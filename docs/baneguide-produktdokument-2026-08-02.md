@@ -1,7 +1,7 @@
 # Baneguide i PlayerHQ — komplett produktdokument
 
 > Skrevet 2026-08-02. Forankret i kodebasen slik den faktisk er (verifisert mot `prisma/schema.prisma`,
-> `src/lib/gameplan/`, `src/lib/runde-logg/`, `src/lib/domain/sg.ts`, `docs/MASTER-SKJERMPLAN.md` og
+> `src/lib/gameplan/`, `src/lib/runde-logg/`, `src/lib/domain/sg.ts`, `docs/port/plan-designport-alle-skjermer.md` og
 > `docs/plan-baneguide-dispersion.md`). Dokumentet er skrevet slik at designer og utvikler kan starte
 > direkte. Ingen kopiering av UpGame/Trackman — kun samme problemklasse, løst selvstendig.
 
@@ -168,8 +168,8 @@ COACH  /admin/spillere/[id]/baneguide        (NY fase 2)
 
 - `/portal/baneguide/**` er allerede redirects til `/portal/gameplan/**` — behold dem
 - Navnespørsmålet (Gameplan vs. Baneguide i UI) er en åpen beslutning → §13
-- Nye rader i `docs/MASTER-SKJERMPLAN.md` opprettes når skjermene bygges (6-hake-regelen gjelder);
-  tre Gameplan-rader finnes allerede (linje 182–184)
+- Nye skjermer måles mot ferdig-definisjonen i `docs/port/plan-designport-alle-skjermer.md`
+  §Ferdig-definisjon per skjerm; sjekk `docs/port/fasit-liste-paper.md` for om Gameplan-flatene har fasit
 
 ---
 
@@ -527,7 +527,7 @@ ny query `getKolleDispersion(userId, klubb)` samme sted.
 | 1.6 | `shot-sync-queue.ts` + `synkSlag` | Flymodus midt i runde → slag i kø → synk ved dekning; idempotens-test |
 | 1.7 | GameplanHull-utvidelse (`kolle`, `planB`) + overlay i S1 | Kirurgisk `db execute`; sikte/soner synlige live |
 | 1.8 | Skjematisk offline-fallback (SVG fra geojson) | Kart uten nett viser hull-form |
-| 1.9 | MASTER-SKJERMPLAN-rader + `npm run verify && npm test` + felt-test på ekte bane | Alle 6 haker; Anders spiller 9 hull med appen |
+| 1.9 | Ferdig-definisjon per skjerm + `npm run verify && npm test` + felt-test på ekte bane | Skjermbilder godkjent av Anders; Anders spiller 9 hull med appen |
 
 ### Fase 2 — «Forstå spillet ditt» (etter MVP-evaluering)
 «Min bag»-dispersion (F2.1) → gameplan-etterlevelse (F2.3) → coach-flate (F2.4) → rette-editor +
@@ -594,7 +594,7 @@ go/no-go for resten av fase 1-rekkefølgen.
 ---
 
 *Vedlikehold: dette dokumentet beskriver målbildet per 2026-08-02. Ved bygging gjelder
-`docs/MASTER-SKJERMPLAN.md` for skjermstatus og `.claude/rules/gotchas.md` for tekniske feller.
+`docs/port/plan-designport-alle-skjermer.md` for skjermstatus og `.claude/rules/gotchas.md` for tekniske feller.
 Kjente doc-avvik funnet under research (rettes separat): `docs/platform/DATA-MODEL.md` sier 14
 SG-felter (er 21) og utelater Shot-GPS-feltene; schema-kommentaren på `Shot` peker på utdatert sti
 `lib/baneguide/shot-coords.ts` (er `src/lib/gameplan/shot-coords.ts`).*

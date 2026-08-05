@@ -42,16 +42,16 @@ AK Golf HQ er en helintegrert plattform som gir golfcoacher og spillere felles v
 
 ## Skjerm-gate (LÅST REGEL)
 
-`docs/MASTER-SKJERMPLAN.md` er den autoritative lista over HVER skjerm i appen.
-
-Hver skjerm har status på 6 haker: **Design · Mobil · Desktop · iPad · Flyt · Data · Funker**.
+Designfasit er Claude Paper (Claude Design-prosjekt `605a48cc`, skjermer i `fase1/`).
 
 **FØR** du bygger, endrer eller kobler en skjerm:
-1. Åpne `docs/MASTER-SKJERMPLAN.md`
-2. Finn raden for skjermen du jobber med
-3. Jobb mot den — oppdater hakene i **samme commit** som kodeendringen
+1. Sjekk `docs/port/fasit-liste-paper.md` — har skjermen fasit, eller må den designes uten?
+2. Sjekk `docs/port/plan-designport-alle-skjermer.md` — hvilken bølge hører skjermen til, og hva er status?
+3. Jobb mot ferdig-definisjonen i samme plan (§Ferdig-definisjon per skjerm).
 
-En skjerm er **ikke ferdig** før alle 6 hakene er grønne. Alt Claude Design har tegnet skal ende opp koblet et sted — sjekk «drop-off»-lista i planen så ingenting glemmes.
+En skjerm er **ikke ferdig** før ferdig-definisjonen er oppfylt og Anders har SETT skjermbildet:
+mobil 390px + desktop, lys og mørk, fasit ved siden av, alle fire tilstander, maks én oransje handling,
+klikk-verifisert.
 
 ---
 

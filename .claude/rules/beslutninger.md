@@ -16,6 +16,29 @@ Gjelder til Anders endrer dem.
 
 ## Beslutningene (august 2026)
 
+- **Navigasjon følger Paper: FIRE PlayerHQ-faner (Anders 2026-08-05).** «I dag · Plan ·
+  Analyse · Meg» — per `fase1/KONTRAKT.md` §10. Fanen **«Gjør» utgår som egen fane**;
+  gjennomføring (live-økt, runde, test) åpnes fra Hjem eller Plan, ikke fra bunn-navigasjonen.
+  Koden har i dag fem faner i `src/components/v2/shell.tsx` (`PORTAL_TABS`) og må bygges om.
+  Bakgrunn: navnene spriker i tre kilder (KONTRAKT §10 · fasit-HTML · `kodeordre-agencyos.md`),
+  og skallet ligger på hver eneste skjerm — spriket måtte lukkes før skjerm-PR-ene kunne kjøre.
+  AgencyOS-railen avklares tilsvarende når steg 8 starter (koden: Hjem/Stall/Kalender/Kø/Innsikt).
+- **Kort-ramme (K2): golfdata-kortene er rammeløse (Anders 2026-08-05).** `Panel` eier flaten;
+  kortene er innholdslag uten egen ramme. Dette er allerede byggets standard i alle 12
+  golfdata-komponenter, så beslutningen bekrefter tilstanden framfor å endre den. Aldri legg
+  ramme på et golfdata-kort som ligger i et Panel — det gir dobbel kant.
+- **LFaseBadge tas IKKE i bruk (Anders 2026-08-05).** Den viser de 5 L-fasene, som er
+  AK-formel v1. v2 (bekreftet 2026-08-03) har ikke L-faser. Appen har allerede riktig
+  erstatning: de tre motorikk-stegene i `src/lib/ak-formel-visning.ts` (Vei B). Komponenten
+  blir liggende ubrukt i Paper-biblioteket — ikke plasser den på noen flate.
+- **AK-formel v2 — press-navnene følger Paper (Anders 2026-08-05):** `ALENE · OBSERVERT ·
+  KONKURRANSE · TURNERING` (hvem som ser på), IKKE appens gamle `FRI · KRAV · UTFORDRING ·
+  KONKURRANSE`. Fire nivåer begge steder, så det er ren omdøping.
+  **Motorikk-stegene er allerede riktige:** Paper skriver `UTEN_BALL / LAV_HAST / AUTO`, appens
+  Vei B har `UTEN_BALL / LAV_HASTIGHET / AUTO` — samme tre steg, kun `LAV_HAST`-skrivemåten
+  skiller. Full v2-formel: `PYRAMIDE_OMRADE_MOTORIKK_BELASTNING_PRESS`, f.eks.
+  `TEK_CHIP_LAV_HAST_TRENINGSOMRADE_ALENE` (kilde: `fase1/workbench-mobil.html`).
+  Databasen beholder de finkornede enum-verdiene — `ak-formel-visning.ts` er fortsatt broen.
 - **Design-fasit er Claude Paper 1:1 (Anders 2026-08-04):** skjermene skal bli **slik de er
   designet i Claude Design-prosjektet «AK Golf HQ — Claude Paper»** (`605a48cc`, hentet via
   `claude-design`-MCP-verktøyet — det er den levende kilden) — layout, informasjonsarkitektur og

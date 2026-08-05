@@ -72,7 +72,7 @@ Nye/endrede modeller (additive — følg gotcha: `CREATE TABLE IF NOT EXISTS` vi
 | 8 | Coach dispersion-verktøy (analyse + benchmark) | `/admin/spillere/[id]/dispersion` | Ny — Claude Design |
 | 9 | Banedata-admin + rette-editor | `/admin/baner` (+ `/[id]`) | Ny — verktøy-UI |
 
-Alle skjermer føres inn i `docs/MASTER-SKJERMPLAN.md` med de 6 hakene og portes via design-porting-gate (adversarial diff til 0 avvik).
+Alle skjermer portes via design-porting-gate (adversarial diff til 0 avvik) og måles mot ferdig-definisjonen i `docs/port/plan-designport-alle-skjermer.md` §Ferdig-definisjon per skjerm.
 
 ---
 
@@ -85,7 +85,7 @@ Alle skjermer føres inn i `docs/MASTER-SKJERMPLAN.md` med de 6 hakene og portes
 5. **Spiller-skjermer** → bygg 1-6, port via gate. *Verifiser:* diff 0 avvik, bygg/tsc/lint grønt.
 6. **Coach-skjermer** → bygg 7-8.
 7. **Banedata-admin + rette-editor** → skjerm 9; rett hull OSM bommer på.
-8. **Avslutning** → MASTER-SKJERMPLAN oppdatert, full `prisma validate && generate && tsc && build`, alle design-differ 0 avvik, fjern gammel `/portal/mal/baner`-demo.
+8. **Avslutning** → ferdig-definisjonen oppfylt per skjerm (`docs/port/plan-designport-alle-skjermer.md`), full `prisma validate && generate && tsc && build`, alle design-differ 0 avvik, fjern gammel `/portal/mal/baner`-demo.
 
 Stor feature — gjøres fase for fase over flere økter, ikke på én.
 

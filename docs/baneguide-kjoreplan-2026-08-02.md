@@ -29,7 +29,7 @@
                  └→ Økt 4 (kart-føring i RundeLoggKlient)
                       ├→ Økt 5 (offline slag-kø + synk)
                       ├→ Økt 6 (gameplan-overlay + kolle/planB — DB-endring)
-                      └→ Økt 7 (skjematisk offline-fallback + skjermplan + sluttverifisering)
+                      └→ Økt 7 (skjematisk offline-fallback + sluttverifisering)
 ```
 
 ---
@@ -211,27 +211,29 @@ Ikke merge uten mitt ja.
 
 ---
 
-## Økt 7 — Offline-fallback, skjermplan og sluttverifisering
+## Økt 7 — Offline-fallback og sluttverifisering
 
 **Leverer:** skjematisk SVG-hullvisning fra geojson når kartfliser mangler (steg 1.8);
-nye/oppdaterte rader i `docs/MASTER-SKJERMPLAN.md` med 6-hake-status (steg 1.9); full
+skjermene målt mot ferdig-definisjonen i `docs/port/plan-designport-alle-skjermer.md` (steg 1.9); full
 regresjonsrunde. (Produktdok §7.5 lag 3, §14 teknisk.)
 
 **Ferdig når:** flymodus uten cachede fliser viser hull-formen (fairway/green/bunkere) i stedet
-for grått kart; skjermplan-rader + dashboard-tall + endringslogg er oppdatert i samme commit;
+for grått kart; ferdig-definisjonen per skjerm er oppfylt og skjermbildene godkjent av Anders;
 `npm run verify && npm test` grønn; alle suksesskriterier §14 punkt 1–8 som kan testes uten
 felt er verifisert og listet i PR-beskrivelsen.
 
 **Kopier-lim:**
 
 ```
-Les docs/baneguide-produktdokument-2026-08-02.md (§7.5 punkt 3, §14) og docs/MASTER-SKJERMPLAN.md.
+Les docs/baneguide-produktdokument-2026-08-02.md (§7.5 punkt 3, §14) og
+docs/port/plan-designport-alle-skjermer.md (§Ferdig-definisjon per skjerm).
 Oppgave: Baneguide Økt 7 av 7 — offline-fallback og sluttverifisering. Gren
 feature/baneguide-okt7-fallback. (1) Skjematisk hull-fallback: SVG tegnet fra Bane.geojson
 (fairway/green/bunkere som former, farger fra map-colors-tankegangen men i CSS/SVG — her KAN
 v2-tokens brukes siden det ikke er Mapbox-canvas) som vises i kart-foring.tsx når Mapbox ikke
-laster. (2) Oppdater docs/MASTER-SKJERMPLAN.md: rader for kart-føringen og ev. endrede
-Gameplan-rader, 6 haker ærlig satt, dashboard-tall + endringslogg i samme commit. (3) Full
+laster. (2) Mål kart-føringen og de endrede Gameplan-skjermene mot ferdig-definisjonen i
+docs/port/plan-designport-alle-skjermer.md — skjermbilder (mobil 390px + desktop, lys og mørk)
+til Anders før noe merges. (3) Full
 regresjon: npm run verify && npm test, manuell sjekk av /portal/gameplan-flatene og tekst-føring.
 List §14-suksesskriteriene punkt 1–8 i PR-beskrivelsen med status. Commit, push, PR.
 Ikke merge uten mitt ja.

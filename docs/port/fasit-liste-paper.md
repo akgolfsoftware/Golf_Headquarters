@@ -6,7 +6,8 @@
 **Endrer ingen skjerm.** Dette er kun en opptelling.
 
 Kilder: Claude Design-prosjektet `605a48cc` → `fase1/` (hentet via `claude-design`-MCP,
-sist listet 05.08.2026) og `docs/MASTER-SKJERMPLAN.md`. Designprosjektets `templates/`,
+sist listet 05.08.2026) og den daværende skjermplanen (slettet 05.08.2026, se git-historikken).
+Designprosjektets `templates/`,
 `kart/wf/` og `uploads/` er IKKE kilde — designeren har selv merket dem historikk/utgått
 (`templates/_UTGÅTT.md`, 01.08.2026).
 
@@ -17,7 +18,7 @@ sist listet 05.08.2026) og `docs/MASTER-SKJERMPLAN.md`. Designprosjektets `templ
 | | Antall |
 |---|---:|
 | Ekte skjermer i appen (redirect og utgåtte rader trukket fra) | **343** |
-| Rader i MASTER-SKJERMPLAN totalt | 375 |
+| Rader i skjermplanen totalt (opptelling 05.08.2026, før den ble slettet) | 375 |
 | …av disse ren redirect eller utgått | 32 |
 | Paper-fasitskjermer på disk | **33** (opp fra 25 — 8 nye siden 02.08, se under) |
 | Ekte ruter disse 32 dekker (mobil + desktop av samme rute teller én gang; 2 filer uten rute trukket fra) | **25** |
@@ -37,7 +38,7 @@ fasit) + AgencyOS AK-stigen og Live-session:
 | `playerhq-runde-live.html` | `/portal/(fullscreen)/runde/live` | 04.08.2026 |
 | `playerhq-runde-logg.html` | `/portal/(fullscreen)/runde/logg` | 04.08.2026 |
 | `playerhq-test-gjennomfor.html` | `/portal/(fullscreen)/tren/tester/[testId]/gjennomfor` | 04.08.2026 |
-| `agencyos-ak-stigen.html` | Ingen ekte rute ennå — ny flate, ikke i MASTER-SKJERMPLAN | ~03.08.2026 |
+| `agencyos-ak-stigen.html` | Ingen ekte rute ennå — ny flate, ikke i skjermopptellingen | ~03.08.2026 |
 | `agencyos-live-session.html` | Ingen ekte rute ennå — trolig coach-siden av live-økt, ikke bekreftet mot kode | ~03.08.2026 |
 
 De seks første lukker **6 av 8** skjermer i «PlayerHQ · Gjennomføre»-raden som tidligere hadde
@@ -120,7 +121,7 @@ PlayerHQ Planlegge og AgencyOS Planlegge.
 
 | Paper-fil | Merknad |
 |---|---|
-| `agencyos-ak-stigen.html` | Ny flate (juniorvisning AK-stigen), ikke i MASTER-SKJERMPLAN eller kode i dag |
+| `agencyos-ak-stigen.html` | Ny flate (juniorvisning AK-stigen), ikke i skjermopptellingen eller kode i dag |
 | `agencyos-live-session.html` | Trolig coach-siden av live-økt; ingen tilsvarende rute funnet i `src/app/admin` |
 
 ---
@@ -160,7 +161,7 @@ Tre områder har fortsatt null fasit i det hele tatt: **PlayerHQ Coach** (20),
 **AgencyOS Innsikt** (14) og **AgencyOS Min uke** (4). **PlayerHQ Gjennomføre** har ikke
 lenger null — 6 av 18 er dekket siden 04.08.2026 (se §PlayerHQ Gjennomføre/live-økt over).
 
-WANG (`team-wang`) og GFGK (`gfgk-junior`) er ikke egne rader i MASTER-SKJERMPLAN i dag og
+WANG (`team-wang`) og GFGK (`gfgk-junior`) var ikke egne rader i skjermopptellingen og
 mangler både fasit og oppføring.
 
 ---
@@ -196,5 +197,5 @@ komposisjonsarbeid framfor 318 enkeltdesign.
 2. **`workbench-turnering.html` → hvilken rute?** Turneringer finnes både som `/admin/tournaments`,
    `/admin/turnering-kart` og `/portal/tren/turneringer`. Filnavnet plasserer den i Workbench, men
    ingen av dagens ruter heter det.
-3. **WANG og GFGK mangler i MASTER-SKJERMPLAN.** Bør legges inn før bølge 9, ellers blir de
+3. **WANG og GFGK mangler i skjermopptellingen.** Bør telles med før bølge 9, ellers blir de
    glemt — de er ikke med i de 343.

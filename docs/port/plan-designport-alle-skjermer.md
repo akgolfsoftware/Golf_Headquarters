@@ -71,7 +71,7 @@ koden som skal matche den, og tilgjengelig fra enhver maskin og enhver økt.
 
 ### Steg 2 — Fasit-listen
 Én tabell: hver Paper-skjerm ↔ hvilken ekte rute i appen den svarer til, bygget fra
-`docs/MASTER-SKJERMPLAN.md`. Viser hvilke skjermer som har fasit, og hvilke som må designes
+den daværende skjermplanen (slettet 05.08.2026, se git-historikken). Viser hvilke skjermer som har fasit, og hvilke som må designes
 fra bunnen fordi Paper ikke har tegnet dem. Dette er grunnlaget for å tallfeste steg 7–9.
 **Endrer ingen skjerm.**
 
@@ -118,7 +118,7 @@ Uten dette siger designet tilbake i løpet av måneder — den gamle hex-gaten b
 
 - **Én PR per steg**, aldri én stor. Anders ser resultatet og kan stoppe når som helst.
 - **Skjermbilder i hver PR:** før / etter / Paper-fasit side om side. Vurderes med øynene.
-- `docs/MASTER-SKJERMPLAN.md` hakes av i SAMME commit som skjermen endres (prosjektregel).
+- Ferdig-definisjonen under (§Ferdig-definisjon per skjerm) er kvalitetsporten — ikke CI alene.
 - `npm run verify && npm test` grønt før hver PR. Aldri merge noe rødt.
 
 ## Tidsbilde
@@ -154,7 +154,7 @@ fordi skjermantallet ikke er kjent før steg 2.
 | 6 — Fjern 419 hardkodede farger | Ferdig (PR #274) |
 | 7 — Bølge 1: PlayerHQ | I gang — se delstatus under |
 | 8 — Bølge 2: AgencyOS | Ikke startet — de 2 avklaringene som blokkerte er løst av Anders 2026-08-04 (se §Fase 1-planlegging «To rute-beslutninger» under); venter kun på tur i rekkefølgen |
-| 9 — Bølge 3: resten | Ikke startet — venter på at WANG/GFGK legges inn i MASTER-SKJERMPLAN |
+| 9 — Bølge 3: resten | Ikke startet — WANG/GFGK må telles med i skjermoversikten først (`fasit-liste-paper.md` §Åpne punkter 3) |
 | 10 — Steng døra (lint-gate) | `scripts/check-token-gap.mjs` bygget og koblet inn i verify+CI — [PR #279](https://github.com/akgolfsoftware/Golf_Headquarters/pull/279), IKKE merget ennå |
 
 ### Steg 7 delstatus (PlayerHQ, 151 skjermer)
@@ -221,8 +221,9 @@ En skjerm er ferdig når ALLE punktene under er vist og godkjent — ikke når C
    tallet»-utvidelse på tall fasiten har det på.
 7. **Klikk-verifisert, ikke bare fotografert:** ark/sheets åpner, primærhandlingen gjør noe,
    ingen konsollfeil (samme krav som `kjerne-klikk.spec.ts` stiller).
-8. **MASTER-SKJERMPLAN-raden oppdateres i samme commit** (prosjektregel), og hakene settes
-   først når punktene over er godkjent av Anders — aldri før.
+8. **Anders har sagt ja** på punktene over før PR-en merges — aldri før. (Den gamle
+   skjermplanen med 6 haker per skjerm er slettet 05.08.2026; denne ferdig-definisjonen
+   erstatter hakene.)
 
 ### Revidert steg 7-plan (2026-08-04, én PR per skjerm, skjermbilde-gate på alle)
 
@@ -277,10 +278,10 @@ linjegrense (`STUB_MAKS_LINJER=20`) for å skille ekte auth-guard-redirects fra 
 
 **Konsekvens:** de 8 reelle skjermene er alle i Gjennomføre/live-økt — matcher godt med
 `docs/port/fasit-liste-paper.md` sitt opprinnelige «PlayerHQ Gjennomføre: 0 fasit, 18 uten fasit»
-(MASTER-SKJERMPLAN teller trolig flere tilstander/faner per rute som egne rader). `(legacy)`-mappa
-og de andre redirect-stubbene er derimot IKKE gjenstående arbeid — `docs/MASTER-SKJERMPLAN.md` er
-ikke krysssjekket mot dette funnet ennå og har sannsynligvis stale rader for disse, bør ryddes før
-steg 8/9 planlegges på samme antatte skala som steg 7.
+(den gamle skjermplanen telte trolig flere tilstander/faner per rute som egne rader). `(legacy)`-mappa
+og de andre redirect-stubbene er derimot IKKE gjenstående arbeid. Skjermplanen ble aldri krysssjekket
+mot dette funnet, og er slettet 05.08.2026 — tallene i `fasit-liste-paper.md` som stammer derfra må
+behandles som anslag før steg 8/9 planlegges på samme skala som steg 7.
 
 ## Fase 1-planlegging 2026-08-04 (Fable 5-økt) — GODKJENT av Anders samme dag
 
@@ -301,8 +302,8 @@ token-effektivt (ingen irrelevante skills/plugins/gammel kontekst). Låst rekkef
   vurder om mønsterdokumentet trenger et nytt destillat neste gang det brukes til en skjerm de nye
   filene dekker).
   ENESTE designkilde for skjermer uten fasit. Dekker den ikke → stopp og spør Anders.
-- MASTER-SKJERMPLAN ryddet: 37 rader merket REDIRECT (30 portal + 7 admin, verifisert fil
-  for fil). 12 stub-ruter uten rad skal ikke få rad.
+- Skjermplanen ryddet (dokumentet er siden slettet 05.08.2026): 37 rader merket REDIRECT
+  (30 portal + 7 admin, verifisert fil for fil). 12 stub-ruter uten rad.
 - Triage-tall AgencyOS (nytt): 154 sider — 89 v2, 37 redirect-stubber, **28 reelt uportede**.
 
 **To rute-beslutninger fra Anders 2026-08-04 (lukker §Åpne punkter 1–2 i fasit-listen):**
@@ -319,7 +320,7 @@ og panelbredder i mønsterdokumentets §Uavklart (avklares første gang de treff
 **Per-skjerm-prosess (FAST, fra Anders' Fase 1-brief):** bygg 1:1 mot fasit-HTML (eller
 mønsterdokumentet) → `npm run verify && npm test` grønt → 4 skjermbilder (390px lys/mørk,
 1280px lys/mørk) side om side med fasit, sendt I CHATTEN → «Venter på ditt ja» → først etter
-ja: PR + MASTER-SKJERMPLAN-haker i samme commit. Aldri merge uten eksplisitt ja.
+ja: PR. Aldri merge uten eksplisitt ja.
 
 ## Fortsett fra en annen maskin
 

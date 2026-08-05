@@ -23,7 +23,7 @@ Coach/eier-flaten for å drive stallen: spillere, planer (Workbench), bookinger,
 
 Next.js 16 App Router · Prisma 7 · Supabase · Tailwind v4 · v2-komponenter (`src/components/v2`) · Lucide · npm
 
-Kanon: `docs/platform/AGENT-BRIEF.md`, `docs/MASTER-SKJERMPLAN.md`, og for design:
+Kanon: `docs/platform/AGENT-BRIEF.md`, `docs/port/plan-designport-alle-skjermer.md`, og for design:
 Claude Design-prosjektet «AK Golf HQ — Claude Paper» (`605a48cc`, `fase1/`) +
 `docs/port/fasit-liste-paper.md`.
 

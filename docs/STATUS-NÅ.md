@@ -14,7 +14,8 @@ fortsatt ikke klar for betalende brukere før P0-aktivering.)
 | Rolle | Dokument |
 |---|---|
 | **Snapshot (denne)** | `docs/STATUS-NÅ.md` |
-| **Skjerm-status** (autoritativ, 6 haker/skjerm + «Veien til 100%») | `docs/MASTER-SKJERMPLAN.md` |
+| **Designdekning per skjerm** (hvilke har Paper-fasit) | `docs/port/fasit-liste-paper.md` |
+| **Porteringsplan + ferdig-definisjon per skjerm** | `docs/port/plan-designport-alle-skjermer.md` |
 | **Uavklart / parkert / løst** | `docs/AAPNE-SPORSMAAL.md` |
 | **Låste forretningsregler** (fasit) | `docs/platform/BUSINESS-RULES.md` |
 | **Full plattformkontekst** (5 min) | `docs/platform/AGENT-BRIEF.md` |

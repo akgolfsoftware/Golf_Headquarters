@@ -1,6 +1,7 @@
 # Screen Context — AK Golf HQ (30 viktigste skjermer)
 
-Generert: 11. juni 2026. Kilde: MASTER-SKJERMPLAN + Prisma-schema + route-tre.
+Generert: 11. juni 2026. Kilde: den daværende skjermplanen (slettet 05.08.2026, se git-historikken)
++ Prisma-schema + route-tre.
 
 Brukes av agenter og utviklere som kontekst FØR arbeid på en skjerm starter.
 Design under aktiv utvikling (2026-07-03) — ingen fasit-pekere per skjerm akkurat nå, se `CLAUDE.md`.
