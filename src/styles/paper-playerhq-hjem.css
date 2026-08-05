@@ -1,0 +1,966 @@
+/* ═══════════════════════════════════════════════════════════════
+   AK Golf HQ · Paper PlayerHQ Hjem — produksjons-CSS
+   Kilde: designsystem/paper/fase1/playerhq-chat-{desktop,mobil}.html
+         + _foundation.css (base resets/helpers)
+   Scope: ALL rules under .paper-hjem (ingen lekkasje til resten av appen)
+   Tokens: unprefixed Paper-vars mappes til --p-* fra paper-tokens.css
+   Bruk: @import "./styles/paper-playerhq-hjem.css" i globals.css
+   ═══════════════════════════════════════════════════════════════ */
+
+/* Token-bridge + root shell */
+.paper-hjem {
+  /* ── Color ── */
+  --bg: var(--p-bg);
+  --fg: var(--p-fg);
+  --surface: var(--p-surface);
+  --soft: var(--p-soft);
+  --soft-hover: var(--p-soft-hover, color-mix(in srgb, var(--p-soft) 92%, var(--p-fg)));
+  --border: var(--p-border);
+  --mid: var(--p-mid);
+  --muted: var(--p-muted);
+  --faint: var(--p-faint, color-mix(in srgb, var(--p-muted) 55%, transparent));
+  --accent: var(--p-accent);
+  --on-accent: var(--p-on-accent);
+  --accent-soft: var(--p-accent-soft);
+  --accent-hover: var(--p-accent-hover);
+  --accent-border: var(--p-accent-border);
+  --rail: var(--p-rail);
+  --rail-fg: var(--p-rail-fg);
+  --rail-on: var(--p-rail-on);
+  --rail-active: var(--p-rail-active);
+  --rail-hover: var(--p-rail-hover);
+  --up: var(--p-up);
+  --down: var(--p-down);
+  --warn: var(--p-warn);
+  --info: var(--p-info);
+  --logo-mark: var(--p-logo-mark);
+  --logo-dot: var(--p-logo-dot);
+  --scrim: var(--p-scrim);
+  --overlay: var(--p-overlay);
+  --focus-ring: var(--p-focus-ring);
+  --shadow: var(--p-shadow);
+  --focus: 2px solid var(--focus-ring);
+
+  /* ── Fonts (layout.tsx: --font-poppins, --font-lora, --font-ibm-plex-mono) ── */
+  --ui: var(--p-ui, var(--p-font-ui, var(--p-font-sans, var(--font-poppins), system-ui, sans-serif)));
+  --disp: var(--p-disp, var(--p-font-disp, var(--p-font-sans, var(--font-poppins), system-ui, sans-serif)));
+  --body: var(--p-body, var(--p-font-body, var(--p-font-serif, var(--font-lora), Georgia, serif)));
+  --mono: var(--p-mono, var(--p-font-mono, var(--font-ibm-plex-mono), ui-monospace, monospace));
+
+  /* ── Type scale · PlayerHQ body 14px ── */
+  --base: var(--p-text-body-player, 14px);
+  --display: var(--p-text-display, 32px);
+  --title: var(--p-text-title, 22px);
+  --card: var(--p-text-card, 16px);
+  --panel: var(--p-text-panel, 14.5px);
+  --label: var(--p-text-label, 10px);
+  --kpi: var(--p-text-kpi, 40px);
+  --hero: var(--p-text-hero, 56px);
+  --section: var(--p-text-section, 40px);
+  --prose: var(--p-text-prose, 18px);
+  --prose-lg: var(--p-text-prose-lg, 22px);
+  --text-nav: var(--p-text-nav, 16px);
+  --text-eyebrow: var(--p-text-eyebrow, 12px);
+
+  /* ── Spacing ── */
+  --s1: var(--p-s1, 4px);
+  --s2: var(--p-s2, 8px);
+  --s3: var(--p-s3, 12px);
+  --s4: var(--p-s4, 16px);
+  --s5: var(--p-s5, 24px);
+  --s6: var(--p-s6, 32px);
+  --s7: var(--p-s7, 48px);
+  --s8: var(--p-s8, 64px);
+  --s9: var(--p-s9, 96px);
+
+  /* ── Radii (fasit r-xs / r-xl mangler i paper-tokens i dag → fallback) ── */
+  --r-none: var(--p-r-none, 0px);
+  --r-xs: var(--p-r-xs, 6px);
+  --r-sm: var(--p-r-sm, 8px);
+  --r-md: var(--p-r-md, 16px);
+  --r-lg: var(--p-r-lg, 24px);
+  --r-xl: var(--p-r-xl, 20px);
+  --r-pill: var(--p-r-pill, 999px);
+
+  /* ── Motion / tap / z-index ── */
+  --ease: var(--p-ease, cubic-bezier(0.16, 1, 0.3, 1));
+  --dur: var(--p-dur, 160ms);
+  --dur-slow: var(--p-dur-slow, 280ms);
+  --tap: var(--p-tap, 44px);
+  --tap-lg: var(--p-tap-lg, 48px);
+  --tap-capture: var(--p-tap-capture, 60px);
+  --z-sticky: var(--p-z-sticky, 10);
+  --z-rail: var(--p-z-rail, 20);
+  --z-sheet: var(--p-z-sheet, 40);
+  --z-modal: var(--p-z-modal, 50);
+  --z-toast: var(--p-z-toast, 100);
+  --z-command: var(--p-z-command, 110);
+
+  /* ── Root shell ── */
+  box-sizing: border-box;
+  min-height: 100dvh;
+  height: 100dvh;
+  max-height: 100dvh;
+  margin: 0;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--ui);
+  font-size: var(--base);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  color-scheme: light dark;
+  overflow: hidden;
+}
+
+.paper-hjem *,
+.paper-hjem *::before,
+.paper-hjem *::after {
+  box-sizing: border-box;
+}
+
+/* ─────────────────────────────────────────────────────────────
+   Foundation base (scoped) — resets, type helpers, a11y, scrollbars
+   ───────────────────────────────────────────────────────────── */
+.paper-hjem *, .paper-hjem *::before, .paper-hjem *::after{ box-sizing:border-box; }
+.paper-hjem, 
+.paper-hjem{
+  background:var(--bg); color:var(--fg);
+  font-family:var(--ui); font-size:var(--base,13.5px); line-height:1.5;
+  -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility;
+}
+.paper-hjem .prose{ font-family:var(--body); font-size:14.5px; line-height:1.62; color:var(--fg); }
+.paper-hjem .num{ font-family:var(--mono); font-variant-numeric:tabular-nums; font-feature-settings:"tnum" 1; }
+.paper-hjem .eyebrow{
+  font-family:var(--mono); font-size:10px; font-weight:500;
+  letter-spacing:.09em; text-transform:uppercase; color:var(--muted);
+}
+.paper-hjem .sr{ position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; border:0; }
+.paper-hjem :where(a,button,input,textarea,select,[tabindex]):focus-visible{
+  outline:2px solid var(--focus); outline-offset:2px; border-radius:var(--r-sm);
+}
+/* ── Knapper ─────────────────────────────────────────────────────
+   .btn            ghost/sekundær — blekkkant, transparent
+   .btn.ink        blekkfylt — bekreftende, men ikke «Én ting nå»
+   .btn.now        ACCENT-FYLT — maks ÉN per skjerm. Dette er «Én ting nå».
+   ────────────────────────────────────────────────────────────── */
+.paper-hjem .btn{
+  display:inline-flex; align-items:center; justify-content:center; gap:var(--s2);
+  min-height:var(--tap); padding:0 var(--s4);
+  font-family:var(--ui); font-size:13px; font-weight:500; line-height:1;
+  color:var(--fg); background:transparent;
+  border:1px solid var(--border); border-radius:var(--r);
+  cursor:pointer; text-decoration:none; white-space:nowrap;
+  transition:background var(--dur) var(--ease), border-color var(--dur) var(--ease), transform var(--dur) var(--ease);
+}
+.paper-hjem .btn:hover{ background:var(--soft); border-color:var(--mid); }
+.paper-hjem .btn:active{ transform:translateY(1px); }
+.paper-hjem .btn[disabled], .paper-hjem .btn[aria-disabled="true"]{ opacity:.45; cursor:not-allowed; pointer-events:none; }
+.paper-hjem .btn.ink{ background:var(--cta); color:var(--on-cta); border-color:var(--cta); }
+.paper-hjem .btn.ink:hover{ background:var(--cta); opacity:.88; }
+.paper-hjem .btn.now{
+  background:var(--accent); color:var(--on-accent); border-color:var(--accent);
+  min-height:var(--tap-lg); font-weight:600; padding:0 var(--s5);
+}
+.paper-hjem .btn.now:hover{ background:var(--accent); filter:brightness(1.04); }
+.paper-hjem .btn.sm{ min-height:36px; padding:0 var(--s3); font-size:12px; }
+@media (pointer:coarse){.paper-hjem .btn.sm{ min-height:var(--tap); }}
+.paper-hjem .btn.icon{ width:var(--tap); min-height:var(--tap); padding:0; }
+/* ── Flater ──────────────────────────────────────────────────── */
+.paper-hjem .panel{ background:var(--surface); border:1px solid var(--border); border-radius:var(--r); }
+@media (pointer:coarse){}
+.paper-hjem .tag{
+  display:inline-flex; align-items:center; gap:var(--s1);
+  padding:3px var(--s2); border-radius:var(--r-pill);
+  font-family:var(--mono); font-size:10.5px; letter-spacing:.04em; text-transform:uppercase;
+  background:var(--soft); color:var(--muted); border:1px solid var(--border);
+}
+.paper-hjem .tag.up{ color:var(--up); }
+.paper-hjem .tag.dn{ color:var(--dn); }
+.paper-hjem .tag.info{ color:var(--info); }
+/* ── Tomtilstand — aldri en tom flate uten neste steg ─────────── */
+.paper-hjem .empty{
+  display:flex; flex-direction:column; align-items:flex-start; gap:var(--s3);
+  padding:var(--s6) var(--s5); background:var(--soft);
+  border:1px dashed var(--border); border-radius:var(--r);
+}
+.paper-hjem .empty h3{ margin:0; font-family:var(--disp); font-size:15px; font-weight:600; }
+.paper-hjem .empty p{ margin:0; max-width:46ch; font-family:var(--body); font-size:14px; color:var(--muted); }
+/* ── Skjelett ────────────────────────────────────────────────── */
+.paper-hjem .skel{ background:var(--soft); border-radius:var(--r-sm); animation:pulse 1.6s var(--ease) infinite; }
+@keyframes pulse{ 0%,100%{opacity:1} 50%{opacity:.55} }
+/* ── Scrim + ark ─────────────────────────────────────────────── */
+.paper-hjem .scrim{ position:fixed; inset:0; background:var(--scrim); z-index:var(--z-sheet); }
+.paper-hjem .sheet{
+  position:fixed; left:0; right:0; bottom:0; z-index:calc(var(--z-sheet) + 1);
+  background:var(--surface); border-top:1px solid var(--border);
+  border-radius:var(--r) var(--r) 0 0; box-shadow:var(--shadow);
+  padding:var(--s3) var(--s4) calc(var(--s5) + env(safe-area-inset-bottom));
+  max-height:88vh; overflow:auto;
+}
+.paper-hjem .sheet-grab{ width:36px; height:4px; border-radius:var(--r-pill); background:var(--border); margin:0 auto var(--s3); }
+@media (prefers-reduced-motion:reduce){.paper-hjem *, .paper-hjem *::before, .paper-hjem *::after{
+    animation-duration:.01ms !important; animation-iteration-count:1 !important;
+    transition-duration:.01ms !important; scroll-behavior:auto !important;
+  }}
+
+/* ─────────────────────────────────────────────────────────────
+   Desktop fasit — .app grid, rail, stage, thread, artifact, composer
+   ───────────────────────────────────────────────────────────── */
+/* ═══════════════════════════════════════════════════════════════
+   Skjermspesifikk CSS · PlayerHQ chat · DESKTOP
+   PlayerHQ er mobil-først. Body 14px også her — desktop er den
+   tilpassede utgaven, ikke omvendt.
+   ═══════════════════════════════════════════════════════════════ */
+.paper-hjem{
+  --base:14px;
+  /* rail-flater: gjennomsiktig blekk, ikke hex — rail er alltid mørk */
+  --rail-hover:rgba(250,249,245,.08);
+  --rail-active:rgba(250,249,245,.14);
+}
+/* Optiske finjusteringer i px (kontrakt §2, begrunnet unntak):
+   gap 2–3px i rail-/faneknapper og loop-etiketter, padding 3px på
+   arbeidslinjer og meldingstekst, calc(28px + var(--s3)) = avatarbredde
+   + kolonneluft. Alt annet spacing går via --s1…--s8. */
+.paper-hjem [hidden]{ display:none !important; }
+.paper-hjem button{ font:inherit; }
+/* Layoutmål (kontrakt §2: eksplisitt begrunnede layout-mål)
+   64px  = venstre rail, samme mål som AgencyOS
+   360px = artefaktpanel, oppgavens anatomi
+   720px = lesebredde i tråden */
+.paper-hjem.app, .paper-hjem .app{
+  display:grid;
+  grid-template-columns:64px minmax(0,1fr) 360px;
+  height:100dvh;
+  background:var(--bg);
+  color:var(--fg);
+  overflow:hidden;
+}
+/* Plan-flate: ingen artefakt-kolonne (fasit playerhq-plan = rail + én kolonne) */
+.paper-hjem.paper-surface-plan .app{
+  grid-template-columns:64px minmax(0,1fr);
+}
+.paper-hjem.paper-surface-plan .paper-plan{
+  min-width:0;
+  min-height:0;
+  height:100%;
+  max-height:100%;
+  overflow:hidden;
+  grid-column: 2;
+  grid-row: 1;
+}
+@media (max-width: 640px){
+  .paper-hjem.paper-surface-plan .paper-plan{
+    grid-column: 1;
+    grid-row: 1;
+  }
+  .paper-hjem.paper-surface-plan .tabs{
+    grid-column: 1;
+    grid-row: 2;
+  }
+}
+@media (min-width: 641px){
+  .paper-hjem.paper-surface-plan .tabs{
+    display: none !important;
+  }
+}
+/* Desktop/iPad (≥641): bunnfaner skjules (rail bærer nav) */
+@media (min-width: 641px){
+  .paper-hjem .tabs{ display:none !important; }
+}
+/* Mobil (≤640): rail skjules, tabs bærer nav — én kolonne */
+@media (max-width: 640px){
+  .paper-hjem .rail{ display:none !important; }
+  .paper-hjem.app,
+  .paper-hjem .app{
+    grid-template-columns: minmax(0, 1fr) !important;
+    grid-template-rows: minmax(0, 1fr) auto;
+    height: 100dvh;
+  }
+  .paper-hjem .stage{ min-height: 0; }
+  .paper-hjem .tabs{ display: grid !important; }
+  .paper-hjem .composer{
+    padding-bottom: calc(var(--s3) + env(safe-area-inset-bottom));
+  }
+}
+/* ── Enhetsbånd · Bølge 1 ────────────────────────────────────────
+   ≥1121  desktop: rail 64 + tråd (720-kolonne) + artefaktpanel 360
+   641–1120 iPad + smal desktop: rail beholdes, artefakt blir bunn-ark.
+   ≤640   mobil: rail skjules, .tabs bærer nav (se egen @media under)
+   ────────────────────────────────────────────────────────────── */
+.paper-hjem #artOpen{ display:none; }
+.paper-hjem #artScrim{ display:none; position:fixed; inset:0; background:var(--scrim); z-index:var(--z-sheet); }
+@media (max-width:1120px){.paper-hjem.app, .paper-hjem .app{ grid-template-columns:64px minmax(0,1fr); }
+.paper-hjem #artOpen{ display:inline-flex; }
+.paper-hjem .artifact{
+    position:fixed; left:0; right:0; bottom:0; z-index:calc(var(--z-sheet) + 1);
+    max-height:88vh; height:auto;
+    background:var(--surface);
+    border-top:1px solid var(--border);
+    border-radius:var(--r) var(--r) 0 0;
+    box-shadow:var(--shadow);
+    padding-bottom:env(safe-area-inset-bottom);
+    transform:translateY(100%);
+    transition:transform var(--dur-slow) var(--ease);
+  }
+.paper-hjem .artifact::before{
+    content:""; display:block; width:36px; height:4px; flex:none;
+    border-radius:var(--r-pill); background:var(--border);
+    margin:var(--s3) auto var(--s1);
+  }
+.paper-hjem.art-open .artifact,
+.paper-hjem:has([data-art-open="true"]) .artifact,
+.paper-hjem .artifact.on{ transform:translateY(0); }
+.paper-hjem.art-open #artScrim,
+.paper-hjem:has([data-art-open="true"]) .scrim,
+.paper-hjem .scrim.on{ display:block; }
+.paper-hjem #abody{ max-height:60vh; }}
+@media (min-width:1121px){.paper-hjem .artifact{ transform:none !important; }}
+.paper-hjem .skip{
+  position:absolute; left:var(--s3); top:-100px; z-index:var(--z-toast);
+  background:var(--surface); border:1px solid var(--border); border-radius:var(--r);
+  padding:var(--s3) var(--s4); color:var(--fg); text-decoration:none;
+}
+.paper-hjem .skip:focus{ top:var(--s3); }
+/* ── Rail ─────────────────────────────────────────────────────── */
+.paper-hjem .rail{
+  background:var(--rail); color:var(--rail-fg); z-index:var(--z-rail);
+  display:flex; flex-direction:column; align-items:center; gap:var(--s3);
+  padding:var(--s4) 0 var(--s3);
+}
+.paper-hjem .logo{ font-family:var(--disp); font-weight:600; font-size:13px; color:var(--rail-on); letter-spacing:.02em; }
+.paper-hjem .logo span{ color:var(--logo-dot); }
+.paper-hjem .rnav{ display:flex; flex-direction:column; align-items:center; gap:var(--s1); width:100%; }
+.paper-hjem .rbtn{
+  width:56px; min-height:var(--tap); padding:var(--s1) 0;
+  display:flex; flex-direction:column; align-items:center; justify-content:center; gap:3px;
+  background:transparent; border:0; border-radius:var(--r);
+  color:var(--rail-fg); cursor:pointer;
+  font-family:var(--ui); font-size:9.5px; line-height:1.1; text-align:center;
+}
+.paper-hjem .rbtn svg{ width:19px; height:19px; fill:none; stroke:currentColor; stroke-width:1.6; stroke-linecap:round; stroke-linejoin:round; }
+.paper-hjem .rbtn:hover{ background:var(--rail-hover); color:var(--rail-on); }
+.paper-hjem .rbtn[aria-current="page"]{ background:var(--rail-active); color:var(--rail-on); }
+.paper-hjem .railsp{ flex:1; }
+/* ── Midtkolonne ──────────────────────────────────────────────── */
+/* min-height:0 + overflow:hidden — uten dem vokser flex-elementet forbi
+   .app{height:100vh}, tråden scroller aldri internt og composeren mister
+   bunnfestet. Samme defekt som i agencyos-konsoll-desktop, rettet 01.08. */
+.paper-hjem .stage{ display:flex; flex-direction:column; min-width:0; min-height:0; overflow:hidden; border-right:1px solid var(--border); }
+.paper-hjem .top{
+  display:flex; align-items:center; gap:var(--s4);
+  padding:var(--s3) var(--s5); border-bottom:1px solid var(--border);
+  background:var(--bg); position:sticky; top:0; z-index:var(--z-sticky);
+}
+.paper-hjem .top h1{ margin:0; font-family:var(--disp); font-size:15px; font-weight:600; }
+.paper-hjem .icbtn{
+  width:var(--tap); height:var(--tap); display:grid; place-items:center;
+  background:transparent; border:1px solid var(--border); border-radius:var(--r);
+  color:var(--fg); cursor:pointer;
+}
+.paper-hjem .icbtn svg{ width:17px; height:17px; fill:none; stroke:currentColor; stroke-width:1.6; stroke-linecap:round; stroke-linejoin:round; }
+.paper-hjem .icbtn:hover{ background:var(--soft); }
+/* ── Sløyfe-indikator · FØR → UNDER → ETTER ──────────────────── */
+.paper-hjem .loop{ margin-left:auto; display:flex; align-items:center; gap:var(--s1); }
+.paper-hjem .loop a,
+.paper-hjem .loop span{
+  min-height:var(--tap); display:flex; flex-direction:column; justify-content:center;
+  padding:0 var(--s3); border-radius:var(--r-sm); text-decoration:none; color:var(--muted);
+  font-family:var(--mono); font-size:10px; letter-spacing:.09em; text-transform:uppercase;
+}
+.paper-hjem .loop a small{ font-family:var(--ui); font-size:10px; letter-spacing:0; text-transform:none; color:var(--mid); }
+.paper-hjem .loop a:hover{ background:var(--soft); color:var(--fg); }
+.paper-hjem .loop a[aria-current="step"],
+.paper-hjem .loop a.on,
+.paper-hjem .loop span.on,
+.paper-hjem .loop span[aria-current="step"]{ background:var(--soft); color:var(--fg); box-shadow:inset 0 -2px 0 0 var(--fg); }
+.paper-hjem .loop .arw{ color:var(--mid); font-size:12px; }
+/* demo-bryter */
+/* ── Modusflater ─────────────────────────────────────────────── */
+.paper-hjem .mode{ flex:1; min-height:0; display:flex; flex-direction:column; }
+/* ── Tråd ────────────────────────────────────────────────────── */
+.paper-hjem .thread{ flex:1; min-height:0; overflow:auto; padding:var(--s5) var(--s5) var(--s6); }
+.paper-hjem .tw{ max-width:720px; margin:0 auto; }
+.paper-hjem .turn{ margin-bottom:var(--s6); }
+.paper-hjem .you{ display:flex; gap:var(--s3); align-items:flex-start; margin-bottom:var(--s4); }
+.paper-hjem .av{
+  width:28px; height:28px; flex:none; border-radius:var(--r-pill);
+  background:var(--soft); border:1px solid var(--border);
+  display:grid; place-items:center; font-family:var(--mono); font-size:10px; color:var(--muted);
+}
+.paper-hjem .msg{ font-family:var(--body); font-size:15px; padding-top:3px; }
+.paper-hjem .ai{ padding-left:calc(28px + var(--s3)); }
+/* avatarbredde + kolonneluft */
+.paper-hjem .steps{ list-style:none; margin:0 0 var(--s4); padding:0; display:flex; flex-direction:column; gap:var(--s2); }
+.paper-hjem .steps li{ display:flex; align-items:center; gap:var(--s2); font-size:12.5px; color:var(--muted); }
+.paper-hjem .steps li svg{ width:14px; height:14px; flex:none; fill:none; stroke:var(--up); stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
+.paper-hjem .steps li .t{ margin-left:auto; color:var(--mid); font-size:11.5px; }
+.paper-hjem .steps li.pend svg{ stroke:var(--mid); }
+.paper-hjem .say{ font-family:var(--body); font-size:14.5px; line-height:1.62; margin:0 0 var(--s3); }
+.paper-hjem .say b{ font-family:var(--ui); font-weight:600; font-size:13.5px; }
+.paper-hjem .artcard{
+  display:flex; align-items:center; gap:var(--s3); width:100%; text-align:left;
+  margin:var(--s3) 0; padding:var(--s4); min-height:var(--tap-lg);
+  background:var(--surface); border:1px solid var(--border); border-radius:var(--r);
+  cursor:pointer; font:inherit; color:inherit;
+}
+.paper-hjem .artcard:hover{ background:var(--soft); }
+.paper-hjem .artcard .ic{ width:36px; height:36px; flex:none; display:grid; place-items:center; border-radius:var(--r-sm); background:var(--soft); }
+.paper-hjem .artcard .ic svg{ width:17px; height:17px; stroke:var(--muted); stroke-width:1.6; fill:none; stroke-linecap:round; stroke-linejoin:round; }
+.paper-hjem .artcard .tx{ flex:1; min-width:0; }
+.paper-hjem .artcard .tx strong{ display:block; font-family:var(--disp); font-size:13.5px; font-weight:600; }
+.paper-hjem .artcard .tx small{ display:block; font-family:var(--mono); font-size:11px; color:var(--muted); margin-top:2px; }
+.paper-hjem .artcard .go{ flex:none; color:var(--muted); font-size:16px; }
+.paper-hjem .saved{
+  display:flex; align-items:flex-start; gap:var(--s2); margin:var(--s3) 0;
+  padding:var(--s3) var(--s4); border:1px solid var(--border); border-radius:var(--r);
+  background:var(--soft); font-size:12.5px; color:var(--muted);
+}
+.paper-hjem .saved svg{ width:14px; height:14px; margin-top:2px; stroke:var(--up); stroke-width:2.2; fill:none; flex:none; }
+.paper-hjem .saved b{ font-family:var(--ui); font-weight:600; color:var(--fg); }
+.paper-hjem .gate{
+  display:flex; align-items:flex-start; gap:var(--s2); margin:var(--s3) 0;
+  padding:var(--s3) var(--s4); border:1px dashed var(--border); border-radius:var(--r);
+  background:var(--surface); font-size:12.5px; color:var(--muted);
+}
+.paper-hjem .gate svg{ width:14px; height:14px; margin-top:2px; stroke:var(--info); stroke-width:2; fill:none; flex:none; }
+.paper-hjem .gate b{ font-family:var(--ui); font-weight:600; color:var(--fg); }
+.paper-hjem .locked{
+  display:flex; align-items:flex-start; gap:var(--s2); margin:var(--s3) 0;
+  padding:var(--s3) var(--s4); border:1px solid var(--border); border-radius:var(--r);
+  background:var(--soft); font-size:12.5px; color:var(--muted);
+}
+.paper-hjem .locked svg{ width:15px; height:15px; margin-top:2px; stroke:var(--muted); stroke-width:1.8; fill:none; flex:none; }
+.paper-hjem .locked b{ font-family:var(--ui); font-weight:600; color:var(--fg); }
+.paper-hjem .draft{ margin:var(--s3) 0; border:1px solid var(--border); border-radius:var(--r); background:var(--surface); overflow:hidden; }
+.paper-hjem .draft .dh{ display:flex; align-items:center; gap:var(--s2); padding:var(--s3) var(--s4); border-bottom:1px solid var(--border); background:var(--soft); }
+.paper-hjem .draft .dh strong{ font-family:var(--disp); font-size:13px; font-weight:600; }
+.paper-hjem .draft .dh .tag{ margin-left:auto; }
+.paper-hjem .drill{ display:flex; gap:var(--s3); padding:var(--s3) var(--s4); border-bottom:1px solid var(--border); }
+.paper-hjem .drill:last-of-type{ border-bottom:0; }
+.paper-hjem .drill .no{ font-family:var(--mono); font-size:11px; color:var(--mid); flex:none; width:2ch; }
+.paper-hjem .drill .tx{ flex:1; min-width:0; }
+.paper-hjem .drill .tx strong{ display:block; font-family:var(--disp); font-size:13px; font-weight:600; }
+.paper-hjem .drill .fx{ display:block; font-family:var(--mono); font-size:11px; color:var(--muted); margin-top:2px; }
+.paper-hjem .drill .mt{ display:block; font-family:var(--mono); font-size:11px; color:var(--mid); margin-top:2px; }
+.paper-hjem .draft .df{ padding:var(--s3) var(--s4); border-top:1px solid var(--border); display:flex; align-items:center; gap:var(--s3); flex-wrap:wrap; }
+/* «Én ting nå»-blokk — eneste sted --accent-soft brukes som flate */
+.paper-hjem .nowblock{ background:var(--accent-soft); border:1px solid var(--border); border-radius:var(--r); padding:var(--s4); }
+.paper-hjem .nowblock h3{ margin:var(--s2) 0 var(--s2); font-family:var(--disp); font-size:15px; font-weight:600; }
+.paper-hjem .nowblock p{ margin:0 0 var(--s4); font-family:var(--body); font-size:14px; color:var(--muted); max-width:52ch; }
+.paper-hjem .acts{ display:flex; gap:var(--s2); flex-wrap:wrap; }
+/* ── Composer ─────────────────────────────────────────────────── */
+.paper-hjem .composer{ border-top:1px solid var(--border); background:var(--surface); padding:var(--s3) var(--s5) var(--s4); }
+.paper-hjem .cwrap{ position:relative; max-width:720px; margin:0 auto; }
+.paper-hjem .box{ border:1px solid var(--border); border-radius:var(--r); background:var(--bg); padding:var(--s3); }
+.paper-hjem .box:focus-within{ border-color:var(--mid); }
+.paper-hjem #ta{
+  display:block; width:100%; border:0; outline:none; background:transparent; resize:none;
+  font-family:var(--body); font-size:15px; line-height:1.5; color:var(--fg);
+  max-height:180px; overflow:auto;
+}
+.paper-hjem #ta::placeholder{ color:var(--mid); }
+.paper-hjem .boxbar{ display:flex; align-items:center; gap:var(--s2); margin-top:var(--s2); }
+.paper-hjem .boxbar .sp{ flex:1; }
+.paper-hjem .mic{
+  width:var(--tap-capture); height:var(--tap-capture);
+  display:grid; place-items:center; background:var(--soft);
+  border:1px solid var(--border); border-radius:var(--r); color:var(--fg); cursor:pointer;
+}
+.paper-hjem .mic svg{ width:22px; height:22px; fill:none; stroke:currentColor; stroke-width:1.6; stroke-linecap:round; stroke-linejoin:round; }
+.paper-hjem .mic:hover{ background:var(--border); }
+.paper-hjem .ctxline{ display:flex; align-items:center; gap:var(--s3); margin-top:var(--s2); }
+.paper-hjem .ctx{
+  display:inline-flex; align-items:center; gap:var(--s2); min-height:var(--tap); padding:0 var(--s3);
+  background:transparent; border:1px solid var(--border); border-radius:var(--r-pill);
+  font-family:var(--mono); font-size:10.5px; letter-spacing:.05em; color:var(--muted); cursor:pointer;
+}
+.paper-hjem .menu, .paper-hjem .pop{
+  position:absolute; bottom:calc(100% + var(--s2)); left:0; right:0;
+  background:var(--surface); border:1px solid var(--border); border-radius:var(--r);
+  box-shadow:var(--shadow); padding:var(--s2); max-height:280px; overflow:auto; z-index:var(--z-sticky);
+}
+.paper-hjem .pop{ left:0; right:auto; width:46ch; bottom:auto; top:calc(100% + var(--s2)); }
+.paper-hjem .mgrp{ font-family:var(--mono); font-size:9.5px; letter-spacing:.1em; text-transform:uppercase; color:var(--mid); padding:var(--s2) var(--s3); }
+.paper-hjem .mitem{
+  display:flex; align-items:center; gap:var(--s3); width:100%; min-height:var(--tap);
+  padding:0 var(--s3); background:transparent; border:0; border-radius:var(--r-sm);
+  color:var(--fg); font-size:13px; text-align:left; cursor:pointer;
+}
+.paper-hjem .mitem[aria-selected="true"]{ background:var(--soft); }
+.paper-hjem .mitem .c{ font-family:var(--mono); font-size:12px; color:var(--muted); min-width:11ch; }
+.paper-hjem .mitem small{ display:block; color:var(--muted); font-size:11.5px; }
+.paper-hjem .pop h4{ margin:0 0 var(--s2); font-family:var(--disp); font-size:13px; }
+.paper-hjem .pop ul{ margin:0; padding-left:var(--s5); font-family:var(--body); font-size:13px; color:var(--muted); }
+.paper-hjem .pop li{ margin-bottom:var(--s1); }
+/* ── Artefaktpanel ────────────────────────────────────────────── */
+/* «Hvorfor dette tallet» — påkrevd på regnede tall (agent-flate.md §1).
+   Manglet HELT i PlayerHQ før 01.08. Øyvind er den som skal stole på et tall
+   hun ikke selv har regnet ut; da er grunnlaget viktigere her enn hos Anders. */
+.paper-hjem .why{ margin:var(--s3) 0 var(--s4); border:1px solid var(--border); border-radius:var(--r); background:var(--surface); }
+.paper-hjem .why summary{
+  display:flex; align-items:center; min-height:var(--tap);
+  padding:0 var(--s4); cursor:pointer; list-style:none;
+  font-family:var(--ui); font-size:12.5px; font-weight:500; color:var(--muted);
+}
+.paper-hjem .why summary::-webkit-details-marker{ display:none; }
+.paper-hjem .why summary::after{ content:"›"; margin-left:auto; transition:transform var(--dur) var(--ease); }
+.paper-hjem .why[open] summary::after{ transform:rotate(90deg); }
+.paper-hjem .why[open] summary{ border-bottom:1px solid var(--border); color:var(--fg); }
+.paper-hjem .why ul{ margin:0; padding:var(--s3) var(--s4) var(--s4) var(--s6); font-family:var(--body); font-size:13.5px; color:var(--muted); }
+.paper-hjem .why li{ margin-bottom:var(--s2); }
+.paper-hjem .why li:last-child{ margin-bottom:0; }
+.paper-hjem .artifact{ display:flex; flex-direction:column; min-width:0; min-height:0; background:var(--bg); }
+.paper-hjem .ahead{ display:flex; align-items:center; gap:var(--s2); padding:var(--s3) var(--s4); border-bottom:1px solid var(--border); }
+.paper-hjem .ahead .t{ font-family:var(--disp); font-size:13px; font-weight:600; }
+.paper-hjem .abody{ flex:1; overflow:auto; padding:var(--s4); }
+.paper-hjem .afoot{ display:flex; gap:var(--s2); padding:var(--s3) var(--s4) var(--s4); border-top:1px solid var(--border); background:var(--surface); }
+.paper-hjem .metarow{ display:flex; gap:var(--s1); flex-wrap:wrap; margin-bottom:var(--s4); }
+.paper-hjem .dcard{ background:var(--surface); border:1px solid var(--border); border-radius:var(--r); padding:var(--s3); margin-bottom:var(--s2); }
+.paper-hjem .dcard .dh{ display:flex; align-items:baseline; gap:var(--s2); margin-bottom:var(--s1); }
+.paper-hjem .dcard .day{ font-family:var(--disp); font-size:12.5px; font-weight:600; }
+.paper-hjem .dcard .meta{ margin-left:auto; font-size:11px; color:var(--muted); }
+.paper-hjem .dcard .fx{ display:block; font-family:var(--mono); font-size:11px; color:var(--muted); word-break:break-all; }
+.paper-hjem .inv{ display:flex; align-items:flex-start; gap:var(--s2); font-size:12px; color:var(--muted); margin-bottom:var(--s2); }
+.paper-hjem .inv svg{ width:13px; height:13px; flex:none; margin-top:2px; fill:none; stroke:var(--up); stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
+.paper-hjem .sect{ border-top:1px solid var(--border); padding-top:var(--s3); margin-top:var(--s3); }
+/* ── UNDER: live-økt ─────────────────────────────────────────── */
+.paper-hjem .live{ flex:1; overflow:auto; padding:var(--s6) var(--s5); }
+.paper-hjem .livewrap{ max-width:720px; margin:0 auto; display:flex; flex-direction:column; gap:var(--s5); }
+.paper-hjem .livehead h2{ margin:var(--s2) 0 var(--s1); font-family:var(--disp); font-size:22px; font-weight:600; }
+.paper-hjem .livehead p{ margin:0; font-family:var(--body); font-size:14px; color:var(--muted); }
+.paper-hjem .clock{ font-family:var(--mono); font-variant-numeric:tabular-nums; font-size:56px; letter-spacing:-.03em; line-height:1; }
+.paper-hjem .livelist{ list-style:none; margin:0; padding:0; display:grid; gap:var(--s2); }
+.paper-hjem .livelist li{ display:flex; gap:var(--s3); align-items:center; padding:var(--s3) var(--s4); border:1px solid var(--border); border-radius:var(--r); background:var(--surface); }
+.paper-hjem .livelist li[data-done="true"]{ background:var(--soft); }
+.paper-hjem .livelist .nm{ flex:1; min-width:0; }
+.paper-hjem .livelist .nm strong{ display:block; font-family:var(--disp); font-size:13.5px; font-weight:600; }
+.paper-hjem .livelist .nm small{ display:block; font-family:var(--mono); font-size:11px; color:var(--muted); margin-top:2px; }
+.paper-hjem .livelist .tick{ flex:none; width:var(--tap); height:var(--tap); min-height:var(--tap); border:1px solid var(--border); border-radius:var(--r-sm); background:transparent; color:var(--muted); cursor:pointer; display:grid; place-items:center; }
+.paper-hjem .livelist .tick svg{ width:16px; height:16px; stroke:currentColor; stroke-width:2.2; fill:none; }
+.paper-hjem .livelist li[data-done="true"] .tick{ color:var(--up); border-color:var(--up); }
+/* ── ETTER ───────────────────────────────────────────────────── */
+.paper-hjem .after{ flex:1; overflow:auto; padding:var(--s6) var(--s5); }
+.paper-hjem .afterwrap{ max-width:720px; margin:0 auto; display:flex; flex-direction:column; gap:var(--s5); }
+.paper-hjem .after h2{ margin:var(--s2) 0 0; font-family:var(--disp); font-size:22px; font-weight:600; }
+.paper-hjem .sumcard{ border:1px solid var(--border); border-radius:var(--r); background:var(--surface); padding:var(--s4); }
+.paper-hjem .sumcard .row{ display:flex; align-items:baseline; gap:var(--s3); padding:var(--s2) 0; border-bottom:1px solid var(--border); font-size:12.5px; }
+.paper-hjem .sumcard .row:last-child{ border-bottom:0; }
+.paper-hjem .sumcard .row .k{ flex:1; color:var(--muted); }
+.paper-hjem .quote{ font-family:var(--body); font-style:italic; font-size:15px; line-height:1.6; margin:0; padding-left:var(--s4); border-left:2px solid var(--border); color:var(--fg); }
+/* ── Tilstander ──────────────────────────────────────────────── */
+.paper-hjem .skelrow{ height:14px; margin-bottom:var(--s2); }
+.paper-hjem .errbox{ padding:var(--s4); border:1px solid var(--dn); border-radius:var(--r); background:var(--surface); }
+.paper-hjem .errbox h3{ margin:0 0 var(--s2); font-family:var(--disp); font-size:15px; font-weight:600; color:var(--dn); }
+.paper-hjem .errbox p{ margin:0 0 var(--s3); font-family:var(--body); font-size:14px; color:var(--muted); max-width:52ch; }
+.paper-hjem .linkrow{ display:flex; flex-wrap:wrap; gap:var(--s2); margin-top:var(--s5); }
+.paper-hjem .linkrow a{
+  font-family:var(--mono); font-size:11px; color:var(--muted); text-decoration:none;
+  min-height:var(--tap); display:inline-flex; align-items:center; padding:0 var(--s3);
+  border:1px solid var(--border); border-radius:var(--r-pill);
+}
+.paper-hjem .linkrow a:hover{ background:var(--soft); color:var(--fg); }
+/* ── Fangst som sentrert modal ───────────────────────────────── */
+.paper-hjem .modalwrap{ position:fixed; inset:0; z-index:var(--z-sheet); display:grid; place-items:center; padding:var(--s5); background:var(--scrim); }
+.paper-hjem .modal{
+  width:min(560px,94vw); max-height:88vh; overflow:auto;
+  background:var(--surface); border:1px solid var(--border); border-radius:var(--r);
+  box-shadow:var(--shadow); padding:var(--s5);
+}
+.paper-hjem .modal h2{ margin:0; font-family:var(--disp); font-size:16px; font-weight:600; }
+.paper-hjem .mhead{ display:flex; align-items:center; gap:var(--s2); margin-bottom:var(--s4); }
+.paper-hjem .capture{ display:flex; flex-direction:column; align-items:center; gap:var(--s3); padding:var(--s3) 0 var(--s4); }
+.paper-hjem .micwrap{ position:relative; display:grid; place-items:center; width:104px; height:104px; }
+.paper-hjem .micring{ position:absolute; inset:16px; border-radius:var(--r-pill); border:2px solid var(--accent); opacity:0; }
+.paper-hjem .capture.rec .micring{ animation:ring 1.8s var(--ease) infinite; }
+@keyframes ring{ 0%{ transform:scale(1); opacity:.55 } 100%{ transform:scale(1.42); opacity:0 } }
+.paper-hjem .bigmic{
+  /* 72px sentrert fangstknapp — over --tap-capture (60px) med vilje. */
+  width:72px; height:72px; min-height:72px; border-radius:var(--r-pill);
+  display:grid; place-items:center; cursor:pointer; position:relative;
+  background:var(--cta); color:var(--on-cta); border:1px solid var(--cta);
+}
+.paper-hjem .capture.rec .bigmic{ background:var(--accent); color:var(--on-accent); border-color:var(--accent); }
+.paper-hjem .bigmic svg{ width:28px; height:28px; stroke:currentColor; stroke-width:1.7; fill:none; stroke-linecap:round; stroke-linejoin:round; }
+.paper-hjem .timer{ font-family:var(--mono); font-variant-numeric:tabular-nums; font-size:26px; letter-spacing:-.02em; }
+.paper-hjem .capstat{ font-family:var(--mono); font-size:10.5px; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); }
+.paper-hjem .transcript{
+  width:100%; min-height:96px; padding:var(--s3);
+  background:var(--soft); border:1px solid var(--border); border-radius:var(--r);
+  font-family:var(--body); font-size:14.5px; line-height:1.6; color:var(--fg);
+}
+.paper-hjem .transcript .ph{ color:var(--mid); font-style:italic; }
+.paper-hjem .chiprow{ display:flex; flex-wrap:wrap; gap:var(--s2); margin:var(--s3) 0; }
+.paper-hjem .savedline{ display:flex; align-items:center; gap:var(--s2); font-family:var(--mono); font-size:10.5px; color:var(--muted); }
+.paper-hjem .savedline svg{ width:13px; height:13px; stroke:var(--up); stroke-width:2.2; fill:none; flex:none; }
+.paper-hjem .goalline{ display:flex; align-items:center; gap:var(--s2); font-size:12px; color:var(--muted); margin-top:var(--s2); }
+.paper-hjem .goalline .num{ font-size:13px; color:var(--fg); }
+/* ── Trykkflate-gulv · 31.07.2026 (Anders: alle interaktive elementer ≥ 44px) ──
+   Gjelder uansett pekertype, ikke bare pointer:coarse. Siste regel i fila
+   slik at den vinner over skjermspesifikke overstyringer.
+   Unntak: elementer merket data-demo-only, som uansett skal ut. */
+.paper-hjem textarea{ padding-top: var(--s2); padding-bottom: var(--s2); }
+.paper-hjem .tag, .paper-hjem .num, .paper-hjem .eyebrow{ min-height: 0; }
+.paper-hjem textarea, .paper-hjem .composer textarea, .paper-hjem [id*="composer"] textarea{ min-height: var(--tap) !important; }
+/* Dokumentnivå skal aldri scrolle horisontalt — brede rutenett scroller i sin
+   egen container. Rettet 31.07.2026 etter måling ved 390px. */
+.paper-hjem, .paper-hjem{ overflow-x: hidden; max-width: 100%; }
+.paper-hjem .grid-scroll, .paper-hjem [data-scroll-x]{ overflow-x: auto; -webkit-overflow-scrolling: touch; }
+@media (max-width: 640px){.paper-hjem > *, .paper-hjem main, .paper-hjem.app, .paper-hjem .app{ max-width: 100vw; }}
+
+/* ─────────────────────────────────────────────────────────────
+   Mobile fasit — .bnav, sheets, compact chrome (overrides desktop)
+   ───────────────────────────────────────────────────────────── */
+/* ═══════════════════════════════════════════════════════════════
+   Skjermspesifikk CSS · PlayerHQ chat · MOBIL (430 × 932)
+   PlayerHQ er mobil-først. Body 14px — Øyvind er 16 år og står på
+   range med én hånd ledig. Telefonrammen er kun visningsramme for
+   desktop-vurdering; innholdet er ekte responsiv mobil-CSS.
+   ═══════════════════════════════════════════════════════════════ */
+.paper-hjem{ --base:14px; }
+/* Optiske finjusteringer i px (kontrakt §2, begrunnet unntak):
+   gap 2–3px i rail-/faneknapper og loop-etiketter, padding 3px på
+   arbeidslinjer og meldingstekst, calc(28px + var(--s3)) = avatarbredde
+   + kolonneluft. Alt annet spacing går via --s1…--s8. */
+.paper-hjem [hidden]{ display:none !important; }
+.paper-hjem button{ font:inherit; }
+/* ── Papirbakgrunn + telefonramme ────────────────────────────── */
+@media (max-width:640px){.paper-hjem{ padding:0; display:block; background:var(--bg); }}
+@media (max-width:640px){}
+.paper-hjem .skip{
+  position:absolute; left:var(--s3); top:-200px; z-index:var(--z-toast);
+  background:var(--surface); border:1px solid var(--border); border-radius:var(--r);
+  padding:var(--s3) var(--s4); color:var(--fg); text-decoration:none;
+}
+.paper-hjem .skip:focus{ top:var(--s3); }
+/* ── Toppbar ─────────────────────────────────────────────────── */
+.paper-hjem .top{
+  flex:none; display:flex; align-items:center; gap:var(--s2);
+  padding:calc(var(--s2) + env(safe-area-inset-top)) var(--s4) var(--s2);
+  border-bottom:1px solid var(--border); background:var(--bg);
+}
+.paper-hjem .top .title{ font-family:var(--disp); font-weight:600; font-size:15px; }
+.paper-hjem .top .when{ font-family:var(--mono); font-size:10px; color:var(--muted); letter-spacing:.06em; }
+.paper-hjem .top .sp{ flex:1; }
+.paper-hjem .iconbtn{
+  width:var(--tap); height:var(--tap); min-height:var(--tap);
+  display:grid; place-items:center; border:0; border-radius:var(--r-sm);
+  background:transparent; color:var(--muted); cursor:pointer;
+}
+.paper-hjem .iconbtn:hover{ background:var(--soft); color:var(--fg); }
+.paper-hjem .iconbtn svg{ width:19px; height:19px; stroke:currentColor; stroke-width:1.6; fill:none; stroke-linecap:round; stroke-linejoin:round; }
+/* ── Sløyfe-indikator · FØR → UNDER → ETTER ──────────────────── */
+.paper-hjem .loop{
+  flex:none; display:flex; align-items:center; gap:var(--s1);
+  padding:var(--s2) var(--s4); border-bottom:1px solid var(--border); background:var(--bg);
+}
+.paper-hjem .loop a{
+  flex:1; min-height:var(--tap); display:flex; flex-direction:column;
+  align-items:center; justify-content:center; gap:2px;
+  text-decoration:none; color:var(--muted); border-radius:var(--r-sm);
+  font-family:var(--mono); font-size:10px; letter-spacing:.09em; text-transform:uppercase;
+}
+.paper-hjem .loop a small{ font-family:var(--ui); font-size:10px; letter-spacing:0; text-transform:none; color:var(--mid); }
+.paper-hjem .loop a:hover{ background:var(--soft); color:var(--fg); }
+.paper-hjem .loop a[aria-current="step"]{ background:var(--soft); color:var(--fg); box-shadow:inset 0 -2px 0 0 var(--fg); }
+.paper-hjem .loop .arw{ flex:none; color:var(--mid); font-size:12px; }
+/* ── Demo-tilstandsrad (fjernes før produksjon) ──────────────── */
+/* ── Modusflater ─────────────────────────────────────────────── */
+.paper-hjem .mode{ flex:1; min-height:0; display:flex; flex-direction:column; }
+/* ── Tråd ────────────────────────────────────────────────────── */
+.paper-hjem .thread{ flex:1; min-height:0; overflow-y:auto; -webkit-overflow-scrolling:touch; padding:var(--s4) var(--s4) var(--s5); }
+.paper-hjem .turn{ margin-bottom:var(--s5); }
+.paper-hjem .you{ display:flex; justify-content:flex-end; margin-bottom:var(--s3); }
+.paper-hjem .you .msg{
+  background:var(--soft); border:1px solid var(--border); border-radius:var(--r);
+  padding:var(--s2) var(--s3); font-size:14px; max-width:86%;
+}
+.paper-hjem .ai{ display:block; }
+.paper-hjem .work{ margin:0 0 var(--s3); }
+.paper-hjem .work > summary{
+  list-style:none; cursor:pointer; display:inline-flex; align-items:center; gap:var(--s2);
+  min-height:var(--tap); font-family:var(--mono); font-size:11px; color:var(--muted);
+}
+.paper-hjem .work > summary::-webkit-details-marker{ display:none; }
+.paper-hjem .work > summary::before{ content:"›"; font-size:15px; display:inline-block; transition:transform var(--dur) var(--ease); }
+.paper-hjem .work[open] > summary::before{ transform:rotate(90deg); }
+.paper-hjem .steps{ list-style:none; margin:0 0 var(--s2); padding:0; }
+.paper-hjem .steps li{ display:flex; align-items:flex-start; gap:var(--s2); font-family:var(--mono); font-size:11px; color:var(--muted); padding:3px 0; }
+.paper-hjem .steps li svg{ width:12px; height:12px; margin-top:3px; stroke:var(--up); stroke-width:2.2; fill:none; flex:none; }
+.paper-hjem .steps li .t{ color:var(--mid); margin-left:auto; padding-left:var(--s2); flex:none; }
+.paper-hjem .say{ font-family:var(--body); font-size:14.5px; line-height:1.62; margin:0; }
+.paper-hjem .say + .say{ margin-top:var(--s3); }
+.paper-hjem .say b{ font-family:var(--ui); font-weight:600; font-size:13.5px; }
+/* Artefaktkort — inngang til bunn-arket */
+.paper-hjem .artcard{
+  display:flex; align-items:center; gap:var(--s3); width:100%; text-align:left;
+  margin-top:var(--s3); padding:var(--s3); min-height:var(--tap-lg);
+  background:var(--surface); border:1px solid var(--border); border-radius:var(--r);
+  cursor:pointer; font:inherit; color:inherit;
+}
+.paper-hjem .artcard:hover{ background:var(--soft); }
+.paper-hjem .artcard .ic{ width:36px; height:36px; flex:none; display:grid; place-items:center; border-radius:var(--r-sm); background:var(--soft); }
+.paper-hjem .artcard .ic svg{ width:17px; height:17px; stroke:var(--muted); stroke-width:1.6; fill:none; stroke-linecap:round; stroke-linejoin:round; }
+.paper-hjem .artcard .tx{ flex:1; min-width:0; }
+.paper-hjem .artcard .tx strong{ display:block; font-family:var(--disp); font-size:13px; font-weight:600; }
+.paper-hjem .artcard .tx small{ display:block; font-family:var(--mono); font-size:10.5px; color:var(--muted); margin-top:2px; word-break:break-all; }
+.paper-hjem .artcard .go{ flex:none; color:var(--muted); font-size:16px; }
+/* Kvittering på fangst — Øyvind eier observasjonen */
+.paper-hjem .saved{
+  display:flex; align-items:flex-start; gap:var(--s2); margin-top:var(--s3);
+  padding:var(--s3); border:1px solid var(--border); border-radius:var(--r);
+  background:var(--soft); font-size:12.5px; color:var(--muted);
+}
+.paper-hjem .saved svg{ width:14px; height:14px; margin-top:2px; stroke:var(--up); stroke-width:2.2; fill:none; flex:none; }
+.paper-hjem .saved b{ font-family:var(--ui); font-weight:600; color:var(--fg); }
+/* Godkjenningslinje — det som endrer planen går til Anders */
+.paper-hjem .gate{
+  display:flex; align-items:flex-start; gap:var(--s2); margin-top:var(--s3);
+  padding:var(--s3); border:1px dashed var(--border); border-radius:var(--r);
+  background:var(--surface); font-size:12.5px; color:var(--muted);
+}
+.paper-hjem .gate svg{ width:14px; height:14px; margin-top:2px; stroke:var(--info); stroke-width:2; fill:none; flex:none; }
+.paper-hjem .gate b{ font-family:var(--ui); font-weight:600; color:var(--fg); }
+/* Utkast til kort økt */
+.paper-hjem .draft{ margin-top:var(--s3); border:1px solid var(--border); border-radius:var(--r); background:var(--surface); overflow:hidden; }
+.paper-hjem .draft .dh{ display:flex; align-items:center; gap:var(--s2); padding:var(--s3); border-bottom:1px solid var(--border); background:var(--soft); }
+.paper-hjem .draft .dh strong{ font-family:var(--disp); font-size:13px; font-weight:600; }
+.paper-hjem .draft .dh .tag{ margin-left:auto; }
+.paper-hjem .drill{ display:flex; gap:var(--s3); padding:var(--s3); border-bottom:1px solid var(--border); }
+.paper-hjem .drill:last-of-type{ border-bottom:0; }
+.paper-hjem .drill .no{ font-family:var(--mono); font-size:11px; color:var(--mid); flex:none; width:2ch; }
+.paper-hjem .drill .tx{ flex:1; min-width:0; }
+.paper-hjem .drill .tx strong{ display:block; font-family:var(--disp); font-size:13px; font-weight:600; }
+.paper-hjem .drill .fx{ display:block; font-family:var(--mono); font-size:10.5px; color:var(--muted); margin-top:2px; word-break:break-all; }
+.paper-hjem .drill .mt{ display:block; font-family:var(--mono); font-size:10.5px; color:var(--mid); margin-top:2px; }
+.paper-hjem .draft .df{ padding:var(--s3); border-top:1px solid var(--border); display:flex; flex-direction:column; gap:var(--s2); }
+/* Økt knyttet til sjekkpunkt — forklaring, ikke sperre. Spilleren kan endre knapp */
+.paper-hjem .locked{
+  display:flex; align-items:flex-start; gap:var(--s2); margin-top:var(--s2);
+  padding:var(--s3); border:1px solid var(--border); border-radius:var(--r); background:var(--soft);
+  font-size:12.5px; color:var(--muted);
+}
+.paper-hjem .locked svg{ width:15px; height:15px; margin-top:2px; stroke:var(--muted); stroke-width:1.8; fill:none; flex:none; }
+.paper-hjem .locked b{ font-family:var(--ui); font-weight:600; color:var(--fg); }
+/* «Én ting nå»-blokk — eneste sted --accent-soft brukes som flate */
+.paper-hjem .nowblock{ background:var(--accent-soft); border:1px solid var(--border); border-radius:var(--r); padding:var(--s4); }
+.paper-hjem .nowblock h2{ margin:var(--s2) 0 var(--s1); font-family:var(--disp); font-size:16px; font-weight:600; line-height:1.3; }
+.paper-hjem .nowblock p{ margin:0; font-family:var(--body); font-size:14px; color:var(--muted); }
+.paper-hjem .nowblock .acts{ display:flex; gap:var(--s2); margin-top:var(--s3); flex-wrap:wrap; }
+.paper-hjem .nowblock .acts .btn{ flex:1 1 auto; }
+.paper-hjem .turnacts{ display:flex; gap:var(--s2); margin-top:var(--s3); flex-wrap:wrap; }
+.paper-hjem .turnacts .btn{ flex:1 1 auto; }
+/* ── Composer ────────────────────────────────────────────────── */
+.paper-hjem .composer{ flex:none; border-top:1px solid var(--border); background:var(--bg); padding:var(--s2) var(--s3) var(--s3); }
+.paper-hjem .ctxline{
+  display:flex; align-items:center; gap:var(--s2); width:100%;
+  min-height:var(--tap); margin-bottom:var(--s2); padding:0 var(--s2);
+  background:none; border:0; border-radius:var(--r-sm);
+  font-family:var(--mono); font-size:10.5px; letter-spacing:.06em; text-transform:uppercase;
+  color:var(--muted); cursor:pointer; text-align:left;
+}
+.paper-hjem .ctxline:hover{ background:var(--soft); }
+.paper-hjem .ctxline .go{ margin-left:auto; font-size:13px; }
+.paper-hjem .crow{ display:flex; align-items:flex-end; gap:var(--s2); }
+.paper-hjem .cbox{ flex:1; min-width:0; background:var(--surface); border:1px solid var(--border); border-radius:var(--r); padding:var(--s2) var(--s3); }
+.paper-hjem .cbox:focus-within{ border-color:var(--fg); }
+.paper-hjem .cbox textarea{
+  width:100%; display:block; resize:none; border:0; outline:none; background:transparent;
+  color:var(--fg); font-family:var(--ui); font-size:15px; line-height:1.45;
+  /* 15px × 1.45 ≈ 22px per linje. min 1 linje, maks 5 linjer — layoutmål. */
+  min-height:22px; max-height:110px; overflow-y:auto;
+}
+.paper-hjem .cbox textarea::placeholder{ color:var(--mid); }
+.paper-hjem .cmini{ display:flex; gap:var(--s1); margin-top:var(--s1); }
+.paper-hjem .cmini button{
+  width:var(--tap); height:var(--tap); min-height:var(--tap);
+  display:grid; place-items:center; border:0; border-radius:var(--r-sm);
+  background:transparent; color:var(--muted); font-family:var(--mono); font-size:14px; cursor:pointer;
+}
+.paper-hjem .cmini button:hover{ background:var(--soft); color:var(--fg); }
+.paper-hjem .cmini button svg{ width:17px; height:17px; stroke:currentColor; stroke-width:1.7; fill:none; stroke-linecap:round; stroke-linejoin:round; }
+/* Mikrofon = «Én ting nå» på mobil. Se HTML-kommentaren over knappen. */
+/* «Hvorfor dette tallet» — påkrevd på regnede tall. Manglet i PlayerHQ
+   før 01.08. På mobil er summary ≥44px fordi den er en trykkflate. */
+.paper-hjem .why{ margin:var(--s3) 0 var(--s4); border:1px solid var(--border); border-radius:var(--r); background:var(--surface); }
+.paper-hjem .why summary{
+  display:flex; align-items:center; min-height:var(--tap);
+  padding:0 var(--s4); cursor:pointer; list-style:none;
+  font-family:var(--ui); font-size:12.5px; font-weight:500; color:var(--muted);
+}
+.paper-hjem .why summary::-webkit-details-marker{ display:none; }
+.paper-hjem .why summary::after{ content:"\203A"; margin-left:auto; transition:transform var(--dur) var(--ease); }
+.paper-hjem .why[open] summary::after{ transform:rotate(90deg); }
+.paper-hjem .why[open] summary{ border-bottom:1px solid var(--border); color:var(--fg); }
+.paper-hjem .why ul{ margin:0; padding:var(--s3) var(--s4) var(--s4) var(--s5); font-family:var(--body); font-size:13.5px; color:var(--muted); }
+.paper-hjem .why li{ margin-bottom:var(--s2); }
+.paper-hjem .why li:last-child{ margin-bottom:0; }
+/* Clay-monopol: når fangst-arket er åpent eier den store mikrofonen i arket
+   aksenten. Composer-mikrofonen bak scrimen faller til blekk. */
+.paper-hjem:has(#sheetCapture.on) .btn.now.mic{
+  background:transparent; color:var(--fg); border-color:var(--border);
+}
+.paper-hjem .btn.now.mic{
+  width:var(--tap-capture); height:var(--tap-capture); min-height:var(--tap-capture);
+  flex:none; padding:0; border-radius:var(--r-pill);
+}
+.paper-hjem .btn.now.mic svg{ width:24px; height:24px; stroke:currentColor; stroke-width:1.7; fill:none; stroke-linecap:round; stroke-linejoin:round; }
+.paper-hjem .sendbtn{
+  width:var(--tap); height:var(--tap); min-height:var(--tap); flex:none;
+  display:grid; place-items:center; border-radius:var(--r);
+  background:var(--cta); color:var(--on-cta); border:1px solid var(--cta); cursor:pointer;
+}
+.paper-hjem .sendbtn:hover{ opacity:.88; }
+.paper-hjem .sendbtn svg{ width:17px; height:17px; stroke:currentColor; stroke-width:2; fill:none; stroke-linecap:round; stroke-linejoin:round; }
+/* ── Bunnfaner — fire flater ─────────────────────────────────── */
+.paper-hjem .tabs{
+  flex:none; display:grid; grid-template-columns:repeat(4,1fr);
+  background:var(--rail); border-top:1px solid var(--border);
+  padding-bottom:env(safe-area-inset-bottom); z-index:var(--z-rail);
+}
+.paper-hjem .tabs button,
+.paper-hjem .tabs a{
+  display:flex; flex-direction:column; align-items:center; justify-content:center; gap:3px;
+  min-height:var(--tap); padding:var(--s2) 0; border:0; background:transparent;
+  color:var(--rail-fg); position:relative; cursor:pointer;
+  font-family:var(--ui); font-size:10px; font-weight:500;
+  text-decoration:none;
+}
+.paper-hjem .tabs button svg,
+.paper-hjem .tabs a svg{ width:20px; height:20px; stroke:currentColor; stroke-width:1.6; fill:none; stroke-linecap:round; stroke-linejoin:round; }
+.paper-hjem .tabs button[aria-current="page"],
+.paper-hjem .tabs a[aria-current="page"]{ color:var(--rail-on); }
+.paper-hjem .tabs button[aria-current="page"]::before,
+.paper-hjem .tabs a[aria-current="page"]::before{ content:""; position:absolute; top:0; left:22%; right:22%; height:2px; background:var(--rail-on); border-radius:var(--r-pill); }
+/* ── UNDER: live-økt ─────────────────────────────────────────── */
+.paper-hjem .live{ flex:1; min-height:0; overflow-y:auto; padding:var(--s5) var(--s4) var(--s5); display:flex; flex-direction:column; gap:var(--s4); }
+.paper-hjem .livehead{ text-align:center; }
+.paper-hjem .livehead h2{ margin:var(--s2) 0 var(--s1); font-family:var(--disp); font-size:18px; font-weight:600; }
+.paper-hjem .livehead p{ margin:0; font-family:var(--body); font-size:14px; color:var(--muted); }
+.paper-hjem .clock{ font-family:var(--mono); font-variant-numeric:tabular-nums; font-size:46px; letter-spacing:-.03em; line-height:1; }
+.paper-hjem .livelist{ list-style:none; margin:0; padding:0; display:grid; gap:var(--s2); }
+.paper-hjem .livelist li{ display:flex; gap:var(--s3); align-items:flex-start; padding:var(--s3); border:1px solid var(--border); border-radius:var(--r); background:var(--surface); }
+.paper-hjem .livelist li[data-done="true"]{ background:var(--soft); }
+.paper-hjem .livelist .nm{ flex:1; min-width:0; }
+.paper-hjem .livelist .nm strong{ display:block; font-family:var(--disp); font-size:13px; font-weight:600; }
+.paper-hjem .livelist .nm small{ display:block; font-family:var(--mono); font-size:10.5px; color:var(--muted); margin-top:2px; word-break:break-all; }
+.paper-hjem .livelist .tick{ flex:none; width:var(--tap); height:var(--tap); min-height:var(--tap); border:1px solid var(--border); border-radius:var(--r-sm); background:transparent; color:var(--muted); cursor:pointer; display:grid; place-items:center; }
+.paper-hjem .livelist .tick svg{ width:16px; height:16px; stroke:currentColor; stroke-width:2.2; fill:none; }
+.paper-hjem .livelist li[data-done="true"] .tick{ color:var(--up); border-color:var(--up); }
+.paper-hjem .liveacts{ display:flex; flex-direction:column; gap:var(--s2); margin-top:auto; }
+/* ── ETTER: etter økta ───────────────────────────────────────── */
+.paper-hjem .after{ flex:1; min-height:0; overflow-y:auto; padding:var(--s5) var(--s4) var(--s5); display:flex; flex-direction:column; gap:var(--s4); }
+.paper-hjem .after h2{ margin:0; font-family:var(--disp); font-size:18px; font-weight:600; }
+.paper-hjem .sumcard{ border:1px solid var(--border); border-radius:var(--r); background:var(--surface); padding:var(--s4); }
+.paper-hjem .sumcard .row{ display:flex; align-items:baseline; gap:var(--s3); padding:var(--s2) 0; border-bottom:1px solid var(--border); font-size:12.5px; }
+.paper-hjem .sumcard .row:last-child{ border-bottom:0; }
+.paper-hjem .sumcard .row .k{ flex:1; color:var(--muted); }
+.paper-hjem .quote{ font-family:var(--body); font-style:italic; font-size:14.5px; line-height:1.6; margin:0; padding-left:var(--s3); border-left:2px solid var(--border); color:var(--fg); }
+/* ── Tilstander ──────────────────────────────────────────────── */
+.paper-hjem .skelrow{ display:grid; gap:var(--s2); margin-bottom:var(--s5); }
+.paper-hjem .errbox{ padding:var(--s4); border:1px solid var(--dn); border-radius:var(--r); background:var(--surface); }
+.paper-hjem .errbox h3{ margin:0 0 var(--s2); font-family:var(--disp); font-size:15px; font-weight:600; color:var(--dn); }
+.paper-hjem .errbox p{ margin:0 0 var(--s3); font-family:var(--body); font-size:14px; color:var(--muted); }
+.paper-hjem .errbox .acts, .paper-hjem .empty .acts{ display:flex; gap:var(--s2); flex-wrap:wrap; }
+.paper-hjem .empty .acts .btn{ flex:1 1 auto; }
+/* ── Ark ─────────────────────────────────────────────────────── */
+.paper-hjem .scrim{ display:none; }
+.paper-hjem .scrim.on{ display:block; }
+.paper-hjem .sheet{ display:none; flex-direction:column; }
+.paper-hjem .sheet.on{ display:flex; }
+.paper-hjem .sheet.tall{ max-height:94%; height:94%; }
+.paper-hjem .sheet-head{ flex:none; display:flex; align-items:center; gap:var(--s2); padding-bottom:var(--s3); border-bottom:1px solid var(--border); }
+.paper-hjem .sheet-head h2{ margin:0; font-family:var(--disp); font-size:15px; font-weight:600; }
+.paper-hjem .sheet-body{ flex:1; min-height:0; overflow-y:auto; padding:var(--s3) 0; }
+.paper-hjem .sheet-foot{ flex:none; display:flex; gap:var(--s2); padding-top:var(--s3); border-top:1px solid var(--border); }
+.paper-hjem .sheet-foot .btn{ flex:1; }
+.paper-hjem .optlist{ list-style:none; margin:0; padding:0; }
+.paper-hjem .optlist button{
+  width:100%; display:flex; align-items:center; gap:var(--s3); text-align:left;
+  min-height:var(--tap-lg); padding:var(--s2); background:none; border:0;
+  border-radius:var(--r-sm); color:var(--fg); font:inherit; cursor:pointer;
+}
+.paper-hjem .optlist button:hover{ background:var(--soft); }
+.paper-hjem .optlist .c{ font-family:var(--mono); font-size:12.5px; color:var(--muted); flex:none; width:88px; }
+.paper-hjem .optlist .d{ display:block; font-size:11.5px; color:var(--muted); }
+.paper-hjem .grp{ font-family:var(--mono); font-size:9.5px; letter-spacing:.1em; text-transform:uppercase; color:var(--mid); padding:var(--s3) var(--s2) var(--s1); }
+.paper-hjem .ctxlist{ list-style:none; margin:0; padding:0; font-family:var(--body); font-size:14px; color:var(--muted); }
+.paper-hjem .ctxlist li{ padding:var(--s2) 0; border-bottom:1px solid var(--border); }
+.paper-hjem .ctxlist li:last-child{ border-bottom:0; }
+/* Planinnhold i artefaktarket */
+.paper-hjem .pcard{ border:1px solid var(--border); border-radius:var(--r); margin-bottom:var(--s3); overflow:hidden; }
+.paper-hjem .pcard .ch{ display:flex; align-items:center; gap:var(--s2); padding:var(--s2) var(--s3); background:var(--soft); border-bottom:1px solid var(--border); }
+.paper-hjem .pcard .ch .day{ font-family:var(--mono); font-size:10.5px; font-weight:600; letter-spacing:.05em; text-transform:uppercase; }
+.paper-hjem .pcard .ch .fx{ margin-left:auto; font-family:var(--mono); font-size:9.5px; color:var(--muted); }
+.paper-hjem .pcard .cb{ padding:var(--s3); display:grid; gap:var(--s2); }
+.paper-hjem .ex{ display:flex; gap:var(--s3); align-items:baseline; font-size:12.5px; }
+.paper-hjem .ex .nm{ flex:1; }
+.paper-hjem .ex .vol{ font-family:var(--mono); font-size:11.5px; color:var(--muted); flex:none; }
+.paper-hjem .inv{ display:flex; align-items:flex-start; gap:var(--s2); font-family:var(--mono); font-size:10.5px; color:var(--up); padding:var(--s1) 0; }
+.paper-hjem .inv svg{ width:12px; height:12px; margin-top:2px; stroke:currentColor; stroke-width:2.2; fill:none; flex:none; }
+/* ── FangstSheet ─────────────────────────────────────────────── */
+.paper-hjem .capture{ display:flex; flex-direction:column; align-items:center; gap:var(--s3); padding:var(--s3) 0 var(--s4); }
+.paper-hjem .micwrap{ position:relative; display:grid; place-items:center; width:104px; height:104px; }
+.paper-hjem .micring{ position:absolute; inset:16px; border-radius:var(--r-pill); border:2px solid var(--accent); opacity:0; }
+.paper-hjem .capture.rec .micring{ animation:ring 1.8s var(--ease) infinite; }
+@keyframes ring{ 0%{ transform:scale(1); opacity:.55 } 100%{ transform:scale(1.42); opacity:0 } }
+.paper-hjem .bigmic{
+  /* 72px sentrert fangstknapp — over --tap-capture (60px) med vilje. */
+  width:72px; height:72px; min-height:72px; border-radius:var(--r-pill);
+  display:grid; place-items:center; cursor:pointer; position:relative;
+  background:var(--cta); color:var(--on-cta); border:1px solid var(--cta);
+}
+.paper-hjem .capture.rec .bigmic{ background:var(--accent); color:var(--on-accent); border-color:var(--accent); }
+.paper-hjem .bigmic svg{ width:28px; height:28px; stroke:currentColor; stroke-width:1.7; fill:none; stroke-linecap:round; stroke-linejoin:round; }
+.paper-hjem .timer{ font-family:var(--mono); font-variant-numeric:tabular-nums; font-size:26px; letter-spacing:-.02em; }
+.paper-hjem .capstat{ font-family:var(--mono); font-size:10.5px; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); }
+.paper-hjem .transcript{
+  width:100%; min-height:96px; padding:var(--s3);
+  background:var(--soft); border:1px solid var(--border); border-radius:var(--r);
+  font-family:var(--body); font-size:14.5px; line-height:1.6; color:var(--fg);
+}
+.paper-hjem .transcript .ph{ color:var(--mid); font-style:italic; }
+.paper-hjem .chiprow{ display:flex; flex-wrap:wrap; gap:var(--s2); }
+.paper-hjem .savedline{ display:flex; align-items:center; gap:var(--s2); font-family:var(--mono); font-size:10.5px; color:var(--muted); }
+.paper-hjem .savedline svg{ width:13px; height:13px; stroke:var(--up); stroke-width:2.2; fill:none; flex:none; }
+.paper-hjem .goalline{ display:flex; align-items:center; gap:var(--s2); font-size:12px; color:var(--muted); }
+.paper-hjem .goalline .num{ font-size:13px; color:var(--fg); }
+.paper-hjem .linkrow{ display:flex; flex-wrap:wrap; gap:var(--s2); margin-top:var(--s5); padding-top:var(--s4); border-top:1px solid var(--border); }
+.paper-hjem .linkrow a{
+  font-family:var(--mono); font-size:11px; color:var(--muted); text-decoration:none;
+  min-height:var(--tap); display:inline-flex; align-items:center; padding:0 var(--s3);
+  border:1px solid var(--border); border-radius:var(--r-pill);
+}
+.paper-hjem .linkrow a:hover{ background:var(--soft); color:var(--fg); }
+/* ── Trykkflategulv ──────────────────────────────────────────────
+   Skjermen er alltid touch, også i telefonrammen på en desktop med
+   mus. Derfor heves alt til var(--tap) uavhengig av pointer-type. */
+/* ── Trykkflate-gulv · 31.07.2026 (Anders: alle interaktive elementer ≥ 44px) ──
+   Gjelder uansett pekertype, ikke bare pointer:coarse. Siste regel i fila
+   slik at den vinner over skjermspesifikke overstyringer.
+   Unntak: elementer merket data-demo-only, som uansett skal ut. */
+.paper-hjem textarea{ padding-top: var(--s2); padding-bottom: var(--s2); }
+.paper-hjem .tag, .paper-hjem .num, .paper-hjem .eyebrow{ min-height: 0; }
+.paper-hjem textarea, .paper-hjem .composer textarea, .paper-hjem [id*="composer"] textarea{ min-height: var(--tap) !important; }
+/* ── Production safety: app fills scoped root ── */
+.paper-hjem.app,
+.paper-hjem .app {
+  height: 100dvh;
+  max-height: 100dvh;
+  min-height: 100dvh;
+  width: 100%;
+  overflow: hidden;
+}
+
+/* Prefer reduced motion already in foundation; reinforce for scoped tree */
+@media (prefers-reduced-motion: reduce) {
+  .paper-hjem *,
+  .paper-hjem *::before,
+  .paper-hjem *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

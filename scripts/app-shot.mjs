@@ -35,8 +35,10 @@ await page.addInitScript(() => { try { localStorage.setItem("ak_cookie_consent",
 
 // --- Login ---
 await page.goto(`${BASE}/auth/login`, { waitUntil: "networkidle" });
-await page.fill("#email", EMAIL);
-await page.fill("#password", PASSWORD);
+// LoginV2: Felt bruker type=email/password (ikke #email)
+await page.waitForSelector('input[type="email"]', { timeout: 20000 });
+await page.fill('input[type="email"]', EMAIL);
+await page.fill('input[type="password"]', PASSWORD);
 await Promise.all([
   page.waitForURL(/\/(portal|admin|forelder)/, { timeout: 30000 }).catch(() => {}),
   page.click('button[type="submit"]'),

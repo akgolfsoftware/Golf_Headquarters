@@ -2,6 +2,16 @@
 
 @import "tailwindcss";
 
+/* Paper / PlayerHQ / golfdata / v2 — top-level @import only.
+ * CSS/Turbopack drop @import after other rules; keep these before any selectors. */
+@import "../styles/paper-tokens.css";
+@import "../styles/paper-playerhq-hjem.css";
+@import "../styles/paper-playerhq-plan.css";
+@import "../styles/golfdata-tokens.css";
+@import "../components/athletic/golfdata/golfdata.css";
+@import "../styles/v2/patterns.css";
+@import "../styles/v2/motion.css";
+
 /* ---------- Designsystem v2 ----------
  * HSL-trippel uten hsl()-wrapper. Tailwind v4 mapper dem til utilities
  * via @theme inline lenger nede. Endres ALDRI uten eksplisitt beslutning.
@@ -579,28 +589,17 @@ html[data-v2-tema="dark"] ::selection {
  * Importerer pattern-klasser + animations brukt av v2-komponenter.
  * Definert i src/styles/v2/patterns.css.
  */
-@import "../styles/v2/patterns.css";
 
 /* ---------- V2 motion- og interaksjonskatalog (FASIT §4b) ----------
  * Én statisk kilde for alle v2-interaksjonsklasser (press/fokus/hover,
  * drag, inn-animasjoner, skeleton, NPS-grid, markdown) — erstatter
  * tidligere runtime-injisert CSS fra komponentfilene.
  */
-@import "../styles/v2/motion.css";
 
 /* ---------- Golfdata-tokens + komponent-CSS (design-handover v13) ----------
  * Scopet token-lag + portert komponent-CSS for golfdata-familien
  * (athletic/golfdata). Verdier portet EKSAKT fra public/design-handover/.
  */
-@import "../styles/golfdata-tokens.css";
-
-/* ---------- Claude Paper-tokens (designport steg 4, 2026-08-03) ----------
- * Nytt tokensett ved siden av det gamle. ALLE navn er prefikset --p-, så
- * denne importen endrer null piksler før en komponent tar dem i bruk.
- * Se src/styles/paper-tokens.css for avviklingsbetingelsen for det gamle settet.
- */
-@import "../styles/paper-tokens.css";
-@import "../components/athletic/golfdata/golfdata.css";
 
 /* ---------- AK Golf type helpers ----------
  * Speilet fra .claude/skills/ak-golf-hq-design/colors_and_type.css.

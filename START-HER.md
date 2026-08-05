@@ -6,10 +6,11 @@
 (stack, prosjektkart, sannhets-hierarki) på 5 min. **Les den før du rører kode.** Deretter:
 `docs/STATUS-NÅ.md` (hvor vi er) og `docs/MASTER-SKJERMPLAN.md` (før skjermarbeid).
 
-**Design:** Claude Paper 1:1 (`designsystem/paper/fase1/`) — se `.claude/rules/beslutninger.md`.  
-**Sperre-lås (P0/KOMMER, `/traad`, tokens):** [`docs/port/sperre-og-beslutninger.md`](docs/port/sperre-og-beslutninger.md).  
+**Design (Paper-only):** `designsystem/paper/fase1/*.html` — eneste visuelle + IA-fasit.  
+Se `.claude/rules/beslutninger.md` og [`docs/port/sperre-og-beslutninger.md`](docs/port/sperre-og-beslutninger.md).  
 **Port-plan:** [`docs/port/plan-designport-alle-skjermer.md`](docs/port/plan-designport-alle-skjermer.md).
 
+**SLETTET (ikke fasit):** `public/design-handover/`, `docs/skjermtekst/`, `docs/design-bestillinger/`.  
 **Ikke stol på** `docs/arkiv/` (historikk). Ved tvil vinner `AGENT-BRIEF.md`.
 
 ## Kjør lokalt

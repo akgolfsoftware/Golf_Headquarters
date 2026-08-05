@@ -57,7 +57,21 @@ export async function GET(req: Request) {
   // Bytt code mot tokens
   try {
     const tokens = await exchangeCode(code);
-    if (!tokens.refresh_token) {
+
+    // Google returnerer ofte ikke refresh_token ved re-auth (app allerede godkjent).
+    // Behold da eksisterende kryptert token; hard-fail bare ved første kobling.
+    let refreshTokenCipher: string | null = null;
+    if (tokens.refresh_token) {
+      refreshTokenCipher = encryptToken(tokens.refresh_token);
+    } else {
+      const existing = await prisma.googleCalendarConnection.findUnique({
+        where: { userId },
+        select: { refreshTokenCipher: true },
+      });
+      refreshTokenCipher = existing?.refreshTokenCipher ?? null;
+    }
+
+    if (!refreshTokenCipher) {
       return NextResponse.redirect(
         new URL(
           "/admin/settings/calendar?error=ingen-refresh-token-fjern-tilgang-og-prov-igjen",
@@ -73,20 +87,19 @@ export async function GET(req: Request) {
     const userInfo = await oauth2.userinfo.get();
     const googleEmail = userInfo.data.email ?? "ukjent@example.com";
 
-    const cipher = encryptToken(tokens.refresh_token);
-
     const connection = await prisma.googleCalendarConnection.upsert({
       where: { userId },
       create: {
         userId,
         googleEmail,
-        refreshTokenCipher: cipher,
+        refreshTokenCipher,
         status: "ACTIVE",
         lastSyncAt: new Date(),
       },
       update: {
         googleEmail,
-        refreshTokenCipher: cipher,
+        // Bare overskriv cipher når Google faktisk ga ny refresh_token
+        ...(tokens.refresh_token ? { refreshTokenCipher } : {}),
         status: "ACTIVE",
         lastError: null,
         lastSyncAt: new Date(),

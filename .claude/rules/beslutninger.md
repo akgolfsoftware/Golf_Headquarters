@@ -105,10 +105,11 @@ Gjelder til Anders endrer dem.
   videre designarbeid. **Produksjonskode** følger fortsatt v2-tokens + C, smalt (`--handling`)
   til post-pilot. `docs/design-system/` og `docs/redesign-v2/` er SLETTET 2026-07-31 (git-historikk);
   kun `docs/design-system/TEMA-LYS-MORK.md` står som tema-beskrivelse av *kode*.
-- **Skjermtekst (copy-kilde):** `docs/skjermtekst/` — ekte norsk UI-tekst per hovedskjerm +
-  design-brief. Kopier derfra, ikke dikt opp ny tekst.
-- Aldri referer til `wireframe/`, gamle `design-package/` eller `design-files-v2/` i
-  produksjonsfiler — disse er slettet fra prosjektet.
+- **Copy-kilde = Paper-HTML:** norsk UI-tekst hentes fra `designsystem/paper/fase1/*.html`.
+  `docs/skjermtekst/`, `public/design-handover/` og `docs/design-bestillinger/` er SLETTET
+  (2026-08) — ikke gjenopprett, ikke bruk som fasit.
+- Aldri referer til `wireframe/`, gamle `design-package/`, `design-files-v2/`,
+  `public/design-handover/` eller `docs/skjermtekst/` i produksjonsfiler.
 - **Skill-rensing (2026-07-19, Agentic OS):** generiske design-skills (`frontend-design`,
   `design-vendor`) er fjernet fra repoets `.claude/skills/`. **Oppdatering 2026-07-25:** også
   `ak-designekspert` og `ak-design-evolution` er fjernet — de var låst til den gamle kanonen.

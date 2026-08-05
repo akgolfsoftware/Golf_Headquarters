@@ -3,6 +3,10 @@
 **Skrevet:** 02.08.2026 · **Gjelder:** steg 2 i `docs/port/plan-designport-alle-skjermer.md`
 **Endrer ingen skjerm.** Dette er kun en opptelling.
 
+> **PAPER-ONLY (2026-08):** `designsystem/paper/fase1/*.html` er eneste visuelle fasit.
+> `public/design-handover/`, `docs/skjermtekst/` og `docs/design-bestillinger/` er SLETTET.
+> Ikke bruk Workbench-PNG, skjermtekst-deck eller gamle bestillinger som designkilde.
+
 Kilder: `designsystem/paper/fase1/` (hentet i steg 1) og `docs/MASTER-SKJERMPLAN.md`.
 
 ---

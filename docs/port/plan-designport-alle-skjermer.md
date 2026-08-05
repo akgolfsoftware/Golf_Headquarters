@@ -170,7 +170,7 @@ fordi skjermantallet ikke er kjent før steg 2.
 | Rute | Status |
 |---|---|
 | `/portal` (Hjem) | Merget (PR #275) — **må ombygges, se avviksliste A1** |
-| `/portal/planlegge` | Merget (PR #276) — **må ombygges, se avviksliste A2** |
+| `/portal/planlegge` | PR-B ombygd 2026-08-04 (Paper 1:1) — venter skjermbilde-ja |
 | `/portal/analysere` | Merget (PR #277) — mangler «Én ting nå» (A3); full visuell kontroll gjenstår |
 | `/portal/meg` | Merget (PR #278) — mangler «Én ting nå»/lydsamtykke (A4); full visuell kontroll gjenstår |
 | `/portal/booking` | [PR #281](https://github.com/akgolfsoftware/Golf_Headquarters/pull/281) åpnet 2026-08-04, IKKE merget — bygget om til timer/credits-oversikt som landing (Anders' instruks), ikke restyling av den gamle 4-stegs veiviseren |
@@ -190,7 +190,10 @@ Tokenet finnes (`T.handling`, låst 2026-07-31); det brukes bare ikke slik fasit
   i topplinja mangler.
 - **A2 — Planlegge:** (1) full skjermbredde i stedet for fasitens 720px-kolonne. (2) FEM
   konkurrerende CTA-er (tre til Workbench) — bryter Enkelhet-regelen «én primær CTA»; fasiten
-  har én aksenthandling (dokken «Start [økta] · 16:00»). (3) Tre døde KPI-tankestreker som
+  har én aksent
+  · **OMBYGD 2026-08-04 (PR-B):** `PlanV2.tsx` → 720px-kolonne, dagfaner, én accent-CTA,
+  ærlig tom tilstand, Workbench som ghost. Venter skjermbilde-ja (mobil 390 + desktop 1280).
+  (historisk avvik før ombygging:)handling (dokken «Start [økta] · 16:00»). (3) Tre døde KPI-tankestreker som
   hovedoppslag. (4) Gammelt v2-typografispråk («Din *uke*») i stedet for fasitens kompakte
   topplinje. (5) Kjempehøye dagpiller + enorme tomtilstandskort.
 - **A3 — Analysere:** «Én ting nå» («Legg inn [område]-økt denne uka» — følger av analysen)

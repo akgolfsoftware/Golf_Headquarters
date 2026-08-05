@@ -30,6 +30,19 @@ Bruk i stedet: `docs/port/fasit-liste-paper.md` + fase1-HTML.
 **Adherence-lint (`_adherence.oxlintrc.json`) FINNES IKKE.**  
 Gate = menneskelig skjermbilde-godkjenning (beslutninger.md), ikke oxlint.
 
+### Paper-only (Anders 2026-08) — slettet konkurranse
+
+**Eneste visuelle + IA-fasit:** `designsystem/paper/fase1/*.html`  
+**Eneste tokens-kilde:** `designsystem/paper/tokens/akhq-tokens.css`  
+**Produksjons-CSS for Paper-porter:** `src/styles/paper-*.css` + `src/components/portal/paper/*`
+
+**SLETTET (ikke gjenopprett, ikke referer som fasit):**
+- `public/design-handover/` (PNG/handover — ikke Paper)
+- `docs/skjermtekst/` (gammel copy-deck)
+- `docs/design-bestillinger/` (gammel bestilling)
+
+Copy, layout og IA hentes **kun** fra Paper-HTML. MASTER-SKJERMPLAN er rute/status-kart — ikke visuell fasit.
+
 ---
 
 ## 2. Konsoll-kommandoer — P0 vs KOMMER

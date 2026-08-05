@@ -1,0 +1,633 @@
+/* ═══════════════════════════════════════════════════════════════
+   AK Golf HQ · Paper PlayerHQ Plan — produksjons-CSS
+   Kilde: designsystem/paper/fase1/playerhq-plan.html
+   Scope: ALL rules under .paper-plan
+   Tokens: unprefixed Paper-vars → --p-* fra paper-tokens.css
+   ═══════════════════════════════════════════════════════════════ */
+
+.paper-plan {
+  /* ── Color ── */
+  --bg: var(--p-bg);
+  --fg: var(--p-fg);
+  --surface: var(--p-surface);
+  --soft: var(--p-soft);
+  --border: var(--p-border);
+  --mid: var(--p-mid);
+  --muted: var(--p-muted);
+  --accent: var(--p-accent);
+  --on-accent: var(--p-on-accent);
+  --accent-soft: var(--p-accent-soft);
+  --cta: var(--p-cta, var(--p-fg));
+  --on-cta: var(--p-on-cta, var(--p-bg));
+  --cta-hover: var(--p-cta-hover, var(--p-soft));
+  --up: var(--p-up);
+  --dn: var(--p-down, var(--p-dn, #de9e82));
+  --info: var(--p-info);
+  --rail: var(--p-rail);
+  --rail-fg: var(--p-rail-fg);
+  --rail-on: var(--p-rail-on);
+  --scrim: var(--p-scrim);
+  --focus: 2px solid var(--p-focus-ring);
+  --softer: var(--p-soft);
+  --border-soft: color-mix(in srgb, var(--p-border) 70%, transparent);
+
+  /* akse-farger (fasit) */
+  --ax-fys: var(--p-ax-fys, #7aa2c5);
+  --ax-tek: var(--p-ax-tek, #9db284);
+  --ax-slag: var(--p-ax-slag, #d97757);
+  --ax-spill: var(--p-ax-spill, #c4a35a);
+  --ax-turn: var(--p-ax-turn, #a78bb8);
+  --accent-fig: var(--p-accent);
+
+  /* ── Fonts ── */
+  --ui: var(--p-ui, var(--p-font-ui, var(--font-poppins), system-ui, sans-serif));
+  --disp: var(--p-disp, var(--p-font-disp, var(--font-poppins), system-ui, sans-serif));
+  --body: var(--p-body, var(--p-font-body, var(--font-lora), Georgia, serif));
+  --mono: var(--p-mono, var(--p-font-mono, var(--font-ibm-plex-mono), ui-monospace, monospace));
+
+  /* ── Type ── */
+  --text-body-player: var(--p-text-body-player, 14px);
+  --text-label: var(--p-text-label, 10px);
+
+  /* ── Spacing ── */
+  --s1: var(--p-s1, 4px);
+  --s2: var(--p-s2, 8px);
+  --s3: var(--p-s3, 12px);
+  --s4: var(--p-s4, 16px);
+  --s5: var(--p-s5, 24px);
+  --s6: var(--p-s6, 32px);
+  --s7: var(--p-s7, 48px);
+  --s8: var(--p-s8, 64px);
+
+  /* ── Radii ── */
+  --r: var(--p-r-md, 16px);
+  --r-sm: var(--p-r-sm, 8px);
+  --r-lg: var(--p-r-lg, 24px);
+  --r-pill: var(--p-r-pill, 999px);
+
+  /* ── Motion / tap / z ── */
+  --ease: var(--p-ease, cubic-bezier(0.16, 1, 0.3, 1));
+  --dur: var(--p-dur, 160ms);
+  --tap: var(--p-tap, 44px);
+  --tap-lg: var(--p-tap-lg, 48px);
+  --z-rail: var(--p-z-rail, 20);
+  --z-sheet: var(--p-z-sheet, 40);
+  --z-toast: var(--p-z-toast, 100);
+
+  /* ── Root shell — fyller V2Shell-innholdet (100% av parent) ── */
+  box-sizing: border-box;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 100%;
+  max-height: 100%;
+  margin: 0;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--ui);
+  font-size: var(--text-body-player);
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+  overflow: hidden;
+}
+
+.paper-plan *,
+.paper-plan *::before,
+.paper-plan *::after {
+  box-sizing: border-box;
+}
+
+.paper-plan button {
+  font: inherit;
+  color: inherit;
+}
+
+.paper-plan a {
+  color: inherit;
+}
+
+.paper-plan .num {
+  font-family: var(--mono);
+  font-variant-numeric: tabular-nums;
+}
+
+.paper-plan .eyebrow {
+  font-family: var(--mono);
+  font-size: var(--text-label);
+  font-weight: 500;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.paper-plan .prose {
+  font-family: var(--body);
+}
+
+.paper-plan .sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+}
+
+.paper-plan :where(a, button, input, summary, [tabindex]):focus-visible {
+  outline: 2px solid var(--p-focus-ring, #b5d4c3);
+  outline-offset: 2px;
+  border-radius: var(--r-sm);
+}
+
+/* ── Buttons / tags ── */
+.paper-plan .btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--s2);
+  min-height: var(--tap-lg);
+  padding: 0 var(--s4);
+  font-size: 14px;
+  font-weight: 500;
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  cursor: pointer;
+  white-space: nowrap;
+  text-decoration: none;
+  color: var(--fg);
+}
+.paper-plan .btn:hover {
+  background: var(--soft);
+  border-color: var(--mid);
+}
+.paper-plan .btn:active {
+  transform: translateY(1px);
+}
+.paper-plan .btn.ink {
+  background: var(--cta);
+  color: var(--on-cta);
+  border-color: var(--cta);
+}
+.paper-plan .btn.now {
+  background: var(--accent);
+  color: var(--on-accent);
+  border-color: var(--accent);
+  font-weight: 600;
+  min-height: 56px;
+}
+.paper-plan .btn.sm {
+  min-height: var(--tap);
+  font-size: 13px;
+  padding: 0 var(--s3);
+}
+.paper-plan .btn.full {
+  width: 100%;
+}
+
+.paper-plan .tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px var(--s2);
+  border-radius: var(--r-pill);
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  background: var(--soft);
+  color: var(--muted);
+  border: 1px solid var(--border);
+}
+.paper-plan .tag.up {
+  color: var(--up);
+}
+.paper-plan .tag.dn {
+  color: var(--dn);
+}
+.paper-plan .tag.info {
+  color: var(--info);
+}
+
+/* ── Topp ── */
+.paper-plan .topp {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: var(--s2);
+  padding: calc(var(--s3) + env(safe-area-inset-top, 0px)) var(--s4) var(--s3);
+  border-bottom: 1px solid var(--border);
+  background: var(--surface);
+}
+.paper-plan .topp h1 {
+  margin: 0;
+  font-family: var(--disp);
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--fg);
+}
+.paper-plan .topp .sub {
+  display: block;
+  font-family: var(--mono);
+  font-size: 10.5px;
+  color: var(--muted);
+}
+.paper-plan .ikon {
+  flex: none;
+  width: var(--tap);
+  height: var(--tap);
+  display: grid;
+  place-items: center;
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  cursor: pointer;
+  text-decoration: none;
+  color: var(--fg);
+}
+.paper-plan .ikon svg {
+  width: 18px;
+  height: 18px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.7;
+}
+
+/* ── Dagfaner ── */
+.paper-plan .dager {
+  flex: none;
+  display: flex;
+  gap: var(--s2);
+  padding: var(--s3) var(--s4);
+  overflow-x: auto;
+  scrollbar-width: none;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg);
+}
+.paper-plan .dager::-webkit-scrollbar {
+  display: none;
+}
+.paper-plan .dpill {
+  flex: 1 0 auto;
+  min-width: 44px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: var(--s2) 6px;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: var(--r);
+  cursor: pointer;
+  color: var(--muted);
+}
+.paper-plan .dpill .dl {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.paper-plan .dpill .dn {
+  font-family: var(--mono);
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--fg);
+}
+.paper-plan .dpill[aria-current="true"],
+.paper-plan .dpill[aria-selected="true"] {
+  background: var(--surface);
+  border-color: var(--fg);
+  color: var(--fg);
+}
+.paper-plan .dpill.idag .dl {
+  color: var(--accent);
+}
+.paper-plan .dpill.har .dn::after {
+  content: "";
+  display: block;
+  width: 4px;
+  height: 4px;
+  margin: 3px auto 0;
+  border-radius: var(--r-pill);
+  background: var(--accent);
+}
+.paper-plan .dpill.done .dn::after {
+  background: var(--up);
+}
+
+/* ── Scroll-body (fasit .kropp) ── */
+.paper-plan .kropp {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  /* s8 + tabs(~56) + safe-area — unngå at .dokk/innhold sklir under bunnfaner */
+  padding: var(--s4) var(--s4) calc(var(--s5) + env(safe-area-inset-bottom, 0px));
+}
+@media (max-width: 640px) {
+  .paper-plan .kropp {
+    padding-bottom: calc(var(--s4) + env(safe-area-inset-bottom, 0px));
+  }
+  .paper-plan .dokk {
+    /* tabs sitter under — dokk er del av kolonnen over tabs */
+    padding-bottom: var(--s3);
+  }
+}
+@media (min-width: 1024px) {
+  .paper-plan .kropp > * {
+    max-width: 720px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .paper-plan .topp,
+  .paper-plan .dager {
+    /* hold topp/dager full bredde men innhold max 720 via inner padding-mønster */
+  }
+  .paper-plan .topp > :first-child,
+  .paper-plan .dager {
+    max-width: 720px;
+    width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
+
+/* ── Uke-kort ── */
+.paper-plan .uke {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  padding: var(--s4);
+  margin-bottom: var(--s4);
+}
+.paper-plan .uke .rad {
+  display: flex;
+  align-items: baseline;
+  gap: var(--s3);
+  padding: var(--s2) 0;
+  border-bottom: 1px solid var(--border-soft);
+  font-size: 13.5px;
+}
+.paper-plan .uke .rad:last-child {
+  border-bottom: 0;
+  padding-bottom: 0;
+}
+.paper-plan .uke .rad:first-of-type {
+  /* first rad after bar */
+}
+.paper-plan .uke .rad span:first-child {
+  color: var(--muted);
+  flex: 1;
+}
+.paper-plan .uke .v {
+  font-weight: 600;
+  color: var(--fg);
+}
+.paper-plan .uke .bar {
+  height: 4px;
+  background: var(--soft);
+  border-radius: var(--r-pill);
+  overflow: hidden;
+  margin: var(--s3) 0;
+}
+.paper-plan .uke .bar > i {
+  display: block;
+  height: 100%;
+  background: var(--accent);
+  border-radius: var(--r-pill);
+}
+.paper-plan .uke .eyebrow {
+  margin-bottom: var(--s2);
+}
+
+/* ── Why ── */
+.paper-plan .why {
+  margin: var(--s3) 0 0;
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+}
+.paper-plan .why summary {
+  display: flex;
+  align-items: center;
+  min-height: var(--tap);
+  padding: 0 var(--s3);
+  cursor: pointer;
+  font-size: 13px;
+  color: var(--muted);
+  list-style: none;
+}
+.paper-plan .why summary::-webkit-details-marker {
+  display: none;
+}
+.paper-plan .why[open] summary {
+  border-bottom: 1px solid var(--border);
+}
+.paper-plan .why ul {
+  margin: 0;
+  padding: var(--s3) var(--s4) var(--s3) 1.3em;
+  font-size: 12.5px;
+  color: var(--muted);
+  line-height: 1.5;
+}
+.paper-plan .why li {
+  margin-bottom: var(--s2);
+}
+
+/* ── Eierskap ── */
+.paper-plan .eier {
+  display: flex;
+  gap: var(--s3);
+  align-items: flex-start;
+  padding: var(--s3) var(--s4);
+  margin-bottom: var(--s4);
+  background: var(--soft);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  font-size: 12.5px;
+  color: var(--muted);
+  line-height: 1.45;
+}
+.paper-plan .eier svg {
+  width: 16px;
+  height: 16px;
+  flex: none;
+  margin-top: 2px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* ── Økt-kort ── */
+.paper-plan .okt {
+  display: block;
+  width: 100%;
+  text-align: left;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--mid);
+  border-radius: var(--r);
+  padding: var(--s4);
+  margin-bottom: var(--s3);
+  cursor: pointer;
+  color: inherit;
+}
+.paper-plan .okt .kl {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--muted);
+  letter-spacing: 0.02em;
+}
+.paper-plan .okt h3 {
+  margin: 4px 0 2px;
+  font-family: var(--disp);
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--fg);
+}
+.paper-plan .okt .m {
+  font-family: var(--mono);
+  font-size: 11.5px;
+  color: var(--muted);
+}
+.paper-plan .okt .badges {
+  display: flex;
+  gap: var(--s2);
+  margin-top: var(--s3);
+  flex-wrap: wrap;
+}
+.paper-plan .okt.ferdig {
+  opacity: 0.66;
+}
+.paper-plan .okt.ferdig h3 {
+  text-decoration: line-through;
+}
+.paper-plan .okt.ax-FYS {
+  border-left-color: var(--ax-fys);
+}
+.paper-plan .okt.ax-TEK {
+  border-left-color: var(--ax-tek);
+}
+.paper-plan .okt.ax-SLAG {
+  border-left-color: var(--ax-slag);
+}
+.paper-plan .okt.ax-SPILL {
+  border-left-color: var(--ax-spill);
+}
+.paper-plan .okt.ax-TURN {
+  border-left-color: var(--ax-turn);
+}
+
+/* ── Tom ── */
+.paper-plan .tom {
+  padding: var(--s5) var(--s4);
+  background: var(--soft);
+  border: 1px dashed var(--border);
+  border-radius: var(--r);
+}
+.paper-plan .tom h3 {
+  margin: 0 0 var(--s2);
+  font-family: var(--disp);
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--fg);
+}
+.paper-plan .tom p {
+  margin: 0 0 var(--s4);
+  font-size: 13.5px;
+  color: var(--muted);
+  line-height: 1.5;
+}
+.paper-plan .tom .valg {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s2);
+}
+.paper-plan .hint {
+  font-family: var(--body);
+  font-size: 12.5px;
+  color: var(--muted);
+  margin: 0 0 var(--s4);
+}
+
+/* ── Drill-liste ── */
+.paper-plan .drill {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.paper-plan .drill li {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--s3);
+  padding: var(--s2) 0;
+  border-bottom: 1px solid var(--border-soft);
+  font-size: 13.5px;
+}
+.paper-plan .drill li:last-child {
+  border-bottom: 0;
+}
+.paper-plan .drill .num {
+  color: var(--muted);
+  flex: none;
+}
+
+/* ── Dokk: ÉN ting nå ── */
+.paper-plan .dokk {
+  flex: none;
+  padding: var(--s3) var(--s4);
+  padding-bottom: calc(var(--s3) + env(safe-area-inset-bottom, 0px));
+  background: linear-gradient(to top, var(--bg) 70%, transparent);
+  border-top: 1px solid var(--border);
+}
+@media (min-width: 1024px) {
+  .paper-plan .dokk {
+    background: var(--bg);
+  }
+  .paper-plan .dokk .btn {
+    max-width: 720px;
+    margin: 0 auto;
+    display: flex;
+  }
+}
+
+/* ── Skeleton ── */
+.paper-plan .sk {
+  height: 14px;
+  border-radius: var(--r-sm);
+  background: linear-gradient(90deg, var(--soft) 25%, var(--softer) 50%, var(--soft) 75%);
+  background-size: 200% 100%;
+  margin-bottom: var(--s2);
+  animation: paper-plan-puls 1.6s var(--ease) infinite;
+}
+@keyframes paper-plan-puls {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.55;
+  }
+}
+
+/* ── Toast ── */
+.paper-plan .toast {
+  position: absolute;
+  left: var(--s4);
+  right: var(--s4);
+  bottom: calc(120px + env(safe-area-inset-bottom, 0px));
+  background: var(--fg);
+  color: var(--bg);
+  padding: var(--s3) var(--s4);
+  border-radius: var(--r);
+  font-size: 13.5px;
+  z-index: var(--z-toast);
+  text-align: center;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .paper-plan * {
+    animation: none !important;
+    transition: none !important;
+  }
+}

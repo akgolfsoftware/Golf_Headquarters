@@ -1,7 +1,8 @@
 /**
- * PlayerHQ Hjem — chat-først (designport steg 7 PR1, mot Paper-fasiten
- * playerhq-chat-desktop.html/-mobil.html). V2Shell leverer chrome-en
- * (rail/bunn-nav, uendret), PortalChatHjem rendrer selve "I dag"-samtalen.
+ * PlayerHQ Hjem — chat-først, 1:1 Claude Paper-fasit
+ * (designsystem/paper/fase1/playerhq-chat-desktop.html / -mobil.html).
+ *
+ * PaperShell + PaperHjem — IKKE V2Shell (gammelt designsystem).
  */
 
 import { redirect } from "next/navigation";
@@ -9,8 +10,7 @@ import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { getDashboardData } from "@/app/portal/actions";
 import { getGjennomforeData } from "@/lib/portal-gjennomfore/gjennomfore-data";
 import { korteDatoKlokke } from "@/lib/portal/korte-dato-klokke";
-import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
-import { PortalChatHjem } from "@/components/portal/v2/chat/PortalChatHjem";
+import { PaperHjem } from "@/components/portal/paper/PaperHjem";
 
 export const dynamic = "force-dynamic";
 
@@ -19,21 +19,13 @@ export default async function PortalHjemPage() {
   if (user.role === "PARENT") redirect("/forelder");
   if (user.role === "GUEST") redirect("/admin/kalender");
 
-  // Dagens økter fra gjennomfore-loaderen (begge økt-spor — samme kilde som
-  // Gjør-fanen) — mål-widgeten (getMaalWidgetData) bortfalt med HjemV2 og er
-  // ikke del av chat-først-innholdet i denne PR-en.
   const [data, gjennomfore] = await Promise.all([
     getDashboardData(user.id),
     getGjennomforeData(user.id),
   ]);
 
-  // Beregnet server-side (ikke i klienten) for å unngå SSR/hydrerings-avvik —
-  // "nå" er pr. definisjon ulik mellom serverrender og klient-mount.
+  // Server-side «nå» for å unngå SSR/hydrerings-avvik
   const naaTekst = korteDatoKlokke(new Date());
 
-  return (
-    <V2Shell aktiv="hjem" nav={PLAYERHQ_NAV} navn={data.user.name} avatarUrl={data.user.avatarUrl}>
-      <PortalChatHjem data={data} gjennomfore={gjennomfore} naaTekst={naaTekst} />
-    </V2Shell>
-  );
+  return <PaperHjem data={data} gjennomfore={gjennomfore} naaTekst={naaTekst} />;
 }
