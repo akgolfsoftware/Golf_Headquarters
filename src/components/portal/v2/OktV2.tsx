@@ -75,7 +75,7 @@ export function OktV2({ data, onSettPyramide }: { data: OktDetaljData; onSettPyr
   // Tom-tilstand: ingen økt funnet for testbrukeren (ærlig, aldri liksom-økt).
   if (!data.found) {
     return (
-      <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+      <div data-paper-portal-okt-detalj style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
         <div>
           <Caps>Økt</Caps>
           <div style={{ marginTop: 10 }}>
@@ -115,10 +115,27 @@ export function OktV2({ data, onSettPyramide }: { data: OktDetaljData; onSettPyr
 
       {/* B: én primær CTA full bredde */}
       {data.kanStarte && (
-        <Link href={data.startHref} style={{ textDecoration: "none", display: "block" }}>
-          <CTAPill icon="play" full>
-            {data.startLabel}
-          </CTAPill>
+        <Link
+          href={data.startHref}
+          data-od-id="okt-start"
+          className="v2-press v2-focus"
+          style={{
+            textDecoration: "none",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: 8,
+            minHeight: 48,
+            width: "100%",
+            borderRadius: 10,
+            background: T.handling,
+            color: T.onHandling,
+            fontFamily: T.ui,
+            fontSize: 14,
+            fontWeight: 600,
+          }}
+        >
+          {data.startLabel}
         </Link>
       )}
 
