@@ -184,7 +184,10 @@ export function AdminOkonomiV2({ data }: { data: AdminOkonomiV2Data }) {
         style={{ textDecoration: "none" }}
         className="hidden md:inline-flex"
       >
-        <CTAPill icon="arrow-up-right">Åpne Stripe</CTAPill>
+        <span style={{
+          display: "inline-flex", alignItems: "center", gap: 8, minHeight: 44, padding: "10px 16px",
+          borderRadius: 10, background: T.handling, color: T.onHandling, fontFamily: T.ui, fontSize: 13, fontWeight: 600,
+        }}>Åpne Stripe</span>
       </a>
     </div>
   );
@@ -406,7 +409,7 @@ export function AdminOkonomiV2({ data }: { data: AdminOkonomiV2Data }) {
   };
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+    <div data-paper-agencyos-okonomi style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 960, margin: "0 auto", width: "100%" }}>
       {hode}
 
       {/* Mobil-snarvei (skjult på desktop der den ligger i hodet) */}
@@ -417,7 +420,10 @@ export function AdminOkonomiV2({ data }: { data: AdminOkonomiV2Data }) {
         style={{ textDecoration: "none" }}
         className="flex md:hidden"
       >
-        <CTAPill icon="arrow-up-right">Åpne Stripe</CTAPill>
+        <span style={{
+          display: "inline-flex", alignItems: "center", gap: 8, minHeight: 44, padding: "10px 16px",
+          borderRadius: 10, background: T.handling, color: T.onHandling, fontFamily: T.ui, fontSize: 13, fontWeight: 600,
+        }}>Åpne Stripe</span>
       </a>
 
       {kpi}
