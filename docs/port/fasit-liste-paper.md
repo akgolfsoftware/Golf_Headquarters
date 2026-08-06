@@ -1,11 +1,10 @@
 # Steg 2 — fasit-listen: Paper-skjerm ↔ ekte rute
 
-**Skrevet:** 02.08.2026 · **Oppdatert:** 05.08.2026 kveld (W1-wireframene batch-godkjent av
-Anders — 11 nye fasitskjermer i `fase2/playerhq/`, se §W1 under. Tidligere samme dag: re-kjørt
-mot Claude Design-prosjektet `605a48cc`, som nå er ENESTE kilde — ikke en lokal speil-mappe,
-se `README.md` i denne mappa).
+**Skrevet:** 02.08.2026 · **Oppdatert:** 2026-08-06 (portstatus: alle fasitruter merget til
+main etter Anders' ja — se **`portstatus-paper.md`** for godkjent/portert liste med PR-nummer.
+Tidligere: 05.08.2026 kveld W1-wireframes batch-godkjent; Claude Design `605a48cc` eneste kilde).
 **Gjelder:** steg 2 i `docs/port/plan-designport-alle-skjermer.md`.
-**Endrer ingen skjerm.** Dette er kun en opptelling.
+**Denne fila** = fasit ↔ rute. **`portstatus-paper.md`** = hva som er portet og godkjent.
 
 Kilder: Claude Design-prosjektet `605a48cc` → `fase1/` (hentet via `claude-design`-MCP,
 sist listet 05.08.2026) og den daværende skjermplanen (slettet 05.08.2026, se git-historikken).
@@ -23,10 +22,12 @@ Designprosjektets `templates/`,
 | Rader i skjermplanen totalt (opptelling 05.08.2026, før den ble slettet) | 375 |
 | …av disse ren redirect eller utgått | 32 |
 | Paper-fasitskjermer på disk | **44** (33 i `fase1/` + 11 godkjente W1-wireframes i `fase2/playerhq/`) |
-| Ekte ruter disse dekker (mobil + desktop av samme rute teller én gang; 2 filer uten rute trukket fra) | **36** |
-| Skjermer som må designes uten fasit | **307** |
+| Ekte ruter disse dekker (mobil + desktop av samme rute teller én gang) | **~38** (AK-stigen + live fikk rute 2026-08-06) |
+| **Portet + godkjent i main** | **Alle fasitruter** — se `portstatus-paper.md` |
+| Skjermer som må designes uten fasit | **~300+** |
 
-**Dekningsgrad: 36 av 343 skjermer — 10,5 %.**
+**Fasit-dekning i design:** ~38 av ~343 skjermer.  
+**Port-status for de med fasit:** fullført 2026-08-06 (Anders' ja per batch).
 
 Merk: 343-tallet er FØR W1-konsolideringen er kodet. Når vedtakene implementeres, utgår
 `/portal/gjennomfore` (redirect), `/portal/planlegge/bygger`, to av fire testflater og én av
@@ -44,8 +45,8 @@ fasit) + AgencyOS AK-stigen og Live-session:
 | `playerhq-runde-live.html` | `/portal/(fullscreen)/runde/live` | 04.08.2026 |
 | `playerhq-runde-logg.html` | `/portal/(fullscreen)/runde/logg` | 04.08.2026 |
 | `playerhq-test-gjennomfor.html` | `/portal/(fullscreen)/tren/tester/[testId]/gjennomfor` | 04.08.2026 |
-| `agencyos-ak-stigen.html` | Ingen ekte rute ennå — ny flate, ikke i skjermopptellingen | ~03.08.2026 |
-| `agencyos-live-session.html` | Ingen ekte rute ennå — trolig coach-siden av live-økt, ikke bekreftet mot kode | ~03.08.2026 |
+| `agencyos-ak-stigen.html` | `/admin/agencyos/ak-stigen` (ny rute 2026-08-06, PR #343) | ~03.08.2026 |
+| `agencyos-live-session.html` | `/admin/agencyos/live` (PR #341) | ~03.08.2026 |
 
 De seks første lukker **6 av 8** skjermer i «PlayerHQ · Gjennomføre»-raden som tidligere hadde
 0 fasit (se tabell §Hva som IKKE har fasit — oppdatert under). Gjenstår uten fasit i den
@@ -148,12 +149,14 @@ Plan dekker den, ruten blir redirect) · økt-detalj-rutene slått sammen · tes
 |---|---|
 | `fangstsheet.html` | Komponentkort, ikke en rute. Hører til steg 5 (byggeklosser), ikke steg 7–9 |
 
-### Uten ekte rute i dag (2 filer)
+### Tidligere uten rute — nå portet (2026-08-06)
 
-| Paper-fil | Merknad |
-|---|---|
-| `agencyos-ak-stigen.html` | Ny flate (juniorvisning AK-stigen), ikke i skjermopptellingen eller kode i dag |
-| `agencyos-live-session.html` | Trolig coach-siden av live-økt; ingen tilsvarende rute funnet i `src/app/admin` |
+| Paper-fil | Rute nå | PR |
+|---|---|---|
+| `agencyos-ak-stigen.html` | `/admin/agencyos/ak-stigen` | #343 |
+| `agencyos-live-session.html` | `/admin/agencyos/live` | #341 |
+| `workbench-turnering.html` | Zoom «Turnering» i WorkbenchV2 (ikke egen tournaments-rute) | #342 |
+| `fangstsheet.html` | Komponent `FangstModal` (fortsatt ikke egen rute) | #344 |
 
 ---
 
