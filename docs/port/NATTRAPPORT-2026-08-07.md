@@ -14,12 +14,12 @@
 | **#374** | S3 | `scripts/check-v2shell-bredde.mjs` — feiler uten `bredde=`. 215 treff på main → **ikke** koblet til verify | n/a | ikke verifisert | skriptet kjører alene |
 | **#375** | S4 | `dryRun` på `slettEksterneBrukerdata` + `anonymiserBruker`; cron `?dryRun=1`; vitest-stub | n/a | ikke verifisert | dryRun-test: **kjøring ikke bekreftet grønn i denne rapporten** — sjekk PR |
 | **#376** | S5 | Klient-feil → `/api/client-error` → `logError`; error.tsx portal/admin/forelder/auth; portal not-found | n/a | ikke verifisert | **ikke** full verify |
+| **#377** | docs | Nattrapport + AAPNE-SPORSMAL | n/a | ikke verifisert | n/a |
+| **#378** | S2 | rateLimit på 44 API-ruter (webhooks urørt) | n/a | ikke verifisert | **ikke** full verify |
 
 **Allerede draft fra før natten (ikke merget):**
 - #370 V2Shell `bredde` + Meg-treet
 - #348–#369 W2/W3 Paper-porter (interim)
-
-**S2 rate limiting:** agent fortsatt i arbeid ved rapportskrivning — se §2 hvis PR mangler.
 
 ---
 
