@@ -36,7 +36,7 @@ function DetaljRad({ label, verdi, last }: { label: string; verdi: React.ReactNo
 
 export function BookingDetaljV2({ data }: { data: BookingDetaljV2Data }) {
   return (
-    <div style={{ maxWidth: 560, width: "100%", margin: "0 auto", display: "flex", flexDirection: "column", gap: T.gap }}>
+    <div data-paper-portal-booking-detalj style={{ maxWidth: 560, width: "100%", margin: "0 auto", display: "flex", flexDirection: "column", gap: T.gap }}>
       {/* Hero — ekte status + tjeneste */}
       <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
         <div>

@@ -11,7 +11,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { T, Caps, Tittel, Kort, Rad, CTAPill, MikroMeta, TomTilstand, AvatarInit } from "@/components/v2";
+import { T, Caps, Tittel, Kort, Rad, MikroMeta, TomTilstand, AvatarInit } from "@/components/v2";
 import { Icon } from "@/components/v2/icon";
 
 export type BookingCoachTjeneste = {
@@ -57,7 +57,7 @@ export function BookingCoachV2({ data }: { data: BookingCoachV2Data }) {
   const fornavn = data.navn.split(" ")[0];
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+    <div data-paper-portal-booking-coach style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
       {/* Hero */}
       <Kort pad={mobile ? "22px 20px" : "28px 30px"}>
         <div style={{ display: "flex", flexDirection: mobile ? "column" : "row", gap: mobile ? 18 : 28, alignItems: mobile ? "flex-start" : "center" }}>
@@ -126,10 +126,16 @@ export function BookingCoachV2({ data }: { data: BookingCoachV2Data }) {
             </p>
             <div style={{ display: "flex", flexDirection: "column", gap: 8, marginTop: 14 }}>
               <Link href={data.wizardHref} style={{ textDecoration: "none", display: "block" }}>
-                <CTAPill icon="arrow-right" full>Velg tid og bekreft</CTAPill>
+                <span style={{
+            display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, minHeight: 48, width: "100%", padding: "10px 16px",
+            borderRadius: 10, background: T.handling, color: T.onHandling, fontFamily: T.ui, fontSize: 14, fontWeight: 600,
+          }}>Velg tid og bekreft</span>
               </Link>
               <Link href={data.meldingHref} style={{ textDecoration: "none", display: "block" }}>
-                <CTAPill ghost icon="message-square" full>Send melding i stedet</CTAPill>
+                <span style={{
+            display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, minHeight: 48, width: "100%", padding: "10px 16px",
+            borderRadius: 10, background: T.handling, color: T.onHandling, fontFamily: T.ui, fontSize: 14, fontWeight: 600,
+          }}>Send melding i stedet</span>
               </Link>
             </div>
             <div style={{ marginTop: 12 }}>
