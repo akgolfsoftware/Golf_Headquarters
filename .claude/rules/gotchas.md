@@ -4,6 +4,21 @@ Flyttet fra CLAUDE.md 2026-06-14. Les denne FØR du skriver kode. Når noe brekk
 (Eldre PRISMA-7- og Supabase-detaljer finnes også i git-historikken.)
 Ingen låst designkanon per 2026-07-25 — nytt system utvikles i Open Design (CLAUDE.md invariant 2).
 
+### GitHub PR-overvåking: `actions_list`/`actions_get` er dyre uansett `minimal_output` (oppdaget 2026-08-06)
+- **Symptom:** en økt som abonnerer på PR-aktivitet (`subscribe_pr_activity`) og deretter poller
+  `mcp__github__actions_list` (`list_workflow_runs`) for å sjekke CI-status brenner tusenvis av tokens
+  per kall — hvert `workflow_run`-objekt inneholder full repo-metadata (alle URL-felter, eier, lisens
+  m.m.), gjentatt for hver kjøring i lista. `minimal_output: true` ble testet og **gjorde ingen
+  forskjell** på denne responsen i denne økten — stol ikke på at parameteren trimmer alt.
+- **Regel:** etter `subscribe_pr_activity` — **stol på de innkommende `<github-webhook-activity>`-
+  hendelsene** for CI-status/kommentarer i stedet for å polle proaktivt. Webhooken varsler om CI-feil
+  og nye kommentarer; unødvendig å spørre selv i mellomtiden.
+- **Må du sjekke status manuelt likevel:** bruk `mcp__github__pull_request_read` med
+  `method: "get_status"` — den returnerer kun commit-statusobjektet (liten payload), ikke
+  `actions_list`/`actions_get` som drar med seg hele repo-objektet per kjøring.
+- Gjelder alle økter i dette repoet, ikke bare PR-babysitting: foretrekk alltid det GitHub MCP-kallet
+  med minst payload som faktisk svarer på spørsmålet, fremfor det som «har mest info».
+
 ### PRODUKSJONSINCIDENT 05.08.2026: `db.<ref>.supabase.co` er IPv6-only — Vercel når den aldri
 - **Symptom:** prod nede siden ca. 11.07 (394 brukere rammet), forverret til total sirkelbryter-
   blokkering 05.08. Feilloggen viste `Authentication failed`/P1000 — så ut som feil passord.
