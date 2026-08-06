@@ -90,7 +90,7 @@ export default async function TrackManListePage() {
     return (
       <V2Shell aktiv="analyse" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
       <TilbakeLenke href="/portal/mal">Mål</TilbakeLenke>
-        <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+        <div data-paper-portal-trackman style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
           {hode}
           <Kort>
             <TomTilstand
@@ -127,7 +127,7 @@ export default async function TrackManListePage() {
 
   return (
     <V2Shell aktiv="analyse" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
-      <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+      <div data-paper-portal-trackman style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
         {hode}
         {importKnapper}
 
