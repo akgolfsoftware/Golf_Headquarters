@@ -58,7 +58,7 @@ export default async function ArtikkelPage({
     const meta = HJELP_ARTIKLER.find((x) => x.slug === slug);
     if (!meta) notFound();
     return (
-      <V2Shell aktiv="meg" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
+      <V2Shell aktiv="meg" bredde="kolonne" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
         <TilbakeLenke href="/portal/meg/help">Hjelp-hub</TilbakeLenke>
         <Kort eyebrow={`${meta.kategori} · Artikkel · ${meta.lesetid} min lesetid`}>
           <TomTilstand
@@ -80,7 +80,7 @@ export default async function ArtikkelPage({
   }
 
   return (
-    <V2Shell aktiv="meg" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
+    <V2Shell aktiv="meg" bredde="kolonne" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
       <TilbakeLenke href="/portal/meg/help">Hjelp-hub</TilbakeLenke>
       <MegHelpArtikkelV2 data={a} />
     </V2Shell>
