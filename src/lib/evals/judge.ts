@@ -11,7 +11,7 @@
 import "server-only";
 import { createHash } from "node:crypto";
 import { z } from "zod";
-import { anthropic, AI_MODEL, isAiEnabled } from "@/lib/ai/client";
+import { anthropic, modelFor, isAiEnabled } from "@/lib/ai/client";
 
 const Score = z.number().int().min(1).max(5);
 
@@ -63,7 +63,7 @@ export async function judgeSubject(subject: JudgeSubject): Promise<JudgeResult> 
   if (!isAiEnabled() || !anthropic) return { ok: false, error: "ai-disabled" };
   try {
     const respons = await anthropic.messages.create({
-      model: AI_MODEL,
+      model: modelFor("llm-judge"),
       max_tokens: 512,
       system: JUDGE_SYSTEM,
       messages: [
@@ -83,7 +83,7 @@ export async function judgeSubject(subject: JudgeSubject): Promise<JudgeResult> 
     return {
       ok: true,
       rubrikk: parsed.data,
-      model: AI_MODEL,
+      model: modelFor("llm-judge"),
       promptHash: judgePromptHash(),
     };
   } catch (err) {
