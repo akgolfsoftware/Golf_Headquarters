@@ -112,7 +112,7 @@ export function RunderV2({ data }: { data: RunderV2Data }) {
   const snittSg = kpis.sgTotalSnitt != null ? fmtSg(kpis.sgTotalSnitt) : "–";
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+    <div data-paper-portal-runder style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
       {/* Hode */}
       <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
         <div>
@@ -127,7 +127,10 @@ export function RunderV2({ data }: { data: RunderV2Data }) {
         <div className="hidden md:flex" style={{ gap: 8, flexWrap: "wrap", alignItems: "center" }}>
           <FortsettRundeCta variant="pill" />
           <Link href={RUTE_LIVE} style={{ textDecoration: "none" }}>
-            <CTAPill icon="flag">Start live-føring</CTAPill>
+            <span style={{
+              display: "inline-flex", alignItems: "center", gap: 8, minHeight: 44, padding: "10px 16px",
+              borderRadius: 10, background: T.handling, color: T.onHandling, fontFamily: T.ui, fontSize: 13, fontWeight: 600,
+            }}>Start live-føring</span>
           </Link>
           <Link href={RUTE_SLAG} style={{ textDecoration: "none" }}>
             <Knapp ghost icon="pencil">Før slag for slag</Knapp>
@@ -161,9 +164,11 @@ export function RunderV2({ data }: { data: RunderV2Data }) {
           />
           <div style={{ display: "flex", flexDirection: "column", gap: 10, marginTop: 12 }}>
             <Link href={RUTE_LIVE} style={{ textDecoration: "none", display: "block" }}>
-              <CTAPill icon="flag" full>
-                Start live-føring
-              </CTAPill>
+              <span style={{
+                display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, minHeight: 48, width: "100%", padding: "10px 16px",
+                borderRadius: 10, background: T.handling, color: T.onHandling, fontFamily: T.ui, fontSize: 14, fontWeight: 600,
+              }}>Start live-føring
+              </span>
             </Link>
             <Link
               href={RUTE_NY}
@@ -186,9 +191,11 @@ export function RunderV2({ data }: { data: RunderV2Data }) {
           {/* B: én primær CTA full på mobil; desktop har den i hodet */}
           <div className="flex md:hidden" style={{ flexDirection: "column", gap: 8 }}>
             <Link href={RUTE_LIVE} style={{ textDecoration: "none", display: "block" }}>
-              <CTAPill icon="flag" full>
-                Start live-føring
-              </CTAPill>
+              <span style={{
+                display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, minHeight: 48, width: "100%", padding: "10px 16px",
+                borderRadius: 10, background: T.handling, color: T.onHandling, fontFamily: T.ui, fontSize: 14, fontWeight: 600,
+              }}>Start live-føring
+              </span>
             </Link>
             <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
               <Link href={RUTE_SLAG} style={{ textDecoration: "none" }}>
