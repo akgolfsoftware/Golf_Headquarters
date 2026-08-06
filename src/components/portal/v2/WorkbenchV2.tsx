@@ -47,6 +47,7 @@ import {
   AKSE_NAVN,
   StatusPill,
   TomTilstand,
+  Rad,
   FordelingRad,
   InnsiktChip,
   Icon,
@@ -1396,6 +1397,74 @@ function Felt({ label, children }: { label: string; children: React.ReactNode })
   );
 }
 /* ── Selve Workbench ───────────────────────────────────── */
+
+/** Paper fasit workbench-turnering.html — turneringsliste inne i Workbench. */
+function WBTurneringNivaa({ data }: { data: WorkbenchData }) {
+  const liste = data.tournaments ?? [];
+  const snart = liste.find((t) => t.soon) ?? liste[0];
+  return (
+    <div data-paper-workbench-turnering style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+      {snart && (
+        <Kort
+          pad="16px 18px"
+          style={{
+            border: `1px solid color-mix(in srgb, ${T.handling} 35%, ${T.border})`,
+            background: `color-mix(in srgb, ${T.handling} 6%, ${T.panel})`,
+          }}
+        >
+          <Caps size={9} color={T.handling}>Én ting nå</Caps>
+          <div style={{ marginTop: 8, fontFamily: T.disp, fontSize: 18, fontWeight: 600, color: T.fg, letterSpacing: "-0.02em" }}>
+            {snart.soon ? "Bekreft påmelding" : "Neste turnering"}
+          </div>
+          <p style={{ margin: "6px 0 0", fontFamily: T.ui, fontSize: 13, color: T.fg2, lineHeight: 1.45 }}>
+            {snart.tn} · {snart.td}
+          </p>
+          <div style={{ marginTop: 14 }}>
+            <span
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: 8,
+                minHeight: 44,
+                padding: "10px 16px",
+                borderRadius: 10,
+                background: T.handling,
+                color: T.onHandling,
+                fontFamily: T.ui,
+                fontSize: 13,
+                fontWeight: 600,
+              }}
+            >
+              Bekreft påmelding
+            </span>
+          </div>
+        </Kort>
+      )}
+      <Kort eyebrow="Turneringer">
+        {liste.length === 0 ? (
+          <TomTilstand
+            icon="trophy"
+            title="Ingen turneringer planlagt"
+            sub="Når turneringer er koblet til planen, dukker de opp her."
+          />
+        ) : (
+          liste.map((t, i) => (
+            <Rad
+              key={`${t.tn}-${t.td}-${i}`}
+              leading={<Icon name="trophy" size={14} style={{ color: t.soon ? T.handling : T.mut }} />}
+              title={t.tn}
+              sub={t.td}
+              meta={t.soon ? <StatusPill tone="warn">Snart</StatusPill> : undefined}
+              last={i === liste.length - 1}
+            />
+          ))
+        )}
+      </Kort>
+    </div>
+  );
+}
+
 export function WorkbenchV2({ data, insights, playerName, planStatus, actions, wbMode, role, steder }: WorkbenchV2Props) {
   const router = useRouter();
   const pathname = usePathname();
@@ -1405,8 +1474,8 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions, w
   // B40 §3: Årsplan (periodisering/makro-faser) er Pro-only — utelates helt
   // fra zoom-velgeren i Standard, ikke bare deaktivert.
   const zoomOptions = proMode
-    ? [{ v: "ar", l: "Årsplan" }, { v: "maned", l: "Måned" }, { v: "uke", l: "Uke" }, { v: "dag", l: "Økt" }]
-    : [{ v: "maned", l: "Måned" }, { v: "uke", l: "Uke" }, { v: "dag", l: "Økt" }];
+    ? [{ v: "ar", l: "Årsplan" }, { v: "maned", l: "Måned" }, { v: "uke", l: "Uke" }, { v: "dag", l: "Økt" }, { v: "turnering", l: "Turnering" }]
+    : [{ v: "maned", l: "Måned" }, { v: "uke", l: "Uke" }, { v: "dag", l: "Økt" }, { v: "turnering", l: "Turnering" }];
 
   function byttWbMode(neste: "standard" | "pro") {
     if (neste === (wbMode ?? "pro") || modeBytterPending) return;
@@ -1422,7 +1491,11 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions, w
   // ikke smugle periodiserings-flaten inn hos en Standard-bruker.
   const zoomParam = searchParams.get("zoom");
   const [nivaa, setNivaaState] = useState(
-    zoomParam === "ar" ? (proMode ? "ar" : "uke") : zoomParam === "maned" || zoomParam === "dag" ? zoomParam : "uke",
+    zoomParam === "ar"
+      ? (proMode ? "ar" : "uke")
+      : zoomParam === "maned" || zoomParam === "dag" || zoomParam === "turnering"
+        ? zoomParam
+        : "uke",
   );
   // Standardøkter først — DnD fra bibliotek er primær vei inn i tom uke.
   const [tab, setTab] = useState("okter");
@@ -2424,6 +2497,7 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions, w
             </div>
           )}
           {nivaa === "maned" && <div key="maned" className="v2-fade-in"><MndNivaa data={data} onVelgDato={velgDatoFraMnd} /></div>}
+          {nivaa === "turnering" && <div key="turnering" className="v2-fade-in"><WBTurneringNivaa data={data} /></div>}
         </div>
         <WBBalanse
           data={data}
