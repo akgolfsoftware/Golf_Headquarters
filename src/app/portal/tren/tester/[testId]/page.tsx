@@ -94,9 +94,9 @@ export default async function TestDetaljSpillerPage({
   ].filter((b): b is string => b !== null);
 
   return (
-    <V2Shell aktiv="gjor" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
+    <V2Shell aktiv="plan" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
       <TilbakeLenke href="/portal/tren/tester">Tester</TilbakeLenke>
-      <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+      <div data-paper-portal-test-detalj style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
         {lagret && (
           <Kort tint pad="14px 18px">
             <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
@@ -242,7 +242,11 @@ export default async function TestDetaljSpillerPage({
         {/* Handlinger */}
         <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 10 }}>
           <Link href={`/portal/tren/tester/${test.id}/gjennomfor`} style={{ textDecoration: "none" }}>
-            <CTAPill icon="play">Start test</CTAPill>
+            <span style={{
+              display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8,
+              minHeight: 44, padding: "0 16px", borderRadius: 10,
+              background: T.handling, color: T.onHandling, fontFamily: T.ui, fontSize: 13, fontWeight: 600,
+            }}>Start test</span>
           </Link>
           <a href={NGF_URL} target="_blank" rel="noreferrer" style={{ textDecoration: "none" }}>
             <CTAPill ghost icon="external-link">
