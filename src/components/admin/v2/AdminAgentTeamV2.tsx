@@ -274,9 +274,13 @@ export function AdminAgentTeamV2({ data }: { data: AdminAgentTeamV2Data }) {
             width: "100%",
           }}
         >
-          <CTAPill icon="play" full>
+          <span style={{
+            display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8,
+            minHeight: 48, width: "100%", padding: "10px 16px", borderRadius: 10,
+            background: T.handling, color: T.onHandling, fontFamily: T.ui, fontSize: 14, fontWeight: 600,
+          }}>
             {running ? "Kjører team …" : "Kjør team"}
-          </CTAPill>
+          </span>
         </button>
         {error && (
           <p style={{ fontFamily: T.ui, fontSize: 12, color: T.down, margin: 0 }}>{error}</p>
@@ -310,7 +314,7 @@ export function AdminAgentTeamV2({ data }: { data: AdminAgentTeamV2Data }) {
   );
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+    <div data-paper-agencyos-agenticos style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 960, margin: "0 auto", width: "100%" }}>
       {hode}
       {skjema}
       {resultat}
