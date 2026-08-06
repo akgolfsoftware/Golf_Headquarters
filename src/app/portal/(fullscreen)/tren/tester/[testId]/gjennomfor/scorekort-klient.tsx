@@ -244,7 +244,7 @@ export function ScorekortKlient({
 
   if (steg === "brief") {
     return (
-      <div>
+      <div data-paper-portal-test-gjennomfor>
         <StatusStrip steg="brief" progressPct={0} live={false} />
 
         {beskrivelse && (
@@ -270,7 +270,7 @@ export function ScorekortKlient({
         <KontekstForm kontekst={kontekst} onSett={(k, v) => setKontekst((prev) => ({ ...prev, [k]: v }))} />
 
         <div style={{ marginTop: 22 }}>
-          <Knapp full icon="play" onClick={() => setSteg("scorekort")} style={{ minHeight: 48 }}>
+          <Knapp full icon="play" onClick={() => setSteg("scorekort")} style={{ minHeight: 48, background: T.handling, color: T.onHandling }}>
             Start test
           </Knapp>
         </div>
@@ -287,7 +287,7 @@ export function ScorekortKlient({
 
   if (steg === "scorekort") {
     return (
-      <div>
+      <div data-paper-portal-test-gjennomfor>
         <StatusStrip
           steg="scorekort"
           progressPct={antallForsok === 0 ? 0 : (antallFort / antallForsok) * 100}
@@ -396,7 +396,7 @@ export function ScorekortKlient({
       )}
 
       <div style={{ marginTop: 22 }}>
-        <Knapp full icon="check" onClick={lagre} disabled={pending || !alleFort} style={{ minHeight: 48 }}>
+        <Knapp full icon="check" onClick={lagre} disabled={pending || !alleFort} style={{ minHeight: 48, background: T.handling, color: T.onHandling }}>
           {pending ? "Lagrer…" : "Lagre resultat"}
         </Knapp>
       </div>
