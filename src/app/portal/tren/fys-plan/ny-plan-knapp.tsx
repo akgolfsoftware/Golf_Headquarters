@@ -6,6 +6,7 @@
 import { useRouter } from "next/navigation";
 import { useToast } from "@/components/shared/toast-provider";
 import { Knapp } from "@/components/v2";
+import { T } from "@/lib/v2/tokens";
 
 export function NyPlanKnapp({ variant }: { variant: "header" | "empty-state" }) {
   const router = useRouter();
@@ -17,7 +18,11 @@ export function NyPlanKnapp({ variant }: { variant: "header" | "empty-state" }) 
   }
 
   return (
-    <Knapp icon="plus" onClick={handleKlikk}>
+    <Knapp
+      icon="plus"
+      onClick={handleKlikk}
+      style={{ background: T.handling, color: T.onHandling }}
+    >
       {variant === "header" ? "Ny plan" : "Lag din første plan"}
     </Knapp>
   );
