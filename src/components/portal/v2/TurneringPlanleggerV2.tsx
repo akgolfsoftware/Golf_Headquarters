@@ -97,7 +97,7 @@ export function TurneringPlanleggerV2({
   }
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+    <div data-paper-portal-turneringer style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
       <div>
         <Caps>Turneringsplanlegger</Caps>
         <div style={{ marginTop: 10 }}>
@@ -300,7 +300,10 @@ export function TurneringPlanleggerV2({
                     rel="noopener noreferrer"
                     style={{ textDecoration: "none" }}
                   >
-                    <CTAPill icon="external-link">Påmelding hos arrangør</CTAPill>
+                    <span style={{
+                      display: "inline-flex", alignItems: "center", gap: 8, minHeight: 44, padding: "0 16px",
+                      borderRadius: 10, background: T.handling, color: T.onHandling, fontFamily: T.ui, fontSize: 13, fontWeight: 600,
+                    }}>Påmelding hos arrangør</span>
                   </a>
                 )}
                 {t.entry && t.entry.entryStatus === "PLANNED" && (
