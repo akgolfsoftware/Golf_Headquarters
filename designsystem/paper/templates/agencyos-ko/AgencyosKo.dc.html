@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<!-- @template name="AgencyOS · Kø" description="Produktets hjerte: blandet kø av coaching og drift, med proveniens per rad, snooze med synlig utsatt-tilstand, artefaktpanel og festet komponist." -->
+<helmet><script src="./ds-base.js"></script><style>html,body{margin:0;padding:0}body{background:var(--bg)}a{color:var(--fg)}a:hover{color:var(--accent-fg)}[data-rsp=rail]{display:flex;flex:none}[data-rsp=panel]{display:flex}[data-rsp=tab]{display:none}@media(max-width:1180px){[data-rsp=panel]{display:none}}@media(max-width:880px){[data-rsp=rail]{display:none}[data-rsp=pad]{padding:16px 14px 24px}[data-rsp=tab]{display:block}[data-rsp=sbar]{display:none}}</style></helmet>
+<div style="display:flex;min-height:100vh;background:var(--bg);color:var(--fg);font-family:var(--ui);font-size:13.5px;-webkit-font-smoothing:antialiased">
+<div data-rsp="rail"><x-import component-from-global-scope="AKGolfHQClaudePaper_605a48.Rail" items="{{ railItems }}" current="{{ nav }}" onNavigate="{{ go }}" initials="AK" hint-size="64px,100vh"></x-import></div>
+<div style="flex:1;min-width:0;display:flex;flex-direction:column">
+<x-import component-from-global-scope="AKGolfHQClaudePaper_605a48.Topbar" theme="{{ theme }}" onToggleTheme="{{ toggleTheme }}" searchPlaceholder="Søk i køen, stallen og økter" hint-size="100%,56px"></x-import>
+<div style="flex:1;min-width:0;display:flex;align-items:stretch">
+<main data-rsp="pad" style="flex:1;min-width:0;padding:24px 28px 32px;display:flex;flex-direction:column;gap:14px">
+<x-import component-from-global-scope="AKGolfHQClaudePaper_605a48.PageHeader" kicker="Onsdag 30. juli · 11:04" title="Kø" lead="Sju saker, sortert på hva som taper mest på å vente. Coaching og drift i samme liste — det er samme menneske med samme oppmerksomhet." meta="{{ headerMeta }}" actions="{{ headerActions }}" dataOdId="page-header" hint-size="100%,120px"></x-import>
+<x-import component-from-global-scope="AKGolfHQClaudePaper_605a48.SegmentControl" options="{{ filtre }}" value="{{ filter }}" onChange="{{ setFilter }}" dataOdId="nav-ko-filter" hint-size="320px,44px"></x-import>
+<div style="display:flex;flex-direction:column;gap:10px">
+<sc-for list="{{ saker }}" as="s" hint-placeholder-count="5">
+<x-import component-from-global-scope="AKGolfHQClaudePaper_605a48.QueueCard" first="{{ s.first }}" sender="{{ s.sender }}" kind="{{ s.kind }}" age="{{ s.age }}" status="{{ s.status }}" statusTone="{{ s.statusTone }}" title="{{ s.title }}" primaryLabel="{{ s.primaryLabel }}" onPrimary="{{ s.onPrimary }}" secondaryLabel="{{ s.secondaryLabel }}" onSecondary="{{ s.onSecondary }}" onSnooze="{{ s.onSnooze }}" snoozedUntil="{{ s.snoozedUntil }}" onUnsnooze="{{ s.onUnsnooze }}" provenance="{{ s.provenance }}" provenanceOpen="{{ s.provenanceOpen }}" state="{{ dataState }}" dataOdId="queue-card" hint-size="100%,140px">{{ s.body }}</x-import>
+</sc-for>
+</div>
+<sc-if value="{{ ingenTreff }}" hint-placeholder-val="{{ false }}">
+<x-import component-from-global-scope="AKGolfHQClaudePaper_605a48.EmptyState" title="Ingen saker i dette filteret" align="start" hint-size="100%,140px">Bytt til «Alle» for å se hele køen — eller lukk skjermen med god samvittighet.</x-import>
+</sc-if>
+</main>
+<aside data-rsp="panel" style="width:320px;flex:none;border-left:1px solid var(--border);background:var(--surface);padding:16px;flex-direction:column;gap:12px;box-sizing:border-box">
+<div style="display:flex;align-items:center;justify-content:space-between;gap:8px"><span style="font-family:var(--mono);font-size:9.5px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)">artefakt · ukeplan</span><x-import component-from-global-scope="AKGolfHQClaudePaper_605a48.Button" variant="ghost" size="sm" dataOdId="cta-panel-close" hint-size="60px,44px">Lukk</x-import></div>
+<div><h2 style="font-family:var(--disp);font-size:16px;font-weight:600;letter-spacing:-.01em;margin:0 0 6px;line-height:1.25">Uke 31 · Emma Sæther</h2><x-import component-from-global-scope="AKGolfHQClaudePaper_605a48.StatusBadge" tone="info" dot="{{ true }}" hint-size="140px,20px">venter godkjenning</x-import></div>
+<x-import component-from-global-scope="AKGolfHQClaudePaper_605a48.KeyValueGrid" items="{{ planPairs }}" columns="{{ 1 }}" hint-size="100%,140px"></x-import>
+<x-import component-from-global-scope="AKGolfHQClaudePaper_605a48.Divider" label="øktene" align="start" hint-size="100%,24px"></x-import>
+<x-import component-from-global-scope="AKGolfHQClaudePaper_605a48.ListGroup" as="div" dataOdId="list-okter" hint-size="100%,200px">
+<sc-for list="{{ okter }}" as="o" hint-placeholder-count="4">
+<x-import component-from-global-scope="AKGolfHQClaudePaper_605a48.ListRow" as="div" leading="none" title="{{ o.title }}" meta="{{ o.meta }}" trailing="value" value="{{ o.right }}" dataOdId="row-okt" hint-size="100%,56px"></x-import>
+</sc-for>
+</x-import>
+<div style="margin-top:auto;display:flex;flex-direction:column;gap:8px"><x-import component-from-global-scope="AKGolfHQClaudePaper_605a48.ProvenanceDisclosure" agent="Plan-vakten" data="Periode P3 SPES · testlogg 12.07 · ukevolum 6 t forrige uke" rule="Aldersregel 15 år: maks 8 t/uke. Invariant 7: TEK 30–45 %." run="{{ planRun }}" hint-size="100%,40px"></x-import><div style="display:flex;gap:8px;flex-wrap:wrap"><x-import component-from-global-scope="AKGolfHQClaudePaper_605a48.Button" variant="primary" size="sm" onClick="{{ godkjenn }}" dataOdId="cta-panel-godkjenn" hint-size="96px,44px">Godkjenn</x-import><x-import component-from-global-scope="AKGolfHQClaudePaper_605a48.Button" variant="ghost" size="sm" dataOdId="cta-panel-alt" hint-size="86px,44px">Åpne alt</x-import></div></div>
+</aside>
+</div>
+<x-import component-from-global-scope="AKGolfHQClaudePaper_605a48.Composer" context="{{ kontekst }}" onContextToggle="{{ toggleCtx }}" onSubmit="{{ spor }}" placeholder="Spør om en sak i køen — «hvorfor foreslo Plan-vakten dette?»" hint-size="100%,72px"></x-import>
+<div data-rsp="sbar"><x-import component-from-global-scope="AKGolfHQClaudePaper_605a48.StatusBar" items="{{ statusPunkter }}" hint-size="100%,26px"></x-import></div>
+<div data-rsp="tab"><x-import component-from-global-scope="AKGolfHQClaudePaper_605a48.TabBar" items="{{ tabItems }}" current="{{ tab }}" onNavigate="{{ setTab }}" hint-size="100%,56px"></x-import></div>
+</div>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280,&quot;height&quot;:860},&quot;dataState&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;content&quot;,&quot;loading&quot;,&quot;empty&quot;,&quot;error&quot;],&quot;default&quot;:&quot;content&quot;,&quot;tsType&quot;:&quot;\&quot;content\&quot; | \&quot;loading\&quot; | \&quot;empty\&quot; | \&quot;error\&quot;&quot;,&quot;section&quot;:&quot;Demo&quot;},&quot;apneProveniens&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Kø&quot;},&quot;initialTheme&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;light&quot;,&quot;dark&quot;],&quot;default&quot;:&quot;light&quot;,&quot;tsType&quot;:&quot;\&quot;light\&quot; | \&quot;dark\&quot;&quot;,&quot;section&quot;:&quot;Tema&quot;}}">
+class Component extends DCLogic {
+  state = { theme: "light", nav: "ko", tab: "ko", filter: "Alle 7", ctx: { emma: true }, utsatt: { markus: "fredag 08:00" }, gjort: {} };
+
+  componentDidMount() {
+    let t = null;
+    try { t = localStorage.getItem("akhq-theme-agencyos"); } catch (e) {}
+    this.applyTheme(t || this.props.initialTheme || "light", false);
+    this.waitNs(0);
+  }
+
+  waitNs(n) {
+    const ns = window.AKGolfHQClaudePaper_605a48;
+    if (ns && ns.RailIcons && ns.QueueCard) { this.forceUpdate(); return; }
+    if (n < 60) setTimeout(() => this.waitNs(n + 1), 100);
+  }
+
+  applyTheme(t, persist) {
+    const v = t === "dark" ? "dark" : "light";
+    document.documentElement.setAttribute("data-theme", v);
+    if (persist) { try { localStorage.setItem("akhq-theme-agencyos", v); } catch (e) {} }
+    this.setState({ theme: v });
+  }
+
+  /* Snooze skjuler ikke: saken beholder plassen sin med synlig «utsatt til».
+     Beslutning [natt 1], 30.07 — en rad som forsvinner stille blir ikke stolt på. */
+  utsett(id, til) { this.setState((s) => ({ utsatt: Object.assign({}, s.utsatt, { [id]: til }) })); }
+  hentTilbake(id) { this.setState((s) => { const u = Object.assign({}, s.utsatt); delete u[id]; return { utsatt: u }; }); }
+  fullfor(id) { this.setState((s) => ({ gjort: Object.assign({}, s.gjort, { [id]: true }) })); }
+
+  kilde() {
+    return [
+      { id: "emma", sender: "Plan-vakten", kind: "coaching", age: "4 t", title: "Godkjenn ukeplan for Emma Sæther",
+        body: "Uke 31 · 4 økter · 6,5 t · TEK 38 % · invariantene grønne",
+        primaryLabel: "Godkjenn", secondaryLabel: "Avvis", provenanceOpen: true,
+        provenance: { agent: "Plan-vakten", data: "Periode P3 SPES · testlogg 12.07 · ukevolum 6 t forrige uke", rule: "Aldersregel 15 år: maks 8 t/uke. Invariant 7: TEK 30–45 %.", run: { at: "04:02", duration: "1,8 s", id: "kj-8841" } } },
+      { id: "wang", sender: "Faktura-vakten", kind: "drift", age: "12 d", status: "over forfall", statusTone: "warn",
+        title: "WANG-fakturaen er 12 dager over forfall — 48 400 kr",
+        body: "Purring nr. 2 er skrevet og klar til sending",
+        primaryLabel: "Send purring", secondaryLabel: "Åpne faktura",
+        provenance: { agent: "Faktura-vakten", data: "Faktura 2026-0412 · forfall 18.07 · purring 1 sendt 24.07", rule: "Purring 2 sendes 10 dager etter forfall.", run: { at: "04:12", duration: "0,4 s", id: "kj-8842" } } },
+      { id: "markus", sender: "Markus", kind: "coaching", age: "2 d", title: "Øktforespørsel: junior gruppe 3, torsdag 16:00",
+        body: "3 deltakere · Mulligan sim 2 · kollisjon med gruppetime",
+        primaryLabel: "Godkjenn", secondaryLabel: "Avvis" },
+      { id: "attest", sender: "Compliance-vakten", kind: "drift", age: "3 d", title: "Politiattest mangler for ny trener (Sofie L.)",
+        body: "Kan ikke settes på økter med mindreårige før attesten er registrert",
+        primaryLabel: "Send krav", secondaryLabel: "Åpne sak",
+        provenance: { agent: "Compliance-vakten", data: "Ansatt 12.07 · attest ikke registrert · 4 økter planlagt", rule: "Attest kreves før første økt med mindreårige.", run: { at: "04:14", duration: "0,3 s", id: "kj-8843" } } },
+      { id: "caddie", sender: "Caddie", kind: "coaching", age: "1 d", title: "Utkast til periodeplan for Jonas Hveem — les gjennom",
+        body: "P4 TURNERING · 6 uker · bygget på testloggen 12.07 og turneringskalenderen",
+        primaryLabel: "Åpne utkast", secondaryLabel: "Avvis",
+        provenance: { agent: "Caddie", data: "Testlogg 12.07 · WAGR-kalender · lastavvik +1,5 t", rule: "Periodeskifte foreslås 6 uker før første turnering." } },
+      { id: "samtykke", sender: "Compliance-vakten", kind: "drift", age: "5 d", title: "Samtykke for Mia Berg utløper 14. august",
+        body: "Bilde- og videobruk i treningsanalyse · foresatt varslet 25.07",
+        primaryLabel: "Send påminnelse", secondaryLabel: "Åpne samtykke",
+        provenance: { agent: "Compliance-vakten", data: "Signert 14.08.2025 · varsel sendt 25.07", rule: "Samtykke varsles 30 dager før utløp." } },
+      { id: "gfgk", sender: "Anders", kind: "drift", age: "1 d", title: "Ring GFGK om klubbavtalen for 2027",
+        body: "Lagt inn manuelt fra møtereferat 29.07", primaryLabel: "Marker gjort", provenance: {} }
+    ];
+  }
+
+  renderVals() {
+    const ns = window.AKGolfHQClaudePaper_605a48 || {};
+    const I = ns.RailIcons || {};
+    const B = ns.Button;
+    const filter = this.state.filter;
+    const alle = this.kilde().filter((s) => !this.state.gjort[s.id]);
+    const antall = { coaching: alle.filter((s) => s.kind === "coaching").length, drift: alle.filter((s) => s.kind === "drift").length };
+    const filtre = ["Alle " + alle.length, "Coaching " + antall.coaching, "Drift " + antall.drift, "Utsatt " + Object.keys(this.state.utsatt).length];
+    const valgt = filtre.indexOf(filter) === -1 ? filtre[0] : filter;
+    const utsattId = (id) => this.state.utsatt[id];
+    let liste = alle;
+    if (valgt.indexOf("Coaching") === 0) liste = alle.filter((s) => s.kind === "coaching");
+    else if (valgt.indexOf("Drift") === 0) liste = alle.filter((s) => s.kind === "drift");
+    else if (valgt.indexOf("Utsatt") === 0) liste = alle.filter((s) => utsattId(s.id));
+    /* Utsatte saker synker til bunnen, men forlater aldri lista. */
+    liste = liste.slice().sort((a, b) => (utsattId(a.id) ? 1 : 0) - (utsattId(b.id) ? 1 : 0));
+    const saker = liste.map((s, i) => Object.assign({}, s, {
+      first: i === 0 && !utsattId(s.id),
+      snoozedUntil: utsattId(s.id),
+      provenanceOpen: !!s.provenanceOpen && i === 0 && !utsattId(s.id) && this.props.apneProveniens !== false,
+      onPrimary: () => this.fullfor(s.id),
+      onSecondary: () => this.fullfor(s.id),
+      onSnooze: () => this.utsett(s.id, "fredag 08:00"),
+      onUnsnooze: () => this.hentTilbake(s.id)
+    }));
+    const lenke = (id, tekst) => B ? React.createElement(B, { variant: "ghost", size: "sm", dataOdId: "cta-" + id }, tekst) : null;
+    return {
+      theme: this.state.theme,
+      nav: this.state.nav,
+      tab: this.state.tab,
+      dataState: this.props.dataState || "content",
+      filter: valgt,
+      filtre: filtre,
+      saker: saker,
+      ingenTreff: saker.length === 0,
+      headerMeta: alle.length + " saker",
+      headerActions: lenke("ko-historikk", "Historikk"),
+      setFilter: (v) => this.setState({ filter: v }),
+      toggleTheme: () => this.applyTheme(this.state.theme === "dark" ? "light" : "dark", true),
+      go: (id) => this.setState({ nav: id }),
+      setTab: (id) => this.setState({ tab: id }),
+      godkjenn: () => this.fullfor("emma"),
+      spor: () => {},
+      toggleCtx: (id) => this.setState((s) => ({ ctx: Object.assign({}, s.ctx, { [id]: !s.ctx[id] }) })),
+      kontekst: [
+        { id: "emma", label: "Emma S.", active: !!this.state.ctx.emma },
+        { id: "u31", label: "uke 31", active: !!this.state.ctx.u31 },
+        { id: "ko", label: "køen", active: !!this.state.ctx.ko }
+      ],
+      railItems: [
+        { id: "hjem", label: "Hjem", icon: I.hjem },
+        { id: "ko", label: "Kø", icon: I.ko },
+        { id: "stall", label: "Stall", icon: I.stall },
+        { id: "kalender", label: "Kalender", icon: I.idag },
+        { id: "plan", label: "Workbench", icon: I.plan },
+        { id: "alt", label: "Alt", icon: I.analyse }
+      ],
+      tabItems: [
+        { id: "hjem", label: "Hjem", icon: I.hjem },
+        { id: "ko", label: "Kø", icon: I.ko },
+        { id: "stall", label: "Stall", icon: I.stall },
+        { id: "ai", label: "Agenter", icon: I.ai },
+        { id: "alt", label: "Alt", icon: I.analyse }
+      ],
+      statusPunkter: [
+        { label: "v2.4 · P3 SPES" },
+        { label: "agentfeil", value: 1, tone: "dn", onClick: () => {} },
+        { label: "MRR", value: "184 200", onClick: () => {} },
+        { label: "innsikter", value: 6, onClick: () => {} },
+        { label: "CANON", value: "✓", tone: "up" }
+      ],
+      planPairs: [
+        { key: "Periode", value: "P3 SPESIALISERING" },
+        { key: "Ukevolum", value: "6,5 t av 5–8 t", mono: true },
+        { key: "TEK-andel", value: "38 % (30–45)", mono: true },
+        { key: "Aldersregel", value: "innenfor · 15 år" }
+      ],
+      planRun: { at: "04:02", duration: "1,8 s", id: "kj-8841" },
+      okter: [
+        { title: "TEK tee", meta: "man 31.07 · 07:00 · 90 min · låst anker", right: "90m" },
+        { title: "SLAG nærspill", meta: "ons 02.08 · 16:00 · gjentakende", right: "60m" },
+        { title: "SPILL 9 hull", meta: "tor 03.08 · 15:00 · 3 deltakere", right: "120m" },
+        { title: "FYS styrke", meta: "fre 04.08 · 17:00", right: "60m" }
+      ]
+    };
+  }
+}
+
+</script>
+</body>
+</html>

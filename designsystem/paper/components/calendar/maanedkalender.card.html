@@ -1,0 +1,83 @@
+<!-- @dsCard group="Kalender" viewport="980x3000" name="MaanedKalender" subtitle="August 2026 i 860 og 430 px × begge moduser, med øktprikker, i dag, valgt, utenfor måneden og alle datatilstander. Høyde målt 03.08 (+10 %)" -->
+<!DOCTYPE html><html lang="nb"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="stylesheet" href="../../styles.css"><link rel="stylesheet" href="../../guidelines/card-support.css">
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="../../_ds_bundle.js"></script>
+<style>.stack{display:grid;grid-template-columns:1fr;min-height:100vh}.stack>div{padding:var(--s5);background:var(--bg);color:var(--fg)}.lab{font-family:var(--mono);font-size:9.5px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:14px 0 6px}.cw{box-sizing:content-box;border:1px dashed var(--border);border-radius:var(--r);padding:var(--s4)}.w860{width:860px;max-width:100%}.w430{width:430px}.assert{font-family:var(--mono);font-size:10px;color:var(--muted);line-height:1.5;white-space:pre-wrap}.ok{color:var(--up)}.bad{color:var(--dn)}</style>
+</head>
+<body><div class="stack"><div id="light"></div><div data-theme="dark" id="dark"></div></div>
+<script type="text/babel">
+const { MaanedKalender } = window.AKGolfHQClaudePaper_605a48;
+/* August 2026: 1.8 er lørdag; uke 31 starter man 27.7, uke 36 slutter 6.9. */
+const EVENTS = {
+  "08-03": [{area:"TEK"},{area:"FYS"}], "08-04": [{area:"SLAG"}],
+  "08-05": [{area:"TEK"}], "08-06": [{area:"SPILL"},{area:"TEK"},{area:"FYS"},{area:"SLAG"}],
+  "08-08": [{area:"TURN"}], "08-09": [{area:"TURN"}], "08-11": [{area:"TEK"}],
+  "08-13": [{area:"FYS"},{area:"SLAG"}], "08-15": [{area:"SPILL"}], "08-20": [{area:"TEK"},{area:"SLAG"}],
+  "08-22": [{area:"TURN"}], "08-27": [{area:"FYS"}]
+};
+function lagUker() {
+  const uker = []; let d = 27, m = 7;
+  for (const u of [31, 32, 33, 34, 35, 36]) {
+    const days = [];
+    for (let i = 0; i < 7; i++) {
+      const key = (m === 7 ? "07-" : m === 8 ? "08-" : "09-") + String(d).padStart(2, "0");
+      days.push({ key, date: d, inMonth: m === 8, today: m === 8 && d === 3, events: EVENTS[key] || [] });
+      d++; if ((m === 7 && d > 31) || (m === 8 && d > 31)) { d = 1; m++; }
+    }
+    uker.push({ week: u, days });
+  }
+  return uker;
+}
+const UKER = lagUker();
+function Specimen() {
+  const [valgt, setValgt] = React.useState("08-06");
+  return (<>
+    <div className="lab">860 px — AgencyOS hovedspalte. I dag (3.8), valgt (6.8, fire økter → tre prikker + «+1»), turneringshelg uke 32</div>
+    <div className="cw w860"><MaanedKalender weeks={UKER} value={valgt} onSelectDay={setValgt} dataOdId="mkal-bred" /></div>
+    <div className="lab">430 px — PlayerHQ-kolonnen (under 560-terskelen: 44 px celler, +N ryker, prikkene står)</div>
+    <div className="cw w430"><MaanedKalender weeks={UKER} value={valgt} onSelectDay={setValgt} dataOdId="mkal-smal" /></div>
+    <div className="lab">tilstander: tett-modifikator · tom · laster · feil</div>
+    <div className="cw w860">
+      <MaanedKalender weeks={UKER.slice(0, 2)} dense dataOdId="mkal-tett" />
+      <div style={{height:12}} />
+      <MaanedKalender weeks={[]} state="empty" dataOdId="mkal-tom" />
+      <div style={{height:12}} />
+      <MaanedKalender weeks={[]} state="loading" dataOdId="mkal-laster" />
+      <div style={{height:12}} />
+      <MaanedKalender weeks={[]} state="error" dataOdId="mkal-feil" />
+    </div>
+  </>);
+}
+ReactDOM.createRoot(document.getElementById("light")).render(<Specimen />);
+ReactDOM.createRoot(document.getElementById("dark")).render(<Specimen />);
+/* ASSERTIONER — verifikatør skal se dem feile først: sett MAKS_PRIKKER-forventningen
+   til 4 (prikketesten rød) eller fjern aria-current fra 3.8 (i dag-testen rød). */
+window.requestAnimationFrame(() => setTimeout(() => {
+  const res = []; const push = (ok, t) => res.push((ok ? "✓ " : "✗ ") + t);
+  const LYS = document.getElementById("light");
+  const bred = LYS.querySelector('[data-od-id="panel-mkal-bred"]');
+  push(!!bred && bred.querySelectorAll('[role=gridcell]').length === 42, "seks uker × sju dager = 42 celler");
+  push(!!bred && bred.querySelectorAll('[role=gridcell][tabindex="0"]').length === 1, "roving tabindex: ett tab-stopp i rutenettet");
+  const idag = bred && bred.querySelector('[aria-current="date"]');
+  push(!!idag && /3/.test(idag.textContent), "3. august er merket i dag");
+  const seks = bred && bred.querySelector('[data-od-id="cta-mkal-bred-08-06"]');
+  push(!!seks && seks.querySelectorAll(".akhq-mkal-dot").length === 3 && /\+1/.test(seks.textContent), "fire økter → tre prikker + «+1»");
+  push(!!seks && seks.getAttribute("aria-selected") === "true", "valgt dag har aria-selected");
+  const ute = bred && bred.querySelector('[data-od-id="cta-mkal-bred-07-27"]');
+  push(!!ute && ute.classList.contains("akhq-mkal-d--ute"), "27. juli er dempet (utenfor måneden)");
+  const smal = LYS.querySelector('[data-od-id="panel-mkal-smal"]');
+  const smalSeks = smal && smal.querySelector('[data-od-id="cta-mkal-smal-08-06"]');
+  const fler = smalSeks && smalSeks.querySelector(".akhq-mkal-fler");
+  push(!!fler && getComputedStyle(fler).display === "none", "430 px → +N-telleren er skjult (terskel 560)");
+  push(!!LYS.querySelector('[data-od-id="panel-mkal-tom"], .akhq-empty') && !!LYS.querySelector(".akhq-skel") && !!LYS.querySelector(".akhq-error"), "tom/laster/feil rendrer Region-tilstandene");
+  const wrap = document.createElement("div"); wrap.setAttribute("data-coarse-test", ""); document.body.appendChild(wrap);
+  if (idag) { const k = idag.cloneNode(true); wrap.appendChild(k); push(k.getBoundingClientRect().height >= 43.99, "dagcelle " + k.getBoundingClientRect().height.toFixed(1) + " px ved grov peker"); }
+  wrap.remove();
+  const ut = document.createElement("div"); ut.className = "assert";
+  ut.innerHTML = res.map((r) => '<div class="' + (r[0] === "✓" ? "ok" : "bad") + '">' + r + "</div>").join("");
+  LYS.appendChild(ut);
+  window.__assert = res;
+}, 90));
+</script></body></html>

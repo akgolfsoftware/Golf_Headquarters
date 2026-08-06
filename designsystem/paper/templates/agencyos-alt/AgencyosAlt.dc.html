@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<!-- @template name="AgencyOS · Alt" description="Indeks over alle funksjoner med nivåmerke per rad — ⌘K på desktop, fane på mobil. Uten denne flaten er hundre funksjoner en meny ingen leser." -->
+<helmet><script src="./ds-base.js"></script><style>html,body{margin:0;padding:0}body{background:var(--bg)}a{color:var(--fg)}a:hover{color:var(--accent-fg)}[data-rsp=rail]{display:flex;flex:none}[data-rsp=tab]{display:none}[data-rsp=kol]{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px 20px;align-items:start}@media(max-width:1024px){[data-rsp=kol]{grid-template-columns:minmax(0,1fr)}}@media(max-width:880px){[data-rsp=rail]{display:none}[data-rsp=pad]{padding:16px 14px 24px}[data-rsp=tab]{display:block}[data-rsp=sbar]{display:none}[data-rsp=cmdk-hint]{display:none}}</style></helmet>
+<div style="display:flex;min-height:100vh;background:var(--bg);color:var(--fg);font-family:var(--ui);font-size:13.5px;-webkit-font-smoothing:antialiased">
+<div data-rsp="rail"><x-import component-from-global-scope="AKGolfHQClaudePaper_605a48.Rail" items="{{ railItems }}" current="{{ nav }}" onNavigate="{{ go }}" initials="AK" hint-size="64px,100vh"></x-import></div>
+<div style="flex:1;min-width:0;display:flex;flex-direction:column">
+<x-import component-from-global-scope="AKGolfHQClaudePaper_605a48.Topbar" theme="{{ theme }}" onToggleTheme="{{ toggleTheme }}" searchPlaceholder="Søk i alle funksjoner" hint-size="100%,56px"></x-import>
+<main data-rsp="pad" style="flex:1;min-width:0;padding:24px 28px 32px;display:flex;flex-direction:column;gap:14px">
+<x-import component-from-global-scope="AKGolfHQClaudePaper_605a48.PageHeader" kicker="Indeks · onsdag 30. juli" title="Alt" lead="Hver funksjon i systemet, med nivåmerke som sier hva som skjer når du trykker: samtale, artefakt i panel, eller full flate." meta="{{ headerMeta }}" actions="{{ headerActions }}" dataOdId="page-header" hint-size="100%,120px"></x-import>
+
+<div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
+<div style="flex:1;min-width:220px"><x-import component-from-global-scope="AKGolfHQClaudePaper_605a48.SearchField" label="Søk i alle funksjoner" placeholder="Søk — «faktura», «test», «samtykke»" value="{{ sok }}" onChange="{{ setSok }}" dataOdId="felt-sok" hint-size="100%,44px"></x-import></div>
+<x-import component-from-global-scope="AKGolfHQClaudePaper_605a48.SegmentControl" options="{{ nivaFiltre }}" value="{{ nivaFilter }}" onChange="{{ setNivaFilter }}" dataOdId="nav-niva" hint-size="300px,44px"></x-import>
+<span data-rsp="cmdk-hint" style="font-family:var(--mono);font-size:10.5px;color:var(--muted)">⌘K åpner den samme indeksen som lag</span>
+</div>
+
+<x-import component-from-global-scope="AKGolfHQClaudePaper_605a48.Callout" tone="info" label="Tre nivåer, tre løfter" hint-size="100%,120px">Nivå 1 svarer i samtalen uten å ta deg noe sted. Nivå 2 åpner et artefakt i panelet ved siden av. Nivå 3 tar over hovedkolonnen — det er de flatene der romlig eller tett arbeid ER jobben.</x-import>
+
+<div data-rsp="kol">
+<sc-for list="{{ grupper }}" as="g" hint-placeholder-count="6">
+<section style="display:flex;flex-direction:column;gap:6px;min-width:0">
+<x-import component-from-global-scope="AKGolfHQClaudePaper_605a48.SectionHeader" title="{{ g.navn }}" meta="{{ g.antall }}" hint-size="100%,32px"></x-import>
+<x-import component-from-global-scope="AKGolfHQClaudePaper_605a48.ListGroup" as="div" dataOdId="list-funksjoner" hint-size="100%,220px">
+<sc-for list="{{ g.rader }}" as="r" hint-placeholder-count="4">
+<x-import component-from-global-scope="AKGolfHQClaudePaper_605a48.ListRow" as="div" leading="none" title="{{ r.label }}" meta="{{ r.meta }}" trailing="value" value="{{ r.niva }}" onClick="{{ r.apne }}" dataOdId="row-funksjon" hint-size="100%,58px"></x-import>
+</sc-for>
+</x-import>
+</section>
+</sc-for>
+</div>
+
+<sc-if value="{{ ingenTreff }}" hint-placeholder-val="{{ false }}">
+<x-import component-from-global-scope="AKGolfHQClaudePaper_605a48.EmptyState" title="Ingen funksjoner matcher søket" align="start" hint-size="100%,140px">Prøv et gammelt navn — indeksen søker også på synonymer og forkortelser.</x-import>
+</sc-if>
+</main>
+<x-import component-from-global-scope="AKGolfHQClaudePaper_605a48.CommandPalette" open="{{ paletteApen }}" onClose="{{ lukkPalette }}" items="{{ paletteItems }}" query="{{ sok }}" onQueryChange="{{ setSokTekst }}" onPick="{{ velgFunksjon }}" placeholder="Skriv for å finne en funksjon" dataOdId="panel-cmdk" hint-size="100%,0px"></x-import>
+<x-import component-from-global-scope="AKGolfHQClaudePaper_605a48.Composer" context="{{ kontekst }}" onContextToggle="{{ toggleCtx }}" onSubmit="{{ spor }}" placeholder="Spør i stedet for å lete — «hva må jeg gjøre med WANG-fakturaen?»" hint-size="100%,72px"></x-import>
+<div data-rsp="sbar"><x-import component-from-global-scope="AKGolfHQClaudePaper_605a48.StatusBar" items="{{ statusPunkter }}" hint-size="100%,26px"></x-import></div>
+<div data-rsp="tab"><x-import component-from-global-scope="AKGolfHQClaudePaper_605a48.TabBar" items="{{ tabItems }}" current="{{ tab }}" onNavigate="{{ setTab }}" hint-size="100%,56px"></x-import></div>
+</div>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280,&quot;height&quot;:860},&quot;initialTheme&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;light&quot;,&quot;dark&quot;],&quot;default&quot;:&quot;light&quot;,&quot;tsType&quot;:&quot;\&quot;light\&quot; | \&quot;dark\&quot;&quot;,&quot;section&quot;:&quot;Tema&quot;}}">
+class Component extends DCLogic {
+  state = { theme: "light", nav: "alt", tab: "alt", sok: "", nivaFilter: "Alle", palette: false };
+
+  componentDidMount() {
+    let t = null;
+    try { t = localStorage.getItem("akhq-theme-agencyos"); } catch (e) {}
+    this.applyTheme(t || this.props.initialTheme || "light", false);
+    this.tast = (e) => {
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") { e.preventDefault(); this.setState((s) => ({ palette: !s.palette })); }
+    };
+    document.addEventListener("keydown", this.tast);
+    this.waitNs(0);
+  }
+
+  componentWillUnmount() { if (this.tast) document.removeEventListener("keydown", this.tast); }
+
+  waitNs(n) {
+    const ns = window.AKGolfHQClaudePaper_605a48;
+    if (ns && ns.RailIcons && ns.CommandPalette) { this.forceUpdate(); return; }
+    if (n < 60) setTimeout(() => this.waitNs(n + 1), 100);
+  }
+
+  applyTheme(t, persist) {
+    const v = t === "dark" ? "dark" : "light";
+    document.documentElement.setAttribute("data-theme", v);
+    if (persist) { try { localStorage.setItem("akhq-theme-agencyos", v); } catch (e) {} }
+    this.setState({ theme: v });
+  }
+
+  /* Indeksen er relevanssortert innenfor hver gruppe, ikke alfabetisk:
+     alfabet er en sorteringsregel for folk som allerede vet navnet. */
+  kilde() {
+    return [
+      { g: "Køen og dagen", label: "Åpne køen", level: 3, meta: "7 saker", keywords: "innboks oppgaver" },
+      { g: "Køen og dagen", label: "Én ting nå", level: 1, meta: "dagens viktigste" },
+      { g: "Køen og dagen", label: "Godkjenn ukeplan", level: 2, meta: "artefakt" },
+      { g: "Køen og dagen", label: "Utsatte saker", level: 3, meta: "1 utsatt" },
+      { g: "Køen og dagen", label: "Dispatch for i dag", level: 1, meta: "morgenbrief" },
+
+      { g: "Spillere", label: "Stall — hvem trenger deg", level: 3, meta: "14 spillere" },
+      { g: "Spillere", label: "Spillerprofil", level: 2, meta: "fem faner" },
+      { g: "Spillere", label: "Åpne profil i full flate", level: 3 },
+      { g: "Spillere", label: "Legg til spiller", level: 1 },
+      { g: "Spillere", label: "Kategorikrav A–K", level: 2, meta: "20 protokoller" },
+      { g: "Spillere", label: "IUP", level: 2, keywords: "individuell utviklingsplan" },
+
+      { g: "Plan og økter", label: "Workbench — ukeplanlegging", level: 3, meta: "uke 31" },
+      { g: "Plan og økter", label: "Periodeplan", level: 2, meta: "P3 SPES" },
+      { g: "Plan og økter", label: "Årshjul", level: 3, keywords: "sesongplan årsplan" },
+      { g: "Plan og økter", label: "Øktnotat", level: 2 },
+      { g: "Plan og økter", label: "Publiser ukeplan", level: 1, meta: "varsler spilleren" },
+      { g: "Plan og økter", label: "Drill-biblioteket", level: 2, meta: "184 drills" },
+
+      { g: "Analyse og test", label: "TrackMan-analyse", level: 3, keywords: "dispersion launch" },
+      { g: "Analyse og test", label: "Live-økt", level: 3, meta: "TrackMan tilkoblet" },
+      { g: "Analyse og test", label: "Testkjøring", level: 3, meta: "20 protokoller" },
+      { g: "Analyse og test", label: "Testresultat", level: 2 },
+      { g: "Analyse og test", label: "Videoanalyse P1–P10", level: 3, keywords: "morad" },
+      { g: "Analyse og test", label: "Strokes gained", level: 2, keywords: "sg ott app arg putt" },
+
+      { g: "Kalender og booking", label: "Kalender", level: 3, meta: "uke 31" },
+      { g: "Kalender og booking", label: "Book time", level: 2, meta: "fire steg" },
+      { g: "Kalender og booking", label: "Simulatorbelegg", level: 3, keywords: "mulligan drop-in" },
+      { g: "Kalender og booking", label: "Ledige tider denne uken", level: 1 },
+
+      { g: "Drift og økonomi", label: "Økonomi per selskap", level: 3, meta: "5 selskap" },
+      { g: "Drift og økonomi", label: "Faktura", level: 2, meta: "3 forfalt" },
+      { g: "Drift og økonomi", label: "Timegrunnlag til godkjenning", level: 2, meta: "egen runde" },
+      { g: "Drift og økonomi", label: "Varelager og ordre", level: 3, keywords: "skarpnord" },
+      { g: "Drift og økonomi", label: "Dagens drift", level: 3, meta: "belegg og oppmøte" },
+      { g: "Drift og økonomi", label: "Kontrakt og avtale", level: 2 },
+
+      { g: "Agenter og system", label: "AgenticOS — kjøringer", level: 3, meta: "1 feilet" },
+      { g: "Agenter og system", label: "Kjør agent på nytt", level: 1, meta: "aldri fra bunn" },
+      { g: "Agenter og system", label: "Agentkjøring (artefakt)", level: 2 },
+      { g: "Agenter og system", label: "CANON-status", level: 2, meta: "13 invarianter" },
+      { g: "Agenter og system", label: "Innstillinger", level: 2 },
+      { g: "Agenter og system", label: "Bytt tema", level: 1 }
+    ];
+  }
+
+  renderVals() {
+    const ns = window.AKGolfHQClaudePaper_605a48 || {};
+    const I = ns.RailIcons || {};
+    const B = ns.Button;
+    const s = this.state;
+    const q = (s.sok || "").trim().toLowerCase();
+    const nivaTall = { "Nivå 1": 1, "Nivå 2": 2, "Nivå 3": 3 }[s.nivaFilter];
+    const alle = this.kilde();
+    const treff = alle.filter((r) => {
+      if (nivaTall && r.level !== nivaTall) return false;
+      if (!q) return true;
+      return (r.label + " " + (r.meta || "") + " " + (r.keywords || "") + " " + r.g).toLowerCase().indexOf(q) > -1;
+    });
+    const navn = [];
+    treff.forEach((r) => { if (navn.indexOf(r.g) === -1) navn.push(r.g); });
+    const NIVAORD = { 1: "samtale", 2: "artefakt", 3: "flate" };
+    const grupper = navn.map((n) => {
+      const rader = treff.filter((r) => r.g === n);
+      return {
+        navn: n, antall: rader.length + (rader.length === 1 ? "\u00A0funksjon" : "\u00A0funksjoner"),
+        rader: rader.map((r) => ({
+          label: r.label,
+          meta: (r.meta ? r.meta + " · " : "") + "nivå " + r.level + " " + NIVAORD[r.level],
+          niva: "N" + r.level,
+          apne: () => {}
+        }))
+      };
+    });
+    const lenke = (id, tekst) => (B ? React.createElement(B, { variant: "ghost", size: "sm", onClick: () => this.setState({ palette: true }), dataOdId: "cta-" + id }, tekst) : null);
+    return {
+      theme: s.theme, nav: s.nav, tab: s.tab,
+      sok: s.sok,
+      setSok: (e) => this.setState({ sok: e && e.target ? e.target.value : e }),
+      setSokTekst: (v) => this.setState({ sok: v }),
+      nivaFiltre: ["Alle", "Nivå 1", "Nivå 2", "Nivå 3"], nivaFilter: s.nivaFilter,
+      setNivaFilter: (v) => this.setState({ nivaFilter: v }),
+      grupper: grupper,
+      ingenTreff: treff.length === 0,
+      /* Hardt mellomrom mellom tall og substantiv — samme ombrekksfelle som i
+         Workbench og Kalender [funn i review 31.07]. */
+      headerMeta: alle.length + "\u00A0funksjoner · " + treff.length + "\u00A0i utvalget",
+      headerActions: lenke("alt-palette", "Åpne som lag (⌘K)"),
+      paletteApen: s.palette,
+      lukkPalette: () => this.setState({ palette: false }),
+      velgFunksjon: () => this.setState({ palette: false }),
+      paletteItems: alle.map((r) => ({ id: r.label, label: r.label, group: r.g, meta: r.meta, level: r.level, keywords: r.keywords })),
+      toggleTheme: () => this.applyTheme(s.theme === "dark" ? "light" : "dark", true),
+      go: (id) => this.setState({ nav: id }),
+      setTab: (id) => this.setState({ tab: id }),
+      spor: () => {},
+      toggleCtx: () => {},
+      kontekst: [{ id: "alt", label: "hele systemet", active: true }],
+      railItems: [
+        { id: "hjem", label: "Hjem", icon: I.hjem },
+        { id: "ko", label: "Kø", icon: I.ko },
+        { id: "stall", label: "Stall", icon: I.stall },
+        { id: "kalender", label: "Kalender", icon: I.idag },
+        { id: "plan", label: "Workbench", icon: I.plan },
+        { id: "alt", label: "Alt", icon: I.analyse }
+      ],
+      tabItems: [
+        { id: "hjem", label: "Hjem", icon: I.hjem },
+        { id: "ko", label: "Kø", icon: I.ko },
+        { id: "stall", label: "Stall", icon: I.stall },
+        { id: "ai", label: "Agenter", icon: I.ai },
+        { id: "alt", label: "Alt", icon: I.analyse }
+      ],
+      statusPunkter: [
+        { label: "v2.4 · P3 SPES" },
+        { label: "agentfeil", value: 1, tone: "dn", onClick: () => {} },
+        { label: "MRR", value: "184 200", onClick: () => {} },
+        { label: "innsikter", value: 6, onClick: () => {} },
+        { label: "CANON", value: "✓", tone: "up" }
+      ]
+    };
+  }
+}
+
+</script>
+</body>
+</html>

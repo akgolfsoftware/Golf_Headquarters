@@ -85,7 +85,7 @@ export function BudgetBar({
           {distribution.map((d) => (
             <span className="akhq-bb-tegn-i" key={d.area}>
               <span className="akhq-bb-prikk" style={{ background: FARGE[d.area] || "var(--mid)" }}></span>
-              {d.area} {med(d.hours, unit)} · {Math.round((d.hours / sum) * 100)} %
+              {d.area} {med(d.hours, unit)} · {Math.round((d.hours / sum) * 100)} %
             </span>
           ))}
         </div>

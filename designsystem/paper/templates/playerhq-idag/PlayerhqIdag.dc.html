@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<!-- @template name="PlayerHQ · I dag" description="Spillerens dagsskjerm i PlayerHQ: 430 px-kolonne, Én ting nå, ukens program og coach-oppsummering. Lys/mørk, tab-bar." -->
+<helmet><script src="./ds-base.js"></script><style>html,body{margin:0;padding:0}body{background:var(--bg)}a{color:var(--fg)}a:hover{color:var(--accent-fg)}@media(max-width:640px){[data-rsp=pad]{padding:var(--s4) var(--s4) 80px}}@media(pointer:coarse){[data-tap]{min-height:44px;display:inline-flex;align-items:center}}</style></helmet>
+<div style="min-height:100vh;background:var(--soft);display:flex;justify-content:center">
+<div style="width:100%;max-width:430px;min-height:100vh;background:var(--bg);color:var(--fg);font-family:var(--ui);font-size:14px;display:flex;flex-direction:column;border-left:1px solid var(--border);border-right:1px solid var(--border);-webkit-font-smoothing:antialiased">
+<x-import component-from-global-scope="AKGolfHQClaudePaper_605a48.Topbar" theme="{{ theme }}" onToggleTheme="{{ toggleTheme }}" searchPlaceholder="Søk i økter" hint-size="100%,56px"></x-import>
+<main data-rsp="pad" style="flex:1;padding:var(--s5) var(--s4) 80px;display:flex;flex-direction:column;gap:var(--s4)">
+<header>
+<p style="margin:0 0 var(--s2);font:500 10px/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)">Mandag 27. juli · uke 31</p>
+<h1 data-od-id="page-title" style="margin:0;font:600 28px/1.15 var(--disp);letter-spacing:-.01em">God morgen, Emma</h1>
+<p style="margin:10px 0 0;max-width:52ch;font:400 15px/1.55 var(--body);color:var(--muted);text-wrap:pretty">Driveren har vært stabil i tre uker. I dag handler alt om wedgene mellom 40 og 70 meter.</p>
+</header>
+<x-import component-from-global-scope="AKGolfHQClaudePaper_605a48.OneThingNow" label="Én ting nå" title="Dagens økt · wedge 40–70 m" actions="{{ nowActions }}" dataOdId="one-thing-now" hint-size="100%,170px">45 minutter på range. Ti slag til hver av tre avstander, med pause mellom hver serie. Anders har godkjent planen i morges.</x-import>
+<section aria-labelledby="prog-title" data-od-id="panel-program" style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);box-shadow:var(--shadow);padding:16px 18px 18px">
+<div style="display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin-bottom:14px">
+<h2 id="prog-title" style="margin:0;font:600 15px/1.3 var(--disp);text-wrap:balance">Ukens program</h2>
+<a href="#" data-tap style="font:600 12.5px/1 var(--ui);color:var(--muted);text-decoration:none;white-space:nowrap">Hele planen →</a>
+</div>
+<x-import component-from-global-scope="AKGolfHQClaudePaper_605a48.ProgramLadder" steps="{{ steps }}" xp="{{ xp }}" state="{{ dataState }}" emptyText="Ingen økter i planen denne uken. Anders legger inn ny plan på søndag." hint-size="100%,230px"></x-import>
+</section>
+<sc-if value="{{ showRecap }}" hint-placeholder-val="{{ true }}">
+<section aria-labelledby="recap-title" data-od-id="panel-recap" style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);box-shadow:var(--shadow);padding:16px 18px 18px">
+<h2 id="recap-title" style="margin:0 0 var(--s3);font:600 15px/1.3 var(--disp);text-wrap:balance">Fra Caddie</h2>
+<x-import component-from-global-scope="AKGolfHQClaudePaper_605a48.AiRecap" who="Caddie" analysis="{{ true }}" deltas="{{ recapDeltas }}" state="{{ dataState }}" emptyText="Caddie venter på flere økter før den sier noe." hint-size="100%,180px">Du treffer flere greener enn i juni, og driveren ligger stabilt innenfor tolv meter sideveis. Det som koster deg slag nå er de korte puttene — under fire meter faller du tre prosentpoeng. Dagens wedgeøkt gir deg kortere putter å starte med.</x-import>
+</section>
+</sc-if>
+</main>
+<div style="position:sticky;bottom:0;z-index:var(--z-sticky)">
+<x-import component-from-global-scope="AKGolfHQClaudePaper_605a48.TabBar" items="{{ tabs }}" current="{{ nav }}" onNavigate="{{ go }}" hint-size="100%,58px"></x-import>
+</div>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;dataState&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;content&quot;,&quot;loading&quot;,&quot;empty&quot;,&quot;error&quot;],&quot;default&quot;:&quot;content&quot;,&quot;tsType&quot;:&quot;\&quot;content\&quot; | \&quot;loading\&quot; | \&quot;empty\&quot; | \&quot;error\&quot;&quot;,&quot;section&quot;:&quot;Demo&quot;},&quot;showRecap&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Layout&quot;},&quot;initialTheme&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;light&quot;,&quot;dark&quot;],&quot;default&quot;:&quot;light&quot;,&quot;tsType&quot;:&quot;\&quot;light\&quot; | \&quot;dark\&quot;&quot;,&quot;section&quot;:&quot;Tema&quot;},&quot;$preview&quot;:{&quot;width&quot;:430,&quot;height&quot;:940}}">
+class Component extends DCLogic {
+  state = { theme: "light", nav: "idag" };
+
+  componentDidMount() {
+    let t = null;
+    try { t = localStorage.getItem("akhq-theme-playerhq"); } catch (e) {}
+    this.applyTheme(t || this.props.initialTheme || "light", false);
+    this.waitNs(0);
+  }
+
+  waitNs(n) {
+    const ns = window.AKGolfHQClaudePaper_605a48;
+    if (ns && ns.RailIcons) { this.forceUpdate(); return; }
+    if (n < 60) setTimeout(() => this.waitNs(n + 1), 100);
+  }
+
+  applyTheme(t, persist) {
+    const v = t === "dark" ? "dark" : "light";
+    document.documentElement.setAttribute("data-theme", v);
+    if (persist) { try { localStorage.setItem("akhq-theme-playerhq", v); } catch (e) {} }
+    this.setState({ theme: v });
+  }
+
+  renderVals() {
+    const ns = window.AKGolfHQClaudePaper_605a48 || {};
+    const I = ns.RailIcons || {};
+    const B = ns.Button;
+    const nowActions = B ? [
+      React.createElement(B, { key: "a", variant: "ghost", size: "sm", dataOdId: "now-flytt" }, "Flytt"),
+      React.createElement(B, { key: "b", variant: "primary", size: "sm", dataOdId: "now-start" }, "Start økt")
+    ] : null;
+    return {
+      theme: this.state.theme,
+      nav: this.state.nav,
+      dataState: this.props.dataState || "content",
+      showRecap: this.props.showRecap !== false,
+      toggleTheme: () => this.applyTheme(this.state.theme === "dark" ? "light" : "dark", true),
+      go: (id) => this.setState({ nav: id }),
+      nowActions: nowActions,
+      tabs: [
+        { id: "idag", label: "I dag", icon: I.idag },
+        { id: "plan", label: "Plan", icon: I.plan },
+        { id: "analyse", label: "Analyse", icon: I.analyse },
+        { id: "profil", label: "Profil", icon: I.profil }
+      ],
+      steps: [
+        { title: "Wedge 40–70 m", meta: "45 min · range · i dag", status: "active" },
+        { title: "Putting under 4 m", meta: "30 min · onsdag", status: "todo" },
+        { title: "Banetur · 9 hull", meta: "Oslo GK · lørdag", status: "todo" },
+        { title: "Driver-kalibrering", meta: "TrackMan · fullført fredag", status: "done" },
+        { title: "Testrunde med Anders", meta: "Låses opp etter fire fullførte økter", status: "locked" }
+      ],
+      xp: { label: "Ukesmål", current: 3, max: 5 },
+      recapDeltas: [
+        { value: 3.4, unit: "%", basis: "GIR vs juni", decimals: 1 },
+        { value: -3, unit: "%", basis: "putt under 4 m", decimals: 0 },
+        { value: -1.2, unit: "slag", basis: "snittscore vs forrige periode", decimals: 1 }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

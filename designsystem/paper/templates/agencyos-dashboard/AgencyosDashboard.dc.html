@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<!-- @template name="AgencyOS · Dashboard" description="Coach-dashboard for AgencyOS: rail, topbar, Én ting nå, KPI-stripe og fire paneler. Lys/mørk, tre bruddpunkter." -->
+<helmet><script src="./ds-base.js"></script><style>html,body{margin:0;padding:0}body{background:var(--bg)}a{color:var(--fg)}a:hover{color:var(--accent-fg)}[data-rsp=col2]{grid-template-columns:minmax(0,1.35fr) minmax(0,1fr)}@media(max-width:980px){[data-rsp=col2]{grid-template-columns:minmax(0,1fr)}[data-rsp=pad]{padding:20px 18px 40px}}@media(pointer:coarse){[data-tap]{min-height:44px;display:inline-flex;align-items:center}}</style></helmet>
+<div style="display:flex;min-height:100vh;background:var(--bg);color:var(--fg);font-family:var(--ui);font-size:13.5px;-webkit-font-smoothing:antialiased">
+<x-import component-from-global-scope="AKGolfHQClaudePaper_605a48.Rail" items="{{ railItems }}" current="{{ nav }}" onNavigate="{{ go }}" initials="AK" hint-size="64px,100vh"></x-import>
+<div style="flex:1;min-width:0;display:flex;flex-direction:column">
+<x-import component-from-global-scope="AKGolfHQClaudePaper_605a48.Topbar" theme="{{ theme }}" onToggleTheme="{{ toggleTheme }}" searchPlaceholder="Søk i stall og økter" hint-size="100%,56px"></x-import>
+<main data-rsp="pad" style="padding:28px 32px 56px;display:flex;flex-direction:column;gap:14px;max-width:1240px;width:100%;box-sizing:border-box">
+<x-import component-from-global-scope="AKGolfHQClaudePaper_605a48.Breadcrumbs" items="{{ crumbs }}" hint-size="220px,16px"></x-import>
+<x-import component-from-global-scope="AKGolfHQClaudePaper_605a48.PageHeader" kicker="Mandag 27. juli · uke 31" title="God morgen, Anders" lead="Tre ting trenger deg før lunsj. Resten kan vente — Caddie har allerede foreslått, du godkjenner." meta="Sist oppdatert 08:42" actions="{{ headerActions }}" dataOdId="page-header" hint-size="100%,120px"></x-import>
+<x-import component-from-global-scope="AKGolfHQClaudePaper_605a48.OneThingNow" label="Én ting nå" title="Godkjenn ukeplan for Emma Berg" actions="{{ nowActions }}" dataOdId="one-thing-now" hint-size="100%,150px" style="margin-bottom:6px">Caddie foreslo approach-fokus 40–70 m etter tre runder under par på wedge. Publiseres til PlayerHQ når du sier ja.</x-import>
+<x-import component-from-global-scope="AKGolfHQClaudePaper_605a48.KpiStripe" items="{{ kpis }}" state="{{ dataState }}" emptyText="Ingen tall registrert denne uken ennå." dataOdId="kpi-stripe" hint-size="100%,110px" style="margin-bottom:10px"></x-import>
+<div data-rsp="col2" style="display:grid;gap:14px">
+<x-import component-from-global-scope="AKGolfHQClaudePaper_605a48.Panel" title="Godkjenninger" titleLevel="{{ h3 }}" action="{{ koAction }}" flush="{{ true }}" dataOdId="panel-godkjenninger" hint-size="100%,260px">
+<x-import component-from-global-scope="AKGolfHQClaudePaper_605a48.ListGroup" as="div" dataOdId="list-ko" hint-size="100%,220px">
+<sc-for list="{{ queue }}" as="q" hint-placeholder-count="4">
+<x-import component-from-global-scope="AKGolfHQClaudePaper_605a48.ListRow" as="div" leading="status" status="{{ q.status }}" title="{{ q.title }}" meta="{{ q.meta }}" trailing="value" value="{{ q.right }}" dataOdId="row-ko" hint-size="100%,56px"></x-import>
+</sc-for>
+</x-import>
+</x-import>
+<x-import component-from-global-scope="AKGolfHQClaudePaper_605a48.Panel" title="Stall · trenger øye" titleLevel="{{ h3 }}" action="{{ stallAction }}" footnote="Fire av tolv spillere har avvik verdt en samtale denne uken." flush="{{ true }}" dataOdId="panel-stall" hint-size="100%,300px">
+<x-import component-from-global-scope="AKGolfHQClaudePaper_605a48.ListGroup" as="div" dataOdId="list-stall" hint-size="100%,240px">
+<sc-for list="{{ stall }}" as="p" hint-placeholder-count="4">
+<x-import component-from-global-scope="AKGolfHQClaudePaper_605a48.ListRow" as="div" leading="avatar" avatar="{{ p.name }}" title="{{ p.name }}" meta="{{ p.note }}" badge="{{ p.badge }}" trailing="badge" href="#" dataOdId="row-stall" hint-size="100%,56px"></x-import>
+</sc-for>
+</x-import>
+</x-import>
+</div>
+<div data-rsp="col2" style="display:grid;gap:14px">
+<x-import component-from-global-scope="AKGolfHQClaudePaper_605a48.Panel" title="AI-dispatch" titleLevel="{{ h3 }}" action="{{ aiAction }}" dataOdId="panel-ai-dispatch" hint-size="100%,260px">
+<x-import component-from-global-scope="AKGolfHQClaudePaper_605a48.AiRecap" who="Caddie" analysis="{{ true }}" deltas="{{ recapDeltas }}" state="{{ dataState }}" emptyText="Caddie har ikke nok data fra denne uken til en oppsummering." hint-size="100%,190px">Stallen slår flere greener enn på tre uker, men putting under fire meter faller. Emma og Jonas har begge mistet slag på korte putter i to runder på rad — legg inn en felles puttøkt torsdag, så tar Caddie oppfølgingen automatisk.</x-import>
+</x-import>
+<sc-if value="{{ showWeekPanel }}" hint-placeholder-val="{{ true }}">
+<x-import component-from-global-scope="AKGolfHQClaudePaper_605a48.Panel" title="Denne uken" titleLevel="{{ h3 }}" action="{{ ukeAction }}" dataOdId="panel-uke" hint-size="100%,240px">
+<x-import component-from-global-scope="AKGolfHQClaudePaper_605a48.NowNext" now="{{ nowBlock }}" next="{{ nextBlock }}" state="{{ dataState }}" emptyText="Ingen økter satt opp denne uken." hint-size="100%,150px"></x-import>
+</x-import>
+</sc-if>
+</div>
+</main>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;dataState&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;content&quot;,&quot;loading&quot;,&quot;empty&quot;,&quot;error&quot;],&quot;default&quot;:&quot;content&quot;,&quot;tsType&quot;:&quot;\&quot;content\&quot; | \&quot;loading\&quot; | \&quot;empty\&quot; | \&quot;error\&quot;&quot;,&quot;section&quot;:&quot;Demo&quot;},&quot;showWeekPanel&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Layout&quot;},&quot;initialTheme&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;light&quot;,&quot;dark&quot;],&quot;default&quot;:&quot;light&quot;,&quot;tsType&quot;:&quot;\&quot;light\&quot; | \&quot;dark\&quot;&quot;,&quot;section&quot;:&quot;Tema&quot;}}">
+class Component extends DCLogic {
+  state = { theme: "light", nav: "hjem" };
+
+  componentDidMount() {
+    let t = null;
+    try { t = localStorage.getItem("akhq-theme-agencyos"); } catch (e) {}
+    this.applyTheme(t || this.props.initialTheme || "light", false);
+    this.waitNs(0);
+  }
+
+  waitNs(n) {
+    const ns = window.AKGolfHQClaudePaper_605a48;
+    if (ns && ns.RailIcons) { this.forceUpdate(); return; }
+    if (n < 60) setTimeout(() => this.waitNs(n + 1), 100);
+  }
+
+  applyTheme(t, persist) {
+    const v = t === "dark" ? "dark" : "light";
+    document.documentElement.setAttribute("data-theme", v);
+    if (persist) { try { localStorage.setItem("akhq-theme-agencyos", v); } catch (e) {} }
+    this.setState({ theme: v });
+  }
+
+  renderVals() {
+    const ns = window.AKGolfHQClaudePaper_605a48 || {};
+    const I = ns.RailIcons || {};
+    const B = ns.Button;
+    const nowActions = B ? [
+      React.createElement(B, { key: "a", variant: "ghost", dataOdId: "now-utsett" }, "Utsett"),
+      React.createElement(B, { key: "b", variant: "primary", dataOdId: "now-godkjenn" }, "Godkjenn")
+    ] : null;
+    /* Panelhodets action: ÉN ghost-knapp eller én liten kontroll — regelen i
+       Panel.prompt.md. Var tidligere håndrullede <a>-lenker med data-tap for
+       berøringsgulv; knappen har gulvet innebygd via --floor. */
+    const lenke = (id, tekst) => B ? React.createElement(B, { variant: "ghost", size: "sm", dataOdId: "cta-" + id }, tekst) : null;
+    const headerActions = B ? [
+      React.createElement(B, { key: "a", variant: "ghost", dataOdId: "cta-ny-okt" }, "Ny økt"),
+      React.createElement(B, { key: "b", variant: "primary", dataOdId: "cta-ukesrapport" }, "Ukesrapport")
+    ] : null;
+    return {
+      theme: this.state.theme,
+      nav: this.state.nav,
+      dataState: this.props.dataState || "content",
+      showWeekPanel: this.props.showWeekPanel !== false,
+      toggleTheme: () => this.applyTheme(this.state.theme === "dark" ? "light" : "dark", true),
+      go: (id) => this.setState({ nav: id }),
+      railItems: [
+        { id: "hjem", label: "Hjem", icon: I.hjem },
+        { id: "stall", label: "Stall", icon: I.stall },
+        { id: "ko", label: "Kø", icon: I.ko },
+        { id: "plan", label: "Plan", icon: I.plan },
+        { id: "cockpit", label: "Data", icon: I.cockpit },
+        { id: "ai", label: "AI", icon: I.ai }
+      ],
+      h3: 3,
+      headerActions: headerActions,
+      koAction: lenke("ko", "Se hele køen"),
+      stallAction: lenke("stall", "Alle spillere"),
+      aiAction: lenke("ai", "AgenticOS"),
+      ukeAction: lenke("kalender", "Kalender"),
+      crumbs: [{ label: "AgencyOS", href: "#" }, { label: "Dashboard" }],
+      nowActions: nowActions,
+      kpis: [
+        { label: "Spillere", value: 12, decimals: 0, window: "aktive nå", delta: 1, deltaBasis: "vs forrige måned" },
+        { label: "Snittscore stall", value: 74.6, decimals: 1, window: "siste 5 runder", delta: -0.8, deltaBasis: "vs forrige periode" },
+        { label: "Strokes Gained totalt", value: 2.92, decimals: 2, window: "siste 5 runder", delta: 0.41, deltaBasis: "vs forrige periode" },
+        { label: "Ukeplaner", value: 9, decimals: 0, window: "av 12 publisert", delta: 3, deltaBasis: "vs i går" }
+      ],
+      queue: [
+        { title: "Ukeplan · Emma Berg", meta: "Foreslått 07:12 · approach 40–70 m", status: "active", right: "Nå" },
+        { title: "Testrapport · Jonas Lie", meta: "TrackMan, 62 slag · venter på kommentar", status: "todo", right: "I dag" },
+        { title: "Baneplan · Mia Sund", meta: "Oslo GK, søndag", status: "todo", right: "Onsdag" },
+        { title: "Månedsrapport · juni", meta: "Sendt til fire foresatte", status: "done", right: "Fredag" }
+      ],
+      stall: [
+        { name: "Emma Berg", note: "SG approach faller · 3 økter siste uke", badge: { tone: "warn", text: "−0,62 SG" } },
+        { name: "Jonas Lie", note: "Putting under 4 m · 51 % treff", badge: { tone: "warn", text: "−0,31 SG" } },
+        { name: "Mia Sund", note: "Driver-dispersion strammet inn", badge: { tone: "up", text: "+0,44 SG" } },
+        { name: "Tobias Haug", note: "Ingen økt logget på ni dager", badge: { tone: "mut", text: "9 dager" } }
+      ],
+      recapDeltas: [
+        { value: 0.41, unit: "SG", basis: "vs forrige uke", decimals: 2 },
+        { value: -3.2, unit: "%", basis: "putt under 4 m", decimals: 1 },
+        { value: 6, unit: "økter", basis: "vs i fjor samme uke", decimals: 0 }
+      ],
+      nowBlock: { title: "Fellesøkt · wedge 40–70 m", meta: "I dag 14:00–15:30 · seks spillere", progress: 0.35 },
+      nextBlock: { title: "TrackMan-test · Jonas Lie", meta: "Torsdag 09:00 · 62 slag planlagt" }
+    };
+  }
+}
+</script>
+</body>
+</html>

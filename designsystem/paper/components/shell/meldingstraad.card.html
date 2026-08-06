@@ -1,0 +1,58 @@
+<!-- @dsCard group="Skall" viewport="980x2070" name="MeldingsTraad" subtitle="Samtale i 860 og 340 px × begge moduser: dagskille, begge parter, alle datatilstander. Høyde målt 03.08 (+10 %)" -->
+<!DOCTYPE html><html lang="nb"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="stylesheet" href="../../styles.css"><link rel="stylesheet" href="../../guidelines/card-support.css">
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="../../_ds_bundle.js"></script>
+<style>.stack{display:grid;grid-template-columns:1fr;min-height:100vh}.stack>div{padding:var(--s5);background:var(--bg);color:var(--fg)}.lab{font-family:var(--mono);font-size:9.5px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:14px 0 6px}.cw{box-sizing:content-box;border:1px dashed var(--border);border-radius:var(--r);padding:var(--s4)}.w860{width:860px;max-width:100%}.w340{width:340px}.assert{font-family:var(--mono);font-size:10px;color:var(--muted);line-height:1.5;white-space:pre-wrap}.ok{color:var(--up)}.bad{color:var(--dn)}</style>
+</head>
+<body><div class="stack"><div id="light"></div><div data-theme="dark" id="dark"></div></div>
+<script type="text/babel">
+const { MeldingsTraad } = window.AKGolfHQClaudePaper_605a48;
+const SAMTALE = [
+  { divider: "i går" },
+  { author: "Anders Kristiansen", time: "19:02", text: "God økt i dag. P6-vinduet satt i 12 av 15 — vi bygger videre på det torsdag." },
+  { self: true, time: "19:15", text: "Takk! Kjente at det løsnet på slutten." },
+  { divider: "i dag" },
+  { author: "Anders Kristiansen", time: "08:12", text: "Så på TrackMan-tallene — wedge-serien din er den beste i år. 8 av 10 innenfor 5 m." },
+  { self: true, time: "08:31", text: "Skal jeg holde samme opplegg på torsdag, eller øke presset?" },
+];
+function Specimen() {
+  return (<>
+    <div className="lab">860 px — Øyvind Rohjan og Anders Kristiansen, to dager</div>
+    <div className="cw w860"><MeldingsTraad messages={SAMTALE} dataOdId="mtr-bred" /></div>
+    <div className="lab">340 px — under 420-terskelen: full boblebredde</div>
+    <div className="cw w340"><MeldingsTraad messages={SAMTALE.slice(3)} dataOdId="mtr-smal" /></div>
+    <div className="lab">tom · laster · feil</div>
+    <div className="cw w860">
+      <MeldingsTraad messages={[]} state="empty" dataOdId="mtr-tom" />
+      <div style={{height:12}} />
+      <MeldingsTraad messages={[]} state="loading" dataOdId="mtr-laster" />
+      <div style={{height:12}} />
+      <MeldingsTraad messages={[]} state="error" dataOdId="mtr-feil" />
+    </div>
+  </>);
+}
+ReactDOM.createRoot(document.getElementById("light")).render(<Specimen />);
+ReactDOM.createRoot(document.getElementById("dark")).render(<Specimen />);
+/* ASSERTIONER — verifikatør skal se dem feile først: legg tid inni boblen,
+   eller gi egen melding en farge. */
+window.requestAnimationFrame(() => setTimeout(() => {
+  const res = []; const push = (ok, t) => res.push((ok ? "✓ " : "✗ ") + t);
+  const LYS = document.getElementById("light");
+  const b = LYS.querySelector('[data-od-id="panel-mtr-bred"]');
+  push(!!b && b.querySelectorAll(".akhq-mtr-boble").length === 4, "fire meldinger");
+  push(!!b && b.querySelectorAll(".akhq-mtr-dagskille").length === 2, "to dagskiller");
+  const meg = b && b.querySelector(".akhq-mtr-m--meg .akhq-mtr-boble");
+  const andre = b && b.querySelector(".akhq-mtr-m:not(.akhq-mtr-m--meg) .akhq-mtr-boble");
+  push(!!meg && !!andre && getComputedStyle(meg).backgroundColor !== getComputedStyle(andre).backgroundColor, "egne og motpartens bobler skilles på flate");
+  const meta = b && b.querySelector(".akhq-mtr-meta");
+  push(!!meta && !meta.closest(".akhq-mtr-boble"), "avsender/tid står utenfor boblen");
+  push(!!b && b.querySelectorAll("button,a[href]").length === 0, "ren visning — Composer eier skrivingen");
+  push(!!LYS.querySelector(".akhq-empty") && !!LYS.querySelector(".akhq-skel") && !!LYS.querySelector(".akhq-error"), "tom/laster/feil rendrer Region-tilstandene");
+  const ut = document.createElement("div"); ut.className = "assert";
+  ut.innerHTML = res.map((r) => '<div class="' + (r[0] === "✓" ? "ok" : "bad") + '">' + r + "</div>").join("");
+  LYS.appendChild(ut);
+  window.__assert = res;
+}, 90));
+</script></body></html>

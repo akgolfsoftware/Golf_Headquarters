@@ -1,0 +1,49 @@
+<!-- @dsCard group="Overlays" viewport="980x1140" name="HjelpPopover" subtitle="Hjelpepanelet i 860 og 300 px × begge moduser: lukket, åpen, høyrejustert. Høyde målt 03.08 (+10 %)" -->
+<!DOCTYPE html><html lang="nb"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="stylesheet" href="../../styles.css"><link rel="stylesheet" href="../../guidelines/card-support.css">
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="../../_ds_bundle.js"></script>
+<style>.stack{display:grid;grid-template-columns:1fr;min-height:100vh}.stack>div{padding:var(--s5);background:var(--bg);color:var(--fg)}.lab{font-family:var(--mono);font-size:9.5px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:14px 0 6px}.cw{box-sizing:content-box;border:1px dashed var(--border);border-radius:var(--r);padding:var(--s4);min-height:150px}.w860{width:860px;max-width:100%}.w300{width:300px}.rad{display:flex;gap:24px;align-items:center}.assert{font-family:var(--mono);font-size:10px;color:var(--muted);line-height:1.5;white-space:pre-wrap}.ok{color:var(--up)}.bad{color:var(--dn)}</style>
+</head>
+<body><div class="stack"><div id="light"></div><div data-theme="dark" id="dark"></div></div>
+<script type="text/babel">
+const { HjelpPopover } = window.AKGolfHQClaudePaper_605a48;
+function Specimen({ moerk }) {
+  return (<>
+    <div className="lab">860 px — lukket knapp · åpen (kun i lys halvdel, for én åpen om gangen)</div>
+    <div className="cw w860"><div className="rad">
+      <span>Strokes Gained totalt <HjelpPopover title="Hva er SG?" dataOdId={"hjp-" + (moerk ? "m" : "l")}>Strokes Gained måler hvert slag mot forventet resultat fra samme posisjon. Positivt tall betyr at du vant slag mot referansen.</HjelpPopover></span>
+      <span>TEK-andel <HjelpPopover title="TEK-andelen" align="hoyre" dataOdId={"hjp2-" + (moerk ? "m" : "l")}>Andelen av treningstiden som er teknikk. Anbefalingen fra CANON er minst 15 prosent.</HjelpPopover></span>
+    </div></div>
+    <div className="lab">300 px — høyrejustert panel ved kant</div>
+    <div className="cw w300"><span style={{display:"flex",justifyContent:"flex-end"}}><HjelpPopover title="Hvorfor brutto?" align="hoyre" dataOdId={"hjp3-" + (moerk ? "m" : "l")}>Appen viser alltid ekte slag — netto skjuler hva som faktisk skjedde på banen.</HjelpPopover></span></div>
+  </>);
+}
+ReactDOM.createRoot(document.getElementById("light")).render(<Specimen moerk={false} />);
+ReactDOM.createRoot(document.getElementById("dark")).render(<Specimen moerk={true} />);
+/* ASSERTIONER — verifikatør skal se dem feile først: fjern aria-expanded,
+   eller la Escape stå uhåndtert (kontraktstesten må kjøres interaktivt). */
+window.requestAnimationFrame(() => setTimeout(() => {
+  const res = []; const push = (ok, t) => res.push((ok ? "✓ " : "✗ ") + t);
+  const LYS = document.getElementById("light");
+  const trig = LYS.querySelector('[data-od-id="cta-hjp-l"]');
+  push(!!trig && trig.getAttribute("aria-expanded") === "false" && trig.getAttribute("aria-haspopup") === "dialog", "utløseren eier tilstanden i markup (kontrakt pkt. 1)");
+  if (trig) trig.click();
+  setTimeout(() => {
+    const panel = LYS.querySelector('[data-od-id="panel-hjp-l"]');
+    push(!!panel && panel.getAttribute("role") === "dialog", "åpnet panel er role=dialog");
+    push(!!trig && trig.getAttribute("aria-expanded") === "true", "aria-expanded følger åpning");
+    push(!!panel && document.activeElement === panel, "fokus flyttes inn i laget (kontrakt pkt. 2)");
+    const wrap = document.createElement("div"); wrap.setAttribute("data-coarse-test", ""); document.body.appendChild(wrap);
+    const k = trig.cloneNode(true); wrap.appendChild(k);
+    const h = parseFloat(getComputedStyle(k, "::after").height) || 0;
+    push(h >= 43.99, "::after-sone " + h.toFixed(1) + " px — knappen forblir 18 px");
+    wrap.remove();
+    const ut = document.createElement("div"); ut.className = "assert";
+    ut.innerHTML = res.map((r) => '<div class="' + (r[0] === "✓" ? "ok" : "bad") + '">' + r + "</div>").join("");
+    LYS.appendChild(ut);
+    window.__assert = res;
+  }, 60);
+}, 90));
+</script></body></html>

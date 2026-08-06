@@ -138,9 +138,9 @@
 
   /* ─── Interaction ─── */
   --focus: #d97757;
-  --ease: cubic-bezier(0.16, 1, 0.3, 1);
-  --dur: 160ms;
-  --dur-slow: 280ms;
+  --ease: cubic-bezier(0.16, 1, 0.3, 1); /* @kind other */
+  --dur: 160ms; /* @kind other */
+  --dur-slow: 280ms; /* @kind other */
 
   /* Tap targets */
   --tap: 44px;
@@ -152,12 +152,12 @@
   --logo-dot: #b85c3d;
 
   /* ─── Z-index ─── */
-  --z-sticky: 10;
-  --z-rail: 20;
-  --z-sheet: 40;
-  --z-modal: 50;
-  --z-toast: 100;
-  --z-command: 110;
+  --z-sticky: 10; /* @kind other */
+  --z-rail: 20; /* @kind other */
+  --z-sheet: 40; /* @kind other */
+  --z-modal: 50; /* @kind other */
+  --z-toast: 100; /* @kind other */
+  --z-command: 110; /* @kind other */
 }
 
 /* ─── Dark (produkt) ─── */

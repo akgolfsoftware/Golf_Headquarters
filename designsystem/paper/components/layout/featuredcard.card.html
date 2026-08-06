@@ -1,0 +1,42 @@
+<!-- @dsCard group="Struktur" viewport="980x1480" name="FeaturedCard" subtitle="Editorial kort i 860 og 340 px × begge moduser: standard og soft, med handlinger. Høyde målt 03.08 (+10 %)" -->
+<!DOCTYPE html><html lang="nb"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="stylesheet" href="../../styles.css"><link rel="stylesheet" href="../../guidelines/card-support.css">
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="../../_ds_bundle.js"></script>
+<style>.stack{display:grid;grid-template-columns:1fr;min-height:100vh}.stack>div{padding:var(--s5);background:var(--bg);color:var(--fg)}.lab{font-family:var(--mono);font-size:9.5px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:14px 0 6px}.cw{box-sizing:content-box;border:1px dashed var(--border);border-radius:var(--r);padding:var(--s4)}.w860{width:860px;max-width:100%}.w340{width:340px}.w{display:flex;flex-direction:column;gap:14px}.assert{font-family:var(--mono);font-size:10px;color:var(--muted);line-height:1.5;white-space:pre-wrap}.ok{color:var(--up)}.bad{color:var(--dn)}</style>
+</head>
+<body><div class="stack"><div id="light"></div><div data-theme="dark" id="dark"></div></div>
+<script type="text/babel">
+const { FeaturedCard, Button } = window.AKGolfHQClaudePaper_605a48;
+function Specimen() {
+  return (<>
+    <div className="lab">860 px — standard med handling · soft-variant</div>
+    <div className="cw w860"><div className="w">
+      <FeaturedCard kicker="Nytt i PlayerHQ" title="Gameplan per bane" actions={<Button dataOdId="feat-prov">Prøv gameplan</Button>} dataOdId="feat-std">Legg strategien før runden: buffer-soner, køllevalg per hull og én tanke per utslag — bygget på DECADE-prinsippene.</FeaturedCard>
+      <FeaturedCard kicker="Neste steg" title="Koble TrackMan-kontoen" soft dataOdId="feat-soft">Når kontoen er koblet, hentes øktene dine automatisk etter hver trening på Mulligan.</FeaturedCard>
+    </div></div>
+    <div className="lab">340 px — under 420-terskelen: tettere polstring, mindre tittel</div>
+    <div className="cw w340"><FeaturedCard kicker="Nytt" title="Gameplan per bane" dataOdId="feat-smal">Buffer-soner og køllevalg per hull.</FeaturedCard></div>
+  </>);
+}
+ReactDOM.createRoot(document.getElementById("light")).render(<Specimen />);
+ReactDOM.createRoot(document.getElementById("dark")).render(<Specimen />);
+/* ASSERTIONER — verifikatør skal se dem feile først: gi kortet radius --r
+   (editorial-testen rød) eller UI-font på prosaen. */
+window.requestAnimationFrame(() => setTimeout(() => {
+  const res = []; const push = (ok, t) => res.push((ok ? "✓ " : "✗ ") + t);
+  const LYS = document.getElementById("light");
+  const std = LYS.querySelector('[data-od-id="panel-feat-std"]');
+  push(!!std && getComputedStyle(std).borderRadius === "16px", "radius er --r-md (16) — editorial, ikke arbeidsflate");
+  const txt = std && std.querySelector(".akhq-feat-txt");
+  push(!!txt && /Lora/.test(getComputedStyle(txt).fontFamily), "prosaen er Lora");
+  push(!!std && std.querySelectorAll(".akhq-btn").length === 1, "handlingen er bibliotekets Button");
+  const soft = LYS.querySelector('[data-od-id="panel-feat-soft"]');
+  push(!!std && !!soft && getComputedStyle(soft).boxShadow === "none", "soft-varianten er uten skygge");
+  const ut = document.createElement("div"); ut.className = "assert";
+  ut.innerHTML = res.map((r) => '<div class="' + (r[0] === "✓" ? "ok" : "bad") + '">' + r + "</div>").join("");
+  LYS.appendChild(ut);
+  window.__assert = res;
+}, 90));
+</script></body></html>

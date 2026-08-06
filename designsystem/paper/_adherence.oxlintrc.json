@@ -1,0 +1,1542 @@
+{
+  "plugins": [
+    "react",
+    "import"
+  ],
+  "rules": {
+    "react/forbid-elements": [
+      "warn",
+      {
+        "forbid": []
+      }
+    ],
+    "no-restricted-imports": [
+      "warn",
+      {
+        "patterns": [
+          {
+            "group": [
+              "components/actions/**",
+              "components/calendar/**",
+              "components/data/**",
+              "components/datavis/**",
+              "components/domene/**",
+              "components/feedback/**",
+              "components/forms/**",
+              "components/golfdata/**",
+              "components/golfviz/**",
+              "components/layout/**",
+              "components/navigation/**",
+              "components/overlays/**",
+              "components/primitives/**",
+              "components/progress/**",
+              "components/queue/**",
+              "components/shell/**",
+              "components/trackman/**",
+              "components/video/**",
+              "guidelines/**"
+            ],
+            "message": "Import design-system components from 'index.js', not component internals."
+          }
+        ]
+      }
+    ],
+    "no-restricted-syntax": [
+      "warn",
+      {
+        "selector": "Literal[value=/#[0-9a-fA-F]{3,8}\\b/]",
+        "message": "Raw hex color — use a design-system color token via var()."
+      },
+      {
+        "selector": "Literal[value=/\\b\\d+px\\b/]",
+        "message": "Raw px value — use a design-system spacing token via var()."
+      },
+      {
+        "selector": "Literal[value=/font-family\\s*:\\s*(?!['\\\"]?(?:IBM Plex Mono|Lora|Poppins))/i]",
+        "message": "Font not provided by the design system. Available: IBM Plex Mono, Lora, Poppins."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='AccordionItem'] > JSXAttribute > JSXIdentifier[name!=/^(?:id|title|meta|body|defaultOpen|key|ref|className|style|children)$/]",
+        "message": "<AccordionItem> doesn't accept that prop. Declared props: id, title, meta, body, defaultOpen."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='AgendaRow'] > JSXAttribute > JSXIdentifier[name!=/^(?:time|endTime|title|meta|area|status|trailing|onClick|dataOdId|key|ref|className|style|children)$/]",
+        "message": "<AgendaRow> doesn't accept that prop. Declared props: time, endTime, title, meta, area, status, trailing, onClick, dataOdId."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='AgendaRow'] > JSXAttribute[name.name='status'] > Literal[value!=/^(?:naa|ferdig|avlyst)$/]",
+        "message": "<AgendaRow> status must be one of 'naa' | 'ferdig' | 'avlyst'."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='AiRecapDelta'] > JSXAttribute > JSXIdentifier[name!=/^(?:value|unit|basis|decimals|key|ref|className|style|children)$/]",
+        "message": "<AiRecapDelta> doesn't accept that prop. Declared props: value, unit, basis, decimals."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='AiTipCard'] > JSXAttribute > JSXIdentifier[name!=/^(?:source|tip|evidence|muted|onDismiss|state|emptyText|dataOdId|key|ref|className|style|children)$/]",
+        "message": "<AiTipCard> doesn't accept that prop. Declared props: source, tip, evidence, muted, onDismiss, state, emptyText, dataOdId."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='AiTipCard'] > JSXAttribute[name.name='state'] > Literal[value!=/^(?:content|empty|loading|error)$/]",
+        "message": "<AiTipCard> state must be one of 'content' | 'empty' | 'loading' | 'error'."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='AKFormelChip'] > JSXAttribute > JSXIdentifier[name!=/^(?:formula|parts|filled|dataOdId|key|ref|className|style|children)$/]",
+        "message": "<AKFormelChip> doesn't accept that prop. Declared props: formula, parts, filled, dataOdId."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='AfbSegment'] > JSXAttribute > JSXIdentifier[name!=/^(?:label|pct|display|tone|key|ref|className|style|children)$/]",
+        "message": "<AfbSegment> doesn't accept that prop. Declared props: label, pct, display, tone."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Avatar'] > JSXAttribute > JSXIdentifier[name!=/^(?:name|initials|src|size|tone|decorative|dataOdId|key|ref|className|style|children)$/]",
+        "message": "<Avatar> doesn't accept that prop. Declared props: name, initials, src, size, tone, decorative, dataOdId."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Avatar'] > JSXAttribute[name.name='size'] > Literal[value!=/^(?:sm|md|lg)$/]",
+        "message": "<Avatar> size must be one of 'sm' | 'md' | 'lg'."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Avatar'] > JSXAttribute[name.name='tone'] > Literal[value!=/^(?:soft|ink|outline)$/]",
+        "message": "<Avatar> tone must be one of 'soft' | 'ink' | 'outline'."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Banner'] > JSXAttribute > JSXIdentifier[name!=/^(?:tone|label|title|announce|actionLabel|onAction|closable|onClose|dataOdId|children|key|ref|className|style|children)$/]",
+        "message": "<Banner> doesn't accept that prop. Declared props: tone, label, title, announce, actionLabel, onAction, closable, onClose, dataOdId, children."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Banner'] > JSXAttribute[name.name='tone'] > Literal[value!=/^(?:neutral|warn|info|privacy)$/]",
+        "message": "<Banner> tone must be one of 'neutral' | 'warn' | 'info' | 'privacy'."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Banner'] > JSXAttribute[name.name='announce'] > Literal[value!=/^(?:none|status|alert)$/]",
+        "message": "<Banner> announce must be one of 'none' | 'status' | 'alert'."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='BarChartItem'] > JSXAttribute > JSXIdentifier[name!=/^(?:label|value|display|key|ref|className|style|children)$/]",
+        "message": "<BarChartItem> doesn't accept that prop. Declared props: label, value, display."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='BenchmarkBadge'] > JSXAttribute > JSXIdentifier[name!=/^(?:value|basis|tone|dataOdId|key|ref|className|style|children)$/]",
+        "message": "<BenchmarkBadge> doesn't accept that prop. Declared props: value, basis, tone, dataOdId."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='BenchmarkBadge'] > JSXAttribute[name.name='tone'] > Literal[value!=/^(?:up|dn|info)$/]",
+        "message": "<BenchmarkBadge> tone must be one of 'up' | 'dn' | 'info'."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='BottomSheet'] > JSXAttribute > JSXIdentifier[name!=/^(?:open|title|onClose|dataOdId|children|key|ref|className|style|children)$/]",
+        "message": "<BottomSheet> doesn't accept that prop. Declared props: open, title, onClose, dataOdId, children."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='BreadcrumbItem'] > JSXAttribute > JSXIdentifier[name!=/^(?:label|href|key|ref|className|style|children)$/]",
+        "message": "<BreadcrumbItem> doesn't accept that prop. Declared props: label, href."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='BudgetDistribution'] > JSXAttribute > JSXIdentifier[name!=/^(?:area|hours|key|ref|className|style|children)$/]",
+        "message": "<BudgetDistribution> doesn't accept that prop. Declared props: area, hours."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='BudgetDistribution'] > JSXAttribute[name.name='area'] > Literal[value!=/^(?:FYS|TEK|SLAG|SPILL|TURN)$/]",
+        "message": "<BudgetDistribution> area must be one of 'FYS' | 'TEK' | 'SLAG' | 'SPILL' | 'TURN'."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Button'] > JSXAttribute > JSXIdentifier[name!=/^(?:variant|size|disabled|dataOdId|children|onClick|key|ref|className|style|children)$/]",
+        "message": "<Button> doesn't accept that prop. Declared props: variant, size, disabled, dataOdId, children, onClick."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Button'] > JSXAttribute[name.name='variant'] > Literal[value!=/^(?:primary|ghost|danger)$/]",
+        "message": "<Button> variant must be one of 'primary' | 'ghost' | 'danger'."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Button'] > JSXAttribute[name.name='size'] > Literal[value!=/^(?:md|sm)$/]",
+        "message": "<Button> size must be one of 'md' | 'sm'."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Callout'] > JSXAttribute > JSXIdentifier[name!=/^(?:tone|label|dataOdId|children|key|ref|className|style|children)$/]",
+        "message": "<Callout> doesn't accept that prop. Declared props: tone, label, dataOdId, children."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Callout'] > JSXAttribute[name.name='tone'] > Literal[value!=/^(?:neutral|warn|info|privacy)$/]",
+        "message": "<Callout> tone must be one of 'neutral' | 'warn' | 'info' | 'privacy'."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='CardGrid'] > JSXAttribute > JSXIdentifier[name!=/^(?:min|columns|dataOdId|children|key|ref|className|style|children)$/]",
+        "message": "<CardGrid> doesn't accept that prop. Declared props: min, columns, dataOdId, children."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='CardGrid'] > JSXAttribute[name.name='min'] > Literal[value!=/^(?:auto|wide)$/]",
+        "message": "<CardGrid> min must be one of 'auto' | 'wide'."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Checkbox'] > JSXAttribute > JSXIdentifier[name!=/^(?:label|dataOdId|key|ref|className|style|children)$/]",
+        "message": "<Checkbox> doesn't accept that prop. Declared props: label, dataOdId."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Chip'] > JSXAttribute > JSXIdentifier[name!=/^(?:selected|static|disabled|onRemove|dataOdId|children|onClick|key|ref|className|style|children)$/]",
+        "message": "<Chip> doesn't accept that prop. Declared props: selected, static, disabled, onRemove, dataOdId, children, onClick."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='CodeInput'] > JSXAttribute > JSXIdentifier[name!=/^(?:length|value|onChange|onComplete|disabled|invalid|label|dataOdId|key|ref|className|style|children)$/]",
+        "message": "<CodeInput> doesn't accept that prop. Declared props: length, value, onChange, onComplete, disabled, invalid, label, dataOdId."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='ComboboxOption'] > JSXAttribute > JSXIdentifier[name!=/^(?:value|label|note|key|ref|className|style|children)$/]",
+        "message": "<ComboboxOption> doesn't accept that prop. Declared props: value, label, note."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='CommandItem'] > JSXAttribute > JSXIdentifier[name!=/^(?:id|label|group|meta|level|keywords|key|ref|className|style|children)$/]",
+        "message": "<CommandItem> doesn't accept that prop. Declared props: id, label, group, meta, level, keywords."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='ComparePair'] > JSXAttribute > JSXIdentifier[name!=/^(?:label|a|b|aDisplay|bDisplay|key|ref|className|style|children)$/]",
+        "message": "<ComparePair> doesn't accept that prop. Declared props: label, a, b, aDisplay, bDisplay."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='ComposerContext'] > JSXAttribute > JSXIdentifier[name!=/^(?:id|label|active|key|ref|className|style|children)$/]",
+        "message": "<ComposerContext> doesn't accept that prop. Declared props: id, label, active."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='ConfirmDialog'] > JSXAttribute > JSXIdentifier[name!=/^(?:open|kicker|title|body|consequence|confirmLabel|cancelLabel|destructive|wide|busy|preview|onConfirm|onCancel|triggerRef|dataOdId|key|ref|className|style|children)$/]",
+        "message": "<ConfirmDialog> doesn't accept that prop. Declared props: open, kicker, title, body, consequence, confirmLabel, cancelLabel, destructive, wide, busy, preview, onConfirm, onCancel, triggerRef, dataOdId."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='DataPreview'] > JSXAttribute > JSXIdentifier[name!=/^(?:columns|rows|moreCount|dense|state|emptyText|dataOdId|key|ref|className|style|children)$/]",
+        "message": "<DataPreview> doesn't accept that prop. Declared props: columns, rows, moreCount, dense, state, emptyText, dataOdId."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='DataPreview'] > JSXAttribute[name.name='state'] > Literal[value!=/^(?:content|empty|loading|error)$/]",
+        "message": "<DataPreview> state must be one of 'content' | 'empty' | 'loading' | 'error'."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='DataTableColumn'] > JSXAttribute > JSXIdentifier[name!=/^(?:key|label|align|sortable|strong|tone|width|render|key|ref|className|style|children)$/]",
+        "message": "<DataTableColumn> doesn't accept that prop. Declared props: key, label, align, sortable, strong, tone, width, render."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='DataTableColumn'] > JSXAttribute[name.name='align'] > Literal[value!=/^(?:start|end)$/]",
+        "message": "<DataTableColumn> align must be one of 'start' | 'end'."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='DatePicker'] > JSXAttribute > JSXIdentifier[name!=/^(?:value|onChange|min|max|placeholder|shortcuts|disabled|defaultOpen|invalid|dataOdId|key|ref|className|style|children)$/]",
+        "message": "<DatePicker> doesn't accept that prop. Declared props: value, onChange, min, max, placeholder, shortcuts, disabled, defaultOpen, invalid, dataOdId."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='DayStripDag'] > JSXAttribute > JSXIdentifier[name!=/^(?:key|weekday|date|today|full|key|ref|className|style|children)$/]",
+        "message": "<DayStripDag> doesn't accept that prop. Declared props: key, weekday, date, today, full."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='DiagnoseKort'] > JSXAttribute > JSXIdentifier[name!=/^(?:title|body|evidence|nextStep|compact|state|emptyText|dataOdId|key|ref|className|style|children)$/]",
+        "message": "<DiagnoseKort> doesn't accept that prop. Declared props: title, body, evidence, nextStep, compact, state, emptyText, dataOdId."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='DiagnoseKort'] > JSXAttribute[name.name='state'] > Literal[value!=/^(?:content|empty|loading|error)$/]",
+        "message": "<DiagnoseKort> state must be one of 'content' | 'empty' | 'loading' | 'error'."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='DiffRad'] > JSXAttribute > JSXIdentifier[name!=/^(?:field|from|to|key|ref|className|style|children)$/]",
+        "message": "<DiffRad> doesn't accept that prop. Declared props: field, from, to."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='DispersionMap'] > JSXAttribute > JSXIdentifier[name!=/^(?:points|ellipse|club|stats|size|state|emptyText|dataOdId|key|ref|className|style|children)$/]",
+        "message": "<DispersionMap> doesn't accept that prop. Declared props: points, ellipse, club, stats, size, state, emptyText, dataOdId."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='DispersionMap'] > JSXAttribute[name.name='state'] > Literal[value!=/^(?:content|empty|loading|error)$/]",
+        "message": "<DispersionMap> state must be one of 'content' | 'empty' | 'loading' | 'error'."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Divider'] > JSXAttribute > JSXIdentifier[name!=/^(?:label|align|spacing|vertical|dataOdId|key|ref|className|style|children)$/]",
+        "message": "<Divider> doesn't accept that prop. Declared props: label, align, spacing, vertical, dataOdId."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Divider'] > JSXAttribute[name.name='align'] > Literal[value!=/^(?:center|start)$/]",
+        "message": "<Divider> align must be one of 'center' | 'start'."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Divider'] > JSXAttribute[name.name='spacing'] > Literal[value!=/^(?:normal|tight|flush)$/]",
+        "message": "<Divider> spacing must be one of 'normal' | 'tight' | 'flush'."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='DotMatrixRow'] > JSXAttribute > JSXIdentifier[name!=/^(?:label|values|key|ref|className|style|children)$/]",
+        "message": "<DotMatrixRow> doesn't accept that prop. Declared props: label, values."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Drawer'] > JSXAttribute > JSXIdentifier[name!=/^(?:open|title|label|footer|side|wide|preview|onClose|triggerRef|dataOdId|children|key|ref|className|style|children)$/]",
+        "message": "<Drawer> doesn't accept that prop. Declared props: open, title, label, footer, side, wide, preview, onClose, triggerRef, dataOdId, children."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Drawer'] > JSXAttribute[name.name='side'] > Literal[value!=/^(?:right|left)$/]",
+        "message": "<Drawer> side must be one of 'right' | 'left'."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='DropdownItem'] > JSXAttribute > JSXIdentifier[name!=/^(?:id|type|text|note|onSelect|disabled|tone|key|ref|className|style|children)$/]",
+        "message": "<DropdownItem> doesn't accept that prop. Declared props: id, type, text, note, onSelect, disabled, tone."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='DropdownItem'] > JSXAttribute[name.name='type'] > Literal[value!=/^(?:item|separator|label)$/]",
+        "message": "<DropdownItem> type must be one of 'item' | 'separator' | 'label'."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='DropdownItem'] > JSXAttribute[name.name='tone'] > Literal[value!=/^(?:default|dn)$/]",
+        "message": "<DropdownItem> tone must be one of 'default' | 'dn'."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='EmptyState'] > JSXAttribute > JSXIdentifier[name!=/^(?:title|children|icon|action|align|density|dataOdId|key|ref|className|style|children)$/]",
+        "message": "<EmptyState> doesn't accept that prop. Declared props: title, children, icon, action, align, density, dataOdId."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='EmptyState'] > JSXAttribute[name.name='align'] > Literal[value!=/^(?:center|start)$/]",
+        "message": "<EmptyState> align must be one of 'center' | 'start'."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='EmptyState'] > JSXAttribute[name.name='density'] > Literal[value!=/^(?:md|sm)$/]",
+        "message": "<EmptyState> density must be one of 'md' | 'sm'."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='FAB'] > JSXAttribute > JSXIdentifier[name!=/^(?:label|icon|iconOnly|overTab|disabled|onClick|dataOdId|key|ref|className|style|children)$/]",
+        "message": "<FAB> doesn't accept that prop. Declared props: label, icon, iconOnly, overTab, disabled, onClick, dataOdId."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='FeaturedCard'] > JSXAttribute > JSXIdentifier[name!=/^(?:kicker|title|children|actions|soft|dataOdId|key|ref|className|style|children)$/]",
+        "message": "<FeaturedCard> doesn't accept that prop. Declared props: kicker, title, children, actions, soft, dataOdId."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='FieldMessage'] > JSXAttribute > JSXIdentifier[name!=/^(?:tone|id|dataOdId|children|key|ref|className|style|children)$/]",
+        "message": "<FieldMessage> doesn't accept that prop. Declared props: tone, id, dataOdId, children."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='FieldMessage'] > JSXAttribute[name.name='tone'] > Literal[value!=/^(?:hint|feil)$/]",
+        "message": "<FieldMessage> tone must be one of 'hint' | 'feil'."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='FilterPillOption'] > JSXAttribute > JSXIdentifier[name!=/^(?:value|label|count|key|ref|className|style|children)$/]",
+        "message": "<FilterPillOption> doesn't accept that prop. Declared props: value, label, count."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='FleksMerke'] > JSXAttribute > JSXIdentifier[name!=/^(?:kind|dataOdId|key|ref|className|style|children)$/]",
+        "message": "<FleksMerke> doesn't accept that prop. Declared props: kind, dataOdId."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='FleksMerke'] > JSXAttribute[name.name='kind'] > Literal[value!=/^(?:fleks|anker)$/]",
+        "message": "<FleksMerke> kind must be one of 'fleks' | 'anker'."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='FormField'] > JSXAttribute > JSXIdentifier[name!=/^(?:label|hint|error|required|density|htmlFor|dataOdId|children|key|ref|className|style|children)$/]",
+        "message": "<FormField> doesn't accept that prop. Declared props: label, hint, error, required, density, htmlFor, dataOdId, children."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='FormField'] > JSXAttribute[name.name='density'] > Literal[value!=/^(?:md|sm)$/]",
+        "message": "<FormField> density must be one of 'md' | 'sm'."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='GappingChart'] > JSXAttribute > JSXIdentifier[name!=/^(?:clubs|min|max|unit|window|state|emptyText|dataOdId|key|ref|className|style|children)$/]",
+        "message": "<GappingChart> doesn't accept that prop. Declared props: clubs, min, max, unit, window, state, emptyText, dataOdId."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='GappingChart'] > JSXAttribute[name.name='state'] > Literal[value!=/^(?:content|empty|loading|error)$/]",
+        "message": "<GappingChart> state must be one of 'content' | 'empty' | 'loading' | 'error'."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='GoalProgress'] > JSXAttribute > JSXIdentifier[name!=/^(?:label|value|target|unit|decimals|window|state|emptyText|dataOdId|key|ref|className|style|children)$/]",
+        "message": "<GoalProgress> doesn't accept that prop. Declared props: label, value, target, unit, decimals, window, state, emptyText, dataOdId."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='GoalProgress'] > JSXAttribute[name.name='state'] > Literal[value!=/^(?:content|empty|loading|error)$/]",
+        "message": "<GoalProgress> state must be one of 'content' | 'empty' | 'loading' | 'error'."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='HeatmapCelle'] > JSXAttribute > JSXIdentifier[name!=/^(?:v|label|key|ref|className|style|children)$/]",
+        "message": "<HeatmapCelle> doesn't accept that prop. Declared props: v, label."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='HjelpPopover'] > JSXAttribute > JSXIdentifier[name!=/^(?:title|children|align|dataOdId|key|ref|className|style|children)$/]",
+        "message": "<HjelpPopover> doesn't accept that prop. Declared props: title, children, align, dataOdId."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='HjelpPopover'] > JSXAttribute[name.name='align'] > Literal[value!=/^(?:venstre|hoyre)$/]",
+        "message": "<HjelpPopover> align must be one of 'venstre' | 'hoyre'."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='HoleStrip'] > JSXAttribute > JSXIdentifier[name!=/^(?:holes|window|state|emptyText|dataOdId|key|ref|className|style|children)$/]",
+        "message": "<HoleStrip> doesn't accept that prop. Declared props: holes, window, state, emptyText, dataOdId."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='HoleStrip'] > JSXAttribute[name.name='state'] > Literal[value!=/^(?:content|empty|loading|error)$/]",
+        "message": "<HoleStrip> state must be one of 'content' | 'empty' | 'loading' | 'error'."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Icon'] > JSXAttribute > JSXIdentifier[name!=/^(?:name|size|key|ref|className|style|children)$/]",
+        "message": "<Icon> doesn't accept that prop. Declared props: name, size."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='KanbanKolonne'] > JSXAttribute > JSXIdentifier[name!=/^(?:title|count|limit|action|emptyText|maxHeight|flat|children|dataOdId|key|ref|className|style|children)$/]",
+        "message": "<KanbanKolonne> doesn't accept that prop. Declared props: title, count, limit, action, emptyText, maxHeight, flat, children, dataOdId."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='KategoriFjellKategori'] > JSXAttribute > JSXIdentifier[name!=/^(?:label|value|krav|display|key|ref|className|style|children)$/]",
+        "message": "<KategoriFjellKategori> doesn't accept that prop. Declared props: label, value, krav, display."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='KategoriKrav'] > JSXAttribute > JSXIdentifier[name!=/^(?:label|current|required|met|key|ref|className|style|children)$/]",
+        "message": "<KategoriKrav> doesn't accept that prop. Declared props: label, current, required, met."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='KeyValuePair'] > JSXAttribute > JSXIdentifier[name!=/^(?:key|value|mono|key|ref|className|style|children)$/]",
+        "message": "<KeyValuePair> doesn't accept that prop. Declared props: key, value, mono."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='KolleStatRad'] > JSXAttribute > JSXIdentifier[name!=/^(?:label|value|key|ref|className|style|children)$/]",
+        "message": "<KolleStatRad> doesn't accept that prop. Declared props: label, value."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='KpiCard'] > JSXAttribute > JSXIdentifier[name!=/^(?:label|value|unit|window|delta|deltaBasis|decimals|tone|state|emptyText|dataOdId|key|ref|className|style|children)$/]",
+        "message": "<KpiCard> doesn't accept that prop. Declared props: label, value, unit, window, delta, deltaBasis, decimals, tone, state, emptyText, dataOdId."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='KpiCard'] > JSXAttribute[name.name='tone'] > Literal[value!=/^(?:up|dn)$/]",
+        "message": "<KpiCard> tone must be one of 'up' | 'dn'."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='KpiCard'] > JSXAttribute[name.name='state'] > Literal[value!=/^(?:content|empty|loading|error)$/]",
+        "message": "<KpiCard> state must be one of 'content' | 'empty' | 'loading' | 'error'."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='KpiStripeItem'] > JSXAttribute > JSXIdentifier[name!=/^(?:label|value|unit|window|delta|deltaBasis|decimals|key|ref|className|style|children)$/]",
+        "message": "<KpiStripeItem> doesn't accept that prop. Declared props: label, value, unit, window, delta, deltaBasis, decimals."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='LaunchParam'] > JSXAttribute > JSXIdentifier[name!=/^(?:label|value|display|windowMin|windowMax|windowDisplay|scaleMin|scaleMax|inWindow|key|ref|className|style|children)$/]",
+        "message": "<LaunchParam> doesn't accept that prop. Declared props: label, value, display, windowMin, windowMax, windowDisplay, scaleMin, scaleMax, inWindow."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='LengdeAvvikRad'] > JSXAttribute > JSXIdentifier[name!=/^(?:label|value|display|flagged|key|ref|className|style|children)$/]",
+        "message": "<LengdeAvvikRad> doesn't accept that prop. Declared props: label, value, display, flagged."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='LFaseBadge'] > JSXAttribute > JSXIdentifier[name!=/^(?:value|showSteps|dataOdId|key|ref|className|style|children)$/]",
+        "message": "<LFaseBadge> doesn't accept that prop. Declared props: value, showSteps, dataOdId."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='ListGroup'] > JSXAttribute > JSXIdentifier[name!=/^(?:label|dividers|as|dataOdId|children|key|ref|className|style|children)$/]",
+        "message": "<ListGroup> doesn't accept that prop. Declared props: label, dividers, as, dataOdId, children."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='ListGroup'] > JSXAttribute[name.name='as'] > Literal[value!=/^(?:ul|div)$/]",
+        "message": "<ListGroup> as must be one of 'ul' | 'div'."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='ListRowBadge'] > JSXAttribute > JSXIdentifier[name!=/^(?:text|kind|tone|dot|key|ref|className|style|children)$/]",
+        "message": "<ListRowBadge> doesn't accept that prop. Declared props: text, kind, tone, dot."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='ListRowBadge'] > JSXAttribute[name.name='kind'] > Literal[value!=/^(?:status|tag)$/]",
+        "message": "<ListRowBadge> kind must be one of 'status' | 'tag'."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='ListRowBadge'] > JSXAttribute[name.name='tone'] > Literal[value!=/^(?:up|warn|info|mut|ny)$/]",
+        "message": "<ListRowBadge> tone must be one of 'up' | 'warn' | 'info' | 'mut' | 'ny'."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='LiveBar'] > JSXAttribute > JSXIdentifier[name!=/^(?:mode|timeLabel|currentLabel|nextLabel|actions|flat|dataOdId|key|ref|className|style|children)$/]",
+        "message": "<LiveBar> doesn't accept that prop. Declared props: mode, timeLabel, currentLabel, nextLabel, actions, flat, dataOdId."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='LiveBar'] > JSXAttribute[name.name='mode'] > Literal[value!=/^(?:live|pause|slutt)$/]",
+        "message": "<LiveBar> mode must be one of 'live' | 'pause' | 'slutt'."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='LiveStatus'] > JSXAttribute > JSXIdentifier[name!=/^(?:mode|timeLabel|inverse|dataOdId|key|ref|className|style|children)$/]",
+        "message": "<LiveStatus> doesn't accept that prop. Declared props: mode, timeLabel, inverse, dataOdId."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='LiveStatus'] > JSXAttribute[name.name='mode'] > Literal[value!=/^(?:live|pause|slutt)$/]",
+        "message": "<LiveStatus> mode must be one of 'live' | 'pause' | 'slutt'."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='LoadChartItem'] > JSXAttribute > JSXIdentifier[name!=/^(?:label|value|display|key|ref|className|style|children)$/]",
+        "message": "<LoadChartItem> doesn't accept that prop. Declared props: label, value, display."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='MkalDag'] > JSXAttribute > JSXIdentifier[name!=/^(?:key|date|inMonth|today|events|key|ref|className|style|children)$/]",
+        "message": "<MkalDag> doesn't accept that prop. Declared props: key, date, inMonth, today, events."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Melding'] > JSXAttribute > JSXIdentifier[name!=/^(?:id|self|author|time|text|divider|key|ref|className|style|children)$/]",
+        "message": "<Melding> doesn't accept that prop. Declared props: id, self, author, time, text, divider."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Modal'] > JSXAttribute > JSXIdentifier[name!=/^(?:open|title|actions|onClose|dataOdId|children|key|ref|className|style|children)$/]",
+        "message": "<Modal> doesn't accept that prop. Declared props: open, title, actions, onClose, dataOdId, children."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='NesteFokusKort'] > JSXAttribute > JSXIdentifier[name!=/^(?:title|why|evidence|planNote|actions|compact|state|emptyText|dataOdId|key|ref|className|style|children)$/]",
+        "message": "<NesteFokusKort> doesn't accept that prop. Declared props: title, why, evidence, planNote, actions, compact, state, emptyText, dataOdId."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='NesteFokusKort'] > JSXAttribute[name.name='state'] > Literal[value!=/^(?:content|empty|loading|error)$/]",
+        "message": "<NesteFokusKort> state must be one of 'content' | 'empty' | 'loading' | 'error'."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='NivaStige'] > JSXAttribute > JSXIdentifier[name!=/^(?:levels|current|target|state|emptyText|dataOdId|key|ref|className|style|children)$/]",
+        "message": "<NivaStige> doesn't accept that prop. Declared props: levels, current, target, state, emptyText, dataOdId."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='NivaStige'] > JSXAttribute[name.name='state'] > Literal[value!=/^(?:content|empty|loading|error)$/]",
+        "message": "<NivaStige> state must be one of 'content' | 'empty' | 'loading' | 'error'."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='NowNextBlock'] > JSXAttribute > JSXIdentifier[name!=/^(?:title|meta|progress|key|ref|className|style|children)$/]",
+        "message": "<NowNextBlock> doesn't accept that prop. Declared props: title, meta, progress."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='OektKort'] > JSXAttribute > JSXIdentifier[name!=/^(?:title|timeLabel|focus|drills|status|statusLabel|footer|onClick|dataOdId|key|ref|className|style|children)$/]",
+        "message": "<OektKort> doesn't accept that prop. Declared props: title, timeLabel, focus, drills, status, statusLabel, footer, onClick, dataOdId."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='OektKort'] > JSXAttribute[name.name='status'] > Literal[value!=/^(?:planlagt|gjennomfort|avlyst)$/]",
+        "message": "<OektKort> status must be one of 'planlagt' | 'gjennomfort' | 'avlyst'."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='OneThingNow'] > JSXAttribute > JSXIdentifier[name!=/^(?:label|title|children|actions|dataOdId|key|ref|className|style|children)$/]",
+        "message": "<OneThingNow> doesn't accept that prop. Declared props: label, title, children, actions, dataOdId."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='PageHeader'] > JSXAttribute > JSXIdentifier[name!=/^(?:kicker|title|lead|meta|actions|level|dataOdId|key|ref|className|style|children)$/]",
+        "message": "<PageHeader> doesn't accept that prop. Declared props: kicker, title, lead, meta, actions, level, dataOdId."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Pagination'] > JSXAttribute > JSXIdentifier[name!=/^(?:page|pageCount|onChange|totalLabel|simple|label|dataOdId|key|ref|className|style|children)$/]",
+        "message": "<Pagination> doesn't accept that prop. Declared props: page, pageCount, onChange, totalLabel, simple, label, dataOdId."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Panel'] > JSXAttribute > JSXIdentifier[name!=/^(?:title|titleLevel|label|action|footnote|density|flush|bleed|dataOdId|children|key|ref|className|style|children)$/]",
+        "message": "<Panel> doesn't accept that prop. Declared props: title, titleLevel, label, action, footnote, density, flush, bleed, dataOdId, children."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Panel'] > JSXAttribute[name.name='density'] > Literal[value!=/^(?:md|sm)$/]",
+        "message": "<Panel> density must be one of 'md' | 'sm'."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='PercentileGauge'] > JSXAttribute > JSXIdentifier[name!=/^(?:value|label|cohort|state|emptyText|dataOdId|key|ref|className|style|children)$/]",
+        "message": "<PercentileGauge> doesn't accept that prop. Declared props: value, label, cohort, state, emptyText, dataOdId."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='PercentileGauge'] > JSXAttribute[name.name='state'] > Literal[value!=/^(?:content|empty|loading|error)$/]",
+        "message": "<PercentileGauge> state must be one of 'content' | 'empty' | 'loading' | 'error'."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Periode'] > JSXAttribute > JSXIdentifier[name!=/^(?:id|type|label|weeks|key|ref|className|style|children)$/]",
+        "message": "<Periode> doesn't accept that prop. Declared props: id, type, label, weeks."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='PersonalBest'] > JSXAttribute > JSXIdentifier[name!=/^(?:label|value|unit|date|context|state|emptyText|dataOdId|key|ref|className|style|children)$/]",
+        "message": "<PersonalBest> doesn't accept that prop. Declared props: label, value, unit, date, context, state, emptyText, dataOdId."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='PersonalBest'] > JSXAttribute[name.name='state'] > Literal[value!=/^(?:content|empty|loading|error)$/]",
+        "message": "<PersonalBest> state must be one of 'content' | 'empty' | 'loading' | 'error'."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Popover'] > JSXAttribute > JSXIdentifier[name!=/^(?:trigger|title|label|footer|align|side|wide|open|defaultOpen|onOpenChange|dataOdId|children|key|ref|className|style|children)$/]",
+        "message": "<Popover> doesn't accept that prop. Declared props: trigger, title, label, footer, align, side, wide, open, defaultOpen, onOpenChange, dataOdId, children."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Popover'] > JSXAttribute[name.name='align'] > Literal[value!=/^(?:auto|left|right)$/]",
+        "message": "<Popover> align must be one of 'auto' | 'left' | 'right'."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Popover'] > JSXAttribute[name.name='side'] > Literal[value!=/^(?:bottom|top)$/]",
+        "message": "<Popover> side must be one of 'bottom' | 'top'."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='PositionMarker'] > JSXAttribute > JSXIdentifier[name!=/^(?:label|pct|active|onSelect|dataOdId|key|ref|className|style|children)$/]",
+        "message": "<PositionMarker> doesn't accept that prop. Declared props: label, pct, active, onSelect, dataOdId."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='PPositionRail'] > JSXAttribute > JSXIdentifier[name!=/^(?:value|window|onSelect|hideLabels|note|state|emptyText|dataOdId|key|ref|className|style|children)$/]",
+        "message": "<PPositionRail> doesn't accept that prop. Declared props: value, window, onSelect, hideLabels, note, state, emptyText, dataOdId."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='PPositionRail'] > JSXAttribute[name.name='state'] > Literal[value!=/^(?:content|empty|loading|error)$/]",
+        "message": "<PPositionRail> state must be one of 'content' | 'empty' | 'loading' | 'error'."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='ProgramLadderStep'] > JSXAttribute > JSXIdentifier[name!=/^(?:title|meta|status|action|key|ref|className|style|children)$/]",
+        "message": "<ProgramLadderStep> doesn't accept that prop. Declared props: title, meta, status, action."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='ProgramLadderStep'] > JSXAttribute[name.name='status'] > Literal[value!=/^(?:done|active|locked)$/]",
+        "message": "<ProgramLadderStep> status must be one of 'done' | 'active' | 'locked'."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='ProgressBar'] > JSXAttribute > JSXIdentifier[name!=/^(?:value|max|label|valueText|tone|size|dataOdId|key|ref|className|style|children)$/]",
+        "message": "<ProgressBar> doesn't accept that prop. Declared props: value, max, label, valueText, tone, size, dataOdId."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='ProgressBar'] > JSXAttribute[name.name='tone'] > Literal[value!=/^(?:ink|up|warn)$/]",
+        "message": "<ProgressBar> tone must be one of 'ink' | 'up' | 'warn'."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='ProgressBar'] > JSXAttribute[name.name='size'] > Literal[value!=/^(?:md|lg)$/]",
+        "message": "<ProgressBar> size must be one of 'md' | 'lg'."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='ProvenanceRun'] > JSXAttribute > JSXIdentifier[name!=/^(?:at|duration|id|key|ref|className|style|children)$/]",
+        "message": "<ProvenanceRun> doesn't accept that prop. Declared props: at, duration, id."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='PuttLab'] > JSXAttribute > JSXIdentifier[name!=/^(?:buckets|window|state|emptyText|dataOdId|key|ref|className|style|children)$/]",
+        "message": "<PuttLab> doesn't accept that prop. Declared props: buckets, window, state, emptyText, dataOdId."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='PuttLab'] > JSXAttribute[name.name='state'] > Literal[value!=/^(?:content|empty|loading|error)$/]",
+        "message": "<PuttLab> state must be one of 'content' | 'empty' | 'loading' | 'error'."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='PuttModellRad'] > JSXAttribute > JSXIdentifier[name!=/^(?:ft|pct|display|ref|refDisplay|key|ref|className|style|children)$/]",
+        "message": "<PuttModellRad> doesn't accept that prop. Declared props: ft, pct, display, ref, refDisplay."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='PyramideFasettItem'] > JSXAttribute > JSXIdentifier[name!=/^(?:area|value|display|key|ref|className|style|children)$/]",
+        "message": "<PyramideFasettItem> doesn't accept that prop. Declared props: area, value, display."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='PyramidProgress'] > JSXAttribute > JSXIdentifier[name!=/^(?:levels|state|emptyText|dataOdId|key|ref|className|style|children)$/]",
+        "message": "<PyramidProgress> doesn't accept that prop. Declared props: levels, state, emptyText, dataOdId."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='PyramidProgress'] > JSXAttribute[name.name='state'] > Literal[value!=/^(?:content|empty|loading|error)$/]",
+        "message": "<PyramidProgress> state must be one of 'content' | 'empty' | 'loading' | 'error'."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='QueueCard'] > JSXAttribute > JSXIdentifier[name!=/^(?:sender|kind|age|title|children|status|statusTone|primaryLabel|onPrimary|secondaryLabel|onSecondary|snoozeLabel|onSnooze|snoozedUntil|onUnsnooze|unsnoozeLabel|first|provenance|provenanceOpen|state|emptyText|dataOdId|key|ref|className|style|children)$/]",
+        "message": "<QueueCard> doesn't accept that prop. Declared props: sender, kind, age, title, children, status, statusTone, primaryLabel, onPrimary, secondaryLabel, onSecondary, snoozeLabel, onSnooze, snoozedUntil, onUnsnooze, unsnoozeLabel, first, provenance, provenanceOpen, state, emptyText, dataOdId."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='QueueCard'] > JSXAttribute[name.name='statusTone'] > Literal[value!=/^(?:up|warn|info|mut|ny)$/]",
+        "message": "<QueueCard> statusTone must be one of 'up' | 'warn' | 'info' | 'mut' | 'ny'."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='QueueCard'] > JSXAttribute[name.name='state'] > Literal[value!=/^(?:content|empty|loading|error)$/]",
+        "message": "<QueueCard> state must be one of 'content' | 'empty' | 'loading' | 'error'."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='QuickLink'] > JSXAttribute > JSXIdentifier[name!=/^(?:id|text|href|onClick|key|ref|className|style|children)$/]",
+        "message": "<QuickLink> doesn't accept that prop. Declared props: id, text, href, onClick."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='RadioOption'] > JSXAttribute > JSXIdentifier[name!=/^(?:value|label|note|disabled|key|ref|className|style|children)$/]",
+        "message": "<RadioOption> doesn't accept that prop. Declared props: value, label, note, disabled."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='RailItem'] > JSXAttribute > JSXIdentifier[name!=/^(?:id|label|icon|key|ref|className|style|children)$/]",
+        "message": "<RailItem> doesn't accept that prop. Declared props: id, label, icon."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='ScoreGaugeSub'] > JSXAttribute > JSXIdentifier[name!=/^(?:label|value|unit|window|key|ref|className|style|children)$/]",
+        "message": "<ScoreGaugeSub> doesn't accept that prop. Declared props: label, value, unit, window."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='ScorekortHull'] > JSXAttribute > JSXIdentifier[name!=/^(?:par|score|key|ref|className|style|children)$/]",
+        "message": "<ScorekortHull> doesn't accept that prop. Declared props: par, score."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='SearchField'] > JSXAttribute > JSXIdentifier[name!=/^(?:label|placeholder|hint|dataOdId|key|ref|className|style|children)$/]",
+        "message": "<SearchField> doesn't accept that prop. Declared props: label, placeholder, hint, dataOdId."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='SectionHeader'] > JSXAttribute > JSXIdentifier[name!=/^(?:title|count|level|action|dataOdId|key|ref|className|style|children)$/]",
+        "message": "<SectionHeader> doesn't accept that prop. Declared props: title, count, level, action, dataOdId."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='SectionLabel'] > JSXAttribute > JSXIdentifier[name!=/^(?:as|id|dataOdId|children|key|ref|className|style|children)$/]",
+        "message": "<SectionLabel> doesn't accept that prop. Declared props: as, id, dataOdId, children."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='SectionLabel'] > JSXAttribute[name.name='as'] > Literal[value!=/^(?:span|div|p)$/]",
+        "message": "<SectionLabel> as must be one of 'span' | 'div' | 'p'."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='SegmentControl'] > JSXAttribute > JSXIdentifier[name!=/^(?:options|value|onChange|disabled|dataOdId|key|ref|className|style|children)$/]",
+        "message": "<SegmentControl> doesn't accept that prop. Declared props: options, value, onChange, disabled, dataOdId."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='SelectOption'] > JSXAttribute > JSXIdentifier[name!=/^(?:value|label|disabled|key|ref|className|style|children)$/]",
+        "message": "<SelectOption> doesn't accept that prop. Declared props: value, label, disabled."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='SessionCard'] > JSXAttribute > JSXIdentifier[name!=/^(?:time|area|title|formula|duration|participants|locked|recurring|draft|selected|compact|note|onClick|dataOdId|key|ref|className|style|children)$/]",
+        "message": "<SessionCard> doesn't accept that prop. Declared props: time, area, title, formula, duration, participants, locked, recurring, draft, selected, compact, note, onClick, dataOdId."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='SessionCard'] > JSXAttribute[name.name='area'] > Literal[value!=/^(?:FYS|TEK|SLAG|SPILL|TURN)$/]",
+        "message": "<SessionCard> area must be one of 'FYS' | 'TEK' | 'SLAG' | 'SPILL' | 'TURN'."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='SgBar'] > JSXAttribute > JSXIdentifier[name!=/^(?:label|value|benchmark|max|dataOdId|key|ref|className|style|children)$/]",
+        "message": "<SgBar> doesn't accept that prop. Declared props: label, value, benchmark, max, dataOdId."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='SgTotalKort'] > JSXAttribute > JSXIdentifier[name!=/^(?:value|delta|deltaBasis|basis|compact|state|emptyText|dataOdId|key|ref|className|style|children)$/]",
+        "message": "<SgTotalKort> doesn't accept that prop. Declared props: value, delta, deltaBasis, basis, compact, state, emptyText, dataOdId."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='SgTotalKort'] > JSXAttribute[name.name='state'] > Literal[value!=/^(?:content|empty|loading|error)$/]",
+        "message": "<SgTotalKort> state must be one of 'content' | 'empty' | 'loading' | 'error'."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Skeleton'] > JSXAttribute > JSXIdentifier[name!=/^(?:variant|width|height|lines|radius|dataOdId|key|ref|className|style|children)$/]",
+        "message": "<Skeleton> doesn't accept that prop. Declared props: variant, width, height, lines, radius, dataOdId."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Skeleton'] > JSXAttribute[name.name='variant'] > Literal[value!=/^(?:block|text|circle|number)$/]",
+        "message": "<Skeleton> variant must be one of 'block' | 'text' | 'circle' | 'number'."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='SkillRadarLive'] > JSXAttribute > JSXIdentifier[name!=/^(?:axes|now|target|previous|size|state|emptyText|dataOdId|key|ref|className|style|children)$/]",
+        "message": "<SkillRadarLive> doesn't accept that prop. Declared props: axes, now, target, previous, size, state, emptyText, dataOdId."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='SkillRadarLive'] > JSXAttribute[name.name='state'] > Literal[value!=/^(?:content|empty|loading|error)$/]",
+        "message": "<SkillRadarLive> state must be one of 'content' | 'empty' | 'loading' | 'error'."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='SkipLink'] > JSXAttribute > JSXIdentifier[name!=/^(?:href|children|dataOdId|key|ref|className|style|children)$/]",
+        "message": "<SkipLink> doesn't accept that prop. Declared props: href, children, dataOdId."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='LekkasjeRad'] > JSXAttribute > JSXIdentifier[name!=/^(?:label|sg|display|key|ref|className|style|children)$/]",
+        "message": "<LekkasjeRad> doesn't accept that prop. Declared props: label, sg, display."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Slider'] > JSXAttribute > JSXIdentifier[name!=/^(?:min|max|step|value|onChange|unit|note|scale|tone|disabled|dataOdId|key|ref|className|style|children)$/]",
+        "message": "<Slider> doesn't accept that prop. Declared props: min, max, step, value, onChange, unit, note, scale, tone, disabled, dataOdId."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Slider'] > JSXAttribute[name.name='tone'] > Literal[value!=/^(?:up|dn)$/]",
+        "message": "<Slider> tone must be one of 'up' | 'dn'."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Sparkline'] > JSXAttribute > JSXIdentifier[name!=/^(?:data|color|width|height|state|emptyText|dataOdId|key|ref|className|style|children)$/]",
+        "message": "<Sparkline> doesn't accept that prop. Declared props: data, color, width, height, state, emptyText, dataOdId."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Sparkline'] > JSXAttribute[name.name='color'] > Literal[value!=/^(?:info|up)$/]",
+        "message": "<Sparkline> color must be one of 'info' | 'up'."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Sparkline'] > JSXAttribute[name.name='state'] > Literal[value!=/^(?:content|empty|loading|error)$/]",
+        "message": "<Sparkline> state must be one of 'content' | 'empty' | 'loading' | 'error'."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='SgvxItem'] > JSXAttribute > JSXIdentifier[name!=/^(?:key|label|group|count|key|ref|className|style|children)$/]",
+        "message": "<SgvxItem> doesn't accept that prop. Declared props: key, label, group, count."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='SpillerKort'] > JSXAttribute > JSXIdentifier[name!=/^(?:name|category|meta|kpiValue|kpiLabel|badge|badgeTone|flat|onClick|dataOdId|key|ref|className|style|children)$/]",
+        "message": "<SpillerKort> doesn't accept that prop. Declared props: name, category, meta, kpiValue, kpiLabel, badge, badgeTone, flat, onClick, dataOdId."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='SpillerKort'] > JSXAttribute[name.name='badgeTone'] > Literal[value!=/^(?:up|warn|info|mut|ny)$/]",
+        "message": "<SpillerKort> badgeTone must be one of 'up' | 'warn' | 'info' | 'mut' | 'ny'."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='TilstandFelt'] > JSXAttribute > JSXIdentifier[name!=/^(?:label|value|tone|key|ref|className|style|children)$/]",
+        "message": "<TilstandFelt> doesn't accept that prop. Declared props: label, value, tone."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='TilstandFelt'] > JSXAttribute[name.name='tone'] > Literal[value!=/^(?:up|dn|mut)$/]",
+        "message": "<TilstandFelt> tone must be one of 'up' | 'dn' | 'mut'."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='StatusBadge'] > JSXAttribute > JSXIdentifier[name!=/^(?:kind|tone|dot|dataOdId|children|key|ref|className|style|children)$/]",
+        "message": "<StatusBadge> doesn't accept that prop. Declared props: kind, tone, dot, dataOdId, children."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='StatusBadge'] > JSXAttribute[name.name='kind'] > Literal[value!=/^(?:status|tag)$/]",
+        "message": "<StatusBadge> kind must be one of 'status' | 'tag'."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='StatusBadge'] > JSXAttribute[name.name='tone'] > Literal[value!=/^(?:up|warn|info|mut|ny)$/]",
+        "message": "<StatusBadge> tone must be one of 'up' | 'warn' | 'info' | 'mut' | 'ny'."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='StatusBarItem'] > JSXAttribute > JSXIdentifier[name!=/^(?:id|label|value|tone|onClick|key|ref|className|style|children)$/]",
+        "message": "<StatusBarItem> doesn't accept that prop. Declared props: id, label, value, tone, onClick."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='StatusBarItem'] > JSXAttribute[name.name='tone'] > Literal[value!=/^(?:up|dn|info)$/]",
+        "message": "<StatusBarItem> tone must be one of 'up' | 'dn' | 'info'."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='StatusCircleRowItem'] > JSXAttribute > JSXIdentifier[name!=/^(?:title|meta|status|right|key|ref|className|style|children)$/]",
+        "message": "<StatusCircleRowItem> doesn't accept that prop. Declared props: title, meta, status, right."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='StatusCircleRowItem'] > JSXAttribute[name.name='status'] > Literal[value!=/^(?:done|active|todo)$/]",
+        "message": "<StatusCircleRowItem> status must be one of 'done' | 'active' | 'todo'."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='StepperStep'] > JSXAttribute > JSXIdentifier[name!=/^(?:id|label|key|ref|className|style|children)$/]",
+        "message": "<StepperStep> doesn't accept that prop. Declared props: id, label."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='StickyActionBar'] > JSXAttribute > JSXIdentifier[name!=/^(?:note|children|stack|dataOdId|key|ref|className|style|children)$/]",
+        "message": "<StickyActionBar> doesn't accept that prop. Declared props: note, children, stack, dataOdId."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='StrikeSmashKort'] > JSXAttribute > JSXIdentifier[name!=/^(?:smash|smashTarget|club|heel|center|toe|basis|compact|state|emptyText|dataOdId|key|ref|className|style|children)$/]",
+        "message": "<StrikeSmashKort> doesn't accept that prop. Declared props: smash, smashTarget, club, heel, center, toe, basis, compact, state, emptyText, dataOdId."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='StrikeSmashKort'] > JSXAttribute[name.name='state'] > Literal[value!=/^(?:content|empty|loading|error)$/]",
+        "message": "<StrikeSmashKort> state must be one of 'content' | 'empty' | 'loading' | 'error'."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='TabBarItem'] > JSXAttribute > JSXIdentifier[name!=/^(?:id|label|icon|disabled|key|ref|className|style|children)$/]",
+        "message": "<TabBarItem> doesn't accept that prop. Declared props: id, label, icon, disabled."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='TabDef'] > JSXAttribute > JSXIdentifier[name!=/^(?:id|label|count|key|ref|className|style|children)$/]",
+        "message": "<TabDef> doesn't accept that prop. Declared props: id, label, count."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Textarea'] > JSXAttribute > JSXIdentifier[name!=/^(?:rows|density|dataOdId|key|ref|className|style|children)$/]",
+        "message": "<Textarea> doesn't accept that prop. Declared props: rows, density, dataOdId."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Textarea'] > JSXAttribute[name.name='density'] > Literal[value!=/^(?:md|sm)$/]",
+        "message": "<Textarea> density must be one of 'md' | 'sm'."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='TextInput'] > JSXAttribute > JSXIdentifier[name!=/^(?:density|dataOdId|key|ref|className|style|children)$/]",
+        "message": "<TextInput> doesn't accept that prop. Declared props: density, dataOdId."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='TextInput'] > JSXAttribute[name.name='density'] > Literal[value!=/^(?:md|sm)$/]",
+        "message": "<TextInput> density must be one of 'md' | 'sm'."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='ThemeToggle'] > JSXAttribute > JSXIdentifier[name!=/^(?:storageKey|target|dataOdId|key|ref|className|style|children)$/]",
+        "message": "<ThemeToggle> doesn't accept that prop. Declared props: storageKey, target, dataOdId."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='TidslinjeItem'] > JSXAttribute > JSXIdentifier[name!=/^(?:id|time|title|body|value|tone|key|ref|className|style|children)$/]",
+        "message": "<TidslinjeItem> doesn't accept that prop. Declared props: id, time, title, body, value, tone."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='TidslinjeItem'] > JSXAttribute[name.name='tone'] > Literal[value!=/^(?:up|dn|info|naa)$/]",
+        "message": "<TidslinjeItem> tone must be one of 'up' | 'dn' | 'info' | 'naa'."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='TigerFiveKort'] > JSXAttribute > JSXIdentifier[name!=/^(?:counts|basis|state|emptyText|dataOdId|key|ref|className|style|children)$/]",
+        "message": "<TigerFiveKort> doesn't accept that prop. Declared props: counts, basis, state, emptyText, dataOdId."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='TigerFiveKort'] > JSXAttribute[name.name='state'] > Literal[value!=/^(?:content|empty|loading|error)$/]",
+        "message": "<TigerFiveKort> state must be one of 'content' | 'empty' | 'loading' | 'error'."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='TimeGridDay'] > JSXAttribute > JSXIdentifier[name!=/^(?:label|date|today|key|ref|className|style|children)$/]",
+        "message": "<TimeGridDay> doesn't accept that prop. Declared props: label, date, today."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Toast'] > JSXAttribute > JSXIdentifier[name!=/^(?:inline|tone|duration|onDone|dataOdId|children|key|ref|className|style|children)$/]",
+        "message": "<Toast> doesn't accept that prop. Declared props: inline, tone, duration, onDone, dataOdId, children."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Toast'] > JSXAttribute[name.name='tone'] > Literal[value!=/^(?:neutral|ok|warn|info)$/]",
+        "message": "<Toast> tone must be one of 'neutral' | 'ok' | 'warn' | 'info'."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Toggle'] > JSXAttribute > JSXIdentifier[name!=/^(?:checked|onChange|label|disabled|dataOdId|key|ref|className|style|children)$/]",
+        "message": "<Toggle> doesn't accept that prop. Declared props: checked, onChange, label, disabled, dataOdId."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Tooltip'] > JSXAttribute > JSXIdentifier[name!=/^(?:text|kbd|side|delay|open|dataOdId|children|key|ref|className|style|children)$/]",
+        "message": "<Tooltip> doesn't accept that prop. Declared props: text, kbd, side, delay, open, dataOdId, children."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Tooltip'] > JSXAttribute[name.name='side'] > Literal[value!=/^(?:top|bottom)$/]",
+        "message": "<Tooltip> side must be one of 'top' | 'bottom'."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Topbar'] > JSXAttribute > JSXIdentifier[name!=/^(?:left|searchPlaceholder|searchDisabled|theme|onToggleTheme|actions|dataOdId|key|ref|className|style|children)$/]",
+        "message": "<Topbar> doesn't accept that prop. Declared props: left, searchPlaceholder, searchDisabled, theme, onToggleTheme, actions, dataOdId."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Topbar'] > JSXAttribute[name.name='theme'] > Literal[value!=/^(?:light|dark)$/]",
+        "message": "<Topbar> theme must be one of 'light' | 'dark'."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='TmsFelt'] > JSXAttribute > JSXIdentifier[name!=/^(?:label|value|key|ref|className|style|children)$/]",
+        "message": "<TmsFelt> doesn't accept that prop. Declared props: label, value."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='TrajShot'] > JSXAttribute > JSXIdentifier[name!=/^(?:carry|apex|key|ref|className|style|children)$/]",
+        "message": "<TrajShot> doesn't accept that prop. Declared props: carry, apex."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='TrendBand'] > JSXAttribute > JSXIdentifier[name!=/^(?:data|band|pbIndex|unit|window|width|height|state|emptyText|dataOdId|key|ref|className|style|children)$/]",
+        "message": "<TrendBand> doesn't accept that prop. Declared props: data, band, pbIndex, unit, window, width, height, state, emptyText, dataOdId."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='TrendBand'] > JSXAttribute[name.name='state'] > Literal[value!=/^(?:content|empty|loading|error)$/]",
+        "message": "<TrendBand> state must be one of 'content' | 'empty' | 'loading' | 'error'."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='TurneringNedtelling'] > JSXAttribute > JSXIdentifier[name!=/^(?:daysLeft|name|meta|deadlineLabel|state|emptyText|dataOdId|key|ref|className|style|children)$/]",
+        "message": "<TurneringNedtelling> doesn't accept that prop. Declared props: daysLeft, name, meta, deadlineLabel, state, emptyText, dataOdId."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='TurneringNedtelling'] > JSXAttribute[name.name='state'] > Literal[value!=/^(?:content|empty|loading|error)$/]",
+        "message": "<TurneringNedtelling> state must be one of 'content' | 'empty' | 'loading' | 'error'."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='UkeKalender'] > JSXAttribute > JSXIdentifier[name!=/^(?:weekLabel|rangeLabel|onPrev|onNext|onToday|toolbar|state|emptyText|compact|dataOdId|children|key|ref|className|style|children)$/]",
+        "message": "<UkeKalender> doesn't accept that prop. Declared props: weekLabel, rangeLabel, onPrev, onNext, onToday, toolbar, state, emptyText, compact, dataOdId, children."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='UkeKalender'] > JSXAttribute[name.name='state'] > Literal[value!=/^(?:content|empty|loading|error)$/]",
+        "message": "<UkeKalender> state must be one of 'content' | 'empty' | 'loading' | 'error'."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='VelvaereFelt'] > JSXAttribute > JSXIdentifier[name!=/^(?:label|value|key|ref|className|style|children)$/]",
+        "message": "<VelvaereFelt> doesn't accept that prop. Declared props: label, value."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='VideoScrubber'] > JSXAttribute > JSXIdentifier[name!=/^(?:value|max|onChange|currentLabel|endLabel|markers|compact|dataOdId|key|ref|className|style|children)$/]",
+        "message": "<VideoScrubber> doesn't accept that prop. Declared props: value, max, onChange, currentLabel, endLabel, markers, compact, dataOdId."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='VisningsVelger'] > JSXAttribute > JSXIdentifier[name!=/^(?:value|onChange|views|block|dataOdId|key|ref|className|style|children)$/]",
+        "message": "<VisningsVelger> doesn't accept that prop. Declared props: value, onChange, views, block, dataOdId."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='YtlEvent'] > JSXAttribute > JSXIdentifier[name!=/^(?:type|label|key|ref|className|style|children)$/]",
+        "message": "<YtlEvent> doesn't accept that prop. Declared props: type, label."
+      }
+    ]
+  },
+  "overrides": [
+    {
+      "files": [
+        "**/index.js"
+      ],
+      "rules": {
+        "no-restricted-imports": "off"
+      }
+    }
+  ],
+  "x-omelette": {
+    "components": {
+      "AccordionItem": {
+        "replaces": []
+      },
+      "AgendaRow": {
+        "replaces": []
+      },
+      "AiRecapDelta": {
+        "replaces": []
+      },
+      "AiTipCard": {
+        "replaces": []
+      },
+      "AKFormelChip": {
+        "replaces": []
+      },
+      "AfbSegment": {
+        "replaces": []
+      },
+      "Avatar": {
+        "replaces": []
+      },
+      "Banner": {
+        "replaces": []
+      },
+      "BarChartItem": {
+        "replaces": []
+      },
+      "BenchmarkBadge": {
+        "replaces": []
+      },
+      "BottomSheet": {
+        "replaces": []
+      },
+      "BreadcrumbItem": {
+        "replaces": []
+      },
+      "BudgetDistribution": {
+        "replaces": []
+      },
+      "Button": {
+        "replaces": []
+      },
+      "Callout": {
+        "replaces": []
+      },
+      "CardGrid": {
+        "replaces": []
+      },
+      "Checkbox": {
+        "replaces": []
+      },
+      "Chip": {
+        "replaces": []
+      },
+      "CodeInput": {
+        "replaces": []
+      },
+      "ComboboxOption": {
+        "replaces": []
+      },
+      "CommandItem": {
+        "replaces": []
+      },
+      "ComparePair": {
+        "replaces": []
+      },
+      "ComposerContext": {
+        "replaces": []
+      },
+      "ConfirmDialog": {
+        "replaces": []
+      },
+      "DataPreview": {
+        "replaces": []
+      },
+      "DataTableColumn": {
+        "replaces": []
+      },
+      "DatePicker": {
+        "replaces": []
+      },
+      "DayStripDag": {
+        "replaces": []
+      },
+      "DiagnoseKort": {
+        "replaces": []
+      },
+      "DiffRad": {
+        "replaces": []
+      },
+      "DispersionMap": {
+        "replaces": []
+      },
+      "Divider": {
+        "replaces": []
+      },
+      "DotMatrixRow": {
+        "replaces": []
+      },
+      "Drawer": {
+        "replaces": []
+      },
+      "DropdownItem": {
+        "replaces": []
+      },
+      "EmptyState": {
+        "replaces": []
+      },
+      "FAB": {
+        "replaces": []
+      },
+      "FeaturedCard": {
+        "replaces": []
+      },
+      "FieldMessage": {
+        "replaces": []
+      },
+      "FilterPillOption": {
+        "replaces": []
+      },
+      "FleksMerke": {
+        "replaces": []
+      },
+      "FormField": {
+        "replaces": []
+      },
+      "GappingChart": {
+        "replaces": []
+      },
+      "GoalProgress": {
+        "replaces": []
+      },
+      "HeatmapCelle": {
+        "replaces": []
+      },
+      "HjelpPopover": {
+        "replaces": []
+      },
+      "HoleStrip": {
+        "replaces": []
+      },
+      "Icon": {
+        "replaces": []
+      },
+      "KanbanKolonne": {
+        "replaces": []
+      },
+      "KategoriFjellKategori": {
+        "replaces": []
+      },
+      "KategoriKrav": {
+        "replaces": []
+      },
+      "KeyValuePair": {
+        "replaces": []
+      },
+      "KolleStatRad": {
+        "replaces": []
+      },
+      "KpiCard": {
+        "replaces": []
+      },
+      "KpiStripeItem": {
+        "replaces": []
+      },
+      "LaunchParam": {
+        "replaces": []
+      },
+      "LengdeAvvikRad": {
+        "replaces": []
+      },
+      "LFaseBadge": {
+        "replaces": []
+      },
+      "ListGroup": {
+        "replaces": []
+      },
+      "ListRowBadge": {
+        "replaces": []
+      },
+      "LiveBar": {
+        "replaces": []
+      },
+      "LiveStatus": {
+        "replaces": []
+      },
+      "LoadChartItem": {
+        "replaces": []
+      },
+      "MkalDag": {
+        "replaces": []
+      },
+      "Melding": {
+        "replaces": []
+      },
+      "Modal": {
+        "replaces": []
+      },
+      "NesteFokusKort": {
+        "replaces": []
+      },
+      "NivaStige": {
+        "replaces": []
+      },
+      "NowNextBlock": {
+        "replaces": []
+      },
+      "OektKort": {
+        "replaces": []
+      },
+      "OneThingNow": {
+        "replaces": []
+      },
+      "PageHeader": {
+        "replaces": []
+      },
+      "Pagination": {
+        "replaces": []
+      },
+      "Panel": {
+        "replaces": []
+      },
+      "PercentileGauge": {
+        "replaces": []
+      },
+      "Periode": {
+        "replaces": []
+      },
+      "PersonalBest": {
+        "replaces": []
+      },
+      "Popover": {
+        "replaces": []
+      },
+      "PositionMarker": {
+        "replaces": []
+      },
+      "PPositionRail": {
+        "replaces": []
+      },
+      "ProgramLadderStep": {
+        "replaces": []
+      },
+      "ProgressBar": {
+        "replaces": []
+      },
+      "ProvenanceRun": {
+        "replaces": []
+      },
+      "PuttLab": {
+        "replaces": []
+      },
+      "PuttModellRad": {
+        "replaces": []
+      },
+      "PyramideFasettItem": {
+        "replaces": []
+      },
+      "PyramidProgress": {
+        "replaces": []
+      },
+      "QueueCard": {
+        "replaces": []
+      },
+      "QuickLink": {
+        "replaces": []
+      },
+      "RadioOption": {
+        "replaces": []
+      },
+      "RailItem": {
+        "replaces": []
+      },
+      "ScoreGaugeSub": {
+        "replaces": []
+      },
+      "ScorekortHull": {
+        "replaces": []
+      },
+      "SearchField": {
+        "replaces": []
+      },
+      "SectionHeader": {
+        "replaces": []
+      },
+      "SectionLabel": {
+        "replaces": []
+      },
+      "SegmentControl": {
+        "replaces": []
+      },
+      "SelectOption": {
+        "replaces": []
+      },
+      "SessionCard": {
+        "replaces": []
+      },
+      "SgBar": {
+        "replaces": []
+      },
+      "SgTotalKort": {
+        "replaces": []
+      },
+      "Skeleton": {
+        "replaces": []
+      },
+      "SkillRadarLive": {
+        "replaces": []
+      },
+      "SkipLink": {
+        "replaces": []
+      },
+      "LekkasjeRad": {
+        "replaces": []
+      },
+      "Slider": {
+        "replaces": []
+      },
+      "Sparkline": {
+        "replaces": []
+      },
+      "SgvxItem": {
+        "replaces": []
+      },
+      "SpillerKort": {
+        "replaces": []
+      },
+      "TilstandFelt": {
+        "replaces": []
+      },
+      "StatusBadge": {
+        "replaces": []
+      },
+      "StatusBarItem": {
+        "replaces": []
+      },
+      "StatusCircleRowItem": {
+        "replaces": []
+      },
+      "StepperStep": {
+        "replaces": []
+      },
+      "StickyActionBar": {
+        "replaces": []
+      },
+      "StrikeSmashKort": {
+        "replaces": []
+      },
+      "TabBarItem": {
+        "replaces": []
+      },
+      "TabDef": {
+        "replaces": []
+      },
+      "Textarea": {
+        "replaces": []
+      },
+      "TextInput": {
+        "replaces": []
+      },
+      "ThemeToggle": {
+        "replaces": []
+      },
+      "TidslinjeItem": {
+        "replaces": []
+      },
+      "TigerFiveKort": {
+        "replaces": []
+      },
+      "TimeGridDay": {
+        "replaces": []
+      },
+      "Toast": {
+        "replaces": []
+      },
+      "Toggle": {
+        "replaces": []
+      },
+      "Tooltip": {
+        "replaces": []
+      },
+      "Topbar": {
+        "replaces": []
+      },
+      "TmsFelt": {
+        "replaces": []
+      },
+      "TrajShot": {
+        "replaces": []
+      },
+      "TrendBand": {
+        "replaces": []
+      },
+      "TurneringNedtelling": {
+        "replaces": []
+      },
+      "UkeKalender": {
+        "replaces": []
+      },
+      "VelvaereFelt": {
+        "replaces": []
+      },
+      "VideoScrubber": {
+        "replaces": []
+      },
+      "VisningsVelger": {
+        "replaces": []
+      },
+      "YtlEvent": {
+        "replaces": []
+      }
+    },
+    "tokens": [
+      "--accent",
+      "--accent-cactus",
+      "--accent-coral",
+      "--accent-deep",
+      "--accent-fg",
+      "--accent-fig",
+      "--accent-heather",
+      "--accent-olive",
+      "--accent-sky",
+      "--accent-soft",
+      "--bg",
+      "--body",
+      "--border",
+      "--cta",
+      "--cta-hover",
+      "--disp",
+      "--dn",
+      "--dur",
+      "--dur-slow",
+      "--ease",
+      "--fg",
+      "--floor",
+      "--focus",
+      "--font-mono",
+      "--font-sans",
+      "--font-serif",
+      "--hairline",
+      "--info",
+      "--info-raw",
+      "--ink-soft",
+      "--inverse",
+      "--logo-dot",
+      "--logo-mark",
+      "--mid",
+      "--mono",
+      "--muted",
+      "--on-accent",
+      "--on-cta",
+      "--r",
+      "--r-lg",
+      "--r-md",
+      "--r-none",
+      "--r-pill",
+      "--r-sm",
+      "--rail",
+      "--rail-active",
+      "--rail-fg",
+      "--rail-hover",
+      "--rail-on",
+      "--s1",
+      "--s2",
+      "--s3",
+      "--s4",
+      "--s5",
+      "--s6",
+      "--s7",
+      "--s8",
+      "--s9",
+      "--scrim",
+      "--shadow",
+      "--shadow-none",
+      "--soft",
+      "--soft-hover",
+      "--surface",
+      "--surface-kraft",
+      "--surface-manilla",
+      "--surface-warm",
+      "--tap",
+      "--tap-capture",
+      "--tap-lg",
+      "--text-body-agency",
+      "--text-body-player",
+      "--text-card",
+      "--text-display",
+      "--text-eyebrow",
+      "--text-hero",
+      "--text-kpi",
+      "--text-label",
+      "--text-nav",
+      "--text-panel",
+      "--text-prose",
+      "--text-prose-lg",
+      "--text-section",
+      "--text-tertiary",
+      "--text-title",
+      "--ui",
+      "--up",
+      "--up-raw",
+      "--z-command",
+      "--z-modal",
+      "--z-rail",
+      "--z-sheet",
+      "--z-sticky",
+      "--z-toast"
+    ],
+    "tokenKinds": {
+      "--bg": "color",
+      "--surface": "color",
+      "--soft": "color",
+      "--soft-hover": "color",
+      "--surface-warm": "color",
+      "--surface-manilla": "color",
+      "--surface-kraft": "color",
+      "--border": "color",
+      "--hairline": "color",
+      "--inverse": "color",
+      "--fg": "color",
+      "--ink-soft": "color",
+      "--muted": "color",
+      "--mid": "color",
+      "--text-tertiary": "font",
+      "--rail": "color",
+      "--rail-fg": "color",
+      "--rail-on": "color",
+      "--rail-hover": "color",
+      "--rail-active": "color",
+      "--cta": "color",
+      "--on-cta": "color",
+      "--cta-hover": "color",
+      "--accent": "color",
+      "--accent-soft": "color",
+      "--accent-fg": "color",
+      "--on-accent": "color",
+      "--accent-deep": "color",
+      "--accent-coral": "color",
+      "--accent-fig": "color",
+      "--accent-cactus": "color",
+      "--accent-olive": "color",
+      "--accent-sky": "color",
+      "--accent-heather": "color",
+      "--up": "color",
+      "--up-raw": "color",
+      "--dn": "color",
+      "--info": "color",
+      "--info-raw": "color",
+      "--font-sans": "font",
+      "--font-serif": "font",
+      "--font-mono": "font",
+      "--disp": "color",
+      "--ui": "color",
+      "--body": "color",
+      "--mono": "color",
+      "--text-display": "font",
+      "--text-title": "font",
+      "--text-card": "font",
+      "--text-panel": "font",
+      "--text-body-agency": "font",
+      "--text-body-player": "font",
+      "--text-label": "font",
+      "--text-kpi": "font",
+      "--text-hero": "font",
+      "--text-section": "font",
+      "--text-prose": "font",
+      "--text-prose-lg": "font",
+      "--text-nav": "font",
+      "--text-eyebrow": "font",
+      "--s1": "spacing",
+      "--s2": "spacing",
+      "--s3": "spacing",
+      "--s4": "spacing",
+      "--s5": "spacing",
+      "--s6": "spacing",
+      "--s7": "spacing",
+      "--s8": "spacing",
+      "--s9": "spacing",
+      "--r-none": "spacing",
+      "--r-sm": "spacing",
+      "--r": "spacing",
+      "--r-md": "spacing",
+      "--r-lg": "spacing",
+      "--r-pill": "spacing",
+      "--shadow": "shadow",
+      "--shadow-none": "shadow",
+      "--scrim": "color",
+      "--focus": "color",
+      "--ease": "other",
+      "--dur": "other",
+      "--dur-slow": "other",
+      "--tap": "spacing",
+      "--tap-lg": "spacing",
+      "--tap-capture": "spacing",
+      "--logo-mark": "color",
+      "--logo-dot": "color",
+      "--z-sticky": "other",
+      "--z-rail": "other",
+      "--z-sheet": "other",
+      "--z-modal": "other",
+      "--z-toast": "other",
+      "--z-command": "other",
+      "--floor": "color"
+    },
+    "fontFamilies": [
+      "IBM Plex Mono",
+      "Lora",
+      "Poppins"
+    ]
+  }
+}

@@ -1,0 +1,58 @@
+<!-- @dsCard group="Datavis" viewport="980x2000" name="LoadChart" subtitle="Belastning mot vindu i 860 og 340 px × begge moduser: innenfor/over/under, alle datatilstander. Høyde målt 03.08 (+10 %)" -->
+<!DOCTYPE html><html lang="nb"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="stylesheet" href="../../styles.css"><link rel="stylesheet" href="../../guidelines/card-support.css">
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="../../_ds_bundle.js"></script>
+<style>.stack{display:grid;grid-template-columns:1fr;min-height:100vh}.stack>div{padding:var(--s5);background:var(--bg);color:var(--fg)}.lab{font-family:var(--mono);font-size:9.5px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:14px 0 6px}.cw{box-sizing:content-box;border:1px dashed var(--border);border-radius:var(--r);padding:var(--s4)}.w860{width:860px;max-width:100%}.w340{width:340px}.assert{font-family:var(--mono);font-size:10px;color:var(--muted);line-height:1.5;white-space:pre-wrap}.ok{color:var(--up)}.bad{color:var(--dn)}</style>
+</head>
+<body><div class="stack"><div id="light"></div><div data-theme="dark" id="dark"></div></div>
+<script type="text/babel">
+const { LoadChart } = window.AKGolfHQClaudePaper_605a48;
+const UKER = [
+  { label: "u27", value: 6, display: "6,0 t" }, { label: "u28", value: 7.5, display: "7,5 t" },
+  { label: "u29", value: 9.5, display: "9,5 t" }, { label: "u30", value: 4, display: "4,0 t" },
+  { label: "u31", value: 6.5, display: "6,5 t" }, { label: "u32", value: 8, display: "8,0 t" },
+];
+function Specimen() {
+  return (<>
+    <div className="lab">860 px — Øyvind Rohjans ukevolum mot vinduet 5–8 t (u29 over taket, u30 under minimum)</div>
+    <div className="cw w860"><LoadChart items={UKER} min={5} max={8} note="vindu 5–8 t · GRUNN-perioden · aldersregel 16 år" dataOdId="lch-vindu" /></div>
+    <div className="lab">340 px — under 380-terskelen: verditall skjult · lav variant uten vindu</div>
+    <div className="cw w340">
+      <LoadChart items={UKER} min={5} max={8} dataOdId="lch-smal" />
+      <div style={{height:12}} />
+      <LoadChart items={UKER.slice(0, 4)} low dataOdId="lch-lav" />
+    </div>
+    <div className="lab">tom · laster · feil</div>
+    <div className="cw w860">
+      <LoadChart items={[]} state="empty" dataOdId="lch-tom" />
+      <div style={{height:12}} />
+      <LoadChart items={[]} state="loading" dataOdId="lch-laster" />
+      <div style={{height:12}} />
+      <LoadChart items={[]} state="error" dataOdId="lch-feil" />
+    </div>
+  </>);
+}
+ReactDOM.createRoot(document.getElementById("light")).render(<Specimen />);
+ReactDOM.createRoot(document.getElementById("dark")).render(<Specimen />);
+/* ASSERTIONER — verifikatør skal se dem feile først: sett max til 100 (over-testen
+   rød) eller bytt --dn til rød hex i kilden (leire-testen rød). */
+window.requestAnimationFrame(() => setTimeout(() => {
+  const res = []; const push = (ok, t) => res.push((ok ? "✓ " : "✗ ") + t);
+  const LYS = document.getElementById("light");
+  const v = LYS.querySelector('[data-od-id="kpi-lch-vindu"]');
+  push(!!v && !!v.querySelector(".akhq-lch-vindu"), "vinduet tegnes bak søylene");
+  push(!!v && v.querySelectorAll(".akhq-lch-stolpe--over").length === 1, "u29 (9,5 t) flagges over taket");
+  push(!!v && v.querySelectorAll(".akhq-lch-stolpe--under").length === 1, "u30 (4,0 t) tones under minimum");
+  const over = v && v.querySelector(".akhq-lch-stolpe--over");
+  push(!!over && /168, ?85, ?54/.test(getComputedStyle(over).backgroundColor), "over taket er leire (--dn), aldri rød");
+  push(!!v && /Anbefalt vindu 5 til 8/.test(v.getAttribute("aria-label") || ""), "sammendraget nevner vinduet");
+  push(!!v && v.querySelectorAll("button").length === 0, "ingen sperre, ingen handling — anbefaling, ikke port");
+  push(!!LYS.querySelector(".akhq-empty") && !!LYS.querySelector(".akhq-skel") && !!LYS.querySelector(".akhq-error"), "tom/laster/feil rendrer Region-tilstandene");
+  const ut = document.createElement("div"); ut.className = "assert";
+  ut.innerHTML = res.map((r) => '<div class="' + (r[0] === "✓" ? "ok" : "bad") + '">' + r + "</div>").join("");
+  LYS.appendChild(ut);
+  window.__assert = res;
+}, 90));
+</script></body></html>

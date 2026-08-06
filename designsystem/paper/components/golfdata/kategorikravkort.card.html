@@ -1,0 +1,55 @@
+<!-- @dsCard group="Golfdata" viewport="980x1570" name="KategoriKravKort" subtitle="Kravliste C→B i 860 og 300 px × begge moduser: møtt/umøtt, tett, alle datatilstander. Høyde målt 03.08 (+10 %)" -->
+<!DOCTYPE html><html lang="nb"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="stylesheet" href="../../styles.css"><link rel="stylesheet" href="../../guidelines/card-support.css">
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="../../_ds_bundle.js"></script>
+<style>.stack{display:grid;grid-template-columns:1fr;min-height:100vh}.stack>div{padding:var(--s5);background:var(--bg);color:var(--fg)}.lab{font-family:var(--mono);font-size:9.5px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:14px 0 6px}.cw{box-sizing:content-box;border:1px dashed var(--border);border-radius:var(--r);padding:var(--s4)}.w860{width:860px;max-width:100%}.w300{width:300px}.assert{font-family:var(--mono);font-size:10px;color:var(--muted);line-height:1.5;white-space:pre-wrap}.ok{color:var(--up)}.bad{color:var(--dn)}</style>
+</head>
+<body><div class="stack"><div id="light"></div><div data-theme="dark" id="dark"></div></div>
+<script type="text/babel">
+const { KategoriKravKort } = window.AKGolfHQClaudePaper_605a48;
+const KRAV = [
+  { label: "Snittscore", current: "74,1", required: "≤ 73,0" },
+  { label: "Driver carry", current: "231 m", required: "≥ 235 m" },
+  { label: "Putt 6 ft make-%", current: "68 %", required: "≥ 65 %", met: true },
+  { label: "Wedge 60 m innenfor 5 m", current: "7 av 10", required: "≥ 6 av 10", met: true },
+  { label: "FYS-score", current: "plassholder", required: "avventer formel" },
+];
+function Specimen() {
+  return (<>
+    <div className="lab">860 px — Øyvind Rohjan C→B: to møtt, FYS avventer formel (plassholder)</div>
+    <div className="cw w860"><KategoriKravKort fromCategory="C" toCategory="B" requirements={KRAV} dataOdId="kkrav-full" /></div>
+    <div className="lab">300 px — under 340-terskelen · tett</div>
+    <div className="cw w300"><KategoriKravKort fromCategory="C" toCategory="B" requirements={KRAV.slice(0, 3)} dense dataOdId="kkrav-smal" /></div>
+    <div className="lab">tom · laster · feil</div>
+    <div className="cw w860">
+      <KategoriKravKort fromCategory="C" toCategory="B" requirements={[]} state="empty" dataOdId="kkrav-tom" />
+      <div style={{height:12}} />
+      <KategoriKravKort fromCategory="C" toCategory="B" requirements={[]} state="loading" dataOdId="kkrav-laster" />
+      <div style={{height:12}} />
+      <KategoriKravKort fromCategory="C" toCategory="B" requirements={[]} state="error" dataOdId="kkrav-feil" />
+    </div>
+  </>);
+}
+ReactDOM.createRoot(document.getElementById("light")).render(<Specimen />);
+ReactDOM.createRoot(document.getElementById("dark")).render(<Specimen />);
+/* ASSERTIONER — verifikatør skal se dem feile først: legg ordet «sperret» i
+   en rad (invarianttesten rød) eller marker alle met (tellingen rød). */
+window.requestAnimationFrame(() => setTimeout(() => {
+  const res = []; const push = (ok, t) => res.push((ok ? "✓ " : "✗ ") + t);
+  const LYS = document.getElementById("light");
+  const f = LYS.querySelector('[data-od-id="kpi-kkrav-full"]');
+  push(!!f && /2 av 5 møtt/.test(f.textContent), "tellingen: 2 av 5 møtt");
+  push(!!f && f.querySelectorAll(".akhq-kkrav-merke:not(.akhq-kkrav-merke--gap)").length === 2, "to ✓-merker");
+  push(!!f && !/sperret|låst|kan ikke/i.test(f.textContent), "ingen sperretekst — invariant 1");
+  const gap = f && f.querySelector(".akhq-kkrav-merke--gap");
+  push(!!gap && !/168, ?85, ?54/.test(getComputedStyle(gap).color), "umøtt krav er nøytralt, ikke leire");
+  push(!!f && /plassholder/.test(f.textContent), "FYS-raden viser plassholder — formelen avventer");
+  push(!!LYS.querySelector(".akhq-empty") && !!LYS.querySelector(".akhq-skel") && !!LYS.querySelector(".akhq-error"), "tom/laster/feil rendrer Region-tilstandene");
+  const ut = document.createElement("div"); ut.className = "assert";
+  ut.innerHTML = res.map((r) => '<div class="' + (r[0] === "✓" ? "ok" : "bad") + '">' + r + "</div>").join("");
+  LYS.appendChild(ut);
+  window.__assert = res;
+}, 90));
+</script></body></html>

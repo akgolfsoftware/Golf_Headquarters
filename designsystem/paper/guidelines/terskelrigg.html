@@ -19,7 +19,7 @@ th{font-weight:600;color:var(--muted);font-size:10px;letter-spacing:.08em;text-t
 <table id="out"></table>
 <div id="rig"></div>
 <script type="text/babel">
-/* ─────────────────────────────────────────────────────────────
+/* ────────────────────────────────────────────────────────────
    TERSKELRIGG — verifiserer at container-terskler fyrer der vi tror.
    Endre kun SPEC. Riggen rendrer hver sak i sin egen content-box
    kolonne, måler containeren, leser den påvirkede egenskapen og
@@ -45,7 +45,7 @@ th{font-weight:600;color:var(--muted);font-size:10px;letter-spacing:.08em;text-t
    readme advarer mot. Når bundelen er kompilert, forsvinner ventelista
    av seg selv og de fem tersklene begynner å assertere uten flere
    endringer her.
-   ───────────────────────────────────────────────────────────── */
+   ─────────────────────────────────────────────────────────── */
 const NS = window.AKGolfHQClaudePaper_605a48;
 const { Panel, ListGroup, ListRow, PageHeader, Button, Banner, EmptyState, KeyValueGrid } = NS;
 /* De fem fra bølge P3 hentes via NS, ikke destrukturert: de kan mangle. */
@@ -142,7 +142,7 @@ const SPEC = {
     ]
   },
 
-  /* ── Bølge P3 (31.07.2026) ────────────────────────────────────
+  /* ── Bølge P3 (31.07.2026) ──────────────────────────────────
      Tersklene under er lest ut av kilden, ikke gjettet:
      DataTable  @container (max-width:560px) → --fs 13px → 12.5px
      FilterPills @container (max-width:420px) → --gap var(--s2)=8px → 6px

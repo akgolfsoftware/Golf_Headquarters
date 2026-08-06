@@ -1,0 +1,66 @@
+<!-- @dsCard group="Datavis" viewport="980x1450" name="PyramideFasett" subtitle="Fem fasetter i 860 og 380 px × begge moduser: filter valgt, lesevariant, manglende område, alle datatilstander. Høyde målt 03.08 (+10 %)" -->
+<!DOCTYPE html><html lang="nb"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="stylesheet" href="../../styles.css"><link rel="stylesheet" href="../../guidelines/card-support.css">
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="../../_ds_bundle.js"></script>
+<style>.stack{display:grid;grid-template-columns:1fr;min-height:100vh}.stack>div{padding:var(--s5);background:var(--bg);color:var(--fg)}.lab{font-family:var(--mono);font-size:9.5px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:14px 0 6px}.cw{box-sizing:content-box;border:1px dashed var(--border);border-radius:var(--r);padding:var(--s4)}.w860{width:860px;max-width:100%}.w380{width:380px}.assert{font-family:var(--mono);font-size:10px;color:var(--muted);line-height:1.5;white-space:pre-wrap}.ok{color:var(--up)}.bad{color:var(--dn)}</style>
+</head>
+<body><div class="stack"><div id="light"></div><div data-theme="dark" id="dark"></div></div>
+<script type="text/babel">
+const { PyramideFasett } = window.AKGolfHQClaudePaper_605a48;
+const UKA = [
+  { area: "FYS", value: 1.5, display: "1,5 t" },
+  { area: "TEK", value: 2.5, display: "2,5 t" },
+  { area: "SLAG", value: 1.5, display: "1,5 t" },
+  { area: "SPILL", value: 1, display: "1,0 t" },
+];
+function Demo() {
+  const [v, setV] = React.useState("TEK");
+  return <PyramideFasett items={UKA} selected={v} onSelect={setV} dataOdId="pfas-filter" />;
+}
+function Specimen() {
+  return (<>
+    <div className="lab">860 px — Øyvind Rohjans uke som filter (TEK valgt; TURN mangler i data → rendres med 0)</div>
+    <div className="cw w860"><Demo /></div>
+    <div className="lab">lesevariant (uten onSelect — role=img, ingen knapper)</div>
+    <div className="cw w860"><PyramideFasett items={UKA} dataOdId="pfas-lese" /></div>
+    <div className="lab">380 px — under 420-terskelen: verditall skjult</div>
+    <div className="cw w380"><PyramideFasett items={UKA} dataOdId="pfas-smal" /></div>
+    <div className="lab">tom · laster · feil</div>
+    <div className="cw w860">
+      <PyramideFasett items={[]} state="empty" dataOdId="pfas-tom" />
+      <div style={{height:12}} />
+      <PyramideFasett items={[]} state="loading" dataOdId="pfas-laster" />
+      <div style={{height:12}} />
+      <PyramideFasett items={[]} state="error" dataOdId="pfas-feil" />
+    </div>
+  </>);
+}
+ReactDOM.createRoot(document.getElementById("light")).render(<Specimen />);
+ReactDOM.createRoot(document.getElementById("dark")).render(<Specimen />);
+/* ASSERTIONER — verifikatør skal se dem feile først: snu REKKEFOLGE i kilden
+   (pyramidetesten rød) eller fjern aria-pressed fra valgt fasett. */
+window.requestAnimationFrame(() => setTimeout(() => {
+  const res = []; const push = (ok, t) => res.push((ok ? "✓ " : "✗ ") + t);
+  const LYS = document.getElementById("light");
+  const f = LYS.querySelector('[data-od-id="kpi-pfas-filter"]');
+  const fasetter = f ? [...f.querySelectorAll(".akhq-pfas-f")] : [];
+  push(fasetter.length === 5, "alltid fem fasetter — TURN rendres med 0 selv om den mangler i data");
+  push(fasetter.length === 5 && fasetter.map((x) => x.querySelector(".akhq-pfas-omr").textContent).join("·") === "FYS·TEK·SLAG·SPILL·TURN", "pyramiderekkefølgen er låst");
+  const valgt = f && f.querySelector('[aria-pressed="true"]');
+  push(!!valgt && /TEK/.test(valgt.textContent), "TEK er valgt med aria-pressed");
+  const lese = LYS.querySelector('[data-od-id="kpi-pfas-lese"]');
+  push(!!lese && lese.getAttribute("role") === "img" && lese.querySelectorAll("button").length === 0, "lesevariant: role=img, ingen knapper");
+  const smalV = LYS.querySelector('[data-od-id="kpi-pfas-smal"] .akhq-pfas-vrd');
+  push(!!smalV && getComputedStyle(smalV).display === "none", "380 px → verditall skjult (terskel 420)");
+  const wrap = document.createElement("div"); wrap.setAttribute("data-coarse-test", ""); document.body.appendChild(wrap);
+  if (valgt) { const k = valgt.cloneNode(true); wrap.appendChild(k); push(k.getBoundingClientRect().height >= 43.99, "fasett " + k.getBoundingClientRect().height.toFixed(1) + " px ved grov peker"); }
+  wrap.remove();
+  push(!!LYS.querySelector(".akhq-empty") && !!LYS.querySelector(".akhq-skel") && !!LYS.querySelector(".akhq-error"), "tom/laster/feil rendrer Region-tilstandene");
+  const ut = document.createElement("div"); ut.className = "assert";
+  ut.innerHTML = res.map((r) => '<div class="' + (r[0] === "✓" ? "ok" : "bad") + '">' + r + "</div>").join("");
+  LYS.appendChild(ut);
+  window.__assert = res;
+}, 90));
+</script></body></html>

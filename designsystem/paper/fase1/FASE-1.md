@@ -27,7 +27,7 @@ Alt måles, ingenting påstås. Tallene under er kjørt i headless Chromium, ikk
 
 **1. Radius 12px, ikke 8.** `tokens/akhq-tokens.css` sa `--r: 8px`, Paper-fasiten sa 12. Konflikten har stått i alle 33 gamle skjermer. Låst til `--r: 12px` / `--r-sm: 8px`.
 
-**2. Primærhandlingen fylles med aksent.** Den gamle regelen var «CTA er blekk, oransje kun Én ting nå» — som i praksis ga en oransje etikett over en svart knapp. Det er ikke monopol, det er abstinens: fargen betydde ingenting. Nå er `.btn.now` fylt med `#D97757`, og alt annet er `--cta` blekk eller ghost. Én per skjerm, målt.
+**2. Primærhandlingen fylles med aksent.** Den gamle regelen var «CTA er blekk, oransje kun Én ting nå» — som i praksis ga en oransje etikett over en svart knapp. Det er ikke monopol, det er abstinens: fargen betød ingenting. Nå er `.btn.now` fylt med `#D97757`, og alt annet er `--cta` blekk eller ghost. Én per skjerm, målt.
 
 **3. Standardsvaret på «lag en skjerm» er et artefakt, ikke en flate.** AgencyOS har fem flater (Konsoll · Kø · Spillere · Kalender · Maskinrom), PlayerHQ har fire (I dag · Plan · Analyse · Meg). Ukeplan, analyse, sjekkpunkt, testresultat, booking — alt er artefakter som åpnes fra tråden. Sidepanel på desktop, bunn-ark på mobil.
 
