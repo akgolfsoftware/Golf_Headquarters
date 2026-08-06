@@ -22,7 +22,8 @@ function useMobile(): boolean {
     const on = () => setMobile(mq.matches);
     on();
     mq.addEventListener("change", on);
-    return () => mq.removeEventListener("change", on);
+    return (
+    <div data-paper-marketing-personvern>) => mq.removeEventListener("change", on);
   }, []);
   return mobile;
 }
@@ -62,7 +63,7 @@ function MNav({ mobile, aktiv }: { mobile: boolean; aktiv: string }) {
                 fontWeight: 600,
                 color: aktiv === n.id ? T.fg : T.fg2,
                 textDecoration: "none",
-                borderBottom: aktiv === n.id ? `2px solid ${T.lime}` : "2px solid transparent",
+                borderBottom: aktiv === n.id ? `2px solid ${T.fg}` : "2px solid transparent",
                 paddingBottom: 2,
               }}
             >
@@ -92,7 +93,7 @@ function MNav({ mobile, aktiv }: { mobile: boolean; aktiv: string }) {
               fontWeight: 600,
               fontSize: 13,
               color: T.onLime,
-              background: T.lime,
+              background: T.fg,
               borderRadius: 9999,
               padding: "9px 18px",
               whiteSpace: "nowrap",
@@ -186,7 +187,7 @@ function JurUl({ children }: { children: ReactNode }) {
   );
 }
 
-const A_STYLE = { color: T.lime, textDecoration: "underline" as const };
+const A_STYLE = { color: T.fg2, textDecoration: "underline" as const };
 
 const SIST_OPPDATERT = "2. august 2026";
 
@@ -200,7 +201,7 @@ export function MarkedPersonvernV2() {
     <MRamme mobile={mobile} aktiv="personvern">
       <div style={{ padding: mobile ? "48px 22px" : "72px 64px" }}>
         <div style={{ maxWidth: 720, margin: "0 auto" }}>
-          <Caps size={11} color={T.lime}>
+          <Caps size={11} color={T.mut}>
             Juridisk
           </Caps>
           <h1
@@ -214,7 +215,7 @@ export function MarkedPersonvernV2() {
               lineHeight: 1.05,
             }}
           >
-            <em style={{ fontStyle: "italic", color: T.lime }}>Personvern</em>-erklæring
+            <em style={{ fontStyle: "italic", color: T.fg }}>Personvern</em>-erklæring
           </h1>
           <p style={{ fontFamily: T.mono, fontSize: 12, color: T.mut, marginTop: 16 }}>Sist oppdatert: {SIST_OPPDATERT}</p>
 
