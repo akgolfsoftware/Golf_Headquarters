@@ -320,9 +320,9 @@ html[data-v2-tema="dark"] {
   --radius-md: calc(var(--radius) - 4px);
   --radius-sm: calc(var(--radius) - 8px);
 
-  --font-sans: var(--font-inter), system-ui, -apple-system, sans-serif;
-  --font-display: var(--font-familjen-grotesk), system-ui, -apple-system, sans-serif;
-  --font-mono: var(--font-jetbrains-mono), ui-monospace, monospace;
+  --font-sans: var(--font-poppins), Arial, system-ui, sans-serif;
+  --font-display: var(--font-poppins), Arial, system-ui, sans-serif;
+  --font-mono: var(--font-ibm-plex-mono), ui-monospace, monospace;
 
   /* Pyramide-utility-aliaser: bg-pyr-fys, text-pyr-tek, border-pyr-slag, ...
    * Kilden er --pyr-* (kanonisk spec). Aldri redefinér her. */

@@ -42,10 +42,11 @@ const familjenGrotesk = Familjen_Grotesk({
 });
 
 // ---------- Claude Paper-fontene (designport steg 4) ----------
-// Lastes som CSS-variabler slik at --p-font-* i paper-tokens.css peker på ekte
-// fonter etter hvert som komponenter portes. Fontene over (Inter/Familjen
-// Grotesk/JetBrains Mono) blir stående til siste skjerm er portet, og fjernes
-// i steg 10 sammen med det gamle tokensettet.
+// --font-sans/--font-display/--font-mono (globals.css) peker nå på disse
+// (fontbyttet gjort 2026-08-06). Fontene over (Inter/Familjen Grotesk/
+// JetBrains Mono) står fortsatt igjen — mange enkeltskjermer (onboarding,
+// teknisk-plan, hubs, golfdata) refererer dem direkte og må portes hver for
+// seg før de kan fjernes i steg 10.
 const poppins = Poppins({
   variable: "--font-poppins",
   weight: ["400", "500", "600", "700"],
