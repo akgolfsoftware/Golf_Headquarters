@@ -166,7 +166,7 @@ export function MarkedBookingV2({
     return (
       <MRamme mobile={mobile} aktiv="booking" cta={{ label: "Book en samtale", href: "/kontakt" }}>
         <Seksjon mobile={mobile}>
-          <div style={{ textAlign: "center", maxWidth: 620, margin: "0 auto" }}>
+          <div data-paper-marketing-booking style={{ textAlign: "center", maxWidth: 620, margin: "0 auto" }}>
             <Eyebrow>Booking</Eyebrow>
             <HeroT mobile={mobile} em="økt">
               Book en
@@ -176,7 +176,10 @@ export function MarkedBookingV2({
             </Lede>
             <div style={{ marginTop: 26, display: "flex", flexDirection: "column", gap: 12, alignItems: "center" }}>
               <a href={acuityUrl} target="_blank" rel="noopener noreferrer" style={{ textDecoration: "none", display: "inline-block" }}>
-                <CTAPill icon="arrow-right">Åpne bookingkalender</CTAPill>
+                <span style={{
+                  display: "inline-flex", alignItems: "center", gap: 8, minHeight: 44, padding: "10px 16px",
+                  borderRadius: 10, background: T.handling, color: T.onHandling, fontFamily: T.ui, fontSize: 13, fontWeight: 600,
+                }}>Åpne bookingkalender</span>
               </a>
               <Link href="/kontakt" className="v2-focus" style={{ fontFamily: T.ui, fontSize: 14, fontWeight: 600, color: T.fg2, textDecoration: "none", minHeight: 44, display: "inline-flex", alignItems: "center" }}>
                 Eller book en samtale først
