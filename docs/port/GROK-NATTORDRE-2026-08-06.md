@@ -257,6 +257,48 @@ er «kommer snart»-plassholdere. Bruk **ett** felles «kommer snart»-mønster
 
 ---
 
+## 4b. To tekniske oppgaver i tillegg til skjermene
+
+Disse kommer fra `docs/port/LANSERINGSGAP-2026-08-06.md` og er mekaniske — mønsteret finnes
+allerede i koden. Ta dem **etter** logo-PR-en, men gjerne før skjermarbeidet hvis du vil ha
+noe lavrisiko å varme opp på. **Én PR hver, draft som alt annet.**
+
+### Oppgave A — rate limiting på de resterende API-rutene
+
+**Situasjon:** 12 av 57 ruter under `src/app/api/` har rate limiting. 45 mangler det.
+
+**Mønsteret finnes:** `src/lib/rate-limit.ts` (Upstash Redis). Se hvordan
+`src/app/api/caddie/chat/route.ts` og `src/app/api/admin/coach-ai/route.ts` bruker det.
+
+**Gjør:**
+1. Kartlegg hvilke ruter som mangler (`grep -rL "rate-limit\|rateLimit" src/app/api --include="route.ts"`)
+2. Legg på samme mønster. Velg grense etter hva ruten gjør:
+   - Skriver til DB eller kaller eksternt API → streng grense
+   - Ren lesing → romsligere
+   - Webhooks fra Stripe → **ikke rør**, de har egen signaturvalidering og skal ikke rate-limites
+3. `npm run verify && npm test` grønt
+
+**Ikke gjør:** ikke endre `src/lib/rate-limit.ts` selv, ikke installer nye pakker, ikke rør
+webhook-ruter (`/api/stripe/webhook`, andre innkommende webhooks).
+
+### Oppgave B — bredde-gate i CI
+
+**Situasjon:** `monsterdokument-paper.md` §1 låser kolonnebredde, men ingenting sjekker det.
+Derfor kunne 280 sider mangle den uten at noen merket det.
+
+**Gjør:** utvid `scripts/check-token-gap.mjs` (eller lag et søsterskript kalt fra samme sted i
+`verify`) som **feiler** når en fil rendrer `<V2Shell` uten en eksplisitt `bredde`-prop.
+
+Krav til skriptet:
+- Meldingen skal si hvilken fil og hva som må gjøres — ikke bare «feil»
+- Skal kunne kjøres alene (`node scripts/<navn>.mjs`) og gi 0 ved suksess
+- **Kjør det på hele repoet før du committer** — finner du flere filer som mangler propen enn
+  du rekker å rette, ikke koble gaten inn i `verify` ennå. Da leverer du skriptet + en liste
+  over gjenstående filer i nattrapporten, og lar `verify` være urørt. **En rød hovedgren er
+  verre enn en manglende gate.**
+
+---
+
 ## 5. Arbeidsflyt per skjerm (følges nøyaktig)
 
 ```bash
