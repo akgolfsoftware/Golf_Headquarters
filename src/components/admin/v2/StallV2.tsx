@@ -394,9 +394,11 @@ export function StallV2({ data }: { data: StallV2Data }) {
       <div className="hidden md:inline-flex" style={{ gap: 8 }}>
         {stallKpi.trenger > 0 ? (
           <button type="button" onClick={foelgOpp} style={{ background: "none", border: "none", padding: 0, cursor: "pointer" }}>
-            <CTAPill icon="alert-circle">
-              Følg opp {stallKpi.trenger}
-            </CTAPill>
+<span style={{
+              display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8,
+              minHeight: 44, padding: "10px 16px", borderRadius: 10, 
+              background: T.handling, color: T.onHandling, fontFamily: T.ui, fontSize: 13, fontWeight: 600,
+            }}>Følg opp {stallKpi.trenger}</span>
           </button>
         ) : (
           <Link href="/admin/spillere/ny" style={{ textDecoration: "none" }}>
@@ -412,16 +414,18 @@ export function StallV2({ data }: { data: StallV2Data }) {
     stallKpi.trenger > 0 ? (
       <div className="md:hidden">
         <button type="button" onClick={foelgOpp} style={{ background: "none", border: "none", padding: 0, cursor: "pointer", width: "100%" }}>
-          <CTAPill icon="alert-circle" full>
-            Følg opp {stallKpi.trenger} {stallKpi.trenger === 1 ? "spiller" : "spillere"}
-          </CTAPill>
+<span style={{
+              display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8,
+              minHeight: 44, padding: "10px 16px", borderRadius: 10, width: "100%",
+              background: T.handling, color: T.onHandling, fontFamily: T.ui, fontSize: 13, fontWeight: 600,
+            }}>Følg opp {stallKpi.trenger} {stallKpi.trenger === 1 ? "spiller" : "spillere"}</span>
         </button>
       </div>
     ) : null;
 
   if (data.spillere.length === 0) {
     return (
-      <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+      <div data-paper-agencyos-spillere style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 960, margin: "0 auto", width: "100%" }}>
         <div>
           <Caps>AgencyOS</Caps>
           <div style={{ marginTop: 10 }}>
@@ -436,9 +440,11 @@ export function StallV2({ data }: { data: StallV2Data }) {
           />
         </Kort>
         <Link href="/admin/spillere/ny" style={{ textDecoration: "none", display: "block" }}>
-          <CTAPill icon="user-plus" full>
-            Legg til første spiller
-          </CTAPill>
+<span style={{
+              display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8,
+              minHeight: 44, padding: "10px 16px", borderRadius: 10, width: "100%",
+              background: T.handling, color: T.onHandling, fontFamily: T.ui, fontSize: 13, fontWeight: 600,
+            }}>Legg til første spiller</span>
         </Link>
       </div>
     );
@@ -446,7 +452,7 @@ export function StallV2({ data }: { data: StallV2Data }) {
 
   if (mobile) {
     return (
-      <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+      <div data-paper-agencyos-spillere style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 960, margin: "0 auto", width: "100%" }}>
         {hode}
         {tilstandKort}
         {mobilPrimaer}
@@ -463,7 +469,7 @@ export function StallV2({ data }: { data: StallV2Data }) {
   }
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+    <div data-paper-agencyos-spillere style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 960, margin: "0 auto", width: "100%" }}>
       {hode}
       {tilstandKort}
       {filtre}
