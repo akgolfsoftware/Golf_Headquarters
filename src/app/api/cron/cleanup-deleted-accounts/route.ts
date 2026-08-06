@@ -33,6 +33,8 @@ export async function GET(req: Request): Promise<NextResponse> {
     return NextResponse.json({ error: "unauthorized" }, { status: 401 });
   }
 
+  const dryRun = new URL(req.url).searchParams.get("dryRun") === "1";
+
   try {
     // Feillogg-retensjon (90 dager) kjører uansett om det finnes konti å
     // anonymisere — den er en egen forpliktelse fra personvernerklæringen.
@@ -63,10 +65,17 @@ export async function GET(req: Request): Promise<NextResponse> {
     // anonymisering er idempotent så en delvis kjøring kan trygt gjentas.
     let anonymisert = 0;
     const feilet: string[] = [];
+    const plan: Array<{ id: string; plan?: string[] }> = [];
     for (const bruker of kandidater) {
       try {
-        await anonymiserBruker(bruker.id);
-        anonymisert++;
+        if (dryRun) {
+          const r = await anonymiserBruker(bruker.id, new Date(), { dryRun: true });
+          plan.push({ id: bruker.id, plan: r.plan });
+          anonymisert++;
+        } else {
+          await anonymiserBruker(bruker.id);
+          anonymisert++;
+        }
       } catch (error) {
         feilet.push(bruker.id);
         await logError({
@@ -79,10 +88,12 @@ export async function GET(req: Request): Promise<NextResponse> {
 
     return NextResponse.json({
       ok: true,
+      dryRun,
       anonymisert,
       feilloggSlettet,
       feilet: feilet.length,
       ids: kandidater.map((u) => u.id),
+      plan: dryRun ? plan : undefined,
     });
   } catch (error) {
     await logError({

@@ -29,11 +29,18 @@ export type EksternSlettingResultat = {
   storageFilerFjernet: number;
   bookingerGjestevasket: number;
   feil: string[];
+  /** true når dryRun — ingen eksterne kall ble utført */
+  dryRun: boolean;
+  /** Hva som ville skjedd (kun dryRun) */
+  plan?: string[];
 };
 
 export async function slettEksterneBrukerdata(
   userId: string,
+  opts: { dryRun?: boolean } = {},
 ): Promise<EksternSlettingResultat> {
+  const dryRun = opts.dryRun === true;
+  const plan: string[] = [];
   const feil: string[] = [];
   let storageFilerFjernet = 0;
   let authSlettet = false;
@@ -46,6 +53,58 @@ export async function slettEksterneBrukerdata(
   });
 
   const sb = trySupabaseAdmin(feil);
+
+  if (dryRun) {
+    // Tørrkjøring: les DB, logg plan — ALDRI kall Auth/Storage/Stripe.
+    plan.push(`ville fjerne avatar-stier for users/${userId}.* i bucket avatars`);
+    try {
+      const videoer = await prisma.playerSwingVideo.findMany({
+        where: { userId },
+        select: { id: true },
+      });
+      plan.push(`ville fjerne ${videoer.length} swing-video(er) fra storage`);
+    } catch {
+      plan.push("ville forsøke swing-video-opprydding (DB-spørring feilet i dryRun)");
+    }
+    try {
+      const opptak = await prisma.sessionRecording.count({
+        where: { playerId: userId, audioUrl: { not: null } },
+      });
+      plan.push(`ville fjerne ${opptak} opptak + tømme transkript/analyse`);
+    } catch {
+      plan.push("ville forsøke opptak-opprydding");
+    }
+    plan.push("ville vaske guestName/guestEmail/guestPhone på egne bookinger");
+    try {
+      const sub = await prisma.subscription.findUnique({
+        where: { userId },
+        select: { stripeCustomerId: true, stripeSubscriptionId: true },
+      });
+      if (sub?.stripeCustomerId) {
+        plan.push(
+          `ville kansellere Stripe-sub ${sub.stripeSubscriptionId ?? "—"} og slette kunde ${sub.stripeCustomerId}`,
+        );
+      } else {
+        plan.push("ingen Stripe-kunde å slette");
+      }
+    } catch {
+      plan.push("ville forsøke Stripe-opprydding");
+    }
+    if (bruker?.authId) {
+      plan.push(`ville slette Supabase Auth-bruker ${bruker.authId}`);
+    } else {
+      plan.push("ingen authId — hopper over Auth-slett");
+    }
+    return {
+      authSlettet: false,
+      stripeKundeSlettet: false,
+      storageFilerFjernet: 0,
+      bookingerGjestevasket: 0,
+      feil,
+      dryRun: true,
+      plan,
+    };
+  }
 
   // ── 1. Storage: avatar (kjent sti users/<id>.<ext> i bucket "avatars") ──
   if (sb) {
@@ -183,6 +242,8 @@ export async function slettEksterneBrukerdata(
     storageFilerFjernet,
     bookingerGjestevasket,
     feil,
+    dryRun,
+    plan: dryRun ? plan : undefined,
   };
 }
 
