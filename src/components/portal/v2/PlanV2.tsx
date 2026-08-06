@@ -1,33 +1,26 @@
 "use client";
 
 /**
- * PlayerHQ Plan — v2 Presis + opplevelse B-pakke (uke + status).
- * Oversikt + ett trykk til Workbench. Ekte data fra getDashboardData.
- * Låst: docs/design-system/plattform-design-2026-07-21/RETNING-PLAN.md
+ * PlayerHQ Plan — Paper-port PR-B (avvik A2).
+ * Fasit: designsystem/paper/fase1/playerhq-plan.html
  *
- * V2Shell eier chrome — denne filen er innholds-stacken.
+ * A2: 720px-kolonne, én aksenthandling (dokk «Start [økta] · tid»),
+ * ingen KPI-tankestrek-helter, Workbench kun som sekundær (ghost).
  */
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import type { DashboardData } from "@/app/portal/actions";
-import type { PyramidArea } from "@/generated/prisma/client";
 import {
   T,
   Caps,
-  Tittel,
   Kort,
   AkseChip,
-  AkseBar,
   StatusPill,
   CTAPill,
-  ProgresjonsBar,
   DagStripe,
   TomTilstand,
-  HjelpTips,
-  Icon,
   type StripeDag,
-  type StatusTone,
 } from "@/components/v2";
 import { OktKort } from "@/components/v2/domene";
 import { BunnArk } from "@/components/v2/bunn-ark";
@@ -39,7 +32,6 @@ const MANEDER = [
   "januar", "februar", "mars", "april", "mai", "juni",
   "juli", "august", "september", "oktober", "november", "desember",
 ];
-const AKSER: AkseKey[] = ["FYS", "TEK", "SLAG", "SPILL", "TURN"];
 
 const AKSE_KORT: Record<AkseKey, string> = {
   FYS: "Fysisk",
@@ -75,43 +67,12 @@ function varighet(min: number): string {
   return `${min} min`;
 }
 
-function timer(min: number): number {
-  return Math.round((min / 60) * 10) / 10;
-}
-
-function fmtT(t: number): string {
-  return String(t).replace(".", ",");
-}
-
-function useMobile(): boolean {
-  const [m, setM] = useState(false);
-  useEffect(() => {
-    const mq = window.matchMedia("(max-width: 767px)");
-    const oppdater = () => setM(mq.matches);
-    oppdater();
-    mq.addEventListener("change", oppdater);
-    return () => mq.removeEventListener("change", oppdater);
-  }, []);
-  return m;
-}
-
-/** Dominerende planlagt akse denne uka (timer) — «Fokus»-KPI. */
-function ukasFokusAkse(weekProgress: DashboardData["weekProgress"]): AkseKey | null {
-  let best: AkseKey | null = null;
-  let bestMin = 0;
-  for (const a of AKSER) {
-    const m = weekProgress.plannedByAxis[a as PyramidArea] ?? 0;
-    if (m > bestMin) {
-      bestMin = m;
-      best = a;
-    }
-  }
-  return bestMin > 0 ? best : null;
+function kortNavn(tittel: string): string {
+  return tittel.split(" · ")[0] ?? tittel;
 }
 
 export function PlanV2({ data }: { data: DashboardData }) {
-  const mobile = useMobile();
-  const { weekNumber, week, weekProgress, optimalSession, todayAll, nesteHandling } = data;
+  const { weekNumber, week, weekProgress, optimalSession, todayAll } = data;
 
   const iDag = new Date();
   iDag.setHours(0, 0, 0, 0);
@@ -127,7 +88,6 @@ export function PlanV2({ data }: { data: DashboardData }) {
   });
   const aktivDag = week.find((d) => d.isToday)?.dayNumber ?? week[0]?.dayNumber ?? null;
 
-  // Dag-navigasjon (Paper-fasit: playerhq-plan.html) — velg én dag, se dens økter.
   const [valgtDagDato, setValgtDagDato] = useState<number | null>(aktivDag);
   const valgtDagObj = week.find((d) => d.dayNumber === valgtDagDato) ?? week.find((d) => d.isToday) ?? week[0];
 
@@ -137,195 +97,111 @@ export function PlanV2({ data }: { data: DashboardData }) {
     : null;
   const apenOktDag = apenOkt ? week.find((d) => d.sessions.some((s) => s.id === apenOkt.id)) : null;
 
-  const planlagtTot = timer(weekProgress.plannedMin);
-  const fullfortTot = timer(weekProgress.completedMin);
   const gjennomforPct =
     weekProgress.plannedMin > 0
       ? Math.round((weekProgress.completedMin / weekProgress.plannedMin) * 100)
       : 0;
 
-  const fokusAkse =
-    (todayAll[0]?.pyramidArea as AkseKey | undefined) ??
-    (optimalSession?.pyramidArea as AkseKey | undefined) ??
-    ukasFokusAkse(weekProgress);
+  // Neste økt for dokken: pågående først, ellers første ufullførte i dag/uka
+  const nesteOkt =
+    todayAll.find((o) => o.status === "IN_PROGRESS") ??
+    todayAll.find((o) => o.status !== "COMPLETED" && o.status !== "CANCELLED" && o.status !== "SKIPPED") ??
+    week
+      .flatMap((d) => d.sessions)
+      .find((o) => o.status !== "COMPLETED" && o.status !== "CANCELLED" && o.status !== "SKIPPED") ??
+    null;
 
-  const akseRader = AKSER.map((a) => ({
-    a,
-    v: timer(weekProgress.completedByAxis[a as PyramidArea]),
-    m: timer(weekProgress.plannedByAxis[a as PyramidArea]),
-  })).filter((r) => r.m > 0 || r.v > 0);
-  const akseMax = Math.max(5, Math.ceil(Math.max(...akseRader.map((r) => Math.max(r.v, r.m)), 0)));
-
-  const statusTone: StatusTone =
-    gjennomforPct >= 80 ? "up" : gjennomforPct >= 40 ? "info" : weekProgress.plannedMin > 0 ? "warn" : "info";
-  const statusTekst =
-    weekProgress.plannedMin === 0
-      ? "Ingen plan"
-      : gjennomforPct >= 80
-        ? "På plan"
-        : gjennomforPct >= 40
-          ? "Underveis"
-          : "Bak plan";
-
-  // Primær CTA: start/neste fra dashboard, ellers Workbench
-  const harDagensJobb = todayAll.some(
-    (o) => o.status !== "COMPLETED" && o.status !== "CANCELLED" && o.status !== "SKIPPED",
-  );
-  const primaerHref = harDagensJobb ? nesteHandling.href : WORKBENCH_HREF;
-  const primaerTekst = harDagensJobb
-    ? nesteHandling.tekst
-    : weekProgress.plannedMin > 0
-      ? "Åpne Workbench"
-      : "Planlegg uke i Workbench";
-  const primaerIkon = harDagensJobb ? nesteHandling.ikon : "calendar";
+  const dokkTekst = nesteOkt
+    ? `Start ${kortNavn(nesteOkt.title).toLowerCase()} · ${toMin(nesteOkt.startTime)}`
+    : null;
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
-      {/* Hode — B: «Din uke» + status */}
+    <div
+      data-paper-portal-planlegge
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        height: "100%",
+        minHeight: 0,
+        position: "relative",
+      }}
+    >
       <div
         style={{
-          display: "flex",
-          alignItems: "flex-end",
-          justifyContent: "space-between",
-          gap: 12,
-          flexWrap: "wrap",
+          flex: 1,
+          minHeight: 0,
+          overflow: "auto",
+          padding: "16px 16px 88px",
         }}
       >
-        <div>
-          <Caps>{`Uke ${weekNumber} · ${periodeLinje(week)}`}</Caps>
-          <div style={{ marginTop: 10 }}>
-            <Tittel mobile={mobile} em="uke">
-              Din
-            </Tittel>
-          </div>
-        </div>
-        <StatusPill tone={statusTone}>{statusTekst}</StatusPill>
-      </div>
-
-      {/* Uke-status KPI — B: planlagt / gjort / fokus (kompakt, ikke 38px-helter) */}
-      <div className="grid grid-cols-3" style={{ gap: 8 }}>
-        {(
-          [
-            { l: "Planlagt", v: weekProgress.plannedMin > 0 ? `${fmtT(planlagtTot)} t` : "—", h: "ukevolum" as const },
-            {
-              l: "Gjort",
-              v: weekProgress.plannedMin > 0 || weekProgress.completedMin > 0 ? `${fmtT(fullfortTot)} t` : "—",
-              h: "planEtterlevelse" as const,
-            },
-            { l: "Fokus", v: fokusAkse ? AKSE_KORT[fokusAkse] : "—", h: "pyramideAkse" as const },
-          ] as const
-        ).map((k) => (
-          <Kort key={k.l} pad="12px 12px">
-            <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
-              <Caps size={9}>{k.l}</Caps>
-              <HjelpTips k={k.h} size={11} />
-            </div>
-            <div
-              style={{
-                fontFamily: T.mono,
-                fontWeight: 700,
-                fontSize: mobile ? 16 : 18,
-                color: T.fg,
-                marginTop: 8,
-                letterSpacing: "-0.02em",
-                lineHeight: 1.15,
-              }}
-            >
-              {k.v}
-            </div>
-          </Kort>
-        ))}
-      </div>
-
-      {weekProgress.plannedMin > 0 && (
-        <div>
-          <div
+        <div
+          style={{
+            maxWidth: 720,
+            margin: "0 auto",
+            display: "flex",
+            flexDirection: "column",
+            gap: 16,
+          }}
+        >
+          {/* Kompakt topplinje — fasit, ikke «Din *uke*»-helter */}
+          <header
             style={{
               display: "flex",
-              justifyContent: "space-between",
               alignItems: "center",
-              marginBottom: 6,
+              justifyContent: "space-between",
+              gap: 12,
+              flexWrap: "wrap",
             }}
           >
-            <span style={{ display: "inline-flex", alignItems: "center", gap: 4, fontFamily: T.ui, fontSize: 11.5, color: T.mut, fontWeight: 600 }}>
-              Uke-gjennomføring
-              <HjelpTips k="planEtterlevelse" size={11} />
-            </span>
-            <span style={{ fontFamily: T.mono, fontSize: 11.5, fontWeight: 700, color: T.fg }}>
-              {gjennomforPct} %
-            </span>
-          </div>
-          <ProgresjonsBar variant="bar" value={gjennomforPct} max={100} showValue={false} label="" />
-          <details style={{ margin: "10px 0 0", border: `1px solid ${T.border}`, borderRadius: T.rCard, background: T.panel }}>
-            <summary
+            <div>
+              <h1
+                style={{
+                  margin: 0,
+                  fontFamily: T.disp,
+                  fontSize: 15,
+                  fontWeight: 600,
+                  color: T.fg,
+                }}
+              >
+                Plan
+              </h1>
+              <div
+                style={{
+                  fontFamily: T.mono,
+                  fontSize: 10.5,
+                  letterSpacing: "0.04em",
+                  color: T.mut,
+                  marginTop: 2,
+                }}
+              >
+                Uke {weekNumber} · {periodeLinje(week)}
+                {weekProgress.plannedMin > 0 ? ` · ${gjennomforPct} % gjort` : ""}
+              </div>
+            </div>
+            <Link
+              href={WORKBENCH_HREF}
+              className="v2-press v2-focus"
               style={{
-                display: "flex",
-                alignItems: "center",
-                minHeight: 40,
-                padding: "0 14px",
-                cursor: "pointer",
-                listStyle: "none",
+                minHeight: 36,
+                padding: "0 12px",
+                borderRadius: 8,
+                border: `1px solid ${T.border}`,
+                background: "transparent",
+                color: T.fg,
                 fontFamily: T.ui,
                 fontSize: 12,
                 fontWeight: 500,
-                color: T.mut,
+                textDecoration: "none",
+                display: "inline-flex",
+                alignItems: "center",
               }}
             >
-              Hvorfor dette tallet
-            </summary>
-            <ul style={{ margin: 0, padding: "10px 14px 14px 22px", fontSize: 12.5, color: T.mut, lineHeight: 1.6 }}>
-              <li style={{ marginBottom: 6 }}>
-                <strong style={{ color: T.fg, fontWeight: 500 }}>Kilde: </strong>
-                denne ukas planlagte og gjennomførte økter, beregnet nå.
-              </li>
-              <li style={{ marginBottom: 6 }}>
-                <strong style={{ color: T.fg, fontWeight: 500 }}>Beregning: </strong>
-                gjennomført tid delt på planlagt tid. Bare økter markert som fullført teller.
-              </li>
-              <li>
-                <strong style={{ color: T.fg, fontWeight: 500 }}>Forbehold: </strong>
-                en økt du starter men ikke fullfører teller ikke før den er logget ferdig.
-              </li>
-            </ul>
-          </details>
-        </div>
-      )}
+              Workbench
+            </Link>
+          </header>
 
-      {/* Eierskap — spilleren eier planen sin (Workbench: flytt/endre uten godkjenning). */}
-      <div
-        style={{
-          display: "flex",
-          gap: 10,
-          padding: "10px 14px",
-          borderRadius: T.rCard,
-          background: T.panel2,
-          border: `1px solid ${T.border}`,
-        }}
-      >
-        <Icon name="shield" size={16} style={{ color: T.mut, flex: "none", marginTop: 2 }} />
-        <p style={{ margin: 0, fontFamily: T.ui, fontSize: 12, color: T.mut, lineHeight: 1.5 }}>
-          Planen er din. Du kan flytte og endre øktene selv i Workbench, med én gang — ingen godkjenning trengs.
-        </p>
-      </div>
+          <DagStripe days={stripeDager} value={valgtDagDato} onChange={(dato) => setValgtDagDato(dato)} />
 
-      <Link href="/portal/booking" style={{ textDecoration: "none", display: "block" }}>
-        <CTAPill icon="calendar-plus" ghost full>
-          Book coachingtime
-        </CTAPill>
-      </Link>
-
-      <DagStripe days={stripeDager} value={valgtDagDato} onChange={(dato) => setValgtDagDato(dato)} />
-
-      {/* Primær CTA — én grønn jobb */}
-      <Link href={primaerHref} style={{ textDecoration: "none", display: "block" }}>
-        <CTAPill icon={primaerIkon} full>
-          {primaerTekst}
-        </CTAPill>
-      </Link>
-
-      <div className="grid grid-cols-1 md:grid-cols-[2fr_1fr]" style={{ gap: T.gap, alignItems: "start" }}>
-        {/* Tidslinje / dager */}
-        <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
           {valgtDagObj && (
             <Kort
               pad="12px"
@@ -359,14 +235,6 @@ export function PlanV2({ data }: { data: DashboardData }) {
                         meta={[o.sted, o.drills.length > 0 ? `${o.drills.length} øvelser` : null]
                           .filter(Boolean)
                           .join(" · ")}
-                        cta={!ferdig ? "Start økt" : undefined}
-                        onCta={
-                          !ferdig
-                            ? () => {
-                                window.location.href = o.href;
-                              }
-                            : undefined
-                        }
                       />
                     );
                   })}
@@ -374,7 +242,7 @@ export function PlanV2({ data }: { data: DashboardData }) {
               ) : valgtDagObj.isToday && optimalSession ? (
                 <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
                   <Caps>Anbefalt (fra form)</Caps>
-                  <div style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 16, color: T.fg }}>
+                  <div style={{ fontFamily: T.disp, fontWeight: 600, fontSize: 15, color: T.fg }}>
                     {optimalSession.title}
                   </div>
                   <p style={{ fontFamily: T.ui, fontSize: 12.5, color: T.fg2, margin: 0, lineHeight: 1.5 }}>
@@ -389,7 +257,7 @@ export function PlanV2({ data }: { data: DashboardData }) {
                 <TomTilstand
                   icon="calendar"
                   title="Hviledag"
-                  sub="Ingen økt denne dagen — eller legg inn en i Workbench."
+                  sub="Ingen økt denne dagen. Endre i Workbench hvis du vil legge inn noe."
                 />
               )}
             </Kort>
@@ -397,12 +265,12 @@ export function PlanV2({ data }: { data: DashboardData }) {
 
           {week.every((d) => d.sessions.length === 0) && !optimalSession && (
             <Kort>
-              <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-                <TomTilstand
-                  icon="calendar"
-                  title="Ingen økter planlagt denne uka"
-                  sub="Åpne Workbench for å legge inn økter."
-                />
+              <TomTilstand
+                icon="calendar"
+                title="Ingen økter planlagt denne uka"
+                sub="Åpne Workbench for å legge inn økter — eller vent på coach-plan."
+              />
+              <div style={{ marginTop: 12 }}>
                 <Link href={WORKBENCH_HREF} style={{ textDecoration: "none", display: "block" }}>
                   <CTAPill icon="calendar" ghost full>
                     Åpne Workbench
@@ -412,95 +280,46 @@ export function PlanV2({ data }: { data: DashboardData }) {
             </Kort>
           )}
         </div>
-
-        {/* Side: belastning + hvorfor + sekundær */}
-        <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
-          <Kort
-            tint
-            eyebrow={
-              <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
-                Ukas belastning
-                <HjelpTips k="ukevolum" size={11} />
-              </span>
-            }
-            action={<HjelpTips k="pyramideAkse" size={11} align="right" />}
-          >
-            {weekProgress.plannedMin > 0 ? (
-              <>
-                <div
-                  style={{
-                    fontFamily: T.mono,
-                    fontWeight: 700,
-                    fontSize: 28,
-                    color: T.fg,
-                    letterSpacing: "-0.03em",
-                  }}
-                >
-                  {fmtT(planlagtTot)}
-                  <span style={{ fontFamily: T.ui, fontSize: 13, fontWeight: 500, color: T.mut, marginLeft: 6 }}>
-                    timer
-                  </span>
-                </div>
-                <p style={{ fontFamily: T.ui, fontSize: 12, color: T.fg2, margin: "6px 0 0" }}>
-                  {fmtT(fullfortTot)} t fullført · {gjennomforPct} % av planen
-                </p>
-                {akseRader.length > 0 && (
-                  <div style={{ marginTop: 12 }}>
-                    {akseRader.map((r, i) => (
-                      <AkseBar key={r.a} a={r.a} v={r.v} m={r.m} max={akseMax} last={i === akseRader.length - 1} />
-                    ))}
-                  </div>
-                )}
-              </>
-            ) : (
-              <TomTilstand icon="activity" title="Ingen belastning" sub="Planlegg økter i Workbench." />
-            )}
-          </Kort>
-
-          {/* Hvorfor — sekundært (fra SG / optimal) */}
-          {optimalSession && (
-            <Kort
-              eyebrow={
-                <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
-                  Fra form (SG)
-                  <HjelpTips k="sgTotal" size={11} />
-                </span>
-              }
-            >
-              <div style={{ fontFamily: T.ui, fontSize: 13, fontWeight: 600, color: T.fg, lineHeight: 1.35 }}>
-                {optimalSession.title}
-              </div>
-              <p style={{ fontFamily: T.ui, fontSize: 12, color: T.mut, margin: "6px 0 0", lineHeight: 1.45 }}>
-                {optimalSession.rationale}
-              </p>
-            </Kort>
-          )}
-
-          {/* Sekundær — ghost, ikke grønn */}
-          <Link href={WORKBENCH_HREF} style={{ textDecoration: "none", display: "block" }}>
-            <CTAPill icon="calendar" ghost full>
-              Endre tidslinje i Workbench
-            </CTAPill>
-          </Link>
-          <Link
-            href="/portal/planlegge/bygger"
-            style={{
-              textDecoration: "none",
-              display: "block",
-              textAlign: "center",
-              fontFamily: T.ui,
-              fontSize: 12,
-              fontWeight: 600,
-              color: T.mut,
-              padding: "4px 0",
-            }}
-          >
-            Bygg ny plan fra bunnen →
-          </Link>
-        </div>
       </div>
 
-      {/* Øktdetalj — tap på et OktKort åpner denne (fasit: playerhq-plan.html .ark) */}
+      {/* Dokk — ÉN aksenthandling (fasit .dokk + .btn.now) */}
+      {dokkTekst && nesteOkt && !apenOkt && (
+        <div
+          style={{
+            position: "sticky",
+            bottom: 0,
+            borderTop: `1px solid ${T.border}`,
+            background: T.bg,
+            padding: "12px 16px",
+            paddingBottom: "max(12px, env(safe-area-inset-bottom))",
+          }}
+        >
+          <div style={{ maxWidth: 720, margin: "0 auto" }}>
+            <Link
+              href={nesteOkt.href}
+              className="v2-press v2-focus"
+              data-od-id="plan-dokk-start"
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                minHeight: 48,
+                width: "100%",
+                borderRadius: 10,
+                background: T.handling,
+                color: T.onHandling,
+                fontFamily: T.ui,
+                fontSize: 14,
+                fontWeight: 600,
+                textDecoration: "none",
+              }}
+            >
+              {dokkTekst}
+            </Link>
+          </div>
+        </div>
+      )}
+
       <BunnArk open={apenOkt != null} onClose={() => setApentOktId(null)} tittel={apenOkt?.title}>
         {apenOkt && (
           <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
@@ -511,7 +330,16 @@ export function PlanV2({ data }: { data: DashboardData }) {
                 ["Varighet", varighet(apenOkt.durationMin)],
                 ["Pyramide", AKSE_KORT[(apenOkt.pyramidArea as AkseKey) || "TEK"]],
               ].map(([l, v]) => (
-                <div key={l} style={{ display: "flex", justifyContent: "space-between", fontSize: 12.5, fontFamily: T.ui, color: T.mut }}>
+                <div
+                  key={l}
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    fontSize: 12.5,
+                    fontFamily: T.ui,
+                    color: T.mut,
+                  }}
+                >
                   <span>{l}</span>
                   <span style={{ fontFamily: T.mono, color: T.fg }}>{v}</span>
                 </div>
@@ -545,7 +373,9 @@ export function PlanV2({ data }: { data: DashboardData }) {
                       }}
                     >
                       <span style={{ fontFamily: T.ui, fontSize: 13, fontWeight: 600, color: T.fg }}>{d.name}</span>
-                      <span style={{ fontFamily: T.mono, fontSize: 11, color: T.mut, flex: "none" }}>{d.durationMinutes} min</span>
+                      <span style={{ fontFamily: T.mono, fontSize: 11, color: T.mut, flex: "none" }}>
+                        {d.durationMinutes} min
+                      </span>
                     </div>
                   ))}
                 </div>
@@ -553,19 +383,34 @@ export function PlanV2({ data }: { data: DashboardData }) {
             )}
 
             <p style={{ margin: 0, fontFamily: T.ui, fontSize: 12, color: T.mut, lineHeight: 1.5 }}>
-              Vil du flytte økta til en annen dag eller tid? Gjør det i Workbench — endringen gjelder med én gang.
+              Vil du flytte økta? Gjør det i Workbench — endringen gjelder med én gang.
             </p>
 
             <div style={{ display: "flex", gap: 8 }}>
               <Link href={WORKBENCH_HREF} style={{ textDecoration: "none", flex: 1 }}>
                 <CTAPill icon="calendar" ghost full>
-                  Flytt i Workbench
+                  Workbench
                 </CTAPill>
               </Link>
-              <Link href={apenOkt.href} style={{ textDecoration: "none", flex: 1 }}>
-                <CTAPill icon={apenOkt.status === "COMPLETED" ? "eye" : "play"} full>
-                  {apenOkt.status === "COMPLETED" ? "Se loggen" : "Start økt"}
-                </CTAPill>
+              <Link
+                href={apenOkt.href}
+                className="v2-press v2-focus"
+                style={{
+                  flex: 1,
+                  display: "inline-flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  minHeight: 44,
+                  borderRadius: 10,
+                  background: apenOkt.status === "COMPLETED" ? T.panel3 : T.handling,
+                  color: apenOkt.status === "COMPLETED" ? T.fg : T.onHandling,
+                  fontFamily: T.ui,
+                  fontSize: 13,
+                  fontWeight: 600,
+                  textDecoration: "none",
+                }}
+              >
+                {apenOkt.status === "COMPLETED" ? "Se loggen" : "Start økt"}
               </Link>
             </div>
           </div>
