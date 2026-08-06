@@ -252,9 +252,12 @@ function TabScorekort({ data, mobile }: { data: TesterV2Data; mobile: boolean })
             sub="Registrer en test — scorekortet fylles over tid."
           />
           <Link href="/portal/tren/tester/ny" style={{ textDecoration: "none", display: "block" }}>
-            <CTAPill icon="plus" full>
-              Registrer test
-            </CTAPill>
+            <button type="button" className="v2-press v2-focus" style={{
+              display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
+              minHeight: 48, width: "100%", borderRadius: 10, border: "none",
+              background: T.handling, color: T.onHandling, fontFamily: T.ui, fontSize: 14, fontWeight: 600, cursor: "pointer",
+            }}>Registrer test
+            </button>
           </Link>
         </div>
       )}
@@ -331,7 +334,7 @@ function TabScorekort({ data, mobile }: { data: TesterV2Data; mobile: boolean })
 
 function TabHistorikk({ data }: { data: TesterV2Data }) {
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+    <div data-paper-portal-tester-hub style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
       <Kort eyebrow="Resultater over tid" action={<Caps size={9}>Siste registreringer</Caps>}>
         {data.historikk.length > 0 ? (
           data.historikk.map((h, i) => (
@@ -381,9 +384,12 @@ export function TesterV2({ data }: { data: TesterV2Data }) {
           </div>
         </div>
         <Link href="/portal/tren/tester/ny" style={{ textDecoration: "none", display: "block", width: "100%", maxWidth: 280 }}>
-          <CTAPill icon="plus" full>
-            Registrer test
-          </CTAPill>
+          <button type="button" className="v2-press v2-focus" style={{
+              display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
+              minHeight: 48, width: "100%", borderRadius: 10, border: "none",
+              background: T.handling, color: T.onHandling, fontFamily: T.ui, fontSize: 14, fontWeight: 600, cursor: "pointer",
+            }}>Registrer test
+          </button>
         </Link>
       </div>
       <PillTabs
