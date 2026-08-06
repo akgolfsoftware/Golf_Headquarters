@@ -1,5 +1,31 @@
 {
   "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "permissions": {
+    "allow": [
+      "Edit",
+      "Bash(git status)",
+      "Bash(git diff*)",
+      "Bash(git add*)",
+      "Bash(git commit*)",
+      "Bash(git log*)",
+      "Bash(git branch*)",
+      "Bash(git checkout -b*)",
+      "Bash(npm run*)",
+      "Bash(npm install*)",
+      "Bash(npx prisma validate*)",
+      "Bash(npx prisma generate*)",
+      "Bash(npx tsc*)"
+    ],
+    "ask": [
+      "Bash(git push*)",
+      "Bash(git checkout main)",
+      "Bash(git checkout master)",
+      "Bash(git reset*)",
+      "Bash(gh pr create*)",
+      "Bash(gh pr merge*)",
+      "Bash(rm -rf*)"
+    ]
+  },
   "hooks": {
     "SessionStart": [
       {
