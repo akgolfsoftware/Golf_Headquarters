@@ -613,9 +613,24 @@ function DetaljPanel({ o, mobile, onLukk }: { o: DrillDetail; mobile?: boolean; 
 
         {/* B: én primær handling */}
         <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-          <CTAPill icon="plus" full onClick={leggIOkt}>
+          <button type="button" className="v2-press v2-focus" onClick={leggIOkt} data-od-id="drills-legg-i-okt" style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: 8,
+            minHeight: 48,
+            width: "100%",
+            borderRadius: 10,
+            border: "none",
+            background: T.handling,
+            color: T.onHandling,
+            fontFamily: T.ui,
+            fontSize: 14,
+            fontWeight: 600,
+            cursor: "pointer",
+          }}>
             Legg i økt
-          </CTAPill>
+          </button>
           <span
             onClick={dupliserPending ? undefined : dupliser}
             style={{
@@ -852,10 +867,26 @@ export function OvelsesbankV2({ data }: { data: DrillDetail[] }) {
                     title="Ingen øvelser ennå"
                     sub="Coachen legger inn øvelser — eller lag dine egne."
                   />
-                  <Link href="/portal/coach/ovelser/ny" style={{ textDecoration: "none", display: "block" }}>
-                    <CTAPill icon="plus" full>
-                      Ny øvelse
-                    </CTAPill>
+                  <Link
+                    href="/portal/coach/ovelser/ny"
+                    data-od-id="drills-ny"
+                    className="v2-press v2-focus"
+                    style={{
+                      textDecoration: "none",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      minHeight: 48,
+                      width: "100%",
+                      borderRadius: 10,
+                      background: T.handling,
+                      color: T.onHandling,
+                      fontFamily: T.ui,
+                      fontSize: 14,
+                      fontWeight: 600,
+                    }}
+                  >
+                    Ny øvelse
                   </Link>
                 </div>
               ) : (
@@ -920,7 +951,7 @@ export function OvelsesbankV2({ data }: { data: DrillDetail[] }) {
 
   // DESKTOP: filter-topp → galleri + detaljpanel til høyre
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+    <div data-paper-portal-drills style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 960, margin: "0 auto", width: "100%" }}>
       {hode}
       <FilterTopp
         type={type}
