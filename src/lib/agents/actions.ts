@@ -31,7 +31,7 @@ export async function acceptPlanAction(actionId: string) {
   await assertPlanActionAccess(user, action);
   if (action.status !== "PENDING") return;
 
-  await acceptAndApplyPlanAction(actionId);
+  await acceptAndApplyPlanAction(actionId, undefined, user.id);
 
   revalidatePath("/portal");
   revalidatePath("/portal/agent-pipeline");
@@ -42,7 +42,7 @@ export async function acceptPlanAction(actionId: string) {
   revalidatePath("/portal/mal/trackman");
 }
 
-export async function rejectPlanAction(actionId: string) {
+export async function rejectPlanAction(actionId: string, reason?: string) {
   const user = await requirePortalUser({ allow: ["PLAYER", "COACH", "ADMIN"] });
 
   const action = await prisma.planAction.findUnique({
@@ -51,9 +51,20 @@ export async function rejectPlanAction(actionId: string) {
   if (!action) throw new Error("not-found");
   await assertPlanActionAccess(user, action);
 
+  // Grunn er valgfri men verdifull eval-data — trimmes og caps til 500 tegn.
+  const rejectReason =
+    typeof reason === "string" && reason.trim().length > 0
+      ? reason.trim().slice(0, 500)
+      : undefined;
+
   await prisma.planAction.update({
     where: { id: actionId },
-    data: { status: "REJECTED" },
+    data: {
+      status: "REJECTED",
+      decidedAt: new Date(),
+      decidedById: user.id,
+      ...(rejectReason ? { rejectReason } : {}),
+    },
   });
 
   revalidatePath("/portal");
