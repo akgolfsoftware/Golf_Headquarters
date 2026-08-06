@@ -275,6 +275,22 @@ git push -u origin feature/paper-<kortnavn>
 (`export DIRECT_URL=postgresql://dummy:dummy@localhost:5432/dummy`) — aldri kopier `.env*`,
 aldri les innholdet, aldri lim det noe sted. Se `.claude/rules/gotchas.md`.
 
+### ⚠ CI er upålitelig akkurat nå — lokal verifisering er eneste sikre gate
+
+Verifisert 06.08 kveld: GitHub Actions plukker ikke opp jobber. En manuelt trigget kjøring på
+PR #370 sto i kø i 15 minutter uten at noen runner tok den, og ble avbrutt (`cancelled`, tom
+steg-liste — den startet aldri). `ci.yml` har en kommentar fra 19.07 om samme problem for
+push/PR-trigget kjøring.
+
+**Konsekvens for deg i natt:**
+- **Lokal `npm run verify && npm test` er ikke en formalitet — det er den ENESTE reelle
+  kvalitetssjekken.** Kjør den fullt ut på hver eneste PR. Ikke hopp over `npm test` fordi
+  «det er bare en breddeendring».
+- **Ikke vent på grønn CI** før du går videre til neste skjerm — den kommer kanskje aldri.
+- **Noter CI-status per PR i nattrapporten:** «CI kjørte grønt» / «CI kjørte aldri (runner)» /
+  «CI feilet — årsak». Anders må vite hvilke PR-er som kun er lokalverifisert, så han vet hvilke
+  som trenger ekstra blikk i morgen. Ikke skriv «verifisert» hvis det kun er lokalt.
+
 **Én skjerm = én branch = én PR.** Ingen «mens jeg var der»-opprydding i andre filer.
 
 ### PR-beskrivelsen skal inneholde
