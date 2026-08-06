@@ -6,7 +6,7 @@
 
 import type { ReactNode } from "react";
 import Link from "next/link";
-import { T, Caps, Kort, StatusPill, Icon, CTAPill } from "@/components/v2";
+import { T, Caps, Kort, StatusPill, Icon } from "@/components/v2";
 
 export type MegFakturaData = {
   fakturaNr: string;
@@ -66,7 +66,7 @@ function SumRad({ label, value, total }: { label: string; value: string; total?:
 
 export function MegFakturaV2({ data, handlinger }: { data: MegFakturaData; handlinger?: ReactNode }) {
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+    <div data-paper-portal-meg-faktura style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
       <div style={{ display: "flex", flexWrap: "wrap", alignItems: "flex-end", justifyContent: "space-between", gap: 14 }}>
         <div style={{ minWidth: 0 }}>
           <Caps>AK Golf · Faktura</Caps>
@@ -184,9 +184,10 @@ export function MegFakturaV2({ data, handlinger }: { data: MegFakturaData; handl
       )}
 
       <Link href="/portal/meg/abonnement" style={{ textDecoration: "none", display: "block" }}>
-        <CTAPill icon="arrow-left" full>
-          Tilbake til abonnement
-        </CTAPill>
+        <span style={{
+            display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, minHeight: 48, width: "100%", padding: "10px 16px",
+            borderRadius: 10, background: T.handling, color: T.onHandling, fontFamily: T.ui, fontSize: 14, fontWeight: 600,
+          }}>Tilbake til abonnement</span>
       </Link>
       <p style={{ fontFamily: T.ui, fontSize: 12, color: T.mut, textAlign: "center", margin: 0 }}>
         Spørsmål?{" "}
