@@ -253,10 +253,27 @@ export function TriageV2({ data, feedback = [], ko }: { data: CockpitData; feedb
 
   // ── B: én primær CTA ──────────────────────────────────────────
   const primaerCta = (
-    <Link href={primaerHref} style={{ textDecoration: "none", display: "block" }}>
-      <CTAPill icon={godkjenningsKo > 0 || totalSaker > 0 ? "arrow-right" : "users"} full>
-        {primaerTekst}
-      </CTAPill>
+    <Link
+      href={primaerHref}
+      data-od-id="innboks-primaer"
+      className="v2-press v2-focus"
+      style={{
+        textDecoration: "none",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        gap: 8,
+        minHeight: 48,
+        width: "100%",
+        borderRadius: 10,
+        background: T.handling,
+        color: T.onHandling,
+        fontFamily: T.ui,
+        fontSize: 14,
+        fontWeight: 600,
+      }}
+    >
+      {primaerTekst}
     </Link>
   );
 
@@ -282,7 +299,7 @@ export function TriageV2({ data, feedback = [], ko }: { data: CockpitData; feedb
 
   if (grupper.length === 0) {
     return (
-      <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+      <div data-paper-agencyos-innboks style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
         {hode}
         {kpi}
         <Kort>
@@ -293,10 +310,25 @@ export function TriageV2({ data, feedback = [], ko }: { data: CockpitData; feedb
           />
         </Kort>
         {godkjenningsKo > 0 ? primaerCta : (
-          <Link href="/admin/agencyos" style={{ textDecoration: "none", display: "block" }}>
-            <CTAPill icon="users" full>
-              Til stall
-            </CTAPill>
+          <Link
+            href="/admin/agencyos"
+            className="v2-press v2-focus"
+            style={{
+              textDecoration: "none",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              minHeight: 48,
+              width: "100%",
+              borderRadius: 10,
+              background: T.handling,
+              color: T.onHandling,
+              fontFamily: T.ui,
+              fontSize: 14,
+              fontWeight: 600,
+            }}
+          >
+            Til stall
           </Link>
         )}
         <TilbakemeldingerKort rader={feedback} />
