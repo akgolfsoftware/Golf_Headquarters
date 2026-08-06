@@ -110,7 +110,7 @@ export default async function V2AdminAgentTeamPage() {
   const data: AdminAgentTeamV2Data = { projects, pastRuns };
 
   return (
-    <V2Shell aktiv="cockpit" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>
+    <V2Shell bredde="kolonne" aktiv="cockpit" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>
       <TilbakeLenke href="/admin/agents">AI-agenter</TilbakeLenke>
       <AdminAgentTeamV2 data={data} />
       <h2 className="mt-2 mb-3 font-display text-[13px] font-semibold text-foreground">Prosjekter</h2>

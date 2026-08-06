@@ -16,7 +16,7 @@ export default async function NyPlanTemplate() {
   const user = await requirePortalUser({ allow: ["COACH", "ADMIN"] });
 
   return (
-    <V2Shell aktiv="planlegge" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"} avatarUrl={user.avatarUrl}>
+    <V2Shell bredde="kolonne" aktiv="planlegge" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"} avatarUrl={user.avatarUrl}>
       <TilbakeLenke href="/admin/plan-templates">Plan-maler</TilbakeLenke>
       <AdminPlanMalNyV2 />
     </V2Shell>

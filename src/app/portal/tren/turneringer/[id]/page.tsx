@@ -38,7 +38,7 @@ export default async function TurneringDetaljPage({
   // Not-found branch — ærlig tomtilstand, aldri demo-innhold.
   if (!data) {
     return (
-      <V2Shell aktiv="analyse" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
+      <V2Shell bredde="kolonne" aktiv="analyse" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
         <TilbakeLenke href="/portal/tren/turneringer">Turneringer</TilbakeLenke>
         <Kort>
           <TomTilstand
@@ -114,7 +114,7 @@ export default async function TurneringDetaljPage({
   };
 
   return (
-    <V2Shell aktiv="analyse" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
+    <V2Shell bredde="kolonne" aktiv="analyse" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
       <TilbakeLenke href="/portal/tren/turneringer">Turneringer</TilbakeLenke>
       <TurneringDetaljV2
         data={v2Data}

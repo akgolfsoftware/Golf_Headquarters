@@ -24,7 +24,7 @@ export default async function V2FysiskPreviewPage() {
   const data = await getFysiskData(user.id);
 
   return (
-    <V2Shell aktiv="gjor" nav={PLAYERHQ_NAV} navn={data.spillerNavn} avatarUrl={user.avatarUrl}>
+    <V2Shell bredde="kolonne" aktiv="gjor" nav={PLAYERHQ_NAV} navn={data.spillerNavn} avatarUrl={user.avatarUrl}>
       <TilbakeLenke href="/portal/gjennomfore">Gjør</TilbakeLenke>
       <FysiskV2 data={data} />
     </V2Shell>

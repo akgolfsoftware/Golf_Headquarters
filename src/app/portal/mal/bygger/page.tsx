@@ -16,7 +16,7 @@ export const metadata = { title: "AI mal-bygger — PlayerHQ" };
 export default async function MalByggerPage() {
   const kontekst = await hentByggerKontekst();
   return (
-    <V2Shell aktiv="meg" nav={PLAYERHQ_NAV} navn={kontekst.spiller.navn}>
+    <V2Shell bredde="kolonne" aktiv="meg" nav={PLAYERHQ_NAV} navn={kontekst.spiller.navn}>
       <TilbakeLenke href="/portal/mal">Mål</TilbakeLenke>
       <MalByggerV2 kontekst={kontekst} />
     </V2Shell>

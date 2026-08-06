@@ -30,7 +30,7 @@ export default async function SpillerTesterPage({
   if (!data) notFound();
 
   return (
-    <V2Shell aktiv="spillere" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>
+    <V2Shell bredde="kolonne" aktiv="spillere" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>
       <AdminSpillerTesterV2 data={data} playerId={id} />
     </V2Shell>
   );

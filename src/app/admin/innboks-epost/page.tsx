@@ -20,7 +20,7 @@ export default async function InnboksEpostPage() {
   const user = await requirePortalUser({ allow: ["ADMIN"] });
   const epost = await loadAlleEpost();
   return (
-    <V2Shell aktiv="innboks" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>
+    <V2Shell bredde="kolonne" aktiv="innboks" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>
       <TilbakeLenke href="/admin/innboks">Innboks</TilbakeLenke>
       <InnboksEpostV2 epost={epost} />
     </V2Shell>

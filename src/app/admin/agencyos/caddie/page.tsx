@@ -27,7 +27,7 @@ export default async function V2CaddieSamtalePage({
   const conversation = await getOrCreateActiveConversation(user.id);
 
   return (
-    <V2Shell nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>
+    <V2Shell bredde="kolonne" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>
       <TilbakeLenke href="/admin/agencyos">Cockpit</TilbakeLenke>
       <Kort
         pad="14px 18px"

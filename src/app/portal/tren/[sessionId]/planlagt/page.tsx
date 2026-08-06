@@ -172,7 +172,7 @@ export default async function OktPlanlagtPage({
   }));
 
   return (
-    <V2Shell aktiv="gjor" nav={PLAYERHQ_NAV} navn={user.name ?? undefined} avatarUrl={user.avatarUrl}>
+    <V2Shell bredde="kolonne" aktiv="gjor" nav={PLAYERHQ_NAV} navn={user.name ?? undefined} avatarUrl={user.avatarUrl}>
       <TilbakeLenke href="/portal/tren">Tilbake</TilbakeLenke>
       <OktPlanlagtV2
         data={{

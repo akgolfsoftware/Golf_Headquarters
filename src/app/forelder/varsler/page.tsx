@@ -60,7 +60,7 @@ export default async function V2ForelderVarslerPreviewPage() {
   };
 
   return (
-    <V2Shell aktiv="oversikt" nav={FORELDER_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
+    <V2Shell bredde="kolonne" aktiv="oversikt" nav={FORELDER_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
       <ForelderVarslerV2 data={data} />
     </V2Shell>
   );

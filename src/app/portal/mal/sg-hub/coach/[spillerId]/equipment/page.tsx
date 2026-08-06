@@ -23,7 +23,7 @@ export default async function CoachEquipmentPage({
   const { player } = await requireCoachForPlayer(user, spillerId);
 
   return (
-    <V2Shell aktiv="analyse" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
+    <V2Shell bredde="kolonne" aktiv="analyse" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
       <EquipmentView
         userId={player.id}
         backHref={`/portal/mal/sg-hub/coach/${spillerId}`}

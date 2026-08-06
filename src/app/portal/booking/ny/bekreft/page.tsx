@@ -99,7 +99,7 @@ export default async function BekreftCreditBookingPage({
   };
 
   return (
-    <V2Shell nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
+    <V2Shell bredde="kolonne" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
       <TilbakeLenke href={backHref}>Velg annen tid</TilbakeLenke>
       <BookingNyBekreftV2 data={data} />
     </V2Shell>

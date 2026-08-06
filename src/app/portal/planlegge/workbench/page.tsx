@@ -64,7 +64,7 @@ export default async function V2WorkbenchPreviewPage({ searchParams }: Props) {
   };
 
   return (
-    <V2Shell aktiv="plan" nav={PLAYERHQ_NAV} navn={user.name}>
+    <V2Shell bredde="full" aktiv="plan" nav={PLAYERHQ_NAV} navn={user.name}>
       <WorkbenchV2
         data={ctx?.data}
         insights={ctx?.insights ?? null}

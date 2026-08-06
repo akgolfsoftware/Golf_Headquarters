@@ -20,7 +20,7 @@ export default async function NyTurneringPage() {
   });
 
   return (
-    <V2Shell aktiv="planlegge" nav={AGENCYOS_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
+    <V2Shell bredde="kolonne" aktiv="planlegge" nav={AGENCYOS_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
       <TilbakeLenke href="/admin/tournaments">Turneringer</TilbakeLenke>
       <TurneringWizardV2 courses={courses} />
     </V2Shell>

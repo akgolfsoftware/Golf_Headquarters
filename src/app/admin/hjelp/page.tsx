@@ -22,7 +22,7 @@ export default async function V2AdminHjelpPage() {
   const user = await requirePortalUser({ allow: ["ADMIN", "COACH"] });
 
   return (
-    <V2Shell aktiv="cockpit" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>
+    <V2Shell bredde="kolonne" aktiv="cockpit" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>
       <TilbakeLenke href="/admin/agencyos">Cockpit</TilbakeLenke>
       <AdminHjelpV2 />
     </V2Shell>

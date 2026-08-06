@@ -123,7 +123,7 @@ export default async function V2GrupperPage() {
     groups.filter((g) => gfgkNavn.has(g.name)).length < gfgkNavn.size;
 
   return (
-    <V2Shell aktiv="spillere" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>
+    <V2Shell bredde="kolonne" aktiv="spillere" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>
       <TilbakeLenke href="/admin/spillere">Stall</TilbakeLenke>
       {manglerGfgk ? (
         <div style={{ marginBottom: 14 }}>

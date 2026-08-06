@@ -57,7 +57,7 @@ export default async function V2ForelderFakturaerPreviewPage() {
   }));
 
   return (
-    <V2Shell aktiv="okonomi" nav={FORELDER_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
+    <V2Shell bredde="kolonne" aktiv="okonomi" nav={FORELDER_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
       <ForelderFakturaerV2 data={{ fakturaer }} />
     </V2Shell>
   );

@@ -97,7 +97,7 @@ export default async function TurneringDetalj({
   const PRIO_LABEL: Record<string, string> = { MAJOR: "Major", NORMAL: "Normal", LOCAL: "Lokal" };
 
   return (
-    <V2Shell aktiv="planlegge" nav={AGENCYOS_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
+    <V2Shell bredde="kolonne" aktiv="planlegge" nav={AGENCYOS_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
       <TilbakeLenke href="/admin/tournaments">Turneringer</TilbakeLenke>
       <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
         {/* Hode */}

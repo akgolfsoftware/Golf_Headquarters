@@ -106,7 +106,7 @@ export default async function OnskeligOktBekreftetPage() {
   // Ingen forespørsel funnet — vis nøktern tomstate (ingen falske data).
   if (!request) {
     return (
-      <V2Shell aktiv="gjor" nav={PLAYERHQ_NAV} navn={user.name ?? undefined} avatarUrl={user.avatarUrl}>
+      <V2Shell bredde="kolonne" aktiv="gjor" nav={PLAYERHQ_NAV} navn={user.name ?? undefined} avatarUrl={user.avatarUrl}>
         <TilbakeLenke href="/portal/gjennomfore">Gjør</TilbakeLenke>
         <Kort>
           <TomTilstand
@@ -142,7 +142,7 @@ export default async function OnskeligOktBekreftetPage() {
   const shortId = request.id.slice(-8).toUpperCase();
 
   return (
-    <V2Shell aktiv="gjor" nav={PLAYERHQ_NAV} navn={user.name ?? undefined} avatarUrl={user.avatarUrl}>
+    <V2Shell bredde="kolonne" aktiv="gjor" nav={PLAYERHQ_NAV} navn={user.name ?? undefined} avatarUrl={user.avatarUrl}>
       <TilbakeLenke href="/portal/gjennomfore">Gjør</TilbakeLenke>
       <OnskeligOktBekreftetV2
         data={{

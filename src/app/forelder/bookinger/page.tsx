@@ -109,6 +109,7 @@ export default async function V2ForelderBookingerPage() {
 
   return (
     <V2Shell
+      bredde="kolonne"
       aktiv="oversikt"
       nav={FORELDER_NAV}
       navn={user.name}

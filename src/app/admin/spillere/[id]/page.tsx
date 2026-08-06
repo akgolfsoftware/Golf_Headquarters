@@ -675,7 +675,7 @@ export default async function SpillerProfilPage({
   };
 
   return (
-    <V2Shell aktiv="spillere" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>
+    <V2Shell bredde="kolonne" aktiv="spillere" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>
       <SpillerDashboardV2 data={dash} />
     </V2Shell>
   );

@@ -104,7 +104,7 @@ export default async function DubletterPage() {
   });
 
   return (
-    <V2Shell aktiv="planlegge" nav={AGENCYOS_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
+    <V2Shell bredde="kolonne" aktiv="planlegge" nav={AGENCYOS_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
       <TilbakeLenke href="/admin/tournaments">Turneringer</TilbakeLenke>
       <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
         <div>

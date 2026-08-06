@@ -100,7 +100,7 @@ export default async function V2MalPreviewPage() {
   };
 
   return (
-    <V2Shell aktiv="meg" nav={PLAYERHQ_NAV} navn={user.name ?? undefined}>
+    <V2Shell bredde="kolonne" aktiv="meg" nav={PLAYERHQ_NAV} navn={user.name ?? undefined}>
       <TilbakeLenke href="/portal/meg">Meg</TilbakeLenke>
       <MalHubV2 data={data} />
     </V2Shell>

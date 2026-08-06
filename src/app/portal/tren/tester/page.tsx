@@ -150,7 +150,7 @@ export default async function V2TesterPreviewPage() {
   };
 
   return (
-    <V2Shell aktiv="analyse" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
+    <V2Shell bredde="kolonne" aktiv="analyse" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
       <TilbakeLenke href="/portal/analysere">Analyse</TilbakeLenke>
       <TesterV2 data={data} />
     </V2Shell>

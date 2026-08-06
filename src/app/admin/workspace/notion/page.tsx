@@ -40,7 +40,7 @@ export default async function WorkspaceNotionPage({
   const pageCount = connection?.databases.reduce((sum, d) => sum + d.pagesCount, 0) ?? 0;
 
   return (
-    <V2Shell aktiv="cockpit" nav={AGENCYOS_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
+    <V2Shell bredde="kolonne" aktiv="cockpit" nav={AGENCYOS_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
       <TilbakeLenke href="/admin/workspace">Workspace</TilbakeLenke>
       <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
         <div>

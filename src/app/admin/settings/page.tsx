@@ -89,7 +89,7 @@ export default async function V2AdminSettingsPage({
   };
 
   return (
-    <V2Shell nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>
+    <V2Shell bredde="kolonne" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>
       <TilbakeLenke href="/admin/agencyos">Cockpit</TilbakeLenke>
       <AdminSettingsV2 data={data} />
     </V2Shell>

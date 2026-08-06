@@ -27,7 +27,7 @@ export default async function MalByggerPage() {
   });
 
   return (
-    <V2Shell aktiv="meg" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
+    <V2Shell bredde="kolonne" aktiv="meg" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
       <TilbakeLenke href="/portal/mal">Mål</TilbakeLenke>
       <AiMalByggerV2
         playerFirstName={(user.name ?? "deg").split(" ")[0]}
