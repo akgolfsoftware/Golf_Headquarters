@@ -1,9 +1,9 @@
 # Skjermplan — tegnede fasitskjermer + wireframe-plan for resten
 
-**Skrevet:** 2026-08-05 (bestilt av Anders samme dag) · **Status:** UTKAST — venter på Anders' godkjenning
-**Kilde:** Claude Design-prosjektet **«AK Golf HQ — Claude Paper»** (`605a48cc-81e8-44bd-94d2-07d50a97370a`),
-`fase1/` — verifisert direkte mot det levende prosjektet 05.08.2026 (33 HTML-fasitfiler + KONTRAKT/FASE-1/_foundation).
-Tallgrunnlag: `docs/port/fasit-liste-paper.md` (05.08). Mønsterregler: `docs/port/monsterdokument-paper.md` (GODKJENT 05.08).
+**Skrevet:** 2026-08-05 · **Oppdatert:** 2026-08-06 (Del A ferdig portet; W2 startet)
+**Status:** Del A (fasit-portering) = **FERDIG i main**. Del B (W2–W6) = **i gang** — neste er W2.
+**Kilde:** Claude Design `605a48cc` · speil `designsystem/paper/` · godkjent-liste `docs/port/portstatus-paper.md`
+Tallgrunnlag: `fasit-liste-paper.md` + `portstatus-paper.md`. Mønster: `monsterdokument-paper.md`.
 
 **Prinsippet Anders har bestilt:** de 318 skjermene uten fasit skal IKKE komponeres fritt fra
 mønsterdokumentet og kodes direkte. De skal **wireframes/tegnes i Claude Design først**, slik at
@@ -12,66 +12,23 @@ side») for alle 343, ikke bare de 25.
 
 ---
 
-## Del A — porteringsplan for de 33 tegnede skjermene (25 ruter)
+## Del A — fasitskjermer (portet og godkjent 2026-08-06)
 
-Rekkefølgen følger den godkjente Fase 1-planen. Én PR per skjerm, skjermbilde-gaten på alle
-(390px mobil først, lys+mørk, fasit ved siden av, alle fire tilstander, aldri merge uten Anders' ja).
+**Alle tegnede fasitskjermer med rute er i main.** Komplett tabell med PR-nummer:
+`docs/port/portstatus-paper.md`.
 
-### Pulje 1 — PlayerHQ kjerne (pågår)
-
-| # | Fasitfil(er) | Rute | Status |
-|---|---|---|---|
-| A | `playerhq-chat-desktop/-mobil.html` | `/portal` (Hjem) | Merget med feil layout (avvik A1) — **ombygging = neste PR** |
-| B | `playerhq-plan.html` | `/portal/planlegge` | Merget med avvik A2 — ombygging etter A |
-| C | `playerhq-analyse.html` | `/portal/analysere` | Avvik A3 («Én ting nå» mangler) |
-| D | `playerhq-meg.html` | `/portal/meg` | Avvik A4 (lydsamtykke-handling mangler) |
-| — | `playerhq-booking.html` | `/portal/booking` | PR #281 åpen — skal gjennom skjermbilde-gaten |
-| E | `workbench-mobil.html` (Testbatteri-arket) | `/portal/planlegge/workbench` | **Blokkert:** testliste 20/21/25? + TalentHQ i meny? |
-
-### Pulje 2 — Gjennomføre-sløyfa (6 nye fasit 04.08)
-
-| Fasitfil | Rute |
-|---|---|
-| `playerhq-live-brief.html` | `/portal/(fullscreen)/live/[sessionId]/brief` |
-| `playerhq-live-okt.html` | `/portal/(fullscreen)/live/[sessionId]/active` |
-| `playerhq-live-summary.html` | `/portal/(fullscreen)/live/[sessionId]/summary` |
-| `playerhq-runde-live.html` | `/portal/(fullscreen)/runde/live` |
-| `playerhq-runde-logg.html` | `/portal/(fullscreen)/runde/logg` |
-| `playerhq-test-gjennomfor.html` | `/portal/(fullscreen)/tren/tester/[testId]/gjennomfor` — deler PR-E-blokkeringen (testliste) |
-
-### Pulje 3 — Workbench (hevstangen: én komponent, to innganger)
-
-| Fasitfil | Rute |
-|---|---|
-| `workbench-desktop.html` | `/admin/spillere/[id]/workbench` |
-| `workbench-mobil.html` | `/portal/planlegge/workbench` (helheten, ikke bare Testbatteri-arket) |
-
-### Pulje 4 — AgencyOS med fasit (steg 8)
-
-| Fasitfil(er) | Rute | Merknad |
+| Pulje | Innhold | Status |
 |---|---|---|
-| `agencyos-konsoll-desktop/-mobil.html` | `/admin/agencyos` | Samme klasse ombygging som Hjem (chat-først vs dashbord) |
-| `agencyos-innboks(-mobil).html` | `/admin/innboks` | |
-| `agencyos-kalender(-mobil).html` | `/admin/kalender` | |
-| `agencyos-spillere(-mobil).html` | `/admin/spillere` | |
-| `spillerprofil.html` | `/admin/spillere/[id]` | |
-| `agencyos-okonomi.html` | `/admin/agencyos/okonomi` | |
-| `agencyos-innstillinger.html` | `/admin/settings` | |
-| `agencyos-agenticos.html` | ny samleflate, erstatter 4 ruter | Beslutning tatt 04.08 — adressen velges når PR-en bygges |
-| `workbench-turnering.html` | inn i `WorkbenchV2` | Beslutning tatt 04.08 — ikke ombygging av `/admin/tournaments` |
+| 1 PlayerHQ kjerne | Hjem, Plan, Analyse, Meg, Booking | #307–#310, #328 |
+| 2 Gjennomføre-sløyfa | Live FØR/UNDER/ETTER, runde, test-gjennomfør, tapper | #311–#317 |
+| 3 Workbench | mobil + desktop + turnering-fane | #329, #342 |
+| 4 AgencyOS | konsoll, innboks, kalender, stall, profil, økonomi, settings, agenticos, live, AK-stigen | #330–#337, #341, #343 |
+| 5 Felles | innlogging, forelder, marketing booking, fangst, logget-ut | #338–#340, #344–#345 |
+| W1 wireframes | 11 fase2-filer (økt, feiring, fys/teknisk, tester, turneringer, drills) | #318–#327 |
 
-### Pulje 5 — fellesflater
+**Blokkert (ikke Del A):** PR-E (testantall 20/21/25) · PR-F (DataGolf-plassering i PlayerHQ).
 
-| Fasitfil | Rute |
-|---|---|
-| `innlogging.html` | `/auth/login` |
-| `foreldreportal.html` | `/forelder` |
-| `booking.html` | `/booking` (marketing) |
-
-### Utenfor plan (2 filer uten rute — trenger produktbeslutning før de går inn)
-
-`agencyos-ak-stigen.html` (ny juniorflate) · `agencyos-live-session.html` (trolig coach-siden av
-live-økt). Spør Anders når pulje 4 nærmer seg. `fangstsheet.html` er komponentkort, ikke skjerm.
+**Historisk Del A-status under (A1–A4, «pulje pågår») er overstyrt** — beholdes ikke som gjeldende.
 
 ---
 
@@ -113,7 +70,7 @@ er at hver bølge krymper i steg 1.
 | Bølge | Område | Uten fasit (anslag) | Merknad |
 |---|---|---:|---|
 | W1 | PlayerHQ Gjennomføre-rest + Planlegge-rest | 12 + 23 | `logger`/`tapper` + planleggings-undersider; tegnes FØR pulje 2 kodes ferdig |
-| W2 | PlayerHQ Analysere + Hjem-rest | 40 + 1 | Størst konsolideringspotensial — mange er trolig faner i den ene analyseflaten |
+| W2 | PlayerHQ Analysere + Hjem-rest | 40 + 1 → **krympes** | **I gang 06.08** — se §W2; hub ferdig; dybdeskjer i PR-kø |
 | W3 | PlayerHQ Meg + Booking + Talent + Coach + Aliaser | 27 + 6 + 5 + 20 + 5 | «Aliaser» må verifiseres mot kode — trolig redirects, ikke skjermer |
 | W4 | AgencyOS alle områder | ~111 | Stall 28 · Admin 18 · Planlegge 18 · Oversikt 16 · Gjennomføre 14 · Innsikt 14 · Min uke 4 · Meg 2 — tegnes FØR pulje 4 kodes |
 | W5 | Marketing + Forelder + Auth + System | 40 + 11 + 10 + 7 | Marketing kan ha egen visuell avklaring — spør Anders før W5 tegnes |
@@ -133,12 +90,35 @@ er at hver bølge krymper i steg 1.
 3. **Aktivt konsolideringsmandat** — design-øktene foreslår sammenslåinger/kutt per område;
    Anders sier ja/nei per område før tegning.
 
-### W1 — TEGNET OG BATCH-GODKJENT (Anders' ja 05.08.2026 kveld)
+### W1 — TEGNET, GODKJENT OG PORTET (05–06.08.2026)
 
-Alle 11 wireframes i `fase2/playerhq/` er batch-godkjent av Anders — de er nå fasit.
-Dekningsregnskapet i `fasit-liste-paper.md` er oppdatert (25 → 36 ruter), lokalt speil
-synket til `designsystem/paper/fase2/`. Neste bølge: **W2 (Analysere + Hjem-rest)** —
-konsolideringsgate før tegning.
+Alle 11 wireframes i `fase2/playerhq/` er batch-godkjent og **portet til main** (#318–#327).
+Neste bølge: **W2 (Analysere + Hjem-rest)** — se §W2 under.
+
+### W2 — I GANG (start 2026-08-06)
+
+**Mål:** PlayerHQ Analysere-undersider + Hjem-rest uten egen fasit.
+
+#### Konsolideringsgate (mot kode 2026-08-06)
+
+| Kategori | Ruter (eksempler) | Forslag |
+|---|---|---|
+| **Hub (har fasit)** | `/portal/analysere` | Allerede portet (#309) — 5 faner i AnalysereV2 |
+| **Ekte dybdeskjer** (v2, porte først) | `/portal/analysere/hull`, `/portal/mal/runder`, `/portal/mal/runder/[id]`, `/portal/gameplan`, `/portal/datagolf`, `/portal/mal/trackman`, `/portal/mal/trackman/[id]` | Én PR hver · Paper `T.handling` · midlertidig seed mot `playerhq-analyse.html` til egen wireframe finnes |
+| **Talent-familie** | `/portal/talent` + 4 undersider | Utsettes til etter hub-dybde ELLER egen mini-batch · merker PR-E-relatert TalentHQ-i-meny |
+| **Redirect / stub** | `/portal/analyse` → analysere, `/portal/stats` → ut, `/portal/gjennomfore` → hjem (W1-vedtak) | **Ikke tegnes** |
+| **Hjem-rest** | Varsler, venner, utfordringer, fysisk, … | Kartlegges etter Analysere-dybde; mange er tynne v2-sider |
+
+**Ikke tegn/kode i W2:** rene redirects, aliaser, legacy under `(legacy)/mal/*` som er erstatttet av v2.
+
+**Arbeidsmåte W2 (inntil full wireframe-batch i Design):**
+1. Port eksisterende v2-dybdeskjer til Paper (handling-monopolet + data-paper + seed).
+2. Parallelt: konsolideringsliste → Claude Design fase2-wireframes for det som trenger ny IA.
+3. Når Design-batch er godkjent: bytt midlertidig seed til ekte fase2-fasit.
+
+**Første PR-kø (kode, startet 06.08):**
+1. Hull-analyse · 2. Runder-liste · 3. Gameplan · 4. Runde-detalj · 5. DataGolf
+
 
 ### W1 — konsolideringsgate GJENNOMFØRT (Anders' ja 05.08.2026)
 
