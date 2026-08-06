@@ -143,7 +143,7 @@ export function UtfordringerV2({ data }: { data: UtfordringerData }) {
   const { aktive, tidligere } = data;
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+    <div data-paper-portal-utfordringer style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 960, margin: "0 auto", width: "100%" }}>
       {/* Hode */}
       <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
         <div>
@@ -156,7 +156,10 @@ export function UtfordringerV2({ data }: { data: UtfordringerData }) {
           </p>
         </div>
         <Link href="/portal/utfordringer/ny" style={{ textDecoration: "none" }}>
-          <CTAPill icon="plus">Ny utfordring</CTAPill>
+          <span style={{
+            display: "inline-flex", alignItems: "center", gap: 8, minHeight: 44, padding: "10px 16px",
+            borderRadius: 10, background: T.handling, color: T.onHandling, fontFamily: T.ui, fontSize: 13, fontWeight: 600,
+          }}>Ny utfordring</span>
         </Link>
       </div>
 
@@ -178,9 +181,10 @@ export function UtfordringerV2({ data }: { data: UtfordringerData }) {
             />
             <div style={{ marginTop: 12 }}>
               <Link href="/portal/utfordringer/ny" style={{ textDecoration: "none", display: "block" }}>
-                <CTAPill icon="plus" full>
-                  Ny utfordring
-                </CTAPill>
+                <span style={{
+                  display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, minHeight: 48, width: "100%", padding: "10px 16px",
+                  borderRadius: 10, background: T.handling, color: T.onHandling, fontFamily: T.ui, fontSize: 14, fontWeight: 600,
+                }}>Ny utfordring</span>
               </Link>
             </div>
           </Kort>
