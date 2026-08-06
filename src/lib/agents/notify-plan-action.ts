@@ -3,6 +3,7 @@ import "server-only";
 import { prisma } from "@/lib/prisma";
 import { resolveCoachIdForPlayer } from "@/lib/workbench/v2-sync";
 import { varsleAgentFunn } from "./agent-notify";
+import { logError } from "@/lib/error-tracking";
 
 export type VarslePlanActionOpts = {
   userId: string;
@@ -39,7 +40,12 @@ export async function varsleVedPlanAction(
       lenke,
       telegram: opts.sgValue != null && opts.sgValue < -1.0,
     });
-  } catch (err) {
-    console.error("[notify-plan-action] feilet", err);
+  } catch (error) {
+    await logError({
+      context: "agents.notifyPlanAction",
+      error,
+      meta: { userId: opts.userId, actionType: opts.actionType, planActionId: opts.planActionId },
+      severity: "warn",
+    });
   }
 }

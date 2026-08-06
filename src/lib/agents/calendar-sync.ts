@@ -22,6 +22,7 @@ import {
 import { reflekterTilBookinger } from "@/lib/google-calendar-reflect";
 import { runAgent } from "./agent-runner";
 import type { AgentResult } from "./agent-runner";
+import { logError } from "@/lib/error-tracking";
 
 export const AGENT_NAME = "calendar-sync";
 
@@ -76,12 +77,14 @@ export async function runCalendarSync(): Promise<AgentResult> {
         const eventId = await pushBooking(b.id);
         if (eventId) pushSynced++;
         else pushFailed++;
-      } catch (err) {
+      } catch (error) {
         pushFailed++;
-        console.error(
-          `[calendar-sync] push feilet for booking=${b.id}`,
-          err instanceof Error ? err.message : err,
-        );
+        await logError({
+          context: "calendar-sync.pushBooking",
+          error,
+          meta: { bookingId: b.id },
+          severity: "warn",
+        });
       }
     }
 

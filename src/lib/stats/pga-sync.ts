@@ -18,6 +18,7 @@
 
 import { prisma } from "@/lib/prisma";
 import { getSkillRatings, type DGTour } from "@/lib/datagolf/client";
+import { logError } from "@/lib/error-tracking";
 
 // Tours som har stats-coverage. DataGolf returnerer skill-ratings for disse:
 const STATS_TOURS: DGTour[] = ["pga", "euro", "kft"];
@@ -96,8 +97,13 @@ export async function syncPgaSkillRatings(): Promise<{
       const result = await syncOneTour(tour);
       perTour[tour] = result.players;
       total += result.players;
-    } catch (err) {
-      console.error(`[pga-sync] ${tour} feilet:`, err);
+    } catch (error) {
+      await logError({
+        context: "pga-sync.syncOneTour",
+        error,
+        meta: { tour },
+        severity: "warn",
+      });
       perTour[tour] = -1;
     }
   }

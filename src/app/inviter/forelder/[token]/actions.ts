@@ -8,6 +8,7 @@ import { prisma } from "@/lib/prisma";
 import { supabaseAdmin } from "@/lib/supabase/admin";
 import { claimPendingAccountByEmail } from "@/lib/auth/claim-pending-account";
 import { resendKlient, FRA_EPOST } from "@/lib/email";
+import { logError } from "@/lib/error-tracking";
 
 type AksepterResult = { ok: false; error: string } | { ok: true; redirect: string };
 
@@ -123,8 +124,8 @@ export async function aksepterInvitasjon(formData: FormData): Promise<AksepterRe
 <p>Du er nå koblet til ${invitation.player.name} sin treningsprofil.</p>
 <p>Logg inn på <a href="https://akgolf.no/auth/login">akgolf.no</a> for å se ukerapport, fakturaer og varsler.</p>`,
     });
-  } catch (err) {
-    console.error("[aksepterInvitasjon] velkomstepost feilet", err);
+  } catch (error) {
+    await logError({ context: "inviter.forelder.velkomst-epost", error, severity: "warn", meta: { invitationId: invitation.id, playerId: invitation.playerId } });
   }
 
   redirect("/forelder");

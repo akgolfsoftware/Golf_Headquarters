@@ -10,6 +10,7 @@ import { audit } from "@/lib/audit";
 import { pushBooking } from "@/lib/google-calendar-kilder";
 import { varsleNyBooking } from "@/lib/booking/varsle-ny-booking";
 import { notify } from "@/lib/notifications";
+import { logError } from "@/lib/error-tracking";
 
 export type CreditBookingInput = {
   serviceTypeId: string;
@@ -168,8 +169,13 @@ export async function createCreditBooking(
   // Best-effort: push til coachens Google Calendar (oppdaterer Booking.googleEventId)
   try {
     await pushBooking(result.id);
-  } catch (err) {
-    console.error("[credit-booking] calendar push failed", err);
+  } catch (error) {
+    await logError({
+      context: "booking.creditBooking.calendarPush",
+      error,
+      meta: { bookingId: result.id },
+      severity: "warn",
+    });
   }
 
   // Best-effort: send bekreftelses-e-post (samme mal som drop-in,
@@ -177,8 +183,13 @@ export async function createCreditBooking(
   try {
     const { sendBookingConfirmation } = await import("@/lib/email/booking-emails");
     await sendBookingConfirmation(result.id);
-  } catch (err) {
-    console.error("[credit-booking] confirmation-email failed", err);
+  } catch (error) {
+    await logError({
+      context: "booking.creditBooking.confirmationEmail",
+      error,
+      meta: { bookingId: result.id },
+      severity: "warn",
+    });
   }
 
   // In-app-varsel

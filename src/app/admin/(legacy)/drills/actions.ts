@@ -10,6 +10,7 @@ import { Prisma } from "@/generated/prisma/client";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { audit } from "@/lib/audit";
+import { logError } from "@/lib/error-tracking";
 import {
   PyramidArea,
   LPhase,
@@ -163,8 +164,8 @@ export async function createDrill(
     });
     revalidatePath("/admin/drills");
     return { success: true, data: { drillId: ny.id } };
-  } catch (err) {
-    console.error("createDrill failed", err);
+  } catch (error) {
+    await logError({ context: "drills.createDrill", error });
     return { error: "Kunne ikke opprette drill" };
   }
 }
@@ -202,8 +203,8 @@ export async function updateDrill(
     revalidatePath("/admin/drills");
     revalidatePath(`/admin/drills/${id}`);
     return { success: true, data: { drillId: id } };
-  } catch (err) {
-    console.error("updateDrill failed", err);
+  } catch (error) {
+    await logError({ context: "drills.updateDrill", error, meta: { id } });
     return { error: "Kunne ikke lagre endringer" };
   }
 }
@@ -265,8 +266,8 @@ export async function duplicateDrill(
     });
     revalidatePath("/admin/drills");
     return { success: true, data: { drillId: kopi.id } };
-  } catch (err) {
-    console.error("duplicateDrill failed", err);
+  } catch (error) {
+    await logError({ context: "drills.duplicateDrill", error, meta: { id } });
     return { error: "Kunne ikke duplisere drill" };
   }
 }
@@ -304,8 +305,8 @@ export async function deleteDrill(
     });
     revalidatePath("/admin/drills");
     return { success: true, data: { drillId: id } };
-  } catch (err) {
-    console.error("deleteDrill failed", err);
+  } catch (error) {
+    await logError({ context: "drills.deleteDrill", error, meta: { id } });
     return { error: "Kunne ikke slette drill" };
   }
 }

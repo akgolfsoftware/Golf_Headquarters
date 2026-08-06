@@ -51,6 +51,18 @@
       "schedule": "30 3 * * *"
     },
     {
+      "path": "/api/cron/webhook-failures-alert",
+      "schedule": "0 * * * *"
+    },
+    {
+      "path": "/api/cron/cleanup-error-logs",
+      "schedule": "0 4 * * *"
+    },
+    {
+      "path": "/api/cron/cleanup-guest-bookings",
+      "schedule": "30 4 * * 1"
+    },
+    {
       "path": "/api/cron/turneringer-schedule",
       "schedule": "0 4 * * *"
     },

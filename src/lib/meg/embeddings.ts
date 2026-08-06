@@ -1,5 +1,6 @@
 import "server-only";
 import { readMegEmbeddingsEnv } from "@/lib/meg/env";
+import { logError } from "@/lib/error-tracking";
 
 export const EMBEDDING_DIM = 512;
 
@@ -38,7 +39,12 @@ export async function embed(
       }),
     });
     if (!res.ok) {
-      console.error("[meg/embeddings] API-feil", res.status, await res.text());
+      await logError({
+        context: "meg.embeddings.api",
+        error: `Voyage API-feil (${res.status})`,
+        meta: { status: res.status, body: await res.text() },
+        severity: "warn",
+      });
       return null;
     }
     const json = (await res.json()) as VoyageResponse;
@@ -46,8 +52,12 @@ export async function embed(
     return json.data
       .sort((a, b) => a.index - b.index)
       .map((d) => d.embedding);
-  } catch (err) {
-    console.error("[meg/embeddings] fetch feilet", err);
+  } catch (error) {
+    await logError({
+      context: "meg.embeddings.fetch",
+      error,
+      severity: "warn",
+    });
     return null;
   }
 }

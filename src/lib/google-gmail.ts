@@ -7,6 +7,7 @@
 import { google, type gmail_v1 } from "googleapis";
 import { getOAuth2Client, decryptToken } from "@/lib/google-calendar";
 import type { GoogleCalendarConnection } from "@/generated/prisma/client";
+import { logError } from "@/lib/error-tracking";
 
 export function getGmailApi(connection: GoogleCalendarConnection): gmail_v1.Gmail {
   const refreshToken = decryptToken(connection.refreshTokenCipher);
@@ -73,8 +74,12 @@ export async function createGmailDraft(
       },
     });
     return res.data.id ?? null;
-  } catch (err) {
-    console.error("[google-gmail] Kunne ikke opprette utkast:", err instanceof Error ? err.message : err);
+  } catch (error) {
+    await logError({
+      context: "google-gmail.createGmailDraft",
+      error,
+      severity: "warn",
+    });
     return null;
   }
 }

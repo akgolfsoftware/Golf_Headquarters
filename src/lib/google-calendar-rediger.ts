@@ -20,6 +20,7 @@ import {
   parseGoogleTidspunkt,
 } from "@/lib/google-calendar-tid";
 import type { calendar_v3 } from "googleapis";
+import { logError } from "@/lib/error-tracking";
 
 export interface HendelseFelter {
   tittel: string;
@@ -151,8 +152,11 @@ export async function opprettHendelseIGoogle(
     }
     return { ok: true, mirrorId };
   } catch (err) {
-    const melding = err instanceof Error ? err.message : String(err);
-    console.error("[gcal-rediger] opprett feilet", melding);
+    await logError({
+      context: "google-calendar-rediger.opprett",
+      error: err,
+      severity: "warn",
+    });
     return { ok: false, feil: "Kunne ikke opprette hendelsen i Google" };
   }
 }
@@ -190,7 +194,12 @@ export async function oppdaterHendelseIGoogle(
     return { ok: true, mirrorId };
   } catch (err) {
     const melding = err instanceof Error ? err.message : String(err);
-    console.error("[gcal-rediger] oppdater feilet", melding);
+    await logError({
+      context: "google-calendar-rediger.oppdater",
+      error: err,
+      meta: { mirrorId },
+      severity: "warn",
+    });
     // Slettet i Google i mellomtiden — rydd speilet så kalenderen ikke lyver.
     if (/404|410|Not Found|deleted/i.test(melding)) {
       await prisma.googleCalendarEvent.delete({ where: { id: mirrorId } });
@@ -218,7 +227,12 @@ export async function slettHendelseIGoogle(
     const melding = err instanceof Error ? err.message : String(err);
     // Allerede borte i Google er greit — vi skal uansett fjerne speilet.
     if (!/404|410|Not Found|deleted/i.test(melding)) {
-      console.error("[gcal-rediger] slett feilet", melding);
+      await logError({
+        context: "google-calendar-rediger.slett",
+        error: err,
+        meta: { mirrorId },
+        severity: "warn",
+      });
       return { ok: false, feil: "Kunne ikke slette hendelsen i Google" };
     }
   }

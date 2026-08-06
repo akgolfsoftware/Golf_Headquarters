@@ -6,14 +6,28 @@
 import { readdirSync, readFileSync, statSync } from "node:fs";
 import path from "node:path";
 
-const ROOTS = ["src/app/admin", "src/app/portal"];
-const AUTH_IMPORT = /from\s+["']@\/lib\/auth\/(?:action-guards|assert-own-or-coached|requireConsentingUser|requirePortalUser|requireCapability|coached|getCurrentUser)["']/;
+// Dekker HELE app/lib/components — ikke bare admin/portal. En usikret server
+// action i src/lib/x/actions.ts er like eksponert som en under portal/, siden
+// server actions kan POST-es direkte forbi layout-guards.
+const ROOTS = ["src/app", "src/lib", "src/components"];
+const AUTH_IMPORT = /from\s+["']@\/lib\/auth\/(?:action-guards|assert-own-or-coached|requireConsentingUser|requirePortalUser|requireCapability|coached|getCurrentUser|canAccessMissionControl)["']/;
 const ALT_AUTH = /from\s+["']@\/lib\/teknisk-plan\/ensure-plan-access["']/;
-const USE_SERVER = /["']use server["']/;
+// Kun EKTE direktiv: en linje som bare er "use server" (evt. med semikolon).
+// Unngår falske treff på "use server" nevnt inne i kommentarer/dok-strenger.
+const USE_SERVER = /^\s*["']use server["'];?\s*$/m;
 
-/** Bevisst offentlige / token-baserte actions (token i URL er hemmeligheten). */
+/**
+ * Bevisst offentlige / token-baserte actions. For token-flytene ER token i URL
+ * hemmeligheten (verifiseres i selve actionen), og de er i tillegg
+ * same-origin-gatet. logout/rapportering opererer ikke på spillerdata.
+ */
 const PUBLIC_ALLOW = new Set([
-  // ingen under admin/portal i dag — marketing/auth ligger utenfor ROOTS
+  "src/app/(marketing)/kontakt/actions.ts", // offentlig kontaktskjema
+  "src/app/auth/guardian-consent/[token]/actions.ts", // token = hemmelighet
+  "src/app/auth/lyd-samtykke/[token]/actions.ts", // token = hemmelighet
+  "src/app/inviter/forelder/[token]/actions.ts", // token = hemmelighet
+  "src/lib/auth/logout.ts", // opererer kun på egen sesjon
+  "src/lib/report-client-error.ts", // klient-feilrapport, ingen dataflate
 ]);
 
 function* walk(dir) {

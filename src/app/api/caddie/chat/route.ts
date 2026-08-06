@@ -11,6 +11,7 @@ import { rateLimit } from "@/lib/rate-limit";
 import { anthropicProvider, modelFor } from "@/lib/ai/client";
 import { CADDIE_SYSTEM_PROMPT } from "@/lib/caddie/system-prompt";
 import { buildCaddieTools } from "@/lib/caddie/tools";
+import { logError } from "@/lib/error-tracking";
 
 export const runtime = "nodejs";
 export const maxDuration = 60;
@@ -133,9 +134,9 @@ export async function POST(req: Request) {
             model: MODEL_ID,
           },
         });
-      } catch (err) {
+      } catch (error) {
         // Persistering må aldri ta ned stream-responsen — logg og fortsett.
-        console.error("[caddie] kunne ikke persistere assistant-melding", err);
+        await logError({ context: "caddie.chat.persister-assistant-melding", error, severity: "warn", meta: { conversationId, userId: user.id } });
       }
 
       // A2: persister hvert write-forslag (needsApproval) som CaddieDraft
@@ -168,8 +169,8 @@ export async function POST(req: Request) {
             },
           });
         }
-      } catch (err) {
-        console.error("[caddie] kunne ikke persistere utkast", err);
+      } catch (error) {
+        await logError({ context: "caddie.chat.persister-utkast", error, severity: "warn", meta: { conversationId, userId: user.id } });
       }
     },
   });

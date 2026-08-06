@@ -17,6 +17,7 @@ import {
   STANDARD_OKT_ANTALL,
 } from "@/lib/plan-engine/standard-fordeling";
 import { SG_FOKUS_LABEL } from "@/lib/workbench/fokus";
+import { logError } from "@/lib/error-tracking";
 
 // Haiku er billig + raskt for korte plan-forslag (gyldig id mot api.anthropic.com).
 const WEEK_SUGGEST_MODEL = "claude-haiku-4-5-20251001" as const;
@@ -286,8 +287,12 @@ export async function generateWeekSuggestions(
     });
 
     return { suggestions: object.suggestions, usedAi: true };
-  } catch (err) {
-    console.error("[ai] generateWeekSuggestions failed, bruker stub", err);
+  } catch (error) {
+    await logError({
+      context: "ai-plan.generateWeekSuggestions",
+      error,
+      meta: { userId },
+    });
     return { suggestions: fallbackSuggestions(), usedAi: false };
   }
 }

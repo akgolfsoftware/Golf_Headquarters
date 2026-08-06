@@ -26,6 +26,7 @@ import {
   PYR_LABEL,
   PYR_REKKEFOLGE,
 } from "@/lib/pyramide";
+import { logError } from "@/lib/error-tracking";
 
 const Body = z.object({
   recordingId: z.string().min(1),
@@ -160,8 +161,8 @@ export async function POST(req: Request) {
       transkripsjon: recording.transcript,
       varighetMin,
     });
-  } catch (err) {
-    console.error("[recording/analyze] Claude-feil", err);
+  } catch (error) {
+    await logError({ context: "recording.analyze.claude", error, meta: { recordingId: recording.id, playerId: spillerId } });
     // Sett FAILED — ellers står opptaket for alltid i PROCESSING og
     // status-pollingen i /admin/recording får aldri en sluttilstand.
     // Transkripsjonen er allerede lagret, så «Analyser på nytt» virker.
@@ -173,10 +174,10 @@ export async function POST(req: Request) {
       actorId: user.id,
       action: "recording.analyze_failed",
       target: `SessionRecording:${recording.id}`,
-      metadata: { error: err instanceof Error ? err.message : "ukjent" },
+      metadata: { error: error instanceof Error ? error.message : "ukjent" },
     });
     return NextResponse.json(
-      { error: "AI-analyse feilet", detail: err instanceof Error ? err.message : null },
+      { error: "AI-analyse feilet", detail: error instanceof Error ? error.message : null },
       { status: 500 },
     );
   }
@@ -217,8 +218,8 @@ export async function POST(req: Request) {
           metadata: { recordingId: recording.id, playerId: recording.playerId },
         });
       }
-    } catch (err) {
-      console.error("[recording/analyze] PlanAction feilet", err);
+    } catch (error) {
+      await logError({ context: "recording.analyze.plan-action", error, severity: "warn", meta: { recordingId: recording.id, playerId: recording.playerId } });
     }
   }
 
@@ -273,13 +274,13 @@ export async function POST(req: Request) {
           spillerSideId: spillerSideId ?? null,
         },
       });
-    } catch (err) {
-      console.error("[recording/analyze] Notion-sync feilet", err);
+    } catch (error) {
+      await logError({ context: "recording.analyze.notion-sync", error, severity: "warn", meta: { recordingId: recording.id } });
       await audit({
         actorId: user.id,
         action: "recording.notion_failed",
         target: `SessionRecording:${recording.id}`,
-        metadata: { error: err instanceof Error ? err.message : "ukjent" },
+        metadata: { error: error instanceof Error ? error.message : "ukjent" },
       });
     }
   }

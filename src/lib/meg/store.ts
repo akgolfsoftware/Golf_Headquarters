@@ -4,6 +4,7 @@ import "server-only";
 import { z } from "zod";
 import { megSupabase } from "@/lib/meg/supabase";
 import type { Classification } from "@/lib/meg/classify-schema";
+import { logError } from "@/lib/error-tracking";
 
 export type StoredLog = { id: string };
 
@@ -52,5 +53,10 @@ export async function storeConversation(
     subject,
     related_log_id: relatedLogId,
   });
-  if (error) console.error("[meg/store] storeConversation feilet", error.message);
+  if (error)
+    await logError({
+      context: "meg.store.storeConversation",
+      error: error.message,
+      meta: { role, subject },
+    });
 }

@@ -35,6 +35,7 @@ import { periodeTypeFraNavnMedEkstra } from "./periode-navn";
 import { hentEffektivePeriodeConstraints } from "./periode-fordeling";
 import { hentEkstraPeriodeNavn } from "./periode-navn-mapping";
 import { tilPeriodeType } from "@/lib/canon/valider-plan";
+import { logError } from "@/lib/error-tracking";
 
 // ---------------------------------------------------------------------------
 // Typer
@@ -221,8 +222,13 @@ export async function genererOkter(input: GenererInput): Promise<GenererResultat
     try {
       const rule = rrulestr(mønster.rrule);
       datoer = rule.between(startDato, sluttDato, true);
-    } catch (err) {
-      console.error(`[session-generator] Ugyldig RRULE for ${mønster.id}:`, err);
+    } catch (error) {
+      await logError({
+        context: "portal.sessionGenerator.rrule",
+        error,
+        meta: { mønsterId: mønster.id },
+        severity: "warn",
+      });
       continue;
     }
 

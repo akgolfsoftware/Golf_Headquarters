@@ -27,6 +27,7 @@ import { prisma } from "@/lib/prisma";
 import { signWebhookToken } from "@/lib/google-calendar";
 import { syncSubscriptionEvents } from "@/lib/google-calendar-mirror";
 import { reflekterTilBookinger } from "@/lib/google-calendar-reflect";
+import { logError } from "@/lib/error-tracking";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -72,9 +73,7 @@ export async function POST(request: Request) {
   // lastError, nullstiller utgått token) og kaster ikke videre.
   const resultat = await syncSubscriptionEvents(sub.id);
   if (resultat.feil) {
-    console.error(
-      `[google-calendar/webhook] sub=${sub.id} speiling feilet: ${resultat.feil}`,
-    );
+    await logError({ context: "google-calendar.webhook.speiling", error: resultat.feil, severity: "warn", meta: { subId: sub.id } });
     // 200 så Google ikke retrier evig — feilen er logget og cron rydder opp.
     return new NextResponse("Error logged", { status: 200 });
   }

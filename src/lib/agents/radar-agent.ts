@@ -12,6 +12,7 @@
 import { prisma } from "@/lib/prisma";
 import { runAgent, type AgentResult } from "./agent-runner";
 import { isYoutubeEnabled, searchYoutube } from "./youtube-search";
+import { logError } from "@/lib/error-tracking";
 
 export const AGENT_NAME = "radar";
 
@@ -101,8 +102,13 @@ async function hentRssFunn(): Promise<Array<RssItem & { kildeNavn: string }>> {
       const xml = await res.text();
       const items = parseRssItems(xml).slice(0, RSS_MAKS_PER_FEED);
       for (const it of items) alle.push({ ...it, kildeNavn: feed.kildeNavn });
-    } catch (err) {
-      console.error(`radar-agent: RSS-henting feilet for ${feed.kildeNavn}`, err);
+    } catch (error) {
+      await logError({
+        context: "agents.radar.rssHenting",
+        error,
+        meta: { kildeNavn: feed.kildeNavn, url: feed.url },
+        severity: "warn",
+      });
     }
   }
   return alle;

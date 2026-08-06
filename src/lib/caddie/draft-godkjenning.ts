@@ -7,6 +7,7 @@
 
 import { prisma } from "@/lib/prisma";
 import { executeApprovedTool } from "@/lib/caddie/approval-executor";
+import { logError } from "@/lib/error-tracking";
 
 export type DraftGodkjenningResult = {
   ok: boolean;
@@ -98,8 +99,13 @@ async function persistAudit(
         toolResults: [payload] as unknown as object,
       },
     });
-  } catch (err) {
+  } catch (error) {
     // Audit-persistering må aldri velte selve godkjenningen.
-    console.error("[caddie/draft-godkjenning] kunne ikke persistere audit", err);
+    await logError({
+      context: "caddie.draftGodkjenning.audit",
+      error,
+      meta: { userId, conversationId },
+      severity: "warn",
+    });
   }
 }

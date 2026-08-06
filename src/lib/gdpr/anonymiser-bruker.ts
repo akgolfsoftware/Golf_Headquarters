@@ -20,6 +20,10 @@ import { prisma } from "@/lib/prisma";
 // Prisma brukes både som type (UserUpdateInput) og verdi (DbNull) — derfor
 // vanlig import, ikke `import type`.
 import { Prisma } from "@/generated/prisma/client";
+import {
+  slettEksterneBrukerdata,
+  type EksternSlettingResultat,
+} from "./slett-eksterne-data";
 
 export type AnonymiseringsResultat = {
   brukerFantes: boolean;
@@ -35,6 +39,11 @@ export type AnonymiseringsResultat = {
     fysOvelser: number;
     runder: number;
   };
+  /**
+   * Resultat av ekstern sletting (Supabase Auth/Storage, Stripe, gjeste-felt).
+   * null når kontoen ikke fantes (ingenting å slette eksternt).
+   */
+  eksterntSlettet: EksternSlettingResultat | null;
 };
 
 /** Feltene som tømmes på brukeren. Eksportert for audit-loggen. */
@@ -79,6 +88,7 @@ export async function anonymiserBruker(
       snittScore: null,
       antallRunder: 0,
       vasket: { okter: 0, driller: 0, drillLogger: 0, fysOvelser: 0, runder: 0 },
+      eksterntSlettet: null,
     };
   }
 
@@ -170,6 +180,12 @@ export async function anonymiserBruker(
       : []),
   ]);
 
+  // ── Ekstern sletting (Supabase Auth/Storage, Stripe, gjeste-felt) ──
+  // Kjøres ETTER at Prisma-anonymiseringen er committet, så den juridisk
+  // viktigste vasken alltid fullføres selv om en ekstern tjeneste feiler.
+  // Best-effort internt — kaster aldri.
+  const eksterntSlettet = await slettEksterneBrukerdata(userId);
+
   return {
     brukerFantes: true,
     publicPlayerAnonymisert,
@@ -182,5 +198,6 @@ export async function anonymiserBruker(
       fysOvelser: fysOvelser.count,
       runder: rundeNotater.count,
     },
+    eksterntSlettet,
   };
 }

@@ -7,6 +7,7 @@
 
 import { revalidatePath } from "next/cache";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
+import { logError } from "@/lib/error-tracking";
 import {
   anbefalMalCore,
   genererPlanForslagCore,
@@ -34,8 +35,12 @@ export async function genererPlanForslagV2(input: {
   try {
     const forslag = await genererPlanForslagCore(user, input);
     return { ok: true, forslag };
-  } catch (e) {
-    console.error("[bygger-v2] generering feilet", e);
+  } catch (error) {
+    await logError({
+      context: "bygger.genererPlanForslag",
+      error,
+      meta: { userId: user.id },
+    });
     return {
       ok: false,
       error: "Kunne ikke generere planen akkurat nå. Prøv igjen om litt — eller bygg uka manuelt i Workbench.",

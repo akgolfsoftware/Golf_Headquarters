@@ -11,6 +11,7 @@ import { isSlotStillAvailable } from "@/lib/booking/availability";
 import { audit } from "@/lib/audit";
 import { nonEmpty, isoDate, email, phone } from "@/lib/validation/schemas";
 import { APP_URL } from "@/lib/app-url";
+import { logError } from "@/lib/error-tracking";
 
 export type BookingFormInput = {
   slug: string;
@@ -188,7 +189,7 @@ export async function createBookingCheckout(
 
     return { ok: true, url: session.url };
   } catch (err) {
-    console.error("[createBookingCheckout]", err);
+    await logError({ context: "booking.createBookingCheckout", error: err });
     // S-12: Fang Prisma unique constraint violation (P2002) fra bookings_slot_unique.
     // Dette skjer når to klienter sender booking-request for samme slot i samme ms
     // (race condition som ikke fanges av isSlotStillAvailable-sjekken over).

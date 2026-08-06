@@ -11,6 +11,7 @@ import { PyramidArea, SkillArea, NgfKategori } from "@/generated/prisma/enums";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { audit } from "@/lib/audit";
+import { logError } from "@/lib/error-tracking";
 import { DRILL_DRAFT_TOOL } from "@/lib/agents/drill-forslag-agent";
 
 export type ForslagResultat = { ok: true; melding: string } | { ok: false; melding: string };
@@ -80,8 +81,8 @@ export async function godkjennDrillForslag(
     revalidatePath("/admin/drills/forslag");
     revalidatePath("/admin/drills");
     return { ok: true, melding: "Lagt til i biblioteket" };
-  } catch (err) {
-    console.error("godkjennDrillForslag failed", err);
+  } catch (error) {
+    await logError({ context: "drills.forslag.godkjennDrillForslag", error, meta: { draftId } });
     return { ok: false, melding: "Kunne ikke opprette drill" };
   }
 }
@@ -145,8 +146,8 @@ export async function godkjennVideoForslag(
     revalidatePath("/admin/drills");
     revalidatePath("/portal/drills");
     return { ok: true, melding: "Video lagt til" };
-  } catch (err) {
-    console.error("godkjennVideoForslag failed", err);
+  } catch (error) {
+    await logError({ context: "drills.forslag.godkjennVideoForslag", error, meta: { draftId } });
     return { ok: false, melding: "Kunne ikke lagre video" };
   }
 }

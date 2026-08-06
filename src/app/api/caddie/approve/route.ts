@@ -9,6 +9,7 @@ import { z } from "zod";
 import { canAccessMissionControl } from "@/lib/auth/canAccessMissionControl";
 import { prisma } from "@/lib/prisma";
 import { executeApprovedTool } from "@/lib/caddie/approval-executor";
+import { logError } from "@/lib/error-tracking";
 
 export const runtime = "nodejs";
 
@@ -123,9 +124,9 @@ async function resolveDraft(
       where: { userId, toolCallId, status: "PENDING" },
       data: { status, resolvedAt: new Date() },
     });
-  } catch (err) {
+  } catch (error) {
     // Kø-synk må aldri ta ned API-responsen.
-    console.error("[caddie/approve] kunne ikke lukke CaddieDraft", err);
+    await logError({ context: "caddie.approve.lukk-draft", error, severity: "warn", meta: { toolCallId, userId } });
   }
 }
 
@@ -144,8 +145,8 @@ async function persistToolMessage(
         toolResults: [payload] as unknown as object,
       },
     });
-  } catch (err) {
+  } catch (error) {
     // Persistering må aldri ta ned API-responsen.
-    console.error("[caddie/approve] kunne ikke persistere tool-melding", err);
+    await logError({ context: "caddie.approve.persister-tool-melding", error, severity: "warn", meta: { conversationId, userId, toolCallId: payload.toolCallId } });
   }
 }

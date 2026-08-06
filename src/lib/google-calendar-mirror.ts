@@ -22,6 +22,7 @@ import { prisma } from "@/lib/prisma";
 import { getCalendarApi } from "@/lib/google-calendar";
 import { parseGoogleTidspunkt } from "@/lib/google-calendar-tid";
 import type { GoogleCalendarConnection } from "@/generated/prisma/client";
+import { logError } from "@/lib/error-tracking";
 
 /** Hvor langt bakover vi speiler ved full sync. */
 const VINDU_MND_BAK = 6;
@@ -160,7 +161,12 @@ export async function syncSubscriptionEvents(
       return syncSubscriptionEvents(subscriptionId, true);
     }
 
-    console.error(`[gcal-mirror] sync feilet for ${sub.calendarName}`, melding);
+    await logError({
+      context: "google-calendar-mirror.sync",
+      error: err,
+      meta: { calendarName: sub.calendarName, subscriptionId },
+      severity: "warn",
+    });
     await prisma.googleCalendarSubscription.update({
       where: { id: subscriptionId },
       data: { lastError: melding.slice(0, 500) },

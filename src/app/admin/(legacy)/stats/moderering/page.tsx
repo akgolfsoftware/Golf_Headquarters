@@ -14,6 +14,7 @@
 import type { Metadata } from "next";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
+import { logError } from "@/lib/error-tracking";
 import { startOfWeek } from "@/lib/uke-helpers";
 import {
   ModeringClientV2,
@@ -150,8 +151,8 @@ export default async function ModeringPage() {
           .filter((ms) => ms >= 0),
       ),
     };
-  } catch (err) {
-    console.error("[moderering] kunne ikke lese moderering-køen", err);
+  } catch (error) {
+    await logError({ context: "admin.stats.moderering.les", error, severity: "warn" });
     lasteFeil =
       "Kunne ikke lese moderering-køen. Tabellen moderation_cases finnes " +
       "kanskje ikke i dette miljøet ennå (opprettes av migrasjonsscriptet før deploy).";

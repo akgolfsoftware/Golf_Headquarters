@@ -10,6 +10,7 @@ import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { harCoachTilgangTilSpiller } from "@/lib/auth/coached";
 import { prisma } from "@/lib/prisma";
 import { upsertV2ForPlanSession } from "@/lib/workbench/v2-sync";
+import { logError } from "@/lib/error-tracking";
 import {
   scheduleTemplateWeek,
   type ScheduledTemplateSession,
@@ -108,7 +109,12 @@ async function applyTemplateCore(
     tilpassetOkter = tilpasset.okter;
     justeringer = tilpasset.justeringer;
   } catch (error) {
-    console.error("[workbench] tilpasning av mal feilet, bruker mal uendret", error);
+    await logError({
+      context: "workbench.applyTemplate.tilpasning",
+      error,
+      meta: { playerId },
+      severity: "warn",
+    });
   }
 
   const scheduled = scheduleTemplateWeek(tilpassetOkter, weekNr);
@@ -233,7 +239,12 @@ export async function coachApplyTemplateToGroup(
         if (res.ok) okterOpprettet += res.sessions?.length ?? 0;
         else hoppet.push({ navn: m.user.name ?? "Ukjent", uke: offset });
       } catch (error) {
-        console.error("[Å3] utrulling feilet for", m.user.id, "uke", offset, error);
+        await logError({
+          context: "workbench.applyTemplate.utrulling",
+          error,
+          meta: { userId: m.user.id, uke: offset, templateId, groupId },
+          severity: "warn",
+        });
         hoppet.push({ navn: m.user.name ?? "Ukjent", uke: offset });
       }
     }

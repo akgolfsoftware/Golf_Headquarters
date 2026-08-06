@@ -11,6 +11,7 @@
  */
 import { prisma } from "@/lib/prisma";
 import { sendPush } from "@/lib/push/send";
+import { logError } from "@/lib/error-tracking";
 
 export type NotificationType =
   | "booking"
@@ -41,8 +42,13 @@ export async function notify(input: NotifyInput): Promise<void> {
         link: input.link ?? null,
       },
     });
-  } catch (err) {
-    console.error("[notifications] notify failed", err);
+  } catch (error) {
+    await logError({
+      context: "notifications.notify",
+      error,
+      meta: { userId: input.userId, type: input.type },
+      severity: "warn",
+    });
   }
   // Web push — samme varsel til brukerens enheter (best-effort, aldri kastende).
   // sendPush er no-op når VAPID-keys mangler eller brukeren ikke har abonnert.
@@ -52,8 +58,13 @@ export async function notify(input: NotifyInput): Promise<void> {
       body: input.body ?? "",
       link: input.link,
     });
-  } catch (err) {
-    console.error("[notifications] push failed", err);
+  } catch (error) {
+    await logError({
+      context: "notifications.notify.push",
+      error,
+      meta: { userId: input.userId },
+      severity: "warn",
+    });
   }
 }
 
@@ -75,8 +86,13 @@ export async function notifyMany(
         link: input.link ?? null,
       })),
     });
-  } catch (err) {
-    console.error("[notifications] notifyMany failed", err);
+  } catch (error) {
+    await logError({
+      context: "notifications.notifyMany",
+      error,
+      meta: { count: userIds.length, type: input.type },
+      severity: "warn",
+    });
   }
   // Web push til hver mottaker (best-effort, aldri kastende).
   try {
@@ -89,8 +105,13 @@ export async function notifyMany(
         }),
       ),
     );
-  } catch (err) {
-    console.error("[notifications] notifyMany push failed", err);
+  } catch (error) {
+    await logError({
+      context: "notifications.notifyMany.push",
+      error,
+      meta: { count: userIds.length },
+      severity: "warn",
+    });
   }
 }
 

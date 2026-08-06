@@ -11,6 +11,7 @@ import { pushBooking, fjernBooking } from "@/lib/google-calendar-kilder";
 import { isSlotStillAvailable } from "@/lib/booking/availability";
 import { notify } from "@/lib/notifications";
 import { isoDate } from "@/lib/validation/schemas";
+import { logError } from "@/lib/error-tracking";
 
 const CancelBookingSchema = z.object({
   bookingId: z.string().min(1, "Booking-ID er påkrevd"),
@@ -62,9 +63,13 @@ export async function cancelBooking(bookingId: string) {
         metadata: { bookingId: booking.id },
       });
       stripeRefundOk = true;
-    } catch (err) {
+    } catch (error) {
       stripeRefundFeilet = true;
-      console.error("[cancel-booking] Stripe refund failed", err);
+      await logError({
+        context: "booking.cancel.stripeRefund",
+        error,
+        meta: { userId: user.id, bookingId, paymentIntentId: booking.stripePaymentIntentId },
+      });
       // S-19: Legg inn WebhookFailure slik at admin ser det i dashbordet
       // og kan behandle refund manuelt. Best-effort — ikke blokker avbestilling.
       try {
@@ -77,12 +82,17 @@ export async function cancelBooking(bookingId: string) {
               paymentIntentId: booking.stripePaymentIntentId,
               userId: booking.userId,
             },
-            errorMessage: err instanceof Error ? err.message : "ukjent feil",
+            errorMessage: error instanceof Error ? error.message : "ukjent feil",
             status: "PENDING",
           },
         });
-      } catch (dbErr) {
-        console.error("[cancel-booking] klarte ikke logge WebhookFailure", dbErr);
+      } catch (dbError) {
+        await logError({
+          context: "booking.cancel.webhookFailureLogg",
+          error: dbError,
+          meta: { userId: user.id, bookingId },
+          severity: "warn",
+        });
       }
     }
   }
@@ -103,8 +113,12 @@ export async function cancelBooking(bookingId: string) {
         data: { creditsRemaining: { increment: 1 } },
       });
       creditRefunded = true;
-    } catch (err) {
-      console.error("[cancel-booking] credit-refund failed", err);
+    } catch (error) {
+      await logError({
+        context: "booking.cancel.creditRefund",
+        error,
+        meta: { userId: user.id, bookingId, subscriptionId: booking.subscriptionId },
+      });
     }
   }
 
@@ -115,8 +129,13 @@ export async function cancelBooking(bookingId: string) {
         booking.serviceType.coachUserId,
         booking.id,
       );
-    } catch (err) {
-      console.error("[cancel-booking] calendar-remove failed", err);
+    } catch (error) {
+      await logError({
+        context: "booking.cancel.calendarRemove",
+        error,
+        meta: { userId: user.id, bookingId },
+        severity: "warn",
+      });
     }
   }
 
@@ -144,8 +163,13 @@ export async function cancelBooking(bookingId: string) {
   try {
     const { sendBookingCancellation } = await import("@/lib/email/booking-emails");
     await sendBookingCancellation(bookingId);
-  } catch (err) {
-    console.error("[cancel-booking] e-post-feil", err);
+  } catch (error) {
+    await logError({
+      context: "booking.cancel.epost",
+      error,
+      meta: { userId: user.id, bookingId },
+      severity: "warn",
+    });
   }
 
   // In-app-varsel til spilleren som eier bookingen
@@ -277,8 +301,13 @@ export async function rescheduleBooking(input: {
   if (booking.googleEventId) {
     try {
       await pushBooking(booking.id);
-    } catch (err) {
-      console.error("[reschedule] calendar push failed", err);
+    } catch (error) {
+      await logError({
+        context: "booking.reschedule.calendarPush",
+        error,
+        meta: { userId: user.id, bookingId: booking.id },
+        severity: "warn",
+      });
     }
   }
 
@@ -297,8 +326,13 @@ export async function rescheduleBooking(input: {
   try {
     const { sendBookingConfirmation } = await import("@/lib/email/booking-emails");
     await sendBookingConfirmation(booking.id);
-  } catch (err) {
-    console.error("[reschedule] confirmation-email failed", err);
+  } catch (error) {
+    await logError({
+      context: "booking.reschedule.epost",
+      error,
+      meta: { userId: user.id, bookingId: booking.id },
+      severity: "warn",
+    });
   }
 
   // In-app-varsel

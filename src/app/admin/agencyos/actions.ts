@@ -17,6 +17,7 @@ import { harCoachTilgangTilSpiller } from "@/lib/auth/coached";
 import { prisma } from "@/lib/prisma";
 import { audit } from "@/lib/audit";
 import { MAKS_PINN } from "@/lib/agencyos/fokus-spillere";
+import { logError } from "@/lib/error-tracking";
 
 const Schema = z.object({ playerId: z.string().min(1) });
 
@@ -46,8 +47,8 @@ export async function pinnSpiller(playerId: string): Promise<FokusResultat> {
         data: { coachId: user.id, playerId: parsed.data.playerId },
       });
     }
-  } catch (err) {
-    console.error("[fokus] pinn feilet", err);
+  } catch (error) {
+    await logError({ context: "agencyos.pinn-spiller", error, meta: { playerId: parsed.data.playerId, coachId: user.id } });
     return { ok: false, error: "Kunne ikke feste spilleren nå. Prøv igjen." };
   }
 
@@ -67,8 +68,8 @@ export async function avpinnSpiller(playerId: string): Promise<FokusResultat> {
     await prisma.coachPinnedPlayer.deleteMany({
       where: { coachId: user.id, playerId: parsed.data.playerId },
     });
-  } catch (err) {
-    console.error("[fokus] avpinn feilet", err);
+  } catch (error) {
+    await logError({ context: "agencyos.avpinn-spiller", error, meta: { playerId: parsed.data.playerId, coachId: user.id } });
     return { ok: false, error: "Kunne ikke løsne spilleren nå. Prøv igjen." };
   }
 

@@ -10,6 +10,7 @@
  */
 import { prisma } from "@/lib/prisma";
 import { notify } from "@/lib/notifications";
+import { logError } from "@/lib/error-tracking";
 
 /** Hvordan bookingen kom inn — vises i varselet. */
 export type BookingKilde =
@@ -102,7 +103,12 @@ export async function varsleNyBooking(
         link: `/admin/bookinger/${booking.id}`,
       });
     }
-  } catch (err) {
-    console.error("[varsle-ny-booking] feilet for", bookingId, err);
+  } catch (error) {
+    await logError({
+      context: "booking.varsleNyBooking",
+      error,
+      meta: { bookingId, kilde },
+      severity: "warn",
+    });
   }
 }

@@ -3,6 +3,7 @@
 // og opprette Coaching Session-side med strukturert analyse.
 
 import { Client } from "@notionhq/client";
+import { logError } from "@/lib/error-tracking";
 
 let _notion: Client | null = null;
 
@@ -103,8 +104,13 @@ async function hentDataSourceId(databaseId: string): Promise<string | null> {
     const forste = db.data_sources[0];
     if (!forste || typeof forste !== "object" || !("id" in forste)) return null;
     return String((forste as { id: string }).id);
-  } catch (err) {
-    console.error("[notion] kunne ikke hente data source for db", databaseId, err);
+  } catch (error) {
+    await logError({
+      context: "notion.hentDataSource",
+      error,
+      meta: { databaseId },
+      severity: "warn",
+    });
     return null;
   }
 }
@@ -168,8 +174,12 @@ export async function finnSpillerSideId(navn: string): Promise<string | null> {
       }
     }
     return null;
-  } catch (err) {
-    console.error("[notion] finnSpillerSideId feilet", err);
+  } catch (error) {
+    await logError({
+      context: "notion.finnSpillerSideId",
+      error,
+      severity: "warn",
+    });
     return null;
   }
 }
@@ -346,8 +356,12 @@ export async function appendTilSpillerprofil(
       block_id: parentId,
       children: [paragraph(linje)],
     });
-  } catch (err) {
-    console.error("[notion] appendTilSpillerprofil feilet", err);
-    throw err;
+  } catch (error) {
+    await logError({
+      context: "notion.appendTilSpillerprofil",
+      error,
+      severity: "warn",
+    });
+    throw error;
   }
 }

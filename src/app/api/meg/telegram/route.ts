@@ -7,6 +7,7 @@ import { hentSamtaleHistorikk } from "@/lib/meg/read";
 import { runMegAgent } from "@/lib/meg/agent";
 import { handleConfirmation } from "@/lib/meg/confirm";
 import { tryLocalFastPath } from "@/lib/meg/router";
+import { logError } from "@/lib/error-tracking";
 
 export const runtime = "nodejs";
 export const maxDuration = 60;
@@ -83,7 +84,7 @@ export async function POST(req: Request) {
   });
 
   const reply = result.ok ? result.text : "Noe gikk galt. Prøv igjen.";
-  if (!result.ok) console.error("[meg/webhook] agent-feil:", result.error);
+  if (!result.ok) await logError({ context: "meg.telegram.agent-feil", error: result.error, meta: { subject } });
 
   await sendTelegramMessage(env.telegramBotToken, subject, reply);
   return NextResponse.json({ ok: true });

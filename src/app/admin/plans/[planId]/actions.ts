@@ -25,6 +25,7 @@ import {
   deleteV2ForPlanSession,
   syncV2FromPlanSessionId,
 } from "@/lib/workbench/v2-sync";
+import { logError } from "@/lib/error-tracking";
 
 type OktData = {
   title: string;
@@ -296,8 +297,8 @@ export async function endPlan(planId: string) {
   // brukeren — beregningen kan kjøres på nytt manuelt eller via cron.
   try {
     await computeEffectiveness(planId);
-  } catch (err) {
-    console.error("[endPlan] computeEffectiveness failed", err);
+  } catch (error) {
+    await logError({ context: "admin.plans.endPlan.effectiveness", error, meta: { planId }, severity: "warn" });
   }
 
   revalidatePath("/admin/plans");
@@ -343,8 +344,8 @@ export async function markPlanCompleted(
 
   try {
     await computeEffectiveness(planId);
-  } catch (err) {
-    console.error("[markPlanCompleted] computeEffectiveness failed", err);
+  } catch (error) {
+    await logError({ context: "admin.plans.markPlanCompleted.effectiveness", error, meta: { planId }, severity: "warn" });
   }
 
   await notify({

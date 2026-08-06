@@ -4,6 +4,7 @@ import "server-only";
 
 import { prisma } from "@/lib/prisma";
 import type { Prisma } from "@/generated/prisma/client";
+import { logError } from "@/lib/error-tracking";
 
 export type AuditEntry = {
   actorId: string | null;
@@ -22,7 +23,11 @@ export async function audit(entry: AuditEntry): Promise<void> {
         metadata: entry.metadata,
       },
     });
-  } catch (err) {
-    console.error("[audit] kunne ikke logge", err);
+  } catch (error) {
+    await logError({
+      context: "audit.write",
+      error,
+      meta: { action: entry.action, target: entry.target },
+    });
   }
 }

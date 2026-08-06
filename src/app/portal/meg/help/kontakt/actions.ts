@@ -8,6 +8,7 @@ import { nonEmpty } from "@/lib/validation/schemas";
 import { prisma } from "@/lib/prisma";
 import { resendKlient, FRA_EPOST } from "@/lib/email";
 import { emailLayout, detailRow, escapeHtml } from "@/lib/email/templates/shared";
+import { logError } from "@/lib/error-tracking";
 
 const SupportTicketSchema = z.object({
   kategori: z.string().min(1, "Kategori er påkrevd"),
@@ -81,11 +82,13 @@ export async function submitSupportTicket(input: Input): Promise<void> {
       navn: user.name ?? "Ukjent",
       epost: user.email ?? "",
     });
-  } catch (err) {
-    console.error(
-      "[support] e-postutsending feilet:",
-      err instanceof Error ? err.message : String(err),
-    );
+  } catch (error) {
+    await logError({
+      context: "support.epostutsending",
+      error,
+      meta: { userId: user.id, ticket },
+      severity: "warn",
+    });
   }
 
   redirect(`/portal/meg/help/kontakt?ticket=${ticket}`);

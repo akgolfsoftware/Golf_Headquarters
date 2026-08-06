@@ -11,6 +11,7 @@ import { prisma } from "@/lib/prisma";
 
 import { encrypt } from "./crypto";
 import { syncNotionDatabase } from "./sync";
+import { logError } from "@/lib/error-tracking";
 
 // Anders' Tasks-DB i Notion (samme verdier som tidligere session).
 const TASKS_DATABASE_ID = "1781b48bdc1a4f8fbd2c38cb10af6220";
@@ -90,10 +91,14 @@ export async function ensureNotionConnection(
   });
 
   // Fire-and-forget initial sync — feiler ikke bootstrap hvis sync feiler.
-  syncNotionDatabase(link.id).catch((err) => {
+  syncNotionDatabase(link.id).catch((error) => {
     // Ikke logg tokenet eller hele error-payload — kun melding.
-    const msg = err instanceof Error ? err.message : String(err);
-    console.error("[notion-bootstrap] Initial sync failed:", msg);
+    void logError({
+      context: "notion.bootstrap.initialSync",
+      error,
+      meta: { linkId: link.id },
+      severity: "warn",
+    });
   });
 
   return "created";

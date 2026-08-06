@@ -12,6 +12,7 @@ import { revalidatePath } from "next/cache";
 import { getCurrentUser } from "@/lib/auth/getCurrentUser";
 import { hasRole } from "@/lib/auth/cbac";
 import { prisma } from "@/lib/prisma";
+import { logError } from "@/lib/error-tracking";
 
 const VurderingSchema = z.object({
   sessionId: z.string().min(1, "Økt-ID er påkrevd"),
@@ -76,8 +77,8 @@ export async function lagreCoachVurdering(
         ...(trimmet.length > 0 ? { notes: trimmet } : {}),
       },
     });
-  } catch (err) {
-    console.error("[live/summary] lagreCoachVurdering feilet", err);
+  } catch (error) {
+    await logError({ context: "admin.live.lagreCoachVurdering", error, meta: { sessionId: parsed.data.sessionId } });
     return { ok: false, error: "Kunne ikke lagre vurdering" };
   }
 

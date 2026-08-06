@@ -7,6 +7,7 @@ import "server-only";
 
 import { prisma } from "@/lib/prisma";
 import { resendKlient, FRA_EPOST } from "@/lib/email";
+import { logError } from "@/lib/error-tracking";
 
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? "https://akgolf.no";
 
@@ -126,9 +127,13 @@ async function sendBooking(
       subject,
       html: tilHtml(body),
     });
-  } catch (err) {
-    console.error("[booking-email] Resend feilet", err);
-    throw err;
+  } catch (error) {
+    await logError({
+      context: "email.booking.resend",
+      error,
+      meta: { bookingId },
+    });
+    throw error;
   }
 }
 
