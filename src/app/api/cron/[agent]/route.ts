@@ -56,6 +56,7 @@ import { runLonnSjekkliste, runLonnPurring } from "@/lib/agents/tripletex-lonn-a
 import { runMaanedsavslutning } from "@/lib/agents/tripletex-maanedsavslutning-agent";
 import { runBallplukkingSjekk } from "@/lib/agents/gfgk-ballplukking-agent";
 import { runVaskelisteSjekk } from "@/lib/agents/mulligan-vaskeliste-agent";
+import { rateLimit } from "@/lib/rate-limit";
 
 export const runtime = "nodejs";
 export const maxDuration = 300;
@@ -144,6 +145,14 @@ export async function GET(
   if (!fn) {
     return NextResponse.json({ error: "unknown-agent" }, { status: 404 });
   }
+  const rl = await rateLimit({ key: `cron-agent:${agent}`, max: 5, windowMs: 60_000 });
+  if (!rl.ok) {
+    return NextResponse.json(
+      { error: "rate-limited" },
+      { status: 429, headers: { "x-ratelimit-reset": String(rl.resetAt) } },
+    );
+  }
+
 
   try {
     const result = await fn();

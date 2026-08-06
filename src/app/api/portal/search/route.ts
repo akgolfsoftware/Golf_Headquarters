@@ -10,6 +10,7 @@
 import { NextResponse } from "next/server";
 import { getCurrentUser } from "@/lib/auth/getCurrentUser";
 import { prisma } from "@/lib/prisma";
+import { rateLimit } from "@/lib/rate-limit";
 
 export const runtime = "nodejs";
 
@@ -98,6 +99,14 @@ export async function GET(request: Request) {
       { status: 401 },
     );
   }
+  const rl = await rateLimit({ key: `portal-search:${user.id}`, max: 60, windowMs: 60_000 });
+  if (!rl.ok) {
+    return NextResponse.json(
+      { error: "rate-limited" },
+      { status: 429, headers: { "x-ratelimit-reset": String(rl.resetAt) } },
+    );
+  }
+
 
   const url = new URL(request.url);
   const q = url.searchParams.get("q")?.trim() ?? "";

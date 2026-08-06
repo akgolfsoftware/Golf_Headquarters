@@ -23,6 +23,7 @@ import {
   type StorageBucket,
 } from "@/lib/storage/buckets";
 import { uploadFile } from "@/lib/storage/supabase-storage";
+import { rateLimit } from "@/lib/rate-limit";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -58,6 +59,14 @@ export async function POST(req: Request) {
       { status: 401 },
     );
   }
+  const rl = await rateLimit({ key: `upload:${user.id}`, max: 20, windowMs: 60_000 });
+  if (!rl.ok) {
+    return NextResponse.json(
+      { error: "rate-limited" },
+      { status: 429, headers: { "x-ratelimit-reset": String(rl.resetAt) } },
+    );
+  }
+
 
   let form: FormData;
   try {

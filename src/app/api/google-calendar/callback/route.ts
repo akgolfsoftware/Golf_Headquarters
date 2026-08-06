@@ -14,10 +14,21 @@ import {
   setupWatchForSubscription,
 } from "@/lib/google-calendar";
 import { logError } from "@/lib/error-tracking";
+import { rateLimit } from "@/lib/rate-limit";
+import { getClientIp } from "@/lib/security/same-origin";
 
 export const runtime = "nodejs";
 
 export async function GET(req: Request) {
+  const ip = getClientIp(req);
+  const rl = await rateLimit({ key: `google-calendar-callback:${ip}`, max: 30, windowMs: 60_000 });
+  if (!rl.ok) {
+    return NextResponse.json(
+      { error: "rate-limited" },
+      { status: 429, headers: { "x-ratelimit-reset": String(rl.resetAt) } },
+    );
+  }
+
   const url = new URL(req.url);
   const code = url.searchParams.get("code");
   const state = url.searchParams.get("state");

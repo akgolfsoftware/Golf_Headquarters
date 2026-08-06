@@ -5,6 +5,7 @@
 import { NextResponse } from "next/server";
 import { canAccessMissionControl } from "@/lib/auth/canAccessMissionControl";
 import { prisma } from "@/lib/prisma";
+import { rateLimit } from "@/lib/rate-limit";
 
 export const runtime = "nodejs";
 
@@ -20,6 +21,14 @@ export async function GET() {
   if (!user) {
     return NextResponse.json({ error: "ikke-autorisert" }, { status: 401 });
   }
+  const rl = await rateLimit({ key: `caddie-conversations:${user.id}`, max: 60, windowMs: 60_000 });
+  if (!rl.ok) {
+    return NextResponse.json(
+      { error: "rate-limited" },
+      { status: 429, headers: { "x-ratelimit-reset": String(rl.resetAt) } },
+    );
+  }
+
 
   // Hent alle meldinger for brukeren, nyeste først, og grupper i minne.
   // Volumet per bruker er moderat (intern admin), så en enkel passering er

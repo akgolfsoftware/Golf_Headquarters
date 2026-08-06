@@ -8,6 +8,7 @@ import { prisma } from "@/lib/prisma";
 import { supabaseAdmin } from "@/lib/supabase/admin";
 import type { Prisma } from "@/generated/prisma/client";
 import { logError } from "@/lib/error-tracking";
+import { rateLimit } from "@/lib/rate-limit";
 
 const BUCKET = "coaching-recordings";
 
@@ -34,6 +35,14 @@ export async function POST(req: Request) {
   if (!user) {
     return NextResponse.json({ error: "Ikke innlogget" }, { status: 401 });
   }
+  const rl = await rateLimit({ key: `recording-upload-chunk:${user.id}`, max: 60, windowMs: 60_000 });
+  if (!rl.ok) {
+    return NextResponse.json(
+      { error: "rate-limited" },
+      { status: 429, headers: { "x-ratelimit-reset": String(rl.resetAt) } },
+    );
+  }
+
 
   let form: FormData;
   try {

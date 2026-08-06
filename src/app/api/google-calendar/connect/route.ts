@@ -6,6 +6,7 @@ import { NextResponse } from "next/server";
 import { randomBytes, createHmac } from "node:crypto";
 import { getCurrentUser } from "@/lib/auth/getCurrentUser";
 import { getAuthUrl, MEG_GOOGLE_SCOPES, SCOPES } from "@/lib/google-calendar";
+import { rateLimit } from "@/lib/rate-limit";
 
 export const runtime = "nodejs";
 
@@ -18,6 +19,14 @@ export async function GET(request: Request) {
   if (user.role !== "ADMIN" && user.role !== "COACH") {
     return NextResponse.json({ error: "forbidden" }, { status: 403 });
   }
+  const rl = await rateLimit({ key: `google-calendar-connect:${user.id}`, max: 30, windowMs: 60_000 });
+  if (!rl.ok) {
+    return NextResponse.json(
+      { error: "rate-limited" },
+      { status: 429, headers: { "x-ratelimit-reset": String(rl.resetAt) } },
+    );
+  }
+
 
   // Signer state med HMAC slik at callback kan verifisere
   const secret = process.env.GOOGLE_WEBHOOK_TOKEN_SECRET;

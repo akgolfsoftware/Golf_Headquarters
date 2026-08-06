@@ -11,13 +11,24 @@
 
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { rateLimit } from "@/lib/rate-limit";
+import { getClientIp } from "@/lib/security/same-origin";
 
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
 
 const DB_TIMEOUT_MS = 3000;
 
-export async function GET() {
+export async function GET(req: Request) {
+  const ip = getClientIp(req);
+  const rl = await rateLimit({ key: `health:${ip}`, max: 60, windowMs: 60_000 });
+  if (!rl.ok) {
+    return NextResponse.json(
+      { error: "rate-limited" },
+      { status: 429, headers: { "x-ratelimit-reset": String(rl.resetAt) } },
+    );
+  }
+
   const base = {
     timestamp: new Date().toISOString(),
     uptime: process.uptime(),
