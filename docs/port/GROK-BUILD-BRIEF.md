@@ -185,6 +185,15 @@ håndhever dem automatisk i Claude Code-økter i dette repoet:
 1. **Aldri rør:** `.env*` (unntatt `.env.example`), `prisma/schema.prisma`, `src/lib/env.ts`,
    `vercel.json`, CI-workflows (`.github/workflows/*`), `package.json`-dependencies. Trenger en
    skjerm noe av dette → stopp og spør Anders, ikke gjør det selv.
+   **Presisering for skjermbilder spesifikt:** `.env.local` må ligge lokalt på disk for at
+   `npm run dev` skal starte (samme som enhver lokal dev-oppsett) — men det betyr IKKE at Grok
+   skal lese, skrive ut, lime inn, logge eller på annen måte flytte innholdet i filen NOEN steder
+   (chat, PR-beskrivelse, commit, kommentar). Anders legger filen på disk selv, utenfor enhver
+   AI-samtale (`vercel env pull .env.local`, eller direkte maskin-til-maskin-kopi) — den ligger
+   der som forutsetning for at appen kjører, ikke som noe agenten skal håndtere. Filen inneholder
+   ekte produksjonshemmeligheter (Supabase DB-passord, Stripe live-nøkler, Anthropic-nøkkel m.fl.)
+   — en lekkasje herfra er et reelt produksjonsincident, ikke en teoretisk risiko
+   (`.claude/rules/gotchas.md` har et eget avsnitt om nøyaktig denne fellen fra 2026-08-03).
 2. **Aldri kjør** `prisma migrate dev`, `prisma db push`, `prisma migrate deploy`, `vercel deploy
    --prod`, `git push --force`, `git reset --hard`, `git clean -f`, sletting av branches på
    remote. Se `.claude/rules/gotchas.md` §Schema-endringer for hvorfor de tre Prisma-kommandoene
