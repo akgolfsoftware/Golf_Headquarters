@@ -162,7 +162,7 @@ export function TapperShell({ sessionId, facilityLabel, defaultClubs, coachPanel
       style={{
         paddingTop: "env(safe-area-inset-top)",
         // Paper live-tapper: mørk flate (rail-blekk) — ikke lime-tema
-        background: "var(--v2-rail, #141413)",
+        background: T.ink,
       }}
     >
       {/* Radial accent */}
@@ -322,8 +322,8 @@ export function TapperShell({ sessionId, facilityLabel, defaultClubs, coachPanel
           disabled={paused}
           className="flex h-[120px] w-full flex-col items-center justify-center gap-1 rounded-[20px] text-foreground transition-transform active:scale-[0.985] disabled:opacity-50"
           style={{
-            background: "var(--v2-fg, #faf9f5)",
-            color: "var(--v2-bg, #141413)",
+            background: T.fg,
+            color: T.bg,
             boxShadow: "none",
           }}
         >
