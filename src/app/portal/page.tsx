@@ -8,10 +8,14 @@ import { redirect } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { getDashboardData } from "@/app/portal/actions";
 import { getGjennomforeData } from "@/lib/portal-gjennomfore/gjennomfore-data";
+import { dagNavnKort } from "@/lib/uke-helpers";
 import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
 import { PortalChatHjem } from "@/components/portal/v2/chat/PortalChatHjem";
 
 export const dynamic = "force-dynamic";
+
+const OSLO_DATO_FMT = new Intl.DateTimeFormat("nb-NO", { day: "2-digit", month: "2-digit", timeZone: "Europe/Oslo" });
+const OSLO_KLOKKE_FMT = new Intl.DateTimeFormat("nb-NO", { hour: "2-digit", minute: "2-digit", hour12: false, timeZone: "Europe/Oslo" });
 
 export default async function PortalHjemPage() {
   const user = await requirePortalUser();
@@ -26,9 +30,15 @@ export default async function PortalHjemPage() {
     getGjennomforeData(user.id),
   ]);
 
+  // Beregnet server-side (Oslo-korrekt, gotchas.md) og sendt som ferdig
+  // streng — unngår at en client-side new Date() gir hydration-mismatch
+  // mellom SSR- og hydration-tidspunkt for topplinjas dato/klokke.
+  const naa = new Date();
+  const naaTekst = { ukedag: dagNavnKort(naa), dato: OSLO_DATO_FMT.format(naa), klokke: OSLO_KLOKKE_FMT.format(naa) };
+
   return (
     <V2Shell aktiv="hjem" nav={PLAYERHQ_NAV} navn={data.user.name} avatarUrl={data.user.avatarUrl}>
-      <PortalChatHjem data={data} gjennomfore={gjennomfore} />
+      <PortalChatHjem data={data} gjennomfore={gjennomfore} naaTekst={naaTekst} />
     </V2Shell>
   );
 }
