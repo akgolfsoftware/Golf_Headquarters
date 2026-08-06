@@ -1,63 +1,77 @@
 /**
  * dryRun skal aldri kalle eksterne tjenester.
- * Vi stubber prisma + sjekker at plan fylles og destruktive flagg er false.
+ * Mønster: t.mock.module + dynamisk import (som progress.test.ts).
+ * Kjør: npm test
  */
-import { describe, it, expect, vi, beforeEach } from "vitest";
+import { test } from "node:test";
+import assert from "node:assert/strict";
 
-vi.mock("@/lib/prisma", () => ({
-  prisma: {
-    user: {
-      findUnique: vi.fn().mockResolvedValue({ authId: "auth-1" }),
+test("slettEksterneBrukerdata dryRun — plan uten Auth/Storage/Stripe", async (t) => {
+  let stripeKalt = false;
+  let supabaseKalt = false;
+
+  t.mock.module("@/lib/prisma", {
+    namedExports: {
+      prisma: {
+        user: {
+          findUnique: async () => ({ authId: "auth-1" }),
+        },
+        playerSwingVideo: {
+          findMany: async () => [{ id: "v1" }],
+        },
+        sessionRecording: {
+          count: async () => 2,
+          findMany: async () => [],
+          updateMany: async () => ({ count: 0 }),
+        },
+        booking: { updateMany: async () => ({ count: 0 }) },
+        subscription: {
+          findUnique: async () => ({
+            stripeCustomerId: "cus_x",
+            stripeSubscriptionId: "sub_x",
+          }),
+        },
+      },
+      Prisma: { DbNull: null },
     },
-    playerSwingVideo: {
-      findMany: vi.fn().mockResolvedValue([{ id: "v1" }]),
-    },
-    sessionRecording: {
-      count: vi.fn().mockResolvedValue(2),
-      findMany: vi.fn(),
-      updateMany: vi.fn(),
-    },
-    booking: { updateMany: vi.fn() },
-    subscription: {
-      findUnique: vi.fn().mockResolvedValue({
-        stripeCustomerId: "cus_x",
-        stripeSubscriptionId: "sub_x",
-      }),
-    },
-  },
-}));
-
-vi.mock("@/lib/supabase/admin", () => ({
-  supabaseAdmin: vi.fn(() => {
-    throw new Error("supabaseAdmin skal ikke kalles i dryRun");
-  }),
-}));
-
-vi.mock("@/lib/stripe", () => ({
-  stripeKlient: vi.fn(() => {
-    throw new Error("stripe skal ikke kalles i dryRun");
-  }),
-}));
-
-vi.mock("@/lib/error-tracking", () => ({
-  logError: vi.fn(),
-}));
-
-import { slettEksterneBrukerdata } from "./slett-eksterne-data";
-
-describe("slettEksterneBrukerdata dryRun", () => {
-  beforeEach(() => {
-    vi.clearAllMocks();
   });
 
-  it("returnerer plan uten å kalle Auth/Storage/Stripe", async () => {
-    const r = await slettEksterneBrukerdata("user-1", { dryRun: true });
-    expect(r.dryRun).toBe(true);
-    expect(r.authSlettet).toBe(false);
-    expect(r.stripeKundeSlettet).toBe(false);
-    expect(r.storageFilerFjernet).toBe(0);
-    expect(r.plan?.length).toBeGreaterThan(0);
-    expect(r.plan?.some((l) => /Stripe/i.test(l))).toBe(true);
-    expect(r.plan?.some((l) => /Auth/i.test(l))).toBe(true);
+  t.mock.module("@/lib/supabase/admin", {
+    namedExports: {
+      supabaseAdmin: () => {
+        supabaseKalt = true;
+        throw new Error("supabaseAdmin skal ikke kalles i dryRun");
+      },
+    },
   });
+
+  t.mock.module("@/lib/stripe", {
+    namedExports: {
+      stripeKlient: () => {
+        stripeKalt = true;
+        throw new Error("stripe skal ikke kalles i dryRun");
+      },
+    },
+  });
+
+  t.mock.module("@/lib/error-tracking", {
+    namedExports: {
+      logError: async () => {},
+    },
+  });
+
+  // server-only er no-op under --conditions=react-server
+  const { slettEksterneBrukerdata } = await import("./slett-eksterne-data");
+
+  const r = await slettEksterneBrukerdata("user-1", { dryRun: true });
+
+  assert.equal(r.dryRun, true);
+  assert.equal(r.authSlettet, false);
+  assert.equal(r.stripeKundeSlettet, false);
+  assert.equal(r.storageFilerFjernet, 0);
+  assert.ok(r.plan && r.plan.length > 0, "plan skal være fylt");
+  assert.ok(r.plan!.some((l) => /Stripe/i.test(l)), "plan skal nevne Stripe");
+  assert.ok(r.plan!.some((l) => /Auth/i.test(l)), "plan skal nevne Auth");
+  assert.equal(stripeKalt, false, "stripeKlient skal ikke kalles");
+  assert.equal(supabaseKalt, false, "supabaseAdmin skal ikke kalles");
 });

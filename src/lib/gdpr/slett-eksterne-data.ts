@@ -52,8 +52,6 @@ export async function slettEksterneBrukerdata(
     select: { authId: true },
   });
 
-  const sb = trySupabaseAdmin(feil);
-
   if (dryRun) {
     // Tørrkjøring: les DB, logg plan — ALDRI kall Auth/Storage/Stripe.
     plan.push(`ville fjerne avatar-stier for users/${userId}.* i bucket avatars`);
@@ -105,6 +103,8 @@ export async function slettEksterneBrukerdata(
       plan,
     };
   }
+
+  const sb = trySupabaseAdmin(feil);
 
   // ── 1. Storage: avatar (kjent sti users/<id>.<ext> i bucket "avatars") ──
   if (sb) {
