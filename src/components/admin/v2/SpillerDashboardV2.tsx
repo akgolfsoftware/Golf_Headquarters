@@ -285,7 +285,7 @@ export function SpillerDashboardV2({ data }: { data: SpillerDashboardV2Data }) {
   const trengerOppfolging = data.heroBadges.some((b) => b.tone === "down" || b.tone === "warn");
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+    <div data-paper-agencyos-spillerprofil style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 960, margin: "0 auto", width: "100%" }}>
       <div>
         <TilbakeLenke href="/admin/spillere">Alle spillere</TilbakeLenke>
       </div>
@@ -372,10 +372,28 @@ export function SpillerDashboardV2({ data }: { data: SpillerDashboardV2Data }) {
 
       {/* B: én primær (Workbench) · øvrige ghost */}
       <div style={{ display: "flex", flexWrap: "wrap", gap: 8, alignItems: "center" }}>
-        <Link href={data.wbHref} style={{ textDecoration: "none", flex: mobile ? "1 1 100%" : undefined }}>
-          <CTAPill icon="layout-dashboard" full={mobile}>
-            {trengerOppfolging ? "Følg opp i Workbench" : "Åpne Workbench"}
-          </CTAPill>
+        <Link
+          href={data.wbHref}
+          data-od-id="spiller-workbench"
+          className="v2-press v2-focus"
+          style={{
+            textDecoration: "none",
+            flex: mobile ? "1 1 100%" : undefined,
+            display: "inline-flex",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: 8,
+            minHeight: 44,
+            padding: "10px 16px",
+            borderRadius: 10,
+            background: T.handling,
+            color: T.onHandling,
+            fontFamily: T.ui,
+            fontSize: 13,
+            fontWeight: 600,
+          }}
+        >
+          {trengerOppfolging ? "Følg opp i Workbench" : "Åpne Workbench"}
         </Link>
         <Link href={data.analyseHref} style={{ textDecoration: "none" }}><CTAPill ghost icon="bar-chart">Analyse</CTAPill></Link>
         <Link href="/admin/innboks" style={{ textDecoration: "none" }}><CTAPill ghost icon="message-circle">Melding</CTAPill></Link>
@@ -465,7 +483,7 @@ export function SpillerDashboardV2({ data }: { data: SpillerDashboardV2Data }) {
                 <div>
                   <div style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 16, color: T.fg }}>{p.plan.navn}</div>
                   <div style={{ fontFamily: T.mono, fontSize: 11, color: T.mut, margin: "6px 0 12px" }}>{p.plan.meta} · {p.plan.pct} % fullført</div>
-                  <Link href={data.wbHref} style={{ textDecoration: "none" }}><CTAPill icon="layout-dashboard">Åpne Workbench</CTAPill></Link>
+                  <Link href={data.wbHref} className="v2-press v2-focus" style={{ textDecoration: "none", display: "inline-flex", alignItems: "center", minHeight: 44, padding: "10px 16px", borderRadius: 10, background: T.handling, color: T.onHandling, fontFamily: T.ui, fontSize: 13, fontWeight: 600 }}>Åpne Workbench</Link>
                 </div>
               ) : (
                 <>
