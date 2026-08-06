@@ -29,11 +29,19 @@ Dette er ikke et prosjekt som mangler ingeniørkvalitet. Det mangler **lukking**
 
 ## Del 2 — Blokkerende for lansering
 
-### 🔴 B1. Sletting av persondata fungerer ikke (GDPR art. 17)
+### 🔴 B1. Sletting av persondata kaskaderer ikke (GDPR art. 17)
 
 **Kilde:** `docs/gdpr/rettigheter-status.md` — dokumentet sier selv «MANGLER for lanseringsnivå».
 
-Konkret, med deres egne ord:
+**Nyansering (verifisert i koden):** valget om å **anonymisere framfor å slette** er bevisst,
+tatt av Anders 28.07.2026 og godt begrunnet i `cleanup-deleted-accounts/route.ts`:
+treningshistorikk beholdes for akademiets utviklingsarbeid, mens persondata og all fritekst
+vaskes bort — «etter vasken peker radene ikke lenger på en person». Det er en legitim tilnærming.
+
+Problemet er ikke anonymisering-vs-sletting. Problemet er at vasken **ikke når hele veien**.
+Verifisert: `anonymiser-bruker.ts` refererer verken Supabase Auth, Storage eller Stripe.
+
+Konkret, med dokumentets egne ord:
 - **Supabase Auth-brukeren slettes ikke.** Cronen sletter kun Prisma-raden. Kontoen består.
 - **Storage-filer slettes ikke** (video, lyd, vedlegg)
 - **Stripe-kunden slettes/anonymiseres ikke**
@@ -55,17 +63,34 @@ testbruker først.
 `exportUserData()` utelater bl.a. `CoachingSession.messages`, og **filer eksporteres ikke i det
 hele tatt** — kun DB-rader. En bruker som ber om «alt dere har om meg» får ikke alt.
 
-### 🔴 B3. Ingen feilmonitorering i produksjon
+### 🟠 B3. Feilmonitorering fanger ikke uventede feil *(korrigert 06.08 kveld)*
 
-**Verifisert:** ingen Sentry, Datadog, Bugsnag eller tilsvarende i `package.json`.
+**Rettelse:** en tidligere versjon av dette dokumentet sa «ingen feilmonitorering». Det var feil.
+`src/lib/error-tracking.ts` finnes og er gjennomtenkt:
 
-Konsekvens: når noe brekker for en ekte bruker, får dere det ikke å vite. Dere oppdager det
-når noen ringer. `/admin/feillogg` finnes, men fanger kun det appen selv velger å logge —
-ikke uventede unntak, hydration-feil eller klientkrasj.
+- console.error → Vercel Logs
+- `ErrorLog`-tabell i Prisma, med UI på `/admin/feillogg`
+- Slack-webhook ved fatal/critical
+- Telegram til Anders ved fatal/error, strupet til én per kontekst per 15. min
+- **PII-sanitering før logging** (e-post, telefon, kortdata, tokens → `[REDACTED]`)
+- 90 dagers retensjon på feillogg, som en uttalt forpliktelse fra personvernerklæringen
 
-**Sammenlign med produksjonsincidenten 11.07–05.08:** prod var nede i ~3 uker for 394 brukere
-før rotårsaken ble funnet. Med feilmonitorering ville P1001-feilen vært synlig samme dag.
-Dette er det billigste tiltaket med størst effekt i hele lista.
+Dette er bedre enn i mange produksjonssystemer, og nedgraderer funnet fra rødt til oransje.
+
+**Det som faktisk mangler:** systemet fanger kun feil koden *velger* å logge via `logError()` i
+en `try/catch`. Det fanger **ikke**:
+- Uventede unntak utenfor try/catch
+- Klientside-krasj (React-feil, hydration-mismatch)
+- Feil i tredjeparts-kode
+- Feil som skjer før JS lastes
+
+Produksjonsincidenten 11.07–05.08 (prod nede ~3 uker, 394 brukere) er illustrerende: P1001-feilen
+var en tilkoblingsfeil som slo til før noe applikasjonslag rakk å logge den.
+
+**Tiltak:** enten en automatisk unntaksfanger (Sentry e.l. — krever ny pakke, se §Grok-oppgave C),
+eller — som et billigere første steg — en `ErrorBoundary` på rotnivå som sender klientfeil til
+`logError()`, pluss en helsesjekk som varsler når appen ikke svarer. Det siste krever ingen ny
+avhengighet.
 
 ---
 
