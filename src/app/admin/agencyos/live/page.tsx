@@ -41,7 +41,9 @@ export default async function V2LivePage() {
           </span>
         </div>
       </Kort>
-      <AgencyLiveV2 coachFirstName={coachFirstName} />
+      <div data-paper-agencyos-live-route>
+        <AgencyLiveV2 coachFirstName={coachFirstName} />
+      </div>
     </V2Shell>
   );
 }
