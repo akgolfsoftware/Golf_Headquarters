@@ -89,7 +89,7 @@ export default async function PlanFeiring({ params }: { params: Params }) {
     eff.sgTotalDelta > personligRekord;
 
   return (
-    <V2Shell aktiv="gjor" nav={PLAYERHQ_NAV} navn={user.name ?? undefined} avatarUrl={user.avatarUrl}>
+    <V2Shell aktiv="plan" nav={PLAYERHQ_NAV} navn={user.name ?? undefined} avatarUrl={user.avatarUrl}>
       <FeiringV2
         data={{
           planNavn: plan.name,

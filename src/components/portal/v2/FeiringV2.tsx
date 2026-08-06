@@ -182,8 +182,26 @@ export function FeiringV2({ data }: { data: FeiringV2Data }) {
 
       {/* B: én primær + tekst-sekundær */}
       <div style={{ display: "flex", flexDirection: "column", gap: 10, paddingBottom: 24 }}>
-        <Link href="/portal/planlegge/workbench?zoom=uke" style={{ textDecoration: "none", display: "block" }}>
-          <CTAPill icon="calendar" full>Planlegg neste periode</CTAPill>
+        <Link
+          href="/portal/planlegge/workbench?zoom=uke"
+          data-od-id="feiring-neste"
+          className="v2-press v2-focus"
+          style={{
+            textDecoration: "none",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            minHeight: 48,
+            width: "100%",
+            borderRadius: 10,
+            background: T.handling,
+            color: T.onHandling,
+            fontFamily: T.ui,
+            fontSize: 14,
+            fontWeight: 600,
+          }}
+        >
+          Planlegg neste periode
         </Link>
         <Link
           href="/portal"
