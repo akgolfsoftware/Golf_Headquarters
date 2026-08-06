@@ -226,8 +226,8 @@ function TabSG({ data, mobile }: { data: AnalysereData; mobile: boolean }) {
               bevis={null}
               grunnlag={nesteFokus.diagnose.grunnlag}
               resept={{ akse: nesteFokus.diagnose.resept.akse as AkseKey, tekst: nesteFokus.diagnose.resept.tekst }}
-              ctaTekst="Planlegg dette"
-              ctaHref={nesteFokus.handlingHref}
+              ctaTekst={undefined}
+              ctaHref={undefined}
             />
           )}
         </div>
@@ -246,11 +246,18 @@ function TabSG({ data, mobile }: { data: AnalysereData; mobile: boolean }) {
             baseline={nesteFokus.baseline}
             begrunnelse={nesteFokus.begrunnelse}
             formelAkse={nesteFokus.formelAkse}
-            handlingTekst="Legg inn treningsøkt"
-            /* Én primær handling per skjerm: når Diagnose-kortet vises, eier DET
-               CTA-en (samme href) — ellers hadde skjermen fått to like lime-CTA-er
-               til samme mål. Uten diagnose er dette kortets CTA den eneste. */
-            handlingHref={nesteFokus.diagnose ? undefined : nesteFokus.handlingHref}
+            enTingNa
+            handlingTekst={(() => {
+              const labels: Record<string, string> = {
+                OTT: "tee",
+                APP: "innspill",
+                ARG: "nærspill",
+                PUTT: "putting",
+              };
+              const n = labels[nesteFokus.akse] ?? "trenings";
+              return `Legg inn ${n}-økt denne uka`;
+            })()}
+            handlingHref={nesteFokus.handlingHref}
           />
           {/* lekkasjeBaand ble beregnet i loaderen men aldri vist — SlagLekkasje
               er fasit-kortet for nettopp den kontrakten ({id,label,sg,slag}). */}
@@ -877,7 +884,7 @@ export function AnalysereV2({
   const eyebrow = kat ? `Kategori ${kat.kategori} · ${kat.niva} · Sesong ${aar}` : `Sesong ${aar}`;
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+    <div data-paper-portal-analysere  style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
       {header ? (
         header(mobile)
       ) : (
