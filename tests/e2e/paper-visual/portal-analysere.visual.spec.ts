@@ -68,12 +68,14 @@ for (const { viewport, tema } of CASES) {
     await page.setViewportSize(PAPER_VIEWPORTS[viewport]);
 
     if (ER_SEED) {
+      // Fasit er i .phone[data-demo-only] — ikke skjul hele phone
       await openFasitFile(page, FASIT_ABS_PATH);
-      await prepareFasitState(page, { tema });
-      const innhold = await fasitInnholdLocator(page);
-      await expect(innhold).toHaveScreenshot(snapshotName, {
-        maxDiffPixelRatio: 0.04,
-      });
+      await page.evaluate((t) => {
+        document.documentElement.setAttribute("data-theme", t);
+      }, tema);
+      await page.addStyleTag({ content: ".state-switch { display: none !important; }" });
+      const target = page.locator(".phone, #kropp, body").first();
+      await expect(target).toHaveScreenshot(snapshotName, { maxDiffPixelRatio: 0.04 });
       return;
     }
 

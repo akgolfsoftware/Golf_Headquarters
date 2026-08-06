@@ -965,11 +965,21 @@ export interface NesteFokusProps {
   formelAkse?: string | null;
   /** Rute handlingen peker til. Utelatt (galleri/lab) → ingen knapp, aldri død kontroll. */
   handlingHref?: string;
+  /**
+   * «Én ting nå»-monopol: full bredde, T.handling (oransje).
+   * Brukes av PlayerHQ Analysere (Paper-fasit playerhq-analyse.html).
+   */
+  enTingNa?: boolean;
 }
-export function NesteFokus({ omrade = "Putting innenfor 6 ft er største lekkasje", akse = "PUTT", sgTap = "−1,2", baseline = "Broadie scratch", begrunnelse = "Innslagsprosenten på 3–6 ft ligger 7 pp under nivåkravet — det koster deg mest per runde.", handlingTekst = "Legg inn treningsøkt", formelAkse = null, handlingHref }: NesteFokusProps) {
+export function NesteFokus({ omrade = "Putting innenfor 6 ft er største lekkasje", akse = "PUTT", sgTap = "−1,2", baseline = "Broadie scratch", begrunnelse = "Innslagsprosenten på 3–6 ft ligger 7 pp under nivåkravet — det koster deg mest per runde.", handlingTekst = "Legg inn treningsøkt", formelAkse = null, handlingHref, enTingNa = false }: NesteFokusProps) {
   const AKSE: Record<string, string> = { OTT: "Tee-slag", APP: "Innspill", ARG: "Nærspill", PUTT: "Putting" };
   return (
     <Kort tint>
+      {enTingNa && (
+        <div style={{ fontFamily: T.mono, fontSize: 10, letterSpacing: "0.08em", textTransform: "uppercase", color: T.mut, marginBottom: 6 }}>
+          Én ting nå
+        </div>
+      )}
       <Caps>Neste fokus</Caps>
       <div style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 19, color: T.fg, lineHeight: 1.22, margin: "10px 0 0" }}>{omrade}</div>
       {sgTap != null && (
@@ -979,11 +989,35 @@ export function NesteFokus({ omrade = "Putting innenfor 6 ft er største lekkasj
         </div>
       )}
       {begrunnelse && <p style={{ fontFamily: T.ui, fontSize: 12.5, color: T.fg2, lineHeight: 1.55, margin: "10px 0 0" }}>{begrunnelse}</p>}
-      <div style={{ display: "flex", alignItems: "center", gap: 10, marginTop: 14 }}>
+      <div style={{ display: "flex", alignItems: "center", gap: 10, marginTop: 14, flexWrap: "wrap" }}>
         {handlingHref && (
-          <Link href={handlingHref} style={{ textDecoration: "none" }}>
-            <CTAPill icon="plus">{handlingTekst}</CTAPill>
-          </Link>
+          enTingNa ? (
+            <Link
+              href={handlingHref}
+              className="v2-press v2-focus"
+              data-od-id="analyse-en-ting-na"
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                minHeight: 48,
+                width: "100%",
+                borderRadius: 10,
+                background: T.handling,
+                color: T.onHandling,
+                fontFamily: T.ui,
+                fontSize: 14,
+                fontWeight: 600,
+                textDecoration: "none",
+              }}
+            >
+              {handlingTekst}
+            </Link>
+          ) : (
+            <Link href={handlingHref} style={{ textDecoration: "none" }}>
+              <CTAPill icon="plus">{handlingTekst}</CTAPill>
+            </Link>
+          )
         )}
         {formelAkse && <span style={{ ...mono(9.5, T.mut, 600) }}>Tren {formelAkse}</span>}
       </div>
