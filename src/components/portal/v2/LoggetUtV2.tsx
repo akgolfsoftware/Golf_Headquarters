@@ -48,7 +48,7 @@ function Knapp({
 }) {
   const v: CSSProperties =
     variant === "primary"
-      ? { background: T.lime, color: T.onLime, border: "none" }
+      ? { background: T.handling, color: T.onHandling, border: "none" }
       : { background: T.panel3, color: T.fg, border: `1px solid ${T.borderS}` };
   return (
     <Link
@@ -295,6 +295,7 @@ export function LoggetUtV2({
 }: LoggetUtV2Props = {}) {
   return (
     <div
+      data-paper-logget-ut
       style={{
         minHeight: "100vh",
         display: "flex",
