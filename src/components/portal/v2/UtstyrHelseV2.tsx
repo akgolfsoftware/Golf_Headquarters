@@ -8,7 +8,6 @@
 import Link from "next/link";
 import {
   Caps,
-  CTAPill,
   Kort,
   StatusPill,
   type StatusTone,
@@ -67,7 +66,7 @@ const METRIC_HJELP: Record<string, HjelpNokkel> = {
 
 export function UtstyrHelseV2({ backHref, spillerNavn, reports }: UtstyrHelseV2Props) {
   return (
-    <div style={{ maxWidth: 760, margin: "0 auto", display: "flex", flexDirection: "column", gap: T.gap }}>
+    <div data-paper-portal-utstyr-helse style={{ maxWidth: 760, margin: "0 auto", display: "flex", flexDirection: "column", gap: T.gap, width: "100%" }}>
       <TilbakeLenke href={backHref}>SG-hub</TilbakeLenke>
 
       {/* Topptekst */}
@@ -108,7 +107,10 @@ export function UtstyrHelseV2({ backHref, spillerNavn, reports }: UtstyrHelseV2P
           />
           <div style={{ display: "flex", justifyContent: "center", marginTop: 4 }}>
             <Link href="/portal/mal/trackman" style={{ textDecoration: "none" }}>
-              <CTAPill icon="upload">Importer din første økt</CTAPill>
+              <span style={{
+            display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, minHeight: 48, width: "100%", padding: "10px 16px",
+            borderRadius: 10, background: T.handling, color: T.onHandling, fontFamily: T.ui, fontSize: 14, fontWeight: 600,
+          }}>Importer din første økt</span>
             </Link>
           </div>
         </Kort>
