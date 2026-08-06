@@ -93,6 +93,7 @@ export function CoachSporsmalTraadV2({
 
   return (
     <div
+      data-paper-portal-coach-sporsmal-traad
       style={{
         maxWidth: 760,
         width: "100%",
