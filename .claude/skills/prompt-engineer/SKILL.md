@@ -6,7 +6,9 @@ description: >
   "agent-prompt", "few-shot", "context engineering", "skriv prompt til Claude/Grok/Gemini",
   "hvordan ber jeg AI-en", "forbedre denne prompten", "prompt for agent",
   eller når en vag oppgave skal bli produksjonsklar AI-instruksjon.
-  Versjon 2026-07-23. Inspirert av Anthropic context engineering + agent design.
+  Versjon 2026-08-06 (flettet inn Claude 5-modellruting med effort-nivåer og
+  anti-antagelse-regler fra ak-golf-prompt-engineer-leveransen — se Samspill).
+  Inspirert av Anthropic context engineering + agent design.
 ---
 
 # Prompt Engineer — verdensklasse
@@ -102,6 +104,20 @@ Hvordan Anders sjekker kvaliteten på 30 sekunder (f.eks. «kjør 2 ganger, samm
 
 **Tvil → billigste som løser jobben.** Si når man skal eskalere.
 
+### Claude-flåten i detalj — Sonnet 5 / Opus 5 / Fable 5 (effort)
+
+«claude-code»-raden over er ikke ett valg — treffer du feil Claude-modell/effort på
+en ellers god prompt, betaler Anders for omganger han ikke trenger.
+
+| Oppgavetype | Modell | Effort | Ikke gjør |
+|---|---|---|---|
+| Tekst-/docs-opprydding, rename, speil-synk, enkle fikser | **Sonnet 5** | standard | Ikke be den «gå utover det grunnleggende» med mindre du vil ha en fullverdig implementasjon — Sonnet 5 holder seg minimal til det som faktisk står i prompten |
+| Produksjonskode, funksjonsbygging, arkitektur/AK-formel-vurderinger, feilsøking | **Opus 5** | `high` (rutinefiks: `medium`/`low`) | Ikke legg til «sjekk arbeidet ditt før du er ferdig» — Opus 5 gjør dette selv; gamle verifiseringsinstrukser gir dobbeltsjekk og unødvendig tokenbruk |
+| Flerdags/sammensatt porting, dyp metodikk-/gap-analyse (kun etter godkjent plan) | **Fable 5** | `high` standard, `xhigh` kun for de viktigste | Ikke gjenbruk preskriptive prompter/skills laget for eldre modeller (kan forringe resultatet). Ikke be om «vis chain-of-thought»/«forklar steg for steg» — kan utløse avslag; be heller om oppsummering av hva som ble gjort og hvorfor |
+
+Subagenter: kun ved reelt parallelle arbeidsstrømmer eller isolert kontekst — enkle,
+sekvensielle eller enkeltfil-oppgaver kjøres direkte, uansett modell.
+
 ## Agentic mønstre — når du designer systemer (ikke bare én prompt)
 
 | Mønster | Bruk når | Anders-eksempel |
@@ -116,6 +132,25 @@ Hvordan Anders sjekker kvaliteten på 30 sekunder (f.eks. «kjør 2 ganger, samm
 
 **AgenticOS-regel:** Preferer **workflow + human gate** over full autonomi.  
 Plan/e-post/kalender-skriv = alltid godkjenning (PlanAction / BEKREFT / «ja»).
+
+## Anti-antagelser (bygg dette inn i hver prompt der det er relevant)
+
+- **Aldri spekuler om kode/filer ingen har åpnet.** Refereres en fil: les den FØR
+  du svarer eller genererer prompten — ingen påstander om en kodebase uten undersøkelse.
+- **Eksakte verdier (farger, stier, navn, tabellnavn, env-nøkler, stack-versjoner)
+  hentes fra kilden hver gang** — aldri fra hukommelse eller fra denne skillen.
+  Prosjektspesifikke fakta bor i det aktuelle prosjektets `CLAUDE.md`; siter derfra.
+- **Mangler kritisk info som finnes i repo/docs/verktøy:** instruer modellen å
+  hente den (grep, MCP, web) — spør mennesket kun når svaret faktisk ikke finnes.
+- **Generelle løsninger, aldri hardkoding mot testcaser.** Er testen feil eller
+  oppgaven urimelig: si det i output, ikke design en prompt som jobber rundt det.
+- **To kilder i konflikt (dokument vs. kode, gammel regel vs. ny):** prompten skal
+  be modellen stoppe og rapportere begge kildene med et forslag til vinner —
+  aldri velge stille. Metodikk/fagkunnskap har alltid ett sannhetssted (f.eks.
+  Masterbrain) — flagg det hvis en prompt ser ut til å skape et nytt.
+- **Definer verifisering i hver prompt** (build, test, visuell sammenligning mot
+  godkjent referanse). Uten bestått verifisering er oppgaven ikke ferdig —
+  «ser riktig ut» er ikke et suksesskriterium.
 
 ## Domene-kontekst du alltid vurderer
 
@@ -142,6 +177,7 @@ Plan/e-post/kalender-skriv = alltid godkjenning (PlanAction / BEKREFT / «ja»).
 - Anbefale agent-team når single-shot holder  
 - Sende PII til sky uten varsel  
 - Returnere prompt uten modell-anbefaling  
+- Designe en prompt som jobber rundt en feil test eller en urimelig oppgave i stedet for å si fra
 
 ## Samspill
 
@@ -149,3 +185,5 @@ Plan/e-post/kalender-skriv = alltid godkjenning (PlanAction / BEKREFT / «ja»).
 - `agent-oppdrag` — lim-maler til flåten  
 - `agenticos` — OS-regler  
 - `ak-prompt-master` — eldre kortere variant; **denne skillen vinner** ved konflikt  
+- Prosjektets `CLAUDE.md` (f.eks. `akgolf-hq`) — stack, versjoner og låste beslutninger;
+  denne skillen dupliserer dem aldri, kun prinsippene for hvordan en prompt bruker dem
