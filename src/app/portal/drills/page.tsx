@@ -25,8 +25,8 @@ export default async function V2OvelsesbankPreviewPage() {
   const data = await getDrillLibraryRich(user.id);
 
   return (
-    <V2Shell aktiv="gjor" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
-      <TilbakeLenke href="/portal/gjennomfore">Gjør</TilbakeLenke>
+    <V2Shell aktiv="plan" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
+      <TilbakeLenke href="/portal/planlegge">Plan</TilbakeLenke>
       <OvelsesbankV2 data={data} />
     </V2Shell>
   );
