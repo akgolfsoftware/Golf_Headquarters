@@ -119,8 +119,11 @@ Hver rad: fasit → rute → merge-PR. Visual seed finnes under `tests/e2e/paper
 
 ## Hva som gjenstår (uten fasit)
 
-Ca. **300+** ekte app-skjermer har **ingen** Paper-fasit tegnet. De er **ikke** rest fra porten
-av de 44 fasitfilene — de krever ny designrunde i Claude Design før kodeport.
+Ca. **300+** app-skjermer har **ingen** dedikert Paper-fasit. Plan: **W2–W6** i
+`skjermplan-tegnet-og-wireframe.md` (wireframe først, deretter port).
+
+**W2 i gang (2026-08-06):** Analysere-dybde (hull, runder, gameplan, …) — se skjermplanen §W2.
+Hub `/portal/analysere` er allerede i main (#309).
 
 Se `fasit-liste-paper.md` §«Hva som IKKE har fasit» for områdeoversikt.
 
@@ -145,3 +148,4 @@ En skjerm er **godkjent i main** når:
 | 2026-08-04 | Live/runde-fasiter + avvik A1–A4 |
 | 2026-08-05 | W1-wireframes batch-godkjent |
 | 2026-08-06 | Full fasit-port: PlayerHQ + AgencyOS + felles (#307–#345) · #290 lukket · #223/#302 merget |
+| 2026-08-06 | W2 startet (Analysere-dybde) · skjermplan Del A markert ferdig |
