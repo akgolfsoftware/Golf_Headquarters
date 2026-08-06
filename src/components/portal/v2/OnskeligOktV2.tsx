@@ -124,7 +124,7 @@ export function OnskeligOktV2({ data }: { data: OnskeligOktV2Data }) {
   }
 
   return (
-    <div data-paper-portal-onskeligokt style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%", maxWidth: 720, margin: "0 auto", width: "100%" }}>
+    <div data-paper-portal-onskeligokt style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
       {/* Hode */}
       <div>
         <Caps>PlayerHQ · Be om økt</Caps>
