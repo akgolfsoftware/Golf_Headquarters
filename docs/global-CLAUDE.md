@@ -47,6 +47,12 @@ Enkle/korte instrukser for ikke-trivielle oppgaver struktureres automatisk til o
 - Hver økt slutter med retro-linje i prosjektets docs/feillogg.md; månedlig mønsteranalyse av loggen
 - Plan-godkjenning før store bygg
 - Nye MCP-er/plugins krever begrunnelse
+- **Koblede connectors trimmes til det økten faktisk trenger** (observert 06.08.2026: en ren
+  kodeøkt i Golf_Headquarters fikk gjentatte til-/frakoblinger av Gmail, Google Kalender/Drive,
+  Higgsfield og Supabase — hver runde skriver ~180 verktøynavn inn i konteksten uten at noen av
+  dem ble brukt). Rene Claude Code-kodeøkter trenger normalt kun GitHub + prosjektets egne MCP-er
+  (Supabase/Vercel der de faktisk rører databasen/deployen). Koble fra resten for den økttypen
+  fremfor å la alt stå tilkoblet som standard.
 - PII (spillere/elever/kunder) aldri i sky-prompts uten anonymisering
 - Økonomitall fra Tripletex-eksport, aldri estimert. Aldri logg inn i Tripletex.
 - Golf-data: brutto score, putt i fot. Motsier data domenekunnskap → undersøk datafeil først.

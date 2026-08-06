@@ -36,6 +36,21 @@ dette handler kun om HVORDAN output håndteres, ikke om å hoppe over steg):
    på nytt for hver melding i en lang økt. Modell-/effort-valg for selve arbeidet: se
    `prompt-engineer`-skillen §Claude-flåten i detalj og `agenticos`-skillen §Claude Code —
    arbeidsdisiplin (ikke duplisert her).
+5. **PR-babysitting med `subscribe_pr_activity`: batch pushene selv når du aktivt retter feil.**
+   Observert 06.08.2026 (samme økt som satte opp denne fila): fem uavhengige, ikke-relaterte
+   endringer ble pushet hver for seg i stedet for samlet — CLAUDE.md §Arbeidsregler sier allerede
+   «committ ofte, push samlet», men regelen brytes lettere i babysitting-modus fordi hver push gir
+   en umiddelbar CI-bekreftelse. Push individuelt KUN når du faktisk trenger å isolere om nettopp
+   DEN endringen fikser en rød CI-sjekk — batch alt annet (dokumentasjon, oppfølgingsspørsmål,
+   ikke-relaterte tillegg) til én push. Hver push utløser to Vercel-webhook-leveranser
+   (Building→Ignored/Ready) i tillegg til selve CI-kjøringen, uansett om builden faktisk kjører.
+
+**Mistenkt, IKKE verifisert (06.08.2026):** samme bloat-mønster som `actions_list`/`actions_get`
+(full repo-metadata per rad, `minimal_output` uten målbar effekt) kan gjelde flere GitHub MCP-lister
+— `list_pull_requests`, `list_commits`, `search_code`, `list_issues` er ikke testet i denne økten.
+Ikke skriv dette om til fasit før noen faktisk har sammenlignet payload-størrelsen med/uten
+`minimal_output` på en av dem — første økt som bruker et av disse kallene bør verifisere og oppdatere
+denne linjen til en bekreftet regel (eller fjerne mistanken hvis den ikke stemmer).
 
 ### PRODUKSJONSINCIDENT 05.08.2026: `db.<ref>.supabase.co` er IPv6-only — Vercel når den aldri
 - **Symptom:** prod nede siden ca. 11.07 (394 brukere rammet), forverret til total sirkelbryter-
