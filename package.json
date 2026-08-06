@@ -13,6 +13,7 @@
     "postinstall": "prisma generate",
     "db:seed": "tsx prisma/seed.ts",
     "kart": "tsx scripts/skjerm-kart.ts",
+    "speil:paper": "node scripts/speil-designsystem.mjs",
     "qa:drills": "tsx scripts/drill-qa.ts",
     "retag:drills": "tsx scripts/retag-drill-kategorier.ts",
     "retag:drills:apply": "tsx scripts/retag-drill-kategorier.ts --apply",
