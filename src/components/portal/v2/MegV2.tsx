@@ -22,7 +22,7 @@ import type { PlayerProgram } from "@/generated/prisma/client";
 import type { GoalItem } from "@/app/portal/actions";
 import type { UserPreferences } from "@/lib/preferences";
 import { logout } from "@/lib/auth/logout";
-import { oppdaterPreferences } from "@/app/portal/meg/actions";
+import { oppdaterPreferences, settEgetLydSamtykke } from "@/app/portal/meg/actions";
 import { uploadAvatar } from "@/lib/storage/avatar";
 import { skalerAvatar } from "@/lib/klient/skaler-avatar";
 import { useCountUp } from "@/lib/v2/hooks";
@@ -79,6 +79,12 @@ export type MegData = {
     nesteTrekk: Date | null;
   };
   notif: UserPreferences["notif"];
+  /** Lydsamtykke (A4) — Én ting nå når ikke GITT. */
+  lydSamtykke: {
+    tillatt: boolean;
+    status: string;
+    gittAt: Date | null;
+  };
 };
 
 const PROGRAM_LABEL: Record<PlayerProgram, string> = {
@@ -225,7 +231,7 @@ type KontoRad = { ic: string; l: string; sub?: string; href: string };
 export function MegV2({ data }: { data: MegData }) {
   const mobile = useMobile();
   const router = useRouter();
-  const { navn, hcp, homeClub, goals, sesong, identitet, program, abo, notif } = data;
+  const { navn, hcp, homeClub, goals, sesong, identitet, program, abo, notif, lydSamtykke } = data;
 
   // Avatar direkte klikkbar her (Anders-krav: bytt bilde skal ikke kreve
   // omvei via Profil og innstillinger) — samme uploadAvatar-action og
@@ -234,6 +240,9 @@ export function MegV2({ data }: { data: MegData }) {
   const [avatarLagrer, startAvatarLagring] = useTransition();
   const [avatarFeil, setAvatarFeil] = useState<string | null>(null);
   const filInputRef = useRef<HTMLInputElement>(null);
+  const [lydPending, startLyd] = useTransition();
+  const [lydFeil, setLydFeil] = useState<string | null>(null);
+  const [lydGittLokalt, setLydGittLokalt] = useState(lydSamtykke.tillatt);
 
   function velgBilde(e: React.ChangeEvent<HTMLInputElement>) {
     const fil = e.target.files?.[0];
@@ -281,7 +290,7 @@ export function MegV2({ data }: { data: MegData }) {
     { ic: "users", l: "Foresatte", sub: "Registrerte foreldre/verger", href: "/portal/meg/foreldre" },
     { ic: "activity", l: "Venner", sub: "Legg til venner, se at de har trent", href: "/portal/venner" },
     { ic: "settings", l: "Innstillinger", sub: "Varsler, personvern, anlegg, språk", href: "/portal/meg/innstillinger" },
-    { ic: "shield", l: "Personvern og samtykke", href: "/portal/meg/innstillinger/personvern" },
+    { ic: "shield", l: "Personvern og samtykke", sub: lydGittLokalt ? "Lydsamtykke gitt" : "Lydsamtykke mangler", href: "/portal/meg/innstillinger/personvern" },
   ];
 
   // «Om deg» — kun rader med ekte verdi. Skjul hele kortet hvis alt mangler.
@@ -306,8 +315,72 @@ export function MegV2({ data }: { data: MegData }) {
   const aboNesteTrekk = formatDato(abo.nesteTrekk);
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
-      {/* Hode — avatar (direkte klikkbar for å bytte bilde) + navn + meta */}
+    <div data-paper-portal-meg  style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+      
+      {!lydGittLokalt && (
+        <div
+          style={{
+            border: `1px solid ${T.border}`,
+            borderRadius: T.rCard,
+            background: T.panel2,
+            padding: 16,
+            display: "flex",
+            flexDirection: "column",
+            gap: 8,
+          }}
+        >
+          <div style={{ fontFamily: T.mono, fontSize: 10, letterSpacing: "0.08em", textTransform: "uppercase", color: T.mut }}>
+            Én ting nå
+          </div>
+          <h2 style={{ margin: 0, fontFamily: T.disp, fontSize: 16, fontWeight: 600, color: T.fg }}>
+            Lydsamtykke mangler
+          </h2>
+          <p style={{ margin: 0, fontFamily: T.ui, fontSize: 13, color: T.fg2, lineHeight: 1.5, maxWidth: "52ch" }}>
+            Uten lydsamtykke kan Anders ikke dele videoanalyse med lyd med deg.
+            Gi samtykke her hvis du er over 16 år — ellers må foresatt gjøre det via trener.
+          </p>
+          <button
+            type="button"
+            disabled={lydPending}
+            onClick={() => {
+              setLydFeil(null);
+              startLyd(async () => {
+                const res = await settEgetLydSamtykke();
+                if (!res.ok) {
+                  setLydFeil(res.feil);
+                  return;
+                }
+                setLydGittLokalt(true);
+                router.refresh();
+              });
+            }}
+            className="v2-press v2-focus"
+            data-od-id="meg-en-ting-na-lyd"
+            style={{
+              marginTop: 4,
+              minHeight: 48,
+              width: "100%",
+              borderRadius: 10,
+              border: "none",
+              background: T.handling,
+              color: T.onHandling,
+              fontFamily: T.ui,
+              fontSize: 14,
+              fontWeight: 600,
+              cursor: lydPending ? "default" : "pointer",
+              opacity: lydPending ? 0.7 : 1,
+            }}
+          >
+            {lydPending ? "Lagrer …" : "Gi lydsamtykke"}
+          </button>
+          {lydFeil && (
+            <p style={{ margin: 0, fontFamily: T.ui, fontSize: 12.5, color: T.down }} role="alert">
+              {lydFeil}
+            </p>
+          )}
+        </div>
+      )}
+{/* Hode — avatar (direkte klikkbar for å bytte bilde) + navn + meta */}
       <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
         <label
           htmlFor="meg-avatar-input"

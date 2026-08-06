@@ -21,6 +21,7 @@ import { prisma } from "@/lib/prisma";
 import { getAbonnementData } from "@/lib/portal-abonnement/abonnement-data";
 import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
 import { MegV2, type MegData } from "@/components/portal/v2/MegV2";
+import { hentLydSamtykkeStatus } from "@/lib/recording/lyd-samtykke";
 
 export const dynamic = "force-dynamic";
 
@@ -29,7 +30,7 @@ export default async function V2MegPreviewPage() {
   if (user.role === "PARENT") redirect("/forelder");
   if (user.role === "GUEST") redirect("/admin/kalender");
 
-  const [profil, goals, agg, identitet, aktivEnrollment, abo] = await Promise.all([
+  const [profil, goals, agg, identitet, aktivEnrollment, abo, lydSjekk] = await Promise.all([
     hentProfil(),
     getGoals(user.id, 3),
     prisma.round.aggregate({
@@ -58,6 +59,7 @@ export default async function V2MegPreviewPage() {
       select: { program: true, enrolledAt: true, coach: { select: { name: true } } },
     }),
     getAbonnementData(user.id),
+    hentLydSamtykkeStatus(user.id),
   ]);
 
   const data: MegData = {
@@ -96,6 +98,11 @@ export default async function V2MegPreviewPage() {
       nesteTrekk: abo.nesteTrekk,
     },
     notif: profil.preferences.notif,
+    lydSamtykke: {
+      tillatt: lydSjekk.tillatt,
+      status: lydSjekk.status,
+      gittAt: lydSjekk.gittAt,
+    },
   };
 
   return (
