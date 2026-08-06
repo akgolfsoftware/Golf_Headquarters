@@ -110,7 +110,7 @@ export function ForelderV2({ data }: { data: ForelderUkerapport }) {
   const alderTekst = childAge != null ? ` · ${childAge} år` : "";
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+    <div data-paper-forelder style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
       {/* Hode */}
       <div
         style={{
@@ -180,7 +180,7 @@ export function ForelderV2({ data }: { data: ForelderUkerapport }) {
                 {childFirstName} er under 18 og trenger ditt ja for å bruke appen
                 fullt ut. Trening kan fortsette mens du ser gjennom.
               </p>
-              <Knapp icon="arrow-right" onClick={gaaTil("/forelder/samtykke")}>
+              <Knapp icon="arrow-right" onClick={gaaTil("/forelder/samtykke")} style={{ background: T.handling, color: T.onHandling }}>
                 Gå til samtykke
               </Knapp>
             </div>
@@ -188,7 +188,7 @@ export function ForelderV2({ data }: { data: ForelderUkerapport }) {
         </Kort>
       ) : (
         <div>
-          <Knapp icon="arrow-right" full={mobile} onClick={gaaTil("/forelder/barn")}>
+          <Knapp icon="arrow-right" full={mobile} onClick={gaaTil("/forelder/barn")} style={{ background: T.handling, color: T.onHandling }}>
             Se mer om {childFirstName}
           </Knapp>
         </div>
