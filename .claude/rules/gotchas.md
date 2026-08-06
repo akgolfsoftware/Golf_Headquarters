@@ -4,6 +4,54 @@ Flyttet fra CLAUDE.md 2026-06-14. Les denne FØR du skriver kode. Når noe brekk
 (Eldre PRISMA-7- og Supabase-detaljer finnes også i git-historikken.)
 Ingen låst designkanon per 2026-07-25 — nytt system utvikles i Open Design (CLAUDE.md invariant 2).
 
+### GitHub PR-overvåking: `actions_list`/`actions_get` er dyre uansett `minimal_output` (oppdaget 2026-08-06)
+- **Symptom:** en økt som abonnerer på PR-aktivitet (`subscribe_pr_activity`) og deretter poller
+  `mcp__github__actions_list` (`list_workflow_runs`) for å sjekke CI-status brenner tusenvis av tokens
+  per kall — hvert `workflow_run`-objekt inneholder full repo-metadata (alle URL-felter, eier, lisens
+  m.m.), gjentatt for hver kjøring i lista. `minimal_output: true` ble testet og **gjorde ingen
+  forskjell** på denne responsen i denne økten — stol ikke på at parameteren trimmer alt.
+- **Regel:** etter `subscribe_pr_activity` — **stol på de innkommende `<github-webhook-activity>`-
+  hendelsene** for CI-status/kommentarer i stedet for å polle proaktivt. Webhooken varsler om CI-feil
+  og nye kommentarer; unødvendig å spørre selv i mellomtiden.
+- **Må du sjekke status manuelt likevel:** bruk `mcp__github__pull_request_read` med
+  `method: "get_status"` — den returnerer kun commit-statusobjektet (liten payload), ikke
+  `actions_list`/`actions_get` som drar med seg hele repo-objektet per kjøring.
+- Gjelder alle økter i dette repoet, ikke bare PR-babysitting: foretrekk alltid det GitHub MCP-kallet
+  med minst payload som faktisk svarer på spørsmålet, fremfor det som «har mest info».
+
+### Token-økonomi generelt (2026-08-06): unngå å strømme store output/dokumenter rått inn i kontekst
+Fire tiltak utover GitHub-punktet over — **ingen av dem skal senke kvalitetsgaten**
+(`npm run verify`/`npm run build` er fortsatt OBLIGATORISK før commit, se `verify-og-commit`-skillen —
+dette handler kun om HVORDAN output håndteres, ikke om å hoppe over steg):
+1. **Redirect langkjørende kommandoer til fil, les kun halen/grep.** `npm run build` lister alle ~449
+   ruter og `npm ci` logger hver pakke — la det gå til en loggfil
+   (`npm run build > /tmp/.../build.log 2>&1; tail -60 build.log`) i stedet for å la det strømme rått
+   inn i samtalen. Feilsøk med `grep -n "error\|Error" build.log` fremfor å lese hele loggen.
+2. **Store dokumenter (`docs/ak-master.md`, `CLAUDE.md`, denne fila) leses med Grep eller
+   Read+offset/limit** når du bare trenger én seksjon — ikke hele filen på nytt for hvert oppslag.
+3. **Ikke les en fil rett etter egen Edit/Write «for å verifisere»** med mindre korrekthet faktisk
+   avhenger av eksakt formatering (YAML-frontmatter i skills, JSON). Edit/Write-verktøyet bekrefter
+   allerede at endringen gikk gjennom — stol på det for vanlig prosa.
+4. **Lang, tema-hoppende økt:** foreslå ny økt/`/clear` fremfor å fortsette — hele historikken betales
+   på nytt for hver melding i en lang økt. Modell-/effort-valg for selve arbeidet: se
+   `prompt-engineer`-skillen §Claude-flåten i detalj og `agenticos`-skillen §Claude Code —
+   arbeidsdisiplin (ikke duplisert her).
+5. **PR-babysitting med `subscribe_pr_activity`: batch pushene selv når du aktivt retter feil.**
+   Observert 06.08.2026 (samme økt som satte opp denne fila): fem uavhengige, ikke-relaterte
+   endringer ble pushet hver for seg i stedet for samlet — CLAUDE.md §Arbeidsregler sier allerede
+   «committ ofte, push samlet», men regelen brytes lettere i babysitting-modus fordi hver push gir
+   en umiddelbar CI-bekreftelse. Push individuelt KUN når du faktisk trenger å isolere om nettopp
+   DEN endringen fikser en rød CI-sjekk — batch alt annet (dokumentasjon, oppfølgingsspørsmål,
+   ikke-relaterte tillegg) til én push. Hver push utløser to Vercel-webhook-leveranser
+   (Building→Ignored/Ready) i tillegg til selve CI-kjøringen, uansett om builden faktisk kjører.
+
+**Mistenkt, IKKE verifisert (06.08.2026):** samme bloat-mønster som `actions_list`/`actions_get`
+(full repo-metadata per rad, `minimal_output` uten målbar effekt) kan gjelde flere GitHub MCP-lister
+— `list_pull_requests`, `list_commits`, `search_code`, `list_issues` er ikke testet i denne økten.
+Ikke skriv dette om til fasit før noen faktisk har sammenlignet payload-størrelsen med/uten
+`minimal_output` på en av dem — første økt som bruker et av disse kallene bør verifisere og oppdatere
+denne linjen til en bekreftet regel (eller fjerne mistanken hvis den ikke stemmer).
+
 ### PRODUKSJONSINCIDENT 05.08.2026: `db.<ref>.supabase.co` er IPv6-only — Vercel når den aldri
 - **Symptom:** prod nede siden ca. 11.07 (394 brukere rammet), forverret til total sirkelbryter-
   blokkering 05.08. Feilloggen viste `Authentication failed`/P1000 — så ut som feil passord.

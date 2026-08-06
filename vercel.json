@@ -1,5 +1,6 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
+  "ignoreCommand": "git diff --quiet HEAD^ HEAD -- ':!*.md' ':!docs/' ':!.claude/' ':!designsystem/' ':!kart/'",
   "crons": [
     {
       "path": "/api/cron/plan-watcher",

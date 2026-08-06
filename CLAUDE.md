@@ -73,10 +73,22 @@ avviklet designprosjekt. Ligger i git-historikken.)
 - **Next.js 16.2.6** (App Router, Turbopack, TS strict) + **React 19.2.4** + Vercel. Node 24 i CI.
 - **Prisma 7.8** + `@prisma/adapter-pg` + **Supabase** Postgres (RLS) — Supabase Auth (Google + e-post/passord).
 - **Tailwind CSS v4** (CSS-first `@theme`, ingen config-fil) — uttrykk via `src/app/globals.css`.
-- **Fonter:** Paper-fasiten er **Poppins** (UI/titler) + **Lora** (prosa/AI-svar) + **IBM Plex Mono** (tall) —
-  alle lastet i `src/app/layout.tsx` og eksponert som `--p-font-*`. Koden bruker per nå fortsatt
-  Inter / Familjen Grotesk / JetBrains Mono: **fontbyttet er ikke gjennomført** og står som åpent punkt
-  i porten. Bygg nytt mot Paper-fasiten. **Inter Tight er fjernet** — ikke gjeninnfør.
+- **Fonter (verifisert mot kode 2026-08-06 — dette avløser tidligere «fontbyttet er ikke gjennomført»):**
+  Paper-fasiten er **Poppins** (UI/titler) + **Lora** (prosa/AI-svar) + **IBM Plex Mono** (tall). Alle tre
+  lastes i `src/app/layout.tsx` og eksponeres som `--font-poppins`/`--font-lora`/`--font-ibm-plex-mono`,
+  videre som `--p-font-sans`/`--p-font-serif`/`--p-font-mono` i `src/styles/paper-tokens.css`.
+  **Byttet er gjort i de globale tokenene** (`src/app/globals.css`): `--font-sans`/`--font-display` →
+  Poppins, `--font-mono` → IBM Plex Mono (kommentert i koden som gjort 2026-08-06).
+  **Byttet er IKKE fullført i alle scoped stylesheets** — disse hardkoder fortsatt gamle fonter direkte
+  i stedet for å lese `--font-sans`/`--font-display`/`--font-mono`: `src/styles/golfdata-tokens.css`,
+  `src/components/hubs/hubs.css`, `src/components/planlegge-v2/styles.css`,
+  `src/components/teknisk-plan/*.css`, `src/components/onboarding/onboarding.css`, samt inline
+  `fontFamily`-styling i bl.a. `admin-hero.tsx`, `player-hero.tsx`, `cookie-banner.tsx`,
+  `onboard/klubb/klubb-wizard.tsx`, `onboard/coach/coach-wizard.tsx`. Den eldre `--font-ui`-tokenen
+  (fortsatt Inter) brukes fortsatt bredt i `golfdata/`- og `workbench-hybrid/`-komponenter.
+  Åpent punkt i porten: migrer disse til de nye tokenene skjerm for skjerm, ikke i én stor commit.
+  **Inter Tight er fjernet** — ikke gjeninnfør. Bygg nytt mot Paper-fasiten (dvs. de globale tokenene,
+  aldri `--font-familjen-grotesk`/`--font-jetbrains-mono`/`--font-inter` direkte i ny kode).
 - **Lucide React** — eneste ikon-bibliotek. **npm** — pakkebehandler.
 - **Serwist 9** (`@serwist/next` + `@serwist/cli`) — PWA/offline. SW bygges av et eget `serwist build`-steg
   ETTER `next build` (se `serwist.config.mjs` + gotchas: Turbopack kjører aldri webpack-pluginen).
@@ -158,6 +170,13 @@ tests/e2e/          # Én samlet e2e-suite (32 specs, siden 2026-08-03): a11y, P
    parallelle token-systemer; vent på Open Design.
 6. **Følg gotchas-listen** (`.claude/rules/gotchas.md`) — Prisma 7 driver adapter, `pg.Pool`, zod ved
    API-grenser, Oslo-tid via `uke-helpers.ts`, `proxy.ts` ikke `middleware.ts`.
+7. **Feillogg (ny praksis 2026-08-06):** kostet noe i økten ekstra tid (feilslått antagelse, gjentatt feil,
+   fasit-avvik) — legg én linje i `docs/feillogg.md` (format øverst i filen), lagt inn av `/pr` ved behov.
+   Ingen feil i økten: ikke rør filen. Formålet er å finne mønstre over tid, ikke logge hver økt.
+8. **Token-økonomi (2026-08-06):** se `.claude/rules/gotchas.md` §Token-økonomi — korte versjon: aldri
+   la lange kommandoer (build/test/`npm ci`) strømme rått inn i samtalen (redirect til fil, tail/grep),
+   grep i store dokumenter fremfor å lese dem hele, stol på PR-webhooks fremfor å polle GitHub Actions.
+   Senker ALDRI kvalitetsgaten (`npm run verify` er fortsatt obligatorisk) — kun hvordan output håndteres.
 
 ## Verifikasjons-pipeline
 ```bash
