@@ -135,8 +135,8 @@ function SvarBoks({ onSend, placeholder }: { onSend: () => void; placeholder?: s
         onClick={onSend}
         className="v2-press v2-focus"
         style={{
-          height: 34, display: "inline-flex", alignItems: "center", gap: 6, borderRadius: 9, background: T.lime,
-          padding: "0 13px", fontFamily: T.disp, fontSize: 12, fontWeight: 700, color: T.onLime, border: "none", cursor: "pointer",
+          height: 34, display: "inline-flex", alignItems: "center", gap: 6, borderRadius: 9, background: T.handling,
+          padding: "0 13px", fontFamily: T.disp, fontSize: 12, fontWeight: 700, color: T.onHandling, border: "none", cursor: "pointer",
         }}
       >
         <Icon name="send" size={13} /> Send
@@ -155,9 +155,9 @@ function ActBtn({ icon, label, onClick, primary }: { icon: string; label: string
       style={{
         height: 28, display: "inline-flex", alignItems: "center", gap: 6, borderRadius: 8,
         padding: "0 10px", fontFamily: T.mono, fontSize: 9.5, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.05em",
-        color: primary ? T.onLime : T.fg2,
-        background: primary ? T.lime : "transparent",
-        border: `1px solid ${primary ? T.lime : T.borderS}`,
+        color: primary ? T.onHandling : T.fg2,
+        background: primary ? T.handling : "transparent",
+        border: `1px solid ${primary ? T.handling : T.borderS}`,
         cursor: "pointer",
       }}
     >
@@ -247,7 +247,7 @@ export function AgencyLiveV2({ coachFirstName = "Anders" }: { coachFirstName?: s
   const imsg = fMessages.filter((m) => m.channel === "imessage");
 
   return (
-    <>
+    <div data-paper-agencyos-live-session style={{ maxWidth: 1200, margin: "0 auto", width: "100%" }}>
       {/* DEMO-banner */}
       <Kort pad="10px 16px" style={{ borderColor: `color-mix(in srgb, ${T.warn} 35%, ${T.border})`, background: `color-mix(in srgb, ${T.warn} 8%, ${T.panel})` }}>
         <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
@@ -592,7 +592,7 @@ export function AgencyLiveV2({ coachFirstName = "Anders" }: { coachFirstName?: s
           <Icon name="check" size={15} strokeWidth={2.4} /> {toast}
         </div>
       )}
-    </>
+    </div>
   );
 }
 
