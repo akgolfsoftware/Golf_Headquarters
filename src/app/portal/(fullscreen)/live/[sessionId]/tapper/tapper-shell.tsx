@@ -161,8 +161,7 @@ export function TapperShell({ sessionId, facilityLabel, defaultClubs, coachPanel
       className="fixed inset-0 grid grid-rows-[56px_1fr_auto] overflow-hidden text-white"
       style={{
         paddingTop: "env(safe-area-inset-top)",
-        // Paper live-tapper: mørk flate (rail-blekk) — ikke lime-tema
-        background: T.ink,
+        background: T.farge.inkMerke,
       }}
     >
       {/* Radial accent */}
