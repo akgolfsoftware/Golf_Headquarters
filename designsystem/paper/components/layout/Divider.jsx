@@ -14,8 +14,8 @@ ensureCss("akhq-css-divider", `
 .akhq-div--v{width:1px;height:auto;align-self:stretch;margin:0 var(--s3)}
 }
 `);
-/* En skillelinje er ikke dekor — den er en påstand om at to ting hører til
-   ulike grupper. Har du ikke den påstanden, bruk avstand i stedet. */
+/* En skillelinje er ikke dekor \u2014 den er en p\u00e5stand om at to ting h\u00f8rer til
+   ulike grupper. Har du ikke den p\u00e5standen, bruk avstand i stedet. */
 export function Divider({ label, align = "center", spacing = "normal", vertical = false, dataOdId = "divider", ...rest }) {
   if (label) {
     return <div className={"akhq-div-lab" + (align === "start" ? " akhq-div-lab--start" : "")} data-od-id={dataOdId} {...rest}>{label}</div>;

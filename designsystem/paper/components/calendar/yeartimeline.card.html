@@ -1,0 +1,64 @@
+<!-- @dsCard group="Kalender" viewport="980x1500" name="YearTimeline" subtitle="Årshjul aug–jul i 860 og 340 px × begge moduser: tre hendelsestyper, nå-måned, alle datatilstander. Høyde målt 03.08 (+10 %)" -->
+<!DOCTYPE html><html lang="nb"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="stylesheet" href="../../styles.css"><link rel="stylesheet" href="../../guidelines/card-support.css">
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="../../_ds_bundle.js"></script>
+<style>.stack{display:grid;grid-template-columns:1fr;min-height:100vh}.stack>div{padding:var(--s5);background:var(--bg);color:var(--fg)}.lab{font-family:var(--mono);font-size:9.5px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:14px 0 6px}.cw{box-sizing:content-box;border:1px dashed var(--border);border-radius:var(--r);padding:var(--s4)}.w860{width:860px;max-width:100%}.w340{width:340px}.assert{font-family:var(--mono);font-size:10px;color:var(--muted);line-height:1.5;white-space:pre-wrap}.ok{color:var(--up)}.bad{color:var(--dn)}</style>
+</head>
+<body><div class="stack"><div id="light"></div><div data-theme="dark" id="dark"></div></div>
+<script type="text/babel">
+const { YearTimeline } = window.AKGolfHQClaudePaper_605a48;
+const SESONG = [
+  { label: "aug", events: [{ type: "test", label: "NGF-test" }] },
+  { label: "sep", events: [{ type: "samling", label: "Samling GFGK" }] },
+  { label: "okt", events: [] },
+  { label: "nov", events: [{ type: "test", label: "TPI-screening" }] },
+  { label: "des", events: [] },
+  { label: "jan", events: [{ type: "samling", label: "Vintersamling" }] },
+  { label: "feb", events: [] },
+  { label: "mar", events: [{ type: "test", label: "NGF-test" }] },
+  { label: "apr", events: [{ type: "samling", label: "Utesamling" }] },
+  { label: "mai", events: [{ type: "turn", label: "Srixon #1" }, { type: "turn", label: "Srixon #2" }] },
+  { label: "jun", events: [{ type: "turn", label: "NM junior" }] },
+  { label: "jul", events: [{ type: "turn", label: "Srixon #4" }, { type: "turn", label: "Lag-NM" }] },
+];
+function Specimen() {
+  return (<>
+    <div className="lab">860 px — WANG-sesongen aug–jul, nå = august (innrammet)</div>
+    <div className="cw w860"><YearTimeline months={SESONG} nowIndex={0} dataOdId="ytl-bred" /></div>
+    <div className="lab">340 px — under 360-terskelen: fire kolonner</div>
+    <div className="cw w340"><YearTimeline months={SESONG} nowIndex={0} showLegend={false} dataOdId="ytl-smal" /></div>
+    <div className="lab">tom · laster · feil</div>
+    <div className="cw w860">
+      <YearTimeline months={[]} state="empty" dataOdId="ytl-tom" />
+      <div style={{height:12}} />
+      <YearTimeline months={[]} state="loading" dataOdId="ytl-laster" />
+      <div style={{height:12}} />
+      <YearTimeline months={[]} state="error" dataOdId="ytl-feil" />
+    </div>
+  </>);
+}
+ReactDOM.createRoot(document.getElementById("light")).render(<Specimen />);
+ReactDOM.createRoot(document.getElementById("dark")).render(<Specimen />);
+/* ASSERTIONER — verifikatør skal se dem feile først: sett nowIndex til 5
+   (ramme-testen rød) eller send fire hendelser i én måned (maks-testen). */
+window.requestAnimationFrame(() => setTimeout(() => {
+  const res = []; const push = (ok, t) => res.push((ok ? "✓ " : "✗ ") + t);
+  const LYS = document.getElementById("light");
+  const b = LYS.querySelector('[data-od-id="panel-ytl-bred"]');
+  push(!!b && b.querySelectorAll(".akhq-ytl-mnd").length === 12, "tolv måneder");
+  const naa = b && b.querySelector(".akhq-ytl-naa .akhq-ytl-mlab");
+  push(!!naa && naa.textContent === "aug", "nå-måneden (aug) er innrammet");
+  const turn = b && b.querySelector(".akhq-ytl-ev--turn .akhq-ytl-prikk");
+  const test = b && b.querySelector(".akhq-ytl-ev--test .akhq-ytl-prikk");
+  push(!!turn && !!test && getComputedStyle(turn).backgroundColor !== getComputedStyle(test).backgroundColor, "turnering og test har ulik tone");
+  push(!!b && /NM junior/.test(b.getAttribute("aria-label") || ""), "sammendraget bærer hendelsene");
+  push(!!b && b.querySelectorAll("button,a[href]").length === 0, "ren visning");
+  push(!!LYS.querySelector(".akhq-empty") && !!LYS.querySelector(".akhq-skel") && !!LYS.querySelector(".akhq-error"), "tom/laster/feil rendrer Region-tilstandene");
+  const ut = document.createElement("div"); ut.className = "assert";
+  ut.innerHTML = res.map((r) => '<div class="' + (r[0] === "✓" ? "ok" : "bad") + '">' + r + "</div>").join("");
+  LYS.appendChild(ut);
+  window.__assert = res;
+}, 90));
+</script></body></html>

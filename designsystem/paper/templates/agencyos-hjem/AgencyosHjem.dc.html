@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<!-- @template name="AgencyOS · Hjem" description="Samtale som standardflate: dispatch som første melding, «Én ting nå» øverst, KPI-rad, «trenger deg», og komponist + statuslinje som del av skallet." -->
+<helmet><script src="./ds-base.js"></script><style>html,body{margin:0;padding:0}body{background:var(--bg)}a{color:var(--fg)}a:hover{color:var(--accent-fg)}[data-rsp=rail]{display:flex;flex:none}[data-rsp=tab]{display:none}[data-rsp=col2]{grid-template-columns:minmax(0,1.35fr) minmax(0,1fr)}@media(max-width:1080px){[data-rsp=col2]{grid-template-columns:minmax(0,1fr)}}@media(max-width:880px){[data-rsp=rail]{display:none}[data-rsp=pad]{padding:16px 14px 20px}[data-rsp=tab]{display:block}[data-rsp=sbar]{display:none}}</style></helmet>
+<div style="display:flex;min-height:100vh;background:var(--bg);color:var(--fg);font-family:var(--ui);font-size:13.5px;-webkit-font-smoothing:antialiased">
+<div data-rsp="rail"><x-import component-from-global-scope="AKGolfHQClaudePaper_605a48.Rail" items="{{ railItems }}" current="{{ nav }}" onNavigate="{{ go }}" initials="AK" hint-size="64px,100vh"></x-import></div>
+<div style="flex:1;min-width:0;display:flex;flex-direction:column">
+<x-import component-from-global-scope="AKGolfHQClaudePaper_605a48.Topbar" theme="{{ theme }}" onToggleTheme="{{ toggleTheme }}" searchPlaceholder="Søk i stall og økter" hint-size="100%,56px"></x-import>
+<main data-rsp="pad" style="flex:1;padding:24px 28px 28px;display:flex;flex-direction:column;gap:14px;max-width:1240px;width:100%;box-sizing:border-box">
+<x-import component-from-global-scope="AKGolfHQClaudePaper_605a48.PageHeader" kicker="Onsdag 30. juli · uke 31 · P3 SPESIALISERING" title="God morgen, Anders" lead="Tre ting taper på å vente i dag. Resten er foreslått og venter på at du sier ja." meta="Dispatch kjørt 04:02" actions="{{ headerActions }}" dataOdId="page-header" hint-size="100%,120px"></x-import>
+<x-import component-from-global-scope="AKGolfHQClaudePaper_605a48.OneThingNow" label="Én ting nå" title="Godkjenn ukeplan for Emma Sæther" actions="{{ nowActions }}" dataOdId="one-thing-now" hint-size="100%,150px">Økt 1 er i morgen 07:00. Plan-vakten foreslo den 04:02, invariantene er grønne, og planen publiseres til PlayerHQ når du sier ja.</x-import>
+<x-import component-from-global-scope="AKGolfHQClaudePaper_605a48.KpiStripe" items="{{ kpis }}" state="{{ dataState }}" emptyText="Ingen nøkkeltall registrert denne uken ennå." dataOdId="kpi-stripe" hint-size="100%,110px"></x-import>
+<div data-rsp="col2" style="display:grid;gap:14px;align-items:start">
+<x-import component-from-global-scope="AKGolfHQClaudePaper_605a48.Panel" title="Dispatch · morgenbrief" titleLevel="{{ h3 }}" action="{{ koAction }}" footnote="Dispatch er første melding i samtalen, ikke en fane. Spør videre i feltet nederst." dataOdId="panel-dispatch" hint-size="100%,300px">
+<x-import component-from-global-scope="AKGolfHQClaudePaper_605a48.AiRecap" who="Dispatch" analysis="{{ true }}" deltas="{{ recapDeltas }}" state="{{ dataState }}" emptyText="Ikke nok data fra denne uken til en oppsummering." hint-size="100%,200px">Tre ting taper på å vente. WANG-fakturaen er 12 dager over forfall — Faktura-vakten har purring nummer to klar. Emmas ukeplan må godkjennes før 07:00 i morgen. Markus har lagt inn to øktforespørsler for junior, hvorav én kolliderer med gruppetimen torsdag.</x-import>
+</x-import>
+<div style="display:flex;flex-direction:column;gap:14px;min-width:0">
+<x-import component-from-global-scope="AKGolfHQClaudePaper_605a48.Panel" title="Trenger deg" titleLevel="{{ h3 }}" action="{{ stallAction }}" flush="{{ true }}" dataOdId="panel-trenger-deg" hint-size="100%,260px">
+<x-import component-from-global-scope="AKGolfHQClaudePaper_605a48.ListGroup" as="div" dataOdId="list-trenger" hint-size="100%,220px">
+<sc-for list="{{ trenger }}" as="p" hint-placeholder-count="4">
+<x-import component-from-global-scope="AKGolfHQClaudePaper_605a48.ListRow" as="div" leading="avatar" avatar="{{ p.avatar }}" title="{{ p.name }}" meta="{{ p.note }}" trailing="chevron" href="#" dataOdId="row-trenger" hint-size="100%,56px"></x-import>
+</sc-for>
+</x-import>
+</x-import>
+<x-import component-from-global-scope="AKGolfHQClaudePaper_605a48.Panel" title="Nå og neste" titleLevel="{{ h3 }}" action="{{ ukeAction }}" dataOdId="panel-naa" hint-size="100%,200px">
+<x-import component-from-global-scope="AKGolfHQClaudePaper_605a48.NowNext" now="{{ nowBlock }}" next="{{ nextBlock }}" state="{{ dataState }}" emptyText="Ingen økter satt opp i dag." hint-size="100%,150px"></x-import>
+</x-import>
+</div>
+</div>
+</main>
+<x-import component-from-global-scope="AKGolfHQClaudePaper_605a48.Composer" context="{{ kontekst }}" onContextToggle="{{ toggleCtx }}" onSubmit="{{ spor }}" placeholder="Spør om en spiller, en uke eller et tall …" hint-size="100%,72px"></x-import>
+<div data-rsp="sbar"><x-import component-from-global-scope="AKGolfHQClaudePaper_605a48.StatusBar" items="{{ statusPunkter }}" hint-size="100%,26px"></x-import></div>
+<div data-rsp="tab"><x-import component-from-global-scope="AKGolfHQClaudePaper_605a48.TabBar" items="{{ tabItems }}" current="{{ tab }}" onNavigate="{{ setTab }}" hint-size="100%,56px"></x-import></div>
+</div>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280,&quot;height&quot;:860},&quot;dataState&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;content&quot;,&quot;loading&quot;,&quot;empty&quot;,&quot;error&quot;],&quot;default&quot;:&quot;content&quot;,&quot;tsType&quot;:&quot;\&quot;content\&quot; | \&quot;loading\&quot; | \&quot;empty\&quot; | \&quot;error\&quot;&quot;,&quot;section&quot;:&quot;Demo&quot;},&quot;initialTheme&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;light&quot;,&quot;dark&quot;],&quot;default&quot;:&quot;light&quot;,&quot;tsType&quot;:&quot;\&quot;light\&quot; | \&quot;dark\&quot;&quot;,&quot;section&quot;:&quot;Tema&quot;}}">
+class Component extends DCLogic {
+  state = { theme: "light", nav: "hjem", tab: "hjem", ctx: {} };
+
+  componentDidMount() {
+    let t = null;
+    try { t = localStorage.getItem("akhq-theme-agencyos"); } catch (e) {}
+    this.applyTheme(t || this.props.initialTheme || "light", false);
+    this.waitNs(0);
+  }
+
+  waitNs(n) {
+    const ns = window.AKGolfHQClaudePaper_605a48;
+    if (ns && ns.RailIcons && ns.Composer) { this.forceUpdate(); return; }
+    if (n < 60) setTimeout(() => this.waitNs(n + 1), 100);
+  }
+
+  applyTheme(t, persist) {
+    const v = t === "dark" ? "dark" : "light";
+    document.documentElement.setAttribute("data-theme", v);
+    if (persist) { try { localStorage.setItem("akhq-theme-agencyos", v); } catch (e) {} }
+    this.setState({ theme: v });
+  }
+
+  renderVals() {
+    const ns = window.AKGolfHQClaudePaper_605a48 || {};
+    const I = ns.RailIcons || {};
+    const B = ns.Button;
+    const lenke = (id, tekst) => B ? React.createElement(B, { variant: "ghost", size: "sm", dataOdId: "cta-" + id }, tekst) : null;
+    /* Oransjemonopolet: skjermens ENE oransje jobb er OneThingNow-knappen.
+       Alt annet på Hjem er blekk eller ghost. */
+    const nowActions = B ? [
+      React.createElement(B, { key: "a", variant: "ghost", size: "sm", dataOdId: "cta-now-hvorfor" }, "Hvorfor?"),
+      React.createElement(B, { key: "b", variant: "ghost", size: "sm", dataOdId: "cta-now-utsett" }, "Utsett"),
+      React.createElement(B, { key: "c", variant: "primary", size: "sm", dataOdId: "cta-now-godkjenn" }, "Godkjenn")
+    ] : null;
+    return {
+      theme: this.state.theme,
+      nav: this.state.nav,
+      tab: this.state.tab,
+      h3: 3,
+      dataState: this.props.dataState || "content",
+      toggleTheme: () => this.applyTheme(this.state.theme === "dark" ? "light" : "dark", true),
+      go: (id) => this.setState({ nav: id }),
+      setTab: (id) => this.setState({ tab: id }),
+      spor: () => {},
+      toggleCtx: (id) => this.setState((s) => ({ ctx: Object.assign({}, s.ctx, { [id]: !s.ctx[id] }) })),
+      kontekst: [
+        { id: "idag", label: "i dag", active: !!this.state.ctx.idag },
+        { id: "stall", label: "stallen", active: !!this.state.ctx.stall },
+        { id: "u31", label: "uke 31", active: !!this.state.ctx.u31 }
+      ],
+      headerActions: lenke("ny-okt", "Ny økt"),
+      koAction: lenke("ko", "Åpne køen"),
+      stallAction: lenke("stall", "Hele stallen"),
+      ukeAction: lenke("kalender", "Kalender"),
+      nowActions: nowActions,
+      railItems: [
+        { id: "hjem", label: "Hjem", icon: I.hjem },
+        { id: "ko", label: "Kø", icon: I.ko },
+        { id: "stall", label: "Stall", icon: I.stall },
+        { id: "kalender", label: "Kalender", icon: I.idag },
+        { id: "plan", label: "Workbench", icon: I.plan },
+        { id: "alt", label: "Alt", icon: I.analyse }
+      ],
+      tabItems: [
+        { id: "hjem", label: "Hjem", icon: I.hjem },
+        { id: "ko", label: "Kø", icon: I.ko },
+        { id: "stall", label: "Stall", icon: I.stall },
+        { id: "ai", label: "Agenter", icon: I.ai },
+        { id: "alt", label: "Alt", icon: I.analyse }
+      ],
+      statusPunkter: [
+        { label: "v2.4 · P3 SPES" },
+        { label: "agentfeil", value: 1, tone: "dn", onClick: () => {} },
+        { label: "MRR", value: "184 200", onClick: () => {} },
+        { label: "innsikter", value: 6, onClick: () => {} },
+        { label: "CANON", value: "✓", tone: "up" }
+      ],
+      kpis: [
+        { label: "I kø", value: 7, decimals: 0, window: "sju saker", delta: 2, deltaBasis: "mot i går" },
+        { label: "MRR konsern", value: 184200, decimals: 0, unit: "kr", window: "juli", delta: 3.1, deltaBasis: "%" },
+        { label: "Økter denne uken", value: 23, decimals: 0, window: "av 25 planlagt", delta: -2, deltaBasis: "mot plan" },
+        { label: "Agentfeil", value: 1, decimals: 0, window: "Faktura-vakten 04:12" }
+      ],
+      recapDeltas: [
+        { value: 3.1, unit: "%", basis: "MRR mot juni", decimals: 1 },
+        { value: -2, unit: "økter", basis: "mot ukeplan", decimals: 0 },
+        { value: 12, unit: "dager", basis: "eldste forfall", decimals: 0 }
+      ],
+      trenger: [
+        { name: "Emma Sæther", avatar: { name: "Emma Sæther" }, note: "ukeplan venter godkjenning · 9 dager siden sist økt" },
+        { name: "Jonas Hveem", avatar: { name: "Jonas Hveem" }, note: "testresultat ulest · lastavvik +1,5 t mot plan" },
+        { name: "Mia Berg", avatar: { name: "Mia Berg" }, note: "samtykke utløper 14. august · 2 åpne LIFE-koder" },
+        { name: "Sofie Lund", avatar: { name: "Sofie Lund" }, note: "politiattest mangler · kan ikke settes på økter" }
+      ],
+      nowBlock: { title: "Gruppetime junior · Mulligan sim 2", meta: "11:00–12:30 · 9 av 11 møtt", progress: 0.42 },
+      nextBlock: { title: "Jonas Hveem · TrackMan-test", meta: "13:00 · protokoll 1–20" }
+    };
+  }
+}
+
+</script>
+</body>
+</html>

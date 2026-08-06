@@ -1,0 +1,63 @@
+<!-- @dsCard group="Kalender" viewport="980x1450" name="Periodeplan" subtitle="Sesongbåndet i 860 og 430 px × begge moduser: valgt periode, nå-markør, lesevariant, alle datatilstander. Høyde målt 03.08 (+10 %)" -->
+<!DOCTYPE html><html lang="nb"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="stylesheet" href="../../styles.css"><link rel="stylesheet" href="../../guidelines/card-support.css">
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="../../_ds_bundle.js"></script>
+<style>.stack{display:grid;grid-template-columns:1fr;min-height:100vh}.stack>div{padding:var(--s5);background:var(--bg);color:var(--fg)}.lab{font-family:var(--mono);font-size:9.5px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:14px 0 6px}.cw{box-sizing:content-box;border:1px dashed var(--border);border-radius:var(--r);padding:var(--s4)}.w860{width:860px;max-width:100%}.w430{width:430px}.assert{font-family:var(--mono);font-size:10px;color:var(--muted);line-height:1.5;white-space:pre-wrap}.ok{color:var(--up)}.bad{color:var(--dn)}</style>
+</head>
+<body><div class="stack"><div id="light"></div><div data-theme="dark" id="dark"></div></div>
+<script type="text/babel">
+const { Periodeplan } = window.AKGolfHQClaudePaper_605a48;
+const SESONG = [
+  { id: "grunn-host", type: "GRUNN", label: "Grunnperiode", weeks: 16 },
+  { id: "spes-host", type: "SPES", label: "Spesialisering", weeks: 18 },
+  { id: "turn-var", type: "TURN", label: "Turnering", weeks: 10 },
+];
+function Specimen() {
+  const [valgt, setValgt] = React.useState("spes-host");
+  return (<>
+    <div className="lab">860 px — WANG-sesongen 44 uker, nå-markør i uke 32, Spesialisering valgt</div>
+    <div className="cw w860"><Periodeplan periods={SESONG} selected={valgt} onSelectPeriod={setValgt} nowPct={22} nowLabel="uke 32" startLabel="aug 2026" endLabel="jul 2027" dataOdId="pp-bred" /></div>
+    <div className="lab">430 px — under 480-terskelen: ukene skjult, typelabelen står</div>
+    <div className="cw w430"><Periodeplan periods={SESONG} nowPct={22} nowLabel="uke 32" onSelectPeriod={setValgt} dataOdId="pp-smal" /></div>
+    <div className="lab">lesevariant (uten onSelectPeriod — ingen knapper) · tom · laster · feil</div>
+    <div className="cw w860">
+      <Periodeplan periods={SESONG} nowPct={22} nowLabel="uke 32" dataOdId="pp-lese" />
+      <div style={{height:12}} />
+      <Periodeplan periods={[]} state="empty" dataOdId="pp-tom" />
+      <div style={{height:12}} />
+      <Periodeplan periods={[]} state="loading" dataOdId="pp-laster" />
+      <div style={{height:12}} />
+      <Periodeplan periods={[]} state="error" dataOdId="pp-feil" />
+    </div>
+  </>);
+}
+ReactDOM.createRoot(document.getElementById("light")).render(<Specimen />);
+ReactDOM.createRoot(document.getElementById("dark")).render(<Specimen />);
+/* ASSERTIONER — verifikatør skal se dem feile først: sett flexGrow til 1 for
+   alle (breddetesten rød), eller gi lesevarianten en onSelectPeriod. */
+window.requestAnimationFrame(() => setTimeout(() => {
+  const res = []; const push = (ok, t) => res.push((ok ? "✓ " : "✗ ") + t);
+  const LYS = document.getElementById("light");
+  const bred = LYS.querySelector('[data-od-id="panel-pp-bred"]');
+  const blokker = bred ? [...bred.querySelectorAll(".akhq-perpl-blk")] : [];
+  push(blokker.length === 3, "tre perioder");
+  push(blokker.length === 3 && blokker[1].getBoundingClientRect().width > blokker[2].getBoundingClientRect().width, "18 uker er bredere enn 10 — bredden bærer tid");
+  push(blokker.every((b) => b.tagName === "BUTTON"), "med onSelectPeriod er blokkene knapper");
+  const valgt = bred && bred.querySelector(".akhq-perpl-blk--valgt");
+  push(!!valgt && /Spesialisering/.test(valgt.textContent), "valgt periode er innrammet");
+  push(!!(bred && bred.querySelector(".akhq-perpl-naa")), "nå-markøren finnes");
+  const band = bred && bred.querySelector(".akhq-perpl-band");
+  push(!!band && /uke 32/.test(band.getAttribute("aria-label") || ""), "båndet har tekstlig sammendrag med nå-uke");
+  const lese = LYS.querySelector('[data-od-id="panel-pp-lese"]');
+  push(!!lese && lese.querySelectorAll("button").length === 0, "lesevariant har ingen knapper");
+  const smal = LYS.querySelector('[data-od-id="panel-pp-smal"] .akhq-perpl-uker');
+  push(!!smal && getComputedStyle(smal).display === "none", "430 px → ukene er skjult (terskel 480)");
+  push(blokker.every((b) => !/217, ?119, ?87/.test(getComputedStyle(b).borderTopColor)), "ingen periode er oransje");
+  const ut = document.createElement("div"); ut.className = "assert";
+  ut.innerHTML = res.map((r) => '<div class="' + (r[0] === "✓" ? "ok" : "bad") + '">' + r + "</div>").join("");
+  LYS.appendChild(ut);
+  window.__assert = res;
+}, 90));
+</script></body></html>

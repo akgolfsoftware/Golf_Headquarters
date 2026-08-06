@@ -1,0 +1,146 @@
+/* ─────────────────────────────────────────────────────────────
+   AK Golf HQ · token-baseline · Claude Paper (Anthropic-tro)
+   Én kilde for alle skjermer. Kopieres verbatim inn i hver fil.
+   Endres en verdi her, endres den i alle skjermer.
+   v2 · 28.07.2026: + logo-tokens (se logo/ak-golf-logo-bruk.md),
+   + --r-pill (beslutning 28.07), + body-størrelser dokumentert.
+
+   Palett:  #141413 ink · #FAF9F5 paper · #B0AEA5 mid · #E8E6DC light
+   Aksent:  #D97757 oransje · #6A9BCC blå · #788C5D grønn
+   Type:    Poppins (heading + UI) · Lora (prosa) · IBM Plex Mono (data)
+
+   Regler som ikke brytes:
+   1. Oransje har monopol på «Én ting nå» og focus. Aldri dekor.
+   2. --mid brukes aldri til tekst i lys modus (2,3:1 mot paper — under AA).
+   3. Rå brand-verdier (--up-raw, --info-raw) kun til grafikk/fyll.
+      Tekst og ikoner bruker de mørknede variantene.
+   4. Ingen rød i paletten. Negativ/attention = --dn (leire).
+
+   Body-størrelse (beslutning 28.07.2026, ikke tokens):
+   AgencyOS (desktop) 13.5px · PlayerHQ (mobil) 14px.
+   ───────────────────────────────────────────────────────────── */
+
+:root {
+  /* Flater */
+  --bg: #FAF9F5;
+  --surface: #FFFFFF;
+  --soft: #F0EEE6;
+  --border: #E8E6DC;
+
+  /* Tekst */
+  --fg: #141413;
+  --muted: #5F5B53;
+  --mid: #B0AEA5;             /* brand mid gray — kun grafikk i lys modus */
+
+  /* Navigasjonsskinne */
+  --rail: #141413;
+  --rail-fg: #B0AEA5;
+  --rail-on: #FAF9F5;
+
+  /* Handling */
+  --cta: #141413;
+  --on-cta: #FAF9F5;
+  --accent: #D97757;          /* brand-oransje — kun «Én ting nå» + focus */
+  --accent-soft: rgba(217, 119, 87, 0.12);
+  --accent-fg: #B85C3D;       /* oransje mørknet for AA-tekst */
+
+  /* Datasemantikk */
+  --up: #63784A;              /* brand-grønn mørknet for AA-tekst */
+  --up-raw: #788C5D;          /* brand-grønn rå — fyll, sparkline */
+  --dn: #A85536;              /* leire avledet av brand-oransjen */
+  --info: #46719F;            /* brand-blå mørknet for AA-tekst */
+  --info-raw: #6A9BCC;        /* brand-blå rå — fyll, sparkline */
+
+  /* Typografi */
+  --disp: "Poppins", Arial, system-ui, sans-serif;
+  --ui: "Poppins", Arial, system-ui, sans-serif;
+  --body: "Lora", Georgia, "Times New Roman", serif;
+  --mono: "IBM Plex Mono", ui-monospace, monospace;
+
+  /* Rom — 4px-basis */
+  --s1: 4px;
+  --s2: 8px;
+  --s3: 12px;
+  --s4: 16px;
+  --s5: 24px;
+  --s6: 32px;
+  --s7: 48px;
+  --s8: 64px;
+
+  /* Form */
+  --r: 8px;
+  --r-sm: 6px;
+  --r-pill: 999px;            /* chips, tags, dag-velgere, pille-CTA */
+  --shadow: 0 1px 0 rgba(20, 20, 19, 0.03), 0 18px 40px rgba(20, 20, 19, 0.05);
+
+  /* Interaksjon */
+  --focus: #D97757;
+  --ease: cubic-bezier(0.16, 1, 0.3, 1);
+  --dur: 160ms;
+
+  /* Logo — se logo/ak-golf-logo-bruk.md */
+  --logo-mark: #141413;
+  --logo-dot: #B85C3D;        /* accent-fg: rå #D97757 er 2,96:1 mot paper */
+
+  /* Lagdeling */
+  --z-sticky: 10;
+  --z-rail: 20;
+  --z-toast: 100;
+}
+
+html[data-theme="dark"] {
+  --bg: #141413;
+  --surface: #1D1C1A;
+  --soft: #26241F;
+  --border: rgba(250, 249, 245, 0.10);
+
+  --fg: #FAF9F5;
+  --muted: #B0AEA5;
+  --mid: #6B675E;
+
+  --rail: #0E0D0C;
+  --rail-fg: #97938A;
+  --rail-on: #FAF9F5;
+
+  --cta: #FAF9F5;
+  --on-cta: #141413;
+  --accent: #D97757;
+  --accent-soft: rgba(217, 119, 87, 0.18);
+  --accent-fg: #E5A184;
+
+  --up: #9DB284;
+  --up-raw: #788C5D;
+  --dn: #DE9E82;
+  --info: #93B7DC;
+  --info-raw: #6A9BCC;
+
+  --shadow: none;
+  --focus: #D97757;
+
+  --logo-mark: #FAF9F5;
+  --logo-dot: #D97757;
+}
+
+/* Navigasjonsskinnen er alltid mørk, uansett tema */
+.rail {
+  --logo-mark: #FAF9F5;
+  --logo-dot: #D97757;
+}
+
+/* Aksentflate — kun marketing og innlogging */
+.on-accent-surface {
+  --logo-mark: #141413;
+  --logo-dot: #141413;
+}
+
+/* Skriftimport — samme lenke i alle skjermer */
+/* <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Lora:ital,wght@0,400;0,500;1,400&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet"> */
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

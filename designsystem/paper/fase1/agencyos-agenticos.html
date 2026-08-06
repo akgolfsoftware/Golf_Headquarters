@@ -855,7 +855,7 @@ prompt: function(w){
        Derfor stammer, ikke ordgrenser.
        MERK: dette er demo. Ekte PII-deteksjon hører hjemme på serveren, ikke
        i et regulæruttrykk i en nettleser. */
-    promptPii = /(navn|f\u00f8dt|f\u00f8dsel|helse|forelder|foresatt|p\u00e5rørende|personnummer|adresse|samtykke|diagnose|\u00f8yvind|spiller)/i
+    promptPii = /(navn|født|fødsel|helse|forelder|foresatt|pårørende|personnummer|adresse|samtykke|diagnose|øyvind|spiller)/i
                   .test(promptInn);
     var m = promptPii ? MODELLER[1]
           : promptModell !== 'auto' ? MODELLER.filter(function(x){ return x.k === promptModell; })[0]

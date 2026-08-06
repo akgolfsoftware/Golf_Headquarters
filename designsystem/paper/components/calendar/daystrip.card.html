@@ -1,0 +1,65 @@
+<!-- @dsCard group="Kalender" viewport="980x890" name="DayStrip" subtitle="Dagvelgeren i 430 og 320 px × begge moduser: valgt, i dag, valgt+i dag, ramme-modifikator. Høyde målt 03.08 (+10 %)" -->
+<!DOCTYPE html><html lang="nb"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="stylesheet" href="../../styles.css"><link rel="stylesheet" href="../../guidelines/card-support.css">
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="../../_ds_bundle.js"></script>
+<style>.stack{display:grid;grid-template-columns:1fr;min-height:100vh}.stack>div{padding:var(--s5);background:var(--bg);color:var(--fg)}.lab{font-family:var(--mono);font-size:9.5px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:14px 0 6px}.cw{box-sizing:content-box;border:1px dashed var(--border);border-radius:var(--r);padding:var(--s4)}.w430{width:430px;max-width:100%}.w320{width:320px}.assert{font-family:var(--mono);font-size:10px;color:var(--muted);line-height:1.5;white-space:pre-wrap}.ok{color:var(--up)}.bad{color:var(--dn)}</style>
+</head>
+<body><div class="stack"><div id="light"></div><div data-theme="dark" id="dark"></div></div>
+<script type="text/babel">
+const { DayStrip } = window.AKGolfHQClaudePaper_605a48;
+const UKE = [
+  { key: "2026-08-03", weekday: "man", date: 3, today: true, full: "mandag 3. august" },
+  { key: "2026-08-04", weekday: "tir", date: 4, full: "tirsdag 4. august" },
+  { key: "2026-08-05", weekday: "ons", date: 5, full: "onsdag 5. august" },
+  { key: "2026-08-06", weekday: "tor", date: 6, full: "torsdag 6. august" },
+  { key: "2026-08-07", weekday: "fre", date: 7, full: "fredag 7. august" },
+  { key: "2026-08-08", weekday: "lør", date: 8, full: "lørdag 8. august" },
+  { key: "2026-08-09", weekday: "søn", date: 9, full: "søndag 9. august" },
+];
+function Demo({ start, framed, id }) {
+  const [v, setV] = React.useState(start);
+  return <DayStrip days={UKE} value={v} onChange={setV} framed={framed} dataOdId={id} />;
+}
+function Specimen() {
+  return (<>
+    <div className="lab">430 px — PlayerHQ-kolonnen. Valgt onsdag; i dag (man 3.) har prikk</div>
+    <div className="cw w430"><Demo start="2026-08-05" id="ds-a" /></div>
+    <div className="lab">valgt OG i dag er samme dag (papirprikk på blekk)</div>
+    <div className="cw w430"><Demo start="2026-08-03" id="ds-b" /></div>
+    <div className="lab">320 px — under 340-terskelen (48 px høyde) · ramme-modifikator</div>
+    <div className="cw w320">
+      <Demo start="2026-08-07" id="ds-c" />
+      <div style={{height:10}} />
+      <Demo start="2026-08-08" framed id="ds-d" />
+    </div>
+  </>);
+}
+ReactDOM.createRoot(document.getElementById("light")).render(<Specimen />);
+ReactDOM.createRoot(document.getElementById("dark")).render(<Specimen />);
+/* ASSERTIONER — verifikatør skal se dem feile først: sett forventet antall til 8,
+   eller fjern data-idag fra mandag (prikktesten blir rød). */
+window.requestAnimationFrame(() => setTimeout(() => {
+  const res = []; const push = (ok, t) => res.push((ok ? "✓ " : "✗ ") + t);
+  const LYS = document.getElementById("light");
+  const a = LYS.querySelector('[data-od-id="nav-ds-a"]');
+  push(!!a && a.querySelectorAll('[role=radio]').length === 7, "sju dager");
+  push(!!a && a.querySelectorAll('[role=radio][tabindex="0"]').length === 1, "roving tabindex: ett tab-stopp");
+  const valgt = a && a.querySelector('[aria-checked="true"]');
+  push(!!valgt && /ons/.test(valgt.textContent), "onsdag er valgt");
+  push(!!valgt && !/217, ?119, ?87/.test(getComputedStyle(valgt).backgroundColor), "valgt dag er blekk, aldri oransje");
+  const idag = a && a.querySelector("[data-idag] .akhq-dstrip-m");
+  push(!!idag && parseFloat(getComputedStyle(idag).opacity) === 1, "i dag har synlig prikk");
+  const b = LYS.querySelector('[data-od-id="nav-ds-b"]');
+  const bValgt = b && b.querySelector('[aria-checked="true"]');
+  push(!!bValgt && bValgt.hasAttribute("data-idag"), "valgt + i dag kan være samme dag");
+  const wrap = document.createElement("div"); wrap.setAttribute("data-coarse-test", ""); document.body.appendChild(wrap);
+  if (valgt) { const k = valgt.cloneNode(true); wrap.appendChild(k); const r = k.getBoundingClientRect(); push(r.height >= 43.99 && r.width >= 43.99, "dagknapp " + r.width.toFixed(0) + "×" + r.height.toFixed(0) + " px ved grov peker"); }
+  wrap.remove();
+  const ut = document.createElement("div"); ut.className = "assert";
+  ut.innerHTML = res.map((r) => '<div class="' + (r[0] === "✓" ? "ok" : "bad") + '">' + r + "</div>").join("");
+  LYS.appendChild(ut);
+  window.__assert = res;
+}, 90));
+</script></body></html>

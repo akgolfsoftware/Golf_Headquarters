@@ -1,0 +1,74 @@
+<!-- @dsCard group="Golfdata" viewport="980x2600" name="DiagnoseKort" subtitle="Diagnose i 860 og 320 px × begge moduser: full, kompakt, uten evidens, alle datatilstander. Høyde målt 03.08 (+10 %)" -->
+<!DOCTYPE html><html lang="nb"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="stylesheet" href="../../styles.css"><link rel="stylesheet" href="../../guidelines/card-support.css">
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="../../_ds_bundle.js"></script>
+<style>.stack{display:grid;grid-template-columns:1fr;min-height:100vh}.stack>div{padding:var(--s5);background:var(--bg);color:var(--fg)}.lab{font-family:var(--mono);font-size:9.5px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:14px 0 6px}.cw{box-sizing:content-box;border:1px dashed var(--border);border-radius:var(--r);padding:var(--s4)}.w860{width:860px;max-width:100%}.w320{width:320px}.assert{font-family:var(--mono);font-size:10px;color:var(--muted);line-height:1.5;white-space:pre-wrap}.ok{color:var(--up)}.bad{color:var(--dn)}</style>
+</head>
+<body><div class="stack"><div id="light"></div><div data-theme="dark" id="dark"></div></div>
+<script type="text/babel">
+const { DiagnoseKort } = window.AKGolfHQClaudePaper_605a48;
+const FULL = {
+  title: "Utslagene lekker når presset øker",
+  body: "Driveren har vært stabil i tre uker på range, men i turnering faller fairway-treffene fra 61 til 44 prosent. Mønsteret peker på tempo, ikke teknikk.",
+  evidence: ["Fairway-% trening 61 · turnering 44", "SG tee −1,84 · siste 3 turneringsrunder", "Tempo 3:1 → 2,6:1 under press"],
+  nextStep: "Turneringslik trening: utslagsserier med konsekvens, PR-stiget over tre uker.",
+};
+function Specimen() {
+  return (<>
+    <div className="lab">860 px — full diagnose for Øyvind Rohjan (prosa maks 52ch)</div>
+    <div className="cw w860"><DiagnoseKort {...FULL} dataOdId="diag-full" /></div>
+    <div className="lab">uten evidens og neste steg · kompakt</div>
+    <div className="cw w860">
+      <DiagnoseKort title="Puttingen holder kategori B-nivå" body="Ingen endring nødvendig — fortsett vedlikeholdsdosen." dataOdId="diag-kort" />
+      <div style={{height:12}} />
+      <DiagnoseKort {...FULL} compact dataOdId="diag-komp" />
+    </div>
+    <div className="lab">320 px — under 340-terskelen</div>
+    <div className="cw w320"><DiagnoseKort {...FULL} dataOdId="diag-smal" /></div>
+    <div className="lab">tom · laster · feil</div>
+    <div className="cw w860">
+      <DiagnoseKort state="empty" dataOdId="diag-tom" />
+      <div style={{height:12}} />
+      <DiagnoseKort state="loading" dataOdId="diag-laster" />
+      <div style={{height:12}} />
+      <DiagnoseKort state="error" dataOdId="diag-feil" />
+    </div>
+  </>);
+}
+ReactDOM.createRoot(document.getElementById("light")).render(<Specimen />);
+ReactDOM.createRoot(document.getElementById("dark")).render(<Specimen />);
+/* ASSERTIONER — verifikatør skal se dem feile først: fjern max-width:52ch
+   (prosatesten rød) eller bytt prosafonten til --ui. */
+window.requestAnimationFrame(() => setTimeout(() => {
+  const res = []; const push = (ok, t) => res.push((ok ? "✓ " : "✗ ") + t);
+  const LYS = document.getElementById("light");
+  const f = LYS.querySelector('[data-od-id="panel-diag-full"]');
+  const txt = f && f.querySelector(".akhq-diag-txt");
+  push(!!txt && /Lora/.test(getComputedStyle(txt).fontFamily), "prosaen er Lora (--body)");
+  /* MÅLT, ikke lest: `max-width:52ch` finnes i kilden, men computed style
+     resolverer ch til px — `=== "52ch"` kan aldri bli sann. Sammenlign mot
+     en probe med samme font, så tester vi det som faktisk gjelder: at
+     bredden følger SKRIFTSTØRRELSEN (ch), ikke containeren (cqi). */
+  let ch52 = NaN, faktiskMw = NaN;
+  if (txt) {
+    const cs = getComputedStyle(txt);
+    const probe = document.createElement("div");
+    probe.style.cssText = "position:absolute;visibility:hidden;width:52ch;font-family:" + cs.fontFamily + ";font-size:" + cs.fontSize + ";font-weight:" + cs.fontWeight;
+    txt.parentElement.appendChild(probe);
+    ch52 = probe.getBoundingClientRect().width;
+    probe.remove();
+    faktiskMw = parseFloat(cs.maxWidth);
+  }
+  push(!!txt && ch52 > 0 && Math.abs(faktiskMw - ch52) < 1, "prosaen er begrenset til 52ch — ch-enheten skal IKKE konverteres til cqi");
+  push(!!f && f.querySelectorAll(".akhq-diag-ev-rad").length === 3, "tre evidenslinjer");
+  push(!!f && /Neste steg/i.test(f.textContent), "neste steg-seksjonen finnes");
+  push(!!f && f.querySelectorAll("button,a[href]").length === 0, "ren visning — handlinger bor hos konsumenten");
+  push(!!LYS.querySelector(".akhq-empty") && !!LYS.querySelector(".akhq-skel") && !!LYS.querySelector(".akhq-error"), "tom/laster/feil rendrer Region-tilstandene");
+  const ut = document.createElement("div"); ut.className = "assert";
+  ut.innerHTML = res.map((r) => '<div class="' + (r[0] === "✓" ? "ok" : "bad") + '">' + r + "</div>").join("");
+  LYS.appendChild(ut);
+  window.__assert = res;
+}, 90));
+</script></body></html>

@@ -1,0 +1,55 @@
+<!-- @dsCard group="Golfdata" viewport="980x1980" name="StrikeSmashKort" subtitle="Smash + treffbilde i 860 og 320 px × begge moduser: kompakt, uten mål, alle datatilstander. Høyde målt 03.08 (+10 %)" -->
+<!DOCTYPE html><html lang="nb"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="stylesheet" href="../../styles.css"><link rel="stylesheet" href="../../guidelines/card-support.css">
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="../../_ds_bundle.js"></script>
+<style>.stack{display:grid;grid-template-columns:1fr;min-height:100vh}.stack>div{padding:var(--s5);background:var(--bg);color:var(--fg)}.lab{font-family:var(--mono);font-size:9.5px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:14px 0 6px}.cw{box-sizing:content-box;border:1px dashed var(--border);border-radius:var(--r);padding:var(--s4)}.w860{width:860px;max-width:100%}.w320{width:320px}.assert{font-family:var(--mono);font-size:10px;color:var(--muted);line-height:1.5;white-space:pre-wrap}.ok{color:var(--up)}.bad{color:var(--dn)}</style>
+</head>
+<body><div class="stack"><div id="light"></div><div data-theme="dark" id="dark"></div></div>
+<script type="text/babel">
+const { StrikeSmashKort } = window.AKGolfHQClaudePaper_605a48;
+function Specimen() {
+  return (<>
+    <div className="lab">860 px — Øyvind Rohjans driver: smash 1,46 mot mål 1,48, 67 % sentertreff</div>
+    <div className="cw w860"><StrikeSmashKort club="Driver" smash={1.46} smashTarget={1.48} heel={20} center={67} toe={13} basis="42 slag · økta 3. august" dataOdId="ssk-full" /></div>
+    <div className="lab">uten mål · kompakt</div>
+    <div className="cw w860">
+      <StrikeSmashKort club="J7" smash={1.33} heel={12} center={74} toe={14} dataOdId="ssk-uten" />
+      <div style={{height:12}} />
+      <StrikeSmashKort club="Driver" smash={1.46} smashTarget={1.48} heel={20} center={67} toe={13} compact dataOdId="ssk-komp" />
+    </div>
+    <div className="lab">320 px — under 340-terskelen (hero 26 px)</div>
+    <div className="cw w320"><StrikeSmashKort club="Driver" smash={1.46} smashTarget={1.48} heel={20} center={67} toe={13} dataOdId="ssk-smal" /></div>
+    <div className="lab">tom · laster · feil</div>
+    <div className="cw w860">
+      <StrikeSmashKort state="empty" dataOdId="ssk-tom" />
+      <div style={{height:12}} />
+      <StrikeSmashKort state="loading" dataOdId="ssk-laster" />
+      <div style={{height:12}} />
+      <StrikeSmashKort state="error" dataOdId="ssk-feil" />
+    </div>
+  </>);
+}
+ReactDOM.createRoot(document.getElementById("light")).render(<Specimen />);
+ReactDOM.createRoot(document.getElementById("dark")).render(<Specimen />);
+/* ASSERTIONER — verifikatør skal se dem feile først: gi hæl-segmentet leire
+   (moraltesten rød) eller skriv smash med punktum. */
+window.requestAnimationFrame(() => setTimeout(() => {
+  const res = []; const push = (ok, t) => res.push((ok ? "✓ " : "✗ ") + t);
+  const LYS = document.getElementById("light");
+  const f = LYS.querySelector('[data-od-id="kpi-ssk-full"]');
+  const v = f && f.querySelector(".akhq-ssk-v");
+  push(!!v && v.textContent === "1,46", "smash med komma-desimal (" + (v ? v.textContent : "?") + ")");
+  push(!!f && /mål 1,48/.test(f.textContent), "målet står ved siden av");
+  const seg = f ? [...f.querySelectorAll(".akhq-ssk-strike .akhq-ssk-seg")] : [];
+  push(seg.length === 3 && seg[1].getBoundingClientRect().width > seg[0].getBoundingClientRect().width, "senter (67 %) er bredest");
+  push(seg.length === 3 && !seg.some((s) => /168, ?85, ?54/.test(getComputedStyle(s).backgroundColor)), "ingen leire i treffbildet — avvik er ikke moral");
+  push(!!f && /hæl 20 %/.test(f.getAttribute("aria-label") || ""), "sammendraget bærer fordelingen");
+  push(!!LYS.querySelector(".akhq-empty") && !!LYS.querySelector(".akhq-skel") && !!LYS.querySelector(".akhq-error"), "tom/laster/feil rendrer Region-tilstandene");
+  const ut = document.createElement("div"); ut.className = "assert";
+  ut.innerHTML = res.map((r) => '<div class="' + (r[0] === "✓" ? "ok" : "bad") + '">' + r + "</div>").join("");
+  LYS.appendChild(ut);
+  window.__assert = res;
+}, 90));
+</script></body></html>

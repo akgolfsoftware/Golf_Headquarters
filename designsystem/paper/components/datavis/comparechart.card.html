@@ -1,0 +1,65 @@
+<!-- @dsCard group="Datavis" viewport="980x2330" name="CompareChart" subtitle="Parvise søyler i 860 og 340 px × begge moduser: referanse (--mid), måling (--info-raw), alle datatilstander. Høyde målt 03.08 (+10 %)" -->
+<!DOCTYPE html><html lang="nb"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="stylesheet" href="../../styles.css"><link rel="stylesheet" href="../../guidelines/card-support.css">
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="../../_ds_bundle.js"></script>
+<style>.stack{display:grid;grid-template-columns:1fr;min-height:100vh}.stack>div{padding:var(--s5);background:var(--bg);color:var(--fg)}.lab{font-family:var(--mono);font-size:9.5px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:14px 0 6px}.cw{box-sizing:content-box;border:1px dashed var(--border);border-radius:var(--r);padding:var(--s4)}.w860{width:860px;max-width:100%}.w340{width:340px}.assert{font-family:var(--mono);font-size:10px;color:var(--muted);line-height:1.5;white-space:pre-wrap}.ok{color:var(--up)}.bad{color:var(--dn)}</style>
+</head>
+<body><div class="stack"><div id="light"></div><div data-theme="dark" id="dark"></div></div>
+<script type="text/babel">
+const { CompareChart } = window.AKGolfHQClaudePaper_605a48;
+const KRAV = [
+  { label: "Driver", a: 231, b: 240, aDisplay: "231 m", bDisplay: "240 m" },
+  { label: "J5", a: 192, b: 195, aDisplay: "192 m", bDisplay: "195 m" },
+  { label: "J7", a: 168, b: 165, aDisplay: "168 m", bDisplay: "165 m" },
+  { label: "Wedge 60", a: 58, b: 60, aDisplay: "58 m", bDisplay: "60 m" },
+];
+const SESONG = [
+  { label: "Snittscore", a: 72.4, b: 75.1, aDisplay: "72,4", bDisplay: "75,1" },
+  { label: "Fairway-%", a: 61, b: 54, aDisplay: "61 %", bDisplay: "54 %" },
+  { label: "GIR-%", a: 58, b: 49, aDisplay: "58 %", bDisplay: "49 %" },
+];
+function Specimen() {
+  return (<>
+    <div className="lab">860 px — Øyvind Rohjan mot kategori B-krav (B er referanse → --mid)</div>
+    <div className="cw w860"><CompareChart pairs={KRAV} seriesA="Øyvind nå" seriesB="Kategori B-krav" dataOdId="cch-krav" /></div>
+    <div className="lab">info-modifikator — B er forrige sesong (måling → --info-raw)</div>
+    <div className="cw w860"><CompareChart pairs={SESONG} seriesA="2026" seriesB="2025" info dataOdId="cch-sesong" /></div>
+    <div className="lab">340 px — under 380-terskelen: verdiraden skjult</div>
+    <div className="cw w340"><CompareChart pairs={SESONG} seriesA="2026" seriesB="2025" dataOdId="cch-smal" /></div>
+    <div className="lab">tom · laster · feil</div>
+    <div className="cw w860">
+      <CompareChart pairs={[]} state="empty" dataOdId="cch-tom" />
+      <div style={{height:12}} />
+      <CompareChart pairs={[]} state="loading" dataOdId="cch-laster" />
+      <div style={{height:12}} />
+      <CompareChart pairs={[]} state="error" dataOdId="cch-feil" />
+    </div>
+  </>);
+}
+ReactDOM.createRoot(document.getElementById("light")).render(<Specimen />);
+ReactDOM.createRoot(document.getElementById("dark")).render(<Specimen />);
+/* ASSERTIONER — verifikatør skal se dem feile først: bytt serie A til --mid
+   i kilden (blekk-testen rød), eller fjern info-klassen (info-testen rød). */
+window.requestAnimationFrame(() => setTimeout(() => {
+  const res = []; const push = (ok, t) => res.push((ok ? "✓ " : "✗ ") + t);
+  const LYS = document.getElementById("light");
+  const krav = LYS.querySelector('[data-od-id="kpi-cch-krav"]');
+  const a = krav && krav.querySelector(".akhq-cch-a");
+  const b = krav && krav.querySelector(".akhq-cch-b");
+  push(!!a && !!b && getComputedStyle(a).backgroundColor !== getComputedStyle(b).backgroundColor, "serie A og B har ulik farge");
+  const ses = LYS.querySelector('[data-od-id="kpi-cch-sesong"]');
+  const bInfo = ses && ses.querySelector(".akhq-cch-b");
+  push(!!b && !!bInfo && getComputedStyle(bInfo).backgroundColor !== getComputedStyle(b).backgroundColor, "info-modifikator gir B en annen tone enn referanse-B");
+  push(!!krav && /231 m mot 240 m/.test(krav.getAttribute("aria-label") || ""), "sammendraget bærer begge verdier med enhet");
+  push(!!krav && krav.querySelectorAll(".akhq-cch-kol").length === 4, "fire par");
+  const smalV = LYS.querySelector('[data-od-id="kpi-cch-smal"] .akhq-cch-vrd');
+  push(!!smalV && getComputedStyle(smalV).display === "none", "340 px → verdiraden skjult (terskel 380)");
+  push(!!LYS.querySelector(".akhq-empty") && !!LYS.querySelector(".akhq-skel") && !!LYS.querySelector(".akhq-error"), "tom/laster/feil rendrer Region-tilstandene");
+  const ut = document.createElement("div"); ut.className = "assert";
+  ut.innerHTML = res.map((r) => '<div class="' + (r[0] === "✓" ? "ok" : "bad") + '">' + r + "</div>").join("");
+  LYS.appendChild(ut);
+  window.__assert = res;
+}, 90));
+</script></body></html>

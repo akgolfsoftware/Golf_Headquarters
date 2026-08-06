@@ -1,0 +1,64 @@
+<!-- @dsCard group="Datavis" viewport="980x1760" name="Heatmap" subtitle="Volummatrise i 860 og 380 px × begge moduser: fem trinn, skala, tett variant, alle datatilstander. Høyde målt 03.08 (+10 %)" -->
+<!DOCTYPE html><html lang="nb"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="stylesheet" href="../../styles.css"><link rel="stylesheet" href="../../guidelines/card-support.css">
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="../../_ds_bundle.js"></script>
+<style>.stack{display:grid;grid-template-columns:1fr;min-height:100vh}.stack>div{padding:var(--s5);background:var(--bg);color:var(--fg)}.lab{font-family:var(--mono);font-size:9.5px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:14px 0 6px}.cw{box-sizing:content-box;border:1px dashed var(--border);border-radius:var(--r);padding:var(--s4)}.w860{width:860px;max-width:100%}.w380{width:380px}.assert{font-family:var(--mono);font-size:10px;color:var(--muted);line-height:1.5;white-space:pre-wrap}.ok{color:var(--up)}.bad{color:var(--dn)}</style>
+</head>
+<body><div class="stack"><div id="light"></div><div data-theme="dark" id="dark"></div></div>
+<script type="text/babel">
+const { Heatmap } = window.AKGolfHQClaudePaper_605a48;
+const RADER = [
+  { label: "FYS", cells: [{v:2,label:"2 økter"},{v:1,label:"1 økt"},{v:2,label:"2 økter"},{v:2,label:"2 økter"},{v:1,label:"1 økt"},{v:2,label:"2 økter"}] },
+  { label: "TEK", cells: [{v:3,label:"4,5 t"},{v:4,label:"6,0 t"},{v:2,label:"3,0 t"},{v:3,label:"4,5 t"},{v:4,label:"6,0 t"},{v:3,label:"4,5 t"}] },
+  { label: "SLAG", cells: [{v:2,label:"3,0 t"},{v:2,label:"3,0 t"},{v:1,label:"1,5 t"},{v:3,label:"4,5 t"},{v:2,label:"3,0 t"},{v:2,label:"3,0 t"}] },
+  { label: "SPILL", cells: [{v:1,label:"9 hull"},{v:2,label:"18 hull"},{v:0},{v:2,label:"18 hull"},{v:1,label:"9 hull"},{v:3,label:"27 hull"}] },
+  { label: "TURN", cells: [{v:0},{v:0},{v:4,label:"Srixon Tour"},{v:0},{v:0},{v:4,label:"NM jr"}] },
+];
+const KOL = ["u27", "u28", "u29", "u30", "u31", "u32"];
+function Specimen() {
+  return (<>
+    <div className="lab">860 px — Øyvind Rohjans volum, område × uke, med skala</div>
+    <div className="cw w860"><Heatmap rows={RADER} colLabels={KOL} dataOdId="hmap-bred" /></div>
+    <div className="lab">380 px — under 420-terskelen: 16 px celler · tett variant uten skala</div>
+    <div className="cw w380">
+      <Heatmap rows={RADER} colLabels={KOL} dataOdId="hmap-smal" />
+      <div style={{height:12}} />
+      <Heatmap rows={RADER.slice(0, 3)} colLabels={KOL} dense showScale={false} dataOdId="hmap-tett" />
+    </div>
+    <div className="lab">tom · laster · feil</div>
+    <div className="cw w860">
+      <Heatmap rows={[]} state="empty" dataOdId="hmap-tom" />
+      <div style={{height:12}} />
+      <Heatmap rows={[]} state="loading" dataOdId="hmap-laster" />
+      <div style={{height:12}} />
+      <Heatmap rows={[]} state="error" dataOdId="hmap-feil" />
+    </div>
+  </>);
+}
+ReactDOM.createRoot(document.getElementById("light")).render(<Specimen />);
+ReactDOM.createRoot(document.getElementById("dark")).render(<Specimen />);
+/* ASSERTIONER — verifikatør skal se dem feile først: send v:7 i en celle
+   (klampe-testen rød) eller fjern title fra cellene. */
+window.requestAnimationFrame(() => setTimeout(() => {
+  const res = []; const push = (ok, t) => res.push((ok ? "✓ " : "✗ ") + t);
+  const LYS = document.getElementById("light");
+  const bred = LYS.querySelector('[data-od-id="kpi-hmap-bred"]');
+  push(!!bred && bred.querySelectorAll(".akhq-hmap-celle").length === 30, "fem rader × seks uker = 30 celler");
+  /* Selektorene er skopet til .akhq-hmap-rad: legend-svatchene gjenbruker
+     de samme intensitetsklassene, så en uskopet telling måler fargelegenden
+     i tillegg til datamatrisen — og knekker når noen endrer legenden. */
+  push(!!bred && bred.querySelectorAll(".akhq-hmap-rad .akhq-hmap-celle--i4").length === 4, "fire maks-intensitetsceller (to TEK-topper på 6,0 t + to turneringsuker) — skalaen er delt på tvers av rader, så maks er maks uansett område");
+  const i2 = bred && bred.querySelector(".akhq-hmap-rad .akhq-hmap-celle--i2");
+  const i4 = bred && bred.querySelector(".akhq-hmap-rad .akhq-hmap-celle--i4");
+  push(!!i2 && !!i4 && getComputedStyle(i2).backgroundColor !== getComputedStyle(i4).backgroundColor, "trinnene er visuelt distinkte");
+  push(!!bred && bred.querySelectorAll("[title]").length >= 20, "cellene bærer verdien i title");
+  push(!!bred && bred.querySelectorAll("button,a[href]").length === 0, "ren visning — ingen treffmål");
+  push(!!LYS.querySelector(".akhq-empty") && !!LYS.querySelector(".akhq-skel") && !!LYS.querySelector(".akhq-error"), "tom/laster/feil rendrer Region-tilstandene");
+  const ut = document.createElement("div"); ut.className = "assert";
+  ut.innerHTML = res.map((r) => '<div class="' + (r[0] === "✓" ? "ok" : "bad") + '">' + r + "</div>").join("");
+  LYS.appendChild(ut);
+  window.__assert = res;
+}, 90));
+</script></body></html>

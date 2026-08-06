@@ -35,7 +35,7 @@ Sendes begge, logger komponenten en advarsel og dropper radens interaktivitet. A
   | `flush` + `bleed` (body-polstring 0) | 2 | 428 | **nei** |
   | ingen Panel (gruppen direkte i spalten) | 0 | 430 | nei |
 
-  Merk at `flush` ikke er innrykksløst: `--pad-x` blir 0 på panelet, men `.akhq-panel--flush .akhq-panel-body` legger tilbake `0 18px` — det er `bleed` som fjerner det siste.
+  Merk at `flush` ikke er innrykksløs: `--pad-x` blir 0 på panelet, men `.akhq-panel--flush .akhq-panel-body` legger tilbake `0 18px` — det er `bleed` som fjerner det siste.
 
   **Tabellen over er assertert, ikke bare regnet:** alle sju konfigurasjonene ligger i `guidelines/terskelrigg.html` og feiler synlig hvis en polstringsendring flytter en av dem over terskelen.
 

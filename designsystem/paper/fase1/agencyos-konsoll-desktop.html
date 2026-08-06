@@ -6,17 +6,17 @@
 <title>Konsoll · AgencyOS · AK Golf HQ</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Lora:ital,wght@0,400;0,500;1,400&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-/* ═══════════════════════════════════════════════════════════════
+/* ══════════════════════════════════════════════════════════════
    AK Golf HQ · Fase 1-fundament · Claude Paper
    Kopieres VERBATIM inn i <style> i hver fil. Ingen hex utenfor :root.
    Endring 31.07.2026 (Anders): --r 8px → 12px. Lukker konflikten
    mellom tokens/akhq-tokens.css og Paper-fasiten.
-   Endring 31.07.2026 (Anders): primærhandlingen ER «Én ting nå» og
+   Endring 31.07.2026 (Anders): primærhandlingen ER «En ting nå» og
    fylles med --accent. Alle andre knapper er blekk eller ghost.
-   ═══════════════════════════════════════════════════════════════ */
+   ══════════════════════════════════════════════════════════════ */
 
 /* ═══ akhq-tokens.css v3.1 — KOPIERT VERBATIM. Eneste tokenkilde. ═══ */
-/* ─────────────────────────────────────────────────────────────
+/* ─────────────────────────────────────────────────────
    AK Golf HQ · Claude Paper tokens v3
    Anthropic-justert (offentlige kilder) + AK produktregler
 
@@ -38,7 +38,7 @@
    - Type-tokens for marketing + produkt
    - Motion, z-index, tap-targets, hairline
    - Dark theme (produkt; marketing er primært lys)
-   ───────────────────────────────────────────────────────────── */
+   ──────────────────────────────────────────────────── */
 
 :root {
   /* ─── Surfaces (Anthropic cream ladder) ─── */
@@ -288,9 +288,9 @@ body{
 
 /* ── Knapper ─────────────────────────────────────────────────────
    .btn            ghost/sekundær — blekkkant, transparent
-   .btn.ink        blekkfylt — bekreftende, men ikke «Én ting nå»
-   .btn.now        ACCENT-FYLT — maks ÉN per skjerm. Dette er «Én ting nå».
-   ────────────────────────────────────────────────────────────── */
+   .btn.ink        blekkfylt — bekreftende, men ikke «En ting nå»
+   .btn.now        ACCENT-FYLT — maks ÉN per skjerm. Dette er «En ting nå».
+   ───────────────────────────────────────────────────────── */
 .btn{
   display:inline-flex; align-items:center; justify-content:center; gap:var(--s2);
   min-height:var(--tap); padding:0 var(--s4);
@@ -314,7 +314,7 @@ body{
 @media (pointer:coarse){ .btn.sm{ min-height:var(--tap); } }
 .btn.icon{ width:var(--tap); min-height:var(--tap); padding:0; }
 
-/* ── Flater ──────────────────────────────────────────────────── */
+/* ── Flater ─────────────────────────────────────────────────── */
 .panel{ background:var(--surface); border:1px solid var(--border); border-radius:var(--r); }
 .chip{
   display:inline-flex; align-items:center; gap:var(--s1);
@@ -333,7 +333,7 @@ body{
 }
 .tag.up{ color:var(--up); } .tag.dn{ color:var(--dn); } .tag.info{ color:var(--info); }
 
-/* ── Tomtilstand — aldri en tom flate uten neste steg ─────────── */
+/* ── Tomtilstand — aldri en tom flate uten neste steg ───────── */
 .empty{
   display:flex; flex-direction:column; align-items:flex-start; gap:var(--s3);
   padding:var(--s6) var(--s5); background:var(--soft);
@@ -342,11 +342,11 @@ body{
 .empty h3{ margin:0; font-family:var(--disp); font-size:15px; font-weight:600; }
 .empty p{ margin:0; max-width:46ch; font-family:var(--body); font-size:14px; color:var(--muted); }
 
-/* ── Skjelett ────────────────────────────────────────────────── */
+/* ── Skjelett ─────────────────────────────────────────────── */
 .skel{ background:var(--soft); border-radius:var(--r-sm); animation:pulse 1.6s var(--ease) infinite; }
 @keyframes pulse{ 0%,100%{opacity:1} 50%{opacity:.55} }
 
-/* ── Scrim + ark ─────────────────────────────────────────────── */
+/* ── Scrim + ark ──────────────────────────────────────────── */
 .scrim{ position:fixed; inset:0; background:var(--scrim); z-index:var(--z-sheet); }
 .sheet{
   position:fixed; left:0; right:0; bottom:0; z-index:calc(var(--z-sheet) + 1);
@@ -382,15 +382,15 @@ button{ font:inherit; }
 .app{ display:grid; grid-template-columns:64px minmax(0,1fr) 380px; height:100vh; }
 #artOpen{ display:none; }  /* vises kun i ark-modus, se mediespørring under */
 
-/* ── Enhetsbånd · Bølge 1 ────────────────────────────────────────
+/* ── Enhetsbånd · Bølge 1 ───────────────────────────────────
    ≥1181  desktop: rail 64 + tråd + artefaktpanel 380 (tre kolonner)
    641–1180 iPad + smal desktop: rail 64 beholdes (collapsed rail ER
             64px ikon-rail — én nav-strategi på tvers av alle bredder,
             aldri nav-løs), artefakt blir bunn-ark. Beslutning 01.08:
-            sheet overalt, ingen split. Primærhandlingen «Én ting nå»
+            sheet overalt, ingen split. Primærhandlingen «En ting nå»
             bor i TRÅDEN, ikke i asiden — den kan derfor aldri forsvinne.
    ≤640   dekkes av agencyos-konsoll-mobil.html (bunnfaner)
-   ────────────────────────────────────────────────────────────── */
+   ───────────────────────────────────────────────────────── */
 @media (max-width:1180px){
   .app{ grid-template-columns:64px minmax(0,1fr); }
   #artOpen{ display:inline-flex; }
@@ -426,7 +426,7 @@ button{ font:inherit; }
 }
 .skip:focus{ top:var(--s3); }
 
-/* ── Rail ─────────────────────────────────────────────────────── */
+/* ── Rail ──────────────────────────────────────────────────── */
 .rail{
   background:var(--rail); color:var(--rail-fg); z-index:var(--z-rail);
   display:flex; flex-direction:column; align-items:center; gap:var(--s3);
@@ -448,7 +448,7 @@ button{ font:inherit; }
 .rbtn .cnt{ font-family:var(--mono); font-size:9.5px; }
 .railsp{ flex:1; }
 
-/* ── Midtkolonne ──────────────────────────────────────────────── */
+/* ── Midtkolonne ──────────────────────────────────────────── */
 /* min-height:0 er påkrevd: uten den vokser flex-elementet forbi
    .app{height:100vh}, tråden scroller aldri internt, hele dokumentet
    scroller i stedet og composeren mister bunnfestet. Målt 01.08:
@@ -524,7 +524,7 @@ kbd{
 .tbl th{ font-family:var(--mono); font-size:10px; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); }
 .tbl td.n,.tbl th.n{ text-align:right; }
 
-/* «Én ting nå»-blokk — eneste sted --accent-soft brukes som flate */
+/* «En ting nå»-blokk — eneste sted --accent-soft brukes som flate */
 /* OneThingNow · kontrakt: 3px clay venstrekant + accent-soft flate.
    Kanten er komponentens signatur — uten den er blokka bare et kort.
    Lukker R1 i designreview-open-design-2026-07-31.md. */
@@ -540,7 +540,7 @@ kbd{
 .undo{ display:flex; align-items:center; gap:var(--s2); margin-top:var(--s3); font-size:12.5px; color:var(--muted); }
 .undo button{ background:transparent; border:0; color:var(--fg); text-decoration:underline; cursor:pointer; min-height:var(--tap); padding:0 var(--s1); font-size:12.5px; }
 
-/* ── Composer ─────────────────────────────────────────────────── */
+/* ── Composer ─────────────────────────────────────────────── */
 .composer{ border-top:1px solid var(--border); background:var(--surface); padding:var(--s3) var(--s5) var(--s4); }
 .cwrap{ position:relative; max-width:74ch; margin:0 auto; }
 .box{ border:1px solid var(--border); border-radius:var(--r); background:var(--bg); padding:var(--s3); }
@@ -585,7 +585,7 @@ kbd{
 .pop ul{ margin:0; padding-left:var(--s5); font-family:var(--body); font-size:13px; color:var(--muted); }
 .pop li{ margin-bottom:var(--s1); }
 
-/* ── Artefaktpanel ────────────────────────────────────────────── */
+/* ── Artefaktpanel ─────────────────────────────────────────── */
 .artifact{ display:flex; flex-direction:column; min-width:0; min-height:0; background:var(--bg); }
 .ahead{ display:flex; align-items:center; gap:var(--s2); padding:var(--s3) var(--s4); border-bottom:1px solid var(--border); }
 .ahead .t{ font-family:var(--disp); font-size:13px; font-weight:600; }
@@ -601,7 +601,7 @@ kbd{
 .inv svg{ width:13px; height:13px; flex:none; margin-top:2px; fill:none; stroke:var(--up); stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
 .sect{ border-top:1px solid var(--border); padding-top:var(--s3); margin-top:var(--s3); }
 
-/* ── Kommandopalett ───────────────────────────────────────────── */
+/* ── Kommandopalett ────────────────────────────────────────── */
 .palwrap{ position:fixed; inset:0; z-index:var(--z-sheet); display:grid; place-items:start center; padding-top:12vh; background:var(--scrim); }
 .pal{ width:min(620px,92vw); background:var(--surface); border:1px solid var(--border); border-radius:var(--r); box-shadow:var(--shadow); overflow:hidden; }
 .pf{ display:flex; align-items:center; gap:var(--s3); padding:var(--s3) var(--s4); border-bottom:1px solid var(--border); }
@@ -609,7 +609,7 @@ kbd{
 .plist{ max-height:52vh; overflow:auto; padding:var(--s2); }
 .pfoot{ display:flex; gap:var(--s4); padding:var(--s3) var(--s4); border-top:1px solid var(--border); font-size:11.5px; color:var(--muted); }
 
-/* ── Fangst-ark ───────────────────────────────────────────────── */
+/* ── Fangst-ark ────────────────────────────────────────────── */
 .rec{ display:flex; align-items:center; gap:var(--s3); padding:var(--s3) 0; }
 .recdot{ width:10px; height:10px; border-radius:var(--r-pill); background:var(--dn); animation:pulse 1.2s var(--ease) infinite; }
 .chips{ display:flex; gap:var(--s2); flex-wrap:wrap; margin:var(--s3) 0; }
@@ -761,7 +761,7 @@ textarea, .composer textarea, [id*="composer"] textarea { min-height: var(--tap)
               </div>
             </article>
 
-            <!-- TUR 3 — systemets uoppfordrede «Én ting nå» -->
+            <!-- TUR 3 — systemets uoppfordrede «En ting nå» -->
             <article class="turn" id="turnNow">
               <div class="ai" style="padding-left:0">
                 <div class="eyebrow" style="margin-bottom:var(--s2)">systemet, uoppfordret · <span class="num">09:12</span></div>
@@ -975,7 +975,7 @@ textarea, .composer textarea, [id*="composer"] textarea { min-height: var(--tap)
   var root = document.documentElement;
   var KEY = 'akhq-theme-agencyos';
 
-  /* ── Tema ─────────────────────────────────────────────── */
+  /* ── Tema ─────────────────────────────────────── */
   var saved = null;
   try { saved = localStorage.getItem(KEY); } catch(e){}
   if (!saved) saved = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
@@ -986,7 +986,7 @@ textarea, .composer textarea, [id*="composer"] textarea { min-height: var(--tap)
     try { localStorage.setItem(KEY, next); } catch(e){}
   });
 
-  /* ── Rail-flater ──────────────────────────────────────── */
+  /* ── Rail-flater ──────────────────────────────────── */
   var railBtns = Array.prototype.slice.call(document.querySelectorAll('.rbtn[data-surface]'));
   railBtns.forEach(function(b){
     b.addEventListener('click', function(){
@@ -996,7 +996,7 @@ textarea, .composer textarea, [id*="composer"] textarea { min-height: var(--tap)
     });
   });
 
-  /* ── Demo-tilstander ──────────────────────────────────── */
+  /* ── Demo-tilstander ───────────────────────────────── */
   var states = { ok:'state-ok', empty:'state-empty', load:'state-load', error:'state-error' };
   document.querySelectorAll('.state-switch .chip').forEach(function(c){
     c.addEventListener('click', function(){
@@ -1056,7 +1056,7 @@ textarea, .composer textarea, [id*="composer"] textarea { min-height: var(--tap)
     else { announce('Ukeplanen er åpnet i artefaktpanelet til høyre.'); }
   });
 
-  /* ── Artefakt som ark (≤1180) ──────────────────────────────────
+  /* ── Artefakt som ark (≤1180) ────────────────────────────────
      Panelet forsvinner ALDRI. Under 1181px blir det et bunn-ark med
      scrim, fokusfelle, Esc og fokusretur. Over 1180px er arkkoden
      inert og panelet er en fast kolonne. Regel 3 i enheter-og-layout. */
@@ -1113,7 +1113,7 @@ textarea, .composer textarea, [id*="composer"] textarea { min-height: var(--tap)
   }
   document.querySelector('[data-od-id="open-oyvind-plan"]').addEventListener('click', seeØyvindPlan);
 
-  /* ── «Én ting nå» — ekte tilstandsendring ─────────────── */
+  /* ── «En ting nå» — ekte tilstandsendring ─────────────── */
   var nowBlock = document.getElementById('nowBlock');
   var railQueue = document.getElementById('railQueue');
   var undoTimer = null, tickTimer = null;
@@ -1158,7 +1158,7 @@ textarea, .composer textarea, [id*="composer"] textarea { min-height: var(--tap)
   }
   attachApprove();
 
-  /* ── Composer ─────────────────────────────────────────── */
+  /* ── Composer ──────────────────────────────────── */
   var ta = document.getElementById('ta');
   var turns = document.getElementById('turns');
   var thread = document.getElementById('thread');
@@ -1269,7 +1269,7 @@ textarea, .composer textarea, [id*="composer"] textarea { min-height: var(--tap)
   }
   document.getElementById('sendBtn').addEventListener('click', send);
 
-  /* ── Slash- og @-menyer ───────────────────────────────── */
+  /* ── Slash- og @-menyer ──────────────────────────────── */
   var slashItems = [
     ['/plan','Lag treningsplan · spiller, uke'],
     ['/analyser','Analyser tall · SG, dispersion, test'],
@@ -1372,7 +1372,7 @@ textarea, .composer textarea, [id*="composer"] textarea { min-height: var(--tap)
     if (e.key === 'Enter' && !e.shiftKey){ e.preventDefault(); send(); }
   });
 
-  /* ── Kontekstpopover ──────────────────────────────────── */
+  /* ── Kontekstpopover ───────────────────────────────── */
   var ctxBtn = document.getElementById('ctxBtn'), ctxPop = document.getElementById('ctxPop');
   ctxBtn.addEventListener('click', function(){
     var open = ctxPop.hidden;
@@ -1380,7 +1380,7 @@ textarea, .composer textarea, [id*="composer"] textarea { min-height: var(--tap)
     ctxBtn.setAttribute('aria-expanded', open ? 'true':'false');
   });
 
-  /* ── Kommandopalett ───────────────────────────────────── */
+  /* ── Kommandopalett ────────────────────────────────── */
   var CMDS = [
     {lvl:'Svarer i samtalen', label:'Én ting nå', syn:'godkjenn haster viktig oyvind', run:function(){ showOk(); document.getElementById('turnNow').scrollIntoView({block:'center'}); var b=document.getElementById('approveBtn'); if(b) b.focus(); }},
     {lvl:'Svarer i samtalen', label:'Dispatch i dag', syn:'brief morgen oversikt dag', run:function(){ ta.value='Vis dagens dispatch'; grow(); send(); }},
@@ -1453,7 +1453,7 @@ textarea, .composer textarea, [id*="composer"] textarea { min-height: var(--tap)
     else if (e.key==='Tab'){ e.preventDefault(); } /* fokusfelle: paletten har ett felt */
   });
 
-  /* ── Fangst-ark ───────────────────────────────────────── */
+  /* ── Fangst-ark ────────────────────────────────────── */
   var capWrap = document.getElementById('captureWrap'), capSheet = document.getElementById('captureSheet'),
       micBtn = document.getElementById('micBtn'), capOpener = null, recSecs = 0, recInt = null;
   function openCapture(){
@@ -1513,14 +1513,14 @@ textarea, .composer textarea, [id*="composer"] textarea { min-height: var(--tap)
     else if (!e.shiftKey && document.activeElement === last){ e.preventDefault(); first.focus(); }
   });
 
-  /* ── Åpningsposisjon ──────────────────────────────────────
+  /* ── Åpningsposisjon ─────────────────────────────────────
      Chat-konvensjon: nyeste tur er synlig ved åpning. Dette er også
-     det som gjør at «Én ting nå» ligger i første skjermbilde på alle
+     det som gjør at «En ting nå» ligger i første skjermbilde på alle
      bredder — målt 1440 / 1280 / 834 / 390. Uten dette må eier scrolle
      etter dagens ene handling, og da er den ikke dagens ene handling. */
   requestAnimationFrame(function(){ thread.scrollTop = thread.scrollHeight; });
 
-  /* ── Globale taster ───────────────────────────────────── */
+  /* ── Globale taster ───────────────────────────────── */
   document.addEventListener('keydown', function(e){
     if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k'){
       e.preventDefault();
