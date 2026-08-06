@@ -3,6 +3,7 @@ import { CheckCircle2, Lock, Play } from "lucide-react";
 import type { LiveV2Session } from "./types";
 import { plannedVolumText } from "./types";
 import { LiveSessionShell } from "./LiveSessionShell";
+import { LiveLoopNav } from "./LiveLoopNav";
 import { HjelpTips } from "@/components/v2/hjelp";
 import { L_FASER } from "@/lib/taxonomy";
 import { T } from "@/lib/v2/tokens";
@@ -56,8 +57,9 @@ export function LiveBrief({ data, canStart, blockReason }: LiveBriefProps) {
   const startButton = canStart ? (
     <Link
       href={`/portal/live/${data.sessionId}/active`}
-      className="flex h-16 w-full items-center justify-center gap-2 rounded-full bg-accent font-mono text-[13px] font-bold uppercase tracking-[0.04em] text-accent-foreground active:scale-[0.98]"
-      style={{ boxShadow: `0 4px 18px ${T.farge.limeMerkeA28}` }}
+      data-od-id="brief-start"
+      className="flex h-12 w-full items-center justify-center gap-2 rounded-[10px] font-sans text-[14px] font-semibold active:scale-[0.98]"
+      style={{ background: T.handling, color: T.onHandling, textDecoration: "none" }}
     >
       <Play className="h-[17px] w-[17px]" fill="currentColor" strokeWidth={0} aria-hidden />
       START ØKT
@@ -84,7 +86,8 @@ export function LiveBrief({ data, canStart, blockReason }: LiveBriefProps) {
       closeHref="/portal/planlegge"
       footer={startButton}
     >
-      <div className="flex flex-col gap-0 px-5 pt-2 pb-4">
+      <div data-paper-portal-live-brief className="flex flex-col gap-0 px-5 pt-2 pb-4" style={{ maxWidth: 720, margin: "0 auto", width: "100%" }}>
+        <LiveLoopNav aktiv="for" sessionId={data.sessionId} />
         {/* Eyebrow */}
         <span className="font-mono text-[9.5px] font-bold uppercase tracking-[0.14em] text-accent">
           Brief · {formatDateTimeEyebrow(data.scheduledAtISO)}
