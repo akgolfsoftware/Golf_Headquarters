@@ -9,7 +9,7 @@ let aiEnabled = true;
 test("judge", async (t) => {
   t.mock.module("@/lib/ai/client", {
     namedExports: {
-      AI_MODEL: "test-modell",
+      modelFor: () => "test-modell",
       isAiEnabled: () => aiEnabled,
       anthropic: {
         messages: {
