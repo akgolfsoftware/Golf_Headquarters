@@ -32,7 +32,7 @@ export default async function DrillDetailPage({
   // Fallback hvis drillen ikke finnes — ærlig melding, aldri demo-innhold.
   if (!data) {
     return (
-      <V2Shell aktiv="gjor" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
+      <V2Shell aktiv="plan" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
         <TilbakeLenke href="/portal/drills">Øvelsesbank</TilbakeLenke>
         <Kort>
           <TomTilstand
@@ -75,7 +75,7 @@ export default async function DrillDetailPage({
   };
 
   return (
-    <V2Shell aktiv="gjor" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
+    <V2Shell aktiv="plan" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
       <TilbakeLenke href="/portal/drills">Øvelsesbank</TilbakeLenke>
       <DrillDetaljV2 data={v2Data} />
     </V2Shell>

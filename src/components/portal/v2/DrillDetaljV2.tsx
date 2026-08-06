@@ -94,10 +94,26 @@ export function DrillDetaljV2({ data }: { data: DrillDetaljV2Data }) {
       </div>
 
       {/* B: primær handling først */}
-      <Link href={data.hrefLeggTilIPlan} style={{ textDecoration: "none", display: "block" }}>
-        <CTAPill icon="plus" full>
-          Legg til i plan
-        </CTAPill>
+      <Link
+        href={data.hrefLeggTilIPlan}
+        data-od-id="drill-legg-i-plan"
+        className="v2-press v2-focus"
+        style={{
+          textDecoration: "none",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          minHeight: 48,
+          width: "100%",
+          borderRadius: 10,
+          background: T.handling,
+          color: T.onHandling,
+          fontFamily: T.ui,
+          fontSize: 14,
+          fontWeight: 600,
+        }}
+      >
+        Legg i neste økt
       </Link>
       <Link
         href={data.hrefBibliotek}
