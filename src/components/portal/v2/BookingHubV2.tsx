@@ -27,7 +27,6 @@ import {
   Rad,
   StatusPill,
   AvatarInit,
-  CTAPill,
   TomTilstand,
   Icon,
 } from "@/components/v2";
@@ -68,7 +67,7 @@ export function BookingHubV2({ data }: { data: BookingHubV2Data }) {
   const tomtForCredits = harPakke && credits.creditsRemaining <= 0;
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 900, margin: "0 auto" }}>
+    <div data-paper-portal-booking style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
       <div>
         <Caps>Booking · AK Golf Academy</Caps>
         <div style={{ marginTop: 10 }}>
@@ -105,10 +104,27 @@ export function BookingHubV2({ data }: { data: BookingHubV2Data }) {
         )}
 
         <div style={{ display: "flex", flexDirection: "column", gap: 8, marginTop: 16 }}>
-          <Link href="/portal/booking/ny" style={{ textDecoration: "none" }}>
-            <CTAPill icon="calendar-plus" full>
-              {tomtForCredits ? "Book — betal per time" : "Book time"}
-            </CTAPill>
+          <Link
+            href="/portal/booking/ny"
+            data-od-id="booking-book-time"
+            className="v2-press v2-focus"
+            style={{
+              textDecoration: "none",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: 8,
+              minHeight: 48,
+              width: "100%",
+              borderRadius: 10,
+              background: T.handling,
+              color: T.onHandling,
+              fontFamily: T.ui,
+              fontSize: 14,
+              fontWeight: 600,
+            }}
+          >
+            {tomtForCredits ? "Book — betal per time" : "Book time"}
           </Link>
           {/* Samme mål som BruktOppV2 sin drop-in-CTA (BookingNyV2.tsx) — ikke en ny betalingsflyt. */}
           <Link
