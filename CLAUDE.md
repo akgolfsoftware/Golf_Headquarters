@@ -145,6 +145,11 @@ tests/e2e/          # Én samlet e2e-suite (32 specs, siden 2026-08-03): a11y, P
 3. **Kjør `npm run verify` før commit** — repoet må bygge rent uten warnings.
 4. **Git:** branch (`feature/...`, `fix/...`) → commit → push (uten å spørre) → åpne PR og spør Anders om main.
    (Unntak: dokument-/regelendringer Anders eksplisitt har bedt om kan gå rett til main.)
+   **Grenen slettes når PR-en merges** (`gh pr merge --delete-branch`) — ellers gror lista igjen.
+   **Parkert arbeid arkiveres, slettes aldri:** `git tag -a arkiv/<gren> <gren> -m "..."` + `git push
+   origin --tags`, så slett grenen. Taggen bevarer alt; hent tilbake med
+   `git switch -c <gren> arkiv/<gren>`. Ryddet 06.08.2026: 17 grener → 6, ti arkivert som tagger.
+   **`git branch --merged` lyver** her (squash-merge) — sjekk `gh pr list --head <gren> --state all`.
 5. **Token-filer:** ingen låst token-kanon per nå (designlåser tømt 2026-07-25) — men ikke opprett nye
    parallelle token-systemer; vent på Open Design.
 6. **Følg gotchas-listen** (`.claude/rules/gotchas.md`) — Prisma 7 driver adapter, `pg.Pool`, zod ved
