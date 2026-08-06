@@ -11,9 +11,8 @@
  * kort), med safe-area-inset for iOS-PWA og en myk uttoning så innhold som
  * ruller under ikke kolliderer visuelt med knappen.
  *
- * `PrimaerKnapp` er den ene store lime handlingen (54px, 16px radius) som fram
- * til nå var kopiert i fire filer — én kilde gjør at tommel-sonen ser lik ut
- * i hurtigmodus, slag-modus og oppsummering.
+ * `PrimaerKnapp` er den ene oransje «Én ting nå»-handlingen (T.handling)
+ * i runde-føringen — Paper-fasit playerhq-runde-live.html.
  */
 
 import type { CSSProperties, ReactNode } from "react";
@@ -66,10 +65,10 @@ export function PrimaerKnapp({
         cursor: venter ? "wait" : disabled ? "default" : "pointer",
         width: "100%",
         height: 54,
-        borderRadius: 16,
+        borderRadius: 10,
         border: "none",
-        background: T.lime,
-        color: T.onLime,
+        background: T.handling,
+        color: T.onHandling,
         fontFamily: T.disp,
         fontSize: 16,
         fontWeight: 700,
@@ -78,7 +77,7 @@ export function PrimaerKnapp({
         justifyContent: "center",
         gap: 8,
         opacity: disabled ? 0.5 : venter ? 0.75 : 1,
-        boxShadow: "0 10px 34px color-mix(in srgb, var(--v2-lime) 28%, transparent)",
+        boxShadow: "none",
         ...style,
       }}
     >
