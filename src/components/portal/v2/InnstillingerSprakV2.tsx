@@ -53,7 +53,7 @@ export function InnstillingerSprakV2({ data }: { data: InnstillingerSprakData })
   }
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+    <div data-paper-portal-innstillinger-sprak style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
         <Tittel mobile={mobile}>Språk og region</Tittel>
         {lagret && <StatusPill tone="lime">Lagret</StatusPill>}

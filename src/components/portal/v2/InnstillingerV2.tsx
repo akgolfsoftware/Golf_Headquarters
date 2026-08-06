@@ -17,7 +17,6 @@ import {
   Rad,
   StatusPill,
   Icon,
-  CTAPill,
 } from "@/components/v2";
 
 /* ── Datakontrakt ──────────────────────────────────────────────────── */
@@ -69,7 +68,7 @@ function Toggle({ on, onToggle, label }: { on: boolean; onToggle: () => void; la
         flex: "none",
         position: "relative",
         display: "inline-block",
-        background: on ? T.lime : T.panel3,
+        background: on ? T.handling : T.panel3,
         border: `1px solid ${on ? "transparent" : T.borderS}`,
         transition: "background 160ms",
       }}
@@ -82,7 +81,7 @@ function Toggle({ on, onToggle, label }: { on: boolean; onToggle: () => void; la
           width: 16,
           height: 16,
           borderRadius: 9999,
-          background: on ? T.onLime : T.mut,
+          background: on ? T.onHandling : T.mut,
           transition: "left 160ms",
         }}
       />
@@ -329,7 +328,7 @@ export function InnstillingerV2({ data }: { data: InnstillingerData }) {
       : "299 kr/mnd";
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+    <div data-paper-portal-innstillinger style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
       <Tittel mobile={mobile}>Innstillinger</Tittel>
 
       {/* B: status først */}
@@ -347,9 +346,10 @@ export function InnstillingerV2({ data }: { data: InnstillingerData }) {
       </div>
 
       <Link href="/portal/meg" style={{ textDecoration: "none", display: "block" }}>
-        <CTAPill icon="arrow-left" full>
-          Tilbake til Meg
-        </CTAPill>
+        <span style={{
+            display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, minHeight: 48, width: "100%", padding: "10px 16px",
+            borderRadius: 10, background: T.handling, color: T.onHandling, fontFamily: T.ui, fontSize: 14, fontWeight: 600,
+          }}>Tilbake til Meg</span>
       </Link>
 
       {mobile ? (
