@@ -403,7 +403,7 @@ export function CockpitV2({
   const innsikt = <InnsiktChip cta="Planlegg i Workbench" href="/admin/planlegge">{innsiktTekst}</InnsiktChip>;
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+    <div data-paper-agencyos-konsoll style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 960, margin: "0 auto", width: "100%" }}>
       {hode}
       {hurtig}
       {/* GO V3: NÅ øverst. Rekkefølgen er hierarkiet — det som pågår og det som
