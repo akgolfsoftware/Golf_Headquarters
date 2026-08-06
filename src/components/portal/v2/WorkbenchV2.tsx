@@ -1999,7 +1999,7 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions, w
       onDragEnd={handleWbDragEnd}
       onDragCancel={() => setActiveDrag(null)}
     >
-    <div style={{ display: "flex", flexDirection: "column", gap: T.gap, position: "relative" }}>
+    <div data-paper-workbench style={{ display: "flex", flexDirection: "column", gap: T.gap, position: "relative", maxWidth: 1200, margin: "0 auto", width: "100%" }}>
       {visColdstartTips && (
         <Kort pad="12px 14px" style={{ border: `1px solid color-mix(in srgb, ${T.lime} 28%, ${T.border})` }}>
           <div style={{ display: "flex", alignItems: "flex-start", gap: 12, flexWrap: "wrap" }}>
@@ -2191,7 +2191,7 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions, w
           )}
           {actions &&
             !(role === "player" && (optimisticStatus ?? planStatus) === "PENDING_PLAYER") && (
-            <Knapp icon="send" onClick={handlePublish} disabled={pubLoading}>{pubLoading ? "Publiserer…" : "Publiser"}</Knapp>
+            <Knapp icon="send" onClick={handlePublish} disabled={pubLoading} style={{ background: T.handling, color: T.onHandling }}>{pubLoading ? "Publiserer…" : "Publiser"}</Knapp>
           )}
         </div>
       </div>
@@ -2234,7 +2234,7 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions, w
           {actions &&
             !(role === "player" && (optimisticStatus ?? planStatus) === "PENDING_PLAYER") && (
             <div style={{ flex: 1 }}>
-              <Knapp icon="send" full onClick={handlePublish} disabled={pubLoading}>{pubLoading ? "Publiserer…" : "Publiser"}</Knapp>
+              <Knapp icon="send" full onClick={handlePublish} disabled={pubLoading} style={{ background: T.handling, color: T.onHandling }}>{pubLoading ? "Publiserer…" : "Publiser"}</Knapp>
             </div>
           )}
           {(actions?.suggestWeek || actions?.duplicateWeek) && (
