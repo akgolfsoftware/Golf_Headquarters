@@ -24,7 +24,7 @@ export interface TalentMinPlanData {
 
 export function TalentMinPlanV2({ data }: { data: TalentMinPlanData }) {
   return (
-    <div data-paper-portal-talent-min-plan style={ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }>
+    <div data-paper-portal-talent-min-plan style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
       {/* Hode */}
       <div>
         <Caps>Talent · Min plan</Caps>
