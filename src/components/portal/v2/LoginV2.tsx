@@ -108,7 +108,7 @@ function Felt({
   );
 }
 
-/** primary=lime CTA · ghost=panel. hvit-varianten fra mockup brukes ikke på login. */
+/** primary=T.handling (Paper Én ting) · ghost=panel. */
 function Knapp({
   children,
   icon,
@@ -128,7 +128,7 @@ function Knapp({
 }) {
   const v: CSSProperties =
     variant === "primary"
-      ? { background: T.lime, color: T.onLime, border: "none" }
+      ? { background: T.handling, color: T.onHandling, border: "none" }
       : { background: T.panel3, color: T.fg, border: `1px solid ${T.borderS}` };
   return (
     <button
@@ -512,6 +512,7 @@ function LoginKort() {
 export function LoginV2() {
   return (
     <div
+      data-paper-innlogging
       style={{
         minHeight: "100vh",
         display: "flex",
