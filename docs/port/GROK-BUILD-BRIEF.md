@@ -120,7 +120,64 @@ Kort fasit — full versjon i `monsterdokument-paper.md` og `.claude/rules/arkit
 
 ---
 
-## 4. Ikke ødelegg noe — sikkerhetsregler for Grok spesifikt
+## 4. Verifisering — hvordan Grok BEVISER at en skjerm er identisk
+
+Skjermbilde-gaten i §7 er den bindende, MENNESKELIGE sjekken — Anders ser og godkjenner. Men
+Grok trenger noe å teste MOT før den ber om den godkjenningen, ellers er «identisk» bare en
+påstand. Dette repoet har tre uavhengige, maskinelle sjekker — bruk alle tre, i denne
+rekkefølgen, FØR skjermbildene sendes til Anders:
+
+### 4.1 Token-compliance (finnes allerede, null nye avhengigheter)
+```bash
+node scripts/check-token-gap.mjs
+```
+Fanger hardkodet hex/px utenfor `--`-tokens — samme skript som kjører i `npm run verify` og CI.
+Feiler denne, er skjermen garantert IKKE identisk med Paper-fasiten uansett hvordan den ser ut
+visuelt, fordi fasiten aldri bruker rå hex/px (§3 over, §7 i `monsterdokument-paper.md`).
+
+### 4.2 Pixel-for-pixel visuell diff (nytt, Playwright-native, null nye avhengigheter)
+`tests/e2e/_paper-fasit-helpers.ts` + `tests/e2e/paper-visual/portal-analysere.visual.spec.ts`
+(eksempel-mønster, kopier for hver ny skjerm) sammenligner et faktisk skjermbilde av den BYGDE
+ruta mot et skjermbilde av FASIT-HTML-filen — pixel for pixel, med Playwright sin innebygde
+`toHaveScreenshot()` (bruker `pixelmatch` internt, allerede en del av `@playwright/test`, ingen
+ny `npm install`). Helper-filen forklarer hvorfor: fasit-filene er demo-stillas
+(`data-theme`-attributt for tema, `[data-tilstand]`-knapper for Suksess/Tom/Laster/Feil,
+`[data-demo-only]`/`.state-switch` som ALDRI skal porteres) — helperen setter riktig tilstand og
+skjuler demo-kromet før skjermbildet tas, slik at det kun er ekte innhold som sammenlignes.
+
+**Bruk (per skjerm):**
+1. **Seed** baseline fra fasit-filen ÉN gang (og på nytt hvis fasiten endres):
+   ```bash
+   PAPER_SEED=1 npx playwright test tests/e2e/paper-visual/<skjerm>.visual.spec.ts --update-snapshots
+   ```
+   Commit de resulterende PNG-ene i `<fil>-snapshots/` — det er nå den faste referansen.
+2. **Sjekk** den bygde ruta mot den referansen, hver gang koden endres:
+   ```bash
+   npx playwright test tests/e2e/paper-visual/<skjerm>.visual.spec.ts
+   ```
+   Rødt → åpne `test-results/…/*-diff.png` (Playwright genererer den automatisk) og se nøyaktig
+   hvor det avviker, før noe sendes til Anders.
+3. Kopier eksempel-spec-en for hver nye skjerm: bytt `FASIT_ABS_PATH`, `BUILT_ROUTE` og
+   `BUILT_CONTENT_SELECTOR` (må pekes til den bygde sidens faktiske innholds-wrapper, ikke
+   rail/nav-chrome rundt den). `maxDiffPixelRatio: 0.04` er en romslig terskel (font-rendering/
+   anti-aliasing varierer selv ved identisk layout) — IKKE sett til 0, men stram inn om ønskelig.
+
+Dette fanger layout-, spacing- og fargedrift maskinelt. Det fanger IKKE feil interaksjon
+(sjekkes ved klikk-verifisering, §7 punkt 7) eller diktet copy (sjekkes manuelt mot
+`docs/skjermtekst/`).
+
+### 4.3 Fasit-samsvar som tekst (rask sunn fornuft-sjekk)
+Før du åpner PR: les gjennom fasit-HTML-filen (eller mønsterdokument-seksjonen) én gang til og
+kryss av punktene i §6 «Ferdig-definisjon» manuelt — antall oransje handlinger, alle fire
+tilstander bygget, artefaktpanel-bredde (380/360px), trådbredde (74ch/720px). De tre sjekkene
+over er maskinelle støtter, ikke en fullstendig erstatning for å faktisk lese fasiten.
+
+**Rekkefølge:** 4.1 → 4.2 → 4.3 → skjermbilder til Anders (§7 steg 5). Ingen av de tre erstatter
+skjermbilde-gaten — de reduserer sjansen for at Anders oppdager noe en maskin kunne fanget først.
+
+---
+
+## 5. Ikke ødelegg noe — sikkerhetsregler for Grok spesifikt
 
 Disse er ufravikelige fordi Grok jobber uten hookene (`beskytt.mjs`, `kvalitetsjekk.mjs`) som
 håndhever dem automatisk i Claude Code-økter i dette repoet:
@@ -144,7 +201,7 @@ håndhever dem automatisk i Claude Code-økter i dette repoet:
 
 ---
 
-## 5. Steg-for-steg-arbeidsflyt (per skjerm, følges nøyaktig)
+## 6. Steg-for-steg-arbeidsflyt (per skjerm, følges nøyaktig)
 
 **Steg 0 — engangs, kun første gang på denne maskinen:**
 ```bash
@@ -181,6 +238,9 @@ npm run verify && npm test
 ```
 Begge grønt, uten warnings, før noe committes.
 
+**Steg 4b — maskinell fasit-sjekk (§4 — token-gap + pixel-diff + tekst-sjekk).** Kjør dette FØR
+skjermbilder tas i steg 5, ikke etterpå — en rød pixel-diff her sparer en runde med Anders.
+
 **Steg 5 — skjermbilde-gate (bindende, ikke valgfri):**
 Ta skjermbilde av den KJØRENDE appen (lokal dev-server eller Vercel-preview), innlogget
 testbruker med ekte data:
@@ -207,7 +267,7 @@ og eksplisitt godkjent i samtalen — først da merger (Anders, eller på hans e
 
 ---
 
-## 6. Ferdig-definisjon (kopiert fra plan-dokumentet — dette ER kvalitetsporten)
+## 7. Ferdig-definisjon (kopiert fra plan-dokumentet — dette ER kvalitetsporten)
 
 En skjerm er ferdig når ALLE 8 punktene er oppfylt — CI grønt alene er IKKE nok:
 
@@ -222,12 +282,15 @@ En skjerm er ferdig når ALLE 8 punktene er oppfylt — CI grønt alene er IKKE 
 
 ---
 
-## 7. Kort oppsummering å lime inn til Grok
+## 8. Kort oppsummering å lime inn til Grok
 
 > Les `docs/port/GROK-BUILD-BRIEF.md` i sin helhet først. Deretter, i rekkefølge:
 > `docs/port/fasit-liste-paper.md` → `docs/port/monsterdokument-paper.md` →
 > `docs/port/plan-designport-alle-skjermer.md`. Pakk zip-innholdet fra Claude Design inn i
 > `designsystem/paper/` (ikke rør noe utenfor den mappa). Bygg ÉN skjerm om gangen, alltid egen
-> branch + draft-PR, aldri push til `main`, alltid `npm run verify && npm test` grønt før commit,
-> alltid skjermbilde-gaten (§5 steg 5 / §6) før du ber om godkjenning. Er du usikker på et
-> designmønster: stopp og spør — ikke gjett og ikke bygg en ny komponent på egen hånd.
+> branch + draft-PR, aldri push til `main`, alltid `npm run verify && npm test` grønt før commit.
+> Før skjermbilder tas: kjør de tre maskinelle fasit-sjekkene i §4 (token-gap, pixel-diff mot
+> fasit-HTML via `tests/e2e/paper-visual/`, tekst-sjekk) — en rød sjekk der betyr skjermen IKKE
+> er identisk, ikke send den til Anders ennå. Deretter alltid skjermbilde-gaten (§6 steg 5 / §7)
+> før du ber om godkjenning. Er du usikker på et designmønster: stopp og spør — ikke gjett og
+> ikke bygg en ny komponent på egen hånd.
