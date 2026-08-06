@@ -327,6 +327,35 @@ mønsterdokumentet) → `npm run verify && npm test` grønt → 4 skjermbilder (
 1280px lys/mørk) side om side med fasit, sendt I CHATTEN → «Venter på ditt ja» → først etter
 ja: PR. Aldri merge uten eksplisitt ja.
 
+## Løpende skjermdesign fra 2026-08-06 (Anders' føring)
+
+Fra og med 06.08.2026 designes og bygges de resterende skjermene **løpende**, ikke i store
+bølge-godkjenninger: én skjerm bygges, skjermbilde-gaten (§Ferdig-definisjon per skjerm)
+kjøres, Anders sier ja, neste skjerm starter — uten å stoppe for ny overordnet plangodkjenning
+mellom hver. Modellen for dette arbeidet er **Sonnet 5**, ikke bare i Fase 2-økten omtalt over,
+men gjennomgående for resten av porteringen (token-effektivt, matcher modellruting i
+`docs/ak-master.md` §15/§25 punkt 6 for tekst-/skjermarbeid).
+
+**Rekkefølgen står uendret** (§Revidert steg 7-plan, deretter Bølge 2 AgencyOS, deretter Bølge
+3) — funksjonsprioriteringen Anders ga 06.08.2026 (mobil: oversikt/gjennomføre trening/gjennomføre
+tester/SG-punching under runde/kommunikasjon; desktop: full planlegging år→økt + analyse/
+sammenligning/turneringsplanlegging) brukes som fasit for **innholdet** i hver skjerm når den
+kommer opp i tur, ikke for å hoppe i køen.
+
+**Tre avklaringer fra samme samtale, gjelder alle skjermer fra nå av:**
+1. **Desktop vs. mobil (PlayerHQ):** samme 4 hovedområder på begge — ingen egen
+   desktop-navigasjon. Mobil viser ett lag om gangen (oversikt → trykk inn i dybden), desktop
+   viser flere lag samtidig (f.eks. full årsplan + ukesdetalj + øktdetalj side ved side i
+   Plan-området). Full funksjonsparitet begge steder — ingenting fjernes på mobil.
+2. **AgencyOS mobil:** full navigasjon, samme som desktop — ingen egen «under økt»-modus.
+3. **Kommunikasjon (trener/grupper/venner):** finnes ikke som ekte meldingsfunksjon i dag (kun
+   `Question`-modellen for spørsmål-til-coach og `Friendship` for venneforespørsler — ingen
+   chat-tråder, ingen gruppemeldinger). Anders har bekreftet full chat skal bygges nå, ikke
+   utsettes. Når «Kommuniser»-skjermene nås i rekkefølgen: dette er IKKE ren
+   komponent-sammensetting — det krever en egen liten plan (nye Prisma-modeller for
+   meldinger/tråder + migrasjon, kirurgisk `db execute`-mønster jf. gotchas.md) FØR skjermen kan
+   være produksjonsklar, ikke bare et wireframe. Stopp og legg fram den planen når steget nås.
+
 ## Fortsett fra en annen maskin
 
 ```
