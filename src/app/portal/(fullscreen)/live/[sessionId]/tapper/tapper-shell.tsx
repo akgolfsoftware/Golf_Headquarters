@@ -157,8 +157,13 @@ export function TapperShell({ sessionId, facilityLabel, defaultClubs, coachPanel
 
   return (
     <div
-      className="fixed inset-0 grid grid-rows-[56px_1fr_auto] overflow-hidden bg-[#0A1F18] text-white"
-      style={{ paddingTop: "env(safe-area-inset-top)" }}
+      data-paper-portal-live-tapper
+      className="fixed inset-0 grid grid-rows-[56px_1fr_auto] overflow-hidden text-white"
+      style={{
+        paddingTop: "env(safe-area-inset-top)",
+        // Paper live-tapper: mørk flate (rail-blekk) — ikke lime-tema
+        background: "var(--v2-rail, #141413)",
+      }}
     >
       {/* Radial accent */}
       <div
@@ -199,9 +204,9 @@ export function TapperShell({ sessionId, facilityLabel, defaultClubs, coachPanel
         <button
           type="button"
           onClick={() => setShowClubPicker((v) => !v)}
-          className="inline-flex items-center gap-2 rounded-full border-2 border-accent bg-[color-mix(in srgb, var(--v2-lime) 8%, transparent)] px-6 py-2.5 font-sans text-[14px] font-semibold text-white transition-colors hover:bg-[color-mix(in srgb, var(--v2-lime) 14%, transparent)]"
+          className="inline-flex items-center gap-2 rounded-full border-2 border-white/25 bg-white/[0.06] px-6 py-2.5 font-sans text-[14px] font-semibold text-white transition-colors hover:bg-white/10"
         >
-          <span className="text-accent">▲</span>
+          <span className="text-white/70">▲</span>
           <span className="font-semibold text-[15px]">
             {activeClub?.name ?? "Velg kølle"}
           </span>
@@ -223,7 +228,7 @@ export function TapperShell({ sessionId, facilityLabel, defaultClubs, coachPanel
                 }}
                 className={`min-h-[44px] rounded-full px-4 py-2 font-sans text-[13px] font-medium transition-colors ${
                   c.id === activeClubId
-                    ? "bg-accent text-accent-foreground"
+                    ? "bg-white text-black"
                     : "border border-white/15 bg-white/5 text-white hover:bg-white/10"
                 }`}
               >
@@ -234,11 +239,11 @@ export function TapperShell({ sessionId, facilityLabel, defaultClubs, coachPanel
         )}
 
         <div
-          className="mt-8 font-mono font-medium leading-[0.9] text-accent tabular-nums"
+          className="mt-8 font-mono font-medium leading-[0.9] text-white tabular-nums"
           style={{
             fontSize: "clamp(120px, 28vw, 220px)",
             letterSpacing: "-0.06em",
-            textShadow: "0 0 40px color-mix(in srgb, var(--v2-lime) 32%, transparent)",
+            textShadow: "none",
           }}
         >
           {activeCount}
@@ -258,8 +263,8 @@ export function TapperShell({ sessionId, facilityLabel, defaultClubs, coachPanel
               {counts[c.id] ?? 0}
             </div>
           ))}
-          <div className="inline-flex items-baseline gap-1.5 font-mono text-[14px] font-medium tabular-nums text-accent">
-            <span className="font-normal text-accent/65">Totalt</span>
+          <div className="inline-flex items-baseline gap-1.5 font-mono text-[14px] font-medium tabular-nums text-white">
+            <span className="font-normal text-white/65">Totalt</span>
             {totalCount}
           </div>
         </div>
@@ -317,9 +322,9 @@ export function TapperShell({ sessionId, facilityLabel, defaultClubs, coachPanel
           disabled={paused}
           className="flex h-[120px] w-full flex-col items-center justify-center gap-1 rounded-[20px] text-foreground transition-transform active:scale-[0.985] disabled:opacity-50"
           style={{
-            background: `linear-gradient(180deg, ${T.farge.limeMerke} 0%, ${T.farge.limeHover} 100%)`,
-            boxShadow:
-              "0 0 0 1px color-mix(in srgb, var(--v2-lime) 50%, transparent), 0 18px 40px color-mix(in srgb, var(--v2-lime) 22%, transparent)",
+            background: "var(--v2-fg, #faf9f5)",
+            color: "var(--v2-bg, #141413)",
+            boxShadow: "none",
           }}
         >
           <span
@@ -337,7 +342,16 @@ export function TapperShell({ sessionId, facilityLabel, defaultClubs, coachPanel
         </button>
 
         {/* Mobile pause/stop row */}
-        <div className="mt-2 flex gap-2 sm:hidden">
+        <div className="mt-2 flex flex-col gap-2 sm:hidden">
+          <button
+            type="button"
+            onClick={() => void avslutt()}
+            data-od-id="tapper-avslutt"
+            className="flex min-h-[48px] w-full items-center justify-center rounded-2xl font-sans text-[14px] font-semibold transition-colors"
+            style={{ background: T.handling, color: T.onHandling }}
+          >
+            Avslutt og lagre
+          </button>
           <button
             type="button"
             onClick={() => {
@@ -346,16 +360,9 @@ export function TapperShell({ sessionId, facilityLabel, defaultClubs, coachPanel
                 return !p;
               });
             }}
-            className="min-h-[56px] flex-1 rounded-2xl border border-white/20 bg-white/[0.04] font-sans text-[14px] font-medium text-white transition-colors hover:bg-white/10"
+            className="min-h-[48px] w-full rounded-2xl border border-white/20 bg-white/[0.04] font-sans text-[14px] font-medium text-white transition-colors hover:bg-white/10"
           >
             {paused ? "Fortsett" : "Pause"}
-          </button>
-          <button
-            type="button"
-            onClick={() => void avslutt()}
-            className="min-h-[56px] flex-1 rounded-2xl border border-white/20 bg-white/[0.04] text-center font-sans text-[14px] font-medium text-white transition-colors hover:bg-white/10"
-          >
-            Avslutt
           </button>
         </div>
 
