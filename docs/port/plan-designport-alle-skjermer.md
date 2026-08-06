@@ -157,10 +157,10 @@ fordi skjermantallet ikke er kjent før steg 2.
 | 5A — Farger inn i `--v2-*` | Ferdig (PR #262) |
 | 5B — Form: radius/avstand/typografi | Ferdig (PR #270–273) |
 | 6 — Fjern 419 hardkodede farger | Ferdig (PR #274) |
-| 7 — Bølge 1: PlayerHQ | I gang — se delstatus under |
-| 8 — Bølge 2: AgencyOS | Ikke startet — de 2 avklaringene som blokkerte er løst av Anders 2026-08-04 (se §Fase 1-planlegging «To rute-beslutninger» under); venter kun på tur i rekkefølgen |
-| 9 — Bølge 3: resten | Ikke startet — WANG/GFGK må telles med i skjermoversikten først (`fasit-liste-paper.md` §Åpne punkter 3) |
-| 10 — Steng døra (lint-gate) | `scripts/check-token-gap.mjs` bygget og koblet inn i verify+CI — [PR #279](https://github.com/akgolfsoftware/Golf_Headquarters/pull/279), IKKE merget ennå |
+| 7 — Bølge 1: PlayerHQ | **Ferdig for fasit-dekkede ruter** (2026-08-06) — se `portstatus-paper.md` |
+| 8 — Bølge 2: AgencyOS | **Ferdig for fasit-dekkede ruter** (2026-08-06) — konsoll, innboks, kalender, stall, profil, økonomi, settings, agenticos, live, AK-stigen |
+| 9 — Bølge 3: resten | Felles ferdig (login, forelder, booking, fangst). ~300 skjermer **uten fasit** gjenstår — ny designrunde |
+| 10 — Steng døra (lint-gate) | `scripts/check-token-gap.mjs` i verify+CI |
 
 ### Steg 7 delstatus (PlayerHQ, 151 skjermer)
 
@@ -171,16 +171,19 @@ fordi skjermantallet ikke er kjent før steg 2.
 > med selv i beskrivelsen). Ny FAST regel (beslutninger.md 2026-08-04): **skjermbilde-gate** —
 > ingen skjerm-PR merges uten app/fasit side om side i PR-beskrivelsen.
 
-**De 6 fasit-dekkede rutene:**
+**Fasit-dekkede ruter (oppdatert 2026-08-06):** alle kjerne- + W1- + AgencyOS- + felles-ruter
+er merget etter Anders' ja. Komplett tabell med PR-nummer: **`portstatus-paper.md`**.
 
-| Rute | Status |
+| Rute | Status (kort) |
 |---|---|
-| `/portal` (Hjem) | Merget (PR #275) — **må ombygges, se avviksliste A1** |
-| `/portal/planlegge` | Merget (PR #276) — **må ombygges, se avviksliste A2** |
-| `/portal/analysere` | Merget (PR #277) — mangler «Én ting nå» (A3); full visuell kontroll gjenstår |
-| `/portal/meg` | Merget (PR #278) — mangler «Én ting nå»/lydsamtykke (A4); full visuell kontroll gjenstår |
-| `/portal/booking` | [PR #281](https://github.com/akgolfsoftware/Golf_Headquarters/pull/281) åpnet 2026-08-04, IKKE merget — bygget om til timer/credits-oversikt som landing (Anders' instruks), ikke restyling av den gamle 4-stegs veiviseren |
-| `/portal/planlegge/workbench` (Workbench mobil) | Mobilflaten `WorkbenchV2Mobil.tsx` finnes og er ferdig — men fasitens **Testbatteri-ark** (`sheetTest`, Tester-seksjon per økt) er IKKE bygget, se ny beslutning under |
+| `/portal` (Hjem) | Portet #307 (A1-runde) |
+| `/portal/planlegge` | Portet #308 |
+| `/portal/analysere` | Portet #309 |
+| `/portal/meg` | Portet #310 |
+| `/portal/booking` | Portet #328 |
+| Workbench + turnering-fane | Portet #329 + #342 |
+| AgencyOS (9+ flater) | Portet #330–#337, #341, #343 |
+| Auth / forelder / marketing booking | Portet #338–#340, #345 |
 
 ### Avviksliste (verifisert mot fasit + kode 2026-08-04)
 

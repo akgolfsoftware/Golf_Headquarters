@@ -3,17 +3,26 @@
 Fase 0–4-dokumentene her (`fase0`–`fase4`, `steg5-kontroll`, kontroll-filene) er
 **frosset underlag** — historikk fra kartleggingen, vedlikeholdes ikke.
 
-`fasit-liste-paper.md` er derimot **levende** — oppdateres når Claude Design-prosjektet
-(`605a48cc`, «AK Golf HQ — Claude Paper») får nye fasitskjermer.
+## Levende dokumenter (les disse)
+
+| Fil | Rolle |
+|---|---|
+| **`portstatus-paper.md`** | **Hva er designet, portet og godkjent i main** — oppdater ved hver batch |
+| `fasit-liste-paper.md` | Fasit-fil ↔ rute (hva finnes i Claude Design) |
+| `plan-designport-alle-skjermer.md` | Arbeidsplan / steg 1–10 |
+| `GROK-BUILD-BRIEF.md` | Instruks for trygg skjermport |
+
+`portstatus-paper.md` er sannhetskilden for «er denne skjermen inne?».  
+`fasit-liste-paper.md` er sannhetskilden for «finnes det en tegnet fasit?».
 
 Én levende plan: `plan-designport-alle-skjermer.md` — full Paper-port av skjermene, **i gang**
 siden Anders overstyrte invariant 2 eksplisitt 2026-08-03 (se
-`.claude/rules/beslutninger.md` §Tema/design). Ikke lenger betinget av noen pilot-evaluering.
+`.claude/rules/beslutninger.md` §Tema/design).
+
+**Status 2026-08-06:** Alle Paper-fasitskjermer med rute er portet og merget (#307–#345).
+Gjenstår: PR-E (testantall) og PR-F (DataGolf) som beslutninger, pluss ~300 app-skjermer
+uten fasit (ny designrunde).
 
 **`designsystem/paper/` er et lokalt speil av Claude Design-prosjektet** (hentet ned i PR #254,
-02.08.2026, ikke lenger kun på grenen `chore/paper-speil-lokal`). Det er IKKE kilden — Claude
-Design-prosjektet `605a48cc` er. Speilet må re-synkes derfra. **Kjent per 05.08.2026: speilet
-er utdatert** — `designsystem/paper/fase1/` har 25 skjermer, det ekte prosjektet har 33 (8 nye,
-se `fasit-liste-paper.md`). Sjekk om speilet faktisk fortsatt brukes noe sted i verify-/CI-steg
-før neste re-sync — er det bare dokumentasjon som leser det, kan det holde å oppdatere det ved
-neste steg-2-kjøring i stedet for på hver design-endring.
+02.08.2026). Det er IKKE kilden — Claude Design-prosjektet `605a48cc` er. Speilet re-synkes
+ved design-endring. Visual seeds: `tests/e2e/paper-visual/`.
