@@ -225,7 +225,11 @@ export function RundeLoggKlient({ modus, baner }: RundeLoggKlientProps) {
   const lukk = () => router.push("/portal/mal/runder");
 
   return (
-    <div data-paper-portal-runde-live style={{ minHeight: "100dvh", background: T.bg }}>
+    <div
+      data-paper-portal-runde-live={modus === "live" ? true : undefined}
+      data-paper-portal-runde-logg={modus === "etterpaa" ? true : undefined}
+      style={{ minHeight: "100dvh", background: T.bg }}
+    >
       {/* safe-area-top: fullskjerm-flate uten shell — topplinja må ikke kollidere
           med iOS-statusbaren (klokke/batteri) i PWA-modus. */}
       <div style={{ maxWidth: 720, margin: "0 auto", padding: "calc(14px + env(safe-area-inset-top)) 16px 32px" }}>
