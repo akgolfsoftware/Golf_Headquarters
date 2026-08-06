@@ -10,6 +10,7 @@ import { fmtMSS } from "@/lib/portal-live/format";
 import { DrillLogger } from "./DrillLogger";
 import { SessionTimer } from "./SessionTimer";
 import { LiveCoachPanel } from "./LiveCoachPanel";
+import { LiveLoopNav } from "./LiveLoopNav";
 import { completeDrill, completeSession, startSession, logDrillReps } from "@/app/portal/(fullscreen)/live/[sessionId]/actions";
 import {
   lagreLiveDrillUtkast,
@@ -88,21 +89,22 @@ function ConfirmOverlay({ show, onConfirm, onCancel }: ConfirmOverlayProps) {
           Fremgangen din blir lagret. Du kan fortsette senere.
         </p>
         <div className="flex flex-col gap-2">
-          {/* B: primær = fortsett (lime); avslutt er sekundær */}
-          <button
-            type="button"
-            onClick={onCancel}
-            className="w-full rounded-full py-[14px] font-mono text-[12px] font-bold uppercase tracking-[0.08em] text-accent-foreground"
-            style={{ background: "var(--lime-500)", minHeight: 48 }}
-          >
-            Fortsett økt
-          </button>
+          {/* Paper: «Avslutt og logg» er Én ting nå (handling); fortsett er blekk */}
           <button
             type="button"
             onClick={onConfirm}
-            className="w-full rounded-full border border-destructive/25 bg-destructive/10 py-[13px] font-mono text-[12px] font-bold uppercase tracking-[0.08em] text-destructive"
+            data-od-id="live-avslutt"
+            className="w-full rounded-[10px] py-[14px] font-sans text-[14px] font-semibold"
+            style={{ background: T.handling, color: T.onHandling, minHeight: 48, border: "none" }}
           >
             Avslutt og lagre
+          </button>
+          <button
+            type="button"
+            onClick={onCancel}
+            className="w-full rounded-[10px] border border-background/25 bg-background/10 py-[13px] font-sans text-[13px] font-medium text-background"
+          >
+            Fortsett økt
           </button>
         </div>
       </div>
@@ -538,10 +540,9 @@ export function LiveActive({ data, coachPanel }: { data: LiveV2Session; coachPan
 
   return (
     <div
+      data-paper-portal-live-active
       className="fixed inset-0 z-50 flex flex-col overflow-hidden"
       style={{
-        // Samme mørke forest-flate som resten av live-flyten (brief/logger/
-        // oppsummering) — komponenten sto tidligere i lyse shadcn-tokens.
         background: LIVE_BG_GRADIENT,
         isolation: "isolate",
       }}
@@ -551,7 +552,7 @@ export function LiveActive({ data, coachPanel }: { data: LiveV2Session; coachPan
         show={showConfirm}
         onConfirm={() => {
           setShowConfirm(false);
-          router.replace("/portal/planlegge");
+          void completeSession(data.sessionId, totalSec);
         }}
         onCancel={() => setShowConfirm(false)}
       />
@@ -579,7 +580,8 @@ export function LiveActive({ data, coachPanel }: { data: LiveV2Session; coachPan
       </header>
 
       {/* Scrollbart innhold */}
-      <main className="flex flex-1 flex-col overflow-y-auto px-[14px] py-[14px]" style={{ minHeight: 0 }}>
+      <main className="flex flex-1 flex-col overflow-y-auto px-[14px] py-[14px]" style={{ minHeight: 0, maxWidth: 720, margin: "0 auto", width: "100%" }}>
+        <LiveLoopNav aktiv="under" sessionId={data.sessionId} />
 
         {/* Tom-tilstand: økt uten drills — ærlig melding + vei videre, i
             stedet for «Trykk Logg rep»-copy som pekte på en knapp som ikke
@@ -596,8 +598,7 @@ export function LiveActive({ data, coachPanel }: { data: LiveV2Session; coachPan
             <button
               type="button"
               onClick={() => router.replace("/portal/planlegge/workbench")}
-              className="mt-[14px] rounded-full border-none px-6 py-3 font-mono text-[11px] font-bold uppercase tracking-[0.06em] text-accent-foreground"
-              style={{ background: "var(--lime-500)" }}
+              className="mt-[14px] rounded-[10px] border border-background/25 bg-background/10 px-6 py-3 font-sans text-[13px] font-semibold text-background"
             >
               Til planen
             </button>
@@ -677,10 +678,11 @@ export function LiveActive({ data, coachPanel }: { data: LiveV2Session; coachPan
             <button
               type="button"
               onClick={() => void completeSession(data.sessionId, totalSec)}
-              className="mt-[14px] rounded-full border-none px-6 py-3 font-mono text-[12px] font-bold uppercase tracking-[0.08em] text-accent-foreground"
-              style={{ background: "var(--lime-500)" }}
+              data-od-id="live-avslutt"
+              className="mt-[14px] w-full rounded-[10px] border-none px-6 py-3 font-sans text-[14px] font-semibold"
+              style={{ background: T.handling, color: T.onHandling }}
             >
-              Se oppsummering
+              Avslutt og logg økta
             </button>
           </div>
         )}
@@ -741,13 +743,25 @@ export function LiveActive({ data, coachPanel }: { data: LiveV2Session; coachPan
             paddingBottom: "max(env(safe-area-inset-bottom), 16px)",
             background: T.farge.inkMerkeA92,
             backdropFilter: "blur(8px)",
+            maxWidth: 720,
+            margin: "0 auto",
+            width: "100%",
           }}
         >
           <button
             type="button"
+            onClick={() => setShowConfirm(true)}
+            data-od-id="live-avslutt"
+            className="w-full rounded-[10px] border-none py-3.5 font-sans text-[14px] font-semibold active:scale-[0.98]"
+            style={{ background: T.handling, color: T.onHandling, minHeight: 48 }}
+          >
+            Avslutt og logg økta
+          </button>
+          <button
+            type="button"
             onClick={handleLogRep}
-            className="w-full rounded-full border-none py-4 font-mono text-[13px] font-bold uppercase tracking-[0.08em] text-accent-foreground active:scale-[0.98]"
-            style={{ background: "var(--lime-500)", minHeight: 52 }}
+            className="mt-2 w-full rounded-[10px] border border-background/25 bg-background/10 py-3.5 font-sans text-[13px] font-semibold text-background active:scale-[0.98]"
+            style={{ minHeight: 48 }}
           >
             Logg rep
           </button>
