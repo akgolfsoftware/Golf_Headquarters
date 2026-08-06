@@ -31,8 +31,8 @@ export default async function OktDetaljPage({
   const data = await getOktDetaljData(user.id, id);
 
   return (
-    <V2Shell aktiv="gjor" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
-      <TilbakeLenke href="/portal/gjennomfore">Gjør</TilbakeLenke>
+    <V2Shell aktiv="plan" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
+      <TilbakeLenke href="/portal/planlegge">Plan</TilbakeLenke>
       <OktV2 data={data} onSettPyramide={settDrillPyramide} />
     </V2Shell>
   );
