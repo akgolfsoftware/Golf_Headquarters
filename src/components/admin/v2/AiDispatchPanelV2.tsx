@@ -4,7 +4,7 @@
  * AI-dispatch-panel — komplett polish (Mobbin-inspo: Linear · Superhuman · Notion AI).
  *
  * Hierarki (5 sek):
- * 1) Én ting NÅ (lime) → 2) mini-status → 3) haster-rader → 4) valgfrie → 5) snarveier
+ * 1) Én ting NÅ (handling) → 2) mini-status → 3) haster-rader → 4) valgfrie → 5) snarveier
  *
  * Tokens: AK v2. Lime KUN på NÅ/live-steg. Ingen emoji. ADHD: én primær CTA.
  */
@@ -329,11 +329,11 @@ export function AiDispatchPanelV2({ data }: { data: AiDispatchData }) {
             marginBottom: 14,
             borderRadius: 14,
             border: `1px solid ${T.borderS}`,
-            background: `linear-gradient(135deg, color-mix(in srgb, ${T.lime} 6%, ${T.panel2}) 0%, ${T.panel2} 55%)`,
+            background: `linear-gradient(135deg, color-mix(in srgb, ${T.handling} 6%, ${T.panel2}) 0%, ${T.panel2} 55%)`,
             overflow: "hidden",
             display: "flex",
             alignItems: "stretch",
-            boxShadow: `0 0 0 1px color-mix(in srgb, ${T.lime} 8%, transparent)`,
+            boxShadow: `0 0 0 1px color-mix(in srgb, ${T.handling} 8%, transparent)`,
           }}
         >
           <span
@@ -341,7 +341,7 @@ export function AiDispatchPanelV2({ data }: { data: AiDispatchData }) {
             style={{
               width: 4,
               flex: "none",
-              background: T.lime,
+              background: T.handling,
             }}
           />
           <div
@@ -358,7 +358,7 @@ export function AiDispatchPanelV2({ data }: { data: AiDispatchData }) {
           >
             <div style={{ minWidth: 0, flex: 1 }}>
               <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
-                <Caps size={9} color={T.lime}>
+                <Caps size={9} color={T.handling}>
                   Én ting NÅ
                 </Caps>
                 <Caps size={9} color={T.mut}>
@@ -381,10 +381,25 @@ export function AiDispatchPanelV2({ data }: { data: AiDispatchData }) {
             </div>
             <Link
               href={data.enTingNa.href}
-              style={{ textDecoration: "none" }}
-              className="v2-focus"
+              data-od-id="en-ting-na"
+              className="v2-press v2-focus"
+              style={{
+                textDecoration: "none",
+                display: "inline-flex",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: 8,
+                minHeight: 44,
+                padding: "10px 16px",
+                borderRadius: 10,
+                background: T.handling,
+                color: T.onHandling,
+                fontFamily: T.ui,
+                fontSize: 13,
+                fontWeight: 600,
+              }}
             >
-              <CTAPill icon="arrow-right">Gjør dette</CTAPill>
+              Gjør dette
             </Link>
           </div>
         </div>
