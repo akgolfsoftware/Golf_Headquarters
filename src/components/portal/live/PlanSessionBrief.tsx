@@ -3,6 +3,7 @@ import { CheckCircle2, Lock, Play } from "lucide-react";
 import type { LiveSessionData } from "@/lib/portal-live/types";
 import { AXIS_LABEL, formatDateTimeEyebrow } from "@/lib/portal-live/format";
 import { LiveSessionShell } from "./LiveSessionShell";
+import { LiveLoopNav } from "./LiveLoopNav";
 import { startPlanSession } from "@/lib/portal-live/actions";
 import { T } from "@/lib/v2/tokens";
 
@@ -23,8 +24,9 @@ export function PlanSessionBrief({ data, canStart, blockReason }: PlanSessionBri
     <form action={startPlanSession.bind(null, data.sessionId)}>
       <button
         type="submit"
-        className="flex h-16 w-full items-center justify-center gap-2 rounded-full bg-accent font-mono text-[13px] font-bold uppercase tracking-[0.04em] text-accent-foreground active:scale-[0.98]"
-        style={{ boxShadow: `0 4px 18px ${T.farge.limeMerkeA28}` }}
+        data-od-id="brief-start"
+        className="flex h-12 w-full items-center justify-center gap-2 rounded-[10px] font-sans text-[14px] font-semibold active:scale-[0.98]"
+        style={{ background: T.handling, color: T.onHandling, width: "100%", border: "none" }}
       >
         <Play className="h-[17px] w-[17px]" fill="currentColor" strokeWidth={0} aria-hidden />
         Start økt
@@ -57,7 +59,8 @@ export function PlanSessionBrief({ data, canStart, blockReason }: PlanSessionBri
 
   return (
     <LiveSessionShell variant="dark" closeHref="/portal/planlegge/workbench" footer={startButton}>
-      <div className="flex flex-col gap-0 px-5 pt-2 pb-4">
+      <div data-paper-portal-live-brief className="flex flex-col gap-0 px-5 pt-2 pb-4" style={{ maxWidth: 720, margin: "0 auto", width: "100%" }}>
+        <LiveLoopNav aktiv="for" sessionId={data.sessionId} />
         <span className="font-mono text-[9.5px] font-bold uppercase tracking-[0.14em] text-accent">
           Økt-intro · {formatDateTimeEyebrow(data.scheduledAtISO)}
         </span>
