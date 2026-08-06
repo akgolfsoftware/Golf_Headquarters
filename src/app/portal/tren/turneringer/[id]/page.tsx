@@ -15,6 +15,7 @@ import { meldDegPa, meldDegAv } from "@/app/portal/(legacy)/tren/turneringer/act
 import { startTurneringsrunde } from "./actions";
 import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
 import { TilbakeLenke, TomTilstand, CTAPill, Kort } from "@/components/v2";
+import { T } from "@/lib/v2/tokens";
 import {
   TurneringDetaljV2,
   type TurneringDetaljV2Data,
@@ -47,7 +48,10 @@ export default async function TurneringDetaljPage({
           />
           <div style={{ display: "flex", justifyContent: "center" }}>
             <Link href="/portal/tren/turneringer" style={{ textDecoration: "none" }}>
-              <CTAPill icon="arrow-right">Se alle turneringer</CTAPill>
+              <span style={{
+                display: "inline-flex", alignItems: "center", gap: 8, minHeight: 44, padding: "0 16px",
+                borderRadius: 10, background: T.handling, color: T.onHandling, fontFamily: T.ui, fontSize: 13, fontWeight: 600,
+              }}>Se alle turneringer</span>
             </Link>
           </div>
         </Kort>

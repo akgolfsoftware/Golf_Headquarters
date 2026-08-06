@@ -180,7 +180,10 @@ export function TurneringDetaljV2({
                 </p>
                 <div>
                   <Link href={`/portal/mal/runder/${turneringsrunde.rundeId}/hull`} style={{ textDecoration: "none" }}>
-                    <CTAPill icon="arrow-right">Fortsett runden</CTAPill>
+                    <span style={{
+                      display: "inline-flex", alignItems: "center", gap: 8, minHeight: 44, padding: "0 16px",
+                      borderRadius: 10, background: T.handling, color: T.onHandling, fontFamily: T.ui, fontSize: 13, fontWeight: 600,
+                    }}>Fortsett runden</span>
                   </Link>
                 </div>
               </div>
