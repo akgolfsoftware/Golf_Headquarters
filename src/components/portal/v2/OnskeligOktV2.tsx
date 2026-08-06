@@ -124,7 +124,7 @@ export function OnskeligOktV2({ data }: { data: OnskeligOktV2Data }) {
   }
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
+    <div data-paper-portal-onskeligokt style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%", maxWidth: 720, margin: "0 auto", width: "100%" }}>
       {/* Hode */}
       <div>
         <Caps>PlayerHQ · Be om økt</Caps>
@@ -271,7 +271,7 @@ export function OnskeligOktV2({ data }: { data: OnskeligOktV2Data }) {
 
       {/* B: én primær Send full bredde */}
       <div style={{ display: "flex", flexDirection: "column", gap: 10, paddingTop: 6 }}>
-        <Knapp icon="send" full onClick={send} disabled={pending}>
+        <Knapp icon="send" full onClick={send} disabled={pending} style={{ background: T.handling, color: T.onHandling }}>
           {pending ? "Sender …" : "Send forespørsel"}
         </Knapp>
         <button
