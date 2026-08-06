@@ -95,7 +95,7 @@ function DatoBoks({ dato, aktiv }: { dato: Date; aktiv?: boolean }) {
         flexDirection: "column",
         alignItems: "center",
         justifyContent: "center",
-        background: aktiv ? T.lime : T.panel3,
+        background: aktiv ? T.handling : T.panel3,
         border: `1px solid ${aktiv ? "transparent" : T.border}`,
       }}
     >
@@ -105,7 +105,7 @@ function DatoBoks({ dato, aktiv }: { dato: Date; aktiv?: boolean }) {
           fontSize: 15,
           fontWeight: 700,
           lineHeight: 1,
-          color: aktiv ? T.onLime : T.fg,
+          color: aktiv ? T.onHandling : T.fg,
           fontVariantNumeric: "tabular-nums",
         }}
       >
@@ -118,7 +118,7 @@ function DatoBoks({ dato, aktiv }: { dato: Date; aktiv?: boolean }) {
           fontWeight: 700,
           letterSpacing: "0.06em",
           marginTop: 2,
-          color: aktiv ? T.onLime : T.mut,
+          color: aktiv ? T.onHandling : T.mut,
         }}
       >
         {mnd}
@@ -175,7 +175,7 @@ export function ForelderBookingerV2({ data }: { data: ForelderBookingerData }) {
   // Ingen barn koblet → ærlig tom-tilstand (lese-først portal).
   if (antallBarn === 0) {
     return (
-      <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+      <div data-paper-portal-forelder-bookinger style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
         <div>
           <Caps>Bookinger</Caps>
           <div style={{ marginTop: 10 }}>
