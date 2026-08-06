@@ -671,10 +671,27 @@ export function AgencyKalenderV2({ data }: { data: KalenderData }) {
   // B: én primær CTA full · booking er sekundær
   const primaerCta = (
     <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-      <Link href="/admin/planlegge" style={{ textDecoration: "none", display: "block" }}>
-        <CTAPill icon="plus" full>
-          Ny økt
-        </CTAPill>
+      <Link
+        href="/admin/planlegge"
+        data-od-id="kalender-ny-okt"
+        className="v2-press v2-focus"
+        style={{
+          textDecoration: "none",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          gap: 8,
+          minHeight: 48,
+          width: "100%",
+          borderRadius: 10,
+          background: T.handling,
+          color: T.onHandling,
+          fontFamily: T.ui,
+          fontSize: 14,
+          fontWeight: 600,
+        }}
+      >
+        Ny økt
       </Link>
       <div style={{ display: "flex", justifyContent: "flex-end" }}>
         <Link href="/admin/bookinger/ny" style={{ textDecoration: "none" }}>
@@ -900,7 +917,7 @@ export function AgencyKalenderV2({ data }: { data: KalenderData }) {
   }
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+    <div data-paper-agencyos-kalender style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 1200, margin: "0 auto", width: "100%" }}>
       {hode}
       {primaerCta}
       {kpi}
