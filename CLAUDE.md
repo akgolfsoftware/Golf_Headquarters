@@ -5,6 +5,10 @@ B2B SaaS (AgencyOS) + forbruker-app (PlayerHQ) med Supabase Postgres. Alt av for
 > Stistrukturen under er verifisert mot filsystemet 2026-07-26. Ved tvil: sjekk filen faktisk finnes
 > før du stoler på en lenke — dokumentkartet har flyttet på seg flere ganger.
 
+## Master
+Fullstendig regelverk og begrunnelse: docs/ak-master.md. Ved konflikt mellom
+CLAUDE.md og ak-master.md vinner ak-master.md.
+
 ## Start her — les disse filene først
 - **`docs/platform/NORDSTJERNE.md`** — produktets nordstjerne. Alltid gjeldende målbilde.
 - **`docs/platform/AGENT-BRIEF.md`** — agent-onboarding: stack, eksakte versjoner, prosjektkart. Les FØR arbeid.
