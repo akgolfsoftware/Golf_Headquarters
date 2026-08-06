@@ -238,7 +238,7 @@ export function PPosisjonSeksjon({
 }: PPosisjonSeksjonProps) {
   const [open, setOpen] = useState(defaultOpen ?? false);
   return (
-    <Kort pad="0" style={highPrio ? { borderLeft: `3px solid ${T.lime}` } : undefined}>
+    <Kort pad="0" style={highPrio ? { borderLeft: `3px solid ${T.handling}` } : undefined}>
       <button
         type="button"
         className="v2-focus"
@@ -271,7 +271,7 @@ export function PPosisjonSeksjon({
             fontSize: 12,
             fontWeight: 700,
             color: highPrio ? T.onLime : T.fg2,
-            background: highPrio ? T.lime : T.panel3,
+            background: highPrio ? T.handling : T.panel3,
             border: `1px solid ${highPrio ? "transparent" : T.border}`,
             borderRadius: 8,
             padding: "5px 8px",
