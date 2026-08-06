@@ -173,6 +173,10 @@ tests/e2e/          # Én samlet e2e-suite (32 specs, siden 2026-08-03): a11y, P
 7. **Feillogg (ny praksis 2026-08-06):** kostet noe i økten ekstra tid (feilslått antagelse, gjentatt feil,
    fasit-avvik) — legg én linje i `docs/feillogg.md` (format øverst i filen), lagt inn av `/pr` ved behov.
    Ingen feil i økten: ikke rør filen. Formålet er å finne mønstre over tid, ikke logge hver økt.
+8. **Token-økonomi (2026-08-06):** se `.claude/rules/gotchas.md` §Token-økonomi — korte versjon: aldri
+   la lange kommandoer (build/test/`npm ci`) strømme rått inn i samtalen (redirect til fil, tail/grep),
+   grep i store dokumenter fremfor å lese dem hele, stol på PR-webhooks fremfor å polle GitHub Actions.
+   Senker ALDRI kvalitetsgaten (`npm run verify` er fortsatt obligatorisk) — kun hvordan output håndteres.
 
 ## Verifikasjons-pipeline
 ```bash

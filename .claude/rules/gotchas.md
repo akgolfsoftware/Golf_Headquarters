@@ -19,6 +19,24 @@ Ingen låst designkanon per 2026-07-25 — nytt system utvikles i Open Design (C
 - Gjelder alle økter i dette repoet, ikke bare PR-babysitting: foretrekk alltid det GitHub MCP-kallet
   med minst payload som faktisk svarer på spørsmålet, fremfor det som «har mest info».
 
+### Token-økonomi generelt (2026-08-06): unngå å strømme store output/dokumenter rått inn i kontekst
+Fire tiltak utover GitHub-punktet over — **ingen av dem skal senke kvalitetsgaten**
+(`npm run verify`/`npm run build` er fortsatt OBLIGATORISK før commit, se `verify-og-commit`-skillen —
+dette handler kun om HVORDAN output håndteres, ikke om å hoppe over steg):
+1. **Redirect langkjørende kommandoer til fil, les kun halen/grep.** `npm run build` lister alle ~449
+   ruter og `npm ci` logger hver pakke — la det gå til en loggfil
+   (`npm run build > /tmp/.../build.log 2>&1; tail -60 build.log`) i stedet for å la det strømme rått
+   inn i samtalen. Feilsøk med `grep -n "error\|Error" build.log` fremfor å lese hele loggen.
+2. **Store dokumenter (`docs/ak-master.md`, `CLAUDE.md`, denne fila) leses med Grep eller
+   Read+offset/limit** når du bare trenger én seksjon — ikke hele filen på nytt for hvert oppslag.
+3. **Ikke les en fil rett etter egen Edit/Write «for å verifisere»** med mindre korrekthet faktisk
+   avhenger av eksakt formatering (YAML-frontmatter i skills, JSON). Edit/Write-verktøyet bekrefter
+   allerede at endringen gikk gjennom — stol på det for vanlig prosa.
+4. **Lang, tema-hoppende økt:** foreslå ny økt/`/clear` fremfor å fortsette — hele historikken betales
+   på nytt for hver melding i en lang økt. Modell-/effort-valg for selve arbeidet: se
+   `prompt-engineer`-skillen §Claude-flåten i detalj og `agenticos`-skillen §Claude Code —
+   arbeidsdisiplin (ikke duplisert her).
+
 ### PRODUKSJONSINCIDENT 05.08.2026: `db.<ref>.supabase.co` er IPv6-only — Vercel når den aldri
 - **Symptom:** prod nede siden ca. 11.07 (394 brukere rammet), forverret til total sirkelbryter-
   blokkering 05.08. Feilloggen viste `Authentication failed`/P1000 — så ut som feil passord.
