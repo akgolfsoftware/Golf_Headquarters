@@ -109,3 +109,64 @@ export async function logout() {
   await supabase.auth.signOut({ scope: "global" });
   redirect("/auth/login");
 }
+
+
+/** Spiller gir eget lydsamtykke (myndig SELV). Mindreårig → foresatt-flyt. */
+export async function settEgetLydSamtykke(): Promise<
+  { ok: true } | { ok: false; feil: string }
+> {
+  const { requireSpillerActionUser } = await import("@/lib/auth/action-guards");
+  const { isMinor } = await import("@/lib/auth/minor");
+  const { LYD_SAMTYKKE_ORDLYD } = await import("@/lib/recording/lyd-samtykke-ordlyd");
+  const { audit } = await import("@/lib/audit");
+
+  const user = await requireSpillerActionUser();
+  const full = await prisma.user.findUnique({
+    where: { id: user.id },
+    select: { dateOfBirth: true },
+  });
+  if (isMinor(full?.dateOfBirth)) {
+    return {
+      ok: false,
+      feil: "Du er under 16 år. Foresatt må gi lydsamtykke via lenke fra treneren.",
+    };
+  }
+
+  const now = new Date();
+  await prisma.lydSamtykke.upsert({
+    where: { userId: user.id },
+    create: {
+      userId: user.id,
+      status: "GITT",
+      gittAv: "SELV",
+      foresattEpost: null,
+      gittAt: now,
+      trukketAt: null,
+      ordlyd: LYD_SAMTYKKE_ORDLYD,
+      token: null,
+      tokenHash: null,
+      tokenExpiresAt: null,
+    },
+    update: {
+      status: "GITT",
+      gittAv: "SELV",
+      foresattEpost: null,
+      gittAt: now,
+      trukketAt: null,
+      ordlyd: LYD_SAMTYKKE_ORDLYD,
+      token: null,
+      tokenHash: null,
+      tokenExpiresAt: null,
+    },
+  });
+
+  await audit({
+    action: "lyd_samtykke.gitt_selv",
+    actorId: user.id,
+    target: `User:${user.id}`,
+  });
+
+  revalidatePath("/portal/meg");
+  revalidatePath("/portal/meg/innstillinger/personvern");
+  return { ok: true };
+}
