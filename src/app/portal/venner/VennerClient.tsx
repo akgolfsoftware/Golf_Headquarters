@@ -95,7 +95,7 @@ function SokLeggTil() {
             border: "none",
             borderRadius: 9999,
             background: T.handling,
-            color: T.onLime,
+            color: T.onHandling,
             fontFamily: T.ui,
             fontSize: 13.5,
             fontWeight: 600,
