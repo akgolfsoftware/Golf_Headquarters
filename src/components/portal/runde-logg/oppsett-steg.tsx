@@ -288,10 +288,10 @@ export function OppsettSteg({ modus, baner, initial, onStart }: OppsettStegProps
           cursor: gyldig ? "pointer" : "not-allowed",
           width: "100%",
           height: 54,
-          borderRadius: 16,
+          borderRadius: 10,
           border: "none",
-          background: gyldig ? T.lime : T.panel3,
-          color: gyldig ? T.onLime : T.mut,
+          background: gyldig ? T.handling : T.panel3,
+          color: gyldig ? T.onHandling : T.mut,
           fontFamily: T.disp,
           fontSize: 16,
           fontWeight: 700,
@@ -299,7 +299,7 @@ export function OppsettSteg({ modus, baner, initial, onStart }: OppsettStegProps
           alignItems: "center",
           justifyContent: "center",
           gap: 8,
-          boxShadow: gyldig ? "0 10px 34px color-mix(in srgb, var(--v2-lime) 28%, transparent)" : "none",
+          boxShadow: "none",
         }}
       >
         Til hull {hull[0]?.holeNumber ?? 1}
