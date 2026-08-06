@@ -4,6 +4,7 @@ import type { LiveV2Summary } from "./types";
 import { HjelpTips } from "@/components/v2/hjelp";
 import { SpillerVurderingForm } from "./SpillerVurderingForm";
 import { T } from "@/lib/v2/tokens";
+import { LiveLoopNav } from "./LiveLoopNav";
 
 export type SessionSummaryProps = {
   data: LiveV2Summary;
@@ -83,7 +84,8 @@ export function SessionSummary({ data, nesteOkt, spillerVurdering }: SessionSumm
     .sort(([, a], [, b]) => b - a);
 
   return (
-    <div className="flex flex-col gap-4 px-4 py-6">
+    <div data-paper-portal-live-summary className="flex flex-col gap-4 px-4 py-6" style={{ maxWidth: 720, margin: "0 auto", width: "100%" }}>
+      <LiveLoopNav aktiv="etter" sessionId={data.sessionId} />
       {/* Hilsen */}
       <div className="text-center">
         <div className="mx-auto mb-4 grid h-16 w-16 place-items-center rounded-full bg-accent/15">
@@ -229,8 +231,9 @@ export function SessionSummary({ data, nesteOkt, spillerVurdering }: SessionSumm
       <div className="flex flex-col gap-2.5">
         <Link
           href={nesteOkt ? nesteOkt.href : "/portal"}
-          className="flex h-14 w-full items-center justify-center gap-2 rounded-full bg-accent font-mono text-sm font-extrabold uppercase tracking-[0.06em] text-foreground active:scale-[0.98]"
-          style={{ boxShadow: `0 4px 18px ${T.farge.limeMerkeA28}` }}
+          data-od-id="etter-neste"
+          className="flex h-12 w-full items-center justify-center gap-2 rounded-[10px] font-sans text-[14px] font-semibold active:scale-[0.98]"
+          style={{ background: T.handling, color: T.onHandling, textDecoration: "none" }}
         >
           {nesteOkt ? nesteOkt.tekst : "Tilbake til hjem"}
           {nesteOkt && <ArrowRight className="h-4 w-4" strokeWidth={2.5} aria-hidden />}
