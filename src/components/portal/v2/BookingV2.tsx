@@ -151,7 +151,7 @@ function StegIndikator({ steg, onVelg, mobile }: { steg: number; onVelg: (n: num
               className="v2-press v2-focus"
               style={{ appearance: "none", background: "none", border: "none", padding: 0, display: "flex", alignItems: "center", gap: 7, cursor: "pointer", flex: "none" }}
             >
-              <span style={{ width: 22, height: 22, borderRadius: 9999, display: "inline-flex", alignItems: "center", justifyContent: "center", flex: "none", fontFamily: T.mono, fontSize: 10, fontWeight: 700, background: aktiv ? T.lime : ferdig ? "color-mix(in srgb, var(--v2-lime) 12%, transparent)" : T.panel2, color: aktiv ? T.onLime : ferdig ? T.lime : T.mut, border: `1px solid ${aktiv ? "transparent" : ferdig ? "color-mix(in srgb, var(--v2-lime) 25%, transparent)" : T.border}` }}>
+              <span style={{ width: 22, height: 22, borderRadius: 9999, display: "inline-flex", alignItems: "center", justifyContent: "center", flex: "none", fontFamily: T.mono, fontSize: 10, fontWeight: 700, background: aktiv ? T.handling : ferdig ? "color-mix(in srgb, var(--v2-lime) 12%, transparent)" : T.panel2, color: aktiv ? T.onHandling : ferdig ? T.lime : T.mut, border: `1px solid ${aktiv ? "transparent" : ferdig ? "color-mix(in srgb, var(--v2-lime) 25%, transparent)" : T.border}` }}>
                 {ferdig ? <Icon name="check" size={11} /> : s.n}
               </span>
               {(!mobile || aktiv) && <span style={{ fontFamily: T.ui, fontSize: 12, fontWeight: 600, color: aktiv ? T.fg : ferdig ? T.fg2 : T.mut, whiteSpace: "nowrap" }}>{s.l}</span>}
@@ -182,7 +182,7 @@ function StegType({ tjenester, credits, valgt, setValgt, mobile }: {
     );
   }
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+    <div data-paper-portal-booking-legacy style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
       <div style={{ display: "grid", gridTemplateColumns: mobile ? "1fr" : "repeat(3,1fr)", gap: T.gap }}>
         {tjenester.map((x) => {
           const er = valgt === x.id;
@@ -208,7 +208,7 @@ function StegType({ tjenester, credits, valgt, setValgt, mobile }: {
                       <Icon name="help-circle" size={12} style={{ color: hjelp ? T.lime : T.mut }} />
                     </span>
                   )}
-                  {er && <span style={{ width: 20, height: 20, borderRadius: 9999, background: T.lime, display: "inline-flex", alignItems: "center", justifyContent: "center" }}><Icon name="check" size={12} style={{ color: T.onLime }} /></span>}
+                  {er && <span style={{ width: 20, height: 20, borderRadius: 9999, background: T.handling, display: "inline-flex", alignItems: "center", justifyContent: "center" }}><Icon name="check" size={12} style={{ color: T.onHandling }} /></span>}
                 </span>
               </div>
               <div>
@@ -286,7 +286,7 @@ function StegCoach({ coacher, fraPris, nesteLedig, valgt, setValgt, mobile }: {
                   {pris && <span style={{ display: "inline-flex", alignItems: "center", gap: 6, fontFamily: T.mono, fontSize: 11, fontWeight: 700, color: T.fg2 }}><Icon name="credit-card" size={12} style={{ color: T.mut }} />{pris}</span>}
                 </div>
               </div>
-              {er && <span style={{ width: 24, height: 24, borderRadius: 9999, background: T.lime, display: "inline-flex", alignItems: "center", justifyContent: "center", flex: "none", alignSelf: mobile ? "flex-end" : "center" }}><Icon name="check" size={13} style={{ color: T.onLime }} /></span>}
+              {er && <span style={{ width: 24, height: 24, borderRadius: 9999, background: T.handling, display: "inline-flex", alignItems: "center", justifyContent: "center", flex: "none", alignSelf: mobile ? "flex-end" : "center" }}><Icon name="check" size={13} style={{ color: T.onHandling }} /></span>}
             </div>
           </button>
         );
@@ -366,7 +366,7 @@ function MiniKalender({ ledigeIso, valgtIso, setValgtIso, visMnd, visAar, setVis
               style={{ appearance: "none", height: celle, borderRadius: 10, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 2, fontFamily: T.mono, fontSize: 12, fontWeight: valgt ? 700 : 500, cursor: ledig ? "pointer" : "default", background: valgt ? T.fg : ledig ? T.panel3 : "transparent", color: valgt ? T.bg : passert ? T.farge.hvitA18 : ledig ? T.fg : T.mut, border: iDagCelle && !valgt ? `1px solid ${T.borderS}` : "1px solid transparent" }}
             >
               {n}
-              {ledig && !valgt && <span style={{ width: 3, height: 3, borderRadius: 9999, background: T.lime }} />}
+              {ledig && !valgt && <span style={{ width: 3, height: 3, borderRadius: 9999, background: T.handling }} />}
             </button>
           );
         })}
@@ -401,7 +401,7 @@ function TidKolonne({ dato, tider, valgt, setValgt }: {
                 type="button"
                 onClick={() => setValgt(kl)}
                 className="v2-press v2-focus"
-                style={{ appearance: "none", display: "flex", alignItems: "center", justifyContent: "center", gap: 8, fontFamily: T.mono, fontSize: 12.5, fontWeight: 700, padding: "10px 0", borderRadius: 10, cursor: "pointer", background: er ? T.lime : T.panel2, color: er ? T.onLime : T.fg, border: `1px solid ${er ? "transparent" : T.border}` }}
+                style={{ appearance: "none", display: "flex", alignItems: "center", justifyContent: "center", gap: 8, fontFamily: T.mono, fontSize: 12.5, fontWeight: 700, padding: "10px 0", borderRadius: 10, cursor: "pointer", background: er ? T.lime : T.panel2, color: er ? T.onHandling : T.fg, border: `1px solid ${er ? "transparent" : T.border}` }}
               >
                 {kl}{er && <Icon name="check" size={12} />}
               </button>
@@ -583,8 +583,8 @@ function Kvittering({ tjeneste, coachNavn, dato, tid, bookingId, mobile }: {
   return (
     <Kort tint pad={mobile ? "28px 20px" : "40px 24px"}>
       <div style={{ display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center", gap: 14 }}>
-        <span style={{ width: 56, height: 56, borderRadius: 9999, background: T.lime, display: "inline-flex", alignItems: "center", justifyContent: "center", boxShadow: "0 0 0 10px color-mix(in srgb, var(--v2-lime) 10%, transparent)" }}>
-          <Icon name="check" size={26} style={{ color: T.onLime }} />
+        <span style={{ width: 56, height: 56, borderRadius: 9999, background: T.handling, display: "inline-flex", alignItems: "center", justifyContent: "center", boxShadow: "0 0 0 10px color-mix(in srgb, var(--v2-lime) 10%, transparent)" }}>
+          <Icon name="check" size={26} style={{ color: T.onHandling }} />
         </span>
         <div>
           <div style={{ fontFamily: T.disp, fontWeight: 700, fontSize: mobile ? 22 : 26, color: T.fg, letterSpacing: "-0.02em" }}>Timen er booket</div>
