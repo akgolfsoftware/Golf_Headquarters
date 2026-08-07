@@ -177,7 +177,7 @@ export function InnstillingerVarslerV2({ data }: { data: InnstillingerVarslerDat
   const antallPaa = Object.values(prefs.notif).filter(Boolean).length;
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+    <div data-paper-portal-innstillinger-varsler style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
         <Tittel mobile={mobile}>Varsler</Tittel>
         {lagret && <StatusPill tone="lime">Lagret</StatusPill>}

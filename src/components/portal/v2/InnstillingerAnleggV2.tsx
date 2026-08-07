@@ -212,7 +212,7 @@ function FasilitetRad({
           flex: "none",
         }}
       >
-        {valgt && <Icon name="check" size={13} style={{ color: T.onLime }} />}
+        {valgt && <Icon name="check" size={13} style={{ color: T.onHandling }} />}
       </span>
       <div style={{ flex: 1, minWidth: 0 }}>
         <div style={{ fontFamily: T.ui, fontSize: 13.5, fontWeight: 600, color: T.fg }}>{tittel}</div>
@@ -273,7 +273,7 @@ export function InnstillingerAnleggV2({ data }: { data: InnstillingerAnleggData 
   const antallValgt = valgte.size;
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+    <div data-paper-portal-innstillinger-anlegg style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
         <Tittel mobile={mobile}>Hva har du tilgang til?</Tittel>
         {status === "lagret" && <StatusPill tone="up">Lagret</StatusPill>}
