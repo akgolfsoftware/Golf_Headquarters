@@ -795,8 +795,8 @@ export function Trend({ series, height = 96, yMin, yMax, baseline = 0, fmt, xLab
       <polygon points={omr} fill={`url(#${gid})`} style={{ opacity: drawn ? 1 : 0, transition: `opacity 700ms ${EASE}` }} />
       <polyline ref={lineRef} points={pts} fill="none" stroke={T.lime} strokeWidth="2" strokeLinejoin="round" strokeLinecap="round" filter={`url(#${gid + "g"})`}
         style={len ? { strokeDasharray: len, strokeDashoffset: drawn ? 0 : len, transition: `stroke-dashoffset 700ms ${EASE}` } : undefined} />
-      <circle cx={sisteX} cy={sisteY} r="7" fill={prikk} opacity="0.18" />
-      <circle cx={sisteX} cy={sisteY} r="3.2" fill={prikk} stroke={T.panel} strokeWidth="1.5" />
+      <circle cx={sisteX} cy={sisteY} r="7" fill={T.lime} opacity="0.18" />
+      <circle cx={sisteX} cy={sisteY} r="3.2" fill={T.lime} stroke={T.panel} strokeWidth="1.5" />
       {xLabels && xLabels.map((l, i) => (
         <text key={i} x={PADL + (i / (xLabels.length - 1)) * iw} y={height - 4} textAnchor={i === 0 ? "start" : i === xLabels.length - 1 ? "end" : "middle"} fontFamily='"JetBrains Mono",monospace' fontSize="8" fill={T.mut} letterSpacing="0.08em">{l}</text>
       ))}
