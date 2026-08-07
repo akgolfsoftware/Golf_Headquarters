@@ -80,7 +80,7 @@ export function MalHubV2({ data }: { data: MalHubData }) {
   const { antall, goals, milepael } = data;
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+    <div data-paper-portal-mal style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
       {/* Hode + B: status pill */}
       <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
         <div>
@@ -96,9 +96,11 @@ export function MalHubV2({ data }: { data: MalHubData }) {
 
       {/* B: én primær CTA full */}
       <Link href="/portal/mal/bygger" style={{ textDecoration: "none", display: "block" }}>
-        <CTAPill icon="plus" full>
-          {goals.length === 0 ? "Sett første mål" : "Nytt mål"}
-        </CTAPill>
+        <span style={{
+                display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, minHeight: 48, width: "100%", padding: "10px 16px",
+                borderRadius: 10, background: T.handling, color: T.onHandling, fontFamily: T.ui, fontSize: 14, fontWeight: 600,
+              }}>{goals.length === 0 ? "Sett første mål" : "Nytt mål"}
+        </span>
       </Link>
 
       {/* Siste milepæl */}
