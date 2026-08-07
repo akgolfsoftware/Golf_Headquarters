@@ -109,7 +109,7 @@ export default async function ForeslatteTesterPage() {
   };
 
   return (
-    <V2Shell nav={AGENCYOS_NAV} navn={user.name ?? "Coach"} avatarUrl={user.avatarUrl}>
+    <V2Shell bredde="kolonne" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"} avatarUrl={user.avatarUrl}>
       <TilbakeLenke href="/admin/tester">Tester</TilbakeLenke>
       <AdminForeslatteTesterV2 data={data} />
     </V2Shell>

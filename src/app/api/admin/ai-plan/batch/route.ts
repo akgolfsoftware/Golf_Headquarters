@@ -7,6 +7,7 @@ import { NextResponse } from "next/server";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { harCoachTilgangTilSpiller } from "@/lib/auth/coached";
 import { genererPlan } from "@/lib/ai-plan/generate";
+import { rateLimit } from "@/lib/rate-limit";
 
 export const runtime = "nodejs";
 export const maxDuration = 300;
@@ -20,6 +21,14 @@ type Body = {
 
 export async function POST(req: Request) {
   const coach = await requirePortalUser({ allow: ["COACH", "ADMIN"] });
+  const rl = await rateLimit({ key: `admin-ai-plan-batch:${coach.id}`, max: 10, windowMs: 60_000 });
+  if (!rl.ok) {
+    return NextResponse.json(
+      { error: "rate-limited" },
+      { status: 429, headers: { "x-ratelimit-reset": String(rl.resetAt) } },
+    );
+  }
+
 
   let body: Body = {};
   try {

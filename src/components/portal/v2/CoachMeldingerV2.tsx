@@ -80,7 +80,7 @@ export function CoachMeldingerV2({ data }: { data: CoachMeldingerData }) {
   // Pro-gate — direkte coach-meldinger krever PlayerHQ Pro (uendret regel).
   if (gratis) {
     return (
-      <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+      <div data-paper-portal-coach-melding style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
         <div>
           <Caps>Coach · Meldinger</Caps>
           <div style={{ marginTop: 10 }}>
@@ -95,9 +95,11 @@ export function CoachMeldingerV2({ data }: { data: CoachMeldingerData }) {
           />
           <div style={{ marginTop: 12 }}>
             <Link href="/portal/meg/abonnement" style={{ textDecoration: "none", display: "block" }}>
-              <CTAPill icon="arrow-right" full>
-                Oppgrader til Pro
-              </CTAPill>
+              <span style={{
+                display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, minHeight: 48, width: "100%", padding: "10px 16px",
+                borderRadius: 10, background: T.handling, color: T.onHandling, fontFamily: T.ui, fontSize: 14, fontWeight: 600,
+              }}>Oppgrader til Pro
+              </span>
             </Link>
           </div>
         </Kort>
@@ -255,9 +257,11 @@ export function CoachMeldingerV2({ data }: { data: CoachMeldingerData }) {
       {/* B: én primær CTA full */}
       {hovedcoach && (
         <Link href="/portal/coach/melding/ny" style={{ textDecoration: "none", display: "block" }}>
-          <CTAPill icon="send" full>
-            Ny melding
-          </CTAPill>
+          <span style={{
+                display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, minHeight: 48, width: "100%", padding: "10px 16px",
+                borderRadius: 10, background: T.handling, color: T.onHandling, fontFamily: T.ui, fontSize: 14, fontWeight: 600,
+              }}>Ny melding
+          </span>
         </Link>
       )}
 

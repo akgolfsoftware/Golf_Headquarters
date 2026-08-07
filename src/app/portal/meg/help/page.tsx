@@ -28,7 +28,7 @@ export default async function HelpPage() {
   };
 
   return (
-    <V2Shell aktiv="meg" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
+    <V2Shell aktiv="meg" bredde="kolonne" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
       <TilbakeLenke href="/portal/meg">Meg</TilbakeLenke>
       <MegHelpV2 data={data} />
     </V2Shell>

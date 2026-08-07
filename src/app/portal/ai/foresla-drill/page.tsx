@@ -87,7 +87,7 @@ export default async function ForeslaDrillPage() {
   });
 
   return (
-    <V2Shell aktiv="gjor" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
+    <V2Shell bredde="kolonne" aktiv="gjor" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
       <TilbakeLenke href="/portal/drills">Øvelsesbank</TilbakeLenke>
       <ForeslaDrillV2
         data={{

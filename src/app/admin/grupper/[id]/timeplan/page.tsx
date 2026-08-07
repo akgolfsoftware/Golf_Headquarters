@@ -91,7 +91,7 @@ export default async function GruppeTimeplanPage({
   }
 
   return (
-    <V2Shell aktiv="spillere" nav={AGENCYOS_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
+    <V2Shell bredde="kolonne" aktiv="spillere" nav={AGENCYOS_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
       <TilbakeLenke href={`/admin/grupper/${id}`}>Gruppe</TilbakeLenke>
       <GruppeTimeplanV2 data={data} onOpprett={opprettAction} onDupliser={dupliserAction} />
     </V2Shell>

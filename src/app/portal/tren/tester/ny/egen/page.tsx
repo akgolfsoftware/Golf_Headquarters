@@ -16,7 +16,7 @@ export default async function NyEgenTestPage() {
   const user = await requirePortalUser({ allow: ["PLAYER", "COACH", "ADMIN"] });
 
   return (
-    <V2Shell aktiv="gjor" nav={PLAYERHQ_NAV} navn={user.name ?? undefined} avatarUrl={user.avatarUrl}>
+    <V2Shell bredde="kolonne" aktiv="gjor" nav={PLAYERHQ_NAV} navn={user.name ?? undefined} avatarUrl={user.avatarUrl}>
       <TilbakeLenke href="/portal/tren/tester">Tilbake til tester</TilbakeLenke>
       <div style={{ maxWidth: 720, width: "100%", margin: "0 auto" }}>
         <Caps>Trening · Tester</Caps>

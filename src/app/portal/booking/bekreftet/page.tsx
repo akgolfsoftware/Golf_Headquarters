@@ -85,7 +85,7 @@ export default async function BekreftetPage({ searchParams }: Props) {
   return (
     // Ingen eksplisitt aktiv-nøkkel: booking-hubben (/portal/booking) lar
     // V2Shell auto-utlede fra pathname — samme her.
-    <V2Shell nav={PLAYERHQ_NAV} navn={user.name ?? undefined} avatarUrl={user.avatarUrl}>
+    <V2Shell bredde="kolonne" nav={PLAYERHQ_NAV} navn={user.name ?? undefined} avatarUrl={user.avatarUrl}>
       <BookingBekreftetV2
         data={{
           linje: `${booking.serviceType.name} · ${dato} · ${klokkeslett}`,

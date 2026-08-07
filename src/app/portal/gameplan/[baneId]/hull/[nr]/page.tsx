@@ -60,7 +60,7 @@ export default async function HoleDetailPage({
         : null;
 
   return (
-    <V2Shell aktiv="analyse" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
+    <V2Shell bredde="kolonne" aktiv="analyse" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
       <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
         <Link
           href={`/portal/gameplan/${bane.id}`}

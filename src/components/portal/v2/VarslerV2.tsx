@@ -95,7 +95,7 @@ export function VarslerV2({ data }: { data: VarslerV2Data }) {
   }
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+    <div data-paper-portal-varsler style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
       {/* Hode: tittel + ulest-pille + marker alle lest */}
       <div
         style={{

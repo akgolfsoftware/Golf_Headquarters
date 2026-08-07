@@ -66,7 +66,7 @@ export default async function ReschedulePage({ params, searchParams }: Props) {
   });
 
   return (
-    <V2Shell aktiv="meg" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
+    <V2Shell aktiv="meg" bredde="kolonne" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
       <div
         style={{
           maxWidth: 720,

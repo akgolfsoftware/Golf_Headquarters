@@ -110,7 +110,7 @@ export default async function CoachWorkbenchPage({ params, searchParams }: Props
   };
 
   return (
-    <V2Shell aktiv="spillere" nav={AGENCYOS_NAV} navn={coachName}>
+    <V2Shell bredde="full" aktiv="spillere" nav={AGENCYOS_NAV} navn={coachName}>
       <CoachWorkbenchMount
         players={players}
         groups={grupper}

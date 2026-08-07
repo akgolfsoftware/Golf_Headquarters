@@ -40,7 +40,7 @@ export default async function HendelseDetaljPage({ params }: { params: Promise<{
   const kanSlette = user.role === "ADMIN" || hendelse.coachId === user.id;
 
   return (
-    <V2Shell aktiv="kalender" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>
+    <V2Shell bredde="kolonne" aktiv="kalender" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>
       <TilbakeLenke href="/admin/kalender">Kalender</TilbakeLenke>
       <div style={{ marginTop: 12, marginBottom: 20 }}>
         <Caps>Hendelse</Caps>

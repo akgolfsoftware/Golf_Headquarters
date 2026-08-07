@@ -12,7 +12,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { T, Caps, Tittel, Kort, CTAPill, TomTilstand } from "@/components/v2";
+import { T, Caps, Tittel, Kort, TomTilstand } from "@/components/v2";
 import { Icon } from "@/components/v2/icon";
 
 export type BookingAnleggFasilitet = {
@@ -47,7 +47,7 @@ export function BookingAnleggV2({ data }: { data: BookingAnleggV2Data }) {
   const mobile = useMobile();
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+    <div data-paper-portal-booking-anlegg style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
       {/* Hero */}
       <Kort tint pad={mobile ? "24px 20px" : "32px 30px"}>
         <span style={{ display: "inline-flex", alignItems: "center", gap: 8 }}>
@@ -106,7 +106,10 @@ export function BookingAnleggV2({ data }: { data: BookingAnleggV2Data }) {
           </p>
           <div style={{ marginTop: 14 }}>
             <Link href="/portal/booking/ny" style={{ textDecoration: "none", display: "block" }}>
-              <CTAPill icon="arrow-right" full>Velg tid i booking</CTAPill>
+              <span style={{
+            display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, minHeight: 48, width: "100%", padding: "10px 16px",
+            borderRadius: 10, background: T.handling, color: T.onHandling, fontFamily: T.ui, fontSize: 14, fontWeight: 600,
+          }}>Velg tid i booking</span>
             </Link>
           </div>
         </Kort>

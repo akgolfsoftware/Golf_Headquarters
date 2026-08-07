@@ -571,7 +571,7 @@ export function ForelderSamtykkeV2({ data }: { data: ForelderSamtykkeData }) {
   const harBarn = barn.length > 0;
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+    <div data-paper-portal-forelder-samtykke style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
       {/* Hode */}
       <div
         style={{

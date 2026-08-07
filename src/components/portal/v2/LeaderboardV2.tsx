@@ -110,7 +110,7 @@ export function LeaderboardV2({ data }: { data: LeaderboardV2Data }) {
   const { fornavn, minRank, total, tab, sgTab, rader, meg } = data;
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+    <div data-paper-portal-leaderboard style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
       {/* Header */}
       <div>
         <Caps>Mål · Leaderboard · siste 30 dager</Caps>

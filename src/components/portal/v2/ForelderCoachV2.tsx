@@ -66,7 +66,7 @@ export function ForelderCoachV2({ data }: { data: ForelderCoachData }) {
 
   if (antallBarn === 0) {
     return (
-      <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+      <div data-paper-portal-forelder-coach style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
         <div>
           <Caps>Coach</Caps>
           <div style={{ marginTop: 10 }}>

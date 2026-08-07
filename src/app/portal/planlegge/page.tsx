@@ -23,7 +23,7 @@ export default async function V2PlanPreviewPage() {
   const data = await getDashboardData(user.id);
 
   return (
-    <V2Shell aktiv="plan" nav={PLAYERHQ_NAV} navn={data.user.name} avatarUrl={data.user.avatarUrl}>
+    <V2Shell bredde="kolonne" aktiv="plan" nav={PLAYERHQ_NAV} navn={data.user.name} avatarUrl={data.user.avatarUrl}>
       <PlanV2 data={data} />
     </V2Shell>
   );

@@ -113,7 +113,7 @@ export default async function TurneringerPage() {
     }));
 
   return (
-    <V2Shell aktiv="planlegge" nav={AGENCYOS_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
+    <V2Shell bredde="kolonne" aktiv="planlegge" nav={AGENCYOS_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
       <div style={{ marginBottom: 12 }}>
         <Link href="/admin/turnering-kart" style={{ textDecoration: "none" }}>
           <Caps size={10}>Norge-data · dekning og toppliste →</Caps>

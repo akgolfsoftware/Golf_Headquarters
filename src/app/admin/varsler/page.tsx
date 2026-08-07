@@ -27,7 +27,7 @@ export default async function VarslerPage() {
   const total = data.ko.planActions + data.counts.notifications;
 
   return (
-    <V2Shell aktiv="innboks" nav={AGENCYOS_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
+    <V2Shell bredde="kolonne" aktiv="innboks" nav={AGENCYOS_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
       <KoHubNav />
       <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
         <div style={{ display: "flex", alignItems: "center", gap: 14 }}>

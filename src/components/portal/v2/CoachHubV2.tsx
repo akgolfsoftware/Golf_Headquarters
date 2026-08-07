@@ -14,7 +14,6 @@ import {
   Kort,
   Rad,
   StatusPill,
-  CTAPill,
   AvatarFoto,
   InnsiktChip,
   TomTilstand,
@@ -95,7 +94,10 @@ function useMobile(): boolean {
 function Snarvei({ href, icon, ghost, children }: { href: string; icon: string; ghost?: boolean; children: string }) {
   return (
     <Link href={href} style={{ textDecoration: "none" }}>
-      <CTAPill icon={icon} ghost={ghost}>{children}</CTAPill>
+      <span style={{
+            display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, minHeight: 48, width: "100%", padding: "10px 16px",
+            borderRadius: 10, background: T.handling, color: T.onHandling, fontFamily: T.ui, fontSize: 14, fontWeight: 600,
+          }}>{children}</span>
     </Link>
   );
 }
@@ -117,7 +119,7 @@ export function CoachHubV2({ data }: { data: CoachHubData }) {
   const timeline = kommende.slice(0, 4);
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+    <div data-paper-portal-coach-hub style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
       {/* Hode + B: status først */}
       <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
         <div>
@@ -138,15 +140,17 @@ export function CoachHubV2({ data }: { data: CoachHubData }) {
       {/* B: én primær CTA */}
       {coach ? (
         <Link href="/portal/coach/melding" style={{ textDecoration: "none", display: "block" }}>
-          <CTAPill icon="send" full>
-            {meldinger.length > 0 ? "Skriv til coach" : `Start samtalen med ${coach.name.split(" ")[0]}`}
-          </CTAPill>
+          <span style={{
+            display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, minHeight: 48, width: "100%", padding: "10px 16px",
+            borderRadius: 10, background: T.handling, color: T.onHandling, fontFamily: T.ui, fontSize: 14, fontWeight: 600,
+          }}>{meldinger.length > 0 ? "Skriv til coach" : `Start samtalen med ${coach.name.split(" ")[0]}`}</span>
         </Link>
       ) : (
         <Link href="/portal/booking" style={{ textDecoration: "none", display: "block" }}>
-          <CTAPill icon="calendar" full>
-            Book en time
-          </CTAPill>
+          <span style={{
+            display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, minHeight: 48, width: "100%", padding: "10px 16px",
+            borderRadius: 10, background: T.handling, color: T.onHandling, fontFamily: T.ui, fontSize: 14, fontWeight: 600,
+          }}>Book en time</span>
         </Link>
       )}
 
@@ -223,9 +227,10 @@ export function CoachHubV2({ data }: { data: CoachHubData }) {
               <TomTilstand icon="calendar" title="Ingen kommende økter" sub="Book en time med coachen din." />
               {coach && (
                 <Link href="/portal/booking" style={{ textDecoration: "none", display: "block" }}>
-                  <CTAPill ghost full icon="calendar">
-                    Book time
-                  </CTAPill>
+                  <span style={{
+            display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, minHeight: 48, width: "100%", padding: "10px 16px",
+            borderRadius: 10, background: T.handling, color: T.onHandling, fontFamily: T.ui, fontSize: 14, fontWeight: 600,
+          }}>Book time</span>
                 </Link>
               )}
             </div>

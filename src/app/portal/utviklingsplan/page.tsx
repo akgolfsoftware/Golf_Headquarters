@@ -284,7 +284,7 @@ export default async function V2UtviklingsplanPreviewPage() {
   const data = await loadData(user.id);
 
   return (
-    <V2Shell aktiv="plan" nav={PLAYERHQ_NAV} navn={data.spillerNavn}>
+    <V2Shell bredde="kolonne" aktiv="plan" nav={PLAYERHQ_NAV} navn={data.spillerNavn}>
       <TilbakeLenke href="/portal/planlegge">Plan</TilbakeLenke>
       <UtviklingsplanV2 data={data} />
     </V2Shell>

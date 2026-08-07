@@ -15,7 +15,7 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { T, Caps, Tittel, Kort, CTAPill, TomTilstand, Icon, HjelpTips } from "@/components/v2";
+import { T, Caps, Tittel, Kort, TomTilstand, Icon, HjelpTips } from "@/components/v2";
 import { CreditMeter } from "@/components/portal/abonnement/credit-meter";
 
 const WIZARD = "/portal/booking/ny";
@@ -90,7 +90,7 @@ function StegPrikker({ aktivt, steg }: {
         const erAktivt = s.nr === aktivt;
         return (
           <li key={s.nr} style={{ display: "flex", flex: i < steg.length - 1 ? 1 : "none", alignItems: "center", gap: 8 }}>
-            <span style={{ width: 22, height: 22, borderRadius: 9999, display: "inline-flex", alignItems: "center", justifyContent: "center", flex: "none", fontFamily: T.mono, fontSize: 10, fontWeight: 700, background: erAktivt ? T.lime : s.ferdig ? "color-mix(in srgb, var(--v2-lime) 12%, transparent)" : T.panel2, color: erAktivt ? T.onLime : s.ferdig ? T.lime : T.mut, border: `1px solid ${erAktivt ? "transparent" : s.ferdig ? "color-mix(in srgb, var(--v2-lime) 25%, transparent)" : T.border}` }}>
+            <span style={{ width: 22, height: 22, borderRadius: 9999, display: "inline-flex", alignItems: "center", justifyContent: "center", flex: "none", fontFamily: T.mono, fontSize: 10, fontWeight: 700, background: erAktivt ? T.handling : s.ferdig ? "color-mix(in srgb, var(--v2-lime) 12%, transparent)" : T.panel2, color: erAktivt ? T.onHandling : s.ferdig ? T.lime : T.mut, border: `1px solid ${erAktivt ? "transparent" : s.ferdig ? "color-mix(in srgb, var(--v2-lime) 25%, transparent)" : T.border}` }}>
               {s.ferdig ? <Icon name="check" size={11} /> : s.nr}
             </span>
             <span style={{ fontFamily: T.ui, fontSize: 12, fontWeight: 600, color: erAktivt ? T.fg : s.ferdig ? T.fg2 : T.mut, whiteSpace: "nowrap" }}>{s.label}</span>
@@ -147,15 +147,15 @@ function DagStripe({ valgtDatoIso, serviceSlug, dager }: {
             href={`${WIZARD}?service=${serviceSlug}&dato=${iso}`}
             scroll={false}
             className="v2-press v2-focus"
-            style={{ display: "flex", minWidth: 60, flex: "none", flexDirection: "column", alignItems: "center", gap: 1, padding: "8px 0 9px", borderRadius: 12, textDecoration: "none", background: aktiv ? T.lime : T.panel2, border: `1px solid ${aktiv ? "transparent" : T.border}` }}
+            style={{ display: "flex", minWidth: 60, flex: "none", flexDirection: "column", alignItems: "center", gap: 1, padding: "8px 0 9px", borderRadius: 12, textDecoration: "none", background: aktiv ? T.handling : T.panel2, border: `1px solid ${aktiv ? "transparent" : T.border}` }}
           >
-            <span style={{ fontFamily: T.mono, fontSize: 8.5, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: aktiv ? T.onLime : T.mut }}>
+            <span style={{ fontFamily: T.mono, fontSize: 8.5, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: aktiv ? T.onHandling : T.mut }}>
               {UKEDAG[d.getDay()]}
             </span>
-            <span style={{ fontFamily: T.mono, fontSize: 15, fontWeight: 700, color: aktiv ? T.onLime : T.fg, fontVariantNumeric: "tabular-nums" }}>
+            <span style={{ fontFamily: T.mono, fontSize: 15, fontWeight: 700, color: aktiv ? T.onHandling : T.fg, fontVariantNumeric: "tabular-nums" }}>
               {d.getDate()}
             </span>
-            <span style={{ fontFamily: T.mono, fontSize: 8.5, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: aktiv ? T.onLime : T.mut }}>
+            <span style={{ fontFamily: T.mono, fontSize: 8.5, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: aktiv ? T.onHandling : T.mut }}>
               {d.toLocaleDateString("nb-NO", { month: "short" })}
             </span>
           </Link>
@@ -222,7 +222,7 @@ function OppsumRad({ label, verdi, mono, last }: { label: React.ReactNode; verdi
 export function BruktOppV2({ resetTekst }: { resetTekst: string | null }) {
   const mobile = useMobile();
   return (
-    <div style={{ width: "100%", maxWidth: 680, margin: "0 auto", display: "flex", flexDirection: "column", gap: T.gap }}>
+    <div data-paper-portal-booking-ny style={{ width: "100%", maxWidth: 680, margin: "0 auto", display: "flex", flexDirection: "column", gap: T.gap }}>
       <div>
         <Caps>PlayerHQ · Book ny time</Caps>
         <div style={{ marginTop: 10 }}>
@@ -239,7 +239,10 @@ export function BruktOppV2({ resetTekst }: { resetTekst: string | null }) {
           sub={resetTekst ?? "Du får nye timer ved neste fakturering."}
         />
         <Link href="/booking" style={{ textDecoration: "none", marginTop: 4 }}>
-          <CTAPill full icon="arrow-up-right">Book drop-in mot betaling</CTAPill>
+          <span style={{
+            display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, minHeight: 48, width: "100%", padding: "10px 16px",
+            borderRadius: 10, background: T.handling, color: T.onHandling, fontFamily: T.ui, fontSize: 14, fontWeight: 600,
+          }}>Book drop-in mot betaling</span>
         </Link>
       </Kort>
     </div>
@@ -294,7 +297,10 @@ export function BookingNyV2({ data }: { data: BookingNyV2Data }) {
                 Free-konto: oppgrader til Pro eller et aktivt coaching-abonnement for å bruke forhåndsbetalte timer.
               </p>
               <Link href="/portal/meg/abonnement" style={{ textDecoration: "none", display: "inline-block", marginTop: 12 }}>
-                <CTAPill icon="arrow-up-right">Oppgrader til Pro</CTAPill>
+                <span style={{
+            display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, minHeight: 48, width: "100%", padding: "10px 16px",
+            borderRadius: 10, background: T.handling, color: T.onHandling, fontFamily: T.ui, fontSize: 14, fontWeight: 600,
+          }}>Oppgrader til Pro</span>
               </Link>
             </div>
           </div>
@@ -331,8 +337,8 @@ export function BookingNyV2({ data }: { data: BookingNyV2Data }) {
                 className="v2-press v2-focus"
                 style={{ display: "flex", alignItems: "flex-start", gap: 14, padding: "16px 18px", borderRadius: T.rCard, textDecoration: "none", background: aktiv ? `${T.tint}, ${T.panel}` : T.panel, border: `1px solid ${aktiv ? "color-mix(in srgb, var(--v2-lime) 35%, transparent)" : T.border}` }}
               >
-                <span aria-hidden style={{ width: 20, height: 20, marginTop: 1, borderRadius: 9999, flex: "none", display: "inline-flex", alignItems: "center", justifyContent: "center", background: aktiv ? T.lime : "transparent", border: aktiv ? "1px solid transparent" : `1px solid ${T.borderS}` }}>
-                  {aktiv && <Icon name="check" size={12} style={{ color: T.onLime }} />}
+                <span aria-hidden style={{ width: 20, height: 20, marginTop: 1, borderRadius: 9999, flex: "none", display: "inline-flex", alignItems: "center", justifyContent: "center", background: aktiv ? T.handling : "transparent", border: aktiv ? "1px solid transparent" : `1px solid ${T.borderS}` }}>
+                  {aktiv && <Icon name="check" size={12} style={{ color: T.onHandling }} />}
                 </span>
                 <div style={{ flex: 1, minWidth: 0 }}>
                   <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12 }}>

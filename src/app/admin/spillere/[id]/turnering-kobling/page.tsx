@@ -63,6 +63,7 @@ export default async function TurneringKoblingPage({
 
   return (
     <V2Shell
+      bredde="kolonne"
       aktiv="spillere"
       nav={AGENCYOS_NAV}
       navn={user.name ?? "Coach"}

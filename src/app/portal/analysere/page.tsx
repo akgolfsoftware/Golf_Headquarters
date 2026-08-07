@@ -26,7 +26,7 @@ export default async function V2AnalyserePreviewPage() {
   ]);
 
   return (
-    <V2Shell aktiv="analyse" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
+    <V2Shell bredde="kolonne" aktiv="analyse" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
       <AnalysereV2 data={{ minGolf, workbench }} userId={user.id} />
     </V2Shell>
   );

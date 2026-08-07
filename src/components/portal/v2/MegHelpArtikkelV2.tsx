@@ -13,7 +13,6 @@ import {
   Icon,
   AkseBar,
   InnsiktChip,
-  CTAPill,
   AvatarInit,
   MikroMeta,
   AKSE_NAVN,
@@ -114,10 +113,16 @@ function ArtikkelFeedback() {
   return (
     <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
       <span onClick={() => setTakket(true)}>
-        <CTAPill icon="thumbs-up">Ja, fikk svar</CTAPill>
+        <span style={{
+            display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, minHeight: 48, width: "100%", padding: "10px 16px",
+            borderRadius: 10, background: T.handling, color: T.onHandling, fontFamily: T.ui, fontSize: 14, fontWeight: 600,
+          }}>Ja, fikk svar</span>
       </span>
       <span onClick={() => setTakket(true)}>
-        <CTAPill ghost icon="thumbs-down">Nei, savner noe</CTAPill>
+        <span style={{
+            display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, minHeight: 48, width: "100%", padding: "10px 16px",
+            borderRadius: 10, background: T.handling, color: T.onHandling, fontFamily: T.ui, fontSize: 14, fontWeight: 600,
+          }}>Nei, savner noe</span>
       </span>
     </div>
   );
@@ -204,7 +209,7 @@ const UKE_FORDELING: { a: AkseKey; pct: number; target: number }[] = [
 
 export function MegHelpArtikkelV2({ data }: { data: MegHelpArtikkelData }) {
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-[1fr_220px]" style={{ gap: T.gap * 2, alignItems: "start" }}>
+    <div data-paper-portal-meg-help-artikkel className="grid grid-cols-1 lg:grid-cols-[1fr_220px]" style={{ gap: T.gap * 2, alignItems: "start", maxWidth: 960, margin: "0 auto", width: "100%"}}>
       <article style={{ maxWidth: 720, minWidth: 0 }}>
         {/* Hode */}
         <Caps>{data.eyebrow}</Caps>
@@ -323,9 +328,10 @@ export function MegHelpArtikkelV2({ data }: { data: MegHelpArtikkelData }) {
           </p>
           <div style={{ display: "flex", flexDirection: "column", gap: 8, marginTop: 14 }}>
             <Link href="/portal/coach/melding/ny" style={{ textDecoration: "none", display: "block" }}>
-              <CTAPill icon="message-square" full>
-                Send melding
-              </CTAPill>
+              <span style={{
+            display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, minHeight: 48, width: "100%", padding: "10px 16px",
+            borderRadius: 10, background: T.handling, color: T.onHandling, fontFamily: T.ui, fontSize: 14, fontWeight: 600,
+          }}>Send melding</span>
             </Link>
             <Link
               href="/portal/meg/abonnement"

@@ -6,7 +6,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { T, Caps, Tittel, Kort, StatusPill, CTAPill, TomTilstand, Icon } from "@/components/v2";
+import { T, Caps, Tittel, Kort, StatusPill, TomTilstand, Icon } from "@/components/v2";
 
 /* ── Datakontrakt (kun ekte data fra page.tsx) ─────────────────────── */
 
@@ -170,7 +170,10 @@ function IntegrasjonKort({ integrasjon }: { integrasjon: Integrasjon }) {
                 support i stedet for å være en død knapp. */}
             <span style={{ marginLeft: "auto" }}>
               <Link href="/portal/meg/help/kontakt" style={{ textDecoration: "none" }}>
-                <CTAPill ghost>Administrer</CTAPill>
+                <span style={{
+            display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, minHeight: 48, width: "100%", padding: "10px 16px",
+            borderRadius: 10, background: T.handling, color: T.onHandling, fontFamily: T.ui, fontSize: 14, fontWeight: 600,
+          }}>Administrer</span>
               </Link>
             </span>
           </>
@@ -184,7 +187,10 @@ function IntegrasjonKort({ integrasjon }: { integrasjon: Integrasjon }) {
                 «be om tilgang»-lenke til support, ikke en falsk koble-til. */}
             <span style={{ marginLeft: "auto" }}>
               <Link href="/portal/meg/help/kontakt" style={{ textDecoration: "none" }}>
-                <CTAPill icon="plug">Be om tilgang</CTAPill>
+                <span style={{
+            display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, minHeight: 48, width: "100%", padding: "10px 16px",
+            borderRadius: 10, background: T.handling, color: T.onHandling, fontFamily: T.ui, fontSize: 14, fontWeight: 600,
+          }}>Be om tilgang</span>
               </Link>
             </span>
           </>
@@ -301,7 +307,7 @@ export function InnstillingerIntegrasjonerV2({ data }: { data: InnstillingerInte
   const totalt = tilkoblet.length + tilgjengelig.length;
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+    <div data-paper-portal-innstillinger-integrasjoner style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
       <Tittel mobile={mobile} em="data finnes">Koble til der</Tittel>
       <p style={{ fontFamily: T.ui, fontSize: 12.5, color: T.mut, lineHeight: 1.6, margin: "-8px 0 0" }}>
         Samle handicap, runder, shot-data, søvn og puls ett sted — uten manuell jobb.
@@ -349,9 +355,10 @@ export function InnstillingerIntegrasjonerV2({ data }: { data: InnstillingerInte
               />
             </Kort>
             <Link href="/portal/meg/help/kontakt" style={{ textDecoration: "none", display: "block", marginBottom: 8 }}>
-              <CTAPill icon="message-circle" full>
-                Be om tilkobling
-              </CTAPill>
+              <span style={{
+            display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, minHeight: 48, width: "100%", padding: "10px 16px",
+            borderRadius: 10, background: T.handling, color: T.onHandling, fontFamily: T.ui, fontSize: 14, fontWeight: 600,
+          }}>Be om tilkobling</span>
             </Link>
           </>
         )}
@@ -383,7 +390,10 @@ export function InnstillingerIntegrasjonerV2({ data }: { data: InnstillingerInte
             </p>
             <div style={{ marginTop: 12 }}>
               <Link href="/portal/meg/help/kontakt" style={{ textDecoration: "none" }}>
-                <CTAPill ghost icon="arrow-right">Kontakt support</CTAPill>
+                <span style={{
+            display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, minHeight: 48, width: "100%", padding: "10px 16px",
+            borderRadius: 10, background: T.handling, color: T.onHandling, fontFamily: T.ui, fontSize: 14, fontWeight: 600,
+          }}>Kontakt support</span>
               </Link>
             </div>
           </div>

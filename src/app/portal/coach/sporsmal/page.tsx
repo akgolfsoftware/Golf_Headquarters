@@ -53,7 +53,7 @@ export default async function V2CoachSporsmalPreviewPage() {
   }));
 
   return (
-    <V2Shell aktiv="meg" nav={PLAYERHQ_NAV} navn={user.name}>
+    <V2Shell bredde="kolonne" aktiv="meg" nav={PLAYERHQ_NAV} navn={user.name}>
       <TilbakeLenke href="/portal/coach">Coach</TilbakeLenke>
       <CoachQAV2 data={{ sporsmal }} />
     </V2Shell>

@@ -75,7 +75,7 @@ export default async function OktDetalj({ params }: Props) {
   return (
     // Ingen eksplisitt aktiv-nøkkel: booking-hubben (/portal/booking) lar
     // V2Shell auto-utlede fra pathname — samme her.
-    <V2Shell nav={PLAYERHQ_NAV} navn={user.name ?? undefined} avatarUrl={user.avatarUrl}>
+    <V2Shell bredde="kolonne" nav={PLAYERHQ_NAV} navn={user.name ?? undefined} avatarUrl={user.avatarUrl}>
       <TilbakeLenke href="/portal/meg/bookinger">Mine bookinger</TilbakeLenke>
       <BookingDetaljV2
         data={{

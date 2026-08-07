@@ -119,7 +119,7 @@ export function MegUtstyrsbagV2({ data }: { data: MegUtstyrsbagData }) {
   const total = KOLLER.length + OVRIG.length;
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+    <div data-paper-portal-meg-utstyrsbag style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
       <div>
         <Tittel mobile={mobile}>Utstyrsbag</Tittel>
         <Caps size={9} style={{ marginTop: 10 }}>

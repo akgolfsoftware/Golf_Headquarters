@@ -51,7 +51,7 @@ export default async function FakturaDetaljPage({
   // Ingen ekte faktura med denne id-en på brukeren — vis ærlig "ikke funnet".
   if (!payment) {
     return (
-      <V2Shell aktiv="meg" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
+      <V2Shell aktiv="meg" bredde="kolonne" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
         <TilbakeLenke href="/portal/meg/abonnement">Abonnement</TilbakeLenke>
         <Kort>
           <TomTilstand
@@ -106,7 +106,7 @@ export default async function FakturaDetaljPage({
   };
 
   return (
-    <V2Shell aktiv="meg" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
+    <V2Shell aktiv="meg" bredde="kolonne" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
       <TilbakeLenke href="/portal/meg/abonnement">Abonnement</TilbakeLenke>
       <MegFakturaV2
         data={data}

@@ -167,7 +167,7 @@ export function CoachAIV2({ data }: { data: CoachAIData }) {
   const tom = meldinger.length === 0;
 
   return (
-    <>
+    <div data-paper-portal-coach-ai style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
       {/* Hode */}
       <div>
         <Caps>PlayerHQ · AI-coach</Caps>
@@ -220,7 +220,7 @@ export function CoachAIV2({ data }: { data: CoachAIData }) {
           </div>
         </div>
       </Kort>
-    </>
+    </div>
   );
 }
 
@@ -228,7 +228,7 @@ export function CoachAIV2({ data }: { data: CoachAIData }) {
 
 function ProGate({ mobile }: { mobile: boolean }) {
   return (
-    <>
+    <div data-paper-portal-coach-ai style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
       <div>
         <Caps>PlayerHQ · AI-coach</Caps>
         <div style={{ marginTop: 10 }}>
@@ -243,6 +243,6 @@ function ProGate({ mobile }: { mobile: boolean }) {
           <Knapp icon="arrow-up-right">Oppgrader til Pro</Knapp>
         </Link>
       </Kort>
-    </>
+    </div>
   );
 }

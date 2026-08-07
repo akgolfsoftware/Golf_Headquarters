@@ -9,6 +9,7 @@ import { z } from "zod";
 import { getCurrentUser } from "@/lib/auth/getCurrentUser";
 import { prisma } from "@/lib/prisma";
 import { audit } from "@/lib/audit";
+import { rateLimit } from "@/lib/rate-limit";
 
 const Body = z.object({
   recordingId: z.string().min(1),
@@ -42,6 +43,14 @@ export async function POST(req: Request) {
   if (!user) {
     return NextResponse.json({ error: "Ikke innlogget" }, { status: 401 });
   }
+  const rl = await rateLimit({ key: `recording-dummy-transcript:${user.id}`, max: 30, windowMs: 60_000 });
+  if (!rl.ok) {
+    return NextResponse.json(
+      { error: "rate-limited" },
+      { status: 429, headers: { "x-ratelimit-reset": String(rl.resetAt) } },
+    );
+  }
+
 
   const parsed = Body.safeParse(await req.json().catch(() => ({})));
   if (!parsed.success) {

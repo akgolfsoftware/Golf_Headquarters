@@ -47,7 +47,7 @@ export default async function ForeldrePage() {
   };
 
   return (
-    <V2Shell aktiv="meg" nav={PLAYERHQ_NAV} navn={user.name ?? "Øyvind Rohjan"} avatarUrl={user.avatarUrl}>
+    <V2Shell aktiv="meg" bredde="kolonne" nav={PLAYERHQ_NAV} navn={user.name ?? "Øyvind Rohjan"} avatarUrl={user.avatarUrl}>
       <TilbakeLenke href="/portal/meg">Meg</TilbakeLenke>
       <MegForeldreV2 data={data} />
     </V2Shell>

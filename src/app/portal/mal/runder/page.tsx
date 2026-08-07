@@ -25,7 +25,7 @@ export default async function V2RunderPreviewPage() {
   const fornavn = user.name ? user.name.split(" ")[0] : "";
 
   return (
-    <V2Shell aktiv="analyse" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
+    <V2Shell bredde="kolonne" aktiv="analyse" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
       <TilbakeLenke href="/portal/mal">Mål</TilbakeLenke>
       <RunderV2 data={{ fornavn, hcp: user.hcp, rows: model.rows, kpis: model.kpis }} />
     </V2Shell>

@@ -36,7 +36,7 @@ export default async function BaneOverviewPage({
   }));
 
   return (
-    <V2Shell aktiv="analyse" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
+    <V2Shell bredde="kolonne" aktiv="analyse" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
       <TilbakeLenke href="/portal/gameplan">Gameplan</TilbakeLenke>
       <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
         <div>

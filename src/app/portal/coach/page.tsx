@@ -32,7 +32,7 @@ export default async function V2CoachPreviewPage() {
   // coachrelasjon — vis oppsalgs-flate i stedet for coach-hubben (aldri blindgate).
   if (!(await erCoachetSpiller(user.id))) {
     return (
-      <V2Shell aktiv="meg" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
+      <V2Shell bredde="kolonne" aktiv="meg" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
         <TilbakeLenke href="/portal/meg">Meg</TilbakeLenke>
         <Kort tint>
           <TomTilstand
@@ -74,7 +74,7 @@ export default async function V2CoachPreviewPage() {
   };
 
   return (
-    <V2Shell aktiv="meg" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl ?? undefined}>
+    <V2Shell bredde="kolonne" aktiv="meg" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl ?? undefined}>
       <TilbakeLenke href="/portal/meg">Meg</TilbakeLenke>
       <CoachHubV2 data={data} />
     </V2Shell>

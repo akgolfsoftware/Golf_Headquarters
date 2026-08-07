@@ -121,7 +121,7 @@ export default async function V2HandlingssenterPage() {
   const data: AdminHandlingssenterData = { dato, oppgaver };
 
   return (
-    <V2Shell aktiv="innboks" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>
+    <V2Shell bredde="kolonne" aktiv="innboks" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>
       <KoHubNav />
       <AdminHandlingssenterV2 data={data} meg={user.name} />
     </V2Shell>

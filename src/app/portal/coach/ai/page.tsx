@@ -59,7 +59,7 @@ export default async function V2CoachAiPreviewPage({
   };
 
   return (
-    <V2Shell aktiv="meg" nav={PLAYERHQ_NAV} navn={user.name ?? undefined} avatarUrl={user.avatarUrl}>
+    <V2Shell bredde="kolonne" aktiv="meg" nav={PLAYERHQ_NAV} navn={user.name ?? undefined} avatarUrl={user.avatarUrl}>
       <TilbakeLenke href="/portal/coach">Coach</TilbakeLenke>
       <CoachAIV2 data={data} />
     </V2Shell>

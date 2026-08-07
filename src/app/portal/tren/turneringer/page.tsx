@@ -27,6 +27,7 @@ export default async function TurneringerPage() {
 
   return (
     <V2Shell
+      bredde="kolonne"
       aktiv="analyse"
       nav={PLAYERHQ_NAV}
       navn={user.name}

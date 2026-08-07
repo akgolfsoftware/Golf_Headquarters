@@ -16,12 +16,23 @@ import { NextResponse, type NextRequest } from "next/server";
 import { createHmac } from "node:crypto";
 import { prisma } from "@/lib/prisma";
 import { encrypt } from "@/lib/notion/crypto";
+import { rateLimit } from "@/lib/rate-limit";
+import { getClientIp } from "@/lib/security/same-origin";
 
 export const runtime = "nodejs";
 
 const REDIRECT_BASE = "/admin/workspace/notion";
 
 export async function GET(req: NextRequest) {
+  const ip = getClientIp(req);
+  const rl = await rateLimit({ key: `notion-oauth-callback:${ip}`, max: 30, windowMs: 60_000 });
+  if (!rl.ok) {
+    return NextResponse.json(
+      { error: "rate-limited" },
+      { status: 429, headers: { "x-ratelimit-reset": String(rl.resetAt) } },
+    );
+  }
+
   const url = req.nextUrl;
   const code = url.searchParams.get("code");
   const state = url.searchParams.get("state");

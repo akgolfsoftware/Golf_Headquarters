@@ -76,7 +76,7 @@ export default async function V2AdminApiKeysPage() {
   };
 
   return (
-    <V2Shell nav={AGENCYOS_NAV}>
+    <V2Shell bredde="kolonne" nav={AGENCYOS_NAV}>
       <TilbakeLenke href="/admin/settings">Innstillinger</TilbakeLenke>
       <AdminApiKeysV2 data={data} />
     </V2Shell>

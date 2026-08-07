@@ -20,6 +20,7 @@ import { prisma } from "@/lib/prisma";
 import { logError } from "@/lib/error-tracking";
 import { anonymiserBruker } from "@/lib/gdpr/anonymiser-bruker";
 import { slettGamleFeillogger } from "@/lib/gdpr/slett-gamle-feillogger";
+import { rateLimit } from "@/lib/rate-limit";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -32,6 +33,16 @@ export async function GET(req: Request): Promise<NextResponse> {
   if (!process.env.CRON_SECRET || auth !== expectedAuth) {
     return NextResponse.json({ error: "unauthorized" }, { status: 401 });
   }
+  const rl = await rateLimit({ key: `cron-cleanup-deleted-accounts`, max: 5, windowMs: 60_000 });
+  if (!rl.ok) {
+    return NextResponse.json(
+      { error: "rate-limited" },
+      { status: 429, headers: { "x-ratelimit-reset": String(rl.resetAt) } },
+    );
+  }
+
+
+  const dryRun = new URL(req.url).searchParams.get("dryRun") === "1";
 
   try {
     // Feillogg-retensjon (90 dager) kjører uansett om det finnes konti å
@@ -63,10 +74,17 @@ export async function GET(req: Request): Promise<NextResponse> {
     // anonymisering er idempotent så en delvis kjøring kan trygt gjentas.
     let anonymisert = 0;
     const feilet: string[] = [];
+    const plan: Array<{ id: string; plan?: string[] }> = [];
     for (const bruker of kandidater) {
       try {
-        await anonymiserBruker(bruker.id);
-        anonymisert++;
+        if (dryRun) {
+          const r = await anonymiserBruker(bruker.id, new Date(), { dryRun: true });
+          plan.push({ id: bruker.id, plan: r.plan });
+          anonymisert++;
+        } else {
+          await anonymiserBruker(bruker.id);
+          anonymisert++;
+        }
       } catch (error) {
         feilet.push(bruker.id);
         await logError({
@@ -79,10 +97,12 @@ export async function GET(req: Request): Promise<NextResponse> {
 
     return NextResponse.json({
       ok: true,
+      dryRun,
       anonymisert,
       feilloggSlettet,
       feilet: feilet.length,
       ids: kandidater.map((u) => u.id),
+      plan: dryRun ? plan : undefined,
     });
   } catch (error) {
     await logError({

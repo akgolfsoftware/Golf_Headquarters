@@ -15,7 +15,7 @@ export default async function BreakTabellPage() {
   const user = await requirePortalUser();
 
   return (
-    <V2Shell aktiv="gjor" nav={PLAYERHQ_NAV} navn={user.name ?? undefined} avatarUrl={user.avatarUrl}>
+    <V2Shell bredde="kolonne" aktiv="gjor" nav={PLAYERHQ_NAV} navn={user.name ?? undefined} avatarUrl={user.avatarUrl}>
       <BreakTabellV2 />
     </V2Shell>
   );

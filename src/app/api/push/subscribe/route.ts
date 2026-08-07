@@ -9,6 +9,8 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { lagrePushSubscription } from "@/lib/push/subscriptions";
+import { rateLimit } from "@/lib/rate-limit";
+import { getClientIp } from "@/lib/security/same-origin";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -22,6 +24,15 @@ const Body = z.object({
 });
 
 export async function POST(req: Request) {
+  const ip = getClientIp(req);
+  const rl = await rateLimit({ key: `push-subscribe:${ip}`, max: 30, windowMs: 60_000 });
+  if (!rl.ok) {
+    return NextResponse.json(
+      { error: "rate-limited" },
+      { status: 429, headers: { "x-ratelimit-reset": String(rl.resetAt) } },
+    );
+  }
+
   let json: unknown;
   try {
     json = await req.json();

@@ -10,7 +10,7 @@
  */
 
 import Link from "next/link";
-import { T, Caps, Tittel, Kort, CTAPill, AvatarInit } from "@/components/v2";
+import { T, Caps, Tittel, Kort, AvatarInit } from "@/components/v2";
 import { Icon } from "@/components/v2/icon";
 
 export type BookingBekreftetV2Data = {
@@ -25,7 +25,7 @@ export type BookingBekreftetV2Data = {
 
 export function BookingBekreftetV2({ data }: { data: BookingBekreftetV2Data }) {
   return (
-    <div style={{ maxWidth: 440, width: "100%", margin: "0 auto", display: "flex", flexDirection: "column", gap: T.gap }}>
+    <div data-paper-portal-booking-bekreftet style={{ maxWidth: 440, width: "100%", margin: "0 auto", display: "flex", flexDirection: "column", gap: T.gap }}>
       {/* Hero */}
       <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 12, textAlign: "center", paddingTop: 8 }}>
         <span
@@ -67,10 +67,16 @@ export function BookingBekreftetV2({ data }: { data: BookingBekreftetV2Data }) {
       {/* Handlinger */}
       <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
         <a href={data.kalenderUrl} target="_blank" rel="noopener noreferrer" style={{ textDecoration: "none", display: "block" }}>
-          <CTAPill icon="calendar-plus" full>Legg i kalender</CTAPill>
+          <span style={{
+            display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, minHeight: 48, width: "100%", padding: "10px 16px",
+            borderRadius: 10, background: T.handling, color: T.onHandling, fontFamily: T.ui, fontSize: 14, fontWeight: 600,
+          }}>Legg i kalender</span>
         </a>
         <Link href="/portal/meg/bookinger" style={{ textDecoration: "none", display: "block" }}>
-          <CTAPill ghost full>Se alle bookinger</CTAPill>
+          <span style={{
+            display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, minHeight: 48, width: "100%", padding: "10px 16px",
+            borderRadius: 10, background: T.handling, color: T.onHandling, fontFamily: T.ui, fontSize: 14, fontWeight: 600,
+          }}>Se alle bookinger</span>
         </Link>
       </div>
     </div>

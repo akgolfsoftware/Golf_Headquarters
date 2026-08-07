@@ -14,7 +14,6 @@ import {
   StatusPill,
   TomTilstand,
   Icon,
-  CTAPill,
   type StatusTone,
 } from "@/components/v2";
 
@@ -98,7 +97,7 @@ export function MegDokumenterV2({ data }: { data: MegDokumenterData }) {
   const n = dokumenter.length;
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+    <div data-paper-portal-meg-dokumenter style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
       <div>
         <Caps>Meg · Dokumenter</Caps>
         <div style={{ marginTop: 10 }}>
@@ -130,9 +129,10 @@ export function MegDokumenterV2({ data }: { data: MegDokumenterData }) {
             />
           </Kort>
           <Link href="/portal/meg" style={{ textDecoration: "none", display: "block" }}>
-            <CTAPill icon="arrow-left" full>
-              Tilbake til Meg
-            </CTAPill>
+            <span style={{
+            display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, minHeight: 48, width: "100%", padding: "10px 16px",
+            borderRadius: 10, background: T.handling, color: T.onHandling, fontFamily: T.ui, fontSize: 14, fontWeight: 600,
+          }}>Tilbake til Meg</span>
           </Link>
         </>
       ) : (

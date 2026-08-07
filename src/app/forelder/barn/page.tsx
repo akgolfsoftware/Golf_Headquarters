@@ -142,6 +142,7 @@ export default async function V2ForelderBarnPreviewPage() {
 
   return (
     <V2Shell
+      bredde="kolonne"
       aktiv="barn"
       nav={FORELDER_NAV}
       navn={user.name}

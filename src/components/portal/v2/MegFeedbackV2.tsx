@@ -104,7 +104,7 @@ export function MegFeedbackV2({ data }: { data: MegFeedbackData }) {
   const kanSende = tekst.trim().length > 0 && !pending;
 
   return (
-    <div style={{ maxWidth: 720, width: "100%", margin: "0 auto", display: "flex", flexDirection: "column", gap: T.gap }}>
+    <div data-paper-portal-meg-feedback style={{ maxWidth: 720, width: "100%", margin: "0 auto", display: "flex", flexDirection: "column", gap: T.gap }}>
       {/* Hode */}
       <div>
         <Caps>Tilbakemelding · under ett minutt</Caps>

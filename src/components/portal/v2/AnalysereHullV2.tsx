@@ -414,7 +414,7 @@ export function AnalysereHullV2({ data }: { data: AnalysereHullV2Data }) {
   const [tab, setTab] = useState<TabKey>("sone");
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+    <div data-paper-portal-analysere-hull style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
       {/* Hode */}
       <div>
         <Caps>PlayerHQ · Hull-analyse</Caps>

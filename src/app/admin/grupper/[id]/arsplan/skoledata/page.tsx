@@ -15,7 +15,7 @@ export default async function SkoledataPage({ params }: { params: Promise<{ id: 
   if (!gruppe) notFound();
 
   return (
-    <V2Shell aktiv="spillere" nav={AGENCYOS_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
+    <V2Shell bredde="kolonne" aktiv="spillere" nav={AGENCYOS_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
       <TilbakeLenke href={`/admin/grupper/${id}/arsplan`}>Årsplan</TilbakeLenke>
 
       <h1 className="mb-1 font-display text-2xl font-bold tracking-[-0.02em] text-foreground">Legg inn skoledata</h1>

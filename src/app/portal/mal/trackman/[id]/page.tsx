@@ -189,8 +189,8 @@ export default async function TrackManDetalj({
   const dispersjon = finnDispersjonKolle(sesjon.rawJson, shots);
 
   return (
-    <V2Shell aktiv="analyse" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
-      <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+    <V2Shell bredde="kolonne" aktiv="analyse" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
+      <div data-paper-portal-trackman-detalj style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 960, margin: "0 auto", width: "100%" }}>
         <Link href="/portal/mal/trackman" style={{ textDecoration: "none", alignSelf: "flex-start" }}>
           <MikroMeta icon="arrow-left">Alle TrackMan-økter</MikroMeta>
         </Link>

@@ -44,7 +44,7 @@ export default async function GdprKoPage() {
   };
 
   return (
-    <V2Shell aktiv="settings" nav={AGENCYOS_NAV} navn={user.name ?? "Admin"}>
+    <V2Shell bredde="kolonne" aktiv="settings" nav={AGENCYOS_NAV} navn={user.name ?? "Admin"}>
       <div
         data-paper-agencyos-gdpr
         style={{

@@ -57,7 +57,7 @@ export default async function ProfilPage() {
   };
 
   return (
-    <V2Shell aktiv="meg" nav={PLAYERHQ_NAV} navn={data.navn} avatarUrl={data.avatarUrl}>
+    <V2Shell aktiv="meg" bredde="kolonne" nav={PLAYERHQ_NAV} navn={data.navn} avatarUrl={data.avatarUrl}>
       <TilbakeLenke href="/portal/meg">Meg</TilbakeLenke>
       <MinProfilV2 data={data} />
     </V2Shell>

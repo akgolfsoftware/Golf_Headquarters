@@ -6,7 +6,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { T, Tittel, Kort, TomTilstand, StatusPill, CTAPill } from "@/components/v2";
+import { T, Tittel, Kort, TomTilstand, StatusPill } from "@/components/v2";
 
 /* ── Hjelpere ──────────────────────────────────────────────────────── */
 
@@ -29,7 +29,7 @@ export function InnstillingerOkterV2() {
   const mobile = useMobile();
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+    <div data-paper-portal-innstillinger-okter style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
       <Tittel mobile={mobile}>Apparater og økter</Tittel>
 
       <div className="grid grid-cols-2" style={{ gap: 8 }}>
@@ -50,9 +50,10 @@ export function InnstillingerOkterV2() {
       </Kort>
 
       <Link href="/portal/meg/innstillinger/sikkerhet" style={{ textDecoration: "none", display: "block" }}>
-        <CTAPill icon="shield" full>
-          Åpne sikkerhet
-        </CTAPill>
+        <span style={{
+            display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, minHeight: 48, width: "100%", padding: "10px 16px",
+            borderRadius: 10, background: T.handling, color: T.onHandling, fontFamily: T.ui, fontSize: 14, fontWeight: 600,
+          }}>Åpne sikkerhet</span>
       </Link>
     </div>
   );

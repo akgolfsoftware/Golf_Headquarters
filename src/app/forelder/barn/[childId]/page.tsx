@@ -211,6 +211,7 @@ export default async function BarnProfil({
 
   return (
     <V2Shell
+      bredde="kolonne"
       aktiv="barn"
       nav={FORELDER_NAV}
       navn={user.name}

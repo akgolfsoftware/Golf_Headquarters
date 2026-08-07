@@ -47,7 +47,7 @@ export function TalentMittNivaV2({ data }: { data: TalentMittNivaData }) {
   const harKohort = data.kohortAntall > 0;
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+    <div data-paper-portal-talent-mitt-niva style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
       {/* Hode */}
       <div>
         <Caps>Talent · Mitt nivå</Caps>

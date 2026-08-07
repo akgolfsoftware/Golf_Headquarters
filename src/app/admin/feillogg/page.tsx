@@ -71,7 +71,7 @@ export default async function AdminFeilloggPage() {
   };
 
   return (
-    <V2Shell aktiv="innsikt" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>
+    <V2Shell bredde="kolonne" aktiv="innsikt" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>
       <TilbakeLenke href="/admin/analyse">Innsikt</TilbakeLenke>
       <AdminFeilloggV2 data={data} />
     </V2Shell>

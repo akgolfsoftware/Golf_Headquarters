@@ -18,8 +18,7 @@ import {
   Rad,
   AvatarInit,
   TomTilstand,
-  CTAPill,
-} from "@/components/v2";
+  } from "@/components/v2";
 
 /* ── Datakontrakt (serialiserbar — formatert på server) ────────────── */
 
@@ -70,7 +69,7 @@ export function CoachQAV2({ data }: { data: CoachQAData }) {
   );
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+    <div data-paper-portal-coach-qa style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
       {/* Hode */}
       <div>
         <Caps>Coach · Spørsmål</Caps>
@@ -111,9 +110,10 @@ export function CoachQAV2({ data }: { data: CoachQAData }) {
               sub="Når noen stiller et spørsmål, dukker det opp her."
             />
             <Link href="/portal/coach/sporsmal/ny" style={{ textDecoration: "none", display: "block" }}>
-              <CTAPill icon="send" full>
-                Still et spørsmål
-              </CTAPill>
+              <span style={{
+            display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, minHeight: 48, width: "100%", padding: "10px 16px",
+            borderRadius: 10, background: T.handling, color: T.onHandling, fontFamily: T.ui, fontSize: 14, fontWeight: 600,
+          }}>Still et spørsmål</span>
             </Link>
           </div>
         ) : vist.length === 0 ? (

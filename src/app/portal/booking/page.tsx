@@ -32,7 +32,7 @@ export default async function BookingHubPage() {
   const hub = await getBookingHubData(user.id);
 
   return (
-    <V2Shell nav={PLAYERHQ_NAV} navn={user.name}>
+    <V2Shell bredde="kolonne" nav={PLAYERHQ_NAV} navn={user.name}>
       <TilbakeLenke href="/portal">Hjem</TilbakeLenke>
       <BookingHubV2 data={{ credits: hub.credits, upcoming: hub.upcoming, coaches: hub.coaches }} />
     </V2Shell>

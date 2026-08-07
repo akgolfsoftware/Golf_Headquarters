@@ -50,7 +50,7 @@ export default async function NyBookingPage({ searchParams }: { searchParams: Pr
   ]);
 
   return (
-    <V2Shell aktiv="bookinger" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>
+    <V2Shell bredde="kolonne" aktiv="bookinger" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>
       <NyBookingWizard
         spillere={spillere.map((s) => ({
           id: s.id,

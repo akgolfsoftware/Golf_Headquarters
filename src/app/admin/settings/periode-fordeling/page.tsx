@@ -20,7 +20,7 @@ export default async function PeriodeFordelingPage() {
   const rader = await hentPeriodeFordelinger();
 
   return (
-    <V2Shell nav={AGENCYOS_NAV}>
+    <V2Shell bredde="kolonne" nav={AGENCYOS_NAV}>
       <TilbakeLenke href="/admin/settings">Innstillinger</TilbakeLenke>
       <PeriodeFordelingV2 rader={rader} />
     </V2Shell>

@@ -14,6 +14,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { logError } from "@/lib/error-tracking";
+import { rateLimit } from "@/lib/rate-limit";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -26,6 +27,14 @@ export async function GET(req: Request): Promise<NextResponse> {
   if (!process.env.CRON_SECRET || auth !== expectedAuth) {
     return NextResponse.json({ error: "unauthorized" }, { status: 401 });
   }
+  const rl = await rateLimit({ key: `cron-cleanup-guest-bookings`, max: 5, windowMs: 60_000 });
+  if (!rl.ok) {
+    return NextResponse.json(
+      { error: "rate-limited" },
+      { status: 429, headers: { "x-ratelimit-reset": String(rl.resetAt) } },
+    );
+  }
+
 
   try {
     const cutoff = new Date(Date.now() - RETENTION_DAYS * 24 * 60 * 60 * 1000);

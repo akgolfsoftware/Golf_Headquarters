@@ -163,7 +163,7 @@ export function DataGolfV2({ data, spillerNavn }: DataGolfProps) {
 
   if (!data.harData) {
     return (
-      <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+      <div data-paper-portal-datagolf style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
         <div>
           <Caps>DataGolf · PGA Tour-baseline · {navn}</Caps>
           <div style={{ marginTop: 10 }}>
@@ -192,9 +192,11 @@ export function DataGolfV2({ data, spillerNavn }: DataGolfProps) {
           />
           <div style={{ marginTop: 12, display: "flex", flexDirection: "column", gap: 8 }}>
             <Link href="/portal/runde/live" style={{ textDecoration: "none", display: "block" }}>
-              <CTAPill icon="flag" full>
-                Start live-føring
-              </CTAPill>
+              <span style={{
+                display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, minHeight: 48, width: "100%", padding: "10px 16px",
+                borderRadius: 10, background: T.handling, color: T.onHandling, fontFamily: T.ui, fontSize: 14, fontWeight: 600,
+              }}>Start live-føring
+              </span>
             </Link>
             <Link href="/portal/analysere" style={{ textDecoration: "none", display: "block" }}>
               <CTAPill ghost full icon="bar-chart">
@@ -297,7 +299,7 @@ export function DataGolfV2({ data, spillerNavn }: DataGolfProps) {
   ) : null;
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+    <div data-paper-portal-datagolf style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
       <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
         <div>
           <Caps>DataGolf · PGA Tour-baseline · {navn}</Caps>

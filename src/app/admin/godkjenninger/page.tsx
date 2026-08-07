@@ -362,7 +362,7 @@ export default async function V2AdminGodkjenningerPage() {
   };
 
   return (
-    <V2Shell aktiv="innboks" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>
+    <V2Shell bredde="kolonne" aktiv="innboks" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>
       <KoHubNav />
       <AdminGodkjenningerV2 data={data} />
     </V2Shell>

@@ -45,7 +45,7 @@ export default async function SpillerAnalysePage({
   ]);
 
   return (
-    <V2Shell aktiv="spillere" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>
+    <V2Shell bredde="kolonne" aktiv="spillere" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>
       <AdminSpillerAnalyseV2
         navn={spiller.name ?? "Spiller"}
         spillerId={spiller.id}

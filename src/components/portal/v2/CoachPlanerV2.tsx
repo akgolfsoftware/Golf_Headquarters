@@ -16,7 +16,6 @@ import {
   KpiFlis,
   StatusPill,
   PillTabs,
-  CTAPill,
   ProgresjonsBar,
   TomTilstand,
   Icon,
@@ -104,7 +103,10 @@ export function CoachPlanerV2({ data }: { data: CoachPlanerData }) {
       </div>
       {tier !== "GRATIS" && (
         <Link href="/portal/onskeligokt" style={{ textDecoration: "none" }}>
-          <CTAPill icon="plus" ghost>Be om plan</CTAPill>
+          <span style={{
+            display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, minHeight: 48, width: "100%", padding: "10px 16px",
+            borderRadius: 10, background: T.handling, color: T.onHandling, fontFamily: T.ui, fontSize: 14, fontWeight: 600,
+          }}>Be om plan</span>
         </Link>
       )}
     </div>
@@ -113,7 +115,7 @@ export function CoachPlanerV2({ data }: { data: CoachPlanerData }) {
   // Pro-gating — coach-laget plan er en del av Pro (låst, ærlig tekst).
   if (tier === "GRATIS") {
     return (
-      <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+      <div data-paper-portal-coach-planer style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
         {hode}
         <Kort tint>
           <TomTilstand
@@ -123,9 +125,10 @@ export function CoachPlanerV2({ data }: { data: CoachPlanerData }) {
           />
           <div style={{ marginTop: 12 }}>
             <Link href="/portal/meg/abonnement" style={{ textDecoration: "none", display: "block" }}>
-              <CTAPill icon="arrow-right" full>
-                Oppgrader til Pro
-              </CTAPill>
+              <span style={{
+            display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, minHeight: 48, width: "100%", padding: "10px 16px",
+            borderRadius: 10, background: T.handling, color: T.onHandling, fontFamily: T.ui, fontSize: 14, fontWeight: 600,
+          }}>Oppgrader til Pro</span>
             </Link>
           </div>
         </Kort>
@@ -146,9 +149,10 @@ export function CoachPlanerV2({ data }: { data: CoachPlanerData }) {
           />
           <div style={{ marginTop: 12, display: "flex", flexDirection: "column", gap: 8 }}>
             <Link href="/portal/onskeligokt" style={{ textDecoration: "none", display: "block" }}>
-              <CTAPill icon="send" full>
-                Be om plan
-              </CTAPill>
+              <span style={{
+            display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, minHeight: 48, width: "100%", padding: "10px 16px",
+            borderRadius: 10, background: T.handling, color: T.onHandling, fontFamily: T.ui, fontSize: 14, fontWeight: 600,
+          }}>Be om plan</span>
             </Link>
             <Link
               href="/portal/gjennomfore"

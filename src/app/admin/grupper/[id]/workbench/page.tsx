@@ -62,7 +62,7 @@ export default async function GruppeWorkbenchPage({ params }: { params: Promise<
   }));
 
   return (
-    <V2Shell aktiv="spillere" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>
+    <V2Shell bredde="full" aktiv="spillere" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>
       <div>
         <TilbakeLenke href={`/admin/grupper/${gruppe.id}`}>{gruppe.name}</TilbakeLenke>
       </div>

@@ -37,6 +37,7 @@ export default async function V2ForelderInnstillingerPreviewPage() {
 
   return (
     <V2Shell
+      bredde="kolonne"
       aktiv="oversikt"
       nav={FORELDER_NAV}
       navn={user.name}

@@ -152,7 +152,7 @@ export default async function V2AdminBookingerPage() {
   };
 
   return (
-    <V2Shell aktiv="kalender" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>
+    <V2Shell bredde="kolonne" aktiv="kalender" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>
       <KalenderHubNav />
       <AdminBookingerV2 data={data} />
     </V2Shell>

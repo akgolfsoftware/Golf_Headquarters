@@ -20,7 +20,7 @@ export default async function PeriodeNavnPage() {
   const oversikt = await hentPeriodeNavnOversikt();
 
   return (
-    <V2Shell nav={AGENCYOS_NAV}>
+    <V2Shell bredde="kolonne" nav={AGENCYOS_NAV}>
       <TilbakeLenke href="/admin/settings">Innstillinger</TilbakeLenke>
       <PeriodeNavnV2 oversikt={oversikt} typer={PERIODE_NAVN_LABELS} />
     </V2Shell>
