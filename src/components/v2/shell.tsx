@@ -34,6 +34,8 @@ export interface V2NavItem {
   href: string;
   /** Skjules for COACH i AgencyOS — siden bak er ADMIN-only (server-gated). */
   adminOnly?: boolean;
+  /** Valgfri antall-badge (f.eks. kø-telling på AgencyOS «Kø»). */
+  badge?: number;
 }
 
 /** Gruppe i «Mer»-menyen (AgencyOS lang hale). */
@@ -86,6 +88,14 @@ export const AGENCYOS_NAV: V2NavItem[] = [
   { id: "innsikt", label: "Innsikt", icon: "bar-chart", href: "/admin/analyse" },
 ];
 
+/** Påfør kø-badge uten å mutere AGENCYOS_NAV-konstanten. erAgency sjekker id/href. */
+export function withAgencyOsNavBadges(koTotalt: number): V2NavItem[] {
+  const n = koTotalt > 0 ? koTotalt : undefined;
+  return AGENCYOS_NAV.map((item) =>
+    item.id === "innboks" && n ? { ...item, badge: n } : { ...item },
+  );
+}
+
 /**
  * AgencyOS «Mer» — FEM ROM (IA 2026-07-26, fasit `mer-sheet.html`).
  *
@@ -104,8 +114,8 @@ export const AGENCYOS_ROM: V2Rom[] = [
   {
     id: "agenticos",
     label: "AgenticOS",
-    beskrivelse: "Caddie, AI-agenter, agent-team, daglig brief",
-    meta: "AI",
+    beskrivelse: "Caddie, coach-agenter, agent-team, daglig brief",
+    meta: "Coach",
     icon: "bot",
     href: "/admin/agents",
   },
@@ -273,16 +283,42 @@ function TemaRailKnapp() {
 
 /** Ett rail-punkt (desktop). */
 function RailLenke({ item, on }: { item: V2NavItem; on: boolean }) {
+  const badge = typeof item.badge === "number" && item.badge > 0 ? item.badge : null;
   return (
     <Link
       href={item.href}
-      title={item.label}
+      title={badge ? `${item.label} (${badge})` : item.label}
       aria-current={on ? "page" : undefined}
       className="v2-press v2-focus"
       style={{ width: 46, display: "flex", flexDirection: "column", alignItems: "center", gap: 3, padding: "7px 0 5px", borderRadius: 12, background: on ? `color-mix(in srgb, ${T.lime} 9%, transparent)` : "transparent", textDecoration: "none", position: "relative", flex: "none" }}
     >
       {on && <span style={{ position: "absolute", left: -7, top: 10, bottom: 10, width: 2, borderRadius: 2, background: T.lime }} />}
-      <Icon name={item.icon} size={18} style={{ color: on ? T.lime : T.mut }} strokeWidth={on ? 2 : 1.5} />
+      <span style={{ position: "relative", display: "inline-flex" }}>
+        <Icon name={item.icon} size={18} style={{ color: on ? T.lime : T.mut }} strokeWidth={on ? 2 : 1.5} />
+        {badge != null && (
+          <span
+            aria-hidden
+            style={{
+              position: "absolute",
+              top: -5,
+              right: -8,
+              minWidth: 14,
+              height: 14,
+              padding: "0 3px",
+              borderRadius: 999,
+              background: T.handling,
+              color: T.bg,
+              fontFamily: T.mono,
+              fontSize: 8,
+              fontWeight: 700,
+              lineHeight: "14px",
+              textAlign: "center",
+            }}
+          >
+            {badge > 99 ? "99+" : badge}
+          </span>
+        )}
+      </span>
       <span style={{ fontFamily: T.mono, fontSize: 7.5, fontWeight: 700, letterSpacing: "0.04em", textTransform: "uppercase", color: on ? T.fg : T.mut }}>{item.label}</span>
     </Link>
   );
@@ -502,15 +538,42 @@ function BunnNavLenker({ aktiv, nav, mer }: { aktiv?: string; nav: V2NavItem[]; 
       >
         {synlige.map((n) => {
           const on = aktiv === n.id;
+          const badge = typeof n.badge === "number" && n.badge > 0 ? n.badge : null;
           return (
             <Link
               key={n.id}
               href={n.href}
               aria-current={on ? "page" : undefined}
+              aria-label={badge ? `${n.label}, ${badge} i kø` : n.label}
               className="v2-press"
-              style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", gap: 4, padding: "4px 0", color: on ? T.lime : T.mut, textDecoration: "none" }}
+              style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", gap: 4, padding: "4px 0", color: on ? T.lime : T.mut, textDecoration: "none", position: "relative" }}
             >
-              <Icon name={n.icon} size={20} strokeWidth={on ? 2 : 1.5} />
+              <span style={{ position: "relative", display: "inline-flex" }}>
+                <Icon name={n.icon} size={20} strokeWidth={on ? 2 : 1.5} />
+                {badge != null && (
+                  <span
+                    aria-hidden
+                    style={{
+                      position: "absolute",
+                      top: -4,
+                      right: -10,
+                      minWidth: 14,
+                      height: 14,
+                      padding: "0 3px",
+                      borderRadius: 999,
+                      background: T.handling,
+                      color: T.bg,
+                      fontFamily: T.mono,
+                      fontSize: 8,
+                      fontWeight: 700,
+                      lineHeight: "14px",
+                      textAlign: "center",
+                    }}
+                  >
+                    {badge > 99 ? "99+" : badge}
+                  </span>
+                )}
+              </span>
               <span style={{ fontFamily: T.mono, fontSize: 9, fontWeight: 600 }}>{n.label}</span>
             </Link>
           );
@@ -564,15 +627,42 @@ function AgencyBunnNav({ aktiv, nav, mer, rom }: { aktiv?: string; nav: V2NavIte
       >
         {primær.map((n) => {
           const on = aktiv === n.id;
+          const badge = typeof n.badge === "number" && n.badge > 0 ? n.badge : null;
           return (
             <Link
               key={n.id}
               href={n.href}
               aria-current={on ? "page" : undefined}
+              aria-label={badge ? `${n.label}, ${badge} i kø` : n.label}
               className="v2-press"
-              style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", gap: 4, padding: "4px 0", color: on ? T.lime : T.mut, textDecoration: "none" }}
+              style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", gap: 4, padding: "4px 0", color: on ? T.lime : T.mut, textDecoration: "none", position: "relative" }}
             >
-              <Icon name={n.icon} size={20} strokeWidth={on ? 2 : 1.5} />
+              <span style={{ position: "relative", display: "inline-flex" }}>
+                <Icon name={n.icon} size={20} strokeWidth={on ? 2 : 1.5} />
+                {badge != null && (
+                  <span
+                    aria-hidden
+                    style={{
+                      position: "absolute",
+                      top: -4,
+                      right: -10,
+                      minWidth: 14,
+                      height: 14,
+                      padding: "0 3px",
+                      borderRadius: 999,
+                      background: T.handling,
+                      color: T.bg,
+                      fontFamily: T.mono,
+                      fontSize: 8,
+                      fontWeight: 700,
+                      lineHeight: "14px",
+                      textAlign: "center",
+                    }}
+                  >
+                    {badge > 99 ? "99+" : badge}
+                  </span>
+                )}
+              </span>
               <span style={{ fontFamily: T.mono, fontSize: 9, fontWeight: 600 }}>{n.label}</span>
             </Link>
           );
@@ -602,7 +692,11 @@ function AgencyBunnNav({ aktiv, nav, mer, rom }: { aktiv?: string; nav: V2NavIte
 export function V2Shell({ aktiv, nav = PLAYERHQ_NAV, mer, rom, navn = "Øyvind Rohjan", avatarUrl, vekslerData, bredde = "full", children }: V2ShellProps) {
   // AgencyOS: auto-koble Mer-menyen uten å måtte endre ~50 kallsteder
   // (alle importerer samme AGENCYOS_NAV-konstant → ref-likhet).
-  const erAgency = nav === AGENCYOS_NAV;
+  // Ikke ref-likhet: withAgencyOsNavBadges() returnerer ny array med badge.
+  const erAgency =
+    nav === AGENCYOS_NAV ||
+    (nav.length === AGENCYOS_NAV.length &&
+      nav.every((n, i) => n.id === AGENCYOS_NAV[i]?.id && n.href === AGENCYOS_NAV[i]?.href));
 
   // COACH ser ikke adminOnly-punkter (Økonomi, Workspace, E-post m.fl.).
   // Ren UI-skjuling — sidene bak er alltid server-gated.

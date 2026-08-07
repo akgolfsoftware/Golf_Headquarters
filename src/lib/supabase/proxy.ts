@@ -13,6 +13,8 @@ export async function updateSession(request: NextRequest, nonce?: string) {
   function buildReqHeaders(): Headers {
     const h = new Headers(request.headers);
     if (nonce) h.set("x-nonce", nonce);
+    // Path for RootLayout tema (SSR) — unngår inline <script> / hydration-støy
+    h.set("x-pathname", request.nextUrl.pathname);
     return h;
   }
 
