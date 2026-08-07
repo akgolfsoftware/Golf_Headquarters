@@ -25,7 +25,7 @@ export function TalentRoadmapV2({ data }: { data: TalentRoadmapData }) {
     data.faser.length === 0 && data.turneringer.length === 0 && data.milepaeler.length === 0;
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+    <div data-paper-portal-talent-roadmap style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
       {/* PRE-BETA — ærlig merking */}
       <Kort pad="12px 18px">
         <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
@@ -72,9 +72,11 @@ export function TalentRoadmapV2({ data }: { data: TalentRoadmapData }) {
             />
             <div style={{ marginTop: 12 }}>
               <Link href="/portal/planlegge/workbench?zoom=uke" style={{ textDecoration: "none", display: "block" }}>
-                <CTAPill icon="calendar" full>
-                  Åpne Workbench
-                </CTAPill>
+                <span style={{
+                display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, minHeight: 48, width: "100%", padding: "10px 16px",
+                borderRadius: 10, background: T.handling, color: T.onHandling, fontFamily: T.ui, fontSize: 14, fontWeight: 600,
+              }}>Åpne Workbench
+                </span>
               </Link>
             </div>
           </>
@@ -157,9 +159,11 @@ export function TalentRoadmapV2({ data }: { data: TalentRoadmapData }) {
           />
           <div style={{ marginTop: 12 }}>
             <Link href="/portal/planlegge/workbench?zoom=uke" style={{ textDecoration: "none", display: "block" }}>
-              <CTAPill icon="calendar" full>
-                Åpne Workbench
-              </CTAPill>
+              <span style={{
+                display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, minHeight: 48, width: "100%", padding: "10px 16px",
+                borderRadius: 10, background: T.handling, color: T.onHandling, fontFamily: T.ui, fontSize: 14, fontWeight: 600,
+              }}>Åpne Workbench
+              </span>
             </Link>
           </div>
         </Kort>

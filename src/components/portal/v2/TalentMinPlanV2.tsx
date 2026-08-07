@@ -24,7 +24,7 @@ export interface TalentMinPlanData {
 
 export function TalentMinPlanV2({ data }: { data: TalentMinPlanData }) {
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+    <div data-paper-portal-talent-min-plan style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
       {/* Hode */}
       <div>
         <Caps>Talent · Min plan</Caps>
@@ -114,9 +114,11 @@ export function TalentMinPlanV2({ data }: { data: TalentMinPlanData }) {
       {/* B: primær vei når neste mål mangler */}
       {!data.nesteMal && (
         <Link href="/portal/coach/melding" style={{ textDecoration: "none", display: "block" }}>
-          <CTAPill icon="send" full>
-            Spør coach om neste mål
-          </CTAPill>
+          <span style={{
+                display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, minHeight: 48, width: "100%", padding: "10px 16px",
+                borderRadius: 10, background: T.handling, color: T.onHandling, fontFamily: T.ui, fontSize: 14, fontWeight: 600,
+              }}>Spør coach om neste mål
+          </span>
         </Link>
       )}
 
