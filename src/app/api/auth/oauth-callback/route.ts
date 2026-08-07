@@ -10,12 +10,16 @@ export const runtime = "nodejs";
 
 export async function GET(req: NextRequest) {
   const ip = getClientIp(req);
-  const rl = await rateLimit({ key: `auth-oauth-callback:${ip}`, max: 30, windowMs: 60_000 });
-  if (!rl.ok) {
-    return NextResponse.json(
-      { error: "rate-limited" },
-      { status: 429, headers: { "x-ratelimit-reset": String(rl.resetAt) } },
-    );
+  try {
+    const rl = await rateLimit({ key: `auth-oauth-callback:${ip}`, max: 30, windowMs: 60_000 });
+    if (!rl.ok) {
+      return NextResponse.json(
+        { error: "rate-limited" },
+        { status: 429, headers: { "x-ratelimit-reset": String(rl.resetAt) } },
+      );
+    }
+  } catch {
+    // Aldri blokker OAuth pga rate-limit infra
   }
 
   const url = req.nextUrl;

@@ -108,10 +108,27 @@ async function rateLimitAsync({
     return memoryLimit(key, max, windowMs);
   }
 
-  const result = await limiter.limit(key);
-  return {
-    ok: result.success,
-    remaining: result.remaining,
-    resetAt: result.reset,
-  };
+  try {
+    const result = await limiter.limit(key);
+    return {
+      ok: result.success,
+      remaining: result.remaining,
+      resetAt: result.reset,
+    };
+  } catch (err) {
+    // Dead Upstash host / network (ENOTFOUND, fetch failed) must NOT take down
+    // auth (oauth-callback) or cron. Fail-open to in-memory unless hard-closed.
+    if (process.env.RATE_LIMIT_FAIL_CLOSED === "1") {
+      throw err;
+    }
+    const now = Date.now();
+    if (now - lastFailOpenLogAt > 60_000) {
+      lastFailOpenLogAt = now;
+      const msg = err instanceof Error ? err.message : String(err);
+      console.error(
+        `[rate-limit] Upstash call failed (${msg}) — soft in-memory limit. key=${key}`,
+      );
+    }
+    return memoryLimit(key, max, windowMs);
+  }
 }
