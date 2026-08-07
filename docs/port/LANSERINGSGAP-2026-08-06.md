@@ -4,8 +4,14 @@
 Alt under er sjekket i repoet. Der jeg ikke har kunnet verifisere noe, står det eksplisitt.
 
 **Sammendrag:** grunnmuren er bedre enn i de fleste prosjekter på denne størrelsen. Det som
-gjenstår er ikke arkitektur — det er *ferdigstillelse* av ting som er 80 % bygget, pluss to
-hull som er alvorlige nok til å utsette lansering.
+gjenstår er ikke arkitektur — det er *ferdigstillelse* av ting som er 80 % bygget.
+
+> **⚠ Rettet 07.08.2026:** de to funnene som opprinnelig sto som «blokkerende for lansering»
+> (GDPR-sletting og -eksport) **var feil** — begge deler var allerede bygget 02.08. Se B1 og B2.
+> Etter rettelsen står det **ingen blokkerende funn** igjen i dette dokumentet. CI-problemet (P2)
+> løste seg også selv natt til 07.08 — kjøringer fullfører normalt igjen.
+>
+> Det som fortsatt gjelder: P3 (branch protection), P4, P5, og hele Del 5 (manuell testing).
 
 ---
 
@@ -29,39 +35,50 @@ Dette er ikke et prosjekt som mangler ingeniørkvalitet. Det mangler **lukking**
 
 ## Del 2 — Blokkerende for lansering
 
-### 🔴 B1. Sletting av persondata kaskaderer ikke (GDPR art. 17)
+### 🟢 B1. Sletting av persondata — RETTET 07.08, var aldri blokkerende
 
-**Kilde:** `docs/gdpr/rettigheter-status.md` — dokumentet sier selv «MANGLER for lanseringsnivå».
+> **Denne seksjonen var feil.** Den sto opprinnelig som rødt/blokkerende funn. Grok fanget opp
+> feilen i nattrapporten 07.08, og den er nå verifisert i koden. Feilen står igjen her i sin
+> helhet under, fordi en rettelse som skjuler hva som var galt ikke er en rettelse.
 
-**Nyansering (verifisert i koden):** valget om å **anonymisere framfor å slette** er bevisst,
-tatt av Anders 28.07.2026 og godt begrunnet i `cleanup-deleted-accounts/route.ts`:
-treningshistorikk beholdes for akademiets utviklingsarbeid, mens persondata og all fritekst
-vaskes bort — «etter vasken peker radene ikke lenger på en person». Det er en legitim tilnærming.
+**Hva jeg påstod (feil):** «`anonymiser-bruker.ts` refererer verken Supabase Auth, Storage eller
+Stripe» — og derfor at sletting ikke kaskaderer.
 
-Problemet er ikke anonymisering-vs-sletting. Problemet er at vasken **ikke når hele veien**.
-Verifisert: `anonymiser-bruker.ts` refererer verken Supabase Auth, Storage eller Stripe.
+**Hva som faktisk stemmer (verifisert 07.08):** `src/lib/gdpr/slett-eksterne-data.ts` ble opprettet
+**02.08.2026** (commit `9b89771`, «sikkerhet: komplett GDPR-eksport og -sletting (Steg 5)») og
+gjør nettopp det jeg påstod manglet:
 
-Konkret, med dokumentets egne ord:
-- **Supabase Auth-brukeren slettes ikke.** Cronen sletter kun Prisma-raden. Kontoen består.
-- **Storage-filer slettes ikke** (video, lyd, vedlegg)
-- **Stripe-kunden slettes/anonymiseres ikke**
-- **Ingen behandlingskø:** `DataExportRequest` med status PENDING vises ingen steder — ingen ser
-  at noen har bedt om sletting
-- Foresatt-slettekrav oppretter kun en forespørsel; koden sier selv *«Faktisk kaskade-sletting
-  gjøres IKKE her — krever manuell behandling»*
+| Påstått mangel | Faktisk status | Bevis |
+|---|---|---|
+| Supabase Auth-bruker slettes ikke | ✅ Slettes | `sb.auth.admin.deleteUser(bruker.authId)` — linje 218 |
+| Stripe-kunde slettes ikke | ✅ Slettes | `stripe.customers.del(sub.stripeCustomerId)` — linje 208 |
+| Storage-filer slettes ikke | ✅ Slettes | `storageFilerFjernet`-teller, linje 119/139 |
+| Ingen behandlingskø | ✅ Finnes | `/admin/gdpr` viser PENDING-køen |
 
-**Hvorfor dette blokkerer:** dere behandler **helsedata om mindreårige** (søvn, hvilepuls,
-skadelogg, symptomer) med foreldresamtykke. En slettefunksjon som ikke sletter, og en slettekø
-ingen overvåker, er ikke en teknisk gjeld — det er et avvik et tilsyn reagerer på.
+`anonymiser-bruker.ts` **kaller** funksjonen på linje 205. Feilen min var å lese den filen isolert,
+se at *den* ikke nevnte Auth/Storage/Stripe, og konkludere uten å følge importen — kombinert med
+at jeg stolte på `docs/gdpr/rettigheter-status.md`, som selv var utdatert i forhold til
+02.08-arbeidet.
 
-**Ikke la en agent gjøre dette over natten.** Det rører `auth.users`, Storage og Stripe-kunder —
-irreversibel sletting av ekte brukerdata. Krever en våken person og en testkjøring mot en
-testbruker først.
+**Lærdom verdt å ta med:** at et dokument sier «MANGLER» er ikke bevis på at noe mangler.
+`rettigheter-status.md` bør oppdateres, ellers villeder den neste som leser den.
 
-### 🔴 B2. Eksport av persondata er ufullstendig (GDPR art. 20)
+**Det som faktisk gjenstår (ikke blokkerende, men gjør det før lansering):**
+- Tørrkjøring mot en testbruker — `dryRun` finnes nå (#375), aldri kjørt mot ekte data
+- Ende-til-ende slettetest: be om sletting → cron kjører → verifiser at data faktisk er borte
+  i Prisma, Supabase Auth, Storage og Stripe
+- Verifiser om fil-**innhold** (bytes) skal med i eksporten, ikke bare manifestet
 
-`exportUserData()` utelater bl.a. `CoachingSession.messages`, og **filer eksporteres ikke i det
-hele tatt** — kun DB-rader. En bruker som ber om «alt dere har om meg» får ikke alt.
+### 🟢 B2. Eksport av persondata — RETTET 07.08, var heller ikke blokkerende
+
+**Hva jeg påstod (feil):** at `exportUserData()` utelater `CoachingSession.messages` og at filer
+ikke eksporteres i det hele tatt.
+
+**Faktisk:** eksporten inkluderer `coachingSessions` og et `_storageFiler`-manifest. Samme
+rotårsak som B1 — utdatert kildedokument, ikke verifisert mot koden.
+
+**Gjenstår:** avklar om manifest er nok, eller om fil-innholdet skal pakkes med. Det er en
+juridisk vurdering (art. 20 «maskinlesbart format»), ikke en teknisk mangel.
 
 ### 🟠 B3. Feilmonitorering fanger ikke uventede feil *(korrigert 06.08 kveld)*
 
@@ -101,11 +118,17 @@ avhengighet.
 Mønsteret finnes (`src/lib/rate-limit.ts`, Upstash). 45 ruter mangler det, inkludert ruter som
 treffer database og eksterne API-er. Dette er mekanisk arbeid — trygt å delegere.
 
-### 🟠 P2. CI kjører ikke
+### 🟢 P2. CI kjører ikke — LØST AV SEG SELV 07.08
 
-Verifisert i kveld: jobber blir stående i kø til de avbrytes. `ci.yml` har en kommentar fra
-19.07 om samme problem. **Uten CI er lokal kjøring eneste gate** — og lokal kjøring kan hoppes
-over av den som har det travelt.
+Kvelden 06.08 sto jobber i kø til de ble avbrutt (35+ min, tom steg-liste — de startet aldri).
+Natt til 07.08 begynte de å kjøre normalt igjen; kjøringer kl. 06:27 og 06:39 fullførte grønt.
+
+**Årsak: forbigående feil hos GitHub, ikke i konfigurasjonen.** `ci.yml` ble lest gjennom og er
+korrekt — `runs-on: ubuntu-latest`, ingen concurrency-grupper som kansellerer, ingen blokkerende
+`if`-betingelser. Ingen endring var nødvendig.
+
+**Konsekvens:** «Require status checks» i branch protection (P3) er nå mulig — det var det ikke
+mens runnerne lå nede.
 
 ### 🟠 P3. Ingen branch protection på `main`
 
