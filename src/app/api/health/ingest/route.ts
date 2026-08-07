@@ -10,6 +10,8 @@ import { NextResponse } from "next/server";
 import { parseAppleHealth } from "@/lib/health/parse-apple-health";
 import { megSupabase } from "@/lib/meg/supabase";
 import { recordWebhookFailure } from "@/lib/webhook-retry";
+import { rateLimit } from "@/lib/rate-limit";
+import { getClientIp } from "@/lib/security/same-origin";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -41,6 +43,15 @@ export async function POST(req: Request) {
   if (!tokenErGyldig(req.headers.get("x-health-token"), forventetToken)) {
     return new NextResponse(null, { status: 401 });
   }
+  const ip = getClientIp(req);
+  const rl = await rateLimit({ key: `health-ingest:${ip}`, max: 20, windowMs: 60_000 });
+  if (!rl.ok) {
+    return NextResponse.json(
+      { error: "rate-limited" },
+      { status: 429, headers: { "x-ratelimit-reset": String(rl.resetAt) } },
+    );
+  }
+
 
   const contentLength = Number(req.headers.get("content-length") ?? "0");
   if (Number.isFinite(contentLength) && contentLength > MAKS_BODY_BYTES) {

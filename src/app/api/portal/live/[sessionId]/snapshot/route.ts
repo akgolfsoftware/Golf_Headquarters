@@ -12,6 +12,7 @@ import { harCoachTilgangTilSpiller } from "@/lib/auth/coached";
 import { prisma } from "@/lib/prisma";
 import { LiveSnapshotSchema } from "@/lib/portal-live/data";
 import { Prisma } from "@/generated/prisma/client";
+import { rateLimit } from "@/lib/rate-limit";
 
 export async function POST(
   req: Request,
@@ -21,6 +22,14 @@ export async function POST(
 
   const user = await getCurrentUser();
   if (!user) return new NextResponse(null, { status: 401 });
+  const rl = await rateLimit({ key: `live-snapshot:${user.id}`, max: 60, windowMs: 60_000 });
+  if (!rl.ok) {
+    return new NextResponse(null, {
+      status: 429,
+      headers: { "x-ratelimit-reset": String(rl.resetAt) },
+    });
+  }
+
 
   let body: unknown;
   try {

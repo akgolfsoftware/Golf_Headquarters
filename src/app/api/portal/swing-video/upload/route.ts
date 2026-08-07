@@ -8,6 +8,7 @@ import { z } from "zod";
 import { getCurrentUser } from "@/lib/auth/getCurrentUser";
 import { isAwaitingGuardianConsent } from "@/lib/auth/minor";
 import { prisma } from "@/lib/prisma";
+import { rateLimit } from "@/lib/rate-limit";
 
 const UploadBody = z.object({
   videoUrl: z.string().url(),
@@ -21,6 +22,14 @@ export async function POST(req: Request) {
   if (!user) {
     return NextResponse.json({ error: "unauthorized" }, { status: 401 });
   }
+  const rl = await rateLimit({ key: `swing-video-upload:${user.id}`, max: 20, windowMs: 60_000 });
+  if (!rl.ok) {
+    return NextResponse.json(
+      { error: "rate-limited" },
+      { status: 429, headers: { "x-ratelimit-reset": String(rl.resetAt) } },
+    );
+  }
+
 
   if (isAwaitingGuardianConsent(user)) {
     return NextResponse.json(

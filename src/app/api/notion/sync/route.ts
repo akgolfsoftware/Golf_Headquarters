@@ -5,6 +5,7 @@ import { NextResponse } from "next/server";
 import { getCurrentUser } from "@/lib/auth/getCurrentUser";
 import { prisma } from "@/lib/prisma";
 import { syncNotionDatabase } from "@/lib/notion/sync";
+import { rateLimit } from "@/lib/rate-limit";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -18,6 +19,14 @@ export async function POST(): Promise<NextResponse> {
   if (user.role !== "ADMIN") {
     return NextResponse.json({ error: "admin_only" }, { status: 403 });
   }
+  const rl = await rateLimit({ key: `notion-sync:${user.id}`, max: 10, windowMs: 60_000 });
+  if (!rl.ok) {
+    return NextResponse.json(
+      { error: "rate-limited" },
+      { status: 429, headers: { "x-ratelimit-reset": String(rl.resetAt) } },
+    );
+  }
+
 
   const links = await prisma.notionDatabaseLink.findMany({
     where: { connection: { userId: user.id }, syncMode: { not: "PAUSED" } },

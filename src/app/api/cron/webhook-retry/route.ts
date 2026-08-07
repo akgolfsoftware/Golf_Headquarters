@@ -23,6 +23,7 @@ import {
   angreBehandlet,
 } from "@/lib/stripe/handle-event";
 import { sendSlackAlert } from "@/lib/slack-alert";
+import { rateLimit } from "@/lib/rate-limit";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -37,6 +38,14 @@ export async function GET(req: Request): Promise<NextResponse> {
   if (!process.env.CRON_SECRET || auth !== expectedAuth) {
     return NextResponse.json({ error: "unauthorized" }, { status: 401 });
   }
+  const rl = await rateLimit({ key: `cron-webhook-retry`, max: 5, windowMs: 60_000 });
+  if (!rl.ok) {
+    return NextResponse.json(
+      { error: "rate-limited" },
+      { status: 429, headers: { "x-ratelimit-reset": String(rl.resetAt) } },
+    );
+  }
+
 
   let stripe: Stripe;
   try {

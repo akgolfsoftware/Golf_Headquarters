@@ -10,6 +10,7 @@ import { canAccessMissionControl } from "@/lib/auth/canAccessMissionControl";
 import { prisma } from "@/lib/prisma";
 import { executeApprovedTool } from "@/lib/caddie/approval-executor";
 import { logError } from "@/lib/error-tracking";
+import { rateLimit } from "@/lib/rate-limit";
 
 export const runtime = "nodejs";
 
@@ -32,6 +33,14 @@ export async function POST(req: Request) {
   if (!user) {
     return Response.json({ ok: false, error: "Ikke autorisert" }, { status: 401 });
   }
+  const rl = await rateLimit({ key: `caddie-approve:${user.id}`, max: 20, windowMs: 60_000 });
+  if (!rl.ok) {
+    return Response.json(
+      { ok: false, error: "rate-limited" },
+      { status: 429, headers: { "x-ratelimit-reset": String(rl.resetAt) } },
+    );
+  }
+
 
   let raw: unknown;
   try {

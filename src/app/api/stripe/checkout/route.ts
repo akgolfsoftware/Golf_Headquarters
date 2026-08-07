@@ -7,6 +7,7 @@ import {
   STRIPE_PRICE_ID_PERFORMANCE,
   STRIPE_PRICE_ID_PERFORMANCE_PRO,
 } from "@/lib/stripe";
+import { rateLimit } from "@/lib/rate-limit";
 
 export const runtime = "nodejs";
 
@@ -27,6 +28,14 @@ export async function POST(req: Request) {
   if (!user) {
     return NextResponse.json({ error: "unauthenticated" }, { status: 401 });
   }
+  const rl = await rateLimit({ key: `stripe-checkout:${user.id}`, max: 20, windowMs: 60_000 });
+  if (!rl.ok) {
+    return NextResponse.json(
+      { error: "rate-limited" },
+      { status: 429, headers: { "x-ratelimit-reset": String(rl.resetAt) } },
+    );
+  }
+
 
   // Les plan-parameter fra body (JSON eller form). Default: pro (PlayerHQ-only).
   let plan: Plan = "pro";

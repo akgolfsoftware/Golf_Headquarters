@@ -3,10 +3,21 @@ import { createClient } from "@/lib/supabase/server";
 import { prisma } from "@/lib/prisma";
 import { safeRedirectPath } from "@/lib/security/safe-redirect";
 import { logError } from "@/lib/error-tracking";
+import { rateLimit } from "@/lib/rate-limit";
+import { getClientIp } from "@/lib/security/same-origin";
 
 export const runtime = "nodejs";
 
 export async function GET(req: NextRequest) {
+  const ip = getClientIp(req);
+  const rl = await rateLimit({ key: `auth-oauth-callback:${ip}`, max: 30, windowMs: 60_000 });
+  if (!rl.ok) {
+    return NextResponse.json(
+      { error: "rate-limited" },
+      { status: 429, headers: { "x-ratelimit-reset": String(rl.resetAt) } },
+    );
+  }
+
   const url = req.nextUrl;
   const code = url.searchParams.get("code");
   // safeRedirectPath avviser absolutte URLer og protocol-relative paths

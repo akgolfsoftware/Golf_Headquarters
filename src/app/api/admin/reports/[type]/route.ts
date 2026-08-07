@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { getCurrentUser } from "@/lib/auth/getCurrentUser";
 import { coachScopedPlayerWhere } from "@/lib/auth/coached";
 import { prisma } from "@/lib/prisma";
+import { rateLimit } from "@/lib/rate-limit";
 
 export const runtime = "nodejs";
 
@@ -36,6 +37,14 @@ export async function GET(
   if (!user || (user.role !== "COACH" && user.role !== "ADMIN")) {
     return NextResponse.json({ error: "forbidden" }, { status: 403 });
   }
+  const rl = await rateLimit({ key: `admin-reports:${user.id}`, max: 60, windowMs: 60_000 });
+  if (!rl.ok) {
+    return NextResponse.json(
+      { error: "rate-limited" },
+      { status: 429, headers: { "x-ratelimit-reset": String(rl.resetAt) } },
+    );
+  }
+
 
   const { type } = await params;
   const filename = type.replace(/\.csv$/, "");
