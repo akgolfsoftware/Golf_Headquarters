@@ -8,6 +8,7 @@ import { runMegAgent } from "@/lib/meg/agent";
 import { handleConfirmation } from "@/lib/meg/confirm";
 import { tryLocalFastPath } from "@/lib/meg/router";
 import { logError } from "@/lib/error-tracking";
+import { rateLimit } from "@/lib/rate-limit";
 
 export const runtime = "nodejs";
 export const maxDuration = 60;
@@ -37,6 +38,14 @@ export async function POST(req: Request) {
     console.warn("[meg/webhook] uautorisert request (secret)", { chatId });
     return NextResponse.json({ ok: true });
   }
+  const rl = await rateLimit({ key: `meg-telegram:${chatId ?? "unknown"}`, max: 20, windowMs: 60_000 });
+  if (!rl.ok) {
+    return NextResponse.json(
+      { ok: false, error: "rate-limited" },
+      { status: 429, headers: { "x-ratelimit-reset": String(rl.resetAt) } },
+    );
+  }
+
   const person = finnPerson(chatId, parsePersoner());
   if (!person) {
     console.warn("[meg/webhook] ukjent avsender", { chatId });

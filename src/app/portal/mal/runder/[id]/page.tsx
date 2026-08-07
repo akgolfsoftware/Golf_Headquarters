@@ -169,7 +169,7 @@ export default async function RundeDetaljPage({
   };
 
   return (
-    <V2Shell aktiv="analyse" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
+    <V2Shell bredde="kolonne" aktiv="analyse" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
       <RundeDetaljV2 data={data} />
     </V2Shell>
   );

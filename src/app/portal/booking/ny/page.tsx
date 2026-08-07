@@ -47,7 +47,7 @@ export default async function NyBookingPage({ searchParams }: Props) {
   if (subscription.creditsRemaining <= 0) {
     const resetAt = subscription.currentPeriodEnd;
     return (
-      <V2Shell nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
+      <V2Shell bredde="kolonne" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
         <TilbakeLenke href="/portal/booking">Booking</TilbakeLenke>
         <BruktOppV2
           resetTekst={
@@ -80,7 +80,7 @@ export default async function NyBookingPage({ searchParams }: Props) {
 
   if (services.length === 0) {
     return (
-      <V2Shell nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
+      <V2Shell bredde="kolonne" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
         <TilbakeLenke href="/portal/booking">Booking</TilbakeLenke>
         <Kort>
           <TomTilstand
@@ -172,7 +172,7 @@ export default async function NyBookingPage({ searchParams }: Props) {
   };
 
   return (
-    <V2Shell nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
+    <V2Shell bredde="kolonne" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
       <TilbakeLenke href="/portal/booking">Booking</TilbakeLenke>
       <BookingNyV2 data={data} />
     </V2Shell>

@@ -8,7 +8,7 @@
 import { useEffect, useState } from "react";
 import { getSignedVideoUrl } from "@/lib/storage/video";
 import Link from "next/link";
-import { T, Caps, Tittel, Kort, VideoKort, TomTilstand, CTAPill } from "@/components/v2";
+import { T, Caps, Tittel, Kort, VideoKort, TomTilstand } from "@/components/v2";
 
 /* ── Datakontrakt (speiler prisma.sessionVideo, status READY) ──────────── */
 
@@ -86,7 +86,7 @@ export function CoachVideoerV2({ data }: { data: CoachVideoerData }) {
   const em = coachNavn.length === 1 ? fornavn(coachNavn[0]) : "coachen din";
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+    <div data-paper-portal-coach-videoer style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
       {/* Hode */}
       <div>
         <Caps>Coach · Videoer</Caps>
@@ -107,9 +107,10 @@ export function CoachVideoerV2({ data }: { data: CoachVideoerData }) {
           />
           <div style={{ marginTop: 12 }}>
             <Link href="/portal/coach/melding" style={{ textDecoration: "none", display: "block" }}>
-              <CTAPill icon="send" full>
-                Spør coach om video
-              </CTAPill>
+              <span style={{
+            display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, minHeight: 48, width: "100%", padding: "10px 16px",
+            borderRadius: 10, background: T.handling, color: T.onHandling, fontFamily: T.ui, fontSize: 14, fontWeight: 600,
+          }}>Spør coach om video</span>
             </Link>
           </div>
         </Kort>

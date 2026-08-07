@@ -27,7 +27,7 @@ export default async function V2TriagePage() {
     koTelling(user.id, user.role),
   ]);
   return (
-    <V2Shell aktiv="innboks" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>
+    <V2Shell bredde="kolonne" aktiv="innboks" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>
       <KoHubNav />
       <TriageV2 data={data} feedback={feedback} ko={ko} />
     </V2Shell>

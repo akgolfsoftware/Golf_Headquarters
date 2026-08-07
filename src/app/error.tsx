@@ -28,9 +28,10 @@ export default function Error({
       </p>
       <h1 className="text-2xl font-semibold tracking-tight">Noe gikk galt</h1>
       <p className="text-center text-sm text-muted-foreground max-w-sm">
-        {error.message ?? "En uventet feil oppstod. Vi ser på det."}
+        En uventet feil oppstod. Vi er varslet og ser på det.
       </p>
       <button
+        type="button"
         onClick={reset}
         className="mt-4 rounded-full bg-primary px-6 py-2.5 text-sm font-medium text-primary-foreground transition-opacity hover:opacity-90"
       >

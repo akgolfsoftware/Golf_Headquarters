@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { getCurrentUser } from "@/lib/auth/getCurrentUser";
 import { prisma } from "@/lib/prisma";
 import { stripeKlient } from "@/lib/stripe";
+import { rateLimit } from "@/lib/rate-limit";
 
 export const runtime = "nodejs";
 
@@ -10,6 +11,14 @@ export async function POST() {
   if (!user) {
     return NextResponse.json({ error: "unauthenticated" }, { status: 401 });
   }
+  const rl = await rateLimit({ key: `stripe-portal:${user.id}`, max: 20, windowMs: 60_000 });
+  if (!rl.ok) {
+    return NextResponse.json(
+      { error: "rate-limited" },
+      { status: 429, headers: { "x-ratelimit-reset": String(rl.resetAt) } },
+    );
+  }
+
 
   const subscription = await prisma.subscription.findUnique({
     where: { userId: user.id },

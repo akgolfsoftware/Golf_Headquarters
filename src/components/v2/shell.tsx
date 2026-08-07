@@ -174,6 +174,21 @@ export interface V2ShellProps {
    * side som vil tilby kontekst-veksling.
    */
   vekslerData?: VekslerData;
+  /**
+   * Innholdsbredde (monsterdokument-paper.md §1: «Tråd/hovedkolonne: sentrert
+   * med max-width:74ch (AgencyOS) eller max-width:720px (PlayerHQ)»).
+   * `"kolonne"` sentrerer children i denne bredden — riktig for enkeltside-
+   * mønstre (detalj/skjema/innstillinger, monsterdokumentet §12). `"full"`
+   * (default, uendret oppførsel) er for skjermer som allerede eier sin egen
+   * flerkolonne-layout (Hjem/Konsoll med artefaktpanel, Workbench,
+   * tabell-tunge oversikter) — disse skal IKKE tvinges inn i en smal kolonne
+   * her, men bygge sin egen riktige bredde internt.
+   * Default er bevisst `"full"` (ikke fasitens narrow-som-standard) fordi en
+   * global bytting av standard ville endret ~280 uverifiserte skjermer på én
+   * gang — samme feil som skjermbilde-gaten finnes for å hindre. Skjermer
+   * settes til `"kolonne"` én om gangen, verifisert.
+   */
+  bredde?: "kolonne" | "full";
   children: ReactNode;
 }
 
@@ -442,7 +457,7 @@ function IkonRailNav({ aktiv, nav, mer, rom, navn, avatarUrl, erAgency }: Requir
       style={{ width: 60, flex: "none", borderRight: `1px solid ${T.border}`, flexDirection: "column", alignItems: "center", padding: "14px 0 12px", gap: 2, position: "sticky", top: 0, height: "100vh", overflowY: "auto" }}
       aria-label="Hovedmeny"
     >
-      <LogoAK size={26} style={{ marginBottom: 12, flex: "none" }} />
+      <LogoAK size={26} surface="ink" style={{ marginBottom: 12, flex: "none" }} />
       {nav.map((n) => <RailLenke key={n.id} item={n} on={aktiv === n.id} />)}
       {((mer && mer.length > 0) || (rom && rom.length > 0)) && (
         <button
@@ -584,7 +599,7 @@ function AgencyBunnNav({ aktiv, nav, mer, rom }: { aktiv?: string; nav: V2NavIte
  * BunnNav. Innholdet stables med T.gap — skjermkomponentene rendrer bare
  * stacken, shellen leverer chrome.
  */
-export function V2Shell({ aktiv, nav = PLAYERHQ_NAV, mer, rom, navn = "Øyvind Rohjan", avatarUrl, vekslerData, children }: V2ShellProps) {
+export function V2Shell({ aktiv, nav = PLAYERHQ_NAV, mer, rom, navn = "Øyvind Rohjan", avatarUrl, vekslerData, bredde = "full", children }: V2ShellProps) {
   // AgencyOS: auto-koble Mer-menyen uten å måtte endre ~50 kallsteder
   // (alle importerer samme AGENCYOS_NAV-konstant → ref-likhet).
   const erAgency = nav === AGENCYOS_NAV;
@@ -741,7 +756,13 @@ export function V2Shell({ aktiv, nav = PLAYERHQ_NAV, mer, rom, navn = "Øyvind R
           {/* D2: kontekst-veksler i toppraden — kun AgencyOS og kun når data er
               gitt (usatt prop ⇒ skjult ⇒ ingen kallsted må endres). */}
           {erAgency && vekslerData && <SpillerVeksler data={vekslerData} />}
-          {children}
+          {bredde === "kolonne" ? (
+            <div style={{ width: "100%", maxWidth: erAgency ? "74ch" : "720px", marginLeft: "auto", marginRight: "auto" }}>
+              {children}
+            </div>
+          ) : (
+            children
+          )}
         </div>
       </div>
       {/* Mobil-bunnnav: AgencyOS får dedikert nav + full-høyde «Mer»-skuff (M1);

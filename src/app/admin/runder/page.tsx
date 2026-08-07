@@ -100,7 +100,7 @@ export default async function V2AdminRunderPage() {
   };
 
   return (
-    <V2Shell aktiv="innsikt" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>
+    <V2Shell bredde="kolonne" aktiv="innsikt" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>
       <InnsiktHubNav />
       <AdminRunderV2 data={data} />
     </V2Shell>

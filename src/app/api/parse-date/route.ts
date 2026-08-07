@@ -10,6 +10,7 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { parseDato } from "@/lib/portal/training/date-parser";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
+import { rateLimit } from "@/lib/rate-limit";
 
 export const dynamic = "force-dynamic";
 
@@ -21,7 +22,16 @@ const BodySchema = z.object({
 
 export async function POST(req: Request) {
   // Krever innlogget bruker — alle roller, inkludert PLAYER og PARENT.
-  await requirePortalUser();
+  const user = await requirePortalUser();
+
+  const rl = await rateLimit({ key: `parse-date:${user.id}`, max: 60, windowMs: 60_000 });
+  if (!rl.ok) {
+    return NextResponse.json(
+      { error: "rate-limited" },
+      { status: 429, headers: { "x-ratelimit-reset": String(rl.resetAt) } },
+    );
+  }
+
 
   let body: unknown;
   try {

@@ -77,7 +77,7 @@ export default async function HelsePage() {
   // (se actions.ts) — dette er den ærlige forklaringen på hvorfor.
   if (!(await harManuellHelseSamtykke(user.id))) {
     return (
-      <V2Shell aktiv="meg" nav={PLAYERHQ_NAV} navn={user.name ?? undefined} avatarUrl={user.avatarUrl}>
+      <V2Shell aktiv="meg" bredde="kolonne" nav={PLAYERHQ_NAV} navn={user.name ?? undefined} avatarUrl={user.avatarUrl}>
         <TilbakeLenke href="/portal/meg">Meg</TilbakeLenke>
         <HelseSamtykkeMangler />
       </V2Shell>
@@ -154,7 +154,7 @@ export default async function HelsePage() {
   };
 
   return (
-    <V2Shell aktiv="meg" nav={PLAYERHQ_NAV} navn={user.name ?? undefined} avatarUrl={user.avatarUrl}>
+    <V2Shell aktiv="meg" bredde="kolonne" nav={PLAYERHQ_NAV} navn={user.name ?? undefined} avatarUrl={user.avatarUrl}>
       <TilbakeLenke href="/portal/meg">Meg</TilbakeLenke>
       <MegHelseV2 data={data} lagre={lagreHelseEntry} />
     </V2Shell>

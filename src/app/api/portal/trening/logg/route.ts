@@ -7,6 +7,7 @@ import { z } from "zod";
 import { getCurrentUser } from "@/lib/auth/getCurrentUser";
 import { prisma } from "@/lib/prisma";
 import { SgCategory } from "@/generated/prisma/client";
+import { rateLimit } from "@/lib/rate-limit";
 
 const LoggSchema = z.object({
   date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
@@ -22,6 +23,14 @@ export async function POST(req: Request) {
   if (!user) {
     return NextResponse.json({ error: "Ikke autentisert" }, { status: 401 });
   }
+  const rl = await rateLimit({ key: `trening-logg:${user.id}`, max: 30, windowMs: 60_000 });
+  if (!rl.ok) {
+    return NextResponse.json(
+      { error: "rate-limited" },
+      { status: 429, headers: { "x-ratelimit-reset": String(rl.resetAt) } },
+    );
+  }
+
 
   const body = await req.json().catch(() => ({}));
   const parsed = LoggSchema.safeParse(body);

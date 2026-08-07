@@ -248,7 +248,7 @@ export default async function V2AdminAnalysePage() {
   const user = await requirePortalUser({ allow: ["ADMIN", "COACH"] });
   const data = await loadStallAnalyse(user);
   return (
-    <V2Shell aktiv="innsikt" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>
+    <V2Shell bredde="kolonne" aktiv="innsikt" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>
       <InnsiktHubNav />
       <AdminAnalyseV2 data={data} />
     </V2Shell>

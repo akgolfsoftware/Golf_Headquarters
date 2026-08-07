@@ -365,7 +365,7 @@ export default async function MetricDrillDownPage({
   };
 
   return (
-    <V2Shell aktiv="analyse" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
+    <V2Shell bredde="kolonne" aktiv="analyse" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
       <TilbakeLenke href="/portal/analysere">Analyse</TilbakeLenke>
       <StatistikkMetrikkV2 data={data} />
     </V2Shell>

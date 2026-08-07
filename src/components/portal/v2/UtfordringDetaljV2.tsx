@@ -156,7 +156,7 @@ export function UtfordringDetaljV2({
   }
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+    <div data-paper-portal-utfordring-detalj style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
       {/* Tilbake */}
       <Link href="/portal/utfordringer" style={{ textDecoration: "none", alignSelf: "flex-start" }}>
         <MikroMeta icon="arrow-left">PlayerHQ · Utfordringer</MikroMeta>

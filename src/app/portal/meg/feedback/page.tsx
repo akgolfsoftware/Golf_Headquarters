@@ -28,7 +28,7 @@ export default async function FeedbackPage({
   const data: MegFeedbackData = { takk: sp?.takk === "1" };
 
   return (
-    <V2Shell aktiv="meg" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
+    <V2Shell aktiv="meg" bredde="kolonne" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
       <TilbakeLenke href="/portal/meg">Meg</TilbakeLenke>
       <MegFeedbackV2 data={data} />
     </V2Shell>

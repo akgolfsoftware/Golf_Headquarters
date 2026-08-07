@@ -71,7 +71,7 @@ export default async function IntegrasjonerPage() {
   };
 
   return (
-    <V2Shell aktiv="meg" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
+    <V2Shell aktiv="meg" bredde="kolonne" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
       <TilbakeLenke href="/portal/meg/innstillinger">Innstillinger</TilbakeLenke>
       <InnstillingerIntegrasjonerV2 data={data} />
     </V2Shell>

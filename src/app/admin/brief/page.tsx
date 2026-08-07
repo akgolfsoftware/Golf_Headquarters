@@ -87,7 +87,7 @@ export default async function DagligBrief() {
   const sluttTid = data.dagensTimer.slutt?.toLocaleTimeString("nb-NO", { hour: "2-digit", minute: "2-digit" });
 
   return (
-    <V2Shell aktiv="cockpit" nav={AGENCYOS_NAV} navn={coach.name} avatarUrl={coach.avatarUrl}>
+    <V2Shell bredde="kolonne" aktiv="cockpit" nav={AGENCYOS_NAV} navn={coach.name} avatarUrl={coach.avatarUrl}>
       <TilbakeLenke href="/admin/innboks">Innboks</TilbakeLenke>
       <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
         {/* Hode */}

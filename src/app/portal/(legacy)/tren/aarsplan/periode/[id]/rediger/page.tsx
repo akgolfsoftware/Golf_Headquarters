@@ -32,7 +32,7 @@ export default async function PeriodeRedigerPage({
     periodeRaw && (isCoach || periodeRaw.seasonPlan.userId === user.id) ? periodeRaw : null;
 
   return (
-    <V2Shell aktiv="plan" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
+    <V2Shell bredde="kolonne" aktiv="plan" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
       <TilbakeLenke href="/portal/tren/aarsplan">Årsplan</TilbakeLenke>
       <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 12, margin: "14px 0 20px" }}>
         <div>

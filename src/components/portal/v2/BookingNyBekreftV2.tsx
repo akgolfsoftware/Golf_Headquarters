@@ -12,7 +12,7 @@
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { T, Caps, Tittel, Kort, Knapp, CTAPill, TekstOmraade, Icon } from "@/components/v2";
+import { T, Caps, Tittel, Kort, Knapp, TekstOmraade, Icon } from "@/components/v2";
 import { createCreditBooking } from "@/lib/booking/credit-booking";
 
 /* ── Datakontrakt (alt serialiserbart — server-pagen eier queries/format) ── */
@@ -68,7 +68,7 @@ export function BookingNyBekreftV2({ data }: { data: BookingNyBekreftV2Data }) {
   }
 
   return (
-    <div style={{ width: "100%", maxWidth: 560, margin: "0 auto", display: "flex", flexDirection: "column", gap: T.gap }}>
+    <div data-paper-portal-booking-ny-bekreft style={{ width: "100%", maxWidth: 560, margin: "0 auto", display: "flex", flexDirection: "column", gap: T.gap }}>
       {/* Hode */}
       <div>
         <Caps>PlayerHQ · Book ny time</Caps>
@@ -98,8 +98,8 @@ export function BookingNyBekreftV2({ data }: { data: BookingNyBekreftV2Data }) {
       {/* Betaling → credit-saldo (denne flyten bruker forhåndsbetalte timer) */}
       <Kort tint eyebrow="Betaling">
         <div style={{ display: "flex", alignItems: "center", gap: 10, padding: "10px 12px", borderRadius: T.rRow, background: T.panel2, border: `1px solid ${T.border}` }}>
-          <span style={{ width: 32, height: 32, flex: "none", borderRadius: 9999, background: T.lime, display: "inline-flex", alignItems: "center", justifyContent: "center" }}>
-            <Icon name="credit-card" size={15} style={{ color: T.onLime }} />
+          <span style={{ width: 32, height: 32, flex: "none", borderRadius: 9999, background: T.handling, display: "inline-flex", alignItems: "center", justifyContent: "center" }}>
+            <Icon name="credit-card" size={15} style={{ color: T.onHandling }} />
           </span>
           <span style={{ fontFamily: T.ui, fontSize: 13, color: T.fg }}>Trekkes fra forhåndsbetalte timer</span>
           <span style={{ marginLeft: "auto", fontFamily: T.mono, fontSize: 11.5, fontWeight: 700, color: T.fg2, fontVariantNumeric: "tabular-nums" }}>
@@ -128,7 +128,10 @@ export function BookingNyBekreftV2({ data }: { data: BookingNyBekreftV2Data }) {
           </Knapp>
 
           <Link href={backHref} style={{ textDecoration: "none" }}>
-            <CTAPill ghost full icon="arrow-left">Endre valg</CTAPill>
+            <span style={{
+            display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, minHeight: 48, width: "100%", padding: "10px 16px",
+            borderRadius: 10, background: T.handling, color: T.onHandling, fontFamily: T.ui, fontSize: 14, fontWeight: 600,
+          }}>Endre valg</span>
           </Link>
         </form>
       )}

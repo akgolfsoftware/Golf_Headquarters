@@ -92,7 +92,7 @@ export default async function V2VarslerPreviewPage() {
   const data: VarslerV2Data = { idag, tidligere, uleste };
 
   return (
-    <V2Shell aktiv="meg" nav={PLAYERHQ_NAV} navn={user.name ?? undefined}>
+    <V2Shell bredde="kolonne" aktiv="meg" nav={PLAYERHQ_NAV} navn={user.name ?? undefined}>
       <TilbakeLenke href="/portal/meg">Meg</TilbakeLenke>
       <VarslerV2 data={data} />
     </V2Shell>

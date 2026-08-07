@@ -10,6 +10,7 @@ import { prisma } from "@/lib/prisma";
 import { supabaseAdmin } from "@/lib/supabase/admin";
 import { audit } from "@/lib/audit";
 import { logError } from "@/lib/error-tracking";
+import { rateLimit } from "@/lib/rate-limit";
 
 const BUCKET = "coaching-recordings";
 const RETENTION_DAYS = 90;
@@ -37,6 +38,14 @@ export async function POST(req: Request) {
   if (!user) {
     return NextResponse.json({ error: "Ikke innlogget" }, { status: 401 });
   }
+  const rl = await rateLimit({ key: `recording-complete:${user.id}`, max: 30, windowMs: 60_000 });
+  if (!rl.ok) {
+    return NextResponse.json(
+      { error: "rate-limited" },
+      { status: 429, headers: { "x-ratelimit-reset": String(rl.resetAt) } },
+    );
+  }
+
 
   const parsed = Body.safeParse(await req.json().catch(() => ({})));
   if (!parsed.success) {

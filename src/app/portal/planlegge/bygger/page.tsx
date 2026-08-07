@@ -22,7 +22,7 @@ export default async function PlanByggerPage() {
   const kontekst = await hentByggerKontekstCore(user);
 
   return (
-    <V2Shell aktiv="plan" nav={PLAYERHQ_NAV} navn={user.name}>
+    <V2Shell bredde="kolonne" aktiv="plan" nav={PLAYERHQ_NAV} navn={user.name}>
       <TilbakeLenke href="/portal/planlegge">Plan</TilbakeLenke>
       <PlanByggerV2
         kontekst={kontekst}

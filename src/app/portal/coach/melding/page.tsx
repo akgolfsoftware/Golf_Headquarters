@@ -34,7 +34,7 @@ export default async function V2CoachMeldingPreviewPage() {
   if (user.tier === "GRATIS") {
     const data: CoachMeldingerData = { gratis: true, hovedcoach: null, traader: [], valgt: null };
     return (
-      <V2Shell aktiv="meg" nav={PLAYERHQ_NAV} navn={user.name}>
+      <V2Shell bredde="kolonne" aktiv="meg" nav={PLAYERHQ_NAV} navn={user.name}>
         <TilbakeLenke href="/portal/coach">Coach</TilbakeLenke>
         <CoachMeldingerV2 data={data} />
       </V2Shell>
@@ -114,7 +114,7 @@ export default async function V2CoachMeldingPreviewPage() {
   };
 
   return (
-    <V2Shell aktiv="meg" nav={PLAYERHQ_NAV} navn={user.name}>
+    <V2Shell bredde="kolonne" aktiv="meg" nav={PLAYERHQ_NAV} navn={user.name}>
       <TilbakeLenke href="/portal/coach">Coach</TilbakeLenke>
       <CoachMeldingerV2 data={data} />
     </V2Shell>

@@ -24,7 +24,7 @@ export default async function VarslerPage() {
   const prefs = lesPreferences(fullUser ?? { preferences: null });
 
   return (
-    <V2Shell aktiv="meg" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
+    <V2Shell aktiv="meg" bredde="kolonne" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
       <TilbakeLenke href="/portal/meg/innstillinger">Innstillinger</TilbakeLenke>
       <InnstillingerVarslerV2 data={{ notif: prefs.notif, spraak: prefs.spraak }} />
     </V2Shell>

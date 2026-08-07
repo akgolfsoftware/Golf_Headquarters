@@ -108,7 +108,7 @@ export default async function V2AdminGjennomforePage() {
   };
 
   return (
-    <V2Shell aktiv="kalender" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>
+    <V2Shell bredde="kolonne" aktiv="kalender" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>
       <TilbakeLenke href="/admin/planlegge">Planlegge</TilbakeLenke>
       <AdminGjennomforeV2 data={data} />
     </V2Shell>

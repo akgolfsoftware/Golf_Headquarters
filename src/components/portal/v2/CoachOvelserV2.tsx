@@ -13,7 +13,6 @@ import {
   T,
   Caps,
   Tittel,
-  CTAPill,
   PillTabs,
   Kort,
   AkseChip,
@@ -97,7 +96,7 @@ export function CoachOvelserV2({ data }: { data: CoachOvelserData }) {
   const valgtLabel = OMRADE_TABS.find((t) => t.id === omrade)?.l ?? "";
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+    <div data-paper-portal-coach-ovelser style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
       {/* Hode */}
       <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
         <div>
@@ -110,9 +109,10 @@ export function CoachOvelserV2({ data }: { data: CoachOvelserData }) {
           </Caps>
         </div>
         <Link href="/portal/coach/ovelser/ny" style={{ textDecoration: "none", display: "block" }}>
-          <CTAPill icon="plus" full>
-            Ny øvelse
-          </CTAPill>
+          <span style={{
+            display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, minHeight: 48, width: "100%", padding: "10px 16px",
+            borderRadius: 10, background: T.handling, color: T.onHandling, fontFamily: T.ui, fontSize: 14, fontWeight: 600,
+          }}>Ny øvelse</span>
         </Link>
       </div>
 
@@ -131,9 +131,10 @@ export function CoachOvelserV2({ data }: { data: CoachOvelserData }) {
           />
           <div style={{ marginTop: 12 }}>
             <Link href="/portal/coach/ovelser/ny" style={{ textDecoration: "none", display: "block" }}>
-              <CTAPill icon="plus" full>
-                Opprett øvelse
-              </CTAPill>
+              <span style={{
+            display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, minHeight: 48, width: "100%", padding: "10px 16px",
+            borderRadius: 10, background: T.handling, color: T.onHandling, fontFamily: T.ui, fontSize: 14, fontWeight: 600,
+          }}>Opprett øvelse</span>
             </Link>
           </div>
         </Kort>
@@ -146,9 +147,10 @@ export function CoachOvelserV2({ data }: { data: CoachOvelserData }) {
           />
           <div style={{ marginTop: 12 }}>
             <Link href="/portal/coach/ovelser/ny" style={{ textDecoration: "none", display: "block" }}>
-              <CTAPill ghost full icon="plus">
-                Opprett øvelse
-              </CTAPill>
+              <span style={{
+            display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, minHeight: 48, width: "100%", padding: "10px 16px",
+            borderRadius: 10, background: T.handling, color: T.onHandling, fontFamily: T.ui, fontSize: 14, fontWeight: 600,
+          }}>Opprett øvelse</span>
             </Link>
           </div>
         </Kort>

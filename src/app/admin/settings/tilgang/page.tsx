@@ -48,7 +48,7 @@ export default async function V2TilgangPage() {
   }));
 
   return (
-    <V2Shell nav={AGENCYOS_NAV}>
+    <V2Shell bredde="kolonne" nav={AGENCYOS_NAV}>
       <TilbakeLenke href="/admin/settings">Innstillinger</TilbakeLenke>
       <AdminTilgangV2 roller={ROLLER} rader={rader} />
     </V2Shell>

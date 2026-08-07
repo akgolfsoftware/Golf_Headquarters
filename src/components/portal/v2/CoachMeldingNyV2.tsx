@@ -43,7 +43,7 @@ export function CoachMeldingNyV2({
 
   if (gratis) {
     return (
-      <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+      <div data-paper-portal-coach-melding-ny style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
         <div>
           <Caps>Coach · Ny melding</Caps>
           <div style={{ marginTop: 10 }}>
@@ -58,7 +58,10 @@ export function CoachMeldingNyV2({
           />
           <div style={{ display: "flex", justifyContent: "center", marginTop: 4 }}>
             <Link href="/portal/meg/abonnement" style={{ textDecoration: "none" }}>
-              <CTAPill icon="arrow-right">Oppgrader til Pro</CTAPill>
+              <span style={{
+              display: "inline-flex", alignItems: "center", gap: 8, minHeight: 44, padding: "10px 16px",
+              borderRadius: 10, background: T.handling, color: T.onHandling, fontFamily: T.ui, fontSize: 13, fontWeight: 600,
+            }}>Oppgrader til Pro</span>
             </Link>
           </div>
         </Kort>

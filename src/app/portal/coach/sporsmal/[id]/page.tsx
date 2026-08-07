@@ -60,7 +60,7 @@ export default async function CoachSporsmalTraadPage({ params }: RouteProps) {
   };
 
   return (
-    <V2Shell aktiv="meg" nav={PLAYERHQ_NAV} navn={user.name}>
+    <V2Shell bredde="kolonne" aktiv="meg" nav={PLAYERHQ_NAV} navn={user.name}>
       <TilbakeLenke href="/portal/coach/sporsmal">Spørsmål</TilbakeLenke>
       <CoachSporsmalTraadV2 data={data} svarAction={svarPaSporsmal} />
     </V2Shell>

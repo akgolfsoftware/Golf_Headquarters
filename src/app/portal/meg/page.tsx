@@ -106,7 +106,7 @@ export default async function V2MegPreviewPage() {
   };
 
   return (
-    <V2Shell aktiv="meg" nav={PLAYERHQ_NAV} navn={data.navn} avatarUrl={data.avatarUrl}>
+    <V2Shell aktiv="meg" bredde="kolonne" nav={PLAYERHQ_NAV} navn={data.navn} avatarUrl={data.avatarUrl}>
       <MegV2 data={data} />
     </V2Shell>
   );

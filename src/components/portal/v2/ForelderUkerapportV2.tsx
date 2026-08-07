@@ -48,7 +48,7 @@ export function ForelderUkerapportV2({ data }: { data: ForelderUkerapport }) {
   const harAktivitet = oktFullfort > 0 || ukeSg != null;
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+    <div data-paper-portal-forelder-ukerapport style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
       {/* Hode + status */}
       <div
         style={{

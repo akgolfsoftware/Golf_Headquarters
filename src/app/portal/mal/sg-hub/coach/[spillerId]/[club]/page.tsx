@@ -51,7 +51,7 @@ export default async function CoachClubDetailPage({
 
   if (allShots.length === 0) {
     return (
-      <V2Shell aktiv="analyse" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
+      <V2Shell bredde="kolonne" aktiv="analyse" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
         <TilbakeLenke href={backHref}>Tilbake til {player.name}</TilbakeLenke>
         <Kort>
           <TomTilstand
@@ -95,7 +95,7 @@ export default async function CoachClubDetailPage({
   };
 
   return (
-    <V2Shell aktiv="analyse" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
+    <V2Shell bredde="kolonne" aktiv="analyse" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
       <TilbakeLenke href={backHref}>Tilbake til {player.name}</TilbakeLenke>
       <CoachSgHubKolleV2 data={data} />
     </V2Shell>

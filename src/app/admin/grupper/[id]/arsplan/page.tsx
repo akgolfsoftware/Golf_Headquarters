@@ -36,7 +36,7 @@ export default async function GruppeArsplanPage({
   const basePath = `/admin/grupper/${id}/arsplan`;
 
   return (
-    <V2Shell aktiv="spillere" nav={AGENCYOS_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
+    <V2Shell bredde="kolonne" aktiv="spillere" nav={AGENCYOS_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
       <TilbakeLenke href={`/admin/grupper/${id}`}>Gruppe</TilbakeLenke>
 
       <div className="mb-4 flex flex-wrap items-center justify-between gap-3">

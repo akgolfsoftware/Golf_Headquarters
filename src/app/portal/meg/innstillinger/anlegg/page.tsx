@@ -32,7 +32,7 @@ export default async function AnleggPage() {
   const tilgjengelig: DrillFasilitet[] = dbUser?.tilgjengeligeFasiliteter ?? [];
 
   return (
-    <V2Shell aktiv="meg" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
+    <V2Shell aktiv="meg" bredde="kolonne" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
       <TilbakeLenke href="/portal/meg/innstillinger">Innstillinger</TilbakeLenke>
       <InnstillingerAnleggV2 data={{ tilgjengelig }} />
     </V2Shell>

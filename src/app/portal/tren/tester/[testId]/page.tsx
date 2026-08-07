@@ -94,7 +94,7 @@ export default async function TestDetaljSpillerPage({
   ].filter((b): b is string => b !== null);
 
   return (
-    <V2Shell aktiv="plan" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
+    <V2Shell bredde="kolonne" aktiv="plan" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
       <TilbakeLenke href="/portal/tren/tester">Tester</TilbakeLenke>
       <div data-paper-portal-test-detalj style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
         {lagret && (

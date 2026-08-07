@@ -15,6 +15,7 @@ import "server-only";
 import { NextResponse } from "next/server";
 import { randomBytes, createHmac } from "node:crypto";
 import { getCurrentUser } from "@/lib/auth/getCurrentUser";
+import { rateLimit } from "@/lib/rate-limit";
 
 export const runtime = "nodejs";
 
@@ -26,6 +27,14 @@ export async function GET() {
   if (user.role !== "ADMIN" && user.role !== "COACH") {
     return NextResponse.json({ error: "forbidden" }, { status: 403 });
   }
+  const rl = await rateLimit({ key: `notion-oauth-connect:${user.id}`, max: 30, windowMs: 60_000 });
+  if (!rl.ok) {
+    return NextResponse.json(
+      { error: "rate-limited" },
+      { status: 429, headers: { "x-ratelimit-reset": String(rl.resetAt) } },
+    );
+  }
+
 
   const clientId = process.env.NOTION_CLIENT_ID;
   const secret = process.env.NOTION_WEBHOOK_SECRET;

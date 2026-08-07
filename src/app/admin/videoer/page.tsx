@@ -73,7 +73,7 @@ export default async function VideoerPage() {
   };
 
   return (
-    <V2Shell nav={AGENCYOS_NAV} navn={user.name ?? "Coach"} avatarUrl={user.avatarUrl}>
+    <V2Shell bredde="kolonne" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"} avatarUrl={user.avatarUrl}>
       <AdminVideoerV2 data={data} />
     </V2Shell>
   );

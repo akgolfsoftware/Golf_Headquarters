@@ -43,7 +43,7 @@ export default async function SikkerhetPage() {
   const score = harEpost ? 80 : 55;
 
   return (
-    <V2Shell aktiv="meg" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
+    <V2Shell aktiv="meg" bredde="kolonne" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
       <TilbakeLenke href="/portal/meg/innstillinger">Innstillinger</TilbakeLenke>
       <InnstillingerSikkerhetV2 data={{ score, sisteInnlogging: formatSiste(user.lastLoginAt) }} />
     </V2Shell>

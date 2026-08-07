@@ -175,7 +175,7 @@ export function RundeDetaljV2({ data }: { data: RundeDetaljData }) {
     Object.values(g).some((v) => v != null) && data.sgTotal != null;
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+    <div data-paper-portal-runde-detalj style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
       {/* Tilbake */}
       <Link href="/portal/mal/runder" style={{ textDecoration: "none", alignSelf: "flex-start" }}>
         <MikroMeta icon="arrow-left">Alle runder</MikroMeta>
@@ -221,21 +221,24 @@ export function RundeDetaljV2({ data }: { data: RundeDetaljData }) {
       {/* B: én primær CTA tidlig */}
       {data.erEier && data.visKjedeStatus ? (
         <Link href={`/portal/mal/runder/${data.id}/fullfor`} style={{ textDecoration: "none", display: "block" }}>
-          <CTAPill icon="check" full>
-            Fullfør slag-kjeden
-          </CTAPill>
+<span style={{
+            display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, minHeight: 48, width: "100%", padding: "10px 16px",
+            borderRadius: 10, background: T.handling, color: T.onHandling, fontFamily: T.ui, fontSize: 14, fontWeight: 600,
+          }}>Fullfør slag-kjeden</span>
         </Link>
       ) : data.erEier && !harHull ? (
         <Link href={`/portal/mal/runder/${data.id}/hull`} style={{ textDecoration: "none", display: "block" }}>
-          <CTAPill icon="plus" full>
-            Legg til hull-for-hull
-          </CTAPill>
+<span style={{
+            display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, minHeight: 48, width: "100%", padding: "10px 16px",
+            borderRadius: 10, background: T.handling, color: T.onHandling, fontFamily: T.ui, fontSize: 14, fontWeight: 600,
+          }}>Legg til hull-for-hull</span>
         </Link>
       ) : (
         <Link href="/portal/coach/melding" style={{ textDecoration: "none", display: "block" }}>
-          <CTAPill icon="send" full>
-            Del med coach
-          </CTAPill>
+<span style={{
+            display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, minHeight: 48, width: "100%", padding: "10px 16px",
+            borderRadius: 10, background: T.handling, color: T.onHandling, fontFamily: T.ui, fontSize: 14, fontWeight: 600,
+          }}>Del med coach</span>
         </Link>
       )}
 

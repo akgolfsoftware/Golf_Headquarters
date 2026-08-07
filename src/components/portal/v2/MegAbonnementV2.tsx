@@ -108,8 +108,8 @@ function LenkePille({
         fontFamily: T.ui,
         fontSize: 12.5,
         fontWeight: 600,
-        color: ghost ? T.fg : T.onLime,
-        background: ghost ? T.panel3 : T.lime,
+        color: ghost ? T.fg : T.onHandling,
+        background: ghost ? T.panel3 : T.handling,
         border: ghost ? `1px solid ${T.borderS}` : "1px solid transparent",
         borderRadius: 9999,
         padding: "11px 18px",
@@ -240,7 +240,7 @@ export function MegAbonnementV2({ data }: { data: MegAbonnementData }) {
   if (kanAvbestille) handlinger.push({ href: "/portal/meg/abonnement/avbestill", ic: "x-circle", l: "Avbestill abonnement", sub: "Tilgang ut perioden, ingen nye trekk" });
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+    <div data-paper-portal-meg-abonnement style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
       <div>
         <Caps>Meg · Abonnement</Caps>
         <div style={{ marginTop: 10 }}>

@@ -38,7 +38,7 @@ export default async function NyPeriodePage({
   const harTilgang = seasonPlan && (isCoach || seasonPlan.userId === user.id);
 
   return (
-    <V2Shell aktiv="plan" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
+    <V2Shell bredde="kolonne" aktiv="plan" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
       <TilbakeLenke href="/portal/tren/aarsplan">Årsplan</TilbakeLenke>
       <div style={{ margin: "14px 0 20px" }}>
         <Caps>PlayerHQ · Tren · Årsplan</Caps>

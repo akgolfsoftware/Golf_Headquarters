@@ -79,7 +79,7 @@ export default async function V2StallPage() {
   const data: StallV2Data = { total: stall.total, grupper, spillere };
 
   return (
-    <V2Shell aktiv="spillere" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>
+    <V2Shell bredde="kolonne" aktiv="spillere" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>
       <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: 4 }}>
         <Link href="/admin/planlegge" style={{ textDecoration: "none" }}>
           <CTAPill icon="target">Workbench · velg spiller</CTAPill>

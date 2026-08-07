@@ -40,7 +40,7 @@ export default async function V2ForelderOkonomiPreviewPage() {
       sistePayments: [],
     };
     return (
-      <V2Shell aktiv="okonomi" nav={FORELDER_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
+      <V2Shell bredde="kolonne" aktiv="okonomi" nav={FORELDER_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
         <ForelderOkonomiV2 data={tomt} />
       </V2Shell>
     );
@@ -118,7 +118,7 @@ export default async function V2ForelderOkonomiPreviewPage() {
   };
 
   return (
-    <V2Shell aktiv="okonomi" nav={FORELDER_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
+    <V2Shell bredde="kolonne" aktiv="okonomi" nav={FORELDER_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
       <ForelderOkonomiV2 data={data} />
     </V2Shell>
   );

@@ -138,7 +138,7 @@ export function MegSymptomNyV2() {
   }
 
   return (
-    <div style={{ maxWidth: 520, width: "100%", margin: "0 auto", display: "flex", flexDirection: "column", gap: T.gap }}>
+    <div data-paper-portal-meg-symptom-ny style={{ maxWidth: 520, width: "100%", margin: "0 auto", display: "flex", flexDirection: "column", gap: T.gap }}>
       {/* Hode */}
       <div>
         <Caps>Meg · Helse</Caps>
@@ -177,7 +177,7 @@ export function MegSymptomNyV2() {
                   fontVariantNumeric: "tabular-nums",
                   background: done ? T.lime : on ? "transparent" : T.panel2,
                   border: `2px solid ${done || on ? T.lime : T.borderS}`,
-                  color: done ? T.onLime : on ? T.lime : T.mut,
+                  color: done ? T.onHandling : on ? T.lime : T.mut,
                 }}
               >
                 {done ? <Icon name="check" size={13} /> : i}
@@ -268,7 +268,7 @@ export function MegSymptomNyV2() {
                 border: `1px solid color-mix(in srgb, ${T.lime} 30%, transparent)`,
               }}
             >
-              <span style={{ marginTop: 5, width: 9, height: 9, borderRadius: 9999, background: T.lime, flex: "none" }} />
+              <span style={{ marginTop: 5, width: 9, height: 9, borderRadius: 9999, background: T.handling, flex: "none" }} />
               <div>
                 <div style={{ fontFamily: T.ui, fontSize: 13.5, color: T.fg }}>
                   <em style={{ fontFamily: T.disp, fontStyle: "italic", color: T.lime }}>{side}</em>{" "}

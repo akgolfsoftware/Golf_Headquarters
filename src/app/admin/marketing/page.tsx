@@ -53,7 +53,7 @@ export default async function AdminMarketingPage() {
   }));
 
   return (
-    <V2Shell nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>
+    <V2Shell bredde="kolonne" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>
       <AdminMarketingV2 poster={rader} />
     </V2Shell>
   );

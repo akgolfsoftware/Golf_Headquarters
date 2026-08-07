@@ -32,7 +32,7 @@ export default async function NyHendelsePage({ searchParams }: { searchParams: S
   const [dato, tid] = start?.includes("T") ? start.split("T") : [fallback.dato, fallback.tid];
 
   return (
-    <V2Shell aktiv="kalender" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>
+    <V2Shell bredde="kolonne" aktiv="kalender" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>
       <TilbakeLenke href="/admin/kalender">Kalender</TilbakeLenke>
       <div style={{ marginTop: 12, marginBottom: 20 }}>
         <Tittel mobile={false}>Ny hendelse</Tittel>

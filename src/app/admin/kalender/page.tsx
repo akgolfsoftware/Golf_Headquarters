@@ -30,7 +30,7 @@ export default async function V2AgencyKalenderPage({
   const data = await hentAgencyKalenderData(uke, user.id);
 
   return (
-    <V2Shell aktiv="kalender" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>
+    <V2Shell bredde="full" aktiv="kalender" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>
       <KalenderHubNav />
       <AgencyKalenderV2 data={data} />
     </V2Shell>

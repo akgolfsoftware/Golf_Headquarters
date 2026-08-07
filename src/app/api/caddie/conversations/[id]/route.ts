@@ -5,6 +5,7 @@
 import { NextResponse } from "next/server";
 import { canAccessMissionControl } from "@/lib/auth/canAccessMissionControl";
 import { prisma } from "@/lib/prisma";
+import { rateLimit } from "@/lib/rate-limit";
 
 export const runtime = "nodejs";
 
@@ -16,6 +17,14 @@ export async function GET(
   if (!user) {
     return NextResponse.json({ error: "ikke-autorisert" }, { status: 401 });
   }
+  const rl = await rateLimit({ key: `caddie-conversation:${user.id}`, max: 60, windowMs: 60_000 });
+  if (!rl.ok) {
+    return NextResponse.json(
+      { error: "rate-limited" },
+      { status: 429, headers: { "x-ratelimit-reset": String(rl.resetAt) } },
+    );
+  }
+
 
   const { id } = await params;
   if (!id) {
@@ -49,6 +58,14 @@ export async function DELETE(
   if (!user) {
     return NextResponse.json({ error: "ikke-autorisert" }, { status: 401 });
   }
+  const rl = await rateLimit({ key: `caddie-conversation:${user.id}`, max: 60, windowMs: 60_000 });
+  if (!rl.ok) {
+    return NextResponse.json(
+      { error: "rate-limited" },
+      { status: 429, headers: { "x-ratelimit-reset": String(rl.resetAt) } },
+    );
+  }
+
 
   const { id } = await params;
   if (!id) {

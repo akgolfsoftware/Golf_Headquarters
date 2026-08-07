@@ -56,7 +56,7 @@ export default async function AdminProfilePage() {
   };
 
   return (
-    <V2Shell nav={AGENCYOS_NAV} navn={user.name ?? "Coach"} avatarUrl={user.avatarUrl}>
+    <V2Shell bredde="kolonne" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"} avatarUrl={user.avatarUrl}>
       <TilbakeLenke href="/admin/agencyos">Cockpit</TilbakeLenke>
       <AdminProfilV2 data={data} />
     </V2Shell>

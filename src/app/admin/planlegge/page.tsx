@@ -61,7 +61,7 @@ export default async function V2AdminPlanleggePreviewPage() {
   const oppgaver = await loadWorkbenchOppgaver({ id: user.id, role: user.role });
 
   return (
-    <V2Shell aktiv="spillere" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>
+    <V2Shell bredde="kolonne" aktiv="spillere" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>
       <div className="md:hidden">
         <WorkbenchMobilV2 data={oppgaver} />
       </div>

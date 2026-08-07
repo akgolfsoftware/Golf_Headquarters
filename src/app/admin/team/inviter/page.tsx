@@ -14,7 +14,7 @@ export default async function V2AdminInviterCoachPage() {
   const user = await requirePortalUser({ allow: ["ADMIN"] });
 
   return (
-    <V2Shell nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>
+    <V2Shell bredde="kolonne" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>
       <TilbakeLenke href="/admin/team">Team</TilbakeLenke>
       <AdminInviterCoachV2 />
     </V2Shell>

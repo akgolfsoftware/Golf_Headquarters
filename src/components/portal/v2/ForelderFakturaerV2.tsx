@@ -147,7 +147,7 @@ export function ForelderFakturaerV2({ data }: { data: ForelderFakturaerData }) {
   const heroSize = mobile ? 34 : 40;
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+    <div data-paper-portal-forelder-fakturaer style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
       {/* Hode + status */}
       <div
         style={{

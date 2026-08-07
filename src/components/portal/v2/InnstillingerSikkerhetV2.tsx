@@ -20,7 +20,6 @@ import {
   Icon,
   Inndata,
   Knapp,
-  CTAPill,
   type StatusTone,
 } from "@/components/v2";
 
@@ -169,7 +168,7 @@ export function InnstillingerSikkerhetV2({ data }: { data: InnstillingerSikkerhe
   }
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+    <div data-paper-portal-innstillinger-sikkerhet style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
       <Tittel mobile={mobile}>Sikkerhet</Tittel>
 
       {/* B: score/status først */}
@@ -192,9 +191,10 @@ export function InnstillingerSikkerhetV2({ data }: { data: InnstillingerSikkerhe
 
       {score < 100 && (
         <Link href="/portal/meg/sikkerhet/2fa" style={{ textDecoration: "none", display: "block" }}>
-          <CTAPill icon="shield" full>
-            Aktiver tofaktor
-          </CTAPill>
+          <span style={{
+            display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, minHeight: 48, width: "100%", padding: "10px 16px",
+            borderRadius: 10, background: T.handling, color: T.onHandling, fontFamily: T.ui, fontSize: 14, fontWeight: 600,
+          }}>Aktiver tofaktor</span>
         </Link>
       )}
 

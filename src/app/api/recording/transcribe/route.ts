@@ -11,6 +11,7 @@ import { supabaseAdmin } from "@/lib/supabase/admin";
 import { transkriber } from "@/lib/transcribe";
 import { audit } from "@/lib/audit";
 import { logError } from "@/lib/error-tracking";
+import { rateLimit } from "@/lib/rate-limit";
 
 export const runtime = "nodejs";
 export const maxDuration = 300; // Whisper kan ta tid for 50-min økter
@@ -29,6 +30,14 @@ export async function POST(request: Request) {
   if (user.role !== "COACH" && user.role !== "ADMIN") {
     return NextResponse.json({ error: "Mangler tilgang" }, { status: 403 });
   }
+  const rl = await rateLimit({ key: `recording-transcribe:${user.id}`, max: 10, windowMs: 60_000 });
+  if (!rl.ok) {
+    return NextResponse.json(
+      { error: "rate-limited" },
+      { status: 429, headers: { "x-ratelimit-reset": String(rl.resetAt) } },
+    );
+  }
+
 
   const parsed = Body.safeParse(await request.json().catch(() => ({})));
   if (!parsed.success) {

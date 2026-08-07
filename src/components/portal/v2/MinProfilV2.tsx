@@ -12,7 +12,6 @@ import {
   T,
   Caps,
   Tittel,
-  CTAPill,
   Knapp,
   Kort,
   StatusPill,
@@ -207,9 +206,10 @@ export function MinProfilV2({ data }: { data: MinProfilData }) {
           )}
         </div>
         <label htmlFor="min-profil-avatar-input" style={{ cursor: avatarLagrer ? "default" : "pointer" }}>
-          <CTAPill ghost icon={avatarLagrer ? "loader" : "camera"}>
-            {avatarLagrer ? "Laster opp …" : "Bytt bilde"}
-          </CTAPill>
+          <span style={{
+            display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, minHeight: 48, width: "100%", padding: "10px 16px",
+            borderRadius: 10, background: T.handling, color: T.onHandling, fontFamily: T.ui, fontSize: 14, fontWeight: 600,
+          }}>{avatarLagrer ? "Laster opp …" : "Bytt bilde"}</span>
         </label>
         <input
           ref={filInputRef}
@@ -260,9 +260,10 @@ export function MinProfilV2({ data }: { data: MinProfilData }) {
     <Kort eyebrow="WAGR" action={<HjelpTips k="wagr" size={11} align="right" />}>
       <TomTilstand icon="globe" title="Verdensranking ikke koblet" sub="WAGR hentes ikke inn i PlayerHQ ennå." />
       <Link href="/portal/meg/help" style={{ textDecoration: "none", display: "block", marginTop: 4 }}>
-        <CTAPill ghost icon="help-circle" full>
-          Les mer i hjelp
-        </CTAPill>
+        <span style={{
+            display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, minHeight: 48, width: "100%", padding: "10px 16px",
+            borderRadius: 10, background: T.handling, color: T.onHandling, fontFamily: T.ui, fontSize: 14, fontWeight: 600,
+          }}>Les mer i hjelp</span>
       </Link>
     </Kort>
   );
@@ -293,7 +294,7 @@ export function MinProfilV2({ data }: { data: MinProfilData }) {
   );
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+    <div data-paper-portal-meg-profil style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12 }}>
         <Tittel mobile={mobile} em="profil">Min</Tittel>
         {!mobile && (

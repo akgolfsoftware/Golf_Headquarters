@@ -43,7 +43,7 @@ export default async function V2CaddieDashbordPage() {
   });
 
   return (
-    <V2Shell nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>
+    <V2Shell bredde="kolonne" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>
       <TilbakeLenke href="/admin/agencyos/caddie">Caddie</TilbakeLenke>
       <CaddieSubNavV2 />
       <AdminCaddieProaktivV2 forslag={forslag} />

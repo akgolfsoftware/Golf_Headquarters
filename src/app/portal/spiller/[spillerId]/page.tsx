@@ -158,7 +158,7 @@ export default async function SpillerDetaljPage({ params }: Props) {
   };
 
   return (
-    <V2Shell nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
+    <V2Shell bredde="kolonne" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
       <TilbakeLenke href="/portal">Tilbake</TilbakeLenke>
       <SpillerDetaljV2 data={data} />
     </V2Shell>

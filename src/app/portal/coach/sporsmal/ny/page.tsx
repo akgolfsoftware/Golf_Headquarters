@@ -48,7 +48,7 @@ export default async function NySporsmalPage({
   }));
 
   return (
-    <V2Shell aktiv="meg" nav={PLAYERHQ_NAV} navn={user.name}>
+    <V2Shell bredde="kolonne" aktiv="meg" nav={PLAYERHQ_NAV} navn={user.name}>
       <TilbakeLenke href="/portal/coach/melding">Meldinger</TilbakeLenke>
       <CoachSporsmalNyV2 data={{ sendt: sendt === "1", mine }} sendAction={stillSporsmalV2} />
     </V2Shell>

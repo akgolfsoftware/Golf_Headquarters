@@ -5,7 +5,7 @@
  */
 
 import Link from "next/link";
-import { T, Caps, Kort, Icon, CTAPill, MikroMeta, TomTilstand } from "@/components/v2";
+import { T, Caps, Kort, Icon, MikroMeta, TomTilstand } from "@/components/v2";
 
 /* ── Datakontrakt ──────────────────────────────────────────────────── */
 
@@ -50,7 +50,7 @@ function sortHref(slug: string, sort: KategoriSort): string {
 
 export function MegHelpKategoriV2({ data }: { data: MegHelpKategoriData }) {
   return (
-    <div style={{ maxWidth: 760, width: "100%", margin: "0 auto", display: "flex", flexDirection: "column", gap: T.gap }}>
+    <div data-paper-portal-meg-help-kategori style={{ maxWidth: 760, width: "100%", margin: "0 auto", display: "flex", flexDirection: "column", gap: T.gap }}>
       {/* Hero */}
       <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 12, textAlign: "center", paddingTop: 6 }}>
         <span
@@ -99,9 +99,9 @@ export function MegHelpKategoriV2({ data }: { data: MegHelpKategoriData }) {
                 fontFamily: T.ui,
                 fontSize: 12.5,
                 fontWeight: 600,
-                background: on ? T.lime : T.panel2,
+                background: on ? T.handling : T.panel2,
                 border: `1px solid ${on ? "transparent" : T.border}`,
-                color: on ? T.onLime : T.fg2,
+                color: on ? T.onHandling : T.fg2,
               }}
             >
               {on && <Icon name="check" size={12} />}
@@ -173,9 +173,10 @@ export function MegHelpKategoriV2({ data }: { data: MegHelpKategoriData }) {
       )}
 
       <Link href="/portal/meg/help/kontakt" style={{ textDecoration: "none", display: "block" }}>
-        <CTAPill icon="mail" full>
-          Send oss et spørsmål
-        </CTAPill>
+        <span style={{
+            display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, minHeight: 48, width: "100%", padding: "10px 16px",
+            borderRadius: 10, background: T.handling, color: T.onHandling, fontFamily: T.ui, fontSize: 14, fontWeight: 600,
+          }}>Send oss et spørsmål</span>
       </Link>
     </div>
   );

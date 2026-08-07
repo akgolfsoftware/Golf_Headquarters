@@ -109,7 +109,7 @@ export default async function GoalDetailPage({
   // Ingen ekte mål — eller ikke tilgang. Vis ærlig "ikke funnet", aldri demo-mål.
   if (!goal || !isOwner) {
     return (
-      <V2Shell aktiv="meg" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
+      <V2Shell bredde="kolonne" aktiv="meg" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
         <TilbakeLenke href="/portal/mal">Mine mål</TilbakeLenke>
         <Kort>
           <TomTilstand
@@ -196,7 +196,7 @@ export default async function GoalDetailPage({
   };
 
   return (
-    <V2Shell aktiv="meg" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
+    <V2Shell bredde="kolonne" aktiv="meg" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
       <TilbakeLenke href="/portal/mal">Mine mål</TilbakeLenke>
       <MalDetaljV2 data={data} testOptions={testOptions} />
     </V2Shell>

@@ -9,6 +9,7 @@
 import { NextResponse } from "next/server";
 import { getCurrentUser } from "@/lib/auth/getCurrentUser";
 import { setViewMode } from "@/lib/view-mode";
+import { rateLimit } from "@/lib/rate-limit";
 
 export const runtime = "nodejs";
 
@@ -22,6 +23,14 @@ export async function GET(req: Request) {
     // Vanlig spiller — bare send til /portal
     return NextResponse.redirect(new URL("/portal", req.url));
   }
+  const rl = await rateLimit({ key: `view-as-player:${user.id}`, max: 30, windowMs: 60_000 });
+  if (!rl.ok) {
+    return NextResponse.json(
+      { error: "rate-limited" },
+      { status: 429, headers: { "x-ratelimit-reset": String(rl.resetAt) } },
+    );
+  }
+
   await setViewMode("player");
   return NextResponse.redirect(new URL("/portal", req.url));
 }
