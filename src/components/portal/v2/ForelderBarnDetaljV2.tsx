@@ -172,8 +172,8 @@ function TabLenker({ barnId, aktiv }: { barnId: string; aktiv: BarnDetaljTab }) 
               fontWeight: 600,
               padding: "8px 15px",
               borderRadius: 9999,
-              color: on ? T.onLime : T.fg2,
-              background: on ? T.lime : T.panel2,
+              color: on ? T.onHandling : T.fg2,
+              background: on ? T.handling : T.panel2,
               border: `1px solid ${on ? "transparent" : T.border}`,
               whiteSpace: "nowrap",
               textDecoration: "none",
@@ -259,7 +259,7 @@ export function ForelderBarnDetaljV2({ data }: { data: ForelderBarnDetaljData })
   const hcpStr = barn.hcp != null ? barn.hcp.toFixed(1).replace(".", ",") : "—";
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+    <div data-paper-portal-forelder-barn-detalj style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
       {/* Tilbake + hode */}
       <div>
         <TilbakeLenke href="/forelder/barn">Mine barn</TilbakeLenke>
@@ -398,7 +398,7 @@ export function ForelderBarnDetaljV2({ data }: { data: ForelderBarnDetaljData })
                           width: `${g.fremdriftPct}%`,
                           height: "100%",
                           borderRadius: 9999,
-                          background: T.lime,
+                          background: T.handling,
                           opacity: 0.9,
                         }}
                       />

@@ -150,7 +150,7 @@ export function ForelderOkonomiV2({ data }: { data: ForelderOkonomiData }) {
   // Tomtilstand — ingen barn koblet.
   if (barnAntall === 0) {
     return (
-      <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+      <div data-paper-portal-forelder-okonomi style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
         <Hode mobile={mobile} sub="Abonnement, fakturaer og kommende trekk." />
         <Kort>
           <TomTilstand

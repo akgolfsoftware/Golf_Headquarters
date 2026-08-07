@@ -87,7 +87,7 @@ export function ForelderInnstillingerV2({ data }: { data: ForelderInnstillingerD
   ];
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+    <div data-paper-portal-forelder-innstillinger style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
       {/* Hode + status */}
       <div
         style={{
