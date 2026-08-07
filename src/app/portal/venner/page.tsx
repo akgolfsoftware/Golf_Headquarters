@@ -16,7 +16,7 @@ export default async function VennerPage() {
 
   return (
     <V2Shell bredde="kolonne" aktiv="meg" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
-      <div style={{ maxWidth: 720, margin: "0 auto", display: "flex", flexDirection: "column", gap: T.gap }}>
+      <div data-paper-portal-venner style={{ maxWidth: 720, margin: "0 auto", display: "flex", flexDirection: "column", gap: T.gap, width: "100%" }}>
         <div>
           <Caps>PlayerHQ · Sosialt</Caps>
           <div style={{ marginTop: 10 }}>
