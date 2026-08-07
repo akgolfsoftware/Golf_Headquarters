@@ -73,7 +73,8 @@ export const ANONYMISERTE_PUBLICPLAYER_FELTER = [
 export async function anonymiserBruker(
   userId: string,
   naa: Date = new Date(),
-): Promise<AnonymiseringsResultat> {
+  opts: { dryRun?: boolean } = {},
+): Promise<AnonymiseringsResultat & { dryRun?: boolean; plan?: string[] }> {
   const bruker = await prisma.user.findUnique({
     where: { id: userId },
     select: { id: true, publicPlayerId: true },
@@ -184,6 +185,23 @@ export async function anonymiserBruker(
   // Kjøres ETTER at Prisma-anonymiseringen er committet, så den juridisk
   // viktigste vasken alltid fullføres selv om en ekstern tjeneste feiler.
   // Best-effort internt — kaster aldri.
+  if (opts.dryRun) {
+    const planEkstern = await slettEksterneBrukerdata(userId, { dryRun: true });
+    return {
+      brukerFantes: true,
+      publicPlayerAnonymisert: Boolean(bruker.publicPlayerId),
+      snittScore: null,
+      antallRunder: 0,
+      vasket: { okter: 0, driller: 0, drillLogger: 0, fysOvelser: 0, runder: 0 },
+      dryRun: true,
+      plan: [
+        "ville anonymisere Prisma-bruker + fritekst",
+        ...(planEkstern.plan ?? []),
+      ],
+      eksterntSlettet: planEkstern,
+    };
+  }
+
   const eksterntSlettet = await slettEksterneBrukerdata(userId);
 
   return {
