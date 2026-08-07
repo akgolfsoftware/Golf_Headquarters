@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { headers } from "next/headers";
+import Script from "next/script";
 import {
   Familjen_Grotesk,
   IBM_Plex_Mono,
@@ -168,11 +169,13 @@ export default async function RootLayout({
             App (/portal|/admin|/forelder): lys default, mørk kun med dark-cookie.
             Marketing/auth: mørk default (som før), lys kun med light-cookie.
             V2Shell synker samme regel ved SPA-navigasjon. */}
-        {/* suppressHydrationWarning: nettlesere nuller nonce-attributtet i DOM
-            (sikkerhetsmekanisme) → server/klient-avvik som er forventet. */}
-        <script
+        {/* Tema-init før paint (FOUC). next/script beforeInteractive — ikke rå
+            <script> i JSX (React 19/Next 16 advarer: kjøres ikke på klient-render).
+            Nonce fra middleware for CSP. */}
+        <Script
+          id="ak-v2-tema-init"
+          strategy="beforeInteractive"
           nonce={nonce}
-          suppressHydrationWarning
           dangerouslySetInnerHTML={{
             __html: `try{var p=window.location.pathname;var ck=document.cookie.split("; ");var mork=ck.some(function(c){return c==="ak-v2-tema=dark"});var lysCk=ck.some(function(c){return c==="ak-v2-tema=light"});var app=p.indexOf("/portal")===0||p.indexOf("/admin")===0||p.indexOf("/forelder")===0;var morkOnsket=app?mork:!lysCk;if(morkOnsket)document.documentElement.setAttribute("data-v2-tema","dark");else document.documentElement.removeAttribute("data-v2-tema")}catch(e){}`,
           }}
