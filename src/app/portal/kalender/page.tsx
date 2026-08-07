@@ -37,7 +37,7 @@ export default async function V2KalenderPreviewPage({ searchParams }: Props) {
   const data = await hentKalenderData(user.id, user.name ?? "Spiller", user.avatarUrl ?? null, refDato);
 
   return (
-    <V2Shell aktiv="plan" nav={PLAYERHQ_NAV} navn={data.spillerNavn} avatarUrl={data.avatarUrl}>
+    <V2Shell bredde="kolonne" aktiv="plan" nav={PLAYERHQ_NAV} navn={data.spillerNavn} avatarUrl={data.avatarUrl}>
       <TilbakeLenke href="/portal/planlegge">Plan</TilbakeLenke>
       <KalenderV2 data={data} />
       {/* Egne avtaler ligger på egen side — de er opptatt tid planleggeren må

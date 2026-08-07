@@ -23,7 +23,7 @@ export default async function NyMeldingPage() {
 
   if (user.tier === "GRATIS") {
     return (
-      <V2Shell aktiv="meg" nav={PLAYERHQ_NAV} navn={user.name}>
+      <V2Shell bredde="kolonne" aktiv="meg" nav={PLAYERHQ_NAV} navn={user.name}>
         <TilbakeLenke href="/portal/coach/melding">Meldinger</TilbakeLenke>
         <CoachMeldingNyV2 data={{ gratis: true, coach: null }} sendAction={sendMeldingNyV2} />
       </V2Shell>
@@ -46,7 +46,7 @@ export default async function NyMeldingPage() {
   const coach = aktivEnrollering?.coach ?? forsteCoach ?? null;
 
   return (
-    <V2Shell aktiv="meg" nav={PLAYERHQ_NAV} navn={user.name}>
+    <V2Shell bredde="kolonne" aktiv="meg" nav={PLAYERHQ_NAV} navn={user.name}>
       <TilbakeLenke href="/portal/coach/melding">Meldinger</TilbakeLenke>
       <CoachMeldingNyV2 data={{ gratis: false, coach }} sendAction={sendMeldingNyV2} />
     </V2Shell>

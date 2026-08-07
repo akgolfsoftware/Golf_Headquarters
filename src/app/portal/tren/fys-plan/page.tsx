@@ -64,7 +64,7 @@ export default async function FysPlanListePage() {
   const harNoen = enriched.length > 0;
 
   return (
-    <V2Shell aktiv="plan" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
+    <V2Shell bredde="kolonne" aktiv="plan" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
       <TilbakeLenke href="/portal/tren">Tren</TilbakeLenke>
       <div data-paper-portal-fys-plan style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
         {/* Hode */}

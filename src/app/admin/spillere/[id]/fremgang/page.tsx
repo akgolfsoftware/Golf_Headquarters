@@ -158,7 +158,7 @@ export default async function SpillerFremgangPage({
   };
 
   return (
-    <V2Shell aktiv="spillere" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>
+    <V2Shell bredde="kolonne" aktiv="spillere" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>
       <AdminSpillerFremgangV2 data={data} />
     </V2Shell>
   );

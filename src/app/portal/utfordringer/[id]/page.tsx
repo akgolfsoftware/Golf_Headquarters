@@ -93,7 +93,7 @@ export default async function UtfordringDetaljPage({
   }
 
   return (
-    <V2Shell aktiv="meg" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
+    <V2Shell bredde="kolonne" aktiv="meg" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
       <UtfordringDetaljV2
         data={data}
         actions={{

@@ -163,7 +163,7 @@ export default async function V2IntegrasjonerPage() {
   ];
 
   return (
-    <V2Shell aktiv="cockpit" nav={AGENCYOS_NAV} navn={me.name ?? "Coach"}>
+    <V2Shell bredde="kolonne" aktiv="cockpit" nav={AGENCYOS_NAV} navn={me.name ?? "Coach"}>
       <TilbakeLenke href="/admin/agencyos">Cockpit</TilbakeLenke>
       <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
         <div>

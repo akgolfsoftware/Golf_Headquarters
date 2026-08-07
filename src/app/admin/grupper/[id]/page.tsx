@@ -200,7 +200,7 @@ export default async function GruppeDetaljPage({
   };
 
   return (
-    <V2Shell aktiv="spillere" nav={AGENCYOS_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
+    <V2Shell bredde="kolonne" aktiv="spillere" nav={AGENCYOS_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
       <GruppeDetaljV2
         data={data}
         ekstra={

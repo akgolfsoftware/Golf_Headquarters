@@ -66,7 +66,7 @@ export default async function SammenligningPage({
 
   if (!mineData) {
     return (
-      <V2Shell aktiv="meg" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
+      <V2Shell bredde="kolonne" aktiv="meg" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
         <TilbakeLenke href="/portal/talent">Talent</TilbakeLenke>
         <TalentIkkeIProgrammet />
       </V2Shell>
@@ -163,7 +163,7 @@ export default async function SammenligningPage({
   };
 
   return (
-    <V2Shell aktiv="meg" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
+    <V2Shell bredde="kolonne" aktiv="meg" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
       <TilbakeLenke href="/portal/talent">Talent</TilbakeLenke>
       <TalentSammenligningV2 data={data} />
     </V2Shell>

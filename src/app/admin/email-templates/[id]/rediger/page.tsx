@@ -42,7 +42,7 @@ export default async function V2RedigerEmailTemplatePage({
   };
 
   return (
-    <V2Shell aktiv="cockpit" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>
+    <V2Shell bredde="kolonne" aktiv="cockpit" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>
       <TilbakeLenke href="/admin/email-templates">E-postmaler</TilbakeLenke>
       <AdminEmailTemplateEditorV2 template={data} testRecipient={user.email} />
     </V2Shell>

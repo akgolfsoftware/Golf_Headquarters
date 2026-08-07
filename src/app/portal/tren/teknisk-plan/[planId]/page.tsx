@@ -179,7 +179,7 @@ export default async function PlanBuilderPage({ params }: PageProps) {
   const statusTone: StatusTone = plan.status === "ACTIVE" ? "up" : plan.status === "DRAFT" ? "info" : "warn";
 
   return (
-    <V2Shell aktiv="plan" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
+    <V2Shell bredde="kolonne" aktiv="plan" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
       <div data-paper-portal-teknisk-plan style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 960, margin: "0 auto", width: "100%" }}>
         {/* Hode */}
         <div style={{ display: "flex", flexWrap: "wrap", alignItems: "flex-end", justifyContent: "space-between", gap: 12 }}>

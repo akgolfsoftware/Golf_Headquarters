@@ -174,7 +174,7 @@ export default async function SpillerPlanDetaljPage({
   const hitRateDrills = drills.filter((d) => d.rate !== "—");
 
   return (
-    <V2Shell aktiv="spillere" nav={AGENCYOS_NAV} navn={coach.name} avatarUrl={coach.avatarUrl}>
+    <V2Shell bredde="kolonne" aktiv="spillere" nav={AGENCYOS_NAV} navn={coach.name} avatarUrl={coach.avatarUrl}>
       <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
         {/* Hode */}
         <div style={{ display: "flex", flexWrap: "wrap", alignItems: "flex-end", justifyContent: "space-between", gap: 12 }}>

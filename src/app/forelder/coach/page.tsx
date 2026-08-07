@@ -48,7 +48,7 @@ export default async function ForelderCoachPage() {
       supportEpost: SUPPORT_EPOST,
     };
     return (
-      <V2Shell aktiv="coach" nav={FORELDER_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
+      <V2Shell bredde="kolonne" aktiv="coach" nav={FORELDER_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
         <ForelderCoachV2 data={data} />
       </V2Shell>
     );
@@ -121,7 +121,7 @@ export default async function ForelderCoachPage() {
   };
 
   return (
-    <V2Shell aktiv="coach" nav={FORELDER_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
+    <V2Shell bredde="kolonne" aktiv="coach" nav={FORELDER_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
       <ForelderCoachV2 data={data} />
     </V2Shell>
   );

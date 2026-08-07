@@ -79,7 +79,7 @@ export default async function V2AdminPlanMalerPreviewPage() {
   };
 
   return (
-    <V2Shell aktiv="planlegge" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>
+    <V2Shell bredde="kolonne" aktiv="planlegge" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>
       <TilbakeLenke href="/admin/planlegge">Planlegge</TilbakeLenke>
       <AdminPlanMalerV2 data={data} />
     </V2Shell>

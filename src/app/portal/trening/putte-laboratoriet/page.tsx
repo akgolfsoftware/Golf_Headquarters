@@ -16,7 +16,7 @@ export default async function PutteLaboratorietPage() {
   const user = await requirePortalUser();
 
   return (
-    <V2Shell aktiv="gjor" nav={PLAYERHQ_NAV} navn={user.name ?? undefined} avatarUrl={user.avatarUrl}>
+    <V2Shell bredde="kolonne" aktiv="gjor" nav={PLAYERHQ_NAV} navn={user.name ?? undefined} avatarUrl={user.avatarUrl}>
       <PutteLabV2 />
     </V2Shell>
   );

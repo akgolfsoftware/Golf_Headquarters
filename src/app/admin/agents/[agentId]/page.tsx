@@ -265,7 +265,7 @@ export default async function AgentDetaljPage({
     : "Ikke kjørt";
 
   return (
-    <V2Shell aktiv="cockpit" nav={AGENCYOS_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
+    <V2Shell bredde="kolonne" aktiv="cockpit" nav={AGENCYOS_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
       <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
         <Link href="/admin/agents" style={{ textDecoration: "none", alignSelf: "flex-start" }}>
           <MikroMeta icon="arrow-left">Agenter</MikroMeta>

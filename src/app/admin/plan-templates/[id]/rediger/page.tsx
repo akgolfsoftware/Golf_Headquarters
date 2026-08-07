@@ -93,7 +93,7 @@ export default async function PlanTemplateEditorPage({
   }));
 
   return (
-    <V2Shell aktiv="planlegge" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"} avatarUrl={user.avatarUrl}>
+    <V2Shell bredde="kolonne" aktiv="planlegge" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"} avatarUrl={user.avatarUrl}>
       <TilbakeLenke href={`/admin/plan-templates/${id}`}>Mal-detalj</TilbakeLenke>
       <AdminPlanMalRedigerV2 template={data} drillOptions={drillOptions} />
     </V2Shell>

@@ -57,7 +57,7 @@ export default async function SpillerPlanIndeksPage({
   };
 
   return (
-    <V2Shell aktiv="spillere" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>
+    <V2Shell bredde="kolonne" aktiv="spillere" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>
       <AdminSpillerPlanV2 data={data} />
     </V2Shell>
   );

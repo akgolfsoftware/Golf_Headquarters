@@ -32,7 +32,7 @@ export default async function DrillEditPage({
   });
 
   return (
-    <V2Shell nav={AGENCYOS_NAV} navn={user.name ?? "Coach"} avatarUrl={user.avatarUrl}>
+    <V2Shell bredde="kolonne" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"} avatarUrl={user.avatarUrl}>
       <AdminDrillRedigerV2 drill={drill} andreDrills={andreDrills} />
     </V2Shell>
   );

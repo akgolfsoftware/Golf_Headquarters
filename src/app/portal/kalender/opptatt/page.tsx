@@ -25,6 +25,7 @@ export default async function OpptattTidPage() {
 
   return (
     <V2Shell
+      bredde="kolonne"
       aktiv="plan"
       nav={PLAYERHQ_NAV}
       navn={user.name}

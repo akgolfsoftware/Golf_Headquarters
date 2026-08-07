@@ -87,7 +87,7 @@ export default async function CoachSgHubPage() {
   };
 
   return (
-    <V2Shell aktiv="meg" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
+    <V2Shell bredde="kolonne" aktiv="meg" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
       <TilbakeLenke href="/portal/coach">Coach</TilbakeLenke>
       <CoachSgHubV2 data={data} />
     </V2Shell>

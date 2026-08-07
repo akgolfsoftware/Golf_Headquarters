@@ -131,7 +131,7 @@ export default async function LeaderboardPage({
   const fornavn = user.name.split(" ")[0];
 
   return (
-    <V2Shell aktiv="analyse" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
+    <V2Shell bredde="kolonne" aktiv="analyse" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
       <TilbakeLenke href="/portal/mal">Mål</TilbakeLenke>
       <LeaderboardV2
         data={{

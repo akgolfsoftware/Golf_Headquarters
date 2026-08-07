@@ -74,7 +74,7 @@ export default async function V2CockpitPage() {
   };
 
   return (
-    <V2Shell aktiv="cockpit" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"} vekslerData={vekslerData}>
+    <V2Shell bredde="full" aktiv="cockpit" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"} vekslerData={vekslerData}>
       <CockpitV2 data={data} innboks={innboks} fokus={fokus} aiDispatch={aiDispatch} stallOkter={stallOkter} />
     </V2Shell>
   );

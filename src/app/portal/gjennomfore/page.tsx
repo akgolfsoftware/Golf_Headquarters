@@ -23,7 +23,7 @@ export default async function V2GjorPreviewPage() {
   const data = await getGjennomforeData(user.id);
 
   return (
-    <V2Shell aktiv="gjor" nav={PLAYERHQ_NAV} navn={user.name ?? undefined} avatarUrl={user.avatarUrl}>
+    <V2Shell bredde="kolonne" aktiv="gjor" nav={PLAYERHQ_NAV} navn={user.name ?? undefined} avatarUrl={user.avatarUrl}>
       <GjorV2 data={data} />
     </V2Shell>
   );
