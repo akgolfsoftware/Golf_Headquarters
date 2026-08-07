@@ -12,7 +12,7 @@ import { MegSymptomNyV2 } from "@/components/portal/v2/MegSymptomNyV2";
 export default async function NyttSymptomPage() {
   const user = await requirePortalUser();
   return (
-    <V2Shell aktiv="meg" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
+    <V2Shell aktiv="meg" bredde="kolonne" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
       <TilbakeLenke href="/portal/meg/helse">Helse</TilbakeLenke>
       <MegSymptomNyV2 />
     </V2Shell>

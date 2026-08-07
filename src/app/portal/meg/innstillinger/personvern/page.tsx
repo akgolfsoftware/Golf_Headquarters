@@ -22,7 +22,7 @@ export default async function PersonvernPage() {
   const krevesForesatt = maaHaForesattSamtykke(user);
 
   return (
-    <V2Shell aktiv="meg" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
+    <V2Shell aktiv="meg" bredde="kolonne" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
     <div
       style={{
         maxWidth: 720,
