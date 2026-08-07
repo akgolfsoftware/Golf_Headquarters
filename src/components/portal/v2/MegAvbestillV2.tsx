@@ -46,7 +46,7 @@ export function MegAvbestillV2({ data }: { data: MegAvbestillData }) {
   }
 
   return (
-    <div style={{ maxWidth: 520, width: "100%", margin: "0 auto", display: "flex", flexDirection: "column", gap: T.gap }}>
+    <div data-paper-portal-meg-avbestill style={{ maxWidth: 520, width: "100%", margin: "0 auto", display: "flex", flexDirection: "column", gap: T.gap }}>
       {/* Hero — varsom advarsel, aldri sperre-språk */}
       <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 12, textAlign: "center", paddingTop: 6 }}>
         <span
@@ -139,8 +139,8 @@ export function MegAvbestillV2({ data }: { data: MegAvbestillData }) {
               width: 36,
               height: 36,
               borderRadius: 9999,
-              background: T.lime,
-              color: T.onLime,
+              background: T.handling,
+              color: T.onHandling,
               display: "inline-flex",
               alignItems: "center",
               justifyContent: "center",
