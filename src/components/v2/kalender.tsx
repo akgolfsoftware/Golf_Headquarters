@@ -344,10 +344,10 @@ export function DagStripe({ days = DS_DEMO, value = 8, onChange = null }: DagStr
         const on = d.date === aktiv;
         return (
           <button key={i} type="button" role="tab" aria-selected={on} onClick={onChange ? () => onChange(d.date, d) : undefined}
-            style={{ appearance: "none", cursor: onChange ? "pointer" : "default", flex: 1, display: "flex", flexDirection: "column", alignItems: "center", gap: 3, padding: "8px 0 7px", borderRadius: 12, background: on ? T.fg : T.panel2, border: `1px solid ${on ? T.fg : T.border}` }}>
+            style={{ appearance: "none", cursor: onChange ? "pointer" : "default", flex: 1, display: "flex", flexDirection: "column", alignItems: "center", gap: 3, padding: "10px 0 8px", borderRadius: T.rCard, background: on ? T.fg : T.panel, border: `1px solid ${on ? T.fg : T.border}`, minHeight: 56 }}>
             <span style={{ ...mono(8.5, on ? T.bg : T.mut, 600), letterSpacing: "0.08em" }}>{d.dow}</span>
             <span style={{ ...mono(13.5, on ? T.bg : T.fg) }}>{d.date}</span>
-            <span style={{ width: 4, height: 4, borderRadius: 9999, background: d.today ? T.lime : d.state === "done" ? (on ? T.bg : T.mut) : "transparent", opacity: d.today ? 1 : 0.6 }} />
+            <span style={{ width: 4, height: 4, borderRadius: 9999, background: d.today ? T.handling : d.state === "done" ? (on ? T.bg : T.mut) : "transparent", opacity: d.today ? 1 : 0.6 }} />
           </button>
         );
       })}

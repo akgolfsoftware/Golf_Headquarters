@@ -71,7 +71,8 @@ function kortNavn(tittel: string): string {
   return tittel.split(" · ")[0] ?? tittel;
 }
 
-export function PlanV2({ data }: { data: DashboardData }) {
+export function PlanV2({ data, depthMode = "simple" }: { data: DashboardData; depthMode?: "simple" | "deep" }) {
+  const deep = depthMode === "deep";
   const { weekNumber, week, weekProgress, optimalSession, todayAll } = data;
 
   const iDag = new Date();
@@ -131,7 +132,8 @@ export function PlanV2({ data }: { data: DashboardData }) {
           flex: 1,
           minHeight: 0,
           overflow: "auto",
-          padding: "16px 16px 88px",
+          padding: "14px 16px 100px",
+          background: T.bg,
         }}
       >
         <div
@@ -140,10 +142,10 @@ export function PlanV2({ data }: { data: DashboardData }) {
             margin: "0 auto",
             display: "flex",
             flexDirection: "column",
-            gap: 16,
+            gap: 18,
           }}
         >
-          {/* Kompakt topplinje — fasit, ikke «Din *uke*»-helter */}
+          {/* Paper plan header */}
           <header
             style={{
               display: "flex",
@@ -158,9 +160,10 @@ export function PlanV2({ data }: { data: DashboardData }) {
                 style={{
                   margin: 0,
                   fontFamily: T.disp,
-                  fontSize: 15,
+                  fontSize: 17,
                   fontWeight: 600,
                   color: T.fg,
+                  letterSpacing: "-0.01em",
                 }}
               >
                 Plan
@@ -168,36 +171,38 @@ export function PlanV2({ data }: { data: DashboardData }) {
               <div
                 style={{
                   fontFamily: T.mono,
-                  fontSize: 10.5,
+                  fontSize: 11,
                   letterSpacing: "0.04em",
                   color: T.mut,
-                  marginTop: 2,
+                  marginTop: 3,
                 }}
               >
                 Uke {weekNumber} · {periodeLinje(week)}
                 {weekProgress.plannedMin > 0 ? ` · ${gjennomforPct} % gjort` : ""}
               </div>
             </div>
-            <Link
-              href={WORKBENCH_HREF}
-              className="v2-press v2-focus"
-              style={{
-                minHeight: 36,
-                padding: "0 12px",
-                borderRadius: 8,
-                border: `1px solid ${T.border}`,
-                background: "transparent",
-                color: T.fg,
-                fontFamily: T.ui,
-                fontSize: 12,
-                fontWeight: 500,
-                textDecoration: "none",
-                display: "inline-flex",
-                alignItems: "center",
-              }}
-            >
-              Workbench
-            </Link>
+            {deep && (
+              <Link
+                href={WORKBENCH_HREF}
+                className="v2-press v2-focus"
+                style={{
+                  minHeight: 36,
+                  padding: "0 12px",
+                  borderRadius: 8,
+                  border: `1px solid ${T.border}`,
+                  background: "transparent",
+                  color: T.fg,
+                  fontFamily: T.ui,
+                  fontSize: 12,
+                  fontWeight: 500,
+                  textDecoration: "none",
+                  display: "inline-flex",
+                  alignItems: "center",
+                }}
+              >
+                Workbench
+              </Link>
+            )}
           </header>
 
           <DagStripe days={stripeDager} value={valgtDagDato} onChange={(dato) => setValgtDagDato(dato)} />
@@ -257,7 +262,7 @@ export function PlanV2({ data }: { data: DashboardData }) {
                 <TomTilstand
                   icon="calendar"
                   title="Hviledag"
-                  sub="Ingen økt denne dagen. Endre i Workbench hvis du vil legge inn noe."
+                  sub={deep ? "Ingen økt denne dagen. Endre i Workbench hvis du vil legge inn noe." : "Ingen økt denne dagen — nyt hviledagen, eller se ukeplanen med coach."}
                 />
               )}
             </Kort>
@@ -268,14 +273,90 @@ export function PlanV2({ data }: { data: DashboardData }) {
               <TomTilstand
                 icon="calendar"
                 title="Ingen økter planlagt denne uka"
-                sub="Åpne Workbench for å legge inn økter — eller vent på coach-plan."
+                sub="Hvile er en del av planen, ikke et hull i den. Når coach eller du legger inn økter, dukker de opp her."
               />
-              <div style={{ marginTop: 12 }}>
-                <Link href={WORKBENCH_HREF} style={{ textDecoration: "none", display: "block" }}>
-                  <CTAPill icon="calendar" ghost full>
-                    Åpne Workbench
-                  </CTAPill>
+              {/* Paper tom-tilstand: tre stille sekundærvalg — aldri flere T.handling */}
+              <div
+                style={{
+                  marginTop: 14,
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: 8,
+                }}
+              >
+                <Link
+                  href="/portal"
+                  data-od-id="plan-tom-fangst"
+                  style={{
+                    fontFamily: T.ui,
+                    fontSize: 13,
+                    fontWeight: 600,
+                    color: T.fg,
+                    textDecoration: "none",
+                    minHeight: 44,
+                    display: "flex",
+                    alignItems: "center",
+                    borderBottom: `1px solid ${T.border}`,
+                    padding: "8px 0",
+                  }}
+                >
+                  Fang en observasjon på Hjem
                 </Link>
+                <Link
+                  href="/portal/coach/melding"
+                  data-od-id="plan-tom-spor"
+                  style={{
+                    fontFamily: T.ui,
+                    fontSize: 13,
+                    fontWeight: 600,
+                    color: T.fg,
+                    textDecoration: "none",
+                    minHeight: 44,
+                    display: "flex",
+                    alignItems: "center",
+                    borderBottom: `1px solid ${T.border}`,
+                    padding: "8px 0",
+                  }}
+                >
+                  Spør coach
+                </Link>
+                {deep ? (
+                  <Link
+                    href={WORKBENCH_HREF}
+                    data-od-id="plan-tom-workbench"
+                    style={{
+                      fontFamily: T.ui,
+                      fontSize: 13,
+                      fontWeight: 600,
+                      color: T.mut,
+                      textDecoration: "none",
+                      minHeight: 44,
+                      display: "flex",
+                      alignItems: "center",
+                      padding: "8px 0",
+                    }}
+                  >
+                    Åpne Workbench (avansert)
+                  </Link>
+                ) : (
+                  <Link
+                    href="/portal/meg/innstillinger"
+                    data-od-id="plan-tom-depth"
+                    style={{
+                      fontFamily: T.ui,
+                      fontSize: 13,
+                      fontWeight: 600,
+                      color: T.mut,
+                      textDecoration: "none",
+                      minHeight: 44,
+                      display: "flex",
+                      alignItems: "center",
+                      padding: "8px 0",
+                    }}
+                  >
+                    Avansert visning under Meg
+                  </Link>
+                )}
               </div>
             </Kort>
           )}
@@ -291,7 +372,8 @@ export function PlanV2({ data }: { data: DashboardData }) {
             borderTop: `1px solid ${T.border}`,
             background: T.bg,
             padding: "12px 16px",
-            paddingBottom: "max(12px, env(safe-area-inset-bottom))",
+            paddingBottom: "max(14px, env(safe-area-inset-bottom))",
+            boxShadow: "0 -8px 24px color-mix(in srgb, var(--v2-fg) 4%, transparent)",
           }}
         >
           <div style={{ maxWidth: 720, margin: "0 auto" }}>
@@ -303,7 +385,7 @@ export function PlanV2({ data }: { data: DashboardData }) {
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
-                minHeight: 48,
+                minHeight: 52,
                 width: "100%",
                 borderRadius: 10,
                 background: T.handling,
@@ -382,16 +464,20 @@ export function PlanV2({ data }: { data: DashboardData }) {
               </div>
             )}
 
-            <p style={{ margin: 0, fontFamily: T.ui, fontSize: 12, color: T.mut, lineHeight: 1.5 }}>
-              Vil du flytte økta? Gjør det i Workbench — endringen gjelder med én gang.
-            </p>
+            {deep && (
+              <p style={{ margin: 0, fontFamily: T.ui, fontSize: 12, color: T.mut, lineHeight: 1.5 }}>
+                Vil du flytte økta? Gjør det i Workbench — endringen gjelder med én gang.
+              </p>
+            )}
 
             <div style={{ display: "flex", gap: 8 }}>
-              <Link href={WORKBENCH_HREF} style={{ textDecoration: "none", flex: 1 }}>
-                <CTAPill icon="calendar" ghost full>
-                  Workbench
-                </CTAPill>
-              </Link>
+              {deep && (
+                <Link href={WORKBENCH_HREF} style={{ textDecoration: "none", flex: 1 }}>
+                  <CTAPill icon="calendar" ghost full>
+                    Workbench
+                  </CTAPill>
+                </Link>
+              )}
               <Link
                 href={apenOkt.href}
                 className="v2-press v2-focus"

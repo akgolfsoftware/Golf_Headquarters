@@ -12,6 +12,7 @@ import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { getDashboardData } from "@/app/portal/actions";
 import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
 import { PlanV2 } from "@/components/portal/v2/PlanV2";
+import { getPlayerDepthMode } from "@/lib/player-depth-mode";
 
 export const dynamic = "force-dynamic";
 
@@ -20,11 +21,14 @@ export default async function V2PlanPreviewPage() {
   if (user.role === "PARENT") redirect("/forelder");
   if (user.role === "GUEST") redirect("/admin/kalender");
 
-  const data = await getDashboardData(user.id);
+  const [data, depthMode] = await Promise.all([
+    getDashboardData(user.id),
+    getPlayerDepthMode(),
+  ]);
 
   return (
     <V2Shell bredde="kolonne" aktiv="plan" nav={PLAYERHQ_NAV} navn={data.user.name} avatarUrl={data.user.avatarUrl}>
-      <PlanV2 data={data} />
+      <PlanV2 data={data} depthMode={depthMode} />
     </V2Shell>
   );
 }

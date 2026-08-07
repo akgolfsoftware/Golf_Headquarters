@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
-import { headers } from "next/headers";
-import Script from "next/script";
+import { cookies, headers } from "next/headers";
 import {
   Familjen_Grotesk,
   IBM_Plex_Mono,
@@ -148,38 +147,42 @@ export const viewport = {
 };
 
 // Async RSC — nødvendig for å lese headers() (CSP-nonce).
+function erAppPath(path: string): boolean {
+  return (
+    path.startsWith("/portal") ||
+    path.startsWith("/admin") ||
+    path.startsWith("/forelder")
+  );
+}
+
+/** Samme regel som gammelt FOUC-script + V2Shell — men på server (ingen <script>). */
+function onsketMorkTema(path: string, temaCookie: string | undefined): boolean {
+  const mork = temaCookie === "dark";
+  const lysCk = temaCookie === "light";
+  // App: lys default, mørk kun med dark-cookie.
+  // Marketing/auth: mørk default, lys kun med light-cookie.
+  return erAppPath(path) ? mork : !lysCk;
+}
+
 export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  // Nonce settes av proxy.ts (middleware) og forwardes som x-nonce request-header
-  // inn i RSC-render. Passes til <Script>-komponenter slik at CSP script-src
-  // med 'nonce-{nonce}' + 'strict-dynamic' godkjenner dem.
-  const nonce = (await headers()).get("x-nonce") ?? undefined;
+  const h = await headers();
+  const path = h.get("x-pathname") ?? "";
+  const temaCookie = (await cookies()).get("ak-v2-tema")?.value;
+  const mork = onsketMorkTema(path, temaCookie);
 
   return (
     <html
       lang="nb"
       className={`${inter.variable} ${jetbrainsMono.variable} ${familjenGrotesk.variable} ${poppins.variable} ${lora.variable} ${ibmPlexMono.variable} h-full antialiased`}
+      {...(mork ? { "data-v2-tema": "dark" } : {})}
       suppressHydrationWarning
     >
       <body className="min-h-full flex flex-col">
-        {/* Fase F PR1: CSS :root = lys. Mørk via data-v2-tema="dark" + cookie.
-            App (/portal|/admin|/forelder): lys default, mørk kun med dark-cookie.
-            Marketing/auth: mørk default (som før), lys kun med light-cookie.
-            V2Shell synker samme regel ved SPA-navigasjon. */}
-        {/* Tema-init før paint (FOUC). next/script beforeInteractive — ikke rå
-            <script> i JSX (React 19/Next 16 advarer: kjøres ikke på klient-render).
-            Nonce fra middleware for CSP. */}
-        <Script
-          id="ak-v2-tema-init"
-          strategy="beforeInteractive"
-          nonce={nonce}
-          dangerouslySetInnerHTML={{
-            __html: `try{var p=window.location.pathname;var ck=document.cookie.split("; ");var mork=ck.some(function(c){return c==="ak-v2-tema=dark"});var lysCk=ck.some(function(c){return c==="ak-v2-tema=light"});var app=p.indexOf("/portal")===0||p.indexOf("/admin")===0||p.indexOf("/forelder")===0;var morkOnsket=app?mork:!lysCk;if(morkOnsket)document.documentElement.setAttribute("data-v2-tema","dark");else document.documentElement.removeAttribute("data-v2-tema")}catch(e){}`,
-          }}
-        />
+        {/* Tema: satt på <html> via cookie + path (SSR). V2Shell synker ved toggle. */}
         {children}
         <InstallPrompt />
         <SwRegister />

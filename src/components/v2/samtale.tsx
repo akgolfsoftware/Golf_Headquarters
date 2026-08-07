@@ -134,34 +134,98 @@ export interface SkrivefeltProps {
   onSend: () => void;
   sender?: boolean;
   placeholder?: string;
+  /**
+   * bare = kun textarea (Paper Hjem: ytre ramme + capture-mic eier layout).
+   * default = felt + send-knapp (ink CTA, ikke lime — Paper .sendbtn).
+   */
+  variant?: "default" | "bare";
+  /** Skjul send-knapp (når parent eier send/mic). */
+  hideSend?: boolean;
 }
-export function Skrivefelt({ value, onChange, onSend, sender, placeholder = "Spør AI-coach …" }: SkrivefeltProps) {
+export function Skrivefelt({
+  value,
+  onChange,
+  onSend,
+  sender,
+  placeholder = "Spør om hva som helst …",
+  variant = "default",
+  hideSend = false,
+}: SkrivefeltProps) {
   const ref = useRef<HTMLTextAreaElement>(null);
   const kanSende = value.trim().length > 0 && !sender;
+  const bare = variant === "bare" || hideSend;
+
+  const ta = (
+    <textarea
+      ref={ref}
+      value={value}
+      onChange={(e) => onChange(e.target.value)}
+      onKeyDown={(e) => {
+        if (e.key === "Enter" && !e.shiftKey) {
+          e.preventDefault();
+          if (kanSende) onSend();
+        }
+      }}
+      placeholder={placeholder}
+      rows={1}
+      disabled={sender}
+      data-od-id="composer-input"
+      style={{
+        width: "100%",
+        display: "block",
+        resize: "none",
+        border: "none",
+        outline: "none",
+        background: "transparent",
+        color: T.fg,
+        fontFamily: T.ui,
+        fontSize: 15,
+        lineHeight: 1.45,
+        padding: bare ? "10px 12px" : "9px 10px",
+        minHeight: 44,
+        maxHeight: 110,
+      }}
+    />
+  );
+
+  if (bare) {
+    return ta;
+  }
+
   return (
-    <div style={{ display: "grid", gridTemplateColumns: "1fr 44px", gap: 8, alignItems: "end", background: T.panel2, border: `1px solid ${T.border}`, borderRadius: 14, padding: 6 }}>
-      <textarea
-        ref={ref}
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        onKeyDown={(e) => {
-          if (e.key === "Enter" && !e.shiftKey) {
-            e.preventDefault();
-            if (kanSende) onSend();
-          }
-        }}
-        placeholder={placeholder}
-        rows={1}
-        disabled={sender}
-        style={{ resize: "none", border: "none", outline: "none", background: "transparent", color: T.fg, fontFamily: T.ui, fontSize: 14, lineHeight: 1.5, padding: "9px 10px", minHeight: 40, maxHeight: 140 }}
-      />
+    <div
+      style={{
+        display: "grid",
+        gridTemplateColumns: "1fr 44px",
+        gap: 8,
+        alignItems: "end",
+        background: T.panel,
+        border: `1px solid ${T.border}`,
+        borderRadius: T.rCard,
+        padding: 6,
+      }}
+    >
+      {ta}
       <button
         type="button"
         onClick={() => kanSende && onSend()}
         disabled={!kanSende}
         aria-label="Send"
+        data-od-id="send-message"
         className="v2-press v2-focus"
-        style={{ width: 44, height: 40, borderRadius: 10, border: "none", background: kanSende ? T.lime : T.panel3, color: kanSende ? T.onLime : T.mut, display: "inline-flex", alignItems: "center", justifyContent: "center", cursor: kanSende ? "pointer" : "default" }}
+        style={{
+          width: 44,
+          height: 44,
+          borderRadius: T.rRow,
+          border: "none",
+          /* Paper .sendbtn = ink CTA, ikke lime */
+          background: kanSende ? T.fg : T.panel3,
+          color: kanSende ? T.bg : T.mut,
+          display: "inline-flex",
+          alignItems: "center",
+          justifyContent: "center",
+          cursor: kanSende ? "pointer" : "default",
+        }}
       >
         <Icon name="send" size={17} />
       </button>

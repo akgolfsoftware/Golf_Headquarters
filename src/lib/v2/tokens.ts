@@ -67,10 +67,11 @@ export const T = {
     textOnDark: "#F7F7F4",
     textOnLight: "#101613",
   } as const,
-  // Typografi
-  disp: '"Familjen Grotesk",Inter,system-ui,sans-serif',
-  ui: "Inter,system-ui,sans-serif",
-  mono: '"JetBrains Mono",ui-monospace,monospace',
+  // Typografi — Paper (Poppins / Lora / IBM Plex Mono via CSS vars)
+  disp: "var(--p-disp, var(--font-display), system-ui, sans-serif)",
+  ui: "var(--p-ui, var(--font-sans), system-ui, sans-serif)",
+  bodyFont: "var(--p-font-serif, Georgia, serif)",
+  mono: "var(--p-font-mono, var(--font-mono), ui-monospace, monospace)",
   // Fontskala (px — fra tokens.css)
   displayXl: 36,
   numHero: 56,
@@ -80,9 +81,9 @@ export const T = {
   bodySm: 12,
   caps: 10,
   capsSm: 9,
-  // Geometri (fasit: tag 8 → input/row 12 → card 20 → sheet 28)
+  // Geometri — Paper: --r-sm 8, --r 12 (app), --r-md 16, sheet larger
   rTag: 8,
-  rCard: 20,
+  rCard: 12,
   rRow: 12,
   // rInput = Paper --r-sm (8px, «knapper, felter, chips» — designport steg 5B).
   // Eneste konsument er src/components/v2/skjema.tsx (verifisert 03.08.2026),

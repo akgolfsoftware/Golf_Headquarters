@@ -12,6 +12,7 @@ import { loadMinGolf } from "@/lib/min-golf/load-min-golf";
 import { loadAnalyticsWorkbenchData } from "@/app/portal/analysere/actions";
 import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
 import { AnalysereV2 } from "@/components/portal/v2/AnalysereV2";
+import { getPlayerDepthMode } from "@/lib/player-depth-mode";
 
 export const dynamic = "force-dynamic";
 
@@ -20,14 +21,15 @@ export default async function V2AnalyserePreviewPage() {
   if (user.role === "GUEST") redirect("/admin/kalender");
   if (user.role === "PARENT") redirect("/forelder");
 
-  const [minGolf, workbench] = await Promise.all([
+  const [minGolf, workbench, depthMode] = await Promise.all([
     loadMinGolf(user.id),
     loadAnalyticsWorkbenchData(user.id),
+    getPlayerDepthMode(),
   ]);
 
   return (
     <V2Shell bredde="kolonne" aktiv="analyse" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
-      <AnalysereV2 data={{ minGolf, workbench }} userId={user.id} />
+      <AnalysereV2 data={{ minGolf, workbench }} userId={user.id} depthMode={depthMode} />
     </V2Shell>
   );
 }
