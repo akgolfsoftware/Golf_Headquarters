@@ -86,7 +86,7 @@ export function CoachSporsmalNyV2({
   }
 
   return (
-    <div style={{ maxWidth: 720, width: "100%", margin: "0 auto", display: "flex", flexDirection: "column", gap: T.gap }}>
+    <div data-paper-portal-coach-sporsmal-ny style={{ maxWidth: 720, width: "100%", margin: "0 auto", display: "flex", flexDirection: "column", gap: T.gap }}>
       <div>
         <Caps>Coach · Nytt spørsmål</Caps>
         <div style={{ marginTop: 10 }}>
