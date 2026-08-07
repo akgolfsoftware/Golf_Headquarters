@@ -60,7 +60,13 @@ export default function GlobalError({
             >
               Noe gikk galt
             </h1>
-            <p style={{ marginTop: 16, fontSize: 16, color: "hsl(var(--muted-foreground))" }}>
+            <p
+              style={{
+                marginTop: 16,
+                fontSize: 16,
+                color: "hsl(var(--muted-foreground))",
+              }}
+            >
               Vi har blitt varslet og ser på det. Last inn siden på nytt eller
               gå tilbake til forsiden.
             </p>
