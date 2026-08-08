@@ -14,12 +14,10 @@ import type { DashboardData } from "@/app/portal/actions";
 import {
   T,
   Caps,
-  Kort,
   AkseChip,
   StatusPill,
   CTAPill,
   DagStripe,
-  TomTilstand,
   type StripeDag,
 } from "@/components/v2";
 import { OktKort } from "@/components/v2/domene";
@@ -125,14 +123,96 @@ export function PlanV2({ data, depthMode = "simple" }: { data: DashboardData; de
         height: "100%",
         minHeight: 0,
         position: "relative",
+        background: T.bg,
       }}
     >
+      {/* Paper .topp — sticky surface header */}
+      <header
+        style={{
+          flex: "none",
+          display: "flex",
+          alignItems: "center",
+          gap: 12,
+          padding: "12px 20px",
+          borderBottom: `1px solid ${T.border}`,
+          background: T.panel,
+          position: "sticky",
+          top: 0,
+          zIndex: 5,
+        }}
+      >
+        <div style={{ minWidth: 0, flex: 1 }}>
+          <h1
+            style={{
+              margin: 0,
+              fontFamily: T.disp,
+              fontSize: 17,
+              fontWeight: 600,
+              color: T.fg,
+            }}
+          >
+            Plan
+          </h1>
+          <span
+            style={{
+              display: "block",
+              fontFamily: T.mono,
+              fontSize: 10.5,
+              color: T.mut,
+              marginTop: 2,
+            }}
+          >
+            Uke {weekNumber} · {periodeLinje(week)}
+            {weekProgress.plannedMin > 0 ? ` · ${gjennomforPct} % gjort` : ""}
+          </span>
+        </div>
+        {deep && (
+          <Link
+            href={WORKBENCH_HREF}
+            className="v2-press v2-focus"
+            data-od-id="plan-workbench"
+            style={{
+              minHeight: 44,
+              padding: "0 14px",
+              borderRadius: T.rCard,
+              border: `1px solid ${T.border}`,
+              background: "transparent",
+              color: T.fg,
+              fontFamily: T.ui,
+              fontSize: 13,
+              fontWeight: 500,
+              textDecoration: "none",
+              display: "inline-flex",
+              alignItems: "center",
+              flex: "none",
+            }}
+          >
+            Workbench
+          </Link>
+        )}
+      </header>
+
+      {/* Paper .dager */}
+      <div
+        style={{
+          flex: "none",
+          borderBottom: `1px solid ${T.border}`,
+          background: T.bg,
+          padding: "12px 16px",
+        }}
+      >
+        <div style={{ maxWidth: 720, margin: "0 auto" }}>
+          <DagStripe days={stripeDager} value={valgtDagDato} onChange={(dato) => setValgtDagDato(dato)} />
+        </div>
+      </div>
+
+      {/* Paper .kropp */}
       <div
         style={{
           flex: 1,
           minHeight: 0,
           overflow: "auto",
-          padding: "14px 16px 100px",
+          padding: "16px 16px 100px",
           background: T.bg,
         }}
       >
@@ -142,85 +222,38 @@ export function PlanV2({ data, depthMode = "simple" }: { data: DashboardData; de
             margin: "0 auto",
             display: "flex",
             flexDirection: "column",
-            gap: 18,
+            gap: 16,
           }}
         >
-          {/* Paper plan header */}
-          <header
-            style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "space-between",
-              gap: 12,
-              flexWrap: "wrap",
-            }}
-          >
-            <div>
-              <h1
-                style={{
-                  margin: 0,
-                  fontFamily: T.disp,
-                  fontSize: 17,
-                  fontWeight: 600,
-                  color: T.fg,
-                  letterSpacing: "-0.01em",
-                }}
-              >
-                Plan
-              </h1>
-              <div
-                style={{
-                  fontFamily: T.mono,
-                  fontSize: 11,
-                  letterSpacing: "0.04em",
-                  color: T.mut,
-                  marginTop: 3,
-                }}
-              >
-                Uke {weekNumber} · {periodeLinje(week)}
-                {weekProgress.plannedMin > 0 ? ` · ${gjennomforPct} % gjort` : ""}
-              </div>
-            </div>
-            {deep && (
-              <Link
-                href={WORKBENCH_HREF}
-                className="v2-press v2-focus"
-                style={{
-                  minHeight: 36,
-                  padding: "0 12px",
-                  borderRadius: 8,
-                  border: `1px solid ${T.border}`,
-                  background: "transparent",
-                  color: T.fg,
-                  fontFamily: T.ui,
-                  fontSize: 12,
-                  fontWeight: 500,
-                  textDecoration: "none",
-                  display: "inline-flex",
-                  alignItems: "center",
-                }}
-              >
-                Workbench
-              </Link>
-            )}
-          </header>
-
-          <DagStripe days={stripeDager} value={valgtDagDato} onChange={(dato) => setValgtDagDato(dato)} />
 
           {valgtDagObj && (
-            <Kort
-              pad="12px"
-              eyebrow={
-                <span style={{ display: "inline-flex", alignItems: "center", gap: 8 }}>
-                  {valgtDagObj.isToday ? "I dag" : dagEtikett(valgtDagObj.date)}
-                  {valgtDagObj.sessions.length > 0 && (
-                    <Caps size={9}>
-                      {valgtDagObj.sessions.length} økt{valgtDagObj.sessions.length === 1 ? "" : "er"}
-                    </Caps>
-                  )}
-                </span>
-              }
+            <section
+              style={{
+                background: T.panel,
+                border: `1px solid ${T.border}`,
+                borderRadius: T.rCard,
+                padding: 16,
+              }}
+              data-od-id="plan-dag"
             >
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "baseline",
+                  gap: 8,
+                  marginBottom: valgtDagObj.sessions.length || (valgtDagObj.isToday && optimalSession) ? 12 : 0,
+                }}
+              >
+                <span style={{ fontFamily: T.disp, fontSize: 14, fontWeight: 600, color: T.fg }}>
+                  {valgtDagObj.isToday ? "I dag" : dagEtikett(valgtDagObj.date)}
+                </span>
+                {valgtDagObj.sessions.length > 0 && (
+                  <Caps size={9}>
+                    {valgtDagObj.sessions.length} økt{valgtDagObj.sessions.length === 1 ? "" : "er"}
+                  </Caps>
+                )}
+              </div>
+              <div>
               {valgtDagObj.sessions.length > 0 ? (
                 <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
                   {valgtDagObj.sessions.map((o) => {
@@ -250,7 +283,7 @@ export function PlanV2({ data, depthMode = "simple" }: { data: DashboardData; de
                   <div style={{ fontFamily: T.disp, fontWeight: 600, fontSize: 15, color: T.fg }}>
                     {optimalSession.title}
                   </div>
-                  <p style={{ fontFamily: T.ui, fontSize: 12.5, color: T.fg2, margin: 0, lineHeight: 1.5 }}>
+                  <p style={{ fontFamily: T.bodyFont, fontSize: 13.5, color: T.mut, margin: 0, lineHeight: 1.55 }}>
                     {optimalSession.rationale}
                   </p>
                   <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
@@ -259,29 +292,69 @@ export function PlanV2({ data, depthMode = "simple" }: { data: DashboardData; de
                   </div>
                 </div>
               ) : (
-                <TomTilstand
-                  icon="calendar"
-                  title="Hviledag"
-                  sub={deep ? "Ingen økt denne dagen. Endre i Workbench hvis du vil legge inn noe." : "Ingen økt denne dagen — nyt hviledagen, eller se ukeplanen med coach."}
-                />
+                <div
+                  data-od-id="plan-hvile"
+                  style={{
+                    padding: "20px 16px",
+                    background: T.panel2,
+                    border: `1px dashed ${T.border}`,
+                    borderRadius: T.rCard,
+                  }}
+                >
+                  <h3 style={{ margin: "0 0 8px", fontFamily: T.disp, fontSize: 15, fontWeight: 600, color: T.fg }}>
+                    Hviledag
+                  </h3>
+                  <p
+                    style={{
+                      margin: 0,
+                      fontFamily: T.bodyFont,
+                      fontSize: 13.5,
+                      color: T.mut,
+                      lineHeight: 1.5,
+                      maxWidth: "46ch",
+                    }}
+                  >
+                    {deep
+                      ? "Ingen økt denne dagen. Endre i Workbench hvis du vil legge inn noe."
+                      : "Ingen økt denne dagen — nyt hviledagen, eller se ukeplanen med coach."}
+                  </p>
+                </div>
               )}
-            </Kort>
+              </div>
+            </section>
           )}
 
           {week.every((d) => d.sessions.length === 0) && !optimalSession && (
-            <Kort>
-              <TomTilstand
-                icon="calendar"
-                title="Ingen økter planlagt denne uka"
-                sub="Hvile er en del av planen, ikke et hull i den. Når coach eller du legger inn økter, dukker de opp her."
-              />
-              {/* Paper tom-tilstand: tre stille sekundærvalg — aldri flere T.handling */}
+            <div
+              data-od-id="plan-tom-uke"
+              style={{
+                padding: "24px 20px",
+                background: T.panel2,
+                border: `1px dashed ${T.border}`,
+                borderRadius: T.rCard,
+              }}
+            >
+              <h3 style={{ margin: "0 0 8px", fontFamily: T.disp, fontSize: 15, fontWeight: 600, color: T.fg }}>
+                Ingen økter planlagt denne uka
+              </h3>
+              <p
+                style={{
+                  margin: "0 0 16px",
+                  fontFamily: T.bodyFont,
+                  fontSize: 13.5,
+                  color: T.mut,
+                  lineHeight: 1.55,
+                  maxWidth: "46ch",
+                }}
+              >
+                Hvile er en del av planen, ikke et hull i den. Når coach eller du legger inn økter, dukker de opp her.
+              </p>
+              {/* Paper .tom .valg — stille sekundærvalg, aldri T.handling her */}
               <div
                 style={{
-                  marginTop: 14,
                   display: "flex",
                   flexDirection: "column",
-                  gap: 8,
+                  gap: 0,
                 }}
               >
                 <Link
@@ -358,7 +431,7 @@ export function PlanV2({ data, depthMode = "simple" }: { data: DashboardData; de
                   </Link>
                 )}
               </div>
-            </Kort>
+            </div>
           )}
         </div>
       </div>
@@ -370,10 +443,9 @@ export function PlanV2({ data, depthMode = "simple" }: { data: DashboardData; de
             position: "sticky",
             bottom: 0,
             borderTop: `1px solid ${T.border}`,
-            background: T.bg,
+            background: T.panel,
             padding: "12px 16px",
             paddingBottom: "max(14px, env(safe-area-inset-bottom))",
-            boxShadow: "0 -8px 24px color-mix(in srgb, var(--v2-fg) 4%, transparent)",
           }}
         >
           <div style={{ maxWidth: 720, margin: "0 auto" }}>
@@ -385,15 +457,16 @@ export function PlanV2({ data, depthMode = "simple" }: { data: DashboardData; de
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
-                minHeight: 52,
+                minHeight: 56,
                 width: "100%",
-                borderRadius: 10,
+                borderRadius: T.rCard,
                 background: T.handling,
                 color: T.onHandling,
                 fontFamily: T.ui,
                 fontSize: 14,
                 fontWeight: 600,
                 textDecoration: "none",
+                border: `1px solid ${T.handling}`,
               }}
             >
               {dokkTekst}
@@ -431,7 +504,7 @@ export function PlanV2({ data, depthMode = "simple" }: { data: DashboardData; de
             {apenOkt.maalsetning && (
               <div>
                 <Caps size={9}>Målsetning</Caps>
-                <p style={{ margin: "6px 0 0", fontFamily: T.ui, fontSize: 13, color: T.fg2, lineHeight: 1.5 }}>
+                <p style={{ margin: "6px 0 0", fontFamily: T.bodyFont, fontSize: 14, color: T.mut, lineHeight: 1.55 }}>
                   {apenOkt.maalsetning}
                 </p>
               </div>
