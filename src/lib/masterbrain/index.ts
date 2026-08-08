@@ -58,3 +58,12 @@ export {
   type HentOptions,
   type Kilde,
 } from "./hent-kunnskap";
+
+/** Drill-bank invent-guards — se drill-bank.ts og MANIFEST (bank TOM). */
+export {
+  DRILL_BANK_EMPTY_CODE,
+  DRILL_BANK_EMPTY_MELDING_NO,
+  erMasterbrainDrillBankTom,
+  masterbrainDrillAntall,
+  masterbrainDrillBankStatus,
+} from "./drill-bank";
