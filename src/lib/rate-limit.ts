@@ -3,14 +3,17 @@
 // Krever env-variabler UPSTASH_REDIS_REST_URL og UPSTASH_REDIS_REST_TOKEN.
 // I produksjon: fail-open (logg + in-memory soft limit per instance) med mindre
 // RATE_LIMIT_FAIL_CLOSED=1 er satt. Bygg feiler ikke uten secrets.
+//
+// Ved vedvarende Redis-feil (WRONGPASS, ENOTFOUND, …) skrus Redis AV for
+// resten av prosessens levetid (circuit open) — unngår spam + ekstra latency.
 
 import { Ratelimit } from "@upstash/ratelimit";
 import { Redis } from "@upstash/redis";
 
 export type RateLimitOptions = {
-  key: string; // f.eks. "ai-chat:userId123"
-  max: number; // antall tillatt
-  windowMs: number; // tidsvindu
+  key: string;
+  max: number;
+  windowMs: number;
 };
 
 type RateLimitResult = {
@@ -24,11 +27,16 @@ const REST_TOKEN = process.env.UPSTASH_REDIS_REST_TOKEN;
 const IS_PROD = process.env.NODE_ENV === "production";
 
 let redis: Redis | null = null;
-
 let initError: string | null = null;
+let circuitOpen = false;
 
 if (REST_URL && REST_TOKEN) {
-  redis = new Redis({ url: REST_URL, token: REST_TOKEN });
+  if (/xxxx\.upstash\.io|YOUR_|placeholder/i.test(REST_URL + REST_TOKEN)) {
+    initError =
+      "[rate-limit] UPSTASH_REDIS_* ser ut som plassholder. Soft in-memory limit.";
+  } else {
+    redis = new Redis({ url: REST_URL, token: REST_TOKEN });
+  }
 } else if (IS_PROD) {
   initError =
     "[rate-limit] UPSTASH_REDIS_REST_URL og/eller UPSTASH_REDIS_REST_TOKEN mangler i produksjon. " +
@@ -40,7 +48,7 @@ if (REST_URL && REST_TOKEN) {
 const limiterCache = new Map<string, Ratelimit>();
 
 function getLimiter(max: number, windowMs: number): Ratelimit | null {
-  if (!redis) return null;
+  if (!redis || circuitOpen) return null;
   const cacheKey = `${max}:${windowMs}`;
   let limiter = limiterCache.get(cacheKey);
   if (!limiter) {
@@ -55,7 +63,6 @@ function getLimiter(max: number, windowMs: number): Ratelimit | null {
   return limiter;
 }
 
-/** Best-effort per process — ikke multi-instance. Brukes når Redis mangler. */
 const memoryWindows = new Map<string, number[]>();
 let lastFailOpenLogAt = 0;
 
@@ -78,6 +85,29 @@ function memoryLimit(key: string, max: number, windowMs: number): RateLimitResul
   };
 }
 
+function logFailOpen(msg: string, key: string) {
+  const now = Date.now();
+  if (now - lastFailOpenLogAt > 60_000) {
+    lastFailOpenLogAt = now;
+    console.error(`${msg} key=${key}`);
+  }
+}
+
+function shouldOpenCircuit(err: unknown): boolean {
+  const msg = err instanceof Error ? err.message : String(err);
+  return /WRONGPASS|unauthorized|ENOTFOUND|getaddrinfo|fetch failed|ECONNREFUSED|ETIMEDOUT|invalid or missing auth/i.test(
+    msg,
+  );
+}
+
+function openCircuit(reason: string) {
+  if (circuitOpen) return;
+  circuitOpen = true;
+  redis = null;
+  limiterCache.clear();
+  console.error(`[rate-limit] circuit OPEN — Redis disabled for process: ${reason}`);
+}
+
 export function rateLimit(opts: RateLimitOptions): Promise<RateLimitResult> {
   return rateLimitAsync(opts);
 }
@@ -91,19 +121,15 @@ async function rateLimitAsync({
     if (process.env.RATE_LIMIT_FAIL_CLOSED === "1") {
       throw new Error(initError);
     }
-    // Logg maks én gang per minutt (unngå spam)
-    const now = Date.now();
-    if (now - lastFailOpenLogAt > 60_000) {
-      lastFailOpenLogAt = now;
-      console.error(
-        `${initError} Soft in-memory limit brukes (RATE_LIMIT_FAIL_CLOSED ikke satt). key=${key}`,
-      );
-    }
+    logFailOpen(`${initError} Soft in-memory limit (RATE_LIMIT_FAIL_CLOSED ikke satt).`, key);
+    return memoryLimit(key, max, windowMs);
+  }
+
+  if (circuitOpen) {
     return memoryLimit(key, max, windowMs);
   }
 
   const limiter = getLimiter(max, windowMs);
-
   if (!limiter) {
     return memoryLimit(key, max, windowMs);
   }
@@ -116,19 +142,14 @@ async function rateLimitAsync({
       resetAt: result.reset,
     };
   } catch (err) {
-    // Dead Upstash host / network (ENOTFOUND, fetch failed) must NOT take down
-    // auth (oauth-callback) or cron. Fail-open to in-memory unless hard-closed.
     if (process.env.RATE_LIMIT_FAIL_CLOSED === "1") {
       throw err;
     }
-    const now = Date.now();
-    if (now - lastFailOpenLogAt > 60_000) {
-      lastFailOpenLogAt = now;
-      const msg = err instanceof Error ? err.message : String(err);
-      console.error(
-        `[rate-limit] Upstash call failed (${msg}) — soft in-memory limit. key=${key}`,
-      );
+    const msg = err instanceof Error ? err.message : String(err);
+    if (shouldOpenCircuit(err)) {
+      openCircuit(msg);
     }
+    logFailOpen(`[rate-limit] Upstash call failed (${msg}) — soft in-memory limit.`, key);
     return memoryLimit(key, max, windowMs);
   }
 }

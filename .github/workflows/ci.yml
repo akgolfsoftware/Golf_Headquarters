@@ -49,6 +49,9 @@ jobs:
       - name: Token-gap gate (designport steg 10 — ingen nye hardkodede farger)
         run: npm run check:token-gap
 
+      - name: Critical imports gate (bundle + offline-queue export contract)
+        run: npm run check:critical-imports
+
       - name: Unit tests (node:test + tsx)
         run: npm test
 

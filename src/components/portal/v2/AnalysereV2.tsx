@@ -853,6 +853,7 @@ export function AnalysereV2({
   data,
   header,
   userId,
+  depthMode = "simple",
 }: {
   data: AnalysereData;
   /** Overstyr default «Din analyse»-hodet (brukes av AgencyOS coach-speilet).
@@ -861,18 +862,27 @@ export function AnalysereV2({
   /** Spilleren analysen gjelder — Trening-fanen henter historikk for denne.
    *  Coach-speilet sender spillerens id, ikke coachens. */
   userId: string;
+  /** Simple/Deep progressive disclosure — TrackMan-fane kun i deep. */
+  depthMode?: "simple" | "deep";
 }) {
   const mobile = useMobile();
+  const deep = depthMode === "deep";
+  const visibleTabs = TABS.filter((t) => deep || t.id !== "trackman");
   const [tab, setTab] = useState<TabId>("sg");
 
   // URL-tab-state (?tab=) — leses ved mount, oppdateres uten full navigasjon.
   useEffect(() => {
     const q = new URLSearchParams(window.location.search).get("tab");
     // eslint-disable-next-line react-hooks/set-state-in-effect -- synk fra URL (?tab=) etter mount er hydrerings-trygt
-    if (ER_TAB(q)) setTab(q);
-  }, []);
+    if (ER_TAB(q) && (deep || q !== "trackman")) setTab(q);
+  }, [deep]);
+  // Simple-mode: fall tilbake fra trackman hvis depth byttes
+  useEffect(() => {
+    if (!deep && tab === "trackman") setTab("sg");
+  }, [deep, tab]);
   const velgTab = (id: string) => {
     if (!ER_TAB(id)) return;
+    if (!deep && id === "trackman") return;
     setTab(id);
     const url = new URL(window.location.href);
     url.searchParams.set("tab", id);
@@ -898,13 +908,13 @@ export function AnalysereV2({
         </div>
       )}
 
-      <PillTabs tabs={TABS.map((t) => ({ id: t.id, l: t.l }))} value={tab} onChange={velgTab} />
+      <PillTabs tabs={visibleTabs.map((t) => ({ id: t.id, l: t.l }))} value={tab} onChange={velgTab} />
 
       <FaneInnhold key={tab}>
         {tab === "sg" && <TabSG data={data} mobile={mobile} />}
         {tab === "statistikk" && <TabStatistikk data={data} />}
         {tab === "trening" && <TabTrening data={data} mobile={mobile} userId={userId} />}
-        {tab === "trackman" && <TabTrackman data={data} mobile={mobile} />}
+        {tab === "trackman" && deep && <TabTrackman data={data} mobile={mobile} />}
         {tab === "tester" && <TabTester data={data} mobile={mobile} />}
       </FaneInnhold>
     </div>

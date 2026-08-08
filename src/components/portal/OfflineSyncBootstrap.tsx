@@ -26,8 +26,8 @@ async function flushAll(): Promise<{ remaining: number; synced: number }> {
   const tapper = await listTapperKo().catch(() => []);
   for (const rad of tapper) {
     try {
-      await tomKo(rad.sessionId, saveTapperCounts);
-      synced += 1;
+      const status = await tomKo(rad.sessionId, saveTapperCounts);
+      if (status === "synket") synced += 1;
     } catch {
       /* keep queue row */
     }
@@ -36,7 +36,7 @@ async function flushAll(): Promise<{ remaining: number; synced: number }> {
   const drills = await listLiveDrillKo().catch(() => []);
   for (const rad of drills) {
     try {
-      const res = await synkLiveDrillKo(rad.sessionId, async (sessionId, items) => {
+      const status = await synkLiveDrillKo(rad.sessionId, async (sessionId, items) => {
         for (const d of items) {
           if (d.repsTotal <= 0 && d.status !== "done") continue;
           const r = await logDrillReps({
@@ -54,7 +54,7 @@ async function flushAll(): Promise<{ remaining: number; synced: number }> {
         }
         return { ok: true as const };
       });
-      if (res) synced += 1;
+      if (status === "synket") synced += 1;
     } catch {
       /* keep */
     }
