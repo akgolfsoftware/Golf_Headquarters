@@ -275,14 +275,14 @@ function TemaRailKnapp() {
       className="v2-press v2-focus"
       style={{ width: 46, display: "flex", flexDirection: "column", alignItems: "center", gap: 3, padding: "7px 0 5px", borderRadius: 12, background: "transparent", border: 0, cursor: "pointer", flex: "none", marginBottom: 8 }}
     >
-      <Icon name={tilLys ? "sun" : "moon"} size={18} style={{ color: T.mut }} strokeWidth={1.5} />
-      <span style={{ fontFamily: T.mono, fontSize: 7.5, fontWeight: 700, letterSpacing: "0.04em", textTransform: "uppercase", color: T.mut }}>{tilLys ? "Lys" : "Mørk"}</span>
+      <Icon name={tilLys ? "sun" : "moon"} size={18} style={{ color: "#b0aea5" }} strokeWidth={1.5} />
+      <span style={{ fontFamily: T.mono, fontSize: 9, fontWeight: 600, letterSpacing: "0.04em", textTransform: "uppercase", color: "#b0aea5" }}>{tilLys ? "Lys" : "Mørk"}</span>
     </button>
   );
 }
 
 /** Ett rail-punkt (desktop). */
-function RailLenke({ item, on }: { item: V2NavItem; on: boolean }) {
+function RailLenke({ item, on, dark }: { item: V2NavItem; on: boolean; dark?: boolean }) {
   const badge = typeof item.badge === "number" && item.badge > 0 ? item.badge : null;
   return (
     <Link
@@ -290,11 +290,27 @@ function RailLenke({ item, on }: { item: V2NavItem; on: boolean }) {
       title={badge ? `${item.label} (${badge})` : item.label}
       aria-current={on ? "page" : undefined}
       className="v2-press v2-focus"
-      style={{ width: 46, display: "flex", flexDirection: "column", alignItems: "center", gap: 3, padding: "7px 0 5px", borderRadius: 12, background: on ? `color-mix(in srgb, ${T.lime} 9%, transparent)` : "transparent", textDecoration: "none", position: "relative", flex: "none" }}
+      style={{
+        width: 56,
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        gap: 3,
+        padding: "8px 0 6px",
+        borderRadius: 12,
+        background: on
+          ? dark
+            ? "rgba(250,249,245,0.14)"
+            : `color-mix(in srgb, ${T.lime} 9%, transparent)`
+          : "transparent",
+        textDecoration: "none",
+        position: "relative",
+        flex: "none",
+      }}
     >
-      {on && <span style={{ position: "absolute", left: -7, top: 10, bottom: 10, width: 2, borderRadius: 2, background: T.lime }} />}
+      {on && !dark && <span style={{ position: "absolute", left: -7, top: 10, bottom: 10, width: 2, borderRadius: 2, background: T.lime }} />}
       <span style={{ position: "relative", display: "inline-flex" }}>
-        <Icon name={item.icon} size={18} style={{ color: on ? T.lime : T.mut }} strokeWidth={on ? 2 : 1.5} />
+        <Icon name={item.icon} size={19} style={{ color: dark ? (on ? "#faf9f5" : "#b0aea5") : (on ? T.lime : T.mut) }} strokeWidth={on ? 2 : 1.5} />
         {badge != null && (
           <span
             aria-hidden
@@ -319,7 +335,7 @@ function RailLenke({ item, on }: { item: V2NavItem; on: boolean }) {
           </span>
         )}
       </span>
-      <span style={{ fontFamily: T.mono, fontSize: 7.5, fontWeight: 700, letterSpacing: "0.04em", textTransform: "uppercase", color: on ? T.fg : T.mut }}>{item.label}</span>
+      <span style={{ fontFamily: T.mono, fontSize: 9, fontWeight: 600, letterSpacing: "0.04em", textTransform: "uppercase", color: dark ? (on ? "#faf9f5" : "#b0aea5") : (on ? T.fg : T.mut) }}>{item.label}</span>
     </Link>
   );
 }
@@ -359,7 +375,7 @@ function MerPanel({ grupper, rom, onClose, mobil, full, erAgency }: { grupper?: 
             ? full
               ? { position: "fixed", inset: 0, zIndex: 91, overflowY: "auto", background: T.panel, opacity: 1, borderRadius: 0, padding: "calc(14px + env(safe-area-inset-top)) 16px calc(20px + env(safe-area-inset-bottom))", boxShadow: "0 -18px 48px rgba(0,0,0,0.5)" }
               : { position: "fixed", left: 0, right: 0, bottom: 0, zIndex: 91, maxHeight: "72vh", overflowY: "auto", background: T.panel, opacity: 1, border: `1px solid ${T.border}`, borderRadius: "18px 18px 0 0", padding: "14px 16px calc(20px + env(safe-area-inset-bottom))", boxShadow: "0 -18px 48px rgba(0,0,0,0.5)" }
-            : { position: "fixed", left: 68, top: 12, bottom: 12, zIndex: 91, width: rom && rom.length > 0 ? 420 : 560, maxWidth: "calc(100vw - 84px)", overflowY: "auto", background: T.panel, opacity: 1, border: `1px solid ${T.border}`, borderRadius: 16, padding: "18px 20px", boxShadow: "0 24px 64px rgba(0,0,0,0.55)" }
+            : { position: "fixed", left: 72, top: 12, bottom: 12, zIndex: 91, width: rom && rom.length > 0 ? 420 : 560, maxWidth: "calc(100vw - 84px)", overflowY: "auto", background: T.panel, opacity: 1, border: `1px solid ${T.border}`, borderRadius: 16, padding: "18px 20px", boxShadow: "0 24px 64px rgba(0,0,0,0.55)" }
         }
       >
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 10 }}>
@@ -490,11 +506,25 @@ function IkonRailNav({ aktiv, nav, mer, rom, navn, avatarUrl, erAgency }: Requir
   return (
     <nav
       className="hidden md:flex"
-      style={{ width: 60, flex: "none", borderRight: `1px solid ${T.border}`, flexDirection: "column", alignItems: "center", padding: "14px 0 12px", gap: 2, position: "sticky", top: 0, height: "100vh", overflowY: "auto" }}
+      style={{
+        width: 64,
+        flex: "none",
+        borderRight: "1px solid rgba(250,249,245,0.08)",
+        flexDirection: "column",
+        alignItems: "center",
+        padding: "14px 0 12px",
+        gap: 2,
+        position: "sticky",
+        top: 0,
+        height: "100vh",
+        overflowY: "auto",
+        background: "#141413",
+        color: "#b0aea5",
+      }}
       aria-label="Hovedmeny"
     >
-      <LogoAK size={26} surface="ink" style={{ marginBottom: 12, flex: "none" }} />
-      {nav.map((n) => <RailLenke key={n.id} item={n} on={aktiv === n.id} />)}
+      <LogoAK size={26} surface="paper" style={{ marginBottom: 12, flex: "none" }} />
+      {nav.map((n) => <RailLenke key={n.id} item={n} on={aktiv === n.id} dark />)}
       {((mer && mer.length > 0) || (rom && rom.length > 0)) && (
         <button
           onClick={() => setMerOpen(true)}
@@ -502,10 +532,10 @@ function IkonRailNav({ aktiv, nav, mer, rom, navn, avatarUrl, erAgency }: Requir
           aria-haspopup="menu"
           aria-expanded={merOpen}
           className="v2-press v2-focus"
-          style={{ width: 46, display: "flex", flexDirection: "column", alignItems: "center", gap: 3, padding: "7px 0 5px", borderRadius: 12, background: "transparent", border: 0, cursor: "pointer", flex: "none" }}
+          style={{ width: 56, display: "flex", flexDirection: "column", alignItems: "center", gap: 3, padding: "8px 0 6px", borderRadius: 12, background: "transparent", border: 0, cursor: "pointer", flex: "none" }}
         >
-          <Icon name="more-horizontal" size={18} style={{ color: aktiv === "mer" ? T.lime : T.mut }} strokeWidth={1.5} />
-          <span style={{ fontFamily: T.mono, fontSize: 7.5, fontWeight: 700, letterSpacing: "0.04em", textTransform: "uppercase", color: aktiv === "mer" ? T.fg : T.mut }}>Mer</span>
+          <Icon name="more-horizontal" size={19} style={{ color: aktiv === "mer" ? "#faf9f5" : "#b0aea5" }} strokeWidth={1.5} />
+          <span style={{ fontFamily: T.mono, fontSize: 9, fontWeight: 600, letterSpacing: "0.04em", textTransform: "uppercase", color: aktiv === "mer" ? "#faf9f5" : "#b0aea5" }}>Mer</span>
         </button>
       )}
       <div style={{ flex: 1, minHeight: 8 }} />

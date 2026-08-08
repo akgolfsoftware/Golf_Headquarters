@@ -91,63 +91,61 @@ function LoopNav({ gjennomfore }: { gjennomfore: GjennomforeData }) {
   return (
     <nav
       aria-label="Sløyfen før, under og etter økta"
-      style={{ display: "flex", alignItems: "stretch", gap: 6, padding: "4px 0 8px" }}
+      style={{ display: "flex", alignItems: "center", gap: 4, marginLeft: "auto" }}
       data-od-id="loop-nav"
     >
       {steg.map((s, i) => {
         const on = s.id === aktiv;
         const kan = Boolean(s.href);
-        const inner = (
+        const cell = (
           <span
             style={{
               display: "flex",
               flexDirection: "column",
-              alignItems: "center",
               justifyContent: "center",
-              gap: 2,
-              minHeight: 48,
-              flex: 1,
-              borderRadius: 10,
-              background: on ? T.panel : "transparent",
-              color: on ? T.fg : kan ? T.fg2 : T.mut,
+              minHeight: 44,
+              padding: "0 12px",
+              borderRadius: 8,
+              background: on ? T.panel2 : "transparent",
+              color: on ? T.fg : kan ? T.mut : T.mut,
               fontFamily: T.mono,
-              fontSize: 11,
-              fontWeight: on ? 600 : 500,
-              letterSpacing: "0.06em",
+              fontSize: 10,
+              fontWeight: 600,
+              letterSpacing: "0.09em",
               textTransform: "uppercase",
-              border: on ? `1px solid ${T.border}` : "1px solid transparent",
-              boxShadow: on ? "inset 0 -2px 0 0 " + T.fg : undefined,
+              opacity: kan || on ? 1 : 0.5,
               pointerEvents: kan || on ? "auto" : "none",
-              opacity: kan || on ? 1 : 0.55,
             }}
           >
-            <span style={{ fontWeight: 700 }}>{s.label}</span>
-            <span style={{ fontSize: 9, opacity: 0.75, marginTop: 2, textTransform: "none", letterSpacing: 0 }}>
+            {s.label}
+            <small
+              style={{
+                fontFamily: T.ui,
+                fontSize: 10,
+                fontWeight: 500,
+                letterSpacing: 0,
+                textTransform: "none",
+                color: on ? T.fg2 : T.mut,
+                marginTop: 1,
+              }}
+            >
               {s.sub}
-            </span>
+            </small>
           </span>
         );
         return (
           <span key={s.id} style={{ display: "contents" }}>
             {s.href && !on ? (
-              <Link
-                href={s.href}
-                style={{ flex: 1, textDecoration: "none" }}
-                data-od-id={`loop-${s.id}`}
-              >
-                {inner}
+              <Link href={s.href} style={{ textDecoration: "none" }} data-od-id={`loop-${s.id}`}>
+                {cell}
               </Link>
             ) : (
-              <span
-                style={{ flex: 1 }}
-                aria-current={on ? "step" : undefined}
-                data-od-id={`loop-${s.id}`}
-              >
-                {inner}
+              <span aria-current={on ? "step" : undefined} data-od-id={`loop-${s.id}`}>
+                {cell}
               </span>
             )}
             {i < steg.length - 1 && (
-              <span style={{ alignSelf: "center", color: T.border, fontSize: 12, padding: "0 2px" }} aria-hidden>
+              <span style={{ color: T.mut, fontSize: 11, padding: "0 2px" }} aria-hidden>
                 →
               </span>
             )}
@@ -289,34 +287,34 @@ function TomTilstand({
   onFangst: () => void;
   onForslag: (s: string) => void;
 }) {
+  /* Paper .empty + .btn (ink/ghost) — not elevated white card */
   const btn: CSSProperties = {
-    flex: "1 1 140px",
     minHeight: 48,
     padding: "0 16px",
-    borderRadius: 12,
+    borderRadius: T.rCard,
     border: `1px solid ${T.border}`,
-    background: T.bg,
+    background: T.panel,
     color: T.fg,
     fontFamily: T.ui,
-    fontSize: 13.5,
+    fontSize: 13,
     fontWeight: 600,
     cursor: "pointer",
-    boxShadow: "0 1px 0 rgba(20,20,19,0.04)",
   };
   return (
     <div
       data-od-id="state-empty"
       style={{
-        margin: "auto 0",
-        maxWidth: 480,
+        alignSelf: "stretch",
+        maxWidth: 520,
         width: "100%",
-        padding: "28px 22px",
-        borderRadius: 16,
-        border: `1px solid ${T.border}`,
-        background: T.panel,
+        padding: "32px 24px",
+        borderRadius: T.rCard,
+        border: `1px dashed ${T.border}`,
+        background: T.panel2,
         display: "flex",
         flexDirection: "column",
-        gap: 18,
+        alignItems: "flex-start",
+        gap: 16,
       }}
     >
       <div>
@@ -324,21 +322,20 @@ function TomTilstand({
           style={{
             margin: 0,
             fontFamily: T.disp,
-            fontSize: 18,
+            fontSize: 15,
             fontWeight: 600,
             color: T.fg,
-            letterSpacing: "-0.01em",
-            lineHeight: 1.25,
+            lineHeight: 1.3,
           }}
         >
           {ukeHarOkter ? "Ingen økt i dag" : `Ingen økter i uke ${weekNumber} ennå`}
         </h3>
         <p
           style={{
-            margin: "10px 0 0",
-            fontFamily: T.ui,
+            margin: "8px 0 0",
+            fontFamily: T.bodyFont,
             fontSize: 14,
-            color: T.fg2,
+            color: T.mut,
             lineHeight: 1.55,
             maxWidth: "46ch",
           }}
@@ -346,7 +343,7 @@ function TomTilstand({
           Det betyr ikke at du står stille — her er tre ting du kan gjøre uansett.
         </p>
       </div>
-      <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
+      <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
         <button type="button" onClick={onFangst} className="v2-press v2-focus" data-od-id="empty-capture" style={btn}>
           Fang en observasjon
         </button>
@@ -373,14 +370,14 @@ function TomTilstand({
         <Link
           href="/portal/planlegge"
           data-od-id="empty-link-plan"
-          style={{ fontFamily: T.ui, fontSize: 13, fontWeight: 600, color: T.fg2, textDecoration: "underline", textUnderlineOffset: 3 }}
+          style={{ fontFamily: T.ui, fontSize: 13, fontWeight: 500, color: T.mut, textDecoration: "underline", textUnderlineOffset: 3 }}
         >
           Se ukeplanen
         </Link>
         <Link
           href="/portal/kalender"
           data-od-id="empty-link-kalender"
-          style={{ fontFamily: T.ui, fontSize: 13, fontWeight: 600, color: T.fg2, textDecoration: "underline", textUnderlineOffset: 3 }}
+          style={{ fontFamily: T.ui, fontSize: 13, fontWeight: 500, color: T.mut, textDecoration: "underline", textUnderlineOffset: 3 }}
         >
           Kalender
         </Link>
@@ -433,45 +430,50 @@ export function PortalChatHjem({
       }}
     >
       {/* ── Hovedkolonne: header + loop + tråd + composer ── */}
-      <div style={{ display: "flex", flexDirection: "column", height: "100%", minHeight: 0, minWidth: 0, background: T.bg }}>
-        {/* ── Topplinje ── */}
+      <div style={{ display: "flex", flexDirection: "column", height: "100%", minHeight: 0, minWidth: 0, background: T.bg, borderRight: mobil ? undefined : `1px solid ${T.border}` }}>
+        {/* ── Topplinje (Paper .top: tittel + loop + capture) ── */}
         <header
           style={{
             display: "flex",
             flexWrap: "wrap",
             alignItems: "center",
-            justifyContent: "space-between",
-            columnGap: 16,
-            rowGap: 8,
-            padding: "14px 20px 10px",
+            gap: 16,
+            padding: "12px 20px",
             background: T.bg,
+            borderBottom: `1px solid ${T.border}`,
+            position: "sticky",
+            top: 0,
+            zIndex: 5,
           }}
         >
-          <div style={{ minWidth: 0 }}>
-            <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg, letterSpacing: "-0.01em" }}>
+          <div style={{ minWidth: 0, flex: "1 1 160px" }}>
+            <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 15, fontWeight: 600, color: T.fg }}>
               I dag
             </h1>
             <div
+              className="num"
               style={{
                 fontFamily: T.mono,
                 fontSize: 11,
-                letterSpacing: "0.04em",
+                letterSpacing: "0.02em",
                 color: T.mut,
-                marginTop: 3,
+                marginTop: 2,
               }}
             >
-              {data.user.name} · kat. {kategori ?? "—"} · SG total {sgTekst} · {naaTekst.ukedag} {naaTekst.dato} {naaTekst.klokke}
+              {data.user.name} · kat. {kategori ?? "—"} · SG total {sgTekst} · {naaTekst.ukedag} {naaTekst.dato}{" "}
+              {naaTekst.klokke}
             </div>
           </div>
+          {!mobil && <LoopNav gjennomfore={gjennomfore} />}
           {mobil && (
             <button
               type="button"
               onClick={() => setArtefaktApen(true)}
               className="v2-press v2-focus"
               style={{
-                minHeight: 36,
+                minHeight: 44,
                 padding: "0 12px",
-                borderRadius: 8,
+                borderRadius: T.rCard,
                 border: `1px solid ${T.border}`,
                 background: T.panel,
                 color: T.fg,
@@ -484,12 +486,33 @@ export function PortalChatHjem({
               Dagens økt
             </button>
           )}
+          <button
+            type="button"
+            onClick={() => setFangstApen(true)}
+            className="v2-press v2-focus"
+            aria-label="Fang en observasjon"
+            data-od-id="open-capture-top"
+            style={{
+              width: 44,
+              height: 44,
+              display: "grid",
+              placeItems: "center",
+              borderRadius: T.rCard,
+              border: `1px solid ${T.border}`,
+              background: "transparent",
+              color: T.fg,
+              cursor: "pointer",
+              flex: "none",
+            }}
+          >
+            <Icon name="mic" size={18} />
+          </button>
         </header>
-
-        {/* Paper loop — full width under header */}
-        <div style={{ padding: "0 16px 8px", borderBottom: `1px solid ${T.border}` }}>
-          <LoopNav gjennomfore={gjennomfore} />
-        </div>
+        {mobil && (
+          <div style={{ padding: "4px 12px 8px", borderBottom: `1px solid ${T.border}` }}>
+            <LoopNav gjennomfore={gjennomfore} />
+          </div>
+        )}
 
         {/* ── Tråd ── */}
         <div
@@ -514,7 +537,7 @@ export function PortalChatHjem({
               gap: 20,
               flex: messages.length === 0 && heltTom ? 1 : undefined,
               justifyContent: messages.length === 0 && heltTom ? "center" : undefined,
-              alignItems: messages.length === 0 && heltTom ? "center" : undefined,
+              alignItems: messages.length === 0 && heltTom ? "stretch" : undefined,
             }}
           >
             {messages.length === 0 && heltTom && (
@@ -579,8 +602,8 @@ export function PortalChatHjem({
           style={{
             flex: "none",
             borderTop: `1px solid ${T.border}`,
-            background: T.bg,
-            padding: "10px 16px max(14px, env(safe-area-inset-bottom))",
+            background: T.panel,
+            padding: "12px 20px max(16px, env(safe-area-inset-bottom))",
           }}
         >
           <div style={{ maxWidth: 720, margin: "0 auto", display: "flex", flexDirection: "column", gap: 8 }}>
