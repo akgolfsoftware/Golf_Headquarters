@@ -73,6 +73,11 @@ async function alleRader(): Promise<TapperKoRad[]> {
   return rader ?? [];
 }
 
+/** Alle rader i offline-køen (for portal-wide flush). */
+export async function listTapperKo(): Promise<TapperKoRad[]> {
+  return alleRader();
+}
+
 /**
  * Tømmer køen for én økt: prøver å synke via gitt lagringsfunksjon
  * (`saveTapperCounts`, injisert for å holde denne fila fri for

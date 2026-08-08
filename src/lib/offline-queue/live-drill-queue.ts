@@ -105,3 +105,9 @@ export async function synkLiveDrillKo(
 export async function slettLiveDrillUtkast(sessionId: string): Promise<void> {
   await fjernFraKo(sessionId);
 }
+
+/** Alle rader i live-drill offline-kø (for portal-wide flush). */
+export async function listLiveDrillKo(): Promise<LiveDrillKoRad[]> {
+  const rader = await medButikk<LiveDrillKoRad[]>("readonly", (b) => b.getAll());
+  return rader ?? [];
+}
