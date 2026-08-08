@@ -32,7 +32,6 @@ import {
   T,
   fmtSg,
   Caps,
-  Tittel,
   Kort,
   TallHero,
   StatusPill,
@@ -894,21 +893,65 @@ export function AnalysereV2({
   const eyebrow = kat ? `Kategori ${kat.kategori} · ${kat.niva} · Sesong ${aar}` : `Sesong ${aar}`;
 
   return (
-    <div data-paper-portal-analysere  style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+    <div
+      data-paper-portal-analysere
+      style={{ display: "flex", flexDirection: "column", minHeight: "100%", background: T.bg }}
+    >
+      {/* Paper .topp */}
       {header ? (
         header(mobile)
       ) : (
-        <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
-          <div>
-            <span style={{ display: "inline-flex", alignItems: "center", gap: 5 }}><Caps>{eyebrow}</Caps>{kat && <HjelpTips k="spillerKategori" size={11} />}</span>
-            <div style={{ marginTop: 10 }}>
-              <Tittel mobile={mobile} em="analyse">Din</Tittel>
-            </div>
+        <header
+          style={{
+            flex: "none",
+            display: "flex",
+            alignItems: "center",
+            gap: 12,
+            padding: "12px 20px",
+            borderBottom: `1px solid ${T.border}`,
+            background: T.panel,
+            position: "sticky",
+            top: 0,
+            zIndex: 5,
+          }}
+        >
+          <div style={{ minWidth: 0, flex: 1 }}>
+            <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>
+              Analyse
+            </h1>
+            <span
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: 5,
+                fontFamily: T.mono,
+                fontSize: 10.5,
+                color: T.mut,
+                marginTop: 2,
+              }}
+            >
+              {eyebrow}
+              {kat && <HjelpTips k="spillerKategori" size={11} />}
+            </span>
           </div>
-        </div>
+        </header>
       )}
 
-      <PillTabs tabs={visibleTabs.map((t) => ({ id: t.id, l: t.l }))} value={tab} onChange={velgTab} />
+      <div
+        style={{
+          flex: "none",
+          borderBottom: `1px solid ${T.border}`,
+          background: T.bg,
+          padding: "10px 16px 0",
+        }}
+      >
+        <div style={{ maxWidth: 720, margin: "0 auto" }}>
+          <PillTabs tabs={visibleTabs.map((t) => ({ id: t.id, l: t.l }))} value={tab} onChange={velgTab} />
+        </div>
+      </div>
+
+      <div style={{ flex: 1, minHeight: 0, overflow: "auto", padding: "16px 16px 32px" }}>
+        <div style={{ maxWidth: 720, margin: "0 auto", display: "flex", flexDirection: "column", gap: T.gap }}>
 
       <FaneInnhold key={tab}>
         {tab === "sg" && <TabSG data={data} mobile={mobile} />}
@@ -917,6 +960,8 @@ export function AnalysereV2({
         {tab === "trackman" && deep && <TabTrackman data={data} mobile={mobile} />}
         {tab === "tester" && <TabTester data={data} mobile={mobile} />}
       </FaneInnhold>
+        </div>
+      </div>
     </div>
   );
 }
