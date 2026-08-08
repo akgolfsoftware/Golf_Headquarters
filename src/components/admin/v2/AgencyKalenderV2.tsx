@@ -38,6 +38,7 @@ import {
   timeGridBlockStyle,
   snapYToSlot,
 } from "@/components/v2";
+import { PaperTopp } from "@/components/portal/v2/PaperChrome";
 import { type AkseKey } from "@/lib/v2/tokens";
 import type { KalenderData, KalDag, KalOkt } from "@/app/admin/kalender/data";
 import { foreslaGridTid } from "@/lib/calendar/notion-grid";
@@ -917,7 +918,7 @@ export function AgencyKalenderV2({ data }: { data: KalenderData }) {
   }
 
   return (
-    <div data-paper-agencyos-kalender style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 1200, margin: "0 auto", width: "100%" }}>
+    <div data-paper-agencyos-kalender style={{ display: "flex", flexDirection: "column", gap: 0, maxWidth: 1200, margin: "0 auto", width: "100%", minHeight: "100%" }}>
       {hode}
       {primaerCta}
       {kpi}

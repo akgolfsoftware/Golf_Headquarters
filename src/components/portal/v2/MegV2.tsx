@@ -30,7 +30,6 @@ import {
   T,
   fmtSg,
   Caps,
-  Tittel,
   Kort,
   StatusPill,
   Rad,
@@ -40,9 +39,9 @@ import {
   TomTilstand,
   Icon,
   HjelpTips,
-  CTAPill,
   type StatusTone,
 } from "@/components/v2";
+import { PaperPage, PaperTopp, PaperKropp } from "./PaperChrome";
 
 /* ── Datakontrakt ──────────────────────────────────────────────────── */
 
@@ -314,15 +313,72 @@ export function MegV2({ data }: { data: MegData }) {
   const aboStatus = abo.status ? ABO_STATUS_LABEL[abo.status] ?? abo.status : null;
   const aboNesteTrekk = formatDato(abo.nesteTrekk);
 
+  const subLinje = (
+    <span style={{ display: "inline-flex", alignItems: "center", gap: 5, flexWrap: "wrap" }}>
+      {metaDeler.length > 0 ? metaDeler[0] : "Meg"}
+      {hcp != null && <HjelpTips k="hcp" size={11} />}
+      {metaDeler.length > 1 && <span>· {metaDeler.slice(1).join(" · ")}</span>}
+    </span>
+  );
+
   return (
-    <div data-paper-portal-meg  style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
-      
+    <PaperPage>
+      <div data-paper-portal-meg style={{ display: "contents" }}>
+      <PaperTopp
+        tittel={navn}
+        sub={subLinje}
+      >
+        <label
+          htmlFor="meg-avatar-input"
+          aria-label="Bytt profilbilde"
+          style={{
+            position: "relative",
+            display: "inline-flex",
+            cursor: avatarLagrer ? "default" : "pointer",
+            flex: "none",
+          }}
+        >
+          <AvatarFoto src={avatarUrl} navn={navn} size={44} ring />
+          <span
+            aria-hidden
+            style={{
+              position: "absolute",
+              right: -2,
+              bottom: -2,
+              width: 18,
+              height: 18,
+              borderRadius: 9999,
+              background: T.panel3,
+              border: `1.5px solid ${T.panel}`,
+              display: "inline-flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <Icon name={avatarLagrer ? "loader" : "camera"} size={10} style={{ color: T.fg2 }} />
+          </span>
+        </label>
+        <input
+          ref={filInputRef}
+          id="meg-avatar-input"
+          type="file"
+          accept="image/jpeg,image/png,image/webp"
+          onChange={velgBilde}
+          disabled={avatarLagrer}
+          style={{ display: "none" }}
+        />
+      </PaperTopp>
+
+      <PaperKropp>
+      {avatarFeil && (
+        <Caps style={{ color: T.down }}>{avatarFeil}</Caps>
+      )}
       {!lydGittLokalt && (
         <div
           style={{
             border: `1px solid ${T.border}`,
             borderRadius: T.rCard,
-            background: T.panel2,
+            background: T.panel,
             padding: 16,
             display: "flex",
             flexDirection: "column",
@@ -335,7 +391,7 @@ export function MegV2({ data }: { data: MegData }) {
           <h2 style={{ margin: 0, fontFamily: T.disp, fontSize: 16, fontWeight: 600, color: T.fg }}>
             Lydsamtykke mangler
           </h2>
-          <p style={{ margin: 0, fontFamily: T.ui, fontSize: 13, color: T.fg2, lineHeight: 1.5, maxWidth: "52ch" }}>
+          <p style={{ margin: 0, fontFamily: T.bodyFont, fontSize: 13.5, color: T.mut, lineHeight: 1.55, maxWidth: "52ch" }}>
             Uten lydsamtykke kan Anders ikke dele videoanalyse med lyd med deg.
             Gi samtykke her hvis du er over 16 år — ellers må foresatt gjøre det via trener.
           </p>
@@ -360,7 +416,7 @@ export function MegV2({ data }: { data: MegData }) {
               marginTop: 4,
               minHeight: 48,
               width: "100%",
-              borderRadius: 10,
+              borderRadius: T.rCard,
               border: "none",
               background: T.handling,
               color: T.onHandling,
@@ -380,48 +436,6 @@ export function MegV2({ data }: { data: MegData }) {
           )}
         </div>
       )}
-{/* Hode — avatar (direkte klikkbar for å bytte bilde) + navn + meta */}
-      <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
-        <label
-          htmlFor="meg-avatar-input"
-          aria-label="Bytt profilbilde"
-          style={{ position: "relative", display: "inline-flex", cursor: avatarLagrer ? "default" : "pointer", flex: "none" }}
-        >
-          <AvatarFoto src={avatarUrl} navn={navn} size={64} ring />
-          <span
-            aria-hidden
-            style={{
-              position: "absolute", right: -2, bottom: -2, width: 22, height: 22, borderRadius: 9999,
-              background: T.panel3, border: `1.5px solid ${T.bg}`, display: "inline-flex",
-              alignItems: "center", justifyContent: "center",
-            }}
-          >
-            <Icon name={avatarLagrer ? "loader" : "camera"} size={11} style={{ color: T.fg2 }} />
-          </span>
-        </label>
-        <input
-          ref={filInputRef}
-          id="meg-avatar-input"
-          type="file"
-          accept="image/jpeg,image/png,image/webp"
-          onChange={velgBilde}
-          disabled={avatarLagrer}
-          style={{ display: "none" }}
-        />
-        <div>
-          <Tittel mobile={mobile}>{navn}</Tittel>
-          {metaDeler.length > 0 && (
-            <Caps style={{ marginTop: 8 }}>
-              <span style={{ display: "inline-flex", alignItems: "center", gap: 5, flexWrap: "wrap" }}>
-                {metaDeler[0]}
-                {hcp != null && <HjelpTips k="hcp" size={11} />}
-                {metaDeler.length > 1 && <span>· {metaDeler.slice(1).join(" · ")}</span>}
-              </span>
-            </Caps>
-          )}
-          {avatarFeil && <Caps style={{ marginTop: 8, color: T.down }}>{avatarFeil}</Caps>}
-        </div>
-      </div>
 
       {/* Om deg — kun ekte, utfylte felt */}
       {identitetsrader.length > 0 && (
@@ -471,10 +485,26 @@ export function MegV2({ data }: { data: MegData }) {
         )}
       </Kort>
 
-      <Link href="/portal" style={{ textDecoration: "none", display: "block" }}>
-        <CTAPill icon="home" full>
-          Til hjem · se hva du skal gjøre
-        </CTAPill>
+      <Link
+        href="/portal"
+        className="v2-press v2-focus"
+        data-od-id="meg-til-hjem"
+        style={{
+          textDecoration: "none",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          minHeight: 48,
+          borderRadius: T.rCard,
+          border: `1px solid ${T.border}`,
+          background: T.panel,
+          color: T.fg,
+          fontFamily: T.ui,
+          fontSize: 14,
+          fontWeight: 600,
+        }}
+      >
+        Til hjem · se hva du skal gjøre
       </Link>
       <Link
         href="/portal/booking"
@@ -568,6 +598,8 @@ export function MegV2({ data }: { data: MegData }) {
           </button>
         </form>
       </Kort>
-    </div>
+      </PaperKropp>
+      </div>
+    </PaperPage>
   );
 }

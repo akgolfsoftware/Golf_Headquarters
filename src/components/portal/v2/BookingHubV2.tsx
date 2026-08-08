@@ -22,7 +22,6 @@ import Link from "next/link";
 import {
   T,
   Caps,
-  Tittel,
   Kort,
   Rad,
   StatusPill,
@@ -30,6 +29,7 @@ import {
   TomTilstand,
   Icon,
 } from "@/components/v2";
+import { PaperPage, PaperTopp, PaperKropp } from "./PaperChrome";
 import type { HubCredits, HubBooking, HubCoach } from "@/lib/portal-booking/hub-data";
 
 export type BookingHubV2Data = {
@@ -67,13 +67,10 @@ export function BookingHubV2({ data }: { data: BookingHubV2Data }) {
   const tomtForCredits = harPakke && credits.creditsRemaining <= 0;
 
   return (
-    <div data-paper-portal-booking style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
-      <div>
-        <Caps>Booking · AK Golf Academy</Caps>
-        <div style={{ marginTop: 10 }}>
-          <Tittel em="coachingtime.">Book</Tittel>
-        </div>
-      </div>
+    <PaperPage>
+      <div data-paper-portal-booking style={{ display: "contents" }}>
+      <PaperTopp tittel="Booking" sub="AK Golf Academy · coachingtime" />
+      <PaperKropp>
 
       {/* Timer/credits — det Anders ba om skal stå først, ikke gjemt i en veiviser. */}
       <Kort tint>
@@ -178,6 +175,8 @@ export function BookingHubV2({ data }: { data: BookingHubV2Data }) {
           ))}
         </Kort>
       )}
-    </div>
+      </PaperKropp>
+      </div>
+    </PaperPage>
   );
 }

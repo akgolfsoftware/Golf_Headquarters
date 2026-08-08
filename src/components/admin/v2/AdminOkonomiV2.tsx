@@ -409,7 +409,7 @@ export function AdminOkonomiV2({ data }: { data: AdminOkonomiV2Data }) {
   };
 
   return (
-    <div data-paper-agencyos-okonomi style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 960, margin: "0 auto", width: "100%" }}>
+    <div data-paper-agencyos-okonomi style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 960, margin: "0 auto", width: "100%", background: "var(--v2-bg)" }}>
       {hode}
 
       {/* Mobil-snarvei (skjult på desktop der den ligger i hodet) */}
