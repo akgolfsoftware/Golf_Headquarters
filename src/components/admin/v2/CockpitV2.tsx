@@ -16,7 +16,6 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import {
   Caps,
-  Tittel,
   StatusPill,
   KpiFlis,
   Kort,
@@ -34,6 +33,7 @@ import {
 } from "@/components/v2";
 import { LiveBar, OktKort } from "@/components/v2/domene";
 import { T, type AkseKey } from "@/lib/v2/tokens";
+import { PaperPage, PaperTopp, PaperKropp } from "@/components/portal/v2/PaperChrome";
 import type {
   CockpitData,
   CockpitFocusPlayer,
@@ -115,25 +115,19 @@ export function CockpitV2({
 
   // ── Hode ────────────────────────────────────────────────────────
   const hode = (
-    <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 14, flexWrap: "wrap" }}>
-      <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
-        {/* 8c.8: profilbilde ved hilsenen (samme grep som PlayerHQ-hjem). */}
-        <AvatarFoto src={data.coachAvatarUrl ?? undefined} navn={data.coachFirstName} size={46} ring />
-        <div>
-          <Caps>{data.dayLabel} · AgencyOS · AgenticOS</Caps>
-          <div style={{ marginTop: 10 }}>
-            <Tittel em={`${data.coachFirstName}.`}>{data.greeting},</Tittel>
-          </div>
-        </div>
-      </div>
-      {data.liveSessionsCount > 0 && (
-        <div className="hidden md:block">
+    <PaperTopp
+      tittel={`${data.greeting}, ${data.coachFirstName}`}
+      sub={`${data.dayLabel} · AgencyOS`}
+      trailing={
+        data.liveSessionsCount > 0 ? (
           <StatusPill tone="down">
             Live · {pl(data.liveSessionsCount, "økt pågår", "økter pågår")}
           </StatusPill>
-        </div>
-      )}
-    </div>
+        ) : undefined
+      }
+    >
+      <AvatarFoto src={data.coachAvatarUrl ?? undefined} navn={data.coachFirstName} size={40} ring />
+    </PaperTopp>
   );
 
   // ── Hurtigstart (Bølge 2): tre faste veier — ikke flere menypunkter ──
@@ -403,8 +397,10 @@ export function CockpitV2({
   const innsikt = <InnsiktChip cta="Planlegg i Workbench" href="/admin/planlegge">{innsiktTekst}</InnsiktChip>;
 
   return (
-    <div data-paper-agencyos-konsoll style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 960, margin: "0 auto", width: "100%" }}>
+    <PaperPage>
+    <div data-paper-agencyos-konsoll style={{ display: "contents" }}>
       {hode}
+      <PaperKropp maxWidth={960}>
       {hurtig}
       {/* GO V3: NÅ øverst. Rekkefølgen er hierarkiet — det som pågår og det som
           trenger coachen kommer FØR KPI/fokus/innboks (som er kontekst, ikke
@@ -423,6 +419,8 @@ export function CockpitV2({
           «Dagens timer» over viser kun bookinger. */}
       {stallOkter && <StallOkterWidget data={stallOkter} />}
       {innsikt}
+      </PaperKropp>
     </div>
+    </PaperPage>
   );
 }

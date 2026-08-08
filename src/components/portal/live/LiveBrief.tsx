@@ -65,10 +65,13 @@ export function LiveBrief({ data, canStart, blockReason }: LiveBriefProps) {
       START ØKT
     </Link>
   ) : (
-    <div className="flex h-16 w-full items-center justify-center gap-2 rounded-full border border-background/25 font-mono text-sm font-bold uppercase tracking-[0.06em] text-background/65">
+    <div
+      className="flex h-12 w-full items-center justify-center gap-2 rounded-[10px] font-sans text-[14px] font-semibold"
+      style={{ border: `1px solid ${T.border}`, background: T.panel2, color: T.mut }}
+    >
       {blockReason === "completed" ? (
         <>
-          <CheckCircle2 className="h-5 w-5 text-accent" strokeWidth={2} aria-hidden />
+          <CheckCircle2 className="h-5 w-5" style={{ color: T.up }} strokeWidth={2} aria-hidden />
           Økten er fullført
         </>
       ) : (
@@ -82,23 +85,23 @@ export function LiveBrief({ data, canStart, blockReason }: LiveBriefProps) {
 
   return (
     <LiveSessionShell
-      variant="dark"
+      variant="paper"
       closeHref="/portal/planlegge"
       footer={startButton}
     >
       <div data-paper-portal-live-brief className="flex flex-col gap-0 px-5 pt-2 pb-4" style={{ maxWidth: 720, margin: "0 auto", width: "100%" }}>
         <LiveLoopNav aktiv="for" sessionId={data.sessionId} />
         {/* Eyebrow */}
-        <span className="font-mono text-[9.5px] font-bold uppercase tracking-[0.14em] text-accent">
+        <span className="font-mono text-[9.5px] font-bold uppercase tracking-[0.14em]" style={{ color: T.handling }}>
           Brief · {formatDateTimeEyebrow(data.scheduledAtISO)}
         </span>
 
         {/* Title + akse-chip */}
         <div className="mt-3 flex items-start justify-between gap-3">
-          <h1 className="font-display text-[30px] font-bold leading-[1.07] -tracking-[0.035em] text-background">
+          <h1 className="font-display text-[22px] font-semibold leading-[1.15] -tracking-[0.02em]" style={{ color: T.fg }}>
             {data.title}{" "}
             {data.studentName && (
-              <em className="font-medium not-italic text-accent">
+              <em className="font-medium not-italic" style={{ color: T.handling }}>
                 med {data.studentName.split(" ")[0]}
               </em>
             )}
@@ -119,32 +122,32 @@ export function LiveBrief({ data, canStart, blockReason }: LiveBriefProps) {
 
         {/* Focus/meta */}
         {data.focus && (
-          <p className="mt-2 text-[13px] text-background/65">{data.focus}</p>
+          <p className="mt-2 text-[13.5px]" style={{ color: T.mut, fontFamily: T.bodyFont }}>{data.focus}</p>
         )}
 
         {/* KPI-chips */}
         <div className="mt-5 flex gap-[9px]">
-          <div className="flex-1 rounded-xl border border-background/10 bg-background/5 p-3">
-            <div className="font-mono text-[8px] uppercase tracking-[0.10em] text-background/45">
+          <div className="flex-1 rounded-xl p-3" style={{ border: `1px solid ${T.border}`, background: T.panel }}>
+            <div className="font-mono text-[8px] uppercase tracking-[0.10em]" style={{ color: T.mut }}>
               Varighet
             </div>
-            <div className="mt-[5px] font-mono text-[19px] font-semibold text-background">
+            <div className="mt-[5px] font-mono text-[19px] font-semibold" style={{ color: T.fg }}>
               {totalDurationMin > 0 ? `${totalDurationMin} min` : "—"}
             </div>
           </div>
-          <div className="flex-1 rounded-xl border border-background/10 bg-background/5 p-3">
-            <div className="font-mono text-[8px] uppercase tracking-[0.10em] text-background/45">
+          <div className="flex-1 rounded-xl p-3" style={{ border: `1px solid ${T.border}`, background: T.panel }}>
+            <div className="font-mono text-[8px] uppercase tracking-[0.10em]" style={{ color: T.mut }}>
               Drills
             </div>
-            <div className="mt-[5px] font-mono text-[19px] font-semibold text-background">
+            <div className="mt-[5px] font-mono text-[19px] font-semibold" style={{ color: T.fg }}>
               {data.drills.length}
             </div>
           </div>
-          <div className="flex-1 rounded-xl border border-background/10 bg-background/5 p-3">
-            <div className="font-mono text-[8px] uppercase tracking-[0.10em] text-background/45">
+          <div className="flex-1 rounded-xl p-3" style={{ border: `1px solid ${T.border}`, background: T.panel }}>
+            <div className="font-mono text-[8px] uppercase tracking-[0.10em]" style={{ color: T.mut }}>
               Reps
             </div>
-            <div className="mt-[5px] font-mono text-[19px] font-semibold text-accent">
+            <div className="mt-[5px] font-mono text-[19px] font-semibold" style={{ color: T.handling }}>
               {totalPlannedReps > 0 ? `${totalPlannedReps}` : "—"}
             </div>
           </div>
@@ -152,11 +155,11 @@ export function LiveBrief({ data, canStart, blockReason }: LiveBriefProps) {
 
         {/* Coach comment */}
         {data.coachComment && (
-          <div className="mt-5 rounded-xl border border-accent/15 bg-accent/10 px-4 py-3">
-            <div className="mb-2 font-mono text-[8px] font-bold uppercase tracking-[0.10em] text-accent">
+          <div className="mt-5 rounded-xl px-4 py-3" style={{ border: `1px solid ${T.border}`, background: T.handlingSoft }}>
+            <div className="mb-2 font-mono text-[8px] font-bold uppercase tracking-[0.10em]" style={{ color: T.handling }}>
               Coach
             </div>
-            <p className="text-[13px] leading-relaxed text-background/90">
+            <p className="text-[13.5px] leading-relaxed" style={{ color: T.fg, fontFamily: T.bodyFont }}>
               {data.coachComment}
             </p>
           </div>
@@ -164,13 +167,13 @@ export function LiveBrief({ data, canStart, blockReason }: LiveBriefProps) {
 
         {/* Program */}
         <div className="mt-6">
-          <span className="inline-flex items-center gap-1.5 font-mono text-[9.5px] font-bold uppercase tracking-[0.10em] text-background/45">
+          <span className="inline-flex items-center gap-1.5 font-mono text-[9.5px] font-bold uppercase tracking-[0.10em]" style={{ color: T.mut }}>
             Program
             {data.drills.some((d) => d.lFase) && <HjelpTips k="lFase" size={11} />}
           </span>
 
           {data.drills.length === 0 ? (
-            <div className="mt-3 rounded-lg border border-dashed border-background/20 px-6 py-8 text-center text-sm text-background/50">
+            <div className="mt-3 rounded-lg px-6 py-8 text-center text-sm" style={{ border: `1px dashed ${T.border}`, background: T.panel2, color: T.mut }}>
               Ingen drills lagt til.
             </div>
           ) : (
@@ -178,23 +181,23 @@ export function LiveBrief({ data, canStart, blockReason }: LiveBriefProps) {
               {data.drills.map((drill) => (
                 <li
                   key={drill.id}
-                  className="flex items-center gap-3 rounded-xl border border-background/10 bg-background/5 px-[14px] py-3"
+                  className="flex items-center gap-3 rounded-xl px-[14px] py-3" style={{ border: `1px solid ${T.border}`, background: T.panel }}
                 >
-                  <span className="grid h-[26px] w-[26px] flex-shrink-0 place-items-center rounded-lg bg-background/10 font-mono text-[12px] font-bold text-accent">
+                  <span className="grid h-[26px] w-[26px] flex-shrink-0 place-items-center rounded-lg font-mono text-[12px] font-bold" style={{ background: T.panel2, color: T.handling }}>
                     {drill.index}
                   </span>
                   <div className="min-w-0 flex-1">
-                    <div className="truncate text-[13.5px] font-semibold text-background">
+                    <div className="truncate text-[13.5px] font-semibold" style={{ color: T.fg }}>
                       {drill.name}
                     </div>
-                    <div className="mt-[2px] font-mono text-[10px] text-background/45">
+                    <div className="mt-[2px] font-mono text-[10px]" style={{ color: T.mut }}>
                       {AXIS_LABEL[drill.pyramide] ?? drill.pyramide}
                       {drill.lFase ? ` · ${L_PHASE_LABEL[drill.lFase] ?? drill.lFase}` : ""}
                       {drill.durationMinutes > 0 ? ` · ${drill.durationMinutes} min` : ""}
                     </div>
                   </div>
                   {(plannedVolumText(drill) ?? (drill.plannedReps > 0 ? `${drill.plannedReps}r` : null)) && (
-                    <span className="whitespace-nowrap font-mono text-[11px] font-semibold text-background/60">
+                    <span className="whitespace-nowrap font-mono text-[11px] font-semibold" style={{ color: T.fg2 }}>
                       {plannedVolumText(drill) ?? `${drill.plannedReps}r`}
                     </span>
                   )}

@@ -10,7 +10,6 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import {
   Caps,
-  Tittel,
   Kort,
   Rad,
   AvatarInit,
@@ -24,6 +23,7 @@ import {
   type SevKey,
 } from "@/components/v2";
 import { T } from "@/lib/v2/tokens";
+import { PaperPage, PaperTopp, PaperKropp } from "@/components/portal/v2/PaperChrome";
 import type {
   CockpitData,
   CockpitFocusPlayer,
@@ -240,15 +240,11 @@ export function TriageV2({ data, feedback = [], ko }: { data: CockpitData; feedb
 
   // ── Hode — B: status ──────────────────────────────────────────
   const hode = (
-    <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 14, flexWrap: "wrap" }}>
-      <div>
-        <Caps>AgencyOS · Innboks</Caps>
-        <div style={{ marginTop: 10 }}>
-          <Tittel>Innboks</Tittel>
-        </div>
-      </div>
-      <StatusPill tone={statusTone}>{statusTekst}</StatusPill>
-    </div>
+    <PaperTopp
+      tittel="Innboks"
+      sub="AgencyOS · kø og saker"
+      trailing={<StatusPill tone={statusTone}>{statusTekst}</StatusPill>}
+    />
   );
 
   // ── B: én primær CTA ──────────────────────────────────────────
@@ -299,8 +295,10 @@ export function TriageV2({ data, feedback = [], ko }: { data: CockpitData; feedb
 
   if (grupper.length === 0) {
     return (
-      <div data-paper-agencyos-innboks style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+      <PaperPage>
+      <div data-paper-agencyos-innboks style={{ display: "contents" }}>
         {hode}
+        <PaperKropp>
         {kpi}
         <Kort>
           <TomTilstand
@@ -332,13 +330,17 @@ export function TriageV2({ data, feedback = [], ko }: { data: CockpitData; feedb
           </Link>
         )}
         <TilbakemeldingerKort rader={feedback} />
+        </PaperKropp>
       </div>
+      </PaperPage>
     );
   }
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+    <PaperPage>
+    <div data-paper-agencyos-innboks style={{ display: "contents" }}>
       {hode}
+      <PaperKropp>
       {primaerCta}
       {kpi}
       <div
@@ -357,6 +359,8 @@ export function TriageV2({ data, feedback = [], ko }: { data: CockpitData; feedb
           <TilbakemeldingerKort rader={feedback} />
         </div>
       </div>
+      </PaperKropp>
     </div>
+    </PaperPage>
   );
 }

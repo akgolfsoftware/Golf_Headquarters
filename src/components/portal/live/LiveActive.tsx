@@ -20,14 +20,10 @@ import {
 } from "@/lib/offline-queue/live-drill-queue";
 import type { LiveDrillReps } from "@/lib/offline-queue/live-drill-kladd";
 
-// Samme mørke forest-gradient som brief/logger/oppsummering (LiveSessionShell
-// "dark"-variant) — hele live-flyten er bevisst alltid mørk uansett appens
-// lys/mørk-tema (immersivt treningsmodus-fokus). Atmosfære-fargene under er
-// pinnet hex (ingen palett-token), mens merkevarefargene forest/lime bruker de
-// mode-invariante palett-primitivene var(--forest-700)/var(--lime-500) — de
-// bytter ALDRI per tema, så mørk-utseendet bevares uten rå hex. Bruk aldri
-// semantiske tokens (var(--signal)/var(--v2-lime)) her — de byttes i lys modus.
-const LIVE_BG_GRADIENT = "radial-gradient(120% 80% at 50% 0%, #0d2218, #0A1F17 70%)";
+// Immersiv mørk live-UNDER: Paper rail-ink (#141413), ikke Presis forest.
+// Brief/summary er lys Paper (LiveSessionShell). Active beholder mørk fokus-flate
+// men med clay handling (#D97757) i stedet for lime.
+const LIVE_BG_GRADIENT = "radial-gradient(120% 80% at 50% 0%, #1c1c1a, #141413 72%)";
 
 type DrillStatus = "done" | "active" | "queued";
 
@@ -81,7 +77,7 @@ function ConfirmOverlay({ show, onConfirm, onCancel }: ConfirmOverlayProps) {
       className="absolute inset-0 z-50 flex items-center justify-center p-5"
       style={{ background: T.farge.inkMerkeA70, backdropFilter: "blur(4px)" }}
     >
-      <div className="w-full max-w-[320px] rounded-[20px] border border-background/10 p-6" style={{ background: T.farge.liveBgKant }}>
+      <div className="w-full max-w-[320px] rounded-[20px] border border-background/10 p-6" style={{ background: "#1c1c1a" }}>
         <div className="font-display text-[18px] font-bold text-background">
           Avslutt økt?
         </div>
@@ -142,7 +138,7 @@ function ChallengeCard({ drill, onLogRep }: ChallengeCardProps) {
     "relative overflow-hidden rounded-[14px] border p-4 transition-all duration-200";
   if (isActive) {
     cardClasses +=
-      " border-accent bg-background/8 shadow-[0_0_0_4px_rgba(209,248,67,0.12)]";
+      " border-accent bg-background/8 shadow-[0_0_0_4px_rgba(217,119,87,0.18)]";
     // lime border for active
   } else if (isDone) {
     cardClasses += " border-background/15 bg-background/5 opacity-85";
@@ -152,7 +148,7 @@ function ChallengeCard({ drill, onLogRep }: ChallengeCardProps) {
   }
 
   return (
-    <div className={cardClasses} style={isActive ? { borderColor: "var(--lime-500)" } : undefined}>
+    <div className={cardClasses} style={isActive ? { borderColor: "var(--v2-handling, #D97757)" } : undefined}>
       {/* Eyebrow */}
       <div className="mb-2 flex items-center gap-[6px] font-mono text-[9.5px] font-semibold uppercase tracking-[0.10em] text-background/60">
         <span className="h-[6px] w-[6px] rounded-full bg-accent" aria-hidden />
@@ -191,8 +187,8 @@ function ChallengeCard({ drill, onLogRep }: ChallengeCardProps) {
           style={{
             width: `${isDone ? 100 : progressPct}%`,
             background: isDone
-              ? `linear-gradient(90deg, ${T.farge.okMerke}, var(--forest-700))`
-              : "linear-gradient(90deg, var(--forest-700), var(--lime-500))",
+              ? `linear-gradient(90deg, ${T.farge.okMerke}, #141413)`
+              : "linear-gradient(90deg, #141413, var(--v2-handling, #D97757))",
           }}
         />
       </div>
@@ -203,7 +199,7 @@ function ChallengeCard({ drill, onLogRep }: ChallengeCardProps) {
           className="font-mono text-[10px] uppercase tracking-[0.06em]"
           style={{
             // Lys status-tekst på den mørke forest-flata.
-            color: isActive ? "var(--lime-500)" : isDone ? T.farge.offwhiteMerkeA65 : T.farge.offwhiteMerkeA45,
+            color: isActive ? "var(--v2-handling, #D97757)" : isDone ? T.farge.offwhiteMerkeA65 : T.farge.offwhiteMerkeA45,
           }}
         >
           {isActive ? "Pågår" : isDone ? "Fullført" : isQueued ? "Venter" : ""}
@@ -214,7 +210,7 @@ function ChallengeCard({ drill, onLogRep }: ChallengeCardProps) {
             type="button"
             onClick={onLogRep}
             className="rounded-full border-none px-5 py-[11px] font-mono text-[12px] font-bold uppercase tracking-[0.06em] text-accent-foreground"
-            style={{ background: "var(--lime-500)", minHeight: 44 }}
+            style={{ background: "var(--v2-handling, #D97757)", minHeight: 44 }}
           >
             Logg rep
           </button>
@@ -623,7 +619,7 @@ export function LiveActive({ data, coachPanel }: { data: LiveV2Session; coachPan
               className="h-full rounded-full transition-all duration-700"
               style={{
                 width: `${progressPct}%`,
-                background: "linear-gradient(90deg, var(--forest-700), var(--lime-500))",
+                background: "linear-gradient(90deg, #141413, var(--v2-handling, #D97757))",
               }}
             />
           </div>
@@ -669,7 +665,7 @@ export function LiveActive({ data, coachPanel }: { data: LiveV2Session; coachPan
         {allDone && (
           <div
             className="mb-[14px] rounded-[14px] p-[18px] text-center"
-            style={{ background: "var(--forest-700)" }}
+            style={{ background: "#141413" }}
           >
             <div className="font-display text-[20px] font-bold text-white">
               Alle drills fullført

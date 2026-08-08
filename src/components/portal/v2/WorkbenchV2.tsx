@@ -200,7 +200,7 @@ function TLBlokk({ o, dragKey, valgt, onVelg, dragbar }: { o: WeekEvent; /** Sta
   const col = T.ax[ak] || T.mut;
   const avvik = o.compliance === "avvik" || o.compliance === "ikke-gjennomfort";
   const pending = erOptimistisk(o.id);
-  const ramme = avvik ? T.down : valgt ? T.lime : T.border;
+  const ramme = avvik ? T.down : valgt ? T.handling : T.border;
   const kanDra = dragbar && !pending && !!o.id;
   const { attributes, listeners, setNodeRef, isDragging } = useDraggable({
     id: `session:${dragKey}`,
@@ -225,7 +225,7 @@ function TLBlokk({ o, dragKey, valgt, onVelg, dragbar }: { o: WeekEvent; /** Sta
         boxShadow: avvik
           ? `0 0 0 1px color-mix(in srgb, ${T.down} 25%, transparent)`
           : valgt
-            ? `0 0 0 1px color-mix(in srgb, ${T.lime} 35%, transparent)`
+            ? `0 0 0 1px color-mix(in srgb, ${T.handling} 35%, transparent)`
             : "none",
       }}
     >
@@ -295,8 +295,8 @@ function WBTidslinjeDagInnhold({ dag, index, valgt, onVelg, droppbar, kanFlytteO
       style={{
         position: "absolute",
         inset: 0,
-        background: isOver ? `color-mix(in srgb, ${T.lime} 8%, transparent)` : "transparent",
-        outline: isOver ? `1px dashed color-mix(in srgb, ${T.lime} 45%, transparent)` : "none",
+        background: isOver ? `color-mix(in srgb, ${T.handling} 8%, transparent)` : "transparent",
+        outline: isOver ? `1px dashed color-mix(in srgb, ${T.handling} 45%, transparent)` : "none",
         outlineOffset: -2,
         transition: "background 80ms",
       }}
@@ -439,7 +439,7 @@ function WBGruppetider({ slots }: { slots: NonNullable<WorkbenchData["groupSlots
         const kl = `${String(start.getHours()).padStart(2, "0")}:${String(start.getMinutes()).padStart(2, "0")}`;
         return (
           <span key={s.id} style={{ display: "inline-flex", alignItems: "center", gap: 6, padding: "5px 10px", borderRadius: 9999, background: T.panel2, border: `1px solid ${T.border}`, fontFamily: T.ui, fontSize: 11.5, color: T.fg2 }}>
-            <Icon name="users" size={11} style={{ color: T.lime }} />
+            <Icon name="users" size={11} style={{ color: T.handling }} />
             {DAGER_KORT[s.dayIndex] ?? ""} {kl} · {s.groupName}
             {s.location ? ` · ${s.location}` : ""}
           </span>
@@ -523,7 +523,7 @@ export function WBBibliotek({ data, tab, setTab, sok, setSok, onVelgOkt, onBrukM
       <PalettSok value={sok} onChange={setSok} placeholder="Søk…" />
       <div style={{ display: "flex", gap: 4 }}>
         {faner.map(([id, l]) => (
-          <button key={id} type="button" onClick={() => setTab(id)} className="v2-press v2-focus" style={{ appearance: "none", cursor: "pointer", flex: 1, fontFamily: T.mono, fontSize: 9, fontWeight: 700, padding: "6px 0", borderRadius: 8, border: `1px solid ${effectiveTab === id ? "transparent" : T.border}`, background: effectiveTab === id ? T.lime : T.panel2, color: effectiveTab === id ? T.onLime : T.fg2, textTransform: "uppercase", letterSpacing: "0.04em" }}>{l}</button>
+          <button key={id} type="button" onClick={() => setTab(id)} className="v2-press v2-focus" style={{ appearance: "none", cursor: "pointer", flex: 1, fontFamily: T.mono, fontSize: 9, fontWeight: 700, padding: "6px 0", borderRadius: 8, border: `1px solid ${effectiveTab === id ? "transparent" : T.border}`, background: effectiveTab === id ? T.fg : T.panel2, color: effectiveTab === id ? T.bg : T.fg2, textTransform: "uppercase", letterSpacing: "0.04em" }}>{l}</button>
         ))}
       </div>
       {visPerioder && (
@@ -536,7 +536,7 @@ export function WBBibliotek({ data, tab, setTab, sok, setSok, onVelgOkt, onBrukM
           {([null, "FYS", "TEK", "SLAG", "SPILL", "TURN"] as (AkseKey | null)[]).map((f) => {
             const on = akseFilter === f;
             return (
-              <button key={f ?? "alle"} type="button" onClick={() => setAkseFilter(f)} className="v2-press" style={{ appearance: "none", cursor: "pointer", fontFamily: T.mono, fontSize: 8, fontWeight: 700, padding: "4px 8px", borderRadius: 9999, border: `1px solid ${on ? "transparent" : T.border}`, background: on ? (f ? T.ax[f] : T.lime) : T.panel2, color: on ? T.onLime : T.mut, letterSpacing: "0.04em" }}>
+              <button key={f ?? "alle"} type="button" onClick={() => setAkseFilter(f)} className="v2-press" style={{ appearance: "none", cursor: "pointer", fontFamily: T.mono, fontSize: 8, fontWeight: 700, padding: "4px 8px", borderRadius: 9999, border: `1px solid ${on ? "transparent" : T.border}`, background: on ? (f ? T.ax[f] : T.fg) : T.panel2, color: on ? (f ? T.onLime : T.bg) : T.mut, letterSpacing: "0.04em" }}>
                 {f ?? "ALLE"}
               </button>
             );
@@ -684,7 +684,7 @@ export function WBBelastning({ data }: { data: WorkbenchData }) {
   return (
     <Kort pad="12px 14px">
       <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 10 }}>
-        <Icon name="activity" size={14} style={{ color: T.lime }} />
+        <Icon name="activity" size={14} style={{ color: T.handling }} />
         <Caps size={9}>Kontekst · uke</Caps>
         {sessionCount > 0 && (
           <span style={{ marginLeft: "auto", fontFamily: T.mono, fontSize: 9, color: T.mut }}>
@@ -862,7 +862,7 @@ export function WBBalanse({ data, valgtOkt, valgtDag, weekNumber, actions, weekO
     <div style={{ display: "flex", flexDirection: "column", gap: 20, minWidth: 0 }}>
       {!skjulTittel && (
         <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-          <Icon name="activity" size={15} style={{ color: T.lime }} />
+          <Icon name="activity" size={15} style={{ color: T.handling }} />
           <span style={{ fontFamily: T.disp, fontSize: 16, fontWeight: 700, color: T.fg }}>
             {valgtOkt ? "Inspektør" : "Balanse"}
           </span>
@@ -877,7 +877,7 @@ export function WBBalanse({ data, valgtOkt, valgtDag, weekNumber, actions, weekO
         <div style={{ display: "flex", flexDirection: "column", gap: 7 }}>
           {fokus && (
             <div style={{ display: "flex", alignItems: "center", gap: 10, padding: "9px 11px", borderRadius: 11, background: T.panel2, border: `1px solid ${T.border}` }}>
-              <span style={{ width: 28, height: 28, borderRadius: 8, background: T.panel3, border: `1px solid ${T.border}`, display: "inline-flex", alignItems: "center", justifyContent: "center", flex: "none" }}><Icon name="target" size={13} style={{ color: T.lime }} /></span>
+              <span style={{ width: 28, height: 28, borderRadius: 8, background: T.panel3, border: `1px solid ${T.border}`, display: "inline-flex", alignItems: "center", justifyContent: "center", flex: "none" }}><Icon name="target" size={13} style={{ color: T.handling }} /></span>
               <div style={{ flex: 1, minWidth: 0 }}>
                 <div style={{ fontFamily: T.ui, fontSize: 12, fontWeight: 600, color: T.fg, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{fokus.label}</div>
                 <div style={{ fontFamily: T.ui, fontSize: 10.5, color: T.mut, marginTop: 1 }}>Fokus · {fokus.kilde === "coach" ? "satt av coach" : "beregnet fra SG-gap"}</div>
@@ -2260,7 +2260,7 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions, w
             <button type="button" onClick={() => setNyOktApen(true)} className="v2-press v2-focus" style={{ appearance: "none", cursor: "pointer", display: "inline-flex", alignItems: "center", gap: 7, minHeight: 44, padding: "0 16px", borderRadius: T.rPill, background: T.panel3, border: `1px solid ${T.border}`, fontFamily: T.ui, fontSize: 12.5, fontWeight: 600, color: T.fg }}><Icon name="plus" size={14} />Ny økt</button>
           )}
           {actions?.suggestWeek && (
-            <button type="button" onClick={handleSuggest} disabled={suggestLoading} title="AI-forslag for uka" className="v2-press v2-focus" style={{ appearance: "none", cursor: suggestLoading ? "default" : "pointer", minWidth: 44, minHeight: 44, borderRadius: T.rPill, background: T.panel3, border: `1px solid ${T.border}`, display: "inline-flex", alignItems: "center", justifyContent: "center", opacity: suggestLoading ? 0.5 : 1 }}><Icon name="sparkles" size={15} style={{ color: T.lime }} /></button>
+            <button type="button" onClick={handleSuggest} disabled={suggestLoading} title="AI-forslag for uka" className="v2-press v2-focus" style={{ appearance: "none", cursor: suggestLoading ? "default" : "pointer", minWidth: 44, minHeight: 44, borderRadius: T.rPill, background: T.panel3, border: `1px solid ${T.border}`, display: "inline-flex", alignItems: "center", justifyContent: "center", opacity: suggestLoading ? 0.5 : 1 }}><Icon name="sparkles" size={15} style={{ color: T.handling }} /></button>
           )}
           {actions &&
             !(role === "player" && (optimisticStatus ?? planStatus) === "PENDING_PLAYER") && (
@@ -2576,7 +2576,7 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions, w
           <div onClick={() => setPubDiff(null)} style={{ position: "absolute", inset: 0, background: T.farge.nestenSvartA62, backdropFilter: "blur(2px)" }} />
           <div role="dialog" aria-label="Bekreft publisering" className="v2-sheet-in" style={{ position: "relative", width: "min(460px, 100%)", maxHeight: "85vh", overflowY: "auto", background: T.panel, border: `1px solid ${T.borderS}`, borderRadius: 20, padding: "20px 22px", boxShadow: `0 24px 60px ${T.farge.svartA50}` }}>
             <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-              <Icon name="send" size={16} style={{ color: T.lime }} />
+              <Icon name="send" size={16} style={{ color: T.handling }} />
               <div style={{ flex: 1, minWidth: 0 }}>
                 <Caps size={8.5}>Før spiller ser endringen</Caps>
                 <h2 style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 17, letterSpacing: "-0.02em", color: T.fg, margin: "4px 0 0" }}>
@@ -2678,7 +2678,7 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions, w
           <div onClick={malLegger ? undefined : () => setMalBekreft(null)} style={{ position: "absolute", inset: 0, background: T.farge.nestenSvartA62, backdropFilter: "blur(2px)" }} />
           <div role="dialog" aria-label="Legg inn mal" className="v2-sheet-in" style={{ position: "relative", width: "min(400px, 100%)", background: T.panel, border: `1px solid ${T.borderS}`, borderRadius: 20, padding: "20px 22px", boxShadow: `0 24px 60px ${T.farge.svartA50}` }}>
             <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-              <Icon name="layers" size={16} style={{ color: T.lime }} />
+              <Icon name="layers" size={16} style={{ color: T.handling }} />
               <h2 style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 17, letterSpacing: "-0.02em", color: T.fg, margin: 0 }}>Legg inn mal</h2>
             </div>
             <div style={{ marginTop: 12, padding: "11px 13px", borderRadius: 11, background: T.panel2, border: `1px solid ${T.border}` }}>

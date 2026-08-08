@@ -8,7 +8,6 @@ import { LiveLoopNav } from "./LiveLoopNav";
 
 export type SessionSummaryProps = {
   data: LiveV2Summary;
-  /** Summary-kjeding (flytpakke 2, 2.7) — neste økt på tvers av begge spor. */
   nesteOkt?: { tekst: string; href: string };
   spillerVurdering?: {
     kvalitet: number;
@@ -25,33 +24,28 @@ const AXIS_LABEL: Record<string, string> = {
   TURN: "Turnering",
 };
 
-const AXIS_BAR: Record<string, string> = {
-  FYS: "hsl(154, 49%, 56%)",
-  TEK: "hsl(34, 80%, 60%)",
-  SLAG: "hsl(222, 100%, 76%)",
-  SPILL: "hsl(72, 92%, 62%)",
-  TURN: "hsl(2, 80%, 75%)",
-};
-
 function fmtMSS(totalSec: number): string {
   const m = Math.floor(totalSec / 60);
   const s = totalSec % 60;
   return `${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`;
 }
 
-/** Klarspråk-dom på plan-etterlevelse — anbefaling, aldri en sperre (phq-live.jsx sin Verdict). */
 function Verdict({ pct }: { pct: number }) {
   const onPlan = pct >= 70;
   return (
     <div
-      className={`flex items-start gap-3 rounded-2xl border p-3.5 ${
-        onPlan ? "border-accent/40 bg-accent/10" : "border-destructive/40 bg-destructive/10"
-      }`}
+      className="flex items-start gap-3 rounded-2xl p-3.5"
+      style={{
+        border: `1px solid ${onPlan ? T.border : T.down}`,
+        background: onPlan ? T.handlingSoft : T.panel2,
+      }}
     >
       <span
-        className={`grid h-7 w-7 flex-shrink-0 place-items-center rounded-full ${
-          onPlan ? "bg-accent/20 text-accent" : "bg-destructive/20 text-destructive"
-        }`}
+        className="grid h-7 w-7 flex-shrink-0 place-items-center rounded-full"
+        style={{
+          background: onPlan ? T.panel : T.panel2,
+          color: onPlan ? T.handling : T.down,
+        }}
       >
         {onPlan ? (
           <CircleCheck className="h-4 w-4" strokeWidth={2} aria-hidden />
@@ -60,11 +54,14 @@ function Verdict({ pct }: { pct: number }) {
         )}
       </span>
       <div className="min-w-0 flex-1">
-        <span className={`inline-flex items-center gap-1.5 text-sm font-bold ${onPlan ? "text-accent" : "text-destructive"}`}>
+        <span
+          className="inline-flex items-center gap-1.5 text-sm font-bold"
+          style={{ color: onPlan ? T.handling : T.down }}
+        >
           {onPlan ? "På plan" : "Avvik fra plan"}
           <HjelpTips k="planEtterlevelse" size={12} />
         </span>
-        <p className="mt-1 text-[12.5px] leading-relaxed text-background/70">
+        <p className="mt-1 text-[12.5px] leading-relaxed" style={{ color: T.mut }}>
           {onPlan
             ? `Du gjennomførte ${pct} % av planen. Økta teller som gjennomført på plan.`
             : `Du gjennomførte ${pct} % av planen. Logges som avvik — coachen ser hva som skjedde, helt greit.`}
@@ -84,69 +81,71 @@ export function SessionSummary({ data, nesteOkt, spillerVurdering }: SessionSumm
     .sort(([, a], [, b]) => b - a);
 
   return (
-    <div data-paper-portal-live-summary className="flex flex-col gap-4 px-4 py-6" style={{ maxWidth: 720, margin: "0 auto", width: "100%" }}>
+    <div
+      data-paper-portal-live-summary
+      className="flex flex-col gap-4 px-4 py-6"
+      style={{ maxWidth: 720, margin: "0 auto", width: "100%", color: T.fg }}
+    >
       <LiveLoopNav aktiv="etter" sessionId={data.sessionId} />
-      {/* Hilsen */}
+
       <div className="text-center">
-        <div className="mx-auto mb-4 grid h-16 w-16 place-items-center rounded-full bg-accent/15">
-          <CheckCircle2 className="h-8 w-8 text-accent" strokeWidth={2} aria-hidden />
+        <div
+          className="mx-auto mb-4 grid h-16 w-16 place-items-center rounded-full"
+          style={{ background: T.handlingSoft }}
+        >
+          <CheckCircle2 className="h-8 w-8" style={{ color: T.handling }} strokeWidth={2} aria-hidden />
         </div>
-        <h1 className="font-display text-3xl font-bold leading-[1.1] -tracking-[0.02em] text-background">
+        <h1
+          className="font-display text-[22px] font-semibold leading-[1.15]"
+          style={{ color: T.fg }}
+        >
           Bra jobba, {firstName}!
         </h1>
-        <p className="mt-2 text-sm text-background/65">
+        <p className="mt-2 text-sm" style={{ color: T.mut }}>
           {completionPct === 100
             ? "Du fullførte hele økta."
             : `Du fullførte ${data.drillsCompleted} av ${data.drills.length} drills.`}
         </p>
       </div>
 
-      {/* Plan-etterlevelse — klarspråk-dom, aldri en sperre */}
       <Verdict pct={completionPct} />
 
-      <SpillerVurderingForm
-        sessionId={data.sessionId}
-        eksisterende={spillerVurdering}
-      />
+      <SpillerVurderingForm sessionId={data.sessionId} eksisterende={spillerVurdering} />
 
-      {/* KPI-kort */}
-      <div className="grid grid-cols-3 gap-4">
-        <div className="rounded-2xl border border-background/10 bg-background/5 p-4 text-center">
-          <Dumbbell className="mx-auto h-5 w-5 text-accent" strokeWidth={2} aria-hidden />
-          <div className="mt-4 font-mono text-3xl font-bold leading-none text-background">
-            {data.totalReps}
+      <div className="grid grid-cols-3 gap-3">
+        {[
+          { Icon: Dumbbell, v: String(data.totalReps), l: "Reps", tip: "repsHastighet" as const },
+          { Icon: Clock, v: fmtMSS(data.durationSec), l: "Tid", tip: null },
+          { Icon: Target, v: String(data.drillsCompleted), l: "Drills", tip: null },
+        ].map(({ Icon, v, l, tip }) => (
+          <div
+            key={l}
+            className="rounded-2xl p-4 text-center"
+            style={{ border: `1px solid ${T.border}`, background: T.panel }}
+          >
+            <Icon className="mx-auto h-5 w-5" style={{ color: T.handling }} strokeWidth={2} aria-hidden />
+            <div className="mt-3 font-mono text-2xl font-bold leading-none" style={{ color: T.fg }}>
+              {v}
+            </div>
+            <div
+              className="mt-2 flex items-center justify-center gap-1 font-mono text-[10px] font-extrabold uppercase tracking-[0.12em]"
+              style={{ color: T.mut }}
+            >
+              {l}
+              {tip && <HjelpTips k={tip} size={11} />}
+            </div>
           </div>
-          <div className="mt-2 flex items-center justify-center gap-1 font-mono text-[10px] font-extrabold uppercase tracking-[0.12em] text-background/55">
-            Reps
-            <HjelpTips k="repsHastighet" size={11} />
-          </div>
-        </div>
-        <div className="rounded-2xl border border-background/10 bg-background/5 p-4 text-center">
-          <Clock className="mx-auto h-5 w-5 text-accent" strokeWidth={2} aria-hidden />
-          <div className="mt-4 font-mono text-3xl font-bold leading-none text-background">
-            {fmtMSS(data.durationSec)}
-          </div>
-          <div className="mt-2 font-mono text-[10px] font-extrabold uppercase tracking-[0.12em] text-background/55">
-            Tid
-          </div>
-        </div>
-        <div className="rounded-2xl border border-background/10 bg-background/5 p-4 text-center">
-          <Target className="mx-auto h-5 w-5 text-accent" strokeWidth={2} aria-hidden />
-          <div className="mt-4 font-mono text-3xl font-bold leading-none text-background">
-            {data.drillsCompleted}
-          </div>
-          <div className="mt-2 font-mono text-[10px] font-extrabold uppercase tracking-[0.12em] text-background/55">
-            Drills
-          </div>
-        </div>
+        ))}
       </div>
 
-      {/* Pyramide-oppsummering */}
       {pyramidEntries.length > 0 && (
-        <div className="rounded-2xl border border-background/10 bg-background/5 p-4">
+        <div className="rounded-2xl p-4" style={{ border: `1px solid ${T.border}`, background: T.panel }}>
           <div className="mb-4 flex items-center gap-2">
-            <TrendingUp className="h-4 w-4 text-accent" strokeWidth={2} aria-hidden />
-            <span className="font-mono text-[10px] font-extrabold uppercase tracking-[0.12em] text-background/70">
+            <TrendingUp className="h-4 w-4" style={{ color: T.handling }} strokeWidth={2} aria-hidden />
+            <span
+              className="font-mono text-[10px] font-extrabold uppercase tracking-[0.12em]"
+              style={{ color: T.mut }}
+            >
               Fordeling etter pyramide
             </span>
             <HjelpTips k="pyramideAkse" size={11} />
@@ -154,21 +153,17 @@ export function SessionSummary({ data, nesteOkt, spillerVurdering }: SessionSumm
           <div className="flex flex-col gap-4">
             {pyramidEntries.map(([axis, reps]) => {
               const pct = data.totalReps > 0 ? (reps / data.totalReps) * 100 : 0;
+              const col = T.ax[axis as keyof typeof T.ax] ?? T.mut;
               return (
                 <div key={axis}>
                   <div className="mb-2 flex items-center justify-between font-mono text-xs font-semibold">
-                    <span style={{ color: AXIS_BAR[axis] ?? "hsl(var(--background))" }}>
-                      {AXIS_LABEL[axis] ?? axis}
-                    </span>
-                    <span className="text-background">{reps} reps</span>
+                    <span style={{ color: col }}>{AXIS_LABEL[axis] ?? axis}</span>
+                    <span style={{ color: T.fg }}>{reps} reps</span>
                   </div>
-                  <div className="h-2 w-full overflow-hidden rounded-full bg-background/10">
+                  <div className="h-2 w-full overflow-hidden rounded-full" style={{ background: T.track }}>
                     <div
-                      className="h-full rounded-full transition-all"
-                      style={{
-                        width: `${pct}%`,
-                        backgroundColor: AXIS_BAR[axis] ?? "hsl(var(--accent))",
-                      }}
+                      className="h-full rounded-full"
+                      style={{ width: `${pct}%`, backgroundColor: col }}
                     />
                   </div>
                 </div>
@@ -178,9 +173,11 @@ export function SessionSummary({ data, nesteOkt, spillerVurdering }: SessionSumm
         </div>
       )}
 
-      {/* Drill-liste */}
-      <div className="rounded-2xl border border-background/10 bg-background/5 p-4">
-        <div className="mb-4 font-mono text-[10px] font-extrabold uppercase tracking-[0.12em] text-background/70">
+      <div className="rounded-2xl p-4" style={{ border: `1px solid ${T.border}`, background: T.panel }}>
+        <div
+          className="mb-4 font-mono text-[10px] font-extrabold uppercase tracking-[0.12em]"
+          style={{ color: T.mut }}
+        >
           Drills fullført
         </div>
         <ul className="flex flex-col gap-2">
@@ -189,13 +186,14 @@ export function SessionSummary({ data, nesteOkt, spillerVurdering }: SessionSumm
             return (
               <li
                 key={drill.id}
-                className="flex items-center justify-between gap-4 rounded-lg border border-background/10 bg-foreground/40 px-4 py-2"
+                className="flex items-center justify-between gap-4 rounded-lg px-4 py-2"
+                style={{ border: `1px solid ${T.border}`, background: T.panel2 }}
               >
                 <div className="min-w-0 flex-1">
-                  <div className="truncate font-display text-sm font-semibold text-background">
+                  <div className="truncate font-display text-sm font-semibold" style={{ color: T.fg }}>
                     {drill.name}
                   </div>
-                  <div className="mt-0.5 font-mono text-xs font-semibold text-background/50">
+                  <div className="mt-0.5 font-mono text-xs font-semibold" style={{ color: T.mut }}>
                     {AXIS_LABEL[drill.pyramide] ?? drill.pyramide}
                     {drill.actualDurationSec != null && drill.actualDurationSec > 0 && (
                       <> · {fmtMSS(drill.actualDurationSec)}</>
@@ -205,15 +203,18 @@ export function SessionSummary({ data, nesteOkt, spillerVurdering }: SessionSumm
                 <div className="text-right">
                   {log ? (
                     <>
-                      <div className="font-mono text-lg font-bold text-accent">
+                      <div className="font-mono text-lg font-bold" style={{ color: T.handling }}>
                         {log.repsTotal}
                       </div>
-                      <div className="font-mono text-[10px] font-extrabold uppercase tracking-[0.1em] text-background/50">
+                      <div
+                        className="font-mono text-[10px] font-extrabold uppercase tracking-[0.1em]"
+                        style={{ color: T.mut }}
+                      >
                         reps
                       </div>
                     </>
                   ) : (
-                    <span className="font-mono text-xs font-semibold text-background/40">
+                    <span className="font-mono text-xs font-semibold" style={{ color: T.mut }}>
                       Ikke logget
                     </span>
                   )}
@@ -224,10 +225,6 @@ export function SessionSummary({ data, nesteOkt, spillerVurdering }: SessionSumm
         </ul>
       </div>
 
-      {/* CTA — GO V2: ÉN neste handling. Er det en økt igjen i dag, er den
-          handlingen. Ellers er veien ut den primære, og planlegging blir den
-          ene stille lenken. Tre likeverdige knapper etter en gjennomført økt
-          er et valg spilleren ikke skal måtte ta. */}
       <div className="flex flex-col gap-2.5">
         <Link
           href={nesteOkt ? nesteOkt.href : "/portal"}
@@ -240,7 +237,8 @@ export function SessionSummary({ data, nesteOkt, spillerVurdering }: SessionSumm
         </Link>
         <Link
           href={nesteOkt ? "/portal" : "/portal/planlegge/workbench?zoom=uke"}
-          className="flex h-11 w-full items-center justify-center font-mono text-xs font-bold uppercase tracking-[0.06em] text-background/55 active:opacity-80"
+          className="flex h-11 w-full items-center justify-center font-mono text-xs font-bold uppercase tracking-[0.06em] active:opacity-80"
+          style={{ color: T.mut, textDecoration: "none" }}
         >
           {nesteOkt ? "Tilbake til hjem" : "Planlegg i Workbench"}
         </Link>

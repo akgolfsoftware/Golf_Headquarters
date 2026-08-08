@@ -5,23 +5,20 @@ import { T } from "@/lib/v2/tokens";
 export type LiveSessionShellProps = {
   title?: string;
   subtitle?: string;
-  /** Bruges kun på dark-modus brief-skjerm. */
   backHref?: string;
   closeHref?: string;
   children: React.ReactNode;
   footer?: React.ReactNode;
   /**
-   * "dark"  — forest-mørk fullscreen (brief + summary).
-   * "light" — lys bakgrunn med hvit topbar (aktiv økt).
+   * "paper" — Paper cream fullscreen (fasit playerhq-live-*.html). Default.
+   * "dark"  — alias for paper (legacy prop; forest dark er utgått vs Paper-fasit).
+   * "light" — samme som paper (aktiv økt topbar med tittel).
    */
-  variant?: "dark" | "light";
+  variant?: "dark" | "light" | "paper";
 };
 
 /**
- * Full-screen skall for live-økt.
- *
- * Variant "dark": forest-radial gradient bakgrunn, accent-farger.
- * Variant "light": cream-bakgrunn med hvit topbar og grønn/svart tekst.
+ * Full-screen skall for live-økt — Paper-fasit (lys cream, ikke forest-mørk).
  */
 export function LiveSessionShell({
   title,
@@ -29,109 +26,111 @@ export function LiveSessionShell({
   closeHref,
   children,
   footer,
-  variant = "dark",
+  variant = "paper",
 }: LiveSessionShellProps) {
-  if (variant === "light") {
-    return (
-      <div
-        className="fixed inset-0 z-50 flex flex-col overflow-hidden"
-        style={{ background: "var(--background)", isolation: "isolate" }}
-      >
-        {/* Topbar */}
-        <header
-          className="flex flex-shrink-0 items-center justify-between border-b border-border bg-card px-[18px] py-[10px]"
-          style={{ paddingTop: "max(env(safe-area-inset-top) + 10px, 54px)" }}
-        >
-          <div>
-            {title && (
-              <div className="font-display text-[16px] font-bold leading-tight -tracking-[0.01em] text-foreground">
-                {title}
-              </div>
-            )}
-            {subtitle && (
-              <div className="mt-[2px] font-mono text-[9.5px] font-semibold text-muted-foreground">
-                {subtitle}
-              </div>
-            )}
-          </div>
-          {closeHref && (
-            <Link
-              href={closeHref}
-              aria-label="Avslutt økt"
-              className="rounded-full border border-destructive/20 bg-destructive/8 px-3 py-[6px] font-mono text-[10px] font-bold uppercase tracking-[0.06em] text-destructive"
-            >
-              Avslutt
-            </Link>
-          )}
-        </header>
+  const showTitleBar = Boolean(title) || variant === "light";
 
-        {/* Innhold */}
-        <main
-          className="flex flex-1 flex-col overflow-y-auto overflow-x-hidden"
-          style={{ minHeight: 0 }}
-        >
-          {children}
-        </main>
-
-        {/* Footer */}
-        {footer && (
-          <footer
-            className="flex-shrink-0 border-t border-border bg-card px-4 pt-4"
-            style={{ paddingBottom: "max(env(safe-area-inset-bottom), 20px)" }}
-          >
-            {footer}
-          </footer>
-        )}
-      </div>
-    );
-  }
-
-  // Dark variant (brief + summary)
   return (
     <div
-      className="fixed inset-0 z-50 flex flex-col text-background"
-      style={{
-        background: `radial-gradient(120% 80% at 50% 0%, ${T.farge.liveBgTopp}, ${T.farge.inkMerke} 70%)`,
-        isolation: "isolate",
-      }}
+      data-paper-live-shell
+      className="fixed inset-0 z-50 flex flex-col overflow-hidden"
+      style={{ background: T.bg, color: T.fg, isolation: "isolate" }}
     >
-      {/* Header */}
       <header
-        className="flex h-16 flex-shrink-0 items-center justify-between gap-4 px-5"
-        style={{ paddingTop: "max(env(safe-area-inset-top), 8px)" }}
+        style={{
+          flex: "none",
+          display: "flex",
+          alignItems: "center",
+          gap: 12,
+          padding: "10px 18px",
+          paddingTop: "max(env(safe-area-inset-top) + 10px, 14px)",
+          borderBottom: `1px solid ${T.border}`,
+          background: T.panel,
+        }}
       >
-        <span className="font-mono text-[10px] font-bold uppercase tracking-[0.16em] text-background/40">
-          PlayerHQ · Live-økt
-        </span>
-
-        {closeHref ? (
+        <div style={{ minWidth: 0, flex: 1 }}>
+          {showTitleBar && title ? (
+            <>
+              <div
+                style={{
+                  fontFamily: T.disp,
+                  fontSize: 16,
+                  fontWeight: 600,
+                  lineHeight: 1.2,
+                  color: T.fg,
+                }}
+              >
+                {title}
+              </div>
+              {subtitle && (
+                <div
+                  style={{
+                    marginTop: 2,
+                    fontFamily: T.mono,
+                    fontSize: 10.5,
+                    color: T.mut,
+                  }}
+                >
+                  {subtitle}
+                </div>
+              )}
+            </>
+          ) : (
+            <span
+              style={{
+                fontFamily: T.mono,
+                fontSize: 10,
+                fontWeight: 700,
+                letterSpacing: "0.12em",
+                textTransform: "uppercase",
+                color: T.mut,
+              }}
+            >
+              PlayerHQ · Live
+            </span>
+          )}
+        </div>
+        {closeHref && (
           <Link
             href={closeHref}
             aria-label="Lukk"
-            className="grid h-10 w-10 place-items-center rounded-full border border-background/15 bg-background/5 text-background/70 active:scale-95"
+            data-od-id="live-shell-lukk"
+            className="v2-press v2-focus"
+            style={{
+              display: "grid",
+              placeItems: "center",
+              width: 40,
+              height: 40,
+              borderRadius: 9999,
+              border: `1px solid ${T.border}`,
+              background: T.panel2,
+              color: T.fg2,
+              textDecoration: "none",
+            }}
           >
             <X className="h-4 w-4" strokeWidth={2} aria-hidden />
           </Link>
-        ) : (
-          <span className="w-10" />
         )}
       </header>
 
-      {/* Innhold */}
       <main
         className="flex flex-1 flex-col overflow-y-auto overflow-x-hidden"
-        style={{ minHeight: 0 }}
+        style={{ minHeight: 0, background: T.bg }}
       >
         {children}
       </main>
 
-      {/* Footer */}
       {footer && (
         <footer
-          className="flex-shrink-0 border-t border-background/10 bg-transparent px-4 pt-4"
-          style={{ paddingBottom: "max(env(safe-area-inset-bottom), 20px)" }}
+          style={{
+            flex: "none",
+            borderTop: `1px solid ${T.border}`,
+            background: T.panel,
+            padding: "12px 16px",
+            paddingBottom: "max(env(safe-area-inset-bottom), 16px)",
+          }}
         >
-          {footer}
+          <div style={{ maxWidth: 720, margin: "0 auto" }}>{footer}</div>
         </footer>
       )}
     </div>

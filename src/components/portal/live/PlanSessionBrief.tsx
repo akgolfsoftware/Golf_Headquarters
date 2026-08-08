@@ -58,7 +58,7 @@ export function PlanSessionBrief({ data, canStart, blockReason }: PlanSessionBri
     : [];
 
   return (
-    <LiveSessionShell variant="dark" closeHref="/portal/planlegge/workbench" footer={startButton}>
+    <LiveSessionShell variant="paper" closeHref="/portal/planlegge/workbench" footer={startButton}>
       <div data-paper-portal-live-brief className="flex flex-col gap-0 px-5 pt-2 pb-4" style={{ maxWidth: 720, margin: "0 auto", width: "100%" }}>
         <LiveLoopNav aktiv="for" sessionId={data.sessionId} />
         <span className="font-mono text-[9.5px] font-bold uppercase tracking-[0.14em] text-accent">

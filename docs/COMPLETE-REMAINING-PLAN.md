@@ -86,11 +86,11 @@ Per flate: **mobil 390 · iPad 768 · desktop 1280 · lys · mørk** (der releva
 | D-P1-03 | Analyse hub | playerhq-analyse | Agent chrome ✅ · **[ANDERS]** sign-off |
 | D-P1-04 | Meg | playerhq-meg | Agent fidelity ✅ · **[ANDERS]** sign-off |
 | D-P1-05 | Booking | playerhq-booking | Agent hub chrome ✅ · **[ANDERS]** sign-off |
-| D-P1-06 | Live brief→active→summary→tapper | live-* | **[ANDERS]** |
-| D-P1-07 | Runde live/logg | runde-* | **[ANDERS]** |
-| D-P1-08 | Workbench m+d | workbench-* | **[ANDERS]** |
-| D-P1-09 | AgencyOS konsoll | agencyos-konsoll-* | **[ANDERS]** |
-| D-P1-10 | Innboks / Kø | agencyos-innboks | **[ANDERS]** |
+| D-P1-06 | Live brief→active→summary→tapper | live-* | Agent Paper light shell+brief+summary ✅ · active ink/clay · **[ANDERS]** sign-off |
+| D-P1-07 | Runde live/logg | runde-* | Already T.bg paper top · light pass OK · **[ANDERS]** |
+| D-P1-08 | Workbench m+d | workbench-* | Agent lime→clay/ink chrome ✅ · full layout egen pass · **[ANDERS]** |
+| D-P1-09 | AgencyOS konsoll | agencyos-konsoll-* | Agent Paper chrome (CockpitV2) ✅ · **[ANDERS]** sign-off |
+| D-P1-10 | Innboks / Kø | agencyos-innboks | Agent Paper chrome ✅ · **[ANDERS]** sign-off |
 | D-P1-11 | Kalender / Stall / Profil | kalender, spillere, spillerprofil | **[ANDERS]** |
 | D-P1-12 | Auth / Forelder / Marketing booking | innlogging, forelder, booking | **[ANDERS]** |
 
