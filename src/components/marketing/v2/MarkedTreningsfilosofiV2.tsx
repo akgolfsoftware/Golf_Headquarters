@@ -51,7 +51,7 @@ function MNav({ mobile, aktiv }: { mobile: boolean; aktiv: string }) {
   return (
     <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 16, padding: mobile ? "16px 22px" : "20px 64px", borderBottom: `1px solid ${T.border}`, position: "relative" }}>
       <Link href="/" style={{ display: "inline-flex", alignItems: "center", gap: 10, textDecoration: "none" }}>
-        <LogoAK size={24} />
+        <LogoAK size={24} surface="paper" />
 
       </Link>
       {!mobile && (
@@ -79,7 +79,7 @@ function MFot({ mobile }: { mobile: boolean }) {
   return (
     <div style={{ borderTop: `1px solid ${T.border}`, padding: mobile ? "32px 22px" : "40px 64px", display: "flex", flexDirection: mobile ? "column" : "row", alignItems: mobile ? "flex-start" : "center", justifyContent: "space-between", gap: 18 }}>
       <span style={{ display: "inline-flex", alignItems: "center", gap: 9 }}>
-        <LogoAK size={18} color={T.mut} />
+        <LogoAK size={18} surface="paper" color={T.mut} />
         <span style={{ fontFamily: T.ui, fontSize: 12.5, color: T.mut }}>AK Golf Group AS · Fredrikstad</span>
       </span>
       <div style={{ display: "flex", gap: 20, flexWrap: "wrap" }}>

@@ -7,6 +7,7 @@ type Props = {
   alt?: string;
 };
 
+/** Paper-palett (ak-golf-logo-bruk.md) — aldri Presis grønn/lime. */
 const SRC: Record<NonNullable<Props["variant"]>, string> = {
   primary: "/logos/ak-golf-logo-primary-on-light.svg",
   mono: "/logos/ak-golf-logo-black-mono.svg",
@@ -14,10 +15,10 @@ const SRC: Record<NonNullable<Props["variant"]>, string> = {
 };
 
 /**
- * AK Golf-logo. Brukes overalt der vi før hadde tekst-versjonen.
- * - primary: AK-grønn mot lys bakgrunn (default)
- * - mono: ren sort (kvitteringer, e-post)
- * - white: hvit mot mørk bakgrunn (admin-sidebar)
+ * AK Golf-logo (Image-variant for e-post/marketing).
+ * - primary: ink + clay prikk på lys flate
+ * - mono: sort
+ * - white: paper-wordmark + clay prikk på mørk flate
  */
 export function AkGolfLogo({
   variant = "primary",

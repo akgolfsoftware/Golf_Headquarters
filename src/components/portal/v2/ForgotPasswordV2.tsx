@@ -207,11 +207,11 @@ function BrandPanel() {
         <circle cx="260" cy="330" r="3.5" fill="color-mix(in srgb, var(--v2-lime) 50%, transparent)" />
       </svg>
       <div style={{ position: "relative" }}>
-        <LogoAK size={30} />
+        <LogoAK size={30} surface="paper" />
       </div>
       <div style={{ flex: 1 }} />
       <div style={{ position: "relative" }}>
-        <LogoAK size={64} style={{ marginBottom: 22 }} />
+        <LogoAK size={64} surface="paper" style={{ marginBottom: 22 }} />
         <h2
           style={{
             fontFamily: T.disp,
@@ -286,7 +286,7 @@ function ForgotKort() {
         className="md:hidden"
         style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 18, padding: "6px 0 6px" }}
       >
-        <LogoAK size={46} />
+        <LogoAK size={46} surface="paper" />
       </div>
 
       {sent ? (

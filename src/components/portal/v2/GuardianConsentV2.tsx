@@ -269,7 +269,7 @@ function BrandPanel() {
         <circle cx="260" cy="330" r="3.5" fill="color-mix(in srgb, var(--v2-lime) 50%, transparent)" />
       </svg>
       <div style={{ position: "relative" }}>
-        <LogoAK size={30} />
+        <LogoAK size={30} surface="paper" />
       </div>
       <div style={{ flex: 1 }} />
       <div style={{ position: "relative" }}>
@@ -347,7 +347,7 @@ function Hode({ playerName, playerAge }: { playerName: string; playerAge: number
     <div style={{ width: "100%", maxWidth: 440, display: "flex", flexDirection: "column", gap: 14 }}>
       {/* Mobil-logo (BrandPanel skjult under md) */}
       <div className="md:hidden" style={{ display: "flex", justifyContent: "center", padding: "6px 0 2px" }}>
-        <LogoAK size={44} />
+        <LogoAK size={44} surface="paper" />
       </div>
       <div style={{ textAlign: "center" }}>
         <span

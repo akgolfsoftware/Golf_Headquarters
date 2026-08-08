@@ -83,7 +83,7 @@ export function MMobilMeny({ aktiv }: { aktiv: string }) {
           style={{ position: "fixed", inset: 0, zIndex: 80, background: `color-mix(in srgb, ${T.bg} 96%, transparent)`, backdropFilter: "blur(14px)", display: "flex", flexDirection: "column", padding: "16px 22px calc(24px + env(safe-area-inset-bottom))", colorScheme: "dark" }}
         >
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-            <LogoAK size={24} />
+            <LogoAK size={24} surface="paper" />
             <button
               type="button"
               aria-label="Lukk meny"
@@ -170,7 +170,7 @@ export function MNav({ mobile, aktiv, cta = STANDARD_CTA }: { mobile: boolean; a
       }}
     >
       <Link href="/" style={{ display: "inline-flex", alignItems: "center", gap: 10, textDecoration: "none" }}>
-        <LogoAK size={24} />
+        <LogoAK size={24} surface="paper" />
       </Link>
       {!mobile && (
         <div style={{ display: "flex", alignItems: "center", gap: 26 }}>
@@ -236,7 +236,7 @@ export function MFot({ mobile }: { mobile: boolean }) {
       }}
     >
       <span style={{ display: "inline-flex", alignItems: "center", gap: 9 }}>
-        <LogoAK size={18} color={T.mut} />
+        <LogoAK size={18} surface="paper" color={T.mut} />
         <span style={{ fontFamily: T.ui, fontSize: 12.5, color: T.mut }}>AK Golf Group AS · Fredrikstad</span>
       </span>
       <div style={{ display: "flex", gap: 20, flexWrap: "wrap" }}>

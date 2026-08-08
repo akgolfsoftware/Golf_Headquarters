@@ -523,7 +523,7 @@ function IkonRailNav({ aktiv, nav, mer, rom, navn, avatarUrl, erAgency }: Requir
       }}
       aria-label="Hovedmeny"
     >
-      <LogoAK size={26} surface="paper" style={{ marginBottom: 12, flex: "none" }} />
+      <LogoAK size={28} surface="ink" style={{ marginBottom: 12, flex: "none" }} />
       {nav.map((n) => <RailLenke key={n.id} item={n} on={aktiv === n.id} dark />)}
       {((mer && mer.length > 0) || (rom && rom.length > 0)) && (
         <button
