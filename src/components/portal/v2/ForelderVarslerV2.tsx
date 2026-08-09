@@ -144,7 +144,7 @@ export function ForelderVarslerV2({ data }: { data: ForelderVarslerData }) {
   const { email, barn, varsler } = data;
 
   return (
-    <div data-paper-portal-forelder-varsler style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
+    <div data-paper-wave-e="forelder-sub" data-paper-portal-forelder-varsler style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
       {/* Hode + status */}
       <div
         style={{

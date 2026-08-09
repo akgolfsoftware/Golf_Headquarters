@@ -240,8 +240,9 @@ export function TriageV2({ data, feedback = [], ko }: { data: CockpitData; feedb
 
   // ── Hode — B: status ──────────────────────────────────────────
   const hode = (
-    <PaperTopp tittel="Innboks"
-      sub="AgencyOS · avvik, godkjenning og spørsmål"
+    <PaperTopp
+      tittel="Innboks"
+      sub={`${totalSaker} åpne · avvik, godkjenning og spørsmål`}
       trailing={<StatusPill tone={statusTone}>{statusTekst}</StatusPill>}
     />
   );
@@ -258,7 +259,7 @@ export function TriageV2({ data, feedback = [], ko }: { data: CockpitData; feedb
         alignItems: "center",
         justifyContent: "center",
         gap: 8,
-        minHeight: 48,
+        minHeight: 56,
         width: "100%",
         borderRadius: 12,
         background: T.handling,
@@ -295,7 +296,7 @@ export function TriageV2({ data, feedback = [], ko }: { data: CockpitData; feedb
   if (grupper.length === 0) {
     return (
       <PaperPage odId="agencyos-innboks">
-      <div data-paper-agencyos-innboks style={{ display: "contents" }}>
+      <div data-paper-agencyos-innboks data-paper-wave-e="innboks" style={{ display: "contents" }}>
         {hode}
         <PaperKropp maxWidth={960}>
         {kpi}
@@ -315,7 +316,7 @@ export function TriageV2({ data, feedback = [], ko }: { data: CockpitData; feedb
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              minHeight: 48,
+              minHeight: 56,
               width: "100%",
               borderRadius: 10,
               background: T.handling,
@@ -337,7 +338,7 @@ export function TriageV2({ data, feedback = [], ko }: { data: CockpitData; feedb
 
   return (
     <PaperPage odId="agencyos-innboks">
-    <div data-paper-agencyos-innboks style={{ display: "contents" }}>
+    <div data-paper-agencyos-innboks data-paper-wave-e="innboks" style={{ display: "contents" }}>
       {hode}
       <PaperKropp maxWidth={960}>
       {primaerCta}

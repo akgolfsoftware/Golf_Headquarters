@@ -42,12 +42,13 @@ export function InnboksEpostV2({ epost }: { epost: InnboksEpostVm[] }) {
   const antallNye = epost.filter((e) => e.status === "NY").length;
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+    <div data-paper-wave-e="innboks-epost" data-od-id="agencyos-innboks-epost" style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 1100, margin: "0 auto", width: "100%" }}>
       <div>
-        <Caps>AgencyOS · Innboks</Caps>
-        <div style={{ marginTop: 10 }}>
-          <Tittel em="post@akgolf.no.">E-post fra</Tittel>
-        </div>
+        <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>Innboks</h1>
+        <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>
+          E-post · post@akgolf.no · {pl(epost.length, "melding", "meldinger")}
+          {antallNye > 0 ? ` · ${antallNye} nye` : ""}
+        </span>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-[340px_1fr]" style={{ gap: T.gap }}>

@@ -110,23 +110,51 @@ export function ForelderV2({ data }: { data: ForelderUkerapport }) {
   const alderTekst = childAge != null ? ` · ${childAge} år` : "";
 
   return (
-    <div data-paper-forelder style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
-      {/* Hode */}
+    <div data-paper-forelder data-paper-wave-e="forelder" data-od-id="foreldreportal" style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
+      {/* Paper .topp — fasit: barnets navn, sub foresatt */}
       <div
         style={{
           display: "flex",
-          alignItems: "flex-end",
+          alignItems: "flex-start",
           justifyContent: "space-between",
           gap: 12,
           flexWrap: "wrap",
         }}
       >
-        <div>
-          <Caps>{`Uke ${ukenummer} · ${childName}${alderTekst}`}</Caps>
-          <div style={{ marginTop: 10 }}>
-            <Tittel mobile={mobile} em={`${childFirstName}.`}>
-              Slik gikk uka for
-            </Tittel>
+        <div style={{ display: "flex", alignItems: "center", gap: 12, minWidth: 0 }}>
+          <span
+            aria-hidden
+            style={{
+              width: 40,
+              height: 40,
+              borderRadius: 9999,
+              flex: "none",
+              display: "inline-flex",
+              alignItems: "center",
+              justifyContent: "center",
+              background: T.panel2,
+              border: `1px solid ${T.border}`,
+              fontFamily: T.mono,
+              fontSize: 12,
+              fontWeight: 700,
+              color: T.fg2,
+            }}
+          >
+            {childName
+              .split(" ")
+              .map((x) => x[0])
+              .join("")
+              .slice(0, 2)
+              .toUpperCase()}
+          </span>
+          <div style={{ minWidth: 0 }}>
+            <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>
+              {childName}
+            </h1>
+            <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>
+              du er registrert som foresatt · uke {ukenummer}
+              {alderTekst}
+            </span>
           </div>
         </div>
         <StatusPill tone={consentActive ? "up" : "warn"}>
@@ -180,7 +208,7 @@ export function ForelderV2({ data }: { data: ForelderUkerapport }) {
                 {childFirstName} er under 18 og trenger ditt ja for å bruke appen
                 fullt ut. Trening kan fortsette mens du ser gjennom.
               </p>
-              <Knapp icon="arrow-right" onClick={gaaTil("/forelder/samtykke")} style={{ background: T.handling, color: T.onHandling }}>
+              <Knapp icon="arrow-right" onClick={gaaTil("/forelder/samtykke")} style={{ background: T.handling, color: T.onHandling, minHeight: 56, borderRadius: 12 }}>
                 Gå til samtykke
               </Knapp>
             </div>
@@ -188,7 +216,7 @@ export function ForelderV2({ data }: { data: ForelderUkerapport }) {
         </Kort>
       ) : (
         <div>
-          <Knapp icon="arrow-right" full={mobile} onClick={gaaTil("/forelder/barn")} style={{ background: T.handling, color: T.onHandling }}>
+          <Knapp icon="arrow-right" full={mobile} onClick={gaaTil("/forelder/barn")} style={{ background: T.handling, color: T.onHandling, minHeight: 56, borderRadius: 12 }}>
             Se mer om {childFirstName}
           </Knapp>
         </div>

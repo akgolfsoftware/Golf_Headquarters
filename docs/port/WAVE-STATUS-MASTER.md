@@ -27,7 +27,7 @@
 | **B** | AgencyOS: Konsoll, Innboks, Spillere, Kalender + nav labels | ✅ | ✅ A+B | ❌ | `WAVE-B-STATUS.md` |
 | **C** | Live FØR/UNDER/ETTER, runde live/logg, fangst | ✅ | ✅ komplett | ❌ | `WAVE-C-STATUS.md` |
 | **D** | Workbench, tester, drills, økt, test-gjennomfør | ✅ | ✅ ×2 | ❌ | `WAVE-D-STATUS.md` |
-| **E** | Kommunikasjon + profil (spillerprofil coach, innboks m+d dyp, forelder) | ⬜ | ⬜ | ❌ | — |
+| **E** | Profil + innboks + forelder | ✅ | ✅ | ❌ | `WAVE-E-STATUS.md` |
 | **F** | P2 zip rest (økonomi, innstillinger, AK-stigen, agenticos, turnering WB, feiring, fys/tek plan) | ⬜ | ⬜ | ❌ | — |
 | **G–K** | Pattern-port ~300+ ruter uten fasit | ⬜ delvis (shell) | ⬜ | ❌ | `PAPER-PATTERN-CHECKLIST.md` |
 
@@ -96,6 +96,17 @@
 
 ---
 
+## Wave E — Profil + kommunikasjon (chrome ✅)
+
+| Flate | Status |
+|---|---|
+| Spillerprofil coach | 17px + Workbench enTing |
+| Innboks triage + e-post | 56 CTA + Paper topp |
+| Foreldreportal | Barnenavn topp + foresatt sub |
+| CTAPill enTing | global 56px |
+
+---
+
 ## Gjenstår (prioritert)
 
 ### Umiddelbart **[ANDERS]**
@@ -106,7 +117,7 @@
 ### Agent neste (kode)
 | # | Oppgave |
 |---|---|
-| 1 | **Wave E** — spillerprofil coach, innboks dyp, foreldreportal Paper |
+| 1 | **Wave F** — økonomi, innstillinger, AK-stigen, agenticos, turnering-WB |
 | 2 | **Wave F** — økonomi, innstillinger, AK-stigen, agenticos, turnering-WB, feiring, fys/tek |
 | 3 | Agency **live-session** dyp (F1-31) |
 | 4 | **Pattern G–K** — ruter uten fasit (monster + tokens) |
@@ -141,4 +152,4 @@
 | `STATUS-NÅ.md` | Plattform-snapshot |
 | `WAVE-A/B/C/D-STATUS.md` | Detalj per wave |
 
-**Sist oppdatert:** 2026-08-09 19:30 CEST · agent Wave D finpuss 2
+**Sist oppdatert:** 2026-08-09 19:35 CEST · agent Wave E chrome

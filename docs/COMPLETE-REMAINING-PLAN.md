@@ -31,7 +31,8 @@
 | Wave B AgencyOS P0 | ✅ chrome + finpuss (Konsoll Innboks Spillere Kalender + nav) |
 | Wave C Live + runde | ✅ chrome + komplett finpuss (cream live, runde, fangst) |
 | Wave D Workbench + test/drill | ✅ chrome + finpuss ×2 (zoom soft, test-gjennomfør Paper) |
-| Wave E–F / pattern G–K | ⬜ ikke startet |
+| Wave E profil/innboks/forelder | ✅ chrome |
+| Wave F / pattern G–K | ⬜ ikke startet |
 | Pixel DONE (screenshot-gate) | ❌ alle waves — venter Anders sign-off |
 | Login OAuth | **OK** + rate-limit circuit-breaker (tidligere) |
 | Masterbrain drill bank | **Tømt** — ingen falske seed-drills |

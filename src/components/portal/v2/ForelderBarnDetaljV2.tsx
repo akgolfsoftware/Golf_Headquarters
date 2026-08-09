@@ -259,7 +259,7 @@ export function ForelderBarnDetaljV2({ data }: { data: ForelderBarnDetaljData })
   const hcpStr = barn.hcp != null ? barn.hcp.toFixed(1).replace(".", ",") : "—";
 
   return (
-    <div data-paper-portal-forelder-barn-detalj style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
+    <div data-paper-wave-e="forelder-sub" data-paper-portal-forelder-barn-detalj style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
       {/* Tilbake + hode */}
       <div>
         <TilbakeLenke href="/forelder/barn">Mine barn</TilbakeLenke>

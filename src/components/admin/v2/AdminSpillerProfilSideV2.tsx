@@ -153,15 +153,20 @@ function ProgressRing({ pct }: { pct: number | null }) {
 
 export function AdminSpillerProfilSideV2({ data }: { data: AdminSpillerProfilSideV2Data }) {
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+    <div data-paper-wave-e="spillerprofil-side" data-od-id="agencyos-spillerprofil-side" style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 960, margin: "0 auto", width: "100%" }}>
       <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
         <TilbakeLenke href={`/admin/spillere/${data.spillerId}`}>{`Tilbake til ${data.navn}`}</TilbakeLenke>
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
-          <h1 style={{ margin: 0, fontFamily: T.disp, fontWeight: 700, fontSize: 30, color: T.fg }}>
-            Spiller-<em style={{ fontStyle: "italic", fontWeight: 400, color: T.lime }}>profil</em>
-          </h1>
+          <div>
+            <h1 style={{ margin: 0, fontFamily: T.disp, fontWeight: 600, fontSize: 17, color: T.fg }}>
+              {data.navn}
+            </h1>
+            <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>
+              Spillerprofil · stamdata
+            </span>
+          </div>
           <Link href={`/admin/spillere/${data.spillerId}/rediger`} style={{ textDecoration: "none" }}>
-            <CTAPill icon="pencil">Rediger</CTAPill>
+            <CTAPill icon="pencil" enTing>Rediger</CTAPill>
           </Link>
         </div>
       </div>
@@ -199,7 +204,7 @@ export function AdminSpillerProfilSideV2({ data }: { data: AdminSpillerProfilSid
                   <div style={{ fontSize: 13, fontWeight: 600, color: T.fg, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{p.navn}</div>
                   <div style={{ marginTop: 2, fontFamily: T.mono, fontSize: 10, textTransform: "uppercase", letterSpacing: "0.08em", color: T.mut }}>{p.relasjon}</div>
                   <div style={{ marginTop: 6, fontFamily: T.mono, fontSize: 11, color: T.mut, fontVariantNumeric: "tabular-nums" }}>{p.kontakt}</div>
-                  <span style={{ marginTop: 6, display: "inline-flex", borderRadius: 9999, background: `color-mix(in srgb, ${T.lime} 12%, transparent)`, padding: "2px 8px", fontFamily: T.mono, fontSize: 9, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.08em", color: T.lime }}>
+                  <span style={{ marginTop: 6, display: "inline-flex", borderRadius: 9999, background: T.handlingSoft, padding: "2px 8px", fontFamily: T.mono, fontSize: 9, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.08em", color: T.handling }}>
                     Stripe-betaler
                   </span>
                 </div>
@@ -239,7 +244,7 @@ export function AdminSpillerProfilSideV2({ data }: { data: AdminSpillerProfilSid
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: 10 }}>
             {data.maal.map((g) => (
               <div key={g.id} style={{ borderRadius: 12, border: `1px solid ${T.border}`, background: T.panel2, padding: 14 }}>
-                <span style={{ display: "inline-flex", borderRadius: 9999, background: `color-mix(in srgb, ${T.lime} 12%, transparent)`, padding: "2px 8px", fontFamily: T.mono, fontSize: 9, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.08em", color: T.lime }}>
+                <span style={{ display: "inline-flex", borderRadius: 9999, background: T.handlingSoft, padding: "2px 8px", fontFamily: T.mono, fontSize: 9, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.08em", color: T.handling }}>
                   {g.typeLabel}
                 </span>
                 <h3 style={{ margin: "8px 0 0", fontSize: 13, fontWeight: 600, lineHeight: 1.4, color: T.fg }}>{g.tittel}</h3>

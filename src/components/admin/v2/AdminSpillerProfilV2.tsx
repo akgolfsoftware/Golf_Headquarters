@@ -105,23 +105,27 @@ export function AdminSpillerProfilV2({ data, variant = "full" }: { data: AdminSp
   ];
   const hero = (
     <Kort>
-      <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: 18 }}>
-        <AvatarInit navn={data.navn} size={64} />
-        <div style={{ flex: 1, minWidth: 200 }}>
-          <Caps size={9}>{data.eyebrow || "—"}</Caps>
-          <h2 style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 26, letterSpacing: "-0.02em", color: T.fg, margin: "6px 0 0", lineHeight: 1.1 }}>
+      <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: 16 }}>
+        <AvatarInit navn={data.navn} size={56} />
+        <div style={{ flex: 1, minWidth: 180 }}>
+          <h1 style={{ fontFamily: T.disp, fontWeight: 600, fontSize: 17, letterSpacing: "-0.02em", color: T.fg, margin: 0, lineHeight: 1.2 }}>
             {data.navn}
-          </h2>
-          {data.meta && (
-            <div style={{ fontFamily: T.mono, fontSize: 11, color: T.mut, marginTop: 6, fontVariantNumeric: "tabular-nums" }}>
-              {data.meta}
-            </div>
-          )}
+          </h1>
+          <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>
+            {data.eyebrow || "Spillerprofil"}
+            {data.meta ? ` · ${data.meta}` : ""}
+          </span>
         </div>
-        <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+        <div style={{ display: "flex", flexWrap: "wrap", gap: 8, width: "100%" }}>
           {heroKnapper.map((b) => (
-            <Link key={b.label} href={b.href} style={{ textDecoration: "none" }}>
-              <CTAPill icon={b.icon} ghost={b.ghost}>{b.label}</CTAPill>
+            <Link
+              key={b.label}
+              href={b.href}
+              style={{ textDecoration: "none", flex: b.ghost ? "none" : 1, minWidth: b.ghost ? 0 : 140 }}
+            >
+              <CTAPill icon={b.icon} ghost={b.ghost} full={!b.ghost} enTing={!b.ghost}>
+                {b.label}
+              </CTAPill>
             </Link>
           ))}
         </div>
@@ -135,7 +139,7 @@ export function AdminSpillerProfilV2({ data, variant = "full" }: { data: AdminSp
       <p style={{ fontFamily: T.ui, fontSize: 13, color: T.fg2, lineHeight: 1.55, margin: 0 }}>{data.flagg.tekst}</p>
       <div style={{ display: "flex", gap: 8, marginTop: 14 }}>
         <Link href={data.flagg.ctaHref} style={{ textDecoration: "none" }}>
-          <CTAPill icon="plus">{data.flagg.ctaLabel}</CTAPill>
+          <CTAPill icon="plus" enTing full>{data.flagg.ctaLabel}</CTAPill>
         </Link>
       </div>
     </Kort>
@@ -193,7 +197,7 @@ export function AdminSpillerProfilV2({ data, variant = "full" }: { data: AdminSp
       <div style={{ marginTop: 4, display: "flex", justifyContent: "center" }}>
         <Link href={data.wbHref} style={{ textDecoration: "none" }}>
           {/* Full-variant: primær. Seksjoner (dashboard eier Workbench): ghost. */}
-          <CTAPill icon="plus" ghost={variant === "seksjoner"}>Lag plan i Workbench</CTAPill>
+          <CTAPill icon="plus" enTing={variant !== "seksjoner"} ghost={variant === "seksjoner"} full={variant !== "seksjoner"}>Lag plan i Workbench</CTAPill>
         </Link>
       </div>
     </Kort>
@@ -208,7 +212,7 @@ export function AdminSpillerProfilV2({ data, variant = "full" }: { data: AdminSp
           onClick={() => router.push(h.href)}
           leading={
             <span style={{ width: 34, height: 34, borderRadius: 11, background: T.panel3, border: `1px solid ${T.border}`, display: "inline-flex", alignItems: "center", justifyContent: "center", flex: "none" }}>
-              <Icon name={h.icon} size={16} style={{ color: T.lime }} />
+              <Icon name={h.icon} size={16} style={{ color: T.handling }} />
             </span>
           }
           title={h.label}
@@ -238,7 +242,7 @@ export function AdminSpillerProfilV2({ data, variant = "full" }: { data: AdminSp
   );
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+    <div data-paper-wave-e="spillerprofil" data-od-id="agencyos-spillerprofil" style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 1100, margin: "0 auto", width: "100%" }}>
       {/* «seksjoner»: dashboardet (SpillerDashboardV2) eier tilbake-lenke + hero. */}
       {variant === "full" && (
         <div>

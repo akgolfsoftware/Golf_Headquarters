@@ -261,7 +261,7 @@ export function ForelderBarnV2({ data }: { data: ForelderBarnData }) {
   const forste = barn[0];
 
   return (
-    <div data-paper-portal-forelder-barn style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
+    <div data-paper-wave-e="forelder-sub" data-paper-portal-forelder-barn style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
       {/* Hode + status */}
       <div
         style={{

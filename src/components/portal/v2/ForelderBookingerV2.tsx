@@ -175,7 +175,7 @@ export function ForelderBookingerV2({ data }: { data: ForelderBookingerData }) {
   // Ingen barn koblet → ærlig tom-tilstand (lese-først portal).
   if (antallBarn === 0) {
     return (
-      <div data-paper-portal-forelder-bookinger style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
+      <div data-paper-wave-e="forelder-sub" data-paper-portal-forelder-bookinger style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
         <div>
           <Caps>Bookinger</Caps>
           <div style={{ marginTop: 10 }}>
