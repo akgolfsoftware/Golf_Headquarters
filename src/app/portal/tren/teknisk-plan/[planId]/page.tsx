@@ -184,15 +184,10 @@ export default async function PlanBuilderPage({ params }: PageProps) {
         {/* Hode */}
         <div style={{ display: "flex", flexWrap: "wrap", alignItems: "flex-end", justifyContent: "space-between", gap: 12 }}>
           <div style={{ minWidth: 0 }}>
-            <Caps>Tren · Teknisk plan</Caps>
-            <div style={{ marginTop: 10 }}>
-              <>
-                <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>Teknisk plan</h1>
-                <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>
-                  {plan.navn} · {periodLabel}
-                </span>
-              </>
-            </div>
+            <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>Teknisk plan</h1>
+            <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>
+              {plan.navn} · {periodLabel}
+            </span>
             <p style={{ fontFamily: T.ui, fontSize: 12.5, color: T.mut, margin: "10px 0 0" }}>
               {allTasks.length} oppgaver fordelt på {plan.positions.length} P-posisjoner · sist oppdatert{" "}
               {plan.updatedAt.toLocaleDateString("nb-NO", { day: "numeric", month: "short" })}.
