@@ -767,7 +767,7 @@ export function AgencyKalenderV2({ data }: { data: KalenderData }) {
     <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
       <Link
         href="/admin/planlegge"
-        data-od-id="kalender-ny-okt" data-paper-en-ting="kalender"
+        data-od-id="kalender-ny-okt" data-paper-en-ting="true"
         className="v2-press v2-focus"
         style={{
           textDecoration: "none",
@@ -775,9 +775,9 @@ export function AgencyKalenderV2({ data }: { data: KalenderData }) {
           alignItems: "center",
           justifyContent: "center",
           gap: 8,
-          minHeight: 48,
+          minHeight: 56,
           width: "100%",
-          borderRadius: 10,
+          borderRadius: 12,
           background: T.handling,
           color: T.onHandling,
           fontFamily: T.ui,
@@ -1079,7 +1079,7 @@ export function AgencyKalenderV2({ data }: { data: KalenderData }) {
   }
 
   return (
-    <PaperPage><div data-paper-agencyos-kalender data-od-id="agency-kalender" style={{ display: "contents" }}><PaperTopp tittel="Kalender" sub="AgencyOS · uke og bookinger" /><PaperKropp maxWidth={1200}>
+    <PaperPage odId="agencyos-kalender"><div data-paper-agencyos-kalender data-paper-wave-b="kalender" data-od-id="agency-kalender" style={{ display: "contents" }}><PaperTopp tittel="Kalender" sub="AgencyOS · uke, bookinger og anlegg" /><PaperKropp maxWidth={1200}>
       {hode}
       {primaerCta}
       {kpi}

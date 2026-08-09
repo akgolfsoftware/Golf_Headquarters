@@ -5,17 +5,17 @@
 ## Fase 1
 - [ ] `agencyos-agenticos.html` — m390 — d1280 — screenshot
 - [ ] `agencyos-ak-stigen.html` — m390 — d1280 — screenshot
-- [ ] `agencyos-innboks-mobil.html` — m390 — d1280 — screenshot
-- [ ] `agencyos-innboks.html` — m390 — d1280 — screenshot
+- [~] `agencyos-innboks-mobil.html` — wave B port (ikke pixel sign-off)
+- [~] `agencyos-innboks.html` — wave B port (ikke pixel sign-off)
 - [ ] `agencyos-innstillinger.html` — m390 — d1280 — screenshot
-- [ ] `agencyos-kalender-mobil.html` — m390 — d1280 — screenshot
-- [ ] `agencyos-kalender.html` — m390 — d1280 — screenshot
-- [ ] `agencyos-konsoll-desktop.html` — m390 — d1280 — screenshot
-- [ ] `agencyos-konsoll-mobil.html` — m390 — d1280 — screenshot
+- [~] `agencyos-kalender-mobil.html` — wave B port (ikke pixel sign-off)
+- [~] `agencyos-kalender.html` — wave B port (ikke pixel sign-off)
+- [~] `agencyos-konsoll-desktop.html` — wave B port (ikke pixel sign-off)
+- [~] `agencyos-konsoll-mobil.html` — wave B port (ikke pixel sign-off)
 - [ ] `agencyos-live-session.html` — m390 — d1280 — screenshot
 - [ ] `agencyos-okonomi.html` — m390 — d1280 — screenshot
-- [ ] `agencyos-spillere-mobil.html` — m390 — d1280 — screenshot
-- [ ] `agencyos-spillere.html` — m390 — d1280 — screenshot
+- [~] `agencyos-spillere-mobil.html` — wave B port (ikke pixel sign-off)
+- [~] `agencyos-spillere.html` — wave B port (ikke pixel sign-off)
 - [ ] `booking.html` — m390 — d1280 — screenshot
 - [ ] `fangstsheet.html` — m390 — d1280 — screenshot
 - [ ] `foreldreportal.html` — m390 — d1280 — screenshot

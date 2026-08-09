@@ -81,10 +81,11 @@ export const PLAYERHQ_NAV: V2NavItem[] = [
  * det som tidligere var 20+ «Mer»-lenker. Se agency-hub-subnav.tsx.
  */
 export const AGENCYOS_NAV: V2NavItem[] = [
-  { id: "cockpit", label: "Hjem", icon: "home", href: "/admin/agencyos" },
-  { id: "spillere", label: "Stall", icon: "users", href: "/admin/spillere" },
+  /* Paper fasit agencyos-*.html rail: Konsoll · Innboks · Spillere · Kalender (+ Workbench i Mer) */
+  { id: "cockpit", label: "Konsoll", icon: "home", href: "/admin/agencyos" },
+  { id: "innboks", label: "Innboks", icon: "inbox", href: "/admin/innboks" },
+  { id: "spillere", label: "Spillere", icon: "users", href: "/admin/spillere" },
   { id: "kalender", label: "Kalender", icon: "calendar", href: "/admin/kalender" },
-  { id: "innboks", label: "Kø", icon: "inbox", href: "/admin/godkjenninger" },
   { id: "innsikt", label: "Innsikt", icon: "bar-chart", href: "/admin/analyse" },
 ];
 
@@ -776,6 +777,7 @@ export function V2Shell({ aktiv, nav = PLAYERHQ_NAV, mer, rom, navn = "Øyvind R
     // Hub-ruter utenfor Mer → primær-seksjon (Kø / Kalender / Innsikt).
     const pathTilSeksjon: Array<{ prefix: string; id: string }> = [
       { prefix: "/admin/godkjenninger", id: "innboks" },
+      { prefix: "/admin/innboks", id: "innboks" },
       { prefix: "/admin/innboks", id: "innboks" },
       { prefix: "/admin/varsler", id: "innboks" },
       { prefix: "/admin/queue", id: "innboks" },

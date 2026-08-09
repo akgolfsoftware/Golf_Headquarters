@@ -34,6 +34,7 @@ import {
   type SevKey,
 } from "@/components/v2";
 import type { AkseKey } from "@/lib/v2/tokens";
+import { PaperPage, PaperTopp, PaperKropp } from "@/components/portal/v2/PaperChrome";
 
 /** true på klient etter mount når viewport < 768px (M3-mobilvariant). */
 function useMobile(): boolean {
@@ -201,7 +202,7 @@ function SpillerSammendrag({ s }: { s: StallV2Player }) {
       {/* B: én primær (Workbench) · profil er sekundær */}
       <div style={{ display: "flex", gap: 8, marginTop: 16, flexWrap: "wrap" }}>
         <Link href={`/admin/spillere/${s.id}/workbench`} style={{ display: "inline-flex", textDecoration: "none" }}>
-          <CTAPill icon="arrow-right">
+          <CTAPill enTing icon="arrow-right">
             {s.trenger ? "Følg opp i Workbench" : "Åpne Workbench"}
           </CTAPill>
         </Link>
@@ -214,6 +215,7 @@ function SpillerSammendrag({ s }: { s: StallV2Player }) {
 }
 
 export function StallV2({ data }: { data: StallV2Data }) {
+  /* Wave B: Paper agencyos-spillere */
   const mobile = useMobile();
   const [grp, setGrp] = useState<string[]>([]);
   const [sta, setSta] = useState<string[]>([]);
@@ -385,9 +387,9 @@ export function StallV2({ data }: { data: StallV2Data }) {
   const hode = (
     <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 14, flexWrap: "wrap" }}>
       <div>
-        <Caps>{data.total === 1 ? "1 spiller · AgencyOS" : `${data.total} spillere · AgencyOS`}</Caps>
+        <Caps>{`${data.total} · ${stallKpi.trenger} trenger deg`}</Caps>
         <div style={{ marginTop: 10 }}>
-          <Tittel em="stall.">Din</Tittel>
+          <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>Spillere</h1>
         </div>
       </div>
       {/* B: én primær i hode — «følg opp» når noen trenger deg; ellers ghost «Ny spiller» */}
@@ -396,9 +398,9 @@ export function StallV2({ data }: { data: StallV2Data }) {
           <button type="button" onClick={foelgOpp} style={{ background: "none", border: "none", padding: 0, cursor: "pointer" }}>
 <span style={{
               display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8,
-              minHeight: 44, padding: "10px 16px", borderRadius: 10, 
+              minHeight: 44, padding: "10px 16px", borderRadius: 12,
               background: T.handling, color: T.onHandling, fontFamily: T.ui, fontSize: 13, fontWeight: 600,
-            }}>Følg opp {stallKpi.trenger}</span>
+            }} data-paper-en-ting="true">Følg opp {stallKpi.trenger}</span>
           </button>
         ) : (
           <Link href="/admin/spillere/ny" style={{ textDecoration: "none" }}>
@@ -418,18 +420,18 @@ export function StallV2({ data }: { data: StallV2Data }) {
               display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8,
               minHeight: 44, padding: "10px 16px", borderRadius: 10, width: "100%",
               background: T.handling, color: T.onHandling, fontFamily: T.ui, fontSize: 13, fontWeight: 600,
-            }}>Følg opp {stallKpi.trenger} {stallKpi.trenger === 1 ? "spiller" : "spillere"}</span>
+            }} data-paper-en-ting="true">Følg opp {stallKpi.trenger} {stallKpi.trenger === 1 ? "spiller" : "spillere"}</span>
         </button>
       </div>
     ) : null;
 
   if (data.spillere.length === 0) {
     return (
-      <div data-paper-agencyos-spillere style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 960, margin: "0 auto", width: "100%" }}>
+      <div data-paper-agencyos-spillere data-paper-wave-b="spillere" data-od-id="agency-spillere" style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 960, margin: "0 auto", width: "100%" }}>
         <div>
           <Caps>AgencyOS</Caps>
           <div style={{ marginTop: 10 }}>
-            <Tittel em="stall.">Din</Tittel>
+            <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>Spillere</h1>
           </div>
         </div>
         <Kort>
@@ -452,7 +454,7 @@ export function StallV2({ data }: { data: StallV2Data }) {
 
   if (mobile) {
     return (
-      <div data-paper-agencyos-spillere style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 960, margin: "0 auto", width: "100%" }}>
+      <div data-paper-agencyos-spillere data-paper-wave-b="spillere" data-od-id="agency-spillere" style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 960, margin: "0 auto", width: "100%" }}>
         {hode}
         {tilstandKort}
         {mobilPrimaer}
@@ -469,7 +471,7 @@ export function StallV2({ data }: { data: StallV2Data }) {
   }
 
   return (
-    <div data-paper-agencyos-spillere style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 960, margin: "0 auto", width: "100%" }}>
+    <div data-paper-agencyos-spillere data-paper-wave-b="spillere" data-od-id="agency-spillere" style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 960, margin: "0 auto", width: "100%" }}>
       {hode}
       {tilstandKort}
       {filtre}

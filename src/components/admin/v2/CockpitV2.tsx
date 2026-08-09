@@ -116,8 +116,8 @@ export function CockpitV2({
   // ── Hode ────────────────────────────────────────────────────────
   const hode = (
     <PaperTopp
-      tittel={`${data.greeting}, ${data.coachFirstName}`}
-      sub={`${data.dayLabel} · AgencyOS`}
+      tittel="Konsoll"
+      sub={`${data.greeting}, ${data.coachFirstName} · ${data.dayLabel}`}
       trailing={
         data.liveSessionsCount > 0 ? (
           <StatusPill tone="down">
@@ -146,7 +146,7 @@ export function CockpitV2({
       </Link>
       <Link href="/admin/spillere" style={{ textDecoration: "none" }}>
         <CTAPill ghost icon="users">
-          Stall
+          Spillere
         </CTAPill>
       </Link>
       <Link href="/admin/kalender" style={{ textDecoration: "none" }}>
@@ -154,9 +154,9 @@ export function CockpitV2({
           Kalender
         </CTAPill>
       </Link>
-      <Link href="/admin/godkjenninger" style={{ textDecoration: "none" }}>
+      <Link href="/admin/innboks" style={{ textDecoration: "none" }}>
         <CTAPill ghost icon="inbox">
-          Kø
+          Innboks
         </CTAPill>
       </Link>
       {/* Opptak: «Mer» er låst til fem rom, så cockpit-hurtigstart er den
@@ -397,7 +397,7 @@ export function CockpitV2({
   const innsikt = <InnsiktChip cta="Planlegg i Workbench" href="/admin/planlegge">{innsiktTekst}</InnsiktChip>;
 
   return (
-    <PaperPage>
+    <PaperPage odId="agencyos-konsoll">
     <div data-paper-agencyos-konsoll style={{ display: "contents" }}>
       {hode}
       <PaperKropp maxWidth={960}>
