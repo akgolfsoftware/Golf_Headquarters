@@ -38,10 +38,12 @@ import {
   timeGridBlockStyle,
   snapYToSlot,
 } from "@/components/v2";
-import { PaperTopp } from "@/components/portal/v2/PaperChrome";
+import { PaperPage, PaperTopp, PaperKropp } from "@/components/portal/v2/PaperChrome";
 import { type AkseKey } from "@/lib/v2/tokens";
 import type { KalenderData, KalDag, KalOkt } from "@/app/admin/kalender/data";
 import { foreslaGridTid } from "@/lib/calendar/notion-grid";
+import { coachColorFor } from "@/lib/booking/coach-colors";
+
 
 /** true på klient etter mount når viewport < 768px (styrer kun layout-tetthet). */
 function useMobile(): boolean {
@@ -56,9 +58,9 @@ function useMobile(): boolean {
   return m;
 }
 
-const SERIE_KANT = `color-mix(in srgb,${T.lime} 45%,transparent)`;
-const SERIE_GLOW = `0 0 0 3px color-mix(in srgb,${T.lime} 10%,transparent)`;
-const NAA_KANT = `color-mix(in srgb,${T.lime} 30%,transparent)`;
+const SERIE_KANT = `color-mix(in srgb,${T.handling} 45%,transparent)`;
+const SERIE_GLOW = `0 0 0 3px color-mix(in srgb,${T.handling} 10%,transparent)`;
+const NAA_KANT = `color-mix(in srgb,${T.handling} 30%,transparent)`;
 
 /* ── MikroMeta — liten mono-etikett m/ ikon (mockup-lokal) ── */
 function MikroMeta({ icon, children }: { icon: string; children: React.ReactNode }) {
@@ -73,6 +75,60 @@ function MikroMeta({ icon, children }: { icon: string; children: React.ReactNode
 /* ── SerieMerke — Apple Kalender-idiom: repeat-ikon + «Gjentas hver …» ── */
 function SerieMerke({ tekst }: { tekst: string }) {
   return <MikroMeta icon="repeat">{tekst}</MikroMeta>;
+}
+
+/** Multi-coach legend — only when 2+ coacher in week. */
+function CoachLegend({
+  coacher,
+}: {
+  coacher: Array<{ id: string; navn: string }>;
+}) {
+  if (coacher.length < 2) return null;
+  return (
+    <div
+      data-od-id="agency-kalender-coach-legend"
+      style={{
+        display: "flex",
+        flexWrap: "wrap",
+        gap: "6px 12px",
+        alignItems: "center",
+        padding: "2px 0 4px",
+      }}
+      aria-label="Coach-farger"
+    >
+      <Caps size={9} style={{ marginRight: 2 }}>
+        Coacher
+      </Caps>
+      {coacher.map((c) => {
+        const col = coachColorFor(c.id);
+        return (
+          <span
+            key={c.id}
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              gap: 6,
+              fontFamily: T.ui,
+              fontSize: 12,
+              color: T.fg2,
+            }}
+          >
+            <span
+              aria-hidden
+              style={{
+                width: 10,
+                height: 10,
+                borderRadius: 3,
+                background: col.accent,
+                flex: "none",
+              }}
+            />
+            {c.navn.split(" ")[0]}
+          </span>
+        );
+      })}
+    </div>
+  );
 }
 
 /* ── OktBlokk — én økt i uke-grid/dag-liste. Serie-økter åpner SerieMeny
@@ -95,17 +151,28 @@ function OktBlokk({
   const erSerie = Boolean(okt.serie);
   const erTrening = Boolean(okt.treningsSessionId);
   const erGoogle = Boolean(okt.erGoogle);
+  const coachAccent =
+    !erGoogle && okt.coachId ? coachColorFor(okt.coachId).accent : null;
   const kant = okt.naa ? NAA_KANT : erSerie ? SERIE_KANT : T.border;
+  const leftBorder = erGoogle
+    ? `3px solid ${okt.kalenderFarge ?? T.mut}`
+    : coachAccent
+      ? `3px solid ${coachAccent}`
+      : `1px solid ${kant}`;
+  const dotColor = erGoogle
+    ? (okt.kalenderFarge ?? T.mut)
+    : coachAccent
+      ? coachAccent
+      : okt.akse
+        ? T.ax[okt.akse as AkseKey]
+        : T.mut;
   const inner = (
     <div
       style={{
         background: erSerie || okt.naa || erTrening ? `${T.tint}, ${T.panel2}` : T.panel2,
         border: `1px solid ${kant}`,
-        // Google-hendelser får kalenderens egen farge som venstrestripe, så
-        // det er umiddelbart synlig hvilken kalender avtalen kommer fra.
-        borderLeft: erGoogle
-          ? `3px solid ${okt.kalenderFarge ?? T.mut}`
-          : `1px solid ${kant}`,
+        // Google-hendelser: kalenderfarge. Bookinger: coach-farge (multi-coach).
+        borderLeft: leftBorder,
         boxShadow: erSerie ? SERIE_GLOW : "none",
         borderRadius: T.rRow,
         padding: compact ? "4px 6px" : "8px 9px",
@@ -121,7 +188,7 @@ function OktBlokk({
     >
       <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
         <span style={{ fontFamily: T.mono, fontSize: compact ? 9 : 10, fontWeight: 700, color: T.fg2, fontVariantNumeric: "tabular-nums" }}>{okt.kl}</span>
-        <span style={{ width: 5, height: 5, borderRadius: 9999, background: erGoogle ? (okt.kalenderFarge ?? T.mut) : okt.akse ? T.ax[okt.akse as AkseKey] : T.mut, flex: "none" }} />
+        <span style={{ width: 5, height: 5, borderRadius: 9999, background: dotColor, flex: "none" }} />
         {!compact && okt.naa && <StatusPill tone="down">Live</StatusPill>}
         {!compact && erTrening && <MikroMeta icon="list">Drills</MikroMeta>}
         {!compact && okt.gruppe != null && <MikroMeta icon="users">{okt.gruppe}</MikroMeta>}
@@ -132,7 +199,8 @@ function OktBlokk({
       {!compact && erGoogle && okt.kalenderNavn && (
         <MikroMeta icon="calendar">{okt.kalenderNavn.trim()}</MikroMeta>
       )}
-      {!compact && okt.sted && <MikroMeta icon="map-pin">{okt.sted}</MikroMeta>}
+      {!compact && okt.coachName && <MikroMeta icon="user">{okt.coachName}</MikroMeta>}
+      {!compact && okt.sted && <MikroMeta icon="map-pin">{okt.facilityName ? `${okt.facilityName}` : okt.sted}</MikroMeta>}
       {!compact && okt.serie && <SerieMerke tekst={okt.serie} />}
     </div>
   );
@@ -459,8 +527,8 @@ function AgencyDagInnhold({
       style={{
         position: "absolute",
         inset: 0,
-        background: over ? `color-mix(in srgb, ${T.lime} 8%, transparent)` : "transparent",
-        outline: over ? `1px dashed color-mix(in srgb, ${T.lime} 45%, transparent)` : "none",
+        background: over ? `color-mix(in srgb, ${T.handling} 8%, transparent)` : "transparent",
+        outline: over ? `1px dashed color-mix(in srgb, ${T.handling} 45%, transparent)` : "none",
         outlineOffset: -2,
         transition: "background 80ms",
       }}
@@ -586,6 +654,12 @@ export function AgencyKalenderV2({ data }: { data: KalenderData }) {
   const router = useRouter();
   const [visning, setVisning] = useState("uke");
   const [flytterId, setFlytterId] = useState<string | null>(null);
+  // Multi-coach + fasilitet: null = alle
+  const [coachFilter, setCoachFilter] = useState<string | null>(
+    // COACH default: se egne bookinger først; ADMIN: alle
+    data.viewerErAdmin ? null : data.viewerCoachId,
+  );
+  const [facilityFilter, setFacilityFilter] = useState<string | null>(null);
 
   // I5: dra en booking-blokk til en annen dag-kolonne.
   const onFlytt = async (bookingId: string, datoISO: string) => {
@@ -646,8 +720,27 @@ export function AgencyKalenderV2({ data }: { data: KalenderData }) {
     </Link>
   );
 
-  const antallOkter = data.antallOkter;
-  const liveIDag = data.dager.find((d) => d.idag)?.okter.filter((o) => o.naa).length ?? 0;
+  const filtrerteDager = data.dager.map((d) => ({
+    ...d,
+    okter: d.okter.filter((o) => {
+      // Google/hendelse/serie uten coach — vis alltid med mindre facility filter
+      if (coachFilter && o.coachId && o.coachId !== coachFilter) return false;
+      // When filtering by coach, hide other coaches' bookinger; keep google/personal
+      if (coachFilter && o.coachId == null && !o.erGoogle && !o.erHendelse && !o.erOppgave && !o.serie && !o.treningsSessionId) {
+        // Booking without coachId (group) — keep
+      }
+      if (facilityFilter) {
+        if (o.facilityId && o.facilityId !== facilityFilter) return false;
+        // Non-booking blocks without facility: hide when facility filter is on
+        if (!o.facilityId && !o.erGoogle && !o.erHendelse && !o.erOppgave && o.href?.includes("/admin/bookinger")) {
+          return false;
+        }
+      }
+      return true;
+    }),
+  }));
+  const antallOkter = filtrerteDager.reduce((n, d) => n + d.okter.length, 0);
+  const liveIDag = filtrerteDager.find((d) => d.idag)?.okter.filter((o) => o.naa).length ?? 0;
   const statusTone = liveIDag > 0 ? "down" : antallOkter > 0 ? "lime" : "info";
   const statusTekst =
     liveIDag > 0
@@ -662,7 +755,7 @@ export function AgencyKalenderV2({ data }: { data: KalenderData }) {
       <div>
         <Caps>{data.ukeLabel}</Caps>
         <div style={{ marginTop: 10 }}>
-          <Tittel mobile={mobile} em="uke.">Stallens</Tittel>
+          <Tittel mobile={mobile} em="uke.">{data.viewerErAdmin ? "Teamets" : "Din"}</Tittel>
         </div>
       </div>
       <StatusPill tone={statusTone}>{statusTekst}</StatusPill>
@@ -674,7 +767,7 @@ export function AgencyKalenderV2({ data }: { data: KalenderData }) {
     <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
       <Link
         href="/admin/planlegge"
-        data-od-id="kalender-ny-okt"
+        data-od-id="kalender-ny-okt" data-paper-en-ting="kalender"
         className="v2-press v2-focus"
         style={{
           textDecoration: "none",
@@ -707,6 +800,71 @@ export function AgencyKalenderV2({ data }: { data: KalenderData }) {
   // Bølge 12: Notion-toolbar i fasit-rekkefølge (familie-calendar.html
   // .cal-toolbar) — «I dag» · piler · periode-tittel · spacer · segmentert
   // visningsvelger. Segmentet er bevisst IKKE lime; lime-jobben er «Ny økt».
+
+  const teamFilter = (data.coacher.length > 0 || data.fasiliteter.length > 0) ? (
+    <div
+      data-od-id="kalender-team-filter"
+      style={{
+        display: "flex",
+        flexWrap: "wrap",
+        gap: 8,
+        alignItems: "center",
+      }}
+      aria-label="Filtrer coach og fasilitet"
+    >
+      {data.coacher.length > 0 && (
+        <label style={{ display: "inline-flex", alignItems: "center", gap: 6, fontFamily: T.mono, fontSize: 10, fontWeight: 700, color: T.mut, textTransform: "uppercase", letterSpacing: "0.04em" }}>
+          Coach
+          <select
+            value={coachFilter ?? ""}
+            onChange={(e) => setCoachFilter(e.target.value || null)}
+            className="v2-focus"
+            style={{
+              minHeight: 40,
+              borderRadius: T.rTag,
+              border: `1px solid ${T.border}`,
+              background: T.panel,
+              color: T.fg,
+              fontFamily: T.ui,
+              fontSize: 13,
+              padding: "0 10px",
+            }}
+          >
+            <option value="">Alle coacher</option>
+            {data.coacher.map((c) => (
+              <option key={c.id} value={c.id}>{c.navn}</option>
+            ))}
+          </select>
+        </label>
+      )}
+      {data.fasiliteter.length > 0 && (
+        <label style={{ display: "inline-flex", alignItems: "center", gap: 6, fontFamily: T.mono, fontSize: 10, fontWeight: 700, color: T.mut, textTransform: "uppercase", letterSpacing: "0.04em" }}>
+          Fasilitet
+          <select
+            value={facilityFilter ?? ""}
+            onChange={(e) => setFacilityFilter(e.target.value || null)}
+            className="v2-focus"
+            style={{
+              minHeight: 40,
+              borderRadius: T.rTag,
+              border: `1px solid ${T.border}`,
+              background: T.panel,
+              color: T.fg,
+              fontFamily: T.ui,
+              fontSize: 13,
+              padding: "0 10px",
+            }}
+          >
+            <option value="">Alle fasiliteter</option>
+            {data.fasiliteter.map((f) => (
+              <option key={f.id} value={f.id}>{f.navn}</option>
+            ))}
+          </select>
+        </label>
+      )}
+    </div>
+  ) : null;
+
   const navigasjon = (
     <div style={{ display: "flex", alignItems: "center", gap: "10px 14px", flexWrap: "wrap" }}>
       <Link
@@ -742,9 +900,9 @@ export function AgencyKalenderV2({ data }: { data: KalenderData }) {
       <SegmentertFaner
         ariaLabel="Kalendervisning"
         options={[
-          { id: "dag", label: "Dag" },
-          { id: "uke", label: "Uke" },
-          { id: "maned", label: "Måned" },
+          { id: "dag", label: "Dag", odId: "kam-vis-dag" },
+          { id: "uke", label: "Uke", odId: "kam-vis-uke" },
+          { id: "maned", label: "Måned", odId: "kam-vis-maaned" },
         ]}
         value={visning}
         onChange={setVisning}
@@ -773,7 +931,7 @@ export function AgencyKalenderV2({ data }: { data: KalenderData }) {
 
   const innsikt = data.innsikt ? (
     <div style={{ display: "flex", gap: 8, alignItems: "flex-start", padding: "10px 12px", borderRadius: 12, background: T.panel2, border: `1px solid ${T.border}` }}>
-      <Icon name="sparkles" size={13} style={{ color: T.lime, flex: "none", marginTop: 1 }} />
+      <Icon name="sparkles" size={13} style={{ color: T.handling, flex: "none", marginTop: 1 }} />
       <span style={{ fontFamily: T.ui, fontSize: 12, color: T.fg2, lineHeight: 1.5 }}>{data.innsikt}</span>
     </div>
   ) : null;
@@ -791,7 +949,7 @@ export function AgencyKalenderV2({ data }: { data: KalenderData }) {
         </Kort>
       );
     } else if (visning === "dag") {
-      const valgt = data.dager.find((d) => d.idag) ?? data.dager[0];
+      const valgt = filtrerteDager.find((d) => d.idag) ?? filtrerteDager[0];
       mobilKropp = (
         <Kort eyebrow={`${valgt.dag} ${valgt.dato}${valgt.idag ? " · i dag" : ""}`}>
           <DagOkterListe dag={valgt} onSerieClick={setValgtSerieOkt} onTreningClick={(o) => void apneTrening(o)} onGoogleClick={setValgtGoogleOkt} onTomLuke={onTomLuke} />
@@ -801,7 +959,7 @@ export function AgencyKalenderV2({ data }: { data: KalenderData }) {
       // Uke: alle 7 ukedager som stablede liste-seksjoner, tap → dag-detalj.
       mobilKropp = (
         <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-          {data.dager.map((d, i) => (
+          {filtrerteDager.map((d, i) => (
             <MobilDagSeksjon key={i} dag={d} onApne={() => setDagArk(d)} />
           ))}
         </div>
@@ -813,7 +971,10 @@ export function AgencyKalenderV2({ data }: { data: KalenderData }) {
         {primaerCta}
         {kpi}
         {navigasjon}
+      {teamFilter}
+        <CoachLegend coacher={data.coacher} />
         {mobilKropp}
+
         {visning === "uke" && serieHint}
         {innsikt}
         <BunnArk
@@ -879,7 +1040,7 @@ export function AgencyKalenderV2({ data }: { data: KalenderData }) {
     // N1: felles Notion TimeGrid (samme motor som Workbench-uke)
     kropp = (
       <TimeGrid
-        days={data.dager.map((d, i) => ({
+        days={filtrerteDager.map((d, i) => ({
           id: d.datoISO || `dag-${i}`,
           dow: d.dag,
           date: d.dato,
@@ -890,7 +1051,7 @@ export function AgencyKalenderV2({ data }: { data: KalenderData }) {
         bordered
         renderDay={(i) => (
           <AgencyDagInnhold
-            dag={data.dager[i]}
+            dag={filtrerteDager[i]}
             onSerieClick={setValgtSerieOkt}
             onTreningClick={(o) => void apneTrening(o)}
             onGoogleClick={setValgtGoogleOkt}
@@ -902,7 +1063,7 @@ export function AgencyKalenderV2({ data }: { data: KalenderData }) {
       />
     );
   } else if (visning === "dag") {
-    const valgt = data.dager.find((d) => d.idag) ?? data.dager[0];
+    const valgt = filtrerteDager.find((d) => d.idag) ?? filtrerteDager[0];
     kropp = (
       <Kort eyebrow={`${valgt.dag} ${valgt.dato}${valgt.idag ? " · i dag" : ""}`}>
         <DagOkterListe dag={valgt} onSerieClick={setValgtSerieOkt} onTreningClick={(o) => void apneTrening(o)} onGoogleClick={setValgtGoogleOkt} onTomLuke={onTomLuke} />
@@ -918,12 +1079,15 @@ export function AgencyKalenderV2({ data }: { data: KalenderData }) {
   }
 
   return (
-    <div data-paper-agencyos-kalender style={{ display: "flex", flexDirection: "column", gap: 0, maxWidth: 1200, margin: "0 auto", width: "100%", minHeight: "100%" }}>
+    <PaperPage><div data-paper-agencyos-kalender data-od-id="agency-kalender" style={{ display: "contents" }}><PaperTopp tittel="Kalender" sub="AgencyOS · uke og bookinger" /><PaperKropp maxWidth={1200}>
       {hode}
       {primaerCta}
       {kpi}
       {navigasjon}
+      {teamFilter}
+      <CoachLegend coacher={data.coacher} />
       {kropp}
+
       {visning === "uke" && serieHint}
       {innsikt}
       {valgtSerieOkt && <SerieMeny okt={valgtSerieOkt} onClose={() => setValgtSerieOkt(null)} />}
@@ -975,6 +1139,8 @@ export function AgencyKalenderV2({ data }: { data: KalenderData }) {
         )}
       </BunnArk>
       {tomLuke && <HurtigOpprett dato={tomLuke.dato} klokkeslett={tomLuke.kl} onLukk={() => setTomLuke(null)} />}
-    </div>
+      </PaperKropp>
+      </div>
+    </PaperPage>
   );
 }

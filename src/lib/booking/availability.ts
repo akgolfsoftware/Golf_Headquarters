@@ -185,11 +185,15 @@ export async function getAvailableSlots(
 /**
  * Verifiser at et spesifikt slot fortsatt er ledig.
  * Brukes ved checkout for å unngå race conditions.
+ *
+ * Soft slot-hold (3 min) respekteres: annen holders hold → false.
+ * holderId = egen bruker/guest-nøkkel (kan fornye sitt hold).
  */
 export async function isSlotStillAvailable(
   serviceTypeId: string,
   startAt: Date,
   coachId: string,
+  holderId?: string | null,
 ): Promise<boolean> {
   const service = await prisma.serviceType.findUnique({
     where: { id: serviceTypeId },
@@ -197,6 +201,21 @@ export async function isSlotStillAvailable(
   if (!service) return false;
 
   const endAt = new Date(startAt.getTime() + service.durationMin * 60_000);
+
+  // Soft hold under Stripe checkout (B.3)
+  const { isBlockedByHold } = await import("@/lib/booking/slot-hold");
+  if (
+    await isBlockedByHold(
+      {
+        serviceTypeId,
+        coachId,
+        startIso: startAt.toISOString(),
+      },
+      holderId,
+    )
+  ) {
+    return false;
+  }
 
   const conflict = await prisma.booking.findFirst({
     where: {

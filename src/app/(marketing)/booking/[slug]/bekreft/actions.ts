@@ -8,7 +8,11 @@ import { stripeKlient } from "@/lib/stripe";
 import { getCurrentUser } from "@/lib/auth/getCurrentUser";
 import { kanBrukeInnebygdBooking } from "@/lib/booking/offentlig-booking";
 import { isSlotStillAvailable } from "@/lib/booking/availability";
+import { acquireHold, DEFAULT_HOLD_TTL_MS } from "@/lib/booking/slot-hold";
+import { recordBookingMetric } from "@/lib/booking/metrics";
 import { audit } from "@/lib/audit";
+
+
 import { nonEmpty, isoDate, email, phone } from "@/lib/validation/schemas";
 import { APP_URL } from "@/lib/app-url";
 import { logError } from "@/lib/error-tracking";
@@ -65,14 +69,39 @@ export async function createBookingCheckout(
     }
 
     const startAt = new Date(data.start);
+    const user = await getCurrentUser();
+    // Soft hold holder: logged-in user or guest email
+    const holderId = user?.id ?? `guest:${data.email.trim().toLowerCase()}`;
+    // Align hold key with the coach that ends up on the booking
+    const coachId = service.coachUserId ?? data.coachId;
 
-    const ok = await isSlotStillAvailable(service.id, startAt, data.coachId);
+
+    const ok = await isSlotStillAvailable(service.id, startAt, coachId, holderId);
     if (!ok) {
+      await recordBookingMetric("book_slot_miss");
       return {
         ok: false,
         error: "Denne tiden ble dessverre booket av noen andre. Velg en annen tid.",
       };
     }
+
+    const hold = await acquireHold(
+      {
+        serviceTypeId: service.id,
+        coachId,
+        startIso: startAt.toISOString(),
+      },
+      holderId,
+      DEFAULT_HOLD_TTL_MS,
+    );
+    if (!hold.ok) {
+      await recordBookingMetric("book_hold_blocked");
+      return {
+        ok: false,
+        error: "Noen andre holder på denne tiden akkurat nå. Vent litt eller velg en annen tid.",
+      };
+    }
+    await recordBookingMetric("book_checkout_start");
 
     // Stripe NOK minimum er 300 øre (kr 3,00)
     if (service.priceOre < 300) {
@@ -102,8 +131,6 @@ export async function createBookingCheckout(
         error: "Ingen lokasjon er registrert i systemet. Kontakt oss på post@akgolf.no.",
       };
     }
-
-    const user = await getCurrentUser();
 
     // userId er nullable — gjester booker uten konto.
     // guestName/guestEmail/guestPhone brukes for kontakt og kvittering.

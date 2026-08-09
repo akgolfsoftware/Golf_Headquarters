@@ -3,10 +3,10 @@
 /**
  * Ny booking — 5-stegs wizard (/admin/bookinger/ny).
  *
- * Steg: 1 Spiller · 2 Tjeneste · 3 Lokasjon/fasilitet · 4 Dato & tid · 5 Bekreft.
- * Wirer mot eksisterende server-action createSessionFromCalendar (src/app/admin/
- * calendar/actions.ts) — ingen ny booking-logikk. AgencyOS-DNA: mono-eyebrows,
- * lime-aksent, DS-tokens, lucide-ikoner. Ingen hardkodet hex, ingen emoji.
+ * Steg: 1 Spiller · 2 Tjeneste (+ multi-coach filter) · 3 Lokasjon/fasilitet · 4 Dato & tid · 5 Bekreft.
+ * Multi-coach: ADMIN filtrerer coach → tjenester; COACH ser egne + felles.
+ * Fasilitet valgfri under lokasjon (capacity vist). Policy-hint fra lib/booking/policy.
+ * Wirer createSessionFromCalendar (kollisjonsvern + facility).
  *
  * Validering pr. steg (kan ikke gå videre uten påkrevd valg). Pris/varighet
  * vises fra valgt tjeneste — aldri oppdiktede tall.
@@ -33,18 +33,35 @@ import { cn } from "@/lib/utils";
 import { createSessionFromCalendar } from "@/app/admin/(legacy)/calendar/actions";
 
 type Spiller = { id: string; name: string; email: string; homeClub: string | null };
-type Tjeneste = { id: string; name: string; durationMin: number; priceOre: number };
-type Fasilitet = { id: string; name: string };
+type Tjeneste = {
+  id: string;
+  name: string;
+  durationMin: number;
+  priceOre: number;
+  maxDeltakere?: number;
+  coachUserId?: string | null;
+  coachName?: string | null;
+};
+type Fasilitet = { id: string; name: string; capacity?: number };
 type Lokasjon = { id: string; name: string; address: string; facilities: Fasilitet[] };
+type Coach = { id: string; name: string };
 
 export type NyBookingWizardProps = {
   spillere: Spiller[];
   tjenester: Tjeneste[];
   lokasjoner: Lokasjon[];
+  /** Team-coacher for filter (ADMIN: alle; COACH: seg selv). */
+  coacher?: Coach[];
+  viewerErAdmin?: boolean;
+  viewerCoachId?: string;
+  /** Prefill coach-filter (fra ?coachId= eller innlogget coach). */
+  defaultCoachId?: string;
   groupId?: string;
   group?: { id: string; name: string; maxParticipants: number | null } | null;
   /** ISO-tidspunkt fra trykk på tom kalenderluke (I1) — prefyller Dato & tid. */
   defaultStart?: string;
+  /** Kort policy-tekst under bekreft. */
+  policyHint?: string;
 };
 
 const STEG = [
@@ -65,12 +82,27 @@ function formatKr(ore: number): string {
   return new Intl.NumberFormat("nb-NO").format(Math.round(ore / 100));
 }
 
-export function NyBookingWizard({ spillere, tjenester, lokasjoner, groupId, group, defaultStart }: NyBookingWizardProps) {
+export function NyBookingWizard({
+  spillere,
+  tjenester,
+  lokasjoner,
+  coacher = [],
+  viewerErAdmin = false,
+  viewerCoachId,
+  defaultCoachId,
+  groupId,
+  group,
+  defaultStart,
+  policyHint,
+}: NyBookingWizardProps) {
   const router = useRouter();
   const [pending, startTransition] = useTransition();
 
   const [steg, setSteg] = useState(1);
   const [spillerId, setSpillerId] = useState<string | null>(null);
+  const [coachFilterId, setCoachFilterId] = useState<string | null>(
+    defaultCoachId ?? (viewerErAdmin ? null : viewerCoachId ?? null),
+  );
   const [tjenesteId, setTjenesteId] = useState<string | null>(null);
   const [lokasjonId, setLokasjonId] = useState<string | null>(null);
   const [fasilitetId, setFasilitetId] = useState<string | null>(null);
@@ -89,9 +121,21 @@ export function NyBookingWizard({ spillere, tjenester, lokasjoner, groupId, grou
   const isGroup = !!groupId;
 
   const valgtSpiller = spillere.find((s) => s.id === spillerId) ?? null;
-  const valgtTjeneste = tjenester.find((t) => t.id === tjenesteId) ?? null;
+  const filtrerteTjenester = useMemo(() => {
+    return tjenester.filter((tj) => {
+      if (!coachFilterId) return true;
+      return tj.coachUserId == null || tj.coachUserId === coachFilterId;
+    });
+  }, [tjenester, coachFilterId]);
+  const valgtTjeneste = filtrerteTjenester.find((t) => t.id === tjenesteId)
+    ?? tjenester.find((t) => t.id === tjenesteId)
+    ?? null;
   const valgtLokasjon = lokasjoner.find((l) => l.id === lokasjonId) ?? null;
   const valgtFasilitet = valgtLokasjon?.facilities.find((f) => f.id === fasilitetId) ?? null;
+  const valgtCoachNavn =
+    valgtTjeneste?.coachName
+    ?? (coachFilterId ? coacher.find((c) => c.id === coachFilterId)?.name : null)
+    ?? null;
 
   const filtrerteSpillere = useMemo(() => {
     const q = sok.trim().toLowerCase();
@@ -184,7 +228,10 @@ export function NyBookingWizard({ spillere, tjenester, lokasjoner, groupId, grou
         Ny <em className="font-normal italic text-primary">booking</em>
       </h1>
       <p className="mt-1 text-sm text-muted-foreground">
-        Manuell booking for en spiller — fem steg. Sender ingen automatisk bekreftelse.
+        {viewerErAdmin
+          ? "Team-booking — velg coach via tjeneste, fasilitet valgfritt. Fem steg."
+          : "Manuell booking for en spiller — fem steg. Fasilitet valgfritt."}
+        {" "}Sender ingen automatisk bekreftelse.
       </p>
 
       {/* Stepper */}
@@ -284,18 +331,62 @@ export function NyBookingWizard({ spillere, tjenester, lokasjoner, groupId, grou
 
         {/* STEG 2 — Tjeneste */}
         {steg === 2 && (
-          <StegRamme tittel="Velg tjeneste" sub="Type, varighet og pris låses fra tjenesten.">
-            {tjenester.length === 0 ? (
-              <Tom tekst="Ingen aktive tjenester. Opprett en under Tjenester." />
+          <StegRamme
+            tittel="Velg tjeneste"
+            sub={
+              viewerErAdmin
+                ? "Filtrer på coach, deretter tjeneste. Felles-tjenester vises alltid."
+                : "Type, varighet og pris låses fra tjenesten."
+            }
+          >
+            {viewerErAdmin && coacher.length > 0 && (
+              <div className="mb-3 flex flex-wrap gap-1.5" data-od-id="ny-booking-coach-filter">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setCoachFilterId(null);
+                    setTjenesteId(null);
+                  }}
+                  className={cn(
+                    "inline-flex items-center rounded-full border px-2.5 py-1 font-mono text-[10px] font-bold uppercase tracking-[0.06em]",
+                    coachFilterId === null
+                      ? "border-primary bg-primary text-primary-foreground"
+                      : "border-border bg-card text-muted-foreground hover:bg-secondary",
+                  )}
+                >
+                  Alle coacher
+                </button>
+                {coacher.map((c) => (
+                  <button
+                    key={c.id}
+                    type="button"
+                    onClick={() => {
+                      setCoachFilterId(c.id);
+                      setTjenesteId(null);
+                    }}
+                    className={cn(
+                      "inline-flex items-center rounded-full border px-2.5 py-1 font-mono text-[10px] font-bold uppercase tracking-[0.06em]",
+                      coachFilterId === c.id
+                        ? "border-primary bg-primary text-primary-foreground"
+                        : "border-border bg-card text-muted-foreground hover:bg-secondary",
+                    )}
+                  >
+                    {c.name}
+                  </button>
+                ))}
+              </div>
+            )}
+            {filtrerteTjenester.length === 0 ? (
+              <Tom tekst="Ingen tjenester for valgt coach. Velg «Alle coacher» eller en annen coach." />
             ) : (
               <div className="grid gap-2 sm:grid-cols-2">
-                {tjenester.map((t) => {
-                  const valgt = t.id === tjenesteId;
+                {filtrerteTjenester.map((tj) => {
+                  const valgt = tj.id === tjenesteId;
                   return (
                     <button
-                      key={t.id}
+                      key={tj.id}
                       type="button"
-                      onClick={() => setTjenesteId(t.id)}
+                      onClick={() => setTjenesteId(tj.id)}
                       className={cn(
                         "flex flex-col gap-2 rounded-lg border p-3.5 text-left transition-colors",
                         valgt
@@ -305,20 +396,32 @@ export function NyBookingWizard({ spillere, tjenester, lokasjoner, groupId, grou
                     >
                       <div className="flex items-start justify-between gap-2">
                         <span className="text-sm font-bold tracking-[-0.005em] text-foreground">
-                          {t.name}
+                          {tj.name}
                         </span>
                         {valgt && (
                           <CheckCircle2 className="h-4 w-4 shrink-0 text-primary" strokeWidth={2} aria-hidden />
                         )}
                       </div>
-                      <div className="flex items-center gap-3 font-mono text-[10px] uppercase tracking-[0.06em] text-muted-foreground">
+                      <div className="flex flex-wrap items-center gap-3 font-mono text-[10px] uppercase tracking-[0.06em] text-muted-foreground">
                         <span className="inline-flex items-center gap-1">
                           <Clock className="h-3 w-3" strokeWidth={1.75} aria-hidden />
-                          {t.durationMin} min
+                          {tj.durationMin} min
                         </span>
                         <span className="inline-flex items-center gap-1 font-bold text-foreground">
-                          {formatKr(t.priceOre)} kr
+                          {formatKr(tj.priceOre)} kr
                         </span>
+                        {tj.coachName && (
+                          <span className="inline-flex items-center gap-1">
+                            <UserIcon className="h-3 w-3" strokeWidth={1.75} aria-hidden />
+                            {tj.coachName}
+                          </span>
+                        )}
+                        {!tj.coachUserId && (
+                          <span className="text-muted-foreground">Felles</span>
+                        )}
+                        {(tj.maxDeltakere ?? 1) > 1 && (
+                          <span>{tj.maxDeltakere} plasser</span>
+                        )}
                       </div>
                     </button>
                   );
@@ -395,6 +498,7 @@ export function NyBookingWizard({ spillere, tjenester, lokasjoner, groupId, grou
                               )}
                             >
                               {f.name}
+                              {f.capacity && f.capacity > 1 ? ` · kap. ${f.capacity}` : ""}
                             </button>
                           ))}
                         </div>
@@ -465,6 +569,10 @@ export function NyBookingWizard({ spillere, tjenester, lokasjoner, groupId, grou
             <dl className="divide-y divide-border rounded-lg border border-border bg-background">
               <Oppsummer label="Spiller" verdi={valgtSpiller?.name ?? "—"} />
               <Oppsummer
+                label="Coach"
+                verdi={valgtCoachNavn ?? (valgtTjeneste?.coachUserId ? "—" : "Felles / gruppe")}
+              />
+              <Oppsummer
                 label="Tjeneste"
                 verdi={
                   valgtTjeneste
@@ -486,6 +594,14 @@ export function NyBookingWizard({ spillere, tjenester, lokasjoner, groupId, grou
               />
               {notat.trim() && <Oppsummer label="Notat" verdi={notat.trim()} />}
             </dl>
+            {policyHint && (
+              <p
+                data-od-id="ny-booking-policy"
+                className="mt-4 rounded-lg border border-border bg-secondary/40 px-3 py-2 font-mono text-[10px] leading-relaxed tracking-[0.02em] text-muted-foreground"
+              >
+                {policyHint}
+              </p>
+            )}
           </StegRamme>
         )}
 

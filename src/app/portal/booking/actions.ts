@@ -20,7 +20,10 @@ import { createCreditBooking } from "@/lib/booking/credit-booking";
 import { kanBrukeCredits } from "@/lib/booking/credits-tilgang";
 import { stripeKlient } from "@/lib/stripe";
 import { sjekkKollisjon, erKollisjonsfeil, kollisjonsmelding } from "@/lib/booking/kollisjonsvern";
+import { acquireHold, DEFAULT_HOLD_TTL_MS } from "@/lib/booking/slot-hold";
+import { recordBookingMetric } from "@/lib/booking/metrics";
 import { APP_URL } from "@/lib/app-url";
+
 
 export async function hentSlotVindu(tjenesteId: string): Promise<SlotVindu> {
   await requirePortalUser({ allow: ["PLAYER", "COACH", "ADMIN"] });
@@ -51,6 +54,7 @@ export async function opprettBooking(input: OpprettBookingInput): Promise<Oppret
     subscription.creditsRemaining > 0;
 
   if (!harCredits) {
+    await recordBookingMetric("book_credit_fail");
     return { ok: false, grunn: "KREVER_BETALING" };
   }
 
@@ -88,6 +92,7 @@ export async function opprettBooking(input: OpprettBookingInput): Promise<Oppret
       };
     }
 
+    await recordBookingMetric("book_success");
     return {
       ok: true,
       bookingId: booking.id,
@@ -96,6 +101,7 @@ export async function opprettBooking(input: OpprettBookingInput): Promise<Oppret
       coachNavn: booking.coach?.name ?? "coach",
     };
   } catch (err) {
+    await recordBookingMetric("book_slot_miss");
     return { ok: false, grunn: err instanceof Error ? err.message : "Booking feilet. Prøv igjen." };
   }
 }
@@ -129,6 +135,25 @@ export async function opprettBookingMedKort(
   if (!service) return { ok: false, grunn: "Tjenesten finnes ikke." };
   if (service.priceOre < 300) return { ok: false, grunn: "Tjenesten mangler gyldig pris — kontakt oss." };
   const endAt = new Date(startAt.getTime() + service.durationMin * 60_000);
+  const coachId = service.coachUserId ?? input.coachId;
+
+  const hold = await acquireHold(
+    {
+      serviceTypeId: service.id,
+      coachId,
+      startIso: startAt.toISOString(),
+    },
+    user.id,
+    DEFAULT_HOLD_TTL_MS,
+  );
+  if (!hold.ok) {
+    await recordBookingMetric("book_hold_blocked");
+    return {
+      ok: false,
+      grunn: "Noen andre holder på denne tiden akkurat nå. Velg en annen tid.",
+    };
+  }
+  await recordBookingMetric("book_checkout_start");
 
   const lokasjon = await prisma.location.findFirst({
     where: service.slug.includes("trackman")
@@ -141,7 +166,7 @@ export async function opprettBookingMedKort(
   try {
     booking = await prisma.$transaction(async (tx) => {
       const vern = await sjekkKollisjon(tx, {
-        coachId: service.coachUserId ?? input.coachId ?? null,
+        coachId,
         serviceTypeId: service.id,
         startAt,
         endAt,
@@ -152,7 +177,7 @@ export async function opprettBookingMedKort(
           userId: user.id,
           serviceTypeId: service.id,
           locationId: lokasjon.id,
-          coachId: service.coachUserId ?? input.coachId ?? null,
+          coachId,
           startAt,
           endAt,
           status: "PENDING",

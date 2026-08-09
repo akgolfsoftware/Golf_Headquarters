@@ -12,6 +12,7 @@ import { isSlotStillAvailable } from "@/lib/booking/availability";
 import { notify } from "@/lib/notifications";
 import { isoDate } from "@/lib/validation/schemas";
 import { logError } from "@/lib/error-tracking";
+import { actorFromRole, cancelOutcome, rescheduleOutcome } from "@/lib/booking/policy";
 
 const CancelBookingSchema = z.object({
   bookingId: z.string().min(1, "Booking-ID er påkrevd"),
@@ -33,28 +34,32 @@ export async function cancelBooking(bookingId: string) {
   });
   if (!booking) throw new Error("not-found");
 
-  // Eier = spiller som booket. Staff = ADMIN eller COACH som eier bookingen
-  // (coachId / serviceType.coachUserId) — ikke hvilken som helst coach.
-  const erEier = booking.userId === user.id;
-  const erEgenCoachBooking =
-    user.role === "COACH" &&
-    (booking.coachId === user.id || booking.serviceType.coachUserId === user.id);
-  const erAdmin = user.role === "ADMIN";
-  const erStaff = erAdmin || erEgenCoachBooking;
-  if (!erEier && !erStaff) {
-    throw new Error("forbidden");
+  const actor = actorFromRole(user.id, user.role);
+  const outcome = cancelOutcome(
+    {
+      id: booking.id,
+      userId: booking.userId,
+      coachId: booking.coachId,
+      serviceCoachUserId: booking.serviceType.coachUserId,
+      startAt: booking.startAt,
+      status: booking.status,
+      subscriptionId: booking.subscriptionId,
+      stripePaymentIntentId: booking.stripePaymentIntentId,
+      priceOre: booking.priceOre,
+    },
+    actor,
+  );
+  if (!outcome.allowed) {
+    if (booking.status === "CANCELLED") return;
+    if (outcome.reasonIfDenied?.includes("tilgang")) throw new Error("forbidden");
+    throw new Error(outcome.reasonIfDenied ?? "forbidden");
   }
-  if (booking.status === "CANCELLED") return;
-
-  const tidTilStart = booking.startAt.getTime() - Date.now();
-  // Spillere: 24t-regel. Egen coach / admin kan refundere uansett tid.
-  const kanRefunderes = erStaff || tidTilStart > 24 * 60 * 60 * 1000;
 
   // Refunder via Stripe hvis berettiget og PaymentIntent finnes.
   // S-19: spor om refund faktisk lyktes — ikke tier stille ved feil.
   let stripeRefundOk = false;
   let stripeRefundFeilet = false;
-  if (kanRefunderes && booking.stripePaymentIntentId) {
+  if (outcome.refundStripe && booking.stripePaymentIntentId) {
     try {
       const stripe = stripeKlient();
       await stripe.refunds.create({
@@ -106,7 +111,7 @@ export async function cancelBooking(bookingId: string) {
   // OG den er avbestilt med refundabel-rett (>24t for spillere, alltid for staff)
   // — øk creditsRemaining med 1.
   let creditRefunded = false;
-  if (booking.subscriptionId && kanRefunderes) {
+  if (booking.subscriptionId && outcome.restoreCredit) {
     try {
       await prisma.subscription.update({
         where: { id: booking.subscriptionId },
@@ -186,8 +191,8 @@ export async function cancelBooking(bookingId: string) {
       refundTekst = "Refundering feilet — vi behandler den manuelt innen 24 timer.";
     } else if (stripeRefundOk) {
       refundTekst = "Refusjon underveis.";
-    } else if (!kanRefunderes) {
-      refundTekst = "Mindre enn 24t igjen — ingen refusjon.";
+    } else if (outcome.lateCancelNoRefund) {
+      refundTekst = outcome.playerMessage;
     } else {
       refundTekst = "";
     }
@@ -241,12 +246,23 @@ export async function rescheduleBooking(input: {
     throw new Error("Avbestilt booking kan ikke flyttes — book ny tid.");
   }
 
-  // Sjekk 24t-regel (egen coach / admin slipper)
-  const tidTilStart = booking.startAt.getTime() - Date.now();
-  if (!erStaff && tidTilStart <= 24 * 60 * 60 * 1000) {
-    throw new Error(
-      "Du kan bare flytte timer som er mer enn 24 timer fram i tid.",
-    );
+  const actorR = actorFromRole(user.id, user.role);
+  const ro = rescheduleOutcome(
+    {
+      id: booking.id,
+      userId: booking.userId,
+      coachId: booking.coachId,
+      serviceCoachUserId: booking.serviceType.coachUserId,
+      startAt: booking.startAt,
+      status: booking.status,
+      subscriptionId: booking.subscriptionId,
+      stripePaymentIntentId: booking.stripePaymentIntentId,
+      priceOre: booking.priceOre,
+    },
+    actorR,
+  );
+  if (!ro.allowed) {
+    throw new Error(ro.reasonIfDenied ?? "Ombooking ikke tillatt");
   }
 
   const newStart = new Date(input.newStartIso);
