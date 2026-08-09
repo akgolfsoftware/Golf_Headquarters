@@ -1,10 +1,13 @@
-# Plan: Komplett design av ALLE skjermer i Claude Paper-zip
+# Plan: Komplett Paper-design for hele appen
 
-**Fasit:** `designsystem/paper/` (= `AK Golf HQ — Claude Paper.zip`, 07.08.2026)  
-**Omfang:** kun det som **finnes i zip** (fase1 33 + fase2 W1 11 + templates)  
-**Ikke i denne planen:** W2–W6 (tegner i Claude Design nå), ~300 ruter uten fasit  
+**Fasit (pixel):** `designsystem/paper/` (= `AK Golf HQ — Claude Paper.zip`, 07.08.2026)  
+**Omfang del 1:** alt i zip (fase1 33 + fase2 W1 11 + templates) — **pixel-nært**  
+**Omfang del 2:** **alle øvrige app-skjermer uten fasit** (~400+ `page.tsx`) — **pattern-designet av Grok** mot designsystemet (tokens, shell, komponenter)  
+**Utenfor inntil ny zip:** W2–W6 HTML som Claude Design tegner nå (importeres senere som ny del 1)
 
-**Mål:** Hver fasit-HTML har én eier-komponent i appen, pixel-nær på mobil (~390) + desktop, Paper-regler (handling-CTA, logo, tokens), empty states ærlig, prod-push etter wave.
+**Mål:**
+1. Hver fasit-HTML → eier-komponent, pixel-nær m+d, Paper-regler, ærlig empty, screenshots  
+2. Hver rute **uten** fasit → ser ut som Paper-appen (samme tokens/shell/CTA), ikke «gammel V1/grå admin»
 
 ---
 
@@ -196,9 +199,11 @@ Brukes som **struktur-referanse** (ikke alltid egen rute):
 | D | WB + drills/tester | 1–1,5 dag |
 | E | profil/innboks/forelder | 0,5–1 dag |
 | F | rest zip | 1–1,5 dag |
-| **Total** | **44 fasiter** | **ca. 6–8 arbeidsdager** fokustert |
+| **Total del 1** | **44 fasiter** | **ca. 6–8 arbeidsdager** fokustert |
+| **Total del 2** | **~alle øvrige ruter** | **ca. 5–8 arbeidsdager** pattern-port (G–K) |
+| **Grand total** | **fasit + pattern** | **ca. 11–16 dager** agent-tid (kan paralleliseres etter A–B) |
 
-*Estimat = AI-agent med fasit + screenshots, ikke «en designer fra null».  
+*Estimat = AI-agent med fasit/designsystem + screenshots, ikke «en designer fra null».  
 Mac-push/Vercel mellom waves anbefales slik at du ser fremdrift live.*
 
 ---
@@ -218,15 +223,69 @@ Sjekkliste-fil: `docs/port/PAPER-ZIP-CHECKLIST.md` (genereres wave for wave).
 
 ---
 
-## 6. Hva denne planen *ikke* dekker
+## 6. Del 2 — Skjermer **uten** fasit (Grok designer mot designsystemet)
 
-| Utenfor zip | Håndtering |
+**Lås (Anders 2026-08-09):** Grok **skal** designe/implementere **alle** eksisterende skjermer som **ikke** har HTML-fasit i zip, ved å følge **designsystemet** — ikke vente på Claude Design for hver rute.
+
+### 6.1 Hva «designet mot designsystemet» betyr
+
+| Bruk alltid | Ikke finn opp |
 |---|---|
-| Analysere-dybde W2 (hull/TM/DataGolf) | Claude Design (pågår) → ny zip → **ny plan** |
-| Marketing alle undersider | Egen W5-M batch |
-| 300+ admin micro-routes | Wireframe + progressiv port etter F |
-| Drill FASIT-innhold | Anders Toshiba |
-| Stripe/DNS/pricing | Drift P0 |
+| Tokens: `T.*` / `paper-tokens.css` / `designsystem/paper/tokens` | Nye farger, fonter, radius |
+| Shell: `V2Shell`, `PaperChrome`, BunnNav / IkonRail | Parallelle «V3»-layouts |
+| Primærer: `Knapp` / `CTAPill` → **handling** (clay) | Lime som primær CTA |
+| Byggesteiner: Kort, Rad, Caps, TomTilstand, StatusPill, skjema | Ad-hoc grå admin-tabeller uten tokens |
+| LogoAK surface-regler | Feil logo-variant |
+| Empty: ærlig (tom drill-bank, ingen fake data) | Placeholder Lorem / seed-drills |
+| Responsive: brukbar 390 + desktop | Kun desktop-layout |
+
+**DONE (uten fasit)** = skjermen følger listen over + ingen console-feil + ikke «orphan legacy»-look.  
+**Ikke** krav om pixel-diff mot en HTML som ikke finnes.
+
+### 6.2 Når Claude Design likevel brukes
+
+| Send til Claude Design | Grok pattern-porter |
+|---|---|
+| Ny informasjonsarkitektur / komplekst dashboard | Settings-undersider, lister, CRUD |
+| W2–W6 og andre strategiske flater (pågår) | Empty/error/loading |
+| Pixel-kritisk salgsflate | «Samme chrome, nytt innhold» |
+| Etter prod: skjerm som *føles feil* til tross for tokens | Små admin-verktøy |
+
+### 6.3 Wave G+ — Pattern-port (etter Wave A–F eller parallelt med E–F)
+
+Kjør **etter** at P0-fasit (Wave A–B) er stabil, slik at mønsteret er låst.
+
+| Wave | Domene | Eksempler | Estimat |
+|---|---|---|---|
+| **G** | PlayerHQ rest uten fasit | varsler, venner, talent-sub, gameplan-sub, innstillinger-*, mal, stats, datagolf shell | 1–2 d |
+| **H** | AgencyOS rest uten fasit | drills admin, email, availability, compliance, grupper, plan-templates, audit, api-keys, … | 2–3 d |
+| **I** | Auth/onboarding rest | wizard-steg, guardian, reset, bankid polish | 0,5–1 d |
+| **J** | Marketing rest | cases, jobb, junior, blogg, cookies, vilkår — tokens + primær handling-CTA | 1 d |
+| **K** | Live/runde/workbench rest-edges | edge states, error boundaries, deep links | 0,5–1 d |
+
+**Inventar:** alle `src/app/**/page.tsx` (~450) minus de som allerede er DONE i fasit-sjekkliste.  
+**Sporing:** `docs/port/PAPER-PATTERN-CHECKLIST.md` (rute → status).
+
+### 6.4 Metode per rute uten fasit
+
+```
+1. Identifiser shell (PlayerHQ / AgencyOS / Marketing / Auth)
+2. Bytt legacy/grå UI → V2/Paper-komponenter + T.*
+3. Primær CTA → handling; ghost sekundær
+4. TomTilstand med ærlig copy
+5. data-paper-pattern="<route>" for QA
+6. Rask sjekk 390 (ingen horisontal overflow) + desktop
+7. Kryss av pattern-checklist
+```
+
+### 6.5 Fortsatt utenfor denne design-planen
+
+| Tema | Eier |
+|---|---|
+| W2–W6 **nye** HTML fra Claude Design | Importer zip → utvid del 1 (pixel) |
+| Drill **innhold** (FASIT-tekster) | Anders Toshiba |
+| Stripe / DNS / Resend / pricing | Drift P0 |
+| Mac push sandbox → main | Anders når tilgjengelig |
 
 ---
 
@@ -236,12 +295,19 @@ Sjekkliste-fil: `docs/port/PAPER-ZIP-CHECKLIST.md` (genereres wave for wave).
 2. Start **Wave A.1** `innlogging.html` ↔ `LoginV2`  
 3. Deretter A.2 Plan/Hjem …  
 4. Etter hver wave: commit + (Mac) push + hard refresh  
-5. Ikke hopp til F før A–B er DONE (kjerne først)
+5. Ikke hopp til F før A–B er DONE (kjerne først)  
+6. **Wave G+ (uten fasit):** start når A–B er stabile — Grok designer mot designsystemet uten å vente på Claude  
+7. Når Claude leverer W2-zip: pause/interleave pixel-port av nye fasiter (høy pri)
 
 ---
 
 ## 8. Suksess
 
-**Zip-komplett** = alle 33 + 11 + template-eierskap har DONE i sjekkliste, screenshots arkivert, prod viser samme etter push.
+| Nivå | Definisjon |
+|---|---|
+| **Del 1 ferdig** | Alle 33 + 11 + templates DONE i `PAPER-ZIP-CHECKLIST.md`, screenshots, prod etter push |
+| **Del 2 ferdig** | Alle app-ruter uten fasit DONE i pattern-checklist (designsystem, ikke pixel-HTML) |
+| **App design-komplett (nåværende scope)** | Del 1 + Del 2 |
+| **Etter ny Design-zip** | Nye fasiter → ny del 1-runde; pattern-ruter som får fasit oppgraderes til pixel |
 
-**Deretter:** importer ny Design-zip (W2+) og kjør tilsvarende plan for *nye* fasiter.
+**Merk:** «App design-komplett» ≠ «Claude har tegnet hver rute». Det betyr: **fasit der den finnes, designsystem overalt ellers.**

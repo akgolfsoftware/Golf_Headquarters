@@ -1,5 +1,7 @@
 # Paper zip checklist — kryss når DONE (se PAPER-ZIP-FULL-IMPLEMENTATION-PLAN.md)
 
+> Skjermer **uten** fasit: `PAPER-PATTERN-CHECKLIST.md` (Grok designer mot designsystemet).
+
 ## Fase 1
 - [ ] `agencyos-agenticos.html` — m390 — d1280 — screenshot
 - [ ] `agencyos-ak-stigen.html` — m390 — d1280 — screenshot

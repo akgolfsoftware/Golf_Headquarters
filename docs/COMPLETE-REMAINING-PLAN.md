@@ -306,3 +306,9 @@ Autonom batch ferdig i sandbox (`handoff/iphone-5h-2026-08-09`, 6 commits).
 **Krever Mac APPLY** for main/prod. Se `docs/port/IPHONE-5H-COMPLETE-2026-08-09.md`.
 
 Inkludert: P2 booking, handling-CTA monopoly, putting brain data+UI, multi-facility, FASIT empty, Design-prompt, Paper zip speil.
+
+## 15. Design scope låst (2026-08-09)
+
+**Del 1:** Pixel-port av Claude Paper zip (44 skjermer) — `docs/port/PAPER-ZIP-FULL-IMPLEMENTATION-PLAN.md`  
+**Del 2:** Grok designer **alle skjermer uten fasit** mot designsystemet (tokens/shell/Paper) — Wave G–K i samme plan, spor `docs/port/PAPER-PATTERN-CHECKLIST.md`  
+**Claude Design:** kun strategiske/nye flater (W2+) — ikke alle micro-ruter.
