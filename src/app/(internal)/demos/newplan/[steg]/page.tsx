@@ -6,6 +6,7 @@
  * Mock-data for Øyvind Rohjan mot Sørlandsåpent (mai-juni 2026).
  */
 
+import { T } from "@/lib/v2/tokens";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import {
@@ -747,7 +748,7 @@ function PyrDonut() {
       <svg viewBox="0 0 42 42" className="h-full w-full" style={{ transform: "rotate(-90deg)" }}>
         <circle cx="21" cy="21" r="15.9" fill="none" stroke="var(--color-border,#E5E3DD)" strokeWidth="6" />
         <circle cx="21" cy="21" r="15.9" fill="none" stroke="#005840" strokeWidth="6" strokeDasharray="40 60" />
-        <circle cx="21" cy="21" r="15.9" fill="none" stroke="#D1F843" strokeWidth="6" strokeDasharray="25 75" strokeDashoffset="-40" />
+        <circle cx="21" cy="21" r="15.9" fill="none" stroke={T.farge.limeMerke} strokeWidth="6" strokeDasharray="25 75" strokeDashoffset="-40" />
         <circle cx="21" cy="21" r="15.9" fill="none" stroke="#16A34A" strokeWidth="6" strokeDasharray="15 85" strokeDashoffset="-65" />
         <circle cx="21" cy="21" r="15.9" fill="none" stroke="#F4C430" strokeWidth="6" strokeDasharray="15 85" strokeDashoffset="-80" />
         <circle cx="21" cy="21" r="15.9" fill="none" stroke="#5E5C57" strokeWidth="6" strokeDasharray="5 95" strokeDashoffset="-95" />

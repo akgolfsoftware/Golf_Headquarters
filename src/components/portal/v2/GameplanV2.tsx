@@ -73,7 +73,7 @@ export function GameplanV2({ data }: { data: BaneLibraryItem[] }) {
           <div style={{ marginTop: 12 }}>
             <Link href="/portal/runde/live" style={{ textDecoration: "none", display: "block" }}>
               <span style={{
-                display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, minHeight: 48, width: "100%", padding: "10px 16px",
+                display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, width: "100%", padding: "10px 16px",
                 borderRadius: 12, background: T.handling, color: T.onHandling, fontFamily: T.ui, fontSize: 14, fontWeight: 600, minHeight: 56,
               }}>Start live-føring
               </span>

@@ -594,7 +594,6 @@ function OktArkSkjema({
                 style={{
                   width: 16,
                   height: 16,
-                  borderRadius: 9999,
                   background: T.handling, minHeight: 52, borderRadius: 12,
                   color: T.onHandling,
                   display: "inline-flex",
@@ -835,7 +834,6 @@ function OktArkSkjema({
                     appearance: "none",
                     width: 36,
                     height: 36,
-                    borderRadius: 9999,
                     background: T.handling, minHeight: 52, borderRadius: 12,
                     border: "none",
                     color: T.onHandling,
@@ -1361,7 +1359,6 @@ export function ValgtOktSeksjon({
               style={{
                 appearance: "none", cursor: "pointer", display: "inline-flex", alignItems: "center", gap: 6,
                 padding: "6px 10px", borderRadius: 9999,
-                border: `1px solid ${okt.eb === a.v ? "transparent" : T.border}`,
                 background: okt.eb === a.v ? T.panel : T.panel2, color: okt.eb === a.v ? T.fg : T.fg2, border: `1px solid ${okt.eb === a.v ? T.fg : T.border}`, boxShadow: okt.eb === a.v ? `inset 0 -2px 0 ${T.handling}` : undefined,
                 fontFamily: T.ui, fontSize: 11, fontWeight: 600, opacity: lagrerFelt ? 0.5 : 1,
               }}

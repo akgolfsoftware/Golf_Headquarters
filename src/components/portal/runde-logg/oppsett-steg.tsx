@@ -289,7 +289,6 @@ export function OppsettSteg({ modus, baner, initial, onStart }: OppsettStegProps
           cursor: gyldig ? "pointer" : "not-allowed",
           width: "100%",
           height: 54,
-          borderRadius: 10,
           border: "none",
           background: gyldig ? T.handling : T.panel3,
           minHeight: 56,

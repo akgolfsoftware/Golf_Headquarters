@@ -540,6 +540,8 @@ export function RadioGruppe({
 export interface SegmentertFanerValg {
   id: string;
   label: string;
+  /** Open Design-id på selve fanen (brukes til fasit-sporing per segment). */
+  odId?: string;
 }
 export interface SegmentertFanerProps {
   label?: ReactNode;
@@ -589,6 +591,7 @@ export function SegmentertFaner({
               type="button"
               role="tab"
               aria-selected={on}
+              data-od-id={o.odId}
               className="v2-press v2-focus"
               onClick={() => {
                 setV(o.id);

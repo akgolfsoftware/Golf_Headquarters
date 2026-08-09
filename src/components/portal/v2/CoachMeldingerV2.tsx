@@ -96,7 +96,7 @@ export function CoachMeldingerV2({ data }: { data: CoachMeldingerData }) {
           <div style={{ marginTop: 12 }}>
             <Link href="/portal/meg/abonnement" style={{ textDecoration: "none", display: "block" }}>
               <span style={{
-                display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, minHeight: 48, width: "100%", padding: "10px 16px",
+                display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, width: "100%", padding: "10px 16px",
                 borderRadius: 12, background: T.handling, color: T.onHandling, fontFamily: T.ui, fontSize: 14, fontWeight: 600, minHeight: 56,
               }}>Oppgrader til Pro
               </span>
@@ -258,7 +258,7 @@ export function CoachMeldingerV2({ data }: { data: CoachMeldingerData }) {
       {hovedcoach && (
         <Link href="/portal/coach/melding/ny" style={{ textDecoration: "none", display: "block" }}>
           <span style={{
-                display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, minHeight: 48, width: "100%", padding: "10px 16px",
+                display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, width: "100%", padding: "10px 16px",
                 borderRadius: 12, background: T.handling, color: T.onHandling, fontFamily: T.ui, fontSize: 14, fontWeight: 600, minHeight: 56,
               }}>Ny melding
           </span>

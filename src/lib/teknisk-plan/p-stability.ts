@@ -1,3 +1,4 @@
+import { T } from "@/lib/v2/tokens";
 import { P_POSITIONS } from "@/components/teknisk-plan/constants";
 import type { PStabilityBar, TaskRow, TmGoalRow } from "./types";
 
@@ -35,7 +36,7 @@ type PositionInput = {
 };
 
 function stabilityColor(pct: number): string {
-  if (pct >= 70) return "#D1F843";
+  if (pct >= 70) return T.farge.limeMerke;
   if (pct >= 50) return "#56C59A";
   if (pct >= 30) return "#E8A33D";
   return "#F2908C";

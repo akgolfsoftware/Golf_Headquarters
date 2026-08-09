@@ -3,6 +3,7 @@
  * Bruker policyBannerTexts() så copy ikke divergierer fra server policy.
  */
 import { policyBannerTexts } from "@/lib/booking/policy";
+import { T } from "@/lib/v2/tokens";
 
 export function PolicyBanner({
   variant = "cancel",
@@ -24,14 +25,14 @@ export function PolicyBanner({
       data-od-id="booking-policy-banner"
       className={className}
       style={{
-        border: "1px dashed var(--border, #e8e6dc)",
-        background: "var(--soft, #f0eee6)",
+        border: `1px dashed ${T.border}`,
+        background: T.panel2,
         borderRadius: 12,
         padding: "12px 14px",
         fontFamily: "Lora, Georgia, serif",
         fontSize: 13.5,
         lineHeight: 1.45,
-        color: "var(--muted, #5e5d59)",
+        color: T.mut,
       }}
     >
       {lines.map((line) => (

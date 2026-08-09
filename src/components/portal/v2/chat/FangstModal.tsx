@@ -133,9 +133,7 @@ export function FangstModal({
               disabled={!kanSende}
               className="v2-press v2-focus"
               style={{
-                minHeight: 44,
                 padding: "0 16px",
-                borderRadius: T.rTag,
                 border: "none",
                 background: kanSende ? T.handling : T.panel3,
                 minHeight: 48,

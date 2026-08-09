@@ -276,8 +276,7 @@ export function AdminAgentTeamV2({ data }: { data: AdminAgentTeamV2Data }) {
         >
           <span style={{
             display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8,
-            minHeight: 48, width: "100%", padding: "10px 16px", borderRadius: 10,
-            background: T.handling, color: T.onHandling, minHeight: 52, borderRadius: 12, fontFamily: T.ui, fontSize: 14, fontWeight: 600,
+width: "100%", padding: "10px 16px",             background: T.handling, color: T.onHandling, minHeight: 52, borderRadius: 12, fontFamily: T.ui, fontSize: 14, fontWeight: 600,
           }}>
             {running ? "Kjører team …" : "Kjør team"}
           </span>

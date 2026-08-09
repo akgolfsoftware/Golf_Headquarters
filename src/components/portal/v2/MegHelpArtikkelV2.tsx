@@ -114,13 +114,13 @@ function ArtikkelFeedback() {
     <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
       <span onClick={() => setTakket(true)}>
         <span style={{
-            display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, minHeight: 48, width: "100%", padding: "10px 16px",
+            display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, width: "100%", padding: "10px 16px",
             borderRadius: 12, background: T.handling, color: T.onHandling, fontFamily: T.ui, fontSize: 14, fontWeight: 600, minHeight: 56,
           }}>Ja, fikk svar</span>
       </span>
       <span onClick={() => setTakket(true)}>
         <span style={{
-            display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, minHeight: 48, width: "100%", padding: "10px 16px",
+            display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, width: "100%", padding: "10px 16px",
             borderRadius: 12, background: T.handling, color: T.onHandling, fontFamily: T.ui, fontSize: 14, fontWeight: 600, minHeight: 56,
           }}>Nei, savner noe</span>
       </span>
@@ -329,7 +329,7 @@ export function MegHelpArtikkelV2({ data }: { data: MegHelpArtikkelData }) {
           <div style={{ display: "flex", flexDirection: "column", gap: 8, marginTop: 14 }}>
             <Link href="/portal/coach/melding/ny" style={{ textDecoration: "none", display: "block" }}>
               <span style={{
-            display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, minHeight: 48, width: "100%", padding: "10px 16px",
+            display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, width: "100%", padding: "10px 16px",
             borderRadius: 12, background: T.handling, color: T.onHandling, fontFamily: T.ui, fontSize: 14, fontWeight: 600, minHeight: 56,
           }}>Send melding</span>
             </Link>

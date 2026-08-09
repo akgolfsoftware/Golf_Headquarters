@@ -3,6 +3,8 @@
  * Server component — pure SVG, no state.
  */
 
+import { T } from "@/lib/v2/tokens";
+
 interface MiniRadarProps {
   values?: number[];
   values2?: number[];
@@ -68,7 +70,7 @@ export function MiniRadar({
       />
       <path
         d={buildPath(values)}
-        fill="#D1F843"
+        fill={T.farge.limeMerke}
         fillOpacity="0.45"
         stroke="#005840"
         strokeWidth="1.5"

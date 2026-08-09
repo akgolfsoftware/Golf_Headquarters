@@ -56,6 +56,12 @@ export interface KalOkt {
   sluttLokal?: string;
   /** Beskrivelsen fra Google, redigerbar i arket. */
   notat?: string | null;
+  /** Multi-coach: eier av bookingen — styrer coach-farge og coach-filteret. */
+  coachId?: string | null;
+  coachName?: string | null;
+  /** Fasilitet: id brukes av filteret, navn vises i stedet for fritekst-sted. */
+  facilityId?: string | null;
+  facilityName?: string | null;
 }
 
 export interface KalDag {
@@ -85,6 +91,13 @@ export interface KalenderData {
   serieMeny: SerieMenyData | null;
   innsikt: string | null;
   nav: { forrige: string; neste: string; idag: string; erInnevaerende: boolean };
+  /** Multi-coach-filter: coacher med booking denne uka. */
+  coacher: { id: string; navn: string }[];
+  /** Fasilitets-filter: fasiliteter med booking denne uka. */
+  fasiliteter: { id: string; navn: string }[];
+  /** ADMIN ser alle coacher som default; COACH ser sine egne først. */
+  viewerErAdmin: boolean;
+  viewerCoachId: string | null;
 }
 
 const DAG_KORT = ["Man", "Tir", "Ons", "Tor", "Fre", "Lør", "Søn"];
@@ -133,7 +146,11 @@ function lokalInput(d: Date): string {
   );
 }
 
-export async function hentAgencyKalenderData(ukeParam?: string, userId?: string): Promise<KalenderData> {
+export async function hentAgencyKalenderData(
+  ukeParam?: string,
+  userId?: string,
+  viewerRolle?: string,
+): Promise<KalenderData> {
   // 1 · Booking-basert uke-grid (gjenbruk eksisterende, verifisert loader).
   const uke = await loadWeekCalendar(ukeParam);
 
@@ -159,6 +176,10 @@ export async function hentAgencyKalenderData(ukeParam?: string, userId?: string)
         serie: null,
         href: e.href,
         naa: e.kind === "live",
+        coachId: e.coachId ?? null,
+        coachName: e.coachName ?? null,
+        facilityId: e.facilityId ?? null,
+        facilityName: e.facilityName ?? null,
       }));
     const pad = (n: number) => String(n).padStart(2, "0");
     return {
@@ -381,7 +402,26 @@ export async function hentAgencyKalenderData(ukeParam?: string, userId?: string)
       idag: `/admin/kalender?uke=${uke.todayParam}`,
       erInnevaerende: uke.isCurrentWeek,
     },
+    // Filtervalg utledes av ukas faktiske bookinger — ingen ekstra spørring,
+    // og tomme lister skjuler filteret helt (se AgencyKalenderV2.teamFilter).
+    coacher: unikeValg(
+      uke.events.map((e) => (e.coachId ? { id: e.coachId, navn: e.coachName ?? "Coach" } : null)),
+    ),
+    fasiliteter: unikeValg(
+      uke.events.map((e) =>
+        e.facilityId ? { id: e.facilityId, navn: e.facilityName ?? "Anlegg" } : null,
+      ),
+    ),
+    viewerErAdmin: viewerRolle === "ADMIN",
+    viewerCoachId: userId ?? null,
   };
+}
+
+/** Unike {id, navn}-valg i innkommende rekkefølge, null-verdier droppet. */
+function unikeValg(rader: ({ id: string; navn: string } | null)[]): { id: string; navn: string }[] {
+  const sett = new Map<string, string>();
+  for (const r of rader) if (r && !sett.has(r.id)) sett.set(r.id, r.navn);
+  return [...sett].map(([id, navn]) => ({ id, navn }));
 }
 
 type SerieRad = Awaited<ReturnType<typeof prisma.groupSchedule.findMany>>[number] & {

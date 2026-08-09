@@ -8,12 +8,14 @@
  * Paletten skal godkjennes av Anders (design-gap meldt i Gameplan-planen).
  */
 
+import { T } from "@/lib/v2/tokens";
+
 // Pyramide-aksefargene (lys modus, --pyr-*/--axis-* i globals.css).
 const PYR = {
   fys: "#005840", // forest
   tek: "#B8852A", // ochre
   slag: "#2563EB", // blå
-  spill: "#D1F843", // lime (= T.lime)
+  spill: T.farge.limeMerke, // lime (= T.lime)
 } as const;
 
 export const MAP_COLORS = {

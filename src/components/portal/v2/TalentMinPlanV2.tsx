@@ -115,7 +115,7 @@ export function TalentMinPlanV2({ data }: { data: TalentMinPlanData }) {
       {!data.nesteMal && (
         <Link href="/portal/coach/melding" style={{ textDecoration: "none", display: "block" }}>
           <span style={{
-                display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, minHeight: 48, width: "100%", padding: "10px 16px",
+                display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, width: "100%", padding: "10px 16px",
                 borderRadius: 12, background: T.handling, color: T.onHandling, fontFamily: T.ui, fontSize: 14, fontWeight: 600, minHeight: 56,
               }}>Spør coach om neste mål
           </span>

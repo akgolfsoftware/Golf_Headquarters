@@ -432,8 +432,10 @@ export function PortalChatHjem({
   const visEnTingNa = gjennomfore.nesteOkt !== null && gjennomfore.nesteOkt.status === "upcoming";
 
   return (
-    <div data-paper-wave-a="chat-idag" data-paper-slug="playerhq-chat" data-od-id="playerhq-idag" style={{ display: "contents" }}>
     <div
+      data-paper-wave-a="chat-idag"
+      data-paper-slug="playerhq-chat"
+      data-od-id="playerhq-idag"
       data-paper-portal-hjem
       style={{
         display: "grid",

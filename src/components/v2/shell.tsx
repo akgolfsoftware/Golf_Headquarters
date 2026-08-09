@@ -276,8 +276,8 @@ function TemaRailKnapp() {
       className="v2-press v2-focus"
       style={{ width: 46, display: "flex", flexDirection: "column", alignItems: "center", gap: 3, padding: "7px 0 5px", borderRadius: 12, background: "transparent", border: 0, cursor: "pointer", flex: "none", marginBottom: 8 }}
     >
-      <Icon name={tilLys ? "sun" : "moon"} size={18} style={{ color: "#b0aea5" }} strokeWidth={1.5} />
-      <span style={{ fontFamily: T.mono, fontSize: 9, fontWeight: 600, letterSpacing: "0.04em", textTransform: "uppercase", color: "#b0aea5" }}>{tilLys ? "Lys" : "Mørk"}</span>
+      <Icon name={tilLys ? "sun" : "moon"} size={18} style={{ color: T.railFg }} strokeWidth={1.5} />
+      <span style={{ fontFamily: T.mono, fontSize: 9, fontWeight: 600, letterSpacing: "0.04em", textTransform: "uppercase", color: T.railFg }}>{tilLys ? "Lys" : "Mørk"}</span>
     </button>
   );
 }
@@ -301,7 +301,7 @@ function RailLenke({ item, on, dark }: { item: V2NavItem; on: boolean; dark?: bo
         borderRadius: 12,
         background: on
           ? dark
-            ? "rgba(250,249,245,0.14)"
+            ? T.farge.kremA14
             : `color-mix(in srgb, ${T.lime} 9%, transparent)`
           : "transparent",
         textDecoration: "none",
@@ -311,7 +311,7 @@ function RailLenke({ item, on, dark }: { item: V2NavItem; on: boolean; dark?: bo
     >
       {on && !dark && <span style={{ position: "absolute", left: -7, top: 10, bottom: 10, width: 2, borderRadius: 2, background: T.handling }} />}
       <span style={{ position: "relative", display: "inline-flex" }}>
-        <Icon name={item.icon} size={19} style={{ color: dark ? (on ? "#faf9f5" : "#b0aea5") : (on ? T.lime : T.mut) }} strokeWidth={on ? 2 : 1.5} />
+        <Icon name={item.icon} size={19} style={{ color: dark ? (on ? T.railOn : T.railFg) : (on ? T.lime : T.mut) }} strokeWidth={on ? 2 : 1.5} />
         {badge != null && (
           <span
             aria-hidden
@@ -336,7 +336,7 @@ function RailLenke({ item, on, dark }: { item: V2NavItem; on: boolean; dark?: bo
           </span>
         )}
       </span>
-      <span style={{ fontFamily: T.mono, fontSize: 9, fontWeight: 600, letterSpacing: "0.04em", textTransform: "uppercase", color: dark ? (on ? "#faf9f5" : "#b0aea5") : (on ? T.fg : T.mut) }}>{item.label}</span>
+      <span style={{ fontFamily: T.mono, fontSize: 9, fontWeight: 600, letterSpacing: "0.04em", textTransform: "uppercase", color: dark ? (on ? T.railOn : T.railFg) : (on ? T.fg : T.mut) }}>{item.label}</span>
     </Link>
   );
 }
@@ -510,7 +510,7 @@ function IkonRailNav({ aktiv, nav, mer, rom, navn, avatarUrl, erAgency }: Requir
       style={{
         width: 64,
         flex: "none",
-        borderRight: "1px solid rgba(250,249,245,0.08)",
+        borderRight: `1px solid ${T.farge.kremA8}`,
         flexDirection: "column",
         alignItems: "center",
         padding: "14px 0 12px",
@@ -566,7 +566,7 @@ function BunnNavLenker({ aktiv, nav, mer }: { aktiv?: string; nav: V2NavItem[]; 
       <nav
         className="flex md:hidden"
         data-paper-faner
-        style={{ position: "fixed", bottom: 0, left: 0, right: 0, zIndex: 40, justifyContent: "space-around", padding: "6px 4px calc(10px + env(safe-area-inset-bottom))", borderTop: "1px solid rgba(250,249,245,0.08)", background: T.rail }}
+        style={{ position: "fixed", bottom: 0, left: 0, right: 0, zIndex: 40, justifyContent: "space-around", padding: "6px 4px calc(10px + env(safe-area-inset-bottom))", borderTop: `1px solid ${T.farge.kremA8}`, background: T.rail }}
         aria-label="Hovedmeny"
       >
         {synlige.map((n) => {
@@ -659,7 +659,7 @@ function AgencyBunnNav({ aktiv, nav, mer, rom }: { aktiv?: string; nav: V2NavIte
       <nav
         className="flex md:hidden"
         data-paper-faner="agency"
-        style={{ position: "fixed", bottom: 0, left: 0, right: 0, zIndex: 40, justifyContent: "space-around", padding: "6px 4px calc(10px + env(safe-area-inset-bottom))", borderTop: "1px solid rgba(250,249,245,0.08)", background: T.rail }}
+        style={{ position: "fixed", bottom: 0, left: 0, right: 0, zIndex: 40, justifyContent: "space-around", padding: "6px 4px calc(10px + env(safe-area-inset-bottom))", borderTop: `1px solid ${T.farge.kremA8}`, background: T.rail }}
         aria-label="Hovedmeny"
       >
         {primær.map((n) => {

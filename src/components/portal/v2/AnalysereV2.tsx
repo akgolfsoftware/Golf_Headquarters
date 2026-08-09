@@ -874,7 +874,10 @@ export function AnalysereV2({
   const mobile = useMobile();
   const deep = depthMode === "deep";
   const visibleTabs = TABS.filter((t) => deep || t.id !== "trackman");
-  const [tab, setTab] = useState<TabId>("sg");
+  const [valgtTab, setTab] = useState<TabId>("sg");
+  // Simple-mode har ingen TrackMan-fane — fall tilbake til SG uten å skrive
+  // state i en effect (avledet verdi, ikke synk).
+  const tab: TabId = !deep && valgtTab === "trackman" ? "sg" : valgtTab;
 
   // URL-tab-state (?tab=) — leses ved mount, oppdateres uten full navigasjon.
   useEffect(() => {
@@ -882,10 +885,6 @@ export function AnalysereV2({
     // eslint-disable-next-line react-hooks/set-state-in-effect -- synk fra URL (?tab=) etter mount er hydrerings-trygt
     if (ER_TAB(q) && (deep || q !== "trackman")) setTab(q);
   }, [deep]);
-  // Simple-mode: fall tilbake fra trackman hvis depth byttes
-  useEffect(() => {
-    if (!deep && tab === "trackman") setTab("sg");
-  }, [deep, tab]);
   const velgTab = (id: string) => {
     if (!ER_TAB(id)) return;
     if (!deep && id === "trackman") return;

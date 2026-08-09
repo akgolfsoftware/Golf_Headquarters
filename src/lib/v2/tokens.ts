@@ -140,6 +140,9 @@ export const T = {
     forestMerkeA25: "rgba(0,88,64,0.25)",
     hvitA65: "rgba(255,255,255,0.65)",
     hvitA8: "rgba(255,255,255,0.08)",
+    // Paper-krem på mørk rail — skillestreker og aktiv-flate i skallet.
+    kremA8: "rgba(250,249,245,0.08)",
+    kremA14: "rgba(250,249,245,0.14)",
     illuForestLys: "#006C50",
     noytralGra: "#908D86",
     hvitA90: "rgba(255,255,255,0.9)",

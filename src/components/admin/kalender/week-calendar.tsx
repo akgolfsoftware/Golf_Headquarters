@@ -56,6 +56,12 @@ export type WeekEvent = {
   kind: WeekEventKind;
   isCompleted: boolean;
   href: string;
+  /** Multi-coach: hvem eier bookingen (farge + coach-filter i AgencyKalenderV2). */
+  coachId?: string | null;
+  coachName?: string | null;
+  /** Fasilitet: id for filter, navn for visning. */
+  facilityId?: string | null;
+  facilityName?: string | null;
 };
 
 export type WeekDayHeader = {

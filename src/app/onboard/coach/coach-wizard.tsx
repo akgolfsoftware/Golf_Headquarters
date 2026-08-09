@@ -179,11 +179,11 @@ export function CoachWizard({
           >
             <svg viewBox="0 0 520 180">
               <rect x="160" y="40" width="200" height="100" rx="12" fill="#FAFAF7" />
-              <circle cx="200" cy="78" r="22" fill="#D1F843" />
+              <circle cx="200" cy="78" r="22" fill={T.farge.limeMerke} />
               <rect x="234" y="62" width="100" height="8" rx="3" fill="#005840" opacity="0.30" />
               <rect x="234" y="78" width="80" height="6" rx="2" fill="#005840" opacity="0.20" />
               <rect x="234" y="92" width="60" height="6" rx="2" fill="#005840" opacity="0.20" />
-              <rect x="180" y="118" width="160" height="10" rx="5" fill="#D1F843" />
+              <rect x="180" y="118" width="160" height="10" rx="5" fill={T.farge.limeMerke} />
               <text
                 x="260"
                 y="125"
@@ -478,8 +478,8 @@ export function CoachWizard({
                   <rect key={`r2${d}`} x={172 + d * 26} y={100} width={20} height={16} rx={2} />
                 ))}
               </g>
-              <rect x={172 + 2 * 26} y={80} width={20} height={16} rx={2} fill="#D1F843" />
-              <rect x={172 + 4 * 26} y={100} width={20} height={16} rx={2} fill="#D1F843" />
+              <rect x={172 + 2 * 26} y={80} width={20} height={16} rx={2} fill={T.farge.limeMerke} />
+              <rect x={172 + 4 * 26} y={100} width={20} height={16} rx={2} fill={T.farge.limeMerke} />
               <text
                 x="260"
                 y="142"
@@ -632,7 +632,7 @@ function ShieldCheckIllust() {
       />
       <path
         d="M230 95 L255 118 L295 78"
-        stroke="#D1F843"
+        stroke={T.farge.limeMerke}
         strokeWidth="6"
         fill="none"
         strokeLinecap="round"

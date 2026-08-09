@@ -174,7 +174,7 @@ export function MegHelpKategoriV2({ data }: { data: MegHelpKategoriData }) {
 
       <Link href="/portal/meg/help/kontakt" style={{ textDecoration: "none", display: "block" }}>
         <span style={{
-            display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, minHeight: 48, width: "100%", padding: "10px 16px",
+            display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, width: "100%", padding: "10px 16px",
             borderRadius: 12, background: T.handling, color: T.onHandling, fontFamily: T.ui, fontSize: 14, fontWeight: 600, minHeight: 56,
           }}>Send oss et spørsmål</span>
       </Link>
