@@ -75,7 +75,7 @@ export function DrillDetaljV2({ data }: { data: DrillDetaljV2Data }) {
   const harCsMeta = data.meta.some((m) => m.text.toUpperCase().includes("CS"));
 
   return (
-    <div data-paper-wave-d="drill-detalj" data-od-id="playerhq-drill-detalj" style={{ maxWidth: 720, width: "100%", margin: "0 auto", display: "flex", flexDirection: "column", gap: T.gap }}>
+    <div  data-paper-slug="playerhq-drill-detalj" data-paper-wave-d="drill-detalj" data-od-id="playerhq-drill-detalj" style={{ maxWidth: 720, width: "100%", margin: "0 auto", display: "flex", flexDirection: "column", gap: T.gap }}>
       {/* Header */}
       <div>
         <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>{data.navn}</h1>

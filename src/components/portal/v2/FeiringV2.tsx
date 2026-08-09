@@ -51,7 +51,7 @@ function deltaFarge(v: number | null): string {
 function SgCelle({ label, v }: { label: string; v: number | null }) {
   const farge = deltaFarge(v);
   return (
-    <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 4, borderRadius: 12, border: `1px solid ${T.border}`, background: T.panel2, padding: "12px 4px", minWidth: 0 }}>
+    <div  data-paper-slug="playerhq-feiring" style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 4, borderRadius: 12, border: `1px solid ${T.border}`, background: T.panel2, padding: "12px 4px", minWidth: 0 }}>
       <Caps size={8.5}>{label}</Caps>
       {v !== null && (
         <Icon name={v >= 0 ? "trending-up" : "trending-down"} size={13} style={{ color: farge }} />

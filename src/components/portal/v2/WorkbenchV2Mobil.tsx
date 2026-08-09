@@ -35,7 +35,7 @@ export function WBTidslinjeMobil({
   const aktivDag = dager.find((d) => Number(d.dato) === valgtDato) ?? defaultDag;
   const stripeDays: StripeDag[] = dager.map((d) => ({ dow: d.dow.slice(0, 1), date: Number(d.dato), today: d.today }));
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+    <div  data-paper-slug="workbench-mobil" style={{ display: "flex", flexDirection: "column", gap: 12 }}>
       <DagStripe days={stripeDays} value={valgtDato} onChange={(date) => setValgtDato(date)} />
       <DagNivaa dag={aktivDag ?? null} valgt={valgt} onVelg={onVelg} dager={dager} onFlytt={onFlytt} />
     </div>

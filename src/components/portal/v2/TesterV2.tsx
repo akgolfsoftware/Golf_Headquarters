@@ -134,7 +134,7 @@ function TestTabell({ seksjoner }: { seksjoner: TesterSeksjon[] }) {
     whiteSpace: "nowrap" as const,
   };
   return (
-    <div style={{ overflowX: "auto" }}>
+    <div  data-paper-slug="playerhq-tester-hub" style={{ overflowX: "auto" }}>
       <table style={{ width: "100%", borderCollapse: "collapse", minWidth: 480 }}>
         <thead>
           <tr>

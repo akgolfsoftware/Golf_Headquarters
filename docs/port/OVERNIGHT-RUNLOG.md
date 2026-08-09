@@ -23,3 +23,9 @@
 - files: PlanV2, AnalysereV2, MegV2, BookingHubV2, LoginV2, MarkedBookingV2
 - also: Agency slugs Cockpit/Stall/Kalender/Triage, Live shell/brief/active/summary
 - next: Batch C finpuss + W1/W2 ports after commit
+
+## 21:45 batch C/D/E partial
+- slugs: fangst, workbench d/m, putte-lab, forelder, okt, drill, tester, feiring, turneringer, runder, hull, datagolf, gameplan
+- live: brief/active/summary/shell
+- putte: success green via up mix; cta migrate partial
+- next: more pixel structure on W3 maler + remaining [ ] fasit

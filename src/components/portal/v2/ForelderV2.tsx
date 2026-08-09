@@ -110,7 +110,7 @@ export function ForelderV2({ data }: { data: ForelderUkerapport }) {
   const alderTekst = childAge != null ? ` · ${childAge} år` : "";
 
   return (
-    <div data-paper-forelder data-paper-wave-e="forelder" data-od-id="foreldreportal" style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
+    <div  data-paper-slug="foreldreportal" data-paper-forelder data-paper-wave-e="forelder" data-od-id="foreldreportal" style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
       {/* Paper .topp — fasit: barnets navn, sub foresatt */}
       <div
         style={{

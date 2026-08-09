@@ -25,25 +25,25 @@
 - [~] `agencyos-spillere-mobil.html`
 - [~] `agencyos-spillere.html`
 - [~] `booking.html` — PP-1.7 READY_SIGN
-- [ ] `fangstsheet.html`
-- [~] `foreldreportal.html`
+- [~] `fangstsheet.html` — overnight slug/CTA READY_SIGN
+- [~] `foreldreportal.html` — overnight slug/CTA READY_SIGN
 - [~] `innlogging.html`
 - [~] `playerhq-analyse.html` — PP-1.3 READY_SIGN
 - [~] `playerhq-booking.html` — PP-1.5 READY_SIGN
 - [~] `playerhq-chat-desktop.html` — PP-1.1 loop/ink/mic (klar sign-off)
 - [~] `playerhq-chat-mobil.html` — PP-1.1 loop/ink/mic (klar sign-off)
-- [~] `playerhq-live-brief.html`
-- [~] `playerhq-live-okt.html`
-- [~] `playerhq-live-summary.html`
+- [~] `playerhq-live-brief.html` — overnight slug/CTA READY_SIGN
+- [~] `playerhq-live-okt.html` — overnight slug/CTA READY_SIGN
+- [~] `playerhq-live-summary.html` — overnight slug/CTA READY_SIGN
 - [~] `playerhq-meg.html`
 - [~] `playerhq-plan.html` — PP-1.2 READY_SIGN
 - [~] `playerhq-runde-live.html`
 - [~] `playerhq-runde-logg.html`
 - [~] `playerhq-test-gjennomfor.html`
 - [ ] `spillerprofil.html`
-- [~] `workbench-desktop.html`
-- [~] `workbench-mobil.html`
-- [ ] `workbench-turnering.html`
+- [~] `workbench-desktop.html` — overnight slug/CTA READY_SIGN
+- [~] `workbench-mobil.html` — overnight slug/CTA READY_SIGN
+- [~] `workbench-turnering.html` — overnight slug/CTA READY_SIGN
 
 ## Fase 2 · PlayerHQ W1 (drill/plan/test/turnering)
 

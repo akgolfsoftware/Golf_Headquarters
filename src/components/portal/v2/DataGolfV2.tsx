@@ -55,7 +55,7 @@ function DGLegend({ refNavn }: { refNavn: string }) {
     { l: "Tour-baseline (0,0)", c: T.fg2 },
   ];
   return (
-    <div style={{ display: "flex", gap: 14, flexWrap: "wrap" }}>
+    <div  data-paper-slug="playerhq-datagolf" style={{ display: "flex", gap: 14, flexWrap: "wrap" }}>
       {serier.map((s) => (
         <span key={s.l} style={{ display: "inline-flex", alignItems: "center", gap: 6, fontFamily: T.ui, fontSize: 11, color: T.mut }}>
           <span style={{ width: 7, height: 7, borderRadius: 9999, background: s.c }} />

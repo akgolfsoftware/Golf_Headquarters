@@ -44,7 +44,7 @@ export function GameplanV2({ data }: { data: BaneLibraryItem[] }) {
   const sumRunder = data.reduce((s, b) => s + b.playerRounds, 0);
 
   return (
-    <div data-paper-wave-g="gameplan" data-paper-portal-gameplan style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
+    <div  data-paper-slug="playerhq-gameplan-liste" data-paper-wave-g="gameplan" data-paper-portal-gameplan style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
       {/* Hode */}
       <div>
         <div data-paper-pattern-topp>

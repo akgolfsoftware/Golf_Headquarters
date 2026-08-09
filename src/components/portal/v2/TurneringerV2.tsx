@@ -62,7 +62,7 @@ export function TurneringerV2({ data }: { data: TurneringerData }) {
   const antallOrd = antall <= 12 ? TALLORD[antall] : String(antall);
 
   return (
-    <div data-paper-wave-f="turneringer" data-od-id="playerhq-turneringer" style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
+    <div  data-paper-slug="playerhq-turneringer" data-paper-wave-f="turneringer" data-od-id="playerhq-turneringer" style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
       {/* Paper .topp */}
       <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
         <div>

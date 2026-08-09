@@ -208,8 +208,7 @@ function TLBlokk({ o, dragKey, valgt, onVelg, dragbar }: { o: WeekEvent; /** Sta
     disabled: !kanDra,
   });
   return (
-    <div
-      ref={setNodeRef}
+    <div ref={setNodeRef}
       data-wb-okt={o.id ?? undefined}
       onClick={() => o.id && !pending && onVelg(o.id)}
       {...(kanDra ? attributes : undefined)}
@@ -1403,7 +1402,7 @@ function WBTurneringNivaa({ data }: { data: WorkbenchData }) {
   const liste = data.tournaments ?? [];
   const snart = liste.find((t) => t.soon) ?? liste[0];
   return (
-    <div data-paper-workbench-turnering data-paper-wave-f="workbench-turnering" style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+    <div data-paper-workbench-turnering data-paper-slug="workbench-desktop" data-paper-wave-f="workbench-turnering" style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
       {snart && (
         <Kort
           pad="16px 18px"

@@ -28,7 +28,7 @@ export function FangstModal({
 
   return createPortal(
     <>
-      <div
+      <div data-paper-slug="fangstsheet"
         onClick={onClose}
         aria-hidden
         style={{ position: "fixed", inset: 0, zIndex: 92, background: T.farge.svartA55 }}

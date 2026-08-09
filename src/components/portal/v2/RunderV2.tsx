@@ -112,7 +112,7 @@ export function RunderV2({ data }: { data: RunderV2Data }) {
   const snittSg = kpis.sgTotalSnitt != null ? fmtSg(kpis.sgTotalSnitt) : "–";
 
   return (
-    <div data-paper-portal-runder style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
+    <div  data-paper-slug="playerhq-runder-liste" data-paper-portal-runder style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
       {/* Hode */}
       <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
         <div>

@@ -75,7 +75,7 @@ export function OktV2({ data, onSettPyramide }: { data: OktDetaljData; onSettPyr
   // Tom-tilstand: ingen økt funnet for testbrukeren (ærlig, aldri liksom-økt).
   if (!data.found) {
     return (
-      <div data-paper-portal-okt-detalj style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
+      <div  data-paper-slug="playerhq-okt-detalj" data-paper-portal-okt-detalj style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
         <div>
           <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>Økt</h1>
           <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>Ingen økt valgt</span>

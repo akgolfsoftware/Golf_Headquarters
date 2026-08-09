@@ -69,7 +69,7 @@ function CtrlLabel({ children }: { children: React.ReactNode }) {
 /* Enkeltvalg-segmenter — PillVelger-idiomet m/ flexWrap (8 lengder på mobil). */
 function Seg({ items, active, onPick }: { items: string[]; active: number; onPick: (i: number) => void }) {
   return (
-    <div style={{ display: "inline-flex", flexWrap: "wrap", gap: 3, background: T.panel2, border: `1px solid ${T.border}`, borderRadius: 12, padding: 3 }}>
+    <div  data-paper-slug="playerhq-putte-lab" style={{ display: "inline-flex", flexWrap: "wrap", gap: 3, background: T.panel2, border: `1px solid ${T.border}`, borderRadius: 12, padding: 3 }}>
       {items.map((it, i) => {
         const on = i === active;
         return (
@@ -425,7 +425,7 @@ function DirGreenen() {
           </Knapp>
         ) : (
           <>
-            <div style={{ borderRadius: 12, padding: 16, background: result.make ? T.forest : T.panel2, border: result.make ? "none" : `1px solid ${T.border}` }}>
+            <div style={{ borderRadius: 12, padding: 16, background: result.make ? "color-mix(in srgb, var(--v2-up) 16%, var(--v2-bg))" : T.panel2, border: result.make ? "none" : `1px solid ${T.border}` }}>
               <div style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 20, lineHeight: 1.2, letterSpacing: "-0.02em", color: result.make ? T.lime : T.fg }}>
                 {result.make ? "I hull" : result.tooShort ? "Kom ikke fram" : result.tooLong ? "Løp forbi" : Math.abs(result.missCm) > result.capCm * 1.8 ? `Bommet ${result.missCm > 0 ? "høyre" : "venstre"}` : "Lipp-out"}
               </div>
@@ -534,7 +534,7 @@ function DirKjeden() {
       </div>
 
       <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-        <div style={{ background: T.forest, borderRadius: 16, padding: 22 }}>
+        <div style={{ background: T.cta, borderRadius: 16, padding: 22 }}>
           <span style={{ display: "inline-flex", alignItems: "center", gap: 5 }}>
             <Caps size={10} color={T.lime}>Make-sannsynlighet</Caps>
             <HjelpTips k="makeProsent" size={11} />
