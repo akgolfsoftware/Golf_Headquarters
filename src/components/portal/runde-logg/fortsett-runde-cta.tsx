@@ -13,7 +13,7 @@ import { T, Icon } from "@/components/v2";
 const abonnerIngen = () => () => {};
 
 type Props = {
-  /** compact = rad/kort-stil; pill = lime CTA */
+  /** compact = rad/kort-stil; pill = clay CTA */
   variant?: "row" | "pill";
   className?: string;
 };
@@ -73,7 +73,7 @@ export function FortsettRundeCta({ variant = "row" }: Props) {
           borderRadius: 10,
           display: "grid",
           placeItems: "center",
-          background: "color-mix(in srgb, var(--v2-lime) 18%, transparent)",
+          background: "color-mix(in srgb, var(--v2-handling, #D97757) 14%, transparent)",
           color: T.forest,
           flex: "none",
         }}

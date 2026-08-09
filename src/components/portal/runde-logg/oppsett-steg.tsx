@@ -210,6 +210,7 @@ export function OppsettSteg({ modus, baner, initial, onStart }: OppsettStegProps
                   <button
                     key={p}
                     type="button"
+        data-paper-en-ting={gyldig ? "true" : undefined}
                     onClick={() => settPar(idx, p)}
                     className="v2-press v2-focus"
                     style={{
@@ -291,6 +292,8 @@ export function OppsettSteg({ modus, baner, initial, onStart }: OppsettStegProps
           borderRadius: 10,
           border: "none",
           background: gyldig ? T.handling : T.panel3,
+          minHeight: 56,
+          borderRadius: 12,
           color: gyldig ? T.onHandling : T.mut,
           fontFamily: T.disp,
           fontSize: 16,

@@ -1,20 +1,27 @@
-# Wave C status — 2026-08-09
+# Wave C status — 2026-08-09 (komplett finpuss)
 
-## Scope: Live + runde + fangst
+## Live-sløyfe (Paper cream)
 
-| Flate | Endring |
+| Flate | Finpuss |
 |---|---|
-| **LiveSessionShell** | Cream topp, 17px tittel, backHref, dokk T.bg |
-| **LiveLoopNav** | Fullbredde FØR/UNDER/ETTER + clay underline |
-| **LiveBrief** | Tittel «Før økta», Start økta clay 56px |
-| **Summary** | Shell «Etter økta» + tilbake til active |
-| **LiveActive** | Clay CTAs 56px, wave marker |
-| **Runde live/logg** | Paper topp «Runde · live» / «Logg en runde», soft mode-toggle |
-| **Fangst** | wave marker, clay send |
+| **LiveSessionShell** | cream topp/dokk, backHref, 17px |
+| **LiveLoopNav** | fullbredde + clay underline |
+| **LiveBrief** | «Før økta», Start 56px clay |
+| **PlanSessionBrief** | samme shell + Paper farger |
+| **LiveActive** | cream (ikke mørk), «Økta pågår», ChallengeCard Paper, Logg rep = enTing, Avslutt sekundær |
+| **SessionTimer** | Paper panel + clay tall |
+| **Confirm** | cream dialog |
+| **SessionSummary** | «Etter økta» shell + 56px CTA |
 
-## Exit C (delvis)
-Live-sløyfe + runde matcher Paper flow/chrome. Pixel screenshot sign-off pending.
-Agency live-session coach view not deep-ported (rail already Wave B).
+## Runde
+| Flate | Finpuss |
+|---|---|
+| **Live/logg topp** | «Runde · live» / «Logg en runde» |
+| **Oppsett CTA** | clay 56px |
+| **Mode-toggle** | soft + clay underline |
 
-## Neste
-Wave D Workbench + tester + drills.
+## Fangst
+wave-c + clay send
+
+## Pixel
+Screenshot sign-off pending. Mac push pending.

@@ -20,10 +20,8 @@ import {
 } from "@/lib/offline-queue/live-drill-queue";
 import type { LiveDrillReps } from "@/lib/offline-queue/live-drill-kladd";
 
-// Immersiv mørk live-UNDER: Paper rail-ink (#141413), ikke Presis forest.
-// Brief/summary er lys Paper (LiveSessionShell). Active beholder mørk fokus-flate
-// men med clay handling (#D97757) i stedet for lime.
-const LIVE_BG_GRADIENT = "radial-gradient(120% 80% at 50% 0%, #1c1c1a, #141413 72%)";
+// Paper-fasit playerhq-live-okt.html — cream live-UNDER.
+const LIVE_BG = "var(--v2-bg, #faf9f5)";
 
 type DrillStatus = "done" | "active" | "queued";
 
@@ -75,160 +73,114 @@ function ConfirmOverlay({ show, onConfirm, onCancel }: ConfirmOverlayProps) {
   return (
     <div
       className="absolute inset-0 z-50 flex items-center justify-center p-5"
-      style={{ background: T.farge.inkMerkeA70, backdropFilter: "blur(4px)" }}
+      style={{ background: T.farge.svartA55, backdropFilter: "blur(4px)" }}
     >
-      <div className="w-full max-w-[320px] rounded-[20px] border border-background/10 p-6" style={{ background: "#1c1c1a" }}>
-        <div className="font-display text-[18px] font-bold text-background">
-          Avslutt økt?
+      <div
+        className="w-full max-w-[320px] rounded-[20px] p-6"
+        style={{ background: T.panel, border: `1px solid ${T.border}`, color: T.fg }}
+      >
+        <div className="font-display text-[18px] font-semibold" style={{ color: T.fg }}>
+          Avslutte økta?
         </div>
-        <p className="mt-2 mb-5 text-[13.5px] leading-[1.55] text-background/60">
+        <p className="mt-2 mb-5 text-[13.5px] leading-[1.55]" style={{ color: T.mut }}>
           Fremgangen din blir lagret. Du kan fortsette senere.
         </p>
         <div className="flex flex-col gap-2">
-          {/* Paper: «Avslutt og logg» er Én ting nå (handling); fortsett er blekk */}
           <button
             type="button"
             onClick={onConfirm}
-            data-od-id="live-avslutt"
-            className="w-full rounded-[10px] py-[14px] font-sans text-[14px] font-semibold"
-            style={{ background: T.handling, color: T.onHandling, minHeight: 56, borderRadius: 12, border: "none" }} data-paper-en-ting="true"
+            data-paper-en-ting="true"
+            className="w-full border-none py-[13px] font-sans text-[14px] font-semibold v2-press"
+            style={{ background: T.handling, color: T.onHandling, minHeight: 52, borderRadius: 12 }}
           >
-            Avslutt og lagre
+            Avslutt og logg
           </button>
           <button
             type="button"
             onClick={onCancel}
-            className="w-full rounded-[10px] border border-background/25 bg-background/10 py-[13px] font-sans text-[13px] font-medium text-background"
+            className="w-full py-[13px] font-sans text-[13px] font-medium v2-press"
+            style={{ border: `1px solid ${T.border}`, background: T.panel2, color: T.fg, borderRadius: 12 }}
           >
-            Fortsett økt
+            Fortsett økta
           </button>
         </div>
       </div>
     </div>
   );
 }
-
-// ── Challenge card (drill-rad i aktiv økt) ──────────────────────────────────
-
-const AXIS_LABEL: Record<string, string> = {
-  FYS: "Fysisk",
-  TEK: "Teknisk",
-  SLAG: "Slag",
-  SPILL: "Spill",
-  TURN: "Turnering",
-};
-
-type ChallengeCardProps = {
-  drill: DrillState;
-  onLogRep?: () => void;
-};
 
 function ChallengeCard({ drill, onLogRep }: ChallengeCardProps) {
   const isActive = drill.status === "active";
   const isDone = drill.status === "done";
-  const isQueued = drill.status === "queued";
 
-  // FYS-drills har ofte ikke plannedReps (repetitions) satt — bruk repSett/
-  // fysSett som mål-proxy (antall sett) i stedet for å vise en tom 0/0-bar.
   const fysMaal = drill.pyramide === "FYS" ? drill.fysSett ?? drill.repSett ?? 0 : 0;
   const maal = drill.plannedReps > 0 ? drill.plannedReps : fysMaal;
   const progressPct = maal > 0 ? Math.min((drill.repsTotal / maal) * 100, 100) : 0;
 
-  let cardClasses =
-    "relative overflow-hidden rounded-[14px] border p-4 transition-all duration-200";
-  if (isActive) {
-    cardClasses +=
-      " border-accent bg-background/8 shadow-[0_0_0_4px_rgba(217,119,87,0.18)]";
-    // lime border for active
-  } else if (isDone) {
-    cardClasses += " border-background/15 bg-background/5 opacity-85";
-  } else {
-    // queued
-    cardClasses += " border-background/10 bg-background/4 opacity-55";
-  }
-
   return (
-    <div className={cardClasses} style={isActive ? { borderColor: "var(--v2-handling, #D97757)" } : undefined}>
-      {/* Eyebrow */}
-      <div className="mb-2 flex items-center gap-[6px] font-mono text-[9.5px] font-semibold uppercase tracking-[0.10em] text-background/60">
-        <span className="h-[6px] w-[6px] rounded-full bg-accent" aria-hidden />
-        {AXIS_LABEL[drill.pyramide] ?? drill.pyramide}
+    <div
+      className="relative overflow-hidden rounded-[14px] border p-4 transition-all duration-200"
+      style={{
+        borderColor: isActive ? T.handling : T.border,
+        background: isActive ? T.handlingSoft : isDone ? T.panel2 : T.panel,
+        boxShadow: isActive ? "0 0 0 3px color-mix(in srgb, var(--v2-handling, #D97757) 18%, transparent)" : undefined,
+        opacity: isDone ? 0.88 : 1,
+      }}
+    >
+      <div
+        className="mb-2 flex items-center gap-[6px] font-mono text-[9.5px] font-semibold uppercase tracking-[0.10em]"
+        style={{ color: T.mut }}
+      >
+        {isDone ? "Fullført" : isActive ? "Nå" : "Kø"}
+        {drill.pyramide ? ` · ${drill.pyramide}` : ""}
       </div>
-
-      {/* Title */}
-      <div className="mb-1 font-display text-[18px] font-bold leading-[1.15] -tracking-[0.02em] text-background">
+      <div
+        className="mb-1 font-display text-[18px] font-bold leading-[1.15] -tracking-[0.02em]"
+        style={{ color: T.fg }}
+      >
         {drill.name}
       </div>
-
-      {/* Planlagt rep-type + volum (bølge 2) — det coachen la inn */}
-      {plannedVolumText(drill) && (
-        <div className="mb-3 font-mono text-[10px] font-semibold uppercase tracking-[0.06em] text-background/60">
-          Planlagt: {plannedVolumText(drill)}
+      {(drill.notes || drill.description) && (
+        <div className="mb-3 text-[12.5px] leading-snug" style={{ color: T.mut, fontFamily: T.bodyFont }}>
+          {drill.notes || drill.description}
         </div>
       )}
-
-      {/* Fremdrift */}
-      <div className="mb-[7px] flex items-center justify-between">
-        <span className="font-mono text-[9.5px] uppercase tracking-[0.06em] text-background/60">
-          Fremdrift
+      <div className="mb-2 flex items-baseline justify-between gap-2">
+        <span className="font-mono text-[9.5px] uppercase tracking-[0.06em]" style={{ color: T.mut }}>
+          Reps
         </span>
-        <span className="font-mono text-[12px] font-semibold text-background">
+        <span className="font-mono text-[12px] font-semibold" style={{ color: T.fg }}>
           {drill.repsTotal}
-          {drill.plannedReps > 0 && (
-            <small className="font-normal text-background/60"> / {drill.plannedReps}</small>
+          {maal > 0 && (
+            <small className="font-normal" style={{ color: T.mut }}> / {maal}</small>
           )}
         </span>
       </div>
-
-      {/* Progress bar — forest→lime gradient */}
-      <div className="h-2 overflow-hidden rounded-full border border-background/10 bg-background/10">
+      <div className="h-2 overflow-hidden rounded-full" style={{ border: `1px solid ${T.border}`, background: T.panel2 }}>
         <div
-          className="h-full rounded-full transition-all duration-700"
+          className="h-full rounded-full transition-all duration-500"
           style={{
-            width: `${isDone ? 100 : progressPct}%`,
+            width: `${progressPct}%`,
             background: isDone
-              ? `linear-gradient(90deg, ${T.farge.okMerke}, #141413)`
-              : "linear-gradient(90deg, #141413, var(--v2-handling, #D97757))",
+              ? T.up
+              : "linear-gradient(90deg, color-mix(in srgb, var(--v2-handling, #D97757) 55%, #141413), var(--v2-handling, #D97757))",
           }}
         />
       </div>
-
-      {/* Status + CTA */}
-      <div className="mt-3 flex items-center justify-between">
-        <span
-          className="font-mono text-[10px] uppercase tracking-[0.06em]"
-          style={{
-            // Lys status-tekst på den mørke forest-flata.
-            color: isActive ? "var(--v2-handling, #D97757)" : isDone ? T.farge.offwhiteMerkeA65 : T.farge.offwhiteMerkeA45,
-          }}
+      {isActive && onLogRep && (
+        <button
+          type="button"
+          onClick={onLogRep}
+          className="mt-3 w-full rounded-[12px] border-none py-2.5 font-sans text-[13px] font-semibold active:scale-[0.98]"
+          style={{ background: T.handling, color: T.onHandling, minHeight: 44 }}
+          data-paper-en-ting="true"
         >
-          {isActive ? "Pågår" : isDone ? "Fullført" : isQueued ? "Venter" : ""}
-        </span>
-
-        {isActive && onLogRep && (
-          <button
-            type="button"
-            onClick={onLogRep}
-            className="rounded-full border-none px-5 py-[11px] font-mono text-[12px] font-bold uppercase tracking-[0.06em] text-accent-foreground"
-            style={{ background: "var(--v2-handling, #D97757)", minHeight: 44 }}
-          >
-            Logg rep
-          </button>
-        )}
-
-        {isDone && (
-          // Lys suksess-grønn (DS mørk-verdi) — .dark-klassen finnes ikke her.
-          <span className="flex items-center gap-[5px] font-mono text-[10px] font-bold" style={{ color: T.farge.suksessLys }}>
-            <Check className="h-[13px] w-[13px]" strokeWidth={2.5} aria-hidden />
-            Fullført
-          </span>
-        )}
-      </div>
+          Logg rep
+        </button>
+      )}
     </div>
   );
 }
-
-// ── LiveActive — hoved-komponent ─────────────────────────────────────────────
 
 export function LiveActive({ data, coachPanel }: { data: LiveV2Session; coachPanel: LiveCoachPanelData }) {
   const router = useRouter();
@@ -499,21 +451,22 @@ export function LiveActive({ data, coachPanel }: { data: LiveV2Session; coachPan
     return (
       <div
         className="fixed inset-0 z-50 flex flex-col" data-paper-wave-c="live-active"
-        style={{ background: LIVE_BG_GRADIENT }}
+        style={{ background: LIVE_BG }}
       >
         {/* Mini topbar for logger-overlay */}
         <header
           className="flex flex-shrink-0 items-center justify-between gap-4 px-5 py-3"
-          style={{ paddingTop: "max(env(safe-area-inset-top) + 12px, 52px)" }}
+          style={{ paddingTop: "max(env(safe-area-inset-top) + 12px, 14px)", borderBottom: `1px solid ${T.border}`, background: T.bg }}
         >
           <button
             type="button"
             onClick={() => setShowDrillLogger(false)}
-            className="font-mono text-[11px] font-bold uppercase tracking-[0.06em] text-background/60"
+            className="font-mono text-[11px] font-bold uppercase tracking-[0.06em] v2-press"
+            style={{ color: T.mut, background: "transparent", border: "none" }}
           >
             Tilbake
           </button>
-          <span className="font-mono text-[10px] font-bold uppercase tracking-[0.12em] text-accent">
+          <span className="font-mono text-[10px] font-bold uppercase tracking-[0.12em]" style={{ color: T.handling }}>
             Logger drill
           </span>
           <span className="w-16" />
@@ -538,9 +491,12 @@ export function LiveActive({ data, coachPanel }: { data: LiveV2Session; coachPan
     <div
       data-paper-portal-live-active
       className="fixed inset-0 z-50 flex flex-col overflow-hidden"
+      data-paper-wave-c="live-active"
       style={{
-        background: LIVE_BG_GRADIENT,
+        background: LIVE_BG,
+        color: T.fg,
         isolation: "isolate",
+        fontFamily: T.ui,
       }}
     >
       {/* Confirm-overlay */}
@@ -555,21 +511,27 @@ export function LiveActive({ data, coachPanel }: { data: LiveV2Session; coachPan
 
       {/* Topbar */}
       <header
-        className="flex flex-shrink-0 items-center justify-between border-b border-background/10 px-[18px] py-[10px]"
-        style={{ paddingTop: "max(env(safe-area-inset-top) + 10px, 54px)" }}
+        data-paper-topp
+        className="flex flex-shrink-0 items-center gap-2 px-4 py-3"
+        style={{
+          paddingTop: "max(env(safe-area-inset-top) + 10px, 14px)",
+          borderBottom: `1px solid ${T.border}`,
+          background: T.bg,
+        }}
       >
-        <div>
-          <div className="font-display text-[16px] font-bold leading-tight -tracking-[0.01em] text-background">
-            {data.title}
-          </div>
-          <div className="mt-[2px] font-mono text-[9.5px] font-semibold text-background/60">
-            {sessionMeta}
+        <div style={{ minWidth: 0, flex: 1 }}>
+          <h1 className="font-display text-[17px] font-semibold leading-tight" style={{ margin: 0, color: T.fg }}>
+            Økta pågår
+          </h1>
+          <div className="mt-[2px] font-mono text-[10.5px]" style={{ color: T.mut }}>
+            {data.title}{sessionMeta ? ` · ${sessionMeta}` : ""}
           </div>
         </div>
         <button
           type="button"
           onClick={() => setShowConfirm(true)}
-          className="rounded-full border border-destructive/20 bg-destructive/8 px-3 py-[6px] font-mono text-[10px] font-bold uppercase tracking-[0.06em] text-destructive"
+          className="v2-press rounded-full px-3 py-[6px] font-mono text-[10px] font-bold uppercase tracking-[0.06em]"
+          style={{ border: `1px solid ${T.border}`, background: T.panel, color: T.down }}
         >
           Avslutt
         </button>
@@ -583,18 +545,19 @@ export function LiveActive({ data, coachPanel }: { data: LiveV2Session; coachPan
             stedet for «Trykk Logg rep»-copy som pekte på en knapp som ikke
             fantes. */}
         {drills.length === 0 && (
-          <div className="mb-[14px] rounded-[14px] border border-dashed border-background/20 p-[18px] text-center">
-            <div className="font-display text-[17px] font-bold text-background">
+          <div className="mb-[14px] rounded-[14px] p-[18px] text-center" style={{ border: `1px dashed ${T.border}`, background: T.panel2 }}>
+            <div className="font-display text-[17px] font-semibold" style={{ color: T.fg }}>
               Ingen drills i denne økta
             </div>
-            <p className="mt-[6px] text-[12.5px] leading-[1.5] text-background/60">
+            <p className="mt-[6px] text-[12.5px] leading-[1.5]" style={{ color: T.mut }}>
               Åpne økta i planen og legg til driller («Rediger økt»), så dukker
               de opp her — eller tren fritt og avslutt når du er ferdig.
             </p>
             <button
               type="button"
               onClick={() => router.replace("/portal/planlegge/workbench")}
-              className="mt-[14px] rounded-[10px] border border-background/25 bg-background/10 px-6 py-3 font-sans text-[13px] font-semibold text-background"
+              className="mt-[14px] rounded-[12px] px-6 py-3 font-sans text-[13px] font-semibold v2-press"
+              style={{ border: `1px solid ${T.border}`, background: T.panel, color: T.fg }}
             >
               Til planen
             </button>
@@ -603,27 +566,26 @@ export function LiveActive({ data, coachPanel }: { data: LiveV2Session; coachPan
 
         {/* GoalProgress-kort */}
         {drills.length > 0 && (
-        <div className="mb-[14px] rounded-[14px] border border-background/10 bg-background/5 p-[14px]">
+        <div className="mb-[14px] rounded-[14px] p-[14px]" style={{ border: `1px solid ${T.border}`, background: T.panel }}>
           <div className="mb-2 flex items-center justify-between">
-            <span className="font-mono text-[9.5px] font-bold uppercase tracking-[0.08em] text-background/60">
+            <span className="font-mono text-[9.5px] font-bold uppercase tracking-[0.08em]" style={{ color: T.mut }}>
               Fremdrift
             </span>
-            <span className="font-mono text-[13px] font-semibold text-background">
+            <span className="font-mono text-[13px] font-semibold" style={{ color: T.fg }}>
               {completedCount}
-              <small className="font-normal text-background/60"> / {drills.length} drills</small>
+              <small className="font-normal" style={{ color: T.mut }}> / {drills.length} drills</small>
             </span>
           </div>
-          {/* progress bar */}
-          <div className="h-[10px] overflow-hidden rounded-full border border-background/10 bg-background/10">
+          <div className="h-[10px] overflow-hidden rounded-full" style={{ border: `1px solid ${T.border}`, background: T.panel2 }}>
             <div
               className="h-full rounded-full transition-all duration-700"
               style={{
                 width: `${progressPct}%`,
-                background: "linear-gradient(90deg, #141413, var(--v2-handling, #D97757))",
+                background: "linear-gradient(90deg, color-mix(in srgb, var(--v2-handling, #D97757) 40%, #141413), var(--v2-handling, #D97757))",
               }}
             />
           </div>
-          <div className="mt-[7px] text-[12px] text-background/60">
+          <div className="mt-[7px] text-[12px]" style={{ color: T.mut }}>
             {allDone
               ? "Alle drills fullført — flott innsats!"
               : completedCount > 0
@@ -665,18 +627,19 @@ export function LiveActive({ data, coachPanel }: { data: LiveV2Session; coachPan
         {allDone && (
           <div
             className="mb-[14px] rounded-[14px] p-[18px] text-center"
-            style={{ background: "#141413" }}
+            style={{ background: T.handlingSoft, border: `1px solid ${T.border}` }}
           >
-            <div className="font-display text-[20px] font-bold text-white">
+            <div className="font-display text-[20px] font-semibold" style={{ color: T.fg }}>
               Alle drills fullført
             </div>
-            <div className="mt-[6px] text-[13px] text-white/75">{data.title}</div>
+            <div className="mt-[6px] text-[13px]" style={{ color: T.mut }}>{data.title}</div>
             <button
               type="button"
               onClick={() => void completeSession(data.sessionId, totalSec)}
               data-od-id="live-avslutt"
-              className="mt-[14px] w-full rounded-[10px] border-none px-6 py-3 font-sans text-[14px] font-semibold"
-              style={{ background: T.handling, color: T.onHandling }}
+              data-paper-en-ting="true"
+              className="mt-[14px] w-full border-none px-6 py-3 font-sans text-[14px] font-semibold"
+              style={{ background: T.handling, color: T.onHandling, minHeight: 56, borderRadius: 12 }}
             >
               Avslutt og logg økta
             </button>
@@ -712,17 +675,17 @@ export function LiveActive({ data, coachPanel }: { data: LiveV2Session; coachPan
                 ? `${neste.plannedReps} reps`
                 : "";
           return (
-            <div className="mt-[10px] flex items-center gap-3 rounded-[14px] border border-background/10 bg-background/5 px-[14px] py-[11px]">
+            <div className="mt-[10px] flex items-center gap-3 rounded-[14px] px-[14px] py-[11px]" style={{ border: `1px solid ${T.border}`, background: T.panel }}>
               <span className="min-w-0 flex-1">
-                <span className="block font-mono text-[9px] font-bold uppercase tracking-[0.09em] text-background/45">
+                <span className="block font-mono text-[9px] font-bold uppercase tracking-[0.09em]" style={{ color: T.mut }}>
                   Neste opp
                 </span>
-                <span className="mt-[2px] block truncate text-[13.5px] font-semibold text-background">
+                <span className="mt-[2px] block truncate text-[13.5px] font-semibold" style={{ color: T.fg }}>
                   {neste.name}
                 </span>
               </span>
               {nesteMaal && (
-                <span className="flex-shrink-0 font-mono text-[10.5px] text-background/60">{nesteMaal}</span>
+                <span className="flex-shrink-0 font-mono text-[10.5px]" style={{ color: T.mut }}>{nesteMaal}</span>
               )}
             </div>
           );
@@ -734,11 +697,12 @@ export function LiveActive({ data, coachPanel }: { data: LiveV2Session; coachPan
       {/* Sticky primær CTA — B: én grønn jobb (tommel-sone) */}
       {active && !allDone && (
         <footer
-          className="flex-shrink-0 border-t border-background/10 px-4 pt-3"
+          data-paper-dokk
+          className="flex-shrink-0 px-4 pt-3"
           style={{
-            paddingBottom: "max(env(safe-area-inset-bottom), 16px)",
-            background: T.farge.inkMerkeA92,
-            backdropFilter: "blur(8px)",
+            paddingBottom: "max(env(safe-area-inset-bottom), 12px)",
+            borderTop: `1px solid ${T.border}`,
+            background: T.bg,
             maxWidth: 720,
             margin: "0 auto",
             width: "100%",
@@ -746,18 +710,11 @@ export function LiveActive({ data, coachPanel }: { data: LiveV2Session; coachPan
         >
           <button
             type="button"
-            onClick={() => setShowConfirm(true)}
-            data-od-id="live-avslutt"
-            className="w-full rounded-[10px] border-none py-3.5 font-sans text-[14px] font-semibold active:scale-[0.98]"
-            style={{ background: T.handling, color: T.onHandling, minHeight: 56, borderRadius: 12 }} data-paper-en-ting="true"
-          >
-            Avslutt og logg økta
-          </button>
-          <button
-            type="button"
             onClick={handleLogRep}
-            className="mt-2 w-full rounded-[10px] border border-background/25 bg-background/10 py-3.5 font-sans text-[13px] font-semibold text-background active:scale-[0.98]"
-            style={{ minHeight: 48 }}
+            data-od-id="live-logg-rep"
+            data-paper-en-ting="true"
+            className="w-full border-none py-3.5 font-sans text-[14px] font-semibold active:scale-[0.98] v2-press"
+            style={{ background: T.handling, color: T.onHandling, minHeight: 56, borderRadius: 12 }}
           >
             Logg rep
           </button>
@@ -765,9 +722,19 @@ export function LiveActive({ data, coachPanel }: { data: LiveV2Session; coachPan
             type="button"
             onClick={() => void handleCompleteDrill()}
             disabled={isCompleting}
-            className="mt-2 w-full py-2 font-mono text-[11px] font-bold uppercase tracking-[0.06em] text-background/55 disabled:opacity-50"
+            className="mt-2 w-full py-3 font-sans text-[13px] font-semibold disabled:opacity-50 v2-press"
+            style={{ minHeight: 48, borderRadius: 12, border: `1px solid ${T.border}`, background: T.panel, color: T.fg }}
           >
-            {activeIdx === drills.length - 1 ? "Fullfør økt uten mer logging" : "Fullfør drill · neste"}
+            {activeIdx === drills.length - 1 ? "Fullfør siste drill" : "Fullfør drill · neste"}
+          </button>
+          <button
+            type="button"
+            onClick={() => setShowConfirm(true)}
+            data-od-id="live-avslutt"
+            className="mt-2 w-full py-2 font-mono text-[11px] font-bold uppercase tracking-[0.06em] disabled:opacity-50"
+            style={{ color: T.mut, background: "transparent", border: "none" }}
+          >
+            Avslutt og logg økta
           </button>
         </footer>
       )}

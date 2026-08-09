@@ -77,60 +77,60 @@ export function DrillLogger({
   return (
     <div className="flex flex-col gap-4 px-4 py-4">
       {/* Drillinfo-kort */}
-      <div className="rounded-2xl border border-background/10 bg-background/5 p-4">
+      <div className="rounded-2xl border p-4" style={{ borderColor: T.border, background: T.panel }}>
         <div className="flex items-start justify-between gap-4">
           <div className="min-w-0 flex-1">
             <div className="flex flex-wrap items-center gap-2">
-              <span className="inline-flex h-6 items-center gap-2 rounded-md border border-background/15 px-2 font-mono text-[10px] font-extrabold uppercase tracking-[0.08em] text-background/90">
+              <span className="inline-flex h-6 items-center gap-2 rounded-md border px-2 font-mono text-[10px] font-extrabold uppercase tracking-[0.08em]" style={{ borderColor: T.border, color: T.fg }}>
                 <span className={`h-2 w-2 rounded-full ${axisDot}`} aria-hidden />
                 {AXIS_LABEL[drill.pyramide] ?? drill.pyramide}
               </span>
               {drill.lFase && (
-                <span className="inline-flex h-6 items-center rounded-md border border-background/15 px-2 font-mono text-[10px] font-extrabold uppercase tracking-[0.08em] text-background/70">
+                <span className="inline-flex h-6 items-center rounded-md border px-2 font-mono text-[10px] font-extrabold uppercase tracking-[0.08em]" style={{ borderColor: T.border, color: T.mut }}>
                   {L_PHASE_LABEL[drill.lFase] ?? drill.lFase}
                 </span>
               )}
             </div>
-            <h2 className="mt-4 font-display text-3xl font-bold leading-[1.1] -tracking-[0.02em] text-background">
+            <h2 className="mt-4 font-display text-2xl font-semibold leading-[1.1] -tracking-[0.02em]" style={{ color: T.fg }}>
               {drill.name}
             </h2>
             {drill.description && (
-              <p className="mt-2 text-sm leading-relaxed text-background/70">
+              <p className="mt-2 text-sm leading-relaxed" style={{ color: T.mut }}>
                 {drill.description}
               </p>
             )}
           </div>
-          <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full border border-background/15 bg-background/5">
-            <Target className="h-5 w-5 text-accent" strokeWidth={2} aria-hidden />
+          <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full border" style={{ borderColor: T.border, background: T.panel2 }}>
+            <Target className="h-5 w-5" style={{ color: T.handling }} strokeWidth={2} aria-hidden />
           </div>
         </div>
 
-        <div className="mt-4 flex flex-wrap items-center gap-4 font-mono text-sm font-semibold tabular-nums text-background/65">
-          <span className="text-accent">{fmtDrillMSS(drillSeconds)} på denne drillen</span>
-          <span className="text-background/30">·</span>
+        <div className="mt-4 flex flex-wrap items-center gap-4 font-mono text-sm font-semibold tabular-nums" style={{ color: T.mut }}>
+          <span style={{ color: T.handling }}>{fmtDrillMSS(drillSeconds)} på denne drillen</span>
+          <span style={{ color: T.mut }}>·</span>
           <span>{drill.durationMinutes} min mål</span>
-          <span className="text-background/30">·</span>
+          <span style={{ color: T.mut }}>·</span>
           <span>{drill.plannedReps > 0 ? `${drill.plannedReps} reps mål` : "Ingen reps-mål"}</span>
         </div>
 
         {drill.notes && (
-          <div className="mt-4 rounded-lg border border-background/10 bg-foreground/40 px-4 py-2 text-sm leading-relaxed text-background/75">
+          <div className="mt-4 rounded-lg border px-4 py-2 text-sm leading-relaxed" style={{ borderColor: T.border, background: T.panel2, color: T.fg2 }}>
             {drill.notes}
           </div>
         )}
 
         {/* Fremdriftslinje */}
         <div className="mt-4">
-          <div className="mb-2 flex items-center justify-between font-mono text-[10px] font-extrabold uppercase tracking-[0.12em] text-background/55">
+          <div className="mb-2 flex items-center justify-between font-mono text-[10px] font-extrabold uppercase tracking-[0.12em]" style={{ color: T.mut }}>
             <span>Drills fullført</span>
             <span>
               {completedCount}/{totalCount}
             </span>
           </div>
-          <div className="h-2 w-full overflow-hidden rounded-full bg-background/10">
+          <div className="h-2 w-full overflow-hidden rounded-full" style={{ background: T.panel2 }}>
             <div
-              className="h-full rounded-full bg-accent transition-all duration-300"
-              style={{ width: `${progressPct}%` }}
+              className="h-full rounded-full transition-all duration-300"
+              style={{ width: `${progressPct}%`, background: T.handling }}
             />
           </div>
         </div>
@@ -178,8 +178,9 @@ export function DrillLogger({
       <button
         type="button"
         onClick={onComplete}
-        className="mt-2 flex h-16 w-full items-center justify-center gap-2 rounded-full bg-accent font-mono text-base font-extrabold uppercase tracking-[0.06em] text-foreground active:scale-[0.98]"
-        style={{ boxShadow: `0 4px 18px ${T.farge.limeMerkeA28}` }}
+        data-paper-en-ting="true"
+        className="mt-2 flex w-full items-center justify-center gap-2 font-sans text-[14px] font-semibold active:scale-[0.98] v2-press"
+        style={{ background: T.handling, color: T.onHandling, minHeight: 56, borderRadius: 12, border: "none" }}
       >
         <Check className="h-5 w-5" strokeWidth={2.5} aria-hidden />
         {isLast ? "Fullfør økt" : "Fullfør drill"}

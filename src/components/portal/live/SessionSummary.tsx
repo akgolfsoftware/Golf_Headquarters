@@ -96,7 +96,7 @@ export function SessionSummary({ data, nesteOkt, spillerVurdering }: SessionSumm
           <CheckCircle2 className="h-8 w-8" style={{ color: T.handling }} strokeWidth={2} aria-hidden />
         </div>
         <h1
-          className="font-display text-[22px] font-semibold leading-[1.15]"
+          className="font-display text-[18px] font-semibold leading-[1.15]"
           style={{ color: T.fg }}
         >
           Bra jobba, {firstName}!
@@ -229,7 +229,7 @@ export function SessionSummary({ data, nesteOkt, spillerVurdering }: SessionSumm
         <Link
           href={nesteOkt ? nesteOkt.href : "/portal"}
           data-od-id="etter-neste"
-          className="flex h-12 w-full items-center justify-center gap-2 rounded-[10px] font-sans text-[14px] font-semibold active:scale-[0.98]"
+          className="flex w-full items-center justify-center gap-2 font-sans text-[14px] font-semibold active:scale-[0.98] v2-press"
           data-paper-en-ting="true"
           style={{ background: T.handling, color: T.onHandling, textDecoration: "none", minHeight: 56, borderRadius: 12, display: "flex", alignItems: "center", justifyContent: "center" }}
         >
