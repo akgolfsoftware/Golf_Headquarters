@@ -1,21 +1,15 @@
-# Wave D status — 2026-08-09 (med finpuss)
+# Wave D status — 2026-08-09 (finpuss 2)
 
-## Scope: Workbench + tester + drills + økt
+## Finpuss pass
 
-| Flate | Paper-finpuss |
+| Flate | Endring |
 |---|---|
-| **Workbench** | h1 17px «Workbench», cream topp (ingen forest-gradient), wave-d, Publiser clay, coldstart handling-border |
-| **WorkbenchInngang** | clay soft ikon |
-| **Tester hub** | «Tester» topp, Registrer 56px clay |
-| **Økt detalj** | «Økt» topp + tittel, Start 56px clay, naa = handling |
-| **Drill detalj** | 17px navn, Legg i neste økt 56px clay |
-| **Drills bank** | «Drills» topp + library sub |
-| **Sheets / admin** | wave markers + clay CTA radius |
+| **Workbench** | Soft zoom-pills (clay underline), i-dag = handlingSoft, valgt økt clay-kant, mobil Publiser 56px, tom-state 17px |
+| **Sheets (Ny/rediger økt)** | Valg-chips soft Paper (ikke solid ink), clay soft highlights, lagre 52px clay |
+| **Workbench mobil** | «Nå» handlingSoft, ikon clay |
+| **Tester** | Dekningstall clay; test-gjennomfør wave + lime→handling + CTA 56 |
+| **Økt tom** | Paper topp |
+| **Drills** | od-id |
 
-## Fasit zip
-- workbench-mobil/desktop
-- playerhq-test-gjennomfor (hub + detalj phase2 partial)
-- drills + drill-detalj
-
-## Exit D
-Treningsløkke chrome: plan → workbench → økt → drill → test er Paper. Pixel sign-off pending.
+## Fortsatt
+Pixel screenshots · Mac push · dyp canvas pixel

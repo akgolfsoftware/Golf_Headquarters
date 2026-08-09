@@ -1009,13 +1009,13 @@ function MndNivaa({ data, onVelgDato }: { data: WorkbenchData; onVelgDato: (dato
               style={{
                 appearance: "none", cursor: "pointer", minHeight: 64, padding: "6px 7px",
                 borderRadius: 10, textAlign: "left", display: "flex", flexDirection: "column", gap: 5,
-                background: erIDag ? `color-mix(in srgb, ${T.lime} 7%, ${T.panel2})` : T.panel2,
-                border: `1px solid ${erIDag ? `color-mix(in srgb, ${T.lime} 40%, transparent)` : T.border}`,
+                background: erIDag ? T.handlingSoft : T.panel2,
+                border: `1px solid ${erIDag ? T.handling : T.border}`,
                 borderBottom: pFarge ? `2px solid color-mix(in srgb, ${pFarge} 70%, transparent)` : undefined,
               }}
             >
               <span style={{ display: "flex", alignItems: "center", gap: 4 }}>
-                <span style={{ fontFamily: T.disp, fontSize: 13, fontWeight: 700, color: erIDag ? T.lime : c ? T.fg : T.mut }}>{dagNr}</span>
+                <span style={{ fontFamily: T.disp, fontSize: 13, fontWeight: 700, color: erIDag ? T.handling : c ? T.fg : T.mut }}>{dagNr}</span>
                 {turnering && <Icon name="trophy" size={10} style={{ color: T.warn }} aria-label={turnering} />}
               </span>
               {c ? (
@@ -1061,7 +1061,7 @@ export function DagNivaa({ dag, valgt, onVelg, dager, onFlytt }: {
           const pending = erOptimistisk(o.id);
           const flyttApen = !!o.id && flyttId === o.id;
           return (
-            <div key={o.id ?? j} className="v2-fade-in" style={{ padding: "9px 11px", borderRadius: 10, background: T.panel2, border: `1px ${pending ? "dashed" : "solid"} ${sel ? T.lime : T.border}`, borderLeft: `3px solid ${col}`, opacity: pending ? 0.6 : 1 }}>
+            <div key={o.id ?? j} className="v2-fade-in" style={{ padding: "9px 11px", borderRadius: 10, background: T.panel2, border: `1px ${pending ? "dashed" : "solid"} ${sel ? T.handling : T.border}`, borderLeft: `3px solid ${col}`, opacity: pending ? 0.6 : 1 }}>
               <div onClick={() => o.id && !pending && onVelg(o.id)} style={{ cursor: pending ? "default" : "pointer" }}>
                 <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
                   <span style={{ fontFamily: T.mono, fontSize: 9, fontWeight: 700, color: T.fg2 }}>{toKl(o.h, o.m)}</span>
@@ -1076,7 +1076,7 @@ export function DagNivaa({ dag, valgt, onVelg, dager, onFlytt }: {
                     type="button"
                     onClick={(e) => { e.stopPropagation(); setFlyttId(flyttApen ? null : o.id!); }}
                     className="v2-press v2-focus"
-                    style={{ appearance: "none", cursor: "pointer", marginTop: 8, display: "inline-flex", alignItems: "center", gap: 5, background: "transparent", border: "none", padding: 0, fontFamily: T.mono, fontSize: 8.5, fontWeight: 700, letterSpacing: "0.05em", textTransform: "uppercase", color: T.lime }}
+                    style={{ appearance: "none", cursor: "pointer", marginTop: 8, display: "inline-flex", alignItems: "center", gap: 5, background: "transparent", border: "none", padding: 0, fontFamily: T.mono, fontSize: 8.5, fontWeight: 700, letterSpacing: "0.05em", textTransform: "uppercase", color: T.handling }}
                   >
                     <Icon name="calendar" size={11} />
                     {flyttApen ? "Avbryt" : "Flytt til annen dag"}
@@ -1426,15 +1426,16 @@ function WBTurneringNivaa({ data }: { data: WorkbenchData }) {
                 alignItems: "center",
                 justifyContent: "center",
                 gap: 8,
-                minHeight: 44,
+                minHeight: 56,
                 padding: "10px 16px",
-                borderRadius: 10,
+                borderRadius: 12,
                 background: T.handling,
                 color: T.onHandling,
                 fontFamily: T.ui,
                 fontSize: 13,
                 fontWeight: 600,
               }}
+              data-paper-en-ting="true"
             >
               Bekreft påmelding
             </span>
@@ -2049,8 +2050,8 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions, w
 
   if (!data) {
     return (
-      <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
-        <Caps>Workbench</Caps>
+      <div data-paper-wave-d="workbench-tom" style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
+        <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>Workbench</h1>
         <Kort><TomTilstand icon="calendar" title="Ingen plandata" sub="Fant ingen treningsplan for spilleren." /></Kort>
       </div>
     );
@@ -2307,7 +2308,7 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions, w
           {actions &&
             !(role === "player" && (optimisticStatus ?? planStatus) === "PENDING_PLAYER") && (
             <div style={{ flex: 1 }}>
-              <Knapp icon="send" full onClick={handlePublish} disabled={pubLoading} style={{ background: T.handling, color: T.onHandling }}>{pubLoading ? "Publiserer…" : "Publiser"}</Knapp>
+              <Knapp icon="send" full onClick={handlePublish} disabled={pubLoading} style={{ background: T.handling, color: T.onHandling, minHeight: 56, borderRadius: 12 }} data-paper-en-ting="true">{pubLoading ? "Publiserer…" : "Publiser"}</Knapp>
             </div>
           )}
           {(actions?.suggestWeek || actions?.duplicateWeek) && (
@@ -2351,8 +2352,8 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions, w
         <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
           {[["ar", `Sesong ${visningsDato.getFullYear()}`, "circle"], ["maned", MANEDER[visningsDato.getMonth()][0].toUpperCase() + MANEDER[visningsDato.getMonth()].slice(1), "circle-dot"], ["uke", `Uke ${weekNumber}`, "calendar"]].map(([v, l, ic], i, arr) => (
             <span key={v} style={{ display: "inline-flex", alignItems: "center", gap: 8 }}>
-              <button type="button" onClick={() => setNivaa(v)} className="v2-press v2-focus" style={{ appearance: "none", cursor: "pointer", display: "inline-flex", alignItems: "center", gap: 7, padding: "6px 11px", borderRadius: 9999, border: `1px solid ${nivaa === v ? `color-mix(in srgb, ${T.lime} 30%, transparent)` : "transparent"}`, background: nivaa === v ? `color-mix(in srgb, ${T.lime} 7%, transparent)` : "transparent", fontFamily: T.ui, fontSize: 12.5, fontWeight: 600, color: nivaa === v ? T.fg : T.fg2 }}>
-                <Icon name={ic} size={13} style={{ color: nivaa === v ? T.lime : T.mut }} />{l}
+              <button type="button" onClick={() => setNivaa(v)} className="v2-press v2-focus" style={{ appearance: "none", cursor: "pointer", display: "inline-flex", alignItems: "center", gap: 7, padding: "8px 12px", minHeight: 40, borderRadius: 9999, border: `1px solid ${nivaa === v ? T.fg : T.border}`, background: nivaa === v ? T.panel : T.panel2, boxShadow: nivaa === v ? `inset 0 -2px 0 ${T.handling}` : undefined, fontFamily: T.ui, fontSize: 12.5, fontWeight: 600, color: nivaa === v ? T.fg : T.fg2 }}>
+                <Icon name={ic} size={13} style={{ color: nivaa === v ? T.handling : T.mut }} />{l}
               </button>
               {i < arr.length - 1 && <Icon name="chevron-right" size={13} style={{ color: T.mut }} />}
             </span>

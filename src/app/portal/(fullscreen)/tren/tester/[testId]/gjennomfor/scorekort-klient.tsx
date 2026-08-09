@@ -270,7 +270,7 @@ export function ScorekortKlient({
         <KontekstForm kontekst={kontekst} onSett={(k, v) => setKontekst((prev) => ({ ...prev, [k]: v }))} />
 
         <div style={{ marginTop: 22 }}>
-          <Knapp full icon="play" onClick={() => setSteg("scorekort")} style={{ minHeight: 48, background: T.handling, color: T.onHandling }}>
+          <Knapp full icon="play" onClick={() => setSteg("scorekort")} style={{ minHeight: 48, background: T.handling, minHeight: 56, borderRadius: 12, color: T.onHandling }}>
             Start test
           </Knapp>
         </div>
@@ -396,7 +396,7 @@ export function ScorekortKlient({
       )}
 
       <div style={{ marginTop: 22 }}>
-        <Knapp full icon="check" onClick={lagre} disabled={pending || !alleFort} style={{ minHeight: 48, background: T.handling, color: T.onHandling }}>
+        <Knapp full icon="check" onClick={lagre} disabled={pending || !alleFort} style={{ minHeight: 48, background: T.handling, minHeight: 56, borderRadius: 12, color: T.onHandling }}>
           {pending ? "Lagrer…" : "Lagre resultat"}
         </Knapp>
       </div>
@@ -445,14 +445,14 @@ function StatusStrip({
 }) {
   const stegNr = STEG_REKKE.indexOf(steg) + 1;
   return (
-    <div style={{ marginTop: 16, borderRadius: 16, border: `1px solid ${T.border}`, background: T.panel, padding: 14 }}>
+    <div data-paper-wave-d="test-gjennomfor" data-od-id="playerhq-test-gjennomfor" style={{ marginTop: 16, borderRadius: 16, border: `1px solid ${T.border}`, background: T.panel, padding: 14 }}>
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12 }}>
         <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
           <span
             aria-hidden
-            style={{ width: 8, height: 8, flex: "none", borderRadius: 9999, background: live ? T.lime : T.mut, boxShadow: live ? `0 0 0 3px color-mix(in srgb, ${T.lime} 30%, transparent)` : "none" }}
+            style={{ width: 8, height: 8, flex: "none", borderRadius: 9999, background: live ? T.handling : T.mut, boxShadow: live ? `0 0 0 3px color-mix(in srgb, ${T.handling} 30%, transparent)` : "none" }}
           />
-          <span style={{ fontFamily: T.mono, fontSize: 10, fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", color: live ? T.lime : T.mut }}>
+          <span style={{ fontFamily: T.mono, fontSize: 10, fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", color: live ? T.handling : T.mut }}>
             {STEG_LABEL[steg]}
           </span>
         </div>
@@ -462,7 +462,7 @@ function StatusStrip({
       </div>
       <div style={{ marginTop: 12, height: 3, overflow: "hidden", borderRadius: 9999, background: T.track }}>
         <div
-          style={{ height: "100%", borderRadius: 9999, background: T.lime, width: `${Math.max(0, Math.min(100, progressPct))}%`, transition: `width 500ms ${T.ease}` }}
+          style={{ height: "100%", borderRadius: 9999, background: T.handling, minHeight: 56, borderRadius: 12, width: `${Math.max(0, Math.min(100, progressPct))}%`, transition: `width 500ms ${T.ease}` }}
         />
       </div>
     </div>
@@ -610,7 +610,7 @@ function PillValg({
               fontWeight: 700,
               letterSpacing: "0.05em",
               textTransform: "uppercase",
-              background: on ? T.lime : T.panel2,
+              background: on ? T.handling : T.panel2,
               border: `1px solid ${on ? "transparent" : T.borderS}`,
               color: on ? T.onLime : T.fg2,
             }}
@@ -633,7 +633,7 @@ function ScoreKort({
   subline: string;
 }) {
   return (
-    <div style={{ display: "flex", alignItems: "center", gap: 14, borderRadius: 14, border: `1px solid ${T.border}`, borderLeft: `3px solid ${T.lime}`, background: T.panel, padding: "14px 16px" }}>
+    <div style={{ display: "flex", alignItems: "center", gap: 14, borderRadius: 14, border: `1px solid ${T.border}`, borderLeft: `3px solid ${T.handling}`, background: T.panel, padding: "14px 16px" }}>
       <span style={{ fontFamily: T.mono, fontSize: 30, fontWeight: 700, lineHeight: 1, letterSpacing: "-0.03em", fontVariantNumeric: "tabular-nums", color: T.fg }}>
         {score === null ? "–" : fmt.format(score)}
       </span>
@@ -719,7 +719,7 @@ function FeltInput({
       fontWeight: 700,
       letterSpacing: "0.06em",
       textTransform: "uppercase",
-      background: on ? T.lime : T.panel2,
+      background: on ? T.handling : T.panel2,
       border: `1px solid ${on ? "transparent" : T.borderS}`,
       color: on ? T.onLime : T.fg2,
     });

@@ -66,7 +66,7 @@ export function AarNivaaMobil({ data }: { data: WorkbenchData }) {
               style={{
                 padding: "10px 12px",
                 borderRadius: 12,
-                background: naa ? `color-mix(in srgb, ${T.lime} 6%, ${T.panel2})` : T.panel2,
+                background: naa ? T.handlingSoft : T.panel2,
                 border: `1px solid ${naa ? "transparent" : T.border}`,
               }}
             >
@@ -111,12 +111,12 @@ export function MobilFold({
         type="button"
         onClick={() => setApen((v) => !v)}
         style={{
-          appearance: "none", cursor: "pointer", width: "100%", minHeight: 48,
+          appearance: "none", cursor: "pointer", width: "100%", minHeight: 52, borderRadius: 12,
           display: "flex", alignItems: "center", gap: 9, padding: "0 14px",
           background: "transparent", border: "none", textAlign: "left",
         }}
       >
-        <Icon name={ikon} size={15} style={{ color: T.lime, flex: "none" }} />
+        <Icon name={ikon} size={15} style={{ color: T.handling, flex: "none" }} />
         <span style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 14, color: T.fg, flex: 1, minWidth: 0 }}>{tittel}</span>
         <Icon name={apen ? "chevron-up" : "chevron-down"} size={15} style={{ color: T.mut, flex: "none" }} />
       </button>

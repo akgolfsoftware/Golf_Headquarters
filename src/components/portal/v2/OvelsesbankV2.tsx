@@ -831,7 +831,7 @@ export function OvelsesbankV2({ data }: { data: DrillDetail[] }) {
   const tomBank = data.length === 0;
 
   const hode = (
-    <div data-paper-wave-d="drills" style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
+    <div data-paper-wave-d="drills" data-od-id="playerhq-drills" style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
       <div>
         <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>Drills</h1>
         <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>

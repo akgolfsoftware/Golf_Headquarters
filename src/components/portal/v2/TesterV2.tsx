@@ -235,7 +235,7 @@ function TabScorekort({ data, mobile }: { data: TesterV2Data; mobile: boolean })
           <div style={{ borderTop: `2px solid ${T.borderS}`, marginTop: 4, paddingTop: 14 }}>
             <div style={{ display: "flex", alignItems: "baseline", gap: 10, flexWrap: "wrap" }}>
               <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}><Caps size={9}>Dekning</Caps><HjelpTips k="testDekning" size={11} /></span>
-              <span style={{ fontFamily: T.mono, fontSize: 30, fontWeight: 700, color: T.lime, lineHeight: 1, fontVariantNumeric: "tabular-nums" }}>{data.testedCount}</span>
+              <span style={{ fontFamily: T.mono, fontSize: 30, fontWeight: 700, color: T.handling, lineHeight: 1, fontVariantNumeric: "tabular-nums" }}>{data.testedCount}</span>
               <span style={{ fontFamily: T.mono, fontSize: 11, color: T.mut }}>av {data.totalTests} tester tatt</span>
               <span style={{ fontFamily: T.mono, fontSize: 11, color: T.mut }}>· {data.totalAttempts} registreringer totalt</span>
             </div>

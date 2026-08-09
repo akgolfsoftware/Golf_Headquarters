@@ -38,8 +38,8 @@ function chipStil(satt: boolean): CSSProperties {
   return {
     appearance: "none", display: "inline-flex", alignItems: "center", gap: 7,
     padding: "8px 12px", borderRadius: 9999, cursor: "pointer",
-    background: satt ? `color-mix(in srgb, ${T.lime} 10%, ${T.panel2})` : T.panel2,
-    border: `1px solid ${satt ? `color-mix(in srgb, ${T.lime} 45%, transparent)` : T.border}`,
+    background: satt ? T.handlingSoft : T.panel2,
+    border: `1px solid ${satt ? T.handling : T.border}`,
     color: satt ? T.fg : T.mut, fontFamily: T.ui, fontSize: 12.5, fontWeight: 600,
     transition: "all 140ms",
   };
@@ -160,7 +160,7 @@ export function DagPillRow({
               padding: "7px 0",
               borderRadius: 8,
               border: `1px solid ${on ? "transparent" : T.border}`,
-              background: on ? T.lime : T.panel2,
+              background: on ? T.panel : T.panel2,
               color: on ? T.onHandling : T.fg2,
               opacity: disabled ? 0.5 : 1,
             }}
@@ -595,7 +595,7 @@ function OktArkSkjema({
                   width: 16,
                   height: 16,
                   borderRadius: 9999,
-                  background: T.handling,
+                  background: T.handling, minHeight: 52, borderRadius: 12,
                   color: T.onHandling,
                   display: "inline-flex",
                   alignItems: "center",
@@ -652,7 +652,7 @@ function OktArkSkjema({
               <span style={{ fontFamily: T.mono, fontSize: 10.5, color: T.mut, fontVariantNumeric: "tabular-nums" }}>{tid} → {sluttTid} · {fmtVarighet(durMin)}</span>
               <span style={{ display: "inline-flex", gap: 4, marginLeft: "auto" }}>
                 {[30, 45, 60, 90, 120].map((m) => (
-                  <button key={m} type="button" onClick={() => setDurMin(m)} className="v2-press" aria-label={`${m} minutter`} style={{ appearance: "none", cursor: "pointer", fontFamily: T.mono, fontSize: 9, fontWeight: 700, padding: "4px 8px", borderRadius: 9999, background: durMin === m ? T.lime : T.panel2, border: `1px solid ${durMin === m ? "transparent" : T.border}`, color: durMin === m ? T.onHandling : T.fg2 }}>
+                  <button key={m} type="button" onClick={() => setDurMin(m)} className="v2-press" aria-label={`${m} minutter`} style={{ appearance: "none", cursor: "pointer", fontFamily: T.mono, fontSize: 9, fontWeight: 700, padding: "4px 8px", borderRadius: 9999, background: durMin === m ? T.panel : T.panel2, border: `1px solid ${durMin === m ? T.fg : T.border}`, color: durMin === m ? T.fg : T.fg2, boxShadow: durMin === m ? `inset 0 -2px 0 ${T.handling}` : undefined }}>
                     {m}
                   </button>
                 ))}
@@ -680,7 +680,7 @@ function OktArkSkjema({
                           fontWeight: 600,
                           padding: "5px 10px",
                           borderRadius: 9999,
-                          background: valgt ? T.lime : T.panel2,
+                          background: valgt ? T.panel : T.panel2,
                           border: `1px solid ${valgt ? "transparent" : T.border}`,
                           color: valgt ? T.onHandling : T.fg2,
                         }}
@@ -739,7 +739,7 @@ function OktArkSkjema({
                         fontWeight: 600,
                         padding: "8px 14px",
                         borderRadius: 9999,
-                        background: gjentaModus === o.v ? T.lime : T.panel2,
+                        background: gjentaModus === o.v ? T.panel : T.panel2,
                         border: `1px solid ${gjentaModus === o.v ? "transparent" : T.border}`,
                         color: gjentaModus === o.v ? T.onHandling : T.fg2,
                       }}
@@ -768,7 +768,7 @@ function OktArkSkjema({
                             padding: "6px 11px",
                             borderRadius: 9999,
                             background: gjentaAntall === n ? T.panel3 : T.panel2,
-                            border: `1px solid ${gjentaAntall === n ? T.lime : T.border}`,
+                            border: `1px solid ${gjentaAntall === n ? T.fg : T.border}`,
                             color: T.fg,
                           }}
                         >
@@ -836,7 +836,7 @@ function OktArkSkjema({
                     width: 36,
                     height: 36,
                     borderRadius: 9999,
-                    background: T.handling,
+                    background: T.handling, minHeight: 52, borderRadius: 12,
                     border: "none",
                     color: T.onHandling,
                     cursor: "pointer",
@@ -925,7 +925,7 @@ function OktArkSkjema({
                           type="button"
                           className="v2-press"
                           onClick={() => { setOppgaveKobler(oppgaveKobler === i ? null : i); setOppgaveSok(""); setOppgaveTreff([]); }}
-                          style={{ appearance: "none", display: "inline-flex", alignItems: "center", gap: 4, background: "transparent", border: 0, padding: 0, cursor: "pointer", fontFamily: T.mono, fontSize: 9.5, color: d.positionTaskId ? T.lime : T.mut }}
+                          style={{ appearance: "none", display: "inline-flex", alignItems: "center", gap: 4, background: "transparent", border: 0, padding: 0, cursor: "pointer", fontFamily: T.mono, fontSize: 9.5, color: d.positionTaskId ? T.handling : T.mut }}
                         >
                           <Icon name="link-2" size={10} />
                           {d.positionTaskId ? `Koblet: ${d.positionTaskTittel ?? "teknisk oppgave"}` : "Koble til teknisk oppgave"}
@@ -974,8 +974,8 @@ function OktArkSkjema({
                       gap: 8,
                       padding: 12,
                       borderRadius: 12,
-                      background: `color-mix(in srgb, ${T.lime} 8%, ${T.panel2})`,
-                      border: `1px solid color-mix(in srgb, ${T.lime} 35%, transparent)`,
+                      background: T.handlingSoft,
+                      border: `1px solid color-mix(in srgb, ${T.handling} 35%, transparent)`,
                     }}
                   >
                     <span style={{ fontFamily: T.ui, fontSize: 12, fontWeight: 700, color: T.fg }}>Egen øvelse</span>
@@ -997,7 +997,7 @@ function OktArkSkjema({
                             type="button"
                             onClick={() => setManuellAkse(a.v)}
                             className="v2-press"
-                            style={{ appearance: "none", cursor: "pointer", fontFamily: T.mono, fontSize: 9, fontWeight: 700, padding: "5px 9px", borderRadius: 9999, background: valgt ? T.lime : T.panel3, border: `1px solid ${valgt ? "transparent" : T.borderS}`, color: valgt ? T.onHandling : T.fg2 }}
+                            style={{ appearance: "none", cursor: "pointer", fontFamily: T.mono, fontSize: 9, fontWeight: 700, padding: "5px 9px", borderRadius: 9999, background: valgt ? T.panel : T.panel3, border: `1px solid ${valgt ? T.fg : T.borderS}`, color: valgt ? T.fg : T.fg2, boxShadow: valgt ? `inset 0 -2px 0 ${T.handling}` : undefined }}
                           >
                             {a.l}
                           </button>
@@ -1046,7 +1046,7 @@ function OktArkSkjema({
                       </button>
                     ))}
                     {drillTreff.length === 0 && (
-                      <button type="button" className="v2-press" onClick={() => { setManuellNavn(drillSok.trim()); setManuellApen(true); setDrillSok(""); }} style={{ appearance: "none", textAlign: "left", padding: "7px 10px", borderRadius: 9, background: `color-mix(in srgb, ${T.lime} 8%, ${T.panel2})`, border: `1px dashed color-mix(in srgb, ${T.lime} 40%, transparent)`, color: T.fg, fontFamily: T.ui, fontSize: 12, cursor: "pointer" }}>
+                      <button type="button" className="v2-press" onClick={() => { setManuellNavn(drillSok.trim()); setManuellApen(true); setDrillSok(""); }} style={{ appearance: "none", textAlign: "left", padding: "7px 10px", borderRadius: 9, background: T.handlingSoft, border: `1px dashed color-mix(in srgb, ${T.handling} 40%, transparent)`, color: T.fg, fontFamily: T.ui, fontSize: 12, cursor: "pointer" }}>
                         + Opprett manuell: «{drillSok.trim()}»
                       </button>
                     )}
@@ -1362,7 +1362,7 @@ export function ValgtOktSeksjon({
                 appearance: "none", cursor: "pointer", display: "inline-flex", alignItems: "center", gap: 6,
                 padding: "6px 10px", borderRadius: 9999,
                 border: `1px solid ${okt.eb === a.v ? "transparent" : T.border}`,
-                background: okt.eb === a.v ? T.lime : T.panel2, color: okt.eb === a.v ? T.onHandling : T.fg2,
+                background: okt.eb === a.v ? T.panel : T.panel2, color: okt.eb === a.v ? T.fg : T.fg2, border: `1px solid ${okt.eb === a.v ? T.fg : T.border}`, boxShadow: okt.eb === a.v ? `inset 0 -2px 0 ${T.handling}` : undefined,
                 fontFamily: T.ui, fontSize: 11, fontWeight: 600, opacity: lagrerFelt ? 0.5 : 1,
               }}
             >
