@@ -30,8 +30,8 @@
 - [~] `innlogging.html`
 - [~] `playerhq-analyse.html`
 - [~] `playerhq-booking.html`
-- [~] `playerhq-chat-desktop.html`
-- [~] `playerhq-chat-mobil.html`
+- [~] `playerhq-chat-desktop.html` — PP-1.1 loop/ink/mic (klar sign-off)
+- [~] `playerhq-chat-mobil.html` — PP-1.1 loop/ink/mic (klar sign-off)
 - [~] `playerhq-live-brief.html`
 - [~] `playerhq-live-okt.html`
 - [~] `playerhq-live-summary.html`

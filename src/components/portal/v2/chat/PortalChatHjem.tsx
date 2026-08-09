@@ -6,6 +6,7 @@
  * Erstatter HjemV2 som innhold på /portal. V2Shell (rail/bunn-nav) er uendret
  * rundt denne komponenten — se src/app/portal/page.tsx.
  *
+ * PP-1.1 (2026-08-09): loop ink underline, btn.ink=T.cta, mic 60px clay, composer bg canvas.
  * Matcher Paper-fasiten (designsystem/paper/fase1/playerhq-chat-desktop.html)
  * strukturelt: rail(V2Shell) + tråd(≤720px lesebredde) + FAST artefaktpanel
  * 360px ved ≥1121px, composer festet nederst. Bygget med EKSISTERENDE
@@ -112,9 +113,11 @@ function LoopNav({ gjennomfore }: { gjennomfore: GjennomforeData }) {
               flexDirection: "column",
               alignItems: "center",
               justifyContent: "center",
-              minHeight: 52,
+              minHeight: 48,
               padding: "8px 6px",
-              borderBottom: on ? `2px solid ${T.handling}` : "2px solid transparent",
+              background: on ? T.panel2 : "transparent",
+              /* Paper .loop a[aria-current]: inset ink underline — clay is mic-only on Hjem */
+              boxShadow: on ? `inset 0 -2px 0 0 ${T.fg}` : "none",
               color: on ? T.fg : T.mut,
               fontFamily: T.mono,
               fontSize: 11,
@@ -198,8 +201,8 @@ function DagensOktInnhold({ gjennomfore }: { gjennomfore: GjennomforeData }) {
           justifyContent: "center",
           minHeight: 44,
           borderRadius: 10,
-          background: T.forest,
-          color: T.onForest,
+          background: T.cta,
+          color: T.onCta,
           fontFamily: T.ui,
           fontSize: 13,
           fontWeight: 600,
@@ -248,9 +251,9 @@ function EnTingNaBanner({ okt, klokke, onSePlan }: { okt: NonNullable<Gjennomfor
               minHeight: 44,
               padding: "0 16px",
               borderRadius: T.rTag,
-              /* Paper .btn.ink — NOT accent; mic owns T.handling on Hjem */
-              background: T.forest,
-              color: T.onForest,
+              /* Paper .btn.ink — ink CTA; mic owns T.handling on Hjem */
+              background: T.cta,
+              color: T.onCta,
               fontFamily: T.ui,
               fontSize: 13,
               fontWeight: 600,
@@ -429,7 +432,7 @@ export function PortalChatHjem({
   const visEnTingNa = gjennomfore.nesteOkt !== null && gjennomfore.nesteOkt.status === "upcoming";
 
   return (
-    <div data-paper-wave-a="chat-idag" data-od-id="playerhq-idag" style={{ display: "contents" }}>
+    <div data-paper-wave-a="chat-idag" data-paper-slug="playerhq-chat" data-od-id="playerhq-idag" style={{ display: "contents" }}>
     <div
       data-paper-portal-hjem
       style={{
@@ -447,8 +450,8 @@ export function PortalChatHjem({
             display: "flex",
             flexWrap: "wrap",
             alignItems: "center",
-            gap: 16,
-            padding: "12px 20px",
+            gap: 12,
+            padding: "10px 16px",
             background: T.bg,
             borderBottom: `1px solid ${T.border}`,
             position: "sticky",
@@ -518,11 +521,7 @@ export function PortalChatHjem({
             <Icon name="mic" size={18} />
           </button>
         </header>
-        {mobil && (
-          <div style={{ padding: "4px 12px 8px", borderBottom: `1px solid ${T.border}` }}>
-            <LoopNav gjennomfore={gjennomfore} />
-          </div>
-        )}
+        {mobil && <LoopNav gjennomfore={gjennomfore} />}
 
         {/* ── Tråd ── */}
         <div
@@ -531,7 +530,7 @@ export function PortalChatHjem({
             flex: 1,
             minHeight: 0,
             overflow: "auto",
-            padding: "24px 20px",
+            padding: "16px 16px 24px",
             display: "flex",
             flexDirection: "column",
             background: T.bg,
@@ -609,11 +608,12 @@ export function PortalChatHjem({
 
         {/* ── Composer (Paper: ctxline + field + capture mic monopoly) ── */}
         <div
+          data-paper-composer
           style={{
             flex: "none",
             borderTop: `1px solid ${T.border}`,
-            background: T.panel,
-            padding: "12px 20px max(16px, env(safe-area-inset-bottom))",
+            background: T.bg,
+            padding: "8px 12px max(12px, env(safe-area-inset-bottom))",
           }}
         >
           <div style={{ maxWidth: 720, margin: "0 auto", display: "flex", flexDirection: "column", gap: 8 }}>
@@ -685,9 +685,11 @@ export function PortalChatHjem({
                 aria-haspopup="dialog"
                 className="v2-press v2-focus"
                 style={{
+                  /* Paper .btn.now.mic — --p-tap-capture 60px, only clay on Hjem */
                   flex: "none",
-                  width: 52,
-                  height: 52,
+                  width: 60,
+                  height: 60,
+                  minHeight: 60,
                   borderRadius: 9999,
                   border: "none",
                   background: T.handling,
@@ -698,8 +700,9 @@ export function PortalChatHjem({
                   cursor: "pointer",
                   boxShadow: "0 2px 10px color-mix(in srgb, var(--v2-handling) 40%, transparent)",
                 }}
+                data-paper-en-ting="true"
               >
-                <Icon name="mic" size={22} />
+                <Icon name="mic" size={24} />
               </button>
             </div>
           </div>
