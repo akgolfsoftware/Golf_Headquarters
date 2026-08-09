@@ -244,7 +244,7 @@ export function ScorekortKlient({
 
   if (steg === "brief") {
     return (
-      <div data-paper-portal-test-gjennomfor>
+      <div data-paper-portal-test-gjennomfor data-paper-wave-d="test-gjennomfor" data-od-id="playerhq-test-gjennomfor" style={{ maxWidth: 720, margin: "0 auto", width: "100%", padding: "0 16px 32px", color: T.fg }}>
         <StatusStrip steg="brief" progressPct={0} live={false} />
 
         {beskrivelse && (
@@ -270,7 +270,7 @@ export function ScorekortKlient({
         <KontekstForm kontekst={kontekst} onSett={(k, v) => setKontekst((prev) => ({ ...prev, [k]: v }))} />
 
         <div style={{ marginTop: 22 }}>
-          <Knapp full icon="play" onClick={() => setSteg("scorekort")} style={{ minHeight: 48, background: T.handling, minHeight: 56, borderRadius: 12, color: T.onHandling }}>
+          <Knapp full icon="play" onClick={() => setSteg("scorekort")} style={{ minHeight: 56, borderRadius: 12, background: T.handling, color: T.onHandling }} data-paper-en-ting="true">
             Start test
           </Knapp>
         </div>
@@ -287,7 +287,7 @@ export function ScorekortKlient({
 
   if (steg === "scorekort") {
     return (
-      <div data-paper-portal-test-gjennomfor>
+      <div data-paper-portal-test-gjennomfor data-paper-wave-d="test-gjennomfor" data-od-id="playerhq-test-gjennomfor" style={{ maxWidth: 720, margin: "0 auto", width: "100%", padding: "0 16px 32px", color: T.fg }}>
         <StatusStrip
           steg="scorekort"
           progressPct={antallForsok === 0 ? 0 : (antallFort / antallForsok) * 100}
@@ -396,7 +396,7 @@ export function ScorekortKlient({
       )}
 
       <div style={{ marginTop: 22 }}>
-        <Knapp full icon="check" onClick={lagre} disabled={pending || !alleFort} style={{ minHeight: 48, background: T.handling, minHeight: 56, borderRadius: 12, color: T.onHandling }}>
+        <Knapp full icon="check" onClick={lagre} disabled={pending || !alleFort} style={{ minHeight: 56, borderRadius: 12, background: T.handling, color: T.onHandling }} data-paper-en-ting="true">
           {pending ? "Lagrer…" : "Lagre resultat"}
         </Knapp>
       </div>
@@ -445,7 +445,7 @@ function StatusStrip({
 }) {
   const stegNr = STEG_REKKE.indexOf(steg) + 1;
   return (
-    <div data-paper-wave-d="test-gjennomfor" data-od-id="playerhq-test-gjennomfor" style={{ marginTop: 16, borderRadius: 16, border: `1px solid ${T.border}`, background: T.panel, padding: 14 }}>
+    <div style={{ marginTop: 16, borderRadius: 16, border: `1px solid ${T.border}`, background: T.panel, padding: 14 }}>
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12 }}>
         <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
           <span
@@ -462,7 +462,7 @@ function StatusStrip({
       </div>
       <div style={{ marginTop: 12, height: 3, overflow: "hidden", borderRadius: 9999, background: T.track }}>
         <div
-          style={{ height: "100%", borderRadius: 9999, background: T.handling, minHeight: 56, borderRadius: 12, width: `${Math.max(0, Math.min(100, progressPct))}%`, transition: `width 500ms ${T.ease}` }}
+          style={{ height: "100%", borderRadius: 9999, background: T.handling, width: `${Math.max(0, Math.min(100, progressPct))}%`, transition: `width 500ms ${T.ease}` }}
         />
       </div>
     </div>

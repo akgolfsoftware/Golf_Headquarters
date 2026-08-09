@@ -49,32 +49,23 @@ export default async function GjennomforTestPage({
   if (!test) notFound();
 
   const spec = parseProtocol(test.protocol) ?? fallbackScorekortSpec();
-  const { foran, accent } = delTittel(test.name);
-
   return (
-    <div style={{ minHeight: "100dvh", background: T.bg, color: T.fg, fontFamily: T.ui }}>
+    <div data-paper-wave-d="test-gjennomfor" style={{ minHeight: "100dvh", background: T.bg, color: T.fg, fontFamily: T.ui }}>
       <div
         className="mx-auto w-full max-w-[460px] px-4 pb-8 sm:px-5 md:max-w-[860px] md:px-8 md:pt-6"
-        style={{ paddingTop: "calc(16px + env(safe-area-inset-top))" }}
+        style={{ paddingTop: "calc(12px + env(safe-area-inset-top))" }}
       >
-        {/* v2-header — mono eyebrow + display-tittel m/ kursiv lime-aksent */}
-        <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: 12 }}>
-          <span style={{ fontFamily: T.mono, fontSize: 10, fontWeight: 700, letterSpacing: "0.14em", textTransform: "uppercase", color: T.mut }}>
-            Test · {test.pyramidArea}
-          </span>
-          <span style={{ fontFamily: T.mono, fontSize: 10, fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase", color: T.mut, fontVariantNumeric: "tabular-nums" }}>
-            {spec.forsok.length} forsøk
-          </span>
-        </div>
-        <h1 style={{ margin: "8px 0 0", fontFamily: T.disp, fontWeight: 700, fontSize: 28, lineHeight: 1.06, letterSpacing: "-0.025em", color: T.fg }}>
-          {foran ? (
-            <>
-              {foran} <em style={{ fontStyle: "italic", color: T.lime }}>{accent}</em>
-            </>
-          ) : (
-            accent
-          )}
-        </h1>
+        {/* Paper .topp — fasit playerhq-test-gjennomfor.html */}
+        <header data-paper-topp style={{ display: "flex", alignItems: "flex-start", gap: 12, marginBottom: 4 }}>
+          <div style={{ minWidth: 0, flex: 1 }}>
+            <h1 style={{ margin: 0, fontFamily: T.disp, fontWeight: 600, fontSize: 17, lineHeight: 1.2, color: T.fg }}>
+              Test
+            </h1>
+            <span style={{ display: "block", marginTop: 2, fontFamily: T.mono, fontSize: 10.5, color: T.mut }}>
+              {test.name} · {test.pyramidArea} · {spec.forsok.length} forsøk
+            </span>
+          </div>
+        </header>
         <div style={{ maxWidth: 680 }}>
           <ScorekortKlient
             testId={test.id}
