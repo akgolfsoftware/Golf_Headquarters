@@ -91,7 +91,7 @@ export function AdminBenchmarksV2({
   const [syncPending, startSync] = useTransition();
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 860 }}>
+    <div data-paper-wave-h="benchmarks" data-paper-pattern  style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 860 }}>
       <div style={{ display: "flex", flexWrap: "wrap", alignItems: "flex-end", justifyContent: "space-between", gap: 14 }}>
         <div>
           <TilbakeLenke href="/admin/tester">Tester</TilbakeLenke>
@@ -126,7 +126,7 @@ export function AdminBenchmarksV2({
           width: "100%",
         }}
       >
-        <CTAPill icon="refresh-cw" full>
+        <CTAPill icon="refresh-cw" full enTing>
           {syncPending ? "Synker …" : "Kjør synk nå"}
         </CTAPill>
       </button>

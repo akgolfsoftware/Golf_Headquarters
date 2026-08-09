@@ -64,10 +64,10 @@ export function AdminInviterCoachV2() {
 
   const hode = (
     <div>
-      <Caps>AgencyOS · Team</Caps>
-      <div style={{ marginTop: 10 }}>
-        <Tittel em="coach.">Inviter</Tittel>
-      </div>
+      <div data-paper-pattern-topp>
+          <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>Inviter coach</h1>
+          <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>AgencyOS</span>
+        </div>
       <p style={{ fontFamily: T.ui, fontSize: 12.5, color: T.mut, lineHeight: 1.55, margin: "10px 0 0", maxWidth: 460 }}>
         Coachen får en e-post med innloggingslink og kan logge inn umiddelbart
         med samme e-post.
@@ -76,7 +76,7 @@ export function AdminInviterCoachV2() {
   );
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+    <div data-paper-wave-h="inviter-coach" data-paper-pattern style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 960, margin: "0 auto", width: "100%" }}>
       {hode}
 
       <Kort style={{ maxWidth: 480 }}>

@@ -265,11 +265,11 @@ export function AdminKalenderSynkV2({ data }: { data: AdminKalenderSynkV2Data })
   const antallMedFeil = subscriptions.filter((r) => r.lastError).length;
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+    <div data-paper-wave-h="kalender-synk" data-paper-pattern style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 960, margin: "0 auto", width: "100%" }}>
       <div>
-        <Caps>AgencyOS · Innstillinger</Caps>
-        <div style={{ marginTop: 10 }}>
-          <Tittel em="2-veis synk.">Google Calendar</Tittel>
+        <div data-paper-pattern-topp>
+          <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>Kalender-synk</h1>
+          <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>AgencyOS</span>
         </div>
         <p style={{ marginTop: 8, fontFamily: T.ui, fontSize: 13, color: T.mut, lineHeight: 1.6, maxWidth: 560 }}>
           Koble Google-kontoen din og velg hvilke kalendere som skal pushe bookinger og blokkere

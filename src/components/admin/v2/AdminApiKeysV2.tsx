@@ -283,9 +283,9 @@ export function AdminApiKeysV2({ data }: { data: AdminApiKeysV2Data }) {
   const hode = (
     <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 14, flexWrap: "wrap" }}>
       <div>
-        <Caps>{`${data.aktiveCount} aktiv${data.aktiveCount === 1 ? "" : "e"} · ${data.totalCount} totalt`}</Caps>
-        <div style={{ marginTop: 10 }}>
-          <Tittel em="og integrasjoner.">API-nøkler</Tittel>
+        <div data-paper-pattern-topp>
+          <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>API-nøkler</h1>
+          <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>Integrasjoner</span>
         </div>
       </div>
       <span onClick={() => setVisModal(true)} style={{ display: "inline-flex" }}>
@@ -312,7 +312,7 @@ export function AdminApiKeysV2({ data }: { data: AdminApiKeysV2Data }) {
     );
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+    <div data-paper-wave-h="api-keys" data-paper-pattern style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 960, margin: "0 auto", width: "100%" }}>
       {hode}
       {liste}
       <p style={{ fontFamily: T.ui, fontSize: 12, color: T.mut, lineHeight: 1.6, margin: 0 }}>

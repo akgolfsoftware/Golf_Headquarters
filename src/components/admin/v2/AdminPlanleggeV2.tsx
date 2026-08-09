@@ -70,9 +70,9 @@ export function AdminPlanleggeV2({ data }: { data: AdminPlanleggeData }) {
   const hode = (
     <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 14, flexWrap: "wrap" }}>
       <div>
-        <Caps>AgencyOS · Workbench</Caps>
-        <div style={{ marginTop: 10 }}>
-          <Tittel em="Workbench.">Åpne</Tittel>
+        <div data-paper-pattern-topp>
+          <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>Planlegge</h1>
+          <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>AgencyOS</span>
         </div>
       </div>
       {totalt > 0 && (
@@ -88,7 +88,7 @@ export function AdminPlanleggeV2({ data }: { data: AdminPlanleggeData }) {
   // Ingen spillere → ærlig tom-tilstand + vei
   if (totalt === 0) {
     return (
-      <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+      <div data-paper-wave-h="planlegge" data-paper-pattern style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 960, margin: "0 auto", width: "100%" }}>
         {hode}
         <Kort>
           <TomTilstand
@@ -98,7 +98,7 @@ export function AdminPlanleggeV2({ data }: { data: AdminPlanleggeData }) {
           />
         </Kort>
         <Link href="/admin/spillere/ny" style={{ textDecoration: "none", display: "block" }}>
-          <CTAPill icon="user-plus" full>
+          <CTAPill icon="user-plus" full enTing>
             Legg til spiller
           </CTAPill>
         </Link>
@@ -118,7 +118,7 @@ export function AdminPlanleggeV2({ data }: { data: AdminPlanleggeData }) {
   // ── B: én primær CTA ──────────────────────────────────────────
   const primaerCta = primaer ? (
     <Link href={workbenchHref(primaer.id)} style={{ textDecoration: "none", display: "block" }}>
-      <CTAPill icon="arrow-right" full>
+      <CTAPill icon="arrow-right" full enTing>
         {primaerTekst}
       </CTAPill>
     </Link>

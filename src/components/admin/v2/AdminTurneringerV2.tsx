@@ -92,9 +92,9 @@ export function AdminTurneringerV2({ data }: { data: AdminTurneringerV2Data }) {
   const hode = (
     <div style={{ display: "flex", flexWrap: "wrap", alignItems: "flex-end", justifyContent: "space-between", gap: 12 }}>
       <div>
-        <Caps>Planlegge · Turneringer · AgencyOS</Caps>
-        <div style={{ marginTop: 10 }}>
-          <Tittel mobile={mobile} em={`${sesong}.`}>Sesong</Tittel>
+        <div data-paper-pattern-topp>
+          <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>Turneringer</h1>
+          <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>AgencyOS</span>
         </div>
         <p style={{ fontFamily: T.ui, fontSize: 12.5, color: T.mut, margin: "8px 0 0", maxWidth: 460 }}>
           Turneringene stallen din spiller. Send fellesmelding til alle påmeldte med ett klikk.
@@ -106,7 +106,7 @@ export function AdminTurneringerV2({ data }: { data: AdminTurneringerV2Data }) {
 
   if (antall === 0) {
     return (
-      <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+      <div data-paper-wave-h="turneringer" data-paper-pattern  style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
         {hode}
         <Kort>
           <TomTilstand

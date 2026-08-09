@@ -136,7 +136,7 @@ export function SlotFormV2({ locations, initial, defaultWeekday, triggerLabel, t
   }
 
   return (
-    <>
+    <div data-paper-wave-h="slotform" data-paper-pattern style={{ display: "contents" }}><>
       {triggerVariant === "lenke" ? (
         <button
           type="button"
@@ -152,7 +152,7 @@ export function SlotFormV2({ locations, initial, defaultWeekday, triggerLabel, t
           style={{ all: "unset", cursor: "pointer", display: "block", width: "100%" }}
           aria-label={triggerLabel}
         >
-          <CTAPill icon="plus" full>
+          <CTAPill icon="plus" full enTing>
             {triggerLabel}
           </CTAPill>
         </button>
@@ -277,5 +277,6 @@ export function SlotFormV2({ locations, initial, defaultWeekday, triggerLabel, t
         </form>
       </dialog>
     </>
+    </div>
   );
 }

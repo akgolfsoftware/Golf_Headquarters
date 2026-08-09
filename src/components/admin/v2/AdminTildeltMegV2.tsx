@@ -23,9 +23,9 @@ export function AdminTildeltMegV2({ data }: { data: AdminTildeltMegV2Data }) {
   const hode = (
     <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 14, flexWrap: "wrap" }}>
       <div>
-        <Caps>Min uke · Tildelt meg · AgencyOS</Caps>
-        <div style={{ marginTop: 10 }}>
-          <Tittel em="til deg.">{`${data.antallOrd} ting`}</Tittel>
+        <div data-paper-pattern-topp>
+          <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>Tildelt meg</h1>
+          <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>AgencyOS</span>
         </div>
         <p style={{ fontFamily: T.ui, fontSize: 13, lineHeight: 1.55, color: T.mut, margin: "10px 0 0", maxWidth: 560 }}>
           Alt som venter på en handling fra deg, samlet ett sted.
@@ -45,7 +45,7 @@ export function AdminTildeltMegV2({ data }: { data: AdminTildeltMegV2Data }) {
 
   if (n === 0) {
     return (
-      <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+      <div data-paper-wave-h="tildeltmeg" data-paper-pattern  style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
         {hode}
         <Kort>
           <TomTilstand

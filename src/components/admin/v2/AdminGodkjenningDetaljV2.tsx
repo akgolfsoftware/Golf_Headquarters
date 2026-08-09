@@ -32,7 +32,7 @@ const STATUS_LABEL: Record<string, string> = {
 
 export function ApprovalNotFound() {
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+    <div data-paper-wave-h="godkjenning-detalj" data-paper-pattern style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 960, margin: "0 auto", width: "100%" }}>
       <TilbakeLenke href="/admin/godkjenninger">Tilbake til godkjenninger</TilbakeLenke>
       <Kort>
         <TomTilstand

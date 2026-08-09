@@ -151,7 +151,7 @@ export function AdminEmailTemplateEditorV2({ template, testRecipient }: Props) {
   const statusTekst = dirty ? "Ulagrede endringer" : active ? "Aktiv · lagret" : "Utkast · lagret";
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+    <div data-paper-wave-h="email-template-editor" data-paper-pattern style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 960, margin: "0 auto", width: "100%" }}>
       {/* Hode — B: status + én primær CTA (Lagre) */}
       <div style={{ display: "flex", flexWrap: "wrap", alignItems: "flex-end", justifyContent: "space-between", gap: 14 }}>
         <div style={{ minWidth: 0 }}>

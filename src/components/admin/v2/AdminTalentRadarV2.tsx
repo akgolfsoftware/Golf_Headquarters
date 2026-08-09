@@ -78,13 +78,13 @@ export function AdminTalentRadarV2({ data }: { data: TalentRadarData }) {
   // ── Tom plattform: ingen talenter i programmet ─────────────────
   if (!valgt) {
     return (
-      <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+      <div data-paper-wave-h="talentradar" data-paper-pattern  style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
         <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 14, flexWrap: "wrap" }}>
           <div>
-            <Caps>AgencyOS · Talent-radar</Caps>
-            <div style={{ marginTop: 10 }}>
-              <Tittel em="programmet.">Ingen emner i </Tittel>
-            </div>
+            <div data-paper-pattern-topp>
+          <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>Talent-radar</h1>
+          <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>AgencyOS</span>
+        </div>
           </div>
           <StatusPill tone="warn">Ingen talenter</StatusPill>
         </div>

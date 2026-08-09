@@ -102,7 +102,7 @@ export function ServiceFormV2({ initial, triggerLabel, triggerVariant = "cta" }:
   }
 
   return (
-    <>
+    <div data-paper-wave-h="serviceform" data-paper-pattern style={{ display: "contents" }}><>
       {triggerVariant === "cta" ? (
         <button
           type="button"
@@ -110,7 +110,7 @@ export function ServiceFormV2({ initial, triggerLabel, triggerVariant = "cta" }:
           style={{ all: "unset", cursor: "pointer", display: "block", width: "100%" }}
           aria-label={triggerLabel}
         >
-          <CTAPill icon="plus" full>
+          <CTAPill icon="plus" full enTing>
             {triggerLabel}
           </CTAPill>
         </button>
@@ -197,5 +197,6 @@ export function ServiceFormV2({ initial, triggerLabel, triggerVariant = "cta" }:
         </form>
       </dialog>
     </>
+    </div>
   );
 }

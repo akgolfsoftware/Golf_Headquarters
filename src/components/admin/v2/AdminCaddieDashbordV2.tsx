@@ -307,13 +307,13 @@ export function AdminCaddieDashbordV2({ coachFirstName, dateLabel, timeLabel, dr
   const statusTone: StatusTone = draft ? "warn" : fleetSummary.active > 0 ? "lime" : "info";
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+    <div data-paper-wave-h="caddie-dashbord" data-paper-pattern style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 960, margin: "0 auto", width: "100%" }}>
       <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 14, flexWrap: "wrap" }}>
         <div>
-          <Caps>AgencyOS · Co-agent</Caps>
-          <div style={{ marginTop: 10 }}>
-            <Tittel em="caddien jobber for deg.">{`God dag, ${coachFirstName} —`}</Tittel>
-          </div>
+          <div data-paper-pattern-topp>
+          <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>Caddie</h1>
+          <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>Dashbord</span>
+        </div>
           <p style={{ marginTop: 8, maxWidth: 720, fontFamily: T.ui, fontSize: 13, lineHeight: 1.55, color: T.mut }}>
             Utkast-til-godkjenning, agent-forvaltning og audit. Utgående handlinger krever alltid godkjenning.
           </p>

@@ -239,7 +239,7 @@ export function AdminTekniskPlanV2({ data }: { data: AdminTekniskPlanData }) {
   const innsikt = <InnsiktChip cta="Planlegg i Workbench" href="/admin/planlegge">{innsiktTekst}</InnsiktChip>;
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+    <div data-paper-wave-h="teknisk-plan-admin" data-paper-pattern  style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
       {hode}
       {kpi}
       {spillerListe}

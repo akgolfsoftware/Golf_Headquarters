@@ -96,10 +96,10 @@ export function AdminSpillerPlanV2({ data }: { data: AdminSpillerPlanData }) {
       <TilbakeLenke href={`/admin/spillere/${spiller.id}`}>Tilbake til {spiller.navn}</TilbakeLenke>
       <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 14, flexWrap: "wrap" }}>
         <div>
-          <Caps>{spiller.navn} · AgencyOS · Utviklingsplaner</Caps>
-          <div style={{ marginTop: 10 }}>
-            <Tittel em="planer.">Tekniske</Tittel>
-          </div>
+          <div data-paper-pattern-topp>
+          <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>Spillerplan</h1>
+          <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>AgencyOS</span>
+        </div>
         </div>
         <StatusPill tone={statusTone}>{statusTekst}</StatusPill>
       </div>
@@ -118,7 +118,7 @@ export function AdminSpillerPlanV2({ data }: { data: AdminSpillerPlanData }) {
   // B: én primær
   const primaerCta = (
     <Link href={workbenchHref} style={{ textDecoration: "none", display: "block" }}>
-      <CTAPill icon="plus" full>
+      <CTAPill icon="plus" full enTing>
         {sortert.length === 0 ? "Lag første plan" : "Lag plan"}
       </CTAPill>
     </Link>
@@ -161,7 +161,7 @@ export function AdminSpillerPlanV2({ data }: { data: AdminSpillerPlanData }) {
         : `${pl(aktive, "aktiv plan", "aktive planer")} — juster mål, drills og periodisering i Workbench.`;
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+    <div data-paper-wave-h="spiller-plan" data-paper-pattern style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 960, margin: "0 auto", width: "100%" }}>
       {hode}
       {kpi}
       {primaerCta}

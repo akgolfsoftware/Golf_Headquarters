@@ -196,12 +196,12 @@ export function AdminForeslatteTesterV2({ data }: { data: AdminForeslatteTesterV
   const { forslag } = data;
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+    <div data-paper-wave-h="foreslatte-tester" data-paper-pattern style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 960, margin: "0 auto", width: "100%" }}>
       {/* Hode */}
       <div>
-        <Caps>AgencyOS · Tester</Caps>
-        <div style={{ marginTop: 10 }}>
-          <Tittel em="tester">Foreslåtte</Tittel>
+        <div data-paper-pattern-topp>
+          <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>Foreslåtte tester</h1>
+          <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>AgencyOS</span>
         </div>
         <p style={{ fontFamily: T.ui, fontSize: 13, color: T.mut, lineHeight: 1.55, margin: "10px 0 0", maxWidth: 560 }}>
           Spillere har sendt inn egne tester for godkjenning. Godkjente tester

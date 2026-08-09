@@ -104,7 +104,7 @@ export function AvailabilityWeekGridV2({ locations, windows }: { locations: Loca
   }
 
   return (
-    <div style={{ userSelect: "none", position: "relative" }}>
+    <div data-paper-wave-h="availabilityweekgrid" data-paper-pattern  style={{ userSelect: "none", position: "relative" }}>
       {livePreview && (
         <div style={{ position: "absolute", top: 0, left: 0, right: 0, background: `color-mix(in srgb, ${T.lime} 90%, transparent)`, color: T.onLime, textAlign: "center", padding: "4px 0", fontFamily: T.mono, fontSize: 11, zIndex: 10, borderRadius: "10px 10px 0 0" }}>
           Dragging: {livePreview} (slipp for å bekrefte)

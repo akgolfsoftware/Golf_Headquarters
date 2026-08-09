@@ -143,13 +143,13 @@ export function AdminReachV2({ data }: { data: AdminReachV2Data }) {
   }, [filter, data.spillere]);
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+    <div data-paper-wave-h="reach" data-paper-pattern style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 960, margin: "0 auto", width: "100%" }}>
       <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 14, flexWrap: "wrap" }}>
         <div>
-          <Caps>Reach & engasjement · Siste 30 dager · AgencyOS</Caps>
-          <div style={{ marginTop: 10 }}>
-            <Tittel em="engasjement.">Plattform</Tittel>
-          </div>
+          <div data-paper-pattern-topp>
+          <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>Reach</h1>
+          <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>AgencyOS</span>
+        </div>
           <p style={{ fontFamily: T.mono, fontSize: 11, textTransform: "uppercase", letterSpacing: "0.06em", color: T.mut, margin: "8px 0 0" }}>
             {data.totaltSpillere} spillere · hvor mye lander det vi sender, og hvem trenger oppmerksomhet?
           </p>
@@ -163,7 +163,7 @@ export function AdminReachV2({ data }: { data: AdminReachV2Data }) {
 
       {/* B: én primær CTA */}
       <Link href="/admin/innboks" style={{ textDecoration: "none", display: "block" }}>
-        <CTAPill icon="message-circle" full>
+        <CTAPill icon="message-circle" full enTing>
           Åpne innboks
         </CTAPill>
       </Link>

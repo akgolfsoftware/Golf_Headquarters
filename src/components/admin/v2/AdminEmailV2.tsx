@@ -331,9 +331,9 @@ export function AdminEmailV2({ data }: { data: AdminEmailV2Data }) {
   const hode = (
     <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 14, flexWrap: "wrap" }}>
       <div>
-        <Caps>AgencyOS · Automatiske e-poster</Caps>
-        <div style={{ marginTop: 10 }}>
-          <Tittel em="maler.">E-post</Tittel>
+        <div data-paper-pattern-topp>
+          <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>E-post</h1>
+          <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>Maler og utsending</span>
         </div>
       </div>
       <div className="hidden md:inline-flex">
@@ -412,7 +412,7 @@ export function AdminEmailV2({ data }: { data: AdminEmailV2Data }) {
     );
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+    <div data-paper-wave-h="email" data-paper-pattern style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 960, margin: "0 auto", width: "100%" }}>
       {hode}
 
       {/* Mobil-handling (skjult på desktop der den ligger i hodet) */}

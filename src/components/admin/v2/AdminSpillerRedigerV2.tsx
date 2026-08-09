@@ -106,7 +106,7 @@ function FeltOmraade({ label, name, defaultValue, hint }: { label: string; name:
 
 export function AdminSpillerRedigerV2({ data }: { data: AdminSpillerRedigerV2Data }) {
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+    <div data-paper-wave-h="spiller-rediger" data-paper-pattern style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 960, margin: "0 auto", width: "100%" }}>
       <div style={{ position: "sticky", top: 0, zIndex: 20, background: `color-mix(in srgb, ${T.bg} 95%, transparent)`, backdropFilter: "blur(6px)", borderBottom: `1px solid ${T.border}`, padding: "10px 0" }}>
         <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", justifyContent: "space-between", gap: 10 }}>
           <div style={{ minWidth: 0 }}>

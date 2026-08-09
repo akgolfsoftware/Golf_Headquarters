@@ -184,7 +184,7 @@ export function AdminUkaV2({ data }: { data: AdminUkaV2Data }) {
   );
 
   return (
-    <>
+    <div data-paper-wave-h="uka" data-paper-pattern style={{ display: "contents" }}><>
       <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 14, flexWrap: "wrap" }}>
         <div>
           <Caps>AgencyOS · Uke {data.ukeNummer}</Caps>
@@ -245,5 +245,6 @@ export function AdminUkaV2({ data }: { data: AdminUkaV2Data }) {
         </div>
       </Kort>
     </>
+    </div>
   );
 }

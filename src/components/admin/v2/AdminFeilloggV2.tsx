@@ -147,9 +147,9 @@ export function AdminFeilloggV2({ data }: { data: AdminFeilloggV2Data }) {
       }}
     >
       <div>
-        <Caps>AgencyOS · Drift</Caps>
-        <div style={{ marginTop: 10 }}>
-          <Tittel em="i produksjon.">Feillogg — hva som ryker</Tittel>
+        <div data-paper-pattern-topp>
+          <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>Feillogg</h1>
+          <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>System</span>
         </div>
       </div>
       <StatusPill tone={rolig ? "up" : "down"}>{rolig ? "Rolig siste døgn" : "Feil siste døgn"}</StatusPill>
@@ -165,7 +165,7 @@ export function AdminFeilloggV2({ data }: { data: AdminFeilloggV2Data }) {
 
   if (data.feil.length === 0) {
     return (
-      <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+      <div data-paper-wave-h="feillogg" data-paper-pattern style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 960, margin: "0 auto", width: "100%" }}>
         {hode}
         {kpi}
         <Kort>

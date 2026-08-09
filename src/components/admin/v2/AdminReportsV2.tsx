@@ -222,14 +222,14 @@ export function AdminReportsV2({ data }: { data: ReportsV2Data }) {
   ];
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+    <div data-paper-wave-h="reports" data-paper-pattern style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 960, margin: "0 auto", width: "100%" }}>
       {/* B: status først + én primær CTA */}
       <div style={{ display: "flex", flexWrap: "wrap", alignItems: "flex-end", justifyContent: "space-between", gap: 14 }}>
         <div>
-          <Caps>System · Rapporter</Caps>
-          <div style={{ marginTop: 10 }}>
-            <Tittel em="rapporter.">Seks</Tittel>
-          </div>
+          <div data-paper-pattern-topp>
+          <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>Rapporter</h1>
+          <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>AgencyOS</span>
+        </div>
           <p style={{ fontFamily: T.ui, fontSize: 13, color: T.fg2, margin: "8px 0 0", maxWidth: 460 }}>
             Generer rapporter for spillere, foreldre, klubb eller forbund. Eksport til PDF og CSV.
           </p>
@@ -240,7 +240,7 @@ export function AdminReportsV2({ data }: { data: ReportsV2Data }) {
       </div>
 
       <a href="/api/admin/reports/spillere.csv" style={{ textDecoration: "none", display: "block" }}>
-        <CTAPill icon="download" full>
+        <CTAPill icon="download" full enTing>
           Generer spiller-rapport
         </CTAPill>
       </a>

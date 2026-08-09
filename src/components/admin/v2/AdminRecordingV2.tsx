@@ -193,7 +193,7 @@ export function AdminRecordingV2({ data }: { data: AdminRecordingV2Data }) {
   const aktivProsesserer = !!aktiv && aktiv.status === "PROCESSING";
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+    <div data-paper-wave-h="recording" data-paper-pattern style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 960, margin: "0 auto", width: "100%" }}>
       <div>
         <Caps>AgencyOS · Opptak</Caps>
         <div style={{ marginTop: 8 }}>

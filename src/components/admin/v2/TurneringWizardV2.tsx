@@ -189,7 +189,7 @@ export function TurneringWizardV2({ courses }: { courses: Course[] }) {
   const venue = courses.find((c) => c.id === state.courseId)?.name || state.manualVenue || "—";
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 640, margin: "0 auto" }}>
+    <div data-paper-wave-h="turneringwizard" data-paper-pattern  style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 640, margin: "0 auto" }}>
       {/* B: status først */}
       <div style={{ display: "flex", flexWrap: "wrap", alignItems: "flex-end", justifyContent: "space-between", gap: 12 }}>
         <div>

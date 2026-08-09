@@ -170,7 +170,7 @@ export function AdminTrackmanV2({ data }: { data: AdminTrackmanV2Data }) {
   // ── Ingen sesjoner — tom + vei ──────────────────────────────────
   if (data.rader.length === 0) {
     return (
-      <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+      <div data-paper-wave-h="trackman" data-paper-pattern  style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
         {hode}
         <Kort>
           <TomTilstand

@@ -235,9 +235,9 @@ export function AdminBookingerV2({ data }: { data: AdminBookingerV2Data }) {
   const hode = (
     <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 14, flexWrap: "wrap" }}>
       <div>
-        <Caps>{`Uke ${data.ukeNr} · ${data.lokasjon} · AgencyOS`}</Caps>
-        <div style={{ marginTop: 10 }}>
-          <Tittel em="kapasitet.">Bookinger &amp;</Tittel>
+        <div data-paper-pattern-topp>
+          <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>Bookinger</h1>
+          <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>AgencyOS</span>
         </div>
       </div>
       <StatusPill tone={statusTone}>{statusTekst}</StatusPill>
@@ -248,7 +248,7 @@ export function AdminBookingerV2({ data }: { data: AdminBookingerV2Data }) {
   const primaerCta = (
     <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
       <Link href={data.nyHref} style={{ textDecoration: "none", display: "block" }}>
-        <CTAPill icon="plus" full>
+        <CTAPill icon="plus" full enTing>
           Ny booking
         </CTAPill>
       </Link>
@@ -364,7 +364,7 @@ export function AdminBookingerV2({ data }: { data: AdminBookingerV2Data }) {
   // Tom uke uten bookinger — ærlig vei
   if (data.bookinger.length === 0) {
     return (
-      <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+      <div data-paper-wave-h="bookinger" data-paper-pattern style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 960, margin: "0 auto", width: "100%" }}>
         {hode}
         {kpi}
         <Kort>

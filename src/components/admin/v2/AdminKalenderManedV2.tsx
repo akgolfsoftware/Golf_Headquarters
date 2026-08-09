@@ -196,7 +196,7 @@ function EmptyStateMaaned() {
 
 export function MonthCalendarV2(props: MonthCalendarV2Props) {
   return (
-    <div style={{ width: "100%" }}>
+    <div data-paper-wave-h="kalender-maned" data-paper-pattern  style={{ width: "100%" }}>
       <div style={{ display: "flex", flexWrap: "wrap", alignItems: "flex-end", justifyContent: "space-between", gap: 14, marginBottom: 20 }}>
         <div>
           <Caps>{`Stallen · ${props.spillerCount} spillere`}</Caps>

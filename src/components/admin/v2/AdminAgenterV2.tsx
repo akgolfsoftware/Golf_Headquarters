@@ -157,9 +157,9 @@ export function AdminAgenterV2({ data }: { data: AdminAgenterV2Data }) {
   const hode = (
     <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 14, flexWrap: "wrap" }}>
       <div>
-        <Caps>AgencyOS · Agenter</Caps>
-        <div style={{ marginTop: 10 }}>
-          <Tittel em="pipeline.">Agent</Tittel>
+        <div data-paper-pattern-topp>
+          <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>Agenter</h1>
+          <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>AgenticOS</span>
         </div>
         <div style={{ fontFamily: T.ui, fontSize: 12.5, color: T.mut, marginTop: 8 }}>
           {pl(data.signalsCount, "signal", "signaler")} · {pl(data.planActionsCount, "plan-action", "plan-actions")} totalt.
@@ -177,7 +177,7 @@ export function AdminAgenterV2({ data }: { data: AdminAgenterV2Data }) {
       : "Se agent-team";
   const primaerCta = (
     <Link href={primaerHref} style={{ textDecoration: "none", display: "block" }}>
-      <CTAPill icon="arrow-right" full>
+      <CTAPill icon="arrow-right" full enTing>
         {primaerTekst}
       </CTAPill>
     </Link>
@@ -277,7 +277,7 @@ export function AdminAgenterV2({ data }: { data: AdminAgenterV2Data }) {
       : "Ingen forslag venter på godkjenning akkurat nå.";
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+    <div data-paper-wave-h="agenter" data-paper-pattern style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 960, margin: "0 auto", width: "100%" }}>
       {hode}
       {primaerCta}
       {kpi}

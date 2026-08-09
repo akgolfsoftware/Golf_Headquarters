@@ -355,14 +355,14 @@ export function AdminVideoerV2({ data }: { data: AdminVideoerV2Data }) {
   const { kpis, spillere, videoer } = data;
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+    <div data-paper-wave-h="videoer" data-paper-pattern  style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
       {/* Hode — B: status */}
       <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 14, flexWrap: "wrap" }}>
         <div>
-          <Caps>AgencyOS · Coaching-videoer</Caps>
-          <div style={{ marginTop: 10 }}>
-            <Tittel em="del med spillerne">Last opp og</Tittel>
-          </div>
+          <div data-paper-pattern-topp>
+          <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>Videoer</h1>
+          <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>AgencyOS</span>
+        </div>
           <p style={{ fontFamily: T.ui, fontSize: 13, color: T.mut, lineHeight: 1.55, margin: "10px 0 0" }}>
             {kpis.totalt} videoer totalt. Maks {MAX_MB} MB per video — mp4, mov eller webm.
           </p>

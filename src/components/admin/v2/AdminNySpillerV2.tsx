@@ -215,9 +215,9 @@ export function AdminNySpillerV2() {
   const hode = (
     <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 14, flexWrap: "wrap" }}>
       <div>
-        <Caps>AgencyOS · Stallen · Onboarding</Caps>
-        <div style={{ marginTop: 10 }}>
-          <Tittel em="spiller.">Ny</Tittel>
+        <div data-paper-pattern-topp>
+          <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>Ny spiller</h1>
+          <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>AgencyOS</span>
         </div>
         <p style={{ fontFamily: T.ui, fontSize: 12.5, color: T.mut, lineHeight: 1.55, margin: "10px 0 0", maxWidth: 460 }}>
           Fire steg — identitet, golf-profil, tier og velkomst. Spilleren får
@@ -233,7 +233,7 @@ export function AdminNySpillerV2() {
   const feilTekst = serverFeil ?? (visFeil ? stegFeil : null);
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+    <div data-paper-wave-h="ny-spiller" data-paper-pattern style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 960, margin: "0 auto", width: "100%" }}>
       {hode}
 
       <Kort>

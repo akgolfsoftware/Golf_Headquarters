@@ -247,7 +247,7 @@ export function AgencyLiveV2({ coachFirstName = "Anders" }: { coachFirstName?: s
   const imsg = fMessages.filter((m) => m.channel === "imessage");
 
   return (
-    <div data-paper-agencyos-live-session style={{ maxWidth: 1200, margin: "0 auto", width: "100%" }}>
+    <div data-paper-wave-h="agency-live" data-paper-agencyos-live-session style={{ maxWidth: 1200, margin: "0 auto", width: "100%" }}>
       {/* DEMO-banner */}
       <Kort pad="10px 16px" style={{ borderColor: `color-mix(in srgb, ${T.warn} 35%, ${T.border})`, background: `color-mix(in srgb, ${T.warn} 8%, ${T.panel})` }}>
         <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
@@ -261,10 +261,10 @@ export function AgencyLiveV2({ coachFirstName = "Anders" }: { coachFirstName?: s
       {/* Hode */}
       <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 14, flexWrap: "wrap" }}>
         <div>
-          <Caps>{SCENE_DATE} · OPS-OVERSIKT</Caps>
-          <div style={{ marginTop: 10 }}>
-            <Tittel em={`${coachFirstName}.`}>God morgen,</Tittel>
-          </div>
+          <div data-paper-pattern-topp>
+          <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>Live</h1>
+          <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>AgencyOS</span>
+        </div>
         </div>
         <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
           <StatusPill>LIVE · alle kilder tilkoblet</StatusPill>

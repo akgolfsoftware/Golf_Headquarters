@@ -119,7 +119,7 @@ function GodkjennLavRisiko({ count }: { count: number }) {
       }}
       aria-label={`Godkjenn lav-risiko (${count})`}
     >
-      <CTAPill icon="check-circle" full>
+      <CTAPill icon="check-circle" full enTing>
         {busy ? "Godkjenner …" : `Godkjenn lav-risiko (${count})`}
       </CTAPill>
     </button>
@@ -448,9 +448,9 @@ export function AdminGodkjenningerV2({ data }: { data: AdminGodkjenningerV2Data 
   const hode = (
     <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 14, flexWrap: "wrap" }}>
       <div>
-        <Caps>AgenticOS · Kø · AgencyOS</Caps>
-        <div style={{ marginTop: 10 }}>
-          <Tittel em="på deg." mobile={mobile}>{`${totalt} venter`}</Tittel>
+        <div data-paper-pattern-topp>
+          <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>Godkjenninger</h1>
+          <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>Kø · AgencyOS</span>
         </div>
         <p style={{ fontFamily: T.ui, fontSize: 13, lineHeight: 1.55, color: T.mut, margin: "10px 0 0", maxWidth: 560 }}>
           AI foreslår — du godkjenner — systemet utfører. Plan-endringer, Caddie-utkast og forespørsler i én kø.
@@ -475,7 +475,7 @@ export function AdminGodkjenningerV2({ data }: { data: AdminGodkjenningerV2Data 
         style={{ all: "unset", cursor: "pointer", display: "block", width: "100%" }}
         aria-label={`Vis ${antallHaster} som haster`}
       >
-        <CTAPill icon="alert-circle" full>
+        <CTAPill icon="alert-circle" full enTing>
           {`Ta ${pl(antallHaster, "sak", "saker")} som haster`}
         </CTAPill>
       </button>
@@ -487,14 +487,14 @@ export function AdminGodkjenningerV2({ data }: { data: AdminGodkjenningerV2Data 
       </div>
     ) : (
       <Link href="/admin/innboks" style={{ textDecoration: "none", display: "block" }}>
-        <CTAPill icon="inbox" full>
+        <CTAPill icon="inbox" full enTing>
           Åpne innboks
         </CTAPill>
       </Link>
     );
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+    <div data-paper-wave-h="godkjenninger" data-paper-pattern style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 960, margin: "0 auto", width: "100%" }}>
       {hode}
       {primaerCta}
 

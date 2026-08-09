@@ -39,13 +39,13 @@ function kategoriHref(kat: string, q: string): string {
 /** Wave D Paper chrome */
 export function AdminDrillsV2({ data }: { data: AdminDrillsV2Data }) {
   return (
-    <div data-paper-wave-d="admin-drills" style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+    <div data-paper-wave-h="drills" data-paper-pattern  data-paper-wave-d="admin-drills" style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
       <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 14, flexWrap: "wrap" }}>
         <div>
-          <Caps>Planlegge · Drill-bibliotek · AgencyOS</Caps>
-          <div style={{ marginTop: 10 }}>
-            <Tittel em="tagget.">{`${data.total} drills,`}</Tittel>
-          </div>
+          <div data-paper-pattern-topp>
+          <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>Drills</h1>
+          <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>Admin</span>
+        </div>
           <p style={{ marginTop: 8, maxWidth: 520, fontFamily: T.ui, fontSize: 13, color: T.fg2, lineHeight: 1.5 }}>
             Øvelsesbiblioteket coachene deler. Filtrer på ferdighet og slipp drills rett inn i en plan.
           </p>

@@ -69,7 +69,7 @@ export function AdminBookingDetaljV2({ data }: { data: AdminBookingDetaljV2Data 
   const primaerIkon = data.spiller ? "user" : "arrow-left";
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 640 }}>
+    <div data-paper-wave-h="booking-detalj" data-paper-pattern  style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 640 }}>
       <Link
         href="/admin/bookinger"
         style={{

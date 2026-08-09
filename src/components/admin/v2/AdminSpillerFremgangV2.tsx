@@ -150,10 +150,10 @@ export function AdminSpillerFremgangV2({ data }: { data: FremgangV2Data }) {
       <TilbakeLenke href={`/admin/spillere/${spillerId}`}>Tilbake til {navn}</TilbakeLenke>
       <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 14, flexWrap: "wrap" }}>
         <div>
-          <Caps>AgencyOS · Fremgang</Caps>
-          <div style={{ marginTop: 10 }}>
-            <Tittel em={em}>{em ? `${fornavn} ` : navn}</Tittel>
-          </div>
+          <div data-paper-pattern-topp>
+          <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>Fremgang</h1>
+          <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>Spiller</span>
+        </div>
           <Caps size={9} style={{ display: "block", marginTop: 6 }}>{periode}</Caps>
         </div>
         <StatusPill tone={harRunder ? "lime" : "warn"}>
@@ -165,7 +165,7 @@ export function AdminSpillerFremgangV2({ data }: { data: FremgangV2Data }) {
 
   const primaerCta = (
     <Link href={`/admin/spillere/${spillerId}/plan`} style={{ textDecoration: "none", display: "block" }}>
-      <CTAPill icon="layout-dashboard" full>
+      <CTAPill icon="layout-dashboard" full enTing>
         Åpne plan i Workbench
       </CTAPill>
     </Link>
@@ -306,7 +306,7 @@ export function AdminSpillerFremgangV2({ data }: { data: FremgangV2Data }) {
   ) : null;
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+    <div data-paper-wave-h="spiller-fremgang" data-paper-pattern style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 960, margin: "0 auto", width: "100%" }}>
       {hode}
       {primaerCta}
       {sgKort}

@@ -41,7 +41,7 @@ export function RaskeHandlingerV2() {
   }
 
   return (
-    <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(160px, 1fr))", gap: 12, marginTop: 20 }}>
+    <div data-paper-wave-h="statsraskehandlinger" data-paper-pattern  style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(160px, 1fr))", gap: 12, marginTop: 20 }}>
       <Reveal delay={0}>
         <button
           type="button"

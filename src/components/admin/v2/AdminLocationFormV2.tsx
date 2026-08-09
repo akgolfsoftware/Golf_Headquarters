@@ -305,7 +305,7 @@ export function LocationFormV2({ initial, triggerLabel }: LocationFormV2Props) {
   }
 
   return (
-    <>
+    <div data-paper-wave-h="locationform" data-paper-pattern style={{ display: "contents" }}><>
       {initial ? (
         <button type="button" onClick={aapne} style={{ background: "none", border: "none", cursor: "pointer", fontFamily: T.mono, fontSize: 11, color: T.lime, textTransform: "uppercase", letterSpacing: "0.06em" }}>
           {triggerLabel}
@@ -317,7 +317,7 @@ export function LocationFormV2({ initial, triggerLabel }: LocationFormV2Props) {
           style={{ all: "unset", cursor: "pointer", display: "block", width: "100%" }}
           aria-label={triggerLabel}
         >
-          <CTAPill icon="plus" full>
+          <CTAPill icon="plus" full enTing>
             {triggerLabel}
           </CTAPill>
         </button>
@@ -352,6 +352,7 @@ export function LocationFormV2({ initial, triggerLabel }: LocationFormV2Props) {
         </form>
       </DialogSkall>
     </>
+    </div>
   );
 }
 

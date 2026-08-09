@@ -89,9 +89,9 @@ export function AdminAuditLogV2({ data }: { data: AdminAuditLogV2Data }) {
   const hode = (
     <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 14, flexWrap: "wrap" }}>
       <div>
-        <Caps>AgencyOS · Sikkerhet</Caps>
-        <div style={{ marginTop: 10 }}>
-          <Tittel em="hendelser.">Audit-log — sikkerhets</Tittel>
+        <div data-paper-pattern-topp>
+          <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>Audit-logg</h1>
+          <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>Sikkerhet</span>
         </div>
       </div>
       <StatusPill tone={ren ? "up" : "warn"}>{ren ? "Audit ren" : "Se gjennom"}</StatusPill>
@@ -113,7 +113,7 @@ export function AdminAuditLogV2({ data }: { data: AdminAuditLogV2Data }) {
   // B: én primær CTA
   const primaerCta = (
     <Link href="/admin/settings/sikkerhet" style={{ textDecoration: "none", display: "block" }}>
-      <CTAPill icon="shield" full>
+      <CTAPill icon="shield" full enTing>
         Åpne sikkerhet
       </CTAPill>
     </Link>
@@ -122,7 +122,7 @@ export function AdminAuditLogV2({ data }: { data: AdminAuditLogV2Data }) {
   // ── Tom-tilstand + vei ────────────────────────────────────────
   if (data.events.length === 0) {
     return (
-      <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+      <div data-paper-wave-h="audit-log" data-paper-pattern style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 960, margin: "0 auto", width: "100%" }}>
         {hode}
         {kpi}
         <Kort>

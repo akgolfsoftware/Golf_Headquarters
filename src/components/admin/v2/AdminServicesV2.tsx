@@ -25,13 +25,13 @@ export function AdminServicesV2({ data }: { data: AdminServicesV2Data }) {
   const aktive = data.tjenester.filter((s) => s.aktiv).length;
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+    <div data-paper-wave-h="services" data-paper-pattern style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 960, margin: "0 auto", width: "100%" }}>
       <div style={{ display: "flex", flexWrap: "wrap", alignItems: "flex-end", justifyContent: "space-between", gap: 14 }}>
         <div>
-          <Caps>Gjennomføre · Tjenester · AgencyOS</Caps>
-          <div style={{ marginTop: 10 }}>
-            <Tittel em={data.flertall ? "tjenester." : "tjeneste."}>{data.tittelOrd}</Tittel>
-          </div>
+          <div data-paper-pattern-topp>
+          <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>Tjenester</h1>
+          <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>Booking</span>
+        </div>
           <p style={{ fontFamily: T.ui, fontSize: 13, lineHeight: 1.55, color: T.mut, margin: "10px 0 0", maxWidth: 560 }}>
             Det spillere kan booke. Pris og varighet styrer booking-flyten og faktureringen.
           </p>

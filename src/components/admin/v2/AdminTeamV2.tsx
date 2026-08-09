@@ -87,9 +87,9 @@ export function AdminTeamV2({ data }: { data: AdminTeamV2Data }) {
   const hode = (
     <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 14, flexWrap: "wrap" }}>
       <div>
-        <Caps>{`${data.totalCount === 1 ? "1 coach" : `${data.totalCount} coacher`} · AgencyOS`}</Caps>
-        <div style={{ marginTop: 10 }}>
-          <Tittel em="og roller.">Team</Tittel>
+        <div data-paper-pattern-topp>
+          <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>Team</h1>
+          <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>AgencyOS</span>
         </div>
       </div>
       <StatusPill tone={data.totalCount > 0 ? "lime" : "warn"}>
@@ -151,7 +151,7 @@ export function AdminTeamV2({ data }: { data: AdminTeamV2Data }) {
     );
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+    <div data-paper-wave-h="team" data-paper-pattern  style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
       {hode}
       {kpier}
       {primaerCta}

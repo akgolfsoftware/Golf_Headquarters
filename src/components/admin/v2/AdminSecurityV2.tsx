@@ -27,11 +27,11 @@ export function AdminSecurityV2({ data }: { data: AdminSecurityV2Data }) {
   const rolleLabel = data.rolle === "ADMIN" ? "Administrator" : "Coach";
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+    <div data-paper-wave-h="security" data-paper-pattern style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 960, margin: "0 auto", width: "100%" }}>
       <div>
-        <Caps>Innstillinger · Sikkerhet</Caps>
-        <div style={{ marginTop: 10 }}>
-          <Tittel em="akkurat nå?">Hvem er logget inn</Tittel>
+        <div data-paper-pattern-topp>
+          <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>Sikkerhet</h1>
+          <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>AgencyOS</span>
         </div>
         <p style={{ fontFamily: T.ui, fontSize: 13, color: T.mut, lineHeight: 1.6, margin: "10px 0 0", maxWidth: 560 }}>
           Kontoen din virker grei. Sjekk likevel listen under — første gang du ser en rar

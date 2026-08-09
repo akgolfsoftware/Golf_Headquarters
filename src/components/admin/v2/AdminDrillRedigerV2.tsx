@@ -297,7 +297,7 @@ export function AdminDrillRedigerV2({ drill, andreDrills }: AdminDrillRedigerV2P
   }
 
   return (
-    <form onSubmit={lagre} style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+    <form data-paper-wave-h="drill-rediger" data-paper-pattern onSubmit={lagre} style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
       {/* Topptekst — B: status + én primær CTA */}
       <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", justifyContent: "space-between", gap: 10 }}>
         <div style={{ minWidth: 0 }}>

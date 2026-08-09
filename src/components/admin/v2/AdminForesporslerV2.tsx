@@ -43,9 +43,9 @@ export function AdminForesporslerV2({ data }: { data: AdminForesporslerV2Data })
   const hode = (
     <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 14, flexWrap: "wrap" }}>
       <div>
-        <Caps>Innboks · Forespørsler · AgencyOS</Caps>
-        <div style={{ marginTop: 10 }}>
-          <Tittel em="å svare på.">{`${open} ${open === 1 ? "forespørsel" : "forespørsler"}`}</Tittel>
+        <div data-paper-pattern-topp>
+          <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>Forespørsler</h1>
+          <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>AgencyOS</span>
         </div>
         <p style={{ fontFamily: T.ui, fontSize: 13, lineHeight: 1.55, color: T.mut, margin: "10px 0 0", maxWidth: 560 }}>
           Booking-ønsker, meldinger og råd fra stallen. Svar eller deleger.
@@ -57,7 +57,7 @@ export function AdminForesporslerV2({ data }: { data: AdminForesporslerV2Data })
 
   const primaerCta = (
     <Link href="/admin/bookinger/ny" style={{ textDecoration: "none", display: "block" }}>
-      <CTAPill icon="calendar-plus" full>
+      <CTAPill icon="calendar-plus" full enTing>
         Ny booking
       </CTAPill>
     </Link>
@@ -65,7 +65,7 @@ export function AdminForesporslerV2({ data }: { data: AdminForesporslerV2Data })
 
   if (data.rader.length === 0) {
     return (
-      <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+      <div data-paper-wave-h="foresporsler" data-paper-pattern style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 960, margin: "0 auto", width: "100%" }}>
         {hode}
         <Kort>
           <TomTilstand

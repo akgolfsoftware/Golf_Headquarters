@@ -396,14 +396,14 @@ export function AdminPlanMalRedigerV2({
   }
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+    <div data-paper-wave-h="plan-mal-rediger" data-paper-pattern style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 960, margin: "0 auto", width: "100%" }}>
       {/* Topptekst — B: status + én primær CTA */}
       <div style={{ display: "flex", flexWrap: "wrap", alignItems: "flex-end", justifyContent: "space-between", gap: 10 }}>
         <div style={{ minWidth: 0 }}>
-          <Caps>Redigerer planmal</Caps>
-          <div style={{ marginTop: 6 }}>
-            <Tittel em={template.name}>Rediger:</Tittel>
-          </div>
+          <div data-paper-pattern-topp>
+          <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>Rediger planmal</h1>
+          <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>AgencyOS</span>
+        </div>
           <p style={{ fontFamily: T.ui, fontSize: 12.5, color: T.fg2, margin: "8px 0 0", lineHeight: 1.55, maxWidth: 640 }}>
             Endringer på innstillinger må lagres separat. Endringer på enkeltøkter lagres når du klikker «Lagre endring».
           </p>

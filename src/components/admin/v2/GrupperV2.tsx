@@ -64,9 +64,9 @@ export function GrupperV2({
   const hode = (
     <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 14, flexWrap: "wrap" }}>
       <div>
-        <Caps>Planlegge · Grupper · AgencyOS</Caps>
-        <div style={{ marginTop: 10 }}>
-          <Tittel>Grupper</Tittel>
+        <div data-paper-pattern-topp>
+          <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>Grupper</h1>
+          <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>AgencyOS</span>
         </div>
         <p style={{ fontFamily: T.ui, fontSize: 12.5, color: T.mut, margin: "8px 0 0" }}>
           {grupperOrd(grupper.length)} · {spillere(totalMedlemmer)}
@@ -219,7 +219,7 @@ export function GrupperV2({
 
   // ── Layout ──────────────────────────────────────────────────────
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+    <div data-paper-wave-h="grupper" data-paper-pattern style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 960, margin: "0 auto", width: "100%" }}>
       {hode}
       {primaerCta}
       <div className="grid grid-cols-1 lg:[grid-template-columns:2fr_3fr]" style={{ gap: T.gap, alignItems: "start" }}>

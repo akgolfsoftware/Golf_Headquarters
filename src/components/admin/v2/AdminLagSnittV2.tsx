@@ -42,13 +42,13 @@ function AksePctBar({ rad }: { rad: LagSnittRad }) {
 
 export function AdminLagSnittV2({ data }: { data: AdminLagSnittV2Data }) {
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+    <div data-paper-wave-h="lag-snitt" data-paper-pattern style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 960, margin: "0 auto", width: "100%" }}>
       <div style={{ display: "flex", flexWrap: "wrap", alignItems: "flex-end", justifyContent: "space-between", gap: 12 }}>
         <div>
-          <Caps>Analysere · Lag-snitt</Caps>
-          <div style={{ marginTop: 10 }}>
-            <Tittel em="per gruppe.">Pyramide</Tittel>
-          </div>
+          <div data-paper-pattern-topp>
+          <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>Lag-snitt</h1>
+          <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>AgencyOS</span>
+        </div>
           <p style={{ fontFamily: T.ui, fontSize: 13, lineHeight: 1.55, color: T.mut, margin: "10px 0 0", maxWidth: 560 }}>
             Slik fordeler treningsbalansen seg i hver gruppe. Bruk det til å justere gruppeprogrammene.
           </p>
@@ -70,7 +70,7 @@ export function AdminLagSnittV2({ data }: { data: AdminLagSnittV2Data }) {
             />
           </Kort>
           <Link href="/admin/grupper" style={{ textDecoration: "none", display: "block" }}>
-            <CTAPill icon="plus" full>Opprett gruppe</CTAPill>
+            <CTAPill icon="plus" full enTing>Opprett gruppe</CTAPill>
           </Link>
         </>
       ) : (

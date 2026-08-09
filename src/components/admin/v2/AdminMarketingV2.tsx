@@ -256,9 +256,9 @@ export function AdminMarketingV2({ poster }: { poster: MarketingPostV2Row[] }) {
   const hode = (
     <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 14, flexWrap: "wrap" }}>
       <div>
-        <Caps>Marketing · AgencyOS</Caps>
-        <div style={{ marginTop: 10 }}>
-          <Tittel em="kalender.">Innholds-</Tittel>
+        <div data-paper-pattern-topp>
+          <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>Marketing</h1>
+          <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>AgencyOS</span>
         </div>
       </div>
       <div className="hidden md:inline-flex">
@@ -312,7 +312,7 @@ export function AdminMarketingV2({ poster }: { poster: MarketingPostV2Row[] }) {
     ) : null;
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+    <div data-paper-wave-h="marketing" data-paper-pattern style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 960, margin: "0 auto", width: "100%" }}>
       {hode}
 
       {/* Mobil-handling (skjult på desktop der den ligger i hodet) */}

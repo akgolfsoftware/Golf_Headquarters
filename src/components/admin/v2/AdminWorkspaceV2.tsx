@@ -279,9 +279,9 @@ export function AdminWorkspaceV2({ data }: { data: AdminWorkspaceV2Data }) {
   const hode = (
     <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 14, flexWrap: "wrap" }}>
       <div>
-        <Caps>{`${data.coachNavn} · Workspace · AgencyOS`}</Caps>
-        <div style={{ marginTop: 10 }}>
-          <Tittel em="uke.">Min</Tittel>
+        <div data-paper-pattern-topp>
+          <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>Workspace</h1>
+          <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>AgencyOS</span>
         </div>
       </div>
       <StatusPill tone={statusTone}>{statusTekst}</StatusPill>
@@ -406,7 +406,7 @@ export function AdminWorkspaceV2({ data }: { data: AdminWorkspaceV2Data }) {
       : `${pl(kpi.apne, "åpen oppgave", "åpne oppgaver")} fordelt på uka. Synk med Notion for å holde lista fersk.`;
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+    <div data-paper-wave-h="workspace" data-paper-pattern  style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
       {hode}
       {kpiFlis}
       {primaerCta}

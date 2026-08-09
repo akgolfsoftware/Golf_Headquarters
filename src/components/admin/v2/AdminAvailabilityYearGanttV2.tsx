@@ -37,7 +37,7 @@ export function AvailabilityYearGanttV2({ year, windows }: { year: number; windo
   const toneFor = (navn: string) => TONER[anleggsNavn.indexOf(navn) % TONER.length];
 
   return (
-    <div style={{ borderRadius: T.rCard, border: `1px solid ${T.border}`, background: T.panel, padding: 18 }}>
+    <div data-paper-wave-h="availabilityyeargantt" data-paper-pattern  style={{ borderRadius: T.rCard, border: `1px solid ${T.border}`, background: T.panel, padding: 18 }}>
       <div style={{ display: "grid", gridTemplateColumns: "160px 1fr", alignItems: "center", gap: 12, marginBottom: 12 }}>
         <span style={{ fontFamily: T.mono, fontSize: 10, textTransform: "uppercase", letterSpacing: "0.10em", color: T.mut }}>{year}</span>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(12, 1fr)" }}>

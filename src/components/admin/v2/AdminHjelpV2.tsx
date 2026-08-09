@@ -190,11 +190,11 @@ export function AdminHjelpV2() {
   const totalArtikler = KATEGORIER.reduce((sum, k) => sum + k.antall, 0);
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+    <div data-paper-wave-h="hjelp" data-paper-pattern style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 960, margin: "0 auto", width: "100%" }}>
       <div>
-        <Caps>AgencyOS · /admin/hjelp</Caps>
-        <div style={{ marginTop: 10 }}>
-          <Tittel em="lurer du på?">Hva</Tittel>
+        <div data-paper-pattern-topp>
+          <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>Hjelp</h1>
+          <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>AgencyOS</span>
         </div>
         <p style={{ fontFamily: T.ui, fontSize: 13, color: T.mut, marginTop: 8, maxWidth: 480 }}>
           Søk i hjelp-artikler, eller spør direkte. Vi svarer innen 1 time på hverdager.

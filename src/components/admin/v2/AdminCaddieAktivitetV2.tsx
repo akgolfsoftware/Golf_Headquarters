@@ -214,10 +214,10 @@ export function AdminCaddieAktivitetV2({
     <>
       <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 14, flexWrap: "wrap" }}>
         <div>
-          <Caps>AgencyOS · Caddie-aktivitet</Caps>
-          <div style={{ marginTop: 10 }}>
-            <Tittel em="aktivitet">Caddie</Tittel>
-          </div>
+          <div data-paper-pattern-topp>
+          <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>Caddie</h1>
+          <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>Aktivitet</span>
+        </div>
           <p style={{ marginTop: 8, fontFamily: T.ui, fontSize: 13, color: T.mut }}>
             I dag · {stats.total} hendelser · {stats.ok} godkjent · {stats.rej} avvist · {stats.wait} venter · snitt-konfidens {(stats.conf * 100).toFixed(0)}%
           </p>

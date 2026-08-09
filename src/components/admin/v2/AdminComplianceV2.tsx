@@ -131,9 +131,9 @@ export function AdminComplianceV2({ data }: { data: ComplianceData }) {
   const hode = (
     <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 14, flexWrap: "wrap" }}>
       <div>
-        <Caps>{data.periodLabel} · AgencyOS</Caps>
-        <div style={{ marginTop: 10 }}>
-          <Tittel em="etterlevelse.">Plan &amp;</Tittel>
+        <div data-paper-pattern-topp>
+          <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>Compliance</h1>
+          <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>AgencyOS</span>
         </div>
       </div>
       <PillVelger
@@ -147,7 +147,7 @@ export function AdminComplianceV2({ data }: { data: ComplianceData }) {
   // Tom stall → ærlig tomrom, ingen resten.
   if (data.stall.length === 0) {
     return (
-      <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+      <div data-paper-wave-h="compliance" data-paper-pattern style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 960, margin: "0 auto", width: "100%" }}>
         {hode}
         <Kort>
           <TomTilstand icon="users" title="Ingen spillere i stallen" sub="Ingen aktive spillere er koblet til deg ennå — etterlevelse måles når det finnes planer å følge." />

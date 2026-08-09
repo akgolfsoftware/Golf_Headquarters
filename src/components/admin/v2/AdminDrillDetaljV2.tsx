@@ -117,7 +117,7 @@ export function AdminDrillDetaljV2({ data, actions }: { data: AdminDrillDetaljV2
   const statusTone = data.brukAntall > 0 ? "lime" as const : "info" as const;
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+    <div data-paper-wave-h="drill-detalj" data-paper-pattern style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 960, margin: "0 auto", width: "100%" }}>
       <Link href="/admin/drills" style={{ display: "inline-flex", alignItems: "center", gap: 6, fontFamily: T.mono, fontSize: 11, textTransform: "uppercase", letterSpacing: "0.06em", color: T.mut, textDecoration: "none" }}>
         <Icon name="arrow-left" size={12} />
         Tilbake til biblioteket

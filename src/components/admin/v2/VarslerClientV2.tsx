@@ -51,7 +51,7 @@ export function VarslerClientV2({ data }: { data: VarslerData }) {
   const venterTall = Math.max(planActions.length, data.ko.planActions - fjernetPlan);
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+    <div data-paper-wave-h="varslerclient" data-paper-pattern  style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
         <Caps>AgencyOS · Varsler</Caps>
         <StatusPill tone={venterTall > 0 ? "warn" : "lime"}>

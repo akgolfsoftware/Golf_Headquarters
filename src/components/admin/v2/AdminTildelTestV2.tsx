@@ -88,7 +88,7 @@ export function AdminTildelTestV2({ data }: { data: AdminTildelTestV2Data }) {
   }
 
   return (
-    <div
+    <div data-paper-wave-h="tildeltest" data-paper-pattern 
       role="dialog"
       aria-modal="true"
       aria-label="Tildel test"

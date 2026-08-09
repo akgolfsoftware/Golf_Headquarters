@@ -197,9 +197,9 @@ export function AdminTalentDiscoveryV2({ data }: { data: TalentDiscoveryV2Data }
   const hode = (
     <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 14, flexWrap: "wrap" }}>
       <div>
-        <Caps>Talent · Discovery · AgencyOS</Caps>
-        <div style={{ marginTop: 10 }}>
-          <Tittel em="talent">Finn nytt</Tittel>
+        <div data-paper-pattern-topp>
+          <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>Talent</h1>
+          <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>Discovery</span>
         </div>
         <p style={{ fontFamily: T.ui, fontSize: 12.5, color: T.mut, lineHeight: 1.55, margin: "10px 0 0", maxWidth: 460 }}>
           Spillere som ennå ikke er i talent-tracking. Søk, filtrer på HCP og
@@ -283,7 +283,7 @@ export function AdminTalentDiscoveryV2({ data }: { data: TalentDiscoveryV2Data }
 
   if (data.kandidater.length === 0) {
     return (
-      <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+      <div data-paper-wave-h="talentdiscovery" data-paper-pattern  style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
         {hode}
         <Kort>
           <TomTilstand

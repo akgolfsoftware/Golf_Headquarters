@@ -118,7 +118,7 @@ export function AdminLiveBriefV2({ data }: { data: AdminLiveBriefV2Data }) {
     return <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>{hode}{kommentarKort}{notaterKort}{start}</div>;
   }
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+    <div data-paper-wave-h="live-brief" data-paper-pattern style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 960, margin: "0 auto", width: "100%" }}>
       {hode}
       <div style={{ display: "grid", gridTemplateColumns: "3fr 2fr", gap: T.gap, alignItems: "start" }}>
         <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>{kommentarKort}</div>

@@ -68,13 +68,13 @@ export function AdminWagrImportV2({ data }: { data: AdminWagrImportV2Data }) {
       : `${data.koblede.length} av ${data.antallSpillere} koblet`;
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+    <div data-paper-wave-h="wagrimport" data-paper-pattern  style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
       <div style={{ display: "flex", flexWrap: "wrap", alignItems: "flex-end", justifyContent: "space-between", gap: 14 }}>
         <div>
-          <Caps>Talent · WAGR-import</Caps>
-          <div style={{ marginTop: 10 }}>
-            <Tittel em="verdensrankingen.">Synk mot</Tittel>
-          </div>
+          <div data-paper-pattern-topp>
+          <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>WAGR-import</h1>
+          <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>AgencyOS</span>
+        </div>
           <p style={{ fontFamily: T.ui, fontSize: 13, lineHeight: 1.55, color: T.mut, margin: "10px 0 0", maxWidth: 560 }}>
             Hent World Amateur Golf Ranking for stallen din. Vi matcher på navn og fødselsdato.
           </p>

@@ -36,7 +36,7 @@ export function AdminCaddieProaktivV2({ forslag }: { forslag: ProaktivtForslag[]
   }
 
   return (
-    <Kort>
+    <div data-paper-wave-h="caddie-proaktiv" data-paper-pattern style={{ display: "contents" }}><Kort>
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, marginBottom: 12, flexWrap: "wrap" }}>
         <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
           <Icon name="sparkles" size={15} style={{ color: T.lime }} />
@@ -87,7 +87,7 @@ export function AdminCaddieProaktivV2({ forslag }: { forslag: ProaktivtForslag[]
           ))}
         </div>
       )}
-    </Kort>
+    </Kort></div>
   );
 }
 

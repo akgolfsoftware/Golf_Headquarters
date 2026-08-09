@@ -277,7 +277,7 @@ export function ModeringClientV2({ saker, historikk, stats, lasteFeil }: AdminSt
   const slett = saker.filter((s) => s.type === "GDPR_SLETTING");
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: T.gap, paddingBottom: 48 }}>
+    <div data-paper-wave-h="statsmoderering" data-paper-pattern  style={{ display: "flex", flexDirection: "column", gap: T.gap, paddingBottom: 48 }}>
       <div style={{ display: "flex", flexWrap: "wrap", alignItems: "flex-end", justifyContent: "space-between", gap: 14 }}>
         <div>
           <Caps>Admin · Stats</Caps>

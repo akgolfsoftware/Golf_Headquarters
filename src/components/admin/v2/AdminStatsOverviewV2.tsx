@@ -99,7 +99,7 @@ function PlausibleCard({ delay, title }: { delay: number; title: string }) {
 
 export function AdminStatsOverviewV2({ data }: { data: AdminStatsOverviewV2Data }) {
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
+    <div data-paper-wave-h="statsoverview" data-paper-pattern  style={{ display: "flex", flexDirection: "column", gap: 4 }}>
       <div style={{ display: "flex", flexWrap: "wrap", alignItems: "flex-end", justifyContent: "space-between", gap: 14, marginBottom: 12 }}>
         <div>
           <Caps>AgencyOS · Stats</Caps>
