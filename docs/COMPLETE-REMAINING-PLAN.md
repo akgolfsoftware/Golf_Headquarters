@@ -291,3 +291,11 @@ Se **`docs/port/AUTONOMOUS-4H-PAPER-2026-08-08.md`**.
 |---|---|
 | 2026-08-08 | Opprettet komplett gjenstående plan (design + alle spor) |
 
+## 13. Oppdatering 2026-08-09 (iPhone 5h autonom)
+
+- Claude Design zip speilet → `designsystem/paper/` (702 filer).
+- P2 booking (slot-hold, policy, coach-colors, metrics) i sandbox; handoff til Mac.
+- Facility-scope helpers + PolicyBanner.
+- Prompt: `docs/port/CLAUDE-DESIGN-PROMPT-FULL-PROSJEKT.md`.
+- Plan: `docs/port/IPHONE-5H-AUTONOMOUS-2026-08-09.md`.
+- fase2 i zip = W1 only; **W2–W6 mangler** → Claude Design.

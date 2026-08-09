@@ -14,6 +14,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { T, Caps, Tittel, Kort, Knapp, TekstOmraade, Icon } from "@/components/v2";
 import { createCreditBooking } from "@/lib/booking/credit-booking";
+import { PolicyBanner } from "@/components/booking/PolicyBanner";
 
 /* ── Datakontrakt (alt serialiserbart — server-pagen eier queries/format) ── */
 
@@ -136,6 +137,7 @@ export function BookingNyBekreftV2({ data }: { data: BookingNyBekreftV2Data }) {
         </form>
       )}
 
+      <PolicyBanner variant="cancel" />
       <p style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 6, fontFamily: T.mono, fontSize: 10, color: T.mut, margin: 0 }}>
         <Icon name="shield" size={12} style={{ color: T.mut }} />
         Gratis avbestilling inntil 24 timer før

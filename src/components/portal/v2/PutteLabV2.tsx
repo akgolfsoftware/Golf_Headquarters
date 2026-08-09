@@ -45,7 +45,7 @@ const PRESETS: { label: string; q: QVals }[] = [
 const KAT = {
   ctrl: T.forest,
   ext: T.warn,
-  mind: T.lime,
+  mind: T.warn, // Paper: unngå lime som kategori på lys flate
 } as const;
 
 const GRESS = {
