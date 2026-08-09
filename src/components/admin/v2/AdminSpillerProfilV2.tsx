@@ -99,7 +99,7 @@ export function AdminSpillerProfilV2({ data, variant = "full" }: { data: AdminSp
 
   // ── Hero (B: én primær Workbench · øvrige ghost) ───────────
   const heroKnapper: { label: string; icon: string; href: string; ghost: boolean }[] = [
-    { label: "Workbench", icon: "layout-dashboard", href: data.wbHref, ghost: false },
+    { label: "Åpne i Workbench", icon: "layout-dashboard", href: data.wbHref, ghost: false },
     { label: "Analyse", icon: "bar-chart", href: data.analyseHref, ghost: true },
     { label: "Melding", icon: "message-circle", href: data.meldingHref, ghost: true },
   ];
@@ -123,7 +123,7 @@ export function AdminSpillerProfilV2({ data, variant = "full" }: { data: AdminSp
               href={b.href}
               style={{ textDecoration: "none", flex: b.ghost ? "none" : 1, minWidth: b.ghost ? 0 : 140 }}
             >
-              <CTAPill icon={b.icon} ghost={b.ghost} full={!b.ghost} enTing={!b.ghost}>
+              <CTAPill icon={b.icon} ghost={b.ghost} full={!b.ghost} enTing={false}>
                 {b.label}
               </CTAPill>
             </Link>

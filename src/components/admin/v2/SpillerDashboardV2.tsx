@@ -285,9 +285,9 @@ export function SpillerDashboardV2({ data }: { data: SpillerDashboardV2Data }) {
   const trengerOppfolging = data.heroBadges.some((b) => b.tone === "down" || b.tone === "warn");
 
   return (
-    <div data-paper-agencyos-spillerprofil style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 960, margin: "0 auto", width: "100%" }}>
+    <div data-paper-agencyos-spillerprofil data-paper-wave-e="spillerprofil" data-od-id="agencyos-spillerprofil" style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 960, margin: "0 auto", width: "100%" }}>
       <div>
-        <TilbakeLenke href="/admin/spillere">Alle spillere</TilbakeLenke>
+        <TilbakeLenke href="/admin/spillere">Tilbake til Spillere</TilbakeLenke>
       </div>
 
       {/* B: identitet først — ingen CTA-rad her (status under, handling etter KPI) */}
@@ -296,7 +296,7 @@ export function SpillerDashboardV2({ data }: { data: SpillerDashboardV2Data }) {
           <AvatarInit navn={p.navn} size={mobile ? 48 : 64} />
           <div style={{ flex: 1, minWidth: mobile ? 160 : 200 }}>
             <div style={{ display: "flex", alignItems: "center", gap: 9, flexWrap: "wrap" }}>
-              <h2 style={{ fontFamily: T.disp, fontWeight: 700, fontSize: mobile ? 21 : 26, letterSpacing: "-0.02em", color: T.fg, margin: 0, lineHeight: 1.1 }}>{p.navn}</h2>
+              <h1 style={{ fontFamily: T.disp, fontWeight: 600, fontSize: 17, letterSpacing: "-0.02em", color: T.fg, margin: 0, lineHeight: 1.2 }}>{p.navn}</h1>
               {data.heroBadges.map((b) => (
                 <StatusPill key={b.label} tone={b.tone}>{b.label}</StatusPill>
               ))}
@@ -374,7 +374,7 @@ export function SpillerDashboardV2({ data }: { data: SpillerDashboardV2Data }) {
       <div style={{ display: "flex", flexWrap: "wrap", gap: 8, alignItems: "center" }}>
         <Link
           href={data.wbHref}
-          data-od-id="spiller-workbench"
+          data-od-id="pp-workbench"
           className="v2-press v2-focus"
           style={{
             textDecoration: "none",
@@ -384,16 +384,17 @@ export function SpillerDashboardV2({ data }: { data: SpillerDashboardV2Data }) {
             justifyContent: "center",
             gap: 8,
             minHeight: 44,
-            padding: "10px 16px",
-            borderRadius: 10,
-            background: T.handling,
-            color: T.onHandling,
+            padding: "10px 18px",
+            borderRadius: 12,
+            /* Paper fasit spillerprofil: .btn.ink (ikke .btn.now clay) */
+            background: T.cta,
+            color: T.onCta,
             fontFamily: T.ui,
             fontSize: 13,
             fontWeight: 600,
           }}
         >
-          {trengerOppfolging ? "Følg opp i Workbench" : "Åpne Workbench"}
+          {trengerOppfolging ? "Følg opp i Workbench" : "Åpne i Workbench"}
         </Link>
         <Link href={data.analyseHref} style={{ textDecoration: "none" }}><CTAPill ghost icon="bar-chart">Analyse</CTAPill></Link>
         <Link href="/admin/innboks" style={{ textDecoration: "none" }}><CTAPill ghost icon="message-circle">Melding</CTAPill></Link>
@@ -483,14 +484,14 @@ export function SpillerDashboardV2({ data }: { data: SpillerDashboardV2Data }) {
                 <div>
                   <div style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 16, color: T.fg }}>{p.plan.navn}</div>
                   <div style={{ fontFamily: T.mono, fontSize: 11, color: T.mut, margin: "6px 0 12px" }}>{p.plan.meta} · {p.plan.pct} % fullført</div>
-                  <Link href={data.wbHref} className="v2-press v2-focus" style={{ textDecoration: "none", display: "inline-flex", alignItems: "center", minHeight: 44, padding: "10px 16px", borderRadius: 10, background: T.handling, color: T.onHandling, fontFamily: T.ui, fontSize: 13, fontWeight: 600 }}>Åpne Workbench</Link>
+                  <Link href={data.wbHref} className="v2-press v2-focus" style={{ textDecoration: "none", display: "inline-flex", alignItems: "center", minHeight: 44, padding: "10px 16px", borderRadius: 12, background: T.cta, color: T.onCta, fontFamily: T.ui, fontSize: 13, fontWeight: 600 }}>Åpne i Workbench</Link>
                 </div>
               ) : (
                 <>
                   <TomTilstand icon="calendar" title="Ingen aktiv plan" sub="Start fra mal i Workbench for å gi spilleren ukentlig program." />
                   <div style={{ display: "flex", justifyContent: "center", marginTop: 4 }}>
                     <Link href={data.wbHref} style={{ textDecoration: "none" }}>
-                      <CTAPill icon="plus">Lag plan i Workbench</CTAPill>
+                      <CTAPill icon="plus" enTing full>Lag plan i Workbench</CTAPill>
                     </Link>
                   </div>
                 </>

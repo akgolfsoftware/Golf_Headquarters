@@ -208,7 +208,7 @@ export function ForelderV2({ data }: { data: ForelderUkerapport }) {
                 {childFirstName} er under 18 og trenger ditt ja for å bruke appen
                 fullt ut. Trening kan fortsette mens du ser gjennom.
               </p>
-              <Knapp icon="arrow-right" onClick={gaaTil("/forelder/samtykke")} style={{ background: T.handling, color: T.onHandling, minHeight: 56, borderRadius: 12 }}>
+              <Knapp icon="arrow-right" enTing full onClick={gaaTil("/forelder/samtykke")}>
                 Gå til samtykke
               </Knapp>
             </div>
@@ -216,7 +216,7 @@ export function ForelderV2({ data }: { data: ForelderUkerapport }) {
         </Kort>
       ) : (
         <div>
-          <Knapp icon="arrow-right" full={mobile} onClick={gaaTil("/forelder/barn")} style={{ background: T.handling, color: T.onHandling, minHeight: 56, borderRadius: 12 }}>
+          <Knapp icon="arrow-right" enTing full={mobile} onClick={gaaTil("/forelder/barn")}>
             Se mer om {childFirstName}
           </Knapp>
         </div>

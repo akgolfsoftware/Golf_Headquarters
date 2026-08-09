@@ -27,7 +27,7 @@
 | **B** | AgencyOS: Konsoll, Innboks, Spillere, Kalender + nav labels | ✅ | ✅ A+B | ❌ | `WAVE-B-STATUS.md` |
 | **C** | Live FØR/UNDER/ETTER, runde live/logg, fangst | ✅ | ✅ komplett | ❌ | `WAVE-C-STATUS.md` |
 | **D** | Workbench, tester, drills, økt, test-gjennomfør | ✅ | ✅ ×2 | ❌ | `WAVE-D-STATUS.md` |
-| **E** | Profil + innboks + forelder | ✅ | ✅ | ❌ | `WAVE-E-STATUS.md` |
+| **E** | Profil + innboks + forelder | ✅ | ✅ | ❌ | `WAVE-E-STATUS.md` + **VALIDATION** |
 | **F** | P2 zip rest (økonomi, innstillinger, AK-stigen, agenticos, turnering WB, feiring, fys/tek plan) | ⬜ | ⬜ | ❌ | — |
 | **G–K** | Pattern-port ~300+ ruter uten fasit | ⬜ delvis (shell) | ⬜ | ❌ | `PAPER-PATTERN-CHECKLIST.md` |
 
