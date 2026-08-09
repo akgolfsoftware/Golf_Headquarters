@@ -251,7 +251,7 @@ export function MarkedJuniorV2() {
             <div style={{ marginTop: 22 }}>
               <a
                 href="mailto:post@akgolf.no?subject=Junior-p%C3%A5melding&body=Hei!%0A%0ANavn%20p%C3%A5%20junior%3A%20%0AAlder%3A%20%0AE-post%20foresatte%3A%20%0ATelefon%3A%20%0A%0AHilsen"
-                style={{ display: "inline-flex", alignItems: "center", gap: 8, fontFamily: T.ui, fontWeight: 600, fontSize: 15, color: T.onLime, background: T.lime, borderRadius: 9999, padding: "14px 28px", textDecoration: "none" }}
+                style={{ display: "inline-flex", alignItems: "center", gap: 8, fontFamily: T.ui, fontWeight: 600, fontSize: 15, color: T.onHandling, background: T.handling, borderRadius: 9999, padding: "14px 28px", textDecoration: "none" }}
               >
                 Send e-post til post@akgolf.no
                 <Icon name="arrow-right" size={15} />

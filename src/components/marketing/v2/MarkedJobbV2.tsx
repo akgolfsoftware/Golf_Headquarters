@@ -201,7 +201,7 @@ export function MarkedJobbV2() {
                 </div>
                 <a
                   href={`mailto:post@akgolf.no?subject=${encodeURIComponent(`Søknad: ${s.tittel}`)}`}
-                  style={{ flex: "none", display: "inline-flex", alignItems: "center", gap: 8, fontFamily: T.ui, fontWeight: 600, fontSize: 13.5, color: T.onLime, background: T.lime, borderRadius: 9999, padding: "12px 22px", textDecoration: "none", whiteSpace: "nowrap" }}
+                  style={{ flex: "none", display: "inline-flex", alignItems: "center", gap: 8, fontFamily: T.ui, fontWeight: 600, fontSize: 13.5, color: T.onHandling, background: T.handling, borderRadius: 9999, padding: "12px 22px", textDecoration: "none", whiteSpace: "nowrap" }}
                 >
                   Søk stilling
                   <Icon name="arrow-right" size={13} />
@@ -225,7 +225,7 @@ export function MarkedJobbV2() {
             </div>
             <a
               href="mailto:post@akgolf.no?subject=Spontansøknad"
-              style={{ flex: "none", display: "inline-flex", alignItems: "center", gap: 8, fontFamily: T.ui, fontWeight: 600, fontSize: 15, color: T.onLime, background: T.lime, borderRadius: 9999, padding: "14px 28px", textDecoration: "none", whiteSpace: "nowrap" }}
+              style={{ flex: "none", display: "inline-flex", alignItems: "center", gap: 8, fontFamily: T.ui, fontWeight: 600, fontSize: 15, color: T.onHandling, background: T.handling, borderRadius: 9999, padding: "14px 28px", textDecoration: "none", whiteSpace: "nowrap" }}
             >
               <Icon name="mail" size={15} />
               Send spontansøknad

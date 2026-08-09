@@ -67,3 +67,10 @@ SPOR C — Masterbrain / putting        SPOR D — Docs + Design-prompt
 | +2h | PuttingFocusBanner på Analysere · putting-signals v1 |
 | +2h | book_cancel metric · fasit zip låst 07.08 |
 
+
+---
+
+## FULLFØRT 2026-08-09 ~17:30 CEST
+
+Se `docs/port/IPHONE-5H-COMPLETE-2026-08-09.md`.
+

@@ -13,6 +13,7 @@ import { loadAnalyticsWorkbenchData } from "@/app/portal/analysere/actions";
 import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
 import { AnalysereV2 } from "@/components/portal/v2/AnalysereV2";
 import { getPlayerDepthMode } from "@/lib/player-depth-mode";
+import { loadPuttingSignalsForUser } from "@/lib/masterbrain/load-putting-signals";
 
 export const dynamic = "force-dynamic";
 
@@ -21,15 +22,16 @@ export default async function V2AnalyserePreviewPage() {
   if (user.role === "GUEST") redirect("/admin/kalender");
   if (user.role === "PARENT") redirect("/forelder");
 
-  const [minGolf, workbench, depthMode] = await Promise.all([
+  const [minGolf, workbench, depthMode, puttingSignals] = await Promise.all([
     loadMinGolf(user.id),
     loadAnalyticsWorkbenchData(user.id),
     getPlayerDepthMode(),
+    loadPuttingSignalsForUser(user.id),
   ]);
 
   return (
     <V2Shell bredde="kolonne" aktiv="analyse" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
-      <AnalysereV2 data={{ minGolf, workbench }} userId={user.id} depthMode={depthMode} />
+      <AnalysereV2 data={{ minGolf, workbench }} userId={user.id} puttingSignals={puttingSignals} depthMode={depthMode} />
     </V2Shell>
   );
 }

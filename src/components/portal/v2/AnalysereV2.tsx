@@ -57,6 +57,7 @@ import {
 } from "@/components/v2";
 import type { HjelpNokkel } from "@/lib/v2/hjelpetekster";
 import { PuttingFocusBanner } from "@/components/portal/v2/PuttingFocusBanner";
+import type { PuttingSignals } from "@/lib/masterbrain/putting-signals";
 
 /** Laveste tenkelige brutto 18-hulls golfscore — under dette er tallet en datafeil,
  *  ikke en ekte runde. Brukt til å vise lasteskjelett i stedet for umulige score-tall. */
@@ -853,6 +854,7 @@ export function AnalysereV2({
   data,
   header,
   userId,
+  puttingSignals,
   depthMode = "simple",
 }: {
   data: AnalysereData;
@@ -862,6 +864,8 @@ export function AnalysereV2({
   /** Spilleren analysen gjelder — Trening-fanen henter historikk for denne.
    *  Coach-speilet sender spillerens id, ikke coachens. */
   userId: string;
+  /** Putting brain signals — optional, honest nulls ok. */
+  puttingSignals?: PuttingSignals | null;
   /** Simple/Deep progressive disclosure — TrackMan-fane kun i deep. */
   depthMode?: "simple" | "deep";
 }) {
@@ -939,7 +943,7 @@ export function AnalysereV2({
       )}
 
       <div style={{ padding: "12px 16px 0", maxWidth: 720, width: "100%", margin: "0 auto", boxSizing: "border-box" }}>
-        <PuttingFocusBanner />
+        <PuttingFocusBanner signals={puttingSignals} />
       </div>
 
       <div

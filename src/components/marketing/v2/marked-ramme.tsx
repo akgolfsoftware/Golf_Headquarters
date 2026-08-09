@@ -137,7 +137,7 @@ export function MMobilMeny({ aktiv }: { aktiv: string }) {
               href="/auth/signup"
               onClick={() => setOpen(false)}
               className="v2-press"
-              style={{ display: "flex", alignItems: "center", justifyContent: "center", fontFamily: T.ui, fontSize: 15, fontWeight: 600, color: T.onLime, background: T.lime, borderRadius: 9999, padding: "14px 28px", textDecoration: "none" }}
+              style={{ display: "flex", alignItems: "center", justifyContent: "center", fontFamily: T.ui, fontSize: 15, fontWeight: 600, color: T.onHandling, background: T.handling, borderRadius: 9999, padding: "14px 28px", textDecoration: "none" }}
             >
               Kom i gang gratis
             </Link>

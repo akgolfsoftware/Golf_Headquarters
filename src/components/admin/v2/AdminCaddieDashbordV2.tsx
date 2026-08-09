@@ -66,7 +66,7 @@ function DraftPanelV2({ draft }: { draft: CoAgentDraft }) {
   if (!draft) {
     return (
       <Kort>
-        <TomTilstand icon="check" title="Ingen utkast venter" sub="Når en co-agent foreslår en endring, dukker den opp her med kildebruk, diff og tre valg: godkjenn, rediger eller avvis." />
+        <TomTilstand icon="check" title="Ingen utkast venter" sub="Co-agent foreslår kun endringer fra ekte data og godkjent drill-bank. Tom bank = ingen drill-forslag. Når noe venter: godkjenn, rediger eller avvis." />
       </Kort>
     );
   }
