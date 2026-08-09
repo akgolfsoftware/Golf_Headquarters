@@ -318,7 +318,7 @@ export function AdminCaddieAktivitetV2({
                           leading={
                             <span
                               aria-hidden
-                              style={{ width: 28, height: 28, flex: "none", borderRadius: 9999, display: "inline-flex", alignItems: "center", justifyContent: "center", fontFamily: T.mono, fontSize: 10, fontWeight: 700, color: T.onForest, background: avatarBg(ev.playerName) }}
+                              style={{ width: 28, height: 28, flex: "none", borderRadius: 9999, display: "inline-flex", alignItems: "center", justifyContent: "center", fontFamily: T.mono, fontSize: 10, fontWeight: 700, color: T.onCta, background: avatarBg(ev.playerName) }}
                             >
                               {ev.playerInitials}
                             </span>
@@ -373,7 +373,7 @@ export function AdminCaddieAktivitetV2({
 
         {/* Rail */}
         <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
-          <Kort style={{ background: T.forest }}>
+          <Kort style={{ background: T.cta }}>
             <Caps size={9} color={T.lime}>I dag · nøkkeltall</Caps>
             <div style={{ marginTop: 8 }}>
               <NokkeltallRad k="Forslag totalt" v={String(stats.total)} />
@@ -397,7 +397,7 @@ export function AdminCaddieAktivitetV2({
                     leading={
                       <span
                         aria-hidden
-                        style={{ width: 26, height: 26, flex: "none", borderRadius: 9999, display: "inline-flex", alignItems: "center", justifyContent: "center", fontFamily: T.mono, fontSize: 10, fontWeight: 700, color: T.onForest, background: avatarBg(p.name) }}
+                        style={{ width: 26, height: 26, flex: "none", borderRadius: 9999, display: "inline-flex", alignItems: "center", justifyContent: "center", fontFamily: T.mono, fontSize: 10, fontWeight: 700, color: T.onCta, background: avatarBg(p.name) }}
                       >
                         {p.initials}
                       </span>

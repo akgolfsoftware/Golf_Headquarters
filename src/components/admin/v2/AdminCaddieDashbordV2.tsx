@@ -145,7 +145,7 @@ function DraftPanelV2({ draft }: { draft: CoAgentDraft }) {
 
         {/* handlinger */}
         <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 9, borderRadius: 12, background: T.forest, padding: "9px 11px" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 9, borderRadius: 12, background: T.cta, padding: "9px 11px" }}>
             <span style={{ width: 26, height: 26, borderRadius: 9999, background: T.lime, color: T.onLime, display: "inline-flex", alignItems: "center", justifyContent: "center", fontFamily: T.disp, fontWeight: 700, fontSize: 11 }}>
               {draft.agentInitials}
             </span>

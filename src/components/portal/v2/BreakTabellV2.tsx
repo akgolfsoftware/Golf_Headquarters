@@ -136,7 +136,7 @@ function LenBlock({ L, foot }: { L: C.LenEntry; foot: string }) {
 function RefCard() {
   return (
     <div style={{ border: `1px solid ${T.border}`, borderRadius: 12, overflow: "hidden", background: T.panel2, display: "flex", flexDirection: "column" }}>
-      <div style={{ display: "flex", alignItems: "center", gap: 8, padding: "9px 14px", background: T.forest, borderBottom: `3px solid ${T.lime}` }}>
+      <div style={{ display: "flex", alignItems: "center", gap: 8, padding: "9px 14px", background: T.cta, borderBottom: `3px solid ${T.lime}` }}>
         <Icon name="ruler" size={14} style={{ color: T.lime }} />
         <span style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 14.5, color: T.farge.hvitA95 }}>Referanse</span>
       </div>
@@ -223,7 +223,7 @@ function KalkulatorView() {
           </div>
 
           {/* Svar-panel */}
-          <div style={{ background: T.forest, borderRadius: 16, padding: 22, display: "flex", flexDirection: "column", position: "relative", overflow: "hidden" }}>
+          <div style={{ background: T.cta, borderRadius: 16, padding: 22, display: "flex", flexDirection: "column", position: "relative", overflow: "hidden" }}>
             <Caps size={10} color={T.handling}>Sikt utenfor hullet</Caps>
             <div style={{ fontFamily: T.mono, fontWeight: 700, lineHeight: 0.9, letterSpacing: "-0.04em", fontSize: 76, color: T.farge.hvitA96, fontVariantNumeric: "tabular-nums", marginTop: 10 }}>
               {adj}

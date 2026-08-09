@@ -55,7 +55,7 @@ export function AdminSlettSpillerKnappV2({ spillerId, spillerNavn }: { spillerId
             {error && <p style={{ marginTop: 10, fontSize: 13, color: T.down }}>{error}</p>}
             <div style={{ display: "flex", justifyContent: "flex-end", gap: 8, marginTop: 20 }}>
               <Knapp ghost disabled={pending} onClick={() => setOpen(false)}>Avbryt</Knapp>
-              <Knapp disabled={pending} onClick={bekreftSlett} style={{ background: T.down, color: T.onForest }}>
+              <Knapp disabled={pending} onClick={bekreftSlett} style={{ background: T.down, color: T.onCta }}>
                 {pending ? "Sletter…" : "Slett spiller"}
               </Knapp>
             </div>
