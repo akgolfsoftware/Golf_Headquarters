@@ -23,8 +23,8 @@ export type AgencyHubTab = {
 
 /** Primær «Kø» — alt som krever handling / oppmerksomhet. */
 export const KO_HUB_TABS: AgencyHubTab[] = [
-  { href: "/admin/godkjenninger", label: "AI" },
-  { href: "/admin/innboks", label: "Meldinger" },
+  { href: "/admin/innboks", label: "Innboks", exact: true },
+  { href: "/admin/godkjenninger", label: "Godkjenning" },
   { href: "/admin/varsler", label: "Varsler" },
   { href: "/admin/queue", label: "Oppfølging" },
   { href: "/admin/handlingssenter", label: "Oppgaver" },
@@ -93,10 +93,12 @@ export function AgencyHubSubNav({
               fontSize: 13,
               fontWeight: 600,
               padding: "8px 15px",
+              minHeight: 44,
               borderRadius: 9999,
-              color: aktiv ? T.onLime : T.fg2,
-              background: aktiv ? T.lime : T.panel2,
-              border: `1px solid ${aktiv ? "transparent" : T.border}`,
+              color: aktiv ? T.fg : T.fg2,
+              background: aktiv ? T.panel : T.panel2,
+              border: `1px solid ${aktiv ? T.fg : T.border}`,
+              boxShadow: aktiv ? `inset 0 -2px 0 ${T.handling}` : undefined,
               whiteSpace: "nowrap",
               textDecoration: "none",
               flex: "none",
