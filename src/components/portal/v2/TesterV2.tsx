@@ -375,18 +375,16 @@ export function TesterV2({ data }: { data: TesterV2Data }) {
       : `Tester · ${data.playerName}`;
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+    <div data-paper-wave-d="tester" data-od-id="playerhq-tester" style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
       <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
         <div>
-          <Caps>{undertittel}</Caps>
-          <div style={{ marginTop: 10 }}>
-            <Tittel mobile={mobile} em="scorekort">Ditt test-</Tittel>
-          </div>
+          <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>Tester</h1>
+          <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>{undertittel}</span>
         </div>
         <Link href="/portal/tren/tester/ny" style={{ textDecoration: "none", display: "block", width: "100%", maxWidth: 280 }}>
-          <button type="button" className="v2-press v2-focus" style={{
+          <button type="button" data-paper-en-ting="true" className="v2-press v2-focus" style={{
               display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
-              minHeight: 48, width: "100%", borderRadius: 10, border: "none",
+              minHeight: 56, width: "100%", borderRadius: 12, border: "none",
               background: T.handling, color: T.onHandling, fontFamily: T.ui, fontSize: 14, fontWeight: 600, cursor: "pointer",
             }}>Registrer test
           </button>

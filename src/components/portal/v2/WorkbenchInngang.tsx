@@ -23,14 +23,14 @@ export function WorkbenchInngang() {
               height: 38,
               borderRadius: 12,
               flex: "none",
-              background: `color-mix(in srgb, ${T.lime} 10%, transparent)`,
+              background: `color-mix(in srgb, ${T.handling} 12%, transparent)`,
               border: `1px solid ${T.border}`,
               display: "inline-flex",
               alignItems: "center",
               justifyContent: "center",
             }}
           >
-            <Icon name="calendar" size={17} style={{ color: T.lime }} />
+            <Icon name="calendar" size={17} style={{ color: T.handling }} />
           </span>
           <div style={{ flex: 1, minWidth: 0 }}>
             <div style={{ fontFamily: T.ui, fontSize: 13.5, fontWeight: 600, color: T.fg }}>Åpne Workbench</div>

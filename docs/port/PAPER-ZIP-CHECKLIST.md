@@ -31,10 +31,10 @@
 - [~] `playerhq-plan.html` — wave A port (ikke pixel sign-off) — wave A topp/dokk enTing
 - [~] `playerhq-runde-live.html` — wave C port (ikke pixel sign-off)
 - [~] `playerhq-runde-logg.html` — wave C port (ikke pixel sign-off)
-- [ ] `playerhq-test-gjennomfor.html` — m390 — d1280 — screenshot
+- [~] `playerhq-test-gjennomfor.html` — wave D port (ikke pixel sign-off)
 - [ ] `spillerprofil.html` — m390 — d1280 — screenshot
-- [ ] `workbench-desktop.html` — m390 — d1280 — screenshot
-- [ ] `workbench-mobil.html` — m390 — d1280 — screenshot
+- [~] `workbench-desktop.html` — wave D port (ikke pixel sign-off)
+- [~] `workbench-mobil.html` — wave D port (ikke pixel sign-off)
 - [ ] `workbench-turnering.html` — m390 — d1280 — screenshot
 
 ## Fase 2 W1

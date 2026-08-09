@@ -2072,9 +2072,9 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions, w
       onDragEnd={handleWbDragEnd}
       onDragCancel={() => setActiveDrag(null)}
     >
-    <div data-paper-workbench style={{ display: "flex", flexDirection: "column", gap: T.gap, position: "relative", maxWidth: 1200, margin: "0 auto", width: "100%" }}>
+    <div data-paper-workbench data-paper-wave-d="workbench" data-od-id="workbench" style={{ display: "flex", flexDirection: "column", gap: T.gap, position: "relative", maxWidth: 1200, margin: "0 auto", width: "100%" }}>
       {visColdstartTips && (
-        <Kort pad="12px 14px" style={{ border: `1px solid color-mix(in srgb, ${T.lime} 28%, ${T.border})` }}>
+        <Kort pad="12px 14px" style={{ border: `1px solid color-mix(in srgb, ${T.handling} 28%, ${T.border})` }}>
           <div style={{ display: "flex", alignItems: "flex-start", gap: 12, flexWrap: "wrap" }}>
             <div style={{ flex: 1, minWidth: 200 }}>
               <Caps size={9}>Kom i gang · {playerName.split(" ")[0]}</Caps>
@@ -2227,15 +2227,15 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions, w
           minHeight: 60,
           padding: "10px 0 14px",
           borderBottom: `1px solid ${T.border}`,
-          background: `linear-gradient(140deg, color-mix(in srgb, ${T.forest} 12%, transparent) 0%, transparent 55%)`,
+          background: T.bg,
         }}
       >
         <div style={{ minWidth: 0 }}>
-          <span style={{ fontFamily: T.mono, fontSize: 8, fontWeight: 700, letterSpacing: "0.16em", textTransform: "uppercase", color: T.mut, display: "block" }}>
-            {role === "player" ? "PlayerHQ · Workbench" : "AgencyOS · Workbench"}
+          <h1 style={{ margin: 0, fontFamily: T.disp, fontWeight: 600, fontSize: 17, color: T.fg, letterSpacing: "-0.02em" }}>Workbench</h1>
+          <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>
+            {playerName} · {role === "player" ? "PlayerHQ" : "AgencyOS"}
           </span>
-          <div style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 17, color: T.fg, letterSpacing: "-0.02em", margin: "3px 0 6px" }}>{playerName}</div>
-          <StatusPill tone={st.tone}>{st.l}</StatusPill>
+          <div style={{ marginTop: 6 }}><StatusPill tone={st.tone}>{st.l}</StatusPill></div>
         </div>
         <Felt label="Zoom"><PillVelger options={zoomOptions} value={nivaa} onChange={setNivaa} /></Felt>
         <Felt label="Modus">
@@ -2264,7 +2264,7 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions, w
           )}
           {actions &&
             !(role === "player" && (optimisticStatus ?? planStatus) === "PENDING_PLAYER") && (
-            <Knapp icon="send" onClick={handlePublish} disabled={pubLoading} style={{ background: T.handling, color: T.onHandling }}>{pubLoading ? "Publiserer…" : "Publiser"}</Knapp>
+            <Knapp icon="send" onClick={handlePublish} disabled={pubLoading} style={{ background: T.handling, color: T.onHandling, minHeight: 44, borderRadius: 12 }} data-paper-en-ting="true">{pubLoading ? "Publiserer…" : "Publiser"}</Knapp>
           )}
         </div>
       </div>
@@ -2273,9 +2273,9 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions, w
       <div className="flex md:hidden" style={{ flexDirection: "column", gap: 10, paddingBottom: 14, borderBottom: `1px solid ${T.border}` }}>
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10 }}>
           <div style={{ minWidth: 0, flex: 1 }}>
-            <span style={{ fontFamily: T.mono, fontSize: 8, fontWeight: 700, letterSpacing: "0.16em", textTransform: "uppercase", color: T.mut, display: "block" }}>Workbench</span>
-            <div style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 3, minWidth: 0 }}>
-              <span style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 16, color: T.fg, letterSpacing: "-0.02em", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{playerName}</span>
+            <h1 style={{ margin: 0, fontFamily: T.disp, fontWeight: 600, fontSize: 17, color: T.fg }}>Workbench</h1>
+            <div style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 2, minWidth: 0 }}>
+              <span style={{ fontFamily: T.mono, fontSize: 10.5, color: T.mut, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{playerName}</span>
               <StatusPill tone={st.tone}>{st.l}</StatusPill>
             </div>
           </div>

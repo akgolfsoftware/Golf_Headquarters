@@ -36,9 +36,10 @@ function kategoriHref(kat: string, q: string): string {
   return qs ? `/admin/drills?${qs}` : "/admin/drills";
 }
 
+/** Wave D Paper chrome */
 export function AdminDrillsV2({ data }: { data: AdminDrillsV2Data }) {
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+    <div data-paper-wave-d="admin-drills" style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
       <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 14, flexWrap: "wrap" }}>
         <div>
           <Caps>Planlegge · Drill-bibliotek · AgencyOS</Caps>

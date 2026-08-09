@@ -128,7 +128,7 @@ export function AdminTesterV2({ data }: { data: AdminTesterV2Data }) {
     >
       <div>
         <Caps>Analysere · Tester · AgencyOS</Caps>
-        <div style={{ marginTop: 10 }}>
+        <div data-paper-wave-d="admin-tester" style={{ marginTop: 10 }}>
           <Tittel em="tester." mobile={mobile}>Stallens</Tittel>
         </div>
       </div>

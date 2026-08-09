@@ -50,7 +50,7 @@ function DrillPrikk({ status }: { status: OktDrill["status"] }) {
   const bg = done
     ? `color-mix(in srgb,${T.up} 12%,transparent)`
     : naa
-      ? `color-mix(in srgb,${T.lime} 12%,transparent)`
+      ? `color-mix(in srgb,${T.handling} 12%,transparent)`
       : T.panel2;
   return (
     <span
@@ -63,7 +63,7 @@ function DrillPrikk({ status }: { status: OktDrill["status"] }) {
       <Icon
         name={done ? "check" : naa ? "play" : "circle"}
         size={13}
-        style={{ color: done ? T.up : naa ? T.lime : T.mut }}
+        style={{ color: done ? T.up : naa ? T.handling : T.mut }}
       />
     </span>
   );
@@ -99,13 +99,16 @@ export function OktV2({ data, onSettPyramide }: { data: OktDetaljData; onSettPyr
   }
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
-      {/* Hode */}
+    <div data-paper-wave-d="okt" data-od-id="playerhq-okt-detalj" data-paper-portal-okt-detalj style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
+      {/* Hode — Paper .topp */}
       <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
         <div>
-          <Caps>{`${data.datoTekst} · ${data.tidTekst} · ${data.sted}`}</Caps>
-          <div style={{ marginTop: 10 }}>
-            <Tittel mobile={mobile} em={data.emTittel}>{data.pyramide} ·</Tittel>
+          <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>Økt</h1>
+          <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>
+            {data.datoTekst} · {data.tidTekst} · {data.sted}
+          </span>
+          <div style={{ marginTop: 8, fontFamily: T.disp, fontSize: 15, fontWeight: 600, color: T.fg }}>
+            {data.tittel}
           </div>
         </div>
         {!data.kanStarte && (
@@ -125,15 +128,16 @@ export function OktV2({ data, onSettPyramide }: { data: OktDetaljData; onSettPyr
             alignItems: "center",
             justifyContent: "center",
             gap: 8,
-            minHeight: 48,
+            minHeight: 56,
             width: "100%",
-            borderRadius: 10,
+            borderRadius: 12,
             background: T.handling,
             color: T.onHandling,
             fontFamily: T.ui,
             fontSize: 14,
             fontWeight: 600,
           }}
+          data-paper-en-ting="true"
         >
           {data.startLabel}
         </Link>

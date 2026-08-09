@@ -226,6 +226,7 @@ export function NyTestEgenV2({ rolle }: Props) {
   }
 
   return (
+    // wave-d
     <div style={{ maxWidth: 720, width: "100%", margin: "0 auto", display: "flex", flexDirection: "column", gap: T.gap }}>
       <ProgresjonsBar
         variant="segment"

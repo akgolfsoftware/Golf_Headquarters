@@ -622,7 +622,7 @@ function DetaljPanel({ o, mobile, onLukk }: { o: DrillDetail; mobile?: boolean; 
             width: "100%",
             borderRadius: 10,
             border: "none",
-            background: T.handling,
+            background: T.handling, borderRadius: 12, minHeight: 48,
             color: T.onHandling,
             fontFamily: T.ui,
             fontSize: 14,
@@ -831,16 +831,12 @@ export function OvelsesbankV2({ data }: { data: DrillDetail[] }) {
   const tomBank = data.length === 0;
 
   const hode = (
-    <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
+    <div data-paper-wave-d="drills" style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
       <div>
-        <Caps>
+        <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>Drills</h1>
+        <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>
           Bibliotek · {data.length} {data.length === 1 ? "øvelse" : "øvelser"}
-        </Caps>
-        <div style={{ marginTop: 10 }}>
-          <Tittel mobile={mobile} em="øvelsesbank">
-            Din
-          </Tittel>
-        </div>
+        </span>
       </div>
     </div>
   );
@@ -879,7 +875,7 @@ export function OvelsesbankV2({ data }: { data: DrillDetail[] }) {
                       minHeight: 48,
                       width: "100%",
                       borderRadius: 10,
-                      background: T.handling,
+                      background: T.handling, borderRadius: 12, minHeight: 48,
                       color: T.onHandling,
                       fontFamily: T.ui,
                       fontSize: 14,

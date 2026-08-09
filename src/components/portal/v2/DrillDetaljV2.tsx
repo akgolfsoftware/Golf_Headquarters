@@ -75,13 +75,11 @@ export function DrillDetaljV2({ data }: { data: DrillDetaljV2Data }) {
   const harCsMeta = data.meta.some((m) => m.text.toUpperCase().includes("CS"));
 
   return (
-    <div style={{ maxWidth: 720, width: "100%", margin: "0 auto", display: "flex", flexDirection: "column", gap: T.gap }}>
+    <div data-paper-wave-d="drill-detalj" data-od-id="playerhq-drill-detalj" style={{ maxWidth: 720, width: "100%", margin: "0 auto", display: "flex", flexDirection: "column", gap: T.gap }}>
       {/* Header */}
       <div>
-        <Caps>{data.eyebrow}</Caps>
-        <div style={{ marginTop: 10 }}>
-          <Tittel>{data.navn}</Tittel>
-        </div>
+        <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>{data.navn}</h1>
+        <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>{data.eyebrow}</span>
         <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap", marginTop: 12 }}>
           <AkseChip a={data.akse} />
           {data.meta.map((m, i) => (
@@ -103,15 +101,16 @@ export function DrillDetaljV2({ data }: { data: DrillDetaljV2Data }) {
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          minHeight: 48,
+          minHeight: 56,
           width: "100%",
-          borderRadius: 10,
+          borderRadius: 12,
           background: T.handling,
           color: T.onHandling,
           fontFamily: T.ui,
           fontSize: 14,
           fontWeight: 600,
         }}
+        data-paper-en-ting="true"
       >
         Legg i neste økt
       </Link>
