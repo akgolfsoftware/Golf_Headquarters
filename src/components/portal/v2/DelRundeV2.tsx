@@ -118,16 +118,15 @@ export function DelRundeV2({ runde, spiller }: DelRundeV2Props) {
   const scoreSize = format === "story" ? 84 : format === "post" ? 72 : 56;
 
   return (
-    <>
+    <div data-paper-wave-g="del-runde" data-paper-pattern style={{ maxWidth: 720, margin: "0 auto", width: "100%", display: "flex", flexDirection: "column", gap: T.gap }}>
       {/* Topptekst */}
       <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 12 }}>
         <div>
-          <Caps>PlayerHQ · Statistikk · Del runde</Caps>
-          <div style={{ marginTop: 6 }}>
-            <div data-paper-pattern-topp>
-        <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>Del runde</h1>
-        <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>Format og synlighet</span>
-      </div>
+          <div data-paper-pattern-topp>
+            <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>Del runde</h1>
+            <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>
+              Format og synlighet
+            </span>
           </div>
           <p style={{ fontFamily: T.mono, fontSize: 11, color: T.mut, margin: "8px 0 0" }}>
             <span style={{ color: T.fg, fontWeight: 700 }}>{runde.kursNavn}</span>
@@ -387,6 +386,6 @@ export function DelRundeV2({ runde, spiller }: DelRundeV2Props) {
           Lenke kopiert
         </div>
       )}
-    </>
+    </div>
   );
 }
