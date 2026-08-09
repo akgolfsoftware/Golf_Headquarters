@@ -1,6 +1,30 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "ignoreCommand": "git diff --quiet HEAD^ HEAD -- ':!*.md' ':!docs/' ':!.claude/' ':!designsystem/' ':!kart/'",
+  "redirects": [
+    {
+      "source": "/((?!api/).*)",
+      "has": [
+        {
+          "type": "host",
+          "value": "akgolf.no"
+        }
+      ],
+      "destination": "https://akgolfgroup.as.me/",
+      "permanent": false
+    },
+    {
+      "source": "/((?!api/).*)",
+      "has": [
+        {
+          "type": "host",
+          "value": "www.akgolf.no"
+        }
+      ],
+      "destination": "https://akgolfgroup.as.me/",
+      "permanent": false
+    }
+  ],
   "crons": [
     {
       "path": "/api/cron/plan-watcher",
