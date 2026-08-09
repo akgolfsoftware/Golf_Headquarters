@@ -58,16 +58,24 @@ export function LiveBrief({ data, canStart, blockReason }: LiveBriefProps) {
     <Link
       href={`/portal/live/${data.sessionId}/active`}
       data-od-id="brief-start"
-      className="flex h-12 w-full items-center justify-center gap-2 rounded-[10px] font-sans text-[14px] font-semibold active:scale-[0.98]"
-      style={{ background: T.handling, color: T.onHandling, textDecoration: "none" }}
+      data-paper-en-ting="true"
+      className="flex w-full items-center justify-center gap-2 font-sans text-[14px] font-semibold active:scale-[0.98] v2-press"
+      style={{
+        background: T.handling,
+        color: T.onHandling,
+        textDecoration: "none",
+        minHeight: 56,
+        borderRadius: 12,
+        border: `1px solid ${T.handling}`,
+      }}
     >
       <Play className="h-[17px] w-[17px]" fill="currentColor" strokeWidth={0} aria-hidden />
-      START ØKT
+      Start økta
     </Link>
   ) : (
     <div
-      className="flex h-12 w-full items-center justify-center gap-2 rounded-[10px] font-sans text-[14px] font-semibold"
-      style={{ border: `1px solid ${T.border}`, background: T.panel2, color: T.mut }}
+      className="flex w-full items-center justify-center gap-2 font-sans text-[14px] font-semibold"
+      style={{ border: `1px solid ${T.border}`, background: T.panel2, color: T.mut, minHeight: 56, borderRadius: 12 }}
     >
       {blockReason === "completed" ? (
         <>
@@ -86,6 +94,10 @@ export function LiveBrief({ data, canStart, blockReason }: LiveBriefProps) {
   return (
     <LiveSessionShell
       variant="paper"
+      odId="playerhq-live-brief"
+      title="Før økta"
+      subtitle={formatDateTimeEyebrow(data.scheduledAtISO)}
+      backHref="/portal/planlegge"
       closeHref="/portal/planlegge"
       footer={startButton}
     >
@@ -98,7 +110,7 @@ export function LiveBrief({ data, canStart, blockReason }: LiveBriefProps) {
 
         {/* Title + akse-chip */}
         <div className="mt-3 flex items-start justify-between gap-3">
-          <h1 className="font-display text-[22px] font-semibold leading-[1.15] -tracking-[0.02em]" style={{ color: T.fg }}>
+          <h1 className="font-display text-[18px] font-semibold leading-[1.15] -tracking-[0.02em]" style={{ color: T.fg }}>
             {data.title}{" "}
             {data.studentName && (
               <em className="font-medium not-italic" style={{ color: T.handling }}>

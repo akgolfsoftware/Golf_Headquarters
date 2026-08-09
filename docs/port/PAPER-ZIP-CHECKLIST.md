@@ -12,7 +12,7 @@
 - [~] `agencyos-kalender.html` — wave B port (ikke pixel sign-off)
 - [~] `agencyos-konsoll-desktop.html` — wave B port (ikke pixel sign-off)
 - [~] `agencyos-konsoll-mobil.html` — wave B port (ikke pixel sign-off)
-- [ ] `agencyos-live-session.html` — m390 — d1280 — screenshot
+- [~] `agencyos-live-session.html` — wave C port (ikke pixel sign-off)
 - [ ] `agencyos-okonomi.html` — m390 — d1280 — screenshot
 - [~] `agencyos-spillere-mobil.html` — wave B port (ikke pixel sign-off)
 - [~] `agencyos-spillere.html` — wave B port (ikke pixel sign-off)
@@ -24,13 +24,13 @@
 - [~] `playerhq-booking.html` — wave A port (ikke pixel sign-off) — wave A Book time enTing
 - [~] `playerhq-chat-desktop.html` — wave A port (ikke pixel sign-off) — wave A loop markers
 - [~] `playerhq-chat-mobil.html` — wave A port (ikke pixel sign-off) — wave A loop markers
-- [ ] `playerhq-live-brief.html` — m390 — d1280 — screenshot
-- [ ] `playerhq-live-okt.html` — m390 — d1280 — screenshot
-- [ ] `playerhq-live-summary.html` — m390 — d1280 — screenshot
+- [~] `playerhq-live-brief.html` — wave C port (ikke pixel sign-off)
+- [~] `playerhq-live-okt.html` — wave C port (ikke pixel sign-off)
+- [~] `playerhq-live-summary.html` — wave C port (ikke pixel sign-off)
 - [~] `playerhq-meg.html` — wave A port (ikke pixel sign-off) — wave A PaperChrome
 - [~] `playerhq-plan.html` — wave A port (ikke pixel sign-off) — wave A topp/dokk enTing
-- [ ] `playerhq-runde-live.html` — m390 — d1280 — screenshot
-- [ ] `playerhq-runde-logg.html` — m390 — d1280 — screenshot
+- [~] `playerhq-runde-live.html` — wave C port (ikke pixel sign-off)
+- [~] `playerhq-runde-logg.html` — wave C port (ikke pixel sign-off)
 - [ ] `playerhq-test-gjennomfor.html` — m390 — d1280 — screenshot
 - [ ] `spillerprofil.html` — m390 — d1280 — screenshot
 - [ ] `workbench-desktop.html` — m390 — d1280 — screenshot

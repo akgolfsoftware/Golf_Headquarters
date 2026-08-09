@@ -37,6 +37,7 @@ export function FangstModal({
         role="dialog"
         aria-modal="true"
         aria-labelledby="fangst-tittel"
+        data-paper-wave-c="fangst"
         style={{
           position: "fixed",
           left: "50%",
@@ -137,6 +138,8 @@ export function FangstModal({
                 borderRadius: T.rTag,
                 border: "none",
                 background: kanSende ? T.handling : T.panel3,
+                minHeight: 48,
+                borderRadius: 12,
                 color: kanSende ? T.onHandling : T.mut,
                 fontFamily: T.ui,
                 fontSize: 13,

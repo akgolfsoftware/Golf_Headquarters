@@ -91,7 +91,7 @@ function ConfirmOverlay({ show, onConfirm, onCancel }: ConfirmOverlayProps) {
             onClick={onConfirm}
             data-od-id="live-avslutt"
             className="w-full rounded-[10px] py-[14px] font-sans text-[14px] font-semibold"
-            style={{ background: T.handling, color: T.onHandling, minHeight: 48, border: "none" }}
+            style={{ background: T.handling, color: T.onHandling, minHeight: 56, borderRadius: 12, border: "none" }} data-paper-en-ting="true"
           >
             Avslutt og lagre
           </button>
@@ -498,7 +498,7 @@ export function LiveActive({ data, coachPanel }: { data: LiveV2Session; coachPan
   if (showDrillLogger && active && activeState) {
     return (
       <div
-        className="fixed inset-0 z-50 flex flex-col"
+        className="fixed inset-0 z-50 flex flex-col" data-paper-wave-c="live-active"
         style={{ background: LIVE_BG_GRADIENT }}
       >
         {/* Mini topbar for logger-overlay */}
@@ -749,7 +749,7 @@ export function LiveActive({ data, coachPanel }: { data: LiveV2Session; coachPan
             onClick={() => setShowConfirm(true)}
             data-od-id="live-avslutt"
             className="w-full rounded-[10px] border-none py-3.5 font-sans text-[14px] font-semibold active:scale-[0.98]"
-            style={{ background: T.handling, color: T.onHandling, minHeight: 48 }}
+            style={{ background: T.handling, color: T.onHandling, minHeight: 56, borderRadius: 12 }} data-paper-en-ting="true"
           >
             Avslutt og logg økta
           </button>

@@ -96,7 +96,7 @@ export default async function LiveSummaryPage({
   const nesteOkt = nesteOktTekst(okt, href, naa);
 
   return (
-    <LiveSessionShell title={data.title} subtitle="Oppsummering" closeHref="/portal/planlegge">
+    <LiveSessionShell odId="playerhq-live-summary" title="Etter økta" subtitle={data.title} backHref={`/portal/live/${sessionId}/active`} closeHref="/portal/planlegge">
       <SessionSummary
         data={summaryData}
         nesteOkt={nesteOkt}

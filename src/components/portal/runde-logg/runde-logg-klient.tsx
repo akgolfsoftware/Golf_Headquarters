@@ -224,37 +224,41 @@ export function RundeLoggKlient({ modus, baner }: RundeLoggKlientProps) {
   // Lukk (tilbake til runde-lista) — kladden består.
   const lukk = () => router.push("/portal/mal/runder");
 
+  const rundeTittel = modus === "live" ? "Runde · live" : "Logg en runde";
+  const rundeSub = oppsett
+    ? `${oppsett.courseNavn}`
+    : modus === "live"
+      ? "På banen · slag for slag"
+      : "Etterregistrering · brutto";
+
   return (
     <div
       data-paper-portal-runde-live={modus === "live" ? true : undefined}
       data-paper-portal-runde-logg={modus === "etterpaa" ? true : undefined}
-      style={{ minHeight: "100dvh", background: T.bg }}
+      data-paper-wave-c="runde"
+      style={{ minHeight: "100dvh", background: T.bg, color: T.fg, fontFamily: T.ui }}
     >
-      {/* safe-area-top: fullskjerm-flate uten shell — topplinja må ikke kollidere
-          med iOS-statusbaren (klokke/batteri) i PWA-modus. */}
-      <div style={{ maxWidth: 720, margin: "0 auto", padding: "calc(14px + env(safe-area-inset-top)) 16px 32px" }}>
-        {/* Topplinje */}
-        <div
+      {/* Paper .topp — fasit playerhq-runde-live/logg.html */}
+      <div style={{ maxWidth: 720, margin: "0 auto", padding: "0 16px 32px", paddingTop: "calc(12px + env(safe-area-inset-top))" }}>
+        <header
+          data-paper-topp
           style={{
             display: "flex",
             alignItems: "center",
-            justifyContent: "space-between",
+            gap: 8,
             marginBottom: 14,
+            paddingBottom: 12,
+            borderBottom: `1px solid ${T.border}`,
           }}
         >
-          <span
-            style={{
-              fontFamily: T.mono,
-              fontSize: 10,
-              fontWeight: 700,
-              letterSpacing: "0.1em",
-              textTransform: "uppercase",
-              color: T.mut,
-            }}
-          >
-            {modus === "live" ? "Live-føring" : "Etterregistrering"}
-            {oppsett ? ` · ${oppsett.courseNavn}` : ""}
-          </span>
+          <div style={{ minWidth: 0, flex: 1 }}>
+            <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>
+              {rundeTittel}
+            </h1>
+            <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>
+              {rundeSub}
+            </span>
+          </div>
           <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
             {steg === "foring" && (
               <div
@@ -287,8 +291,9 @@ export function RundeLoggKlient({ modus, baner }: RundeLoggKlientProps) {
                       padding: "5px 10px",
                       borderRadius: 8,
                       border: "none",
-                      background: foringsModus === id ? T.lime : "transparent",
-                      color: foringsModus === id ? T.onLime : T.fg2,
+                      background: foringsModus === id ? T.panel : "transparent",
+                      color: foringsModus === id ? T.fg : T.fg2,
+                      boxShadow: foringsModus === id ? `inset 0 -2px 0 ${T.handling}` : undefined,
                       fontFamily: T.mono,
                       fontSize: 10,
                       fontWeight: 700,
@@ -323,7 +328,7 @@ export function RundeLoggKlient({ modus, baner }: RundeLoggKlientProps) {
               <Icon name="x" size={15} />
             </button>
           </div>
-        </div>
+        </header>
 
         {steg === "oppsett" && (
           <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>

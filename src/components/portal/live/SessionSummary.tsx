@@ -230,7 +230,8 @@ export function SessionSummary({ data, nesteOkt, spillerVurdering }: SessionSumm
           href={nesteOkt ? nesteOkt.href : "/portal"}
           data-od-id="etter-neste"
           className="flex h-12 w-full items-center justify-center gap-2 rounded-[10px] font-sans text-[14px] font-semibold active:scale-[0.98]"
-          style={{ background: T.handling, color: T.onHandling, textDecoration: "none" }}
+          data-paper-en-ting="true"
+          style={{ background: T.handling, color: T.onHandling, textDecoration: "none", minHeight: 56, borderRadius: 12, display: "flex", alignItems: "center", justifyContent: "center" }}
         >
           {nesteOkt ? nesteOkt.tekst : "Tilbake til hjem"}
           {nesteOkt && <ArrowRight className="h-4 w-4" strokeWidth={2.5} aria-hidden />}

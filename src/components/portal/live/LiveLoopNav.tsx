@@ -4,8 +4,7 @@ import { T } from "@/lib/v2/tokens";
 export type LiveLoopSteg = "for" | "under" | "etter";
 
 /**
- * FØR → UNDER → ETTER — Paper-fasiten (playerhq-live-*.html).
- * Kun visuell posisjon; navigasjon til reelle ruter når sessionId finnes.
+ * FØR → UNDER → ETTER — Paper-fasit (playerhq-live-*.html .loop).
  */
 export function LiveLoopNav({
   aktiv,
@@ -24,11 +23,15 @@ export function LiveLoopNav({
   return (
     <nav
       aria-label="Sløyfen før, under og etter økta"
+      data-paper-loop
+      data-paper-wave-c="live-loop"
       style={{
         display: "flex",
         alignItems: "stretch",
-        gap: 4,
-        padding: "8px 0 12px",
+        width: "100%",
+        borderBottom: `1px solid ${T.border}`,
+        background: T.bg,
+        marginBottom: 4,
       }}
     >
       {steg.map((s, i) => {
@@ -37,41 +40,51 @@ export function LiveLoopNav({
           <span
             style={{
               display: "flex",
+              flex: 1,
               flexDirection: "column",
               alignItems: "center",
               justifyContent: "center",
-              minHeight: 44,
-              flex: 1,
-              borderRadius: 8,
-              background: on ? T.panel2 : "transparent",
+              minHeight: 52,
+              padding: "8px 4px",
+              borderBottom: on ? `2px solid ${T.handling}` : "2px solid transparent",
               color: on ? T.fg : T.mut,
               fontFamily: T.mono,
-              fontSize: 10,
+              fontSize: 11,
+              fontWeight: 600,
               letterSpacing: "0.08em",
               textTransform: "uppercase",
-              textDecoration: "none",
-              border: on ? `1px solid ${T.border}` : "1px solid transparent",
+              textAlign: "center",
             }}
           >
-            <span style={{ fontWeight: 700 }}>{s.label}</span>
-            <span style={{ fontSize: 9, opacity: 0.75, marginTop: 2, textTransform: "none", letterSpacing: 0 }}>
+            <span>{s.label}</span>
+            <span
+              style={{
+                fontFamily: T.ui,
+                fontSize: 10,
+                fontWeight: 500,
+                letterSpacing: 0,
+                textTransform: "none",
+                color: on ? T.fg2 : T.mut,
+                marginTop: 2,
+              }}
+            >
               {s.sub}
             </span>
           </span>
         );
         return (
-          <span key={s.id} style={{ display: "contents" }}>
+          <span key={s.id} style={{ display: "flex", flex: 1, alignItems: "stretch" }}>
             {s.href && !on ? (
-              <Link href={s.href} style={{ flex: 1, textDecoration: "none" }} aria-current={on ? "step" : undefined}>
+              <Link href={s.href} style={{ flex: 1, display: "flex", textDecoration: "none" }} data-od-id={`loop-${s.id}`}>
                 {inner}
               </Link>
             ) : (
-              <span style={{ flex: 1 }} aria-current={on ? "step" : undefined}>
+              <span style={{ flex: 1, display: "flex" }} aria-current={on ? "step" : undefined} data-od-id={`loop-${s.id}`}>
                 {inner}
               </span>
             )}
             {i < steg.length - 1 && (
-              <span style={{ alignSelf: "center", color: T.border, fontSize: 12, padding: "0 2px" }} aria-hidden>
+              <span style={{ color: T.mut, fontSize: 10, alignSelf: "center", padding: "0 2px", flex: "none" }} aria-hidden>
                 →
               </span>
             )}
