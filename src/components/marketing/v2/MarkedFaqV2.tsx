@@ -354,7 +354,7 @@ export function MarkedFaqV2() {
   const mobile = useMobile();
 
   return (
-    <MRamme mobile={mobile} aktiv="faq">
+    <MRamme mobile={mobile} aktiv="faq" waveId="marked-faq">
       {/* Hero */}
       <Seksjon mobile={mobile} style={{ paddingBottom: mobile ? 20 : 32 }}>
         <div style={{ maxWidth: 620 }}>

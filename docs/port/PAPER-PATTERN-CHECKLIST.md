@@ -2,6 +2,8 @@
 
 Status: `todo` → `done` når designsystem-port er OK (se plan §6).
 
+**2026-08-09 Wave I:** Marketing/stats MCta clay + wave-i på 40 sider. Se `WAVE-I-STATUS.md`.
+
 **2026-08-09 Wave H:** AgencyOS pattern bulk ✅ (~55 admin V2). Se `WAVE-H-STATUS.md`.
 
 **2026-08-09 Wave G:** PlayerHQ pattern-port bulk ✅ (~50 V2-flater: talent, mal, datagolf, meg-*, coach-*, venner, varsler, innstillinger-*). Se `WAVE-G-STATUS.md`.

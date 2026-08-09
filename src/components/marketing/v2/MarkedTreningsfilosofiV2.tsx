@@ -165,7 +165,7 @@ const SG: { kort: string; navn: string; tekst: string }[] = [
 export function MarkedTreningsfilosofiV2() {
   const mobile = useMobile();
   return (
-    <MRamme mobile={mobile} aktiv="treningsfilosofi">
+    <MRamme mobile={mobile} aktiv="treningsfilosofi" waveId="marked-treningsfilosofi">
       <Seksjon mobile={mobile} style={{ paddingBottom: mobile ? 28 : 40 }}>
         <div style={{ maxWidth: 640 }}>
           <Eyebrow>Slik trener vi</Eyebrow>

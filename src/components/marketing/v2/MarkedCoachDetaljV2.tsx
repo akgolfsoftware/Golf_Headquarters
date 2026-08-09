@@ -24,7 +24,7 @@ export function MarkedCoachDetaljV2({ c }: { c: CoachProfil }) {
   const mobile = useMobile();
   const fornavn = c.navn.split(" ")[0];
   return (
-    <MRamme mobile={mobile} aktiv="coacher">
+    <MRamme mobile={mobile} aktiv="coacher" waveId="marked-coach-detalj">
       {/* Hero */}
       <Seksjon mobile={mobile}>
         <div style={{ display: "flex", flexDirection: mobile ? "column" : "row", gap: mobile ? 24 : 32, alignItems: mobile ? "flex-start" : "center" }}>

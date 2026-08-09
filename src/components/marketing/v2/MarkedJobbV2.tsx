@@ -150,7 +150,7 @@ const VERDIER: { t: string; d: string }[] = [
 export function MarkedJobbV2() {
   const mobile = useMobile();
   return (
-    <MRamme mobile={mobile} aktiv="jobb">
+    <MRamme mobile={mobile} aktiv="jobb" waveId="marked-jobb">
       <Seksjon mobile={mobile} style={{ paddingBottom: mobile ? 28 : 40 }}>
         <div style={{ maxWidth: 640 }}>
           <Eyebrow>Karriere</Eyebrow>

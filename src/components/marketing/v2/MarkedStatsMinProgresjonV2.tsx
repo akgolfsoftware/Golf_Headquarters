@@ -55,7 +55,7 @@ export function MinProgresjonV2({ fornavn, sammenligninger, sgInputs }: MinProgr
   const trendSeries = sgInputs.map((s) => s.sgTotal ?? 0);
 
   return (
-    <StatsRamme mobile={mobile}>
+    <StatsRamme mobile={mobile} waveId="marked-stats-min-progresjon">
       <Seksjon mobile={mobile}>
         <Eyebrow>Innlogget · Min progresjon</Eyebrow>
         <HeroT mobile={mobile}>Velkommen tilbake, {fornavn}.</HeroT>

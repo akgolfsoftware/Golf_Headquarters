@@ -69,7 +69,7 @@ export function StatsUkaV2({
   }));
 
   return (
-    <StatsRamme mobile={mobile}>
+    <StatsRamme mobile={mobile} waveId="stats-uka">
       {/* Hero */}
       <Seksjon mobile={mobile}>
         <Eyebrow>

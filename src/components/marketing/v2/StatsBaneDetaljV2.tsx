@@ -82,7 +82,7 @@ export function StatsBaneDetaljV2({
   const maxScoreCount = Math.max(1, ...scoreDist.map((b) => b.count));
 
   return (
-    <StatsRamme mobile={mobile} aktiv="baner">
+    <StatsRamme mobile={mobile} aktiv="baner" waveId="stats-bane-detalj">
       {/* Hero */}
       <Seksjon mobile={mobile}>
         <Link

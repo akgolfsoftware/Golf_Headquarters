@@ -128,7 +128,7 @@ function TurneringKort({ t }: { t: TurneringListeRad }) {
 
         {t.norskeAntall > 0 && (
           <div style={{ marginTop: "auto", paddingTop: 8 }}>
-            <span style={{ display: "inline-flex", alignItems: "center", gap: 5, background: T.lime, color: T.onLime, borderRadius: 999, padding: "3px 10px", fontFamily: T.mono, fontSize: 11, fontWeight: 600, letterSpacing: "0.06em" }}>
+            <span style={{ display: "inline-flex", alignItems: "center", gap: 5, background: T.handling, color: T.onHandling, borderRadius: 999, padding: "3px 10px", fontFamily: T.mono, fontSize: 11, fontWeight: 600, letterSpacing: "0.06em" }}>
               <span style={{ fontWeight: 700, letterSpacing: "0.08em", opacity: 0.85 }}>NOR</span> {t.norskeAntall} norsk{t.norskeAntall === 1 ? "" : "e"}
             </span>
           </div>
@@ -153,7 +153,7 @@ export function StatsTurneringerV2({ tour, tid, turneringer, counts, totaltNorsk
   const harData = turneringer.length > 0;
 
   return (
-    <StatsRamme mobile={mobile} aktiv="turneringer">
+    <StatsRamme mobile={mobile} aktiv="turneringer" waveId="stats-turneringer">
       <StatsListe
         mobile={mobile}
         eyebrow="AK Golf Stats · Turneringer"

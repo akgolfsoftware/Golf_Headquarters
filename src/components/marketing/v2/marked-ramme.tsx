@@ -262,9 +262,11 @@ export function MFot({ mobile }: { mobile: boolean }) {
   );
 }
 
-export function MRamme({ mobile, aktiv, cta, children }: { mobile: boolean; aktiv: string; cta?: MNavCta; children: ReactNode }) {
+export function MRamme({ mobile, aktiv, cta, children, waveId }: { mobile: boolean; aktiv: string; cta?: MNavCta; children: ReactNode; waveId?: string }) {
   return (
     <div
+      data-paper-wave-i={waveId ?? `marked-${aktiv}`}
+      data-paper-pattern="marketing"
       style={{
         minHeight: "100vh",
         colorScheme: "dark",
@@ -374,14 +376,17 @@ export function MCta({
     fontFamily: T.ui,
     fontWeight: 600,
     fontSize: small ? 13 : 15,
-    color: ghost ? T.fg : T.onLime,
-    background: ghost ? T.panel3 : T.lime,
+    color: ghost ? T.fg : T.onHandling,
+    /* Paper: primær CTA = clay handling (ikke lime) */
+    background: ghost ? T.panel3 : T.handling,
     border: ghost ? `1px solid ${T.borderS}` : "none",
-    borderRadius: 9999,
+    borderRadius: 12,
     padding: small ? "9px 18px" : "14px 28px",
+    minHeight: small ? 40 : 56,
     cursor: "pointer",
     whiteSpace: "nowrap",
     textDecoration: "none",
+    justifyContent: "center",
   };
   const inner = (
     <>

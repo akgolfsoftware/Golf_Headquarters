@@ -58,7 +58,7 @@ export function MarkedTurneringerListeV2({
 }) {
   const mobile = useMobile();
   return (
-    <MRamme mobile={mobile} aktiv="turneringer">
+    <MRamme mobile={mobile} aktiv="turneringer" waveId="marked-turneringer-liste">
       {/* Hero */}
       <Seksjon mobile={mobile} style={{ paddingBottom: mobile ? 24 : 40 }}>
         <span

@@ -41,7 +41,7 @@ export function StatsBanerV2({ baner, totalTurneringer, totalSpillere }: StatsBa
   }, [baner, query, region]);
 
   return (
-    <StatsRamme mobile={mobile} aktiv="baner">
+    <StatsRamme mobile={mobile} aktiv="baner" waveId="stats-baner">
       {/* Hero */}
       <Seksjon mobile={mobile}>
         <Eyebrow>AK Golf Stats · Baner</Eyebrow>

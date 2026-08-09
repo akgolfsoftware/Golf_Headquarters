@@ -154,7 +154,7 @@ const SESONGPLAN: { periode: string; fokus: string; sted: string }[] = [
 export function MarkedJuniorV2() {
   const mobile = useMobile();
   return (
-    <MRamme mobile={mobile} aktiv="junior">
+    <MRamme mobile={mobile} aktiv="junior" waveId="marked-junior">
       <Seksjon mobile={mobile} style={{ paddingBottom: mobile ? 28 : 40 }}>
         <div style={{ maxWidth: 640 }}>
           <Eyebrow>Junior · AK Golf Academy</Eyebrow>

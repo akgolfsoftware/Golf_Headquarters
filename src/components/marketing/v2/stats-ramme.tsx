@@ -259,13 +259,19 @@ export function StatsRamme({
   mobile,
   aktiv,
   children,
+  waveId,
 }: {
   mobile: boolean;
   aktiv?: StatsFamilie;
   children: ReactNode;
+  waveId?: string;
 }) {
   return (
-    <MRamme mobile={mobile} aktiv="stats">
+    <MRamme
+      mobile={mobile}
+      aktiv="stats"
+      waveId={waveId ?? (aktiv ? `stats-${aktiv}` : "stats-hub")}
+    >
       <StatsSubnav mobile={mobile} aktiv={aktiv} />
       {children}
     </MRamme>

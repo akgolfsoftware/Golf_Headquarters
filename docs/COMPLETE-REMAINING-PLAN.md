@@ -35,7 +35,8 @@
 | Wave F P2 zip rest | ✅ chrome |
 | Pattern G PlayerHQ | ✅ bulk |
 | Pattern H AgencyOS | ✅ bulk |
-| Pattern I–K | ⬜ marketing/public |
+| Pattern I marketing/stats | ✅ |
+| Pattern J–K | ⬜ legacy/intern |
 | Pixel DONE (screenshot-gate) | ❌ alle waves — venter Anders sign-off |
 | Login OAuth | **OK** + rate-limit circuit-breaker (tidligere) |
 | Masterbrain drill bank | **Tømt** — ingen falske seed-drills |

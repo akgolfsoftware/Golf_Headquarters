@@ -39,7 +39,7 @@ export function MarkedBloggListeV2({ posts }: { posts: BloggPostMeta[] }) {
   const rest = filtrert.filter((p) => p.slug !== featured?.slug);
 
   return (
-    <MRamme mobile={mobile} aktiv="blogg">
+    <MRamme mobile={mobile} aktiv="blogg" waveId="marked-blogg-liste">
       {/* Hero */}
       <Seksjon mobile={mobile} style={{ paddingBottom: mobile ? 24 : 32 }}>
         <Eyebrow>Blogg · AK Golf Academy</Eyebrow>
@@ -90,7 +90,7 @@ export function MarkedBloggListeV2({ posts }: { posts: BloggPostMeta[] }) {
               </div>
               <div>
                 <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                  <span style={{ fontFamily: T.mono, fontSize: 9.5, fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", color: T.onLime, background: T.lime, borderRadius: 9999, padding: "4px 10px" }}>
+                  <span style={{ fontFamily: T.mono, fontSize: 9.5, fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", color: T.onHandling, background: T.handling, borderRadius: 9999, padding: "4px 10px" }}>
                     Utvalgt
                   </span>
                   <span style={{ fontFamily: T.mono, fontSize: 9.5, fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", color: T.mut, background: T.panel2, borderRadius: 9999, padding: "4px 10px" }}>

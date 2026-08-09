@@ -15,7 +15,7 @@ const NB_DATE = new Intl.DateTimeFormat("nb-NO", { day: "numeric", month: "long"
 export function MarkedBloggDetaljV2({ post }: { post: BlogPost }) {
   const mobile = useMobile();
   return (
-    <MRamme mobile={mobile} aktiv="blogg">
+    <MRamme mobile={mobile} aktiv="blogg" waveId="marked-blogg-detalj">
       {/* Hero-bilde */}
       <div style={{ position: "relative", aspectRatio: mobile ? "4 / 3" : "16 / 7", width: "100%", background: T.panel2 }}>
         <Image src={post.bilde} alt={post.tittel} fill priority sizes="100vw" style={{ objectFit: "cover" }} />

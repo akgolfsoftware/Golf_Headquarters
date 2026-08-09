@@ -135,7 +135,7 @@ export function SokV2({ initialQuery, initialType, serverResultater }: SokV2Prop
     visKlubbResultater.length === 0;
 
   return (
-    <StatsRamme mobile={mobile}>
+    <StatsRamme mobile={mobile} waveId="marked-stats-sok">
       <Seksjon mobile={mobile} style={{ paddingBottom: 8 }}>
         <Eyebrow>AK Golf Stats · Søk</Eyebrow>
         <HeroT mobile={mobile}>Søk alt.</HeroT>

@@ -260,7 +260,7 @@ export function MarkedPlayerHQV2() {
   ];
 
   return (
-    <MRamme mobile={mobile} aktiv="playerhq">
+    <MRamme mobile={mobile} aktiv="playerhq" waveId="marked-player-hq">
       {/* Hero */}
       <Seksjon mobile={mobile} style={{ paddingBottom: mobile ? 28 : 48 }}>
         <div style={{ maxWidth: 640, margin: "0 auto", textAlign: "center" }}>

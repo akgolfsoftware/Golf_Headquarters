@@ -198,7 +198,7 @@ function FaqAcc({ items }: { items: { q: string; a: string }[] }) {
 export function MarkedCoachingV2() {
   const mobile = useMobile();
   return (
-    <MRamme mobile={mobile} aktiv="coaching" cta={{ label: "Book en samtale", href: "/booking" }}>
+    <MRamme mobile={mobile} aktiv="coaching" cta={{ label: "Book en samtale", href: "/booking" }} waveId="marked-coaching">
       <AvslorRoot>
         <Seksjon mobile={mobile}>
           <div

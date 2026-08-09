@@ -145,7 +145,7 @@ const CASES: Case[] = [
 export function MarkedSuksessV2() {
   const mobile = useMobile();
   return (
-    <MRamme mobile={mobile} aktiv="suksess">
+    <MRamme mobile={mobile} aktiv="suksess" waveId="marked-suksess">
       <Seksjon mobile={mobile} style={{ paddingBottom: mobile ? 28 : 40 }}>
         <div style={{ maxWidth: 640 }}>
           <Eyebrow>Suksesshistorier · AK Golf Academy</Eyebrow>

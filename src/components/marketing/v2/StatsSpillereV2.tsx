@@ -151,7 +151,7 @@ export function StatsSpillereV2({ q, aar, tier, view, side, totalSpillere, total
   const visTabell = view === "tabell";
 
   return (
-    <StatsRamme mobile={mobile} aktiv="spillere">
+    <StatsRamme mobile={mobile} aktiv="spillere" waveId="stats-spillere">
       <StatsListe
         mobile={mobile}
         eyebrow="AK Golf Stats · Norsk golfdatabase"
@@ -306,7 +306,7 @@ export function StatsSpillereV2({ q, aar, tier, view, side, totalSpillere, total
                 ← Forrige
               </Link>
             )}
-            <span style={{ fontFamily: T.ui, fontSize: 13, fontWeight: 600, color: T.onLime, background: T.lime, borderRadius: 999, padding: "8px 16px" }}>Side {side}</span>
+            <span style={{ fontFamily: T.ui, fontSize: 13, fontWeight: 600, color: T.onHandling, background: T.handling, borderRadius: 999, padding: "8px 16px" }}>Side {side}</span>
             <Link href={buildUrl({ side: String(side + 1) })} style={{ fontFamily: T.ui, fontSize: 13, fontWeight: 600, color: T.fg2, border: `1px solid ${T.borderS}`, borderRadius: 999, padding: "8px 16px", textDecoration: "none" }}>
               Neste →
             </Link>

@@ -150,8 +150,8 @@ function CaseKort({ c }: { c: Case }) {
   return (
     <Kort pad="0">
       <div style={{ position: "relative", height: 96, borderRadius: `${T.rCard}px ${T.rCard}px 0 0`, background: `linear-gradient(150deg, ${T.forest} 0%, ${T.panel} 100%)`, overflow: "hidden" }}>
-        <span style={{ position: "absolute", left: 16, top: 14, borderRadius: 9999, background: T.lime, color: T.onLime, padding: "5px 12px", fontFamily: T.mono, fontSize: 9.5, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em" }}>{c.badge}</span>
-        <span style={{ position: "absolute", right: 16, top: 14, width: 34, height: 34, borderRadius: 9999, background: T.lime, color: T.onLime, display: "inline-flex", alignItems: "center", justifyContent: "center" }}>
+        <span style={{ position: "absolute", left: 16, top: 14, borderRadius: 9999, background: T.handling, color: T.onHandling, padding: "5px 12px", fontFamily: T.mono, fontSize: 9.5, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em" }}>{c.badge}</span>
+        <span style={{ position: "absolute", right: 16, top: 14, width: 34, height: 34, borderRadius: 9999, background: T.handling, color: T.onHandling, display: "inline-flex", alignItems: "center", justifyContent: "center" }}>
           <Icon name="trending-down" size={16} />
         </span>
         <div style={{ position: "absolute", bottom: 8, right: 16, fontFamily: T.mono, fontSize: 30, fontWeight: 700, color: T.farge.hvitA14, lineHeight: 1 }}>-{forbedring}</div>
@@ -177,7 +177,7 @@ function CaseKort({ c }: { c: Case }) {
 export function MarkedCasesV2({ tournaments }: { tournaments: CasesTournament[] }) {
   const mobile = useMobile();
   return (
-    <MRamme mobile={mobile} aktiv="cases">
+    <MRamme mobile={mobile} aktiv="cases" waveId="marked-cases">
       <Seksjon mobile={mobile} style={{ paddingBottom: mobile ? 28 : 40 }}>
         <div style={{ maxWidth: 640 }}>
           <Eyebrow>Resultater vi er stolte av</Eyebrow>

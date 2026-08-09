@@ -91,8 +91,8 @@ function MNav({ mobile, aktiv }: { mobile: boolean; aktiv: string }) {
               fontFamily: T.ui,
               fontWeight: 600,
               fontSize: 13,
-              color: T.onLime,
-              background: T.lime,
+              color: T.onHandling,
+              background: T.handling,
               borderRadius: 9999,
               padding: "9px 18px",
               whiteSpace: "nowrap",
@@ -197,7 +197,7 @@ export function MarkedPersonvernV2() {
   const mobile = useMobile();
 
   return (
-    <MRamme mobile={mobile} aktiv="personvern">
+    <MRamme mobile={mobile} aktiv="personvern" waveId="marked-personvern">
       <div style={{ padding: mobile ? "48px 22px" : "72px 64px" }}>
         <div style={{ maxWidth: 720, margin: "0 auto" }}>
           <Caps size={11} color={T.mut}>

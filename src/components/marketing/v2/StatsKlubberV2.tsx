@@ -67,7 +67,7 @@ export function StatsKlubberV2({ klubber, totalSpillere, totalTurneringer }: Sta
   const mestPro = [...klubber].sort((a, b) => b.pro + b.college - (a.pro + a.college))[0];
 
   return (
-    <StatsRamme mobile={mobile} aktiv="klubber">
+    <StatsRamme mobile={mobile} aktiv="klubber" waveId="stats-klubber">
       {/* Hero */}
       <Seksjon mobile={mobile}>
         <Eyebrow>AK Golf Stats · Klubber</Eyebrow>

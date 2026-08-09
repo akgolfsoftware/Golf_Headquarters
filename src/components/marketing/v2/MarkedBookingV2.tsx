@@ -164,7 +164,7 @@ export function MarkedBookingV2({
   /* Pauset flyt (publikum uten BOOKING_PUBLIC) — ærlig Acuity + samtale. */
   if (paused) {
     return (
-      <MRamme mobile={mobile} aktiv="booking" cta={{ label: "Book en samtale", href: "/kontakt" }}>
+      <MRamme mobile={mobile} aktiv="booking" cta={{ label: "Book en samtale", href: "/kontakt" }} waveId="marked-booking">
         <Seksjon mobile={mobile}>
           <div data-paper-marketing-booking style={{ textAlign: "center", maxWidth: 620, margin: "0 auto" }}>
             <Eyebrow>Booking</Eyebrow>
@@ -178,7 +178,7 @@ export function MarkedBookingV2({
               <a href={acuityUrl} target="_blank" rel="noopener noreferrer" style={{ textDecoration: "none", display: "inline-block" }}>
                 <span style={{
                   display: "inline-flex", alignItems: "center", gap: 8, minHeight: 44, padding: "10px 16px",
-                  borderRadius: 10, background: T.handling, color: T.onHandling, fontFamily: T.ui, fontSize: 13, fontWeight: 600,
+                  borderRadius: 12, background: T.handling, color: T.onHandling, fontFamily: T.ui, fontSize: 14, fontWeight: 600, minHeight: 56,
                 }}>Åpne bookingkalender</span>
               </a>
               <Link href="/kontakt" className="v2-focus" style={{ fontFamily: T.ui, fontSize: 14, fontWeight: 600, color: T.fg2, textDecoration: "none", minHeight: 44, display: "inline-flex", alignItems: "center" }}>
@@ -211,7 +211,7 @@ export function MarkedBookingV2({
   );
 
   return (
-    <MRamme mobile={mobile} aktiv="booking">
+    <MRamme mobile={mobile} aktiv="booking" waveId="marked-booking">
       <Seksjon mobile={mobile} style={{ paddingBottom: mobile ? 20 : 28 }}>
         <div style={{ textAlign: "center", maxWidth: 620, margin: "0 auto" }}>
           <Eyebrow>Booking · steg 1 av 4</Eyebrow>

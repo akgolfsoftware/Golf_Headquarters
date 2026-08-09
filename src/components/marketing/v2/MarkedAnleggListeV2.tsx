@@ -38,7 +38,7 @@ const MULLIGAN = {
 export function MarkedAnleggListeV2({ locations }: { locations: AnleggLocation[] }) {
   const mobile = useMobile();
   return (
-    <MRamme mobile={mobile} aktiv="anlegg">
+    <MRamme mobile={mobile} aktiv="anlegg" waveId="marked-anlegg-liste">
       {/* Hero */}
       <Seksjon mobile={mobile}>
         <Eyebrow>Anlegg · AK Golf Group</Eyebrow>

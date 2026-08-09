@@ -43,8 +43,8 @@ function MCta({ children, small, href }: { children: ReactNode; small?: boolean;
     fontFamily: T.ui,
     fontWeight: 600,
     fontSize: small ? 13 : 15,
-    color: T.onLime,
-    background: T.lime,
+    color: T.onHandling,
+    background: T.handling,
     border: "none",
     borderRadius: 9999,
     padding: small ? "9px 18px" : "14px 28px",
@@ -189,7 +189,7 @@ export function MarkedVilkarV2() {
   const mobile = useMobile();
 
   return (
-    <MRamme mobile={mobile} aktiv="vilkar">
+    <MRamme mobile={mobile} aktiv="vilkar" waveId="marked-vilkar">
       <div style={{ padding: mobile ? "48px 22px" : "72px 64px" }}>
         <div style={{ maxWidth: 720, margin: "0 auto" }}>
           <Caps size={11} color={T.lime}>

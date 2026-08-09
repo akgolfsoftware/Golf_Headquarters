@@ -99,7 +99,7 @@ export function MarkedStatsHubV2({ norskeIAksjon, kommendeTurneringer, sisteSync
   const familier = FAMILIER.map((f) => (f.id === "baner" ? { ...f, foot: `${totalBaner} BANER · SLOPE · CR` } : f));
 
   return (
-    <StatsRamme mobile={mobile}>
+    <StatsRamme mobile={mobile} waveId="marked-stats-hub">
       {/* Hero */}
       <Seksjon mobile={mobile}>
         <div style={{ display: "grid", gridTemplateColumns: mobile ? "1fr" : "1.4fr 1fr", gap: mobile ? 32 : 48, alignItems: "start" }}>

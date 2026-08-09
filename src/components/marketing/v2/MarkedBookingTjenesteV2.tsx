@@ -102,7 +102,7 @@ export function MarkedBookingTjenesteV2({ tjeneste, dager, valgtDatoTekst, slots
   const mobile = useMobile();
 
   return (
-    <MRamme mobile={mobile} aktiv="booking">
+    <MRamme mobile={mobile} aktiv="booking" waveId="marked-booking-tjeneste">
       {/* Hero */}
       <Seksjon mobile={mobile} style={{ paddingBottom: mobile ? 20 : 28 }}>
         <TilbakeLenke href="/booking">Alle tjenester</TilbakeLenke>

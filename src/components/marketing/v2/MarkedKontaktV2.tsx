@@ -418,7 +418,7 @@ export function MarkedKontaktV2() {
   const [open, setOpen] = useState(0);
 
   return (
-    <MRamme mobile={mobile} aktiv="kontakt">
+    <MRamme mobile={mobile} aktiv="kontakt" waveId="marked-kontakt">
       {/* Hero */}
       <Seksjon mobile={mobile} style={{ paddingBottom: mobile ? 28 : 40 }}>
         <div style={{ maxWidth: 620 }}>

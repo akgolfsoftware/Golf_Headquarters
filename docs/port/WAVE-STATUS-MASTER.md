@@ -31,7 +31,8 @@
 | **F** | P2 zip rest (økonomi, innstillinger, AK-stigen, agenticos, turnering WB, feiring, fys/tek plan) | ✅ | ✅ | ❌ | `WAVE-F-STATUS.md` |
 | **G** | Pattern PlayerHQ rest (uten fasit) | ✅ | ✅ | n/a pattern | `WAVE-G-STATUS.md` |
 | **H** | Pattern AgencyOS rest (uten fasit) | ✅ | ✅ | n/a pattern | `WAVE-H-STATUS.md` |
-| **I–K** | Marketing/public/stats + legacy | ⬜ | ⬜ | ❌ | `PAPER-PATTERN-CHECKLIST.md` |
+| **I** | Pattern marketing/public/stats | ✅ | ✅ | n/a pattern | `WAVE-I-STATUS.md` |
+| **J–K** | Legacy/intern/onboard rest | ⬜ | ⬜ | ❌ | `PAPER-PATTERN-CHECKLIST.md` |
 
 ---
 
@@ -132,6 +133,13 @@ Se `WAVE-H-STATUS.md`.
 
 ---
 
+## Wave I — Marketing / stats (✅)
+
+MCta → clay 56 · MRamme/StatsRamme wave-i · 40 public V2-sider.  
+Se `WAVE-I-STATUS.md`.
+
+---
+
 ## Gjenstår (prioritert)
 
 ### Umiddelbart **[ANDERS]**
@@ -142,7 +150,7 @@ Se `WAVE-H-STATUS.md`.
 ### Agent neste (kode)
 | # | Oppgave |
 |---|---|
-| 1 | **Wave I** — marketing/public/stats pattern |
+| 1 | **Wave J** — legacy/intern rest **eller Mac push A–I** |
 | 2 | **Wave F** — økonomi, innstillinger, AK-stigen, agenticos, turnering-WB, feiring, fys/tek |
 | 3 | Agency **live-session** dyp (F1-31) |
 | 4 | **Pattern G–K** — ruter uten fasit (monster + tokens) |
@@ -177,4 +185,4 @@ Se `WAVE-H-STATUS.md`.
 | `STATUS-NÅ.md` | Plattform-snapshot |
 | `WAVE-A/B/C/D-STATUS.md` | Detalj per wave |
 
-**Sist oppdatert:** 2026-08-09 20:15 CEST · agent Wave H pattern
+**Sist oppdatert:** 2026-08-09 20:25 CEST · agent Wave I pattern

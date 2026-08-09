@@ -171,7 +171,7 @@ export function MarkedPriserV2() {
   const [open, setOpen] = useState(0);
 
   return (
-    <MRamme mobile={mobile} aktiv="priser">
+    <MRamme mobile={mobile} aktiv="priser" waveId="marked-priser">
       {/* Hero */}
       <Seksjon mobile={mobile} style={{ paddingBottom: mobile ? 28 : 48 }}>
         <div style={{ maxWidth: 560, margin: "0 auto", textAlign: "center" }}>

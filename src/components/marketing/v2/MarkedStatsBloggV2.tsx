@@ -64,7 +64,7 @@ export function BloggListeV2({ alle, featured, rest }: BloggListeV2Props) {
   const kategorier = ["Alle", ...Array.from(new Set(alle.map((p) => p.kategori)))];
 
   return (
-    <StatsRamme mobile={mobile}>
+    <StatsRamme mobile={mobile} waveId="marked-stats-blogg">
       <Seksjon mobile={mobile}>
         <Eyebrow>AK Golf Stats · Analyse</Eyebrow>
         <HeroT mobile={mobile} em="betyr noe.">Tall som</HeroT>
@@ -159,7 +159,7 @@ export function BloggDetaljV2({ post, relaterte, MDXContent }: BloggDetaljV2Prop
   const initialer = post.forfatter.split(" ").map((n) => n[0]).join("");
 
   return (
-    <StatsRamme mobile={mobile}>
+    <StatsRamme mobile={mobile} waveId="marked-stats-blogg">
       <Seksjon mobile={mobile} style={{ borderBottom: `1px solid ${T.border}`, paddingBottom: mobile ? 32 : 48 }}>
         <MCta ghost small icon="arrow-left" href="/stats/blogg">Alle artikler</MCta>
         <div style={{ marginTop: 20 }}>
@@ -201,7 +201,7 @@ export function BloggDetaljV2({ post, relaterte, MDXContent }: BloggDetaljV2Prop
 
       <Seksjon mobile={mobile}>
         <Kort pad={mobile ? "22px" : "28px"} style={{ maxWidth: 720, margin: "0 auto", display: "flex", gap: 20 }}>
-          <div style={{ width: 56, height: 56, borderRadius: "50%", background: T.lime, color: T.onLime, display: "grid", placeItems: "center", fontFamily: T.mono, fontWeight: 700, fontSize: 18, flexShrink: 0 }}>
+          <div style={{ width: 56, height: 56, borderRadius: "50%", background: T.handling, color: T.onHandling, display: "grid", placeItems: "center", fontFamily: T.mono, fontWeight: 700, fontSize: 18, flexShrink: 0 }}>
             {initialer}
           </div>
           <div>

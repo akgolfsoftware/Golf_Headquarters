@@ -62,7 +62,7 @@ export function MarkedAnleggDetaljV2({ data }: { data: AnleggData }) {
   ];
 
   return (
-    <MRamme mobile={mobile} aktiv="anlegg">
+    <MRamme mobile={mobile} aktiv="anlegg" waveId="marked-anlegg-detalj">
       {/* Hero */}
       <Seksjon mobile={mobile}>
         <div style={{ display: "flex", flexDirection: mobile ? "column" : "row", gap: mobile ? 24 : 40, alignItems: mobile ? "stretch" : "center" }}>
@@ -160,7 +160,7 @@ export function MarkedAnleggDetaljV2({ data }: { data: AnleggData }) {
                 <p style={{ fontFamily: T.ui, fontSize: 12.5, color: T.fg2, lineHeight: 1.55, margin: "8px 0 0" }}>{l.description}</p>
                 <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginTop: "auto", paddingTop: 16, borderTop: `1px solid ${T.border}` }}>
                   <span style={{ fontFamily: T.mono, fontSize: 11, fontWeight: 700, color: T.fg }}>{l.cta}</span>
-                  <Icon name="arrow-right" size={13} style={{ color: T.onLime, background: T.lime, borderRadius: 9999, padding: 5, boxSizing: "content-box" }} />
+                  <Icon name="arrow-right" size={13} style={{ color: T.onHandling, background: T.handling, borderRadius: 9999, padding: 5, boxSizing: "content-box" }} />
                 </div>
               </Kort>
             </a>

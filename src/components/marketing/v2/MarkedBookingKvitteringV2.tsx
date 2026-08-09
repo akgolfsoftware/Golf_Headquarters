@@ -103,7 +103,7 @@ export function MarkedBookingKvitteringV2({
   const mobile = useMobile();
 
   return (
-    <MRamme mobile={mobile} aktiv="booking">
+    <MRamme mobile={mobile} aktiv="booking" waveId="marked-booking-kvittering">
       <Seksjon mobile={mobile} style={{ paddingBottom: mobile ? 20 : 28 }}>
         <div style={{ maxWidth: 620, margin: "0 auto", textAlign: "center" }}>
           {bekreftet ? (

@@ -69,7 +69,7 @@ const TOOLS = [
 export function VerktoyHubV2() {
   const mobile = useMobile();
   return (
-    <StatsRamme mobile={mobile} aktiv="verktoy">
+    <StatsRamme mobile={mobile} aktiv="verktoy" waveId="marked-stats-verktoy">
       <Seksjon mobile={mobile}>
         <Eyebrow>AK Golf Stats · Verktøy</Eyebrow>
         <StatsStatusBar
@@ -175,7 +175,7 @@ export function AvstandV2() {
   };
 
   return (
-    <StatsRamme mobile={mobile} aktiv="verktoy">
+    <StatsRamme mobile={mobile} aktiv="verktoy" waveId="marked-stats-verktoy">
       <Seksjon mobile={mobile}>
         <TilbakeVerktoy />
         <Eyebrow>Verktøy · Avstand</Eyebrow>
@@ -279,7 +279,7 @@ export function ScoreTilHcpV2() {
   const pct = percentilNorge(hcp);
 
   return (
-    <StatsRamme mobile={mobile} aktiv="verktoy">
+    <StatsRamme mobile={mobile} aktiv="verktoy" waveId="marked-stats-verktoy">
       <Seksjon mobile={mobile}>
         <TilbakeVerktoy />
         <Eyebrow>Verktøy · Score til HCP</Eyebrow>
@@ -339,7 +339,7 @@ export function TourEkvivalentV2() {
   const { tourScore, hcp, tourHcp } = tourEquivalentScore(score, { norskSlope: slope, norskCr: cr });
 
   return (
-    <StatsRamme mobile={mobile} aktiv="verktoy">
+    <StatsRamme mobile={mobile} aktiv="verktoy" waveId="marked-stats-verktoy">
       <Seksjon mobile={mobile}>
         <TilbakeVerktoy />
         <Eyebrow>Verktøy · Tour-ekvivalent</Eyebrow>
@@ -420,7 +420,7 @@ export function SgEstimatorV2() {
   const tourSnitt = [5, 5, 5, 5];
 
   return (
-    <StatsRamme mobile={mobile} aktiv="verktoy">
+    <StatsRamme mobile={mobile} aktiv="verktoy" waveId="marked-stats-verktoy">
       <Seksjon mobile={mobile}>
         <TilbakeVerktoy />
         <Eyebrow>Verktøy · SG-estimator</Eyebrow>
@@ -455,7 +455,7 @@ export function SgEstimatorV2() {
                   <Kort key={k.key} tint={erGap} style={{ position: "relative" }}>
                     <Caps color={erGap ? T.lime : T.mut}>
                       {KATEGORI_LABEL[k.key]}
-                      {erGap && <span style={{ marginLeft: 8, background: T.lime, color: T.onLime, padding: "1px 6px", borderRadius: 3, fontSize: 9, fontWeight: 700 }}>GAP</span>}
+                      {erGap && <span style={{ marginLeft: 8, background: T.handling, color: T.onHandling, padding: "1px 6px", borderRadius: 3, fontSize: 9, fontWeight: 700 }}>GAP</span>}
                     </Caps>
                     <div style={{ fontFamily: T.mono, fontSize: 30, fontWeight: 500, marginTop: 10, color: (k.verdi ?? 0) < -5 ? T.down : T.fg }}>
                       {k.verdi !== null ? (k.verdi >= 0 ? "+" : "") + k.verdi.toFixed(2) : "—"}
@@ -540,7 +540,7 @@ export function WhsKalkulatorV2() {
   const inputStil: React.CSSProperties = { fontFamily: T.mono, fontSize: 15, width: 64, boxSizing: "border-box", padding: "6px 8px", border: `1px solid ${T.borderS}`, borderRadius: 6, textAlign: "center", background: T.panel2, color: T.fg };
 
   return (
-    <StatsRamme mobile={mobile} aktiv="verktoy">
+    <StatsRamme mobile={mobile} aktiv="verktoy" waveId="marked-stats-verktoy">
       <Seksjon mobile={mobile}>
         <TilbakeVerktoy />
         <Eyebrow>Verktøy · WHS-kalkulator</Eyebrow>

@@ -155,7 +155,7 @@ const MANIFEST: { nr: string; t: string; d: string }[] = [
 export function MarkedOmOssV2() {
   const mobile = useMobile();
   return (
-    <MRamme mobile={mobile} aktiv="om-oss">
+    <MRamme mobile={mobile} aktiv="om-oss" waveId="marked-om-oss">
       {/* Hero */}
       <Seksjon mobile={mobile} style={{ paddingBottom: mobile ? 28 : 40 }}>
         <div style={{ maxWidth: 640 }}>

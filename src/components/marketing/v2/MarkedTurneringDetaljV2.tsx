@@ -58,7 +58,7 @@ export function MarkedTurneringDetaljV2({ t }: { t: TurneringDetalj }) {
   const datoStr = formaterDato(t.startDate, t.endDate);
 
   return (
-    <MRamme mobile={mobile} aktiv="turneringer">
+    <MRamme mobile={mobile} aktiv="turneringer" waveId="marked-turnering-detalj">
       {/* Hero */}
       <Seksjon mobile={mobile} style={{ paddingBottom: mobile ? 24 : 32 }}>
         <MCta ghost small icon="arrow-left" href="/turneringer">

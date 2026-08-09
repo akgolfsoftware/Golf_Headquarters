@@ -56,7 +56,7 @@ export function StatsKlubbDetaljV2({
   }));
 
   return (
-    <StatsRamme mobile={mobile} aktiv="klubber">
+    <StatsRamme mobile={mobile} aktiv="klubber" waveId="stats-klubb-detalj">
       {/* Hero */}
       <Seksjon mobile={mobile}>
         <Link

@@ -210,7 +210,7 @@ export function MarkedForsideV2() {
   const aktivSkjerm = useStickySkjerm();
 
   return (
-    <MRamme mobile={mobile} aktiv="hjem" cta={{ label: "Book en samtale", href: "/booking" }}>
+    <MRamme mobile={mobile} aktiv="hjem" cta={{ label: "Book en samtale", href: "/booking" }} waveId="marked-forside">
       <AvslorRoot>
         {/* ── 1. Hero full-bleed ── */}
         <header

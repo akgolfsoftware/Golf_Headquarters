@@ -49,7 +49,7 @@ const FASILITETER: Fasilitet[] = [
 export function MarkedCoacherListeV2({ coacher }: { coacher: CoachKort[] }) {
   const mobile = useMobile();
   return (
-    <MRamme mobile={mobile} aktiv="coacher">
+    <MRamme mobile={mobile} aktiv="coacher" waveId="marked-coacher-liste">
       {/* Hero */}
       <Seksjon mobile={mobile}>
         <Eyebrow>Coachene · AK Golf Academy</Eyebrow>
@@ -189,8 +189,8 @@ function CoachCard({ c }: { c: CoachKort }) {
               fontWeight: 700,
               letterSpacing: "0.05em",
               textTransform: "uppercase",
-              color: T.onLime,
-              background: T.lime,
+              color: T.onHandling,
+              background: T.handling,
               borderRadius: 9999,
               padding: "5px 10px",
             }}

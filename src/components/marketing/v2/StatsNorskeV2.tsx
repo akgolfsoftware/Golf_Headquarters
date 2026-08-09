@@ -87,7 +87,7 @@ function TurnGruppeKort({ gruppe }: { gruppe: NorskeTurnGruppe }) {
       <div style={{ padding: "20px 22px 16px", borderBottom: `1px solid ${T.border}`, display: "flex", flexDirection: "column", gap: 6 }}>
         <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
           {erLive ? (
-            <span style={{ display: "inline-flex", alignItems: "center", gap: 5, fontFamily: T.mono, fontSize: 9.5, fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase", color: T.onLime, background: T.up, borderRadius: 999, padding: "2px 8px" }}>
+            <span style={{ display: "inline-flex", alignItems: "center", gap: 5, fontFamily: T.mono, fontSize: 9.5, fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase", color: T.onHandling, background: T.up, borderRadius: 999, padding: "2px 8px" }}>
               LIVE
             </span>
           ) : (
@@ -202,7 +202,7 @@ export function StatsNorskeV2({ grupper }: StatsNorskeV2Props) {
   const antallLiveNaa = grupper.filter((g) => g.turnering.status === "IN_PROGRESS").length;
 
   return (
-    <StatsRamme mobile={mobile} aktiv="turneringer">
+    <StatsRamme mobile={mobile} aktiv="turneringer" waveId="stats-norske">
       <StatsDetalj
         mobile={mobile}
         eyebrow="Denne uken"
