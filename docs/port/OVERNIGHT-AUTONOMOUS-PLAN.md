@@ -1,342 +1,134 @@
-# OVERNIGHT AUTONOMOUS PLAN — fullfør uten godkjenning
+# OVERNIGHT AUTONOMOUS PLAN v2.0 — automatisk godkjennelse
 
-**Versjon:** 1.0 · **09.08.2026 21:30 CEST**  
-**Mål:** Agent jobber **kontinuerlig** (auto-yes / «fortsett» uten spørsmål) til **kode-port er komplett** for all in-scope Paper-fidelity, med handoff-bundles til `main` underveis.  
-**Styrende pixel-definisjon:** `PIXEL-PERFECT-PLAN-COMPLETE.md` (D1–D12)  
-**Viktig skille:** Agent kan fullføre **D1–D11 (kode + screenshots i sandbox)**. **D12 (Anders sign-off)** kan ikke auto-lukkes — planen markerer dem `READY_SIGN` og fortsetter.
+**Versjon:** 2.0 · **09.08.2026 kveld** (avløser v1.0 som var skrevet for iPhone-sandbox uten git-push)  
+**Kontekst:** Alt nattarbeid fra natt 1 er på `main`. Denne maskinen (Mac) kan pushe. `akgolf.no`
+videresender midlertidig til Acuity (PR #384) — **prod er derfor ikke kundeeksponert**, kun
+`akgolf-hq.vercel.app`. Det gjør auto-merge til main lavrisiko akkurat nå.  
+**Styrende plan:** `PIXEL-PERFECT-PLAN-COMPLETE.md` v1.1 (D1–D12)  
+**Autorisasjon:** Anders har eksplisitt bestilt denne nattplanen med automatisk godkjennelse
+(samtale 09.08.2026 kveld). Det dekker forbruksregelens krav om eksplisitt beslutning for
+autonome nattkjøringer.
 
 ---
 
-## 0. Autonomi-protokoll (alltid på)
+## 1. Hva «automatisk godkjennelse» betyr — og ikke betyr
 
-### 0.1 Auto-yes (gjelder hele natten)
+### 1.1 FORHÅNDSGODKJENT (agenten gjør uten å spørre)
 
-Agent skal **aldri** stoppe for å spørre om:
-
-- «Skal jeg fortsette?»
-- «Vil du ha A eller B?» når planen allerede har prioritert rekkefølge
-- Godkjenning før commit
-- Godkjenning før neste PP-fase
-
-**Tolking av bruker-meldinger under kjøring:**
-
-| Melding | Handling |
+| Handling | Vilkår |
 |---|---|
-| `fortsett` / `next` / `go` / `auto` / tom / emoji | Neste arbeidspakke i køen |
-| `status` | 10-linjers status + fortsett umiddelbart etter |
-| `stopp` / `pause` | Stopp etter nåværende fil-commit |
-| `push` | Generer bundle + Mac-kommandoer, fortsett kode |
-| Konkret bug/skjerm | Fiks det, deretter tilbake til kø |
+| Bygge/pixel-passe skjermer til READY_SIGN | Kun in-scope per pixel-planen §1.1 |
+| Commit på arbeidsgren + PR + **merge til main** | KUN når `npm run verify` + `npm test` er grønt; maks 1–3 skjermer per PR |
+| Produsere side-om-side-skjermbilder (app vs fasit, m390 + d1280) | Lagres i `screenshots/paper/`; samles i morgengalleri |
+| Oppdatere status-docs (PP-*-STATUS, checklist `[ ]`→`[~]`, VARIANTS-filer) | Aldri sette `[x]` |
+| Kjøre Playwright smoke / lint / tsc løpende | Rødt = fiks før merge, aldri merge rødt |
+| Opprette/oppdatere redirects for legacy-ruter som allerede er vedtatt i PP-0-ROUTE-MAP | Kun dokumenterte vedtak |
+| Feillogg-linjer i `docs/feillogg.md` | Ved reelle feilmønstre |
 
-### 0.2 Beslutningsregler (når plan er tvetydig)
+### 1.2 ALDRI auto-godkjent (hard grense — uansett hva natten finner)
 
-1. **Fasit vinner** på layout/CTA/logo/type  
-2. **Én solid clay** per view (Én ting nå / mic) — ellers ink CTA  
-3. **Minimal diff** — ikke refaktor hele appen  
-4. **Mal før variant** (W3–W5)  
-5. **PlayerHQ før AgencyOS** innen samme timeblokk  
-6. Ved konflikt funksjon vs fasit: ærlig empty, ikke fake data  
-7. Ved usikker rute: les `github.md` + `PP-0-ROUTE-MAP.md`  
-8. Aldri commit `.env` / secrets  
-9. Sandbox kan ikke `git push` → alltid bundle + `PUSH-*.sh` / kommandoer  
-10. Etter hver **arbeidspakke** (1–3 skjermer): commit + oppdater status-doc
-
-### 0.3 Stopp-betingelser (kun disse)
-
-- Bruker sier `stopp` / `pause`
-- Kritiske røde tester / build-brudd som ikke løses på 2 forsøk → logg `BLOCKED` i status, hopp til neste pakke
-- Disk/minne-feil i sandbox
-
-**Ikke stopp for:** manglende Vercel, manglende Anders, manglende screenshots på prod, «ser litt annerledes ut uten sign-off».
-
----
-
-## 1. Definisjon av «komplett ferdig» i denne natten
-
-### 1.1 Agent-komplett (mål for natten)
-
-| Krav | Mål |
+| Forbudt om natten | Hvorfor |
 |---|---|
-| Alle **fase1 33** fasit | Kode-port D1–D11 minimum (chrome + CTA + struktur + slug) |
-| Fase2 W1–W2 (23) | Kode-port eller eksplisitt mal-gjenbruk |
-| W3–W5 maler (19 HTML) | **Mal-komponenter** pixel-nære + variants-docs fylt |
-| W6 (4) | Port eller merket microsite-chrome OK |
-| Checklist | 0× `[ ]` for IN-fasit; alle enten `[~] READY_SIGN` eller `[x]` |
-| PP-status docs | Oppdatert per fase |
-| Bundles | Minst én push-klar bundle per stor batch |
+| Sette `[x]` / D12 sign-off | Kun Anders. Natten leverer READY_SIGN + skjermbilder |
+| Fjerne Acuity-redirecten (PP-10.7) | Lanseringsbeslutning — kun Anders |
+| DB-migrasjoner / `schema.prisma` / nye dependencies | CLAUDE.md arbeidsregel 2 |
+| Slette ruter/URLer, slette grener, force-push | Sikkerhetsregler |
+| Sende noe til spillere/kunder (e-post, push, SMS) | PII + kunde-SLA |
+| Røre Stripe/betaling/webhooks, `.env*`, secrets | Runbook §2.5 |
+| Endre `proxy.ts` CSP, `vercel.json`, feature-flags | Prod-adferd utenfor design |
+| Refaktorering utenfor skjermen som portes | Minimal diff-prinsippet |
+| Rørepunkter med PII (spillerdata i prompts/skjermbilder) | Bruk screentest-brukeren (Øyvind Rohjan), aldri ekte spillere |
 
-### 1.2 Menneske-komplett (etter natten — Anders)
-
-| Krav | Når |
-|---|---|
-| D12 sign-off batch | Morgen: 15 min stikkprøve P0, deretter rullerende |
-| Mac push alle bundles | Når du er ved laptop |
-| Prod smoke | Etter siste push |
-
-**Natten er suksess om:** Anders kan **kun signere og pushe**, ikke designe/implementere.
+**Blir noe i køen umulig uten en forbudt handling: merk `BLOCKED` i status-doc med én linje
+begrunnelse, hopp til neste pakke. Aldri improviser forbi grensen.**
 
 ---
 
-## 2. Arbeidskø (strikt rekkefølge)
+## 2. Nattens arbeidskø (strikt rekkefølge)
 
-### BATCH A — PP-1 ferdig (PlayerHQ kjerne) · ~2–4 t
+Prinsipp: **først gjøre sign-off billig for Anders, deretter bygge det ubygde.**
 
-| # | Pakke | Fasit | Eier | Exit |
-|---|---|---|---|---|
-| A1 | ✅ PP-1.1 Hjem/chat | chat-m/d | PortalChatHjem | DONE kode |
-| A2 | PP-1.2 Plan | playerhq-plan | PlanV2 | loop/CTA/dokk/topp |
-| A3 | PP-1.3 Analyse | playerhq-analyse | AnalysereV2 | |
-| A4 | PP-1.4 Meg | playerhq-meg | MegV2 | |
-| A5 | PP-1.5 Booking hub | playerhq-booking | BookingHubV2 | |
-| A6 | PP-1.6 Login | innlogging | LoginV2 | flat cream, logo paper |
-| A7 | PP-1.7 Public booking | booking.html | marketing booking | clay CTA |
+### Pakke 1 — Morgengalleri for sign-off (høyest verdi, ~2–3 t)
 
-**Batch A commit:** `feat(paper): PP-1 complete PlayerHQ core ports`  
-**Bundle:** `overnight-A-pp1.bundle`
+Målet: Anders skal kunne signere PP-1 + PP-2-kjernen fra iPhone på 15 minutter i morgen.
 
----
+1. Start dev/preview mot screentest-bruker.
+2. For hver av de 7 PP-1-skjermene + PP-2.1–2.4: screenshot app m390 + d1280, lys og mørk,
+   og tilsvarende fasit-HTML i samme viewport.
+3. Sett bildene sammen side-om-side (app venstre, fasit høyre) → `screenshots/paper/signoff/`.
+4. Generer `docs/port/SIGNOFF-GALLERI-2026-08-10.md`: én seksjon per skjerm med bilder,
+   diff-liste (maks 5 punkter per skjerm) og anbefaling GODKJENN / FIKS FØRST.
+5. Commit + merge (dokument + bilder).
 
-### BATCH B — PP-2 AgencyOS kjerne · ~2–4 t
+**Exit:** 11 skjermer klare for D12 med bevis. Ingen skjerm merket `[x]`.
 
-| # | Pakke | Fasit | Eier |
-|---|---|---|---|
-| B1 | Konsoll | agencyos-konsoll-* | CockpitV2 |
-| B2 | Innboks | agencyos-innboks-* | TriageV2 |
-| B3 | Spillere | agencyos-spillere-* | StallV2 |
-| B4 | Kalender | agencyos-kalender-* | AgencyKalenderV2 |
-| B5 | Økonomi | agencyos-okonomi | AdminOkonomiV2 |
-| B6 | Innstillinger | agencyos-innstillinger | AdminSettingsV2 |
-| B7 | AK-stigen + AgenticOS + profil | rester fase1 admin | |
+### Pakke 2 — Diff-lukking på det galleriene avdekker (~2 t)
 
-**Bundle:** `overnight-B-pp2.bundle`
+Der pakke 1 finner åpenbare avvik (feil spacing, feil CTA, manglende seksjon): fiks med minimal
+diff, regenerer skjermbildet. Kun avvik der fasit er entydig — skjønnsspørsmål listes i galleriet
+som spørsmål til Anders i stedet.
 
----
+### Pakke 3 — PP-3 pixel-pass (Live / Runde / Fangst / Workbench / Forelder, ~3–4 t)
 
-### BATCH C — PP-3 Live / Runde / WB / Fangst / Forelder · ~2–4 t
+PP-3.1–3.12 fra chrome-PORT til READY_SIGN: strukturell pixel per fasit, slugs verifisert,
+skjermbilder inn i galleriet. Workbench-mobil og live-økt prioriteres (høyest bruk).
 
-| # | Pakke |
-|---|---|
-| C1 | Live brief / active / summary (cream, 56 clay start) |
-| C2 | Runde live + logg |
-| C3 | Test gjennomfør |
-| C4 | FangstModal = fangstsheet |
-| C5 | Workbench d/m/turnering |
-| C6 | Foreldreportal hub |
+### Pakke 4 — De 36 `[ ]` bygges, i denne rekkefølgen (~resten av natten)
 
-**Bundle:** `overnight-C-pp3.bundle`  
-**Milestone:** fase1 33/33 `[~]` READY_SIGN
+1. **PP-4 W1** (11): drills, drill-detalj, økt-detalj, fys-plan, teknisk-plan, tester-hub,
+   test-detalj, turneringer, turnering-detalj, feiring, live-tapper.
+2. **F2.6-primitiver** som PP-5 trenger (datavis/trackman/golfdata) — port én gang, komponer etterpå.
+3. **PP-5 W2** (12): putte-lab, trackman liste/detalj, analyse-hull, runder, runde-detalj,
+   gameplan ×2, datagolf, filter-sheet, varsler, hjem-rest.
+4. **PP-6–PP-8 mal-fabrikk:** malen 100 % pixel først, deretter variant-pass per rute inn i
+   `PP-W3/W4/W5-VARIANTS.md`.
+5. **PP-9 W6** (wang/gfgk microsites — egne tokens, ikke Paper-shell).
 
----
+Hver skjerm: READY_SIGN + skjermbildepar inn i galleriet. Commit per 1–3 skjermer, verify grønt
+før hver merge.
 
-### BATCH D — PP-4 W1 (økt/drill/test/turnering/feiring) · ~2–3 t
+### Pakke 5 — Nattrapport (siste 30 min, eller ved stopp)
 
-Alle 11 W1 HTML → eier-komponenter.  
-**Bundle:** `overnight-D-pp4.bundle`
+`docs/port/NATTRAPPORT-2026-08-10.md`: hva ble READY_SIGN, hva ble BLOCKED og hvorfor,
+checklist-tellere før/etter, lenke til galleriet, de 3 viktigste beslutningene Anders må ta.
+Oppdater `docs/STATUS-NÅ.md`-snapshotlinjen + `WAVE-STATUS-MASTER.md`.
 
 ---
 
-### BATCH E — PP-5 W2 data-dybde · ~3–5 t
+## 3. Autonomi-protokoll (uendret fra v1.0, presisert)
 
-| Prioritet | Skjerm |
-|---|---|
-| E1 | Putte-lab |
-| E2 | TrackMan liste + detalj (canonical mal/*) |
-| E3 | Analyse-hull |
-| E4 | Runder liste/detalj |
-| E5 | Gameplan + banekart |
-| E6 | DataGolf |
-| E7 | Historikk-filter + hjem-varsler/rest |
-
-Port F2.6 primitiver **kun når skjerm krever det** (minimal).  
-**Bundle:** `overnight-E-pp5.bundle`
+1. **Fasit vinner** på layout/CTA/logo/type. Skjønn → spørsmål i galleriet, ikke gjetting.
+2. **Én solid clay** per view; ellers ink CTA.
+3. **Minimal diff** — aldri refaktor utenfor skjermen.
+4. **Mal før variant** (W3–W5). **PlayerHQ før AgencyOS** i samme blokk.
+5. Manglende data i fasit: ærlig tom tilstand, aldri fake seed.
+6. Usikker rute: `github.md` + `PP-0-ROUTE-MAP.md`.
+7. Batch pushes — ikke én push per småfiks (gotchas §Token-økonomi).
+8. Lange kommandoer til loggfil, les halen (aldri rå strøm i kontekst).
+9. To mislykkede forsøk på samme feil → `BLOCKED`, neste pakke.
+10. Stopp KUN ved: Anders sier stopp · build-brudd som ikke løses på 2 forsøk · disk/miljøfeil.
 
 ---
 
-### BATCH F — PP-6 W3 mal-fabrikk · ~3–4 t
+## 4. Suksesskriterium for natten
 
-Implementer/oppdater **mal-skall** + fyll `docs/port/PP-W3-VARIANTS.md`:
+> **Anders våkner til ett galleri-dokument, signerer fra iPhone, og ingenting annet krever ham.**
 
-1. innstillinger (9 ruter)  
-2. abonnement  
-3. helse  
-4. booking-ny + mine  
-5. coach-hub  
-6. talent  
-
-**Bundle:** `overnight-F-pp6.bundle`
-
----
-
-### BATCH G — PP-7 W4 Agency maler · ~3–4 t
-
-1. godkjenninger/kø  
-2. gruppe-detalj  
-3. bookinger  
-4. planbibliotek  
-5. turneringer  
-6. oppsett  
-
-+ `docs/port/PP-W4-VARIANTS.md`  
-**Bundle:** `overnight-G-pp7.bundle`
-
----
-
-### BATCH H — PP-8 W5 Marketing/Auth/Forelder/System · ~2–3 t
-
-1. marketing-side + katalog  
-2. auth-flyt + samtykke (utvid PP-1.6)  
-3. forelder-barn  
-4. system-tilstander  
-
-+ `docs/port/PP-W5-VARIANTS.md`  
-**Bundle:** `overnight-H-pp8.bundle`
-
----
-
-### BATCH I — PP-9 W6 microsites · ~1–2 t
-
-WANG + GFGK mot egne tokens (ikke tving Paper-shell).  
-**Bundle:** `overnight-I-pp9.bundle`
-
----
-
-### BATCH J — PP-10 Regression + lukking · ~1–2 t
-
-1. Checklist: 0 `[ ]`  
-2. Grep: ingen gamle logo-paths; neon CTA lint grønn  
-3. `npm run typecheck` (hvis mulig) / smoke kritiske ruter  
-4. Oppdater `WAVE-STATUS-MASTER.md` + `OVERNIGHT-RUNLOG.md`  
-5. Final mega-bundle `overnight-FINAL.bundle` = origin/main..HEAD  
-
-**Exit natt:** Agent skriver:
-
-```
-NIGHT_COMPLETE
-batches: A…J status
-commits: N
-ready_sign: M skjermer
-blocked: …
-mac_push: se overnight-FINAL + PUSH-OVERNIGHT.sh
-```
-
----
-
-## 3. Per-skjerm fabrikk (uendret, rask)
-
-```
-1. Åpne fasit HTML (grep CSS: topp, dokk, btn.now, btn.ink, loop)
-2. Åpne eier .tsx
-3. Diff ≤ 15 punkter
-4. Patch minimal
-5. data-paper-slug="<fasit-stem>"
-6. Oppdater checklist [~] + READY_SIGN i PP-*-STATUS
-7. Commit etter 1–3 skjermer
-```
-
-**Tidsboks:** max 45 min per 1:1-fasit; max 90 min per mal. Overskridelse → mark `PARTIAL`, neste.
-
----
-
-## 4. Push-strategi (Mac om morgenen / underveis)
-
-```bash
-# Generisk mønster (agent produserer bundle + disse linjene):
-cd ~/Developer/akgolf-hq
-git checkout main && git pull origin main
-git fetch ~/Downloads/<bundle>.bundle HEAD:refs/heads/handoff/overnight-<id>
-git merge --ff-only handoff/overnight-<id>
-git push origin main
-```
-
-Agent skal **alltid** ha siste bundle i `/home/workdir/artifacts/` og oppdatert:
-
-`docs/port/OVERNIGHT-RUNLOG.md` med:
-
-```
-## HH:MM
-- batch: A2
-- commit: abc123
-- files: …
-- next: A3
-```
-
----
-
-## 5. Timeplan (ca. 8–12 t agent-tid)
-
-| Blokk | UTC+2 | Batch |
+| Måltall | Minimum | Mål |
 |---|---|---|
-| 1 | start+0–3t | A (PP-1) |
-| 2 | +3–6t | B (PP-2) |
-| 3 | +6–8t | C (PP-3) → fase1 lukket |
-| 4 | +8–10t | D + E (W1/W2) |
-| 5 | +10–13t | F + G (maler W3/W4) |
-| 6 | +13–15t | H + I + J |
-
-Hvis kortere natt: **prioritet A → B → C → E1–E3 → F booking-maler → J partial**.
+| Skjermer i sign-off-galleri | 11 (PP-1 + PP-2-kjerne) | 25+ |
+| `[ ]` → `[~]` READY_SIGN | 10 | 25+ |
+| Røde merges til main | **0** | 0 |
+| `[x]` satt av agent | **0** | 0 |
 
 ---
 
-## 6. OUT (ikke i nattkjøring)
+## 5. Oppstart
 
-- Stats (~45) — egen plan  
-- AgenticOS dyp produktlogikk  
-- Ny backend-features utenom det som allerede finnes  
-- Pixel D12 sign-off  
-- Prisma migrate / env-endringer  
-- Drill bank seed (fjernet — ikke gjeninnfør)  
+Natten startes med én melding fra Anders i en frisk økt (Sonnet 5 per beslutning 2026-08-04):
 
----
-
-## 7. Kvalitetsgulv (selv uten D12)
-
-Hver portet skjerm **må** ha:
-
-- [ ] `data-paper-slug`  
-- [ ] Ingen solid neon-lime CTA  
-- [ ] Primær handling = ink eller clay iht. fasit  
-- [ ] Logo paper/LogoAK surface riktig  
-- [ ] Tom tilstand ærlig  
-- [ ] Mobil 390 lesbar (ingen horisontal overflow i hovedflate)  
-
----
-
-## 8. Startkommando til agent (lim inn når natten starter)
-
-```
-OVERNIGHT MODE ON
-Les docs/port/OVERNIGHT-AUTONOMOUS-PLAN.md
-Auto-yes: aldri spør om fortsettelse
-Start: BATCH A fra første ikke-DONE (nå A2 Plan)
-Etter hver pakke: commit + oppdater OVERNIGHT-RUNLOG.md + PP-status
-Etter hver batch: bundle i artifacts/
-Kjør til NIGHT_COMPLETE eller stopp
-Ved «fortsett»/«next»: bare neste pakke
+```text
+Kjør OVERNIGHT-AUTONOMOUS-PLAN.md v2.0 pakke 1–5. Auto-godkjent per planen. Stopp-ord: stopp.
 ```
 
----
-
-## 9. Morgen-sjekkliste (Anders, 10 min)
-
-1. Last ned siste `overnight-*.bundle` / FINAL  
-2. Push til main (kommandoer i chatten / RUNLOG)  
-3. Vercel Ready → hard refresh  
-4. Spotcheck: `/portal`, `/portal/planlegge`, `/admin/agencyos`  
-5. Svar `godkjent PP-1` / list avvik — agent fikser dagtid  
-
----
-
-## 10. Status nå (ved plan-opprettelse)
-
-| | |
-|---|---|
-| PP-0 | DONE + på main (`30dfdf57`) |
-| PP-1.1 Hjem/chat | Kode DONE (`7b0a68c`) — bundle `pp1-1` må pushes hvis ikke merget |
-| PP-1.2…1.7 | Neste |
-| Checklist | ~2 `[x]`, ~51 `[~]`, ~38 `[ ]` |
-
----
-
-## 11. Én setning
-
-**Agent jobber uavbrutt A→J med auto-yes, commits og bundles; du pusher om morgenen og signerer — da er hele Paper in-scope kode-komplett og klar for pixel-sign-off.**
+Meldingen er samtidig det eksplisitte «ja» for nattens main-merges innenfor §1.1-vilkårene.
