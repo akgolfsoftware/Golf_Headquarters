@@ -11,7 +11,12 @@
 
 ---
 
-## 0. Definisjon av «komplett skjerm»
+## 0. Preflight (obligatorisk før Wave A)
+
+Se **`docs/port/PAPER-PREFLIGHT-CONFLICTS-2026-08-09.md`**.  
+Wave **0** (token-semantikk, ingen dobbel shell, golfdata-scope, Mac push) **før** pixel-port.
+
+## 0b. Definisjon av «komplett skjerm»
 
 En skjerm er **DONE** kun når alle er sanne:
 

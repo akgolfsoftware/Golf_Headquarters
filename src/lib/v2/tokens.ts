@@ -6,6 +6,11 @@
  *
  * C smalt (2026-07-31): T.handling = «Én ting nå»-monopolet (#D97757).
  * Maks én gang per skjerm. Ikke bytt ut forest/lime for vanlige knapper.
+ * TOKEN-SEMANTIKK (Paper bridge, 2026-08-09 — preflight):
+ * - T.lime / --v2-lime = var(--p-cta) = INK #141413 på lys (IKKE neon #D1F843).
+ * - T.handling / --v2-handling = clay #D97757 = «Én ting nå»-monopolet.
+ * - Neon AK-lime bare via T.farge.limeMerke (eller eksplisitt brand) — ikke T.lime.
+ * - Se docs/port/PAPER-PREFLIGHT-CONFLICTS-2026-08-09.md
  */
 export const T = {
   // Flater — lys default; mørk via data-v2-tema="dark"
