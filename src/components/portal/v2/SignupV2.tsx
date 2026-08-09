@@ -241,7 +241,7 @@ function GoogleG() {
 
 function EllerSkille() {
   return (
-    <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+    <div  data-paper-slug="auth-signup" style={{ display: "flex", alignItems: "center", gap: 12 }}>
       <span style={{ flex: 1, height: 1, background: T.border }} />
       <span
         style={{

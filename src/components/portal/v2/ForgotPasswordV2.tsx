@@ -175,7 +175,7 @@ function Lenke({ href, children }: { href: string; children: ReactNode }) {
 function BrandPanel() {
   return (
     <div
-      className="hidden md:flex"
+ data-paper-slug="auth-forgot"       className="hidden md:flex"
       style={{
         width: 520,
         flex: "none",

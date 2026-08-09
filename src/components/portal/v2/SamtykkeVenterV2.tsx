@@ -153,7 +153,7 @@ function Knapp({
 function BrandPanel() {
   return (
     <div
-      className="hidden md:flex"
+ data-paper-slug="auth-samtykke-venter"       className="hidden md:flex"
       style={{
         width: 520,
         flex: "none",
