@@ -11,8 +11,8 @@
  *  - Foreldreportal sidebar (variant="parent")
  *  - Mobile drawers (samme komponent, justerbart via prop)
  *
- * Logo: /logos/ak-golf-logo-white-on-dark.svg (hvit "ak" med lime-prikk på k)
- * Bakgrunn forventes mørk (AK forest-grønn).
+ * Logo: /logos/paper/ak-golf-logo-mono-paper.svg (paper wordmark på mørk flate).
+ * Bakgrunn forventes mørk (Paper rail #141413).
  */
 
 import Link from "next/link";
@@ -63,7 +63,7 @@ export function SidebarBrand({
       className={`flex flex-col items-center gap-2 py-2 no-underline ${className}`.trim()}
     >
       <Image
-        src="/logos/ak-golf-logo-white-on-dark.svg"
+        src="/logos/paper/ak-golf-logo-mono-paper.svg"
         alt=""
         width={logoWidth}
         height={Math.round(logoWidth * (470 / 538))}
@@ -76,7 +76,7 @@ export function SidebarBrand({
           fontSize: 10.5,
           fontWeight: 700,
           letterSpacing: "0.14em",
-          color: "hsl(var(--accent))",
+          color: "#D97757",
           textAlign: "center",
           lineHeight: 1.2,
         }}

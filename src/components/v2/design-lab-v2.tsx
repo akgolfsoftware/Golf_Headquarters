@@ -109,8 +109,8 @@ export function DesignLabV2() {
   const tema = useSyncExternalStore(abonner, lesTema, () => "light" as V2Tema);
   const logoSrc =
     tema === "dark"
-      ? "/logos/ak-golf-logo-white-on-dark.svg"
-      : "/logos/ak-golf-logo-primary-on-light.svg";
+      ? "/logos/paper/ak-golf-logo-mono-paper.svg"
+      : "/logos/paper/ak-golf-logo-on-paper.svg";
 
   return (
     <div

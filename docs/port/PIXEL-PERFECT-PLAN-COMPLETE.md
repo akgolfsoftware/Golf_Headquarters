@@ -166,6 +166,8 @@ Navnekonvensjon: **PP-** (Pixel Perfect) for å skille fra gamle Wave A–I (chr
 
 ### PP-0 · Foundation (1–2 dager)
 
+> **PP-0 STATUS 2026-08-09:** kode-gates 0.1–0.6 DONE — se `docs/port/PP-0-STATUS.md`. 0.7 = Vercel verify.
+
 | ID | Oppgave | Exit |
 |---|---|---|
 | PP-0.1 | Bekreft tokens = zip (2) | diff 0 på nøkkelverdier |

@@ -441,7 +441,7 @@ export default async function GfgkJuniorForside() {
           >
             <div className="flex h-[60px] w-[84px] shrink-0 items-center justify-center">
               <Image
-                src="/logos/ak-golf-logo-primary-on-light.svg"
+                src="/logos/paper/ak-golf-logo-on-paper.svg"
                 alt="AK Golf Academy"
                 width={84}
                 height={60}

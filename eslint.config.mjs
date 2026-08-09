@@ -52,6 +52,34 @@ const eslintConfig = defineConfig([
       ],
     },
   },
+
+  // PP-0.5 Paper CTA guards (2026-08-09) — neon lime never as CTA fill;
+  // solid handling monopol is clay #D97757 / T.handling (enTing).
+  {
+    files: ["src/**/*.{ts,tsx}"],
+    ignores: [
+      "src/components/athletic/**",
+      "src/lib/v2/tokens.ts",
+      "src/styles/**",
+      "src/app/globals.css",
+    ],
+    rules: {
+      "no-restricted-syntax": [
+        "error",
+        {
+          selector: "Literal[value='#D1F843']",
+          message:
+            "Paper: neon AK-lime (#D1F843) er merkevare/brand — aldri CTA-fyll. Bruk T.cta (ink) eller T.handling (clay Én ting nå).",
+        },
+        {
+          selector: "Literal[value='#d1f843']",
+          message:
+            "Paper: neon AK-lime (#D1F843) er merkevare/brand — aldri CTA-fyll. Bruk T.cta (ink) eller T.handling (clay Én ting nå).",
+        },
+      ],
+    },
+  },
+
   // Override default ignores of eslint-config-next.
   globalIgnores([
     ".next/**",
