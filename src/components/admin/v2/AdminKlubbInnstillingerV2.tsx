@@ -98,11 +98,12 @@ export function AdminKlubbInnstillingerV2({ klubber, settings }: Props) {
   const totalCoacher = klubber.reduce((s, k) => s + k.coacherCount, 0);
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+    <div data-paper-wave-f="innstillinger" data-od-id="agencyos-innstillinger" style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
       <div>
         <Caps>{`${klubber.length === 1 ? "1 klubb" : `${klubber.length} klubber`} · ${aktive} aktive · AgencyOS`}</Caps>
         <div style={{ marginTop: 10 }}>
-          <Tittel em="innstillinger.">Klubb-</Tittel>
+          <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>Innstillinger</h1>
+        <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>AgencyOS · klubb</span>
         </div>
       </div>
 

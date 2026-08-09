@@ -67,13 +67,18 @@ export function FeiringV2({ data }: { data: FeiringV2Data }) {
   const visSammenligning = data.personligRekord !== null && data.eff !== null && data.eff.total !== null;
 
   return (
-    <div style={{ maxWidth: 520, width: "100%", margin: "0 auto", display: "flex", flexDirection: "column", gap: T.gap }}>
+    <div data-paper-wave-f="feiring" data-od-id="playerhq-feiring" style={{ maxWidth: 520, width: "100%", margin: "0 auto", display: "flex", flexDirection: "column", gap: T.gap }}>
+      {/* Paper topp — fasit: Plan fullført */}
+      <div style={{ textAlign: "center" }}>
+        <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>Plan fullført</h1>
+        <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>{data.planNavn}</span>
+      </div>
       {/* Hero */}
       <Kort tint pad="26px 22px">
         <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 14, textAlign: "center" }}>
           <RingMaaler label="Periode" value={data.prosent} min={0} max={100} unit="%" size={124} />
-          <Caps color={T.lime}>Periode fullført</Caps>
-          <Tittel em="gjennomkjøring!">Utrolig</Tittel>
+          <Caps color={T.handling}>Periode fullført</Caps>
+          <div style={{ fontFamily: T.disp, fontSize: 22, fontWeight: 600, color: T.fg }}>Utrolig gjennomkjøring!</div>
           <p style={{ fontFamily: T.ui, fontSize: 13.5, lineHeight: 1.6, color: T.fg2, maxWidth: 340, margin: 0 }}>
             {data.planNavn} er fullført. {data.ferdige} av {data.total} økter gjennomført.
           </p>
@@ -84,9 +89,9 @@ export function FeiringV2({ data }: { data: FeiringV2Data }) {
       {data.erRekord && (
         <Kort tint>
           <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-            <Icon name="star" size={18} style={{ color: T.lime, flex: "none" }} />
+            <Icon name="star" size={18} style={{ color: T.handling, flex: "none" }} />
             <div style={{ minWidth: 0 }}>
-              <Caps color={T.lime}>Personlig rekord</Caps>
+              <Caps color={T.handling}>Personlig rekord</Caps>
               <div style={{ fontFamily: T.ui, fontSize: 12.5, color: T.fg2, marginTop: 3 }}>
                 Beste SG-Total-delta hittil — bygg videre på dette.
               </div>
@@ -104,7 +109,7 @@ export function FeiringV2({ data }: { data: FeiringV2Data }) {
           <span style={{ fontFamily: T.mono, fontSize: 14, color: T.mut }}>/{data.total} fullført</span>
         </div>
         <div style={{ marginTop: 12, height: 7, borderRadius: 9999, background: T.track, overflow: "hidden" }}>
-          <div style={{ width: `${data.prosent}%`, height: "100%", borderRadius: 9999, background: T.lime, opacity: 0.9 }} />
+          <div style={{ width: `${data.prosent}%`, height: "100%", borderRadius: 9999, background: T.handling, /* enTing */ opacity: 0.95 }} />
         </div>
         <div style={{ fontFamily: T.ui, fontSize: 11.5, color: T.mut, marginTop: 9 }}>
           {data.planNavn} · {data.total} {data.total === 1 ? "uke" : "uker"}
@@ -191,10 +196,11 @@ export function FeiringV2({ data }: { data: FeiringV2Data }) {
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            minHeight: 48,
+            minHeight: 56, // paper enTing
+
             width: "100%",
-            borderRadius: 10,
-            background: T.handling,
+            borderRadius: 12,
+            background: T.handling, /* enTing */
             color: T.onHandling,
             fontFamily: T.ui,
             fontSize: 14,

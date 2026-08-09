@@ -230,10 +230,10 @@ export function AdminAgentTeamV2({ data }: { data: AdminAgentTeamV2Data }) {
   const hode = (
     <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 14, flexWrap: "wrap" }}>
       <div>
-        <Caps>AgencyOS · Agent-team</Caps>
-        <div style={{ marginTop: 10 }}>
-          <Tittel em="team.">Agent</Tittel>
-        </div>
+        <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>AgenticOS</h1>
+        <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>
+          AgencyOS · agent-team · sekvensiell AI
+        </span>
         <p style={{ fontFamily: T.ui, fontSize: 13, color: T.mut, marginTop: 8, maxWidth: 520, lineHeight: 1.55 }}>
           Flere AI-er jobber sekvensielt på én oppgave. Output fra ett steg mates inn i neste.
         </p>
@@ -277,7 +277,7 @@ export function AdminAgentTeamV2({ data }: { data: AdminAgentTeamV2Data }) {
           <span style={{
             display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8,
             minHeight: 48, width: "100%", padding: "10px 16px", borderRadius: 10,
-            background: T.handling, color: T.onHandling, fontFamily: T.ui, fontSize: 14, fontWeight: 600,
+            background: T.handling, color: T.onHandling, minHeight: 52, borderRadius: 12, fontFamily: T.ui, fontSize: 14, fontWeight: 600,
           }}>
             {running ? "Kjører team …" : "Kjør team"}
           </span>
@@ -314,7 +314,7 @@ export function AdminAgentTeamV2({ data }: { data: AdminAgentTeamV2Data }) {
   );
 
   return (
-    <div data-paper-agencyos-agenticos style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 960, margin: "0 auto", width: "100%" }}>
+    <div data-paper-agencyos-agenticos data-paper-wave-f="agenticos" data-od-id="agencyos-agenticos" style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 960, margin: "0 auto", width: "100%" }}>
       {hode}
       {skjema}
       {resultat}

@@ -310,7 +310,7 @@ export function AiDispatchPanelV2({ data }: { data: AiDispatchData }) {
 
   return (
     <Kort
-      eyebrow="AgenticOS · AI-dispatch"
+      eyebrow="AgenticOS · AI-dispatch" data-paper-wave-f="agenticos-dispatch"
       action={
         harKø ? (
           <StatusPill tone="warn">

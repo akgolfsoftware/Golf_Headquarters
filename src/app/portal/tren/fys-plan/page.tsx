@@ -66,13 +66,14 @@ export default async function FysPlanListePage() {
   return (
     <V2Shell bredde="kolonne" aktiv="plan" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
       <TilbakeLenke href="/portal/tren">Tren</TilbakeLenke>
-      <div data-paper-portal-fys-plan style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
+      <div data-paper-portal-fys-plan data-paper-wave-f="fys-plan" data-od-id="playerhq-fys-plan" style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
         {/* Hode */}
         <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
           <div>
             <Caps>Tren · Fysisk plan</Caps>
             <div style={{ marginTop: 10 }}>
-              <Tittel em="-plan">FYS</Tittel>
+              <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>FYS</h1>
+              <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>Fysisk plan</span>
             </div>
           </div>
           <NyPlanKnapp variant="header" />

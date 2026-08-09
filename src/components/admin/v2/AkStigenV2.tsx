@@ -30,16 +30,15 @@ export function AkStigenV2({ grupper = [] }: { grupper?: AkStigenGruppe[] }) {
   return (
     <div
       data-paper-agencyos-ak-stigen
+      data-paper-wave-f="ak-stigen"
+      data-od-id="agencyos-ak-stigen"
       style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 960, margin: "0 auto", width: "100%" }}
     >
       <div>
-        <Caps>AgencyOS · Junior</Caps>
-        <div style={{ marginTop: 10 }}>
-          <Tittel>AK-stigen</Tittel>
-        </div>
-        <p style={{ margin: "10px 0 0", fontFamily: T.ui, fontSize: 13, color: T.mut, maxWidth: "52ch", lineHeight: 1.5 }}>
-          Mini → Knøtt → Basis → Utvikling → Elite. Én stige for hele juniorprogrammet.
-        </p>
+        <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>AK-stigen</h1>
+        <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>
+          Junior · Mini → Knøtt → Basis → Utvikling → Elite
+        </span>
       </div>
 
       {trengerOppfolging > 0 && (
@@ -68,15 +67,16 @@ export function AkStigenV2({ grupper = [] }: { grupper?: AkStigenGruppe[] }) {
               display: "inline-flex",
               alignItems: "center",
               gap: 8,
-              minHeight: 44,
+              minHeight: 56,
               padding: "10px 16px",
-              borderRadius: 10,
+              borderRadius: 12,
               background: T.handling,
               color: T.onHandling,
               fontFamily: T.ui,
-              fontSize: 13,
+              fontSize: 14,
               fontWeight: 600,
             }}
+            data-paper-en-ting="true"
           >
             Åpne i Spillere
           </Link>
@@ -140,14 +140,15 @@ export function AkStigenV2({ grupper = [] }: { grupper?: AkStigenGruppe[] }) {
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            minHeight: 48,
-            borderRadius: 10,
+            minHeight: 56,
+            borderRadius: 12,
             background: T.handling,
             color: T.onHandling,
             fontFamily: T.ui,
             fontSize: 14,
             fontWeight: 600,
           }}
+          data-paper-en-ting="true"
         >
           Åpne i Spillere
         </Link>

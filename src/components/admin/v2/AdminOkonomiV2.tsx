@@ -169,13 +169,10 @@ export function AdminOkonomiV2({ data }: { data: AdminOkonomiV2Data }) {
   const hode = (
     <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 14, flexWrap: "wrap" }}>
       <div>
-        <Caps>{`Mer · Økonomi · ${data.periodeLabel}`}</Caps>
-        <div style={{ marginTop: 10 }}>
-          <Tittel mobile={mobile}>Økonomi</Tittel>
-        </div>
-        <p style={{ fontFamily: T.ui, fontSize: 12.5, color: T.mut, margin: "10px 0 0", maxWidth: "52ch", lineHeight: 1.5 }}>
-          Penger og kapasitet — ikke sportstall. Innsikt eier SG og progresjon.
-        </p>
+        <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>Økonomi</h1>
+        <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>
+          Mer · {data.periodeLabel} · penger og kapasitet
+        </span>
       </div>
       <a
         href={data.stripeHref}
@@ -183,10 +180,11 @@ export function AdminOkonomiV2({ data }: { data: AdminOkonomiV2Data }) {
         rel="noopener noreferrer"
         style={{ textDecoration: "none" }}
         className="hidden md:inline-flex"
+        data-paper-en-ting="true"
       >
         <span style={{
-          display: "inline-flex", alignItems: "center", gap: 8, minHeight: 44, padding: "10px 16px",
-          borderRadius: 10, background: T.handling, color: T.onHandling, fontFamily: T.ui, fontSize: 13, fontWeight: 600,
+          display: "inline-flex", alignItems: "center", gap: 8, minHeight: 56, padding: "10px 16px",
+          borderRadius: 12, background: T.handling, color: T.onHandling, fontFamily: T.ui, fontSize: 14, fontWeight: 600,
         }}>Åpne Stripe</span>
       </a>
     </div>
@@ -409,7 +407,7 @@ export function AdminOkonomiV2({ data }: { data: AdminOkonomiV2Data }) {
   };
 
   return (
-    <div data-paper-agencyos-okonomi style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 960, margin: "0 auto", width: "100%", background: "var(--v2-bg)" }}>
+    <div data-paper-agencyos-okonomi data-paper-wave-f="okonomi" data-od-id="agencyos-okonomi" style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 960, margin: "0 auto", width: "100%", background: T.bg }}>
       {hode}
 
       {/* Mobil-snarvei (skjult på desktop der den ligger i hodet) */}
@@ -421,8 +419,8 @@ export function AdminOkonomiV2({ data }: { data: AdminOkonomiV2Data }) {
         className="flex md:hidden"
       >
         <span style={{
-          display: "inline-flex", alignItems: "center", gap: 8, minHeight: 44, padding: "10px 16px",
-          borderRadius: 10, background: T.handling, color: T.onHandling, fontFamily: T.ui, fontSize: 13, fontWeight: 600,
+          display: "inline-flex", alignItems: "center", gap: 8, minHeight: 56, padding: "10px 16px",
+          borderRadius: 12, background: T.handling, color: T.onHandling, fontFamily: T.ui, fontSize: 14, fontWeight: 600, width: "100%", justifyContent: "center",
         }}>Åpne Stripe</span>
       </a>
 

@@ -46,11 +46,12 @@ export function FysiskV2({ data }: { data: FysiskViewData }) {
 
   if (!okt) {
     return (
-      <div data-paper-portal-fysisk style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
+      <div data-paper-portal-fysisk data-paper-wave-f="fys" data-od-id="playerhq-fys-plan" style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
         <div>
           <Caps>Fysisk trening</Caps>
           <div style={{ marginTop: 10 }}>
-            <Tittel mobile={mobile} em={spillerNavn.split(" ")[0]}>Fysisk ·</Tittel>
+            <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>FYS</h1>
+            <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>{spillerNavn}</span>
           </div>
         </div>
         <div className="grid grid-cols-3" style={{ gap: 8 }}>
@@ -76,8 +77,8 @@ export function FysiskV2({ data }: { data: FysiskViewData }) {
         </Kort>
         <Link href="/portal/planlegge/workbench?zoom=uke" style={{ textDecoration: "none", display: "block" }}>
           <span style={{
-            display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, minHeight: 48, width: "100%", padding: "10px 16px",
-            borderRadius: 10, background: T.handling, color: T.onHandling, fontFamily: T.ui, fontSize: 14, fontWeight: 600,
+            display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, minHeight: 56, width: "100%", padding: "10px 16px",
+            borderRadius: 12, background: T.handling, color: T.onHandling, fontFamily: T.ui, fontSize: 14, fontWeight: 600,
           }}>Åpne Workbench
           </span>
         </Link>
@@ -103,7 +104,7 @@ export function FysiskV2({ data }: { data: FysiskViewData }) {
   const domSone = okt.intervaller[0]?.sone ?? "S3";
 
   return (
-    <div data-paper-portal-fysisk style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
+    <div data-paper-portal-fysisk data-paper-wave-f="fys" data-od-id="playerhq-fys-plan" style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
       {/* Hode */}
       <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
         <div>
@@ -153,8 +154,8 @@ export function FysiskV2({ data }: { data: FysiskViewData }) {
           <div style={{ marginTop: 12 }}>
             <Link href="/portal/planlegge/workbench?zoom=uke" style={{ textDecoration: "none", display: "block" }}>
               <span style={{
-            display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, minHeight: 48, width: "100%", padding: "10px 16px",
-            borderRadius: 10, background: T.handling, color: T.onHandling, fontFamily: T.ui, fontSize: 14, fontWeight: 600,
+            display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, minHeight: 56, width: "100%", padding: "10px 16px",
+            borderRadius: 12, background: T.handling, color: T.onHandling, fontFamily: T.ui, fontSize: 14, fontWeight: 600,
           }}>Åpne Workbench
               </span>
             </Link>
@@ -168,7 +169,7 @@ export function FysiskV2({ data }: { data: FysiskViewData }) {
 
       {/* Styrke — én logger per øvelse (sett × reps) */}
       {okt.styrke.length > 0 && (
-        <div data-paper-portal-fysisk style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
+        <div data-paper-portal-fysisk data-paper-wave-f="fys" data-od-id="playerhq-fys-plan" style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
           <Caps>Styrke · logg sett × reps</Caps>
           {okt.styrke.map((o) => (
             <SettRepsLogger

@@ -62,23 +62,23 @@ export function TurneringerV2({ data }: { data: TurneringerData }) {
   const antallOrd = antall <= 12 ? TALLORD[antall] : String(antall);
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
-      {/* Hode + B: status */}
+    <div data-paper-wave-f="turneringer" data-od-id="playerhq-turneringer" style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
+      {/* Paper .topp */}
       <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
         <div>
-          <Caps>Oversikt · {aar}</Caps>
-          <div style={{ marginTop: 10 }}>
-            <Tittel mobile={mobile} em="påmeldt.">{antallOrd}</Tittel>
-          </div>
+          <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>Turneringer</h1>
+          <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>
+            Oversikt · {aar} · {antallOrd} påmeldt
+          </span>
         </div>
-        <StatusPill tone={antall > 0 ? "lime" : "info"}>
+        <StatusPill tone={antall > 0 ? "info" : "info"}>
           {antall} {antall === 1 ? "turnering" : "turneringer"}
         </StatusPill>
       </div>
 
-      {/* B: én primær CTA først */}
+      {/* Primær: ink workbench-inngang (planlegging) — enTing hvis booking-intent */}
       <Link href="/portal/planlegge/workbench?zoom=uke" style={{ textDecoration: "none", display: "block" }}>
-        <CTAPill icon="calendar-plus" full>
+        <CTAPill icon="calendar-plus" full enTing>
           Planlegg i Workbench
         </CTAPill>
       </Link>
