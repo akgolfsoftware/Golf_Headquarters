@@ -41,7 +41,7 @@ export function PaperTopp({
           style={{
             margin: 0,
             fontFamily: T.disp,
-            fontSize: 20,
+            fontSize: 17,
             fontWeight: 600,
             letterSpacing: "-0.02em",
             color: T.fg,
@@ -54,10 +54,11 @@ export function PaperTopp({
           <div
             className="paper-sub"
             style={{
-              fontFamily: T.ui,
-              fontSize: 12.5,
+              display: "block",
+              fontFamily: T.mono,
+              fontSize: 10.5,
               color: T.mut,
-              marginTop: 3,
+              marginTop: 2,
               lineHeight: 1.35,
             }}
           >

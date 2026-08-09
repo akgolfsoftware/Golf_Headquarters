@@ -91,8 +91,15 @@ function LoopNav({ gjennomfore }: { gjennomfore: GjennomforeData }) {
   return (
     <nav
       aria-label="Sløyfen før, under og etter økta"
-      style={{ display: "flex", alignItems: "center", gap: 4, marginLeft: "auto" }}
       data-od-id="loop-nav"
+      data-paper-loop
+      style={{
+        display: "flex",
+        alignItems: "stretch",
+        width: "100%",
+        borderBottom: `1px solid ${T.border}`,
+        background: T.bg,
+      }}
     >
       {steg.map((s, i) => {
         const on = s.id === aktiv;
@@ -101,20 +108,22 @@ function LoopNav({ gjennomfore }: { gjennomfore: GjennomforeData }) {
           <span
             style={{
               display: "flex",
+              flex: 1,
               flexDirection: "column",
+              alignItems: "center",
               justifyContent: "center",
-              minHeight: 44,
-              padding: "0 12px",
-              borderRadius: 8,
-              background: on ? T.panel2 : "transparent",
-              color: on ? T.fg : kan ? T.mut : T.mut,
+              minHeight: 52,
+              padding: "8px 6px",
+              borderBottom: on ? `2px solid ${T.handling}` : "2px solid transparent",
+              color: on ? T.fg : T.mut,
               fontFamily: T.mono,
-              fontSize: 10,
+              fontSize: 11,
               fontWeight: 600,
-              letterSpacing: "0.09em",
+              letterSpacing: "0.08em",
               textTransform: "uppercase",
-              opacity: kan || on ? 1 : 0.5,
+              opacity: kan || on ? 1 : 0.45,
               pointerEvents: kan || on ? "auto" : "none",
+              textAlign: "center",
             }}
           >
             {s.label}
@@ -126,7 +135,7 @@ function LoopNav({ gjennomfore }: { gjennomfore: GjennomforeData }) {
                 letterSpacing: 0,
                 textTransform: "none",
                 color: on ? T.fg2 : T.mut,
-                marginTop: 1,
+                marginTop: 2,
               }}
             >
               {s.sub}
@@ -134,18 +143,18 @@ function LoopNav({ gjennomfore }: { gjennomfore: GjennomforeData }) {
           </span>
         );
         return (
-          <span key={s.id} style={{ display: "contents" }}>
+          <span key={s.id} style={{ display: "flex", flex: 1, alignItems: "stretch" }}>
             {s.href && !on ? (
-              <Link href={s.href} style={{ textDecoration: "none" }} data-od-id={`loop-${s.id}`}>
+              <Link href={s.href} style={{ textDecoration: "none", flex: 1, display: "flex" }} data-od-id={`loop-${s.id}`}>
                 {cell}
               </Link>
             ) : (
-              <span aria-current={on ? "step" : undefined} data-od-id={`loop-${s.id}`}>
+              <span aria-current={on ? "step" : undefined} data-od-id={`loop-${s.id}`} style={{ flex: 1, display: "flex" }}>
                 {cell}
               </span>
             )}
             {i < steg.length - 1 && (
-              <span style={{ color: T.mut, fontSize: 11, padding: "0 2px" }} aria-hidden>
+              <span style={{ color: T.mut, fontSize: 10, alignSelf: "center", padding: "0 2px", flex: "none" }} aria-hidden>
                 →
               </span>
             )}

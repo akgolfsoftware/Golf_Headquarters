@@ -427,7 +427,7 @@ function MerPanel({ grupper, rom, onClose, mobil, full, erAgency }: { grupper?: 
                       className="v2-press v2-focus"
                       style={{ display: "flex", alignItems: "center", gap: 10, padding: "7px 8px", borderRadius: 9, textDecoration: "none", color: on ? T.lime : T.fg, background: on ? `color-mix(in srgb, ${T.lime} 8%, transparent)` : "transparent" }}
                     >
-                      <Icon name={it.icon} size={15} style={{ color: on ? T.lime : T.mut, flex: "none" }} />
+                      <Icon name={it.icon} size={15} style={{ color: on ? T.railOn : T.railFg, flex: "none" }} />
                       <span style={{ fontSize: 12.5, fontWeight: 500 }}>{it.label}</span>
                     </Link>
                   );
@@ -518,10 +518,11 @@ function IkonRailNav({ aktiv, nav, mer, rom, navn, avatarUrl, erAgency }: Requir
         top: 0,
         height: "100vh",
         overflowY: "auto",
-        background: "#141413",
-        color: "#b0aea5",
+        background: T.rail,
+        color: T.railFg,
       }}
       aria-label="Hovedmeny"
+      data-paper-rail
     >
       <LogoAK size={28} surface="ink" style={{ marginBottom: 12, flex: "none" }} />
       {nav.map((n) => <RailLenke key={n.id} item={n} on={aktiv === n.id} dark />)}
@@ -563,7 +564,8 @@ function BunnNavLenker({ aktiv, nav, mer }: { aktiv?: string; nav: V2NavItem[]; 
     <>
       <nav
         className="flex md:hidden"
-        style={{ position: "fixed", bottom: 0, left: 0, right: 0, zIndex: 40, justifyContent: "space-around", padding: "8px 8px calc(16px + env(safe-area-inset-bottom))", borderTop: `1px solid ${T.border}`, background: T.bg }}
+        data-paper-faner
+        style={{ position: "fixed", bottom: 0, left: 0, right: 0, zIndex: 40, justifyContent: "space-around", padding: "6px 4px calc(10px + env(safe-area-inset-bottom))", borderTop: "1px solid rgba(250,249,245,0.08)", background: T.rail }}
         aria-label="Hovedmeny"
       >
         {synlige.map((n) => {
@@ -576,8 +578,11 @@ function BunnNavLenker({ aktiv, nav, mer }: { aktiv?: string; nav: V2NavItem[]; 
               aria-current={on ? "page" : undefined}
               aria-label={badge ? `${n.label}, ${badge} i kø` : n.label}
               className="v2-press"
-              style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", gap: 4, padding: "4px 0", color: on ? T.lime : T.mut, textDecoration: "none", position: "relative" }}
+              style={{ flex: 1, minHeight: 56, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 3, padding: "4px 0", color: on ? T.railOn : T.railFg, textDecoration: "none", position: "relative" }}
             >
+              {on && (
+                <span aria-hidden style={{ position: "absolute", top: 0, left: "24%", right: "24%", height: 2, borderRadius: 999, background: T.railOn }} />
+              )}
               <span style={{ position: "relative", display: "inline-flex" }}>
                 <Icon name={n.icon} size={20} strokeWidth={on ? 2 : 1.5} />
                 {badge != null && (
@@ -614,7 +619,7 @@ function BunnNavLenker({ aktiv, nav, mer }: { aktiv?: string; nav: V2NavItem[]; 
             aria-haspopup="menu"
             aria-expanded={merOpen}
             className="v2-press"
-            style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", gap: 4, padding: "4px 0", color: merOpen ? T.lime : T.mut, background: "transparent", border: 0, cursor: "pointer" }}
+            style={{ flex: 1, minHeight: 56, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 3, padding: "4px 0", color: merOpen ? T.railOn : T.railFg, background: "transparent", border: 0, cursor: "pointer" }}
           >
             <Icon name="more-horizontal" size={20} strokeWidth={1.5} />
             <span style={{ fontFamily: T.mono, fontSize: 9, fontWeight: 600 }}>Mer</span>
@@ -652,7 +657,8 @@ function AgencyBunnNav({ aktiv, nav, mer, rom }: { aktiv?: string; nav: V2NavIte
     <>
       <nav
         className="flex md:hidden"
-        style={{ position: "fixed", bottom: 0, left: 0, right: 0, zIndex: 40, justifyContent: "space-around", padding: "8px 8px calc(16px + env(safe-area-inset-bottom))", borderTop: `1px solid ${T.border}`, background: T.bg }}
+        data-paper-faner="agency"
+        style={{ position: "fixed", bottom: 0, left: 0, right: 0, zIndex: 40, justifyContent: "space-around", padding: "6px 4px calc(10px + env(safe-area-inset-bottom))", borderTop: "1px solid rgba(250,249,245,0.08)", background: T.rail }}
         aria-label="Hovedmeny"
       >
         {primær.map((n) => {
@@ -665,8 +671,11 @@ function AgencyBunnNav({ aktiv, nav, mer, rom }: { aktiv?: string; nav: V2NavIte
               aria-current={on ? "page" : undefined}
               aria-label={badge ? `${n.label}, ${badge} i kø` : n.label}
               className="v2-press"
-              style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", gap: 4, padding: "4px 0", color: on ? T.lime : T.mut, textDecoration: "none", position: "relative" }}
+              style={{ flex: 1, minHeight: 56, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 3, padding: "4px 0", color: on ? T.railOn : T.railFg, textDecoration: "none", position: "relative" }}
             >
+              {on && (
+                <span aria-hidden style={{ position: "absolute", top: 0, left: "24%", right: "24%", height: 2, borderRadius: 999, background: T.railOn }} />
+              )}
               <span style={{ position: "relative", display: "inline-flex" }}>
                 <Icon name={n.icon} size={20} strokeWidth={on ? 2 : 1.5} />
                 {badge != null && (

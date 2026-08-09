@@ -907,22 +907,22 @@ export function AnalysereV2({
         header(mobile)
       ) : (
         <header
+          data-paper-topp
           style={{
             flex: "none",
             display: "flex",
             alignItems: "center",
-            gap: 12,
-            padding: "12px 20px",
+            gap: 8,
+            padding: "12px 16px",
             borderBottom: `1px solid ${T.border}`,
             background: T.bg,
             position: "sticky",
             top: 0,
             zIndex: 5,
-            borderBottom: `1px solid ${T.border}`,
           }}
         >
           <div style={{ minWidth: 0, flex: 1 }}>
-            <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 20, fontWeight: 600, letterSpacing: "-0.02em", color: T.fg }}>
+            <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>
               Analyse
             </h1>
             <span
@@ -952,8 +952,9 @@ export function AnalysereV2({
           flex: "none",
           borderBottom: `1px solid ${T.border}`,
           background: T.bg,
-          padding: "10px 16px 0",
+          padding: "10px 16px 12px",
         }}
+        data-paper-segs
       >
         <div style={{ maxWidth: 720, margin: "0 auto" }}>
           <PillTabs tabs={visibleTabs.map((t) => ({ id: t.id, l: t.l }))} value={tab} onChange={velgTab} />

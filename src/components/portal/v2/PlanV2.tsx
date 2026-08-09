@@ -128,14 +128,15 @@ export function PlanV2({ data, depthMode = "simple" }: { data: DashboardData; de
     >
       {/* Paper .topp — sticky surface header */}
       <header
+        data-paper-topp
         style={{
           flex: "none",
           display: "flex",
           alignItems: "center",
-          gap: 12,
-          padding: "12px 20px",
+          gap: 8,
+          padding: "12px 16px",
           borderBottom: `1px solid ${T.border}`,
-          background: T.panel,
+          background: T.bg,
           position: "sticky",
           top: 0,
           zIndex: 5,
@@ -443,23 +444,25 @@ export function PlanV2({ data, depthMode = "simple" }: { data: DashboardData; de
             position: "sticky",
             bottom: 0,
             borderTop: `1px solid ${T.border}`,
-            background: T.panel,
+            background: T.bg,
             padding: "12px 16px",
-            paddingBottom: "max(14px, env(safe-area-inset-bottom))",
+            paddingBottom: "max(12px, env(safe-area-inset-bottom))",
           }}
+          data-paper-dokk
         >
           <div style={{ maxWidth: 720, margin: "0 auto" }}>
             <Link
               href={nesteOkt.href}
               className="v2-press v2-focus"
-              data-od-id="plan-dokk-start" data-paper-en-ting="true"
+              data-od-id="plan-dokk-start"
+              data-paper-en-ting="true"
               style={{
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
                 minHeight: 56,
                 width: "100%",
-                borderRadius: T.rCard,
+                borderRadius: 12,
                 background: T.handling,
                 color: T.onHandling,
                 fontFamily: T.ui,

@@ -43,6 +43,10 @@ export const T = {
   onCta: "var(--v2-on-lime)",
   brand: "var(--v2-brand, #D1F843)", // neon AK-lime — ALDRI primær CTA
   onBrand: "#141413",
+  // Paper rail / faner (alltid mørk chrome)
+  rail: "var(--p-rail, #141413)",
+  railFg: "var(--p-rail-fg, #b0aea5)",
+  railOn: "var(--p-rail-on, #faf9f5)",
   // Primærhandling-monopol («Én ting nå») — C smalt, låst 2026-07-31
   handling: "var(--v2-handling)",
   onHandling: "var(--v2-on-handling)",
