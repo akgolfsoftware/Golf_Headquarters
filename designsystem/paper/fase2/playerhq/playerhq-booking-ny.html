@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="nb" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Book time · PlayerHQ · AK Golf HQ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Lora:ital,wght@0,400;0,500;1,400&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="w3-base.css">
+<style>
+/* ═══ PlayerHQ · Booking-veiviser (fase2/W3) ═══
+   Rute: /portal/booking/ny — query-drevet: ?service= → steg 2, &dato= → steg 3,
+   slot-lenke → /portal/booking/ny/bekreft. URL-kontrakten er uendret fra koden.
+   Kilde: ServiceType (aktive) · Location · getAvailableSlots · Subscription
+   (creditsRemaining / monthlyCredits / currentPeriodEnd).
+   Kodens to gater er egne tilstander her: ingen credits igjen (BruktOppV2) og
+   ingen aktive tjenester. Uten pakke redirecter ruten til /coaching — ikke skjerm.
+   Bekreft-siden og kvitteringen følger samme mal — se manifest. */
+.steg{ display:flex; gap:var(--s2); margin-bottom:var(--s4); }
+.steg > div{ flex:1; }
+.steg .strek{ height:3px; border-radius:var(--r-pill); background:var(--soft); }
+.steg .strek.pa{ background:var(--accent); }
+.steg .sl{ display:block; font-family:var(--mono); font-size:9.5px; letter-spacing:.08em;
+  text-transform:uppercase; color:var(--muted); margin-top:var(--s1); }
+.steg .sl.pa{ color:var(--accent-fg); }
+.saldo{ display:flex; align-items:center; justify-content:space-between; gap:var(--s3);
+  padding:var(--s3) var(--s4); border-radius:var(--r); background:var(--soft);
+  border:1px solid var(--border); margin-bottom:var(--s4); }
+.saldo .sv{ font-family:var(--mono); font-size:18px; font-weight:600; font-variant-numeric:tabular-nums; }
+.saldo .sm{ font-family:var(--body); font-size:12.5px; color:var(--muted); }
+.datorad{ display:flex; gap:var(--s2); overflow-x:auto; padding-bottom:var(--s2); margin-bottom:var(--s3); }
+.dato{ flex:none; width:60px; min-height:66px; border-radius:var(--r); border:1px solid var(--border);
+  background:var(--surface); cursor:pointer; display:grid; place-content:center; text-align:center; gap:2px; }
+.dato .dd{ font-family:var(--mono); font-size:9.5px; text-transform:uppercase; color:var(--muted); }
+.dato .dn{ font-family:var(--mono); font-size:17px; font-weight:600; }
+.dato[aria-pressed="true"]{ background:var(--accent); border-color:var(--accent); color:var(--on-accent); }
+.dato[aria-pressed="true"] .dd{ color:var(--on-accent); opacity:.75; }
+.dato:disabled{ opacity:.4; cursor:not-allowed; }
+.slots{ display:grid; grid-template-columns:repeat(3,1fr); gap:var(--s2); }
+.slot{ min-height:var(--tap-lg); border-radius:var(--r); border:1px solid var(--border);
+  background:var(--surface); cursor:pointer; font-family:var(--mono); font-size:14px;
+  font-variant-numeric:tabular-nums; display:grid; place-items:center; gap:1px; }
+.slot small{ font-size:9.5px; color:var(--muted); font-family:var(--mono); }
+.slot:hover{ border-color:var(--mid); }
+.tjeneste[aria-pressed="true"]{ border-color:var(--accent); background:var(--accent-soft); }
+</style>
+</head>
+<body>
+<p class="framehint">PlayerHQ · Book time · 430 px. Under 641 px fyller den skjermen.</p>
+<div class="phone" data-demo-only="true">
+  <header class="topp">
+    <a class="ikon" href="../../fase1/playerhq-booking.html" aria-label="Til Booking" data-od-id="bookny-tilbake"><svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg></a>
+    <div style="min-width:0"><h1>Book time</h1><span class="sub">Velg tjeneste, dag og tid</span></div>
+    <span style="flex:1"></span>
+    <div data-demo-only="true" style="display:flex;gap:4px">
+      <button class="ikon" data-tilstand="steg1" aria-pressed="true" aria-label="Demo: steg 1" data-od-id="bookny-demo-1"><span class="num" style="font-size:10px">1</span></button>
+      <button class="ikon" data-tilstand="steg3" aria-pressed="false" aria-label="Demo: steg 3" data-od-id="bookny-demo-3"><span class="num" style="font-size:10px">3</span></button>
+      <button class="ikon" data-tilstand="bruktopp" aria-pressed="false" aria-label="Demo: brukt opp credits" data-od-id="bookny-demo-brukt"><span class="num" style="font-size:10px">B</span></button>
+      <button class="ikon" data-tilstand="tom" aria-pressed="false" aria-label="Demo: ingen tjenester" data-od-id="bookny-demo-tom"><span class="num" style="font-size:10px">T</span></button>
+    </div>
+    <button class="ikon" id="themeBtn" aria-label="Bytt til mørk modus" data-od-id="bookny-theme"><svg viewBox="0 0 24 24"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></button>
+  </header>
+
+  <main class="kropp">
+
+    <section data-vis="steg1">
+      <div class="steg">
+        <div><div class="strek pa"></div><span class="sl pa">1 Tjeneste</span></div>
+        <div><div class="strek"></div><span class="sl">2 Dag</span></div>
+        <div><div class="strek"></div><span class="sl">3 Tid</span></div>
+      </div>
+      <div class="saldo"><div><span class="sv num">3 av 4</span> <span class="sm">timer igjen denne måneden</span></div><span class="tag">Fornyer 14. sep</span></div>
+
+      <span class="eyebrow">Hva vil du booke?</span>
+      <div style="margin-top:var(--s2)">
+        <button class="rad tjeneste" aria-pressed="true" data-od-id="bookny-tjeneste-0"><div class="tx"><span class="tn">Coachtime 60 min</span><span class="tm">Gamle Fredrikstad GK · 1 time</span></div><span class="hoyre"><span class="hv">1 time</span></span></button>
+        <button class="rad tjeneste" aria-pressed="false" data-od-id="bookny-tjeneste-1"><div class="tx"><span class="tn">TrackMan-økt 60 min</span><span class="tm">Mulligan Indoor Golf · 1 time</span></div><span class="hoyre"><span class="hv">1 time</span></span></button>
+        <button class="rad tjeneste" aria-pressed="false" data-od-id="bookny-tjeneste-2"><div class="tx"><span class="tn">Banetime 90 min</span><span class="tm">Gamle Fredrikstad GK · 1,5 time</span></div><span class="hoyre"><span class="hv">2 timer</span></span></button>
+        <button class="rad tjeneste" aria-pressed="false" data-od-id="bookny-tjeneste-3"><div class="tx"><span class="tn">Videoanalyse 30 min</span><span class="tm">Mulligan Indoor Golf · 30 min</span></div><span class="hoyre"><span class="hv">0,5 time</span></span></button>
+      </div>
+      <button class="btn now full" style="margin-top:var(--s4)" data-od-id="bookny-videre-1">Velg dag</button>
+    </section>
+
+    <section data-vis="steg3" hidden>
+      <div class="steg">
+        <div><div class="strek pa"></div><span class="sl">1 Tjeneste</span></div>
+        <div><div class="strek pa"></div><span class="sl">2 Dag</span></div>
+        <div><div class="strek pa"></div><span class="sl pa">3 Tid</span></div>
+      </div>
+      <div class="kort"><h3>Coachtime 60 min</h3><p>Gamle Fredrikstad GK · torsdag 20. august. Trekkes fra saldoen din — 2 timer igjen etterpå.</p></div>
+
+      <span class="eyebrow">Dag</span>
+      <div class="datorad" style="margin-top:var(--s2)">
+        <button class="dato" aria-pressed="false" data-od-id="bookny-dag-0"><span class="dd">ons</span><span class="dn num">19</span></button>
+        <button class="dato" aria-pressed="true" data-od-id="bookny-dag-1"><span class="dd">tor</span><span class="dn num">20</span></button>
+        <button class="dato" aria-pressed="false" data-od-id="bookny-dag-2"><span class="dd">fre</span><span class="dn num">21</span></button>
+        <button class="dato" disabled data-od-id="bookny-dag-3"><span class="dd">lør</span><span class="dn num">22</span></button>
+        <button class="dato" aria-pressed="false" data-od-id="bookny-dag-4"><span class="dd">søn</span><span class="dn num">23</span></button>
+        <button class="dato" aria-pressed="false" data-od-id="bookny-dag-5"><span class="dd">man</span><span class="dn num">24</span></button>
+      </div>
+
+      <span class="eyebrow">Ledige tider · torsdag 20. august</span>
+      <div class="slots" style="margin-top:var(--s2)">
+        <button class="slot" data-od-id="bookny-slot-0">09:00<small>Anders</small></button>
+        <button class="slot" data-od-id="bookny-slot-1">10:00<small>Anders</small></button>
+        <button class="slot" data-od-id="bookny-slot-2">11:00<small>Mia</small></button>
+        <button class="slot" data-od-id="bookny-slot-3">14:00<small>Anders</small></button>
+        <button class="slot" data-od-id="bookny-slot-4">15:00<small>Mia</small></button>
+        <button class="slot" data-od-id="bookny-slot-5">16:00<small>Anders</small></button>
+      </div>
+      <p style="font-family:var(--body);font-size:12.5px;color:var(--muted);margin-top:var(--s3)">Trykk en tid for å gå til bekreftelsen. Der ser du hva som trekkes før du sier ja.</p>
+    </section>
+
+    <section data-vis="bruktopp" hidden>
+      <div class="kort tint">
+        <span class="eyebrow">Ingen timer igjen</span>
+        <h3>Du har brukt alle fire timene denne måneden</h3>
+        <p>Saldoen fylles på igjen mandag 1. september. Trenger du en time før det, kan du kjøpe en enkelttime uten å endre pakken din.</p>
+        <button class="btn now full" data-od-id="bookny-dropin">Kjøp enkelttime · 890 kr</button>
+      </div>
+      <div class="kort"><p>Vil du ha flere timer hver måned fast, kan du oppgradere til Performance Pro. Snakk med coachen din først — det er ofte planen, ikke antallet timer, som er flaskehalsen.</p>
+      <button class="btn full" data-od-id="bookny-oppgrader">Se pakkene</button></div>
+    </section>
+
+    <section data-vis="tom" hidden>
+      <div class="tom">
+        <h3>Ingen tjenester tilgjengelig</h3>
+        <p>Ingen coaching-tjenester er aktive i øyeblikket. Det er som regel midlertidig — kontakt support@akgolf.no hvis det varer.</p>
+        <button class="btn now full" data-od-id="bookny-tom-kontakt">Kontakt support</button>
+      </div>
+    </section>
+
+  </main>
+</div>
+<div class="sr" id="live" aria-live="polite"></div>
+<script src="w3-demo.js"></script>
+</body>
+</html>

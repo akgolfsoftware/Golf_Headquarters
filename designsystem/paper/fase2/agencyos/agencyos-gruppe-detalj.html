@@ -1,0 +1,192 @@
+<!doctype html>
+<html lang="nb" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Gruppe · AgencyOS · AK Golf HQ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Lora:ital,wght@0,400;0,500;1,400&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="w4-base.css">
+<style>
+/* Gruppe-detalj — fasit for /admin/grupper/[id] + arsplan · timeplan ·
+   skoledata · workbench (faner på samme flate). Liste: /admin/grupper. */
+.gr{ display:grid; grid-template-columns:38px minmax(0,1fr) 92px 92px 150px; gap:var(--s3);
+  align-items:center; width:100%; text-align:left; padding:var(--s3) var(--s4);
+  margin-bottom:var(--s2); background:var(--surface); border:1px solid var(--border);
+  border-radius:var(--r); cursor:pointer; color:inherit; }
+.gr:hover{ border-color:var(--mid); }
+.gr .t{ font-size:13.5px; font-weight:600; }
+.gr .s{ display:block; font-family:var(--mono); font-size:10.5px; color:var(--muted); }
+.kol{ display:flex; flex-direction:column; gap:2px; }
+.kol .k{ font-family:var(--mono); font-size:9px; letter-spacing:.07em; text-transform:uppercase; color:var(--muted); }
+.kol .v{ font-family:var(--mono); font-size:14px; font-weight:600; font-variant-numeric:tabular-nums; }
+.bar{ height:6px; border-radius:var(--r-pill); background:var(--soft); overflow:hidden; }
+.bar i{ display:block; height:100%; background:var(--fg); }
+.uke{ display:grid; grid-template-columns:repeat(7,1fr); gap:var(--s1); margin-top:var(--s2); }
+.uke div{ padding:var(--s2); border:1px solid var(--border-soft); border-radius:var(--r-sm);
+  background:var(--softer); font-family:var(--mono); font-size:10px; color:var(--muted); text-align:center; }
+.uke div.har{ background:var(--surface); border-color:var(--border); color:var(--fg); }
+@media (max-width:900px){ .gr{ grid-template-columns:38px minmax(0,1fr) 92px; } .gr .skjul{ display:none; } }
+</style>
+</head>
+<body>
+<div class="app med-panel">
+  <nav class="rail" aria-label="AgencyOS">
+    <div class="logo">AK<span>.</span></div>
+    <a class="rbtn" href="#" data-od-id="nav-cockpit"><svg viewBox="0 0 24 24"><path d="M4 12l8-7 8 7"/><path d="M6 11v8h12v-8"/></svg>Cockpit</a>
+    <a class="rbtn" href="#" data-od-id="nav-innboks"><svg viewBox="0 0 24 24"><path d="M3 12h5l2 3h4l2-3h5"/><path d="M5 6h14l2 6v6H3v-6z"/></svg>Innboks<span class="cnt">7</span></a>
+    <a class="rbtn" href="#" data-od-id="nav-kalender"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M8 3v4M16 3v4M3 11h18"/></svg>Kalender</a>
+    <a class="rbtn" href="#" aria-current="page" data-od-id="nav-stall"><svg viewBox="0 0 24 24"><circle cx="9" cy="9" r="3"/><path d="M3 20a6 6 0 0112 0"/><path d="M16 8h5M16 12h5M16 16h5"/></svg>Stall</a>
+    <a class="rbtn" href="#" data-od-id="nav-plan"><svg viewBox="0 0 24 24"><path d="M5 4h14v16H5z"/><path d="M9 9h6M9 13h6M9 17h3"/></svg>Plan</a>
+    <a class="rbtn" href="#" data-od-id="nav-innsikt"><svg viewBox="0 0 24 24"><path d="M4 19V9M10 19V5M16 19v-7M22 19H2"/></svg>Innsikt</a>
+    <a class="rbtn" href="#" data-od-id="nav-oppsett"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3"/></svg>Oppsett</a>
+  </nav>
+
+  <main class="stage">
+    <header class="top">
+      <div><h1>Elite 1 — GFGK</h1><span class="sub">selektert · 11 medlemmer · coach Anders Kristiansen</span></div>
+      <div class="hoyre">
+        <button class="btn" type="button" data-od-id="cta-legg-til-spiller">Legg til spiller</button>
+        <button class="btn ink" type="button" data-od-id="cta-start-okt">Start økt</button>
+        <button class="ikon" id="themeBtn" type="button" aria-label="Bytt til mørk modus" data-od-id="cta-tema"><svg viewBox="0 0 24 24"><path d="M20 14a8 8 0 01-10-10 8 8 0 1010 10z"/></svg></button>
+      </div>
+    </header>
+
+    <div class="riggbar" data-demo-only>
+      <span>Tilstand</span>
+      <button class="chip" type="button" data-tilstand="full">Full gruppe</button>
+      <button class="chip" type="button" data-tilstand="tom">Uten medlemmer</button>
+      <span class="sr" id="live" role="status" aria-live="polite"></span>
+    </div>
+
+    <div class="faner" role="tablist" data-faner>
+      <button class="fane" role="tab" aria-selected="true" data-fane="medlemmer" data-od-id="fane-medlemmer">Medlemmer</button>
+      <button class="fane" role="tab" aria-selected="false" data-fane="arsplan" data-od-id="fane-arsplan">Årsplan</button>
+      <button class="fane" role="tab" aria-selected="false" data-fane="timeplan" data-od-id="fane-timeplan">Timeplan</button>
+      <button class="fane" role="tab" aria-selected="false" data-fane="skoledata" data-od-id="fane-skoledata">Skoledata</button>
+    </div>
+
+    <div class="flate midt">
+      <section data-vis="full">
+        <div class="kpirad">
+          <div class="kpi"><span class="k">Medlemmer</span><span class="v num">11</span><span class="w">2 hjelpetrenere</span></div>
+          <div class="kpi"><span class="k">Snitt hcp</span><span class="v num">+1,4</span><span class="w">spenn +3,1 til 4,2</span></div>
+          <div class="kpi"><span class="k">Runder 90 dg</span><span class="v num">96</span><span class="w">8,7 per spiller</span></div>
+          <div class="kpi"><span class="k">Følger planen</span><span class="v num">73 %</span><span class="w">snitt av aktive planer</span></div>
+          <div class="kpi"><span class="k">Samlinger</span><span class="v num">18</span><span class="w">neste tirsdag 17:00</span></div>
+        </div>
+
+        <div data-fanepanel="medlemmer">
+          <div class="filters" style="padding-left:0;padding-right:0;background:transparent;border:0">
+            <button class="chip" type="button" aria-pressed="true" data-od-id="filter-trinn-alle">Alle trinn <span class="n">11</span></button>
+            <button class="chip" type="button" aria-pressed="false" data-od-id="filter-trinn-vg1">VG1 <span class="n">4</span></button>
+            <button class="chip" type="button" aria-pressed="false" data-od-id="filter-trinn-vg2">VG2 <span class="n">5</span></button>
+            <button class="chip" type="button" aria-pressed="false" data-od-id="filter-trinn-vg3">VG3 <span class="n">2</span></button>
+          </div>
+
+          <button class="gr" type="button" data-od-id="list-medlem-1">
+            <span class="av">EB</span>
+            <span><span class="t">Emil Berg</span><span class="s">VG2 · Grønmo GK · PRO</span></span>
+            <span class="kol"><span class="k">Hcp</span><span class="v">+1,8</span></span>
+            <span class="kol skjul"><span class="k">Runder 90d</span><span class="v">12</span></span>
+            <span class="kol skjul"><span class="k">Plan · Skarpsliping</span><span class="bar"><i style="width:82%"></i></span><span class="v">82 % · 14/17</span></span>
+          </button>
+          <button class="gr" type="button" data-od-id="list-medlem-2">
+            <span class="av">NL</span>
+            <span><span class="t">Nora Lie</span><span class="s">VG1 · Fredrikstad GK</span></span>
+            <span class="kol"><span class="k">Hcp</span><span class="v">2,4</span></span>
+            <span class="kol skjul"><span class="k">Runder 90d</span><span class="v">7</span></span>
+            <span class="kol skjul"><span class="k">Plan · Grunnlag</span><span class="bar"><i style="width:41%"></i></span><span class="v">41 % · 7/17</span></span>
+          </button>
+          <button class="gr" type="button" data-od-id="list-medlem-3">
+            <span class="av">JA</span>
+            <span><span class="t">Jonas Aas</span><span class="s">VG3 · Onsøy GK · hjelpetrener</span></span>
+            <span class="kol"><span class="k">Hcp</span><span class="v">+3,1</span></span>
+            <span class="kol skjul"><span class="k">Runder 90d</span><span class="v">15</span></span>
+            <span class="kol skjul"><span class="k">Plan</span><span class="v">ingen aktiv</span></span>
+          </button>
+          <button class="gr" type="button" data-od-id="list-medlem-4">
+            <span class="av">MR</span>
+            <span><span class="t">Mia Ruud</span><span class="s">VG2 · Larvik GK</span></span>
+            <span class="kol"><span class="k">Hcp</span><span class="v">4,2</span></span>
+            <span class="kol skjul"><span class="k">Runder 90d</span><span class="v">9</span></span>
+            <span class="kol skjul"><span class="k">Plan · Grunnlag</span><span class="bar"><i style="width:65%"></i></span><span class="v">65 % · 11/17</span></span>
+          </button>
+        </div>
+
+        <div data-fanepanel="arsplan" hidden>
+          <div class="kort">
+            <div class="korthode"><span class="t">Årsplan 2026</span><span class="hoyre"><button class="btn sm" type="button" data-od-id="cta-rediger-periode">Rediger perioder</button></span></div>
+            <div class="linje">Grunnlag · uke 2–14<span class="v">volum 12 t/uke</span></div>
+            <div class="linje">Oppbygging · uke 15–22<span class="v">volum 14 t/uke</span></div>
+            <div class="linje">Skarpsliping · uke 23–35<span class="v">volum 10 t/uke</span></div>
+            <div class="linje">Turnering · uke 36–41<span class="v">volum 8 t/uke</span></div>
+            <div class="linje">Overgang · uke 42–48<span class="v">volum 6 t/uke</span></div>
+          </div>
+          <div class="kort">
+            <div class="korthode"><span class="t">Rull ut mal til gruppa</span></div>
+            <p>Malen legges på alle 11 medlemmene med start fra valgt uke. Spillere med aktiv plan får forslaget til godkjenning, ikke overskriving.</p>
+            <label class="felt"><span>Godkjent mal</span><select data-od-id="felt-mal"><option>Skarpsliping 8 uker · 24 økter · brukt 31 ganger</option><option>Grunnlag 12 uker · 36 økter · brukt 18 ganger</option><option>Turneringsuke 1 uke · 4 økter · brukt 12 ganger</option></select></label>
+            <label class="felt"><span>Start</span><select data-od-id="felt-start"><option>Uke 34 · 17.08.2026</option><option>Uke 35 · 24.08.2026</option></select></label>
+            <button class="btn ink" type="button" data-od-id="cta-rull-ut">Rull ut til 11 spillere</button>
+          </div>
+        </div>
+
+        <div data-fanepanel="timeplan" hidden>
+          <div class="kort">
+            <div class="korthode"><span class="t">Uke 33</span><span class="hoyre"><button class="btn sm" type="button" data-od-id="cta-ny-samling">Ny samling</button></span></div>
+            <div class="uke"><div class="har">Ma<br>17:00</div><div class="har">Ti<br>16:00</div><div>On</div><div class="har">To<br>17:00</div><div>Fr</div><div class="har">Lø<br>09:00</div><div>Sø</div></div>
+          </div>
+          <button class="rad" type="button" data-od-id="list-samling-1"><span class="tx"><span class="tn">Fellesøkt · nærspill</span><span class="tm">tir 12.08 · 16:00–18:00 · Gressbanen · gjentas ukentlig</span></span><span class="hoyre"><span class="hv">9/12</span></span><svg class="pil" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
+          <button class="rad" type="button" data-od-id="list-samling-2"><span class="tx"><span class="tn">Testbatteri · august</span><span class="tm">tor 14.08 · 17:00–19:30 · Innendørs · engangs</span></span><span class="hoyre"><span class="hv">11/11</span></span><svg class="pil" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
+        </div>
+
+        <div data-fanepanel="skoledata" hidden>
+          <div class="kort">
+            <div class="korthode"><span class="t">Skoleuke og treningsvindu</span></div>
+            <p>Skoledata bestemmer når gruppa kan trene i skoletiden. Endring her flytter ikke økter automatisk — den varsler når en samling havner utenfor vinduet.</p>
+            <div class="linje">Skoletid tirsdag<span class="v">08:15–14:00</span></div>
+            <div class="linje">Treningsvindu tirsdag<span class="v">14:30–18:00</span></div>
+            <div class="linje">Skolefri uke<span class="v">40</span></div>
+            <div class="linje">Eksamensperiode<span class="v">uke 21–23</span></div>
+          </div>
+        </div>
+      </section>
+
+      <section data-vis="tom" hidden>
+        <div class="tom">
+          <h3>Gruppa har ingen medlemmer ennå</h3>
+          <p>Legg til spillere fra stallen din. Timeplan og årsplan kan settes opp først — de rulles ut til medlemmene du legger til etterpå.</p>
+          <button class="btn ink" type="button" data-od-id="cta-tom-legg-til">Legg til spiller</button>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <aside class="panel" aria-label="Gruppa">
+    <div class="phead"><span class="t">Om gruppa</span></div>
+    <div class="pbody">
+      <div class="blokk">
+        <span class="flab">Neste samling</span>
+        <p>Tirsdag 12. august, 16:00–18:00 · Gressbanen · nærspill. 9 av 12 plasser fylt.</p>
+      </div>
+      <div class="blokk">
+        <span class="flab">Nøkkeltall</span>
+        <div class="linje">Type<span class="v">Selektert</span></div>
+        <div class="linje">Coach<span class="v">Anders K.</span></div>
+        <div class="linje">Hjelpetrenere<span class="v">2</span></div>
+        <div class="linje">PRO-andel<span class="v">27 %</span></div>
+      </div>
+      <div class="blokk">
+        <span class="flab">Trenger oppfølging</span>
+        <p>Jonas Aas har ingen aktiv plan, og Nora Lie ligger på 41 % gjennomføring. Begge er under gruppas snitt på 73 %.</p>
+      </div>
+    </div>
+    <div class="pfoot">
+      <button class="btn" type="button" data-od-id="cta-workbench">Åpne Workbench</button>
+      <button class="btn ink" type="button" data-od-id="cta-meld-gruppa">Meld gruppa</button>
+    </div>
+  </aside>
+</div>
+<script src="w4-demo.js"></script>
+</body>
+</html>

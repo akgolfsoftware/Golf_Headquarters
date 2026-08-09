@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="nb" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Abonnement · PlayerHQ · AK Golf HQ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Lora:ital,wght@0,400;0,500;1,400&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="w3-base.css">
+<style>
+/* ═══ PlayerHQ · Meg · Abonnement (fase2/W3) ═══
+   Rute: /portal/meg/abonnement. Kilde: getAbonnementData (FAKTISK tier +
+   subscription + fakturahistorikk). De tre hero-tilstandene er hentet
+   1:1 fra koden: «oppgrader» (ikke Pro) · «status» (Pro, betaler) ·
+   «gratis» (Pro via coaching-pakke — credits > 0). PAST_DUE = betaling
+   feilet og har egen tilstand. Undersidene avbestill / kort/ny /
+   faktura/[id] / oppgrader/flyt følger §8-skjemamalen — se manifest.
+   Abonnement-kanon: gratis via pakke/prøve/gruppe, ellers 299 kr/mnd. */
+.hero{ background:var(--accent-soft); border:1px solid var(--border); border-radius:var(--r);
+  padding:var(--s5) var(--s4); margin-bottom:var(--s4); }
+.hero .plan{ font-family:var(--disp); font-size:24px; font-weight:600; letter-spacing:-.02em;
+  margin:var(--s2) 0 var(--s1); }
+.hero .pris{ font-family:var(--mono); font-size:13px; color:var(--muted); }
+.hero p{ font-family:var(--body); font-size:13.5px; color:var(--muted); max-width:50ch;
+  margin:var(--s3) 0 var(--s4); text-wrap:pretty; }
+.hero.fare{ background:rgba(168,85,54,.10); }
+.faktura{ display:flex; align-items:center; gap:var(--s3); padding:var(--s3) 0;
+  border-bottom:1px solid var(--border-soft); text-decoration:none; color:inherit; }
+.faktura:last-child{ border-bottom:0; }
+.faktura .fx{ flex:1; min-width:0; }
+.faktura .fn{ display:block; font-size:13.5px; font-weight:500; }
+.faktura .fm{ display:block; font-family:var(--mono); font-size:10.5px; color:var(--muted); margin-top:2px; }
+.ytelse{ display:flex; gap:var(--s3); align-items:flex-start; padding:var(--s2) 0;
+  font-family:var(--body); font-size:13.5px; color:var(--ink-soft); }
+.ytelse svg{ width:15px; height:15px; flex:none; margin-top:3px; fill:none; stroke:var(--up);
+  stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
+</style>
+</head>
+<body>
+<p class="framehint">PlayerHQ · Abonnement · 430 px. Under 641 px fyller den skjermen.</p>
+<div class="phone" data-demo-only="true">
+  <header class="topp">
+    <a class="ikon" href="../../fase1/playerhq-meg.html" aria-label="Til Meg" data-od-id="abo-tilbake"><svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg></a>
+    <div style="min-width:0"><h1>Abonnement</h1><span class="sub">Meg · plan, betaling og kvitteringer</span></div>
+    <span style="flex:1"></span>
+    <div data-demo-only="true" style="display:flex;gap:4px">
+      <button class="ikon" data-tilstand="pakke" aria-pressed="true" aria-label="Demo: gratis via pakke" data-od-id="abo-demo-pakke"><span class="num" style="font-size:10px">P</span></button>
+      <button class="ikon" data-tilstand="oppgrader" aria-pressed="false" aria-label="Demo: kan oppgradere" data-od-id="abo-demo-oppgrader"><span class="num" style="font-size:10px">O</span></button>
+      <button class="ikon" data-tilstand="feilet" aria-pressed="false" aria-label="Demo: betaling feilet" data-od-id="abo-demo-feilet"><span class="num" style="font-size:10px">E</span></button>
+      <button class="ikon" data-tilstand="tom" aria-pressed="false" aria-label="Demo: tom" data-od-id="abo-demo-tom"><span class="num" style="font-size:10px">T</span></button>
+    </div>
+    <button class="ikon" id="themeBtn" aria-label="Bytt til mørk modus" data-od-id="abo-theme"><svg viewBox="0 0 24 24"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></button>
+  </header>
+
+  <main class="kropp">
+
+    <section data-vis="pakke">
+      <div class="hero">
+        <span class="eyebrow">Din plan</span>
+        <div class="plan">Performance Pro</div>
+        <div class="pris num">0 kr/mnd — dekket av coaching-pakken din</div>
+        <p>Du har fire coachtimer i måneden, og PlayerHQ Pro følger med pakken. Så lenge pakken er aktiv, betaler du ikke for PlayerHQ.</p>
+        <button class="btn full" data-od-id="abo-endre-pakke">Endre coaching-pakke</button>
+      </div>
+      <div class="kort">
+        <h3>Dette er med</h3>
+        <div class="ytelse"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg><span>Fire coachtimer i måneden — book i kalenderen.</span></div>
+        <div class="ytelse"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg><span>Full analyse: TrackMan, Strokes Gained og hullstatistikk.</span></div>
+        <div class="ytelse"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg><span>Ukeplaner laget av coachen din, ikke av en mal.</span></div>
+      </div>
+      <div class="kort">
+        <span class="eyebrow">Kvitteringer</span>
+        <a class="faktura" href="#" data-od-id="abo-faktura-0"><div class="fx"><span class="fn">Performance Pro · august</span><span class="fm num">14. august 2026 · 2 990 kr</span></div><svg class="pil" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></a>
+        <a class="faktura" href="#" data-od-id="abo-faktura-1"><div class="fx"><span class="fn">Performance Pro · juli</span><span class="fm num">14. juli 2026 · 2 990 kr</span></div><svg class="pil" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></a>
+        <a class="faktura" href="#" data-od-id="abo-faktura-2"><div class="fx"><span class="fn">Performance Pro · juni</span><span class="fm num">14. juni 2026 · 2 990 kr</span></div><svg class="pil" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></a>
+      </div>
+      <button class="btn full" data-od-id="abo-endre-kort">Endre betalingskort</button>
+    </section>
+
+    <section data-vis="oppgrader" hidden>
+      <div class="hero">
+        <span class="eyebrow">Din plan</span>
+        <div class="plan">Gratis</div>
+        <div class="pris num">0 kr/mnd</div>
+        <p>Du logger økter og runder som før. Pro åpner analysen — Strokes Gained, TrackMan-historikk og hullstatistikk — og koster 299 kr i måneden. Du kan si opp når du vil.</p>
+        <button class="btn now full" data-od-id="abo-oppgrader">Oppgrader til Pro · 299 kr/mnd</button>
+      </div>
+      <div class="kort">
+        <h3>Det du får ekstra</h3>
+        <div class="ytelse"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg><span>Strokes Gained per kølle og per hull.</span></div>
+        <div class="ytelse"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg><span>Hele TrackMan-historikken, ikke bare siste økt.</span></div>
+        <div class="ytelse"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg><span>Gameplan per bane før turnering.</span></div>
+      </div>
+      <div class="kort"><p>Har du coaching-pakke hos AK Golf Academy, følger Pro med gratis. Snakk med coachen din før du betaler for begge.</p></div>
+    </section>
+
+    <section data-vis="feilet" hidden>
+      <div class="hero fare">
+        <span class="eyebrow" style="color:var(--dn)">Betaling feilet</span>
+        <div class="plan">Performance</div>
+        <div class="pris num">Trekket 14. august gikk ikke gjennom</div>
+        <p>Kortet ble avvist av banken. Du har full tilgang i ti dager til — vi prøver på nytt 18. august, eller du kan legge inn et nytt kort nå.</p>
+        <button class="btn now full" data-od-id="abo-nytt-kort">Legg inn nytt kort</button>
+      </div>
+      <div class="kort">
+        <span class="eyebrow">Kvitteringer</span>
+        <a class="faktura" href="#" data-od-id="abo-feil-faktura-0"><div class="fx"><span class="fn">Performance · august</span><span class="fm num">Ikke betalt · 990 kr</span></div><span class="tag dn">Feilet</span></a>
+        <a class="faktura" href="#" data-od-id="abo-feil-faktura-1"><div class="fx"><span class="fn">Performance · juli</span><span class="fm num">14. juli 2026 · 990 kr</span></div><svg class="pil" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></a>
+      </div>
+    </section>
+
+    <section data-vis="tom" hidden>
+      <div class="tom">
+        <h3>Ingen betalinger ennå</h3>
+        <p>Du står på gratisplanen og har aldri blitt trukket. Kvitteringer dukker opp her fra første betaling.</p>
+        <button class="btn now full" data-od-id="abo-tom-oppgrader">Se hva Pro gir deg</button>
+      </div>
+    </section>
+
+  </main>
+</div>
+<div class="sr" id="live" aria-live="polite"></div>
+<script src="w3-demo.js"></script>
+</body>
+</html>

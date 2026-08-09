@@ -1,0 +1,188 @@
+<!doctype html>
+<html lang="nb" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Historikk · filter · AK Golf HQ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Lora:ital,wght@0,400;0,500;1,400&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="w3-base.css">
+<style>
+.tilbake-rad{flex:none;padding:var(--s3) var(--s4) 0;background:var(--surface)}
+.tilbake{display:inline-flex;align-items:center;gap:4px;min-height:var(--tap);font-family:var(--mono);font-size:11px;color:var(--muted);text-decoration:none}
+.filterlinje{display:flex;gap:var(--s2);align-items:center;margin-bottom:var(--s3);flex-wrap:wrap}
+.chip{display:inline-flex;align-items:center;gap:6px;min-height:36px;padding:0 var(--s3);border:1px solid var(--border);border-radius:var(--r-pill);background:var(--surface);font-family:var(--mono);font-size:11px;cursor:pointer;color:inherit}
+.chip[aria-pressed="true"]{background:var(--soft);border-color:var(--hairline);color:var(--fg);font-weight:600}
+.chip .x{color:var(--muted)}
+.rader{display:flex;flex-direction:column}
+.lrad{display:flex;align-items:center;gap:var(--s3);min-height:52px;padding:var(--s2) 0;border-bottom:1px solid var(--border-soft);text-decoration:none;color:inherit}
+.lrad:last-child{border-bottom:0}
+.lrad .tx{flex:1;min-width:0}.lrad .tn{font-size:13px;font-weight:500}
+.lrad .tm{display:block;font-size:11.5px;color:var(--muted);margin-top:1px}
+.lrad .tr{font-family:var(--mono);font-size:12.5px;font-weight:600}
+.lrad .tr.pos{color:var(--up)}.lrad .tr.neg{color:var(--dn)}
+.datebox{display:flex;flex-direction:column;align-items:center;background:var(--soft);border:1px solid var(--border);border-radius:var(--r-sm);padding:6px 10px;min-width:46px}
+.datebox .d{font-family:var(--mono);font-size:15px;font-weight:700;line-height:1}
+.datebox .m{font-family:var(--mono);font-size:8.5px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-top:2px}
+.scrim{position:absolute;inset:0;background:rgba(20,20,19,.38);opacity:0;pointer-events:none;transition:opacity var(--dur) var(--ease);z-index:30}
+.scrim.aapen{opacity:1;pointer-events:auto}
+.sheet{position:absolute;left:0;right:0;bottom:0;z-index:31;background:var(--surface);border-top:1px solid var(--border);border-radius:var(--r-lg) var(--r-lg) 0 0;box-shadow:var(--shadow);transform:translateY(100%);transition:transform var(--dur) var(--ease);display:flex;flex-direction:column;max-height:86%}
+.sheet.aapen{transform:translateY(0)}
+.grabb{width:40px;height:4px;border-radius:var(--r-pill);background:var(--hairline);margin:10px auto 0}
+.sheet header{display:flex;align-items:center;gap:var(--s2);padding:var(--s3) var(--s4) var(--s2)}
+.sheet header h2{margin:0;font-family:var(--disp);font-size:15px;font-weight:600}
+.sheet .innhold{overflow-y:auto;padding:0 var(--s4) var(--s4)}
+.gruppe{padding:var(--s4) 0;border-bottom:1px solid var(--border-soft)}
+.gruppe:last-child{border-bottom:0}
+.gruppe .eyebrow{display:block;margin-bottom:var(--s3)}
+.valg{display:flex;flex-wrap:wrap;gap:var(--s2)}
+.seg{display:flex;border:1px solid var(--border);border-radius:var(--r);overflow:hidden}
+.seg button{flex:1;min-height:var(--tap);padding:0 var(--s3);background:var(--surface);border:0;border-right:1px solid var(--border);font-size:12.5px;cursor:pointer}
+.seg button:last-child{border-right:0}
+.seg button[aria-pressed="true"]{background:var(--soft);font-weight:600}
+.sheet footer{flex:none;display:flex;gap:var(--s2);padding:var(--s3) var(--s4) calc(var(--s4) + env(safe-area-inset-bottom));border-top:1px solid var(--border);background:var(--surface)}
+.sheet footer .btn{flex:1}
+.btn.ink{background:var(--cta);color:var(--on-cta);border-color:var(--cta)}
+.faner{flex:none;display:flex;background:var(--rail,#141413);z-index:20;padding-bottom:env(safe-area-inset-bottom)}
+.faner a{flex:1;min-height:56px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;color:#b0aea5;text-decoration:none;font-size:10px;position:relative}
+.faner a svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+.faner a[aria-current="page"]{color:#faf9f5}
+.faner a[aria-current="page"]::before{content:"";position:absolute;top:0;left:24%;right:24%;height:2px;background:#faf9f5;border-radius:var(--r-pill)}
+.toast{position:fixed;left:50%;bottom:96px;transform:translateX(-50%);z-index:var(--z-toast);background:var(--fg);color:var(--bg);padding:var(--s3) var(--s4);border-radius:var(--r);font-size:13px}
+.tellelinje{font-family:var(--mono);font-size:11px;color:var(--muted);margin-bottom:var(--s2)}
+</style>
+</head>
+<body>
+<p class="framehint">PlayerHQ · Historikk med filter-sheet · 430 px. Under 641 px fyller den skjermen.</p>
+<div class="phone">
+  <div class="tilbake-rad"><a class="tilbake" href="../../fase1/playerhq-analyse.html" data-od-id="hist-tilbake">‹ Analyse</a></div>
+  <header class="topp">
+    <div style="min-width:0"><h1>Historikk</h1><span class="sub">Øyvind Rohjan · alle økter og runder</span></div>
+    <span style="flex:1"></span>
+    <button class="ikon" id="filterBtn" aria-label="Åpne filter" data-od-id="hist-apne-filter"><svg viewBox="0 0 24 24"><path d="M3 5h18M6 12h12M10 19h4"/></svg></button>
+    <button class="ikon" id="themeBtn" aria-label="Bytt til mørk modus" data-od-id="hist-theme"><svg viewBox="0 0 24 24"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></button>
+  </header>
+  <main class="kropp">
+    <div class="filterlinje" id="aktive"></div>
+    <div class="kort">
+      <p class="tellelinje" id="telle">—</p>
+      <div class="rader" id="rader"></div>
+    </div>
+    <div id="tomboks" hidden>
+      <div class="tom">
+        <h3>Ingen treff på dette filteret</h3>
+        <p>Ingen økter eller runder i valgt periode med valgt type. Utvid perioden eller nullstill filteret.</p>
+        <button class="btn" id="nullstillTom" data-od-id="hist-tom-nullstill">Nullstill filter</button>
+      </div>
+    </div>
+  </main>
+  <nav class="faner" aria-label="Hovednavigasjon"><a href="../../fase1/playerhq-chat-mobil.html" data-od-id="tab-idag"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>I dag</a><a href="../../fase1/playerhq-plan.html" data-od-id="tab-plan"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>Plan</a><a href="../../fase1/playerhq-analyse.html" aria-current="page" data-od-id="tab-analyse"><svg viewBox="0 0 24 24"><path d="M3 3v18h18M7 15l4-4 3 3 5-6"/></svg>Analyse</a><a href="../../fase1/playerhq-meg.html" data-od-id="tab-meg"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21v-1a6 6 0 0 1 6-6h4a6 6 0 0 1 6 6v1"/></svg>Meg</a></nav>
+  <div class="scrim" id="scrim"></div>
+  <section class="sheet" id="sheet" role="dialog" aria-modal="true" aria-labelledby="sheetTittel" aria-hidden="true">
+    <div class="grabb"></div>
+    <header><h2 id="sheetTittel">Filtrer historikk</h2><span style="flex:1"></span><button class="ikon" id="lukkBtn" aria-label="Lukk filter" data-od-id="hist-sheet-lukk"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button></header>
+    <div class="innhold">
+      <div class="gruppe"><span class="eyebrow">periode</span><div class="seg" role="group" aria-label="Periode" id="gPeriode"><button data-v="30" aria-pressed="false" data-od-id="filt-per-30">30 dager</button><button data-v="90" aria-pressed="true" data-od-id="filt-per-90">90 dager</button><button data-v="sesong" aria-pressed="false" data-od-id="filt-per-sesong">Sesong</button><button data-v="alt" aria-pressed="false" data-od-id="filt-per-alt">Alt</button></div></div>
+      <div class="gruppe"><span class="eyebrow">type</span><div class="valg" id="gType"><button class="chip" data-v="runde" aria-pressed="true" data-od-id="filt-type-runde">Runder</button><button class="chip" data-v="okt" aria-pressed="true" data-od-id="filt-type-okt">Økter</button><button class="chip" data-v="test" aria-pressed="true" data-od-id="filt-type-test">Tester</button><button class="chip" data-v="trackman" aria-pressed="false" data-od-id="filt-type-trackman">TrackMan</button></div></div>
+      <div class="gruppe"><span class="eyebrow">sone</span><div class="valg" id="gSone"><button class="chip" data-v="alle" aria-pressed="true" data-od-id="filt-sone-alle">Alle soner</button><button class="chip" data-v="tee" aria-pressed="false" data-od-id="filt-sone-tee">Tee</button><button class="chip" data-v="innspill" aria-pressed="false" data-od-id="filt-sone-innspill">Innspill</button><button class="chip" data-v="naerspill" aria-pressed="false" data-od-id="filt-sone-naerspill">Nærspill</button><button class="chip" data-v="putt" aria-pressed="false" data-od-id="filt-sone-putt">Putt</button></div></div>
+      <div class="gruppe"><span class="eyebrow">sortering</span><div class="seg" role="group" aria-label="Sortering" id="gSort"><button data-v="ny" aria-pressed="true" data-od-id="filt-sort-ny">Nyeste</button><button data-v="gammel" aria-pressed="false" data-od-id="filt-sort-gammel">Eldste</button><button data-v="sg" aria-pressed="false" data-od-id="filt-sort-sg">Best SG</button></div></div>
+    </div>
+    <footer><button class="btn" id="nullstill" data-od-id="filt-nullstill">Nullstill</button><button class="btn ink" id="bruk" data-od-id="filt-bruk">Vis <span class="num" id="brukTall">12</span> treff</button></footer>
+  </section>
+</div>
+<div class="toast" id="toast" hidden role="status"></div>
+<div class="sr" id="live" aria-live="polite"></div>
+<script>
+(function(){
+'use strict';
+var live=document.getElementById('live'),toastEl=document.getElementById('toast'),toastT;
+function toast(t){toastEl.textContent=t;toastEl.hidden=false;clearTimeout(toastT);toastT=setTimeout(function(){toastEl.hidden=true},2600)}
+function el(t,c,x){var e=document.createElement(t);if(c)e.className=c;if(x!=null)e.textContent=x;return e}
+var DATA=[
+ {type:'runde',sone:'alle',dag:'18',mnd:'mai',n:'Emigrant Golfklubb',m:'18 hull · par 72 · 71 slag',v:'+0,42',k:'pos',dager:9},
+ {type:'okt',sone:'naerspill',dag:'16',mnd:'mai',n:'Nærspill · 60 min',m:'Anders Kristiansen · anlegg Bogstad',v:'8/10',k:'',dager:11},
+ {type:'test',sone:'putt',dag:'14',mnd:'mai',n:'Puttetest 3–9 m',m:'24 putter · lab-protokoll',v:'42 %',k:'',dager:13},
+ {type:'runde',sone:'alle',dag:'11',mnd:'mai',n:'Oslo Golfklubb',m:'18 hull · par 72 · 76 slag',v:'−1,10',k:'neg',dager:16},
+ {type:'okt',sone:'tee',dag:'8',mnd:'mai',n:'Utslag · 75 min',m:'Egen økt · range',v:'Fullført',k:'',dager:19},
+ {type:'trackman',sone:'tee',dag:'8',mnd:'mai',n:'TrackMan · driver + jern',m:'112 slag · 6 køller',v:'Importert',k:'',dager:19},
+ {type:'runde',sone:'alle',dag:'4',mnd:'mai',n:'Bogstad Golfklubb',m:'18 hull · par 71 · 74 slag',v:'−0,35',k:'neg',dager:23},
+ {type:'test',sone:'innspill',dag:'2',mnd:'mai',n:'Innspillstest 80–140 m',m:'30 slag · snitt 11,4 m',v:'Ny PB',k:'pos',dager:25},
+ {type:'okt',sone:'putt',dag:'29',mnd:'apr',n:'Putting · 45 min',m:'Egen økt · puttegreen',v:'Fullført',k:'',dager:28},
+ {type:'runde',sone:'alle',dag:'27',mnd:'apr',n:'Emigrant Golfklubb',m:'18 hull · par 72 · 75 slag',v:'−0,62',k:'neg',dager:30},
+ {type:'okt',sone:'tee',dag:'22',mnd:'apr',n:'Utslag · 60 min',m:'Anders Kristiansen',v:'Fullført',k:'',dager:35},
+ {type:'test',sone:'tee',dag:'12',mnd:'apr',n:'Lengdetest driver',m:'20 slag · carry-snitt 218 m',v:'218 m',k:'',dager:45}
+];
+var STD={periode:'90',type:['runde','okt','test'],sone:['alle'],sort:'ny'};
+var f={periode:STD.periode,type:STD.type.slice(),sone:STD.sone.slice(),sort:STD.sort};
+var utkast=JSON.parse(JSON.stringify(f));
+function grense(p){return p==='30'?30:p==='90'?90:p==='sesong'?200:9999}
+function treff(s){return DATA.filter(function(d){
+ if(d.dager>grense(s.periode))return false;
+ if(s.type.indexOf(d.type)<0)return false;
+ if(s.sone.indexOf('alle')<0&&s.sone.indexOf(d.sone)<0&&d.sone!=='alle')return false;
+ if(s.sone.indexOf('alle')<0&&d.sone==='alle')return false;
+ return true})}
+function sorter(a,s){var l=a.slice();if(s.sort==='gammel')l.reverse();if(s.sort==='sg')l.sort(function(x,y){return (y.k==='pos')-(x.k==='pos')});return l}
+var ETIKETT={runde:'Runder',okt:'Økter',test:'Tester',trackman:'TrackMan',tee:'Tee',innspill:'Innspill',naerspill:'Nærspill',putt:'Putt'};
+function tegnAktive(){
+ var w=document.getElementById('aktive');w.innerHTML='';
+ var merker=[];
+ merker.push({t:f.periode==='alt'?'Hele historikken':f.periode==='sesong'?'Sesong 2026':'Siste '+f.periode+' dager',nokkel:'periode'});
+ if(f.type.length<4)f.type.forEach(function(t){merker.push({t:ETIKETT[t],nokkel:'type:'+t})});
+ f.sone.filter(function(s){return s!=='alle'}).forEach(function(s){merker.push({t:ETIKETT[s],nokkel:'sone:'+s})});
+ if(f.sort!=='ny')merker.push({t:f.sort==='gammel'?'Eldste først':'Best SG først',nokkel:'sort'});
+ merker.forEach(function(m){
+  var b=el('button','chip');b.setAttribute('aria-pressed','true');b.dataset.odId='hist-chip-'+m.nokkel.replace(':','-');
+  b.appendChild(document.createTextNode(m.t));b.appendChild(el('span','x','×'));
+  b.addEventListener('click',function(){fjern(m.nokkel)});w.appendChild(b);
+ });
+ var n=el('button','chip','Filtrer …');n.dataset.odId='hist-chip-apne';n.addEventListener('click',apne);w.appendChild(n);
+}
+function fjern(n){
+ if(n==='periode')f.periode='alt';
+ else if(n==='sort')f.sort='ny';
+ else if(n.indexOf('type:')===0){f.type=f.type.filter(function(t){return t!==n.slice(5)});if(!f.type.length)f.type=STD.type.slice()}
+ else if(n.indexOf('sone:')===0){f.sone=f.sone.filter(function(t){return t!==n.slice(5)});if(!f.sone.length)f.sone=['alle']}
+ utkast=JSON.parse(JSON.stringify(f));speilUtkast();tegn();
+}
+function tegn(){
+ tegnAktive();
+ var liste=sorter(treff(f),f),w=document.getElementById('rader');w.innerHTML='';
+ document.getElementById('telle').textContent=liste.length+' av '+DATA.length+' oppføringer';
+ document.getElementById('tomboks').hidden=liste.length>0;
+ document.querySelector('.kropp .kort').hidden=liste.length===0;
+ liste.forEach(function(d){
+  var a=el('a','lrad');a.href='#';a.dataset.odId='hist-rad-'+d.dag+d.mnd;
+  var db=el('span','datebox');db.appendChild(el('span','d num',d.dag));db.appendChild(el('span','m',d.mnd));a.appendChild(db);
+  var tx=el('div','tx');tx.appendChild(el('span','tn',d.n));tx.appendChild(el('span','tm',d.m));a.appendChild(tx);
+  a.appendChild(el('span','tr '+d.k,d.v));w.appendChild(a);
+ });
+ live.textContent=liste.length+' treff';
+}
+function speilUtkast(){
+ document.querySelectorAll('#gPeriode button').forEach(function(b){b.setAttribute('aria-pressed',String(b.dataset.v===utkast.periode))});
+ document.querySelectorAll('#gSort button').forEach(function(b){b.setAttribute('aria-pressed',String(b.dataset.v===utkast.sort))});
+ document.querySelectorAll('#gType .chip').forEach(function(b){b.setAttribute('aria-pressed',String(utkast.type.indexOf(b.dataset.v)>=0))});
+ document.querySelectorAll('#gSone .chip').forEach(function(b){b.setAttribute('aria-pressed',String(utkast.sone.indexOf(b.dataset.v)>=0))});
+ document.getElementById('brukTall').textContent=treff(utkast).length;
+}
+var sheet=document.getElementById('sheet'),scrim=document.getElementById('scrim');
+function apne(){utkast=JSON.parse(JSON.stringify(f));speilUtkast();sheet.classList.add('aapen');scrim.classList.add('aapen');sheet.setAttribute('aria-hidden','false');document.getElementById('lukkBtn').focus()}
+function lukk(){sheet.classList.remove('aapen');scrim.classList.remove('aapen');sheet.setAttribute('aria-hidden','true')}
+document.getElementById('filterBtn').addEventListener('click',apne);
+document.getElementById('lukkBtn').addEventListener('click',lukk);
+scrim.addEventListener('click',lukk);
+document.addEventListener('keydown',function(e){if(e.key==='Escape')lukk()});
+document.querySelectorAll('#gPeriode button').forEach(function(b){b.addEventListener('click',function(){utkast.periode=b.dataset.v;speilUtkast()})});
+document.querySelectorAll('#gSort button').forEach(function(b){b.addEventListener('click',function(){utkast.sort=b.dataset.v;speilUtkast()})});
+document.querySelectorAll('#gType .chip').forEach(function(b){b.addEventListener('click',function(){var v=b.dataset.v,i=utkast.type.indexOf(v);if(i<0)utkast.type.push(v);else if(utkast.type.length>1)utkast.type.splice(i,1);speilUtkast()})});
+document.querySelectorAll('#gSone .chip').forEach(function(b){b.addEventListener('click',function(){var v=b.dataset.v;if(v==='alle'){utkast.sone=['alle']}else{var s=utkast.sone.filter(function(x){return x!=='alle'}),i=s.indexOf(v);if(i<0)s.push(v);else s.splice(i,1);utkast.sone=s.length?s:['alle']}speilUtkast()})});
+document.getElementById('nullstill').addEventListener('click',function(){utkast=JSON.parse(JSON.stringify(STD));speilUtkast();toast('Filter nullstilt.')});
+document.getElementById('nullstillTom').addEventListener('click',function(){f=JSON.parse(JSON.stringify(STD));utkast=JSON.parse(JSON.stringify(STD));speilUtkast();tegn()});
+document.getElementById('bruk').addEventListener('click',function(){f=JSON.parse(JSON.stringify(utkast));lukk();tegn()});
+var KEY='akhq-theme-playerhq',saved=localStorage.getItem(KEY);if(saved)document.documentElement.dataset.theme=saved;
+document.getElementById('themeBtn').addEventListener('click',function(){var n=document.documentElement.dataset.theme==='dark'?'light':'dark';document.documentElement.dataset.theme=n;localStorage.setItem(KEY,n);this.setAttribute('aria-label',n==='dark'?'Bytt til lys modus':'Bytt til mørk modus')});
+speilUtkast();tegn();
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,204 @@
+<!doctype html>
+<html lang="nb" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Godkjenninger · AgencyOS · AK Golf HQ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Lora:ital,wght@0,400;0,500;1,400&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="w4-base.css">
+<style>
+/* Godkjenninger — én kø, tre kilder. Fasit for /admin/godkjenninger,
+   /admin/handlingssenter, /admin/queue, /admin/approvals(+[id]), /admin/foresporsler. */
+.kohode{ display:flex; align-items:center; gap:var(--s3); margin-bottom:var(--s4); flex-wrap:wrap; }
+.kohode .n{ font-family:var(--mono); font-size:26px; font-weight:600; }
+.kort.forste{ border-color:var(--fg); box-shadow:inset 3px 0 0 var(--fg); }
+.kilde{ display:inline-flex; align-items:center; gap:var(--s1); font-family:var(--mono);
+  font-size:10px; letter-spacing:.04em; text-transform:uppercase; color:var(--muted); }
+.diff{ margin:var(--s3) 0 0; padding:var(--s3) var(--s4); background:var(--softer);
+  border:1px solid var(--border-soft); border-radius:var(--r-sm);
+  font-family:var(--mono); font-size:12px; color:var(--fg); }
+.diff .k{ display:block; font-size:9px; letter-spacing:.07em; text-transform:uppercase;
+  color:var(--muted); margin-bottom:var(--s1); }
+.handlinger{ display:flex; gap:var(--s2); margin-top:var(--s3); flex-wrap:wrap; }
+.meta{ display:flex; align-items:center; gap:var(--s2); flex-wrap:wrap; margin-bottom:var(--s2); }
+.meta .navn{ font-size:13.5px; font-weight:600; }
+.meta .tid{ margin-left:auto; font-family:var(--mono); font-size:11px; color:var(--muted); }
+.kort h3{ margin:0 0 var(--s1); font-size:14.5px; }
+.lost .linje .v{ color:var(--muted); font-size:11px; }
+</style>
+</head>
+<body>
+<div class="app med-panel">
+  <nav class="rail" aria-label="AgencyOS">
+    <div class="logo">AK<span>.</span></div>
+    <a class="rbtn" href="#" data-od-id="nav-cockpit"><svg viewBox="0 0 24 24"><path d="M4 12l8-7 8 7"/><path d="M6 11v8h12v-8"/></svg>Cockpit</a>
+    <a class="rbtn" href="#" aria-current="page" data-od-id="nav-innboks"><svg viewBox="0 0 24 24"><path d="M3 12h5l2 3h4l2-3h5"/><path d="M5 6h14l2 6v6H3v-6z"/></svg>Innboks<span class="cnt">7</span></a>
+    <a class="rbtn" href="#" data-od-id="nav-kalender"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M8 3v4M16 3v4M3 11h18"/></svg>Kalender</a>
+    <a class="rbtn" href="#" data-od-id="nav-stall"><svg viewBox="0 0 24 24"><circle cx="9" cy="9" r="3"/><path d="M3 20a6 6 0 0112 0"/><path d="M16 8h5M16 12h5M16 16h5"/></svg>Stall</a>
+    <a class="rbtn" href="#" data-od-id="nav-plan"><svg viewBox="0 0 24 24"><path d="M5 4h14v16H5z"/><path d="M9 9h6M9 13h6M9 17h3"/></svg>Plan</a>
+    <a class="rbtn" href="#" data-od-id="nav-innsikt"><svg viewBox="0 0 24 24"><path d="M4 19V9M10 19V5M16 19v-7M22 19H2"/></svg>Innsikt</a>
+    <a class="rbtn" href="#" data-od-id="nav-oppsett"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3"/></svg>Oppsett</a>
+  </nav>
+
+  <main class="stage">
+    <header class="top">
+      <div><h1>Godkjenninger</h1><span class="sub">agencyos · én kø · 3 kilder</span></div>
+      <div class="hoyre">
+        <button class="ikon" id="themeBtn" type="button" aria-label="Bytt til mørk modus" data-od-id="cta-tema"><svg viewBox="0 0 24 24"><path d="M20 14a8 8 0 01-10-10 8 8 0 1010 10z"/></svg></button>
+      </div>
+    </header>
+
+    <div class="riggbar" data-demo-only>
+      <span>Tilstand</span>
+      <button class="chip" type="button" data-tilstand="ko">Kø (7)</button>
+      <button class="chip" type="button" data-tilstand="tom">Tom</button>
+      <button class="chip" type="button" data-tilstand="laster">Laster</button>
+      <span class="sr" id="live" role="status" aria-live="polite"></span>
+    </div>
+
+    <div class="filters">
+      <button class="chip" type="button" aria-pressed="true" data-od-id="filter-alle">Alle <span class="n">7</span></button>
+      <button class="chip" type="button" aria-pressed="false" data-od-id="filter-agent">Agent <span class="n">4</span></button>
+      <button class="chip" type="button" aria-pressed="false" data-od-id="filter-caddie">Caddie-utkast <span class="n">2</span></button>
+      <button class="chip" type="button" aria-pressed="false" data-od-id="filter-foresporsel">Økt-forespørsler <span class="n">1</span></button>
+    </div>
+
+    <div class="flate midt">
+      <section data-vis="ko">
+        <div class="kohode">
+          <span class="n num">7</span>
+          <span class="eyebrow">venter på deg</span>
+          <button class="btn" type="button" data-od-id="cta-godkjenn-lavrisiko">Godkjenn 3 lavrisiko samlet</button>
+        </div>
+
+        <article class="kort forste" data-od-id="panel-godkjenning-1">
+          <div class="meta">
+            <span class="navn">Emil Berg</span>
+            <span class="tag dn">Haster</span>
+            <span class="kilde">agent · handlingssenter</span>
+            <span class="tid num">09:40</span>
+          </div>
+          <h3>Bytt onsdagsøkta fra SLAG til PUTT</h3>
+          <p>Puttesnittet har falt tre uker på rad, og de to siste rundene taper mest fra 2–3 m. Forslaget flytter én økt, ikke hele uka.</p>
+          <div class="diff"><span class="k">Dette endres</span>~1 økt endres · Onsdag 17:00 SLAG → PUTT · Periode → Skarpsliping</div>
+          <details class="why" data-od-id="panel-hvorfor-1">
+            <summary>Hvorfor?</summary>
+            <ul>
+              <li>Agent: Planagent · kjørt 09.08.2026 kl. 06:15</li>
+              <li>Data: 5 siste runder · SG putt −0,84 · 12 økter siste 28 dager</li>
+              <li>Regel: SG-fall over tre uker på samme område utløser forslag om områdebytte</li>
+            </ul>
+          </details>
+          <div class="handlinger">
+            <button class="btn ink" type="button" data-od-id="cta-godkjenn-1">Godkjenn</button>
+            <button class="btn" type="button" data-od-id="cta-endre-1">Endre først</button>
+            <button class="btn" type="button" data-od-id="cta-utsett-1">Utsett</button>
+            <button class="btn fare" type="button" data-od-id="cta-avvis-1">Avvis</button>
+          </div>
+        </article>
+
+        <article class="kort" data-od-id="panel-godkjenning-2">
+          <div class="meta">
+            <span class="navn">Nora Lie</span>
+            <span class="tag">Lavrisiko</span>
+            <span class="kilde">agent · TrackMan-baseline</span>
+            <span class="tid num">i går</span>
+          </div>
+          <h3>Ny baseline for ballhastighet, driver</h3>
+          <p>Testen 07.08 gir høyere baseline enn den som ligger i planen. Målet på oppgaven flyttes tilsvarende.</p>
+          <div class="diff"><span class="k">Dette endres</span>Baseline ballhastighet på «Driver — fart»: 68,2 → 70,4 m/s (fra TM-test 07.08.2026)</div>
+          <details class="why"><summary>Hvorfor?</summary><ul><li>Agent: Testagent · kjørt 07.08.2026 kl. 21:02</li><li>Data: TrackMan-økt 07.08 · 42 slag driver</li><li>Regel: baseline oppdateres når snittet av 20 beste avviker over 2 % fra gjeldende</li></ul></details>
+          <div class="handlinger">
+            <button class="btn ink" type="button" data-od-id="cta-godkjenn-2">Godkjenn</button>
+            <button class="btn" type="button" data-od-id="cta-endre-2">Endre først</button>
+            <button class="btn fare" type="button" data-od-id="cta-avvis-2">Avvis</button>
+          </div>
+        </article>
+
+        <article class="kort" data-od-id="panel-godkjenning-3">
+          <div class="meta">
+            <span class="navn">Jonas Aas</span>
+            <span class="kilde">caddie-utkast · melding</span>
+            <span class="tid num">2 dg siden</span>
+          </div>
+          <h3>Melding til spiller: oppfølging etter skade</h3>
+          <p>Sender melding: «Hvordan går det med ryggen?» — Vi tar ned volumet denne uka og holder teknisk fokus lavt. Si fra i morgen tidlig hvordan…</p>
+          <div class="handlinger">
+            <button class="btn ink" type="button" data-od-id="cta-send-3">Send</button>
+            <button class="btn" type="button" data-od-id="cta-rediger-3">Rediger utkast</button>
+            <a class="btn" href="#" data-od-id="cta-caddie-3">Åpne i Caddie</a>
+            <button class="btn fare" type="button" data-od-id="cta-forkast-3">Forkast</button>
+          </div>
+        </article>
+
+        <article class="kort" data-od-id="panel-godkjenning-4">
+          <div class="meta">
+            <span class="navn">Mia Ruud</span>
+            <span class="kilde">forespørsel · fra spiller</span>
+            <span class="tid num">3 dg siden</span>
+          </div>
+          <h3>Økt-forespørsel: torsdag ettermiddag</h3>
+          <p>Ønsker gjennomgang av wedgeavstander før klubbmesterskapet · 14.08.2026 · etter 16:00</p>
+          <div class="handlinger">
+            <button class="btn ink" type="button" data-od-id="cta-legg-i-kalender-4">Legg i kalenderen</button>
+            <button class="btn" type="button" data-od-id="cta-foresla-tid-4">Foreslå annen tid</button>
+            <button class="btn fare" type="button" data-od-id="cta-avslaa-4">Kan ikke</button>
+          </div>
+        </article>
+
+        <section class="grp lost">
+          <div class="grphead"><h2>Løst nylig</h2><span class="n num">3 sjekkpunkter</span></div>
+          <p class="grpnote">Godkjente forslag med sjekkpunkt — de kommer tilbake hit når fristen er nådd.</p>
+          <div class="kort">
+            <div class="linje">Emil Berg · puttvolum opp to uker<span class="v">sjekk 19.08</span></div>
+            <div class="linje">Nora Lie · driverfart holdes over 70 m/s<span class="v">sjekk 21.08</span></div>
+            <div class="linje">Mia Ruud · wedgeavstander innenfor 4 m<span class="v">sjekk 26.08</span></div>
+          </div>
+        </section>
+      </section>
+
+      <section data-vis="tom" hidden>
+        <div class="tom">
+          <h3>Køen er tom</h3>
+          <p>Ingenting venter på godkjenning akkurat nå. Agentene sender nye forslag når det kommer inn nye runder, tester eller signaler fra spillerne dine.</p>
+          <a class="btn" href="#" data-od-id="cta-tom-stall">Gå til stallen</a>
+        </div>
+      </section>
+
+      <section data-vis="laster" hidden aria-busy="true">
+        <div class="kort"><div class="skel" style="width:38%"></div><div class="skel" style="width:70%"></div><div class="skel" style="width:56%"></div></div>
+        <div class="kort"><div class="skel" style="width:44%"></div><div class="skel" style="width:64%"></div></div>
+        <div class="kort"><div class="skel" style="width:30%"></div><div class="skel" style="width:72%"></div></div>
+      </section>
+    </div>
+  </main>
+
+  <aside class="panel" aria-label="Køens tall">
+    <div class="phead"><span class="t">Køen i tall</span></div>
+    <div class="pbody">
+      <div class="kpirad" style="grid-template-columns:repeat(2,1fr)">
+        <div class="kpi"><span class="k">Venter</span><span class="v num">7</span><span class="w">4 agent · 2 caddie · 1 fsp</span></div>
+        <div class="kpi"><span class="k">Lavrisiko</span><span class="v num">3</span><span class="w">kan godkjennes samlet</span></div>
+        <div class="kpi"><span class="k">Eldste</span><span class="v num">3 dg</span><span class="w">Mia Ruud</span></div>
+        <div class="kpi"><span class="k">Godkjent 7 dg</span><span class="v num">14</span><span class="w">2 avvist</span></div>
+      </div>
+      <div class="blokk">
+        <span class="flab">Slik leses køen</span>
+        <p>Hvert forslag viser hva som faktisk endres før du sier ja. Har et forslag ingen «Dette endres»-linje, er det ingen planendring — da er det en melding eller en forespørsel.</p>
+      </div>
+      <div class="blokk">
+        <span class="flab">Kilder</span>
+        <div class="linje">Agent (PlanAction)<span class="v">4</span></div>
+        <div class="linje">Caddie-utkast<span class="v">2</span></div>
+        <div class="linje">Økt-forespørsel<span class="v">1</span></div>
+        <div class="linje">E-postutkast<span class="v">innboks</span></div>
+      </div>
+    </div>
+    <div class="pfoot">
+      <button class="btn ink" type="button" data-od-id="cta-godkjenn-lavrisiko-panel">Godkjenn 3 lavrisiko</button>
+    </div>
+  </aside>
+</div>
+<script src="w4-demo.js"></script>
+</body>
+</html>

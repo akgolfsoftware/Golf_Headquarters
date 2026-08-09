@@ -1,0 +1,63 @@
+<!doctype html><html lang="nb"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>WANG — logg inn (fase2)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Quattrocento+Sans:wght@400;700&display=swap" rel="stylesheet">
+<style>
+.wang-tp{--wang-navy:#17446f;--wang-teal:#2e857d;--wang-mint:#49ca9f;--wang-teal-text:#226f67;--cat-pink:#d12a5c;--bg-app:#f4f6f8;--surface-card:#fff;--text-primary:#1e293b;--text-secondary:#475569;--border-subtle:#e9edf1;--neutral-50:#f4f6f8;--neutral-100:#e9edf1;--neutral-400:#94a3b8;--tint-navy:color-mix(in srgb,var(--wang-navy) 12%,white);--tint-mint:color-mix(in srgb,var(--wang-mint) 13%,white);--tint-pink:color-mix(in srgb,var(--cat-pink) 10%,white);--tint-gray:#f1f4f7;--grad-hero-line:linear-gradient(160deg,color-mix(in srgb,var(--wang-navy) 82%,white) 0%,var(--wang-navy) 55%,color-mix(in srgb,var(--wang-navy) 82%,black) 100%);--radius-card:26px;--radius-input:16px;--shadow-card:0 8px 24px rgba(23,68,111,.08);--shadow-hero:0 18px 40px rgba(15,23,42,.22);--font-brand:"Montserrat",system-ui,sans-serif;--font-body:"Quattrocento Sans",system-ui,sans-serif;color:var(--text-primary);font-family:var(--font-body)}
+*{box-sizing:border-box}body{margin:0;background:#e6eaee;font-family:"Quattrocento Sans",system-ui,sans-serif}
+.scene{display:flex;gap:32px;flex-wrap:wrap;justify-content:center;padding:36px 20px 64px}
+.stack{display:grid;gap:10px;justify-items:center}
+.merk{font-family:"Montserrat",sans-serif;font-weight:700;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#64748b}
+.ramme{width:430px;height:880px;border-radius:44px;background:var(--bg-app);box-shadow:0 24px 60px rgba(15,23,42,.22);overflow:hidden;position:relative;display:flex;flex-direction:column}
+.statusbar{height:52px;display:flex;align-items:flex-end;justify-content:space-between;padding:0 26px 8px;font-family:"Montserrat",sans-serif;font-weight:600;font-size:12.5px;color:var(--text-primary);font-variant-numeric:tabular-nums}
+.hero{margin:0 16px;background:var(--grad-hero-line);border-radius:var(--radius-card);box-shadow:var(--shadow-hero);padding:28px 24px;color:#fff}
+.skjold{width:48px;height:48px;border-radius:14px;background:rgba(255,255,255,.14);display:grid;place-items:center;font-family:"Montserrat",sans-serif;font-weight:800;font-size:17px;margin-bottom:16px}
+.hero .lab{font-family:"Montserrat",sans-serif;font-weight:700;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--wang-mint);margin-bottom:8px}
+.hero h1{margin:0 0 10px;font-family:"Montserrat",sans-serif;font-weight:800;font-size:26px;line-height:1.15}
+.hero p{margin:0;font-size:14.5px;line-height:1.6;color:rgba(255,255,255,.72)}
+.kort{margin:16px;background:var(--surface-card);border-radius:var(--radius-card);box-shadow:var(--shadow-card);padding:24px;display:grid;gap:14px}
+label{font-family:"Montserrat",sans-serif;font-weight:600;font-size:12.5px;color:var(--text-secondary)}
+.felt{height:52px;border-radius:var(--radius-input);background:var(--neutral-50);border:1.5px solid var(--neutral-100);display:flex;align-items:center;padding:0 16px;font-size:15.5px;color:var(--text-primary)}
+.felt.ph{color:var(--neutral-400)}
+.felt.feil{border-color:var(--cat-pink);background:var(--tint-pink)}
+.hjelp{font-size:13px;line-height:1.55;color:var(--text-secondary);margin:0}
+.feilmld{display:flex;gap:8px;align-items:flex-start;background:var(--tint-pink);color:#a01f45;border-radius:14px;padding:12px 14px;font-size:13.5px;line-height:1.5}
+.cta{height:52px;border-radius:999px;border:none;cursor:pointer;background:var(--wang-navy);color:#fff;font-family:"Montserrat",sans-serif;font-weight:700;font-size:15px;width:100%}
+.lenke{background:none;border:none;cursor:pointer;color:var(--wang-navy);font-family:"Montserrat",sans-serif;font-weight:600;font-size:13.5px;padding:12px;min-height:44px}
+.bunn{margin-top:auto;padding:0 24px 34px;text-align:center;font-size:12.5px;line-height:1.6;color:var(--text-secondary)}
+.kode{display:flex;gap:10px;justify-content:space-between}
+.rute{flex:1;height:60px;border-radius:16px;background:var(--neutral-50);border:1.5px solid var(--neutral-100);display:grid;place-items:center;font-family:"Montserrat",sans-serif;font-weight:700;font-size:22px;font-variant-numeric:tabular-nums}
+.rute.aktiv{border-color:var(--wang-mint);background:var(--tint-mint)}
+</style></head>
+<body class="wang-tp">
+<div class="scene">
+
+<div class="stack"><div class="merk">Suksess — e-post</div><div class="ramme">
+<div class="statusbar"><span>09:41</span><span>WANG Golf</span></div>
+<section class="hero"><div class="skjold">W</div><div class="lab">Toppidrett Fredrikstad</div><h1>Golf-fellessiden</h1><p>Logg inn for å se sesongplan, kalender og samlinger. Siden er stengt for uinnloggede fordi den viser elevdata.</p></section>
+<div class="kort"><div><label for="e">E-post</label><div class="felt" id="e" style="margin-top:8px">oyvind.rohjan@wang.no</div></div>
+<p class="hjelp">Du får en engangskode på e-post. Bruk skoleadressen din, eller foresattes adresse hvis du er under 16.</p>
+<button class="cta" data-od-id="wang-login-send-kode">Send meg kode</button>
+<button class="lenke" data-od-id="wang-login-hjelp">Får du ikke logget inn?</button></div>
+<div class="bunn">WANG Toppidrett Fredrikstad · golfgruppa<br>Drives på AK Golf HQ</div>
+</div></div>
+
+<div class="stack"><div class="merk">Kodebekreftelse</div><div class="ramme">
+<div class="statusbar"><span>09:41</span><span>WANG Golf</span></div>
+<section class="hero"><div class="skjold">W</div><div class="lab">Steg 2 av 2</div><h1>Skriv inn koden</h1><p>Vi sendte seks siffer til oyvind.rohjan@wang.no. Koden varer i ti minutter.</p></section>
+<div class="kort"><label>Engangskode</label><div class="kode"><span class="rute aktiv">4</span><span class="rute aktiv">1</span><span class="rute aktiv">9</span><span class="rute"></span><span class="rute"></span><span class="rute"></span></div>
+<p class="hjelp">Fant du den ikke? Sjekk søppelpost — eller be om ny om 42 sekunder.</p>
+<button class="cta" data-od-id="wang-login-bekreft">Logg inn</button>
+<button class="lenke" data-od-id="wang-login-bytt">Bytt e-postadresse</button></div>
+<div class="bunn">Elevdata om mindreårige. Siden indekseres ikke.</div>
+</div></div>
+
+<div class="stack"><div class="merk">Feil — ugyldig kode</div><div class="ramme">
+<div class="statusbar"><span>09:43</span><span>WANG Golf</span></div>
+<section class="hero"><div class="skjold">W</div><div class="lab">Steg 2 av 2</div><h1>Skriv inn koden</h1><p>Vi sendte seks siffer til oyvind.rohjan@wang.no. Koden varer i ti minutter.</p></section>
+<div class="kort"><label>Engangskode</label><div class="kode"><span class="rute" style="border-color:var(--cat-pink);background:var(--tint-pink)">4</span><span class="rute" style="border-color:var(--cat-pink);background:var(--tint-pink)">1</span><span class="rute" style="border-color:var(--cat-pink);background:var(--tint-pink)">9</span><span class="rute" style="border-color:var(--cat-pink);background:var(--tint-pink)">2</span><span class="rute" style="border-color:var(--cat-pink);background:var(--tint-pink)">0</span><span class="rute" style="border-color:var(--cat-pink);background:var(--tint-pink)">7</span></div>
+<div class="feilmld">Koden stemmer ikke, eller den er utløpt. Du har to forsøk igjen før vi låser i 15 minutter.</div>
+<button class="cta" data-od-id="wang-login-ny-kode">Send ny kode</button>
+<button class="lenke" data-od-id="wang-login-kontakt">Kontakt trener</button></div>
+<div class="bunn">Låst ute? Trener Anders kan åpne kontoen din.</div>
+</div></div>
+
+</div></body></html>

@@ -34,6 +34,9 @@
               "components/shell/**",
               "components/trackman/**",
               "components/video/**",
+              "fase2/agencyos/**",
+              "fase2/felles/**",
+              "fase2/playerhq/**",
               "guidelines/**"
             ],
             "message": "Import design-system components from 'index.js', not component internals."
@@ -82,6 +85,22 @@
       {
         "selector": "JSXOpeningElement[name.name='AKFormelChip'] > JSXAttribute > JSXIdentifier[name!=/^(?:formula|parts|filled|dataOdId|key|ref|className|style|children)$/]",
         "message": "<AKFormelChip> doesn't accept that prop. Declared props: formula, parts, filled, dataOdId."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='AkFormelVerdi'] > JSXAttribute > JSXIdentifier[name!=/^(?:pyr|omr|del|mot|bel|press|pValg|pModus|key|ref|className|style|children)$/]",
+        "message": "<AkFormelVerdi> doesn't accept that prop. Declared props: pyr, omr, del, mot, bel, press, pValg, pModus."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='AkFormelVerdi'] > JSXAttribute[name.name='mot'] > Literal[value!=/^(?:UTEN_BALL|LAV_HASTIGHET|AUTO)$/]",
+        "message": "<AkFormelVerdi> mot must be one of 'UTEN_BALL' | 'LAV_HASTIGHET' | 'AUTO'."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='AkFormelVerdi'] > JSXAttribute[name.name='bel'] > Literal[value!=/^(?:INNENDORS|TRENINGSOMRADE|BANE|KONKURRANSE)$/]",
+        "message": "<AkFormelVerdi> bel must be one of 'INNENDORS' | 'TRENINGSOMRADE' | 'BANE' | 'KONKURRANSE'."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='AkFormelVerdi'] > JSXAttribute[name.name='press'] > Literal[value!=/^(?:ALENE|OBSERVERT|KONKURRANSE|TURNERING)$/]",
+        "message": "<AkFormelVerdi> press must be one of 'ALENE' | 'OBSERVERT' | 'KONKURRANSE' | 'TURNERING'."
       },
       {
         "selector": "JSXOpeningElement[name.name='AfbSegment'] > JSXAttribute > JSXIdentifier[name!=/^(?:label|pct|display|tone|key|ref|className|style|children)$/]",
@@ -456,16 +475,16 @@
         "message": "<LoadChartItem> doesn't accept that prop. Declared props: label, value, display."
       },
       {
-        "selector": "JSXOpeningElement[name.name='MkalDag'] > JSXAttribute > JSXIdentifier[name!=/^(?:key|date|inMonth|today|events|key|ref|className|style|children)$/]",
-        "message": "<MkalDag> doesn't accept that prop. Declared props: key, date, inMonth, today, events."
-      },
-      {
         "selector": "JSXOpeningElement[name.name='Melding'] > JSXAttribute > JSXIdentifier[name!=/^(?:id|self|author|time|text|divider|key|ref|className|style|children)$/]",
         "message": "<Melding> doesn't accept that prop. Declared props: id, self, author, time, text, divider."
       },
       {
         "selector": "JSXOpeningElement[name.name='Modal'] > JSXAttribute > JSXIdentifier[name!=/^(?:open|title|actions|onClose|dataOdId|children|key|ref|className|style|children)$/]",
         "message": "<Modal> doesn't accept that prop. Declared props: open, title, actions, onClose, dataOdId, children."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='MkalDag'] > JSXAttribute > JSXIdentifier[name!=/^(?:key|date|inMonth|today|events|key|ref|className|style|children)$/]",
+        "message": "<MkalDag> doesn't accept that prop. Declared props: key, date, inMonth, today, events."
       },
       {
         "selector": "JSXOpeningElement[name.name='NesteFokusKort'] > JSXAttribute > JSXIdentifier[name!=/^(?:title|why|evidence|planNote|actions|compact|state|emptyText|dataOdId|key|ref|className|style|children)$/]",
@@ -944,6 +963,9 @@
       "AKFormelChip": {
         "replaces": []
       },
+      "AkFormelVerdi": {
+        "replaces": []
+      },
       "AfbSegment": {
         "replaces": []
       },
@@ -1118,13 +1140,13 @@
       "LoadChartItem": {
         "replaces": []
       },
-      "MkalDag": {
-        "replaces": []
-      },
       "Melding": {
         "replaces": []
       },
       "Modal": {
+        "replaces": []
+      },
+      "MkalDag": {
         "replaces": []
       },
       "NesteFokusKort": {

@@ -1,0 +1,220 @@
+<!doctype html>
+<html lang="nb" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Marketing-mal · AK Golf</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Lora:ital,wght@0,400;0,500;1,400&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../felles/w5-base.css">
+<style>
+/* Marketing-mal — tre varianter av samme skall: forside (hero + bevis + bånd),
+   pakke/pris, og ren prosa (juridisk, redaksjonelt).
+   Fasit for `(marketing)/`: forside · coaching · playerhq · junior · priser ·
+   om-oss · treningsfilosofi · cases · faq · kontakt · jobb · suksess ·
+   vilkar · personvern · cookies.
+   Marketing er primært LYS — ingen tema-toggle. Fylt aksentflate er tillatt her
+   (baseline v2.1: kun marketing/innlogging), men CTA er fortsatt blekk. */
+.prisrad{ display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:var(--s4); }
+.pris{ padding:var(--s5); background:var(--surface); border:1px solid var(--border);
+  border-radius:var(--r-md); display:flex; flex-direction:column; gap:var(--s3); }
+.pris.valgt{ border-color:var(--fg); box-shadow:var(--shadow); }
+.pris .tall{ font-family:var(--mono); font-size:34px; font-weight:600; }
+.pris .tall small{ font-size:13px; font-weight:400; color:var(--muted); }
+.pris ul{ margin:0; padding-left:var(--s5); font-family:var(--body); font-size:15px;
+  color:var(--muted); }
+.pris li{ margin-bottom:var(--s2); }
+.pris .btn{ margin-top:auto; }
+.bevis{ display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:var(--s5); }
+.bevis .t{ font-family:var(--mono); font-size:34px; font-weight:600; }
+.bevis .u{ font-family:var(--body); font-size:15px; color:var(--muted); }
+.band .bevis .u{ color:var(--mid); }
+.sitat{ font-family:var(--body); font-size:var(--text-prose-lg); line-height:1.55;
+  max-width:34ch; margin:0; }
+.qa{ border-bottom:1px solid var(--border); }
+.qa summary{ display:flex; align-items:center; min-height:56px; cursor:pointer;
+  list-style:none; font-size:17px; font-weight:500; }
+.qa summary::-webkit-details-marker{ display:none; }
+.qa summary::after{ content:"+"; margin-left:auto; font-family:var(--mono); color:var(--muted); }
+.qa[open] summary::after{ content:"−"; }
+.qa p{ margin:0 0 var(--s5); font-family:var(--body); font-size:16px; color:var(--muted); max-width:62ch; }
+</style>
+</head>
+<body>
+<a class="sr" href="#innhold">Hopp til innhold</a>
+<header class="mnav">
+  <a class="logo" href="#" data-od-id="nav-logo">AK Golf<span>.</span></a>
+  <nav aria-label="Hovedmeny">
+    <a href="#" data-od-id="nav-coaching">Coaching</a>
+    <a href="#" data-od-id="nav-playerhq">PlayerHQ</a>
+    <a href="#" data-od-id="nav-junior">Junior</a>
+    <a href="#" data-od-id="nav-priser">Priser</a>
+    <a href="#" data-od-id="nav-om">Om oss</a>
+  </nav>
+  <div class="hoyre">
+    <a class="btn sm" href="#" data-od-id="cta-logg-inn">Logg inn</a>
+    <a class="btn sm ink" href="#" data-od-id="cta-bestill">Bestill time</a>
+  </div>
+</header>
+
+<div class="riggbar" data-demo-only>
+  <span>Mal</span>
+  <button class="chip" type="button" data-tilstand="forside">Forside</button>
+  <button class="chip" type="button" data-tilstand="pris">Priser</button>
+  <button class="chip" type="button" data-tilstand="prosa">Prosa / juridisk</button>
+  <span class="sr" id="live" role="status" aria-live="polite"></span>
+</div>
+
+<main id="innhold">
+  <section data-vis="forside">
+    <div class="sek">
+      <div class="wrap">
+        <span class="eyebrow">Coaching · Fredrikstad og Onsøy</span>
+        <h1 class="hero">Trening som henger sammen fra uke til uke.</h1>
+        <p class="ing">Vi bygger planen rundt tallene dine, ikke rundt en generell øktmal. Du ser hva som skal gjøres i dag, og hvorfor det står der.</p>
+        <div style="display:flex;gap:var(--s3);flex-wrap:wrap">
+          <a class="btn ink" href="#" data-od-id="cta-hero-bestill">Bestill en prøvetime</a>
+          <a class="btn" href="#" data-od-id="cta-hero-les">Se hvordan vi jobber</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="sek tett">
+      <div class="wrap">
+        <div class="bilde" style="aspect-ratio:16/7">Bilde: coach og spiller på range, landskap — 2400×1050</div>
+      </div>
+    </div>
+
+    <div class="sek band">
+      <div class="wrap">
+        <span class="eyebrow">Slik ser det ut</span>
+        <div class="bevis" style="margin-top:var(--s5)">
+          <div><span class="t num">63</span><span class="u">spillere i systemet</span></div>
+          <div><span class="t num">1 480</span><span class="u">loggede økter i 2026</span></div>
+          <div><span class="t num">−2,1</span><span class="u">snitt scoreendring første sesong</span></div>
+          <div><span class="t num">9</span><span class="u">år med juniorprogram</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="sek">
+      <div class="wrap">
+        <h2 class="sekt">Tre måter å jobbe med oss på</h2>
+        <div class="rutenett">
+          <a class="mkort" href="#" data-od-id="cta-kort-coaching">
+            <span class="eyebrow">Én til én</span>
+            <h3 class="und">Coaching</h3>
+            <p>Fast coach, egen plan og TrackMan-oppfølging. For deg som spiller turneringer og vil vite hvor slagene ligger.</p>
+          </a>
+          <a class="mkort" href="#" data-od-id="cta-kort-junior">
+            <span class="eyebrow">6–19 år</span>
+            <h3 class="und">Junior og elite</h3>
+            <p>Gruppetrening gjennom hele året, med skoleplan og foreldreoversikt. Fire nivåer, fra første kølle til NM.</p>
+          </a>
+          <a class="mkort" href="#" data-od-id="cta-kort-playerhq">
+            <span class="eyebrow">App</span>
+            <h3 class="und">PlayerHQ</h3>
+            <p>Planen, øktene og tallene dine på telefonen. Følger med i alle coachingpakker, kan også kjøpes alene.</p>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <div class="sek">
+      <div class="wrap" style="display:grid;grid-template-columns:1fr 1fr;gap:var(--s7);align-items:center">
+        <div class="bilde">Portrett: spiller, stående — 1200×1800</div>
+        <div>
+          <span class="eyebrow">Case</span>
+          <blockquote class="sitat">«Jeg sluttet å gjette hva jeg skulle trene på. Planen kom fra rundene mine, og da ble det lettere å møte opp.»</blockquote>
+          <p class="ing" style="font-size:15px;margin-top:var(--s4)">Emil Berg, 17 — fra hcp 4,2 til +1,8 på to sesonger</p>
+          <a class="btn" href="#" data-od-id="cta-case">Les hele historien</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="sek">
+      <div class="wrap smal" style="text-align:center">
+        <h2 class="sekt" style="max-width:none;margin-inline:auto">Start med en prøvetime</h2>
+        <p class="ing" style="margin-inline:auto">45 minutter med kartlegging og en konkret plan for de neste fire ukene. Ingen binding.</p>
+        <a class="btn ink" href="#" data-od-id="cta-bunn-bestill">Bestill prøvetime · 590 kr</a>
+      </div>
+    </div>
+  </section>
+
+  <section data-vis="pris" hidden>
+    <div class="sek">
+      <div class="wrap">
+        <span class="eyebrow">Priser</span>
+        <h1 class="hero">Tre pakker. Ingen binding.</h1>
+        <p class="ing">Alle pakker inkluderer PlayerHQ, plan og TrackMan-økter. Forskjellen er hvor tett vi følger deg.</p>
+        <div class="prisrad">
+          <div class="pris">
+            <span class="eyebrow">Selvgående</span>
+            <span class="tall">249 <small>kr/mnd</small></span>
+            <ul><li>PlayerHQ med plan og logg</li><li>Månedlig gjennomgang av tallene</li><li>Øvelsesbank og tester</li></ul>
+            <a class="btn" href="#" data-od-id="cta-pris-1">Velg Selvgående</a>
+          </div>
+          <div class="pris valgt">
+            <span class="eyebrow">Mest valgt</span>
+            <span class="tall">1 890 <small>kr/mnd</small></span>
+            <ul><li>To coachtimer i måneden</li><li>Egen plan, justert hver uke</li><li>TrackMan og testbatteri</li><li>Turneringsoppfølging</li></ul>
+            <a class="btn ink" href="#" data-od-id="cta-pris-2">Velg Coaching</a>
+          </div>
+          <div class="pris">
+            <span class="eyebrow">Selektert</span>
+            <span class="tall">3 400 <small>kr/mnd</small></span>
+            <ul><li>Ukentlig coachtime</li><li>Fysisk plan og helseoppfølging</li><li>Coach på turnering</li><li>Foreldreportal</li></ul>
+            <a class="btn" href="#" data-od-id="cta-pris-3">Velg Elite</a>
+          </div>
+        </div>
+        <p class="ing" style="font-size:15px;margin-top:var(--s5)">Junior under 16 år får 20 % rabatt på alle pakker. Klubber og lag: <a href="#" data-od-id="cta-pris-klubb">be om tilbud</a>.</p>
+      </div>
+    </div>
+
+    <div class="sek tett">
+      <div class="wrap smal">
+        <h2 class="sekt">Spørsmål som går igjen</h2>
+        <details class="qa"><summary>Kan jeg bytte pakke underveis?</summary><p>Ja, fra måned til måned. Endringen slår inn ved neste fakturering, og planen din følger med over.</p></details>
+        <details class="qa"><summary>Hva skjer hvis jeg blir skadet?</summary><p>Du kan sette abonnementet på pause i inntil tre måneder. Planen fryses, og vi legger en retur-plan når du er klar.</p></details>
+        <details class="qa"><summary>Trenger jeg TrackMan for å ha nytte av dette?</summary><p>Nei. Runder og enkle tester gir nok grunnlag til å bygge en plan. TrackMan gir presisjon på ballflukt, ikke på hva du bør trene.</p></details>
+      </div>
+    </div>
+  </section>
+
+  <section data-vis="prosa" hidden>
+    <div class="sek">
+      <div class="wrap smal">
+        <span class="eyebrow">Sist oppdatert 12. juni 2026</span>
+        <h1 class="hero" style="font-size:var(--text-section);max-width:24ch">Personvernerklæring</h1>
+        <div class="prosa">
+          <p>Denne erklæringen forklarer hvilke opplysninger AK Golf Group AS samler inn om deg, hvorfor vi gjør det, og hva du kan kreve av oss. Den gjelder både nettsidene våre og PlayerHQ.</p>
+          <h2>Hva vi lagrer</h2>
+          <p>Vi lagrer kontaktopplysninger, treningsdata du selv registrerer, resultater fra runder og tester, og data fra utstyr du kobler til — for eksempel TrackMan. Helseopplysninger lagres bare når du selv legger dem inn, og deles med coachen din bare hvis du har sagt ja.</p>
+          <h2>Hvem som ser hva</h2>
+          <ul>
+            <li>Coachen din ser treningsdata og resultater for sine egne spillere.</li>
+            <li>Foresatte til spillere under 16 år ser ukerapport, økonomi og oppmøte — ikke fritekstnotater fra spilleren.</li>
+            <li>Ingen utenfor AK Golf Group får tilgang uten at du har samtykket.</li>
+          </ul>
+          <h2>Dine rettigheter</h2>
+          <p>Du kan når som helst be om innsyn i alt vi har lagret om deg, få det utlevert i maskinlesbart format, eller kreve at kontoen og innholdet slettes permanent. Begge deler gjør du selv under Innstillinger → Personvern, eller ved å kontakte oss.</p>
+          <p>Har du spørsmål om hvordan vi behandler opplysningene dine, <a href="#" data-od-id="cta-prosa-kontakt">ta kontakt</a> — vi svarer innen tre virkedager.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="footer">
+  <div class="wrap">
+    <div class="lenker">
+      <a href="#" data-od-id="footer-om">Om oss</a><a href="#" data-od-id="footer-kontakt">Kontakt</a>
+      <a href="#" data-od-id="footer-jobb">Jobb hos oss</a><a href="#" data-od-id="footer-blogg">Blogg</a>
+      <a href="#" data-od-id="footer-anlegg">Anlegg</a><a href="#" data-od-id="footer-vilkar">Vilkår</a>
+      <a href="#" data-od-id="footer-personvern">Personvern</a><a href="#" data-od-id="footer-cookies">Cookies</a>
+    </div>
+    <p style="margin:0">AK Golf Group AS · Fredrikstad · org. 923 456 789</p>
+  </div>
+</footer>
+<script src="../felles/w5-demo.js"></script>
+</body>
+</html>

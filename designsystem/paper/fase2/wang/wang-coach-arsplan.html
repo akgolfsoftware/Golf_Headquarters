@@ -1,0 +1,85 @@
+<!doctype html><html lang="nb"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>WANG Årsplan — Coach (fase2)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Quattrocento+Sans:wght@400;700&display=swap" rel="stylesheet">
+<style>
+.wang-tp{--wang-navy:#17446f;--wang-teal:#2e857d;--wang-mint:#49ca9f;--wang-teal-text:#226f67;--cat-orange:#f47b20;--cat-pink:#d12a5c;--cat-blue:#007db1;--cat-purple:#7f1975;--bg-app:#f4f6f8;--surface-card:#fff;--text-primary:#1e293b;--text-secondary:#475569;--white:#fff;--text-on-dark:#fff;--text-on-dark-dim:rgba(255,255,255,.72);--border-subtle:#e9edf1;--focus-ring:#49ca9f;--neutral-50:#f4f6f8;--neutral-100:#e9edf1;--neutral-400:#94a3b8;--tint-navy:color-mix(in srgb,var(--wang-navy) 12%,white);--tint-teal:color-mix(in srgb,var(--wang-teal) 13%,white);--tint-mint:color-mix(in srgb,var(--wang-mint) 13%,white);--tint-orange:color-mix(in srgb,var(--cat-orange) 9%,white);--tint-blue:color-mix(in srgb,var(--cat-blue) 10%,white);--tint-purple:color-mix(in srgb,var(--cat-purple) 10%,white);--tint-gray:#f1f4f7;--grad-hero-line:linear-gradient(160deg,color-mix(in srgb,var(--wang-navy) 82%,white) 0%,var(--wang-navy) 55%,color-mix(in srgb,var(--wang-navy) 82%,black) 100%);--radius-card:26px;--radius-card-sm:20px;--radius-icon-chip:14px;--shadow-card:0 8px 24px rgba(23,68,111,.08);--shadow-card-sm:0 4px 14px rgba(23,68,111,.06);--shadow-hero:0 18px 40px rgba(15,23,42,.22);--font-brand:"Montserrat",system-ui,sans-serif;--font-body:"Quattrocento Sans",system-ui,sans-serif;background:var(--bg-app);color:var(--text-primary);font-family:var(--font-body)}
+*{box-sizing:border-box}body{margin:0;background:#e6eaee}
+.wang-tp .t-label{font-family:var(--font-brand);font-weight:700;font-size:12px;letter-spacing:.08em;text-transform:uppercase;line-height:1.3}
+.wang-num{font-variant-numeric:tabular-nums}
+.wang-card{background:var(--surface-card);border-radius:var(--radius-card);box-shadow:var(--shadow-card)}
+.wrap{max-width:1180px;margin:0 auto;padding:28px 24px 64px;display:grid;gap:20px}
+.topp{display:flex;align-items:center;gap:14px;justify-content:space-between;flex-wrap:wrap}
+.merke{display:flex;align-items:center;gap:10px;font-family:var(--font-brand);font-weight:800;color:var(--wang-navy);letter-spacing:.02em}
+.skjold{width:34px;height:34px;border-radius:10px;background:var(--grad-hero-line);color:#fff;display:grid;place-items:center;font-size:13px;font-family:var(--font-brand);font-weight:800}
+.pill{display:inline-flex;align-items:center;height:44px;padding:0 20px;border-radius:999px;border:none;cursor:pointer;font-family:var(--font-brand);font-weight:600;font-size:14px;background:var(--neutral-50);color:var(--text-secondary)}
+.pill[aria-current="true"]{background:var(--wang-navy);color:#fff}
+.hero{background:var(--grad-hero-line);border-radius:var(--radius-card);box-shadow:var(--shadow-hero);padding:32px;color:#fff}
+.hero h1{margin:0 0 12px;font-family:var(--font-brand);font-weight:800;font-size:34px;line-height:1.15}
+.hero p{margin:0;max-width:62ch;color:var(--text-on-dark-dim);font-size:15.5px;line-height:1.6}
+.heroband{display:flex;gap:10px;flex-wrap:wrap;margin-top:20px}
+.akchip{display:inline-flex;align-items:center;gap:6px;height:30px;padding:0 12px;border-radius:999px;background:rgba(255,255,255,.12);color:#fff}
+.akchip b{font-family:var(--font-brand);font-weight:800;font-size:10px;letter-spacing:.06em;opacity:.75}
+.akchip span{font-family:var(--font-brand);font-weight:700;font-size:12.5px}
+.kol{display:grid;grid-template-columns:minmax(0,1.65fr) minmax(0,1fr);gap:20px;align-items:start}
+.kort{padding:24px}
+h2{margin:0 0 4px;font-family:var(--font-brand);font-weight:700;font-size:19px;color:var(--text-primary)}
+.sub{margin:0 0 18px;color:var(--text-secondary);font-size:14px;line-height:1.55}
+.periode{display:grid;grid-template-columns:44px minmax(0,1fr) auto;gap:14px;align-items:start;padding:16px 0;border-top:1px solid var(--border-subtle)}
+.periode:first-of-type{border-top:none;padding-top:0}
+.ikon{width:42px;height:42px;border-radius:var(--radius-icon-chip);display:grid;place-items:center;font-family:var(--font-brand);font-weight:800;font-size:13px}
+.p-navn{font-family:var(--font-brand);font-weight:700;font-size:15.5px}
+.p-meta{margin-top:3px;color:var(--text-secondary);font-size:13.5px;line-height:1.5}
+.status{display:inline-flex;align-items:center;height:24px;padding:0 10px;border-radius:999px;font-family:var(--font-brand);font-weight:700;font-size:11px;white-space:nowrap}
+.bar{height:8px;border-radius:999px;background:var(--neutral-100);overflow:hidden;margin-top:10px}
+.bar i{display:block;height:100%;border-radius:999px;background:linear-gradient(135deg,var(--wang-teal),var(--wang-mint))}
+.elev{display:flex;align-items:center;gap:12px;padding:12px 0;border-top:1px solid var(--border-subtle)}
+.elev:first-of-type{border-top:none}
+.avatar{width:36px;height:36px;border-radius:12px;background:var(--tint-navy);color:var(--wang-navy);display:grid;place-items:center;font-family:var(--font-brand);font-weight:700;font-size:12.5px}
+.elev-navn{font-family:var(--font-brand);font-weight:600;font-size:14.5px}
+.elev-meta{color:var(--text-secondary);font-size:12.5px}
+.cta{display:inline-flex;align-items:center;justify-content:center;height:48px;padding:0 22px;border-radius:999px;border:none;cursor:pointer;background:var(--wang-navy);color:#fff;font-family:var(--font-brand);font-weight:700;font-size:14.5px;box-shadow:var(--shadow-card-sm)}
+.ghost{background:transparent;color:var(--wang-navy);box-shadow:none;border:1.5px solid var(--neutral-100)}
+.tom{border-radius:var(--radius-card-sm);border:1.5px dashed var(--neutral-400);background:var(--tint-gray);padding:26px;text-align:center}
+.tom p{margin:8px auto 16px;max-width:44ch;color:var(--text-secondary);font-size:14px;line-height:1.6}
+.tom h3{margin:0;font-family:var(--font-brand);font-weight:700;font-size:16px}
+.tilstand{font-family:var(--font-brand);font-weight:700;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#64748b;margin:26px 4px 0}
+@media(max-width:900px){.kol{grid-template-columns:1fr}.hero h1{font-size:26px}}
+</style></head>
+<body class="wang-tp">
+<div class="wrap">
+<div class="topp"><div class="merke"><span class="skjold">W</span>WANG Toppidrett Fredrikstad · Golf</div>
+<div style="display:flex;gap:8px"><button class="pill" data-od-id="wang-coach-nav-fellesside">Fellesside</button><button class="pill" aria-current="true" data-od-id="wang-coach-nav-arsplan">Årsplan (coach)</button></div></div>
+
+<section class="hero"><div class="t-label wang-num" style="color:var(--wang-mint);margin-bottom:10px">Sesong 2026/27 · Trenervisning</div>
+<h1>Årsplan golf — 14 elever, 5 perioder</h1>
+<p>Periodisert plan for skoleåret. Endringer her publiseres til elevenes fellesside og til PlayerHQ-planene innen fem minutter.</p>
+<div class="heroband"><span class="akchip wang-num"><b>UKE</b><span>34</span></span><span class="akchip wang-num"><b>PERIODE</b><span>Grunntrening 2</span></span><span class="akchip wang-num"><b>ELEVER</b><span>14</span></span><span class="akchip wang-num"><b>SAMLINGER</b><span>3 igjen</span></span></div></section>
+
+<div class="kol">
+<section class="wang-card kort">
+<h2>Perioder</h2><p class="sub">Fem perioder fra august til juni. Klikk en periode for å redigere fokus, økter og tester.</p>
+<div class="periode"><span class="ikon" style="background:var(--tint-blue);color:var(--cat-blue)">P1</span><div><div class="p-navn">Oppstart og kartlegging</div><div class="p-meta">Uke 33–36 · teknisk baseline, fysisk test 1, banespill tirsdag</div><div class="bar"><i style="width:100%"></i></div></div><span class="status" style="background:var(--tint-teal);color:var(--wang-teal-text)">Fullført</span></div>
+<div class="periode"><span class="ikon" style="background:var(--tint-mint);color:var(--wang-teal-text)">P2</span><div><div class="p-navn">Grunntrening 2</div><div class="p-meta">Uke 37–44 · volum på nærspill, styrke 2×/uke, samling Kongsvinger 12.–13.10</div><div class="bar"><i style="width:38%"></i></div></div><span class="status" style="background:var(--tint-mint);color:var(--wang-teal-text)">Pågår</span></div>
+<div class="periode"><span class="ikon" style="background:var(--tint-purple);color:var(--cat-purple)">P3</span><div><div class="p-navn">Innendørssesong</div><div class="p-meta">Uke 45–06 · TrackMan-blokker, mental trening, skoleeksamen uke 50</div><div class="bar"><i style="width:0"></i></div></div><span class="status" style="background:var(--tint-gray);color:var(--text-secondary)">Planlagt</span></div>
+<div class="periode"><span class="ikon" style="background:var(--tint-orange);color:var(--cat-orange)">P4</span><div><div class="p-navn">Konkurranseforberedelse</div><div class="p-meta">Uke 07–16 · treningsleir Spania, testuke, gameplan per bane</div><div class="bar"><i style="width:0"></i></div></div><span class="status" style="background:var(--tint-gray);color:var(--text-secondary)">Planlagt</span></div>
+<div class="periode"><span class="ikon" style="background:var(--tint-navy);color:var(--wang-navy)">P5</span><div><div class="p-navn">Konkurransesesong</div><div class="p-meta">Uke 17–25 · turneringsuker, vedlikeholdstrening, avslutning 18.06</div><div class="bar"><i style="width:0"></i></div></div><span class="status" style="background:var(--tint-gray);color:var(--text-secondary)">Planlagt</span></div>
+<div style="display:flex;gap:10px;margin-top:22px;flex-wrap:wrap"><button class="cta" data-od-id="wang-coach-publiser">Publiser uke 37–44</button><button class="cta ghost" data-od-id="wang-coach-ny-periode">Legg til periode</button></div>
+</section>
+
+<div style="display:grid;gap:20px">
+<section class="wang-card kort"><h2>Elevene</h2><p class="sub">Hentet fra AgencyOS-gruppa. Trykk for spillerprofil.</p>
+<div class="elev"><span class="avatar">ØR</span><div style="flex:1"><div class="elev-navn">Øyvind Rohjan</div><div class="elev-meta wang-num">Vg2 · hcp 2,4 · 3 økter denne uka</div></div><span class="status" style="background:var(--tint-mint);color:var(--wang-teal-text)">Ajour</span></div>
+<div class="elev"><span class="avatar">MH</span><div style="flex:1"><div class="elev-navn">Mathea Hansen</div><div class="elev-meta wang-num">Vg1 · hcp 6,1 · 2 økter denne uka</div></div><span class="status" style="background:var(--tint-mint);color:var(--wang-teal-text)">Ajour</span></div>
+<div class="elev"><span class="avatar">JB</span><div style="flex:1"><div class="elev-navn">Jonas Berg</div><div class="elev-meta wang-num">Vg3 · hcp 1,8 · 0 økter denne uka</div></div><span class="status" style="background:var(--tint-orange);color:var(--cat-orange)">Mangler logg</span></div>
+<div class="elev"><span class="avatar">+11</span><div style="flex:1"><div class="elev-navn">Vis alle 14 elever</div><div class="elev-meta">Sortert etter loggføring</div></div></div>
+</section>
+
+<section class="wang-card kort"><h2>Neste samling</h2><p class="sub">Kongsvinger 12.–13. oktober · 11 påmeldte av 14.</p>
+<div class="elev" style="border-top:none"><span class="ikon" style="background:var(--tint-navy);color:var(--wang-navy)">12</span><div style="flex:1"><div class="elev-navn">Reisebrev ikke sendt</div><div class="elev-meta">Foreldre får det automatisk når du publiserer.</div></div></div>
+<button class="cta ghost" style="width:100%;margin-top:12px" data-od-id="wang-coach-samling">Åpne samlingen</button></section>
+</div>
+</div>
+
+<div class="tilstand">Tom tilstand — ingen periodeplan ennå</div>
+<section class="wang-card kort"><div class="tom"><h3>Ingen perioder lagt inn</h3><p>Årsplanen er tom for sesongen 2026/27. Start fra fjorårets plan, eller bygg periodene fra bunnen.</p><button class="cta ghost" data-od-id="wang-coach-tom-start">Kopier fra 2025/26</button></div></section>
+</div>
+</body></html>

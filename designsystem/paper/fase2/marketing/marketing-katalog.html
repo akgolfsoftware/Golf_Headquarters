@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="nb" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Katalog-mal · AK Golf</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Lora:ital,wght@0,400;0,500;1,400&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../felles/w5-base.css">
+<style>
+/* Katalog-mal — liste + detalj for alt redaksjonelt og oppslagsbart på
+   marketing: coacher(+[slug]) · anlegg(+[slug]) · blogg(+[slug]) ·
+   cases · turneringer(+[slug]).
+   Detaljen er samme mal uansett type: bilde, fakta-kolonne, prosa, CTA. */
+.kat{ display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:var(--s5); }
+.kat a{ text-decoration:none; color:inherit; display:block; }
+.kat a:hover .navn{ color:var(--accent-fg); }
+.kat .navn{ display:block; margin-top:var(--s3); font-family:var(--disp); font-size:19px; font-weight:600; }
+.kat .meta{ display:block; margin-top:var(--s1); font-family:var(--mono); font-size:11.5px; color:var(--muted); }
+.kat p{ margin:var(--s2) 0 0; font-family:var(--body); font-size:15px; color:var(--muted); max-width:40ch; }
+.filterrad{ display:flex; gap:var(--s2); flex-wrap:wrap; margin-bottom:var(--s5); }
+.filterrad button{ min-height:var(--tap); padding:0 var(--s4); font-size:14px;
+  background:var(--surface); border:1px solid var(--border); border-radius:var(--r-pill); cursor:pointer; }
+.filterrad button[aria-pressed="true"]{ background:var(--fg); color:var(--bg); border-color:var(--fg); }
+.detalj{ display:grid; grid-template-columns:minmax(0,1fr) 320px; gap:var(--s7); align-items:start; }
+.fakta{ padding:var(--s5); background:var(--soft); border-radius:var(--r-md); position:sticky; top:88px; }
+.fakta .linje{ border-bottom-color:var(--hairline); }
+@media (max-width:900px){ .detalj{ grid-template-columns:1fr; } .fakta{ position:static; } }
+</style>
+</head>
+<body>
+<a class="sr" href="#innhold">Hopp til innhold</a>
+<header class="mnav">
+  <a class="logo" href="#" data-od-id="nav-logo">AK Golf<span>.</span></a>
+  <nav aria-label="Hovedmeny">
+    <a href="#" data-od-id="nav-coaching">Coaching</a>
+    <a href="#" data-od-id="nav-coacher">Coacher</a>
+    <a href="#" data-od-id="nav-anlegg">Anlegg</a>
+    <a href="#" data-od-id="nav-blogg">Blogg</a>
+    <a href="#" data-od-id="nav-priser">Priser</a>
+  </nav>
+  <div class="hoyre">
+    <a class="btn sm" href="#" data-od-id="cta-logg-inn">Logg inn</a>
+    <a class="btn sm ink" href="#" data-od-id="cta-bestill">Bestill time</a>
+  </div>
+</header>
+
+<div class="riggbar" data-demo-only>
+  <span>Mal</span>
+  <button class="chip" type="button" data-tilstand="liste">Liste</button>
+  <button class="chip" type="button" data-tilstand="detalj">Detalj</button>
+  <button class="chip" type="button" data-tilstand="tom">Tomt filter</button>
+  <span class="sr" id="live" role="status" aria-live="polite"></span>
+</div>
+
+<main id="innhold">
+  <section data-vis="liste">
+    <div class="sek">
+      <div class="wrap">
+        <span class="eyebrow">Coacher</span>
+        <h1 class="hero" style="font-size:var(--text-section);max-width:22ch">Sju coacher, ett system</h1>
+        <p class="ing">Alle jobber etter samme metode og samme tallgrunnlag. Velg den som holder til nærmest deg — eller den som passer nivået ditt.</p>
+
+        <div class="filterrad" role="group" aria-label="Filtrer coacher">
+          <button type="button" aria-pressed="true" data-od-id="filter-alle">Alle · 7</button>
+          <button type="button" aria-pressed="false" data-od-id="filter-fredrikstad">Fredrikstad · 4</button>
+          <button type="button" aria-pressed="false" data-od-id="filter-onsoy">Onsøy · 2</button>
+          <button type="button" aria-pressed="false" data-od-id="filter-junior">Junior · 5</button>
+          <button type="button" aria-pressed="false" data-od-id="filter-elite">Elite · 3</button>
+        </div>
+
+        <div class="kat">
+          <a href="#" data-od-id="list-coach-1">
+            <span class="bilde" style="aspect-ratio:4/5">Portrett: Anders Kristiansen — 1000×1250</span>
+            <span class="navn">Anders Kristiansen</span>
+            <span class="meta">Head coach · Fredrikstad · elite og junior</span>
+            <p>PGA-utdannet, 14 år som trener. Jobber mest med spillere som skal fra kretsnivå til nasjonalt.</p>
+          </a>
+          <a href="#" data-od-id="list-coach-2">
+            <span class="bilde" style="aspect-ratio:4/5">Portrett: Trine Hauge — 1000×1250</span>
+            <span class="navn">Trine Hauge</span>
+            <span class="meta">Coach · Fredrikstad · nybegynner og junior</span>
+            <p>Spesialisert på de første to sesongene: grep, oppsett og det å få runder til å bli morsomme.</p>
+          </a>
+          <a href="#" data-od-id="list-coach-3">
+            <span class="bilde" style="aspect-ratio:4/5">Portrett: Martin Sund — 1000×1250</span>
+            <span class="navn">Martin Sund</span>
+            <span class="meta">Coach · Onsøy · nærspill</span>
+            <p>Jobber med putting og spill innenfor 100 meter. Bruker TrackMan og PuttLab i hver økt.</p>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section data-vis="detalj" hidden>
+    <div class="sek">
+      <div class="wrap">
+        <nav class="eyebrow" aria-label="Brødsmuler" style="margin-bottom:var(--s4)">
+          <a href="#" data-od-id="crumb-hjem" style="text-decoration:none">Hjem</a> · <a href="#" data-od-id="crumb-coacher" style="text-decoration:none">Coacher</a> · Anders Kristiansen
+        </nav>
+        <div class="detalj">
+          <div>
+            <span class="bilde" style="aspect-ratio:16/9;margin-bottom:var(--s5)">Bilde: Anders på range, liggende — 1920×1080</span>
+            <h1 class="hero" style="font-size:var(--text-section);max-width:22ch">Anders Kristiansen</h1>
+            <p class="ing">Head coach i AK Golf Group. Bygger opplegget rundt spillerens egne tall, ikke rundt en fast øktmal.</p>
+            <div class="prosa">
+              <p>Jeg har trent golfspillere siden 2012, de siste ni årene med juniorprogrammet i Fredrikstad. Det jeg bryr meg mest om, er at spilleren skjønner hvorfor en økt står i planen. Uten det blir treningen tilfeldig, uansett hvor god økta er.</p>
+              <h2>Slik jobber jeg</h2>
+              <p>Vi starter med kartlegging: et testbatteri og noen runder med slagregistrering. Da vet vi hvor slagene faktisk går tapt — som regel et annet sted enn spilleren tror. Derfra lager vi en plan i perioder, og justerer den hver uke etter det som skjer.</p>
+              <h2>Hvem jeg passer for</h2>
+              <ul>
+                <li>Juniorer som skal fra krets til nasjonalt nivå</li>
+                <li>Voksne med hcp under 10 som har stagnert</li>
+                <li>Lag og grupper som trenger et felles system</li>
+              </ul>
+            </div>
+          </div>
+          <aside class="fakta">
+            <div class="linje">Anlegg<span class="v">Fredrikstad GK</span></div>
+            <div class="linje">Nivå<span class="v">Elite · junior</span></div>
+            <div class="linje">Utstyr<span class="v">TrackMan · PuttLab</span></div>
+            <div class="linje">Pris fra<span class="v">1 200 kr / 60 min</span></div>
+            <div class="linje">Neste ledige<span class="v">tir 12.08 · 16:00</span></div>
+            <a class="btn ink full" href="#" style="margin-top:var(--s4)" data-od-id="cta-bestill-coach">Bestill time</a>
+            <a class="btn full" href="#" style="margin-top:var(--s2)" data-od-id="cta-kontakt-coach">Still et spørsmål</a>
+          </aside>
+        </div>
+      </div>
+    </div>
+
+    <div class="sek tett">
+      <div class="wrap">
+        <h2 class="sekt">Andre coacher i Fredrikstad</h2>
+        <div class="kat">
+          <a href="#" data-od-id="list-relatert-1"><span class="bilde" style="aspect-ratio:4/5">Portrett: Trine Hauge — 1000×1250</span><span class="navn">Trine Hauge</span><span class="meta">Nybegynner og junior</span></a>
+          <a href="#" data-od-id="list-relatert-2"><span class="bilde" style="aspect-ratio:4/5">Portrett: Martin Sund — 1000×1250</span><span class="navn">Martin Sund</span><span class="meta">Nærspill</span></a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section data-vis="tom" hidden>
+    <div class="sek">
+      <div class="wrap">
+        <span class="eyebrow">Coacher</span>
+        <h1 class="hero" style="font-size:var(--text-section);max-width:22ch">Sju coacher, ett system</h1>
+        <div class="filterrad" role="group" aria-label="Filtrer coacher">
+          <button type="button" aria-pressed="false" data-od-id="filter-tom-alle">Alle · 7</button>
+          <button type="button" aria-pressed="true" data-od-id="filter-tom-larvik">Larvik · 0</button>
+          <button type="button" aria-pressed="false" data-od-id="filter-tom-elite">Elite · 3</button>
+        </div>
+        <div class="tom" style="max-width:640px">
+          <h3>Ingen coacher i Larvik ennå</h3>
+          <p>Vi holder til i Fredrikstad og Onsøy. Er dere flere i Larvik som ønsker fast oppfølging, kan vi se på et opplegg der — si fra.</p>
+          <div style="display:flex;gap:var(--s2);flex-wrap:wrap">
+            <a class="btn ink" href="#" data-od-id="cta-tom-kontakt">Meld interesse</a>
+            <a class="btn" href="#" data-od-id="cta-tom-alle">Se alle sju</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="footer">
+  <div class="wrap">
+    <div class="lenker">
+      <a href="#" data-od-id="footer-om">Om oss</a><a href="#" data-od-id="footer-kontakt">Kontakt</a>
+      <a href="#" data-od-id="footer-blogg">Blogg</a><a href="#" data-od-id="footer-anlegg">Anlegg</a>
+      <a href="#" data-od-id="footer-vilkar">Vilkår</a><a href="#" data-od-id="footer-personvern">Personvern</a>
+    </div>
+    <p style="margin:0">AK Golf Group AS · Fredrikstad · org. 923 456 789</p>
+  </div>
+</footer>
+<script src="../felles/w5-demo.js"></script>
+</body>
+</html>

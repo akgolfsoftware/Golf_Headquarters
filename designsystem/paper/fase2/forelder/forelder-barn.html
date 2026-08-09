@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="nb" data-theme="light" data-temanokkel="akhq-theme-playerhq">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Foreldreportal · AK Golf HQ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Lora:ital,wght@0,400;0,500;1,400&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../felles/w5-base.css">
+<style>
+/* Foreldreportal-undersider — fase1 `foreldreportal.html` er fasit for huben.
+   Denne dekker resten: /forelder/barn(+[childId]) · ukerapport · okonomi ·
+   fakturaer · bookinger · varsler · innstillinger · samtykke · coach.
+   Personvernlinjen står i hver visning: foresatte ser oppmøte, plan og økonomi
+   — aldri spillerens egne notater, meldinger eller velværetekst. */
+.topp{ display:flex; align-items:center; gap:var(--s3); padding:var(--s4);
+  border-bottom:1px solid var(--border); background:var(--surface); }
+.topp h1{ margin:0; font-family:var(--disp); font-size:18px; font-weight:600; }
+.topp .sub{ display:block; font-family:var(--mono); font-size:11px; color:var(--muted); }
+.faner{ display:flex; gap:var(--s4); padding:0 var(--s4); border-bottom:1px solid var(--border);
+  background:var(--surface); overflow-x:auto; scrollbar-width:none; }
+.faner::-webkit-scrollbar{ display:none; }
+.fane{ min-height:var(--tap); padding:0 2px; background:transparent; border:0;
+  border-bottom:2px solid transparent; font-size:14px; font-weight:500; color:var(--muted);
+  cursor:pointer; white-space:nowrap; }
+.fane[aria-pressed="true"]{ color:var(--fg); border-bottom-color:var(--fg); font-weight:600; }
+.uke{ display:grid; grid-template-columns:repeat(7,1fr); gap:var(--s1); margin:var(--s3) 0 0; }
+.uke div{ padding:var(--s2) 0; border-radius:var(--r-sm); background:var(--soft);
+  font-family:var(--mono); font-size:10px; color:var(--muted); text-align:center; }
+.uke div.mott{ background:color-mix(in srgb, var(--up-raw) 30%, var(--soft)); color:var(--fg); }
+.uke div.borte{ border:1px dashed var(--hairline); background:transparent; }
+.personvern{ display:flex; gap:var(--s2); padding:var(--s3) var(--s4); margin-bottom:var(--s3);
+  background:var(--soft); border-radius:var(--r); font-family:var(--body); font-size:13px;
+  color:var(--muted); }
+</style>
+</head>
+<body>
+<div class="side">
+  <div class="riggbar" data-demo-only>
+    <span>Tilstand</span>
+    <button class="chip" type="button" data-tilstand="barn">Barnet mitt</button>
+    <button class="chip" type="button" data-tilstand="okonomi">Økonomi</button>
+    <button class="chip" type="button" data-tilstand="flere">Flere barn</button>
+    <button class="chip" type="button" data-tilstand="uten">Uten samtykke</button>
+    <button class="chip" type="button" id="themeBtn" aria-label="Bytt til mørk modus">Tema</button>
+    <span class="sr" id="live" role="status" aria-live="polite"></span>
+  </div>
+
+  <div class="kolonne bred" style="padding-inline:0">
+    <header class="topp">
+      <span class="av">EB</span>
+      <div><h1>Emil Berg</h1><span class="sub">15 år · Elite 1 · coach Anders K.</span></div>
+    </header>
+    <div class="faner" role="group" aria-label="Visning">
+      <button class="fane" type="button" aria-pressed="true" data-od-id="fane-uke">Uka</button>
+      <button class="fane" type="button" aria-pressed="false" data-od-id="fane-plan">Plan</button>
+      <button class="fane" type="button" aria-pressed="false" data-od-id="fane-okonomi">Økonomi</button>
+      <button class="fane" type="button" aria-pressed="false" data-od-id="fane-varsler">Varsler</button>
+      <button class="fane" type="button" aria-pressed="false" data-od-id="fane-samtykke">Samtykke</button>
+    </div>
+
+    <div style="padding:var(--s4)">
+      <section data-vis="barn">
+        <div class="personvern">Du ser oppmøte, plan og økonomi. Emils egne notater, meldinger til coachen og velværelogg er hans — de vises ikke her.</div>
+
+        <div class="kpirad">
+          <div class="kpi"><span class="k">Oppmøte 4 uker</span><span class="v num">11/12</span><span class="w">én avlyst av coach</span></div>
+          <div class="kpi"><span class="k">Timer trent</span><span class="v num">14,5</span><span class="w">siste 7 dager</span></div>
+          <div class="kpi"><span class="k">Runder</span><span class="v num">3</span><span class="w">siste 30 dager</span></div>
+        </div>
+
+        <div class="kort">
+          <h3>Denne uka</h3>
+          <div class="uke"><div class="mott">Ma<br>17</div><div class="mott">Ti<br>16</div><div class="borte">On</div><div class="mott">To<br>17</div><div class="borte">Fr</div><div class="mott">Lø<br>09</div><div class="borte">Sø</div></div>
+          <p style="margin-top:var(--s3)">Fire økter planlagt, tre gjennomført så langt. Lørdagens fellesøkt er på Gressbanen fra 09:00 til 11:00.</p>
+        </div>
+
+        <div class="kort">
+          <h3>Ukerapport fra coach</h3>
+          <p>Emil har hatt en god uke på nærspill, og de siste to øktene har vært konsentrerte. Vi holder volumet der det er fram til klubbmesterskapet 23. august — han trenger ikke mer, han trenger jevnhet.</p>
+          <div class="linje">Sendt<span class="v">søn 03.08</span></div>
+          <div class="linje">Neste rapport<span class="v">søn 10.08</span></div>
+        </div>
+
+        <button class="rad" type="button" data-od-id="list-neste-okt">
+          <span class="tx"><span class="tn">Neste økt · nærspill</span><span class="tm">tir 12.08 · 16:00–18:00 · Gressbanen</span></span>
+          <svg class="pil" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg>
+        </button>
+        <button class="rad" type="button" data-od-id="list-turnering">
+          <span class="tx"><span class="tn">Klubbmesterskap GFGK</span><span class="tm">23.08 · Fredrikstad GK · påmeldt</span></span>
+          <span class="hoyre"><span class="hv">14 dg</span></span>
+          <svg class="pil" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg>
+        </button>
+        <a class="btn full" href="#" style="margin-top:var(--s3)" data-od-id="cta-meld-coach">Send melding til coach</a>
+      </section>
+
+      <section data-vis="okonomi" hidden>
+        <div class="kpirad">
+          <div class="kpi"><span class="k">Månedlig</span><span class="v num">1 512</span><span class="w">kr · Coaching m/juniorrabatt</span></div>
+          <div class="kpi"><span class="k">Neste trekk</span><span class="v num">01.09</span><span class="w">Visa •••• 4417</span></div>
+          <div class="kpi"><span class="k">Utestående</span><span class="v num">0</span><span class="w">kr</span></div>
+        </div>
+
+        <div class="kort">
+          <h3>Fakturaer</h3>
+          <button class="rad" type="button" data-od-id="list-faktura-1"><span class="tx"><span class="tn">August 2026</span><span class="tm">Betalt 01.08 · Coaching junior</span></span><span class="hoyre"><span class="hv">1 512</span></span><svg class="pil" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
+          <button class="rad" type="button" data-od-id="list-faktura-2"><span class="tx"><span class="tn">Juli 2026</span><span class="tm">Betalt 01.07 · Coaching junior</span></span><span class="hoyre"><span class="hv">1 512</span></span><svg class="pil" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
+          <button class="rad" type="button" data-od-id="list-faktura-3"><span class="tx"><span class="tn">Turneringsavgift · NM junior</span><span class="tm">Betalt 12.06 · engangs</span></span><span class="hoyre"><span class="hv">950</span></span><svg class="pil" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
+        </div>
+
+        <div class="kort">
+          <h3>Bookinger med kostnad</h3>
+          <div class="linje">Ekstra coachtime · 14.08<span class="v">1 200 kr</span></div>
+          <div class="linje">TrackMan-økt · 21.08<span class="v">1 700 kr</span></div>
+          <p style="margin-top:var(--s3)">Enkelttimer faktureres i måneden etter. Vil du stoppe en booking, kan du avbestille kostnadsfritt inntil 24 timer før.</p>
+        </div>
+
+        <div class="kort">
+          <h3>Betalingsmåte</h3>
+          <div class="linje">Visa •••• 4417<span class="v">utløper 04/28</span></div>
+          <a class="btn full" href="#" style="margin-top:var(--s3)" data-od-id="cta-bytt-kort">Bytt betalingskort</a>
+        </div>
+      </section>
+
+      <section data-vis="flere" hidden>
+        <div class="personvern">Du har to barn i systemet. Velg hvem du vil se — økonomi vises samlet nederst.</div>
+        <button class="rad" type="button" data-od-id="list-barn-1"><span class="av">EB</span><span class="tx"><span class="tn">Emil Berg</span><span class="tm">15 år · Elite 1 · 11/12 oppmøte</span></span><svg class="pil" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
+        <button class="rad" type="button" data-od-id="list-barn-2"><span class="av">SB</span><span class="tx"><span class="tn">Sara Berg</span><span class="tm">11 år · Junior 2 · 8/8 oppmøte</span></span><svg class="pil" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
+        <div class="kort" style="margin-top:var(--s4)">
+          <h3>Samlet i august</h3>
+          <div class="linje">Emil · Coaching junior<span class="v">1 512</span></div>
+          <div class="linje">Sara · Junior 2<span class="v">690</span></div>
+          <div class="linje"><strong>Totalt</strong><span class="v"><strong>2 202 kr</strong></span></div>
+        </div>
+      </section>
+
+      <section data-vis="uten" hidden>
+        <div class="tom">
+          <h3>Vi mangler samtykket ditt</h3>
+          <p>Emil har laget konto, men den åpnes ikke før du har sagt ja til hva som lagres og hvem som ser det. Det tar under et minutt.</p>
+          <div style="display:flex;gap:var(--s2);flex-wrap:wrap">
+            <a class="btn ink" href="#" data-od-id="cta-gi-samtykke">Gi samtykke</a>
+            <a class="btn" href="#" data-od-id="cta-les-personvern">Les hva vi lagrer</a>
+          </div>
+        </div>
+        <div class="kort" style="margin-top:var(--s4)">
+          <h3>Dette ser du når samtykket er på plass</h3>
+          <p>Oppmøte og treningstider, ukerapport fra coachen, plan for perioden, turneringer Emil er påmeldt, og alt som gjelder betaling.</p>
+        </div>
+      </section>
+    </div>
+  </div>
+</div>
+<script src="../felles/w5-demo.js"></script>
+</body>
+</html>

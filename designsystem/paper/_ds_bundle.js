@@ -1,4 +1,4 @@
-/* @ds-bundle: {"format":4,"namespace":"AKGolfHQClaudePaper_605a48","components":[{"name":"Button","sourcePath":"components/actions/Button.jsx"},{"name":"Chip","sourcePath":"components/actions/Chip.jsx"},{"name":"FAB","sourcePath":"components/actions/FAB.jsx"},{"name":"OneThingNow","sourcePath":"components/actions/OneThingNow.jsx"},{"name":"AgendaRow","sourcePath":"components/calendar/AgendaRow.jsx"},{"name":"BudgetBar","sourcePath":"components/calendar/BudgetBar.jsx"},{"name":"DayStrip","sourcePath":"components/calendar/DayStrip.jsx"},{"name":"MaanedKalender","sourcePath":"components/calendar/MaanedKalender.jsx"},{"name":"Periodeplan","sourcePath":"components/calendar/Periodeplan.jsx"},{"name":"SessionCard","sourcePath":"components/calendar/SessionCard.jsx"},{"name":"Tidslinje","sourcePath":"components/calendar/Tidslinje.jsx"},{"name":"TimeGrid","sourcePath":"components/calendar/TimeGrid.jsx"},{"name":"UkeKalender","sourcePath":"components/calendar/UkeKalender.jsx"},{"name":"VISNINGER","sourcePath":"components/calendar/VisningsVelger.jsx"},{"name":"VisningsVelger","sourcePath":"components/calendar/VisningsVelger.jsx"},{"name":"YearTimeline","sourcePath":"components/calendar/YearTimeline.jsx"},{"name":"Region","sourcePath":"components/data/viz.jsx"},{"name":"AiRecap","sourcePath":"components/data/AiRecap.jsx"},{"name":"AiTipCard","sourcePath":"components/data/AiTipCard.jsx"},{"name":"DataPreview","sourcePath":"components/data/DataPreview.jsx"},{"name":"DataTable","sourcePath":"components/data/DataTable.jsx"},{"name":"KpiCard","sourcePath":"components/data/KpiCard.jsx"},{"name":"KpiStripe","sourcePath":"components/data/KpiStripe.jsx"},{"name":"NowNext","sourcePath":"components/data/NowNext.jsx"},{"name":"StatusCircleRow","sourcePath":"components/data/StatusCircleRow.jsx"},{"name":"AkseFordelingsBar","sourcePath":"components/datavis/AkseFordelingsBar.jsx"},{"name":"BarChart","sourcePath":"components/datavis/BarChart.jsx"},{"name":"CompareChart","sourcePath":"components/datavis/CompareChart.jsx"},{"name":"Heatmap","sourcePath":"components/datavis/Heatmap.jsx"},{"name":"KategoriFjell","sourcePath":"components/datavis/KategoriFjell.jsx"},{"name":"LengdeAvvik","sourcePath":"components/datavis/LengdeAvvik.jsx"},{"name":"LoadChart","sourcePath":"components/datavis/LoadChart.jsx"},{"name":"PPositionRail","sourcePath":"components/datavis/PPositionRail.jsx"},{"name":"PyramideFasett","sourcePath":"components/datavis/PyramideFasett.jsx"},{"name":"AKFormelChip","sourcePath":"components/domene/AKFormelChip.jsx"},{"name":"BenchmarkBadge","sourcePath":"components/domene/BenchmarkBadge.jsx"},{"name":"DiffKort","sourcePath":"components/domene/DiffKort.jsx"},{"name":"FleksMerke","sourcePath":"components/domene/FleksMerke.jsx"},{"name":"LFASER","sourcePath":"components/domene/LFaseBadge.jsx"},{"name":"LFaseBadge","sourcePath":"components/domene/LFaseBadge.jsx"},{"name":"LiveBar","sourcePath":"components/domene/LiveBar.jsx"},{"name":"LiveStatus","sourcePath":"components/domene/LiveStatus.jsx"},{"name":"NivaStige","sourcePath":"components/domene/NivaStige.jsx"},{"name":"OektKort","sourcePath":"components/domene/OektKort.jsx"},{"name":"SpillerKort","sourcePath":"components/domene/SpillerKort.jsx"},{"name":"TurneringNedtelling","sourcePath":"components/domene/TurneringNedtelling.jsx"},{"name":"VelvaereKort","sourcePath":"components/domene/VelvaereKort.jsx"},{"name":"Banner","sourcePath":"components/feedback/Banner.jsx"},{"name":"TONES","sourcePath":"components/feedback/Callout.jsx"},{"name":"Callout","sourcePath":"components/feedback/Callout.jsx"},{"name":"EmptyState","sourcePath":"components/feedback/EmptyState.jsx"},{"name":"Skeleton","sourcePath":"components/feedback/Skeleton.jsx"},{"name":"Checkbox","sourcePath":"components/forms/Checkbox.jsx"},{"name":"CodeInput","sourcePath":"components/forms/CodeInput.jsx"},{"name":"Combobox","sourcePath":"components/forms/Combobox.jsx"},{"name":"DatePicker","sourcePath":"components/forms/DatePicker.jsx"},{"name":"FieldMessage","sourcePath":"components/forms/FieldMessage.jsx"},{"name":"FormField","sourcePath":"components/forms/FormField.jsx"},{"name":"Radio","sourcePath":"components/forms/Radio.jsx"},{"name":"RadioGroup","sourcePath":"components/forms/Radio.jsx"},{"name":"SearchField","sourcePath":"components/forms/SearchField.jsx"},{"name":"SegmentControl","sourcePath":"components/forms/SegmentControl.jsx"},{"name":"Select","sourcePath":"components/forms/Select.jsx"},{"name":"Slider","sourcePath":"components/forms/Slider.jsx"},{"name":"TextInput","sourcePath":"components/forms/TextInput.jsx"},{"name":"Textarea","sourcePath":"components/forms/Textarea.jsx"},{"name":"Toggle","sourcePath":"components/forms/Toggle.jsx"},{"name":"DiagnoseKort","sourcePath":"components/golfdata/DiagnoseKort.jsx"},{"name":"KategoriKravKort","sourcePath":"components/golfdata/KategoriKravKort.jsx"},{"name":"LaunchWindowKort","sourcePath":"components/golfdata/LaunchWindowKort.jsx"},{"name":"NesteFokusKort","sourcePath":"components/golfdata/NesteFokusKort.jsx"},{"name":"PuttModellKort","sourcePath":"components/golfdata/PuttModellKort.jsx"},{"name":"Scorekort","sourcePath":"components/golfdata/Scorekort.jsx"},{"name":"SgTotalKort","sourcePath":"components/golfdata/SgTotalKort.jsx"},{"name":"SlagLekkasjeKart","sourcePath":"components/golfdata/SlagLekkasjeKart.jsx"},{"name":"SpillerTilstandKort","sourcePath":"components/golfdata/SpillerTilstandKort.jsx"},{"name":"StrikeSmashKort","sourcePath":"components/golfdata/StrikeSmashKort.jsx"},{"name":"TigerFiveKort","sourcePath":"components/golfdata/TigerFiveKort.jsx"},{"name":"DispersionMap","sourcePath":"components/golfviz/DispersionMap.jsx"},{"name":"GappingChart","sourcePath":"components/golfviz/GappingChart.jsx"},{"name":"HoleStrip","sourcePath":"components/golfviz/HoleStrip.jsx"},{"name":"PuttLab","sourcePath":"components/golfviz/PuttLab.jsx"},{"name":"PyramidProgress","sourcePath":"components/golfviz/PyramidProgress.jsx"},{"name":"SgBar","sourcePath":"components/golfviz/SgBreakdown.jsx"},{"name":"SgBreakdown","sourcePath":"components/golfviz/SgBreakdown.jsx"},{"name":"SkillRadarLive","sourcePath":"components/golfviz/SkillRadarLive.jsx"},{"name":"Sparkline","sourcePath":"components/golfviz/Sparkline.jsx"},{"name":"TrendBand","sourcePath":"components/golfviz/TrendBand.jsx"},{"name":"Accordion","sourcePath":"components/layout/Accordion.jsx"},{"name":"CardGrid","sourcePath":"components/layout/CardGrid.jsx"},{"name":"Divider","sourcePath":"components/layout/Divider.jsx"},{"name":"FeaturedCard","sourcePath":"components/layout/FeaturedCard.jsx"},{"name":"FilterPills","sourcePath":"components/layout/FilterPills.jsx"},{"name":"KanbanKolonne","sourcePath":"components/layout/KanbanKolonne.jsx"},{"name":"KeyValueGrid","sourcePath":"components/layout/KeyValueGrid.jsx"},{"name":"ListGroup","sourcePath":"components/layout/ListGroup.jsx"},{"name":"ListRow","sourcePath":"components/layout/ListRow.jsx"},{"name":"PageHeader","sourcePath":"components/layout/PageHeader.jsx"},{"name":"Pagination","sourcePath":"components/layout/Pagination.jsx"},{"name":"Panel","sourcePath":"components/layout/Panel.jsx"},{"name":"SectionHeader","sourcePath":"components/layout/SectionHeader.jsx"},{"name":"Stepper","sourcePath":"components/layout/Stepper.jsx"},{"name":"StickyActionBar","sourcePath":"components/layout/StickyActionBar.jsx"},{"name":"Breadcrumbs","sourcePath":"components/navigation/Breadcrumbs.jsx"},{"name":"RailIcons","sourcePath":"components/navigation/Icon.jsx"},{"name":"Icon","sourcePath":"components/navigation/Icon.jsx"},{"name":"QuickLinkBar","sourcePath":"components/navigation/QuickLinkBar.jsx"},{"name":"Rail","sourcePath":"components/navigation/Rail.jsx"},{"name":"SkipLink","sourcePath":"components/navigation/SkipLink.jsx"},{"name":"SpillerGruppeVeksler","sourcePath":"components/navigation/SpillerGruppeVeksler.jsx"},{"name":"TabBar","sourcePath":"components/navigation/TabBar.jsx"},{"name":"Tabs","sourcePath":"components/navigation/Tabs.jsx"},{"name":"TabPanel","sourcePath":"components/navigation/Tabs.jsx"},{"name":"ThemeToggle","sourcePath":"components/navigation/ThemeToggle.jsx"},{"name":"Topbar","sourcePath":"components/navigation/Topbar.jsx"},{"name":"BottomSheet","sourcePath":"components/overlays/BottomSheet.jsx"},{"name":"ConfirmDialog","sourcePath":"components/overlays/ConfirmDialog.jsx"},{"name":"Drawer","sourcePath":"components/overlays/Drawer.jsx"},{"name":"DropdownMenu","sourcePath":"components/overlays/DropdownMenu.jsx"},{"name":"HjelpPopover","sourcePath":"components/overlays/HjelpPopover.jsx"},{"name":"Modal","sourcePath":"components/overlays/Modal.jsx"},{"name":"Popover","sourcePath":"components/overlays/Popover.jsx"},{"name":"Toast","sourcePath":"components/overlays/Toast.jsx"},{"name":"Tooltip","sourcePath":"components/overlays/Tooltip.jsx"},{"name":"Avatar","sourcePath":"components/primitives/Avatar.jsx"},{"name":"SectionLabel","sourcePath":"components/primitives/SectionLabel.jsx"},{"name":"StatusBadge","sourcePath":"components/primitives/StatusBadge.jsx"},{"name":"DotMatrix","sourcePath":"components/progress/DotMatrix.jsx"},{"name":"GoalProgress","sourcePath":"components/progress/GoalProgress.jsx"},{"name":"PercentileGauge","sourcePath":"components/progress/PercentileGauge.jsx"},{"name":"PersonalBest","sourcePath":"components/progress/PersonalBest.jsx"},{"name":"ProgramLadder","sourcePath":"components/progress/ProgramLadder.jsx"},{"name":"ProgressBar","sourcePath":"components/progress/ProgressBar.jsx"},{"name":"ScoreGauge","sourcePath":"components/progress/ScoreGauge.jsx"},{"name":"ProvenanceDisclosure","sourcePath":"components/queue/ProvenanceDisclosure.jsx"},{"name":"QueueCard","sourcePath":"components/queue/QueueCard.jsx"},{"name":"CommandPalette","sourcePath":"components/shell/CommandPalette.jsx"},{"name":"Composer","sourcePath":"components/shell/Composer.jsx"},{"name":"MeldingsTraad","sourcePath":"components/shell/MeldingsTraad.jsx"},{"name":"StatusBar","sourcePath":"components/shell/StatusBar.jsx"},{"name":"KolleStatKort","sourcePath":"components/trackman/KolleStatKort.jsx"},{"name":"TrackmanSammendrag","sourcePath":"components/trackman/TrackmanSammendrag.jsx"},{"name":"TrajectoryPlot","sourcePath":"components/trackman/TrajectoryPlot.jsx"},{"name":"PositionMarker","sourcePath":"components/video/PositionMarker.jsx"},{"name":"VideoScrubber","sourcePath":"components/video/VideoScrubber.jsx"}],"sourceHashes":{"components/actions/Button.jsx":"d761dee18370","components/actions/Chip.jsx":"b9f50ab9586c","components/actions/FAB.jsx":"fae9e58f4f32","components/actions/OneThingNow.jsx":"87c91b5515bd","components/calendar/AgendaRow.jsx":"5053fcbf3b90","components/calendar/BudgetBar.jsx":"4ddb49c2f9d3","components/calendar/DayStrip.jsx":"ca15d796fc5b","components/calendar/MaanedKalender.jsx":"23e8b7bc3e40","components/calendar/Periodeplan.jsx":"20ed93cac7b1","components/calendar/SessionCard.jsx":"84ccd38d4298","components/calendar/Tidslinje.jsx":"a5fd9df6b748","components/calendar/TimeGrid.jsx":"3470a5716fc8","components/calendar/UkeKalender.jsx":"55735fca6972","components/calendar/VisningsVelger.jsx":"798e872a7b5e","components/calendar/YearTimeline.jsx":"81cc62a00918","components/calendar/viz.jsx":"4716f3177234","components/data/AiRecap.jsx":"52616f6c8cf7","components/data/AiTipCard.jsx":"de4ee37b5c0b","components/data/DataPreview.jsx":"a4acaf6c39b6","components/data/DataTable.jsx":"0bf29f3ee192","components/data/KpiCard.jsx":"3481abeb22bb","components/data/KpiStripe.jsx":"60e08bcf1576","components/data/NowNext.jsx":"87a298fe492d","components/data/StatusCircleRow.jsx":"c241eb83f3d2","components/data/viz.jsx":"88552b0bbb07","components/datavis/AkseFordelingsBar.jsx":"4ea8a1ce70ed","components/datavis/BarChart.jsx":"ae56d234a194","components/datavis/CompareChart.jsx":"f4b2d87bdb6e","components/datavis/Heatmap.jsx":"b3df57eb23f9","components/datavis/KategoriFjell.jsx":"9acf589521e7","components/datavis/LengdeAvvik.jsx":"e735bf1e8a2d","components/datavis/LoadChart.jsx":"6b7cf141b60e","components/datavis/PPositionRail.jsx":"0288c174e1ee","components/datavis/PyramideFasett.jsx":"2c95808caaef","components/datavis/viz.jsx":"4716f3177234","components/domene/AKFormelChip.jsx":"801ca842cebd","components/domene/BenchmarkBadge.jsx":"f6c6e8d7caee","components/domene/DiffKort.jsx":"c29af5dff366","components/domene/FleksMerke.jsx":"e38982c4f87d","components/domene/LFaseBadge.jsx":"f6e5b3cbb332","components/domene/LiveBar.jsx":"0e04aaa4ed42","components/domene/LiveStatus.jsx":"cd8e6611d95f","components/domene/NivaStige.jsx":"944ee1d92d90","components/domene/OektKort.jsx":"effcdc4f5cc1","components/domene/SpillerKort.jsx":"8ba0c43ea140","components/domene/TurneringNedtelling.jsx":"bd5e5e8d3d7e","components/domene/VelvaereKort.jsx":"b12bbb4822bd","components/domene/viz.jsx":"4716f3177234","components/feedback/Banner.jsx":"fe673f6d5dc3","components/feedback/Callout.jsx":"a247b2642666","components/feedback/EmptyState.jsx":"ecc0bf87d7f8","components/feedback/Skeleton.jsx":"9a92cbcc6f16","components/forms/Checkbox.jsx":"a61f39b57719","components/forms/CodeInput.jsx":"4cf0188dd7b9","components/forms/Combobox.jsx":"9e21617c04e1","components/forms/DatePicker.jsx":"ffcb0f7ef83b","components/forms/FieldMessage.jsx":"0673bcb79d78","components/forms/FormField.jsx":"0a1969748c20","components/forms/Radio.jsx":"1bd2f6e785eb","components/forms/SearchField.jsx":"e7ed28d608ca","components/forms/SegmentControl.jsx":"36112d6ba924","components/forms/Select.jsx":"2ce722c7d401","components/forms/Slider.jsx":"7b0dc8133f87","components/forms/TextInput.jsx":"a143a26ac490","components/forms/Textarea.jsx":"ee303252d1a6","components/forms/Toggle.jsx":"e85d032e120b","components/golfdata/DiagnoseKort.jsx":"fccce2f11634","components/golfdata/KategoriKravKort.jsx":"c1135a46cb5d","components/golfdata/LaunchWindowKort.jsx":"af1d2cb81447","components/golfdata/NesteFokusKort.jsx":"56d437ffeb80","components/golfdata/PuttModellKort.jsx":"e3d8d9f3429e","components/golfdata/Scorekort.jsx":"5e7de3d858e2","components/golfdata/SgTotalKort.jsx":"3ad382842287","components/golfdata/SlagLekkasjeKart.jsx":"bb4ee1d39ec4","components/golfdata/SpillerTilstandKort.jsx":"5fd2720b65a6","components/golfdata/StrikeSmashKort.jsx":"8082fad50ee9","components/golfdata/TigerFiveKort.jsx":"2bd96d3681df","components/golfdata/viz.jsx":"4716f3177234","components/golfviz/DispersionMap.jsx":"a4d79b9f44f8","components/golfviz/GappingChart.jsx":"da5d841bb0c3","components/golfviz/HoleStrip.jsx":"60683f28e530","components/golfviz/PuttLab.jsx":"46fc6c3a45ee","components/golfviz/PyramidProgress.jsx":"6ca56d9e6771","components/golfviz/SgBreakdown.jsx":"70657fd12e7a","components/golfviz/SkillRadarLive.jsx":"54ff1b6d0380","components/golfviz/Sparkline.jsx":"b872d951f4ab","components/golfviz/TrendBand.jsx":"9a2a2507e72d","components/golfviz/viz.jsx":"4716f3177234","components/layout/Accordion.jsx":"7fa7e7eeb3ba","components/layout/CardGrid.jsx":"6ae62ab90343","components/layout/Divider.jsx":"9cb9a7a11500","components/layout/FeaturedCard.jsx":"917f7262f3ab","components/layout/FilterPills.jsx":"18609e681ba4","components/layout/KanbanKolonne.jsx":"0040b7c85ded","components/layout/KeyValueGrid.jsx":"f3422a8e414e","components/layout/ListGroup.jsx":"d9ed3db05798","components/layout/ListRow.jsx":"18a6b9749d2e","components/layout/PageHeader.jsx":"3e3b7c5e0b70","components/layout/Pagination.jsx":"cdbc739c36be","components/layout/Panel.jsx":"49e1bc1e7976","components/layout/SectionHeader.jsx":"d07692798089","components/layout/Stepper.jsx":"67a2ea28c34b","components/layout/StickyActionBar.jsx":"64b9b1cb71e7","components/navigation/Breadcrumbs.jsx":"8c5aa64ec284","components/navigation/Icon.jsx":"0c54466ab50d","components/navigation/QuickLinkBar.jsx":"af4b86518b38","components/navigation/Rail.jsx":"4079e95bad4e","components/navigation/SkipLink.jsx":"2b5e9a927c77","components/navigation/SpillerGruppeVeksler.jsx":"6c8455f02a69","components/navigation/TabBar.jsx":"926fced4d11a","components/navigation/Tabs.jsx":"c8d7c671fdaf","components/navigation/ThemeToggle.jsx":"58ee8ade2098","components/navigation/Topbar.jsx":"1f0cacacc8fe","components/overlays/BottomSheet.jsx":"511abb3ed927","components/overlays/ConfirmDialog.jsx":"2e91b43f520e","components/overlays/Drawer.jsx":"897872ddab3e","components/overlays/DropdownMenu.jsx":"9f95898556ae","components/overlays/HjelpPopover.jsx":"2a432d3c5f0a","components/overlays/Modal.jsx":"cd6ea1cacde2","components/overlays/Popover.jsx":"3cb2ebaa5a0f","components/overlays/Toast.jsx":"7b82aaa22a6d","components/overlays/Tooltip.jsx":"1dc79844eb9f","components/overlays/overlay-focus.jsx":"62fe89a8f0ea","components/primitives/Avatar.jsx":"e518b932dca2","components/primitives/SectionLabel.jsx":"645cef000902","components/primitives/StatusBadge.jsx":"3f4cd9ed09d2","components/progress/DotMatrix.jsx":"91f139b099d2","components/progress/GoalProgress.jsx":"dba0c2f9f8d0","components/progress/PercentileGauge.jsx":"200c18233c68","components/progress/PersonalBest.jsx":"e284af0852d6","components/progress/ProgramLadder.jsx":"a7fd380c517b","components/progress/ProgressBar.jsx":"a984b86575c0","components/progress/ScoreGauge.jsx":"6a9de0ef623d","components/progress/viz.jsx":"4716f3177234","components/queue/ProvenanceDisclosure.jsx":"8d29be5a28da","components/queue/QueueCard.jsx":"bc0b2df2f8ff","components/shell/CommandPalette.jsx":"d2965e89f402","components/shell/Composer.jsx":"e0c0f8d7d0b3","components/shell/MeldingsTraad.jsx":"5cf660a5824e","components/shell/StatusBar.jsx":"2820fd53a71f","components/trackman/KolleStatKort.jsx":"c7a1aae58c0f","components/trackman/TrackmanSammendrag.jsx":"c65cc05389af","components/trackman/TrajectoryPlot.jsx":"b85bfebb5e5f","components/trackman/viz.jsx":"4716f3177234","components/video/PositionMarker.jsx":"d56ba5462728","components/video/VideoScrubber.jsx":"7aa5db46e86a","guidelines/lagsjekk.mjs":"bfa0acc8c09d"},"inlinedExternals":[],"unexposedExports":[{"name":"analyserFil","sourcePath":"guidelines/lagsjekk.mjs"},{"name":"delta","sourcePath":"components/data/viz.jsx"},{"name":"ensureCss","sourcePath":"components/data/viz.jsx"},{"name":"finnDuplikater","sourcePath":"guidelines/lagsjekk.mjs"},{"name":"finnUdeklarerte","sourcePath":"guidelines/lagsjekk.mjs"},{"name":"finnUgyldige","sourcePath":"guidelines/lagsjekk.mjs"},{"name":"focusablesIn","sourcePath":"components/overlays/overlay-focus.jsx"},{"name":"initialsFrom","sourcePath":"components/primitives/Avatar.jsx"},{"name":"isTopLayer","sourcePath":"components/overlays/overlay-focus.jsx"},{"name":"nf","sourcePath":"components/data/viz.jsx"},{"name":"nfi","sourcePath":"components/data/viz.jsx"},{"name":"samleDeklarasjoner","sourcePath":"guidelines/lagsjekk.mjs"},{"name":"sg","sourcePath":"components/data/viz.jsx"},{"name":"ukenummer","sourcePath":"components/forms/DatePicker.jsx"},{"name":"useOverlayLayer","sourcePath":"components/overlays/overlay-focus.jsx"},{"name":"useRovingKeys","sourcePath":"components/overlays/overlay-focus.jsx"},{"name":"vurder","sourcePath":"guidelines/lagsjekk.mjs"}]} */
+/* @ds-bundle: {"format":4,"namespace":"AKGolfHQClaudePaper_605a48","components":[{"name":"Button","sourcePath":"components/actions/Button.jsx"},{"name":"Chip","sourcePath":"components/actions/Chip.jsx"},{"name":"FAB","sourcePath":"components/actions/FAB.jsx"},{"name":"OneThingNow","sourcePath":"components/actions/OneThingNow.jsx"},{"name":"AgendaRow","sourcePath":"components/calendar/AgendaRow.jsx"},{"name":"BudgetBar","sourcePath":"components/calendar/BudgetBar.jsx"},{"name":"DayStrip","sourcePath":"components/calendar/DayStrip.jsx"},{"name":"MaanedKalender","sourcePath":"components/calendar/MaanedKalender.jsx"},{"name":"Periodeplan","sourcePath":"components/calendar/Periodeplan.jsx"},{"name":"SessionCard","sourcePath":"components/calendar/SessionCard.jsx"},{"name":"Tidslinje","sourcePath":"components/calendar/Tidslinje.jsx"},{"name":"TimeGrid","sourcePath":"components/calendar/TimeGrid.jsx"},{"name":"UkeKalender","sourcePath":"components/calendar/UkeKalender.jsx"},{"name":"VISNINGER","sourcePath":"components/calendar/VisningsVelger.jsx"},{"name":"VisningsVelger","sourcePath":"components/calendar/VisningsVelger.jsx"},{"name":"YearTimeline","sourcePath":"components/calendar/YearTimeline.jsx"},{"name":"Region","sourcePath":"components/data/viz.jsx"},{"name":"AiRecap","sourcePath":"components/data/AiRecap.jsx"},{"name":"AiTipCard","sourcePath":"components/data/AiTipCard.jsx"},{"name":"DataPreview","sourcePath":"components/data/DataPreview.jsx"},{"name":"DataTable","sourcePath":"components/data/DataTable.jsx"},{"name":"KpiCard","sourcePath":"components/data/KpiCard.jsx"},{"name":"KpiStripe","sourcePath":"components/data/KpiStripe.jsx"},{"name":"NowNext","sourcePath":"components/data/NowNext.jsx"},{"name":"StatusCircleRow","sourcePath":"components/data/StatusCircleRow.jsx"},{"name":"AkseFordelingsBar","sourcePath":"components/datavis/AkseFordelingsBar.jsx"},{"name":"BarChart","sourcePath":"components/datavis/BarChart.jsx"},{"name":"CompareChart","sourcePath":"components/datavis/CompareChart.jsx"},{"name":"Heatmap","sourcePath":"components/datavis/Heatmap.jsx"},{"name":"KategoriFjell","sourcePath":"components/datavis/KategoriFjell.jsx"},{"name":"LengdeAvvik","sourcePath":"components/datavis/LengdeAvvik.jsx"},{"name":"LoadChart","sourcePath":"components/datavis/LoadChart.jsx"},{"name":"PPositionRail","sourcePath":"components/datavis/PPositionRail.jsx"},{"name":"PyramideFasett","sourcePath":"components/datavis/PyramideFasett.jsx"},{"name":"AKFormelChip","sourcePath":"components/domene/AKFormelChip.jsx"},{"name":"BenchmarkBadge","sourcePath":"components/domene/BenchmarkBadge.jsx"},{"name":"DiffKort","sourcePath":"components/domene/DiffKort.jsx"},{"name":"FleksMerke","sourcePath":"components/domene/FleksMerke.jsx"},{"name":"LFASER","sourcePath":"components/domene/LFaseBadge.jsx"},{"name":"LFaseBadge","sourcePath":"components/domene/LFaseBadge.jsx"},{"name":"LiveBar","sourcePath":"components/domene/LiveBar.jsx"},{"name":"LiveStatus","sourcePath":"components/domene/LiveStatus.jsx"},{"name":"NivaStige","sourcePath":"components/domene/NivaStige.jsx"},{"name":"OektKort","sourcePath":"components/domene/OektKort.jsx"},{"name":"SpillerKort","sourcePath":"components/domene/SpillerKort.jsx"},{"name":"TurneringNedtelling","sourcePath":"components/domene/TurneringNedtelling.jsx"},{"name":"VelvaereKort","sourcePath":"components/domene/VelvaereKort.jsx"},{"name":"Banner","sourcePath":"components/feedback/Banner.jsx"},{"name":"TONES","sourcePath":"components/feedback/Callout.jsx"},{"name":"Callout","sourcePath":"components/feedback/Callout.jsx"},{"name":"EmptyState","sourcePath":"components/feedback/EmptyState.jsx"},{"name":"Skeleton","sourcePath":"components/feedback/Skeleton.jsx"},{"name":"AK_STRUKTUR","sourcePath":"components/forms/AkFormelVelger.jsx"},{"name":"AK_MOTORIKK","sourcePath":"components/forms/AkFormelVelger.jsx"},{"name":"AK_BELASTNING","sourcePath":"components/forms/AkFormelVelger.jsx"},{"name":"AK_PRESS","sourcePath":"components/forms/AkFormelVelger.jsx"},{"name":"AK_P_POSISJONER","sourcePath":"components/forms/AkFormelVelger.jsx"},{"name":"AkFormelVelger","sourcePath":"components/forms/AkFormelVelger.jsx"},{"name":"AkFormelLinje","sourcePath":"components/forms/AkFormelVelger.jsx"},{"name":"Checkbox","sourcePath":"components/forms/Checkbox.jsx"},{"name":"CodeInput","sourcePath":"components/forms/CodeInput.jsx"},{"name":"Combobox","sourcePath":"components/forms/Combobox.jsx"},{"name":"DatePicker","sourcePath":"components/forms/DatePicker.jsx"},{"name":"FieldMessage","sourcePath":"components/forms/FieldMessage.jsx"},{"name":"FormField","sourcePath":"components/forms/FormField.jsx"},{"name":"Radio","sourcePath":"components/forms/Radio.jsx"},{"name":"RadioGroup","sourcePath":"components/forms/Radio.jsx"},{"name":"SearchField","sourcePath":"components/forms/SearchField.jsx"},{"name":"SegmentControl","sourcePath":"components/forms/SegmentControl.jsx"},{"name":"Select","sourcePath":"components/forms/Select.jsx"},{"name":"Slider","sourcePath":"components/forms/Slider.jsx"},{"name":"TextInput","sourcePath":"components/forms/TextInput.jsx"},{"name":"Textarea","sourcePath":"components/forms/Textarea.jsx"},{"name":"Toggle","sourcePath":"components/forms/Toggle.jsx"},{"name":"DiagnoseKort","sourcePath":"components/golfdata/DiagnoseKort.jsx"},{"name":"KategoriKravKort","sourcePath":"components/golfdata/KategoriKravKort.jsx"},{"name":"LaunchWindowKort","sourcePath":"components/golfdata/LaunchWindowKort.jsx"},{"name":"NesteFokusKort","sourcePath":"components/golfdata/NesteFokusKort.jsx"},{"name":"PuttModellKort","sourcePath":"components/golfdata/PuttModellKort.jsx"},{"name":"Scorekort","sourcePath":"components/golfdata/Scorekort.jsx"},{"name":"SgTotalKort","sourcePath":"components/golfdata/SgTotalKort.jsx"},{"name":"SlagLekkasjeKart","sourcePath":"components/golfdata/SlagLekkasjeKart.jsx"},{"name":"SpillerTilstandKort","sourcePath":"components/golfdata/SpillerTilstandKort.jsx"},{"name":"StrikeSmashKort","sourcePath":"components/golfdata/StrikeSmashKort.jsx"},{"name":"TigerFiveKort","sourcePath":"components/golfdata/TigerFiveKort.jsx"},{"name":"DispersionMap","sourcePath":"components/golfviz/DispersionMap.jsx"},{"name":"GappingChart","sourcePath":"components/golfviz/GappingChart.jsx"},{"name":"HoleStrip","sourcePath":"components/golfviz/HoleStrip.jsx"},{"name":"PuttLab","sourcePath":"components/golfviz/PuttLab.jsx"},{"name":"PyramidProgress","sourcePath":"components/golfviz/PyramidProgress.jsx"},{"name":"SgBar","sourcePath":"components/golfviz/SgBreakdown.jsx"},{"name":"SgBreakdown","sourcePath":"components/golfviz/SgBreakdown.jsx"},{"name":"SkillRadarLive","sourcePath":"components/golfviz/SkillRadarLive.jsx"},{"name":"Sparkline","sourcePath":"components/golfviz/Sparkline.jsx"},{"name":"TrendBand","sourcePath":"components/golfviz/TrendBand.jsx"},{"name":"Accordion","sourcePath":"components/layout/Accordion.jsx"},{"name":"CardGrid","sourcePath":"components/layout/CardGrid.jsx"},{"name":"Divider","sourcePath":"components/layout/Divider.jsx"},{"name":"FeaturedCard","sourcePath":"components/layout/FeaturedCard.jsx"},{"name":"FilterPills","sourcePath":"components/layout/FilterPills.jsx"},{"name":"KanbanKolonne","sourcePath":"components/layout/KanbanKolonne.jsx"},{"name":"KeyValueGrid","sourcePath":"components/layout/KeyValueGrid.jsx"},{"name":"ListGroup","sourcePath":"components/layout/ListGroup.jsx"},{"name":"ListRow","sourcePath":"components/layout/ListRow.jsx"},{"name":"PageHeader","sourcePath":"components/layout/PageHeader.jsx"},{"name":"Pagination","sourcePath":"components/layout/Pagination.jsx"},{"name":"Panel","sourcePath":"components/layout/Panel.jsx"},{"name":"SectionHeader","sourcePath":"components/layout/SectionHeader.jsx"},{"name":"Stepper","sourcePath":"components/layout/Stepper.jsx"},{"name":"StickyActionBar","sourcePath":"components/layout/StickyActionBar.jsx"},{"name":"Breadcrumbs","sourcePath":"components/navigation/Breadcrumbs.jsx"},{"name":"RailIcons","sourcePath":"components/navigation/Icon.jsx"},{"name":"Icon","sourcePath":"components/navigation/Icon.jsx"},{"name":"QuickLinkBar","sourcePath":"components/navigation/QuickLinkBar.jsx"},{"name":"Rail","sourcePath":"components/navigation/Rail.jsx"},{"name":"SkipLink","sourcePath":"components/navigation/SkipLink.jsx"},{"name":"SpillerGruppeVeksler","sourcePath":"components/navigation/SpillerGruppeVeksler.jsx"},{"name":"TabBar","sourcePath":"components/navigation/TabBar.jsx"},{"name":"Tabs","sourcePath":"components/navigation/Tabs.jsx"},{"name":"TabPanel","sourcePath":"components/navigation/Tabs.jsx"},{"name":"ThemeToggle","sourcePath":"components/navigation/ThemeToggle.jsx"},{"name":"Topbar","sourcePath":"components/navigation/Topbar.jsx"},{"name":"BottomSheet","sourcePath":"components/overlays/BottomSheet.jsx"},{"name":"ConfirmDialog","sourcePath":"components/overlays/ConfirmDialog.jsx"},{"name":"Drawer","sourcePath":"components/overlays/Drawer.jsx"},{"name":"DropdownMenu","sourcePath":"components/overlays/DropdownMenu.jsx"},{"name":"HjelpPopover","sourcePath":"components/overlays/HjelpPopover.jsx"},{"name":"Modal","sourcePath":"components/overlays/Modal.jsx"},{"name":"Popover","sourcePath":"components/overlays/Popover.jsx"},{"name":"Toast","sourcePath":"components/overlays/Toast.jsx"},{"name":"Tooltip","sourcePath":"components/overlays/Tooltip.jsx"},{"name":"Avatar","sourcePath":"components/primitives/Avatar.jsx"},{"name":"SectionLabel","sourcePath":"components/primitives/SectionLabel.jsx"},{"name":"StatusBadge","sourcePath":"components/primitives/StatusBadge.jsx"},{"name":"DotMatrix","sourcePath":"components/progress/DotMatrix.jsx"},{"name":"GoalProgress","sourcePath":"components/progress/GoalProgress.jsx"},{"name":"PercentileGauge","sourcePath":"components/progress/PercentileGauge.jsx"},{"name":"PersonalBest","sourcePath":"components/progress/PersonalBest.jsx"},{"name":"ProgramLadder","sourcePath":"components/progress/ProgramLadder.jsx"},{"name":"ProgressBar","sourcePath":"components/progress/ProgressBar.jsx"},{"name":"ScoreGauge","sourcePath":"components/progress/ScoreGauge.jsx"},{"name":"ProvenanceDisclosure","sourcePath":"components/queue/ProvenanceDisclosure.jsx"},{"name":"QueueCard","sourcePath":"components/queue/QueueCard.jsx"},{"name":"CommandPalette","sourcePath":"components/shell/CommandPalette.jsx"},{"name":"Composer","sourcePath":"components/shell/Composer.jsx"},{"name":"MeldingsTraad","sourcePath":"components/shell/MeldingsTraad.jsx"},{"name":"StatusBar","sourcePath":"components/shell/StatusBar.jsx"},{"name":"KolleStatKort","sourcePath":"components/trackman/KolleStatKort.jsx"},{"name":"TrackmanSammendrag","sourcePath":"components/trackman/TrackmanSammendrag.jsx"},{"name":"TrajectoryPlot","sourcePath":"components/trackman/TrajectoryPlot.jsx"},{"name":"PositionMarker","sourcePath":"components/video/PositionMarker.jsx"},{"name":"VideoScrubber","sourcePath":"components/video/VideoScrubber.jsx"}],"sourceHashes":{"components/actions/Button.jsx":"d761dee18370","components/actions/Chip.jsx":"b9f50ab9586c","components/actions/FAB.jsx":"fae9e58f4f32","components/actions/OneThingNow.jsx":"87c91b5515bd","components/calendar/AgendaRow.jsx":"5053fcbf3b90","components/calendar/BudgetBar.jsx":"4ddb49c2f9d3","components/calendar/DayStrip.jsx":"ca15d796fc5b","components/calendar/MaanedKalender.jsx":"23e8b7bc3e40","components/calendar/Periodeplan.jsx":"20ed93cac7b1","components/calendar/SessionCard.jsx":"84ccd38d4298","components/calendar/Tidslinje.jsx":"a5fd9df6b748","components/calendar/TimeGrid.jsx":"3470a5716fc8","components/calendar/UkeKalender.jsx":"55735fca6972","components/calendar/VisningsVelger.jsx":"798e872a7b5e","components/calendar/YearTimeline.jsx":"81cc62a00918","components/calendar/viz.jsx":"4716f3177234","components/data/AiRecap.jsx":"52616f6c8cf7","components/data/AiTipCard.jsx":"de4ee37b5c0b","components/data/DataPreview.jsx":"a4acaf6c39b6","components/data/DataTable.jsx":"0bf29f3ee192","components/data/KpiCard.jsx":"3481abeb22bb","components/data/KpiStripe.jsx":"60e08bcf1576","components/data/NowNext.jsx":"87a298fe492d","components/data/StatusCircleRow.jsx":"c241eb83f3d2","components/data/viz.jsx":"88552b0bbb07","components/datavis/AkseFordelingsBar.jsx":"4ea8a1ce70ed","components/datavis/BarChart.jsx":"ae56d234a194","components/datavis/CompareChart.jsx":"f4b2d87bdb6e","components/datavis/Heatmap.jsx":"b3df57eb23f9","components/datavis/KategoriFjell.jsx":"9acf589521e7","components/datavis/LengdeAvvik.jsx":"e735bf1e8a2d","components/datavis/LoadChart.jsx":"6b7cf141b60e","components/datavis/PPositionRail.jsx":"0288c174e1ee","components/datavis/PyramideFasett.jsx":"2c95808caaef","components/datavis/viz.jsx":"4716f3177234","components/domene/AKFormelChip.jsx":"801ca842cebd","components/domene/BenchmarkBadge.jsx":"f6c6e8d7caee","components/domene/DiffKort.jsx":"c29af5dff366","components/domene/FleksMerke.jsx":"e38982c4f87d","components/domene/LFaseBadge.jsx":"07a915461c95","components/domene/LiveBar.jsx":"0e04aaa4ed42","components/domene/LiveStatus.jsx":"cd8e6611d95f","components/domene/NivaStige.jsx":"944ee1d92d90","components/domene/OektKort.jsx":"effcdc4f5cc1","components/domene/SpillerKort.jsx":"8ba0c43ea140","components/domene/TurneringNedtelling.jsx":"bd5e5e8d3d7e","components/domene/VelvaereKort.jsx":"b12bbb4822bd","components/domene/viz.jsx":"4716f3177234","components/feedback/Banner.jsx":"fe673f6d5dc3","components/feedback/Callout.jsx":"a247b2642666","components/feedback/EmptyState.jsx":"ecc0bf87d7f8","components/feedback/Skeleton.jsx":"9a92cbcc6f16","components/forms/AkFormelVelger.jsx":"56a097a2608a","components/forms/Checkbox.jsx":"a61f39b57719","components/forms/CodeInput.jsx":"4cf0188dd7b9","components/forms/Combobox.jsx":"9e21617c04e1","components/forms/DatePicker.jsx":"ffcb0f7ef83b","components/forms/FieldMessage.jsx":"0673bcb79d78","components/forms/FormField.jsx":"0a1969748c20","components/forms/Radio.jsx":"1bd2f6e785eb","components/forms/SearchField.jsx":"e7ed28d608ca","components/forms/SegmentControl.jsx":"36112d6ba924","components/forms/Select.jsx":"2ce722c7d401","components/forms/Slider.jsx":"7b0dc8133f87","components/forms/TextInput.jsx":"a143a26ac490","components/forms/Textarea.jsx":"ee303252d1a6","components/forms/Toggle.jsx":"e85d032e120b","components/golfdata/DiagnoseKort.jsx":"fccce2f11634","components/golfdata/KategoriKravKort.jsx":"c1135a46cb5d","components/golfdata/LaunchWindowKort.jsx":"af1d2cb81447","components/golfdata/NesteFokusKort.jsx":"56d437ffeb80","components/golfdata/PuttModellKort.jsx":"e3d8d9f3429e","components/golfdata/Scorekort.jsx":"5e7de3d858e2","components/golfdata/SgTotalKort.jsx":"3ad382842287","components/golfdata/SlagLekkasjeKart.jsx":"bb4ee1d39ec4","components/golfdata/SpillerTilstandKort.jsx":"5fd2720b65a6","components/golfdata/StrikeSmashKort.jsx":"8082fad50ee9","components/golfdata/TigerFiveKort.jsx":"2bd96d3681df","components/golfdata/viz.jsx":"4716f3177234","components/golfviz/DispersionMap.jsx":"a4d79b9f44f8","components/golfviz/GappingChart.jsx":"da5d841bb0c3","components/golfviz/HoleStrip.jsx":"60683f28e530","components/golfviz/PuttLab.jsx":"46fc6c3a45ee","components/golfviz/PyramidProgress.jsx":"6ca56d9e6771","components/golfviz/SgBreakdown.jsx":"70657fd12e7a","components/golfviz/SkillRadarLive.jsx":"54ff1b6d0380","components/golfviz/Sparkline.jsx":"b872d951f4ab","components/golfviz/TrendBand.jsx":"9a2a2507e72d","components/golfviz/viz.jsx":"4716f3177234","components/layout/Accordion.jsx":"7fa7e7eeb3ba","components/layout/CardGrid.jsx":"6ae62ab90343","components/layout/Divider.jsx":"9cb9a7a11500","components/layout/FeaturedCard.jsx":"917f7262f3ab","components/layout/FilterPills.jsx":"18609e681ba4","components/layout/KanbanKolonne.jsx":"0040b7c85ded","components/layout/KeyValueGrid.jsx":"f3422a8e414e","components/layout/ListGroup.jsx":"d9ed3db05798","components/layout/ListRow.jsx":"18a6b9749d2e","components/layout/PageHeader.jsx":"3e3b7c5e0b70","components/layout/Pagination.jsx":"cdbc739c36be","components/layout/Panel.jsx":"49e1bc1e7976","components/layout/SectionHeader.jsx":"d07692798089","components/layout/Stepper.jsx":"67a2ea28c34b","components/layout/StickyActionBar.jsx":"64b9b1cb71e7","components/navigation/Breadcrumbs.jsx":"8c5aa64ec284","components/navigation/Icon.jsx":"0c54466ab50d","components/navigation/QuickLinkBar.jsx":"af4b86518b38","components/navigation/Rail.jsx":"4079e95bad4e","components/navigation/SkipLink.jsx":"2b5e9a927c77","components/navigation/SpillerGruppeVeksler.jsx":"6c8455f02a69","components/navigation/TabBar.jsx":"926fced4d11a","components/navigation/Tabs.jsx":"c8d7c671fdaf","components/navigation/ThemeToggle.jsx":"58ee8ade2098","components/navigation/Topbar.jsx":"1f0cacacc8fe","components/overlays/BottomSheet.jsx":"511abb3ed927","components/overlays/ConfirmDialog.jsx":"2e91b43f520e","components/overlays/Drawer.jsx":"897872ddab3e","components/overlays/DropdownMenu.jsx":"9f95898556ae","components/overlays/HjelpPopover.jsx":"2a432d3c5f0a","components/overlays/Modal.jsx":"cd6ea1cacde2","components/overlays/Popover.jsx":"3cb2ebaa5a0f","components/overlays/Toast.jsx":"7b82aaa22a6d","components/overlays/Tooltip.jsx":"1dc79844eb9f","components/overlays/overlay-focus.jsx":"62fe89a8f0ea","components/primitives/Avatar.jsx":"e518b932dca2","components/primitives/SectionLabel.jsx":"645cef000902","components/primitives/StatusBadge.jsx":"596f98551907","components/progress/DotMatrix.jsx":"91f139b099d2","components/progress/GoalProgress.jsx":"dba0c2f9f8d0","components/progress/PercentileGauge.jsx":"200c18233c68","components/progress/PersonalBest.jsx":"e284af0852d6","components/progress/ProgramLadder.jsx":"a7fd380c517b","components/progress/ProgressBar.jsx":"a984b86575c0","components/progress/ScoreGauge.jsx":"6a9de0ef623d","components/progress/viz.jsx":"4716f3177234","components/queue/ProvenanceDisclosure.jsx":"8d29be5a28da","components/queue/QueueCard.jsx":"bc0b2df2f8ff","components/shell/CommandPalette.jsx":"d2965e89f402","components/shell/Composer.jsx":"e0c0f8d7d0b3","components/shell/MeldingsTraad.jsx":"5cf660a5824e","components/shell/StatusBar.jsx":"2820fd53a71f","components/trackman/KolleStatKort.jsx":"c7a1aae58c0f","components/trackman/TrackmanSammendrag.jsx":"c65cc05389af","components/trackman/TrajectoryPlot.jsx":"b85bfebb5e5f","components/trackman/viz.jsx":"4716f3177234","components/video/PositionMarker.jsx":"d56ba5462728","components/video/VideoScrubber.jsx":"7aa5db46e86a","fase2/agencyos/w4-demo.js":"999df15f0aeb","fase2/felles/w5-demo.js":"bd3a2ba1b3b1","fase2/playerhq/w3-demo.js":"550e73b39f05","guidelines/lagsjekk.mjs":"bfa0acc8c09d"},"inlinedExternals":[],"unexposedExports":[{"name":"analyserFil","sourcePath":"guidelines/lagsjekk.mjs"},{"name":"delferdighetsListe","sourcePath":"components/forms/AkFormelVelger.jsx"},{"name":"delta","sourcePath":"components/data/viz.jsx"},{"name":"ensureCss","sourcePath":"components/data/viz.jsx"},{"name":"finnDuplikater","sourcePath":"guidelines/lagsjekk.mjs"},{"name":"finnUdeklarerte","sourcePath":"guidelines/lagsjekk.mjs"},{"name":"finnUgyldige","sourcePath":"guidelines/lagsjekk.mjs"},{"name":"focusablesIn","sourcePath":"components/overlays/overlay-focus.jsx"},{"name":"formelSlots","sourcePath":"components/forms/AkFormelVelger.jsx"},{"name":"formelStreng","sourcePath":"components/forms/AkFormelVelger.jsx"},{"name":"harPPosisjon","sourcePath":"components/forms/AkFormelVelger.jsx"},{"name":"initialsFrom","sourcePath":"components/primitives/Avatar.jsx"},{"name":"isTopLayer","sourcePath":"components/overlays/overlay-focus.jsx"},{"name":"nf","sourcePath":"components/data/viz.jsx"},{"name":"nfi","sourcePath":"components/data/viz.jsx"},{"name":"omradeObjekt","sourcePath":"components/forms/AkFormelVelger.jsx"},{"name":"pEkspandert","sourcePath":"components/forms/AkFormelVelger.jsx"},{"name":"samleDeklarasjoner","sourcePath":"guidelines/lagsjekk.mjs"},{"name":"sg","sourcePath":"components/data/viz.jsx"},{"name":"ukenummer","sourcePath":"components/forms/DatePicker.jsx"},{"name":"useOverlayLayer","sourcePath":"components/overlays/overlay-focus.jsx"},{"name":"useRovingKeys","sourcePath":"components/overlays/overlay-focus.jsx"},{"name":"vurder","sourcePath":"guidelines/lagsjekk.mjs"}]} */
 
 (() => {
 
@@ -3327,10 +3327,11 @@ if (typeof document !== "undefined" && !document.getElementById("akhq-css-lfb"))
 const LFASER = ["L-KROPP", "L-ARM", "L-KØLLE", "L-BALL", "L-AUTO"];
 /* L-fasen som badge: fargeløs (AK-vokabularet fargekodes aldri) med
    prikk-indikator for hvor i læringsløpet fasen ligger — forbi = --mid,
-   nå = blekk, kommende = border. Fasene er en LUKKET rekkefølge fra CANON.
-   MERK (flagget i kart/status-2026-08-03.md): Bølge 1 fjernet L-faser fra
-   fase1-skjermene, men ordren 03.08 bestiller badgen — appvisningen Vei B
-   bruker fortsatt fase-steg. Eier avgjør endelig bruk; badgen er klar. */
+   nå = blekk, kommende = border. Fasene er en LUKKET rekkefølge fra CANON v1.
+   AVGJORT 05.08.2026 (Anders): badgen tas IKKE i bruk — AK-formel v2 har
+   ikke L-faser; appens Vei B-motorikksteg (UTEN_BALL/LAV_HAST/AUTO) er
+   erstatningen. Blir liggende ubrukt i biblioteket; ikke plasser den på
+   noen flate. */
 function LFaseBadge({
   value,
   showSteps = true,
@@ -3990,6 +3991,739 @@ function Skeleton({
 }
 Object.assign(__ds_scope, { Skeleton });
 })(); } catch (e) { __ds_ns.__errors.push({ path: "components/feedback/Skeleton.jsx", error: String((e && e.message) || e) }); }
+
+// components/forms/AkFormelVelger.jsx
+try { (() => {
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); }
+const css = `
+@layer akhq-base, akhq-container, akhq-modifier;
+@layer akhq-base{
+.akhq-fv{display:flex;flex-direction:column;gap:var(--s3);font-family:var(--ui)}
+.akhq-fv-steg{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:var(--s4)}
+.akhq-fv-steg[data-hvilende=true]{opacity:.5}
+.akhq-fv-steg--felt{border-style:dashed;background:var(--bg)}
+.akhq-fv-hd{display:flex;align-items:center;gap:var(--s2);margin-bottom:var(--s1)}
+.akhq-fv-num{--h:22px;font-family:var(--mono);font-size:11px;color:var(--on-cta);background:var(--cta);border-radius:var(--r-pill);width:var(--h);height:var(--h);display:grid;place-items:center;flex:none}
+.akhq-fv-num--felt{background:var(--soft);color:var(--muted)}
+.akhq-fv-tit{font-weight:600;font-size:15px;flex:1;color:var(--fg)}
+.akhq-fv-pick{font-family:var(--mono);font-size:12px;color:var(--accent-fg);font-weight:500;text-align:right}
+.akhq-fv-desc{font-family:var(--body);font-size:13px;color:var(--muted);line-height:1.55;margin:0 0 var(--s3)}
+.akhq-fv-grp{margin-bottom:var(--s3)}
+.akhq-fv-grp:last-child{margin-bottom:0}
+.akhq-fv-gl{font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);font-weight:600;margin-bottom:var(--s2)}
+.akhq-fv-chips{display:flex;flex-wrap:wrap;gap:var(--s2)}
+.akhq-fv-chip{--h:36px;--floor:0px;min-height:max(var(--h),var(--floor));display:inline-flex;align-items:center;gap:6px;border:1px solid var(--border);border-radius:var(--r-pill);padding:0 var(--s3);font-family:inherit;font-size:13px;font-weight:500;color:var(--fg);background:var(--surface);cursor:pointer;transition:background var(--dur) var(--ease),border-color var(--dur) var(--ease)}
+.akhq-fv-chip:hover:not([aria-pressed=true]),.akhq-fv-chip[data-state=hover]{background:var(--soft)}
+.akhq-fv-chip[aria-pressed=true]{background:var(--cta);color:var(--on-cta);border-color:var(--cta)}
+.akhq-fv-chip:focus-visible,.akhq-fv-chip[data-state=focus]{outline:2px solid var(--focus);outline-offset:2px}
+.akhq-fv-chip--mono{font-family:var(--mono);font-size:12px;min-width:64px;justify-content:center}
+.akhq-fv-sw{width:8px;height:8px;border-radius:50%;background:var(--akhq-fv-pyr,var(--mid));flex:none}
+.akhq-fv-note{font-family:var(--body);font-size:12.5px;color:var(--muted);line-height:1.5;margin-top:var(--s3);padding-left:var(--s3);border-left:2px solid var(--hairline)}
+.akhq-fv-note b{font-family:var(--ui);font-weight:600;color:var(--fg)}
+.akhq-fv-note--apen{border-left-color:var(--accent)}
+.akhq-fv-bar{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:var(--s4)}
+.akhq-fv-bl{font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);font-weight:600;margin-bottom:6px}
+.akhq-fv-formel{font-family:var(--mono);font-size:13px;line-height:1.5;word-break:break-word;font-weight:500;color:var(--fg)}
+.akhq-fv-tom{color:var(--mid)}
+.akhq-fv-sep{color:var(--mid)}
+.akhq-fv-human{font-family:var(--body);font-size:12.5px;color:var(--muted);margin-top:6px;line-height:1.5}
+}
+@layer akhq-container{
+/* Gulvet gjelder treffmålet — chipen. Samme regel som SegmentControl. */
+@media(pointer:coarse){.akhq-fv-chip{--floor:44px}}
+[data-coarse-test] .akhq-fv-chip{--floor:44px}
+}
+`;
+if (typeof document !== "undefined" && !document.getElementById("akhq-css-fv")) {
+  const s = document.createElement("style");
+  s.id = "akhq-css-fv";
+  s.textContent = css;
+  document.head.appendChild(s);
+}
+
+/* ── Strukturen — AK-formel v3, jf. docs/ordre-ak-formel-v3-2026-08-03.md §2 ──
+   Områdelista avhenger av pyramiden. Pyramiden er en gaffel, ikke en etikett. */
+
+const DEL_PUTT = [{
+  k: "GREENLESNING",
+  l: "Greenlesning",
+  d: "Lese fall og hastighet"
+}, {
+  k: "SIKTE",
+  l: "Sikte",
+  d: "Peke putteren der du vil"
+}, {
+  k: "BALLSTART",
+  l: "Ballstart",
+  d: "Få ballen ut på valgt linje"
+}, {
+  k: "LENGDEKONTROLL",
+  l: "Lengdekontroll",
+  d: "Riktig fart på ballen"
+}];
+const DEL_SLAG = [{
+  k: "OPPSTILLING",
+  l: "Oppstilling",
+  d: "Kropp og føtter i forhold til målet"
+}, {
+  k: "GREP",
+  l: "Grep",
+  d: "Hendene på køllen"
+}, {
+  k: "SIKTE",
+  l: "Sikte",
+  d: "Køllebladet mot målet"
+}, {
+  k: "BALLSTART",
+  l: "Ballstart",
+  d: "Startretningen på ballen"
+}, {
+  k: "SKRU",
+  l: "Skru",
+  d: "Kurven — draw eller fade"
+}, {
+  k: "LENGDEKONTROLL",
+  l: "Lengdekontroll",
+  d: "Treffe riktig distanse"
+}];
+const DEL_SPILL = [{
+  k: "FORBEREDELSER",
+  l: "Forberedelser",
+  d: "Banekunnskap, plan, rutine før slaget"
+}, {
+  k: "STRATEGI_TAKTIKK",
+  l: "Strategi/taktikk",
+  d: "Køllevalg, mål, risiko og buffer"
+}, {
+  k: "MENTAL",
+  l: "Mental",
+  d: "Fokus, aksept, spenningsregulering"
+}];
+/* FYS: kun STYRKE er definert (Anders 03.08). De tre øvrige står åpne — vis det, ikke dikt. */
+const DEL_FYS = {
+  STYRKE: [{
+    k: "RFD",
+    l: "RFD",
+    d: "Kraftutvikling per tid — eksplosivitet"
+  }, {
+    k: "MAKSSTYRKE",
+    l: "Maksstyrke",
+    d: "Høyeste kraft uansett tid"
+  }, {
+    k: "UTHOLDENHET",
+    l: "Utholdenhet",
+    d: "Kraft holdt over tid"
+  }]
+};
+
+/* Tee/innspill/nærspill/putt — 17 områder i fire SG-grupper. Deles av TEK og SLAG. */
+const OMR_GOLF = [{
+  grp: "Tee",
+  items: [{
+    k: "TEE_TOTAL",
+    l: "Tee Total"
+  }]
+}, {
+  grp: "Innspill",
+  items: [{
+    k: "INNSPILL_200",
+    l: "Innspill 200+"
+  }, {
+    k: "INNSPILL_150",
+    l: "Innspill 150–200"
+  }, {
+    k: "INNSPILL_100",
+    l: "Innspill 100–150"
+  }, {
+    k: "INNSPILL_50",
+    l: "Innspill 50–100"
+  }, {
+    k: "INNSPILL_0_50",
+    l: "Innspill 0–50"
+  }]
+}, {
+  grp: "Nærspill",
+  items: [{
+    k: "PITCH",
+    l: "Pitch"
+  }, {
+    k: "CHIP",
+    l: "Chip"
+  }, {
+    k: "LOB",
+    l: "Lob"
+  }, {
+    k: "BUNKER",
+    l: "Bunker"
+  }]
+}, /* Enhet fot (Anders 03.08). Koden lagrer meter — vis alltid enhet, aldri bart tall. */
+{
+  grp: "Putt (fot)",
+  items: [{
+    k: "PUTT_0_3",
+    l: "Putt 0–3"
+  }, {
+    k: "PUTT_3_5",
+    l: "Putt 3–5"
+  }, {
+    k: "PUTT_5_10",
+    l: "Putt 5–10"
+  }, {
+    k: "PUTT_10_15",
+    l: "Putt 10–15"
+  }, {
+    k: "PUTT_15_25",
+    l: "Putt 15–25"
+  }, {
+    k: "PUTT_25_40",
+    l: "Putt 25–40"
+  }, {
+    k: "PUTT_40",
+    l: "Putt 40+"
+  }]
+}];
+const AK_STRUKTUR = {
+  FYS: {
+    l: "Fysisk",
+    d: "Styrke, kondisjon, spenst og bevegelighet.",
+    omrader: [{
+      grp: null,
+      items: [{
+        k: "STYRKE",
+        l: "Styrke"
+      }, {
+        k: "KONDISJON",
+        l: "Kondisjon"
+      }, {
+        k: "SPENST",
+        l: "Spenst"
+      }, {
+        k: "BEVEGELIGHET",
+        l: "Bevegelighet"
+      }]
+    }],
+    del: "fys",
+    slots: ["pyr", "omr", "del", "bel"],
+    delApen: "Delferdighet er definert for Styrke. Kondisjon, spenst og bevegelighet står åpne — se §4.1b."
+  },
+  TEK: {
+    l: "Teknikk",
+    d: "Sving-mekanikk, P-posisjoner, MORAD-arbeid.",
+    omrader: OMR_GOLF,
+    del: "golf",
+    slots: ["pyr", "omr", "del", "mot", "bel", "press"]
+  },
+  SLAG: {
+    l: "Golfslag",
+    d: "Slag med ball mot mål.",
+    omrader: OMR_GOLF,
+    del: "golf",
+    slots: ["pyr", "omr", "del", "mot", "bel", "press"]
+  },
+  SPILL: {
+    l: "Spill",
+    d: "Banespill, test, scoring.",
+    /* BANE beholdt (Anders 03.08): form, ikke sted. Etiketter alltid — «Bane» finnes òg under Belastning. */
+    omrader: [{
+      grp: null,
+      items: [{
+        k: "BANE",
+        l: "Bane"
+      }, {
+        k: "TEST",
+        l: "Test"
+      }, {
+        k: "SCORING",
+        l: "Scoring"
+      }, {
+        k: "INNSPILL",
+        l: "Innspill"
+      }]
+    }],
+    del: "spill",
+    slots: ["pyr", "omr", "del", "mot", "bel", "press"]
+  },
+  TURN: {
+    l: "Turnering",
+    d: "Turneringstypene — hva turneringen skal brukes til.",
+    omrader: [{
+      grp: null,
+      items: [{
+        k: "TRENING",
+        l: "Trening",
+        d: "Turnering som treningsarena"
+      }, {
+        k: "UTVIKLING",
+        l: "Utvikling",
+        d: "Turnering for å bygge nivå"
+      }, {
+        k: "PRESTASJON",
+        l: "Prestasjon",
+        d: "Turnering det skal leveres i"
+      }]
+    }],
+    del: "spill",
+    slots: ["pyr", "omr", "del", "mot", "bel", "press"]
+  }
+};
+const AK_MOTORIKK = [{
+  k: "UTEN_BALL",
+  l: "Uten ball",
+  d: "Bevegelse uten å slå"
+}, {
+  k: "LAV_HASTIGHET",
+  l: "Lav hastighet",
+  d: "Sakte, kontrollert"
+}, {
+  k: "AUTO",
+  l: "Auto",
+  d: "Full fart, automatisert"
+}];
+const AK_BELASTNING = [{
+  k: "INNENDORS",
+  l: "Innendørs",
+  d: "Studio, simulator, treningsrom"
+}, {
+  k: "TRENINGSOMRADE",
+  l: "Treningsområde",
+  d: "Range, nærspillsareal, puttegreen"
+}, {
+  k: "BANE",
+  l: "Bane",
+  d: "Ute på hullene"
+}, {
+  k: "KONKURRANSE",
+  l: "Konkurranse",
+  d: "Reell turnering"
+}];
+const AK_PRESS = [{
+  k: "ALENE",
+  l: "Alene",
+  d: "Ingen ser på"
+}, {
+  k: "OBSERVERT",
+  l: "Observert",
+  d: "Noen følger med, resultat noteres"
+}, {
+  k: "KONKURRANSE",
+  l: "Konkurranse",
+  d: "Match, poeng eller konsekvens"
+}, {
+  k: "TURNERING",
+  l: "Turnering",
+  d: "Ekte turneringssituasjon"
+}];
+const AK_P_POSISJONER = ["P1.0", "P2.0", "P3.0", "P4.0", "P5.0", "P6.0", "P7.0", "P8.0", "P9.0", "P10.0"];
+const P_MODUS = [{
+  k: "ENKEL",
+  l: "Én posisjon"
+}, {
+  k: "FLERE",
+  l: "Flere"
+}, {
+  k: "INTERVALL",
+  l: "Mellom"
+}];
+/* P-systemet gjelder kun TEK på tee og innspill (Anders 03.08). Ikke nærspill, ikke putt. */
+const P_OMRADER = ["TEE_TOTAL", "INNSPILL_200", "INNSPILL_150", "INNSPILL_100", "INNSPILL_50", "INNSPILL_0_50"];
+const MOT_KORT = {
+  UTEN_BALL: "UTEN_BALL",
+  LAV_HASTIGHET: "LAV_HAST",
+  AUTO: "AUTO"
+};
+const TOM = {
+  pyr: "PYRAMIDE",
+  omr: "OMRÅDE",
+  p: "P-POSISJON",
+  del: "DELFERDIGHET",
+  mot: "MOTORIKK",
+  bel: "BELASTNING",
+  press: "PRESS"
+};
+/* Nullstillingskartet — bytter du et steg, faller alt under bort. Ikke bare skjules. */
+const NULLSTILL = {
+  pyr: ["omr", "del", "mot", "bel", "press"],
+  omr: ["del", "mot", "bel", "press"],
+  del: ["mot", "bel", "press"],
+  mot: ["bel", "press"],
+  bel: ["press"]
+};
+const finn = (liste, k) => (liste || []).find(x => x.k === k) || null;
+const pIdx = k => AK_P_POSISJONER.indexOf(k);
+function omradeObjekt(verdi) {
+  const p = AK_STRUKTUR[verdi.pyr];
+  if (!p) return null;
+  for (const g of p.omrader) {
+    const f = g.items.find(i => i.k === verdi.omr);
+    if (f) return {
+      ...f,
+      grp: g.grp
+    };
+  }
+  return null;
+}
+function delferdighetsListe(verdi) {
+  const p = AK_STRUKTUR[verdi.pyr];
+  if (!p || !p.del) return null;
+  if (p.del === "spill") return DEL_SPILL;
+  if (p.del === "fys") return DEL_FYS[verdi.omr] || null;
+  const o = omradeObjekt(verdi);
+  if (!o) return null;
+  return o.grp && o.grp.startsWith("Putt") ? DEL_PUTT : DEL_SLAG;
+}
+function harPPosisjon(verdi) {
+  return verdi.pyr === "TEK" && P_OMRADER.includes(verdi.omr);
+}
+function pEkspandert(verdi) {
+  const valg = verdi.pValg || [];
+  if (!valg.length) return [];
+  if (verdi.pModus === "INTERVALL" && valg.length === 2) {
+    const a = pIdx(valg[0]),
+      b = pIdx(valg[1]);
+    return AK_P_POSISJONER.slice(Math.min(a, b), Math.max(a, b) + 1);
+  }
+  return [...valg].sort((x, y) => pIdx(x) - pIdx(y));
+}
+function pStreng(verdi) {
+  const e = pEkspandert(verdi);
+  if (!e.length) return null;
+  if (verdi.pModus === "INTERVALL" && e.length > 1) return e[0] + "-" + e[e.length - 1];
+  return e.join("+");
+}
+function formelSlots(verdi) {
+  const p = AK_STRUKTUR[verdi.pyr];
+  if (!p) return ["pyr"];
+  const s = [...p.slots];
+  if (harPPosisjon(verdi)) s.splice(s.indexOf("omr") + 1, 0, "p");
+  return s;
+}
+function formelStreng(verdi) {
+  const alle = {
+    pyr: verdi.pyr,
+    omr: verdi.omr,
+    p: pStreng(verdi),
+    del: verdi.del,
+    mot: verdi.mot ? MOT_KORT[verdi.mot] : null,
+    bel: verdi.bel,
+    press: verdi.press
+  };
+  return formelSlots(verdi).map(s => alle[s] || TOM[s]).join("_");
+}
+function Chip({
+  l,
+  valgt,
+  onClick,
+  mono,
+  pyr
+}) {
+  return /*#__PURE__*/React.createElement("button", {
+    type: "button",
+    className: "akhq-fv-chip" + (mono ? " akhq-fv-chip--mono" : ""),
+    "aria-pressed": valgt,
+    onClick: onClick,
+    style: pyr ? {
+      "--akhq-fv-pyr": pyr
+    } : undefined
+  }, pyr && /*#__PURE__*/React.createElement("span", {
+    className: "akhq-fv-sw",
+    "aria-hidden": "true"
+  }), /*#__PURE__*/React.createElement("span", null, l));
+}
+function Steg({
+  nr,
+  tittel,
+  valgt,
+  desc,
+  hvilende,
+  felt,
+  children,
+  note,
+  apen
+}) {
+  return /*#__PURE__*/React.createElement("section", {
+    className: "akhq-fv-steg" + (felt ? " akhq-fv-steg--felt" : ""),
+    "data-hvilende": hvilende ? "true" : undefined
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "akhq-fv-hd"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "akhq-fv-num" + (felt ? " akhq-fv-num--felt" : "")
+  }, nr), /*#__PURE__*/React.createElement("span", {
+    className: "akhq-fv-tit"
+  }, tittel), /*#__PURE__*/React.createElement("span", {
+    className: "akhq-fv-pick"
+  }, valgt || "")), desc && /*#__PURE__*/React.createElement("p", {
+    className: "akhq-fv-desc"
+  }, desc), children, note && /*#__PURE__*/React.createElement("div", {
+    className: "akhq-fv-note"
+  }, /*#__PURE__*/React.createElement("b", null, note.tit, ":"), " ", note.tekst), apen && /*#__PURE__*/React.createElement("div", {
+    className: "akhq-fv-note akhq-fv-note--apen"
+  }, /*#__PURE__*/React.createElement("b", null, "\xC5pent:"), " ", apen));
+}
+const PYR_FARGE = {
+  FYS: "var(--accent-heather)",
+  TEK: "var(--info-raw)",
+  SLAG: "var(--up-raw)",
+  SPILL: "var(--accent-cactus)",
+  TURN: "var(--accent-fig)"
+};
+const OMR_DESC = {
+  FYS: "Fire fysiske hovedområder.",
+  TEK: "Hvor på banen? 17 områder i fire grupper. Gruppa er Strokes Gained-aksen.",
+  SLAG: "Hvor på banen? 17 områder i fire grupper. Gruppa er Strokes Gained-aksen.",
+  SPILL: "Hva slags spilltrening?",
+  TURN: "Hva skal turneringen brukes til?"
+};
+function AkFormelVelger({
+  verdi = {},
+  onChange,
+  visFormel = true,
+  dataOdId = "ak-formel-velger",
+  ...rest
+}) {
+  const v = {
+    pModus: "ENKEL",
+    pValg: [],
+    ...verdi
+  };
+  const p = AK_STRUKTUR[v.pyr] || null;
+  const omr = omradeObjekt(v);
+  const dl = delferdighetsListe(v);
+  const slots = p ? p.slots : [];
+  const har = s => slots.includes(s);
+  const sett = (felt, k) => {
+    if (!onChange) return;
+    const neste = {
+      ...v,
+      [felt]: v[felt] === k ? null : k
+    };
+    (NULLSTILL[felt] || []).forEach(x => {
+      neste[x] = null;
+    });
+    if (felt === "pyr" || felt === "omr") neste.pValg = [];
+    onChange(neste);
+  };
+  const settP = k => {
+    if (!onChange) return;
+    const valg = v.pValg || [];
+    let neste;
+    if (v.pModus === "ENKEL") neste = valg[0] === k ? [] : [k];else if (v.pModus === "FLERE") neste = valg.includes(k) ? valg.filter(x => x !== k) : [...valg, k];else neste = valg.length === 1 ? [valg[0], k] : [k];
+    onChange({
+      ...v,
+      pValg: neste
+    });
+  };
+  const pValgt = k => {
+    const valg = v.pValg || [];
+    if (!valg.length) return false;
+    if (v.pModus === "INTERVALL" && valg.length === 2) {
+      const a = pIdx(valg[0]),
+        b = pIdx(valg[1]),
+        i = pIdx(k);
+      return i >= Math.min(a, b) && i <= Math.max(a, b);
+    }
+    return valg.includes(k);
+  };
+  const delValgt = v.del && dl ? finn(dl, v.del) : null;
+  const motValgt = finn(AK_MOTORIKK, v.mot);
+  const belValgt = finn(AK_BELASTNING, v.bel);
+  const pressValgt = finn(AK_PRESS, v.press);
+  const belKlar = har("mot") ? !!v.mot : !!v.omr;
+  return /*#__PURE__*/React.createElement("div", _extends({
+    className: "akhq-fv",
+    "data-od-id": dataOdId
+  }, rest), /*#__PURE__*/React.createElement(Steg, {
+    nr: "1",
+    tittel: "Pyramide",
+    valgt: p ? p.l : "",
+    desc: "Hva slags trening er dette? Fem typer, aldri flere. Valget her styrer alt under.",
+    note: p ? {
+      tit: p.l,
+      tekst: p.d
+    } : null
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "akhq-fv-chips"
+  }, Object.keys(AK_STRUKTUR).map(k => /*#__PURE__*/React.createElement(Chip, {
+    key: k,
+    l: AK_STRUKTUR[k].l,
+    valgt: v.pyr === k,
+    pyr: PYR_FARGE[k],
+    onClick: () => sett("pyr", k)
+  })))), /*#__PURE__*/React.createElement(Steg, {
+    nr: "2",
+    tittel: "Omr\xE5de",
+    valgt: omr ? omr.l : "",
+    hvilende: !p,
+    desc: p ? OMR_DESC[v.pyr] : "Velg pyramide først.",
+    note: omr && omr.d ? {
+      tit: omr.l,
+      tekst: omr.d
+    } : null
+  }, p && p.omrader.map((g, i) => /*#__PURE__*/React.createElement("div", {
+    className: "akhq-fv-grp",
+    key: g.grp || i
+  }, g.grp && /*#__PURE__*/React.createElement("div", {
+    className: "akhq-fv-gl"
+  }, g.grp), /*#__PURE__*/React.createElement("div", {
+    className: "akhq-fv-chips"
+  }, g.items.map(it => /*#__PURE__*/React.createElement(Chip, {
+    key: it.k,
+    l: it.l,
+    valgt: v.omr === it.k,
+    onClick: () => sett("omr", it.k)
+  })))))), harPPosisjon(v) && /*#__PURE__*/React.createElement(Steg, {
+    nr: "P",
+    tittel: "P-posisjon",
+    valgt: pStreng(v) || "",
+    desc: "Hvor i svingen? MORAD P1.0\u2013P10.0. Velg ett punkt, flere punkter, eller bevegelsen mellom to."
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "akhq-fv-grp"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "akhq-fv-gl"
+  }, "Hvordan velge"), /*#__PURE__*/React.createElement("div", {
+    className: "akhq-fv-chips"
+  }, P_MODUS.map(m => /*#__PURE__*/React.createElement(Chip, {
+    key: m.k,
+    l: m.l,
+    valgt: v.pModus === m.k,
+    onClick: () => onChange && onChange({
+      ...v,
+      pModus: m.k,
+      pValg: []
+    })
+  })))), /*#__PURE__*/React.createElement("div", {
+    className: "akhq-fv-grp"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "akhq-fv-gl"
+  }, v.pModus === "INTERVALL" ? (v.pValg || []).length === 0 ? "Trykk startpunkt" : (v.pValg || []).length === 1 ? "Trykk sluttpunkt" : "Trykk for å begynne på nytt" : "Posisjon"), /*#__PURE__*/React.createElement("div", {
+    className: "akhq-fv-chips"
+  }, AK_P_POSISJONER.map(k => /*#__PURE__*/React.createElement(Chip, {
+    key: k,
+    l: k,
+    mono: true,
+    valgt: pValgt(k),
+    onClick: () => settP(k)
+  }))))), v.pyr === "TEK" && omr && !harPPosisjon(v) && /*#__PURE__*/React.createElement(Steg, {
+    nr: "P",
+    tittel: "P-posisjon",
+    felt: true,
+    desc: `P-systemet gjelder kun Tee Total og innspill. ${omr.l} har det ikke.`
+  }), /*#__PURE__*/React.createElement(Steg, {
+    nr: "3",
+    tittel: "Delferdighet",
+    valgt: delValgt ? delValgt.l : "",
+    hvilende: !omr,
+    desc: !p ? "Velg pyramide først." : har("del") ? "Hva ved slaget trener du?" : "Ikke definert for denne pyramiden.",
+    note: delValgt ? {
+      tit: delValgt.l,
+      tekst: delValgt.d
+    } : null,
+    apen: p && p.delApen && !dl ? p.delApen : null
+  }, har("del") && dl && /*#__PURE__*/React.createElement("div", {
+    className: "akhq-fv-chips"
+  }, dl.map(d => /*#__PURE__*/React.createElement(Chip, {
+    key: d.k,
+    l: d.l,
+    valgt: v.del === d.k,
+    onClick: () => sett("del", d.k)
+  })))), /*#__PURE__*/React.createElement(Steg, {
+    nr: "4",
+    tittel: "Motorikk",
+    valgt: motValgt ? motValgt.l : "",
+    hvilende: !har("mot") || !v.del,
+    desc: har("mot") ? "Hvor fort går bevegelsen? Erstatter L-fase og CS-nivå." : "Gjelder ikke denne pyramiden.",
+    note: motValgt ? {
+      tit: motValgt.l,
+      tekst: motValgt.d
+    } : null
+  }, har("mot") && v.del && /*#__PURE__*/React.createElement("div", {
+    className: "akhq-fv-chips"
+  }, AK_MOTORIKK.map(m => /*#__PURE__*/React.createElement(Chip, {
+    key: m.k,
+    l: m.l,
+    valgt: v.mot === m.k,
+    onClick: () => sett("mot", m.k)
+  })))), /*#__PURE__*/React.createElement(Steg, {
+    nr: "5",
+    tittel: "Belastning",
+    valgt: belValgt ? belValgt.l : "",
+    hvilende: !belKlar,
+    desc: "Hvor foreg\xE5r det? Erstatter M0\u2013M5.",
+    note: belValgt ? {
+      tit: belValgt.l,
+      tekst: belValgt.d
+    } : null
+  }, belKlar && /*#__PURE__*/React.createElement("div", {
+    className: "akhq-fv-chips"
+  }, AK_BELASTNING.map(b => /*#__PURE__*/React.createElement(Chip, {
+    key: b.k,
+    l: b.l,
+    valgt: v.bel === b.k,
+    onClick: () => sett("bel", b.k)
+  })))), /*#__PURE__*/React.createElement(Steg, {
+    nr: "6",
+    tittel: "Press",
+    valgt: pressValgt ? pressValgt.l : "",
+    hvilende: !har("press") || !v.bel,
+    desc: har("press") ? "Hvor mye står på spill? Erstatter PR1–PR5." : "Gjelder ikke denne pyramiden.",
+    note: pressValgt ? {
+      tit: pressValgt.l,
+      tekst: pressValgt.d
+    } : null
+  }, har("press") && v.bel && /*#__PURE__*/React.createElement("div", {
+    className: "akhq-fv-chips"
+  }, AK_PRESS.map(x => /*#__PURE__*/React.createElement(Chip, {
+    key: x.k,
+    l: x.l,
+    valgt: v.press === x.k,
+    onClick: () => sett("press", x.k)
+  })))), visFormel && /*#__PURE__*/React.createElement(AkFormelLinje, {
+    verdi: v
+  }));
+}
+function AkFormelLinje({
+  verdi = {},
+  dataOdId = "ak-formel-linje",
+  ...rest
+}) {
+  const v = {
+    pModus: "ENKEL",
+    pValg: [],
+    ...verdi
+  };
+  const p = AK_STRUKTUR[v.pyr] || null;
+  const dl = delferdighetsListe(v);
+  const omr = omradeObjekt(v);
+  const alle = {
+    pyr: v.pyr,
+    omr: v.omr,
+    p: pStreng(v),
+    del: v.del,
+    mot: v.mot ? MOT_KORT[v.mot] : null,
+    bel: v.bel,
+    press: v.press
+  };
+  const slots = formelSlots(v);
+  const igjen = slots.filter(s => !alle[s]).length;
+  const menneske = !p ? "Velg pyramide for å begynne." : igjen > 0 ? `${igjen} igjen av ${slots.length}.` : [p.l, omr ? omr.l : null, harPPosisjon(v) ? pStreng(v) : null, v.del && dl ? (finn(dl, v.del) || {}).l : null, v.mot ? (finn(AK_MOTORIKK, v.mot) || {}).l : null, v.bel ? (finn(AK_BELASTNING, v.bel) || {}).l : null, v.press ? (finn(AK_PRESS, v.press) || {}).l : null].filter(Boolean).join(" · ");
+  return /*#__PURE__*/React.createElement("div", _extends({
+    className: "akhq-fv-bar",
+    "data-od-id": dataOdId
+  }, rest), /*#__PURE__*/React.createElement("div", {
+    className: "akhq-fv-bl"
+  }, "Formelen s\xE5 langt"), /*#__PURE__*/React.createElement("div", {
+    className: "akhq-fv-formel"
+  }, slots.map((s, i) => /*#__PURE__*/React.createElement(React.Fragment, {
+    key: s
+  }, i > 0 && /*#__PURE__*/React.createElement("span", {
+    className: "akhq-fv-sep"
+  }, "_"), /*#__PURE__*/React.createElement("span", {
+    className: alle[s] ? undefined : "akhq-fv-tom"
+  }, alle[s] || TOM[s])))), /*#__PURE__*/React.createElement("div", {
+    className: "akhq-fv-human"
+  }, menneske));
+}
+Object.assign(__ds_scope, { AK_STRUKTUR, AK_MOTORIKK, AK_BELASTNING, AK_PRESS, AK_P_POSISJONER, omradeObjekt, delferdighetsListe, harPPosisjon, pEkspandert, formelSlots, formelStreng, AkFormelVelger, AkFormelLinje });
+})(); } catch (e) { __ds_ns.__errors.push({ path: "components/forms/AkFormelVelger.jsx", error: String((e && e.message) || e) }); }
 
 // components/forms/Checkbox.jsx
 try { (() => {
@@ -10063,9 +10797,10 @@ const css = `
    skal stoppe blikket. Hører i kind=status, ikke tag. */
 .akhq-badge--ny{color:var(--bg);background:var(--fg)}
 /* tag = fargeløs PERMANENT. AK-vokabularet (GRUNN/SPESIALISERING/TURNERING,
-   FYS/TEK/SLAG/SPILL/TURN, CS, M0–M5, PR1–PR5, L-faser, A–K) skal aldri
-   fargekodes — det sprenger paletten og kolliderer med datasemantikken der
-   grønn betyr bedre. Bindende; ikke ta det opp per skjerm. */
+   FYS/TEK/SLAG/SPILL/TURN, A–K, og AK-formel v2-verdiene — motorikk,
+   belastning, press) skal aldri fargekodes — det sprenger paletten og
+   kolliderer med datasemantikken der grønn betyr bedre. Bindende; ikke ta
+   det opp per skjerm. */
 .akhq-badge--tag{color:var(--muted);background:transparent;border-color:var(--border)}
 }`;
 if (typeof document !== "undefined" && !document.getElementById("akhq-css-badge")) {
@@ -11874,6 +12609,163 @@ function VideoScrubber({
 Object.assign(__ds_scope, { VideoScrubber });
 })(); } catch (e) { __ds_ns.__errors.push({ path: "components/video/VideoScrubber.jsx", error: String((e && e.message) || e) }); }
 
+// fase2/agencyos/w4-demo.js
+try { (() => {
+(function () {
+  'use strict';
+
+  /* Delt demo-rigg for W4-wireframene: tilstandsbryter, faner, tema, brytere.
+     Alt merket data-demo-only fjernes ved integrasjon. */
+  var knapper = document.querySelectorAll('[data-tilstand]');
+  function sett(navn) {
+    document.querySelectorAll('[data-vis]').forEach(function (s) {
+      s.hidden = s.dataset.vis !== navn;
+    });
+    knapper.forEach(function (b) {
+      b.setAttribute('aria-pressed', String(b.dataset.tilstand === navn));
+    });
+    var live = document.getElementById('live');
+    if (live) live.textContent = 'Tilstand: ' + navn;
+  }
+  knapper.forEach(function (b) {
+    b.addEventListener('click', function () {
+      sett(b.dataset.tilstand);
+    });
+  });
+  if (knapper.length) sett(knapper[0].dataset.tilstand);
+  document.querySelectorAll('[data-faner]').forEach(function (gruppe) {
+    var faner = gruppe.querySelectorAll('.fane');
+    faner.forEach(function (f) {
+      f.addEventListener('click', function () {
+        faner.forEach(function (a) {
+          a.setAttribute('aria-selected', String(a === f));
+        });
+        var mål = f.dataset.fane;
+        document.querySelectorAll('[data-fanepanel]').forEach(function (p) {
+          p.hidden = p.dataset.fanepanel !== mål;
+        });
+      });
+    });
+  });
+  var KEY = 'akhq-theme-agencyos',
+    saved = null;
+  try {
+    saved = localStorage.getItem(KEY);
+  } catch (e) {}
+  if (saved) document.documentElement.dataset.theme = saved;
+  var tb = document.getElementById('themeBtn');
+  if (tb) tb.addEventListener('click', function () {
+    var next = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
+    document.documentElement.dataset.theme = next;
+    try {
+      localStorage.setItem(KEY, next);
+    } catch (e) {}
+    this.setAttribute('aria-label', next === 'dark' ? 'Bytt til lys modus' : 'Bytt til mørk modus');
+  });
+  document.querySelectorAll('.sw').forEach(function (s) {
+    s.addEventListener('click', function () {
+      this.setAttribute('aria-checked', this.getAttribute('aria-checked') === 'true' ? 'false' : 'true');
+    });
+  });
+})();
+})(); } catch (e) { __ds_ns.__errors.push({ path: "fase2/agencyos/w4-demo.js", error: String((e && e.message) || e) }); }
+
+// fase2/felles/w5-demo.js
+try { (() => {
+(function () {
+  'use strict';
+
+  /* Delt demo-rigg for W5-wireframene: tilstandsbryter + tema.
+     Alt merket data-demo-only fjernes ved integrasjon. Marketing er primært lys —
+     tema-toggle finnes bare på produktflatene (auth/forelder/system). */
+  var knapper = document.querySelectorAll('[data-tilstand]');
+  function sett(navn) {
+    document.querySelectorAll('[data-vis]').forEach(function (s) {
+      s.hidden = s.dataset.vis !== navn;
+    });
+    knapper.forEach(function (b) {
+      b.setAttribute('aria-pressed', String(b.dataset.tilstand === navn));
+    });
+    var live = document.getElementById('live');
+    if (live) live.textContent = 'Tilstand: ' + navn;
+  }
+  knapper.forEach(function (b) {
+    b.addEventListener('click', function () {
+      sett(b.dataset.tilstand);
+    });
+  });
+  if (knapper.length) sett(knapper[0].dataset.tilstand);
+
+  /* Tema gjenopprettes KUN på flater som selv oppgir en temanøkkel. Marketing er
+     primært lys og har ingen nøkkel — uten denne porten arvet den PlayerHQs
+     lagrede mørke tema og rendret hele forsiden på blekk. */
+  var KEY = document.documentElement.dataset.temanokkel,
+    saved = null;
+  if (KEY) {
+    try {
+      saved = localStorage.getItem(KEY);
+    } catch (e) {}
+    if (saved) document.documentElement.dataset.theme = saved;
+  }
+  var tb = document.getElementById('themeBtn');
+  if (tb) tb.addEventListener('click', function () {
+    var next = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
+    document.documentElement.dataset.theme = next;
+    try {
+      if (KEY) localStorage.setItem(KEY, next);
+    } catch (e) {}
+    this.setAttribute('aria-label', next === 'dark' ? 'Bytt til lys modus' : 'Bytt til mørk modus');
+  });
+})();
+})(); } catch (e) { __ds_ns.__errors.push({ path: "fase2/felles/w5-demo.js", error: String((e && e.message) || e) }); }
+
+// fase2/playerhq/w3-demo.js
+try { (() => {
+(function () {
+  'use strict';
+
+  /* Delt demo-rigg for W3-wireframene: tilstandsbryter + tema. Alt merket
+     data-demo-only fjernes ved integrasjon. */
+  var knapper = document.querySelectorAll('[data-tilstand]');
+  function sett(navn) {
+    document.querySelectorAll('[data-vis]').forEach(function (s) {
+      s.hidden = s.dataset.vis !== navn;
+    });
+    knapper.forEach(function (b) {
+      b.setAttribute('aria-pressed', String(b.dataset.tilstand === navn));
+    });
+    var live = document.getElementById('live');
+    if (live) live.textContent = 'Tilstand: ' + navn;
+  }
+  knapper.forEach(function (b) {
+    b.addEventListener('click', function () {
+      sett(b.dataset.tilstand);
+    });
+  });
+  if (knapper.length) sett(knapper[0].dataset.tilstand);
+  var KEY = 'akhq-theme-playerhq',
+    saved = null;
+  try {
+    saved = localStorage.getItem(KEY);
+  } catch (e) {}
+  if (saved) document.documentElement.dataset.theme = saved;
+  var tb = document.getElementById('themeBtn');
+  if (tb) tb.addEventListener('click', function () {
+    var next = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
+    document.documentElement.dataset.theme = next;
+    try {
+      localStorage.setItem(KEY, next);
+    } catch (e) {}
+    this.setAttribute('aria-label', next === 'dark' ? 'Bytt til lys modus' : 'Bytt til mørk modus');
+  });
+  document.querySelectorAll('.sw').forEach(function (s) {
+    s.addEventListener('click', function () {
+      this.setAttribute('aria-checked', this.getAttribute('aria-checked') === 'true' ? 'false' : 'true');
+    });
+  });
+})();
+})(); } catch (e) { __ds_ns.__errors.push({ path: "fase2/playerhq/w3-demo.js", error: String((e && e.message) || e) }); }
+
 // guidelines/lagsjekk.mjs
 try { (() => {
 /* Lagmedlemskaps-sjekk — kompileringssjekk, ikke sjekklistepunkt.
@@ -12232,6 +13124,20 @@ __ds_ns.Callout = __ds_scope.Callout;
 __ds_ns.EmptyState = __ds_scope.EmptyState;
 
 __ds_ns.Skeleton = __ds_scope.Skeleton;
+
+__ds_ns.AK_STRUKTUR = __ds_scope.AK_STRUKTUR;
+
+__ds_ns.AK_MOTORIKK = __ds_scope.AK_MOTORIKK;
+
+__ds_ns.AK_BELASTNING = __ds_scope.AK_BELASTNING;
+
+__ds_ns.AK_PRESS = __ds_scope.AK_PRESS;
+
+__ds_ns.AK_P_POSISJONER = __ds_scope.AK_P_POSISJONER;
+
+__ds_ns.AkFormelVelger = __ds_scope.AkFormelVelger;
+
+__ds_ns.AkFormelLinje = __ds_scope.AkFormelLinje;
 
 __ds_ns.Checkbox = __ds_scope.Checkbox;
 

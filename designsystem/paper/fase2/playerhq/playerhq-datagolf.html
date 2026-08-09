@@ -1,0 +1,192 @@
+<!doctype html>
+<html lang="nb" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>DataGolf · AK Golf HQ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Lora:ital,wght@0,400;0,500;1,400&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* akhq-tokens.css v3.1 — KOPIERT VERBATIM. */
+:root{--bg:#faf9f5;--surface:#fff;--soft:#f0eee6;--soft-hover:#e8e6dc;--border:#e8e6dc;--hairline:#d1cfc5;--fg:#141413;--muted:#5e5d59;--mid:#b0aea5;--rail:#141413;--rail-fg:#b0aea5;--rail-on:#faf9f5;--cta:#141413;--on-cta:#faf9f5;--accent:#d97757;--accent-soft:rgba(217,119,87,.12);--accent-fg:#b85c3d;--on-accent:#141413;--up:#63784a;--up-raw:#788c5d;--dn:#a85536;--info:#46719f;--info-raw:#6a9bcc;--font-sans:"Poppins",Arial,system-ui,sans-serif;--font-serif:"Lora",Georgia,serif;--font-mono:"IBM Plex Mono",ui-monospace,monospace;--disp:var(--font-sans);--ui:var(--font-sans);--body:var(--font-serif);--mono:var(--font-mono);--text-label:10px;--text-body-player:14px;--s1:4px;--s2:8px;--s3:12px;--s4:16px;--s5:24px;--s6:32px;--s7:48px;--s8:64px;--r-sm:8px;--r:12px;--r-lg:24px;--r-pill:999px;--shadow:0 1px 0 rgba(20,20,19,.03),0 18px 40px rgba(20,20,19,.05);--focus:#d97757;--ease:cubic-bezier(.16,1,.3,1);--dur:160ms;--tap:44px;--tap-lg:48px;--logo-mark:#141413;--logo-dot:#b85c3d;--z-rail:20;--z-toast:100}
+[data-theme="dark"]{color:#faf9f5;--bg:#141413;--surface:#1d1c1a;--soft:#26241f;--soft-hover:#2e2c28;--border:rgba(250,249,245,.10);--hairline:rgba(250,249,245,.08);--fg:#faf9f5;--muted:#b0aea5;--mid:#6b675e;--rail:#0e0d0c;--rail-fg:#97938a;--rail-on:#faf9f5;--cta:#faf9f5;--on-cta:#141413;--accent-soft:rgba(217,119,87,.18);--accent-fg:#e5a184;--up:#9db284;--up-raw:#788c5d;--dn:#de9e82;--info:#93b7dc;--shadow:none;--logo-mark:#faf9f5;--logo-dot:#d97757}
+[data-theme="light"]{color:#141413}
+:root{--softer:#f6f4ee;--border-soft:#efede4}[data-theme="dark"]{--softer:#1a1917;--border-soft:rgba(250,249,245,.06)}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}}
+@media (pointer:coarse){:root{--floor:var(--tap)}}
+*,*::before,*::after{box-sizing:border-box}html,body{margin:0;height:100%}
+body{background:var(--bg);color:var(--fg);font-family:var(--ui);font-size:var(--text-body-player);line-height:1.55;-webkit-font-smoothing:antialiased}
+[hidden]{display:none!important}button{font:inherit;color:inherit}
+.num{font-family:var(--mono);font-variant-numeric:tabular-nums}
+.eyebrow{font-family:var(--mono);font-size:var(--text-label);font-weight:500;letter-spacing:.09em;text-transform:uppercase;color:var(--muted)}
+.prose{font-family:var(--body)}.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+:where(a,button,input,summary,[tabindex]):focus-visible{outline:2px solid var(--focus);outline-offset:2px;border-radius:var(--r-sm)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:var(--s2);min-height:var(--tap-lg);padding:0 var(--s4);font-size:14px;font-weight:500;background:transparent;border:1px solid var(--border);border-radius:var(--r);cursor:pointer;white-space:nowrap;text-decoration:none}
+.btn:hover{background:var(--soft);border-color:var(--mid)}.btn:active{transform:translateY(1px)}
+.btn.ink{background:var(--cta);color:var(--on-cta);border-color:var(--cta)}
+.btn.now{background:var(--accent);color:var(--on-accent);border-color:var(--accent);font-weight:600;min-height:56px}
+.btn.full{width:100%}.btnrow{display:flex;gap:var(--s2);flex-wrap:wrap}
+.phone{width:430px;max-width:100%;height:920px;margin:0 auto;position:relative;overflow:hidden;background:var(--bg);border:1px solid var(--border);border-radius:var(--r-lg);display:flex;flex-direction:column}
+@media (max-width:640px){.phone{width:100%;height:100dvh;max-width:none;border:0;border-radius:0}.framehint{display:none}}
+@media (min-width:1024px){.phone{width:100%;max-width:none;height:100vh;border:0;border-radius:0}.kropp>*{max-width:720px;margin-left:auto;margin-right:auto}.tilbake-rad>*{max-width:720px;margin-left:auto;margin-right:auto}}
+.framehint{text-align:center;font-size:11px;color:var(--muted);padding:var(--s3)}.phone .scrim{position:absolute}
+.tilbake-rad{flex:none;padding:var(--s3) var(--s4) 0;background:var(--surface)}
+.tilbake{display:inline-flex;align-items:center;gap:4px;min-height:var(--tap);font-family:var(--mono);font-size:11px;letter-spacing:.03em;color:var(--muted);text-decoration:none}.tilbake:hover{color:var(--fg)}
+.topp{flex:none;padding:var(--s2) var(--s4) var(--s3);border-bottom:1px solid var(--border);background:var(--surface)}
+.topprad{display:flex;align-items:center;gap:var(--s2)}
+.topp h1{margin:0;font-family:var(--disp);font-size:17px;font-weight:600}
+.topp .sub{display:block;font-family:var(--mono);font-size:10.5px;color:var(--muted);margin-top:2px}
+.ikon{flex:none;width:var(--tap);height:var(--tap);display:grid;place-items:center;background:transparent;border:1px solid var(--border);border-radius:var(--r);cursor:pointer}
+.ikon svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.7}
+.kropp{flex:1;min-height:0;overflow-y:auto;padding:var(--s4) var(--s4) calc(var(--s8) + env(safe-area-inset-bottom))}
+.kort{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:var(--s4);margin-bottom:var(--s3)}
+.kort.tint{background:var(--soft)}
+.kort>.eyebrow{display:block;margin-bottom:var(--s2)}
+.eyebrow-rad{display:flex;align-items:baseline;justify-content:space-between;gap:var(--s2);margin-bottom:var(--s2)}.eyebrow-rad .eyebrow{margin-bottom:0}
+.kpirad{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--s2);margin-bottom:var(--s3)}
+.kpifl{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:var(--s3);text-align:center}
+.kpifl.tint{background:var(--soft)}
+.kpifl .l{display:block;font-family:var(--mono);font-size:9px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:4px}
+.kpifl .v{font-family:var(--mono);font-size:18px;font-weight:600}
+.rader{display:flex;flex-direction:column}
+.rad{display:flex;align-items:center;gap:var(--s3);min-height:52px;padding:var(--s2) 0;border-bottom:1px solid var(--border-soft);cursor:pointer;text-decoration:none;color:inherit}
+.rad:last-child{border-bottom:0}.rad:hover{background:var(--softer)}
+.rad .lead{flex:none}
+.rad .tekst{flex:1;min-width:0}.rad .tekst .t{font-size:13px;font-weight:500;display:flex;align-items:center;gap:6px}
+.rad .tekst .m{display:block;font-size:11.5px;color:var(--muted);margin-top:1px}
+.rad .trail{flex:none;text-align:right;font-family:var(--mono);font-size:12.5px;font-weight:600}
+.rad .trail.pos{color:var(--up)}.rad .trail.neg{color:var(--dn)}.rad .trail.na{color:var(--mid)}
+.rad .chev{flex:none;color:var(--mid);font-size:18px;line-height:1}
+.pill{display:inline-flex;align-items:center;padding:2px 8px;border-radius:var(--r-pill);font-family:var(--mono);font-size:9.5px;font-weight:600;letter-spacing:.04em;text-transform:uppercase}
+.pill.up{background:var(--soft);color:var(--up)}.pill.mid{background:var(--soft);color:var(--muted)}
+.scorebox{width:46px;height:46px;border-radius:var(--r);display:flex;flex-direction:column;align-items:center;justify-content:center;background:var(--soft);border:1px solid var(--border)}
+.scorebox.best{background:var(--up);border-color:var(--up);color:var(--surface)}
+.scorebox .s{font-family:var(--mono);font-size:15px;font-weight:700;line-height:1}
+.scorebox .p{font-family:var(--mono);font-size:9px;font-weight:600;margin-top:2px;opacity:.75}
+.datebox{display:flex;flex-direction:column;align-items:center;background:var(--soft);border:1px solid var(--border);border-radius:var(--r-sm);padding:6px 10px;min-width:46px}
+.datebox .d{font-family:var(--mono);font-size:15px;font-weight:700;line-height:1}
+.datebox .m{font-family:var(--mono);font-size:8.5px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-top:2px}
+.circlenum{display:grid;place-items:center;width:32px;height:32px;border-radius:999px;background:var(--soft);border:1px solid var(--border);font-family:var(--mono);font-size:12px;font-weight:700}
+.dtwrap{max-height:280px;overflow:auto;border-top:1px solid var(--border);margin-top:var(--s2)}
+.tab{width:100%;border-collapse:collapse}
+.tab thead th{position:sticky;top:0;background:var(--surface);text-align:left;font-family:var(--mono);font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:500;padding:var(--s2) var(--s1);border-bottom:1px solid var(--border)}
+.tab td{padding:8px var(--s1);border-bottom:1px solid var(--border-soft);font-size:12.5px}
+.tab tr:last-child td{border-bottom:0}.tab td.r,.tab th.r{text-align:right;font-family:var(--mono)}
+.tab td.pos{color:var(--up)}.tab td.neg{color:var(--dn)}
+.tab tfoot td{padding:var(--s2) var(--s1) 0;border-bottom:0;font-family:var(--mono);font-size:11px;color:var(--muted)}
+.sg{margin-top:var(--s2)}.sgrad{display:grid;grid-template-columns:60px minmax(0,1fr) 58px;gap:var(--s2);align-items:center;min-height:32px}
+.sgrad .n{font-size:12px;font-family:var(--mono);color:var(--muted)}.sgrad .v{font-family:var(--mono);font-size:13px;text-align:right}
+.sgrad .v.pos{color:var(--up)}.sgrad .v.neg{color:var(--dn)}
+.spor2{position:relative;height:10px;background:var(--soft);border-radius:var(--r-pill)}
+.spor2 .null{position:absolute;left:50%;top:-3px;bottom:-3px;width:1px;background:var(--hairline)}
+.spor2 i{position:absolute;top:0;bottom:0;border-radius:var(--r-pill)}.spor2 i.pos{background:var(--up-raw);left:50%}.spor2 i.neg{background:var(--dn);right:50%}
+.mapph{height:220px;border-radius:var(--r);background:repeating-linear-gradient(135deg,var(--soft),var(--soft) 10px,var(--softer) 10px,var(--softer) 20px);border:1px solid var(--border);display:grid;place-items:center;font-family:var(--mono);font-size:11px;color:var(--muted);margin-bottom:var(--s3)}
+.scatter{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);overflow:hidden}
+.scatter svg{display:block;width:100%;height:220px}
+.legend{display:flex;gap:14px;flex-wrap:wrap;font-family:var(--mono);font-size:11px;color:var(--muted);margin-top:var(--s2)}
+.legend i{display:inline-block;width:7px;height:7px;border-radius:999px;margin-right:6px;vertical-align:middle}
+.merknad{font-family:var(--body);font-size:12px;color:var(--muted);padding:var(--s2) var(--s3);background:var(--soft);border-radius:var(--r-sm);margin-bottom:var(--s3)}
+.tom{padding:var(--s5) var(--s4);background:var(--soft);border:1px dashed var(--border);border-radius:var(--r)}
+.tom h3{margin:0 0 var(--s2);font-family:var(--disp);font-size:15px;font-weight:600}.tom p{margin:0;font-family:var(--body);font-size:13.5px;color:var(--muted)}
+.instr{font-family:var(--mono);font-size:11px;line-height:1.7;color:var(--muted);background:var(--softer);border-radius:var(--r-sm);padding:10px 14px;margin-top:var(--s3)}
+.faner{flex:none;display:flex;background:var(--rail);z-index:var(--z-rail);padding-bottom:env(safe-area-inset-bottom)}
+.faner a{flex:1;min-height:56px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;color:var(--rail-fg);text-decoration:none;font-size:10px;position:relative}
+.faner a svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+.faner a[aria-current="page"]{color:var(--rail-on)}
+.faner a[aria-current="page"]::before{content:"";position:absolute;top:0;left:24%;right:24%;height:2px;background:var(--rail-on);border-radius:var(--r-pill)}
+.toast{position:fixed;left:50%;bottom:96px;transform:translateX(-50%);z-index:var(--z-toast);background:var(--fg);color:var(--bg);padding:var(--s3) var(--s4);border-radius:var(--r);font-size:13px}
+button,.btn,a.btn{min-height:var(--tap)}
+/* ═══ /portal/datagolf · DataGolfV2 ═══ */
+
+</style>
+</head>
+<body>
+<p class="framehint">PlayerHQ · DataGolf · 430 px. Under 641 px fyller den skjermen.</p>
+<div class="phone" data-demo-only="true">
+  <div class="tilbake-rad"><a class="tilbake" href="../../fase1/playerhq-analyse.html" data-od-id="datagolf-tilbake">‹ Analyse</a></div>
+  <header class="topp">
+    <div class="topprad">
+      <div style="min-width:0">
+        <h1>Deg mot touren</h1>
+        <span class="sub">DataGolf · PGA Tour-baseline · Øyvind Rohjan</span>
+      </div>
+      <span style="flex:1"></span>
+      <div data-demo-only="true" style="display:flex;gap:4px">
+        <button class="ikon" data-tilstand="fylt" aria-pressed="true" aria-label="Demo: suksess" data-od-id="datagolf-demo-fylt"><span class="num" style="font-size:10px">S</span></button>
+        <button class="ikon" data-tilstand="tom" aria-pressed="false" aria-label="Demo: tom" data-od-id="datagolf-demo-tom"><span class="num" style="font-size:10px">T</span></button>
+      </div>
+      
+      <button class="ikon" id="themeBtn" aria-label="Bytt til mørk modus" data-od-id="datagolf-theme">
+        <svg viewBox="0 0 24 24"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+      </button>
+    </div>
+  </header>
+  <main class="kropp" id="kropp"></main>
+  <nav class="faner" aria-label="Hovednavigasjon"><a href="../../fase1/playerhq-chat-mobil.html" data-od-id="tab-idag"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>I dag</a><a href="../../fase1/playerhq-plan.html" data-od-id="tab-plan"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>Plan</a><a href="../../fase1/playerhq-analyse.html" aria-current="page" data-od-id="tab-analyse"><svg viewBox="0 0 24 24"><path d="M3 3v18h18M7 15l4-4 3 3 5-6"/></svg>Analyse</a><a href="../../fase1/playerhq-meg.html" data-od-id="tab-meg"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21v-1a6 6 0 0 1 6-6h4a6 6 0 0 1 6 6v1"/></svg>Meg</a></nav>
+  <div class="scrim" id="scrim"></div>
+</div>
+<div class="toast" id="toast" hidden role="status"></div>
+<div class="sr" id="live" aria-live="polite"></div>
+<script>
+(function(){
+'use strict';
+var live=document.getElementById('live');function si(t){live.textContent=t}
+var toastEl=document.getElementById('toast'),toastT;function toast(t){toastEl.textContent=t;toastEl.hidden=false;clearTimeout(toastT);toastT=setTimeout(function(){toastEl.hidden=true},2600)}
+function el(tag,cls,txt){var e=document.createElement(tag);if(cls)e.className=cls;if(txt!=null)e.textContent=txt;return e}
+function komma(n,d){d=d==null?1:d;return n.toFixed(d).replace('.',',')}
+function sgTekst(v){return (v>0?'+':v<0?'−':'')+komma(Math.abs(v),2)}
+function signertHel(n){return n===0?'E':(n>0?'+':'−')+Math.abs(n)}
+var tilstand='fylt';
+
+/* [kode, navn, deg, referanse] — SG mot tour-baseline (0). Referansen er én
+   registrert PGA-sesong, ikke hele feltet. Deg ligger bak i alle fire. */
+var KAT=[['OTT','Off the tee',-0.35,0.42],['APP','Innspill',-0.60,0.31],['ARG','Nærspill',-0.15,0.18],['PUTT','Putting',-0.10,0.09]];
+function render(){
+ var w=document.getElementById('kropp');w.innerHTML='';
+ var harData=tilstand==='fylt';
+ if(!harData){
+  var kpirad=el('div','kpirad');
+  [['Gap','—'],['Kategorier','—'],['Status','Ingen data']].forEach(function(k){var f=el('div','kpifl');f.appendChild(el('span','l',k[0]));f.appendChild(el('span','v num',k[1]));kpirad.appendChild(f)});
+  w.appendChild(kpirad);
+  var t=el('div','kort');var tt=el('div','tom');tt.appendChild(el('h3',null,'Ingen sammenligning ennå'));tt.appendChild(el('p',null,'Registrer SG på runder — da fylles gap mot touren per kategori.'));t.appendChild(tt);
+  var b=el('button','btn ink full','Start live-føring');b.style.marginTop='var(--s3)';b.dataset.odId='datagolf-tom-live';b.addEventListener('click',function(){toast('Live-føring startet.')});t.appendChild(b);
+  var b2=el('a','btn full','Se SG-analyse');b2.style.marginTop='var(--s2)';b2.href='../../fase1/playerhq-analyse.html';b2.dataset.odId='datagolf-tom-analyse';t.appendChild(b2);
+  w.appendChild(t);return;
+ }
+ w.appendChild(el('p','merknad','Sammenligningen er mot én registrert referansespiller, ikke mot hele tourfeltet.'));
+ /* posisjon = deg − referanse. Negativ = bak referansen, samme fortegnsregel
+    som DataGolfV2 (posisjon = −gapTotal, der gapTotal er avstanden TIL referansen). */
+ var posisjon=KAT.reduce(function(s,k){return s+(k[2]-k[3])},0);
+ var hero=el('div','kort tint');hero.appendChild(el('span','eyebrow','deg mot touren · sg total'));
+ var h=el('div');h.style.marginTop='10px';var v=el('span','num',sgTekst(posisjon));v.style.fontSize='40px';v.style.fontWeight='600';v.style.color=posisjon>=0?'var(--up)':'var(--dn)';h.appendChild(v);
+ var u=el('span',null,' slag/runde');u.style.color='var(--muted)';u.style.fontSize='12px';h.appendChild(u);hero.appendChild(h);
+ var sub=el('p',null,'mot Emma Nyström (2026) · brutto');sub.style.fontFamily='var(--body)';sub.style.fontSize='12px';sub.style.color='var(--muted)';sub.style.margin='6px 0 0';hero.appendChild(sub);
+ w.appendChild(hero);
+ var katK=el('div','kort');katK.appendChild(el('span','eyebrow','per kategori · deg vs referanse'));
+ var maks=Math.max.apply(null,KAT.flatMap(function(k){return [Math.abs(k[2]),Math.abs(k[3])]}));
+ KAT.forEach(function(k,i){
+  var grp=document.createElement('div');grp.style.padding='11px 0';grp.style.borderBottom=i===KAT.length-1?'none':'1px solid var(--border)';
+  var head=document.createElement('div');head.style.display='flex';head.style.gap='8px';head.style.marginBottom='8px';
+  head.appendChild(el('span','num',k[0]));var nm=el('span',null,k[1]);nm.style.color='var(--muted)';nm.style.fontSize='12.5px';head.appendChild(nm);grp.appendChild(head);
+  [['Deg',k[2]],['Referanse',k[3]]].forEach(function(row){
+   var r=el('div','sgrad');r.style.gridTemplateColumns='70px minmax(0,1fr) 58px';r.appendChild(el('span','n',row[0]));
+   var sp=el('span','spor2');sp.appendChild(el('span','null'));var iEl=document.createElement('i');iEl.className=row[1]>=0?'pos':'neg';iEl.style.width=(Math.abs(row[1])/maks*48)+'%';sp.appendChild(iEl);r.appendChild(sp);
+   r.appendChild(el('span','v num '+(row[1]>=0?'pos':'neg'),sgTekst(row[1])));grp.appendChild(r);
+  });
+  katK.appendChild(grp);
+ });
+ w.appendChild(katK);
+ /* Innsikten utledes av de samme tallene som stolpene — aldri skrevet fritt. */
+ var storst=KAT.slice().sort(function(a,b){return (a[2]-a[3])-(b[2]-b[3])})[0];
+ var innsikt=el('div','kort');innsikt.style.borderLeft='3px solid var(--info)';
+ var p=el('p',null,'Størst avstand til referansen er i '+storst[1].toLowerCase()+' ('+sgTekst(storst[2]-storst[3])+' slag) — det er der gapet mot touren lukkes raskest.');p.style.fontFamily='var(--body)';p.style.fontSize='13px';p.style.margin='0';innsikt.appendChild(p);w.appendChild(innsikt);
+}
+
+function settDemo(){document.querySelectorAll('[data-tilstand]').forEach(function(b){b.setAttribute('aria-pressed',String(b.dataset.tilstand===tilstand))});render()}
+document.querySelectorAll('[data-tilstand]').forEach(function(b){b.addEventListener('click',function(){tilstand=b.dataset.tilstand;settDemo()})});
+var KEY='akhq-theme-playerhq';var saved=localStorage.getItem(KEY);if(saved)document.documentElement.dataset.theme=saved;
+document.getElementById('themeBtn').addEventListener('click',function(){var next=document.documentElement.dataset.theme==='dark'?'light':'dark';document.documentElement.dataset.theme=next;localStorage.setItem(KEY,next);this.setAttribute('aria-label',next==='dark'?'Bytt til lys modus':'Bytt til mørk modus')});
+render();
+})();
+</script>
+</body>
+</html>

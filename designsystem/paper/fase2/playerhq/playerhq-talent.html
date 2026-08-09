@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="nb" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Talent · PlayerHQ · AK Golf HQ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Lora:ital,wght@0,400;0,500;1,400&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="w3-base.css">
+<style>
+/* ═══ PlayerHQ · Talent · Mitt nivå + Roadmap (fase2/W3) ═══
+   Ruter: /portal/talent/mitt-niva og /portal/talent/roadmap.
+   Kilde: TalentTracking (fem akser: fysisk · teknikk · taktikk · mental ·
+   motivasjon, + milepaeler) · SeasonPlan.periodBlocks (L-faser) ·
+   tournamentEntries. Kohort-snitt = samme nivå, egen rad ekskludert.
+   FEATURES.TALENT av → notFound (ikke skjerm). Uten TalentTracking-rad vises
+   TalentIkkeIProgrammet — «ikke i programmet»-tilstanden her.
+   /talent/sammenligning og /min-plan følger samme mal — se manifest. */
+.akse{ margin-bottom:var(--s3); }
+.aksetopp{ display:flex; align-items:baseline; justify-content:space-between; gap:var(--s3); margin-bottom:var(--s1); }
+.aksetopp .an{ font-size:13.5px; font-weight:500; }
+.aksetopp .av{ font-family:var(--mono); font-size:13.5px; font-weight:600; font-variant-numeric:tabular-nums; }
+.spor{ position:relative; height:10px; border-radius:var(--r-pill); background:var(--soft);
+  border:1px solid var(--border); overflow:hidden; }
+.spor i{ position:absolute; inset:0 auto 0 0; border-radius:var(--r-pill); background:var(--accent); display:block; }
+.spor u{ position:absolute; top:-3px; bottom:-3px; width:2px; background:var(--info); display:block; }
+.aksemeta{ font-family:var(--mono); font-size:9.5px; color:var(--muted); margin-top:var(--s1); display:block; }
+.legend{ display:flex; gap:var(--s4); font-family:var(--mono); font-size:10px; color:var(--muted);
+  margin:var(--s3) 0 var(--s4); }
+.legend span{ display:inline-flex; align-items:center; gap:6px; }
+.prikk{ width:10px; height:10px; border-radius:3px; background:var(--accent); display:block; }
+.prikk.k{ background:var(--info); width:2px; height:12px; border-radius:0; }
+.fase{ display:flex; gap:var(--s3); padding:var(--s3) 0; border-bottom:1px solid var(--border-soft); }
+.fase:last-child{ border-bottom:0; }
+.fase .fp{ flex:none; width:74px; font-family:var(--mono); font-size:10.5px; color:var(--muted); padding-top:2px; }
+.fase .fn{ font-size:13.5px; font-weight:500; display:block; }
+.fase .ff{ font-family:var(--body); font-size:12.5px; color:var(--muted); display:block; margin-top:2px; }
+.mile{ display:flex; gap:var(--s3); align-items:flex-start; padding:var(--s3) 0;
+  border-bottom:1px solid var(--border-soft); }
+.mile:last-child{ border-bottom:0; }
+.sjekk{ flex:none; width:20px; height:20px; border-radius:50%; border:1.5px solid var(--border);
+  display:grid; place-items:center; margin-top:1px; }
+.sjekk svg{ width:11px; height:11px; fill:none; stroke:var(--on-accent); stroke-width:2.6;
+  stroke-linecap:round; stroke-linejoin:round; opacity:0; }
+.sjekk.ja{ background:var(--accent); border-color:var(--accent); }
+.sjekk.ja svg{ opacity:1; }
+.mile .mn{ font-size:13.5px; font-weight:500; display:block; }
+.mile .mm{ font-family:var(--mono); font-size:10.5px; color:var(--muted); display:block; margin-top:2px; }
+</style>
+</head>
+<body>
+<p class="framehint">PlayerHQ · Talent · 430 px. Under 641 px fyller den skjermen.</p>
+<div class="phone" data-demo-only="true">
+  <header class="topp">
+    <a class="ikon" href="../../fase1/playerhq-meg.html" aria-label="Til Talent" data-od-id="talent-tilbake"><svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg></a>
+    <div style="min-width:0"><h1>Talent</h1><span class="sub">Nivå 4 · Regionalt · AK-stigen</span></div>
+    <span style="flex:1"></span>
+    <div data-demo-only="true" style="display:flex;gap:4px">
+      <button class="ikon" data-tilstand="niva" aria-pressed="true" aria-label="Demo: mitt nivå" data-od-id="talent-demo-niva"><span class="num" style="font-size:10px">N</span></button>
+      <button class="ikon" data-tilstand="roadmap" aria-pressed="false" aria-label="Demo: roadmap" data-od-id="talent-demo-road"><span class="num" style="font-size:10px">R</span></button>
+      <button class="ikon" data-tilstand="utenfor" aria-pressed="false" aria-label="Demo: ikke i programmet" data-od-id="talent-demo-utenfor"><span class="num" style="font-size:10px">U</span></button>
+      <button class="ikon" data-tilstand="tom" aria-pressed="false" aria-label="Demo: tom sesongplan" data-od-id="talent-demo-tom"><span class="num" style="font-size:10px">T</span></button>
+    </div>
+    <button class="ikon" id="themeBtn" aria-label="Bytt til mørk modus" data-od-id="talent-theme"><svg viewBox="0 0 24 24"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></button>
+  </header>
+
+  <main class="kropp">
+
+    <section data-vis="niva">
+      <div class="kort tint">
+        <span class="eyebrow">Der du står</span>
+        <h3>Nivå 4 — Regionalt</h3>
+        <p>Sammenlignet med de 18 andre på samme nivå. Aksene er coachens vurdering fra siste gjennomgang, ikke automatiske tall.</p>
+      </div>
+
+      <div class="legend"><span><i class="prikk"></i>Deg</span><span><i class="prikk k"></i>Snitt på nivå 4</span></div>
+
+      <div class="akse"><div class="aksetopp"><span class="an">Fysisk</span><span class="av num">6,5</span></div>
+        <div class="spor"><i style="width:65%"></i><u style="left:58%"></u></div><span class="aksemeta">Kohort 5,8 · sist vurdert 14.06</span></div>
+      <div class="akse"><div class="aksetopp"><span class="an">Teknikk</span><span class="av num">7,2</span></div>
+        <div class="spor"><i style="width:72%"></i><u style="left:64%"></u></div><span class="aksemeta">Kohort 6,4 · sist vurdert 14.06</span></div>
+      <div class="akse"><div class="aksetopp"><span class="an">Taktikk</span><span class="av num">5,1</span></div>
+        <div class="spor"><i style="width:51%"></i><u style="left:61%"></u></div><span class="aksemeta">Kohort 6,1 · sist vurdert 14.06</span></div>
+      <div class="akse"><div class="aksetopp"><span class="an">Mental</span><span class="av num">6,0</span></div>
+        <div class="spor"><i style="width:60%"></i><u style="left:59%"></u></div><span class="aksemeta">Kohort 5,9 · sist vurdert 14.06</span></div>
+      <div class="akse"><div class="aksetopp"><span class="an">Motivasjon</span><span class="av num">8,4</span></div>
+        <div class="spor"><i style="width:84%"></i><u style="left:70%"></u></div><span class="aksemeta">Kohort 7,0 · sist vurdert 14.06</span></div>
+
+      <div class="kort" style="margin-top:var(--s4)">
+        <span class="eyebrow">Én ting nå</span>
+        <h3>Taktikk er det som holder igjen</h3>
+        <p>Ett poeng under snittet på nivået ditt, og det eneste feltet der du ligger under. Gameplan før hver turneringsrunde er tiltaket Anders har satt.</p>
+        <a class="btn now full" href="playerhq-gameplan-liste.html" data-od-id="talent-til-gameplan">Åpne gameplan</a>
+      </div>
+    </section>
+
+    <section data-vis="roadmap" hidden>
+      <div class="kort tint">
+        <span class="eyebrow">Sesongen 2026</span>
+        <h3>Nivå 4 — veien til nivå 5</h3>
+        <p>Fasene kommer fra sesongplanen din. Milepælene setter du og Anders sammen — de er ikke automatiske.</p>
+      </div>
+
+      <div class="kort">
+        <span class="eyebrow">Faser</span>
+        <div class="fase"><span class="fp num">jan – mar</span><div><span class="fn">Grunnperiode</span><span class="ff">Volum og fysisk base · innetrening</span></div></div>
+        <div class="fase"><span class="fp num">apr – mai</span><div><span class="fn">Spesialisering</span><span class="ff">Wedge-kontroll 60–90 m</span></div></div>
+        <div class="fase"><span class="fp num">jun – aug</span><div><span class="fn">Turneringsperiode</span><span class="ff">Sju turneringer · vedlikehold mellom</span></div></div>
+        <div class="fase"><span class="fp num">sep</span><div><span class="fn">Testuke</span><span class="ff">Hele batteriet på nytt</span></div></div>
+      </div>
+
+      <div class="kort">
+        <span class="eyebrow">Turneringer</span>
+        <button class="rad" data-od-id="talent-turn-0"><div class="tx"><span class="tn">Sørlandsmesterskapet</span><span class="tm">12. jun</span></div><span class="tag up">Spilt</span></button>
+        <button class="rad" data-od-id="talent-turn-1"><div class="tx"><span class="tn">Narvesen Tour · Moss</span><span class="tm">3. jul</span></div><span class="tag up">Spilt</span></button>
+        <button class="rad" data-od-id="talent-turn-2"><div class="tx"><span class="tn">NM junior</span><span class="tm">28. aug</span></div><span class="tag akt">Neste</span></button>
+      </div>
+
+      <div class="kort">
+        <span class="eyebrow">Milepæler</span>
+        <div class="mile"><span class="sjekk ja"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg></span><div><span class="mn">Hcp under 4,0</span><span class="mm num">Nådd 22. mai</span></div></div>
+        <div class="mile"><span class="sjekk ja"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg></span><div><span class="mn">Fire turneringsrunder under 76</span><span class="mm num">Nådd 3. juli</span></div></div>
+        <div class="mile"><span class="sjekk"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg></span><div><span class="mn">Topp 20 i NM junior</span><span class="mm num">28. august</span></div></div>
+        <div class="mile"><span class="sjekk"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg></span><div><span class="mn">SG nærspill over 0 mot nivå 5</span><span class="mm num">Testuka i september</span></div></div>
+      </div>
+    </section>
+
+    <section data-vis="utenfor" hidden>
+      <div class="kort">
+        <h3>Du er ikke i talentprogrammet</h3>
+        <p>AK-stigen er for spillere som følges opp i talentløpet. Er du med i akademiet, kan Anders melde deg inn — da fylles nivå, akser og roadmap fra vurderingene dine.</p>
+        <a class="btn now full" href="playerhq-coach-hub.html" data-od-id="talent-utenfor-coach">Spør coachen din</a>
+      </div>
+      <div class="kort"><p>Alt du logger teller uansett. Blir du meldt inn senere, er historikken din allerede der.</p></div>
+    </section>
+
+    <section data-vis="tom" hidden>
+      <div class="kort tint"><span class="eyebrow">Sesongen 2026</span><h3>Nivå 4 — Regionalt</h3><p>Nivået ditt er satt, men sesongen er ikke lagt inn ennå.</p></div>
+      <div class="tom">
+        <h3>Ingen sesongplan for 2026</h3>
+        <p>Faser, turneringer og milepæler kommer fra sesongplanen. Den lager du og Anders sammen — som regel i januar.</p>
+        <a class="btn now full" href="playerhq-turneringer.html" data-od-id="talent-tom-plan">Start sesongplanen</a>
+      </div>
+    </section>
+
+  </main>
+</div>
+<div class="sr" id="live" aria-live="polite"></div>
+<script src="w3-demo.js"></script>
+</body>
+</html>
