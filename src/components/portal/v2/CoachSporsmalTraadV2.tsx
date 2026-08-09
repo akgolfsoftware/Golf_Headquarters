@@ -92,7 +92,7 @@ export function CoachSporsmalTraadV2({
   const toast = useToast();
 
   return (
-    <div
+    <div data-paper-wave-g="coachsporsmaltraad" data-paper-pattern 
       data-paper-portal-coach-sporsmal-traad
       style={{
         maxWidth: 760,
@@ -105,11 +105,9 @@ export function CoachSporsmalTraadV2({
     >
       {/* Hode */}
       <div>
-        <Caps>Coach · Spørsmål</Caps>
-        <div style={{ marginTop: 10 }}>
-          <Tittel mobile={mobile} em="coach">
-            Spørsmål til
-          </Tittel>
+        <div data-paper-pattern-topp>
+          <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>Spørsmål</h1>
+          <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>Tråd</span>
         </div>
         <div
           style={{

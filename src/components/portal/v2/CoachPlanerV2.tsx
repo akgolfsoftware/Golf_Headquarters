@@ -95,17 +95,17 @@ export function CoachPlanerV2({ data }: { data: CoachPlanerData }) {
   const hode = (
     <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
       <div>
-        <Caps>Coach · Delte planer</Caps>
-        <div style={{ marginTop: 10 }}>
-          <Tittel mobile={mobile} em="planer">Mine</Tittel>
+        <div data-paper-pattern-topp>
+          <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>Planer</h1>
+          <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>Coach</span>
         </div>
         {coachNavn && <Caps size={9} style={{ marginTop: 8 }}>Fra {coachNavn}</Caps>}
       </div>
       {tier !== "GRATIS" && (
         <Link href="/portal/onskeligokt" style={{ textDecoration: "none" }}>
           <span style={{
-            display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, minHeight: 48, width: "100%", padding: "10px 16px",
-            borderRadius: 10, background: T.handling, color: T.onHandling, fontFamily: T.ui, fontSize: 14, fontWeight: 600,
+            display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, minHeight: 56, width: "100%", padding: "10px 16px",
+            borderRadius: 12, background: T.handling, color: T.onHandling, fontFamily: T.ui, fontSize: 14, fontWeight: 600,
           }}>Be om plan</span>
         </Link>
       )}
@@ -115,7 +115,7 @@ export function CoachPlanerV2({ data }: { data: CoachPlanerData }) {
   // Pro-gating — coach-laget plan er en del av Pro (låst, ærlig tekst).
   if (tier === "GRATIS") {
     return (
-      <div data-paper-portal-coach-planer style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
+      <div data-paper-wave-g="coachplaner" data-paper-portal-coach-planer style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
         {hode}
         <Kort tint>
           <TomTilstand
@@ -126,8 +126,8 @@ export function CoachPlanerV2({ data }: { data: CoachPlanerData }) {
           <div style={{ marginTop: 12 }}>
             <Link href="/portal/meg/abonnement" style={{ textDecoration: "none", display: "block" }}>
               <span style={{
-            display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, minHeight: 48, width: "100%", padding: "10px 16px",
-            borderRadius: 10, background: T.handling, color: T.onHandling, fontFamily: T.ui, fontSize: 14, fontWeight: 600,
+            display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, minHeight: 56, width: "100%", padding: "10px 16px",
+            borderRadius: 12, background: T.handling, color: T.onHandling, fontFamily: T.ui, fontSize: 14, fontWeight: 600,
           }}>Oppgrader til Pro</span>
             </Link>
           </div>
@@ -150,8 +150,8 @@ export function CoachPlanerV2({ data }: { data: CoachPlanerData }) {
           <div style={{ marginTop: 12, display: "flex", flexDirection: "column", gap: 8 }}>
             <Link href="/portal/onskeligokt" style={{ textDecoration: "none", display: "block" }}>
               <span style={{
-            display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, minHeight: 48, width: "100%", padding: "10px 16px",
-            borderRadius: 10, background: T.handling, color: T.onHandling, fontFamily: T.ui, fontSize: 14, fontWeight: 600,
+            display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, minHeight: 56, width: "100%", padding: "10px 16px",
+            borderRadius: 12, background: T.handling, color: T.onHandling, fontFamily: T.ui, fontSize: 14, fontWeight: 600,
           }}>Be om plan</span>
             </Link>
             <Link

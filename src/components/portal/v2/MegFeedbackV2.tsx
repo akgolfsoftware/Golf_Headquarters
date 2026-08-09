@@ -104,12 +104,15 @@ export function MegFeedbackV2({ data }: { data: MegFeedbackData }) {
   const kanSende = tekst.trim().length > 0 && !pending;
 
   return (
-    <div data-paper-portal-meg-feedback style={{ maxWidth: 720, width: "100%", margin: "0 auto", display: "flex", flexDirection: "column", gap: T.gap }}>
+    <div data-paper-wave-g="megfeedback" data-paper-portal-meg-feedback style={{ maxWidth: 720, width: "100%", margin: "0 auto", display: "flex", flexDirection: "column", gap: T.gap }}>
       {/* Hode */}
       <div>
         <Caps>Tilbakemelding · under ett minutt</Caps>
         <div style={{ marginTop: 12 }}>
-          <Tittel mobile={mobile} em="PlayerHQ?">Hva synes du om</Tittel>
+          <div data-paper-pattern-topp>
+        <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>Tilbakemelding</h1>
+        <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>Meg</span>
+      </div>
         </div>
         <p style={{ fontFamily: T.ui, fontSize: 13.5, color: T.fg2, lineHeight: 1.6, margin: "12px 0 0", maxWidth: 560 }}>
           Vi leser hver eneste tilbakemelding. Bug, forslag eller bare ros, alt teller.

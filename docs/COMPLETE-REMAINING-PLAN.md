@@ -33,7 +33,8 @@
 | Wave D Workbench + test/drill | ✅ chrome + finpuss ×2 (zoom soft, test-gjennomfør Paper) |
 | Wave E profil/innboks/forelder | ✅ chrome |
 | Wave F P2 zip rest | ✅ chrome |
-| Pattern G–K | ⬜ ikke startet |
+| Pattern G PlayerHQ | ✅ bulk |
+| Pattern H–K | ⬜ Agency/marketing |
 | Pixel DONE (screenshot-gate) | ❌ alle waves — venter Anders sign-off |
 | Login OAuth | **OK** + rate-limit circuit-breaker (tidligere) |
 | Masterbrain drill bank | **Tømt** — ingen falske seed-drills |

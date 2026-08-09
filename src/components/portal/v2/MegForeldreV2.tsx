@@ -66,11 +66,11 @@ export function MegForeldreV2({ data }: { data: MegForeldreData }) {
   const erTom = foresatte.length === 0;
 
   return (
-    <div data-paper-portal-meg-foreldre style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
+    <div data-paper-wave-g="megforeldre" data-paper-portal-meg-foreldre style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
       <div>
-        <Caps>Foresatte · Oversikt</Caps>
-        <div style={{ marginTop: 10 }}>
-          <Tittel mobile={mobile}>Mine foresatte</Tittel>
+        <div data-paper-pattern-topp>
+          <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>Foreldre</h1>
+          <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>Meg</span>
         </div>
       </div>
 
@@ -114,8 +114,8 @@ export function MegForeldreV2({ data }: { data: MegForeldreData }) {
       {erTom && (
         <Link href="/portal/meg/help/kontakt" style={{ textDecoration: "none", display: "block" }}>
           <span style={{
-            display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, minHeight: 48, width: "100%", padding: "10px 16px",
-            borderRadius: 10, background: T.handling, color: T.onHandling, fontFamily: T.ui, fontSize: 14, fontWeight: 600,
+            display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, minHeight: 56, width: "100%", padding: "10px 16px",
+            borderRadius: 12, background: T.handling, color: T.onHandling, fontFamily: T.ui, fontSize: 14, fontWeight: 600,
           }}>Kontakt support</span>
         </Link>
       )}

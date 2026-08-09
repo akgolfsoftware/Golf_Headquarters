@@ -414,16 +414,19 @@ export function MalDetaljV2({ data, testOptions = [] }: { data: MalDetaljV2Data;
     (data.linkedTestName ? `Test: ${data.linkedTestName}` : null);
 
   return (
-    <div style={{ maxWidth: 720, width: "100%", margin: "0 auto", display: "flex", flexDirection: "column", gap: T.gap }}>
+    <div data-paper-wave-g="maldetalj" data-paper-pattern style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
       {/* Header */}
       <div>
         <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
-          <Caps color={T.lime}>{data.typeLabel}</Caps>
+          <Caps color={T.handling}>{data.typeLabel}</Caps>
           {data.goalType === "HCP_TARGET" && <HjelpTips k="hcp" size={12} />}
           {data.goalType === "SG_AREA" && <HjelpTips k="sgOmrade" size={12} />}
         </span>
         <div style={{ marginTop: 10 }}>
-          <Tittel mobile>{data.tittel}</Tittel>
+          <div data-paper-pattern-topp>
+        <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>Mål</h1>
+        <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>Detalj</span>
+      </div>
         </div>
         {data.fristTekst && (
           <p style={{ fontFamily: T.ui, fontSize: 12.5, color: T.mut, margin: "10px 0 0" }}>

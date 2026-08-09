@@ -97,7 +97,7 @@ function ForslagKort({ t }: { t: TournamentSuggestion }) {
         </div>
 
         <div style={{ marginTop: 12, borderRadius: 12, background: T.panel2, border: `1px solid ${T.border}`, padding: "10px 12px" }}>
-          <Caps size={9} color={T.lime}>Hvorfor denne</Caps>
+          <Caps size={9} color={T.handling}>Hvorfor denne</Caps>
           <p style={{ fontFamily: T.ui, fontSize: 12.5, color: T.fg2, lineHeight: 1.55, margin: "5px 0 0" }}>{t.why}</p>
         </div>
       </Kort>
@@ -108,11 +108,11 @@ function ForslagKort({ t }: { t: TournamentSuggestion }) {
 export function ForeslaTurneringV2({ data }: { data: ForeslaTurneringV2Data }) {
   const { playerFirstName, hcpLabel, catalogCount, suggestions } = data;
   return (
-    <div style={{ maxWidth: 720, width: "100%", margin: "0 auto", display: "flex", flexDirection: "column", gap: T.gap }}>
+    <div data-paper-wave-g="foreslaturnering" data-paper-pattern style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
       <div>
-        <Caps>AI · Turnerings-anbefaling</Caps>
-        <div style={{ marginTop: 10 }}>
-          <Tittel em={playerFirstName}>Turneringer for</Tittel>
+        <div data-paper-pattern-topp>
+          <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>Foreslå turnering</h1>
+          <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>Turnering</span>
         </div>
         <p style={{ fontFamily: T.ui, fontSize: 13, color: T.mut, margin: "10px 0 0", lineHeight: 1.55 }}>
           Vurdert mot handicapet ditt og turneringene du allerede er påmeldt.
@@ -139,7 +139,7 @@ export function ForeslaTurneringV2({ data }: { data: ForeslaTurneringV2Data }) {
           />
           <div style={{ marginTop: 12 }}>
             <Link href="/portal/tren/turneringer" style={{ textDecoration: "none", display: "block" }}>
-              <CTAPill icon="calendar-plus" full>
+              <CTAPill icon="calendar-plus" full enTing>
                 Se turneringer
               </CTAPill>
             </Link>

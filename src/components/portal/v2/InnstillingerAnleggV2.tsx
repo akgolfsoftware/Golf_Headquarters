@@ -273,9 +273,12 @@ export function InnstillingerAnleggV2({ data }: { data: InnstillingerAnleggData 
   const antallValgt = valgte.size;
 
   return (
-    <div data-paper-portal-innstillinger-anlegg style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
+    <div data-paper-wave-g="innstillingeranlegg" data-paper-portal-innstillinger-anlegg style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
-        <Tittel mobile={mobile}>Hva har du tilgang til?</Tittel>
+        <div data-paper-pattern-topp>
+        <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>Anlegg</h1>
+        <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>Innstillinger</span>
+      </div>
         {status === "lagret" && <StatusPill tone="up">Lagret</StatusPill>}
         {status === "feil" && <StatusPill tone="down">Noe gikk galt — prøv igjen</StatusPill>}
       </div>

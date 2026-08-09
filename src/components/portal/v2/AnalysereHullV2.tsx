@@ -414,12 +414,12 @@ export function AnalysereHullV2({ data }: { data: AnalysereHullV2Data }) {
   const [tab, setTab] = useState<TabKey>("sone");
 
   return (
-    <div data-paper-portal-analysere-hull style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
+    <div data-paper-wave-g="analyserehull" data-paper-portal-analysere-hull style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
       {/* Hode */}
       <div>
-        <Caps>PlayerHQ · Hull-analyse</Caps>
-        <div style={{ marginTop: 10 }}>
-          <Tittel em="slag?">Hvor taper du</Tittel>
+        <div data-paper-pattern-topp>
+          <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>Hull</h1>
+          <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>Analyse</span>
         </div>
       </div>
 

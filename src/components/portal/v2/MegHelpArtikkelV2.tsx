@@ -115,13 +115,13 @@ function ArtikkelFeedback() {
       <span onClick={() => setTakket(true)}>
         <span style={{
             display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, minHeight: 48, width: "100%", padding: "10px 16px",
-            borderRadius: 10, background: T.handling, color: T.onHandling, fontFamily: T.ui, fontSize: 14, fontWeight: 600,
+            borderRadius: 12, background: T.handling, color: T.onHandling, fontFamily: T.ui, fontSize: 14, fontWeight: 600, minHeight: 56,
           }}>Ja, fikk svar</span>
       </span>
       <span onClick={() => setTakket(true)}>
         <span style={{
             display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, minHeight: 48, width: "100%", padding: "10px 16px",
-            borderRadius: 10, background: T.handling, color: T.onHandling, fontFamily: T.ui, fontSize: 14, fontWeight: 600,
+            borderRadius: 12, background: T.handling, color: T.onHandling, fontFamily: T.ui, fontSize: 14, fontWeight: 600, minHeight: 56,
           }}>Nei, savner noe</span>
       </span>
     </div>
@@ -209,7 +209,7 @@ const UKE_FORDELING: { a: AkseKey; pct: number; target: number }[] = [
 
 export function MegHelpArtikkelV2({ data }: { data: MegHelpArtikkelData }) {
   return (
-    <div data-paper-portal-meg-help-artikkel className="grid grid-cols-1 lg:grid-cols-[1fr_220px]" style={{ gap: T.gap * 2, alignItems: "start", maxWidth: 960, margin: "0 auto", width: "100%"}}>
+    <div data-paper-wave-g="meghelpartikkel" data-paper-pattern  data-paper-portal-meg-help-artikkel className="grid grid-cols-1 lg:grid-cols-[1fr_220px]" style={{ gap: T.gap * 2, alignItems: "start", maxWidth: 960, margin: "0 auto", width: "100%"}}>
       <article style={{ maxWidth: 720, minWidth: 0 }}>
         {/* Hode */}
         <Caps>{data.eyebrow}</Caps>
@@ -330,7 +330,7 @@ export function MegHelpArtikkelV2({ data }: { data: MegHelpArtikkelData }) {
             <Link href="/portal/coach/melding/ny" style={{ textDecoration: "none", display: "block" }}>
               <span style={{
             display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, minHeight: 48, width: "100%", padding: "10px 16px",
-            borderRadius: 10, background: T.handling, color: T.onHandling, fontFamily: T.ui, fontSize: 14, fontWeight: 600,
+            borderRadius: 12, background: T.handling, color: T.onHandling, fontFamily: T.ui, fontSize: 14, fontWeight: 600, minHeight: 56,
           }}>Send melding</span>
             </Link>
             <Link

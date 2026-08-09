@@ -68,7 +68,10 @@ export function CoachSgHubV2({ data }: { data: CoachSgHubV2Data }) {
       <div>
         <Caps>Sammenlign med coach</Caps>
         <div style={{ marginTop: 6 }}>
-          <Tittel mobile em={data.coachEtternavn}>{data.coachFornavn}</Tittel>
+          <div data-paper-pattern-topp>
+        <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>SG Hub</h1>
+        <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>Coach</span>
+      </div>
         </div>
         <p style={{ fontFamily: T.ui, fontSize: 13, color: T.mut, margin: "8px 0 0" }}>
           Head Coach · SG-data til inspirasjon
@@ -102,7 +105,7 @@ export function CoachSgHubV2({ data }: { data: CoachSgHubV2Data }) {
               sub="Logg runder for å se sammenligningen mot coach."
             />
             <Link href="/portal/runde/live" style={{ textDecoration: "none", display: "block" }}>
-              <CTAPill icon="flag" full>
+              <CTAPill icon="flag" full enTing>
                 Start live-føring
               </CTAPill>
             </Link>
@@ -116,7 +119,7 @@ export function CoachSgHubV2({ data }: { data: CoachSgHubV2Data }) {
               const coachPos50 = coachPos ? 50 + fillPct(k.coach) : 50 - fillPct(k.coach);
               const valColor = minePos ? T.up : T.down;
               return (
-                <div
+                <div data-paper-wave-g="coachsghub" data-paper-pattern 
                   key={k.label}
                   style={{
                     display: "grid",

@@ -165,7 +165,7 @@ function RefRow({ icon, label, value }: { icon: string; label: string; value: st
 function RefNote({ heading, body }: { heading: string; body: React.ReactNode }) {
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
-      <Caps size={9} color={T.lime}>{heading}</Caps>
+      <Caps size={9} color={T.handling}>{heading}</Caps>
       <span style={{ fontFamily: T.ui, fontSize: 12, lineHeight: 1.5, color: T.mut }}>{body}</span>
     </div>
   );
@@ -224,7 +224,7 @@ function KalkulatorView() {
 
           {/* Svar-panel */}
           <div style={{ background: T.forest, borderRadius: 16, padding: 22, display: "flex", flexDirection: "column", position: "relative", overflow: "hidden" }}>
-            <Caps size={10} color={T.lime}>Sikt utenfor hullet</Caps>
+            <Caps size={10} color={T.handling}>Sikt utenfor hullet</Caps>
             <div style={{ fontFamily: T.mono, fontWeight: 700, lineHeight: 0.9, letterSpacing: "-0.04em", fontSize: 76, color: T.farge.hvitA96, fontVariantNumeric: "tabular-nums", marginTop: 10 }}>
               {adj}
               <span style={{ fontSize: 28, fontWeight: 600, color: T.lime }}>&#8239;cm</span>
@@ -399,14 +399,12 @@ function SammenligningView() {
 // ─── Hovedskjerm ─────────────────────────────────────────────────────────────
 export function BreakTabellV2() {
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+    <div data-paper-wave-g="breaktabell" data-paper-pattern style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
       {/* Header */}
       <div>
-        <Caps>PlayerHQ · Green-lesing</Caps>
-        <div style={{ marginTop: 10 }}>
-          <Tittel>
-            Hvor mye <em style={{ fontStyle: "italic", color: T.lime }}>brekker</em> putten?
-          </Tittel>
+        <div data-paper-pattern-topp>
+          <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>Break-tabell</h1>
+          <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>Analyse</span>
         </div>
         <p style={{ margin: "12px 0 0", maxWidth: "64ch", fontFamily: T.ui, fontSize: 13.5, lineHeight: 1.6, color: T.mut }}>
           Centimeter å sikte{" "}

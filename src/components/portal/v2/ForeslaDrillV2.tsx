@@ -85,13 +85,13 @@ function ForslagKort({ drill }: { drill: DrillSuggestion }) {
       </div>
 
       <div style={{ marginTop: 12, borderRadius: 12, background: T.panel2, border: `1px solid ${T.border}`, padding: "10px 12px" }}>
-        <Caps size={9} color={T.lime}>Hvorfor denne</Caps>
+        <Caps size={9} color={T.handling}>Hvorfor denne</Caps>
         <p style={{ fontFamily: T.ui, fontSize: 12.5, color: T.fg2, lineHeight: 1.55, margin: "5px 0 0" }}>{drill.why}</p>
       </div>
 
       <div style={{ marginTop: 12 }}>
         <Link href={`/portal/drills/${drill.id}`} style={{ textDecoration: "none" }}>
-          <CTAPill icon="arrow-right" full>Åpne drill</CTAPill>
+          <CTAPill icon="arrow-right" full enTing>Åpne drill</CTAPill>
         </Link>
       </div>
     </Kort>
@@ -101,13 +101,13 @@ function ForslagKort({ drill }: { drill: DrillSuggestion }) {
 export function ForeslaDrillV2({ data }: { data: ForeslaDrillV2Data }) {
   const { playerFirstName, analysedTestCount, suggestions } = data;
   return (
-    <div style={{ maxWidth: 720, width: "100%", margin: "0 auto", display: "flex", flexDirection: "column", gap: T.gap }}>
+    <div data-paper-wave-g="foresladrill" data-paper-pattern style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
       <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
         <div>
-          <Caps>AI · Drill-anbefaling</Caps>
-          <div style={{ marginTop: 10 }}>
-            <Tittel em={playerFirstName}>Drills tilpasset</Tittel>
-          </div>
+          <div data-paper-pattern-topp>
+          <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>Foreslå drill</h1>
+          <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>Trening</span>
+        </div>
           <p style={{ fontFamily: T.ui, fontSize: 13, color: T.mut, margin: "10px 0 0", lineHeight: 1.55 }}>
             Matchet mot dine svakeste områder fra tester.
           </p>
@@ -134,7 +134,7 @@ export function ForeslaDrillV2({ data }: { data: ForeslaDrillV2Data }) {
           />
           <div style={{ marginTop: 12 }}>
             <Link href="/portal/tren/tester" style={{ textDecoration: "none", display: "block" }}>
-              <CTAPill icon="arrow-right" full>
+              <CTAPill icon="arrow-right" full enTing>
                 Gå til tester
               </CTAPill>
             </Link>

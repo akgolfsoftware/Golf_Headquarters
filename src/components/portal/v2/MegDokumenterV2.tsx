@@ -97,11 +97,11 @@ export function MegDokumenterV2({ data }: { data: MegDokumenterData }) {
   const n = dokumenter.length;
 
   return (
-    <div data-paper-portal-meg-dokumenter style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
+    <div data-paper-wave-g="megdokumenter" data-paper-portal-meg-dokumenter style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
       <div>
-        <Caps>Meg · Dokumenter</Caps>
-        <div style={{ marginTop: 10 }}>
-          <Tittel>Dokumenter</Tittel>
+        <div data-paper-pattern-topp>
+          <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>Dokumenter</h1>
+          <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>Meg</span>
         </div>
       </div>
 
@@ -130,8 +130,8 @@ export function MegDokumenterV2({ data }: { data: MegDokumenterData }) {
           </Kort>
           <Link href="/portal/meg" style={{ textDecoration: "none", display: "block" }}>
             <span style={{
-            display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, minHeight: 48, width: "100%", padding: "10px 16px",
-            borderRadius: 10, background: T.handling, color: T.onHandling, fontFamily: T.ui, fontSize: 14, fontWeight: 600,
+            display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, minHeight: 56, width: "100%", padding: "10px 16px",
+            borderRadius: 12, background: T.handling, color: T.onHandling, fontFamily: T.ui, fontSize: 14, fontWeight: 600,
           }}>Tilbake til Meg</span>
           </Link>
         </>

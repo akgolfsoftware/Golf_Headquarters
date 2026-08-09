@@ -44,12 +44,12 @@ export function GameplanV2({ data }: { data: BaneLibraryItem[] }) {
   const sumRunder = data.reduce((s, b) => s + b.playerRounds, 0);
 
   return (
-    <div data-paper-portal-gameplan style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
+    <div data-paper-wave-g="gameplan" data-paper-portal-gameplan style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
       {/* Hode */}
       <div>
-        <Caps>Gameplan</Caps>
-        <div style={{ marginTop: 10 }}>
-          <Tittel mobile={mobile} em="dine">Banene</Tittel>
+        <div data-paper-pattern-topp>
+          <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>Gameplan</h1>
+          <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>Banene dine</span>
         </div>
         <p style={{ fontFamily: T.ui, fontSize: 12.5, color: T.fg2, lineHeight: 1.6, margin: "10px 0 0" }}>
           Spredningen din på hver bane du spiller.
@@ -74,7 +74,7 @@ export function GameplanV2({ data }: { data: BaneLibraryItem[] }) {
             <Link href="/portal/runde/live" style={{ textDecoration: "none", display: "block" }}>
               <span style={{
                 display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, minHeight: 48, width: "100%", padding: "10px 16px",
-                borderRadius: 10, background: T.handling, color: T.onHandling, fontFamily: T.ui, fontSize: 14, fontWeight: 600,
+                borderRadius: 12, background: T.handling, color: T.onHandling, fontFamily: T.ui, fontSize: 14, fontWeight: 600, minHeight: 56,
               }}>Start live-føring
               </span>
             </Link>

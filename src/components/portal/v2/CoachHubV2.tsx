@@ -95,8 +95,8 @@ function Snarvei({ href, icon, ghost, children }: { href: string; icon: string; 
   return (
     <Link href={href} style={{ textDecoration: "none" }}>
       <span style={{
-            display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, minHeight: 48, width: "100%", padding: "10px 16px",
-            borderRadius: 10, background: T.handling, color: T.onHandling, fontFamily: T.ui, fontSize: 14, fontWeight: 600,
+            display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, minHeight: 56, width: "100%", padding: "10px 16px",
+            borderRadius: 12, background: T.handling, color: T.onHandling, fontFamily: T.ui, fontSize: 14, fontWeight: 600,
           }}>{children}</span>
     </Link>
   );
@@ -119,14 +119,14 @@ export function CoachHubV2({ data }: { data: CoachHubData }) {
   const timeline = kommende.slice(0, 4);
 
   return (
-    <div data-paper-portal-coach-hub style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
+    <div data-paper-wave-g="coachhub" data-paper-portal-coach-hub style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
       {/* Hode + B: status først */}
       <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
         <div>
-          <Caps>{coach ? `Coach · ${coach.name}` : "Coach"}</Caps>
-          <div style={{ marginTop: 10 }}>
-            <Tittel mobile={mobile} em="coach">Din</Tittel>
-          </div>
+          <div data-paper-pattern-topp>
+          <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>Coach</h1>
+          <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>Hub</span>
+        </div>
         </div>
         {coach ? (
           <StatusPill tone={kommende.length > 0 ? "lime" : "info"}>
@@ -141,15 +141,15 @@ export function CoachHubV2({ data }: { data: CoachHubData }) {
       {coach ? (
         <Link href="/portal/coach/melding" style={{ textDecoration: "none", display: "block" }}>
           <span style={{
-            display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, minHeight: 48, width: "100%", padding: "10px 16px",
-            borderRadius: 10, background: T.handling, color: T.onHandling, fontFamily: T.ui, fontSize: 14, fontWeight: 600,
+            display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, minHeight: 56, width: "100%", padding: "10px 16px",
+            borderRadius: 12, background: T.handling, color: T.onHandling, fontFamily: T.ui, fontSize: 14, fontWeight: 600,
           }}>{meldinger.length > 0 ? "Skriv til coach" : `Start samtalen med ${coach.name.split(" ")[0]}`}</span>
         </Link>
       ) : (
         <Link href="/portal/booking" style={{ textDecoration: "none", display: "block" }}>
           <span style={{
-            display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, minHeight: 48, width: "100%", padding: "10px 16px",
-            borderRadius: 10, background: T.handling, color: T.onHandling, fontFamily: T.ui, fontSize: 14, fontWeight: 600,
+            display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, minHeight: 56, width: "100%", padding: "10px 16px",
+            borderRadius: 12, background: T.handling, color: T.onHandling, fontFamily: T.ui, fontSize: 14, fontWeight: 600,
           }}>Book en time</span>
         </Link>
       )}
@@ -228,8 +228,8 @@ export function CoachHubV2({ data }: { data: CoachHubData }) {
               {coach && (
                 <Link href="/portal/booking" style={{ textDecoration: "none", display: "block" }}>
                   <span style={{
-            display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, minHeight: 48, width: "100%", padding: "10px 16px",
-            borderRadius: 10, background: T.handling, color: T.onHandling, fontFamily: T.ui, fontSize: 14, fontWeight: 600,
+            display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, minHeight: 56, width: "100%", padding: "10px 16px",
+            borderRadius: 12, background: T.handling, color: T.onHandling, fontFamily: T.ui, fontSize: 14, fontWeight: 600,
           }}>Book time</span>
                 </Link>
               )}

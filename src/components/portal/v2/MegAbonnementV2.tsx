@@ -152,7 +152,7 @@ function HeroOppgrader({ mobile }: { mobile: boolean }) {
   return (
     <Kort tint pad="24px 24px 26px" style={{ borderColor: `color-mix(in srgb,${T.lime} 32%,transparent)` }}>
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10 }}>
-        <Caps color={T.lime}>PlayerHQ Pro</Caps>
+        <Caps color={T.handling}>PlayerHQ Pro</Caps>
         <StatusPill>Full tilgang</StatusPill>
       </div>
       <Pris tall="299" mobile={mobile} />
@@ -178,7 +178,7 @@ function HeroStatus({ fornyes, mobile }: { fornyes: string | null; mobile: boole
   return (
     <Kort tint pad="24px 24px 26px" style={{ borderColor: `color-mix(in srgb,${T.lime} 32%,transparent)` }}>
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10 }}>
-        <Caps color={T.lime}>PlayerHQ Pro</Caps>
+        <Caps color={T.handling}>PlayerHQ Pro</Caps>
         <StatusPill tone="up">Aktiv</StatusPill>
       </div>
       <Pris tall="299" mobile={mobile} />
@@ -194,7 +194,7 @@ function HeroGratis({ pakkeNavn }: { pakkeNavn: string | null }) {
   return (
     <Kort tint pad="24px 24px 26px">
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10 }}>
-        <Caps color={T.lime}>Ditt abonnement</Caps>
+        <Caps color={T.handling}>Ditt abonnement</Caps>
         <StatusPill>Gratis</StatusPill>
       </div>
       <div style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 30, letterSpacing: "-0.02em", color: T.fg, lineHeight: 1, marginTop: 14 }}>
@@ -240,11 +240,11 @@ export function MegAbonnementV2({ data }: { data: MegAbonnementData }) {
   if (kanAvbestille) handlinger.push({ href: "/portal/meg/abonnement/avbestill", ic: "x-circle", l: "Avbestill abonnement", sub: "Tilgang ut perioden, ingen nye trekk" });
 
   return (
-    <div data-paper-portal-meg-abonnement style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
+    <div data-paper-wave-g="megabonnement" data-paper-portal-meg-abonnement style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
       <div>
-        <Caps>Meg · Abonnement</Caps>
-        <div style={{ marginTop: 10 }}>
-          <Tittel mobile={mobile}>Abonnement</Tittel>
+        <div data-paper-pattern-topp>
+          <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>Abonnement</h1>
+          <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>Meg</span>
         </div>
       </div>
 

@@ -43,12 +43,12 @@ export function CoachMeldingNyV2({
 
   if (gratis) {
     return (
-      <div data-paper-portal-coach-melding-ny style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
+      <div data-paper-wave-g="coachmeldingny" data-paper-pattern  data-paper-portal-coach-melding-ny style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
         <div>
-          <Caps>Coach · Ny melding</Caps>
-          <div style={{ marginTop: 10 }}>
-            <Tittel em="Pro">Krever</Tittel>
-          </div>
+          <div data-paper-pattern-topp>
+          <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>Ny melding</h1>
+          <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>Coach</span>
+        </div>
         </div>
         <Kort tint>
           <TomTilstand

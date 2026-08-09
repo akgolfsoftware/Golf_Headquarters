@@ -25,7 +25,7 @@ export function TalentRoadmapV2({ data }: { data: TalentRoadmapData }) {
     data.faser.length === 0 && data.turneringer.length === 0 && data.milepaeler.length === 0;
 
   return (
-    <div data-paper-portal-talent-roadmap style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
+    <div data-paper-wave-g="talentroadmap" data-paper-portal-talent-roadmap style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
       {/* PRE-BETA — ærlig merking */}
       <Kort pad="12px 18px">
         <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
@@ -38,9 +38,9 @@ export function TalentRoadmapV2({ data }: { data: TalentRoadmapData }) {
 
       {/* Hode */}
       <div>
-        <Caps>Talent · Roadmap</Caps>
-        <div style={{ marginTop: 10 }}>
-          <Tittel em="neste nivå">Min vei mot</Tittel>
+        <div data-paper-pattern-topp>
+          <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>Roadmap</h1>
+          <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>Talent</span>
         </div>
         <div style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 10 }}>
           <StatusPill tone="lime">Nivå {data.niva}</StatusPill>
@@ -74,7 +74,7 @@ export function TalentRoadmapV2({ data }: { data: TalentRoadmapData }) {
               <Link href="/portal/planlegge/workbench?zoom=uke" style={{ textDecoration: "none", display: "block" }}>
                 <span style={{
                 display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, minHeight: 48, width: "100%", padding: "10px 16px",
-                borderRadius: 10, background: T.handling, color: T.onHandling, fontFamily: T.ui, fontSize: 14, fontWeight: 600,
+                borderRadius: 12, background: T.handling, color: T.onHandling, fontFamily: T.ui, fontSize: 14, fontWeight: 600, minHeight: 56,
               }}>Åpne Workbench
                 </span>
               </Link>
@@ -161,7 +161,7 @@ export function TalentRoadmapV2({ data }: { data: TalentRoadmapData }) {
             <Link href="/portal/planlegge/workbench?zoom=uke" style={{ textDecoration: "none", display: "block" }}>
               <span style={{
                 display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, minHeight: 48, width: "100%", padding: "10px 16px",
-                borderRadius: 10, background: T.handling, color: T.onHandling, fontFamily: T.ui, fontSize: 14, fontWeight: 600,
+                borderRadius: 12, background: T.handling, color: T.onHandling, fontFamily: T.ui, fontSize: 14, fontWeight: 600, minHeight: 56,
               }}>Åpne Workbench
               </span>
             </Link>

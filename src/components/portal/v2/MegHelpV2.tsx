@@ -112,14 +112,12 @@ export function MegHelpV2({ data }: { data: MegHelpData }) {
   const ingenTreff = q.length > 0 && treffKat.length === 0 && treffArt.length === 0;
 
   return (
-    <div data-paper-portal-meg-help style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
+    <div data-paper-wave-g="meghelp" data-paper-portal-meg-help style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
       {/* Hode */}
       <div>
-        <Caps>Meg · Hjelp</Caps>
-        <div style={{ marginTop: 10 }}>
-          <Tittel mobile={mobile} em="support.">
-            Hjelp &amp;
-          </Tittel>
+        <div data-paper-pattern-topp>
+          <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>Hjelp</h1>
+          <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>Meg</span>
         </div>
         <p style={{ fontFamily: T.ui, fontSize: 13, color: T.mut, lineHeight: 1.6, margin: "10px 0 0", maxWidth: 520 }}>
           Svar på vanlige spørsmål, søk i veiledningene, eller ta direkte kontakt.
@@ -142,8 +140,8 @@ export function MegHelpV2({ data }: { data: MegHelpData }) {
             </Kort>
             <Link href="/portal/meg/help/kontakt" style={{ textDecoration: "none", display: "block" }}>
               <span style={{
-            display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, minHeight: 48, width: "100%", padding: "10px 16px",
-            borderRadius: 10, background: T.handling, color: T.onHandling, fontFamily: T.ui, fontSize: 14, fontWeight: 600,
+            display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, minHeight: 56, width: "100%", padding: "10px 16px",
+            borderRadius: 12, background: T.handling, color: T.onHandling, fontFamily: T.ui, fontSize: 14, fontWeight: 600,
           }}>Kontakt support</span>
             </Link>
           </>
@@ -258,8 +256,8 @@ export function MegHelpV2({ data }: { data: MegHelpData }) {
 
           <Link href="/portal/meg/help/kontakt" style={{ textDecoration: "none", display: "block" }}>
             <span style={{
-            display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, minHeight: 48, width: "100%", padding: "10px 16px",
-            borderRadius: 10, background: T.handling, color: T.onHandling, fontFamily: T.ui, fontSize: 14, fontWeight: 600,
+            display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, minHeight: 56, width: "100%", padding: "10px 16px",
+            borderRadius: 12, background: T.handling, color: T.onHandling, fontFamily: T.ui, fontSize: 14, fontWeight: 600,
           }}>Kontakt support</span>
           </Link>
           <Link

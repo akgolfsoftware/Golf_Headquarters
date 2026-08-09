@@ -138,7 +138,7 @@ export function MegSymptomNyV2() {
   }
 
   return (
-    <div data-paper-portal-meg-symptom-ny style={{ maxWidth: 520, width: "100%", margin: "0 auto", display: "flex", flexDirection: "column", gap: T.gap }}>
+    <div data-paper-wave-g="megsymptomny" data-paper-pattern  data-paper-portal-meg-symptom-ny style={{ maxWidth: 520, width: "100%", margin: "0 auto", display: "flex", flexDirection: "column", gap: T.gap }}>
       {/* Hode */}
       <div>
         <Caps>Meg · Helse</Caps>

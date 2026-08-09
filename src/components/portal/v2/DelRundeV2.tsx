@@ -124,7 +124,10 @@ export function DelRundeV2({ runde, spiller }: DelRundeV2Props) {
         <div>
           <Caps>PlayerHQ · Statistikk · Del runde</Caps>
           <div style={{ marginTop: 6 }}>
-            <Tittel mobile em="runde">Del</Tittel>
+            <div data-paper-pattern-topp>
+        <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>Del runde</h1>
+        <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>Format og synlighet</span>
+      </div>
           </div>
           <p style={{ fontFamily: T.mono, fontSize: 11, color: T.mut, margin: "8px 0 0" }}>
             <span style={{ color: T.fg, fontWeight: 700 }}>{runde.kursNavn}</span>

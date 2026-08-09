@@ -96,22 +96,22 @@ export function CoachOvelserV2({ data }: { data: CoachOvelserData }) {
   const valgtLabel = OMRADE_TABS.find((t) => t.id === omrade)?.l ?? "";
 
   return (
-    <div data-paper-portal-coach-ovelser style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
+    <div data-paper-wave-g="coachovelser" data-paper-portal-coach-ovelser style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
       {/* Hode */}
       <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
         <div>
-          <Caps>Coach · Øvelser</Caps>
-          <div style={{ marginTop: 10 }}>
-            <Tittel mobile={mobile} em={coachNavn}>Øvelser fra</Tittel>
-          </div>
+          <div data-paper-pattern-topp>
+          <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>Øvelser</h1>
+          <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>Coach</span>
+        </div>
           <Caps size={9} style={{ marginTop: 8, color: T.mut }}>
             {ovelser.length} øvelse{ovelser.length === 1 ? "" : "r"} i biblioteket
           </Caps>
         </div>
         <Link href="/portal/coach/ovelser/ny" style={{ textDecoration: "none", display: "block" }}>
           <span style={{
-            display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, minHeight: 48, width: "100%", padding: "10px 16px",
-            borderRadius: 10, background: T.handling, color: T.onHandling, fontFamily: T.ui, fontSize: 14, fontWeight: 600,
+            display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, minHeight: 56, width: "100%", padding: "10px 16px",
+            borderRadius: 12, background: T.handling, color: T.onHandling, fontFamily: T.ui, fontSize: 14, fontWeight: 600,
           }}>Ny øvelse</span>
         </Link>
       </div>
@@ -132,8 +132,8 @@ export function CoachOvelserV2({ data }: { data: CoachOvelserData }) {
           <div style={{ marginTop: 12 }}>
             <Link href="/portal/coach/ovelser/ny" style={{ textDecoration: "none", display: "block" }}>
               <span style={{
-            display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, minHeight: 48, width: "100%", padding: "10px 16px",
-            borderRadius: 10, background: T.handling, color: T.onHandling, fontFamily: T.ui, fontSize: 14, fontWeight: 600,
+            display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, minHeight: 56, width: "100%", padding: "10px 16px",
+            borderRadius: 12, background: T.handling, color: T.onHandling, fontFamily: T.ui, fontSize: 14, fontWeight: 600,
           }}>Opprett øvelse</span>
             </Link>
           </div>
@@ -148,8 +148,8 @@ export function CoachOvelserV2({ data }: { data: CoachOvelserData }) {
           <div style={{ marginTop: 12 }}>
             <Link href="/portal/coach/ovelser/ny" style={{ textDecoration: "none", display: "block" }}>
               <span style={{
-            display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, minHeight: 48, width: "100%", padding: "10px 16px",
-            borderRadius: 10, background: T.handling, color: T.onHandling, fontFamily: T.ui, fontSize: 14, fontWeight: 600,
+            display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, minHeight: 56, width: "100%", padding: "10px 16px",
+            borderRadius: 12, background: T.handling, color: T.onHandling, fontFamily: T.ui, fontSize: 14, fontWeight: 600,
           }}>Opprett øvelse</span>
             </Link>
           </div>

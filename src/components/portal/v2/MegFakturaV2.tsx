@@ -66,7 +66,7 @@ function SumRad({ label, value, total }: { label: string; value: string; total?:
 
 export function MegFakturaV2({ data, handlinger }: { data: MegFakturaData; handlinger?: ReactNode }) {
   return (
-    <div data-paper-portal-meg-faktura style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
+    <div data-paper-wave-g="megfaktura" data-paper-portal-meg-faktura style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
       <div style={{ display: "flex", flexWrap: "wrap", alignItems: "flex-end", justifyContent: "space-between", gap: 14 }}>
         <div style={{ minWidth: 0 }}>
           <Caps>AK Golf · Faktura</Caps>
@@ -185,8 +185,8 @@ export function MegFakturaV2({ data, handlinger }: { data: MegFakturaData; handl
 
       <Link href="/portal/meg/abonnement" style={{ textDecoration: "none", display: "block" }}>
         <span style={{
-            display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, minHeight: 48, width: "100%", padding: "10px 16px",
-            borderRadius: 10, background: T.handling, color: T.onHandling, fontFamily: T.ui, fontSize: 14, fontWeight: 600,
+            display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, minHeight: 56, width: "100%", padding: "10px 16px",
+            borderRadius: 12, background: T.handling, color: T.onHandling, fontFamily: T.ui, fontSize: 14, fontWeight: 600,
           }}>Tilbake til abonnement</span>
       </Link>
       <p style={{ fontFamily: T.ui, fontSize: 12, color: T.mut, textAlign: "center", margin: 0 }}>

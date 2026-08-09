@@ -29,7 +29,8 @@
 | **D** | Workbench, tester, drills, økt, test-gjennomfør | ✅ | ✅ ×2 | ❌ | `WAVE-D-STATUS.md` |
 | **E** | Profil + innboks + forelder | ✅ | ✅ | ❌ | `WAVE-E-STATUS.md` + **VALIDATION** |
 | **F** | P2 zip rest (økonomi, innstillinger, AK-stigen, agenticos, turnering WB, feiring, fys/tek plan) | ✅ | ✅ | ❌ | `WAVE-F-STATUS.md` |
-| **G–K** | Pattern-port ~300+ ruter uten fasit | ⬜ delvis (shell) | ⬜ | ❌ | `PAPER-PATTERN-CHECKLIST.md` |
+| **G** | Pattern PlayerHQ rest (uten fasit) | ✅ | ✅ | n/a pattern | `WAVE-G-STATUS.md` |
+| **H–K** | AgencyOS rest + marketing + legacy | ⬜ | ⬜ | ❌ | `PAPER-PATTERN-CHECKLIST.md` |
 
 ---
 
@@ -116,6 +117,13 @@
 
 ---
 
+## Wave G — Pattern PlayerHQ (✅)
+
+~50 flater: Talent, Mål, DataGolf, Meg-sub, Coach-portal, Venner, Varsler, innstillinger-*.  
+Se `WAVE-G-STATUS.md`.
+
+---
+
 ## Gjenstår (prioritert)
 
 ### Umiddelbart **[ANDERS]**
@@ -126,7 +134,7 @@
 ### Agent neste (kode)
 | # | Oppgave |
 |---|---|
-| 1 | **Pattern G–K** — ruter uten fasit + innboks filtre (E gap) |
+| 1 | **Wave H** — AgencyOS rest uten fasit |
 | 2 | **Wave F** — økonomi, innstillinger, AK-stigen, agenticos, turnering-WB, feiring, fys/tek |
 | 3 | Agency **live-session** dyp (F1-31) |
 | 4 | **Pattern G–K** — ruter uten fasit (monster + tokens) |
@@ -161,4 +169,4 @@
 | `STATUS-NÅ.md` | Plattform-snapshot |
 | `WAVE-A/B/C/D-STATUS.md` | Detalj per wave |
 
-**Sist oppdatert:** 2026-08-09 19:45 CEST · agent Wave F chrome
+**Sist oppdatert:** 2026-08-09 20:00 CEST · agent Wave G pattern

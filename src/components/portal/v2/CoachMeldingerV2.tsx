@@ -80,12 +80,12 @@ export function CoachMeldingerV2({ data }: { data: CoachMeldingerData }) {
   // Pro-gate — direkte coach-meldinger krever PlayerHQ Pro (uendret regel).
   if (gratis) {
     return (
-      <div data-paper-portal-coach-melding style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
+      <div data-paper-wave-g="coachmeldinger" data-paper-portal-coach-melding style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
         <div>
-          <Caps>Coach · Meldinger</Caps>
-          <div style={{ marginTop: 10 }}>
-            <Tittel mobile={mobile} em="Pro">Krever</Tittel>
-          </div>
+          <div data-paper-pattern-topp>
+          <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>Meldinger</h1>
+          <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>Coach</span>
+        </div>
         </div>
         <Kort tint>
           <TomTilstand
@@ -97,7 +97,7 @@ export function CoachMeldingerV2({ data }: { data: CoachMeldingerData }) {
             <Link href="/portal/meg/abonnement" style={{ textDecoration: "none", display: "block" }}>
               <span style={{
                 display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, minHeight: 48, width: "100%", padding: "10px 16px",
-                borderRadius: 10, background: T.handling, color: T.onHandling, fontFamily: T.ui, fontSize: 14, fontWeight: 600,
+                borderRadius: 12, background: T.handling, color: T.onHandling, fontFamily: T.ui, fontSize: 14, fontWeight: 600, minHeight: 56,
               }}>Oppgrader til Pro
               </span>
             </Link>
@@ -259,7 +259,7 @@ export function CoachMeldingerV2({ data }: { data: CoachMeldingerData }) {
         <Link href="/portal/coach/melding/ny" style={{ textDecoration: "none", display: "block" }}>
           <span style={{
                 display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, minHeight: 48, width: "100%", padding: "10px 16px",
-                borderRadius: 10, background: T.handling, color: T.onHandling, fontFamily: T.ui, fontSize: 14, fontWeight: 600,
+                borderRadius: 12, background: T.handling, color: T.onHandling, fontFamily: T.ui, fontSize: 14, fontWeight: 600, minHeight: 56,
               }}>Ny melding
           </span>
         </Link>

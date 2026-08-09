@@ -126,7 +126,7 @@ export function GjorV2({ data }: { data: GjennomforeData }) {
   }
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+    <div data-paper-wave-g="gjor" data-paper-pattern style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
       {/* Hode */}
       <div
         style={{
@@ -138,12 +138,10 @@ export function GjorV2({ data }: { data: GjennomforeData }) {
         }}
       >
         <div>
-          <Caps>{headerCaps}</Caps>
-          <div style={{ marginTop: 10 }}>
-            <Tittel mobile={mobile} em={titelEm}>
-              {titelChildren}
-            </Tittel>
-          </div>
+          <div data-paper-pattern-topp>
+          <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>Gjør</h1>
+          <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>Dagens økt</span>
+        </div>
         </div>
         {headerStatus}
       </div>
@@ -185,7 +183,7 @@ export function GjorV2({ data }: { data: GjennomforeData }) {
           </Kort>
 
           <Link href="/portal/planlegge/workbench?zoom=uke" style={{ textDecoration: "none", display: "block" }}>
-            <CTAPill icon="calendar" full>
+            <CTAPill icon="calendar" full enTing>
               Åpne Workbench
             </CTAPill>
           </Link>
@@ -258,7 +256,7 @@ export function GjorV2({ data }: { data: GjennomforeData }) {
           {/* Én primær CTA */}
           {nesteOkt && (
             <Link href={nesteOkt.href} style={{ textDecoration: "none", display: "block" }}>
-              <CTAPill icon="play" full>
+              <CTAPill icon="play" full enTing>
                 {live ? "Fortsett økt" : "Start økt"}
               </CTAPill>
             </Link>

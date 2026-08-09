@@ -119,9 +119,12 @@ export function MegUtstyrsbagV2({ data }: { data: MegUtstyrsbagData }) {
   const total = KOLLER.length + OVRIG.length;
 
   return (
-    <div data-paper-portal-meg-utstyrsbag style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
+    <div data-paper-wave-g="megutstyrsbag" data-paper-portal-meg-utstyrsbag style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
       <div>
-        <Tittel mobile={mobile}>Utstyrsbag</Tittel>
+        <div data-paper-pattern-topp>
+        <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>Utstyr</h1>
+        <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>Meg</span>
+      </div>
         <Caps size={9} style={{ marginTop: 10 }}>
           Køller, ball og bag
         </Caps>

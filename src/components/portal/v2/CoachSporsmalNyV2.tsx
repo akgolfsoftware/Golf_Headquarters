@@ -86,11 +86,11 @@ export function CoachSporsmalNyV2({
   }
 
   return (
-    <div data-paper-portal-coach-sporsmal-ny style={{ maxWidth: 720, width: "100%", margin: "0 auto", display: "flex", flexDirection: "column", gap: T.gap }}>
+    <div data-paper-wave-g="coachsporsmalny" data-paper-pattern  data-paper-portal-coach-sporsmal-ny style={{ maxWidth: 720, width: "100%", margin: "0 auto", display: "flex", flexDirection: "column", gap: T.gap }}>
       <div>
-        <Caps>Coach · Nytt spørsmål</Caps>
-        <div style={{ marginTop: 10 }}>
-          <Tittel em="coach">Still spørsmål til</Tittel>
+        <div data-paper-pattern-topp>
+          <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>Nytt spørsmål</h1>
+          <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>Coach</span>
         </div>
       </div>
 

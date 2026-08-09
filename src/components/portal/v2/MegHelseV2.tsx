@@ -262,7 +262,7 @@ export function MegHelseV2({ data, lagre }: { data: MegHelseData; lagre: LagreFn
   const sovnKpi = siste?.sleepHours != null ? formatTimer(siste.sleepHours) : "—";
 
   return (
-    <div data-paper-portal-meg-helse style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
+    <div data-paper-wave-g="meghelse" data-paper-portal-meg-helse style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
       <div>
         <Caps style={{ marginBottom: 10 }}>Meg · Helse</Caps>
         <Tittel mobile={mobile} em="status">

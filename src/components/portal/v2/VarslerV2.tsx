@@ -95,7 +95,7 @@ export function VarslerV2({ data }: { data: VarslerV2Data }) {
   }
 
   return (
-    <div data-paper-portal-varsler style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
+    <div data-paper-wave-g="varsler" data-paper-portal-varsler style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
       {/* Hode: tittel + ulest-pille + marker alle lest */}
       <div
         style={{
@@ -107,7 +107,10 @@ export function VarslerV2({ data }: { data: VarslerV2Data }) {
         }}
       >
         <div style={{ display: "flex", alignItems: "center", gap: 12, flexWrap: "wrap" }}>
-          <Tittel em="nå">Varsler</Tittel>
+          <div data-paper-pattern-topp>
+        <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>Varsler</h1>
+        <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>Alle varsler</span>
+      </div>
           {uleste > 0 && <StatusPill tone="lime">{ulesteOrd} nye</StatusPill>}
         </div>
         {uleste > 0 && (

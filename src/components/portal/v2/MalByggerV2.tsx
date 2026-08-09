@@ -212,7 +212,7 @@ export function MalByggerV2({ kontekst }: MalByggerV2Props) {
   }
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+    <div data-paper-wave-g="malbygger" data-paper-pattern style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
       {/* Topp */}
       <div
         style={{
@@ -224,10 +224,10 @@ export function MalByggerV2({ kontekst }: MalByggerV2Props) {
         }}
       >
         <div>
-          <Caps>Mål · AI mal-bygger</Caps>
-          <div style={{ marginTop: 10 }}>
-            <Tittel em="mal-bygger">AI</Tittel>
-          </div>
+          <div data-paper-pattern-topp>
+          <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>Målbygger</h1>
+          <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>Sett nytt mål</span>
+        </div>
           <p
             style={{
               fontFamily: T.ui,

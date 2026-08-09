@@ -289,11 +289,11 @@ export function AiMalByggerV2({
   }
 
   return (
-    <div style={{ maxWidth: 720, width: "100%", margin: "0 auto", display: "flex", flexDirection: "column", gap: T.gap }}>
+    <div data-paper-wave-g="aimalbygger" data-paper-pattern style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
       <div>
-        <Caps>AI · Mål-bygger</Caps>
-        <div style={{ marginTop: 10 }}>
-          <Tittel em={playerFirstName}>La oss sette målene dine,</Tittel>
+        <div data-paper-pattern-topp>
+          <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>Målbygger</h1>
+          <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>AI-forslag</span>
         </div>
       </div>
 

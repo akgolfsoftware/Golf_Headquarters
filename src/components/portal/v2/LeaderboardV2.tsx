@@ -110,7 +110,7 @@ export function LeaderboardV2({ data }: { data: LeaderboardV2Data }) {
   const { fornavn, minRank, total, tab, sgTab, rader, meg } = data;
 
   return (
-    <div data-paper-portal-leaderboard style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
+    <div data-paper-wave-g="leaderboard" data-paper-portal-leaderboard style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
       {/* Header */}
       <div>
         <Caps>Mål · Leaderboard · siste 30 dager</Caps>
@@ -199,7 +199,7 @@ export function LeaderboardV2({ data }: { data: LeaderboardV2Data }) {
           />
           <div style={{ marginTop: 12 }}>
             <Link href="/portal/runde/live" style={{ textDecoration: "none", display: "block" }}>
-              <CTAPill icon="flag" full>
+              <CTAPill icon="flag" full enTing>
                 Start live-føring
               </CTAPill>
             </Link>

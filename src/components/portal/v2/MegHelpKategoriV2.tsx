@@ -50,7 +50,7 @@ function sortHref(slug: string, sort: KategoriSort): string {
 
 export function MegHelpKategoriV2({ data }: { data: MegHelpKategoriData }) {
   return (
-    <div data-paper-portal-meg-help-kategori style={{ maxWidth: 760, width: "100%", margin: "0 auto", display: "flex", flexDirection: "column", gap: T.gap }}>
+    <div data-paper-wave-g="meghelpkategori" data-paper-pattern  data-paper-portal-meg-help-kategori style={{ maxWidth: 760, width: "100%", margin: "0 auto", display: "flex", flexDirection: "column", gap: T.gap }}>
       {/* Hero */}
       <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 12, textAlign: "center", paddingTop: 6 }}>
         <span
@@ -175,7 +175,7 @@ export function MegHelpKategoriV2({ data }: { data: MegHelpKategoriData }) {
       <Link href="/portal/meg/help/kontakt" style={{ textDecoration: "none", display: "block" }}>
         <span style={{
             display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, minHeight: 48, width: "100%", padding: "10px 16px",
-            borderRadius: 10, background: T.handling, color: T.onHandling, fontFamily: T.ui, fontSize: 14, fontWeight: 600,
+            borderRadius: 12, background: T.handling, color: T.onHandling, fontFamily: T.ui, fontSize: 14, fontWeight: 600, minHeight: 56,
           }}>Send oss et spørsmål</span>
       </Link>
     </div>

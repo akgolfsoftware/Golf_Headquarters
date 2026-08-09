@@ -80,14 +80,14 @@ export function MalHubV2({ data }: { data: MalHubData }) {
   const { antall, goals, milepael } = data;
 
   return (
-    <div data-paper-portal-mal style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
+    <div data-paper-wave-g="malhub" data-paper-portal-mal style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
       {/* Hode + B: status pill */}
       <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
         <div>
-          <Caps>Mål</Caps>
-          <div style={{ marginTop: 10 }}>
-            <Tittel mobile={mobile} em="mål">Mine</Tittel>
-          </div>
+          <div data-paper-pattern-topp>
+          <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>Mål</h1>
+          <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>Mine mål og milepæler</span>
+        </div>
         </div>
         <StatusPill tone={antall > 0 ? "lime" : "info"}>
           {antall} {antall === 1 ? "aktivt" : "aktive"}
@@ -98,7 +98,7 @@ export function MalHubV2({ data }: { data: MalHubData }) {
       <Link href="/portal/mal/bygger" style={{ textDecoration: "none", display: "block" }}>
         <span style={{
                 display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, minHeight: 48, width: "100%", padding: "10px 16px",
-                borderRadius: 10, background: T.handling, color: T.onHandling, fontFamily: T.ui, fontSize: 14, fontWeight: 600,
+                borderRadius: 12, background: T.handling, color: T.onHandling, fontFamily: T.ui, fontSize: 14, fontWeight: 600, minHeight: 56,
               }}>{goals.length === 0 ? "Sett første mål" : "Nytt mål"}
         </span>
       </Link>
@@ -108,7 +108,7 @@ export function MalHubV2({ data }: { data: MalHubData }) {
         <Kort tint>
           <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
             <Icon name="trophy" size={14} style={{ color: T.lime }} />
-            <Caps color={T.lime}>Siste milepæl</Caps>
+            <Caps color={T.handling}>Siste milepæl</Caps>
           </div>
           <div style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 17, color: T.fg, lineHeight: 1.3 }}>
             {milepael.tittel}

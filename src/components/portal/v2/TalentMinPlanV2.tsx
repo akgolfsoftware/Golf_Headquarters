@@ -24,12 +24,12 @@ export interface TalentMinPlanData {
 
 export function TalentMinPlanV2({ data }: { data: TalentMinPlanData }) {
   return (
-    <div data-paper-portal-talent-min-plan style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
+    <div data-paper-wave-g="talentminplan" data-paper-portal-talent-min-plan style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
       {/* Hode */}
       <div>
-        <Caps>Talent · Min plan</Caps>
-        <div style={{ marginTop: 10 }}>
-          <Tittel em="utviklingsplan">Min</Tittel>
+        <div data-paper-pattern-topp>
+          <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>Min plan</h1>
+          <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>Talent</span>
         </div>
         <div style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 10, flexWrap: "wrap" }}>
           <StatusPill tone="lime">Nivå {data.niva}</StatusPill>
@@ -116,7 +116,7 @@ export function TalentMinPlanV2({ data }: { data: TalentMinPlanData }) {
         <Link href="/portal/coach/melding" style={{ textDecoration: "none", display: "block" }}>
           <span style={{
                 display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, minHeight: 48, width: "100%", padding: "10px 16px",
-                borderRadius: 10, background: T.handling, color: T.onHandling, fontFamily: T.ui, fontSize: 14, fontWeight: 600,
+                borderRadius: 12, background: T.handling, color: T.onHandling, fontFamily: T.ui, fontSize: 14, fontWeight: 600, minHeight: 56,
               }}>Spør coach om neste mål
           </span>
         </Link>

@@ -371,7 +371,13 @@ export function VennerClient({ initial }: { initial: VennerData }) {
   const { venner, innkommende, utgaende } = initial;
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: 28 }}>
+    <div data-paper-wave-g="venner" data-paper-pattern style={{ display: "flex", flexDirection: "column", gap: 28, maxWidth: 720, margin: "0 auto", width: "100%" }}>
+      <div data-paper-pattern-topp>
+        <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>Venner</h1>
+        <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>
+          Søk, forespørsler og liste
+        </span>
+      </div>
       <section style={{ display: "flex", flexDirection: "column", gap: 8 }}>
         <Caps>Legg til venn</Caps>
         <SokLeggTil />
