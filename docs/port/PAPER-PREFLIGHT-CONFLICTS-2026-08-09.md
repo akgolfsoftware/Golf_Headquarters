@@ -164,3 +164,22 @@ Wave G–K  pattern uten fasit
 3. **Prod uten push** (du ser gammel UI uansett port)
 
 Alt annet er migreringsarbeid inne i planen, ikke showstoppers.
+
+
+---
+
+## WAVE 0 FIXED (2026-08-09 kode)
+
+| Punkt | Fix |
+|---|---|
+| B2 golfdata-scope | **Fjernet** fra `admin/(legacy)/layout.tsx` |
+| B3 PortalShell | **Erstattet** med `V2Shell` i `portal/(legacy)/layout.tsx` |
+| Dobbel V2Shell | Fjernet nestet shell i aarsplan periode ny/rediger |
+| Dobbel GlobalSearchModal | Fjernet fra admin legacy layout (eies av V2Shell) |
+| Shell bakgrunn | Flat `T.bg` (fjernet vignett-gradient som skiller fra Paper) |
+| data-paper-shell | På V2Shell root + data-paper-column |
+| PillTabs / FilterChips | Soft/selected Paper (ikke solid ink-fill) |
+| StatusPill lime | Bruker `T.fg` soft (ink), ikke neon |
+| Token aliases | `T.cta` / `T.onCta` / `T.brand` + `--v2-brand` |
+
+**Gjenstår (ikke Wave 0):** Mac push, pixel Wave A–F, pattern G–K, shadcn Button-migrering per flate.

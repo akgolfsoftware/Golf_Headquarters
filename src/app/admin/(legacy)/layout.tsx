@@ -1,14 +1,13 @@
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
-import { GlobalSearchModal } from "@/components/admin/global-search-modal";
 
-// Legacy-flater under /admin — 2026-07-12: rendres nå i V2Shell (samme
-// AgencyOS-chrome som de porterte sidene: ikon-rail med etiketter + Mer-meny +
-// full bredde) i stedet for gamle AdminShell (sidebar/topbar med scope-velger).
-// Innholdet er allerede retunet mørkt (golfdata-scope beholdes for tokens);
-// selve flatene rekomponeres til v2 bølgevis per git-historikken
-// Global Cmd+K-søk beholdes (selvstendig klient-modal).
-// Auth-guarden ligger i src/app/admin/layout.tsx (toppen).
+/**
+ * AgencyOS under /admin/(legacy) — én V2Shell (Paper chrome).
+ * IKKE .golfdata-scope her: den overstyrte Paper --p-*/--v2-* inni innholdet.
+ * Athletic/golfdata-widgets som *trenger* scope wrapper lokalt i egen komponent.
+ * IKKE nest V2Shell i child pages (layout eier chrome).
+ * GlobalSearchModal eies av V2Shell (Agency) — ikke monter her (dobbel modal).
+ */
 export default async function AdminLegacyLayout({
   children,
 }: {
@@ -16,9 +15,13 @@ export default async function AdminLegacyLayout({
 }) {
   const user = await requirePortalUser({ allow: ["COACH", "ADMIN"] });
   return (
-    <V2Shell bredde="kolonne" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"} avatarUrl={user.avatarUrl}>
-      <div className="golfdata-scope">{children}</div>
-      <GlobalSearchModal />
+    <V2Shell
+      bredde="kolonne"
+      nav={AGENCYOS_NAV}
+      navn={user.name ?? "Coach"}
+      avatarUrl={user.avatarUrl}
+    >
+      {children}
     </V2Shell>
   );
 }

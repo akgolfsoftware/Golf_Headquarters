@@ -9,7 +9,6 @@
  */
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
-import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
 import { Caps, Tittel, TomTilstand, TilbakeLenke } from "@/components/v2";
 import { PeriodeFormV2 } from "@/components/portal/v2/PeriodeFormV2";
 
@@ -38,7 +37,7 @@ export default async function NyPeriodePage({
   const harTilgang = seasonPlan && (isCoach || seasonPlan.userId === user.id);
 
   return (
-    <V2Shell bredde="kolonne" aktiv="plan" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
+    <>
       <TilbakeLenke href="/portal/tren/aarsplan">Årsplan</TilbakeLenke>
       <div style={{ margin: "14px 0 20px" }}>
         <Caps>PlayerHQ · Tren · Årsplan</Caps>
@@ -56,6 +55,6 @@ export default async function NyPeriodePage({
           sub="Du trenger en sesongplan før du kan legge til perioder. Opprett en årsplan først."
         />
       )}
-    </V2Shell>
+    </>
   );
 }

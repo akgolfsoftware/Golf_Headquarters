@@ -847,10 +847,12 @@ export function V2Shell({ aktiv, nav = PLAYERHQ_NAV, mer, rom, navn = "Øyvind R
   return (
     <div
       className={tema}
+      data-paper-shell={erAgency ? "agencyos" : "playerhq"}
+      data-paper-chrome="v2-shell"
       suppressHydrationWarning
       style={{
         minHeight: "100vh",
-        background: `radial-gradient(1100px 460px at 24% -8%, var(--v2-vignett), transparent 62%), ${T.bg}`,
+        background: T.bg,
         color: T.fg,
         fontFamily: T.ui,
         colorScheme: tema,
@@ -881,7 +883,10 @@ export function V2Shell({ aktiv, nav = PLAYERHQ_NAV, mer, rom, navn = "Øyvind R
               gitt (usatt prop ⇒ skjult ⇒ ingen kallsted må endres). */}
           {erAgency && vekslerData && <SpillerVeksler data={vekslerData} />}
           {bredde === "kolonne" ? (
-            <div style={{ width: "100%", maxWidth: erAgency ? "74ch" : "720px", marginLeft: "auto", marginRight: "auto" }}>
+            <div
+              data-paper-column={erAgency ? "agency" : "player"}
+              style={{ width: "100%", maxWidth: erAgency ? "74ch" : "720px", marginLeft: "auto", marginRight: "auto" }}
+            >
               {children}
             </div>
           ) : (

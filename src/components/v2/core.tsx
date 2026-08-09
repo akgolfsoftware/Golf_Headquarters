@@ -132,7 +132,8 @@ export interface StatusPillProps {
    border i samme tone (26%) rundt den 10%-tonede fyllen. rTag(8) var feil radius
    for et merke (den er reservert Knapp, se Button.prompt.md) — retter til rPill. */
 export function StatusPill({ children, tone = "lime" }: StatusPillProps) {
-  const c: string = { lime: T.lime, up: T.up, warn: T.warn, down: T.down, info: T.info }[tone];
+  /* lime-tone = Paper ink accent soft (not neon). Brand neon never on status default. */
+  const c: string = { lime: T.fg, up: T.up, warn: T.warn, down: T.down, info: T.info }[tone];
   return (
     <span
       style={{
@@ -386,7 +387,7 @@ export function PillTabs({ tabs, value, onChange }: PillTabsProps) {
         {tabs.map((t) => {
           const on = value === t.id;
           return (
-            <button key={t.id} className="v2-press v2-focus" onClick={() => onChange && onChange(t.id)} style={{ appearance: "none", cursor: "pointer", fontFamily: T.ui, fontSize: 13, fontWeight: 600, padding: "8px 15px", minHeight: 40, minWidth: 44, borderRadius: T.rPill, color: on ? T.onLime : T.fg2, background: on ? T.lime : T.panel2, border: `1px solid ${on ? "transparent" : T.border}`, whiteSpace: "nowrap" }}>{t.l}</button>
+            <button key={t.id} className="v2-press v2-focus" onClick={() => onChange && onChange(t.id)} style={{ appearance: "none", cursor: "pointer", fontFamily: T.ui, fontSize: 13, fontWeight: 600, padding: "8px 15px", minHeight: 40, minWidth: 44, borderRadius: T.rPill, color: on ? T.fg : T.fg2, background: on ? T.panel : T.panel2, border: `1px solid ${on ? T.fg : T.border}`, boxShadow: on ? `inset 0 -2px 0 ${T.handling}` : undefined, whiteSpace: "nowrap" }}>{t.l}</button>
           );
         })}
       </div>
@@ -435,7 +436,7 @@ export function FilterChips({ items, active = [], onToggle, axis }: FilterChipsP
       {items.map((x, i) => {
         const on = active.indexOf(x) !== -1;
         return (
-          <button key={i} className="v2-press v2-focus" onClick={() => onToggle && onToggle(x)} style={{ appearance: "none", cursor: "pointer", display: "inline-flex", alignItems: "center", gap: 6, height: 32, padding: "0 12px", borderRadius: 9999, background: on ? T.lime : T.panel3, border: `1px solid ${on ? "transparent" : T.borderS}`, color: on ? T.onLime : T.fg, fontFamily: T.ui, fontSize: 12.5, fontWeight: 500 }}>
+          <button key={i} className="v2-press v2-focus" onClick={() => onToggle && onToggle(x)} style={{ appearance: "none", cursor: "pointer", display: "inline-flex", alignItems: "center", gap: 6, height: 32, padding: "0 12px", borderRadius: 9999, background: on ? T.handlingSoft : T.panel3, border: `1px solid ${on ? T.handling : T.borderS}`, color: on ? T.handling : T.fg, fontFamily: T.ui, fontSize: 12.5, fontWeight: 500 }}>
             {on && <Icon name="check" size={12} />}
             {axis && T.ax[x as AkseKey] && <span style={{ width: 7, height: 7, borderRadius: 9999, background: T.ax[x as AkseKey] }} />}
             {axis ? AKSE_NAVN[x as AkseKey] || x : x}

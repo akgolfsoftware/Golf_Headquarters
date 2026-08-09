@@ -38,6 +38,11 @@ export const T = {
   onForest: "#FFFFFF",
   lime: "var(--v2-lime)",
   onLime: "var(--v2-on-lime)",
+  // Paper aliases (tydelig semantikk — samme CSS-vars)
+  cta: "var(--v2-lime)",           // ink CTA fill (#141413 lys)
+  onCta: "var(--v2-on-lime)",
+  brand: "var(--v2-brand, #D1F843)", // neon AK-lime — ALDRI primær CTA
+  onBrand: "#141413",
   // Primærhandling-monopol («Én ting nå») — C smalt, låst 2026-07-31
   handling: "var(--v2-handling)",
   onHandling: "var(--v2-on-handling)",

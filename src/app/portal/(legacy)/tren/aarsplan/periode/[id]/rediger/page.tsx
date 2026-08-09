@@ -8,7 +8,6 @@
  */
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
-import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
 import { Caps, Tittel, TomTilstand, TilbakeLenke, StatusPill } from "@/components/v2";
 import { PeriodeFormV2 } from "@/components/portal/v2/PeriodeFormV2";
 
@@ -32,7 +31,7 @@ export default async function PeriodeRedigerPage({
     periodeRaw && (isCoach || periodeRaw.seasonPlan.userId === user.id) ? periodeRaw : null;
 
   return (
-    <V2Shell bredde="kolonne" aktiv="plan" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
+    <>
       <TilbakeLenke href="/portal/tren/aarsplan">Årsplan</TilbakeLenke>
       <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 12, margin: "14px 0 20px" }}>
         <div>
@@ -65,6 +64,6 @@ export default async function PeriodeRedigerPage({
           sub="Perioden er enten slettet eller du har ikke tilgang til den."
         />
       )}
-    </V2Shell>
+    </>
   );
 }
