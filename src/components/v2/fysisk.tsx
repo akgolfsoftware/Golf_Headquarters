@@ -346,7 +346,7 @@ export function AutoProgresjon({ forslag = "+2,5 kg neste gang", grunnlag = "All
         Anbefaling: <span style={{ fontFamily: T.mono, fontWeight: 700, color: T.fg }}>{forslag}</span>
         <span style={{ display: "block", fontSize: 11, color: T.mut, marginTop: 2 }}>{grunnlag}</span>
       </span>
-      <button onClick={() => { setStatus("godtatt"); onGodta?.(); }} title="Godta anbefaling" style={{ appearance: "none", cursor: "pointer", width: 44, height: 44, flex: "none", borderRadius: 12, background: T.lime, border: "none", color: T.onLime, display: "inline-flex", alignItems: "center", justifyContent: "center" }}>
+      <button onClick={() => { setStatus("godtatt"); onGodta?.(); }} title="Godta anbefaling" style={{ appearance: "none", cursor: "pointer", width: 44, height: 44, flex: "none", borderRadius: 12, background: T.handling, border: "none", color: T.onHandling, display: "inline-flex", alignItems: "center", justifyContent: "center" }}>
         <Icon name="check" size={16} />
       </button>
       <button onClick={() => { setStatus("avvist"); onAvvis?.(); }} title="Avvis — behold dagens vekt" style={{ appearance: "none", cursor: "pointer", width: 44, height: 44, flex: "none", borderRadius: 12, background: T.panel3, border: `1px solid ${T.borderS}`, color: T.fg2, display: "inline-flex", alignItems: "center", justifyContent: "center" }}>

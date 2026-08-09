@@ -82,7 +82,7 @@ function LagreKnapp({ children }: { children: React.ReactNode }) {
       type="submit"
       form="rediger-form"
       className="v2-press v2-focus"
-      style={{ appearance: "none", display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, fontFamily: T.ui, fontSize: 12.5, fontWeight: 600, color: T.onLime, background: T.lime, border: "1px solid transparent", borderRadius: 9999, padding: "10px 18px", cursor: "pointer" }}
+      style={{ appearance: "none", display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, fontFamily: T.ui, fontSize: 12.5, fontWeight: 600, color: T.onHandling, background: T.handling, border: "1px solid transparent", borderRadius: 9999, padding: "10px 18px", cursor: "pointer" }}
     >
       {children}
     </button>

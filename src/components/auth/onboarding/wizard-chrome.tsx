@@ -98,7 +98,7 @@ export function ProgressDots({
                 flex: "none",
                 background: done ? T.lime : now ? "transparent" : T.panel2,
                 border: `2px solid ${done || now ? T.lime : T.borderS}`,
-                color: done ? T.onLime : now ? T.lime : T.mut,
+                color: done ? T.onHandling : now ? T.lime : T.mut,
               }}
             >
               {done ? <Check size={13} strokeWidth={2.5} aria-hidden /> : n}
@@ -297,9 +297,9 @@ export function PrimaryCta({
           gap: 8,
           borderRadius: 9999,
           padding: "0 24px",
-          background: T.lime,
+          background: T.handling,
           border: "1px solid transparent",
-          color: T.onLime,
+          color: T.onHandling,
           fontFamily: T.ui,
           fontSize: 14.5,
           fontWeight: 600,

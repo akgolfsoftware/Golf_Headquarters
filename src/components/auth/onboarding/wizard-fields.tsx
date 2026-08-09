@@ -205,7 +205,7 @@ function CheckCircle({ selected }: { selected: boolean }) {
         borderRadius: 9999,
         background: selected ? T.lime : "transparent",
         border: `1.5px solid ${selected ? T.lime : T.borderS}`,
-        color: selected ? T.onLime : "transparent",
+        color: selected ? T.onHandling : "transparent",
       }}
     >
       {selected && <Check size={13} strokeWidth={2.5} aria-hidden />}
@@ -330,7 +330,7 @@ export function PillToggle({
         borderRadius: 9999,
         background: selected ? T.lime : T.panel3,
         border: `1px solid ${selected ? "transparent" : T.borderS}`,
-        color: selected ? T.onLime : T.fg2,
+        color: selected ? T.onHandling : T.fg2,
         fontFamily: T.mono,
         fontSize: 11,
         fontWeight: 600,
@@ -689,7 +689,7 @@ export function FrequencySegment({
                 fontVariantNumeric: "tabular-nums",
                 cursor: "pointer",
                 background: on ? T.lime : T.panel3,
-                color: on ? T.onLime : T.fg2,
+                color: on ? T.onHandling : T.fg2,
               }}
             >
               {n}
@@ -745,14 +745,14 @@ export function CoachCard({
             top: 10,
             right: 10,
             borderRadius: 4,
-            background: T.lime,
+            background: T.handling,
             padding: "2px 6px",
             fontFamily: T.mono,
             fontSize: 8,
             fontWeight: 700,
             letterSpacing: "0.1em",
             textTransform: "uppercase",
-            color: T.onLime,
+            color: T.onHandling,
           }}
         >
           Valgt
@@ -772,7 +772,7 @@ export function CoachCard({
           fontFamily: T.mono,
           fontSize: 13,
           fontWeight: 700,
-          color: selected ? T.onLime : T.fg2,
+          color: selected ? T.onHandling : T.fg2,
         }}
       >
         {initials}
@@ -837,14 +837,14 @@ export function PlanCard({
             top: -9,
             right: 14,
             borderRadius: 4,
-            background: T.lime,
+            background: T.handling,
             padding: "2px 6px",
             fontFamily: T.mono,
             fontSize: 8,
             fontWeight: 700,
             letterSpacing: "0.1em",
             textTransform: "uppercase",
-            color: T.onLime,
+            color: T.onHandling,
           }}
         >
           Anbefalt
@@ -975,7 +975,7 @@ export function AgreeItem({
           borderRadius: 6,
           background: checked ? T.lime : T.panel2,
           border: `1px solid ${checked ? "transparent" : T.borderS}`,
-          color: T.onLime,
+          color: T.onHandling,
         }}
       >
         {checked && <Check size={13} strokeWidth={2.5} aria-hidden />}

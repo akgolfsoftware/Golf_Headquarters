@@ -152,7 +152,7 @@ function Avkryssing({
         }}
       >
         {checked ? (
-          <Icon name="check" size={13} style={{ color: T.onLime }} />
+          <Icon name="check" size={13} style={{ color: T.onHandling }} />
         ) : null}
       </span>
       <span
@@ -185,7 +185,7 @@ function Knapp({
 }) {
   const v: CSSProperties = disabled
     ? { background: T.panel3, color: T.mut, border: `1px solid ${T.border}` }
-    : { background: T.lime, color: T.onLime, border: "none" };
+    : { background: T.handling, color: T.onHandling, border: "none" };
   return (
     <button
       type={type}
@@ -496,8 +496,8 @@ function SuccessKort({ playerName }: { playerName: string }) {
             fontFamily: T.ui,
             fontSize: 13.5,
             fontWeight: 600,
-            background: T.lime,
-            color: T.onLime,
+            background: T.handling,
+            color: T.onHandling,
           }}
         >
           Gå til foreldreportal
@@ -672,7 +672,7 @@ function ConsentKort({
             <Icon
               name="check"
               size={16}
-              style={{ color: kanSende && !isPending ? T.onLime : T.mut }}
+              style={{ color: kanSende && !isPending ? T.onHandling : T.mut }}
             />
           }
         >

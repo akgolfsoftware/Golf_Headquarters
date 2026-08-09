@@ -172,7 +172,7 @@ export function FullforKjedeKlient({
               type="button"
               onClick={() => router.push(`/portal/mal/runder/${roundId}`)}
               className="v2-press v2-focus"
-              style={{ appearance: "none", cursor: "pointer", width: "100%", height: 46, borderRadius: 12, border: "none", background: T.lime, color: T.onLime, fontFamily: T.disp, fontSize: 14.5, fontWeight: 700 }}
+              style={{ appearance: "none", cursor: "pointer", width: "100%", height: 46, borderRadius: 12, border: "none", background: T.handling, color: T.onHandling, fontFamily: T.disp, fontSize: 14.5, fontWeight: 700 }}
             >
               Til runden
             </button>
@@ -293,7 +293,7 @@ export function FullforKjedeKlient({
                 borderRadius: 14,
                 border: "none",
                 background: ferdig && !mismatch ? T.lime : T.panel3,
-                color: ferdig && !mismatch ? T.onLime : T.mut,
+                color: ferdig && !mismatch ? T.onHandling : T.mut,
                 fontFamily: T.disp,
                 fontSize: 15,
                 fontWeight: 700,
@@ -341,7 +341,7 @@ export function FullforKjedeKlient({
       <Kort pad="14px 12px">
         <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
           <div style={{ height: 5, borderRadius: 9999, background: T.panel2, margin: "4px 10px 10px" }}>
-            <div style={{ width: `${Math.round((komplette / alle) * 100)}%`, height: "100%", borderRadius: 9999, background: T.lime }} />
+            <div style={{ width: `${Math.round((komplette / alle) * 100)}%`, height: "100%", borderRadius: 9999, background: T.handling }} />
           </div>
           {hullListe.map((h) => (
             <div key={h.holeNumber} className="v2-row-h" style={{ display: "flex", alignItems: "center", gap: 10, padding: "9px 12px", borderRadius: 10 }}>

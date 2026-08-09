@@ -107,8 +107,8 @@ export function FlyttTilArk({
           const on = dag === d.id;
           return (
             <button key={d.id} onClick={() => setDag(d.id)} style={{ appearance: "none", cursor: "pointer", minHeight: 52, borderRadius: 12, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 2, background: on ? T.lime : T.panel2, border: `1px solid ${on ? "transparent" : T.border}` }}>
-              <span style={{ fontFamily: T.mono, fontSize: 8.5, fontWeight: 700, textTransform: "uppercase", color: on ? T.onLime : T.mut }}>{d.l}</span>
-              <span style={{ fontFamily: T.mono, fontSize: 14, fontWeight: 700, color: on ? T.onLime : T.fg, fontVariantNumeric: "tabular-nums" }}>{d.d}</span>
+              <span style={{ fontFamily: T.mono, fontSize: 8.5, fontWeight: 700, textTransform: "uppercase", color: on ? T.onHandling : T.mut }}>{d.l}</span>
+              <span style={{ fontFamily: T.mono, fontSize: 14, fontWeight: 700, color: on ? T.onHandling : T.fg, fontVariantNumeric: "tabular-nums" }}>{d.d}</span>
             </button>
           );
         })}
@@ -124,12 +124,12 @@ export function FlyttTilArk({
         {tider.map((t) => {
           const on = tid === t;
           return (
-            <button key={t} onClick={() => setTid(t)} style={{ appearance: "none", cursor: "pointer", height: 44, borderRadius: 12, fontFamily: T.mono, fontSize: 13, fontWeight: 700, fontVariantNumeric: "tabular-nums", color: on ? T.onLime : T.fg2, background: on ? T.lime : T.panel2, border: `1px solid ${on ? "transparent" : T.border}` }}>{t}</button>
+            <button key={t} onClick={() => setTid(t)} style={{ appearance: "none", cursor: "pointer", height: 44, borderRadius: 12, fontFamily: T.mono, fontSize: 13, fontWeight: 700, fontVariantNumeric: "tabular-nums", color: on ? T.onHandling : T.fg2, background: on ? T.lime : T.panel2, border: `1px solid ${on ? "transparent" : T.border}` }}>{t}</button>
           );
         })}
       </div>
       <span style={{ fontFamily: T.mono, fontSize: 10, color: T.mut, display: "block", marginTop: 10, fontVariantNumeric: "tabular-nums" }}>{kapasitet}</span>
-      <button onClick={() => onFlytt && onFlytt({ dag, tid })} style={{ appearance: "none", cursor: "pointer", width: "100%", height: 48, marginTop: 14, borderRadius: 9999, background: T.lime, border: "none", color: T.onLime, fontFamily: T.ui, fontSize: 14, fontWeight: 600, display: "flex", alignItems: "center", justifyContent: "center", gap: 8 }}>
+      <button onClick={() => onFlytt && onFlytt({ dag, tid })} style={{ appearance: "none", cursor: "pointer", width: "100%", height: 48, marginTop: 14, borderRadius: 9999, background: T.handling, border: "none", color: T.onHandling, fontFamily: T.ui, fontSize: 14, fontWeight: 600, display: "flex", alignItems: "center", justifyContent: "center", gap: 8 }}>
         <Icon name="arrow-right" size={15} />Flytt hit
       </button>
     </Ark>

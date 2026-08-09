@@ -13,6 +13,7 @@ import { notify } from "@/lib/notifications";
 import { isoDate } from "@/lib/validation/schemas";
 import { logError } from "@/lib/error-tracking";
 import { actorFromRole, cancelOutcome, rescheduleOutcome } from "@/lib/booking/policy";
+import { recordBookingMetric } from "@/lib/booking/metrics";
 
 const CancelBookingSchema = z.object({
   bookingId: z.string().min(1, "Booking-ID er påkrevd"),
@@ -206,6 +207,7 @@ export async function cancelBooking(bookingId: string) {
     });
   }
 
+  await recordBookingMetric("book_cancel");
   revalidatePath("/portal/meg/bookinger");
   revalidatePath("/admin/bookinger");
   revalidatePath("/admin/kalender");

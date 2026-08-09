@@ -189,7 +189,7 @@ export function ServiceFormV2({ initial, triggerLabel, triggerVariant = "cta" }:
             <button
               type="submit"
               disabled={pending}
-              style={{ borderRadius: 9999, border: "1px solid transparent", background: T.lime, padding: "10px 18px", fontSize: 13, fontWeight: 600, color: T.onLime, cursor: "pointer", opacity: pending ? 0.6 : 1 }}
+              style={{ borderRadius: 9999, border: "1px solid transparent", background: T.handling, padding: "10px 18px", fontSize: 13, fontWeight: 600, color: T.onHandling, cursor: "pointer", opacity: pending ? 0.6 : 1 }}
             >
               {pending ? "Lagrer…" : "Lagre"}
             </button>

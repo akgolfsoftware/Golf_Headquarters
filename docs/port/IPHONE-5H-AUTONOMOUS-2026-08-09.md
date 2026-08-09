@@ -61,3 +61,9 @@ SPOR C — Masterbrain / putting        SPOR D — Docs + Design-prompt
 - PuttingSignals mapper harden hvis finnes
 - Handoff-bundle for Mac
 
+
+| +2h | Knapp+CTAPill default → T.handling (Paper monopoly) |
+| +2h | Auth/runde/admin solid lime CTA → handling (18 filer) |
+| +2h | PuttingFocusBanner på Analysere · putting-signals v1 |
+| +2h | book_cancel metric · fasit zip låst 07.08 |
+

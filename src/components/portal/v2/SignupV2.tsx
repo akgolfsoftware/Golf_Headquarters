@@ -182,7 +182,7 @@ function Knapp({
 }) {
   const v: CSSProperties =
     variant === "primary"
-      ? { background: T.lime, color: T.onLime, border: "none" }
+      ? { background: T.handling, color: T.onHandling, border: "none" }
       : { background: T.panel3, color: T.fg, border: `1px solid ${T.borderS}` };
   return (
     <button
@@ -316,7 +316,7 @@ function Samtykke({ checked, onToggle }: { checked: boolean; onToggle: () => voi
           transition: `background ${T.dur}ms ${T.ease}, border-color ${T.dur}ms ${T.ease}`,
         }}
       >
-        {checked && <Icon name="check" size={13} strokeWidth={3} style={{ color: T.onLime }} />}
+        {checked && <Icon name="check" size={13} strokeWidth={3} style={{ color: T.onHandling }} />}
       </button>
       <span>
         Jeg godtar{" "}
@@ -397,13 +397,13 @@ function PakkeVelger({
                     right: 14,
                     borderRadius: 9999,
                     padding: "2px 9px",
-                    background: T.lime,
+                    background: T.handling,
                     fontFamily: T.mono,
                     fontSize: 8.5,
                     fontWeight: 800,
                     letterSpacing: "0.06em",
                     textTransform: "uppercase",
-                    color: T.onLime,
+                    color: T.onHandling,
                   }}
                 >
                   Mest populær
@@ -797,7 +797,7 @@ function SignupKort({
           variant="primary"
           type="submit"
           disabled={laster}
-          icon={<Icon name="arrow-right" size={16} style={{ color: T.onLime }} />}
+          icon={<Icon name="arrow-right" size={16} style={{ color: T.onHandling }} />}
         >
           {laster ? "Oppretter…" : "Opprett konto"}
         </Knapp>

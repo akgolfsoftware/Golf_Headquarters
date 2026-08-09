@@ -56,6 +56,7 @@ import {
   type StatusTone,
 } from "@/components/v2";
 import type { HjelpNokkel } from "@/lib/v2/hjelpetekster";
+import { PuttingFocusBanner } from "@/components/portal/v2/PuttingFocusBanner";
 
 /** Laveste tenkelige brutto 18-hulls golfscore — under dette er tallet en datafeil,
  *  ikke en ekte runde. Brukt til å vise lasteskjelett i stedet for umulige score-tall. */
@@ -936,6 +937,10 @@ export function AnalysereV2({
           </div>
         </header>
       )}
+
+      <div style={{ padding: "12px 16px 0", maxWidth: 720, width: "100%", margin: "0 auto", boxSizing: "border-box" }}>
+        <PuttingFocusBanner />
+      </div>
 
       <div
         style={{

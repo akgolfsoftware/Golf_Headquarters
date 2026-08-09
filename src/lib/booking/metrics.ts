@@ -8,6 +8,7 @@ import { Redis } from "@upstash/redis";
 
 export type BookingMetricEvent =
   | "book_success"
+  | "book_cancel"
   | "book_slot_miss"
   | "book_credit_fail"
   | "book_hold_blocked"
@@ -63,6 +64,7 @@ export async function readBookingMetrics(
 ): Promise<Partial<Record<BookingMetricEvent, number>>> {
   const events: BookingMetricEvent[] = [
     "book_success",
+    "book_cancel",
     "book_slot_miss",
     "book_credit_fail",
     "book_hold_blocked",
