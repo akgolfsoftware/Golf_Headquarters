@@ -1,10 +1,37 @@
-# PIXEL-PERFECT PLAN — hele produktet (Paper (2) fasit)
+# PIXEL-PERFECT PLAN — hele produktet (Paper-fasit)
 
-**Versjon:** 1.0 · **Dato:** 09.08.2026  
-**Fasit-kilde:** `designsystem/paper/` = *AK Golf HQ — Claude Paper (2).zip*  
+**Versjon:** 1.1 · **Dato:** 09.08.2026 kveld  
+**Fasit-kilde:** `designsystem/paper/` = *AK Golf HQ — Claude Paper (3).zip* — verifisert 09.08.2026 kveld:
+zip (3) er **byte-identisk** med zip (2)-speilet i repoet (diff = 0 filer). Ingen resync nødvendig; all
+gap-analyse og checklist fra zip (2) gjelder uendret.  
 **Natt-autonomi:** [`docs/port/OVERNIGHT-AUTONOMOUS-PLAN.md`](./OVERNIGHT-AUTONOMOUS-PLAN.md)  
 **Status-kilde:** `docs/port/WAVE-STATUS-MASTER.md` · `docs/port/PAPER-ZIP-CHECKLIST.md` · `docs/port/PAPER-ZIP2-SYNC-2026-08-09.md`  
 **Mål når planen er ferdig:** Hver **in-scope** skjerm er **pixel-perfekt** mot fasit (eller mal-fasit), signert av Anders, på `main`/prod.
+
+---
+
+## STATUS-SNAPSHOT (09.08.2026 kveld — etter overnight batch A–G)
+
+| Fase | Status | Gjenstår |
+|---|---|---|
+| **PP-0 Foundation** | 0.1–0.6 **DONE** · 0.7 se merknad under | Prod-verify (mot `akgolf-hq.vercel.app`, se Acuity-merknad) |
+| **PP-1 PlayerHQ kjerne** | Alle 7 **READY_SIGN** (kode ferdig) | **Anders D12 sign-off** — første prioritet |
+| **PP-2 AgencyOS kjerne** | Slugs + chrome PORT; Konsoll READY_SIGN-polish | Full pixel-pass 2.2–2.9 + sign-off |
+| **PP-3 Live/WB/Forelder** | Slugs + chrome PORT (Wave C/D/E) | Pixel-pass + sign-off |
+| **PP-4 W1 / PP-5 W2** | Slugs lagt (batch C–E delvis) | Strukturell pixel + F2.6-primitiver + sign-off |
+| **PP-6–PP-8 mal-fabrikk W3–W5** | Slug-stubber + VARIANTS-filer opprettet | Mal-pixel + variant-pass |
+| **PP-9 W6 / PP-10 regression** | Ikke startet | Alt |
+| **Checklist totalt** | **2 `[x]` · 53 `[~]` · 36 `[ ]`** (av 79 IN + variant-rader) | 53 sign-off + 36 bygg |
+
+**Kritisk vei til 100 %:** (1) Anders signerer PP-1 (7 skjermer) → (2) pixel-pass + sign-off PP-2/PP-3
+→ (3) de 36 `[ ]` bygges fase for fase → (4) mal-varianter W3–W5 → (5) PP-10 regression + COMPLETE.
+Flaskehalsen er nå **sign-off-kapasitet (Anders), ikke agent-kode** — skjermbilder side-om-side må
+produseres per skjerm og sendes i samtalen (mobil 390 først, lys + mørk).
+
+**Acuity-merknad (09.08.2026):** `akgolf.no` og `www.akgolf.no` videresender **midlertidig** til
+Acuity-bookingen (PR #384) til plattformen er testet. All prod-verifisering i PP-0.7 og PP-10.5
+gjøres derfor mot **`akgolf-hq.vercel.app`**. Før planen kan merkes COMPLETE må redirecten
+fjernes fra `vercel.json` (egen liten PR) — lagt inn som PP-10.7 under.
 
 ---
 
@@ -343,8 +370,9 @@ Implementer **6 maler** pixel-perfekt, deretter variant-pass:
 | PP-10.2 | Full runde: alle `[x]` i `PAPER-ZIP-CHECKLIST.md` |
 | PP-10.3 | Playwright smoke: alle P0-ruter 200 + ingen console error |
 | PP-10.4 | Visuell stikkprøve 10 tilfeldige variant-ruter |
-| PP-10.5 | Prod deploy + hard refresh verifisering |
+| PP-10.5 | Prod deploy + hard refresh verifisering (mot `akgolf-hq.vercel.app` så lenge Acuity-redirecten står) |
 | PP-10.6 | Merk planen **COMPLETE** i WAVE-STATUS-MASTER + dato |
+| PP-10.7 | Fjern Acuity-redirecten fra `vercel.json` (PR #384 reverseres) + verifiser `akgolf.no` = plattformen | 
 
 ---
 
@@ -472,7 +500,7 @@ Alle må være sanne:
 2. W3/W4/W5 variant-filer: **100 % ruter `[x]`** (ikke redirects)  
 3. PP-0 gates grønne  
 4. Playwright smoke P0+P1 grønn  
-5. `main` + prod (`akgolf.no`) på samme commit  
+5. `main` + prod på samme commit, **Acuity-redirecten fjernet** (PP-10.7) og `akgolf.no` viser plattformen  
 6. Anders skriftlig: «Pixel-plan COMPLETE» (dato)  
 7. OUT-lister (stats, drift) dokumentert som **ikke** del av complete  
 
@@ -480,15 +508,15 @@ Når 1–7 er sanne: **alle in-scope skjermer er pixel-perfekt slik de skal vær
 
 ---
 
-## 11. Første 72 timer (start nå)
+## 11. Neste 72 timer (oppdatert 09.08 kveld — Foundation og batch A er ferdig kode)
 
 | Time | Handling |
 |---|---|
-| 0–2 | Push/merge Paper (2) sync + denne planen til `main` |
-| 2–8 | PP-0.2–0.5 (shell + CTA + logo + lint) |
-| 8–24 | PP-1.1 Hjem/chat pixel (mobil først) |
-| 24–48 | PP-1.2 Plan + PP-1.4 Meg |
-| 48–72 | PP-1.3 Analyse + PP-1.5 Booking hub — Anders sign-off runde 1 |
+| 0–4 | **Sign-off-runde PP-1:** agent produserer side-om-side-skjermbilder (app vs fasit, m390 + d1280) for alle 7 PP-1-skjermer og sender i samtalen; Anders krysser `[x]` eller gir diff-liste |
+| 4–12 | Rett diffene fra runde 1; start pixel-pass PP-2.2–2.4 (Innboks/Spillere/Kalender) |
+| 12–24 | Sign-off-runde PP-2 (samme format) |
+| 24–48 | PP-3 pixel-pass (Live/Workbench/Forelder) + sign-off-runde |
+| 48–72 | Start de 36 `[ ]`: PP-4 W1-skjermene først, deretter F2.6-primitiver for PP-5 |
 
 ---
 
