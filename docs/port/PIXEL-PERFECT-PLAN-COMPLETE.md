@@ -2,6 +2,7 @@
 
 **Versjon:** 1.0 · **Dato:** 09.08.2026  
 **Fasit-kilde:** `designsystem/paper/` = *AK Golf HQ — Claude Paper (2).zip*  
+**Natt-autonomi:** [`docs/port/OVERNIGHT-AUTONOMOUS-PLAN.md`](./OVERNIGHT-AUTONOMOUS-PLAN.md)  
 **Status-kilde:** `docs/port/WAVE-STATUS-MASTER.md` · `docs/port/PAPER-ZIP-CHECKLIST.md` · `docs/port/PAPER-ZIP2-SYNC-2026-08-09.md`  
 **Mål når planen er ferdig:** Hver **in-scope** skjerm er **pixel-perfekt** mot fasit (eller mal-fasit), signert av Anders, på `main`/prod.
 
