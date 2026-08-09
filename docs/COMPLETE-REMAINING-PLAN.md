@@ -299,3 +299,10 @@ Se **`docs/port/AUTONOMOUS-4H-PAPER-2026-08-08.md`**.
 - Prompt: `docs/port/CLAUDE-DESIGN-PROMPT-FULL-PROSJEKT.md`.
 - Plan: `docs/port/IPHONE-5H-AUTONOMOUS-2026-08-09.md`.
 - fase2 i zip = W1 only; **W2–W6 mangler** → Claude Design.
+
+## 14. iPhone 5h COMPLETE (2026-08-09)
+
+Autonom batch ferdig i sandbox (`handoff/iphone-5h-2026-08-09`, 6 commits).  
+**Krever Mac APPLY** for main/prod. Se `docs/port/IPHONE-5H-COMPLETE-2026-08-09.md`.
+
+Inkludert: P2 booking, handling-CTA monopoly, putting brain data+UI, multi-facility, FASIT empty, Design-prompt, Paper zip speil.
