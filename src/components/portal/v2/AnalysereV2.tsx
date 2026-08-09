@@ -1,6 +1,8 @@
 "use client";
 
 /**
+ * PP-1.3 paper slug playerhq-analyse.
+ *
  * PlayerHQ Analysere — v2 Presis + opplevelse B-pakke (form + nedbrytning).
  * Komponert fra ui_kits/v2/phq-analysere.jsx, EKTE data fra loadMinGolf +
  * loadAnalyticsWorkbenchData. Kun v2-komponenter; ingen rå hex (kun T.*).
@@ -899,7 +901,7 @@ export function AnalysereV2({
 
   return (
     <div
-      data-paper-portal-analysere data-paper-wave-a="analyse"
+      data-paper-portal-analysere data-paper-wave-a="analyse" data-paper-slug="playerhq-analyse"
       style={{ display: "flex", flexDirection: "column", minHeight: "100%", background: T.bg }}
     >
       {/* Paper .topp */}

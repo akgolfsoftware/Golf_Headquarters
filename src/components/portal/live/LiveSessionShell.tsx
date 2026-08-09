@@ -42,7 +42,7 @@ export function LiveSessionShell({
       data-od-id={odId}
       className="fixed inset-0 z-50 flex flex-col overflow-hidden"
       style={{ background: T.bg, color: T.fg, isolation: "isolate", fontFamily: T.ui }}
-    >
+     data-paper-slug="playerhq-live">
       <header
         data-paper-topp
         style={{

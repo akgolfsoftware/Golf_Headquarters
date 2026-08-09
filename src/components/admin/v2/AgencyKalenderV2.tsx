@@ -94,8 +94,7 @@ function CoachLegend({
         alignItems: "center",
         padding: "2px 0 4px",
       }}
-      aria-label="Coach-farger"
-    >
+      aria-label="Coach-farger">
       <Caps size={9} style={{ marginRight: 2 }}>
         Coacher
       </Caps>
@@ -1079,7 +1078,7 @@ export function AgencyKalenderV2({ data }: { data: KalenderData }) {
   }
 
   return (
-    <PaperPage odId="agencyos-kalender"><div data-paper-agencyos-kalender data-paper-wave-b="kalender" data-od-id="agency-kalender" style={{ display: "contents" }}><PaperTopp tittel="Kalender" sub="AgencyOS · uke, bookinger og anlegg" /><PaperKropp maxWidth={1200}>
+    <PaperPage odId="agencyos-kalender"><div data-paper-agencyos-kalender data-paper-slug="agencyos-kalender" data-paper-wave-b="kalender" data-od-id="agency-kalender" style={{ display: "contents" }}><PaperTopp tittel="Kalender" sub="AgencyOS · uke, bookinger og anlegg" /><PaperKropp maxWidth={1200}>
       {hode}
       {primaerCta}
       {kpi}

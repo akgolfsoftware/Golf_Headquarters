@@ -24,19 +24,19 @@
 - [~] `agencyos-okonomi.html`
 - [~] `agencyos-spillere-mobil.html`
 - [~] `agencyos-spillere.html`
-- [~] `booking.html`
+- [~] `booking.html` — PP-1.7 READY_SIGN
 - [ ] `fangstsheet.html`
 - [~] `foreldreportal.html`
 - [~] `innlogging.html`
-- [~] `playerhq-analyse.html`
-- [~] `playerhq-booking.html`
+- [~] `playerhq-analyse.html` — PP-1.3 READY_SIGN
+- [~] `playerhq-booking.html` — PP-1.5 READY_SIGN
 - [~] `playerhq-chat-desktop.html` — PP-1.1 loop/ink/mic (klar sign-off)
 - [~] `playerhq-chat-mobil.html` — PP-1.1 loop/ink/mic (klar sign-off)
 - [~] `playerhq-live-brief.html`
 - [~] `playerhq-live-okt.html`
 - [~] `playerhq-live-summary.html`
 - [~] `playerhq-meg.html`
-- [~] `playerhq-plan.html`
+- [~] `playerhq-plan.html` — PP-1.2 READY_SIGN
 - [~] `playerhq-runde-live.html`
 - [~] `playerhq-runde-logg.html`
 - [~] `playerhq-test-gjennomfor.html`

@@ -166,7 +166,7 @@ export function MarkedBookingV2({
     return (
       <MRamme mobile={mobile} aktiv="booking" cta={{ label: "Book en samtale", href: "/kontakt" }} waveId="marked-booking">
         <Seksjon mobile={mobile}>
-          <div data-paper-marketing-booking style={{ textAlign: "center", maxWidth: 620, margin: "0 auto" }}>
+          <div data-paper-marketing-booking data-paper-slug="booking" style={{ textAlign: "center", maxWidth: 620, margin: "0 auto" }}>
             <Eyebrow>Booking</Eyebrow>
             <HeroT mobile={mobile} em="økt">
               Book en

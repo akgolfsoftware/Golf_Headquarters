@@ -3,6 +3,7 @@
 /**
  * PlayerHQ Plan — Paper-port PR-B (avvik A2).
  * Fasit: designsystem/paper/fase1/playerhq-plan.html
+ * PP-1.2 (2026-08-09): slug, dokk gradient, clay 56 enTing.
  *
  * A2: 720px-kolonne, én aksenthandling (dokk «Start [økta] · tid»),
  * ingen KPI-tankestrek-helter, Workbench kun som sekundær (ghost).
@@ -116,7 +117,7 @@ export function PlanV2({ data, depthMode = "simple" }: { data: DashboardData; de
 
   return (
     <div
-      data-paper-portal-plan data-paper-wave-a="plan" data-od-id="plan-root"
+      data-paper-portal-plan data-paper-wave-a="plan" data-paper-slug="playerhq-plan" data-od-id="plan-root"
       style={{
         display: "flex",
         flexDirection: "column",
@@ -444,9 +445,10 @@ export function PlanV2({ data, depthMode = "simple" }: { data: DashboardData; de
             position: "sticky",
             bottom: 0,
             borderTop: `1px solid ${T.border}`,
-            background: T.bg,
-            padding: "12px 16px",
-            paddingBottom: "max(12px, env(safe-area-inset-bottom))",
+            /* Paper .dokk — fade over innhold */
+            background: "linear-gradient(180deg, color-mix(in srgb, var(--v2-bg) 0%, transparent) 0%, var(--v2-bg) 28%)",
+            padding: "16px 16px",
+            paddingBottom: "max(16px, env(safe-area-inset-bottom))",
           }}
           data-paper-dokk
         >

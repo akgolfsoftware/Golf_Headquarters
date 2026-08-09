@@ -92,7 +92,8 @@ export function LiveBrief({ data, canStart, blockReason }: LiveBriefProps) {
   );
 
   return (
-    <LiveSessionShell
+    <div data-paper-slug="playerhq-live-brief" style={{display:"contents"}}>
+      <LiveSessionShell
       variant="paper"
       odId="playerhq-live-brief"
       title="Før økta"
@@ -222,5 +223,6 @@ export function LiveBrief({ data, canStart, blockReason }: LiveBriefProps) {
         <div className="h-4" />
       </div>
     </LiveSessionShell>
+    </div>
   );
 }

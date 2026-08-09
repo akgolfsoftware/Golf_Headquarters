@@ -251,7 +251,7 @@ export function TriageV2({ data, feedback = [], ko }: { data: CockpitData; feedb
   const primaerCta = (
     <Link
       href={primaerHref}
-      data-od-id="innboks-primaer" data-paper-en-ting="true"
+      data-od-id="innboks-primaer" data-paper-slug="agencyos-innboks" data-paper-en-ting="true"
       className="v2-press v2-focus"
       style={{
         textDecoration: "none",
@@ -296,7 +296,7 @@ export function TriageV2({ data, feedback = [], ko }: { data: CockpitData; feedb
   if (grupper.length === 0) {
     return (
       <PaperPage odId="agencyos-innboks">
-      <div data-paper-agencyos-innboks data-paper-wave-e="innboks" style={{ display: "contents" }}>
+      <div data-paper-agencyos-innboks data-paper-wave-e="innboks" data-paper-slug="agencyos-innboks" style={{ display: "contents" }}>
         {hode}
         <PaperKropp maxWidth={960}>
         {kpi}
@@ -338,7 +338,7 @@ export function TriageV2({ data, feedback = [], ko }: { data: CockpitData; feedb
 
   return (
     <PaperPage odId="agencyos-innboks">
-    <div data-paper-agencyos-innboks data-paper-wave-e="innboks" style={{ display: "contents" }}>
+    <div data-paper-agencyos-innboks data-paper-wave-e="innboks" data-paper-slug="agencyos-innboks" style={{ display: "contents" }}>
       {hode}
       <PaperKropp maxWidth={960}>
       {primaerCta}

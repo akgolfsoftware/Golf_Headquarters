@@ -128,7 +128,7 @@ function Knapp({
 }) {
   const v: CSSProperties =
     variant === "primary"
-      ? { background: T.cta, color: T.onCta, border: "none" }
+      ? { background: T.cta, color: T.onCta, border: "none", minHeight: 48 }
       : { background: T.panel3, color: T.fg, border: `1px solid ${T.borderS}` };
   return (
     <button
@@ -527,6 +527,7 @@ export function LoginV2 /* wave A fasit: innlogging.html */() {
     <div
       data-paper-innlogging
       data-paper-wave-a="login"
+      data-paper-slug="innlogging"
       data-od-id="innlogging"
       style={{
         minHeight: "100vh",

@@ -74,7 +74,7 @@ function ConfirmOverlay({ show, onConfirm, onCancel }: ConfirmOverlayProps) {
     <div
       className="absolute inset-0 z-50 flex items-center justify-center p-5"
       style={{ background: T.farge.svartA55, backdropFilter: "blur(4px)" }}
-    >
+     data-paper-slug="playerhq-live-okt">
       <div
         className="w-full max-w-[320px] rounded-[20px] p-6"
         style={{ background: T.panel, border: `1px solid ${T.border}`, color: T.fg }}

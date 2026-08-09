@@ -68,7 +68,7 @@ export function BookingHubV2({ data }: { data: BookingHubV2Data }) {
 
   return (
     <PaperPage odId="playerhq-booking">
-      <div data-paper-portal-booking style={{ display: "contents" }}>
+      <div data-paper-portal-booking data-paper-slug="playerhq-booking" style={{ display: "contents" }}>
       <PaperTopp tittel="Book time" sub={coaches[0]?.name ? `med ${coaches[0].name}` : "AK Golf Academy"} />
       <PaperKropp>
 
@@ -112,7 +112,7 @@ export function BookingHubV2({ data }: { data: BookingHubV2Data }) {
               alignItems: "center",
               justifyContent: "center",
               gap: 8,
-              minHeight: 48,
+              minHeight: 56,
               width: "100%",
               borderRadius: 12,
               background: T.handling,

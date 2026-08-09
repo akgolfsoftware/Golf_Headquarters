@@ -39,7 +39,7 @@ function Verdict({ pct }: { pct: number }) {
         border: `1px solid ${onPlan ? T.border : T.down}`,
         background: onPlan ? T.handlingSoft : T.panel2,
       }}
-    >
+     data-paper-slug="playerhq-live-summary">
       <span
         className="grid h-7 w-7 flex-shrink-0 place-items-center rounded-full"
         style={{

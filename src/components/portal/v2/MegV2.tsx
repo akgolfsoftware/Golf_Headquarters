@@ -323,7 +323,7 @@ export function MegV2({ data }: { data: MegData }) {
 
   return (
     <PaperPage odId="playerhq-meg">
-      <div data-paper-portal-meg style={{ display: "contents" }}>
+      <div data-paper-portal-meg data-paper-slug="playerhq-meg" style={{ display: "contents" }}>
       <PaperTopp
         tittel={navn}
         sub={subLinje}
@@ -411,12 +411,12 @@ export function MegV2({ data }: { data: MegData }) {
               });
             }}
             className="v2-press v2-focus"
-            data-od-id="meg-en-ting-na-lyd"
+            data-od-id="meg-en-ting-na-lyd" data-paper-en-ting="true"
             style={{
               marginTop: 4,
-              minHeight: 48,
+              minHeight: 56,
               width: "100%",
-              borderRadius: T.rCard,
+              borderRadius: 12,
               border: "none",
               background: T.handling,
               color: T.onHandling,
