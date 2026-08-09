@@ -1,3 +1,9 @@
+> **STYRENDE PLAN (pixel-perfekt, 09.08.2026):**  
+> [`docs/port/PIXEL-PERFECT-PLAN-COMPLETE.md`](./PIXEL-PERFECT-PLAN-COMPLETE.md)  
+> Wave A–I under = **chrome-port historikk**, ikke pixel DONE.  
+> Pixel-faser heter **PP-0 … PP-10**.
+
+---
 # Paper wave status — master (2026-08-09)
 
 **Branch (sandbox):** `handoff/iphone-5h-2026-08-09` (commits A–D + finpuss)  

@@ -1,6 +1,7 @@
 # Paper zip checklist — kryss når DONE (pixel m390 + d1280)
 
 > Oppdatert: **2026-08-09** etter sync av **Claude Paper (2).zip** → `designsystem/paper/`  
+> **Styrende plan:** `docs/port/PIXEL-PERFECT-PLAN-COMPLETE.md` (PP-0…PP-10 → 79/79 `[x]`)  
 > Gap-rapport: `PAPER-ZIP2-SYNC-2026-08-09.md`  
 > Skjermer **uten** fasit: `PAPER-PATTERN-CHECKLIST.md`
 
