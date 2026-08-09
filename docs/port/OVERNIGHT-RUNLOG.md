@@ -34,3 +34,13 @@
 - 21 additional eier-komponenter med data-paper-slug (W3/W4 + drills/fys/spillerprofil)
 - PP-W3/W4/W5-VARIANTS.md stubs
 - next: structural pixel on high-traffic remaining + mega bundle
+
+## 21:55 mid-night checkpoint
+- commits ahead of origin/main: 6+
+- batch A READY_SIGN complete
+- C–G slug coverage expanded (~50+ files)
+- auth V2 slugs
+- CTA forest→cta sweep
+- bundle: overnight-ALL.bundle
+- NOT NIGHT_COMPLETE: still ~35 checklist [ ] and pixel finpuss
+- next tick: deeper fasit CSS match on high-traffic remaining [ ]
