@@ -613,7 +613,7 @@ function DetaljPanel({ o, mobile, onLukk }: { o: DrillDetail; mobile?: boolean; 
 
         {/* B: én primær handling */}
         <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-          <button type="button" className="v2-press v2-focus" onClick={leggIOkt} data-od-id="drills-legg-i-okt" style={{
+          <button type="button" className="v2-press v2-focus" onClick={leggIOkt} data-od-id="drills-legg-i-okt" data-paper-slug="playerhq-drills" style={{
             display: "flex",
             alignItems: "center",
             justifyContent: "center",

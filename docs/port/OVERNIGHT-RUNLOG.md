@@ -29,3 +29,8 @@
 - live: brief/active/summary/shell
 - putte: success green via up mix; cta migrate partial
 - next: more pixel structure on W3 maler + remaining [ ] fasit
+
+## 21:50 batch F–G slug wave
+- 21 additional eier-komponenter med data-paper-slug (W3/W4 + drills/fys/spillerprofil)
+- PP-W3/W4/W5-VARIANTS.md stubs
+- next: structural pixel on high-traffic remaining + mega bundle

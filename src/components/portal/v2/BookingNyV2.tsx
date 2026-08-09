@@ -222,7 +222,7 @@ function OppsumRad({ label, verdi, mono, last }: { label: React.ReactNode; verdi
 export function BruktOppV2({ resetTekst }: { resetTekst: string | null }) {
   const mobile = useMobile();
   return (
-    <div data-paper-portal-booking-ny style={{ width: "100%", maxWidth: 680, margin: "0 auto", display: "flex", flexDirection: "column", gap: T.gap }}>
+    <div data-paper-portal-booking-ny data-paper-slug="playerhq-booking-ny" style={{ width: "100%", maxWidth: 680, margin: "0 auto", display: "flex", flexDirection: "column", gap: T.gap }}>
       <div>
         <Caps>PlayerHQ · Book ny time</Caps>
         <div style={{ marginTop: 10 }}>

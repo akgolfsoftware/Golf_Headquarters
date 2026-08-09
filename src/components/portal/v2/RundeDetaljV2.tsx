@@ -175,7 +175,7 @@ export function RundeDetaljV2({ data }: { data: RundeDetaljData }) {
     Object.values(g).some((v) => v != null) && data.sgTotal != null;
 
   return (
-    <div data-paper-portal-runde-detalj style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
+    <div data-paper-portal-runde-detalj data-paper-slug="playerhq-runde-detalj" style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
       {/* Tilbake */}
       <Link href="/portal/mal/runder" style={{ textDecoration: "none", alignSelf: "flex-start" }}>
         <MikroMeta icon="arrow-left">Alle runder</MikroMeta>

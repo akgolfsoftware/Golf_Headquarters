@@ -240,7 +240,7 @@ export function MegAbonnementV2({ data }: { data: MegAbonnementData }) {
   if (kanAvbestille) handlinger.push({ href: "/portal/meg/abonnement/avbestill", ic: "x-circle", l: "Avbestill abonnement", sub: "Tilgang ut perioden, ingen nye trekk" });
 
   return (
-    <div data-paper-wave-g="megabonnement" data-paper-portal-meg-abonnement style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
+    <div data-paper-wave-g="megabonnement" data-paper-slug="playerhq-abonnement" data-paper-portal-meg-abonnement style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
       <div>
         <div data-paper-pattern-topp>
           <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>Abonnement</h1>

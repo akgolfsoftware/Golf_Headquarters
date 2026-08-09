@@ -54,7 +54,7 @@ const UNDERSIDER = [
 
 export function TalentV2({ data }: { data: TalentData }) {
   return (
-    <div data-paper-wave-g="talent" data-paper-portal-talent style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
+    <div data-paper-wave-g="talent" data-paper-slug="playerhq-talent" data-paper-portal-talent style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
       {/* Hode */}
       <div>
         <div data-paper-pattern-topp>

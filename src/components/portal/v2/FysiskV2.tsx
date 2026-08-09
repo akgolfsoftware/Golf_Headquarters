@@ -46,7 +46,7 @@ export function FysiskV2({ data }: { data: FysiskViewData }) {
 
   if (!okt) {
     return (
-      <div data-paper-portal-fysisk data-paper-wave-f="fys" data-od-id="playerhq-fys-plan" style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
+      <div data-paper-portal-fysisk data-paper-wave-f="fys" data-od-id="playerhq-fys-plan" data-paper-slug="playerhq-fys-plan" style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
         <div>
           <Caps>Fysisk trening</Caps>
           <div style={{ marginTop: 10 }}>

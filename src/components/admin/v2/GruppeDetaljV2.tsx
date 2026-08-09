@@ -102,7 +102,7 @@ export function GruppeDetaljV2({
   ekstra?: React.ReactNode;
 }) {
   return (
-    <div data-paper-wave-h="gruppedetalj" data-paper-pattern  style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+    <div data-paper-wave-h="gruppedetalj" data-paper-slug="agencyos-gruppe-detalj" data-paper-pattern  style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
       <Link href="/admin/grupper" style={{ textDecoration: "none", alignSelf: "flex-start" }}>
         <MikroMeta icon="arrow-left">Grupper</MikroMeta>
       </Link>

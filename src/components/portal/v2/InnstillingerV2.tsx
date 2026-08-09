@@ -328,7 +328,7 @@ export function InnstillingerV2({ data }: { data: InnstillingerData }) {
       : "299 kr/mnd";
 
   return (
-    <div data-paper-portal-innstillinger data-paper-wave-f="innstillinger-player" data-od-id="playerhq-innstillinger" style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
+    <div data-paper-portal-innstillinger data-paper-wave-f="innstillinger-player" data-od-id="playerhq-innstillinger" data-paper-slug="playerhq-innstillinger" style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
       <div>
         <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>Innstillinger</h1>
         <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>Konto, varsler og preferanser</span>

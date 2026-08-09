@@ -31,7 +31,7 @@ export function AkStigenV2({ grupper = [] }: { grupper?: AkStigenGruppe[] }) {
     <div
       data-paper-agencyos-ak-stigen
       data-paper-wave-f="ak-stigen"
-      data-od-id="agencyos-ak-stigen"
+      data-od-id="agencyos-ak-stigen" data-paper-slug="agencyos-ak-stigen"
       style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 960, margin: "0 auto", width: "100%" }}
     >
       <div>

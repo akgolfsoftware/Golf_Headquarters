@@ -92,7 +92,7 @@ export function AdminTurneringerV2({ data }: { data: AdminTurneringerV2Data }) {
   const hode = (
     <div style={{ display: "flex", flexWrap: "wrap", alignItems: "flex-end", justifyContent: "space-between", gap: 12 }}>
       <div>
-        <div data-paper-pattern-topp>
+        <div data-paper-pattern-topp data-paper-slug="agencyos-turneringer">
           <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>Turneringer</h1>
           <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>AgencyOS</span>
         </div>

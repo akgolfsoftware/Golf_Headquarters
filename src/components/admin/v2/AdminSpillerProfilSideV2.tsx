@@ -153,7 +153,7 @@ function ProgressRing({ pct }: { pct: number | null }) {
 
 export function AdminSpillerProfilSideV2({ data }: { data: AdminSpillerProfilSideV2Data }) {
   return (
-    <div data-paper-wave-e="spillerprofil-side" data-od-id="agencyos-spillerprofil-side" style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 960, margin: "0 auto", width: "100%" }}>
+    <div data-paper-wave-e="spillerprofil-side" data-od-id="agencyos-spillerprofil-side" data-paper-slug="spillerprofil" style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 960, margin: "0 auto", width: "100%" }}>
       <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
         <TilbakeLenke href={`/admin/spillere/${data.spillerId}`}>{`Tilbake til ${data.navn}`}</TilbakeLenke>
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>

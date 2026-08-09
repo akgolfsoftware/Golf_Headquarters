@@ -89,7 +89,7 @@ export function TurneringDetaljV2({
 }) {
   const visRundeKort = turneringsrunde != null || kanStarteRunde;
   return (
-    <div data-paper-wave-f="turnering-detalj" style={{ maxWidth: 720, width: "100%", margin: "0 auto", display: "flex", flexDirection: "column", gap: T.gap }}>
+    <div data-paper-wave-f="turnering-detalj" data-paper-slug="playerhq-turnering-detalj" style={{ maxWidth: 720, width: "100%", margin: "0 auto", display: "flex", flexDirection: "column", gap: T.gap }}>
       {/* Header */}
       <Kort tint>
         <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 12 }}>

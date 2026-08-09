@@ -119,7 +119,7 @@ export function CoachHubV2({ data }: { data: CoachHubData }) {
   const timeline = kommende.slice(0, 4);
 
   return (
-    <div data-paper-wave-g="coachhub" data-paper-portal-coach-hub style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
+    <div data-paper-wave-g="coachhub" data-paper-slug="playerhq-coach-hub" data-paper-portal-coach-hub style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
       {/* Hode + B: status først */}
       <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
         <div>
