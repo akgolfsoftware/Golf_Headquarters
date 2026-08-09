@@ -30,6 +30,7 @@ import {
   User as UserIcon,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { isValidCoachFacilityPair } from "@/lib/booking/facility-scope";
 import { createSessionFromCalendar } from "@/app/admin/(legacy)/calendar/actions";
 
 type Spiller = { id: string; name: string; email: string; homeClub: string | null };
@@ -44,7 +45,7 @@ type Tjeneste = {
 };
 type Fasilitet = { id: string; name: string; capacity?: number };
 type Lokasjon = { id: string; name: string; address: string; facilities: Fasilitet[] };
-type Coach = { id: string; name: string };
+type Coach = { id: string; name: string; facilityIds?: string[] };
 
 export type NyBookingWizardProps = {
   spillere: Spiller[];
