@@ -100,8 +100,8 @@ export function AdminDrillsV2({ data }: { data: AdminDrillsV2Data }) {
       {data.drills.length === 0 ? (
         <TomTilstand
           icon="search"
-          title="Ingen drills i denne kategorien ennå"
-          sub="Bytt kategori, fjern søk, eller opprett en ny drill."
+          title="Drill-banken er tom her"
+          sub="Ingen validerte FASIT-drills i denne kategorien. Vi finner ikke opp øvelser — legg til godkjente drills, eller bytt filter."
         />
       ) : (
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))", gap: 12 }}>

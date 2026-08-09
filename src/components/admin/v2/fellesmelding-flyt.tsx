@@ -266,8 +266,8 @@ function FellesmeldingModal({
                 fontFamily: T.ui,
                 fontSize: 12.5,
                 fontWeight: 700,
-                color: T.onLime,
-                background: T.lime,
+                color: T.onHandling,
+                background: T.handling,
                 border: "none",
                 opacity: pending ? 0.6 : 1,
               }}
@@ -287,7 +287,7 @@ function FellesmeldingModal({
               fontFamily: T.ui,
               fontSize: 12.5,
               fontWeight: delvis ? 600 : 700,
-              color: delvis ? T.fg : T.onLime,
+              color: delvis ? T.fg : T.onHandling,
               background: delvis ? T.panel3 : T.lime,
               border: delvis ? `1px solid ${T.borderS}` : "none",
             }}
@@ -516,8 +516,8 @@ function FellesmeldingModal({
                   fontFamily: T.ui,
                   fontSize: 12.5,
                   fontWeight: 700,
-                  color: T.onLime,
-                  background: T.lime,
+                  color: T.onHandling,
+                  background: T.handling,
                   border: "none",
                   opacity: !kanSende || pending ? 0.6 : 1,
                 }}
@@ -593,7 +593,7 @@ function Avkryss({ av }: { av: boolean }) {
         border: av ? "1px solid transparent" : `1.5px solid ${T.borderS}`,
       }}
     >
-      {av && <Icon name="check" size={13} style={{ color: T.onLime }} />}
+      {av && <Icon name="check" size={13} style={{ color: T.onHandling }} />}
     </span>
   );
 }

@@ -75,11 +75,11 @@ export function AdminCaddieProaktivV2({ forslag }: { forslag: ProaktivtForslag[]
                   )}`}
                   className="v2-press v2-focus"
                   style={{
-                    display: "inline-flex", alignItems: "center", gap: 5, borderRadius: 9999, background: T.lime, padding: "5px 11px",
-                    fontFamily: T.mono, fontSize: 9.5, fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.05em", color: T.onLime, textDecoration: "none",
+                    display: "inline-flex", alignItems: "center", gap: 5, borderRadius: 9999, background: T.handling, padding: "5px 11px",
+                    fontFamily: T.mono, fontSize: 9.5, fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.05em", color: T.onHandling, textDecoration: "none",
                   }}
                 >
-                  Åpne i samtale <Icon name="arrow-right" size={11} style={{ color: T.onLime }} />
+                  Åpne i samtale <Icon name="arrow-right" size={11} style={{ color: T.onHandling }} />
                 </Link>
                 <AvvisKnapp id={f.id} />
               </div>

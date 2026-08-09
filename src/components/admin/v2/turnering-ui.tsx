@@ -142,7 +142,7 @@ export function ModalFooter({
         onClick={submitForm ? undefined : onLagre}
         disabled={busy || lagreDisabled}
         className="v2-press v2-focus"
-        style={{ appearance: "none", cursor: busy || lagreDisabled ? "default" : "pointer", borderRadius: 9999, padding: "9px 18px", fontFamily: T.ui, fontSize: 12.5, fontWeight: 700, color: T.onLime, background: T.lime, border: "none", opacity: busy || lagreDisabled ? 0.6 : 1 }}
+        style={{ appearance: "none", cursor: busy || lagreDisabled ? "default" : "pointer", borderRadius: 9999, padding: "9px 18px", fontFamily: T.ui, fontSize: 12.5, fontWeight: 700, color: T.onHandling, background: T.handling, border: "none", opacity: busy || lagreDisabled ? 0.6 : 1 }}
       >
         {busy ? "Lagrer…" : lagreTekst}
       </button>

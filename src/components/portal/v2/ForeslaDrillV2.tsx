@@ -129,8 +129,8 @@ export function ForeslaDrillV2({ data }: { data: ForeslaDrillV2Data }) {
         <Kort>
           <TomTilstand
             icon="target"
-            title="Ingen forslag ennå"
-            sub="Ta noen tester — da foreslår vi drills der du har mest å hente."
+            title="Ingen drill-forslag"
+            sub="Enten mangler testdata, eller øvelsesbanken er tom (ingen oppspinnede drills). Ta tester når banken har godkjente øvelser."
           />
           <div style={{ marginTop: 12 }}>
             <Link href="/portal/tren/tester" style={{ textDecoration: "none", display: "block" }}>

@@ -188,7 +188,7 @@ export function AdminStatsOverviewV2({ data }: { data: AdminStatsOverviewV2Data 
             </div>
             <Link
               href="/admin/stats/moderering"
-              style={{ display: "inline-flex", flex: "none", alignItems: "center", gap: 8, borderRadius: 9999, background: T.lime, padding: "10px 20px", fontFamily: T.ui, fontSize: 13, fontWeight: 600, color: T.onLime, textDecoration: "none" }}
+              style={{ display: "inline-flex", flex: "none", alignItems: "center", gap: 8, borderRadius: 9999, background: T.handling, padding: "10px 20px", fontFamily: T.ui, fontSize: 13, fontWeight: 600, color: T.onHandling, textDecoration: "none" }}
             >
               Til moderering
               <Icon name="arrow-right" size={14} />

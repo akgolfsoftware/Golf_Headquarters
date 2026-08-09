@@ -132,7 +132,18 @@ export function NyBookingWizard({
     ?? tjenester.find((t) => t.id === tjenesteId)
     ?? null;
   const valgtLokasjon = lokasjoner.find((l) => l.id === lokasjonId) ?? null;
-  const valgtFasilitet = valgtLokasjon?.facilities.find((f) => f.id === fasilitetId) ?? null;
+  const coachForFac =
+    coacher.find((c) => c.id === coachFilterId) ??
+    (valgtTjeneste?.coachUserId
+      ? coacher.find((c) => c.id === valgtTjeneste.coachUserId)
+      : undefined);
+  const visibleFacilities = useMemo(() => {
+    const all = valgtLokasjon?.facilities ?? [];
+    const ids = coachForFac?.facilityIds;
+    if (!ids || ids.length === 0) return all;
+    return all.filter((f) => ids.includes(f.id));
+  }, [valgtLokasjon, coachForFac?.facilityIds]);
+  const valgtFasilitet = visibleFacilities.find((f) => f.id === fasilitetId) ?? null;
   const valgtCoachNavn =
     valgtTjeneste?.coachName
     ?? (coachFilterId ? coacher.find((c) => c.id === coachFilterId)?.name : null)
@@ -177,6 +188,26 @@ export function NyBookingWizard({
     const startAt = new Date(`${dato}T${tid}`);
     if (Number.isNaN(startAt.getTime())) {
       setFeil("Ugyldig dato eller tid.");
+      return;
+    }
+    const coachForPair =
+      coacher.find((c) => c.id === coachFilterId) ??
+      (valgtTjeneste.coachUserId
+        ? coacher.find((c) => c.id === valgtTjeneste.coachUserId)
+        : undefined);
+    if (
+      coachForPair &&
+      fasilitetId &&
+      !isValidCoachFacilityPair(
+        {
+          id: coachForPair.id,
+          name: coachForPair.name,
+          facilityIds: coachForPair.facilityIds ?? [],
+        },
+        fasilitetId,
+      )
+    ) {
+      setFeil("Valgt coach er ikke tilgjengelig på denne fasiliteten.");
       return;
     }
     setFeil(null);

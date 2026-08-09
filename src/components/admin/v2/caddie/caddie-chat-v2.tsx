@@ -114,7 +114,7 @@ export function CaddieChatV2({ conversationId, initialSeed }: { conversationId: 
             className="v2-press v2-focus"
             style={{
               width: 40, height: 40, flex: "none", borderRadius: 9999, display: "inline-flex", alignItems: "center", justifyContent: "center",
-              background: T.lime, color: T.onLime, border: "none", cursor: !input.trim() || isStreaming ? "default" : "pointer",
+              background: T.handling, color: T.onHandling, border: "none", cursor: !input.trim() || isStreaming ? "default" : "pointer",
               opacity: !input.trim() || isStreaming ? 0.5 : 1,
             }}
           >

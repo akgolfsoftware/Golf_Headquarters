@@ -864,8 +864,8 @@ export function OvelsesbankV2({ data }: { data: DrillDetail[] }) {
                 <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
                   <TomTilstand
                     icon="book-open"
-                    title="Ingen øvelser ennå"
-                    sub="Coachen legger inn øvelser — eller lag dine egne."
+                    title="Øvelsesbanken er tom"
+                    sub="Kun godkjente drills vises. Tom bank = ingen forslag — ikke oppspinn."
                   />
                   <Link
                     href="/portal/coach/ovelser/ny"

@@ -81,6 +81,41 @@ export default async function NyBookingPage({
 
   const policy = policyBannerTexts();
 
+  // Multi-facility: coaches → facilityIds via availability locations (empty = all)
+  const coachIds = coacher.map((c) => c.id);
+  const avRows =
+    coachIds.length === 0
+      ? []
+      : await prisma.coachAvailability.findMany({
+          where: { coachId: { in: coachIds }, active: true },
+          select: { coachId: true, locationId: true },
+        });
+  const locByCoach = new Map<string, Set<string>>();
+  for (const row of avRows) {
+    if (!row.coachId || !row.locationId) continue;
+    const set = locByCoach.get(row.coachId) ?? new Set<string>();
+    set.add(row.locationId);
+    locByCoach.set(row.coachId, set);
+  }
+  const locToFac = new Map<string, string[]>();
+  for (const loc of lokasjoner) {
+    locToFac.set(
+      loc.id,
+      loc.facilities.map((f) => f.id),
+    );
+  }
+  const coacherMedScope = coacher.map((c) => {
+    const locs = locByCoach.get(c.id);
+    if (!locs || locs.size === 0) {
+      return { id: c.id, name: c.name ?? "Coach", facilityIds: [] as string[] };
+    }
+    const facs = new Set<string>();
+    for (const lid of locs) {
+      for (const fid of locToFac.get(lid) ?? []) facs.add(fid);
+    }
+    return { id: c.id, name: c.name ?? "Coach", facilityIds: [...facs] };
+  });
+
   return (
     <V2Shell bredde="kolonne" aktiv="bookinger" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>
       <NyBookingWizard
@@ -109,10 +144,7 @@ export default async function NyBookingPage({
             capacity: f.capacity,
           })),
         }))}
-        coacher={coacher.map((c) => ({
-          id: c.id,
-          name: c.name ?? "Coach",
-        }))}
+        coacher={coacherMedScope}
         viewerErAdmin={erAdmin}
         viewerCoachId={user.id}
         defaultCoachId={coachPrefill ?? (erAdmin ? undefined : user.id)}
