@@ -2,12 +2,13 @@
 
 > **Hva dette er:** ett snapshot av hvor plattformen står akkurat nå. Oppdater datoen + relevante linjer når noe vesentlig endrer seg.
 
-**Sist oppdatert:** 2026-08-04 natt (designport steg 7-status oppdatert — se linje under. Forrige:
-2026-08-03 kvalitetsaudit tiltak 9+10 fullført: hydreringsfeilen på Workbench fikset og
-verifisert 3/3 mot prod (React #418 fjernet fra `KJENTE_FEIL`), `processed_webhook_events` finnes i prod
-med RLS, PR #253 merget. CSP-funnet på `/admin/spillere` står fortsatt åpent, dokumentert under. Design-GAP
-i PlayerHQ/AgencyOS/Forelder/Auth = 0 (v2/Presis-æraen, egen målestokk fra Paper-porten under). Appen er
-fortsatt ikke klar for betalende brukere før P0-aktivering.)
+**Sist oppdatert:** 2026-08-09 kveld.
+
+**Paper-port (viktigst nå):** Wave **0–D** chrome + finpuss er i sandbox-branch
+`handoff/iphone-5h-2026-08-09` — se **`docs/port/WAVE-STATUS-MASTER.md`**.
+Ikke antatt på prod før Mac push. Pixel sign-off (fasit side om side) mangler for alle waves.
+Masterbrain drill-seed er tømt. Appen er fortsatt ikke klar for betalende brukere før P0-aktivering
+(Stripe/DNS/Resend + spiller-login).
 
 ## Levende kilder (én av hver rolle — start her)
 
@@ -27,6 +28,12 @@ Historiske bygg-spor (SKJERM-STATUS, SKJERM-BYGGEPLAN, BYGGELOGG-FLAGG, KONFLIKT
 ---
 
 ## Kort sagt
+
+### Paper design (2026-08-09)
+- **Masterstatus:** [`docs/port/WAVE-STATUS-MASTER.md`](port/WAVE-STATUS-MASTER.md)
+- Wave A–D agent-port: PlayerHQ P0, AgencyOS P0, Live+runde, Workbench/test/drill
+- **Gjenstår:** Mac push · pixel DONE · Wave E–F · pattern G–K
+
 Appen er **deployet og kjører** på `akgolf-hq.vercel.app`. PlayerHQ + AgencyOS + Forelder + Auth har **0 design-GAP** (verifisert 23. jul). Coaching-/business-motoren (ukesyklus, godkjenningskø, churn, kapasitet-som-penger, m.m.) er levert i juli. **Den er IKKE klar for betalende/ekte brukere ennå** — største hinder er at registrerte spillere aldri har logget inn, pluss Resend DKIM / DNS / Stripe-panel hos Anders. Betaling starter **1. september 2026** (`BETALING_STARTER` i `src/lib/feature-flags.ts:18`, verifisert 2026-08-02) — koden gir alle PRO gratis frem til da. Dette dokumentet sa tidligere 1. august; datoen i koden er fasit.
 
 Push til `main` deployer automatisk via **Vercel git-integrasjon**. GitHub Actions `deploy.yml` er manuell (`workflow_dispatch`) — kjør ALDRI `vercel deploy --prod` manuelt.

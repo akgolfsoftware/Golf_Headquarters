@@ -1,5 +1,9 @@
 # Plan: Komplett Paper-design for hele appen
 
+> **Fremdrift 2026-08-09:** Wave **0–D** agent-port + finpuss ✅ i sandbox.  
+> **Ikke DONE** (mangler pixel screenshots + Anders sign-off + Mac push til main).  
+> Levende status: **`docs/port/WAVE-STATUS-MASTER.md`**.
+
 **Fasit (pixel):** `designsystem/paper/` (= `AK Golf HQ — Claude Paper.zip`, 07.08.2026)  
 **Omfang del 1:** alt i zip (fase1 33 + fase2 W1 11 + templates) — **pixel-nært**  
 **Omfang del 2:** **alle øvrige app-skjermer uten fasit** (~400+ `page.tsx`) — **pattern-designet av Grok** mot designsystemet (tokens, shell, komponenter)  

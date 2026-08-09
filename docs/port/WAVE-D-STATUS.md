@@ -1,3 +1,5 @@
+> **Master:** [`WAVE-STATUS-MASTER.md`](./WAVE-STATUS-MASTER.md)
+
 # Wave D status — 2026-08-09 (finpuss 2)
 
 ## Finpuss pass

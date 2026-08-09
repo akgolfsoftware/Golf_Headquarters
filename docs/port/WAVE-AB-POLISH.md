@@ -1,3 +1,5 @@
+> **Master:** [`WAVE-STATUS-MASTER.md`](./WAVE-STATUS-MASTER.md)
+
 # Wave A+B finpuss — 2026-08-09
 
 ## Shell / chrome

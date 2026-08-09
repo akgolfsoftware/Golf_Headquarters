@@ -1,3 +1,5 @@
+> **Master:** [`WAVE-STATUS-MASTER.md`](./WAVE-STATUS-MASTER.md)
+
 # Wave A status — 2026-08-09 (pass 2)
 
 ## Pass 2

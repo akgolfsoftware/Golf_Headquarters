@@ -1,3 +1,5 @@
+> **Master:** [`WAVE-STATUS-MASTER.md`](./WAVE-STATUS-MASTER.md)
+
 # Wave C status — 2026-08-09 (komplett finpuss)
 
 ## Live-sløyfe (Paper cream)

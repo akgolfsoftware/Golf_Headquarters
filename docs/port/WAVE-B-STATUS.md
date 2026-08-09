@@ -1,3 +1,5 @@
+> **Master:** [`WAVE-STATUS-MASTER.md`](./WAVE-STATUS-MASTER.md)
+
 # Wave B status — 2026-08-09
 
 ## AgencyOS P0 chrome (fasit zip)

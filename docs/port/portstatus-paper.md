@@ -1,6 +1,8 @@
 # Paper-portstatus — designet og godkjent
 
-**Oppdatert:** 2026-08-06  
+**Oppdatert:** 2026-08-09  
+**Wave-port:** se `WAVE-STATUS-MASTER.md` (A–D chrome i sandbox; pixel DONE ≠ chrome)  
+
 **Godkjent av:** Anders (eksplisitt «ja» per PR-batch)  
 **Kilde design:** Claude Design `605a48cc` · lokalt speil `designsystem/paper/`  
 **Kilde kode:** `main` · visual seeds i `tests/e2e/paper-visual/`
@@ -16,7 +18,8 @@ etter Anders' ja. Oppdater denne fila ved hver nye batch — ikke bare fasit-lis
 |---|---:|
 | Paper-fasitfiler på disk | **44** |
 | Unike ruter med fasit (mobil+desktop = 1) | **~38** |
-| **Portert + merget til main (godkjent)** | **~40 flater** |
+| **Portert + merget til main (godkjent)** | **~40 flater** (eldre batch) |
+| **Wave A–D fidelity re-port (sandbox 09.08)** | **Chrome ✅ · pixel DONE ❌ · main ❌** |
 | Fasit uten full app-port | **0** (fangstsheet = komponent, ferdig) |
 | Bevisst blokkert (PR-E, PR-F) | **2 beslutninger** |
 | App-skjermer uten Paper-fasit i det hele tatt | **~300+** |

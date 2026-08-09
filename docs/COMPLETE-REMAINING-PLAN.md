@@ -1,6 +1,6 @@
 # Komplett gjenstående plan — AK Golf HQ
 
-**Oppdatert:** 2026-08-08 · **Eier:** Anders Kristiansen · **Agent-kilde:** én fil  
+**Oppdatert:** 2026-08-09 · **Eier:** Anders Kristiansen · **Agent-kilde:** én fil  
 **Formål:** Alt som gjenstår — design, produkt, data, Masterbrain, drift, lansering — i én plan.  
 **Ingen antagelser:** der Anders må velge, står det **[ANDERS]**. Ellers kan agent jobbe autonomt innenfor låste regler.
 
@@ -18,24 +18,30 @@
 
 ---
 
-## 0. Nå-tilstand (2026-08-08 kveld)
+## 0. Nå-tilstand (2026-08-09 kveld)
+
+**Paper wave-status (master):** `docs/port/WAVE-STATUS-MASTER.md`
 
 | Spor | Status |
 |---|---|
-| GitHub `main` Paper | **I main** — Hjem/Plan/Analyse chrome, logo ink/paper, depthMode, guards |
-| Vercel prod | **READY** etter push-scripts (verifiser logo + Plan) |
-| Login OAuth | **OK** + rate-limit circuit-breaker |
-| Fasit-port Del A | **I main** — fidelity-pass pågår (ikke bare «tokens merget») |
-| P1 fidelity gjort (agent) | Hjem · Plan · Analyse header · **Meg** · **Booking hub** · logo app-wide |
-| P1 gjenstår (agent) | Live-sløyfe · Runde · Workbench · AgencyOS chrome |
-| Uten Paper-fasit | **~300+** → Claude Design **fase2 W2–W6** (prompt levert) |
-| Masterbrain drill bank | **Tømt** — ingen falske drills til FASIT finnes |
+| Sandbox branch | `handoff/iphone-5h-2026-08-09` — Wave **0–D** chrome + finpuss |
+| GitHub `main` / prod | **Ikke oppdatert med A–D** før **[ANDERS] Mac push** |
+| Wave 0 preflight | ✅ shell/tokens/CTA-semantikk |
+| Wave A PlayerHQ P0 | ✅ chrome + finpuss (Login Plan Analyse Meg Booking Hjem) |
+| Wave B AgencyOS P0 | ✅ chrome + finpuss (Konsoll Innboks Spillere Kalender + nav) |
+| Wave C Live + runde | ✅ chrome + komplett finpuss (cream live, runde, fangst) |
+| Wave D Workbench + test/drill | ✅ chrome + finpuss ×2 (zoom soft, test-gjennomfør Paper) |
+| Wave E–F / pattern G–K | ⬜ ikke startet |
+| Pixel DONE (screenshot-gate) | ❌ alle waves — venter Anders sign-off |
+| Login OAuth | **OK** + rate-limit circuit-breaker (tidligere) |
+| Masterbrain drill bank | **Tømt** — ingen falske seed-drills |
 | Betaling | PRO gratis til `BETALING_STARTER` 1. sep 2026 |
 
 ### Parallelle spor nå
-1. **Agent:** fortsett P1 fidelity (Live → Workbench → AgencyOS)  
-2. **Claude Design:** W2 Analysere-dybde (prompt i `docs/port/CLAUDE-DESIGN-PROMPT-RESTERENDE-SKJERMER.md`)  
-3. **Anders:** sign-off skjermbilder + Design-batch-ja  
+1. **[ANDERS]** Mac push A–D → main → hard refresh  
+2. **[ANDERS]** Pixel sign-off Wave A–D (fasit side om side)  
+3. **Agent:** Wave E (profil/kommunikasjon) deretter F  
+4. **Claude Design:** W2–W6 uten fasit (prompt finnes)  
 
 ---
 
@@ -86,12 +92,12 @@ Per flate: **mobil 390 · iPad 768 · desktop 1280 · lys · mørk** (der releva
 | D-P1-03 | Analyse hub | playerhq-analyse | Agent chrome ✅ · **[ANDERS]** sign-off |
 | D-P1-04 | Meg | playerhq-meg | Agent fidelity ✅ · **[ANDERS]** sign-off |
 | D-P1-05 | Booking | playerhq-booking | Agent hub chrome ✅ · **[ANDERS]** sign-off |
-| D-P1-06 | Live brief→active→summary→tapper | live-* | Agent Paper light shell+brief+summary ✅ · active ink/clay · **[ANDERS]** sign-off |
-| D-P1-07 | Runde live/logg | runde-* | Already T.bg paper top · light pass OK · **[ANDERS]** |
-| D-P1-08 | Workbench m+d | workbench-* | Agent lime→clay/ink chrome ✅ · full layout egen pass · **[ANDERS]** |
-| D-P1-09 | AgencyOS konsoll | agencyos-konsoll-* | Agent Paper chrome (CockpitV2) ✅ · **[ANDERS]** sign-off |
-| D-P1-10 | Innboks / Kø | agencyos-innboks | Agent Paper chrome ✅ · **[ANDERS]** sign-off |
-| D-P1-11 | Kalender / Stall / Profil | kalender, spillere, spillerprofil | **[ANDERS]** |
+| D-P1-06 | Live brief→active→summary | live-* | Wave **C** cream active + loop + 56 CTA ✅ · **[ANDERS]** pixel |
+| D-P1-07 | Runde live/logg | runde-* | Wave **C** Paper topp titler ✅ · **[ANDERS]** pixel |
+| D-P1-08 | Workbench m+d | workbench-* | Wave **D** + finpuss (soft zoom, Publiser clay) ✅ · **[ANDERS]** pixel |
+| D-P1-09 | AgencyOS konsoll | agencyos-konsoll-* | Wave **B** Konsoll Paper ✅ · **[ANDERS]** pixel |
+| D-P1-10 | Innboks / Kø | agencyos-innboks | Wave **B** Innboks + hub pills ✅ · **[ANDERS]** pixel |
+| D-P1-11 | Kalender / Stall | kalender, spillere | Wave **B** ✅ · Profil coach = **Wave E** · **[ANDERS]** pixel |
 | D-P1-12 | Auth / Forelder / Marketing booking | innlogging, forelder, booking | **[ANDERS]** |
 
 **Agent mellom sign-offs:** fiks A1–A4 type avvik (layout, én ting nå, composer, empty) uten å spørre — Paper HTML er fasit.
