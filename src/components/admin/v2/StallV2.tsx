@@ -127,7 +127,7 @@ function SpillerRadEnkel({
           <SevChip s={s.sev} />
         </span>
       }
-      trailing={valgt ? <span style={{ width: 2, height: 20, borderRadius: 2, background: T.lime, flex: "none" }} /> : undefined}
+      trailing={valgt ? <span style={{ width: 2, height: 20, borderRadius: 2, background: T.handling, flex: "none" }} /> : undefined}
       last={last}
     />
   );
@@ -387,7 +387,7 @@ export function StallV2({ data }: { data: StallV2Data }) {
   const hode = (
     <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 14, flexWrap: "wrap" }}>
       <div>
-        <Caps>{`${data.total} · ${stallKpi.trenger} trenger deg`}</Caps>
+        <span style={{ fontFamily: T.mono, fontSize: 10.5, color: T.mut }}>{data.total} spillere · {stallKpi.trenger} trenger deg</span>
         <div style={{ marginTop: 10 }}>
           <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>Spillere</h1>
         </div>

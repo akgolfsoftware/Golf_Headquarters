@@ -397,7 +397,7 @@ export function CockpitV2({
   const innsikt = <InnsiktChip cta="Planlegg i Workbench" href="/admin/planlegge">{innsiktTekst}</InnsiktChip>;
 
   return (
-    <PaperPage odId="agencyos-konsoll">
+    <PaperPage odId="agencyos-konsoll"><div data-paper-wave-b="konsoll" style={{ display: "contents" }}>
     <div data-paper-agencyos-konsoll style={{ display: "contents" }}>
       {hode}
       <PaperKropp maxWidth={960}>

@@ -381,7 +381,7 @@ function LoginKort() {
             position: "absolute",
             inset: "-24px -60px auto",
             height: 140,
-            background: `radial-gradient(closest-side, ${T.handlingSoft}, transparent 72%)`,
+            background: T.panel2,
             pointerEvents: "none",
           }}
         />
@@ -546,7 +546,7 @@ export function LoginV2 /* wave A fasit: innlogging.html */() {
           alignItems: "center",
           justifyContent: "center",
           padding: "48px 22px",
-          background: `radial-gradient(700px 420px at 60% -12%, ${T.handlingSoft}, transparent 62%), ${T.bg}`,
+          background: T.bg,
         }}
       >
         <Suspense fallback={<div style={{ width: "100%", maxWidth: 400, height: 420 }} aria-hidden />}>

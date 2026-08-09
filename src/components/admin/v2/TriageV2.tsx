@@ -297,7 +297,7 @@ export function TriageV2({ data, feedback = [], ko }: { data: CockpitData; feedb
       <PaperPage odId="agencyos-innboks">
       <div data-paper-agencyos-innboks style={{ display: "contents" }}>
         {hode}
-        <PaperKropp>
+        <PaperKropp maxWidth={960}>
         {kpi}
         <Kort>
           <TomTilstand
@@ -339,7 +339,7 @@ export function TriageV2({ data, feedback = [], ko }: { data: CockpitData; feedb
     <PaperPage odId="agencyos-innboks">
     <div data-paper-agencyos-innboks style={{ display: "contents" }}>
       {hode}
-      <PaperKropp>
+      <PaperKropp maxWidth={960}>
       {primaerCta}
       {kpi}
       <div

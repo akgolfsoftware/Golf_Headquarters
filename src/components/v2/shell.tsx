@@ -309,7 +309,7 @@ function RailLenke({ item, on, dark }: { item: V2NavItem; on: boolean; dark?: bo
         flex: "none",
       }}
     >
-      {on && !dark && <span style={{ position: "absolute", left: -7, top: 10, bottom: 10, width: 2, borderRadius: 2, background: T.lime }} />}
+      {on && !dark && <span style={{ position: "absolute", left: -7, top: 10, bottom: 10, width: 2, borderRadius: 2, background: T.handling }} />}
       <span style={{ position: "relative", display: "inline-flex" }}>
         <Icon name={item.icon} size={19} style={{ color: dark ? (on ? "#faf9f5" : "#b0aea5") : (on ? T.lime : T.mut) }} strokeWidth={on ? 2 : 1.5} />
         {badge != null && (
@@ -426,7 +426,7 @@ function MerPanel({ grupper, rom, onClose, mobil, full, erAgency }: { grupper?: 
                       onClick={onClose}
                       role="menuitem"
                       className="v2-press v2-focus"
-                      style={{ display: "flex", alignItems: "center", gap: 10, padding: "7px 8px", borderRadius: 9, textDecoration: "none", color: on ? T.lime : T.fg, background: on ? `color-mix(in srgb, ${T.lime} 8%, transparent)` : "transparent" }}
+                      style={{ display: "flex", alignItems: "center", gap: 10, padding: "7px 8px", borderRadius: 9, textDecoration: "none", color: on ? T.fg : T.fg2, background: on ? T.panel2 : "transparent" }}
                     >
                       <Icon name={it.icon} size={15} style={{ color: on ? T.railOn : T.railFg, flex: "none" }} />
                       <span style={{ fontSize: 12.5, fontWeight: 500 }}>{it.label}</span>
@@ -460,7 +460,7 @@ function MerPanel({ grupper, rom, onClose, mobil, full, erAgency }: { grupper?: 
                     borderRadius: T.rRow,
                     textDecoration: "none",
                     color: T.fg,
-                    background: fremhevet ? `color-mix(in srgb, ${T.lime} 8%, transparent)` : "transparent",
+                    background: fremhevet ? T.handlingSoft : "transparent",
                     border: `1px solid ${fremhevet ? `color-mix(in srgb, ${T.lime} 22%, ${T.border})` : "transparent"}`,
                   }}
                 >
@@ -472,7 +472,7 @@ function MerPanel({ grupper, rom, onClose, mobil, full, erAgency }: { grupper?: 
                       display: "grid",
                       placeItems: "center",
                       flex: "none",
-                      background: fremhevet ? `color-mix(in srgb, ${T.lime} 14%, ${T.panel3})` : T.panel3,
+                      background: fremhevet ? T.handlingSoft : T.panel3,
                       border: `1px solid ${fremhevet ? `color-mix(in srgb, ${T.lime} 28%, ${T.border})` : T.border}`,
                       color: fremhevet ? T.lime : T.fg2,
                     }}
@@ -536,8 +536,8 @@ function IkonRailNav({ aktiv, nav, mer, rom, navn, avatarUrl, erAgency }: Requir
           className="v2-press v2-focus"
           style={{ width: 56, display: "flex", flexDirection: "column", alignItems: "center", gap: 3, padding: "8px 0 6px", borderRadius: 12, background: "transparent", border: 0, cursor: "pointer", flex: "none" }}
         >
-          <Icon name="more-horizontal" size={19} style={{ color: aktiv === "mer" ? "#faf9f5" : "#b0aea5" }} strokeWidth={1.5} />
-          <span style={{ fontFamily: T.mono, fontSize: 9, fontWeight: 600, letterSpacing: "0.04em", textTransform: "uppercase", color: aktiv === "mer" ? "#faf9f5" : "#b0aea5" }}>Mer</span>
+          <Icon name="more-horizontal" size={19} style={{ color: aktiv === "mer" ? T.railOn : T.railFg }} strokeWidth={1.5} />
+          <span style={{ fontFamily: T.mono, fontSize: 9, fontWeight: 600, letterSpacing: "0.04em", textTransform: "uppercase", color: aktiv === "mer" ? T.railOn : T.railFg }}>Mer</span>
         </button>
       )}
       <div style={{ flex: 1, minHeight: 8 }} />
@@ -598,7 +598,7 @@ function BunnNavLenker({ aktiv, nav, mer }: { aktiv?: string; nav: V2NavItem[]; 
                       padding: "0 3px",
                       borderRadius: 999,
                       background: T.handling,
-                      color: T.bg,
+                      color: T.onHandling,
                       fontFamily: T.mono,
                       fontSize: 8,
                       fontWeight: 700,
@@ -691,7 +691,7 @@ function AgencyBunnNav({ aktiv, nav, mer, rom }: { aktiv?: string; nav: V2NavIte
                       padding: "0 3px",
                       borderRadius: 999,
                       background: T.handling,
-                      color: T.bg,
+                      color: T.onHandling,
                       fontFamily: T.mono,
                       fontSize: 8,
                       fontWeight: 700,
@@ -712,7 +712,7 @@ function AgencyBunnNav({ aktiv, nav, mer, rom }: { aktiv?: string; nav: V2NavIte
           aria-haspopup="menu"
           aria-expanded={skuffOpen}
           className="v2-press"
-          style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", gap: 4, padding: "4px 0", color: skuffOpen ? T.lime : T.mut, background: "transparent", border: 0, cursor: "pointer" }}
+          style={{ flex: 1, minHeight: 56, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 3, padding: "4px 0", color: skuffOpen ? T.railOn : T.railFg, background: "transparent", border: 0, cursor: "pointer" }}
         >
           <Icon name="more-horizontal" size={20} strokeWidth={1.5} />
           <span style={{ fontFamily: T.mono, fontSize: 9, fontWeight: 600 }}>Mer</span>
