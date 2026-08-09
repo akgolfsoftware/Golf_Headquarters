@@ -395,7 +395,7 @@ function LoginKort() {
           style={{
             fontFamily: T.disp,
             fontWeight: 700,
-            fontSize: 28,
+            fontSize: 26,
             letterSpacing: "-0.03em",
             color: T.fg,
             margin: 0,
