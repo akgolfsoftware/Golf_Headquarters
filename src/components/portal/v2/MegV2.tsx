@@ -322,7 +322,7 @@ export function MegV2({ data }: { data: MegData }) {
   );
 
   return (
-    <PaperPage>
+    <PaperPage odId="playerhq-meg">
       <div data-paper-portal-meg style={{ display: "contents" }}>
       <PaperTopp
         tittel={navn}

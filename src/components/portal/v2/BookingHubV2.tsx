@@ -67,9 +67,9 @@ export function BookingHubV2({ data }: { data: BookingHubV2Data }) {
   const tomtForCredits = harPakke && credits.creditsRemaining <= 0;
 
   return (
-    <PaperPage>
+    <PaperPage odId="playerhq-booking">
       <div data-paper-portal-booking style={{ display: "contents" }}>
-      <PaperTopp tittel="Booking" sub="AK Golf Academy · coachingtime" />
+      <PaperTopp tittel="Book time" sub={coaches[0]?.name ? `med ${coaches[0].name}` : "AK Golf Academy"} />
       <PaperKropp>
 
       {/* Timer/credits — det Anders ba om skal stå først, ikke gjemt i en veiviser. */}
@@ -103,7 +103,8 @@ export function BookingHubV2({ data }: { data: BookingHubV2Data }) {
         <div style={{ display: "flex", flexDirection: "column", gap: 8, marginTop: 16 }}>
           <Link
             href="/portal/booking/ny"
-            data-od-id="booking-book-time"
+            data-od-id="pb-book"
+            data-paper-en-ting="true"
             className="v2-press v2-focus"
             style={{
               textDecoration: "none",
@@ -113,7 +114,7 @@ export function BookingHubV2({ data }: { data: BookingHubV2Data }) {
               gap: 8,
               minHeight: 48,
               width: "100%",
-              borderRadius: 10,
+              borderRadius: 12,
               background: T.handling,
               color: T.onHandling,
               fontFamily: T.ui,

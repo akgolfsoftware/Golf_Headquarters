@@ -19,16 +19,16 @@
 - [ ] `booking.html` — m390 — d1280 — screenshot
 - [ ] `fangstsheet.html` — m390 — d1280 — screenshot
 - [ ] `foreldreportal.html` — m390 — d1280 — screenshot
-- [ ] `innlogging.html` — m390 — d1280 — screenshot
-- [ ] `playerhq-analyse.html` — m390 — d1280 — screenshot
-- [ ] `playerhq-booking.html` — m390 — d1280 — screenshot
-- [ ] `playerhq-chat-desktop.html` — m390 — d1280 — screenshot
-- [ ] `playerhq-chat-mobil.html` — m390 — d1280 — screenshot
+- [~] `innlogging.html` — wave A port (ikke pixel sign-off) — wave A structure+ink CTA
+- [~] `playerhq-analyse.html` — wave A port (ikke pixel sign-off) — wave A topp+markers
+- [~] `playerhq-booking.html` — wave A port (ikke pixel sign-off) — wave A Book time enTing
+- [~] `playerhq-chat-desktop.html` — wave A port (ikke pixel sign-off) — wave A loop markers
+- [~] `playerhq-chat-mobil.html` — wave A port (ikke pixel sign-off) — wave A loop markers
 - [ ] `playerhq-live-brief.html` — m390 — d1280 — screenshot
 - [ ] `playerhq-live-okt.html` — m390 — d1280 — screenshot
 - [ ] `playerhq-live-summary.html` — m390 — d1280 — screenshot
-- [ ] `playerhq-meg.html` — m390 — d1280 — screenshot
-- [ ] `playerhq-plan.html` — m390 — d1280 — screenshot
+- [~] `playerhq-meg.html` — wave A port (ikke pixel sign-off) — wave A PaperChrome
+- [~] `playerhq-plan.html` — wave A port (ikke pixel sign-off) — wave A topp/dokk enTing
 - [ ] `playerhq-runde-live.html` — m390 — d1280 — screenshot
 - [ ] `playerhq-runde-logg.html` — m390 — d1280 — screenshot
 - [ ] `playerhq-test-gjennomfor.html` — m390 — d1280 — screenshot

@@ -108,7 +108,7 @@ function Felt({
   );
 }
 
-/** primary=T.handling (Paper Én ting) · ghost=panel. */
+/** primary=ink CTA (Paper) · ghost=panel. Clay reserved for Én ting nå elsewhere. */
 function Knapp({
   children,
   icon,
@@ -128,7 +128,7 @@ function Knapp({
 }) {
   const v: CSSProperties =
     variant === "primary"
-      ? { background: T.handling, color: T.onHandling, border: "none" }
+      ? { background: T.cta, color: T.onCta, border: "none" }
       : { background: T.panel3, color: T.fg, border: `1px solid ${T.borderS}` };
   return (
     <button
@@ -237,7 +237,7 @@ function BrandPanel() {
         position: "relative",
         overflow: "hidden",
         borderRight: `1px solid ${T.border}`,
-        background: `radial-gradient(560px 460px at 28% 24%, ${T.handlingSoft}, transparent 68%), radial-gradient(420px 380px at 82% 88%, color-mix(in srgb, var(--v2-handling) 10%, transparent), transparent 60%), ${T.bg}`,
+        background: T.bg,
         flexDirection: "column",
         padding: "34px 40px 44px",
       }}
@@ -278,8 +278,8 @@ function BrandPanel() {
             margin: 0,
           }}
         >
-          Hele golfutviklingen din.{" "}
-          <em style={{ fontStyle: "italic", color: T.handling }}>Ett sted.</em>
+          Én konto.{" "}
+          <em style={{ fontStyle: "italic", color: T.fg }}>Riktig sted.</em>
         </h2>
         <p
           style={{
@@ -291,8 +291,21 @@ function BrandPanel() {
             maxWidth: 360,
           }}
         >
-          Plan, trening og analyse — koblet rett til coachen din.
+          Coach, spiller og foresatt logger inn med samme skjema. Kontoen din avgjør hvor du havner.
         </p>
+        <div
+          style={{
+            marginTop: 22,
+            fontFamily: T.mono,
+            fontSize: 10,
+            fontWeight: 600,
+            letterSpacing: "0.06em",
+            textTransform: "uppercase",
+            color: T.mut,
+          }}
+        >
+          AK Golf Academy · Fredrikstad
+        </div>
       </div>
     </div>
   );
@@ -509,10 +522,12 @@ function LoginKort() {
 
 /* ── Offentlig login-flate (dark-scope, fluid AuthRamme) ───────────── */
 
-export function LoginV2() {
+export function LoginV2 /* wave A fasit: innlogging.html */() {
   return (
     <div
       data-paper-innlogging
+      data-paper-wave-a="login"
+      data-od-id="innlogging"
       style={{
         minHeight: "100vh",
         display: "flex",

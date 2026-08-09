@@ -899,7 +899,7 @@ export function AnalysereV2({
 
   return (
     <div
-      data-paper-portal-analysere
+      data-paper-portal-analysere data-paper-wave-a="analyse"
       style={{ display: "flex", flexDirection: "column", minHeight: "100%", background: T.bg }}
     >
       {/* Paper .topp */}
@@ -914,14 +914,15 @@ export function AnalysereV2({
             gap: 12,
             padding: "12px 20px",
             borderBottom: `1px solid ${T.border}`,
-            background: T.panel,
+            background: T.bg,
             position: "sticky",
             top: 0,
             zIndex: 5,
+            borderBottom: `1px solid ${T.border}`,
           }}
         >
           <div style={{ minWidth: 0, flex: 1 }}>
-            <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>
+            <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 20, fontWeight: 600, letterSpacing: "-0.02em", color: T.fg }}>
               Analyse
             </h1>
             <span

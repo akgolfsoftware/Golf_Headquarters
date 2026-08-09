@@ -452,22 +452,20 @@ export interface CTAPillProps {
   ghost?: boolean;
   /** Strekker pillen til full bredde av forelder (f.eks. mobil-CTA under et kort). */
   full?: boolean;
-  /** DS-GAP fikset 2026-07-19: CTAPill manglet onClick — var kun dekorativ. */
+  /** Paper: clay «Én ting nå» — maks én per skjerm. Default solid = ink CTA. */
+  enTing?: boolean;
   onClick?: () => void;
 }
-/* Paper-fasit: actions/Button — "Radius --r-sm (målt mot referanse-dashboardet);
-   --r-pill er for chips/tags/dag-velgere." CTAPill er funksjonelt en knapp
-   (har onClick), ikke en chip — radius rettes fra full pille til r-sm, som
-   deler tallverdi med T.rTag (8px) selv om navnet i tokens.ts ikke er endret.
-   Høyde/padding (44px berøringsmål) er BEHOLDT uendret — Paper sin 36px-høyde
-   forutsetter en egen coarse-pointer-gulv-mekanisme (se Button.d.ts) som ikke
-   er bygget her; å krympe synlig høyde uten den ville svekket touch-målet. */
-export function CTAPill({ icon, children, ghost, full, onClick }: CTAPillProps) {
+/* Paper-fasit: solid default = ink (--p-cta). enTing=true → clay handling-monopol. */
+export function CTAPill({ icon, children, ghost, full, enTing, onClick }: CTAPillProps) {
+  const solidBg = enTing ? T.handling : T.cta;
+  const solidFg = enTing ? T.onHandling : T.onCta;
   return (
     <button
       type="button"
       onClick={onClick}
       className="v2-press v2-focus"
+      data-paper-en-ting={enTing ? "true" : undefined}
       style={{
         appearance: "none",
         display: "inline-flex",
@@ -477,8 +475,8 @@ export function CTAPill({ icon, children, ghost, full, onClick }: CTAPillProps) 
         fontFamily: T.ui,
         fontSize: 12.5,
         fontWeight: 600,
-        color: ghost ? T.fg : T.onHandling,
-        background: ghost ? T.panel3 : T.handling,
+        color: ghost ? T.fg : solidFg,
+        background: ghost ? T.panel3 : solidBg,
         border: ghost ? `1px solid ${T.borderS}` : "none",
         borderRadius: T.rTag,
         padding: "10px 16px",
@@ -514,23 +512,23 @@ export interface KnappProps {
   ghost?: boolean;
   full?: boolean;
   disabled?: boolean;
+  /** Paper clay «Én ting nå» — ellers ink solid CTA. */
+  enTing?: boolean;
   onClick?: () => void;
-  /** "submit" for skjema-knapper — default "button". */
   type?: "button" | "submit";
-  /** Stil-overstyring (f.eks. minHeight: 44 for touch-mål). */
   style?: CSSProperties;
 }
-/* Interaktiv CTA-pille (ekte <button>): onClick + full-bredde + disabled.
-   CTAPill er den statiske varianten; Knapp brukes i flerstegs-flyter.
-   Paper-fasit: actions/Button — samme r-sm-radius-retting og samme begrunnelse
-   for å beholde 44px berøringsmål som i CTAPill over. */
-export function Knapp({ icon, children, ghost, full, disabled, onClick, type = "button", style }: KnappProps) {
+/* Paper: default solid = ink CTA; enTing → clay handling. */
+export function Knapp({ icon, children, ghost, full, disabled, enTing, onClick, type = "button", style }: KnappProps) {
+  const solidBg = enTing ? T.handling : T.cta;
+  const solidFg = enTing ? T.onHandling : T.onCta;
   return (
     <button
       type={type}
       className="v2-press v2-focus"
       onClick={disabled ? undefined : onClick}
       disabled={disabled}
+      data-paper-en-ting={enTing ? "true" : undefined}
       style={{
         appearance: "none",
         display: "inline-flex",
@@ -540,8 +538,8 @@ export function Knapp({ icon, children, ghost, full, disabled, onClick, type = "
         fontFamily: T.ui,
         fontSize: 12.5,
         fontWeight: 600,
-        color: ghost ? T.fg : T.onHandling,
-        background: ghost ? T.panel3 : T.handling,
+        color: ghost ? T.fg : solidFg,
+        background: ghost ? T.panel3 : solidBg,
         border: ghost ? `1px solid ${T.borderS}` : "1px solid transparent",
         borderRadius: T.rTag,
         padding: "10px 18px",

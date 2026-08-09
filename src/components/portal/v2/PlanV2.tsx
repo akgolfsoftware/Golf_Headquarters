@@ -116,7 +116,7 @@ export function PlanV2({ data, depthMode = "simple" }: { data: DashboardData; de
 
   return (
     <div
-      data-paper-portal-planlegge
+      data-paper-portal-plan data-paper-wave-a="plan" data-od-id="plan-root"
       style={{
         display: "flex",
         flexDirection: "column",
@@ -452,7 +452,7 @@ export function PlanV2({ data, depthMode = "simple" }: { data: DashboardData; de
             <Link
               href={nesteOkt.href}
               className="v2-press v2-focus"
-              data-od-id="plan-dokk-start"
+              data-od-id="plan-dokk-start" data-paper-en-ting="true"
               style={{
                 display: "flex",
                 alignItems: "center",
