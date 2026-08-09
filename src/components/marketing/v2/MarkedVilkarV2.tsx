@@ -144,7 +144,7 @@ function MFot({ mobile }: { mobile: boolean }) {
   );
 }
 
-function MRamme({ mobile, aktiv, children }: { mobile: boolean; aktiv: string; children: ReactNode }) {
+function MRamme({ mobile, aktiv, children, waveId }: { mobile: boolean; aktiv: string; children: ReactNode; waveId?: string }) {
   return (
     <div
       style={{

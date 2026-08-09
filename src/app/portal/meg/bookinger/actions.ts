@@ -161,7 +161,7 @@ export async function cancelBooking(bookingId: string) {
       stripeRefundFeilet,
       creditRefunded,
       subscriptionId: booking.subscriptionId,
-      tidTilStartMs: tidTilStart,
+      tidTilStartMs: booking.startAt.getTime() - Date.now(),
     },
   });
 

@@ -177,7 +177,7 @@ export function MarkedBookingV2({
             <div style={{ marginTop: 26, display: "flex", flexDirection: "column", gap: 12, alignItems: "center" }}>
               <a href={acuityUrl} target="_blank" rel="noopener noreferrer" style={{ textDecoration: "none", display: "inline-block" }}>
                 <span style={{
-                  display: "inline-flex", alignItems: "center", gap: 8, minHeight: 44, padding: "10px 16px",
+                  display: "inline-flex", alignItems: "center", gap: 8, padding: "10px 16px",
                   borderRadius: 12, background: T.handling, color: T.onHandling, fontFamily: T.ui, fontSize: 14, fontWeight: 600, minHeight: 56,
                 }}>Åpne bookingkalender</span>
               </a>

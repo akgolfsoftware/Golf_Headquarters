@@ -73,7 +73,7 @@ export function FortsettRundeCta({ variant = "row" }: Props) {
           borderRadius: 10,
           display: "grid",
           placeItems: "center",
-          background: "color-mix(in srgb, var(--v2-handling, #D97757) 14%, transparent)",
+          background: `color-mix(in srgb, ${T.handling} 14%, transparent)`,
           color: T.forest,
           flex: "none",
         }}

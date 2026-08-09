@@ -283,8 +283,7 @@ export function NyTestV2({ tests, sistePerTest, spillerNavn }: Props) {
         /* quota — ignore */
       }
     }, 10000);
-    return (
-    // wave-d) => window.clearInterval(timer);
+    return () => window.clearInterval(timer);
   }, [state]);
 
   const valgtKatalog = useMemo(

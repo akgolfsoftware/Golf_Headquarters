@@ -97,9 +97,9 @@ function MFot({ mobile }: { mobile: boolean }) {
   );
 }
 
-function MRamme({ mobile, aktiv, children }: { mobile: boolean; aktiv: string; children: ReactNode }) {
+function MRamme({ mobile, aktiv, children, waveId }: { mobile: boolean; aktiv: string; children: ReactNode; waveId?: string }) {
   return (
-    <div style={{ minHeight: "100vh", colorScheme: "dark", color: T.fg, fontFamily: T.ui, background: `radial-gradient(1100px 520px at 30% -10%, ${T.farge.forestMerkeA20}, transparent 62%), ${T.bg}`, display: "flex", flexDirection: "column" }}>
+    <div data-paper-wave-i={waveId ?? `marked-${aktiv}`} data-paper-pattern="marketing" style={{ minHeight: "100vh", colorScheme: "dark", color: T.fg, fontFamily: T.ui, background: `radial-gradient(1100px 520px at 30% -10%, ${T.farge.forestMerkeA20}, transparent 62%), ${T.bg}`, display: "flex", flexDirection: "column" }}>
       <MNav mobile={mobile} aktiv={aktiv} />
       {/* <main>-landemerke — samme a11y-fiks som delt marked-ramme.tsx. */}
       <main style={{ flex: 1 }}>{children}</main>

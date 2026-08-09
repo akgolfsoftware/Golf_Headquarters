@@ -96,7 +96,7 @@ function MFot({ mobile }: { mobile: boolean }) {
   );
 }
 
-function MRamme({ mobile, aktiv, children }: { mobile: boolean; aktiv: string; children: ReactNode }) {
+function MRamme({ mobile, aktiv, children, waveId }: { mobile: boolean; aktiv: string; children: ReactNode; waveId?: string }) {
   return (
     <div style={{ minHeight: "100vh", background: `radial-gradient(1100px 520px at 30% -10%, ${T.farge.forestMerkeA20}, transparent 62%), ${T.bg}`, display: "flex", flexDirection: "column" }}>
       <MNav mobile={mobile} aktiv={aktiv} />

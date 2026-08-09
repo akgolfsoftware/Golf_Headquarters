@@ -129,6 +129,10 @@ export async function loadWeekCalendar(ukeParam?: string): Promise<WeekCalendarP
       kind,
       isCompleted: b.status === "COMPLETED" && !erLive,
       href: `/admin/bookinger/${b.id}`,
+      coachId: b.coachId,
+      coachName: b.coach?.name ?? null,
+      facilityId: b.facilityId,
+      facilityName: b.facility?.name ?? null,
     };
   });
 

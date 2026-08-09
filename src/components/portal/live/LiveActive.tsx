@@ -109,6 +109,11 @@ function ConfirmOverlay({ show, onConfirm, onCancel }: ConfirmOverlayProps) {
   );
 }
 
+type ChallengeCardProps = {
+  drill: DrillState;
+  onLogRep?: () => void;
+};
+
 function ChallengeCard({ drill, onLogRep }: ChallengeCardProps) {
   const isActive = drill.status === "active";
   const isDone = drill.status === "done";
@@ -123,7 +128,7 @@ function ChallengeCard({ drill, onLogRep }: ChallengeCardProps) {
       style={{
         borderColor: isActive ? T.handling : T.border,
         background: isActive ? T.handlingSoft : isDone ? T.panel2 : T.panel,
-        boxShadow: isActive ? "0 0 0 3px color-mix(in srgb, var(--v2-handling, #D97757) 18%, transparent)" : undefined,
+        boxShadow: isActive ? `0 0 0 3px color-mix(in srgb, ${T.handling} 18%, transparent)` : undefined,
         opacity: isDone ? 0.88 : 1,
       }}
     >
@@ -163,7 +168,7 @@ function ChallengeCard({ drill, onLogRep }: ChallengeCardProps) {
             width: `${progressPct}%`,
             background: isDone
               ? T.up
-              : "linear-gradient(90deg, color-mix(in srgb, var(--v2-handling, #D97757) 55%, #141413), var(--v2-handling, #D97757))",
+              : `linear-gradient(90deg, color-mix(in srgb, ${T.handling} 55%, ${T.rail}), ${T.handling})`,
           }}
         />
       </div>
@@ -581,7 +586,7 @@ export function LiveActive({ data, coachPanel }: { data: LiveV2Session; coachPan
               className="h-full rounded-full transition-all duration-700"
               style={{
                 width: `${progressPct}%`,
-                background: "linear-gradient(90deg, color-mix(in srgb, var(--v2-handling, #D97757) 40%, #141413), var(--v2-handling, #D97757))",
+                background: `linear-gradient(90deg, color-mix(in srgb, ${T.handling} 40%, ${T.rail}), ${T.handling})`,
               }}
             />
           </div>

@@ -135,8 +135,8 @@ export function StatsBigRadar({
           <Radar
             name={themLabel}
             dataKey="ref"
-            stroke="#D1F843"
-            fill="#D1F843"
+            stroke={T.farge.limeMerke}
+            fill={T.farge.limeMerke}
             fillOpacity={0.2}
             strokeWidth={2}
             strokeDasharray="5 3"

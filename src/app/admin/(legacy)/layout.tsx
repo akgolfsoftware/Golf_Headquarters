@@ -3,7 +3,7 @@ import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
 
 /**
  * AgencyOS under /admin/(legacy) — én V2Shell (Paper chrome).
- * IKKE .golfdata-scope her: den overstyrte Paper --p-*/--v2-* inni innholdet.
+ * IKKE .golfdata-scope her: den overstyrte Paper-tokens (--p- og --v2-) inni innholdet.
  * Athletic/golfdata-widgets som *trenger* scope wrapper lokalt i egen komponent.
  * IKKE nest V2Shell i child pages (layout eier chrome).
  * GlobalSearchModal eies av V2Shell (Agency) — ikke monter her (dobbel modal).

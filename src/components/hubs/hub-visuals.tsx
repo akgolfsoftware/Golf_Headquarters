@@ -1,3 +1,4 @@
+import { T } from "@/lib/v2/tokens";
 import { cn } from "@/lib/utils";
 import type { ReactNode } from "react";
 
@@ -73,7 +74,7 @@ export function HubSparkline({ variant = "up" }: { variant?: "up" | "down" }) {
   return (
     <svg className="spk" viewBox="0 0 90 28" width="90" height="28" preserveAspectRatio="none" aria-hidden>
       <path d={path} stroke="#005840" strokeWidth="1.6" fill="none" />
-      <circle cx="86" cy={dotY} r="2.6" fill="#D1F843" stroke="#005840" strokeWidth="1.4" />
+      <circle cx="86" cy={dotY} r="2.6" fill={T.farge.limeMerke} stroke="#005840" strokeWidth="1.4" />
     </svg>
   );
 }
