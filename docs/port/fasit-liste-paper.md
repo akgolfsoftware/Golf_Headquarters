@@ -1,37 +1,51 @@
 # Steg 2 — fasit-listen: Paper-skjerm ↔ ekte rute
 
-**Skrevet:** 02.08.2026 · **Oppdatert:** 2026-08-06 (portstatus: alle fasitruter merget til
-main etter Anders' ja — se **`portstatus-paper.md`** for godkjent/portert liste med PR-nummer.
-Tidligere: 05.08.2026 kveld W1-wireframes batch-godkjent; Claude Design `605a48cc` eneste kilde).
+**Skrevet:** 02.08.2026 · **Oppdatert:** 2026-08-10 (tegningen er FERDIG — W1–W6 er alle
+tegnet, 79 fasit-HTML. Tallene under sto på «25 av 343» fra 06.08 og var da over fire dager
+utdaterte).
 **Gjelder:** steg 2 i `docs/port/plan-designport-alle-skjermer.md`.
 **Denne fila** = fasit ↔ rute. **`portstatus-paper.md`** = hva som er portet og godkjent.
+**Styrende plan er ikke lenger denne** — det er `PIXEL-PERFECT-PLAN-COMPLETE.md` (PP-0…PP-10).
 
-Kilder: Claude Design-prosjektet `605a48cc` → `fase1/` (hentet via `claude-design`-MCP,
-sist listet 05.08.2026) og den daværende skjermplanen (slettet 05.08.2026, se git-historikken).
-Designprosjektets `templates/`,
-`kart/wf/` og `uploads/` er IKKE kilde — designeren har selv merket dem historikk/utgått
+Kilder: Claude Design-prosjektet `605a48cc` (hentet via `claude-design`-MCP, sist listet
+**2026-08-10**) og speilet `designsystem/paper/`. Speilet er verifisert i synk med prosjektet
+samme dag: 33 filer i `fase1/`, 46 i `fase2/`, 8 templates — samme filer begge steder.
+Designprosjektets `kart/wf/` og `uploads/` er IKKE kilde, og `templates/` er strukturreferanse
+(shell-fasit), ikke egne skjermer — designeren har merket den gamle bruken utgått
 (`templates/_UTGÅTT.md`, 01.08.2026).
 
 ---
 
-## Det korte svaret
+## Det korte svaret (2026-08-10)
 
 | | Antall |
 |---|---:|
-| Ekte skjermer i appen (redirect og utgåtte rader trukket fra) | **343** |
-| Rader i skjermplanen totalt (opptelling 05.08.2026, før den ble slettet) | 375 |
-| …av disse ren redirect eller utgått | 32 |
-| Paper-fasitskjermer på disk | **44** (33 i `fase1/` + 11 godkjente W1-wireframes i `fase2/playerhq/`) |
-| Ekte ruter disse dekker (mobil + desktop av samme rute teller én gang) | **~38** (AK-stigen + live fikk rute 2026-08-06) |
-| **Portet + godkjent i main** | **Alle fasitruter** — se `portstatus-paper.md` |
-| Skjermer som må designes uten fasit | **~300+** |
+| **Tegnede Paper-fasitskjermer** | **79** — 33 i `fase1/` + 46 i `fase2/` |
+| …av disse i fase2 | PlayerHQ 30 · AgencyOS 6 · marketing 2 · auth 2 · WANG 2 · GFGK 2 · forelder 1 · system 1 |
+| Templates (shell-fasit, ikke egne ruter) | 8 |
+| Komponenter i biblioteket | 138 |
+| **Tegning gjenstående** | **0 for in-scope** — W1–W6 er alle tegnet |
+| **Pixel-signert av Anders** | **0 av 79** |
+| Kodet chrome, ikke signert (`[~]`) | 52 |
+| Ikke bygget (`[ ]`) | 35 (inkl. de 8 templates-radene) |
 
-**Fasit-dekning i design:** ~38 av ~343 skjermer.  
-**Port-status for de med fasit:** fullført 2026-08-06 (Anders' ja per batch).
+**Dekningen er ikke lenger «25 av 343».** Strategien endret seg 09.08: kjernen (fase1 + W1 + W2)
+har 1:1-fasit, og resten dekkes av **maler** — 6 maler i W3 dekker 17 Meg/Booking-ruter, 6 i W4
+dekker admin-restene, 6 i W5 dekker ~63 marketing/auth/forelder/system-ruter. Én tegnet mal +
+variant-sjekk per rute erstatter én tegning per skjerm. Derfor er 79 fasit nok til å dekke alle
+**in-scope** ruter.
 
-Merk: 343-tallet er FØR W1-konsolideringen er kodet. Når vedtakene implementeres, utgår
-`/portal/gjennomfore` (redirect), `/portal/planlegge/bygger`, to av fire testflater og én av
-de to sammenslåtte økt-detalj-rutene — totalen synker da mot ~338. Re-telles per bølge.
+**Eksplisitt utenfor** (se `PIXEL-PERFECT-PLAN-COMPLETE.md` §1.2): `(marketing)/stats/*` (~45),
+drift/AgenticOS-dyp (~14), redirect-stubber, `(legacy)/*` som erstattes, og interne demoer.
+
+**Flaskehalsen er sign-off, ikke tegning og ikke kode.** Ingen skjerm har kryss. Sign-off krever
+skjermbilder side om side mot fasit — og de kan per 10.08 ikke lages mot en Vercel-preview, fordi
+Preview-miljøet mangler `DATABASE_URL` (alle DB-sider svarer 500). Se `NATTRAPPORT-2026-08-10.md`
+og PR #389/#390.
+
+Tallgrunnlaget under (343 skjermer, tabellen i §«Hva som IKKE har fasit») er **historikk fra
+05.–06.08** og er beholdt for sporbarhet. Det er ikke re-talt mot kode etter at mal-strategien
+ble innført, og skal ikke brukes som dekningsregnskap lenger.
 
 **Endring siden 02.08.2026:** 8 nye fasitskjermer levert av designeren — 6 i PlayerHQ
 Gjennomføre/live-økt-familien (som sto med **0 fasit** i tabellen under §Hva som IKKE har
@@ -160,7 +174,11 @@ Plan dekker den, ruten blir redirect) · økt-detalj-rutene slått sammen · tes
 
 ---
 
-## Hva som IKKE har fasit — de 318
+## Hva som IKKE har fasit — de 318 (HISTORIKK 05.08, ikke gjeldende)
+
+> ⚠ **Utdatert siden 09.08.2026.** Denne seksjonen ble skrevet før W2–W6 ble tegnet og før
+> mal-strategien. Alle radene under har nå fasit, enten 1:1 eller via mal. Beholdt for
+> sporbarhet — bruk §«Det korte svaret» øverst som dekningsregnskap.
 
 Per seksjon, ekte skjermer uten en tegnet Paper-skjerm. **NB: tabellen er opptellingen fra
 05.08 morgen — W1-godkjenningen samme kveld er IKKE regnet inn i radene.** For
@@ -204,28 +222,22 @@ mangler både fasit og oppføring.
 
 ---
 
-## Hva dette betyr for steg 7–9
+## Hva dette betyr nå (oppdatert 2026-08-10)
 
-De tre bølgene i planen kan nå tallfestes:
+Bølgetabellen som sto her («7 — PlayerHQ 151 skjermer, 23 med fasit …») er **utgått**. Den
+regnet én tegning per skjerm, og konkluderte med at «93 % av skjermene har ingen fasit å måle
+mot». Begge deler er passert:
 
-| Bølge | Skjermer | Med fasit | Må designes underveis |
-|---|---:|---:|---:|
-| 7 — PlayerHQ | 151 | 23 (12 + 11 fra W1) | 128 |
-| 8 — AgencyOS | 121 | 10 | 111 |
-| 9 — resten (marketing, booking, forelder, auth, system) | 71 | 3 | 68 |
+- **W1–W6 er tegnet.** Ingen in-scope skjerm mangler fasit lenger.
+- **Mal-strategien løste volumet.** 18 maler (6 i W3, 6 i W4, 6 i W5) dekker de ~100 rutene som
+  ellers ville krevd hver sin tegning. Metoden er: implementer malen 100 % pixel, så arver alle
+  ruter som deler den layouten — deretter en kort variant-sjekk per rute (tittel, tom tilstand,
+  primær handling).
+- **Steg 7–9-strukturen er avløst av PP-0…PP-10.** Se `PIXEL-PERFECT-PLAN-COMPLETE.md`.
 
-Designes «underveis» gjelder ikke lenger: siden 05.08 tegnes alt i forkant i bølger W1–W6
-(`docs/port/skjermplan-tegnet-og-wireframe.md`) — ingen skjerm kodes uten tegnet fasit.
-
-Den viktigste konsekvensen står ved lag selv om tallet er bedre: **93 % av skjermene har
-ingen fasit å måle mot.** Planens arbeidsmåte — «skjermbilder side om side med Paper-fasiten
-i hver PR» — virker for 25 skjermer. For de 318 andre må porten hvile på noe annet:
-byggeklossene fra steg 5 og retningslinjene i `guidelines/` i Claude Design-prosjektet
-(`605a48cc`). Er de riktige, blir de fleste skjermene riktige uten at hver enkelt er tegnet
-først.
-
-Det taler for å legge mer vekt på steg 5 og 6 enn planen antyder, og for å behandle steg 7–9 som
-komposisjonsarbeid framfor 318 enkeltdesign.
+Det som står ved lag fra den gamle konklusjonen er poenget om byggeklossene: er primitivene i
+`components/` og reglene i `guidelines/` riktige, blir skjermene riktige uten at hver enkelt
+måles for seg. Det er nettopp det mal-pixel bygger på.
 
 ---
 

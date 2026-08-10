@@ -2,20 +2,42 @@
 
 > **Hva dette er:** ett snapshot av hvor plattformen står akkurat nå. Oppdater datoen + relevante linjer når noe vesentlig endrer seg.
 
-**Sist oppdatert:** 2026-08-10 natt.
+**Sist oppdatert:** 2026-08-10 formiddag.
 
-**Bygget:** `main` er **grønt** igjen. Den var rød med 114 feil fra 09.08 (syntaksfeil fra
+**Bygget:** `main` er **grønt**. Den var rød med 114 feil fra 09.08 (syntaksfeil fra
 automatisk slug-tagging skjulte 79 typefeil, som igjen skjulte 17 lint- og 14 fargefeil).
 Rettet i [#385](https://github.com/akgolfsoftware/Golf_Headquarters/pull/385) — `npm run verify`
 grønt, 943/943 tester.
 
-**Paper-port (viktigst nå):** Wave **0–D** chrome + finpuss er i sandbox-branch
-`handoff/iphone-5h-2026-08-09` — se **`docs/port/WAVE-STATUS-MASTER.md`**.
-Ikke antatt på prod før Mac push.
-**Pixel sign-off:** de 11 skjermene i PP-1 + PP-2-kjernen har nå bevis side om side mot fasit i
-**`docs/port/SIGNOFF-GALLERI-2026-08-10.md`** (33 bilder, mobil + desktop, lys + mørk). Ingen av
-dem er nær nok fasiten til å signeres ennå — tre beslutninger venter på Anders, se
-`docs/port/NATTRAPPORT-2026-08-10.md`. Øvrige waves mangler fortsatt sign-off helt.
+**Vercel Preview bygger IKKE — og har ikke gjort det siden 05.08.** `DIRECT_URL` mangler i
+Preview-miljøet, så `postinstall: prisma generate` velter `npm install` før bygget starter. Alle
+preview-deployer siden #384 er ERROR; alle produksjonsdeployer er READY, derfor ble det ikke
+oppdaget. Kodefiksen ligger i [#389](https://github.com/akgolfsoftware/Golf_Headquarters/pull/389)
+(gjør `prisma.config.ts` tolerant), men **`DATABASE_URL` mangler også i Preview**, så DB-sider
+svarer 500 der. Det siste kan bare fikses i Vercel-panelet.
+**Konsekvens: sign-off-galleriet kan ikke kjøres mot preview — og uten galleri kan ingen skjerm
+krysses av.** Dette er nå den harde blokkeringen for hele designporten.
+
+**Paper-port (viktigst nå):** styrende plan er **`docs/port/PIXEL-PERFECT-PLAN-COMPLETE.md`**
+(PP-0…PP-10). Wave A–I i `WAVE-STATUS-MASTER.md` er chrome-historikk, ikke pixel.
+
+- **Design/tegning: FERDIG.** 79 fasit-HTML i Claude Design `605a48cc` (33 `fase1/` + 46
+  `fase2/`) + 8 templates + 138 komponenter. W1–W6 er alle tegnet; ingen in-scope skjerm mangler
+  fasit. Speilet `designsystem/paper/` er verifisert i synk 10.08.
+- **Kode: 52 `[~]`** (chrome portet, ikke pixel), **35 `[ ]`** (ikke bygget, inkl. 8
+  templates-rader).
+- **Pixel sign-off: 0 av 79.** Bevis side om side finnes for 11 skjermer i
+  **`docs/port/SIGNOFF-GALLERI-2026-08-10.md`** (33 bilder, mobil + desktop, lys + mørk).
+- **Bygget etter galleriet:** PP-1.3 Analyse (13 → 4 kort) og PP-1.6 oransje innlogging
+  ([#387](https://github.com/akgolfsoftware/Golf_Headquarters/pull/387)) · PP-2.1 Konsoll
+  ombygget til tråd + rail til åtte punkter
+  ([#388](https://github.com/akgolfsoftware/Golf_Headquarters/pull/388)) · PP-2.2 Innboks
+  ([#389](https://github.com/akgolfsoftware/Golf_Headquarters/pull/389), åpen) · PP-1.1/1.2/1.4/1.5
+  ([#390](https://github.com/akgolfsoftware/Golf_Headquarters/pull/390), åpen).
+  **Ingen av dem er signert** — galleriets bilder er fra før endringene og må tas på nytt.
+- **Gjenstår:** PP-2.3 Spillere · PP-2.4 Kalender · PP-3 (live/WB/forelder) · de 35 `[ ]` ·
+  mal-varianter W3–W5 · PP-10 regresjon. PP-1.7 offentlig booking er låst til slutt (Acuity).
+
 Masterbrain drill-seed er tømt. Appen er fortsatt ikke klar for betalende brukere før P0-aktivering
 (Stripe/DNS/Resend + spiller-login).
 
@@ -29,7 +51,8 @@ Masterbrain drill-seed er tømt. Appen er fortsatt ikke klar for betalende bruke
 | **Uavklart / parkert / løst** | `docs/AAPNE-SPORSMAAL.md` |
 | **Låste forretningsregler** (fasit) | `docs/platform/BUSINESS-RULES.md` |
 | **Full plattformkontekst** (5 min) | `docs/platform/AGENT-BRIEF.md` |
-| **Design-gap (produkt)** | `docs/port/fasit-liste-paper.md` (25 av 343 ruter har Paper-fasit) + `docs/port/plan-designport-alle-skjermer.md` |
+| **Design-gap (produkt)** | `docs/port/fasit-liste-paper.md` (79 fasit-HTML — dekker alle in-scope ruter, 1:1 eller via mal) |
+| **Styrende portplan** | `docs/port/PIXEL-PERFECT-PLAN-COMPLETE.md` (PP-0…PP-10) |
 | **Ferdigstillingsplan** | Cursor-plan «Ferdigstill AK Golf HQ» (Fase A lansering → Fase B loop) |
 
 Historiske bygg-spor (SKJERM-STATUS, SKJERM-BYGGEPLAN, BYGGELOGG-FLAGG, KONFLIKTER) er slettet 05.08.2026 — de lever i git-historikken, ikke bygg mot dem.
@@ -38,10 +61,11 @@ Historiske bygg-spor (SKJERM-STATUS, SKJERM-BYGGEPLAN, BYGGELOGG-FLAGG, KONFLIKT
 
 ## Kort sagt
 
-### Paper design (2026-08-09)
-- **Masterstatus:** [`docs/port/WAVE-STATUS-MASTER.md`](port/WAVE-STATUS-MASTER.md)
-- Wave A–D agent-port: PlayerHQ P0, AgencyOS P0, Live+runde, Workbench/test/drill
-- **Gjenstår:** Mac push · pixel DONE · Wave E–F · pattern G–K
+### Paper design (2026-08-10)
+- **Styrende plan:** [`docs/port/PIXEL-PERFECT-PLAN-COMPLETE.md`](port/PIXEL-PERFECT-PLAN-COMPLETE.md) (PP-0…PP-10)
+- **Chrome-historikk:** [`docs/port/WAVE-STATUS-MASTER.md`](port/WAVE-STATUS-MASTER.md) — Wave A–I portet
+- Tegning ferdig (79 fasit) · kode 52 `[~]` / 35 `[ ]` · **0 signert**
+- **Gjenstår:** sign-off (blokkert av Preview-env) · PP-2.3/2.4 · PP-3 · de 35 `[ ]` · mal-varianter
 
 Appen er **deployet og kjører** på `akgolf-hq.vercel.app`. PlayerHQ + AgencyOS + Forelder + Auth har **0 design-GAP** (verifisert 23. jul). Coaching-/business-motoren (ukesyklus, godkjenningskø, churn, kapasitet-som-penger, m.m.) er levert i juli. **Den er IKKE klar for betalende/ekte brukere ennå** — største hinder er at registrerte spillere aldri har logget inn, pluss Resend DKIM / DNS / Stripe-panel hos Anders. Betaling starter **1. september 2026** (`BETALING_STARTER` i `src/lib/feature-flags.ts:18`, verifisert 2026-08-02) — koden gir alle PRO gratis frem til da. Dette dokumentet sa tidligere 1. august; datoen i koden er fasit.
 

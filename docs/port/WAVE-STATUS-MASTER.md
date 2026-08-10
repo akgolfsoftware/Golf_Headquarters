@@ -146,21 +146,28 @@ Se `WAVE-I-STATUS.md`.
 
 ---
 
-## Gjenstår (prioritert)
+## Gjenstår (prioritert) — oppdatert 10.08.2026
+
+> **«Mac push» er ikke lenger et punkt.** Wave A–I-arbeidet ligger i `main` (batch A–G,
+> W3–W5-slugs og auth-slugs er alle merget). Sandbox-branchen
+> `handoff/iphone-5h-2026-08-09` er historikk.
 
 ### Umiddelbart **[ANDERS]**
-1. **Mac push** sandbox-branch → `main` (handoff tarball / apply script)
-2. Hard refresh prod: Hjem, Plan, Agency Konsoll, Live, Workbench
-3. **Pixel sign-off** Wave A–D (fasit side om side) → marker DONE i `PAPER-ZIP-CHECKLIST.md`
+1. **Sett env-variabler for Vercel Preview** (`DIRECT_URL` + `DATABASE_URL`, pooler-host —
+   ikke den IPv6-only direkte-hosten). Uten dette kan ikke sign-off-galleriet lages, og
+   ingen skjerm kan krysses av. Se `STATUS-NÅ.md` og PR #389/#390.
+2. Merg [#389](https://github.com/akgolfsoftware/Golf_Headquarters/pull/389) — gjør
+   `prisma.config.ts` tolerant for manglende `DIRECT_URL` så preview i det hele tatt bygger.
+3. **Pixel sign-off** når nytt galleri foreligger → marker `[x]` i `PAPER-ZIP-CHECKLIST.md`.
 
 ### Agent neste (kode)
 | # | Oppgave |
 |---|---|
-| 1 | **Wave J** — legacy/intern rest **eller Mac push A–I** |
-| 2 | **Wave F** — økonomi, innstillinger, AK-stigen, agenticos, turnering-WB, feiring, fys/tek |
-| 3 | Agency **live-session** dyp (F1-31) |
-| 4 | **Pattern G–K** — ruter uten fasit (monster + tokens) |
-| 5 | Screenshots `screenshots/paper/*` der mulig i sandbox |
+| 1 | **PP-2.3 Spillere** — gruppering (Trenger deg nå / Følger planen / Hviler), SG-kolonne, fire nøkkeltall i detaljpanelet |
+| 2 | **PP-2.4 Kalender** — detaljkolonne med konfliktløsning, belegg-tallene, Agenda-visning, tettere tidsakse |
+| 3 | **PP-3** — live/runde/workbench/forelder pixel-pass |
+| 4 | De **35 `[ ]`** i checklisten, fase for fase |
+| 5 | **Mal-varianter W3–W5** + PP-10 regresjon |
 
 ### Produkt / lansering (uendret spor)
 - Masterbrain rebuild + Putting brain (drill bank tømt)
