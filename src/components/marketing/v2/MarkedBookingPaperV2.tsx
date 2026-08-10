@@ -42,6 +42,8 @@ export interface MarkedBookingPaperV2Props {
   tjenester: PaperTjeneste[];
   abonnement: PaperAbonnement[];
   lokasjon: string;
+  /** Første ledige luke for den billigste økta, regnet på server. */
+  nesteLedigInit: string | null;
 }
 
 type Steg = "tjeneste" | "tid" | "deg" | "bekreft";
@@ -62,6 +64,7 @@ export function MarkedBookingPaperV2({
   tjenester,
   abonnement,
   lokasjon,
+  nesteLedigInit,
 }: MarkedBookingPaperV2Props) {
   const [steg, setSteg] = useState<Steg>("tjeneste");
   const [valgtSlug, setValgtSlug] = useState<string | null>(null);
@@ -122,13 +125,16 @@ export function MarkedBookingPaperV2({
     [tjenester],
   );
 
-  /* Neste ledige er ukjent før en tjeneste er valgt — ledigheten er coachens,
-     og coachen følger tjenesten. Fasiten viser «—» i samme situasjon. */
+  /* Serveren har regnet neste ledige for den billigste økta. Så snart kunden
+     velger en tjeneste, er det DEN coachens ledighet som gjelder — da tar de
+     lastede dagene over. */
   const nesteLedig = useMemo(() => {
-    const d = dager.find((x) => x.tider.length);
-    if (!d) return null;
-    return { tekst: `${d.dw} ${d.tider[0].kl}`, sted: lokasjon };
-  }, [dager, lokasjon]);
+    if (dager.length) {
+      const d = dager.find((x) => x.tider.length);
+      return d ? { tekst: `${d.dw} ${d.tider[0].kl}`, sted: lokasjon } : null;
+    }
+    return nesteLedigInit ? { tekst: nesteLedigInit, sted: lokasjon } : null;
+  }, [dager, lokasjon, nesteLedigInit]);
 
   const rullTilBook = useCallback(() => {
     bookRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -303,9 +309,7 @@ export function MarkedBookingPaperV2({
               <div>
                 <span className="k">Neste ledige</span>
                 <span className="v">{nesteLedig?.tekst ?? "—"}</span>
-                <span className="w">
-                  {nesteLedig?.sted ?? (valgtSlug ? "ingen ledige tider" : "velg en tjeneste først")}
-                </span>
+                <span className="w">{nesteLedig?.sted ?? "ingen ledige tider"}</span>
               </div>
               <div>
                 <span className="k">Bekreftelse</span>

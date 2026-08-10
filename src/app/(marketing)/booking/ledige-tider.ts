@@ -46,6 +46,37 @@ export type LedigDag = {
   tider: LedigTid[];
 };
 
+/**
+ * Første ledige luke for én tjeneste. Brukes av heroens «Neste ledige», som
+ * skal vise et ekte tidspunkt allerede ved første visning — fasiten har tallet
+ * der. Løkka bryter på første treff, så i praksis er dette ett oppslag.
+ */
+export async function finnNesteLedige(
+  slug: string,
+): Promise<{ tekst: string } | null> {
+  publicAction();
+  if (!(await kanBrukeInnebygdBooking())) return null;
+
+  const service = await prisma.serviceType.findUnique({ where: { slug } });
+  if (!service || !service.active) return null;
+
+  const idag = new Date();
+  idag.setHours(0, 0, 0, 0);
+
+  for (let i = 0; i < DAGER_FRAM; i++) {
+    const d = new Date(idag);
+    d.setDate(d.getDate() + i);
+    const alle = await getAvailableSlots(service.id, d);
+    const slots = service.coachUserId
+      ? alle.filter((s) => s.coachId === service.coachUserId)
+      : alle;
+    if (slots.length) {
+      return { tekst: `${ukedag.format(d).replace(".", "")} ${klokke.format(slots[0].start)}` };
+    }
+  }
+  return null;
+}
+
 export async function hentLedigeDager(slug: string): Promise<LedigDag[]> {
   // Bevisst åpen for uinnloggede: bookingsiden er inngangen for folk uten
   // konto, og ledige luker er offentlig informasjon. Ingen persondata leses.
