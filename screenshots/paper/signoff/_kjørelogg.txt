@@ -1,3 +1,2 @@
-OK    PP-2.2 m390   /admin/innboks — "AI Meldinger Varsler Oppfølging Oppgaver AGENCYOS · INNBOKS Innboks 2 "
-FEIL  PP-2.2 d1280 — page.waitForTimeout: Target page, context or browser has been closed
-FEIL  PP-2.2 m390 mørk — browser.newContext: Target page, context or browser has been closed
+OK    PP-1.7 m390   /booking — "AK Golf . Logg inn AK GOLF ACADEMY · FREDRIKSTAD Book en time med Ande"
+OK    PP-1.7 d1280  /booking — "AK Golf . Priser Spørsmål Logg inn AK GOLF ACADEMY · FREDRIKSTAD Book "
