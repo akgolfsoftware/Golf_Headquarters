@@ -1,35 +1,30 @@
 /**
- * v2-preview: AgencyOS Triage / Innboks (retning C). Egen top-level route-group
- * (v2preview) som IKKE arver AdminShell — kun root-layout — så V2Shell leverer
- * all chrome (IkonRail/BunnNav) i mørk v2-scope.
+ * AgencyOS · Innboks (PP-2.2).
  *
- * Auth + data er identisk med cockpit-ruten: samme requirePortalUser-guard
- * (ADMIN/COACH) og samme loadDailyBrief-loader (køen gjenbrukes, grupperes).
+ * Fasit: designsystem/paper/fase1/agencyos-innboks.html. Én liste med
+ * filterpiller og ett detaljpanel — ikke fem faner. Rutene bak pillene lever
+ * videre (/admin/godkjenninger, /admin/varsler, /admin/oppfolging,
+ * /admin/handlingssenter); de nås fra ⌘K og fra «Åpne i …» på hver sak.
+ * Derfor er KoHubNav borte fra DENNE skjermen, ikke fra appen.
  *
- * Server component.
+ * Server component. Samme requirePortalUser-guard (ADMIN/COACH) som før.
  */
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
-import { loadDailyBrief } from "@/lib/agencyos/daily-brief-data";
-import { loadAppFeedback } from "@/lib/admin/load-app-feedback";
-import { koTelling } from "@/lib/admin/ko-telling";
+import { loadInnboksSaker } from "@/lib/admin/innboks-saker";
 import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
-import { KoHubNav } from "@/components/admin/v2/agency-hub-subnav";
-import { TriageV2 } from "@/components/admin/v2/TriageV2";
+import { InnboksSaker } from "@/components/admin/v2/innboks/InnboksSaker";
 
 export const dynamic = "force-dynamic";
+export const metadata = { title: "Innboks · AgencyOS" };
 
-export default async function V2TriagePage() {
+export default async function AdminInnboksPage() {
   const user = await requirePortalUser({ allow: ["ADMIN", "COACH"] });
-  const [data, feedback, ko] = await Promise.all([
-    loadDailyBrief({ id: user.id, name: user.name, role: user.role }),
-    loadAppFeedback(),
-    koTelling(user.id, user.role),
-  ]);
+  const data = await loadInnboksSaker({ id: user.id, role: user.role, name: user.name });
+
   return (
-    <V2Shell bredde="kolonne" aktiv="innboks" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>
-      <KoHubNav />
-      <TriageV2 data={data} feedback={feedback} ko={ko} />
+    <V2Shell bredde="full" aktiv="innboks" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>
+      <InnboksSaker data={data} />
     </V2Shell>
   );
 }
