@@ -1,0 +1,448 @@
+<!-- @dsCard group="Skjermer" -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>A2 Oversikt — WANG Golf</title>
+<style>
+  @import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800&family=Quattrocento+Sans:wght@400;700&display=swap");
+
+  :root {
+    --wang-navy: #17446f;
+    --wang-teal: #2e857d;
+    --wang-mint: #49ca9f;
+    --wang-teal-text: #226f67;
+    --cat-orange: #f47b20;
+    --cat-blue: #007db1;
+
+    --bg-app: #f4f6f8;
+    --surface-card: #ffffff;
+    --text-primary: #1e293b;
+    --text-secondary: #475569;
+    --border-subtle: #e9edf1;
+
+    --tint-teal: color-mix(in srgb, #2e857d 13%, white);
+    --tint-orange: color-mix(in srgb, #f47b20 9%, white);
+    --tint-blue: color-mix(in srgb, #007db1 10%, white);
+
+    --radius-card: 26px;
+    --radius-card-sm: 20px;
+    --radius-chip: 999px;
+    --shadow-card: 0 8px 24px rgba(23, 68, 111, 0.08);
+    --shadow-card-sm: 0 4px 14px rgba(23, 68, 111, 0.06);
+    --shadow-hero: 0 18px 40px rgba(15, 23, 42, 0.22);
+
+    --font-brand: "Montserrat", system-ui, sans-serif;
+    --font-body: "Quattrocento Sans", system-ui, sans-serif;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    padding: 36px 28px 60px;
+    background: #e6eaee;
+    color: var(--text-primary);
+    font-family: var(--font-body);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .page { max-width: 1420px; margin: 0 auto; }
+
+  h1 { font-family: var(--font-brand); font-weight: 800; font-size: 26px; letter-spacing: -0.015em; margin: 0 0 6px; }
+
+  .lede { color: var(--text-secondary); font-size: 15px; line-height: 1.6; max-width: 68ch; margin: 0 0 32px; }
+
+  .t-label {
+    font-family: var(--font-brand); font-weight: 700; font-size: 12px;
+    letter-spacing: 0.08em; text-transform: uppercase; line-height: 1.3;
+    color: var(--text-secondary); margin: 0 0 12px;
+  }
+
+  .frames { display: flex; gap: 30px; align-items: flex-start; flex-wrap: wrap; }
+  .cap { font-family: var(--font-brand); font-weight: 700; font-size: 11px; letter-spacing: 0.07em; text-transform: uppercase; color: var(--text-secondary); margin: 0 0 9px; }
+
+  .phone {
+    width: 390px; height: 800px; background: var(--bg-app);
+    border-radius: 30px; box-shadow: var(--shadow-hero);
+    overflow: hidden; display: flex; flex-direction: column; flex: none;
+  }
+
+  .desk {
+    width: 900px; background: var(--bg-app); border-radius: 18px;
+    box-shadow: var(--shadow-hero); overflow: hidden;
+    display: flex; flex-direction: column; flex: none; min-width: 0;
+  }
+
+  .hd { background: var(--surface-card); box-shadow: var(--shadow-card-sm); flex: none; z-index: 3; }
+  .hd-row { display: flex; align-items: center; gap: 12px; padding: 13px 18px; min-width: 0; }
+  .crest { width: 34px; height: 34px; border-radius: 9px; background: var(--wang-navy); display: grid; place-items: center; flex: none; font-family: var(--font-brand); font-weight: 800; font-size: 13px; color: #fff; }
+  .hd-txt { min-width: 0; flex: 1; }
+  .hd-txt b { display: block; font-family: var(--font-brand); font-weight: 800; font-size: 14.5px; line-height: 1.2; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .hd-txt span { display: block; font-family: var(--font-brand); font-weight: 700; font-size: 10.5px; letter-spacing: 0.07em; text-transform: uppercase; color: var(--text-secondary); margin-top: 2px; }
+  .season { display: inline-flex; align-items: center; gap: 6px; height: 28px; padding: 0 12px; border-radius: var(--radius-chip); background: var(--tint-teal); color: var(--wang-teal-text); font-family: var(--font-brand); font-weight: 700; font-size: 11px; white-space: nowrap; flex: none; }
+  .dot { width: 6px; height: 6px; border-radius: 999px; background: var(--wang-mint); flex: none; }
+
+  .hd-tabs { display: flex; gap: 6px; padding: 0 26px 12px; min-width: 0; }
+  .tab { font-family: var(--font-brand); font-weight: 700; font-size: 12.5px; padding: 8px 15px; border-radius: var(--radius-chip); color: var(--text-secondary); background: transparent; border: 0; white-space: nowrap; }
+  .tab.on { background: var(--wang-navy); color: #fff; }
+
+  .scroll { flex: 1; overflow: hidden; padding: 15px 16px 18px; display: flex; flex-direction: column; gap: 13px; min-height: 0; }
+
+  /* ---- Sesongbånd: helhetsbildet som mangler i dag ---- */
+  .hero {
+    background: var(--wang-navy); color: #fff;
+    border-radius: var(--radius-card); box-shadow: var(--shadow-hero);
+    padding: 17px 18px 16px; min-width: 0; flex: none;
+  }
+
+  .hero .kick { font-family: var(--font-brand); font-weight: 700; font-size: 10.5px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--wang-mint); margin: 0; }
+  .hero h2 { font-family: var(--font-brand); font-weight: 800; font-size: 23px; margin: 5px 0 0; letter-spacing: -0.015em; }
+  .hero .sub { font-size: 13px; color: rgba(255,255,255,.72); margin: 4px 0 0; line-height: 1.5; }
+
+  /* Sesongstripen */
+  .strip { display: flex; gap: 3px; margin-top: 14px; }
+  .strip i { height: 7px; border-radius: 3px; flex: 1; display: block; }
+  .strip-legend { display: flex; justify-content: space-between; margin-top: 7px; font-family: var(--font-brand); font-weight: 700; font-size: 9.5px; letter-spacing: .05em; text-transform: uppercase; color: rgba(255,255,255,.6); }
+
+  .card { background: var(--surface-card); border-radius: var(--radius-card-sm); box-shadow: var(--shadow-card-sm); padding: 14px 15px; min-width: 0; flex: none; }
+
+  .sec-h { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 9px; min-width: 0; }
+  .sec-h .t { font-family: var(--font-brand); font-weight: 700; font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--text-secondary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+  .sec-h .a { font-family: var(--font-brand); font-weight: 700; font-size: 11.5px; color: var(--wang-navy); white-space: nowrap; flex: none; }
+
+  /* Øktrad */
+  .okt { display: flex; align-items: center; gap: 11px; padding: 9px 0; border-bottom: 1px solid var(--border-subtle); min-width: 0; }
+  .okt:last-child { border-bottom: 0; padding-bottom: 0; }
+  .okt:first-child { padding-top: 0; }
+  .tid { width: 42px; flex: none; font-family: var(--font-brand); font-weight: 700; font-size: 12.5px; font-variant-numeric: tabular-nums; color: var(--wang-navy); }
+  .okt-txt { min-width: 0; flex: 1; }
+  .okt-txt b { display: block; font-family: var(--font-brand); font-weight: 600; font-size: 13.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .okt-txt span { display: block; font-size: 12px; color: var(--text-secondary); margin-top: 1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .pil { flex: none; width: 15px; height: 15px; stroke: #94a3b8; fill: none; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+
+  .chip { display: inline-flex; align-items: center; font-family: var(--font-brand); font-weight: 700; font-size: 10px; letter-spacing: .05em; text-transform: uppercase; padding: 4px 9px; border-radius: 999px; white-space: nowrap; flex: none; }
+
+  .btn { font-family: var(--font-brand); font-weight: 600; font-size: 14.5px; padding: 13px 22px; border-radius: 999px; border: 0; background: var(--wang-navy); color: #fff; width: 100%; }
+
+  .skel { background: linear-gradient(90deg, #eef1f4 25%, #e3e8ed 50%, #eef1f4 75%); border-radius: 8px; height: 12px; }
+  .skel-d { background: rgba(255,255,255,.16); border-radius: 8px; }
+
+  .bn { flex: none; background: var(--surface-card); box-shadow: 0 -6px 20px rgba(23,68,111,.09); display: grid; grid-template-columns: repeat(4,1fr); padding: 8px 6px 14px; }
+  .bn-i { display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 5px 2px; border: 0; background: transparent; color: var(--text-secondary); min-width: 0; }
+  .bn-i svg { width: 21px; height: 21px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+  .bn-i span { font-family: var(--font-brand); font-weight: 700; font-size: 10px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
+  .bn-i.on { color: var(--wang-navy); }
+  .bn-i.on::before { content: ""; position: absolute; margin-top: -8px; width: 22px; height: 3px; border-radius: 999px; background: var(--wang-mint); }
+
+  .note { background: var(--surface-card); border-radius: var(--radius-card); box-shadow: var(--shadow-card); padding: 22px 24px; font-size: 14px; line-height: 1.65; color: var(--text-secondary); margin-top: 30px; }
+  .note b { color: var(--text-primary); }
+  .note ul { margin: 10px 0 0; padding-left: 20px; }
+  .note li { margin-bottom: 8px; }
+  .split { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px,1fr)); gap: 18px; }
+  .was { border-left: 3px solid #cbd5e1; padding-left: 14px; }
+  .now { border-left: 3px solid var(--wang-mint); padding-left: 14px; }
+  .was h4, .now h4 { font-family: var(--font-brand); font-weight: 700; font-size: 11px; letter-spacing: .07em; text-transform: uppercase; margin: 0 0 7px; color: var(--text-secondary); }
+  .was p, .now p { margin: 0; font-size: 13.5px; line-height: 1.6; }
+
+  .d-grid { display: grid; grid-template-columns: minmax(0,1.5fr) minmax(0,1fr); gap: 14px; align-items: start; }
+</style>
+
+<div class="page">
+  <h1>A2 — Oversikt</h1>
+  <p class="lede">
+    Elevens landingsflate. Hovedgrepet er <b>sesongbåndet</b> øverst: det svarer på «hvor er jeg
+    i sesongen» før du rekker å rulle. Under følger dagen, så uka. Én primær handling.
+  </p>
+
+  <p class="t-label">Mobil 390px — fire tilstander</p>
+  <div class="frames">
+
+    <!-- SUKSESS -->
+    <div>
+      <p class="cap">Suksess</p>
+      <div class="phone">
+        <div class="hd"><div class="hd-row">
+          <div class="crest">W</div>
+          <div class="hd-txt"><b>Toppidrett Fredrikstad</b><span>Golf</span></div>
+          <span class="season"><span class="dot"></span>26/27</span>
+        </div></div>
+
+        <div class="scroll">
+          <div class="hero">
+            <p class="kick">Uke 34 · Periode 3 av 6</p>
+            <h2>Konkurranse</h2>
+            <p class="sub">Fire uker igjen av perioden. Neste: NM junior, 12. september.</p>
+            <div class="strip">
+              <i style="background:#49ca9f"></i><i style="background:#49ca9f"></i>
+              <i style="background:#2e857d"></i>
+              <i style="background:#f47b20;flex:1.6"></i>
+              <i style="background:rgba(255,255,255,.22)"></i><i style="background:rgba(255,255,255,.22)"></i>
+            </div>
+            <div class="strip-legend"><span>Aug</span><span>Des</span><span>Apr</span><span>Jul</span></div>
+          </div>
+
+          <div class="card">
+            <div class="sec-h"><span class="t">I dag · tirsdag 11. aug</span><span class="a">Uka →</span></div>
+            <div class="okt">
+              <span class="tid">11:00</span>
+              <span class="okt-txt"><b>Baneøkt — spill</b><span>Gamle Fredrikstad · 2 t</span></span>
+              <span class="chip" style="background:var(--tint-orange);color:#b4571a">Nå</span>
+            </div>
+            <div class="okt">
+              <span class="tid">15:30</span>
+              <span class="okt-txt"><b>Fysisk — styrke</b><span>WANG-hallen · 1 t</span></span>
+              <svg class="pil" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="sec-h"><span class="t">Resten av uka</span><span class="a">Plan →</span></div>
+            <div class="okt">
+              <span class="tid">Tor</span>
+              <span class="okt-txt"><b>Nærspill — chip og pitch</b><span>Simulator · 1,5 t</span></span>
+              <svg class="pil" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg>
+            </div>
+            <div class="okt">
+              <span class="tid">Fre</span>
+              <span class="okt-txt"><b>Baneøkt — 18 hull</b><span>Gamle Fredrikstad · 4 t</span></span>
+              <svg class="pil" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg>
+            </div>
+            <div class="okt">
+              <span class="tid">Lør</span>
+              <span class="okt-txt"><b>Klubbturnering</b><span>Onsøy GK · hele dagen</span></span>
+              <span class="chip" style="background:var(--tint-blue);color:#00618a">Turnering</span>
+            </div>
+          </div>
+
+          <button class="btn">Logg dagens økt</button>
+        </div>
+
+        <div class="bn">
+          <button class="bn-i on"><svg viewBox="0 0 24 24"><path d="M3 9.5 12 3l9 6.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg><span>Oversikt</span></button>
+          <button class="bn-i"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M8 2v4M16 2v4M3 10h18"/></svg><span>Plan</span></button>
+          <button class="bn-i"><svg viewBox="0 0 24 24"><path d="M22 9 12 4 2 9l10 5z"/><path d="M6 11.5V17c0 1.5 2.7 3 6 3s6-1.5 6-3v-5.5"/></svg><span>Skole</span></button>
+          <button class="bn-i"><svg viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/></svg><span>Foreldre</span></button>
+        </div>
+      </div>
+    </div>
+
+    <!-- LASTER -->
+    <div>
+      <p class="cap">Laster</p>
+      <div class="phone">
+        <div class="hd"><div class="hd-row">
+          <div class="crest">W</div>
+          <div class="hd-txt"><b>Toppidrett Fredrikstad</b><span>Golf</span></div>
+          <span class="season"><span class="dot"></span>26/27</span>
+        </div></div>
+        <div class="scroll">
+          <div class="hero">
+            <div class="skel-d" style="width:46%;height:10px"></div>
+            <div class="skel-d" style="width:62%;height:22px;margin-top:9px"></div>
+            <div class="skel-d" style="width:88%;height:12px;margin-top:9px"></div>
+            <div class="strip" style="margin-top:15px">
+              <i style="background:rgba(255,255,255,.18)"></i><i style="background:rgba(255,255,255,.18)"></i>
+              <i style="background:rgba(255,255,255,.18)"></i><i style="background:rgba(255,255,255,.18)"></i>
+            </div>
+          </div>
+          <div class="card">
+            <div class="skel" style="width:44%;height:9px"></div>
+            <div class="skel" style="width:82%;margin-top:12px"></div>
+            <div class="skel" style="width:66%;margin-top:8px"></div>
+          </div>
+          <div class="card">
+            <div class="skel" style="width:36%;height:9px"></div>
+            <div class="skel" style="width:90%;margin-top:12px"></div>
+            <div class="skel" style="width:74%;margin-top:8px"></div>
+            <div class="skel" style="width:58%;margin-top:8px"></div>
+          </div>
+        </div>
+        <div class="bn">
+          <button class="bn-i on"><svg viewBox="0 0 24 24"><path d="M3 9.5 12 3l9 6.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg><span>Oversikt</span></button>
+          <button class="bn-i"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M8 2v4M16 2v4M3 10h18"/></svg><span>Plan</span></button>
+          <button class="bn-i"><svg viewBox="0 0 24 24"><path d="M22 9 12 4 2 9l10 5z"/><path d="M6 11.5V17c0 1.5 2.7 3 6 3s6-1.5 6-3v-5.5"/></svg><span>Skole</span></button>
+          <button class="bn-i"><svg viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/></svg><span>Foreldre</span></button>
+        </div>
+      </div>
+    </div>
+
+    <!-- TOM -->
+    <div>
+      <p class="cap">Tom — ingen plan lagt inn</p>
+      <div class="phone">
+        <div class="hd"><div class="hd-row">
+          <div class="crest">W</div>
+          <div class="hd-txt"><b>Toppidrett Fredrikstad</b><span>Golf</span></div>
+          <span class="season"><span class="dot"></span>26/27</span>
+        </div></div>
+        <div class="scroll">
+          <div class="hero" style="background:#334155">
+            <p class="kick" style="color:#cbd5e1">Sesong 2026–2027</p>
+            <h2>Ikke planlagt ennå</h2>
+            <p class="sub">Treneren legger inn periodene. Da fylles båndet under.</p>
+            <div class="strip">
+              <i style="background:rgba(255,255,255,.16)"></i><i style="background:rgba(255,255,255,.16)"></i>
+              <i style="background:rgba(255,255,255,.16)"></i><i style="background:rgba(255,255,255,.16)"></i>
+            </div>
+            <div class="strip-legend"><span>Aug</span><span>Des</span><span>Apr</span><span>Jul</span></div>
+          </div>
+          <div class="card" style="text-align:center;padding:26px 20px">
+            <div style="width:56px;height:56px;border-radius:999px;background:var(--tint-teal);display:grid;place-items:center;margin:0 auto">
+              <svg viewBox="0 0 24 24" style="width:25px;height:25px;stroke:var(--wang-teal-text);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M8 2v4M16 2v4M3 10h18"/></svg>
+            </div>
+            <div style="font-family:var(--font-brand);font-weight:700;font-size:16.5px;margin-top:13px">Ingen økter denne uka</div>
+            <div style="font-size:13px;color:var(--text-secondary);line-height:1.6;margin-top:6px">
+              Så snart årsplanen er lagt inn, ser du dagen og uka her.
+            </div>
+          </div>
+        </div>
+        <div class="bn">
+          <button class="bn-i on"><svg viewBox="0 0 24 24"><path d="M3 9.5 12 3l9 6.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg><span>Oversikt</span></button>
+          <button class="bn-i"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M8 2v4M16 2v4M3 10h18"/></svg><span>Plan</span></button>
+          <button class="bn-i"><svg viewBox="0 0 24 24"><path d="M22 9 12 4 2 9l10 5z"/><path d="M6 11.5V17c0 1.5 2.7 3 6 3s6-1.5 6-3v-5.5"/></svg><span>Skole</span></button>
+          <button class="bn-i"><svg viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/></svg><span>Foreldre</span></button>
+        </div>
+      </div>
+    </div>
+
+    <!-- FEIL -->
+    <div>
+      <p class="cap">Feil</p>
+      <div class="phone">
+        <div class="hd"><div class="hd-row">
+          <div class="crest">W</div>
+          <div class="hd-txt"><b>Toppidrett Fredrikstad</b><span>Golf</span></div>
+          <span class="season"><span class="dot"></span>26/27</span>
+        </div></div>
+        <div class="scroll" style="justify-content:center;align-items:center;text-align:center;padding:24px 30px">
+          <div style="width:62px;height:62px;border-radius:999px;background:var(--tint-orange);display:grid;place-items:center">
+            <svg viewBox="0 0 24 24" style="width:27px;height:27px;stroke:#b4571a;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round"><path d="M12 9v4M12 17h.01"/><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/></svg>
+          </div>
+          <div style="font-family:var(--font-brand);font-weight:700;font-size:17.5px;margin-top:15px">Fikk ikke lastet oversikten</div>
+          <div style="font-size:13.5px;color:var(--text-secondary);line-height:1.6;margin-top:7px;max-width:34ch">
+            Sjekk at du er på nett. Planen ligger trygt — den hentes på nytt når du prøver igjen.
+          </div>
+          <button style="margin-top:18px;font-family:var(--font-brand);font-weight:600;font-size:14px;padding:12px 24px;border-radius:999px;border:0;background:var(--wang-navy);color:#fff">Prøv igjen</button>
+        </div>
+        <div class="bn">
+          <button class="bn-i on"><svg viewBox="0 0 24 24"><path d="M3 9.5 12 3l9 6.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg><span>Oversikt</span></button>
+          <button class="bn-i"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M8 2v4M16 2v4M3 10h18"/></svg><span>Plan</span></button>
+          <button class="bn-i"><svg viewBox="0 0 24 24"><path d="M22 9 12 4 2 9l10 5z"/><path d="M6 11.5V17c0 1.5 2.7 3 6 3s6-1.5 6-3v-5.5"/></svg><span>Skole</span></button>
+          <button class="bn-i"><svg viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/></svg><span>Foreldre</span></button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <p class="t-label" style="margin-top:34px">Desktop 1280px</p>
+  <div class="frames">
+    <div class="desk">
+      <div class="hd">
+        <div class="hd-row" style="padding:15px 26px 12px">
+          <div class="crest" style="width:40px;height:40px;font-size:15px">W</div>
+          <div class="hd-txt"><b style="font-size:16px">Toppidrett Fredrikstad</b><span>Golf · Fellesside for elever og foreldre</span></div>
+          <span class="season" style="height:30px;font-size:11.5px"><span class="dot"></span>Sesong 2026–2027</span>
+        </div>
+        <div class="hd-tabs">
+          <button class="tab on">Oversikt</button><button class="tab">Plan</button>
+          <button class="tab">Skole</button><button class="tab">Foreldre</button>
+        </div>
+      </div>
+      <div class="scroll" style="padding:20px 26px 26px">
+        <div class="hero" style="padding:22px 24px">
+          <p class="kick">Uke 34 · Periode 3 av 6</p>
+          <h2 style="font-size:27px">Konkurranse</h2>
+          <p class="sub">Fire uker igjen av perioden. Neste: NM junior, 12. september.</p>
+          <div class="strip" style="margin-top:16px">
+            <i style="background:#49ca9f"></i><i style="background:#49ca9f"></i>
+            <i style="background:#2e857d"></i><i style="background:#f47b20;flex:1.6"></i>
+            <i style="background:rgba(255,255,255,.22)"></i><i style="background:rgba(255,255,255,.22)"></i>
+          </div>
+          <div class="strip-legend"><span>August</span><span>Desember</span><span>April</span><span>Juli</span></div>
+        </div>
+
+        <div class="d-grid">
+          <div class="card" style="border-radius:var(--radius-card);padding:17px 19px">
+            <div class="sec-h"><span class="t">I dag · tirsdag 11. august</span><span class="a">Se uka →</span></div>
+            <div class="okt">
+              <span class="tid">11:00</span>
+              <span class="okt-txt"><b>Baneøkt — spill</b><span>Gamle Fredrikstad · 2 timer · Anders</span></span>
+              <span class="chip" style="background:var(--tint-orange);color:#b4571a">Nå</span>
+            </div>
+            <div class="okt">
+              <span class="tid">15:30</span>
+              <span class="okt-txt"><b>Fysisk — styrke underkropp</b><span>WANG-hallen · 1 time</span></span>
+              <svg class="pil" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg>
+            </div>
+          </div>
+
+          <div class="card" style="border-radius:var(--radius-card);padding:17px 19px">
+            <div class="sec-h"><span class="t">Denne uka</span></div>
+            <div style="display:flex;flex-direction:column;gap:9px">
+              <div style="display:flex;justify-content:space-between;gap:10px;min-width:0">
+                <span style="font-size:13.5px;color:var(--text-secondary);min-width:0">Planlagte økter</span>
+                <b style="font-family:var(--font-brand);font-variant-numeric:tabular-nums;flex:none">6</b>
+              </div>
+              <div style="display:flex;justify-content:space-between;gap:10px;min-width:0">
+                <span style="font-size:13.5px;color:var(--text-secondary);min-width:0">Gjennomført</span>
+                <b style="font-family:var(--font-brand);font-variant-numeric:tabular-nums;color:var(--wang-teal-text);flex:none">2</b>
+              </div>
+              <div style="display:flex;justify-content:space-between;gap:10px;min-width:0">
+                <span style="font-size:13.5px;color:var(--text-secondary);min-width:0">Volum</span>
+                <b style="font-family:var(--font-brand);font-variant-numeric:tabular-nums;flex:none">11,5 t</b>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card" style="border-radius:var(--radius-card);padding:17px 19px">
+          <div class="sec-h"><span class="t">Resten av uka</span><span class="a">Hele planen →</span></div>
+          <div class="okt">
+            <span class="tid">Tor</span>
+            <span class="okt-txt"><b>Nærspill — chip og pitch</b><span>Simulator · 1,5 timer</span></span>
+            <svg class="pil" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg>
+          </div>
+          <div class="okt">
+            <span class="tid">Fre</span>
+            <span class="okt-txt"><b>Baneøkt — 18 hull tellende</b><span>Gamle Fredrikstad · 4 timer</span></span>
+            <svg class="pil" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg>
+          </div>
+          <div class="okt">
+            <span class="tid">Lør</span>
+            <span class="okt-txt"><b>Klubbturnering</b><span>Onsøy GK · hele dagen</span></span>
+            <span class="chip" style="background:var(--tint-blue);color:#00618a">Turnering</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="note">
+    <div class="split">
+      <div class="was">
+        <h4>Slik er det i dag</h4>
+        <p>
+          Oversikten starter rett på ukelista. Eleven ser hva som skjer, men ikke hvor i sesongen
+          hun er, hvor lenge perioden varer, eller hva den bygger mot. Helhetsbildet finnes bare
+          hvis du går inn på Plan → Sesong → Årshjul — tre trykk unna.
+        </p>
+      </div>
+      <div class="now">
+        <h4>Slik blir det</h4>
+        <p>
+          Sesongbåndet ligger øverst på landingsflaten: periodenavn, hvor mange uker igjen, neste
+          milepæl, og hele året som en fargestripe med «du er her». Helhetsbildet koster null trykk.
+        </p>
+      </div>
+    </div>
+    <ul style="margin-top:18px">
+      <li><b>Sesongbåndet leser fra <code>GroupPeriodBlock</code></b> — periodetype, start, slutt og
+        fokus finnes allerede. Stripen trenger ingen nye felter.</li>
+      <li><b>Én primær handling:</b> «Logg dagens økt». Alt annet er lenker.</li>
+      <li><b>Nå-merket</b> er oransje (warning-tokenet) fordi det varsler om tid, ikke om avvik.
+        Ingenting her sperrer — jf. invariant 1.</li>
+      <li><b>Tom tilstand beholder sesongbåndet</b> i grå variant, så flaten ikke kollapser til
+        ingenting før treneren har lagt inn planen.</li>
+      <li><b>Tallene er tabulære</b> så ukeoppsummeringen ikke hopper når den oppdateres.</li>
+    </ul>
+  </div>
+</div>

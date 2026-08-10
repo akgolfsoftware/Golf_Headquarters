@@ -1,0 +1,325 @@
+<!-- @dsCard group="Skjermer" -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>A4 Periodedetalj — WANG Golf</title>
+<style>
+  @import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800&family=Quattrocento+Sans:wght@400;700&display=swap");
+  :root {
+    --wang-navy:#17446f; --wang-teal:#2e857d; --wang-mint:#49ca9f; --wang-teal-text:#226f67;
+    --cat-orange:#f47b20; --cat-yellow:#fcd700; --cat-blue:#007db1; --cat-purple:#7f1975; --cat-gray:#d2d2d2;
+    --bg-app:#f4f6f8; --surface-card:#fff; --text-primary:#1e293b; --text-secondary:#475569; --border-subtle:#e9edf1;
+    --tint-teal:color-mix(in srgb,#2e857d 13%,white); --tint-orange:color-mix(in srgb,#f47b20 9%,white);
+    --tint-blue:color-mix(in srgb,#007db1 10%,white); --tint-yellow:color-mix(in srgb,#fcd700 16%,white);
+    --radius-card:26px; --radius-card-sm:20px;
+    --shadow-card:0 8px 24px rgba(23,68,111,.08); --shadow-card-sm:0 4px 14px rgba(23,68,111,.06);
+    --shadow-hero:0 18px 40px rgba(15,23,42,.22);
+    --font-brand:"Montserrat",system-ui,sans-serif; --font-body:"Quattrocento Sans",system-ui,sans-serif;
+  }
+  * { box-sizing:border-box; }
+  body { margin:0; padding:36px 28px 60px; background:#e6eaee; color:var(--text-primary); font-family:var(--font-body); -webkit-font-smoothing:antialiased; }
+  .page { max-width:1460px; margin:0 auto; }
+  h1 { font-family:var(--font-brand); font-weight:800; font-size:26px; letter-spacing:-.015em; margin:0 0 6px; }
+  .lede { color:var(--text-secondary); font-size:15px; line-height:1.6; max-width:68ch; margin:0 0 32px; }
+  .t-label { font-family:var(--font-brand); font-weight:700; font-size:12px; letter-spacing:.08em; text-transform:uppercase; color:var(--text-secondary); margin:0 0 12px; }
+  .frames { display:flex; gap:30px; align-items:flex-start; flex-wrap:wrap; }
+  .cap { font-family:var(--font-brand); font-weight:700; font-size:11px; letter-spacing:.07em; text-transform:uppercase; color:var(--text-secondary); margin:0 0 9px; }
+  .phone { width:390px; height:830px; background:var(--bg-app); border-radius:30px; box-shadow:var(--shadow-hero); overflow:hidden; display:flex; flex-direction:column; flex:none; }
+  .desk { width:900px; background:var(--bg-app); border-radius:18px; box-shadow:var(--shadow-hero); overflow:hidden; display:flex; flex-direction:column; flex:none; min-width:0; }
+
+  .hd { background:var(--surface-card); box-shadow:var(--shadow-card-sm); flex:none; }
+  .hd-back { display:flex; align-items:center; gap:9px; padding:14px 18px; min-width:0; }
+  .hd-back svg { width:19px; height:19px; stroke:var(--wang-navy); fill:none; stroke-width:2.3; stroke-linecap:round; stroke-linejoin:round; flex:none; }
+  .hd-back b { font-family:var(--font-brand); font-weight:700; font-size:13.5px; color:var(--wang-navy); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; min-width:0; }
+
+  .scroll { flex:1; overflow:hidden; padding:14px 16px 18px; display:flex; flex-direction:column; gap:12px; min-height:0; }
+  .card { background:var(--surface-card); border-radius:var(--radius-card-sm); box-shadow:var(--shadow-card-sm); padding:14px 15px; min-width:0; flex:none; }
+
+  .hero { border-radius:var(--radius-card); box-shadow:var(--shadow-hero); padding:17px 18px; color:#fff; min-width:0; flex:none; background:var(--cat-orange); }
+  .hero .kick { font-family:var(--font-brand); font-weight:700; font-size:10.5px; letter-spacing:.08em; text-transform:uppercase; color:rgba(255,255,255,.82); margin:0; }
+  .hero h2 { font-family:var(--font-brand); font-weight:800; font-size:24px; margin:5px 0 0; letter-spacing:-.015em; }
+  .hero .sub { font-size:13px; color:rgba(255,255,255,.86); margin:5px 0 0; line-height:1.5; }
+  .hero .prog { height:6px; border-radius:999px; background:rgba(255,255,255,.3); margin-top:14px; overflow:hidden; }
+  .hero .prog i { display:block; height:100%; width:50%; background:#fff; border-radius:999px; }
+  .hero .prog-t { font-family:var(--font-brand); font-weight:700; font-size:10px; letter-spacing:.05em; text-transform:uppercase; color:rgba(255,255,255,.86); margin-top:7px; }
+
+  .sec-h { font-family:var(--font-brand); font-weight:700; font-size:11px; letter-spacing:.08em; text-transform:uppercase; color:var(--text-secondary); margin:0 0 10px; }
+
+  .kv { display:flex; justify-content:space-between; gap:12px; padding:8px 0; border-bottom:1px solid var(--border-subtle); min-width:0; }
+  .kv:last-child { border-bottom:0; padding-bottom:0; }
+  .kv:first-child { padding-top:0; }
+  .kv span { font-size:13.5px; color:var(--text-secondary); min-width:0; }
+  .kv b { font-family:var(--font-brand); font-weight:700; font-size:13.5px; font-variant-numeric:tabular-nums; flex:none; }
+
+  .pyr { display:flex; gap:3px; height:10px; border-radius:999px; overflow:hidden; }
+  .pyr i { display:block; }
+  .pyr-rad { display:flex; align-items:center; gap:10px; padding:7px 0; border-bottom:1px solid var(--border-subtle); min-width:0; }
+  .pyr-rad:last-child { border-bottom:0; padding-bottom:0; }
+  .pyr-rad i { width:9px; height:9px; border-radius:3px; flex:none; }
+  .pyr-rad span { font-size:13px; color:var(--text-secondary); flex:1; min-width:0; }
+  .pyr-rad b { font-family:var(--font-brand); font-weight:700; font-size:13px; font-variant-numeric:tabular-nums; flex:none; }
+
+  .mal { display:flex; gap:10px; padding:10px 0; border-bottom:1px solid var(--border-subtle); min-width:0; align-items:flex-start; }
+  .mal:last-child { border-bottom:0; padding-bottom:0; }
+  .mal:first-child { padding-top:0; }
+  .mal-ic { width:22px; height:22px; border-radius:7px; flex:none; display:grid; place-items:center; background:var(--tint-teal); }
+  .mal-ic svg { width:13px; height:13px; stroke:var(--wang-teal-text); fill:none; stroke-width:2.6; stroke-linecap:round; stroke-linejoin:round; }
+  .mal-t { min-width:0; flex:1; }
+  .mal-t b { display:block; font-family:var(--font-brand); font-weight:600; font-size:13.5px; line-height:1.4; }
+  .mal-t span { display:block; font-size:12px; color:var(--text-secondary); margin-top:2px; }
+
+  .ny { display:inline-flex; align-items:center; gap:5px; font-family:var(--font-brand); font-weight:700; font-size:9px; letter-spacing:.05em; text-transform:uppercase; padding:3px 8px; border-radius:999px; background:var(--tint-yellow); color:#7a6200; white-space:nowrap; flex:none; }
+
+  .skel { background:linear-gradient(90deg,#eef1f4 25%,#e3e8ed 50%,#eef1f4 75%); border-radius:8px; height:12px; }
+  .skel-d { background:rgba(255,255,255,.22); border-radius:8px; }
+
+  .note { background:var(--surface-card); border-radius:var(--radius-card); box-shadow:var(--shadow-card); padding:22px 24px; font-size:14px; line-height:1.65; color:var(--text-secondary); margin-top:30px; }
+  .note b { color:var(--text-primary); }
+  .note ul { margin:10px 0 0; padding-left:20px; }
+  .note li { margin-bottom:8px; }
+  .d2 { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:14px; align-items:start; }
+</style>
+
+<div class="page">
+  <h1>A4 — Periodedetalj</h1>
+  <p class="lede">
+    Én periode i sin helhet. Her hører <b>mål</b>, <b>tester</b> og <b>pyramidefordeling</b> hjemme
+    — de tre tingene du savnet. Pyramiden finnes i basen i dag; mål og tester er markert som
+    <span class="ny">Nytt felt</span> og krever schema-endring før de kan kodes.
+  </p>
+
+  <p class="t-label">Mobil 390px — fire tilstander</p>
+  <div class="frames">
+
+    <!-- SUKSESS -->
+    <div>
+      <p class="cap">Suksess</p>
+      <div class="phone">
+        <div class="hd"><div class="hd-back">
+          <svg viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></svg><b>Årsplan</b>
+        </div></div>
+        <div class="scroll">
+          <div class="hero">
+            <p class="kick">Periode 3 av 6 · 2. nov – 15. des</p>
+            <h2>Konkurranse</h2>
+            <p class="sub">Turneringsrytme. Færre, skarpere økter.</p>
+            <div class="prog"><i></i></div>
+            <div class="prog-t">Uke 3 av 6 · 3 uker igjen</div>
+          </div>
+
+          <div class="card">
+            <p class="sec-h">Mål for perioden <span class="ny">Nytt felt</span></p>
+            <div class="mal">
+              <span class="mal-ic"><svg viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg></span>
+              <span class="mal-t"><b>60 % treff innenfor to meter fra 40 meter</b><span>Måles i testuka i januar</span></span>
+            </div>
+            <div class="mal">
+              <span class="mal-ic"><svg viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg></span>
+              <span class="mal-t"><b>Snitt under 74 slag i tellende runder</b><span>Fem runder i perioden</span></span>
+            </div>
+            <div class="mal">
+              <span class="mal-ic"><svg viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg></span>
+              <span class="mal-t"><b>Fullføre rutinen på hvert slag</b><span>Egenvurdering etter hver runde</span></span>
+            </div>
+          </div>
+
+          <div class="card">
+            <p class="sec-h">Øktbudsjett per uke</p>
+            <div class="pyr">
+              <i style="background:var(--cat-blue);flex:2"></i><i style="background:var(--wang-teal);flex:3"></i>
+              <i style="background:var(--wang-mint);flex:2"></i><i style="background:var(--cat-purple);flex:4"></i>
+              <i style="background:var(--cat-orange);flex:2"></i>
+            </div>
+            <div style="margin-top:11px">
+              <div class="pyr-rad"><i style="background:var(--cat-blue)"></i><span>Fysisk</span><b>2</b></div>
+              <div class="pyr-rad"><i style="background:var(--wang-teal)"></i><span>Teknikk</span><b>3</b></div>
+              <div class="pyr-rad"><i style="background:var(--wang-mint)"></i><span>Slag</span><b>2</b></div>
+              <div class="pyr-rad"><i style="background:var(--cat-purple)"></i><span>Spill</span><b>4</b></div>
+              <div class="pyr-rad"><i style="background:var(--cat-orange)"></i><span>Turnering</span><b>2</b></div>
+            </div>
+          </div>
+
+          <div class="card">
+            <p class="sec-h">Omfang</p>
+            <div class="kv"><span>Ukevolum</span><b>7–10 t</b></div>
+            <div class="kv"><span>Økter i uka</span><b>13</b></div>
+            <div class="kv"><span>Varighet</span><b>6 uker</b></div>
+          </div>
+
+          <div class="card">
+            <p class="sec-h">Tester i perioden <span class="ny">Nytt felt</span></p>
+            <div class="mal">
+              <span class="mal-ic" style="background:var(--tint-yellow)"><svg viewBox="0 0 24 24" style="stroke:#7a6200"><path d="M3 3v18h18"/><path d="m7 15 4-4 3 3 5-6"/></svg></span>
+              <span class="mal-t"><b>TN Putt Gate</b><span>Uke 6 · testuka i januar</span></span>
+            </div>
+            <div class="mal">
+              <span class="mal-ic" style="background:var(--tint-yellow)"><svg viewBox="0 0 24 24" style="stroke:#7a6200"><path d="M3 3v18h18"/><path d="m7 15 4-4 3 3 5-6"/></svg></span>
+              <span class="mal-t"><b>40-meter presisjon</b><span>Uke 6 · testuka i januar</span></span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- LASTER -->
+    <div>
+      <p class="cap">Laster</p>
+      <div class="phone">
+        <div class="hd"><div class="hd-back"><svg viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></svg><b>Årsplan</b></div></div>
+        <div class="scroll">
+          <div class="hero" style="background:#94a3b8">
+            <div class="skel-d" style="width:52%;height:10px"></div>
+            <div class="skel-d" style="width:58%;height:23px;margin-top:9px"></div>
+            <div class="skel-d" style="width:84%;height:12px;margin-top:9px"></div>
+            <div class="prog" style="margin-top:16px"><i style="width:0"></i></div>
+          </div>
+          <div class="card">
+            <div class="skel" style="width:42%;height:9px"></div>
+            <div class="skel" style="width:88%;margin-top:12px"></div>
+            <div class="skel" style="width:70%;margin-top:8px"></div>
+          </div>
+          <div class="card">
+            <div class="skel" style="width:36%;height:9px"></div>
+            <div class="skel" style="width:100%;height:10px;margin-top:12px"></div>
+            <div class="skel" style="width:64%;margin-top:10px"></div>
+            <div class="skel" style="width:58%;margin-top:8px"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TOM -->
+    <div>
+      <p class="cap">Tom — periode uten innhold</p>
+      <div class="phone">
+        <div class="hd"><div class="hd-back"><svg viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></svg><b>Årsplan</b></div></div>
+        <div class="scroll">
+          <div class="hero" style="background:var(--cat-gray);color:#334155">
+            <p class="kick" style="color:#475569">Periode 4 av 6 · 16. des – 2. jan</p>
+            <h2 style="color:#1e293b">Ferie</h2>
+            <p class="sub" style="color:#475569">Fri. Ingen planlagte økter.</p>
+          </div>
+          <div class="card" style="text-align:center;padding:30px 22px">
+            <div style="width:54px;height:54px;border-radius:999px;background:#eef2f6;display:grid;place-items:center;margin:0 auto">
+              <svg viewBox="0 0 24 24" style="width:24px;height:24px;stroke:#94a3b8;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+            </div>
+            <div style="font-family:var(--font-brand);font-weight:700;font-size:16.5px;margin-top:13px">Ingen økter planlagt</div>
+            <div style="font-size:13px;color:var(--text-secondary);line-height:1.6;margin-top:6px">
+              Perioden er satt av til fri. Neste periode starter 5. januar med testuka.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- FEIL -->
+    <div>
+      <p class="cap">Feil</p>
+      <div class="phone">
+        <div class="hd"><div class="hd-back"><svg viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></svg><b>Årsplan</b></div></div>
+        <div class="scroll" style="justify-content:center;align-items:center;text-align:center;padding:24px 30px">
+          <div style="width:62px;height:62px;border-radius:999px;background:var(--tint-orange);display:grid;place-items:center">
+            <svg viewBox="0 0 24 24" style="width:27px;height:27px;stroke:#b4571a;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round"><path d="M12 9v4M12 17h.01"/><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/></svg>
+          </div>
+          <div style="font-family:var(--font-brand);font-weight:700;font-size:17.5px;margin-top:15px">Fant ikke perioden</div>
+          <div style="font-size:13.5px;color:var(--text-secondary);line-height:1.6;margin-top:7px;max-width:34ch">
+            Den kan ha blitt endret eller fjernet fra planen.
+          </div>
+          <button style="margin-top:18px;font-family:var(--font-brand);font-weight:600;font-size:14px;padding:12px 24px;border-radius:999px;border:0;background:var(--wang-navy);color:#fff">Til årsplanen</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <p class="t-label" style="margin-top:34px">Desktop 1280px</p>
+  <div class="frames">
+    <div class="desk">
+      <div class="hd"><div class="hd-back" style="padding:15px 26px"><svg viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></svg><b>Årsplan</b></div></div>
+      <div class="scroll" style="padding:20px 26px 26px;gap:14px">
+        <div class="hero" style="padding:22px 24px">
+          <p class="kick">Periode 3 av 6 · 2. november – 15. desember</p>
+          <h2 style="font-size:28px">Konkurranse</h2>
+          <p class="sub">Turneringsrytme. Færre, skarpere økter.</p>
+          <div class="prog"><i></i></div>
+          <div class="prog-t">Uke 3 av 6 · 3 uker igjen</div>
+        </div>
+
+        <div class="d2">
+          <div class="card" style="border-radius:var(--radius-card);padding:17px 19px">
+            <p class="sec-h">Mål for perioden <span class="ny">Nytt felt</span></p>
+            <div class="mal">
+              <span class="mal-ic"><svg viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg></span>
+              <span class="mal-t"><b>60 % treff innenfor to meter fra 40 meter</b><span>Måles i testuka i januar</span></span>
+            </div>
+            <div class="mal">
+              <span class="mal-ic"><svg viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg></span>
+              <span class="mal-t"><b>Snitt under 74 slag i tellende runder</b><span>Fem runder i perioden</span></span>
+            </div>
+            <div class="mal">
+              <span class="mal-ic"><svg viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg></span>
+              <span class="mal-t"><b>Fullføre rutinen på hvert slag</b><span>Egenvurdering etter hver runde</span></span>
+            </div>
+          </div>
+
+          <div class="card" style="border-radius:var(--radius-card);padding:17px 19px">
+            <p class="sec-h">Øktbudsjett per uke</p>
+            <div class="pyr">
+              <i style="background:var(--cat-blue);flex:2"></i><i style="background:var(--wang-teal);flex:3"></i>
+              <i style="background:var(--wang-mint);flex:2"></i><i style="background:var(--cat-purple);flex:4"></i>
+              <i style="background:var(--cat-orange);flex:2"></i>
+            </div>
+            <div style="margin-top:11px">
+              <div class="pyr-rad"><i style="background:var(--cat-blue)"></i><span>Fysisk</span><b>2</b></div>
+              <div class="pyr-rad"><i style="background:var(--wang-teal)"></i><span>Teknikk</span><b>3</b></div>
+              <div class="pyr-rad"><i style="background:var(--wang-mint)"></i><span>Slag</span><b>2</b></div>
+              <div class="pyr-rad"><i style="background:var(--cat-purple)"></i><span>Spill</span><b>4</b></div>
+              <div class="pyr-rad"><i style="background:var(--cat-orange)"></i><span>Turnering</span><b>2</b></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="d2">
+          <div class="card" style="border-radius:var(--radius-card);padding:17px 19px">
+            <p class="sec-h">Omfang</p>
+            <div class="kv"><span>Ukevolum</span><b>7–10 timer</b></div>
+            <div class="kv"><span>Økter i uka</span><b>13</b></div>
+            <div class="kv"><span>Varighet</span><b>6 uker</b></div>
+          </div>
+          <div class="card" style="border-radius:var(--radius-card);padding:17px 19px">
+            <p class="sec-h">Tester i perioden <span class="ny">Nytt felt</span></p>
+            <div class="mal">
+              <span class="mal-ic" style="background:var(--tint-yellow)"><svg viewBox="0 0 24 24" style="stroke:#7a6200"><path d="M3 3v18h18"/><path d="m7 15 4-4 3 3 5-6"/></svg></span>
+              <span class="mal-t"><b>TN Putt Gate</b><span>Uke 6 · testuka i januar</span></span>
+            </div>
+            <div class="mal">
+              <span class="mal-ic" style="background:var(--tint-yellow)"><svg viewBox="0 0 24 24" style="stroke:#7a6200"><path d="M3 3v18h18"/><path d="m7 15 4-4 3 3 5-6"/></svg></span>
+              <span class="mal-t"><b>40-meter presisjon</b><span>Uke 6 · testuka i januar</span></span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="note">
+    <b>Denne skjermen finnes ikke i dag.</b> Perioder er i dag bare farget bakgrunn i kalenderen —
+    du kan ikke åpne én og se hva den handler om. Det er her årsplanen får mening for eleven.
+
+    <ul>
+      <li><b>Pyramidefordelingen kan kodes nå.</b> <code>weeklySessionBudget</code> holder allerede
+        <code>{FYS, TEK, SLAG, SPILL, TURN}</code>, zod-validert via <code>SessionBudgetSchema</code>.
+        Stripen og lista leser rett fra den.</li>
+      <li><b>Mål og tester krever nye felter</b> på <code>GroupPeriodBlock</code> og er merket
+        <span class="ny">Nytt felt</span> i designet. Begge er additive, altså trygge via
+        <code>db execute</code>-mønsteret i gotchas §Schema-endringer — men ikke i en autonom økt.</li>
+      <li><b>Forslag til modellering</b> (til beslutning, ikke bygget): mål som egen tabell
+        <code>GroupPeriodGoal</code> (tekst + målemetode + status), tester som koblingstabell mot
+        <code>TestDefinition</code>. Da unngås JSON-blober som må zod-valideres ved hver lesing.</li>
+      <li><b>Fremdriftsstripen</b> regnes fra <code>startDate</code>/<code>endDate</code> mot dagens
+        dato i Oslo-tid — bruk <code>uke-helpers.ts</code>, aldri rå <code>getDay()</code>.</li>
+      <li><b>Hero-fargen følger periodetypen</b>, samme kanon som tidslinja i A3. Ferie får grå
+        hero med mørk tekst — kontrastsjekket.</li>
+      <li><b>Tom tilstand er ikke en feil.</b> En ferieperiode uten økter er riktig utfall, og
+        teksten peker videre til neste periode i stedet for å be brukeren gjøre noe.</li>
+    </ul>
+  </div>
+</div>

@@ -1,0 +1,243 @@
+<!-- @dsCard group="Grunnlag" -->
+<meta charset="utf-8">
+<title>Farger — WANG Golf</title>
+<style>
+  @import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700&family=Quattrocento+Sans:wght@400;700&display=swap");
+
+  :root {
+    --wang-navy: #17446f;
+    --wang-teal: #2e857d;
+    --wang-mint: #49ca9f;
+    --wang-teal-text: #226f67;
+
+    --cat-orange: #f47b20;
+    --cat-yellow: #fcd700;
+    --cat-pink: #d12a5c;
+    --cat-blue: #007db1;
+    --cat-purple: #7f1975;
+    --cat-gray: #d2d2d2;
+
+    --bg-app: #f4f6f8;
+    --surface-card: #ffffff;
+    --text-primary: #1e293b;
+    --text-secondary: #475569;
+    --border-subtle: #e9edf1;
+
+    --radius-card: 26px;
+    --radius-card-sm: 20px;
+    --radius-chip: 999px;
+    --shadow-card: 0 8px 24px rgba(23, 68, 111, 0.08);
+    --shadow-card-sm: 0 4px 14px rgba(23, 68, 111, 0.06);
+
+    --font-brand: "Montserrat", system-ui, sans-serif;
+    --font-body: "Quattrocento Sans", system-ui, sans-serif;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    padding: 40px 32px 56px;
+    background: var(--bg-app);
+    color: var(--text-primary);
+    font-family: var(--font-body);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .wrap { max-width: 1120px; margin: 0 auto; }
+
+  h1 {
+    font-family: var(--font-brand);
+    font-weight: 700;
+    font-size: 28px;
+    letter-spacing: -0.01em;
+    margin: 0 0 6px;
+  }
+
+  .lede {
+    color: var(--text-secondary);
+    font-size: 15px;
+    line-height: 1.6;
+    max-width: 62ch;
+    margin: 0 0 36px;
+  }
+
+  .t-label {
+    font-family: var(--font-brand);
+    font-weight: 700;
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    line-height: 1.3;
+    color: var(--text-secondary);
+    margin: 0 0 14px;
+  }
+
+  section { margin-bottom: 38px; }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+    gap: 16px;
+  }
+
+  .sw {
+    background: var(--surface-card);
+    border-radius: var(--radius-card-sm);
+    box-shadow: var(--shadow-card-sm);
+    overflow: hidden;
+    min-width: 0;
+  }
+
+  .chip {
+    height: 88px;
+    display: flex;
+    align-items: flex-end;
+    padding: 12px 14px;
+  }
+
+  .chip span {
+    font-family: var(--font-brand);
+    font-weight: 600;
+    font-size: 12px;
+    letter-spacing: 0.04em;
+  }
+
+  .meta { padding: 12px 14px 14px; min-width: 0; }
+
+  .meta b {
+    display: block;
+    font-family: var(--font-brand);
+    font-weight: 600;
+    font-size: 13px;
+    margin-bottom: 3px;
+  }
+
+  .meta code {
+    font-size: 12px;
+    color: var(--text-secondary);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .note {
+    background: var(--surface-card);
+    border-radius: var(--radius-card);
+    box-shadow: var(--shadow-card);
+    padding: 22px 24px;
+    font-size: 14px;
+    line-height: 1.65;
+    color: var(--text-secondary);
+  }
+
+  .note b { color: var(--text-primary); }
+  .note ul { margin: 10px 0 0; padding-left: 20px; }
+  .note li { margin-bottom: 6px; }
+</style>
+
+<div class="wrap">
+  <h1>Farger</h1>
+  <p class="lede">
+    Hentet fra <code>src/styles/wang-tokens.css</code> — allerede i produksjon på
+    <code>/team-wang</code>. Paletten er lys og enpalett med vilje; det finnes ingen mørk modus.
+  </p>
+
+  <section>
+    <p class="t-label">Kjernefarger</p>
+    <div class="grid">
+      <div class="sw">
+        <div class="chip" style="background: #17446f"><span style="color: #fff">Aa</span></div>
+        <div class="meta"><b>Navy</b><code>#17446f</code></div>
+      </div>
+      <div class="sw">
+        <div class="chip" style="background: #2e857d"><span style="color: #fff">Aa</span></div>
+        <div class="meta"><b>Teal</b><code>#2e857d</code></div>
+      </div>
+      <div class="sw">
+        <div class="chip" style="background: #49ca9f"><span style="color: #0f172a">Aa</span></div>
+        <div class="meta"><b>Mint</b><code>#49ca9f</code></div>
+      </div>
+      <div class="sw">
+        <div class="chip" style="background: #226f67"><span style="color: #fff">Aa</span></div>
+        <div class="meta"><b>Teal tekst</b><code>#226f67</code></div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <p class="t-label">Kategorifarger</p>
+    <div class="grid">
+      <div class="sw">
+        <div class="chip" style="background: #f47b20"><span style="color: #fff">Aa</span></div>
+        <div class="meta"><b>Oransje</b><code>#f47b20</code></div>
+      </div>
+      <div class="sw">
+        <div class="chip" style="background: #fcd700"><span style="color: #0f172a">Aa</span></div>
+        <div class="meta"><b>Gul</b><code>#fcd700</code></div>
+      </div>
+      <div class="sw">
+        <div class="chip" style="background: #d12a5c"><span style="color: #fff">Aa</span></div>
+        <div class="meta"><b>Rosa</b><code>#d12a5c</code></div>
+      </div>
+      <div class="sw">
+        <div class="chip" style="background: #007db1"><span style="color: #fff">Aa</span></div>
+        <div class="meta"><b>Blå</b><code>#007db1</code></div>
+      </div>
+      <div class="sw">
+        <div class="chip" style="background: #7f1975"><span style="color: #fff">Aa</span></div>
+        <div class="meta"><b>Lilla</b><code>#7f1975</code></div>
+      </div>
+      <div class="sw">
+        <div class="chip" style="background: #d2d2d2"><span style="color: #0f172a">Aa</span></div>
+        <div class="meta"><b>Grå</b><code>#d2d2d2</code></div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <p class="t-label">Flate og tekst</p>
+    <div class="grid">
+      <div class="sw">
+        <div class="chip" style="background: #f4f6f8"><span style="color: #475569">Aa</span></div>
+        <div class="meta"><b>Bakgrunn</b><code>#f4f6f8</code></div>
+      </div>
+      <div class="sw">
+        <div class="chip" style="background: #ffffff; box-shadow: inset 0 0 0 1px #e9edf1">
+          <span style="color: #1e293b">Aa</span>
+        </div>
+        <div class="meta"><b>Kort</b><code>#ffffff</code></div>
+      </div>
+      <div class="sw">
+        <div class="chip" style="background: #1e293b"><span style="color: #fff">Aa</span></div>
+        <div class="meta"><b>Tekst primær</b><code>#1e293b</code></div>
+      </div>
+      <div class="sw">
+        <div class="chip" style="background: #475569"><span style="color: #fff">Aa</span></div>
+        <div class="meta"><b>Tekst sekundær</b><code>#475569</code></div>
+      </div>
+      <div class="sw">
+        <div class="chip" style="background: #0f172a"><span style="color: #fff">Aa</span></div>
+        <div class="meta"><b>Navy dyp</b><code>#0f172a</code></div>
+      </div>
+      <div class="sw">
+        <div class="chip" style="background: #e9edf1"><span style="color: #475569">Aa</span></div>
+        <div class="meta"><b>Kantlinje</b><code>#e9edf1</code></div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <p class="t-label">Semantisk bruk</p>
+    <div class="note">
+      Tokenene under peker videre til kjernefargene — bruk dem i stedet for rå hex, slik at en
+      justering av merkevaren slår gjennom overalt.
+      <ul>
+        <li><b>primary</b> → navy. Hovedhandling, aktive tilstander, navigasjon.</li>
+        <li><b>success</b> → teal. Gjennomført, godkjent, på plan.</li>
+        <li><b>accent</b> → mint. Fremheving og fokusring. <b>Aldri som tekstfarge på navy.</b></li>
+        <li><b>warning</b> → oransje. Avvik som krever oppmerksomhet, aldri som sperre.</li>
+        <li><b>danger</b> → rosa. Feil og destruktive handlinger.</li>
+        <li><b>info</b> → blå. Nøytral opplysning.</li>
+      </ul>
+    </div>
+  </section>
+</div>
