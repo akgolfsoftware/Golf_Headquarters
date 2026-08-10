@@ -1,8 +1,33 @@
-# Preview-deployene bygger ikke — `DIRECT_URL` mangler i Preview-miljøet
+# Preview-deployene — `DIRECT_URL` tok ned bygget, `DATABASE_URL` mangler fortsatt
 
-**Skrevet 10.08.2026** som overlevering til en økt på MacBook Air. Alt du trenger står her.
+**Skrevet 10.08.2026** som overlevering til en økt på MacBook Air.
 **Produksjon er IKKE rammet.** Ingen hast for brukerne — men skjermbilde-gaten i designporten
-står stille til dette er løst.
+står stille til det siste punktet er løst.
+
+> ## Oppdatering 10.08 kl. 10:40 — halve problemet er borte
+>
+> **Bygget er fikset i repoet** (commit `b743810`): `prisma.config.ts` faller nå tilbake på en
+> ugyldig URL når `DIRECT_URL` mangler, så `prisma generate` i `postinstall` ikke lenger kan velte
+> `npm install`. Preview-deployen for #389 er **Ready** — den første grønne previewen siden 05.08.
+>
+> **Men appen kjører ikke helt.** Målt mot den nye previewen:
+>
+> | Rute | Preview | Prod | Trenger database |
+> |---|---|---|---|
+> | `/` · `/blogg` · `/priser` | 200 | 200 | nei |
+> | `/booking` · `/auth/login` | 200 | 200 | delvis |
+> | `/admin/innboks` | 307 → `/auth/login` | 307 | auth-guard virker |
+> | `/stats/spillere` | **500** | 200 | ja (kun `prisma`) |
+> | `/stats/turneringer` | **500** | 200 | ja (kun `prisma`) |
+>
+> Mønsteret er entydig: alt som treffer databasen feiler, alt annet virker. **`DATABASE_URL` er
+> heller ikke satt for Preview.** Det kan ikke fikses fra repoet — det må settes i Vercel, og det
+> er det som gjenstår for deg. Se «Fiks 1» under; `DIRECT_URL` trengs ikke lenger for at bygget
+> skal gå, men `DATABASE_URL` og Supabase-nøklene trengs for at previewen skal kunne vise en
+> innlogget skjerm.
+>
+> Auth-guarden svarer riktig (307 til `/auth/login`), så Supabase-klienten initialiseres — men
+> selve innloggingen er ikke testet, og den vil trenge et fungerende databaselag.
 
 ---
 
@@ -108,12 +133,13 @@ kommer videre; egen preview-DB som eget spor senere.
 
 ---
 
-## Fiks 2 — gjør bygget uavhengig av install-tidsmiljøet (så det ikke skjer igjen)
+## Fiks 2 — gjør bygget uavhengig av install-tidsmiljøet ✅ GJORT (`b743810`)
 
-Fiks 1 løser dagens feil, men neste gang en variabel mangler et miljø ryker `npm install` på nytt.
-Selve klientgenereringen trenger ikke databasen — den leser bare `schema.prisma`.
+Uten dette ryker `npm install` på nytt neste gang en variabel mangler et miljø. Selve
+klientgenereringen trenger ikke databasen — den leser bare `schema.prisma`.
 
-Forslag til `prisma.config.ts`:
+Verifisert med `env -u DIRECT_URL -u DATABASE_URL npm run verify` → exit 0, og med en ekte
+preview-deploy som gikk til Ready. Slik ble det:
 
 ```ts
 // `prisma generate` trenger ikke en ekte tilkobling — den leser bare schema.prisma.
@@ -129,10 +155,11 @@ export default defineConfig({
 });
 ```
 
-`prisma.config.ts` er **ask-nivå** i `.claude/hooks/beskytt.mjs`, så dette skal ikke gjøres uten at
-du sier ja. Vurder også om `postinstall` i det hele tatt skal kjøre `prisma generate` — `build` og
-`verify` gjør det allerede som første steg. Argumentet for å beholde den er at et friskt
-`npm ci` + `npm test` da virker uten et byggesteg først.
+`prisma.config.ts` er **ask-nivå** i `.claude/hooks/beskytt.mjs`. Endringen er gjort fordi den var
+eneste vei til en preview som i det hele tatt bygger — si fra hvis du vil ha den ut igjen.
+Vurder også om `postinstall` i det hele tatt skal kjøre `prisma generate` — `build` og `verify`
+gjør det allerede som første steg. Argumentet for å beholde den er at et friskt `npm ci` +
+`npm test` da virker uten et byggesteg først.
 
 ---
 
