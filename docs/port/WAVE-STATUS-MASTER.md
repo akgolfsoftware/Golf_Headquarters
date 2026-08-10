@@ -153,12 +153,13 @@ Se `WAVE-I-STATUS.md`.
 > `handoff/iphone-5h-2026-08-09` er historikk.
 
 ### Umiddelbart **[ANDERS]**
-1. **Sett env-variabler for Vercel Preview** (`DIRECT_URL` + `DATABASE_URL`, pooler-host —
-   ikke den IPv6-only direkte-hosten). Uten dette kan ikke sign-off-galleriet lages, og
-   ingen skjerm kan krysses av. Se `STATUS-NÅ.md` og PR #389/#390.
-2. Merg [#389](https://github.com/akgolfsoftware/Golf_Headquarters/pull/389) — gjør
-   `prisma.config.ts` tolerant for manglende `DIRECT_URL` så preview i det hele tatt bygger.
-3. **Pixel sign-off** når nytt galleri foreligger → marker `[x]` i `PAPER-ZIP-CHECKLIST.md`.
+1. ~~Sett env-variabler for Vercel Preview~~ — **gjort 10.08 kl. 11:24.** Preview bygger, og
+   `/stats/spillere` (ren Prisma) svarer 200.
+2. **Bekreft passordet til testbrukerne** (`SCREENTEST_PASSWORD`) — det er det eneste som nå
+   står mellom oss og et nytt sign-off-galleri. Status uavklart etter hendelsen 03.08.
+3. Merg [#389](https://github.com/akgolfsoftware/Golf_Headquarters/pull/389) — ikke lenger
+   blokkerende, men hindrer at et manglende env-navn igjen kan velte `npm install`.
+4. **Pixel sign-off** når nytt galleri foreligger → marker `[x]` i `PAPER-ZIP-CHECKLIST.md`.
 
 ### Agent neste (kode)
 | # | Oppgave |

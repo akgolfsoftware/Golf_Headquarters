@@ -9,14 +9,23 @@ automatisk slug-tagging skjulte 79 typefeil, som igjen skjulte 17 lint- og 14 fa
 Rettet i [#385](https://github.com/akgolfsoftware/Golf_Headquarters/pull/385) — `npm run verify`
 grønt, 943/943 tester.
 
-**Vercel Preview bygger IKKE — og har ikke gjort det siden 05.08.** `DIRECT_URL` mangler i
-Preview-miljøet, så `postinstall: prisma generate` velter `npm install` før bygget starter. Alle
-preview-deployer siden #384 er ERROR; alle produksjonsdeployer er READY, derfor ble det ikke
-oppdaget. Kodefiksen ligger i [#389](https://github.com/akgolfsoftware/Golf_Headquarters/pull/389)
-(gjør `prisma.config.ts` tolerant), men **`DATABASE_URL` mangler også i Preview**, så DB-sider
-svarer 500 der. Det siste kan bare fikses i Vercel-panelet.
-**Konsekvens: sign-off-galleriet kan ikke kjøres mot preview — og uten galleri kan ingen skjerm
-krysses av.** Dette er nå den harde blokkeringen for hele designporten.
+**Vercel Preview virker igjen (verifisert 10.08 kl. 11:24).** Preview hadde vært rød siden 05.08:
+`DIRECT_URL` manglet, så `postinstall: prisma generate` veltet `npm install` før bygget startet.
+Alle preview-deployer fra #384 til og med 10.08 formiddag er ERROR, mens hver produksjonsdeploy er
+READY — derfor ble det ikke oppdaget.
+
+**Env-variablene er nå satt for Preview.** Målt, ikke antatt: nøyaktig samme kode som feilet
+kl. 10:41 bygde READY kl. 11:24 (PR #390, uten at #389 var merget og uten kodeendring i
+`prisma.config.ts`). Og databasen svarer — `/stats/spillere` (ren Prisma) gir **200**, der den ga
+500 tidligere samme dag.
+
+[#389](https://github.com/akgolfsoftware/Golf_Headquarters/pull/389) gjør i tillegg
+`prisma.config.ts` tolerant for manglende `DIRECT_URL`. Den er ikke lenger blokkerende, men bør
+merges likevel — den hindrer at et manglende env-navn igjen kan velte `npm install`.
+
+**Konsekvens for sign-off:** galleriet kan nå kjøres mot en preview-URL. Det som gjenstår er
+legitimasjonen — `scripts/signoff-gallery.mjs` krever `SCREENTEST_PASSWORD`/`SHOT_PASSWORD` for
+testbrukerne, og passordets status er uavklart etter hendelsen 03.08 (se §Funnet i klikk-testen).
 
 **Paper-port (viktigst nå):** styrende plan er **`docs/port/PIXEL-PERFECT-PLAN-COMPLETE.md`**
 (PP-0…PP-10). Wave A–I i `WAVE-STATUS-MASTER.md` er chrome-historikk, ikke pixel.

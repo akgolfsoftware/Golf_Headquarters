@@ -97,5 +97,6 @@ Fire PR-er, minste risiko først:
 ## Ferdig-definisjonen
 
 De 12 D-kriteriene i `PIXEL-PERFECT-PLAN-COMPLETE.md` §0. Merk D12: skjermbilder side om side
-mot fasit, mobil 390 først, lys + mørk, sendt i samtalen. **Per 10.08 kan de ikke lages mot en
-Vercel-preview** — Preview mangler `DATABASE_URL`. Avklar det før du planlegger sign-off.
+mot fasit, mobil 390 først, lys + mørk, sendt i samtalen. Preview-miljøet virker igjen fra
+10.08 kl. 11:24, så galleriet kan kjøres mot en preview-URL — forutsatt at du har
+`SCREENTEST_PASSWORD` for testbrukerne.

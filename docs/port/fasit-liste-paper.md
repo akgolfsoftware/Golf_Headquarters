@@ -39,9 +39,9 @@ variant-sjekk per rute erstatter én tegning per skjerm. Derfor er 79 fasit nok 
 drift/AgenticOS-dyp (~14), redirect-stubber, `(legacy)/*` som erstattes, og interne demoer.
 
 **Flaskehalsen er sign-off, ikke tegning og ikke kode.** Ingen skjerm har kryss. Sign-off krever
-skjermbilder side om side mot fasit — og de kan per 10.08 ikke lages mot en Vercel-preview, fordi
-Preview-miljøet mangler `DATABASE_URL` (alle DB-sider svarer 500). Se `NATTRAPPORT-2026-08-10.md`
-og PR #389/#390.
+skjermbilder side om side mot fasit. Preview-miljøet var blokkert fra 05.08 til 10.08 kl. 11:24
+(manglende `DIRECT_URL`/`DATABASE_URL`) — **det er nå løst**, og galleriet kan kjøres mot preview
+så snart passordet til testbrukerne er bekreftet. Se `STATUS-NÅ.md` og PR #390.
 
 Tallgrunnlaget under (343 skjermer, tabellen i §«Hva som IKKE har fasit») er **historikk fra
 05.–06.08** og er beholdt for sporbarhet. Det er ikke re-talt mot kode etter at mal-strategien

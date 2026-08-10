@@ -30,11 +30,14 @@ mot `PAPER-ZIP-CHECKLIST.md` 10.08: **ingen** rad har kryss.
 (3) Anders signerer PP-1/PP-2 → (4) PP-2.3/2.4 + PP-3 → (5) de 35 `[ ]` → (6) mal-varianter W3–W5
 → (7) PP-10 regresjon + COMPLETE.
 
-> 🚧 **Blokkering 10.08: sign-off kan ikke produseres.** Vercel Preview har manglet `DIRECT_URL`
-> siden 05.08 (bygget dør i `npm install`; kodefiks i #389) **og** `DATABASE_URL` (DB-sider svarer
-> 500). Galleri-skriptet krever en kjørende app med ekte innlogging, så det kan ikke kjøres mot
-> preview før env-variablene er satt i Vercel-panelet. Flaskehalsen er altså ikke lenger «Anders'
-> sign-off-kapasitet» — det er at **grunnlaget for sign-off ikke kan lages**.
+> ✅ **Preview-blokkeringen er løst 10.08 kl. 11:24.** Preview manglet `DIRECT_URL` fra 05.08
+> (bygget døde i `npm install`) og `DATABASE_URL` (DB-sider svarte 500). Env-variablene er nå satt:
+> samme kode som feilet kl. 10:41 bygde READY kl. 11:24, og `/stats/spillere` svarer 200.
+>
+> 🔑 **Det som gjenstår for sign-off er legitimasjon.** `scripts/signoff-gallery.mjs` logger inn som
+> `screentest@akgolf.test` / `coachtest@akgolf.test` og krever `SCREENTEST_PASSWORD` (eller
+> `SHOT_PASSWORD`). Passordets status er uavklart etter hendelsen 03.08. Uten det kan kun
+> skjermer som ikke krever innlogging fotograferes (PP-1.6 Innlogging, PP-1.7 offentlig booking).
 
 **Acuity-merknad (09.08.2026):** `akgolf.no` og `www.akgolf.no` videresender **midlertidig** til
 Acuity-bookingen (PR #384) til plattformen er testet. All prod-verifisering i PP-0.7 og PP-10.5
