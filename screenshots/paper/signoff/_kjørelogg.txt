@@ -1,2 +1,3 @@
-OK    PP-2.1 m390   /admin/agencyos — "KONTEKST Hele stallen Konsoll Mandag 10. aug · 08:29 Kommandoer ⌘K Dag"
-OK    PP-2.1 d1280  /admin/agencyos — "KONSOLL INNBOKS SPILLERE KALENDER INNSIKT MER SPILLER MØRK CT KONTEKST"
+OK    PP-2.2 m390   /admin/innboks — "AI Meldinger Varsler Oppfølging Oppgaver AGENCYOS · INNBOKS Innboks 2 "
+FEIL  PP-2.2 d1280 — page.waitForTimeout: Target page, context or browser has been closed
+FEIL  PP-2.2 m390 mørk — browser.newContext: Target page, context or browser has been closed
