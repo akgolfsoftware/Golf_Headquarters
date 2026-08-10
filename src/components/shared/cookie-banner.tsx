@@ -13,9 +13,15 @@ import { T } from "@/lib/v2/tokens";
  *
  * Etter accept fires CustomEvent "ak:cookie-consent" slik at
  * AnalyticsLoader kan laste inn Plausible.
+ *
+ * Plassbehov (10.08.2026): banneret er festet i bunnen og lå tidligere OPPÅ
+ * sticky handlingsdokker og bunn-nav på mobil — dokken så klikkbar ut, men
+ * pekerhendelsene traff banner-kortet. Banneret måler derfor sin egen høyde og
+ * publiserer den som `--ak-cookie-h` på <html>; bunn-forankret chrome legger
+ * variabelen til sin egen bunn-padding og forskyver seg opp mens banneret vises.
  */
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Cookie, X } from "lucide-react";
@@ -24,6 +30,8 @@ const CONSENT_KEY = "ak_cookie_consent";
 const CONSENT_ALL = "all";
 const CONSENT_NECESSARY = "necessary";
 const CONSENT_TTL_DAYS = 365;
+/** CSS-variabel bunn-forankret chrome leser for å forskyve seg opp. */
+const HOYDE_VAR = "--ak-cookie-h";
 
 function setCookieConsent(value: string) {
   const expires = new Date();
@@ -45,6 +53,7 @@ function getStoredConsent(): string | null {
 
 export function CookieBanner() {
   const [visible, setVisible] = useState(false);
+  const ytreRef = useRef<HTMLDivElement | null>(null);
   const pathname = usePathname();
   // GFGK Junior-micrositen har egen merkevare — banneren skifter drakt der.
   // Klassen gfgk-jr gir tilgang til de scopede GFGK-variablene (tokens-fila
@@ -94,6 +103,28 @@ export function CookieBanner() {
     }
   }, []);
 
+  // Publiser bannerets faktiske høyde som --ak-cookie-h så lenge det vises.
+  // ResizeObserver fordi høyden endrer seg med tekstbryting (390px vs 1280px)
+  // og med knappene som wrapper på smale skjermer.
+  useEffect(() => {
+    const el = ytreRef.current;
+    const rot = document.documentElement;
+    if (!visible || skjulPaAuth || !el) {
+      rot.style.setProperty(HOYDE_VAR, "0px");
+      return;
+    }
+    const oppdater = () => {
+      rot.style.setProperty(HOYDE_VAR, `${Math.ceil(el.getBoundingClientRect().height)}px`);
+    };
+    oppdater();
+    const ro = new ResizeObserver(oppdater);
+    ro.observe(el);
+    return () => {
+      ro.disconnect();
+      rot.style.setProperty(HOYDE_VAR, "0px");
+    };
+  }, [visible, skjulPaAuth]);
+
   if (!visible || skjulPaAuth) return null;
 
   function onGodta() {
@@ -108,6 +139,7 @@ export function CookieBanner() {
 
   return (
     <div
+      ref={ytreRef}
       role="dialog"
       aria-modal="false"
       aria-label="Cookie-samtykke"

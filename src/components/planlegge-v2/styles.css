@@ -585,7 +585,8 @@
     display: flex;
     position: fixed; bottom: 0; left: 0; right: 0;
     background: #fff; border-top: 1px solid var(--border);
-    padding: 8px 4px 14px;
+    /* + --ak-cookie-h: forskyv opp mens cookie-banneret dekker bunnen. */
+    padding: 8px 4px calc(14px + var(--ak-cookie-h, 0px));
     z-index: 30;
   }
   .bottom-nav .bn-item {
@@ -884,7 +885,7 @@
   background: #fff;
   border-top: 1px solid var(--border);
   padding: 16px 24px;
-  padding-bottom: max(env(safe-area-inset-bottom), 16px);
+  padding-bottom: calc(max(env(safe-area-inset-bottom), 16px) + var(--ak-cookie-h, 0px));
   display: flex; align-items: center; gap: 16px;
   margin-top: auto;
   z-index: 10;

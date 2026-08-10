@@ -4,6 +4,27 @@ Flyttet fra CLAUDE.md 2026-06-14. Les denne FØR du skriver kode. Når noe brekk
 (Eldre PRISMA-7- og Supabase-detaljer finnes også i git-historikken.)
 Ingen låst designkanon per 2026-07-25 — nytt system utvikles i Open Design (CLAUDE.md invariant 2).
 
+### Cookie-banneret lå oppå sticky bunn-chrome på mobil (oppdaget 2026-08-10)
+- **Symptom:** på 390px med tomt samtykke kunne skjermens primære handling ikke trykkes —
+  Playwright fikk «element intercepts pointer events» fra
+  `<div role="dialog" aria-label="Cookie-samtykke">`. Målt på `/portal`: bunn-nav-en lå
+  komplett skjult bak banner-kortet, men så klikkbar ut i skjermbildet.
+- **Årsak:** banneret er `position: fixed; bottom: 0` og ~284px høyt på 390px. Ytre wrapper
+  har riktignok `pointerEvents: none`, men selve kortet (`pointerEvents: auto`) er nesten
+  full bredde og dekker hele bunnsonen. Gjaldt alle skjermer med bunn-nav eller sticky
+  handlingsdokk, ikke bare den som avdekket det.
+- **Fikset ved å forskyve dokken opp, ikke ved å legge banneret oppå:** banneret måler seg
+  selv (ResizeObserver) og publiserer høyden som `--ak-cookie-h` på `<html>`; den nullstilles
+  til `0px` når samtykke er gitt. Bunn-forankret chrome legger variabelen til sin egen
+  bunn-padding — bakgrunnen strekker seg da bak banneret, så det blir ingen glippe.
+- **Regel:** enhver ny `position: fixed`/`sticky`-flate forankret i bunnen SKAL ha
+  `+ var(--ak-cookie-h, 0px)` i bunn-paddingen, ved siden av `env(safe-area-inset-bottom)`.
+  Mønster: `padding: 12px 16px calc(12px + env(safe-area-inset-bottom) + var(--ak-cookie-h, 0px))`.
+  Regresjonstest: `tests/e2e/cookie-banner-dokk.spec.ts`.
+- **Ikke løst (samme klasse):** modale bunn-ark (`src/components/v2/bunn-ark.tsx`, z-index 91)
+  ligger under banneret (z-index 9999). Åpnes et ark mens banneret vises, dekkes arkets
+  bunn. Sjeldent i praksis (banneret forsvinner ved første valg), men er samme feil.
+
 ### Rutenett-kolonne uten `min-width: 0` sprenger skjermen (oppdaget 2026-08-10)
 - **Symptom:** `/admin/innboks` på 1280 px viste avkuttet tekst, ingen «Se»-knapper og ingen
   høyrekolonne. Målt i nettleseren: listekolonnen var **1681 px** bred i et 1280 px vindu, og

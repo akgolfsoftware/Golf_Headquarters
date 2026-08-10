@@ -448,7 +448,8 @@ export function PlanV2({ data, depthMode = "simple" }: { data: DashboardData; de
             /* Paper .dokk — fade over innhold */
             background: "linear-gradient(180deg, color-mix(in srgb, var(--v2-bg) 0%, transparent) 0%, var(--v2-bg) 28%)",
             padding: "16px 16px",
-            paddingBottom: "max(16px, env(safe-area-inset-bottom))",
+            // + --ak-cookie-h: forskyv opp mens cookie-banneret dekker bunnen.
+            paddingBottom: "calc(max(16px, env(safe-area-inset-bottom)) + var(--ak-cookie-h, 0px))",
           }}
           data-paper-dokk
         >

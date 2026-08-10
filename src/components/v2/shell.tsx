@@ -594,7 +594,7 @@ function BunnNavLenker({ aktiv, nav, mer }: { aktiv?: string; nav: V2NavItem[]; 
       <nav
         className="flex md:hidden"
         data-paper-faner
-        style={{ position: "fixed", bottom: 0, left: 0, right: 0, zIndex: 40, justifyContent: "space-around", padding: "6px 4px calc(10px + env(safe-area-inset-bottom))", borderTop: `1px solid ${T.farge.kremA8}`, background: T.rail }}
+        style={{ position: "fixed", bottom: 0, left: 0, right: 0, zIndex: 40, justifyContent: "space-around", padding: "6px 4px calc(10px + env(safe-area-inset-bottom) + var(--ak-cookie-h, 0px))", borderTop: `1px solid ${T.farge.kremA8}`, background: T.rail }}
         aria-label="Hovedmeny"
       >
         {synlige.map((n) => {
@@ -690,7 +690,7 @@ function AgencyBunnNav({ aktiv, nav, mer, rom }: { aktiv?: string; nav: V2NavIte
       <nav
         className="flex md:hidden"
         data-paper-faner="agency"
-        style={{ position: "fixed", bottom: 0, left: 0, right: 0, zIndex: 40, justifyContent: "space-around", padding: "6px 4px calc(10px + env(safe-area-inset-bottom))", borderTop: `1px solid ${T.farge.kremA8}`, background: T.rail }}
+        style={{ position: "fixed", bottom: 0, left: 0, right: 0, zIndex: 40, justifyContent: "space-around", padding: "6px 4px calc(10px + env(safe-area-inset-bottom) + var(--ak-cookie-h, 0px))", borderTop: `1px solid ${T.farge.kremA8}`, background: T.rail }}
         aria-label="Hovedmeny"
       >
         {primær.map((n) => {

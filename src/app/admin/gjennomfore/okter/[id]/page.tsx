@@ -279,7 +279,7 @@ export default async function OktDetaljPage({
           zIndex: 30,
           borderTop: `1px solid ${T.border}`,
           background: T.panel,
-          padding: "10px 16px",
+          padding: "10px 16px calc(10px + var(--ak-cookie-h, 0px))",
           display: "flex",
           gap: 8,
         }}

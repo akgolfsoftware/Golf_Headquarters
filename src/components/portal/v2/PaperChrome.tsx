@@ -107,7 +107,12 @@ export function PaperKropp({
   );
 }
 
-/** Sticky bottom dock — Paper .dokk (én clay-handling). */
+/**
+ * Sticky bottom dock — Paper .dokk (én clay-handling).
+ * Bunn-paddingen legger til `--ak-cookie-h` (satt av CookieBanner) slik at
+ * handlingen forskyves opp mens cookie-banneret vises — ellers ligger banneret
+ * oppå knappen og fanger trykket.
+ */
 export function PaperDokk({ children }: { children: ReactNode }) {
   return (
     <div
@@ -117,7 +122,7 @@ export function PaperDokk({ children }: { children: ReactNode }) {
         position: "sticky",
         bottom: 0,
         zIndex: 4,
-        padding: "12px 16px calc(12px + env(safe-area-inset-bottom))",
+        padding: "12px 16px calc(12px + env(safe-area-inset-bottom) + var(--ak-cookie-h, 0px))",
         background: `linear-gradient(to top, ${T.bg} 70%, transparent)`,
         borderTop: `1px solid ${T.border}`,
       }}
