@@ -18,7 +18,7 @@ import { getStallOkterData } from "@/lib/widgets/stall-okter-data";
 import { prisma } from "@/lib/prisma";
 import type { PlayerProgram } from "@/generated/prisma/client";
 import { V2Shell, AGENCYOS_NAV, type VekslerData } from "@/components/v2/shell";
-import { CockpitV2 } from "@/components/admin/v2/CockpitV2";
+import { KonsollChat } from "@/components/admin/v2/konsoll/KonsollChat";
 
 export const dynamic = "force-dynamic";
 
@@ -65,6 +65,14 @@ export default async function V2CockpitPage() {
     fokusSpillere: fokus.forslag.length + fokus.pinnet.length,
   });
 
+  // Klokka formateres server-side i Oslo-tid: Vercel kjører UTC, så en
+  // klient-beregnet klokke ville gitt hydreringsavvik (gotchas §Tidssone).
+  const klokke = new Intl.DateTimeFormat("nb-NO", {
+    hour: "2-digit",
+    minute: "2-digit",
+    timeZone: "Europe/Oslo",
+  }).format(new Date());
+
   const vekslerData: VekslerData = {
     spillere: spillereRaw.map((s) => ({ id: s.id, navn: s.name ?? "Spiller", avatarUrl: s.avatarUrl })),
     grupper: grupperRaw.map((g) => ({ id: g.id, navn: g.name, href: `/admin/grupper/${g.id}`, antall: g._count.members })),
@@ -75,7 +83,15 @@ export default async function V2CockpitPage() {
 
   return (
     <V2Shell bredde="full" aktiv="cockpit" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"} vekslerData={vekslerData}>
-      <CockpitV2 data={data} innboks={innboks} fokus={fokus} aiDispatch={aiDispatch} stallOkter={stallOkter} />
+      <KonsollChat
+        data={data}
+        innboks={innboks}
+        fokus={fokus}
+        aiDispatch={aiDispatch}
+        stallOkter={stallOkter}
+        kanChatte={isAdmin}
+        klokke={klokke}
+      />
     </V2Shell>
   );
 }
