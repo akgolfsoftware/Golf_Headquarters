@@ -15,7 +15,7 @@ Claude Paper.
 | # | Beslutning | Anbefaling |
 |---|---|---|
 | B1 | Egen git-repo for WANG? | **Nei — behold i monorepoet.** Se §1. |
-| B2 | Hvilket Claude Design-prosjekt er fasit? | **`be77fcdb` «WANG Toppidrett - Software»**, utvidet med `golf-*`-templates. Ikke et nytt, tredje WANG-prosjekt. Se §3. |
+| B2 | Hvilket Claude Design-prosjekt er fasit? | **AVGJORT 2026-08-10: nytt prosjekt** — `3935e216` «WANG Golf — Årsplan (redesign 2026)». Anders overstyrte anbefalingen om å utvide `be77fcdb`. Se §3. |
 | B3 | Skal AgencyOS-skjermene WANG-brandes? | **Nei — AgencyOS forblir Claude Paper.** WANG-merkevaren gjelder kun elev-/foreldreflaten. Se §2. |
 
 **Omfanget er avklart (B6, 2026-08-10):** flaten dekker **kun golfgruppa**, ikke skolens
@@ -111,8 +111,38 @@ WANG-drakt, eller (b) en redirect til AgencyOS. Dette er beslutning **B4** — s
 
 ## 3. Designkilde og fasit
 
-**Fasit: Claude Design-prosjektet `be77fcdb-7e1e-4341-aa67-23f21370ad8a` —
-«WANG Toppidrett - Software».**
+**Fasit (Anders 2026-08-10): Claude Design-prosjektet
+`3935e216-ee5b-4d83-8fbd-30e0ec5e7d98` — «WANG Golf — Årsplan (redesign 2026)».**
+
+Anders overstyrte anbefalingen i §3.1 om å utvide `be77fcdb`: designet skal **forbedres**, ikke
+bare porteres, og redesignet får derfor et eget prosjekt. Nye skjermer designes der.
+
+Prosjektet er opprettet og seedet med merkevaregrunnlaget hentet fra kode
+(`src/styles/wang-tokens.css`):
+
+- `readme.md` — brief: hva som skal forbedres, låste rammer, skjermprioritering
+- `grunnlag/farger.html` — kjerne-, kategori- og flatefarger + semantisk bruk
+- `grunnlag/typografi.html` — Montserrat/Quattrocento Sans-skala og regler
+- `grunnlag/flater-og-bevegelse.html` — kort, skygger, merker, knapper, avstand, bevegelse
+
+**Divergensrisikoen fra §3.1 er reell og håndteres slik:** grunnlaget over er kopiert fra
+produksjonstokenene, ikke funnet opp på nytt. Endres en token i redesignet, skal den endres i
+`wang-tokens.css` i samme PR — aldri bare ett av stedene.
+
+### 3.0 `be77fcdb` — hva den fortsatt brukes til
+
+«WANG Toppidrett - Software» blir **referanse, ikke fasit**. Den eier fortsatt to ting som
+ikke skal kopieres inn i det nye prosjektet uten grunn:
+
+- `assets/` — ekte vektorlogo (`wang-crest.svg`, `wang-logo-vertical.svg`,
+  `wang-logo-horizontal.svg`)
+- `uploads/wang-designmanual-2021.pdf` — skolens offisielle designmanual (30 sider)
+
+Hentes inn i redesignprosjektet ved behov. Resten av `be77fcdb` (~40 komponenter, 17
+guideline-kort, ~60 maler) er inspirasjon å plukke fra — se §3.2.
+
+<details>
+<summary>Opprinnelig §3-innhold (anbefalingen som ble overstyrt)</summary>
 
 Prosjektet er allerede komplett som designsystem og trenger ikke bygges på nytt:
 
@@ -137,10 +167,13 @@ divergere fra `wang-tokens.css` innen en måned. Nye skjermer legges derfor **in
 med slug-prefiks `golf-`, slik at de eksisterende `elev-`/`trener-`/`admin-`-malene for
 den generiske treningsplattformen ikke blandes med golfgruppas flate.
 
-### 3.2 Hva som mangler i fasiten
+</details>
 
-De 60 eksisterende malene dekker den generiske treningsplattformen — ikke golfgruppas årsplan.
-**Ingen av skjermene i §4.A og §4.B har fasit i dag.** Nærmeste slektninger å bygge videre på:
+### 3.2 Hva som må designes
+
+Ingen av skjermene i §4.A og §4.B har fasit — verken i det nye prosjektet eller i `be77fcdb`.
+Alle 16 WANG-skjermer skal designes i redesignprosjektet. Nærmeste slektninger i `be77fcdb`
+å plukke mønstre fra (referanse, ikke mal å kopiere):
 
 | Ny skjerm | Nærmeste eksisterende mal | Gjenbrukbare komponenter |
 |---|---|---|
@@ -157,7 +190,9 @@ De 60 eksisterende malene dekker den generiske treningsplattformen — ikke golf
 
 ## 4. Skjermregnskap
 
-Alle skjermer i og rundt WANG-årsplanen. «Fasit» = finnes ferdig i `be77fcdb`.
+Alle skjermer i og rundt WANG-årsplanen. «Fasit» = finnes ferdig designet. Etter B2-avgjørelsen
+10.08 er fasit-kolonnen **nei for alle 16 WANG-skjermer** — de designes nå i `3935e216`.
+Kolonnen står som den var, siden den viser hva som fantes i `be77fcdb`.
 «Data» = ekte fra AgencyOS-basen (E), delvis (D), eller hardkodet demo (H).
 
 ### A. Elev-/foreldreflaten — `/team-wang` (WANG-branding)
@@ -236,10 +271,15 @@ tsx + `PrismaPg`, aldri `migrate dev`).
 Hver bølge = én PR per skjerm. Aldri merge til main uten Anders' «ja».
 
 **Bølge 0 — beslutninger og fundament** (ingen skjermer)
-- B1–B5 avklart (§0, §7).
-- `golf-*`-navnekonvensjon opprettet i `be77fcdb`.
-- Verifiser at `wang-tokens.css` fortsatt matcher `tokens/colors.css` i fasiten. Speilet er
-  fra prosjektets v2-generasjon; sjekk avvik før noe bygges oppå.
+- B1, B3, B4, B5 avklart (§0, §7). B2 og B6 er avgjort 10.08.
+- ~~`golf-*`-navnekonvensjon opprettet i `be77fcdb`.~~ **Utgått:** redesignprosjektet
+  `3935e216` er dedikert til golfgruppa, så prefiks er unødvendig. Skjermene navngis
+  direkte (`arsplan-elev`, `uke`, `okt-detalj` …).
+- **Gjort 10.08:** prosjektet opprettet og seedet med `readme.md` + `grunnlag/` (farger,
+  typografi, flater og bevegelse), hentet fra `wang-tokens.css`.
+- Hent inn logo (`wang-crest.svg` m.fl.) og designmanualen fra `be77fcdb` når en skjerm
+  trenger dem.
+- Gjenstår i bølge 0: designe A1 (skallet) i prosjektet før bølge 1 kan kodes.
 
 **Bølge 1 — skallet** (A1, A2)
 Header, faner, hero-kortet, bunnmeny. Alt annet arver herfra — ikke gå videre før A2 er
@@ -248,7 +288,8 @@ skjerm 1 før den ser riktig ut — ALT annet arver stilen derfra.»
 
 **Bølge 2 — planen** (A3, A4, A5, A6, A7)
 Kjernen i produktet, og den eneste delen som er 100 % dekket av ekte AgencyOS-data.
-Høyest verdi per skjerm. `YearView`/`CalendarView`/`WeekPlanner` gjenbrukes fra fasiten.
+Høyest verdi per skjerm. `YearView`/`CalendarView`/`WeekPlanner` i `be77fcdb` er mønster-
+referanse for kalendermekanikken — selve designet lages nytt i `3935e216`.
 
 **Bølge 3 — detaljer og hendelser** (A13, A14, A8)
 A14 har ekte data. A13 og A8 krever datagapet i §5 eller synlig demo-merking.
@@ -269,7 +310,7 @@ datamodeller ligger sist.
 | # | Spørsmål | Blokkerer |
 |---|---|---|
 | B1 | Egen repo? (anbefaling: nei) | Alt |
-| B2 | `be77fcdb` som fasit, `golf-*`-prefiks? (anbefaling: ja) | Bølge 0 |
+| ~~B2~~ | ~~`be77fcdb` som fasit, `golf-*`-prefiks?~~ | **AVGJORT** — nytt prosjekt `3935e216`, se §3 |
 | B3 | AgencyOS forblir Paper? (anbefaling: ja) | §C |
 | B4 | Skal `/team-wang/coach` overleve, eller redirecte til AgencyOS? | Bølge 4 |
 | B5 | Skal skole-/foreldredata (A9, A10, A12) modelleres, eller forbli merket demo? | Bølge 5 |
@@ -287,8 +328,8 @@ Følger av dette:
   idretts-agnostiske modeller, ingen tenant-nøkkel i data.
 - **Rollemodellen forenkles:** elev · foresatt · trener (Anders). `skoleadmin`, `eier` og
   `klubbtrener` fra `be77fcdb` bygges **ikke**.
-- **Fasit-bruk snevres inn:** kun `golf-*`-malene er i omfang. De generiske `elev-*`,
-  `trener-*`, `admin-*`, `eier-*`-malene er referanse, ikke leveranse (§9).
+- **Fasit-bruk snevres inn:** kun golfgruppas skjermer designes. De generiske `elev-*`,
+  `trener-*`, `admin-*`, `eier-*`-malene i `be77fcdb` er referanse, ikke leveranse (§9).
 - **Ingen prematur generalisering:** bygg mot golf konkret. `Group`-modellen bærer allerede
   en eventuell fremtidig idrett nr. 2 uten at noe abstraheres nå.
 
@@ -303,7 +344,7 @@ En skjerm er ferdig når **alle** punktene er sanne:
 1. **Skjermbilde-gaten:** Anders har SETT skjermen — faktisk skjermbilde av kjørende app
    (Vercel-preview, innlogget testbruker), sendt **direkte i samtalen** (synlig fra iPhone).
 2. **Mobil 390px alltid først**, deretter desktop 1280px.
-3. **Fasit-utsnittet ved siden av** — den tilsvarende `golf-*`-malen fra `be77fcdb`.
+3. **Fasit-utsnittet ved siden av** — den tilsvarende skjermen fra `3935e216`.
 4. **Alle fire tilstander:** Suksess · Tom · Laster · Feil.
 5. **Maks én primær handling** per skjerm (`beslutninger.md` §Enkelhet).
 6. **Klikk-verifisert** — ikke bare fotografert.
@@ -332,7 +373,7 @@ beholder med `nowrap`-tekst eller lange strenger MÅ ha `minWidth: 0`. WANG-flat
 - `/gfgk-junior/` — egen skole/klubb, egen palett (`.gfgk-jr`), egen plan.
 - De ~60 generiske malene i `be77fcdb` (`elev-*`, `trener-*`, `admin-*`, `eier-*`) — de
   tilhører WANG Treningsplattform som produkt, ikke golfgruppas årsplan. **Endelig ute av
-  omfang** etter B6-avklaringen 10.08.2026 (§7): kun `golf-*`-malene bygges. De generiske
-  kan leses som mønsterreferanse, men ingen av dem blir en skjerm i denne planen.
+  omfang** etter B6-avklaringen 10.08.2026 (§7). De kan leses som mønsterreferanse, men ingen
+  av dem blir en skjerm i denne planen.
 - **Multi-idrett og multi-tenant** — ingen idrettsvelger, ingen skole nr. 2, ingen
   `skoleadmin`/`eier`/`klubbtrener`-roller. Se B6.
