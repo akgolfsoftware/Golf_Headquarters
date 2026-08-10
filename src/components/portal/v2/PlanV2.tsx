@@ -22,7 +22,9 @@ import {
   type StripeDag,
 } from "@/components/v2";
 import { OktKort } from "@/components/v2/domene";
+import { HvorforDette } from "@/components/v2/hjelp";
 import { BunnArk } from "@/components/v2/bunn-ark";
+import type { UkePeriode } from "@/lib/portal-plan/uke-periode";
 import type { AkseKey } from "@/lib/v2/tokens";
 import { WORKBENCH_HREF } from "./WorkbenchInngang";
 
@@ -70,7 +72,16 @@ function kortNavn(tittel: string): string {
   return tittel.split(" · ")[0] ?? tittel;
 }
 
-export function PlanV2({ data, depthMode = "simple" }: { data: DashboardData; depthMode?: "simple" | "deep" }) {
+export function PlanV2({
+  data,
+  depthMode = "simple",
+  periode = null,
+}: {
+  data: DashboardData;
+  depthMode?: "simple" | "deep";
+  /** Aktiv treningsperiode fra årsplanen. Null = ikke satt (raden viser «Ikke satt»). */
+  periode?: UkePeriode | null;
+}) {
   const deep = depthMode === "deep";
   const { weekNumber, week, weekProgress, optimalSession, todayAll } = data;
 
@@ -80,7 +91,9 @@ export function PlanV2({ data, depthMode = "simple" }: { data: DashboardData; de
     const forbi = d.date.getTime() < iDag.getTime();
     const alleFullfort = d.sessions.length > 0 && d.sessions.every((s) => s.status === "COMPLETED");
     return {
-      dow: d.dayLabel.charAt(0),
+      /* Paper bruker tre bokstaver (MAN TIR ONS) — med én bokstav er
+         tirsdag/torsdag og lørdag/søndag ikke til å skille fra hverandre. */
+      dow: d.dayLabel.slice(0, 3).toUpperCase(),
       date: d.dayNumber,
       today: d.isToday,
       state: forbi && alleFullfort ? "done" : undefined,
@@ -101,6 +114,11 @@ export function PlanV2({ data, depthMode = "simple" }: { data: DashboardData; de
     weekProgress.plannedMin > 0
       ? Math.round((weekProgress.completedMin / weekProgress.plannedMin) * 100)
       : 0;
+
+  // Ukeoppsummeringen (Paper .uke) teller økter, ikke minutter — begge vises.
+  const ukasOkter = week.flatMap((d) => d.sessions);
+  const antallOkter = ukasOkter.length;
+  const fullforteOkter = ukasOkter.filter((o) => o.status === "COMPLETED").length;
 
   // Neste økt for dokken: pågående først, ellers første ufullførte i dag/uka
   const nesteOkt =
@@ -227,6 +245,117 @@ export function PlanV2({ data, depthMode = "simple" }: { data: DashboardData; de
             gap: 16,
           }}
         >
+          {/* Paper .uke — ukeoppsummeringen fasiten åpner Plan med (PP-1.2) */}
+          <section
+            data-od-id="plan-uke"
+            style={{
+              background: T.panel,
+              border: `1px solid ${T.border}`,
+              borderRadius: T.rCard,
+              padding: 16,
+            }}
+          >
+            <Caps size={9}>
+              Uke {weekNumber} · {periodeLinje(week)}
+            </Caps>
+            {/* Paper .bar — framdrift som andel av planlagt tid */}
+            <div
+              style={{
+                height: 6,
+                borderRadius: 999,
+                background: T.panel3,
+                overflow: "hidden",
+                margin: "10px 0 8px",
+              }}
+              role="progressbar"
+              aria-valuenow={gjennomforPct}
+              aria-valuemin={0}
+              aria-valuemax={100}
+              aria-label="Andel av ukas planlagte tid som er gjennomført"
+            >
+              <i
+                style={{
+                  display: "block",
+                  height: "100%",
+                  width: `${gjennomforPct}%`,
+                  background: T.fg,
+                }}
+              />
+            </div>
+            <Caps size={9}>
+              {fullforteOkter} av {antallOkter} økt{antallOkter === 1 ? "" : "er"} gjennomført · {gjennomforPct} %
+            </Caps>
+
+            <div style={{ marginTop: 12, display: "flex", flexDirection: "column" }}>
+              {[
+                ["Periode", periode ? periode.navn : "Ikke satt"],
+                ["Økter", String(antallOkter)],
+                ["Planlagt tid", varighet(weekProgress.plannedMin)],
+                ["Gjennomført", varighet(weekProgress.completedMin)],
+              ].map(([etikett, verdi]) => (
+                <div
+                  key={etikett}
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    gap: 12,
+                    minHeight: 32,
+                    borderTop: `1px solid ${T.border}`,
+                    paddingTop: 6,
+                    marginTop: 6,
+                  }}
+                >
+                  <span style={{ fontFamily: T.ui, fontSize: 13, color: T.mut, minWidth: 0 }}>{etikett}</span>
+                  <span style={{ fontFamily: T.mono, fontSize: 13, color: T.fg, flex: "none" }}>{verdi}</span>
+                </div>
+              ))}
+            </div>
+
+            <HvorforDette
+              kilde={`Uke ${weekNumber} slik den ligger i planen din nå.`}
+              beregning="Gjennomført tid delt på planlagt tid. Bare økter du har markert som ferdige teller."
+              forbehold="En økt du starter, men ikke fullfører, teller ikke før den er logget."
+            />
+          </section>
+
+          {/* Paper .eier — eierskapet skrevet ut, ikke antatt */}
+          <p
+            data-od-id="plan-eierskap"
+            style={{
+              margin: 0,
+              fontFamily: T.bodyFont,
+              fontSize: T.body,
+              lineHeight: 1.5,
+              color: T.mut,
+            }}
+          >
+            Planen er din. Du kan flytte og endre øktene selv, med én gang — ingen godkjenning. Coachen din får
+            beskjed om endringen, så han vet hva som skjedde.
+          </p>
+
+          {/* Coachingtimer bookes her; treningsøkter ligger i planen — to ting, to steder */}
+          <Link
+            href="/portal/booking"
+            data-od-id="plan-book-time"
+            className="v2-press v2-focus"
+            style={{
+              minHeight: 44,
+              borderRadius: T.rCard,
+              border: `1px solid ${T.border}`,
+              background: "transparent",
+              color: T.fg,
+              fontFamily: T.ui,
+              fontSize: 14,
+              fontWeight: 500,
+              textDecoration: "none",
+              display: "inline-flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            Book coachingtime
+          </Link>
 
           {valgtDagObj && (
             <section

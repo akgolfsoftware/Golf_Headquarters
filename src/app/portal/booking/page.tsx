@@ -34,7 +34,14 @@ export default async function BookingHubPage() {
   return (
     <V2Shell aktiv="plan" bredde="kolonne" nav={PLAYERHQ_NAV} navn={user.name}>
       <TilbakeLenke href="/portal">Hjem</TilbakeLenke>
-      <BookingHubV2 data={{ credits: hub.credits, upcoming: hub.upcoming, coaches: hub.coaches }} />
+      <BookingHubV2
+        data={{
+          credits: hub.credits,
+          upcoming: hub.upcoming,
+          coaches: hub.coaches,
+          forsteLedige: hub.forsteLedige,
+        }}
+      />
     </V2Shell>
   );
 }

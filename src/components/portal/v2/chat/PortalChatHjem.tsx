@@ -48,6 +48,12 @@ import type { PortalChatMessage } from "./types";
 
 const FORSLAG = ["Hva skal jeg trene i dag?", "Hva var resultatet sist?", "Hva står på ukeplanen?"];
 
+/** Paper .cmini — hintene fasiten viser under skrivefeltet. */
+const SNARVEIER = [
+  { tegn: "/", merkelapp: "Kommandoer", odId: "toggle-slash" },
+  { tegn: "@", merkelapp: "Øvelser og drills", odId: "toggle-at" },
+] as const;
+
 function meldingTekst(m: PortalChatMessage): string {
   return m.parts
     .filter((p): p is { type: "text"; text: string } => p.type === "text")
@@ -634,6 +640,7 @@ export function PortalChatHjem({
               {gjennomfore.nesteOkt ? ` · neste ${gjennomfore.nesteOkt.tid}` : " · ingen økt i dag"}
             </div>
             <div style={{ display: "flex", gap: 10, alignItems: "flex-end" }}>
+              {/* Paper .cbox — rammen eier paddingen, textarea er naken inni */}
               <div
                 style={{
                   flex: 1,
@@ -641,7 +648,7 @@ export function PortalChatHjem({
                   background: T.panel,
                   border: `1px solid ${T.border}`,
                   borderRadius: T.rCard,
-                  padding: "2px 4px",
+                  padding: "8px 12px",
                 }}
               >
                 <Skrivefelt
@@ -650,35 +657,39 @@ export function PortalChatHjem({
                   onChange={setInput}
                   onSend={() => send(input)}
                   sender={busy}
-                  placeholder="Spør om hva som helst. / for kommandoer."
+                  placeholder="Spør om hva som helst. / for kommandoer, @ for øvelse."
                 />
+                {/* Paper .cmini — hintene er trykkflater som setter tegnet i feltet */}
+                <div style={{ display: "flex", gap: 4, marginTop: 4 }}>
+                  {SNARVEIER.map((snarvei) => (
+                    <button
+                      key={snarvei.tegn}
+                      type="button"
+                      onClick={() => setInput(input.endsWith(snarvei.tegn) ? input : input + snarvei.tegn)}
+                      aria-label={snarvei.merkelapp}
+                      data-od-id={snarvei.odId}
+                      className="v2-press v2-focus"
+                      style={{
+                        width: 44,
+                        height: 44,
+                        minHeight: 44,
+                        display: "grid",
+                        placeItems: "center",
+                        border: "none",
+                        borderRadius: T.rRow,
+                        background: "transparent",
+                        color: T.mut,
+                        fontFamily: T.mono,
+                        fontSize: 14,
+                        cursor: "pointer",
+                      }}
+                    >
+                      {snarvei.tegn}
+                    </button>
+                  ))}
+                </div>
               </div>
-              <button
-                type="button"
-                onClick={() => {
-                  if (input.trim() && !busy) void send(input);
-                }}
-                disabled={!input.trim() || busy}
-                aria-label="Send"
-                data-od-id="send-message"
-                className="v2-press v2-focus"
-                style={{
-                  flex: "none",
-                  width: 48,
-                  height: 48,
-                  borderRadius: T.rCard,
-                  border: "none",
-                  background: input.trim() && !busy ? T.fg : T.panel3,
-                  color: input.trim() && !busy ? T.bg : T.mut,
-                  display: "inline-flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  cursor: input.trim() && !busy ? "pointer" : "default",
-                }}
-              >
-                <Icon name="send" size={18} />
-              </button>
-              {/* Paper: mic = eneste T.handling på Hjem */}
+              {/* Paper: mic = eneste T.handling på Hjem, og står FØR send */}
               <button
                 type="button"
                 onClick={() => setFangstApen(true)}
@@ -706,6 +717,46 @@ export function PortalChatHjem({
               >
                 <Icon name="mic" size={24} />
               </button>
+              <button
+                type="button"
+                onClick={() => {
+                  if (input.trim() && !busy) void send(input);
+                }}
+                disabled={!input.trim() || busy}
+                aria-label="Send"
+                data-od-id="send-message"
+                className="v2-press v2-focus"
+                style={{
+                  /* Paper .sendbtn — --p-tap 44px, ink (ikke clay) */
+                  flex: "none",
+                  width: 44,
+                  height: 44,
+                  minHeight: 44,
+                  borderRadius: T.rCard,
+                  border: "none",
+                  background: input.trim() && !busy ? T.fg : T.panel3,
+                  color: input.trim() && !busy ? T.bg : T.mut,
+                  display: "inline-flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  cursor: input.trim() && !busy ? "pointer" : "default",
+                }}
+              >
+                <Icon name="send" size={18} />
+              </button>
+            </div>
+            {/* Paper .eyebrow under composeren */}
+            <div
+              style={{
+                fontFamily: T.mono,
+                fontSize: 10,
+                fontWeight: 500,
+                letterSpacing: "0.09em",
+                textTransform: "uppercase",
+                color: T.mut,
+              }}
+            >
+              Enter sender · shift+enter ny linje
             </div>
           </div>
         </div>

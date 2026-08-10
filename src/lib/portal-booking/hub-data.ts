@@ -13,6 +13,7 @@
 
 import { prisma } from "@/lib/prisma";
 import { kanBrukeCredits } from "@/lib/booking/credits-tilgang";
+import { beregnSlotVindu } from "@/lib/portal-booking/slot-vindu";
 import type { Tier } from "@/generated/prisma/client";
 
 const NOK = new Intl.NumberFormat("nb-NO");
@@ -51,12 +52,31 @@ export type HubCoach = {
   fromPrice: string | null;
 };
 
+/**
+ * Første ledige luke framover — grunnlaget for «Én ting nå» på booking-huben
+ * (Paper `fase1/playerhq-booking.html`: «Ta man 12:00», ikke «Book time»).
+ * Null når ingen tjeneste er aktiv, eller ingen luke finnes i vinduet.
+ */
+export type HubForsteLedige = {
+  serviceId: string;
+  serviceName: string;
+  /** ISO-dato for dagen luka ligger på. */
+  datoIso: string;
+  /** «12:00» — Oslo-tid, fra availability-engine. */
+  kl: string;
+  /** «man» — kort ukedag, til knappeteksten. */
+  ukedagKort: string;
+  coachNavn: string;
+};
+
 export type BookingHubData = {
   credits: HubCredits;
   upcoming: HubBooking[];
   /** Siste 10 fullførte eller avbestilte bookinger (COMPLETED + CANCELLED). */
   past: HubBooking[];
   coaches: HubCoach[];
+  /** Første ledige luke i de neste 14 dagene, eller null. */
+  forsteLedige: HubForsteLedige | null;
 };
 
 function initialsFromName(name: string): string {
@@ -161,5 +181,45 @@ export async function getBookingHubData(userId: string): Promise<BookingHubData>
     };
   });
 
-  return { credits, upcoming, past, coaches };
+  return { credits, upcoming, past, coaches, forsteLedige: await hentForsteLedige() };
+}
+
+const UKEDAG_KORT = ["søn", "man", "tir", "ons", "tor", "fre", "lør"];
+
+/**
+ * Første ledige luke i de neste 14 dagene for standardtjenesten.
+ *
+ * Standardtjeneste = billigste aktive tjeneste med en coach — samme tjenesten
+ * spilleren ellers ville landet på i wizarden. Vinduet er 14 dager, ikke 28 som
+ * i wizarden: dette er én linje på en oversikt, og hver dag koster et
+ * availability-oppslag.
+ *
+ * Feiler oppslaget, returnerer vi null i stedet for å kaste — «Én ting nå» er
+ * en anbefaling, og en booking-hub som ikke laster er verre enn en uten den.
+ */
+async function hentForsteLedige(): Promise<HubForsteLedige | null> {
+  try {
+    const tjeneste = await prisma.serviceType.findFirst({
+      where: { active: true, coachUserId: { not: null } },
+      orderBy: { priceOre: "asc" },
+      select: { id: true, name: true },
+    });
+    if (!tjeneste) return null;
+
+    const vindu = await beregnSlotVindu(tjeneste.id, 14);
+    const dag = vindu.dager.find((d) => d.tider.length > 0);
+    const tid = dag?.tider[0];
+    if (!dag || !tid) return null;
+
+    return {
+      serviceId: tjeneste.id,
+      serviceName: tjeneste.name,
+      datoIso: dag.datoIso,
+      kl: tid.kl,
+      ukedagKort: UKEDAG_KORT[new Date(dag.datoIso).getDay()]!,
+      coachNavn: tid.coachNavn,
+    };
+  } catch {
+    return null;
+  }
 }
