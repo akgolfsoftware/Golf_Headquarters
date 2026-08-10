@@ -347,12 +347,15 @@ export function TriageV2({ data, feedback = [], ko }: { data: CockpitData; feedb
         className="grid grid-cols-1 lg:grid-cols-[3fr_2fr]"
         style={{ gap: T.gap, alignItems: "start" }}
       >
-        <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+        {/* minWidth: 0 — uten den vokser rutenett-kolonnen til bredden på den
+            lengste raden (nowrap + ellipsis krymper ikke av seg selv), og både
+            listen og høyrekolonnen blir klippet utenfor skjermen. */}
+        <div style={{ display: "flex", flexDirection: "column", gap: T.gap, minWidth: 0 }}>
           {grupper.map((g) => (
             <TriageGruppe key={g.key} g={g} onOpen={(href) => router.push(href)} />
           ))}
         </div>
-        <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: T.gap, minWidth: 0 }}>
           <InnsiktChip cta="Åpne godkjenninger" href="/admin/godkjenninger">
             {innsiktTekst}
           </InnsiktChip>

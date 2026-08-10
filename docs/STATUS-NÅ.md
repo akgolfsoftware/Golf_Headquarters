@@ -2,11 +2,20 @@
 
 > **Hva dette er:** ett snapshot av hvor plattformen står akkurat nå. Oppdater datoen + relevante linjer når noe vesentlig endrer seg.
 
-**Sist oppdatert:** 2026-08-09 kveld.
+**Sist oppdatert:** 2026-08-10 natt.
+
+**Bygget:** `main` er **grønt** igjen. Den var rød med 114 feil fra 09.08 (syntaksfeil fra
+automatisk slug-tagging skjulte 79 typefeil, som igjen skjulte 17 lint- og 14 fargefeil).
+Rettet i [#385](https://github.com/akgolfsoftware/Golf_Headquarters/pull/385) — `npm run verify`
+grønt, 943/943 tester.
 
 **Paper-port (viktigst nå):** Wave **0–D** chrome + finpuss er i sandbox-branch
 `handoff/iphone-5h-2026-08-09` — se **`docs/port/WAVE-STATUS-MASTER.md`**.
-Ikke antatt på prod før Mac push. Pixel sign-off (fasit side om side) mangler for alle waves.
+Ikke antatt på prod før Mac push.
+**Pixel sign-off:** de 11 skjermene i PP-1 + PP-2-kjernen har nå bevis side om side mot fasit i
+**`docs/port/SIGNOFF-GALLERI-2026-08-10.md`** (33 bilder, mobil + desktop, lys + mørk). Ingen av
+dem er nær nok fasiten til å signeres ennå — tre beslutninger venter på Anders, se
+`docs/port/NATTRAPPORT-2026-08-10.md`. Øvrige waves mangler fortsatt sign-off helt.
 Masterbrain drill-seed er tømt. Appen er fortsatt ikke klar for betalende brukere før P0-aktivering
 (Stripe/DNS/Resend + spiller-login).
 
