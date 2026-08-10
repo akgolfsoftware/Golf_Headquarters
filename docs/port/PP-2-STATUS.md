@@ -26,7 +26,7 @@ godkjenninger») der fasiten bruker den på én konkret handling på én konkret
 
 | ID | Anbefaling | Størrelse |
 |---|---|---|
-| PP-2.1 Konsoll | FIKS FØRST | **Stor** — fasiten er en samtale med artefaktkolonne, appen er en oppslagstavle |
+| PP-2.1 Konsoll | **Egen jobb** (Anders 10.08) | **Stor** — fasiten er en samtale med artefaktkolonne, appen er en oppslagstavle. Brief: [`PP-2.1-KONSOLL-BRIEF.md`](PP-2.1-KONSOLL-BRIEF.md) |
 | PP-2.2 Innboks | FIKS FØRST | Stor — layoutfeil (1681 px i 1280 px vindu) **rettet 10.08** |
 | PP-2.3 Spillere | FIKS FØRST | Middels — mangler gruppering (Trenger deg / Følger planen / Hviler) og SG-kolonne |
 | PP-2.4 Kalender | FIKS FØRST | Stor — mangler detaljkolonne, Agenda-visning og belegg-tallene |
