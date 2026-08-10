@@ -1,127 +1,98 @@
 /**
- * /booking — v2-port 16. juli 2026. Datalogikk gjenbrukt 1:1 fra
- * (mlegacy)/booking/page.tsx: Acuity-pause (nå rollestyrt via
- * kanBrukeInnebygdBooking), Prisma-spørringen (aktive tjenester med
- * pris > 0), lokasjon-mapping
- * (Trackman → Mulligan, ellers GFGK), coach-bios og abonnement-grupperingen
- * («performance» i navnet). Presentasjonen bor i MarkedBookingV2 (v2, MRamme
- * — flyttet ut av (mlegacy)-chromen som resten av markedssidene).
+ * /booking — Paper-port (PP-1.7, 10.08.2026). Fasit:
+ * `designsystem/paper/fase1/booking.html` — én side med fire steg
+ * (tjeneste → tid → deg → bekreft), i stedet for den gamle tre-siders flyten
+ * via `/booking/[slug]`. Presentasjonen bor i MarkedBookingPaperV2.
+ *
+ * Acuity-pausen (kanBrukeInnebygdBooking) og Prisma-spørringen er beholdt fra
+ * v2-porten 16. juli 2026. Undersidene `/booking/[slug]` består uendret —
+ * de er fortsatt Stripe-flytens landingspunkt ved avbrutt betaling.
  */
 import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
 import { BOOKING_ACUITY_URL, kanBrukeInnebygdBooking } from "@/lib/booking/offentlig-booking";
+import { MarkedBookingV2 } from "@/components/marketing/v2/MarkedBookingV2";
 import {
-  MarkedBookingV2,
-  type BookingLokasjon,
-  type BookingTjeneste,
-  type BookingTrener,
-} from "@/components/marketing/v2/MarkedBookingV2";
+  MarkedBookingPaperV2,
+  type PaperAbonnement,
+  type PaperTjeneste,
+} from "@/components/marketing/v2/MarkedBookingPaperV2";
 
 export const metadata: Metadata = {
-  title: "Book økt | AK Golf",
-  description: "Book Pro-time, Trackman-analyse eller gruppe-økt online.",
+  title: "Book en time · AK Golf Academy",
+  description:
+    "Personlig coaching med Anders Kristiansen. Velg tjeneste og ledig tid, og book online.",
 };
-
-type SearchParams = Promise<{ lokasjon?: string; trener?: string }>;
-
-// Lokasjon-mapping. Trackman-tjenester foregår på Mulligan, alt annet på GFGK.
-// Når ServiceType får locationId-FK (V1.5+), leses dette fra DB.
-function getLocationForService(slug: string): string {
-  if (slug.includes("trackman") || slug.includes("mulligan")) return "mulligan";
-  return "gfgk";
-}
 
 function erAbonnement(name: string): boolean {
   return name.toLowerCase().includes("performance");
 }
 
-// Coach-display-info per User-ID. Brukes for tittel/beskrivelse i UI.
-// Navn hentes fra DB via ServiceType.coach.
-const COACH_BIOS: Record<string, { tittel: string }> = {
-  "anders@akgolf.no": {
-    tittel: "Head Coach · 15+ år erfaring · WANG Toppidrett",
-  },
-  "markus@akgolf.no": {
-    tittel: "Assistent-coach · spillerutvikling",
-  },
-};
+/** «Anders Kristiansen» → «Anders». Fasiten viser fornavn på tjenestekortene. */
+function fornavn(navn: string | null | undefined): string | null {
+  if (!navn) return null;
+  return navn.trim().split(/\s+/)[0] || null;
+}
 
-const LOCATIONS: Record<string, { id: string; navn: string; sted: string }> = {
-  gfgk: {
-    id: "gfgk",
-    navn: "Gamle Fredrikstad Golfklubb",
-    sted: "Torsnesveien 16, 1630 Gamle Fredrikstad",
-  },
-  mulligan: {
-    id: "mulligan",
-    navn: "Mulligan Indoor Golf Fredrikstad",
-    sted: "Produksjonsveien 21, 1618 Fredrikstad",
-  },
-};
+// Fasiten låser flaten til én lokasjon ved lansering. Navnet leses fra samme
+// rad som checkout faktisk bruker, slik at skjermen ikke lover et annet sted
+// enn bookingen havner på.
+const LOKASJON_FALLBACK = "Gamle Fredrikstad GK";
 
-export default async function BookingLanding({
-  searchParams,
-}: {
-  searchParams: SearchParams;
-}) {
-  const { lokasjon, trener } = await searchParams;
-
+export default async function BookingLanding() {
   // Pauset for publikum: alle domener sendes til Acuity. Kun ADMIN ser flyten
   // (til BOOKING_PUBLIC=true) — se src/lib/booking/offentlig-booking.ts.
   if (!(await kanBrukeInnebygdBooking())) {
     return <MarkedBookingV2 paused acuityUrl={BOOKING_ACUITY_URL} />;
   }
 
-  const services = await prisma.serviceType.findMany({
-    where: { active: true, priceOre: { gt: 0 } },
-    orderBy: { priceOre: "asc" },
-    include: {
-      coach: { select: { id: true, name: true, email: true } },
-    },
-  });
+  const [services, lokasjonRad] = await Promise.all([
+    prisma.serviceType.findMany({
+      where: { active: true, priceOre: { gt: 0 } },
+      orderBy: { priceOre: "asc" },
+      include: { coach: { select: { name: true } } },
+    }),
+    prisma.location.findFirst({
+      where: {
+        OR: [
+          { name: { contains: "Fredrikstad" } },
+          { name: { contains: "GFGK" } },
+          { name: { contains: "Golfklubb" } },
+        ],
+      },
+      select: { name: true },
+    }),
+  ]);
 
-  // Hvilke lokasjoner finnes representert?
-  const aktiveLokasjoner = Array.from(
-    new Set(services.map((s) => getLocationForService(s.slug))),
-  );
-  const lokasjonValg: BookingLokasjon[] = aktiveLokasjoner
-    .map((id) => LOCATIONS[id])
-    .filter(Boolean);
+  const tjenester: PaperTjeneste[] = services
+    .filter((s) => !erAbonnement(s.name))
+    .map((s) => ({
+      slug: s.slug,
+      navn: s.name,
+      coachNavn: fornavn(s.coach?.name),
+      pris: Math.round(s.priceOre / 100),
+      // ServiceType har ingen kolonne for prisenhet, så flaten sier «kr» og lar
+      // beskrivelsen fra basen bære nyansen (delt økt, per spiller osv.).
+      enhet: "kr",
+      varighetMin: s.durationMin,
+      beskrivelse: s.description,
+    }));
 
-  // Hvilke trenere har minst én aktiv tjeneste? (deduplisert)
-  const treneresMap = new Map<string, BookingTrener>();
-  for (const s of services) {
-    if (s.coach && !treneresMap.has(s.coach.id)) {
-      treneresMap.set(s.coach.id, {
-        id: s.coach.id,
-        navn: s.coach.name,
-        tittel: COACH_BIOS[s.coach.email]?.tittel ?? "Coach",
-      });
-    }
-  }
-  const trenere = Array.from(treneresMap.values()).sort((a, b) =>
-    a.navn.localeCompare(b.navn),
-  );
-
-  const tjenester: BookingTjeneste[] = services.map((s) => ({
-    id: s.id,
-    slug: s.slug,
-    name: s.name,
-    description: s.description,
-    priceOre: s.priceOre,
-    durationMin: s.durationMin,
-    coachId: s.coach?.id ?? null,
-    lokasjonId: getLocationForService(s.slug),
-    abonnement: erAbonnement(s.name),
-  }));
+  const abonnement: PaperAbonnement[] = services
+    .filter((s) => erAbonnement(s.name))
+    .map((s) => ({
+      slug: s.slug,
+      navn: s.name,
+      coachNavn: fornavn(s.coach?.name),
+      pris: Math.round(s.priceOre / 100),
+      beskrivelse: s.description,
+    }));
 
   return (
-    <MarkedBookingV2
-      lokasjonValg={lokasjonValg}
-      trenere={trenere}
+    <MarkedBookingPaperV2
       tjenester={tjenester}
-      valgtLokasjon={lokasjon ?? null}
-      valgtTrener={trener ?? null}
+      abonnement={abonnement}
+      lokasjon={lokasjonRad?.name ?? LOKASJON_FALLBACK}
     />
   );
 }
