@@ -77,16 +77,27 @@ export const PLAYERHQ_NAV: V2NavItem[] = [
 ];
 
 /**
- * AgencyOS primær-nav: 5 jobber. Hub-faner (Kø / Kalender / Innsikt) samler
- * det som tidligere var 20+ «Mer»-lenker. Se agency-hub-subnav.tsx.
+ * AgencyOS primær-nav — ÅTTE punkter, 1:1 med Paper-fasitens rail
+ * (`agencyos-konsoll-desktop.html`, `<nav class="rail">`). Låst av Anders
+ * 2026-08-10, sammen med PP-2.1.
+ *
+ * «Innsikt» sto her frem til 10.08 og er IKKE i fasiten. Den er ikke borte:
+ * /admin/analyse nås fra Cmd+K og fra «Innsikt»-knappen nederst i konsollens
+ * artefaktpanel. Ikke legg den tilbake i railen uten at fasiten endres først.
+ *
+ * Workbench, AgenticOS, Økonomi og Innstillinger er løftet OPP fra «Mer» hit.
+ * De blir stående i AGENCYOS_ROM også — railen vinner ved dublett, men
+ * rommene bærer beskrivelsene og er fortsatt mobil-«Mer»-innholdet.
  */
 export const AGENCYOS_NAV: V2NavItem[] = [
-  /* Paper fasit agencyos-*.html rail: Konsoll · Innboks · Spillere · Kalender (+ Workbench i Mer) */
   { id: "cockpit", label: "Konsoll", icon: "home", href: "/admin/agencyos" },
   { id: "innboks", label: "Innboks", icon: "inbox", href: "/admin/innboks" },
   { id: "spillere", label: "Spillere", icon: "users", href: "/admin/spillere" },
   { id: "kalender", label: "Kalender", icon: "calendar", href: "/admin/kalender" },
-  { id: "innsikt", label: "Innsikt", icon: "bar-chart", href: "/admin/analyse" },
+  { id: "workbench", label: "Workbench", icon: "target", href: "/admin/planlegge" },
+  { id: "agenticos", label: "AgenticOS", icon: "bot", href: "/admin/agents" },
+  { id: "okonomi", label: "Økonomi", icon: "credit-card", href: "/admin/agencyos/okonomi", adminOnly: true },
+  { id: "innstillinger", label: "Innstillinger", icon: "settings", href: "/admin/settings", adminOnly: true },
 ];
 
 /** Påfør kø-badge uten å mutere AGENCYOS_NAV-konstanten. erAgency sjekker id/href. */
@@ -336,7 +347,24 @@ function RailLenke({ item, on, dark }: { item: V2NavItem; on: boolean; dark?: bo
           </span>
         )}
       </span>
-      <span style={{ fontFamily: T.mono, fontSize: 9, fontWeight: 600, letterSpacing: "0.04em", textTransform: "uppercase", color: dark ? (on ? T.railOn : T.railFg) : (on ? T.fg : T.mut) }}>{item.label}</span>
+      {/* Railen er 64px bred. «Innstillinger» i 9px versal + 0.04em sperring
+          er bredere enn det og ble klippet til «INNSTILLINGE» (målt 10.08 da
+          railen gikk fra fem til åtte punkter). Lange etiketter krymper i
+          stedet for å bli kuttet — teksten er navigasjonen, ikke pynt. */}
+      <span
+        style={{
+          fontFamily: T.mono,
+          fontSize: item.label.length > 10 ? 7.5 : 9,
+          fontWeight: 600,
+          letterSpacing: item.label.length > 10 ? "0.01em" : "0.04em",
+          textTransform: "uppercase",
+          maxWidth: "100%",
+          textAlign: "center",
+          color: dark ? (on ? T.railOn : T.railFg) : (on ? T.fg : T.mut),
+        }}
+      >
+        {item.label}
+      </span>
     </Link>
   );
 }
@@ -638,7 +666,10 @@ function BunnNavLenker({ aktiv, nav, mer }: { aktiv?: string; nav: V2NavItem[]; 
    AGENCYOS_ROM (fem rom), så hele coach-flaten er nåbar. Mørkt tema beholdes
    (V2Shell holder AgencyOS mørk/lys via cookie som før). PlayerHQ-mobilen bruker
    fortsatt BunnNavLenker uendret. */
-const AGENCY_MOBIL_PRIMÆR = ["cockpit", "innboks", "spillere", "kalender"];
+/* Fem, ikke åtte: fasitens mobil-bunn (agencyos-konsoll-mobil.html) viser
+   Konsoll · Innboks · Spillere · Kalender · Workbench. AgenticOS, Økonomi og
+   Innstillinger faller automatisk ned i «Mer»-skuffen under (se `resten`). */
+const AGENCY_MOBIL_PRIMÆR = ["cockpit", "innboks", "spillere", "kalender", "workbench"];
 
 function AgencyBunnNav({ aktiv, nav, mer, rom }: { aktiv?: string; nav: V2NavItem[]; mer?: V2NavGruppe[]; rom?: V2Rom[] }) {
   const [skuffOpen, setSkuffOpen] = useState(false);
@@ -771,7 +802,7 @@ export function V2Shell({ aktiv, nav = PLAYERHQ_NAV, mer, rom, navn = "Øyvind R
       Planlegging: "kalender",
       "Tid og booking": "kalender",
       Innsikt: "innsikt",
-      "Workbench & plan": "spillere",
+      "Workbench & plan": "workbench",
     };
     let best: { id: string; href: string } | undefined;
     // Hub-ruter utenfor Mer → primær-seksjon (Kø / Kalender / Innsikt).
@@ -786,13 +817,18 @@ export function V2Shell({ aktiv, nav = PLAYERHQ_NAV, mer, rom, navn = "Øyvind R
       { prefix: "/admin/bookinger", id: "kalender" },
       { prefix: "/admin/agencyos/uka", id: "kalender" },
       { prefix: "/admin/availability", id: "kalender" },
+      /* «innsikt» er ikke lenger et rail-punkt (fasiten har åtte, uten den).
+         Mappingen står igjen med vilje: id-en treffer ingen rail-knapp, så
+         analyse-rutene får ingen markert seksjon — samme bevisste tomrom som
+         PlayerHQ har for «gjor». Ikke «rett» dette ved å legge Innsikt
+         tilbake i railen; fasiten må endres først. */
       { prefix: "/admin/analyse", id: "innsikt" },
       { prefix: "/admin/tester", id: "innsikt" },
       { prefix: "/admin/trackman", id: "innsikt" },
       { prefix: "/admin/runder", id: "innsikt" },
       { prefix: "/admin/reports", id: "innsikt" },
       { prefix: "/admin/analysere", id: "innsikt" },
-      { prefix: "/admin/planlegge", id: "spillere" },
+      { prefix: "/admin/planlegge", id: "workbench" },
       { prefix: "/admin/spillere", id: "spillere" },
       { prefix: "/admin/agencyos", id: "cockpit" },
     ];
