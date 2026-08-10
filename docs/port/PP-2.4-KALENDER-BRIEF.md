@@ -66,9 +66,25 @@ sak** — her «Flytt til 17:30–18:30» for den valgte kollisjonen. «Ny økt�
 
 ### 5. Tidsaksen er for luftig
 
-Appen viser 04:00–22:00 med mye tomrom; fasiten pakker 05:00–20:00 tettere og får hele dagen på
-én skjerm. Konstantene ligger i `AgencyKalenderV2.tsx` (se `timeGridBlockStyle` og `startMin`-
-matten rundt linje 460–550).
+**Rettet 10.08.2026 — denne seksjonen sa opprinnelig «fasiten pakker 05:00–20:00». Det var feil.**
+Fasiten er `T_START = 5*60, T_SLUTT = 23*60, SLOT = 30, SLOT_H = 22` — altså **05:00–23:00 i
+30-minutters intervaller, 22 px per slot (44 px/time)**. Identisk i `agencyos-kalender.html` §546
+og `workbench-desktop.html` §837, der linjen er merket «beslutning Anders 01.08.2026».
+
+Appen viste 04:00–23:00 i 20-minutters intervaller à 56 px/time. Konstantene lå ikke i
+`AgencyKalenderV2.tsx` som denne briefen først påsto, men i `src/lib/calendar/notion-grid.ts`,
+som er delt kilde for kalenderen, Workbench, coach-workbench og `shared/calendar`.
+
+**Levert:** aksen følger nå fasiten, og fordi kilden er delt fulgte Workbench med — som er riktig,
+siden Workbench-fasiten har samme akse. Aksen merkes per slot (05:00, 05:30, …) med hele timer i
+full tekstfarge og halvtimene dempet, per Papers `tegnAkse()`. Grid-kroppen krympet fra 1064 px
+til 792 px.
+
+**Én konsekvens å være klar over:** 04:00-raden forsvant. Den ble lagt inn 29.07 av
+AgencyOS-kodeordren «for tidlige morgenøkter (WANG/GFGK før skole)». Paper vinner (invariant 2),
+og Anders' beslutning er nyere. Økter som likevel starter før 05:00 klemmes til toppen av grid av
+`timeGridBlockStyle` — de forsvinner ikke, men de får ikke egen rad. Er det et reelt problem for
+WANG/GFGK, er det en fasit-endring å ta med Anders, ikke noe å lappe i koden.
 
 ---
 

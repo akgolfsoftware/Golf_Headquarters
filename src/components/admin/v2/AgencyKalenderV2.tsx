@@ -130,6 +130,59 @@ function CoachLegend({
   );
 }
 
+/** Nullstilt knappeflate — brukt der en økt-rad selv er trykkflaten. */
+const NAKEN_KNAPP: React.CSSProperties = {
+  appearance: "none",
+  background: "none",
+  border: "none",
+  padding: 0,
+  textAlign: "left",
+  width: "100%",
+  cursor: "pointer",
+};
+
+/** Fargemerket for en økt — Google-kalenderfarge, ellers coach, ellers akse. */
+function oktAksentFarge(okt: KalOkt): string {
+  if (okt.erGoogle) return okt.kalenderFarge ?? T.mut;
+  if (okt.coachId) return coachColorFor(okt.coachId).accent;
+  if (okt.akse) return T.ax[okt.akse as AkseKey] ?? T.mut;
+  return T.mut;
+}
+
+/* ── OktTrykkflate — felles trykk-dispatch for én økt: Google-hendelse åpner
+   redigeringsarket, treningsøkt åpner drill-lesevisningen, serie åpner SerieMeny,
+   og alt annet navigerer via href. Delt av OktBlokk (grid/dag-liste) og AgendaRad
+   slik at de to visningene ikke kan komme i utakt. ── */
+function OktTrykkflate({
+  okt,
+  onSerieClick,
+  onTreningClick,
+  onGoogleClick,
+  children,
+}: {
+  okt: KalOkt;
+  onSerieClick?: (okt: KalOkt) => void;
+  onTreningClick?: (okt: KalOkt) => void;
+  onGoogleClick?: (okt: KalOkt) => void;
+  children: React.ReactNode;
+}) {
+  const knapp = (fn?: (okt: KalOkt) => void) => (
+    <button type="button" onClick={() => fn?.(okt)} className="v2-focus" style={NAKEN_KNAPP}>
+      {children}
+    </button>
+  );
+  if (okt.erGoogle) return knapp(onGoogleClick);
+  if (okt.treningsSessionId) return knapp(onTreningClick);
+  if (okt.serie) return knapp(onSerieClick);
+  return okt.href ? (
+    <Link href={okt.href} style={{ textDecoration: "none" }}>
+      {children}
+    </Link>
+  ) : (
+    <>{children}</>
+  );
+}
+
 /* ── OktBlokk — én økt i uke-grid/dag-liste. Serie-økter åpner SerieMeny
    (klikk setter state hos forelder) i stedet for å navigere bort — vanlige
    økter beholder Link-navigasjon til booking/gruppe. Treningsøkter med
@@ -158,13 +211,7 @@ function OktBlokk({
     : coachAccent
       ? `3px solid ${coachAccent}`
       : `1px solid ${kant}`;
-  const dotColor = erGoogle
-    ? (okt.kalenderFarge ?? T.mut)
-    : coachAccent
-      ? coachAccent
-      : okt.akse
-        ? T.ax[okt.akse as AkseKey]
-        : T.mut;
+  const dotColor = oktAksentFarge(okt);
   const inner = (
     <div
       style={{
@@ -203,50 +250,17 @@ function OktBlokk({
       {!compact && okt.serie && <SerieMerke tekst={okt.serie} />}
     </div>
   );
-  if (erGoogle) {
-    // Klikk åpner redigeringsarket (steg 4) — endre tid, tittel og sted uten
-    // å forlate AgencyOS. Arket har lenke videre til Google.
-    return (
-      <button
-        type="button"
-        onClick={() => onGoogleClick?.(okt)}
-        className="v2-focus"
-        style={{ appearance: "none", background: "none", border: "none", padding: 0, textAlign: "left", width: "100%", cursor: "pointer" }}
-      >
-        {inner}
-      </button>
-    );
-  }
-  if (erTrening) {
-    return (
-      <button
-        type="button"
-        onClick={() => onTreningClick?.(okt)}
-        className="v2-focus"
-        style={{ appearance: "none", background: "none", border: "none", padding: 0, textAlign: "left", width: "100%", cursor: "pointer" }}
-      >
-        {inner}
-      </button>
-    );
-  }
-  if (erSerie) {
-    return (
-      <button
-        type="button"
-        onClick={() => onSerieClick?.(okt)}
-        className="v2-focus"
-        style={{ appearance: "none", background: "none", border: "none", padding: 0, textAlign: "left", width: "100%", cursor: "pointer" }}
-      >
-        {inner}
-      </button>
-    );
-  }
-  return okt.href ? (
-    <Link href={okt.href} style={{ textDecoration: "none" }}>
+  // Klikk på Google-hendelse åpner redigeringsarket (steg 4) — endre tid, tittel
+  // og sted uten å forlate AgencyOS. Arket har lenke videre til Google.
+  return (
+    <OktTrykkflate
+      okt={okt}
+      onSerieClick={onSerieClick}
+      onTreningClick={onTreningClick}
+      onGoogleClick={onGoogleClick}
+    >
       {inner}
-    </Link>
-  ) : (
-    inner
+    </OktTrykkflate>
   );
 }
 
@@ -595,6 +609,180 @@ function DagOkterListe({ dag, onSerieClick, onTreningClick, onGoogleClick, onTom
   );
 }
 
+/* ── Agenda (Paper `.agenda` / `.agrad`) — flat, kronologisk liste. Tredje
+   visning ved siden av Dag og Uke, og den eneste som er lesbar på 390 px uten
+   å bli et rutenett.
+
+   Avvik fra fasit, bevisst: Paper viser agendaen for ÉN valgt dag, fordi hele
+   fasit-toolbaren er dag-scopet i Dag/Agenda-modus. Denne skjermen laster en
+   UKE (`data.dager`, ukeLabel, uke-piler) og har ingen valgt-dag-tilstand, så
+   agendaen spenner uka og skiller dagene med et dato-hode. Radformatet er
+   fasitens: klokkeslett · tittel + undertekst · sted. ── */
+
+/** «09:00–10:00» for en økt. Heldag og oppgavefrist har ingen ekte spenn. */
+function agendaTidsspenn(okter: KalOkt[], idx: number): string {
+  const okt = okter[idx];
+  if (okt.heldag) return "Hele dagen";
+  if (okt.startMin >= 24 * 60) return "Frist";
+  const slutt = okt.startMin + estimertVarighetMin(okter, idx);
+  const pad = (n: number) => String(n).padStart(2, "0");
+  return `${okt.kl}–${pad(Math.floor(slutt / 60) % 24)}:${pad(slutt % 60)}`;
+}
+
+/** Undertekst: den mest opplysende metaen vi faktisk har for økta. */
+function agendaUndertekst(okt: KalOkt): string | null {
+  if (okt.erOppgave) return "Oppgave-frist";
+  if (okt.erHendelse) return "Hendelse";
+  if (okt.erGoogle) return okt.kalenderNavn?.trim() || "Google-kalender";
+  if (okt.serie) return okt.serie;
+  if (okt.coachName) return okt.coachName;
+  if (okt.gruppe != null) return `${okt.gruppe} spillere`;
+  return null;
+}
+
+function AgendaRad({
+  okter,
+  idx,
+  onSerieClick,
+  onTreningClick,
+  onGoogleClick,
+}: {
+  okter: KalOkt[];
+  idx: number;
+  onSerieClick: (okt: KalOkt) => void;
+  onTreningClick: (okt: KalOkt) => void;
+  onGoogleClick: (okt: KalOkt) => void;
+}) {
+  const okt = okter[idx];
+  const sub = agendaUndertekst(okt);
+  const sted = okt.facilityName ?? okt.sted;
+  // Fasit `.agrad.ledig` er stiplet. Vi har ingen «ledig luke»-rad ennå (det
+  // kommer med nøkkeltallene i neste PR), men hendelser og frister er samme
+  // slag: ikke en avtale med en spiller. De arver derfor den stiplede kanten.
+  const stiplet = Boolean(okt.erHendelse || okt.erOppgave);
+  return (
+    <OktTrykkflate
+      okt={okt}
+      onSerieClick={onSerieClick}
+      onTreningClick={onTreningClick}
+      onGoogleClick={onGoogleClick}
+    >
+      <div
+        style={{
+          display: "grid",
+          // minmax(0,1fr) på midtkolonnen: uten den sprenger lange titler raden
+          // ut av vinduet i stedet for å ellipse (gotchas.md, 10.08.2026).
+          gridTemplateColumns: "104px minmax(0,1fr) auto",
+          gap: 12,
+          alignItems: "center",
+          width: "100%",
+          minHeight: 56,
+          padding: 12,
+          borderRadius: T.rRow,
+          background: okt.naa ? `${T.tint}, ${T.panel2}` : T.panel2,
+          border: `1px ${stiplet ? "dashed" : "solid"} ${okt.naa ? NAA_KANT : T.border}`,
+          borderLeft: `3px ${stiplet ? "dashed" : "solid"} ${oktAksentFarge(okt)}`,
+        }}
+      >
+        <span
+          style={{
+            fontFamily: T.mono,
+            fontSize: 12,
+            fontWeight: 600,
+            color: T.fg2,
+            fontVariantNumeric: "tabular-nums",
+          }}
+        >
+          {agendaTidsspenn(okter, idx)}
+        </span>
+        <span style={{ display: "flex", flexDirection: "column", gap: 2, minWidth: 0 }}>
+          <span
+            style={{
+              fontFamily: T.ui,
+              fontSize: 13,
+              fontWeight: 600,
+              color: T.fg,
+              whiteSpace: "nowrap",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+            }}
+          >
+            {okt.navn}
+          </span>
+          {sub && (
+            <span
+              style={{
+                fontFamily: T.mono,
+                fontSize: 10.5,
+                color: T.mut,
+                whiteSpace: "nowrap",
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+              }}
+            >
+              {sub}
+            </span>
+          )}
+        </span>
+        <span style={{ display: "flex", alignItems: "center", gap: 8, flex: "none" }}>
+          {okt.naa && <StatusPill tone="down">Live</StatusPill>}
+          {sted && <MikroMeta icon="map-pin">{sted}</MikroMeta>}
+        </span>
+      </div>
+    </OktTrykkflate>
+  );
+}
+
+function AgendaListe({
+  dager,
+  onSerieClick,
+  onTreningClick,
+  onGoogleClick,
+}: {
+  dager: KalDag[];
+  onSerieClick: (okt: KalOkt) => void;
+  onTreningClick: (okt: KalOkt) => void;
+  onGoogleClick: (okt: KalOkt) => void;
+}) {
+  const medOkter = dager.filter((d) => d.okter.length > 0);
+  if (medOkter.length === 0) {
+    return (
+      <Kort>
+        <TomTilstand
+          icon="calendar"
+          title="Ingen avtaler denne uka"
+          sub="Prøv et annet filter, eller legg ut ledige coachingtimer."
+        />
+      </Kort>
+    );
+  }
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: 18 }}>
+      {medOkter.map((d) => (
+        <div key={d.datoISO || d.dato} style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+            <Caps size={9}>
+              {d.dag} {d.dato}
+              {d.idag ? " · i dag" : ""}
+            </Caps>
+            <span style={{ flex: 1, height: 1, background: T.border }} />
+          </div>
+          {d.okter.map((o, i) => (
+            <AgendaRad
+              key={o.id}
+              okter={d.okter}
+              idx={i}
+              onSerieClick={onSerieClick}
+              onTreningClick={onTreningClick}
+              onGoogleClick={onGoogleClick}
+            />
+          ))}
+        </div>
+      ))}
+    </div>
+  );
+}
+
 /* ── MobilDagSeksjon — én ukedag som liste-rad på mobil (M3). Hele dagen er ETT
    tap-mål (ingen dra-og-slipp på mobil) → åpner dag-detalj i BunnArk. Viser
    dato-merke, økt-antall og et kompakt sammendrag av dagens økter (tid · navn ·
@@ -902,6 +1090,7 @@ export function AgencyKalenderV2({ data }: { data: KalenderData }) {
           { id: "dag", label: "Dag", odId: "kam-vis-dag" },
           { id: "uke", label: "Uke", odId: "kam-vis-uke" },
           { id: "maned", label: "Måned", odId: "kam-vis-maaned" },
+          { id: "agenda", label: "Agenda", odId: "kal-vis-agenda" },
         ]}
         value={visning}
         onChange={setVisning}
@@ -941,7 +1130,16 @@ export function AgencyKalenderV2({ data }: { data: KalenderData }) {
   //    only). Segmentvelger, serie-merker og opprett-inngang er tap-baserte. ──
   if (mobile) {
     let mobilKropp: React.ReactNode;
-    if (visning === "maned") {
+    if (visning === "agenda") {
+      mobilKropp = (
+        <AgendaListe
+          dager={filtrerteDager}
+          onSerieClick={setValgtSerieOkt}
+          onTreningClick={(o) => void apneTrening(o)}
+          onGoogleClick={setValgtGoogleOkt}
+        />
+      );
+    } else if (visning === "maned") {
       mobilKropp = (
         <Kort>
           <TomTilstand icon="calendar" title="Månedsvisning kommer" sub="Denne forhåndsvisningen laster uke-data. Måned kobles i en senere bølge." />
@@ -1046,7 +1244,6 @@ export function AgencyKalenderV2({ data }: { data: KalenderData }) {
           today: d.idag,
         }))}
         showNowLine
-        timeColWidth={48}
         bordered
         renderDay={(i) => (
           <AgencyDagInnhold
@@ -1067,6 +1264,15 @@ export function AgencyKalenderV2({ data }: { data: KalenderData }) {
       <Kort eyebrow={`${valgt.dag} ${valgt.dato}${valgt.idag ? " · i dag" : ""}`}>
         <DagOkterListe dag={valgt} onSerieClick={setValgtSerieOkt} onTreningClick={(o) => void apneTrening(o)} onGoogleClick={setValgtGoogleOkt} onTomLuke={onTomLuke} />
       </Kort>
+    );
+  } else if (visning === "agenda") {
+    kropp = (
+      <AgendaListe
+        dager={filtrerteDager}
+        onSerieClick={setValgtSerieOkt}
+        onTreningClick={(o) => void apneTrening(o)}
+        onGoogleClick={setValgtGoogleOkt}
+      />
     );
   } else {
     // Måned: ikke koblet til denne forhåndsvisnings-loaderen ennå (ærlig tom-tilstand).
