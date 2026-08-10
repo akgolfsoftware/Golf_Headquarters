@@ -126,9 +126,11 @@ function Knapp({
   disabled?: boolean;
   ariaBusy?: boolean;
 }) {
+  // Innlogging er den ene skjermen der «Logg inn» ER den ene handlingen, så clay
+  // bryter ikke monopolet. Anders bekreftet mot fasit innlogging.html 10.08.2026.
   const v: CSSProperties =
     variant === "primary"
-      ? { background: T.cta, color: T.onCta, border: "none", minHeight: 48 }
+      ? { background: T.handling, color: T.onHandling, border: "none", minHeight: 48 }
       : { background: T.panel3, color: T.fg, border: `1px solid ${T.borderS}` };
   return (
     <button

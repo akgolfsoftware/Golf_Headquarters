@@ -102,3 +102,6 @@ tmp/
 .claude/settings.local.json
 .env*.local
 tmp-handoff/
+
+# Sign-off-galleri: mellomfiler (app/fasit hver for seg) — kun montasjene committes
+screenshots/paper/signoff/_raw-*.png

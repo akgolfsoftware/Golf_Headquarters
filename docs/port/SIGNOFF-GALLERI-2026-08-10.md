@@ -105,24 +105,26 @@ faste deler av skjermen, ikke innhold.*
 ![PP-1.3 desktop](../../screenshots/paper/signoff/PP-1.3-d1280.png)
 ![PP-1.3 mørk](../../screenshots/paper/signoff/PP-1.3-m390-dark.png)
 
-Dette er skjermen med størst forskjell i hele PlayerHQ.
+Dette *var* skjermen med størst forskjell i hele PlayerHQ. Etter Anders' beslutning 10.08 er den
+kortet fra tretten kort til fire.
 
 **Avvik**
 
-1. **Appen er fire ganger så lang som fasiten.** Fasiten er én skjerm: SG-total med fire
-   søylerader, en forklaringslinje, og handlingen. Appen har elleve seksjoner under hverandre —
-   Diagnose, Slaglekkasje med 13 rader, SG-nedbrytning, Runder, Treningsøkter, Hull-analyse,
-   Gameplan, Sammenlign med proffer.
+1. ~~Appen er fire ganger så lang som fasiten — tretten bokser mot fem.~~ **Løst 10.08 etter
+   Anders' beslutning.** SG-fanen viser nå fire kort: SG-total, SG per område, «Én ting nå» og
+   score siste ti runder. Diagnose, slaglekkasje, nøkkeltallene og de tre videre-lenkene er flyttet
+   til Statistikk-fanen. Ingenting er fjernet — alt ligger ett trykk unna. Bildet over viser
+   tilstanden etter endringen.
 2. **Fanene er ulike.** Fasit har tre fylte piller (Strokes Gained · Trening · Tester). Appen har
    fire med omriss (SG · Trening · Tester · Statistikk).
 3. **Ærlighetsnotisen mangler**: «Tallene er målinger, ikke karakterer. Ingen terskler er vurdert
    — regler og låser er midlertidig ute.» Den står rett under tittelen i fasiten.
-4. **Handlingen står for langt ned.** Fasit legger «Legg inn innspill-økt denne uka» rett under
-   SG-kortet. Appen har den etter fire andre kort.
+4. ~~Handlingen står for langt ned.~~ Løst av samme endring — «Legg inn putting-økt denne uka»
+   er nå tredje kort, ikke sjuende.
 5. **To oransje flater samtidig** — varselboksen «For lite putting-data ennå» og CTA-en lenger ned.
 
-**Anbefaling: FIKS FØRST**, men dette er ikke en natt-jobb. Punkt 1 er et spørsmål til deg:
-skal de åtte ekstra seksjonene bort, eller flyttes bak fanene?
+**Anbefaling: GODKJENN** når du har sett bildet. Punkt 2, 3 og 5 er småting som kan tas i neste
+runde — de endrer ikke hva skjermen er.
 
 ---
 
@@ -186,9 +188,9 @@ Utviklingsplan, Konto) er utenfor fasitens dekning — det kan ikke vurderes her
    Kontoen din bestemmer hvor du havner.» Appen går rett på feltene.
 2. **«Hvor du havner»-seksjonen mangler helt** — de tre linjene som forklarer AgencyOS, PlayerHQ
    og Foreldreportalen, og setningen «Du velger ikke selv. Kontoen avgjør.»
-3. **Knappefargen spriker.** Fasiten har oransje «Logg inn». Appen har mørk/svart. *Dette er et
-   spørsmål til deg, ikke en feil: oransje er ellers reservert til «Én ting nå», og på
-   innloggingssiden finnes det bare én handling. Skal oransje gjelde her?*
+3. ~~Knappefargen spriker — fasiten har oransje «Logg inn», appen hadde mørk.~~ **Avgjort av
+   Anders 10.08: oransje.** Innlogging er den ene skjermen der «Logg inn» *er* den ene handlingen,
+   så clay bryter ikke monopolet. Rettet, og bildet over viser resultatet.
 4. **Logoen er plassert ulikt.** Fasit: «AK Golf.» som ordmerke øverst til venstre. App: ak-symbolet
    sentrert i et eget bånd over kortet.
 5. Google- og BankID-knappene finnes i appen, ikke i fasiten. *De er ekte funksjoner og skal bli —
@@ -335,11 +337,11 @@ coach. Det slår inn så snart det finnes bookinger med coach.*
 |---|---|---|
 | PP-1.1 I dag | Fiks først | Liten (skrivefelt, knapperekkefølge) |
 | PP-1.2 Plan | Fiks først | Middels (manglende ukeoppsummering) |
-| PP-1.3 Analyse | Fiks først | Stor (skjermen må kortes ned) |
+| PP-1.3 Analyse | **Klar for kryss** | 13 → 4 kort, gjort 10.08 |
 | PP-1.4 Meg | Fiks først, så godkjenn | Liten |
 | PP-1.5 Booking i app | Fiks først | Liten — én feil rettet i natt |
-| PP-1.6 Innlogging | Fiks først | Middels — venter på svar om oransje |
-| PP-1.7 Booking offentlig | **Blokkert** | Din beslutning om Acuity |
+| PP-1.6 Innlogging | Fiks først | Oransje knapp gjort; «Hvor du havner» gjenstår |
+| PP-1.7 Booking offentlig | **Låst til slutt** | Acuity blir stående til resten er ferdig |
 | PP-2.1 Konsoll | Fiks først | **Stor — ombygging** |
 | PP-2.2 Innboks | Fiks først | Stor + én ren feil |
 | PP-2.3 Spillere | Fiks først | Middels |
@@ -349,13 +351,15 @@ coach. Det slår inn så snart det finnes bookinger med coach.*
 plass over hele linjen, men formen ikke er det — særlig i AgencyOS, der tre av fire skjermer
 mangler kolonnen som gjør at du kan avgjøre noe uten å bytte side.
 
-## De tre spørsmålene jeg trenger svar på
+## De tre spørsmålene — besvart av Anders 10.08.2026
 
-1. **Skal innloggingsknappen være oransje?** Fasiten sier ja. Regelen om at oransje er reservert
-   til «Én ting nå» sier nei. Begge kan ikke stemme.
-2. **Hva skal skje med de åtte ekstra seksjonene på Analyse?** Bort, eller bak faner?
-3. **Blir Acuity-omveien stående?** Så lenge den står kan ikke den offentlige bookingsiden bygges
-   mot fasiten.
+1. **Innloggingsknappen skal være oransje.** Innlogging er den ene skjermen der «Logg inn» er den
+   ene handlingen, så clay bryter ikke «Én ting nå»-monopolet. Bygget.
+2. **De åtte ekstra seksjonene på Analyse flyttes bak fanene.** Førsteskjermen viser tallet, hvor
+   lekkasjen er, og den ene tingen å gjøre. Resten ligger under Statistikk. Ingenting slettet.
+   Bygget.
+3. **Acuity-omveien blir stående til alt annet er ferdig.** PP-1.7 er dermed låst til slutt av
+   porten, ikke et åpent spørsmål. Ikke rør `vercel.json`-videresendingen.
 
 ## Fotnote om metoden
 
