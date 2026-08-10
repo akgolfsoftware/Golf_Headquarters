@@ -46,13 +46,41 @@ Fasitens formel står i `agencyos-kalender.html` §`function belegg(dag)`:
 > tilgjengelig og teller ikke i nevneren. Holdte luker teller som booket. Ledige timer teller
 > ikke — de er en mulighet, ikke en avtale.
 
-**Datakilder som finnes:** `getAvailableSlots` / `beregnSlotVindu`
-(`src/lib/portal-booking/slot-vindu.ts`) gir ledige luker. Booket tid ligger i `Booking` +
-`TrainingSessionV2`. Sperret tid ligger i `CoachAvailability`. Kollisjoner kan regnes av
-overlappende tidsrom i samme dag — fasiten regner dem, den skriver dem aldri.
-
 **Ikke hardkod noen av tallene.** Fasitens egen kommentar: «Belegg og kollisjon REGNES, aldri
 skrives for hånd.»
+
+**Levert 10.08.2026.** Regnestykket ligger i `src/lib/domain/kalender-belegg.ts` (rene funksjoner,
+13 tester), nevneren hentes av `src/lib/admin-kalender/tilgjengelighet.ts`. Fire flis-er:
+Belegg · Booket · Ledige timer · Kollisjoner, med «Hvorfor dette tallet» under.
+
+**To ting i denne seksjonen var upresise, og er rettet i implementasjonen:**
+
+1. *«Sperret tid ligger i `CoachAvailability`»* — nei. `CoachAvailability` er det motsatte:
+   coachens **bookbare vindu**. Sperret tid ligger i `CalendarEvent` (ferie, møte, stengt anlegg)
+   og i speilede Google-avtaler. Det er en fordel: fasitens nevner er «18 t minus sperret», mens
+   appen kan bruke coachens faktiske vindu, som er et sannere tall. Finnes ingen vinduer, faller
+   koden tilbake til fasitens grunnlag og **sier det** i «Hvorfor dette tallet» — en prosent uten
+   oppgitt nevner er en påstand, ikke et tall.
+2. *«Booket tid ligger i `Booking` + `TrainingSessionV2`»* — riktig, men begge manglet **sluttid**
+   i loaderen. `KalOkt` hadde kun `startMin`, så varighet ble gjettet av `estimertVarighetMin`
+   (gap til neste, ellers 60). Belegg regnet av den gjetningen ville vært oppdiktet. `sluttMin`
+   er nå lagt til fra alle kilder (`Booking.endAt`, `GroupSchedule.endAt`,
+   `TrainingSessionV2.endTime`, `CalendarEvent.endAt`, Google-speilet) — noe som samtidig gir
+   riktige blokkhøyder i grid og riktige tidsspenn i agendaen.
+
+`getAvailableSlots` ble vurdert og **ikke** brukt til «ledige timer»: den krever en `tjenesteId`,
+gjør et Google-kall per coach, og filtrerer bort fortiden — kalenderen viser også tidligere uker.
+Ledig kapasitet regnes i stedet som tilgjengelig minus booket, som er samme størrelse uten
+rundturen.
+
+**Avvik fra fasit, bevisst:** kollisjoner regnes **per coach**. Fasiten har én coach, så to
+overlappende timer er alltid en kollisjon; appen er multi-coach, og to coacher kan jobbe samtidig.
+Økter uten registrert coach (gruppeserier — `GroupSchedule` har ingen coach-kolonne) holdes
+utenfor og telles opp i forbeholdet. Under-rapportering er den ærlige feilen her.
+
+Nøkkeltallene er dessuten **uke-scopet**, ikke dag-scopet som fasiten — samme grunn som for
+agendaen: skjermen laster en uke og har ingen valgt-dag-tilstand. Ukeprosenten regnes av summene,
+ikke som snitt av dagsprosentene (en dag med 1 av 2 timer og en med 0 av 8 gir 10 %, ikke 25 %).
 
 ### 3. Agenda-visning mangler
 
@@ -92,10 +120,15 @@ WANG/GFGK, er det en fasit-endring å ta med Anders, ikke noe å lappe i koden.
 
 Fire PR-er, minste risiko først:
 
-1. **Tidsakse + Agenda-visning** — rent visuelt, ingen nye spørringer.
-2. **Nøkkeltallene** — nytt datalag for belegg/ledige/kollisjoner.
+1. ~~**Tidsakse + Agenda-visning**~~ — **levert 10.08.2026.**
+2. ~~**Nøkkeltallene**~~ — **levert 10.08.2026.**
 3. **Detaljkolonnen** — gjenbruk artefaktpanel-mønsteret, koblet til valgt økt.
 4. **Clay-disiplin** — flytt oransje fra «Ny økt» til konfliktløsningen. Krever at 3 er på plass.
+
+Steg 3 har nå det den trenger: `kollisjoner()` returnerer hvilke to økter som overlapper og i
+hvilket tidsrom, som er nøyaktig underlaget «Kollisjon i din kalender — «\<tittel\>» overlapper»
+og «Flytt til 17:30–18:30» skal bygges av. Selve forslaget (første ledige luke etter konflikten)
+finnes ikke ennå.
 
 ## Fallgruver
 

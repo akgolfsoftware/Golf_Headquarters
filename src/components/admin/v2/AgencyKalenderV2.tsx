@@ -30,7 +30,7 @@ import {
   Kort,
   StatusPill,
   TomTilstand,
-  KpiFlis,
+  HvorforDette,
   Icon,
   HurtigOpprett,
   BunnArk,
@@ -41,6 +41,13 @@ import {
 import { PaperPage, PaperTopp, PaperKropp } from "@/components/portal/v2/PaperChrome";
 import { type AkseKey } from "@/lib/v2/tokens";
 import type { KalenderData, KalDag, KalOkt } from "@/app/admin/kalender/data";
+import {
+  beleggForDager,
+  formaterTid,
+  kollisjoner,
+  utenEier,
+  type BeleggOkt,
+} from "@/lib/domain/kalender-belegg";
 import { foreslaGridTid } from "@/lib/calendar/notion-grid";
 import { coachColorFor } from "@/lib/booking/coach-colors";
 
@@ -472,9 +479,16 @@ function GoogleHendelseArk({
   );
 }
 
-/** Estimert varighet (min) når loader ikke gir slutt-tid — gap til neste, ellers 60. */
+/**
+ * Varighet i minutter. Bruker EKTE sluttid når kilden har en (alle bookinger,
+ * serier, hendelser, treningsøkter og tidfestede Google-avtaler har det siden
+ * PP-2.4 steg 2) og estimerer bare når den mangler — gap til neste, ellers 60.
+ */
 function estimertVarighetMin(okter: KalOkt[], idx: number): number {
   const cur = okter[idx];
+  if (cur.sluttMin != null && cur.sluttMin > cur.startMin) {
+    return cur.sluttMin - cur.startMin;
+  }
   // Oppgave-frist (startMin 1440) — kompakt rad nederst
   if (cur.startMin >= 24 * 60) return 30;
   // Heldags Google-hendelse (startMin -1) — kompakt rad øverst, ikke en
@@ -606,6 +620,65 @@ function DagOkterListe({ dag, onSerieClick, onTreningClick, onGoogleClick, onTom
         Ny booking eller økt
       </button>
     </>
+  );
+}
+
+/* ── MaalFlis (Paper `.m` i `.maalrad`) — nøkkeltall i tre linjer: etikett,
+   regnet verdi, og en kort kvalifisering som sier hva tallet gjelder. Den
+   tredje linja er ikke pynt: «6 t» alene svarer ikke på «6 t av hva?». ── */
+function MaalFlis({
+  etikett,
+  verdi,
+  kvalifisering,
+  varsle,
+  odId,
+}: {
+  etikett: string;
+  verdi: string;
+  kvalifisering: string;
+  varsle?: boolean;
+  odId?: string;
+}) {
+  return (
+    <div
+      data-od-id={odId}
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        gap: 2,
+        minWidth: 0,
+        padding: "12px 16px",
+        borderRadius: T.rCard,
+        background: varsle ? `${T.tint}, ${T.panel2}` : T.panel2,
+        border: `1px solid ${varsle ? NAA_KANT : T.border}`,
+      }}
+    >
+      <Caps size={9}>{etikett}</Caps>
+      <span
+        style={{
+          fontFamily: T.mono,
+          fontSize: 19,
+          fontWeight: 600,
+          letterSpacing: "-0.02em",
+          color: T.fg,
+          fontVariantNumeric: "tabular-nums",
+        }}
+      >
+        {verdi}
+      </span>
+      <span
+        style={{
+          fontFamily: T.ui,
+          fontSize: 10.5,
+          color: T.mut,
+          whiteSpace: "nowrap",
+          overflow: "hidden",
+          textOverflow: "ellipsis",
+        }}
+      >
+        {kvalifisering}
+      </span>
+    </div>
   );
 }
 
@@ -928,6 +1001,40 @@ export function AgencyKalenderV2({ data }: { data: KalenderData }) {
   }));
   const antallOkter = filtrerteDager.reduce((n, d) => n + d.okter.length, 0);
   const liveIDag = filtrerteDager.find((d) => d.idag)?.okter.filter((o) => o.naa).length ?? 0;
+
+  // ── Nøkkeltall (PP-2.4 steg 2) ────────────────────────────────────────────
+  // Fasitens regel: «Belegg og kollisjon REGNES, aldri skrives for hånd.»
+  // Regnestykket bor i src/lib/domain/kalender-belegg.ts; her velges bare
+  // hvilket utvalg og hvilken nevner som gjelder for det brukeren ser på.
+  //
+  // Nevneren følger coach-filteret: ser du på én coach, måles belegget mot DEN
+  // coachens vindu. Ser du på alle, mot lagets samlede kapasitet. Uten det ville
+  // et filter til én coach gitt et kunstig lavt belegg mot lagets nevner.
+  const { tilgjengelighet } = data;
+  const basisFor = (dagIndex: number): number => {
+    if (coachFilter && tilgjengelighet.grunnlag === "tilgjengelighet") {
+      return tilgjengelighet.basisPerCoach[coachFilter]?.[dagIndex] ?? 0;
+    }
+    return tilgjengelighet.basisPerDag[dagIndex] ?? 0;
+  };
+  const beleggOkter = (dag: KalDag): BeleggOkt[] =>
+    dag.okter
+      .filter((o) => o.sluttMin != null && o.startMin >= 0 && o.startMin < 24 * 60)
+      .map((o) => ({
+        id: o.id,
+        startMin: o.startMin,
+        sluttMin: o.sluttMin as number,
+        slag: o.slag,
+        coachId: o.coachId ?? null,
+      }));
+  const belegg = beleggForDager(
+    filtrerteDager.map((d, i) => ({ okter: beleggOkter(d), basisMin: basisFor(i) })),
+    tilgjengelighet.grunnlag,
+  );
+  // Kollisjoner regnes per dag: to avtaler på ulike dager kan aldri overlappe,
+  // og å slå sammen uka først ville gitt falske treff på like klokkeslett.
+  const alleKollisjoner = filtrerteDager.flatMap((d) => kollisjoner(beleggOkter(d)));
+  const antallUtenEier = filtrerteDager.reduce((n, d) => n + utenEier(beleggOkter(d)), 0);
   const statusTone = liveIDag > 0 ? "down" : antallOkter > 0 ? "lime" : "info";
   const statusTekst =
     liveIDag > 0
@@ -1098,15 +1205,68 @@ export function AgencyKalenderV2({ data }: { data: KalenderData }) {
     </div>
   );
 
-  // B: uke-status (5s)
+  // Nøkkeltall (fasit `.maalrad`): Belegg · Booket · Ledige timer · Kollisjoner.
+  // Erstatter Økter/Serier/Live nå, som svarte på «hva finnes» i stedet for
+  // «har du for lite eller for mye å gjøre».
+  const beleggBasisTekst =
+    tilgjengelighet.grunnlag === "tilgjengelighet"
+      ? coachFilter
+        ? "av coachens vindu"
+        : "av registrert kapasitet"
+      : "av hele tidsaksen";
   const kpi = (
-    // `instant`: rene opptellinger — 0 er en ekte verdi her, så en tell-opp-fra-0
-    // kan ikke skilles fra «ingen økter denne uka» (og står fast på 0 hvis fanen
-    // lastes i bakgrunnen, der animasjonsframene er suspendert).
-    <div className="grid grid-cols-3" style={{ gap: T.gap }}>
-      <KpiFlis label="Økter uke" value={antallOkter} tint={antallOkter > 0} instant />
-      <KpiFlis label="Serier" value={data.serieOkterAntall} instant />
-      <KpiFlis label="Live nå" value={liveIDag} varsle={liveIDag > 0} instant />
+    <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+      <div
+        className="grid grid-cols-2 md:grid-cols-4"
+        style={{ gap: 8 }}
+        data-od-id="kalender-maalrad"
+      >
+        <MaalFlis
+          etikett="Belegg"
+          // Null nevner ⇒ tallet finnes ikke. «0 %» ville lest som en tom uke.
+          verdi={belegg.prosent == null ? "—" : `${belegg.prosent} %`}
+          kvalifisering={belegg.prosent == null ? "ingen kapasitet registrert" : beleggBasisTekst}
+          odId="kal-maal-belegg"
+        />
+        <MaalFlis
+          etikett="Booket"
+          verdi={formaterTid(belegg.booketMin)}
+          kvalifisering="coachingtid"
+          odId="kal-maal-booket"
+        />
+        <MaalFlis
+          etikett="Ledige timer"
+          verdi={belegg.tilgjengeligMin > 0 ? formaterTid(belegg.ledigMin) : "—"}
+          kvalifisering={belegg.tilgjengeligMin > 0 ? "kan bookes" : "ingen kapasitet registrert"}
+          odId="kal-maal-ledige"
+        />
+        <MaalFlis
+          etikett="Kollisjoner"
+          verdi={String(alleKollisjoner.length)}
+          kvalifisering={alleKollisjoner.length ? "overlapper i tid" : "ingen"}
+          varsle={alleKollisjoner.length > 0}
+          odId="kal-maal-kollisjoner"
+        />
+      </div>
+      <HvorforDette
+        kilde={`Alle avtaler i ${data.periode}${
+          coachFilter
+            ? ` for ${data.coacher.find((c) => c.id === coachFilter)?.navn ?? "valgt coach"}`
+            : ", alle coacher"
+        }${facilityFilter ? ", filtrert på anlegg" : ""}.`}
+        beregning={
+          tilgjengelighet.grunnlag === "tilgjengelighet"
+            ? "Booket coachingtid delt på tilgjengelig tid. Tilgjengelig = coachens registrerte vinduer, minus sperret tid (ferie, møte, stengt anlegg)."
+            : `Booket coachingtid delt på tilgjengelig tid. Ingen coach har registrert tilgjengelighet denne uka, så nevneren er hele tidsaksen (${formaterTid(
+                tilgjengelighet.basisPerDag[0] ?? 0,
+              )} per dag) minus sperret tid — samme grunnlag som fasiten bruker.`
+        }
+        forbehold={`Overlappende avtaler for samme coach telles én gang i «Booket» — to timer som deler en halvtime opptar halvannen, ikke to. Ledige timer er kapasitet som ikke er booket, ikke publiserte luker.${
+          antallUtenEier > 0
+            ? ` ${antallUtenEier} ${antallUtenEier === 1 ? "økt mangler" : "økter mangler"} registrert coach (gruppeserier har ingen coach-kolonne): de er verken kollisjonssjekket eller slått sammen med andre avtaler.`
+            : ""
+        }`}
+      />
     </div>
   );
 
