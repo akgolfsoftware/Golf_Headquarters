@@ -74,6 +74,14 @@ export interface KalOkt {
   sluttLokal?: string;
   /** Beskrivelsen fra Google, redigerbar i arket. */
   notat?: string | null;
+  /**
+   * Booking-id — satt KUN for rader som kommer fra `Booking`. Det er de eneste
+   * som kan flyttes i tid (`flyttBookingTilTid`); serier, treningsøkter,
+   * hendelser og Google-speil har ingen flytte-handling. Detaljkolonnen bruker
+   * feltet til å avgjøre om «Flytt til …» i det hele tatt skal vises — en knapp
+   * som ikke kan gjøre noe skal ikke stå der.
+   */
+  bookingId?: string;
   /** Multi-coach: eier av bookingen — styrer coach-farge og coach-filteret. */
   coachId?: string | null;
   coachName?: string | null;
@@ -218,6 +226,7 @@ export async function hentAgencyKalenderData(
         serie: null,
         href: e.href,
         naa: e.kind === "live",
+        bookingId: e.id,
         coachId: e.coachId ?? null,
         coachName: e.coachName ?? null,
         facilityId: e.facilityId ?? null,

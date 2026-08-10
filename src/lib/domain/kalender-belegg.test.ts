@@ -3,7 +3,9 @@ import assert from "node:assert/strict";
 import {
   beleggForDag,
   beleggForDager,
+  foreslaFlytting,
   formaterTid,
+  klokke,
   kollisjoner,
   utenEier,
   type BeleggOkt,
@@ -57,13 +59,52 @@ describe("kalender-belegg · kollisjoner", () => {
     assert.equal(utenEier(okter), 2);
   });
 
-  it("ser bort fra sperret tid og informasjonsrader", () => {
+  it("flagger coaching mot sperret tid", () => {
+    // Utvidelse mot fasit: DB-constrainten hindrer coaching×coaching for samme
+    // coach, så dette er kollisjonstypen appen faktisk produserer.
     const k = kollisjoner([
-      okt("a", "12:00", "13:00", "sperret"),
+      okt("time", "12:00", "13:00", "coaching"),
+      okt("legetime", "12:30", "13:30", "sperret"),
+    ]);
+    assert.equal(k.length, 1);
+    assert.equal(k[0].fraMin, 12 * 60 + 30);
+  });
+
+  it("er ikke kollisjon når begge er sperret", () => {
+    // Et møte under en ferieuke er ikke noe å løse.
+    const k = kollisjoner([
+      okt("ferie", "08:00", "16:00", "sperret"),
+      okt("mote", "12:00", "13:00", "sperret"),
+    ]);
+    assert.equal(k.length, 0);
+  });
+
+  it("ser bort fra informasjonsrader", () => {
+    const k = kollisjoner([
       okt("b", "12:00", "13:00", "ingen"),
       okt("c", "12:00", "13:00", "coaching"),
     ]);
     assert.equal(k.length, 0);
+  });
+});
+
+describe("kalender-belegg · foreslaFlytting", () => {
+  const SISTE = 23 * 60;
+
+  it("starter når motparten slutter, med samme varighet", () => {
+    // Fasitens tilfelle: 16:00–17:30 og 16:30–17:30 → flytt til 17:30–18:30.
+    const forslag = foreslaFlytting(okt("b", "16:30", "17:30"), okt("a", "16:00", "17:30"), SISTE);
+    assert.deepEqual(forslag, { startMin: 17 * 60 + 30, sluttMin: 18 * 60 + 30 });
+    assert.equal(klokke(forslag!.startMin), "17:30");
+  });
+
+  it("gir null når forslaget ikke får plass før tidsaksen slutter", () => {
+    // Å dytte avtalen ut av kalenderen er ikke en løsning.
+    assert.equal(foreslaFlytting(okt("b", "22:00", "23:00"), okt("a", "22:00", "23:00"), SISTE), null);
+  });
+
+  it("gir null når økta allerede ligger riktig", () => {
+    assert.equal(foreslaFlytting(okt("b", "18:00", "19:00"), okt("a", "16:00", "17:00"), SISTE), null);
   });
 });
 

@@ -122,13 +122,42 @@ Fire PR-er, minste risiko først:
 
 1. ~~**Tidsakse + Agenda-visning**~~ — **levert 10.08.2026.**
 2. ~~**Nøkkeltallene**~~ — **levert 10.08.2026.**
-3. **Detaljkolonnen** — gjenbruk artefaktpanel-mønsteret, koblet til valgt økt.
-4. **Clay-disiplin** — flytt oransje fra «Ny økt» til konfliktløsningen. Krever at 3 er på plass.
+3. ~~**Detaljkolonnen**~~ — **levert 10.08.2026.**
+4. ~~**Clay-disiplin**~~ — **levert 10.08.2026, sammen med 3.** Den lot seg ikke utsette: så snart
+   detaljkolonnen fikk sin clay «Flytt til …»-knapp, hadde skjermen to clay-flater samtidig.
 
-Steg 3 har nå det den trenger: `kollisjoner()` returnerer hvilke to økter som overlapper og i
-hvilket tidsrom, som er nøyaktig underlaget «Kollisjon i din kalender — «\<tittel\>» overlapper»
-og «Flytt til 17:30–18:30» skal bygges av. Selve forslaget (første ledige luke etter konflikten)
-finnes ikke ennå.
+### Hva steg 3 + 4 ble
+
+Skallet er den **delte** `ArtefaktPanel` (`src/components/portal/v2/chat/ArtefaktPanel.tsx`) —
+fast høyrekolonne over 1180 px, `BunnArk` under, per briefens krav om å ikke oppfinne et tredje
+mønster. Den fikk én ny valgfri `foot`-prop (fasitens `.dfoot`); uten den oppfører den seg som før.
+Innholdet ligger i `src/components/admin/v2/KalenderDetalj.tsx`.
+
+**Trykk velger nå økta** i stedet for å navigere bort — fasitens modell. De dypere handlingene
+(åpne avtalen, redigere Google-hendelsen, se drills, om serien) flyttet til panelets fot, så
+ingenting gikk tapt; det koster ett trykk, som er fasitens egen avveining.
+
+**«Flytt til …» flytter faktisk avtalen.** Ny server action `flyttBookingTilTid` i
+`admin/agencyos/uka/actions.ts` — søsteren til `flyttBookingTilDag` (den bytter dag og beholder
+klokkeslettet, denne bytter klokkeslett og beholder dagen), med samme rollesjekk, samme guard mot
+fullførte/kansellerte, og `sjekkKollisjon` inne i transaksjonen.
+
+**Knappen vises bare når noe faktisk kan flyttes** — altså når minst én av de to kolliderende er en
+`Booking`. Serier, treningsøkter og Google-hendelser har ingen flytte-handling; da står varselet
+alene. En knapp som ikke kan gjøre noe skal ikke stå der.
+
+**Kollisjonsregelen måtte utvides.** Fasiten sammenligner `coaching` mot `coaching`. I appen finnes
+det en DB-constraint (`booking_coach_no_overlap`) som gjør nettopp det umulig for to bookinger med
+samme coach — så en bokstavelig port ville stått på 0 kollisjoner for alltid. Den ekte
+kollisjonstypen er coaching mot **sperret** tid (privat Google-avtale, ferie, møte), som
+availability-engine allerede regner som konflikt. Den teller nå. To sperrede ting som overlapper er
+fortsatt ingen kollisjon — et møte under en ferieuke er ikke noe å løse.
+
+**«Hvorfor dette tallet» flyttet** fra målraden til detaljkolonnens tomtilstand, som i fasiten.
+Den lå feil sted etter steg 2.
+
+**«Ny økt» falt til omriss.** Fasit-kalenderen har ingen «Ny økt»-knapp i det hele tatt; skjermens
+eneste clay (`.btn.now`) er kollisjonsløsningen.
 
 ## Fallgruver
 

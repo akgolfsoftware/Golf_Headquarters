@@ -82,12 +82,25 @@ function varighet(o: BeleggOkt): number {
 }
 
 /**
- * Kollisjoner: par av coaching-avtaler som overlapper i tid for SAMME coach.
+ * Kollisjoner: to ting som opptar SAMME coach samtidig.
  *
  * Fasitens regel, ordrett: «Coachen er ressursen. To coachingtimer som
  * overlapper i tid er en kollisjon uansett hvor de foregår — Anders kan ikke
  * være to steder samtidig. Gruppeøkter er ÉN avtale med flere deltakere, ikke
  * flere avtaler.»
+ *
+ * UTVIDET MOT FASIT — coaching mot SPERRET teller også. Fasiten sammenligner
+ * kun `coaching` mot `coaching`, fordi mockupen ikke har noe tilfelle der en
+ * time krasjer med sperret tid. I appen er det motsatt: databasen har en
+ * exclusion-constraint (`booking_coach_no_overlap`) som gjør at to bookinger for
+ * samme coach ikke KAN overlappe, mens en booking som krasjer med coachens
+ * private Google-avtale eller en ferieuke er fullt mulig — og er nøyaktig det
+ * availability-engine allerede regner som konflikt. Holdt vi oss bokstavelig til
+ * fasiten, ville telleren stått på 0 for alltid og skjult den ene kollisjonstypen
+ * appen faktisk produserer.
+ *
+ * To sperrede ting som overlapper er derimot ingen kollisjon — et møte under en
+ * ferieuke er ikke noe å løse.
  *
  * Økter uten kjent coach (`coachId === null`) holdes utenfor. Å anta at de
  * tilhører den innloggede coachen ville produsert kollisjoner som ikke finnes;
@@ -98,13 +111,17 @@ function varighet(o: BeleggOkt): number {
  * overlapper ikke (`a1 < b2 && b1 < a2`, som i fasiten).
  */
 export function kollisjoner(okter: BeleggOkt[]): Kollisjon[] {
-  const relevante = okter.filter((o) => o.slag === "coaching" && o.coachId !== null);
+  const relevante = okter.filter(
+    (o) => (o.slag === "coaching" || o.slag === "sperret") && o.coachId !== null,
+  );
   const ut: Kollisjon[] = [];
   for (let i = 0; i < relevante.length; i++) {
     for (let j = i + 1; j < relevante.length; j++) {
       const a = relevante[i];
       const b = relevante[j];
       if (a.coachId !== b.coachId) continue;
+      // Minst én av de to må være en avtale som skal gjennomføres.
+      if (a.slag !== "coaching" && b.slag !== "coaching") continue;
       if (a.startMin < b.sluttMin && b.startMin < a.sluttMin) {
         ut.push({
           a: a.id,
@@ -117,6 +134,38 @@ export function kollisjoner(okter: BeleggOkt[]): Kollisjon[] {
     }
   }
   return ut;
+}
+
+/**
+ * Foreslå ny tid for økta som skal flyttes: start når den andre slutter, samme
+ * varighet. Fasitens `nyFra = Math.max(min2(a.til), min2(b.fra))`.
+ *
+ * Flytting skjer i TID, ikke i sted — den eneste dimensjonen som finnes når
+ * coachen er ressursen (fasitens egen begrunnelse).
+ *
+ * Returnerer null når forslaget ikke får plass før `sisteSluttMin` (tidsaksens
+ * slutt). Et forslag som dytter avtalen ut av kalenderen er ikke en løsning, og
+ * en knapp som ikke løser noe skal ikke stå der.
+ */
+export function foreslaFlytting(
+  flyttes: BeleggOkt,
+  motpart: BeleggOkt,
+  sisteSluttMin: number,
+): { startMin: number; sluttMin: number } | null {
+  const lengde = varighet(flyttes);
+  if (lengde <= 0) return null;
+  const startMin = Math.max(motpart.sluttMin, flyttes.startMin);
+  const sluttMin = startMin + lengde;
+  if (sluttMin > sisteSluttMin) return null;
+  if (startMin === flyttes.startMin) return null;
+  return { startMin, sluttMin };
+}
+
+/** «09:30» fra minutter siden midnatt. */
+export function klokke(minutter: number): string {
+  const t = Math.floor(minutter / 60);
+  const m = minutter % 60;
+  return `${String(t).padStart(2, "0")}:${String(m).padStart(2, "0")}`;
 }
 
 /** Antall økter som ikke kan kollisjonssjekkes fordi eieren er ukjent. */

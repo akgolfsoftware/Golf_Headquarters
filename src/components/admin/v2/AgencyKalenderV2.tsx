@@ -9,7 +9,7 @@
  * segmentert visningsvelger. Segmentet er ikke lime; lime-jobben er «Ny økt».
  */
 
-import { useEffect, useState, useTransition } from "react";
+import { createContext, useContext, useEffect, useMemo, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { flyttBookingTilDag } from "@/app/admin/agencyos/uka/actions";
 import { hentKalenderDrills } from "@/app/admin/kalender/drill-actions";
@@ -43,11 +43,22 @@ import { type AkseKey } from "@/lib/v2/tokens";
 import type { KalenderData, KalDag, KalOkt } from "@/app/admin/kalender/data";
 import {
   beleggForDager,
+  foreslaFlytting,
   formaterTid,
+  klokke,
   kollisjoner,
   utenEier,
   type BeleggOkt,
 } from "@/lib/domain/kalender-belegg";
+import { GRID_END_MIN } from "@/lib/calendar/notion-grid";
+import { ArtefaktPanel, useErMobil } from "@/components/portal/v2/chat/ArtefaktPanel";
+import {
+  KalenderDetaljFot,
+  KalenderDetaljInnhold,
+  type DetaljHandling,
+  type FlyttForslag,
+} from "./KalenderDetalj";
+import { flyttBookingTilTid } from "@/app/admin/agencyos/uka/actions";
 import { foreslaGridTid } from "@/lib/calendar/notion-grid";
 import { coachColorFor } from "@/lib/booking/coach-colors";
 
@@ -137,6 +148,19 @@ function CoachLegend({
   );
 }
 
+/**
+ * Valgt økt (PP-2.4 steg 3) — kontekst i stedet for prop-drilling.
+ *
+ * OktBlokk ligger fem nivåer under skjermkomponenten (TimeGrid → AgencyDagInnhold
+ * → OktBlokk, og DagOkterListe/MobilDagSeksjon/AgendaRad ved siden av). Å tre
+ * `valgtId` og `velg` gjennom alle ville rørt seks signaturer for én ting alle
+ * bladnodene trenger.
+ */
+const ValgKontekst = createContext<{
+  valgtId: string | null;
+  velg: (okt: KalOkt) => void;
+} | null>(null);
+
 /** Nullstilt knappeflate — brukt der en økt-rad selv er trykkflaten. */
 const NAKEN_KNAPP: React.CSSProperties = {
   appearance: "none",
@@ -173,11 +197,23 @@ function OktTrykkflate({
   onGoogleClick?: (okt: KalOkt) => void;
   children: React.ReactNode;
 }) {
+  const valg = useContext(ValgKontekst);
   const knapp = (fn?: (okt: KalOkt) => void) => (
-    <button type="button" onClick={() => fn?.(okt)} className="v2-focus" style={NAKEN_KNAPP}>
+    <button
+      type="button"
+      onClick={() => fn?.(okt)}
+      className="v2-focus"
+      aria-current={valg?.valgtId === okt.id ? "true" : undefined}
+      style={NAKEN_KNAPP}
+    >
       {children}
     </button>
   );
+  // PP-2.4 steg 3: finnes detaljkolonnen, VELGER et trykk økta i stedet for å
+  // navigere bort — fasitens modell. Den dypere handlingen (åpne avtalen,
+  // redigere Google-hendelsen, se drills) flytter til panelets fot, så ingenting
+  // går tapt; det koster ett trykk, som er fasitens egen avveining.
+  if (valg) return knapp(valg.velg);
   if (okt.erGoogle) return knapp(onGoogleClick);
   if (okt.treningsSessionId) return knapp(onTreningClick);
   if (okt.serie) return knapp(onSerieClick);
@@ -913,6 +949,10 @@ export function AgencyKalenderV2({ data }: { data: KalenderData }) {
   const mobile = useMobile();
   const router = useRouter();
   const [visning, setVisning] = useState("uke");
+  // Detaljkolonnen: fast høyrekolonne over 1180 px (fasitens brytepunkt), ark
+  // under. Samme hook som PlayerHQ-chatens artefaktpanel, med kalenderens tall.
+  const detaljSomArk = useErMobil(1180);
+  const [valgtId, setValgtId] = useState<string | null>(null);
   const [flytterId, setFlytterId] = useState<string | null>(null);
   // Multi-coach + fasilitet: null = alle
   const [coachFilter, setCoachFilter] = useState<string | null>(
@@ -957,6 +997,10 @@ export function AgencyKalenderV2({ data }: { data: KalenderData }) {
   const treningFraArk = (okt: KalOkt) => { setDagArk(null); void apneTrening(okt); };
   const tomLukeFraArk = (dato: string, kl: string) => { setDagArk(null); setTomLuke({ dato, kl }); };
   const googleFraArk = (okt: KalOkt) => { setDagArk(null); setValgtGoogleOkt(okt); };
+  // Velg økt → detaljpanelet. Dag-arket lukkes først: på mobil er panelet også
+  // et BunnArk, og to ark oppå hverandre gir feil z-rekkefølge (samme grunn som
+  // *FraArk-hjelperne over).
+  const velgOkt = (okt: KalOkt) => { setDagArk(null); setValgtId(okt.id); };
 
   async function apneTrening(okt: KalOkt) {
     if (!okt.treningsSessionId) return;
@@ -1035,6 +1079,119 @@ export function AgencyKalenderV2({ data }: { data: KalenderData }) {
   // og å slå sammen uka først ville gitt falske treff på like klokkeslett.
   const alleKollisjoner = filtrerteDager.flatMap((d) => kollisjoner(beleggOkter(d)));
   const antallUtenEier = filtrerteDager.reduce((n, d) => n + utenEier(beleggOkter(d)), 0);
+
+  // ── Detaljkolonne (PP-2.4 steg 3) ─────────────────────────────────────────
+  const alleOkter = useMemo(
+    () => filtrerteDager.flatMap((d) => d.okter),
+    [filtrerteDager],
+  );
+  const valgtOkt = alleOkter.find((o) => o.id === valgtId) ?? null;
+  const valgtKollisjon = valgtOkt
+    ? (alleKollisjoner.find((k) => k.a === valgtOkt.id || k.b === valgtOkt.id) ?? null)
+    : null;
+  const motpartId = valgtKollisjon
+    ? valgtKollisjon.a === valgtOkt?.id
+      ? valgtKollisjon.b
+      : valgtKollisjon.a
+    : null;
+  const motpart = motpartId ? (alleOkter.find((o) => o.id === motpartId) ?? null) : null;
+
+  // Forslaget flytter den av de to som FAKTISK kan flyttes — en Booking. Er
+  // ingen av dem en booking (to Google-avtaler, en serie), står varselet alene
+  // uten knapp: å tilby en flytting appen ikke kan utføre er verre enn å la
+  // coachen løse det selv.
+  const flyttForslag: FlyttForslag | null = (() => {
+    if (!valgtKollisjon || !valgtOkt || !motpart) return null;
+    const somBelegg = (o: KalOkt): BeleggOkt => ({
+      id: o.id,
+      startMin: o.startMin,
+      sluttMin: o.sluttMin as number,
+      slag: o.slag,
+      coachId: o.coachId ?? null,
+    });
+    // Foretrekk å flytte den valgte, hvis den kan flyttes — det er den coachen
+    // ser på. Ellers motparten.
+    const kandidater: Array<[KalOkt, KalOkt]> = [
+      [valgtOkt, motpart],
+      [motpart, valgtOkt],
+    ];
+    for (const [flyttes, mot] of kandidater) {
+      if (!flyttes.bookingId || flyttes.sluttMin == null || mot.sluttMin == null) continue;
+      const forslag = foreslaFlytting(somBelegg(flyttes), somBelegg(mot), GRID_END_MIN);
+      if (forslag) {
+        return {
+          bookingId: flyttes.bookingId,
+          navn: flyttes.navn,
+          startMin: forslag.startMin,
+          sluttMin: forslag.sluttMin,
+        };
+      }
+    }
+    return null;
+  })();
+
+  const detaljHandling: DetaljHandling | null = !valgtOkt
+    ? null
+    : valgtOkt.erGoogle
+      ? { label: "Rediger hendelsen", onClick: () => setValgtGoogleOkt(valgtOkt), ikon: "pencil" }
+      : valgtOkt.treningsSessionId
+        ? { label: "Se drills", onClick: () => void apneTrening(valgtOkt), ikon: "list" }
+        : valgtOkt.serie
+          ? { label: "Om serien", onClick: () => setValgtSerieOkt(valgtOkt), ikon: "repeat" }
+          : valgtOkt.href
+            ? { label: "Åpne avtalen", href: valgtOkt.href }
+            : null;
+
+  const flyttTilTid = async (forslag: FlyttForslag) => {
+    const res = await flyttBookingTilTid(forslag.bookingId, klokke(forslag.startMin));
+    if (res.ok) router.refresh();
+    return res;
+  };
+
+  // «Hvorfor dette tallet» bor i detaljkolonnens tomtilstand, som i fasiten —
+  // ikke under målraden.
+  const hvorforKilde = `Alle avtaler i ${data.periode}${
+    coachFilter
+      ? ` for ${data.coacher.find((c) => c.id === coachFilter)?.navn ?? "valgt coach"}`
+      : ", alle coacher"
+  }${facilityFilter ? ", filtrert på anlegg" : ""}.`;
+  const hvorforBeregning =
+    tilgjengelighet.grunnlag === "tilgjengelighet"
+      ? "Booket coachingtid delt på tilgjengelig tid. Tilgjengelig = coachens registrerte vinduer, minus sperret tid (ferie, møte, stengt anlegg)."
+      : `Booket coachingtid delt på tilgjengelig tid. Ingen coach har registrert tilgjengelighet denne uka, så nevneren er hele tidsaksen (${formaterTid(
+          tilgjengelighet.basisPerDag[0] ?? 0,
+        )} per dag) minus sperret tid — samme grunnlag som fasiten bruker.`;
+  const hvorforForbehold = `Overlappende avtaler for samme coach telles én gang i «Booket» — to timer som deler en halvtime opptar halvannen, ikke to. Ledige timer er kapasitet som ikke er booket, ikke publiserte luker.${
+    antallUtenEier > 0
+      ? ` ${antallUtenEier} ${antallUtenEier === 1 ? "økt mangler" : "økter mangler"} registrert coach (gruppeserier har ingen coach-kolonne): de er verken kollisjonssjekket eller slått sammen med andre avtaler.`
+      : ""
+  }`;
+
+  const detaljPanel = (
+    <ArtefaktPanel
+      mobil={detaljSomArk}
+      open={valgtId !== null}
+      onClose={() => setValgtId(null)}
+      tittel={valgtOkt ? valgtOkt.navn : data.periode}
+      foot={
+        <KalenderDetaljFot
+          handling={detaljHandling}
+          forslag={flyttForslag}
+          onFlytt={flyttTilTid}
+        />
+      }
+    >
+      <KalenderDetaljInnhold
+        valgt={valgtOkt}
+        kollisjon={valgtKollisjon}
+        motpartNavn={motpart?.navn ?? null}
+        belegg={belegg}
+        kildeTekst={hvorforKilde}
+        beregningTekst={hvorforBeregning}
+        forbeholdTekst={hvorforForbehold}
+      />
+    </ArtefaktPanel>
+  );
   const statusTone = liveIDag > 0 ? "down" : antallOkter > 0 ? "lime" : "info";
   const statusTekst =
     liveIDag > 0
@@ -1056,38 +1213,24 @@ export function AgencyKalenderV2({ data }: { data: KalenderData }) {
     </div>
   );
 
-  // B: én primær CTA full · booking er sekundær
+  // Clay-disiplin (PP-2.4 steg 4, fremtvunget av steg 3): fasit-kalenderen har
+  // INGEN «Ny økt»-knapp — skjermens eneste clay-flate (`.btn.now`) er
+  // kollisjonsløsningen i detaljkolonnen. «Ny økt» er en generisk inngang, ikke
+  // «én ting nå», og faller derfor til omriss. Uten dette ville skjermen hatt to
+  // clay-flater samtidig så snart en kollisjon var valgt, og clay-monopolet
+  // (T.handling, låst 2026-07-31) ville mistet betydningen sin.
   const primaerCta = (
-    <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-      <Link
-        href="/admin/planlegge"
-        data-od-id="kalender-ny-okt" data-paper-en-ting="true"
-        className="v2-press v2-focus"
-        style={{
-          textDecoration: "none",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          gap: 8,
-          minHeight: 56,
-          width: "100%",
-          borderRadius: 12,
-          background: T.handling,
-          color: T.onHandling,
-          fontFamily: T.ui,
-          fontSize: 14,
-          fontWeight: 600,
-        }}
-      >
-        Ny økt
+    <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+      <Link href="/admin/planlegge" data-od-id="kalender-ny-okt" style={{ textDecoration: "none" }}>
+        <CTAPill ghost icon="plus">
+          Ny økt
+        </CTAPill>
       </Link>
-      <div style={{ display: "flex", justifyContent: "flex-end" }}>
-        <Link href="/admin/bookinger/ny" style={{ textDecoration: "none" }}>
-          <CTAPill ghost icon="calendar-check">
-            Ny booking
-          </CTAPill>
-        </Link>
-      </div>
+      <Link href="/admin/bookinger/ny" style={{ textDecoration: "none" }}>
+        <CTAPill ghost icon="calendar-check">
+          Ny booking
+        </CTAPill>
+      </Link>
     </div>
   );
 
@@ -1248,25 +1391,6 @@ export function AgencyKalenderV2({ data }: { data: KalenderData }) {
           odId="kal-maal-kollisjoner"
         />
       </div>
-      <HvorforDette
-        kilde={`Alle avtaler i ${data.periode}${
-          coachFilter
-            ? ` for ${data.coacher.find((c) => c.id === coachFilter)?.navn ?? "valgt coach"}`
-            : ", alle coacher"
-        }${facilityFilter ? ", filtrert på anlegg" : ""}.`}
-        beregning={
-          tilgjengelighet.grunnlag === "tilgjengelighet"
-            ? "Booket coachingtid delt på tilgjengelig tid. Tilgjengelig = coachens registrerte vinduer, minus sperret tid (ferie, møte, stengt anlegg)."
-            : `Booket coachingtid delt på tilgjengelig tid. Ingen coach har registrert tilgjengelighet denne uka, så nevneren er hele tidsaksen (${formaterTid(
-                tilgjengelighet.basisPerDag[0] ?? 0,
-              )} per dag) minus sperret tid — samme grunnlag som fasiten bruker.`
-        }
-        forbehold={`Overlappende avtaler for samme coach telles én gang i «Booket» — to timer som deler en halvtime opptar halvannen, ikke to. Ledige timer er kapasitet som ikke er booket, ikke publiserte luker.${
-          antallUtenEier > 0
-            ? ` ${antallUtenEier} ${antallUtenEier === 1 ? "økt mangler" : "økter mangler"} registrert coach (gruppeserier har ingen coach-kolonne): de er verken kollisjonssjekket eller slått sammen med andre avtaler.`
-            : ""
-        }`}
-      />
     </div>
   );
 
@@ -1323,6 +1447,7 @@ export function AgencyKalenderV2({ data }: { data: KalenderData }) {
       );
     }
     return (
+      <ValgKontekst.Provider value={{ valgtId, velg: velgOkt }}>
       <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
         {hode}
         {primaerCta}
@@ -1334,6 +1459,7 @@ export function AgencyKalenderV2({ data }: { data: KalenderData }) {
 
         {visning === "uke" && serieHint}
         {innsikt}
+        {detaljPanel}
         <BunnArk
           open={dagAark !== null}
           onClose={() => setDagArk(null)}
@@ -1388,6 +1514,7 @@ export function AgencyKalenderV2({ data }: { data: KalenderData }) {
         </BunnArk>
         {tomLuke && <HurtigOpprett dato={tomLuke.dato} klokkeslett={tomLuke.kl} onLukk={() => setTomLuke(null)} />}
       </div>
+      </ValgKontekst.Provider>
     );
   }
 
@@ -1444,6 +1571,7 @@ export function AgencyKalenderV2({ data }: { data: KalenderData }) {
   }
 
   return (
+    <ValgKontekst.Provider value={{ valgtId, velg: velgOkt }}>
     <PaperPage odId="agencyos-kalender"><div data-paper-agencyos-kalender data-paper-slug="agencyos-kalender" data-paper-wave-b="kalender" data-od-id="agency-kalender" style={{ display: "contents" }}><PaperTopp tittel="Kalender" sub="AgencyOS · uke, bookinger og anlegg" /><PaperKropp maxWidth={1200}>
       {hode}
       {primaerCta}
@@ -1451,7 +1579,45 @@ export function AgencyKalenderV2({ data }: { data: KalenderData }) {
       {navigasjon}
       {teamFilter}
       <CoachLegend coacher={data.coacher} />
-      {kropp}
+
+      {/* Fasitens todelte lerret: kalender + detaljkolonne. Over 1180 px står
+          panelet fast ved siden av; under bytter det form til ark (samme
+          kontrakt som PlayerHQ-artefaktet: «forsvinner ikke — bytter form»).
+          `minWidth: 0` på BEGGE kolonnene: uten det sprenger lange titler i
+          agendaen og økt-blokkene rutenettet ut av vinduet i stedet for å
+          ellipse (gotchas.md, 10.08.2026). */}
+      {detaljSomArk ? (
+        <>
+          {kropp}
+          {detaljPanel}
+        </>
+      ) : (
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "minmax(0,1fr) 340px",
+            gap: T.gap,
+            alignItems: "start",
+            minWidth: 0,
+          }}
+        >
+          <div style={{ minWidth: 0 }}>{kropp}</div>
+          <div
+            style={{
+              minWidth: 0,
+              maxHeight: "calc(100vh - 160px)",
+              position: "sticky",
+              top: 16,
+              borderRadius: T.rCard,
+              border: `1px solid ${T.border}`,
+              overflow: "hidden",
+              display: "flex",
+            }}
+          >
+            {detaljPanel}
+          </div>
+        </div>
+      )}
 
       {visning === "uke" && serieHint}
       {innsikt}
@@ -1507,5 +1673,6 @@ export function AgencyKalenderV2({ data }: { data: KalenderData }) {
       </PaperKropp>
       </div>
     </PaperPage>
+    </ValgKontekst.Provider>
   );
 }
