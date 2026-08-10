@@ -206,18 +206,26 @@ Utviklingsplan, Konto) er utenfor fasitens dekning — det kan ikke vurderes her
 ![PP-1.7 desktop](../../screenshots/paper/signoff/PP-1.7-d1280.png)
 ![PP-1.7 mørk](../../screenshots/paper/signoff/PP-1.7-m390-dark.png)
 
-**Denne kan ikke signeres nå — og det er med vilje.**
+**Bygget 10.08.2026 (PR [#391](https://github.com/akgolfsoftware/Golf_Headquarters/pull/391)) — klar for din signatur.**
 
-Fasiten er en komplett salgsside: overskrift med ditt navn, tre nøkkeltall (fra 300 kr / neste
-ledige man 12:00 / svar innen 48 t), full prisliste med sju tjenester, stegindikator, abonnement
-og spørsmål-og-svar.
+Siden var tre sider (velg tjeneste → egen side for tid → egen side for bekreft). Nå er den
+fasitens ene side med fire steg, med den sticky handlingslinja nederst som alltid sier hva neste
+trykk gjør.
 
-Appen viser en kort side med «Åpne bookingkalender», fordi bookingen er videresendt til Acuity
-([#384](https://github.com/akgolfsoftware/Golf_Headquarters/pull/384)) til plattformen er testet.
-Det er din beslutning, og nattregelen forbyr meg å røre den.
+Skjermbildene er tatt på en Vercel-preview med ekte tjenester og ekte ledige tider, ikke lokalt
+og ikke med testdata. Flyten er klikket gjennom hele veien til oppsummeringen — 14 kontroller,
+ingen konsollfeil. Betalingsknappen er bevisst ikke trykket, så det er ikke opprettet noen ekte
+booking.
 
-**Status: BLOKKERT** til du bestemmer om Acuity-omveien skal bli stående. Så lenge den står, er
-det ingenting å sammenligne.
+**Tre bevisste forskjeller fra fasiten, alle med grunn:**
+
+| Fasit | Her | Hvorfor |
+|---|---|---|
+| «Svar 48 t» | «Bekreftelse straks» | Du valgte å beholde Stripe, så timen er bekreftet ved betaling |
+| «1 350 kr per spiller» | «1 350 kr» | `ServiceType` har ingen kolonne for prisenhet — beskrivelsen bærer nyansen |
+| «Start abonnement» | «Ta kontakt om abonnement» | Abonnement tegnes ikke selvbetjent ennå |
+
+**Status: KLAR FOR SIGNATUR.**
 
 ---
 
@@ -341,7 +349,7 @@ coach. Det slår inn så snart det finnes bookinger med coach.*
 | PP-1.4 Meg | Fiks først, så godkjenn | Liten |
 | PP-1.5 Booking i app | Fiks først | Liten — én feil rettet i natt |
 | PP-1.6 Innlogging | Fiks først | Oransje knapp gjort; «Hvor du havner» gjenstår |
-| PP-1.7 Booking offentlig | **Låst til slutt** | Acuity blir stående til resten er ferdig |
+| PP-1.7 Booking offentlig | **Klar for signatur** | Bygget 10.08 (PR #391); Acuity står fortsatt på `akgolf.no` |
 | PP-2.1 Konsoll | Fiks først | **Stor — ombygging** |
 | PP-2.2 Innboks | Fiks først | Stor + én ren feil |
 | PP-2.3 Spillere | Fiks først | Middels |

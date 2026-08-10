@@ -1,2 +1,2 @@
-OK    PP-2.1 m390   /admin/agencyos — "KONTEKST Hele stallen Konsoll Mandag 10. aug · 08:29 Kommandoer ⌘K Dag"
-OK    PP-2.1 d1280  /admin/agencyos — "KONSOLL INNBOKS SPILLERE KALENDER INNSIKT MER SPILLER MØRK CT KONTEKST"
+OK    PP-1.7 m390   /booking — "AK Golf . Logg inn AK GOLF ACADEMY · FREDRIKSTAD Book en time med Ande"
+OK    PP-1.7 d1280  /booking — "AK Golf . Priser Spørsmål Logg inn AK GOLF ACADEMY · FREDRIKSTAD Book "
