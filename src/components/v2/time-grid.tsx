@@ -6,7 +6,7 @@
  * Én motor for tidskolonne + dag-headers + time-/halvtime-linjer + nå-linje.
  * Dag-innhold (økter, droppable, booking-blokker) leveres via `renderDay`.
  *
- * Fasit: src/lib/calendar/notion-grid.ts (04:00–23:00, 20 min).
+ * Fasit: src/lib/calendar/notion-grid.ts (05:00–23:00, 30 min, 44 px/time).
  */
 
 import { type CSSProperties, type ReactNode, useEffect, useMemo, useState } from "react";
@@ -18,6 +18,7 @@ import {
   GRID_START_MIN,
   PIXEL_PER_HOUR,
   gridHours,
+  gridTicks,
 } from "@/lib/calendar/notion-grid";
 import { T } from "@/lib/v2/tokens";
 
@@ -51,7 +52,7 @@ type Props = {
   style?: CSSProperties;
 };
 
-/** Snap Y i grid-body til 20-min slot innenfor 04:00–(23:00−20min). */
+/** Snap Y i grid-body til slot innenfor 05:00–(23:00−GRID_SLOT_MIN). */
 export function snapYToSlot(y: number): Omit<TimeGridSlot, "dayIndex"> {
   const hours = GRID_START_HOUR + y / PIXEL_PER_HOUR;
   let totalMin = Math.round((hours * 60) / GRID_SLOT_MIN) * GRID_SLOT_MIN;
@@ -88,12 +89,15 @@ export function TimeGrid({
   renderDay,
   onEmptyClick,
   showNowLine = true,
-  timeColWidth = 44,
+  // Paper `.tg` bruker en 62px tidskolonne — «05:30» i mono trenger mer plass
+  // enn den gamle to-sifrede time-etiketten.
+  timeColWidth = 62,
   bordered = true,
   className,
   style,
 }: Props) {
   const timer = useMemo(() => gridHours(), []);
+  const merker = useMemo(() => gridTicks(), []);
   const bodyH = GRID_BODY_PX;
 
   const [tikk, setTikk] = useState(0);
@@ -180,25 +184,30 @@ export function TimeGrid({
 
       {/* Kropp: tid + dager */}
       <div style={{ display: "flex", position: "relative", height: bodyH }}>
+        {/* Tidsakse (Paper `tegnAkse`): ett merke per slot, hele timer i full
+            tekstfarge og halvtimene dempet — så aksen er lesbar uten å rope. */}
         <div style={{ width: timeColWidth, flex: "none", position: "relative" }}>
-          {timer.map((h) =>
-            h < GRID_END_HOUR ? (
+          {merker.map((min) => {
+            const helTime = min % 60 === 0;
+            return (
               <span
-                key={h}
+                key={min}
                 style={{
                   position: "absolute",
-                  top: (h - GRID_START_HOUR) * PIXEL_PER_HOUR - 5,
+                  top: ((min - GRID_START_MIN) / 60) * PIXEL_PER_HOUR - 5,
                   right: 8,
                   fontFamily: T.mono,
-                  fontSize: 9,
-                  color: T.mut,
+                  fontSize: 10,
+                  fontWeight: helTime ? 500 : 400,
+                  color: helTime ? T.fg : T.mut,
                   fontVariantNumeric: "tabular-nums",
                 }}
               >
-                {String(h).padStart(2, "0")}
+                {String(Math.floor(min / 60)).padStart(2, "0")}:
+                {String(min % 60).padStart(2, "0")}
               </span>
-            ) : null,
-          )}
+            );
+          })}
         </div>
 
         <div style={{ flex: 1, position: "relative", display: "flex", minWidth: 0 }}>

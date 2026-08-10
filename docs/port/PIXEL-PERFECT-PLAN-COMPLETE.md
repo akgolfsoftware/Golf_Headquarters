@@ -10,23 +10,34 @@ gap-analyse og checklist fra zip (2) gjelder uendret.
 
 ---
 
-## STATUS-SNAPSHOT (09.08.2026 kveld — etter overnight batch A–G)
+## STATUS-SNAPSHOT (10.08.2026 formiddag — etter sign-off-galleriet)
 
 | Fase | Status | Gjenstår |
 |---|---|---|
 | **PP-0 Foundation** | 0.1–0.6 **DONE** · 0.7 se merknad under | Prod-verify (mot `akgolf-hq.vercel.app`, se Acuity-merknad) |
-| **PP-1 PlayerHQ kjerne** | Alle 7 **READY_SIGN** (kode ferdig) | **Anders D12 sign-off** — første prioritet |
-| **PP-2 AgencyOS kjerne** | Slugs + chrome PORT; Konsoll READY_SIGN-polish | Full pixel-pass 2.2–2.9 + sign-off |
+| **PP-1 PlayerHQ kjerne** | 1.3 + 1.6 bygget (#387) · 1.1/1.2/1.4/1.5 bygget (#390) · 1.7 BLOCKED | Nytt galleri → sign-off |
+| **PP-2 AgencyOS kjerne** | 2.1 Konsoll ombygget (#388) · 2.2 Innboks (#389) | **2.3 Spillere · 2.4 Kalender** + sign-off |
 | **PP-3 Live/WB/Forelder** | Slugs + chrome PORT (Wave C/D/E) | Pixel-pass + sign-off |
 | **PP-4 W1 / PP-5 W2** | Slugs lagt (batch C–E delvis) | Strukturell pixel + F2.6-primitiver + sign-off |
 | **PP-6–PP-8 mal-fabrikk W3–W5** | Slug-stubber + VARIANTS-filer opprettet | Mal-pixel + variant-pass |
 | **PP-9 W6 / PP-10 regression** | Ikke startet | Alt |
-| **Checklist totalt** | **2 `[x]` · 53 `[~]` · 36 `[ ]`** (av 79 IN + variant-rader) | 53 sign-off + 36 bygg |
+| **Checklist totalt** | **0 `[x]` · 52 `[~]` · 35 `[ ]`** (79 fasit + 8 templates = 87 rader) | 52 sign-off + 35 bygg |
 
-**Kritisk vei til 100 %:** (1) Anders signerer PP-1 (7 skjermer) → (2) pixel-pass + sign-off PP-2/PP-3
-→ (3) de 36 `[ ]` bygges fase for fase → (4) mal-varianter W3–W5 → (5) PP-10 regression + COMPLETE.
-Flaskehalsen er nå **sign-off-kapasitet (Anders), ikke agent-kode** — skjermbilder side-om-side må
-produseres per skjerm og sendes i samtalen (mobil 390 først, lys + mørk).
+Telleren sto tidligere på «2 `[x]` · 53 `[~]` · 36 `[ ]`». Det var feil på alle tre — talt på nytt
+mot `PAPER-ZIP-CHECKLIST.md` 10.08: **ingen** rad har kryss.
+
+**Kritisk vei til 100 %:** (1) **Preview-miljøet må virke** → (2) nytt sign-off-galleri →
+(3) Anders signerer PP-1/PP-2 → (4) PP-2.3/2.4 + PP-3 → (5) de 35 `[ ]` → (6) mal-varianter W3–W5
+→ (7) PP-10 regresjon + COMPLETE.
+
+> ✅ **Preview-blokkeringen er løst 10.08 kl. 11:24.** Preview manglet `DIRECT_URL` fra 05.08
+> (bygget døde i `npm install`) og `DATABASE_URL` (DB-sider svarte 500). Env-variablene er nå satt:
+> samme kode som feilet kl. 10:41 bygde READY kl. 11:24, og `/stats/spillere` svarer 200.
+>
+> 🔑 **Det som gjenstår for sign-off er legitimasjon.** `scripts/signoff-gallery.mjs` logger inn som
+> `screentest@akgolf.test` / `coachtest@akgolf.test` og krever `SCREENTEST_PASSWORD` (eller
+> `SHOT_PASSWORD`). Passordets status er uavklart etter hendelsen 03.08. Uten det kan kun
+> skjermer som ikke krever innlogging fotograferes (PP-1.6 Innlogging, PP-1.7 offentlig booking).
 
 **Acuity-merknad (09.08.2026):** `akgolf.no` og `www.akgolf.no` videresender **midlertidig** til
 Acuity-bookingen (PR #384) til plattformen er testet. All prod-verifisering i PP-0.7 og PP-10.5

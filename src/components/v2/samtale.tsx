@@ -181,7 +181,9 @@ export function Skrivefelt({
         fontFamily: T.ui,
         fontSize: 15,
         lineHeight: 1.45,
-        padding: bare ? "10px 12px" : "9px 10px",
+        /* Paper .cbox textarea har ingen egen padding — rammen (.cbox) eier den.
+           minHeight 44 = to linjer à 22px, som fasitens composer viser. */
+        padding: bare ? 0 : "9px 10px",
         minHeight: 44,
         maxHeight: 110,
       }}

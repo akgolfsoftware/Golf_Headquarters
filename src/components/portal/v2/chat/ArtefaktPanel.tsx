@@ -41,6 +41,7 @@ export function ArtefaktPanel({
   open,
   onClose,
   tittel,
+  foot,
   children,
 }: {
   /** Fra useErMobil() i forelder — delt state, se filkommentar. */
@@ -48,12 +49,22 @@ export function ArtefaktPanel({
   open: boolean;
   onClose: () => void;
   tittel: string;
+  /**
+   * Fast handlingsfot (Paper `.dfoot`) — panelets primære handling, alltid
+   * synlig mens kroppen scroller. Lagt til for AgencyOS-kalenderen (PP-2.4
+   * steg 3), der foten bærer «Flytt til …» for en kollisjon. Utelates den,
+   * oppfører panelet seg nøyaktig som før.
+   */
+  foot?: ReactNode;
   children: ReactNode;
 }) {
   if (mobil) {
+    // BunnArk har ingen egen fot — handlingen legges sist i innholdet, der den
+    // havner rett over arkets underkant uansett.
     return (
       <BunnArk open={open} onClose={onClose} tittel={tittel}>
         {children}
+        {foot && <div style={{ marginTop: 16 }}>{foot}</div>}
       </BunnArk>
     );
   }
@@ -83,6 +94,19 @@ export function ArtefaktPanel({
         <span style={{ fontFamily: T.disp, fontSize: 13, fontWeight: 600, color: T.fg }}>{tittel}</span>
       </div>
       <div style={{ flex: 1, minHeight: 0, overflow: "auto", padding: 16 }}>{children}</div>
+      {foot && (
+        <div
+          style={{
+            flex: "none",
+            display: "flex",
+            gap: 8,
+            padding: "12px 16px",
+            borderTop: `1px solid ${T.border}`,
+          }}
+        >
+          {foot}
+        </div>
+      )}
     </aside>
   );
 }

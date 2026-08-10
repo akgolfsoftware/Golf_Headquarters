@@ -1,7 +1,21 @@
 # Skjermplan — tegnede fasitskjermer + wireframe-plan for resten
 
-**Skrevet:** 2026-08-05 · **Oppdatert:** 2026-08-06 (Del A ferdig portet; W2 startet)
-**Status:** Del A (fasit-portering) = **FERDIG i main**. Del B (W2–W6) = **i gang** — neste er W2.
+**Skrevet:** 2026-08-05 · **Oppdatert:** 2026-08-10 (Del B fullført — W2–W6 er tegnet)
+**Status:** Del A (fasit-portering) = **FERDIG i main**. Del B (W1–W6 tegning) = **FERDIG**.
+
+> ✅ **Tegnesporet er avsluttet 09.08.2026.** Alle bølgene er tegnet: W1 (11 filer, godkjent
+> 05.08), W2 (analyse-dybde), W3 (Meg/Booking/Talent/Coach), W4 (AgencyOS), W5
+> (marketing/auth/forelder/system) og W6 (WANG + GFGK). Til sammen **79 fasit-HTML** i
+> Claude Design `605a48cc` — 33 i `fase1/`, 46 i `fase2/`.
+>
+> W3–W5 ble tegnet som **maler**, ikke én tegning per skjerm: 18 maler dekker ~100 ruter.
+> Konsolideringsnotatene ligger i designprosjektets `kart/w3-…`, `kart/w4-…`, `kart/w5-…` og
+> `kart/w6-telling-wang-gfgk-2026-08-09.md`.
+>
+> Dette dokumentet er dermed **historikk over hvordan tegningen ble planlagt og gjennomført**.
+> Gjeldende plan for kodingen er `PIXEL-PERFECT-PLAN-COMPLETE.md` (PP-0…PP-10).
+> Seksjonene under (§W2 «I GANG», bølgetabellen med anslag) beskriver tilstanden 06.08 og er
+> ikke gjeldende status.
 **Kilde:** Claude Design `605a48cc` · speil `designsystem/paper/` · godkjent-liste `docs/port/portstatus-paper.md`
 Tallgrunnlag: `fasit-liste-paper.md` + `portstatus-paper.md`. Mønster: `monsterdokument-paper.md`.
 

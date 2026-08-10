@@ -336,7 +336,6 @@ function WBTidslinje({ dager, valgt, onVelg, kanFlytteOkter, kanLeggeTil, kanBru
     <TimeGrid
       days={days}
       showNowLine
-      timeColWidth={44}
       bordered
       renderDay={(i) => (
         <WBTidslinjeDagInnhold
