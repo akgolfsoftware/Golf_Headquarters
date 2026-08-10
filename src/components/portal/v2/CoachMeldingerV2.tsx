@@ -161,7 +161,7 @@ export function CoachMeldingerV2({ data }: { data: CoachMeldingerData }) {
               gap: 10,
               borderTop: `1px solid ${T.border}`,
               background: T.panel,
-              padding: "12px 14px calc(12px + env(safe-area-inset-bottom))",
+              padding: "12px 14px calc(12px + env(safe-area-inset-bottom) + var(--ak-cookie-h, 0px))",
             }}
           >
             <ForslagRad items={HURTIGSVAR} onPick={(s) => setUtkast(s)} />

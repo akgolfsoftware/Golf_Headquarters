@@ -26,7 +26,7 @@ export function TommelSone({ children }: { children: ReactNode }) {
         bottom: 0,
         zIndex: 5,
         paddingTop: 12,
-        paddingBottom: "calc(8px + env(safe-area-inset-bottom))",
+        paddingBottom: "calc(8px + env(safe-area-inset-bottom) + var(--ak-cookie-h, 0px))",
         // Uttoning mot bakgrunnen: innhold som ruller under blir dempet, ikke
         // kuttet — knappen leses fortsatt som del av siden, ikke en flytende bar.
         background: `linear-gradient(to top, ${T.bg} 72%, transparent)`,
