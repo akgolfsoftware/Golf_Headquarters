@@ -24,7 +24,6 @@ import Link from "next/link";
 import {
   T,
   Caps,
-  Tittel,
   CTAPill,
   SegmentertFaner,
   Kort,
@@ -659,6 +658,55 @@ function DagOkterListe({ dag, onSerieClick, onTreningClick, onGoogleClick, onTom
   );
 }
 
+/* ── FilterChip (Paper `.chip` i kalenderens filterrad) — erstattet to
+   nedtrekksmenyer 10.08.2026. Fasiten filtrerer med synlige knapper, ikke
+   skjulte lister: du ser hvilke coacher som finnes uten å åpne noe.
+
+   Egen komponent framfor den delte `FilterChips` i `components/v2/core.tsx`,
+   av to grunner: den matcher på visningstekst (her trengs id, siden to coacher
+   kan hete det samme), og den markerer valgt tilstand med clay — som er
+   reservert til «Én ting nå», og på denne skjermen er det kollisjonsknappen i
+   detaljkolonnen. Valgt filter er derfor blekk-fylt, som i fasiten. ── */
+function FilterChip({
+  aktiv,
+  onClick,
+  odId,
+  children,
+}: {
+  aktiv: boolean;
+  onClick: () => void;
+  odId: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      aria-pressed={aktiv}
+      data-od-id={odId}
+      className="v2-press v2-focus"
+      style={{
+        appearance: "none",
+        cursor: "pointer",
+        display: "inline-flex",
+        alignItems: "center",
+        minHeight: 32,
+        padding: "0 12px",
+        borderRadius: T.rPill,
+        background: aktiv ? T.cta : T.panel,
+        border: `1px solid ${aktiv ? T.cta : T.border}`,
+        color: aktiv ? T.onCta : T.fg,
+        fontFamily: T.ui,
+        fontSize: 12.5,
+        fontWeight: 500,
+        whiteSpace: "nowrap",
+      }}
+    >
+      {children}
+    </button>
+  );
+}
+
 /* ── MaalFlis (Paper `.m` i `.maalrad`) — nøkkeltall i tre linjer: etikett,
    regnet verdi, og en kort kvalifisering som sier hva tallet gjelder. Den
    tredje linja er ikke pynt: «6 t» alene svarer ikke på «6 t av hva?». ── */
@@ -1192,7 +1240,6 @@ export function AgencyKalenderV2({ data }: { data: KalenderData }) {
       />
     </ArtefaktPanel>
   );
-  const statusTone = liveIDag > 0 ? "down" : antallOkter > 0 ? "lime" : "info";
   const statusTekst =
     liveIDag > 0
       ? `Live · ${liveIDag}`
@@ -1200,37 +1247,36 @@ export function AgencyKalenderV2({ data }: { data: KalenderData }) {
         ? `${antallOkter} økter`
         : "Tom uke";
 
-  // B: hode = tittel + status (primær CTA ligger under)
-  const hode = (
-    <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 14, flexWrap: "wrap" }}>
-      <div>
-        <Caps>{data.ukeLabel}</Caps>
-        <div style={{ marginTop: 10 }}>
-          <Tittel mobile={mobile} em="uke.">{data.viewerErAdmin ? "Teamets" : "Din"}</Tittel>
+  // Krom-opprydding 10.08.2026 (PP-2.4): fasiten har ÉN kompakt topplinje —
+  // tittel og undertittel til venstre, visningsvelger til høyre — og deretter
+  // nøkkeltall og filter. Appen hadde fem stablede bånd: eyebrow + «Teamets
+  // uke.»-hero + statuspille, egen knapperad, nøkkeltall, egen navigasjonsrad
+  // og egen filterrad. Innholdet er beholdt i sin helhet, men brettet sammen:
+  // ukelabel og økt-telling er blitt undertittel, og knappene har flyttet opp
+  // på tittelraden.
+  //
+  // Clay-disiplin (PP-2.4 steg 4): fasit-kalenderen har INGEN «Ny økt»-knapp —
+  // skjermens eneste clay-flate (`.btn.now`) er kollisjonsløsningen i
+  // detaljkolonnen. «Ny økt» er en generisk inngang, ikke «én ting nå», og
+  // forblir derfor omriss.
+  const topplinje = (
+    <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+      <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 14, flexWrap: "wrap" }}>
+        {/* Ingen egen tittel her — `PaperTopp` under eier «Kalender», og to like
+            overskrifter over hverandre er akkurat den støyen denne oppryddingen
+            skulle fjerne. Denne linja bærer konteksten tittelen ikke har. */}
+        <Caps style={{ minWidth: 0 }}>
+          {data.ukeLabel} · {data.viewerErAdmin ? "teamet" : "din kalender"} · {statusTekst}
+        </Caps>
+        <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
+          <Link href="/admin/planlegge" data-od-id="kalender-ny-okt" style={{ textDecoration: "none" }}>
+            <CTAPill ghost icon="plus">Ny økt</CTAPill>
+          </Link>
+          <Link href="/admin/bookinger/ny" style={{ textDecoration: "none" }}>
+            <CTAPill ghost icon="calendar-check">Ny booking</CTAPill>
+          </Link>
         </div>
       </div>
-      <StatusPill tone={statusTone}>{statusTekst}</StatusPill>
-    </div>
-  );
-
-  // Clay-disiplin (PP-2.4 steg 4, fremtvunget av steg 3): fasit-kalenderen har
-  // INGEN «Ny økt»-knapp — skjermens eneste clay-flate (`.btn.now`) er
-  // kollisjonsløsningen i detaljkolonnen. «Ny økt» er en generisk inngang, ikke
-  // «én ting nå», og faller derfor til omriss. Uten dette ville skjermen hatt to
-  // clay-flater samtidig så snart en kollisjon var valgt, og clay-monopolet
-  // (T.handling, låst 2026-07-31) ville mistet betydningen sin.
-  const primaerCta = (
-    <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-      <Link href="/admin/planlegge" data-od-id="kalender-ny-okt" style={{ textDecoration: "none" }}>
-        <CTAPill ghost icon="plus">
-          Ny økt
-        </CTAPill>
-      </Link>
-      <Link href="/admin/bookinger/ny" style={{ textDecoration: "none" }}>
-        <CTAPill ghost icon="calendar-check">
-          Ny booking
-        </CTAPill>
-      </Link>
     </div>
   );
 
@@ -1250,54 +1296,35 @@ export function AgencyKalenderV2({ data }: { data: KalenderData }) {
       aria-label="Filtrer coach og fasilitet"
     >
       {data.coacher.length > 0 && (
-        <label style={{ display: "inline-flex", alignItems: "center", gap: 6, fontFamily: T.mono, fontSize: 10, fontWeight: 700, color: T.mut, textTransform: "uppercase", letterSpacing: "0.04em" }}>
-          Coach
-          <select
-            value={coachFilter ?? ""}
-            onChange={(e) => setCoachFilter(e.target.value || null)}
-            className="v2-focus"
-            style={{
-              minHeight: 40,
-              borderRadius: T.rTag,
-              border: `1px solid ${T.border}`,
-              background: T.panel,
-              color: T.fg,
-              fontFamily: T.ui,
-              fontSize: 13,
-              padding: "0 10px",
-            }}
-          >
-            <option value="">Alle coacher</option>
-            {data.coacher.map((c) => (
-              <option key={c.id} value={c.id}>{c.navn}</option>
-            ))}
-          </select>
-        </label>
+        <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }} role="group" aria-label="Filtrer coach">
+          <FilterChip aktiv={coachFilter === null} onClick={() => setCoachFilter(null)} odId="kal-coach-alle">
+            Alle
+          </FilterChip>
+          {data.coacher.map((c) => (
+            <FilterChip
+              key={c.id}
+              aktiv={coachFilter === c.id}
+              onClick={() => setCoachFilter(coachFilter === c.id ? null : c.id)}
+              odId={`kal-coach-${c.id}`}
+            >
+              {c.navn}
+            </FilterChip>
+          ))}
+        </div>
       )}
       {data.fasiliteter.length > 0 && (
-        <label style={{ display: "inline-flex", alignItems: "center", gap: 6, fontFamily: T.mono, fontSize: 10, fontWeight: 700, color: T.mut, textTransform: "uppercase", letterSpacing: "0.04em" }}>
-          Fasilitet
-          <select
-            value={facilityFilter ?? ""}
-            onChange={(e) => setFacilityFilter(e.target.value || null)}
-            className="v2-focus"
-            style={{
-              minHeight: 40,
-              borderRadius: T.rTag,
-              border: `1px solid ${T.border}`,
-              background: T.panel,
-              color: T.fg,
-              fontFamily: T.ui,
-              fontSize: 13,
-              padding: "0 10px",
-            }}
-          >
-            <option value="">Alle fasiliteter</option>
-            {data.fasiliteter.map((f) => (
-              <option key={f.id} value={f.id}>{f.navn}</option>
-            ))}
-          </select>
-        </label>
+        <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }} role="group" aria-label="Filtrer fasilitet">
+          {data.fasiliteter.map((f) => (
+            <FilterChip
+              key={f.id}
+              aktiv={facilityFilter === f.id}
+              onClick={() => setFacilityFilter(facilityFilter === f.id ? null : f.id)}
+              odId={`kal-fasilitet-${f.id}`}
+            >
+              {f.navn}
+            </FilterChip>
+          ))}
+        </div>
       )}
     </div>
   ) : null;
@@ -1449,11 +1476,10 @@ export function AgencyKalenderV2({ data }: { data: KalenderData }) {
     return (
       <ValgKontekst.Provider value={{ valgtId, velg: velgOkt }}>
       <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
-        {hode}
-        {primaerCta}
-        {kpi}
+        {topplinje}
         {navigasjon}
-      {teamFilter}
+        {kpi}
+        {teamFilter}
         <CoachLegend coacher={data.coacher} />
         {mobilKropp}
 
@@ -1573,10 +1599,9 @@ export function AgencyKalenderV2({ data }: { data: KalenderData }) {
   return (
     <ValgKontekst.Provider value={{ valgtId, velg: velgOkt }}>
     <PaperPage odId="agencyos-kalender"><div data-paper-agencyos-kalender data-paper-slug="agencyos-kalender" data-paper-wave-b="kalender" data-od-id="agency-kalender" style={{ display: "contents" }}><PaperTopp tittel="Kalender" sub="AgencyOS · uke, bookinger og anlegg" /><PaperKropp maxWidth={1200}>
-      {hode}
-      {primaerCta}
-      {kpi}
+      {topplinje}
       {navigasjon}
+      {kpi}
       {teamFilter}
       <CoachLegend coacher={data.coacher} />
 
