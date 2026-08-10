@@ -30,12 +30,14 @@ import {
   Icon,
 } from "@/components/v2";
 import { PaperPage, PaperTopp, PaperKropp } from "./PaperChrome";
-import type { HubCredits, HubBooking, HubCoach } from "@/lib/portal-booking/hub-data";
+import type { HubCredits, HubBooking, HubCoach, HubForsteLedige } from "@/lib/portal-booking/hub-data";
 
 export type BookingHubV2Data = {
   credits: HubCredits;
   upcoming: HubBooking[];
   coaches: HubCoach[];
+  /** Første ledige luke — grunnlaget for «Én ting nå». Null = ingen ledig tid funnet. */
+  forsteLedige: HubForsteLedige | null;
 };
 
 const UKEDAG = ["søn", "man", "tir", "ons", "tor", "fre", "lør"];
@@ -62,7 +64,7 @@ const STATUS_LABEL: Record<HubBooking["status"], string> = {
 };
 
 export function BookingHubV2({ data }: { data: BookingHubV2Data }) {
-  const { credits, upcoming, coaches } = data;
+  const { credits, upcoming, coaches, forsteLedige } = data;
   const harPakke = credits.monthlyCredits > 0;
   const tomtForCredits = harPakke && credits.creditsRemaining <= 0;
 
@@ -71,6 +73,63 @@ export function BookingHubV2({ data }: { data: BookingHubV2Data }) {
       <div data-paper-portal-booking data-paper-slug="playerhq-booking" style={{ display: "contents" }}>
       <PaperTopp tittel="Book time" sub={coaches[0]?.name ? `med ${coaches[0].name}` : "AK Golf Academy"} />
       <PaperKropp>
+
+      {/* Paper .nowblock — «Én ting nå» peker på EN konkret luke, ikke på
+          «book en time» generelt. Vises bare når det finnes en ledig luke. */}
+      {forsteLedige && (
+        <div
+          data-od-id="pb-one-thing-now"
+          style={{
+            border: `1px solid ${T.border}`,
+            borderLeft: `3px solid ${T.handling}`,
+            borderRadius: T.rCard,
+            background: T.handlingSoft,
+            padding: 16,
+            display: "flex",
+            flexDirection: "column",
+            gap: 8,
+          }}
+        >
+          <Caps size={9}>Én ting nå</Caps>
+          <h2 style={{ margin: 0, fontFamily: T.disp, fontSize: 16, fontWeight: 600, color: T.fg }}>
+            Første ledige time er {forsteLedige.ukedagKort} kl. {forsteLedige.kl}
+          </h2>
+          <p style={{ margin: 0, fontFamily: T.bodyFont, fontSize: T.body, color: T.mut, lineHeight: 1.55, maxWidth: "52ch" }}>
+            {forsteLedige.serviceName} med {forsteLedige.coachNavn}
+            {formatDato(forsteLedige.datoIso) ? ` · ${formatDato(forsteLedige.datoIso)}` : ""}.{" "}
+            {/* Saldoen regnes, aldri skrives — står det «én time igjen» som fast
+                tekst, lyver linja i det øyeblikket du booker den siste. */}
+            {harPakke
+              ? tomtForCredits
+                ? "Abonnementstimene dine er brukt opp denne perioden, så denne betales per time."
+                : `Du har ${credits.creditsRemaining === 1 ? "én time" : `${credits.creditsRemaining} timer`} igjen i abonnementet denne perioden.`
+              : "Uten coaching-pakke betales timen per gang."}
+          </p>
+          <Link
+            href="/portal/booking/ny"
+            data-od-id="pb-ta-luke"
+            data-paper-en-ting="true"
+            className="v2-press v2-focus"
+            style={{
+              marginTop: 4,
+              textDecoration: "none",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              minHeight: 56,
+              width: "100%",
+              borderRadius: 12,
+              background: T.handling,
+              color: T.onHandling,
+              fontFamily: T.ui,
+              fontSize: 14,
+              fontWeight: 600,
+            }}
+          >
+            Ta {forsteLedige.ukedagKort} {forsteLedige.kl}
+          </Link>
+        </div>
+      )}
 
       {/* Timer/credits — det Anders ba om skal stå først, ikke gjemt i en veiviser. */}
       <Kort tint>
@@ -101,10 +160,12 @@ export function BookingHubV2({ data }: { data: BookingHubV2Data }) {
         )}
 
         <div style={{ display: "flex", flexDirection: "column", gap: 8, marginTop: 16 }}>
+          {/* Clay-monopolet: står «Én ting nå» over med den konkrete luka, faller
+              denne til omriss. Uten den er dette skjermens ene handling. */}
           <Link
             href="/portal/booking/ny"
             data-od-id="pb-book"
-            data-paper-en-ting="true"
+            {...(forsteLedige ? {} : { "data-paper-en-ting": "true" })}
             className="v2-press v2-focus"
             style={{
               textDecoration: "none",
@@ -112,17 +173,18 @@ export function BookingHubV2({ data }: { data: BookingHubV2Data }) {
               alignItems: "center",
               justifyContent: "center",
               gap: 8,
-              minHeight: 56,
+              minHeight: forsteLedige ? 44 : 56,
               width: "100%",
               borderRadius: 12,
-              background: T.handling,
-              color: T.onHandling,
+              border: forsteLedige ? `1px solid ${T.border}` : "none",
+              background: forsteLedige ? "transparent" : T.handling,
+              color: forsteLedige ? T.fg : T.onHandling,
               fontFamily: T.ui,
               fontSize: 14,
               fontWeight: 600,
             }}
           >
-            {tomtForCredits ? "Book — betal per time" : "Book time"}
+            {tomtForCredits ? "Book — betal per time" : forsteLedige ? "Se alle ledige tider" : "Book time"}
           </Link>
           {/* Samme mål som BruktOppV2 sin drop-in-CTA (BookingNyV2.tsx) — ikke en ny betalingsflyt. */}
           <Link

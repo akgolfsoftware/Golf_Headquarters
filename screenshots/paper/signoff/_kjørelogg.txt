@@ -1,2 +1,2 @@
-OK    PP-2.1 m390   /admin/agencyos — "KONTEKST Hele stallen Konsoll Mandag 10. aug · 08:29 Kommandoer ⌘K Dag"
-OK    PP-2.1 d1280  /admin/agencyos — "KONSOLL INNBOKS SPILLERE KALENDER INNSIKT MER SPILLER MØRK CT KONTEKST"
+OK    PP-2.4 m390   /admin/kalender — "Uke Bookinger Tavle Tilgjengelighet UKE 33 · 10.–16. AUGUST · ALLE SPI"
+OK    PP-2.4 d1280  /admin/kalender — "KONSOLL INNBOKS SPILLERE KALENDER WORKBENCH AGENTICOS ØKONOMI INNSTILL"

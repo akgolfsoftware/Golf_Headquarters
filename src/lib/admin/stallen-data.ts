@@ -17,7 +17,14 @@ import { erOktGjennomfort } from "@/lib/workbench/compliance";
 export type GroupBucket = "WANG" | "GFGK" | "AKA";
 export type TierKind = "konk" | "mosj" | "akad";
 export type SgTone = "pos" | "neg" | "flat";
-export type StatusKind = "aktiv" | "bak" | "inaktiv" | "veil";
+/**
+ * `hviler` (2026-08-10, PP-2.3): planlagt pause eller retur-til-spill.
+ * Paper-fasiten `agencyos-spillere.html` har tre grupper, og skriver eksplisitt
+ * om denne: «Planlagt pause eller retur-til-spill. **Teller ikke som stille.**»
+ * Før dette havnet SKADET/PERMISJON i «bak plan», så en spiller i avtalt pause
+ * lyste som om coachen måtte gjøre noe.
+ */
+export type StatusKind = "aktiv" | "bak" | "inaktiv" | "veil" | "hviler";
 export type Axis = "fys" | "tek" | "slag" | "spill" | "turn";
 
 export type AxisAdh = { axis: Axis; pct: number; alarm: boolean };
@@ -173,10 +180,12 @@ function statusFrom(
 ): { status: StatusKind; label: string } {
   if (wantsGuidance) return { status: "veil", label: "Ønsker veil." };
   if (userStatus === "INAKTIV") return { status: "inaktiv", label: "Inaktiv" };
+  // Hviler FØR stillhets-sjekken: en avtalt pause skal ikke leses som stillhet.
+  // SKADET = retur-til-spill-protokoll, PERMISJON = planlagt pause.
+  if (userStatus === "SKADET") return { status: "hviler", label: "Retur til spill" };
+  if (userStatus === "PERMISJON") return { status: "hviler", label: "Planlagt pause" };
   if (daysSinceLogin == null || daysSinceLogin >= 14)
     return { status: "inaktiv", label: "Inaktiv" };
-  if (userStatus === "SKADET" || userStatus === "PERMISJON")
-    return { status: "bak", label: "Bak plan" };
   // Bak plan: planlagte økter denne uka, men under halvparten gjennomført
   // og uka er kommet et stykke (>=3 dager inn).
   if (oktPlanned > 0 && oktDone < oktPlanned * 0.5)

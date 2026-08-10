@@ -27,6 +27,17 @@ const SEV_MAP: Record<StatusKind, SevKey> = {
   inaktiv: "medium",
   veil: "lav",
   aktiv: "ok",
+  // Hviler er en avtalt tilstand, ikke et signal — den skal aldri lyse.
+  hviler: "ok",
+};
+
+/** Paper-fasitens tre grupper på Spillere (`agencyos-spillere.html`). */
+const GRUPPERING: Record<StatusKind, StallV2Player["bolk"]> = {
+  bak: "trenger",
+  inaktiv: "trenger",
+  veil: "trenger",
+  aktiv: "planen",
+  hviler: "hviler",
 };
 
 /** Akse-nøkkel lowercase (loader) → AkseKey (pyramide-kanon). */
@@ -61,7 +72,9 @@ export default async function V2StallPage() {
       dir: (r.sgTone === "neg" ? "down" : "up") as "up" | "down",
       sev: SEV_MAP[r.status],
       statusLabel: r.statusLabel,
-      trenger: r.status !== "aktiv",
+      // «Hviler» teller ikke som noe som venter på coachen (fasitens ordlyd).
+      trenger: r.status !== "aktiv" && r.status !== "hviler",
+      bolk: GRUPPERING[r.status],
       sgTrend: r.sgTrend,
       adherence: r.adherence.map((a) => ({ akse: AKSE_MAP[a.axis], pct: a.pct })),
       adhPct: r.adhPct,

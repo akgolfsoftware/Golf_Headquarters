@@ -376,9 +376,12 @@ export function MegV2({ data }: { data: MegData }) {
       {!lydGittLokalt && (
         <div
           style={{
+            /* Paper .varselblokk — lys clay-flate med clay-strek langs venstre kant.
+               Kortet er «Én ting nå», ikke et vanlig panel. */
             border: `1px solid ${T.border}`,
+            borderLeft: `3px solid ${T.handling}`,
             borderRadius: T.rCard,
-            background: T.panel,
+            background: T.handlingSoft,
             padding: 16,
             display: "flex",
             flexDirection: "column",

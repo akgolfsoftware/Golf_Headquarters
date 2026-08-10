@@ -31,6 +31,31 @@ godkjenninger») der fasiten bruker den på én konkret handling på én konkret
 | PP-2.3 Spillere | FIKS FØRST | Middels — mangler gruppering (Trenger deg / Følger planen / Hviler) og SG-kolonne |
 | PP-2.4 Kalender | FIKS FØRST | Stor — mangler detaljkolonne, Agenda-visning og belegg-tallene |
 
+## PP-2.3 — bygget 10.08.2026
+
+Lista er delt i fasitens tre bolker, hver med sin forklaring i fasitens egen ordlyd.
+
+**Funn underveis: «Hviler» fantes ikke som tilstand, og det var en ekte feil — ikke bare en
+manglende overskrift.** `SKADET` og `PERMISJON` ble begge mappet til «Bak plan», så en spiller i
+avtalt pause eller retur-til-spill lyste rødt som om coachen måtte gjøre noe. Fasiten sier
+eksplisitt det motsatte: «Planlagt pause eller retur-til-spill. **Teller ikke som stille.**»
+Ny `StatusKind: "hviler"` med etikettene «Planlagt pause» / «Retur til spill», og sjekken er
+flyttet FØR stillhets-sjekken i `statusFrom()`.
+
+| Avvik | Status |
+|---|---|
+| 1 Gruppering i tre | **Bygget** |
+| 2 Filtre i tre rader → én rad med tall | Gjenstår |
+| 3 «Radene mangler tall» | **Delvis feil i galleriet** — SG *er* på hver rad (`meta`-kolonnen i `SpillerRadEnkel`). Siste økt mangler reelt, og finnes ikke i `StallenRow` |
+| 4 Detaljpanel: fire nøkkeltall + testtabell | Gjenstår — krever kategori + testdata i loaderen |
+| 5 Workbench-knapp over overskriften | Gjenstår |
+
+## PP-2.4 — egen jobb
+
+Brief skrevet: [`PP-2.4-KALENDER-BRIEF.md`](./PP-2.4-KALENDER-BRIEF.md). Fire PR-er anbefalt
+(tidsakse+agenda → nøkkeltall → detaljkolonne → clay-disiplin). Ikke påbegynt i kode — den er
+på størrelse med Konsollen og bør ikke tas som en delvis justering.
+
 Merk: coach-testbrukeren har 1 spiller og ingen bookinger, så flere skjermer viser tom tilstand.
 Det er notert per skjerm i galleriet slik at ingenting vurderes på feil grunnlag.
 

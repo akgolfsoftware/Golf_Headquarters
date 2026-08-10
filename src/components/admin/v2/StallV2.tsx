@@ -66,6 +66,8 @@ export interface StallV2Player {
   statusLabel: string;
   /** status !== ok — for «Trenger deg»-filteret. */
   trenger: boolean;
+  /** Hvilken av fasitens tre bolker spilleren hører til. */
+  bolk: "trenger" | "planen" | "hviler";
   /** SG-serie eldst → nyest (ekte målepunkter). */
   sgTrend: number[];
   /** Plan-etterlevelse per akse denne uka (% av planlagte minutter). */
@@ -86,6 +88,13 @@ export interface StallV2Data {
   grupper: string[];
   spillere: StallV2Player[];
 }
+
+/** Paper `agencyos-spillere.html` §GRUPPER — ordlyden er fasitens egen. */
+const BOLKER = [
+  { k: "trenger", n: "Trenger deg nå", note: "Noe venter på deg, eller spilleren har vært stille for lenge." },
+  { k: "planen", n: "Følger planen", note: "Logger som avtalt. Ingen handling nødvendig." },
+  { k: "hviler", n: "Hviler", note: "Planlagt pause eller retur-til-spill. Teller ikke som stille." },
+] as const;
 
 const STATUS_FILTRE = ["Trenger deg", "I rute"] as const;
 const BETALING_FILTRE = ["Abonnent", "Skylder"] as const;
@@ -305,17 +314,37 @@ export function StallV2({ data }: { data: StallV2Data }) {
         <TomTilstand icon="users" title="Ingen spillere her" sub="Ingen spillere passer filteret akkurat nå." />
       </Kort>
     ) : aktiveRader.length === 0 ? null : (
-      <Kort pad="4px 20px">
-        {aktiveRader.map((x, i) => (
-          <SpillerRadEnkel
-            key={x.id}
-            s={x}
-            valgt={valgt?.id === x.id}
-            onClick={() => velg(x.id)}
-            last={i === aktiveRader.length - 1}
-          />
-        ))}
-      </Kort>
+      /* Paper-fasitens tre bolker. Hver har sin forklaring — poenget er at
+         coachen skal skjønne HVORFOR en spiller ligger der, uten å spørre.
+         Tomme bolker rendres ikke. */
+      <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+        {BOLKER.map((b) => {
+          const rader = aktiveRader.filter((x) => x.bolk === b.k);
+          if (rader.length === 0) return null;
+          return (
+            <Kort key={b.k} pad="4px 20px">
+              <div style={{ padding: "12px 0 8px" }}>
+                <div style={{ display: "flex", alignItems: "baseline", gap: 8 }}>
+                  <Caps size={9}>{b.n}</Caps>
+                  <span style={{ fontFamily: T.mono, fontSize: 11, color: T.mut }}>{rader.length}</span>
+                </div>
+                <p style={{ margin: "4px 0 0", fontFamily: T.ui, fontSize: 11.5, color: T.mut, lineHeight: 1.45 }}>
+                  {b.note}
+                </p>
+              </div>
+              {rader.map((x, i) => (
+                <SpillerRadEnkel
+                  key={x.id}
+                  s={x}
+                  valgt={valgt?.id === x.id}
+                  onClick={() => velg(x.id)}
+                  last={i === rader.length - 1}
+                />
+              ))}
+            </Kort>
+          );
+        })}
+      </div>
     );
 
   const venterSeksjon =

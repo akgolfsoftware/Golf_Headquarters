@@ -19,6 +19,8 @@
 import { prisma } from "@/lib/prisma";
 import { loadWeekCalendar } from "@/lib/admin-kalender/week-data";
 import { hentSpeiledeHendelser } from "@/lib/google-calendar-mirror";
+import { hentTilgjengelighet, type Tilgjengelighet } from "@/lib/admin-kalender/tilgjengelighet";
+import type { OktSlag } from "@/lib/domain/kalender-belegg";
 
 export type AkseKort = "FYS" | "TEK" | "SLAG" | "SPILL" | "TURN";
 
@@ -26,6 +28,22 @@ export interface KalOkt {
   id: string;
   kl: string;
   startMin: number;
+  /**
+   * Minutter siden midnatt for slutt — EKTE sluttid fra kilden, ikke estimat.
+   * Klemt til 1440 når økta strekker seg over midnatt, så dagsregnskapet aldri
+   * låner tid fra neste dag. Undefined kun der kilden ikke har en slutt
+   * (oppgavefrist er et tidspunkt, ikke et spenn).
+   *
+   * Belegg regnes av dette feltet. Uten det måtte det vært regnet av
+   * `estimertVarighetMin`, altså en gjetning presentert som en prosent.
+   */
+  sluttMin?: number;
+  /**
+   * Hva økta gjør med beleggsregnestykket. Se `src/lib/domain/kalender-belegg.ts`.
+   * Settes av loaderen, som er det eneste stedet som vet hvilken tabell raden kom
+   * fra — komponenten skal aldri gjette slag ut fra navn eller flagg.
+   */
+  slag: OktSlag;
   navn: string;
   akse?: AkseKort;
   sted?: string | null;
@@ -56,6 +74,14 @@ export interface KalOkt {
   sluttLokal?: string;
   /** Beskrivelsen fra Google, redigerbar i arket. */
   notat?: string | null;
+  /**
+   * Booking-id — satt KUN for rader som kommer fra `Booking`. Det er de eneste
+   * som kan flyttes i tid (`flyttBookingTilTid`); serier, treningsøkter,
+   * hendelser og Google-speil har ingen flytte-handling. Detaljkolonnen bruker
+   * feltet til å avgjøre om «Flytt til …» i det hele tatt skal vises — en knapp
+   * som ikke kan gjøre noe skal ikke stå der.
+   */
+  bookingId?: string;
   /** Multi-coach: eier av bookingen — styrer coach-farge og coach-filteret. */
   coachId?: string | null;
   coachName?: string | null;
@@ -98,6 +124,12 @@ export interface KalenderData {
   /** ADMIN ser alle coacher som default; COACH ser sine egne først. */
   viewerErAdmin: boolean;
   viewerCoachId: string | null;
+  /**
+   * Nevneren i beleggsbrøken, per dag og per coach. Komponenten regner selve
+   * belegget, fordi coach- og fasilitetsfilteret er klient-side — serveren vet
+   * ikke hvilket utvalg brukeren ser på.
+   */
+  tilgjengelighet: Tilgjengelighet;
 }
 
 const DAG_KORT = ["Man", "Tir", "Ons", "Tor", "Fre", "Lør", "Søn"];
@@ -131,6 +163,22 @@ function hhmm(d: Date): string {
 
 function ukedagIndex(d: Date): number {
   return (d.getDay() + 6) % 7;
+}
+
+/**
+ * Sluttid i minutter siden midnatt, klemt til DEN dagen økta starter.
+ *
+ * En hendelse som går over midnatt (ferieuke, flere døgn) ville ellers gitt et
+ * negativt eller absurd lite spenn, og dratt beleggstallet med seg. Klemmes til
+ * 24:00 så dagsregnskapet aldri låner tid fra neste dag.
+ */
+function sluttMinFor(start: Date, slutt: Date): number {
+  const sammeDag =
+    start.getFullYear() === slutt.getFullYear() &&
+    start.getMonth() === slutt.getMonth() &&
+    start.getDate() === slutt.getDate();
+  if (!sammeDag) return 24 * 60;
+  return slutt.getHours() * 60 + slutt.getMinutes();
 }
 
 /**
@@ -169,6 +217,8 @@ export async function hentAgencyKalenderData(
         id: e.id,
         kl: e.timeLabel,
         startMin: e.startMin,
+        sluttMin: e.endMin,
+        slag: "coaching",
         navn: e.title,
         akse: akseFra(e.serviceLabel),
         sted: e.location,
@@ -176,6 +226,7 @@ export async function hentAgencyKalenderData(
         serie: null,
         href: e.href,
         naa: e.kind === "live",
+        bookingId: e.id,
         coachId: e.coachId ?? null,
         coachName: e.coachName ?? null,
         facilityId: e.facilityId ?? null,
@@ -215,6 +266,11 @@ export async function hentAgencyKalenderData(
       id: `serie-${s.id}`,
       kl: hhmm(s.startAt),
       startMin,
+      sluttMin: sluttMinFor(s.startAt, s.endAt),
+      // En gruppeøkt er ÉN avtale med flere deltakere, ikke flere avtaler
+      // (fasitens kollisjonsregel). GroupSchedule har ingen coach-kolonne, så
+      // eieren forblir ukjent og serien holdes utenfor kollisjonsregningen.
+      slag: "coaching",
       navn: s.group.name,
       akse: undefined, // akse for gruppe-serie er ikke registrert — nøytral prikk, ikke gjettet
       sted: s.location,
@@ -232,7 +288,7 @@ export async function hentAgencyKalenderData(
   ukeSluttForHendelser.setDate(ukeSluttForHendelser.getDate() + 7);
   const hendelser = await prisma.calendarEvent.findMany({
     where: { startAt: { lt: ukeSluttForHendelser }, endAt: { gt: ukeStart } },
-    select: { id: true, title: true, startAt: true, endAt: true },
+    select: { id: true, title: true, startAt: true, endAt: true, coachId: true },
     orderBy: { startAt: "asc" },
   });
   for (const h of hendelser) {
@@ -242,6 +298,10 @@ export async function hentAgencyKalenderData(
       id: `hendelse-${h.id}`,
       kl: hhmm(h.startAt),
       startMin: h.startAt.getHours() * 60 + h.startAt.getMinutes(),
+      sluttMin: sluttMinFor(h.startAt, h.endAt),
+      // Ferie, møte, stengt anlegg: ikke bookbar tid. Fasitens «sperret» —
+      // krymper nevneren i beleggsbrøken, teller ikke som booket.
+      slag: "sperret",
       navn: h.title,
       akse: undefined,
       sted: null,
@@ -250,6 +310,7 @@ export async function hentAgencyKalenderData(
       href: `/admin/kalender/hendelse/${h.id}`,
       naa: false,
       erHendelse: true,
+      coachId: h.coachId,
     });
   }
 
@@ -274,6 +335,9 @@ export async function hentAgencyKalenderData(
         id: `oppgave-${t.id}`,
         kl: "Frist",
         startMin: 1440,
+        // En frist er et tidspunkt, ikke et spenn — den opptar ingen coachtid og
+        // holdes derfor utenfor både teller og nevner.
+        slag: "ingen",
         navn: t.title,
         akse: t.priority === "haster" ? "TURN" : undefined,
         sted: null,
@@ -306,7 +370,9 @@ export async function hentAgencyKalenderData(
       id: true,
       title: true,
       startTime: true,
+      endTime: true,
       status: true,
+      coachId: true,
       drills: { select: { pyramide: true }, take: 1 },
     },
     take: 200,
@@ -320,6 +386,8 @@ export async function hentAgencyKalenderData(
       id: `tren-${s.id}`,
       kl: hhmm(s.startTime),
       startMin,
+      sluttMin: sluttMinFor(s.startTime, s.endTime),
+      slag: "coaching",
       navn: s.title,
       akse: forsteAkse,
       sted: null,
@@ -328,6 +396,9 @@ export async function hentAgencyKalenderData(
       href: `/admin/spillere`,
       naa: s.status === "IN_PROGRESS",
       treningsSessionId: s.id,
+      // Loaderen henter kun økter der viewer er coach eller vert, så eieren er
+      // kjent selv når coachId er tom.
+      coachId: s.coachId ?? userId ?? null,
     });
   }
 
@@ -350,6 +421,12 @@ export async function hentAgencyKalenderData(
         // uten klokkeslett — samme uttrykk som i Google/Apple Calendar.
         kl: g.allDay ? "Hele dagen" : hhmm(g.startAt),
         startMin: g.allDay ? -1 : g.startAt.getHours() * 60 + g.startAt.getMinutes(),
+        sluttMin: g.allDay ? undefined : sluttMinFor(g.startAt, g.endAt),
+        // Coachens private avtaler blokkerer bookbar tid — samme regel som
+        // availability-engine bruker (`getCalendarBusy`). Heldagsrader er
+        // informasjon («Ferieuke»), ikke et opptatt klokkeslett: de ville spist
+        // hele nevneren om de talte som sperret.
+        slag: g.allDay ? "ingen" : "sperret",
         navn: g.summary,
         akse: undefined,
         sted: g.location,
@@ -366,9 +443,15 @@ export async function hentAgencyKalenderData(
         startLokal: lokalInput(g.startAt),
         sluttLokal: lokalInput(g.endAt),
         notat: g.description,
+        // Google-speilet er personlig: hendelsene tilhører den innloggede coachen.
+        coachId: userId,
       });
     }
   }
+
+  // 7 · Tilgjengelig coachtid per dag — nevneren i beleggsbrøken. Hentes for
+  // alle coacher; komponenten velger riktig nevner når coach-filteret er satt.
+  const tilgjengelighet = await hentTilgjengelighet(ukeStart, null);
 
   // Sorter hver dag på starttid.
   for (const d of dager) d.okter.sort((a, b) => a.startMin - b.startMin);
@@ -414,6 +497,7 @@ export async function hentAgencyKalenderData(
     ),
     viewerErAdmin: viewerRolle === "ADMIN",
     viewerCoachId: userId ?? null,
+    tilgjengelighet,
   };
 }
 

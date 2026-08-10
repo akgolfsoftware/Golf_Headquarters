@@ -1,5 +1,4 @@
 "use client";
-import { T } from "@/lib/v2/tokens";
 
 /**
  * S-14: GDPR-cookie-banner.
@@ -13,9 +12,22 @@ import { T } from "@/lib/v2/tokens";
  *
  * Etter accept fires CustomEvent "ak:cookie-consent" slik at
  * AnalyticsLoader kan laste inn Plausible.
+ *
+ * Plassbehov (10.08.2026): banneret er festet i bunnen og lå tidligere OPPÅ
+ * sticky handlingsdokker og bunn-nav på mobil — dokken så klikkbar ut, men
+ * pekerhendelsene traff banner-kortet. Banneret måler derfor sin egen høyde og
+ * publiserer den som `--ak-cookie-h` på <html>; bunn-forankret chrome legger
+ * variabelen til sin egen bunn-padding og forskyver seg opp mens banneret vises.
+ *
+ * Drakt (10.08.2026): portet til Claude Paper. Flater/tekst/avstand er `--p-*`
+ * (src/styles/paper-tokens.css), knappene følger `.btn`/`.btn.ink` i
+ * `designsystem/paper/fase1/_foundation.css` — 13px/500, radius `--p-r`, blekk
+ * som primær. Ikke clay: aksenten er reservert «Én ting nå»
+ * (docs/port/monsterdokument-paper.md §2 + §7). GFGK-micrositen beholder sin
+ * egen drakt.
  */
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Cookie, X } from "lucide-react";
@@ -24,6 +36,8 @@ const CONSENT_KEY = "ak_cookie_consent";
 const CONSENT_ALL = "all";
 const CONSENT_NECESSARY = "necessary";
 const CONSENT_TTL_DAYS = 365;
+/** CSS-variabel bunn-forankret chrome leser for å forskyve seg opp. */
+const HOYDE_VAR = "--ak-cookie-h";
 
 function setCookieConsent(value: string) {
   const expires = new Date();
@@ -45,6 +59,7 @@ function getStoredConsent(): string | null {
 
 export function CookieBanner() {
   const [visible, setVisible] = useState(false);
+  const ytreRef = useRef<HTMLDivElement | null>(null);
   const pathname = usePathname();
   // GFGK Junior-micrositen har egen merkevare — banneren skifter drakt der.
   // Klassen gfgk-jr gir tilgang til de scopede GFGK-variablene (tokens-fila
@@ -53,6 +68,10 @@ export function CookieBanner() {
   // Auth-flyten (login/signup/onboarding) er kort og fokusert — banneren
   // dekket «Fortsett med Google»-knappen og andre CTA-er nederst på skjermen.
   const skjulPaAuth = pathname?.startsWith("/auth") ?? false;
+  // Paper-drakt (--p-*, src/styles/paper-tokens.css). Primærknappen er BLEKK
+  // (--p-cta), ikke clay: aksenten #d97757 har monopol på «Én ting nå»
+  // (monsterdokument-paper.md §2 + §7). Blekk snur seg selv i mørkt tema, så
+  // den gamle primary/accent-kollisjonen kan ikke gjenoppstå her.
   const farger = gfgk
     ? {
         kortBg: "var(--gfgk-white)",
@@ -61,29 +80,27 @@ export function CookieBanner() {
         tittelFont: "var(--font-jr-sans)",
         tekst: "var(--fg-2)",
         ikon: "var(--gold-700)",
-        lenke: "var(--teal-600)",
+        lenke: "var(--ink)",
         knappBg: "var(--gfgk-ink)",
         knappFg: "var(--gfgk-white)",
-        knapp2Fg: "var(--fg-2)",
+        knapp2Fg: "var(--ink)",
         knapp2Border: "var(--n-200)",
       }
     : {
-        kortBg: "hsl(var(--card))",
-        kortBorder: "hsl(var(--border))",
-        tittel: "hsl(var(--foreground))",
-        tittelFont: "var(--font-familjen-grotesk)",
-        tekst: "hsl(var(--muted-foreground))",
-        ikon: "hsl(var(--primary))",
-        lenke: "hsl(var(--primary))",
-        knappBg: "hsl(var(--primary))",
-        // MÅ være --primary-foreground, ikke --accent: i mørkt tema er --primary og
-        // --accent samme lime (se .claude/rules/gotchas.md «primary=accent»), så
-        // accent-på-primary ga 1:1 kontrast — knappen var usynlig. Lys: hvit på grønn.
-        // Mørk: nær-svart på lime.
-        knappFg: "hsl(var(--primary-foreground))",
-        knapp2Fg: "hsl(var(--muted-foreground))",
-        knapp2Border: "hsl(var(--border))",
+        kortBg: "var(--p-surface)",
+        kortBorder: "var(--p-border)",
+        tittel: "var(--p-fg)",
+        tittelFont: "var(--p-font-sans)",
+        tekst: "var(--p-muted)",
+        ikon: "var(--p-muted)",
+        lenke: "var(--p-fg)",
+        knappBg: "var(--p-cta)",
+        knappFg: "var(--p-on-cta)",
+        knapp2Fg: "var(--p-fg)",
+        knapp2Border: "var(--p-border)",
       };
+  // Brødtekst er Lora i Paper, men GFGK-micrositen har egen prosa-font.
+  const brodFont = gfgk ? "var(--font-jr-sans)" : "var(--p-font-serif)";
 
   useEffect(() => {
     const stored = getStoredConsent();
@@ -93,6 +110,28 @@ export function CookieBanner() {
       return () => clearTimeout(t);
     }
   }, []);
+
+  // Publiser bannerets faktiske høyde som --ak-cookie-h så lenge det vises.
+  // ResizeObserver fordi høyden endrer seg med tekstbryting (390px vs 1280px)
+  // og med knappene som wrapper på smale skjermer.
+  useEffect(() => {
+    const el = ytreRef.current;
+    const rot = document.documentElement;
+    if (!visible || skjulPaAuth || !el) {
+      rot.style.setProperty(HOYDE_VAR, "0px");
+      return;
+    }
+    const oppdater = () => {
+      rot.style.setProperty(HOYDE_VAR, `${Math.ceil(el.getBoundingClientRect().height)}px`);
+    };
+    oppdater();
+    const ro = new ResizeObserver(oppdater);
+    ro.observe(el);
+    return () => {
+      ro.disconnect();
+      rot.style.setProperty(HOYDE_VAR, "0px");
+    };
+  }, [visible, skjulPaAuth]);
 
   if (!visible || skjulPaAuth) return null;
 
@@ -108,6 +147,7 @@ export function CookieBanner() {
 
   return (
     <div
+      ref={ytreRef}
       role="dialog"
       aria-modal="false"
       aria-label="Cookie-samtykke"
@@ -119,8 +159,6 @@ export function CookieBanner() {
         left: 0,
         right: 0,
         zIndex: 9999,
-        padding: "16px",
-        paddingBottom: "calc(16px + env(safe-area-inset-bottom, 0px))",
         display: "flex",
         justifyContent: "center",
         pointerEvents: "none",
@@ -128,28 +166,32 @@ export function CookieBanner() {
     >
       <div
         style={{
+          // 560px: samme lesebredde som Paper sine bunn-ark. Arket ligger flush
+          // mot bunnkanten (kun toppradius) — ikke et flytende kort med luft
+          // rundt, som kolliderer visuelt med bunn-nav-en bak det.
           maxWidth: 560,
           width: "100%",
           background: farger.kortBg,
           border: `1px solid ${farger.kortBorder}`,
-          borderRadius: "16px 16px 0 0",
-          padding: "20px 24px",
-          boxShadow: `0 -4px 24px ${T.farge.svartA10}`,
+          borderBottom: "none",
+          borderRadius: "var(--p-r-md) var(--p-r-md) 0 0",
+          padding: "var(--p-s5) var(--p-s5) calc(var(--p-s5) + env(safe-area-inset-bottom, 0px))",
+          boxShadow: "var(--p-shadow)",
           display: "flex",
           flexDirection: "column",
-          gap: 12,
+          gap: "var(--p-s3)",
           pointerEvents: "auto",
         }}
       >
         {/* Header */}
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "var(--p-s2)" }}>
             <Cookie size={18} style={{ color: farger.ikon }} strokeWidth={1.75} />
             <span
               style={{
                 fontFamily: farger.tittelFont,
-                fontSize: 15,
-                fontWeight: 700,
+                fontSize: "var(--p-text-panel)",
+                fontWeight: 600,
                 color: farger.tittel,
                 letterSpacing: "-0.01em",
               }}
@@ -165,8 +207,9 @@ export function CookieBanner() {
               background: "none",
               border: "none",
               cursor: "pointer",
-              width: 44,
-              height: 44,
+              // --p-tap: Paper sin gulvregel for alt interaktivt.
+              width: "var(--p-tap)",
+              height: "var(--p-tap)",
               color: farger.tekst,
               display: "flex",
               alignItems: "center",
@@ -181,9 +224,12 @@ export function CookieBanner() {
         {/* Beskrivelse */}
         <p
           style={{
-            fontSize: 13,
+            // Lora 14px/1.62, maks 52ch — Paper sin prosa-anatomi.
+            fontFamily: brodFont,
+            fontSize: "var(--p-text-body-player)",
             color: farger.tekst,
-            lineHeight: 1.5,
+            lineHeight: 1.62,
+            maxWidth: "52ch",
             margin: 0,
           }}
         >
@@ -192,30 +238,38 @@ export function CookieBanner() {
           personopplysninger deles med tredjeparter.{" "}
           <Link
             href="/cookies"
-            style={{ color: farger.lenke, textDecoration: "underline" }}
+            style={{
+              color: farger.lenke,
+              textDecoration: "underline",
+              textUnderlineOffset: "0.18em",
+            }}
           >
             Les mer
           </Link>
           .
         </p>
 
-        {/* Knapper */}
-        <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+        {/* Knapper — Paper `.btn` / `.btn.ink` (_foundation.css): 13px/500,
+            min-høyde --p-tap, radius --p-r. Ingen pill, ingen fet skrift, og
+            ingen clay: dette er ikke «Én ting nå». */}
+        <div style={{ display: "flex", gap: "var(--p-s2)", flexWrap: "wrap" }}>
           <button
             type="button"
             onClick={onGodta}
             style={{
               flex: 1,
               minWidth: 140,
-              height: 44,
-              borderRadius: 999,
+              minHeight: "var(--p-tap)",
+              padding: "0 var(--p-s4)",
+              borderRadius: "var(--p-r)",
               background: farger.knappBg,
               color: farger.knappFg,
-              border: "none",
-              fontSize: 13,
-              fontWeight: 700,
-              cursor: "pointer",
+              border: `1px solid ${farger.knappBg}`,
               fontFamily: farger.tittelFont,
+              fontSize: 13,
+              fontWeight: 500,
+              lineHeight: 1,
+              cursor: "pointer",
             }}
           >
             Godta alle
@@ -226,13 +280,16 @@ export function CookieBanner() {
             style={{
               flex: 1,
               minWidth: 140,
-              height: 44,
-              borderRadius: 999,
+              minHeight: "var(--p-tap)",
+              padding: "0 var(--p-s4)",
+              borderRadius: "var(--p-r)",
               background: "transparent",
               color: farger.knapp2Fg,
               border: `1px solid ${farger.knapp2Border}`,
+              fontFamily: farger.tittelFont,
               fontSize: 13,
-              fontWeight: 600,
+              fontWeight: 500,
+              lineHeight: 1,
               cursor: "pointer",
             }}
           >
