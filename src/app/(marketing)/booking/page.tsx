@@ -48,11 +48,14 @@ function coachEtikett(tjenestenavn: string, coach: string | null): string | null
  * Fasitens rekkefølge: én coach av gangen (Anders før Markus), billigste først
  * innenfor hver, og gruppe-økter uten coach til slutt. Ren pris-sortering
  * blandet coachene om hverandre.
+ *
+ * Sorterer på coachen fra basen (`sorterPaa`), ikke på etiketten kortet viser —
+ * den er ofte tom fordi tjenestenavnet allerede bærer coachen.
  */
-function sorterSomFasit<T extends { coachNavn: string | null; pris: number }>(a: T, b: T): number {
-  if ((a.coachNavn === null) !== (b.coachNavn === null)) return a.coachNavn === null ? 1 : -1;
-  if (a.coachNavn && b.coachNavn && a.coachNavn !== b.coachNavn) {
-    return a.coachNavn.localeCompare(b.coachNavn, "nb");
+function sorterSomFasit<T extends { sorterPaa: string | null; pris: number }>(a: T, b: T): number {
+  if ((a.sorterPaa === null) !== (b.sorterPaa === null)) return a.sorterPaa === null ? 1 : -1;
+  if (a.sorterPaa && b.sorterPaa && a.sorterPaa !== b.sorterPaa) {
+    return a.sorterPaa.localeCompare(b.sorterPaa, "nb");
   }
   return a.pris - b.pris;
 }
@@ -93,6 +96,7 @@ export default async function BookingLanding() {
       slug: s.slug,
       navn: s.name,
       coachNavn: coachEtikett(s.name, fornavn(s.coach?.name)),
+      sorterPaa: fornavn(s.coach?.name),
       pris: Math.round(s.priceOre / 100),
       // ServiceType har ingen kolonne for prisenhet, så flaten sier «kr» og lar
       // beskrivelsen fra basen bære nyansen (delt økt, per spiller osv.).
@@ -100,7 +104,8 @@ export default async function BookingLanding() {
       varighetMin: s.durationMin,
       beskrivelse: s.description,
     }))
-    .sort(sorterSomFasit);
+    .sort(sorterSomFasit)
+    .map(({ sorterPaa: _sorterPaa, ...t }) => t);
 
   const abonnement: PaperAbonnement[] = services
     .filter((s) => erAbonnement(s.name))
@@ -108,10 +113,12 @@ export default async function BookingLanding() {
       slug: s.slug,
       navn: s.name,
       coachNavn: coachEtikett(s.name, fornavn(s.coach?.name)),
+      sorterPaa: fornavn(s.coach?.name),
       pris: Math.round(s.priceOre / 100),
       beskrivelse: s.description,
     }))
-    .sort(sorterSomFasit);
+    .sort(sorterSomFasit)
+    .map(({ sorterPaa: _sorterPaa, ...a }) => a);
 
   // Heroens «Neste ledige» skal vise et ekte tidspunkt med en gang. Vi spør for
   // den billigste økta — den er også fra-prisen heroen viser, så tallene hører
