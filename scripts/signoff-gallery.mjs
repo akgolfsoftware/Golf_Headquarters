@@ -74,7 +74,15 @@ async function nyKontekst(device, tema) {
   return ctx;
 }
 
-async function loggInn(ctx, epost) {
+async function loggInn(ctx, epost, forsok = 2) {
+  for (let i = 1; i <= forsok; i++) {
+    if (await loggInnEnGang(ctx, epost)) return true;
+    if (i < forsok) await new Promise((r) => setTimeout(r, 4000));
+  }
+  return false;
+}
+
+async function loggInnEnGang(ctx, epost) {
   const page = await ctx.newPage();
   await page.goto(`${BASE}/auth/login`, { waitUntil: "domcontentloaded", timeout: 90000 });
   // Dev-serveren kan bruke lang tid på første kompilering av en rute — vent tålmodig.

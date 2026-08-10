@@ -4,6 +4,23 @@ Flyttet fra CLAUDE.md 2026-06-14. Les denne FØR du skriver kode. Når noe brekk
 (Eldre PRISMA-7- og Supabase-detaljer finnes også i git-historikken.)
 Ingen låst designkanon per 2026-07-25 — nytt system utvikles i Open Design (CLAUDE.md invariant 2).
 
+### Rutenett-kolonne uten `min-width: 0` sprenger skjermen (oppdaget 2026-08-10)
+- **Symptom:** `/admin/innboks` på 1280 px viste avkuttet tekst, ingen «Se»-knapper og ingen
+  høyrekolonne. Målt i nettleseren: listekolonnen var **1681 px** bred i et 1280 px vindu, og
+  `document.scrollWidth` var klemt til 1280 — innholdet var altså klippet bort, ikke scrollbart.
+- **Årsak:** `grid-cols-[3fr_2fr]` gir kolonnene `min-width: auto` som default. `Rad`
+  (`src/components/v2/core.tsx`) setter `whiteSpace: nowrap` + `textOverflow: ellipsis` på tittel
+  og undertekst — men `nowrap` gjør at *innholdets* minstebredde blir hele setningen, og `auto`
+  lar kolonnen vokse til den. Ellipsen slår aldri inn, for kolonnen krymper aldri.
+- **Regel:** enhver flex/grid-beholder som inneholder `Rad`, `nowrap`-tekst eller lange strenger
+  MÅ ha `minWidth: 0` (eller `min-w-0`). `Rad`s indre `<div>` har det allerede — feilen ligger
+  alltid i beholderen rundt.
+- Samme `grid-cols-[3fr_2fr]`-mønster brukes i minst sju andre admin-komponenter (StallV2,
+  AdminComplianceV2, AdminEmailV2, AdminAgenterV2, AdminSpillerTesterV2, AdminSpillerRedigerV2,
+  feil-laste). De ble ikke rørt 10.08 fordi innholdet deres er kort nok til å ikke utløse feilen —
+  men de er samme latente bombe. Sjekk med `document.documentElement.scrollWidth` mot
+  `window.innerWidth` når du porterer en av dem.
+
 ### GitHub PR-overvåking: `actions_list`/`actions_get` er dyre uansett `minimal_output` (oppdaget 2026-08-06)
 - **Symptom:** en økt som abonnerer på PR-aktivitet (`subscribe_pr_activity`) og deretter poller
   `mcp__github__actions_list` (`list_workflow_runs`) for å sjekke CI-status brenner tusenvis av tokens

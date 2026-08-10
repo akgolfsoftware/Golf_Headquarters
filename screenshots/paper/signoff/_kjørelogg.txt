@@ -1,0 +1,4 @@
+OK    PP-1.5 m390   /portal/booking — "Hjem Book time med Markus Røinås Pedersen TIMER DENNE PERIODEN 3 av 4 "
+OK    PP-1.5 d1280  /portal/booking — "I DAG PLAN ANALYSE MEG MØRK ØR Hjem Book time med Markus Røinås Peders"
+OK    PP-2.2 m390   /admin/innboks — "Innboks Godkjenning Varsler Oppfølging Oppgaver Innboks 5 åpne · avvik"
+OK    PP-2.2 d1280  /admin/innboks — "KONSOLL INNBOKS SPILLERE KALENDER INNSIKT MER SPILLER MØRK CT Innboks "
