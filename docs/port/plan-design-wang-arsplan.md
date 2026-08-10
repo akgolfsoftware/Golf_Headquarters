@@ -1,6 +1,7 @@
 # Designplan — WANG Toppidrett Fredrikstad, årsplan/treningsplan
 
 Status: **utkast til beslutning** · Opprettet 2026-08-10 · Eier: Anders
+Omfang låst 2026-08-10: **kun golfgruppa** ved WANG Toppidrett Fredrikstad (avklaring B6, §7).
 
 Dekker alle skjermer i WANG-flaten (elev/foreldre + trener) og grensesnittet mot AgencyOS,
 der innholdet i treningsplanen faktisk skal lages. Skrevet etter samme mal som
@@ -16,6 +17,9 @@ Claude Paper.
 | B1 | Egen git-repo for WANG? | **Nei — behold i monorepoet.** Se §1. |
 | B2 | Hvilket Claude Design-prosjekt er fasit? | **`be77fcdb` «WANG Toppidrett - Software»**, utvidet med `golf-*`-templates. Ikke et nytt, tredje WANG-prosjekt. Se §3. |
 | B3 | Skal AgencyOS-skjermene WANG-brandes? | **Nei — AgencyOS forblir Claude Paper.** WANG-merkevaren gjelder kun elev-/foreldreflaten. Se §2. |
+
+**Omfanget er avklart (B6, 2026-08-10):** flaten dekker **kun golfgruppa**, ikke skolens
+øvrige idretter. Det bekrefter B1 (én repo) og holder skjermregnskapet på 22. Se §7.
 
 Resten av dokumentet er skjermregnskapet, bølgene og ferdig-definisjonen som følger av dette.
 
@@ -42,14 +46,16 @@ billigere:
 4. **`.claude/rules/arkitektur.md` sier det allerede:** «Splitting til separate repos er ikke
    aktuell før etter lansering — du jobber i dette ene repoet med alt.»
 
-**Motargumentet er likevel ekte, og bør noteres.** Claude Design-prosjektet
+**Motargumentet er vurdert og forkastet (Anders 2026-08-10).** Claude Design-prosjektet
 «WANG Toppidrett - Software» beskriver i `readme.md` noe langt større enn golfgruppa:
 en *multi-tenant, white-label treningsplattform for toppidrettsgymnas*, multi-idrett
 (golf, fotball, håndball, langrenn, tennis), med elev/trener/skoleadmin/eier/foresatt/
-klubbtrener-roller. **Det er et annet produkt enn AK Golf HQ.** Hvis det er produktet som
-skal bygges, er egen repo riktig til slutt.
+klubbtrener-roller. **Det er et annet produkt enn AK Golf HQ** — og det er IKKE det som
+skal bygges nå. **Omfanget er kun golfgruppa** (avklaring B6, §7). Dermed faller det
+eneste argumentet for egen repo bort, og §1-svaret står uten forbehold: én repo.
 
-**Anbefalt utløser for splitt:** skole nr. 2 som betaler. Ikke før.
+**Anbefalt utløser for splitt:** skole nr. 2 som betaler, eller idrett nr. 2 ved WANG.
+Ikke før. Sømmen under holder den døra åpen uten at noe bygges for den i dag.
 
 **Gode nyheter — sømmen er allerede lagt.** Dagens struktur er ekstraksjonsklar uten videre
 arbeid, og bør holdes slik:
@@ -267,10 +273,24 @@ datamodeller ligger sist.
 | B3 | AgencyOS forblir Paper? (anbefaling: ja) | §C |
 | B4 | Skal `/team-wang/coach` overleve, eller redirecte til AgencyOS? | Bølge 4 |
 | B5 | Skal skole-/foreldredata (A9, A10, A12) modelleres, eller forbli merket demo? | Bølge 5 |
-| B6 | Er WANG-flaten kun golf, eller alle idretter ved skolen? Fasiten i `be77fcdb` antar multi-idrett; koden antar golf. | Omfang totalt |
+| ~~B6~~ | ~~Er WANG-flaten kun golf, eller alle idretter ved skolen?~~ | **AVKLART** |
 
-B6 er den som kan velte planen: svarer Anders «alle idretter», er §1-motargumentet det
-gjeldende produktet, og da endres både repo-svaret og skjermregnskapet.
+### B6 — avklart 2026-08-10: kun golfgruppa
+
+Anders: «vi skal kun ha golf gruppen.» WANG-flaten dekker **golfgruppa ved WANG Toppidrett
+Fredrikstad**, ikke skolens øvrige idretter og ikke skolen som helhet.
+
+Følger av dette:
+
+- **§1 står:** én repo, ingen splitt. Multi-tenant-motargumentet er ikke gjeldende produkt.
+- **Skjermregnskapet står:** 22 skjermer, uendret. Ingen idrettsvelger, ingen
+  idretts-agnostiske modeller, ingen tenant-nøkkel i data.
+- **Rollemodellen forenkles:** elev · foresatt · trener (Anders). `skoleadmin`, `eier` og
+  `klubbtrener` fra `be77fcdb` bygges **ikke**.
+- **Fasit-bruk snevres inn:** kun `golf-*`-malene er i omfang. De generiske `elev-*`,
+  `trener-*`, `admin-*`, `eier-*`-malene er referanse, ikke leveranse (§9).
+- **Ingen prematur generalisering:** bygg mot golf konkret. `Group`-modellen bærer allerede
+  en eventuell fremtidig idrett nr. 2 uten at noe abstraheres nå.
 
 ---
 
@@ -311,5 +331,8 @@ beholder med `nowrap`-tekst eller lange strenger MÅ ha `minWidth: 0`. WANG-flat
 - Redesign av AgencyOS-skjermene i §C — hører til Paper-porten.
 - `/gfgk-junior/` — egen skole/klubb, egen palett (`.gfgk-jr`), egen plan.
 - De ~60 generiske malene i `be77fcdb` (`elev-*`, `trener-*`, `admin-*`, `eier-*`) — de
-  tilhører WANG Treningsplattform som produkt, ikke golfgruppas årsplan. Røres ikke før B6
-  er avklart.
+  tilhører WANG Treningsplattform som produkt, ikke golfgruppas årsplan. **Endelig ute av
+  omfang** etter B6-avklaringen 10.08.2026 (§7): kun `golf-*`-malene bygges. De generiske
+  kan leses som mønsterreferanse, men ingen av dem blir en skjerm i denne planen.
+- **Multi-idrett og multi-tenant** — ingen idrettsvelger, ingen skole nr. 2, ingen
+  `skoleadmin`/`eier`/`klubbtrener`-roller. Se B6.
