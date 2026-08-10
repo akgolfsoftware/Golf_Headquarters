@@ -221,18 +221,6 @@ function TabSG({ data, mobile }: { data: AnalysereData; mobile: boolean }) {
                «−0,0» på alle fire og skjuler rangeringen. */
             desimaler={2}
           />
-          {nesteFokus?.diagnose && (
-            <Diagnose
-              symptom={nesteFokus.diagnose.symptom}
-              /* bevis = null: datakontrakten bærer ingen spiller-vs-baseline-verdi
-                 for symptomet, og fabrikkerte bevis-søyler er verre enn ingen. */
-              bevis={null}
-              grunnlag={nesteFokus.diagnose.grunnlag}
-              resept={{ akse: nesteFokus.diagnose.resept.akse as AkseKey, tekst: nesteFokus.diagnose.resept.tekst }}
-              ctaTekst={undefined}
-              ctaHref={undefined}
-            />
-          )}
         </div>
       ) : (
         <Kort eyebrow="Per område" action={<HjelpTips k="sgBaseline" size={12} />}>
@@ -262,16 +250,6 @@ function TabSG({ data, mobile }: { data: AnalysereData; mobile: boolean }) {
             })()}
             handlingHref={nesteFokus.handlingHref}
           />
-          {/* lekkasjeBaand ble beregnet i loaderen men aldri vist — SlagLekkasje
-              er fasit-kortet for nettopp den kontrakten ({id,label,sg,slag}). */}
-          {nesteFokus.lekkasjeBaand.length > 0 && (
-            <SlagLekkasje
-              baand={nesteFokus.lekkasjeBaand}
-              baseline={nesteFokus.baseline}
-              grunnlag={nesteFokus.grunnlag}
-              desimaler={2}
-            />
-          )}
         </div>
       )}
 
@@ -291,7 +269,47 @@ function TabSG({ data, mobile }: { data: AnalysereData; mobile: boolean }) {
         </Kort>
       )}
 
-      <div className="grid grid-cols-2 md:grid-cols-3" style={{ gridColumn: "1 / -1", gap: T.gap, alignItems: "start" }}>
+    </div>
+  );
+}
+
+/**
+ * Dybdelaget bak Statistikk-fanen (Anders 10.08.2026): diagnose, slaglekkasje,
+ * nøkkeltall og de tre videre-lenkene lå tidligere under SG-fanen og gjorde den
+ * til 13 kort i én scroll. Fasiten playerhq-analyse.html har fire. Ingenting er
+ * fjernet — alt ligger ett trykk unna.
+ */
+function AnalyseDybde({ data, mobile }: { data: AnalysereData; mobile: boolean }) {
+  const { sgStatus, nesteFokus } = data.minGolf;
+  const { rounds, training } = data.workbench;
+
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+      {nesteFokus?.diagnose && (
+        <Diagnose
+          symptom={nesteFokus.diagnose.symptom}
+          /* bevis = null: datakontrakten bærer ingen spiller-vs-baseline-verdi
+             for symptomet, og fabrikkerte bevis-søyler er verre enn ingen. */
+          bevis={null}
+          grunnlag={nesteFokus.diagnose.grunnlag}
+          resept={{ akse: nesteFokus.diagnose.resept.akse as AkseKey, tekst: nesteFokus.diagnose.resept.tekst }}
+          ctaTekst={undefined}
+          ctaHref={undefined}
+        />
+      )}
+
+      {/* lekkasjeBaand ble beregnet i loaderen men aldri vist — SlagLekkasje
+          er fasit-kortet for nettopp den kontrakten ({id,label,sg,slag}). */}
+      {nesteFokus && nesteFokus.lekkasjeBaand.length > 0 && (
+        <SlagLekkasje
+          baand={nesteFokus.lekkasjeBaand}
+          baseline={nesteFokus.baseline}
+          grunnlag={nesteFokus.grunnlag}
+          desimaler={2}
+        />
+      )}
+
+      <div className="grid grid-cols-2 md:grid-cols-3" style={{ gap: T.gap, alignItems: "start" }}>
         {[
           { ic: "target", l: "SG-nedbrytning", s: `${sgStatus.kategorier.length} områder · ${sgStatus.baseline}` },
           { ic: "flag", l: "Runder", s: `${rounds.totalRounds} i sesong${rounds.bestScore != null ? ` · beste ${rounds.bestScore}` : ""}` },
@@ -307,7 +325,7 @@ function TabSG({ data, mobile }: { data: AnalysereData; mobile: boolean }) {
         ))}
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2" style={{ gridColumn: "1 / -1", gap: T.gap }}>
+      <div className="grid grid-cols-1 md:grid-cols-2" style={{ gap: T.gap }}>
         {[
           { href: "/portal/analysere/hull", ic: "map", l: "Hull-analyse", s: "Hvor taper du slag — hull for hull" },
           { href: "/portal/gameplan", ic: "crosshair", l: "Gameplan", s: "Banekart, spredning og hull-for-hull sikte" },
@@ -335,7 +353,7 @@ function TabSG({ data, mobile }: { data: AnalysereData; mobile: boolean }) {
 
 /* ── Fane: Statistikk ──────────────────────────────────────────────── */
 
-function TabStatistikk({ data }: { data: AnalysereData }) {
+function TabStatistikk({ data, mobile }: { data: AnalysereData; mobile: boolean }) {
   const { rounds } = data.workbench;
   const { tigerFive } = data.minGolf.runder;
 
@@ -409,6 +427,8 @@ function TabStatistikk({ data }: { data: AnalysereData }) {
           <TomTilstand icon="flag" title="Ingen runder" sub="Runder du registrerer dukker opp her." />
         )}
       </Kort>
+
+      <AnalyseDybde data={data} mobile={mobile} />
     </div>
   );
 }
@@ -967,7 +987,7 @@ export function AnalysereV2({
 
       <FaneInnhold key={tab}>
         {tab === "sg" && <TabSG data={data} mobile={mobile} />}
-        {tab === "statistikk" && <TabStatistikk data={data} />}
+        {tab === "statistikk" && <TabStatistikk data={data} mobile={mobile} />}
         {tab === "trening" && <TabTrening data={data} mobile={mobile} userId={userId} />}
         {tab === "trackman" && deep && <TabTrackman data={data} mobile={mobile} />}
         {tab === "tester" && <TabTester data={data} mobile={mobile} />}

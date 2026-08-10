@@ -1,4 +1,2 @@
-OK    PP-1.5 m390   /portal/booking — "Hjem Book time med Markus Røinås Pedersen TIMER DENNE PERIODEN 3 av 4 "
-OK    PP-1.5 d1280  /portal/booking — "I DAG PLAN ANALYSE MEG MØRK ØR Hjem Book time med Markus Røinås Peders"
-OK    PP-2.2 m390   /admin/innboks — "Innboks Godkjenning Varsler Oppfølging Oppgaver Innboks 5 åpne · avvik"
-OK    PP-2.2 d1280  /admin/innboks — "KONSOLL INNBOKS SPILLERE KALENDER INNSIKT MER SPILLER MØRK CT Innboks "
+OK    PP-1.3 m390   /portal/analysere — "Analyse Kategori B · National Elite · Sesong 2026 PUTTING · FOKUS LAV "
+OK    PP-1.3 d1280  /portal/analysere — "I DAG PLAN ANALYSE MEG MØRK ØR Analyse Kategori B · National Elite · S"
