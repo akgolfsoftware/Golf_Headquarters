@@ -1031,5 +1031,6 @@ function sessionToWeekEvent(s: WeekSessionRow, now: Date): WeekEvent {
     compliance: oktCompliance(s, now),
     lFase: s.lFase ?? null,
     miljo: s.miljo ?? null,
+    drillCount: s._count.drills,
   };
 }

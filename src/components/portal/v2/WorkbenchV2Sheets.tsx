@@ -88,7 +88,8 @@ export interface WorkbenchV2Actions {
     sessionId: string,
     patch: import("@/lib/workbench/session-update").SessionUpdateInput,
   ) => Promise<{ ok: boolean; error?: string }>;
-  publish: () => Promise<{ ok: boolean; error?: string; status?: PlanStatus }>;
+  /** PP-3: valgfri begrunnelse fra publiser-dialogen — går på varselet til spilleren. */
+  publish: (melding?: string) => Promise<{ ok: boolean; error?: string; status?: PlanStatus }>;
   /** Spiller: godta plan som venter (PENDING_PLAYER → ACTIVE). */
   acceptPlan?: () => Promise<{ ok: boolean; error?: string; status?: PlanStatus }>;
   /** Spiller: be om endring (PENDING_PLAYER → REJECTED). */

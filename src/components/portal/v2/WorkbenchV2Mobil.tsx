@@ -92,35 +92,45 @@ export function AarNivaaMobil({ data }: { data: WorkbenchData }) {
   );
 }
 
-/* ── MobilFold — generisk utfellbar seksjon (44 px+ trykkmål) ───── */
-export function MobilFold({
+/* ── WbBottomSheet — mobil bunn-ark (PP-3 fasit: grab/shead/sbody) ──
+   Erstatter MobilFold-akkordeonene: Bibliotek og Balanse åpnes som ark
+   nederst, samme overleggsmønster som arkene i WorkbenchV2Sheets.tsx. */
+export function WbBottomSheet({
   tittel,
-  ikon,
-  startApen,
+  onLukk,
   children,
 }: {
   tittel: string;
-  ikon: string;
-  startApen?: boolean;
+  onLukk: () => void;
   children: ReactNode;
 }) {
-  const [apen, setApen] = useState(!!startApen);
   return (
-    <Kort pad="0">
-      <button
-        type="button"
-        onClick={() => setApen((v) => !v)}
+    <div style={{ position: "fixed", inset: 0, zIndex: 70 }} role="dialog" aria-modal="true" aria-label={tittel}>
+      <div onClick={onLukk} style={{ position: "absolute", inset: 0, background: T.farge.nestenSvartA62, backdropFilter: "blur(2px)" }} />
+      <div
+        className="v2-sheet-in"
         style={{
-          appearance: "none", cursor: "pointer", width: "100%", minHeight: 52, borderRadius: 12,
-          display: "flex", alignItems: "center", gap: 9, padding: "0 14px",
-          background: "transparent", border: "none", textAlign: "left",
+          position: "absolute", left: 0, right: 0, bottom: 0, maxHeight: "88dvh",
+          display: "flex", flexDirection: "column", background: T.panel,
+          borderTop: `1px solid ${T.borderS}`, borderRadius: "20px 20px 0 0",
+          paddingBottom: "env(safe-area-inset-bottom)",
         }}
       >
-        <Icon name={ikon} size={15} style={{ color: T.handling, flex: "none" }} />
-        <span style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 14, color: T.fg, flex: 1, minWidth: 0 }}>{tittel}</span>
-        <Icon name={apen ? "chevron-up" : "chevron-down"} size={15} style={{ color: T.mut, flex: "none" }} />
-      </button>
-      {apen && <div style={{ padding: "0 14px 16px" }}>{children}</div>}
-    </Kort>
+        <span aria-hidden style={{ width: 36, height: 4, borderRadius: 9999, background: T.border, margin: "10px auto 6px", flex: "none" }} />
+        <div style={{ display: "flex", alignItems: "center", gap: 8, padding: "0 16px 10px", borderBottom: `1px solid ${T.border}`, flex: "none" }}>
+          <span style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 15, color: T.fg, flex: 1, minWidth: 0 }}>{tittel}</span>
+          <button
+            type="button"
+            onClick={onLukk}
+            aria-label="Lukk"
+            className="v2-press v2-focus"
+            style={{ appearance: "none", cursor: "pointer", width: 44, height: 44, display: "inline-flex", alignItems: "center", justifyContent: "center", background: "transparent", border: `1px solid ${T.border}`, borderRadius: 10, color: T.fg2 }}
+          >
+            <Icon name="x" size={16} />
+          </button>
+        </div>
+        <div style={{ flex: 1, minHeight: 0, overflowY: "auto", padding: 16 }}>{children}</div>
+      </div>
+    </div>
   );
 }
