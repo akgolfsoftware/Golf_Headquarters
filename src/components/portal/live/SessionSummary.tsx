@@ -430,8 +430,8 @@ export function SessionSummary({ data, nesteOkt, spillerVurdering, lagredeOrd }:
               }}
             />
             <p className="mb-0 mt-2 font-serif text-[12.5px]" style={{ color: "var(--p-muted)" }}>
-              Utkastet er laget av tallene og notatene dine — ingen AI. Endre
-              fritt, det er dine ord som lagres.
+              Utkastet er laget fra tallene og notatene dine. Endre fritt — det
+              er dine ord som lagres.
               {data.coachName ? ` ${data.coachName.split(" ")[0]} ser oppsummeringen i stallen sin.` : ""}
             </p>
           </div>
@@ -457,7 +457,7 @@ export function SessionSummary({ data, nesteOkt, spillerVurdering, lagredeOrd }:
               color: "var(--p-on-accent)",
             }}
           >
-            {pending ? "Lagrer…" : "Lagre til loggen"}
+            {pending ? "Lagrer…" : "Lagre i loggen"}
           </button>
         </>
       )}

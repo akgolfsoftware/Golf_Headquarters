@@ -295,7 +295,7 @@ export async function loadSpillerProfilPanel(
     },
     {
       id: "plan",
-      tittel: "Plan",
+      tittel: "Plan denne uka",
       kilde: "TrainingPlan · TrainingPlanSession · PlanAction",
       linjer: planLinjer,
       aapen: true,

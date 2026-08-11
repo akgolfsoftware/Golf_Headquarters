@@ -275,6 +275,48 @@ export function ScorekortKlient({
     ? (spec.forsok[0]?.label ?? null)
     : null;
 
+  // ── Feiltilstand — fasitens egen flate (Kontrakt §3: «Prøv igjen» er den ene
+  //    aksenthandlingen). Alt du har registrert står urørt i scorekortet. ──
+  if (feil) {
+    return (
+      <div
+        data-paper-slug="playerhq-test-gjennomfor"
+        data-od-id="playerhq-test-gjennomfor-feil"
+        style={{ maxWidth: 720, margin: "0 auto", width: "100%", color: T.fg, minWidth: 0 }}
+      >
+        <div
+          role="alert"
+          style={{
+            padding: "24px 16px",
+            background: T.panel2,
+            border: `1px dashed ${T.border}`,
+            borderRadius: T.rCard,
+            marginTop: 16,
+          }}
+        >
+          <h3 style={{ margin: "0 0 8px", fontFamily: T.disp, fontSize: 15, fontWeight: 600, color: T.fg }}>
+            Klarte ikke å lagre testen
+          </h3>
+          <p style={{ margin: "0 0 12px", fontFamily: T.bodyFont, fontSize: 13.5, color: T.mut, lineHeight: 1.55 }}>
+            Resultatet ligger trygt på telefonen — ingenting av det du har
+            registrert er tapt. Prøv å lagre på nytt når du er klar.
+          </p>
+          <Knapp
+            enTing
+            full
+            icon="check"
+            onClick={lagre}
+            disabled={pending}
+            style={{ minHeight: 56, borderRadius: T.rCard }}
+            data-paper-en-ting="true"
+          >
+            {pending ? "Lagrer…" : "Prøv igjen"}
+          </Knapp>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div
       data-paper-slug="playerhq-test-gjennomfor"
@@ -449,24 +491,6 @@ export function ScorekortKlient({
         Du kan lagre når som helst — også en avbrutt test. Det som er registrert,
         telles og merkes med antall forsøk.
       </p>
-
-      {feil && (
-        <div
-          role="alert"
-          style={{
-            marginTop: 12,
-            borderRadius: 11,
-            border: `1px solid color-mix(in srgb, ${T.down} 35%, transparent)`,
-            background: `color-mix(in srgb, ${T.down} 10%, transparent)`,
-            padding: "10px 14px",
-            fontFamily: T.ui,
-            fontSize: 13,
-            color: T.down,
-          }}
-        >
-          {feil}
-        </div>
-      )}
 
       <div style={{ marginTop: 8, display: "flex", justifyContent: "center" }}>
         <Link

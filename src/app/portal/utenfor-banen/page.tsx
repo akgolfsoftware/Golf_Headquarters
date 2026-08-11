@@ -99,6 +99,7 @@ export default async function UtenforBanenPage() {
   const aktive = utfordringer.filter((u) => u.status === "ACTIVE");
 
   const data: UtenforBanenData = {
+    navn: user.name,
     ukeNr: ukenummer(idag),
     uke,
     gjortAntall,
@@ -119,16 +120,30 @@ export default async function UtenforBanenPage() {
           ovelser: [
             ...fysisk.okt.styrke.map((o) => {
               const s0 = o.startSett[0];
+              // Verdikolonne (fasitens .ov): ± kg vs forrige økt når historikken
+              // finnes («sist»); ellers tom — aldri fabrikkert fremgang.
+              const sist0 = o.sist[0];
+              let verdi: string | null = null;
+              let pos = false;
+              if (s0 && sist0 && s0.vekt > 0 && sist0.vekt > 0) {
+                const diff = s0.vekt - sist0.vekt;
+                verdi = diff === 0 ? "=" : `${diff > 0 ? "+" : "−"}${Math.abs(diff)} kg`;
+                pos = diff > 0;
+              }
               return {
                 navn: o.navn,
                 meta: s0
                   ? `${o.startSett.length} × ${s0.reps}${s0.vekt > 0 ? ` · ${s0.vekt} kg` : ""}`
                   : o.muskelgrupper.join(" · ") || "Styrke",
+                verdi,
+                pos,
               };
             }),
             ...fysisk.okt.intervaller.map((i) => ({
               navn: i.navn,
               meta: `${i.serier} × ${i.minutter} min · ${i.sone}`,
+              verdi: null,
+              pos: false,
             })),
           ],
         }

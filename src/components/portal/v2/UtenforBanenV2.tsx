@@ -24,6 +24,7 @@ import { Kort, Caps, TomTilstand } from "@/components/v2";
 export type UkeDagStatus = "" | "gjort" | "planlagt";
 
 export type UtenforBanenData = {
+  navn: string;
   ukeNr: number;
   /** Én status per ukedag, mandag først. */
   uke: UkeDagStatus[];
@@ -39,7 +40,7 @@ export type UtenforBanenData = {
   okt: {
     navn: string;
     varighetMin: number | null;
-    ovelser: { navn: string; meta: string }[];
+    ovelser: { navn: string; meta: string; verdi: string | null; pos: boolean }[];
   } | null;
   venner: { id: string; navn: string; hcp: number | null; kategori: string | null }[];
   utfordringer: {
@@ -92,7 +93,9 @@ export function UtenforBanenV2({ data }: { data: UtenforBanenData }) {
         <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>
           {heltTom
             ? "Ingenting aktivert"
-            : `Fysisk · lag · utfordringer${data.planlagtAntall > 0 ? ` · ${data.gjortAntall} av ${data.planlagtAntall} økter denne uka` : ""}`}
+            : data.planlagtAntall > 0
+              ? `${data.navn} · ${data.gjortAntall} av ${data.planlagtAntall} økter denne uka`
+              : data.navn}
         </span>
       </div>
 
@@ -101,7 +104,7 @@ export function UtenforBanenV2({ data }: { data: UtenforBanenData }) {
           <TomTilstand
             icon="dumbbell"
             title="Ingenting aktivt utenfor banen"
-            sub="Fysisk plan settes opp av coachen din. Lag og utfordringer krever at du er med i en stall som har det slått på — spør coachen hvis du vil bli med."
+            sub="Fysisk plan settes opp av coachen din. Lag og utfordringer krever at du er med i en stall som har det slått på — spør Anders hvis du vil bli med."
           />
           <div style={{ marginTop: 12, textAlign: "center" }}>
             <Link
@@ -124,7 +127,7 @@ export function UtenforBanenV2({ data }: { data: UtenforBanenData }) {
                 textDecoration: "none",
               }}
             >
-              Skriv til coachen
+              Skriv til Anders
             </Link>
           </div>
         </Kort>
@@ -140,7 +143,7 @@ export function UtenforBanenV2({ data }: { data: UtenforBanenData }) {
                 padding: 16,
               }}
             >
-              <Caps>Én ting nå</Caps>
+              <Caps color={T.handling}>Én ting nå</Caps>
               <h2 style={{ margin: "8px 0 4px", fontFamily: T.disp, fontSize: 16, fontWeight: 600, color: T.fg }}>
                 Fysisk økt i dag — {data.dagensFys.varighetMin} min
               </h2>
@@ -157,7 +160,7 @@ export function UtenforBanenV2({ data }: { data: UtenforBanenData }) {
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
-                  minHeight: 48,
+                  minHeight: 56,
                   borderRadius: T.rTag,
                   background: T.handling,
                   color: T.onHandling,
@@ -286,6 +289,20 @@ export function UtenforBanenV2({ data }: { data: UtenforBanenData }) {
                           {o.meta}
                         </span>
                       </div>
+                      {o.verdi && (
+                        <span
+                          className="num"
+                          style={{
+                            fontFamily: T.mono,
+                            fontSize: 12.5,
+                            fontWeight: 600,
+                            textAlign: "right",
+                            color: o.pos ? T.up : T.fg,
+                          }}
+                        >
+                          {o.verdi}
+                        </span>
+                      )}
                     </div>
                   ))
                 ) : (

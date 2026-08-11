@@ -651,7 +651,7 @@ export function ForelderV2({ data }: { data: ForelderPortalData }) {
   function renderKontakt() {
     return (
       <>
-        <Kort eyebrow="Kontakt coachen">
+        <Kort eyebrow="Kontakt Anders">
           <Kilde k="users, bookings" />
           {data.coachNavn ? (
             <>
