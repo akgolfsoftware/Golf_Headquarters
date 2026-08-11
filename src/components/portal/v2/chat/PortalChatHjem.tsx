@@ -399,6 +399,13 @@ function TomTilstand({
         >
           Kalender
         </Link>
+        <Link
+          href="/portal/utenfor-banen"
+          data-od-id="empty-link-utenfor-banen"
+          style={{ fontFamily: T.ui, fontSize: 13, fontWeight: 500, color: T.mut, textDecoration: "underline", textUnderlineOffset: 3 }}
+        >
+          Utenfor banen
+        </Link>
       </div>
     </div>
   );
@@ -766,6 +773,25 @@ export function PortalChatHjem({
 
       <ArtefaktPanel mobil={mobil} open={artefaktApen} onClose={() => setArtefaktApen(false)} tittel="Dagens økt">
         <DagensOktInnhold gjennomfore={gjennomfore} />
+        {/* Inngang til hub-en «Utenfor banen» (Paper W2: playerhq-hjem-rest) */}
+        <Link
+          href="/portal/utenfor-banen"
+          data-od-id="open-utenfor-banen"
+          style={{
+            display: "block",
+            marginTop: 16,
+            paddingTop: 12,
+            borderTop: `1px solid ${T.border}`,
+            fontFamily: T.ui,
+            fontSize: 13,
+            fontWeight: 500,
+            color: T.mut,
+            textDecoration: "underline",
+            textUnderlineOffset: 3,
+          }}
+        >
+          Utenfor banen — fysisk · lag · utfordringer
+        </Link>
       </ArtefaktPanel>
 
       {fangstApen && (
