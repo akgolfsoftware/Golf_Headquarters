@@ -401,7 +401,19 @@ function TabStatistikk({ data, mobile }: { data: AnalysereData; mobile: boolean 
 
       <Kort
         eyebrow="Runde-historikk"
-        action={<Caps size={9}>{rounds.rounds.length} runder</Caps>}
+        action={
+          <span style={{ display: "inline-flex", alignItems: "center", gap: 10 }}>
+            <Caps size={9}>{rounds.rounds.length} runder</Caps>
+            {/* Inngang til den samlede historikk-flaten (Paper W2: historikk-filter-sheet) */}
+            <Link
+              href="/portal/analysere/historikk"
+              data-od-id="analysere-hele-historikken"
+              style={{ fontFamily: T.ui, fontSize: 12, fontWeight: 600, color: T.mut, textDecoration: "underline", textUnderlineOffset: 3 }}
+            >
+              Hele historikken →
+            </Link>
+          </span>
+        }
       >
         {rounds.rounds.length > 0 ? (
           rounds.rounds.slice(0, 10).map((r, i, arr) => (
