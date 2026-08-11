@@ -666,10 +666,11 @@ function BunnNavLenker({ aktiv, nav, mer }: { aktiv?: string; nav: V2NavItem[]; 
    AGENCYOS_ROM (fem rom), så hele coach-flaten er nåbar. Mørkt tema beholdes
    (V2Shell holder AgencyOS mørk/lys via cookie som før). PlayerHQ-mobilen bruker
    fortsatt BunnNavLenker uendret. */
-/* Fem, ikke åtte: fasitens mobil-bunn (agencyos-konsoll-mobil.html) viser
-   Konsoll · Innboks · Spillere · Kalender · Workbench. AgenticOS, Økonomi og
-   Innstillinger faller automatisk ned i «Mer»-skuffen under (se `resten`). */
-const AGENCY_MOBIL_PRIMÆR = ["cockpit", "innboks", "spillere", "kalender", "workbench"];
+/* Maks fem flater i bunn-nav (fasitens regel, agencyos-konsoll-mobil.html:
+   «Bunnfaner — maks fem flater»). Fire primære + «Mer» = fem. Workbench,
+   AgenticOS, Økonomi og Innstillinger faller ned i «Mer»-skuffen (se `resten`)
+   — seks faner (5 + Mer) brøt fasitens tak, rettet 11.08 (PP-2.1). */
+const AGENCY_MOBIL_PRIMÆR = ["cockpit", "innboks", "spillere", "kalender"];
 
 function AgencyBunnNav({ aktiv, nav, mer, rom }: { aktiv?: string; nav: V2NavItem[]; mer?: V2NavGruppe[]; rom?: V2Rom[] }) {
   const [skuffOpen, setSkuffOpen] = useState(false);

@@ -609,8 +609,11 @@ export function KonsollChat({
                   height: 48,
                   borderRadius: T.rCard,
                   border: "none",
-                  background: kanChatte && input.trim() && !busy ? T.cta : T.panel3,
-                  color: kanChatte && input.trim() && !busy ? T.onCta : T.mut,
+                  /* Fasit agencyos-konsoll-mobil.html .sendbtn: alltid blekk
+                     (--cta/--on-cta) — aldri grå flate. Deaktivert = dempet. */
+                  background: T.cta,
+                  color: T.onCta,
+                  opacity: kanChatte && input.trim() && !busy ? 1 : 0.45,
                   display: "inline-flex",
                   alignItems: "center",
                   justifyContent: "center",

@@ -132,7 +132,7 @@ const PRACTICE_TO_PYRAMID: Record<PracticeType, PyramidArea> = {
   SPILL_TEST: "SPILL",
 };
 
-const UKEDAG_KORT = ["Søn", "Man", "Tir", "Ons", "Tor", "Fre", "Lør"];
+const UKEDAG_KORT = ["Man", "Tir", "Ons", "Tor", "Fre", "Lør", "Søn"];
 
 function startOfDay(d: Date): Date {
   const s = new Date(d);
