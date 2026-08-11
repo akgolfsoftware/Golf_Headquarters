@@ -17,6 +17,11 @@ import Link from "next/link";
 import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
 import { CTAPill } from "@/components/v2";
 import { StallV2, type StallV2Data, type StallV2Player } from "@/components/admin/v2/StallV2";
+import { SpillerProfilPanel } from "@/components/admin/v2/SpillerProfilPanel";
+import {
+  loadSpillerProfilPanel,
+  type SpillerProfilPanelData,
+} from "@/lib/admin-spiller/spiller-profil-panel-data";
 import type { SevKey } from "@/components/v2";
 
 export const dynamic = "force-dynamic";
@@ -55,9 +60,26 @@ const GRUPPE_LABEL: Record<string, string> = {
   AKA: "AK Academy",
 };
 
-export default async function V2StallPage() {
+export default async function V2StallPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ profil?: string }>;
+}) {
   const user = await requirePortalUser({ allow: ["ADMIN", "COACH"] });
+  const { profil } = await searchParams;
   const stall = await loadStallen({ id: user.id, role: user.role }, {});
+
+  // Spillerprofil-artefaktet (PP-3): åpnes per spiller via ?profil=<id>.
+  // Feil i lastingen skjuler ikke lista — panelet viser ærlig feiltilstand.
+  let profilData: SpillerProfilPanelData | null = null;
+  let profilFeil = false;
+  if (profil) {
+    try {
+      profilData = await loadSpillerProfilPanel({ id: user.id, role: user.role }, profil);
+    } catch {
+      profilFeil = true;
+    }
+  }
 
   const spillere: StallV2Player[] = stall.rows.map((r) => {
     const form = r.sgTrend.length > 0 ? r.sgTrend[r.sgTrend.length - 1] : null;
@@ -99,6 +121,7 @@ export default async function V2StallPage() {
         </Link>
       </div>
       <StallV2 data={data} />
+      {profil && <SpillerProfilPanel data={profilData} feil={profilFeil || !profilData} />}
     </V2Shell>
   );
 }

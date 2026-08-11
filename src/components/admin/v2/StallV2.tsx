@@ -220,7 +220,9 @@ function SpillerSammendrag({ s }: { s: StallV2Player }) {
             {s.trenger ? "Følg opp i Workbench" : "Åpne Workbench"}
           </CTAPill>
         </Link>
-        <Link href={`/admin/spillere/${s.id}`} style={{ display: "inline-flex", textDecoration: "none" }}>
+        {/* PP-3: profilen er et artefakt-panel på denne flaten (?profil=<id>);
+            full side lever videre som fallback via panelets «Full side». */}
+        <Link href={`/admin/spillere?profil=${s.id}`} style={{ display: "inline-flex", textDecoration: "none" }}>
           <CTAPill ghost>Se profil</CTAPill>
         </Link>
       </div>
