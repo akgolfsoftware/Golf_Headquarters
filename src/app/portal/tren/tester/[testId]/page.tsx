@@ -1,15 +1,18 @@
 /**
- * PlayerHQ Test-detalj — v2. Protokoll-steg (zod-parset fra protocol),
- * scoring-regel, egen historikk med trend mot forrige, og Start test.
- * Auth + datahenting beholdt 1:1 (requirePortalUser + Prisma + testTilgangWhere).
- * `?lagret=1` viser kvittering + «Del med coach».
- * «?»-regelen: pyramide-akse forklares via pyramideAkse, historikk via testbatteri.
- * Referanse-rad: formel ikke låst — aldri fasit-tall.
+ * PlayerHQ · Test-detalj (/portal/tren/tester/[testId]) — Paper-port W1 (fase2).
+ * Fasit: designsystem/paper/fase2/playerhq/playerhq-test-detalj.html.
+ *
+ * Struktur per fasit: «om testen» → protokollkort med nummererte steg +
+ * scoringsregel (vises ALLTID, også uten resultater) → historikk-stolpediagram
+ * med siste måling uthevet + trend-tag + why-details → clay-CTA «Ta måling»
+ * (gjennomføringen har egen fasit — denne skjermen er forberedelsen).
+ * Auth + datahenting uendret: requirePortalUser + testTilgangWhere +
+ * parseProtocol (zod) + parseForScoring/lavereErBedre. `?lagret=1`-kvittering
+ * beholdt (funksjonell retur fra gjennomføringen).
  */
 
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import type { PyramidArea } from "@/generated/prisma/client";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { testTilgangWhere } from "@/lib/portal-tester/test-tilgang";
@@ -17,18 +20,13 @@ import { parseProtocol, type ScorekortForsok } from "@/lib/portal-tester/protoco
 import { parseForScoring, lavereErBedre } from "@/lib/portal-tester/test-scoring";
 import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
 import { T } from "@/lib/v2/tokens";
-import {
-  Tittel,
-  Kort,
-  Rad,
-  CTAPill,
-  StatusPill,
-  MikroMeta,
-  TomTilstand,
-  AkseChip,
-  HjelpTips, TilbakeLenke } from "@/components/v2";
+import { Caps, Kort, StatusPill, MikroMeta, TilbakeLenke } from "@/components/v2";
 
-/** Grupper forsøk på label → steg-liste. */
+export const dynamic = "force-dynamic";
+
+const NGF_URL = "https://www.golfforbundet.no/spiller/toppidrett/skjemaer";
+
+/** Grupper forsøk på label → steg-liste (bevart fra forrige versjon). */
 function grupperSteg(
   forsok: ScorekortForsok[],
 ): { label: string; antall: number; target: string | null }[] {
@@ -41,17 +39,17 @@ function grupperSteg(
   return [...m.values()];
 }
 
-export const dynamic = "force-dynamic";
-
-const NGF_URL = "https://www.golfforbundet.no/spiller/toppidrett/skjemaer";
-
 /** Norsk tall-format: maks 2 desimaler, komma som desimalskille. */
 function fmtNum(n: number): string {
   return (Math.round(n * 100) / 100).toLocaleString("nb-NO", { maximumFractionDigits: 2 });
 }
 
-function fmtDato(d: Date): string {
-  return d.toLocaleDateString("nb-NO", { day: "numeric", month: "short", year: "numeric" });
+function fmtDatoKort(d: Date): string {
+  return d.toLocaleDateString("nb-NO", { day: "2-digit", month: "2-digit", timeZone: "Europe/Oslo" });
+}
+
+function fmtDatoLang(d: Date): string {
+  return d.toLocaleDateString("nb-NO", { day: "numeric", month: "short", timeZone: "Europe/Oslo" });
 }
 
 export default async function TestDetaljSpillerPage({
@@ -71,9 +69,10 @@ export default async function TestDetaljSpillerPage({
   });
   if (!test) notFound();
 
+  // Historikk eldste→nyeste (stolpediagrammet leser venstre→høyre).
   const resultater = await prisma.testResult.findMany({
     where: { userId: user.id, testId },
-    orderBy: { takenAt: "desc" },
+    orderBy: { takenAt: "asc" },
     select: { id: true, score: true, takenAt: true },
   });
 
@@ -83,177 +82,320 @@ export default async function TestDetaljSpillerPage({
   const enhet = scoringSpec.unit;
   // Retning fra scoring-typen (motoren). Ukjent (fallback/uten protokoll) → nøytral trend.
   const lavere = scoringSpec.kind === "fallback" ? null : lavereErBedre(scoringSpec.kind);
-  const akse = test.pyramidArea as PyramidArea;
 
-  const metaBiter = [
-    steg.length > 0 ? `${steg.length} ${steg.length === 1 ? "øvelse" : "øvelser"}` : null,
-    enhet ? `Enhet ${enhet}` : null,
-    resultater.length > 0
-      ? `${resultater.length} ${resultater.length === 1 ? "resultat" : "resultater"}`
-      : null,
-  ].filter((b): b is string => b !== null);
+  // Siste 8 målinger i diagrammet — skala fra faktisk maks (aldri fabrikkert tak).
+  const hist = resultater.slice(-8);
+  const maks = hist.length > 0 ? Math.max(...hist.map((r) => r.score), 0) : 0;
+  const siste = resultater[resultater.length - 1] ?? null;
+  const nestSiste = resultater[resultater.length - 2] ?? null;
+
+  let trend: { text: string; tone: "pos" | "neg" | "flat" } | null = null;
+  if (siste && nestSiste) {
+    const diff = siste.score - nestSiste.score;
+    if (diff === 0) {
+      trend = { text: "±0 vs forrige måling", tone: "flat" };
+    } else {
+      const bedre = lavere == null ? null : lavere ? diff < 0 : diff > 0;
+      trend = {
+        text: `${diff > 0 ? "+" : "−"}${fmtNum(Math.abs(diff))} vs forrige måling`,
+        tone: bedre == null ? "flat" : bedre ? "pos" : "neg",
+      };
+    }
+  }
+  const toneFarge = { pos: "var(--v2-up)", neg: "var(--v2-down)", flat: "var(--v2-mut)" } as const;
+
+  const subBiter = [test.pyramidArea, enhet ? `måles i ${enhet}` : null].filter(Boolean);
+
+  /* Protokollkortet — vises ALLTID (fasit), også når spilleren mangler resultater. */
+  const protokollKort = (
+    <Kort eyebrow="protokoll">
+      {steg.length > 0 ? (
+        <div>
+          {steg.map((s, i) => (
+            <div
+              key={s.label}
+              style={{
+                display: "flex",
+                gap: 12,
+                padding: "8px 0",
+                fontSize: 13,
+                borderBottom: i === steg.length - 1 ? "none" : `1px solid ${T.borderS}`,
+              }}
+            >
+              <span
+                style={{
+                  flex: "none",
+                  width: 22,
+                  height: 22,
+                  borderRadius: T.rPill,
+                  display: "grid",
+                  placeItems: "center",
+                  background: T.panel2,
+                  fontFamily: T.mono,
+                  fontSize: 11,
+                  color: T.mut,
+                }}
+              >
+                {i + 1}
+              </span>
+              <span style={{ fontFamily: T.bodyFont, color: T.fg2 }}>
+                {s.label}
+                <span style={{ fontFamily: T.mono, color: T.mut }}>
+                  {" "}× {s.antall}
+                  {s.target != null ? ` · mål ${s.target}` : ""}
+                </span>
+              </span>
+            </div>
+          ))}
+        </div>
+      ) : (
+        <div>
+          <p style={{ fontFamily: T.bodyFont, fontSize: 13, color: T.fg2, lineHeight: 1.6, margin: 0 }}>
+            Testen har ingen steg-protokoll i systemet ennå — scoringsregelen under gjelder.
+          </p>
+          <a href={NGF_URL} target="_blank" rel="noreferrer" style={{ textDecoration: "none", display: "inline-block", marginTop: 10 }}>
+            <MikroMeta icon="external-link">Protokoller hos NGF</MikroMeta>
+          </a>
+        </div>
+      )}
+      <div
+        style={{
+          display: "flex",
+          gap: 12,
+          alignItems: "baseline",
+          marginTop: 8,
+          paddingTop: 8,
+          borderTop: `1px solid ${T.borderS}`,
+          fontSize: 13,
+        }}
+      >
+        <span style={{ fontFamily: T.ui, color: T.fg }}>Scoring</span>
+        <span style={{ fontFamily: T.bodyFont, color: T.mut }}>{test.scoringRule}</span>
+      </div>
+    </Kort>
+  );
 
   return (
     <V2Shell bredde="kolonne" aktiv="plan" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
       <TilbakeLenke href="/portal/tren/tester">Tester</TilbakeLenke>
-      <div data-paper-portal-test-detalj style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
+      <div
+        data-paper-slug="playerhq-test-detalj"
+        data-od-id="playerhq-test-detalj"
+        style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}
+      >
+        {/* Kvittering etter gjennomføring — funksjonell tilstand, beholdt */}
         {lagret && (
           <Kort tint pad="14px 18px">
-            <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
-                <StatusPill tone="up">Test fullført · resultat lagret</StatusPill>
-                <Link href="/portal/coach/melding" style={{ textDecoration: "none" }}>
-                  <MikroMeta icon="send">Del med coach</MikroMeta>
-                </Link>
-              </div>
-              <p style={{ fontFamily: T.ui, fontSize: 12, color: T.fg2, margin: 0, lineHeight: 1.5 }}>
-                Utvalgte tester (f.eks. CHS, driver carry, smash) kan foreslå baseline på{" "}
-                <strong>full sving</strong>-TM-mål. Coach ser forslaget under Godkjenninger i AgencyOS.
-              </p>
-              <Link href="/portal/tren/teknisk-plan" style={{ textDecoration: "none" }}>
-                <MikroMeta icon="wrench">Se teknisk plan / full sving</MikroMeta>
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
+              <StatusPill tone="up">Test fullført · resultat lagret</StatusPill>
+              <Link href="/portal/coach/melding" style={{ textDecoration: "none" }}>
+                <MikroMeta icon="send">Del med coach</MikroMeta>
               </Link>
             </div>
           </Kort>
         )}
 
-        {/* Hode */}
+        {/* Topp — fasit: testnavn / AKSE · måles i [enhet] */}
         <div>
-          <span style={{ display: "inline-flex", alignItems: "center", gap: 8 }}>
-            <AkseChip a={akse} />
-            <HjelpTips k="pyramideAkse" size={11} />
+          <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>
+            {test.name}
+          </h1>
+          <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>
+            {subBiter.join(" · ")}
           </span>
-          <div style={{ marginTop: 10 }}>
-            <Tittel>{test.name}</Tittel>
-          </div>
-          {metaBiter.length > 0 && (
-            <p style={{ fontFamily: T.mono, fontSize: 10.5, textTransform: "uppercase", letterSpacing: "0.06em", color: T.mut, margin: "10px 0 0" }}>
-              {metaBiter.join(" · ")}
+        </div>
+
+        {/* Tom tilstand — ingen resultater ennå (protokollen står fortsatt under) */}
+        {resultater.length === 0 && (
+          <div
+            style={{
+              padding: "24px 16px",
+              background: T.panel2,
+              border: `1px dashed ${T.border}`,
+              borderRadius: T.rCard,
+            }}
+          >
+            <h3 style={{ margin: "0 0 8px", fontFamily: T.disp, fontSize: 15, fontWeight: 600, color: T.fg }}>
+              Du har ikke tatt denne testen ennå
+            </h3>
+            <p style={{ margin: 0, fontFamily: T.bodyFont, fontSize: 13.5, color: T.mut }}>
+              Protokollen står under — første måling blir referansen din.
             </p>
-          )}
+          </div>
+        )}
+
+        {/* Om testen — kun reelle felter (varighet/utstyr finnes ikke i skjemaet) */}
+        <Kort eyebrow="om testen">
+          {[
+            ["Pyramide", test.pyramidArea],
+            ...(enhet ? [["Enhet", enhet] as [string, string]] : []),
+            ...(steg.length > 0
+              ? [["Øvelser", `${steg.length} steg`] as [string, string]]
+              : []),
+          ].map(([k, v], i, arr) => (
+            <div
+              key={k}
+              style={{
+                display: "flex",
+                alignItems: "baseline",
+                gap: 8,
+                padding: "8px 0",
+                borderBottom: i === arr.length - 1 ? "none" : `1px solid ${T.borderS}`,
+                fontSize: 13,
+              }}
+            >
+              <span style={{ fontFamily: T.ui, color: T.fg }}>{k}</span>
+              <span style={{ marginLeft: "auto", fontFamily: T.mono, textAlign: "right", color: T.fg }}>{v}</span>
+            </div>
+          ))}
           {test.description && (
-            <p style={{ fontFamily: T.ui, fontSize: 13, color: T.fg2, lineHeight: 1.6, maxWidth: "62ch", margin: "10px 0 0" }}>
+            <p style={{ fontFamily: T.bodyFont, fontSize: 13, color: T.mut, lineHeight: 1.6, margin: "8px 0 0" }}>
               {test.description}
             </p>
           )}
-        </div>
-
-        {/* Slik gjennomføres testen */}
-        <Kort eyebrow="Slik gjennomføres testen" pad={steg.length > 0 ? "14px 18px" : undefined}>
-          {steg.length > 0 ? (
-            steg.map((s, i) => (
-              <Rad
-                key={s.label}
-                last={i === steg.length - 1}
-                title={s.label}
-                sub={s.target != null ? `Mål ${s.target}` : undefined}
-                trailing={
-                  <span style={{ fontFamily: T.mono, fontSize: 13, fontWeight: 700, color: T.fg, fontVariantNumeric: "tabular-nums" }}>
-                    × {s.antall}
-                  </span>
-                }
-              />
-            ))
-          ) : (
-            <div>
-              <p style={{ fontFamily: T.ui, fontSize: 13, color: T.fg, lineHeight: 1.6, margin: 0 }}>
-                {test.scoringRule}
-              </p>
-              <a href={NGF_URL} target="_blank" rel="noreferrer" style={{ textDecoration: "none", display: "inline-block", marginTop: 10 }}>
-                <MikroMeta icon="external-link">Protokoller hos NGF</MikroMeta>
-              </a>
-            </div>
-          )}
         </Kort>
 
-        {/* Slik scores den */}
-        <Kort tint eyebrow="Slik scores den">
-          <p style={{ fontFamily: T.ui, fontSize: 13, color: T.fg, lineHeight: 1.6, margin: 0 }}>
-            {test.scoringRule}
-          </p>
-          {enhet && (
-            <p style={{ fontFamily: T.mono, fontSize: 11, color: T.mut, margin: "8px 0 0" }}>
-              Enhet: {enhet}
-            </p>
-          )}
-        </Kort>
+        {protokollKort}
 
-        {/* Din historikk */}
-        <Kort
-          eyebrow={
-            <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
-              Din historikk <HjelpTips k="testbatteri" size={11} />
-            </span>
-          }
-        >
-          {resultater.length === 0 ? (
-            <TomTilstand
-              icon="list"
-              title="Ingen resultater ennå"
-              sub="Ta testen for å starte historikken."
-            />
-          ) : (
-            resultater.map((r, i) => {
-              const forrige = resultater[i + 1] ?? null;
-              let trendTekst = "Første";
-              let trendFarge: string = T.mut;
-              if (forrige) {
-                const diff = r.score - forrige.score;
-                if (diff === 0) {
-                  trendTekst = "± 0";
-                } else {
-                  const pil = diff > 0 ? "↑" : "↓";
-                  const bedre = lavere == null ? null : lavere ? diff < 0 : diff > 0;
-                  trendTekst = `${pil} ${diff > 0 ? "+" : "−"}${fmtNum(Math.abs(diff))}`;
-                  trendFarge = bedre == null ? T.mut : bedre ? T.up : T.down;
-                }
-              }
-              return (
-                <Rad
-                  key={r.id}
-                  last={i === resultater.length - 1}
-                  title={
-                    <span style={{ fontFamily: T.mono, fontVariantNumeric: "tabular-nums" }}>
+        {/* Historikk — stolpediagram med siste måling uthevet + trend-tag */}
+        {resultater.length > 0 && (
+          <Kort eyebrow={`din historikk · ${resultater.length} ${resultater.length === 1 ? "måling" : "målinger"}`}>
+            <div style={{ display: "flex", alignItems: "flex-end", gap: 8, height: 72, margin: "24px 0 12px" }}>
+              {hist.map((r, i) => {
+                const sisteStolpe = i === hist.length - 1;
+                return (
+                  <div
+                    key={r.id}
+                    style={{
+                      flex: 1,
+                      background: sisteStolpe ? "var(--v2-mut)" : T.panel2,
+                      borderRadius: "8px 8px 0 0",
+                      position: "relative",
+                      minHeight: 8,
+                      height: maks > 0 ? `${Math.round((r.score / maks) * 100)}%` : "8px",
+                    }}
+                  >
+                    <span
+                      style={{
+                        position: "absolute",
+                        top: -18,
+                        left: "50%",
+                        transform: "translateX(-50%)",
+                        fontFamily: T.mono,
+                        fontSize: 9.5,
+                        color: T.mut,
+                        whiteSpace: "nowrap",
+                      }}
+                    >
                       {fmtNum(r.score)}
-                      {enhet && <span style={{ fontSize: 11, fontWeight: 400, color: T.mut }}> {enhet}</span>}
                     </span>
-                  }
-                  sub={fmtDato(r.takenAt)}
-                  trailing={
-                    <span style={{ fontFamily: T.mono, fontSize: 12, fontWeight: 600, color: trendFarge }}>
-                      {trendTekst}
-                    </span>
-                  }
-                />
-              );
-            })
-          )}
-        </Kort>
+                  </div>
+                );
+              })}
+            </div>
+            <div style={{ display: "flex", gap: 8 }}>
+              {hist.map((r) => (
+                <span
+                  key={r.id}
+                  style={{ flex: 1, textAlign: "center", fontFamily: T.mono, fontSize: 9.5, color: T.mut }}
+                >
+                  {fmtDatoKort(r.takenAt)}
+                </span>
+              ))}
+            </div>
+            {trend && (
+              <div style={{ marginTop: 12 }}>
+                <span
+                  style={{
+                    display: "inline-flex",
+                    alignItems: "center",
+                    padding: "3px 8px",
+                    borderRadius: T.rPill,
+                    fontFamily: T.mono,
+                    fontSize: 10,
+                    letterSpacing: "0.04em",
+                    textTransform: "uppercase",
+                    background: T.panel2,
+                    color: toneFarge[trend.tone],
+                    border: `1px solid ${T.border}`,
+                  }}
+                >
+                  {trend.text}
+                </span>
+              </div>
+            )}
+            <details data-od-id="testd-why" style={{ marginTop: 12, border: `1px solid ${T.border}`, borderRadius: T.rCard }}>
+              <summary
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  minHeight: 44,
+                  padding: "0 16px",
+                  cursor: "pointer",
+                  listStyle: "none",
+                  fontFamily: T.ui,
+                  fontSize: 12.5,
+                  fontWeight: 500,
+                  color: T.mut,
+                }}
+              >
+                Hvorfor dette tallet
+              </summary>
+              <ul
+                style={{
+                  margin: 0,
+                  padding: "12px 16px 16px 24px",
+                  fontFamily: T.bodyFont,
+                  fontSize: 13,
+                  color: T.mut,
+                  borderTop: `1px solid ${T.border}`,
+                }}
+              >
+                <li style={{ marginBottom: 8 }}>
+                  Kilde: dine {resultater.length === 1 ? "logg av" : `${resultater.length} loggede målinger av`}{" "}
+                  {test.name}, sist {fmtDatoLang((siste ?? resultater[0]).takenAt)}.
+                </li>
+                {siste && nestSiste ? (
+                  <li style={{ marginBottom: 8 }}>
+                    Beregning: trenden er siste måling mot nest siste — {fmtNum(siste.score)} mot{" "}
+                    {fmtNum(nestSiste.score)}.
+                  </li>
+                ) : (
+                  <li style={{ marginBottom: 8 }}>
+                    Beregning: første måling er referansen — trend kommer fra andre måling.
+                  </li>
+                )}
+                <li style={{ marginBottom: 8 }}>
+                  Forbehold: målingene er gyldige når protokollen følges likt hver gang.
+                </li>
+              </ul>
+            </details>
+          </Kort>
+        )}
 
-        {/* Referanse — formel ikke låst, aldri fasit-tall */}
-        <Kort pad="14px 18px">
-          <MikroMeta icon="info">
-            {test.pyramidArea === "FYS"
-              ? "Referanseverdier kommer — FYS-resultatformelen er ikke låst ennå."
-              : "Referanseverdier: kommer (formel ikke låst)."}
-          </MikroMeta>
-        </Kort>
-
-        {/* Handlinger */}
-        <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 10 }}>
-          <Link href={`/portal/tren/tester/${test.id}/gjennomfor`} style={{ textDecoration: "none" }}>
-            <span style={{
-              display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8,
-              minHeight: 44, padding: "0 16px", borderRadius: 10,
-              background: T.handling, color: T.onHandling, fontFamily: T.ui, fontSize: 13, fontWeight: 600,
-            }}>Start test</span>
-          </Link>
-          <a href={NGF_URL} target="_blank" rel="noreferrer" style={{ textDecoration: "none" }}>
-            <CTAPill ghost icon="external-link">
-              Protokoller hos NGF
-            </CTAPill>
-          </a>
-        </div>
+        {/* Kontrakt §3: skjermens ene aksenthandling — start målingen */}
+        <Link
+          href={`/portal/tren/tester/${test.id}/gjennomfor`}
+          data-od-id="testd-start"
+          data-paper-en-ting="true"
+          className="v2-press v2-focus"
+          style={{
+            textDecoration: "none",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            minHeight: 56,
+            width: "100%",
+            borderRadius: T.rCard,
+            background: T.handling,
+            color: T.onHandling,
+            fontFamily: T.ui,
+            fontSize: 14,
+            fontWeight: 600,
+          }}
+        >
+          {resultater.length === 0 ? "Ta første måling" : "Ta måling"}
+        </Link>
       </div>
     </V2Shell>
   );
