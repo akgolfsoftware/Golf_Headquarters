@@ -121,16 +121,21 @@ function SpillerRadEnkel({
       sub={`Hcp ${s.hcp} · ${s.gruppe} · ${s.statusLabel}`}
       meta={
         <span style={{ display: "inline-flex", alignItems: "center", gap: 8 }}>
-          <span
-            style={{
-              fontFamily: T.mono,
-              fontSize: 15,
-              fontWeight: 700,
-              color: T.fg,
-              fontVariantNumeric: "tabular-nums",
-            }}
-          >
-            {s.sg}
+          {/* Fasitens .kol: etikett «SG total» + verdi der FORTEGNET bestemmer
+              fargen — alltid (agencyos-spillere.html §SG). */}
+          <span style={{ display: "inline-flex", flexDirection: "column", gap: 2, alignItems: "flex-end" }}>
+            <Caps size={8}>SG total</Caps>
+            <span
+              style={{
+                fontFamily: T.mono,
+                fontSize: 15,
+                fontWeight: 700,
+                color: s.sg.startsWith("+") ? T.up : s.sg.startsWith("−") || s.sg.startsWith("-") ? T.down : T.fg,
+                fontVariantNumeric: "tabular-nums",
+              }}
+            >
+              {s.sg}
+            </span>
           </span>
           {s.delta && <DeltaChip v={s.delta} dir={s.dir} />}
           <SevChip s={s.sev} />
@@ -229,6 +234,9 @@ export function StallV2({ data }: { data: StallV2Data }) {
   const [grp, setGrp] = useState<string[]>([]);
   const [sta, setSta] = useState<string[]>([]);
   const [bet, setBet] = useState<string[]>([]);
+  // Fasit agencyos-spillere-mobil.html: «Søk er synlig, ikke gjemt» — med
+  // tømmeknapp, fordi tomt søk ellers krever like mange trykk som søket selv.
+  const [sok, setSok] = useState("");
   // Audit-funn 6: når ALLE spillere venter på innlogging må seksjonen starte
   // åpen — ellers er coachens hovedliste en tom, svart kolonne.
   const alleVenter = data.spillere.length > 0 && data.spillere.every((p) => p.venter);
@@ -243,7 +251,13 @@ export function StallV2({ data }: { data: StallV2Data }) {
   const toggle = (arr: string[], set: (v: string[]) => void) => (x: string) =>
     set(arr.indexOf(x) !== -1 ? arr.filter((y) => y !== x) : arr.concat(x));
 
+  const sokTrim = sok.trim().toLowerCase();
   const filtered = data.spillere.filter((p) => {
+    const sokOk =
+      sokTrim === "" ||
+      p.navn.toLowerCase().includes(sokTrim) ||
+      p.gruppe.toLowerCase().includes(sokTrim);
+    if (!sokOk) return false;
     const gOk = grp.length === 0 || grp.indexOf(p.gruppe) !== -1;
     const sOk = sta.length === 0 || sta.indexOf(p.trenger ? "Trenger deg" : "I rute") !== -1;
     const bOk =
@@ -294,6 +308,61 @@ export function StallV2({ data }: { data: StallV2Data }) {
 
   const filtre = (
     <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+      {/* Søk — fasitens .sok: synlig felt med tømmeknapp. */}
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          gap: 8,
+          minHeight: 44,
+          padding: "0 12px",
+          borderRadius: 12,
+          background: T.panel,
+          border: `1px solid ${T.border}`,
+        }}
+      >
+        <Icon name="search" size={15} style={{ color: T.mut, flex: "none" }} />
+        <input
+          type="search"
+          value={sok}
+          onChange={(e) => setSok(e.target.value)}
+          placeholder="Søk på navn eller gruppe"
+          autoComplete="off"
+          aria-label="Søk etter spiller"
+          data-od-id="sp-sok"
+          style={{
+            flex: 1,
+            minWidth: 0,
+            appearance: "none",
+            background: "transparent",
+            border: "none",
+            outline: "none",
+            fontFamily: T.ui,
+            fontSize: 13,
+            color: T.fg,
+          }}
+        />
+        {sok !== "" && (
+          <button
+            type="button"
+            onClick={() => setSok("")}
+            aria-label="Tøm søket"
+            className="v2-press v2-focus"
+            data-od-id="sp-tom-sok"
+            style={{
+              appearance: "none",
+              background: "transparent",
+              border: "none",
+              padding: 4,
+              cursor: "pointer",
+              display: "inline-flex",
+              color: T.mut,
+            }}
+          >
+            <Icon name="x" size={14} />
+          </button>
+        )}
+      </div>
       {data.grupper.length > 0 && filterRad("Gruppe", data.grupper, grp, toggle(grp, setGrp))}
       {filterRad("Status", STATUS_FILTRE, sta, toggle(sta, setSta))}
       {filterRad("Betaling", BETALING_FILTRE, bet, toggle(bet, setBet))}
