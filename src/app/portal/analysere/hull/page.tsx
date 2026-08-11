@@ -145,6 +145,7 @@ export default async function HullAnalysePage() {
     // Varmekart over banen: snitt avvik fra par per hull, aggregert over
     // ALLE registrerte runder (domenelogikk i src/lib/domain/hole-heatmap.ts).
     hullVarme: aggregerHullVarme(alleHullScores),
+    spillerNavn: user.name ?? null,
   };
 
   return (
