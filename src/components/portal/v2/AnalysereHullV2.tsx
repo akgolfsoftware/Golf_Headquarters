@@ -16,12 +16,9 @@ import {
   PillTabs,
   Rad,
   TomTilstand,
-  SgKategorier,
   MiniSpark,
-  Scorekort,
   VarmeKart,
   HjelpTips,
-  Icon,
   hoverKapabel,
 } from "@/components/v2";
 import { MIN_RUNDER, type HullVarmeCelle, type HullVarmeResultat } from "@/lib/domain/hole-heatmap";
@@ -66,12 +63,19 @@ export interface AnalysereHullV2Data {
   runde: HullRunde | null;
   /** Varmekart-aggregat (snitt avvik fra par per hull) — se src/lib/domain/hole-heatmap.ts. */
   hullVarme: HullVarmeResultat;
+  /** Spillernavn til underteksten i toppen (fasit: «Øyvind Rohjan · kat. D»). */
+  spillerNavn?: string | null;
 }
 
 /* ── Hjelpere ──────────────────────────────────────────────────────────── */
 
 function fmtSignedNb(n: number): string {
   return n === 0 ? "E" : (n > 0 ? "+" : "−") + String(Math.abs(n));
+}
+
+/** SG med 2 desimaler (fasitens sgTekst: «+0,81»). fmtSg fra tokens har 1. */
+function fmtSg2(v: number): string {
+  return (v > 0 ? "+" : v < 0 ? "−" : "") + Math.abs(v).toFixed(2).replace(".", ",");
 }
 
 /** Rutenett-form for varmekartet: ≤ 9 hull → én rad; ellers UT (1–9) / INN
@@ -106,13 +110,6 @@ function byggVarmeGrid(celler: HullVarmeCelle[]): {
    åpner ved museover, touch åpner/lukker ved trykk, Escape/fokus-tap lukker.
    Ny visning av SAMME data som Rad-listen under viser — ingen ny query. ── */
 
-const SONE_IKON: Record<HullSone["id"], string> = {
-  tee: "target",
-  app: "crosshair",
-  arg: "footprints",
-  putt: "flag",
-};
-
 function SoneDiagramBlokk({
   sone,
   harData,
@@ -132,7 +129,7 @@ function SoneDiagramBlokk({
   // — aldri fabrikker et tall når datagrunnlaget mangler.
   const visSg = harData && sone.sg != null;
   const farge = visSg ? (sone.sg! >= 0 ? T.up : T.down) : T.mut;
-  const sgTekst = visSg ? `${fmtSg(sone.sg!)} slag` : "—";
+  const sgTekst = visSg ? `${fmtSg2(sone.sg!)} slag` : "—";
   const kortTekst = `${sone.label}: ${sgTekst}`;
 
   return (
@@ -166,12 +163,12 @@ function SoneDiagramBlokk({
           border: `1px solid ${T.border}`,
         }}
       >
-        <Icon name={SONE_IKON[sone.id]} size={16} style={{ color: farge }} />
+        {/* Fasit-soneblok: kode + verdi + spor — ingen ikonrad. */}
         <span style={{ fontFamily: T.mono, fontSize: 9, fontWeight: 700, letterSpacing: "0.06em", textTransform: "uppercase", color: T.mut }}>
           {sone.kode}
         </span>
         <span style={{ fontFamily: T.mono, fontSize: 12.5, fontWeight: 700, color: farge, fontVariantNumeric: "tabular-nums" }}>
-          {visSg ? fmtSg(sone.sg!) : "—"}
+          {visSg ? fmtSg2(sone.sg!) : "—"}
         </span>
         <span style={{ width: "70%", height: 4, borderRadius: 9999, background: T.track, overflow: "hidden" }}>
           <span
@@ -225,7 +222,7 @@ function SoneDiagram({ soner, harData }: { soner: HullSone[]; harData: boolean }
     <Kort
       eyebrow={
         <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
-          Sone-kart <HjelpTips k="soneDiagram" size={11} />
+          Sone-kart · tee → innspill → nærspill → putt <HjelpTips k="soneDiagram" size={11} />
         </span>
       }
     >
@@ -259,11 +256,57 @@ function SoneFane({ soner, sgRegistreringer }: { soner: HullSone[]; sgRegistreri
       <SoneDiagram soner={soner} harData={harData} />
 
       {harData && kategorier.length > 0 ? (
-        <SgKategorier
-          kategorier={kategorier}
-          baseline="Broadie scratch"
-          hjelp="sgOmrade"
-        />
+        /* Fasit: «sg per sone · mot Broadie scratch» — sgrad-rekker med
+           nullinje i midten og «… slag»-suffiks (spor2-mønsteret). */
+        <Kort
+          eyebrow={
+            <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
+              SG per sone <HjelpTips k="sgOmrade" size={11} />
+            </span>
+          }
+          action={<span style={{ fontFamily: T.mono, fontSize: 9, color: T.mut }}>mot Broadie scratch</span>}
+        >
+          {(() => {
+            const maks = Math.max(0.5, ...kategorier.map((k) => Math.abs(k.sg)));
+            const navn = new Map(soner.map((s) => [s.kode, s.label]));
+            return kategorier.map((k) => {
+              const gain = k.sg >= 0;
+              return (
+                <div
+                  key={k.akse}
+                  style={{ display: "grid", gridTemplateColumns: "82px minmax(0,1fr) 78px", gap: 8, alignItems: "center", minHeight: 34 }}
+                >
+                  <span style={{ fontFamily: T.ui, fontSize: 12.5, color: T.fg, minWidth: 0 }}>{navn.get(k.akse) ?? k.akse}</span>
+                  <span style={{ position: "relative", height: 10, borderRadius: 9999, background: T.track, minWidth: 0 }}>
+                    <span aria-hidden style={{ position: "absolute", left: "50%", top: -3, bottom: -3, width: 1, background: T.borderS }} />
+                    <span
+                      style={{
+                        position: "absolute",
+                        top: 0,
+                        bottom: 0,
+                        borderRadius: 9999,
+                        width: `${(Math.abs(k.sg) / maks) * 48}%`,
+                        background: gain ? T.up : T.down,
+                        ...(gain ? { left: "50%" } : { right: "50%" }),
+                      }}
+                    />
+                  </span>
+                  <span
+                    style={{
+                      fontFamily: T.mono,
+                      fontSize: 13,
+                      textAlign: "right",
+                      fontVariantNumeric: "tabular-nums",
+                      color: gain ? T.up : T.down,
+                    }}
+                  >
+                    {fmtSg2(k.sg)} slag
+                  </span>
+                </div>
+              );
+            });
+          })()}
+        </Kort>
       ) : (
         <Kort eyebrow="SG per sone">
           <TomTilstand
@@ -278,7 +321,7 @@ function SoneFane({ soner, sgRegistreringer }: { soner: HullSone[]; sgRegistreri
         eyebrow="Per sone"
         action={
           <span style={{ fontFamily: T.mono, fontSize: 9, color: T.mut }}>
-            trening siste 30 dager · {sgRegistreringer} SG-registreringer
+            {sgRegistreringer} SG-registreringer
           </span>
         }
       >
@@ -302,7 +345,7 @@ function SoneFane({ soner, sgRegistreringer }: { soner: HullSone[]; sgRegistreri
                   color: s.sg == null ? T.mut : s.sg >= 0 ? T.up : T.down,
                 }}
               >
-                {s.sg == null ? "—" : `${fmtSg(s.sg)} slag`}
+                {s.sg == null ? "—" : `${fmtSg2(s.sg)} slag`}
               </span>
             }
           />
@@ -332,19 +375,30 @@ function VarmekartKort({ hullVarme }: { hullVarme: HullVarmeResultat }) {
       }
     >
       {hullVarme.harNokData ? (
-        <div style={{ overflowX: "auto" }}>
-          <VarmeKart
-            rows={grid.rows}
-            cols={grid.cols}
-            values={grid.values}
-            color={T.down}
-            fmt={(_v, ri, ci) => {
-              const c = grid.raw[ri]?.[ci];
-              if (!c) return "Ingen data på dette hullet";
-              return `${fmtSg(c.snittDiff)} mot par · ${c.rundeAntall} ${c.rundeAntall === 1 ? "runde" : "runder"}`;
-            }}
-          />
-        </div>
+        <>
+          <div style={{ overflowX: "auto" }}>
+            <VarmeKart
+              rows={grid.rows}
+              cols={grid.cols}
+              values={grid.values}
+              color={T.down}
+              fmt={(_v, ri, ci) => {
+                const c = grid.raw[ri]?.[ci];
+                if (!c) return "Ingen data på dette hullet";
+                return `${fmtSg(c.snittDiff)} mot par · ${c.rundeAntall} ${c.rundeAntall === 1 ? "runde" : "runder"}`;
+              }}
+            />
+          </div>
+          {/* Fasit-legende: på/under par → konsekvent bogey+ */}
+          <div style={{ display: "flex", alignItems: "center", gap: 6, marginTop: 12, fontFamily: T.mono, fontSize: 9.5, color: T.mut }}>
+            <span>på/under par</span>
+            <span
+              aria-hidden
+              style={{ width: 64, height: 8, borderRadius: 9999, background: `linear-gradient(to right, ${T.panel2}, ${T.down})` }}
+            />
+            <span>konsekvent bogey+</span>
+          </div>
+        </>
       ) : (
         <TomTilstand
           icon="flag"
@@ -358,14 +412,18 @@ function VarmekartKort({ hullVarme }: { hullVarme: HullVarmeResultat }) {
 
 function HullFane({ runde, hullVarme }: { runde: HullRunde | null; hullVarme: HullVarmeResultat }) {
   if (!runde) {
+    // Fasit tom-tilstand: begge kortene vises (hull for hull + varmekart).
     return (
-      <Kort eyebrow="Hull for hull">
-        <TomTilstand
-          icon="flag"
-          title="Ingen runder med hull-score ennå"
-          sub="Logg en runde hull for hull, så ser du fordelingen her."
-        />
-      </Kort>
+      <>
+        <Kort eyebrow="Hull for hull">
+          <TomTilstand
+            icon="flag"
+            title="Ingen runder med hull-score ennå"
+            sub="Logg en runde hull for hull, så ser du fordelingen her."
+          />
+        </Kort>
+        <VarmekartKort hullVarme={hullVarme} />
+      </>
     );
   }
 
@@ -389,17 +447,83 @@ function HullFane({ runde, hullVarme }: { runde: HullRunde | null; hullVarme: Hu
         <KpiFlis label="Snitt per hull" value={snittTekst} instant />
       </div>
 
-      <Scorekort
-        hull={runde.holes.map((h) => ({
-          nr: h.holeNumber,
-          par: h.par,
-          score: h.strokes,
-          sg: null,
-        }))}
-        sammendrag={{ score: slagSum, par: parSum, sg: null }}
-        baseline="Broadie scratch"
-        hjelp="sgTotal"
-      />
+      {/* Fasit: scorekort som tabell (Hull/Par/Score/Mot par + Sum) i rullbar
+          container med klebrig hode — ikke SG-grid (runden har ikke SG per hull). */}
+      <Kort
+        eyebrow={
+          <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
+            Scorekort · {runde.holeCount} hull <HjelpTips k="tilPar" size={11} />
+          </span>
+        }
+      >
+        <div style={{ maxHeight: 280, overflow: "auto", borderTop: `1px solid ${T.border}`, marginTop: 8 }}>
+          <table style={{ width: "100%", borderCollapse: "collapse" }}>
+            <thead>
+              <tr>
+                {["Hull", "Par", "Score", "Mot par"].map((h, i) => (
+                  <th
+                    key={h}
+                    style={{
+                      position: "sticky",
+                      top: 0,
+                      background: T.panel,
+                      textAlign: i === 0 ? "left" : "right",
+                      fontFamily: T.mono,
+                      fontSize: 9.5,
+                      letterSpacing: "0.08em",
+                      textTransform: "uppercase",
+                      color: T.mut,
+                      fontWeight: 500,
+                      padding: "8px 4px",
+                      borderBottom: `1px solid ${T.border}`,
+                    }}
+                  >
+                    {h}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {runde.holes.map((h, i) => {
+                const diff = h.strokes - h.par;
+                const td = (hoyre: boolean, farge?: string): React.CSSProperties => ({
+                  padding: "8px 4px",
+                  borderBottom: i === runde.holes.length - 1 ? "none" : `1px solid ${T.border}`,
+                  fontSize: 12.5,
+                  ...(hoyre ? { textAlign: "right" as const, fontFamily: T.mono, fontVariantNumeric: "tabular-nums" as const } : {}),
+                  ...(farge ? { color: farge } : {}),
+                });
+                return (
+                  <tr key={h.holeNumber}>
+                    <td style={td(false)}>{h.holeNumber}</td>
+                    <td style={td(true)}>{h.par}</td>
+                    <td style={td(true)}>{h.strokes}</td>
+                    <td style={td(true, diff > 0 ? T.down : diff < 0 ? T.up : undefined)}>{fmtSignedNb(diff)}</td>
+                  </tr>
+                );
+              })}
+            </tbody>
+            <tfoot>
+              <tr>
+                <td style={{ padding: "8px 4px 0", fontFamily: T.mono, fontSize: 11, color: T.mut }}>Sum</td>
+                <td style={{ padding: "8px 4px 0", textAlign: "right", fontFamily: T.mono, fontSize: 11, color: T.mut }}>{parSum}</td>
+                <td style={{ padding: "8px 4px 0", textAlign: "right", fontFamily: T.mono, fontSize: 11, color: T.mut }}>{slagSum}</td>
+                <td
+                  style={{
+                    padding: "8px 4px 0",
+                    textAlign: "right",
+                    fontFamily: T.mono,
+                    fontSize: 11,
+                    color: runde.parDiff > 0 ? T.down : runde.parDiff < 0 ? T.up : T.mut,
+                  }}
+                >
+                  {fmtSignedNb(runde.parDiff)}
+                </td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+      </Kort>
 
       <VarmekartKort hullVarme={hullVarme} />
     </>
@@ -418,10 +542,27 @@ export function AnalysereHullV2({ data }: { data: AnalysereHullV2Data }) {
       {/* Hode */}
       <div>
         <div data-paper-pattern-topp>
-          <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>Hull</h1>
-          <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>Analyse</span>
+          <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>Hull-analyse</h1>
+          <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>
+            {data.spillerNavn || "Analyse"}
+          </span>
         </div>
       </div>
+
+      {/* Fasit-merknad — vises på begge faner, øverst i kroppen. */}
+      <p
+        style={{
+          margin: 0,
+          fontFamily: T.bodyFont,
+          fontSize: 12,
+          color: T.mut,
+          padding: "8px 12px",
+          background: T.panel2,
+          borderRadius: 8,
+        }}
+      >
+        Tallene er målinger, ikke karakterer. Ingen terskler er vurdert — regler og låser er midlertidig ute.
+      </p>
 
       <PillTabs
         tabs={[
