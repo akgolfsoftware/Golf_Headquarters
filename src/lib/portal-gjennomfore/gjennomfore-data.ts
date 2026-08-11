@@ -18,6 +18,8 @@ import {
   v2SessionStartHref,
   type V2OktUiStatus,
 } from "@/lib/portal/session-hrefs";
+import { lFaseTilSteg, pressTilNivaa } from "@/lib/ak-formel-visning";
+import type { FangstFormel } from "@/lib/domain/fangst-chips";
 
 type PyramidArea = "FYS" | "TEK" | "SLAG" | "SPILL" | "TURN";
 type OktStatus = V2OktUiStatus;
@@ -61,6 +63,12 @@ export type GjennomforeOkt = {
   pyramidArea: PyramidArea;
   /** C5b: hvilken modell økten bor i — styrer markerOktStatus-actionen. */
   kilde: "v2" | "plan";
+  /**
+   * AK-formel-utsnitt for FangstSheet-chip-avledning (Paper fangstsheet.html §6).
+   * Fra første drill med område (v2) eller øktas egne felter (plan).
+   * null når økta ikke bærer formel — FangstSheet faller da til generiske chips.
+   */
+  formel: FangstFormel | null;
 };
 
 export type GjennomforeData = {
@@ -113,7 +121,14 @@ export async function getGjennomforeData(userId: string): Promise<GjennomforeDat
           miljo: true,
           completedSummary: true,
           drills: {
-            select: { id: true, name: true },
+            select: {
+              id: true,
+              name: true,
+              pyramide: true,
+              omraade: true,
+              lFase: true,
+              prPress: true,
+            },
             orderBy: { sortOrder: "asc" },
             take: 4,
           },
@@ -138,6 +153,9 @@ export async function getGjennomforeData(userId: string): Promise<GjennomforeDat
           durationMin: true,
           status: true,
           pyramidArea: true,
+          skillArea: true,
+          lFase: true,
+          pressureLevel: true,
           environment: true,
           log: { select: { id: true } },
           drills: {
@@ -178,6 +196,17 @@ export async function getGjennomforeData(userId: string): Promise<GjennomforeDat
     const drillNavn = o.drills.map((d) => d.name);
     const trengerLogg = status === "done" && o.completedSummary === null;
 
+    // Formel-utsnitt fra første drill som bærer område (TrainingDrillV2).
+    const fDrill = o.drills.find((d) => d.omraade != null) ?? null;
+    const formel: FangstFormel | null = fDrill
+      ? {
+          pyramide: fDrill.pyramide,
+          omraade: fDrill.omraade,
+          motorikk: lFaseTilSteg(fDrill.lFase),
+          press: pressTilNivaa(fDrill.prPress),
+        }
+      : null;
+
     // meta for rad-visning (kompakt)
     const minTil = minutterTil(o.startTime);
     const tidLabel =
@@ -207,6 +236,7 @@ export async function getGjennomforeData(userId: string): Promise<GjennomforeDat
       varighet,
       pyramidArea: pyramid,
       kilde: "v2",
+      formel,
     };
   };
 
@@ -257,6 +287,15 @@ export async function getGjennomforeData(userId: string): Promise<GjennomforeDat
       varighet,
       pyramidArea: o.pyramidArea as PyramidArea,
       kilde: "plan",
+      // Plan-økter bærer formelen på økt-nivå (TrainingPlanSession).
+      formel: o.skillArea
+        ? {
+            pyramide: o.pyramidArea,
+            omraade: o.skillArea,
+            motorikk: lFaseTilSteg(o.lFase),
+            press: pressTilNivaa(o.pressureLevel),
+          }
+        : null,
     };
   };
 

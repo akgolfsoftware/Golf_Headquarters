@@ -43,7 +43,7 @@ import { usePortalChat } from "./use-portal-chat";
 import { PortalStegListe } from "./PortalStegListe";
 import { PortalHvorforDette } from "./PortalHvorforDette";
 import { ArtefaktPanel, useErMobil } from "./ArtefaktPanel";
-import { FangstModal } from "./FangstModal";
+import { FangstSheet } from "./FangstSheet";
 import type { PortalChatMessage } from "./types";
 
 const FORSLAG = ["Hva skal jeg trene i dag?", "Hva var resultatet sist?", "Hva står på ukeplanen?"];
@@ -434,6 +434,8 @@ export function PortalChatHjem({
   const kategori = data.kpiStats.avgScore != null ? kategoriFraSnittscore(data.kpiStats.avgScore).kategori : null;
   const sgTekst = formatSg(data.kpiStats.sgTotal);
   const ukeHarOkter = data.week.some((d) => d.sessions.length > 0);
+  /** FangstSheet-kontekst: aktiv/neste økt, ellers siste fullførte i dag. */
+  const fangstOkt = gjennomfore.nesteOkt ?? gjennomfore.fullfortIdag.at(-1) ?? null;
   const heltTom = gjennomfore.nesteOkt === null && gjennomfore.fullfortIdag.length === 0;
   const visEnTingNa = gjennomfore.nesteOkt !== null && gjennomfore.nesteOkt.status === "upcoming";
 
@@ -767,11 +769,13 @@ export function PortalChatHjem({
       </ArtefaktPanel>
 
       {fangstApen && (
-        <FangstModal
+        <FangstSheet
           onClose={() => setFangstApen(false)}
-          onLeggITraden={(tekst) => {
+          onLagre={(tekst) => {
             void send(tekst);
           }}
+          formel={fangstOkt?.formel ?? null}
+          oktLabel={fangstOkt ? `${fangstOkt.tittel} · ${fangstOkt.meta}` : null}
         />
       )}
     </div>
