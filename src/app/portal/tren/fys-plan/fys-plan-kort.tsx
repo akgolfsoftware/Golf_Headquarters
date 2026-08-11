@@ -1,15 +1,11 @@
 "use client";
 
-/* FYS-plan-kort — v2 klientkomponent (ProgresjonsBar er klient-side).
+/* FYS-plan-kort — Paper-port W1 (fase2). Fasit .plan-kortet:
+   navn, mono-meta («uker · økter · uke X av Y»), tynn fremdriftsstolpe.
    Fremdrift = uke vi er i / totale uker, beregnet på serveren. */
 
 import Link from "next/link";
-import {
-  T,
-  Kort,
-  StatusPill,
-  ProgresjonsBar,
-} from "@/components/v2";
+import { T } from "@/lib/v2/tokens";
 
 export type FysPlanKortData = {
   id: string;
@@ -21,37 +17,49 @@ export type FysPlanKortData = {
   currentWeek: number;
 };
 
-const STATUS_CFG: Record<FysPlanKortData["status"], { label: string; tone: "lime" | "info" | "up" }> = {
-  ACTIVE: { label: "Aktiv", tone: "lime" },
-  DRAFT: { label: "Utkast", tone: "info" },
-  ARCHIVED: { label: "Arkivert", tone: "up" },
-};
-
 export function FysPlanKort({ plan }: { plan: FysPlanKortData }) {
-  const s = STATUS_CFG[plan.status];
   return (
-    <Link href={`/portal/tren/fys-plan/${plan.id}`} style={{ textDecoration: "none", display: "block" }}>
-      <Kort hover pad="16px 18px">
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10 }}>
-          <span style={{ fontFamily: T.disp, fontSize: 15, fontWeight: 700, color: T.fg }}>
-            {plan.navn}
-          </span>
-          <StatusPill tone={s.tone}>{s.label}</StatusPill>
-        </div>
-        <p style={{ fontFamily: T.mono, fontSize: 10.5, color: T.mut, margin: "6px 0 12px" }}>
-          {plan.ukerCount} uker · {plan.okterCount} økter
-        </p>
-        <ProgresjonsBar
-          variant="bar"
-          value={plan.pct}
-          max={100}
-          label={
-            plan.ukerCount > 0
-              ? `Uke ${plan.currentWeek} av ${plan.ukerCount}`
-              : "Ingen uker planlagt"
-          }
+    <Link
+      href={`/portal/tren/fys-plan/${plan.id}`}
+      className="v2-focus"
+      style={{
+        display: "block",
+        background: T.panel,
+        border: `1px solid ${T.border}`,
+        borderRadius: T.rCard,
+        padding: 16,
+        textDecoration: "none",
+        color: "inherit",
+      }}
+    >
+      <span style={{ display: "block", fontFamily: T.disp, fontSize: 14.5, fontWeight: 600, color: T.fg }}>
+        {plan.navn}
+        {plan.status === "DRAFT" ? " · utkast" : ""}
+      </span>
+      <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>
+        {plan.ukerCount} uker · {plan.okterCount} økter
+        {plan.ukerCount > 0 ? ` · uke ${plan.currentWeek} av ${plan.ukerCount}` : ""}
+      </span>
+      <span
+        style={{
+          display: "block",
+          height: 6,
+          background: T.track,
+          borderRadius: 9999,
+          overflow: "hidden",
+          marginTop: 12,
+        }}
+      >
+        <i
+          style={{
+            display: "block",
+            height: "100%",
+            width: `${plan.pct}%`,
+            background: T.mut,
+            borderRadius: 9999,
+          }}
         />
-      </Kort>
+      </span>
     </Link>
   );
 }

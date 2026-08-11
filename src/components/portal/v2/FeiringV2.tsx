@@ -1,20 +1,17 @@
 "use client";
 
 /**
- * PlayerHQ · Plan-feiring — v2 Presis + B-pakke (status + én primær «ny plan»).
- * Ekte gjennomføring/SG-delta. T.* only.
+ * PlayerHQ · Plan-feiring — Paper-port W1 (fase2).
+ * Fasit: designsystem/paper/fase2/playerhq/playerhq-feiring.html.
+ *
+ * Ett formål: anerkjenne arbeidet med EKTE tall og peke videre. Ingen
+ * konfetti-løgn — tallene bærer feiringen. Fasitens tilstander: fullført
+ * (hero + KPI + «perioden i tall» + CTA-rad) og ikke-ferdig (ærlig
+ * fremdrift i stedet for fest). Alle tall kommer fra planens egne økter.
  */
 
 import Link from "next/link";
-import {
-  T,
-  Caps,
-  Tittel,
-  Kort,
-  CTAPill,
-  RingMaaler,
-  HjelpTips,
-} from "@/components/v2";
+import { T, Caps, Kort, HvorforDette } from "@/components/v2";
 import { Icon } from "@/components/v2/icon";
 
 export type FeiringV2Data = {
@@ -22,208 +19,229 @@ export type FeiringV2Data = {
   prosent: number;
   ferdige: number;
   total: number;
+  /** Sum treningstimer fra fullførte økter — null når varighet mangler. */
+  timer: number | null;
+  /** Antall uker i planperioden — null uten sluttdato. */
+  uker: number | null;
+  /** Pyramideområdet med størst planlagt volum — null uten økter. */
+  pyramideTopp: string | null;
+  /** Navn på coachen som publiserte planen — null når ukjent. */
+  publisertAv: string | null;
+  /** Forrige plans etterlevelse i prosent — null uten tidligere planer. */
+  forrigeEtterlevelse: number | null;
   erRekord: boolean;
-  /** SG-deltaer (snitt 5 runder før vs. etter planen) — null = ikke beregnet. */
-  eff: {
-    total: number | null;
-    ott: number | null;
-    app: number | null;
-    arg: number | null;
-    putt: number | null;
-  } | null;
-  personligRekord: number | null;
-  antallPlaner: number;
+  /** SG-Total-delta fra PlanEffectiveness — null = ikke beregnet. */
+  sgTotalDelta: number | null;
+  /** Planen er ikke ferdig — vis ærlig fremdrift i stedet for fest. */
+  ikkeFerdig: boolean;
 };
 
-function formatDelta(v: number | null): string {
-  if (v === null) return "—";
+function fmtDelta(v: number): string {
   const sign = v >= 0 ? "+" : "";
   return `${sign}${v.toFixed(2).replace(".", ",")}`;
 }
 
-function deltaFarge(v: number | null): string {
-  if (v === null) return T.mut;
-  if (v > 0.05) return T.up;
-  if (v < -0.05) return T.down;
-  return T.mut;
-}
-
-function SgCelle({ label, v }: { label: string; v: number | null }) {
-  const farge = deltaFarge(v);
-  return (
-    <div  data-paper-slug="playerhq-feiring" style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 4, borderRadius: 12, border: `1px solid ${T.border}`, background: T.panel2, padding: "12px 4px", minWidth: 0 }}>
-      <Caps size={8.5}>{label}</Caps>
-      {v !== null && (
-        <Icon name={v >= 0 ? "trending-up" : "trending-down"} size={13} style={{ color: farge }} />
-      )}
-      <span style={{ fontFamily: T.mono, fontSize: 13, fontWeight: 700, fontVariantNumeric: "tabular-nums", color: farge }}>
-        {formatDelta(v)}
-      </span>
-    </div>
-  );
-}
+const CLAY_CTA: React.CSSProperties = {
+  textDecoration: "none",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  minHeight: 56,
+  borderRadius: 12,
+  background: T.handling,
+  color: T.onHandling,
+  fontFamily: T.ui,
+  fontSize: 14,
+  fontWeight: 600,
+};
 
 export function FeiringV2({ data }: { data: FeiringV2Data }) {
-  const visSammenligning = data.personligRekord !== null && data.eff !== null && data.eff.total !== null;
+  const diff =
+    data.forrigeEtterlevelse === null ? null : data.prosent - data.forrigeEtterlevelse;
 
   return (
-    <div data-paper-wave-f="feiring" data-od-id="playerhq-feiring" style={{ maxWidth: 520, width: "100%", margin: "0 auto", display: "flex", flexDirection: "column", gap: T.gap }}>
-      {/* Paper topp — fasit: Plan fullført */}
-      <div style={{ textAlign: "center" }}>
-        <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>Plan fullført</h1>
-        <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>{data.planNavn}</span>
+    <div
+      data-paper-slug="playerhq-feiring"
+      data-od-id="playerhq-feiring"
+      style={{ maxWidth: 720, width: "100%", margin: "0 auto", display: "flex", flexDirection: "column", gap: T.gap }}
+    >
+      {/* Topp — fasit: Plan fullført + planens navn */}
+      <div>
+        <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>
+          {data.ikkeFerdig ? "Planen din" : "Plan fullført"}
+        </h1>
+        <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>
+          {data.planNavn}
+        </span>
       </div>
-      {/* Hero */}
-      <Kort tint pad="26px 22px">
-        <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 14, textAlign: "center" }}>
-          <RingMaaler label="Periode" value={data.prosent} min={0} max={100} unit="%" size={124} />
-          <Caps color={T.handling}>Periode fullført</Caps>
-          <div style={{ fontFamily: T.disp, fontSize: 22, fontWeight: 600, color: T.fg }}>Utrolig gjennomkjøring!</div>
-          <p style={{ fontFamily: T.ui, fontSize: 13.5, lineHeight: 1.6, color: T.fg2, maxWidth: 340, margin: 0 }}>
-            {data.planNavn} er fullført. {data.ferdige} av {data.total} økter gjennomført.
-          </p>
-        </div>
-      </Kort>
 
-      {/* Personlig rekord */}
-      {data.erRekord && (
-        <Kort tint>
-          <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-            <Icon name="star" size={18} style={{ color: T.handling, flex: "none" }} />
-            <div style={{ minWidth: 0 }}>
-              <Caps color={T.handling}>Personlig rekord</Caps>
-              <div style={{ fontFamily: T.ui, fontSize: 12.5, color: T.fg2, marginTop: 3 }}>
-                Beste SG-Total-delta hittil — bygg videre på dette.
+      {data.ikkeFerdig ? (
+        /* Fullført-guarden — fasit: ærlig fremdrift, ingen fest */
+        <div style={{ padding: "24px 16px", background: T.panel2, border: `1px dashed ${T.border}`, borderRadius: T.rCard }}>
+          <h3 style={{ margin: "0 0 8px", fontFamily: T.disp, fontSize: 15, fontWeight: 600, color: T.fg }}>
+            Planen er ikke ferdig ennå
+          </h3>
+          <p style={{ margin: "0 0 12px", fontFamily: T.bodyFont, fontSize: 13.5, color: T.mut }}>
+            Du har fullført {data.ferdige} av {data.total} økter. Feiringen venter til siste økt er
+            logget — den kommer av seg selv.
+          </p>
+          <div style={{ height: 8, background: T.track, borderRadius: 9999, overflow: "hidden", margin: "8px 0 12px" }}>
+            <div style={{ height: "100%", width: `${data.prosent}%`, background: T.mut, borderRadius: 9999 }} />
+          </div>
+          <Link href="/portal/tren" data-od-id="feiring-tom-plan" className="v2-press v2-focus" style={{ ...CLAY_CTA, width: "100%" }} data-paper-en-ting="true">
+            Åpne neste økt
+          </Link>
+        </div>
+      ) : (
+        <>
+          {/* Hero — den fullførte planen */}
+          <div style={{ textAlign: "center", padding: "32px 16px 24px" }}>
+            <div
+              style={{
+                width: 56,
+                height: 56,
+                margin: "0 auto 16px",
+                borderRadius: 9999,
+                display: "grid",
+                placeItems: "center",
+                background: T.handlingSoft,
+                color: T.handling,
+              }}
+            >
+              <Icon name="trophy" size={26} />
+            </div>
+            <h2 style={{ margin: "0 0 8px", fontFamily: T.disp, fontSize: 22, fontWeight: 600, color: T.fg }}>
+              {data.planNavn} er fullført
+            </h2>
+            <p style={{ margin: "0 auto", maxWidth: "44ch", fontFamily: T.bodyFont, fontSize: 14.5, color: T.mut }}>
+              {data.uker !== null ? `${data.uker} uker, ` : ""}
+              {data.ferdige} økter{data.timer !== null ? `, ${data.timer} timer` : ""}. Dette er
+              arbeidet som flytter tallene — og du gjorde det.
+            </p>
+          </div>
+
+          {/* KPI-rutenett */}
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
+            <div style={{ background: T.panel, border: `1px solid ${T.border}`, borderRadius: T.rCard, padding: 16, textAlign: "center" }}>
+              <Caps>økter</Caps>
+              <div style={{ fontFamily: T.mono, fontSize: 28, fontWeight: 600, fontVariantNumeric: "tabular-nums", color: T.fg }}>
+                {data.ferdige} av {data.total}
               </div>
             </div>
+            <div style={{ background: T.panel, border: `1px solid ${T.border}`, borderRadius: T.rCard, padding: 16, textAlign: "center" }}>
+              <Caps>etterlevelse</Caps>
+              <div style={{ fontFamily: T.mono, fontSize: 28, fontWeight: 600, fontVariantNumeric: "tabular-nums", color: T.fg }}>
+                {data.prosent} %
+              </div>
+              {diff !== null && (
+                <span
+                  style={{
+                    display: "inline-flex",
+                    alignItems: "center",
+                    padding: "3px 8px",
+                    borderRadius: 9999,
+                    fontFamily: T.mono,
+                    fontSize: 10,
+                    letterSpacing: "0.04em",
+                    textTransform: "uppercase",
+                    background: T.panel2,
+                    border: `1px solid ${T.border}`,
+                    color: diff >= 0 ? T.up : T.down,
+                  }}
+                >
+                  {diff >= 0 ? "+" : "−"}
+                  {Math.abs(diff)} vs forrige plan
+                </span>
+              )}
+            </div>
           </div>
-        </Kort>
-      )}
 
-      {/* Planfremgang */}
-      <Kort eyebrow="Planfremgang">
-        <div style={{ display: "flex", alignItems: "baseline", gap: 8 }}>
-          <span style={{ fontFamily: T.mono, fontSize: 30, fontWeight: 700, lineHeight: 0.95, fontVariantNumeric: "tabular-nums", color: T.up }}>
-            {data.ferdige}
-          </span>
-          <span style={{ fontFamily: T.mono, fontSize: 14, color: T.mut }}>/{data.total} fullført</span>
-        </div>
-        <div style={{ marginTop: 12, height: 7, borderRadius: 9999, background: T.track, overflow: "hidden" }}>
-          <div style={{ width: `${data.prosent}%`, height: "100%", borderRadius: 9999, background: T.handling, /* enTing */ opacity: 0.95 }} />
-        </div>
-        <div style={{ fontFamily: T.ui, fontSize: 11.5, color: T.mut, marginTop: 9 }}>
-          {data.planNavn} · {data.total} {data.total === 1 ? "uke" : "uker"}
-        </div>
-      </Kort>
+          {/* Rekord — reelt tall uten fasit-motpart, beholdt (ærlig motivasjon) */}
+          {data.erRekord && data.sgTotalDelta !== null && (
+            <Kort tint>
+              <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                <Icon name="star" size={18} style={{ color: T.handling, flex: "none" }} />
+                <div style={{ minWidth: 0 }}>
+                  <Caps color={T.handling}>Personlig rekord</Caps>
+                  <div style={{ fontFamily: T.bodyFont, fontSize: 12.5, color: T.fg2, marginTop: 3 }}>
+                    Beste SG-Total-utvikling av planene dine hittil.
+                  </div>
+                </div>
+              </div>
+            </Kort>
+          )}
 
-      {/* SG-utvikling */}
-      {data.eff ? (
-        <Kort
-          eyebrow={
-            <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
-              Strokes Gained — utvikling
-              <HjelpTips k="sgOmrade" size={11} />
-            </span>
-          }
-        >
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(5, 1fr)", gap: 8 }}>
-            <SgCelle label="Total" v={data.eff.total} />
-            <SgCelle label="OTT" v={data.eff.ott} />
-            <SgCelle label="APP" v={data.eff.app} />
-            <SgCelle label="ARG" v={data.eff.arg} />
-            <SgCelle label="PUTT" v={data.eff.putt} />
-          </div>
-          <p style={{ fontFamily: T.ui, fontSize: 11.5, color: T.mut, margin: "12px 0 0" }}>
-            Snitt SG — 5 runder før vs. etter planen.
-          </p>
-        </Kort>
-      ) : (
-        <Kort>
-          <p style={{ fontFamily: T.ui, fontSize: 13, color: T.mut, textAlign: "center", lineHeight: 1.6, margin: 0 }}>
-            Ikke nok runde-data ennå til SG-delta. Spill noen runder — vi regner det automatisk.
-          </p>
-          <div style={{ marginTop: 12 }}>
-            <Link href="/portal/runde/live" style={{ textDecoration: "none", display: "block" }}>
-              <CTAPill ghost full icon="flag">
-                Start live-føring
-              </CTAPill>
+          {/* Perioden i tall */}
+          <Kort eyebrow="perioden i tall">
+            <div>
+              {(
+                [
+                  ["Periode", data.planNavn],
+                  data.timer !== null ? ["Treningstimer", `${data.timer} t`] : null,
+                  data.pyramideTopp ? ["Størst volum", data.pyramideTopp] : null,
+                  data.sgTotalDelta !== null ? ["SG Total-utvikling", fmtDelta(data.sgTotalDelta)] : null,
+                  data.publisertAv ? ["Publisert av", data.publisertAv] : null,
+                ].filter(Boolean) as [string, string][]
+              ).map((pr, i, arr) => (
+                <div
+                  key={pr[0]}
+                  style={{
+                    display: "flex",
+                    alignItems: "baseline",
+                    gap: 8,
+                    padding: "8px 0",
+                    borderBottom: i === arr.length - 1 ? "none" : `1px solid ${T.border}`,
+                    fontSize: 13,
+                    color: T.fg,
+                  }}
+                >
+                  <span>{pr[0]}</span>
+                  <span style={{ marginLeft: "auto", fontFamily: T.mono, textAlign: "right" }}>{pr[1]}</span>
+                </div>
+              ))}
+            </div>
+            <HvorforDette
+              kilde={`alle øktene i planen «${data.planNavn}» — ${data.ferdige} fullført, ${data.total - data.ferdige} ikke fullført.`}
+              beregning={`etterlevelse er fullførte økter delt på planlagte — ${data.ferdige} av ${data.total} er ${data.prosent} prosent.`}
+              forbehold="droppede økter teller ikke negativt utover brøken — å droppe med beskjed er en del av eierskapet, ikke et avvik."
+            />
+          </Kort>
+
+          {/* Kontrakt §3: én aksenthandling — neste periode. Analysen er lesing. */}
+          <div style={{ display: "flex", gap: 8, paddingBottom: 24 }}>
+            <Link
+              href="/portal/planlegge/workbench?zoom=uke"
+              data-od-id="feiring-neste"
+              className="v2-press v2-focus"
+              style={{ ...CLAY_CTA, flex: 1 }}
+              data-paper-en-ting="true"
+            >
+              Åpne neste periode
+            </Link>
+            <Link
+              href="/portal/analysere"
+              data-od-id="feiring-analyse"
+              className="v2-press v2-focus"
+              style={{
+                textDecoration: "none",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                minHeight: 56,
+                padding: "0 16px",
+                borderRadius: 12,
+                border: `1px solid ${T.border}`,
+                color: T.fg,
+                fontFamily: T.ui,
+                fontSize: 14,
+                fontWeight: 500,
+              }}
+            >
+              Se analysen
             </Link>
           </div>
-        </Kort>
+        </>
       )}
-
-      {/* Mot tidligere planer */}
-      {visSammenligning && data.eff && (
-        <Kort
-          eyebrow={
-            <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
-              Mot tidligere planer
-              <HjelpTips k="sgTotal" size={11} />
-            </span>
-          }
-        >
-          <div style={{ display: "flex", gap: 24, flexWrap: "wrap" }}>
-            <div>
-              <Caps size={9}>Denne planen</Caps>
-              <div style={{ fontFamily: T.mono, fontSize: 22, fontWeight: 700, fontVariantNumeric: "tabular-nums", color: deltaFarge(data.eff.total), marginTop: 5 }}>
-                {formatDelta(data.eff.total)}
-              </div>
-            </div>
-            <div>
-              <Caps size={9}>Beste tidligere</Caps>
-              <div style={{ fontFamily: T.mono, fontSize: 22, fontWeight: 700, fontVariantNumeric: "tabular-nums", color: deltaFarge(data.personligRekord), marginTop: 5 }}>
-                {formatDelta(data.personligRekord)}
-              </div>
-            </div>
-            <div>
-              <Caps size={9}>Planer totalt</Caps>
-              <div style={{ fontFamily: T.mono, fontSize: 22, fontWeight: 700, fontVariantNumeric: "tabular-nums", color: T.fg, marginTop: 5 }}>
-                {data.antallPlaner}
-              </div>
-            </div>
-          </div>
-        </Kort>
-      )}
-
-      {/* B: én primær + tekst-sekundær */}
-      <div style={{ display: "flex", flexDirection: "column", gap: 10, paddingBottom: 24 }}>
-        <Link
-          href="/portal/planlegge/workbench?zoom=uke"
-          data-od-id="feiring-neste"
-          className="v2-press v2-focus"
-          style={{
-            textDecoration: "none",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            minHeight: 56, // paper enTing
-
-            width: "100%",
-            borderRadius: 12,
-            background: T.handling, /* enTing */
-            color: T.onHandling,
-            fontFamily: T.ui,
-            fontSize: 14,
-            fontWeight: 600,
-          }}
-        >
-          Planlegg neste periode
-        </Link>
-        <Link
-          href="/portal"
-          style={{
-            textDecoration: "none",
-            display: "block",
-            textAlign: "center",
-            fontFamily: T.ui,
-            fontSize: 12,
-            fontWeight: 600,
-            color: T.mut,
-          }}
-        >
-          Tilbake til hjem →
-        </Link>
-      </div>
     </div>
   );
 }

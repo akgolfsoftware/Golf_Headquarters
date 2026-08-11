@@ -1,44 +1,36 @@
 "use client";
 
 /**
- * PlayerHQ · Drill-detalj — v2 (retning C «Presis»).
- * v2-port 16. juli 2026: erstatter DrillDetalj (v10, components/portal/drills).
+ * PlayerHQ · Drill-detalj — Paper-port W1 (fase2).
+ * Fasit: designsystem/paper/fase2/playerhq/playerhq-drill-detalj.html.
  *
- * Kun presentasjonslaget er nytt (v2-primitiver + T-tokens). Datakontrakten
- * speiler loaderens ærlige prinsipp: tomme seksjoner utelates eller vises som
- * ærlige tomtilstander (media uten filer → «Media kommer»), aldri fabrikerte
- * tall. Avkryssbare trinn (klient-tilstand, lagres ikke) er bevart fra v10.
+ * Struktur per fasit: header (navn + mono-sub) → «hva den trener» →
+ * «AK-formelen · slot for slot» → clay-CTA «Legg i neste økt».
+ * Ærlig-prinsippet fra loaderen består: slots og seksjoner vises kun når
+ * feltene faktisk finnes — aldri fabrikerte verdier. Trinn (avkryssbare),
+ * media, coach-notat og parametere er reelle data uten fasit-motpart og
+ * beholdes som egne kort (Enkelhet: behold funksjoner).
  */
 
 import { useState } from "react";
 import Link from "next/link";
 import {
   T,
-  Caps,
-  Tittel,
   Kort,
-  AkseChip,
-  MikroMeta,
-  CTAPill,
   AvatarInit,
   TomTilstand,
-  HjelpTips,
 } from "@/components/v2";
 import { Icon } from "@/components/v2/icon";
 import type { AkseKey } from "@/lib/v2/tokens";
 
-export type DrillMetaChip = {
-  icon: "clock" | "list" | "target" | "zap";
-  text: string;
-};
-
 export type DrillDetaljV2Data = {
   akse: AkseKey;
-  /** Eyebrow, f.eks. "SLAG · INNSPILL". */
-  eyebrow: string;
+  /** Mono-sublinje under navnet, f.eks. "Innspill · 35 min · 30 reps". */
+  sub: string;
   navn: string;
   beskrivelse: string | null;
-  meta: DrillMetaChip[];
+  /** AK-formelen slot for slot — kun slots med faktisk verdi. */
+  slots: { k: string; v: string }[];
   /** Utledede trinn — tom liste skjuler seksjonen. */
   trinn: { n: number; text: string }[];
   coachNotat: string | null;
@@ -51,16 +43,8 @@ export type DrillDetaljV2Data = {
   hrefLeggTilIPlan: string;
 };
 
-/** v10-metaikonene → Icon-navn i v2-kartet ("zap" finnes ikke → "activity"). */
-const META_IKON: Record<DrillMetaChip["icon"], string> = {
-  clock: "clock",
-  list: "list",
-  target: "target",
-  zap: "activity",
-};
-
 export function DrillDetaljV2({ data }: { data: DrillDetaljV2Data }) {
-  // Avkryssbare trinn — ren klient-tilstand (som i v10), lagres ikke.
+  // Avkryssbare trinn — ren klient-tilstand, lagres ikke.
   const [gjort, setGjort] = useState<Set<number>>(new Set());
 
   function toggleTrinn(n: number) {
@@ -72,73 +56,57 @@ export function DrillDetaljV2({ data }: { data: DrillDetaljV2Data }) {
     });
   }
 
-  const harCsMeta = data.meta.some((m) => m.text.toUpperCase().includes("CS"));
-
   return (
-    <div  data-paper-slug="playerhq-drill-detalj" data-paper-wave-d="drill-detalj" data-od-id="playerhq-drill-detalj" style={{ maxWidth: 720, width: "100%", margin: "0 auto", display: "flex", flexDirection: "column", gap: T.gap }}>
-      {/* Header */}
-      <div>
-        <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>{data.navn}</h1>
-        <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>{data.eyebrow}</span>
-        <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap", marginTop: 12 }}>
-          <AkseChip a={data.akse} />
-          {data.meta.map((m, i) => (
-            <MikroMeta key={i} icon={META_IKON[m.icon]}>
-              {m.text}
-            </MikroMeta>
-          ))}
-          {harCsMeta && <HjelpTips k="csNivaa" size={12} />}
-        </div>
+    <div
+      data-paper-slug="playerhq-drill-detalj"
+      data-od-id="playerhq-drill-detalj"
+      style={{ maxWidth: 720, width: "100%", margin: "0 auto", display: "flex", flexDirection: "column", gap: T.gap }}
+    >
+      {/* Topp — fasit: navn + mono-sub */}
+      <div style={{ minWidth: 0 }}>
+        <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+          {data.navn}
+        </h1>
+        <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>
+          {data.sub}
+        </span>
       </div>
 
-      {/* B: primær handling først */}
-      <Link
-        href={data.hrefLeggTilIPlan}
-        data-od-id="drill-legg-i-plan"
-        className="v2-press v2-focus"
-        style={{
-          textDecoration: "none",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          minHeight: 56,
-          width: "100%",
-          borderRadius: 12,
-          background: T.handling,
-          color: T.onHandling,
-          fontFamily: T.ui,
-          fontSize: 14,
-          fontWeight: 600,
-        }}
-        data-paper-en-ting="true"
-      >
-        Legg i neste økt
-      </Link>
-      <Link
-        href={data.hrefBibliotek}
-        style={{
-          textDecoration: "none",
-          display: "block",
-          textAlign: "center",
-          fontFamily: T.ui,
-          fontSize: 12,
-          fontWeight: 600,
-          color: T.mut,
-        }}
-      >
-        Tilbake til øvelsesbanken →
-      </Link>
-
-      {/* Beskrivelse */}
+      {/* Hva den trener */}
       {data.beskrivelse && (
-        <Kort eyebrow="Om drillen">
-          <p style={{ fontFamily: T.ui, fontSize: 13.5, color: T.fg2, lineHeight: 1.6, margin: 0 }}>
+        <Kort eyebrow="hva den trener">
+          <p style={{ fontFamily: T.bodyFont, fontSize: 14, color: T.fg2, lineHeight: 1.6, margin: 0 }}>
             {data.beskrivelse}
           </p>
         </Kort>
       )}
 
-      {/* Trinn */}
+      {/* AK-formelen · slot for slot — kun slots med faktisk verdi */}
+      {data.slots.length > 0 && (
+        <Kort eyebrow="AK-formelen · slot for slot">
+          <div>
+            {data.slots.map((s, i) => (
+              <div
+                key={s.k}
+                style={{
+                  display: "flex",
+                  gap: 12,
+                  padding: "8px 0",
+                  fontSize: 12.5,
+                  borderBottom: i === data.slots.length - 1 ? "none" : `1px solid ${T.border}`,
+                }}
+              >
+                <span style={{ flex: "none", width: 96, fontFamily: T.mono, fontSize: 10, textTransform: "uppercase", letterSpacing: "0.06em", color: T.mut, paddingTop: 2 }}>
+                  {s.k}
+                </span>
+                <span style={{ fontFamily: T.bodyFont, color: T.fg2 }}>{s.v}</span>
+              </div>
+            ))}
+          </div>
+        </Kort>
+      )}
+
+      {/* Trinn — reelle data (fra prerequisites), uten fasit-motpart */}
       {data.trinn.length > 0 && (
         <Kort
           eyebrow="Slik gjør du det"
@@ -161,8 +129,8 @@ export function DrillDetaljV2({ data }: { data: DrillDetaljV2Data }) {
                   onClick={() => toggleTrinn(t.n)}
                   style={{ display: "flex", alignItems: "flex-start", gap: 12, padding: "11px 0", borderBottom: i === data.trinn.length - 1 ? "none" : `1px solid ${T.border}`, cursor: "pointer" }}
                 >
-                  <span style={{ marginTop: 1, width: 20, height: 20, borderRadius: 7, border: `2px solid ${on ? T.lime : T.borderS}`, background: on ? T.lime : "transparent", display: "inline-flex", alignItems: "center", justifyContent: "center", flex: "none" }}>
-                    {on && <Icon name="check" size={13} style={{ color: T.onLime }} />}
+                  <span style={{ marginTop: 1, width: 20, height: 20, borderRadius: 7, border: `2px solid ${on ? T.cta : T.borderS}`, background: on ? T.cta : "transparent", display: "inline-flex", alignItems: "center", justifyContent: "center", flex: "none" }}>
+                    {on && <Icon name="check" size={13} style={{ color: T.onCta }} />}
                   </span>
                   <div style={{ flex: 1, minWidth: 0 }}>
                     <span style={{ fontFamily: T.mono, fontSize: 10, fontWeight: 700, color: T.mut, marginRight: 8 }}>{t.n}.</span>
@@ -177,7 +145,7 @@ export function DrillDetaljV2({ data }: { data: DrillDetaljV2Data }) {
         </Kort>
       )}
 
-      {/* Media */}
+      {/* Media — kun det som faktisk finnes; ellers ærlig tomtilstand */}
       <Kort eyebrow="Media">
         {data.media.length === 0 ? (
           <TomTilstand icon="video" title="Media kommer" sub="Video eller bilder for drillen er ikke lastet opp ennå." />
@@ -210,7 +178,7 @@ export function DrillDetaljV2({ data }: { data: DrillDetaljV2Data }) {
             <AvatarInit navn={data.coachNavn} size={34} />
             <div style={{ flex: 1, minWidth: 0 }}>
               <span style={{ fontFamily: T.ui, fontSize: 12, fontWeight: 600, color: T.fg2, display: "block" }}>{data.coachNavn}</span>
-              <p style={{ fontFamily: T.ui, fontSize: 13.5, color: T.fg, lineHeight: 1.6, margin: "6px 0 0" }}>{data.coachNotat}</p>
+              <p style={{ fontFamily: T.bodyFont, fontSize: 13.5, color: T.fg, lineHeight: 1.6, margin: "6px 0 0" }}>{data.coachNotat}</p>
             </div>
           </div>
         </Kort>
@@ -230,6 +198,44 @@ export function DrillDetaljV2({ data }: { data: DrillDetaljV2Data }) {
         </Kort>
       )}
 
+      {/* Kontrakt §3: skjermens ene aksenthandling (fasit: sist på siden) */}
+      <Link
+        href={data.hrefLeggTilIPlan}
+        data-od-id="drilld-legg"
+        className="v2-press v2-focus"
+        style={{
+          textDecoration: "none",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          minHeight: 56,
+          width: "100%",
+          borderRadius: T.rCard,
+          background: T.handling,
+          color: T.onHandling,
+          fontFamily: T.ui,
+          fontSize: 14,
+          fontWeight: 600,
+        }}
+        data-paper-en-ting="true"
+      >
+        Legg i neste økt
+      </Link>
+      <Link
+        href={data.hrefBibliotek}
+        style={{
+          textDecoration: "none",
+          display: "block",
+          textAlign: "center",
+          fontFamily: T.ui,
+          fontSize: 12,
+          fontWeight: 600,
+          color: T.mut,
+          paddingBottom: 24,
+        }}
+      >
+        Tilbake til øvelsesbanken →
+      </Link>
     </div>
   );
 }
