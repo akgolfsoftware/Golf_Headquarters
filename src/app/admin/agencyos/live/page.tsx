@@ -20,7 +20,7 @@ export default async function V2LivePage() {
   const coachFirstName = (user.name ?? "Coach").trim().split(/\s+/)[0];
 
   return (
-    <V2Shell bredde="kolonne" aktiv="live" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>
+    <V2Shell bredde="full" aktiv="live" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>
       <TilbakeLenke href="/admin/agencyos">Cockpit</TilbakeLenke>
       <Kort
         pad="14px 18px"

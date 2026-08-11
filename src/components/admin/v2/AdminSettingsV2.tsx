@@ -229,7 +229,7 @@ export function AdminSettingsV2({ data }: { data: AdminSettingsV2Data }) {
   );
 
   return (
-    <div data-paper-wave-h="settings" data-paper-agencyos-settings style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 960, margin: "0 auto", width: "100%" }}>
+    <div data-paper-wave-h="settings" data-paper-agencyos-settings style={{ display: "flex", flexDirection: "column", gap: T.gap, width: "100%" }}>
       {hode}
       {kpier}
       {faner}

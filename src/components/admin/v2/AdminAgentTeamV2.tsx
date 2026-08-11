@@ -313,7 +313,7 @@ width: "100%", padding: "10px 16px",             background: T.handling, color: 
   );
 
   return (
-    <div data-paper-agencyos-agenticos data-paper-wave-f="agenticos" data-od-id="agencyos-agenticos" style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 960, margin: "0 auto", width: "100%" }}>
+    <div data-paper-agencyos-agenticos data-paper-wave-f="agenticos" data-od-id="agencyos-agenticos" style={{ display: "flex", flexDirection: "column", gap: T.gap, width: "100%" }}>
       {hode}
       {skjema}
       {resultat}

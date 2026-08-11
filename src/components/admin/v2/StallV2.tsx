@@ -527,7 +527,7 @@ export function StallV2({ data }: { data: StallV2Data }) {
 
   if (data.spillere.length === 0) {
     return (
-      <div data-paper-agencyos-spillere data-paper-wave-b="spillere" data-od-id="agency-spillere" style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 960, margin: "0 auto", width: "100%" }} data-paper-slug="agencyos-spillere">
+      <div data-paper-agencyos-spillere data-paper-wave-b="spillere" data-od-id="agency-spillere" style={{ display: "flex", flexDirection: "column", gap: T.gap, width: "100%" }} data-paper-slug="agencyos-spillere">
         <div>
           <Caps>AgencyOS</Caps>
           <div style={{ marginTop: 10 }}>
@@ -554,7 +554,7 @@ export function StallV2({ data }: { data: StallV2Data }) {
 
   if (mobile) {
     return (
-      <div data-paper-agencyos-spillere data-paper-wave-b="spillere" data-od-id="agency-spillere" style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 960, margin: "0 auto", width: "100%" }}>
+      <div data-paper-agencyos-spillere data-paper-wave-b="spillere" data-od-id="agency-spillere" style={{ display: "flex", flexDirection: "column", gap: T.gap, width: "100%" }}>
         {hode}
         {tilstandKort}
         {mobilPrimaer}
@@ -571,7 +571,7 @@ export function StallV2({ data }: { data: StallV2Data }) {
   }
 
   return (
-    <div data-paper-agencyos-spillere data-paper-wave-b="spillere" data-od-id="agency-spillere" style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 960, margin: "0 auto", width: "100%" }}>
+    <div data-paper-agencyos-spillere data-paper-wave-b="spillere" data-od-id="agency-spillere" style={{ display: "flex", flexDirection: "column", gap: T.gap, width: "100%" }}>
       {hode}
       {tilstandKort}
       {filtre}
