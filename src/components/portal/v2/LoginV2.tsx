@@ -313,6 +313,44 @@ function BrandPanel() {
   );
 }
 
+/** «Hvor du havner» — fasit innlogging.html: portene forklares, men kan ikke
+ *  velges. Kontoen avgjør målet etter innlogging. */
+function HvorDuHavner() {
+  const porter: { icon: "users" | "flag" | "shield-check"; navn: string; tekst: string }[] = [
+    { icon: "users", navn: "AgencyOS", tekst: "Hele driften: innboks, spillere, kalender, økonomi." },
+    { icon: "flag", navn: "PlayerHQ", tekst: "Planen din, øktene dine, analysene dine." },
+    { icon: "shield-check", navn: "Foreldreportalen", tekst: "Samtykker, betaling og innsyn i planen." },
+  ];
+  return (
+    <div style={{ marginTop: 18, paddingTop: 18, borderTop: `1px solid ${T.border}` }}>
+      <Caps size={9} style={{ marginBottom: 10 }}>
+        Hvor du havner
+      </Caps>
+      {porter.map((p, i) => (
+        <div
+          key={p.navn}
+          style={{
+            display: "flex",
+            alignItems: "flex-start",
+            gap: 10,
+            padding: "10px 0",
+            borderBottom: i < porter.length - 1 ? `1px solid ${T.borderS}` : "none",
+          }}
+        >
+          <Icon name={p.icon} size={15} style={{ color: T.mut, marginTop: 2, flex: "none" }} />
+          <div style={{ minWidth: 0 }}>
+            <div style={{ fontFamily: T.ui, fontSize: 13, fontWeight: 600, color: T.fg }}>{p.navn}</div>
+            <div style={{ fontFamily: T.ui, fontSize: 12, color: T.mut, lineHeight: 1.45 }}>{p.tekst}</div>
+          </div>
+        </div>
+      ))}
+      <p style={{ fontFamily: T.ui, fontSize: 12, color: T.mut, margin: "10px 0 0", lineHeight: 1.45 }}>
+        Du velger ikke selv. Kontoen avgjør, og du sendes rett dit etter innlogging.
+      </p>
+    </div>
+  );
+}
+
 /* ── Login-kortet ──────────────────────────────────────────────────── */
 
 function LoginKort() {
@@ -415,14 +453,11 @@ function LoginKort() {
         noValidate
         aria-describedby={feil ? feilId : undefined}
         style={{
-          background: T.panel,
-          border: `1px solid ${T.border}`,
-          borderRadius: T.rCard,
-          padding: 20,
+          /* Fasit innlogging.html: flatt skjema rett på bakgrunnen — ingen
+             kort-ramme eller skygge rundt feltene. */
           display: "flex",
           flexDirection: "column",
           gap: 14,
-          boxShadow: `inset 0 1px 0 ${T.farge.hvitA5}, 0 12px 32px ${T.farge.svartA35}`,
         }}
       >
         <Felt
@@ -504,6 +539,8 @@ function LoginKort() {
       <div style={{ textAlign: "center" }}>
         <Lenke href="/auth/forgot-password">Glemt passord?</Lenke>
       </div>
+
+      <HvorDuHavner />
 
       {/* Fot — synlig på mobil (1:1 med mockupens mobil-Login) */}
       <p
