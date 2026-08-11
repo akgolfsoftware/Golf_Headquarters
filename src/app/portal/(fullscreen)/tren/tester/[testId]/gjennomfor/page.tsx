@@ -71,7 +71,7 @@ export default async function GjennomforTestPage({
               Test
             </h1>
             <span style={{ display: "block", marginTop: 2, fontFamily: T.mono, fontSize: 10.5, color: T.mut }}>
-              {test.name} · {test.pyramidArea} · {spec.forsok.length} forsøk
+              {test.name} · {test.pyramidArea}
             </span>
           </div>
         </header>

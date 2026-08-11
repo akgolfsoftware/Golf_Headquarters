@@ -185,7 +185,7 @@ export function TapperShell({ sessionId, oktLabel, clubs, coachPanel, initialCou
             display: "grid",
             placeItems: "center",
             border: `1px solid ${T.border}`,
-            borderRadius: 12,
+            borderRadius: T.rCard,
             color: "inherit",
             textDecoration: "none",
           }}
@@ -232,7 +232,7 @@ export function TapperShell({ sessionId, oktLabel, clubs, coachPanel, initialCou
                 fontWeight: 500,
                 background: "transparent",
                 border: `1px solid ${T.border}`,
-                borderRadius: 12,
+                borderRadius: T.rCard,
                 color: T.fg,
                 cursor: "pointer",
               }}
@@ -295,7 +295,7 @@ export function TapperShell({ sessionId, oktLabel, clubs, coachPanel, initialCou
                 fontWeight: 500,
                 background: "transparent",
                 border: `1px solid ${T.border}`,
-                borderRadius: 12,
+                borderRadius: T.rCard,
                 color: T.fg,
                 cursor: "pointer",
               }}
@@ -368,7 +368,7 @@ export function TapperShell({ sessionId, oktLabel, clubs, coachPanel, initialCou
                 style={{
                   minHeight: 60,
                   border: `1px solid ${T.border}`,
-                  borderRadius: 12,
+                  borderRadius: T.rCard,
                   background: T.bg,
                   color: T.fg,
                   fontFamily: T.ui,
@@ -403,7 +403,7 @@ export function TapperShell({ sessionId, oktLabel, clubs, coachPanel, initialCou
               minHeight: 56,
               width: "100%",
               border: "none",
-              borderRadius: 12,
+              borderRadius: T.rCard,
               background: T.handling,
               color: T.onHandling,
               fontFamily: T.ui,

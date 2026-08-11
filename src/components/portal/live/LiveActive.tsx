@@ -810,6 +810,7 @@ export function LiveActive({ data, coachPanel }: { data: LiveV2Session; coachPan
             <p className="mb-0 mt-3 font-serif text-[12.5px]" style={{ color: "var(--p-muted)" }}>
               Notatene ligger på telefonen gjennom økta og flettes inn i
               oppsummeringen — der lagres de i loggen med dine ord.
+              Stemmefangst finnes på I dag-skjermen.
             </p>
             {notater.length > 0 && (
               <div className="mt-4">

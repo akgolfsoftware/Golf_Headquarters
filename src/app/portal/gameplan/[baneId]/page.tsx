@@ -85,12 +85,14 @@ export default async function BaneOverviewPage({
 
         {/* Kartpanel — Mapbox-satellitt med tee/green per hull (fasitens mapph) */}
         {harData && harKart && (
-          <CourseMap
-            center={{ lat: bane.latitude!, lng: bane.longitude! }}
-            geojson={bane.geojson as unknown as GeoJSON.FeatureCollection}
-            holes={mapHoles}
-            className="h-[220px] w-full overflow-hidden rounded-xl border border-border"
-          />
+          <div style={{ border: `1px solid ${T.border}`, borderRadius: T.rCard, overflow: "hidden" }}>
+            <CourseMap
+              center={{ lat: bane.latitude!, lng: bane.longitude! }}
+              geojson={bane.geojson as unknown as GeoJSON.FeatureCollection}
+              holes={mapHoles}
+              className="h-[220px] w-full"
+            />
+          </div>
         )}
 
         {/* Hull-liste / tom tilstand */}

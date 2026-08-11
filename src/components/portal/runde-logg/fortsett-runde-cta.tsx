@@ -13,10 +13,16 @@ import { T, Icon } from "@/components/v2";
 const abonnerIngen = () => () => {};
 
 type Props = {
-  /** compact = rad/kort-stil; pill = clay CTA */
+  /** compact = rad/kort-stil; pill = ink CTA */
   variant?: "row" | "pill";
   className?: string;
 };
+
+/** true når en runde-kladd finnes (ikke oppsett-steget) — for betinget kort-skall rundt CTA-en. */
+export function useHarRundeKladd(): boolean {
+  const kladd = useSyncExternalStore(abonnerIngen, lesKladdCached, lesKladdServer);
+  return kladd != null && kladd.steg !== "oppsett";
+}
 
 export function FortsettRundeCta({ variant = "row" }: Props) {
   const kladd = useSyncExternalStore(abonnerIngen, lesKladdCached, lesKladdServer);
@@ -41,8 +47,8 @@ export function FortsettRundeCta({ variant = "row" }: Props) {
           alignItems: "center",
           gap: 8,
           borderRadius: 999,
-          background: T.handling,
-          color: T.onHandling,
+          background: T.cta,
+          color: T.onCta,
           fontFamily: T.ui,
           fontSize: 13,
           fontWeight: 700,
@@ -74,8 +80,8 @@ export function FortsettRundeCta({ variant = "row" }: Props) {
           borderRadius: 10,
           display: "grid",
           placeItems: "center",
-          background: `color-mix(in srgb, ${T.handling} 14%, transparent)`,
-          color: T.forest,
+          background: `color-mix(in srgb, ${T.cta} 14%, transparent)`,
+          color: T.fg,
           flex: "none",
         }}
       >

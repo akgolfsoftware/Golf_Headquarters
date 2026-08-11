@@ -5,16 +5,14 @@
  * Liste + snitt. Tom = full grønn vei til live-føring. T.* only.
  */
 
-import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import type { RundeRow, RunderKpis } from "@/lib/portal-runder/runder-list-data";
-import { FortsettRundeCta } from "@/components/portal/runde-logg/fortsett-runde-cta";
+import { FortsettRundeCta, useHarRundeKladd } from "@/components/portal/runde-logg/fortsett-runde-cta";
 import {
   T,
   fmtSg,
   Caps,
-  Tittel,
   Kort,
   KpiFlis,
   CTAPill,
@@ -28,7 +26,7 @@ import {
 /* ── Data-kontrakt ─────────────────────────────────────────────────── */
 
 export type RunderV2Data = {
-  fornavn: string;
+  navn: string;
   hcp: number | null;
   rows: RundeRow[];
   kpis: RunderKpis;
@@ -56,19 +54,6 @@ function komma(n: number, desimaler = 1): string {
 function tilParTxt(v: number): string {
   if (v === 0) return "E";
   return v > 0 ? `+${v}` : `−${Math.abs(v)}`;
-}
-
-/** true på klient etter mount når viewport < 768px (styrer kun tallstørrelser). */
-function useMobile(): boolean {
-  const [m, setM] = useState(false);
-  useEffect(() => {
-    const mq = window.matchMedia("(max-width: 767px)");
-    const oppdater = () => setM(mq.matches);
-    oppdater();
-    mq.addEventListener("change", oppdater);
-    return () => mq.removeEventListener("change", oppdater);
-  }, []);
-  return m;
 }
 
 /* ── Score-boks (rad-leading) ──────────────────────────────────────── */
@@ -100,29 +85,27 @@ function ScoreBoks({ score, tilPar, beste }: { score: number; tilPar: number; be
 /* ── Skjerm ────────────────────────────────────────────────────────── */
 
 export function RunderV2({ data }: { data: RunderV2Data }) {
-  const mobile = useMobile();
   const router = useRouter();
-  const { fornavn, hcp, rows, kpis } = data;
+  const harKladd = useHarRundeKladd();
+  const { navn, hcp, rows, kpis } = data;
   const tom = rows.length === 0;
 
   const aar = new Date().getFullYear();
-  const eyebrow = `Sesong ${aar}${hcp != null ? ` · HCP ${komma(hcp)}` : ""}`;
+  const sub = `${navn ? `${navn} · ` : ""}Sesong ${aar}${hcp != null ? ` · HCP ${komma(hcp)}` : ""}`;
 
   const snittScore = kpis.snittScore != null ? String(Math.round(kpis.snittScore)) : "–";
   const snittSg = kpis.sgTotalSnitt != null ? fmtSg(kpis.sgTotalSnitt) : "–";
 
   return (
-    <div  data-paper-slug="playerhq-runder-liste" data-paper-portal-runder style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
-      {/* Hode */}
+    <div  data-paper-slug="playerhq-runder-liste" data-paper-portal-runder style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%", minWidth: 0 }}>
+      {/* Hode — fasit: h1 «Runder» + mono-sub «navn · Sesong år · HCP» */}
       <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
-        <div>
-          <span style={{ display: "inline-flex", alignItems: "center", gap: 5 }}>
-            <Caps>{eyebrow}</Caps>
+        <div style={{ minWidth: 0 }}>
+          <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>Runder</h1>
+          <span className="num" style={{ display: "inline-flex", alignItems: "center", gap: 5, fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>
+            {sub}
             {hcp != null && <HjelpTips k="hcp" size={11} />}
           </span>
-          <div style={{ marginTop: 10 }}>
-            <Tittel mobile={mobile} em="runder">{fornavn ? `${fornavn}s` : "Dine"}</Tittel>
-          </div>
         </div>
         <div className="hidden md:flex" style={{ gap: 8, flexWrap: "wrap", alignItems: "center" }}>
           <FortsettRundeCta variant="pill" />
@@ -141,12 +124,14 @@ export function RunderV2({ data }: { data: RunderV2Data }) {
         </div>
       </div>
 
-      {/* Fortsett kladd — mobil/alle */}
-      <div className="md:hidden">
-        <Kort pad="4px 16px">
-          <FortsettRundeCta />
-        </Kort>
-      </div>
+      {/* Fortsett kladd — mobil, kun når kladd faktisk finnes (aldri tomt kort-skall) */}
+      {harKladd && (
+        <div className="md:hidden">
+          <Kort pad="4px 16px">
+            <FortsettRundeCta />
+          </Kort>
+        </div>
+      )}
 
       {/* B: status først (også tom) */}
       <div className="grid grid-cols-3" style={{ gap: T.gap }}>

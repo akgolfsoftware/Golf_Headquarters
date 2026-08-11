@@ -22,12 +22,11 @@ export default async function V2RunderPreviewPage() {
   if (user.role === "GUEST") redirect("/admin/kalender");
 
   const model = await getRunderListModel(user.id);
-  const fornavn = user.name ? user.name.split(" ")[0] : "";
 
   return (
     <V2Shell bredde="kolonne" aktiv="analyse" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
       <TilbakeLenke href="/portal/mal">Mål</TilbakeLenke>
-      <RunderV2 data={{ fornavn, hcp: user.hcp, rows: model.rows, kpis: model.kpis }} />
+      <RunderV2 data={{ navn: user.name ?? "", hcp: user.hcp, rows: model.rows, kpis: model.kpis }} />
     </V2Shell>
   );
 }

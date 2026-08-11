@@ -20,7 +20,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { markNotificationsRead } from "@/app/portal/(legacy)/varsler/actions";
 import { T } from "@/lib/v2/tokens";
-import { Caps, Kort, Knapp, TomTilstand } from "@/components/v2";
+import { Caps, Kort, TomTilstand } from "@/components/v2";
 import { Icon } from "@/components/v2/icon";
 
 /* ── Datakontrakt (fra server-loaderen) ────────────────────────────── */
@@ -92,13 +92,6 @@ export function VarslerV2({ data }: { data: VarslerV2Data }) {
     });
   }
 
-  function markerAlle() {
-    startTransition(async () => {
-      await markNotificationsRead();
-      router.refresh();
-    });
-  }
-
   return (
     <div
       data-paper-wave-g="varsler"
@@ -116,11 +109,6 @@ export function VarslerV2({ data }: { data: VarslerV2Data }) {
             {uleste > 0 ? `${uleste} uleste` : "ingen uleste"}
           </span>
         </div>
-        {uleste > 0 && (
-          <Knapp icon="check" ghost disabled={pending} onClick={markerAlle}>
-            {pending ? "Markerer…" : "Marker alle lest"}
-          </Knapp>
-        )}
       </div>
 
       {tomt ? (
@@ -129,15 +117,30 @@ export function VarslerV2({ data }: { data: VarslerV2Data }) {
           <TomTilstand
             icon="bell"
             title="Alt er lest"
-            sub="Ingen nye varsler. Meldinger fra coachen, timeendringer og påminnelser dukker opp her."
+            sub="Ingen nye varsler. Meldinger fra coachen, timeendringer og påminnelser om føring dukker opp her."
           />
           <div style={{ marginTop: 12, textAlign: "center" }}>
             <Link
               href="/portal"
               data-od-id="varsler-tom-idag"
-              style={{ textDecoration: "none", fontFamily: T.ui, fontSize: 12, fontWeight: 600, color: T.mut }}
+              className="v2-press v2-focus"
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                justifyContent: "center",
+                minHeight: 44,
+                padding: "0 16px",
+                borderRadius: T.rTag,
+                border: `1px solid ${T.border}`,
+                background: T.panel,
+                color: T.fg,
+                fontFamily: T.ui,
+                fontSize: 13,
+                fontWeight: 600,
+                textDecoration: "none",
+              }}
             >
-              Gå til I dag →
+              Gå til I dag
             </Link>
           </div>
         </Kort>
@@ -173,7 +176,7 @@ export function VarslerV2({ data }: { data: VarslerV2Data }) {
                   width: "100%",
                   alignItems: "center",
                   justifyContent: "center",
-                  minHeight: 48,
+                  minHeight: 56,
                   borderRadius: T.rTag,
                   border: "none",
                   background: T.handling,
