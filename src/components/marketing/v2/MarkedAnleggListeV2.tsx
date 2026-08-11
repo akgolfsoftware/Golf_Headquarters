@@ -1,15 +1,14 @@
-"use client";
-
 /**
- * AK Golf HQ v2 — markedsside ANLEGG-LISTE (/anlegg), retning C, mørk.
+ * AK Golf HQ — markedsside ANLEGG-LISTE (/anlegg), Paper.
+ * Fasit: designsystem/paper/fase2/marketing/marketing-katalog.html.
  * Ekte copy speilet fra (mlegacy)/anlegg/page.tsx. Data (DB-lokasjoner)
  * hentes server-side i page.tsx og sendes inn som prop.
  */
 import Image from "next/image";
 import Link from "next/link";
-import { T } from "@/lib/v2/tokens";
-import { Icon, Kort, Caps } from "@/components/v2";
-import { MRamme, Eyebrow, HeroT, SeksT, Lede, MCta, Seksjon, useMobile } from "./marked-ramme";
+import { Icon } from "@/components/v2";
+import { PkShell } from "./paper/PkShell";
+import { PkSek, PkEyebrow, PkHero, PkIng, PkSekt, PkCta, PkKat, PkKort } from "./paper/PkPrimitives";
 
 export type AnleggLocation = {
   id: string;
@@ -36,157 +35,130 @@ const MULLIGAN = {
 };
 
 export function MarkedAnleggListeV2({ locations }: { locations: AnleggLocation[] }) {
-  const mobile = useMobile();
   return (
-    <MRamme mobile={mobile} aktiv="anlegg" waveId="marked-anlegg-liste">
-      {/* Hero */}
-      <Seksjon mobile={mobile}>
-        <Eyebrow>Anlegg · AK Golf Group</Eyebrow>
-        <HeroT mobile={mobile} em="ute og inne">Hjemmebaner,</HeroT>
-        <Lede style={{ marginTop: 22 }}>
-          Gamle Fredrikstad Golfklubb og Miklagard Golfklubb ute, Mulligan Indoor Golf med TrackMan-simulatorer inne. Samme coach, samme plan, sømløs booking.
-        </Lede>
-        <div style={{ display: "flex", gap: 10, flexWrap: "wrap", marginTop: 26 }}>
-          <MCta icon="arrow-right" href="/booking">
+    <PkShell aktiv="/anlegg" dataSlug="marketing-anlegg-liste">
+      <PkSek>
+        <PkEyebrow>Anlegg · AK Golf Group</PkEyebrow>
+        <PkHero>Hjemmebaner, ute og inne</PkHero>
+        <PkIng>
+          Gamle Fredrikstad Golfklubb og Miklagard Golfklubb ute, Mulligan Indoor Golf med
+          TrackMan-simulatorer inne. Samme coach, samme plan, sømløs booking.
+        </PkIng>
+        <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
+          <PkCta href="/booking" clay>
             Book en økt
-          </MCta>
-          <MCta ghost href="/kontakt">
+          </PkCta>
+          <PkCta href="/kontakt" ghost icon={null}>
             Kontakt oss
-          </MCta>
+          </PkCta>
         </div>
-      </Seksjon>
+      </PkSek>
 
-      {/* Anlegg-grid */}
-      <Seksjon mobile={mobile} style={{ paddingTop: 0 }}>
-        <Caps>Hovedanlegg · Østlandet</Caps>
-        <div style={{ marginTop: 14 }}>
-          <SeksT mobile={mobile} em="anlegg">Velg ditt</SeksT>
+      <PkSek notop>
+        <PkEyebrow>Hovedanlegg · Østlandet</PkEyebrow>
+        <div style={{ marginTop: 12 }}>
+          <PkSekt>Velg ditt anlegg</PkSekt>
         </div>
-        <div style={{ display: "grid", gridTemplateColumns: mobile ? "1fr" : "repeat(2, 1fr)", gap: T.gap, marginTop: 24 }}>
+        <PkKat>
           {locations.map((loc) => (
-            <Link key={loc.id} href={`/anlegg/${loc.slug}`} style={{ textDecoration: "none" }}>
-              <Kort pad="0" hover style={{ overflow: "hidden" }}>
-                <div style={{ position: "relative", aspectRatio: "16 / 10", width: "100%", background: T.panel2 }}>
-                  <Image
-                    src={HERO_IMAGES[loc.slug] ?? HERO_IMAGES.default}
-                    alt={`Bilde fra ${loc.name}`}
-                    fill
-                    sizes="(max-width: 860px) 100vw, 50vw"
-                    style={{ objectFit: "cover" }}
-                  />
-                </div>
-                <div style={{ padding: 24 }}>
-                  <span style={{ display: "inline-flex", alignItems: "center", gap: 6, fontFamily: T.mono, fontSize: 10, fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", color: T.mut }}>
-                    <Icon name="sprout" size={13} style={{ color: T.mut }} />
-                    Bane · {loc.facilities.length} {loc.facilities.length === 1 ? "fasilitet" : "fasiliteter"}
-                  </span>
-                  <div style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 21, color: T.fg, marginTop: 8, letterSpacing: "-0.015em" }}>{loc.name}</div>
-                  <p style={{ display: "flex", alignItems: "center", gap: 6, fontFamily: T.ui, fontSize: 13, color: T.fg2, margin: "6px 0 0" }}>
-                    <Icon name="map-pin" size={13} style={{ color: T.lime, flex: "none" }} />
-                    {loc.address}
-                  </p>
-                  {loc.facilities.length > 0 && (
-                    <div style={{ display: "flex", flexDirection: "column", marginTop: 12 }}>
-                      {loc.facilities.map((f, i) => (
-                        <div
-                          key={f.id}
-                          style={{
-                            display: "flex",
-                            alignItems: "center",
-                            gap: 8,
-                            padding: "8px 0",
-                            fontFamily: T.ui,
-                            fontSize: 12.5,
-                            fontWeight: 600,
-                            color: T.fg2,
-                            borderTop: i === 0 ? "none" : `1px solid ${T.border}`,
-                          }}
-                        >
-                          <Icon name={f.isIndoor ? "building-2" : "sprout"} size={13} style={{ color: T.lime, flex: "none" }} />
-                          {f.name}
-                          <span style={{ marginLeft: "auto", fontFamily: T.mono, fontSize: 10, letterSpacing: "0.1em", textTransform: "uppercase", color: T.mut }}>
-                            {f.isIndoor ? "Inne" : "Ute"}
-                          </span>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                  <span style={{ display: "inline-flex", alignItems: "center", gap: 6, fontFamily: T.ui, fontSize: 13.5, fontWeight: 600, color: T.lime, marginTop: 14 }}>
-                    Se anlegget
-                    <Icon name="arrow-right" size={14} />
-                  </span>
-                </div>
-              </Kort>
+            <Link key={loc.id} href={`/anlegg/${loc.slug}`} className="pk-kort pk-kort-hover">
+              <div style={{ position: "relative", aspectRatio: "16 / 10", width: "100%", background: "var(--p-soft)" }}>
+                <Image
+                  src={HERO_IMAGES[loc.slug] ?? HERO_IMAGES.default}
+                  alt={`Bilde fra ${loc.name}`}
+                  fill
+                  sizes="(max-width: 860px) 100vw, 50vw"
+                  style={{ objectFit: "cover" }}
+                />
+              </div>
+              <div className="pk-kort-body">
+                <span className="pk-meta" style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                  <Icon name="sprout" size={13} />
+                  Bane · {loc.facilities.length} {loc.facilities.length === 1 ? "fasilitet" : "fasiliteter"}
+                </span>
+                <span className="pk-navn">{loc.name}</span>
+                <p style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                  <Icon name="map-pin" size={13} style={{ color: "var(--p-accent-fg)", flex: "none" }} />
+                  {loc.address}
+                </p>
+                {loc.facilities.length > 0 && (
+                  <div style={{ display: "flex", flexDirection: "column", marginTop: 12 }}>
+                    {loc.facilities.map((f, i) => (
+                      <div
+                        key={f.id}
+                        className="pk-linje"
+                        style={{ borderTop: i === 0 ? "none" : "1px solid var(--p-hairline)", borderBottom: "none" }}
+                      >
+                        <Icon name={f.isIndoor ? "building-2" : "sprout"} size={13} style={{ color: "var(--p-accent-fg)", flex: "none" }} />
+                        {f.name}
+                        <span className="pk-v" style={{ fontFamily: "var(--p-mono)", fontSize: 10, textTransform: "uppercase" }}>
+                          {f.isIndoor ? "Inne" : "Ute"}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                )}
+                <span className="pk-lesmer">Se anlegget →</span>
+              </div>
             </Link>
           ))}
 
           {/* Mulligan Indoor Golf — kuratert kort (ingen detaljside ennå) */}
-          <Kort pad="0" hover style={{ overflow: "hidden" }}>
-            <div style={{ position: "relative", aspectRatio: "16 / 10", width: "100%", background: T.panel2 }}>
+          <div className="pk-kort">
+            <div style={{ position: "relative", aspectRatio: "16 / 10", width: "100%", background: "var(--p-soft)" }}>
               <Image src={MULLIGAN.foto} alt={MULLIGAN.fotoAlt} fill sizes="(max-width: 860px) 100vw, 50vw" style={{ objectFit: "cover" }} />
             </div>
-            <div style={{ padding: 24 }}>
-              <span style={{ display: "inline-flex", alignItems: "center", gap: 6, fontFamily: T.mono, fontSize: 10, fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", color: T.mut }}>
-                <Icon name="building-2" size={13} style={{ color: T.mut }} />
+            <div className="pk-kort-body">
+              <span className="pk-meta" style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                <Icon name="building-2" size={13} />
                 Inne · TrackMan-simulatorer
               </span>
-              <div style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 21, color: T.fg, marginTop: 8, letterSpacing: "-0.015em" }}>{MULLIGAN.navn}</div>
-              <p style={{ display: "flex", alignItems: "center", gap: 6, fontFamily: T.ui, fontSize: 13, color: T.fg2, margin: "6px 0 0" }}>
-                <Icon name="map-pin" size={13} style={{ color: T.lime, flex: "none" }} />
+              <span className="pk-navn">{MULLIGAN.navn}</span>
+              <p style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                <Icon name="map-pin" size={13} style={{ color: "var(--p-accent-fg)", flex: "none" }} />
                 Fredrikstad og Sarpsborg, årsåpent
               </p>
               <div style={{ display: "flex", flexDirection: "column", marginTop: 12 }}>
                 {MULLIGAN.steder.map((sted, i) => (
                   <div
                     key={sted.navn}
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      gap: 8,
-                      padding: "8px 0",
-                      fontFamily: T.ui,
-                      fontSize: 12.5,
-                      fontWeight: 600,
-                      color: T.fg2,
-                      borderTop: i === 0 ? "none" : `1px solid ${T.border}`,
-                    }}
+                    className="pk-linje"
+                    style={{ borderTop: i === 0 ? "none" : "1px solid var(--p-hairline)", borderBottom: "none" }}
                   >
-                    <Icon name="building-2" size={13} style={{ color: T.lime, flex: "none" }} />
+                    <Icon name="building-2" size={13} style={{ color: "var(--p-accent-fg)", flex: "none" }} />
                     {sted.navn} · {sted.by}
-                    <span style={{ marginLeft: "auto", fontFamily: T.mono, fontSize: 10, letterSpacing: "0.1em", textTransform: "uppercase", color: T.mut }}>Inne</span>
+                    <span className="pk-v" style={{ fontFamily: "var(--p-mono)", fontSize: 10, textTransform: "uppercase" }}>
+                      Inne
+                    </span>
                   </div>
                 ))}
               </div>
-              <Link href="/booking" style={{ display: "inline-flex", alignItems: "center", gap: 6, fontFamily: T.ui, fontSize: 13.5, fontWeight: 600, color: T.lime, marginTop: 14, textDecoration: "none" }}>
-                Book simulatortid
-                <Icon name="arrow-right" size={14} />
+              <Link href="/booking" className="pk-lesmer" style={{ textDecoration: "none" }}>
+                Book simulatortid →
               </Link>
             </div>
-          </Kort>
-        </div>
-      </Seksjon>
+          </div>
+        </PkKat>
+      </PkSek>
 
-      {/* Closing CTA */}
-      <Seksjon mobile={mobile} style={{ paddingTop: mobile ? 20 : 32 }}>
-        <Kort tint pad={mobile ? "26px 22px" : "36px 40px"}>
-          <div style={{ display: "flex", flexDirection: mobile ? "column" : "row", alignItems: mobile ? "flex-start" : "center", gap: 20 }}>
-            <div style={{ flex: 1 }}>
-              <SeksT mobile={mobile} em="trene">Klar til å</SeksT>
-              <p style={{ fontFamily: T.ui, fontSize: 14, color: T.fg2, lineHeight: 1.6, margin: "10px 0 0", maxWidth: 480 }}>
-                Book en økt på GFGK, Miklagard eller hos Mulligan. Samme coach og samme plan uansett hvor du trener.
-              </p>
-            </div>
+      <PkSek notop>
+        <PkKort tint>
+          <div className="pk-kort-body" style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+            <PkSekt>Klar til å trene?</PkSekt>
+            <p style={{ fontFamily: "var(--p-body)", fontSize: 14.5, color: "var(--p-muted)", margin: 0, maxWidth: 480 }}>
+              Book en økt på GFGK, Miklagard eller hos Mulligan. Samme coach og samme plan uansett hvor du trener.
+            </p>
             <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
-              <MCta icon="arrow-right" href="/booking">
+              <PkCta href="/booking" clay>
                 Book en økt
-              </MCta>
-              <MCta ghost href="/kontakt">
+              </PkCta>
+              <PkCta href="/kontakt" ghost icon={null}>
                 Kontakt oss
-              </MCta>
+              </PkCta>
             </div>
           </div>
-        </Kort>
-      </Seksjon>
-    </MRamme>
+        </PkKort>
+      </PkSek>
+    </PkShell>
   );
 }

@@ -1,15 +1,16 @@
-"use client";
-
 /**
- * AK Golf HQ v2 — markedsside TURNERING-DETALJ (/turneringer/[slug]),
- * retning C, mørk. Ekte copy + datalogikk speilet fra
- * (mlegacy)/turneringer/[slug]/page.tsx (KPI-er, leaderboard, norske i
- * aksjon). Prisma-henting + JSON-LD/LiveRefresher gjøres i page.tsx.
+ * AK Golf HQ — markedsside TURNERING-DETALJ (/turneringer/[slug]), Paper.
+ * Fasit: designsystem/paper/fase2/marketing/marketing-katalog.html
+ * (§detalj/§fakta) — retematchet med pk-tokens; KPI-strip og leaderboard er
+ * egne mønstre (stats-tabell), ikke i katalog-malen, men følger samme
+ * fargespråk/typografi. Ekte copy + datalogikk speilet fra
+ * (mlegacy)/turneringer/[slug]/page.tsx. Prisma-henting + JSON-LD/
+ * LiveRefresher gjøres i page.tsx.
  */
-import { T } from "@/lib/v2/tokens";
-import { Icon, Kort, Caps, StatusPill } from "@/components/v2";
+import { Icon, StatusPill } from "@/components/v2";
 import { FlagGlyph } from "@/components/stats/flag-glyph";
-import { MRamme, Eyebrow, HeroT, MCta, Seksjon, useMobile } from "./marked-ramme";
+import { PkShell } from "./paper/PkShell";
+import { PkSek, PkEyebrow, PkHero, PkCta, PkKpi, PkTom } from "./paper/PkPrimitives";
 
 export type EntrySpiller = { id: string; name: string; slug: string; country: string | null; tier: string; photoUrl: string | null };
 export type TurneringEntry = {
@@ -40,8 +41,6 @@ const NB_DATE = new Intl.DateTimeFormat("nb-NO", { day: "numeric", month: "long"
 const NB_TIME = new Intl.DateTimeFormat("nb-NO", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" });
 
 export function MarkedTurneringDetaljV2({ t }: { t: TurneringDetalj }) {
-  const mobile = useMobile();
-
   const alle = t.entries;
   const norske = alle.filter((e) => e.player.country === "NO");
   const erLive = t.status === "IN_PROGRESS";
@@ -58,35 +57,29 @@ export function MarkedTurneringDetaljV2({ t }: { t: TurneringDetalj }) {
   const datoStr = formaterDato(t.startDate, t.endDate);
 
   return (
-    <MRamme mobile={mobile} aktiv="turneringer" waveId="marked-turnering-detalj">
-      {/* Hero */}
-      <Seksjon mobile={mobile} style={{ paddingBottom: mobile ? 24 : 32 }}>
-        <MCta ghost small icon="arrow-left" href="/turneringer">
+    <PkShell aktiv="/turneringer" dataSlug="marketing-turnering-detalj">
+      <PkSek>
+        <PkCta href="/turneringer" ghost small icon="arrow-left">
           Alle turneringer
-        </MCta>
+        </PkCta>
         <div style={{ marginTop: 20 }}>
-          <Eyebrow>{`${formaterTour(t.tour)} · ${datoStr}`}</Eyebrow>
+          <PkEyebrow>{`${formaterTour(t.tour)} · ${datoStr}`}</PkEyebrow>
         </div>
-        <div style={{ display: "flex", flexDirection: mobile ? "column" : "row", justifyContent: "space-between", alignItems: mobile ? "flex-start" : "flex-start", gap: 16 }}>
-          <HeroT mobile={mobile}>{t.name}</HeroT>
-          <div style={{ textAlign: mobile ? "left" : "right", flex: "none" }}>
-            {t.location && (
-              <div style={{ display: "flex", alignItems: "center", gap: 6, justifyContent: mobile ? "flex-start" : "flex-end", fontFamily: T.ui, fontSize: 14, color: T.fg2 }}>
-                <Icon name="map-pin" size={14} style={{ color: T.lime }} />
-                {t.location}
-              </div>
-            )}
-            {t.officialUrl && (
-              <a
-                href={t.officialUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                style={{ display: "flex", alignItems: "center", gap: 4, justifyContent: mobile ? "flex-start" : "flex-end", fontFamily: T.ui, fontSize: 12.5, color: T.lime, marginTop: 6, textDecoration: "none" }}
-              >
-                Offisiell side <Icon name="external-link" size={12} />
-              </a>
-            )}
-          </div>
+        <div style={{ marginTop: 8 }}>
+          <PkHero>{t.name}</PkHero>
+        </div>
+        <div style={{ display: "flex", flexWrap: "wrap", gap: 16, marginTop: 8, fontFamily: "var(--p-ui)", fontSize: 14, color: "var(--p-muted)" }}>
+          {t.location && (
+            <span style={{ display: "flex", alignItems: "center", gap: 6 }}>
+              <Icon name="map-pin" size={14} style={{ color: "var(--p-accent-fg)" }} />
+              {t.location}
+            </span>
+          )}
+          {t.officialUrl && (
+            <a href={t.officialUrl} target="_blank" rel="noopener noreferrer" style={{ display: "flex", alignItems: "center", gap: 4, color: "var(--p-accent-fg)", textDecoration: "none" }}>
+              Offisiell side <Icon name="external-link" size={12} />
+            </a>
+          )}
         </div>
 
         <div style={{ display: "flex", gap: 10, alignItems: "center", marginTop: 18, flexWrap: "wrap" }}>
@@ -94,56 +87,46 @@ export function MarkedTurneringDetaljV2({ t }: { t: TurneringDetalj }) {
           {erFerdig && <StatusPill tone="info">Ferdigspilt</StatusPill>}
           {erKommende && <StatusPill tone="lime">Kommende</StatusPill>}
           {t.winnerName && erFerdig && (
-            <span style={{ display: "inline-flex", alignItems: "center", gap: 8, fontFamily: T.ui, fontSize: 13, color: T.fg2, border: `1px solid ${T.borderS}`, borderRadius: 9999, padding: "5px 14px" }}>
-              <Icon name="trophy" size={13} style={{ color: T.lime }} />
-              Vinner: <strong style={{ color: T.fg }}>{t.winnerName}</strong>
+            <span style={{ display: "inline-flex", alignItems: "center", gap: 8, fontFamily: "var(--p-ui)", fontSize: 13, color: "var(--p-muted)", border: "1px solid var(--p-border)", borderRadius: 9999, padding: "5px 14px" }}>
+              <Icon name="trophy" size={13} style={{ color: "var(--p-accent-fg)" }} />
+              Vinner: <strong style={{ color: "var(--p-fg)" }}>{t.winnerName}</strong>
             </span>
           )}
         </div>
-      </Seksjon>
+      </PkSek>
 
-      {/* KPI-strip */}
-      <Seksjon mobile={mobile} style={{ paddingTop: 0 }}>
-        <div style={{ display: "grid", gridTemplateColumns: mobile ? "1fr 1fr" : "repeat(4, 1fr)", gap: T.gap }}>
-          <Kort pad="18px 20px"><Caps>Deltakere</Caps><span style={{ fontFamily: T.mono, fontSize: 32, fontWeight: 700, color: T.fg, marginTop: 10, display: "block" }}>{alle.length}</span></Kort>
-          <Kort pad="18px 20px"><Caps>Norske</Caps><span style={{ fontFamily: T.mono, fontSize: 32, fontWeight: 700, color: T.lime, marginTop: 10, display: "block" }}>{norske.length}</span></Kort>
-          <Kort pad="18px 20px">
-            <Caps>{erFerdig ? "Vinnerscore" : "Leder"}</Caps>
-            <span style={{ fontFamily: T.mono, fontSize: 32, fontWeight: 700, color: T.fg, marginTop: 10, display: "block" }}>{lederToPar !== null ? formaterToPar(lederToPar) : "—"}</span>
-            <span style={{ fontFamily: T.ui, fontSize: 11.5, color: T.mut, marginTop: 4, display: "block" }}>{lederToPar !== null ? (erFerdig ? "Sluttresultat" : "Beste score til par") : "Ikke startet"}</span>
-          </Kort>
-          <Kort pad="18px 20px">
-            <Caps>Runde</Caps>
-            <span style={{ fontFamily: T.mono, fontSize: 32, fontWeight: 700, color: T.fg, marginTop: 10, display: "block" }}>{naavarendeRunde !== null ? `R${naavarendeRunde}` : "—"}</span>
-            <span style={{ fontFamily: T.ui, fontSize: 11.5, color: T.mut, marginTop: 4, display: "block" }}>{erLive ? "Pågår nå" : erFerdig ? "Fullført" : "Ikke startet"}</span>
-          </Kort>
+      <PkSek notop>
+        <div className="pk-kpirad">
+          <PkKpi label="Deltakere" value={alle.length} />
+          <PkKpi label="Norske" value={norske.length} />
+          <PkKpi label={erFerdig ? "Vinnerscore" : "Leder"} value={lederToPar !== null ? formaterToPar(lederToPar) : "—"} sub={lederToPar !== null ? (erFerdig ? "Sluttresultat" : "Beste score til par") : "Ikke startet"} />
+          <PkKpi label="Runde" value={naavarendeRunde !== null ? `R${naavarendeRunde}` : "—"} sub={erLive ? "Pågår nå" : erFerdig ? "Fullført" : "Ikke startet"} />
         </div>
-      </Seksjon>
+      </PkSek>
 
-      {/* Norske i aksjon */}
       {norske.length > 0 && (
-        <Seksjon mobile={mobile} style={{ paddingTop: 0 }}>
-          <Caps color={T.lime}>Norske i aksjon</Caps>
-          <div style={{ display: "grid", gridTemplateColumns: mobile ? "1fr" : "repeat(2, 1fr)", gap: T.gap, marginTop: 14 }}>
+        <PkSek notop>
+          <PkEyebrow>Norske i aksjon</PkEyebrow>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: 16, marginTop: 14 }}>
             {norske.map((e) => (
-              <Kort key={e.id} tint pad="22px">
+              <div key={e.id} className="pk-kort pk-kort-tint pk-kort-pad">
                 <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
                   <FlagGlyph code="no" size={16} />
-                  <span style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 19, color: T.fg }}>{e.player.name}</span>
+                  <span style={{ fontFamily: "var(--p-disp)", fontWeight: 600, fontSize: 19, color: "var(--p-fg)" }}>{e.player.name}</span>
                 </div>
                 <div style={{ display: "flex", gap: 24, marginTop: 16, flexWrap: "wrap" }}>
                   {erLive && e.position !== null && (
                     <>
                       <div>
-                        <Caps size={9}>Posisjon</Caps>
-                        <span style={{ fontFamily: T.mono, fontSize: 24, fontWeight: 700, color: T.lime, marginTop: 4, display: "block" }}>
+                        <span className="pk-eyebrow" style={{ fontSize: 9 }}>Posisjon</span>
+                        <span style={{ fontFamily: "var(--p-mono)", fontSize: 24, fontWeight: 700, color: "var(--p-accent-fg)", marginTop: 4, display: "block" }}>
                           {e.tied ? `T${e.position}` : e.position}
                         </span>
                       </div>
                       {e.scoreToPar !== null && (
                         <div>
-                          <Caps size={9}>Score til par</Caps>
-                          <span style={{ fontFamily: T.mono, fontSize: 24, fontWeight: 700, marginTop: 4, display: "block", color: e.scoreToPar < 0 ? T.up : e.scoreToPar > 0 ? T.down : T.fg }}>
+                          <span className="pk-eyebrow" style={{ fontSize: 9 }}>Score til par</span>
+                          <span style={{ fontFamily: "var(--p-mono)", fontSize: 24, fontWeight: 700, marginTop: 4, display: "block", color: e.scoreToPar < 0 ? "var(--p-up)" : e.scoreToPar > 0 ? "var(--p-dn)" : "var(--p-fg)" }}>
                             {formaterToPar(e.scoreToPar)}
                           </span>
                         </div>
@@ -151,75 +134,66 @@ export function MarkedTurneringDetaljV2({ t }: { t: TurneringDetalj }) {
                     </>
                   )}
                   <div>
-                    <Caps size={9}>{formaterTier(e.player.tier)}</Caps>
-                    {e.status === "CUT" && (
-                      <span style={{ fontFamily: T.mono, fontSize: 10, fontWeight: 700, color: T.mut, background: T.panel2, borderRadius: 5, padding: "3px 8px", marginTop: 6, display: "inline-block", textTransform: "uppercase" }}>
-                        Cut
-                      </span>
-                    )}
+                    <span className="pk-eyebrow" style={{ fontSize: 9 }}>{formaterTier(e.player.tier)}</span>
+                    {e.status === "CUT" && <span className="pk-tag" style={{ marginTop: 6, display: "inline-block" }}>Cut</span>}
                   </div>
                 </div>
-              </Kort>
+              </div>
             ))}
           </div>
-        </Seksjon>
+        </PkSek>
       )}
 
-      {/* Full leaderboard */}
-      {alle.length > 0 && (
-        <Seksjon mobile={mobile} style={{ paddingTop: 0 }}>
+      {alle.length > 0 ? (
+        <PkSek notop>
           <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", flexWrap: "wrap", gap: 8 }}>
             <div>
-              <Caps>Leaderboard</Caps>
-              <span style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 22, color: T.fg, marginTop: 6, display: "block" }}>Hele feltet: {alle.length} spillere</span>
+              <PkEyebrow>Leaderboard</PkEyebrow>
+              <span style={{ fontFamily: "var(--p-disp)", fontWeight: 600, fontSize: 22, color: "var(--p-fg)", marginTop: 6, display: "block" }}>Hele feltet: {alle.length} spillere</span>
             </div>
-            {t.leaderboardSnapAt && (
-              <span style={{ fontFamily: T.mono, fontSize: 10, letterSpacing: "0.08em", textTransform: "uppercase", color: T.mut }}>
-                Sist oppdatert {NB_TIME.format(t.leaderboardSnapAt)}
-              </span>
-            )}
+            {t.leaderboardSnapAt && <span className="pk-eyebrow">Sist oppdatert {NB_TIME.format(t.leaderboardSnapAt)}</span>}
           </div>
 
           <div style={{ overflowX: "auto", marginTop: 18 }}>
-            <table style={{ width: "100%", borderCollapse: "collapse", fontFamily: T.mono, fontSize: 12.5 }}>
+            <table className="pk-tabell">
               <thead>
-                <tr style={{ borderBottom: `2px solid ${T.borderS}` }}>
-                  <Th align="left">Pos</Th>
-                  <Th align="left">Spiller</Th>
-                  <Th align="left">Land</Th>
-                  {erLive && <Th align="right">Til par</Th>}
-                  {erLive && <Th align="right">Thru</Th>}
-                  <Th align="right">Status</Th>
+                <tr>
+                  <th>Pos</th>
+                  <th>Spiller</th>
+                  <th>Land</th>
+                  {erLive && <th className="pk-th-right">Til par</th>}
+                  {erLive && <th className="pk-th-right">Thru</th>}
+                  <th className="pk-th-right">Status</th>
                 </tr>
               </thead>
               <tbody>
                 {alle.map((e, i) => (
-                  <tr key={e.id} style={{ borderBottom: `1px solid ${T.border}`, background: e.player.country === "NO" ? "color-mix(in srgb, " + T.lime + " 6%, transparent)" : "transparent" }}>
-                    <td style={{ padding: "12px 16px 12px 0", color: i < 3 ? T.lime : T.mut, fontWeight: i < 3 ? 700 : 500 }}>
+                  <tr key={e.id} className={e.player.country === "NO" ? "pk-tr-no" : undefined}>
+                    <td style={{ color: i < 3 ? "var(--p-accent-fg)" : "var(--p-muted)", fontWeight: i < 3 ? 700 : 500 }}>
                       {e.tied && e.position !== null ? `T${e.position}` : (e.position ?? i + 1)}
                     </td>
-                    <td style={{ padding: "12px 16px 12px 0", fontFamily: T.ui, fontWeight: 600, fontSize: 13.5, color: T.fg }}>
+                    <td style={{ fontFamily: "var(--p-ui)", fontWeight: 600, fontSize: 13.5, color: "var(--p-fg)" }}>
                       {e.player.name}
-                      {e.player.country === "NO" && <Icon name="star" size={11} style={{ color: T.lime, marginLeft: 6 }} />}
+                      {e.player.country === "NO" && <Icon name="star" size={11} style={{ color: "var(--p-accent-fg)", marginLeft: 6 }} />}
                     </td>
-                    <td style={{ padding: "12px 16px 12px 0" }}>
+                    <td>
                       <FlagGlyph code={e.player.country?.toLowerCase() ?? "xx"} size={13} />
                     </td>
                     {erLive && (
-                      <td style={{ padding: "12px 0", textAlign: "right", fontWeight: 600, color: e.scoreToPar !== null ? (e.scoreToPar < 0 ? T.up : e.scoreToPar > 0 ? T.down : T.fg) : T.mut }}>
+                      <td className="pk-td-right" style={{ fontWeight: 600, color: e.scoreToPar !== null ? (e.scoreToPar < 0 ? "var(--p-up)" : e.scoreToPar > 0 ? "var(--p-dn)" : "var(--p-fg)") : "var(--p-muted)" }}>
                         {e.scoreToPar !== null ? formaterToPar(e.scoreToPar) : "—"}
                       </td>
                     )}
                     {erLive && (
-                      <td style={{ padding: "12px 0 12px 16px", textAlign: "right", color: T.mut }}>
+                      <td className="pk-td-right" style={{ color: "var(--p-muted)" }}>
                         {e.status === "CUT" ? "—" : e.thru === null ? "—" : e.thru >= 18 ? "F" : e.thru}
                       </td>
                     )}
-                    <td style={{ padding: "12px 0", textAlign: "right" }}>
+                    <td className="pk-td-right">
                       {e.status === "CUT" ? (
-                        <span style={{ fontFamily: T.mono, fontSize: 10, letterSpacing: "0.06em", textTransform: "uppercase", color: T.mut, background: T.panel2, borderRadius: 4, padding: "2px 7px" }}>Cut</span>
+                        <span className="pk-tag">Cut</span>
                       ) : (
-                        <span style={{ color: T.mut, fontSize: 11 }}>{formaterTier(e.player.tier)}</span>
+                        <span style={{ color: "var(--p-muted)", fontSize: 11 }}>{formaterTier(e.player.tier)}</span>
                       )}
                     </td>
                   </tr>
@@ -227,47 +201,29 @@ export function MarkedTurneringDetaljV2({ t }: { t: TurneringDetalj }) {
               </tbody>
             </table>
           </div>
-        </Seksjon>
+        </PkSek>
+      ) : (
+        <PkSek notop>
+          <PkTom title="Deltakerliste oppdateres" description="Vi henter felt-listen automatisk så snart turneringen er i gang." />
+        </PkSek>
       )}
 
-      {/* Tom-tilstand */}
-      {alle.length === 0 && (
-        <Seksjon mobile={mobile} style={{ paddingTop: 0 }}>
-          <Kort pad="48px" style={{ textAlign: "center", alignItems: "center", border: `1px dashed ${T.border}` }}>
-            <Icon name="trophy" size={32} style={{ color: T.mut }} />
-            <span style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 17, color: T.fg, marginTop: 14 }}>Deltakerliste oppdateres</span>
-            <span style={{ fontFamily: T.ui, fontSize: 13, color: T.mut, marginTop: 6 }}>Vi henter felt-listen automatisk så snart turneringen er i gang.</span>
-          </Kort>
-        </Seksjon>
-      )}
-
-      {/* Mersalg */}
-      <Seksjon mobile={mobile} style={{ paddingTop: 0 }}>
-        <Kort tint pad={mobile ? "26px 22px" : "36px 40px"}>
-          <div style={{ display: "flex", flexDirection: mobile ? "column" : "row", alignItems: mobile ? "flex-start" : "center", gap: 20 }}>
-            <div style={{ flex: 1 }}>
-              <span style={{ fontFamily: T.disp, fontWeight: 700, fontSize: mobile ? 22 : 26, color: T.fg, letterSpacing: "-0.02em" }}>
-                Følger du proffene? <em style={{ fontStyle: "italic", color: T.lime }}>Lær av dem også.</em>
-              </span>
-              <p style={{ fontFamily: T.ui, fontSize: 14, color: T.fg2, lineHeight: 1.6, margin: "10px 0 0", maxWidth: 480 }}>
+      <PkSek notop>
+        <div className="pk-kort pk-kort-tint">
+          <div className="pk-kort-body" style={{ display: "flex", alignItems: "center", gap: 20, flexWrap: "wrap" }}>
+            <div style={{ flex: 1, minWidth: 240 }}>
+              <span style={{ fontFamily: "var(--p-disp)", fontWeight: 600, fontSize: 22, color: "var(--p-fg)" }}>Følger du proffene? Lær av dem også.</span>
+              <p style={{ fontFamily: "var(--p-body)", fontSize: 14.5, color: "var(--p-muted)", margin: "10px 0 0", maxWidth: 480 }}>
                 PlayerHQ gir deg treningsdagbok, statistikk og AI-coach. Bygd av coacher med 10+ års erfaring.
               </p>
             </div>
-            <MCta icon="arrow-right" href="/auth/signup">
+            <PkCta href="/auth/signup" clay>
               Kom i gang gratis
-            </MCta>
+            </PkCta>
           </div>
-        </Kort>
-      </Seksjon>
-    </MRamme>
-  );
-}
-
-function Th({ children, align }: { children: React.ReactNode; align: "left" | "right" }) {
-  return (
-    <th style={{ padding: align === "left" ? "10px 16px 10px 0" : "10px 0", textAlign: align, fontWeight: 500, fontSize: 9.5, letterSpacing: "0.1em", textTransform: "uppercase", color: T.mut }}>
-      {children}
-    </th>
+        </div>
+      </PkSek>
+    </PkShell>
   );
 }
 
