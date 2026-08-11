@@ -9,7 +9,7 @@
 
 import Link from "next/link";
 import { erCoachetSpiller } from "@/lib/auth/coached";
-import { Kort, TomTilstand, Knapp, TilbakeLenke } from "@/components/v2";
+import { T, Kort, TomTilstand, Knapp, TilbakeLenke } from "@/components/v2";
 import { redirect } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import {
@@ -45,6 +45,11 @@ export default async function V2CoachPreviewPage() {
               <Knapp icon="calendar-check">Book en prøvetime</Knapp>
             </Link>
           </div>
+        </Kort>
+        <Kort>
+          <p style={{ margin: 0, fontFamily: T.ui, fontSize: 13, color: T.mut, lineHeight: 1.6 }}>
+            Du mister ingenting ved å vente. Alt du logger nå — økter, runder og tester — er der den dagen du får coach.
+          </p>
         </Kort>
       </V2Shell>
     );

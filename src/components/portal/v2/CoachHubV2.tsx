@@ -5,21 +5,16 @@
  * Coachkort, kommende økter, meldingstråd. T.* only. Tom = grønn vei.
  */
 
-import { useEffect, useState } from "react";
 import Link from "next/link";
 import {
   T,
   Caps,
-  Tittel,
   Kort,
   Rad,
   StatusPill,
   AvatarFoto,
-  InnsiktChip,
   TomTilstand,
-  MeldingsTraad,
   Icon,
-  type Melding,
   type StatusTone,
 } from "@/components/v2";
 
@@ -61,12 +56,6 @@ function varighet(start: Date, end: Date): string {
   return `${min} min`;
 }
 
-/** ISO-ts → «09:15» (ugyldig ts → tom streng). */
-function tidFraTs(ts: string): string {
-  const d = new Date(ts);
-  return Number.isNaN(d.getTime()) ? "" : klokke(d);
-}
-
 /** Nærhets-status for en kommende økt (i dag / snart), ellers ingen pill. */
 function naerhet(d: Date): { l: string; tone: StatusTone } | null {
   const naa = new Date();
@@ -76,183 +65,146 @@ function naerhet(d: Date): { l: string; tone: StatusTone } | null {
   return null;
 }
 
-/** true på klient etter mount når viewport < 768px (styrer kun tallstørrelser). */
-function useMobile(): boolean {
-  const [m, setM] = useState(false);
-  useEffect(() => {
-    const mq = window.matchMedia("(max-width: 767px)");
-    const oppdater = () => setM(mq.matches);
-    oppdater();
-    mq.addEventListener("change", oppdater);
-    return () => mq.removeEventListener("change", oppdater);
-  }, []);
-  return m;
-}
-
-/* ── Snarvei-CTA (Link + CTAPill — v2-idiomet, jf. GjorV2) ──────────── */
-
-function Snarvei({ href, icon, ghost, children }: { href: string; icon: string; ghost?: boolean; children: string }) {
-  return (
-    <Link href={href} style={{ textDecoration: "none" }}>
-      <span style={{
-            display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, minHeight: 56, width: "100%", padding: "10px 16px",
-            borderRadius: 12, background: T.handling, color: T.onHandling, fontFamily: T.ui, fontSize: 14, fontWeight: 600,
-          }}>{children}</span>
-    </Link>
-  );
-}
-
 /* ── Skjerm ────────────────────────────────────────────────────────── */
 
 export function CoachHubV2({ data }: { data: CoachHubData }) {
-  const mobile = useMobile();
   const { coach, fokus, meldinger, kommende } = data;
 
   const nyeFraCoach = meldinger.filter((m) => m.role === "coach").length;
-  const sisteMeldinger: Melding[] = meldinger.slice(-4).map((m) => ({
-    meg: m.role === "me",
-    fra: m.role === "coach" ? coach?.name : undefined,
-    tekst: m.body,
-    tid: tidFraTs(m.ts),
-  }));
-
   const timeline = kommende.slice(0, 4);
+
+  const sisteMeldingSnippet = meldinger.length > 0 ? meldinger[meldinger.length - 1] : null;
+  const meldingerSub = sisteMeldingSnippet
+    ? `${sisteMeldingSnippet.role === "coach" ? coach?.name.split(" ")[0] ?? "Coach" : "Deg"} · «${sisteMeldingSnippet.body.slice(0, 40)}${sisteMeldingSnippet.body.length > 40 ? "…" : ""}»${nyeFraCoach > 0 ? ` · ${nyeFraCoach} nye` : ""}`
+    : "Send den første meldingen til coachen din";
 
   return (
     <div data-paper-wave-g="coachhub" data-paper-slug="playerhq-coach-hub" data-paper-portal-coach-hub style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
-      {/* Hode + B: status først */}
-      <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
-        <div>
-          <div data-paper-pattern-topp>
-          <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>Coach</h1>
-          <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>Hub</span>
-        </div>
-        </div>
-        {coach ? (
-          <StatusPill tone={kommende.length > 0 ? "lime" : "info"}>
-            {kommende.length > 0 ? `${kommende.length} kommende` : "Ingen time booket"}
-          </StatusPill>
-        ) : (
-          <StatusPill tone="warn">Ingen coach</StatusPill>
-        )}
+      {/* Hode — tittel + undertekst (fasit: «Fokus, meldinger og timene dine») */}
+      <div>
+        <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>Coach</h1>
+        <span style={{ display: "block", fontFamily: T.ui, fontSize: 11.5, color: T.mut, marginTop: 2 }}>Fokus, meldinger og timene dine</span>
       </div>
 
-      {/* B: én primær CTA */}
-      {coach ? (
-        <Link href="/portal/coach/melding" style={{ textDecoration: "none", display: "block" }}>
-          <span style={{
-            display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, minHeight: 56, width: "100%", padding: "10px 16px",
-            borderRadius: 12, background: T.handling, color: T.onHandling, fontFamily: T.ui, fontSize: 14, fontWeight: 600,
-          }}>{meldinger.length > 0 ? "Skriv til coach" : `Start samtalen med ${coach.name.split(" ")[0]}`}</span>
-        </Link>
-      ) : (
-        <Link href="/portal/booking" style={{ textDecoration: "none", display: "block" }}>
-          <span style={{
-            display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, minHeight: 56, width: "100%", padding: "10px 16px",
-            borderRadius: 12, background: T.handling, color: T.onHandling, fontFamily: T.ui, fontSize: 14, fontWeight: 600,
-          }}>Book en time</span>
-        </Link>
-      )}
-
-      {/* Coachkort + tidslinje */}
       <div className="grid grid-cols-1 md:grid-cols-[3fr_2fr]" style={{ gap: T.gap, alignItems: "start" }}>
-        <Kort tint eyebrow="Din coach">
-          {coach ? (
-            <>
-              <div style={{ display: "flex", alignItems: "center", gap: 13 }}>
-                <AvatarFoto src={coach.avatarUrl} navn={coach.name} size={48} ring />
-                <div style={{ minWidth: 0 }}>
-                  <div style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 17, color: T.fg, lineHeight: 1.2 }}>{coach.name}</div>
-                  <Caps size={9} style={{ marginTop: 5 }}>Head Coach · AK Golf Academy</Caps>
-                </div>
-              </div>
+        <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+          {/* Coachtopp — avatar + navn, ingen kortramme (matcher fasit .coachtopp) */}
+          <div style={{ display: "flex", alignItems: "center", gap: 13 }}>
+            <AvatarFoto src={coach?.avatarUrl ?? null} navn={coach?.name ?? "?"} size={52} ring />
+            <div style={{ minWidth: 0 }}>
+              <div style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 17, color: T.fg, lineHeight: 1.2 }}>{coach?.name ?? "Ingen coach ennå"}</div>
+              <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>
+                {coach ? "Hovedcoach" : "Venter på tildeling"}
+              </span>
+            </div>
+          </div>
 
+          {/* Fokus nå — tint-kort, egen flate under coachtopp (fasit .kort.tint) */}
+          {coach && (
+            <Kort tint eyebrow="Fokus nå">
               {fokus ? (
-                <div style={{ marginTop: 14 }}>
-                  <InnsiktChip>
-                    {fokus.title ? <strong style={{ color: T.fg, fontWeight: 700 }}>{fokus.title}: </strong> : null}
-                    {fokus.content.slice(0, 160)}
-                    {fokus.content.length > 160 ? "…" : ""}
-                  </InnsiktChip>
-                </div>
+                <>
+                  {fokus.title && <div style={{ fontFamily: T.disp, fontWeight: 600, fontSize: 14.5, color: T.fg, marginBottom: 6 }}>{fokus.title}</div>}
+                  <p style={{ fontFamily: T.ui, fontSize: 12.5, color: T.mut, lineHeight: 1.6, margin: 0 }}>
+                    {fokus.content.slice(0, 200)}
+                    {fokus.content.length > 200 ? "…" : ""}
+                  </p>
+                </>
               ) : (
-                <p style={{ fontFamily: T.ui, fontSize: 12.5, color: T.mut, lineHeight: 1.6, margin: "14px 0 0" }}>
+                <p style={{ fontFamily: T.ui, fontSize: 12.5, color: T.mut, lineHeight: 1.6, margin: 0 }}>
                   Ingen fokusnotat fra coach denne uka.
                 </p>
               )}
+            </Kort>
+          )}
 
-              <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginTop: 16 }}>
-                <Snarvei href={`/portal/coach/${coach.id}`} icon="user" ghost>Se profil</Snarvei>
-                <Snarvei href="/portal/booking" icon="calendar" ghost>Booking</Snarvei>
+          {/* Meldinger — én rad, fasit har ikke forhåndsvisning av bobler på hub-nivå */}
+          <Kort pad="4px 6px">
+            <Link href="/portal/coach/melding" style={{ textDecoration: "none", color: "inherit", display: "block" }}>
+              <Rad
+                last
+                leading={<Icon name="message-circle" size={16} style={{ color: T.mut }} />}
+                title="Meldinger"
+                sub={meldingerSub}
+                meta={nyeFraCoach > 0 ? <StatusPill tone="lime">{nyeFraCoach}</StatusPill> : undefined}
+              />
+            </Link>
+          </Kort>
+
+          {!coach && (
+            <Link href="/portal/booking" style={{ textDecoration: "none", display: "block" }}>
+              <span style={{
+                display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, minHeight: 56, width: "100%", padding: "10px 16px",
+                borderRadius: 12, background: T.handling, color: T.onHandling, fontFamily: T.ui, fontSize: 14, fontWeight: 600,
+              }}>Book en time</span>
+            </Link>
+          )}
+        </div>
+
+        <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+          {/* Timene dine */}
+          <Kort eyebrow="Timene dine" action={kommende.length > 0 ? <Caps size={9}>{kommende.length} bookinger</Caps> : undefined}>
+            {timeline.length > 0 ? (
+              <>
+                {timeline.map((s, i) => {
+                  const naer = naerhet(s.startAt);
+                  const sub = [s.locationName, varighet(s.startAt, s.endAt)].filter(Boolean).join(" · ");
+                  return (
+                    <Rad
+                      key={s.id}
+                      leading={
+                        <span style={{ width: 52, flex: "none", display: "flex", flexDirection: "column", gap: 2 }}>
+                          <span style={{ fontFamily: T.mono, fontSize: 12, fontWeight: 700, color: naer?.tone === "lime" ? T.lime : T.fg, fontVariantNumeric: "tabular-nums" }}>{klokke(s.startAt)}</span>
+                          <span style={{ fontFamily: T.mono, fontSize: 9, fontWeight: 700, letterSpacing: "0.04em", textTransform: "uppercase", color: T.mut }}>{datoKort(s.startAt)}</span>
+                        </span>
+                      }
+                      title={s.title}
+                      sub={sub}
+                      meta={naer ? <StatusPill tone={naer.tone}>{naer.l}</StatusPill> : undefined}
+                      trailing={null}
+                      last={i === timeline.length - 1}
+                    />
+                  );
+                })}
+                {kommende.length > timeline.length && (
+                  <Link href="/portal/booking" style={{ textDecoration: "none", display: "block", marginTop: 12 }}>
+                    <span style={{ display: "inline-flex", alignItems: "center", gap: 6, fontFamily: T.mono, fontSize: 10, fontWeight: 700, letterSpacing: "0.06em", textTransform: "uppercase", color: T.lime }}>
+                      Se alle {kommende.length} <Icon name="arrow-right" size={12} style={{ color: T.lime }} />
+                    </span>
+                  </Link>
+                )}
+              </>
+            ) : (
+              <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+                <TomTilstand icon="calendar" title="Ingen kommende timer" sub="Book en time med coachen din." />
+                {coach && (
+                  <Link href="/portal/booking" style={{ textDecoration: "none", display: "block" }}>
+                    <span style={{
+                      display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, minHeight: 56, width: "100%", padding: "10px 16px",
+                      borderRadius: 12, background: T.handling, color: T.onHandling, fontFamily: T.ui, fontSize: 14, fontWeight: 600,
+                    }}>Book time</span>
+                  </Link>
+                )}
               </div>
-            </>
-          ) : (
-            <TomTilstand icon="user" title="Ingen coach tildelt ennå" sub="Book en time eller kontakt AK Golf for tildeling." />
-          )}
-        </Kort>
+            )}
+          </Kort>
 
-        <Kort eyebrow="Kommende med coach" action={kommende.length > 0 ? <Caps size={9}>{kommende.length} økter</Caps> : undefined}>
-          {timeline.length > 0 ? (
-            <>
-              {timeline.map((s, i) => {
-                const naer = naerhet(s.startAt);
-                const sub = [s.locationName, varighet(s.startAt, s.endAt)].filter(Boolean).join(" · ");
-                return (
-                  <Rad
-                    key={s.id}
-                    leading={
-                      <span style={{ width: 52, flex: "none", display: "flex", flexDirection: "column", gap: 2 }}>
-                        <span style={{ fontFamily: T.mono, fontSize: 12, fontWeight: 700, color: naer?.tone === "lime" ? T.lime : T.fg, fontVariantNumeric: "tabular-nums" }}>{klokke(s.startAt)}</span>
-                        <span style={{ fontFamily: T.mono, fontSize: 9, fontWeight: 700, letterSpacing: "0.04em", textTransform: "uppercase", color: T.mut }}>{datoKort(s.startAt)}</span>
-                      </span>
-                    }
-                    title={s.title}
-                    sub={sub}
-                    meta={naer ? <StatusPill tone={naer.tone}>{naer.l}</StatusPill> : undefined}
-                    trailing={null}
-                    last={i === timeline.length - 1}
-                  />
-                );
-              })}
-              {kommende.length > timeline.length && (
-                <Link href="/portal/booking" style={{ textDecoration: "none", display: "block", marginTop: 12 }}>
-                  <span style={{ display: "inline-flex", alignItems: "center", gap: 6, fontFamily: T.mono, fontSize: 10, fontWeight: 700, letterSpacing: "0.06em", textTransform: "uppercase", color: T.lime }}>
-                    Se alle {kommende.length} <Icon name="arrow-right" size={12} style={{ color: T.lime }} />
-                  </span>
-                </Link>
-              )}
-            </>
-          ) : (
-            <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-              <TomTilstand icon="calendar" title="Ingen kommende økter" sub="Book en time med coachen din." />
-              {coach && (
-                <Link href="/portal/booking" style={{ textDecoration: "none", display: "block" }}>
-                  <span style={{
-            display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, minHeight: 56, width: "100%", padding: "10px 16px",
-            borderRadius: 12, background: T.handling, color: T.onHandling, fontFamily: T.ui, fontSize: 14, fontWeight: 600,
-          }}>Book time</span>
-                </Link>
-              )}
-            </div>
+          {/* Fra coach — snarveier til videoer/øvelser/spørsmål (fasit «Fra Anders») */}
+          {coach && (
+            <Kort eyebrow={`Fra ${coach.name.split(" ")[0]}`} pad="4px 6px">
+              <Link href="/portal/coach/videoer" style={{ textDecoration: "none", color: "inherit", display: "block" }}>
+                <Rad leading={<Icon name="video" size={16} style={{ color: T.mut }} />} title="Videoer" sub="Klipp coachen har delt med deg" />
+              </Link>
+              <Link href="/portal/coach/ovelser" style={{ textDecoration: "none", color: "inherit", display: "block" }}>
+                <Rad leading={<Icon name="dumbbell" size={16} style={{ color: T.mut }} />} title="Øvelser til deg" sub="Denne periodens øvelser" />
+              </Link>
+              <Link href="/portal/coach/sporsmal" style={{ textDecoration: "none", color: "inherit", display: "block" }}>
+                <Rad last leading={<Icon name="help-circle" size={16} style={{ color: T.mut }} />} title="Spørsmål" sub="Still et spørsmål mellom timene" />
+              </Link>
+            </Kort>
           )}
-        </Kort>
+        </div>
       </div>
-
-      {/* Meldinger — primær CTA er øverst; her kun forhåndsvisning */}
-      <Kort
-        eyebrow="Meldinger"
-        action={coach && nyeFraCoach > 0 ? <StatusPill tone="lime">{nyeFraCoach} fra coach</StatusPill> : undefined}
-      >
-        {coach ? (
-          sisteMeldinger.length > 0 ? (
-            <MeldingsTraad meldinger={sisteMeldinger} />
-          ) : (
-            <TomTilstand icon="message-circle" title="Ingen meldinger ennå" sub="Bruk knappen øverst for å starte samtalen." />
-          )
-        ) : (
-          <TomTilstand icon="message-circle" title="Ingen meldinger" sub="Du får en coach tildelt før dere kan skrive sammen." />
-        )}
-      </Kort>
     </div>
   );
 }
