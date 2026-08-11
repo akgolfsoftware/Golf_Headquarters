@@ -2200,7 +2200,8 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions, w
       onDragEnd={handleWbDragEnd}
       onDragCancel={() => setActiveDrag(null)}
     >
-    <div data-paper-workbench data-paper-wave-d="workbench" data-od-id="workbench" style={{ display: "flex", flexDirection: "column", gap: T.gap, position: "relative", maxWidth: 1200, margin: "0 auto", width: "100%" }}>
+    {/* PP-3: full bredde (fasit .wb eier hele vinduet) — maxWidth 1200 fjernet. */}
+    <div data-paper-workbench data-paper-wave-d="workbench" data-od-id="workbench" style={{ display: "flex", flexDirection: "column", gap: T.gap, position: "relative", width: "100%" }}>
       {visColdstartTips && (
         <Kort pad="12px 14px" style={{ border: `1px solid color-mix(in srgb, ${T.handling} 28%, ${T.border})` }}>
           <div style={{ display: "flex", alignItems: "flex-start", gap: 12, flexWrap: "wrap" }}>
