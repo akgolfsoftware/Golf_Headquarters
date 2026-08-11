@@ -16,7 +16,7 @@ export default async function AdminLegacyLayout({
   const user = await requirePortalUser({ allow: ["COACH", "ADMIN"] });
   return (
     <V2Shell
-      bredde="kolonne"
+      bredde="full"
       nav={AGENCYOS_NAV}
       navn={user.name ?? "Coach"}
       avatarUrl={user.avatarUrl}

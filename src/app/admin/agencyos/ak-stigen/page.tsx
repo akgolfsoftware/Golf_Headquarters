@@ -16,7 +16,7 @@ export default async function AkStigenPage() {
 
   // Ærlig tom tilstand først — tellinger kobles når junior-grupper er modellert i stall-loader.
   return (
-    <V2Shell bredde="kolonne" aktiv="spillere" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>
+    <V2Shell bredde="full" aktiv="spillere" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>
       <TilbakeLenke href="/admin/agencyos">Cockpit</TilbakeLenke>
       <AkStigenV2 />
     </V2Shell>

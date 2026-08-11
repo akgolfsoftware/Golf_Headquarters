@@ -407,7 +407,7 @@ export function AdminOkonomiV2({ data }: { data: AdminOkonomiV2Data }) {
   };
 
   return (
-    <div data-paper-agencyos-okonomi data-paper-wave-f="okonomi" data-od-id="agencyos-okonomi" data-paper-slug="agencyos-okonomi" style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 960, margin: "0 auto", width: "100%", background: T.bg }}>
+    <div data-paper-agencyos-okonomi data-paper-wave-f="okonomi" data-od-id="agencyos-okonomi" data-paper-slug="agencyos-okonomi" style={{ display: "flex", flexDirection: "column", gap: T.gap, width: "100%", background: T.bg }}>
       {hode}
 
       {/* Mobil-snarvei (skjult på desktop der den ligger i hodet) */}
