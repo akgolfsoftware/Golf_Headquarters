@@ -86,9 +86,9 @@ function ScoreBoks({ score, tilPar, beste }: { score: number; tilPar: number; be
         flexDirection: "column",
         alignItems: "center",
         justifyContent: "center",
-        background: beste ? T.lime : T.panel3,
-        border: `1px solid ${beste ? "transparent" : T.border}`,
-        color: beste ? T.onLime : T.fg,
+        background: beste ? T.up : T.panel3,
+        border: `1px solid ${beste ? T.up : T.border}`,
+        color: beste ? T.panel : T.fg,
       }}
     >
       <span style={{ fontFamily: T.mono, fontSize: 16, fontWeight: 700, lineHeight: 1, fontVariantNumeric: "tabular-nums" }}>{score}</span>
@@ -129,7 +129,7 @@ export function RunderV2({ data }: { data: RunderV2Data }) {
           <Link href={RUTE_LIVE} style={{ textDecoration: "none" }}>
             <span style={{
               display: "inline-flex", alignItems: "center", gap: 8, minHeight: 44, padding: "10px 16px",
-              borderRadius: 10, background: T.handling, color: T.onHandling, fontFamily: T.ui, fontSize: 13, fontWeight: 600,
+              borderRadius: 10, background: T.cta, color: T.onCta, fontFamily: T.ui, fontSize: 13, fontWeight: 600,
             }}>Start live-føring</span>
           </Link>
           <Link href={RUTE_SLAG} style={{ textDecoration: "none" }}>
@@ -166,7 +166,7 @@ export function RunderV2({ data }: { data: RunderV2Data }) {
             <Link href={RUTE_LIVE} style={{ textDecoration: "none", display: "block" }}>
               <span style={{
                 display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, minHeight: 48, width: "100%", padding: "10px 16px",
-                borderRadius: 10, background: T.handling, color: T.onHandling, fontFamily: T.ui, fontSize: 14, fontWeight: 600,
+                borderRadius: 10, background: T.cta, color: T.onCta, fontFamily: T.ui, fontSize: 14, fontWeight: 600,
               }}>Start live-føring
               </span>
             </Link>
@@ -193,13 +193,13 @@ export function RunderV2({ data }: { data: RunderV2Data }) {
             <Link href={RUTE_LIVE} style={{ textDecoration: "none", display: "block" }}>
               <span style={{
                 display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, minHeight: 48, width: "100%", padding: "10px 16px",
-                borderRadius: 10, background: T.handling, color: T.onHandling, fontFamily: T.ui, fontSize: 14, fontWeight: 600,
+                borderRadius: 10, background: T.cta, color: T.onCta, fontFamily: T.ui, fontSize: 14, fontWeight: 600,
               }}>Start live-føring
               </span>
             </Link>
             <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
               <Link href={RUTE_SLAG} style={{ textDecoration: "none" }}>
-                <Knapp ghost icon="pencil">Slag for slag</Knapp>
+                <Knapp ghost icon="pencil">Før slag for slag</Knapp>
               </Link>
               <Link href={RUTE_NY} style={{ textDecoration: "none" }}>
                 <Knapp ghost icon="plus">Hurtig score</Knapp>
@@ -217,7 +217,7 @@ export function RunderV2({ data }: { data: RunderV2Data }) {
                 title={
                   <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
                     {r.courseName}
-                    {r.isBest && <Icon name="star" size={12} style={{ color: T.lime, flex: "none" }} />}
+                    {r.isBest && <Icon name="star" size={12} style={{ color: T.up, flex: "none" }} />}
                   </span>
                 }
                 sub={`${datoTxt(r.playedAt)} · Par ${r.par}`}
