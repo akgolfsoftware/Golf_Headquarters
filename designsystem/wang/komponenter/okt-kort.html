@@ -1,0 +1,243 @@
+<!-- @dsCard group="Komponenter" -->
+<!doctype html>
+<html lang="nb">
+<head>
+<meta charset="utf-8">
+<title>Økt-kort og fire tilstander — WANG Golf</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Quattrocento+Sans:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --wang-navy: #17446f;
+    --wang-teal: #2e857d;
+    --wang-mint: #49ca9f;
+    --cat-orange: #f47b20;
+    --cat-pink: #d12a5c;
+    --cat-blue: #007db1;
+    --bg-app: #f4f6f8;
+    --text-primary: #1e293b;
+    --text-secondary: #475569;
+    --border-subtle: #e9edf1;
+    --font-brand: "Montserrat", system-ui, sans-serif;
+    --font-body: "Quattrocento Sans", system-ui, sans-serif;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; padding: 32px; background: var(--bg-app);
+    color: var(--text-primary); font-family: var(--font-body);
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 1120px; margin: 0 auto; }
+  h1 { font-family: var(--font-brand); font-weight: 800; font-size: 28px; letter-spacing: -.01em; margin: 0 0 6px; }
+  .lede { color: var(--text-secondary); margin: 0 0 30px; max-width: 64ch; line-height: 1.6; }
+  .states { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px; }
+  .col { min-width: 0; }
+  .t-label {
+    font-family: var(--font-brand); font-weight: 700; font-size: 12px;
+    letter-spacing: .08em; text-transform: uppercase; color: var(--text-secondary);
+    margin: 0 0 12px;
+  }
+  .phone {
+    width: 100%; max-width: 390px; background: var(--bg-app);
+    border-radius: 26px; padding: 16px; min-width: 0;
+  }
+
+  /* --- økt-kort --- */
+  .okt {
+    background: #fff; border-radius: 20px;
+    box-shadow: 0 4px 14px rgba(23, 68, 111, .06);
+    padding: 14px 16px; margin-bottom: 12px;
+    display: grid; grid-template-columns: 4px minmax(0, 1fr) auto;
+    gap: 14px; align-items: center;
+    transition: transform 140ms cubic-bezier(.22,1,.36,1), box-shadow 220ms cubic-bezier(.22,1,.36,1);
+    cursor: pointer; -webkit-tap-highlight-color: transparent;
+  }
+  .okt:active { transform: scale(.97); }
+  .okt:focus-visible { outline: 2px solid var(--wang-mint); outline-offset: 2px; }
+  .stripe { align-self: stretch; border-radius: 999px; min-height: 44px; }
+  .body { min-width: 0; }
+  .kat {
+    font-family: var(--font-brand); font-weight: 700; font-size: 11px;
+    letter-spacing: .08em; text-transform: uppercase; margin: 0 0 3px;
+  }
+  .tittel {
+    font-family: var(--font-brand); font-weight: 700; font-size: 15px;
+    margin: 0 0 3px; line-height: 1.3;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .sub {
+    font-size: 13px; color: var(--text-secondary); margin: 0;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .tid {
+    font-family: var(--font-brand); font-weight: 700; font-size: 13px;
+    color: var(--text-secondary); font-variant-numeric: tabular-nums;
+    text-align: right; flex: none;
+  }
+
+  /* --- tom --- */
+  .tom {
+    background: #fff; border-radius: 20px; padding: 32px 24px; text-align: center;
+    box-shadow: 0 4px 14px rgba(23, 68, 111, .06);
+  }
+  .tom svg { color: #c5d0da; margin-bottom: 12px; }
+  .tom h3 { font-family: var(--font-brand); font-weight: 700; font-size: 16px; margin: 0 0 6px; }
+  .tom p { color: var(--text-secondary); font-size: 14px; margin: 0 0 18px; line-height: 1.55; }
+  .btn {
+    font-family: var(--font-brand); font-weight: 700; font-size: 14px;
+    border: 0; border-radius: 999px; padding: 11px 22px; cursor: pointer;
+    background: var(--wang-navy); color: #fff;
+  }
+
+  /* --- laster --- */
+  .skel {
+    background: #fff; border-radius: 20px; padding: 14px 16px; margin-bottom: 12px;
+    box-shadow: 0 4px 14px rgba(23, 68, 111, .06);
+    display: grid; grid-template-columns: 4px minmax(0, 1fr); gap: 14px; align-items: center;
+  }
+  .sk {
+    background: linear-gradient(90deg, #eef1f5 25%, #e2e8f0 37%, #eef1f5 63%);
+    background-size: 400% 100%; animation: sh 1.4s ease infinite; border-radius: 6px;
+  }
+  @keyframes sh { 0% { background-position: 100% 50% } 100% { background-position: 0 50% } }
+
+  /* --- feil --- */
+  .feil {
+    background: #fff; border-radius: 20px; padding: 26px 24px; text-align: center;
+    box-shadow: 0 4px 14px rgba(23, 68, 111, .06);
+  }
+  .feil svg { color: var(--cat-pink); margin-bottom: 10px; }
+  .feil h3 { font-family: var(--font-brand); font-weight: 700; font-size: 16px; margin: 0 0 6px; }
+  .feil p { color: var(--text-secondary); font-size: 14px; margin: 0 0 18px; line-height: 1.55; }
+  .b-sec {
+    background: color-mix(in srgb, #17446f 12%, white); color: var(--wang-navy);
+    font-family: var(--font-brand); font-weight: 700; font-size: 14px;
+    border: 0; border-radius: 999px; padding: 11px 22px; cursor: pointer;
+  }
+
+  .note {
+    background: #fff; border-radius: 26px; box-shadow: 0 8px 24px rgba(23,68,111,.08);
+    padding: 22px 26px; margin-top: 30px; font-size: 14px; line-height: 1.65;
+  }
+  .note strong { font-family: var(--font-brand); }
+  code { background: #f1f4f7; padding: 1px 6px; border-radius: 6px; font-size: .92em; font-family: ui-monospace, SFMono-Regular, monospace; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Økt-kort — fire tilstander</h1>
+  <p class="lede">
+    Byggeklossen hele årsplanen består av, vist på 390px. Ferdig-definisjonen krever
+    alle fire tilstander per skjerm — derfor står de her side om side, ikke som ettertanke.
+  </p>
+
+  <div class="states">
+    <div class="col">
+      <p class="t-label">Suksess</p>
+      <div class="phone">
+        <div class="okt" tabindex="0">
+          <div class="stripe" style="background:#2e857d"></div>
+          <div class="body">
+            <p class="kat" style="color:#226f67">TEKNIKK</p>
+            <p class="tittel">Nærspill — 40–70 meter</p>
+            <p class="sub">Rangen · Anders Kristiansen</p>
+          </div>
+          <div class="tid">09:00<br>90 min</div>
+        </div>
+        <div class="okt" tabindex="0">
+          <div class="stripe" style="background:#f47b20"></div>
+          <div class="body">
+            <p class="kat" style="color:#b8560e">FYSISK</p>
+            <p class="tittel">Styrke underkropp og rotasjonsstabilitet</p>
+            <p class="sub">Styrkerommet · Egentrening</p>
+          </div>
+          <div class="tid">11:15<br>60 min</div>
+        </div>
+        <div class="okt" tabindex="0">
+          <div class="stripe" style="background:#007db1"></div>
+          <div class="body">
+            <p class="kat" style="color:#005d84">SPILL</p>
+            <p class="tittel">9 hull med scorekort</p>
+            <p class="sub">Gamle Fredrikstad GK</p>
+          </div>
+          <div class="tid">13:30<br>150 min</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col">
+      <p class="t-label">Tom</p>
+      <div class="phone">
+        <div class="tom">
+          <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/></svg>
+          <h3>Ingen økter denne uka</h3>
+          <p>Uke 40 er høstferie. Neste økt er tirsdag 7. oktober.</p>
+          <button class="btn">Gå til uke 41</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="col">
+      <p class="t-label">Laster</p>
+      <div class="phone">
+        <div class="skel">
+          <div class="sk" style="height:44px;border-radius:999px"></div>
+          <div>
+            <div class="sk" style="height:9px;width:64px;margin-bottom:8px"></div>
+            <div class="sk" style="height:13px;width:82%;margin-bottom:7px"></div>
+            <div class="sk" style="height:11px;width:56%"></div>
+          </div>
+        </div>
+        <div class="skel">
+          <div class="sk" style="height:44px;border-radius:999px"></div>
+          <div>
+            <div class="sk" style="height:9px;width:52px;margin-bottom:8px"></div>
+            <div class="sk" style="height:13px;width:70%;margin-bottom:7px"></div>
+            <div class="sk" style="height:11px;width:44%"></div>
+          </div>
+        </div>
+        <div class="skel">
+          <div class="sk" style="height:44px;border-radius:999px"></div>
+          <div>
+            <div class="sk" style="height:9px;width:58px;margin-bottom:8px"></div>
+            <div class="sk" style="height:13px;width:76%;margin-bottom:7px"></div>
+            <div class="sk" style="height:11px;width:50%"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col">
+      <p class="t-label">Feil</p>
+      <div class="phone">
+        <div class="feil">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>
+          <h3>Fikk ikke hentet planen</h3>
+          <p>Sjekk nettforbindelsen. Planen ligger lagret og forsvinner ikke.</p>
+          <button class="b-sec">Prøv igjen</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="note">
+    <strong>Kortet er et 3-kolonners grid — og midtkolonnen MÅ ha <code>min-width: 0</code>.</strong>
+    Tittelen bruker <code>white-space: nowrap</code> + <code>text-overflow: ellipsis</code>.
+    Uten <code>min-width: 0</code> blir kolonnens minstebredde hele setningen, ellipsen slår
+    aldri inn, og kortet sprenger skjermen i stedet for å kutte teksten. Dette traff
+    produksjon 10.08.2026 — en kolonne ble 1681px bred i et 1280px vindu.
+    <p style="margin:14px 0 0">
+      Verifiser på hver skjerm: <code>document.documentElement.scrollWidth</code> skal være
+      lik <code>window.innerWidth</code>. Øktnavnene i årsplanen er lange nok til å utløse
+      feilen — «Styrke underkropp og rotasjonsstabilitet» over er et ekte eksempel.
+    </p>
+    <p style="margin:14px 0 0">
+      <strong>Tomtilstanden har alltid én vei videre.</strong> «Ingen økter» uten en knapp
+      er en blindvei. Feiltilstanden beroliger om data — eleven skal aldri lure på om
+      planen er borte.
+    </p>
+  </div>
+</div>
+</body>
+</html>

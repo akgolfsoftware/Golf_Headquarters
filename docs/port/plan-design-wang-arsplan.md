@@ -124,6 +124,10 @@ Prosjektet er opprettet og seedet med merkevaregrunnlaget hentet fra kode
 - `grunnlag/farger.html` — kjerne-, kategori- og flatefarger + semantisk bruk
 - `grunnlag/typografi.html` — Montserrat/Quattrocento Sans-skala og regler
 - `grunnlag/flater-og-bevegelse.html` — kort, skygger, merker, knapper, avstand, bevegelse
+- `tokens/wang-tokens.css` — ren kopi av produksjonstokenene, så avvik kan `diff`-es
+- `komponenter/knapper-og-chips.html` — piller, kategori-chips, segmentert velger
+- `komponenter/okt-kort.html` — årsplanens byggekloss i alle fire tilstander, med
+  `min-width: 0`-fella (`gotchas.md`) dokumentert i selve kortet
 
 **Divergensrisikoen fra §3.1 er reell og håndteres slik:** grunnlaget over er kopiert fra
 produksjonstokenene, ikke funnet opp på nytt. Endres en token i redesignet, skal den endres i

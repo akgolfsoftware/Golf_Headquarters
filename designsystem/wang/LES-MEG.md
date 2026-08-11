@@ -14,7 +14,9 @@ fire tilstander (Suksess · Tom · Laster · Feil), deretter desktop 1280px, og 
 | Mappe | Innhold |
 |---|---|
 | `grunnlag/` | Farger, typografi, flater og bevegelse — hentet fra `src/styles/wang-tokens.css` |
+| `komponenter/` | Gjenbrukbare byggeklosser: knapper/chips, økt-kort i alle fire tilstander |
 | `skjermer/` | Skjermdesign, én fil per skjerm |
+| `tokens/` | Ren kopi av `src/styles/wang-tokens.css` — sammenlign med `diff` |
 
 **Endrer du en token her, endre den i `src/styles/wang-tokens.css` i samme PR.** Det er
 mottiltaket mot at redesignet og produksjonskoden divergerer (se

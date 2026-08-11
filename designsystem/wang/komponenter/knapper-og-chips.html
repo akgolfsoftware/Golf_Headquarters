@@ -1,0 +1,143 @@
+<!-- @dsCard group="Komponenter" -->
+<!doctype html>
+<html lang="nb">
+<head>
+<meta charset="utf-8">
+<title>Knapper og chips — WANG Golf</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Quattrocento+Sans:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --wang-navy: #17446f;
+    --wang-teal: #2e857d;
+    --wang-mint: #49ca9f;
+    --cat-orange: #f47b20;
+    --cat-pink: #d12a5c;
+    --cat-blue: #007db1;
+    --cat-purple: #7f1975;
+    --bg-app: #f4f6f8;
+    --text-primary: #1e293b;
+    --text-secondary: #475569;
+    --border-subtle: #e9edf1;
+    --font-brand: "Montserrat", system-ui, sans-serif;
+    --font-body: "Quattrocento Sans", system-ui, sans-serif;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; padding: 32px; background: var(--bg-app);
+    color: var(--text-primary); font-family: var(--font-body);
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 900px; margin: 0 auto; }
+  h1 { font-family: var(--font-brand); font-weight: 800; font-size: 28px; letter-spacing: -.01em; margin: 0 0 6px; }
+  .lede { color: var(--text-secondary); margin: 0 0 30px; max-width: 62ch; line-height: 1.6; }
+  .t-label {
+    font-family: var(--font-brand); font-weight: 700; font-size: 12px;
+    letter-spacing: .08em; text-transform: uppercase; color: var(--text-secondary);
+    margin: 0 0 16px;
+  }
+  .card {
+    background: #fff; border-radius: 26px;
+    box-shadow: 0 8px 24px rgba(23, 68, 111, .08);
+    padding: 26px 28px; margin-bottom: 20px;
+  }
+  .row { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
+  .btn {
+    font-family: var(--font-brand); font-weight: 700; font-size: 14px;
+    border: 0; border-radius: 999px; padding: 12px 24px; cursor: pointer;
+    display: inline-flex; align-items: center; gap: 8px;
+    transition: transform 140ms cubic-bezier(.22,1,.36,1), box-shadow 220ms cubic-bezier(.22,1,.36,1), background 140ms ease;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .btn:active { transform: scale(.97); }
+  .btn:focus-visible { outline: 2px solid var(--wang-mint); outline-offset: 2px; }
+  .b-primary { background: var(--wang-navy); color: #fff; box-shadow: 0 2px 8px rgba(23,68,111,.1); }
+  .b-primary:hover { background: #13395d; }
+  .b-secondary { background: color-mix(in srgb, #17446f 12%, white); color: var(--wang-navy); }
+  .b-secondary:hover { background: color-mix(in srgb, #17446f 18%, white); }
+  .b-ghost { background: transparent; color: var(--wang-navy); }
+  .b-ghost:hover { background: color-mix(in srgb, #17446f 8%, white); }
+  .b-disabled { background: #e9edf1; color: #94a3b8; cursor: not-allowed; }
+  .b-sm { padding: 8px 16px; font-size: 13px; }
+  .b-lg { padding: 15px 30px; font-size: 15px; }
+  .chip {
+    font-family: var(--font-brand); font-weight: 700; font-size: 12px;
+    letter-spacing: .04em; border-radius: 999px; padding: 6px 14px;
+    display: inline-flex; align-items: center; gap: 6px;
+  }
+  .dot { width: 7px; height: 7px; border-radius: 999px; flex: none; }
+  .seg {
+    display: inline-flex; background: #eef1f5; border-radius: 999px; padding: 4px; gap: 2px;
+  }
+  .seg button {
+    font-family: var(--font-brand); font-weight: 700; font-size: 13px;
+    border: 0; background: transparent; color: var(--text-secondary);
+    padding: 9px 20px; border-radius: 999px; cursor: pointer;
+    transition: background 140ms ease, color 140ms ease;
+  }
+  .seg button[aria-selected="true"] { background: #fff; color: var(--wang-navy); box-shadow: 0 2px 8px rgba(23,68,111,.1); }
+  .note { font-size: 14px; line-height: 1.65; }
+  .note strong { font-family: var(--font-brand); }
+  svg { flex: none; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Knapper og chips</h1>
+  <p class="lede">
+    Alt er piller. Én primær handling per skjerm — resten er sekundær eller ghost.
+    Ikoner er Lucide, aldri emoji.
+  </p>
+
+  <div class="card">
+    <p class="t-label">Knapper</p>
+    <div class="row" style="margin-bottom:18px">
+      <button class="btn b-primary">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
+        Legg til økt
+      </button>
+      <button class="btn b-secondary">Se hele uka</button>
+      <button class="btn b-ghost">Avbryt</button>
+      <button class="btn b-disabled" disabled>Ikke tilgjengelig</button>
+    </div>
+    <div class="row">
+      <button class="btn b-primary b-sm">Liten</button>
+      <button class="btn b-primary">Standard</button>
+      <button class="btn b-primary b-lg">Stor</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <p class="t-label">Kategori-chips — økttyper</p>
+    <div class="row">
+      <span class="chip" style="background:color-mix(in srgb,#2e857d 13%,white);color:#226f67"><span class="dot" style="background:#2e857d"></span>TEKNIKK</span>
+      <span class="chip" style="background:color-mix(in srgb,#f47b20 9%,white);color:#b8560e"><span class="dot" style="background:#f47b20"></span>FYSISK</span>
+      <span class="chip" style="background:color-mix(in srgb,#007db1 10%,white);color:#005d84"><span class="dot" style="background:#007db1"></span>SPILL</span>
+      <span class="chip" style="background:color-mix(in srgb,#d12a5c 10%,white);color:#9e1f45"><span class="dot" style="background:#d12a5c"></span>TURNERING</span>
+      <span class="chip" style="background:color-mix(in srgb,#7f1975 10%,white);color:#7f1975"><span class="dot" style="background:#7f1975"></span>SAMLING</span>
+      <span class="chip" style="background:#f1f4f7;color:#64748b"><span class="dot" style="background:#d2d2d2"></span>FRI</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <p class="t-label">Segmentert velger — periode/visning</p>
+    <div class="seg" role="tablist">
+      <button role="tab" aria-selected="true">Uke</button>
+      <button role="tab" aria-selected="false">Måned</button>
+      <button role="tab" aria-selected="false">Årshjul</button>
+    </div>
+  </div>
+
+  <div class="card note">
+    <strong>Maks én primær handling per skjerm.</strong> Navy-pillen er den eneste
+    som skal dra blikket. Har en skjerm to like tunge handlinger, er skjermen feil
+    designet — ikke knappene.
+    <p style="margin:14px 0 0">
+      <strong>Chips merker, de handler ikke.</strong> En chip er en tilstand eller
+      kategori. Skal noe skje ved trykk, er det en knapp.
+    </p>
+  </div>
+</div>
+</body>
+</html>
