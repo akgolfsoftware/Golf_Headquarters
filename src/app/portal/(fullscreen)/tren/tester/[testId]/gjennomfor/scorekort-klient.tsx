@@ -29,7 +29,6 @@
 import { useMemo, useRef, useState, useTransition } from "react";
 import type { CSSProperties, ReactNode } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { T, Knapp, TekstOmraade } from "@/components/v2";
 import { Icon } from "@/components/v2/icon";
 import type { ScorekortFelt, ScorekortForsok, ScorekortSpec } from "@/lib/portal-tester/protocol";
@@ -129,7 +128,6 @@ export function ScorekortKlient({
   /** Rå protokoll-JSON — sendes til motoren for live-score (samme som server). */
   protocol: unknown;
 }) {
-  const router = useRouter();
   const [pending, startTransition] = useTransition();
 
   const [verdier, setVerdier] = useState<Verdier>({});
@@ -520,7 +518,7 @@ export function ScorekortKlient({
           position: "sticky",
           bottom: 0,
           marginTop: 12,
-          padding: "12px 0 calc(12px + env(safe-area-inset-bottom))",
+          padding: "12px 0 calc(12px + env(safe-area-inset-bottom) + var(--ak-cookie-h, 0px))",
           background: `linear-gradient(to top, ${T.bg} 70%, transparent)`,
         }}
       >
