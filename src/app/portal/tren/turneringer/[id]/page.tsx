@@ -1,9 +1,11 @@
 /**
- * PlayerHQ · Trening · Turnering — detalj (/portal/tren/turneringer/[id]) — v2.
- * v2-port 16. juli 2026: `TurneringDetaljV2` erstatter hybrid-designet, ruten
- * flyttet ut av (legacy). Auth-guard (PLAYER/COACH/ADMIN), loadTurneringDetalj-
- * loaderen og server actions (meldDegPa/meldDegAv via inline "use server")
- * er uendret. Not-found-branch beholdt med ærlig tomtilstand.
+ * PlayerHQ · Turnering-detalj (/portal/tren/turneringer/[id]) — Paper-port W1
+ * (fase2). Fasit: designsystem/paper/fase2/playerhq/playerhq-turnering-detalj.html.
+ *
+ * Fakta-radene bygges her KUN av reelle loader-felter (Startavgift/Reise
+ * finnes ikke i schemaet → utelates ærlig). Dobbel bekreftelse (claim +
+ * confirm) skjer i komponenten. Loader (loadTurneringDetalj), auth-guard og
+ * server actions (meldDegAv, startTurneringsrunde) er uendret.
  */
 
 import Link from "next/link";
@@ -11,10 +13,10 @@ import { notFound } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { loadTurneringDetalj } from "@/lib/portal-turnering/turnering-detalj-data";
-import { meldDegPa, meldDegAv } from "@/app/portal/(legacy)/tren/turneringer/actions";
+import { meldDegAv } from "@/app/portal/(legacy)/tren/turneringer/actions";
 import { startTurneringsrunde } from "./actions";
 import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
-import { TilbakeLenke, TomTilstand, CTAPill, Kort } from "@/components/v2";
+import { TilbakeLenke } from "@/components/v2";
 import { T } from "@/lib/v2/tokens";
 import {
   TurneringDetaljV2,
@@ -35,36 +37,56 @@ export default async function TurneringDetaljPage({
 
   const data = await loadTurneringDetalj(user.id, id);
 
-  // Not-found branch — ærlig tomtilstand, aldri demo-innhold.
+  // Tom tilstand — fasit-copy: «Fant ikke turneringen», én vei videre.
   if (!data) {
     return (
-      <V2Shell bredde="kolonne" aktiv="analyse" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
+      <V2Shell bredde="kolonne" aktiv="plan" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
         <TilbakeLenke href="/portal/tren/turneringer">Turneringer</TilbakeLenke>
-        <Kort>
-          <TomTilstand
-            icon="trophy"
-            title="Ingen turnering tilgjengelig"
-            sub="Turneringen ble ikke funnet eller du har ikke tilgang."
-          />
-          <div style={{ display: "flex", justifyContent: "center" }}>
-            <Link href="/portal/tren/turneringer" style={{ textDecoration: "none" }}>
-              <span style={{
-                display: "inline-flex", alignItems: "center", gap: 8, minHeight: 44, padding: "0 16px",
-                borderRadius: 10, background: T.handling, color: T.onHandling, fontFamily: T.ui, fontSize: 13, fontWeight: 600,
-              }}>Se alle turneringer</span>
+        <div style={{ maxWidth: 720, margin: "0 auto", width: "100%" }}>
+          <div
+            style={{
+              padding: "24px 16px",
+              background: T.panel2,
+              border: `1px dashed ${T.border}`,
+              borderRadius: T.rCard,
+            }}
+          >
+            <h3 style={{ margin: "0 0 8px", fontFamily: T.disp, fontSize: 15, fontWeight: 600, color: T.fg }}>
+              Fant ikke turneringen
+            </h3>
+            <p style={{ margin: "0 0 12px", fontFamily: T.bodyFont, fontSize: 13.5, color: T.mut }}>
+              Den kan være avlyst eller flyttet i GolfBox. Katalogen har alltid
+              gjeldende liste.
+            </p>
+            <Link
+              href="/portal/tren/turneringer"
+              data-od-id="turnd-tom-katalog"
+              data-paper-en-ting="true"
+              className="v2-press v2-focus"
+              style={{
+                textDecoration: "none",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                minHeight: 56,
+                width: "100%",
+                borderRadius: T.rCard,
+                background: T.handling,
+                color: T.onHandling,
+                fontFamily: T.ui,
+                fontSize: 14,
+                fontWeight: 600,
+              }}
+            >
+              Til turneringskatalogen
             </Link>
           </div>
-        </Kort>
+        </div>
       </V2Shell>
     );
   }
 
   const pameldt = data.entry?.state.active === true;
-
-  async function pameldAction() {
-    "use server";
-    await meldDegPa(id);
-  }
 
   async function avmeldAction() {
     "use server";
@@ -86,40 +108,50 @@ export default async function TurneringDetaljPage({
   const kanStarteRunde =
     pameldt && data.erRelevantNa && data.rundeBaneId != null && data.liveRunde == null;
 
+  // EntryState → forenklet status for dobbel bekreftelse-flyten.
+  const entryStatus: TurneringDetaljV2Data["entryStatus"] = !data.entry
+    ? "INGEN"
+    : data.entry.state.active
+      ? data.entry.state.tone === "ok"
+        ? "CONFIRMED"
+        : data.entry.state.tone === "warn"
+          ? "CLAIMED"
+          : "PLANNED"
+      : "ANNEN";
+
+  // Faktakort — kun reelle felter (aldri fabrikkerte verdier).
+  const fakta: TurneringDetaljV2Data["fakta"] = [];
+  fakta.push({ k: "Når", v: data.dateLong });
+  if (data.venue) fakta.push({ k: "Bane", v: data.venue });
+  if (data.format) fakta.push({ k: "Format", v: data.format });
+  if (data.entryClosesLabel) fakta.push({ k: "Påmeldingsfrist", v: data.entryClosesLabel });
+  if (data.recommendedLevel) fakta.push({ k: "Nivå", v: data.recommendedLevel });
+  if (data.entry) fakta.push({ k: "I sesongplanen din", v: `plan ${data.entry.planTier}` });
+
   const v2Data: TurneringDetaljV2Data = {
+    id: data.id,
     navn: data.name,
-    datoLang: data.dateLong,
-    sted: data.venue,
-    format: data.format,
-    tour: data.tour,
-    status: data.status,
-    offisiellUrl: data.officialUrl,
-    coachNotat: data.entry?.notes ?? null,
-    coachNavn: "Anders Kristiansen",
-    entry: data.entry
-      ? {
-          statusLabel: data.entry.state.label,
-          statusTone: data.entry.state.tone,
-          kategori: data.entry.category,
-          notater: data.entry.notes,
-          paameldtTekst: data.entry.registeredLong,
-        }
-      : null,
+    sub: [data.venue, data.dateCompact, data.entry ? `plan ${data.entry.planTier}` : null]
+      .filter(Boolean)
+      .join(" · "),
+    fakta,
+    fristLabel: data.entryClosesLabel,
+    entryStatus,
+    notater: data.entry?.notes ?? null,
     historikk: data.history.map((h) => ({
       id: h.id,
       aar: h.year,
       plassering: h.position,
       score: h.score,
     })),
+    arrangorUrl: data.registrationUrl ?? data.officialUrl,
   };
 
   return (
-    <V2Shell bredde="kolonne" aktiv="analyse" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
+    <V2Shell bredde="kolonne" aktiv="plan" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
       <TilbakeLenke href="/portal/tren/turneringer">Turneringer</TilbakeLenke>
       <TurneringDetaljV2
         data={v2Data}
-        pameldt={pameldt}
-        pameldAction={pameldAction}
         avmeldAction={avmeldAction}
         turneringsrunde={
           data.liveRunde
