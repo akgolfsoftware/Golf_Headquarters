@@ -1,16 +1,25 @@
 "use client";
-import { T } from "@/lib/v2/tokens";
+
+/**
+ * PlayerHQ · Slagteller-shell — Paper-port W1 (fase2).
+ * Fasit: designsystem/paper/fase2/playerhq/playerhq-live-tapper.html.
+ *
+ * Struktur per fasit: topp (tilbake + Slagteller + økt-sub) → stort tellertall
+ * «slag denne økta» → «siste slag kl. X» med Angre → fordeling per kølle →
+ * bunnfestet fangstflate med kølleknapper (60px-mål) + clay «Avslutt og lagre».
+ *
+ * Databegrensning (bevisst): persisteringen er dagens SessionBallLog-
+ * AGGREGATER (saveTapperCounts) — ingen Shot-skriving. «Siste slag kl. X» og
+ * Angre bæres derfor av LOKAL state i denne shell-en (kun tapp gjort i denne
+ * nettleserøkta); uten lokale tapp utelates raden ærlig. Debounce, offline-kø
+ * (leggIKo/tomKo) og gjenopptak fra initialCounts er uendret.
+ */
 
 import { useEffect, useRef, useState } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
-import {
-  ChevronDown,
-  Clock,
-  Pause,
-  Play,
-  StopCircle,
-  X,
-} from "lucide-react";
+import { T } from "@/lib/v2/tokens";
+import { Icon } from "@/components/v2/icon";
 import { LiveCoachPanel } from "@/components/portal/live/LiveCoachPanel";
 import type { LiveCoachPanelData } from "@/components/portal/live/types";
 import { saveTapperCounts } from "./actions";
@@ -20,43 +29,38 @@ type Club = { id: string; name: string };
 
 type Props = {
   sessionId: string;
-  facilityLabel: string;
-  defaultClubs: Club[];
+  /** Øktas navn — mono-sublinjen i toppen. */
+  oktLabel: string;
+  /** Kølleknappene — fra spillerens utstyrsbag (bygget i page.tsx). */
+  clubs: Club[];
   coachPanel: LiveCoachPanelData;
   /** Tidligere lagrede tellinger (session_ball_logs) — gjenopptak etter refresh. */
   initialCounts?: Record<string, number>;
 };
 
-/**
- * Tapper-shell — fullscreen mørk modus med ett stort tap-felt.
- * Mobile-first: tap-knapp 120px høyde, store tap-targets, minimal UI.
- *
- * Tellingene persisteres til session_ball_logs: debounced ~5 s etter siste
- * tap, ved pause, og før navigering ut (avslutt/lukk).
- */
-export function TapperShell({ sessionId, facilityLabel, defaultClubs, coachPanel, initialCounts }: Props) {
+/** Lokalt tapp denne nettleserøkta — bærer «siste slag kl. X» + Angre. */
+type Tapp = { clubId: string; kl: string };
+
+const OSLO_KL = new Intl.DateTimeFormat("nb-NO", {
+  hour: "2-digit",
+  minute: "2-digit",
+  timeZone: "Europe/Oslo",
+});
+
+export function TapperShell({ sessionId, oktLabel, clubs, coachPanel, initialCounts }: Props) {
   const router = useRouter();
   const [counts, setCounts] = useState<Record<string, number>>(() => ({
-    ...Object.fromEntries(defaultClubs.map((c) => [c.id, 0])),
+    ...Object.fromEntries(clubs.map((c) => [c.id, 0])),
     ...(initialCounts ?? {}),
   }));
-  const [activeClubId, setActiveClubId] = useState<string>(
-    defaultClubs[0]?.id ?? "",
-  );
-  const [paused, setPaused] = useState(false);
-  const [startedAt] = useState(() => new Date());
-  const [now, setNow] = useState(() => new Date());
-  const [showClubPicker, setShowClubPicker] = useState(false);
+  const [tapp, setTapp] = useState<Tapp[]>([]);
   const [lagreStatus, setLagreStatus] = useState<"ok" | "kolagt" | "gitt-opp">("ok");
 
-  useEffect(() => {
-    const t = setInterval(() => setNow(new Date()), 30_000);
-    return () => clearInterval(t);
-  }, []);
-
-  // ── Persistering: debounce + flush ──────────────────────────────
+  // ── Persistering: debounce + flush (uendret mekanikk) ──────────
   const countsRef = useRef(counts);
-  countsRef.current = counts;
+  useEffect(() => {
+    countsRef.current = counts;
+  }, [counts]);
   const saveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   async function lagre(): Promise<boolean> {
@@ -90,9 +94,8 @@ export function TapperShell({ sessionId, facilityLabel, defaultClubs, coachPanel
     };
   }, []);
 
-  // Tøm evt. kølagt telling fra en tidligere økt: ved mount (siden kan lastes
-  // på nytt mens nettet allerede er tilbake, uten at "online" noensinne fyres)
-  // og hver gang nettet kommer tilbake mens siden er åpen.
+  // Tøm evt. kølagt telling fra en tidligere økt: ved mount og hver gang
+  // nettet kommer tilbake mens siden er åpen.
   useEffect(() => {
     async function synk() {
       const resultat = await tomKo(sessionId, saveTapperCounts);
@@ -109,14 +112,10 @@ export function TapperShell({ sessionId, facilityLabel, defaultClubs, coachPanel
     router.push(`/portal/live/${sessionId}`);
   }
 
-  function handleTap() {
-    if (paused) return;
-    setCounts((prev) => ({
-      ...prev,
-      [activeClubId]: (prev[activeClubId] ?? 0) + 1,
-    }));
+  function tappKolle(clubId: string) {
+    setCounts((prev) => ({ ...prev, [clubId]: (prev[clubId] ?? 0) + 1 }));
+    setTapp((prev) => [{ clubId, kl: OSLO_KL.format(new Date()) }, ...prev]);
     planleggLagring();
-    // Haptic feedback hvis tilgjengelig
     if (typeof navigator !== "undefined" && "vibrate" in navigator) {
       try {
         navigator.vibrate?.(20);
@@ -126,252 +125,296 @@ export function TapperShell({ sessionId, facilityLabel, defaultClubs, coachPanel
     }
   }
 
+  function angre() {
+    const siste = tapp[0];
+    if (!siste) return;
+    setCounts((prev) => ({
+      ...prev,
+      [siste.clubId]: Math.max(0, (prev[siste.clubId] ?? 0) - 1),
+    }));
+    setTapp((prev) => prev.slice(1));
+    planleggLagring();
+  }
+
   const totalCount = Object.values(counts).reduce((a, b) => a + b, 0);
-  const activeClub = defaultClubs.find((c) => c.id === activeClubId);
-  const activeCount = counts[activeClubId] ?? 0;
+  const navnFor = (id: string) => clubs.find((c) => c.id === id)?.name ?? id;
 
-  const fmtTime = (d: Date) =>
-    d.toLocaleTimeString("nb-NO", { hour: "2-digit", minute: "2-digit" });
-
-  // Long-press to confirm end
-  const longPressTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const [endProgress, setEndProgress] = useState(0);
-
-  function startEndPress() {
-    setEndProgress(0);
-    const start = Date.now();
-    longPressTimer.current = setInterval(() => {
-      const pct = Math.min(1, (Date.now() - start) / 800);
-      setEndProgress(pct);
-      if (pct >= 1) {
-        cancelEndPress();
-        void avslutt();
-      }
-    }, 30);
-  }
-  function cancelEndPress() {
-    if (longPressTimer.current) clearInterval(longPressTimer.current);
-    longPressTimer.current = null;
-    setEndProgress(0);
-  }
+  // Fordeling: kølleknappenes rekkefølge først, deretter evt. historiske
+  // kølle-nøkler fra tidligere lagringer som ikke lenger er i bagen.
+  const fordelingIds = [
+    ...clubs.map((c) => c.id),
+    ...Object.keys(counts).filter((id) => !clubs.some((c) => c.id === id)),
+  ].filter((id) => (counts[id] ?? 0) > 0);
+  const maks = Math.max(1, ...fordelingIds.map((id) => counts[id] ?? 0));
 
   return (
     <div
-      data-paper-portal-live-tapper
-      className="fixed inset-0 grid grid-rows-[56px_1fr_auto] overflow-hidden text-white"
+      data-paper-slug="playerhq-live-tapper"
+      data-od-id="playerhq-live-tapper"
       style={{
-        paddingTop: "env(safe-area-inset-top)",
-        background: T.farge.inkMerke,
+        position: "fixed",
+        inset: 0,
+        display: "flex",
+        flexDirection: "column",
+        overflow: "hidden",
+        background: T.bg,
+        color: T.fg,
       }}
     >
-      {/* Radial accent */}
-      <div
-        aria-hidden
-        className="pointer-events-none absolute left-1/2 top-[38%] h-[900px] w-[900px] -translate-x-1/2 -translate-y-1/2 rounded-full"
+      {/* Topp — tilbake + Slagteller + økt-sub */}
+      <header
         style={{
-          background:
-            `radial-gradient(circle, color-mix(in srgb, var(--v2-lime) 5%, transparent) 0%, ${T.farge.limeMerkeA0} 60%)`,
+          flex: "none",
+          display: "flex",
+          alignItems: "center",
+          gap: 8,
+          padding: "calc(12px + env(safe-area-inset-top)) 16px 12px",
+          borderBottom: `1px solid ${T.border}`,
+          background: T.panel,
         }}
-      />
-
-      {/* Topbar */}
-      <div className="relative z-10 flex items-center gap-2 border-b border-white/5 px-4 sm:px-6">
-        <div className="flex items-center gap-2">
-          <div className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/[0.06] px-4 py-1.5 font-sans text-[11px] font-semibold uppercase tracking-[0.10em] text-white/95">
-            Range-mode
-          </div>
-          <div className="hidden items-center gap-2 font-mono text-[12px] text-white/65 tabular-nums sm:inline-flex">
-            <Clock className="h-3.5 w-3.5" strokeWidth={1.75} />
-            {fmtTime(startedAt)} → {fmtTime(now)}
-          </div>
-        </div>
-        <div className="flex-1 truncate text-center font-sans text-[13px] text-white/60">
-          {facilityLabel}
-        </div>
-        <button
-          type="button"
-          onClick={() => void avslutt()}
-          aria-label="Lukk tapper"
-          className="grid h-10 w-10 place-items-center rounded-full border border-white/20 text-white transition-colors hover:bg-white/10"
+      >
+        <Link
+          href={`/portal/live/${sessionId}`}
+          aria-label="Til live-økta"
+          data-od-id="tapper-tilbake"
+          className="v2-press v2-focus"
+          style={{
+            flex: "none",
+            width: 44,
+            height: 44,
+            display: "grid",
+            placeItems: "center",
+            border: `1px solid ${T.border}`,
+            borderRadius: 12,
+            color: "inherit",
+            textDecoration: "none",
+          }}
         >
-          <X className="h-4 w-4" strokeWidth={1.75} />
-        </button>
-      </div>
-
-      {/* Tap zone */}
-      <div className="relative z-0 flex flex-col items-center justify-center px-4 pt-6">
-        <button
-          type="button"
-          onClick={() => setShowClubPicker((v) => !v)}
-          className="inline-flex items-center gap-2 rounded-full border-2 border-white/25 bg-white/[0.06] px-6 py-2.5 font-sans text-[14px] font-semibold text-white transition-colors hover:bg-white/10"
-        >
-          <span className="text-white/70">▲</span>
-          <span className="font-semibold text-[15px]">
-            {activeClub?.name ?? "Velg kølle"}
+          <Icon name="chevron-left" size={18} />
+        </Link>
+        <div style={{ minWidth: 0 }}>
+          <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600 }}>Slagteller</h1>
+          <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+            {oktLabel}
           </span>
-          <span className="inline-flex items-center gap-1 border-l border-white/20 pl-4 font-sans text-[12px] text-white/65">
-            <ChevronDown className="h-3.5 w-3.5" strokeWidth={1.75} />
-            Bytt
-          </span>
-        </button>
+        </div>
+      </header>
 
-        {showClubPicker && (
-          <div className="z-20 mt-2 flex max-w-full flex-wrap justify-center gap-2 rounded-2xl border border-white/10 bg-white/[0.04] p-4">
-            {defaultClubs.map((c) => (
-              <button
-                key={c.id}
-                type="button"
-                onClick={() => {
-                  setActiveClubId(c.id);
-                  setShowClubPicker(false);
-                }}
-                className={`min-h-[44px] rounded-full px-4 py-2 font-sans text-[13px] font-medium transition-colors ${
-                  c.id === activeClubId
-                    ? "bg-white text-black"
-                    : "border border-white/15 bg-white/5 text-white hover:bg-white/10"
-                }`}
-              >
-                {c.name}
-              </button>
-            ))}
+      {/* Kropp */}
+      <main style={{ flex: 1, minHeight: 0, overflowY: "auto", padding: 16, width: "100%", maxWidth: 720, margin: "0 auto" }}>
+        {/* Feil — slagene ligger trygt lokalt (offline-køen bærer dem) */}
+        {lagreStatus !== "ok" && (
+          <div
+            role="alert"
+            style={{ padding: "16px", background: T.panel2, border: `1px dashed ${T.border}`, borderRadius: T.rCard, marginBottom: 12 }}
+          >
+            <h3 style={{ margin: "0 0 8px", fontFamily: T.disp, fontSize: 15, fontWeight: 600, color: T.fg }}>
+              Slagene ble ikke lagret
+            </h3>
+            <p style={{ margin: "0 0 12px", fontFamily: T.bodyFont, fontSize: 13.5, color: T.mut }}>
+              {lagreStatus === "gitt-opp"
+                ? "Fikk ikke synket etter flere forsøk — slagene ligger fortsatt trygt på telefonen. Sjekk nettet ditt."
+                : `Nettet forsvant under lagringen. De ${totalCount} slagene ligger trygt på telefonen og sendes automatisk når nettet er tilbake.`}
+            </p>
+            <button
+              type="button"
+              onClick={() => void lagre()}
+              data-od-id="tapper-retry"
+              className="v2-press v2-focus"
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                justifyContent: "center",
+                minHeight: 44,
+                padding: "0 16px",
+                fontFamily: T.ui,
+                fontSize: 14,
+                fontWeight: 500,
+                background: "transparent",
+                border: `1px solid ${T.border}`,
+                borderRadius: 12,
+                color: T.fg,
+                cursor: "pointer",
+              }}
+            >
+              Prøv igjen nå
+            </button>
           </div>
         )}
 
-        <div
-          className="mt-8 font-mono font-medium leading-[0.9] text-white tabular-nums"
-          style={{
-            fontSize: "clamp(120px, 28vw, 220px)",
-            letterSpacing: "-0.06em",
-            textShadow: "none",
-          }}
-        >
-          {activeCount}
-        </div>
-        <div className="mt-2 font-sans text-[16px] text-white/65 sm:text-[18px]">
-          ball med {activeClub?.name.toLowerCase() ?? "valgt kølle"}
-        </div>
-
-        {/* Mini stats */}
-        <div className="mt-8 flex max-w-full flex-wrap items-center justify-center gap-x-6 gap-y-2 rounded-full border border-white/10 bg-white/[0.04] px-6 py-2">
-          {defaultClubs.slice(0, 4).map((c) => (
-            <div
-              key={c.id}
-              className="inline-flex items-baseline gap-1.5 font-mono text-[13px] tabular-nums text-white/75"
-            >
-              <span className="font-normal text-white/50">{c.name}</span>
-              {counts[c.id] ?? 0}
-            </div>
-          ))}
-          <div className="inline-flex items-baseline gap-1.5 font-mono text-[14px] font-medium tabular-nums text-white">
-            <span className="font-normal text-white/65">Totalt</span>
+        {/* Telleren — skjermens hovedoppslag */}
+        <div style={{ textAlign: "center", padding: "24px 0 16px" }}>
+          <span style={{ display: "block", fontFamily: T.mono, fontSize: 10, fontWeight: 500, letterSpacing: "0.09em", textTransform: "uppercase", color: T.mut }}>
+            slag denne økta
+          </span>
+          <div style={{ fontFamily: T.mono, fontSize: 40, fontWeight: 600, fontVariantNumeric: "tabular-nums", lineHeight: 1.1 }}>
             {totalCount}
           </div>
+          <div style={{ fontFamily: T.bodyFont, fontSize: 13.5, color: T.mut }}>
+            Tapp kølla du slo med — ett tapp per slag.
+          </div>
         </div>
-      </div>
 
-      {/* Floating right-side actions (desktop) */}
-      <div className="absolute right-4 top-1/2 z-20 hidden -translate-y-1/2 flex-col gap-2 sm:flex">
-        <button
-          type="button"
-          onMouseDown={startEndPress}
-          onMouseUp={cancelEndPress}
-          onMouseLeave={cancelEndPress}
-          onTouchStart={startEndPress}
-          onTouchEnd={cancelEndPress}
-          aria-label="Avslutt (hold inne)"
-          className="relative grid h-14 w-14 place-items-center overflow-hidden rounded-full border border-white/20 bg-white/[0.04] text-white transition-colors hover:bg-white/10"
-        >
-          <StopCircle className="h-5 w-5" strokeWidth={1.75} />
-          {endProgress > 0 && (
-            <div
-              className="absolute inset-0 -z-0 bg-accent/30"
+        {/* Siste slag + Angre — KUN når lokale tapp finnes (aggregatene fra
+            databasen har ikke tidsstempler, så raden fabrikkeres aldri) */}
+        {tapp.length > 0 && (
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: 12,
+              background: T.panel,
+              border: `1px solid ${T.border}`,
+              borderRadius: T.rCard,
+              padding: "12px 16px",
+              marginBottom: 12,
+              minWidth: 0,
+            }}
+          >
+            <div style={{ flex: 1, minWidth: 0, fontSize: 13, fontFamily: T.ui }}>
+              <span style={{ fontWeight: 600 }}>{navnFor(tapp[0].clubId)}</span>
+              {" · siste slag"}
+              <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, fontVariantNumeric: "tabular-nums" }}>
+                kl. {tapp[0].kl}
+              </span>
+            </div>
+            <button
+              type="button"
+              onClick={angre}
+              data-od-id="tapper-angre"
+              className="v2-press v2-focus"
               style={{
-                clipPath: `inset(${(1 - endProgress) * 100}% 0 0 0)`,
+                flex: "none",
+                display: "inline-flex",
+                alignItems: "center",
+                justifyContent: "center",
+                minHeight: 44,
+                padding: "0 16px",
+                fontFamily: T.ui,
+                fontSize: 14,
+                fontWeight: 500,
+                background: "transparent",
+                border: `1px solid ${T.border}`,
+                borderRadius: 12,
+                color: T.fg,
+                cursor: "pointer",
               }}
-            />
-          )}
-        </button>
-        <button
-          type="button"
-          onClick={() => {
-            setPaused((p) => {
-              if (!p) void lagre();
-              return !p;
-            });
-          }}
-          aria-label={paused ? "Fortsett" : "Pause"}
-          className="grid h-14 w-14 place-items-center rounded-full border border-white/20 bg-white/[0.04] text-white transition-colors hover:bg-white/10"
-        >
-          {paused ? (
-            <Play className="h-5 w-5" strokeWidth={1.75} />
-          ) : (
-            <Pause className="h-5 w-5" strokeWidth={1.75} />
-          )}
-        </button>
-      </div>
+            >
+              Angre
+            </button>
+          </div>
+        )}
 
-      {/* TAP-knapp */}
+        {/* Fordeling per kølle */}
+        {fordelingIds.length > 0 && (
+          <div>
+            <span style={{ display: "block", fontFamily: T.mono, fontSize: 10, fontWeight: 500, letterSpacing: "0.09em", textTransform: "uppercase", color: T.mut }}>
+              fordeling per kølle
+            </span>
+            {fordelingIds.map((id, i) => (
+              <div
+                key={id}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 12,
+                  padding: "8px 0",
+                  fontSize: 13,
+                  fontFamily: T.ui,
+                  borderBottom: i === fordelingIds.length - 1 ? "none" : `1px solid ${T.borderS}`,
+                  minWidth: 0,
+                }}
+              >
+                <span style={{ minWidth: 64, flex: "none" }}>{navnFor(id)}</span>
+                <span style={{ flex: 1, height: 6, background: T.panel2, borderRadius: T.rPill, overflow: "hidden", minWidth: 0 }}>
+                  <span
+                    style={{
+                      display: "block",
+                      height: "100%",
+                      width: `${Math.round(((counts[id] ?? 0) / maks) * 100)}%`,
+                      background: T.mut,
+                      borderRadius: T.rPill,
+                    }}
+                  />
+                </span>
+                <span style={{ fontFamily: T.mono, fontVariantNumeric: "tabular-nums", minWidth: "2ch", textAlign: "right" }}>
+                  {counts[id]}
+                </span>
+              </div>
+            ))}
+          </div>
+        )}
+      </main>
+
+      {/* Køllene — bunnfestet fangstflate (Kontrakt §4: primær handling
+          bunnfestet på mobil, aldri i scroll-flyt) */}
       <div
-        className="relative z-10 px-4 pb-6 pt-2 sm:px-6 sm:pb-6"
-        style={{ paddingBottom: "max(env(safe-area-inset-bottom), 1.5rem)" }}
+        style={{
+          flex: "none",
+          borderTop: `1px solid ${T.border}`,
+          background: T.panel,
+          padding: "12px 16px calc(12px + env(safe-area-inset-bottom))",
+        }}
       >
-        <button
-          type="button"
-          onClick={handleTap}
-          disabled={paused}
-          className="flex h-[120px] w-full flex-col items-center justify-center gap-1 rounded-[20px] text-foreground transition-transform active:scale-[0.985] disabled:opacity-50"
-          style={{
-            background: T.fg,
-            color: T.bg,
-            boxShadow: "none",
-          }}
-        >
-          <span
-            className="font-display font-bold uppercase"
-            style={{ fontSize: 32, letterSpacing: "0.06em", lineHeight: 1 }}
-          >
-            {paused ? "Pauset" : "Tap"}
-          </span>
-          <span
-            className="font-sans font-medium"
-            style={{ color: T.farge.inkMerke2A62, fontSize: 13 }}
-          >
-            {paused ? "trykk pause for å fortsette" : "for å logge én ball"}
-          </span>
-        </button>
-
-        {/* Mobile pause/stop row */}
-        <div className="mt-2 flex flex-col gap-2 sm:hidden">
+        <div style={{ width: "100%", maxWidth: 720, margin: "0 auto" }}>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 8, marginBottom: 12 }}>
+            {clubs.map((c) => (
+              <button
+                key={c.id}
+                type="button"
+                onClick={() => tappKolle(c.id)}
+                data-od-id={`tapper-klubb-${c.id}`}
+                className="v2-press v2-focus"
+                style={{
+                  minHeight: 60,
+                  border: `1px solid ${T.border}`,
+                  borderRadius: 12,
+                  background: T.bg,
+                  color: T.fg,
+                  fontFamily: T.ui,
+                  fontSize: 14,
+                  fontWeight: 500,
+                  cursor: "pointer",
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: 2,
+                  minWidth: 0,
+                }}
+              >
+                <span>{c.name}</span>
+                <span style={{ fontFamily: T.mono, fontSize: 10, color: T.mut }}>tapp = 1 slag</span>
+              </button>
+            ))}
+          </div>
+          {/* Kontrakt §3: skjermens ene aksenthandling — avslutter tellingen
+              og lagrer slagene i økta. Kølletappene er selve fangstflaten. */}
           <button
             type="button"
             onClick={() => void avslutt()}
             data-od-id="tapper-avslutt"
-            className="flex min-h-[48px] w-full items-center justify-center rounded-2xl font-sans text-[14px] font-semibold transition-colors"
-            style={{ background: T.handling, color: T.onHandling }}
+            data-paper-en-ting="true"
+            className="v2-press v2-focus"
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              minHeight: 56,
+              width: "100%",
+              border: "none",
+              borderRadius: 12,
+              background: T.handling,
+              color: T.onHandling,
+              fontFamily: T.ui,
+              fontSize: 14,
+              fontWeight: 600,
+              cursor: "pointer",
+            }}
           >
             Avslutt og lagre
           </button>
-          <button
-            type="button"
-            onClick={() => {
-              setPaused((p) => {
-                if (!p) void lagre();
-                return !p;
-              });
-            }}
-            className="min-h-[48px] w-full rounded-2xl border border-white/20 bg-white/[0.04] font-sans text-[14px] font-medium text-white transition-colors hover:bg-white/10"
-          >
-            {paused ? "Fortsett" : "Pause"}
-          </button>
         </div>
-
-        <p className="mt-2 text-center font-mono text-[11px] text-white/40">
-          {lagreStatus === "gitt-opp"
-            ? "Kunne ikke synke etter flere forsøk — sjekk nettet ditt."
-            : lagreStatus === "kolagt"
-              ? "Lagret lokalt — synker automatisk når nettet er tilbake."
-              : "Lagres automatisk."}
-        </p>
       </div>
 
       <LiveCoachPanel data={coachPanel} />
