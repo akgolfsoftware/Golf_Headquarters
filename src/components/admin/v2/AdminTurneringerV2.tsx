@@ -7,8 +7,8 @@
  */
 
 import Link from "next/link";
-import type { CSSProperties } from "react";
-import { Caps, Kort, Rad, StatusPill, TomTilstand, Tittel, T, CTAPill, type StatusTone } from "@/components/v2";
+import { useState, type CSSProperties } from "react";
+import { Kort, Rad, StatusPill, TomTilstand, T, CTAPill, PillTabs, type StatusTone } from "@/components/v2";
 import { Icon } from "@/components/v2/icon";
 import { useMobile } from "./turnering-ui";
 
@@ -22,12 +22,18 @@ export interface AdminTurneringV2Row {
   anlegg: string | null;
   paameldte: number;
   chip: { label: string; tone: TurneringChipTone } | null;
+  /** Starter i eller etter inneværende uke (Oslo-tid) — styrer Kommende/Spilte-fanen. */
+  erKommende: boolean;
 }
 
 export interface AdminTurneringerV2Data {
   sesong: number;
   rader: AdminTurneringV2Row[];
+  /** Manuelt registrerte turneringer uten kobling mot en kanonisk kilde ennå (se /admin/tournaments/dubletter). */
+  dublettAntall: number;
 }
+
+const pl = (n: number, en: string, flere: string) => `${n} ${n === 1 ? en : flere}`;
 
 const TONE_MAP: Record<TurneringChipTone, StatusTone> = {
   ok: "up",
@@ -76,10 +82,15 @@ function TurneringTittel({ r }: { r: AdminTurneringV2Row }) {
 
 export function AdminTurneringerV2({ data }: { data: AdminTurneringerV2Data }) {
   const mobile = useMobile();
-  const { sesong, rader } = data;
+  const { sesong, rader, dublettAntall } = data;
   const antall = rader.length;
   const statusTone: StatusTone = antall > 0 ? "lime" : "warn";
   const statusTekst = antall === 0 ? "Ingen påmeldte" : antall === 1 ? "1 turnering" : `${antall} turneringer`;
+
+  const [fane, setFane] = useState<"kommende" | "spilte">("kommende");
+  const kommende = rader.filter((r) => r.erKommende);
+  const spilte = rader.filter((r) => !r.erKommende);
+  const synlige = fane === "kommende" ? kommende : spilte;
 
   const primaerCta = (
     <Link href="/admin/tournaments/ny" style={{ textDecoration: "none", display: "block" }}>
@@ -89,12 +100,34 @@ export function AdminTurneringerV2({ data }: { data: AdminTurneringerV2Data }) {
     </Link>
   );
 
+  const dublettBanner =
+    dublettAntall > 0 ? (
+      <Kort tint>
+        <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+          <span style={{ fontFamily: T.ui, fontSize: 12, fontWeight: 600, color: T.fg }}>Én ting nå</span>
+          <p style={{ fontFamily: T.ui, fontSize: 12.5, color: T.mut, margin: 0 }}>
+            {dublettAntall === 1
+              ? "Én manuelt registrert turnering ser ut til å matche en kjent kilde."
+              : `${dublettAntall} manuelt registrerte turneringer ser ut til å matche kjente kilder.`}{" "}
+            Slår du dem sammen, samles påmeldinger og resultater på ett sted.
+          </p>
+          <Link href="/admin/tournaments/dubletter" style={{ textDecoration: "none", alignSelf: "flex-start" }}>
+            <CTAPill icon="git-compare">
+              Gå gjennom {pl(dublettAntall, "dublett", "dubletter")}
+            </CTAPill>
+          </Link>
+        </div>
+      </Kort>
+    ) : null;
+
   const hode = (
     <div style={{ display: "flex", flexWrap: "wrap", alignItems: "flex-end", justifyContent: "space-between", gap: 12 }}>
       <div>
         <div data-paper-pattern-topp data-paper-slug="agencyos-turneringer">
           <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>Turneringer</h1>
-          <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>AgencyOS</span>
+          <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>
+            AgencyOS · sesong {sesong} · {pl(antall, "registrert", "registrerte")}
+          </span>
         </div>
         <p style={{ fontFamily: T.ui, fontSize: 12.5, color: T.mut, margin: "8px 0 0", maxWidth: 460 }}>
           Turneringene stallen din spiller. Send fellesmelding til alle påmeldte med ett klikk.
@@ -108,6 +141,7 @@ export function AdminTurneringerV2({ data }: { data: AdminTurneringerV2Data }) {
     return (
       <div data-paper-wave-h="turneringer" data-paper-pattern  style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
         {hode}
+        {dublettBanner}
         <Kort>
           <TomTilstand
             icon="trophy"
@@ -123,13 +157,36 @@ export function AdminTurneringerV2({ data }: { data: AdminTurneringerV2Data }) {
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
       {hode}
+      {dublettBanner}
       {primaerCta}
 
+      <PillTabs
+        tabs={[
+          { id: "kommende", l: `Kommende · ${kommende.length}` },
+          { id: "spilte", l: `Spilte · ${spilte.length}` },
+        ]}
+        value={fane}
+        onChange={(id) => setFane(id as "kommende" | "spilte")}
+      />
+
+      {synlige.length === 0 ? (
+        <Kort>
+          <TomTilstand
+            icon="trophy"
+            title={fane === "kommende" ? "Ingen kommende turneringer" : "Ingen spilte turneringer ennå"}
+            sub={
+              fane === "kommende"
+                ? "Ingen turneringer i vente denne uka eller senere."
+                : "Turneringer som er spilt dukker opp her etter startdato."
+            }
+          />
+        </Kort>
+      ) : (
       <Kort pad={mobile ? "4px 16px" : "6px 20px"}>
-        {rader.map((r, i) => (
+        {synlige.map((r, i) => (
           <Rad
             key={r.key}
-            last={i === rader.length - 1}
+            last={i === synlige.length - 1}
             leading={<TurneringIkon />}
             title={<TurneringTittel r={r} />}
             sub={
@@ -176,6 +233,7 @@ export function AdminTurneringerV2({ data }: { data: AdminTurneringerV2Data }) {
           />
         ))}
       </Kort>
+      )}
     </div>
   );
 }
