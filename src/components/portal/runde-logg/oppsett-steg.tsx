@@ -210,7 +210,6 @@ export function OppsettSteg({ modus, baner, initial, onStart }: OppsettStegProps
                   <button
                     key={p}
                     type="button"
-        data-paper-en-ting={gyldig ? "true" : undefined}
                     onClick={() => settPar(idx, p)}
                     className="v2-press v2-focus"
                     style={{
@@ -280,6 +279,7 @@ export function OppsettSteg({ modus, baner, initial, onStart }: OppsettStegProps
       <button
         type="button"
         disabled={!gyldig}
+        data-paper-en-ting={gyldig ? "true" : undefined}
         onClick={() =>
           onStart({ courseId, courseNavn, roundType, hullValg, playedAt, hull })
         }
