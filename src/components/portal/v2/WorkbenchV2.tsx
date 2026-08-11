@@ -481,9 +481,10 @@ export function WBBibliotek({ data, tab, setTab, sok, setSok, onVelgOkt, onBrukM
   // Standard, faller innholdet trygt tilbake til Økter (uten å fjerne
   // den lagrede tab-verdien, i tilfelle de bytter tilbake til Pro).
   const effectiveTab = !proMode && tab === "maler" ? "okter" : tab;
+  // PP-3 fasit .libtabs: Maler | Økter | Drills | Turn.
   const faner = proMode
-    ? [["maler", "Maler"], ["okter", "Økter"], ["driller", "Driller"]]
-    : [["okter", "Økter"], ["driller", "Driller"]];
+    ? [["maler", "Maler"], ["okter", "Økter"], ["driller", "Drills"], ["turn", "Turn."]]
+    : [["okter", "Økter"], ["driller", "Drills"], ["turn", "Turn."]];
   const maler = (data.planTemplates ?? []).filter((m) => treff(m.name));
   const okter = (data.paletteItems ?? []).filter((b) => treff(b.title) && (!akseFilter || b.cat === akseFilter));
   // Driller-fanen: øvelsesbanken via server-søk (debounced).
@@ -538,7 +539,7 @@ export function WBBibliotek({ data, tab, setTab, sok, setSok, onVelgOkt, onBrukM
           <PeriodePalett />
         </div>
       )}
-      {effectiveTab !== "maler" && (
+      {effectiveTab !== "maler" && effectiveTab !== "turn" && (
         <div style={{ display: "flex", gap: 4, flexWrap: "wrap" }} data-wb-aksefilter>
           {([null, "FYS", "TEK", "SLAG", "SPILL", "TURN"] as (AkseKey | null)[]).map((f) => {
             const on = akseFilter === f;
@@ -560,7 +561,7 @@ export function WBBibliotek({ data, tab, setTab, sok, setSok, onVelgOkt, onBrukM
             <WBMalKort key={m.id} mal={m} onBrukMal={onBrukMal} />
           )) : <TomTilstand icon="search" title="Ingen mal" sub={sok ? "Prøv et annet søk." : "Ingen godkjente planmaler ennå."} />}
         </div>
-      ) : (
+      ) : effectiveTab === "okter" ? (
         <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
           {okter.length ? okter.map((b) => (
             <PalettBrikke
@@ -585,6 +586,32 @@ export function WBBibliotek({ data, tab, setTab, sok, setSok, onVelgOkt, onBrukM
               }
             />
           )}
+        </div>
+      ) : null}
+      {effectiveTab === "turn" && (
+        <div style={{ display: "flex", flexDirection: "column", gap: 8 }} data-wb-turnfane>
+          {(() => {
+            // PP-3 fasit: turneringene er ankerpunkter — vis dem i biblioteket.
+            // tournamentCalendar (dato + prioritet) foretrekkes; tournaments er fallback.
+            const kal = (data.tournamentCalendar ?? []).filter((t) => treff(t.title));
+            const enkel = (data.tournaments ?? []).filter((t) => treff(t.tn));
+            if (kal.length === 0 && enkel.length === 0) {
+              return <TomTilstand icon="trophy" title="Ingen turneringer" sub={sok ? "Prøv et annet søk." : "Turneringer i kalenderen dukker opp her."} />;
+            }
+            const PRIO: Record<string, string> = { MAJOR: "prio A", NORMAL: "prio B", LOCAL: "prio C" };
+            const rader = kal.length > 0
+              ? kal.map((t) => ({ n: t.title, f: `${new Date(t.startDate).toLocaleDateString("nb-NO", { day: "numeric", month: "short" })} · ${PRIO[t.priority] ?? t.priority} · om ${t.daysUntil} d` }))
+              : enkel.map((t) => ({ n: t.tn, f: t.td }));
+            return rader.map((r, i) => (
+              <div key={`${r.n}-${i}`} style={{ padding: "8px 9px", borderRadius: 10, background: T.panel2, border: `1px dashed ${T.borderS}`, minWidth: 0 }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                  <Icon name="trophy" size={11} style={{ color: T.mut, flex: "none" }} />
+                  <span style={{ fontFamily: T.ui, fontSize: 11.5, fontWeight: 600, color: T.fg, flex: 1, minWidth: 0, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{r.n}</span>
+                </div>
+                <span style={{ display: "block", fontFamily: T.mono, fontSize: 8.5, color: T.mut, marginTop: 4 }}>{r.f}</span>
+              </div>
+            ));
+          })()}
         </div>
       )}
       {tab === "driller" && (
