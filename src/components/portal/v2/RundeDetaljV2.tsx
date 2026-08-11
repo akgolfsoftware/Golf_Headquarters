@@ -6,20 +6,17 @@
  */
 
 import Link from "next/link";
-import type { ReactNode } from "react";
+import type { CSSProperties, ReactNode } from "react";
 import { UpGameImportModal } from "@/app/portal/mal/runder/[id]/upgame-import-modal";
 import {
   T,
   Caps,
-  Tittel,
   Kort,
   Rad,
-  CTAPill,
   StatusPill,
   MikroMeta,
   TomTilstand,
   KpiFlis,
-  Scorekort,
   SgKategorier,
   HjelpTips,
   type ScorekortHull,
@@ -87,40 +84,16 @@ export type RundeDetaljData = {
 
 /* ── Rene hjelpere ─────────────────────────────────────────────────── */
 
-function tilParTekst(diff: number): string {
-  if (diff === 0) return "even par";
-  return diff > 0 ? `+${diff}` : `−${Math.abs(diff)}`;
-}
-
 /** Kort par-differanse med retning: «+2», «−1», «E». */
 function tilKortParTekst(diff: number): string {
   if (diff === 0) return "E";
   return diff > 0 ? `+${diff}` : `−${Math.abs(diff)}`;
 }
 
-/** UT/INN/TOTALT-rad: score · par · differanse (tonet birdie-grønn/bogey-rød). */
-function UtInnTall({ score, par }: { score: number; par: number }) {
-  const d = score - par;
-  return (
-    <span style={{ fontFamily: T.mono, fontSize: 13, fontWeight: 700, color: T.fg }}>
-      {score}
-      <span style={{ fontSize: 10, fontWeight: 400, color: T.mut }}> · par {par} · </span>
-      <span style={{ color: d < 0 ? T.up : d > 0 ? T.down : T.fg }}>{tilKortParTekst(d)}</span>
-    </span>
-  );
-}
-
 function sgTekst(v: number | null): string {
   if (v == null) return "—";
   return `${v >= 0 ? "+" : "−"}${Math.abs(v).toFixed(2).replace(".", ",")}`;
 }
-
-const SG_KATEGORI_NAVN: Record<string, string> = {
-  OTT: "tee-slagene",
-  APP: "innspillene",
-  ARG: "nærspillet",
-  PUTT: "puttingen",
-};
 
 /** Buckets med minst én ekte verdi (aldri en rad der alt er «— ingen slag» pga tomt datasett). */
 function BucketKort({
@@ -162,14 +135,6 @@ export function RundeDetaljV2({ data }: { data: RundeDetaljData }) {
   const harHull = data.hull.length > 0;
   const sgTotalTekst = sgTekst(data.sgTotal);
 
-  // Største lekkasje blant hovedkategoriene (kun negative — ellers ingen linje).
-  const verste = data.sgKategorier
-    .filter((k) => k.sg < 0)
-    .sort((a, b) => a.sg - b.sg)[0];
-  const storsteLekkasje = verste
-    ? `${SG_KATEGORI_NAVN[verste.akse] ?? verste.akse} (${sgTekst(verste.sg)})`
-    : null;
-
   const g = data.granulaerSg;
   const harGranulaerData =
     Object.values(g).some((v) => v != null) && data.sgTotal != null;
@@ -178,24 +143,17 @@ export function RundeDetaljV2({ data }: { data: RundeDetaljData }) {
     <div data-paper-portal-runde-detalj data-paper-slug="playerhq-runde-detalj" style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
       {/* Tilbake */}
       <Link href="/portal/mal/runder" style={{ textDecoration: "none", alignSelf: "flex-start" }}>
-        <MikroMeta icon="arrow-left">Alle runder</MikroMeta>
+        <MikroMeta icon="arrow-left">Runder</MikroMeta>
       </Link>
 
-      {/* Hode + B: status-rad */}
-      <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
-        <div>
-          <Caps>
-            {data.baneNavn} · {data.datoTekst}
-          </Caps>
-          <div style={{ marginTop: 10 }}>
-            <Tittel em={`${tilParTekst(diff)}.`}>{data.score}</Tittel>
-          </div>
-        </div>
-        {data.sgTotal != null ? (
-          <StatusPill tone={data.sgTotal >= 0 ? "up" : "down"}>SG {sgTotalTekst}</StatusPill>
-        ) : (
-          <StatusPill tone="info">SG mangler</StatusPill>
-        )}
+      {/* Hode — fasit: bane + dato i toppen, KPI-rad rett under (begge tilstander) */}
+      <Caps>
+        {data.baneNavn} · {data.datoTekst}
+      </Caps>
+      <div className="grid grid-cols-3" style={{ gap: 8 }}>
+        <KpiFlis label="Score (brutto)" value={String(data.score)} instant />
+        <KpiFlis label="Mot par" value={tilKortParTekst(diff)} instant />
+        <KpiFlis label="SG total" value={sgTotalTekst} hjelp="sgTotal" instant />
       </div>
 
       {/* GO V2: rett etter lagring er dette en KVITTERING, ikke en handlings-meny.
@@ -223,59 +181,163 @@ export function RundeDetaljV2({ data }: { data: RundeDetaljData }) {
         <Link href={`/portal/mal/runder/${data.id}/fullfor`} style={{ textDecoration: "none", display: "block" }}>
 <span style={{
             display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, minHeight: 48, width: "100%", padding: "10px 16px",
-            borderRadius: 10, background: T.handling, color: T.onHandling, fontFamily: T.ui, fontSize: 14, fontWeight: 600,
+            borderRadius: 10, background: T.cta, color: T.onCta, fontFamily: T.ui, fontSize: 14, fontWeight: 600,
           }}>Fullfør slag-kjeden</span>
         </Link>
       ) : data.erEier && !harHull ? (
         <Link href={`/portal/mal/runder/${data.id}/hull`} style={{ textDecoration: "none", display: "block" }}>
 <span style={{
             display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, minHeight: 48, width: "100%", padding: "10px 16px",
-            borderRadius: 10, background: T.handling, color: T.onHandling, fontFamily: T.ui, fontSize: 14, fontWeight: 600,
+            borderRadius: 10, background: T.cta, color: T.onCta, fontFamily: T.ui, fontSize: 14, fontWeight: 600,
           }}>Legg til hull-for-hull</span>
         </Link>
       ) : (
         <Link href="/portal/coach/melding" style={{ textDecoration: "none", display: "block" }}>
 <span style={{
             display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, minHeight: 48, width: "100%", padding: "10px 16px",
-            borderRadius: 10, background: T.handling, color: T.onHandling, fontFamily: T.ui, fontSize: 14, fontWeight: 600,
+            borderRadius: 10, background: T.cta, color: T.onCta, fontFamily: T.ui, fontSize: 14, fontWeight: 600,
           }}>Del med coach</span>
         </Link>
       )}
 
-      {/* Scorekort — HoleScore-sannhet / Shot-avledet fallback */}
+      {/* SG per kategori — fasit: første kort, før scorekortet */}
+      {data.sgTotal == null ? (
+        <Kort eyebrow="SG per kategori">
+          <TomTilstand
+            icon="trending-up"
+            title="Ingen SG beregnet for denne runden"
+            sub="Runden er registrert med hurtig score. Før hull for hull med slag for å få SG og scorekort."
+          />
+        </Kort>
+      ) : data.sgKategorier.length > 0 ? (
+        <SgKategorier kategorier={data.sgKategorier} hjelp="sgOmrade" desimaler={2} />
+      ) : (
+        <Kort eyebrow="SG per kategori">
+          <TomTilstand icon="trending-up" title="Ingen kategori-data" sub="—" />
+        </Kort>
+      )}
+
+      {/* Granulære buckets — kun når kjeden faktisk ga bucket-nivå-data */}
+      {harGranulaerData && (
+        <div className="grid grid-cols-1 sm:grid-cols-2" style={{ gap: T.gap }}>
+          <BucketKort
+            tittel="Tee og innspill — per avstand"
+            rader={[
+              ["Tee-slag", g.tee],
+              ["200 m+", g.app200],
+              ["150–200 m", g.app150],
+              ["100–150 m", g.app100],
+              ["50–100 m", g.app50],
+            ]}
+          />
+          <BucketKort
+            tittel="Nærspill"
+            rader={[
+              ["Chip (≤12 m)", g.chip],
+              ["Pitch", g.pitch],
+              ["Bunker", g.bunker],
+            ]}
+          />
+          <BucketKort
+            tittel="Putting — per lengde (ft)"
+            rader={[
+              ["0–3 ft", g.putt0_3],
+              ["3–5 ft", g.putt3_5],
+              ["5–10 ft", g.putt5_10],
+              ["10–15 ft", g.putt10_15],
+              ["15–25 ft", g.putt15_25],
+              ["25–40 ft", g.putt25_40],
+              ["40 ft+", g.putt40plus],
+            ]}
+          />
+        </div>
+      )}
+
+      {/* Scorekort — fasit: tabell Hull/Par/Score/Mot par + Sum, klebrig hode */}
       {harHull ? (
         <>
-          <Scorekort
-            hull={data.hull}
-            sammendrag={{ score: data.score, par: data.par, sg: data.sgTotal }}
-            hjelp="sgTotal"
-          />
-          {/* UT/INN + putter/FW/GIR (D6a) — kun tall som faktisk er logget */}
-          {data.hullStat && (
-            <Kort eyebrow="Fra scorekortet" pad="12px 18px">
+          <Kort eyebrow={`Scorekort · ${data.hull.length} hull`}>
+            <div style={{ maxHeight: 280, overflow: "auto", borderTop: `1px solid ${T.border}`, marginTop: 8 }}>
+              <table style={{ width: "100%", borderCollapse: "collapse" }}>
+                <thead>
+                  <tr>
+                    {["Hull", "Par", "Score", "Mot par"].map((h, i) => (
+                      <th
+                        key={h}
+                        style={{
+                          position: "sticky",
+                          top: 0,
+                          background: T.panel,
+                          textAlign: i === 0 ? "left" : "right",
+                          fontFamily: T.mono,
+                          fontSize: 9.5,
+                          letterSpacing: "0.08em",
+                          textTransform: "uppercase",
+                          color: T.mut,
+                          fontWeight: 500,
+                          padding: "8px 4px",
+                          borderBottom: `1px solid ${T.border}`,
+                        }}
+                      >
+                        {h}
+                      </th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody>
+                  {data.hull.map((h, i) => {
+                    const d = h.score - h.par;
+                    const td = (hoyre: boolean, farge?: string): CSSProperties => ({
+                      padding: "8px 4px",
+                      borderBottom: i === data.hull.length - 1 ? "none" : `1px solid ${T.border}`,
+                      fontSize: 12.5,
+                      ...(hoyre ? { textAlign: "right" as const, fontFamily: T.mono, fontVariantNumeric: "tabular-nums" as const } : {}),
+                      ...(farge ? { color: farge } : {}),
+                    });
+                    return (
+                      <tr key={h.nr}>
+                        <td style={td(false)}>{h.nr}</td>
+                        <td style={td(true)}>{h.par}</td>
+                        <td style={td(true)}>{h.score}</td>
+                        <td style={td(true, d > 0 ? T.down : d < 0 ? T.up : undefined)}>{tilKortParTekst(d)}</td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+                <tfoot>
+                  <tr>
+                    <td style={{ padding: "8px 4px 0", fontFamily: T.mono, fontSize: 11, color: T.mut }}>Sum</td>
+                    <td style={{ padding: "8px 4px 0", textAlign: "right", fontFamily: T.mono, fontSize: 11, color: T.mut }}>{data.par}</td>
+                    <td style={{ padding: "8px 4px 0", textAlign: "right", fontFamily: T.mono, fontSize: 11, color: T.mut }}>{data.score}</td>
+                    <td
+                      style={{
+                        padding: "8px 4px 0",
+                        textAlign: "right",
+                        fontFamily: T.mono,
+                        fontSize: 11,
+                        color: diff > 0 ? T.down : diff < 0 ? T.up : T.mut,
+                      }}
+                    >
+                      {tilKortParTekst(diff)}
+                    </td>
+                  </tr>
+                </tfoot>
+              </table>
+            </div>
+          </Kort>
+          {/* Putt · fairway · gir — fasit-rader, kun tall som faktisk er logget */}
+          {data.hullStat && (data.hullStat.putter || data.hullStat.fairway || data.hullStat.gir) && (
+            <Kort eyebrow="Putt · fairway · gir" pad="12px 18px">
               {(() => {
                 const s = data.hullStat;
-                const harBegge = s.ut.antall > 0 && s.inn.antall > 0;
                 const rader: Array<{ key: string; navn: ReactNode; innhold: ReactNode }> = [];
-                if (harBegge) {
-                  rader.push({ key: "ut", navn: "UT (hull 1–9)", innhold: <UtInnTall score={s.ut.score} par={s.ut.par} /> });
-                  rader.push({ key: "inn", navn: "INN (hull 10–18)", innhold: <UtInnTall score={s.inn.score} par={s.inn.par} /> });
-                }
-                rader.push({
-                  key: "totalt",
-                  navn: "TOTALT",
-                  innhold: <UtInnTall score={s.ut.score + s.inn.score} par={s.ut.par + s.inn.par} />,
-                });
                 if (s.putter) {
                   rader.push({
                     key: "putter",
-                    navn: <>Putter <HjelpTips k="putter" size={11} /></>,
+                    navn: <>Putter totalt <HjelpTips k="putter" size={11} /></>,
                     innhold: (
-                      <span style={{ fontFamily: T.mono, fontSize: 13, fontWeight: 700, color: T.fg }}>
-                        {s.putter.totalt}
-                        <span style={{ fontSize: 10, fontWeight: 400, color: T.mut }}>
-                          {" "}· {s.putter.hull} hull logget
-                        </span>
+                      <span style={{ fontFamily: T.mono, fontSize: 12.5, fontWeight: 600, color: T.fg }}>
+                        {s.putter.totalt} putt · {s.putter.hull} hull
                       </span>
                     ),
                   });
@@ -283,11 +345,10 @@ export function RundeDetaljV2({ data }: { data: RundeDetaljData }) {
                 if (s.fairway) {
                   rader.push({
                     key: "fairway",
-                    navn: <>Fairway-treff <HjelpTips k="fairwayTreff" size={11} /></>,
+                    navn: <>Fairway truffet <HjelpTips k="fairwayTreff" size={11} /></>,
                     innhold: (
-                      <span style={{ fontFamily: T.mono, fontSize: 13, fontWeight: 700, color: T.fg }}>
-                        {s.fairway.treff}
-                        <span style={{ fontSize: 10, fontWeight: 400, color: T.mut }}> av {s.fairway.av}</span>
+                      <span style={{ fontFamily: T.mono, fontSize: 12.5, fontWeight: 600, color: T.fg }}>
+                        {s.fairway.treff} av {s.fairway.av}
                       </span>
                     ),
                   });
@@ -295,11 +356,10 @@ export function RundeDetaljV2({ data }: { data: RundeDetaljData }) {
                 if (s.gir) {
                   rader.push({
                     key: "gir",
-                    navn: <>GIR (green på regulering) <HjelpTips k="gir" size={11} /></>,
+                    navn: <>Green in regulation <HjelpTips k="gir" size={11} /></>,
                     innhold: (
-                      <span style={{ fontFamily: T.mono, fontSize: 13, fontWeight: 700, color: T.fg }}>
-                        {s.gir.treff}
-                        <span style={{ fontSize: 10, fontWeight: 400, color: T.mut }}> av {s.gir.av}</span>
+                      <span style={{ fontFamily: T.mono, fontSize: 12.5, fontWeight: 600, color: T.fg }}>
+                        {s.gir.treff} av {s.gir.av}
                       </span>
                     ),
                   });
@@ -347,17 +407,11 @@ export function RundeDetaljV2({ data }: { data: RundeDetaljData }) {
         </>
       ) : (
         <>
-          {/* Sammendrag uten hulldata */}
-          <div className="grid grid-cols-1 sm:grid-cols-3" style={{ gap: T.gap }}>
-            <KpiFlis label="Score" value={String(data.score)} />
-            <KpiFlis label="Til par" value={tilParTekst(diff)} />
-            <KpiFlis label="SG total" value={sgTotalTekst} hjelp="sgTotal" />
-          </div>
-          <Kort>
+          <Kort eyebrow="Scorekort">
             <TomTilstand
               icon="flag"
-              title="Hull-for-hull mangler"
-              sub="Runden er logget med kun totalscore. Logg hull-for-hull neste gang — eller legg det til nå."
+              title="Ingen hull-for-hull ennå"
+              sub="Kun totalscore er registrert for denne runden."
             />
             {data.erEier && (
               <div style={{ marginTop: 8, textAlign: "center" }}>
@@ -376,91 +430,6 @@ export function RundeDetaljV2({ data }: { data: RundeDetaljData }) {
               </div>
             )}
           </Kort>
-        </>
-      )}
-
-      {/* Strokes Gained — hvor slagene ble tjent og tapt (vi gjetter aldri) */}
-      {data.sgTotal == null ? (
-        <Kort>
-          <TomTilstand
-            icon="trending-up"
-            title="Ingen Strokes Gained ennå"
-            sub="SG krever slag-for-slag — vi gjetter aldri. Bruk knappen øverst for å fullføre."
-          />
-        </Kort>
-      ) : (
-        <>
-          <Kort
-            eyebrow={
-              <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
-                Strokes Gained <HjelpTips k="sgOmrade" size={11} />
-              </span>
-            }
-            action={
-              data.sgSource === "beregnet" ? (
-                <StatusPill tone="up">Beregnet fra slag-kjeden</StatusPill>
-              ) : data.sgSource === "manual" ? (
-                <StatusPill tone="info">Manuelt ført</StatusPill>
-              ) : undefined
-            }
-          >
-            {data.sgKategorier.length > 0 ? (
-              <SgKategorier kategorier={data.sgKategorier} />
-            ) : (
-              <TomTilstand icon="trending-up" title="Ingen kategori-data" sub="—" />
-            )}
-            {storsteLekkasje && (
-              <p
-                style={{
-                  fontFamily: T.ui,
-                  fontSize: 12,
-                  color: T.mut,
-                  margin: "12px 0 0",
-                  paddingTop: 12,
-                  borderTop: `1px solid ${T.border}`,
-                }}
-              >
-                Største lekkasje:{" "}
-                <span style={{ fontWeight: 700, color: T.down }}>{storsteLekkasje}</span>
-              </p>
-            )}
-          </Kort>
-
-          {/* Granulære buckets — kun når kjeden faktisk ga bucket-nivå-data */}
-          {harGranulaerData && (
-            <div className="grid grid-cols-1 sm:grid-cols-2" style={{ gap: T.gap }}>
-              <BucketKort
-                tittel="Tee og innspill — per avstand"
-                rader={[
-                  ["Tee-slag", g.tee],
-                  ["200 m+", g.app200],
-                  ["150–200 m", g.app150],
-                  ["100–150 m", g.app100],
-                  ["50–100 m", g.app50],
-                ]}
-              />
-              <BucketKort
-                tittel="Nærspill"
-                rader={[
-                  ["Chip (≤12 m)", g.chip],
-                  ["Pitch", g.pitch],
-                  ["Bunker", g.bunker],
-                ]}
-              />
-              <BucketKort
-                tittel="Putting — per lengde (ft)"
-                rader={[
-                  ["0–3 ft", g.putt0_3],
-                  ["3–5 ft", g.putt3_5],
-                  ["5–10 ft", g.putt5_10],
-                  ["10–15 ft", g.putt10_15],
-                  ["15–25 ft", g.putt15_25],
-                  ["25–40 ft", g.putt25_40],
-                  ["40 ft+", g.putt40plus],
-                ]}
-              />
-            </div>
-          )}
         </>
       )}
 

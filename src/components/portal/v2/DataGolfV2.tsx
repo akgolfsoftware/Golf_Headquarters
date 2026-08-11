@@ -1,83 +1,44 @@
 "use client";
 
 /**
- * PlayerHQ DataGolf — v2 Presis + B-pakke (status mot tour + én vei til plan).
+ * PlayerHQ DataGolf — Paper-fasit playerhq-datagolf.html (deg mot touren).
  * Ekte SG vs PGA Tour-baseline. T.* only. Tom = registrer runde / se analyse.
  */
 
-import { useEffect, useState } from "react";
 import Link from "next/link";
 import type { DataGolfData, DataGolfKategori } from "@/lib/portal-stats/datagolf-data";
-import { WORKBENCH_HREF } from "./WorkbenchInngang";
 import {
   T,
   fmtSg,
   Caps,
-  Tittel,
   Kort,
-  TallHero,
-  StatusPill,
-  Trend,
-  InnsiktChip,
-  PillVelger,
+  KpiFlis,
   TomTilstand,
-  MikroMeta,
   HjelpTips,
   CTAPill,
+  Trend,
 } from "@/components/v2";
 
 export type DataGolfProps = { data: DataGolfData; spillerNavn?: string };
 
 /* ── Rene hjelpere ─────────────────────────────────────────────────── */
 
-function useMobile(): boolean {
-  const [m, setM] = useState(false);
-  useEffect(() => {
-    const mq = window.matchMedia("(max-width: 767px)");
-    const oppdater = () => setM(mq.matches);
-    oppdater();
-    mq.addEventListener("change", oppdater);
-    return () => mq.removeEventListener("change", oppdater);
-  }, []);
-  return m;
-}
-
 /** SG-verdi → norsk komma-desimal m/ fortegn, «—» for null. */
 function sg(v: number | null): string {
   return v == null ? "—" : fmtSg(v);
 }
 
-/* ── Legende: Deg vs referansespiller vs tour-baseline (0) ───────────── */
-function DGLegend({ refNavn }: { refNavn: string }) {
-  const serier = [
-    { l: "Deg", c: T.lime },
-    { l: refNavn, c: T.info },
-    { l: "Tour-baseline (0,0)", c: T.fg2 },
-  ];
-  return (
-    <div  data-paper-slug="playerhq-datagolf" style={{ display: "flex", gap: 14, flexWrap: "wrap" }}>
-      {serier.map((s) => (
-        <span key={s.l} style={{ display: "inline-flex", alignItems: "center", gap: 6, fontFamily: T.ui, fontSize: 11, color: T.mut }}>
-          <span style={{ width: 7, height: 7, borderRadius: 9999, background: s.c }} />
-          {s.l}
-        </span>
-      ))}
-    </div>
-  );
-}
-
-/* Divergerende SG-bar rundt 0-linjen (tour-baseline). Positiv = høyre (foran
-   touren), negativ = venstre (bak). Reprodusert fra mockupens DGGruppe-bar,
-   men to-veis fordi ekte SG-verdier kan være både + og −. */
-function SgBar({ v, max, farge }: { v: number | null; max: number; farge: string }) {
+/* Divergerende SG-bar rundt 0-linjen (tour-baseline). Fasit .spor2: positiv
+   fylles i up-grønn mot høyre, negativ i dn-rød mot venstre. */
+function SgBar({ v, max }: { v: number | null; max: number }) {
   if (v == null) {
-    return <div style={{ flex: 1, height: 7, borderRadius: 9999, background: T.track }} />;
+    return <div style={{ flex: 1, height: 10, borderRadius: 9999, background: T.track }} />;
   }
-  const halv = Math.min(50, (Math.abs(v) / max) * 50);
+  const halv = Math.min(48, (Math.abs(v) / max) * 48);
   const neg = v < 0;
   return (
-    <div style={{ flex: 1, height: 7, borderRadius: 9999, background: T.track, position: "relative", overflow: "hidden" }}>
-      <span style={{ position: "absolute", left: "50%", top: 0, bottom: 0, width: 1, background: T.borderS }} />
+    <div style={{ flex: 1, height: 10, borderRadius: 9999, background: T.track, position: "relative" }}>
+      <span style={{ position: "absolute", left: "50%", top: -3, bottom: -3, width: 1, background: T.borderS }} />
       <div
         style={{
           position: "absolute",
@@ -85,8 +46,7 @@ function SgBar({ v, max, farge }: { v: number | null; max: number; farge: string
           bottom: 0,
           ...(neg ? { right: "50%" } : { left: "50%" }),
           width: halv + "%",
-          background: farge,
-          opacity: 0.9,
+          background: neg ? T.down : T.up,
           borderRadius: 9999,
         }}
       />
@@ -94,54 +54,29 @@ function SgBar({ v, max, farge }: { v: number | null; max: number; farge: string
   );
 }
 
-/* Én kategori = gruppe m/ Deg · referansespiller (begge ekte SG-verdier). */
-function DGGruppe({ k, refNavn, max, last }: { k: DataGolfKategori; refNavn: string; max: number; last: boolean }) {
+/* Én kategori = gruppe m/ Deg · Referanse (fasit-rader: navn 70px, spor, verdi). */
+function DGGruppe({ k, max, last }: { k: DataGolfKategori; max: number; last: boolean }) {
   const rows = [
-    { l: "Deg", v: k.deg, c: T.lime },
-    { l: refNavn, v: k.ref, c: T.info },
+    { l: "Deg", v: k.deg },
+    { l: "Referanse", v: k.ref },
   ];
   return (
     <div style={{ padding: "11px 0", borderBottom: last ? "none" : `1px solid ${T.border}` }}>
       <div style={{ display: "flex", alignItems: "baseline", gap: 8, marginBottom: 8 }}>
-        <span style={{ fontFamily: T.mono, fontSize: 10, fontWeight: 700, color: T.fg2 }}>{k.code}</span>
-        <span style={{ fontFamily: T.ui, fontSize: 12.5, color: T.fg2 }}>{k.name}</span>
-        {k.gap != null && (
-          <span style={{ marginLeft: "auto", display: "inline-flex", alignItems: "center", gap: 4, fontFamily: T.mono, fontSize: 10, color: T.mut }}>
-            gap {sg(-k.gap)}
-            <HjelpTips k="sgGap" size={10} />
-          </span>
-        )}
+        <span style={{ fontFamily: T.mono, fontSize: 12, fontVariantNumeric: "tabular-nums", color: T.fg }}>{k.code}</span>
+        <span style={{ fontFamily: T.ui, fontSize: 12.5, color: T.mut }}>{k.name}</span>
       </div>
       <div style={{ display: "flex", flexDirection: "column", gap: 5 }}>
         {rows.map((r) => (
-          <div key={r.l} style={{ display: "flex", alignItems: "center", gap: 10 }}>
+          <div key={r.l} style={{ display: "grid", gridTemplateColumns: "70px minmax(0,1fr) 58px", gap: 8, alignItems: "center", minHeight: 32 }}>
+            <span style={{ fontFamily: T.mono, fontSize: 12, color: T.mut }}>{r.l}</span>
+            <SgBar v={r.v} max={max} />
             <span
               style={{
-                width: 86,
-                flex: "none",
-                fontFamily: T.mono,
-                fontSize: 9,
-                fontWeight: 700,
-                color: T.mut,
-                textTransform: "uppercase",
-                letterSpacing: "0.05em",
-                overflow: "hidden",
-                textOverflow: "ellipsis",
-                whiteSpace: "nowrap",
-              }}
-            >
-              {r.l}
-            </span>
-            <SgBar v={r.v} max={max} farge={r.c} />
-            <span
-              style={{
-                width: 44,
-                flex: "none",
                 textAlign: "right",
                 fontFamily: T.mono,
-                fontSize: 12,
-                fontWeight: 700,
-                color: r.v == null ? T.mut : T.fg,
+                fontSize: 13,
+                color: r.v == null ? T.mut : r.v >= 0 ? T.up : T.down,
                 fontVariantNumeric: "tabular-nums",
               }}
             >
@@ -157,32 +92,21 @@ function DGGruppe({ k, refNavn, max, last }: { k: DataGolfKategori; refNavn: str
 /* ── Skjerm ────────────────────────────────────────────────────────── */
 
 export function DataGolfV2({ data, spillerNavn }: DataGolfProps) {
-  const navn = spillerNavn?.trim() || "Deg";
-  const mobile = useMobile();
-  const [periode, setPeriode] = useState("alle");
+  const navn = spillerNavn?.trim();
 
   if (!data.harData) {
     return (
-      <div data-paper-wave-g="datagolf" data-paper-portal-datagolf style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
-        <div>
-          <div data-paper-pattern-topp>
-          <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>DataGolf</h1>
-          <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>Deg mot touren</span>
-        </div>
+      <div data-paper-slug="playerhq-datagolf" data-paper-wave-g="datagolf" data-paper-portal-datagolf style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
+        <div data-paper-pattern-topp>
+          <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>Deg mot touren</h1>
+          <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>
+            DataGolf · PGA Tour-baseline{navn ? ` · ${navn}` : ""}
+          </span>
         </div>
         <div className="grid grid-cols-3" style={{ gap: 8 }}>
-          {(
-            [
-              { l: "Gap", v: "—" },
-              { l: "Kategorier", v: "—" },
-              { l: "Status", v: "Ingen data" },
-            ] as const
-          ).map((k) => (
-            <Kort key={k.l} pad="12px">
-              <Caps size={9}>{k.l}</Caps>
-              <div style={{ fontFamily: T.mono, fontWeight: 700, fontSize: 15, marginTop: 8, color: T.fg }}>{k.v}</div>
-            </Kort>
-          ))}
+          <KpiFlis label="Gap" value="—" instant />
+          <KpiFlis label="Kategorier" value="—" instant />
+          <KpiFlis label="Status" value="Ingen data" instant />
         </div>
         <Kort>
           <TomTilstand
@@ -194,7 +118,7 @@ export function DataGolfV2({ data, spillerNavn }: DataGolfProps) {
             <Link href="/portal/runde/live" style={{ textDecoration: "none", display: "block" }}>
               <span style={{
                 display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, width: "100%", padding: "10px 16px",
-                borderRadius: 12, background: T.handling, color: T.onHandling, fontFamily: T.ui, fontSize: 14, fontWeight: 600, minHeight: 56,
+                borderRadius: 12, background: T.cta, color: T.onCta, fontFamily: T.ui, fontSize: 14, fontWeight: 600, minHeight: 48,
               }}>Start live-føring
               </span>
             </Link>
@@ -217,123 +141,87 @@ export function DataGolfV2({ data, spillerNavn }: DataGolfProps) {
   // Posisjon mot touren (deg − ref). Negativ = bak.
   const posisjon = data.gapTotal != null ? -data.gapTotal : null;
 
-  const hero = (
-    <Kort tint>
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10 }}>
+  // Trend over registrerte sammenligninger (kun når ≥2 snapshots) —
+  // beholdt utover fasiten (ekte data, ingen fasit-seksjon å speile).
+  const harTrend = data.trend.length >= 2;
+  const trendLo = harTrend ? Math.min(0, ...data.trend) - 0.4 : 0;
+  const trendHi = harTrend ? Math.max(0, ...data.trend) + 0.4 : 0;
+
+  return (
+    <div data-paper-slug="playerhq-datagolf" data-paper-portal-datagolf style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
+      {/* Hode — fasit: h1 «Deg mot touren», sub DataGolf · baseline · navn */}
+      <div data-paper-pattern-topp>
+        <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>Deg mot touren</h1>
+        <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>
+          DataGolf · PGA Tour-baseline{navn ? ` · ${navn}` : ""}
+        </span>
+      </div>
+
+      {/* Fasit: .merknad — serif på myk flate */}
+      <p style={{ fontFamily: T.bodyFont, fontSize: 12, color: T.mut, lineHeight: 1.6, margin: 0, background: T.panel2, borderRadius: 8, padding: "8px 12px" }}>
+        Sammenligningen er mot én registrert referansespiller, ikke mot hele tourfeltet.
+      </p>
+
+      {/* Hero — fasit: tint-kort, 40px mono-tall tonet up/dn, serif-sub */}
+      <Kort tint>
         <span style={{ display: "inline-flex", alignItems: "center", gap: 7 }}>
           <Caps>Deg mot touren · SG total</Caps>
           <HjelpTips k="dataGolfBaseline" size={12} />
         </span>
-        {data.gapDelta != null && (
-          <StatusPill tone={data.gapDeltaDir === "up" ? "up" : "down"}>
-            {data.gapDeltaDir === "up" ? "Nærmer seg" : "Økende gap"}
-          </StatusPill>
-        )}
-      </div>
-      <div style={{ marginTop: 14 }}>
-        <TallHero
-          value={posisjon != null ? fmtSg(posisjon) : "—"}
-          unit="slag/runde"
-          delta={data.gapDelta != null ? fmtSg(data.gapDelta) : undefined}
-          dir={data.gapDeltaDir ?? undefined}
-          size={mobile ? 44 : 56}
-          sub={
-            <>
-              mot {refNavn}
-              {data.refAar != null ? ` (${data.refAar})` : ""} · brutto
-              {data.sgTotalDeg != null && data.sgTotalRef != null ? (
-                <> · din SG {sg(data.sgTotalDeg)} mot {sg(data.sgTotalRef)}</>
-              ) : null}
-            </>
-          }
-        />
-      </div>
-    </Kort>
-  );
+        <div style={{ marginTop: 10 }}>
+          <span
+            style={{
+              fontFamily: T.mono,
+              fontSize: 40,
+              fontWeight: 600,
+              lineHeight: 1,
+              fontVariantNumeric: "tabular-nums",
+              color: posisjon == null ? T.mut : posisjon >= 0 ? T.up : T.down,
+            }}
+          >
+            {posisjon != null ? fmtSg(posisjon) : "—"}
+          </span>
+          <span style={{ fontFamily: T.ui, fontSize: 12, color: T.mut }}> slag/runde</span>
+        </div>
+        <p style={{ fontFamily: T.bodyFont, fontSize: 12, color: T.mut, margin: "6px 0 0" }}>
+          mot {refNavn}
+          {data.refAar != null ? ` (${data.refAar})` : ""} · brutto
+        </p>
+      </Kort>
 
-  const kategorier = (
-    <Kort eyebrow={`Per kategori · deg vs ${refNavn}`} action={<Caps size={9}>Slag/runde</Caps>}>
-      <div style={{ marginBottom: 8 }}>
-        <DGLegend refNavn={refNavn} />
-      </div>
-      {data.kategorier.map((k, i) => (
-        <DGGruppe key={k.code} k={k} refNavn={refNavn} max={max} last={i === data.kategorier.length - 1} />
-      ))}
-    </Kort>
-  );
+      {/* Per kategori — fasit-rader: Deg / Referanse, spor m/ nullinje, tonede verdier */}
+      <Kort eyebrow="Per kategori · deg vs referanse">
+        {data.kategorier.map((k, i) => (
+          <DGGruppe key={k.code} k={k} max={max} last={i === data.kategorier.length - 1} />
+        ))}
+      </Kort>
 
-  // Trend over registrerte sammenligninger (kun når ≥2 snapshots).
-  const harTrend = data.trend.length >= 2;
-  const trendLo = harTrend ? Math.min(0, ...data.trend) - 0.4 : 0;
-  const trendHi = harTrend ? Math.max(0, ...data.trend) + 0.4 : 0;
-  const trend = harTrend ? (
-    <Kort eyebrow="Gap mot touren · registrerte sammenligninger" action={<Caps size={9}>0-linjen = tour</Caps>}>
-      <Trend
-        series={data.trend}
-        yMin={trendLo}
-        yMax={trendHi}
-        baseline={0}
-        height={mobile ? 92 : 110}
-        xLabels={data.trendLabels.length ? data.trendLabels : undefined}
-      />
-      <div style={{ marginTop: 10, fontFamily: T.ui, fontSize: 11.5, color: T.mut }}>
-        {data.gapDelta != null && data.gapDelta >= 0
-          ? `Gapet har krympet ${sg(Math.abs(data.gapDelta))} slag siden forrige sammenligning.`
-          : `Basert på ${data.antallSnapshots} registrerte sammenligninger.`}
-      </div>
-    </Kort>
-  ) : (
-    <Kort eyebrow="Gap mot touren · over tid" action={<Caps size={9}>0-linjen = tour</Caps>}>
-      <TomTilstand
-        icon="activity"
-        title="Trenger flere sammenligninger"
-        sub="Registrer minst to sammenligninger for å se hvordan gapet mot touren endrer seg over tid."
-      />
-    </Kort>
-  );
+      {/* Innsikt — fasit: kort m/ info-kant, serif, utledet av de samme tallene */}
+      {data.storsteGap && (
+        <Kort style={{ borderLeft: `3px solid ${T.info}` }}>
+          <p style={{ fontFamily: T.bodyFont, fontSize: 13, color: T.fg, lineHeight: 1.6, margin: 0 }}>
+            Størst avstand til referansen er i {data.storsteGap.name.toLowerCase()} ({sg(-data.storsteGap.gap)} slag) — det er der gapet mot touren lukkes raskest.
+          </p>
+        </Kort>
+      )}
 
-  const innsikt = data.storsteGap ? (
-    <InnsiktChip cta="Planlegg dette" href={WORKBENCH_HREF}>
-      Størst avstand til {refNavn} er i {data.storsteGap.name.toLowerCase()} ({sg(-data.storsteGap.gap)} slag) — det er der gapet mot touren lukkes raskest.
-    </InnsiktChip>
-  ) : null;
-
-  return (
-    <div data-paper-portal-datagolf style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
-      <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
-        <div>
-          <Caps>DataGolf · PGA Tour-baseline · {navn}</Caps>
-          <div style={{ marginTop: 10 }}>
-            <Tittel mobile={mobile} em="touren">Deg mot</Tittel>
+      {/* Gap over tid — beholdt utover fasiten (egen datastøtte) */}
+      {harTrend && (
+        <Kort eyebrow="Gap mot touren · registrerte sammenligninger" action={<Caps size={9}>0-linjen = tour</Caps>}>
+          <Trend
+            series={data.trend}
+            yMin={trendLo}
+            yMax={trendHi}
+            baseline={0}
+            height={92}
+            xLabels={data.trendLabels.length ? data.trendLabels : undefined}
+          />
+          <div style={{ marginTop: 10, fontFamily: T.ui, fontSize: 11.5, color: T.mut }}>
+            {data.gapDelta != null && data.gapDelta >= 0
+              ? `Gapet har krympet ${sg(Math.abs(data.gapDelta))} slag siden forrige sammenligning.`
+              : `Basert på ${data.antallSnapshots} registrerte sammenligninger.`}
           </div>
-          <div style={{ marginTop: 8 }}>
-            <MikroMeta icon="trophy">
-              Referanse: {refNavn}
-              {data.refTour ? ` · ${data.refTour.toUpperCase()}` : ""}
-              {data.refAar != null ? ` ${data.refAar}` : ""}
-            </MikroMeta>
-          </div>
-        </div>
-        <PillVelger
-          options={[{ v: "alle", l: `Alle (${data.antallSnapshots})` }]}
-          value={periode}
-          onChange={setPeriode}
-        />
-      </div>
-      {mobile ? (
-        <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
-          {hero}
-          {kategorier}
-          {trend}
-          {innsikt}
-        </div>
-      ) : (
-        <div style={{ display: "grid", gridTemplateColumns: "3fr 2fr", gap: T.gap, alignItems: "start" }}>
-          {hero}
-          {trend}
-          {kategorier}
-          <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>{innsikt}</div>
-        </div>
+        </Kort>
       )}
     </div>
   );

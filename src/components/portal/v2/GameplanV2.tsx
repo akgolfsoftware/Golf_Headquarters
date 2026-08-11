@@ -11,13 +11,11 @@ import { useRouter } from "next/navigation";
 import type { BaneLibraryItem } from "@/lib/gameplan/queries";
 import {
   T,
-  Caps,
   Tittel,
   Kort,
   Rad,
   KpiFlis,
   StatusPill,
-  MikroMeta,
   TomTilstand,
   CTAPill,
   Icon,
@@ -49,9 +47,10 @@ export function GameplanV2({ data }: { data: BaneLibraryItem[] }) {
       <div>
         <div data-paper-pattern-topp>
           <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>Gameplan</h1>
-          <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>Banene dine</span>
+          <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>Dine baner</span>
         </div>
-        <p style={{ fontFamily: T.ui, fontSize: 12.5, color: T.fg2, lineHeight: 1.6, margin: "10px 0 0" }}>
+        {/* Fasit: .merknad — serif på myk flate */}
+        <p style={{ fontFamily: T.bodyFont, fontSize: 12, color: T.mut, lineHeight: 1.6, margin: "10px 0 0", background: T.panel2, borderRadius: 8, padding: "8px 12px" }}>
           Spredningen din på hver bane du spiller.
         </p>
       </div>
@@ -60,7 +59,7 @@ export function GameplanV2({ data }: { data: BaneLibraryItem[] }) {
       <div className="grid grid-cols-3" style={{ gap: T.gap }}>
         <KpiFlis label="Baner" value={String(data.length || "—")} />
         <KpiFlis label="Kartlagt" value={data.length === 0 ? "—" : String(kartlagte)} />
-        <KpiFlis label="Spilte runder" value={data.length === 0 ? "—" : String(sumRunder)} tint />
+        <KpiFlis label="Spilte runder" value={data.length === 0 ? "—" : String(sumRunder)} />
       </div>
 
       {data.length === 0 ? (
@@ -74,7 +73,7 @@ export function GameplanV2({ data }: { data: BaneLibraryItem[] }) {
             <Link href="/portal/runde/live" style={{ textDecoration: "none", display: "block" }}>
               <span style={{
                 display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, width: "100%", padding: "10px 16px",
-                borderRadius: 12, background: T.handling, color: T.onHandling, fontFamily: T.ui, fontSize: 14, fontWeight: 600, minHeight: 56,
+                borderRadius: 12, background: T.cta, color: T.onCta, fontFamily: T.ui, fontSize: 14, fontWeight: 600, minHeight: 48,
               }}>Start live-føring
               </span>
             </Link>
@@ -84,7 +83,7 @@ export function GameplanV2({ data }: { data: BaneLibraryItem[] }) {
         <>
 
           {/* Banebibliotek */}
-          <Kort eyebrow="Banebibliotek" action={<Caps size={9}>{data.length} baner</Caps>}>
+          <Kort eyebrow="Banebibliotek" action={<span style={{ fontFamily: T.mono, fontSize: 12, color: T.fg, fontVariantNumeric: "tabular-nums" }}>{data.length} baner</span>}>
             {data.map((b, i) => (
               <Rad
                 key={b.id}
@@ -92,8 +91,8 @@ export function GameplanV2({ data }: { data: BaneLibraryItem[] }) {
                 leading={
                   <span
                     style={{
-                      width: 38,
-                      height: 38,
+                      width: 32,
+                      height: 32,
                       flex: "none",
                       borderRadius: 9999,
                       background: T.panel2,
@@ -103,19 +102,19 @@ export function GameplanV2({ data }: { data: BaneLibraryItem[] }) {
                       justifyContent: "center",
                     }}
                   >
-                    <Icon name="map-pin" size={17} style={{ color: T.lime }} />
+                    <Icon name="map-pin" size={15} style={{ color: T.fg }} />
                   </span>
                 }
                 title={b.navn}
                 sub={b.klubb}
                 meta={
-                  <span style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                  <span style={{ display: "flex", alignItems: "center", gap: 10 }}>
                     {b.hasGeometry ? (
-                      <StatusPill tone="lime">{b.holesMapped} hull</StatusPill>
+                      <StatusPill tone="up">{b.holesMapped} hull</StatusPill>
                     ) : (
-                      <MikroMeta icon="clock">Kommer</MikroMeta>
+                      <span style={{ display: "inline-flex", alignItems: "center", height: 20, boxSizing: "border-box", fontFamily: T.mono, fontSize: 10, fontWeight: 600, letterSpacing: "0.04em", textTransform: "uppercase", color: T.mut, background: T.panel2, borderRadius: T.rPill, padding: "0 8px" }}>Kommer</span>
                     )}
-                    <MikroMeta icon="flag">{b.playerRounds} runder</MikroMeta>
+                    <span style={{ fontFamily: T.mono, fontSize: 11, color: T.mut }}>{b.playerRounds} runder</span>
                   </span>
                 }
                 last={i === data.length - 1}
