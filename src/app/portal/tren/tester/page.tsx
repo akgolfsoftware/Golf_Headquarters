@@ -22,9 +22,9 @@ import { Icon } from "@/components/v2/icon";
 export const dynamic = "force-dynamic";
 
 const TONE_FARGE: Record<"pos" | "neg" | "flat", string> = {
-  pos: "var(--v2-up)",
-  neg: "var(--v2-down)",
-  flat: "var(--v2-mut)",
+  pos: T.up,
+  neg: T.down,
+  flat: T.mut,
 };
 
 function TrendTag({ delta }: { delta: NonNullable<TestRow["delta"]> }) {

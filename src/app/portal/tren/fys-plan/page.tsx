@@ -126,7 +126,7 @@ export default async function FysPlanListePage() {
             </h3>
             <p style={{ margin: "0 0 16px", fontFamily: T.bodyFont, fontSize: 14, color: T.mut, maxWidth: "52ch" }}>
               {dagensFys.location ? `${dagensFys.location} · ` : ""}
-              {dagensFys.durationMin} min. Økta ligger i planen din i dag.
+              {dagensFys.durationMin} min. Økta ligger først i dag — golfkølla venter til etterpå.
             </p>
             {/* Kontrakt §3: skjermens ene aksenthandling */}
             <Link
@@ -178,7 +178,8 @@ export default async function FysPlanListePage() {
           </div>
         )}
 
-        {/* Tom tilstand — fasit-copy, én vei videre */}
+        {/* Tom tilstand — fasit-copy, to veier: be om plan (clay) + logg fri økt.
+            Clay kun når «Én ting nå» ikke alt bruker den (maks én per skjerm). */}
         {!harNoen && (
           <div
             style={{
@@ -192,10 +193,56 @@ export default async function FysPlanListePage() {
               Ingen FYS-plan ennå
             </h3>
             <p style={{ margin: "0 0 12px", fontFamily: T.bodyFont, fontSize: 13.5, color: T.mut }}>
-              Det ligger ingen fysisk plan for deg ennå. Lag en i Workbench — den teller i totalen
-              sammen med golftreningen.
+              Anders har ikke lagt en fysisk plan for deg. Du kan be om en — eller logge fri
+              fysisk trening så lenge, den teller i totalen.
             </p>
-            <NyPlanKnapp variant="empty-state" primary={!dagensFys} />
+            <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+              <Link
+                href="/portal/coach/melding/ny"
+                data-od-id="fys-tom-be"
+                className="v2-press v2-focus"
+                {...(!dagensFys ? { "data-paper-en-ting": "true" } : {})}
+                style={{
+                  textDecoration: "none",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  minHeight: 56,
+                  width: "100%",
+                  borderRadius: T.rCard,
+                  ...(!dagensFys
+                    ? { background: T.handling, color: T.onHandling }
+                    : { background: T.panel, color: T.fg, border: `1px solid ${T.border}` }),
+                  fontFamily: T.ui,
+                  fontSize: 14,
+                  fontWeight: 600,
+                }}
+              >
+                Be Anders om en FYS-plan
+              </Link>
+              <Link
+                href="/portal/planlegge/workbench"
+                data-od-id="fys-tom-fri"
+                className="v2-press v2-focus"
+                style={{
+                  textDecoration: "none",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  minHeight: 56,
+                  width: "100%",
+                  borderRadius: T.rCard,
+                  background: T.panel,
+                  color: T.fg,
+                  border: `1px solid ${T.border}`,
+                  fontFamily: T.ui,
+                  fontSize: 14,
+                  fontWeight: 500,
+                }}
+              >
+                Logg fri fysisk økt
+              </Link>
+            </div>
           </div>
         )}
 

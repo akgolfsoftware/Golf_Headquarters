@@ -103,7 +103,7 @@ export default async function TestDetaljSpillerPage({
       };
     }
   }
-  const toneFarge = { pos: "var(--v2-up)", neg: "var(--v2-down)", flat: "var(--v2-mut)" } as const;
+  const toneFarge = { pos: T.up, neg: T.down, flat: T.mut } as const;
 
   const subBiter = [test.pyramidArea, enhet ? `måles i ${enhet}` : null].filter(Boolean);
 
@@ -238,7 +238,8 @@ export default async function TestDetaljSpillerPage({
           </span>
         </div>
 
-        {/* Tom tilstand — ingen resultater ennå (protokollen står fortsatt under) */}
+        {/* Tom tilstand — ingen resultater ennå (protokollen står fortsatt under).
+            Fasit: clay-handlingen ligger INNE i tom-blokken, over protokollkortet. */}
         {resultater.length === 0 && (
           <div
             style={{
@@ -251,9 +252,31 @@ export default async function TestDetaljSpillerPage({
             <h3 style={{ margin: "0 0 8px", fontFamily: T.disp, fontSize: 15, fontWeight: 600, color: T.fg }}>
               Du har ikke tatt denne testen ennå
             </h3>
-            <p style={{ margin: 0, fontFamily: T.bodyFont, fontSize: 13.5, color: T.mut }}>
+            <p style={{ margin: "0 0 12px", fontFamily: T.bodyFont, fontSize: 13.5, color: T.mut }}>
               Protokollen står under — første måling blir referansen din.
             </p>
+            <Link
+              href={`/portal/tren/tester/${test.id}/gjennomfor`}
+              data-od-id="testd-tom-start"
+              data-paper-en-ting="true"
+              className="v2-press v2-focus"
+              style={{
+                textDecoration: "none",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                minHeight: 56,
+                width: "100%",
+                borderRadius: T.rCard,
+                background: T.handling,
+                color: T.onHandling,
+                fontFamily: T.ui,
+                fontSize: 14,
+                fontWeight: 600,
+              }}
+            >
+              Ta første måling
+            </Link>
           </div>
         )}
 
@@ -301,7 +324,7 @@ export default async function TestDetaljSpillerPage({
                     key={r.id}
                     style={{
                       flex: 1,
-                      background: sisteStolpe ? "var(--v2-mut)" : T.panel2,
+                      background: sisteStolpe ? T.mut : T.panel2,
                       borderRadius: "8px 8px 0 0",
                       position: "relative",
                       minHeight: 8,
@@ -406,29 +429,32 @@ export default async function TestDetaljSpillerPage({
           </Kort>
         )}
 
-        {/* Kontrakt §3: skjermens ene aksenthandling — start målingen */}
-        <Link
-          href={`/portal/tren/tester/${test.id}/gjennomfor`}
-          data-od-id="testd-start"
-          data-paper-en-ting="true"
-          className="v2-press v2-focus"
-          style={{
-            textDecoration: "none",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            minHeight: 56,
-            width: "100%",
-            borderRadius: T.rCard,
-            background: T.handling,
-            color: T.onHandling,
-            fontFamily: T.ui,
-            fontSize: 14,
-            fontWeight: 600,
-          }}
-        >
-          {resultater.length === 0 ? "Ta første måling" : "Ta måling"}
-        </Link>
+        {/* Kontrakt §3: skjermens ene aksenthandling — start testen.
+            I tom tilstand bor clay-handlingen i tom-blokken over (maks én). */}
+        {resultater.length > 0 && (
+          <Link
+            href={`/portal/tren/tester/${test.id}/gjennomfor`}
+            data-od-id="testd-start"
+            data-paper-en-ting="true"
+            className="v2-press v2-focus"
+            style={{
+              textDecoration: "none",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              minHeight: 56,
+              width: "100%",
+              borderRadius: T.rCard,
+              background: T.handling,
+              color: T.onHandling,
+              fontFamily: T.ui,
+              fontSize: 14,
+              fontWeight: 600,
+            }}
+          >
+            Start testen
+          </Link>
+        )}
       </div>
     </V2Shell>
   );

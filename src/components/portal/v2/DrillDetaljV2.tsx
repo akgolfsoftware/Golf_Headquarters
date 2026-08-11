@@ -39,7 +39,9 @@ export type DrillDetaljV2Data = {
   media: { kind: "video" | "foto"; label: string; url: string }[];
   /** Parameter-tabell — kun rader med faktisk verdi. */
   params: { key: string; value: string }[];
-  hrefBibliotek: string;
+  /** «din bruk» — Sist brukt / Siste 30 dager (samme kilde som øvelsesbanken).
+      «Beste resultat» finnes ikke i datamodellen og utelates ærlig. */
+  bruk: { k: string; v: string }[];
   hrefLeggTilIPlan: string;
 };
 
@@ -100,6 +102,32 @@ export function DrillDetaljV2({ data }: { data: DrillDetaljV2Data }) {
                   {s.k}
                 </span>
                 <span style={{ fontFamily: T.bodyFont, color: T.fg2 }}>{s.v}</span>
+              </div>
+            ))}
+          </div>
+        </Kort>
+      )}
+
+      {/* Din bruk — fasit: Sist brukt / Siste 30 dager (Beste resultat utelatt ærlig) */}
+      {data.bruk.length > 0 && (
+        <Kort eyebrow="din bruk">
+          <div>
+            {data.bruk.map((b, i) => (
+              <div
+                key={b.k}
+                style={{
+                  display: "flex",
+                  alignItems: "baseline",
+                  justifyContent: "space-between",
+                  gap: 12,
+                  padding: "10px 0",
+                  borderBottom: i === data.bruk.length - 1 ? "none" : `1px solid ${T.border}`,
+                }}
+              >
+                <span style={{ fontFamily: T.ui, fontSize: 12.5, color: T.mut }}>{b.k}</span>
+                <span style={{ fontFamily: T.mono, fontSize: 12.5, fontWeight: 700, color: T.fg, textAlign: "right", fontVariantNumeric: "tabular-nums" }}>
+                  {b.v}
+                </span>
               </div>
             ))}
           </div>
@@ -221,21 +249,26 @@ export function DrillDetaljV2({ data }: { data: DrillDetaljV2Data }) {
       >
         Legg i neste økt
       </Link>
-      <Link
-        href={data.hrefBibliotek}
+
+      {/* Eier-fotnote — fasit: hvorfor ingen godkjenning trengs */}
+      <div
         style={{
-          textDecoration: "none",
-          display: "block",
-          textAlign: "center",
-          fontFamily: T.ui,
-          fontSize: 12,
-          fontWeight: 600,
+          display: "flex",
+          alignItems: "flex-start",
+          gap: 10,
+          fontFamily: T.bodyFont,
+          fontSize: 12.5,
           color: T.mut,
+          lineHeight: 1.6,
           paddingBottom: 24,
         }}
       >
-        Tilbake til øvelsesbanken →
-      </Link>
+        <Icon name="pencil" size={14} style={{ color: T.mut, flex: "none", marginTop: 3 }} />
+        <span>
+          Å legge en drill i egen økt endrer ikke ukeplanen — derfor ingen godkjenning. Anders
+          får beskjed og kan justere om det kolliderer med tema.
+        </span>
+      </div>
     </div>
   );
 }

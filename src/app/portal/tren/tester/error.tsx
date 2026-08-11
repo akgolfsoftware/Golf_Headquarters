@@ -1,8 +1,9 @@
 "use client";
 
-/* Feil-tilstand for /portal/drills (Paper-port W1, fase2).
-   Fasit-copy: banken svarte ikke — drillene i planlagte økter ligger i selve
-   økta og virker som før. Dekker også [id]-ruten. */
+/* Feil-tilstand for /portal/tren/tester (Paper-port W1, fase2).
+   Fasit-copy: resultatlageret svarte ikke — loggede resultater er trygge.
+   Ligger på tester-nivået (ikke tren/) så fys-plan ikke arver copy-en.
+   Dekker også [testId]-rutene. */
 
 import { useEffect } from "react";
 import { T } from "@/lib/v2/tokens";
@@ -15,7 +16,7 @@ export default function Error({
   reset: () => void;
 }) {
   useEffect(() => {
-    console.error("[drills/error]", error.digest, error);
+    console.error("[tester/error]", error.digest, error);
   }, [error]);
 
   return (
@@ -29,16 +30,16 @@ export default function Error({
         }}
       >
         <h3 style={{ margin: "0 0 8px", fontFamily: T.disp, fontSize: 15, fontWeight: 600, color: T.fg }}>
-          Klarte ikke å hente øvelsesbanken
+          Klarte ikke å hente testene
         </h3>
         <p style={{ margin: "0 0 12px", fontFamily: T.bodyFont, fontSize: 13.5, color: T.mut }}>
-          Banken svarte ikke innen 30 sekunder. Drillene i planlagte økter ligger i selve økta
-          og virker som før.
+          Resultatlageret svarte ikke innen 30 sekunder. Loggede resultater er trygge — også de
+          som alt er sendt til TalentHQ.
         </p>
         <button
           type="button"
           onClick={reset}
-          data-od-id="drills-retry"
+          data-od-id="tester-retry"
           className="v2-press v2-focus"
           style={{
             display: "flex",

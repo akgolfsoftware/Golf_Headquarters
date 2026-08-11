@@ -1,8 +1,7 @@
 "use client";
 
-/* Feil-tilstand for /portal/drills (Paper-port W1, fase2).
-   Fasit-copy: banken svarte ikke — drillene i planlagte økter ligger i selve
-   økta og virker som før. Dekker også [id]-ruten. */
+/* Feil-tilstand for /portal/tren/fys-plan (Paper-port W1, fase2).
+   Fasit-copy: planlageret svarte ikke — logget trening er trygt lagret. */
 
 import { useEffect } from "react";
 import { T } from "@/lib/v2/tokens";
@@ -15,7 +14,7 @@ export default function Error({
   reset: () => void;
 }) {
   useEffect(() => {
-    console.error("[drills/error]", error.digest, error);
+    console.error("[fys-plan/error]", error.digest, error);
   }, [error]);
 
   return (
@@ -29,16 +28,15 @@ export default function Error({
         }}
       >
         <h3 style={{ margin: "0 0 8px", fontFamily: T.disp, fontSize: 15, fontWeight: 600, color: T.fg }}>
-          Klarte ikke å hente øvelsesbanken
+          Klarte ikke å hente FYS-planene
         </h3>
         <p style={{ margin: "0 0 12px", fontFamily: T.bodyFont, fontSize: 13.5, color: T.mut }}>
-          Banken svarte ikke innen 30 sekunder. Drillene i planlagte økter ligger i selve økta
-          og virker som før.
+          Planlageret svarte ikke innen 30 sekunder. Logget trening er trygt lagret.
         </p>
         <button
           type="button"
           onClick={reset}
-          data-od-id="drills-retry"
+          data-od-id="fys-retry"
           className="v2-press v2-focus"
           style={{
             display: "flex",
