@@ -328,6 +328,8 @@ function AnalyseDybde({ data, mobile }: { data: AnalysereData; mobile: boolean }
       <div className="grid grid-cols-1 md:grid-cols-2" style={{ gap: T.gap }}>
         {[
           { href: "/portal/analysere/hull", ic: "map", l: "Hull-analyse", s: "Hvor taper du slag — hull for hull" },
+          // Paper W2 (fase2): putte-lab som egen dybdeflate under Analyse.
+          { href: "/portal/analysere/putting", ic: "circle-dot", l: "Putte-lab", s: "Treff %, distansekontroll og putte-økter" },
           { href: "/portal/gameplan", ic: "crosshair", l: "Gameplan", s: "Banekart, spredning og hull-for-hull sikte" },
           { href: "/portal/datagolf", ic: "trophy", l: "Sammenlign med proffer", s: "Din SG mot DataGolf-baseline" },
         ].map((c) => (
