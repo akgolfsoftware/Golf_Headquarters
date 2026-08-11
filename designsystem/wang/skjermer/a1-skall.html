@@ -1,0 +1,598 @@
+<!-- @dsCard group="Skjermer" -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>A1 Skall — WANG Golf</title>
+<style>
+  @import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800&family=Quattrocento+Sans:wght@400;700&display=swap");
+
+  :root {
+    --wang-navy: #17446f;
+    --wang-teal: #2e857d;
+    --wang-mint: #49ca9f;
+    --wang-teal-text: #226f67;
+    --cat-orange: #f47b20;
+
+    --bg-app: #f4f6f8;
+    --surface-card: #ffffff;
+    --text-primary: #1e293b;
+    --text-secondary: #475569;
+    --border-subtle: #e9edf1;
+    --focus-ring: #49ca9f;
+
+    --tint-teal: color-mix(in srgb, #2e857d 13%, white);
+    --tint-orange: color-mix(in srgb, #f47b20 9%, white);
+
+    --radius-card: 26px;
+    --radius-card-sm: 20px;
+    --radius-chip: 999px;
+    --shadow-card: 0 8px 24px rgba(23, 68, 111, 0.08);
+    --shadow-card-sm: 0 4px 14px rgba(23, 68, 111, 0.06);
+    --shadow-hero: 0 18px 40px rgba(15, 23, 42, 0.22);
+    --shadow-float: 0 12px 32px rgba(15, 42, 68, 0.18);
+
+    --font-brand: "Montserrat", system-ui, sans-serif;
+    --font-body: "Quattrocento Sans", system-ui, sans-serif;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    padding: 36px 28px 60px;
+    background: #e6eaee;
+    color: var(--text-primary);
+    font-family: var(--font-body);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .page { max-width: 1360px; margin: 0 auto; }
+
+  h1 {
+    font-family: var(--font-brand);
+    font-weight: 800;
+    font-size: 26px;
+    letter-spacing: -0.015em;
+    margin: 0 0 6px;
+  }
+
+  .lede {
+    color: var(--text-secondary);
+    font-size: 15px;
+    line-height: 1.6;
+    max-width: 68ch;
+    margin: 0 0 32px;
+  }
+
+  .t-label {
+    font-family: var(--font-brand);
+    font-weight: 700;
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    line-height: 1.3;
+    color: var(--text-secondary);
+    margin: 0 0 12px;
+  }
+
+  .frames { display: flex; gap: 30px; align-items: flex-start; flex-wrap: wrap; }
+
+  .frame-wrap { min-width: 0; }
+
+  .cap {
+    font-family: var(--font-brand);
+    font-weight: 700;
+    font-size: 11px;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    color: var(--text-secondary);
+    margin: 0 0 9px;
+  }
+
+  /* ---- Telefonramme ---- */
+  .phone {
+    width: 390px;
+    height: 760px;
+    background: var(--bg-app);
+    border-radius: 30px;
+    box-shadow: var(--shadow-hero);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    flex: none;
+  }
+
+  .desk {
+    width: 820px;
+    height: 520px;
+    background: var(--bg-app);
+    border-radius: 18px;
+    box-shadow: var(--shadow-hero);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    flex: none;
+    min-width: 0;
+  }
+
+  /* ---- Header ---- */
+  .hd {
+    background: var(--surface-card);
+    box-shadow: var(--shadow-card-sm);
+    flex: none;
+    z-index: 3;
+  }
+
+  .hd-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 13px 18px;
+    min-width: 0;
+  }
+
+  .crest {
+    width: 34px;
+    height: 34px;
+    border-radius: 9px;
+    background: var(--wang-navy);
+    display: grid;
+    place-items: center;
+    flex: none;
+    font-family: var(--font-brand);
+    font-weight: 800;
+    font-size: 13px;
+    color: #fff;
+    letter-spacing: 0.02em;
+  }
+
+  .hd-txt { min-width: 0; flex: 1; }
+
+  .hd-txt b {
+    display: block;
+    font-family: var(--font-brand);
+    font-weight: 800;
+    font-size: 14.5px;
+    line-height: 1.2;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .hd-txt span {
+    display: block;
+    font-family: var(--font-brand);
+    font-weight: 700;
+    font-size: 10.5px;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    color: var(--text-secondary);
+    margin-top: 2px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .season {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    height: 28px;
+    padding: 0 12px;
+    border-radius: var(--radius-chip);
+    background: var(--tint-teal);
+    color: var(--wang-teal-text);
+    font-family: var(--font-brand);
+    font-weight: 700;
+    font-size: 11px;
+    white-space: nowrap;
+    flex: none;
+  }
+
+  .dot { width: 6px; height: 6px; border-radius: 999px; background: var(--wang-mint); flex: none; }
+
+  /* ---- Desktop-faner i header ---- */
+  .hd-tabs {
+    display: flex;
+    gap: 6px;
+    padding: 0 18px 11px;
+    min-width: 0;
+  }
+
+  .tab {
+    font-family: var(--font-brand);
+    font-weight: 700;
+    font-size: 12.5px;
+    padding: 8px 15px;
+    border-radius: var(--radius-chip);
+    color: var(--text-secondary);
+    background: transparent;
+    border: 0;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+
+  .tab.on { background: var(--wang-navy); color: #fff; }
+
+  /* ---- Innhold ---- */
+  .body-area {
+    flex: 1;
+    overflow: hidden;
+    padding: 16px 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 13px;
+    min-height: 0;
+  }
+
+  .card {
+    background: var(--surface-card);
+    border-radius: var(--radius-card-sm);
+    box-shadow: var(--shadow-card-sm);
+    padding: 15px 16px;
+    min-width: 0;
+  }
+
+  .skel {
+    background: linear-gradient(90deg, #eef1f4 25%, #e3e8ed 50%, #eef1f4 75%);
+    border-radius: 8px;
+    height: 12px;
+  }
+
+  /* ---- Bunnmeny (mobil) ---- */
+  .bn {
+    flex: none;
+    background: var(--surface-card);
+    box-shadow: 0 -6px 20px rgba(23, 68, 111, 0.09);
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    padding: 8px 6px 14px;
+    z-index: 3;
+  }
+
+  .bn-i {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    padding: 5px 2px;
+    border: 0;
+    background: transparent;
+    cursor: pointer;
+    color: var(--text-secondary);
+    min-width: 0;
+  }
+
+  .bn-i svg { width: 21px; height: 21px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+  .bn-i span {
+    font-family: var(--font-brand);
+    font-weight: 700;
+    font-size: 10px;
+    letter-spacing: 0.02em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+  }
+
+  .bn-i.on { color: var(--wang-navy); }
+  .bn-i.on svg { stroke-width: 2.4; }
+
+  .bn-i.on::before {
+    content: "";
+    position: absolute;
+    margin-top: -8px;
+    width: 22px;
+    height: 3px;
+    border-radius: 999px;
+    background: var(--wang-mint);
+  }
+
+  /* ---- Notat ---- */
+  .note {
+    background: var(--surface-card);
+    border-radius: var(--radius-card);
+    box-shadow: var(--shadow-card);
+    padding: 22px 24px;
+    font-size: 14px;
+    line-height: 1.65;
+    color: var(--text-secondary);
+    margin-top: 30px;
+  }
+
+  .note b { color: var(--text-primary); }
+  .note ul { margin: 10px 0 0; padding-left: 20px; }
+  .note li { margin-bottom: 8px; }
+
+  .split { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 18px; }
+
+  .was {
+    border-left: 3px solid #cbd5e1;
+    padding-left: 14px;
+  }
+
+  .now {
+    border-left: 3px solid var(--wang-mint);
+    padding-left: 14px;
+  }
+
+  .was h4, .now h4 {
+    font-family: var(--font-brand);
+    font-weight: 700;
+    font-size: 11px;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    margin: 0 0 7px;
+    color: var(--text-secondary);
+  }
+
+  .was p, .now p { margin: 0; font-size: 13.5px; line-height: 1.6; }
+</style>
+
+<div class="page">
+  <h1>A1 — Skallet</h1>
+  <p class="lede">
+    Header, navigasjon og innholdsramme. Alt annet arver herfra, så denne skal sitte før noe
+    annet designes. Hovedgrepet: <b>bunnmeny på mobil</b> i stedet for vannrett rullende piller
+    i headeren.
+  </p>
+
+  <p class="t-label">Mobil 390px — fire tilstander</p>
+  <div class="frames">
+
+    <!-- Suksess -->
+    <div class="frame-wrap">
+      <p class="cap">Suksess</p>
+      <div class="phone">
+        <div class="hd">
+          <div class="hd-row">
+            <div class="crest">W</div>
+            <div class="hd-txt">
+              <b>Toppidrett Fredrikstad</b>
+              <span>Golf</span>
+            </div>
+            <span class="season"><span class="dot"></span>26/27</span>
+          </div>
+        </div>
+        <div class="body-area">
+          <div class="card">
+            <div style="font-family: var(--font-brand); font-weight: 700; font-size: 11px; letter-spacing: .07em; text-transform: uppercase; color: var(--text-secondary)">Innholdsflate</div>
+            <div style="font-family: var(--font-brand); font-weight: 700; font-size: 17px; margin-top: 6px">Skjermens innhold</div>
+            <div style="font-size: 13.5px; color: var(--text-secondary); line-height: 1.6; margin-top: 6px">
+              Hver skjerm fyller dette området. Rammen, headeren og bunnmenyen er felles.
+            </div>
+          </div>
+          <div class="card" style="flex: 1"></div>
+        </div>
+        <div class="bn">
+          <button class="bn-i on">
+            <svg viewBox="0 0 24 24"><path d="M3 9.5 12 3l9 6.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg>
+            <span>Oversikt</span>
+          </button>
+          <button class="bn-i">
+            <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M8 2v4M16 2v4M3 10h18"/></svg>
+            <span>Plan</span>
+          </button>
+          <button class="bn-i">
+            <svg viewBox="0 0 24 24"><path d="M22 9 12 4 2 9l10 5z"/><path d="M6 11.5V17c0 1.5 2.7 3 6 3s6-1.5 6-3v-5.5"/></svg>
+            <span>Skole</span>
+          </button>
+          <button class="bn-i">
+            <svg viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/></svg>
+            <span>Foreldre</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Laster -->
+    <div class="frame-wrap">
+      <p class="cap">Laster</p>
+      <div class="phone">
+        <div class="hd">
+          <div class="hd-row">
+            <div class="crest">W</div>
+            <div class="hd-txt">
+              <b>Toppidrett Fredrikstad</b>
+              <span>Golf</span>
+            </div>
+            <span class="season"><span class="dot"></span>26/27</span>
+          </div>
+        </div>
+        <div class="body-area">
+          <div class="card">
+            <div class="skel" style="width: 38%; height: 9px"></div>
+            <div class="skel" style="width: 72%; height: 17px; margin-top: 9px"></div>
+            <div class="skel" style="width: 90%; margin-top: 10px"></div>
+            <div class="skel" style="width: 64%; margin-top: 7px"></div>
+          </div>
+          <div class="card">
+            <div class="skel" style="width: 50%; height: 9px"></div>
+            <div class="skel" style="width: 84%; margin-top: 10px"></div>
+          </div>
+          <div class="card" style="flex: 1"></div>
+        </div>
+        <div class="bn">
+          <button class="bn-i on">
+            <svg viewBox="0 0 24 24"><path d="M3 9.5 12 3l9 6.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg>
+            <span>Oversikt</span>
+          </button>
+          <button class="bn-i">
+            <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M8 2v4M16 2v4M3 10h18"/></svg>
+            <span>Plan</span>
+          </button>
+          <button class="bn-i">
+            <svg viewBox="0 0 24 24"><path d="M22 9 12 4 2 9l10 5z"/><path d="M6 11.5V17c0 1.5 2.7 3 6 3s6-1.5 6-3v-5.5"/></svg>
+            <span>Skole</span>
+          </button>
+          <button class="bn-i">
+            <svg viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/></svg>
+            <span>Foreldre</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tom -->
+    <div class="frame-wrap">
+      <p class="cap">Tom</p>
+      <div class="phone">
+        <div class="hd">
+          <div class="hd-row">
+            <div class="crest">W</div>
+            <div class="hd-txt">
+              <b>Toppidrett Fredrikstad</b>
+              <span>Golf</span>
+            </div>
+            <span class="season"><span class="dot"></span>26/27</span>
+          </div>
+        </div>
+        <div class="body-area" style="justify-content: center; align-items: center; text-align: center; padding: 24px 30px">
+          <div style="width: 62px; height: 62px; border-radius: 999px; background: var(--tint-teal); display: grid; place-items: center">
+            <svg viewBox="0 0 24 24" style="width: 27px; height: 27px; stroke: var(--wang-teal-text); fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M8 2v4M16 2v4M3 10h18"/></svg>
+          </div>
+          <div style="font-family: var(--font-brand); font-weight: 700; font-size: 17.5px; margin-top: 15px">Ingenting her ennå</div>
+          <div style="font-size: 13.5px; color: var(--text-secondary); line-height: 1.6; margin-top: 7px; max-width: 34ch">
+            Årsplanen legges inn av treneren. Så snart den er klar, dukker øktene opp her.
+          </div>
+          <button style="margin-top: 18px; font-family: var(--font-brand); font-weight: 600; font-size: 14px; padding: 12px 24px; border-radius: 999px; border: 0; background: var(--wang-navy); color: #fff; cursor: pointer">
+            Se sesongen
+          </button>
+        </div>
+        <div class="bn">
+          <button class="bn-i on">
+            <svg viewBox="0 0 24 24"><path d="M3 9.5 12 3l9 6.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg>
+            <span>Oversikt</span>
+          </button>
+          <button class="bn-i">
+            <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M8 2v4M16 2v4M3 10h18"/></svg>
+            <span>Plan</span>
+          </button>
+          <button class="bn-i">
+            <svg viewBox="0 0 24 24"><path d="M22 9 12 4 2 9l10 5z"/><path d="M6 11.5V17c0 1.5 2.7 3 6 3s6-1.5 6-3v-5.5"/></svg>
+            <span>Skole</span>
+          </button>
+          <button class="bn-i">
+            <svg viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/></svg>
+            <span>Foreldre</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Feil -->
+    <div class="frame-wrap">
+      <p class="cap">Feil</p>
+      <div class="phone">
+        <div class="hd">
+          <div class="hd-row">
+            <div class="crest">W</div>
+            <div class="hd-txt">
+              <b>Toppidrett Fredrikstad</b>
+              <span>Golf</span>
+            </div>
+            <span class="season"><span class="dot"></span>26/27</span>
+          </div>
+        </div>
+        <div class="body-area" style="justify-content: center; align-items: center; text-align: center; padding: 24px 30px">
+          <div style="width: 62px; height: 62px; border-radius: 999px; background: var(--tint-orange); display: grid; place-items: center">
+            <svg viewBox="0 0 24 24" style="width: 27px; height: 27px; stroke: #b4571a; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round"><path d="M12 9v4M12 17h.01"/><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/></svg>
+          </div>
+          <div style="font-family: var(--font-brand); font-weight: 700; font-size: 17.5px; margin-top: 15px">Fikk ikke lastet planen</div>
+          <div style="font-size: 13.5px; color: var(--text-secondary); line-height: 1.6; margin-top: 7px; max-width: 34ch">
+            Sjekk at du er på nett. Innholdet hentes på nytt når du prøver igjen.
+          </div>
+          <button style="margin-top: 18px; font-family: var(--font-brand); font-weight: 600; font-size: 14px; padding: 12px 24px; border-radius: 999px; border: 0; background: var(--wang-navy); color: #fff; cursor: pointer">
+            Prøv igjen
+          </button>
+        </div>
+        <div class="bn">
+          <button class="bn-i on">
+            <svg viewBox="0 0 24 24"><path d="M3 9.5 12 3l9 6.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg>
+            <span>Oversikt</span>
+          </button>
+          <button class="bn-i">
+            <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M8 2v4M16 2v4M3 10h18"/></svg>
+            <span>Plan</span>
+          </button>
+          <button class="bn-i">
+            <svg viewBox="0 0 24 24"><path d="M22 9 12 4 2 9l10 5z"/><path d="M6 11.5V17c0 1.5 2.7 3 6 3s6-1.5 6-3v-5.5"/></svg>
+            <span>Skole</span>
+          </button>
+          <button class="bn-i">
+            <svg viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/></svg>
+            <span>Foreldre</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <p class="t-label" style="margin-top: 34px">Desktop 1280px — faner i headeren, ingen bunnmeny</p>
+  <div class="frames">
+    <div class="frame-wrap">
+      <div class="desk">
+        <div class="hd">
+          <div class="hd-row" style="padding: 15px 26px 12px">
+            <div class="crest" style="width: 40px; height: 40px; font-size: 15px">W</div>
+            <div class="hd-txt">
+              <b style="font-size: 16px">Toppidrett Fredrikstad</b>
+              <span>Golf · Fellesside for elever og foreldre</span>
+            </div>
+            <span class="season" style="height: 30px; font-size: 11.5px"><span class="dot"></span>Sesong 2026–2027</span>
+          </div>
+          <div class="hd-tabs" style="padding: 0 26px 12px">
+            <button class="tab on">Oversikt</button>
+            <button class="tab">Plan</button>
+            <button class="tab">Skole</button>
+            <button class="tab">Foreldre</button>
+          </div>
+        </div>
+        <div class="body-area" style="padding: 22px 26px">
+          <div class="card" style="border-radius: var(--radius-card); padding: 20px 22px">
+            <div style="font-family: var(--font-brand); font-weight: 700; font-size: 11px; letter-spacing: .07em; text-transform: uppercase; color: var(--text-secondary)">Innholdsflate</div>
+            <div style="font-family: var(--font-brand); font-weight: 700; font-size: 20px; margin-top: 6px">Maks 1120px, sentrert</div>
+            <div style="font-size: 14px; color: var(--text-secondary); line-height: 1.6; margin-top: 6px; max-width: 62ch">
+              Samme innholdsflate som mobil, men i bredere rutenett. Headeren bærer fanene, så
+              bunnmenyen forsvinner over 640px.
+            </div>
+          </div>
+          <div class="card" style="border-radius: var(--radius-card); flex: 1"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="note">
+    <div class="split">
+      <div class="was">
+        <h4>Slik er det i dag</h4>
+        <p>
+          Fire piller i en vannrett rullende rad under headeren. På 390px havner «Foreldre»
+          delvis utenfor skjermen, og headeren spiser 110px før innholdet begynner. Ingen
+          markering av hvor du er når du har rullet ned.
+        </p>
+      </div>
+      <div class="now">
+        <h4>Slik blir det</h4>
+        <p>
+          Bunnmeny med fire faste plasser og ikon + tekst. Alle fire er synlige samtidig,
+          tommelen når dem, og aktiv fane markeres med en mint strek. Headeren krymper til
+          én rad på mobil.
+        </p>
+      </div>
+    </div>
+
+    <ul style="margin-top: 18px">
+      <li><b>Fanenavnene er uendret</b> — Oversikt, Plan, Skole, Foreldre. Å døpe om «Oversikt»
+        til «I dag» er en produktbeslutning, ikke en designbeslutning; den tas separat.</li>
+      <li><b>Bunnmenyen forsvinner over 640px</b> og erstattes av faner i headeren. Samme
+        brekkpunkt som <code>.wang-vis-mobil</code> allerede bruker.</li>
+      <li><b>Sesongmerket forkortes til «26/27» på mobil</b> og skrives fullt ut på desktop.</li>
+      <li><b>Trygg sone i bunn:</b> 14px ekstra polstring under menyen for iPhone-hjemmestripen.</li>
+      <li><b>Hver flate som inneholder lang tekst må ha <code>minWidth: 0</code></b> — gotcha
+        oppdaget 10.08. Headerens tittelblokk har det allerede i dette designet.</li>
+    </ul>
+  </div>
+</div>

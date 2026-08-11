@@ -1,0 +1,179 @@
+/* =========================================================================
+   WANG Toppidrett Fredrikstad — Golf-fellessiden (/team-wang)
+   Kilde: Claude Design «WANG Toppidrett Fredrikstad Golf v2»
+   (tokens/colors.css + tokens/spacing.css i designprosjektet).
+   Scopet under .wang-tp slik at WANG-paletten aldri lekker inn i appens
+   øvrige tokens (samme mønster som .gfgk-jr i gfgk-junior-tokens.css).
+   Rå hex er tillatt her: src/styles/ er utenfor check-no-hex-gaten —
+   komponentene bruker kun var(--wang-*)/var(--tint-*)/var(--cat-*).
+   ========================================================================= */
+
+.wang-tp {
+  /* ---- Merkevarekjerne ---- */
+  --wang-navy: #17446f;
+  --wang-teal: #2e857d;
+  --wang-mint: #49ca9f;
+  --wang-teal-text: #226f67;
+
+  /* ---- Kategorifarger ---- */
+  --cat-orange: #f47b20;
+  --cat-yellow: #fcd700;
+  --cat-pink: #d12a5c;
+  --cat-blue: #007db1;
+  --cat-purple: #7f1975;
+  --cat-gray: #d2d2d2;
+
+  /* ---- Flater og tekst ---- */
+  --bg-app: #f4f6f8;
+  --surface-card: #ffffff;
+  --text-primary: #1e293b;
+  --text-secondary: #475569;
+  --navy-deep: #0f172a;
+  --white: #ffffff;
+  --text-on-dark: #ffffff;
+  --text-on-dark-dim: rgba(255, 255, 255, 0.72);
+  --border-subtle: #e9edf1;
+  --focus-ring: #49ca9f;
+
+  /* ---- Nøytraler ---- */
+  --neutral-50: #f4f6f8;
+  --neutral-100: #e9edf1;
+  --neutral-200: #dce3ea;
+  --neutral-300: #c5d0da;
+  --neutral-400: #94a3b8;
+  --neutral-500: #64748b;
+  --neutral-600: #475569;
+  --neutral-700: #334155;
+  --neutral-800: #1e293b;
+  --neutral-900: #0f172a;
+
+  /* ---- Tints (tonede chip-/kort-bakgrunner) ---- */
+  --tint-navy: color-mix(in srgb, var(--wang-navy) 12%, white);
+  --tint-teal: color-mix(in srgb, var(--wang-teal) 13%, white);
+  --tint-mint: color-mix(in srgb, var(--wang-mint) 13%, white);
+  --tint-orange: color-mix(in srgb, var(--cat-orange) 9%, white);
+  --tint-yellow: color-mix(in srgb, var(--cat-yellow) 9%, white);
+  --tint-pink: color-mix(in srgb, var(--cat-pink) 10%, white);
+  --tint-blue: color-mix(in srgb, var(--cat-blue) 10%, white);
+  --tint-purple: color-mix(in srgb, var(--cat-purple) 10%, white);
+  --tint-gray: #f1f4f7;
+
+  /* ---- Gradienter ---- */
+  --grad-score: linear-gradient(135deg, var(--wang-teal) 0%, var(--wang-mint) 100%);
+  --grad-hero-line: linear-gradient(
+    160deg,
+    color-mix(in srgb, var(--wang-navy) 82%, white) 0%,
+    var(--wang-navy) 55%,
+    color-mix(in srgb, var(--wang-navy) 82%, black) 100%
+  );
+
+  /* ---- Semantiske aliaser ---- */
+  --color-primary: var(--wang-navy);
+  --color-success: var(--wang-teal);
+  --color-accent: var(--wang-mint);
+  --color-warning: var(--cat-orange);
+  --color-danger: var(--cat-pink);
+  --color-info: var(--cat-blue);
+  --color-disabled: var(--cat-gray);
+
+  /* ---- Spacing / radius / skygger ---- */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-7: 32px;
+  --space-8: 40px;
+  --space-9: 48px;
+  --space-10: 64px;
+  --radius-card: 26px;
+  --radius-card-sm: 20px;
+  --radius-input: 16px;
+  --radius-chip: 999px;
+  --radius-icon-chip: 14px;
+  --shadow-card: 0 8px 24px rgba(23, 68, 111, 0.08);
+  --shadow-card-sm: 0 4px 14px rgba(23, 68, 111, 0.06);
+  --shadow-hero: 0 18px 40px rgba(15, 23, 42, 0.22);
+  --shadow-float: 0 12px 32px rgba(15, 42, 68, 0.18);
+  --shadow-press: 0 2px 8px rgba(23, 68, 111, 0.1);
+
+  /* ---- Bevegelse ---- */
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --dur-fast: 140ms;
+  --dur: 220ms;
+  --dur-slow: 420ms;
+  --press-scale: 0.97;
+
+  /* ---- Typografi (fontvariablene settes av next/font i layout.tsx) ---- */
+  --font-brand: var(--font-wang-brand), "Montserrat", system-ui, sans-serif;
+  --font-body: var(--font-wang-body), "Quattrocento Sans", system-ui, sans-serif;
+  --fs-label: 12px;
+  --ls-label: 0.08em;
+
+  background: var(--bg-app);
+  color: var(--text-primary);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ---- Typografi-hjelpere ---- */
+.wang-tp .t-label {
+  font-family: var(--font-brand);
+  font-weight: 700;
+  font-size: var(--fs-label);
+  letter-spacing: var(--ls-label);
+  text-transform: uppercase;
+  line-height: 1.3;
+}
+
+.wang-tp .wang-num {
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---- Kort: hvite flater med myke navy-tintede skygger, aldri border ---- */
+.wang-tp .wang-card {
+  background: var(--surface-card);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-card);
+  box-sizing: border-box;
+}
+
+/* ---- Trykkbare flater (pill-knapper, kort med onClick) ---- */
+.wang-tp .wang-pressable {
+  transition:
+    transform var(--dur-fast) var(--ease-out),
+    box-shadow var(--dur) var(--ease-out),
+    background var(--dur-fast) ease,
+    color var(--dur-fast) ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.wang-tp .wang-pressable:active {
+  transform: scale(var(--press-scale));
+}
+
+.wang-tp .wang-pressable:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+
+/* ---- Responsiv synlighet (header-logo, kalender-etiketter) ---- */
+.wang-tp .wang-vis-mobil {
+  display: none;
+}
+
+@media (max-width: 640px) {
+  .wang-tp .wang-vis-mobil {
+    display: block;
+  }
+
+  .wang-tp .wang-vis-desktop {
+    display: none !important;
+  }
+
+  .wang-tp .wang-skjul-mobil {
+    display: none !important;
+  }
+}
