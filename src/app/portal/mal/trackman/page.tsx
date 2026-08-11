@@ -1,8 +1,13 @@
 /**
- * PlayerHQ TrackMan-hub — v2. Liste over importerte økter, nyeste først.
- * Én TrackMan-import-modal og trend-seksjon; sidens ramme og liste er v2. Ingen hardkodede
- * tall — ærlig tom tilstand når ingen økt er importert.
- * «?»-regelen: TrackMan-begrepet forklares via hjelpetekst-nøkkelen trackman.
+ * PlayerHQ · TrackMan-liste (/portal/mal/trackman) — Paper-port W2 (fase2).
+ * Fasit: designsystem/paper/fase2/playerhq/playerhq-trackman-liste.html.
+ *
+ * Struktur per fasit: topp «Range-analyse / TrackMan · sesjonsanalyse per
+ * kølle» → antallslinje → full-bredde ink-importknapp → trendkort
+ * (køllehastighet, enkel sparkline) → sesjonsliste (datebox + dato/slag/
+ * kilde/miljø) → «Be om coach-vurdering» (ghost, høyrestilt). Tom tilstand
+ * med fasit-copy + eksport-instruks. Ingen clay-CTA — fasiten har ingen.
+ * Alle tall fra databasen — aldri fabrikkert.
  */
 
 import Link from "next/link";
@@ -10,17 +15,11 @@ import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
 import { T } from "@/lib/v2/tokens";
-import {
-  Caps,
-  Tittel,
-  Kort,
-  Rad,
-  CTAPill,
-  TomTilstand,
-  HjelpTips, TilbakeLenke } from "@/components/v2";
+import { Kort, Rad, CTAPill, TomTilstand, TilbakeLenke } from "@/components/v2";
 import { TrackmanImportModal } from "@/components/shared/trackman-import-modal";
 import { TrackManTrendSeksjon, byggTrendData } from "./trend-seksjon";
 import type { TrackManEnvironment } from "@/generated/prisma/client";
+import type { CSSProperties } from "react";
 
 const ENV_LABEL: Record<TrackManEnvironment, string> = {
   SIMULATOR_INDOOR: "Simulator innendørs",
@@ -37,70 +36,75 @@ const SOURCE_LABEL: Record<string, string> = {
   api: "TrackMan API",
 };
 
+/** Fasitens `.btn.ink.full` — ink-fylt, full bredde. */
+const INK_FULL: CSSProperties = {
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  width: "100%",
+  minHeight: 48,
+  padding: "0 16px",
+  fontFamily: T.ui,
+  fontSize: 14,
+  fontWeight: 500,
+  background: T.cta,
+  color: T.onCta,
+  border: `1px solid ${T.cta}`,
+  borderRadius: T.rCard,
+  cursor: "pointer",
+};
+
 export default async function TrackManListePage() {
   const user = await requirePortalUser();
 
-  const [okter, clubSignaler] = await Promise.all([
-    prisma.trackManSession.findMany({
-      where: { userId: user.id },
-      orderBy: { recordedAt: "desc" },
-      select: {
-        id: true,
-        recordedAt: true,
-        source: true,
-        shotCount: true,
-        environment: true,
-        rawJson: true,
-      },
-    }),
-    prisma.signal.findMany({
-      where: { userId: user.id, kind: "CLUB_AVG" },
-      select: { value: true, payload: true, computedAt: true },
-      orderBy: { computedAt: "asc" },
-    }),
-  ]);
+  const okter = await prisma.trackManSession.findMany({
+    where: { userId: user.id },
+    orderBy: { recordedAt: "desc" },
+    select: {
+      id: true,
+      recordedAt: true,
+      source: true,
+      shotCount: true,
+      environment: true,
+      rawJson: true,
+    },
+  });
 
   const hode = (
     <div>
-      <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
-        <Caps>TrackMan · sesjonsanalyse</Caps>
-        <HjelpTips k="trackman" size={11} />
+      <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>
+        Range-analyse
+      </h1>
+      <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>
+        TrackMan · sesjonsanalyse per kølle
       </span>
-      <div style={{ marginTop: 10 }}>
-        <Tittel em="per kølle">Range-analyse</Tittel>
-      </div>
-      {okter.length > 0 && (
-        <p style={{ fontFamily: T.mono, fontSize: 11, color: T.mut, margin: "10px 0 0" }}>
-          {okter.length} {okter.length === 1 ? "økt" : "økter"} registrert · nyeste først
-        </p>
-      )}
     </div>
   );
 
-  const importKnapper = (
-    <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
-      <TrackmanImportModal
-        variant="primary"
-        label={okter.length === 0 ? "Importer TrackMan" : "Importer ny økt"}
-      />
-    </div>
+  const importKnapp = (
+    <TrackmanImportModal
+      label={okter.length === 0 ? "Importer TrackMan" : "Importer ny økt"}
+      triggerStyle={INK_FULL}
+    />
   );
 
   if (okter.length === 0) {
     return (
       <V2Shell bredde="kolonne" aktiv="analyse" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
-      <TilbakeLenke href="/portal/mal">Mål</TilbakeLenke>
-        <div data-paper-portal-trackman style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
+        <TilbakeLenke href="/portal/mal">Mål</TilbakeLenke>
+        <div
+          data-paper-slug="playerhq-trackman-liste"
+          data-od-id="playerhq-trackman-liste"
+          style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%", minWidth: 0 }}
+        >
           {hode}
+          {importKnapp}
           <Kort>
             <TomTilstand
               icon="activity"
               title="Ingen TrackMan-data importert ennå"
               sub="Importer din første økt for å se spredning, stabilitet og full parameter-tabell per kølle."
             />
-            <div style={{ display: "flex", justifyContent: "center", marginTop: 8 }}>
-              {importKnapper}
-            </div>
             <p
               style={{
                 fontFamily: T.mono,
@@ -127,12 +131,22 @@ export default async function TrackManListePage() {
 
   return (
     <V2Shell bredde="kolonne" aktiv="analyse" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
-      <div data-paper-portal-trackman style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
+      <TilbakeLenke href="/portal/mal">Mål</TilbakeLenke>
+      <div
+        data-paper-slug="playerhq-trackman-liste"
+        data-od-id="playerhq-trackman-liste"
+        style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%", minWidth: 0 }}
+      >
         {hode}
-        {importKnapper}
 
-        {/* Trend-seksjon (vises kun ved ≥ 2 sesjoner) */}
-        <TrackManTrendSeksjon data={byggTrendData(okter, clubSignaler)} />
+        <p style={{ fontFamily: T.mono, fontSize: 11, color: T.mut, margin: 0, fontVariantNumeric: "tabular-nums" }}>
+          {okter.length} {okter.length === 1 ? "økt" : "økter"} registrert · nyeste først
+        </p>
+
+        {importKnapp}
+
+        {/* Trend — enkel sparkline, kun ved ≥ 2 økter med målt køllehastighet */}
+        <TrackManTrendSeksjon punkter={byggTrendData(okter)} />
 
         {/* Sesjonsliste */}
         <Kort pad="6px 18px">
@@ -150,6 +164,7 @@ export default async function TrackManListePage() {
               <Link
                 key={okt.id}
                 href={`/portal/mal/trackman/${okt.id}`}
+                data-od-id={`trackman-rad-${i}`}
                 style={{ textDecoration: "none", display: "block" }}
               >
                 <Rad
@@ -201,9 +216,13 @@ export default async function TrackManListePage() {
           })}
         </Kort>
 
-        {/* Coach-vurdering */}
+        {/* Coach-vurdering — sekundær, høyrestilt per fasit */}
         <div style={{ display: "flex", justifyContent: "flex-end" }}>
-          <Link href="/portal/coach/melding?type=trackman-vurdering" style={{ textDecoration: "none" }}>
+          <Link
+            href="/portal/coach/melding?type=trackman-vurdering"
+            data-od-id="trackman-coach"
+            style={{ textDecoration: "none" }}
+          >
             <CTAPill ghost icon="send">
               Be om coach-vurdering
             </CTAPill>

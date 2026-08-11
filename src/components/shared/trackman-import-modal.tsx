@@ -20,6 +20,7 @@ import {
   useRef,
   useState,
   useTransition,
+  type CSSProperties,
 } from "react";
 import { useRouter } from "next/navigation";
 import {
@@ -56,6 +57,9 @@ type Props = {
   /** Tekst på trigger-knappen. Defaultes til "Importer TrackMan". */
   label?: string;
   className?: string;
+  /** Inline-stil på trigger-knappen — brukes av Paper-flater som styler
+   *  triggeren med tokens (fasitens `.btn.ink.full`) i stedet for Tailwind. */
+  triggerStyle?: CSSProperties;
   /**
    * Hvis satt: spillerens userId som import skal lagres mot.
    * Brukes når coach importerer for spilleren via /admin/spillere/[id].
@@ -91,6 +95,7 @@ export function TrackmanImportModal({
   variant = "primary",
   label = "Importer TrackMan",
   className,
+  triggerStyle,
   onBehalfOfUserId,
 }: Props) {
   const router = useRouter();
@@ -308,7 +313,8 @@ export function TrackmanImportModal({
       <button
         type="button"
         onClick={() => setOpen(true)}
-        className={[triggerClass, className].filter(Boolean).join(" ")}
+        className={[triggerStyle ? undefined : triggerClass, className].filter(Boolean).join(" ")}
+        style={triggerStyle}
       >
         {label}
       </button>
