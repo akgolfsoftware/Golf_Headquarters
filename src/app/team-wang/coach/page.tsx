@@ -19,6 +19,8 @@ export const metadata: Metadata = {
 
 export default async function WangCoachPage() {
   await requirePortalUser({ allow: ["ADMIN", "COACH"], redirectTo: "/team-wang/logg-inn" });
-  const live = await hentWangGruppe();
+  // Eneste stedet elevnavn hentes. Trygt her: siden er sperret både i proxy.ts
+  // og av requirePortalUser over — fellessiden ved siden av er åpen.
+  const live = await hentWangGruppe({ medElevnavn: true });
   return <CoachArsplan live={live} />;
 }

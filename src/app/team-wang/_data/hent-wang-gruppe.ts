@@ -1,8 +1,11 @@
 // Server-only: henter ekte gruppedata for WANG Toppidrett Fredrikstad fra basen
-// (AgencyOS-gruppa Anders la inn 19.7 via seed-wang-aarsplan-2026). Brukes av de
-// auth-gatede /team-wang-sidene til å vise ekte elevliste, perioder og
-// samlinger/hendelser oppå den rike skjermtekst-demoen (der basen mangler felt
-// — drill-nivå, KM-matrise, timeplan — beholdes demo).
+// (AgencyOS-gruppa Anders la inn 19.7 via seed-wang-aarsplan-2026). Brukes av
+// /team-wang-sidene til å vise ekte perioder og samlinger/hendelser oppå den
+// rike skjermtekst-demoen (der basen mangler felt — drill-nivå, KM-matrise,
+// timeplan — beholdes demo).
+//
+// Elevlista er opt-in via `medElevnavn` og hentes kun av den auth-gatede
+// coach-siden — fellessiden er åpen for deling og skal aldri vise navn.
 //
 // Ingen kall ved build: /team-wang-sidene er dynamiske (auth via cookies), og
 // alt her er pakket i try/catch → null slik at en manglende gruppe/DB gir ren
@@ -112,10 +115,17 @@ function skoleAr(perioder: { startIso: string; endIso: string }[]): string | nul
 
 /**
  * Henter ekte WANG-gruppedata. Returnerer null hvis gruppa ikke finnes eller DB
- * feiler — kalleren faller da tilbake til ren demo. Kun elevnavn (PII om
- * mindreårige) — kall dette KUN fra auth-gatede sider.
+ * feiler — kalleren faller da tilbake til ren demo.
+ *
+ * Elevnavn er PII om mindreårige og hentes derfor KUN når `medElevnavn: true`
+ * sendes eksplisitt. Standard er `false`: `elever` blir tom og `antallElever`
+ * teller medlemmer uten å avsløre hvem de er. Den åpne fellessiden
+ * (`/team-wang`) bruker standarden; kun den auth-gatede `/team-wang/coach`
+ * ber om navn. Sett aldri `medElevnavn: true` på en side uten innlogging.
  */
-export async function hentWangGruppe(): Promise<WangLiveData | null> {
+export async function hentWangGruppe(
+  { medElevnavn = false }: { medElevnavn?: boolean } = {}
+): Promise<WangLiveData | null> {
   try {
     const gruppe = await prisma.group.findFirst({
       where: { name: GRUPPE_NAVN },
@@ -155,13 +165,18 @@ export async function hentWangGruppe(): Promise<WangLiveData | null> {
       },
     });
 
-    const elever: WangElev[] = gruppe.members
-      .map((m) => ({
-        navn: m.user.name?.trim() || m.user.email,
-        rolle: m.role,
-      }))
-      .filter((e) => e.navn)
-      .sort((a, b) => a.navn.localeCompare(b.navn, "nb"));
+    // Navn (og e-post som fallback) forlater aldri denne funksjonen med mindre
+    // kalleren ba om det. Antallet er aggregat og regnes uansett.
+    const elever: WangElev[] = medElevnavn
+      ? gruppe.members
+          .map((m) => ({
+            navn: m.user.name?.trim() || m.user.email,
+            rolle: m.role,
+          }))
+          .filter((e) => e.navn)
+          .sort((a, b) => a.navn.localeCompare(b.navn, "nb"))
+      : [];
+    const antallElever = medElevnavn ? elever.length : gruppe.members.length;
 
     const perioder: WangPeriodeDb[] = perioderRader.map((p) => ({
       fase: p.lPhase as WangFase,
@@ -213,7 +228,7 @@ export async function hentWangGruppe(): Promise<WangLiveData | null> {
 
     return {
       gruppeNavn: gruppe.name,
-      antallElever: elever.length,
+      antallElever,
       elever,
       perioder,
       hendelser,

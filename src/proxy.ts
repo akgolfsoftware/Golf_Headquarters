@@ -142,16 +142,19 @@ export async function proxy(request: NextRequest) {
   const nonce = Buffer.from(crypto.randomUUID()).toString("base64");
   const response = await updateSession(request, nonce);
 
-  // /team-wang/logg-inn er selve innloggingssiden — unntas fra sperren for å
-  // unngå redirect-loop. Resten av /team-wang (elevdata om mindreårige) krever
-  // innlogging siden 2026-08-02 (tidligere bevisst åpnet for demo/deling).
-  const erTeamWangLogin = path === "/team-wang/logg-inn" || path.startsWith("/team-wang/logg-inn/");
+  // /team-wang: fellessiden er ÅPEN igjen fra 2026-08-11 (Anders' beslutning) —
+  // den skal kunne deles med elever og foreldre uten innlogging. Det er trygt
+  // fordi siden ikke lenger viser navn: `hentWangGruppe()` utelater elevlista
+  // som standard, og fellessiden ber aldri om den. Sperren fra 2026-08-02 gjaldt
+  // nettopp elevnavn (PII om mindreårige) — premisset er fjernet, ikke omgått.
+  // /team-wang/coach viser fortsatt roster med navn og forblir derfor sperret.
+  const erTeamWangCoach = path === "/team-wang/coach" || path.startsWith("/team-wang/coach/");
   const erBeskyttet =
     path.startsWith("/portal") ||
     path.startsWith("/admin") ||
     path.startsWith("/intern") ||
     path.startsWith("/dev-banekart") ||
-    (path.startsWith("/team-wang") && !erTeamWangLogin);
+    erTeamWangCoach;
 
   if (erBeskyttet) {
     // Sjekk auth-status via samme cookies som updateSession nettopp refresjet.

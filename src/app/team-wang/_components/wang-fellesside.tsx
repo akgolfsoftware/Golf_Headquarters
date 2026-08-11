@@ -171,7 +171,7 @@ export function WangFellesside({ startFane, live = null }: { startFane: Fane; li
         ) : fane === "skole" ? (
           <FaneSkole live={live} />
         ) : (
-          <FaneForeldre live={live} />
+          <FaneForeldre />
         )}
       </main>
     </div>
