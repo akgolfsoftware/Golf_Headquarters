@@ -1,5 +1,11 @@
 /**
- * PlayerHQ TrackMan-økt-detalj — v2.
+ * PlayerHQ TrackMan-økt-detalj — Paper-port W2 (fase2).
+ * Fasit: designsystem/paper/fase2/playerhq/playerhq-trackman-detalj.html —
+ * topp «Økt · dd.mm.åååå / TrackMan · kilde» → intro-linje (slag + matchet)
+ * → sammendrag-KPI-er (kun felter som finnes på TrackManShot) → spredning →
+ * per kølle. Ærlige tomme tilstander per seksjon med fasit-copy.
+ * Stabilitet-seksjonen under fasit-innholdet er bevart funksjon (utenfor
+ * fasiten, fjernes ikke — Enkelhet-prinsippet beholder funksjoner).
  *
  * Bølge 12c (Open Design-port): økta bruker nå fasit-kortene fra
  * `familie-trackman.html` — `TrackmanSammendrag`, `DispersionPlot` og
@@ -16,7 +22,6 @@
  * «?»-regelen: dispersion forklares via hjelpetekst-nøkkelen dispersjon.
  */
 
-import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
@@ -26,9 +31,8 @@ import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
 import { T } from "@/lib/v2/tokens";
 import {
   Caps,
-  Tittel,
   Kort,
-  MikroMeta,
+  TilbakeLenke,
   TomTilstand,
   HjelpTips,
   TrackmanSammendrag,
@@ -41,6 +45,13 @@ import { StabilitetSeksjon, beregnStabilitet } from "./stability-seksjon";
 
 /** mph → m/s (DB lagrer ball-/køllefart i mph, fasit viser m/s). */
 const MPH_TIL_MPS = 0.44704;
+
+/** Kilde-etikett per fasit-sub («TrackMan · CSV»). */
+const SOURCE_LABEL: Record<string, string> = {
+  "csv-import": "CSV",
+  "html-import": "HTML",
+  api: "TrackMan API",
+};
 
 /** Snitt av tallene som faktisk finnes. Null når ingen har verdi. */
 function snitt(verdier: (number | null)[]): number | null {
@@ -185,21 +196,25 @@ export default async function TrackManDetalj({
     month: "2-digit",
     year: "numeric",
   });
+  const kilde = SOURCE_LABEL[sesjon.source] ?? sesjon.source;
 
   const dispersjon = finnDispersjonKolle(sesjon.rawJson, shots);
 
   return (
     <V2Shell bredde="kolonne" aktiv="analyse" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
-      <div data-paper-portal-trackman-detalj style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 960, margin: "0 auto", width: "100%" }}>
-        <Link href="/portal/mal/trackman" style={{ textDecoration: "none", alignSelf: "flex-start" }}>
-          <MikroMeta icon="arrow-left">Alle TrackMan-økter</MikroMeta>
-        </Link>
-
+      <TilbakeLenke href="/portal/mal/trackman">Alle TrackMan-økter</TilbakeLenke>
+      <div
+        data-paper-slug="playerhq-trackman-detalj"
+        data-od-id="playerhq-trackman-detalj"
+        style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%", minWidth: 0 }}
+      >
         <div>
-          <Caps>PlayerHQ · TrackMan · {sesjon.source}</Caps>
-          <div style={{ marginTop: 10 }}>
-            <Tittel em={datoTekst}>Økt</Tittel>
-          </div>
+          <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>
+            Økt · {datoTekst}
+          </h1>
+          <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>
+            TrackMan · {kilde}
+          </span>
           <p style={{ fontFamily: T.ui, fontSize: 12.5, color: T.mut, margin: "10px 0 0" }}>
             {sesjon.shotCount} slag registrert
             {shots.length > 0
