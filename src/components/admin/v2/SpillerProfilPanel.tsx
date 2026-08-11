@@ -158,6 +158,71 @@ function Seksjon({ s }: { s: ProfilSeksjon }) {
   );
 }
 
+/** kpirad fra fasiten — delt mellom panel (2 kol) og fullskjerm (4 kol ≥900px). */
+function KpiFliser({ kpi, className }: { kpi: SpillerProfilPanelData["kpi"]; className?: string }) {
+  return (
+    <div
+      className={className}
+      style={
+        className
+          ? undefined
+          : {
+              display: "grid",
+              gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
+              gap: "var(--p-s2)",
+              marginBottom: "var(--p-s3)",
+            }
+      }
+    >
+      {kpi.map((k) => (
+        <div
+          key={k.k}
+          style={{
+            padding: "var(--p-s3)",
+            background: "var(--p-surface)",
+            border: "1px solid var(--p-border)",
+            borderRadius: "var(--p-r)",
+            minWidth: 0,
+          }}
+        >
+          <span
+            style={{
+              ...mono,
+              display: "block",
+              fontSize: 9,
+              letterSpacing: "0.07em",
+              textTransform: "uppercase",
+              color: "var(--p-muted)",
+            }}
+          >
+            {k.k}
+          </span>
+          <span
+            className="num"
+            style={{
+              ...mono,
+              display: "block",
+              fontSize: 21,
+              fontWeight: 600,
+              letterSpacing: "-0.02em",
+              color: k.tone === "pos" ? "var(--p-up)" : k.tone === "neg" ? "var(--p-dn)" : "var(--p-fg)",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+              whiteSpace: "nowrap",
+            }}
+          >
+            {k.v}
+          </span>
+          <span style={{ display: "block", fontSize: 10.5, color: "var(--p-muted)" }}>{k.w}</span>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+const MERKNAD =
+  "Profilen viser målinger, ikke dommer. Seksjoner merket «ikke koblet ennå» venter på datakobling.";
+
 const ghostBtn: CSSProperties = {
   display: "inline-flex",
   alignItems: "center",
@@ -176,6 +241,91 @@ const ghostBtn: CSSProperties = {
   textDecoration: "none",
   whiteSpace: "nowrap",
 };
+
+/**
+ * SpillerProfilFull — fasitens `body.full`-modus (spillerprofil.html:312-317):
+ * samme innhold som panelet, men i full bredde — kpirad i 4 kolonner og
+ * seksjonene i CSS-spalter (2, 3 over 1700px, 1 på mobil; `break-inside:avoid`).
+ * Rendres av /admin/spillere/[id] inne i V2Shell (skallet eier chrome).
+ */
+export function SpillerProfilFull({ data }: { data: SpillerProfilPanelData }) {
+  return (
+    <div
+      data-paper-slug="spillerprofil"
+      data-od-id="spiller-profil-full"
+      style={{ fontFamily: "var(--p-ui)", color: "var(--p-fg)", minWidth: 0 }}
+    >
+      <style>{`
+        .pp-full-kpi{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--p-s2);margin-bottom:var(--p-s3)}
+        @media (min-width:900px){.pp-full-kpi{grid-template-columns:repeat(4,minmax(0,1fr))}}
+        .pp-full-sek{column-count:1;column-gap:var(--p-s4)}
+        @media (min-width:1100px){.pp-full-sek{column-count:2}}
+        @media (min-width:1700px){.pp-full-sek{column-count:3}}
+        .pp-full-sek > details{break-inside:avoid}
+      `}</style>
+
+      {/* phead — kilde: User */}
+      <header style={{ display: "flex", alignItems: "center", gap: "var(--p-s3)", minWidth: 0, marginBottom: "var(--p-s4)" }}>
+        <span
+          aria-hidden
+          style={{
+            ...mono,
+            width: 44,
+            height: 44,
+            flex: "none",
+            borderRadius: 999,
+            background: "var(--p-soft)",
+            display: "grid",
+            placeItems: "center",
+            fontSize: 14,
+            fontWeight: 600,
+            color: "var(--p-muted)",
+          }}
+        >
+          {data.initialer}
+        </span>
+        <div style={{ minWidth: 0, flex: "1 1 auto" }}>
+          <h1 style={{ margin: 0, fontFamily: "var(--p-disp)", fontSize: 17, fontWeight: 600 }}>{data.navn}</h1>
+          <span style={{ ...mono, display: "block", fontSize: 11, color: "var(--p-muted)" }}>{data.subLinje}</span>
+        </div>
+        <div style={{ display: "flex", gap: "var(--p-s2)", flex: "none" }}>
+          <Link href="/admin/spillere" data-od-id="pp-full-tilbake" style={ghostBtn}>
+            Tilbake til Spillere
+          </Link>
+          <Link
+            href={data.workbenchHref}
+            data-od-id="pp-full-workbench"
+            style={{ ...ghostBtn, background: "var(--p-cta)", color: "var(--p-on-cta)", borderColor: "var(--p-cta)" }}
+          >
+            Åpne i Workbench
+          </Link>
+        </div>
+      </header>
+
+      <KpiFliser kpi={data.kpi} className="pp-full-kpi" />
+
+      <p
+        style={{
+          fontSize: 11.5,
+          color: "var(--p-muted)",
+          fontFamily: "var(--p-body)",
+          padding: "var(--p-s2) var(--p-s3)",
+          background: "var(--p-soft)",
+          borderRadius: "var(--p-r-sm)",
+          margin: "0 0 var(--p-s4)",
+        }}
+      >
+        {MERKNAD}
+      </p>
+
+      <div className="pp-full-sek">
+        {data.seksjoner.map((s) => (
+          <Seksjon key={s.id} s={s} />
+        ))}
+      </div>
+    </div>
+  );
+}
 
 export function SpillerProfilPanel({
   data,
@@ -354,57 +504,7 @@ export function SpillerProfilPanel({
           ) : (
             <>
               {/* kpirad — kilde: Round · User.hcp · Booking · TrainingPlanSession */}
-              <div
-                style={{
-                  display: "grid",
-                  gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
-                  gap: "var(--p-s2)",
-                  marginBottom: "var(--p-s3)",
-                }}
-              >
-                {data.kpi.map((k) => (
-                  <div
-                    key={k.k}
-                    style={{
-                      padding: "var(--p-s3)",
-                      background: "var(--p-surface)",
-                      border: "1px solid var(--p-border)",
-                      borderRadius: "var(--p-r)",
-                      minWidth: 0,
-                    }}
-                  >
-                    <span
-                      style={{
-                        ...mono,
-                        display: "block",
-                        fontSize: 9,
-                        letterSpacing: "0.07em",
-                        textTransform: "uppercase",
-                        color: "var(--p-muted)",
-                      }}
-                    >
-                      {k.k}
-                    </span>
-                    <span
-                      className="num"
-                      style={{
-                        ...mono,
-                        display: "block",
-                        fontSize: 21,
-                        fontWeight: 600,
-                        letterSpacing: "-0.02em",
-                        color: k.tone === "pos" ? "var(--p-up)" : k.tone === "neg" ? "var(--p-dn)" : "var(--p-fg)",
-                        overflow: "hidden",
-                        textOverflow: "ellipsis",
-                        whiteSpace: "nowrap",
-                      }}
-                    >
-                      {k.v}
-                    </span>
-                    <span style={{ display: "block", fontSize: 10.5, color: "var(--p-muted)" }}>{k.w}</span>
-                  </div>
-                ))}
-              </div>
+              <KpiFliser kpi={data.kpi} />
 
               <p
                 style={{
@@ -417,8 +517,7 @@ export function SpillerProfilPanel({
                   margin: "0 0 var(--p-s4)",
                 }}
               >
-                Profilen viser målinger, ikke dommer. Seksjoner merket «ikke koblet ennå» venter på
-                datakobling.
+                {MERKNAD}
               </p>
 
               <div>

@@ -37,7 +37,6 @@ import {
   HjelpTips,
   TrackmanSammendrag,
   DispersionPlot,
-  KolleStatKort,
   type TrackmanKpi,
 } from "@/components/v2";
 import { finnDispersjonKolle, sideTekst } from "./dispersjon";
@@ -224,14 +223,8 @@ export default async function TrackManDetalj({
           </p>
         </div>
 
-        {/* Sammendrag for økta */}
-        <TrackmanSammendrag
-          tittel="TrackMan-økt"
-          dato={datoTekst}
-          slag={sesjon.shotCount}
-          kpier={kpier}
-          beste={beste}
-        />
+        {/* Sammendrag for økta (fasit: eyebrow + KPI-fliser + beste som prosa) */}
+        <TrackmanSammendrag kpier={kpier} beste={beste} />
 
         {/* Spredning for kølla med flest plasserbare slag */}
         <div>
@@ -277,18 +270,33 @@ export default async function TrackManDetalj({
               />
             </Kort>
           ) : (
-            <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-              {kolleKort.map((k) => (
-                <KolleStatKort
+            /* Fasit: ETT kort med kompakte rader — navn | snitt | spredning |
+               side | slag — ikke ett kort per kølle. */
+            <Kort>
+              {kolleKort.map((k, i) => (
+                <div
                   key={k.kolle}
-                  kolle={k.kolle}
-                  snitt={k.snitt}
-                  spredning={k.spredning}
-                  side={k.side}
-                  slag={k.slag}
-                />
+                  style={{
+                    display: "flex", alignItems: "center", gap: 12, padding: "10px 0",
+                    borderBottom: i === kolleKort.length - 1 ? "none" : `1px solid ${T.border}`,
+                  }}
+                >
+                  <span style={{ flex: 1, fontFamily: T.ui, fontSize: 13, fontWeight: 500, color: T.fg, minWidth: 0 }}>{k.kolle}</span>
+                  <span style={{ fontFamily: T.mono, fontSize: 13, width: 56, textAlign: "right", color: T.fg }}>
+                    {k.snitt === null ? "—" : `${heltall(k.snitt)} m`}
+                  </span>
+                  <span style={{ fontFamily: T.mono, fontSize: 13, width: 50, textAlign: "right", color: T.mut }}>
+                    {k.spredning === null ? "—" : `${komma(k.spredning, 1)} m`}
+                  </span>
+                  <span style={{ fontFamily: T.mono, fontSize: 11, width: 72, textAlign: "right", color: T.mut }}>
+                    {k.side ?? "—"}
+                  </span>
+                  <span style={{ fontFamily: T.mono, fontSize: 11, width: 48, textAlign: "right", color: T.mut }}>
+                    {k.slag === null ? "—" : `${k.slag} slag`}
+                  </span>
+                </div>
               ))}
-            </div>
+            </Kort>
           )}
         </div>
 

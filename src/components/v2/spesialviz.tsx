@@ -535,32 +535,25 @@ export interface TrackmanSammendragProps {
   beste?: string | null;
 }
 export function TrackmanSammendrag({
-  tittel = "TrackMan-økt", dato = "Tirsdag 7. juli · 60 min", slag = 86,
+  tittel = "sammendrag · trackman-økt",
   kpier = TS_KPI, beste = "Beste slag: 248 m carry · 1,51 smash (driver)",
 }: TrackmanSammendragProps) {
+  /* Fasit (playerhq-trackman-detalj.html): eyebrow «sammendrag · trackman-økt»
+     + fire sentrerte KPI-fliser + beste slag som ren mutet prosa-linje. Slag-
+     antallet lever i intro-linja over kortet — aldri som stort tall her. */
   return (
     <Kort>
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10 }}>
-        <Caps>{tittel}</Caps>
-        <span style={{ fontFamily: T.mono, fontSize: 9, color: T.mut }}>{dato}</span>
-      </div>
-      <div style={{ display: "flex", alignItems: "baseline", gap: 8, marginTop: 12 }}>
-        <span style={{ ...mono(38), lineHeight: 0.9 }}>{slag == null ? "—" : slag}</span>
-        <span style={{ fontFamily: T.mono, fontSize: 12, color: T.mut }}>slag</span>
-      </div>
-      <div style={{ display: "grid", gridTemplateColumns: `repeat(${Math.min(4, kpier.length)}, 1fr)`, gap: 8, marginTop: 14 }}>
+      <Caps>{tittel}</Caps>
+      <div style={{ display: "grid", gridTemplateColumns: `repeat(${Math.min(4, kpier.length)}, 1fr)`, gap: 8, marginTop: 12 }}>
         {kpier.map((x, i) => (
-          <div key={i} style={{ background: T.panel2, border: `1px solid ${T.border}`, borderRadius: T.rRow, padding: "9px 11px" }}>
+          <div key={i} style={{ background: T.panel2, border: `1px solid ${T.border}`, borderRadius: T.rRow, padding: "9px 11px", textAlign: "center" }}>
             <Caps size={8}>{x.l}</Caps>
-            <span style={{ ...mono(14), display: "block", marginTop: 5 }}>{x.v == null ? "—" : x.v}{x.enhet && <span style={{ fontSize: 8.5, color: T.mut, marginLeft: 3 }}>{x.enhet}</span>}</span>
+            <span style={{ ...mono(14), display: "block", marginTop: 5 }}>{x.v == null ? "—" : x.v}{x.enhet && x.v != null && <span style={{ fontSize: 8.5, color: T.mut, marginLeft: 3 }}>{x.enhet}</span>}</span>
           </div>
         ))}
       </div>
       {beste && (
-        <div style={{ display: "flex", gap: 8, alignItems: "center", marginTop: 12, padding: "9px 12px", borderRadius: T.rRow, background: `color-mix(in srgb, ${T.lime} 7%, transparent)` }}>
-          <Icon name="star" size={13} style={{ color: T.lime, flex: "none" }} />
-          <span style={{ fontFamily: T.ui, fontSize: 12, color: T.fg2 }}>{beste}</span>
-        </div>
+        <p style={{ fontFamily: T.bodyFont, fontSize: 12, color: T.mut, margin: "12px 0 0" }}>{beste}</p>
       )}
     </Kort>
   );
