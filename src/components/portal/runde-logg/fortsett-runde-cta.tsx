@@ -23,8 +23,9 @@ export function FortsettRundeCta({ variant = "row" }: Props) {
   if (!kladd || kladd.steg === "oppsett") return null;
 
   const hullNr = (kladd.aktivtHullIdx ?? 0) + 1;
-  const href =
-    kladd.modus === "live" ? "/portal/runde/live" : "/portal/runde/logg";
+  // PP-3: slag-/hull-føringen bor nå på /runde/live for begge modi —
+  // /runde/logg er det nye ettskjerms etterregistrerings-skjemaet.
+  const href = "/portal/runde/live";
   const title = `Fortsett runde · hull ${hullNr}`;
   const sub =
     kladd.oppsett.courseNavn?.trim() ||
