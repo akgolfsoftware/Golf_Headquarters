@@ -125,6 +125,16 @@ export type LiveV2Session = {
   focus: string | null;
   status: LiveV2Status;
   scheduledAtISO: string;
+  /** Planlagt slutt (TrainingSessionV2.endTime). */
+  endTimeISO: string;
+  /** Hvor økta skjer (TrainingSessionV2.location). */
+  location: string | null;
+  /** Øktas målsetning i klarspråk (TrainingSessionV2.maalsetning). */
+  maalsetning: string | null;
+  /** Navn på coachen som publiserte økta. */
+  coachName: string | null;
+  /** Når økta ble lagt i planen (TrainingSessionV2.createdAt). */
+  publishedAtISO: string | null;
   completed: boolean;
   studentName: string | null;
   pyramide: PyramidArea;

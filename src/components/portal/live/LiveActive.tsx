@@ -1,16 +1,15 @@
 "use client";
-import { T } from "@/lib/v2/tokens";
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { Check, Clock } from "lucide-react";
-import type { LiveV2Drill, LiveV2Session, DrillRepState, LiveCoachPanelData } from "./types";
-import { plannedVolumText } from "./types";
-import { fmtMSS } from "@/lib/portal-live/format";
+import { Check } from "lucide-react";
+import type { LiveV2Session, DrillRepState, LiveCoachPanelData } from "./types";
+import type { LiveV2Drill } from "./types";
 import { DrillLogger } from "./DrillLogger";
 import { SessionTimer } from "./SessionTimer";
 import { LiveCoachPanel } from "./LiveCoachPanel";
 import { LiveLoopNav } from "./LiveLoopNav";
+import { WhyDetails } from "./WhyDetails";
 import { completeDrill, completeSession, startSession, logDrillReps } from "@/app/portal/(fullscreen)/live/[sessionId]/actions";
 import {
   lagreLiveDrillUtkast,
@@ -19,15 +18,69 @@ import {
   synkLiveDrillKo,
 } from "@/lib/offline-queue/live-drill-queue";
 import type { LiveDrillReps } from "@/lib/offline-queue/live-drill-kladd";
-
-// Paper-fasit playerhq-live-okt.html — cream live-UNDER.
-const LIVE_BG = "var(--v2-bg, #faf9f5)";
+import { T } from "@/lib/v2/tokens";
 
 type DrillStatus = "done" | "active" | "queued";
 
 type DrillState = LiveV2Drill & {
   status: DrillStatus;
 } & DrillRepState;
+
+type Modus = "sjekk" | "reps" | "logg";
+
+/** Notat i den frie loggen — tidsstempel er mm:ss inn i økta. */
+type LiveNotat = { t: string; tekst: string };
+
+function fmtMSS(totalSec: number): string {
+  const m = Math.floor(totalSec / 60);
+  const s = totalSec % 60;
+  return `${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`;
+}
+
+/** «90» → «1 t 30 min». */
+function tidTekst(min: number): string {
+  const t = Math.floor(min / 60);
+  const r = min % 60;
+  if (t === 0) return `${r} min`;
+  return r === 0 ? `${t} t` : `${t} t ${r} min`;
+}
+
+const OSLO_TID = new Intl.DateTimeFormat("nb-NO", {
+  hour: "2-digit",
+  minute: "2-digit",
+  timeZone: "Europe/Oslo",
+});
+
+function notatKey(sessionId: string): string {
+  return `akhq-live-notater-${sessionId}`;
+}
+
+/** Les notater fra sessionStorage — DB-mekanisme for frie øktnotater finnes
+ *  ikke; notatene flettes inn i «dine ord»-utkastet i ETTER (ærlig valg). */
+function lesNotater(sessionId: string): LiveNotat[] {
+  try {
+    const raw = sessionStorage.getItem(notatKey(sessionId));
+    if (!raw) return [];
+    const parsed: unknown = JSON.parse(raw);
+    if (!Array.isArray(parsed)) return [];
+    return parsed.filter(
+      (n): n is LiveNotat =>
+        !!n && typeof n === "object" &&
+        typeof (n as LiveNotat).t === "string" &&
+        typeof (n as LiveNotat).tekst === "string",
+    );
+  } catch {
+    return [];
+  }
+}
+
+function lagreNotater(sessionId: string, notater: LiveNotat[]) {
+  try {
+    sessionStorage.setItem(notatKey(sessionId), JSON.stringify(notater));
+  } catch {
+    /* ignore */
+  }
+}
 
 function buildInitialDrills(data: LiveV2Session): DrillState[] {
   const drills: DrillState[] = data.drills.map((d, i) => {
@@ -74,24 +127,23 @@ function ConfirmOverlay({ show, onConfirm, onCancel }: ConfirmOverlayProps) {
     <div
       className="absolute inset-0 z-50 flex items-center justify-center p-5"
       style={{ background: T.farge.svartA55, backdropFilter: "blur(4px)" }}
-     data-paper-slug="playerhq-live-okt">
+    >
       <div
         className="w-full max-w-[320px] rounded-[20px] p-6"
-        style={{ background: T.panel, border: `1px solid ${T.border}`, color: T.fg }}
+        style={{ background: "var(--p-surface)", border: "1px solid var(--p-border)", color: "var(--p-fg)" }}
       >
-        <div className="font-display text-[18px] font-semibold" style={{ color: T.fg }}>
+        <div className="font-sans text-[18px] font-semibold" style={{ color: "var(--p-fg)" }}>
           Avslutte økta?
         </div>
-        <p className="mt-2 mb-5 text-[13.5px] leading-[1.55]" style={{ color: T.mut }}>
-          Fremgangen din blir lagret. Du kan fortsette senere.
+        <p className="mb-5 mt-2 font-serif text-[13.5px] leading-[1.55]" style={{ color: "var(--p-muted)" }}>
+          Alt du har telt og notert blir med til oppsummeringen.
         </p>
         <div className="flex flex-col gap-2">
           <button
             type="button"
             onClick={onConfirm}
-            data-paper-en-ting="true"
             className="w-full border-none py-[13px] font-sans text-[14px] font-semibold v2-press"
-            style={{ background: T.handling, color: T.onHandling, minHeight: 52, borderRadius: 12 }}
+            style={{ background: "var(--p-cta)", color: "var(--p-on-cta)", minHeight: 52, borderRadius: 12 }}
           >
             Avslutt og logg
           </button>
@@ -99,7 +151,7 @@ function ConfirmOverlay({ show, onConfirm, onCancel }: ConfirmOverlayProps) {
             type="button"
             onClick={onCancel}
             className="w-full py-[13px] font-sans text-[13px] font-medium v2-press"
-            style={{ border: `1px solid ${T.border}`, background: T.panel2, color: T.fg, borderRadius: 12 }}
+            style={{ border: "1px solid var(--p-border)", background: "var(--p-soft)", color: "var(--p-fg)", borderRadius: 12 }}
           >
             Fortsett økta
           </button>
@@ -109,84 +161,11 @@ function ConfirmOverlay({ show, onConfirm, onCancel }: ConfirmOverlayProps) {
   );
 }
 
-type ChallengeCardProps = {
-  drill: DrillState;
-  onLogRep?: () => void;
-};
-
-function ChallengeCard({ drill, onLogRep }: ChallengeCardProps) {
-  const isActive = drill.status === "active";
-  const isDone = drill.status === "done";
-
-  const fysMaal = drill.pyramide === "FYS" ? drill.fysSett ?? drill.repSett ?? 0 : 0;
-  const maal = drill.plannedReps > 0 ? drill.plannedReps : fysMaal;
-  const progressPct = maal > 0 ? Math.min((drill.repsTotal / maal) * 100, 100) : 0;
-
-  return (
-    <div
-      className="relative overflow-hidden rounded-[14px] border p-4 transition-all duration-200"
-      style={{
-        borderColor: isActive ? T.handling : T.border,
-        background: isActive ? T.handlingSoft : isDone ? T.panel2 : T.panel,
-        boxShadow: isActive ? `0 0 0 3px color-mix(in srgb, ${T.handling} 18%, transparent)` : undefined,
-        opacity: isDone ? 0.88 : 1,
-      }}
-    >
-      <div
-        className="mb-2 flex items-center gap-[6px] font-mono text-[9.5px] font-semibold uppercase tracking-[0.10em]"
-        style={{ color: T.mut }}
-      >
-        {isDone ? "Fullført" : isActive ? "Nå" : "Kø"}
-        {drill.pyramide ? ` · ${drill.pyramide}` : ""}
-      </div>
-      <div
-        className="mb-1 font-display text-[18px] font-bold leading-[1.15] -tracking-[0.02em]"
-        style={{ color: T.fg }}
-      >
-        {drill.name}
-      </div>
-      {(drill.notes || drill.description) && (
-        <div className="mb-3 text-[12.5px] leading-snug" style={{ color: T.mut, fontFamily: T.bodyFont }}>
-          {drill.notes || drill.description}
-        </div>
-      )}
-      <div className="mb-2 flex items-baseline justify-between gap-2">
-        <span className="font-mono text-[9.5px] uppercase tracking-[0.06em]" style={{ color: T.mut }}>
-          Reps
-        </span>
-        <span className="font-mono text-[12px] font-semibold" style={{ color: T.fg }}>
-          {drill.repsTotal}
-          {maal > 0 && (
-            <small className="font-normal" style={{ color: T.mut }}> / {maal}</small>
-          )}
-        </span>
-      </div>
-      <div className="h-2 overflow-hidden rounded-full" style={{ border: `1px solid ${T.border}`, background: T.panel2 }}>
-        <div
-          className="h-full rounded-full transition-all duration-500"
-          style={{
-            width: `${progressPct}%`,
-            background: isDone
-              ? T.up
-              : `linear-gradient(90deg, color-mix(in srgb, ${T.handling} 55%, ${T.rail}), ${T.handling})`,
-          }}
-        />
-      </div>
-      {isActive && onLogRep && (
-        <button
-          type="button"
-          onClick={onLogRep}
-          className="mt-3 w-full rounded-[12px] border-none py-2.5 font-sans text-[13px] font-semibold active:scale-[0.98]"
-          style={{ background: T.handling, color: T.onHandling, minHeight: 44 }}
-          data-paper-en-ting="true"
-        >
-          Logg rep
-        </button>
-      )}
-    </div>
-  );
-}
-
+/**
+ * UNDER-skjermen i live-sløyfa — Paper-fasit playerhq-live-okt.html (PP-3).
+ * Klokke øverst, modusveksler Sjekkliste | Reps | Logg, clay «Avslutt og
+ * logg økta» i dokken. Ingenting sperrer — avvik forklares i ETTER.
+ */
 export function LiveActive({ data, coachPanel }: { data: LiveV2Session; coachPanel: LiveCoachPanelData }) {
   const router = useRouter();
   const [drills, setDrills] = useState<DrillState[]>(() => buildInitialDrills(data));
@@ -195,10 +174,22 @@ export function LiveActive({ data, coachPanel }: { data: LiveV2Session; coachPan
   const [drillSec, setDrillSec] = useState(0);
   const [isCompleting, setIsCompleting] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
-  const [showDrillLogger, setShowDrillLogger] = useState(false);
+  const [modus, setModus] = useState<Modus>("sjekk");
+  const [valgtDrillId, setValgtDrillId] = useState<string | null>(null);
+  const [notater, setNotater] = useState<LiveNotat[]>([]);
+  const [notatTekst, setNotatTekst] = useState("");
+  const [offline, setOffline] = useState(
+    () => typeof navigator !== "undefined" && !navigator.onLine,
+  );
 
   const activeIdx = useMemo(() => drills.findIndex((d) => d.status === "active"), [drills]);
   const active = activeIdx >= 0 ? drills[activeIdx] : null;
+
+  // Valgt drill i Reps-modus — default den aktive.
+  const valgt = useMemo(() => {
+    const v = valgtDrillId ? drills.find((d) => d.id === valgtDrillId) : null;
+    return v ?? active ?? drills[0] ?? null;
+  }, [drills, valgtDrillId, active]);
 
   // Start sesjonen ved mount (idempotent).
   const activatedRef = useRef(false);
@@ -221,6 +212,7 @@ export function LiveActive({ data, coachPanel }: { data: LiveV2Session; coachPan
   useEffect(() => {
     if (restoredRef.current) return;
     restoredRef.current = true;
+    setNotater(lesNotater(data.sessionId));
     void lesLiveDrillUtkast(data.sessionId).then((utkast) => {
       if (!utkast?.drills.length) return;
       setDrills((prev) =>
@@ -264,8 +256,8 @@ export function LiveActive({ data, coachPanel }: { data: LiveV2Session; coachPan
       persistTimer.current = setTimeout(() => {
         void lagreLiveDrillUtkast(data.sessionId, payload, sec).then(() => {
           if (typeof navigator !== "undefined" && !navigator.onLine) return;
-          void synkLiveDrillKo(data.sessionId, async (sessionId, drills) => {
-            for (const d of drills) {
+          void synkLiveDrillKo(data.sessionId, async (sessionId, kladd) => {
+            for (const d of kladd) {
               if (d.repsTotal <= 0 && d.status !== "done") continue;
               const res = await logDrillReps({
                 sessionId,
@@ -288,10 +280,12 @@ export function LiveActive({ data, coachPanel }: { data: LiveV2Session; coachPan
     [data.sessionId],
   );
 
+  // Online/offline: synk køen når nettet kommer tilbake + ærlig banner.
   useEffect(() => {
     function onOnline() {
-      void synkLiveDrillKo(data.sessionId, async (sessionId, drills) => {
-        for (const d of drills) {
+      setOffline(false);
+      void synkLiveDrillKo(data.sessionId, async (sessionId, kladd) => {
+        for (const d of kladd) {
           if (d.repsTotal <= 0 && d.status !== "done") continue;
           const res = await logDrillReps({
             sessionId,
@@ -308,12 +302,19 @@ export function LiveActive({ data, coachPanel }: { data: LiveV2Session; coachPan
         return { ok: true };
       });
     }
+    function onOffline() {
+      setOffline(true);
+    }
     window.addEventListener("online", onOnline);
-    return () => window.removeEventListener("online", onOnline);
+    window.addEventListener("offline", onOffline);
+    return () => {
+      window.removeEventListener("online", onOnline);
+      window.removeEventListener("offline", onOffline);
+    };
   }, [data.sessionId]);
 
-  // Timer — økt-tid tikker fra start uavhengig av aktiv drill (0-drill-økter
-  // sto tidligere fastfrosset på 00:00); stopper når alt er fullført.
+  // Timer — økt-tid tikker fra start uavhengig av aktiv drill; stopper når
+  // alt er fullført.
   useEffect(() => {
     const ferdig = drills.length > 0 && drills.every((d) => d.status === "done");
     if (paused || ferdig) return;
@@ -352,397 +353,522 @@ export function LiveActive({ data, coachPanel }: { data: LiveV2Session; coachPan
   const togglePause = useCallback(() => setPaused((p) => !p), []);
 
   const handleDrillChange = useCallback(
-    (state: DrillRepState) => {
-      if (!active) return;
+    (drillId: string, state: DrillRepState) => {
       setDrills((prev) => {
-        const neste = prev.map((d) => (d.id === active.id ? { ...d, ...state } : d));
+        const neste = prev.map((d) => (d.id === drillId ? { ...d, ...state } : d));
         persistDrills(neste, totalSec);
         return neste;
       });
     },
-    [active, persistDrills, totalSec],
+    [persistDrills, totalSec],
   );
 
-  const handleCompleteDrill = useCallback(async () => {
-    if (!active || isCompleting) return;
-    setIsCompleting(true);
-    vibrate(40);
+  /** Fullfør en drill (server + lokal state). Fullfører ALDRI økta automatisk —
+   *  fasiten lar spilleren selv trykke «Avslutt og logg økta» i dokken. */
+  const fullforDrill = useCallback(
+    async (drill: DrillState) => {
+      if (isCompleting) return;
+      setIsCompleting(true);
+      vibrate(40);
 
-    // Fanges FØR setDrillSec(0) under — dette er tiden drillen faktisk tok,
-    // og den mater varighetsestimatet neste gang drillen planlegges.
-    const brukteSek = drillSec;
+      const erAktiv = drill.status === "active";
+      const brukteSek = erAktiv ? drillSec : null;
 
-    try {
-      const res = await completeDrill({
-        sessionId: data.sessionId,
-        drillId: active.id,
-        repsTotal: active.repsTotal,
-        repsWithoutBall: active.repsWithoutBall,
-        repsLowSpeed: active.repsLowSpeed,
-        repsAutomatic: active.repsAutomatic,
-        repsHit: active.repsHit,
-        successRate:
-          active.repsTotal > 0 ? Math.round((active.repsHit / active.repsTotal) * 100) : 0,
-        notes: active.logNotes,
-        actualDurationSec: brukteSek,
+      try {
+        const res = await completeDrill({
+          sessionId: data.sessionId,
+          drillId: drill.id,
+          repsTotal: drill.repsTotal,
+          repsWithoutBall: drill.repsWithoutBall,
+          repsLowSpeed: drill.repsLowSpeed,
+          repsAutomatic: drill.repsAutomatic,
+          repsHit: drill.repsHit,
+          successRate:
+            drill.repsTotal > 0 ? Math.round((drill.repsHit / drill.repsTotal) * 100) : 0,
+          notes: drill.logNotes,
+          actualDurationSec: brukteSek ?? undefined,
+        });
+        if (!res.ok && typeof navigator !== "undefined" && !navigator.onLine) {
+          persistDrills(
+            drills.map((d) => (d.id === drill.id ? { ...d, status: "done" as const } : d)),
+            totalSec,
+            brukteSek != null ? { [drill.id]: brukteSek } : undefined,
+          );
+        }
+      } catch (err) {
+        console.error("[LiveActive] completeDrill feilet", err);
+        persistDrills(drills, totalSec, brukteSek != null ? { [drill.id]: brukteSek } : undefined);
+      } finally {
+        setIsCompleting(false);
+      }
+
+      setDrills((prev) => {
+        let nesteAktivSatt = false;
+        const neste = prev.map((d) => {
+          if (d.id === drill.id) return { ...d, status: "done" as const };
+          return d;
+        });
+        // Var den fullførte drillen aktiv? Flytt aktiv til første i kø.
+        if (erAktiv) {
+          for (const d of neste) {
+            if (!nesteAktivSatt && d.status === "queued") {
+              d.status = "active";
+              nesteAktivSatt = true;
+            }
+          }
+        }
+        persistDrills(neste, totalSec, brukteSek != null ? { [drill.id]: brukteSek } : undefined);
+        return neste;
       });
-      if (!res.ok && typeof navigator !== "undefined" && !navigator.onLine) {
-        // Offline: behold lokal state; synk ved online.
-        persistDrills(
-          drills.map((d) =>
-            d.id === active.id ? { ...d, status: "done" as const } : d,
-          ),
-          totalSec,
-          { [active.id]: brukteSek },
+      if (erAktiv) setDrillSec(0);
+      vibrate([60, 40]);
+    },
+    [data.sessionId, drills, drillSec, isCompleting, persistDrills, totalSec],
+  );
+
+  /** Fjern haken lokalt (kladd) — en allerede logget drill i DB røres ikke;
+   *  du kan telle videre og fullføre på nytt. */
+  const angreDrill = useCallback(
+    (drill: DrillState) => {
+      setDrills((prev) => {
+        const neste = prev.map((d) =>
+          d.id === drill.id
+            ? { ...d, status: (prev.some((x) => x.status === "active") ? "queued" : "active") as DrillStatus }
+            : d,
         );
-      }
-    } catch (err) {
-      console.error("[LiveActive] completeDrill feilet", err);
-      // Offline-fallback: lagre utkast så reps og tid ikke forsvinner.
-      persistDrills(drills, totalSec, { [active.id]: brukteSek });
-    } finally {
-      setIsCompleting(false);
-    }
-
-    setDrills((prev) => {
-      const neste = prev.map((d, i) => {
-        if (d.id === active.id) return { ...d, status: "done" as const };
-        if (i === activeIdx + 1) return { ...d, status: "active" as const };
-        return d;
+        persistDrills(neste, totalSec);
+        return neste;
       });
-      persistDrills(neste, totalSec, { [active.id]: brukteSek });
-      return neste;
-    });
-    setDrillSec(0);
-    setShowDrillLogger(false);
-    vibrate([60, 40]);
+    },
+    [persistDrills, totalSec],
+  );
 
-    if (activeIdx === drills.length - 1) {
-      await completeSession(data.sessionId, totalSec);
-      await slettLiveDrillUtkast(data.sessionId);
-    }
-  }, [active, activeIdx, data.sessionId, drills, drillSec, isCompleting, persistDrills, totalSec]);
+  const avsluttOkta = useCallback(async () => {
+    setShowConfirm(false);
+    await completeSession(data.sessionId, totalSec);
+    await slettLiveDrillUtkast(data.sessionId);
+  }, [data.sessionId, totalSec]);
 
-  const handleLogRep = useCallback(() => {
-    setShowDrillLogger(true);
-  }, []);
-
-  const activeState: DrillRepState | undefined = active
-    ? {
-        repsTotal: active.repsTotal,
-        repsWithoutBall: active.repsWithoutBall,
-        repsLowSpeed: active.repsLowSpeed,
-        repsAutomatic: active.repsAutomatic,
-        repsHit: active.repsHit,
-      }
-    : undefined;
+  const lagreNotat = useCallback(() => {
+    const tekst = notatTekst.trim();
+    if (!tekst) return;
+    const neste = [{ t: fmtMSS(totalSec), tekst }, ...notater];
+    setNotater(neste);
+    setNotatTekst("");
+    lagreNotater(data.sessionId, neste);
+  }, [data.sessionId, notatTekst, notater, totalSec]);
 
   const completedCount = drills.filter((d) => d.status === "done").length;
-  const progressPct = drills.length > 0 ? (completedCount / drills.length) * 100 : 0;
 
-  // Undertittelen skal aldri gjenta tittelen (sto dobbelt ved 0 drills).
-  const sessionMeta =
-    drills.length > 0
-      ? `${completedCount} / ${drills.length} drills`
-      : "Ingen drills i økta";
+  // Klokke-meta: «satt opp HH:MM · planlagt X» — vi lagrer ikke faktisk
+  // starttidspunkt klientside, så vi viser det planlagte, ærlig merket.
+  const oppsattKl = OSLO_TID.format(new Date(data.scheduledAtISO));
+  const vindusMin = Math.max(
+    0,
+    Math.round(
+      (new Date(data.endTimeISO).getTime() - new Date(data.scheduledAtISO).getTime()) / 60000,
+    ),
+  );
+  const planlagtMin = vindusMin > 0 ? vindusMin : data.drills.reduce((s, d) => s + d.durationMinutes, 0);
+  const klokkeMeta = `satt opp ${oppsattKl}${planlagtMin > 0 ? ` · planlagt ${tidTekst(planlagtMin)}` : ""}`;
 
-  // Alle drills ferdige — vis ferdigmelding.
-  const allDone = completedCount === drills.length && drills.length > 0;
-  /** Over planlagt tid på denne drillen? Kun visning — sperrer aldri noe. */
-  const overPlanlagt =
-    !!active && active.durationMinutes > 0 && drillSec > active.durationMinutes * 60;
-
-  if (showDrillLogger && active && activeState) {
-    return (
-      <div
-        className="fixed inset-0 z-50 flex flex-col" data-paper-wave-c="live-active"
-        style={{ background: LIVE_BG }}
-      >
-        {/* Mini topbar for logger-overlay */}
-        <header
-          className="flex flex-shrink-0 items-center justify-between gap-4 px-5 py-3"
-          style={{ paddingTop: "max(env(safe-area-inset-top) + 12px, 14px)", borderBottom: `1px solid ${T.border}`, background: T.bg }}
-        >
-          <button
-            type="button"
-            onClick={() => setShowDrillLogger(false)}
-            className="font-mono text-[11px] font-bold uppercase tracking-[0.06em] v2-press"
-            style={{ color: T.mut, background: "transparent", border: "none" }}
-          >
-            Tilbake
-          </button>
-          <span className="font-mono text-[10px] font-bold uppercase tracking-[0.12em]" style={{ color: T.handling }}>
-            Logger drill
-          </span>
-          <span className="w-16" />
-        </header>
-        <main className="flex flex-1 flex-col overflow-y-auto" style={{ minHeight: 0 }}>
-          <DrillLogger
-            drill={active}
-            state={activeState}
-            onChange={handleDrillChange}
-            onComplete={handleCompleteDrill}
-            isLast={activeIdx === drills.length - 1}
-            completedCount={completedCount}
-            totalCount={drills.length}
-            drillSeconds={drillSec}
-          />
-        </main>
-      </div>
-    );
-  }
+  const eyebrowCls = "font-mono text-[10px] font-medium uppercase tracking-[0.09em]";
 
   return (
     <div
       data-paper-portal-live-active
+      data-paper-slug="playerhq-live-okt"
       className="fixed inset-0 z-50 flex flex-col overflow-hidden"
-      data-paper-wave-c="live-active"
       style={{
-        background: LIVE_BG,
-        color: T.fg,
+        background: "var(--p-bg)",
+        color: "var(--p-fg)",
         isolation: "isolate",
-        fontFamily: T.ui,
+        fontFamily: "var(--p-ui, var(--font-sans), system-ui, sans-serif)",
       }}
     >
-      {/* Confirm-overlay */}
       <ConfirmOverlay
         show={showConfirm}
-        onConfirm={() => {
-          setShowConfirm(false);
-          void completeSession(data.sessionId, totalSec);
-        }}
+        onConfirm={() => void avsluttOkta()}
         onCancel={() => setShowConfirm(false)}
       />
 
-      {/* Topbar */}
+      {/* Topp */}
       <header
         data-paper-topp
         className="flex flex-shrink-0 items-center gap-2 px-4 py-3"
         style={{
           paddingTop: "max(env(safe-area-inset-top) + 10px, 14px)",
-          borderBottom: `1px solid ${T.border}`,
-          background: T.bg,
+          borderBottom: "1px solid var(--p-border)",
+          background: "var(--p-surface)",
         }}
       >
         <div style={{ minWidth: 0, flex: 1 }}>
-          <h1 className="font-display text-[17px] font-semibold leading-tight" style={{ margin: 0, color: T.fg }}>
+          <h1 className="font-sans text-[17px] font-semibold leading-tight" style={{ margin: 0, color: "var(--p-fg)" }}>
             Økta pågår
           </h1>
-          <div className="mt-[2px] font-mono text-[10.5px]" style={{ color: T.mut }}>
-            {data.title}{sessionMeta ? ` · ${sessionMeta}` : ""}
+          <div className="mt-[2px] truncate font-mono text-[10.5px]" style={{ color: "var(--p-muted)" }}>
+            {data.title}
+            {data.location ? ` · ${data.location}` : ""}
           </div>
         </div>
-        <button
-          type="button"
-          onClick={() => setShowConfirm(true)}
-          className="v2-press rounded-full px-3 py-[6px] font-mono text-[10px] font-bold uppercase tracking-[0.06em]"
-          style={{ border: `1px solid ${T.border}`, background: T.panel, color: T.down }}
-        >
-          Avslutt
-        </button>
       </header>
 
       {/* Scrollbart innhold */}
-      <main className="flex flex-1 flex-col overflow-y-auto px-[14px] py-[14px]" style={{ minHeight: 0, maxWidth: 720, margin: "0 auto", width: "100%" }}>
+      <main
+        className="flex min-w-0 flex-1 flex-col overflow-y-auto px-4 py-4"
+        style={{ minHeight: 0, maxWidth: 720, margin: "0 auto", width: "100%", paddingBottom: 96 }}
+      >
         <LiveLoopNav aktiv="under" sessionId={data.sessionId} />
 
-        {/* Tom-tilstand: økt uten drills — ærlig melding + vei videre, i
-            stedet for «Trykk Logg rep»-copy som pekte på en knapp som ikke
-            fantes. */}
-        {drills.length === 0 && (
-          <div className="mb-[14px] rounded-[14px] p-[18px] text-center" style={{ border: `1px dashed ${T.border}`, background: T.panel2 }}>
-            <div className="font-display text-[17px] font-semibold" style={{ color: T.fg }}>
+        {/* Offline er informasjon, ikke feil — alt lagres lokalt og synkes. */}
+        {offline && (
+          <div
+            className="mb-4 mt-2 px-4 py-3 font-serif text-[12.5px]"
+            style={{
+              background: "var(--p-soft)",
+              border: "1px solid var(--p-border)",
+              borderRadius: 12,
+              color: "var(--p-muted)",
+            }}
+            role="status"
+          >
+            Mistet forbindelsen. Alt du teller og noterer lagres på telefonen og
+            synkes når nettet er tilbake — fortsett å trene.
+          </div>
+        )}
+
+        {/* Øktklokka — Pause stopper telleren, aldri økta */}
+        <div className="mt-2">
+          <SessionTimer seconds={totalSec} paused={paused} onTogglePause={togglePause} meta={klokkeMeta} />
+        </div>
+
+        {/* Modusveksler: Sjekkliste · Reps · Logg */}
+        <div
+          className="mt-4 flex gap-1 p-1"
+          style={{ background: "var(--p-soft)", border: "1px solid var(--p-border)", borderRadius: 12 }}
+          role="group"
+          aria-label="Velg visning"
+        >
+          {(
+            [
+              ["sjekk", "Sjekkliste"],
+              ["reps", "Reps"],
+              ["logg", "Logg"],
+            ] as Array<[Modus, string]>
+          ).map(([id, label]) => {
+            const on = modus === id;
+            return (
+              <button
+                key={id}
+                type="button"
+                aria-pressed={on}
+                data-od-id={`live-modus-${id}`}
+                onClick={() => setModus(id)}
+                className="flex-1 font-sans text-[13px] font-medium"
+                style={{
+                  minHeight: 44,
+                  borderRadius: 8,
+                  border: on ? "1px solid var(--p-border)" : "1px solid transparent",
+                  background: on ? "var(--p-surface)" : "transparent",
+                  color: on ? "var(--p-fg)" : "var(--p-muted)",
+                }}
+              >
+                {label}
+              </button>
+            );
+          })}
+        </div>
+
+        {/* Tom tilstand: økt uten drills — ærlig melding + vei videre */}
+        {drills.length === 0 && modus !== "logg" && (
+          <div
+            className="mt-4 px-4 py-6"
+            style={{ background: "var(--p-soft)", border: "1px dashed var(--p-border)", borderRadius: 12 }}
+          >
+            <h3 className="m-0 font-sans text-[15px] font-semibold" style={{ color: "var(--p-fg)" }}>
               Ingen drills i denne økta
-            </div>
-            <p className="mt-[6px] text-[12.5px] leading-[1.5]" style={{ color: T.mut }}>
-              Åpne økta i planen og legg til driller («Rediger økt»), så dukker
-              de opp her — eller tren fritt og avslutt når du er ferdig.
+            </h3>
+            <p className="mb-3 mt-2 font-serif text-[13.5px]" style={{ color: "var(--p-muted)" }}>
+              Åpne økta i planen og legg til driller — eller tren fritt, noter i
+              Logg og avslutt når du er ferdig.
             </p>
             <button
               type="button"
               onClick={() => router.replace("/portal/planlegge/workbench")}
-              className="mt-[14px] rounded-[12px] px-6 py-3 font-sans text-[13px] font-semibold v2-press"
-              style={{ border: `1px solid ${T.border}`, background: T.panel, color: T.fg }}
+              className="w-full font-sans text-[13px] font-semibold"
+              style={{
+                minHeight: 48,
+                borderRadius: 12,
+                border: "1px solid var(--p-border)",
+                background: "var(--p-surface)",
+                color: "var(--p-fg)",
+              }}
             >
               Til planen
             </button>
           </div>
         )}
 
-        {/* GoalProgress-kort */}
-        {drills.length > 0 && (
-        <div className="mb-[14px] rounded-[14px] p-[14px]" style={{ border: `1px solid ${T.border}`, background: T.panel }}>
-          <div className="mb-2 flex items-center justify-between">
-            <span className="font-mono text-[9.5px] font-bold uppercase tracking-[0.08em]" style={{ color: T.mut }}>
-              Fremdrift
+        {/* ── Sjekkliste ── */}
+        {modus === "sjekk" && drills.length > 0 && (
+          <div className="mt-4 min-w-0">
+            <span className={eyebrowCls} style={{ color: "var(--p-muted)" }}>
+              drills · {completedCount} av {drills.length} gjennomført
             </span>
-            <span className="font-mono text-[13px] font-semibold" style={{ color: T.fg }}>
-              {completedCount}
-              <small className="font-normal" style={{ color: T.mut }}> / {drills.length} drills</small>
-            </span>
+            <div className="mt-2 flex min-w-0 flex-col gap-2">
+              {drills.map((d) => {
+                const ferdig = d.status === "done";
+                return (
+                  <div
+                    key={d.id}
+                    className="flex min-w-0 items-start gap-3 p-3"
+                    style={{
+                      background: "var(--p-surface)",
+                      border: "1px solid var(--p-border)",
+                      borderRadius: 12,
+                    }}
+                  >
+                    <button
+                      type="button"
+                      aria-pressed={ferdig}
+                      aria-label={(ferdig ? "Fjern hake: " : "Marker gjennomført: ") + d.name}
+                      data-od-id={`live-sjekk-${d.index}`}
+                      onClick={() => (ferdig ? angreDrill(d) : void fullforDrill(d))}
+                      disabled={isCompleting}
+                      className="grid flex-none place-items-center"
+                      style={{
+                        width: 44,
+                        height: 44,
+                        borderRadius: 9999,
+                        border: `1px solid ${ferdig ? "var(--p-up)" : "var(--p-border)"}`,
+                        background: ferdig ? "var(--p-soft)" : "transparent",
+                        color: ferdig ? "var(--p-up)" : "var(--p-mid)",
+                      }}
+                    >
+                      <Check className="h-[18px] w-[18px]" strokeWidth={2} aria-hidden />
+                    </button>
+                    <div className="min-w-0 flex-1">
+                      <span
+                        className="block text-[13.5px] font-semibold"
+                        style={{
+                          color: ferdig ? "var(--p-muted)" : "var(--p-fg)",
+                          textDecoration: ferdig ? "line-through" : "none",
+                        }}
+                      >
+                        {d.name}
+                      </span>
+                      <span className="font-mono text-[10.5px]" style={{ color: "var(--p-muted)" }}>
+                        {d.repsTotal} av {d.plannedReps > 0 ? d.plannedReps : "—"} reps
+                        {d.durationMinutes > 0 ? ` · ${d.durationMinutes} min` : ""}
+                      </span>
+                    </div>
+                    <button
+                      type="button"
+                      aria-label={`Tell reps for ${d.name}`}
+                      data-od-id={`live-tell-${d.index}`}
+                      onClick={() => {
+                        setValgtDrillId(d.id);
+                        setModus("reps");
+                      }}
+                      className="flex-none self-center px-3 font-sans text-[13px] font-medium"
+                      style={{
+                        minHeight: 44,
+                        borderRadius: 12,
+                        border: "1px solid var(--p-border)",
+                        background: "transparent",
+                        color: "var(--p-fg)",
+                      }}
+                    >
+                      Tell
+                    </button>
+                  </div>
+                );
+              })}
+            </div>
+            <p className="mb-0 mt-3 font-serif text-[12.5px]" style={{ color: "var(--p-muted)" }}>
+              Å hoppe over en drill er lov. Det du ikke rekker, følger med til
+              oppsummeringen som avvik — ikke som feil.
+            </p>
           </div>
-          <div className="h-[10px] overflow-hidden rounded-full" style={{ border: `1px solid ${T.border}`, background: T.panel2 }}>
-            <div
-              className="h-full rounded-full transition-all duration-700"
-              style={{
-                width: `${progressPct}%`,
-                background: `linear-gradient(90deg, color-mix(in srgb, ${T.handling} 40%, ${T.rail}), ${T.handling})`,
-              }}
-            />
-          </div>
-          <div className="mt-[7px] text-[12px]" style={{ color: T.mut }}>
-            {allDone
-              ? "Alle drills fullført — flott innsats!"
-              : completedCount > 0
-              ? `Drill ${completedCount + 1} av ${drills.length} pågår`
-              : "Trykk «Logg rep» for å begynne"}
-          </div>
-        </div>
         )}
 
-        {/* Timer */}
-        <div className="mb-[14px]">
-          <SessionTimer
-            seconds={totalSec}
-            paused={paused}
-            onTogglePause={togglePause}
-            label="Økt-tid"
-          />
-          {/* Tid på drillen du holder på med, mot det som var planlagt.
-              Ambert når du er over — aldri sperrende, bare til orientering. */}
-          {active && !allDone && (
+        {/* ── Reps: én-drill-fokus med DrillLogger ── */}
+        {modus === "reps" && drills.length > 0 && valgt && (
+          <div className="mt-4 min-w-0">
             <div
-              className="mt-[8px] flex items-center justify-center gap-[6px] rounded-full px-3 py-[6px] font-mono text-[11px]"
-              style={{
-                background: overPlanlagt ? `var(--amber-100, ${T.farge.varselBakgrunn})` : `var(--panel-2, ${T.farge.hvitA6})`,
-                color: overPlanlagt ? `var(--amber-900, ${T.farge.varselTekst})` : "inherit",
-              }}
+              className="flex gap-2 overflow-x-auto pb-1"
+              role="group"
+              aria-label="Velg drill"
+              style={{ scrollbarWidth: "none" }}
             >
-              <Clock size={11} aria-hidden />
-              <span>
-                {fmtMSS(drillSec)}
-                {active.durationMinutes > 0 && ` / ${active.durationMinutes} min`}
-              </span>
-              {overPlanlagt && <span className="font-bold">over plan</span>}
+              {drills.map((d) => {
+                const on = d.id === valgt.id;
+                return (
+                  <button
+                    key={d.id}
+                    type="button"
+                    aria-pressed={on}
+                    data-od-id={`live-repdrill-${d.index}`}
+                    onClick={() => setValgtDrillId(d.id)}
+                    className="flex-none whitespace-nowrap px-3 text-[12.5px]"
+                    style={{
+                      minHeight: 44,
+                      borderRadius: 9999,
+                      border: `1px solid ${on ? "var(--p-fg)" : "var(--p-border)"}`,
+                      background: on ? "var(--p-fg)" : "var(--p-surface)",
+                      color: on ? "var(--p-bg)" : "var(--p-muted)",
+                    }}
+                  >
+                    {d.name}
+                  </button>
+                );
+              })}
             </div>
-          )}
-        </div>
+            <div className="-mx-4">
+              <DrillLogger
+                drill={valgt}
+                state={{
+                  repsTotal: valgt.repsTotal,
+                  repsWithoutBall: valgt.repsWithoutBall,
+                  repsLowSpeed: valgt.repsLowSpeed,
+                  repsAutomatic: valgt.repsAutomatic,
+                  repsHit: valgt.repsHit,
+                  logNotes: valgt.logNotes,
+                }}
+                onChange={(state) => handleDrillChange(valgt.id, state)}
+                onComplete={() => void fullforDrill(valgt)}
+                isLast={completedCount === drills.length - 1 && valgt.status !== "done"}
+                completedCount={completedCount}
+                totalCount={drills.length}
+                drillSeconds={valgt.status === "active" ? drillSec : 0}
+              />
+            </div>
 
-        {/* Alle drills ferdige — grønt banner */}
-        {allDone && (
-          <div
-            className="mb-[14px] rounded-[14px] p-[18px] text-center"
-            style={{ background: T.handlingSoft, border: `1px solid ${T.border}` }}
-          >
-            <div className="font-display text-[20px] font-semibold" style={{ color: T.fg }}>
-              Alle drills fullført
-            </div>
-            <div className="mt-[6px] text-[13px]" style={{ color: T.mut }}>{data.title}</div>
+            {/* Målet — alltid synlig der det telles */}
+            {data.maalsetning && (
+              <div
+                className="mt-2 p-4"
+                style={{ background: "var(--p-surface)", border: "1px solid var(--p-border)", borderRadius: 12 }}
+              >
+                <span className={eyebrowCls} style={{ color: "var(--p-muted)" }}>
+                  mål i dag
+                </span>
+                <p className="m-0 mt-1 font-serif text-[14px]" style={{ color: "var(--p-fg)" }}>
+                  {data.maalsetning}
+                </p>
+                <WhyDetails
+                  odId="live-why-maal"
+                  punkter={[
+                    data.coachName
+                      ? `Kilde: målsetningen ${data.coachName} la på økta i planen.`
+                      : "Kilde: målsetningen som ligger på økta i planen.",
+                    "Forbehold: veiledende, aldri låst. Telle uten mål er også lov.",
+                  ]}
+                />
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* ── Logg: fritt notat med tidsstempel inn i økta ── */}
+        {modus === "logg" && (
+          <div className="mt-4 min-w-0">
+            <span className={eyebrowCls} style={{ color: "var(--p-muted)" }}>
+              notat til loggen
+            </span>
+            <textarea
+              value={notatTekst}
+              onChange={(e) => setNotatTekst(e.target.value)}
+              placeholder="Hva skjedde? Skriv kort — «traff tynt på 70 m når jeg ble sliten» er nok."
+              aria-label="Notat til loggen"
+              data-od-id="live-loggfelt"
+              className="mt-2 w-full resize-y p-3 font-serif text-[15px]"
+              style={{
+                minHeight: 110,
+                background: "var(--p-surface)",
+                color: "var(--p-fg)",
+                border: "1px solid var(--p-border)",
+                borderRadius: 12,
+              }}
+            />
             <button
               type="button"
-              onClick={() => void completeSession(data.sessionId, totalSec)}
-              data-od-id="live-avslutt"
-              data-paper-en-ting="true"
-              className="mt-[14px] w-full border-none px-6 py-3 font-sans text-[14px] font-semibold"
-              style={{ background: T.handling, color: T.onHandling, minHeight: 56, borderRadius: 12 }}
+              data-od-id="live-lagre-notat"
+              onClick={lagreNotat}
+              disabled={!notatTekst.trim()}
+              className="mt-2 w-full font-sans text-[14px] font-medium disabled:opacity-50"
+              style={{
+                minHeight: 48,
+                borderRadius: 12,
+                border: "1px solid var(--p-cta)",
+                background: "var(--p-cta)",
+                color: "var(--p-on-cta)",
+              }}
             >
-              Avslutt og logg økta
+              Lagre notat
             </button>
+            <p className="mb-0 mt-3 font-serif text-[12.5px]" style={{ color: "var(--p-muted)" }}>
+              Notatene ligger på telefonen gjennom økta og flettes inn i
+              oppsummeringen — der lagres de i loggen med dine ord.
+            </p>
+            {notater.length > 0 && (
+              <div className="mt-4">
+                <span className={eyebrowCls} style={{ color: "var(--p-muted)" }}>
+                  notater i denne økta · {notater.length}
+                </span>
+                {notater.map((n, i) => (
+                  <div
+                    key={`${n.t}-${i}`}
+                    className="mt-2 p-3 font-serif text-[13.5px]"
+                    style={{
+                      background: "var(--p-surface)",
+                      border: "1px solid var(--p-border)",
+                      borderRadius: 12,
+                      color: "var(--p-fg)",
+                    }}
+                  >
+                    <span className="mb-[2px] block font-mono text-[10px]" style={{ color: "var(--p-muted)" }}>
+                      {n.t} inn i økta
+                    </span>
+                    {n.tekst}
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         )}
-
-        {/* Drill-kort — aktiv øvelse først (B: 5s ser hva som skjer nå) */}
-        <div className="flex flex-col gap-[10px]">
-          {drills
-            .slice()
-            .sort((a, b) => {
-              const rank = (s: DrillStatus) => (s === "active" ? 0 : s === "queued" ? 1 : 2);
-              return rank(a.status) - rank(b.status);
-            })
-            .map((drill) => (
-            <ChallengeCard
-              key={drill.id}
-              drill={drill}
-              onLogRep={drill.status === "active" ? handleLogRep : undefined}
-            />
-          ))}
-        </div>
-
-        {/* Neste opp — sekundær info */}
-        {active && !allDone && activeIdx < drills.length - 1 && (() => {
-          const neste = drills[activeIdx + 1];
-          const nesteMaal =
-            neste.pyramide === "FYS"
-              ? neste.fysSett ?? neste.repSett
-                ? `${neste.fysSett ?? neste.repSett} sett`
-                : ""
-              : neste.plannedReps > 0
-                ? `${neste.plannedReps} reps`
-                : "";
-          return (
-            <div className="mt-[10px] flex items-center gap-3 rounded-[14px] px-[14px] py-[11px]" style={{ border: `1px solid ${T.border}`, background: T.panel }}>
-              <span className="min-w-0 flex-1">
-                <span className="block font-mono text-[9px] font-bold uppercase tracking-[0.09em]" style={{ color: T.mut }}>
-                  Neste opp
-                </span>
-                <span className="mt-[2px] block truncate text-[13.5px] font-semibold" style={{ color: T.fg }}>
-                  {neste.name}
-                </span>
-              </span>
-              {nesteMaal && (
-                <span className="flex-shrink-0 font-mono text-[10.5px]" style={{ color: T.mut }}>{nesteMaal}</span>
-              )}
-            </div>
-          );
-        })()}
 
         <div className="h-4" />
       </main>
 
-      {/* Sticky primær CTA — B: én grønn jobb (tommel-sone) */}
-      {active && !allDone && (
-        <footer
-          data-paper-dokk
-          className="flex-shrink-0 px-4 pt-3"
-          style={{
-            paddingBottom: "max(env(safe-area-inset-bottom), 12px)",
-            borderTop: `1px solid ${T.border}`,
-            background: T.bg,
-            maxWidth: 720,
-            margin: "0 auto",
-            width: "100%",
-          }}
-        >
-          <button
-            type="button"
-            onClick={handleLogRep}
-            data-od-id="live-logg-rep"
-            data-paper-en-ting="true"
-            className="w-full border-none py-3.5 font-sans text-[14px] font-semibold active:scale-[0.98] v2-press"
-            style={{ background: T.handling, color: T.onHandling, minHeight: 56, borderRadius: 12 }}
-          >
-            Logg rep
-          </button>
-          <button
-            type="button"
-            onClick={() => void handleCompleteDrill()}
-            disabled={isCompleting}
-            className="mt-2 w-full py-3 font-sans text-[13px] font-semibold disabled:opacity-50 v2-press"
-            style={{ minHeight: 48, borderRadius: 12, border: `1px solid ${T.border}`, background: T.panel, color: T.fg }}
-          >
-            {activeIdx === drills.length - 1 ? "Fullfør siste drill" : "Fullfør drill · neste"}
-          </button>
+      {/* Dokk — skjermens ene clay-handling: avslutter og går til ETTER */}
+      <footer
+        data-paper-dokk
+        className="flex-shrink-0 px-4 pt-3"
+        style={{
+          paddingBottom: "max(env(safe-area-inset-bottom), 12px)",
+          borderTop: "1px solid var(--p-border)",
+          background: "var(--p-bg)",
+        }}
+      >
+        <div style={{ maxWidth: 720, margin: "0 auto" }}>
           <button
             type="button"
             onClick={() => setShowConfirm(true)}
             data-od-id="live-avslutt"
-            className="mt-2 w-full py-2 font-mono text-[11px] font-bold uppercase tracking-[0.06em] disabled:opacity-50"
-            style={{ color: T.mut, background: "transparent", border: "none" }}
+            data-paper-en-ting="true"
+            className="w-full border-none font-sans text-[14px] font-semibold active:translate-y-px"
+            style={{
+              minHeight: 56,
+              borderRadius: 12,
+              background: "var(--p-accent)",
+              color: "var(--p-on-accent)",
+            }}
           >
             Avslutt og logg økta
           </button>
-        </footer>
-      )}
+        </div>
+      </footer>
 
       <LiveCoachPanel data={coachPanel} activeDrillId={active?.id ?? null} />
     </div>

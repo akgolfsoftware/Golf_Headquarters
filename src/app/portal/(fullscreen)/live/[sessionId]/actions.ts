@@ -226,12 +226,20 @@ export async function loadLiveSession(sessionId: string): Promise<AccessResult> 
     return { ok: false, reason: "forbidden" };
   }
 
-  const student = session.studentId
-    ? await prisma.user.findUnique({
-        where: { id: session.studentId },
-        select: { name: true },
-      })
-    : null;
+  const [student, coach] = await Promise.all([
+    session.studentId
+      ? prisma.user.findUnique({
+          where: { id: session.studentId },
+          select: { name: true },
+        })
+      : Promise.resolve(null),
+    session.coachId
+      ? prisma.user.findUnique({
+          where: { id: session.coachId },
+          select: { name: true },
+        })
+      : Promise.resolve(null),
+  ]);
 
   const existingLogs = await prisma.drillLogV2.findMany({
     where: { drill: { sessionId } },
@@ -254,6 +262,11 @@ export async function loadLiveSession(sessionId: string): Promise<AccessResult> 
     focus: `${MILJO_LABEL[session.miljo] ?? session.miljo} · ${PRACTICE_LABEL[session.practiceType] ?? session.practiceType}`,
     status: session.status as SessionStatusV2,
     scheduledAtISO: session.startTime.toISOString(),
+    endTimeISO: session.endTime.toISOString(),
+    location: session.location,
+    maalsetning: session.maalsetning,
+    coachName: session.isCoachCreated ? coach?.name ?? null : null,
+    publishedAtISO: session.createdAt.toISOString(),
     completed: session.status === "COMPLETED",
     studentName: student?.name ?? null,
     pyramide,
@@ -477,6 +490,53 @@ export async function completeSession(sessionId: string, clientDurationSec?: num
   revalidatePath("/portal/planlegge");
   revalidatePath(`/portal/live/${sessionId}`);
   redirect(`/portal/live/${sessionId}/summary`);
+}
+
+/** «Dine ord» etter økt → completedSummary.dineOrd (Paper PP-3, ETTER-skjermen).
+ *  Samme lagringsmønster som spillerVurdering — ingen ny persistens, kun et
+ *  felt til i completedSummary-JSON-en. Speiles til plan-økt-loggen så coachen
+ *  ser spillerens oppsummering i stallen. */
+export async function lagreDineOrd(
+  sessionId: string,
+  tekst: string,
+): Promise<{ ok: boolean; error?: string }> {
+  const { user, session } = await verifyAccess(sessionId);
+  if (session.status !== "COMPLETED") {
+    return { ok: false, error: "Økta er ikke fullført ennå" };
+  }
+  const ord = tekst.trim().slice(0, 2000);
+  if (!ord) {
+    return { ok: false, error: "Skriv noe først — ett ord er nok" };
+  }
+
+  const existing =
+    session.completedSummary &&
+    typeof session.completedSummary === "object" &&
+    !Array.isArray(session.completedSummary)
+      ? (session.completedSummary as Record<string, unknown>)
+      : {};
+
+  const neste = {
+    ...existing,
+    dineOrd: {
+      tekst: ord,
+      loggedBy: user.id,
+      loggedAt: new Date().toISOString(),
+    },
+  };
+
+  await prisma.trainingSessionV2.update({
+    where: { id: sessionId },
+    data: { completedSummary: neste as unknown as Prisma.InputJsonValue },
+  });
+
+  // Bevisst INGEN speiling til TrainingPlanSessionLog.notes her —
+  // lagreSpillerVurdering eier det feltet (spiller-fokus), og en upsert
+  // herfra ville overskrevet det. Coachen leser dineOrd fra completedSummary.
+
+  revalidatePath(`/portal/live/${sessionId}/summary`);
+  revalidatePath("/portal/planlegge");
+  return { ok: true };
 }
 
 /** Spiller-vurdering etter økt → completedSummary.spillerVurdering (write-back). */

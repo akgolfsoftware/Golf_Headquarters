@@ -174,13 +174,13 @@ export function DrillLogger({
         </>
       )}
 
-      {/* Fullfør-knapp */}
+      {/* Fullfør-knapp — ink, ikke clay: skjermens ene clay-CTA er
+          «Avslutt og logg økta» i dokken (fasit playerhq-live-okt.html). */}
       <button
         type="button"
         onClick={onComplete}
-        data-paper-en-ting="true"
         className="mt-2 flex w-full items-center justify-center gap-2 font-sans text-[14px] font-semibold active:scale-[0.98] v2-press"
-        style={{ background: T.handling, color: T.onHandling, minHeight: 56, borderRadius: 12, border: "none" }}
+        style={{ background: "var(--p-cta)", color: "var(--p-on-cta)", minHeight: 56, borderRadius: 12, border: "none" }}
       >
         <Check className="h-5 w-5" strokeWidth={2.5} aria-hidden />
         {isLast ? "Fullfør økt" : "Fullfør drill"}

@@ -44,6 +44,12 @@ export default async function LiveSummaryPage({
     storedSummary && typeof storedSummary === "object" && !Array.isArray(storedSummary)
       ? Number((storedSummary as Record<string, unknown>).durationSec)
       : NaN;
+  const rawDineOrd = summaryRoot?.dineOrd;
+  const lagredeOrd =
+    rawDineOrd && typeof rawDineOrd === "object" && !Array.isArray(rawDineOrd) &&
+    typeof (rawDineOrd as Record<string, unknown>).tekst === "string"
+      ? ((rawDineOrd as Record<string, unknown>).tekst as string)
+      : null;
   const rawVurdering = summaryRoot?.spillerVurdering;
   const spillerVurdering =
     rawVurdering && typeof rawVurdering === "object" && !Array.isArray(rawVurdering)
@@ -101,6 +107,7 @@ export default async function LiveSummaryPage({
         data={summaryData}
         nesteOkt={nesteOkt}
         spillerVurdering={spillerVurdering && spillerVurdering.kvalitet >= 1 ? spillerVurdering : null}
+        lagredeOrd={lagredeOrd}
       />
     </LiveSessionShell>
   );

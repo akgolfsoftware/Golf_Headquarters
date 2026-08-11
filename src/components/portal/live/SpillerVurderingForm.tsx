@@ -2,6 +2,8 @@
 
 /**
  * Spiller-vurdering etter live-økt — write-back til completedSummary + plan-notes.
+ * Paper-restylet (PP-3): nøytral ink-knapp — skjermens ene clay-CTA er
+ * «Lagre til loggen» i SessionSummary.
  */
 
 import { useState, useTransition } from "react";
@@ -18,6 +20,41 @@ type Props = {
   } | null;
 };
 
+const EYEBROW = "font-mono text-[10px] font-medium uppercase tracking-[0.09em]";
+const FELT_LABEL = "mb-1 block font-mono text-[9.5px] font-medium uppercase tracking-[0.06em]";
+
+function TallKnapp({
+  n,
+  valgt,
+  onClick,
+  ariaLabel,
+  liten,
+}: {
+  n: number;
+  valgt: boolean;
+  onClick: () => void;
+  ariaLabel: string;
+  liten?: boolean;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      aria-pressed={valgt}
+      aria-label={ariaLabel}
+      className={`grid place-items-center font-mono font-semibold ${liten ? "h-9 w-9 text-[12px]" : "h-11 w-11 text-[13px]"}`}
+      style={{
+        borderRadius: 9999,
+        border: `1px solid ${valgt ? "var(--p-fg)" : "var(--p-border)"}`,
+        background: valgt ? "var(--p-fg)" : "var(--p-surface)",
+        color: valgt ? "var(--p-bg)" : "var(--p-muted)",
+      }}
+    >
+      {n}
+    </button>
+  );
+}
+
 export function SpillerVurderingForm({ sessionId, eksisterende }: Props) {
   const [kvalitet, setKvalitet] = useState(eksisterende?.kvalitet ?? 0);
   const [rpe, setRpe] = useState(eksisterende?.rpe ?? 0);
@@ -29,17 +66,20 @@ export function SpillerVurderingForm({ sessionId, eksisterende }: Props) {
 
   if (lagret) {
     return (
-      <div className="rounded-2xl border border-accent/30 bg-accent/10 p-4">
-        <div className="font-mono text-[10px] font-bold uppercase tracking-[0.08em] text-accent">
-          Din vurdering
-        </div>
-        <p className="mt-2 text-sm text-background">
+      <div
+        className="p-4"
+        style={{ background: "var(--p-surface)", border: "1px solid var(--p-border)", borderRadius: 12 }}
+      >
+        <span className={EYEBROW} style={{ color: "var(--p-muted)" }}>
+          din vurdering
+        </span>
+        <p className="mb-0 mt-2 font-serif text-[13.5px]" style={{ color: "var(--p-fg)" }}>
           Kvalitet: {kvalitet || eksisterende?.kvalitet}/5
           {(rpe || eksisterende?.rpe) ? ` · RPE ${rpe || eksisterende?.rpe}/10` : ""}
           {(folelse || eksisterende?.folelse) ? ` · ${folelse || eksisterende?.folelse}` : ""}
         </p>
         {(nesteFokus || eksisterende?.nesteFokus) ? (
-          <p className="mt-1 text-[13px] text-background/70">
+          <p className="mb-0 mt-1 font-serif text-[13px]" style={{ color: "var(--p-muted)" }}>
             Neste fokus: {nesteFokus || eksisterende?.nesteFokus}
           </p>
         ) : null}
@@ -73,61 +113,63 @@ export function SpillerVurderingForm({ sessionId, eksisterende }: Props) {
   }
 
   return (
-    <div className="rounded-2xl border border-background/10 bg-background/5 p-4">
-      <div className="font-mono text-[10px] font-bold uppercase tracking-[0.08em] text-background/60">
-        Hvordan var økta?
-      </div>
-      <p className="mt-1 mb-3 text-[12.5px] text-background/65">
-        Kvalitet og neste fokus går til coachen — anbefaling, ikke sperre.
+    <div
+      className="p-4"
+      style={{ background: "var(--p-surface)", border: "1px solid var(--p-border)", borderRadius: 12 }}
+    >
+      <span className={EYEBROW} style={{ color: "var(--p-muted)" }}>
+        hvordan var økta?
+      </span>
+      <p className="mb-3 mt-1 font-serif text-[12.5px]" style={{ color: "var(--p-muted)" }}>
+        Kvalitet og neste fokus går til coachen — informasjon, aldri sperre.
       </p>
 
       <div className="mb-3 flex gap-2">
         {[1, 2, 3, 4, 5].map((n) => (
-          <button
+          <TallKnapp
             key={n}
-            type="button"
+            n={n}
+            valgt={kvalitet === n}
             onClick={() => setKvalitet(n)}
-            className={`grid h-11 w-11 place-items-center rounded-full font-mono text-[13px] font-bold ${
-              kvalitet === n ? "bg-accent text-accent-foreground" : "border border-background/15 bg-background/10 text-background/75"
-            }`}
-            aria-label={`Kvalitet ${n}`}
-          >
-            {n}
-          </button>
+            ariaLabel={`Kvalitet ${n}`}
+          />
         ))}
       </div>
 
-      <label className="mb-1 block font-mono text-[9.5px] font-bold uppercase tracking-[0.06em] text-background/50">
+      <label className={FELT_LABEL} style={{ color: "var(--p-muted)" }}>
         Hvor hard var økta? (1 = veldig lett · 10 = maksimal)
       </label>
       <div className="mb-3 flex flex-wrap gap-1.5">
         {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((n) => (
-          <button
+          <TallKnapp
             key={n}
-            type="button"
+            n={n}
+            liten
+            valgt={rpe === n}
             onClick={() => setRpe(n)}
-            className={`grid h-9 w-9 place-items-center rounded-full font-mono text-[12px] font-bold ${
-              rpe === n ? "bg-accent text-accent-foreground" : "border border-background/15 bg-background/10 text-background/75"
-            }`}
-            aria-label={`Anstrengelse ${n} av 10`}
-          >
-            {n}
-          </button>
+            ariaLabel={`Anstrengelse ${n} av 10`}
+          />
         ))}
       </div>
 
-      <label className="mb-1 block font-mono text-[9.5px] font-bold uppercase tracking-[0.06em] text-background/50">
+      <label className={FELT_LABEL} style={{ color: "var(--p-muted)" }}>
         Følelse (valgfritt)
       </label>
       <input
         value={folelse}
         onChange={(e) => setFolelse(e.target.value)}
         placeholder="F.eks. fokusert, sliten, motivert"
-        className="mb-3 w-full rounded-xl border border-background/15 bg-background/5 px-3 py-2.5 text-[13px] text-background placeholder:text-background/35"
+        className="mb-3 w-full px-3 py-2.5 font-serif text-[13px]"
+        style={{
+          background: "var(--p-bg)",
+          color: "var(--p-fg)",
+          border: "1px solid var(--p-border)",
+          borderRadius: 8,
+        }}
         maxLength={200}
       />
 
-      <label className="mb-1 block font-mono text-[9.5px] font-bold uppercase tracking-[0.06em] text-background/50">
+      <label className={FELT_LABEL} style={{ color: "var(--p-muted)" }}>
         Neste fokus
       </label>
       <textarea
@@ -135,23 +177,35 @@ export function SpillerVurderingForm({ sessionId, eksisterende }: Props) {
         onChange={(e) => setNesteFokus(e.target.value)}
         placeholder="Hva bør neste økt prioritere?"
         rows={2}
-        className="mb-3 w-full rounded-xl border border-background/15 bg-background/5 px-3 py-2.5 text-[13px] text-background placeholder:text-background/35"
+        className="mb-3 w-full px-3 py-2.5 font-serif text-[13px]"
+        style={{
+          background: "var(--p-bg)",
+          color: "var(--p-fg)",
+          border: "1px solid var(--p-border)",
+          borderRadius: 8,
+        }}
         maxLength={500}
       />
 
-      {feil ? <p className="mb-2 text-[12px] text-destructive">{feil}</p> : null}
-      {lagret && !eksisterende ? (
-        <p className="mb-2 text-[12px] text-accent">Lagret — takk!</p>
+      {feil ? (
+        <p className="mb-2 font-serif text-[12px]" style={{ color: "var(--p-dn)" }} role="alert">
+          {feil}
+        </p>
       ) : null}
 
       <button
         type="button"
         disabled={pending || lagret}
         onClick={onSubmit}
-        className="w-full rounded-full bg-accent py-3 font-mono text-[11px] font-bold uppercase tracking-[0.06em] text-accent-foreground disabled:opacity-50"
-        style={{ minHeight: 48 }}
+        className="w-full border-none font-sans text-[13px] font-medium disabled:opacity-50"
+        style={{
+          minHeight: 48,
+          borderRadius: 12,
+          background: "var(--p-cta)",
+          color: "var(--p-on-cta)",
+        }}
       >
-        {pending ? "Lagrer…" : "Send til coach"}
+        {pending ? "Lagrer…" : "Lagre vurdering"}
       </button>
     </div>
   );

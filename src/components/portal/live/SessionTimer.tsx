@@ -1,10 +1,9 @@
-import { Pause, Play } from "lucide-react";
-import { T } from "@/lib/v2/tokens";
-
 export type SessionTimerProps = {
   seconds: number;
   paused: boolean;
   onTogglePause: () => void;
+  /** Undertekst, f.eks. «startet 15:00 · planlagt 1 t 30 min». */
+  meta?: string;
   label?: string;
   /** @deprecated always paper cream */
   variant?: "dark" | "light";
@@ -16,46 +15,54 @@ function fmtMSS(totalSec: number): string {
   return `${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`;
 }
 
-/** Stor timer for live-økt — Paper cream (fasit live-okt). */
+/**
+ * Øktklokka — Paper-fasit playerhq-live-okt.html .klokke.
+ * mm:ss i mono, meta-linje, Pause inline. Pause er informasjon, ikke sperre.
+ */
 export function SessionTimer({
   seconds,
   paused,
   onTogglePause,
+  meta,
   label = "Økt-tid",
 }: SessionTimerProps) {
   return (
     <div
-      className="flex items-center justify-between gap-4 rounded-[14px] border px-4 py-4"
-      style={{ borderColor: T.border, background: T.panel }}
+      className="flex min-w-0 items-center gap-3 px-4 py-3"
+      style={{
+        background: "var(--p-surface)",
+        border: "1px solid var(--p-border)",
+        borderRadius: 12,
+      }}
     >
-      <div>
-        <div
-          className="font-mono text-[9.5px] font-bold uppercase tracking-[0.14em]"
-          style={{ color: T.mut }}
-        >
-          {label}
-        </div>
-        <div
-          className="mt-2 font-mono text-5xl font-bold leading-none tracking-tight"
-          style={{ color: T.handling }}
-          aria-live="polite"
-          aria-label={`Økt-tid ${fmtMSS(seconds)}`}
-        >
-          {fmtMSS(seconds)}
-        </div>
-      </div>
+      <span
+        className="font-mono text-[40px] font-medium leading-none [font-variant-numeric:tabular-nums]"
+        style={{ color: paused ? "var(--p-muted)" : "var(--p-fg)" }}
+        aria-live="polite"
+        aria-label={`${label} ${fmtMSS(seconds)}${paused ? " — pauset" : ""}`}
+      >
+        {fmtMSS(seconds)}
+      </span>
+      {meta && (
+        <span className="min-w-0 font-mono text-[10.5px]" style={{ color: "var(--p-muted)" }}>
+          {meta}
+        </span>
+      )}
+      <span className="flex-1" />
       <button
         type="button"
         onClick={onTogglePause}
         aria-label={paused ? "Fortsett økt" : "Pause økt"}
-        className="grid h-14 w-14 place-items-center rounded-full border active:scale-95 v2-press"
-        style={{ borderColor: T.border, background: T.panel2, color: T.fg }}
+        className="flex-none px-3 font-sans text-[13px] font-medium active:translate-y-px"
+        style={{
+          minHeight: 44,
+          borderRadius: 12,
+          border: "1px solid var(--p-border)",
+          background: "transparent",
+          color: "var(--p-fg)",
+        }}
       >
-        {paused ? (
-          <Play className="h-6 w-6 fill-current" strokeWidth={2} aria-hidden />
-        ) : (
-          <Pause className="h-6 w-6 fill-current" strokeWidth={2} aria-hidden />
-        )}
+        {paused ? "Fortsett" : "Pause"}
       </button>
     </div>
   );
