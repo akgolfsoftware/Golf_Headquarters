@@ -6,7 +6,8 @@
  * auth + tilgangsregel (testTilgangWhere — andres private tester gir 404),
  * protocol-JSON tolkes via parseProtocol (zod safeParse) og normaliseres til
  * ScorekortSpec; eldre tester uten protocol får fallback (ett tallfelt
- * «Score»). Selve flyten (Brief → Scorekort → Oppsummering) er klient-side.
+ * «Score»). Paper-port PP-3 (2026-08-11): fasiten playerhq-test-gjennomfor.html
+ * er ETT skjermbilde — protokoll + scorekort på samme flate, ingen stegmaskin.
  */
 
 import { notFound } from "next/navigation";
@@ -48,6 +49,14 @@ export default async function GjennomforTestPage({
   });
   if (!test) notFound();
 
+  // Forrige resultat for samme test — kilden til «Foreslått mål» og
+  // «Hvorfor dette tallet» (fasit: forrige resultat + IUP + forbehold).
+  const forrige = await prisma.testResult.findFirst({
+    where: { userId: user.id, testId: test.id },
+    orderBy: { takenAt: "desc" },
+    select: { score: true, takenAt: true },
+  });
+
   const spec = parseProtocol(test.protocol) ?? fallbackScorekortSpec();
   return (
     <div data-paper-wave-d="test-gjennomfor" style={{ minHeight: "100dvh", background: T.bg, color: T.fg, fontFamily: T.ui }}>
@@ -71,6 +80,19 @@ export default async function GjennomforTestPage({
             testId={test.id}
             beskrivelse={test.description}
             scoringRule={test.scoringRule}
+            omraade={test.pyramidArea}
+            sist={
+              forrige
+                ? {
+                    score: forrige.score,
+                    dato: new Intl.DateTimeFormat("nb-NO", {
+                      timeZone: "Europe/Oslo",
+                      day: "2-digit",
+                      month: "2-digit",
+                    }).format(forrige.takenAt),
+                  }
+                : null
+            }
             spec={spec}
             protocol={test.protocol}
           />

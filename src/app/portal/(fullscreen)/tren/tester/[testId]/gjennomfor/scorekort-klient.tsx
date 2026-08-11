@@ -1,33 +1,43 @@
 "use client";
 
 /**
- * PlayerHQ · Tren · Tester · Gjennomfør — scorekort-klient (v2).
- * v2-port 17. juli 2026 (Team D2): flyttet fra (fullscreen-test) og restylet
- * til v2 (T-tokens + v2-primitiver), samme fullskjerm-konvensjon som
- * live-familien (chrome-løs, egen flate).
+ * PlayerHQ · Test-gjennomføring — Paper-port PP-3 (fase 1).
+ * Fasit: designsystem/paper/fase1/playerhq-test-gjennomfor.html.
  *
- * Tre steg: Brief (m/kontekst) → Scorekort → Oppsummering.
+ * ETT skjermbilde (fasiten har ingen stegmaskin): protokoll-kortet
+ * (beskrivelse-prosa + Scoring/Område/Foreslått mål med «Hvorfor dette
+ * tallet»-details) og scorekortet på samme flate. Forsøksrad = nr | label |
+ * én stor knapp som sykler uregistrert → OK → bom → uregistrert
+ * (aria-pressed). Løpende score over radene. Clay-CTA «Lagre testen» i fast
+ * bunn-dokk — blokkerer med toast når ingenting er registrert.
  *
- * Scoren regnes via den FELLES motoren (test-scoring.ts) — samme funksjon
- * serveren bruker som fasit. Klienten sender kun rå slag-verdier + kontekst;
- * live-preview og lagret score kan derfor aldri avvike. Enheter/mål kommer
- * alltid fra protokollen (ingen hardkodede referanseverdier). Logikken er
- * uendret fra legacy-klienten — kun presentasjonslaget er nytt.
+ * Felter som ikke passer OK/bom-syklusen (målt verdi, poeng, flere felter)
+ * beholder feltinput inline i raden — ingen funksjon fjernes. Kontekst og
+ * notat består (sammenslått under scorekortet).
+ *
+ * Lagring gjenbruker actions.ts UENDRET. Serveren krever verdi på alle
+ * innsendte forsøk, så «lagre når som helst» sendes som de registrerte
+ * forsøkene alene — og kun når de er en sammenhengende rekke fra forsøk 1
+ * (avbrutt test = stoppet underveis). Da er indeks-paringen mot protokollens
+ * mål per slag fortsatt korrekt for alle scoring-typer. Hull i rekka →
+ * forklarende toast, aldri korrupt lagring.
+ *
+ * Ved suksess redirecter serveren til testsiden (?lagret=1) — kvitteringen
+ * bor der (samme mønster som før porten).
  */
 
-import { useEffect, useMemo, useState, useTransition } from "react";
+import { useMemo, useRef, useState, useTransition } from "react";
 import type { CSSProperties, ReactNode } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { T, Caps, Knapp, CTAPill, TekstOmraade } from "@/components/v2";
+import { T, Knapp, TekstOmraade } from "@/components/v2";
 import { Icon } from "@/components/v2/icon";
 import type { ScorekortFelt, ScorekortForsok, ScorekortSpec } from "@/lib/portal-tester/protocol";
 import { scoreTest } from "@/lib/portal-tester/test-scoring";
 import { lagreTestResultat } from "./actions";
 
-type Steg = "brief" | "scorekort" | "oppsummering";
-
-/** Verdi-state: tallfelt lagres som rå streng (norsk komma), checkbox som boolean. */
+/** Verdi-state: tallfelt som rå streng (norsk komma), checkbox som boolean.
+ *  Fravær av nøkkel = uregistrert. */
 type Verdier = Record<number, Record<string, string | boolean>>;
 
 type Vanskelighet = "lett" | "middels" | "vanskelig";
@@ -44,14 +54,6 @@ type Kontekst = {
 const MAKS_HISTORIKK = 50;
 const MAKS_POENG = 999;
 
-/** Stegene i flyten — drives status-stripens teller (jf. Live Test «Øvelse N av M»). */
-const STEG_REKKE: Steg[] = ["brief", "scorekort", "oppsummering"];
-const STEG_LABEL: Record<Steg, string> = {
-  brief: "Klargjøring",
-  scorekort: "Live nå",
-  oppsummering: "Oppsummering",
-};
-
 /** Norsk desimal-parsing: «12,4» / «−3» → tall. Tom/ugyldig → null. */
 function parseNorsk(raw: string): number | null {
   const trimmed = raw.trim();
@@ -63,7 +65,6 @@ function parseNorsk(raw: string): number | null {
 const fmt = new Intl.NumberFormat("nb-NO", { maximumFractionDigits: 2 });
 
 function iDagISO(): string {
-  // Lokalt datostempel (YYYY-MM-DD) uten å dra inn tidssone-skjevhet.
   const d = new Date();
   const m = `${d.getMonth() + 1}`.padStart(2, "0");
   const dag = `${d.getDate()}`.padStart(2, "0");
@@ -82,7 +83,7 @@ function renKontekst(k: Kontekst): Record<string, string> | undefined {
   return Object.keys(ut).length > 0 ? ut : undefined;
 }
 
-/* ── Delte stiler (v2) ─────────────────────────────────── */
+/* ── Delte stiler ─────────────────────────────────────────────── */
 
 const lblStil: CSSProperties = {
   fontFamily: T.mono,
@@ -112,12 +113,18 @@ export function ScorekortKlient({
   testId,
   beskrivelse,
   scoringRule,
+  omraade,
+  sist,
   spec,
   protocol,
 }: {
   testId: string;
   beskrivelse: string | null;
   scoringRule: string;
+  /** Fasitens Område-rad: «Putting · TEK» e.l. — pyramideområdet fra testen. */
+  omraade: string;
+  /** Forrige resultat for samme test (why-details) — null når ingen finnes. */
+  sist: { score: number; dato: string } | null;
   spec: ScorekortSpec;
   /** Rå protokoll-JSON — sendes til motoren for live-score (samme som server). */
   protocol: unknown;
@@ -125,11 +132,12 @@ export function ScorekortKlient({
   const router = useRouter();
   const [pending, startTransition] = useTransition();
 
-  const [steg, setSteg] = useState<Steg>("brief");
   const [verdier, setVerdier] = useState<Verdier>({});
   const [historikk, setHistorikk] = useState<Verdier[]>([]);
   const [notat, setNotat] = useState("");
   const [feil, setFeil] = useState<string | null>(null);
+  const [toast, setToast] = useState<string | null>(null);
+  const toastTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [kontekst, setKontekst] = useState<Kontekst>({
     dato: iDagISO(),
     lokasjon: "",
@@ -139,9 +147,11 @@ export function ScorekortKlient({
     greenfasthet: "",
   });
 
-  useEffect(() => {
-    window.scrollTo({ top: 0 });
-  }, [steg]);
+  function visToast(t: string) {
+    setToast(t);
+    if (toastTimer.current) clearTimeout(toastTimer.current);
+    toastTimer.current = setTimeout(() => setToast(null), 2600);
+  }
 
   const antallForsok = spec.forsok.length;
 
@@ -167,26 +177,39 @@ export function ScorekortKlient({
     [verdier, spec],
   );
 
-  /** Antall slag som er ført (minst én gyldig verdi). */
-  const antallFort = useMemo(
-    () => forsokData.filter((f) => Object.values(f.verdier).some((v) => v !== null)).length,
+  /** Hvilke forsøk som er ført (minst én gyldig verdi). */
+  const fortMaske = useMemo(
+    () => forsokData.map((f) => Object.values(f.verdier).some((v) => v !== null)),
     [forsokData],
   );
+  const antallFort = fortMaske.filter(Boolean).length;
+  const alleFort = antallFort === antallForsok;
+  /** Registrerte forsøk er en sammenhengende rekke fra forsøk 1. */
+  const erPrefiks = fortMaske.every((fort, i) => fort === (i < antallFort));
 
   // Live-score via SAMME motor som serveren → preview kan ikke avvike fra fasit.
   const motor = useMemo(() => scoreTest(protocol, forsokData), [protocol, forsokData]);
-  const score = antallFort === 0 ? null : motor.score;
   const scoringKind = motor.details.scoring;
+  const erTelling = scoringKind === "count_ok";
 
-  /** Enhet for totalscore-visning. Telle-tester vises som «av M». */
-  const scoreEnhet =
-    scoringKind === "count_ok"
-      ? `av ${antallForsok}`
-      : (motor.details.unit ?? spec.unit ?? null);
-  /** Enhet i Brief-protokollkortet — protokollens egen. */
-  const protokollEnhet = spec.unit ?? motor.details.unit ?? null;
+  const antOk = useMemo(
+    () =>
+      forsokData.filter((f) => {
+        const v = f.verdier["ok"] ?? f.verdier["sunket"];
+        return v === true || v === 1;
+      }).length,
+    [forsokData],
+  );
 
-  const alleFort = antallFort === antallForsok;
+  const scoreEnhet = erTelling
+    ? `av ${antallForsok}`
+    : (motor.details.unit ?? spec.unit ?? null);
+
+  /** Fasitens foreslåtte mål: forrige resultat pluss én (kun telle-tester). */
+  const foreslaatt =
+    erTelling && sist !== null
+      ? Math.min(Math.round(sist.score) + 1, antallForsok)
+      : null;
 
   // ── State-oppdatering med angre-historikk ──────────────────────
   function pushHistorikk() {
@@ -198,27 +221,47 @@ export function ScorekortKlient({
     setVerdier((prev) => ({ ...prev, [nr]: { ...prev[nr], [key]: verdi } }));
   }
 
+  /** Syklus for én-checkbox-rader: uregistrert → OK → bom → uregistrert. */
+  function syklus(nr: number, key: string) {
+    pushHistorikk();
+    setVerdier((prev) => {
+      const rad = { ...prev[nr] };
+      const v = rad[key];
+      if (v === undefined) rad[key] = true;
+      else if (v === true) rad[key] = false;
+      else delete rad[key];
+      return { ...prev, [nr]: rad };
+    });
+  }
+
   function angreSiste() {
     if (historikk.length === 0) return;
     setVerdier(historikk[historikk.length - 1]);
     setHistorikk(historikk.slice(0, -1));
   }
 
-  // ── Lagring ────────────────────────────────────────────────────
+  // ── Lagring — «du kan lagre når som helst», serverkontrakten uendret ──
   function lagre() {
-    if (!alleFort) {
-      setFeil("Alle slag må føres før du kan lagre.");
+    if (antallFort === 0) {
+      visToast("Registrer minst ett forsøk først.");
+      return;
+    }
+    if (!alleFort && !erPrefiks) {
+      visToast("Fyll forsøkene i rekkefølge — du kan stoppe når som helst, men ikke hoppe over.");
       return;
     }
     setFeil(null);
     const kontekstInn = renKontekst(kontekst);
+    // Avbrutt test: kun de registrerte forsøkene sendes (sammenhengende fra
+    // forsøk 1, så protokoll-paringen per slag holder).
+    const sendes = forsokData.filter((_, i) => fortMaske[i]);
     startTransition(async () => {
       try {
         const res = await lagreTestResultat({
           testId,
           notes: notat.trim() === "" ? undefined : notat.trim(),
           ...(kontekstInn ? { kontekst: kontekstInn } : {}),
-          forsok: forsokData,
+          forsok: sendes,
         });
         // Ved suksess redirecter action til testsiden (?lagret=1).
         if (res && !res.ok) setFeil(res.error);
@@ -228,149 +271,171 @@ export function ScorekortKlient({
     });
   }
 
-  function avbryt() {
-    router.push(`/portal/tren/tester/${testId}`);
-  }
-
-  // ── Visnings-hjelpere ──────────────────────────────────────────
   const fellesLabel = spec.forsok.every((f) => f.label === spec.forsok[0]?.label)
     ? (spec.forsok[0]?.label ?? null)
     : null;
-  const enkel = spec.forsok.every((f) => f.felter.length === 1);
-  const harMaal = spec.forsok.some((f) => f.target !== undefined);
-  const felterTekst = (spec.forsok[0]?.felter ?? [])
-    .map((f) => (f.unit ? `${f.label} (${f.unit})` : f.label))
-    .join(" · ");
 
-  if (steg === "brief") {
-    return (
-      <div data-paper-portal-test-gjennomfor data-paper-wave-d="test-gjennomfor" data-od-id="playerhq-test-gjennomfor" style={{ maxWidth: 720, margin: "0 auto", width: "100%", padding: "0 16px 32px", color: T.fg }}>
-        <StatusStrip steg="brief" progressPct={0} live={false} />
-
+  return (
+    <div
+      data-paper-slug="playerhq-test-gjennomfor"
+      data-od-id="playerhq-test-gjennomfor"
+      style={{ maxWidth: 720, margin: "0 auto", width: "100%", color: T.fg, minWidth: 0 }}
+    >
+      {/* ── Protokollen — kilde: TestDefinition ── */}
+      <div style={{ background: T.panel, border: `1px solid ${T.border}`, borderRadius: T.rCard, padding: 16, marginTop: 16 }}>
+        <span style={lblStil}>Protokoll</span>
         {beskrivelse && (
-          <p style={{ margin: "18px 0 14px", maxWidth: "62ch", fontFamily: T.ui, fontSize: 13.5, lineHeight: 1.6, color: T.fg2 }}>
+          <p style={{ margin: "8px 0", fontFamily: T.bodyFont, fontSize: 13.5, lineHeight: 1.6, color: T.fg2 }}>
             {beskrivelse}
           </p>
         )}
+        <ProtokollRad k="Scoring" v={scoringRule} />
+        <ProtokollRad k="Område" v={omraade} />
+        {foreslaatt !== null && (
+          <ProtokollRad k="Foreslått mål" v={`${foreslaatt} av ${antallForsok}`} last />
+        )}
+        {foreslaatt !== null && sist !== null && (
+          <details
+            style={{ margin: "12px 0 0", border: `1px solid ${T.border}`, borderRadius: T.rCard }}
+          >
+            <summary
+              className="v2-focus"
+              style={{
+                display: "flex",
+                alignItems: "center",
+                minHeight: 44,
+                padding: "0 16px",
+                cursor: "pointer",
+                listStyle: "none",
+                fontSize: 12.5,
+                fontWeight: 500,
+                color: T.mut,
+              }}
+            >
+              Hvorfor dette tallet
+            </summary>
+            <ul
+              style={{
+                margin: 0,
+                padding: "12px 16px 16px 26px",
+                fontFamily: T.bodyFont,
+                fontSize: 13,
+                color: T.mut,
+                lineHeight: 1.55,
+              }}
+            >
+              <li style={{ marginBottom: 8 }}>
+                Kilde: forrige resultat {sist.dato} — {fmt.format(sist.score)} av {antallForsok} — og IUP-en din.
+              </li>
+              <li style={{ marginBottom: 8 }}>Beregning: målet er forrige resultat pluss én.</li>
+              <li>
+                Forbehold: foreslått, aldri låst fasit. Testen er like gyldig uansett hva
+                resultatet blir.
+              </li>
+            </ul>
+          </details>
+        )}
+      </div>
 
-        <SectionHead>Protokoll</SectionHead>
-        <div style={{ overflow: "hidden", borderRadius: 16, border: `1px solid ${T.border}`, background: T.panel }}>
-          <BriefRad label="Forsøk" verdi={`${antallForsok}`} />
-          <BriefRad label="Per forsøk" verdi={felterTekst} />
-          {protokollEnhet && <BriefRad label="Enhet" verdi={protokollEnhet} />}
-          <BriefRad label="Scoring" verdi={scoringRule} last />
+      {/* ── Kontekst — funksjon beholdt, sammenslått på flata ── */}
+      <details style={{ marginTop: 12, border: `1px solid ${T.border}`, borderRadius: T.rCard, background: T.panel }}>
+        <summary
+          className="v2-focus"
+          style={{
+            display: "flex",
+            alignItems: "center",
+            minHeight: 44,
+            padding: "0 16px",
+            cursor: "pointer",
+            listStyle: "none",
+            fontSize: 12.5,
+            fontWeight: 500,
+            color: T.mut,
+          }}
+        >
+          Kontekst · valgfritt
+        </summary>
+        <div style={{ padding: "0 16px 16px" }}>
+          <KontekstForm kontekst={kontekst} onSett={(k, v) => setKontekst((prev) => ({ ...prev, [k]: v }))} />
+        </div>
+      </details>
+
+      {/* ── Scorekortet — løpende score + én rad per forsøk ── */}
+      <div style={{ background: T.panel, border: `1px solid ${T.border}`, borderRadius: T.rCard, padding: 16, marginTop: 12 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+          <span style={lblStil}>Scorekort</span>
+          <span style={{ flex: 1 }} />
+          <button
+            type="button"
+            onClick={angreSiste}
+            disabled={historikk.length === 0}
+            className="v2-press v2-focus"
+            style={{
+              appearance: "none",
+              display: "inline-flex",
+              alignItems: "center",
+              gap: 6,
+              minHeight: 32,
+              padding: "0 10px",
+              background: "transparent",
+              border: `1px solid ${T.borderS}`,
+              borderRadius: 9999,
+              cursor: historikk.length === 0 ? "default" : "pointer",
+              fontFamily: T.mono,
+              fontSize: 10.5,
+              color: T.mut,
+              opacity: historikk.length === 0 ? 0.4 : 1,
+            }}
+          >
+            <Icon name="rotate-cw" size={12} />
+            Angre siste
+          </button>
         </div>
 
-        {harMaal && (
-          <p style={{ margin: "10px 0 0", fontFamily: T.ui, fontSize: 11.5, lineHeight: 1.6, color: T.mut }}>
-            Målverdier i protokollen er foreslått fra IUP — ikke låst fasit.
-          </p>
+        {/* Løpende score — regnet fra radene under */}
+        <div
+          role="status"
+          style={{ display: "flex", alignItems: "baseline", gap: 12, margin: "8px 0 12px" }}
+        >
+          <span
+            style={{
+              fontFamily: T.mono,
+              fontVariantNumeric: "tabular-nums",
+              fontSize: 40,
+              fontWeight: 500,
+              lineHeight: 1,
+              color: T.fg,
+            }}
+          >
+            {erTelling ? antOk : antallFort === 0 ? "–" : fmt.format(motor.score)}
+          </span>
+          <span style={{ fontFamily: T.mono, fontSize: 13, color: T.mut }}>
+            {erTelling
+              ? `OK · ${antallFort} av ${antallForsok} registrert`
+              : `${scoreEnhet ?? "score"} · ${antallFort} av ${antallForsok} registrert`}
+          </span>
+        </div>
+
+        {fellesLabel && spec.forsok.some((f) => f.felter.length > 1) && (
+          <span style={{ ...lblStil, display: "block", marginBottom: 6 }}>{fellesLabel}</span>
         )}
 
-        <KontekstForm kontekst={kontekst} onSett={(k, v) => setKontekst((prev) => ({ ...prev, [k]: v }))} />
-
-        <div style={{ marginTop: 22 }}>
-          <Knapp full icon="play" onClick={() => setSteg("scorekort")} style={{ minHeight: 56, borderRadius: 12, background: T.handling, color: T.onHandling }} data-paper-en-ting="true">
-            Start test
-          </Knapp>
-        </div>
-        <div style={{ marginTop: 10, display: "flex", justifyContent: "center" }}>
-          <Link href={`/portal/tren/tester/${testId}`} style={{ textDecoration: "none" }}>
-            <CTAPill ghost icon="arrow-left">Tilbake til testen</CTAPill>
-          </Link>
-        </div>
-
-        <FysPlassholderNote />
-      </div>
-    );
-  }
-
-  if (steg === "scorekort") {
-    return (
-      <div data-paper-portal-test-gjennomfor data-paper-wave-d="test-gjennomfor" data-od-id="playerhq-test-gjennomfor" style={{ maxWidth: 720, margin: "0 auto", width: "100%", padding: "0 16px 32px", color: T.fg }}>
-        <StatusStrip
-          steg="scorekort"
-          progressPct={antallForsok === 0 ? 0 : (antallFort / antallForsok) * 100}
-          live
-        />
-
-        {/* Accent-kort — løpende score (jf. runde-ny) */}
-        <div style={{ marginTop: 18 }}>
-          <ScoreKort
-            score={score}
-            scoreEnhet={scoreEnhet}
-            subline={`Forsøk ${antallFort} av ${antallForsok}`}
-          />
-        </div>
-
-        <SectionHead>{fellesLabel ?? "Scorekort"}</SectionHead>
-        <div style={{ display: "grid", gap: 8, gridTemplateColumns: enkel ? "repeat(auto-fill, minmax(150px, 1fr))" : "repeat(auto-fill, minmax(260px, 1fr))" }}>
-          {spec.forsok.map((f) => (
-            <ForsokKort
-              key={f.nr}
-              forsok={f}
-              visLabel={fellesLabel === null}
-              verdier={verdier[f.nr]}
-              onSett={(key, verdi, medHistorikk) => settVerdi(f.nr, key, verdi, medHistorikk)}
-              onSnapshot={pushHistorikk}
-            />
-          ))}
-        </div>
-
-        <div style={{ marginTop: 16, display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
-          <Knapp ghost icon="rotate-cw" onClick={angreSiste} disabled={historikk.length === 0} style={{ minHeight: 44 }}>
-            Angre siste
-          </Knapp>
-          <Knapp ghost icon="x" onClick={avbryt} style={{ minHeight: 44 }}>
-            Avbryt
-          </Knapp>
-        </div>
-
-        <div style={{ marginTop: 16 }}>
-          <Knapp full icon="arrow-right" onClick={() => setSteg("oppsummering")} disabled={antallFort === 0} style={{ minHeight: 48 }}>
-            Til oppsummering
-          </Knapp>
-        </div>
-
-        <FysPlassholderNote />
-      </div>
-    );
-  }
-
-  // ── Steg C — Oppsummering ──────────────────────────────────────
-  return (
-    <div>
-      <StatusStrip steg="oppsummering" progressPct={100} live={false} />
-
-      <div style={{ marginTop: 18 }}>
-        <ScoreKort
-          score={score}
-          scoreEnhet={scoreEnhet}
-          subline={`${antallFort} av ${antallForsok} slag ført`}
-        />
-      </div>
-
-      <SectionHead>Per forsøk</SectionHead>
-      <div style={{ overflow: "hidden", borderRadius: 16, border: `1px solid ${T.border}`, background: T.panel }}>
+        {/* Én rad per forsøk — rendret fra ScorekortSpec */}
         {spec.forsok.map((f, i) => (
-          <div
+          <ForsokRad
             key={f.nr}
-            style={{ display: "flex", alignItems: "center", gap: 12, padding: "11px 16px", borderBottom: i === spec.forsok.length - 1 ? "none" : `1px solid ${T.border}` }}
-          >
-            <span style={{ width: 28, flex: "none", fontFamily: T.mono, fontSize: 10, fontWeight: 700, fontVariantNumeric: "tabular-nums", color: T.mut }}>
-              {String(f.nr).padStart(2, "0")}
-            </span>
-            <span style={{ minWidth: 0, flex: 1, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", fontFamily: T.ui, fontSize: 13, fontWeight: 600, color: T.fg }}>
-              {f.label}
-            </span>
-            <span style={{ flex: "none", fontFamily: T.mono, fontSize: 12, fontVariantNumeric: "tabular-nums", color: T.fg2 }}>
-              {forsokSammendrag(f, verdier[f.nr])}
-            </span>
-          </div>
+            forsok={f}
+            last={i === spec.forsok.length - 1}
+            verdier={verdier[f.nr]}
+            onSyklus={(key) => syklus(f.nr, key)}
+            onSett={(key, verdi, medHistorikk) => settVerdi(f.nr, key, verdi, medHistorikk)}
+            onSnapshot={pushHistorikk}
+          />
         ))}
       </div>
 
-      <div style={{ marginTop: 16 }}>
+      {/* Notat — funksjon beholdt */}
+      <div style={{ marginTop: 12 }}>
         <TekstOmraade
           label="Notat · valgfritt"
           value={notat}
@@ -380,111 +445,294 @@ export function ScorekortKlient({
         />
       </div>
 
-      {!alleFort && (
-        <p style={{ margin: "12px 0 0", fontFamily: T.ui, fontSize: 11.5, lineHeight: 1.6, color: T.warn }}>
-          Før resultat på alle {antallForsok} slag før du lagrer ({antallFort} ført).
-        </p>
-      )}
+      <p style={{ margin: "12px 0 0", fontFamily: T.bodyFont, fontSize: 12.5, color: T.mut, lineHeight: 1.55 }}>
+        Du kan lagre når som helst — også en avbrutt test. Det som er registrert,
+        telles og merkes med antall forsøk.
+      </p>
 
       {feil && (
         <div
           role="alert"
-          style={{ marginTop: 16, borderRadius: 11, border: `1px solid color-mix(in srgb, ${T.down} 35%, transparent)`, background: `color-mix(in srgb, ${T.down} 10%, transparent)`, padding: "10px 14px", fontFamily: T.ui, fontSize: 13, color: T.down }}
+          style={{
+            marginTop: 12,
+            borderRadius: 11,
+            border: `1px solid color-mix(in srgb, ${T.down} 35%, transparent)`,
+            background: `color-mix(in srgb, ${T.down} 10%, transparent)`,
+            padding: "10px 14px",
+            fontFamily: T.ui,
+            fontSize: 13,
+            color: T.down,
+          }}
         >
           {feil}
         </div>
       )}
 
-      <div style={{ marginTop: 22 }}>
-        <Knapp full icon="check" onClick={lagre} disabled={pending || !alleFort} style={{ minHeight: 56, borderRadius: 12, background: T.handling, color: T.onHandling }} data-paper-en-ting="true">
-          {pending ? "Lagrer…" : "Lagre resultat"}
-        </Knapp>
-      </div>
-      <div style={{ marginTop: 10, display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
-        <Knapp ghost icon="chevron-left" onClick={() => setSteg("scorekort")} disabled={pending} style={{ minHeight: 44 }}>
-          Tilbake
-        </Knapp>
-        <Knapp
-          ghost
-          onClick={avbryt}
-          disabled={pending}
-          style={{ minHeight: 44, color: T.down, borderColor: `color-mix(in srgb, ${T.down} 35%, transparent)` }}
+      <div style={{ marginTop: 8, display: "flex", justifyContent: "center" }}>
+        <Link
+          href={`/portal/tren/tester/${testId}`}
+          style={{
+            display: "inline-flex",
+            alignItems: "center",
+            gap: 6,
+            minHeight: 44,
+            padding: "0 12px",
+            fontFamily: T.ui,
+            fontSize: 13,
+            color: T.mut,
+            textDecoration: "none",
+          }}
         >
-          Forkast
-        </Knapp>
+          <Icon name="x" size={14} />
+          Avbryt uten å lagre
+        </Link>
       </div>
 
       <FysPlassholderNote />
+
+      {/* ── Fast bunn-dokk — skjermens ene clay-handling ── */}
+      <div
+        style={{
+          position: "sticky",
+          bottom: 0,
+          marginTop: 12,
+          padding: "12px 0 calc(12px + env(safe-area-inset-bottom))",
+          background: `linear-gradient(to top, ${T.bg} 70%, transparent)`,
+        }}
+      >
+        <Knapp
+          enTing
+          full
+          icon="check"
+          onClick={lagre}
+          disabled={pending}
+          style={{ minHeight: 56, borderRadius: 12 }}
+          data-paper-en-ting="true"
+        >
+          {pending ? "Lagrer…" : "Lagre testen"}
+        </Knapp>
+      </div>
+
+      {toast && (
+        <div
+          role="status"
+          style={{
+            position: "fixed",
+            left: "50%",
+            bottom: 96,
+            transform: "translateX(-50%)",
+            zIndex: 100,
+            background: T.fg,
+            color: T.bg,
+            padding: "12px 16px",
+            borderRadius: 12,
+            fontSize: 13,
+            fontFamily: T.ui,
+            maxWidth: "min(90vw, 420px)",
+          }}
+        >
+          {toast}
+        </div>
+      )}
+
+      {/* Klikkbar summary-markør skjules (fasit .why summary) */}
+      <style>{`details > summary::-webkit-details-marker { display: none; }`}</style>
     </div>
   );
 }
 
 /* ── Sub-komponenter ──────────────────────────────────────────── */
 
+function ProtokollRad({ k, v, last }: { k: string; v: string; last?: boolean }) {
+  return (
+    <div
+      style={{
+        display: "flex",
+        alignItems: "baseline",
+        gap: 8,
+        padding: "8px 0",
+        borderBottom: last ? "none" : `1px solid ${T.border}`,
+        fontSize: 13,
+        minWidth: 0,
+      }}
+    >
+      <span style={{ color: T.fg, flex: "none" }}>{k}</span>
+      <span
+        style={{
+          marginLeft: "auto",
+          fontFamily: T.mono,
+          textAlign: "right",
+          color: T.fg2,
+          fontVariantNumeric: "tabular-nums",
+          minWidth: 0,
+        }}
+      >
+        {v}
+      </span>
+    </div>
+  );
+}
+
 /** Bunn-note fra Live Test-fasit — gjør FYS-plassholder-status eksplisitt. */
 function FysPlassholderNote() {
   return (
-    <p style={{ margin: "26px 0 0", borderTop: `1px solid ${T.border}`, paddingTop: 16, textAlign: "center", fontFamily: T.mono, fontSize: 9, fontWeight: 600, letterSpacing: "0.08em", textTransform: "uppercase", color: T.mut }}>
+    <p style={{ margin: "20px 0 0", borderTop: `1px solid ${T.border}`, paddingTop: 14, textAlign: "center", fontFamily: T.mono, fontSize: 9, fontWeight: 600, letterSpacing: "0.08em", textTransform: "uppercase", color: T.mut }}>
       FYS-resultater er plassholderverdier · formelen er ikke låst
     </p>
   );
 }
 
 /**
- * Terminal status-stripe (Live Test-idiom). Venstre: live-puls + stegstatus.
- * Høyre: «Steg N av 3». Under: framdriftslinje.
+ * Én scorekortrad. Med nøyaktig ett checkbox-felt: fasitens store
+ * syklus-knapp (uregistrert → OK → bom). Andre felt-varianter beholder
+ * feltinput inline i raden.
  */
-function StatusStrip({
-  steg,
-  progressPct,
-  live,
+function ForsokRad({
+  forsok,
+  last,
+  verdier,
+  onSyklus,
+  onSett,
+  onSnapshot,
 }: {
-  steg: Steg;
-  progressPct: number;
-  live: boolean;
+  forsok: ScorekortForsok;
+  last: boolean;
+  verdier: Record<string, string | boolean> | undefined;
+  onSyklus: (key: string) => void;
+  onSett: (key: string, verdi: string | boolean, medHistorikk: boolean) => void;
+  onSnapshot: () => void;
 }) {
-  const stegNr = STEG_REKKE.indexOf(steg) + 1;
-  return (
-    <div style={{ marginTop: 16, borderRadius: 16, border: `1px solid ${T.border}`, background: T.panel, padding: 14 }}>
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12 }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-          <span
-            aria-hidden
-            style={{ width: 8, height: 8, flex: "none", borderRadius: 9999, background: live ? T.handling : T.mut, boxShadow: live ? `0 0 0 3px color-mix(in srgb, ${T.handling} 30%, transparent)` : "none" }}
-          />
-          <span style={{ fontFamily: T.mono, fontSize: 10, fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", color: live ? T.handling : T.mut }}>
-            {STEG_LABEL[steg]}
-          </span>
-        </div>
-        <span style={{ fontFamily: T.mono, fontSize: 11, fontWeight: 700, fontVariantNumeric: "tabular-nums", color: T.mut }}>
-          Steg {stegNr} av {STEG_REKKE.length}
+  const enkelCheckbox = forsok.felter.length === 1 && forsok.felter[0].type === "checkbox";
+
+  if (enkelCheckbox) {
+    const key = forsok.felter[0].key;
+    const v = verdier?.[key];
+    const erOk = v === true;
+    const erBom = v === false;
+    return (
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          gap: 12,
+          padding: "4px 0",
+          borderBottom: last ? "none" : `1px solid ${T.border}`,
+          minWidth: 0,
+        }}
+      >
+        <span
+          style={{
+            flex: "none",
+            width: 24,
+            fontFamily: T.mono,
+            fontSize: 11,
+            color: T.mut,
+            textAlign: "right",
+            fontVariantNumeric: "tabular-nums",
+          }}
+        >
+          {forsok.nr}
         </span>
+        <span
+          style={{
+            minWidth: 0,
+            flex: 1,
+            fontSize: 13,
+            color: T.fg,
+            whiteSpace: "nowrap",
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+          }}
+        >
+          {forsok.label}
+          {forsok.target && (
+            <span style={{ fontFamily: T.mono, fontSize: 9, color: T.mut, marginLeft: 6 }}>
+              mål {forsok.target}
+            </span>
+          )}
+        </span>
+        <button
+          type="button"
+          onClick={() => onSyklus(key)}
+          aria-pressed={erOk}
+          aria-label={`${forsok.label}: ${
+            erOk
+              ? "OK — trykk for å endre"
+              : erBom
+                ? "ikke OK — trykk for å endre"
+                : "ikke registrert — trykk for OK"
+          }`}
+          className="v2-press v2-focus"
+          style={{
+            flex: "none",
+            minWidth: 64,
+            minHeight: 44,
+            display: "inline-flex",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: 4,
+            border: `1px solid ${erOk ? T.up : T.borderS}`,
+            borderRadius: 9999,
+            background: erOk ? T.panel2 : "transparent",
+            cursor: "pointer",
+            fontFamily: T.mono,
+            fontSize: 11,
+            color: erOk ? T.up : erBom ? T.down : T.mut,
+          }}
+        >
+          {erOk && <Icon name="check" size={14} style={{ color: T.up }} />}
+          {erOk ? "OK" : erBom ? "bom" : "—"}
+        </button>
       </div>
-      <div style={{ marginTop: 12, height: 3, overflow: "hidden", borderRadius: 9999, background: T.track }}>
-        <div
-          style={{ height: "100%", borderRadius: 9999, background: T.handling, width: `${Math.max(0, Math.min(100, progressPct))}%`, transition: `width 500ms ${T.ease}` }}
-        />
-      </div>
-    </div>
-  );
-}
+    );
+  }
 
-function SectionHead({ children }: { children: ReactNode }) {
+  // Felter som ikke passer syklusen — inline input i raden, ingen funksjon fjernet.
   return (
-    <div style={{ margin: "20px 0 10px", display: "flex", alignItems: "baseline", gap: 10 }}>
-      <Caps size={9}>{children}</Caps>
-      <span aria-hidden style={{ height: 1, flex: 1, background: T.border }} />
-    </div>
-  );
-}
-
-function BriefRad({ label, verdi, last }: { label: string; verdi: string; last?: boolean }) {
-  return (
-    <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: 12, borderBottom: last ? "none" : `1px solid ${T.border}`, padding: "11px 16px" }}>
-      <span style={{ ...lblStil, flex: "none" }}>{label}</span>
-      <span style={{ minWidth: 0, textAlign: "right", fontFamily: T.ui, fontSize: 13, fontWeight: 600, lineHeight: 1.4, color: T.fg }}>
-        {verdi}
+    <div
+      style={{
+        display: "flex",
+        alignItems: "flex-start",
+        gap: 12,
+        padding: "10px 0",
+        borderBottom: last ? "none" : `1px solid ${T.border}`,
+        minWidth: 0,
+      }}
+    >
+      <span
+        style={{
+          flex: "none",
+          width: 24,
+          marginTop: 4,
+          fontFamily: T.mono,
+          fontSize: 11,
+          color: T.mut,
+          textAlign: "right",
+          fontVariantNumeric: "tabular-nums",
+        }}
+      >
+        {forsok.nr}
       </span>
+      <div style={{ minWidth: 0, flex: 1, display: "flex", flexDirection: "column", gap: 8 }}>
+        <span style={{ fontSize: 13, color: T.fg }}>
+          {forsok.label}
+          {forsok.target && (
+            <span style={{ fontFamily: T.mono, fontSize: 9, color: T.mut, marginLeft: 6 }}>
+              mål {forsok.target}
+            </span>
+          )}
+        </span>
+        {forsok.felter.map((felt) => (
+          <FeltInput
+            key={felt.key}
+            felt={felt}
+            forsokNr={forsok.nr}
+            verdi={verdier?.[felt.key]}
+            onSett={(verdi, medHistorikk) => onSett(felt.key, verdi, medHistorikk)}
+            onSnapshot={onSnapshot}
+          />
+        ))}
+      </div>
     </div>
   );
 }
@@ -499,72 +747,69 @@ function KontekstForm({
   onSett: <K extends keyof Kontekst>(key: K, verdi: Kontekst[K]) => void;
 }) {
   return (
-    <>
-      <SectionHead>Kontekst</SectionHead>
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: 10 }}>
-        <Felt label="Dato">
-          <input
-            type="date"
-            value={kontekst.dato}
-            onChange={(e) => onSett("dato", e.target.value)}
-            className="v2-focus"
-            style={inputStil}
-          />
-        </Felt>
-        <Felt label="Lokasjon">
-          <input
-            type="text"
-            value={kontekst.lokasjon}
-            onChange={(e) => onSett("lokasjon", e.target.value)}
-            placeholder="Bane / anlegg"
-            className="v2-focus"
-            style={inputStil}
-          />
-        </Felt>
-        <Felt label="Vanskelighetsgrad">
-          <PillValg
-            verdier={[
-              ["lett", "Lett"],
-              ["middels", "Middels"],
-              ["vanskelig", "Vanskelig"],
-            ]}
-            valgt={kontekst.vanskelighet}
-            onVelg={(v) => onSett("vanskelighet", kontekst.vanskelighet === v ? "" : (v as Vanskelighet))}
-          />
-        </Felt>
-        <Felt label="Vær">
-          <input
-            type="text"
-            value={kontekst.vaer}
-            onChange={(e) => onSett("vaer", e.target.value)}
-            placeholder="Vind, sol, regn…"
-            className="v2-focus"
-            style={inputStil}
-          />
-        </Felt>
-        <Felt label="Fart på greener">
-          <input
-            type="text"
-            value={kontekst.greenfart}
-            onChange={(e) => onSett("greenfart", e.target.value)}
-            placeholder="Stimp / rask–treig"
-            className="v2-focus"
-            style={inputStil}
-          />
-        </Felt>
-        <Felt label="Green-fasthet">
-          <PillValg
-            verdier={[
-              ["myk", "Myk"],
-              ["medium", "Medium"],
-              ["hard", "Hard"],
-            ]}
-            valgt={kontekst.greenfasthet}
-            onVelg={(v) => onSett("greenfasthet", kontekst.greenfasthet === v ? "" : (v as Fasthet))}
-          />
-        </Felt>
-      </div>
-    </>
+    <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: 10 }}>
+      <Felt label="Dato">
+        <input
+          type="date"
+          value={kontekst.dato}
+          onChange={(e) => onSett("dato", e.target.value)}
+          className="v2-focus"
+          style={inputStil}
+        />
+      </Felt>
+      <Felt label="Lokasjon">
+        <input
+          type="text"
+          value={kontekst.lokasjon}
+          onChange={(e) => onSett("lokasjon", e.target.value)}
+          placeholder="Bane / anlegg"
+          className="v2-focus"
+          style={inputStil}
+        />
+      </Felt>
+      <Felt label="Vanskelighetsgrad">
+        <PillValg
+          verdier={[
+            ["lett", "Lett"],
+            ["middels", "Middels"],
+            ["vanskelig", "Vanskelig"],
+          ]}
+          valgt={kontekst.vanskelighet}
+          onVelg={(v) => onSett("vanskelighet", kontekst.vanskelighet === v ? "" : (v as Vanskelighet))}
+        />
+      </Felt>
+      <Felt label="Vær">
+        <input
+          type="text"
+          value={kontekst.vaer}
+          onChange={(e) => onSett("vaer", e.target.value)}
+          placeholder="Vind, sol, regn…"
+          className="v2-focus"
+          style={inputStil}
+        />
+      </Felt>
+      <Felt label="Fart på greener">
+        <input
+          type="text"
+          value={kontekst.greenfart}
+          onChange={(e) => onSett("greenfart", e.target.value)}
+          placeholder="Stimp / rask–treig"
+          className="v2-focus"
+          style={inputStil}
+        />
+      </Felt>
+      <Felt label="Green-fasthet">
+        <PillValg
+          verdier={[
+            ["myk", "Myk"],
+            ["medium", "Medium"],
+            ["hard", "Hard"],
+          ]}
+          valgt={kontekst.greenfasthet}
+          onVelg={(v) => onSett("greenfasthet", kontekst.greenfasthet === v ? "" : (v as Fasthet))}
+        />
+      </Felt>
+    </div>
   );
 }
 
@@ -610,83 +855,15 @@ function PillValg({
               fontWeight: 700,
               letterSpacing: "0.05em",
               textTransform: "uppercase",
-              background: on ? T.handling : T.panel2,
+              background: on ? T.cta : T.panel2,
               border: `1px solid ${on ? "transparent" : T.borderS}`,
-              color: on ? T.onLime : T.fg2,
+              color: on ? T.onCta : T.fg2,
             }}
           >
             {label}
           </button>
         );
       })}
-    </div>
-  );
-}
-
-function ScoreKort({
-  score,
-  scoreEnhet,
-  subline,
-}: {
-  score: number | null;
-  scoreEnhet: string | null;
-  subline: string;
-}) {
-  return (
-    <div style={{ display: "flex", alignItems: "center", gap: 14, borderRadius: 14, border: `1px solid ${T.border}`, borderLeft: `3px solid ${T.handling}`, background: T.panel, padding: "14px 16px" }}>
-      <span style={{ fontFamily: T.mono, fontSize: 30, fontWeight: 700, lineHeight: 1, letterSpacing: "-0.03em", fontVariantNumeric: "tabular-nums", color: T.fg }}>
-        {score === null ? "–" : fmt.format(score)}
-      </span>
-      <div style={{ minWidth: 0, flex: 1 }}>
-        <div style={{ whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", fontFamily: T.mono, fontSize: 15, fontWeight: 700, fontVariantNumeric: "tabular-nums", color: T.fg }}>
-          {scoreEnhet ?? "Score"}
-        </div>
-        <div style={{ marginTop: 2, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", fontFamily: T.mono, fontSize: 9, letterSpacing: "0.1em", textTransform: "uppercase", color: T.mut }}>
-          {subline}
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function ForsokKort({
-  forsok,
-  visLabel,
-  verdier,
-  onSett,
-  onSnapshot,
-}: {
-  forsok: ScorekortForsok;
-  visLabel: boolean;
-  verdier: Record<string, string | boolean> | undefined;
-  onSett: (key: string, verdi: string | boolean, medHistorikk: boolean) => void;
-  onSnapshot: () => void;
-}) {
-  return (
-    <div style={{ display: "flex", flexDirection: "column", gap: 8, borderRadius: 14, border: `1px solid ${T.border}`, background: T.panel, padding: 12 }}>
-      <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: 8 }}>
-        <span style={lblStil}>Forsøk {forsok.nr}</span>
-        {forsok.target && (
-          <span style={{ whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", fontFamily: T.mono, fontSize: 9, fontVariantNumeric: "tabular-nums", color: T.mut }}>
-            mål {forsok.target}
-          </span>
-        )}
-      </div>
-      {visLabel && (
-        <span style={{ fontFamily: T.ui, fontSize: 12.5, fontWeight: 600, lineHeight: 1.4, color: T.fg }}>
-          {forsok.label}
-        </span>
-      )}
-      {forsok.felter.map((felt) => (
-        <FeltInput
-          key={felt.key}
-          felt={felt}
-          forsokNr={forsok.nr}
-          verdi={verdier?.[felt.key]}
-          onSett={(verdi, medHistorikk) => onSett(felt.key, verdi, medHistorikk)}
-          onSnapshot={onSnapshot}
-        />
-      ))}
     </div>
   );
 }
@@ -719,9 +896,9 @@ function FeltInput({
       fontWeight: 700,
       letterSpacing: "0.06em",
       textTransform: "uppercase",
-      background: on ? T.handling : T.panel2,
+      background: on ? T.cta : T.panel2,
       border: `1px solid ${on ? "transparent" : T.borderS}`,
-      color: on ? T.onLime : T.fg2,
+      color: on ? T.onCta : T.fg2,
     });
     return (
       <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
@@ -839,25 +1016,4 @@ function FeltInput({
       </label>
     </div>
   );
-}
-
-/* ── Oppsummerings-hjelper ────────────────────────────────────── */
-
-function forsokSammendrag(
-  forsok: ScorekortForsok,
-  verdier: Record<string, string | boolean> | undefined,
-): string {
-  const deler = forsok.felter.map((felt) => {
-    const v = verdier?.[felt.key];
-    if (felt.type === "checkbox") {
-      if (v === true) return "Treff";
-      if (v === false) return "Bom";
-      return "–";
-    }
-    const tall = typeof v === "string" ? parseNorsk(v) : null;
-    if (tall === null) return "–";
-    const enhet = felt.unit ?? (felt.type === "meter" ? "m" : null);
-    return enhet ? `${fmt.format(tall)} ${enhet}` : fmt.format(tall);
-  });
-  return deler.join(" · ");
 }

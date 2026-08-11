@@ -16,6 +16,7 @@ import { notFound } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { testTilgangWhere } from "@/lib/portal-tester/test-tilgang";
+import { FEATURES } from "@/lib/features";
 import { parseProtocol, type ScorekortForsok } from "@/lib/portal-tester/protocol";
 import { parseForScoring, lavereErBedre } from "@/lib/portal-tester/test-scoring";
 import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
@@ -183,16 +184,48 @@ export default async function TestDetaljSpillerPage({
         data-od-id="playerhq-test-detalj"
         style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}
       >
-        {/* Kvittering etter gjennomføring — funksjonell tilstand, beholdt */}
+        {/* Kvittering etter gjennomføring — fasit playerhq-test-gjennomfor.html
+            (serveren redirecter hit ved lagring; kvitteringen bor derfor her).
+            TalentHQ-lenken vises kun når TalentHQ-flaten faktisk er skrudd på. */}
         {lagret && (
-          <Kort tint pad="14px 18px">
-            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
-              <StatusPill tone="up">Test fullført · resultat lagret</StatusPill>
-              <Link href="/portal/coach/melding" style={{ textDecoration: "none" }}>
+          <div
+            style={{
+              padding: "20px 16px",
+              background: T.panel,
+              border: `1px solid ${T.up}`,
+              borderRadius: T.rCard,
+            }}
+          >
+            <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
+              <StatusPill tone="up">Lagret</StatusPill>
+              <Link href="/portal/coach/melding" style={{ textDecoration: "none", marginLeft: "auto" }}>
                 <MikroMeta icon="send">Del med coach</MikroMeta>
               </Link>
             </div>
-          </Kort>
+            <p style={{ margin: 0, fontFamily: T.bodyFont, fontSize: 13.5, color: T.mut, lineHeight: 1.6 }}>
+              Resultatet er lagret og telles i historikken under. Coachen ser det i
+              stallen.
+            </p>
+            {FEATURES.TALENT && (
+              <Link
+                href="/portal/talent"
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: 6,
+                  marginTop: 12,
+                  minHeight: 44,
+                  fontFamily: T.ui,
+                  fontSize: 13,
+                  fontWeight: 500,
+                  color: T.fg,
+                  textDecoration: "none",
+                }}
+              >
+                Se utviklingen i TalentHQ →
+              </Link>
+            )}
+          </div>
         )}
 
         {/* Topp — fasit: testnavn / AKSE · måles i [enhet] */}
