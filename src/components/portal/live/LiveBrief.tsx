@@ -1,12 +1,12 @@
+import type { CSSProperties } from "react";
 import Link from "next/link";
-import { CheckCircle2, Lock, Play } from "lucide-react";
+import { CheckCircle2, Lock, Pencil } from "lucide-react";
 import type { LiveV2Session } from "./types";
 import { plannedVolumText } from "./types";
 import { LiveSessionShell } from "./LiveSessionShell";
 import { LiveLoopNav } from "./LiveLoopNav";
-import { HjelpTips } from "@/components/v2/hjelp";
+import { WhyDetails } from "./WhyDetails";
 import { L_FASER } from "@/lib/taxonomy";
-import { T } from "@/lib/v2/tokens";
 
 export type LiveBriefProps = {
   data: LiveV2Session;
@@ -22,207 +22,343 @@ const AXIS_LABEL: Record<string, string> = {
   TURN: "Turnering",
 };
 
-/** Rå CSS-var-navn (golfdata-laget, definert i globals.css) per pyramide-akse. */
-const AXIS_VAR: Record<string, string> = {
-  FYS: "--axis-fys",
-  TEK: "--axis-tek",
-  SLAG: "--axis-slag",
-  SPILL: "--axis-spill",
-  TURN: "--axis-turn",
-};
-
-// L_PHASE_LABEL het tidligere GRUNN/SPESIAL/TURNERING — det er faktisk den
-// separate LPhase-enumen (sesongperiode), ikke LFase (bevegelses-læringssteg)
-// som drill.lFase faktisk er typet som. Rettet til riktig L-Kropp/Arm/Kølle/
-// Ball/Auto-skala (samme kilde som drill-editor.tsx bruker).
 const L_PHASE_LABEL: Record<string, string> = Object.fromEntries(
   L_FASER.map((f) => [f.kode, f.label]),
 );
 
-function formatDateTimeEyebrow(iso: string): string {
-  const d = new Date(iso);
-  const date = d
-    .toLocaleDateString("nb-NO", { weekday: "short", day: "2-digit", month: "short" })
-    .toUpperCase()
-    .replace(/\.$/, "")
-    .replace(/\./g, "");
-  const time = d.toLocaleTimeString("nb-NO", { hour: "2-digit", minute: "2-digit" });
-  return `${date} · ${time}`;
+const OSLO_TID = new Intl.DateTimeFormat("nb-NO", {
+  hour: "2-digit",
+  minute: "2-digit",
+  timeZone: "Europe/Oslo",
+});
+const OSLO_DAG = new Intl.DateTimeFormat("nb-NO", {
+  weekday: "long",
+  day: "numeric",
+  month: "numeric",
+  timeZone: "Europe/Oslo",
+});
+const OSLO_DATO_KORT = new Intl.DateTimeFormat("nb-NO", {
+  day: "2-digit",
+  month: "2-digit",
+  timeZone: "Europe/Oslo",
+});
+
+function storForbokstav(s: string): string {
+  return s.charAt(0).toUpperCase() + s.slice(1);
 }
 
-export function LiveBrief({ data, canStart, blockReason }: LiveBriefProps) {
-  const totalPlannedReps = data.drills.reduce((sum, d) => sum + d.plannedReps, 0);
-  const totalDurationMin = data.drills.reduce((sum, d) => sum + d.durationMinutes, 0);
+/** «90 min» → «1 t 30 min» (fasitens tid()-helper). */
+function tidTekst(min: number): string {
+  const t = Math.floor(min / 60);
+  const r = min % 60;
+  if (t === 0) return `${r} min`;
+  return r === 0 ? `${t} t` : `${t} t ${r} min`;
+}
 
-  const startButton = canStart ? (
-    <Link
-      href={`/portal/live/${data.sessionId}/active`}
-      data-od-id="brief-start"
-      data-paper-en-ting="true"
-      className="flex w-full items-center justify-center gap-2 font-sans text-[14px] font-semibold active:scale-[0.98] v2-press"
-      style={{
-        background: T.handling,
-        color: T.onHandling,
-        textDecoration: "none",
-        minHeight: 56,
-        borderRadius: 12,
-        border: `1px solid ${T.handling}`,
-      }}
-    >
-      <Play className="h-[17px] w-[17px]" fill="currentColor" strokeWidth={0} aria-hidden />
-      Start økta
-    </Link>
-  ) : (
+/** «om 1 t 12 min» — kun når starten er frem i tid. */
+function omTekst(minTil: number): string | null {
+  if (minTil <= 0) return null;
+  return `om ${tidTekst(minTil)}`;
+}
+
+const KORT_STIL: CSSProperties = {
+  background: "var(--p-surface)",
+  border: "1px solid var(--p-border)",
+  borderRadius: 12,
+  padding: 16,
+  minWidth: 0,
+};
+
+const EYEBROW = "font-mono text-[10px] font-medium uppercase tracking-[0.09em]";
+
+function MetaRad({ navn, verdi }: { navn: string; verdi: string }) {
+  return (
     <div
-      className="flex w-full items-center justify-center gap-2 font-sans text-[14px] font-semibold"
-      style={{ border: `1px solid ${T.border}`, background: T.panel2, color: T.mut, minHeight: 56, borderRadius: 12 }}
+      className="flex min-w-0 items-baseline gap-2 border-b py-2 text-[13px] last:border-b-0"
+      style={{ borderColor: "var(--p-border-soft, var(--p-border))" }}
     >
-      {blockReason === "completed" ? (
-        <>
-          <CheckCircle2 className="h-5 w-5" style={{ color: T.up }} strokeWidth={2} aria-hidden />
-          Økten er fullført
-        </>
-      ) : (
-        <>
-          <Lock className="h-5 w-5" strokeWidth={2} aria-hidden />
-          Live krever PRO
-        </>
-      )}
+      <span style={{ color: "var(--p-fg)" }}>{navn}</span>
+      <span className="ml-auto min-w-0 text-right font-mono" style={{ color: "var(--p-fg)" }}>
+        {verdi}
+      </span>
     </div>
   );
+}
+
+/**
+ * FØR-skjermen i live-sløyfa — Paper-fasit playerhq-live-brief.html (PP-3).
+ * Nowblock «Én ting nå» → metadata → målsetning m/why → drills → eierskap.
+ */
+export function LiveBrief({ data, canStart, blockReason }: LiveBriefProps) {
+  const start = new Date(data.scheduledAtISO);
+  const slutt = new Date(data.endTimeISO);
+  const startKl = OSLO_TID.format(start);
+  const sluttKl = OSLO_TID.format(slutt);
+  const dagNavn = storForbokstav(OSLO_DAG.format(start));
+
+  const minTil = Math.round((start.getTime() - Date.now()) / 60000);
+  const om = omTekst(minTil);
+
+  // Varighet: planlagt vindu når det finnes, ellers summen av drilltidene.
+  const vindusMin = Math.max(0, Math.round((slutt.getTime() - start.getTime()) / 60000));
+  const drillSumMin = data.drills.reduce((sum, d) => sum + d.durationMinutes, 0);
+  const varighetMin = vindusMin > 0 ? vindusMin : drillSumMin;
+  const varighetErRegnet = vindusMin === 0 && drillSumMin > 0;
+
+  const publisertAv =
+    data.coachName && data.publishedAtISO
+      ? `${data.coachName} · ${OSLO_DATO_KORT.format(new Date(data.publishedAtISO))}`
+      : data.coachName;
+
+  const metaRader: Array<[string, string]> = [["Når", `${dagNavn} ${startKl}–${sluttKl}`]];
+  if (data.location) metaRader.push(["Sted", data.location]);
+  if (varighetMin > 0) metaRader.push(["Varighet", tidTekst(varighetMin)]);
+  metaRader.push(["Pyramide", AXIS_LABEL[data.pyramide] ?? data.pyramide]);
+  if (publisertAv) metaRader.push(["Publisert av", publisertAv]);
 
   return (
-    <div data-paper-slug="playerhq-live-brief" style={{display:"contents"}}>
+    <div data-paper-slug="playerhq-live-brief" style={{ display: "contents" }}>
       <LiveSessionShell
-      variant="paper"
-      odId="playerhq-live-brief"
-      title="Før økta"
-      subtitle={formatDateTimeEyebrow(data.scheduledAtISO)}
-      backHref="/portal/planlegge"
-      closeHref="/portal/planlegge"
-      footer={startButton}
-    >
-      <div data-paper-portal-live-brief className="flex flex-col gap-0 px-5 pt-2 pb-4" style={{ maxWidth: 720, margin: "0 auto", width: "100%" }}>
-        <LiveLoopNav aktiv="for" sessionId={data.sessionId} />
-        {/* Eyebrow */}
-        <span className="font-mono text-[9.5px] font-bold uppercase tracking-[0.14em]" style={{ color: T.handling }}>
-          Brief · {formatDateTimeEyebrow(data.scheduledAtISO)}
-        </span>
+        variant="paper"
+        odId="playerhq-live-brief"
+        title="Før økta"
+        subtitle={`${dagNavn} · ${startKl}`}
+        backHref="/portal/planlegge"
+        closeHref="/portal/planlegge"
+      >
+        <div
+          className="flex min-w-0 flex-col px-4 pb-16 pt-2"
+          style={{ maxWidth: 720, margin: "0 auto", width: "100%" }}
+        >
+          <LiveLoopNav aktiv="for" sessionId={data.sessionId} />
 
-        {/* Title + akse-chip */}
-        <div className="mt-3 flex items-start justify-between gap-3">
-          <h1 className="font-display text-[18px] font-semibold leading-[1.15] -tracking-[0.02em]" style={{ color: T.fg }}>
-            {data.title}{" "}
-            {data.studentName && (
-              <em className="font-medium not-italic" style={{ color: T.handling }}>
-                med {data.studentName.split(" ")[0]}
-              </em>
-            )}
-          </h1>
-          <span
-            className="mt-1 flex flex-shrink-0 items-center gap-2 whitespace-nowrap rounded-full px-3 py-1.5"
+          {/* «Én ting nå»-blokk — eneste sted clay-soft brukes som flate */}
+          <div
+            className="mt-4"
             style={{
-              background: `color-mix(in srgb, var(${AXIS_VAR[data.pyramide]}) 16%, transparent)`,
-              border: `1px solid color-mix(in srgb, var(${AXIS_VAR[data.pyramide]}) 40%, transparent)`,
+              background: "var(--p-accent-soft)",
+              border: "1px solid var(--p-border)",
+              borderRadius: 12,
+              padding: 16,
             }}
           >
-            <span className="font-mono text-[10.5px] font-bold" style={{ color: `var(${AXIS_VAR[data.pyramide]})` }}>
-              {AXIS_LABEL[data.pyramide] ?? data.pyramide}
+            <span className={EYEBROW} style={{ color: "var(--p-muted)" }}>
+              Én ting nå
             </span>
-            <HjelpTips k="pyramideAkse" size={12} align="right" />
-          </span>
-        </div>
-
-        {/* Focus/meta */}
-        {data.focus && (
-          <p className="mt-2 text-[13.5px]" style={{ color: T.mut, fontFamily: T.bodyFont }}>{data.focus}</p>
-        )}
-
-        {/* KPI-chips */}
-        <div className="mt-5 flex gap-[9px]">
-          <div className="flex-1 rounded-xl p-3" style={{ border: `1px solid ${T.border}`, background: T.panel }}>
-            <div className="font-mono text-[8px] uppercase tracking-[0.10em]" style={{ color: T.mut }}>
-              Varighet
-            </div>
-            <div className="mt-[5px] font-mono text-[19px] font-semibold" style={{ color: T.fg }}>
-              {totalDurationMin > 0 ? `${totalDurationMin} min` : "—"}
-            </div>
-          </div>
-          <div className="flex-1 rounded-xl p-3" style={{ border: `1px solid ${T.border}`, background: T.panel }}>
-            <div className="font-mono text-[8px] uppercase tracking-[0.10em]" style={{ color: T.mut }}>
-              Drills
-            </div>
-            <div className="mt-[5px] font-mono text-[19px] font-semibold" style={{ color: T.fg }}>
-              {data.drills.length}
-            </div>
-          </div>
-          <div className="flex-1 rounded-xl p-3" style={{ border: `1px solid ${T.border}`, background: T.panel }}>
-            <div className="font-mono text-[8px] uppercase tracking-[0.10em]" style={{ color: T.mut }}>
-              Reps
-            </div>
-            <div className="mt-[5px] font-mono text-[19px] font-semibold" style={{ color: T.handling }}>
-              {totalPlannedReps > 0 ? `${totalPlannedReps}` : "—"}
-            </div>
-          </div>
-        </div>
-
-        {/* Coach comment */}
-        {data.coachComment && (
-          <div className="mt-5 rounded-xl px-4 py-3" style={{ border: `1px solid ${T.border}`, background: T.handlingSoft }}>
-            <div className="mb-2 font-mono text-[8px] font-bold uppercase tracking-[0.10em]" style={{ color: T.handling }}>
-              Coach
-            </div>
-            <p className="text-[13.5px] leading-relaxed" style={{ color: T.fg, fontFamily: T.bodyFont }}>
-              {data.coachComment}
+            <h2
+              className="my-2 font-sans text-[15px] font-semibold"
+              style={{ color: "var(--p-fg)" }}
+            >
+              Økta starter kl. <span className="font-mono">{startKl}</span>
+              {om && (
+                <>
+                  {" · "}
+                  <span className="font-mono">{om}</span>
+                </>
+              )}
+            </h2>
+            <p
+              className="mb-4 mt-0 font-serif text-[14px]"
+              style={{ color: "var(--p-muted)", maxWidth: "52ch" }}
+            >
+              {data.location
+                ? `${data.location} er satt opp ${startKl}–${sluttKl}. Du trenger ikke gjøre noe før du står der.`
+                : `Økta er satt opp ${startKl}–${sluttKl}. Du trenger ikke gjøre noe før du er på plass.`}
             </p>
-          </div>
-        )}
-
-        {/* Program */}
-        <div className="mt-6">
-          <span className="inline-flex items-center gap-1.5 font-mono text-[9.5px] font-bold uppercase tracking-[0.10em]" style={{ color: T.mut }}>
-            Program
-            {data.drills.some((d) => d.lFase) && <HjelpTips k="lFase" size={11} />}
-          </span>
-
-          {data.drills.length === 0 ? (
-            <div className="mt-3 rounded-lg px-6 py-8 text-center text-sm" style={{ border: `1px dashed ${T.border}`, background: T.panel2, color: T.mut }}>
-              Ingen drills lagt til.
-            </div>
-          ) : (
-            <ol className="mt-[10px] flex flex-col gap-2">
-              {data.drills.map((drill) => (
-                <li
-                  key={drill.id}
-                  className="flex items-center gap-3 rounded-xl px-[14px] py-3" style={{ border: `1px solid ${T.border}`, background: T.panel }}
+            <div className="flex flex-wrap gap-2">
+              {canStart ? (
+                <Link
+                  href={`/portal/live/${data.sessionId}/active`}
+                  data-od-id="brief-start-okta"
+                  data-paper-en-ting="true"
+                  className="flex flex-1 items-center justify-center font-sans text-[14px] font-semibold no-underline active:translate-y-px"
+                  style={{
+                    minHeight: 56,
+                    borderRadius: 12,
+                    background: "var(--p-accent)",
+                    color: "var(--p-on-accent)",
+                    border: "1px solid var(--p-accent)",
+                  }}
                 >
-                  <span className="grid h-[26px] w-[26px] flex-shrink-0 place-items-center rounded-lg font-mono text-[12px] font-bold" style={{ background: T.panel2, color: T.handling }}>
-                    {drill.index}
-                  </span>
-                  <div className="min-w-0 flex-1">
-                    <div className="truncate text-[13.5px] font-semibold" style={{ color: T.fg }}>
-                      {drill.name}
-                    </div>
-                    <div className="mt-[2px] font-mono text-[10px]" style={{ color: T.mut }}>
-                      {AXIS_LABEL[drill.pyramide] ?? drill.pyramide}
-                      {drill.lFase ? ` · ${L_PHASE_LABEL[drill.lFase] ?? drill.lFase}` : ""}
-                      {drill.durationMinutes > 0 ? ` · ${drill.durationMinutes} min` : ""}
-                    </div>
-                  </div>
-                  {(plannedVolumText(drill) ?? (drill.plannedReps > 0 ? `${drill.plannedReps}r` : null)) && (
-                    <span className="whitespace-nowrap font-mono text-[11px] font-semibold" style={{ color: T.fg2 }}>
-                      {plannedVolumText(drill) ?? `${drill.plannedReps}r`}
-                    </span>
-                  )}
-                </li>
-              ))}
-            </ol>
-          )}
-        </div>
+                  Start økta
+                </Link>
+              ) : blockReason === "completed" ? (
+                <Link
+                  href={`/portal/live/${data.sessionId}/summary`}
+                  className="flex flex-1 items-center justify-center gap-2 font-sans text-[14px] font-medium no-underline"
+                  style={{
+                    minHeight: 56,
+                    borderRadius: 12,
+                    border: "1px solid var(--p-border)",
+                    background: "var(--p-surface)",
+                    color: "var(--p-muted)",
+                  }}
+                >
+                  <CheckCircle2 className="h-5 w-5" style={{ color: "var(--p-up)" }} strokeWidth={2} aria-hidden />
+                  Økta er fullført — se oppsummeringen
+                </Link>
+              ) : (
+                <Link
+                  href="/portal/meg/abonnement"
+                  className="flex flex-1 items-center justify-center gap-2 font-sans text-[14px] font-medium no-underline"
+                  style={{
+                    minHeight: 56,
+                    borderRadius: 12,
+                    border: "1px solid var(--p-border)",
+                    background: "var(--p-surface)",
+                    color: "var(--p-muted)",
+                  }}
+                >
+                  <Lock className="h-4 w-4" strokeWidth={2} aria-hidden />
+                  Live krever PRO
+                </Link>
+              )}
+              {/* Ingen egen flytte-flyt finnes — flytting skjer i Workbench. */}
+              <Link
+                href="/portal/planlegge/workbench"
+                data-od-id="brief-flytt-okta"
+                className="flex flex-1 items-center justify-center font-sans text-[14px] font-medium no-underline active:translate-y-px"
+                style={{
+                  minHeight: 48,
+                  borderRadius: 12,
+                  border: "1px solid var(--p-border)",
+                  background: "transparent",
+                  color: "var(--p-fg)",
+                }}
+              >
+                Flytt økta
+              </Link>
+            </div>
+          </div>
 
-        <div className="h-4" />
-      </div>
-    </LiveSessionShell>
+          {/* Metadata — kilde: TrainingSessionV2 */}
+          <div className="mt-4" style={KORT_STIL}>
+            <span className={EYEBROW} style={{ color: "var(--p-muted)" }}>
+              {data.title}
+            </span>
+            <div className="mt-1">
+              {metaRader.map(([navn, verdi]) => (
+                <MetaRad key={navn} navn={navn} verdi={verdi} />
+              ))}
+            </div>
+            {varighetErRegnet && (
+              <WhyDetails
+                odId="brief-why-varighet"
+                punkter={[
+                  "Kilde: drillene i økta — planlagt tid per drill.",
+                  `Beregning: summen av de ${data.drills.length} drilltidene (${tidTekst(drillSumMin)}).`,
+                  "Forbehold: planlagt tid, ikke målt. Den faktiske tiden logges når du trener.",
+                ]}
+              />
+            )}
+          </div>
+
+          {/* Målsetning + hvorfor */}
+          {data.maalsetning && (
+            <div className="mt-4" style={KORT_STIL}>
+              <span className={EYEBROW} style={{ color: "var(--p-muted)" }}>
+                målsetning
+              </span>
+              <p className="mb-0 mt-2 font-serif text-[15px]" style={{ color: "var(--p-fg)" }}>
+                {data.maalsetning}
+              </p>
+              <WhyDetails
+                odId="brief-why-maal"
+                punkter={[
+                  data.coachName
+                    ? `Kilde: målsetningen ${data.coachName} la på økta i planen.`
+                    : "Kilde: målsetningen som ligger på økta i planen.",
+                  "Forbehold: veiledende, aldri låst — du kan endre eller droppe den når du starter økta.",
+                ]}
+              />
+            </div>
+          )}
+
+          {/* Coach-kommentar (finnes ikke i fasit-demoen, men er ekte data) */}
+          {data.coachComment && (
+            <div className="mt-4" style={KORT_STIL}>
+              <span className={EYEBROW} style={{ color: "var(--p-muted)" }}>
+                fra coachen
+              </span>
+              <p className="mb-0 mt-2 font-serif text-[14px]" style={{ color: "var(--p-fg)" }}>
+                {data.coachComment}
+              </p>
+            </div>
+          )}
+
+          {/* Drills — kilde: TrainingDrillV2 */}
+          <div className="mt-4 min-w-0">
+            <span className={EYEBROW} style={{ color: "var(--p-muted)" }}>
+              drills · {data.drills.length}
+              {drillSumMin > 0 ? ` · ${tidTekst(drillSumMin)}` : ""}
+            </span>
+            {data.drills.length === 0 ? (
+              <div
+                className="mt-2 px-4 py-6"
+                style={{
+                  background: "var(--p-soft)",
+                  border: "1px dashed var(--p-border)",
+                  borderRadius: 12,
+                }}
+              >
+                <h3 className="m-0 font-sans text-[15px] font-semibold" style={{ color: "var(--p-fg)" }}>
+                  Ingen drills i økta ennå
+                </h3>
+                <p className="mb-0 mt-2 font-serif text-[13.5px]" style={{ color: "var(--p-muted)" }}>
+                  Åpne økta i Workbench og legg til driller — eller start og tren
+                  fritt. Ingenting sperrer.
+                </p>
+              </div>
+            ) : (
+              <div className="mt-2 flex min-w-0 flex-col gap-2">
+                {data.drills.map((drill) => {
+                  const volum =
+                    plannedVolumText(drill) ??
+                    (drill.plannedReps > 0 ? `${drill.plannedReps} reps` : null);
+                  return (
+                    <div key={drill.id} className="min-w-0" style={{ ...KORT_STIL, padding: 12 }}>
+                      <span className="text-[13.5px] font-semibold" style={{ color: "var(--p-fg)" }}>
+                        {drill.name}
+                      </span>
+                      <span className="font-mono text-[10.5px]" style={{ color: "var(--p-muted)" }}>
+                        {volum ? ` ${volum}` : ""}
+                        {drill.durationMinutes > 0 ? ` · ${tidTekst(drill.durationMinutes)}` : ""}
+                      </span>
+                      <span
+                        className="mt-1 block break-all font-mono text-[9.5px]"
+                        style={{ color: "var(--p-mid)" }}
+                      >
+                        {AXIS_LABEL[drill.pyramide] ?? drill.pyramide}
+                        {drill.lFase ? ` · ${L_PHASE_LABEL[drill.lFase] ?? drill.lFase}` : ""}
+                      </span>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+
+          {/* Eierskapet skrevet ut, ikke antatt */}
+          <div
+            className="mt-4 flex gap-3 px-4 py-3 font-serif text-[12.5px]"
+            style={{
+              background: "var(--p-soft)",
+              border: "1px solid var(--p-border)",
+              borderRadius: 12,
+              color: "var(--p-muted)",
+            }}
+          >
+            <Pencil className="mt-[2px] h-4 w-4 flex-none" strokeWidth={1.7} aria-hidden />
+            <span>
+              Økta er din. Du kan endre målet, hoppe over drills eller droppe hele
+              økta — ingenting sperrer.
+              {data.coachName
+                ? ` ${data.coachName.split(" ")[0]} får beskjed, så han vet hva som skjedde.`
+                : " Coachen din får beskjed, så ingenting forsvinner."}
+            </span>
+          </div>
+        </div>
+      </LiveSessionShell>
     </div>
   );
 }
