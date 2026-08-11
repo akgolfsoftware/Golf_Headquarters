@@ -1,10 +1,13 @@
-import { CheckCircle2, Clock, Dumbbell, Target, TrendingUp, ArrowRight, CircleCheck, TriangleAlert } from "lucide-react";
+"use client";
+
+import { useEffect, useState, useTransition, type CSSProperties } from "react";
 import Link from "next/link";
+import { Check } from "lucide-react";
 import type { LiveV2Summary } from "./types";
-import { HjelpTips } from "@/components/v2/hjelp";
 import { SpillerVurderingForm } from "./SpillerVurderingForm";
-import { T } from "@/lib/v2/tokens";
 import { LiveLoopNav } from "./LiveLoopNav";
+import { WhyDetails } from "./WhyDetails";
+import { lagreDineOrd } from "@/app/portal/(fullscreen)/live/[sessionId]/actions";
 
 export type SessionSummaryProps = {
   data: LiveV2Summary;
@@ -13,237 +16,451 @@ export type SessionSummaryProps = {
     kvalitet: number;
     nesteFokus: string;
     folelse?: string | null;
+    rpe?: number | null;
   } | null;
+  /** Allerede lagrede «dine ord» (completedSummary.dineOrd). */
+  lagredeOrd?: string | null;
 };
 
-const AXIS_LABEL: Record<string, string> = {
-  FYS: "Fysisk",
-  TEK: "Teknisk",
-  SLAG: "Slag",
-  SPILL: "Spill",
-  TURN: "Turnering",
-};
+type LiveNotat = { t: string; tekst: string };
 
-function fmtMSS(totalSec: number): string {
-  const m = Math.floor(totalSec / 60);
-  const s = totalSec % 60;
-  return `${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`;
+function notatKey(sessionId: string): string {
+  return `akhq-live-notater-${sessionId}`;
 }
 
-function Verdict({ pct }: { pct: number }) {
-  const onPlan = pct >= 70;
+function lesNotater(sessionId: string): LiveNotat[] {
+  try {
+    const raw = sessionStorage.getItem(notatKey(sessionId));
+    if (!raw) return [];
+    const parsed: unknown = JSON.parse(raw);
+    if (!Array.isArray(parsed)) return [];
+    return parsed.filter(
+      (n): n is LiveNotat =>
+        !!n && typeof n === "object" &&
+        typeof (n as LiveNotat).t === "string" &&
+        typeof (n as LiveNotat).tekst === "string",
+    );
+  } catch {
+    return [];
+  }
+}
+
+/** «84» → «1 t 24 min». */
+function tidTekst(min: number): string {
+  const t = Math.floor(min / 60);
+  const r = min % 60;
+  if (t === 0) return `${r} min`;
+  return r === 0 ? `${t} t` : `${t} t ${r} min`;
+}
+
+/** Deterministisk utkast av øktas faktiske tall + drillnavn — ingen AI-kall. */
+function byggUtkast(data: LiveV2Summary, notater: LiveNotat[]): string {
+  const deler: string[] = [];
+  const min = Math.round(data.durationSec / 60);
+  if (data.drills.length > 0) {
+    deler.push(
+      `${data.title}: ${data.drillsCompleted} av ${data.drills.length} drills` +
+        `${data.totalReps > 0 ? ` og ${data.totalReps} reps` : ""}` +
+        `${min > 0 ? ` på ${tidTekst(min)}` : ""}.`,
+    );
+  } else if (min > 0) {
+    deler.push(`${data.title}: fri økt på ${tidTekst(min)}.`);
+  } else {
+    deler.push(`${data.title}: økt gjennomført.`);
+  }
+  const treff = data.existingLogs.reduce((s, l) => s + l.repsHit, 0);
+  if (treff > 0 && data.totalReps > 0) {
+    deler.push(`${treff} av ${data.totalReps} reps markert som treff.`);
+  }
+  const mestVolum = data.drills
+    .map((d) => ({ d, log: data.existingLogs.find((l) => l.drillId === d.id) }))
+    .filter((x) => (x.log?.repsTotal ?? 0) > 0)
+    .sort((a, b) => (b.log?.repsTotal ?? 0) - (a.log?.repsTotal ?? 0))[0];
+  if (mestVolum) {
+    deler.push(`Mest volum på ${mestVolum.d.name.toLowerCase()}.`);
+  }
+  if (notater[0]) {
+    deler.push(notater[0].tekst);
+  }
+  return deler.join(" ");
+}
+
+const EYEBROW = "font-mono text-[10px] font-medium uppercase tracking-[0.09em]";
+
+const KORT: CSSProperties = {
+  background: "var(--p-surface)",
+  border: "1px solid var(--p-border)",
+  borderRadius: 12,
+  padding: 16,
+  minWidth: 0,
+};
+
+function Tag({ tekst, tone }: { tekst: string; tone: "up" | "info" }) {
   return (
-    <div
-      className="flex items-start gap-3 rounded-2xl p-3.5"
+    <span
+      className="ml-auto inline-flex flex-none items-center whitespace-nowrap px-2 py-[3px] font-mono text-[10px] uppercase tracking-[0.04em]"
       style={{
-        border: `1px solid ${onPlan ? T.border : T.down}`,
-        background: onPlan ? T.handlingSoft : T.panel2,
+        borderRadius: 9999,
+        background: "var(--p-soft)",
+        border: "1px solid var(--p-border)",
+        color: tone === "up" ? "var(--p-up)" : "var(--p-info)",
       }}
-     data-paper-slug="playerhq-live-summary">
-      <span
-        className="grid h-7 w-7 flex-shrink-0 place-items-center rounded-full"
-        style={{
-          background: onPlan ? T.panel : T.panel2,
-          color: onPlan ? T.handling : T.down,
-        }}
-      >
-        {onPlan ? (
-          <CircleCheck className="h-4 w-4" strokeWidth={2} aria-hidden />
-        ) : (
-          <TriangleAlert className="h-4 w-4" strokeWidth={2} aria-hidden />
-        )}
-      </span>
-      <div className="min-w-0 flex-1">
-        <span
-          className="inline-flex items-center gap-1.5 text-sm font-bold"
-          style={{ color: onPlan ? T.handling : T.down }}
-        >
-          {onPlan ? "På plan" : "Avvik fra plan"}
-          <HjelpTips k="planEtterlevelse" size={12} />
-        </span>
-        <p className="mt-1 text-[12.5px] leading-relaxed" style={{ color: T.mut }}>
-          {onPlan
-            ? `Du gjennomførte ${pct} % av planen. Økta teller som gjennomført på plan.`
-            : `Du gjennomførte ${pct} % av planen. Logges som avvik — coachen ser hva som skjedde, helt greit.`}
-        </p>
-      </div>
-    </div>
+    >
+      {tekst}
+    </span>
   );
 }
 
-export function SessionSummary({ data, nesteOkt, spillerVurdering }: SessionSummaryProps) {
-  const firstName = data.studentName?.split(" ")[0] ?? "spiller";
-  const completionPct =
-    data.drills.length > 0 ? Math.round((data.drillsCompleted / data.drills.length) * 100) : 0;
+/**
+ * ETTER-skjermen i live-sløyfa — Paper-fasit playerhq-live-summary.html (PP-3).
+ * Tallkort m/why → plan mot gjort → notater → dine ord (deterministisk
+ * utkast) → clay «Lagre til loggen» → kvittering med neste økt.
+ */
+export function SessionSummary({ data, nesteOkt, spillerVurdering, lagredeOrd }: SessionSummaryProps) {
+  const [notater, setNotater] = useState<LiveNotat[]>([]);
+  const [ord, setOrd] = useState<string | null>(null);
+  const [lagret, setLagret] = useState(Boolean(lagredeOrd));
+  const [feil, setFeil] = useState<string | null>(null);
+  const [pending, startTransition] = useTransition();
 
-  const pyramidEntries = Object.entries(data.pyramidSummary)
-    .filter(([, v]) => v > 0)
-    .sort(([, a], [, b]) => b - a);
+  // Notatene lever i sessionStorage fra UNDER-skjermen (ingen DB-mekanisme
+  // for frie øktnotater) — leses etter mount, flettes inn i utkastet.
+  useEffect(() => {
+    const t = setTimeout(() => {
+      const n = lesNotater(data.sessionId);
+      setNotater(n);
+      setOrd((prev) => prev ?? lagredeOrd ?? byggUtkast(data, n));
+    }, 0);
+    return () => clearTimeout(t);
+  }, [data, lagredeOrd]);
+
+  const plannedRepsTotal = data.drills.reduce((s, d) => s + d.plannedReps, 0);
+  const treffTotal = data.existingLogs.reduce((s, l) => s + l.repsHit, 0);
+  const vindusMin = Math.max(
+    0,
+    Math.round(
+      (new Date(data.endTimeISO).getTime() - new Date(data.scheduledAtISO).getTime()) / 60000,
+    ),
+  );
+  const planlagtMin =
+    vindusMin > 0 ? vindusMin : data.drills.reduce((s, d) => s + d.durationMinutes, 0);
+  const varighetMin = Math.round(data.durationSec / 60);
+  const tidsavvikMin = planlagtMin > 0 && data.durationSec > 0 ? planlagtMin - varighetMin : 0;
+
+  const tallRader: Array<[string, string]> = [];
+  if (data.durationSec > 0) {
+    tallRader.push([
+      "Varighet",
+      `${tidTekst(varighetMin)}${planlagtMin > 0 ? ` (plan ${tidTekst(planlagtMin)})` : ""}`,
+    ]);
+  }
+  if (data.drills.length > 0) {
+    tallRader.push(["Drills", `${data.drillsCompleted} av ${data.drills.length}`]);
+  }
+  if (data.totalReps > 0 || plannedRepsTotal > 0) {
+    tallRader.push([
+      "Reps totalt",
+      plannedRepsTotal > 0 ? `${data.totalReps} av ${plannedRepsTotal}` : String(data.totalReps),
+    ]);
+  }
+  if (treffTotal > 0) {
+    tallRader.push(["Treff", `${treffTotal} av ${data.totalReps}`]);
+  }
+
+  function lagre() {
+    const tekst = (ord ?? "").trim();
+    if (!tekst) {
+      setFeil("Skriv noe først — ett ord er nok.");
+      return;
+    }
+    setFeil(null);
+    startTransition(async () => {
+      const res = await lagreDineOrd(data.sessionId, tekst);
+      if (!res.ok) {
+        setFeil(res.error ?? "Klarte ikke å lagre til loggen. Teksten din står trygt her — prøv igjen.");
+        return;
+      }
+      try {
+        sessionStorage.removeItem(notatKey(data.sessionId));
+      } catch {
+        /* ignore */
+      }
+      setLagret(true);
+    });
+  }
 
   return (
     <div
       data-paper-portal-live-summary
-      className="flex flex-col gap-4 px-4 py-6"
-      style={{ maxWidth: 720, margin: "0 auto", width: "100%", color: T.fg }}
+      data-paper-slug="playerhq-live-summary"
+      className="flex min-w-0 flex-col px-4 pb-16 pt-2"
+      style={{ maxWidth: 720, margin: "0 auto", width: "100%", color: "var(--p-fg)" }}
     >
       <LiveLoopNav aktiv="etter" sessionId={data.sessionId} />
 
-      <div className="text-center">
-        <div
-          className="mx-auto mb-4 grid h-16 w-16 place-items-center rounded-full"
-          style={{ background: T.handlingSoft }}
-        >
-          <CheckCircle2 className="h-8 w-8" style={{ color: T.handling }} strokeWidth={2} aria-hidden />
-        </div>
-        <h1
-          className="font-display text-[18px] font-semibold leading-[1.15]"
-          style={{ color: T.fg }}
-        >
-          Bra jobba, {firstName}!
-        </h1>
-        <p className="mt-2 text-sm" style={{ color: T.mut }}>
-          {completionPct === 100
-            ? "Du fullførte hele økta."
-            : `Du fullførte ${data.drillsCompleted} av ${data.drills.length} drills.`}
-        </p>
-      </div>
-
-      <Verdict pct={completionPct} />
-
-      <SpillerVurderingForm sessionId={data.sessionId} eksisterende={spillerVurdering} />
-
-      <div className="grid grid-cols-3 gap-3">
-        {[
-          { Icon: Dumbbell, v: String(data.totalReps), l: "Reps", tip: "repsHastighet" as const },
-          { Icon: Clock, v: fmtMSS(data.durationSec), l: "Tid", tip: null },
-          { Icon: Target, v: String(data.drillsCompleted), l: "Drills", tip: null },
-        ].map(({ Icon, v, l, tip }) => (
+      {lagret ? (
+        <>
+          {/* ── Kvittering ── */}
           <div
-            key={l}
-            className="rounded-2xl p-4 text-center"
-            style={{ border: `1px solid ${T.border}`, background: T.panel }}
+            className="mt-4 px-4 py-6"
+            style={{
+              background: "var(--p-surface)",
+              border: "1px solid var(--p-up)",
+              borderRadius: 12,
+            }}
           >
-            <Icon className="mx-auto h-5 w-5" style={{ color: T.handling }} strokeWidth={2} aria-hidden />
-            <div className="mt-3 font-mono text-2xl font-bold leading-none" style={{ color: T.fg }}>
-              {v}
-            </div>
-            <div
-              className="mt-2 flex items-center justify-center gap-1 font-mono text-[10px] font-extrabold uppercase tracking-[0.12em]"
-              style={{ color: T.mut }}
+            <h2
+              className="m-0 flex items-center gap-2 font-sans text-[16px] font-semibold"
+              style={{ color: "var(--p-fg)" }}
             >
-              {l}
-              {tip && <HjelpTips k={tip} size={11} />}
-            </div>
+              <Check className="h-5 w-5" style={{ color: "var(--p-up)" }} strokeWidth={2} aria-hidden />
+              Lagret i loggen
+            </h2>
+            <p className="mb-0 mt-2 font-serif text-[13.5px]" style={{ color: "var(--p-muted)" }}>
+              Økta er logget som gjennomført.
+              {data.coachName
+                ? ` ${data.coachName.split(" ")[0]} ser oppsummeringen — han skal ikke godkjenne noe, bare vite hva som skjedde.`
+                : " Coachen din ser oppsummeringen — ingen godkjenning, bare informasjon."}
+            </p>
           </div>
-        ))}
-      </div>
 
-      {pyramidEntries.length > 0 && (
-        <div className="rounded-2xl p-4" style={{ border: `1px solid ${T.border}`, background: T.panel }}>
-          <div className="mb-4 flex items-center gap-2">
-            <TrendingUp className="h-4 w-4" style={{ color: T.handling }} strokeWidth={2} aria-hidden />
-            <span
-              className="font-mono text-[10px] font-extrabold uppercase tracking-[0.12em]"
-              style={{ color: T.mut }}
-            >
-              Fordeling etter pyramide
-            </span>
-            <HjelpTips k="pyramideAkse" size={11} />
-          </div>
-          <div className="flex flex-col gap-4">
-            {pyramidEntries.map(([axis, reps]) => {
-              const pct = data.totalReps > 0 ? (reps / data.totalReps) * 100 : 0;
-              const col = T.ax[axis as keyof typeof T.ax] ?? T.mut;
-              return (
-                <div key={axis}>
-                  <div className="mb-2 flex items-center justify-between font-mono text-xs font-semibold">
-                    <span style={{ color: col }}>{AXIS_LABEL[axis] ?? axis}</span>
-                    <span style={{ color: T.fg }}>{reps} reps</span>
-                  </div>
-                  <div className="h-2 w-full overflow-hidden rounded-full" style={{ background: T.track }}>
-                    <div
-                      className="h-full rounded-full"
-                      style={{ width: `${pct}%`, backgroundColor: col }}
-                    />
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      )}
-
-      <div className="rounded-2xl p-4" style={{ border: `1px solid ${T.border}`, background: T.panel }}>
-        <div
-          className="mb-4 font-mono text-[10px] font-extrabold uppercase tracking-[0.12em]"
-          style={{ color: T.mut }}
-        >
-          Drills fullført
-        </div>
-        <ul className="flex flex-col gap-2">
-          {data.drills.map((drill) => {
-            const log = data.existingLogs.find((l) => l.drillId === drill.id);
-            return (
-              <li
-                key={drill.id}
-                className="flex items-center justify-between gap-4 rounded-lg px-4 py-2"
-                style={{ border: `1px solid ${T.border}`, background: T.panel2 }}
+          {/* Neste steg — én vei videre, aldri blank flate */}
+          {nesteOkt && (
+            <div className="mt-4" style={KORT}>
+              <span className={EYEBROW} style={{ color: "var(--p-muted)" }}>
+                neste økt
+              </span>
+              <Link
+                href={nesteOkt.href}
+                data-od-id="etter-kvitt-neste"
+                className="mt-1 flex min-w-0 items-baseline gap-2 py-2 text-[13px] no-underline"
+                style={{ color: "var(--p-fg)" }}
               >
-                <div className="min-w-0 flex-1">
-                  <div className="truncate font-display text-sm font-semibold" style={{ color: T.fg }}>
-                    {drill.name}
-                  </div>
-                  <div className="mt-0.5 font-mono text-xs font-semibold" style={{ color: T.mut }}>
-                    {AXIS_LABEL[drill.pyramide] ?? drill.pyramide}
-                    {drill.actualDurationSec != null && drill.actualDurationSec > 0 && (
-                      <> · {fmtMSS(drill.actualDurationSec)}</>
-                    )}
-                  </div>
-                </div>
-                <div className="text-right">
-                  {log ? (
-                    <>
-                      <div className="font-mono text-lg font-bold" style={{ color: T.handling }}>
-                        {log.repsTotal}
-                      </div>
-                      <div
-                        className="font-mono text-[10px] font-extrabold uppercase tracking-[0.1em]"
-                        style={{ color: T.mut }}
-                      >
-                        reps
-                      </div>
-                    </>
-                  ) : (
-                    <span className="font-mono text-xs font-semibold" style={{ color: T.mut }}>
-                      Ikke logget
-                    </span>
-                  )}
-                </div>
-              </li>
-            );
-          })}
-        </ul>
-      </div>
+                <span className="min-w-0 truncate">{nesteOkt.tekst}</span>
+              </Link>
+            </div>
+          )}
 
-      <div className="flex flex-col gap-2.5">
-        <Link
-          href={nesteOkt ? nesteOkt.href : "/portal"}
-          data-od-id="etter-neste"
-          className="flex w-full items-center justify-center gap-2 font-sans text-[14px] font-semibold active:scale-[0.98] v2-press"
-          data-paper-en-ting="true"
-          style={{ background: T.handling, color: T.onHandling, textDecoration: "none", minHeight: 56, borderRadius: 12, display: "flex", alignItems: "center", justifyContent: "center" }}
-        >
-          {nesteOkt ? nesteOkt.tekst : "Tilbake til hjem"}
-          {nesteOkt && <ArrowRight className="h-4 w-4" strokeWidth={2.5} aria-hidden />}
-        </Link>
-        <Link
-          href={nesteOkt ? "/portal" : "/portal/planlegge/workbench?zoom=uke"}
-          className="flex h-11 w-full items-center justify-center font-mono text-xs font-bold uppercase tracking-[0.06em] active:opacity-80"
-          style={{ color: T.mut, textDecoration: "none" }}
-        >
-          {nesteOkt ? "Tilbake til hjem" : "Planlegg i Workbench"}
-        </Link>
-      </div>
+          <div className="mt-4 flex flex-col gap-2">
+            <Link
+              href="/portal/planlegge"
+              data-od-id="etter-kvitt-plan"
+              className="flex w-full items-center justify-center font-sans text-[14px] font-medium no-underline"
+              style={{
+                minHeight: 48,
+                borderRadius: 12,
+                border: "1px solid var(--p-border)",
+                background: "transparent",
+                color: "var(--p-fg)",
+              }}
+            >
+              Til planen
+            </Link>
+            <Link
+              href="/portal/analysere"
+              data-od-id="etter-kvitt-analyse"
+              className="flex w-full items-center justify-center font-sans text-[14px] font-medium no-underline"
+              style={{
+                minHeight: 48,
+                borderRadius: 12,
+                border: "1px solid var(--p-border)",
+                background: "transparent",
+                color: "var(--p-fg)",
+              }}
+            >
+              Se utviklingen i Analyse
+            </Link>
+            <button
+              type="button"
+              data-od-id="etter-kvitt-angre"
+              onClick={() => setLagret(false)}
+              className="w-full font-sans text-[13px]"
+              style={{
+                minHeight: 44,
+                borderRadius: 12,
+                border: "1px solid var(--p-border)",
+                background: "transparent",
+                color: "var(--p-muted)",
+              }}
+            >
+              Tilbake til oppsummeringen
+            </button>
+          </div>
+        </>
+      ) : (
+        <>
+          {/* ── Tallene — kilde: DrillLogV2-loggene fra økta ── */}
+          <div className="mt-4" style={KORT}>
+            <span className={EYEBROW} style={{ color: "var(--p-muted)" }}>
+              {data.title} · gjennomført
+            </span>
+            <div className="mt-1">
+              {tallRader.map(([navn, verdi]) => (
+                <div
+                  key={navn}
+                  className="flex min-w-0 items-baseline gap-2 border-b py-2 text-[13px] last:border-b-0"
+                  style={{ borderColor: "var(--p-border-soft, var(--p-border))" }}
+                >
+                  <span>{navn}</span>
+                  <span className="ml-auto min-w-0 text-right font-mono">{verdi}</span>
+                </div>
+              ))}
+              {tallRader.length === 0 && (
+                <p className="mb-0 mt-2 font-serif text-[13.5px]" style={{ color: "var(--p-muted)" }}>
+                  Ingen tall ble logget i denne økta — det er også informasjon.
+                </p>
+              )}
+            </div>
+            {tallRader.length > 0 && (
+              <WhyDetails
+                odId="etter-why-tall"
+                punkter={[
+                  "Kilde: det du selv logget i økta — reps og treff per drill, pluss øktklokka.",
+                  "Beregning: summene av drill-loggene; varigheten er klokkas medgåtte tid.",
+                  "Forbehold: én økt er ett datapunkt. Trenden vises i Analyse.",
+                ]}
+              />
+            )}
+          </div>
+
+          {/* ── Plan mot gjort — informasjon, aldri kritikk ── */}
+          {data.drills.length > 0 && (
+            <div className="mt-4" style={KORT}>
+              <span className={EYEBROW} style={{ color: "var(--p-muted)" }}>
+                plan mot gjort
+              </span>
+              <div className="mt-1">
+                {data.drills.map((drill) => {
+                  const log = data.existingLogs.find((l) => l.drillId === drill.id);
+                  const gjort = log
+                    ? `${log.repsTotal}${drill.plannedReps > 0 ? ` av ${drill.plannedReps}` : ""} reps` +
+                      (log.repsHit > 0 ? ` · ${log.repsHit} treff` : "")
+                    : "ikke logget";
+                  // Tag kun når BÅDE planlagte og loggede reps finnes.
+                  const tag =
+                    log && drill.plannedReps > 0
+                      ? log.repsTotal >= drill.plannedReps
+                        ? ({ tekst: "som planlagt", tone: "up" } as const)
+                        : ({ tekst: `mål ${drill.plannedReps}`, tone: "info" } as const)
+                      : null;
+                  return (
+                    <div
+                      key={drill.id}
+                      className="flex min-w-0 items-start gap-2 border-b py-2 text-[13px] last:border-b-0"
+                      style={{ borderColor: "var(--p-border-soft, var(--p-border))" }}
+                    >
+                      <div className="min-w-0">
+                        <span className="block truncate">{drill.name}</span>
+                        <span className="block font-mono text-[10.5px]" style={{ color: "var(--p-muted)" }}>
+                          {gjort}
+                        </span>
+                      </div>
+                      {tag && <Tag tekst={tag.tekst} tone={tag.tone} />}
+                    </div>
+                  );
+                })}
+                {Math.abs(tidsavvikMin) >= 1 && (
+                  <div
+                    className="flex min-w-0 items-start gap-2 py-2 text-[13px]"
+                    style={{ borderColor: "var(--p-border-soft, var(--p-border))" }}
+                  >
+                    <div className="min-w-0">
+                      <span className="block">
+                        Avsluttet {tidTekst(Math.abs(tidsavvikMin))}{" "}
+                        {tidsavvikMin > 0 ? "før" : "etter"} planlagt
+                      </span>
+                      <span className="block font-mono text-[10.5px]" style={{ color: "var(--p-muted)" }}>
+                        Helt greit — avvik er informasjon til neste plan, ikke feil.
+                      </span>
+                    </div>
+                    <Tag tekst="notert" tone="info" />
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+
+          {/* ── Notater fra økta ── */}
+          {notater.length > 0 && (
+            <div className="mt-4 min-w-0">
+              <span className={EYEBROW} style={{ color: "var(--p-muted)" }}>
+                notater fra økta · {notater.length}
+              </span>
+              {notater.map((n, i) => (
+                <div
+                  key={`${n.t}-${i}`}
+                  className="mt-2 p-3 font-serif text-[13.5px]"
+                  style={{
+                    background: "var(--p-surface)",
+                    border: "1px solid var(--p-border)",
+                    borderRadius: 12,
+                  }}
+                >
+                  <span className="mb-[2px] block font-mono text-[10px]" style={{ color: "var(--p-muted)" }}>
+                    {n.t} inn i økta
+                  </span>
+                  {n.tekst}
+                </div>
+              ))}
+            </div>
+          )}
+
+          {/* ── Vurderingene (beholdt funksjonalitet) ── */}
+          <div className="mt-4">
+            <SpillerVurderingForm sessionId={data.sessionId} eksisterende={spillerVurdering} />
+          </div>
+
+          {/* ── Dine ord — utkastet er bygget av øktas tall, endres fritt ── */}
+          <div className="mt-4 min-w-0">
+            <span className={EYEBROW} style={{ color: "var(--p-muted)" }}>
+              dine ord · skrives til loggen
+            </span>
+            <textarea
+              value={ord ?? ""}
+              onChange={(e) => setOrd(e.target.value)}
+              aria-label="Oppsummering med dine ord"
+              data-od-id="etter-oppsum-tekst"
+              className="mt-2 w-full resize-y p-3 font-serif text-[15px]"
+              style={{
+                minHeight: 110,
+                background: "var(--p-surface)",
+                color: "var(--p-fg)",
+                border: "1px solid var(--p-border)",
+                borderRadius: 12,
+              }}
+            />
+            <p className="mb-0 mt-2 font-serif text-[12.5px]" style={{ color: "var(--p-muted)" }}>
+              Utkastet er laget av tallene og notatene dine — ingen AI. Endre
+              fritt, det er dine ord som lagres.
+              {data.coachName ? ` ${data.coachName.split(" ")[0]} ser oppsummeringen i stallen sin.` : ""}
+            </p>
+          </div>
+
+          {feil && (
+            <p className="mb-0 mt-3 font-serif text-[13px]" style={{ color: "var(--p-dn)" }} role="alert">
+              {feil}
+            </p>
+          )}
+
+          {/* Skjermens ene clay-handling — skriver til loggen */}
+          <button
+            type="button"
+            data-od-id="etter-lagre-logg"
+            data-paper-en-ting="true"
+            onClick={lagre}
+            disabled={pending}
+            className="mt-4 w-full border-none font-sans text-[14px] font-semibold active:translate-y-px disabled:opacity-60"
+            style={{
+              minHeight: 56,
+              borderRadius: 12,
+              background: "var(--p-accent)",
+              color: "var(--p-on-accent)",
+            }}
+          >
+            {pending ? "Lagrer…" : "Lagre til loggen"}
+          </button>
+        </>
+      )}
     </div>
   );
 }
