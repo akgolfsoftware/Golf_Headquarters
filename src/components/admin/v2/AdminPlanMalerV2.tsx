@@ -9,7 +9,6 @@ import Link from "next/link";
 import { useState } from "react";
 import {
   Caps,
-  Tittel,
   Kort,
   KpiFlis,
   FilterChips,
@@ -43,6 +42,8 @@ export interface PlanMalRad {
   oktAntall: number;
   /** Disiplin-fordeling (topp→base av pyramiden). Tom = ingen gyldig kilde. */
   fordeling: PlanMalFordeling[];
+  /** Godkjent kan rulles ut til grupper/spillere. Utkast kan ikke (fasit: agencyos-planbibliotek). */
+  godkjent: boolean;
 }
 export interface AdminPlanMalerData {
   maler: PlanMalRad[];
@@ -91,16 +92,19 @@ function MalKort({ m }: { m: PlanMalRad }) {
           >
             <Icon name={FASE_IKON[m.fase]} size={19} style={{ color: T.lime }} />
           </span>
-          <span
-            style={{
-              fontFamily: T.mono,
-              fontSize: 10,
-              fontWeight: 700,
-              color: m.usageCount > 0 ? T.lime : T.mut,
-              fontVariantNumeric: "tabular-nums",
-            }}
-          >
-            Brukt {m.usageCount}×
+          <span style={{ display: "inline-flex", alignItems: "center", gap: 8 }}>
+            {!m.godkjent && <StatusPill tone="warn">Utkast</StatusPill>}
+            <span
+              style={{
+                fontFamily: T.mono,
+                fontSize: 10,
+                fontWeight: 700,
+                color: m.usageCount > 0 ? T.lime : T.mut,
+                fontVariantNumeric: "tabular-nums",
+              }}
+            >
+              Brukt {m.usageCount}×
+            </span>
           </span>
         </div>
 
@@ -144,18 +148,26 @@ function MalKort({ m }: { m: PlanMalRad }) {
   );
 }
 
+const STATUS_FILTRE = ["Godkjent", "Utkast"] as const;
+
 export function AdminPlanMalerV2({ data }: { data: AdminPlanMalerData }) {
   const [fase, setFase] = useState<string[]>([]);
+  const [status, setStatus] = useState<string[]>([]);
 
   const toggle = (x: string) =>
     setFase((arr) => (arr.indexOf(x) !== -1 ? arr.filter((y) => y !== x) : arr.concat(x)));
+  const toggleStatus = (x: string) =>
+    setStatus((arr) => (arr.indexOf(x) !== -1 ? arr.filter((y) => y !== x) : arr.concat(x)));
 
   const filtrert = data.maler.filter(
-    (m) => fase.length === 0 || fase.indexOf(FASE_LABEL[m.fase]) !== -1,
+    (m) =>
+      (fase.length === 0 || fase.indexOf(FASE_LABEL[m.fase]) !== -1) &&
+      (status.length === 0 || status.indexOf(m.godkjent ? "Godkjent" : "Utkast") !== -1),
   );
 
   const total = data.maler.length;
   const totalBruk = data.maler.reduce((sum, m) => sum + m.usageCount, 0);
+  const totalGodkjent = data.maler.filter((m) => m.godkjent).length;
   const snittUker =
     total > 0 ? Math.round(data.maler.reduce((s, m) => s + m.varighetUker, 0) / total) : 0;
 
@@ -168,7 +180,7 @@ export function AdminPlanMalerV2({ data }: { data: AdminPlanMalerData }) {
   const hode = (
     <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 14, flexWrap: "wrap" }}>
       <div>
-        <div data-paper-pattern-topp>
+        <div data-paper-pattern-topp data-paper-slug="agencyos-planbibliotek">
           <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>Planmaler</h1>
           <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>AgencyOS</span>
         </div>
@@ -202,20 +214,27 @@ export function AdminPlanMalerV2({ data }: { data: AdminPlanMalerData }) {
     );
   }
 
-  // ── KPI-flis (3) ──────────────────────────────────────────────
+  // ── KPI-flis (4) ──────────────────────────────────────────────
   const kpi = (
-    <div className="grid grid-cols-2 lg:grid-cols-3" style={{ gap: T.gap }}>
+    <div className="grid grid-cols-2 lg:grid-cols-4" style={{ gap: T.gap }}>
       <KpiFlis label="Maler" value={total} />
+      <KpiFlis label="Godkjent" value={totalGodkjent} tint />
       <KpiFlis label="Total bruk" value={totalBruk} />
       <KpiFlis label="Snitt lengde (uker)" value={snittUker} />
     </div>
   );
 
-  // ── Fase-filter ───────────────────────────────────────────────
+  // ── Status- og fase-filter ──────────────────────────────────────
   const filtre = (
-    <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
-      <Caps size={9} style={{ width: 64, flex: "none" }}>Fase</Caps>
-      <FilterChips items={[...FASE_FILTRE]} active={fase} onToggle={toggle} />
+    <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+      <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
+        <Caps size={9} style={{ width: 64, flex: "none" }}>Status</Caps>
+        <FilterChips items={[...STATUS_FILTRE]} active={status} onToggle={toggleStatus} />
+      </div>
+      <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
+        <Caps size={9} style={{ width: 64, flex: "none" }}>Fase</Caps>
+        <FilterChips items={[...FASE_FILTRE]} active={fase} onToggle={toggle} />
+      </div>
     </div>
   );
 
