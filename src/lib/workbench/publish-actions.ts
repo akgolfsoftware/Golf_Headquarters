@@ -140,6 +140,9 @@ function revalidateWorkbench(playerId: string) {
  */
 export async function publishWorkbenchPlan(
   playerId?: string,
+  /** Valgfri begrunnelse fra publiser-dialogen — legges på varselet til spilleren
+   *  (eksisterende Notification/push-mekanisme, ingen ny lagring). */
+  melding?: string,
 ): Promise<{ ok: boolean; error?: string; status?: PlanStatus }> {
   const user = await requirePortalUser(
     playerId ? { allow: ["COACH", "ADMIN"] } : { allow: ["PLAYER", "COACH", "ADMIN"] },
@@ -168,6 +171,8 @@ export async function publishWorkbenchPlan(
   }
 
   const erOppdatering = plan.status === "ACTIVE" || plan.status === "ACCEPTED";
+  // Begrunnelse fra dialogen: trimmes og kappes — går KUN inn i varselteksten.
+  const begrunnelse = typeof melding === "string" ? melding.trim().slice(0, 500) : "";
 
   // WB4: snapshot av kommende økter lagres — diff-grunnlag for neste publisering.
   const snapshotPlan = await hentPlanOgOkter(plan.userId);
@@ -188,16 +193,20 @@ export async function publishWorkbenchPlan(
         title: erOppdatering
           ? "Oppdatert treningsplan venter på deg"
           : "Ny treningsplan venter på godkjenning",
-        body: erOppdatering
-          ? `Coachen har oppdatert «${plan.name}». Åpne Workbench for å se og godkjenne.`
-          : `Planen «${plan.name}» er sendt til deg. Åpne Workbench for å godkjenne.`,
+        body:
+          (erOppdatering
+            ? `Coachen har oppdatert «${plan.name}». Åpne Workbench for å se og godkjenne.`
+            : `Planen «${plan.name}» er sendt til deg. Åpne Workbench for å godkjenne.`) +
+          (begrunnelse ? ` Begrunnelse: ${begrunnelse}` : ""),
         link: "/portal/planlegge/workbench",
       },
     });
     // C5: push til spillerens enheter — best-effort (stille av uten VAPID/abonnement).
     await sendPush(plan.userId, {
       title: erOppdatering ? "Plan oppdatert av coachen" : "Ny treningsplan fra coachen din",
-      body: `«${plan.name}» er klar — åpne Workbench for å se og godkjenne.`,
+      body:
+        `«${plan.name}» er klar — åpne Workbench for å se og godkjenne.` +
+        (begrunnelse ? ` Begrunnelse: ${begrunnelse}` : ""),
       link: "/portal/planlegge/workbench",
       tag: "plan-publisert",
     });

@@ -29,6 +29,8 @@ export type WeekEvent = {
   /** AK-formel (plan-økter) — klarspråk i UI via ak-formel-visning. */
   lFase?: string | null;
   miljo?: string | null;
+  /** Antall drills i økta (SessionDrill._count) — KPI-stripen summerer denne. */
+  drillCount?: number;
 };
 
 export type WeekDay = {

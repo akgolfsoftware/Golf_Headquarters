@@ -48,7 +48,9 @@ export default async function V2WorkbenchPreviewPage({ searchParams }: Props) {
     updateSession: updateWorkbenchSession,
     applyTemplate: applyWorkbenchTemplate,
     removeSession: removeWorkbenchSession,
-    publish: publishWorkbenchPlan,
+    // Bind playerId=undefined eksplisitt — komponenten sender begrunnelsen som
+    // FØRSTE argument, og uten bind ville den havnet i playerId-plassen.
+    publish: publishWorkbenchPlan.bind(null, undefined),
     acceptPlan: acceptWorkbenchPlan,
     rejectPlan: rejectWorkbenchPlan,
     publishDiff: hentPubliserDiff,
