@@ -30,7 +30,7 @@ export default async function GfgkJuniorKalenderPage() {
   ).filter((g): g is NonNullable<typeof g> => g !== null);
 
   return (
-    <div>
+    <div data-paper-slug="gfgk-kalender">
       <GfgkHeader aktiv="kalender" />
       {grupper.length === 0 ? (
         <div className="mx-auto max-w-3xl px-4 py-16">
