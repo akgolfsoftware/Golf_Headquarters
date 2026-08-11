@@ -18,7 +18,7 @@ import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
 import { T } from "@/lib/v2/tokens";
-import { Caps, Tittel, Kort, KpiFlis, StatusPill, TilbakeLenke, type StatusTone } from "@/components/v2";
+import { Caps, Kort, KpiFlis, StatusPill, TilbakeLenke, type StatusTone } from "@/components/v2";
 import {
   PPosisjonSeksjon,
   PlanSammendragKort,
@@ -40,6 +40,12 @@ import { OppgaveLauncher, type PositionTarget } from "./oppgave-launcher";
 import { OppgaveEditLauncher } from "./oppgave-edit-launcher";
 import { TekniskPlanFullsvingShell } from "@/components/portal/v2/TekniskPlanFullsvingShell";
 import { erFullsving } from "@/lib/teknisk-plan/fullsving";
+import {
+  TekniskPlanVisning,
+  type EnTingLes,
+  type FokusLes,
+} from "@/components/teknisk-plan/teknisk-plan-visning";
+import { loadNesteOkt } from "@/lib/portal/load-neste-okt";
 
 export const dynamic = "force-dynamic";
 
@@ -178,10 +184,81 @@ export default async function PlanBuilderPage({ params }: PageProps) {
   const statusLabel = plan.status === "ACTIVE" ? "AKTIV" : plan.status === "DRAFT" ? "UTKAST" : "ARKIVERT";
   const statusTone: StatusTone = plan.status === "ACTIVE" ? "up" : plan.status === "DRAFT" ? "info" : "warn";
 
+  // ── Paper-lesevisning (fasit: playerhq-teknisk-plan.html) ──
+  // Fremdrift per fokus telles i REPS (planens ekte enhet) — fasitens
+  // «økter»-telling finnes ikke i datamodellen og fabrikkeres ikke.
+  const fokusLes: FokusLes[] = sortedPositions.map((p) => {
+    const gjort = p.tasks.reduce(
+      (s, t) => s + (t.repsGjortDry ?? 0) + (t.repsGjortLav ?? 0) + (t.repsGjortFull ?? 0),
+      0,
+    );
+    const av = p.tasks.reduce(
+      (s, t) => s + (t.repsMaalDry ?? 0) + (t.repsMaalLav ?? 0) + (t.repsMaalFull ?? 0),
+      0,
+    );
+    const titler = p.tasks.map((t) => t.tittel).filter((x) => x.trim().length > 0);
+    const beskrivelse =
+      titler.length === 0
+        ? null
+        : titler.length <= 2
+          ? titler.join(" · ")
+          : `${titler.slice(0, 2).join(" · ")} · +${titler.length - 2} til`;
+    return {
+      id: p.id,
+      pNummer: p.pNummer,
+      navn: p.navn,
+      beskrivelse,
+      gjort,
+      av,
+      hovedfokus: p.hovedfokus,
+    };
+  });
+
+  // Én ting nå: fokuset med størst gjenstående arbeid (mål − logget), clay-CTA
+  // til neste planlagte økt (ekte oppslag — workbench når ingen finnes).
+  let enTing: EnTingLes | null = null;
+  const medRest = fokusLes
+    .filter((f) => f.av > 0 && f.gjort < f.av)
+    .sort((a, b) => (b.av - b.gjort) - (a.av - a.gjort));
+  if (medRest.length > 0) {
+    const f = medRest[0];
+    const neste = await loadNesteOkt(user.id, new Date());
+    enTing = {
+      pNummer: f.pNummer,
+      navn: f.navn,
+      tekst: `${f.pNummer} er fokuset med størst gjenstående arbeid — ${f.gjort.toLocaleString("nb-NO")} av ${f.av.toLocaleString("nb-NO")} reps logget.`,
+      ctaLabel: neste.okt ? "Åpne neste økt" : "Åpne Workbench",
+      ctaHref: neste.href,
+    };
+  }
+
+  const planKort: [string, string][] = [
+    ["Periode", `${plan.navn} · ${periodLabel}`],
+    ["Status", statusLabel],
+    ["Fokusområder", String(plan.positions.length)],
+    ["Oppgaver", String(allTasks.length)],
+    ["Publisert av", plan.opprettetAv?.name ?? "Coach"],
+  ];
+
+  const whyPunkter = [
+    "Kilde: reps du (eller coachen) har logget per oppgave i planen, summert per P-posisjon.",
+    "Beregning: logget reps mot reps-målet — på tvers av uten ball, lav fart og full fart.",
+    "Forbehold: fremdrift måler gjennomføring, ikke kvalitet. Om posisjonen faktisk sitter, avgjøres på film og TrackMan — sammen med coachen.",
+  ];
+
   return (
     <V2Shell bredde="kolonne" aktiv="plan" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
-      <div data-paper-wave-f="teknisk-plan" data-paper-portal-teknisk-plan style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 960, margin: "0 auto", width: "100%" }}>
-        {/* Hode */}
+      <TilbakeLenke href="/portal/tren/teknisk-plan">Tekniske planer</TilbakeLenke>
+      <div data-paper-slug="playerhq-teknisk-plan" data-od-id="playerhq-teknisk-plan" style={{ maxWidth: 960, margin: "0 auto", width: "100%" }}>
+        <TekniskPlanVisning
+          tittelSub={`${plan.navn} · ${periodLabel} · ${plan.opprettetAv?.name ?? "Coach"}`}
+          enTing={enTing}
+          planKort={planKort}
+          fokus={fokusLes}
+          whyPunkter={whyPunkter}
+          rediger={
+      <div style={{ display: "flex", flexDirection: "column", gap: T.gap, width: "100%", minWidth: 0 }}>
+        {/* Hode (redigeringsmodus — dagens verktøylinje, uendret) */}
         <div style={{ display: "flex", flexWrap: "wrap", alignItems: "flex-end", justifyContent: "space-between", gap: 12 }}>
           <div style={{ minWidth: 0 }}>
             <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>Teknisk plan</h1>
@@ -194,7 +271,6 @@ export default async function PlanBuilderPage({ params }: PageProps) {
             </p>
           </div>
           <div style={{ display: "flex", gap: 8, flexWrap: "wrap", alignItems: "center" }}>
-            <TilbakeLenke href="/portal/tren/teknisk-plan">Tekniske planer</TilbakeLenke>
             <OppgaveLauncher planId={plan.id} target={defaultTarget} variant="primary" label="Ny oppgave" />
           </div>
         </div>
@@ -389,6 +465,9 @@ export default async function PlanBuilderPage({ params }: PageProps) {
             />
           </aside>
         </div>
+      </div>
+          }
+        />
       </div>
     </V2Shell>
   );
