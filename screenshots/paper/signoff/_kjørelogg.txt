@@ -1,2 +1,2 @@
-OK    PP-2.4 m390   /admin/kalender — "Uke Bookinger Tavle Tilgjengelighet UKE 33 · 10.–16. AUGUST · ALLE SPI"
-OK    PP-2.4 d1280  /admin/kalender — "KONSOLL INNBOKS SPILLERE KALENDER WORKBENCH AGENTICOS ØKONOMI INNSTILL"
+OK    PP-1.7 m390   /booking — "AK Golf . Logg inn AK GOLF ACADEMY · FREDRIKSTAD Book en time med Ande"
+OK    PP-1.7 d1280  /booking — "AK Golf . Priser Spørsmål Logg inn AK GOLF ACADEMY · FREDRIKSTAD Book "
