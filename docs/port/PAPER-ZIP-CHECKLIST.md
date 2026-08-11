@@ -47,10 +47,10 @@
 
 ## Fase 2 · PlayerHQ W1 (drill/plan/test/turnering)
 
-- [ ] `fase2/playerhq/playerhq-drill-detalj.html`
+- [~] `fase2/playerhq/playerhq-drill-detalj.html` — natt 11.08 (#394) READY_SIGN
 - [ ] `fase2/playerhq/playerhq-drills.html`
-- [ ] `fase2/playerhq/playerhq-feiring.html`
-- [ ] `fase2/playerhq/playerhq-fys-plan.html`
+- [~] `fase2/playerhq/playerhq-feiring.html` — natt 11.08 (#394) READY_SIGN
+- [~] `fase2/playerhq/playerhq-fys-plan.html` — natt 11.08 (#394) READY_SIGN
 - [ ] `fase2/playerhq/playerhq-live-tapper.html`
 - [ ] `fase2/playerhq/playerhq-okt-detalj.html`
 - [ ] `fase2/playerhq/playerhq-teknisk-plan.html`
