@@ -220,7 +220,7 @@ export function InnboksSaker({ data }: { data: InnboksData }) {
         </div>
 
         {/* ── Radene ── */}
-        <div role="list" aria-label="Saker" style={{ padding: 16, display: "flex", flexDirection: "column", gap: 8 }}>
+        <div role="list" aria-label="Saker" style={{ padding: mobil ? "16px 16px 132px" : 16, display: "flex", flexDirection: "column", gap: 8 }}>
           {rader.length === 0 ? (
             <TomListe
               filter={filter}
@@ -239,6 +239,62 @@ export function InnboksSaker({ data }: { data: InnboksData }) {
           )}
         </div>
       </div>
+
+      {/* ── «Én ting nå» — sticky bunn-CTA på mobil (fasitens .bunn i
+          agencyos-innboks-mobil.html): peker alltid på øverste ubehandlede
+          sak. Skjules når arket er åpent (clay-monopolet — arket eier da
+          Godkjenn-knappen). ── */}
+      {mobil && !arkApent && (
+        <div
+          data-od-id="inn-bunn-cta"
+          style={{
+            position: "fixed",
+            left: 0,
+            right: 0,
+            bottom: "calc(72px + env(safe-area-inset-bottom) + var(--ak-cookie-h, 0px))",
+            zIndex: 30,
+            padding: "12px 16px",
+            borderTop: `1px solid ${T.border}`,
+            background: T.panel,
+          }}
+        >
+          {(() => {
+            const sak = data.saker.find((s) => !s.lost) ?? null;
+            if (!sak)
+              return (
+                <>
+                  <span style={{ display: "block", fontFamily: T.bodyFont, fontSize: 12, color: T.mut, marginBottom: 8 }}>
+                    Innboksen er tom. Ingenting venter på deg.
+                  </span>
+                  <Link
+                    href="/admin/kalender"
+                    className="v2-press v2-focus"
+                    data-od-id="inn-bunn-kalender"
+                    style={{ ...knappStil({ fyll: "omriss" }), width: "100%", textDecoration: "none" }}
+                  >
+                    Åpne kalenderen
+                  </Link>
+                </>
+              );
+            return (
+              <>
+                <span style={{ display: "block", fontFamily: T.bodyFont, fontSize: 12, color: T.mut, marginBottom: 8 }}>
+                  Øverste ubehandlede sak: {sak.tittel}
+                </span>
+                <button
+                  type="button"
+                  onClick={() => velg(sak)}
+                  className="v2-press v2-focus"
+                  data-od-id="inn-one-thing-now"
+                  style={{ ...knappStil({ fyll: "clay" }), width: "100%" }}
+                >
+                  {sak.type === "forslag" ? "Se grunnlaget og godkjenn" : "Åpne saken"}
+                </button>
+              </>
+            );
+          })()}
+        </div>
+      )}
 
       {/* ══ Detaljpanel — fast kolonne på desktop, bunnark på mobil ══ */}
       {mobil ? (
