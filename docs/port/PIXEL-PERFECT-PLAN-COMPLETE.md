@@ -244,8 +244,8 @@ Dette er det som avgjør om appen *ser ut som* Paper.
 
 | ID | Fasit | Rute | Eier |
 |---|---|---|---|
-| PP-2.1 | `agencyos-konsoll-desktop.html` + mobil | `/admin/agencyos` | CockpitV2 |
-| PP-2.2 | `agencyos-innboks.html` + mobil | `/admin/innboks` | TriageV2 |
+| PP-2.1 | `agencyos-konsoll-desktop.html` + mobil | `/admin/agencyos` | konsoll/KonsollChat (var CockpitV2) |
+| PP-2.2 | `agencyos-innboks.html` + mobil | `/admin/innboks` | innboks/InnboksSaker (var TriageV2) |
 | PP-2.3 | `agencyos-spillere.html` + mobil | `/admin/spillere` | StallV2 |
 | PP-2.4 | `agencyos-kalender.html` + mobil | `/admin/kalender` | AgencyKalenderV2 |
 | PP-2.5 | `agencyos-okonomi.html` | `/admin/agencyos/okonomi` | AdminOkonomiV2 |

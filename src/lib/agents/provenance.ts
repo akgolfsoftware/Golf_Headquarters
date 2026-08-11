@@ -93,3 +93,36 @@ export function provenanceLesbarTekst(raw: unknown): string | null {
 
   return `${deler.join(", ")} — kilde: ${kilde}${antall}`;
 }
+
+/**
+ * Samme provenance, men som én linje per faktum — «Grunnlag»-lista i
+ * Innboks-fasiten (agencyos-innboks.html §prov). Tom liste når raden ikke har
+ * provenance, slik at seksjonen kan skjules i stedet for å vise et tomt kort.
+ */
+export function provenanceLinjer(raw: unknown): string[] {
+  const parsed = provenanceSchema.safeParse(raw);
+  if (!parsed.success) return [];
+  const p = parsed.data;
+
+  const linjer: string[] = [];
+  const antall = p.rader.length;
+  linjer.push(
+    `Kilde: ${KILDE_LABEL[p.kilde]}${antall > 0 ? ` · ${antall} rad${antall === 1 ? "" : "er"}` : ""}`,
+  );
+  linjer.push(`Regel: ${p.regel}`);
+  if (p.terskel != null || p.maaltVerdi != null) {
+    const maalt = p.maaltVerdi != null ? `målt ${p.maaltVerdi}` : null;
+    const grense = p.terskel != null ? `grense ${p.terskel}` : null;
+    linjer.push([maalt, grense].filter(Boolean).join(" · "));
+  }
+  if (p.tidsvindu) {
+    const fmt = (iso: string) => {
+      const d = new Date(iso);
+      return Number.isNaN(d.getTime())
+        ? iso
+        : d.toLocaleDateString("nb-NO", { day: "2-digit", month: "2-digit", timeZone: "Europe/Oslo" });
+    };
+    linjer.push(`Tidsvindu: ${fmt(p.tidsvindu.fra)} – ${fmt(p.tidsvindu.til)}`);
+  }
+  return linjer;
+}

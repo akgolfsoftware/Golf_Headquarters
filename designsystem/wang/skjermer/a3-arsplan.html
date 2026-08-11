@@ -1,0 +1,411 @@
+<!-- @dsCard group="Skjermer" -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>A3 Årsplan — WANG Golf</title>
+<style>
+  @import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800&family=Quattrocento+Sans:wght@400;700&display=swap");
+
+  :root {
+    --wang-navy: #17446f; --wang-teal: #2e857d; --wang-mint: #49ca9f; --wang-teal-text: #226f67;
+    --cat-orange: #f47b20; --cat-yellow: #fcd700; --cat-pink: #d12a5c; --cat-blue: #007db1;
+    --cat-purple: #7f1975; --cat-gray: #d2d2d2;
+    --bg-app: #f4f6f8; --surface-card: #fff; --text-primary: #1e293b; --text-secondary: #475569;
+    --border-subtle: #e9edf1;
+    --tint-teal: color-mix(in srgb, #2e857d 13%, white);
+    --tint-orange: color-mix(in srgb, #f47b20 9%, white);
+    --tint-blue: color-mix(in srgb, #007db1 10%, white);
+    --tint-purple: color-mix(in srgb, #7f1975 10%, white);
+    --radius-card: 26px; --radius-card-sm: 20px; --radius-chip: 999px;
+    --shadow-card: 0 8px 24px rgba(23,68,111,.08); --shadow-card-sm: 0 4px 14px rgba(23,68,111,.06);
+    --shadow-hero: 0 18px 40px rgba(15,23,42,.22);
+    --font-brand: "Montserrat", system-ui, sans-serif;
+    --font-body: "Quattrocento Sans", system-ui, sans-serif;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; padding: 36px 28px 60px; background: #e6eaee; color: var(--text-primary); font-family: var(--font-body); -webkit-font-smoothing: antialiased; }
+  .page { max-width: 1460px; margin: 0 auto; }
+  h1 { font-family: var(--font-brand); font-weight: 800; font-size: 26px; letter-spacing: -.015em; margin: 0 0 6px; }
+  .lede { color: var(--text-secondary); font-size: 15px; line-height: 1.6; max-width: 68ch; margin: 0 0 32px; }
+  .t-label { font-family: var(--font-brand); font-weight: 700; font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--text-secondary); margin: 0 0 12px; }
+  .frames { display: flex; gap: 30px; align-items: flex-start; flex-wrap: wrap; }
+  .cap { font-family: var(--font-brand); font-weight: 700; font-size: 11px; letter-spacing: .07em; text-transform: uppercase; color: var(--text-secondary); margin: 0 0 9px; }
+  .phone { width: 390px; height: 820px; background: var(--bg-app); border-radius: 30px; box-shadow: var(--shadow-hero); overflow: hidden; display: flex; flex-direction: column; flex: none; }
+  .desk { width: 980px; background: var(--bg-app); border-radius: 18px; box-shadow: var(--shadow-hero); overflow: hidden; display: flex; flex-direction: column; flex: none; min-width: 0; }
+
+  .hd { background: var(--surface-card); box-shadow: var(--shadow-card-sm); flex: none; z-index: 3; }
+  .hd-row { display: flex; align-items: center; gap: 12px; padding: 13px 18px; min-width: 0; }
+  .crest { width: 34px; height: 34px; border-radius: 9px; background: var(--wang-navy); display: grid; place-items: center; flex: none; font-family: var(--font-brand); font-weight: 800; font-size: 13px; color: #fff; }
+  .hd-txt { min-width: 0; flex: 1; }
+  .hd-txt b { display: block; font-family: var(--font-brand); font-weight: 800; font-size: 14.5px; line-height: 1.2; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .hd-txt span { display: block; font-family: var(--font-brand); font-weight: 700; font-size: 10.5px; letter-spacing: .07em; text-transform: uppercase; color: var(--text-secondary); margin-top: 2px; }
+  .season { display: inline-flex; align-items: center; gap: 6px; height: 28px; padding: 0 12px; border-radius: 999px; background: var(--tint-teal); color: var(--wang-teal-text); font-family: var(--font-brand); font-weight: 700; font-size: 11px; white-space: nowrap; flex: none; }
+  .dot { width: 6px; height: 6px; border-radius: 999px; background: var(--wang-mint); flex: none; }
+  .hd-tabs { display: flex; gap: 6px; padding: 0 26px 12px; }
+  .tab { font-family: var(--font-brand); font-weight: 700; font-size: 12.5px; padding: 8px 15px; border-radius: 999px; color: var(--text-secondary); background: transparent; border: 0; white-space: nowrap; }
+  .tab.on { background: var(--wang-navy); color: #fff; }
+
+  .scroll { flex: 1; overflow: hidden; padding: 15px 16px 18px; display: flex; flex-direction: column; gap: 12px; min-height: 0; }
+
+  .titel { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; min-width: 0; flex: none; }
+  .titel h2 { font-family: var(--font-brand); font-weight: 800; font-size: 21px; letter-spacing: -.015em; margin: 0; min-width: 0; }
+  .titel .yr { font-family: var(--font-brand); font-weight: 700; font-size: 11.5px; color: var(--text-secondary); white-space: nowrap; flex: none; font-variant-numeric: tabular-nums; }
+
+  /* Segmentert bytter */
+  .seg { display: flex; background: #e5eaf0; border-radius: 999px; padding: 3px; gap: 2px; flex: none; }
+  .seg button { flex: 1; font-family: var(--font-brand); font-weight: 700; font-size: 12px; padding: 8px 4px; border-radius: 999px; border: 0; background: transparent; color: var(--text-secondary); min-width: 0; }
+  .seg button.on { background: #fff; color: var(--wang-navy); box-shadow: var(--shadow-card-sm); }
+
+  .card { background: var(--surface-card); border-radius: var(--radius-card-sm); box-shadow: var(--shadow-card-sm); padding: 13px 14px; min-width: 0; flex: none; }
+
+  /* ---- Periodeliste (mobil) ---- */
+  .per { display: flex; gap: 11px; padding: 11px 0; border-bottom: 1px solid var(--border-subtle); min-width: 0; align-items: flex-start; }
+  .per:last-child { border-bottom: 0; padding-bottom: 0; }
+  .per:first-child { padding-top: 2px; }
+  .per-bar { width: 4px; border-radius: 999px; flex: none; align-self: stretch; min-height: 42px; }
+  .per-txt { min-width: 0; flex: 1; }
+  .per-top { display: flex; align-items: center; gap: 7px; min-width: 0; }
+  .per-top b { font-family: var(--font-brand); font-weight: 700; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+  .per-dato { font-family: var(--font-brand); font-weight: 700; font-size: 10.5px; letter-spacing: .05em; text-transform: uppercase; color: var(--text-secondary); margin-top: 3px; font-variant-numeric: tabular-nums; }
+  .per-fokus { font-size: 12.5px; color: var(--text-secondary); line-height: 1.5; margin-top: 4px; }
+  .per-meta { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 7px; }
+  .mini { font-family: var(--font-brand); font-weight: 700; font-size: 9.5px; letter-spacing: .04em; text-transform: uppercase; padding: 3px 7px; border-radius: 6px; background: #eef2f6; color: var(--text-secondary); white-space: nowrap; }
+  .naa { font-family: var(--font-brand); font-weight: 700; font-size: 9px; letter-spacing: .05em; text-transform: uppercase; padding: 3px 7px; border-radius: 999px; background: var(--cat-orange); color: #fff; flex: none; }
+
+  /* ---- Gantt (desktop) ---- */
+  .gantt { display: grid; grid-template-columns: 116px minmax(0,1fr); gap: 0 12px; align-items: center; min-width: 0; }
+  .g-mnd { display: grid; grid-template-columns: repeat(12,1fr); gap: 2px; min-width: 0; }
+  .g-mnd span { font-family: var(--font-brand); font-weight: 700; font-size: 9.5px; letter-spacing: .04em; text-transform: uppercase; color: var(--text-secondary); text-align: center; overflow: hidden; }
+  .g-rad { display: grid; grid-template-columns: repeat(12,1fr); gap: 2px; height: 26px; align-items: center; min-width: 0; position: relative; }
+  .g-blk { height: 22px; border-radius: 7px; display: flex; align-items: center; padding: 0 8px; font-family: var(--font-brand); font-weight: 700; font-size: 10px; color: #fff; letter-spacing: .03em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+  .g-navn { font-family: var(--font-brand); font-weight: 700; font-size: 11px; color: var(--text-primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+  .g-naa { position: absolute; top: -4px; bottom: -4px; width: 2px; background: var(--cat-orange); border-radius: 2px; }
+
+  /* ---- Pyramide-fordeling ---- */
+  .pyr { display: flex; gap: 3px; height: 9px; border-radius: 999px; overflow: hidden; margin-top: 8px; }
+  .pyr i { display: block; }
+  .pyr-leg { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 8px; }
+  .pyr-leg span { display: inline-flex; align-items: center; gap: 5px; font-family: var(--font-brand); font-weight: 700; font-size: 9.5px; letter-spacing: .04em; text-transform: uppercase; color: var(--text-secondary); white-space: nowrap; }
+  .pyr-leg i { width: 8px; height: 8px; border-radius: 2px; flex: none; }
+
+  .skel { background: linear-gradient(90deg,#eef1f4 25%,#e3e8ed 50%,#eef1f4 75%); border-radius: 8px; height: 12px; }
+
+  .bn { flex: none; background: var(--surface-card); box-shadow: 0 -6px 20px rgba(23,68,111,.09); display: grid; grid-template-columns: repeat(4,1fr); padding: 8px 6px 14px; }
+  .bn-i { display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 5px 2px; border: 0; background: transparent; color: var(--text-secondary); min-width: 0; }
+  .bn-i svg { width: 21px; height: 21px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+  .bn-i span { font-family: var(--font-brand); font-weight: 700; font-size: 10px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
+  .bn-i.on { color: var(--wang-navy); }
+  .bn-i.on::before { content: ""; position: absolute; margin-top: -8px; width: 22px; height: 3px; border-radius: 999px; background: var(--wang-mint); }
+
+  .note { background: var(--surface-card); border-radius: var(--radius-card); box-shadow: var(--shadow-card); padding: 22px 24px; font-size: 14px; line-height: 1.65; color: var(--text-secondary); margin-top: 30px; }
+  .note b { color: var(--text-primary); }
+  .note ul { margin: 10px 0 0; padding-left: 20px; }
+  .note li { margin-bottom: 8px; }
+  .split { display: grid; grid-template-columns: repeat(auto-fit,minmax(320px,1fr)); gap: 18px; }
+  .was { border-left: 3px solid #cbd5e1; padding-left: 14px; }
+  .now { border-left: 3px solid var(--wang-mint); padding-left: 14px; }
+  .was h4,.now h4 { font-family: var(--font-brand); font-weight: 700; font-size: 11px; letter-spacing: .07em; text-transform: uppercase; margin: 0 0 7px; color: var(--text-secondary); }
+  .was p,.now p { margin: 0; font-size: 13.5px; line-height: 1.6; }
+</style>
+
+<div class="page">
+  <h1>A3 — Årsplan</h1>
+  <p class="lede">
+    Hele sesongen på én flate. Mobil får en loddrett periodeliste, desktop får en tidslinje over
+    tolv måneder. Begge viser <b>hvor du er nå</b> og <b>hva hver periode bygger mot</b>.
+  </p>
+
+  <p class="t-label">Mobil 390px — fire tilstander</p>
+  <div class="frames">
+
+    <!-- SUKSESS -->
+    <div>
+      <p class="cap">Suksess</p>
+      <div class="phone">
+        <div class="hd"><div class="hd-row">
+          <div class="crest">W</div><div class="hd-txt"><b>Toppidrett Fredrikstad</b><span>Golf</span></div>
+          <span class="season"><span class="dot"></span>26/27</span>
+        </div></div>
+        <div class="scroll">
+          <div class="titel"><h2>Årsplan</h2><span class="yr">2026–2027</span></div>
+          <div class="seg"><button class="on">Perioder</button><button>Måned</button><button>Uke</button></div>
+
+          <div class="card">
+            <div class="per">
+              <span class="per-bar" style="background:var(--wang-mint)"></span>
+              <span class="per-txt">
+                <span class="per-top"><b>Grunn 1</b></span>
+                <div class="per-dato">1. aug – 20. sep · 7 uker</div>
+                <div class="per-fokus">Volum og teknisk base. Lange baneøkter.</div>
+                <div class="per-meta"><span class="mini">10–14 t/uke</span><span class="mini">12 økter</span></div>
+              </span>
+            </div>
+            <div class="per">
+              <span class="per-bar" style="background:var(--wang-teal)"></span>
+              <span class="per-txt">
+                <span class="per-top"><b>Spesial 1</b></span>
+                <div class="per-dato">21. sep – 1. nov · 6 uker</div>
+                <div class="per-fokus">Nærspill og putting mot høstturneringene.</div>
+                <div class="per-meta"><span class="mini">9–12 t/uke</span><span class="mini">10 økter</span></div>
+              </span>
+            </div>
+            <div class="per">
+              <span class="per-bar" style="background:var(--cat-orange)"></span>
+              <span class="per-txt">
+                <span class="per-top"><b>Konkurranse</b><span class="naa">Nå</span></span>
+                <div class="per-dato">2. nov – 15. des · 6 uker</div>
+                <div class="per-fokus">Turneringsrytme. Færre, skarpere økter.</div>
+                <div class="per-meta"><span class="mini">7–10 t/uke</span><span class="mini">8 økter</span></div>
+                <div class="pyr">
+                  <i style="background:var(--cat-blue);flex:2"></i>
+                  <i style="background:var(--wang-teal);flex:3"></i>
+                  <i style="background:var(--wang-mint);flex:2"></i>
+                  <i style="background:var(--cat-purple);flex:4"></i>
+                  <i style="background:var(--cat-orange);flex:2"></i>
+                </div>
+                <div class="pyr-leg">
+                  <span><i style="background:var(--cat-blue)"></i>Fys 2</span>
+                  <span><i style="background:var(--wang-teal)"></i>Tek 3</span>
+                  <span><i style="background:var(--wang-mint)"></i>Slag 2</span>
+                  <span><i style="background:var(--cat-purple)"></i>Spill 4</span>
+                  <span><i style="background:var(--cat-orange)"></i>Turn 2</span>
+                </div>
+              </span>
+            </div>
+            <div class="per">
+              <span class="per-bar" style="background:var(--cat-gray)"></span>
+              <span class="per-txt">
+                <span class="per-top"><b>Ferie</b></span>
+                <div class="per-dato">16. des – 2. jan · 2 uker</div>
+                <div class="per-fokus">Fri. Ingen planlagte økter.</div>
+              </span>
+            </div>
+            <div class="per">
+              <span class="per-bar" style="background:var(--cat-yellow)"></span>
+              <span class="per-txt">
+                <span class="per-top"><b>Testuke</b></span>
+                <div class="per-dato">5. jan – 11. jan · 1 uke</div>
+                <div class="per-fokus">Testbatteri — utgangspunkt for vårsesongen.</div>
+              </span>
+            </div>
+          </div>
+        </div>
+        <div class="bn">
+          <button class="bn-i"><svg viewBox="0 0 24 24"><path d="M3 9.5 12 3l9 6.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg><span>Oversikt</span></button>
+          <button class="bn-i on"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M8 2v4M16 2v4M3 10h18"/></svg><span>Plan</span></button>
+          <button class="bn-i"><svg viewBox="0 0 24 24"><path d="M22 9 12 4 2 9l10 5z"/><path d="M6 11.5V17c0 1.5 2.7 3 6 3s6-1.5 6-3v-5.5"/></svg><span>Skole</span></button>
+          <button class="bn-i"><svg viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/></svg><span>Foreldre</span></button>
+        </div>
+      </div>
+    </div>
+
+    <!-- LASTER -->
+    <div>
+      <p class="cap">Laster</p>
+      <div class="phone">
+        <div class="hd"><div class="hd-row">
+          <div class="crest">W</div><div class="hd-txt"><b>Toppidrett Fredrikstad</b><span>Golf</span></div>
+          <span class="season"><span class="dot"></span>26/27</span>
+        </div></div>
+        <div class="scroll">
+          <div class="titel"><h2>Årsplan</h2><span class="yr">2026–2027</span></div>
+          <div class="seg"><button class="on">Perioder</button><button>Måned</button><button>Uke</button></div>
+          <div class="card">
+            <div class="per"><span class="per-bar" style="background:#e2e8f0"></span><span class="per-txt">
+              <div class="skel" style="width:44%;height:14px"></div>
+              <div class="skel" style="width:66%;height:9px;margin-top:8px"></div>
+              <div class="skel" style="width:88%;height:11px;margin-top:7px"></div>
+            </span></div>
+            <div class="per"><span class="per-bar" style="background:#e2e8f0"></span><span class="per-txt">
+              <div class="skel" style="width:52%;height:14px"></div>
+              <div class="skel" style="width:60%;height:9px;margin-top:8px"></div>
+              <div class="skel" style="width:76%;height:11px;margin-top:7px"></div>
+            </span></div>
+            <div class="per"><span class="per-bar" style="background:#e2e8f0"></span><span class="per-txt">
+              <div class="skel" style="width:38%;height:14px"></div>
+              <div class="skel" style="width:70%;height:9px;margin-top:8px"></div>
+            </span></div>
+          </div>
+        </div>
+        <div class="bn">
+          <button class="bn-i"><svg viewBox="0 0 24 24"><path d="M3 9.5 12 3l9 6.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg><span>Oversikt</span></button>
+          <button class="bn-i on"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M8 2v4M16 2v4M3 10h18"/></svg><span>Plan</span></button>
+          <button class="bn-i"><svg viewBox="0 0 24 24"><path d="M22 9 12 4 2 9l10 5z"/><path d="M6 11.5V17c0 1.5 2.7 3 6 3s6-1.5 6-3v-5.5"/></svg><span>Skole</span></button>
+          <button class="bn-i"><svg viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/></svg><span>Foreldre</span></button>
+        </div>
+      </div>
+    </div>
+
+    <!-- TOM -->
+    <div>
+      <p class="cap">Tom</p>
+      <div class="phone">
+        <div class="hd"><div class="hd-row">
+          <div class="crest">W</div><div class="hd-txt"><b>Toppidrett Fredrikstad</b><span>Golf</span></div>
+          <span class="season"><span class="dot"></span>26/27</span>
+        </div></div>
+        <div class="scroll">
+          <div class="titel"><h2>Årsplan</h2><span class="yr">2026–2027</span></div>
+          <div class="seg"><button class="on">Perioder</button><button>Måned</button><button>Uke</button></div>
+          <div class="card" style="text-align:center;padding:32px 22px">
+            <div style="width:58px;height:58px;border-radius:999px;background:var(--tint-teal);display:grid;place-items:center;margin:0 auto">
+              <svg viewBox="0 0 24 24" style="width:26px;height:26px;stroke:var(--wang-teal-text);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round"><path d="M3 3v18h18"/><path d="m7 15 4-4 3 3 5-6"/></svg>
+            </div>
+            <div style="font-family:var(--font-brand);font-weight:700;font-size:17px;margin-top:14px">Årsplanen er ikke lagt inn</div>
+            <div style="font-size:13px;color:var(--text-secondary);line-height:1.6;margin-top:7px">
+              Treneren legger inn periodene for sesongen. Da ser du hele året her — hvor du er,
+              hva som kommer, og hva hver periode bygger mot.
+            </div>
+          </div>
+        </div>
+        <div class="bn">
+          <button class="bn-i"><svg viewBox="0 0 24 24"><path d="M3 9.5 12 3l9 6.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg><span>Oversikt</span></button>
+          <button class="bn-i on"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M8 2v4M16 2v4M3 10h18"/></svg><span>Plan</span></button>
+          <button class="bn-i"><svg viewBox="0 0 24 24"><path d="M22 9 12 4 2 9l10 5z"/><path d="M6 11.5V17c0 1.5 2.7 3 6 3s6-1.5 6-3v-5.5"/></svg><span>Skole</span></button>
+          <button class="bn-i"><svg viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/></svg><span>Foreldre</span></button>
+        </div>
+      </div>
+    </div>
+
+    <!-- FEIL -->
+    <div>
+      <p class="cap">Feil</p>
+      <div class="phone">
+        <div class="hd"><div class="hd-row">
+          <div class="crest">W</div><div class="hd-txt"><b>Toppidrett Fredrikstad</b><span>Golf</span></div>
+          <span class="season"><span class="dot"></span>26/27</span>
+        </div></div>
+        <div class="scroll" style="justify-content:center;align-items:center;text-align:center;padding:24px 30px">
+          <div style="width:62px;height:62px;border-radius:999px;background:var(--tint-orange);display:grid;place-items:center">
+            <svg viewBox="0 0 24 24" style="width:27px;height:27px;stroke:#b4571a;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round"><path d="M12 9v4M12 17h.01"/><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/></svg>
+          </div>
+          <div style="font-family:var(--font-brand);font-weight:700;font-size:17.5px;margin-top:15px">Fikk ikke lastet årsplanen</div>
+          <div style="font-size:13.5px;color:var(--text-secondary);line-height:1.6;margin-top:7px;max-width:34ch">
+            Sjekk at du er på nett. Planen ligger trygt lagret.
+          </div>
+          <button style="margin-top:18px;font-family:var(--font-brand);font-weight:600;font-size:14px;padding:12px 24px;border-radius:999px;border:0;background:var(--wang-navy);color:#fff">Prøv igjen</button>
+        </div>
+        <div class="bn">
+          <button class="bn-i"><svg viewBox="0 0 24 24"><path d="M3 9.5 12 3l9 6.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg><span>Oversikt</span></button>
+          <button class="bn-i on"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M8 2v4M16 2v4M3 10h18"/></svg><span>Plan</span></button>
+          <button class="bn-i"><svg viewBox="0 0 24 24"><path d="M22 9 12 4 2 9l10 5z"/><path d="M6 11.5V17c0 1.5 2.7 3 6 3s6-1.5 6-3v-5.5"/></svg><span>Skole</span></button>
+          <button class="bn-i"><svg viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/></svg><span>Foreldre</span></button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <p class="t-label" style="margin-top:34px">Desktop 1280px — tidslinje over tolv måneder</p>
+  <div class="frames">
+    <div class="desk">
+      <div class="hd">
+        <div class="hd-row" style="padding:15px 26px 12px">
+          <div class="crest" style="width:40px;height:40px;font-size:15px">W</div>
+          <div class="hd-txt"><b style="font-size:16px">Toppidrett Fredrikstad</b><span>Golf · Fellesside for elever og foreldre</span></div>
+          <span class="season" style="height:30px;font-size:11.5px"><span class="dot"></span>Sesong 2026–2027</span>
+        </div>
+        <div class="hd-tabs"><button class="tab">Oversikt</button><button class="tab on">Plan</button><button class="tab">Skole</button><button class="tab">Foreldre</button></div>
+      </div>
+      <div class="scroll" style="padding:20px 26px 26px;gap:14px">
+        <div class="titel"><h2 style="font-size:24px">Årsplan</h2><span class="yr">Sesong 2026–2027</span></div>
+
+        <div class="card" style="border-radius:var(--radius-card);padding:18px 20px">
+          <div class="gantt">
+            <span></span>
+            <div class="g-mnd">
+              <span>Aug</span><span>Sep</span><span>Okt</span><span>Nov</span><span>Des</span><span>Jan</span>
+              <span>Feb</span><span>Mar</span><span>Apr</span><span>Mai</span><span>Jun</span><span>Jul</span>
+            </div>
+
+            <span class="g-navn">Grunn 1</span>
+            <div class="g-rad"><div class="g-blk" style="grid-column:1/3;background:var(--wang-mint);color:#0f172a">1. aug – 20. sep</div></div>
+
+            <span class="g-navn">Spesial 1</span>
+            <div class="g-rad"><div class="g-blk" style="grid-column:2/4;background:var(--wang-teal)">21. sep – 1. nov</div></div>
+
+            <span class="g-navn">Konkurranse</span>
+            <div class="g-rad">
+              <div class="g-blk" style="grid-column:4/6;background:var(--cat-orange)">2. nov – 15. des</div>
+              <div class="g-naa" style="grid-column:4;justify-self:center"></div>
+            </div>
+
+            <span class="g-navn">Ferie</span>
+            <div class="g-rad"><div class="g-blk" style="grid-column:5/6;background:var(--cat-gray);color:#334155">2 uker</div></div>
+
+            <span class="g-navn">Testuke</span>
+            <div class="g-rad"><div class="g-blk" style="grid-column:6/7;background:var(--cat-yellow);color:#0f172a">5.–11. jan</div></div>
+
+            <span class="g-navn">Grunn 2</span>
+            <div class="g-rad"><div class="g-blk" style="grid-column:6/9;background:var(--wang-mint);color:#0f172a">12. jan – 15. mar</div></div>
+
+            <span class="g-navn">Spesial 2</span>
+            <div class="g-rad"><div class="g-blk" style="grid-column:9/11;background:var(--wang-teal)">16. mar – 30. apr</div></div>
+
+            <span class="g-navn">Turnering</span>
+            <div class="g-rad"><div class="g-blk" style="grid-column:11/13;background:var(--cat-orange)">1. mai – 30. jun</div></div>
+          </div>
+        </div>
+
+        <div class="card" style="border-radius:var(--radius-card);padding:18px 20px">
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:11px;min-width:0">
+            <span style="font-family:var(--font-brand);font-weight:700;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--text-secondary)">Nå: Konkurranse · 2. nov – 15. des</span>
+            <span class="naa">Uke 3 av 6</span>
+          </div>
+          <div style="font-size:14px;color:var(--text-secondary);line-height:1.6;max-width:70ch">
+            Turneringsrytme. Færre, skarpere økter — 7–10 timer i uka fordelt på åtte økter.
+          </div>
+          <div class="pyr" style="height:11px;margin-top:12px">
+            <i style="background:var(--cat-blue);flex:2"></i><i style="background:var(--wang-teal);flex:3"></i>
+            <i style="background:var(--wang-mint);flex:2"></i><i style="background:var(--cat-purple);flex:4"></i>
+            <i style="background:var(--cat-orange);flex:2"></i>
+          </div>
+          <div class="pyr-leg" style="margin-top:10px">
+            <span><i style="background:var(--cat-blue)"></i>Fysisk 2</span>
+            <span><i style="background:var(--wang-teal)"></i>Teknikk 3</span>
+            <span><i style="background:var(--wang-mint)"></i>Slag 2</span>
+            <span><i style="background:var(--cat-purple)"></i>Spill 4</span>
+            <span><i style="background:var(--cat-orange)"></i>Turnering 2</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="note">
+    <div class="split">
+      <div class="was">
+        <h4>Slik er det i dag</h4>
+        <p>
+          Årsplanen ligger tre nivåer ned: Plan → Sesong → Årshjul, med et fjerde valg mellom
+          Årshjul og Tidslinje. Fire trykk før eleven ser sesongen. Pyramidefordelingen vises
+          ingen steder, selv om tallene finnes i basen.
+        </p>
+      </div>
+      <div class="now">
+        <h4>Slik blir det</h4>
+        <p>
+          Ett trykk fra bunnmenyen. Perioder er standardvisningen; Måned og Uke er sidestilte
+          valg i samme bytter, ikke undernivåer. Øktbudsjettet vises som en fordelingsstripe på
+          den aktive perioden.
+        </p>
+      </div>
+    </div>
+    <ul style="margin-top:18px">
+      <li><b>Alt leses fra <code>GroupPeriodBlock</code></b> — <code>lPhase</code> gir farge og navn,
+        <code>startDate</code>/<code>endDate</code> gir plassering, <code>focus</code> gir teksten,
+        <code>weeklyVolMin/Max</code> gir timetallet, <code>weeklySessionBudget</code> gir stripen.
+        <b>Ingen nye felter.</b></li>
+      <li><b>Tre nivåer ble til ett.</b> Fanevalget Perioder/Måned/Uke er én segmentert bytter —
+        jf. «minst mulig trykk» i beslutninger.md.</li>
+      <li><b>Nå-markøren</b> er en oransje strek i tidslinja og et «Nå»-merke i lista. Samme farge
+        begge steder.</li>
+      <li><b>Gantt-rutenettet er 12 kolonner</b> med <code>grid-column</code> per periode. Hver
+        celle har <code>min-width: 0</code> og <code>text-overflow: ellipsis</code> — periodenavn
+        kan bli lange.</li>
+      <li><b>Ferie er grå, ikke tom.</b> En periode uten trening er fortsatt en periode, og skal
+        vises — den forklarer hullet i planen.</li>
+      <li><b>Smale blokker bytter etikett.</b> En periode som dekker under to måneder får varighet
+        («2 uker») i stedet for datospenn — datoene står uansett i periodelista. Regel ved koding:
+        under ~90px bredde, vis varighet.</li>
+    </ul>
+  </div>
+</div>

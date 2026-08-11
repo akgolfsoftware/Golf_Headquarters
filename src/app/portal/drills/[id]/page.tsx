@@ -37,12 +37,12 @@ export default async function DrillDetailPage({
         <Kort>
           <TomTilstand
             icon="dumbbell"
-            title="Drillen finnes ikke"
-            sub="Denne drillen finnes ikke eller er ikke tilgjengelig for deg."
+            title="Fant ikke drillen"
+            sub="Drillen finnes ikke eller er ikke tilgjengelig for deg — den kan være fjernet fra banken."
           />
           <div style={{ display: "flex", justifyContent: "center" }}>
             <Link href="/portal/drills" style={{ textDecoration: "none" }}>
-              <CTAPill icon="arrow-right">Se alle drills</CTAPill>
+              <CTAPill icon="arrow-right">Til øvelsesbanken</CTAPill>
             </Link>
           </div>
         </Kort>
@@ -50,17 +50,29 @@ export default async function DrillDetailPage({
     );
   }
 
-  // Loader-output → v2-datakontrakt. Samme felter som v10-mappingen
-  // (mapDrillData), inkl. coach = Anders Kristiansen og faste CTA-adresser.
+  // Loader-output → Paper-datakontrakt (fase2-fasit playerhq-drill-detalj.html).
+  // Sub-linjen komponeres av eyebrow-detaljen + meta-chips (kun reelle felter).
+  // AK-formel-slots utledes av faktiske felter: Pyramide (akse), Område
+  // (skill/treningsområde), Motorikk (læringsfase, Vei B) og Belastning
+  // (miljø). Slots uten data utelates — aldri fabrikert.
+  const eyebrowDetalj = data.eyebrow.includes(" · ")
+    ? data.eyebrow.split(" · ").slice(1).join(" · ")
+    : null;
+  const sub = [eyebrowDetalj ?? data.eyebrow, ...data.meta.map((m) => m.text)].join(" · ");
+  const laeringsfase = data.params.find((p) => p.key === "Læringsfase")?.value ?? null;
+  const miljo = data.params.find((p) => p.key === "Miljø")?.value ?? null;
+  const slots: { k: string; v: string }[] = [
+    { k: "Pyramide", v: data.axisLabel },
+    ...(eyebrowDetalj ? [{ k: "Område", v: eyebrowDetalj }] : []),
+    ...(laeringsfase ? [{ k: "Motorikk", v: laeringsfase }] : []),
+    ...(miljo ? [{ k: "Belastning", v: miljo }] : []),
+  ];
   const v2Data: DrillDetaljV2Data = {
     akse: data.axis.toUpperCase() as AkseKey,
-    eyebrow: data.eyebrow,
+    sub,
     navn: data.name,
     beskrivelse: data.description,
-    meta: data.meta.map((chip) => ({
-      icon: chip.icon,
-      text: chip.text,
-    })),
+    slots,
     trinn: data.steps,
     coachNotat: data.coachNotes,
     coachNavn: "Anders Kristiansen",

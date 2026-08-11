@@ -1,0 +1,188 @@
+<!-- @dsCard group="Grunnlag" -->
+<meta charset="utf-8">
+<title>Typografi — WANG Golf</title>
+<style>
+  @import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700&family=Quattrocento+Sans:wght@400;700&display=swap");
+
+  :root {
+    --wang-navy: #17446f;
+    --wang-teal-text: #226f67;
+    --bg-app: #f4f6f8;
+    --surface-card: #ffffff;
+    --text-primary: #1e293b;
+    --text-secondary: #475569;
+    --border-subtle: #e9edf1;
+    --radius-card: 26px;
+    --shadow-card: 0 8px 24px rgba(23, 68, 111, 0.08);
+    --font-brand: "Montserrat", system-ui, sans-serif;
+    --font-body: "Quattrocento Sans", system-ui, sans-serif;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    padding: 40px 32px 56px;
+    background: var(--bg-app);
+    color: var(--text-primary);
+    font-family: var(--font-body);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .wrap { max-width: 1120px; margin: 0 auto; }
+
+  h1 {
+    font-family: var(--font-brand);
+    font-weight: 700;
+    font-size: 28px;
+    letter-spacing: -0.01em;
+    margin: 0 0 6px;
+  }
+
+  .lede {
+    color: var(--text-secondary);
+    font-size: 15px;
+    line-height: 1.6;
+    max-width: 62ch;
+    margin: 0 0 36px;
+  }
+
+  .t-label {
+    font-family: var(--font-brand);
+    font-weight: 700;
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    line-height: 1.3;
+    color: var(--text-secondary);
+    margin: 0 0 14px;
+  }
+
+  .card {
+    background: var(--surface-card);
+    border-radius: var(--radius-card);
+    box-shadow: var(--shadow-card);
+    padding: 26px 28px;
+    margin-bottom: 22px;
+    min-width: 0;
+  }
+
+  .row {
+    display: grid;
+    grid-template-columns: 168px minmax(0, 1fr);
+    gap: 20px;
+    align-items: baseline;
+    padding: 15px 0;
+    border-bottom: 1px solid var(--border-subtle);
+  }
+
+  .row:last-child { border-bottom: 0; padding-bottom: 0; }
+  .row:first-child { padding-top: 0; }
+
+  .spec {
+    font-family: var(--font-brand);
+    font-weight: 600;
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--text-secondary);
+    line-height: 1.5;
+    min-width: 0;
+  }
+
+  .spec em {
+    display: block;
+    font-style: normal;
+    font-weight: 500;
+    text-transform: none;
+    letter-spacing: 0;
+    font-size: 12px;
+    opacity: 0.78;
+    margin-top: 3px;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .sample { min-width: 0; }
+
+  .d1 { font-family: var(--font-brand); font-weight: 700; font-size: 34px; line-height: 1.15; letter-spacing: -0.02em; }
+  .d2 { font-family: var(--font-brand); font-weight: 700; font-size: 26px; line-height: 1.2; letter-spacing: -0.01em; }
+  .d3 { font-family: var(--font-brand); font-weight: 600; font-size: 19px; line-height: 1.3; }
+  .d4 { font-family: var(--font-brand); font-weight: 600; font-size: 15px; line-height: 1.4; }
+  .lbl { font-family: var(--font-brand); font-weight: 700; font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; }
+  .body { font-family: var(--font-body); font-size: 16px; line-height: 1.65; }
+  .body-sm { font-family: var(--font-body); font-size: 14px; line-height: 1.6; color: var(--text-secondary); }
+  .num { font-family: var(--font-brand); font-weight: 700; font-size: 40px; font-variant-numeric: tabular-nums; letter-spacing: -0.02em; line-height: 1; }
+
+  .note {
+    font-size: 14px;
+    line-height: 1.65;
+    color: var(--text-secondary);
+  }
+
+  .note b { color: var(--text-primary); }
+  .note ul { margin: 10px 0 0; padding-left: 20px; }
+  .note li { margin-bottom: 7px; }
+</style>
+
+<div class="wrap">
+  <h1>Typografi</h1>
+  <p class="lede">
+    To fonter. <b>Montserrat</b> bærer merkevaren — titler, etiketter og tall.
+    <b>Quattrocento Sans</b> bærer brødteksten. Ingen tredje font.
+  </p>
+
+  <p class="t-label">Skala</p>
+  <div class="card">
+    <div class="row">
+      <div class="spec">Display 1<em>Montserrat 700 · 34px</em></div>
+      <div class="sample"><div class="d1">Sesongen 2026/27</div></div>
+    </div>
+    <div class="row">
+      <div class="spec">Display 2<em>Montserrat 700 · 26px</em></div>
+      <div class="sample"><div class="d2">Periode 3 — Konkurranse</div></div>
+    </div>
+    <div class="row">
+      <div class="spec">Overskrift<em>Montserrat 600 · 19px</em></div>
+      <div class="sample"><div class="d3">Uke 34 · Teknikk og nærspill</div></div>
+    </div>
+    <div class="row">
+      <div class="spec">Deloverskrift<em>Montserrat 600 · 15px</em></div>
+      <div class="sample"><div class="d4">Tirsdag — Baneøkt</div></div>
+    </div>
+    <div class="row">
+      <div class="spec">Etikett<em>Montserrat 700 · 12px · 0.08em</em></div>
+      <div class="sample"><div class="lbl" style="color: var(--wang-teal-text)">Gjennomført</div></div>
+    </div>
+    <div class="row">
+      <div class="spec">Brødtekst<em>Quattrocento Sans 400 · 16px</em></div>
+      <div class="sample">
+        <div class="body">
+          Denne uka bygger vi videre på nærspillet fra forrige periode. Målet er 60 prosent
+          treff innenfor to meter fra 40 meter.
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="spec">Brødtekst liten<em>Quattrocento Sans 400 · 14px</em></div>
+      <div class="sample">
+        <div class="body-sm">Sist oppdatert av Anders — mandag 10. august.</div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="spec">Tall<em>Montserrat 700 · tabular-nums</em></div>
+      <div class="sample"><div class="num" style="color: var(--wang-navy)">18,4</div></div>
+    </div>
+  </div>
+
+  <p class="t-label">Regler</p>
+  <div class="card note">
+    <ul>
+      <li><b>Tall er alltid tabular.</b> Kolonner med tall som endrer seg skal ikke hoppe.</li>
+      <li><b>Etiketter er versaler med 0.08em sperring</b> — de er strukturmarkører, ikke tekst
+        som skal leses som setning. Hold dem på ett til to ord.</li>
+      <li><b>Aldri Montserrat i lange avsnitt.</b> Over ~2 linjer går teksten til Quattrocento Sans.</li>
+      <li><b>Norsk bokmål overalt.</b> Ingen engelske ord i grensesnittet.</li>
+      <li><b>Aldri emoji.</b> Ikoner kommer fra Lucide.</li>
+    </ul>
+  </div>
+</div>

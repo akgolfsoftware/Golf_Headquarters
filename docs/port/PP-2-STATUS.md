@@ -26,8 +26,8 @@ godkjenninger») der fasiten bruker den på én konkret handling på én konkret
 
 | ID | Anbefaling | Størrelse |
 |---|---|---|
-| PP-2.1 Konsoll | **Egen jobb** (Anders 10.08) | **Stor** — fasiten er en samtale med artefaktkolonne, appen er en oppslagstavle. Brief: [`PP-2.1-KONSOLL-BRIEF.md`](PP-2.1-KONSOLL-BRIEF.md) |
-| PP-2.2 Innboks | FIKS FØRST | Stor — layoutfeil (1681 px i 1280 px vindu) **rettet 10.08** |
+| PP-2.1 Konsoll | **Bygget 10.08** (#388) — venter skjermbilde-gate | **Stor** — fasiten er en samtale med artefaktkolonne, appen var en oppslagstavle. Brief: [`PP-2.1-KONSOLL-BRIEF.md`](PP-2.1-KONSOLL-BRIEF.md) |
+| PP-2.2 Innboks | **Bygget 10.08** — venter skjermbilde-gate | Stor — layoutfeil (1681 px i 1280 px vindu) rettet, deretter ombygget til fasitens ene liste + detaljpanel (se under) |
 | PP-2.3 Spillere | FIKS FØRST | Middels — mangler gruppering (Trenger deg / Følger planen / Hviler) og SG-kolonne |
 | PP-2.4 Kalender | FIKS FØRST | Stor — mangler detaljkolonne, Agenda-visning og belegg-tallene |
 
@@ -58,3 +58,33 @@ på størrelse med Konsollen og bør ikke tas som en delvis justering.
 
 Merk: coach-testbrukeren har 1 spiller og ingen bookinger, så flere skjermer viser tom tilstand.
 Det er notert per skjerm i galleriet slik at ingenting vurderes på feil grunnlag.
+
+## PP-2.2 Innboks — hva som ble bygget 10.08.2026
+
+Alle fire avvikene fra galleriet er lukket:
+
+1. **Detaljpanelet forklarer og avgjør saken.** Gjelder · anbefalingskontrakten
+   (Hvorfor · Hva · Forventet effekt · Hvorfor nå) · grunnlag · Avvis / Godkjenn og send.
+   Kontrakten bæres kun av `forslag`, som i fasiten. Felter agenten ikke har skrevet står som
+   «Ikke oppgitt av agenten» — de fabrikeres ikke.
+2. **Én liste med filterpiller** (Alle · Trenger godkjenning · Fra spiller · Drift · Løst) i
+   stedet for fem faner. Rutene bak pillene er IKKE fjernet — de nås fra ⌘K og fra «Åpne i …»
+   på hver sak. Bare fanene er borte fra denne skjermen.
+3. **Clay er én handling på én sak:** godkjenn-knappen på øverste åpne sak. Det brede
+   «Behandle 46 godkjenninger»-båndet er borte.
+4. **Radene har etiketter** (type + hvem) og fristkolonne til høyre, med rød frist når saken
+   haster eller har ligget i tre dager.
+
+Datalag: `src/lib/admin/innboks-saker.ts` samler PlanAction · CaddieDraft · SessionRequest ·
+Notification · AppFeedback til én sakliste. Ingenting fra den gamle TriageV2 er slettet —
+KPI-tallene bor i pillene, tilbakemeldingene er saker av typen «Fra spiller», innsikts-boblen er
+erstattet av grunnlaget per sak.
+
+**Bevisst avvik fra fasiten:** fasitens ti-sekunders «Angre» er ikke bygget. En godkjent
+PlanAction kjører den faktiske planendringen, og systemet har ingen omvendt operasjon — en
+angre-knapp som ikke angrer er verre enn ingen. Løste saker havner i «Løst» med tidsstempel, og
+panelet peker videre på neste sak (fasitens egen løst-tilstand).
+
+**Ikke verifisert med skjermbilde ennå:** øktens container har ingen database-tilgang, så
+galleriet må kjøres mot Vercel-previewen før skjermen kan krysses av:
+`node scripts/signoff-gallery.mjs "PP-2.2" <preview-url>`.
