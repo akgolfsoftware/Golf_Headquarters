@@ -10,8 +10,10 @@
  */
 
 import { T, Caps, Tittel, Kort, StatusPill, MikroMeta, type StatusTone } from "@/components/v2";
+import { BookingAvbestillKnapp } from "./BookingAvbestillKnapp";
 
 export type BookingDetaljV2Data = {
+  bookingId: string;
   tjeneste: string;
   statusLabel: string;
   statusTone: StatusTone;
@@ -23,6 +25,10 @@ export type BookingDetaljV2Data = {
   sted: string;
   coachNavn: string | null;
   notat: string | null;
+  /** Kan avbestilles (status PENDING/CONFIRMED og starter i fremtiden). */
+  kanAvbestille: boolean;
+  /** >24 t til start — avgjør kun teksten i avbestill-varselet (server håndhever). */
+  kanFaaRefusjon: boolean;
 };
 
 function DetaljRad({ label, verdi, last }: { label: string; verdi: React.ReactNode; last?: boolean }) {
@@ -36,7 +42,7 @@ function DetaljRad({ label, verdi, last }: { label: string; verdi: React.ReactNo
 
 export function BookingDetaljV2({ data }: { data: BookingDetaljV2Data }) {
   return (
-    <div data-paper-portal-booking-detalj style={{ maxWidth: 560, width: "100%", margin: "0 auto", display: "flex", flexDirection: "column", gap: T.gap }}>
+    <div data-paper-portal-booking-detalj data-paper-slug="playerhq-booking-mine" style={{ maxWidth: 560, width: "100%", margin: "0 auto", display: "flex", flexDirection: "column", gap: T.gap }}>
       {/* Hero — ekte status + tjeneste */}
       <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
         <div>
@@ -78,6 +84,9 @@ export function BookingDetaljV2({ data }: { data: BookingDetaljV2Data }) {
           </p>
         </Kort>
       )}
+
+      {/* Avbestilling — dobbeltbekreftet, 24t-grensen er kodens regel (policy.ts) */}
+      {data.kanAvbestille && <BookingAvbestillKnapp bookingId={data.bookingId} canRefund={data.kanFaaRefusjon} />}
     </div>
   );
 }

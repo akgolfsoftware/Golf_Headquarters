@@ -14,6 +14,7 @@ import { prisma } from "@/lib/prisma";
 import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
 import { TilbakeLenke, type StatusTone } from "@/components/v2";
 import { BookingDetaljV2 } from "@/components/portal/v2/BookingDetaljV2";
+import { AVBESTILLING_FRIST_TIMER } from "@/lib/booking/policy";
 
 export const dynamic = "force-dynamic";
 
@@ -64,6 +65,11 @@ export default async function OktDetalj({ params }: Props) {
 
   if (!booking || booking.userId !== user.id) notFound();
 
+  // eslint-disable-next-line react-hooks/purity
+  const timerTilStart = (booking.startAt.getTime() - Date.now()) / 3_600_000;
+  const kanAvbestille = (booking.status === "PENDING" || booking.status === "CONFIRMED") && timerTilStart > 0;
+  const kanFaaRefusjon = timerTilStart > AVBESTILLING_FRIST_TIMER;
+
   const coach =
     booking.serviceType.coachUserId
       ? await prisma.user.findUnique({
@@ -79,6 +85,7 @@ export default async function OktDetalj({ params }: Props) {
       <TilbakeLenke href="/portal/meg/bookinger">Mine bookinger</TilbakeLenke>
       <BookingDetaljV2
         data={{
+          bookingId: booking.id,
           tjeneste: booking.serviceType.name,
           statusLabel: STATUS_LABEL[booking.status] ?? "Planlagt",
           statusTone: STATUS_TONE[booking.status] ?? "info",
@@ -88,6 +95,8 @@ export default async function OktDetalj({ params }: Props) {
           sted: booking.location.name,
           coachNavn: coach?.name ?? null,
           notat: booking.notes,
+          kanAvbestille,
+          kanFaaRefusjon,
         }}
       />
     </V2Shell>
