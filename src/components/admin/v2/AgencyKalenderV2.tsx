@@ -29,7 +29,6 @@ import {
   Kort,
   StatusPill,
   TomTilstand,
-  HvorforDette,
   Icon,
   HurtigOpprett,
   BunnArk,
@@ -996,11 +995,15 @@ function MobilDagSeksjon({ dag, onApne }: { dag: KalDag; onApne: () => void }) {
 export function AgencyKalenderV2({ data }: { data: KalenderData }) {
   const mobile = useMobile();
   const router = useRouter();
-  const [visning, setVisning] = useState("uke");
+  // Fasiten åpner i DAG (`agencyos-kalender.html`: `var visning = 'dag'`).
+  // Uka er oversikt; dagen er der coachen faktisk handler.
+  const [visning, setVisning] = useState("dag");
   // Detaljkolonnen: fast høyrekolonne over 1180 px (fasitens brytepunkt), ark
   // under. Samme hook som PlayerHQ-chatens artefaktpanel, med kalenderens tall.
   const detaljSomArk = useErMobil(1180);
   const [valgtId, setValgtId] = useState<string | null>(null);
+  /** Coachen har lukket detaljpanelet selv — da skal kollisjonen ikke åpne det igjen. */
+  const [harLukketDetalj, setHarLukketDetalj] = useState(false);
   const [flytterId, setFlytterId] = useState<string | null>(null);
   // Multi-coach + fasilitet: null = alle
   const [coachFilter, setCoachFilter] = useState<string | null>(
@@ -1133,7 +1136,28 @@ export function AgencyKalenderV2({ data }: { data: KalenderData }) {
     () => filtrerteDager.flatMap((d) => d.okter),
     [filtrerteDager],
   );
-  const valgtOkt = alleOkter.find((o) => o.id === valgtId) ?? null;
+  // Fasitens `forsteHandling()`: finnes en kollisjon, ER den dagens ene
+  // handling — og da skal den kolliderende avtalen være valgt ved ankomst.
+  // Uten dette åpner kalenderen med tom detaljkolonne og en uløst kollisjon
+  // liggende i lerretet. Avledet, ikke satt i en effekt: har coachen lukket
+  // panelet selv, skal det bli værende lukket.
+  // Hvilken dag dagsvisningen står på. Fasiten åpner på dagen der kollisjonen
+  // ligger — «Løs kollisjonen» skal være synlig ved ankomst, og da må lerretet
+  // vise den samme dagen. Har uka ingen kollisjon, er i dag riktig dag.
+  const dagMedKollisjon = filtrerteDager.find((d) => kollisjoner(beleggOkter(d)).length > 0);
+  const visteDagen = dagMedKollisjon ?? filtrerteDager.find((d) => d.idag) ?? filtrerteDager[0];
+  // Kun der detaljen er en fast kolonne. Under 1180 px er den et modalt ark,
+  // og å åpne det av seg selv ville møtt coachen med en dialog før de har
+  // sett kalenderen. På mobil er kollisjonen merket i lerretet i stedet.
+  const forvalgtId = harLukketDetalj || detaljSomArk
+    ? null
+    : ((visning === "dag" && visteDagen
+        ? kollisjoner(beleggOkter(visteDagen))[0]
+        : alleKollisjoner[0]
+      )?.b ?? null);
+  const effektivValgtId = valgtId ?? forvalgtId;
+
+  const valgtOkt = alleOkter.find((o) => o.id === effektivValgtId) ?? null;
   const valgtKollisjon = valgtOkt
     ? (alleKollisjoner.find((k) => k.a === valgtOkt.id || k.b === valgtOkt.id) ?? null)
     : null;
@@ -1218,8 +1242,8 @@ export function AgencyKalenderV2({ data }: { data: KalenderData }) {
   const detaljPanel = (
     <ArtefaktPanel
       mobil={detaljSomArk}
-      open={valgtId !== null}
-      onClose={() => setValgtId(null)}
+      open={effektivValgtId !== null}
+      onClose={() => { setValgtId(null); setHarLukketDetalj(true); }}
       tittel={valgtOkt ? valgtOkt.navn : data.periode}
       foot={
         <KalenderDetaljFot
@@ -1255,28 +1279,19 @@ export function AgencyKalenderV2({ data }: { data: KalenderData }) {
   // ukelabel og økt-telling er blitt undertittel, og knappene har flyttet opp
   // på tittelraden.
   //
-  // Clay-disiplin (PP-2.4 steg 4): fasit-kalenderen har INGEN «Ny økt»-knapp —
-  // skjermens eneste clay-flate (`.btn.now`) er kollisjonsløsningen i
-  // detaljkolonnen. «Ny økt» er en generisk inngang, ikke «én ting nå», og
-  // forblir derfor omriss.
+  // Signering 12.08: toppen skal være HELT uten handlinger (fasitens `.top`
+  // har kun tittel, undertittel og visningsvelgeren). «Ny økt» og «Ny booking»
+  // er derfor fjernet herfra — begge finnes fortsatt der de hører hjemme:
+  // trykk på en tom luke i lerretet, og «Ny booking eller økt» i dagslista.
+  // Skjermens eneste clay-flate er kollisjonsløsningen i detaljkolonnen.
   const topplinje = (
     <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-      <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 14, flexWrap: "wrap" }}>
-        {/* Ingen egen tittel her — `PaperTopp` under eier «Kalender», og to like
-            overskrifter over hverandre er akkurat den støyen denne oppryddingen
-            skulle fjerne. Denne linja bærer konteksten tittelen ikke har. */}
-        <Caps style={{ minWidth: 0 }}>
-          {data.ukeLabel} · {data.viewerErAdmin ? "teamet" : "din kalender"} · {statusTekst}
-        </Caps>
-        <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
-          <Link href="/admin/planlegge" data-od-id="kalender-ny-okt" style={{ textDecoration: "none" }}>
-            <CTAPill ghost icon="plus">Ny økt</CTAPill>
-          </Link>
-          <Link href="/admin/bookinger/ny" style={{ textDecoration: "none" }}>
-            <CTAPill ghost icon="calendar-check">Ny booking</CTAPill>
-          </Link>
-        </div>
-      </div>
+      {/* Ingen egen tittel her — `PaperTopp` under eier «Kalender», og to like
+          overskrifter over hverandre er akkurat den støyen denne oppryddingen
+          skulle fjerne. Denne linja bærer konteksten tittelen ikke har. */}
+      <Caps style={{ minWidth: 0 }}>
+        {data.ukeLabel} · {data.viewerErAdmin ? "teamet" : "din kalender"} · {statusTekst}
+      </Caps>
     </div>
   );
 
@@ -1457,7 +1472,7 @@ export function AgencyKalenderV2({ data }: { data: KalenderData }) {
         </Kort>
       );
     } else if (visning === "dag") {
-      const valgt = filtrerteDager.find((d) => d.idag) ?? filtrerteDager[0];
+      const valgt = visteDagen;
       mobilKropp = (
         <Kort eyebrow={`${valgt.dag} ${valgt.dato}${valgt.idag ? " · i dag" : ""}`}>
           <DagOkterListe dag={valgt} onSerieClick={setValgtSerieOkt} onTreningClick={(o) => void apneTrening(o)} onGoogleClick={setValgtGoogleOkt} onTomLuke={onTomLuke} />
@@ -1474,7 +1489,7 @@ export function AgencyKalenderV2({ data }: { data: KalenderData }) {
       );
     }
     return (
-      <ValgKontekst.Provider value={{ valgtId, velg: velgOkt }}>
+      <ValgKontekst.Provider value={{ valgtId: effektivValgtId, velg: velgOkt }}>
       <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
         {topplinje}
         {navigasjon}
@@ -1572,7 +1587,7 @@ export function AgencyKalenderV2({ data }: { data: KalenderData }) {
       />
     );
   } else if (visning === "dag") {
-    const valgt = filtrerteDager.find((d) => d.idag) ?? filtrerteDager[0];
+    const valgt = visteDagen;
     kropp = (
       <Kort eyebrow={`${valgt.dag} ${valgt.dato}${valgt.idag ? " · i dag" : ""}`}>
         <DagOkterListe dag={valgt} onSerieClick={setValgtSerieOkt} onTreningClick={(o) => void apneTrening(o)} onGoogleClick={setValgtGoogleOkt} onTomLuke={onTomLuke} />
@@ -1597,7 +1612,7 @@ export function AgencyKalenderV2({ data }: { data: KalenderData }) {
   }
 
   return (
-    <ValgKontekst.Provider value={{ valgtId, velg: velgOkt }}>
+    <ValgKontekst.Provider value={{ valgtId: effektivValgtId, velg: velgOkt }}>
     <PaperPage odId="agencyos-kalender"><div data-paper-agencyos-kalender data-paper-slug="agencyos-kalender" data-paper-wave-b="kalender" data-od-id="agency-kalender" style={{ display: "contents" }}><PaperTopp tittel="Kalender" sub="AgencyOS · uke, bookinger og anlegg" /><PaperKropp maxWidth={1200}>
       {topplinje}
       {navigasjon}
