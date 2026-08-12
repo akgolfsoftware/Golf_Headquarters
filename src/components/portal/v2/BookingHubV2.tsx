@@ -25,11 +25,10 @@ import {
   Kort,
   Rad,
   StatusPill,
-  AvatarInit,
   TomTilstand,
   Icon,
 } from "@/components/v2";
-import { PaperPage, PaperTopp, PaperKropp } from "./PaperChrome";
+import { PaperPage, PaperTopp, PaperKropp, PaperDokk } from "./PaperChrome";
 import type { HubCredits, HubBooking, HubCoach, HubForsteLedige } from "@/lib/portal-booking/hub-data";
 
 export type BookingHubV2Data = {
@@ -63,6 +62,31 @@ const STATUS_LABEL: Record<HubBooking["status"], string> = {
   CANCELLED: "Avbestilt",
 };
 
+/** Fasitens `rad()` i abonnementskortet: etikett til venstre, verdi til høyre. */
+function AboRad({ label, verdi, last }: { label: string; verdi: string; last?: boolean }) {
+  return (
+    <div
+      style={{
+        display: "flex",
+        alignItems: "baseline",
+        justifyContent: "space-between",
+        gap: 12,
+        padding: "10px 0",
+        borderBottom: last ? "none" : `1px solid ${T.border}`,
+      }}
+    >
+      <span style={{ fontFamily: T.ui, fontSize: 13, color: T.mut }}>{label}</span>
+      <span style={{ fontFamily: T.mono, fontSize: 12.5, color: T.fg, textAlign: "right" }}>{verdi}</span>
+    </div>
+  );
+}
+
+const TIER_NAVN: Record<string, string> = {
+  GRATIS: "Gratis",
+  PRO: "Performance",
+  ELITE: "Performance Pro",
+};
+
 export function BookingHubV2({ data }: { data: BookingHubV2Data }) {
   const { credits, upcoming, coaches, forsteLedige } = data;
   const harPakke = credits.monthlyCredits > 0;
@@ -71,7 +95,12 @@ export function BookingHubV2({ data }: { data: BookingHubV2Data }) {
   return (
     <PaperPage odId="playerhq-booking">
       <div data-paper-portal-booking data-paper-slug="playerhq-booking" style={{ display: "contents" }}>
-      <PaperTopp tittel="Book time" sub={coaches[0]?.name ? `med ${coaches[0].name}` : "AK Golf Academy"} />
+      <PaperTopp
+        tittel="Book time"
+        sub={coaches[0]?.name ? `med ${coaches[0].name}` : "AK Golf Academy"}
+        tilbakeHref="/portal"
+        tilbakeLabel="Til hjem"
+      />
       <PaperKropp>
 
       {/* Paper .nowblock — «Én ting nå» peker på EN konkret luke, ikke på
@@ -224,21 +253,56 @@ export function BookingHubV2({ data }: { data: BookingHubV2Data }) {
         )}
       </Kort>
 
-      {coaches.length > 0 && (
-        <Kort eyebrow="Coacher">
-          {coaches.map((c, i, arr) => (
-            <Rad
-              key={c.id}
-              leading={<AvatarInit navn={c.name} size={32} />}
-              title={c.name}
-              sub={`${c.serviceCount} ${c.serviceCount === 1 ? "tjeneste" : "tjenester"}${c.fromPrice ? ` · fra ${c.fromPrice}` : ""}`}
-              trailing={null}
-              last={i === arr.length - 1}
-            />
-          ))}
+      {/* Abonnementskortet (fasitens §Abonnement): hva pakken er, hva den
+          inneholder, og hvor mye du har brukt i perioden. Prisraden står
+          bevisst ute — prisen bor i Stripe, ikke i Subscription, og et tall
+          uten kilde er en gjetning. */}
+      {harPakke && (
+        <Kort eyebrow="Abonnement">
+          <AboRad label={TIER_NAVN[credits.tier] ?? "Coaching-pakke"} verdi={`${credits.monthlyCredits} timer per måned`} />
+          <AboRad
+            label="Brukt i perioden"
+            verdi={`${credits.monthlyCredits - credits.creditsRemaining} av ${credits.monthlyCredits}`}
+          />
+          <AboRad label="PlayerHQ" verdi="inkludert" />
+          <AboRad
+            label="Ubrukte timer"
+            verdi={credits.renewsAtIso ? `nullstilles ${formatDato(credits.renewsAtIso)}` : "nullstilles ved periodeskifte"}
+            last
+          />
         </Kort>
       )}
+
+      {/* Coacher-seksjonen er fjernet (signering 12.08): fasiten har den ikke,
+          og coachen står allerede i headerens undertittel. */}
       </PaperKropp>
+
+      {/* Fasitens `.dokk` — den faste handlingen står nederst, alltid synlig,
+          i stedet for at spilleren må lete etter hvor man kommer videre. */}
+      <PaperDokk>
+        <Link
+          href="/portal/booking/ny"
+          data-od-id="pb-neste"
+          className="v2-press v2-focus"
+          style={{
+            textDecoration: "none",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            minHeight: 48,
+            width: "100%",
+            borderRadius: 12,
+            background: T.panel,
+            border: `1px solid ${T.border}`,
+            color: T.fg,
+            fontFamily: T.ui,
+            fontSize: 14,
+            fontWeight: 600,
+          }}
+        >
+          Velg en dag
+        </Link>
+      </PaperDokk>
       </div>
     </PaperPage>
   );

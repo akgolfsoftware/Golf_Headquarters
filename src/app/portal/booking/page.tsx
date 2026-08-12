@@ -20,7 +20,6 @@ import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { getBookingHubData } from "@/lib/portal-booking/hub-data";
 import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
 import { BookingHubV2 } from "@/components/portal/v2/BookingHubV2";
-import { TilbakeLenke } from "@/components/v2";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Booking · AK Golf" };
@@ -33,7 +32,6 @@ export default async function BookingHubPage() {
 
   return (
     <V2Shell aktiv="plan" bredde="kolonne" nav={PLAYERHQ_NAV} navn={user.name}>
-      <TilbakeLenke href="/portal">Hjem</TilbakeLenke>
       <BookingHubV2
         data={{
           credits: hub.credits,

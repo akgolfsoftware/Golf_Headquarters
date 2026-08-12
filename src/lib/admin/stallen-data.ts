@@ -14,7 +14,9 @@ import type { PlayerProgram, Tier, UserStatus, PyramidArea } from "@/generated/p
 import { erOktGjennomfort } from "@/lib/workbench/compliance";
 
 // ── Typer eksponert til komponenten ─────────────────────────────
-export type GroupBucket = "WANG" | "GFGK" | "AKA";
+import { bucketFraEnrollments, type GroupBucket } from "@/lib/domain/program-bucket";
+
+export type { GroupBucket };
 export type TierKind = "konk" | "mosj" | "akad";
 export type SgTone = "pos" | "neg" | "flat";
 /**
@@ -133,17 +135,6 @@ function shortName(name: string): string {
   return `${first} ${rest}`;
 }
 
-const PROGRAM_BUCKET: Record<PlayerProgram, GroupBucket | null> = {
-  WANG_TOPPIDRETT: "WANG",
-  WANG_UNG: "WANG",
-  GFGK_MINI: "GFGK",
-  GFGK_BREDDE: "GFGK",
-  GFGK_JENTER: "GFGK",
-  GFGK_ELITE: "GFGK",
-  AK_ACADEMY: "AKA",
-  AK_ACADEMY_JUNIOR: "AKA",
-  PLATFORM_ONLY: null,
-};
 
 /** Tier-enum → fasitens ikon-bucket + label. Vi har ikke ambisjons-tier i
  *  datamodellen, så abonnement-tier brukes som nærmeste ekte felt. */
@@ -302,14 +293,7 @@ export async function loadStallen(
       : null;
 
     // Gruppe-bucket: første aktive enrollering som mapper til en bucket.
-    let group: GroupBucket | null = null;
-    for (const e of p.enrollmentsAsPlayer) {
-      const b = PROGRAM_BUCKET[e.program];
-      if (b) {
-        group = b;
-        break;
-      }
-    }
+    const group = bucketFraEnrollments(p.enrollmentsAsPlayer);
     const coachName = p.enrollmentsAsPlayer.find((e) => e.coach?.name)?.coach?.name ?? null;
 
     // SG-trend (eldst → nyest). Bruk BrukerSgInput hvis tilgjengelig, ellers Round.

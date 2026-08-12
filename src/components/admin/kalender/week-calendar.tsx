@@ -16,6 +16,7 @@
  * DS-tokens kun — ingen hardkodet hex, ingen emoji (kun lucide).
  */
 
+import type { GroupBucket } from "@/lib/domain/program-bucket";
 import Link from "next/link";
 import {
   CalendarPlus,
@@ -62,6 +63,8 @@ export type WeekEvent = {
   /** Fasilitet: id for filter, navn for visning. */
   facilityId?: string | null;
   facilityName?: string | null;
+  /** Hvilket program spilleren er meldt inn i — bærer kalenderens programfilter. */
+  program?: GroupBucket | null;
 };
 
 export type WeekDayHeader = {

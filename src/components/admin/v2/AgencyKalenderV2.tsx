@@ -10,6 +10,7 @@
  */
 
 import { createContext, useContext, useEffect, useMemo, useState, useTransition } from "react";
+import type { GroupBucket } from "@/lib/domain/program-bucket";
 import { useRouter } from "next/navigation";
 import { flyttBookingTilDag } from "@/app/admin/agencyos/uka/actions";
 import { hentKalenderDrills } from "@/app/admin/kalender/drill-actions";
@@ -666,6 +667,15 @@ function DagOkterListe({ dag, onSerieClick, onTreningClick, onGoogleClick, onTom
    kan hete det samme), og den markerer valgt tilstand med clay — som er
    reservert til «Én ting nå», og på denne skjermen er det kollisjonsknappen i
    detaljkolonnen. Valgt filter er derfor blekk-fylt, som i fasiten. ── */
+/** Fasitens fire programvalg + «Alle». `null` = økter uten registrert program. */
+type ProgramFilterKey = "alle" | GroupBucket;
+const PROGRAM_FILTRE: { k: ProgramFilterKey; n: string }[] = [
+  { k: "alle", n: "Alle" },
+  { k: "AKA", n: "Akademi" },
+  { k: "WANG", n: "WANG" },
+  { k: "GFGK", n: "GFGK" },
+];
+
 function FilterChip({
   aktiv,
   onClick,
@@ -1011,6 +1021,9 @@ export function AgencyKalenderV2({ data }: { data: KalenderData }) {
     data.viewerErAdmin ? null : data.viewerCoachId,
   );
   const [facilityFilter, setFacilityFilter] = useState<string | null>(null);
+  // Paper `agencyos-kalender.html` §FILTRE: Alle · Akademi · WANG · GFGK ·
+  // Ledige timer. Enkeltvalg, som i fasiten.
+  const [programFilter, setProgramFilter] = useState<ProgramFilterKey>("alle");
 
   // I5: dra en booking-blokk til en annen dag-kolonne.
   const onFlytt = async (bookingId: string, datoISO: string) => {
@@ -1083,6 +1096,11 @@ export function AgencyKalenderV2({ data }: { data: KalenderData }) {
       // When filtering by coach, hide other coaches' bookinger; keep google/personal
       if (coachFilter && o.coachId == null && !o.erGoogle && !o.erHendelse && !o.erOppgave && !o.serie && !o.treningsSessionId) {
         // Booking without coachId (group) — keep
+      }
+      if (programFilter !== "alle") {
+        // «Vet ikke hvilket program» skjules framfor å telles inn i et
+        // program den kanskje ikke hører til.
+        if (o.program !== programFilter) return false;
       }
       if (facilityFilter) {
         if (o.facilityId && o.facilityId !== facilityFilter) return false;
@@ -1299,7 +1317,10 @@ export function AgencyKalenderV2({ data }: { data: KalenderData }) {
   // .cal-toolbar) — «I dag» · piler · periode-tittel · spacer · segmentert
   // visningsvelger. Segmentet er bevisst IKKE lime; lime-jobben er «Ny økt».
 
-  const teamFilter = (data.coacher.length > 0 || data.fasiliteter.length > 0) ? (
+  // Alle ukas økter FØR filtrering — tellerne skal vise hvor mye som finnes,
+  // ikke hvor mye som er igjen etter ditt eget filter.
+  const alleUkeOkter = data.dager.flatMap((d) => d.okter);
+  const teamFilter = (
     <div
       data-od-id="kalender-team-filter"
       style={{
@@ -1308,12 +1329,31 @@ export function AgencyKalenderV2({ data }: { data: KalenderData }) {
         gap: 8,
         alignItems: "center",
       }}
-      aria-label="Filtrer coach og fasilitet"
+      aria-label="Filtrer program, coach og fasilitet"
     >
+      <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }} role="group" aria-label="Filtrer program">
+        {PROGRAM_FILTRE.filter(
+          (f) => f.k === "alle" || alleUkeOkter.some((o) => o.program === f.k),
+        ).map((f) => (
+          <FilterChip
+            key={f.k}
+            aktiv={programFilter === f.k}
+            onClick={() => setProgramFilter(f.k)}
+            odId={`kal-filter-${f.k.toLowerCase()}`}
+          >
+            {f.n}
+            <span style={{ fontFamily: T.mono, fontSize: 11, opacity: 0.7, marginLeft: 6 }}>
+              {f.k === "alle"
+                ? alleUkeOkter.length
+                : alleUkeOkter.filter((o) => o.program === f.k).length}
+            </span>
+          </FilterChip>
+        ))}
+      </div>
       {data.coacher.length > 0 && (
         <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }} role="group" aria-label="Filtrer coach">
           <FilterChip aktiv={coachFilter === null} onClick={() => setCoachFilter(null)} odId="kal-coach-alle">
-            Alle
+            Alle coacher
           </FilterChip>
           {data.coacher.map((c) => (
             <FilterChip
@@ -1342,7 +1382,7 @@ export function AgencyKalenderV2({ data }: { data: KalenderData }) {
         </div>
       )}
     </div>
-  ) : null;
+  );
 
   const navigasjon = (
     <div style={{ display: "flex", alignItems: "center", gap: "10px 14px", flexWrap: "wrap" }}>

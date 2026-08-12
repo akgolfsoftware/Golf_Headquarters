@@ -33,6 +33,7 @@
 import { useEffect, useRef, useState, type CSSProperties } from "react";
 import Link from "next/link";
 import { T } from "@/lib/v2/tokens";
+import { TemaHeaderKnapp } from "@/components/v2/tema";
 import { SamtaleBoble, SamtaleSkriver, SamtaleFeil, Skrivefelt, ForslagRad } from "@/components/v2/samtale";
 import { Icon } from "@/components/v2/icon";
 import { kategoriFraSnittscore } from "@/lib/domain/ak-kategori";
@@ -297,12 +298,10 @@ function EnTingNaBanner({ okt, klokke, onSePlan }: { okt: NonNullable<Gjennomfor
 function TomTilstand({
   ukeHarOkter,
   weekNumber,
-  onFangst,
   onForslag,
 }: {
   ukeHarOkter: boolean;
   weekNumber: number;
-  onFangst: () => void;
   onForslag: (s: string) => void;
 }) {
   /* Paper .empty + .btn (ink/ghost) — not elevated white card */
@@ -358,55 +357,23 @@ function TomTilstand({
             maxWidth: "46ch",
           }}
         >
-          Det betyr ikke at du står stille — her er tre ting du kan gjøre uansett.
+          Det betyr ikke at du står stille. Lag en økt du rekker i dag, så
+          bygger vi videre derfra.
         </p>
       </div>
-      <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-        <button type="button" onClick={onFangst} className="v2-press v2-focus" data-od-id="empty-capture" style={btn}>
-          Fang en observasjon
-        </button>
-        <button
-          type="button"
-          onClick={() => onForslag("Lag en 25-minutters økt")}
-          className="v2-press v2-focus"
-          data-od-id="empty-short"
-          style={btn}
-        >
-          Lag en 25-min økt selv
-        </button>
-        <button
-          type="button"
-          onClick={() => onForslag("Vis forrige uke")}
-          className="v2-press v2-focus"
-          data-od-id="empty-lastweek"
-          style={btn}
-        >
-          Se forrige uke
-        </button>
-      </div>
-      <div style={{ display: "flex", gap: 16, flexWrap: "wrap" }}>
-        <Link
-          href="/portal/planlegge"
-          data-od-id="empty-link-plan"
-          style={{ fontFamily: T.ui, fontSize: 13, fontWeight: 500, color: T.mut, textDecoration: "underline", textUnderlineOffset: 3 }}
-        >
-          Se ukeplanen
-        </Link>
-        <Link
-          href="/portal/kalender"
-          data-od-id="empty-link-kalender"
-          style={{ fontFamily: T.ui, fontSize: 13, fontWeight: 500, color: T.mut, textDecoration: "underline", textUnderlineOffset: 3 }}
-        >
-          Kalender
-        </Link>
-        <Link
-          href="/portal/utenfor-banen"
-          data-od-id="empty-link-utenfor-banen"
-          style={{ fontFamily: T.ui, fontSize: 13, fontWeight: 500, color: T.mut, textDecoration: "underline", textUnderlineOffset: 3 }}
-        >
-          Utenfor banen
-        </Link>
-      </div>
+      {/* Signering 12.08: tom tilstand hadde SEKS veier videre — tre knapper og
+          tre lenker, alle like tunge. Fasiten har én. De andre veiene er ikke
+          borte: planen og kalenderen ligger i bunn-navigasjonen, og fangst er
+          mikrofonen i skrivefeltet, som er skjermens aksenthandling. */}
+      <button
+        type="button"
+        onClick={() => onForslag("Lag en 25-minutters økt")}
+        className="v2-press v2-focus"
+        data-od-id="empty-short"
+        style={{ ...btn, background: T.fg, color: T.bg, border: "none" }}
+      >
+        Lag en 25-minutters økt
+      </button>
     </div>
   );
 }
@@ -490,8 +457,11 @@ export function PortalChatHjem({
                 marginTop: 2,
               }}
             >
-              {data.user.name} · kat. {kategori ?? "—"} · SG total {sgTekst} · {naaTekst.ukedag} {naaTekst.dato}{" "}
-              {naaTekst.klokke}
+              {/* Fasitens mobil-header er flat: navn, kategori og SG. Dato og
+                  klokke gjorde linja tre linjer høy på 390 px og dyttet
+                  sløyfen ned — de står igjen på desktop, der det er plass. */}
+              {data.user.name} · kat. {kategori ?? "—"} · SG total {sgTekst}
+              {!mobil && ` · ${naaTekst.ukedag} ${naaTekst.dato} ${naaTekst.klokke}`}
             </div>
           </div>
           {!mobil && <LoopNav gjennomfore={gjennomfore} />}
@@ -516,27 +486,37 @@ export function PortalChatHjem({
               Dagens økt
             </button>
           )}
-          <button
-            type="button"
-            onClick={() => setFangstApen(true)}
-            className="v2-press v2-focus"
-            aria-label="Fang en observasjon"
-            data-od-id="open-capture-top"
-            style={{
-              width: 44,
-              height: 44,
-              display: "grid",
-              placeItems: "center",
-              borderRadius: T.rCard,
-              border: `1px solid ${T.border}`,
-              background: "transparent",
-              color: T.fg,
-              cursor: "pointer",
-              flex: "none",
-            }}
-          >
-            <Icon name="mic" size={18} />
-          </button>
+          {/* Mikrofonen i headeren er desktop-fasitens (der composeren har en
+              liten, nøytral mic). På mobil eier composeren den store
+              clay-mikrofonen, og en ekstra her ble bare et duplikat som dyttet
+              temabryteren ned på egen linje. */}
+          {!mobil && (
+            <button
+              type="button"
+              onClick={() => setFangstApen(true)}
+              className="v2-press v2-focus"
+              aria-label="Fang en observasjon"
+              data-od-id="open-capture-top"
+              style={{
+                width: 44,
+                height: 44,
+                display: "grid",
+                placeItems: "center",
+                borderRadius: T.rCard,
+                border: `1px solid ${T.border}`,
+                background: "transparent",
+                color: T.fg,
+                cursor: "pointer",
+                flex: "none",
+              }}
+            >
+              <Icon name="mic" size={18} />
+            </button>
+          )}
+          {/* Paper har temabryteren i headeren på hver skjerm (mobil-fasitens
+              `#themeToggle`). Den satt bare i desktop-railen før, altså
+              utilgjengelig på telefon — der Øyvind faktisk bruker appen. */}
+          <TemaHeaderKnapp />
         </header>
         {mobil && <LoopNav gjennomfore={gjennomfore} />}
 
@@ -570,7 +550,6 @@ export function PortalChatHjem({
               <TomTilstand
                 ukeHarOkter={ukeHarOkter}
                 weekNumber={data.weekNumber}
-                onFangst={() => setFangstApen(true)}
                 onForslag={send}
               />
             )}
@@ -741,7 +720,7 @@ export function PortalChatHjem({
                   width: 44,
                   height: 44,
                   minHeight: 44,
-                  borderRadius: T.rCard,
+                  borderRadius: 9999,
                   border: "none",
                   background: input.trim() && !busy ? T.fg : T.panel3,
                   color: input.trim() && !busy ? T.bg : T.mut,
@@ -751,7 +730,9 @@ export function PortalChatHjem({
                   cursor: input.trim() && !busy ? "pointer" : "default",
                 }}
               >
-                <Icon name="send" size={18} />
+                {/* Fasitens `.sendbtn` bruker pil, ikke papirfly — papirflyet
+                    leses som «send e-post», ikke «send meldingen i tråden». */}
+                <Icon name="arrow-right" size={18} />
               </button>
             </div>
             {/* Paper .eyebrow under composeren */}

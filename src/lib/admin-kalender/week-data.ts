@@ -11,6 +11,7 @@
 
 import { prisma } from "@/lib/prisma";
 import type { WeekCalendarProps, WeekEvent } from "@/components/admin/kalender/week-calendar";
+import { bucketFraEnrollments } from "@/lib/domain/program-bucket";
 
 const DAGER_KORT = ["MAN", "TIR", "ONS", "TOR", "FRE", "LØR", "SØN"];
 const MND_KORT = [
@@ -73,7 +74,17 @@ export async function loadWeekCalendar(ukeParam?: string): Promise<WeekCalendarP
     },
     orderBy: { startAt: "asc" },
     include: {
-      user: { select: { name: true } },
+      user: {
+        select: {
+          name: true,
+          // Programfilteret i kalenderen: aktive innmeldinger, nyeste først.
+          enrollmentsAsPlayer: {
+            where: { endedAt: null },
+            select: { program: true },
+            orderBy: { enrolledAt: "desc" },
+          },
+        },
+      },
       serviceType: { select: { name: true, coachUserId: true } },
       location: { select: { name: true } },
       facility: { select: { name: true } },
@@ -133,6 +144,7 @@ export async function loadWeekCalendar(ukeParam?: string): Promise<WeekCalendarP
       coachName: b.coach?.name ?? null,
       facilityId: b.facilityId,
       facilityName: b.facility?.name ?? null,
+      program: bucketFraEnrollments(b.user?.enrollmentsAsPlayer ?? []),
     };
   });
 

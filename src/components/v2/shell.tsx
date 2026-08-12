@@ -19,6 +19,7 @@ import { createPortal } from "react-dom";
 import { T } from "@/lib/v2/tokens";
 import { Icon } from "./icon";
 import { LogoAK, AvatarFoto } from "./core";
+import { useV2Tema, lesTema, type V2Tema } from "./tema";
 import { SpillerVeksler, type VekslerData } from "./spiller-veksler";
 import { useErAdmin } from "./rolle";
 import { GlobalSearchModal } from "@/components/admin/global-search-modal";
@@ -216,37 +217,7 @@ export interface V2ShellProps {
 
 /* ---------- DS2: tema (lys default på app-flater, mørk via bryter — 25. jul) ---------- */
 
-type V2Tema = "dark" | "light";
-
-function lesTema(): V2Tema {
-  if (typeof document === "undefined") return "light";
-  // Fase F: CSS default = lys; mørk kun med eksplisitt data-v2-tema="dark"
-  return document.documentElement.getAttribute("data-v2-tema") === "dark" ? "dark" : "light";
-}
-
-function abonnerTema(cb: () => void) {
-  window.addEventListener("ak-v2-tema", cb);
-  return () => window.removeEventListener("ak-v2-tema", cb);
-}
-
-/**
- * Tema-tilstand for v2-flatene. Sannheten bor på <html data-v2-tema> (satt før
- * paint av inline-scriptet i rot-layout) + cookie `ak-v2-tema`; hooken speiler
- * den og synker alle instanser via et vindus-event. SSR-snapshot er lys
- * (app-flatene er lys-først fra 25. jul — mørk kommer kun fra cookie
- * `ak-v2-tema=dark`, som serveren ikke kjenner her) — React retter ved hydration.
- */
-function useV2Tema() {
-  const tema = useSyncExternalStore<V2Tema>(abonnerTema, lesTema, () => "light");
-  const bytt = () => {
-    const neste: V2Tema = lesTema() === "light" ? "dark" : "light";
-    if (neste === "dark") document.documentElement.setAttribute("data-v2-tema", "dark");
-    else document.documentElement.removeAttribute("data-v2-tema");
-    document.cookie = `ak-v2-tema=${neste};path=/;max-age=31536000;samesite=lax`;
-    window.dispatchEvent(new Event("ak-v2-tema"));
-  };
-  return { tema, bytt };
-}
+// Tema-hooken bor i `./tema` — delt med PaperTopp, se den filen.
 
 /** Sol/måne-knapp i railen (desktop). Viser det du BYTTER TIL. */
 /** Coach/Spiller-toggle (Anders 2026-07-13): coacher og admin har alt

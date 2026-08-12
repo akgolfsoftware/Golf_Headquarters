@@ -17,6 +17,7 @@
  */
 
 import { prisma } from "@/lib/prisma";
+import { bucketFraEnrollments, flertallsBucket, type GroupBucket } from "@/lib/domain/program-bucket";
 import { loadWeekCalendar } from "@/lib/admin-kalender/week-data";
 import { hentSpeiledeHendelser } from "@/lib/google-calendar-mirror";
 import { hentTilgjengelighet, type Tilgjengelighet } from "@/lib/admin-kalender/tilgjengelighet";
@@ -88,6 +89,13 @@ export interface KalOkt {
   /** Fasilitet: id brukes av filteret, navn vises i stedet for fritekst-sted. */
   facilityId?: string | null;
   facilityName?: string | null;
+  /**
+   * Hvilket program økta hører til (Paper `agencyos-kalender.html` §FILTRE).
+   * Bookinger og treningsøkter arver spillerens innmelding; gruppeserier
+   * arver medlemmenes. Null der programmet ikke er registrert — filteret
+   * skjuler da økta framfor å gjette den inn i feil program.
+   */
+  program?: GroupBucket | null;
 }
 
 export interface KalDag {
@@ -231,6 +239,7 @@ export async function hentAgencyKalenderData(
         coachName: e.coachName ?? null,
         facilityId: e.facilityId ?? null,
         facilityName: e.facilityName ?? null,
+        program: e.program ?? null,
       }));
     const pad = (n: number) => String(n).padStart(2, "0");
     return {
@@ -246,7 +255,29 @@ export async function hentAgencyKalenderData(
   const serier = await prisma.groupSchedule.findMany({
     where: { recurring: "WEEKLY" },
     include: {
-      group: { select: { id: true, name: true, _count: { select: { members: true } } } },
+      group: {
+        select: {
+          id: true,
+          name: true,
+          _count: { select: { members: true } },
+          // Programmet til en gruppeserie er medlemmenes program. Vi leser
+          // noen få medlemmer og bruker det programmet flest av dem står i.
+          members: {
+            select: {
+              user: {
+                select: {
+                  enrollmentsAsPlayer: {
+                    where: { endedAt: null },
+                    select: { program: true },
+                    orderBy: { enrolledAt: "desc" },
+                  },
+                },
+              },
+            },
+            take: 20,
+          },
+        },
+      },
     },
     orderBy: { startAt: "asc" },
   });
@@ -278,6 +309,9 @@ export async function hentAgencyKalenderData(
       serie: `Gjentas hver ${DAG_GJENTAS[dayIndex]}.`,
       href: `/admin/grupper/${s.group.id}`,
       naa: false,
+      program: flertallsBucket(
+        s.group.members.map((m) => bucketFraEnrollments(m.user?.enrollmentsAsPlayer ?? [])),
+      ),
     });
     serieOkterAntall += 1;
   }
@@ -374,9 +408,28 @@ export async function hentAgencyKalenderData(
       status: true,
       coachId: true,
       drills: { select: { pyramide: true }, take: 1 },
+      studentId: true,
     },
     take: 200,
   });
+
+  // TrainingSessionV2 har bare `studentId` (ingen relasjon), så programmene
+  // hentes i ett oppslag i stedet for én spørring per økt.
+  const studentIder = [...new Set(treningsOkter.map((s) => s.studentId).filter((id): id is string => id != null))];
+  const programPerStudent = new Map<string, GroupBucket | null>();
+  if (studentIder.length > 0) {
+    const innmeldinger = await prisma.playerEnrollment.findMany({
+      where: { userId: { in: studentIder }, endedAt: null },
+      select: { userId: true, program: true },
+      orderBy: { enrolledAt: "desc" },
+    });
+    for (const id of studentIder) {
+      programPerStudent.set(
+        id,
+        bucketFraEnrollments(innmeldinger.filter((e) => e.userId === id)),
+      );
+    }
+  }
   for (const s of treningsOkter) {
     const dayIndex = ukedagIndex(s.startTime);
     if (dayIndex < 0 || dayIndex > 6) continue;
@@ -399,6 +452,7 @@ export async function hentAgencyKalenderData(
       // Loaderen henter kun økter der viewer er coach eller vert, så eieren er
       // kjent selv når coachId er tom.
       coachId: s.coachId ?? userId ?? null,
+      program: s.studentId ? (programPerStudent.get(s.studentId) ?? null) : null,
     });
   }
 

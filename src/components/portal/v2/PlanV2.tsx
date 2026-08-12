@@ -12,6 +12,7 @@
 import Link from "next/link";
 import { useState } from "react";
 import type { DashboardData } from "@/app/portal/actions";
+import { TemaHeaderKnapp } from "@/components/v2/tema";
 import {
   T,
   Caps,
@@ -19,6 +20,7 @@ import {
   StatusPill,
   CTAPill,
   DagStripe,
+  Icon,
   type StripeDag,
 } from "@/components/v2";
 import { OktKort } from "@/components/v2/domene";
@@ -210,6 +212,9 @@ export function PlanV2({
             Workbench
           </Link>
         )}
+        {/* Fasitens `#themeBtn` — Plan har egen header og fikk den ikke fra
+            PaperTopp. */}
+        <TemaHeaderKnapp />
       </header>
 
       {/* Paper .dager */}
@@ -319,20 +324,31 @@ export function PlanV2({
             />
           </section>
 
-          {/* Paper .eier — eierskapet skrevet ut, ikke antatt */}
-          <p
+          {/* Paper `.eier` — eierskapet skrevet ut, ikke antatt. Signering
+              12.08: notisen sto som løs brødtekst og forsvant i sida; fasiten
+              har den i en grå boks med blyantikon, så den leses som en notis
+              og ikke som en avsnitt til. */}
+          <div
             data-od-id="plan-eierskap"
             style={{
-              margin: 0,
+              display: "flex",
+              gap: 12,
+              padding: "12px 16px",
+              borderRadius: T.rCard,
+              background: T.panel2,
+              border: `1px solid ${T.border}`,
               fontFamily: T.bodyFont,
-              fontSize: T.body,
+              fontSize: 12.5,
               lineHeight: 1.5,
               color: T.mut,
             }}
           >
-            Planen er din. Du kan flytte og endre øktene selv, med én gang — ingen godkjenning. Coachen din får
-            beskjed om endringen, så han vet hva som skjedde.
-          </p>
+            <Icon name="pencil" size={16} style={{ flex: "none", marginTop: 2 }} />
+            <span>
+              Planen er din. Du kan flytte og endre øktene selv, med én gang — ingen godkjenning. Coachen din får
+              beskjed om endringen, så han vet hva som skjedde.
+            </span>
+          </div>
 
           {/* Coachingtimer bookes her; treningsøkter ligger i planen — to ting, to steder */}
           <Link
@@ -354,7 +370,7 @@ export function PlanV2({
               justifyContent: "center",
             }}
           >
-            Book coachingtime
+            Book coachingtime med Anders
           </Link>
 
           {valgtDagObj && (

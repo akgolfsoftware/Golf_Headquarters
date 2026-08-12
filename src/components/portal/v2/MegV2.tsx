@@ -15,7 +15,7 @@
  * dupliserte tested logikk uten sikkerhetsnett.
  */
 
-import { useEffect, useRef, useState, useTransition } from "react";
+import { useRef, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import type { PlayerProgram } from "@/generated/prisma/client";
@@ -130,19 +130,6 @@ function maalPill(g: GoalItem): { l: string; tone: StatusTone } | null {
   return { l: `${g.daysLeft} dager igjen`, tone: "lime" };
 }
 
-/** true på klient etter mount når viewport < 768px (styrer kun tallstørrelser). */
-function useMobile(): boolean {
-  const [m, setM] = useState(false);
-  useEffect(() => {
-    const mq = window.matchMedia("(max-width: 767px)");
-    const oppdater = () => setM(mq.matches);
-    oppdater();
-    mq.addEventListener("change", oppdater);
-    return () => mq.removeEventListener("change", oppdater);
-  }, []);
-  return m;
-}
-
 /** «Sesongen i tall»-verdi med tell-opp (0 → mål ved mount), reduced-motion-trygg
  *  via useCountUp. Egen komponent fordi hooket ikke kan kalles inne i .map(). */
 function SesongTallVerdi({ value }: { value: string }) {
@@ -228,7 +215,6 @@ type KontoRad = { ic: string; l: string; sub?: string; href: string };
 /* ── Skjerm ────────────────────────────────────────────────────────── */
 
 export function MegV2({ data }: { data: MegData }) {
-  const mobile = useMobile();
   const router = useRouter();
   const { navn, hcp, homeClub, goals, sesong, identitet, program, abo, notif, lydSamtykke } = data;
 
@@ -473,7 +459,9 @@ export function MegV2({ data }: { data: MegData }) {
       </div>
 
       {/* Primær mål + én grønn vei */}
-      <Kort tint eyebrow="Sesongmål" action={pill ? <StatusPill tone={pill.tone}>{pill.l}</StatusPill> : undefined}>
+      {/* Ingen `tint`: Paper er matt, og clay-gradienten her leste som om
+          sesongmålet var en varsling. Signering 12.08. */}
+      <Kort eyebrow="Sesongmål" action={pill ? <StatusPill tone={pill.tone}>{pill.l}</StatusPill> : undefined}>
         {primaer ? (
           <>
             <div style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 18, color: T.fg, lineHeight: 1.25 }}>

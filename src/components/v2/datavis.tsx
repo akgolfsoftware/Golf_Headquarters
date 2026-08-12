@@ -405,14 +405,25 @@ export interface SgKategorierProps {
    *  med 1 desimal avrundes små forskjeller til «−0,0» på alle fire, og da er
    *  rangeringen — hele poenget med kortet — usynlig. */
   desimaler?: 1 | 2;
+  /** Uten egen kortramme — for bruk inne i et annet kort. */
+  bar?: boolean;
 }
-export function SgKategorier({ kategorier = SGK_DEMO, baseline = "Broadie scratch", fagkoder = false, hjelp, desimaler = 1 }: SgKategorierProps) {
+/* Beslutning 05.08: golfdata-kortene er innholdslag — flaten eier rammen.
+   `bar` brukes når kortet ligger inne i et annet kort, så kanten ikke dobles.
+   Egen komponent (ikke definert i render) — ellers remounter React hele
+   treet ved hver oppdatering. */
+function SgRamme({ bar, children }: { bar: boolean; children: ReactNode }) {
+  if (!bar) return <Kort>{children}</Kort>;
+  return <div style={{ display: "flex", flexDirection: "column", minWidth: 0 }}>{children}</div>;
+}
+
+export function SgKategorier({ kategorier = SGK_DEMO, baseline = "Broadie scratch", fagkoder = false, hjelp, desimaler = 1, bar = false }: SgKategorierProps) {
   const fmt = (v: number): string =>
     desimaler === 1 ? fmtSg(v) : `${v > 0 ? "+" : v < 0 ? "−" : ""}${Math.abs(v).toFixed(2).replace(".", ",")}`;
   const max = Math.max(0.5, ...kategorier.map((k) => Math.abs(k.sg)));
   const verst = kategorier.reduce((wi, k, i, a) => (k.sg < a[wi].sg ? i : wi), 0);
   return (
-    <Kort>
+    <SgRamme bar={bar}>
       {eyebrowRow(
         hjelp ? (
           <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
@@ -438,7 +449,7 @@ export function SgKategorier({ kategorier = SGK_DEMO, baseline = "Broadie scratc
           </div>
         );
       })}
-    </Kort>
+    </SgRamme>
   );
 }
 
