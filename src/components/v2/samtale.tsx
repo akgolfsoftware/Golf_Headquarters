@@ -127,6 +127,48 @@ export function SamtaleFeil({ children }: SamtaleFeilProps) {
   );
 }
 
+/* ── Send-knapp (delt) ────────────────────────────────────
+   Fasitens `.sendbtn` (playerhq-chat-mobil.html · agencyos-konsoll-mobil.html):
+   rund, blekkfylt knapp med pil — ikke papirfly, som leses som «send e-post».
+   Lå inline i PortalChatHjem etter PP-1.1 (PR #428); løftet hit 12.08 fordi
+   signeringen fant SAMME avvik på konsollen (PP-2.1). Fikslista: «Én
+   komponentfiks dekker begge.» */
+export interface SendKnappProps {
+  onClick: () => void;
+  /** false ⇒ dempet flate og ingen peker (tomt felt, sender, eller ikke tillatt). */
+  aktiv: boolean;
+  /** Fasitens tap-mål er 44; konsollens composer bruker 48. */
+  storrelse?: number;
+}
+export function SendKnapp({ onClick, aktiv, storrelse = 44 }: SendKnappProps) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      disabled={!aktiv}
+      aria-label="Send"
+      data-od-id="send-message"
+      className="v2-press v2-focus"
+      style={{
+        flex: "none",
+        width: storrelse,
+        height: storrelse,
+        minHeight: storrelse,
+        borderRadius: 9999,
+        border: "none",
+        background: aktiv ? T.fg : T.panel3,
+        color: aktiv ? T.bg : T.mut,
+        display: "inline-flex",
+        alignItems: "center",
+        justifyContent: "center",
+        cursor: aktiv ? "pointer" : "default",
+      }}
+    >
+      <Icon name="arrow-right" size={18} />
+    </button>
+  );
+}
+
 /* ── Skrivefelt (komposisjon) ─────────────────────────── */
 export interface SkrivefeltProps {
   value: string;

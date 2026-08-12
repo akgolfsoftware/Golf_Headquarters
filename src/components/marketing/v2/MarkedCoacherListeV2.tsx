@@ -1,13 +1,29 @@
+"use client";
+
 /**
  * AK Golf HQ — markedsside COACHER-LISTE (/coacher), Paper.
- * Fasit: designsystem/paper/fase2/marketing/marketing-katalog.html.
- * Ekte copy speilet fra (mlegacy)/coacher/page.tsx. Data (DB-foto-berikelse)
- * hentes server-side i page.tsx og sendes inn som prop.
+ * Fasit: designsystem/paper/fase2/marketing/marketing-katalog.html
+ * (§filterrad + §kat). Ekte copy speilet fra (mlegacy)/coacher/page.tsx.
+ * Data (DB-foto-berikelse) hentes server-side i page.tsx og sendes inn som prop.
+ * Filterpillene teller ekte coacher — fasitens «Alle · 7» er placeholder-data.
  */
+import { useMemo, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { PkShell } from "./paper/PkShell";
-import { PkSek, PkEyebrow, PkHero, PkIng, PkSekt, PkCta, PkKat, PkKort, PkBilde, PkTag } from "./paper/PkPrimitives";
+import {
+  PkSek,
+  PkEyebrow,
+  PkHero,
+  PkIng,
+  PkSekt,
+  PkCta,
+  PkKat,
+  PkKort,
+  PkBilde,
+  PkTag,
+  PkFilterrad,
+} from "./paper/PkPrimitives";
 
 export type CoachKort = {
   slug: string;
@@ -17,6 +33,8 @@ export type CoachKort = {
   initialer: string;
   foto: string | null;
   tags: string[];
+  /** Hvem coachen jobber med — driver filterraden over kortene. */
+  omrader?: string[];
 };
 
 type Fasilitet = { type: string; navn: string; beskrivelse: string; feats: string[] };
@@ -37,7 +55,29 @@ const FASILITETER: Fasilitet[] = [
   },
 ];
 
+const ALLE = "Alle";
+
 export function MarkedCoacherListeV2({ coacher }: { coacher: CoachKort[] }) {
+  const [aktivt, setAktivt] = useState<string>(ALLE);
+
+  const filtre = useMemo(() => {
+    const teller = new Map<string, number>();
+    for (const c of coacher) {
+      for (const omrade of c.omrader ?? []) {
+        teller.set(omrade, (teller.get(omrade) ?? 0) + 1);
+      }
+    }
+    return [
+      { navn: ALLE, antall: coacher.length },
+      ...[...teller.entries()].map(([navn, antall]) => ({ navn, antall })),
+    ];
+  }, [coacher]);
+
+  const filtrert = useMemo(
+    () => (aktivt === ALLE ? coacher : coacher.filter((c) => (c.omrader ?? []).includes(aktivt))),
+    [coacher, aktivt],
+  );
+
   return (
     <PkShell aktiv="/coacher" dataSlug="marketing-coacher-liste">
       <PkSek>
@@ -47,8 +87,22 @@ export function MarkedCoacherListeV2({ coacher }: { coacher: CoachKort[] }) {
       </PkSek>
 
       <PkSek notop>
+        {filtre.length > 1 && (
+          <PkFilterrad label="Filtrer coacher">
+            {filtre.map((f) => (
+              <button
+                key={f.navn}
+                type="button"
+                aria-pressed={aktivt === f.navn}
+                onClick={() => setAktivt(f.navn)}
+              >
+                {f.navn} · {f.antall}
+              </button>
+            ))}
+          </PkFilterrad>
+        )}
         <PkKat>
-          {coacher.map((c) => (
+          {filtrert.map((c) => (
             <CoachCard key={c.slug} c={c} />
           ))}
         </PkKat>
