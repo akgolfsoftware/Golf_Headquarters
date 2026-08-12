@@ -1,3 +1,5 @@
+> ⚠️ UTGÅTT (12.08.2026) — styrer ikke skjermbygging. Se docs/port/GYLDIGHET.md.
+
 # Prompt til Claude Design (Sonnet 5) — resterende skjermer uten fasit
 
 **Prosjekt:** AK Golf HQ · Claude Design `605a48cc`  

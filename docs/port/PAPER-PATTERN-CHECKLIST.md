@@ -1,3 +1,5 @@
+> ⚠️ UTGÅTT (12.08.2026) — styrer ikke skjermbygging. Se docs/port/GYLDIGHET.md.
+
 # Paper pattern checklist — skjermer UTEN fasit-HTML
 
 Status: `todo` → `done` når designsystem-port er OK (se plan §6).

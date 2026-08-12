@@ -1,3 +1,5 @@
+> ⚠️ UTGÅTT (12.08.2026) — styrer ikke skjermbygging. Se docs/port/GYLDIGHET.md.
+
 # Fase 3 — inline-style-kartlegging
 
 **Dato:** 2026-08-02 · **Branch:** `claude/inline-style-mapping-oayctz` · **Base:** `main` @ `ef400f1`

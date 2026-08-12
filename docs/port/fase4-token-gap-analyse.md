@@ -1,3 +1,5 @@
+> ⚠️ UTGÅTT (12.08.2026) — styrer ikke skjermbygging. Se docs/port/GYLDIGHET.md.
+
 # Fase 4 — token-gap-analyse: hva `T` mangler før bølge 1
 
 Målt 2026-08-02 på `main` @ `a1c41fed`. Ingen kode endret. Ingen token-fil rørt.

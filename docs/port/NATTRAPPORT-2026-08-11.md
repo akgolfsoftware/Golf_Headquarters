@@ -1,3 +1,5 @@
+> ⚠️ UTGÅTT (12.08.2026) — styrer ikke skjermbygging. Se docs/port/GYLDIGHET.md.
+
 # NATTRAPPORT — natt til 11.08.2026 (skrevet 08:2x, før 09-fristen)
 
 **Kjørt etter:** `masterplan-lansering-2026-08-11.md` + `OVERNIGHT-AUTONOMOUS-PLAN.md` v2.0.

@@ -1,3 +1,5 @@
+> ⚠️ UTGÅTT (12.08.2026) — styrer ikke skjermbygging. Se docs/port/GYLDIGHET.md.
+
 # Nattrapport 10.08.2026
 
 **Kjørt:** `OVERNIGHT-AUTONOMOUS-PLAN.md` v2.0, pakke 1–5. Auto-godkjent per planen.

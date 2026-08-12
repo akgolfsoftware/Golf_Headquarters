@@ -1,3 +1,5 @@
+> ⚠️ UTGÅTT (12.08.2026) — styrer ikke skjermbygging. Se docs/port/GYLDIGHET.md.
+
 # Komplett prompt til Claude Design — les prosjekt + tegn resterende
 
 **Bruk:** Claude Design / Sonnet med prosjekt **AK Golf HQ — Claude Paper**  

@@ -1,3 +1,5 @@
+> ⚠️ UTGÅTT (12.08.2026) — styrer ikke skjermbygging. Se docs/port/GYLDIGHET.md.
+
 # Overnight progress board
 
 **Sist:** 09.08.2026 ~21:55 CEST · mode ON

@@ -1,3 +1,5 @@
+> ⚠️ UTGÅTT (12.08.2026) — styrer ikke skjermbygging. Se docs/port/GYLDIGHET.md.
+
 # PP-0.6 — Rute-sanering (TrackMan + Workbench)
 
 **Dato:** 09.08.2026 · Del av `PIXEL-PERFECT-PLAN-COMPLETE.md` PP-0

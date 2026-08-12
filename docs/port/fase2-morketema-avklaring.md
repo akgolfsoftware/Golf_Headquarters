@@ -1,3 +1,5 @@
+> ⚠️ UTGÅTT (12.08.2026) — styrer ikke skjermbygging. Se docs/port/GYLDIGHET.md.
+
 # Fase 2 — mørketema-avklaring
 
 **Dato:** 2026-08-02 · **Branch:** `claude/morketema-avklaring-x30oyt` · **Status:** beslutningsunderlag, venter på Anders

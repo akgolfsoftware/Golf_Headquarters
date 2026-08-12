@@ -1,3 +1,5 @@
+> ⚠️ UTGÅTT (12.08.2026) — styrer ikke skjermbygging. Se docs/port/GYLDIGHET.md.
+
 # PP-2 AgencyOS kjerne — status
 
 **Oppdatert:** 09.08.2026 overnight  

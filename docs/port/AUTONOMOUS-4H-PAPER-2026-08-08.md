@@ -1,3 +1,5 @@
+> ⚠️ UTGÅTT (12.08.2026) — styrer ikke skjermbygging. Se docs/port/GYLDIGHET.md.
+
 # Autonom 4-timers kjøreplan — Paper overalt (uten videre godkjenning)
 
 **Start:** 2026-08-08 · **Varighet:** 4 timer · **Mandat:** Anders ba om plan som *jobber konstant uten videre godkjenning*  

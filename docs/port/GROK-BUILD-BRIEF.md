@@ -1,3 +1,5 @@
+> ⚠️ UTGÅTT (12.08.2026) — styrer ikke skjermbygging. Se docs/port/GYLDIGHET.md.
+
 # Brief til Grok Build — fortsett skjermporten trygt fra MacBook Air
 
 **Skrevet:** 06.08.2026 av Claude (på oppdrag fra Anders) · **Status:** til gjennomlesing FØR noe bygges.

@@ -1,3 +1,5 @@
+> ⚠️ UTGÅTT (12.08.2026) — styrer ikke skjermbygging. Se docs/port/GYLDIGHET.md.
+
 # Fase 0 — kartlegging før designport
 
 Målt 2026-08-02 i `akgolfsoftware/Golf_Headquarters`, branch `claude/akgolf-design-mapping-xvov2s`.

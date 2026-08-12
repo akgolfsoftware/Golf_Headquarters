@@ -1,3 +1,5 @@
+> ⚠️ UTGÅTT (12.08.2026) — styrer ikke skjermbygging. Se docs/port/GYLDIGHET.md.
+
 # Plan — port alle skjermer til Claude Paper
 
 **Skrevet:** 02.08.2026 · **Status:** GODKJENT OG I GANG (Anders 2026-08-03) — se svar nederst

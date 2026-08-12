@@ -1,3 +1,5 @@
+> ⚠️ UTGÅTT (12.08.2026) — styrer ikke skjermbygging. Se docs/port/GYLDIGHET.md.
+
 # Fase 1 — Beslutningsunderlag: hva skjer med token-filene?
 
 **Dato:** 02.08.2026 · **Branch:** `claude/akgolf-tokens-decision-0ppuuc` · **Status:** venter på Anders
