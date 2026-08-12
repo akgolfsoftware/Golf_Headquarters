@@ -9,10 +9,7 @@ import Link from "next/link";
 import { useState } from "react";
 import {
   Kort,
-  KpiFlis,
-  CTAPill,
   Knapp,
-  StatusPill,
   TomTilstand,
   Icon,
   T,
@@ -302,34 +299,34 @@ export function AdminPlanMalerV2({ data }: { data: AdminPlanMalerData }) {
       (status.length === 0 ||
         status.indexOf(m.godkjent ? STATUS_FILTRE[0] : STATUS_FILTRE[1]) !== -1),
   );
-  const snittUker =
-    total > 0 ? Math.round(data.maler.reduce((s, m) => s + m.varighetUker, 0) / total) : 0;
 
-  // B: status
-  const statusTone = total === 0 ? "warn" : totalBruk > 0 ? "up" : "info";
-  const statusTekst =
-    total === 0 ? "Ingen maler" : totalBruk > 0 ? `Brukt ${totalBruk}×` : pl(total, "mal", "maler");
+  // ── Hode — fasitens `.top` (agencyos-planbibliotek.html) ──────
+  // Tittel + tellende undertittel til venstre, handling til høyre. Fasiten har
+  // verken KPI-fliser eller full-bredde aksentknapp her: tallene bor i
+  // undertittelen, og «Ny mal» er en vanlig knapp. Tidligere lå det fire
+  // KpiFlis og en oransje full-bredde CTA over lista — de dyttet selve
+  // biblioteket under skjermkanten på mobil.
+  const undertittel =
+    total === 0
+      ? "Ingen maler ennå"
+      : `${pl(total, "mal", "maler")} · brukt ${totalBruk} ${totalBruk === 1 ? "gang" : "ganger"}`;
 
-  // ── Hode — B: status ──────────────────────────────────────────
-  const hode = (
-    <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 14, flexWrap: "wrap" }}>
-      <div>
-        <div data-paper-pattern-topp data-paper-slug="agencyos-planbibliotek">
-          <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>Planmaler</h1>
-          <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>AgencyOS</span>
-        </div>
-      </div>
-      <StatusPill tone={statusTone}>{statusTekst}</StatusPill>
-    </div>
+  const nyMalKnapp = (
+    <Link href="/admin/plan-templates/ny" style={{ textDecoration: "none" }}>
+      <Knapp icon="plus">Ny mal</Knapp>
+    </Link>
   );
 
-  // B: én primær CTA
-  const primaerCta = (
-    <Link href="/admin/plan-templates/ny" style={{ textDecoration: "none", display: "block" }}>
-      <CTAPill icon="plus" full enTing>
-        Ny mal
-      </CTAPill>
-    </Link>
+  const hode = (
+    <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 14, flexWrap: "wrap" }}>
+      <div data-paper-pattern-topp data-paper-slug="agencyos-planbibliotek" style={{ minWidth: 0 }}>
+        <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>Planer og maler</h1>
+        <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>
+          {undertittel}
+        </span>
+      </div>
+      <div style={{ display: "flex", alignItems: "center", gap: 8, flex: "none" }}>{nyMalKnapp}</div>
+    </div>
   );
 
   if (total === 0) {
@@ -343,20 +340,9 @@ export function AdminPlanMalerV2({ data }: { data: AdminPlanMalerData }) {
             sub="Opprett den første malen for å spare tid når du lager nye planer."
           />
         </Kort>
-        {primaerCta}
       </div>
     );
   }
-
-  // ── KPI-flis (4) ──────────────────────────────────────────────
-  const kpi = (
-    <div className="grid grid-cols-2 lg:grid-cols-4" style={{ gap: T.gap }}>
-      <KpiFlis label="Maler" value={total} />
-      <KpiFlis label="Godkjent" value={totalGodkjent} tint />
-      <KpiFlis label="Total bruk" value={totalBruk} />
-      <KpiFlis label="Snitt lengde (uker)" value={snittUker} />
-    </div>
-  );
 
   // ── Filterrad med tellere — fasitens `.filters` ────────────────
   // Én rad, ikke to merkede grupper: status først, deretter fase.
@@ -439,8 +425,6 @@ export function AdminPlanMalerV2({ data }: { data: AdminPlanMalerData }) {
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
       {hode}
-      {primaerCta}
-      {kpi}
       {filtre}
       {liste}
     </div>
