@@ -1,9 +1,9 @@
-import { Check, Target } from "lucide-react";
+"use client";
+
+import { useState } from "react";
+import { Check } from "lucide-react";
 import type { LiveV2Drill, DrillRepState } from "./types";
-import { RepCounter } from "./RepCounter";
 import { FysDrillLogger } from "./FysDrillLogger";
-import { L_FASER } from "@/lib/taxonomy";
-import { T } from "@/lib/v2/tokens";
 
 export type DrillLoggerProps = {
   drill: LiveV2Drill;
@@ -19,33 +19,39 @@ export type DrillLoggerProps = {
   drillSeconds: number;
 };
 
-function fmtDrillMSS(totalSec: number): string {
-  const m = Math.floor(totalSec / 60);
-  const s = totalSec % 60;
-  return `${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`;
+/**
+ * Reps-kortet fra fasiten (playerhq-live-okt.html §Rep-telling): eyebrow med
+ * drillnavn → stor tallstatus «N av M reps · X treff» → to store tappere
+ * «+1 rep» / «+1 treff» → «Angre siste». Store treffmål for én hånd på rangen.
+ *
+ * Datamodellen beholdes: «+1 rep» øker motorikk-bøtta som matcher drillens
+ * fase (uten ball / lav hastighet / auto), «+1 treff» øker repsHit — feltet
+ * successRate allerede regnes fra (logDrillReps: repsHit/repsTotal). Totalen
+ * er summen av bøttene, som før. Angre husker rekkefølgen lokalt i økta.
+ *
+ * FYS-drills bruker fortsatt FysDrillLogger (utenfor fasitens reps-seksjon).
+ */
+
+type Bucket = "repsWithoutBall" | "repsLowSpeed" | "repsAutomatic" | "repsHit";
+
+/** Motorikk-bøtte for «+1 rep» ut fra drillens fase. Uten fase: auto. */
+function repBucket(lFase: string | null): Bucket {
+  if (!lFase) return "repsAutomatic";
+  const f = lFase.toUpperCase();
+  if (f.includes("UTEN") || f.includes("KROPP") || f.includes("ARM") || f.includes("KØLLE") || f.includes("KOLLE")) {
+    return "repsWithoutBall";
+  }
+  if (f.includes("LAV") || f.includes("BALL")) return "repsLowSpeed";
+  return "repsAutomatic";
 }
 
-const AXIS_LABEL: Record<string, string> = {
-  FYS: "Fysisk",
-  TEK: "Teknisk",
-  SLAG: "Slag",
-  SPILL: "Spill",
-  TURN: "Turnering",
-};
-
-// Rettet 2026-07-16 (samme bug som LiveBrief.tsx hadde): drill.lFase er typet
-// LFase (L-Kropp/Arm/Kølle/Ball/Auto), ikke den separate LPhase-enumen.
-const L_PHASE_LABEL: Record<string, string> = Object.fromEntries(
-  L_FASER.map((f) => [f.kode, f.label]),
-);
-
-const AXIS_DOT: Record<string, string> = {
-  FYS: "bg-pyr-fys",
-  TEK: "bg-pyr-tek",
-  SLAG: "bg-pyr-slag",
-  SPILL: "bg-pyr-spill",
-  TURN: "bg-pyr-turn",
-};
+function medTotal(state: DrillRepState): DrillRepState {
+  return {
+    ...state,
+    repsTotal:
+      state.repsWithoutBall + state.repsLowSpeed + state.repsAutomatic + state.repsHit,
+  };
+}
 
 export function DrillLogger({
   drill,
@@ -53,125 +59,142 @@ export function DrillLogger({
   onChange,
   onComplete,
   isLast,
-  completedCount,
-  totalCount,
-  drillSeconds,
 }: DrillLoggerProps) {
-  const computedTotal =
+  // Angre-stakk: hvilke bøtter de siste tappene gikk til (kun denne økta).
+  const [tapp, setTapp] = useState<Bucket[]>([]);
+
+  const erFys = drill.pyramide === "FYS";
+
+  const total =
     state.repsWithoutBall + state.repsLowSpeed + state.repsAutomatic + state.repsHit;
 
-  const setField = <K extends keyof DrillRepState>(key: K, value: number) => {
-    if (key === "repsTotal") {
-      onChange({ ...state, repsTotal: Math.max(0, value) });
-      return;
-    }
-    const next = { ...state, [key]: Math.max(0, value) } as DrillRepState;
-    next.repsTotal = next.repsWithoutBall + next.repsLowSpeed + next.repsAutomatic + next.repsHit;
-    onChange(next);
+  const leggTil = (bucket: Bucket) => {
+    setTapp((s) => [...s, bucket]);
+    onChange(medTotal({ ...state, [bucket]: state[bucket] + 1 }));
   };
 
-  const progressPct = totalCount > 0 ? (completedCount / totalCount) * 100 : 0;
-  const axisDot = AXIS_DOT[drill.pyramide] ?? "bg-accent";
-  const erFys = drill.pyramide === "FYS";
+  const angre = () => {
+    const siste = tapp[tapp.length - 1];
+    if (!siste) return;
+    setTapp((s) => s.slice(0, -1));
+    onChange(medTotal({ ...state, [siste]: Math.max(0, state[siste] - 1) }));
+  };
+
+  const tapperStil: React.CSSProperties = {
+    minHeight: 88,
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 2,
+    border: "1px solid var(--p-border)",
+    borderRadius: "var(--p-r, 12px)",
+    background: "var(--p-soft)",
+    cursor: "pointer",
+    fontFamily: "var(--p-disp)",
+    fontSize: 15,
+    fontWeight: 600,
+    color: "var(--p-fg)",
+  };
+  const tapperSmall: React.CSSProperties = {
+    fontFamily: "var(--p-font-mono)",
+    fontSize: 10,
+    fontWeight: 400,
+    color: "var(--p-muted)",
+    textTransform: "uppercase",
+    letterSpacing: "0.06em",
+  };
 
   return (
     <div className="flex flex-col gap-4 px-4 py-4">
-      {/* Drillinfo-kort */}
-      <div className="rounded-2xl border p-4" style={{ borderColor: T.border, background: T.panel }}>
-        <div className="flex items-start justify-between gap-4">
-          <div className="min-w-0 flex-1">
-            <div className="flex flex-wrap items-center gap-2">
-              <span className="inline-flex h-6 items-center gap-2 rounded-md border px-2 font-mono text-[10px] font-extrabold uppercase tracking-[0.08em]" style={{ borderColor: T.border, color: T.fg }}>
-                <span className={`h-2 w-2 rounded-full ${axisDot}`} aria-hidden />
-                {AXIS_LABEL[drill.pyramide] ?? drill.pyramide}
-              </span>
-              {drill.lFase && (
-                <span className="inline-flex h-6 items-center rounded-md border px-2 font-mono text-[10px] font-extrabold uppercase tracking-[0.08em]" style={{ borderColor: T.border, color: T.mut }}>
-                  {L_PHASE_LABEL[drill.lFase] ?? drill.lFase}
-                </span>
-              )}
-            </div>
-            <h2 className="mt-4 font-display text-2xl font-semibold leading-[1.1] -tracking-[0.02em]" style={{ color: T.fg }}>
-              {drill.name}
-            </h2>
-            {drill.description && (
-              <p className="mt-2 text-sm leading-relaxed" style={{ color: T.mut }}>
-                {drill.description}
-              </p>
-            )}
-          </div>
-          <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full border" style={{ borderColor: T.border, background: T.panel2 }}>
-            <Target className="h-5 w-5" style={{ color: T.handling }} strokeWidth={2} aria-hidden />
-          </div>
-        </div>
-
-        <div className="mt-4 flex flex-wrap items-center gap-4 font-mono text-sm font-semibold tabular-nums" style={{ color: T.mut }}>
-          <span style={{ color: T.handling }}>{fmtDrillMSS(drillSeconds)} på denne drillen</span>
-          <span style={{ color: T.mut }}>·</span>
-          <span>{drill.durationMinutes} min mål</span>
-          <span style={{ color: T.mut }}>·</span>
-          <span>{drill.plannedReps > 0 ? `${drill.plannedReps} reps mål` : "Ingen reps-mål"}</span>
-        </div>
-
-        {drill.notes && (
-          <div className="mt-4 rounded-lg border px-4 py-2 text-sm leading-relaxed" style={{ borderColor: T.border, background: T.panel2, color: T.fg2 }}>
-            {drill.notes}
-          </div>
-        )}
-
-        {/* Fremdriftslinje */}
-        <div className="mt-4">
-          <div className="mb-2 flex items-center justify-between font-mono text-[10px] font-extrabold uppercase tracking-[0.12em]" style={{ color: T.mut }}>
-            <span>Drills fullført</span>
-            <span>
-              {completedCount}/{totalCount}
-            </span>
-          </div>
-          <div className="h-2 w-full overflow-hidden rounded-full" style={{ background: T.panel2 }}>
-            <div
-              className="h-full rounded-full transition-all duration-300"
-              style={{ width: `${progressPct}%`, background: T.handling }}
-            />
-          </div>
-        </div>
-      </div>
-
-      {/* Rep-tellere golf, eller FYS-modalitetslogger for fysiske drills */}
       {erFys ? (
         <FysDrillLogger drill={drill} onChange={onChange} />
       ) : (
-        <>
-          <RepCounter
-            label="Totalt"
-            value={computedTotal}
-            primary
-            hideDecrement
-            readOnly
-          />
-
-          <div className="grid gap-4">
-            <RepCounter
-              label="Uten ball"
-              value={state.repsWithoutBall}
-              onChange={(v) => setField("repsWithoutBall", v)}
-            />
-            <RepCounter
-              label="Lav hastighet"
-              value={state.repsLowSpeed}
-              onChange={(v) => setField("repsLowSpeed", v)}
-            />
-            <RepCounter
-              label="Automatikk"
-              value={state.repsAutomatic}
-              onChange={(v) => setField("repsAutomatic", v)}
-            />
-            <RepCounter
-              label="Golfballer slått"
-              value={state.repsHit}
-              onChange={(v) => setField("repsHit", v)}
-            />
+        /* Fasitens repkort */
+        <div
+          style={{
+            background: "var(--p-surface)",
+            border: "1px solid var(--p-border)",
+            borderRadius: "var(--p-r, 12px)",
+            padding: 16,
+          }}
+        >
+          <span
+            style={{
+              display: "block",
+              fontFamily: "var(--p-font-mono)",
+              fontSize: 10,
+              fontWeight: 700,
+              textTransform: "uppercase",
+              letterSpacing: "0.1em",
+              color: "var(--p-muted)",
+            }}
+          >
+            {drill.name}
+          </span>
+          <div style={{ display: "flex", alignItems: "baseline", gap: 12, margin: "10px 0 12px", flexWrap: "wrap" }}>
+            <span
+              style={{
+                fontFamily: "var(--p-font-mono)",
+                fontVariantNumeric: "tabular-nums",
+                fontSize: 40,
+                fontWeight: 500,
+                lineHeight: 1,
+                color: "var(--p-fg)",
+              }}
+            >
+              {total}
+            </span>
+            <span style={{ fontFamily: "var(--p-font-mono)", fontSize: 13, color: "var(--p-muted)" }}>
+              av {drill.plannedReps > 0 ? drill.plannedReps : "—"} reps
+              {state.repsHit > 0 ? ` · ${state.repsHit} treff` : ""}
+            </span>
           </div>
-        </>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
+            <button
+              type="button"
+              data-od-id="live-tap-rep"
+              onClick={() => leggTil(repBucket(drill.lFase))}
+              className="active:translate-y-px"
+              style={tapperStil}
+            >
+              +1
+              <small style={tapperSmall}>rep</small>
+            </button>
+            <button
+              type="button"
+              data-od-id="live-tap-treff"
+              onClick={() => leggTil("repsHit")}
+              className="active:translate-y-px"
+              style={{ ...tapperStil, borderColor: "var(--p-up)" }}
+            >
+              +1
+              <small style={tapperSmall}>treff</small>
+            </button>
+          </div>
+          <button
+            type="button"
+            data-od-id="live-angre"
+            onClick={angre}
+            disabled={tapp.length === 0}
+            className="w-full"
+            style={{
+              marginTop: 8,
+              minHeight: 44,
+              borderRadius: "var(--p-r-sm, 8px)",
+              border: "1px solid var(--p-border)",
+              background: "var(--p-surface)",
+              fontFamily: "var(--p-ui)",
+              fontSize: 13,
+              fontWeight: 500,
+              color: tapp.length === 0 ? "var(--p-muted)" : "var(--p-fg)",
+              cursor: tapp.length === 0 ? "default" : "pointer",
+              opacity: tapp.length === 0 ? 0.6 : 1,
+            }}
+          >
+            Angre siste
+          </button>
+        </div>
       )}
 
       {/* Fullfør-knapp — ink, ikke clay: skjermens ene clay-CTA er

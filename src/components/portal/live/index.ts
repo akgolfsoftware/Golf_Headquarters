@@ -8,7 +8,6 @@
 export * from "./types";
 export { LiveSessionShell } from "./LiveSessionShell";
 export { SessionTimer } from "./SessionTimer";
-export { RepCounter } from "./RepCounter";
 export { DrillLogger } from "./DrillLogger";
 export { SessionSummary } from "./SessionSummary";
 export { SpillerVurderingForm } from "./SpillerVurderingForm";
