@@ -9,6 +9,7 @@ const DRAFT_TITLER: Record<string, string> = {
   draftPlayerNote: "Notat på spiller",
   draftPlanAdjustment: "Justering av treningsplan",
   reengageInactivePlayer: "Oppfølging av inaktiv spiller",
+  suggestDrillVideo: "Videoforslag til øvelse",
 };
 
 /** Norsk tittel for et Caddie-utkast. Ukjent toolName → generisk fallback. */

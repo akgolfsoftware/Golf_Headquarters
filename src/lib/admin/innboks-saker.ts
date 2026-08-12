@@ -301,7 +301,58 @@ export async function loadInnboksSaker(user: {
   }
 
   // ── forslag · CaddieDraft ───────────────────────────────────────────
+  // Signering 12.08: 30+ identiske «Caddie-utkast»-rader druknet resten av
+  // innboksen. Utkast av samme type samles derfor til ÉN sak med teller.
+  // Samleraden får ingen godkjenn/avvis: å sende 30 AI-skrevne meldinger med
+  // ett trykk er nettopp det innboksen skal hindre — den leder til Caddie,
+  // der utkastene leses hver for seg. Er det bare ett utkast av en type,
+  // beholder det sine egne handlinger.
+  const draftsPerType = new Map<string, typeof caddieDrafts>();
   for (const d of caddieDrafts) {
+    const gruppe = draftsPerType.get(d.toolName);
+    if (gruppe) gruppe.push(d);
+    else draftsPerType.set(d.toolName, [d]);
+  }
+  for (const [toolName, gruppe] of draftsPerType) {
+    if (gruppe.length < 2) continue;
+    const eldst = gruppe.reduce((a, b) => (a.createdAt <= b.createdAt ? a : b));
+    const { frist, snart } = fristTekst(eldst.createdAt, now, false);
+    const hvem = new Set(
+      gruppe.map((d) => {
+        const sid = draftSpillerId(d.toolInput) ?? d.userId;
+        return navn.get(sid) ?? navn.get(d.userId) ?? "Spiller";
+      }),
+    );
+    saker.push({
+      id: `caddieDraftGruppe:${toolName}`,
+      kilde: "caddieDraft",
+      type: "forslag",
+      tittel: `${caddieDraftTittel(toolName)} · ${gruppe.length}`,
+      sub: `${gruppe.length} utkast venter. Ingenting er sendt.`,
+      hvem: hvem.size === 1 ? [...hvem][0] : `${hvem.size} spillere`,
+      frist,
+      snart,
+      lost: false,
+      lostTekst: null,
+      kontrakt: {
+        hvorfor: null,
+        hva: `Caddie har skrevet ${gruppe.length} utkast av samme type. Les dem hver for seg i Caddie — de sendes ikke herfra.`,
+        effekt: null,
+        hvorforNa: hvorforNaTekst(eldst.createdAt, now, false),
+      },
+      grunnlag: [
+        `Kilde: Caddie · verktøy ${toolName}`,
+        `Eldste utkast skrevet ${narTekst(eldst.createdAt, now)}`,
+      ],
+      href: "/admin/agencyos/caddie/dashbord",
+      hrefTekst: "Åpne i Caddie",
+      primaer: null,
+      sekundaer: null,
+    });
+  }
+
+  for (const d of caddieDrafts) {
+    if ((draftsPerType.get(d.toolName)?.length ?? 0) >= 2) continue;
     const spillerId = draftSpillerId(d.toolInput) ?? d.userId;
     const { frist, snart } = fristTekst(d.createdAt, now, false);
     saker.push({
