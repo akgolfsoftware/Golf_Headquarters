@@ -60,6 +60,7 @@ export default async function V2AdminPlanMalerPreviewPage() {
       ukentligOktAntall: true,
       usageCount: true,
       disciplinFordeling: true,
+      approved: true,
       _count: { select: { sessions: true } },
     },
   });
@@ -75,6 +76,7 @@ export default async function V2AdminPlanMalerPreviewPage() {
       usageCount: m.usageCount,
       oktAntall: m._count.sessions,
       fordeling: tilFordeling(m.disciplinFordeling),
+      godkjent: m.approved,
     })),
   };
 

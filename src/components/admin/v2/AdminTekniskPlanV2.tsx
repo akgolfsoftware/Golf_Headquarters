@@ -109,7 +109,7 @@ export function AdminTekniskPlanV2({ data }: { data: AdminTekniskPlanData }) {
   // ── Hode ──────────────────────────────────────────────────────
   const hode = (
     <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 14, flexWrap: "wrap" }}>
-      <div>
+      <div data-paper-pattern-topp data-paper-slug="agencyos-planbibliotek">
         <Caps>
           {pl(spillere.length, "spiller", "spillere")} · {pl(maler.length, "mal", "maler")} · AgencyOS
         </Caps>
