@@ -1,72 +1,64 @@
-"use client";
-
 /**
- * AK Golf HQ v2 — markedsside BLOGG-DETALJ (/blogg/[slug]), retning C, mørk.
+ * AK Golf HQ — markedsside BLOGG-DETALJ (/blogg/[slug]), Paper.
+ * Fasit: designsystem/paper/fase2/marketing/marketing-katalog.html (§detalj).
  * Ekte copy speilet fra (mlegacy)/blogg/[slug]/page.tsx.
  */
 import Image from "next/image";
-import { T } from "@/lib/v2/tokens";
 import { Icon } from "@/components/v2";
-import { MRamme, HeroT, MCta, Seksjon, useMobile } from "./marked-ramme";
+import { PkShell } from "./paper/PkShell";
+import { PkSek, PkHero, PkProsa, PkCta } from "./paper/PkPrimitives";
 import type { BlogPost } from "@/app/(marketing)/(mlegacy)/blogg/posts";
 
 const NB_DATE = new Intl.DateTimeFormat("nb-NO", { day: "numeric", month: "long", year: "numeric" });
 
 export function MarkedBloggDetaljV2({ post }: { post: BlogPost }) {
-  const mobile = useMobile();
   return (
-    <MRamme mobile={mobile} aktiv="blogg" waveId="marked-blogg-detalj">
-      {/* Hero-bilde */}
-      <div style={{ position: "relative", aspectRatio: mobile ? "4 / 3" : "16 / 7", width: "100%", background: T.panel2 }}>
+    <PkShell aktiv="/blogg" dataSlug="marketing-blogg-detalj">
+      <div style={{ position: "relative", aspectRatio: "16 / 7", width: "100%", background: "var(--p-soft)" }}>
         <Image src={post.bilde} alt={post.tittel} fill priority sizes="100vw" style={{ objectFit: "cover" }} />
-        <div style={{ position: "absolute", inset: 0, background: `linear-gradient(180deg, ${T.farge.grafittMerkeA15} 0%, ${T.farge.grafittMerkeA85} 100%)` }} />
       </div>
 
-      <Seksjon mobile={mobile} style={{ paddingTop: mobile ? 24 : 40 }}>
-        <MCta ghost small icon="arrow-left" href="/blogg">
+      <PkSek>
+        <PkCta href="/blogg" ghost small icon="arrow-left">
           Tilbake til blogg
-        </MCta>
+        </PkCta>
         <div style={{ marginTop: 20, maxWidth: 760 }}>
-          <HeroT mobile={mobile}>{post.tittel}</HeroT>
-          <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: 18, marginTop: 20, fontFamily: T.ui, fontSize: 13, color: T.fg2 }}>
+          <PkHero>{post.tittel}</PkHero>
+          <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: 18, marginTop: 16, fontFamily: "var(--p-ui)", fontSize: 13, color: "var(--p-muted)" }}>
             <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
-              <Icon name="calendar" size={14} style={{ color: T.lime }} />
+              <Icon name="calendar" size={14} style={{ color: "var(--p-accent-fg)" }} />
               {NB_DATE.format(new Date(post.dato))}
             </span>
             <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
-              <Icon name="user" size={14} style={{ color: T.lime }} />
+              <Icon name="user" size={14} style={{ color: "var(--p-accent-fg)" }} />
               {post.forfatter}
             </span>
           </div>
         </div>
-      </Seksjon>
+      </PkSek>
 
-      {/* Innhold */}
-      <Seksjon mobile={mobile} style={{ paddingTop: 0 }}>
-        <div style={{ maxWidth: 720, display: "flex", flexDirection: "column", gap: 18 }}>
-          <p style={{ fontFamily: T.disp, fontStyle: "italic", fontSize: mobile ? 17 : 19, color: T.fg2, lineHeight: 1.5, margin: 0 }}>{post.ingress}</p>
+      <PkSek notop>
+        <PkProsa>
+          <p style={{ fontFamily: "var(--p-disp)", fontStyle: "italic", fontSize: 19, color: "var(--p-muted)" }}>{post.ingress}</p>
           {post.innhold.map((p, i) => (
-            <p key={i} style={{ fontFamily: T.ui, fontSize: 15.5, color: T.fg2, lineHeight: 1.75, margin: 0 }}>
-              {p}
-            </p>
+            <p key={i}>{p}</p>
           ))}
-        </div>
-      </Seksjon>
+        </PkProsa>
+      </PkSek>
 
-      {/* Til oversikten */}
-      <Seksjon mobile={mobile} style={{ paddingTop: mobile ? 12 : 20 }}>
-        <div style={{ borderTop: `1px solid ${T.border}`, paddingTop: 28 }}>
-          <span style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 20, color: T.fg, letterSpacing: "-0.015em" }}>Les flere innlegg</span>
-          <p style={{ fontFamily: T.ui, fontSize: 13.5, color: T.fg2, lineHeight: 1.6, margin: "10px 0 0", maxWidth: 480 }}>
+      <PkSek notop>
+        <div style={{ borderTop: "1px solid var(--p-border)", paddingTop: 28 }}>
+          <span style={{ fontFamily: "var(--p-disp)", fontWeight: 600, fontSize: 20, color: "var(--p-fg)" }}>Les flere innlegg</span>
+          <p style={{ fontFamily: "var(--p-body)", fontSize: 14.5, color: "var(--p-muted)", lineHeight: 1.6, margin: "10px 0 0", maxWidth: 480 }}>
             Tanker fra coachene om trening, struktur og hva som faktisk flytter scoren.
           </p>
           <div style={{ marginTop: 18 }}>
-            <MCta ghost icon="arrow-left" href="/blogg">
+            <PkCta href="/blogg" ghost icon="arrow-left">
               Til oversikten
-            </MCta>
+            </PkCta>
           </div>
         </div>
-      </Seksjon>
-    </MRamme>
+      </PkSek>
+    </PkShell>
   );
 }

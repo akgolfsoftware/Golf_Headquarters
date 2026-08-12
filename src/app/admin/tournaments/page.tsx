@@ -18,7 +18,7 @@ import { AdminTurneringerV2, type AdminTurneringV2Row, type TurneringChipTone } 
 
 export const dynamic = "force-dynamic";
 
-type RadIntern = AdminTurneringV2Row & { statuser: string[] };
+type RadIntern = Omit<AdminTurneringV2Row, "erKommende"> & { statuser: string[] };
 
 /** «9.–10. jun» / «21. jun» / «14. aug – 16. sep» (nb-NO, uten år). */
 function datoSpenn(start: Date, end: Date | null): string {
@@ -100,7 +100,6 @@ export default async function TurneringerPage() {
   }
 
   const rader: AdminTurneringV2Row[] = [...perTurnering.values()]
-    .filter((r) => r.start.getTime() >= ukeStart.getTime())
     .sort((a, b) => a.start.getTime() - b.start.getTime())
     .map((r) => ({
       key: r.key,
@@ -110,7 +109,14 @@ export default async function TurneringerPage() {
       anlegg: r.anlegg,
       paameldte: r.statuser.filter((s) => s !== "WITHDRAWN").length,
       chip: statusChip(r.statuser),
+      erKommende: r.start.getTime() >= ukeStart.getTime(),
     }));
+
+  // Manuelt registrerte turneringer uten kobling mot en kanonisk kilde ennå —
+  // samme datagrunnlag som dubletter-siden (/admin/tournaments/dubletter).
+  const dublettAntall = await prisma.tournament.count({
+    where: { sourceOrigin: "MANUAL", mergedIntoId: null },
+  });
 
   return (
     <V2Shell bredde="kolonne" aktiv="planlegge" nav={AGENCYOS_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
@@ -119,7 +125,7 @@ export default async function TurneringerPage() {
           <Caps size={10}>Norge-data · dekning og toppliste →</Caps>
         </Link>
       </div>
-      <AdminTurneringerV2 data={{ sesong: now.getFullYear(), rader }} />
+      <AdminTurneringerV2 data={{ sesong: now.getFullYear(), rader, dublettAntall }} />
     </V2Shell>
   );
 }

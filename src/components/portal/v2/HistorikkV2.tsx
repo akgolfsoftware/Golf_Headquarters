@@ -82,7 +82,7 @@ export function HistorikkV2({ entries, navn }: { entries: HistorikkEntry[]; navn
       filtre.periode === "alt"
         ? "Hele historikken"
         : filtre.periode === "sesong"
-          ? "Denne sesongen"
+          ? `Sesong ${new Date().getFullYear()}`
           : `Siste ${filtre.periode} dager`,
     fjern: () => setFiltre((f) => ({ ...f, periode: "alt" })),
   });

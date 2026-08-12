@@ -65,6 +65,8 @@ export interface AnalysereHullV2Data {
   hullVarme: HullVarmeResultat;
   /** Spillernavn til underteksten i toppen (fasit: «Øyvind Rohjan · kat. D»). */
   spillerNavn?: string | null;
+  /** Spillerens A–K-kategori (fasit-sub «navn · kat. X») — null når ukjent. */
+  kategori?: string | null;
 }
 
 /* ── Hjelpere ──────────────────────────────────────────────────────────── */
@@ -538,16 +540,28 @@ export function AnalysereHullV2({ data }: { data: AnalysereHullV2Data }) {
   const [tab, setTab] = useState<TabKey>("sone");
 
   return (
-    <div  data-paper-slug="playerhq-analyse-hull" data-paper-wave-g="analyserehull" data-paper-portal-analysere-hull style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
+    <div  data-paper-slug="playerhq-analyse-hull" data-paper-wave-g="analyserehull" data-paper-portal-analysere-hull style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%", minWidth: 0 }}>
       {/* Hode */}
       <div>
         <div data-paper-pattern-topp>
           <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>Hull-analyse</h1>
           <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>
-            {data.spillerNavn || "Analyse"}
+            {data.spillerNavn
+              ? `${data.spillerNavn}${data.kategori ? ` · kat. ${data.kategori}` : ""}`
+              : "Analyse"}
           </span>
         </div>
       </div>
+
+      {/* Fasit-rekkefølge: topp → faner → merknad (merknaden først inne i kroppen). */}
+      <PillTabs
+        tabs={[
+          { id: "sone", l: "Sone-kart" },
+          { id: "hull", l: "Hull for hull" },
+        ]}
+        value={tab}
+        onChange={(id) => setTab(id as TabKey)}
+      />
 
       {/* Fasit-merknad — vises på begge faner, øverst i kroppen. */}
       <p
@@ -563,15 +577,6 @@ export function AnalysereHullV2({ data }: { data: AnalysereHullV2Data }) {
       >
         Tallene er målinger, ikke karakterer. Ingen terskler er vurdert — regler og låser er midlertidig ute.
       </p>
-
-      <PillTabs
-        tabs={[
-          { id: "sone", l: "Sone-kart" },
-          { id: "hull", l: "Hull for hull" },
-        ]}
-        value={tab}
-        onChange={(id) => setTab(id as TabKey)}
-      />
 
       {tab === "sone" ? (
         <SoneFane soner={data.soner} sgRegistreringer={data.sgRegistreringer} />

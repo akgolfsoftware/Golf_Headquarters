@@ -150,7 +150,7 @@ export function AdminLiveActiveV2({ data }: { data: AdminLiveActiveV2Data }) {
   );
 
   return (
-    <div data-paper-wave-h="live-active" data-paper-pattern style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 960, margin: "0 auto", width: "100%" }}>
+    <div data-paper-wave-h="live-active" data-paper-pattern style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 1180, margin: "0 auto", width: "100%" }}>
       <style>{`@keyframes v2LivePing{0%{transform:scale(1);opacity:.6}75%,100%{transform:scale(2.2);opacity:0}}.v2-live-ping{animation:v2LivePing 1.6s cubic-bezier(0,0,.2,1) infinite}`}</style>
       {hode}
       {kpi}

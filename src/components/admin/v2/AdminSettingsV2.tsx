@@ -20,7 +20,6 @@
 import Link from "next/link";
 import {
   Caps,
-  Tittel,
   Kort,
   Rad,
   AvatarInit,
@@ -205,7 +204,7 @@ function TilgangFane({ href }: { href: string }) {
 export function AdminSettingsV2({ data }: { data: AdminSettingsV2Data }) {
   const hode = (
     <div>
-      <div data-paper-pattern-topp data-paper-slug="agencyos-oppsett">
+      <div data-paper-pattern-topp data-paper-slug="agencyos-innstillinger">
           <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>Innstillinger</h1>
           <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>AgencyOS</span>
         </div>
@@ -229,7 +228,7 @@ export function AdminSettingsV2({ data }: { data: AdminSettingsV2Data }) {
   );
 
   return (
-    <div data-paper-wave-h="settings" data-paper-agencyos-settings style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 960, margin: "0 auto", width: "100%" }}>
+    <div data-paper-wave-h="settings" data-paper-agencyos-settings style={{ display: "flex", flexDirection: "column", gap: T.gap, width: "100%" }}>
       {hode}
       {kpier}
       {faner}

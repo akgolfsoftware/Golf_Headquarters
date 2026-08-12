@@ -13,6 +13,7 @@
  * er uendret. Drag-and-drop er fortsatt ikke aktiv (grip-håndtak vises).
  */
 
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
@@ -81,7 +82,63 @@ export default async function PlanBuilderPage({ params }: PageProps) {
     },
   });
 
-  if (!plan) return notFound();
+  if (!plan) {
+    // Fasit (playerhq-teknisk-plan.html): mangler planen HELT, vises tom
+    // tilstand med vei videre — aldri 404. Finnes andre planer, er id-en
+    // bare feil, og 404 er fortsatt riktig (K6-tilgangsregelen).
+    const antallPlaner = await prisma.technicalPlan.count({ where: { userId: user.id } });
+    if (antallPlaner > 0) return notFound();
+    return (
+      <V2Shell bredde="kolonne" aktiv="plan" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
+        <TilbakeLenke href="/portal/tren">Tren</TilbakeLenke>
+        <div
+          data-paper-slug="playerhq-teknisk-plan"
+          data-od-id="playerhq-teknisk-plan-tom"
+          style={{ maxWidth: 720, margin: "0 auto", width: "100%" }}
+        >
+          <div
+            style={{
+              padding: "24px 16px",
+              background: T.panel2,
+              border: `1px dashed ${T.border}`,
+              borderRadius: T.rCard,
+            }}
+          >
+            <h3 style={{ margin: "0 0 8px", fontFamily: T.disp, fontSize: 15, fontWeight: 600, color: T.fg }}>
+              Ingen teknisk plan ennå
+            </h3>
+            <p style={{ margin: "0 0 12px", fontFamily: T.bodyFont, fontSize: 13.5, color: T.mut }}>
+              Anders har ikke publisert en teknisk plan for deg. Den bygges vanligvis etter en
+              svinganalyse — be om en, så starter dere der.
+            </p>
+            {/* Kontrakt §3: skjermens ene aksenthandling */}
+            <Link
+              href="/portal/coach/melding/ny"
+              data-od-id="tek-tom-be"
+              data-paper-en-ting="true"
+              className="v2-press v2-focus"
+              style={{
+                textDecoration: "none",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                minHeight: 56,
+                width: "100%",
+                borderRadius: T.rCard,
+                background: T.handling,
+                color: T.onHandling,
+                fontFamily: T.ui,
+                fontSize: 14,
+                fontWeight: 600,
+              }}
+            >
+              Be Anders om svinganalyse
+            </Link>
+          </div>
+        </div>
+      </V2Shell>
+    );
+  }
 
   // Totals
   const allTasks = plan.positions.flatMap((p) => p.tasks);

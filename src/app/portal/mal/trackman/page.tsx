@@ -223,7 +223,7 @@ export default async function TrackManListePage() {
             data-od-id="trackman-coach"
             style={{ textDecoration: "none" }}
           >
-            <CTAPill ghost icon="send">
+            <CTAPill ghost>
               Be om coach-vurdering
             </CTAPill>
           </Link>

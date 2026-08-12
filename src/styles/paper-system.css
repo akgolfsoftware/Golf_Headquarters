@@ -1,0 +1,127 @@
+/* ─────────────────────────────────────────────────────────────
+   Paper — systemtilstander (offline · 404 · 500 · vedlikehold · ingen
+   tilgang). Kilde: designsystem/paper/fase2/system/system-tilstander.html.
+   Bruker KUN --p-*-tokens (src/styles/paper-tokens.css). Scopet under
+   .pks- for å ikke lekke inn i resten av appen.
+   ───────────────────────────────────────────────────────────── */
+
+.pks-side {
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  background: var(--p-bg);
+  color: var(--p-fg);
+  font-family: var(--p-ui);
+}
+.pks-kolonne {
+  width: 100%;
+  max-width: 430px;
+  margin: 0 auto;
+  padding: var(--p-s5) var(--p-s4) calc(var(--p-s8) + env(safe-area-inset-bottom));
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.pks-merke {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--p-s2);
+  padding: 0 0 var(--p-s5);
+  font-family: var(--p-disp);
+  font-size: 20px;
+  font-weight: 700;
+}
+.pks-merke span { color: var(--p-logo-dot); }
+
+.pks-figur {
+  width: 64px;
+  height: 64px;
+  margin-bottom: var(--p-s5);
+  border-radius: var(--p-r-md);
+  border: 1px solid var(--p-border);
+  background: var(--p-soft);
+  display: grid;
+  place-items: center;
+}
+.pks-figur svg {
+  width: 28px;
+  height: 28px;
+  fill: none;
+  stroke: var(--p-muted);
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+h1.pks-tittel {
+  margin: 0 0 var(--p-s3);
+  font-family: var(--p-disp);
+  font-size: 26px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+p.pks-tekst {
+  margin: 0 0 var(--p-s5);
+  font-family: var(--p-body);
+  font-size: 15.5px;
+  color: var(--p-muted);
+  max-width: 46ch;
+  text-wrap: pretty;
+}
+.pks-virker {
+  padding: var(--p-s4);
+  background: var(--p-soft);
+  border-radius: var(--p-r);
+  margin-bottom: var(--p-s5);
+}
+.pks-virker .pks-flab {
+  display: block;
+  font-family: var(--p-mono);
+  font-size: 10px;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--p-muted);
+  margin-bottom: var(--p-s2);
+}
+.pks-linje {
+  display: flex;
+  align-items: baseline;
+  gap: var(--p-s3);
+  padding: var(--p-s2) 0;
+  border-bottom: 1px solid var(--p-hairline);
+  font-size: 13.5px;
+}
+.pks-linje:last-child { border-bottom: 0; }
+.pks-linje .pks-v { margin-left: auto; font-family: var(--p-mono); font-variant-numeric: tabular-nums; }
+
+.pks-knapper { display: flex; gap: var(--p-s2); flex-wrap: wrap; }
+.pks-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--p-s2);
+  min-height: var(--p-tap-lg);
+  padding: 0 var(--p-s5);
+  font-size: 15px;
+  font-weight: 500;
+  font-family: var(--p-ui);
+  background: transparent;
+  border: 1px solid var(--p-border);
+  border-radius: var(--p-r);
+  cursor: pointer;
+  white-space: nowrap;
+  text-decoration: none;
+  color: inherit;
+}
+.pks-btn:hover { background: var(--p-soft); border-color: var(--p-mid); color: inherit; }
+.pks-btn.pks-btn-ink { background: var(--p-cta); color: var(--p-on-cta); border-color: var(--p-cta); }
+.pks-btn.pks-btn-ink:hover { background: var(--p-cta-hover); border-color: var(--p-cta-hover); color: var(--p-on-cta); }
+
+.pks-kode {
+  margin-top: var(--p-s5);
+  font-family: var(--p-mono);
+  font-size: 11px;
+  color: var(--p-muted);
+}

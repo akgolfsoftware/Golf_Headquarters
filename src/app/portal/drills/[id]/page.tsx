@@ -10,6 +10,7 @@
 import Link from "next/link";
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
+import { prisma } from "@/lib/prisma";
 import { loadDrillDetalj } from "@/lib/portal-drilldetalj/drill-detalj-data";
 import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
 import { TilbakeLenke, TomTilstand, CTAPill, Kort } from "@/components/v2";
@@ -18,6 +19,11 @@ import {
   type DrillDetaljV2Data,
 } from "@/components/portal/v2/DrillDetaljV2";
 import type { AkseKey } from "@/lib/v2/tokens";
+
+// Modulnivå-helper: Date.now() kan ikke kalles i render-body (react-hooks/purity).
+function tredveDagerSiden(): Date {
+  return new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
+}
 
 export default async function DrillDetailPage({
   params,
@@ -55,6 +61,29 @@ export default async function DrillDetailPage({
   // AK-formel-slots utledes av faktiske felter: Pyramide (akse), Område
   // (skill/treningsområde), Motorikk (læringsfase, Vei B) og Belastning
   // (miljø). Slots uten data utelates — aldri fabrikert.
+  // «din bruk» — samme datakilde som øvelsesbankens «brukt i N økter siste
+  // 30 dager» (TrainingDrillV2.exerciseId → egne TrainingSessionV2-økter).
+  // «Beste resultat» finnes ikke i datamodellen og utelates ærlig.
+  const brukRader = await prisma.trainingDrillV2.findMany({
+    where: { exerciseId: id, session: { studentId: user.id } },
+    select: { sessionId: true, session: { select: { title: true, startTime: true } } },
+    orderBy: { session: { startTime: "desc" } },
+  });
+  const grense = tredveDagerSiden();
+  const okterSiste30 = new Set(
+    brukRader.filter((b) => b.session.startTime >= grense).map((b) => b.sessionId),
+  ).size;
+  const sist = brukRader[0] ?? null;
+  const bruk: { k: string; v: string }[] = [
+    {
+      k: "Sist brukt",
+      v: sist
+        ? `${sist.session.startTime.toLocaleDateString("nb-NO", { day: "2-digit", month: "2-digit", timeZone: "Europe/Oslo" })} · økta ${sist.session.title}`
+        : "ikke brukt ennå",
+    },
+    { k: "Siste 30 dager", v: `${okterSiste30} ${okterSiste30 === 1 ? "økt" : "økter"}` },
+  ];
+
   const eyebrowDetalj = data.eyebrow.includes(" · ")
     ? data.eyebrow.split(" · ").slice(1).join(" · ")
     : null;
@@ -82,7 +111,7 @@ export default async function DrillDetailPage({
       url: m.url,
     })),
     params: data.params,
-    hrefBibliotek: "/portal/drills",
+    bruk,
     hrefLeggTilIPlan: "/portal/planlegge/workbench",
   };
 

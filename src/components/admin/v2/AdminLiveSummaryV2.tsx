@@ -169,7 +169,7 @@ export function AdminLiveSummaryV2({ data }: { data: AdminLiveSummaryV2Data }) {
     return <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>{hode}{kpi}{drillliste}{vurderingKort}{navigasjon}</div>;
   }
   return (
-    <div data-paper-wave-h="live-summary" data-paper-pattern style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 960, margin: "0 auto", width: "100%" }}>
+    <div data-paper-wave-h="live-summary" data-paper-pattern style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 1180, margin: "0 auto", width: "100%" }}>
       {hode}{kpi}
       <div style={{ display: "grid", gridTemplateColumns: "3fr 2fr", gap: T.gap, alignItems: "start" }}>
         {drillliste}

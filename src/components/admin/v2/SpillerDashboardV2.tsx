@@ -285,7 +285,7 @@ export function SpillerDashboardV2({ data }: { data: SpillerDashboardV2Data }) {
   const trengerOppfolging = data.heroBadges.some((b) => b.tone === "down" || b.tone === "warn");
 
   return (
-    <div data-paper-agencyos-spillerprofil data-paper-wave-e="spillerprofil" data-od-id="agencyos-spillerprofil" style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 960, margin: "0 auto", width: "100%" }}>
+    <div data-paper-agencyos-spillerprofil data-paper-wave-e="spillerprofil" data-od-id="agencyos-spillerprofil" style={{ display: "flex", flexDirection: "column", gap: T.gap, width: "100%" }}>
       <div>
         <TilbakeLenke href="/admin/spillere">Tilbake til Spillere</TilbakeLenke>
       </div>

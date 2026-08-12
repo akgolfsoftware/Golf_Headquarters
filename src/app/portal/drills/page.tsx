@@ -9,6 +9,7 @@
  * Bruk siste 30 dager telles fra TrainingDrillV2.exerciseId (egne økter).
  */
 
+import Link from "next/link";
 import { redirect } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
@@ -184,10 +185,33 @@ export default async function DrillsPage() {
             <h3 style={{ margin: "0 0 8px", fontFamily: T.disp, fontSize: 15, fontWeight: 600, color: T.fg }}>
               Øvelsesbanken er tom
             </h3>
-            <p style={{ margin: 0, fontFamily: T.bodyFont, fontSize: 13.5, color: T.mut }}>
+            <p style={{ margin: "0 0 12px", fontFamily: T.bodyFont, fontSize: 13.5, color: T.mut }}>
               Anders har ikke publisert driller ennå — banken fylles av coachen, ikke av appen.
               Øktene dine virker som før; drillene der ligger i selve økta.
             </p>
+            {/* Kontrakt §3: skjermens ene aksenthandling i tom tilstand */}
+            <Link
+              href="/portal/coach/melding/ny"
+              data-od-id="drills-tom-be"
+              data-paper-en-ting="true"
+              className="v2-press v2-focus"
+              style={{
+                textDecoration: "none",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                minHeight: 56,
+                width: "100%",
+                borderRadius: T.rCard,
+                background: T.handling,
+                color: T.onHandling,
+                fontFamily: T.ui,
+                fontSize: 14,
+                fontWeight: 600,
+              }}
+            >
+              Spør Anders om øvelsesbanken
+            </Link>
           </div>
         ) : (
           <DrillsListe anbefalt={anbefalt} rader={rader} />

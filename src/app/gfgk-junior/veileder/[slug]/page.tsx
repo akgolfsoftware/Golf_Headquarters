@@ -38,19 +38,23 @@ export default async function ArtikkelPage({
   ).slice(0, 3);
 
   return (
-    <div>
+    <div data-paper-slug="gfgk-veileder-artikkel">
       <GfgkHeader aktiv="kunnskap" />
 
       <section className="text-white" style={{ background: "var(--ink)" }}>
         <div className="jr-fade-up mx-auto max-w-[820px] px-5 pb-10 pt-12 sm:px-7 sm:pt-14">
-          <Link
-            href="/gfgk-junior/veileder"
-            className="inline-flex items-center gap-1.5 text-[13.5px] font-bold no-underline"
-            style={{ color: T.farge.hvitA70 }}
-          >
-            <ArrowLeft className="h-3.5 w-3.5" strokeWidth={2.5} />
-            Kunnskapsbase
-          </Link>
+          <div className="flex flex-wrap items-center gap-2 text-[12.5px]" style={{ fontFamily: "var(--font-jr-mono)", color: T.farge.hvitA60 }}>
+            <Link
+              href="/gfgk-junior/veileder"
+              className="inline-flex items-center gap-1.5 font-bold no-underline"
+              style={{ color: "var(--gfgk-gold)" }}
+            >
+              <ArrowLeft className="h-3.5 w-3.5" strokeWidth={2.5} />
+              Kunnskapsbase
+            </Link>
+            <span>/</span>
+            <span>{meta.label}</span>
+          </div>
           <div className="mt-5 flex flex-wrap items-center gap-3">
             <span
               className="rounded-full px-3 py-1 text-[11.5px] font-bold uppercase tracking-[0.06em]"

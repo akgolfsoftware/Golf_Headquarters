@@ -24,7 +24,7 @@ import { nesteOktTekst } from "@/lib/portal/neste-okt-tekst";
 import { InviteFriendTrigger } from "@/components/portal/workbench/invite-friend-trigger";
 import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
 import { T } from "@/lib/v2/tokens";
-import { Caps, TilbakeLenke, StatusPill } from "@/components/v2";
+import { Caps, TilbakeLenke, StatusPill, Icon } from "@/components/v2";
 import { Check } from "lucide-react";
 
 export const dynamic = "force-dynamic";
@@ -195,7 +195,7 @@ function MaalKort({ maal, hvorfor }: { maal: string; hvorfor: string | null }) {
               color: T.mut,
             }}
           >
-            Hvorfor denne økta
+            Hvorfor dette tallet
           </summary>
           <p
             style={{
@@ -319,25 +319,27 @@ export default async function OktDetaljPage({
               {data.dagTekst} · uke {data.ukeNr}
             </span>
           </div>
-          <StatusPill tone={data.statusTone}>{data.statusLabel}</StatusPill>
         </div>
 
         {erGjort ? (
           <>
             {/* ── Gjennomført ── */}
+            {/* Fasit-KPI «resultat» (X av Y + tag «Mål nådd»). Fasitens andre
+                KPI «endring» (± vs forrige økt) utelates ærlig — forrige-økt-
+                data finnes ikke i modellen ennå. */}
             {data.resultat && (
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
+              <div style={{ display: "grid", gridTemplateColumns: "1fr", gap: 8 }}>
                 <div style={{ ...kortStil, padding: "12px 16px" }}>
-                  <Caps>drills fullført</Caps>
+                  <Caps>resultat</Caps>
                   <div style={{ fontFamily: T.mono, fontSize: 22, fontWeight: 600, color: T.fg, fontVariantNumeric: "tabular-nums" }}>
                     {data.resultat.drillsFullfort} av {data.resultat.antallDrills}
                   </div>
-                </div>
-                <div style={{ ...kortStil, padding: "12px 16px" }}>
-                  <Caps>reps totalt</Caps>
-                  <div style={{ fontFamily: T.mono, fontSize: 22, fontWeight: 600, color: T.fg, fontVariantNumeric: "tabular-nums" }}>
-                    {data.resultat.totalReps ?? "—"}
-                  </div>
+                  {data.resultat.antallDrills > 0 &&
+                    data.resultat.drillsFullfort === data.resultat.antallDrills && (
+                      <div style={{ marginTop: 6 }}>
+                        <StatusPill tone="up">Mål nådd</StatusPill>
+                      </div>
+                    )}
                 </div>
               </div>
             )}
@@ -556,9 +558,10 @@ export default async function OktDetaljPage({
                 color: T.mut,
               }}
             >
+              <Icon name="pencil" size={16} style={{ color: T.mut, flex: "none", marginTop: 2 }} />
               <span style={{ minWidth: 0 }}>
                 Økta er din. Du kan endre målet, hoppe over drills eller droppe hele økta —
-                ingenting sperrer. Coachen får beskjed, så han vet hva som skjedde.
+                ingenting sperrer. Anders får beskjed, så han vet hva som skjedde.
               </span>
             </div>
           </>
