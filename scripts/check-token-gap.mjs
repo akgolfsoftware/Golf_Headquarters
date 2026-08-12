@@ -18,6 +18,11 @@ const COLOR_RE =
 const ALLOW_FILES = new Set([
   "src/lib/v2/tokens.ts",
   "src/styles/paper-tokens.css", // ikke .tsx, men listet for lesbarhet
+  // global-error rendrer sin egen <html> UTEN root-layout — globals.css/
+  // paper-tokens.css lastes ikke garantert der, så var(--p-*) kan være
+  // udefinert. Fila MÅ bære Paper-paletten som rå verdier (samme hex som
+  // tokenfila). Gaten skal ikke tvinge en feilside som mister fargene sine.
+  "src/app/global-error.tsx",
 ]);
 
 function* walk(dir) {
