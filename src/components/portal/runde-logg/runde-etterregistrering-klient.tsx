@@ -709,7 +709,7 @@ export function RundeEtterregistreringKlient({ baner, siste }: Props) {
                 bottom: 0,
                 zIndex: 5,
                 paddingTop: 12,
-                paddingBottom: "calc(8px + env(safe-area-inset-bottom))",
+                paddingBottom: "calc(8px + env(safe-area-inset-bottom) + var(--ak-cookie-h, 0px))",
                 background: `linear-gradient(to top, ${T.bg} 72%, transparent)`,
               }}
             >
