@@ -1,4 +1,2 @@
-OK    NT-419a m390   /team-wang/coach — "WANG Toppidrett Fredrikstad AK ÅRSPLAN · SESONG 2026–2027 Ekte datoer "
-OK    NT-419a d1280  /team-wang/coach — "WANG Toppidrett Treningsplattform PLANLEGG Årsplan Økter Treningsbank "
-OK    NT-419b m390   /gfgk-junior/kalender — "GFGK JUNIOR & ELITE GFGK JUNIOR — GAMLE FREDRIKSTAD GOLFKLUBB Trenings"
-OK    NT-419b d1280  /gfgk-junior/kalender — "GFGK JUNIOR & ELITE Hjem Starte med golf Slik trener vi Gruppene Treni"
+OK    NT-416a m390   /admin/plan-templates — "Planlegge Planmaler AgencyOS BRUKT 40× Ny mal MALER 92 GODKJENT 92 TOT"
+OK    NT-416a d1280  /admin/plan-templates — "KONSOLL INNBOKS SPILLERE KALENDER WORKBENCH AGENTICOS ØKONOMI INNSTILL"

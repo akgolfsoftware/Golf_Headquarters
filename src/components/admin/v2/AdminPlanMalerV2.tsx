@@ -13,9 +13,8 @@ import {
   KpiFlis,
   FilterChips,
   CTAPill,
+  Knapp,
   StatusPill,
-  MikroMeta,
-  Pyramide,
   TomTilstand,
   Icon,
   T,
@@ -69,82 +68,162 @@ const FASE_LABEL: Record<LPhase, string> = {
 };
 const FASE_FILTRE = ["Grunnfase", "Spesialfase", "Turneringsfase"] as const;
 
+/** Rader per gruppe før «Vis N til». Holder mobilsiden på én skjermlengde. */
+const VIS_ANTALL = 8;
+
 const pl = (n: number, en: string, flere: string) => `${n} ${n === 1 ? en : flere}`;
 
-function MalKort({ m }: { m: PlanMalRad }) {
-  return (
-    <Link href={`/admin/plan-templates/${m.id}`} style={{ textDecoration: "none" }}>
-      <Kort hover style={{ height: "100%", gap: 12 }}>
-        {/* Hode: fase-badge + bruk-teller */}
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10 }}>
-          <span
-            style={{
-              display: "inline-flex",
-              alignItems: "center",
-              justifyContent: "center",
-              width: 38,
-              height: 38,
-              flex: "none",
-              borderRadius: 10,
-              background: T.panel3,
-              border: `1px solid ${T.border}`,
-            }}
-          >
-            <Icon name={FASE_IKON[m.fase]} size={19} style={{ color: T.lime }} />
-          </span>
-          <span style={{ display: "inline-flex", alignItems: "center", gap: 8 }}>
-            {!m.godkjent && <StatusPill tone="warn">Utkast</StatusPill>}
-            <span
-              style={{
-                fontFamily: T.mono,
-                fontSize: 10,
-                fontWeight: 700,
-                color: m.usageCount > 0 ? T.lime : T.mut,
-                fontVariantNumeric: "tabular-nums",
-              }}
-            >
-              Brukt {m.usageCount}×
-            </span>
-          </span>
-        </div>
+/**
+ * Kompakt malrad — fasitens `.rad` i `agencyos-planbibliotek.html`:
+ * navn, én metalinje, tynn andelsstripe og prosentnøkler. Ikke et kort.
+ * Utkast vises uten stripe (fasit viser den kun for godkjente maler).
+ */
+function MalRad({ m, last }: { m: PlanMalRad; last?: boolean }) {
+  const bruk =
+    m.usageCount === 0 ? "aldri brukt" : `brukt ${pl(m.usageCount, "gang", "ganger")}`;
+  const meta = `${pl(m.oktAntall, "økt", "økter")} · ${bruk} · ${m.godkjent ? "godkjent" : "utkast"}`;
+  const andeler = m.fordeling.filter((f) => f.value > 0);
+  const visStripe = m.godkjent && andeler.length > 0;
+  // Fasit viser alle andelene, største først, og lar linja brytes.
+  const nokler = andeler.slice().sort((a, b) => b.value - a.value);
 
-        {/* Navn */}
+  return (
+    <Link
+      href={`/admin/plan-templates/${m.id}`}
+      className="v2-row-h"
+      style={{
+        display: "flex",
+        alignItems: "center",
+        gap: 12,
+        padding: "11px 10px",
+        margin: "0 -10px",
+        borderRadius: T.rRow,
+        borderBottom: last ? "none" : `1px solid ${T.border}`,
+        textDecoration: "none",
+      }}
+    >
+      <span
+        style={{
+          display: "inline-flex",
+          alignItems: "center",
+          justifyContent: "center",
+          width: 32,
+          height: 32,
+          flex: "none",
+          borderRadius: 9,
+          background: T.panel3,
+          border: `1px solid ${T.border}`,
+        }}
+      >
+        <Icon name={FASE_IKON[m.fase]} size={16} style={{ color: T.lime }} />
+      </span>
+
+      {/* minWidth 0: uten den sprenger nowrap-teksten kolonnen (gotcha 10.08) */}
+      <span style={{ flex: 1, minWidth: 0, display: "block" }}>
         <span
           style={{
-            fontFamily: T.disp,
-            fontSize: 16,
-            fontWeight: 700,
-            lineHeight: 1.2,
-            letterSpacing: "-0.015em",
+            display: "block",
+            fontFamily: T.ui,
+            fontSize: 13.5,
+            fontWeight: 600,
             color: T.fg,
+            whiteSpace: "nowrap",
+            overflow: "hidden",
+            textOverflow: "ellipsis",
           }}
         >
           {m.navn}
         </span>
+        <span
+          style={{
+            display: "block",
+            fontFamily: T.ui,
+            fontSize: 11.5,
+            color: T.mut,
+            marginTop: 2,
+            whiteSpace: "nowrap",
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+          }}
+        >
+          {meta}
+        </span>
 
-        {/* Meta */}
-        <div style={{ display: "flex", flexWrap: "wrap", gap: 12 }}>
-          <MikroMeta icon={FASE_IKON[m.fase]}>{FASE_LABEL[m.fase]}</MikroMeta>
-          <MikroMeta icon="flag">Kat. {m.kategori}</MikroMeta>
-          <MikroMeta icon="calendar">{pl(m.varighetUker, "uke", "uker")}</MikroMeta>
-          <MikroMeta icon="repeat">{m.ukentligOktAntall}/uke</MikroMeta>
-        </div>
+        {visStripe && (
+          <>
+            <span
+              style={{ display: "flex", gap: 2, height: 6, borderRadius: 999, overflow: "hidden", marginTop: 7 }}
+              aria-hidden
+            >
+              {andeler.map((f) => (
+                <span key={f.akse} style={{ display: "block", flex: f.value, background: T.ax[f.akse] }} />
+              ))}
+            </span>
+            <span
+              style={{
+                display: "flex",
+                gap: 10,
+                flexWrap: "wrap",
+                marginTop: 5,
+                fontFamily: T.mono,
+                fontSize: 10,
+                color: T.mut,
+                fontVariantNumeric: "tabular-nums",
+              }}
+            >
+              {nokler.map((f) => (
+                <span key={f.akse}>
+                  {f.akse} <b style={{ fontWeight: 500, color: T.fg }}>{f.value} %</b>
+                </span>
+              ))}
+            </span>
+          </>
+        )}
+      </span>
 
-        {/* Akse-fordeling */}
-        <div style={{ marginTop: "auto", paddingTop: 12, borderTop: `1px solid ${T.border}` }}>
-          <Caps size={9}>Akse-fordeling</Caps>
-          <div style={{ marginTop: 10 }}>
-            {m.fordeling.length > 0 ? (
-              <Pyramide data={m.fordeling} max={100} showValues={false} />
-            ) : (
-              <span style={{ fontFamily: T.ui, fontSize: 12, color: T.mut }}>
-                Ingen fordeling registrert.
-              </span>
-            )}
-          </div>
-        </div>
-      </Kort>
+      <Icon name="chevron-right" size={14} style={{ color: T.mut, flex: "none" }} />
     </Link>
+  );
+}
+
+/** Gruppeseksjon med tittel, teller og forklaringsnotat — fasitens `.grp`. */
+function Gruppe({
+  tittel,
+  teller,
+  notat,
+  maler,
+}: {
+  tittel: string;
+  teller: string;
+  notat: string;
+  maler: PlanMalRad[];
+}) {
+  const [visAlle, setVisAlle] = useState(false);
+  const synlige = visAlle ? maler : maler.slice(0, VIS_ANTALL);
+  const skjulte = maler.length - synlige.length;
+
+  return (
+    <Kort>
+      <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: 10 }}>
+        <h2 style={{ margin: 0, fontFamily: T.disp, fontSize: 14, fontWeight: 600, color: T.fg }}>{tittel}</h2>
+        <span style={{ fontFamily: T.mono, fontSize: 10.5, color: T.mut, fontVariantNumeric: "tabular-nums" }}>
+          {teller}
+        </span>
+      </div>
+      <p style={{ margin: "6px 0 4px", fontFamily: T.ui, fontSize: 11.5, lineHeight: 1.45, color: T.mut }}>
+        {notat}
+      </p>
+      <div style={{ minWidth: 0 }}>
+        {synlige.map((m, i) => (
+          <MalRad key={m.id} m={m} last={i === synlige.length - 1 && skjulte === 0} />
+        ))}
+      </div>
+      {skjulte > 0 && (
+        <Knapp icon="chevron-down" ghost full onClick={() => setVisAlle(true)}>
+          Vis {skjulte} til
+        </Knapp>
+      )}
+    </Kort>
   );
 }
 
@@ -159,15 +238,23 @@ export function AdminPlanMalerV2({ data }: { data: AdminPlanMalerData }) {
   const toggleStatus = (x: string) =>
     setStatus((arr) => (arr.indexOf(x) !== -1 ? arr.filter((y) => y !== x) : arr.concat(x)));
 
-  const filtrert = data.maler.filter(
-    (m) =>
-      (fase.length === 0 || fase.indexOf(FASE_LABEL[m.fase]) !== -1) &&
-      (status.length === 0 || status.indexOf(m.godkjent ? "Godkjent" : "Utkast") !== -1),
-  );
-
   const total = data.maler.length;
   const totalBruk = data.maler.reduce((sum, m) => sum + m.usageCount, 0);
   const totalGodkjent = data.maler.filter((m) => m.godkjent).length;
+
+  // Fasit merker status-pillene med antall (Godkjent 18 / Utkast 6).
+  // Etiketten ER filterverdien, så teller og valg aldri kan komme i utakt.
+  const statusEtikett = {
+    godkjent: `${STATUS_FILTRE[0]} ${totalGodkjent}`,
+    utkast: `${STATUS_FILTRE[1]} ${total - totalGodkjent}`,
+  };
+
+  const filtrert = data.maler.filter(
+    (m) =>
+      (fase.length === 0 || fase.indexOf(FASE_LABEL[m.fase]) !== -1) &&
+      (status.length === 0 ||
+        status.indexOf(m.godkjent ? statusEtikett.godkjent : statusEtikett.utkast) !== -1),
+  );
   const snittUker =
     total > 0 ? Math.round(data.maler.reduce((s, m) => s + m.varighetUker, 0) / total) : 0;
 
@@ -229,7 +316,11 @@ export function AdminPlanMalerV2({ data }: { data: AdminPlanMalerData }) {
     <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
       <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
         <Caps size={9} style={{ width: 64, flex: "none" }}>Status</Caps>
-        <FilterChips items={[...STATUS_FILTRE]} active={status} onToggle={toggleStatus} />
+        <FilterChips
+          items={[statusEtikett.godkjent, statusEtikett.utkast]}
+          active={status}
+          onToggle={toggleStatus}
+        />
       </div>
       <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
         <Caps size={9} style={{ width: 64, flex: "none" }}>Fase</Caps>
@@ -238,17 +329,33 @@ export function AdminPlanMalerV2({ data }: { data: AdminPlanMalerData }) {
     </div>
   );
 
-  // ── Grid / filtrert tom-tilstand ──────────────────────────────
-  const grid =
+  // ── Grupper: Mest brukt (godkjent) + Utkast — fasitens `.grp` ──
+  const godkjente = filtrert.filter((m) => m.godkjent);
+  const utkast = filtrert.filter((m) => !m.godkjent);
+
+  const liste =
     filtrert.length === 0 ? (
       <Kort>
-        <TomTilstand icon="filter" title="Ingen maler her" sub="Ingen maler passer fase-filteret akkurat nå." />
+        <TomTilstand icon="filter" title="Ingen maler her" sub="Ingen maler passer filteret akkurat nå." />
       </Kort>
     ) : (
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3" style={{ gap: T.gap, alignItems: "stretch" }}>
-        {filtrert.map((m) => (
-          <MalKort key={m.id} m={m} />
-        ))}
+      <div style={{ display: "flex", flexDirection: "column", gap: T.gap, minWidth: 0 }}>
+        {godkjente.length > 0 && (
+          <Gruppe
+            tittel="Mest brukt"
+            teller={pl(godkjente.length, "godkjent", "godkjente")}
+            notat="Rekkefølgen følger bruk, ikke navn — malen du rullet ut sist ligger derfor ikke nødvendigvis øverst."
+            maler={godkjente}
+          />
+        )}
+        {utkast.length > 0 && (
+          <Gruppe
+            tittel="Utkast"
+            teller={String(utkast.length)}
+            notat="Utkast kan ikke rulles ut til grupper. De må godkjennes først."
+            maler={utkast}
+          />
+        )}
       </div>
     );
 
@@ -258,7 +365,7 @@ export function AdminPlanMalerV2({ data }: { data: AdminPlanMalerData }) {
       {primaerCta}
       {kpi}
       {filtre}
-      {grid}
+      {liste}
     </div>
   );
 }
