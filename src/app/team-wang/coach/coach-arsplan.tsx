@@ -35,6 +35,20 @@ function effektivePerioder(live: WangLiveData | null): CoachPeriode[] {
   });
 }
 
+// ISO-uke (mandag-basert, Oslo). Kun til heroband-oppsummering — ikke bindende noe sted.
+function isoUke(d: Date): number {
+  const t = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
+  const dagnr = (t.getUTCDay() + 6) % 7;
+  t.setUTCDate(t.getUTCDate() - dagnr + 3);
+  const forsteTorsdag = new Date(Date.UTC(t.getUTCFullYear(), 0, 4));
+  return 1 + Math.round(((t.getTime() - forsteTorsdag.getTime()) / 86400000 - 3 + ((forsteTorsdag.getUTCDay() + 6) % 7)) / 7);
+}
+
+function aktivPeriode(perioder: CoachPeriode[]): CoachPeriode | null {
+  const iDag = new Date().toISOString().slice(0, 10);
+  return perioder.find((p) => p.start <= iDag && iDag <= p.end) ?? perioder[0] ?? null;
+}
+
 function dato(s: string): string {
   const MON = ["jan", "feb", "mar", "apr", "mai", "jun", "jul", "aug", "sep", "okt", "nov", "des"];
   const d = new Date(s + "T12:00:00");
@@ -47,7 +61,7 @@ export function CoachArsplan({ live = null }: { live?: WangLiveData | null }) {
   const periode = selPeriod ? perioder.find((p) => p.key === selPeriod) ?? null : null;
 
   return (
-    <div style={{ display: "flex", minHeight: "100vh", background: "var(--bg-app)" }}>
+    <div data-paper-slug="wang-coach-arsplan" style={{ display: "flex", minHeight: "100vh", background: "var(--bg-app)" }}>
       {/* Sidebar (desktop) */}
       <aside className="wang-skjul-mobil" style={{ width: 260, flexShrink: 0, background: "var(--wang-navy)", color: "var(--text-on-dark)", display: "flex", flexDirection: "column", position: "sticky", top: 0, height: "100vh", overflowY: "auto" }}>
         <div style={{ padding: "22px 20px 16px", display: "flex", alignItems: "center", gap: 12 }}>
@@ -111,6 +125,10 @@ export function CoachArsplan({ live = null }: { live?: WangLiveData | null }) {
 }
 
 function Oversikt({ perioder, live, onOpen }: { perioder: CoachPeriode[]; live: WangLiveData | null; onOpen: (key: string) => void }) {
+  const aktiv = aktivPeriode(perioder);
+  const samlingerIgjen = live
+    ? live.hendelser.filter((h) => h.kind === "SAMLING" || h.kind === "HELDAGSSAMLING").length
+    : null;
   return (
     <>
       <section style={{ background: "var(--grad-hero-line)", borderRadius: "var(--radius-card)", boxShadow: "var(--shadow-hero)", padding: "clamp(22px,4vw,30px)", color: "var(--text-on-dark)" }}>
@@ -126,6 +144,12 @@ function Oversikt({ perioder, live, onOpen }: { perioder: CoachPeriode[]; live: 
         <p style={{ margin: 0, fontFamily: "var(--font-body)", fontSize: 14.5, lineHeight: 1.55, color: T.farge.hvitA90, maxWidth: 620 }}>
           Fire perioder fra august til juni. Hver periode har sin egen treningsfordeling (pyramide), læringsfase-fokus og mål. Trykk på en periode for detaljer.
         </p>
+        <div style={{ display: "flex", gap: 10, flexWrap: "wrap", marginTop: 20 }}>
+          <HeroChip label="UKE" verdi={String(isoUke(new Date()))} />
+          {aktiv ? <HeroChip label="PERIODE" verdi={aktiv.name} /> : null}
+          {live ? <HeroChip label="ELEVER" verdi={String(live.antallElever)} /> : null}
+          {samlingerIgjen != null ? <HeroChip label="SAMLINGER" verdi={`${samlingerIgjen} igjen`} /> : null}
+        </div>
       </section>
 
       <GruppeRoster live={live} />
@@ -148,6 +172,15 @@ function Oversikt({ perioder, live, onOpen }: { perioder: CoachPeriode[]; live: 
         ))}
       </div>
     </>
+  );
+}
+
+function HeroChip({ label, verdi }: { label: string; verdi: string }) {
+  return (
+    <span style={{ display: "inline-flex", alignItems: "center", gap: 6, height: 30, padding: "0 12px", borderRadius: 999, background: T.farge.hvitA12 }}>
+      <b className="wang-num" style={{ fontFamily: "var(--font-brand)", fontWeight: 800, fontSize: 10, letterSpacing: "0.06em", opacity: 0.75, color: "var(--white)" }}>{label}</b>
+      <span className="wang-num" style={{ fontFamily: "var(--font-brand)", fontWeight: 700, fontSize: 12.5, color: "var(--white)" }}>{verdi}</span>
+    </span>
   );
 }
 
