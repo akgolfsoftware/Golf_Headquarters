@@ -54,10 +54,11 @@ const AKSE_MAP: Record<Axis, AkseKey> = {
   turn: "TURN",
 };
 
+/** Fasitens programnavn (`agencyos-spillere.html` §FILTRE) — ikke forkortelser. */
 const GRUPPE_LABEL: Record<string, string> = {
-  WANG: "WANG",
-  GFGK: "GFGK",
-  AKA: "AK Academy",
+  WANG: "WANG Toppidrett",
+  GFGK: "GFGK Junior",
+  AKA: "AK Golf Academy",
 };
 
 export default async function V2StallPage({
@@ -101,17 +102,14 @@ export default async function V2StallPage({
       adherence: r.adherence.map((a) => ({ akse: AKSE_MAP[a.axis], pct: a.pct })),
       adhPct: r.adhPct,
       venter: r.neverLoggedIn,
+      dagerSiden: r.dagerSiden,
       pakke: r.pakke,
       pakkeAktiv: r.pakkeAktiv,
       skylder: r.skylder,
     };
   });
 
-  const grupper = (["WANG", "GFGK", "AKA"] as const)
-    .filter((g) => stall.counts[g] > 0)
-    .map((g) => GRUPPE_LABEL[g]);
-
-  const data: StallV2Data = { total: stall.total, grupper, spillere };
+  const data: StallV2Data = { total: stall.total, spillere };
 
   return (
     <V2Shell bredde="full" aktiv="spillere" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>

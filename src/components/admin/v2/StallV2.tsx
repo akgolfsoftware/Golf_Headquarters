@@ -15,7 +15,6 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import {
   Caps,
-  Tittel,
   Kort,
   Rad,
   AvatarInit,
@@ -24,7 +23,6 @@ import {
   TallHero,
   Trend,
   AkseBar,
-  FilterChips,
   CTAPill,
   TomTilstand,
   BunnArk,
@@ -34,7 +32,6 @@ import {
   type SevKey,
 } from "@/components/v2";
 import type { AkseKey } from "@/lib/v2/tokens";
-import { PaperPage, PaperTopp, PaperKropp } from "@/components/portal/v2/PaperChrome";
 
 /** true på klient etter mount når viewport < 768px (M3-mobilvariant). */
 function useMobile(): boolean {
@@ -76,6 +73,8 @@ export interface StallV2Player {
   adhPct: number | null;
   /** Aldri logget inn — bulk-importert plassholderprofil uten aktivitet ennå. */
   venter: boolean;
+  /** Dager siden siste innlogging — bærer fasitens «Stille over 7 dager». */
+  dagerSiden: number | null;
   /** Abonnements-pakke («Drop-in» uten abonnement) — fra cockpit-lista (B2). */
   pakke: string;
   pakkeAktiv: boolean;
@@ -84,8 +83,6 @@ export interface StallV2Player {
 }
 export interface StallV2Data {
   total: number;
-  /** Tilgjengelige gruppe-filtre (kun de med spillere). */
-  grupper: string[];
   spillere: StallV2Player[];
 }
 
@@ -96,11 +93,72 @@ const BOLKER = [
   { k: "hviler", n: "Hviler", note: "Planlagt pause eller retur-til-spill. Teller ikke som stille." },
 ] as const;
 
-const STATUS_FILTRE = ["Trenger deg", "I rute"] as const;
-const BETALING_FILTRE = ["Abonnent", "Skylder"] as const;
+/**
+ * Paper `agencyos-spillere.html` §FILTRE — ÉN rad enkeltvalg med teller per
+ * chip. Fasiten filtrerer på program, ikke på status/betaling: coachen tenker
+ * «hvem i WANG», ikke «hvem er abonnent».
+ */
+type FilterKey = "alle" | "akademi" | "wang" | "gfgk" | "stille";
+const FILTRE: { k: FilterKey; n: string; f: (s: StallV2Player) => boolean }[] = [
+  { k: "alle", n: "Alle", f: () => true },
+  { k: "akademi", n: "AK Golf Academy", f: (s) => s.gruppe === "AK Golf Academy" },
+  { k: "wang", n: "WANG Toppidrett", f: (s) => s.gruppe === "WANG Toppidrett" },
+  { k: "gfgk", n: "GFGK Junior", f: (s) => s.gruppe === "GFGK Junior" },
+  {
+    k: "stille",
+    n: "Stille over 7 dager",
+    f: (s) => s.dagerSiden != null && s.dagerSiden >= 7 && s.bolk !== "hviler",
+  },
+];
 
 /** Sorteringsvekt for signalstyrke — sterkeste øverst i lista (GO V3). */
 const SEV_RANG: Record<SevKey, number> = { sterk: 0, medium: 1, lav: 2, ok: 3 };
+
+/** Fasitens `.chip` — enkeltvalg med teller. Egen her fordi delte FilterChips
+ *  er flervalg og mangler telleren. */
+function ProgramChip({
+  navn,
+  antall,
+  aktiv,
+  onClick,
+  odId,
+}: {
+  navn: string;
+  antall: number;
+  aktiv: boolean;
+  onClick: () => void;
+  odId: string;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      aria-pressed={aktiv}
+      className="v2-press v2-focus"
+      data-od-id={odId}
+      style={{
+        display: "inline-flex",
+        alignItems: "center",
+        gap: 6,
+        minHeight: 44,
+        padding: "0 14px",
+        borderRadius: 999,
+        whiteSpace: "nowrap",
+        cursor: "pointer",
+        fontFamily: T.ui,
+        fontSize: 12.5,
+        background: aktiv ? T.fg : T.panel,
+        color: aktiv ? T.bg : T.fg,
+        border: `1px solid ${aktiv ? T.fg : T.border}`,
+      }}
+    >
+      {navn}
+      <span style={{ fontFamily: T.mono, fontSize: 11, opacity: 0.7, fontVariantNumeric: "tabular-nums" }}>
+        {antall}
+      </span>
+    </button>
+  );
+}
 
 function SpillerRadEnkel({
   s,
@@ -233,9 +291,7 @@ function SpillerSammendrag({ s }: { s: StallV2Player }) {
 export function StallV2({ data }: { data: StallV2Data }) {
   /* Wave B: Paper agencyos-spillere */
   const mobile = useMobile();
-  const [grp, setGrp] = useState<string[]>([]);
-  const [sta, setSta] = useState<string[]>([]);
-  const [bet, setBet] = useState<string[]>([]);
+  const [filter, setFilter] = useState<FilterKey>("alle");
   // Fasit agencyos-spillere-mobil.html: «Søk er synlig, ikke gjemt» — med
   // tømmeknapp, fordi tomt søk ellers krever like mange trykk som søket selv.
   const [sok, setSok] = useState("");
@@ -250,23 +306,14 @@ export function StallV2({ data }: { data: StallV2Data }) {
   // Mobil: sammendrag i BunnArk (valg via desktop-panel / initial valgtId).
   const [arkApen, setArkApen] = useState(false);
 
-  const toggle = (arr: string[], set: (v: string[]) => void) => (x: string) =>
-    set(arr.indexOf(x) !== -1 ? arr.filter((y) => y !== x) : arr.concat(x));
-
   const sokTrim = sok.trim().toLowerCase();
+  const aktivtFilter = FILTRE.find((f) => f.k === filter) ?? FILTRE[0];
   const filtered = data.spillere.filter((p) => {
     const sokOk =
       sokTrim === "" ||
       p.navn.toLowerCase().includes(sokTrim) ||
       p.gruppe.toLowerCase().includes(sokTrim);
-    if (!sokOk) return false;
-    const gOk = grp.length === 0 || grp.indexOf(p.gruppe) !== -1;
-    const sOk = sta.length === 0 || sta.indexOf(p.trenger ? "Trenger deg" : "I rute") !== -1;
-    const bOk =
-      bet.length === 0 ||
-      (bet.indexOf("Abonnent") !== -1 && p.pakkeAktiv) ||
-      (bet.indexOf("Skylder") !== -1 && p.skylder);
-    return gOk && sOk && bOk;
+    return sokOk && aktivtFilter.f(p);
   });
   // Hub-tall (5 sek): på plan / trenger deg / skylder — kun fra ekte rader.
   const stallKpi = {
@@ -295,18 +342,6 @@ export function StallV2({ data }: { data: StallV2Data }) {
     filtered.find((p) => p.id === valgtId) ??
     filtered[0] ??
     null;
-
-  const filterRad = (
-    label: string,
-    items: readonly string[],
-    active: string[],
-    onToggle: (x: string) => void,
-  ) => (
-    <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
-      <Caps size={9} style={{ width: 64, flex: "none" }}>{label}</Caps>
-      <FilterChips items={[...items]} active={active} onToggle={onToggle} />
-    </div>
-  );
 
   const filtre = (
     <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
@@ -365,9 +400,20 @@ export function StallV2({ data }: { data: StallV2Data }) {
           </button>
         )}
       </div>
-      {data.grupper.length > 0 && filterRad("Gruppe", data.grupper, grp, toggle(grp, setGrp))}
-      {filterRad("Status", STATUS_FILTRE, sta, toggle(sta, setSta))}
-      {filterRad("Betaling", BETALING_FILTRE, bet, toggle(bet, setBet))}
+      {/* Fasitens ene filterrad: program + «stille», hver med teller. Chips
+          som ikke treffer noen spiller rendres ikke — tomme valg er støy. */}
+      <div style={{ display: "flex", gap: 8, overflowX: "auto", scrollbarWidth: "none", paddingBottom: 2 }}>
+        {FILTRE.filter((f) => f.k === "alle" || data.spillere.some(f.f)).map((f) => (
+          <ProgramChip
+            key={f.k}
+            navn={f.n}
+            antall={data.spillere.filter(f.f).length}
+            aktiv={filter === f.k}
+            onClick={() => setFilter(f.k)}
+            odId={`sp-filter-${f.k}`}
+          />
+        ))}
+      </div>
     </div>
   );
 
@@ -475,13 +521,13 @@ export function StallV2({ data }: { data: StallV2Data }) {
     </div>
   );
 
+  /** Fasitens «Én ting nå»: øverste spiller i «Trenger deg nå» innenfor det
+   *  valgte filteret — ikke et nytt filter coachen må skru av igjen. */
+  const forsteTrenger = aktiveRader.find((p) => p.trenger) ?? null;
   const foelgOpp = () => {
-    setSta(["Trenger deg"]);
-    const foerste = data.spillere.find((p) => !p.venter && p.trenger);
-    if (foerste) {
-      setValgtId(foerste.id);
-      if (mobile) setArkApen(true);
-    }
+    if (!forsteTrenger) return;
+    setValgtId(forsteTrenger.id);
+    if (mobile) setArkApen(true);
   };
 
   const hode = (
@@ -494,13 +540,13 @@ export function StallV2({ data }: { data: StallV2Data }) {
       </div>
       {/* B: én primær i hode — «følg opp» når noen trenger deg; ellers ghost «Ny spiller» */}
       <div className="hidden md:inline-flex" style={{ gap: 8 }}>
-        {stallKpi.trenger > 0 ? (
+        {forsteTrenger ? (
           <button type="button" onClick={foelgOpp} style={{ background: "none", border: "none", padding: 0, cursor: "pointer" }}>
 <span style={{
               display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8,
               minHeight: 44, padding: "10px 16px", borderRadius: 12,
               background: T.handling, color: T.onHandling, fontFamily: T.ui, fontSize: 13, fontWeight: 600,
-            }} data-paper-en-ting="true">Følg opp {stallKpi.trenger}</span>
+            }} data-paper-en-ting="true">Åpne {forsteTrenger.navn.split(" ")[0]}</span>
           </button>
         ) : (
           <Link href="/admin/spillere/ny" style={{ textDecoration: "none" }}>
@@ -511,19 +557,69 @@ export function StallV2({ data }: { data: StallV2Data }) {
     </div>
   );
 
-  /** B: full-bredde primær under KPI på mobil når noen trenger deg. */
-  const mobilPrimaer =
-    stallKpi.trenger > 0 ? (
-      <div className="md:hidden">
-        <button type="button" onClick={foelgOpp} style={{ background: "none", border: "none", padding: 0, cursor: "pointer", width: "100%" }}>
-<span style={{
-              display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8,
-              minHeight: 44, padding: "10px 16px", borderRadius: 10, width: "100%",
-              background: T.handling, color: T.onHandling, fontFamily: T.ui, fontSize: 13, fontWeight: 600,
-            }} data-paper-en-ting="true">Følg opp {stallKpi.trenger} {stallKpi.trenger === 1 ? "spiller" : "spillere"}</span>
-        </button>
-      </div>
-    ) : null;
+  /**
+   * Fasitens `.bunn` (agencyos-spillere-mobil.html): fast dokk nederst med
+   * hint + én full-bredde handling. Gotcha: bunnforankret chrome må legge
+   * `--ak-cookie-h` til bunn-paddingen, ellers dekker cookie-banneret knappen.
+   */
+  const mobilDokk = (
+    <div
+      data-od-id="spm-bunn"
+      style={{
+        position: "sticky",
+        bottom: 0,
+        marginLeft: -16,
+        marginRight: -16,
+        padding: "12px 16px calc(12px + env(safe-area-inset-bottom) + var(--ak-cookie-h, 0px))",
+        borderTop: `1px solid ${T.border}`,
+        background: T.panel,
+        zIndex: 5,
+      }}
+    >
+      {forsteTrenger ? (
+        <>
+          <span style={{ display: "block", fontFamily: T.ui, fontSize: 12, color: T.mut, marginBottom: 8 }}>
+            Øverst i «Trenger deg nå»: {forsteTrenger.navn}.
+          </span>
+          <button
+            type="button"
+            onClick={foelgOpp}
+            data-od-id="spm-one-thing-now"
+            style={{ background: "none", border: "none", padding: 0, cursor: "pointer", width: "100%" }}
+          >
+            <span
+              style={{
+                display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8,
+                minHeight: 44, padding: "10px 16px", borderRadius: 10, width: "100%",
+                background: T.handling, color: T.onHandling, fontFamily: T.ui, fontSize: 13, fontWeight: 600,
+              }}
+              data-paper-en-ting="true"
+            >
+              Åpne {forsteTrenger.navn.split(" ")[0]}
+            </span>
+          </button>
+        </>
+      ) : (
+        <>
+          <span style={{ display: "block", fontFamily: T.ui, fontSize: 12, color: T.mut, marginBottom: 8 }}>
+            Ingen spiller venter på deg i dette utvalget.
+          </span>
+          <Link href="/admin/kalender" style={{ textDecoration: "none", display: "block" }} data-od-id="spm-bunn-kalender">
+            <span
+              style={{
+                display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8,
+                minHeight: 44, padding: "10px 16px", borderRadius: 10, width: "100%",
+                background: T.panel, color: T.fg, border: `1px solid ${T.border}`,
+                fontFamily: T.ui, fontSize: 13, fontWeight: 600,
+              }}
+            >
+              Åpne kalenderen
+            </span>
+          </Link>
+        </>
+      )}
+    </div>
+  );
 
   if (data.spillere.length === 0) {
     return (
@@ -557,12 +653,12 @@ export function StallV2({ data }: { data: StallV2Data }) {
       <div data-paper-agencyos-spillere data-paper-wave-b="spillere" data-od-id="agency-spillere" style={{ display: "flex", flexDirection: "column", gap: T.gap, width: "100%" }}>
         {hode}
         {tilstandKort}
-        {mobilPrimaer}
         {filtre}
         <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
           {aktivListe}
           {venterSeksjon}
         </div>
+        {mobilDokk}
         <BunnArk open={arkApen && !!valgt} onClose={() => setArkApen(false)} tittel={valgt?.navn}>
           {valgt && <SpillerSammendrag s={valgt} />}
         </BunnArk>

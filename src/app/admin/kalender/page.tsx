@@ -12,7 +12,6 @@
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
-import { KalenderHubNav } from "@/components/admin/v2/agency-hub-subnav";
 import { AgencyKalenderV2 } from "@/components/admin/v2/AgencyKalenderV2";
 import { hentAgencyKalenderData } from "./data";
 
@@ -31,7 +30,6 @@ export default async function V2AgencyKalenderPage({
 
   return (
     <V2Shell bredde="full" aktiv="kalender" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>
-      <KalenderHubNav />
       <AgencyKalenderV2 data={data} />
     </V2Shell>
   );
