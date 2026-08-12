@@ -40,6 +40,16 @@ const SCREENS = [
   { id: "PP-2.2", navn: "AgencyOS innboks", rute: "/admin/innboks", bruker: COACH, fasitM: "agencyos-innboks-mobil.html", fasitD: "agencyos-innboks.html" },
   { id: "PP-2.3", navn: "AgencyOS spillere", rute: "/admin/spillere", bruker: COACH, fasitM: "agencyos-spillere-mobil.html", fasitD: "agencyos-spillere.html" },
   { id: "PP-2.4", navn: "AgencyOS kalender", rute: "/admin/kalender", bruker: COACH, fasitM: "agencyos-kalender-mobil.html", fasitD: "agencyos-kalender.html" },
+  // Natt 12.08 — skjermene fra PR #415–#419 (fasit i fase2/ via relativ sti)
+  { id: "NT-415", navn: "Coach-hub", rute: "/portal/coach", bruker: SPILLER, fasitM: "../fase2/playerhq/playerhq-coach-hub.html", fasitD: "../fase2/playerhq/playerhq-coach-hub.html" },
+  { id: "NT-416a", navn: "Planbibliotek", rute: "/admin/plan-templates", bruker: COACH, fasitM: "../fase2/agencyos/agencyos-planbibliotek.html", fasitD: "../fase2/agencyos/agencyos-planbibliotek.html" },
+  { id: "NT-416b", navn: "AgencyOS turneringer", rute: "/admin/tournaments", bruker: COACH, fasitM: "../fase2/agencyos/agencyos-turneringer.html", fasitD: "../fase2/agencyos/agencyos-turneringer.html" },
+  { id: "NT-417", navn: "Runde-logg", rute: "/portal/runde/logg", bruker: SPILLER, fasitM: "playerhq-runde-logg.html", fasitD: "playerhq-runde-logg.html" },
+  { id: "NT-418a", navn: "Katalog: coacher", rute: "/coacher", bruker: null, fasitM: "../fase2/marketing/marketing-katalog.html", fasitD: "../fase2/marketing/marketing-katalog.html" },
+  { id: "NT-418b", navn: "Katalog: blogg", rute: "/blogg", bruker: null, fasitM: "../fase2/marketing/marketing-katalog.html", fasitD: "../fase2/marketing/marketing-katalog.html" },
+  { id: "NT-418c", navn: "System: 404", rute: "/denne-finnes-ikke-natt", bruker: null, fasitM: "../fase2/system/system-tilstander.html", fasitD: "../fase2/system/system-tilstander.html" },
+  { id: "NT-419a", navn: "WANG coach-årsplan", rute: "/team-wang/coach", bruker: COACH, fasitM: "../fase2/wang/wang-coach-arsplan.html", fasitD: "../fase2/wang/wang-coach-arsplan.html" },
+  { id: "NT-419b", navn: "GFGK kalender", rute: "/gfgk-junior/kalender", bruker: null, fasitM: "../fase2/gfgk/gfgk-kalender.html", fasitD: "../fase2/gfgk/gfgk-kalender.html" },
 ];
 
 const only = (process.argv[2] || "").trim();

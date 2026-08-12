@@ -40,7 +40,7 @@
 - [~] `playerhq-runde-live.html`
 - [~] `playerhq-runde-logg.html`
 - [~] `playerhq-test-gjennomfor.html`
-- [ ] `spillerprofil.html`
+- [~] `spillerprofil.html` — full ombygging ligger i åpen PR #414
 - [~] `workbench-desktop.html` — overnight slug/CTA READY_SIGN
 - [~] `workbench-mobil.html` — overnight slug/CTA READY_SIGN
 - [~] `workbench-turnering.html` — overnight slug/CTA READY_SIGN
@@ -48,16 +48,16 @@
 ## Fase 2 · PlayerHQ W1 (drill/plan/test/turnering)
 
 - [~] `fase2/playerhq/playerhq-drill-detalj.html` — natt 11.08 (#394) READY_SIGN
-- [ ] `fase2/playerhq/playerhq-drills.html`
+- [~] `fase2/playerhq/playerhq-drills.html` — tilstands-pass 11.08 (#412)
 - [~] `fase2/playerhq/playerhq-feiring.html` — natt 11.08 (#394) READY_SIGN
 - [~] `fase2/playerhq/playerhq-fys-plan.html` — natt 11.08 (#394) READY_SIGN
-- [ ] `fase2/playerhq/playerhq-live-tapper.html`
-- [ ] `fase2/playerhq/playerhq-okt-detalj.html`
-- [ ] `fase2/playerhq/playerhq-teknisk-plan.html`
-- [ ] `fase2/playerhq/playerhq-test-detalj.html`
-- [ ] `fase2/playerhq/playerhq-tester-hub.html`
-- [ ] `fase2/playerhq/playerhq-turnering-detalj.html`
-- [ ] `fase2/playerhq/playerhq-turneringer.html`
+- [~] `fase2/playerhq/playerhq-live-tapper.html` — bygget (#398), fiks i åpen #413
+- [~] `fase2/playerhq/playerhq-okt-detalj.html` — bygget (#399), fiks i åpen #413
+- [~] `fase2/playerhq/playerhq-teknisk-plan.html` — tilstands-pass 11.08 (#412)
+- [~] `fase2/playerhq/playerhq-test-detalj.html` — tilstands-pass 11.08 (#412)
+- [~] `fase2/playerhq/playerhq-tester-hub.html` — tilstands-pass 11.08 (#412)
+- [~] `fase2/playerhq/playerhq-turnering-detalj.html` — bygget (#398), fiks i åpen #413
+- [~] `fase2/playerhq/playerhq-turneringer.html` — bygget (#398), fiks i åpen #413
 
 ## Fase 2 · W2 Analysere-dybde (ny i zip 2)
 
@@ -65,14 +65,14 @@
 - [~] `fase2/playerhq/playerhq-runder-liste.html` → RunderV2
 - [~] `fase2/playerhq/playerhq-runde-detalj.html` → RundeDetaljV2
 - [~] `fase2/playerhq/playerhq-gameplan-liste.html` → GameplanV2
-- [ ] `fase2/playerhq/playerhq-gameplan-banekart.html`
-- [~] `fase2/playerhq/playerhq-datagolf.html` → DataGolfV2
-- [ ] `fase2/playerhq/playerhq-trackman-liste.html`
-- [ ] `fase2/playerhq/playerhq-trackman-detalj.html`
-- [~] `fase2/playerhq/playerhq-putte-lab.html` → PutteLabV2
-- [ ] `fase2/playerhq/playerhq-historikk-filter-sheet.html`
-- [ ] `fase2/playerhq/playerhq-hjem-rest.html`
-- [ ] `fase2/playerhq/playerhq-hjem-varsler.html`
+- [~] `fase2/playerhq/playerhq-gameplan-banekart.html` — bygget 11.08 (#408)
+- [~] `fase2/playerhq/playerhq-datagolf.html` → DataGolfV2 — pixel-pass (#411)
+- [~] `fase2/playerhq/playerhq-trackman-liste.html` — bygget 11.08 (#405)
+- [~] `fase2/playerhq/playerhq-trackman-detalj.html` — bygget 11.08 (#405), fiks i åpen #414
+- [~] `fase2/playerhq/playerhq-putte-lab.html` → PutteLabV2 — pixel-pass (#409)
+- [~] `fase2/playerhq/playerhq-historikk-filter-sheet.html` — bygget 11.08 (#407)
+- [~] `fase2/playerhq/playerhq-hjem-rest.html` — bygget 11.08 (#407)
+- [~] `fase2/playerhq/playerhq-hjem-varsler.html` — bygget 11.08 (#407)
 
 ## Fase 2 · W3 Meg/Booking/Talent/Coach (ny i zip 2)
 
@@ -81,7 +81,7 @@
 - [~] `fase2/playerhq/playerhq-helse.html` → MegHelseV2
 - [~] `fase2/playerhq/playerhq-booking-ny.html` → BookingNyV2
 - [~] `fase2/playerhq/playerhq-booking-mine.html`
-- [ ] `fase2/playerhq/playerhq-coach-hub.html`
+- [~] `fase2/playerhq/playerhq-coach-hub.html` — pixel-pass natt 12.08, åpen PR #415
 - [~] `fase2/playerhq/playerhq-talent.html` → TalentV2
 
 ## Fase 2 · W4 AgencyOS (ny i zip 2)
@@ -89,25 +89,25 @@
 - [~] `fase2/agencyos/agencyos-godkjenninger.html` → AdminGodkjenningerV2
 - [~] `fase2/agencyos/agencyos-gruppe-detalj.html` → GruppeDetaljV2
 - [~] `fase2/agencyos/agencyos-bookinger.html` → AdminBookingerV2
-- [ ] `fase2/agencyos/agencyos-planbibliotek.html`
-- [ ] `fase2/agencyos/agencyos-turneringer.html`
+- [~] `fase2/agencyos/agencyos-planbibliotek.html` — pixel-pass natt 12.08, åpen PR #416
+- [~] `fase2/agencyos/agencyos-turneringer.html` — pixel-pass natt 12.08, åpen PR #416
 - [~] `fase2/agencyos/agencyos-oppsett.html` → AdminSettingsV2
 
 ## Fase 2 · W5 Marketing/Auth/Forelder/System (ny i zip 2)
 
 - [~] `fase2/marketing/marketing-side.html` (wave I clay)
-- [ ] `fase2/marketing/marketing-katalog.html`
+- [~] `fase2/marketing/marketing-katalog.html` — bygget natt 12.08, åpen PR #418
 - [~] `fase2/auth/auth-flyt.html` → LoginV2 m.fl.
 - [~] `fase2/auth/auth-samtykke.html` → GuardianConsentV2
 - [~] `fase2/forelder/forelder-barn.html`
-- [ ] `fase2/system/system-tilstander.html`
+- [~] `fase2/system/system-tilstander.html` — bygget natt 12.08, åpen PR #418
 
 ## Fase 2 · W6 WANG + GFGK (eget chrome — ikke Paper-shell)
 
-- [ ] `fase2/wang/wang-coach-arsplan.html`
-- [ ] `fase2/wang/wang-logg-inn.html`
-- [ ] `fase2/gfgk/gfgk-kalender.html`
-- [ ] `fase2/gfgk/gfgk-veileder-artikkel.html`
+- [~] `fase2/wang/wang-coach-arsplan.html` — pixel-pass natt 12.08, åpen PR #419 (layoutspørsmål til Anders i PR)
+- [ ] `fase2/wang/wang-logg-inn.html` — BLOKKERT: filene eies av åpen #406 + fasitens OTP-flyt er produktbeslutning
+- [~] `fase2/gfgk/gfgk-kalender.html` — delvis pixel-pass natt 12.08, åpen PR #419 (delt kalenderkomponent ikke forket)
+- [~] `fase2/gfgk/gfgk-veileder-artikkel.html` — pixel-pass natt 12.08, åpen PR #419
 
 ## Templates (struktur)
 
