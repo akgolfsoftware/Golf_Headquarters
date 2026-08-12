@@ -6,6 +6,8 @@
  */
 import type { CSSProperties, ReactNode } from "react";
 import { T } from "@/lib/v2/tokens";
+import Link from "next/link";
+import { Icon } from "@/components/v2";
 import { TemaHeaderKnapp } from "@/components/v2/tema";
 
 export function PaperTopp({
@@ -14,6 +16,8 @@ export function PaperTopp({
   trailing,
   children,
   utenTema,
+  tilbakeHref,
+  tilbakeLabel = "Tilbake",
 }: {
   tittel: string;
   sub?: ReactNode;
@@ -21,6 +25,9 @@ export function PaperTopp({
   children?: ReactNode;
   /** Flater som er låst til ett tema (onboarding) skjuler bryteren. */
   utenTema?: boolean;
+  /** Rund tilbakeknapp først i headeren (fasitens `.ikon` med pil). */
+  tilbakeHref?: string;
+  tilbakeLabel?: string;
 }) {
   return (
     <header
@@ -39,6 +46,28 @@ export function PaperTopp({
         zIndex: 5,
       }}
     >
+      {tilbakeHref && (
+        <Link
+          href={tilbakeHref}
+          aria-label={tilbakeLabel}
+          title={tilbakeLabel}
+          className="v2-press v2-focus"
+          style={{
+            flex: "none",
+            width: 40,
+            height: 40,
+            display: "inline-flex",
+            alignItems: "center",
+            justifyContent: "center",
+            borderRadius: 9999,
+            border: `1px solid ${T.border}`,
+            color: T.fg2,
+            textDecoration: "none",
+          }}
+        >
+          <Icon name="arrow-left" size={17} />
+        </Link>
+      )}
       {children}
       <div style={{ minWidth: 0, flex: 1 }}>
         <h1
@@ -124,10 +153,14 @@ export function PaperDokk({ children }: { children: ReactNode }) {
   return (
     <div
       data-paper-dokk
+      /* Bunn-navigasjonen er `position: fixed` og ~96px høy på mobil (samme
+         tall som shellens egen bunn-luft, `pb-[calc(96px+…)]`). Uten dette
+         offsettet ligger dokken bak den — samme feilklasse som
+         cookie-banneret, se gotchas. Over md finnes ingen bunn-nav. */
+      className="bottom-[calc(96px+env(safe-area-inset-bottom))] md:bottom-0"
       style={{
         flex: "none",
         position: "sticky",
-        bottom: 0,
         zIndex: 4,
         padding: "12px 16px calc(12px + env(safe-area-inset-bottom) + var(--ak-cookie-h, 0px))",
         background: `linear-gradient(to top, ${T.bg} 70%, transparent)`,

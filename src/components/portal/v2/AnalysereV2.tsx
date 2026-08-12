@@ -18,6 +18,7 @@
 
 import { useEffect, useState, type ReactNode } from "react";
 import Link from "next/link";
+import { TemaHeaderKnapp } from "@/components/v2/tema";
 import type { MinGolfData } from "@/lib/min-golf/load-min-golf";
 import type { AnalyticsWorkbenchData } from "@/app/portal/analysere/actions";
 import { hentTreningsHistorikkFiltrert } from "@/app/portal/analysere/actions";
@@ -132,7 +133,7 @@ function useMobile(): boolean {
 
 function TabSG({ data, mobile }: { data: AnalysereData; mobile: boolean }) {
   const { sgStatus, nesteFokus } = data.minGolf;
-  const { rounds, training } = data.workbench;
+  const { rounds } = data.workbench;
 
   const tp = sgStatus.trendPunkter;
   const harTrend = tp.length >= 2;
@@ -177,6 +178,22 @@ function TabSG({ data, mobile }: { data: AnalysereData; mobile: boolean }) {
                 <Trend series={tp.map((p) => p.sg)} yMin={Math.min(-1, ...tp.map((p) => p.sg))} />
               </div>
             )}
+            {/* Signering 12.08: fasitens SG-kort bærer tallet OG de fire
+                båndene i samme kort — nedbrytningen forklarer totalen, og to
+                separate kort tvang blikket til å hoppe mellom dem. */}
+            {sgStatus.kategorier.length > 0 && (
+              <div style={{ marginTop: 14 }}>
+                <SgKategorier
+                  bar
+                  kategorier={sgStatus.kategorier}
+                  baseline={sgStatus.baseline}
+                  hjelp="sgOmrade"
+                  /* 2 desimaler: ekte per-område-SG ligger så tett at 1 desimal gir
+                     «−0,0» på alle fire og skjuler rangeringen. */
+                  desimaler={2}
+                />
+              </div>
+            )}
             <HvorforDette
               kilde={`Dine ${sgStatus.runder} siste registrerte runder, brutto score.`}
               beregning={`SG måler slag spart mot ${sgStatus.baseline}, ikke mot par. Delene summerer til totalen.`}
@@ -208,25 +225,6 @@ function TabSG({ data, mobile }: { data: AnalysereData; mobile: boolean }) {
         )}
       </Kort>
 
-      {/* Bølge 12b: fasit-komponentene fra familie-golfdata erstatter den
-          hjemmesnekrede nedbrytningen. SgKategorier har nullinje i midten
-          (gevinst høyre / tap venstre) + «størst tap»-markør, som showroomet. */}
-      {sgStatus.kategorier.length > 0 ? (
-        <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
-          <SgKategorier
-            kategorier={sgStatus.kategorier}
-            baseline={sgStatus.baseline}
-            hjelp="sgOmrade"
-            /* 2 desimaler: ekte per-område-SG ligger så tett at 1 desimal gir
-               «−0,0» på alle fire og skjuler rangeringen. */
-            desimaler={2}
-          />
-        </div>
-      ) : (
-        <Kort eyebrow="Per område" action={<HjelpTips k="sgBaseline" size={12} />}>
-          <TomTilstand icon="target" title="Mangler nedbrytning" sub="SG per område fyller seg når runder er registrert." />
-        </Kort>
-      )}
 
       {nesteFokus && (
         <div style={{ gridColumn: "1 / -1", display: "grid", gap: T.gap }} className="md:grid-cols-[3fr_2fr]">
@@ -905,11 +903,16 @@ export function AnalysereV2({
 }) {
   const mobile = useMobile();
   const deep = depthMode === "deep";
-  const visibleTabs = TABS.filter((t) => deep || t.id !== "trackman");
+  // Fasiten (`playerhq-analyse.html` §segs) har TRE faner: Strokes Gained ·
+  // Trening · Tester. TrackMan og Statistikk er dybdelag — de vises kun i
+  // deep-modus, så vanlige spillere møter fasitens tre. Innholdet er beholdt
+  // i sin helhet; det er bare ikke lenger fjerde og femte valg for alle.
+  const visibleTabs = TABS.filter((t) => deep || (t.id !== "trackman" && t.id !== "statistikk"));
   const [valgtTab, setTab] = useState<TabId>("sg");
   // Simple-mode har ingen TrackMan-fane — fall tilbake til SG uten å skrive
   // state i en effect (avledet verdi, ikke synk).
-  const tab: TabId = !deep && valgtTab === "trackman" ? "sg" : valgtTab;
+  const tab: TabId =
+    !deep && (valgtTab === "trackman" || valgtTab === "statistikk") ? "sg" : valgtTab;
 
   // URL-tab-state (?tab=) — leses ved mount, oppdateres uten full navigasjon.
   useEffect(() => {
@@ -919,7 +922,7 @@ export function AnalysereV2({
   }, [deep]);
   const velgTab = (id: string) => {
     if (!ER_TAB(id)) return;
-    if (!deep && id === "trackman") return;
+    if (!deep && (id === "trackman" || id === "statistikk")) return;
     setTab(id);
     const url = new URL(window.location.href);
     url.searchParams.set("tab", id);
@@ -973,12 +976,11 @@ export function AnalysereV2({
               {kat && <HjelpTips k="spillerKategori" size={11} />}
             </span>
           </div>
+          {/* Fasitens `#themeBtn` — Analyse har egen header, så den fikk ikke
+              bryteren fra PaperTopp. */}
+          <TemaHeaderKnapp />
         </header>
       )}
-
-      <div style={{ padding: "12px 16px 0", maxWidth: 720, width: "100%", margin: "0 auto", boxSizing: "border-box" }}>
-        <PuttingFocusBanner signals={puttingSignals} />
-      </div>
 
       <div
         style={{
@@ -997,8 +999,29 @@ export function AnalysereV2({
       <div style={{ flex: 1, minHeight: 0, overflow: "auto", padding: "16px 16px 32px" }}>
         <div style={{ maxWidth: 720, margin: "0 auto", display: "flex", flexDirection: "column", gap: T.gap }}>
 
+      {/* Fasitens `.merknad` — står over fane-innholdet, alltid. Uten den er
+          tallene påstander framfor målinger. */}
+      <p
+        style={{
+          margin: 0,
+          fontFamily: T.bodyFont,
+          fontSize: 12.5,
+          lineHeight: 1.5,
+          color: T.mut,
+        }}
+      >
+        Tallene er målinger, ikke karakterer. Ingen terskler er vurdert.
+      </p>
+
       <FaneInnhold key={tab}>
-        {tab === "sg" && <TabSG data={data} mobile={mobile} />}
+        {tab === "sg" && (
+          <>
+            {/* Flyttet hit fra over fanerada: der konkurrerte kortets egen
+                handling med selve fanevalget. Signalet hører til SG. */}
+            <PuttingFocusBanner signals={puttingSignals} />
+            <TabSG data={data} mobile={mobile} />
+          </>
+        )}
         {tab === "statistikk" && <TabStatistikk data={data} mobile={mobile} />}
         {tab === "trening" && <TabTrening data={data} mobile={mobile} userId={userId} />}
         {tab === "trackman" && deep && <TabTrackman data={data} mobile={mobile} />}
