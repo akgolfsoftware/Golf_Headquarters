@@ -44,6 +44,7 @@ import { usePortalChat } from "./use-portal-chat";
 import { PortalStegListe } from "./PortalStegListe";
 import { PortalHvorforDette } from "./PortalHvorforDette";
 import { ArtefaktPanel, useErMobil } from "./ArtefaktPanel";
+import { PushOptInBanner } from "@/components/portal/push-opt-in-banner";
 import { FangstSheet } from "./FangstSheet";
 import type { PortalChatMessage } from "./types";
 
@@ -599,6 +600,11 @@ export function PortalChatHjem({
             {visEnTingNa && gjennomfore.nesteOkt && (
               <EnTingNaBanner okt={gjennomfore.nesteOkt} klokke={naaTekst.klokke} onSePlan={() => setArtefaktApen(true)} />
             )}
+
+            {/* Første-besøk push-opt-in — viser seg kun til brukere som ikke har
+                tatt stilling (localStorage + Notification.permission-sjekk i
+                komponenten). Skjuler seg selv etter valg. */}
+            <PushOptInBanner />
           </div>
         </div>
 
