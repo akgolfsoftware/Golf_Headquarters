@@ -40,12 +40,16 @@ Gjelder til Anders endrer dem.
   `TEK_CHIP_LAV_HAST_TRENINGSOMRADE_ALENE` (kilde: `fase1/workbench-mobil.html`).
   Databasen beholder de finkornede enum-verdiene — `ak-formel-visning.ts` er fortsatt broen.
 - **Design-fasit er Claude Paper 1:1 (Anders 2026-08-04):** skjermene skal bli **slik de er
-  designet i Claude Design-prosjektet «AK Golf HQ — Claude Paper»** (`605a48cc`, hentet via
-  `claude-design`-MCP-verktøyet — det er den levende kilden) — layout, informasjonsarkitektur og
-  interaksjonsmønster, ikke bare farger/tokens. `designsystem/paper/fase1/` i repoet er et lokalt
-  speil av samme mappe, brukt kun til rask lesing/diff; det er IKKE kilden og kan henge etter (var
-  25 av 33 skjermer 05.08.2026 — sjekk alltid mot Claude Design-prosjektet direkte før du stoler på
-  at speilet er ajour). Bakgrunn: steg 7 PR1–PR4 ble merget med riktige
+  designet i Claude Design-prosjektet «AK Golf HQ — Claude Paper»** (`605a48cc`) — layout,
+  informasjonsarkitektur og interaksjonsmønster, ikke bare farger/tokens.
+  **Speilregelen endret 2026-08-12 (Anders):** `designsystem/paper/` er **arbeidsfasiten** —
+  208 HTML-filer, målt byte-identisk mot siste zip (zip (3), 09.08). Den gamle formuleringen
+  («IKKE kilden, sjekk alltid mot Claude Design-prosjektet direkte») skrev seg fra 05.08, da
+  speilet var 25 av 33 skjermer. Det stemmer ikke lenger, og `claude-design`-MCP-en er ikke
+  tilgjengelig i alle økter — så regelen krevde en vei som ofte er stengt, samtidig som den
+  forbød tillit til den som virker. `605a48cc` er fortsatt originalen ved uenighet, og speilet
+  resynkes når Anders leverer ny zip. Sjekk `SYNC-STATUS.md` for ferskhet.
+  Bakgrunn for selve 1:1-kravet: steg 7 PR1–PR4 ble merget med riktige
   tokens men feil skall («Én ting nå» manglet på alle fire, Hjem manglet artefaktkolonne/tom
   tilstand, Planlegge hadde 5 konkurrerende CTA-er). Full avviksliste og ombyggingsplan:
   `docs/port/plan-designport-alle-skjermer.md` §Avvik.
@@ -99,8 +103,7 @@ Gjelder til Anders endrer dem.
   Full skjermport kjører nå aktivt per `docs/port/plan-designport-alle-skjermer.md` (10 steg,
   én PR per skjerm/steg, aldri merge til main uten Anders' «ja»). `designsystem/paper/` er et
   lokalt speil hentet ned i repoet 02.08.2026 (PR #254, ikke lenger kun på `chore/paper-speil-lokal`)
-  — men speilet er IKKE kilden og oppdateres ikke automatisk; Claude Design-prosjektet `605a48cc`
-  (via `claude-design`-MCP) er alltid fasiten. Se også `docs/gjenstaaende-plan-2026-07-31.md` §1.1
+  — og er siden 12.08.2026 **arbeidsfasiten**, se speilregelen over. Se også `docs/gjenstaaende-plan-2026-07-31.md` §1.1
   (historisk — skrevet før overstyringen) og `docs/for-under-etter-spec.md` §2 for historikken.
 - **Navne-kanon (demo):** spiller = **Øyvind Rohjan**, coach = **Anders Kristiansen** — alltid fulle
   navn, gamle demo-navn skal bort. Unntak: ekte coach **«Markus Røinås Pedersen»** på markedssidene,
