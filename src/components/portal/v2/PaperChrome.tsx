@@ -6,17 +6,21 @@
  */
 import type { CSSProperties, ReactNode } from "react";
 import { T } from "@/lib/v2/tokens";
+import { TemaHeaderKnapp } from "@/components/v2/tema";
 
 export function PaperTopp({
   tittel,
   sub,
   trailing,
   children,
+  utenTema,
 }: {
   tittel: string;
   sub?: ReactNode;
   trailing?: ReactNode;
   children?: ReactNode;
+  /** Flater som er låst til ett tema (onboarding) skjuler bryteren. */
+  utenTema?: boolean;
 }) {
   return (
     <header
@@ -67,6 +71,9 @@ export function PaperTopp({
         )}
       </div>
       {trailing}
+      {/* Paper har temabryteren i headeren på hver skjerm — den satt bare i
+          railen før, altså usynlig på mobil. Sist i rekken, som i fasiten. */}
+      {!utenTema && <TemaHeaderKnapp />}
     </header>
   );
 }
