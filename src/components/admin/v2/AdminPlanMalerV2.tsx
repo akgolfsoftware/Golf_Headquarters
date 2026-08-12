@@ -347,7 +347,16 @@ export function AdminPlanMalerV2({ data }: { data: AdminPlanMalerData }) {
   // ── Filterrad med tellere — fasitens `.filters` ────────────────
   // Én rad, ikke to merkede grupper: status først, deretter fase.
   // Tellerne er faste tall for hele biblioteket (som fasiten), så de ikke
-  // hopper mens du filtrerer. Faser uten maler vises ikke — døde valg.
+  // hopper mens du filtrerer.
+  //
+  // Valg med 0 treff vises ikke — verken status eller fase. En knapp som aldri
+  // kan gi et resultat er støy: den ser klikkbar ut, og svaret er alltid en tom
+  // liste. Gjelder begge kanaler; «Utkast 0» sto igjen da fasene ble ryddet.
+  const statusMedTall = [
+    { navn: STATUS_FILTRE[0], antall: totalGodkjent },
+    { navn: STATUS_FILTRE[1], antall: total - totalGodkjent },
+  ].filter((s) => s.antall > 0);
+
   const faseMedTall = FASE_FILTRE.map((navn) => ({
     navn,
     antall: data.maler.filter((m) => FASE_LABEL[m.fase] === navn).length,
@@ -368,18 +377,15 @@ export function AdminPlanMalerV2({ data }: { data: AdminPlanMalerData }) {
         border: `1px solid ${T.borderS}`,
       }}
     >
-      <FilterChip
-        etikett={STATUS_FILTRE[0]}
-        antall={totalGodkjent}
-        aktiv={status.indexOf(STATUS_FILTRE[0]) !== -1}
-        onClick={() => toggleStatus(STATUS_FILTRE[0])}
-      />
-      <FilterChip
-        etikett={STATUS_FILTRE[1]}
-        antall={total - totalGodkjent}
-        aktiv={status.indexOf(STATUS_FILTRE[1]) !== -1}
-        onClick={() => toggleStatus(STATUS_FILTRE[1])}
-      />
+      {statusMedTall.map((s) => (
+        <FilterChip
+          key={s.navn}
+          etikett={s.navn}
+          antall={s.antall}
+          aktiv={status.indexOf(s.navn) !== -1}
+          onClick={() => toggleStatus(s.navn)}
+        />
+      ))}
       {faseMedTall.map((f) => (
         <FilterChip
           key={f.navn}
