@@ -2,7 +2,31 @@
 
 > **Hva dette er:** ett snapshot av hvor plattformen står akkurat nå. Oppdater datoen + relevante linjer når noe vesentlig endrer seg.
 
-**Sist oppdatert:** 2026-08-10 formiddag.
+**Sist oppdatert:** 2026-08-13 (lanserings-QC).
+
+## Lanserings-QC 13.08 (målt, ikke antatt)
+
+- **Bygg:** `npm run verify` grønn uten warnings · **977/977 enhetstester** grønne på main.
+- **e2e mot prod (chromium):** 91 grønne · 21 røde · 427 hoppet over (mangler spiller-creds
+  E2E_TEST_USER_*). De røde: (a) **CSP-blokkert Turbopack-chunk** `047h7de8kxhou.js`
+  (v2-tokens) — 8 forekomster, reprodusert i prod; siden RENDRER riktig (trolig kun Nexts
+  forhåndslasting som blokkeres), men skal fikses; (b) visual-diff hjem/planlegge/analysere
+  mot fasit-demodata — hører til sign-off; (c) pilot-smoke mangler E2E_COACH_*-env.
+- **DB (prod):** 42 brukere · 38 spillere · **13 har logget inn** (25 aldri) ·
+  **0 push-abonnement** · 22 bookinger · 39 Payment-rader · **1 PlayerEnrollment** (stallen
+  fortsatt tom) · 13 abonnement.
+- **Aktiverings-e-post (dry-run):** ok=14, feil=11 — MEN de 14 «ok» går til syntetiske
+  `@spillere.akgolf.no`-adresser. **Ekte spiller-e-poster må inn før utsending.**
+- **Skallvalidering (templates-radene):** grønn — PlayerHQ har de fire låste fanene,
+  AgencyOS-railen matcher fasitens åtte punkter, mobil-bunnav de fem flatene. Templates-mappen
+  er `_UTGÅTT` designfasit; validert mot beslutningen 31.07, ikke mot malene.
+- **Nye PR-er:** [#430](https://github.com/akgolfsoftware/Golf_Headquarters/pull/430)
+  (push-opt-in montert — banneret var aldri montert) ·
+  [#431](https://github.com/akgolfsoftware/Golf_Headquarters/pull/431) (lanseringsbryteren,
+  merges kun på eksplisitt ja). Rotasjonsscript for SCREENTEST_PASSWORD ligger i #430
+  (`scripts/roter-screentest-passord.ts` — Anders kjører).
+- **Ferskt sign-off-galleri** (18 skjermer etter bølge A–C) levert i samtalen 13.08.
+  WANG-skjermen bevisst utelatt (ekte elevnavn i prod-data).
 
 **Bygget:** `main` er **grønt**. Den var rød med 114 feil fra 09.08 (syntaksfeil fra
 automatisk slug-tagging skjulte 79 typefeil, som igjen skjulte 17 lint- og 14 fargefeil).
