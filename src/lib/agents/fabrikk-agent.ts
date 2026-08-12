@@ -1,11 +1,13 @@
-// fabrikk: leser ubehandlede funn fra radar-agenten (RadarFunn) og lar Claude
-// vurdere om funnet har treningsverdi. Har det det, genereres en HELT EGEN
-// øvelse/test inspirert av temaet — aldri kopiert tekst/video fra kilden —
-// grundet i masterbrain sin CANON-fasit (nivå A-K, pyramidefordeling,
-// LTAD-fase). Forslaget lagres som CaddieDraft med samme toolName som
-// drill-forslag-agent, så det dukker opp i den EKSISTERENDE godkjenningskøen
-// på /admin/drills/forslag uten noen ny UI. Radar-funnet markeres behandlet
-// uansett utfall (relevant, irrelevant eller feilet) — hver rad behandles kun én gang.
+// fabrikk: leser ubehandlede funn fra radar-agenten (RadarFunn).
+//
+// HARD LAW (Masterbrain): Så lenge drill-banken er TOM, genereres INGEN
+// øvelser fra nyheter/YouTube. Radar-funn forblir ubehandlet til banken
+// har FASIT-drills (eller policy endres av Anders). Dette stoppet et brudd
+// der Claude fant på drill-navn uten kilde i fasiten.
+//
+// Når banken er fylt: agenten kan igjen vurdere inspirasjon — men skal da
+// knyttes til eksisterende fasit-drills / godkjenningsflyt, ikke frie navn
+// uten promote-gate. Se masterbrain-rebuild/03-DRILL-BANK-RESTART.md.
 
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
@@ -13,8 +15,15 @@ import { runAgent, type AgentResult } from "./agent-runner";
 import { anthropic, modelFor, AI_MAX_TOKENS, isAiEnabled, tekstFra } from "@/lib/ai/client";
 import { PyramidArea, SkillArea, NgfKategori } from "@/generated/prisma/enums";
 import { DRILL_DRAFT_TOOL } from "./drill-forslag-agent";
-import { masterbrain } from "@/lib/masterbrain";
+import {
+  masterbrain,
+  DRILL_BANK_EMPTY_CODE,
+  DRILL_BANK_EMPTY_MELDING_NO,
+  erMasterbrainDrillBankTom,
+  masterbrainDrillBankStatus,
+} from "@/lib/masterbrain";
 import { logError } from "@/lib/error-tracking";
+
 
 export const AGENT_NAME = "fabrikk";
 
@@ -101,6 +110,27 @@ function parseForslag(tekst: string): Forslag | null {
 
 export async function runFabrikk(): Promise<AgentResult> {
   return runAgent(AGENT_NAME, null, async () => {
+    // P0 invent-guard — før Claude og før CaddieDraft.
+    if (erMasterbrainDrillBankTom()) {
+      const bank = masterbrainDrillBankStatus();
+      const ubehandlet = await prisma.radarFunn.count({
+        where: { behandlet: false },
+      });
+      return {
+        output: {
+          status: DRILL_BANK_EMPTY_CODE,
+          invent_guard: "blocked_empty_bank",
+          melding: DRILL_BANK_EMPTY_MELDING_NO,
+          agentRegel: bank.agentRegel,
+          bankStatus: bank.status,
+          antallDrills: bank.antall,
+          forslagLagret: 0,
+          funnUbehandlet: ubehandlet,
+          note: "Radar-funn er ikke markert behandlet — de venter til drill-banken har FASIT-innhold.",
+        },
+      };
+    }
+
     if (!isAiEnabled() || !anthropic) {
       return { output: { status: "ai-av", melding: "Anthropic-nøkkel er ikke satt." } };
     }

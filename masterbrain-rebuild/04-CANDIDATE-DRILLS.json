@@ -1,0 +1,453 @@
+{
+  "version": "0.1.0",
+  "status": "UTKAST_ONLY",
+  "description": "Drill-kandidater ekstrahert fra SOURCE med kildehenvisning. ALDRI merge til knowledge/entities/drills.json uten Anders promote. entities i drills.json skal forbli tom til da.",
+  "hard_law": "Never invent. Every candidate has SOURCE path. Auto-extracted items marked confidence low.",
+  "updated": "2026-08-07",
+  "source_root": "/Volumes/TOSHIBA EXT/MORAD_AI_GOLF_COACH",
+  "candidates": [
+    {
+      "utkast_id": "UTKAST-FS-001",
+      "proposed_id": "fs_left_elbow_adduction",
+      "domain": "FULLSWING",
+      "name": "Left Elbow Adduction Drill",
+      "name_no": "Venstre albue-adduksjon",
+      "purpose": "Improve left elbow position and location in downswing (position #1 vs #2)",
+      "pyramid_area": "TEK",
+      "cs_min": null,
+      "cs_max": null,
+      "target_faults_hypothesis": ["left_elbow_stall", "incorrect_elbow_position"],
+      "p_positions_trained": ["P1.1", "P2.0", "P3.0"],
+      "setup": [
+        "Set up more bent over from waist and knees",
+        "Stance width: 12 inches",
+        "Ball position: N-0"
+      ],
+      "execution": [
+        "Lower clubhead to ground by lowering hands",
+        "Keep left elbow straight",
+        "Cock wrists immediately from P1.1 to P2.0",
+        "Maximum backswing P3.0",
+        "Adduct left elbow back toward ball with wrists cocked",
+        "Transfer weight 4-6 inches to N-0 ball position"
+      ],
+      "feel": "Dramatic difference in left elbow position (#1 instead of #2); compression on the ball; elbow adducting toward body median line",
+      "references": { "model_players": ["Seve Ballesteros"] },
+      "confidence": "high",
+      "legacy_ids": ["left_elbow_adduction"],
+      "source": [
+        {
+          "path": "/Volumes/TOSHIBA EXT/MORAD_AI_GOLF_COACH/10 - KNOWLEDGE BASE/04 - DRILLS/MORAD-DRILLS.md",
+          "type": "kb_md",
+          "section": "1. Left Elbow Adduction Drill"
+        },
+        {
+          "path": "/Volumes/TOSHIBA EXT/MORAD_AI_GOLF_COACH/05 - REFERENCE MATERIAL/05 - EMAIL CORRESPONDENCE/E-mail Mac O´Grady /TEKNIKK_Elbow_Adduction-Drill-Paris-Dreams.md",
+          "type": "email_md",
+          "quote_span": "adduct the left elbow back towards the ball with the wrists cocked and the weight transferring four to six inches"
+        }
+      ],
+      "validation_status": "PENDING_ANDERS"
+    },
+    {
+      "utkast_id": "UTKAST-FS-002",
+      "proposed_id": "fs_three_momentum_transfers",
+      "domain": "FULLSWING",
+      "name": "Three Momentum Transfer Timing Drill",
+      "name_no": "Tre momentum-overføringer — timing",
+      "purpose": "Coordinate three critical mass/weight transfers",
+      "pyramid_area": "TEK",
+      "cs_min": null,
+      "cs_max": null,
+      "target_faults_hypothesis": ["improper_weight_transfer"],
+      "p_positions_trained": ["P3.0", "P4.0", "P7.0"],
+      "setup": [],
+      "execution": [
+        "At P3.0 begin moving left elbow up address baseline",
+        "Note clubhead still moving toward target",
+        "Time hip COG movement with elbow movement",
+        "Coordinate all three transfers to peak at impact"
+      ],
+      "feel": "Clubhead mass, body weight (hip COG), and arms mass coordinated",
+      "references": { "model_players": ["Ben Hogan"] },
+      "three_transfers": [
+        "Clubhead mass toward target (P3.0 to P4.0)",
+        "Body weight (Hip COG) up address baseline",
+        "Arms mass up address baseline"
+      ],
+      "confidence": "high",
+      "legacy_ids": ["three_momentum_transfer"],
+      "source": [
+        {
+          "path": "/Volumes/TOSHIBA EXT/MORAD_AI_GOLF_COACH/10 - KNOWLEDGE BASE/04 - DRILLS/MORAD-DRILLS.md",
+          "type": "kb_md",
+          "section": "2. Three Momentum Transfer Timing Drill"
+        },
+        {
+          "path": "/Volumes/TOSHIBA EXT/MORAD_AI_GOLF_COACH/05 - REFERENCE MATERIAL/05 - EMAIL CORRESPONDENCE/E-mail Mac O´Grady /2015-06-22_TEKNIKK_Momentum_3-Transfers-Humeral-Scapula-Orbit.md",
+          "type": "email_md"
+        }
+      ],
+      "validation_status": "PENDING_ANDERS"
+    },
+    {
+      "utkast_id": "UTKAST-FS-003",
+      "proposed_id": "fs_spine_alignment_setup",
+      "domain": "FULLSWING",
+      "name": "Spine Alignment Setup Drill",
+      "name_no": "Rygg/søyle-oppsett",
+      "purpose": "Establish correct upper body tilt at address (~5° left)",
+      "pyramid_area": "TEK",
+      "cs_min": null,
+      "cs_max": null,
+      "target_faults_hypothesis": ["poor_spine_alignment"],
+      "p_positions_trained": ["P1.0", "P6.0", "P9.0"],
+      "setup": [],
+      "execution": [
+        "At address align outside of right knee to right shoulder in straight line",
+        "Feel upper torso tilted slightly LEFT (~5°)",
+        "Check Lines #1 #2 #3 (lumbar, thoracic, cervical)",
+        "Maintain 5° tilt through P6.0 and into follow-through"
+      ],
+      "feel": "Not punch-shot setup; reverse C at finish when correct",
+      "confidence": "high",
+      "legacy_ids": ["spine_alignment_setup"],
+      "source": [
+        {
+          "path": "/Volumes/TOSHIBA EXT/MORAD_AI_GOLF_COACH/10 - KNOWLEDGE BASE/04 - DRILLS/MORAD-DRILLS.md",
+          "type": "kb_md",
+          "section": "3. Spine Alignment Setup Drill"
+        },
+        {
+          "path": "/Volumes/TOSHIBA EXT/MORAD_AI_GOLF_COACH/05 - REFERENCE MATERIAL/05 - EMAIL CORRESPONDENCE/E-mail Mac O´Grady /TEKNIKK_Elbow_Adduction-Drill-Paris-Dreams.md",
+          "type": "email_md",
+          "quote_span": "upper torso is aligned with a slight tilt to my left at P1.0"
+        }
+      ],
+      "validation_status": "PENDING_ANDERS"
+    },
+    {
+      "utkast_id": "UTKAST-FS-004",
+      "proposed_id": "fs_right_arm_clubshaft_angle",
+      "domain": "FULLSWING",
+      "name": "Right Arm/Clubshaft Angle Maintenance Drill",
+      "name_no": "Høyre arm / skaft-vinkel 110°",
+      "purpose": "Maintain 110° angle from P2.0 to P4.0",
+      "pyramid_area": "TEK",
+      "cs_min": null,
+      "cs_max": null,
+      "target_faults_hypothesis": ["angle_loss_backswing"],
+      "p_positions_trained": ["P2.0", "P4.0"],
+      "setup": ["Set up normally"],
+      "execution": [
+        "Take club to P2.0 (club parallel, toe up)",
+        "Check 110° between right arm and clubshaft",
+        "Continue to P4.0 maintaining exact same angle",
+        "If clubshaft wobbles at top, angle has changed"
+      ],
+      "feel": "No change in right arm/clubshaft angle; no change in left elbow flexion",
+      "confidence": "high",
+      "legacy_ids": ["right_arm_angle_maintenance"],
+      "source": [
+        {
+          "path": "/Volumes/TOSHIBA EXT/MORAD_AI_GOLF_COACH/10 - KNOWLEDGE BASE/04 - DRILLS/MORAD-DRILLS.md",
+          "type": "kb_md",
+          "section": "4. Right Arm/Clubshaft Angle Maintenance Drill"
+        }
+      ],
+      "validation_status": "PENDING_ANDERS"
+    },
+    {
+      "utkast_id": "UTKAST-FS-005",
+      "proposed_id": "fs_humeral_scapula_activation",
+      "domain": "FULLSWING",
+      "name": "Humeral-Scapula Activation Drill",
+      "name_no": "Humeral-scapula-aktivering",
+      "purpose": "Learn to move arm independently of body pivot (arm speed)",
+      "pyramid_area": "TEK",
+      "cs_min": null,
+      "cs_max": null,
+      "target_faults_hypothesis": ["left_elbow_stall"],
+      "p_positions_trained": [],
+      "setup": ["Can be done without club first"],
+      "execution": [
+        "Extend left arm in front with no elbow flexion",
+        "Move arm laterally left then right (shoulder joint)",
+        "At address practice moving entire left arm up baseline",
+        "Body pivots but arm moves independently forward",
+        "Do NOT deactivate shoulder joint in downswing"
+      ],
+      "feel": "Entire arm (not just elbow) moves as fast as possible back in front of body",
+      "confidence": "high",
+      "legacy_ids": ["humeral_scapula_activation"],
+      "source": [
+        {
+          "path": "/Volumes/TOSHIBA EXT/MORAD_AI_GOLF_COACH/10 - KNOWLEDGE BASE/04 - DRILLS/MORAD-DRILLS.md",
+          "type": "kb_md",
+          "section": "5. Humeral-Scapula Activation Drill"
+        }
+      ],
+      "validation_status": "PENDING_ANDERS"
+    },
+    {
+      "utkast_id": "UTKAST-FS-006",
+      "proposed_id": "fs_knock_down_seve",
+      "domain": "FULLSWING",
+      "name": "Knock-Down Shot Practice (Seve Style)",
+      "name_no": "Knock-down (Seve)",
+      "purpose": "Master elbow adduction and compression via abbreviated knock-down",
+      "pyramid_area": "SLAG",
+      "cs_min": null,
+      "cs_max": null,
+      "target_faults_hypothesis": ["incorrect_elbow_position", "left_elbow_stall"],
+      "p_positions_trained": ["P3.0", "P7.0"],
+      "setup": [
+        "Slightly bent over stance",
+        "12-inch stance width",
+        "Ball position N-0"
+      ],
+      "execution": [
+        "Abbreviated backswing (P3.0 max)",
+        "Adduct left elbow toward ball",
+        "Keep wrists cocked",
+        "Transfer weight through impact",
+        "Feel compression; short follow-through"
+      ],
+      "feel": "Elbow position #1, adduction location, ball compression, trajectory control",
+      "references": { "model_players": ["Seve Ballesteros"] },
+      "confidence": "high",
+      "legacy_ids": ["knock_down_shot"],
+      "source": [
+        {
+          "path": "/Volumes/TOSHIBA EXT/MORAD_AI_GOLF_COACH/10 - KNOWLEDGE BASE/04 - DRILLS/MORAD-DRILLS.md",
+          "type": "kb_md",
+          "section": "6. Knock-Down Shot Practice (Seve Style)"
+        },
+        {
+          "path": "/Volumes/TOSHIBA EXT/MORAD_AI_GOLF_COACH/05 - REFERENCE MATERIAL/05 - EMAIL CORRESPONDENCE/E-mail Mac O´Grady /TEKNIKK_Elbow_Adduction-Knock-Down-Shots.md",
+          "type": "email_md"
+        }
+      ],
+      "validation_status": "PENDING_ANDERS"
+    },
+    {
+      "utkast_id": "UTKAST-PUTT-001",
+      "proposed_id": "putt_progressive_distance_1_to_300",
+      "domain": "PUTTING",
+      "name": "Progressive Distance Putting (1–300 ft)",
+      "name_no": "Progressiv putte-avstand (1–300 fot)",
+      "purpose": "Expand cerebellum distance database; build speed→line control across all lengths",
+      "pyramid_area": "SLAG",
+      "cs_min": null,
+      "cs_max": null,
+      "target_faults_hypothesis": [],
+      "target_putting_faults_hypothesis": [],
+      "p_positions_trained": [],
+      "setup": ["Putting green with room for long lags; do not groove one hole"],
+      "execution": [
+        "Hit on the order of 100 putts per distance over time",
+        "Every foot-distance from 1 ft through 300 ft",
+        "Do not skip distances",
+        "For each putt: Read, Look, See, Feel, Stroke"
+      ],
+      "feel": "Clubhead speed into ball speed that controls line",
+      "notes": "This is a multi-month/year PROGRAM more than a 10-minute drill. Product may expose as 'program' not single session drill.",
+      "confidence": "high",
+      "source": [
+        {
+          "path": "/Volumes/TOSHIBA EXT/MORAD_AI_GOLF_COACH/10 - KNOWLEDGE BASE/04 - DRILLS/PUTTING-METHODOLOGY.md",
+          "type": "kb_md"
+        },
+        {
+          "path": "/Volumes/TOSHIBA EXT/MORAD_AI_GOLF_COACH/05 - REFERENCE MATERIAL/05 - EMAIL CORRESPONDENCE/E-mail Mac O´Grady /PUTTING_Drills_1-300ft-Half-Decade-Mastery.md",
+          "type": "email_md",
+          "quote_span": "hitting a hundred putts from 1 ft to 2 ft, to 3 ft, all the way out to yes, I said, \"300ft!\""
+        }
+      ],
+      "validation_status": "PENDING_ANDERS"
+    },
+    {
+      "utkast_id": "UTKAST-PUTT-002",
+      "proposed_id": "putt_heels_together_pendulum_1000",
+      "domain": "PUTTING",
+      "name": "Heels-Together Pendulum (Dean Martin) + volume ladder",
+      "name_no": "Hæler sammen-pendel + volumstige",
+      "purpose": "Feel true pendulum rhythm; volume practice 1–50+ ft",
+      "pyramid_area": "SLAG",
+      "cs_min": null,
+      "cs_max": null,
+      "target_faults_hypothesis": [],
+      "target_putting_faults_hypothesis": [],
+      "p_positions_trained": [],
+      "setup": [
+        "Feet heels and toes together (touching)",
+        "Weak right hand grip, strong left hand grip",
+        "Clubshaft aligned through palms of both hands"
+      ],
+      "execution": [
+        "Clubhead swings off ground upward immediately in backswing",
+        "Immediately upward in follow-through (pendulum)",
+        "Left elbow flexion backswing; extension forward; right elbow flexion follow-through",
+        "Do not use wrists",
+        "Volume protocol: 100 putts at 1 ft, then 2 ft, ... through 10 ft and continue ladder (email describes up toward 50 ft / 1000 putts total context)",
+        "Walk around holes to avoid grooving green"
+      ],
+      "feel": "Clubhead as true pendulum; rhythm of up-down-up",
+      "references": { "model_players": ["Dean Martin", "Mac O'Grady (lefty 1977)"] },
+      "confidence": "high",
+      "source": [
+        {
+          "path": "/Volumes/TOSHIBA EXT/MORAD_AI_GOLF_COACH/05 - REFERENCE MATERIAL/05 - EMAIL CORRESPONDENCE/E-mail Mac O´Grady /PUTTING_Drills_1000-Putts-Dean-Martin-Heels-Together.md",
+          "type": "email_md",
+          "quote_span": "Putt with your feet (heals & toes) together (touching) as the clubhead swings off the ground upward immediately"
+        }
+      ],
+      "validation_status": "PENDING_ANDERS"
+    },
+    {
+      "utkast_id": "UTKAST-FS-007",
+      "proposed_id": "fs_elbow_flexion_chip",
+      "domain": "SHORT_GAME",
+      "name": "Elbow Flexion Chip",
+      "name_no": "Albuefleksjon-chip",
+      "purpose": "Eliminate wrist action in chipping",
+      "pyramid_area": "SLAG",
+      "cs_min": null,
+      "cs_max": null,
+      "target_faults_hypothesis": [],
+      "p_positions_trained": [],
+      "setup": [],
+      "execution": ["Chip with elbow flexion only — bend elbow up, extend down; no wrist, no body rotation"],
+      "feel": "",
+      "confidence": "low",
+      "extraction_note": "Auto-named D001 in knowledge_base_v1.json — needs Anders rewrite of name/steps",
+      "legacy_ids": ["D001"],
+      "source": [
+        {
+          "path": "/Volumes/TOSHIBA EXT/MORAD_AI_GOLF_COACH/MORAD_DATA/06_terminology/knowledge_base_v1.json",
+          "type": "auto_extract_json",
+          "source_chunk": "Oct2014_Practice3_19",
+          "mac_quote": "I'm just bending my elbow again. Could you, did you see that I didn't use the wrist?"
+        }
+      ],
+      "validation_status": "PENDING_ANDERS_LOW_PRIORITY"
+    },
+    {
+      "utkast_id": "UTKAST-FS-008",
+      "proposed_id": "fs_three_lines_photo_check",
+      "domain": "FULLSWING",
+      "name": "Three Lines Photo Check",
+      "name_no": "Tre linjer — bilde-sjekk i finish",
+      "purpose": "Verify finish position lines",
+      "pyramid_area": "TEK",
+      "confidence": "low",
+      "extraction_note": "Auto D002 — photo checkpoint more than drill",
+      "legacy_ids": ["D002"],
+      "source": [
+        {
+          "path": "/Volumes/TOSHIBA EXT/MORAD_AI_GOLF_COACH/MORAD_DATA/06_terminology/knowledge_base_v1.json",
+          "type": "auto_extract_json",
+          "source_chunk": "Oct2014_Practice3_0"
+        }
+      ],
+      "validation_status": "PENDING_ANDERS_LOW_PRIORITY"
+    },
+    {
+      "utkast_id": "UTKAST-FS-009",
+      "proposed_id": "fs_right_arm_45_p7",
+      "domain": "FULLSWING",
+      "name": "Right Arm 45 Degrees at P7",
+      "name_no": "Høyre arm 45° ved P7",
+      "purpose": "Learn correct P7 right arm angle; requires continued hip rotation",
+      "pyramid_area": "TEK",
+      "p_positions_trained": ["P7.0"],
+      "confidence": "low",
+      "legacy_ids": ["D003"],
+      "source": [
+        {
+          "path": "/Volumes/TOSHIBA EXT/MORAD_AI_GOLF_COACH/MORAD_DATA/06_terminology/knowledge_base_v1.json",
+          "type": "auto_extract_json",
+          "source_chunk": "Aug2016_Practice2_3"
+        }
+      ],
+      "validation_status": "PENDING_ANDERS_LOW_PRIORITY"
+    },
+    {
+      "utkast_id": "UTKAST-FS-010",
+      "proposed_id": "fs_squat_to_finish",
+      "domain": "FULLSWING",
+      "name": "Squat-to-Finish Drill",
+      "name_no": "Squat til finish",
+      "purpose": "Timing of squat in transition and drive up to finish",
+      "pyramid_area": "TEK",
+      "confidence": "low",
+      "legacy_ids": ["D004"],
+      "source": [
+        {
+          "path": "/Volumes/TOSHIBA EXT/MORAD_AI_GOLF_COACH/MORAD_DATA/06_terminology/knowledge_base_v1.json",
+          "type": "auto_extract_json",
+          "source_chunk": "Aug2016_Practice2_19"
+        }
+      ],
+      "validation_status": "PENDING_ANDERS_LOW_PRIORITY"
+    },
+    {
+      "utkast_id": "UTKAST-FS-011",
+      "proposed_id": "fs_shaft_on_hips_visual",
+      "domain": "FULLSWING",
+      "name": "Shaft-on-Hips Visual",
+      "name_no": "Stav på hofter — visuell",
+      "purpose": "See hip rotation plane and right elbow relative to shaft",
+      "pyramid_area": "TEK",
+      "confidence": "low",
+      "legacy_ids": ["D005"],
+      "source": [
+        {
+          "path": "/Volumes/TOSHIBA EXT/MORAD_AI_GOLF_COACH/MORAD_DATA/06_terminology/knowledge_base_v1.json",
+          "type": "auto_extract_json",
+          "source_chunk": "Aug2016_Practice2_11",
+          "mac_quote": "This is going to show you how much the hips are rotating."
+        }
+      ],
+      "validation_status": "PENDING_ANDERS_LOW_PRIORITY"
+    }
+  ],
+  "not_included_pending_source_search": [
+    {
+      "legacy_id": "hip_lead_drill",
+      "reason": "In fjernede_navn but no dedicated section in MORAD-DRILLS.md"
+    },
+    {
+      "legacy_id": "lag_retention_drill",
+      "reason": "No dedicated SOURCE section found in Phase 0"
+    },
+    {
+      "legacy_id": "pump_drill",
+      "reason": "No dedicated SOURCE section found in Phase 0"
+    },
+    {
+      "legacy_id": "hip_rotation_drill",
+      "reason": "Referenced never defined — do not invent"
+    },
+    {
+      "legacy_id": "posture_maintenance",
+      "reason": "Referenced never defined"
+    },
+    {
+      "legacy_id": "shoulder_tilt_drill",
+      "reason": "Referenced never defined"
+    },
+    {
+      "legacy_id": "shoulder_turn_drill",
+      "reason": "Referenced never defined"
+    },
+    {
+      "legacy_id": "x_factor_drill",
+      "reason": "Referenced never defined"
+    }
+  ],
+  "promote_gate": {
+    "required": ["validation_status=APPROVED_BY_ANDERS", "schema R1-R9", "source path exists"],
+    "forbidden": ["auto-merge", "LLM batch invent", "write to drills.json without promote script"]
+  }
+}
