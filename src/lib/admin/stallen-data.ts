@@ -65,6 +65,8 @@ export type StallenRow = {
   /** Aldri logget inn (lastLoginAt mangler) — bulk-importert plassholderprofil
    *  uten egen aktivitet ennå, skal grupperes bak «Venter på innlogging». */
   neverLoggedIn: boolean;
+  /** Dager siden siste innlogging. null = aldri logget inn. */
+  dagerSiden: number | null;
   /** Abonnements-pakke (Subscription.tier, «Drop-in» uten abonnement) —
    *  flyttet inn fra den tidligere cockpit-spillerlista (B2, 2026-07-12). */
   pakke: string;
@@ -399,6 +401,7 @@ export async function loadStallen(
       status,
       statusLabel,
       neverLoggedIn: days == null,
+      dagerSiden: days,
       pakke: p.subscription?.tier ?? "Drop-in",
       pakkeAktiv: p.subscription?.status === "ACTIVE",
       skylder: p._count.payments > 0,
