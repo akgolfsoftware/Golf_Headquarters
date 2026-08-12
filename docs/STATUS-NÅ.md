@@ -190,5 +190,36 @@ Push til `main` deployer automatisk via **Vercel git-integrasjon**. GitHub Actio
 
 ## Verifisert vs. antatt
 - **Verifisert 2026-07-24 (kode/docs):** design-GAP = 0 i kjerneprodukter; Workbench = V2; live UI utover 4a; D2/D5/D6 løst; Bolk 2/4/5 i MASTER lukket; veikart C/B/A-punkter levert i statusloggen.
-- **Sist DB-sjekket 2026-07-14:** 31 spillere / 0 innlogginger / 0 push — re-sjekk ved aktivering.
+- **DB-sjekket på nytt 2026-08-12 (mot `DIRECT_URL`, prod) — avløser 14.07-tallene «31 spillere /
+  0 innlogginger / 0 push», som var både utdaterte og for pessimistiske:**
+
+  | Måltall | Verdi |
+  |---|---:|
+  | Brukere totalt / spillere / testkontoer | 42 / 38 / 4 |
+  | Aktive ekte spillere (ikke slettet, ikke test) | 35 |
+  | Spillere med `lastLoginAt` satt | 16 |
+  | Auth-kontoer (Supabase) — alle har logget inn minst én gang | 25 |
+  | Push-abonnementer | 0 |
+
+  **`lastLoginAt` skrives allerede ved innlogging** (16 rader, ferskeste 12.08). P0-punktet
+  «sørg for at `lastLoginAt` settes» er altså allerede løst — det som gjenstår er aktiveringen.
+
+  **Aktiveringsgapet er 13 spillere, ikke 31.** Fordelingen av de 38 spillerne:
+  - 23 har `authId = "pending-…"` (invitasjonsrader). Av dem har **14 allerede opprettet
+    Supabase-konto** på samme e-post — de kobles automatisk av `claimPendingAccountByEmail`
+    ved neste innlogging. 9 venter fortsatt på at spilleren registrerer seg.
+  - **13 har verken auth-konto eller invitasjon** — de kan ikke logge inn i dag. Dette er den
+    reelle aktiveringsjobben.
+  - **0 spillere har en foreldet ekte `authId`** (målt eksplisitt). Frykten for at
+    Supabase-prosjektbyttet i juli etterlot brukere med `authId` mot det gamle prosjektet —
+    som ville gitt e-postkollisjon i `ensureUser` — er **avkreftet**.
+
+- **PII-merknad (12.08):** preview-miljøet leser **produksjonsdatabasen**. «Test-/preview-data»
+  finnes ikke som eget datasett. Nattrapportens anbefaling om å «bytte WANG-elevene i
+  testdatagrunnlaget til fiktive navn» ville derfor endret ekte mindreåriges navn i prod og skal
+  IKKE gjøres. Riktig tiltak er å ikke fotografere WANG-flatene mot ekte data (eller anonymisere
+  i skjermbilde-steget) — beslutning ligger hos Anders.
+- **`SCREENTEST_PASSWORD` er gyldig (verifisert 12.08** — innlogging som `coachtest@akgolf.test`
+  mot lokal dev lyktes**), men fortsatt kompromittert** siden eksponeringen 03.08. Må roteres av
+  Anders; agenter har ikke tilgang til `.env*`.
 - **Antatt / panel:** Stripe live, Resend DKIM, Google Calendar, DNS `akgolf.no`.
