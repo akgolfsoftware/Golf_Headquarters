@@ -5,8 +5,12 @@
 //   SCREEN_IDS_CSV = f.eks. "PP-1.1,PP-1.2"  (default: alle i SCREENS)
 //   BASE_URL       = default http://localhost:3000
 //
-// Output: screenshots/paper/signoff/<id>-<m390|d1280>.png (app | fasit)
-//         screenshots/paper/signoff/<id>-m390-dark.png    (app mørk)
+// Output: screenshots/paper/signoff/<id>-<m390|d1280>.png (app | fasit, hele siden)
+//         screenshots/paper/signoff/<id>-m390-dark.png    (app mørk, hele siden)
+//         screenshots/paper/signoff/vindu-<id>-<m390|d1280>-light.png
+//         screenshots/paper/signoff/vindu-<id>-m390-dark.png
+//   vindu-* = kun det som synes i vinduet. Det er DISSE som avgjør om bunnkrom
+//   (skrivefelt, dokk, cookie-banner) sitter riktig — fullsidebildene kan ikke vise det.
 import { config as loadEnv } from "dotenv";
 import { chromium } from "playwright";
 import { mkdir, writeFile, readFile } from "node:fs/promises";
@@ -109,16 +113,24 @@ async function loggInnEnGang(ctx, epost) {
   return ok;
 }
 
-async function appShot(ctx, rute, fil) {
+/**
+ * `vindu: true` tar bare det som er synlig i vinduet, ikke hele siden.
+ * Nødvendig for bunnkrom: et `position: fixed`-felt fotograferes i fullPage-modus
+ * der det tilfeldigvis ligger, og siden fortsetter under det — så et fullsidebilde
+ * kan aldri vise om skrivefeltet eller dokken faktisk sitter fast. Lagt inn 12.08.2026
+ * etter at tre feil på rad (cookie-banner, bunndokk, konsoll-composer) alle satt i
+ * bunnen og alle slapp gjennom fullsidebildene.
+ */
+async function appShot(ctx, rute, fil, { vindu = false } = {}) {
   const page = await ctx.newPage();
   await page.goto(`${BASE}${rute}`, { waitUntil: "domcontentloaded", timeout: 60000 });
   await page.waitForLoadState("networkidle", { timeout: 15000 }).catch(() => {});
   await page.waitForTimeout(1200);
   await page.mouse.move(0, 0);
-  await page.evaluate(() => window.scrollTo(0, 0));
+  if (!vindu) await page.evaluate(() => window.scrollTo(0, 0));
   await page.addStyleTag({ content: SKJUL_DEV }).catch(() => {});
   await page.waitForTimeout(200);
-  await page.screenshot({ path: fil, fullPage: true });
+  await page.screenshot({ path: fil, fullPage: !vindu });
   const tekst = await page.evaluate(() => document.body.innerText.slice(0, 120).replace(/\s+/g, " "));
   await page.close();
   return tekst;
@@ -184,6 +196,7 @@ for (const s of kø) {
       const ctx = await hentKontekst(device, "light", s.bruker);
       if (!ctx) { logg.push(`FEIL  ${s.id} ${device} — innlogging feilet`); continue; }
       const tekst = await appShot(ctx, s.rute, appFil);
+      await appShot(ctx, s.rute, `${OUT}/vindu-${s.id}-${device}-light.png`, { vindu: true });
       const harFasit = await fasitShot(ctx, fasitNavn, fasitFil);
       await sideOmSide(appFil, harFasit ? fasitFil : null, `${OUT}/${s.id}-${device}.png`, VP[device].width);
       logg.push(`OK    ${s.id} ${device.padEnd(6)} ${s.rute} — "${tekst.slice(0, 70)}"${harFasit ? "" : "  (FASIT MANGLER)"}`);
@@ -194,7 +207,10 @@ for (const s of kø) {
   // Mørk modus: kun mobil (kontrastsjekk, jf. primary=accent-fellen)
   try {
     const ctx = await hentKontekst("m390", "dark", s.bruker);
-    if (ctx) await appShot(ctx, s.rute, `${OUT}/${s.id}-m390-dark.png`);
+    if (ctx) {
+      await appShot(ctx, s.rute, `${OUT}/${s.id}-m390-dark.png`);
+      await appShot(ctx, s.rute, `${OUT}/vindu-${s.id}-m390-dark.png`, { vindu: true });
+    }
   } catch (e) {
     logg.push(`FEIL  ${s.id} m390 mørk — ${String(e.message).split("\n")[0]}`);
   }

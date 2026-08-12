@@ -34,7 +34,7 @@ import { useEffect, useRef, useState, type CSSProperties } from "react";
 import Link from "next/link";
 import { T } from "@/lib/v2/tokens";
 import { TemaHeaderKnapp } from "@/components/v2/tema";
-import { SamtaleBoble, SamtaleSkriver, SamtaleFeil, Skrivefelt, ForslagRad } from "@/components/v2/samtale";
+import { SamtaleBoble, SamtaleSkriver, SamtaleFeil, Skrivefelt, ForslagRad, SendKnapp } from "@/components/v2/samtale";
 import { Icon } from "@/components/v2/icon";
 import { kategoriFraSnittscore } from "@/lib/domain/ak-kategori";
 import { formatSg } from "@/lib/sg";
@@ -705,35 +705,15 @@ export function PortalChatHjem({
               >
                 <Icon name="mic" size={24} />
               </button>
-              <button
-                type="button"
+              {/* Paper .sendbtn — rund, blekkfylt, med pil. Knappen bodde
+                  inline her etter PP-1.1; den er nå den delte `SendKnapp`, slik
+                  at konsollen (PP-2.1) bruker nøyaktig samme knapp. */}
+              <SendKnapp
                 onClick={() => {
                   if (input.trim() && !busy) void send(input);
                 }}
-                disabled={!input.trim() || busy}
-                aria-label="Send"
-                data-od-id="send-message"
-                className="v2-press v2-focus"
-                style={{
-                  /* Paper .sendbtn — --p-tap 44px, ink (ikke clay) */
-                  flex: "none",
-                  width: 44,
-                  height: 44,
-                  minHeight: 44,
-                  borderRadius: 9999,
-                  border: "none",
-                  background: input.trim() && !busy ? T.fg : T.panel3,
-                  color: input.trim() && !busy ? T.bg : T.mut,
-                  display: "inline-flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  cursor: input.trim() && !busy ? "pointer" : "default",
-                }}
-              >
-                {/* Fasitens `.sendbtn` bruker pil, ikke papirfly — papirflyet
-                    leses som «send e-post», ikke «send meldingen i tråden». */}
-                <Icon name="arrow-right" size={18} />
-              </button>
+                aktiv={Boolean(input.trim()) && !busy}
+              />
             </div>
             {/* Paper .eyebrow under composeren */}
             <div

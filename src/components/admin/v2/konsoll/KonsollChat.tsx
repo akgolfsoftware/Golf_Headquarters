@@ -40,7 +40,8 @@ import { ArtefaktPanel, useErMobil } from "@/components/portal/v2/chat/ArtefaktP
 import { useCaddieChat } from "@/components/admin/caddie/use-caddie-chat";
 import { CaddieApprovalModal } from "@/components/admin/caddie/caddie-approval-modal";
 import type { CaddieToolCall } from "@/components/admin/caddie/types";
-import { SamtaleBoble, SamtaleSkriver } from "@/components/v2/samtale";
+import { SamtaleBoble, SamtaleSkriver, SendKnapp } from "@/components/v2/samtale";
+import { TemaHeaderKnapp } from "@/components/v2/tema";
 import { StallOkterWidget } from "@/components/widgets";
 import type { StallOkterData } from "@/lib/widgets/stall-okter-data";
 import type { CockpitData } from "@/components/admin/cockpit/agency-cockpit";
@@ -176,7 +177,11 @@ export function KonsollChat({
         style={{
           display: "flex",
           flexDirection: "column",
-          minHeight: 0,
+          /* Desktop: kolonnen får viewport-høyde (minus skallets topp-/bunnluft,
+             24 + 36 px) slik at composerens `marginTop:auto` fester feltet i
+             bunnen også når tråden er kort. Mobil: composeren er fixed, så
+             kolonnen skal ikke tvinges høy. */
+          minHeight: mobil ? 0 : "calc(100dvh - 60px)",
           minWidth: 0,
           background: T.bg,
         }}
@@ -205,13 +210,22 @@ export function KonsollChat({
             </div>
           </div>
 
+          {/* Søk i headeren (fasitens `.altbtn` på mobil, `.kbdhint` på desktop).
+              Knappen sendte «cmd-palette:open» — et event INGEN lytter på i
+              AgencyOS (CmdPalette er kun montert i PlayerHQ-providerne), så
+              søket var dødt her. Riktig mottaker er GlobalSearchModal, som
+              V2Shell monterer for AgencyOS. */}
           <button
             type="button"
-            onClick={() => window.dispatchEvent(new CustomEvent("cmd-palette:open"))}
+            onClick={() => window.dispatchEvent(new CustomEvent("global-search:open"))}
             className="v2-press v2-focus"
             data-od-id="open-palette"
+            aria-label="Søk i spillere, sider og kommandoer"
             style={{
               minHeight: 40,
+              display: "inline-flex",
+              alignItems: "center",
+              gap: 6,
               padding: "0 12px",
               borderRadius: T.rTag,
               border: `1px solid ${T.border}`,
@@ -223,7 +237,14 @@ export function KonsollChat({
               flex: "none",
             }}
           >
-            Kommandoer <kbd style={{ fontFamily: T.mono, fontSize: 11 }}>⌘K</kbd>
+            <Icon name="search" size={16} strokeWidth={1.7} />
+            {mobil ? (
+              "Søk"
+            ) : (
+              <>
+                Kommandoer <kbd style={{ fontFamily: T.mono, fontSize: 11 }}>⌘K</kbd>
+              </>
+            )}
           </button>
 
           {mobil && (
@@ -249,6 +270,11 @@ export function KonsollChat({
               Dagen din
             </button>
           )}
+
+          {/* Temabryteren står i headeren på hver Paper-skjerm (fasitens
+              `#theme-toggle` på mobil, `#themeToggle` i railen på desktop).
+              På konsollen manglet den helt på telefon. */}
+          <TemaHeaderKnapp />
         </header>
 
         {/* ══ Tråden ══ */}
@@ -258,9 +284,13 @@ export function KonsollChat({
           aria-label="Samtale"
           style={{
             minHeight: 0,
-            padding: "16px 16px 24px",
+            /* Mobil: composeren er fast og ligger utenfor flyten — tråden må ha
+               luft under seg tilsvarende feltets høyde, ellers ligger siste
+               innlegg bak den. */
+            padding: mobil ? "16px 16px 140px" : "16px 16px 24px",
             display: "flex",
             flexDirection: "column",
+            flex: 1,
           }}
         >
           <div
@@ -522,13 +552,26 @@ export function KonsollChat({
           </div>
         </div>
 
-        {/* ══ Composer ══ */}
+        {/* ══ Composer ══
+            Signering 12.08: «skrivefeltet skal ligge fast nederst, rett over
+            fanelinjen». Sticky holdt ikke: V2Shell er `minHeight:100vh` med
+            padding, ikke en høyde-container, så en kort tråd ga et felt som lå
+            midt på skjermen. På mobil er feltet derfor FAST (fixed) og lagt
+            nøyaktig oppå bunnfanenes overkant — 6+56+10 px nav + safe-area +
+            cookie-bannerets høyde (gotchas §Cookie-banneret). På desktop er
+            midtkolonnen gitt viewport-høyde, så `marginTop:auto` + sticky
+            faktisk fester feltet i bunnen. */}
         <div
           data-paper-composer
           style={{
-            position: "sticky",
-            // Mobil: klar av AgencyOS-bunnnavet (fast, ~60px + safe-area).
-            bottom: mobil ? "calc(60px + env(safe-area-inset-bottom))" : 0,
+            position: mobil ? "fixed" : "sticky",
+            ...(mobil
+              ? {
+                  left: 0,
+                  right: 0,
+                  bottom: "calc(72px + env(safe-area-inset-bottom) + var(--ak-cookie-h, 0px))",
+                }
+              : { bottom: 0 }),
             zIndex: 6,
             borderTop: `1px solid ${T.border}`,
             background: T.bg,
@@ -596,32 +639,14 @@ export function KonsollChat({
                   }}
                 />
               </div>
-              <button
-                type="button"
+              {/* Samme knapp som PlayerHQ-hjem fikk i PP-1.1: rund, blekkfylt,
+                  med pil. Papirflyet leses som «send e-post», ikke «send
+                  meldingen i tråden». */}
+              <SendKnapp
                 onClick={() => void send(input)}
-                disabled={!kanChatte || !input.trim() || busy}
-                aria-label="Send"
-                data-od-id="send-message"
-                className="v2-press v2-focus"
-                style={{
-                  flex: "none",
-                  width: 48,
-                  height: 48,
-                  borderRadius: T.rCard,
-                  border: "none",
-                  /* Fasit agencyos-konsoll-mobil.html .sendbtn: alltid blekk
-                     (--cta/--on-cta) — aldri grå flate. Deaktivert = dempet. */
-                  background: T.cta,
-                  color: T.onCta,
-                  opacity: kanChatte && input.trim() && !busy ? 1 : 0.45,
-                  display: "inline-flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  cursor: kanChatte && input.trim() && !busy ? "pointer" : "default",
-                }}
-              >
-                <Icon name="send" size={18} />
-              </button>
+                aktiv={kanChatte && Boolean(input.trim()) && !busy}
+                storrelse={48}
+              />
             </div>
           </div>
         </div>

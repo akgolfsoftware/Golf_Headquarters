@@ -8,13 +8,8 @@
 import Link from "next/link";
 import { useState } from "react";
 import {
-  Caps,
   Kort,
-  KpiFlis,
-  FilterChips,
-  CTAPill,
   Knapp,
-  StatusPill,
   TomTilstand,
   Icon,
   T,
@@ -229,6 +224,62 @@ function Gruppe({
 
 const STATUS_FILTRE = ["Godkjent", "Utkast"] as const;
 
+/**
+ * Filterpille med teller — fasitens `.chip` med `<span class="n">`.
+ * Valgt = invertert blekk (fg-flate, bg-tekst), aldri oransje: den kanalen
+ * er reservert «Én ting nå» (maks én oransje handling per skjerm).
+ */
+function FilterChip({
+  etikett,
+  antall,
+  aktiv,
+  onClick,
+}: {
+  etikett: string;
+  antall: number;
+  aktiv: boolean;
+  onClick: () => void;
+}) {
+  return (
+    <button
+      type="button"
+      className="v2-press v2-focus"
+      aria-pressed={aktiv}
+      onClick={onClick}
+      style={{
+        appearance: "none",
+        cursor: "pointer",
+        flex: "none",
+        display: "inline-flex",
+        alignItems: "center",
+        gap: 6,
+        minHeight: 36,
+        padding: "0 14px",
+        borderRadius: T.rPill,
+        whiteSpace: "nowrap",
+        fontFamily: T.ui,
+        fontSize: 12.5,
+        fontWeight: 500,
+        background: aktiv ? T.fg : T.panel3,
+        color: aktiv ? T.bg : T.fg,
+        border: `1px solid ${aktiv ? T.fg : T.borderS}`,
+      }}
+    >
+      {etikett}
+      <span
+        style={{
+          fontFamily: T.mono,
+          fontSize: 11,
+          opacity: 0.7,
+          fontVariantNumeric: "tabular-nums",
+        }}
+      >
+        {antall}
+      </span>
+    </button>
+  );
+}
+
 export function AdminPlanMalerV2({ data }: { data: AdminPlanMalerData }) {
   const [fase, setFase] = useState<string[]>([]);
   const [status, setStatus] = useState<string[]>([]);
@@ -242,47 +293,40 @@ export function AdminPlanMalerV2({ data }: { data: AdminPlanMalerData }) {
   const totalBruk = data.maler.reduce((sum, m) => sum + m.usageCount, 0);
   const totalGodkjent = data.maler.filter((m) => m.godkjent).length;
 
-  // Fasit merker status-pillene med antall (Godkjent 18 / Utkast 6).
-  // Etiketten ER filterverdien, så teller og valg aldri kan komme i utakt.
-  const statusEtikett = {
-    godkjent: `${STATUS_FILTRE[0]} ${totalGodkjent}`,
-    utkast: `${STATUS_FILTRE[1]} ${total - totalGodkjent}`,
-  };
-
   const filtrert = data.maler.filter(
     (m) =>
       (fase.length === 0 || fase.indexOf(FASE_LABEL[m.fase]) !== -1) &&
       (status.length === 0 ||
-        status.indexOf(m.godkjent ? statusEtikett.godkjent : statusEtikett.utkast) !== -1),
-  );
-  const snittUker =
-    total > 0 ? Math.round(data.maler.reduce((s, m) => s + m.varighetUker, 0) / total) : 0;
-
-  // B: status
-  const statusTone = total === 0 ? "warn" : totalBruk > 0 ? "up" : "info";
-  const statusTekst =
-    total === 0 ? "Ingen maler" : totalBruk > 0 ? `Brukt ${totalBruk}×` : pl(total, "mal", "maler");
-
-  // ── Hode — B: status ──────────────────────────────────────────
-  const hode = (
-    <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 14, flexWrap: "wrap" }}>
-      <div>
-        <div data-paper-pattern-topp data-paper-slug="agencyos-planbibliotek">
-          <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>Planmaler</h1>
-          <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>AgencyOS</span>
-        </div>
-      </div>
-      <StatusPill tone={statusTone}>{statusTekst}</StatusPill>
-    </div>
+        status.indexOf(m.godkjent ? STATUS_FILTRE[0] : STATUS_FILTRE[1]) !== -1),
   );
 
-  // B: én primær CTA
-  const primaerCta = (
-    <Link href="/admin/plan-templates/ny" style={{ textDecoration: "none", display: "block" }}>
-      <CTAPill icon="plus" full enTing>
-        Ny mal
-      </CTAPill>
+  // ── Hode — fasitens `.top` (agencyos-planbibliotek.html) ──────
+  // Tittel + tellende undertittel til venstre, handling til høyre. Fasiten har
+  // verken KPI-fliser eller full-bredde aksentknapp her: tallene bor i
+  // undertittelen, og «Ny mal» er en vanlig knapp. Tidligere lå det fire
+  // KpiFlis og en oransje full-bredde CTA over lista — de dyttet selve
+  // biblioteket under skjermkanten på mobil.
+  const undertittel =
+    total === 0
+      ? "Ingen maler ennå"
+      : `${pl(total, "mal", "maler")} · brukt ${totalBruk} ${totalBruk === 1 ? "gang" : "ganger"}`;
+
+  const nyMalKnapp = (
+    <Link href="/admin/plan-templates/ny" style={{ textDecoration: "none" }}>
+      <Knapp icon="plus">Ny mal</Knapp>
     </Link>
+  );
+
+  const hode = (
+    <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 14, flexWrap: "wrap" }}>
+      <div data-paper-pattern-topp data-paper-slug="agencyos-planbibliotek" style={{ minWidth: 0 }}>
+        <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>Planer og maler</h1>
+        <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>
+          {undertittel}
+        </span>
+      </div>
+      <div style={{ display: "flex", alignItems: "center", gap: 8, flex: "none" }}>{nyMalKnapp}</div>
+    </div>
   );
 
   if (total === 0) {
@@ -296,36 +340,61 @@ export function AdminPlanMalerV2({ data }: { data: AdminPlanMalerData }) {
             sub="Opprett den første malen for å spare tid når du lager nye planer."
           />
         </Kort>
-        {primaerCta}
       </div>
     );
   }
 
-  // ── KPI-flis (4) ──────────────────────────────────────────────
-  const kpi = (
-    <div className="grid grid-cols-2 lg:grid-cols-4" style={{ gap: T.gap }}>
-      <KpiFlis label="Maler" value={total} />
-      <KpiFlis label="Godkjent" value={totalGodkjent} tint />
-      <KpiFlis label="Total bruk" value={totalBruk} />
-      <KpiFlis label="Snitt lengde (uker)" value={snittUker} />
-    </div>
-  );
+  // ── Filterrad med tellere — fasitens `.filters` ────────────────
+  // Én rad, ikke to merkede grupper: status først, deretter fase.
+  // Tellerne er faste tall for hele biblioteket (som fasiten), så de ikke
+  // hopper mens du filtrerer.
+  //
+  // Valg med 0 treff vises ikke — verken status eller fase. En knapp som aldri
+  // kan gi et resultat er støy: den ser klikkbar ut, og svaret er alltid en tom
+  // liste. Gjelder begge kanaler; «Utkast 0» sto igjen da fasene ble ryddet.
+  const statusMedTall = [
+    { navn: STATUS_FILTRE[0], antall: totalGodkjent },
+    { navn: STATUS_FILTRE[1], antall: total - totalGodkjent },
+  ].filter((s) => s.antall > 0);
 
-  // ── Status- og fase-filter ──────────────────────────────────────
+  const faseMedTall = FASE_FILTRE.map((navn) => ({
+    navn,
+    antall: data.maler.filter((m) => FASE_LABEL[m.fase] === navn).length,
+  })).filter((f) => f.antall > 0);
+
   const filtre = (
-    <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-      <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
-        <Caps size={9} style={{ width: 64, flex: "none" }}>Status</Caps>
-        <FilterChips
-          items={[statusEtikett.godkjent, statusEtikett.utkast]}
-          active={status}
-          onToggle={toggleStatus}
+    <div
+      className="scrollbar-none"
+      style={{
+        display: "flex",
+        alignItems: "center",
+        gap: 8,
+        minWidth: 0,
+        overflowX: "auto",
+        padding: "10px 12px",
+        borderRadius: T.rCard,
+        background: T.panel2,
+        border: `1px solid ${T.borderS}`,
+      }}
+    >
+      {statusMedTall.map((s) => (
+        <FilterChip
+          key={s.navn}
+          etikett={s.navn}
+          antall={s.antall}
+          aktiv={status.indexOf(s.navn) !== -1}
+          onClick={() => toggleStatus(s.navn)}
         />
-      </div>
-      <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
-        <Caps size={9} style={{ width: 64, flex: "none" }}>Fase</Caps>
-        <FilterChips items={[...FASE_FILTRE]} active={fase} onToggle={toggle} />
-      </div>
+      ))}
+      {faseMedTall.map((f) => (
+        <FilterChip
+          key={f.navn}
+          etikett={f.navn}
+          antall={f.antall}
+          aktiv={fase.indexOf(f.navn) !== -1}
+          onClick={() => toggle(f.navn)}
+        />
+      ))}
     </div>
   );
 
@@ -362,8 +431,6 @@ export function AdminPlanMalerV2({ data }: { data: AdminPlanMalerData }) {
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
       {hode}
-      {primaerCta}
-      {kpi}
       {filtre}
       {liste}
     </div>

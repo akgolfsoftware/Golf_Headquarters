@@ -637,11 +637,16 @@ function BunnNavLenker({ aktiv, nav, mer }: { aktiv?: string; nav: V2NavItem[]; 
    AGENCYOS_ROM (fem rom), så hele coach-flaten er nåbar. Mørkt tema beholdes
    (V2Shell holder AgencyOS mørk/lys via cookie som før). PlayerHQ-mobilen bruker
    fortsatt BunnNavLenker uendret. */
-/* Maks fem flater i bunn-nav (fasitens regel, agencyos-konsoll-mobil.html:
-   «Bunnfaner — maks fem flater»). Fire primære + «Mer» = fem. Workbench,
-   AgenticOS, Økonomi og Innstillinger faller ned i «Mer»-skuffen (se `resten`)
-   — seks faner (5 + Mer) brøt fasitens tak, rettet 11.08 (PP-2.1). */
-const AGENCY_MOBIL_PRIMÆR = ["cockpit", "innboks", "spillere", "kalender"];
+/* Fem flater i bunn-nav, og fasiten (agencyos-konsoll-mobil.html §BUNNFANER)
+   sier hvilke fem: Konsoll · Innboks · Spillere · Kalender · WORKBENCH.
+   Signeringen 12.08: «Workbench synlig i navigasjonen i stedet for Mer».
+   Workbench lå i «Mer»-skuffen — planlegging, coachens mest brukte flate, var
+   to trykk unna på telefon.
+   «Mer» er beholdt som en SMAL, ikon-bare overflyt til høyre for de fem: fasiten
+   har ingen slik knapp fordi den ikke har AgenticOS/Økonomi/Innstillinger/rom å
+   ta vare på — appen har det, og uten knappen ville de flatene vært uten vei inn
+   på mobil. Fjernes den, må rommene få en annen inngang først. */
+const AGENCY_MOBIL_PRIMÆR = ["cockpit", "innboks", "spillere", "kalender", "workbench"];
 
 function AgencyBunnNav({ aktiv, nav, mer, rom }: { aktiv?: string; nav: V2NavItem[]; mer?: V2NavGruppe[]; rom?: V2Rom[] }) {
   const [skuffOpen, setSkuffOpen] = useState(false);
@@ -715,10 +720,10 @@ function AgencyBunnNav({ aktiv, nav, mer, rom }: { aktiv?: string; nav: V2NavIte
           aria-haspopup="menu"
           aria-expanded={skuffOpen}
           className="v2-press"
-          style={{ flex: 1, minHeight: 56, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 3, padding: "4px 0", color: skuffOpen ? T.railOn : T.railFg, background: "transparent", border: 0, cursor: "pointer" }}
+          aria-label="Mer — AgenticOS, Økonomi, Innstillinger og rommene"
+          style={{ flex: "none", width: 44, minHeight: 56, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 3, padding: "4px 0", color: skuffOpen ? T.railOn : T.railFg, background: "transparent", border: 0, cursor: "pointer" }}
         >
           <Icon name="more-horizontal" size={20} strokeWidth={1.5} />
-          <span style={{ fontFamily: T.mono, fontSize: 9, fontWeight: 600 }}>Mer</span>
         </button>
       </nav>
       {skuffOpen && <MerPanel grupper={skuffGrupper} rom={rom} onClose={() => setSkuffOpen(false)} mobil full erAgency />}

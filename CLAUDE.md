@@ -53,8 +53,17 @@ via `claude-design`-MCP-verktøyet) er designfasit; full port til `src/` kjører
 
 ## Skjermarbeid (gjeldende prosess)
 
-**Designfasit:** Claude Paper — Claude Design-prosjektet `605a48cc`, skjermene i `fase1/` (hentes via
-`claude-design`-MCP). `designsystem/paper/fase1/` i repoet er kun et lokalt speil og kan være utdatert.
+**Designfasit:** Claude Paper — Claude Design-prosjektet `605a48cc` er **originalen**.
+**Arbeidsfasiten er det lokale speilet `designsystem/paper/`** (208 HTML, `fase1/` + `fase2/`) —
+det er den du leser, differ og sammenligner mot. Speilet gjelder så lenge
+`designsystem/paper/SYNC-STATUS.md` viser at det er målt mot siste zip fra Anders (nå: zip (3),
+09.08.2026, byte-identisk med zip (2) — 0 avvik).
+
+**Resynk skjer når Anders leverer ny zip, ikke før hver skjerm.** Den gamle regelen krevde henting
+via `claude-design`-MCP før hver sammenligning. Den koblingen er ikke tilgjengelig i alle økter, så
+regelen sendte arbeidet inn i en blindvei og sådde tvil om det ene som faktisk virker. Endret
+12.08.2026 etter Anders' beslutning. Er MCP-en tilgjengelig og du er i tvil: verifiser gjerne — men
+det er ikke et krav for å jobbe.
 
 **Dekningsregnskap:** `docs/port/fasit-liste-paper.md` — hvilke skjermer har fasit, hvilke må designes uten.
 

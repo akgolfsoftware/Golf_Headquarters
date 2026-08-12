@@ -21,6 +21,7 @@ const FALLBACK_COACHER: CoachKort[] = [
     initialer: "AK",
     foto: null,
     tags: ["Plan & struktur", "Trackman", "Mental"],
+    omrader: ["Junior", "Elite", "Nybegynner"],
   },
   {
     slug: "markus",
@@ -30,6 +31,7 @@ const FALLBACK_COACHER: CoachKort[] = [
     initialer: "MR",
     foto: null,
     tags: ["Nærspill", "Putting", "Junior"],
+    omrader: ["Junior"],
   },
 ];
 
