@@ -61,12 +61,12 @@ function AllDagRad({
 }) {
   if (hendelser.length === 0) return null;
   return (
-    <div className="mb-2 grid gap-1" style={{ gridTemplateColumns: `repeat(${dager.length}, 1fr)` }}>
+    <div className="mb-2 grid min-w-0 gap-1" style={{ gridTemplateColumns: `repeat(${dager.length}, 1fr)` }}>
       {dager.map((d) => {
         const iso = tilIso(d);
         const dagensHendelser = hendelser.filter((h) => h.dato === iso);
         return (
-          <div key={iso} className="flex flex-col gap-1">
+          <div key={iso} className="flex min-w-0 flex-col gap-1">
             {dagensHendelser.map((h) => (
               <button
                 key={h.id}
@@ -285,7 +285,7 @@ export function GruppeKalenderWrapper({ data, classYear = null }: { data: Gruppe
       )}
 
       {visning === "uke" && (
-        <div>
+        <div className="min-w-0 overflow-x-auto">
           <AllDagRad
             dager={ukeDager}
             hendelser={byggAllDagHendelser(data.samlinger, data.skoleHendelser, tilIso(ukeDager[0]), tilIso(ukeDager[6]), classYear, data.turneringer)}
@@ -325,7 +325,7 @@ export function GruppeKalenderWrapper({ data, classYear = null }: { data: Gruppe
       )}
 
       {visning === "dag" && (
-        <div>
+        <div className="min-w-0 overflow-x-auto">
           <p className="mb-2 font-mono text-[11px] font-bold uppercase tracking-[0.10em] text-muted-foreground">
             {dag.toLocaleDateString("nb-NO", { weekday: "long", day: "numeric", month: "long" })}
           </p>
