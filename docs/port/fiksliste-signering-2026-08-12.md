@@ -1,5 +1,10 @@
 # Fiksliste etter Anders' signering 12.08.2026
 
+> **LUKKET 13.08.2026:** bølge A–C (#427–#429) leverte fiksene, nytt galleri ble kjørt mot
+> prod 13.08, og **Anders signerte GODKJENN på alle 18 skjermene + push-banneret (#430)**.
+> Sjekklisten er oppdatert til `[x]` for de signerte radene. Gjenstående skjønnsspørsmål
+> i §0/§1 under er dermed løst i praksis (skjermene godkjent som de står) — historikk.
+
 **Grunnlag:** signering mot sign-off-galleriet 12.08 (ferske bilder mot dagens `main`, etter
 #413/#414/#424). Anders svarte **FIKS på 18 skjermer**; NT-416b (AgencyOS turneringer) ble ikke
 vurdert.

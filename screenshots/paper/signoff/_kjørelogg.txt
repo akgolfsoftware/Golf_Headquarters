@@ -1,2 +1,2 @@
-OK    NT-416a m390   /admin/plan-templates — "Planlegge Planer og maler 92 maler · brukt 40 ganger Ny mal Godkjent 9"
-OK    NT-416a d1280  /admin/plan-templates — "KONSOLL INNBOKS SPILLERE KALENDER WORKBENCH AGENTICOS ØKONOMI INNSTILL"
+OK    PP-1.1 m390   /portal — "I dag Øyvind Rohjan · kat. B · SG total +0,4 Dagens økt FØR planlegg →"
+OK    PP-1.1 d1280  /portal — "I DAG PLAN ANALYSE MEG MØRK ØR I dag Øyvind Rohjan · kat. B · SG total"

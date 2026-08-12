@@ -27,6 +27,10 @@
   (`scripts/roter-screentest-passord.ts` — Anders kjører).
 - **Ferskt sign-off-galleri** (18 skjermer etter bølge A–C) levert i samtalen 13.08.
   WANG-skjermen bevisst utelatt (ekte elevnavn i prod-data).
+- **SIGNERT 13.08:** Anders godkjente **alle 18 galleri-skjermene + push-banneret**.
+  #430 (push) og #382 (drill-guard) merget. Sjekklisten: **22 rader `[x]`.** Gjenstår til
+  signering: resten av `[~]`-radene (småruter/varianter) + PP-1.7 booking (lanseringsbryteren)
+  + WANG-innlogging (produktbeslutning).
 
 **Bygget:** `main` er **grønt**. Den var rød med 114 feil fra 09.08 (syntaksfeil fra
 automatisk slug-tagging skjulte 79 typefeil, som igjen skjulte 17 lint- og 14 fargefeil).

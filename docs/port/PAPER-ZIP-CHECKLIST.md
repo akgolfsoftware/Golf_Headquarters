@@ -13,32 +13,32 @@
 
 - [~] `agencyos-agenticos.html`
 - [~] `agencyos-ak-stigen.html`
-- [~] `agencyos-innboks-mobil.html`
-- [~] `agencyos-innboks.html`
+- [x] `agencyos-innboks-mobil.html` — PP-2.2 signert av Anders 13.08.2026 (galleri mot prod)
+- [x] `agencyos-innboks.html` — PP-2.2 signert av Anders 13.08.2026 (galleri mot prod)
 - [~] `agencyos-innstillinger.html`
-- [~] `agencyos-kalender-mobil.html`
-- [~] `agencyos-kalender.html`
-- [~] `agencyos-konsoll-desktop.html`
-- [~] `agencyos-konsoll-mobil.html`
+- [x] `agencyos-kalender-mobil.html` — PP-2.4 signert av Anders 13.08.2026 (galleri mot prod)
+- [x] `agencyos-kalender.html` — PP-2.4 signert av Anders 13.08.2026 (galleri mot prod)
+- [x] `agencyos-konsoll-desktop.html` — PP-2.1 signert av Anders 13.08.2026 (galleri mot prod)
+- [x] `agencyos-konsoll-mobil.html` — PP-2.1 signert av Anders 13.08.2026 (galleri mot prod)
 - [~] `agencyos-live-session.html`
 - [~] `agencyos-okonomi.html`
-- [~] `agencyos-spillere-mobil.html`
-- [~] `agencyos-spillere.html`
+- [x] `agencyos-spillere-mobil.html` — PP-2.3 signert av Anders 13.08.2026 (galleri mot prod)
+- [x] `agencyos-spillere.html` — PP-2.3 signert av Anders 13.08.2026 (galleri mot prod)
 - [~] `booking.html` — PP-1.7 READY_SIGN
 - [~] `fangstsheet.html` — overnight slug/CTA READY_SIGN
 - [~] `foreldreportal.html` — overnight slug/CTA READY_SIGN
-- [~] `innlogging.html`
-- [~] `playerhq-analyse.html` — PP-1.3 READY_SIGN
-- [~] `playerhq-booking.html` — PP-1.5 READY_SIGN
-- [~] `playerhq-chat-desktop.html` — PP-1.1 loop/ink/mic (klar sign-off)
-- [~] `playerhq-chat-mobil.html` — PP-1.1 loop/ink/mic (klar sign-off)
+- [x] `innlogging.html` — PP-1.6 signert av Anders 13.08.2026 (galleri mot prod)
+- [x] `playerhq-analyse.html` — PP-1.3 signert av Anders 13.08.2026 (galleri mot prod)
+- [x] `playerhq-booking.html` — PP-1.5 signert av Anders 13.08.2026 (galleri mot prod)
+- [x] `playerhq-chat-desktop.html` — PP-1.1 signert av Anders 13.08.2026 (galleri mot prod)
+- [x] `playerhq-chat-mobil.html` — PP-1.1 signert av Anders 13.08.2026 (galleri mot prod)
 - [~] `playerhq-live-brief.html` — overnight slug/CTA READY_SIGN
 - [~] `playerhq-live-okt.html` — overnight slug/CTA READY_SIGN
 - [~] `playerhq-live-summary.html` — overnight slug/CTA READY_SIGN
-- [~] `playerhq-meg.html`
-- [~] `playerhq-plan.html` — PP-1.2 READY_SIGN
+- [x] `playerhq-meg.html` — PP-1.4 signert av Anders 13.08.2026 (galleri mot prod)
+- [x] `playerhq-plan.html` — PP-1.2 signert av Anders 13.08.2026 (galleri mot prod)
 - [~] `playerhq-runde-live.html`
-- [~] `playerhq-runde-logg.html`
+- [x] `playerhq-runde-logg.html` — NT-417 signert av Anders 13.08.2026 (galleri mot prod)
 - [~] `playerhq-test-gjennomfor.html`
 - [~] `spillerprofil.html` — full ombygging ligger i åpen PR #414
 - [~] `workbench-desktop.html` — overnight slug/CTA READY_SIGN
@@ -81,7 +81,7 @@
 - [~] `fase2/playerhq/playerhq-helse.html` → MegHelseV2
 - [~] `fase2/playerhq/playerhq-booking-ny.html` → BookingNyV2
 - [~] `fase2/playerhq/playerhq-booking-mine.html`
-- [~] `fase2/playerhq/playerhq-coach-hub.html` — pixel-pass natt 12.08, åpen PR #415
+- [x] `fase2/playerhq/playerhq-coach-hub.html` — NT-415 signert av Anders 13.08.2026 (galleri mot prod)
 - [~] `fase2/playerhq/playerhq-talent.html` → TalentV2
 
 ## Fase 2 · W4 AgencyOS (ny i zip 2)
@@ -89,24 +89,24 @@
 - [~] `fase2/agencyos/agencyos-godkjenninger.html` → AdminGodkjenningerV2
 - [~] `fase2/agencyos/agencyos-gruppe-detalj.html` → GruppeDetaljV2
 - [~] `fase2/agencyos/agencyos-bookinger.html` → AdminBookingerV2
-- [~] `fase2/agencyos/agencyos-planbibliotek.html` — pixel-pass natt 12.08, åpen PR #416
-- [~] `fase2/agencyos/agencyos-turneringer.html` — pixel-pass natt 12.08, åpen PR #416
+- [x] `fase2/agencyos/agencyos-planbibliotek.html` — NT-416a signert av Anders 13.08.2026 (galleri mot prod)
+- [x] `fase2/agencyos/agencyos-turneringer.html` — NT-416b signert av Anders 13.08.2026 (galleri mot prod)
 - [~] `fase2/agencyos/agencyos-oppsett.html` → AdminSettingsV2
 
 ## Fase 2 · W5 Marketing/Auth/Forelder/System (ny i zip 2)
 
 - [~] `fase2/marketing/marketing-side.html` (wave I clay)
-- [~] `fase2/marketing/marketing-katalog.html` — bygget natt 12.08, åpen PR #418
+- [x] `fase2/marketing/marketing-katalog.html` — NT-418a/b signert av Anders 13.08.2026 (galleri mot prod)
 - [~] `fase2/auth/auth-flyt.html` → LoginV2 m.fl.
 - [~] `fase2/auth/auth-samtykke.html` → GuardianConsentV2
 - [~] `fase2/forelder/forelder-barn.html`
-- [~] `fase2/system/system-tilstander.html` — bygget natt 12.08, åpen PR #418
+- [x] `fase2/system/system-tilstander.html` — NT-418c signert av Anders 13.08.2026 (galleri mot prod)
 
 ## Fase 2 · W6 WANG + GFGK (eget chrome — ikke Paper-shell)
 
 - [~] `fase2/wang/wang-coach-arsplan.html` — pixel-pass natt 12.08, åpen PR #419 (layoutspørsmål til Anders i PR)
 - [ ] `fase2/wang/wang-logg-inn.html` — BLOKKERT: filene eies av åpen #406 + fasitens OTP-flyt er produktbeslutning
-- [~] `fase2/gfgk/gfgk-kalender.html` — delvis pixel-pass natt 12.08, åpen PR #419 (delt kalenderkomponent ikke forket)
+- [x] `fase2/gfgk/gfgk-kalender.html` — NT-419b signert av Anders 13.08.2026 (galleri mot prod)
 - [~] `fase2/gfgk/gfgk-veileder-artikkel.html` — pixel-pass natt 12.08, åpen PR #419
 
 ## Templates (struktur)
