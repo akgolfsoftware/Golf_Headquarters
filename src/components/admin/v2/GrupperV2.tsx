@@ -219,7 +219,7 @@ export function GrupperV2({
 
   // ── Layout ──────────────────────────────────────────────────────
   return (
-    <div data-paper-wave-h="grupper" data-paper-pattern style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 960, margin: "0 auto", width: "100%" }}>
+    <div data-paper-wave-h="grupper" data-paper-slug="agencyos-gruppe-detalj" data-paper-pattern style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 960, margin: "0 auto", width: "100%" }}>
       {hode}
       {primaerCta}
       <div className="grid grid-cols-1 lg:[grid-template-columns:2fr_3fr]" style={{ gap: T.gap, alignItems: "start" }}>

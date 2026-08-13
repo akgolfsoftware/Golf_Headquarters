@@ -19,6 +19,7 @@ import {
   CTAPill,
   AvatarFoto,
 } from "@/components/v2";
+import { GruppeFaner } from "./GruppeFaner";
 
 /* ── Data-kontrakt ─────────────────────────────────────────────────── */
 
@@ -106,6 +107,8 @@ export function GruppeDetaljV2({
       <Link href="/admin/grupper" style={{ textDecoration: "none", alignSelf: "flex-start" }}>
         <MikroMeta icon="arrow-left">Grupper</MikroMeta>
       </Link>
+
+      <GruppeFaner groupId={data.id} aktiv="medlemmer" />
 
       {/* Hode — B: status */}
       <div style={{ display: "flex", flexWrap: "wrap", alignItems: "flex-end", justifyContent: "space-between", gap: 12 }}>

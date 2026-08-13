@@ -10,6 +10,7 @@
 import { useState } from "react";
 import { Caps, Kort, Knapp, StatusPill, MikroMeta, TomTilstand } from "@/components/v2";
 import { T } from "@/lib/v2/tokens";
+import { GruppeFaner } from "./GruppeFaner";
 
 /* ── Data-kontrakt ─────────────────────────────────────────────────── */
 
@@ -160,7 +161,8 @@ export function GruppeTimeplanV2({
 }) {
   const [opprettFeil, setOpprettFeil] = useState<string | null>(null);
   return (
-    <div data-paper-wave-h="gruppetimeplan" data-paper-pattern  style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+    <div data-paper-wave-h="gruppetimeplan" data-paper-slug="agencyos-gruppe-detalj" data-paper-pattern  style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+      <GruppeFaner groupId={data.groupId} aktiv="timeplan" />
       <div>
         <Caps>Grupper · {data.navn}</Caps>
         <p style={{ fontFamily: T.ui, fontSize: 12.5, color: T.mut, margin: "10px 0 0" }}>
