@@ -57,6 +57,20 @@ const SCREENS = [
   // Natt 13.08 — drift/AgenticOS-sporet (PR #433 + #435)
   { id: "NT-433", navn: "AgenticOS-hub", rute: "/admin/agenticos", bruker: COACH, fasitM: "../fase2/agencyos/agencyos-agenticos-hub.html", fasitD: "../fase2/agencyos/agencyos-agenticos-hub.html" },
   { id: "NT-435", navn: "Agent-detalj", rute: "/admin/agents/daily-brief", bruker: COACH, fasitM: "../fase2/agencyos/agencyos-agent-detalj.html", fasitD: "../fase2/agencyos/agencyos-agent-detalj.html" },
+  // W4-runden 13.08 — PR #437/#438/#440/#441/#442 (kjøres mot hver PRs preview-URL)
+  { id: "W4-437a", navn: "Godkjenninger", rute: "/admin/godkjenninger", bruker: COACH, fasitM: "../fase2/agencyos/agencyos-godkjenninger.html", fasitD: "../fase2/agencyos/agencyos-godkjenninger.html" },
+  { id: "W4-437b", navn: "Handlingssenter", rute: "/admin/handlingssenter", bruker: COACH, fasitM: "../fase2/agencyos/agencyos-godkjenninger.html", fasitD: "../fase2/agencyos/agencyos-godkjenninger.html" },
+  { id: "W4-437c", navn: "Oppfølgingskø", rute: "/admin/queue", bruker: COACH, fasitM: "../fase2/agencyos/agencyos-godkjenninger.html", fasitD: "../fase2/agencyos/agencyos-godkjenninger.html" },
+  { id: "W4-438a", navn: "Bookinger", rute: "/admin/bookinger", bruker: COACH, fasitM: "../fase2/agencyos/agencyos-bookinger.html", fasitD: "../fase2/agencyos/agencyos-bookinger.html" },
+  { id: "W4-438b", navn: "Ny booking", rute: "/admin/bookinger/ny", bruker: COACH, fasitM: "../fase2/agencyos/agencyos-bookinger.html", fasitD: "../fase2/agencyos/agencyos-bookinger.html" },
+  { id: "W4-440a", navn: "Grupper", rute: "/admin/grupper", bruker: COACH, fasitM: "../fase2/agencyos/agencyos-gruppe-detalj.html", fasitD: "../fase2/agencyos/agencyos-gruppe-detalj.html" },
+  { id: "W4-441a", navn: "Innstillinger/Oppsett", rute: "/admin/settings", bruker: COACH, fasitM: "../fase2/agencyos/agencyos-oppsett.html", fasitD: "../fase2/agencyos/agencyos-oppsett.html" },
+  { id: "W4-441b", navn: "GDPR-kø", rute: "/admin/gdpr", bruker: COACH, fasitM: "../fase2/agencyos/agencyos-oppsett.html", fasitD: "../fase2/agencyos/agencyos-oppsett.html" },
+  { id: "W4-441c", navn: "Audit-logg", rute: "/admin/audit-log", bruker: COACH, fasitM: "../fase2/agencyos/agencyos-oppsett.html", fasitD: "../fase2/agencyos/agencyos-oppsett.html" },
+  { id: "W4-442a", navn: "Økter", rute: "/admin/okter", bruker: COACH, fasitM: "../fase2/agencyos/agencyos-planbibliotek.html", fasitD: "../fase2/agencyos/agencyos-planbibliotek.html" },
+  { id: "W4-442b", navn: "Ny planmal", rute: "/admin/plan-templates/ny", bruker: COACH, fasitM: "../fase2/agencyos/agencyos-planbibliotek.html", fasitD: "../fase2/agencyos/agencyos-planbibliotek.html" },
+  { id: "W4-442c", navn: "Ny turnering", rute: "/admin/tournaments/ny", bruker: COACH, fasitM: "../fase2/agencyos/agencyos-turneringer.html", fasitD: "../fase2/agencyos/agencyos-turneringer.html" },
+  { id: "W4-442d", navn: "Turnering-dubletter", rute: "/admin/tournaments/dubletter", bruker: COACH, fasitM: "../fase2/agencyos/agencyos-turneringer.html", fasitD: "../fase2/agencyos/agencyos-turneringer.html" },
 ];
 
 const only = (process.argv[2] || "").trim();
