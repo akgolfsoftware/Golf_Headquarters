@@ -55,6 +55,12 @@ p.pk-notis strong { color: var(--p-fg); }
   font-size: 15px;
   color: var(--p-muted);
 }
+.pk-bevis.pk-bevis-topp { margin-top: var(--p-s5); }
+.pk-bevis .pk-t.pk-t-tekst {
+  font-family: var(--p-disp);
+  font-size: 19px;
+  letter-spacing: -0.01em;
+}
 
 /* ── Kort-rutenett (fasit `.rutenett` + `.mkort`) ── */
 .pk-rutenett {
@@ -226,8 +232,10 @@ p.pk-ing.pk-ing-fot { font-size: 15px; margin-top: var(--p-s5); max-width: 62ch;
   gap: var(--p-s7);
   align-items: center;
 }
+.pk-todelt.pk-todelt-skjema { grid-template-columns: 3fr 2fr; align-items: start; }
 @media (max-width: 900px) {
-  .pk-todelt { grid-template-columns: 1fr; }
+  .pk-todelt,
+  .pk-todelt.pk-todelt-skjema { grid-template-columns: 1fr; }
 }
 
 /* ── Spørsmål og svar (fasit `.qa`) ── */
@@ -259,6 +267,59 @@ p.pk-ing.pk-ing-fot { font-size: 15px; margin-top: var(--p-s5); max-width: 62ch;
 
 .pk-qa-gruppe { margin-top: var(--p-s7); }
 h2.pk-sekt.pk-sekt-liten { font-size: 26px; margin-bottom: var(--p-s2); }
+
+/* ── Skjemafelt (fasit: felles/w5-base.css `.felt`, brukt av auth og kontakt) ── */
+.pk-felt { display: block; margin-bottom: var(--p-s4); }
+.pk-felt > span {
+  display: block;
+  font-size: 13px;
+  font-weight: 500;
+  margin-bottom: var(--p-s1);
+}
+.pk-felt input,
+.pk-felt select,
+.pk-felt textarea {
+  width: 100%;
+  min-height: var(--p-tap-lg);
+  padding: 0 var(--p-s4);
+  background: var(--p-surface);
+  color: var(--p-fg);
+  border: 1px solid var(--p-border);
+  border-radius: var(--p-r);
+  font: inherit;
+}
+.pk-felt textarea {
+  padding: var(--p-s3) var(--p-s4);
+  min-height: 104px;
+  resize: vertical;
+  font-family: var(--p-body);
+}
+.pk-felt .pk-hjelp {
+  display: block;
+  margin-top: var(--p-s1);
+  font-size: 12.5px;
+  color: var(--p-muted);
+}
+.pk-felt.pk-felt-feil input,
+.pk-felt.pk-felt-feil select,
+.pk-felt.pk-felt-feil textarea { border-color: var(--p-dn); }
+
+.pk-feltpar { display: grid; grid-template-columns: 1fr 1fr; gap: var(--p-s4); }
+@media (max-width: 600px) {
+  .pk-feltpar { grid-template-columns: 1fr; gap: 0; }
+}
+
+/* Kvittering og feil står i skjemaet, aldri bare i en toast (fasitkrav). */
+.pk-kvittering,
+.pk-feilmelding {
+  margin: 0 0 var(--p-s4);
+  padding: var(--p-s3) var(--p-s4);
+  border-radius: var(--p-r);
+  font-size: 13.5px;
+  line-height: 1.55;
+}
+.pk-kvittering { background: var(--p-soft); border: 1px solid var(--p-border); }
+.pk-feilmelding { background: var(--p-soft); border: 1px solid var(--p-dn); color: var(--p-dn); }
 
 /* ── Knapperad under hero ── */
 .pk-knapperad { display: flex; gap: var(--p-s3); flex-wrap: wrap; }
