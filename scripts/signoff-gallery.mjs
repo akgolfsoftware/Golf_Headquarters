@@ -54,6 +54,9 @@ const SCREENS = [
   { id: "NT-418c", navn: "System: 404", rute: "/denne-finnes-ikke-natt", bruker: null, fasitM: "../fase2/system/system-tilstander.html", fasitD: "../fase2/system/system-tilstander.html" },
   { id: "NT-419a", navn: "WANG coach-årsplan", rute: "/team-wang/coach", bruker: COACH, fasitM: "../fase2/wang/wang-coach-arsplan.html", fasitD: "../fase2/wang/wang-coach-arsplan.html" },
   { id: "NT-419b", navn: "GFGK kalender", rute: "/gfgk-junior/kalender", bruker: null, fasitM: "../fase2/gfgk/gfgk-kalender.html", fasitD: "../fase2/gfgk/gfgk-kalender.html" },
+  // Natt 13.08 — drift/AgenticOS-sporet (PR #433 + #435)
+  { id: "NT-433", navn: "AgenticOS-hub", rute: "/admin/agenticos", bruker: COACH, fasitM: "../fase2/agencyos/agencyos-agenticos-hub.html", fasitD: "../fase2/agencyos/agencyos-agenticos-hub.html" },
+  { id: "NT-435", navn: "Agent-detalj", rute: "/admin/agents/daily-brief", bruker: COACH, fasitM: "../fase2/agencyos/agencyos-agent-detalj.html", fasitD: "../fase2/agencyos/agencyos-agent-detalj.html" },
 ];
 
 const only = (process.argv[2] || "").trim();
