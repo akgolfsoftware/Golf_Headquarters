@@ -327,11 +327,13 @@ export interface KpiFlisProps {
    *  reell mellomverdi (f.eks. golf-brutto­score) — ellers vises en umulig verdi
    *  i overgangen (0 → mål) i de første rammene etter montering. */
   instant?: boolean;
+  /** Liten mutt undertekst under verdien (f.eks. «49 av 119 timeluker»). */
+  sub?: ReactNode;
 }
 /* Paper-fasit: data/KpiCard — akhq-card (16px uniform padding, ikke Panels
    asymmetriske 16/18/18), verdi clamp(24px,2.4vw,28px)/600/sporing -.03em
    (var 38/700, mye større enn Paper sin tette KPI-flis). */
-export function KpiFlis({ label, value, delta, dir, tint, varsle, hjelp, instant }: KpiFlisProps) {
+export function KpiFlis({ label, value, delta, dir, tint, varsle, hjelp, instant, sub }: KpiFlisProps) {
   const tom = value === null || value === undefined || value === "";
   const animert = useCountUp(tom ? 0 : (value as number | string));
   const shown = tom ? TOM_TALL : instant ? String(value) : animert;
@@ -345,6 +347,7 @@ export function KpiFlis({ label, value, delta, dir, tint, varsle, hjelp, instant
         <span style={{ fontFamily: T.mono, fontSize: "clamp(24px, 2.4vw, 28px)", fontWeight: 600, letterSpacing: "-0.03em", color: T.fg, lineHeight: 1, fontVariantNumeric: "tabular-nums" }}>{shown}</span>
         {delta && !tom && <DeltaChip v={delta} dir={dir} />}
       </div>
+      {sub && <span style={{ fontFamily: T.ui, fontSize: 10.5, color: T.mut, display: "block", marginTop: 6 }}>{sub}</span>}
     </Kort>
   );
 }
