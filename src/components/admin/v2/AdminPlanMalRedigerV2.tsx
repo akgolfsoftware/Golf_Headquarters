@@ -400,7 +400,7 @@ export function AdminPlanMalRedigerV2({
       {/* Topptekst — B: status + én primær CTA */}
       <div style={{ display: "flex", flexWrap: "wrap", alignItems: "flex-end", justifyContent: "space-between", gap: 10 }}>
         <div style={{ minWidth: 0 }}>
-          <div data-paper-pattern-topp>
+          <div data-paper-pattern-topp data-paper-slug="agencyos-planbibliotek">
           <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>Rediger planmal</h1>
           <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>AgencyOS</span>
         </div>
