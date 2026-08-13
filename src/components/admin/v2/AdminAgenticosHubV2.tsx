@@ -81,10 +81,20 @@ export interface AgenticosHubData {
     signaler7d: number;
     planForslag7d: number;
   };
+  /** Fra ai_costs (datamodell vedtatt 13.08). null-kost = pris ukjent ved logging. */
+  aiKost: {
+    kallIdag: number;
+    kostIdagUsd: number | null;
+    kall7d: number;
+    kost7dUsd: number | null;
+    kallUtenPris7d: number;
+  };
   godkjenningerHref: string;
 }
 
 const pl = (n: number, en: string, flere: string) => `${n} ${n === 1 ? en : flere}`;
+const usd = (belop: number | null) =>
+  belop == null ? "—" : `$${belop.toFixed(2).replace(".", ",")}`;
 const pst = (teller: number, nevner: number) =>
   nevner === 0 ? "—" : `${(100 * (teller / nevner)).toFixed(1).replace(".", ",")} %`;
 
@@ -216,26 +226,29 @@ function DriftPanel({ data }: { data: AgenticosHubData }) {
         </div>
       </Kort>
 
-      <Kort eyebrow="Uten datamodell ennå" pad="16px">
-        <p style={{ fontFamily: T.ui, fontSize: 12, color: T.mut, margin: 0, lineHeight: 1.6 }}>
-          Kost per kjøring, modellvalg og prompt-versjoner kan ikke vises —{" "}
-          <code style={{ fontFamily: T.mono, fontSize: 11, background: T.panel2, padding: "1px 4px", borderRadius: 4 }}>
-            AiModel
-          </code>
-          ,{" "}
-          <code style={{ fontFamily: T.mono, fontSize: 11, background: T.panel2, padding: "1px 4px", borderRadius: 4 }}>
-            RoutingRule
-          </code>
-          ,{" "}
-          <code style={{ fontFamily: T.mono, fontSize: 11, background: T.panel2, padding: "1px 4px", borderRadius: 4 }}>
-            AiPrompt
-          </code>{" "}
-          og{" "}
-          <code style={{ fontFamily: T.mono, fontSize: 11, background: T.panel2, padding: "1px 4px", borderRadius: 4 }}>
-            AiCost
-          </code>{" "}
-          finnes ikke som tabeller. Flaten sier det i stedet for å late som.
-        </p>
+      <Kort eyebrow="AI-kost" pad="16px">
+        {data.aiKost.kall7d === 0 ? (
+          <p style={{ fontFamily: T.ui, fontSize: 12, color: T.mut, margin: 0, lineHeight: 1.6 }}>
+            Ingen kostdata siste 7 dager. Tabellene er på plass — agentene logger kall via{" "}
+            <code style={{ fontFamily: T.mono, fontSize: 11, background: T.panel2, padding: "1px 4px", borderRadius: 4 }}>
+              registrerAiKost
+            </code>{" "}
+            etter hvert som de kobles på.
+          </p>
+        ) : (
+          <>
+            <div className="grid grid-cols-2" style={{ gap: 10 }}>
+              <KpiCell label="Kost i dag" value={usd(data.aiKost.kostIdagUsd)} sub={pl(data.aiKost.kallIdag, "kall", "kall")} />
+              <KpiCell label="Kost 7 d" value={usd(data.aiKost.kost7dUsd)} sub={pl(data.aiKost.kall7d, "kall", "kall")} />
+            </div>
+            {data.aiKost.kallUtenPris7d > 0 && (
+              <p style={{ fontFamily: T.ui, fontSize: 11, color: T.mut, margin: "8px 0 0", lineHeight: 1.5 }}>
+                {pl(data.aiKost.kallUtenPris7d, "kall mangler pris", "kall mangler pris")} — modellen er
+                ikke i katalogen, kosten er ikke medregnet.
+              </p>
+            )}
+          </>
+        )}
       </Kort>
 
       <Kort eyebrow="Ruter som samles her" pad="4px 16px">

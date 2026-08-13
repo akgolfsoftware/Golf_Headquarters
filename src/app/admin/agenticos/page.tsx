@@ -8,12 +8,11 @@
  *
  * Fasit: designsystem/paper/fase2/agencyos/agencyos-agenticos-hub.html.
  *
- * Data KUN fra eksisterende loadere: AGENT_INFO/MANUELLE_AGENTER
- * (`src/lib/agencyos/agent-registry.ts`, flyttet ut av /admin/agents da den
- * siden ble en redirect), siste 30 AgentRun (samme spørring som den gamle
- * /admin/agents-siden), og PlanAction-tellinger. Ingen nye tabeller —
- * kost/modell/prompt-panelet sier eksplisitt at AiModel/RoutingRule/
- * AiPrompt/AiCost ikke finnes, i stedet for å fabrikere tall.
+ * Data fra AGENT_INFO/MANUELLE_AGENTER (`src/lib/agencyos/agent-registry.ts`,
+ * flyttet ut av /admin/agents da den siden ble en redirect), siste 30 AgentRun
+ * (samme spørring som den gamle /admin/agents-siden), PlanAction-tellinger,
+ * og ai_costs-aggregater (datamodell vedtatt 13.08 — agenter logger via
+ * `registrerAiKost`). Ingen kostdata → ekte tom-tilstand, aldri fabrikkerte tall.
  *
  * Server component.
  */
@@ -50,7 +49,7 @@ export default async function AdminAgenticosPage() {
   const sju_dager_siden = new Date();
   sju_dager_siden.setDate(sju_dager_siden.getDate() - 7);
 
-  const [recentRuns, pendingCount, forslagIdag, kjoringerIdag, kjoringerIdagFeil, signaler7d, planForslag7d] =
+  const [recentRuns, pendingCount, forslagIdag, kjoringerIdag, kjoringerIdagFeil, signaler7d, planForslag7d, kostIdag, kost7d, kallUtenPris7d] =
     await Promise.all([
       prisma.agentRun.findMany({ orderBy: { createdAt: "desc" }, take: 30 }),
       prisma.planAction.count({ where: { status: "PENDING" } }),
@@ -59,6 +58,17 @@ export default async function AdminAgenticosPage() {
       prisma.agentRun.count({ where: { createdAt: { gte: idag }, status: "ERROR" } }),
       prisma.signal.count({ where: { computedAt: { gte: sju_dager_siden } } }),
       prisma.planAction.count({ where: { createdAt: { gte: sju_dager_siden } } }),
+      prisma.aiCost.aggregate({
+        where: { createdAt: { gte: idag } },
+        _count: { _all: true },
+        _sum: { costUsd: true },
+      }),
+      prisma.aiCost.aggregate({
+        where: { createdAt: { gte: sju_dager_siden } },
+        _count: { _all: true },
+        _sum: { costUsd: true },
+      }),
+      prisma.aiCost.count({ where: { createdAt: { gte: sju_dager_siden }, costUsd: null } }),
     ]);
 
   // Aggreger per agent (fra siste 30 kjøringer) — samme mønster som den
@@ -140,6 +150,13 @@ export default async function AdminAgenticosPage() {
       snittTidMs,
       signaler7d,
       planForslag7d,
+    },
+    aiKost: {
+      kallIdag: kostIdag._count._all,
+      kostIdagUsd: kostIdag._sum.costUsd,
+      kall7d: kost7d._count._all,
+      kost7dUsd: kost7d._sum.costUsd,
+      kallUtenPris7d,
     },
     godkjenningerHref: "/admin/godkjenninger",
   };

@@ -48,11 +48,8 @@ export default async function MegDashboard() {
           bekreftelser og siste logg.
         </p>
         <div className="flex gap-4 pt-2">
-          <Link href="/meg/dispatch" className="text-sm font-medium text-primary hover:underline">
-            Dispatch (pause-kortet) →
-          </Link>
-          <Link href="/meg/morgenbrief" className="text-sm font-medium text-primary hover:underline">
-            Morgenbrief →
+          <Link href="/admin/brief" className="text-sm font-medium text-primary hover:underline">
+            Daglig brief →
           </Link>
         </div>
       </header>
