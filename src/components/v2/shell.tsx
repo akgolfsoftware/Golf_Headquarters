@@ -78,27 +78,28 @@ export const PLAYERHQ_NAV: V2NavItem[] = [
 ];
 
 /**
- * AgencyOS primær-nav — ÅTTE punkter, 1:1 med Paper-fasitens rail
- * (`agencyos-konsoll-desktop.html`, `<nav class="rail">`). Låst av Anders
- * 2026-08-10, sammen med PP-2.1.
+ * AgencyOS primær-nav — SJU punkter (Anders 2026-08-13): fase 2-fasitens rail
+ * (`fase2/agencyos/*.html`) som grunnmønster, men med Workbench og AgenticOS
+ * i stedet for fasitens Innsikt og Oppsett («må nås raskere»). Logoen er
+ * appens egen AK-logo, ikke fasitens wordmark.
  *
- * «Innsikt» sto her frem til 10.08 og er IKKE i fasiten. Den er ikke borte:
- * /admin/analyse nås fra Cmd+K og fra «Innsikt»-knappen nederst i konsollens
- * artefaktpanel. Ikke legg den tilbake i railen uten at fasiten endres først.
+ * Ute av railen, fortsatt fullt tilgjengelige:
+ * - Innsikt (/admin/analyse): Cmd+K + «Innsikt»-knappen i konsollens artefaktpanel.
+ * - Oppsett (/admin/settings) og Økonomi: AGENCYOS_ROM («Mer» på mobil) + Cmd+K.
+ * Sider som sender aktiv="innsikt"/"innstillinger" får ingen markert fane —
+ * samme bevisste mønster som PlayerHQ-«gjor».
  *
- * Workbench, AgenticOS, Økonomi og Innstillinger er løftet OPP fra «Mer» hit.
- * De blir stående i AGENCYOS_ROM også — railen vinner ved dublett, men
- * rommene bærer beskrivelsene og er fortsatt mobil-«Mer»-innholdet.
+ * «Plan» bruker id "planlegge" fordi hele plan-familien (plans, teknisk-plan,
+ * okter, tournaments) allerede sender aktiv="planlegge".
  */
 export const AGENCYOS_NAV: V2NavItem[] = [
-  { id: "cockpit", label: "Konsoll", icon: "home", href: "/admin/agencyos" },
+  { id: "cockpit", label: "Cockpit", icon: "home", href: "/admin/agencyos" },
   { id: "innboks", label: "Innboks", icon: "inbox", href: "/admin/innboks" },
-  { id: "spillere", label: "Spillere", icon: "users", href: "/admin/spillere" },
   { id: "kalender", label: "Kalender", icon: "calendar", href: "/admin/kalender" },
+  { id: "spillere", label: "Stall", icon: "users", href: "/admin/spillere" },
+  { id: "planlegge", label: "Plan", icon: "file-text", href: "/admin/plans" },
   { id: "workbench", label: "Workbench", icon: "target", href: "/admin/planlegge" },
   { id: "agenticos", label: "AgenticOS", icon: "bot", href: "/admin/agenticos" },
-  { id: "okonomi", label: "Økonomi", icon: "credit-card", href: "/admin/agencyos/okonomi", adminOnly: true },
-  { id: "innstillinger", label: "Innstillinger", icon: "settings", href: "/admin/settings", adminOnly: true },
 ];
 
 /** Påfør kø-badge uten å mutere AGENCYOS_NAV-konstanten. erAgency sjekker id/href. */
@@ -318,17 +319,16 @@ function RailLenke({ item, on, dark }: { item: V2NavItem; on: boolean; dark?: bo
           </span>
         )}
       </span>
-      {/* Railen er 64px bred. «Innstillinger» i 9px versal + 0.04em sperring
-          er bredere enn det og ble klippet til «INNSTILLINGE» (målt 10.08 da
-          railen gikk fra fem til åtte punkter). Lange etiketter krymper i
-          stedet for å bli kuttet — teksten er navigasjonen, ikke pynt. */}
+      {/* Fasiten (både fase 1 og fase 2) skriver rail-etikettene i vanlig
+          skrift, ikke versaler — kun appen ropte. Sans + mixed case per
+          Anders 13.08. Lange etiketter krymper fortsatt i stedet for å
+          klippes — teksten er navigasjonen, ikke pynt. */}
       <span
         style={{
-          fontFamily: T.mono,
-          fontSize: item.label.length > 10 ? 7.5 : 9,
-          fontWeight: 600,
-          letterSpacing: item.label.length > 10 ? "0.01em" : "0.04em",
-          textTransform: "uppercase",
+          fontFamily: T.ui,
+          fontSize: item.label.length > 10 ? 9 : 10,
+          fontWeight: 500,
+          letterSpacing: 0,
           maxWidth: "100%",
           textAlign: "center",
           color: dark ? (on ? T.railOn : T.railFg) : (on ? T.fg : T.mut),
@@ -536,7 +536,7 @@ function IkonRailNav({ aktiv, nav, mer, rom, navn, avatarUrl, erAgency }: Requir
           style={{ width: 56, display: "flex", flexDirection: "column", alignItems: "center", gap: 3, padding: "8px 0 6px", borderRadius: 12, background: "transparent", border: 0, cursor: "pointer", flex: "none" }}
         >
           <Icon name="more-horizontal" size={19} style={{ color: aktiv === "mer" ? T.railOn : T.railFg }} strokeWidth={1.5} />
-          <span style={{ fontFamily: T.mono, fontSize: 9, fontWeight: 600, letterSpacing: "0.04em", textTransform: "uppercase", color: aktiv === "mer" ? T.railOn : T.railFg }}>Mer</span>
+          <span style={{ fontFamily: T.ui, fontSize: 10, fontWeight: 500, color: aktiv === "mer" ? T.railOn : T.railFg }}>Mer</span>
         </button>
       )}
       <div style={{ flex: 1, minHeight: 8 }} />
@@ -711,7 +711,7 @@ function AgencyBunnNav({ aktiv, nav, mer, rom }: { aktiv?: string; nav: V2NavIte
                   </span>
                 )}
               </span>
-              <span style={{ fontFamily: T.mono, fontSize: 9, fontWeight: 600 }}>{n.label}</span>
+              <span style={{ fontFamily: T.ui, fontSize: 10, fontWeight: 500 }}>{n.label}</span>
             </Link>
           );
         })}
