@@ -26,6 +26,7 @@ import {
 } from "@/components/admin/v2/AdminPlanMalerV2";
 import type { AkseKey } from "@/lib/v2/tokens";
 import { TilbakeLenke } from "@/components/v2";
+import { bygUkeOversikt } from "@/lib/domain/plan-uke-oversikt";
 
 export const dynamic = "force-dynamic";
 
@@ -48,7 +49,9 @@ function tilFordeling(blob: unknown): PlanMalFordeling[] {
 export default async function V2AdminPlanMalerPreviewPage() {
   const user = await requirePortalUser({ allow: ["ADMIN", "COACH"] });
 
-  // Samme select-kontrakt + sortering som den ekte plan-maler-indeksen.
+  // Samme select-kontrakt + sortering som den ekte plan-maler-indeksen, utvidet
+  // med feltene inspektørpanelet trenger (uke-for-uke + effekt) — se
+  // AdminPlanMalerV2 §PlanMalInspektor.
   const rader = await prisma.planTemplate.findMany({
     orderBy: [{ usageCount: "desc" }, { name: "asc" }],
     select: {
@@ -61,7 +64,9 @@ export default async function V2AdminPlanMalerPreviewPage() {
       usageCount: true,
       disciplinFordeling: true,
       approved: true,
-      _count: { select: { sessions: true } },
+      effectivenessAvg: true,
+      sessions: { select: { ukeNr: true, pyramidArea: true } },
+      _count: { select: { sessions: true, effectiveness: true } },
     },
   });
 
@@ -77,11 +82,17 @@ export default async function V2AdminPlanMalerPreviewPage() {
       oktAntall: m._count.sessions,
       fordeling: tilFordeling(m.disciplinFordeling),
       godkjent: m.approved,
+      ukeOversikt: bygUkeOversikt(m.sessions, m.varighetUker),
+      effektAvg: m.effectivenessAvg,
+      effektAntall: m._count.effectiveness,
     })),
   };
 
   return (
-    <V2Shell bredde="kolonne" aktiv="planlegge" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>
+    // "full" (ikke "kolonne"): inspektørpanelet på ≥1024px er en andre kolonne
+    // ved siden av lista (fasitens `<aside class="panel">`, 380px) — samme
+    // mønster som AdminGodkjenningerV2 sin «Køen i tall».
+    <V2Shell bredde="full" aktiv="planlegge" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>
       <TilbakeLenke href="/admin/planlegge">Planlegge</TilbakeLenke>
       <AdminPlanMalerV2 data={data} />
     </V2Shell>
