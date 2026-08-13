@@ -30,7 +30,7 @@ export type WorkspacePrio = "BRENNER" | "HOY" | "MED" | "LAV";
 export type WorkspaceStatus = "TODO" | "DOING" | "DONE" | "BLOKKERT";
 
 export interface AdminWorkspaceV2Task {
-  id: number;
+  id: string;
   tittel: string;
   selskap: string;
   prio: WorkspacePrio;

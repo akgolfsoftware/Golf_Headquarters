@@ -5256,3 +5256,70 @@ model RadarFunn {
   @@index([behandlet, funnetAt])
   @@map("radar_funn")
 }
+
+// ---------- AgenticOS AI-datamodell (2026-08-13) ----------
+
+// Vedtatt av Anders 13.08 (nattrapport spm. 3: «før hub-signering»). DDL kjøres
+// med scripts/add-agenticos-ai-tables-2026-08-13.ts (kirurgisk db execute, jf.
+// gotchas.md §Schema-endringer). Bevisst uten @relation til eksisterende
+// modeller — kun interne relasjoner mellom de fire nye tabellene.
+
+// Modellkatalog: hvilke AI-modeller plattformen kan rute til, med priser.
+// Priser er nullable — ukjent pris vises som ukjent, aldri fabrikkert.
+model AiModel {
+  id             String   @id @default(cuid())
+  name           String   @unique // visningsnavn, f.eks. "Sonnet 4.6"
+  provider       String   @default("anthropic")
+  modelId        String   @unique // API-id, f.eks. "claude-sonnet-4-6"
+  inputUsdPer1M  Float? // USD per 1M input-tokens
+  outputUsdPer1M Float? // USD per 1M output-tokens
+  active         Boolean  @default(true)
+  createdAt      DateTime @default(now())
+
+  routingRules RoutingRule[]
+
+  @@map("ai_models")
+}
+
+// Ruting: hvilken modell en agent skal bruke (avløser på sikt det hardkodede
+// modelFor()-registeret i src/lib/ai/client.ts).
+model RoutingRule {
+  id        String   @id @default(cuid())
+  agentName String   @unique
+  aiModelId String
+  aiModel   AiModel  @relation(fields: [aiModelId], references: [id], onDelete: Cascade)
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+
+  @@map("routing_rules")
+}
+
+// Versjonerte system-prompter per agent.
+model AiPrompt {
+  id        String   @id @default(cuid())
+  agentName String
+  version   Int      @default(1)
+  content   String
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+
+  @@unique([agentName, version])
+  @@map("ai_prompts")
+}
+
+// Kost per AI-kall. modelId er snapshot (API-id), ikke FK — kostrader skal
+// overleve at modellkatalogen endres. costUsd null = pris ukjent ved logging.
+model AiCost {
+  id           String   @id @default(cuid())
+  agentName    String
+  agentRunId   String?
+  modelId      String
+  inputTokens  Int      @default(0)
+  outputTokens Int      @default(0)
+  costUsd      Float?
+  createdAt    DateTime @default(now())
+
+  @@index([agentName, createdAt])
+  @@index([createdAt])
+  @@map("ai_costs")
+}
