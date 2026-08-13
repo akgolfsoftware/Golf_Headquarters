@@ -44,9 +44,10 @@ export default async function GdprKoPage() {
   };
 
   return (
-    <V2Shell bredde="kolonne" aktiv="settings" nav={AGENCYOS_NAV} navn={user.name ?? "Admin"}>
+    <V2Shell bredde="kolonne" aktiv="innstillinger" nav={AGENCYOS_NAV} navn={user.name ?? "Admin"}>
       <div
         data-paper-agencyos-gdpr
+        data-paper-slug="agencyos-oppsett"
         style={{
           display: "flex",
           flexDirection: "column",
@@ -130,8 +131,8 @@ export default async function GdprKoPage() {
                           minHeight: 44,
                           padding: "10px 16px",
                           borderRadius: 10,
-                          background: T.handling,
-                          color: T.onHandling,
+                          background: T.down,
+                          color: T.onCta,
                           fontFamily: T.ui,
                           fontSize: 13,
                           fontWeight: 600,
