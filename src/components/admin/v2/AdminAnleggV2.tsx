@@ -76,7 +76,7 @@ export function AdminAnleggV2({ data }: { data: AdminAnleggV2Data }) {
     <div data-paper-wave-h="anlegg" data-paper-pattern style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 960, margin: "0 auto", width: "100%" }}>
       <div style={{ display: "flex", flexWrap: "wrap", alignItems: "flex-end", justifyContent: "space-between", gap: 14 }}>
         <div>
-          <div data-paper-pattern-topp>
+          <div data-paper-pattern-topp data-paper-slug="agencyos-bookinger">
           <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>Anlegg</h1>
           <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>Fasiliteter</span>
         </div>
