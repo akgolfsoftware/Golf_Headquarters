@@ -1,0 +1,197 @@
+/* ─────────────────────────────────────────────────────────────
+   Paper — marketing-side (forside · coaching · playerhq · junior · priser ·
+   om-oss · treningsfilosofi · faq · kontakt · jobb · suksess · vilkar ·
+   personvern · cookies)
+   Kilde: designsystem/paper/fase2/marketing/marketing-side.html
+   (+ fellesreglene i designsystem/paper/fase2/felles/w5-base.css)
+
+   Tillegg til paper-katalog.css — den fila eier nav/footer/wrap/sek/hero/
+   ing/prosa/bilde/kort, og lastes alltid sammen med denne. Her ligger KUN
+   de tre skallvariantenes egne mønstre: bevis-bånd, prispakker, sitat og
+   spørsmålsliste. Bruker utelukkende --p-*-tokens, aldri egne hex-verdier.
+   ───────────────────────────────────────────────────────────── */
+
+/* ── Smal tekstkolonne (prosa/juridisk + sentrerte avslutninger) ── */
+.pk-wrap.pk-wrap-smal { max-width: 720px; }
+
+/* ── Prosa-tittel (fasit: `h1.hero` med seksjonsstørrelse, 24ch) ── */
+h1.pk-hero.pk-hero-prosa { font-size: var(--p-text-section); max-width: 24ch; }
+@media (max-width: 800px) {
+  h1.pk-hero.pk-hero-prosa { font-size: 30px; }
+}
+
+/* ── Notis i prosa (utkast-/varselnotat) ── */
+p.pk-notis {
+  margin: 0;
+  font-family: var(--p-body);
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--p-muted);
+}
+p.pk-notis strong { color: var(--p-fg); }
+
+/* ── Inverse bånd (fasit `.band`) ── */
+.pk-band { background: var(--p-inverse); color: var(--p-bg); }
+.pk-band a { color: var(--p-bg); }
+.pk-band .pk-eyebrow { color: var(--p-mid); }
+.pk-band .pk-bevis .pk-u { color: var(--p-mid); }
+
+/* ── Bevis-tall (fasit `.bevis`) ── */
+.pk-bevis {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: var(--p-s5);
+}
+.pk-bevis .pk-t {
+  display: block;
+  font-family: var(--p-mono);
+  font-size: 34px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+.pk-bevis .pk-u {
+  display: block;
+  font-family: var(--p-body);
+  font-size: 15px;
+  color: var(--p-muted);
+}
+
+/* ── Kort-rutenett (fasit `.rutenett` + `.mkort`) ── */
+.pk-rutenett {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: var(--p-s4);
+}
+.pk-mkort {
+  display: block;
+  padding: var(--p-s5);
+  background: var(--p-surface);
+  border: 1px solid var(--p-border);
+  border-radius: var(--p-r-md);
+  text-decoration: none;
+  color: inherit;
+}
+a.pk-mkort:hover { border-color: var(--p-mid); color: inherit; }
+.pk-mkort .pk-eyebrow { display: block; margin-bottom: var(--p-s2); }
+.pk-mkort .pk-und {
+  margin: 0;
+  font-family: var(--p-disp);
+  font-size: 19px;
+  font-weight: 600;
+}
+.pk-mkort p {
+  margin: var(--p-s2) 0 0;
+  font-family: var(--p-body);
+  font-size: 15px;
+  color: var(--p-muted);
+}
+
+/* ── Prispakker (fasit `.prisrad` / `.pris`) ── */
+.pk-prisrad {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: var(--p-s4);
+}
+.pk-pris {
+  display: flex;
+  flex-direction: column;
+  gap: var(--p-s3);
+  padding: var(--p-s5);
+  background: var(--p-surface);
+  border: 1px solid var(--p-border);
+  border-radius: var(--p-r-md);
+}
+.pk-pris.pk-pris-valgt {
+  border-color: var(--p-fg);
+  box-shadow: var(--p-shadow);
+}
+.pk-pris .pk-tall {
+  font-family: var(--p-mono);
+  font-size: 34px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+.pk-pris .pk-tall small { font-size: 13px; font-weight: 400; color: var(--p-muted); }
+.pk-pris ul {
+  margin: 0;
+  padding-left: var(--p-s5);
+  font-family: var(--p-body);
+  font-size: 15px;
+  color: var(--p-muted);
+}
+.pk-pris li { margin-bottom: var(--p-s2); }
+.pk-pris .pk-btn { margin-top: auto; }
+.pk-pris .pk-pris-lede {
+  margin: 0;
+  font-family: var(--p-body);
+  font-size: 15px;
+  line-height: 1.55;
+  color: var(--p-muted);
+}
+
+/* Sluttnote under en seksjon (fasit: `.ing` i 15px med toppluft) */
+p.pk-ing.pk-ing-fot { font-size: 15px; margin-top: var(--p-s5); max-width: 62ch; }
+
+/* ── Sitat (fasit `.sitat`) ── */
+.pk-sitat {
+  margin: 0;
+  font-family: var(--p-body);
+  font-size: var(--p-text-prose-lg);
+  line-height: 1.55;
+  max-width: 34ch;
+}
+
+/* ── Todelt seksjon (bilde + sitat/tekst) ── */
+.pk-todelt {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--p-s7);
+  align-items: center;
+}
+@media (max-width: 900px) {
+  .pk-todelt { grid-template-columns: 1fr; }
+}
+
+/* ── Spørsmål og svar (fasit `.qa`) ── */
+.pk-qa { border-bottom: 1px solid var(--p-border); }
+.pk-qa summary {
+  display: flex;
+  align-items: center;
+  min-height: 56px;
+  cursor: pointer;
+  list-style: none;
+  font-size: 17px;
+  font-weight: 500;
+}
+.pk-qa summary::-webkit-details-marker { display: none; }
+.pk-qa summary::after {
+  content: "+";
+  margin-left: auto;
+  font-family: var(--p-mono);
+  color: var(--p-muted);
+}
+.pk-qa[open] summary::after { content: "−"; }
+.pk-qa p {
+  margin: 0 0 var(--p-s5);
+  font-family: var(--p-body);
+  font-size: 16px;
+  color: var(--p-muted);
+  max-width: 62ch;
+}
+
+.pk-qa-gruppe { margin-top: var(--p-s7); }
+h2.pk-sekt.pk-sekt-liten { font-size: 26px; margin-bottom: var(--p-s2); }
+
+/* ── Knapperad under hero ── */
+.pk-knapperad { display: flex; gap: var(--p-s3); flex-wrap: wrap; }
+.pk-knapperad.pk-knapperad-midt { justify-content: center; }
+
+/* ── Sentrert avslutning ── */
+.pk-midtstilt { text-align: center; }
+.pk-midtstilt h2.pk-sekt { max-width: none; margin-inline: auto; }
+.pk-midtstilt p.pk-ing { margin-inline: auto; }
+
+@media (max-width: 800px) {
+  .pk-bevis .pk-t,
+  .pk-pris .pk-tall { font-size: 30px; }
+}
