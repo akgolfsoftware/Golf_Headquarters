@@ -247,7 +247,7 @@ export function NyBookingWizard({
   }
 
   return (
-    <div className="mx-auto max-w-[960px] px-6 py-8">
+    <div className="mx-auto max-w-[960px] px-6 py-8" data-paper-slug="agencyos-bookinger">
       <Link
         href="/admin/bookinger"
         className="inline-flex items-center gap-1.5 font-mono text-[10px] font-bold uppercase tracking-[0.10em] text-muted-foreground transition-colors hover:text-foreground"
