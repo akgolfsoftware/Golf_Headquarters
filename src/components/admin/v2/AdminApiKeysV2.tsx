@@ -312,7 +312,7 @@ export function AdminApiKeysV2({ data }: { data: AdminApiKeysV2Data }) {
     );
 
   return (
-    <div data-paper-wave-h="api-keys" data-paper-pattern style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 960, margin: "0 auto", width: "100%" }}>
+    <div data-paper-wave-h="api-keys" data-paper-pattern data-paper-slug="agencyos-oppsett" style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 960, margin: "0 auto", width: "100%" }}>
       {hode}
       {liste}
       <p style={{ fontFamily: T.ui, fontSize: 12, color: T.mut, lineHeight: 1.6, margin: 0 }}>

@@ -80,8 +80,8 @@ export default async function V2AdminAuditLogPage() {
   const data: AdminAuditLogV2Data = { events, total, mistenkelige };
 
   return (
-    <V2Shell bredde="kolonne" aktiv="innsikt" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>
-      <TilbakeLenke href="/admin/analyse">Innsikt</TilbakeLenke>
+    <V2Shell bredde="kolonne" aktiv="innstillinger" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>
+      <TilbakeLenke href="/admin/settings">Innstillinger</TilbakeLenke>
       <AdminAuditLogV2 data={data} />
     </V2Shell>
   );

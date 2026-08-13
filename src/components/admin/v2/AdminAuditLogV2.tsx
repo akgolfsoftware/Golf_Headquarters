@@ -138,7 +138,7 @@ export function AdminAuditLogV2({ data }: { data: AdminAuditLogV2Data }) {
   }
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+    <div data-paper-slug="agencyos-oppsett" style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
       {hode}
       {kpi}
       {primaerCta}

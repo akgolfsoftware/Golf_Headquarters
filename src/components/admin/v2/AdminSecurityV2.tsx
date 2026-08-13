@@ -27,7 +27,7 @@ export function AdminSecurityV2({ data }: { data: AdminSecurityV2Data }) {
   const rolleLabel = data.rolle === "ADMIN" ? "Administrator" : "Coach";
 
   return (
-    <div data-paper-wave-h="security" data-paper-pattern style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 960, margin: "0 auto", width: "100%" }}>
+    <div data-paper-wave-h="security" data-paper-pattern data-paper-slug="agencyos-oppsett" style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 960, margin: "0 auto", width: "100%" }}>
       <div>
         <div data-paper-pattern-topp>
           <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>Sikkerhet</h1>

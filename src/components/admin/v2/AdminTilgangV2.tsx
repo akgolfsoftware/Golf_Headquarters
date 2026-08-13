@@ -180,7 +180,7 @@ export function AdminTilgangV2({ roller, rader }: { roller: UserRole[]; rader: A
   }
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+    <div data-paper-slug="agencyos-oppsett" style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
       {hode}
       {primaerCta}
       {infoRad}
