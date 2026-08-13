@@ -167,7 +167,7 @@ export function CoachAIV2({ data }: { data: CoachAIData }) {
   const tom = meldinger.length === 0;
 
   return (
-    <div data-paper-wave-g="coachai" data-paper-portal-coach-ai style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
+    <div data-paper-wave-g="coachai" data-paper-portal-coach-ai data-paper-slug="playerhq-coach-hub" style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
       {/* Hode */}
       <div>
         <div data-paper-pattern-topp>
@@ -228,7 +228,7 @@ export function CoachAIV2({ data }: { data: CoachAIData }) {
 
 function ProGate({ mobile }: { mobile: boolean }) {
   return (
-    <div data-paper-portal-coach-ai style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
+    <div data-paper-portal-coach-ai data-paper-slug="playerhq-coach-hub" style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
       <div>
         <Caps>PlayerHQ · AI-coach</Caps>
         <div style={{ marginTop: 10 }}>

@@ -11,8 +11,6 @@ import { useRouter } from "next/navigation";
 
 import {
   T,
-  Caps,
-  Tittel,
   Kort,
   StatusPill,
   TomTilstand,
@@ -91,7 +89,7 @@ export function TalentSammenligningV2({ data }: { data: TalentSammenligningData 
   const harValgt = data.valgt !== null;
 
   return (
-    <div data-paper-wave-g="talentsammenligning" data-paper-portal-talent-sammenligning style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
+    <div data-paper-wave-g="talentsammenligning" data-paper-portal-talent-sammenligning data-paper-slug="playerhq-talent" style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
       {/* Hode */}
       <div>
         <div data-paper-pattern-topp>

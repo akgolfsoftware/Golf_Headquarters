@@ -5,12 +5,10 @@
  * T.* only. Lys PlayerHQ.
  */
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import {
   T,
-  Caps,
-  Tittel,
   Kort,
   KpiFlis,
   PillTabs,
@@ -37,27 +35,11 @@ export type CoachQAData = {
   sporsmal: CoachSporsmal[];
 };
 
-/* ── Ren hjelper ───────────────────────────────────────────────────── */
-
-/** true på klient etter mount når viewport < 768px (styrer kun tallstørrelser). */
-function useMobile(): boolean {
-  const [m, setM] = useState(false);
-  useEffect(() => {
-    const mq = window.matchMedia("(max-width: 767px)");
-    const oppdater = () => setM(mq.matches);
-    oppdater();
-    mq.addEventListener("change", oppdater);
-    return () => mq.removeEventListener("change", oppdater);
-  }, []);
-  return m;
-}
-
 type Filter = "alle" | "apne" | "besvart";
 
 /* ── Skjerm ────────────────────────────────────────────────────────── */
 
 export function CoachQAV2({ data }: { data: CoachQAData }) {
-  const mobile = useMobile();
   const [filter, setFilter] = useState<Filter>("alle");
 
   const { sporsmal } = data;
@@ -69,7 +51,7 @@ export function CoachQAV2({ data }: { data: CoachQAData }) {
   );
 
   return (
-    <div data-paper-wave-g="coachqa" data-paper-portal-coach-qa style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
+    <div data-paper-wave-g="coachqa" data-paper-portal-coach-qa data-paper-slug="playerhq-coach-hub" style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
       {/* Hode */}
       <div>
         <div data-paper-pattern-topp>

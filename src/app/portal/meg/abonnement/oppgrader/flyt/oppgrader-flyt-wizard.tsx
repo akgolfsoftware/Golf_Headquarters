@@ -46,6 +46,8 @@ export function OppgraderFlytWizard() {
 
   return (
     <div
+      data-paper-slug="playerhq-abonnement"
+      data-paper-portal-meg-oppgrader-flyt
       style={{
         maxWidth: 480,
         margin: "0 auto",

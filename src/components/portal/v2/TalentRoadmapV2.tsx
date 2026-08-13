@@ -6,7 +6,7 @@
  */
 
 import Link from "next/link";
-import { T, Caps, Tittel, Kort, Rad, StatusPill, KpiFlis, TomTilstand, CTAPill, HjelpTips } from "@/components/v2";
+import { T, Kort, Rad, StatusPill, KpiFlis, TomTilstand, HjelpTips } from "@/components/v2";
 import { Icon } from "@/components/v2/icon";
 
 /* ── Data-kontrakt ─────────────────────────────────────────────────── */
@@ -25,7 +25,7 @@ export function TalentRoadmapV2({ data }: { data: TalentRoadmapData }) {
     data.faser.length === 0 && data.turneringer.length === 0 && data.milepaeler.length === 0;
 
   return (
-    <div data-paper-wave-g="talentroadmap" data-paper-portal-talent-roadmap style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
+    <div data-paper-wave-g="talentroadmap" data-paper-portal-talent-roadmap data-paper-slug="playerhq-talent" style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
       {/* PRE-BETA — ærlig merking */}
       <Kort pad="12px 18px">
         <div style={{ display: "flex", alignItems: "center", gap: 10 }}>

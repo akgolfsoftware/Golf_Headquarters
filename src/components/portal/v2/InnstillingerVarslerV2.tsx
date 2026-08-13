@@ -18,7 +18,6 @@ import {
 import {
   T,
   Caps,
-  Tittel,
   Kort,
   StatusPill,
   Bryter,
@@ -34,21 +33,6 @@ export type InnstillingerVarslerData = {
   /** Valgt app-språk fra samme preferanse-blob. */
   spraak: "nb" | "en";
 };
-
-/* ── Hjelpere ──────────────────────────────────────────────────────── */
-
-/** true på klient etter mount når viewport < 768px (styrer kun tallstørrelser). */
-function useMobile(): boolean {
-  const [m, setM] = useState(false);
-  useEffect(() => {
-    const mq = window.matchMedia("(max-width: 767px)");
-    const oppdater = () => setM(mq.matches);
-    oppdater();
-    mq.addEventListener("change", oppdater);
-    return () => mq.removeEventListener("change", oppdater);
-  }, []);
-  return m;
-}
 
 /** Bryter-rad med skillelinje (Bryter selv har ingen border). */
 function BryterRad({ last, children }: { last?: boolean; children: ReactNode }) {
@@ -83,7 +67,6 @@ function InfoBoks({ tone = "noytral", children }: { tone?: "noytral" | "warn" | 
 /* ── Skjerm ────────────────────────────────────────────────────────── */
 
 export function InnstillingerVarslerV2({ data }: { data: InnstillingerVarslerData }) {
-  const mobile = useMobile();
   const router = useRouter();
 
   // ── Notif-brytere + språk — samme lagringsflyt som notif-toggles.tsx ──
@@ -177,7 +160,7 @@ export function InnstillingerVarslerV2({ data }: { data: InnstillingerVarslerDat
   const antallPaa = Object.values(prefs.notif).filter(Boolean).length;
 
   return (
-    <div data-paper-wave-g="innstillingervarsler" data-paper-portal-innstillinger-varsler style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
+    <div data-paper-wave-g="innstillingervarsler" data-paper-portal-innstillinger-varsler data-paper-slug="playerhq-innstillinger" style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
         <div data-paper-pattern-topp>
         <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>Varsler</h1>

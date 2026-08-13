@@ -5,10 +5,10 @@
  * T.* only. Lys PlayerHQ.
  */
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { getSignedVideoUrl } from "@/lib/storage/video";
 import Link from "next/link";
-import { T, Caps, Tittel, Kort, VideoKort, TomTilstand } from "@/components/v2";
+import { T, Kort, VideoKort, TomTilstand } from "@/components/v2";
 
 /* ── Datakontrakt (speiler prisma.sessionVideo, status READY) ──────────── */
 
@@ -40,28 +40,9 @@ function varighetTekst(sek: number | null): string | null {
   return `${m}:${String(s).padStart(2, "0")}`;
 }
 
-/** Fornavn fra fullt navn (for tittel-em). */
-function fornavn(navn: string): string {
-  return navn.trim().split(/\s+/)[0] ?? navn;
-}
-
-/** true på klient etter mount når viewport < 768px (styrer kun tallstørrelser). */
-function useMobile(): boolean {
-  const [m, setM] = useState(false);
-  useEffect(() => {
-    const mq = window.matchMedia("(max-width: 767px)");
-    const oppdater = () => setM(mq.matches);
-    oppdater();
-    mq.addEventListener("change", oppdater);
-    return () => mq.removeEventListener("change", oppdater);
-  }, []);
-  return m;
-}
-
 /* ── Skjerm ────────────────────────────────────────────────────────────── */
 
 export function CoachVideoerV2({ data }: { data: CoachVideoerData }) {
-  const mobile = useMobile();
   const { videoer } = data;
 
   // Hvilken video som åpnes akkurat nå + ev. feil per video.
@@ -81,12 +62,8 @@ export function CoachVideoerV2({ data }: { data: CoachVideoerData }) {
     }
   }
 
-  // Tittel-em: én coach → fornavnet; flere/ingen → nøytralt.
-  const coachNavn = Array.from(new Set(videoer.map((v) => v.coachName)));
-  const em = coachNavn.length === 1 ? fornavn(coachNavn[0]) : "coachen din";
-
   return (
-    <div data-paper-wave-g="coachvideoer" data-paper-portal-coach-videoer style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
+    <div data-paper-wave-g="coachvideoer" data-paper-portal-coach-videoer data-paper-slug="playerhq-coach-hub" style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
       {/* Hode */}
       <div>
         <div data-paper-pattern-topp>

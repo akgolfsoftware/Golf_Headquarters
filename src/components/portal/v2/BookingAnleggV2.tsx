@@ -47,7 +47,7 @@ export function BookingAnleggV2({ data }: { data: BookingAnleggV2Data }) {
   const mobile = useMobile();
 
   return (
-    <div data-paper-portal-booking-anlegg style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
+    <div data-paper-portal-booking-anlegg data-paper-slug="playerhq-booking-mine" style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
       {/* Hero */}
       <Kort tint pad={mobile ? "24px 20px" : "32px 30px"}>
         <span style={{ display: "inline-flex", alignItems: "center", gap: 8 }}>

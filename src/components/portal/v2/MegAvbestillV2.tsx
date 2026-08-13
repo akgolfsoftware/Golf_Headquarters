@@ -46,7 +46,7 @@ export function MegAvbestillV2({ data }: { data: MegAvbestillData }) {
   }
 
   return (
-    <div data-paper-wave-g="megavbestill" data-paper-portal-meg-avbestill style={{ maxWidth: 520, width: "100%", margin: "0 auto", display: "flex", flexDirection: "column", gap: T.gap }}>
+    <div data-paper-wave-g="megavbestill" data-paper-portal-meg-avbestill data-paper-slug="playerhq-abonnement" style={{ maxWidth: 520, width: "100%", margin: "0 auto", display: "flex", flexDirection: "column", gap: T.gap }}>
       {/* Hero — varsom advarsel, aldri sperre-språk */}
       <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 12, textAlign: "center", paddingTop: 6 }}>
         <span

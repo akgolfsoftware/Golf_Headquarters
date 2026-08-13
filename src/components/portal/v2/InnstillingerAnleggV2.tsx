@@ -4,11 +4,11 @@
  * PlayerHQ Innstillinger · Anlegg — v2 Presis + B-pakke (status, lagre = full CTA).
  */
 
-import { useEffect, useState, useTransition } from "react";
+import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import type { DrillFasilitet } from "@/generated/prisma/client";
 import { lagreFasilitetProfil } from "@/app/portal/meg/innstillinger/actions";
-import { T, Caps, Tittel, Kort, Knapp, StatusPill, Icon } from "@/components/v2";
+import { T, Caps, Kort, Knapp, StatusPill, Icon } from "@/components/v2";
 
 /* ── Katalog (uendret innhold fra fasilitet-profil-form.tsx) ───────── */
 
@@ -149,19 +149,6 @@ export type InnstillingerAnleggData = {
 
 /* ── Hjelpere ──────────────────────────────────────────────────────── */
 
-/** true på klient etter mount når viewport < 768px (styrer kun tallstørrelser). */
-function useMobile(): boolean {
-  const [m, setM] = useState(false);
-  useEffect(() => {
-    const mq = window.matchMedia("(max-width: 767px)");
-    const oppdater = () => setM(mq.matches);
-    oppdater();
-    mq.addEventListener("change", oppdater);
-    return () => mq.removeEventListener("change", oppdater);
-  }, []);
-  return m;
-}
-
 /** Avkryssbar fasilitet-rad — lime check-boks + tittel + flerlinje-beskrivelse. */
 function FasilitetRad({
   tittel,
@@ -228,7 +215,6 @@ function FasilitetRad({
 /* ── Skjerm ────────────────────────────────────────────────────────── */
 
 export function InnstillingerAnleggV2({ data }: { data: InnstillingerAnleggData }) {
-  const mobile = useMobile();
   const router = useRouter();
   const [valgte, setValgte] = useState<Set<DrillFasilitet>>(new Set(data.tilgjengelig));
   const [status, setStatus] = useState<"idle" | "lagret" | "feil">("idle");
@@ -273,7 +259,7 @@ export function InnstillingerAnleggV2({ data }: { data: InnstillingerAnleggData 
   const antallValgt = valgte.size;
 
   return (
-    <div data-paper-wave-g="innstillingeranlegg" data-paper-portal-innstillinger-anlegg style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
+    <div data-paper-wave-g="innstillingeranlegg" data-paper-portal-innstillinger-anlegg data-paper-slug="playerhq-innstillinger" style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
         <div data-paper-pattern-topp>
         <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>Anlegg</h1>

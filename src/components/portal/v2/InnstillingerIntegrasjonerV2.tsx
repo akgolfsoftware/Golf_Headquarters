@@ -4,9 +4,8 @@
  * PlayerHQ Innstillinger · Integrasjoner — v2 Presis + B-pakke (status, tom + CTA).
  */
 
-import { useEffect, useState } from "react";
 import Link from "next/link";
-import { T, Caps, Tittel, Kort, StatusPill, TomTilstand, Icon } from "@/components/v2";
+import { T, Caps, Kort, StatusPill, TomTilstand, Icon } from "@/components/v2";
 
 /* ── Datakontrakt (kun ekte data fra page.tsx) ─────────────────────── */
 
@@ -44,19 +43,6 @@ type Integrasjon = {
 };
 
 /* ── Hjelpere ──────────────────────────────────────────────────────── */
-
-/** true på klient etter mount når viewport < 768px (styrer kun tallstørrelser). */
-function useMobile(): boolean {
-  const [m, setM] = useState(false);
-  useEffect(() => {
-    const mq = window.matchMedia("(max-width: 767px)");
-    const oppdater = () => setM(mq.matches);
-    oppdater();
-    mq.addEventListener("change", oppdater);
-    return () => mq.removeEventListener("change", oppdater);
-  }, []);
-  return m;
-}
 
 /** Kvadratisk tjeneste-emblem (erstatter brand-SVG-ene — kun T.*-tokens). */
 function Emblem({ ikon, aktiv }: { ikon: string; aktiv?: boolean }) {
@@ -203,8 +189,6 @@ function IntegrasjonKort({ integrasjon }: { integrasjon: Integrasjon }) {
 /* ── Skjerm ────────────────────────────────────────────────────────── */
 
 export function InnstillingerIntegrasjonerV2({ data }: { data: InnstillingerIntegrasjonerData }) {
-  const mobile = useMobile();
-
   const tilkoblet: Integrasjon[] = [];
   const tilgjengelig: Integrasjon[] = [];
 
@@ -307,7 +291,7 @@ export function InnstillingerIntegrasjonerV2({ data }: { data: InnstillingerInte
   const totalt = tilkoblet.length + tilgjengelig.length;
 
   return (
-    <div data-paper-wave-g="innstillingerintegrasjoner" data-paper-portal-innstillinger-integrasjoner style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
+    <div data-paper-wave-g="innstillingerintegrasjoner" data-paper-portal-innstillinger-integrasjoner data-paper-slug="playerhq-innstillinger" style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
       <div data-paper-pattern-topp>
         <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>Integrasjoner</h1>
         <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>Innstillinger</span>

@@ -29,6 +29,8 @@ export default async function AiCoachPage() {
   return (
     <V2Shell aktiv="meg" bredde="kolonne" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
     <div
+      data-paper-slug="playerhq-innstillinger"
+      data-paper-portal-innstillinger-ai-coach
       style={{
         maxWidth: 520,
         margin: "0 auto",
