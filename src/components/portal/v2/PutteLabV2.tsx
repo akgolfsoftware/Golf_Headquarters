@@ -229,14 +229,14 @@ function GnSvg({ s, ballPos, onDragSlope, onDragAim }: {
           <path d="M0 7 L0 -6 M-4 -2 L0 -7 L4 -2" fill="none" stroke={T.lime} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
         </g>
       </g>
-      <text x={GCX} y={GCY + RING_R + 18} textAnchor="middle" fontFamily="JetBrains Mono, monospace" fontSize="9" fontWeight="700" fill={KRITT} fillOpacity="0.6" letterSpacing="1">FALL ↓ {s.dir}°</text>
+      <text x={GCX} y={GCY + RING_R + 18} textAnchor="middle" fontFamily={T.mono} fontSize="9" fontWeight="700" fill={KRITT} fillOpacity="0.6" letterSpacing="1">FALL ↓ {s.dir}°</text>
 
       <path d={prev} fill="none" stroke={BLEKK} strokeOpacity="0.8" strokeWidth="2.5" strokeDasharray="3 6" strokeLinecap="round" />
       <line x1={CX} y1={BALL_Y} x2={aimX} y2={HOLE_Y} stroke={T.lime} strokeWidth="2.5" strokeDasharray="7 5" strokeLinecap="round" />
 
       <g opacity={Math.abs(aimX - ghost) > 2 ? 0.8 : 0}>
         <line x1={ghost} y1={HOLE_Y - 13} x2={ghost} y2={HOLE_Y + 13} stroke={KRITT} strokeWidth="1.5" strokeDasharray="2 3" strokeOpacity="0.65" />
-        <text x={ghost} y={HOLE_Y - 18} textAnchor="middle" fontFamily="JetBrains Mono, monospace" fontSize="8" fontWeight="700" fill={KRITT} fillOpacity="0.7">IDEELT</text>
+        <text x={ghost} y={HOLE_Y - 18} textAnchor="middle" fontFamily={T.mono} fontSize="8" fontWeight="700" fill={KRITT} fillOpacity="0.7">IDEELT</text>
       </g>
 
       <ellipse cx={CX} cy={HOLE_Y} rx="11" ry="9" fill={BLEKK} />
@@ -246,7 +246,7 @@ function GnSvg({ s, ballPos, onDragSlope, onDragAim }: {
 
       <g style={{ cursor: "ew-resize" }} transform={`translate(${aimX},${HOLE_Y})`} onPointerDown={handleAimDown}>
         <path d="M0 -26 L7 -16 L0 -6 L-7 -16 Z" fill={T.lime} stroke={BLEKK} strokeWidth="1.5" />
-        <text x="0" y="-30" textAnchor="middle" fontFamily="JetBrains Mono, monospace" fontSize="8" fontWeight="800" fill={KRITT}>SIKT</text>
+        <text x="0" y="-30" textAnchor="middle" fontFamily={T.mono} fontSize="8" fontWeight="800" fill={KRITT}>SIKT</text>
       </g>
 
       <circle
@@ -259,7 +259,7 @@ function GnSvg({ s, ballPos, onDragSlope, onDragAim }: {
         strokeOpacity="0.35"
         strokeWidth="1"
       />
-      <text x={CX} y={BALL_Y + 22} textAnchor="middle" fontFamily="JetBrains Mono, monospace" fontSize="8" fontWeight="700" fill={KRITT} fillOpacity="0.7">BALL</text>
+      <text x={CX} y={BALL_Y + 22} textAnchor="middle" fontFamily={T.mono} fontSize="8" fontWeight="700" fill={KRITT} fillOpacity="0.7">BALL</text>
     </svg>
   );
 }
@@ -611,7 +611,7 @@ function KontrollDial({ q }: { q: QVals }) {
   return (
     <svg viewBox={`0 0 ${VB} ${VB}`} role="img" aria-label="Kontroll-skive" style={{ width: "100%", height: "auto" }}>
       <circle cx={KCX} cy={KCY} r="196" fill="none" stroke={T.warn} strokeWidth="3" strokeDasharray="3 9" opacity="0.55" />
-      <text x={KCX} y="26" textAnchor="middle" fontFamily="JetBrains Mono, monospace" fontSize="10" fontWeight="800" letterSpacing="1.5" fill={T.warn}>FLAKS · UTENFOR KONTROLL</text>
+      <text x={KCX} y="26" textAnchor="middle" fontFamily={T.mono} fontSize="10" fontWeight="800" letterSpacing="1.5" fill={T.warn}>FLAKS · UTENFOR KONTROLL</text>
 
       {stageArr.map(([k, lbl], i) => {
         const a0 = i * 90 + 6, a1 = i * 90 + 84, mid = (a0 + a1) / 2;
@@ -625,17 +625,17 @@ function KontrollDial({ q }: { q: QVals }) {
           <g key={k}>
             <path d={kontrollArc(r, a0, a1)} fill="none" stroke={T.track} strokeWidth="26" strokeLinecap="round" />
             <path d={kontrollArc(r, a0, fillEnd)} fill="none" stroke={T.lime} strokeWidth="26" strokeLinecap="round" />
-            <text x={lp.x.toFixed(1)} y={lp.y.toFixed(1)} textAnchor="middle" dominantBaseline="middle" fontFamily="JetBrains Mono, monospace" fontSize="11" fontWeight="800" fill={T.fg}>{lbl.toUpperCase()}</text>
-            <text x={lp.x.toFixed(1)} y={(lp.y + 14).toFixed(1)} textAnchor="middle" dominantBaseline="middle" fontFamily="JetBrains Mono, monospace" fontSize="10" fontWeight="700" fill={T.mut}>{Math.round(q[k] * 100)}</text>
+            <text x={lp.x.toFixed(1)} y={lp.y.toFixed(1)} textAnchor="middle" dominantBaseline="middle" fontFamily={T.mono} fontSize="11" fontWeight="800" fill={T.fg}>{lbl.toUpperCase()}</text>
+            <text x={lp.x.toFixed(1)} y={(lp.y + 14).toFixed(1)} textAnchor="middle" dominantBaseline="middle" fontFamily={T.mono} fontSize="10" fontWeight="700" fill={T.mut}>{Math.round(q[k] * 100)}</text>
           </g>
         );
       })}
 
       <circle cx={KCX} cy={KCY} r="96" fill={T.lime} opacity="0.10" />
       <circle cx={KCX} cy={KCY} r="92" fill="none" stroke={T.lime} strokeWidth="2.5" />
-      <text x={KCX} y={KCY - 22} textAnchor="middle" fontFamily="JetBrains Mono, monospace" fontSize="11" fontWeight="800" letterSpacing="2" fill={T.fg2} opacity="0.8">AKSEPT</text>
-      <text x={KCX} y={KCY + 18} textAnchor="middle" fontFamily="JetBrains Mono, monospace" fontSize="58" fontWeight="700" fill={T.fg} letterSpacing="-2">{proc}</text>
-      <text x={KCX} y={KCY + 44} textAnchor="middle" fontFamily="JetBrains Mono, monospace" fontSize="11" fontWeight="700" fill={T.mut}>PROSESS-SCORE</text>
+      <text x={KCX} y={KCY - 22} textAnchor="middle" fontFamily={T.mono} fontSize="11" fontWeight="800" letterSpacing="2" fill={T.fg2} opacity="0.8">AKSEPT</text>
+      <text x={KCX} y={KCY + 18} textAnchor="middle" fontFamily={T.mono} fontSize="58" fontWeight="700" fill={T.fg} letterSpacing="-2">{proc}</text>
+      <text x={KCX} y={KCY + 44} textAnchor="middle" fontFamily={T.mono} fontSize="11" fontWeight="700" fill={T.mut}>PROSESS-SCORE</text>
     </svg>
   );
 }

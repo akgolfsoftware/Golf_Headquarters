@@ -249,7 +249,7 @@ export function AdminBookingerV2({ data }: { data: AdminBookingerV2Data }) {
   const primaerCta = (
     <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
       <Link href={data.nyHref} style={{ textDecoration: "none", display: "block" }}>
-        <CTAPill icon="plus" full enTing>
+        <CTAPill icon="plus" full>
           Ny booking
         </CTAPill>
       </Link>

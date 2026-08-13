@@ -41,7 +41,6 @@ export const T = {
   // Paper aliases (tydelig semantikk — samme CSS-vars)
   cta: "var(--v2-lime)",           // ink CTA fill (#141413 lys)
   onCta: "var(--v2-on-lime)",
-  brand: "var(--v2-brand, #D1F843)", // neon AK-lime — ALDRI primær CTA
   onBrand: "#141413",
   // Paper rail / faner (alltid mørk chrome)
   rail: "var(--p-rail, #141413)",

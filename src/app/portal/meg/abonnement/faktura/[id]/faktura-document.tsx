@@ -14,16 +14,17 @@ import {
   StyleSheet,
 } from "@react-pdf/renderer";
 
-// ── Designsystem-farger (matcher tokens i globals.css, PlayerHQ lyst tema) ──
+// ── Paper-tokens (react-pdf kan ikke lese CSS-vars — verdiene speiler
+//    src/styles/paper-tokens.css lys modus; hold dem i synk manuelt) ──
 const COLOR = {
-  primary: "#005840",
-  foreground: "#0A1F17",
-  muted: "#5E5C57",
-  border: "#E5E3DD",
+  primary: "#141413",
+  foreground: "#141413",
+  muted: "#5E5D59",
+  border: "#E8E6DC",
   card: "#FFFFFF",
-  secondary: "#F1EEE5",
-  background: "#FAFAF7",
-  success: "#1A7D56",
+  secondary: "#F0EEE6",
+  background: "#FAF9F5",
+  success: "#63784A",
 } as const;
 
 const styles = StyleSheet.create({

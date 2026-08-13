@@ -81,13 +81,13 @@ function byggEpostHtml(navn: string, fakturaNr: string): string {
   return `<!doctype html>
 <html lang="nb">
 <head><meta charset="UTF-8"></head>
-<body style="font-family: system-ui, sans-serif; max-width: 580px; margin: 32px auto; color: #0A1F17;">
+<body style="font-family: system-ui, sans-serif; max-width: 580px; margin: 32px auto; color: #141413;">
   <h1 style="font-size: 24px; font-weight: 600; margin: 0 0 12px;">Hei ${navn} —</h1>
   <p>Her er fakturaen din fra AK Golf Academy. Den ligger vedlagt som PDF i denne e-posten.</p>
-  <p style="margin-top: 16px; color: #5E5C57; font-size: 13px;">
-    Faktura <strong style="color: #0A1F17;">#${fakturaNr}</strong>
+  <p style="margin-top: 16px; color: #5E5D59; font-size: 13px;">
+    Faktura <strong style="color: #141413;">#${fakturaNr}</strong>
   </p>
-  <p style="margin-top: 24px; color: #5E5C57; font-size: 12px;">
+  <p style="margin-top: 24px; color: #5E5D59; font-size: 12px;">
     Spørsmål om fakturaen? Svar på denne e-posten, så hjelper vi deg.
   </p>
 </body>

@@ -119,7 +119,7 @@ function GodkjennLavRisiko({ count }: { count: number }) {
       }}
       aria-label={`Godkjenn lav-risiko (${count})`}
     >
-      <CTAPill icon="check-circle" full enTing>
+      <CTAPill icon="check-circle" full>
         {busy ? "Godkjenner …" : `Godkjenn lav-risiko (${count})`}
       </CTAPill>
     </button>
@@ -475,7 +475,7 @@ export function AdminGodkjenningerV2({ data }: { data: AdminGodkjenningerV2Data 
         style={{ all: "unset", cursor: "pointer", display: "block", width: "100%" }}
         aria-label={`Vis ${antallHaster} som haster`}
       >
-        <CTAPill icon="alert-circle" full enTing>
+        <CTAPill icon="alert-circle" full>
           {`Ta ${pl(antallHaster, "sak", "saker")} som haster`}
         </CTAPill>
       </button>
@@ -487,7 +487,7 @@ export function AdminGodkjenningerV2({ data }: { data: AdminGodkjenningerV2Data 
       </div>
     ) : (
       <Link href="/admin/innboks" style={{ textDecoration: "none", display: "block" }}>
-        <CTAPill icon="inbox" full enTing>
+        <CTAPill icon="inbox" full>
           Åpne innboks
         </CTAPill>
       </Link>

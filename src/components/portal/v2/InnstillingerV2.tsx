@@ -351,7 +351,7 @@ export function InnstillingerV2({ data }: { data: InnstillingerData }) {
       <Link href="/portal/meg" style={{ textDecoration: "none", display: "block" }}>
         <span style={{
             display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, minHeight: 48, width: "100%", padding: "10px 16px",
-            borderRadius: 10, background: T.handling, color: T.onHandling, fontFamily: T.ui, fontSize: 14, fontWeight: 600,
+            borderRadius: 10, background: T.panel3, color: T.fg, border: `1px solid ${T.borderS}`, fontFamily: T.ui, fontSize: 14, fontWeight: 600,
           }}>Tilbake til Meg</span>
       </Link>
 

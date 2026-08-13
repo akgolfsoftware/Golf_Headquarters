@@ -119,7 +119,7 @@ export function AdminPlansV2({ data }: { data: AdminPlansData }) {
   // ── B: én primær CTA ───────────────────────────────────────────
   const primaerCta = (
     <Link href={data.nyPlanHref} style={{ textDecoration: "none", display: "block" }}>
-      <CTAPill icon="plus" full enTing>
+      <CTAPill icon="plus" full>
         Ny plan
       </CTAPill>
     </Link>

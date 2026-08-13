@@ -1,27 +1,9 @@
-import { SubNav } from "@/components/portal/sub-nav";
-
-const ITEMS = [
-  { href: "/portal/coach",          label: "Oversikt" },
-  { href: "/portal/coach/plans",    label: "Planer" },
-  { href: "/portal/coach/plans/perioder", label: "Perioder" },
-  { href: "/portal/coach/ovelser",  label: "Øvelser" },
-  { href: "/portal/coach/videoer",  label: "Videoer" },
-  { href: "/portal/coach/sg-hub",   label: "SG-hub" },
-  { href: "/portal/coach/melding",  label: "Meldinger" },
-  { href: "/portal/onskeligokt",    label: "Ønske om økt" },
-  { href: "/portal/booking",        label: "Book økt" },
-  { href: "/portal/coach/ai",       label: "AI-coach" },
-];
-
 export default function CoachLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  return (
-    <div className="space-y-6">
-      <SubNav items={ITEMS} />
-      <div>{children}</div>
-    </div>
-  );
+  // Ingen ekstra SubNav her — dobbel-nav mot fasit. Alle page.tsx under
+  // (legacy)/coach er rene redirects til /portal/coach-v2-flatene.
+  return <>{children}</>;
 }
