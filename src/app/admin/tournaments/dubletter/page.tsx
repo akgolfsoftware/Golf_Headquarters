@@ -107,7 +107,7 @@ export default async function DubletterPage() {
     <V2Shell bredde="kolonne" aktiv="planlegge" nav={AGENCYOS_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
       <TilbakeLenke href="/admin/tournaments">Turneringer</TilbakeLenke>
       <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
-        <div>
+        <div data-paper-pattern-topp data-paper-slug="agencyos-turneringer">
           <Caps>Planlegge · Turneringer</Caps>
           <div style={{ marginTop: 10 }}>
             <Tittel em="dubletter">Vurder</Tittel>

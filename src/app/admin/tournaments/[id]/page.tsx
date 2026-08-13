@@ -102,7 +102,7 @@ export default async function TurneringDetalj({
       <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
         {/* Hode */}
         <div style={{ display: "flex", flexWrap: "wrap", alignItems: "flex-end", justifyContent: "space-between", gap: 12 }}>
-          <div>
+          <div data-paper-pattern-topp data-paper-slug="agencyos-turneringer">
             <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
               <Caps>AgencyOS · Turneringer</Caps>
               <StatusPill tone="info">{tournament.format}</StatusPill>

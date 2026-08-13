@@ -192,7 +192,7 @@ export function TurneringWizardV2({ courses }: { courses: Course[] }) {
     <div data-paper-wave-h="turneringwizard" data-paper-pattern  style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 640, margin: "0 auto" }}>
       {/* B: status først */}
       <div style={{ display: "flex", flexWrap: "wrap", alignItems: "flex-end", justifyContent: "space-between", gap: 12 }}>
-        <div>
+        <div data-paper-pattern-topp data-paper-slug="agencyos-turneringer">
           <Caps>AgencyOS · Ny turnering</Caps>
           <div style={{ marginTop: 8 }}>
             <Tittel em="turnering.">Ny</Tittel>

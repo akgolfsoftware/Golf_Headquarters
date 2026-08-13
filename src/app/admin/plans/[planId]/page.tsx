@@ -178,7 +178,7 @@ export default async function AdminPlanDetalj({
 
         {/* Hode */}
         <div style={{ display: "flex", flexWrap: "wrap", alignItems: "flex-end", justifyContent: "space-between", gap: 12 }}>
-          <div>
+          <div data-paper-pattern-topp data-paper-slug="agencyos-planbibliotek">
             <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
               <Caps>AgencyOS · Planer</Caps>
               <StatusPill tone={STATUS_TONE[plan.status] ?? "info"}>{plan.status}</StatusPill>
