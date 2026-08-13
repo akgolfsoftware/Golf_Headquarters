@@ -41,6 +41,8 @@ export default async function NyttKortPage() {
   return (
     <V2Shell aktiv="meg" bredde="kolonne" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
       <div
+        data-paper-slug="playerhq-abonnement"
+        data-paper-portal-meg-kort-ny
         style={{
           maxWidth: 480,
           margin: "0 auto",

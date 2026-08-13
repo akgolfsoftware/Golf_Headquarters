@@ -66,7 +66,7 @@ function SumRad({ label, value, total }: { label: string; value: string; total?:
 
 export function MegFakturaV2({ data, handlinger }: { data: MegFakturaData; handlinger?: ReactNode }) {
   return (
-    <div data-paper-wave-g="megfaktura" data-paper-portal-meg-faktura style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
+    <div data-paper-wave-g="megfaktura" data-paper-portal-meg-faktura data-paper-slug="playerhq-abonnement" style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
       <div style={{ display: "flex", flexWrap: "wrap", alignItems: "flex-end", justifyContent: "space-between", gap: 14 }}>
         <div style={{ minWidth: 0 }}>
           <Caps>AK Golf · Faktura</Caps>

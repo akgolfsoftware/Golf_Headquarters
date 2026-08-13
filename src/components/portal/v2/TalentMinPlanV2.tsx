@@ -6,7 +6,7 @@
  */
 
 import Link from "next/link";
-import { T, Caps, Tittel, Kort, Rad, StatusPill, FordelingRad, TomTilstand, HjelpTips, CTAPill } from "@/components/v2";
+import { T, Caps, Kort, Rad, StatusPill, FordelingRad, TomTilstand, HjelpTips, CTAPill } from "@/components/v2";
 import { Icon } from "@/components/v2/icon";
 
 /* ── Data-kontrakt ─────────────────────────────────────────────────── */
@@ -24,7 +24,7 @@ export interface TalentMinPlanData {
 
 export function TalentMinPlanV2({ data }: { data: TalentMinPlanData }) {
   return (
-    <div data-paper-wave-g="talentminplan" data-paper-portal-talent-min-plan style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
+    <div data-paper-wave-g="talentminplan" data-paper-portal-talent-min-plan data-paper-slug="playerhq-talent" style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
       {/* Hode */}
       <div>
         <div data-paper-pattern-topp>

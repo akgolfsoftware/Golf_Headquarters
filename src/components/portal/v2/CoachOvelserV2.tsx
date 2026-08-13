@@ -5,14 +5,13 @@
  * T.* only. Lys PlayerHQ.
  */
 
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import Link from "next/link";
 import type { PyramidArea } from "@/generated/prisma/client";
 import type { AkseKey } from "@/lib/v2/tokens";
 import {
   T,
   Caps,
-  Tittel,
   PillTabs,
   Kort,
   AkseChip,
@@ -67,24 +66,10 @@ function csTekst(o: CoachOvelseItem): string | null {
   return `CS${o.csMin ?? o.csMax}`;
 }
 
-/** true på klient etter mount når viewport < 768px (styrer kun tittelstørrelse). */
-function useMobile(): boolean {
-  const [m, setM] = useState(false);
-  useEffect(() => {
-    const mq = window.matchMedia("(max-width: 767px)");
-    const oppdater = () => setM(mq.matches);
-    oppdater();
-    mq.addEventListener("change", oppdater);
-    return () => mq.removeEventListener("change", oppdater);
-  }, []);
-  return m;
-}
-
 /* ── Skjerm ────────────────────────────────────────────────────────────── */
 
 export function CoachOvelserV2({ data }: { data: CoachOvelserData }) {
-  const mobile = useMobile();
-  const { coachNavn, ovelser } = data;
+  const { ovelser } = data;
   const [omrade, setOmrade] = useState<PyramidArea | "ALLE">("ALLE");
 
   const synlige = useMemo(
@@ -96,7 +81,7 @@ export function CoachOvelserV2({ data }: { data: CoachOvelserData }) {
   const valgtLabel = OMRADE_TABS.find((t) => t.id === omrade)?.l ?? "";
 
   return (
-    <div data-paper-wave-g="coachovelser" data-paper-portal-coach-ovelser style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
+    <div data-paper-wave-g="coachovelser" data-paper-portal-coach-ovelser data-paper-slug="playerhq-coach-hub" style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
       {/* Hode */}
       <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
         <div>

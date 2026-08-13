@@ -57,7 +57,7 @@ export function BookingCoachV2({ data }: { data: BookingCoachV2Data }) {
   const fornavn = data.navn.split(" ")[0];
 
   return (
-    <div data-paper-portal-booking-coach style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
+    <div data-paper-portal-booking-coach data-paper-slug="playerhq-booking-mine" style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
       {/* Hero */}
       <Kort pad={mobile ? "22px 20px" : "28px 30px"}>
         <div style={{ display: "flex", flexDirection: mobile ? "column" : "row", gap: mobile ? 18 : 28, alignItems: mobile ? "flex-start" : "center" }}>

@@ -5,7 +5,7 @@
  * T.* only. Lys PlayerHQ.
  */
 
-import { T, Caps, Tittel, Kort, StatusPill, HjelpTips, RadarProfil } from "@/components/v2";
+import { T, Kort, StatusPill, HjelpTips, RadarProfil } from "@/components/v2";
 import type { TalentAkseKey } from "./TalentFellesV2";
 
 /* ── Data-kontrakt ─────────────────────────────────────────────────── */
@@ -47,7 +47,7 @@ export function TalentMittNivaV2({ data }: { data: TalentMittNivaData }) {
   const harKohort = data.kohortAntall > 0;
 
   return (
-    <div data-paper-wave-g="talentmittniva" data-paper-portal-talent-mitt-niva style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
+    <div data-paper-wave-g="talentmittniva" data-paper-portal-talent-mitt-niva data-paper-slug="playerhq-talent" style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
       {/* Hode */}
       <div>
         <div data-paper-pattern-topp>

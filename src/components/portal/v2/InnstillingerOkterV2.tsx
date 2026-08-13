@@ -4,32 +4,14 @@
  * PlayerHQ Innstillinger · Apparater — v2 Presis + B-pakke (tom = én grønn vei).
  */
 
-import { useEffect, useState } from "react";
 import Link from "next/link";
-import { T, Tittel, Kort, TomTilstand, StatusPill } from "@/components/v2";
-
-/* ── Hjelpere ──────────────────────────────────────────────────────── */
-
-/** true på klient etter mount når viewport < 768px (styrer kun tallstørrelser). */
-function useMobile(): boolean {
-  const [m, setM] = useState(false);
-  useEffect(() => {
-    const mq = window.matchMedia("(max-width: 767px)");
-    const oppdater = () => setM(mq.matches);
-    oppdater();
-    mq.addEventListener("change", oppdater);
-    return () => mq.removeEventListener("change", oppdater);
-  }, []);
-  return m;
-}
+import { T, Kort, TomTilstand, StatusPill } from "@/components/v2";
 
 /* ── Skjerm ────────────────────────────────────────────────────────── */
 
 export function InnstillingerOkterV2() {
-  const mobile = useMobile();
-
   return (
-    <div data-paper-wave-g="innstillingerokter" data-paper-portal-innstillinger-okter style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
+    <div data-paper-wave-g="innstillingerokter" data-paper-portal-innstillinger-okter data-paper-slug="playerhq-innstillinger" style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
       <div data-paper-pattern-topp>
         <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>Økter</h1>
         <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>Innstillinger</span>

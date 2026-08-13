@@ -5,11 +5,9 @@
  * T.* only. Lys PlayerHQ.
  */
 
-import { useEffect, useState, useTransition } from "react";
+import { useState, useTransition } from "react";
 import {
   T,
-  Caps,
-  Tittel,
   Kort,
   StatusPill,
   AvatarInit,
@@ -37,21 +35,6 @@ export type CoachSporsmalTraad = {
   /** Forhåndsformatert tid fra answeredAt (null når ubesvart). */
   besvartTid: string | null;
 };
-
-/* ── Ren hjelper ───────────────────────────────────────────────────── */
-
-/** true på klient etter mount når viewport < 768px (styrer kun titteltørrelse). */
-function useMobile(): boolean {
-  const [m, setM] = useState(false);
-  useEffect(() => {
-    const mq = window.matchMedia("(max-width: 767px)");
-    const oppdater = () => setM(mq.matches);
-    oppdater();
-    mq.addEventListener("change", oppdater);
-    return () => mq.removeEventListener("change", oppdater);
-  }, []);
-  return m;
-}
 
 /* Liten mono-meta med ikon (stilt/besvart-tidspunkt). */
 function TidMeta({ icon, children }: { icon: string; children: React.ReactNode }) {
@@ -88,12 +71,12 @@ export function CoachSporsmalTraadV2({
   data: CoachSporsmalTraad;
   svarAction: (questionId: string, answer: string) => Promise<void>;
 }) {
-  const mobile = useMobile();
   const toast = useToast();
 
   return (
-    <div data-paper-wave-g="coachsporsmaltraad" data-paper-pattern 
+    <div data-paper-wave-g="coachsporsmaltraad" data-paper-pattern
       data-paper-portal-coach-sporsmal-traad
+      data-paper-slug="playerhq-coach-hub"
       style={{
         maxWidth: 760,
         width: "100%",

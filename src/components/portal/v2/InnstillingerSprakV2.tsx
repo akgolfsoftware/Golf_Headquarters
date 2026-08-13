@@ -4,10 +4,10 @@
  * PlayerHQ Innstillinger · Språk — v2 Presis + B-pakke (status, klarspråk).
  */
 
-import { useEffect, useState, useTransition } from "react";
+import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { oppdaterPreferences } from "@/app/portal/meg/actions";
-import { T, Tittel, Kort, StatusPill, ValgKort } from "@/components/v2";
+import { T, Kort, StatusPill, ValgKort } from "@/components/v2";
 
 /* ── Datakontrakt ──────────────────────────────────────────────────── */
 
@@ -16,25 +16,9 @@ export type InnstillingerSprakData = {
   spraak: "nb" | "en";
 };
 
-/* ── Hjelpere ──────────────────────────────────────────────────────── */
-
-/** true på klient etter mount når viewport < 768px (styrer kun tallstørrelser). */
-function useMobile(): boolean {
-  const [m, setM] = useState(false);
-  useEffect(() => {
-    const mq = window.matchMedia("(max-width: 767px)");
-    const oppdater = () => setM(mq.matches);
-    oppdater();
-    mq.addEventListener("change", oppdater);
-    return () => mq.removeEventListener("change", oppdater);
-  }, []);
-  return m;
-}
-
 /* ── Skjerm ────────────────────────────────────────────────────────── */
 
 export function InnstillingerSprakV2({ data }: { data: InnstillingerSprakData }) {
-  const mobile = useMobile();
   const router = useRouter();
   const [valgt, setValgt] = useState<"nb" | "en">(data.spraak);
   const [pending, startTransition] = useTransition();
@@ -53,7 +37,7 @@ export function InnstillingerSprakV2({ data }: { data: InnstillingerSprakData })
   }
 
   return (
-    <div data-paper-wave-g="innstillingersprak" data-paper-portal-innstillinger-sprak style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
+    <div data-paper-wave-g="innstillingersprak" data-paper-portal-innstillinger-sprak data-paper-slug="playerhq-innstillinger" style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
         <div data-paper-pattern-topp>
         <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>Språk</h1>
