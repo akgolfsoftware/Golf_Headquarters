@@ -96,7 +96,7 @@ export const AGENCYOS_NAV: V2NavItem[] = [
   { id: "spillere", label: "Spillere", icon: "users", href: "/admin/spillere" },
   { id: "kalender", label: "Kalender", icon: "calendar", href: "/admin/kalender" },
   { id: "workbench", label: "Workbench", icon: "target", href: "/admin/planlegge" },
-  { id: "agenticos", label: "AgenticOS", icon: "bot", href: "/admin/agents" },
+  { id: "agenticos", label: "AgenticOS", icon: "bot", href: "/admin/agenticos" },
   { id: "okonomi", label: "Økonomi", icon: "credit-card", href: "/admin/agencyos/okonomi", adminOnly: true },
   { id: "innstillinger", label: "Innstillinger", icon: "settings", href: "/admin/settings", adminOnly: true },
 ];
@@ -130,7 +130,7 @@ export const AGENCYOS_ROM: V2Rom[] = [
     beskrivelse: "Caddie, coach-agenter, agent-team, daglig brief",
     meta: "Coach",
     icon: "bot",
-    href: "/admin/agents",
+    href: "/admin/agenticos",
   },
   {
     id: "plan",
