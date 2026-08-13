@@ -131,7 +131,7 @@ export default async function OppfolgingsKoPage() {
       <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
         {/* Hode */}
         <div style={{ display: "flex", flexWrap: "wrap", alignItems: "flex-end", justifyContent: "space-between", gap: 12 }}>
-          <div>
+          <div data-paper-pattern-topp data-paper-slug="agencyos-godkjenninger">
             <Caps>AgencyOS · Oppfølgingskø</Caps>
             <div style={{ marginTop: 10 }}>
               <Tittel em="samtale">Hvem trenger en</Tittel>

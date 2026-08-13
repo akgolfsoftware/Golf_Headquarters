@@ -32,7 +32,7 @@ const STATUS_LABEL: Record<string, string> = {
 
 export function ApprovalNotFound() {
   return (
-    <div data-paper-wave-h="godkjenning-detalj" data-paper-pattern style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 960, margin: "0 auto", width: "100%" }}>
+    <div data-paper-wave-h="godkjenning-detalj" data-paper-pattern data-paper-slug="agencyos-godkjenninger" style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 960, margin: "0 auto", width: "100%" }}>
       <TilbakeLenke href="/admin/godkjenninger">Tilbake til godkjenninger</TilbakeLenke>
       <Kort>
         <TomTilstand
@@ -104,7 +104,7 @@ export function ApprovalDetailClient({ detail }: { detail: ApprovalDetail }) {
   const statusTone = detail.status === "PENDING" ? "info" as const : detail.status === "ACCEPTED" ? "lime" as const : "down" as const;
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: T.gap, paddingBottom: 96 }}>
+    <div data-paper-wave-h="godkjenning-detalj" data-paper-pattern data-paper-slug="agencyos-godkjenninger" style={{ display: "flex", flexDirection: "column", gap: T.gap, paddingBottom: 96 }}>
       <TilbakeLenke href="/admin/godkjenninger">{eyebrow}</TilbakeLenke>
 
       {/* B: status først */}
