@@ -1,2 +1,2 @@
-OK    PP-1.1 m390   /portal — "I dag Øyvind Rohjan · kat. B · SG total +0,4 Dagens økt FØR planlegg →"
-OK    PP-1.1 d1280  /portal — "I DAG PLAN ANALYSE MEG MØRK ØR I dag Øyvind Rohjan · kat. B · SG total"
+OK    NT-435 m390   /admin/agents/daily-brief — "Agenter AGENCYOS · AGENTER AKTIV Daily Brief agenticos · agent-detalj "
+OK    NT-435 d1280  /admin/agents/daily-brief — "KONSOLL INNBOKS SPILLERE KALENDER WORKBENCH AGENTICOS ØKONOMI INNSTILL"

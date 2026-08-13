@@ -7,6 +7,12 @@
       "runtimeArgs": ["run", "dev"],
       "port": 3000,
       "autoPort": true
+    },
+    {
+      "name": "ak-golf-website",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev", "--prefix", "/Users/anderskristiansen/Developer/ak-golf-website", "--", "-p", "3005"],
+      "port": 3005
     }
   ]
 }
