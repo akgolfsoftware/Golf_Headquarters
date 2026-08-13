@@ -64,6 +64,7 @@ export interface AdminBookingerV2Data {
   };
   anlegg: string[]; // aktive anlegg (heatmap-caption)
   bookinger: AdminBookingV2Row[];
+  tjenester: { id: string; navn: string; varighetMin: number; prisLabel: string }[];
 }
 
 const STATUS: Record<BookingStatusKey, { label: string; tone: StatusTone; filter: string }> = {
@@ -353,6 +354,29 @@ export function AdminBookingerV2({ data }: { data: AdminBookingerV2Data }) {
     </Kort>
   );
 
+  // ── Tjenester og åpningstid (§ fasit, lenker til ekte /admin/services) ──
+  const tjenesterKort =
+    data.tjenester.length > 0 ? (
+      <Kort
+        eyebrow="Tjenester og åpningstid"
+        action={
+          <Link href="/admin/services" className="v2-focus" style={{ textDecoration: "none" }}>
+            <Caps size={9} color={T.mut}>Rediger</Caps>
+          </Link>
+        }
+      >
+        {data.tjenester.map((t, i) => (
+          <Rad
+            key={t.id}
+            title={`${t.navn} · ${t.varighetMin} min`}
+            sub={undefined}
+            meta={<span style={{ fontFamily: T.mono, fontSize: 12, color: T.fg }}>{t.prisLabel}</span>}
+            last={i === data.tjenester.length - 1}
+          />
+        ))}
+      </Kort>
+    ) : null;
+
   // ── AI-innsikt → kø ───────────────────────────────────────────
   const innsiktTekst =
     antallPending > 0
@@ -400,6 +424,8 @@ export function AdminBookingerV2({ data }: { data: AdminBookingerV2Data }) {
         {liste}
         {heatmap}
       </div>
+
+      {tjenesterKort}
 
       <InnsiktChip>{innsiktTekst}</InnsiktChip>
     </div>

@@ -59,7 +59,7 @@ export default async function V2AdminBookingerPage() {
   ukeSlutt.setDate(ukeSlutt.getDate() + 7);
   const ukeNr = isoUke(ukeStart);
 
-  const [bookinger, facilities, ventendeForesporsler] = await Promise.all([
+  const [bookinger, facilities, ventendeForesporsler, tjenester] = await Promise.all([
     prisma.booking.findMany({
       where: { startAt: { gte: ukeStart, lt: ukeSlutt } },
       orderBy: { startAt: "asc" },
@@ -82,6 +82,12 @@ export default async function V2AdminBookingerPage() {
       orderBy: [{ location: { name: "asc" } }, { name: "asc" }],
     }),
     prisma.sessionRequest.count({ where: { status: "PENDING" } }),
+    prisma.serviceType.findMany({
+      where: { active: true },
+      select: { id: true, name: true, durationMin: true, priceOre: true },
+      orderBy: { name: "asc" },
+      take: 6,
+    }),
   ]);
 
   // --- Kapasitet-heatmap: timer × dag (ekte bookinger) ---
@@ -149,6 +155,12 @@ export default async function V2AdminBookingerPage() {
     heat: { timer: TIMER, dager: DAG_KOLONNER, verdier },
     anlegg: facilities.map((f) => f.name),
     bookinger: rader,
+    tjenester: tjenester.map((t) => ({
+      id: t.id,
+      navn: t.name,
+      varighetMin: t.durationMin,
+      prisLabel: `${Math.round(t.priceOre / 100).toLocaleString("nb-NO")} kr`,
+    })),
   };
 
   return (
