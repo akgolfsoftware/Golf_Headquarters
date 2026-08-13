@@ -92,8 +92,8 @@
 - [x] `fase2/agencyos/agencyos-planbibliotek.html` — NT-416a signert av Anders 13.08.2026 (galleri mot prod)
 - [x] `fase2/agencyos/agencyos-turneringer.html` — NT-416b signert av Anders 13.08.2026 (galleri mot prod)
 - [~] `fase2/agencyos/agencyos-oppsett.html` → AdminSettingsV2
-- [ ] `fase2/agencyos/agencyos-agenticos-hub.html`
-- [ ] `fase2/agencyos/agencyos-agent-detalj.html`
+- [~] `fase2/agencyos/agencyos-agenticos-hub.html` — bygget natt 13.08 (#433, galleri NT-433) READY_SIGN
+- [~] `fase2/agencyos/agencyos-agent-detalj.html` — bygget natt 13.08 (#435, galleri NT-435) READY_SIGN
 
 ## Fase 2 · W5 Marketing/Auth/Forelder/System (ny i zip 2)
 

@@ -17,3 +17,25 @@ denne økten, kun kode + kort variant-sjekk tittel/tom/primær-handling).
 | playerhq-talent | /portal/talent/* (5 skjermer) | `playerhq-talent` (TalentV2) | Slug + TomTilstand (3 forekomster) på plass fra før — ingen konkrete avvik funnet i denne kjappe sjekken. | [ ] |
 
 Oppdateres fortløpende under overnight.
+
+## Natt 13.08 — variant-utrulling etter rutefasit.md (PR #434)
+
+Slug-sporing (`data-paper-slug`) + lint-rydding på variantflatene under — ingen
+funksjons-/layoutendring (flatene var alt bygget i tidligere bølger; rutefasit-avvikene
+deres var allerede dekket eller står på STOPP-lista). Skjermbilder: rutene er
+attributt-endringer uten visuell diff — galleri ikke tatt per rute, jf. NATTRAPPORT-2026-08-13.
+
+| Rute(r) | Mal | Avvik (fra rutefasit.md) | Status |
+|---|---|---|---|
+| meg/innstillinger/{varsler,sprak,okter,anlegg,sikkerhet,integrasjoner,personvern,ai-coach} | playerhq-innstillinger | per rutefasit-tabellen | tagget (#434) |
+| meg/abonnement/{faktura/[id], kort/ny, avbestill, oppgrader/flyt} | playerhq-abonnement | kvittering/kortskjema/bekreftelse/pakkevalg | tagget (#434) |
+| booking/anlegg/[anleggId] · booking/coach/[coachId] | playerhq-booking-mine | §12 detaljkort | tagget (#434) |
+| coach/{ai, ovelser, videoer, sporsmal/ny, sporsmal/[id]} | playerhq-coach-hub | trådmal m/AI-avsender · §10 liste · skjema | tagget (#434) — hub/tråd urørt (pixel-signert) |
+| talent/{mitt-niva, roadmap, sammenligning, min-plan} | playerhq-talent | malens to tilstander · kohorttabell | tagget (#434) |
+
+**STOPP-lista natt 13.08 (én-linje-testen slo ut / mangler grunnlag):**
+- `meg/innstillinger/okter` — siden viser enhetsadministrasjon; standardvarighet + påminnelsestid mangler felt i datamodellen (`UserPreferences`).
+- `meg/helse` symptom/ny — skal være BottomSheet-ark, er i dag full side; strukturendring, ikke pixel-diff.
+- `meg/help` (+kategori/artikkel/kontakt) — egen mal (gfgk-veileder-artikkel med PlayerHQ-chrome), ikke påbegynt.
+- `CoachPlanerV2` (2 av 3 render-grener) og `CoachSgHubV2` (Fragment-rot) — delvis/ikke tagget.
+- `/portal/talent` hub — åpent spørsmål i rutefasit («hub → redirect?») — ikke bygget før Anders svarer.
