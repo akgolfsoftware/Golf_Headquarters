@@ -168,6 +168,28 @@ p.pk-ing.pk-ing-fot { font-size: 15px; margin-top: var(--p-s5); max-width: 62ch;
 }
 .pk-fakta-liste .pk-linje:last-child { border-bottom: 1px solid var(--p-hairline); }
 
+/* Inne i et kort er verdiene setninger, ikke tall — stables under etiketten
+   i stedet for å høyrestilles (høyrestilt løpende tekst er uleselig). */
+.pk-mkort .pk-fakta-liste .pk-linje {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+}
+.pk-mkort .pk-fakta-liste .pk-linje > span:first-child {
+  font-family: var(--p-mono);
+  font-size: 9.5px;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--p-muted);
+}
+.pk-mkort .pk-fakta-liste .pk-v {
+  margin-left: 0;
+  text-align: left;
+  font-family: var(--p-ui);
+  font-size: 13.5px;
+  line-height: 1.5;
+}
+
 /* ── Sitatrad (tall til venstre, sitat til høyre) ── */
 .pk-sitatrad {
   display: grid;
@@ -241,7 +263,13 @@ h2.pk-sekt.pk-sekt-liten { font-size: 26px; margin-bottom: var(--p-s2); }
 /* ── Knapperad under hero ── */
 .pk-knapperad { display: flex; gap: var(--p-s3); flex-wrap: wrap; }
 .pk-knapperad.pk-knapperad-midt { justify-content: center; }
-.pk-mkort .pk-knapp-topp { margin-top: var(--p-s4); }
+.pk-knapp-topp { margin-top: var(--p-s4); }
+.pk-mkort.pk-mkort-foto { padding: 0; overflow: hidden; }
+.pk-mkort.pk-mkort-foto > *:not(.pk-foto) { margin-left: var(--p-s5); margin-right: var(--p-s5); }
+.pk-mkort.pk-mkort-foto .pk-foto { border: 0; border-radius: 0; }
+.pk-mkort.pk-mkort-foto .pk-eyebrow { margin-top: var(--p-s4); }
+.pk-mkort.pk-mkort-foto .pk-fakta-liste { margin-bottom: var(--p-s5); }
+.pk-kort-tint .pk-und { margin: var(--p-s2) 0 var(--p-s3); font-family: var(--p-disp); font-size: 19px; font-weight: 600; }
 
 /* ── Sentrert avslutning ── */
 .pk-midtstilt { text-align: center; }
