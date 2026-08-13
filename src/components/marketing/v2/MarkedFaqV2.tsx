@@ -7,6 +7,7 @@
    og spørsmålene er lenkbare/søkbare uten JavaScript.
    COPY: uendret fra forrige versjon (kilde mlegacy/faq). */
 
+import Link from "next/link";
 import { PkShell } from "./paper/PkShell";
 
 type Sporsmal = { q: string; a: string };
@@ -108,9 +109,9 @@ export function MarkedFaqV2() {
             <a className="pk-btn pk-btn-ink" href="mailto:post@akgolf.no">
               post@akgolf.no
             </a>
-            <a className="pk-btn" href="/kontakt">
+            <Link className="pk-btn" href="/kontakt">
               Kontaktskjema
-            </a>
+            </Link>
           </div>
         </div>
       </div>

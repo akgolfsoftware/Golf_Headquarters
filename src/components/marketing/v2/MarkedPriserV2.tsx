@@ -11,6 +11,7 @@
 
    Trekkspillet er native <details>, som i fasiten — ingen klient-state. */
 
+import Link from "next/link";
 import { PkShell } from "./paper/PkShell";
 
 const FAQ: { q: string; a: string }[] = [
@@ -56,9 +57,9 @@ export function MarkedPriserV2() {
                 <li>Coaching-pakke: Performance eller Performance Pro</li>
                 <li>Gruppe via AK Golf, som WANG eller klubbtrening</li>
               </ul>
-              <a className="pk-btn" href="/auth/signup">
+              <Link className="pk-btn" href="/auth/signup">
                 Kom i gang gratis
-              </a>
+              </Link>
             </div>
 
             <div className="pk-pris pk-pris-valgt">
@@ -73,16 +74,16 @@ export function MarkedPriserV2() {
                 <li>TrackMan-data og video</li>
                 <li>AI-caddie og prioritert støtte</li>
               </ul>
-              <a className="pk-btn pk-btn-ink" href="/auth/signup">
+              <Link className="pk-btn pk-btn-ink" href="/auth/signup">
                 Velg Pro
-              </a>
+              </Link>
             </div>
           </div>
 
           <p className="pk-ing pk-ing-fot">
             Eller 2 690 kr/år, to måneder gratis. Coaching-pakker kjøpes separat: Performance og
             Performance Pro er antall økter med coach, ikke app-nivåer. Har du pakke, er appen
-            inkludert. Les mer på <a href="/coaching">coaching-siden</a>.
+            inkludert. Les mer på <Link href="/coaching">coaching-siden</Link>.
           </p>
         </div>
       </div>

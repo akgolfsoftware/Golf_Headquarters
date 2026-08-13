@@ -141,6 +141,62 @@ p.pk-ing.pk-ing-fot { font-size: 15px; margin-top: var(--p-s5); max-width: 62ch;
   max-width: 34ch;
 }
 
+/* ── Foto i Paper-ramme (fasitens `.bilde` med ekte bilde) ── */
+.pk-foto {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 3 / 2;
+  overflow: hidden;
+  border: 1px solid var(--p-border);
+  border-radius: var(--p-r-md);
+  background: var(--p-soft);
+}
+.pk-foto.pk-foto-bred { aspect-ratio: 16 / 7; }
+.pk-foto img { object-fit: cover; }
+@media (max-width: 800px) {
+  .pk-foto.pk-foto-bred { aspect-ratio: 4 / 3; }
+}
+
+/* ── Faktalinjer (org.nr, adresse …) ── */
+.pk-fakta-liste {
+  margin-top: var(--p-s4);
+  border-top: 1px solid var(--p-border);
+}
+.pk-fakta-liste .pk-linje {
+  padding: var(--p-s3) 0;
+  font-size: 14.5px;
+}
+.pk-fakta-liste .pk-linje:last-child { border-bottom: 1px solid var(--p-hairline); }
+
+/* ── Sitatrad (tall til venstre, sitat til høyre) ── */
+.pk-sitatrad {
+  display: grid;
+  grid-template-columns: 220px minmax(0, 1fr);
+  gap: var(--p-s7);
+  align-items: start;
+  padding: var(--p-s6) 0;
+  border-top: 1px solid var(--p-border);
+}
+.pk-sitatrad .pk-t {
+  display: block;
+  margin-top: var(--p-s2);
+  font-family: var(--p-mono);
+  font-size: 30px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+.pk-sitatrad .pk-u {
+  display: block;
+  margin-top: var(--p-s1);
+  font-family: var(--p-body);
+  font-size: 15px;
+  color: var(--p-muted);
+}
+.pk-sitatrad .pk-sitat { max-width: 46ch; }
+@media (max-width: 900px) {
+  .pk-sitatrad { grid-template-columns: 1fr; gap: var(--p-s4); }
+}
+
 /* ── Todelt seksjon (bilde + sitat/tekst) ── */
 .pk-todelt {
   display: grid;
@@ -185,6 +241,7 @@ h2.pk-sekt.pk-sekt-liten { font-size: 26px; margin-bottom: var(--p-s2); }
 /* ── Knapperad under hero ── */
 .pk-knapperad { display: flex; gap: var(--p-s3); flex-wrap: wrap; }
 .pk-knapperad.pk-knapperad-midt { justify-content: center; }
+.pk-mkort .pk-knapp-topp { margin-top: var(--p-s4); }
 
 /* ── Sentrert avslutning ── */
 .pk-midtstilt { text-align: center; }

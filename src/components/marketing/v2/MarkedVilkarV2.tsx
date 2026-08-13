@@ -6,6 +6,7 @@
    JURIDISK TEKST: uendret fra forrige versjon — kun chrome og typografi
    er byttet. Ingen omskriving av juridisk innhold. */
 
+import Link from "next/link";
 import { PkShell } from "./paper/PkShell";
 
 const SIST_OPPDATERT = "12. mai 2026";
@@ -120,7 +121,7 @@ export function MarkedVilkarV2() {
             <h2>8. Personvern</h2>
             <p>
               Behandling av personopplysninger er beskrevet i vår{" "}
-              <a href="/personvern">personvernerklæring</a>.
+              <Link href="/personvern">personvernerklæring</Link>.
             </p>
 
             <h2>9. Verneting og lovvalg</h2>
