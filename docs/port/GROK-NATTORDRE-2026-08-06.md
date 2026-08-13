@@ -1,3 +1,5 @@
+> ⚠️ UTGÅTT (12.08.2026) — styrer ikke skjermbygging. Se docs/port/GYLDIGHET.md.
+
 # Nattordre til Grok — fullfør skjermporten
 
 **Skrevet:** 06.08.2026 kveld · **Gjelder:** natten 06.–07.08.2026

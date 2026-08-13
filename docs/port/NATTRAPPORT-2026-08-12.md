@@ -1,3 +1,5 @@
+> ⚠️ UTGÅTT (12.08.2026) — styrer ikke skjermbygging. Se docs/port/GYLDIGHET.md.
+
 # NATTRAPPORT — natt til 12.08.2026
 
 **Mandat:** Anders godkjente 11.08 kveld autonom nattkjøring mot «samtlige skjermer». Valgt

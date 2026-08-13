@@ -1,3 +1,5 @@
+> ⚠️ UTGÅTT (12.08.2026) — styrer ikke skjermbygging. Se docs/port/GYLDIGHET.md.
+
 # OVERNIGHT AUTONOMOUS PLAN v2.0 — automatisk godkjennelse
 
 **Versjon:** 2.0 · **09.08.2026 kveld** (avløser v1.0 som var skrevet for iPhone-sandbox uten git-push)  

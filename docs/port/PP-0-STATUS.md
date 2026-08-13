@@ -1,3 +1,5 @@
+> ⚠️ UTGÅTT (12.08.2026) — styrer ikke skjermbygging. Se docs/port/GYLDIGHET.md.
+
 # PP-0 Foundation — status
 
 **Plan:** `docs/port/PIXEL-PERFECT-PLAN-COMPLETE.md`  

@@ -1,3 +1,5 @@
+> ⚠️ UTGÅTT (12.08.2026) — styrer ikke skjermbygging. Se docs/port/GYLDIGHET.md.
+
 # Paper zip (2) ↔ kodebase — sync & gap 2026-08-09
 
 **Kilde:** `AK Golf HQ — Claude Paper (2).zip` (Claude Design, sync `github.md` 2026-08-09T10:48Z)  

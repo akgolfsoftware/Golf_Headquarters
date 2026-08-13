@@ -1,3 +1,5 @@
+> ⚠️ UTGÅTT (12.08.2026) — styrer ikke skjermbygging. Se docs/port/GYLDIGHET.md.
+
 # Er Claude Paper-prosjektet komplett? — kontroll 03.08.2026
 
 > ⚠ **Frosset underlag (jf. `docs/port/README.md`) — tallene under er fra 03.08.2026 og er

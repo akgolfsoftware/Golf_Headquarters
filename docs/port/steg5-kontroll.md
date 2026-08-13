@@ -1,3 +1,5 @@
+> ⚠️ UTGÅTT (12.08.2026) — styrer ikke skjermbygging. Se docs/port/GYLDIGHET.md.
+
 # Steg 5 — kontroll før porting av byggeklossene
 
 **Skrevet:** 03.08.2026 · **Endrer ingen kode.** Dette er en opptelling og en korreksjon.

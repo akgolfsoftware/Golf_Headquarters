@@ -1,3 +1,5 @@
+> ⚠️ UTGÅTT (12.08.2026) — styrer ikke skjermbygging. Se docs/port/GYLDIGHET.md.
+
 > **STYRENDE PLAN (pixel-perfekt, 09.08.2026):**  
 > [`docs/port/PIXEL-PERFECT-PLAN-COMPLETE.md`](./PIXEL-PERFECT-PLAN-COMPLETE.md)  
 > Wave A–I under = **chrome-port historikk**, ikke pixel DONE.  

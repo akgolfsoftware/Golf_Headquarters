@@ -1,3 +1,5 @@
+> ⚠️ UTGÅTT (12.08.2026) — styrer ikke skjermbygging. Se docs/port/GYLDIGHET.md.
+
 # iPhone 5h autonom kjøring — FULLFØRT 2026-08-09
 
 **Branch (sandbox):** `handoff/iphone-5h-2026-08-09`  

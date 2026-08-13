@@ -1,3 +1,5 @@
+> ⚠️ UTGÅTT (12.08.2026) — styrer ikke skjermbygging. Se docs/port/GYLDIGHET.md.
+
 # Nattordre — teknisk tillegg (workflows / agent-team)
 
 **Skrevet:** 06.08.2026 kveld · **Utvider:** `GROK-NATTORDRE-2026-08-06.md`

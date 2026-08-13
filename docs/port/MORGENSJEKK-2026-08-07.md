@@ -1,3 +1,5 @@
+> ⚠️ UTGÅTT (12.08.2026) — styrer ikke skjermbygging. Se docs/port/GYLDIGHET.md.
+
 # Morgensjekk 07.08.2026 — gjennomgang av Groks nattarbeid
 
 **Mål:** komme gjennom alle draft-PR-ene på 15–20 minutter, ikke én time.

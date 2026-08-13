@@ -1,3 +1,5 @@
+> ⚠️ UTGÅTT (12.08.2026) — styrer ikke skjermbygging. Se docs/port/GYLDIGHET.md.
+
 # Skjermplan — tegnede fasitskjermer + wireframe-plan for resten
 
 **Skrevet:** 2026-08-05 · **Oppdatert:** 2026-08-10 (Del B fullført — W2–W6 er tegnet)

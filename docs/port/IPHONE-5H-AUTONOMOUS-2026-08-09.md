@@ -1,3 +1,5 @@
+> ⚠️ UTGÅTT (12.08.2026) — styrer ikke skjermbygging. Se docs/port/GYLDIGHET.md.
+
 # iPhone-dag — 5-timers autonom plan (2026-08-09)
 
 **Kontekst:** Anders jobber remote fra iPhone. Ingen manuelle Mac-steg midt i vinduet.  
