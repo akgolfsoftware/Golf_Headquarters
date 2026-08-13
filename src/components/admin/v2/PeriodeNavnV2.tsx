@@ -34,7 +34,7 @@ export function PeriodeNavnV2({
       : "Alle navn gjenkjent";
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 900 }}>
+    <div data-paper-slug="agencyos-oppsett" style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 900 }}>
       <div style={{ display: "flex", flexWrap: "wrap", alignItems: "flex-end", justifyContent: "space-between", gap: 12 }}>
         <div>
           <Caps>Metodikk</Caps>
