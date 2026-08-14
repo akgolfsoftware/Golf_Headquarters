@@ -298,7 +298,7 @@ function DataTabellKort({ columns, rows }: { columns: DataTabellColumn[]; rows: 
                     const { vis, farge } = dtCelle(c, row[c.key]);
                     return (
                       <span key={c.key} style={{ display: "inline-flex", alignItems: "baseline", gap: 6 }}>
-                        <span style={{ fontFamily: T.mono, fontSize: 8, fontWeight: 700, letterSpacing: "0.06em", textTransform: "uppercase", color: T.mut }}>{c.label}</span>
+                        <span style={{ fontFamily: T.mono, fontSize: 8.5, fontWeight: 700, letterSpacing: "0.06em", textTransform: "uppercase", color: T.mut }}>{c.label}</span>
                         <span style={{ fontFamily: T.mono, fontSize: 12, fontWeight: 700, color: farge, fontVariantNumeric: "tabular-nums" }}>{vis}</span>
                       </span>
                     );
@@ -444,7 +444,7 @@ export function SgKategorier({ kategorier = SGK_DEMO, baseline = "Broadie scratc
               <span style={{ position: "absolute", top: 0, height: "100%", borderRadius: 9999, width: `${w}%`, background: gain ? T.up : T.down, ...(gain ? { left: "50%" } : { right: "50%" }) }} />
             </span>
             <span style={{ width: 78, flex: "none", textAlign: "right", ...mono(12, gain ? T.up : T.down) }}>
-              {fmt(k.sg)}{i === verst && <span style={{ display: "block", fontFamily: T.mono, fontSize: 8, fontWeight: 700, letterSpacing: "0.05em", textTransform: "uppercase", color: T.down }}>størst tap</span>}
+              {fmt(k.sg)}{i === verst && <span style={{ display: "block", fontFamily: T.mono, fontSize: 8.5, fontWeight: 700, letterSpacing: "0.05em", textTransform: "uppercase", color: T.down }}>størst tap</span>}
             </span>
           </div>
         );
@@ -578,7 +578,7 @@ export function Scorekort({ hull = SK_DEMO, sammendrag = null, baseline = "Broad
           const d = h.score - h.par;
           return (
             <div key={h.nr} style={{ background: T.panel2, border: `1px solid ${T.border}`, borderRadius: 8, padding: "6px 4px", textAlign: "center" }}>
-              <div style={{ fontFamily: T.mono, fontSize: 8, color: T.mut }}>{h.nr} · P{h.par}</div>
+              <div style={{ fontFamily: T.mono, fontSize: 8.5, color: T.mut }}>{h.nr} · P{h.par}</div>
               <div style={{ ...mono(15, skFarge(d)), lineHeight: 1.3 }}>{h.score}</div>
               <div style={{ ...mono(8.5, h.sg == null ? T.mut : h.sg >= 0 ? T.up : T.down, 600) }}>{h.sg == null ? "—" : fmtSg(h.sg)}</div>
             </div>
@@ -761,8 +761,8 @@ export function LaunchWindow({ kolle = "Driver", csNivaa = "CS90", skudd = LW_SK
         </div>
       </div>
       <svg viewBox={`0 0 ${W} ${H}`} style={{ width: "100%", height: "auto", display: "block" }} role="img" aria-label={`Launch mot spinn — ${inne} av ${skudd.length} slag i vinduet`}>
-        <text x={m.l + 4} y={m.t + 2} style={{ fontFamily: T.mono, fontSize: 8, fill: T.mut }}>rpm</text>
-        <text x={W - m.r} y={m.t + 2} textAnchor="end" style={{ fontFamily: T.mono, fontSize: 8, fill: T.mut }}>launch °</text>
+        <text x={m.l + 4} y={m.t + 2} style={{ fontFamily: T.mono, fontSize: 8.5, fill: T.mut }}>rpm</text>
+        <text x={W - m.r} y={m.t + 2} textAnchor="end" style={{ fontFamily: T.mono, fontSize: 8.5, fill: T.mut }}>launch °</text>
         <rect x={X(vindu.launchMin)} y={Y(vindu.spinnMax)} width={X(vindu.launchMax) - X(vindu.launchMin)} height={Y(vindu.spinnMin) - Y(vindu.spinnMax)}
           rx="5" fill={`color-mix(in srgb, ${T.up} 10%, transparent)`} stroke={`color-mix(in srgb, ${T.up} 45%, transparent)`} strokeDasharray="4 3" strokeWidth="1" />
         <text x={X(vindu.launchMin) + 6} y={Y(vindu.spinnMax) + 12} style={{ fontFamily: T.mono, fontSize: 8.5, fontWeight: 700, fill: T.up }}>Vindu · {csNivaa}</text>
@@ -819,7 +819,7 @@ export function StrikeSmash({ kolle = "Driver", soner = SS_DEMO, idealSmash = 1.
                   : <span key={i} style={{ ...celle, ...mono(11.5, smashFarge(z), 600), background: T.panel2, border: `1px solid ${T.border}` }}>{z.smash == null || tom ? "—" : kd(z.smash, 2)}</span>;
               })}
             </div>
-            <div style={{ fontFamily: T.mono, fontSize: 8, color: T.mut, textAlign: "center", marginTop: 5 }}>Hæl ← → Tå</div>
+            <div style={{ fontFamily: T.mono, fontSize: 8.5, color: T.mut, textAlign: "center", marginTop: 5 }}>Hæl ← → Tå</div>
           </div>
         ))}
       </div>
@@ -932,7 +932,7 @@ export function Diagnose({ symptom = "Mister 0,8 slag på innspill 100–150 m",
   );
   return (
     <Kort eyebrow="Diagnose">
-      {steg("Symptom", false, <div style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 16.5, color: T.fg, lineHeight: 1.25 }}>{symptom}</div>)}
+      {steg("Symptom", false, <div style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 17, color: T.fg, lineHeight: 1.25 }}>{symptom}</div>)}
       {steg("Bevis", false, (
         <div>
           {bevis && [{ d: bevis.spiller, fyll: `color-mix(in srgb, ${T.down} 62%, transparent)` }, { d: bevis.baseline, fyll: T.borderS }].map(({ d, fyll }, i) => (
