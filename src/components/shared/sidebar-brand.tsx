@@ -73,7 +73,7 @@ export function SidebarBrand({
       />
       <span
         style={{
-          fontFamily: "'JetBrains Mono', monospace",
+          fontFamily: "var(--p-mono)",
           fontSize: 10.5,
           fontWeight: 700,
           letterSpacing: "0.14em",

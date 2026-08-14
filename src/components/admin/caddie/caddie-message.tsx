@@ -14,7 +14,7 @@ type Props = {
 /**
  * Markdown-rendering for Caddie-svar via react-markdown + remark-gfm.
  * Støtter GFM-tabeller (Caddie presenterer tall i tabeller per systemprompt),
- * lister, bold, lenker og kodeblokker. Tabeller bruker JetBrains Mono
+ * lister, bold, lenker og kodeblokker. Tabeller bruker IBM Plex Mono
  * (tabulære tall, jf. designsystem).
  */
 const MD_CLASS = cn(

@@ -28,14 +28,14 @@ export const REGIONER: RegionInfo[] = [
     slug: "ost",
     navn: "Øst-Norge",
     fylker: ["Oslo", "Akershus", "Buskerud", "Vestfold", "Telemark", "Innlandet"],
-    farge: "rgba(0, 88, 64, 0.12)",
+    farge: "rgba(20, 20, 19, 0.12)",
     fargeStrong: "hsl(var(--primary))",
   },
   {
     slug: "vest",
     navn: "Vest-Norge",
     fylker: ["Vestland", "Rogaland"],
-    farge: "rgba(209, 248, 67, 0.25)",
+    farge: "rgba(99, 120, 74, 0.25)",
     fargeStrong: "#8CA015",
   },
   {

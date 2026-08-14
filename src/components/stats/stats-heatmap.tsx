@@ -11,12 +11,12 @@ interface StatsHeatmapProps {
 
 function getHeatColor(value: number): string {
   // value is 0-100 (percentage)
-  if (value >= 90) return "rgba(0, 88, 64, 0.85)";
-  if (value >= 70) return "rgba(0, 88, 64, 0.60)";
-  if (value >= 50) return "rgba(0, 88, 64, 0.40)";
-  if (value >= 30) return "rgba(0, 88, 64, 0.20)";
-  if (value >= 10) return "rgba(0, 88, 64, 0.10)";
-  return "rgba(0, 88, 64, 0.05)";
+  if (value >= 90) return "rgba(20, 20, 19, 0.85)";
+  if (value >= 70) return "rgba(20, 20, 19, 0.60)";
+  if (value >= 50) return "rgba(20, 20, 19, 0.40)";
+  if (value >= 30) return "rgba(20, 20, 19, 0.20)";
+  if (value >= 10) return "rgba(20, 20, 19, 0.10)";
+  return "rgba(20, 20, 19, 0.05)";
 }
 
 function getTextColor(value: number): string {

@@ -208,8 +208,8 @@
 }
 /* Pulserende lime-prikk-hint når slider ikke er rørte */
 @keyframes kat-pulse {
-  0%, 100% { box-shadow: 0 0 0 1px var(--primary), 0 2px 6px rgba(0, 0, 0, 0.15), 0 0 0 0 rgba(209, 248, 67, 0.5); }
-  50% { box-shadow: 0 0 0 1px var(--primary), 0 2px 6px rgba(0, 0, 0, 0.15), 0 0 0 6px rgba(209, 248, 67, 0); }
+  0%, 100% { box-shadow: 0 0 0 1px var(--primary), 0 2px 6px rgba(0, 0, 0, 0.15), 0 0 0 0 rgba(99, 120, 74, 0.5); }
+  50% { box-shadow: 0 0 0 1px var(--primary), 0 2px 6px rgba(0, 0, 0, 0.15), 0 0 0 6px rgba(217, 119, 87, 0); }
 }
 .kat-range.kat-hint::-webkit-slider-thumb { animation: kat-pulse 2s infinite; }
 
@@ -412,7 +412,7 @@
   font-family: var(--font-mono);
   font-variant-numeric: tabular-nums;
 }
-.kat-dtable tr:hover td { background: rgba(0, 88, 64, 0.03); }
+.kat-dtable tr:hover td { background: rgba(20, 20, 19, 0.03); }
 .kat-dtable a { color: var(--primary); text-decoration: none; }
 .kat-dtable a:hover { text-decoration: underline; }
 .kat-dtable-footnote {
@@ -454,7 +454,7 @@
 }
 .kat-mersalg-card {
   background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(209, 248, 67, 0.18);
+  border: 1px solid rgba(99, 120, 74, 0.18);
   border-radius: 16px;
   padding: 28px;
 }
@@ -516,7 +516,7 @@
 .kat-strip-card:hover {
   border-color: var(--primary);
   transform: translateY(-2px);
-  box-shadow: 0 8px 24px rgba(0, 88, 64, 0.1);
+  box-shadow: 0 8px 24px rgba(20, 20, 19, 0.1);
 }
 .kat-strip-card .kat-strip-icon {
   width: 36px;

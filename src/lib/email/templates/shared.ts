@@ -48,7 +48,7 @@ export function emailLayout(input: EmailLayoutInput): string {
         <table role="presentation" width="580" cellpadding="0" cellspacing="0" style="max-width:580px;width:100%;background:#FFFFFF;border-radius:16px;overflow:hidden;border:1px solid #E5E3DD;">
           <tr>
             <td style="padding:32px 32px 0 32px;">
-              <div style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px;letter-spacing:0.1em;color:#5E5C57;text-transform:uppercase;">AK Golf</div>
+              <div style="font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:12px;letter-spacing:0.1em;color:#5E5C57;text-transform:uppercase;">AK Golf</div>
               <h1 style="margin:8px 0 24px 0;font-size:24px;font-weight:600;line-height:1.3;color:#0A1F17;">${escapeHtml(input.heading)}</h1>
             </td>
           </tr>
@@ -60,7 +60,7 @@ export function emailLayout(input: EmailLayoutInput): string {
           <tr>
             <td style="padding:24px 32px;background:#F1EEE5;border-top:1px solid #E5E3DD;font-size:12px;color:#5E5C57;line-height:1.5;">
               AK Golf Academy · Bossumveien 6, 1605 Fredrikstad<br />
-              <a href="mailto:post@akgolf.no" style="color:#005840;text-decoration:none;">post@akgolf.no</a>
+              <a href="mailto:post@akgolf.no" style="color:#B85C3D;text-decoration:none;">post@akgolf.no</a>
             </td>
           </tr>
         </table>
@@ -79,7 +79,7 @@ export function detailRow(label: string, value: string): string {
 }
 
 export function primaryButton(label: string, href: string): string {
-  return `<a href="${escapeAttr(href)}" style="display:inline-block;padding:12px 24px;background:#005840;color:#D1F843;text-decoration:none;border-radius:9999px;font-weight:600;font-size:14px;">${escapeHtml(label)}</a>`;
+  return `<a href="${escapeAttr(href)}" style="display:inline-block;padding:12px 24px;background:#141413;color:#FAF9F5;text-decoration:none;border-radius:9999px;font-weight:600;font-size:14px;">${escapeHtml(label)}</a>`;
 }
 
 export function escapeHtml(s: string): string {

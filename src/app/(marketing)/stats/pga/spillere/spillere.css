@@ -203,8 +203,8 @@
   font-weight: 500;
 }
 .spillere-dtable a:hover { color: var(--primary); text-decoration: underline; }
-.spillere-dtable tr.norsk-row { background: rgba(209, 248, 67, 0.06); }
-.spillere-dtable tr.norsk-row:hover { background: rgba(209, 248, 67, 0.14); }
+.spillere-dtable tr.norsk-row { background: rgba(99, 120, 74, 0.06); }
+.spillere-dtable tr.norsk-row:hover { background: rgba(99, 120, 74, 0.14); }
 
 /* ─── Profil hero ─── */
 .spillere-profil-hero {

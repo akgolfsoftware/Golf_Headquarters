@@ -163,17 +163,17 @@ export function KlubbWizard({
             }}
           >
             <svg viewBox="0 0 520 180">
-              <rect x="180" y="40" width="160" height="120" rx="12" fill="#FAFAF7" />
-              <path d="M 200 60 L 320 60 L 320 80 L 260 80 L 260 100 L 320 100 L 320 120 L 200 120 Z" fill="#005840" />
+              <rect x="180" y="40" width="160" height="120" rx="12" fill="var(--p-bg)" />
+              <path d="M 200 60 L 320 60 L 320 80 L 260 80 L 260 100 L 320 100 L 320 120 L 200 120 Z" fill="var(--p-fg)" />
               <rect x="220" y="130" width="80" height="14" rx="3" fill={T.farge.limeMerke} />
               <text
                 x="260"
                 y="155"
                 textAnchor="middle"
-                fontFamily="JetBrains Mono"
+                style={{ fontFamily: "var(--p-mono)" }}
                 fontSize="8"
                 fontWeight="800"
-                fill="#FAFAF7"
+                fill="var(--p-bg)"
                 letterSpacing="0.10em"
               >
                 KLUBB-OPPSETT
@@ -261,7 +261,7 @@ export function KlubbWizard({
               </div>
               <span
                 style={{
-                  fontFamily: "var(--font-familjen-grotesk)",
+                  fontFamily: "var(--p-disp)",
                   fontSize: 18,
                   fontWeight: 800,
                 }}
@@ -316,7 +316,7 @@ export function KlubbWizard({
             }}
           >
             <svg viewBox="0 0 520 180">
-              <g fill="#003A2A">
+              <g fill="var(--p-fg)">
                 {[
                   { x: 200, r: 18 },
                   { x: 260, r: 22 },
@@ -334,10 +334,10 @@ export function KlubbWizard({
                 x="260"
                 y="170"
                 textAnchor="middle"
-                fontFamily="JetBrains Mono"
+                style={{ fontFamily: "var(--p-mono)" }}
                 fontSize="8"
                 fontWeight="800"
-                fill="#FAFAF7"
+                fill="var(--p-bg)"
                 letterSpacing="0.10em"
               >
                 COACH-TEAM
@@ -442,13 +442,13 @@ export function KlubbWizard({
             }}
           >
             <svg viewBox="0 0 520 180">
-              <rect x="120" y="30" width="280" height="120" rx="12" fill="#fff" stroke="#005840" strokeWidth="1.5" />
+              <rect x="120" y="30" width="280" height="120" rx="12" fill="var(--p-surface)" stroke="var(--p-fg)" strokeWidth="1.5" />
               <rect x="140" y="48" width="240" height="14" rx="3" fill={T.farge.limeMerke} />
               {[0, 1, 2, 3, 4].map((row) => (
                 <g key={row}>
-                  <rect x={140} y={72 + row * 14} width={60} height={8} rx={2} fill="#005840" opacity="0.2" />
-                  <rect x={210} y={72 + row * 14} width={100} height={8} rx={2} fill="#005840" opacity="0.15" />
-                  <rect x={320} y={72 + row * 14} width={60} height={8} rx={2} fill="#005840" opacity="0.15" />
+                  <rect x={140} y={72 + row * 14} width={60} height={8} rx={2} fill="var(--p-fg)" opacity="0.2" />
+                  <rect x={210} y={72 + row * 14} width={100} height={8} rx={2} fill="var(--p-fg)" opacity="0.15" />
+                  <rect x={320} y={72 + row * 14} width={60} height={8} rx={2} fill="var(--p-fg)" opacity="0.15" />
                 </g>
               ))}
             </svg>
@@ -473,7 +473,7 @@ export function KlubbWizard({
               <div>
                 <div
                   style={{
-                    fontFamily: "var(--font-familjen-grotesk)",
+                    fontFamily: "var(--p-disp)",
                     fontWeight: 700,
                     fontSize: 14,
                   }}
@@ -499,7 +499,7 @@ export function KlubbWizard({
               <div>
                 <div
                   style={{
-                    fontFamily: "var(--font-familjen-grotesk)",
+                    fontFamily: "var(--p-disp)",
                     fontWeight: 700,
                     fontSize: 14,
                   }}
@@ -525,7 +525,7 @@ export function KlubbWizard({
               <div>
                 <div
                   style={{
-                    fontFamily: "var(--font-familjen-grotesk)",
+                    fontFamily: "var(--p-disp)",
                     fontWeight: 700,
                     fontSize: 14,
                   }}
@@ -548,7 +548,7 @@ export function KlubbWizard({
                 </div>
                 <span
                   style={{
-                    fontFamily: "var(--font-familjen-grotesk)",
+                    fontFamily: "var(--p-disp)",
                     fontSize: 18,
                     fontWeight: 800,
                   }}
@@ -567,7 +567,7 @@ export function KlubbWizard({
               </button>
               <p
                 style={{
-                  fontFamily: "var(--font-jetbrains-mono)",
+                  fontFamily: "var(--p-mono)",
                   fontSize: 10,
                   color: T.farge.noytralGra,
                   letterSpacing: "0.06em",
@@ -607,7 +607,7 @@ export function KlubbWizard({
             }}
           >
             <svg viewBox="0 0 520 180">
-              <rect x="140" y="50" width="240" height="80" rx="10" fill="#635BFF" />
+              <rect x="140" y="50" width="240" height="80" rx="10" fill={T.stripeMerke} />
               <text
                 x="260"
                 y="100"
@@ -615,7 +615,7 @@ export function KlubbWizard({
                 fontFamily="Inter, sans-serif"
                 fontSize="40"
                 fontWeight="800"
-                fill="#fff"
+                fill="var(--p-surface)"
               >
                 stripe
               </text>
@@ -623,7 +623,7 @@ export function KlubbWizard({
                 x="260"
                 y="155"
                 textAnchor="middle"
-                fontFamily="JetBrains Mono"
+                style={{ fontFamily: "var(--p-mono)" }}
                 fontSize="8"
                 fontWeight="800"
                 fill={T.farge.limeMerke}
@@ -649,7 +649,7 @@ export function KlubbWizard({
               </div>
               <span
                 style={{
-                  fontFamily: "var(--font-familjen-grotesk)",
+                  fontFamily: "var(--p-disp)",
                   fontSize: 22,
                   fontWeight: 800,
                   letterSpacing: "-0.02em",
@@ -691,7 +691,7 @@ export function KlubbWizard({
             </button>
             <p
               style={{
-                fontFamily: "var(--font-jetbrains-mono)",
+                fontFamily: "var(--p-mono)",
                 fontSize: 10,
                 color: T.farge.noytralGra,
                 letterSpacing: "0.06em",
@@ -730,19 +730,19 @@ export function KlubbWizard({
             }}
           >
             <svg viewBox="0 0 520 180">
-              <ellipse cx="260" cy="160" rx="180" ry="10" fill="#003A2A" opacity="0.25" />
+              <ellipse cx="260" cy="160" rx="180" ry="10" fill="var(--p-fg)" opacity="0.25" />
               {[
                 { x: 170, label: "GC" },
                 { x: 260, label: "N" },
                 { x: 350, label: "R" },
               ].map((p, i) => (
                 <g key={i}>
-                  <circle cx={p.x} cy={80} r={32} fill="#003A2A" />
+                  <circle cx={p.x} cy={80} r={32} fill="var(--p-fg)" />
                   <text
                     x={p.x}
                     y={88}
                     textAnchor="middle"
-                    fontFamily="var(--font-familjen-grotesk), sans-serif"
+                    style={{ fontFamily: "var(--p-disp)" }}
                     fontSize="22"
                     fontWeight="800"
                     fill={T.farge.limeMerke}
@@ -751,8 +751,8 @@ export function KlubbWizard({
                   </text>
                 </g>
               ))}
-              <line x1={202} y1={80} x2={228} y2={80} stroke="#003A2A" strokeWidth={3} />
-              <line x1={292} y1={80} x2={318} y2={80} stroke="#003A2A" strokeWidth={3} />
+              <line x1={202} y1={80} x2={228} y2={80} stroke="var(--p-fg)" strokeWidth={3} />
+              <line x1={292} y1={80} x2={318} y2={80} stroke="var(--p-fg)" strokeWidth={3} />
             </svg>
           </div>
           <h2 className="ob-step-title">
@@ -774,7 +774,7 @@ export function KlubbWizard({
             <div>
               <div
                 style={{
-                  fontFamily: "var(--font-familjen-grotesk)",
+                  fontFamily: "var(--p-disp)",
                   fontSize: 14,
                   fontWeight: 700,
                 }}
@@ -798,7 +798,7 @@ export function KlubbWizard({
             <div>
               <div
                 style={{
-                  fontFamily: "var(--font-familjen-grotesk)",
+                  fontFamily: "var(--p-disp)",
                   fontSize: 14,
                   fontWeight: 700,
                 }}
@@ -833,7 +833,7 @@ export function KlubbWizard({
             />
             <p
               style={{
-                fontFamily: "var(--font-jetbrains-mono)",
+                fontFamily: "var(--p-mono)",
                 fontSize: 10,
                 color: T.farge.noytralGra,
               }}

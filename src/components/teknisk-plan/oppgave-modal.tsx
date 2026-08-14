@@ -727,7 +727,7 @@ export function OppgaveModal({ open, onClose, initial, onSubmit, isEditing, onLo
                   display: "flex",
                   alignItems: "center",
                   gap: 6,
-                  fontFamily: "var(--font-mono, 'JetBrains Mono', monospace)",
+                  fontFamily: "var(--p-mono)",
                   fontSize: 10,
                   fontWeight: 700,
                   color: "hsl(var(--muted-foreground))",

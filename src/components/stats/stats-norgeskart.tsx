@@ -59,8 +59,8 @@ const REGIONER: RegionPath[] = [
 ];
 
 const REGION_COLORS: Record<RegionSlug, { base: string; hover: string; active: string }> = {
-  ost:  { base: "rgba(0, 88, 64, 0.18)",   hover: "rgba(0, 88, 64, 0.35)",   active: "hsl(var(--primary))" },
-  vest: { base: "rgba(209, 248, 67, 0.30)", hover: "rgba(209, 248, 67, 0.55)", active: "#8CA015" },
+  ost:  { base: "rgba(20, 20, 19, 0.18)",   hover: "rgba(20, 20, 19, 0.35)",   active: "hsl(var(--primary))" },
+  vest: { base: "rgba(99, 120, 74, 0.30)", hover: "rgba(99, 120, 74, 0.55)", active: "#8CA015" },
   midt: { base: "rgba(30, 100, 200, 0.15)", hover: "rgba(30, 100, 200, 0.30)", active: "#1E64C8" },
   nord: { base: "rgba(120, 60, 180, 0.15)", hover: "rgba(120, 60, 180, 0.30)", active: "#783CB4" },
   sor:  { base: "rgba(200, 80, 30, 0.15)",  hover: "rgba(200, 80, 30, 0.30)",  active: "#C8501E" },

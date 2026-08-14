@@ -12,9 +12,9 @@
   --forest-900: #0A1F17;
   --forest-700: #0F2A22;
   --forest-600: #163027;
-  --forest-500: #005840;
+  --forest-500: #141413;    /* Paper --p-cta */
   --forest-300: #2B4F42;
-  --lime-500: #D1F843;
+  --lime-500: #63784A;      /* Paper --p-up */
   --cream-50: #FAFAF7;
   --cream-100: #F5F4EE;
   --cream-200: #F1EEE5;
@@ -50,10 +50,10 @@
   --ring: var(--forest-500);
 
   /* Pyramide-akser */
-  --pyr-fys: #005840;
+  --pyr-fys: #788C5D;       /* Paper --p-accent-olive */
   --pyr-tek: #B8852A;
   --pyr-slag: #2563EB;
-  --pyr-spill: #D1F843;
+  --pyr-spill: #C46686;     /* Paper --p-accent-fig */
   --pyr-turn: #A32D2D;
 
   /* Type scale */
@@ -88,7 +88,7 @@
   --shadow-sm: 0 2px 4px rgba(10, 31, 23, 0.05);
   --shadow-md: 0 4px 14px rgba(10, 31, 23, 0.08);
   --shadow-lg: 0 12px 32px rgba(10, 31, 23, 0.12);
-  --shadow-lime: 0 6px 14px rgba(209, 248, 67, 0.25);
+  --shadow-lime: 0 6px 14px rgba(20, 20, 19, 0.25);
 
   /* Root surface */
   height: 100vh;
@@ -106,7 +106,7 @@
 .gfgk-deck *::before,
 .gfgk-deck *::after { box-sizing: border-box; }
 
-.gfgk-deck ::selection { background: rgba(0, 88, 64, 0.14); }
+.gfgk-deck ::selection { background: rgba(20, 20, 19, 0.14); }
 .gfgk-deck button { font-family: inherit; }
 
 /* ---- Scroll container ---- */
@@ -250,7 +250,7 @@
   color: var(--foreground);
 }
 .gfgk-deck .chip .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--primary); }
-.gfgk-deck .chip-accent { background: rgba(209,248,67,0.18); border-color: rgba(0,88,64,0.18); color: var(--primary); }
+.gfgk-deck .chip-accent { background: rgba(99,120,74,0.18); border-color: rgba(20,20,19,0.18); color: var(--primary); }
 
 /* ============================================================
    Topbar
@@ -374,7 +374,7 @@
 
 .gfgk-deck .ico-badge {
   width: 44px; height: 44px; border-radius: var(--radius-md);
-  background: rgba(0,88,64,0.07); color: var(--primary);
+  background: rgba(20,20,19,0.07); color: var(--primary);
   display: inline-flex; align-items: center; justify-content: center;
 }
 .gfgk-deck .ico-badge svg { width: 22px; height: 22px; stroke-width: 1.5; }
@@ -395,7 +395,7 @@
 }
 .gfgk-deck .equity .goal {
   position: absolute; left: 0; right: 0; top: 40px; height: 0;
-  border-top: 2px dashed rgba(0,88,64,0.35);
+  border-top: 2px dashed rgba(20,20,19,0.35);
 }
 .gfgk-deck .equity .goal .label {
   position: absolute; right: 0; top: -22px;
@@ -472,7 +472,7 @@
 @keyframes gfgkPtIn { from { opacity: 0; transform: translate(-50%, 50%) scale(0.4);} to { opacity: 1; } }
 .gfgk-deck .spread .span-band {
   position: absolute; bottom: 34px; height: 6px; transform: translateY(50%);
-  background: rgba(0,88,64,0.1); border-radius: var(--radius-full);
+  background: rgba(20,20,19,0.1); border-radius: var(--radius-full);
 }
 
 /* Spillerkort */
@@ -491,7 +491,7 @@
 .gfgk-deck .pcard .top { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
 .gfgk-deck .pcard .initials {
   width: 44px; height: 44px; border-radius: 50%; flex: none;
-  background: rgba(0,88,64,0.08); color: var(--primary);
+  background: rgba(20,20,19,0.08); color: var(--primary);
   display: flex; align-items: center; justify-content: center;
   font-family: var(--font-mono); font-size: 14px; font-weight: 700; letter-spacing: 0.04em;
 }
@@ -540,8 +540,8 @@
 .gfgk-deck table.rtable thead th.sorted .arrow { opacity: 1; color: var(--primary); }
 .gfgk-deck table.rtable tbody tr.prow { border-top: 1px solid var(--border); cursor: pointer; transition: background 140ms ease; }
 .gfgk-deck table.rtable tbody tr.prow:first-child { border-top: 0; }
-.gfgk-deck table.rtable tbody tr.prow:hover { background: rgba(0,88,64,0.04); }
-.gfgk-deck table.rtable tbody tr.prow.open { background: rgba(0,88,64,0.05); }
+.gfgk-deck table.rtable tbody tr.prow:hover { background: rgba(20,20,19,0.04); }
+.gfgk-deck table.rtable tbody tr.prow.open { background: rgba(20,20,19,0.05); }
 .gfgk-deck table.rtable .rank { font-family: var(--font-mono); color: var(--muted-foreground); font-feature-settings:"tnum"; }
 .gfgk-deck table.rtable .pname { font-weight: 600; display: inline-flex; align-items: center; gap: 8px; }
 .gfgk-deck table.rtable .pname .chev { width: 14px; height: 14px; color: var(--muted-foreground); transition: transform 160ms ease; flex: none; }

@@ -100,7 +100,7 @@ export function StatsTrendGraf({ data, height = 240 }: StatsTrendGrafProps) {
               y1={ty}
               x2={pad.l + cw}
               y2={ty}
-              stroke="#E5E3DD"
+              stroke="var(--p-border)"
               strokeWidth={1}
               strokeDasharray="4 4"
             />
@@ -110,7 +110,7 @@ export function StatsTrendGraf({ data, height = 240 }: StatsTrendGrafProps) {
               textAnchor="end"
               fontFamily="var(--font-mono)"
               fontSize={10}
-              fill="#5E5C57"
+              fill="var(--p-muted)"
             >
               {tick.toFixed(1)}
             </text>
@@ -122,7 +122,7 @@ export function StatsTrendGraf({ data, height = 240 }: StatsTrendGrafProps) {
       <path
         d={linePath}
         fill="none"
-        stroke="#005840"
+        stroke="var(--p-info)"
         strokeWidth={2.5}
         strokeLinecap="round"
         strokeLinejoin="round"
@@ -134,8 +134,8 @@ export function StatsTrendGraf({ data, height = 240 }: StatsTrendGrafProps) {
             cx={p.x}
             cy={p.y}
             r={4}
-            fill="#005840"
-            stroke="#FAFAF7"
+            fill="var(--p-info)"
+            stroke="var(--p-bg)"
             strokeWidth={2}
           />
           <text
@@ -144,7 +144,7 @@ export function StatsTrendGraf({ data, height = 240 }: StatsTrendGrafProps) {
             textAnchor="middle"
             fontFamily="var(--font-mono)"
             fontSize={10}
-            fill="#5E5C57"
+            fill="var(--p-muted)"
           >
             {p.d.aar}
           </text>

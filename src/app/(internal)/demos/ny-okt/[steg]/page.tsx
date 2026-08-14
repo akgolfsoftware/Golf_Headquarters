@@ -105,9 +105,9 @@ function DotIndicator({ current }: { current: StegId }) {
               <span
                 className={`h-2.5 w-2.5 flex-shrink-0 rounded-full ${
                   state === "done"
-                    ? "bg-[var(--brand-primary,#005840)]"
+                    ? "bg-[var(--brand-primary,#141413)]"
                     : state === "active"
-                      ? "bg-accent ring-2 ring-[var(--brand-primary,#005840)] ring-offset-2 ring-offset-[var(--surface,#FAFAF7)]"
+                      ? "bg-accent ring-2 ring-[var(--brand-primary,#141413)] ring-offset-2 ring-offset-[var(--surface,#FAFAF7)]"
                       : "bg-[var(--surface-alt,#F1EEE5)] border border-border"
                 }`}
               />
@@ -115,7 +115,7 @@ function DotIndicator({ current }: { current: StegId }) {
                 <span
                   className={`h-px flex-1 ${
                     stepNum < idx
-                      ? "bg-[var(--brand-primary,#005840)]"
+                      ? "bg-[var(--brand-primary,#141413)]"
                       : "bg-[var(--line-soft,#EFEDE6)]"
                   }`}
                 />
@@ -165,13 +165,13 @@ function FooterBar({ current }: { current: StegId }) {
         {next ? (
           <Link
             href={`/demos/ny-okt/${next}`}
-            className="inline-flex items-center gap-1.5 rounded-md bg-accent px-4 py-2 text-[13px] font-semibold text-[var(--brand-accent-on,#005840)] transition-opacity hover:opacity-90"
+            className="inline-flex items-center gap-1.5 rounded-md bg-accent px-4 py-2 text-[13px] font-semibold text-[var(--brand-accent-on,#141413)] transition-opacity hover:opacity-90"
           >
             {nextLabels[idx]}
             <ArrowRight className="h-3.5 w-3.5" strokeWidth={2} />
           </Link>
         ) : (
-          <button className="inline-flex items-center gap-1.5 rounded-md bg-accent px-4 py-2 text-[13px] font-semibold text-[var(--brand-accent-on,#005840)] transition-opacity hover:opacity-90">
+          <button className="inline-flex items-center gap-1.5 rounded-md bg-accent px-4 py-2 text-[13px] font-semibold text-[var(--brand-accent-on,#141413)] transition-opacity hover:opacity-90">
             <Play className="h-3.5 w-3.5 fill-current" strokeWidth={0} />
             Start økt →
           </button>
@@ -230,11 +230,11 @@ function Step1() {
             borderColor: T.farge.forestMerkeA18,
           }}
         >
-          <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-lg bg-[var(--brand-primary,#005840)] text-white">
+          <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-lg bg-[var(--brand-primary,#141413)] text-white">
             <Sparkles className="h-[18px] w-[18px]" strokeWidth={1.75} />
           </div>
           <div className="flex-1">
-            <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-[var(--brand-primary,#005840)]">
+            <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.10em] text-[var(--brand-primary,#141413)]">
               Agenten anbefaler
             </div>
             <p className="mt-1 font-display text-[15px] italic leading-[1.4] text-foreground">
@@ -253,7 +253,7 @@ function Step1() {
         }}
       >
         <Shield
-          className="h-4 w-4 text-[var(--brand-primary,#005840)]"
+          className="h-4 w-4 text-[var(--brand-primary,#141413)]"
           strokeWidth={1.75}
         />
         <span>
@@ -281,14 +281,14 @@ function KCard({
       type="button"
       className={`flex flex-col items-start gap-2 rounded-xl border-2 bg-card p-6 text-left transition-colors ${
         selected
-          ? "border-[var(--brand-primary,#005840)] bg-[rgba(0,88,64,0.04)]"
+          ? "border-[var(--brand-primary,#141413)] bg-[rgba(20,20,19,0.04)]"
           : "border-border hover:bg-secondary/40"
       }`}
     >
       <div
         className={
           selected
-            ? "text-[var(--brand-primary,#005840)]"
+            ? "text-[var(--brand-primary,#141413)]"
             : "text-muted-foreground"
         }
       >
@@ -297,7 +297,7 @@ function KCard({
       <div className="font-display text-[16px] font-bold leading-tight">{title}</div>
       <p className="text-[12.5px] leading-[1.5] text-muted-foreground">{sub}</p>
       {selected && (
-        <div className="inline-flex items-center gap-1 text-[11px] font-semibold text-[var(--brand-primary,#005840)]">
+        <div className="inline-flex items-center gap-1 text-[11px] font-semibold text-[var(--brand-primary,#141413)]">
           <Check className="h-3 w-3" strokeWidth={2.5} />
           Valgt
         </div>
@@ -316,7 +316,7 @@ function Chip({
   active?: boolean;
 }) {
   const toneBg: Record<string, string> = {
-    tek: "rgba(0,88,64,0.12)",
+    tek: "rgba(20,20,19,0.12)",
     slag: "color-mix(in srgb, var(--v2-lime) 25%, transparent)",
     spill: "rgba(184,133,42,0.15)",
   };
@@ -328,7 +328,7 @@ function Chip({
   if (active) {
     return (
       <button
-        className="inline-flex items-center rounded-full px-4 py-2 text-[12.5px] font-semibold leading-none ring-2 ring-[var(--brand-primary,#005840)] ring-offset-2 ring-offset-[var(--surface,#FAFAF7)]"
+        className="inline-flex items-center rounded-full px-4 py-2 text-[12.5px] font-semibold leading-none ring-2 ring-[var(--brand-primary,#141413)] ring-offset-2 ring-offset-[var(--surface,#FAFAF7)]"
         style={{
           background: tone ? toneBg[tone] : `var(--surface-alt,${T.farge.sandMerke})`,
           color: tone ? toneColor[tone] : undefined,
@@ -372,7 +372,7 @@ function Step2() {
               key={b.l}
               className={`inline-flex items-center rounded-sm px-4 py-2 text-[13px] font-medium transition-colors ${
                 b.a
-                  ? "bg-[var(--brand-primary,#005840)] text-white"
+                  ? "bg-[var(--brand-primary,#141413)] text-white"
                   : "text-foreground hover:bg-secondary"
               }`}
             >
@@ -389,18 +389,18 @@ function Step2() {
         <div className="rounded-xl border border-border bg-card px-6 py-6">
           <div className="relative h-2 rounded-sm bg-[var(--surface-alt,#F1EEE5)]">
             <div
-              className="absolute left-0 top-0 h-full rounded-sm bg-[var(--brand-primary,#005840)]"
+              className="absolute left-0 top-0 h-full rounded-sm bg-[var(--brand-primary,#141413)]"
               style={{ width: "50%" }}
             />
             <div
-              className="absolute top-1/2 h-5 w-5 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-[var(--brand-primary,#005840)] bg-white shadow"
+              className="absolute top-1/2 h-5 w-5 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-[var(--brand-primary,#141413)] bg-white shadow"
               style={{ left: "50%" }}
             />
           </div>
           <div className="mt-2 flex justify-between font-mono text-[11px] text-muted-foreground">
             <span>1 · Lett</span>
             <span>2</span>
-            <span className="font-semibold text-[var(--brand-primary,#005840)]">3 · Medium</span>
+            <span className="font-semibold text-[var(--brand-primary,#141413)]">3 · Medium</span>
             <span>4</span>
             <span>5 · Hard</span>
           </div>
@@ -410,7 +410,7 @@ function Step2() {
       <section>
         <div className="flex items-center gap-2 rounded-xl border border-border bg-card px-6 py-4">
           <Clock
-            className="h-5 w-5 text-[var(--brand-primary,#005840)]"
+            className="h-5 w-5 text-[var(--brand-primary,#141413)]"
             strokeWidth={1.75}
           />
           <div className="text-[13px] leading-[1.5] text-foreground">
@@ -435,7 +435,7 @@ function Step3() {
         <div className="mb-4 flex items-end justify-between gap-4">
           <SectionHead num="01 · STED" title="Hvor skal du trene?" />
           <div className="inline-flex rounded-md border border-border bg-transparent p-1">
-            <button className="rounded-sm bg-[var(--brand-primary,#005840)] px-4 py-1.5 text-[12px] font-medium text-white">
+            <button className="rounded-sm bg-[var(--brand-primary,#141413)] px-4 py-1.5 text-[12px] font-medium text-white">
               Mine vanlige
             </button>
             <button className="rounded-sm px-4 py-1.5 text-[12px] font-medium text-foreground hover:bg-secondary">
@@ -502,13 +502,13 @@ function FacRow({
     <div
       className={`flex items-start gap-4 rounded-xl bg-card p-4 ${
         selected
-          ? "border-2 border-[var(--brand-primary,#005840)] bg-[rgba(0,88,64,0.04)]"
+          ? "border-2 border-[var(--brand-primary,#141413)] bg-[rgba(20,20,19,0.04)]"
           : dashed
             ? "border border-dashed border-border"
             : "border border-border hover:bg-secondary/30"
       }`}
     >
-      <div className="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-lg bg-[var(--surface-alt,#F1EEE5)] text-[var(--brand-primary,#005840)]">
+      <div className="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-lg bg-[var(--surface-alt,#F1EEE5)] text-[var(--brand-primary,#141413)]">
         <Home className="h-[22px] w-[22px]" strokeWidth={1.5} />
       </div>
       <div className="min-w-0 flex-1">
@@ -540,7 +540,7 @@ function FacRow({
       </div>
       {selected && (
         <Check
-          className="h-5 w-5 flex-shrink-0 text-[var(--brand-primary,#005840)]"
+          className="h-5 w-5 flex-shrink-0 text-[var(--brand-primary,#141413)]"
           strokeWidth={2}
         />
       )}
@@ -686,7 +686,7 @@ function CalDay({
   let cls = "py-1.5 rounded-md";
   if (muted) cls += " text-muted-foreground/50";
   else if (selected)
-    cls += " bg-accent text-[var(--brand-accent-on,#005840)] font-semibold";
+    cls += " bg-accent text-[var(--brand-accent-on,#141413)] font-semibold";
   else cls += " hover:bg-secondary cursor-pointer";
   return <span className={cls}>{d}</span>;
 }
@@ -817,7 +817,7 @@ function ExerciseLine({
         style={
           added
             ? { background: "color-mix(in srgb, var(--v2-lime) 32%, transparent)", color: "#5C6B0E" }
-            : { background: "rgba(0,88,64,0.12)", color: "hsl(var(--primary))" }
+            : { background: "rgba(20,20,19,0.12)", color: "hsl(var(--primary))" }
         }
       >
         {pill}
@@ -852,7 +852,7 @@ function Step6() {
                 «TEK · teknikk på Mulligan Studio 2»
               </h2>
             </div>
-            <span className="inline-flex flex-shrink-0 items-center rounded-full bg-accent px-4 py-1 text-[12px] font-semibold leading-none text-[var(--brand-accent-on,#005840)]">
+            <span className="inline-flex flex-shrink-0 items-center rounded-full bg-accent px-4 py-1 text-[12px] font-semibold leading-none text-[var(--brand-accent-on,#141413)]">
               Klar
             </span>
           </div>
@@ -942,7 +942,7 @@ function ExerciseListRow({
 function OptionRow({ title, sub }: { title: string; sub: string }) {
   return (
     <label className="flex cursor-pointer items-center gap-2 rounded-xl border border-border bg-card px-4 py-2">
-      <span className="flex h-[18px] w-[18px] flex-shrink-0 items-center justify-center rounded-sm border-2 border-[var(--brand-primary,#005840)] bg-[var(--brand-primary,#005840)] text-white">
+      <span className="flex h-[18px] w-[18px] flex-shrink-0 items-center justify-center rounded-sm border-2 border-[var(--brand-primary,#141413)] bg-[var(--brand-primary,#141413)] text-white">
         <Check className="h-3 w-3" strokeWidth={2.5} />
       </span>
       <div className="flex-1">

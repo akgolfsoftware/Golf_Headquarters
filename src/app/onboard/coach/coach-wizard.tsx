@@ -178,20 +178,20 @@ export function CoachWizard({
             style={{ background: `linear-gradient(160deg, ${T.farge.illuForestMork} 0%, ${T.farge.illuForestLys} 100%)` }}
           >
             <svg viewBox="0 0 520 180">
-              <rect x="160" y="40" width="200" height="100" rx="12" fill="#FAFAF7" />
+              <rect x="160" y="40" width="200" height="100" rx="12" fill="var(--p-bg)" />
               <circle cx="200" cy="78" r="22" fill={T.farge.limeMerke} />
-              <rect x="234" y="62" width="100" height="8" rx="3" fill="#005840" opacity="0.30" />
-              <rect x="234" y="78" width="80" height="6" rx="2" fill="#005840" opacity="0.20" />
-              <rect x="234" y="92" width="60" height="6" rx="2" fill="#005840" opacity="0.20" />
+              <rect x="234" y="62" width="100" height="8" rx="3" fill="var(--p-fg)" opacity="0.30" />
+              <rect x="234" y="78" width="80" height="6" rx="2" fill="var(--p-fg)" opacity="0.20" />
+              <rect x="234" y="92" width="60" height="6" rx="2" fill="var(--p-fg)" opacity="0.20" />
               <rect x="180" y="118" width="160" height="10" rx="5" fill={T.farge.limeMerke} />
               <text
                 x="260"
                 y="125"
                 textAnchor="middle"
-                fontFamily="JetBrains Mono"
+                style={{ fontFamily: "var(--p-mono)" }}
                 fontSize="7"
                 fontWeight="800"
-                fill="#0A1F17"
+                fill="var(--p-fg)"
                 letterSpacing="0.10em"
               >
                 COACH-INVITASJON
@@ -252,7 +252,7 @@ export function CoachWizard({
             <div>
               <div
                 style={{
-                  fontFamily: "var(--font-familjen-grotesk)",
+                  fontFamily: "var(--p-disp)",
                   fontSize: 14,
                   fontWeight: 700,
                 }}
@@ -295,12 +295,12 @@ export function CoachWizard({
             }}
           >
             <svg viewBox="0 0 520 180">
-              <rect x="120" y="30" width="280" height="120" rx="12" fill="#fff" stroke="#005840" strokeWidth="1.5" />
-              <rect x="140" y="50" width="80" height="8" rx="3" fill="#005840" opacity="0.30" />
-              <rect x="140" y="68" width="240" height="6" rx="2" fill="#005840" opacity="0.15" />
-              <rect x="140" y="92" width="60" height="8" rx="3" fill="#005840" opacity="0.30" />
-              <rect x="140" y="110" width="180" height="6" rx="2" fill="#005840" opacity="0.15" />
-              <rect x="140" y="130" width="120" height="6" rx="2" fill="#005840" opacity="0.15" />
+              <rect x="120" y="30" width="280" height="120" rx="12" fill="var(--p-surface)" stroke="var(--p-fg)" strokeWidth="1.5" />
+              <rect x="140" y="50" width="80" height="8" rx="3" fill="var(--p-fg)" opacity="0.30" />
+              <rect x="140" y="68" width="240" height="6" rx="2" fill="var(--p-fg)" opacity="0.15" />
+              <rect x="140" y="92" width="60" height="8" rx="3" fill="var(--p-fg)" opacity="0.30" />
+              <rect x="140" y="110" width="180" height="6" rx="2" fill="var(--p-fg)" opacity="0.15" />
+              <rect x="140" y="130" width="120" height="6" rx="2" fill="var(--p-fg)" opacity="0.15" />
             </svg>
           </div>
           <h2 className="ob-step-title">
@@ -464,10 +464,10 @@ export function CoachWizard({
             style={{ background: `linear-gradient(160deg, ${T.farge.illuForestMork} 0%, ${T.farge.illuForestLys} 100%)` }}
           >
             <svg viewBox="0 0 520 180">
-              <rect x="160" y="30" width="200" height="120" rx="12" fill="#FAFAF7" />
-              <rect x="160" y="30" width="200" height="22" rx="12 12 0 0" fill="#005840" />
-              <rect x="160" y="44" width="200" height="8" fill="#005840" />
-              <g fill="#E5E3DD">
+              <rect x="160" y="30" width="200" height="120" rx="12" fill="var(--p-bg)" />
+              <rect x="160" y="30" width="200" height="22" rx="12 12 0 0" fill="var(--p-fg)" />
+              <rect x="160" y="44" width="200" height="8" fill="var(--p-fg)" />
+              <g fill="var(--p-border)">
                 {[0, 1, 2, 3, 4, 5, 6].map((d) => (
                   <rect key={d} x={172 + d * 26} y={60} width={20} height={16} rx={2} />
                 ))}
@@ -484,10 +484,10 @@ export function CoachWizard({
                 x="260"
                 y="142"
                 textAnchor="middle"
-                fontFamily="JetBrains Mono"
+                style={{ fontFamily: "var(--p-mono)" }}
                 fontSize="8"
                 fontWeight="800"
-                fill="#005840"
+                fill="var(--p-fg)"
                 letterSpacing="0.10em"
               >
                 GOOGLE CALENDAR · LIVE-SYNC
@@ -509,7 +509,7 @@ export function CoachWizard({
               </div>
               <span
                 style={{
-                  fontFamily: "var(--font-familjen-grotesk)",
+                  fontFamily: "var(--p-disp)",
                   fontSize: 22,
                   fontWeight: 800,
                   letterSpacing: "-0.02em",
@@ -551,7 +551,7 @@ export function CoachWizard({
             </button>
             <p
               style={{
-                fontFamily: "var(--font-jetbrains-mono)",
+                fontFamily: "var(--p-mono)",
                 fontSize: 10,
                 color: T.farge.noytralGra,
                 letterSpacing: "0.06em",
@@ -625,10 +625,10 @@ export function CoachWizard({
 function ShieldCheckIllust() {
   return (
     <g>
-      <ellipse cx="260" cy="160" rx="120" ry="10" fill="#003A2A" opacity="0.25" />
+      <ellipse cx="260" cy="160" rx="120" ry="10" fill="var(--p-fg)" opacity="0.25" />
       <path
         d="M260 30 L320 50 V100 Q320 145 260 160 Q200 145 200 100 V50 Z"
-        fill="#003A2A"
+        fill="var(--p-fg)"
       />
       <path
         d="M230 95 L255 118 L295 78"

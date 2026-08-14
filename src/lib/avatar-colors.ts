@@ -3,11 +3,11 @@
 // vi trenger visuell variasjon mellom 6 buckets.
 // TODO: konsolider farge — vurder å legge inn som --avatar-1..--avatar-6 tokens i globals.css.
 export const AVATAR_GRADIENTS: readonly string[] = [
-  "linear-gradient(135deg,#005840,#1A7D56)",
+  "linear-gradient(135deg,#63784A,#788C5D)",
   "linear-gradient(135deg,#A6651E,#7A4910)",
   "linear-gradient(135deg,#7A998C,#56796D)",
   "linear-gradient(135deg,#A32D2D,#7C2020)",
-  "linear-gradient(135deg,#1A7D56,#005840)",
+  "linear-gradient(135deg,#788C5D,#63784A)",
   "linear-gradient(135deg,#3b5994,#5b7cb8)",
 ];
 

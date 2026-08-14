@@ -313,7 +313,7 @@ export function CourseMap({
         }
         .ak-gp-sikte {
           width: 22px; height: 22px; border-radius: 9999px;
-          border: 3px solid ${GAMEPLAN_COLORS.sikte}; background: rgba(209,248,67,0.18);
+          border: 3px solid ${GAMEPLAN_COLORS.sikte}; background: rgba(99,120,74,0.18);
           box-shadow: 0 1px 6px rgba(0,0,0,.5); cursor: ${interactive ? "grab" : "default"};
         }
       `}</style>

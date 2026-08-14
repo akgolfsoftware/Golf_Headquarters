@@ -7,7 +7,7 @@
  * C smalt (2026-07-31): T.handling = «Én ting nå»-monopolet (#D97757).
  * Maks én gang per skjerm. Ikke bytt ut forest/lime for vanlige knapper.
  * TOKEN-SEMANTIKK (Paper bridge, 2026-08-09 — preflight):
- * - T.lime / --v2-lime = var(--p-cta) = INK #141413 på lys (IKKE neon #D1F843).
+ * - T.lime / --v2-lime = var(--p-cta) = INK #141413 på lys (IKKE Presis-lime).
  * - T.handling / --v2-handling = clay #D97757 = «Én ting nå»-monopolet.
  * - Neon AK-lime bare via T.farge.limeMerke (eller eksplisitt brand) — ikke T.lime.
  * - Se docs/port/PAPER-PREFLIGHT-CONFLICTS-2026-08-09.md
@@ -67,18 +67,23 @@ export const T = {
   chartFaint: "#B8B5AC",
   // Lys mint-bakgrunn for "college"-tier-badge på stats/spillere (fg = forest)
   tierCollegeBg: "#E8F5F0",
+  // Stripe sin merkelilla, brukt i betalings-illustrasjonen i klubb-onboarding.
+  // Tredjeparts merkevare — skal IKKE temafarges, men bor her så skjermfila
+  // holder seg hex-fri (lint-porten i scripts/check-token-gap.mjs).
+  stripeMerke: "#635BFF",
   // Bakgrunnsgradienter + tekstfarger for stats-wrapped-slide/-player (delt
-  // Spotify Wrapped-stil delekort). Faste merkevarefarger uavhengig av tema
-  // (kortet er en eksporterbar/delbar grafikk) — innkapslet her så
-  // komponentfilene forblir hex-frie. accentColor/dot-farger gjenbruker
-  // T.forest/T.lime over.
+  // Spotify Wrapped-stil delekort). Faste farger uavhengig av tema — kortet
+  // eksporteres som bilde og kan derfor IKKE lese var(--p-*). Verdiene er
+  // Paper-palettens egne hex (steg 10, 2026-08-14): «forest» → blekk,
+  // «lime» → clay. Navnene er beholdt fordi seks konsumenter bruker dem som
+  // variant-nøkler; de beskriver nå posisjon i kortserien, ikke farge.
   wrapped: {
-    bgForest: "linear-gradient(160deg, #005840 0%, #003D2C 100%)",
-    bgForestDark: "linear-gradient(160deg, #002A1A 0%, #001510 100%)",
-    bgLime: "linear-gradient(160deg, #D1F843 0%, #B8E020 100%)",
-    bgOffwhite: "linear-gradient(160deg, #FAFAF7 0%, #F1EEE5 100%)",
-    textOnDark: "#F7F7F4",
-    textOnLight: "#101613",
+    bgForest: "linear-gradient(160deg, #141413 0%, #26241f 100%)",
+    bgForestDark: "linear-gradient(160deg, #0e0d0c 0%, #000000 100%)",
+    bgLime: "linear-gradient(160deg, #d97757 0%, #c6613f 100%)",
+    bgOffwhite: "linear-gradient(160deg, #faf9f5 0%, #f0eee6 100%)",
+    textOnDark: "#faf9f5",
+    textOnLight: "#141413",
   } as const,
   // Typografi — Paper (Poppins / Lora / IBM Plex Mono via CSS vars)
   disp: "var(--p-disp, var(--font-display), system-ui, sans-serif)",
@@ -109,25 +114,30 @@ export const T = {
   // Skygge på valgt segment i segmentert kontroll (fasit: ikke lime, men løft)
   segSkygge: "var(--v2-seg-skygge)",
   // Sentraliserte fargeliteraler fra inline style (steg 6, 2026-08-03) — IKKE
-  // tema-styrt, samme mønster som tee/milepael/wrapped over. Hver nøkkel er en
-  // eksakt kopi av verdien som sto i JSX før porten; ingen piksel er endret.
+  // tema-styrt, samme mønster som tee/milepael/wrapped over.
+  //
+  // NAVNENE LYVER (steg 10, 2026-08-14). `forestMerke*` og `limeMerke*` het
+  // etter Presis-paletten. Verdiene er nå Paper: forest → blekk #141413,
+  // lime → --p-up #63784A, med samme alfa som før. Navnene står igjen fordi
+  // ~25 komponentfiler leser dem, og omdøping er en egen, mekanisk PR som
+  // ikke skal blandes inn i en fargeport. Les alltid VERDIEN, ikke navnet.
   // Konsolidering til færre, tema-styrte navn er en egen designbeslutning.
   farge: {
     svartA50: "rgba(0,0,0,0.5)",
     svartA35: "rgba(0,0,0,0.35)",
-    forestMerkeA20: "rgba(0,88,64,0.2)",
+    forestMerkeA20: "rgba(20,20,19,0.2)",
     svartA55: "rgba(0,0,0,0.55)",
     nestenSvartA62: "rgba(6,7,6,0.62)",
     hvitA75: "rgba(255,255,255,0.75)",
     hvitA5: "rgba(255,255,255,0.05)",
-    forestMerkeA55: "rgba(0,88,64,0.55)",
+    forestMerkeA55: "rgba(20,20,19,0.55)",
     hvitA10: "rgba(255,255,255,0.1)",
-    forestMerkeA14: "rgba(0,88,64,0.14)",
+    forestMerkeA14: "rgba(20,20,19,0.14)",
     hvitA85: "rgba(255,255,255,0.85)",
     hvitA70: "rgba(255,255,255,0.7)",
     hvitA60: "rgba(255,255,255,0.6)",
     svartA40: "rgba(0,0,0,0.4)",
-    forestMerkeA6: "rgba(0,88,64,0.06)",
+    forestMerkeA6: "rgba(20,20,19,0.06)",
     hvitA6: "rgba(255,255,255,0.06)",
     hvitA12: "rgba(255,255,255,0.12)",
     linjeMerke: "#E5E3DD",
@@ -136,7 +146,7 @@ export const T = {
     hvitA96: "rgba(255,255,255,0.96)",
     hvitA15: "rgba(255,255,255,0.15)",
     illuForestMork: "#003A2A",
-    forestMerkeA25: "rgba(0,88,64,0.25)",
+    forestMerkeA25: "rgba(20,20,19,0.25)",
     hvitA65: "rgba(255,255,255,0.65)",
     hvitA8: "rgba(255,255,255,0.08)",
     // Paper-krem på mørk rail — skillestreker og aktiv-flate i skallet.
@@ -146,8 +156,10 @@ export const T = {
     noytralGra: "#908D86",
     hvitA90: "rgba(255,255,255,0.9)",
     hvitA14: "rgba(255,255,255,0.14)",
-    limeMerkeA28: "rgba(209,248,67,0.28)",
-    forestMerke: "#005840",
+    limeMerkeA28: "rgba(99,120,74,0.28)",
+    // Steg 10: Presis-navnene beholdt (mange konsumenter), Paper-verdier inn.
+    // forestMerke var Presis-grønn → Paper-primær er blekk (--p-cta).
+    forestMerke: "var(--p-cta)",
     sandLysA88: "rgba(250,250,247,0.88)",
     sandLysA80: "rgba(250,250,247,0.8)",
     hvitA50: "rgba(255,255,255,0.5)",
@@ -158,7 +170,8 @@ export const T = {
     grafittMerkeA72: "rgba(13,14,13,0.72)",
     sandLysA90: "rgba(250,250,247,0.9)",
     hvitA55: "rgba(255,255,255,0.55)",
-    limeMerke: "#D1F843",
+    // limeMerke var Presis-lime og bar «positiv/høydepunkt» → Paper --p-up.
+    limeMerke: "var(--p-up)",
     myntGronnA18: "rgba(73,202,159,0.18)",
     taakeMerkeA85: "rgba(238,240,236,0.85)",
     myntLysA10: "rgba(79,208,138,0.1)",
@@ -168,23 +181,23 @@ export const T = {
     varselMerkeA35: "rgba(232,180,60,0.35)",
     varselMerkeA8: "rgba(232,180,60,0.08)",
     inkMerkeA70: "rgba(10,31,23,0.7)",
-    forestMerkeA22: "rgba(0,88,64,0.22)",
+    forestMerkeA22: "rgba(20,20,19,0.22)",
     svart: "#000000",
-    forestMerkeA4: "rgba(0,88,64,0.04)",
-    forestMerkeA18: "rgba(0,88,64,0.18)",
+    forestMerkeA4: "rgba(20,20,19,0.04)",
+    forestMerkeA18: "rgba(20,20,19,0.18)",
     rodMerkeA8: "rgba(216,57,57,0.08)",
     rodMerkeA25: "rgba(216,57,57,0.25)",
     forestVariant: "#006B4F",
     sandLysA70: "rgba(250,250,247,0.7)",
     inkMerkeA5: "rgba(10,31,23,0.05)",
-    forestMerkeA70: "rgba(0,88,64,0.7)",
+    forestMerkeA70: "rgba(20,20,19,0.7)",
     sandLysA85: "rgba(250,250,247,0.85)",
     feilMerkeA8: "rgba(163,45,45,0.08)",
     feilMerkeA30: "rgba(163,45,45,0.3)",
     inkMerkeA6: "rgba(10,31,23,0.06)",
-    forestMerkeA8: "rgba(0,88,64,0.08)",
+    forestMerkeA8: "rgba(20,20,19,0.08)",
     inkMerkeA10: "rgba(10,31,23,0.1)",
-    forestMerkeA5: "rgba(0,88,64,0.05)",
+    forestMerkeA5: "rgba(20,20,19,0.05)",
     sandLysA78: "rgba(250,250,247,0.78)",
     hvitA92: "rgba(255,255,255,0.92)",
     hvitA98: "rgba(255,255,255,0.98)",
@@ -193,7 +206,7 @@ export const T = {
     hvitA40: "rgba(255,255,255,0.4)",
     hvitA28: "rgba(255,255,255,0.28)",
     hvitA35: "rgba(255,255,255,0.35)",
-    limeMerkeA0: "rgba(209,248,67,0)",
+    limeMerkeA0: "rgba(99,120,74,0)",
     limeHover: "#C2EE2F",
     inkMerke2A62: "rgba(10,31,24,0.62)",
     kremMerkeA85: "rgba(245,244,238,0.85)",
@@ -202,14 +215,14 @@ export const T = {
     svartKode: "#111111",
     svartA18: "rgba(0,0,0,0.18)",
     svartA20: "rgba(0,0,0,0.2)",
-    limeMerkeA10: "rgba(209,248,67,0.1)",
+    limeMerkeA10: "rgba(99,120,74,0.1)",
     grafittMerkeA15: "rgba(13,14,13,0.15)",
     grafittMerkeA85: "rgba(13,14,13,0.85)",
     himmelBlaA14: "rgba(90,169,240,0.14)",
-    limeMerkeA12: "rgba(209,248,67,0.12)",
+    limeMerkeA12: "rgba(99,120,74,0.12)",
     svartA75: "rgba(0,0,0,0.75)",
-    limeMerkeA35: "rgba(209,248,67,0.35)",
-    limeMerkeA6: "rgba(209,248,67,0.06)",
+    limeMerkeA35: "rgba(99,120,74,0.35)",
+    limeMerkeA6: "rgba(99,120,74,0.06)",
     grafittMerkeA18: "rgba(13,14,13,0.18)",
     gullMerkeA10: "rgba(184,133,42,0.1)",
     gullMerkeA30: "rgba(184,133,42,0.3)",
@@ -231,7 +244,7 @@ export const T = {
     varselMerkeA10: "rgba(232,180,60,0.1)",
     varselMerkeA30: "rgba(232,180,60,0.3)",
     myntLysA30: "rgba(79,208,138,0.3)",
-    forestMerkeA35: "rgba(0,88,64,0.35)",
+    forestMerkeA35: "rgba(20,20,19,0.35)",
     hvitA4: "rgba(255,255,255,0.04)",
     hvitA80: "rgba(255,255,255,0.8)",
     grafittMerke2A0: "rgba(21,23,21,0)",
@@ -245,9 +258,9 @@ export const T = {
     feilTekstMork: "#7F1D1D",
     sandLysA30: "rgba(250,250,247,0.3)",
     inkMerkeA20: "rgba(10,31,23,0.2)",
-    forestMerkeA16: "rgba(0,88,64,0.16)",
-    forestMerkeA45: "rgba(0,88,64,0.45)",
-    forestMerkeA60: "rgba(0,88,64,0.6)",
+    forestMerkeA16: "rgba(20,20,19,0.16)",
+    forestMerkeA45: "rgba(20,20,19,0.45)",
+    forestMerkeA60: "rgba(20,20,19,0.6)",
     grafittPanel: "#222522",
     hvitA22: "rgba(255,255,255,0.22)",
     svartA25: "rgba(0,0,0,0.25)",

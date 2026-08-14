@@ -109,7 +109,7 @@ export async function sendSlackAlert({
     </p>
     ${metaHtml}
     <div style="margin-top:24px;padding-top:16px;border-top:1px solid #E5E3DD;font-family:monospace;font-size:10px;color:#9C9990;letter-spacing:0.06em;">
-      ${new Date().toISOString()} · <a href="https://vercel.com/akgolf/akgolf-hq" style="color:#005840;text-decoration:none;">akgolf-hq dashboard</a>
+      ${new Date().toISOString()} · <a href="https://vercel.com/akgolf/akgolf-hq" style="color:#B85C3D;text-decoration:none;">akgolf-hq dashboard</a>
     </div>
   </div>
 </body></html>`;

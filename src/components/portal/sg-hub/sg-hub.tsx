@@ -504,13 +504,13 @@ function GapToDrillSeksjon({ gtd }: { gtd: SgGapToDrill }) {
           <div className="border-t border-border p-5 lg:border-l lg:border-t-0">
             <div className="mb-2 flex items-center gap-2 font-mono text-[9px] font-extrabold uppercase tracking-[0.12em] text-primary">
               <span
-                className="inline-block h-1.5 w-1.5 rounded-full bg-accent shadow-[0_0_6px_rgba(209,248,67,0.7)]"
+                className="inline-block h-1.5 w-1.5 rounded-full bg-accent shadow-[0_0_6px_rgba(20,20,19,0.7)]"
                 aria-hidden
               />
               ANBEFALT DRILL
             </div>
 
-            <div className="rounded-[14px] border-2 border-accent shadow-[0_0_0_4px_rgba(209,248,67,0.10)]">
+            <div className="rounded-[14px] border-2 border-accent shadow-[0_0_0_4px_rgba(20,20,19,0.10)]">
               <div className="p-4">
                 <span className="inline-flex h-[18px] items-center rounded px-2 bg-info/10 font-mono text-[9px] font-extrabold uppercase tracking-[0.10em] text-info">
                   {primær.axisLabel}
@@ -546,7 +546,7 @@ function GapToDrillSeksjon({ gtd }: { gtd: SgGapToDrill }) {
                 <div className="mt-3 flex flex-wrap gap-2">
                   <Link
                     href="/portal/planlegge"
-                    className="inline-flex h-9 items-center gap-2 rounded-full bg-accent px-4 font-mono text-[11px] font-extrabold uppercase tracking-[0.10em] text-primary shadow-[0_4px_12px_rgba(209,248,67,0.25)] transition-opacity hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                    className="inline-flex h-9 items-center gap-2 rounded-full bg-accent px-4 font-mono text-[11px] font-extrabold uppercase tracking-[0.10em] text-primary shadow-[0_4px_12px_rgba(20,20,19,0.25)] transition-opacity hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                   >
                     <Plus className="h-3 w-3" strokeWidth={2.5} aria-hidden />
                     Legg til i Workbench

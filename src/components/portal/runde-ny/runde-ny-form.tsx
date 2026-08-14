@@ -462,7 +462,7 @@ export function RundeNyForm({
         type="button"
         onClick={lagre}
         disabled={pending}
-        className="mt-6 inline-flex h-[52px] w-full items-center justify-center gap-2 rounded-full bg-primary font-mono text-[12px] font-bold uppercase tracking-[0.08em] text-primary-foreground shadow-[0_8px_20px_rgba(0,88,64,0.18)] transition hover:bg-primary/90 disabled:pointer-events-none disabled:opacity-60"
+        className="mt-6 inline-flex h-[52px] w-full items-center justify-center gap-2 rounded-full bg-primary font-mono text-[12px] font-bold uppercase tracking-[0.08em] text-primary-foreground shadow-[0_8px_20px_rgba(20,20,19,0.18)] transition hover:bg-primary/90 disabled:pointer-events-none disabled:opacity-60"
       >
         <Check className="h-[18px] w-[18px]" strokeWidth={2} aria-hidden />
         {pending ? "Lagrer…" : "Lagre runde"}

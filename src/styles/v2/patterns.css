@@ -11,7 +11,7 @@
 
 /* ──────────────────── Editorial primitives ──────────────────── */
 .v2-eyebrow {
-  font-family: var(--font-jetbrains-mono);
+  font-family: var(--p-mono);
   font-size: 10px;
   font-weight: 700;
   text-transform: uppercase;
@@ -103,10 +103,10 @@
 .itin-card {
   border-left: 5px solid var(--axis-color, hsl(var(--border)));
 }
-.axis-FYS   { --axis-color: var(--pyr-fys, #005840);   background: color-mix(in oklab, var(--pyr-fys, #005840) 8%, hsl(var(--card))); }
+.axis-FYS   { --axis-color: var(--pyr-fys, #788C5D);   background: color-mix(in oklab, var(--pyr-fys, #788C5D) 8%, hsl(var(--card))); }
 .axis-TEK   { --axis-color: var(--pyr-tek, #B8852A);   background: color-mix(in oklab, var(--pyr-tek, #B8852A) 10%, hsl(var(--card))); }
 .axis-SLAG  { --axis-color: var(--pyr-slag, #2563EB);  background: color-mix(in oklab, var(--pyr-slag, #2563EB) 10%, hsl(var(--card))); }
-.axis-SPILL { --axis-color: var(--pyr-spill, #D1F843); background: color-mix(in oklab, var(--pyr-spill, #D1F843) 18%, hsl(var(--card))); }
+.axis-SPILL { --axis-color: var(--pyr-spill, #C46686); background: color-mix(in oklab, var(--pyr-spill, #C46686) 18%, hsl(var(--card))); }
 .axis-TURN  { --axis-color: var(--pyr-turn, #A32D2D);  background: color-mix(in oklab, var(--pyr-turn, #A32D2D) 10%, hsl(var(--card))); }
 
 .itin-card.is-active {

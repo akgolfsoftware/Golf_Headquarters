@@ -4,7 +4,7 @@
  * Én segment per credit (maks 12 — over det vises kun numerisk).
  * Farge-logikk: ≥ 50 % igjen = forest (default) · < 50 % = warning · 0 = destructive.
  * Siste aktive segment kan rendres i lime (--accent) for å forsterke "én igjen".
- * Tall i JetBrains Mono med tnum. Verdier kommer fra DB — aldri hardkodet.
+ * Tall i IBM Plex Mono med tnum. Verdier kommer fra DB — aldri hardkodet.
  */
 
 import { cn } from "@/lib/utils";

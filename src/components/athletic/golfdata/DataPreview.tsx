@@ -3,7 +3,7 @@ import type React from "react";
 /**
  * AK Golf HQ — DataPreview
  * Delt hover/scrubber-primitiv: et lite kort som viser verdien for punktet under
- * pekeren. Verdi i JetBrains Mono, kort label over, valgfri delta (--up/--down).
+ * pekeren. Verdi i IBM Plex Mono, kort label over, valgfri delta (--up/--down).
  * PRESENTASJONELT: forelderen eier hover-geometrien og posisjonerer via x/y;
  * dette kortet eier bare utseendet + inn/ut-bevegelsen. CSS: ./golfdata.css (.ak-dpv).
  */

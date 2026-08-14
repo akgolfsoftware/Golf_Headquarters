@@ -376,7 +376,7 @@ function PreviewCard({
       <div
         className={`relative mx-auto flex w-full ${aspect} flex-col overflow-hidden rounded-lg p-6 ${
           erMork
-            ? "bg-gradient-to-br from-[#006C50] to-[#003A2A] text-white"
+            ? "bg-gradient-to-br from-[#141413] to-[#26241f] text-white"
             : format === "pdf"
               ? "border border-border bg-card text-foreground"
               : "bg-gradient-to-br from-secondary/60 to-secondary text-foreground"

@@ -91,10 +91,10 @@ const STATS_LEGACY_VARS = {
   "--card-foreground": "90 11.8% 93.3%",
   "--popover": "120 4.5% 8.6%",
   "--popover-foreground": "90 11.8% 93.3%",
-  "--primary": "72.9 92.8% 61.8%", // T.lime
-  "--primary-foreground": "120 3.7% 5.3%", // T.onLime
-  "--accent": "72.9 92.8% 61.8%",
-  "--accent-foreground": "120 3.7% 5.3%",
+  "--primary": "48 33% 97%", // #FAF9F5 = Paper --p-cta (mørk)
+  "--primary-foreground": "60 2.6% 7.6%", // #141413 = Paper --p-on-cta
+  "--accent": "87 23% 61%", // #9DB284 = Paper --p-up (mørk) — høydepunkt
+  "--accent-foreground": "60 2.6% 7.6%", // #141413 = blekk på fylt --p-up
   "--secondary": "120 5% 7.8%", // T.panel2
   "--secondary-foreground": "90 11.8% 93.3%",
   "--muted": "120 5% 7.8%",
@@ -105,7 +105,7 @@ const STATS_LEGACY_VARS = {
   "--warning-foreground": "120 3.7% 5.3%",
   "--border": "0 0% 100% / 0.08", // T.border
   "--input": "0 0% 100% / 0.08",
-  "--ring": "72.9 92.8% 61.8%",
+  "--ring": "15 63% 60%", // #D97757 = Paper --p-focus
   // 3) DS-semantiske aliaser (rå verdier — det Tailwind-utilities faktisk bruker)
   "--bg": T.bg,
   "--surface": T.panel,
@@ -138,7 +138,7 @@ const STATS_LEGACY_VARS = {
   "--s-shadow-sm": "0 1px 2px rgba(0, 0, 0, 0.28)",
   "--s-shadow-md": "0 2px 8px rgba(0, 0, 0, 0.36), 0 1px 2px rgba(0, 0, 0, 0.28)",
   "--s-shadow-lg": "0 12px 32px rgba(0, 0, 0, 0.44), 0 2px 6px rgba(0, 0, 0, 0.3)",
-  "--s-shadow-hover": "0 8px 24px rgba(209, 248, 67, 0.16)",
+  "--s-shadow-hover": "0 8px 24px rgba(20, 20, 19, 0.16)",
   // --s-r-* (radius) er geometri, ikke tema — uendret fra kilden
   "--s-r-sm": "8px",
   "--s-r-md": "12px",

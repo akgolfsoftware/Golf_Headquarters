@@ -382,7 +382,7 @@
 }
 .profil-sammenlign-searchbox:focus {
   border-color: var(--s-accent);
-  box-shadow: 0 0 0 3px rgba(209, 248, 67, 0.22);
+  box-shadow: 0 0 0 3px rgba(217, 119, 87, 0.22);
 }
 
 /* ─── Stats-tab ─── */

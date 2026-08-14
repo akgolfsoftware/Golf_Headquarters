@@ -1,13 +1,6 @@
 import type { Metadata } from "next";
 import { cookies, headers } from "next/headers";
-import {
-  Familjen_Grotesk,
-  IBM_Plex_Mono,
-  Inter,
-  JetBrains_Mono,
-  Lora,
-  Poppins,
-} from "next/font/google";
+import { IBM_Plex_Mono, Lora, Poppins } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { InstallPrompt } from "@/components/portal/install-prompt";
@@ -18,35 +11,12 @@ import { CookieBanner } from "@/components/shared/cookie-banner";
 import { AnalyticsLoader } from "@/components/shared/analytics-loader";
 import "./globals.css";
 
-// Inter — UI og brødtekst (variable font)
-const inter = Inter({
-  variable: "--font-inter",
-  subsets: ["latin"],
-  display: "swap",
-});
-
-// JetBrains Mono — KPI-tall, tabulære tall, kode
-const jetbrainsMono = JetBrains_Mono({
-  variable: "--font-jetbrains-mono",
-  subsets: ["latin"],
-  display: "swap",
-});
-
-// Familjen Grotesk — eneste display-font i appen; Inter Tight er fjernet
-// (Fase 3, 2026-07-07). Merk: design-kanonen er tømt 2026-07-25 — fontvalg
-// står fritt frem til nytt designsystem fra Open Design.
-const familjenGrotesk = Familjen_Grotesk({
-  variable: "--font-familjen-grotesk",
-  subsets: ["latin"],
-  display: "swap",
-});
-
-// ---------- Claude Paper-fontene (designport steg 4) ----------
-// --font-sans/--font-display/--font-mono (globals.css) peker nå på disse
-// (fontbyttet gjort 2026-08-06). Fontene over (Inter/Familjen Grotesk/
-// JetBrains Mono) står fortsatt igjen — mange enkeltskjermer (onboarding,
-// teknisk-plan, hubs, golfdata) refererer dem direkte og må portes hver for
-// seg før de kan fjernes i steg 10.
+// ---------- Claude Paper-fontene (designport steg 4 + 10) ----------
+// Poppins (UI/display) · Lora (prosa) · IBM Plex Mono (tall) er de ENESTE
+// fontene i appen. Inter, Familjen Grotesk og JetBrains Mono ble fjernet i
+// steg 10 (2026-08-14) da siste direkte referanse til deres CSS-variabler
+// var portet til --p-ui / --p-disp / --p-mono. Ikke gjeninnfør dem — se
+// CLAUDE.md invariant 2. Lint-porten i scripts/check-token-gap.mjs vokter det.
 const poppins = Poppins({
   variable: "--font-poppins",
   weight: ["400", "500", "600", "700"],
@@ -137,7 +107,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport = {
-  themeColor: "#005840",
+  themeColor: "#141413",
   width: "device-width",
   initialScale: 1,
   // WCAG 1.4.4: zoom skal aldri sperres (iOS ignorerer uansett user-scalable=no).
@@ -180,7 +150,7 @@ export default async function RootLayout({
   return (
     <html
       lang="nb"
-      className={`${inter.variable} ${jetbrainsMono.variable} ${familjenGrotesk.variable} ${poppins.variable} ${lora.variable} ${ibmPlexMono.variable} h-full antialiased`}
+      className={`${poppins.variable} ${lora.variable} ${ibmPlexMono.variable} h-full antialiased`}
       {...(mork ? { "data-v2-tema": "dark" } : {})}
       suppressHydrationWarning
     >

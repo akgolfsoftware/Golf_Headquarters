@@ -217,7 +217,7 @@ Tjeneste: ${booking.serviceType.name}<br/>
 Tid: ${dato}<br/>
 Sted: ${booking.location.name}<br/>
 <br/>
-<a href="${process.env.NEXT_PUBLIC_APP_URL ?? "https://akgolf.no"}/admin/bookings" style="color:#005840;">Se alle bookinger →</a>
+<a href="${process.env.NEXT_PUBLIC_APP_URL ?? "https://akgolf.no"}/admin/bookings" style="color:#B85C3D;">Se alle bookinger →</a>
 </p>`,
       });
     } catch (err) {

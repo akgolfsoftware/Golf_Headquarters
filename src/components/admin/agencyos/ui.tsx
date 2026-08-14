@@ -49,7 +49,7 @@ export function AgPageHead({
       </div>
       {when && (
         <div className="inline-flex items-center gap-2 font-mono text-[11px] font-bold uppercase tracking-[0.12em] text-muted-foreground">
-          <span className="inline-flex items-center gap-[5px] text-primary before:h-[6px] before:w-[6px] before:rounded-full before:bg-accent before:shadow-[0_0_6px_rgba(209,248,67,0.7)] before:content-[''] motion-safe:before:animate-pulse">
+          <span className="inline-flex items-center gap-[5px] text-primary before:h-[6px] before:w-[6px] before:rounded-full before:bg-accent before:shadow-[0_0_6px_rgba(20,20,19,0.7)] before:content-[''] motion-safe:before:animate-pulse">
             Live
           </span>
           {when}

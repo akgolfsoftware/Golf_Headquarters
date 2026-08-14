@@ -61,7 +61,7 @@ const CATEGORY_META: Record<SgCategoryKey, { label: string; colorHex: string }> 
   APP: { label: "Innspill", colorHex: "#B8852A" },
   PUTT: { label: "Putt", colorHex: "#A32D2D" },
   OTT: { label: "Drive · slag", colorHex: "#2563EB" },
-  ARG: { label: "Around-the-green", colorHex: "#005840" },
+  ARG: { label: "Around-the-green", colorHex: "#788C5D" },
 };
 
 const SG_FIELD: Record<SgCategoryKey, keyof RoundInput> = {

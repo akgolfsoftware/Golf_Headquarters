@@ -23,7 +23,7 @@ export default function PortalNotFound() {
     >
       <p
         style={{
-          fontFamily: "var(--font-jetbrains-mono), monospace",
+          fontFamily: "var(--p-mono)",
           fontSize: 11,
           letterSpacing: "0.18em",
           textTransform: "uppercase",
