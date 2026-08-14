@@ -186,14 +186,14 @@ function TLBlokkInnhold({ o, kompakt, h, col }: { o: WeekEvent; kompakt: boolean
   return (
     <>
       <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
-        <span style={{ fontFamily: T.mono, fontSize: 7.5, fontWeight: 700, letterSpacing: "0.03em", color: `color-mix(in srgb, ${col} 55%, ${T.fg})`, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{AKSE_NAVN[ak] || o.eb} · {toKl(o.h, o.m)}</span>
+        <span style={{ fontFamily: T.mono, fontSize: 8.5, fontWeight: 700, letterSpacing: "0.03em", color: `color-mix(in srgb, ${col} 55%, ${T.fg})`, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{AKSE_NAVN[ak] || o.eb} · {toKl(o.h, o.m)}</span>
         {done && <Icon name="check" size={9} style={{ color: T.up, marginLeft: "auto", flex: "none" }} />}
         {avvik && <Icon name="alert-triangle" size={9} style={{ color: T.down, marginLeft: "auto", flex: "none" }} />}
       </div>
       {!kompakt && <div style={{ fontFamily: T.ui, fontSize: 10.5, fontWeight: 600, color: T.fg, marginTop: 2, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{o.ttl}</div>}
-      {!kompakt && h >= 58 && <div style={{ fontFamily: T.mono, fontSize: 8, color: T.mut, marginTop: 2 }}>{toKl(o.h, o.m)} · {fmtVarighet(o.durMin)}</div>}
+      {!kompakt && h >= 58 && <div style={{ fontFamily: T.mono, fontSize: 8.5, color: T.mut, marginTop: 2 }}>{toKl(o.h, o.m)} · {fmtVarighet(o.durMin)}</div>}
       {formelLinje ? (
-        <div style={{ fontFamily: T.mono, fontSize: 7.5, fontWeight: 700, color: T.fg2, marginTop: 2, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+        <div style={{ fontFamily: T.mono, fontSize: 8.5, fontWeight: 700, color: T.fg2, marginTop: 2, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
           {formelLinje}
         </div>
       ) : null}
@@ -545,7 +545,7 @@ export function WBBibliotek({ data, tab, setTab, sok, setSok, onVelgOkt, onBrukM
           {([null, "FYS", "TEK", "SLAG", "SPILL", "TURN"] as (AkseKey | null)[]).map((f) => {
             const on = akseFilter === f;
             return (
-              <button key={f ?? "alle"} type="button" onClick={() => setAkseFilter(f)} className="v2-press" style={{ appearance: "none", cursor: "pointer", fontFamily: T.mono, fontSize: 8, fontWeight: 700, padding: "4px 8px", borderRadius: 9999, border: `1px solid ${on ? "transparent" : T.border}`, background: on ? (f ? T.ax[f] : T.fg) : T.panel2, color: on ? (f ? T.onLime : T.bg) : T.mut, letterSpacing: "0.04em" }}>
+              <button key={f ?? "alle"} type="button" onClick={() => setAkseFilter(f)} className="v2-press" style={{ appearance: "none", cursor: "pointer", fontFamily: T.mono, fontSize: 8.5, fontWeight: 700, padding: "4px 8px", borderRadius: 9999, border: `1px solid ${on ? "transparent" : T.border}`, background: on ? (f ? T.ax[f] : T.fg) : T.panel2, color: on ? (f ? T.onLime : T.bg) : T.mut, letterSpacing: "0.04em" }}>
                 {f ?? "ALLE"}
               </button>
             );
@@ -743,7 +743,7 @@ export function WBBelastning({ data }: { data: WorkbenchData }) {
             border: `1px solid ${T.border}`,
           }}
         >
-          <div style={{ fontFamily: T.mono, fontSize: 8, fontWeight: 700, color: T.mut, letterSpacing: "0.06em", textTransform: "uppercase" }}>
+          <div style={{ fontFamily: T.mono, fontSize: 8.5, fontWeight: 700, color: T.mut, letterSpacing: "0.06em", textTransform: "uppercase" }}>
             Planlagt
           </div>
           <div style={{ fontFamily: T.mono, fontSize: 15, fontWeight: 700, color: T.fg, marginTop: 4, fontVariantNumeric: "tabular-nums" }}>
@@ -765,7 +765,7 @@ export function WBBelastning({ data }: { data: WorkbenchData }) {
           }}
         >
           <div style={{ display: "flex", alignItems: "center", gap: 5 }}>
-            <span style={{ fontFamily: T.mono, fontSize: 8, fontWeight: 700, color: T.mut, letterSpacing: "0.06em", textTransform: "uppercase" }}>
+            <span style={{ fontFamily: T.mono, fontSize: 8.5, fontWeight: 700, color: T.mut, letterSpacing: "0.06em", textTransform: "uppercase" }}>
               ACWR
             </span>
             <HjelpTips k="acwr" size={10} />
@@ -786,7 +786,7 @@ export function WBBelastning({ data }: { data: WorkbenchData }) {
             border: `1px solid ${turnering?.soon ? `color-mix(in srgb, ${T.warn} 40%, ${T.border})` : T.border}`,
           }}
         >
-          <div style={{ fontFamily: T.mono, fontSize: 8, fontWeight: 700, color: T.mut, letterSpacing: "0.06em", textTransform: "uppercase" }}>
+          <div style={{ fontFamily: T.mono, fontSize: 8.5, fontWeight: 700, color: T.mut, letterSpacing: "0.06em", textTransform: "uppercase" }}>
             Neste turnering
           </div>
           {turnering ? (
@@ -857,7 +857,7 @@ function KoachNotatSeksjon({ coachNotat }: { coachNotat: NonNullable<WorkbenchV2
         {notater.map((n) => (
           <div key={n.id} style={{ padding: "8px 10px", borderRadius: 10, background: T.panel2, border: `1px solid ${T.border}` }}>
             <p style={{ margin: 0, fontFamily: T.ui, fontSize: 11.5, color: T.fg, lineHeight: 1.45 }}>{n.content}</p>
-            <span style={{ fontFamily: T.mono, fontSize: 8, color: T.mut }}>{new Date(n.createdAt).toLocaleDateString("nb-NO", { day: "numeric", month: "short" })}</span>
+            <span style={{ fontFamily: T.mono, fontSize: 8.5, color: T.mut }}>{new Date(n.createdAt).toLocaleDateString("nb-NO", { day: "numeric", month: "short" })}</span>
           </div>
         ))}
         <textarea
@@ -1060,7 +1060,7 @@ function MndNivaa({ data, onVelgDato }: { data: WorkbenchData; onVelgDato: (dato
                       <span key={x.ax} title={`${AKSE_NAVN[x.ax.toUpperCase() as AkseKey] ?? x.ax} · ${fmtVarighet(x.min)}`} style={{ width: 7, height: 7, borderRadius: 9999, background: T.ax[x.ax.toUpperCase() as AkseKey] ?? T.mut }} />
                     ))}
                   </span>
-                  <span style={{ fontFamily: T.mono, fontSize: 8, color: T.mut }}>{c.count} · {fmtVarighet(totMin)}</span>
+                  <span style={{ fontFamily: T.mono, fontSize: 8.5, color: T.mut }}>{c.count} · {fmtVarighet(totMin)}</span>
                 </>
               ) : null}
             </button>
@@ -1100,7 +1100,7 @@ export function DagNivaa({ dag, valgt, onVelg, dager, onFlytt }: {
               <div onClick={() => o.id && !pending && onVelg(o.id)} style={{ cursor: pending ? "default" : "pointer" }}>
                 <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
                   <span style={{ fontFamily: T.mono, fontSize: 9, fontWeight: 700, color: T.fg2 }}>{toKl(o.h, o.m)}</span>
-                  <span style={{ fontFamily: T.mono, fontSize: 8, fontWeight: 700, color: `color-mix(in srgb, ${col} 55%, ${T.fg})` }}>{AKSE_NAVN[ak] || o.eb}</span>
+                  <span style={{ fontFamily: T.mono, fontSize: 8.5, fontWeight: 700, color: `color-mix(in srgb, ${col} 55%, ${T.fg})` }}>{AKSE_NAVN[ak] || o.eb}</span>
                   <span style={{ marginLeft: "auto", fontFamily: T.mono, fontSize: 8.5, color: T.mut }}>{fmtVarighet(o.durMin)}</span>
                 </div>
                 <div style={{ fontFamily: T.ui, fontSize: 12.5, fontWeight: 600, color: T.fg, marginTop: 5 }}>{o.ttl}</div>
@@ -1426,7 +1426,7 @@ function byggDager(data: WorkbenchData): DagKol[] {
 function Felt({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 5 }}>
-      <span style={{ fontFamily: T.mono, fontSize: 8, fontWeight: 700, letterSpacing: "0.11em", textTransform: "uppercase", color: T.mut }}>{label}</span>
+      <span style={{ fontFamily: T.mono, fontSize: 8.5, fontWeight: 700, letterSpacing: "0.11em", textTransform: "uppercase", color: T.mut }}>{label}</span>
       {children}
     </div>
   );
@@ -2442,7 +2442,7 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions, w
                     <span style={{ fontFamily: T.mono, fontSize: 18, fontWeight: 700, color: T.fg, fontVariantNumeric: "tabular-nums", flex: "none" }}>{adher != null ? `${adherDisp}%` : "—"}</span>
                     <div style={{ minWidth: 0 }}>
                       <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}>
-                        <span style={{ fontFamily: T.mono, fontSize: 8, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: T.mut, whiteSpace: "nowrap" }}>Plan-etterlevelse</span>
+                        <span style={{ fontFamily: T.mono, fontSize: 8.5, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: T.mut, whiteSpace: "nowrap" }}>Plan-etterlevelse</span>
                         <HjelpTips k="planEtterlevelse" size={11} />
                       </span>
                       <span style={{ fontFamily: T.mono, fontSize: 9, fontWeight: 700, color: harAvvik ? T.warn : T.up, display: "block", marginTop: 2, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{avvikTekst}</span>
@@ -2716,7 +2716,7 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions, w
             />
             <div style={{ display: "flex", alignItems: "center", gap: 8, padding: "6px 10px", borderRadius: 10, background: `color-mix(in srgb, ${harAvvik ? T.warn : T.up} 8%, transparent)`, border: `1px solid color-mix(in srgb, ${harAvvik ? T.warn : T.up} 32%, transparent)` }}>
               <span style={{ fontFamily: T.mono, fontSize: 15, fontWeight: 700, color: T.fg, fontVariantNumeric: "tabular-nums" }}>{adher != null ? `${adherDisp}%` : "–"}</span>
-              <span style={{ fontFamily: T.mono, fontSize: 7.5, fontWeight: 700, letterSpacing: "0.05em", textTransform: "uppercase", color: T.mut, whiteSpace: "nowrap" }}>etterlevelse · {avvikTekst}</span>
+              <span style={{ fontFamily: T.mono, fontSize: 8.5, fontWeight: 700, letterSpacing: "0.05em", textTransform: "uppercase", color: T.mut, whiteSpace: "nowrap" }}>etterlevelse · {avvikTekst}</span>
             </div>
             {(actions?.suggestWeek || actions?.duplicateWeek) && (
               <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
@@ -2820,7 +2820,7 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions, w
               ["drills", String(ukeKpi.drills)],
             ] as const).map(([k, v]) => (
               <div key={k} style={{ flex: "none" }}>
-                <span style={{ display: "block", fontFamily: T.mono, fontSize: 8, letterSpacing: "0.08em", textTransform: "uppercase", color: T.mut }}>{k}</span>
+                <span style={{ display: "block", fontFamily: T.mono, fontSize: 8.5, letterSpacing: "0.08em", textTransform: "uppercase", color: T.mut }}>{k}</span>
                 <span style={{ display: "block", fontFamily: T.mono, fontSize: 15, fontWeight: 700, color: T.fg, fontVariantNumeric: "tabular-nums" }}>{v}</span>
               </div>
             ))}
