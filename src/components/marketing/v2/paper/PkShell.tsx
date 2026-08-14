@@ -1,18 +1,22 @@
 import Link from "next/link";
 import "@/styles/paper-katalog.css";
+import "@/styles/paper-side.css";
 
 /**
- * PkShell — delt Paper marketing-skall for katalog-flatene (coacher, anlegg,
- * blogg, cases, turneringer). Fasit: designsystem/paper/fase2/marketing/
- * marketing-katalog.html (§mnav/§footer). Bruker KUN --p-*-tokens.
+ * PkShell — delt Paper marketing-skall. To nav-varianter, samme skall:
+ *  - `katalog` (default): coacher, anlegg, blogg, cases, turneringer.
+ *    Fasit: designsystem/paper/fase2/marketing/marketing-katalog.html.
+ *  - `side`: forside, coaching, playerhq, junior, priser, om-oss,
+ *    treningsfilosofi, faq, kontakt, jobb, suksess, vilkar, personvern,
+ *    cookies. Fasit: .../marketing-side.html (§mnav/§footer).
+ * Bruker KUN --p-*-tokens.
  *
- * Ingen egen header/nav per side — dette er «marketing-shell»-en for
- * katalog-flatene. Mobil (<800px) skjuler midtre nav-lenker (CSS), matcher
- * fasitens `.mnav nav{ display:none }`-regel — ingen hamburger-erstatning
- * i denne malen.
+ * Ingen egen header/nav per side. Mobil (<800px) skjuler midtre nav-lenker
+ * (CSS), matcher fasitens `.mnav nav{ display:none }`-regel — ingen
+ * hamburger-erstatning i denne malen.
  */
 
-const NAV: { href: string; label: string }[] = [
+const NAV_KATALOG: { href: string; label: string }[] = [
   { href: "/coaching", label: "Coaching" },
   { href: "/coacher", label: "Coacher" },
   { href: "/anlegg", label: "Anlegg" },
@@ -20,7 +24,15 @@ const NAV: { href: string; label: string }[] = [
   { href: "/priser", label: "Priser" },
 ];
 
-const FOOTER: { href: string; label: string }[] = [
+const NAV_SIDE: { href: string; label: string }[] = [
+  { href: "/coaching", label: "Coaching" },
+  { href: "/playerhq", label: "PlayerHQ" },
+  { href: "/junior", label: "Junior" },
+  { href: "/priser", label: "Priser" },
+  { href: "/om-oss", label: "Om oss" },
+];
+
+const FOOTER_KATALOG: { href: string; label: string }[] = [
   { href: "/om-oss", label: "Om oss" },
   { href: "/kontakt", label: "Kontakt" },
   { href: "/blogg", label: "Blogg" },
@@ -29,16 +41,33 @@ const FOOTER: { href: string; label: string }[] = [
   { href: "/personvern", label: "Personvern" },
 ];
 
+const FOOTER_SIDE: { href: string; label: string }[] = [
+  { href: "/om-oss", label: "Om oss" },
+  { href: "/kontakt", label: "Kontakt" },
+  { href: "/jobb", label: "Jobb hos oss" },
+  { href: "/blogg", label: "Blogg" },
+  { href: "/anlegg", label: "Anlegg" },
+  { href: "/vilkar", label: "Vilkår" },
+  { href: "/personvern", label: "Personvern" },
+  { href: "/cookies", label: "Cookies" },
+];
+
 export function PkShell({
   aktiv,
   children,
   dataSlug,
+  variant = "katalog",
 }: {
   /** Hvilken nav-lenke som er aktiv — matcher href-segmentet. */
   aktiv?: string;
   children: React.ReactNode;
   dataSlug: string;
+  /** Nav-/footer-sett: katalogflatene eller de redaksjonelle sidene. */
+  variant?: "katalog" | "side";
 }) {
+  const NAV = variant === "side" ? NAV_SIDE : NAV_KATALOG;
+  const FOOTER = variant === "side" ? FOOTER_SIDE : FOOTER_KATALOG;
+
   return (
     <div className="pk-page" data-paper-slug={dataSlug}>
       <header className="pk-nav">
@@ -56,7 +85,7 @@ export function PkShell({
           <Link href="/auth/login" className="pk-btn pk-btn-sm">
             Logg inn
           </Link>
-          <Link href="/booking" className="pk-btn pk-btn-sm pk-btn-clay">
+          <Link href="/booking" className="pk-btn pk-btn-sm pk-btn-ink">
             Bestill time
           </Link>
         </div>
