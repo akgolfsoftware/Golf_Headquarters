@@ -80,6 +80,11 @@ const SCREENS = [
   { id: "B2-fangst", navn: "FangstSheet", rute: "/portal", bruker: SPILLER, klikk: 'button[aria-label="Fang en observasjon"]', fasitM: "fangstsheet.html", fasitD: "fangstsheet.html" },
   { id: "B2-forelder", navn: "Foreldreportal", rute: "/forelder", bruker: "screentest-parent@akgolf.test", fasitM: "foreldreportal.html", fasitD: "foreldreportal.html" },
   { id: "B3-turnering", navn: "Workbench turnering", rute: "/admin/spillere/c7e2811d-86e1-49fe-9100-d33d5056eac2/workbench?zoom=turnering", bruker: COACH, fasitM: "workbench-turnering.html", fasitD: "workbench-turnering.html" },
+  // Bølge 4 — 14.08, resten av fase1 med gjeldende (ikke erstattet) fasit.
+  { id: "B4-live", navn: "AgencyOS Mission Control", rute: "/admin/agencyos/live", bruker: COACH, fasitM: "agencyos-live-session.html", fasitD: "agencyos-live-session.html" },
+  { id: "B4-okonomi", navn: "AgencyOS økonomi", rute: "/admin/agencyos/okonomi", bruker: COACH, fasitM: "agencyos-okonomi.html", fasitD: "agencyos-okonomi.html" },
+  { id: "B4-akstigen", navn: "AK-stigen", rute: "/admin/agencyos/ak-stigen", bruker: COACH, fasitM: "agencyos-ak-stigen.html", fasitD: "agencyos-ak-stigen.html" },
+  { id: "B4-spillerprofil", navn: "Spillerprofil", rute: "/admin/spillere/c7e2811d-86e1-49fe-9100-d33d5056eac2", bruker: COACH, fasitM: "spillerprofil.html", fasitD: "spillerprofil.html" },
 ];
 
 const only = (process.argv[2] || "").trim();
