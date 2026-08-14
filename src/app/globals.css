@@ -481,6 +481,11 @@ html[data-v2-tema="dark"] {
 html {
   scroll-behavior: smooth;
   -webkit-tap-highlight-color: transparent;
+  /* Sticky toppbarer spiser de øverste px-ene av viewporten. Uten dette lander
+   * anker-hopp (scrollIntoView, #fragment, tastaturfokus) BAK toppbaren.
+   * Speilvendt --ak-cookie-h i bunnen: forskyv rullen, aldri legg innhold oppå.
+   * Flater med sticky toppbar publiserer sin egen høyde som --ak-topbar-h. */
+  scroll-padding-top: var(--ak-topbar-h, 0px);
 }
 
 /* iOS Safari: forhindre auto-zoom på input-fokus.

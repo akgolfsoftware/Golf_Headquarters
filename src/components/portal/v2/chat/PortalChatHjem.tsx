@@ -34,6 +34,7 @@ import { useEffect, useRef, useState, type CSSProperties } from "react";
 import Link from "next/link";
 import { T } from "@/lib/v2/tokens";
 import { TemaHeaderKnapp } from "@/components/v2/tema";
+import { useToppbarHoyde } from "@/components/v2/toppbar-hoyde";
 import { SamtaleBoble, SamtaleSkriver, SamtaleFeil, Skrivefelt, ForslagRad, SendKnapp } from "@/components/v2/samtale";
 import { Icon } from "@/components/v2/icon";
 import { kategoriFraSnittscore } from "@/lib/domain/ak-kategori";
@@ -395,6 +396,8 @@ export function PortalChatHjem({
   const [fangstApen, setFangstApen] = useState(false);
   const mobil = useErMobil();
   const trådRef = useRef<HTMLDivElement>(null);
+  // Sticky toppbar over dokumentrullen — publiser høyden (toppbar-hoyde.tsx).
+  const toppRef = useToppbarHoyde<HTMLElement>();
   const busy = status === "streaming" || status === "submitted";
 
   useEffect(() => {
@@ -431,6 +434,8 @@ export function PortalChatHjem({
       <div style={{ display: "flex", flexDirection: "column", height: "100%", minHeight: 0, minWidth: 0, background: T.bg, borderRight: mobil ? undefined : `1px solid ${T.border}` }}>
         {/* ── Topplinje (Paper .top: tittel + loop + capture) ── */}
         <header
+          ref={toppRef}
+          data-paper-topp
           style={{
             display: "flex",
             flexWrap: "wrap",

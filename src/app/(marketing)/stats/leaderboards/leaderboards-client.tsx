@@ -6,6 +6,7 @@
 
 import { useState } from "react";
 import { StatsIcon } from "@/components/stats/icon";
+import { useToppbarHoyde } from "@/components/v2/toppbar-hoyde";
 
 function SearchBox() {
   const [query, setQuery] = useState("");
@@ -136,6 +137,9 @@ const KATEGORIER = [
 
 function KategoriStrip() {
   const [aktiv, setAktiv] = useState("pga");
+  // Sticky strip over dokumentrullen — publiser høyden så seksjons-hoppene
+  // under lander UNDER stripen, ikke bak den (toppbar-hoyde.tsx).
+  const toppRef = useToppbarHoyde<HTMLDivElement>();
 
   const klikk = (id: string) => {
     setAktiv(id);
@@ -144,6 +148,7 @@ function KategoriStrip() {
 
   return (
     <div
+      ref={toppRef}
       style={{
         position: "sticky",
         top: 0,

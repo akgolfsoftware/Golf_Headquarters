@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Caps, Kort, Knapp, StatusPill, TomTilstand, T } from "@/components/v2";
 import { Icon } from "@/components/v2/icon";
+import { ToppbarHoyde } from "@/components/v2/toppbar-hoyde";
 import { AdminSlettSpillerKnappV2 } from "./AdminSlettSpillerKnappV2";
 import { lagreSpiller } from "@/app/admin/(legacy)/spillere/[id]/rediger/actions";
 
@@ -108,6 +109,8 @@ export function AdminSpillerRedigerV2({ data }: { data: AdminSpillerRedigerV2Dat
   return (
     <div data-paper-wave-h="spiller-rediger" data-paper-pattern style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 960, margin: "0 auto", width: "100%" }}>
       <div style={{ position: "sticky", top: 0, zIndex: 20, background: `color-mix(in srgb, ${T.bg} 95%, transparent)`, backdropFilter: "blur(6px)", borderBottom: `1px solid ${T.border}`, padding: "10px 0" }}>
+        {/* Server-komponent — kan ikke bruke hooken, så måleren måler forelderen. */}
+        <ToppbarHoyde />
         <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", justifyContent: "space-between", gap: 10 }}>
           <div style={{ minWidth: 0 }}>
             <Link href={`/admin/spillere/${data.spillerId}`} style={{ display: "inline-flex", alignItems: "center", gap: 6, fontFamily: T.mono, fontSize: 10, textTransform: "uppercase", letterSpacing: "0.08em", color: T.mut, textDecoration: "none" }}>

@@ -7,6 +7,7 @@ import { T } from "@/lib/v2/tokens";
  */
 
 import DOMPurify from "dompurify";
+import { useToppbarHoyde } from "@/components/v2/toppbar-hoyde";
 import {
   CartesianGrid,
   Legend,
@@ -75,6 +76,9 @@ function tierBadge(tier: string) {
 }
 
 export function SammenlignResultat({ spillerA, spillerB, slugA, slugB }: Props) {
+  // Sticky toppbar over dokumentrullen — publiser høyden (toppbar-hoyde.tsx).
+  // Må stå FØR den tidlige returen under: hooks kjøres i samme rekkefølge hver render.
+  const toppRef = useToppbarHoyde<HTMLDivElement>();
   if (!spillerA || !spillerB) {
     return (
       <section
@@ -166,6 +170,7 @@ export function SammenlignResultat({ spillerA, spillerB, slugA, slugB }: Props) 
     <div>
       {/* ── STICKY TOPP-BAR ────────────────────────────────────── */}
       <div
+        ref={toppRef}
         style={{
           position: "sticky",
           top: 0,

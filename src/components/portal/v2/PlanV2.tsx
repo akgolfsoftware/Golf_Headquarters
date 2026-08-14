@@ -11,6 +11,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
+import { useToppbarHoyde } from "@/components/v2/toppbar-hoyde";
 import type { DashboardData } from "@/app/portal/actions";
 import { TemaHeaderKnapp } from "@/components/v2/tema";
 import {
@@ -103,6 +104,7 @@ export function PlanV2({
   });
   const aktivDag = week.find((d) => d.isToday)?.dayNumber ?? week[0]?.dayNumber ?? null;
 
+  const toppRef = useToppbarHoyde<HTMLElement>();
   const [valgtDagDato, setValgtDagDato] = useState<number | null>(aktivDag);
   const valgtDagObj = week.find((d) => d.dayNumber === valgtDagDato) ?? week.find((d) => d.isToday) ?? week[0];
 
@@ -149,6 +151,7 @@ export function PlanV2({
     >
       {/* Paper .topp — sticky surface header */}
       <header
+        ref={toppRef}
         data-paper-topp
         style={{
           flex: "none",
