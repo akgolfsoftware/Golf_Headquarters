@@ -133,6 +133,12 @@ export type WorkbenchData = {
     /** Øktbudsjett per pyramideområde (8c.1, zod-validert). */
     budsjett?: import("@/lib/workbench/perioder").SessionBudget | null;
   }[];
+  /**
+   * Turneringsfanen (fasit workbench-turnering.html): påmeldinger i
+   * sesongvinduet med alt kollisjonssjekken trenger. Perioder leses fra
+   * seasonBlocks; vurderingen gjøres i turnering-plan.ts.
+   */
+  turneringPlan?: import("@/lib/workbench/turnering-plan").TurneringPaamelding[];
   /** Turneringer med konkret dato for kalender/Gantt (ikke bare «om N dg»). */
   tournamentCalendar?: {
     title: string;
@@ -979,6 +985,61 @@ export async function loadWorkbenchData(
     .filter((x): x is NonNullable<typeof x> => x !== null)
     .sort((a, b) => new Date(a.startDate).getTime() - new Date(b.startDate).getTime());
 
+  // ── Turneringsfanen: påmeldinger i sesongvinduet ────────────────
+  // Eget oppslag med fulle felter (status/notat/sluttdato) — sidebar-queryen
+  // over er bevisst smal (take 4, kun kommende) og røres ikke.
+  const sesongFra = seasonPlan?.periodBlocks[0]?.startDate ?? new Date(now.getTime() - 14 * 86_400_000);
+  const sesongTil =
+    seasonPlan && seasonPlan.periodBlocks.length > 0
+      ? seasonPlan.periodBlocks.reduce(
+          (max, b) => (b.endDate > max ? b.endDate : max),
+          seasonPlan.periodBlocks[0].endDate,
+        )
+      : new Date(now.getTime() + 365 * 86_400_000);
+  const turneringPlanEntries = await prisma.tournamentEntry.findMany({
+    where: {
+      userId,
+      entryStatus: { in: ["PLANNED", "CLAIMED_REGISTERED", "CONFIRMED"] },
+      OR: [
+        { tournament: { startDate: { gte: sesongFra, lte: sesongTil } } },
+        { manualDate: { gte: sesongFra, lte: sesongTil } },
+      ],
+    },
+    orderBy: { createdAt: "asc" },
+    take: 40,
+    select: {
+      id: true,
+      priority: true,
+      entryStatus: true,
+      notes: true,
+      category: true,
+      manualName: true,
+      manualDate: true,
+      manualEndDate: true,
+      tournament: { select: { name: true, startDate: true, endDate: true, location: true } },
+    },
+  });
+  const turneringPlan = turneringPlanEntries
+    .map((e) => {
+      const fra = e.tournament?.startDate ?? e.manualDate ?? null;
+      if (!fra) return null;
+      const til = e.tournament?.endDate ?? e.manualEndDate ?? fra;
+      return {
+        id: e.id,
+        navn: e.tournament?.name ?? e.manualName ?? "Turnering",
+        sted: e.tournament?.location ?? null,
+        fra: fra.toISOString().slice(0, 10),
+        til: til.toISOString().slice(0, 10),
+        kategori: e.category,
+        prioritet: e.priority,
+        status: e.entryStatus,
+        notat: e.notes,
+        uavklart: e.entryStatus !== "CONFIRMED",
+      };
+    })
+    .filter((x): x is NonNullable<typeof x> => x !== null)
+    .sort((a, b) => a.fra.localeCompare(b.fra));
+
   return {
     weekHead,
     weekDays,
@@ -996,6 +1057,7 @@ export async function loadWorkbenchData(
     canonChip,
     canonBudsjett,
     tournamentCalendar: tournamentCalendar.length > 0 ? tournamentCalendar : undefined,
+    turneringPlan: turneringPlan.length > 0 ? turneringPlan : undefined,
     planTemplates: templateRows.length > 0 ? templateRows : undefined,
     paletteItems: paletteItems.length > 0 ? paletteItems : undefined,
     fysPlanHref,
