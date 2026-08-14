@@ -15,6 +15,41 @@
   background: var(--p-bg);
   color: var(--p-fg);
   font-family: var(--p-ui);
+
+  /* Fast lys palett — fasiten: «Marketing er primært LYS — ingen tema-toggle»
+     (marketing-side.html §skall + marketing-katalog.html). Skjer med
+     scope-tokens, IKKE med tema-klassen — samme mønster som wang-tokens.css,
+     jf. gotchas §Tema. Rot-layoutens default for marketing er mørk, og uten
+     denne låsen arver hele marketing-flaten produkt-mørk.
+     Verdiene er verbatim fra :root-blokken i paper-tokens.css. */
+  color-scheme: light;
+  --p-bg: #faf9f5;
+  --p-surface: #ffffff;
+  --p-soft: #f0eee6;
+  --p-soft-hover: #e8e6dc;
+  --p-surface-warm: #e3dacc;
+  --p-border: #e8e6dc;
+  --p-hairline: #d1cfc5;
+  --p-inverse: #000000;
+  --p-fg: #141413;
+  --p-ink-soft: #3d3d3a;
+  --p-muted: #5e5d59;
+  --p-mid: #b0aea5;
+  --p-text-tertiary: #87867f;
+  --p-cta: #141413;
+  --p-on-cta: #faf9f5;
+  --p-cta-hover: #3d3d3a;
+  --p-accent: #d97757;
+  --p-accent-soft: rgba(217, 119, 87, 0.12);
+  --p-accent-fg: #b85c3d;
+  --p-on-accent: #141413;
+  --p-up: #63784a;
+  --p-dn: #a85536;
+  --p-info: #46719f;
+  --p-shadow: 0 1px 0 rgba(20, 20, 19, 0.03), 0 18px 40px rgba(20, 20, 19, 0.05);
+  --p-focus: #d97757;
+  --p-logo-mark: #141413;
+  --p-logo-dot: #d97757;
 }
 
 /* ── Nav ── */
