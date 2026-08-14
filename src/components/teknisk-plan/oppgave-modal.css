@@ -38,7 +38,7 @@
   align-items: flex-start;
 }
 .tp-modal .m-head .eyebrow {
-  font-family: var(--font-mono, 'JetBrains Mono', monospace);
+  font-family: var(--p-mono);
   font-size: 10px;
   font-weight: 700;
   color: hsl(var(--muted-foreground));
@@ -57,21 +57,21 @@
   opacity: 0.6;
 }
 .tp-modal .m-head h2 {
-  font-family: var(--font-display, var(--font-familjen-grotesk), sans-serif);
+  font-family: var(--p-disp);
   font-size: 24px;
   font-weight: 700;
   letter-spacing: -0.02em;
   margin-top: 8px;
 }
 .tp-modal .m-head h2 em {
-  font-family: var(--font-familjen-grotesk), sans-serif;
+  font-family: var(--p-disp);
   font-style: italic;
   font-weight: 400;
   color: hsl(var(--primary));
 }
 .tp-modal .m-head .sub {
   margin-top: 6px;
-  font-family: var(--font-mono, 'JetBrains Mono', monospace);
+  font-family: var(--p-mono);
   font-size: 10.5px;
   font-weight: 600;
   color: hsl(var(--muted-foreground));
@@ -122,7 +122,7 @@
   margin-bottom: 16px;
 }
 .tp-modal .section-head .num {
-  font-family: var(--font-mono, 'JetBrains Mono', monospace);
+  font-family: var(--p-mono);
   font-size: 11px;
   font-weight: 600;
   color: hsl(var(--muted-foreground));
@@ -133,7 +133,7 @@
   display: inline-block;
   background: hsl(var(--primary));
   color: hsl(var(--accent));
-  font-family: var(--font-display, var(--font-familjen-grotesk), sans-serif);
+  font-family: var(--p-disp);
   font-weight: 800;
   width: 22px;
   height: 22px;
@@ -145,7 +145,7 @@
   margin-right: 8px;
 }
 .tp-modal .section-head .helper {
-  font-family: var(--font-mono, 'JetBrains Mono', monospace);
+  font-family: var(--p-mono);
   font-size: 11px;
   color: hsl(var(--muted-foreground));
 }
@@ -208,7 +208,7 @@
   justify-content: center;
   gap: 5px;
   cursor: pointer;
-  font-family: var(--font-mono, 'JetBrains Mono', monospace);
+  font-family: var(--p-mono);
 }
 .tp-modal .seg button:hover { background: hsl(var(--secondary)); }
 .tp-modal .seg button.active {
@@ -245,7 +245,7 @@
   border-color: hsl(var(--primary));
 }
 .tp-modal .area-tab .meta {
-  font-family: var(--font-mono, 'JetBrains Mono', monospace);
+  font-family: var(--p-mono);
   font-size: 9px;
   font-weight: 600;
   letter-spacing: 0.08em;
@@ -256,7 +256,7 @@
   margin-top: 10px;
 }
 .tp-modal .area-sub-label {
-  font-family: var(--font-mono, 'JetBrains Mono', monospace);
+  font-family: var(--p-mono);
   font-size: 10.5px;
   font-weight: 600;
   color: hsl(var(--muted-foreground));
@@ -342,7 +342,7 @@
 }
 .tp-modal .media-slot .nm { font-weight: 700; font-size: 13px; }
 .tp-modal .media-slot .meta {
-  font-family: var(--font-mono, 'JetBrains Mono', monospace);
+  font-family: var(--p-mono);
   font-size: 10px;
   color: hsl(var(--muted-foreground));
 }
@@ -374,7 +374,7 @@
   font-size: 13px;
 }
 .tp-modal .rep-card .head .nm em {
-  font-family: var(--font-familjen-grotesk), sans-serif;
+  font-family: var(--p-disp);
   font-style: italic;
   color: hsl(var(--muted-foreground));
   font-weight: 400;
@@ -383,7 +383,7 @@
   width: 100%;
   border: 0;
   background: transparent;
-  font-family: var(--font-display, var(--font-familjen-grotesk), sans-serif);
+  font-family: var(--p-disp);
   font-size: 28px;
   font-weight: 800;
   color: hsl(var(--foreground));
@@ -391,7 +391,7 @@
 }
 .tp-modal .rep-card .num-input:focus { outline: none; color: hsl(var(--primary)); }
 .tp-modal .rep-card .desc {
-  font-family: var(--font-mono, 'JetBrains Mono', monospace);
+  font-family: var(--p-mono);
   font-size: 9.5px;
   color: hsl(var(--muted-foreground));
   text-transform: uppercase;
@@ -417,7 +417,7 @@
   border-color: hsl(var(--primary));
 }
 .tp-modal .drill-chip .id {
-  font-family: var(--font-mono, 'JetBrains Mono', monospace);
+  font-family: var(--p-mono);
   font-size: 9.5px;
   opacity: 0.7;
 }
@@ -437,7 +437,7 @@
   font-size: 12px;
 }
 .tp-tm-table .h {
-  font-family: var(--font-mono, 'JetBrains Mono', monospace);
+  font-family: var(--p-mono);
   font-size: 10px;
   font-weight: 700;
   color: hsl(var(--muted-foreground));
@@ -447,7 +447,7 @@
   border-bottom: 1px solid hsl(var(--border));
 }
 .tp-tm-table .v {
-  font-family: var(--font-mono, 'JetBrains Mono', monospace);
+  font-family: var(--p-mono);
   font-variant-numeric: tabular-nums;
   padding: 8px 0;
   border-bottom: 1px solid hsl(var(--border-soft, #EFEDE6));
@@ -465,7 +465,7 @@
   gap: 5px;
   padding: 3px 8px;
   border-radius: 999px;
-  font-family: var(--font-mono, 'JetBrains Mono', monospace);
+  font-family: var(--p-mono);
   font-size: 9.5px;
   font-weight: 700;
   text-transform: uppercase;
@@ -504,7 +504,7 @@
 .tp-hit-row .corridor-row .sep { color: hsl(var(--muted-foreground)); font-size: 11px; }
 .tp-hit-row .input,
 .tp-hit-row select.input {
-  font-family: var(--font-mono, 'JetBrains Mono', monospace);
+  font-family: var(--p-mono);
   font-variant-numeric: tabular-nums;
   font-size: 11px;
   padding: 5px 7px;
@@ -520,12 +520,12 @@
 }
 .tp-hit-row .req-row .input { width: 38px; padding: 5px 4px; text-align: center; }
 .tp-hit-row .req-row .of {
-  font-family: var(--font-mono, 'JetBrains Mono', monospace);
+  font-family: var(--p-mono);
   font-size: 11px;
   color: hsl(var(--muted-foreground));
 }
 .tp-hit-status {
-  font-family: var(--font-mono, 'JetBrains Mono', monospace);
+  font-family: var(--p-mono);
   font-size: 12px;
   font-weight: 700;
   font-variant-numeric: tabular-nums;
@@ -540,7 +540,7 @@
   padding-top: 8px;
   border-top: 1px solid hsl(var(--border-soft, #EFEDE6));
   margin-top: 4px;
-  font-family: var(--font-mono, 'JetBrains Mono', monospace);
+  font-family: var(--p-mono);
   font-size: 10.5px;
   color: hsl(var(--muted-foreground));
 }

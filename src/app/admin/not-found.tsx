@@ -30,7 +30,7 @@ export default function AdminNotFound() {
       >
         <div
           style={{
-            fontFamily: "var(--font-jetbrains-mono), monospace",
+            fontFamily: "var(--p-mono)",
             fontSize: 44,
             fontWeight: 700,
             color: "var(--v2-lime)",

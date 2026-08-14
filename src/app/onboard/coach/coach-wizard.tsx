@@ -188,7 +188,7 @@ export function CoachWizard({
                 x="260"
                 y="125"
                 textAnchor="middle"
-                fontFamily="JetBrains Mono"
+                style={{ fontFamily: "var(--p-mono)" }}
                 fontSize="7"
                 fontWeight="800"
                 fill="#0A1F17"
@@ -252,7 +252,7 @@ export function CoachWizard({
             <div>
               <div
                 style={{
-                  fontFamily: "var(--font-familjen-grotesk)",
+                  fontFamily: "var(--p-disp)",
                   fontSize: 14,
                   fontWeight: 700,
                 }}
@@ -484,7 +484,7 @@ export function CoachWizard({
                 x="260"
                 y="142"
                 textAnchor="middle"
-                fontFamily="JetBrains Mono"
+                style={{ fontFamily: "var(--p-mono)" }}
                 fontSize="8"
                 fontWeight="800"
                 fill="#005840"
@@ -509,7 +509,7 @@ export function CoachWizard({
               </div>
               <span
                 style={{
-                  fontFamily: "var(--font-familjen-grotesk)",
+                  fontFamily: "var(--p-disp)",
                   fontSize: 22,
                   fontWeight: 800,
                   letterSpacing: "-0.02em",
@@ -551,7 +551,7 @@ export function CoachWizard({
             </button>
             <p
               style={{
-                fontFamily: "var(--font-jetbrains-mono)",
+                fontFamily: "var(--p-mono)",
                 fontSize: 10,
                 color: T.farge.noytralGra,
                 letterSpacing: "0.06em",

@@ -102,9 +102,8 @@ export interface TittelProps {
   em?: string;
 }
 /* skjermtittel m/ valgfri kursiv lime-aksent. Paper-fasit: type-display.html
-   «sidetittel» 32/600, sporing -.01em — skriftfamilien (Familjen Grotesk) er
-   uendret (CLAUDE.md invariant 2, C smalt beholder Inter/Familjen Grotesk/
-   JetBrains Mono til etter piloten). */
+   «sidetittel» 32/600, sporing -.01em. Skriftfamilien er Poppins via T.disp
+   (steg 10, 2026-08-14 — Familjen Grotesk er fjernet fra appen). */
 export function Tittel({ children, mobile, em }: TittelProps) {
   return <h1 style={{ fontFamily: T.disp, fontWeight: 600, fontSize: mobile ? 27 : 32, letterSpacing: "-0.01em", color: T.fg, margin: 0, lineHeight: 1.1 }}>{children}{em && <> <em style={{ fontStyle: "italic", color: T.lime }}>{em}</em></>}</h1>;
 }
@@ -801,7 +800,7 @@ export function Trend({ series, height = 96, yMin, yMax, baseline = 0, fmt, xLab
       {grid.map((v, i) => (
         <g key={i}>
           <line x1={PADL} x2={W_ - PADR} y1={Y(v)} y2={Y(v)} stroke={`color-mix(in srgb, ${T.border} 70%, transparent)`} strokeWidth="1" />
-          <text x={PADL - 7} y={Y(v) + 3} textAnchor="end" fontFamily='"JetBrains Mono",monospace' fontSize="8.5" fill={T.mut}>{f(v)}</text>
+          <text x={PADL - 7} y={Y(v) + 3} textAnchor="end" style={{ fontFamily: "var(--p-mono)" }} fontSize="8.5" fill={T.mut}>{f(v)}</text>
         </g>
       ))}
       {baseline != null && baseline >= lo && baseline <= hi && (
@@ -813,7 +812,7 @@ export function Trend({ series, height = 96, yMin, yMax, baseline = 0, fmt, xLab
       <circle cx={sisteX} cy={sisteY} r="7" fill={T.lime} opacity="0.18" />
       <circle cx={sisteX} cy={sisteY} r="3.2" fill={T.lime} stroke={T.panel} strokeWidth="1.5" />
       {xLabels && xLabels.map((l, i) => (
-        <text key={i} x={PADL + (i / (xLabels.length - 1)) * iw} y={height - 4} textAnchor={i === 0 ? "start" : i === xLabels.length - 1 ? "end" : "middle"} fontFamily='"JetBrains Mono",monospace' fontSize="8" fill={T.mut} letterSpacing="0.08em">{l}</text>
+        <text key={i} x={PADL + (i / (xLabels.length - 1)) * iw} y={height - 4} textAnchor={i === 0 ? "start" : i === xLabels.length - 1 ? "end" : "middle"} style={{ fontFamily: "var(--p-mono)" }} fontSize="8" fill={T.mut} letterSpacing="0.08em">{l}</text>
       ))}
     </svg>
   );

@@ -41,9 +41,9 @@
   --sand-900: #101613;
 
   /* ---- Typografi (typography.css) ---- */
-  --font-display: var(--font-familjen-grotesk), "Inter", system-ui, sans-serif;
-  --font-ui: var(--font-inter), system-ui, -apple-system, sans-serif;
-  --font-mono: var(--font-jetbrains-mono), ui-monospace, "SF Mono", Menlo, monospace;
+  --font-display: var(--p-disp);
+  --font-ui: var(--p-ui);
+  --font-mono: var(--p-mono);
   --text-11: 0.6875rem;
   --text-12: 0.75rem;
   --text-13: 0.8125rem;

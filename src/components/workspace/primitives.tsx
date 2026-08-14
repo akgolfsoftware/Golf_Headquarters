@@ -444,7 +444,7 @@ export function WorkspaceHero({
               <em
                 className="font-normal not-italic"
                 style={{
-                  fontFamily: "var(--font-familjen-grotesk), sans-serif",
+                  fontFamily: "var(--p-disp)",
                   fontStyle: "italic",
                   color: "hsl(var(--primary))",
                 }}

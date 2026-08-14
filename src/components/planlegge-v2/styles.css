@@ -38,10 +38,10 @@
   --r-pill:    999px;
 
   /* Type */
-  --font-display: var(--font-familjen-grotesk), system-ui, sans-serif;
+  --font-display: var(--p-disp);
   --font-body:    'Inter', system-ui, sans-serif;
-  --font-mono:    'JetBrains Mono', ui-monospace, monospace;
-  --font-serif:   var(--font-familjen-grotesk), sans-serif;
+  --font-mono:    var(--p-mono);
+  --font-serif:   var(--p-body);
 
   /* Layout */
   --sidebar-w: 240px;

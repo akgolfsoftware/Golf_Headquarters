@@ -133,7 +133,7 @@ html[data-v2-tema="dark"] {
   --sand-900: #101613;
 
   /* Typografi */
-  --font-ui: var(--font-inter), system-ui, -apple-system, sans-serif;
+  --font-ui: var(--p-ui);
   --text-11: 0.6875rem;
   --text-12: 0.75rem;
   --text-13: 0.8125rem;
@@ -761,7 +761,7 @@ em.editorial {
   /* Radius/typografi eies av TS-speilet T (src/lib/v2/tokens.ts) — de døde
    * CSS-duplikatene (--v2-r-*, --v2-font-display/-ui, --v2-card-shadow) er
    * slettet 2026-08-03. --v2-font-mono beholdes (i bruk via var()). */
-  --v2-font-mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
+  --v2-font-mono: var(--p-mono);
   color-scheme: light;
 }
 html[data-v2-tema="dark"] {

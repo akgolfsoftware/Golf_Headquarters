@@ -226,7 +226,7 @@
   border-radius: 4px;
   background: var(--v2-panel3);
   padding: 1px 5px;
-  font-family: "JetBrains Mono", ui-monospace, monospace;
+  font-family: var(--p-mono);
   font-size: 12px;
 }
 .v2-md pre {
@@ -235,7 +235,7 @@
   border-radius: 8px;
   background: var(--v2-panel3);
   padding: 8px;
-  font-family: "JetBrains Mono", ui-monospace, monospace;
+  font-family: var(--p-mono);
   font-size: 12px;
 }
 .v2-md pre code {
@@ -246,7 +246,7 @@
   margin: 8px 0;
   width: 100%;
   border-collapse: collapse;
-  font-family: "JetBrains Mono", ui-monospace, monospace;
+  font-family: var(--p-mono);
   font-size: 12px;
 }
 .v2-md th,

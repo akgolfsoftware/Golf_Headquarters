@@ -48,7 +48,7 @@ export function emailLayout(input: EmailLayoutInput): string {
         <table role="presentation" width="580" cellpadding="0" cellspacing="0" style="max-width:580px;width:100%;background:#FFFFFF;border-radius:16px;overflow:hidden;border:1px solid #E5E3DD;">
           <tr>
             <td style="padding:32px 32px 0 32px;">
-              <div style="font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px;letter-spacing:0.1em;color:#5E5C57;text-transform:uppercase;">AK Golf</div>
+              <div style="font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:12px;letter-spacing:0.1em;color:#5E5C57;text-transform:uppercase;">AK Golf</div>
               <h1 style="margin:8px 0 24px 0;font-size:24px;font-weight:600;line-height:1.3;color:#0A1F17;">${escapeHtml(input.heading)}</h1>
             </td>
           </tr>

@@ -57,7 +57,7 @@
 }
 
 .ob-step-title {
-  font-family: var(--font-familjen-grotesk, sans-serif);
+  font-family: var(--p-disp);
   font-size: 28px;
   font-weight: 700;
   letter-spacing: -0.02em;
@@ -66,7 +66,7 @@
 }
 
 .ob-step-title em {
-  font-family: var(--font-familjen-grotesk), sans-serif;
+  font-family: var(--p-disp);
   font-style: italic;
   font-weight: 400;
   color: var(--v2-lime, #005840);
@@ -97,7 +97,7 @@
 }
 
 .ob-inspo blockquote {
-  font-family: var(--font-familjen-grotesk), sans-serif;
+  font-family: var(--p-disp);
   font-style: italic;
   font-size: 17px;
   line-height: 1.45;
@@ -107,7 +107,7 @@
 .ob-inspo cite {
   display: block;
   margin-top: 8px;
-  font-family: var(--font-jetbrains-mono, 'JetBrains Mono', monospace);
+  font-family: var(--p-mono);
   font-size: 10px;
   font-style: normal;
   color: #005840;
@@ -145,7 +145,7 @@
 }
 
 .ob-label {
-  font-family: var(--font-jetbrains-mono, 'JetBrains Mono', monospace);
+  font-family: var(--p-mono);
   font-size: 10px;
   font-weight: 700;
   letter-spacing: 0.10em;
@@ -172,7 +172,7 @@
 }
 
 .ob-input-help {
-  font-family: var(--font-jetbrains-mono, 'JetBrains Mono', monospace);
+  font-family: var(--p-mono);
   font-size: 10px;
   color: #908D86;
 }
@@ -253,7 +253,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  font-family: var(--font-familjen-grotesk, sans-serif);
+  font-family: var(--p-disp);
   font-size: 18px;
   font-weight: 800;
 }
@@ -304,7 +304,7 @@
 }
 
 .ob-summary-key {
-  font-family: var(--font-jetbrains-mono, 'JetBrains Mono', monospace);
+  font-family: var(--p-mono);
   font-size: 10px;
   color: #5E5C57;
   letter-spacing: 0.06em;
@@ -314,7 +314,7 @@
 }
 
 .ob-summary-val {
-  font-family: var(--font-familjen-grotesk, sans-serif);
+  font-family: var(--p-disp);
   font-weight: 600;
   text-align: right;
 }
@@ -372,7 +372,7 @@
 }
 
 .ob-skip-link {
-  font-family: var(--font-jetbrains-mono, 'JetBrains Mono', monospace);
+  font-family: var(--p-mono);
   font-size: 11px;
   color: #5E5C57;
   text-decoration: underline;
@@ -509,7 +509,7 @@
   border: 1.5px solid #E5E3DD;
   background: #ffffff;
   border-radius: 999px;
-  font-family: var(--font-jetbrains-mono, 'JetBrains Mono', monospace);
+  font-family: var(--p-mono);
   font-size: 11px;
   font-weight: 600;
   color: #5E5C57;

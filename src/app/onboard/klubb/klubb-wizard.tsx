@@ -170,7 +170,7 @@ export function KlubbWizard({
                 x="260"
                 y="155"
                 textAnchor="middle"
-                fontFamily="JetBrains Mono"
+                style={{ fontFamily: "var(--p-mono)" }}
                 fontSize="8"
                 fontWeight="800"
                 fill="#FAFAF7"
@@ -261,7 +261,7 @@ export function KlubbWizard({
               </div>
               <span
                 style={{
-                  fontFamily: "var(--font-familjen-grotesk)",
+                  fontFamily: "var(--p-disp)",
                   fontSize: 18,
                   fontWeight: 800,
                 }}
@@ -334,7 +334,7 @@ export function KlubbWizard({
                 x="260"
                 y="170"
                 textAnchor="middle"
-                fontFamily="JetBrains Mono"
+                style={{ fontFamily: "var(--p-mono)" }}
                 fontSize="8"
                 fontWeight="800"
                 fill="#FAFAF7"
@@ -473,7 +473,7 @@ export function KlubbWizard({
               <div>
                 <div
                   style={{
-                    fontFamily: "var(--font-familjen-grotesk)",
+                    fontFamily: "var(--p-disp)",
                     fontWeight: 700,
                     fontSize: 14,
                   }}
@@ -499,7 +499,7 @@ export function KlubbWizard({
               <div>
                 <div
                   style={{
-                    fontFamily: "var(--font-familjen-grotesk)",
+                    fontFamily: "var(--p-disp)",
                     fontWeight: 700,
                     fontSize: 14,
                   }}
@@ -525,7 +525,7 @@ export function KlubbWizard({
               <div>
                 <div
                   style={{
-                    fontFamily: "var(--font-familjen-grotesk)",
+                    fontFamily: "var(--p-disp)",
                     fontWeight: 700,
                     fontSize: 14,
                   }}
@@ -548,7 +548,7 @@ export function KlubbWizard({
                 </div>
                 <span
                   style={{
-                    fontFamily: "var(--font-familjen-grotesk)",
+                    fontFamily: "var(--p-disp)",
                     fontSize: 18,
                     fontWeight: 800,
                   }}
@@ -567,7 +567,7 @@ export function KlubbWizard({
               </button>
               <p
                 style={{
-                  fontFamily: "var(--font-jetbrains-mono)",
+                  fontFamily: "var(--p-mono)",
                   fontSize: 10,
                   color: T.farge.noytralGra,
                   letterSpacing: "0.06em",
@@ -623,7 +623,7 @@ export function KlubbWizard({
                 x="260"
                 y="155"
                 textAnchor="middle"
-                fontFamily="JetBrains Mono"
+                style={{ fontFamily: "var(--p-mono)" }}
                 fontSize="8"
                 fontWeight="800"
                 fill={T.farge.limeMerke}
@@ -649,7 +649,7 @@ export function KlubbWizard({
               </div>
               <span
                 style={{
-                  fontFamily: "var(--font-familjen-grotesk)",
+                  fontFamily: "var(--p-disp)",
                   fontSize: 22,
                   fontWeight: 800,
                   letterSpacing: "-0.02em",
@@ -691,7 +691,7 @@ export function KlubbWizard({
             </button>
             <p
               style={{
-                fontFamily: "var(--font-jetbrains-mono)",
+                fontFamily: "var(--p-mono)",
                 fontSize: 10,
                 color: T.farge.noytralGra,
                 letterSpacing: "0.06em",
@@ -742,7 +742,7 @@ export function KlubbWizard({
                     x={p.x}
                     y={88}
                     textAnchor="middle"
-                    fontFamily="var(--font-familjen-grotesk), sans-serif"
+                    style={{ fontFamily: "var(--p-disp)" }}
                     fontSize="22"
                     fontWeight="800"
                     fill={T.farge.limeMerke}
@@ -774,7 +774,7 @@ export function KlubbWizard({
             <div>
               <div
                 style={{
-                  fontFamily: "var(--font-familjen-grotesk)",
+                  fontFamily: "var(--p-disp)",
                   fontSize: 14,
                   fontWeight: 700,
                 }}
@@ -798,7 +798,7 @@ export function KlubbWizard({
             <div>
               <div
                 style={{
-                  fontFamily: "var(--font-familjen-grotesk)",
+                  fontFamily: "var(--p-disp)",
                   fontSize: 14,
                   fontWeight: 700,
                 }}
@@ -833,7 +833,7 @@ export function KlubbWizard({
             />
             <p
               style={{
-                fontFamily: "var(--font-jetbrains-mono)",
+                fontFamily: "var(--p-mono)",
                 fontSize: 10,
                 color: T.farge.noytralGra,
               }}
