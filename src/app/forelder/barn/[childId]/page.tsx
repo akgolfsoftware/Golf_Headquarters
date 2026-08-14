@@ -7,8 +7,9 @@
 
 import { notFound } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
-import { assertBarnTilhorerForelder } from "@/lib/forelder";
+import { assertBarnTilhorerForelder, alderFraFodselsdato } from "@/lib/forelder";
 import { prisma } from "@/lib/prisma";
+import { startOfWeek, endOfWeek } from "@/lib/uke-helpers";
 import { V2Shell, FORELDER_NAV } from "@/components/v2/shell";
 import {
   ForelderBarnDetaljV2,
@@ -83,6 +84,82 @@ export default async function BarnProfil({
   if (!barn || barn.role !== "PLAYER") notFound();
 
   const aktivPlan = barn.trainingPlans[0] ?? null;
+  const alder = alderFraFodselsdato(barn.dateOfBirth);
+  const samtykkeGitt = barn.guardianConsentGivenAt != null;
+
+  // Denne uka (Ma–Sø, Oslo-korrekt) — samme kilde som resten av siden
+  // (TrainingPlanSession), kun avgrenset til inneværende uke for gridet.
+  const naa = new Date();
+  const ukeStart = startOfWeek(naa);
+  const ukeSlutt = endOfWeek(naa);
+  const [ukeSesjoner, nesteOkt, coachMelding, katalogTurneringer, manuelleTurneringer] =
+    await Promise.all([
+      prisma.trainingPlanSession.findMany({
+        where: {
+          plan: { userId: childId },
+          scheduledAt: { gte: ukeStart, lte: ukeSlutt },
+          status: { not: "CANCELLED" },
+        },
+        select: { scheduledAt: true },
+        orderBy: { scheduledAt: "asc" },
+      }),
+      // Neste planlagte/aktive økt (kan ligge etter denne uka).
+      prisma.trainingPlanSession.findFirst({
+        where: {
+          plan: { userId: childId },
+          status: { in: ["PLANNED", "ACTIVE"] },
+          scheduledAt: { gte: naa },
+        },
+        orderBy: { scheduledAt: "asc" },
+        select: { title: true, scheduledAt: true, durationMin: true, location: true },
+      }),
+      // Siste coach-melding (samme kilde som hentForelderUkerapport/ForelderCoachV2).
+      prisma.notification.findFirst({
+        where: { userId: childId, type: "melding" },
+        orderBy: { createdAt: "desc" },
+        select: { title: true, body: true, createdAt: true },
+      }),
+      // Neste turnering barnet er meldt på, ikke trukket. To kilder (katalog vs.
+      // manuell) hentes hver for seg og slås sammen, siden Prisma ikke kan
+      // sortere pålitelig på tvers av en nullable relasjon + et eget felt.
+      prisma.tournamentEntry.findFirst({
+        where: {
+          userId: childId,
+          withdrawnAt: null,
+          tournament: { startDate: { gte: naa } },
+        },
+        orderBy: { tournament: { startDate: "asc" } },
+        select: { entryStatus: true, tournament: { select: { name: true, startDate: true } } },
+      }),
+      prisma.tournamentEntry.findFirst({
+        where: { userId: childId, withdrawnAt: null, tournamentId: null, manualDate: { gte: naa } },
+        orderBy: { manualDate: "asc" },
+        select: { entryStatus: true, manualName: true, manualDate: true },
+      }),
+    ]);
+
+  const turneringEntry = (() => {
+    const a = katalogTurneringer
+      ? { navn: katalogTurneringer.tournament!.name, dato: katalogTurneringer.tournament!.startDate, status: katalogTurneringer.entryStatus }
+      : null;
+    const b = manuelleTurneringer
+      ? { navn: manuelleTurneringer.manualName ?? "Turnering", dato: manuelleTurneringer.manualDate!, status: manuelleTurneringer.entryStatus }
+      : null;
+    if (a && b) return a.dato <= b.dato ? a : b;
+    return a ?? b;
+  })();
+
+  const ukeGrid = Array.from({ length: 7 }, (_, i) => {
+    const dag = new Date(ukeStart);
+    dag.setDate(dag.getDate() + i);
+    const okt = ukeSesjoner.find(
+      (s) =>
+        s.scheduledAt.getFullYear() === dag.getFullYear() &&
+        s.scheduledAt.getMonth() === dag.getMonth() &&
+        s.scheduledAt.getDate() === dag.getDate(),
+    );
+    return { dato: dag, time: okt ? okt.scheduledAt : null };
+  });
 
   // Aggregert uke-data (4 siste uker)
   const fireUkerSiden = new Date();
@@ -150,7 +227,15 @@ export default async function BarnProfil({
       avatarUrl: barn.avatarUrl,
       hcp: barn.hcp,
       homeClub: barn.homeClub,
+      alder,
     },
+    samtykkeGitt,
+    ukeGrid,
+    nesteOkt,
+    coachMelding: coachMelding
+      ? { forfatter: coachMelding.title, tekst: coachMelding.body ?? "", sendtAt: coachMelding.createdAt }
+      : null,
+    nesteTurnering: turneringEntry,
     tab,
     antallRunder,
     avgSg,
