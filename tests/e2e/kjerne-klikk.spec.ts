@@ -100,10 +100,13 @@ async function sveipSkjermer(
     await expect(page, `${skjerm.navn} kastet ut til login`).not.toHaveURL(
       /\/auth\/login/,
     );
+    // Bare «500» som eget alternativ ga falsk alarm: prislista på
+    // /admin/bookinger inneholder «1 500 kr». HTTP 500 fanges allerede av
+    // status-sjekken over, så her leter vi kun etter feilsidenes ordlyd.
     await expect(
       page.locator("body"),
       `${skjerm.navn} viser feilside`,
-    ).not.toContainText(/Application error|Internal Server Error|500/i);
+    ).not.toContainText(/Application error|Internal Server Error/i);
   }
 }
 
