@@ -24,7 +24,7 @@
 - [~] `agencyos-okonomi.html`
 - [x] `agencyos-spillere-mobil.html` — PP-2.3 signert av Anders 13.08.2026 (galleri mot prod)
 - [x] `agencyos-spillere.html` — PP-2.3 signert av Anders 13.08.2026 (galleri mot prod)
-- [~] `booking.html` — PP-1.7 READY_SIGN
+- [~] `booking.html` — PP-1.7 READY_SIGN. Kan ikke signeres mot prod før BOOKING_PUBLIC slås på (prod viser interim-siden med vilje, jf. #431) — designet ligger ferdig bak bryteren
 - [~] `fangstsheet.html` — overnight slug/CTA READY_SIGN
 - [~] `foreldreportal.html` — overnight slug/CTA READY_SIGN
 - [x] `innlogging.html` — PP-1.6 signert av Anders 13.08.2026 (galleri mot prod)
@@ -86,14 +86,14 @@
 
 ## Fase 2 · W4 AgencyOS (ny i zip 2)
 
-- [~] `fase2/agencyos/agencyos-godkjenninger.html` → AdminGodkjenningerV2
-- [~] `fase2/agencyos/agencyos-gruppe-detalj.html` → GruppeDetaljV2
-- [~] `fase2/agencyos/agencyos-bookinger.html` → AdminBookingerV2
-- [x] `fase2/agencyos/agencyos-planbibliotek.html` — NT-416a signert av Anders 13.08.2026 (galleri mot prod)
-- [x] `fase2/agencyos/agencyos-turneringer.html` — NT-416b signert av Anders 13.08.2026 (galleri mot prod)
-- [~] `fase2/agencyos/agencyos-oppsett.html` → AdminSettingsV2
-- [~] `fase2/agencyos/agencyos-agenticos-hub.html` — bygget natt 13.08 (#433, galleri NT-433) READY_SIGN
-- [~] `fase2/agencyos/agencyos-agent-detalj.html` — bygget natt 13.08 (#435, galleri NT-435) READY_SIGN
+- [x] `fase2/agencyos/agencyos-godkjenninger.html` → AdminGodkjenningerV2 — W4-437a/b/c signert av Anders 14.08.2026 (galleri mot prod: godkjenninger, handlingssenter, oppfølgingskø)
+- [x] `fase2/agencyos/agencyos-gruppe-detalj.html` → GruppeDetaljV2 — W4-440a signert av Anders 14.08.2026 (galleri mot prod)
+- [x] `fase2/agencyos/agencyos-bookinger.html` → AdminBookingerV2 — W4-438a/b signert av Anders 14.08.2026 (galleri mot prod: bookinger, ny booking)
+- [x] `fase2/agencyos/agencyos-planbibliotek.html` — NT-416a signert av Anders 13.08.2026; tilleggsruter W4-442a/b (økter, ny planmal) signert 14.08.2026
+- [x] `fase2/agencyos/agencyos-turneringer.html` — NT-416b signert av Anders 13.08.2026; tilleggsruter W4-442c/d (ny turnering, dubletter) signert 14.08.2026
+- [x] `fase2/agencyos/agencyos-oppsett.html` → AdminSettingsV2 — W4-441a/b/c signert av Anders 14.08.2026 (galleri mot prod: innstillinger, GDPR-kø, audit-logg)
+- [x] `fase2/agencyos/agencyos-agenticos-hub.html` — bygget natt 13.08 (#433); NT-433 signert av Anders 14.08.2026 (galleri mot prod)
+- [x] `fase2/agencyos/agencyos-agent-detalj.html` — bygget natt 13.08 (#435); NT-435 signert av Anders 14.08.2026 (galleri mot prod)
 
 ## Fase 2 · W5 Marketing/Auth/Forelder/System (ny i zip 2)
 
