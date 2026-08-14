@@ -200,3 +200,23 @@ html[data-v2-tema="dark"] {
   --p-logo-mark: #faf9f5;
   --p-logo-dot: #d97757;
 }
+
+/* ─── Logo-varianter fra fasiten (kun variabler, ingen komponentregler).
+   Railen er alltid mørk uansett tema; aksentflaten (marketing/innlogging)
+   bærer blekk-logo. Klassene tas i bruk når railen/aksentflaten portes. ─── */
+.rail {
+  --p-logo-mark: #faf9f5;
+  --p-logo-dot: #d97757;
+}
+
+.on-accent-surface {
+  --p-logo-mark: #141413;
+  --p-logo-dot: #141413;
+}
+
+/* ─── Gulvregel: min treffmål på touch (fasit §Gulvregel). ─── */
+@media (pointer: coarse) {
+  :root {
+    --p-floor: var(--p-tap);
+  }
+}
