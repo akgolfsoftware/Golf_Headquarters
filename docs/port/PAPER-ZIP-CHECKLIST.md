@@ -24,7 +24,7 @@
 - [~] `agencyos-okonomi.html`
 - [x] `agencyos-spillere-mobil.html` — PP-2.3 signert av Anders 13.08.2026 (galleri mot prod)
 - [x] `agencyos-spillere.html` — PP-2.3 signert av Anders 13.08.2026 (galleri mot prod)
-- [~] `booking.html` — PP-1.7 READY_SIGN. Kan ikke signeres mot prod før BOOKING_PUBLIC slås på (prod viser interim-siden med vilje, jf. #431) — designet ligger ferdig bak bryteren
+- [x] `booking.html` — PP-1.7 signert av Anders 14.08.2026 (galleri mot lokalt miljø med BOOKING_PUBLIC=true; prod viser fortsatt Acuity med vilje inntil bryteren slås på i egen beslutning)
 - [x] `fangstsheet.html` — B2-fangst signert av Anders 14.08.2026 (galleri mot prod, arket åpnet via klikk)
 - [x] `foreldreportal.html` — B2-forelder signert av Anders 14.08.2026 (galleri mot prod, innlogget test-forelder)
 - [x] `innlogging.html` — PP-1.6 signert av Anders 13.08.2026 (galleri mot prod)

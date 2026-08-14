@@ -1,2 +1,2 @@
-OK    B3-turnering m390   /admin/spillere/c7e2811d-86e1-49fe-9100-d33d5056eac2/workbench?zoom=turnering — "Tilbake til Øyvind Rohjan AK COACH Anders Kristiansen PLANLEGGER FOR A"
-OK    B3-turnering d1280  /admin/spillere/c7e2811d-86e1-49fe-9100-d33d5056eac2/workbench?zoom=turnering — "Cockpit Innboks Kalender Stall Plan Workbench AgenticOS Mer SPILLER MØ"
+OK    PP-1.7 m390   /booking — "AK Golf . Logg inn AK GOLF ACADEMY · FREDRIKSTAD Book en time med Ande"
+OK    PP-1.7 d1280  /booking — "AK Golf . Priser Spørsmål Logg inn AK GOLF ACADEMY · FREDRIKSTAD Book "
