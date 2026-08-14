@@ -8,7 +8,6 @@ import Link from "next/link";
 import {
   T,
   Caps,
-  Tittel,
   Kort,
   Rad,
   StatusPill,

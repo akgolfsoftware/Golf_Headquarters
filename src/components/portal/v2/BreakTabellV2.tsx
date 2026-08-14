@@ -7,7 +7,7 @@
 
 import { Fragment, useState } from "react";
 import * as C from "@/lib/putt-core";
-import { T, Caps, Tittel, Kort, HjelpTips } from "@/components/v2";
+import { T, Caps, Kort, HjelpTips } from "@/components/v2";
 import { Icon } from "@/components/v2/icon";
 
 // ─── Lokale data (uendret fra legacy) ────────────────────────────────────────

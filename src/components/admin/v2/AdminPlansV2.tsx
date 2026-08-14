@@ -10,7 +10,6 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import {
   Caps,
-  Tittel,
   Kort,
   Rad,
   KpiFlis,
