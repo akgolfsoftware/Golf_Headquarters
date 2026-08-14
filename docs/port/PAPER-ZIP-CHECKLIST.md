@@ -12,7 +12,7 @@
 ## Fase 1 (33)
 
 - [-] `agencyos-agenticos.html` — GJELDER IKKE: gammel rail (før 13.08-beslutningen), erstattet av `fase2/agencyos/agencyos-agenticos-hub.html` (allerede signert NT-433, /admin/agenticos)
-- [~] `agencyos-ak-stigen.html`
+- [x] `agencyos-ak-stigen.html` — B4b signert av Anders 14.08.2026 (bygget i #464: tre faner, Én ting nå, ekte Group-kobling. Nytt funn utover fasit: 4 grupper med 46 spillere ukoblet til stigen — vises ærlig, ikke gjettet)
 - [x] `agencyos-innboks-mobil.html` — PP-2.2 signert av Anders 13.08.2026 (galleri mot prod)
 - [x] `agencyos-innboks.html` — PP-2.2 signert av Anders 13.08.2026 (galleri mot prod)
 - [-] `agencyos-innstillinger.html` — GJELDER IKKE: gammel rail, erstattet av `fase2/agencyos/agencyos-oppsett.html` (allerede signert W4-441a/b/c, /admin/settings)
@@ -20,8 +20,8 @@
 - [x] `agencyos-kalender.html` — PP-2.4 signert av Anders 13.08.2026 (galleri mot prod)
 - [x] `agencyos-konsoll-desktop.html` — PP-2.1 signert av Anders 13.08.2026 (galleri mot prod)
 - [x] `agencyos-konsoll-mobil.html` — PP-2.1 signert av Anders 13.08.2026 (galleri mot prod)
-- [~] `agencyos-live-session.html`
-- [~] `agencyos-okonomi.html`
+- [x] `agencyos-live-session.html` — B4b signert av Anders 14.08.2026 (NY rute /admin/agencyos/live/[sessionId] bygget i #464; /admin/agencyos/live er Mission Control, en annen flate). Inngang: kalenderens detaljpanel → «Åpne live-økt». Kjent grense: SessionRecording.sessionId settes aldri av /api/recording/start, så opptak viser tomt — samme som fasitens eget snapshot
+- [x] `agencyos-okonomi.html` — B4b signert av Anders 14.08.2026 (bygget i #464: fasitens fire faner, Mot målet med merket antatt kurs, Hull i tallene som LIVE gap-sjekk — ikke fasitens statiske 02.08-snapshot)
 - [x] `agencyos-spillere-mobil.html` — PP-2.3 signert av Anders 13.08.2026 (galleri mot prod)
 - [x] `agencyos-spillere.html` — PP-2.3 signert av Anders 13.08.2026 (galleri mot prod)
 - [x] `booking.html` — PP-1.7 signert av Anders 14.08.2026 (galleri mot lokalt miljø med BOOKING_PUBLIC=true; prod viser fortsatt Acuity med vilje inntil bryteren slås på i egen beslutning)

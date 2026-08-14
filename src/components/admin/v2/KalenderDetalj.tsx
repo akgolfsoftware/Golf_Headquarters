@@ -217,6 +217,7 @@ export type DetaljHandling =
 
 export function KalenderDetaljFot({
   handling,
+  sekundaer,
   forslag,
   onFlytt,
 }: {
@@ -225,6 +226,9 @@ export function KalenderDetaljFot({
    * arkene (Google-redigering, drill-liste, seriemeny). Foten kjenner dem ikke.
    */
   handling: DetaljHandling | null;
+  /** Valgfri andrehandling under primæren — samme nøytrale stil, aldri clay.
+   *  Brukes av treningsøkter: «Se drills» + «Åpne live-økt». */
+  sekundaer?: DetaljHandling | null;
   forslag: FlyttForslag | null;
   onFlytt: (forslag: FlyttForslag) => Promise<{ ok: boolean; error?: string }>;
 }) {
@@ -278,6 +282,7 @@ export function KalenderDetaljFot({
   if (!handling) return null;
 
   const stil: React.CSSProperties = {
+
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
@@ -295,41 +300,37 @@ export function KalenderDetaljFot({
     appearance: "none",
     cursor: "pointer",
   };
-  const innhold = (
-    <>
-      {handling.ikon && <Icon name={handling.ikon} size={13} />}
-      {handling.label}
-    </>
-  );
-
-  if ("href" in handling) {
-    return handling.ekstern ? (
-      <a
-        href={handling.href}
-        target="_blank"
-        rel="noopener noreferrer"
-        data-od-id="kal-apne-avtale"
-        className="v2-press v2-focus"
-        style={stil}
-      >
-        {innhold}
-      </a>
-    ) : (
-      <Link href={handling.href} data-od-id="kal-apne-avtale" className="v2-press v2-focus" style={stil}>
-        {innhold}
-      </Link>
+  const rendre = (h: DetaljHandling, odId: string) => {
+    const innhold = (
+      <>
+        {h.ikon && <Icon name={h.ikon} size={13} />}
+        {h.label}
+      </>
     );
-  }
+    if ("href" in h) {
+      return h.ekstern ? (
+        <a href={h.href} target="_blank" rel="noopener noreferrer" data-od-id={odId} className="v2-press v2-focus" style={stil}>
+          {innhold}
+        </a>
+      ) : (
+        <Link href={h.href} data-od-id={odId} className="v2-press v2-focus" style={stil}>
+          {innhold}
+        </Link>
+      );
+    }
+    return (
+      <button type="button" onClick={h.onClick} data-od-id={odId} className="v2-press v2-focus" style={stil}>
+        {innhold}
+      </button>
+    );
+  };
+
+  if (!sekundaer) return rendre(handling, "kal-apne-avtale");
 
   return (
-    <button
-      type="button"
-      onClick={handling.onClick}
-      data-od-id="kal-apne-avtale"
-      className="v2-press v2-focus"
-      style={stil}
-    >
-      {innhold}
-    </button>
+    <div style={{ display: "flex", flexDirection: "column", gap: 8, width: "100%" }}>
+      {rendre(handling, "kal-apne-avtale")}
+      {rendre(sekundaer, "kal-apne-live-okt")}
+    </div>
   );
 }

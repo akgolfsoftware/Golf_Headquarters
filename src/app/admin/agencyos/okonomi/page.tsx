@@ -123,7 +123,7 @@ export default async function V2AdminOkonomiPage() {
   const ukeSlutt = new Date(ukeStart);
   ukeSlutt.setDate(ukeSlutt.getDate() + 7);
 
-  const [denneMnd, forrigeMnd, alleSeks, utestaende, sisteFakturaer, proAktive, ukasBookinger, tilgjengelighet, gratisSpillere] = await Promise.all([
+  const [denneMnd, forrigeMnd, alleSeks, utestaende, sisteFakturaer, proAktive, ukasBookinger, tilgjengelighet, gratisSpillere, betalingerTotalt, betalingerUtenBruker] = await Promise.all([
     prisma.payment.aggregate({
       _sum: { amountOre: true },
       _count: true,
@@ -158,6 +158,10 @@ export default async function V2AdminOkonomiPage() {
       select: { weekday: true, date: true, startTime: true, endTime: true },
     }),
     prisma.user.count({ where: { subscription: null } }),
+    // Hull i tallene (fasit agencyos-okonomi.html): hvor mange betalinger
+    // mangler koblet bruker, og finnes en selskapskobling i det hele tatt.
+    prisma.payment.count(),
+    prisma.payment.count({ where: { userId: null } }),
   ]);
 
   // Månedlig serie (6 mnd, i kr).
@@ -203,6 +207,16 @@ export default async function V2AdminOkonomiPage() {
     bookingerUka: ukasBookinger.length,
     gratisSpillere,
     tjenesterHref: "/admin/services",
+    // Konsernmålet (CLAUDE.md §3). Kursen ligger ikke i basen — antatt og
+    // tydelig merket, samme mønster som fasitens egen «Mot målet»-fane.
+    konsernMaal: { usd: 500_000, antattKurs: 10.5 },
+    hull: {
+      betalingerTotalt,
+      betalingerUtenBruker,
+      // Ingen tabell knytter en betaling til et selskap (AK Golf Academy,
+      // Mulligan, Skarpnord) i dag — konsernstrukturen bor kun i Notion.
+      harSelskapskobling: false,
+    },
   };
 
   return (
