@@ -79,6 +79,7 @@ const SCREENS = [
   { id: "B2-wb", navn: "Spiller-workbench", rute: "/admin/spillere/c7e2811d-86e1-49fe-9100-d33d5056eac2/workbench", bruker: COACH, fasitM: "workbench-mobil.html", fasitD: "workbench-desktop.html" },
   { id: "B2-fangst", navn: "FangstSheet", rute: "/portal", bruker: SPILLER, klikk: 'button[aria-label="Fang en observasjon"]', fasitM: "fangstsheet.html", fasitD: "fangstsheet.html" },
   { id: "B2-forelder", navn: "Foreldreportal", rute: "/forelder", bruker: "screentest-parent@akgolf.test", fasitM: "foreldreportal.html", fasitD: "foreldreportal.html" },
+  { id: "B3-turnering", navn: "Workbench turnering", rute: "/admin/spillere/c7e2811d-86e1-49fe-9100-d33d5056eac2/workbench?zoom=turnering", bruker: COACH, fasitM: "workbench-turnering.html", fasitD: "workbench-turnering.html" },
 ];
 
 const only = (process.argv[2] || "").trim();

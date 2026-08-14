@@ -43,7 +43,7 @@
 - [~] `spillerprofil.html` — full ombygging merget i #414 (12.08)
 - [x] `workbench-desktop.html` — B2-wb signert av Anders 14.08.2026 (galleri mot prod, spiller-workbench d1280)
 - [x] `workbench-mobil.html` — B2-wb signert av Anders 14.08.2026 (galleri mot prod, spiller-workbench m390)
-- [~] `workbench-turnering.html` — KAN IKKE SIGNERES ennå: turneringsvarianten finnes ikke i koden (rutekart: fane/modus på spiller-workbench). Anders bestilte bygging 14.08.2026 — under arbeid
+- [x] `workbench-turnering.html` — B3-turnering signert av Anders 14.08.2026 (bygget i #463, galleri mot preview). Kollisjonssjekk turnering×periodisering + sesongtidslinje + bekreft-handling. Mobil har bevisst ingen Turnering-fane (PP-3-beslutning, uendret)
 
 ## Fase 2 · PlayerHQ W1 (drill/plan/test/turnering)
 
