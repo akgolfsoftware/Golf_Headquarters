@@ -17,7 +17,7 @@ De fem andre leveransene er ikke blokkert av dette.
 |---|---|---|
 | D1 Workbench F4 | Delvis | Mangler utkast-status og faktisk tid på økt-nivå |
 | D2 Booking → faktura | Ja | «Forfalt» må utledes — forfallsdato mangler |
-| D3 Ukesrapport/digest | Ja | Ingen |
+| D3 Ukesrapport/digest | **Bygget 15.08** | Krevde ny delingstabell — godkjent av Anders |
 | D4 Test → drill | **Nei** | Testene har ingen områdekode |
 | D5 Gapping | Ja | Køllelista bør komme fra TrackMan, ikke Utstyr |
 | D6 Skoletidsbekreftelse | Ja | Ingen |
@@ -150,6 +150,22 @@ eier status, vi lagrer referanse» — peker mot Stripe som kilde.
 3. **D2** — avklar forfallskilde (Stripe vs. eget felt) først
 4. **D1** — legg til `erUtkast` + publiseringsfelt, så bygg
 5. **D4** — venter på Anders' backfill av 36 testområder
+
+## Etterspill — funn under bygging av D3 (15.08.2026)
+
+1. **`endOfWeek` er en EKSKLUSIV grense.** Den returnerer mandag neste uke kl. 00:00, ikke
+   søndag 23:59. Skal brukes med `lt`, aldri `lte`. Truffet under bygging (perioden viste
+   «10.–17. august», altså åtte dager). **Eksisterende feil samme sted:**
+   `hentForelderUkerapport` i `src/lib/forelder.ts` bruker `lte: ukeSlutt` og teller derfor
+   mandagens økter i to uker. Ikke rettet her (utenfor scope), men bør ryddes.
+
+2. **`SessionStatus` og `SessionStatusV2` er to ulike enums.** Den eldre har `ABANDONED`,
+   `ACTIVE`, `PAUSED`; V2 har `IN_PROGRESS`. `src/lib/workbench/compliance.ts` er skrevet for
+   den eldre og kan ikke ta imot V2-økter direkte. `src/lib/domain/etterlevelse.ts` tar imot
+   begge for å unngå at hver konsument må konvertere.
+
+3. **Ny tabell `ukesrapport_delinger`** (godkjent av Anders 15.08). Additiv, uten `@relation`,
+   opprettet med `scripts/add-ukesrapport-deling-2026-08-15.ts` per gotchas §Schema-endringer.
 
 ## Åpne spørsmål til Anders
 

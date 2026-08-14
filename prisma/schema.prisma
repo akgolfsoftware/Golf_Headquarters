@@ -1647,6 +1647,26 @@ model TrackManSession {
 
 /// B5: arkiverte månedsrapporter (én per kalendermåned). payload er
 /// zod-validert ved lesing (MaanedsrapportSchema i lib/agents/maanedsrapport).
+/// D3 · deling av ukesdigest. Coachen deler manuelt — aldri automatikk.
+/// Én rad = «denne spilleren fikk uke N delt med seg». Fravær av rad er det
+/// ærlige «ikke delt ennå», og digesten viser da tom tilstand.
+///
+/// Bevisst uten @relation (jf. gotchas §Schema-endringer): additiv tabell som
+/// ikke krever endring i User, så DDL-en kan kjøres kirurgisk.
+model UkesrapportDeling {
+  id       String   @id @default(cuid())
+  coachId  String
+  playerId String
+  /// ISO-år og ISO-ukenummer for uka som ble delt.
+  ar       Int
+  uke      Int
+  deltAt   DateTime @default(now())
+
+  @@unique([playerId, ar, uke])
+  @@index([coachId, deltAt])
+  @@map("ukesrapport_delinger")
+}
+
 model MonthlyReport {
   id        String   @id @default(cuid())
   year      Int

@@ -29,6 +29,26 @@ function komma(n: number): string {
   return n.toString().replace(".", ",");
 }
 
+/** D3 · én linje i ukerapport-kortet: navn til venstre, verdi til høyre. */
+function Rapportlinje({ navn, verdi }: { navn: string; verdi: string }) {
+  return (
+    <div
+      style={{
+        display: "flex",
+        alignItems: "baseline",
+        justifyContent: "space-between",
+        gap: 12,
+        fontFamily: T.ui,
+        fontSize: 13,
+        color: T.fg,
+      }}
+    >
+      <span style={{ flex: "none" }}>{navn}</span>
+      <span style={{ color: T.mut, textAlign: "right", minWidth: 0 }}>{verdi}</span>
+    </div>
+  );
+}
+
 /* ── Skjerm ────────────────────────────────────────────────────────── */
 
 export function ForelderUkerapportV2({ data }: { data: ForelderUkerapport }) {
@@ -68,6 +88,49 @@ export function ForelderUkerapportV2({ data }: { data: ForelderUkerapport }) {
         <StatusPill tone={harAktivitet ? "up" : "info"}>
           {harAktivitet ? "Aktiv uke" : "Rolig uke"}
         </StatusPill>
+      </div>
+
+      {/* D3 · ukerapport-kortet: samme tall og samme nevner som barnets egen
+          digest. Delingen er en manuell handling fra coachen, aldri automatikk. */}
+      <div
+        style={{
+          background: T.panel,
+          border: `1px solid ${T.border}`,
+          borderRadius: T.rCard,
+          padding: 16,
+          display: "flex",
+          flexDirection: "column",
+          gap: 8,
+        }}
+      >
+        <Rapportlinje
+          navn="Gjennomført"
+          verdi={
+            data.etterlevelseTekst
+              ? `${data.etterlevelseTekst} ${data.nevnerTekst}`
+              : "Ingen økter er forfalt ennå denne uka"
+          }
+        />
+        <Rapportlinje
+          navn="Betaling"
+          verdi={
+            data.utestaendeOre > 0
+              ? `${(data.utestaendeOre / 100).toLocaleString("nb-NO")} kr utestående`
+              : "ingenting utestående"
+          }
+        />
+        <p
+          style={{
+            margin: "4px 0 0",
+            fontFamily: T.ui,
+            fontSize: 12,
+            color: T.mut,
+            lineHeight: 1.55,
+          }}
+        >
+          Tallene er de samme som i {childFirstName} sin egen digest — samme nevnere. Du ser
+          aldri andre spilleres tall her.
+        </p>
       </div>
 
       {/* Status først — 3 KPI */}

@@ -143,8 +143,16 @@ i `designsystem/paper/kart/`. Arbeidsordre: `kart/prompt-code-session-implemente
 - [ ] **D2 · Booking → faktura** — `fase2/agencyos/agencyos-okonomi.html` + `playerhq-betaling.html`.
       Kjeden finnes (`Booking.trainingSessionV2Id` → `Payment.bookingId`). ÅPENT: «forfalt» er
       ingen `PaymentStatus` og har ingen forfallsdato — hentes fra Stripe eller nytt felt.
-- [ ] **D3 · Ukesrapport + digest** — `agencyos-godkjenninger.html` + `playerhq-ukesdigest.html`
-      + `forelder-barn.html`. Ingen blokkeringer. Klar til bygging.
+- [~] **D3 · Ukesrapport + digest** — `agencyos-godkjenninger.html` + `playerhq-ukesdigest.html`
+      + `forelder-barn.html`. BYGGET 15.08.2026: ukesrapport-kortet som leseelement i køen
+      (info-kant, ingen Godkjenn-knapp), NY rute `/portal/ukesdigest`, og ukerapport-kortet i
+      foreldreportalen. Etterlevelsen regnes ett sted (`src/lib/domain/etterlevelse.ts`) så
+      alle tre flatene viser samme tall med samme nevner. Deling persisteres i ny tabell
+      `ukesrapport_delinger` (Anders godkjente 15.08) — manuell coach-handling, aldri automatikk.
+      **Venter på pixel-signering:** rapportkortet kunne ikke fotograferes med ekte data
+      (testcoachens stall har 0 økter denne uka → kortet skjules med vilje).
+      Avvik fra fasit, bevisst: testforfall viser forfallsdato uten «intervall N uker», fordi
+      intervallet ikke finnes i basen (`TestAssignment` har kun `dueDate`).
 - [ ] **D4 · Test → drill + forfall** — `playerhq-test-detalj.html` + `playerhq-hjem-varsler.html`
       + `workbench-desktop.html`. **BLOKKERT:** `TestDefinition` har kun `pyramidArea`, ingen
       områdekode — oppslag i delt taksonomi er umulig. Krever ett additivt felt + Anders'
