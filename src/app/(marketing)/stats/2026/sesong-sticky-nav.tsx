@@ -7,6 +7,7 @@ import { T } from "@/lib/v2/tokens";
  */
 
 import { useEffect, useState, useCallback } from "react";
+import { useToppbarHoyde } from "@/components/v2/toppbar-hoyde";
 
 const SEKSJONER = [
   { id: "tall", label: "01 Aret i tall" },
@@ -18,6 +19,9 @@ const SEKSJONER = [
 
 export function SesongStickyNav() {
   const [aktiv, setAktiv] = useState<string>("tall");
+  // Sticky nav over dokumentrullen — publiser høyden så seksjons-hoppene under
+  // lander UNDER nav-en, ikke bak den (toppbar-hoyde.tsx).
+  const toppRef = useToppbarHoyde<HTMLElement>();
 
   const handleScroll = useCallback(() => {
     const scroll = window.scrollY + 100;
@@ -42,6 +46,7 @@ export function SesongStickyNav() {
 
   return (
     <nav
+      ref={toppRef}
       aria-label="Sesongoversikt-seksjoner"
       style={{
         position: "sticky",

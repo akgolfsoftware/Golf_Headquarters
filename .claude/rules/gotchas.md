@@ -15,16 +15,24 @@ Ingen låst designkanon per 2026-07-25 — nytt system utvikles i Open Design (C
 - **Fiks:** autoscroll krever nå at brukeren faktisk har sendt noe (`harSendt`-ref settes i `send()`).
   Ved sidelasting møter du toppen av konsollen. I tillegg publiserer toppbaren sin målte høyde som
   `--ak-topbar-h` (ResizeObserver), og `html` har `scroll-padding-top: var(--ak-topbar-h, 0px)`.
-- **Regel:** en `position: sticky; top: 0`-toppbar over DOKUMENT-rullen må publisere høyden sin som
-  `--ak-topbar-h`, ellers lander alle anker-hopp (scrollIntoView, `#fragment`, tastaturfokus) bak
-  den. Speilvendt `--ak-cookie-h` i bunnen — samme prinsipp: forskyv rullen, aldri legg noe oppå.
+- **Regel:** en `position: sticky; top: 0`-toppbar over DOKUMENT-rullen SKAL publisere høyden sin
+  som `--ak-topbar-h`, ellers lander alle anker-hopp (scrollIntoView, `#fragment`, tastaturfokus)
+  bak den. Bruk `useToppbarHoyde()` fra `src/components/v2/toppbar-hoyde.tsx` — eller
+  `<ToppbarHoyde />` som første barn når toppbaren står i en server-komponent. Speilvendt
+  `--ak-cookie-h` i bunnen: forskyv rullen, aldri legg noe oppå.
   Autoscroll-til-bunn hører hjemme i en EGEN scroll-container (mønsteret i
   `portal/v2/chat/PortalChatHjem.tsx`, som scroller `trådRef`), ikke på dokumentet.
+- **Alle 12 dokument-sticky toppbarene bruker mekanismen** (14.08): PaperTopp (delt av alle
+  PlayerHQ-skjermer med `PaperPage`), PlanV2, AnalysereV2, PortalChatHjem, KonsollChat,
+  InnboksSaker, AdminSpillerRedigerV2, sesong-sticky-nav, leaderboards-client,
+  sammenlign-spillere/resultat, wang-fellesside, coach-arsplan.
+- **De øvrige `position: sticky`-forekomstene er noe annet og skal IKKE ha den:** sidepaneler
+  (`top: 16`), tabellhoder og lister inne i en egen scroll-container, dialoghoder, og alle
+  bunn-dokker (de bruker `--ak-cookie-h`). Måler du dem, blir `--ak-topbar-h` for stor og
+  anker-hopp får unødig luft.
 - Regresjonstest: `tests/e2e/agencyos-toppbar-overlapp.spec.ts`.
-- **Ikke løst (samme klasse):** 18 andre flater har `position: sticky; top: 0` uten å publisere
-  `--ak-topbar-h` (bl.a. `portal/v2/AnalysereV2.tsx`, `admin/v2/innboks/InnboksSaker.tsx`,
-  `(marketing)/stats/*`). De er trygge så lenge ingenting scroller dokumentet programmatisk —
-  men innfører du et anker-hopp der, må toppbaren publisere høyden først.
+- **Felle ved testing:** `/stats/leaderboards`, `/stats/klubber`, `/stats/tour` m.fl. redirecter
+  til `/stats` i prod (`STATS_PROTOTYPE_PREFIXES` i `proxy.ts`) — de er ubrukelige som testruter.
 
 ### Cookie-banneret lå oppå sticky bunn-chrome på mobil (oppdaget 2026-08-10)
 - **Symptom:** på 390px med tomt samtykke kunne skjermens primære handling ikke trykkes —

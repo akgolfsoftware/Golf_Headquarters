@@ -7,6 +7,7 @@ import { T } from "@/lib/v2/tokens";
 // useSyncExternalStore), klampet til sesongspennet — deterministisk på server.
 
 import { useState, useSyncExternalStore } from "react";
+import { useToppbarHoyde } from "@/components/v2/toppbar-hoyde";
 
 import {
   COMPS,
@@ -81,6 +82,8 @@ function klientNaa(): string {
 }
 
 export function WangFellesside({ startFane, live = null }: { startFane: Fane; live?: WangLiveData | null }) {
+  // Sticky toppbar over dokumentrullen — publiser høyden (toppbar-hoyde.tsx).
+  const toppRef = useToppbarHoyde<HTMLElement>();
   const naaIso = useSyncExternalStore(tomAbonnement, klientNaa, () => SPAN_START_ISO);
   const naa = new Date(naaIso + "T12:00:00");
 
@@ -110,7 +113,7 @@ export function WangFellesside({ startFane, live = null }: { startFane: Fane; li
   return (
     <div style={{ minHeight: "100vh", background: "var(--bg-app)" }}>
       {/* Header */}
-      <header style={{ position: "sticky", top: 0, zIndex: 40, background: "var(--surface-card)", boxShadow: "var(--shadow-card-sm)" }}>
+      <header ref={toppRef} style={{ position: "sticky", top: 0, zIndex: 40, background: "var(--surface-card)", boxShadow: "var(--shadow-card-sm)" }}>
         <div style={{ maxWidth: 1120, margin: "0 auto", padding: "16px clamp(16px,4vw,40px) 14px", boxSizing: "border-box", display: "flex", alignItems: "center", gap: 16, flexWrap: "wrap", borderBottom: "1px solid var(--border-subtle)" }}>
           {/* eslint-disable-next-line @next/next/no-img-element -- statisk SVG-merke, ingen optimalisering nødvendig */}
           <img src="/team-wang/wang-logo-horizontal.svg" alt="WANG Toppidrett" style={{ height: 42, display: "block" }} />

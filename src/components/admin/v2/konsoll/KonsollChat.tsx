@@ -42,6 +42,7 @@ import { CaddieApprovalModal } from "@/components/admin/caddie/caddie-approval-m
 import type { CaddieToolCall } from "@/components/admin/caddie/types";
 import { SamtaleBoble, SamtaleSkriver } from "@/components/v2/samtale";
 import { TemaHeaderKnapp } from "@/components/v2/tema";
+import { useToppbarHoyde } from "@/components/v2/toppbar-hoyde";
 import { StallOkterWidget } from "@/components/widgets";
 import type { StallOkterData } from "@/lib/widgets/stall-okter-data";
 import type { CockpitData } from "@/components/admin/cockpit/agency-cockpit";
@@ -91,7 +92,9 @@ export function KonsollChat({
   const [input, setInput] = useState("");
   const bunnRef = useRef<HTMLDivElement>(null);
   const taRef = useRef<HTMLTextAreaElement>(null);
-  const toppRef = useRef<HTMLElement>(null);
+  // Toppbaren er sticky over dokumentrullen — publiser høyden så anker-hopp
+  // lander under den (se components/v2/toppbar-hoyde.tsx).
+  const toppRef = useToppbarHoyde<HTMLElement>();
   // Autoscroll er en chat-affordans som først gir mening etter at DU har sendt
   // noe. Ved sidelasting skal konsollen møte deg på toppen.
   const harSendt = useRef(false);
@@ -114,26 +117,6 @@ export function KonsollChat({
     bunnRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
   }, [messages.length]);
 
-  // Toppbaren er `position: sticky` over dokumentrullen og spiser derfor de
-  // øverste px-ene av viewporten. Uten `scroll-padding-top` lander ethvert
-  // anker-hopp (scrollIntoView, #fragment, tastaturfokus) bak den. Samme
-  // prinsipp som `--ak-cookie-h` i bunnen: forskyv rullen, aldri legg innhold
-  // oppå. Høyden måles fordi toppbaren wrapper til flere rader på 390 px.
-  useEffect(() => {
-    const el = toppRef.current;
-    const rot = document.documentElement;
-    if (!el) return;
-    const oppdater = () => {
-      rot.style.setProperty("--ak-topbar-h", `${Math.ceil(el.getBoundingClientRect().height)}px`);
-    };
-    oppdater();
-    const ro = new ResizeObserver(oppdater);
-    ro.observe(el);
-    return () => {
-      ro.disconnect();
-      rot.style.removeProperty("--ak-topbar-h");
-    };
-  }, []);
 
   const ventendeGodkjenning = useMemo<CaddieToolCall | null>(() => {
     for (const m of messages) {

@@ -9,6 +9,7 @@ import { T } from "@/lib/v2/tokens";
 import Link from "next/link";
 import { Icon } from "@/components/v2";
 import { TemaHeaderKnapp } from "@/components/v2/tema";
+import { useToppbarHoyde } from "@/components/v2/toppbar-hoyde";
 
 export function PaperTopp({
   tittel,
@@ -29,8 +30,10 @@ export function PaperTopp({
   tilbakeHref?: string;
   tilbakeLabel?: string;
 }) {
+  const toppRef = useToppbarHoyde<HTMLElement>();
   return (
     <header
+      ref={toppRef}
       data-paper-topp
       data-paper-wave-a="topp"
       style={{

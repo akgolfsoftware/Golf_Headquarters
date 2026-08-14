@@ -34,6 +34,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { T } from "@/lib/v2/tokens";
 import { Icon } from "@/components/v2/icon";
+import { useToppbarHoyde } from "@/components/v2/toppbar-hoyde";
 import { ArtefaktPanel, useErMobil } from "@/components/portal/v2/chat/ArtefaktPanel";
 import { avgjorInnboksSak } from "@/app/admin/innboks/actions";
 import type { InnboksData, InnboksSak, InnboksSakType } from "@/lib/admin/innboks-saker";
@@ -59,6 +60,8 @@ const pl = (n: number, en: string, flere: string) => `${n} ${n === 1 ? en : fler
 
 export function InnboksSaker({ data }: { data: InnboksData }) {
   const mobil = useErMobil();
+  // Sticky toppbar over dokumentrullen — publiser høyden (toppbar-hoyde.tsx).
+  const toppRef = useToppbarHoyde<HTMLElement>();
   const router = useRouter();
   const [filter, setFilter] = useState<FilterKey>("alle");
   const [valgtId, setValgtId] = useState<string | null>(data.saker.find((s) => !s.lost)?.id ?? null);
@@ -126,6 +129,8 @@ export function InnboksSaker({ data }: { data: InnboksData }) {
       {/* ══ Lista ══ */}
       <div style={{ display: "flex", flexDirection: "column", minWidth: 0, background: T.bg }}>
         <header
+          ref={toppRef}
+          data-paper-topp
           style={{
             display: "flex",
             flexWrap: "wrap",

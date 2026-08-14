@@ -7,6 +7,7 @@ import { T } from "@/lib/v2/tokens";
 
 import { useState } from "react";
 import { ArrowLeft, Bell } from "lucide-react";
+import { useToppbarHoyde } from "@/components/v2/toppbar-hoyde";
 import Image from "next/image";
 
 import {
@@ -56,6 +57,8 @@ function dato(s: string): string {
 }
 
 export function CoachArsplan({ live = null }: { live?: WangLiveData | null }) {
+  // Sticky toppbar over dokumentrullen — publiser høyden (toppbar-hoyde.tsx).
+  const toppRef = useToppbarHoyde<HTMLElement>();
   const [selPeriod, setSelPeriod] = useState<string | null>(null);
   const perioder = effektivePerioder(live);
   const periode = selPeriod ? perioder.find((p) => p.key === selPeriod) ?? null : null;
@@ -99,7 +102,7 @@ export function CoachArsplan({ live = null }: { live?: WangLiveData | null }) {
 
       <div style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column" }}>
         {/* Topbar */}
-        <header style={{ position: "sticky", top: 0, zIndex: 30, height: 64, background: "var(--surface-card)", boxShadow: "var(--shadow-card-sm)", display: "flex", alignItems: "center", gap: 16, padding: "0 clamp(16px,3vw,28px)" }}>
+        <header ref={toppRef} style={{ position: "sticky", top: 0, zIndex: 30, height: 64, background: "var(--surface-card)", boxShadow: "var(--shadow-card-sm)", display: "flex", alignItems: "center", gap: 16, padding: "0 clamp(16px,3vw,28px)" }}>
           <Image src="/team-wang/wang-crest.svg" alt="WANG" width={26} height={34} className="wang-vis-mobil" style={{ height: 32, width: "auto" }} />
           <span style={{ display: "inline-flex", alignItems: "center", gap: 8, height: 32, padding: "0 14px", borderRadius: 999, background: "var(--neutral-50)", fontFamily: "var(--font-brand)", fontWeight: 700, fontSize: 12.5, color: "var(--text-primary)" }}>
             <span style={{ width: 8, height: 8, borderRadius: 999, background: "var(--wang-mint)" }} />WANG Toppidrett Fredrikstad

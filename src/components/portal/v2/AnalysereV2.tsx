@@ -19,6 +19,7 @@
 import { useEffect, useState, type ReactNode } from "react";
 import Link from "next/link";
 import { TemaHeaderKnapp } from "@/components/v2/tema";
+import { useToppbarHoyde } from "@/components/v2/toppbar-hoyde";
 import type { MinGolfData } from "@/lib/min-golf/load-min-golf";
 import type { AnalyticsWorkbenchData } from "@/app/portal/analysere/actions";
 import { hentTreningsHistorikkFiltrert } from "@/app/portal/analysere/actions";
@@ -902,6 +903,7 @@ export function AnalysereV2({
   depthMode?: "simple" | "deep";
 }) {
   const mobile = useMobile();
+  const toppRef = useToppbarHoyde<HTMLElement>();
   const deep = depthMode === "deep";
   // Fasiten (`playerhq-analyse.html` §segs) har TRE faner: Strokes Gained ·
   // Trening · Tester. TrackMan og Statistikk er dybdelag — de vises kun i
@@ -943,6 +945,7 @@ export function AnalysereV2({
         header(mobile)
       ) : (
         <header
+          ref={toppRef}
           data-paper-topp
           style={{
             flex: "none",

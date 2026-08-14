@@ -53,3 +53,49 @@ test.describe("AgencyOS-konsollen — sticky toppbar", () => {
     expect(parseFloat(funn.scrollPaddingTop)).toBeGreaterThan(0);
   });
 });
+
+/**
+ * Alle sticky toppbarer over dokumentrullen skal publisere --ak-topbar-h, slik
+ * at `html { scroll-padding-top }` faktisk har en verdi å jobbe med. Uten dette
+ * lander anker-hopp bak toppbaren — det er nøyaktig feilen over, bare på en
+ * annen flate.
+ *
+ * NB: `/stats/leaderboards`, `/stats/klubber` m.fl. er bevisst redirect'et til
+ * `/stats` i produksjon (prototypedata, se `STATS_PROTOTYPE_PREFIXES` i
+ * proxy.ts) — ikke bruk dem som testruter, de lander aldri der du tror.
+ */
+async function maalToppbar(page: import("@playwright/test").Page) {
+  return page.evaluate(() => {
+    const rot = document.documentElement;
+    return {
+      variabel: getComputedStyle(rot).getPropertyValue("--ak-topbar-h").trim(),
+      padding: getComputedStyle(rot).scrollPaddingTop,
+    };
+  });
+}
+
+test.describe("Sticky toppbarer publiserer høyden sin", () => {
+  test("--ak-topbar-h er satt på /stats/2026 (offentlig)", async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.goto("/stats/2026");
+    await dismissCookieBanner(page);
+    await page.waitForTimeout(1200);
+
+    const maalt = await maalToppbar(page);
+    expect(maalt.variabel, "--ak-topbar-h skal være publisert").not.toBe("");
+    expect(parseFloat(maalt.padding)).toBeGreaterThan(0);
+  });
+
+  test("--ak-topbar-h er satt på /admin/innboks", async ({ page }) => {
+    test.skip(!hasCoachAuth(), "mangler coach-credentials");
+    await page.setViewportSize({ width: 390, height: 844 });
+    await loginAsCoach(page);
+    await page.goto("/admin/innboks");
+    await dismissCookieBanner(page);
+    await page.waitForTimeout(1500);
+
+    const maalt = await maalToppbar(page);
+    expect(maalt.variabel, "--ak-topbar-h skal være publisert").not.toBe("");
+    expect(parseFloat(maalt.padding)).toBeGreaterThan(0);
+  });
+});
