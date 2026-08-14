@@ -6,12 +6,15 @@
  */
 
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Kort,
   Knapp,
+  StatusPill,
   TomTilstand,
   Icon,
+  Caps,
+  AKSE_NAVN,
   T,
 } from "@/components/v2";
 import type { AkseKey } from "@/lib/v2/tokens";
@@ -22,6 +25,13 @@ export interface PlanMalFordeling {
   akse: AkseKey;
   /** Andel av planen for denne aksen, i prosent (0–100). */
   value: number;
+}
+/** Sammenhengende ukeblokk med samme dominerende pyramide-område — se bygUkeOversikt. */
+export interface PlanMalUkeblokk {
+  fraUke: number;
+  tilUke: number;
+  omrade: AkseKey;
+  oktAntall: number;
 }
 export interface PlanMalRad {
   id: string;
@@ -38,6 +48,12 @@ export interface PlanMalRad {
   fordeling: PlanMalFordeling[];
   /** Godkjent kan rulles ut til grupper/spillere. Utkast kan ikke (fasit: agencyos-planbibliotek). */
   godkjent: boolean;
+  /** Uke-for-uke — sammenhengende blokker med dominerende pyramide-område. Tom = ingen økter ennå. */
+  ukeOversikt: PlanMalUkeblokk[];
+  /** Gjennomsnittlig SG-Total-delta fra PlanEffectiveness. null = ingen målinger ennå. */
+  effektAvg: number | null;
+  /** Antall PlanEffectiveness-rader (fullførte planer) bak effektAvg. */
+  effektAntall: number;
 }
 export interface AdminPlanMalerData {
   maler: PlanMalRad[];
@@ -73,7 +89,33 @@ const pl = (n: number, en: string, flere: string) => `${n} ${n === 1 ? en : fler
  * navn, én metalinje, tynn andelsstripe og prosentnøkler. Ikke et kort.
  * Utkast vises uten stripe (fasit viser den kun for godkjente maler).
  */
-function MalRad({ m, last }: { m: PlanMalRad; last?: boolean }) {
+/** ≥1024px: brekkpunkt der inspektørpanelet vises ved siden av lista. */
+function useMediaQuery(query: string): boolean {
+  const [match, setMatch] = useState(false);
+  useEffect(() => {
+    const mq = window.matchMedia(query);
+    const oppdater = () => setMatch(mq.matches);
+    oppdater();
+    mq.addEventListener("change", oppdater);
+    return () => mq.removeEventListener("change", oppdater);
+  }, [query]);
+  return match;
+}
+
+function MalRad({
+  m,
+  last,
+  valgt,
+  visPanel,
+  onVelg,
+}: {
+  m: PlanMalRad;
+  last?: boolean;
+  valgt?: boolean;
+  /** true når inspektørpanelet er synlig (≥1024px) — klikk velger da i panelet i stedet for å navigere. */
+  visPanel: boolean;
+  onVelg: (id: string) => void;
+}) {
   const bruk =
     m.usageCount === 0 ? "aldri brukt" : `brukt ${pl(m.usageCount, "gang", "ganger")}`;
   const meta = `${pl(m.oktAntall, "økt", "økter")} · ${bruk} · ${m.godkjent ? "godkjent" : "utkast"}`;
@@ -85,6 +127,16 @@ function MalRad({ m, last }: { m: PlanMalRad; last?: boolean }) {
   return (
     <Link
       href={`/admin/plan-templates/${m.id}`}
+      aria-current={valgt ? "true" : undefined}
+      onClick={(e) => {
+        // Desktop (≥1024px): inspektørpanelet er synlig — klikk velger malen der
+        // i stedet for å navigere bort fra lista. Mobil: naviger til detaljruten
+        // som før (ingen panel å velge inn i).
+        if (visPanel) {
+          e.preventDefault();
+          onVelg(m.id);
+        }
+      }}
       className="v2-row-h"
       style={{
         display: "flex",
@@ -94,6 +146,7 @@ function MalRad({ m, last }: { m: PlanMalRad; last?: boolean }) {
         margin: "0 -10px",
         borderRadius: T.rRow,
         borderBottom: last ? "none" : `1px solid ${T.border}`,
+        background: valgt ? T.panel3 : undefined,
         textDecoration: "none",
       }}
     >
@@ -187,11 +240,17 @@ function Gruppe({
   teller,
   notat,
   maler,
+  valgtId,
+  visPanel,
+  onVelg,
 }: {
   tittel: string;
   teller: string;
   notat: string;
   maler: PlanMalRad[];
+  valgtId: string | null;
+  visPanel: boolean;
+  onVelg: (id: string) => void;
 }) {
   const [visAlle, setVisAlle] = useState(false);
   const synlige = visAlle ? maler : maler.slice(0, VIS_ANTALL);
@@ -210,7 +269,14 @@ function Gruppe({
       </p>
       <div style={{ minWidth: 0 }}>
         {synlige.map((m, i) => (
-          <MalRad key={m.id} m={m} last={i === synlige.length - 1 && skjulte === 0} />
+          <MalRad
+            key={m.id}
+            m={m}
+            last={i === synlige.length - 1 && skjulte === 0}
+            valgt={m.id === valgtId}
+            visPanel={visPanel}
+            onVelg={onVelg}
+          />
         ))}
       </div>
       {skjulte > 0 && (
@@ -280,9 +346,143 @@ function FilterChip({
   );
 }
 
+/** Kompakt KPI-flis inne i inspektørpanelet — samme geometri som `KøenITall` i AdminGodkjenningerV2. */
+function InspektorKpi({ label, verdi, sub }: { label: string; verdi: string; sub: string }) {
+  return (
+    <div style={{ background: T.panel2, border: `1px solid ${T.borderS}`, borderRadius: T.rTag, padding: 12, minWidth: 0 }}>
+      <Caps size={9}>{label}</Caps>
+      <div style={{ fontFamily: T.mono, fontSize: 22, fontWeight: 600, color: T.fg, marginTop: 6 }}>{verdi}</div>
+      <div style={{ fontFamily: T.ui, fontSize: 11, color: T.mut, marginTop: 2 }}>{sub}</div>
+    </div>
+  );
+}
+
+/**
+ * Inspektørpanel — fasitens `<aside class="panel">` (agencyos-planbibliotek.html).
+ * Vises kun ≥1024px (samme brekkpunkt som AdminGodkjenningerV2 sin «Køen i tall»).
+ *
+ * Avvik fra fasit (dokumentert per CLAUDE.md-regel — aldri oppdiktede tall):
+ * - «Brukes nå av»-lista er utelatt. Det finnes ingen relasjon fra TrainingPlan
+ *   tilbake til PlanTemplate den ble opprettet fra (kun PlanEffectiveness.templateId,
+ *   som først settes når en plan er FULLFØRT — ikke mens den er aktiv), så «hvilke
+ *   spillere kjører denne malen akkurat nå» kan ikke besvares ærlig med dagens skjema.
+ * - «Effekt»-blokka viser gjennomsnittlig SG-Total-delta fra PlanEffectiveness
+ *   (samme kilde som allerede brukes i AdminPlanMalDetaljV2), ikke fasitens
+ *   spesifikke «SG nærspill +0,41, 24 av 31 utrullinger med ≥10 runder etter» —
+ *   den nedbrytningen finnes ikke i data.
+ * - «Uke for uke» viser malens ekte dominerende pyramide-område per ukeblokk
+ *   (bygUkeOversikt), ikke fasitens narrative fasenavn («kartlegging» osv.), som
+ *   ikke er lagret noe sted.
+ */
+function PlanMalInspektor({ mal }: { mal: PlanMalRad }) {
+  return (
+    <aside
+      aria-label={mal.navn}
+      style={{
+        position: "sticky",
+        top: 16,
+        display: "flex",
+        flexDirection: "column",
+        gap: 16,
+        background: T.panel,
+        border: `1px solid ${T.border}`,
+        borderRadius: T.rCard,
+        padding: 16,
+        minWidth: 0,
+      }}
+    >
+      <div style={{ display: "flex", alignItems: "center", gap: 8, minWidth: 0 }}>
+        <span
+          style={{
+            fontFamily: T.disp,
+            fontSize: 15,
+            fontWeight: 600,
+            color: T.fg,
+            minWidth: 0,
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+            whiteSpace: "nowrap",
+          }}
+        >
+          {mal.navn}
+        </span>
+        <span style={{ marginLeft: "auto", flex: "none" }}>
+          <StatusPill tone={mal.godkjent ? "up" : "warn"}>{mal.godkjent ? "Godkjent" : "Utkast"}</StatusPill>
+        </span>
+      </div>
+
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
+        <InspektorKpi
+          label="Varighet"
+          verdi={`${mal.varighetUker} uker`}
+          sub={`${pl(mal.oktAntall, "økt", "økter")} · ${mal.ukentligOktAntall} per uke`}
+        />
+        <InspektorKpi
+          label="Brukt"
+          verdi={String(mal.usageCount)}
+          sub={mal.usageCount === 1 ? "gang" : "ganger"}
+        />
+      </div>
+
+      {mal.effektAvg != null && mal.effektAntall > 0 && (
+        <div style={{ background: T.panel2, border: `1px solid ${T.borderS}`, borderRadius: T.rTag, padding: 12 }}>
+          <Caps size={9}>Effekt</Caps>
+          <p style={{ margin: "8px 0 0", fontFamily: T.ui, fontSize: 12, lineHeight: 1.55, color: T.mut }}>
+            Spillere som fullførte malen endret SG-Total med{" "}
+            <span style={{ color: T.fg, fontWeight: 600 }}>
+              {mal.effektAvg >= 0 ? "+" : ""}
+              {mal.effektAvg.toFixed(2).replace(".", ",")}
+            </span>{" "}
+            i snitt, målt over {pl(mal.effektAntall, "fullført plan", "fullførte planer")}.
+          </p>
+        </div>
+      )}
+
+      <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+        <Caps size={9}>Uke for uke</Caps>
+        {mal.ukeOversikt.length === 0 ? (
+          <p style={{ margin: 0, fontFamily: T.ui, fontSize: 12, color: T.mut }}>
+            Ingen økter lagt inn i malen ennå.
+          </p>
+        ) : (
+          mal.ukeOversikt.map((b, i) => (
+            <div key={i} style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: 8 }}>
+              <span style={{ fontFamily: T.ui, fontSize: 12.5, color: T.fg, minWidth: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                {b.fraUke === b.tilUke ? `Uke ${b.fraUke}` : `Uke ${b.fraUke}–${b.tilUke}`} · {AKSE_NAVN[b.omrade]}
+              </span>
+              <span style={{ fontFamily: T.mono, fontSize: 12, color: T.mut, flex: "none" }}>
+                {pl(b.oktAntall, "økt", "økter")}
+              </span>
+            </div>
+          ))
+        )}
+      </div>
+
+      <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+        <Link href={`/admin/plan-templates/${mal.id}/rediger`} style={{ textDecoration: "none", flex: 1 }}>
+          <Knapp ghost full icon="pencil">
+            Rediger
+          </Knapp>
+        </Link>
+        <Link href="/admin/grupper" style={{ textDecoration: "none", flex: 1 }}>
+          <Knapp full icon="send">
+            Rull ut
+          </Knapp>
+        </Link>
+      </div>
+    </aside>
+  );
+}
+
 export function AdminPlanMalerV2({ data }: { data: AdminPlanMalerData }) {
   const [fase, setFase] = useState<string[]>([]);
   const [status, setStatus] = useState<string[]>([]);
+  // Inspektørpanel (≥1024px): malen som er valgt inn — default første godkjente
+  // (fasitens «list-mal-1» har aria-current), ellers første i lista.
+  const [valgtId, setValgtId] = useState<string | null>(
+    () => data.maler.find((m) => m.godkjent)?.id ?? data.maler[0]?.id ?? null,
+  );
+  const visPanel = useMediaQuery("(min-width: 1024px)");
 
   const toggle = (x: string) =>
     setFase((arr) => (arr.indexOf(x) !== -1 ? arr.filter((y) => y !== x) : arr.concat(x)));
@@ -415,6 +615,9 @@ export function AdminPlanMalerV2({ data }: { data: AdminPlanMalerData }) {
             teller={pl(godkjente.length, "godkjent", "godkjente")}
             notat="Rekkefølgen følger bruk, ikke navn — malen du rullet ut sist ligger derfor ikke nødvendigvis øverst."
             maler={godkjente}
+            valgtId={valgtId}
+            visPanel={visPanel}
+            onVelg={setValgtId}
           />
         )}
         {utkast.length > 0 && (
@@ -423,16 +626,34 @@ export function AdminPlanMalerV2({ data }: { data: AdminPlanMalerData }) {
             teller={String(utkast.length)}
             notat="Utkast kan ikke rulles ut til grupper. De må godkjennes først."
             maler={utkast}
+            valgtId={valgtId}
+            visPanel={visPanel}
+            onVelg={setValgtId}
           />
         )}
       </div>
     );
 
+  // Panelet følger valgtId uavhengig av filtrering — bytter du fane mens en mal
+  // er valgt, skal panelet fortsatt vise den (som fasitens statiske utvalg).
+  const valgtMal = data.maler.find((m) => m.id === valgtId) ?? null;
+
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
-      {hode}
-      {filtre}
-      {liste}
+    <div
+      style={{
+        display: "grid",
+        gridTemplateColumns: visPanel ? "minmax(0,1fr) 380px" : "1fr",
+        alignItems: "start",
+        gap: visPanel ? 20 : 0,
+        minWidth: 0,
+      }}
+    >
+      <div style={{ display: "flex", flexDirection: "column", gap: T.gap, minWidth: 0 }}>
+        {hode}
+        {filtre}
+        {liste}
+      </div>
+      {visPanel && valgtMal && <PlanMalInspektor mal={valgtMal} />}
     </div>
   );
 }
