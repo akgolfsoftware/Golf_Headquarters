@@ -49,10 +49,10 @@ export function StatsRangeSlider({
           width: 22px;
           height: 22px;
           border-radius: 50%;
-          background: #005840;
-          border: 3px solid #D1F843;
+          background: var(--p-cta);
+          border: 3px solid var(--p-bg);
           cursor: pointer;
-          box-shadow: 0 2px 6px rgba(0,88,64,0.3);
+          box-shadow: var(--p-shadow);
           transition: transform 0.15s;
         }
         input[type="range"]::-webkit-slider-thumb:hover {
@@ -62,8 +62,8 @@ export function StatsRangeSlider({
           width: 22px;
           height: 22px;
           border-radius: 50%;
-          background: #005840;
-          border: 3px solid #D1F843;
+          background: var(--p-cta);
+          border: 3px solid var(--p-bg);
           cursor: pointer;
         }
       `}</style>

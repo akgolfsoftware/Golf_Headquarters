@@ -164,7 +164,7 @@ export function KlubbWizard({
           >
             <svg viewBox="0 0 520 180">
               <rect x="180" y="40" width="160" height="120" rx="12" fill="#FAFAF7" />
-              <path d="M 200 60 L 320 60 L 320 80 L 260 80 L 260 100 L 320 100 L 320 120 L 200 120 Z" fill="#005840" />
+              <path d="M 200 60 L 320 60 L 320 80 L 260 80 L 260 100 L 320 100 L 320 120 L 200 120 Z" fill="var(--p-fg)" />
               <rect x="220" y="130" width="80" height="14" rx="3" fill={T.farge.limeMerke} />
               <text
                 x="260"
@@ -442,13 +442,13 @@ export function KlubbWizard({
             }}
           >
             <svg viewBox="0 0 520 180">
-              <rect x="120" y="30" width="280" height="120" rx="12" fill="#fff" stroke="#005840" strokeWidth="1.5" />
+              <rect x="120" y="30" width="280" height="120" rx="12" fill="var(--p-surface)" stroke="var(--p-fg)" strokeWidth="1.5" />
               <rect x="140" y="48" width="240" height="14" rx="3" fill={T.farge.limeMerke} />
               {[0, 1, 2, 3, 4].map((row) => (
                 <g key={row}>
-                  <rect x={140} y={72 + row * 14} width={60} height={8} rx={2} fill="#005840" opacity="0.2" />
-                  <rect x={210} y={72 + row * 14} width={100} height={8} rx={2} fill="#005840" opacity="0.15" />
-                  <rect x={320} y={72 + row * 14} width={60} height={8} rx={2} fill="#005840" opacity="0.15" />
+                  <rect x={140} y={72 + row * 14} width={60} height={8} rx={2} fill="var(--p-fg)" opacity="0.2" />
+                  <rect x={210} y={72 + row * 14} width={100} height={8} rx={2} fill="var(--p-fg)" opacity="0.15" />
+                  <rect x={320} y={72 + row * 14} width={60} height={8} rx={2} fill="var(--p-fg)" opacity="0.15" />
                 </g>
               ))}
             </svg>
@@ -615,7 +615,7 @@ export function KlubbWizard({
                 fontFamily="Inter, sans-serif"
                 fontSize="40"
                 fontWeight="800"
-                fill="#fff"
+                fill="var(--p-surface)"
               >
                 stripe
               </text>

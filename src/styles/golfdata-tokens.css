@@ -17,9 +17,9 @@
 
 .golfdata-scope {
   /* ---- Råskalaer (tema-uavhengige, fra colors.css) ---- */
-  --lime-500: #D1F843;
+  --lime-500: #63784A;      /* Paper --p-up */
   --lime-600: #BCE234;
-  --forest-700: #005840;
+  --forest-700: #141413;    /* Paper --p-cta */
   --forest-800: #073A2A;
   /* v14-synk (2026-07-08): bakgrunn variant B "løftet" — LÅST etter Anders' fysiske
      sollys-test («ikke for mørkt»). Historie: #0A0B0A → #060706 → #141513 (låst). */
@@ -117,8 +117,8 @@
   --signal-fill-edge: var(--border-strong);
 
   /* ---- Pyramide-akser — LYS (data-viz.css .light-blokken) ---- */
-  --axis-fys: #005840;
-  --axis-fys-text: #005840;
+  --axis-fys: #788C5D;      /* Paper --p-accent-olive */
+  --axis-fys-text: #63784A;
   --axis-fys-soft: rgba(0, 88, 64, 0.13);
   --axis-tek: #B8852A;
   --axis-tek-text: #8A6316;
@@ -126,7 +126,7 @@
   --axis-slag: #2563EB;
   --axis-slag-text: #1D4FD0;
   --axis-slag-soft: rgba(37, 99, 235, 0.13);
-  --axis-spill: #D1F843;
+  --axis-spill: #C46686;    /* Paper --p-accent-fig */
   --axis-spill-text: #55680A;
   --axis-spill-soft: rgba(209, 248, 67, 0.22);
   --axis-turn: #A32D2D;
@@ -201,7 +201,7 @@ html[data-v2-tema="dark"] .golfdata-scope {
   --axis-slag: #84A9FF;
   --axis-slag-text: #9EBCFF;
   --axis-slag-soft: rgba(132, 169, 255, 0.15);
-  --axis-spill: #D1F843;
+  --axis-spill: #C46686;    /* Paper --p-accent-fig */
   /* v14-synk (2026-07-08): adoptert fra design-prosjektet — #F0E6A8, en avmettet varm
      gull-tone (hue dreid bort fra markørens grønn-gule mot ~55°). Erstatter forrige
      hotfix #DFF982 (samme problem løst, men denne er umulig å forveksle med -fill

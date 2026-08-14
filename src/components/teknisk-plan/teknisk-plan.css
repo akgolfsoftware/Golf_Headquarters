@@ -6,10 +6,10 @@
 
 .tp-scope {
   --tp-pyr-fys: #1A4D2E;
-  --tp-pyr-tek: #005840;
+  --tp-pyr-tek: #6A9BCC;    /* Paper --p-accent-sky */
   --tp-pyr-slag: #2C7D52;
   --tp-pyr-spill: #88B45A;
-  --tp-pyr-turn: #D1F843;
+  --tp-pyr-turn: #C46686;   /* Paper --p-accent-fig */
   --tp-warn: #B8852A;
   --tp-r-card: 16px;
 

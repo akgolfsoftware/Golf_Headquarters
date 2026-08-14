@@ -122,7 +122,7 @@ export function StatsTrendGraf({ data, height = 240 }: StatsTrendGrafProps) {
       <path
         d={linePath}
         fill="none"
-        stroke="#005840"
+        stroke="var(--p-info)"
         strokeWidth={2.5}
         strokeLinecap="round"
         strokeLinejoin="round"
@@ -134,8 +134,8 @@ export function StatsTrendGraf({ data, height = 240 }: StatsTrendGrafProps) {
             cx={p.x}
             cy={p.y}
             r={4}
-            fill="#005840"
-            stroke="#FAFAF7"
+            fill="var(--p-info)"
+            stroke="var(--p-bg)"
             strokeWidth={2}
           />
           <text

@@ -1,8 +1,8 @@
 :root {
   /* Brand */
-  --forest:      #005840;
+  --forest:      #141413;   /* Paper --p-cta */
   --forest-dark: #003A2A;
-  --lime:        #D1F843;
+  --lime:        #63784A;   /* Paper --p-up */
   --lime-deep:   #BFE933;
 
   /* Surface */
@@ -25,9 +25,9 @@
   --success:     #2C7D52;
 
   /* Pyramide */
-  --pyr-fys:     #005840;
+  --pyr-fys:     #788C5D;   /* Paper --p-accent-olive */
   --pyr-tek:     #1A7D56;
-  --pyr-slag:    #D1F843;
+  --pyr-slag:    #6A9BCC;   /* Paper --p-accent-sky */
   --pyr-spill:   #B8852A;
   --pyr-turn:    #5E5C57;
 

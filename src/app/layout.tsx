@@ -107,7 +107,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport = {
-  themeColor: "#005840",
+  themeColor: "#141413",
   width: "device-width",
   initialScale: 1,
   // WCAG 1.4.4: zoom skal aldri sperres (iOS ignorerer uansett user-scalable=no).

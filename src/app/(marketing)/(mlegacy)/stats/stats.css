@@ -9,11 +9,11 @@
   --s-bg:       #FAFAF7;
   --s-fg:       #0A1F17;
   --s-card:     #FFFFFF;
-  --s-primary:  #005840;
-  --s-primary-fg: #D1F843;
+  --s-primary:  #141413;    /* Paper --p-cta */
+  --s-primary-fg: #FAF9F5;  /* Paper --p-on-cta */
   --s-secondary: #F1EEE5;
-  --s-accent:   #D1F843;
-  --s-accent-fg: #005840;
+  --s-accent:   #D97757;    /* Paper --p-accent (clay) */
+  --s-accent-fg: #141413;   /* Paper --p-on-accent */
   --s-muted:    #F1EEE5;
   --s-muted-fg: #5E5C57;
   --s-border:   #E5E3DD;

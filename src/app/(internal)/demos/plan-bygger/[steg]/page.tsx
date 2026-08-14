@@ -176,9 +176,9 @@ function StepCard({
       <div
         className={`mb-2 inline-flex h-6 w-6 items-center justify-center rounded-full font-mono text-[12px] font-semibold leading-none ${
           isDone
-            ? "bg-[var(--brand-primary,#005840)] text-white"
+            ? "bg-[var(--brand-primary,#141413)] text-white"
             : isCurrent
-              ? "bg-accent text-[var(--brand-accent-on,#005840)]"
+              ? "bg-accent text-[var(--brand-accent-on,#141413)]"
               : "bg-[var(--surface-alt,#F1EEE5)] text-muted-foreground"
         }`}
       >
@@ -188,7 +188,7 @@ function StepCard({
       <div className="mt-1 text-[11px] leading-[1.3] text-muted-foreground">{sub}</div>
       {isDone && (
         <Check
-          className="absolute right-3 top-3 h-4 w-4 text-[var(--brand-primary,#005840)]"
+          className="absolute right-3 top-3 h-4 w-4 text-[var(--brand-primary,#141413)]"
           strokeWidth={2.5}
         />
       )}
@@ -380,7 +380,7 @@ function PlayerPickCard({
       <div
         className={`flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full ${
           selected
-            ? "border-2 border-accent bg-accent text-[var(--brand-accent-on,#005840)]"
+            ? "border-2 border-accent bg-accent text-[var(--brand-accent-on,#141413)]"
             : "border-2 border-border"
         }`}
       >
@@ -555,11 +555,11 @@ function MiniCal({ title, weeks, month }: { title: string; weeks: string; month:
           let cls = base;
           if (c.state === "muted") cls += " text-muted-foreground/50";
           else if (c.state === "start" || c.state === "end")
-            cls += " bg-[var(--brand-primary,#005840)] text-white font-semibold";
+            cls += " bg-[var(--brand-primary,#141413)] text-white font-semibold";
           else if (c.state === "in-range") cls += " bg-[rgba(0,88,64,0.10)] rounded-none";
           else if (c.state === "peak")
             cls +=
-              " bg-accent text-[var(--brand-accent-on,#005840)] font-bold outline outline-2 -outline-offset-2 outline-accent";
+              " bg-accent text-[var(--brand-accent-on,#141413)] font-bold outline outline-2 -outline-offset-2 outline-accent";
           else cls += " hover:bg-secondary";
           return (
             <div key={i} className={cls}>
@@ -577,7 +577,7 @@ function Preset({ label, sub, active = false }: { label: string; sub: string; ac
     <button
       className={`rounded-md border px-4 py-2.5 text-center transition-colors ${
         active
-          ? "border-[var(--brand-primary,#005840)] bg-[var(--brand-primary,#005840)] text-white"
+          ? "border-[var(--brand-primary,#141413)] bg-[var(--brand-primary,#141413)] text-white"
           : "border-border bg-background hover:bg-secondary"
       }`}
     >
@@ -787,13 +787,13 @@ function Step4() {
   return (
     <>
       <div
-        className="mb-6 flex items-center gap-4 rounded-lg border border-[rgba(0,88,64,0.18)] border-l-4 border-l-[var(--brand-primary,#005840)] px-4 py-4"
+        className="mb-6 flex items-center gap-4 rounded-lg border border-[rgba(0,88,64,0.18)] border-l-4 border-l-[var(--brand-primary,#141413)] px-4 py-4"
         style={{
           backgroundImage:
             `linear-gradient(135deg, ${T.farge.forestMerkeA6} 0%, color-mix(in srgb, var(--v2-lime) 10%, transparent) 100%)`,
         }}
       >
-        <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full bg-[var(--brand-primary,#005840)] font-mono text-[11px] font-bold text-[var(--brand-accent,#D1F843)]">
+        <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full bg-[var(--brand-primary,#141413)] font-mono text-[11px] font-bold text-[var(--brand-accent,#C46686)]">
           PA
         </div>
         <div className="flex-1">
@@ -809,7 +809,7 @@ function Step4() {
         <button className="inline-flex items-center rounded-md border border-border bg-transparent px-4 py-2 text-[13px] font-medium text-foreground transition-colors hover:bg-secondary">
           Avvis
         </button>
-        <button className="inline-flex items-center rounded-md bg-accent px-4 py-2 text-[13px] font-semibold text-[var(--brand-accent-on,#005840)] transition-opacity hover:opacity-90">
+        <button className="inline-flex items-center rounded-md bg-accent px-4 py-2 text-[13px] font-semibold text-[var(--brand-accent-on,#141413)] transition-opacity hover:opacity-90">
           Bruk forslag
         </button>
       </div>
@@ -1321,7 +1321,7 @@ function SumBlock({
         {editHref && (
           <Link
             href={editHref}
-            className="font-sans text-[11px] font-medium normal-case tracking-normal text-[var(--brand-primary,#005840)] hover:underline"
+            className="font-sans text-[11px] font-medium normal-case tracking-normal text-[var(--brand-primary,#141413)] hover:underline"
           >
             rediger
           </Link>
@@ -1362,13 +1362,13 @@ function SumRow({
 function AgentStrip({ label, body }: { label: string; body: React.ReactNode }) {
   return (
     <div
-      className="mb-6 flex items-center gap-4 rounded-lg border border-[rgba(0,88,64,0.18)] border-l-4 border-l-[var(--brand-primary,#005840)] px-4 py-4"
+      className="mb-6 flex items-center gap-4 rounded-lg border border-[rgba(0,88,64,0.18)] border-l-4 border-l-[var(--brand-primary,#141413)] px-4 py-4"
       style={{
         backgroundImage:
           `linear-gradient(135deg, ${T.farge.forestMerkeA6} 0%, color-mix(in srgb, var(--v2-lime) 10%, transparent) 100%)`,
       }}
     >
-      <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full bg-[var(--brand-primary,#005840)] font-mono text-[11px] font-bold text-[var(--brand-accent,#D1F843)]">
+      <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full bg-[var(--brand-primary,#141413)] font-mono text-[11px] font-bold text-[var(--brand-accent,#C46686)]">
         PA
       </div>
       <div className="flex-1">
@@ -1377,7 +1377,7 @@ function AgentStrip({ label, body }: { label: string; body: React.ReactNode }) {
         </div>
         <p className="mt-1 max-w-[720px] text-[13px] leading-[1.5] text-foreground">{body}</p>
       </div>
-      <button className="inline-flex items-center rounded-md bg-accent px-4 py-2 text-[13px] font-semibold text-[var(--brand-accent-on,#005840)] transition-opacity hover:opacity-90">
+      <button className="inline-flex items-center rounded-md bg-accent px-4 py-2 text-[13px] font-semibold text-[var(--brand-accent-on,#141413)] transition-opacity hover:opacity-90">
         Bruk forslag
       </button>
     </div>
@@ -1398,7 +1398,7 @@ function SideCard({ title, children }: { title: string; children: React.ReactNod
 function PlayerMini() {
   return (
     <div className="mb-4 grid grid-cols-[48px_1fr] items-center gap-2">
-      <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[var(--brand-primary,#005840)] font-display text-[16px] font-semibold text-white">
+      <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[var(--brand-primary,#141413)] font-display text-[16px] font-semibold text-white">
         M
       </div>
       <div>

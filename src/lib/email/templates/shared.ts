@@ -60,7 +60,7 @@ export function emailLayout(input: EmailLayoutInput): string {
           <tr>
             <td style="padding:24px 32px;background:#F1EEE5;border-top:1px solid #E5E3DD;font-size:12px;color:#5E5C57;line-height:1.5;">
               AK Golf Academy · Bossumveien 6, 1605 Fredrikstad<br />
-              <a href="mailto:post@akgolf.no" style="color:#005840;text-decoration:none;">post@akgolf.no</a>
+              <a href="mailto:post@akgolf.no" style="color:#B85C3D;text-decoration:none;">post@akgolf.no</a>
             </td>
           </tr>
         </table>
@@ -79,7 +79,7 @@ export function detailRow(label: string, value: string): string {
 }
 
 export function primaryButton(label: string, href: string): string {
-  return `<a href="${escapeAttr(href)}" style="display:inline-block;padding:12px 24px;background:#005840;color:#D1F843;text-decoration:none;border-radius:9999px;font-weight:600;font-size:14px;">${escapeHtml(label)}</a>`;
+  return `<a href="${escapeAttr(href)}" style="display:inline-block;padding:12px 24px;background:#141413;color:#FAF9F5;text-decoration:none;border-radius:9999px;font-weight:600;font-size:14px;">${escapeHtml(label)}</a>`;
 }
 
 export function escapeHtml(s: string): string {

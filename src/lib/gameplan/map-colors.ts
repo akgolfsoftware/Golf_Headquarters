@@ -12,7 +12,7 @@ import { T } from "@/lib/v2/tokens";
 
 // Pyramide-aksefargene (lys modus, --pyr-*/--axis-* i globals.css).
 const PYR = {
-  fys: "#005840", // forest
+  fys: "#788C5D", // Paper --p-accent-olive
   tek: "#B8852A", // ochre
   slag: "#2563EB", // blå
   spill: T.farge.limeMerke, // lime (= T.lime)
@@ -29,7 +29,7 @@ export const MAP_COLORS = {
 
 /** Slag- og dispersjonslag (fase C4/C5). */
 export const DISPERSION_COLORS = {
-  shotPoint: PYR.spill, // #D1F843 lime — landingspunkter
+  shotPoint: PYR.spill, // Paper --p-accent-fig — landingspunkter
   shotPointStroke: "#0D0E0D", // T.bg nær-svart — kant rundt punktene for lesbarhet
   sigma1Fill: PYR.spill, // lime-flate m/ lav opacity (settes i laget)
   sigma1Stroke: PYR.spill, // lime kant (1σ)
@@ -41,7 +41,7 @@ export const DISPERSION_COLORS = {
 
 /** Gameplan interaktiv modus (C7) — sikte-markør + bra/aldri-soner. */
 export const GAMEPLAN_COLORS = {
-  sikte: PYR.spill, // #D1F843 lime — samme sikte-farge som tee/holeLine
+  sikte: PYR.spill, // Paper --p-accent-fig — samme sikte-farge som tee/holeLine
   soneBra: "#4FD08A", // T.up grønn — «bra å misse»-sone
   soneAldri: "#E05D44", // status-rød — «aldri hit»-sone
 } as const;

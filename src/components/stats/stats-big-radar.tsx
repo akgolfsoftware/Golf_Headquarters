@@ -112,13 +112,13 @@ export function StatsBigRadar({
     <div style={{ width: "100%", maxWidth: 480, margin: "0 auto" }}>
       <ResponsiveContainer width="100%" height={360}>
         <RadarChart data={data} outerRadius="78%">
-          <PolarGrid stroke="#E5E3DD" strokeWidth={1} />
+          <PolarGrid stroke="var(--p-border)" strokeWidth={1} />
           <PolarAngleAxis
             dataKey="kategori"
             tick={{
               fill: "hsl(var(--muted-foreground))",
               fontSize: 13,
-              fontFamily: "var(--font-display)",
+              fontFamily: "var(--p-disp)",
               fontWeight: 600,
               letterSpacing: "0.04em",
             }}
@@ -127,16 +127,16 @@ export function StatsBigRadar({
           <Radar
             name={youLabel}
             dataKey="du"
-            stroke="#005840"
-            fill="#005840"
+            stroke="var(--p-info)"
+            fill="var(--p-info)"
             fillOpacity={0.35}
             strokeWidth={2}
           />
           <Radar
             name={themLabel}
             dataKey="ref"
-            stroke={T.farge.limeMerke}
-            fill={T.farge.limeMerke}
+            stroke="var(--p-accent-olive)"
+            fill="var(--p-accent-olive)"
             fillOpacity={0.2}
             strokeWidth={2}
             strokeDasharray="5 3"

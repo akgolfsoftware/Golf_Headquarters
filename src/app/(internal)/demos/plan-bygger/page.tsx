@@ -44,13 +44,13 @@ export default function PlanByggerDemo() {
 
         {/* Agent strip */}
         <div
-          className="mb-6 flex items-center gap-4 rounded-lg border border-[rgba(0,88,64,0.18)] border-l-4 border-l-[var(--brand-primary,#005840)] px-4 py-4"
+          className="mb-6 flex items-center gap-4 rounded-lg border border-[rgba(0,88,64,0.18)] border-l-4 border-l-[var(--brand-primary,#141413)] px-4 py-4"
           style={{
             backgroundImage:
               `linear-gradient(135deg, ${T.farge.forestMerkeA6} 0%, color-mix(in srgb, var(--v2-lime) 10%, transparent) 100%)`,
           }}
         >
-          <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full bg-[var(--brand-primary,#005840)] font-mono text-[11px] font-bold text-[var(--brand-accent,#D1F843)]">
+          <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full bg-[var(--brand-primary,#141413)] font-mono text-[11px] font-bold text-[var(--brand-accent,#C46686)]">
             PA
           </div>
           <div className="flex-1">
@@ -66,7 +66,7 @@ export default function PlanByggerDemo() {
           <button className="inline-flex items-center rounded-md border border-border bg-transparent px-4 py-2 text-[13px] font-medium text-foreground transition-colors hover:bg-secondary">
             Avvis
           </button>
-          <button className="inline-flex items-center rounded-md bg-accent px-4 py-2 text-[13px] font-semibold text-[var(--brand-accent-on,#005840)] transition-opacity hover:opacity-90">
+          <button className="inline-flex items-center rounded-md bg-accent px-4 py-2 text-[13px] font-semibold text-[var(--brand-accent-on,#141413)] transition-opacity hover:opacity-90">
             Bruk forslag
           </button>
         </div>
@@ -96,7 +96,7 @@ export default function PlanByggerDemo() {
             name="Peak"
             dates="2.–4. jun · turnering"
             progress={0}
-            barColor="var(--color-pyr-spill,#D1F843)"
+            barColor="var(--color-pyr-spill,#C46686)"
           />
         </div>
 
@@ -124,7 +124,7 @@ export default function PlanByggerDemo() {
             </div>
 
             <SliderBlock
-              color="var(--color-pyr-fys,#005840)"
+              color="var(--color-pyr-fys,#788C5D)"
               code="FYS"
               label="fysisk fundament"
               value={10}
@@ -151,7 +151,7 @@ export default function PlanByggerDemo() {
               historyLabel="Faktisk siste 4 u: 24 % · agent foreslår løft"
             />
             <SliderBlock
-              color="var(--color-pyr-spill,#D1F843)"
+              color="var(--color-pyr-spill,#C46686)"
               code="SPILL"
               label="banespill"
               value={30}
@@ -192,7 +192,7 @@ export default function PlanByggerDemo() {
                 Spiller
               </h4>
               <div className="mb-4 grid grid-cols-[48px_1fr] items-center gap-2">
-                <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[var(--brand-primary,#005840)] font-display text-[16px] font-semibold text-white">
+                <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[var(--brand-primary,#141413)] font-display text-[16px] font-semibold text-white">
                   M
                 </div>
                 <div>
@@ -278,9 +278,9 @@ function StepCard({
       <div
         className={`mb-2 inline-flex h-6 w-6 items-center justify-center rounded-full font-mono text-[12px] font-semibold leading-none ${
           isDone
-            ? "bg-[var(--brand-primary,#005840)] text-white"
+            ? "bg-[var(--brand-primary,#141413)] text-white"
             : isCurrent
-              ? "bg-accent text-[var(--brand-accent-on,#005840)]"
+              ? "bg-accent text-[var(--brand-accent-on,#141413)]"
               : "bg-[var(--surface-alt,#F1EEE5)] text-muted-foreground"
         }`}
       >
@@ -290,7 +290,7 @@ function StepCard({
       <div className="mt-1 text-[11px] leading-[1.3] text-muted-foreground">{sub}</div>
       {isDone && (
         <Check
-          className="absolute right-3 top-3 h-4 w-4 text-[var(--brand-primary,#005840)]"
+          className="absolute right-3 top-3 h-4 w-4 text-[var(--brand-primary,#141413)]"
           strokeWidth={2.5}
         />
       )}
@@ -323,7 +323,7 @@ function PhaseCard({
     >
       <div className="flex items-center justify-between font-mono text-[9px] font-semibold uppercase tracking-[0.10em] text-muted-foreground">
         {current ? (
-          <b className="rounded-md bg-accent px-1.5 py-0.5 text-[var(--brand-accent-on,#005840)]">
+          <b className="rounded-md bg-accent px-1.5 py-0.5 text-[var(--brand-accent-on,#141413)]">
             {num}
           </b>
         ) : (

@@ -25,10 +25,10 @@
   --popover-foreground: 150 15.8% 7.5%;
 
   /* Brand */
-  --primary: 163.6 100% 17.3%;     /* #005840 = DS --signal (forest-700) */
-  --primary-foreground: 0 0% 100%; /* #FFFFFF = DS --on-signal (var lime — DS sier hvit på signal i lys) */
-  --accent: 72.9 92.8% 61.8%;      /* #D1F843 = DS --signal-fill (lime-500) */
-  --accent-foreground: 90 5% 7.8%; /* #141513 = DS --on-signal-fill (graphite-0, var forest) */
+  --primary: 60 2.6% 7.6%;         /* #141413 = Paper --p-cta (blekk) */
+  --primary-foreground: 48 33% 97%; /* #FAF9F5 = Paper --p-on-cta (papir) */
+  --accent: 48 25% 92%;            /* #F0EEE6 = Paper --p-soft (dempet hover-flate) */
+  --accent-foreground: 60 2.6% 7.6%; /* #141413 = Paper --p-fg */
 
   /* Neutrals */
   --secondary: 60 6.7% 94.1%;      /* #F1F1EF = DS --surface-2 (sand-100) */
@@ -63,10 +63,10 @@ html[data-v2-tema="dark"] {
   --popover: 120 1.5% 12.7%;
   --popover-foreground: 0 0% 94.1%;
 
-  --primary: 72.9 92.8% 61.8%;     /* #D1F843 = DS --signal (mørk = lime) */
-  --primary-foreground: 90 5% 7.8%; /* #141513 = DS --on-signal (graphite-0) */
-  --accent: 72.9 92.8% 61.8%;
-  --accent-foreground: 90 5% 7.8%;
+  --primary: 48 33% 97%;           /* #FAF9F5 = Paper --p-cta (mørk = papir) */
+  --primary-foreground: 60 2.6% 7.6%; /* #141413 = Paper --p-on-cta */
+  --accent: 43 10% 13.5%;          /* #26241F = Paper --p-soft (mørk) */
+  --accent-foreground: 48 33% 97%; /* #FAF9F5 = Paper --p-fg (mørk) */
 
   --secondary: 70 7.9% 14.9%;      /* #282923 = DS --surface-2 (graphite-100) */
   --secondary-foreground: 0 0% 94.1%;
@@ -95,7 +95,7 @@ html[data-v2-tema="dark"] {
   --muted-2:     #7E807A;
   --forest:      #00684A;
   --forest-deep: #004D37;
-  --lime:        #D1F843;
+  --lime:        #9DB284;   /* var Presis-lime — Paper --p-up (mørk) */
 }
 
 /* ---------- DS-tokens (v14) løftet til globalt nivå — Fase 1 token-konvergens ----------
@@ -111,9 +111,9 @@ html[data-v2-tema="dark"] {
  */
 :root {
   /* Råskalaer (tema-uavhengige) */
-  --lime-500: #D1F843;
+  --lime-500: #63784A;      /* var Presis-lime — Paper --p-up (mater --compliance-on) */
   --lime-600: #BCE234;
-  --forest-700: #005840;
+  --forest-700: #141413;    /* var Presis-grønn — Paper --p-cta (blekk) */
   --forest-800: #073A2A;
   --graphite-0: #141513;
   --graphite-50: #202120;
@@ -199,18 +199,18 @@ html[data-v2-tema="dark"] {
   --compliance-none: var(--sand-500);
 
   /* Pyramide-akser — LYS */
-  --axis-fys: #005840;
-  --axis-fys-text: #005840;
-  --axis-fys-soft: rgba(0, 88, 64, 0.13);
+  --axis-fys: #788C5D;              /* Paper --p-accent-olive */
+  --axis-fys-text: #63784A;         /* Paper --p-up */
+  --axis-fys-soft: rgba(120, 140, 93, 0.13);
   --axis-tek: #B8852A;
   --axis-tek-text: #8A6316;
   --axis-tek-soft: rgba(184, 133, 42, 0.13);
   --axis-slag: #2563EB;
   --axis-slag-text: #1D4FD0;
   --axis-slag-soft: rgba(37, 99, 235, 0.13);
-  --axis-spill: #D1F843;
-  --axis-spill-text: #55680A;
-  --axis-spill-soft: rgba(209, 248, 67, 0.22);
+  --axis-spill: #C46686;            /* Paper --p-accent-fig */
+  --axis-spill-text: #9E4A67;
+  --axis-spill-soft: rgba(196, 102, 134, 0.16);
   --axis-turn: #A32D2D;
   --axis-turn-text: #A32D2D;
   --axis-turn-soft: rgba(163, 45, 45, 0.13);
@@ -265,9 +265,9 @@ html[data-v2-tema="dark"] {
   --axis-slag: #84A9FF;
   --axis-slag-text: #9EBCFF;
   --axis-slag-soft: rgba(132, 169, 255, 0.15);
-  --axis-spill: #D1F843;
-  --axis-spill-text: #F0E6A8;
-  --axis-spill-soft: rgba(209, 248, 67, 0.16);
+  --axis-spill: #D98AA3;            /* Paper fig, løftet for mørk */
+  --axis-spill-text: #E5A9BC;
+  --axis-spill-soft: rgba(217, 138, 163, 0.16);
   --axis-turn: #F2908C;
   --axis-turn-text: #F5A8A4;
   --axis-turn-soft: rgba(242, 144, 140, 0.16);
@@ -377,10 +377,10 @@ html[data-v2-tema="dark"] {
    * mal-identitet. Matchet til AK-paletten (forest, lime, ochre, cream).
    * Brukes via bg-[image:var(--gradient-avatar-N)] eller inline style.
    */
-  --gradient-avatar-1: linear-gradient(135deg, #005840 0%, #1A7D56 100%);
+  --gradient-avatar-1: linear-gradient(135deg, #63784A 0%, #788C5D 100%);
   --gradient-avatar-2: linear-gradient(135deg, #1A7D56 0%, #4A9670 100%);
   --gradient-avatar-3: linear-gradient(135deg, #B8852A 0%, #D4A04A 100%);
-  --gradient-avatar-4: linear-gradient(135deg, #006B4F 0%, #D1F843 100%);
+  --gradient-avatar-4: linear-gradient(135deg, #46719F 0%, #6A9BCC 100%);
   --gradient-avatar-5: linear-gradient(135deg, #29261B 0%, #5E5C57 100%);
   --gradient-avatar-6: linear-gradient(135deg, #A6651E 0%, #7A4910 100%);
   --gradient-avatar-7: linear-gradient(135deg, #2C7D76 0%, #3FA39A 100%);
@@ -390,14 +390,14 @@ html[data-v2-tema="dark"] {
    * Direkte fra wireframe/design-package — referert i HTML-designene.
    * Disse er TILLEGG til de semantiske tokens; bruk dem på cockpit-layouts.
    */
-  --color-brand-primary: #005840;
-  --color-brand-primary-hover: #00472f;
-  --color-brand-primary-soft: #E8F0EC;
-  --color-brand-primary-deep: #003B2A;
-  --color-brand-accent: #D1F843;
-  --color-brand-accent-hover: #C2EE2F;
-  --color-brand-accent-on: #0A1F18;
-  --color-accent-bg: rgba(209, 248, 67, 0.12);
+  --color-brand-primary: #141413;        /* Paper --p-cta */
+  --color-brand-primary-hover: #26241F;
+  --color-brand-primary-soft: #F0EEE6;
+  --color-brand-primary-deep: #0E0D0C;
+  --color-brand-accent: #D97757;         /* Paper --p-accent (clay) */
+  --color-brand-accent-hover: #C6613F;
+  --color-brand-accent-on: #141413;
+  --color-accent-bg: rgba(217, 119, 87, 0.12);
   --color-accent-fill: rgba(209, 248, 67, 0.25);
   --color-accent-soft: #ECFCC0;
   --color-accent-deep: #BFE933;
@@ -450,9 +450,9 @@ html[data-v2-tema="dark"] {
   --border-soft:  #EDEBE4;
   --ink:          #0A1F17;
   --muted-2:      #8A877F;
-  --forest:       #005840;
+  --forest:       #141413;  /* var Presis-grønn — Paper --p-cta */
   --forest-deep:  #00402F;
-  --lime:         #D1F843;
+  --lime:         #63784A;  /* var Presis-lime — Paper --p-up */
   --lime-deep:    #B9E022;
   --lime-dim:     #A9CF2E;
   --ok:           #1A7D56;
@@ -721,7 +721,7 @@ em.editorial {
   --v2-panel2: var(--p-soft);
   --v2-panel3: var(--p-soft-hover);
   --v2-tint: linear-gradient(140deg, rgba(217, 119, 87, 0.10) 0%, rgba(255, 255, 255, 0) 55%);
-  --v2-niva-grad: linear-gradient(90deg, #c9d4cc 0%, #005840 45%, #6e9a4e 75%, #a8ca20 100%);
+  --v2-niva-grad: linear-gradient(90deg, #c9d4cc 0%, #63784a 45%, #788c5d 75%, #9db284 100%);
   --v2-vignett: rgba(217, 119, 87, 0.07);
   --v2-border: var(--p-border);
   --v2-border-s: var(--p-hairline);
@@ -772,7 +772,7 @@ html[data-v2-tema="dark"] {
   --v2-panel2: var(--p-soft);
   --v2-panel3: var(--p-soft-hover);
   --v2-tint: linear-gradient(140deg, rgba(217, 119, 87, 0.20) 0%, rgba(29, 28, 26, 0) 55%);
-  --v2-niva-grad: linear-gradient(90deg, #26332b 0%, #005840 45%, #6e9a4e 75%, #d1f843 100%);
+  --v2-niva-grad: linear-gradient(90deg, #26332b 0%, #63784a 45%, #788c5d 75%, #9db284 100%);
   --v2-vignett: rgba(217, 119, 87, 0.12);
   --v2-border: var(--p-border);
   --v2-border-s: var(--p-hairline);
@@ -794,7 +794,7 @@ html[data-v2-tema="dark"] {
   --v2-ax-fys: #3dbe78;
   --v2-ax-tek: #e8b43c;
   --v2-ax-slag: #5aa9f0;
-  --v2-ax-spill: #d1f843;
+  --v2-ax-spill: #d98aa3;
   --v2-ax-turn: #f0683e;
   /* Paper-port steg 5B: Paper sin mørke --p-shadow er "none" (flate mørke
    * kort løftes ikke med skygge i Paper) — se src/styles/paper-tokens.css. */

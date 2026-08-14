@@ -7,7 +7,7 @@
  * C smalt (2026-07-31): T.handling = «Én ting nå»-monopolet (#D97757).
  * Maks én gang per skjerm. Ikke bytt ut forest/lime for vanlige knapper.
  * TOKEN-SEMANTIKK (Paper bridge, 2026-08-09 — preflight):
- * - T.lime / --v2-lime = var(--p-cta) = INK #141413 på lys (IKKE neon #D1F843).
+ * - T.lime / --v2-lime = var(--p-cta) = INK #141413 på lys (IKKE Presis-lime).
  * - T.handling / --v2-handling = clay #D97757 = «Én ting nå»-monopolet.
  * - Neon AK-lime bare via T.farge.limeMerke (eller eksplisitt brand) — ikke T.lime.
  * - Se docs/port/PAPER-PREFLIGHT-CONFLICTS-2026-08-09.md
@@ -68,17 +68,18 @@ export const T = {
   // Lys mint-bakgrunn for "college"-tier-badge på stats/spillere (fg = forest)
   tierCollegeBg: "#E8F5F0",
   // Bakgrunnsgradienter + tekstfarger for stats-wrapped-slide/-player (delt
-  // Spotify Wrapped-stil delekort). Faste merkevarefarger uavhengig av tema
-  // (kortet er en eksporterbar/delbar grafikk) — innkapslet her så
-  // komponentfilene forblir hex-frie. accentColor/dot-farger gjenbruker
-  // T.forest/T.lime over.
+  // Spotify Wrapped-stil delekort). Faste farger uavhengig av tema — kortet
+  // eksporteres som bilde og kan derfor IKKE lese var(--p-*). Verdiene er
+  // Paper-palettens egne hex (steg 10, 2026-08-14): «forest» → blekk,
+  // «lime» → clay. Navnene er beholdt fordi seks konsumenter bruker dem som
+  // variant-nøkler; de beskriver nå posisjon i kortserien, ikke farge.
   wrapped: {
-    bgForest: "linear-gradient(160deg, #005840 0%, #003D2C 100%)",
-    bgForestDark: "linear-gradient(160deg, #002A1A 0%, #001510 100%)",
-    bgLime: "linear-gradient(160deg, #D1F843 0%, #B8E020 100%)",
-    bgOffwhite: "linear-gradient(160deg, #FAFAF7 0%, #F1EEE5 100%)",
-    textOnDark: "#F7F7F4",
-    textOnLight: "#101613",
+    bgForest: "linear-gradient(160deg, #141413 0%, #26241f 100%)",
+    bgForestDark: "linear-gradient(160deg, #0e0d0c 0%, #000000 100%)",
+    bgLime: "linear-gradient(160deg, #d97757 0%, #c6613f 100%)",
+    bgOffwhite: "linear-gradient(160deg, #faf9f5 0%, #f0eee6 100%)",
+    textOnDark: "#faf9f5",
+    textOnLight: "#141413",
   } as const,
   // Typografi — Paper (Poppins / Lora / IBM Plex Mono via CSS vars)
   disp: "var(--p-disp, var(--font-display), system-ui, sans-serif)",
@@ -147,7 +148,9 @@ export const T = {
     hvitA90: "rgba(255,255,255,0.9)",
     hvitA14: "rgba(255,255,255,0.14)",
     limeMerkeA28: "rgba(209,248,67,0.28)",
-    forestMerke: "#005840",
+    // Steg 10: Presis-navnene beholdt (mange konsumenter), Paper-verdier inn.
+    // forestMerke var Presis-grønn → Paper-primær er blekk (--p-cta).
+    forestMerke: "var(--p-cta)",
     sandLysA88: "rgba(250,250,247,0.88)",
     sandLysA80: "rgba(250,250,247,0.8)",
     hvitA50: "rgba(255,255,255,0.5)",
@@ -158,7 +161,8 @@ export const T = {
     grafittMerkeA72: "rgba(13,14,13,0.72)",
     sandLysA90: "rgba(250,250,247,0.9)",
     hvitA55: "rgba(255,255,255,0.55)",
-    limeMerke: "#D1F843",
+    // limeMerke var Presis-lime og bar «positiv/høydepunkt» → Paper --p-up.
+    limeMerke: "var(--p-up)",
     myntGronnA18: "rgba(73,202,159,0.18)",
     taakeMerkeA85: "rgba(238,240,236,0.85)",
     myntLysA10: "rgba(79,208,138,0.1)",

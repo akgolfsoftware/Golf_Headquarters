@@ -122,7 +122,7 @@ function ModalShell({
                       state === "done"
                         ? "bg-primary text-primary-foreground"
                         : state === "active"
-                          ? "bg-accent text-[var(--brand-accent-on,#005840)] ring-2 ring-primary/30"
+                          ? "bg-accent text-[var(--brand-accent-on,#141413)] ring-2 ring-primary/30"
                           : "bg-card text-muted-foreground ring-1 ring-border"
                     }`}
                   >
@@ -232,7 +232,7 @@ function Steg1() {
               <span>GFGK</span>
             </div>
           </div>
-          <span className="inline-flex items-center rounded-full bg-accent px-2.5 py-1 font-mono text-[10px] font-bold uppercase tracking-wider text-[var(--brand-accent-on,#005840)]">
+          <span className="inline-flex items-center rounded-full bg-accent px-2.5 py-1 font-mono text-[10px] font-bold uppercase tracking-wider text-[var(--brand-accent-on,#141413)]">
             PRO
           </span>
           <button className="rounded-md px-2.5 py-1.5 text-[12px] font-medium text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground">
@@ -434,7 +434,7 @@ function ChoiceCard({
         <span
           className={`absolute right-3.5 top-3.5 rounded-full px-2 py-0.5 font-mono text-[10px] font-bold uppercase tracking-wider ${
             badgeAccent
-              ? "bg-accent text-[var(--brand-accent-on,#005840)]"
+              ? "bg-accent text-[var(--brand-accent-on,#141413)]"
               : "bg-[var(--surface-alt,#F1EEE5)] text-muted-foreground"
           }`}
         >
@@ -444,7 +444,7 @@ function ChoiceCard({
       <div
         className={`mb-4 flex h-11 w-11 items-center justify-center rounded-xl ${
           highlighted
-            ? "bg-accent text-[var(--brand-accent-on,#005840)]"
+            ? "bg-accent text-[var(--brand-accent-on,#141413)]"
             : muted
               ? "bg-[var(--surface-alt,#F1EEE5)] text-muted-foreground"
               : "bg-[var(--brand-primary-soft,rgba(0,88,64,0.08))] text-primary"
@@ -464,7 +464,7 @@ function ChoiceCard({
       <div
         className={`mt-2.5 inline-flex items-center gap-1.5 font-display text-[12px] font-semibold ${
           highlighted
-            ? "text-[var(--brand-accent-on,#005840)]"
+            ? "text-[var(--brand-accent-on,#141413)]"
             : muted
               ? "text-muted-foreground"
               : "text-primary"
@@ -595,7 +595,7 @@ function ExerciseRow({
   const catStyles: Record<CatKind, string> = {
     fys: "bg-[rgba(22,163,74,0.12)] text-success",
     tek: "bg-[var(--brand-primary-soft,rgba(0,88,64,0.08))] text-primary",
-    slag: "bg-[color-mix(in srgb, var(--v2-lime) 20%, transparent)] text-[var(--brand-accent-on,#005840)] border border-[rgba(184,200,46,0.4)]",
+    slag: "bg-[color-mix(in srgb, var(--v2-lime) 20%, transparent)] text-[var(--brand-accent-on,#141413)] border border-[rgba(184,200,46,0.4)]",
     spill: "bg-[rgba(244,196,48,0.14)] text-warning",
     turn: "bg-[var(--surface-alt,#F1EEE5)] text-muted-foreground",
   };
@@ -747,7 +747,7 @@ function PyrDonut() {
     <div className="relative h-[140px] w-[140px]">
       <svg viewBox="0 0 42 42" className="h-full w-full" style={{ transform: "rotate(-90deg)" }}>
         <circle cx="21" cy="21" r="15.9" fill="none" stroke="var(--color-border,#E5E3DD)" strokeWidth="6" />
-        <circle cx="21" cy="21" r="15.9" fill="none" stroke="#005840" strokeWidth="6" strokeDasharray="40 60" />
+        <circle cx="21" cy="21" r="15.9" fill="none" stroke="#141413" strokeWidth="6" strokeDasharray="40 60" />
         <circle cx="21" cy="21" r="15.9" fill="none" stroke={T.farge.limeMerke} strokeWidth="6" strokeDasharray="25 75" strokeDashoffset="-40" />
         <circle cx="21" cy="21" r="15.9" fill="none" stroke="#16A34A" strokeWidth="6" strokeDasharray="15 85" strokeDashoffset="-65" />
         <circle cx="21" cy="21" r="15.9" fill="none" stroke="#F4C430" strokeWidth="6" strokeDasharray="15 85" strokeDashoffset="-80" />

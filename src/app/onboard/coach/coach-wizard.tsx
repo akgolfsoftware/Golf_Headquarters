@@ -180,9 +180,9 @@ export function CoachWizard({
             <svg viewBox="0 0 520 180">
               <rect x="160" y="40" width="200" height="100" rx="12" fill="#FAFAF7" />
               <circle cx="200" cy="78" r="22" fill={T.farge.limeMerke} />
-              <rect x="234" y="62" width="100" height="8" rx="3" fill="#005840" opacity="0.30" />
-              <rect x="234" y="78" width="80" height="6" rx="2" fill="#005840" opacity="0.20" />
-              <rect x="234" y="92" width="60" height="6" rx="2" fill="#005840" opacity="0.20" />
+              <rect x="234" y="62" width="100" height="8" rx="3" fill="var(--p-fg)" opacity="0.30" />
+              <rect x="234" y="78" width="80" height="6" rx="2" fill="var(--p-fg)" opacity="0.20" />
+              <rect x="234" y="92" width="60" height="6" rx="2" fill="var(--p-fg)" opacity="0.20" />
               <rect x="180" y="118" width="160" height="10" rx="5" fill={T.farge.limeMerke} />
               <text
                 x="260"
@@ -295,12 +295,12 @@ export function CoachWizard({
             }}
           >
             <svg viewBox="0 0 520 180">
-              <rect x="120" y="30" width="280" height="120" rx="12" fill="#fff" stroke="#005840" strokeWidth="1.5" />
-              <rect x="140" y="50" width="80" height="8" rx="3" fill="#005840" opacity="0.30" />
-              <rect x="140" y="68" width="240" height="6" rx="2" fill="#005840" opacity="0.15" />
-              <rect x="140" y="92" width="60" height="8" rx="3" fill="#005840" opacity="0.30" />
-              <rect x="140" y="110" width="180" height="6" rx="2" fill="#005840" opacity="0.15" />
-              <rect x="140" y="130" width="120" height="6" rx="2" fill="#005840" opacity="0.15" />
+              <rect x="120" y="30" width="280" height="120" rx="12" fill="var(--p-surface)" stroke="var(--p-fg)" strokeWidth="1.5" />
+              <rect x="140" y="50" width="80" height="8" rx="3" fill="var(--p-fg)" opacity="0.30" />
+              <rect x="140" y="68" width="240" height="6" rx="2" fill="var(--p-fg)" opacity="0.15" />
+              <rect x="140" y="92" width="60" height="8" rx="3" fill="var(--p-fg)" opacity="0.30" />
+              <rect x="140" y="110" width="180" height="6" rx="2" fill="var(--p-fg)" opacity="0.15" />
+              <rect x="140" y="130" width="120" height="6" rx="2" fill="var(--p-fg)" opacity="0.15" />
             </svg>
           </div>
           <h2 className="ob-step-title">
@@ -465,8 +465,8 @@ export function CoachWizard({
           >
             <svg viewBox="0 0 520 180">
               <rect x="160" y="30" width="200" height="120" rx="12" fill="#FAFAF7" />
-              <rect x="160" y="30" width="200" height="22" rx="12 12 0 0" fill="#005840" />
-              <rect x="160" y="44" width="200" height="8" fill="#005840" />
+              <rect x="160" y="30" width="200" height="22" rx="12 12 0 0" fill="var(--p-fg)" />
+              <rect x="160" y="44" width="200" height="8" fill="var(--p-fg)" />
               <g fill="#E5E3DD">
                 {[0, 1, 2, 3, 4, 5, 6].map((d) => (
                   <rect key={d} x={172 + d * 26} y={60} width={20} height={16} rx={2} />
@@ -487,7 +487,7 @@ export function CoachWizard({
                 style={{ fontFamily: "var(--p-mono)" }}
                 fontSize="8"
                 fontWeight="800"
-                fill="#005840"
+                fill="var(--p-fg)"
                 letterSpacing="0.10em"
               >
                 GOOGLE CALENDAR · LIVE-SYNC

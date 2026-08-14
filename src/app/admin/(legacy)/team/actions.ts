@@ -89,7 +89,7 @@ export async function inviterCoach(
   <h1 style="font-size: 24px; font-weight: 600;">Hei ${ny.name} —</h1>
   <p>${aktor.name} har invitert deg som coach i AK Golf HQ.</p>
   <p>Logg inn med denne e-postadressen (${ny.email}) for å komme i gang:</p>
-  <p><a href="https://akgolf.no/auth/login" style="display:inline-block;padding:12px 24px;background:#005840;color:#D1F843;text-decoration:none;border-radius:6px;font-weight:600;">Logg inn</a></p>
+  <p><a href="https://akgolf.no/auth/login" style="display:inline-block;padding:12px 24px;background:#141413;color:#FAF9F5;text-decoration:none;border-radius:6px;font-weight:600;">Logg inn</a></p>
 </body></html>`,
       });
       epostSendt = true;

@@ -69,7 +69,7 @@
   font-family: var(--p-disp);
   font-style: italic;
   font-weight: 400;
-  color: var(--v2-lime, #005840);
+  color: var(--v2-lime, #141413);
 }
 
 .ob-ingress {
@@ -87,7 +87,7 @@
 }
 
 .ob-inspo {
-  background: #D1F843;
+  background: var(--p-accent-soft);
   border-radius: 14px;
   padding: 20px 22px;
 }
@@ -110,7 +110,7 @@
   font-family: var(--p-mono);
   font-size: 10px;
   font-style: normal;
-  color: #005840;
+  color: var(--p-fg);
   letter-spacing: 0.10em;
   font-weight: 700;
   text-transform: uppercase;
@@ -167,8 +167,8 @@
 }
 
 .ob-input:focus {
-  border-color: #005840;
-  box-shadow: 0 0 0 3px rgba(0, 88, 64, 0.10);
+  border-color: var(--p-focus);
+  box-shadow: 0 0 0 3px var(--p-accent-soft);
 }
 
 .ob-input-help {
@@ -202,9 +202,9 @@
 
 .ob-radio-card:has(input:checked),
 .ob-radio-card.checked {
-  border-color: #D1F843;
+  border-color: var(--p-cta);
   border-width: 2px;
-  background: rgba(209, 248, 67, 0.10);
+  background: var(--p-soft);
 }
 
 .ob-radio-grid {
@@ -240,7 +240,7 @@
 }
 
 .ob-coach-card.selected {
-  border-color: #D1F843;
+  border-color: var(--p-cta);
   border-width: 2px;
 }
 
@@ -249,7 +249,7 @@
   height: 60px;
   border-radius: 50%;
   background: linear-gradient(140deg, #F1EEE5, #E5E3DD);
-  color: #005840;
+  color: var(--p-fg);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -278,7 +278,7 @@
 }
 
 .ob-plan-card.selected {
-  border-color: #D1F843;
+  border-color: var(--p-cta);
   border-width: 2px;
 }
 
@@ -338,9 +338,9 @@
 }
 
 .ob-agree-item.checked {
-  border-color: #D1F843;
+  border-color: var(--p-cta);
   border-width: 2px;
-  background: rgba(209, 248, 67, 0.12);
+  background: var(--p-soft);
 }
 
 .ob-agree-checkbox {
@@ -357,8 +357,8 @@
 }
 
 .ob-agree-item.checked .ob-agree-checkbox {
-  background: var(--v2-lime, #005840);
-  border-color: var(--v2-lime, #005840);
+  background: var(--v2-lime, #141413);
+  border-color: var(--v2-lime, #141413);
 }
 
 .ob-security-strip {
@@ -407,7 +407,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #005840;
+  color: var(--p-fg);
 }
 
 .ob-success-wrap {
@@ -423,7 +423,7 @@
   width: 88px;
   height: 88px;
   border-radius: 50%;
-  background: var(--v2-lime, #005840);
+  background: var(--v2-lime, #141413);
   color: var(--v2-on-lime, #ffffff);
   display: flex;
   align-items: center;
@@ -449,7 +449,7 @@
   padding: 12px 24px;
   border-radius: 999px;
   /* Lys tema: --v2-lime = forest, --v2-on-lime = hvit */
-  background: var(--v2-lime, #005840);
+  background: var(--v2-lime, #141413);
   color: var(--v2-on-lime, #ffffff);
   font-size: 14px;
   font-weight: 700;
@@ -490,7 +490,7 @@
 }
 
 .ob-btn-outline:hover {
-  border-color: var(--v2-lime, #005840);
+  border-color: var(--v2-lime, #141413);
 }
 
 .ob-btn-outline:disabled {
@@ -519,9 +519,9 @@
 }
 
 .ob-pill-toggle.selected {
-  background: var(--v2-lime, #005840);
+  background: var(--v2-lime, #141413);
   color: var(--v2-on-lime, #ffffff);
-  border-color: var(--v2-lime, #005840);
+  border-color: var(--v2-lime, #141413);
 }
 
 .ob-pay-summary {
@@ -555,7 +555,7 @@
 }
 
 .ob-paymethod.selected {
-  border-color: #D1F843;
+  border-color: var(--p-cta);
   border-width: 2px;
 }
 
