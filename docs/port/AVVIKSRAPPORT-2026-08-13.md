@@ -183,6 +183,9 @@ checklisten (se §3) i neste dok-PR.
 7. **Templates-fasitene (8 × `.dc.html`)** — de er Open Design-komponentkontrakter, ikke
    HTML-skjermer, og har null kodemotpart. Beslutning: egen portingskontrakt eller ut av
    checklisten (referer `guidelines/kompilerte-filtyper.md`).
+   **AVGJORT av Anders 14.08.2026: ut av checklisten.** Radene er merket `[-] gjelder ikke`
+   i `PAPER-ZIP-CHECKLIST.md` med begrunnelse (`templates/_UTGÅTT.md` + at alt innholdet
+   allerede er bygget fra `fase1/`-fasitene).
 
 ## 6. Forslag til CI-vakter (hindre gjentakelse)
 

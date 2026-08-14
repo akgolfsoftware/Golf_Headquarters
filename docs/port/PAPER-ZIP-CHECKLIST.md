@@ -111,16 +111,22 @@
 - [x] `fase2/gfgk/gfgk-kalender.html` — NT-419b signert av Anders 13.08.2026 (galleri mot prod)
 - [~] `fase2/gfgk/gfgk-veileder-artikkel.html` — pixel-pass natt 12.08, merget i #419
 
-## Templates (struktur)
+## Templates (struktur) — GJELDER IKKE (Anders' beslutning 14.08.2026)
 
-- [ ] `templates/agencyos-alt/AgencyosAlt.dc.html`
-- [ ] `templates/agencyos-dashboard/AgencyosDashboard.dc.html`
-- [ ] `templates/agencyos-hjem/AgencyosHjem.dc.html`
-- [ ] `templates/agencyos-kalender/AgencyosKalender.dc.html`
-- [ ] `templates/agencyos-ko/AgencyosKo.dc.html`
-- [ ] `templates/agencyos-stall/AgencyosStall.dc.html`
-- [ ] `templates/agencyos-workbench/AgencyosWorkbench.dc.html`
-- [ ] `templates/playerhq-idag/PlayerhqIdag.dc.html`
+De åtte `.dc.html`-filene er Open Design-komponentkontrakter (maler for designverktøyets
+egen plukker), ikke skjermfasiter, og skal IKKE portes til kode. Fasiten selv stempler
+mappen som historikk (`designsystem/paper/templates/_UTGÅTT.md`, 01.08.2026): alt innholdet
+er erstattet av `fase1/`-skjermene, som allerede er bygget. Filtypeforklaring:
+`designsystem/paper/guidelines/kompilerte-filtyper.md`. Radene beholdes som historikk:
+
+- [-] `templates/agencyos-alt/AgencyosAlt.dc.html` — gjelder ikke
+- [-] `templates/agencyos-dashboard/AgencyosDashboard.dc.html` — gjelder ikke
+- [-] `templates/agencyos-hjem/AgencyosHjem.dc.html` — gjelder ikke
+- [-] `templates/agencyos-kalender/AgencyosKalender.dc.html` — gjelder ikke
+- [-] `templates/agencyos-ko/AgencyosKo.dc.html` — gjelder ikke
+- [-] `templates/agencyos-stall/AgencyosStall.dc.html` — gjelder ikke
+- [-] `templates/agencyos-workbench/AgencyosWorkbench.dc.html` — gjelder ikke
+- [-] `templates/playerhq-idag/PlayerhqIdag.dc.html` — gjelder ikke
 
 ---
 
