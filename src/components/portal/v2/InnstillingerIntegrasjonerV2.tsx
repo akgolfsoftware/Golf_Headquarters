@@ -6,6 +6,7 @@
 
 import Link from "next/link";
 import { T, Caps, Kort, StatusPill, TomTilstand, Icon } from "@/components/v2";
+import { InnstillingerHode } from "@/components/portal/v2/InnstillingerHode";
 
 /* ── Datakontrakt (kun ekte data fra page.tsx) ─────────────────────── */
 
@@ -292,10 +293,7 @@ export function InnstillingerIntegrasjonerV2({ data }: { data: InnstillingerInte
 
   return (
     <div data-paper-wave-g="innstillingerintegrasjoner" data-paper-portal-innstillinger-integrasjoner data-paper-slug="playerhq-innstillinger" style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
-      <div data-paper-pattern-topp>
-        <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>Integrasjoner</h1>
-        <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>Innstillinger</span>
-      </div>
+      <InnstillingerHode tittel="Integrasjoner" undertekst="Innstillinger" tilbakeHref="/portal/meg/innstillinger" />
       <p style={{ fontFamily: T.ui, fontSize: 12.5, color: T.mut, lineHeight: 1.6, margin: "-8px 0 0" }}>
         Samle handicap, runder, shot-data, søvn og puls ett sted — uten manuell jobb.
       </p>

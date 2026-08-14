@@ -9,7 +9,6 @@
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
-import { TilbakeLenke } from "@/components/v2";
 import { InnstillingerOkterV2 } from "@/components/portal/v2/InnstillingerOkterV2";
 
 export const dynamic = "force-dynamic";
@@ -19,7 +18,6 @@ export default async function OkterPage() {
 
   return (
     <V2Shell aktiv="meg" bredde="kolonne" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
-      <TilbakeLenke href="/portal/meg/innstillinger">Innstillinger</TilbakeLenke>
       <InnstillingerOkterV2 />
     </V2Shell>
   );

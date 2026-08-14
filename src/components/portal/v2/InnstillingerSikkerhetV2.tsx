@@ -7,6 +7,7 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { ReauthModal } from "@/components/auth/reauth-modal";
+import { InnstillingerHode } from "@/components/portal/v2/InnstillingerHode";
 import { createClient } from "@/lib/supabase/client";
 import {
   T,
@@ -168,10 +169,7 @@ export function InnstillingerSikkerhetV2({ data }: { data: InnstillingerSikkerhe
 
   return (
     <div data-paper-wave-g="innstillingersikkerhet" data-paper-portal-innstillinger-sikkerhet data-paper-slug="playerhq-innstillinger" style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
-      <div data-paper-pattern-topp>
-        <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>Sikkerhet</h1>
-        <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>Innstillinger</span>
-      </div>
+      <InnstillingerHode tittel="Sikkerhet" undertekst="Innstillinger" tilbakeHref="/portal/meg/innstillinger" />
 
       {/* B: score/status først */}
       <Kort tint>

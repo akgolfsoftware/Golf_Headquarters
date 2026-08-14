@@ -13,7 +13,6 @@
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
-import { TilbakeLenke } from "@/components/v2";
 import {
   InnstillingerIntegrasjonerV2,
   type InnstillingerIntegrasjonerData,
@@ -72,7 +71,6 @@ export default async function IntegrasjonerPage() {
 
   return (
     <V2Shell aktiv="meg" bredde="kolonne" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
-      <TilbakeLenke href="/portal/meg/innstillinger">Innstillinger</TilbakeLenke>
       <InnstillingerIntegrasjonerV2 data={data} />
     </V2Shell>
   );

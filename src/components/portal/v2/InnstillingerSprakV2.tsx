@@ -8,6 +8,7 @@ import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { oppdaterPreferences } from "@/app/portal/meg/actions";
 import { T, Kort, StatusPill, ValgKort } from "@/components/v2";
+import { InnstillingerHode } from "@/components/portal/v2/InnstillingerHode";
 
 /* ── Datakontrakt ──────────────────────────────────────────────────── */
 
@@ -38,13 +39,12 @@ export function InnstillingerSprakV2({ data }: { data: InnstillingerSprakData })
 
   return (
     <div data-paper-wave-g="innstillingersprak" data-paper-portal-innstillinger-sprak data-paper-slug="playerhq-innstillinger" style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
-        <div data-paper-pattern-topp>
-        <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>Språk</h1>
-        <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>Innstillinger</span>
-      </div>
-        {lagret && <StatusPill tone="lime">Lagret</StatusPill>}
-      </div>
+      <InnstillingerHode
+        tittel="Språk"
+        undertekst="Innstillinger"
+        tilbakeHref="/portal/meg/innstillinger"
+        action={lagret ? <StatusPill tone="lime">Lagret</StatusPill> : undefined}
+      />
 
       <Kort pad="12px">
         <span style={{ fontFamily: T.mono, fontSize: 9, fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase", color: T.mut, display: "block" }}>Nå</span>
