@@ -382,6 +382,45 @@ button{ font:inherit; color:inherit; }
 .mnow span{ position:absolute; right:0; top:-14px; font-family:var(--mono);
   font-size:9px; background:var(--bg); padding:0 3px; }
 
+/* ── F1: forslag, agenda, hjelp, flytting ────────────────── */
+.mokt.har-forslag{ border-style:dashed; border-color:var(--accent); }
+.fslag{ display:block; font-family:var(--mono); font-size:9px; letter-spacing:.05em;
+  text-transform:uppercase; color:var(--accent-fg); flex:none; }
+.mokt.flyttes{ opacity:.75; box-shadow:0 6px 18px rgba(20,20,19,.16); z-index:3; }
+.agendaL{ padding:var(--s2) 0 var(--s5); }
+.agendaL .ad{ font-family:var(--mono); font-size:10px; letter-spacing:.09em;
+  text-transform:uppercase; color:var(--muted); margin:var(--s4) 0 var(--s2); }
+.agendaL .ar{ display:flex; align-items:center; gap:var(--s2); width:100%; text-align:left;
+  min-height:var(--tap-lg); padding:var(--s2) var(--s3); margin-bottom:var(--s1);
+  background:var(--surface); border:1px solid var(--border); border-left:3px solid var(--mid);
+  border-radius:var(--r-sm); cursor:pointer; }
+.agendaL .ar.done{ opacity:.6; }
+.agendaL .ar .at{ font-family:var(--mono); font-size:11px; flex:none; width:88px; }
+.agendaL .ar .an{ font-size:13px; font-weight:500; min-width:0; overflow:hidden;
+  text-overflow:ellipsis; white-space:nowrap; }
+.agendaL .ar .af{ margin-left:auto; flex:none; font-family:var(--mono); font-size:9.5px; color:var(--muted); }
+.flabrad{ display:flex; align-items:center; gap:var(--s2); }
+.flabrad .flab{ margin-bottom:0; }
+.hjelp{ flex:none; width:24px; height:24px; min-height:24px; padding:0; border-radius:var(--r-pill);
+  border:1px solid var(--border); background:transparent; color:var(--muted);
+  font:600 11px/1 var(--mono); cursor:pointer; }
+.hjelp[aria-expanded="true"]{ color:var(--fg); border-color:var(--mid); }
+.hint.forklaring{ margin:var(--s1) 0 var(--s2); }
+.ghost{ border:1px dashed var(--accent); background:var(--accent-soft);
+  border-radius:var(--r); padding:var(--s3); margin-bottom:var(--s3); }
+.ghost .gh{ font-family:var(--mono); font-size:9px; letter-spacing:.06em;
+  text-transform:uppercase; color:var(--accent-fg); margin-bottom:var(--s1); }
+.ghost h4{ margin:0 0 var(--s1); font-size:13.5px; }
+.ghost p{ margin:0 0 var(--s2); font-size:12.5px; font-family:var(--body); }
+.fdiff{ display:flex; align-items:center; gap:var(--s2); flex-wrap:wrap; margin:0 0 var(--s2); }
+.fdiff .df{ font-family:var(--mono); font-size:9.5px; word-break:break-all; }
+.fdiff .fra{ text-decoration:line-through; color:var(--muted); }
+.fdiff .pil{ color:var(--muted); }
+.gacts{ display:flex; gap:var(--s2); }
+.toast .ang{ margin-left:var(--s3); background:transparent; border:0; color:var(--bg);
+  text-decoration:underline; text-underline-offset:2px; font:inherit; cursor:pointer;
+  min-height:0; padding:0; }
+
 .ax-FYS{ border-left-color:var(--accent-sky); }
 .ax-TEK{ border-left-color:var(--accent-olive); }
 .ax-SLAG{ border-left-color:var(--accent-fig); }
@@ -475,6 +514,22 @@ button{ font:inherit; color:inherit; }
 button,.chip,summary,input,textarea,[role="button"]{ min-height:var(--tap); }
 .dtyp,.num,.eyebrow,.maal .v{ min-height:0; }
 
+/* ══ F4 mobil: composer-utkast og faktisk-mot-planlagt ══
+   Utkast kan aldri forveksles med plan: stiplet, egen etikett, teller ikke.
+   Clay-monopolet står. */
+.mokt.ghost{ border:1px dashed var(--accent); border-left:3px solid var(--accent);
+  background:var(--surface); }
+.ar.ghost{ border-style:dashed; border-left-style:solid; border-left-color:var(--accent); }
+.mokt.hoppet,.ar.hoppet{ opacity:.72; }
+.ghlab,.hoplab,.floggr{ display:block; font-family:var(--mono); font-size:9px;
+  letter-spacing:.05em; text-transform:uppercase; }
+.ghlab{ color:var(--accent-fg); }
+.hoplab{ color:var(--dn); }
+.floggr{ color:var(--up); }
+.cxchips{ display:flex; flex-wrap:wrap; gap:var(--s2); margin:0 0 var(--s4); }
+.pghost ul{ list-style:none; margin:var(--s2) 0; padding:0; }
+.pghost li{ font-family:var(--mono); font-size:10.5px; padding:2px 0; }
+
 </style>
 </head>
 <body>
@@ -491,17 +546,21 @@ button,.chip,summary,input,textarea,[role="button"]{ min-height:var(--tap); }
       <span class="sub">Øyvind Rohjan · uke <span class="num">32</span></span>
     </div>
     <span style="flex:1"></span>
+    <button class="iconbtn" id="cxOpen" aria-label="Composer — skriv planen i naturlig språk" data-od-id="wbm-cx-open">
+      <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+    </button>
     <button class="iconbtn" id="themeBtn" aria-label="Bytt til mørk modus" data-od-id="wbm-theme">
       <svg viewBox="0 0 24 24"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
     </button>
   </header>
 
-  <!-- Zoom: sveipbar pille-rad. Samme nivåer som desktop, egen komponent. -->
+  <!-- Zoom: sveipbar pille-rad. Agenda er mobilens standard (masterplan §05). -->
   <div class="zooms" role="group" aria-label="Zoom-nivå">
-    <button data-zoom="ar" aria-current="false" data-od-id="wbm-zoom-ar">Årsplan</button>
-    <button data-zoom="maned" aria-current="false" data-od-id="wbm-zoom-maned">Måned</button>
+    <button data-zoom="agenda" aria-current="true" data-od-id="wbm-zoom-agenda">Agenda</button>
+    <button data-zoom="dag" aria-current="false" data-od-id="wbm-zoom-dag">Dag</button>
     <button data-zoom="uke" aria-current="false" data-od-id="wbm-zoom-uke">Uke</button>
-    <button data-zoom="dag" aria-current="true" data-od-id="wbm-zoom-dag">Dag</button>
+    <button data-zoom="maned" aria-current="false" data-od-id="wbm-zoom-maned">Måned</button>
+    <button data-zoom="ar" aria-current="false" data-od-id="wbm-zoom-ar">Årsplan</button>
   </div>
 
   <!-- Dagpiller: mobilens egen kalenderkomponent. Ikke sju kolonner. -->
@@ -510,7 +569,7 @@ button,.chip,summary,input,textarea,[role="button"]{ min-height:var(--tap); }
   <main class="dagbody" id="dagbody"></main>
 
   <div class="bunn">
-    <p class="statusnote">Regler og låser er midlertidig ute. Ingenting er validert.</p>
+    <p class="statusnote">Regler og låser er midlertidig ute. Etterlevelse teller publiserte økter med passert slutt.</p>
     <div class="maal" id="maal"></div>
     <button class="btn now full" id="nowBtn" data-od-id="wbm-one-thing-now">Publiser uke 32 til Øyvind</button>
   </div>
@@ -545,6 +604,19 @@ button,.chip,summary,input,textarea,[role="button"]{ min-height:var(--tap); }
       </button>
     </div>
     <div class="sbody" id="slotBody"></div>
+  </section>
+
+  <!-- F4: Composer — naturlig språk → stiplede utkast i uka -->
+  <section class="sheet" id="sheetCx" role="dialog" aria-modal="true" aria-labelledby="cxTitle">
+    <div class="grab"></div>
+    <div class="shead">
+      <h2 id="cxTitle">Composer</h2>
+      <span style="flex:1"></span>
+      <button class="iconbtn" data-sheet-close="1" aria-label="Lukk" data-od-id="wbm-cx-lukk">
+        <svg viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <div class="sbody" id="cxBody"></div>
   </section>
 
   <!-- Testvelger -->
@@ -689,23 +761,323 @@ function klokke(min){
 }
 function yFor(min){ return (min - T_START) / SLOT * SLOT_H; }
 
+/* Demo-nå: torsdag i uke 32, 17:24. Nå-linje og «i dag» tegnes mot denne. */
+var NAA = { dag:3, min:17 * 60 + 24 };
+/* Mobilens visninger: agenda (standard) eller dag. Uke/måned/årsplan hører desktop til. */
+var visning = 'agenda';
+function snap(min){
+  return Math.max(T_START, Math.min(T_SLUTT - SLOT, Math.round(min / SLOT) * SLOT));
+}
+
+/* Angre: snapshot før hver mutasjon. Mobilens ⌘Z er Angre-knappen i toasten. */
+var UNDO = [];
+function pushUndo(){ UNDO.push(JSON.stringify(OKTER)); if (UNDO.length > 40) UNDO.shift(); }
+function angre(){
+  if (!UNDO.length){ toast('Ingenting å angre.'); return; }
+  OKTER = JSON.parse(UNDO.pop());
+  if (valgtId && !OKTER.some(function(o){ return o.id === valgtId; })) valgtId = null;
+  renderAlt(); si('Siste endring er angret.');
+}
+
+/* Forklaringer bak ?-knappene — samme tekster som desktop. */
+var FORKLARING = {
+  formel:     'Formelen er drillens identitet: PYRAMIDE_OMRÅDE_MOTORIKK_BELASTNING_PRESS. Den bygges av valgene under — endrer du et valg, endres formelen med en gang.',
+  pyramide:   'Hvilken etasje i pyramiden drillen trener: Fysisk, Teknikk, Slag, Spill eller Turnering.',
+  omrade:     'Hvor på banen: utslag, innspill (aldri under 50 m — det er nærspill), nærspill, putt (i fot) eller spill.',
+  motorikk:   'Hvor automatisert bevegelsen kjøres: uten ball, lav hastighet eller auto. Reps på to nivåer = to drills.',
+  belastning: 'Miljøet drillen kjøres i: innendørs, treningsområde, bane eller konkurranse.',
+  press:      'Hvor mye det står på spill mens du gjør det: alene, observert, konkurranse eller turnering.'
+};
+function hjelp(tekst, od){
+  var btn = el('button', 'hjelp', '?'); btn.type = 'button';
+  btn.dataset.odId = od;
+  btn.setAttribute('aria-label', 'Forklaring');
+  btn.setAttribute('aria-expanded', 'false');
+  var p = null;
+  btn.addEventListener('click', function(ev){
+    ev.stopPropagation();
+    if (p){ p.remove(); p = null; btn.setAttribute('aria-expanded','false'); return; }
+    p = el('p', 'hint forklaring', tekst);
+    btn.parentNode.parentNode.insertBefore(p, btn.parentNode.nextSibling);
+    btn.setAttribute('aria-expanded','true');
+  });
+  return btn;
+}
+
+/* Agentforslag (PlanAction PENDING) — diff på berørt økt, godkjenn/avvis i øktarket. */
+var FORSLAG = { oktId:'o3', status:'venter', agent:'Plan Watcher',
+  tittel:'Bytt torsdag fra nærspill til innspill',
+  hvorfor:'SG innspill er ditt svakeste område siste 10 runder, og sjekkpunktet 14.08 måler nettopp innspill. Samme varighet — volumet er uendret.',
+  fra:'TEK_CHIP_LAV_HAST_TRENINGSOMRADE_ALENE',
+  til:'TEK_INNSPILL_50_LAV_HAST_TRENINGSOMRADE_ALENE' };
+function brukForslag(){
+  pushUndo();
+  var o = OKTER.filter(function(x){ return x.id === FORSLAG.oktId; })[0];
+  if (o){
+    o.navn = 'Innspill · lengdekontroll';
+    o.maal = 'Ni av tolv innenfor fire meter fra 50–100 m.';
+    o.drills[0].formel = {pyramide:'TEK',omrade:'INNSPILL_50',motorikk:'LAV_HAST',
+                          belastning:'TRENINGSOMRADE',press:'ALENE'};
+    o.drills[0].navn = 'Avstandsstige 50–100 m';
+  }
+  FORSLAG.status = 'brukt';
+  valgtId = FORSLAG.oktId; renderAlt(); apneOkt();
+  si('Forslaget er brukt. Torsdag er endret til innspill.');
+  toastAngre('Forslaget er skrevet inn');
+}
+function avvisForslag(){
+  FORSLAG.status = 'avvist'; renderAlt(); apneOkt();
+  si('Forslaget er avvist. Ingen spor lagret.');
+}
+
+/* ── F4: periodiserings-ghost — søndagsforslaget ────────────────
+   Samme motor som desktop: uke 33 er turneringsuke (NM Junior), utkastet
+   er nedtrappingsmalen med peaking, begrunnet med etterlevelsen. Legges
+   aldri inn selv. Prototypen viser uke 32. */
+var PERIODISERING = { status:'venter', uke:33,
+  tittel:'Uke 33 er turneringsuke — utkastet ligger klart',
+  hvorfor:'NM Junior spilles 14.–16.08 (uke 33). Utkastet bygger på malen ' +
+    '«Turneringsuke · nedtrapping» og peaking-regelen: siste harde økt tirsdag, ' +
+    'deretter fallende volum inn mot torsdag.',
+  okter:[ 'tir 17:00 · Putt · rullelengde · 60 min',
+          'ons 16:00 · Nedtrapping tee · 60 min',
+          'tor 09:00 · Oppvarmingsrutine · 60 min',
+          'fre–søn · NM Junior · Losby' ] };
+function periodiseringKort(){
+  var m = maal();
+  var g = el('div', 'ghost pghost');
+  g.appendChild(el('div', 'gh', 'periodisering · søndagsforslaget'));
+  g.appendChild(el('h4', null, PERIODISERING.tittel));
+  g.appendChild(el('p', null, PERIODISERING.hvorfor + ' Etterlevelsen i uke 32 så langt er ' +
+    m.fullfort + ' av ' + m.passert + ' — volumet er satt deretter.'));
+  var ul = el('ul');
+  PERIODISERING.okter.forEach(function(x){ ul.appendChild(el('li', null, x)); });
+  g.appendChild(ul);
+  var acts = el('div', 'gacts');
+  var ok = el('button', 'btn ink sm', 'Legg utkastet i uke 33');
+  ok.dataset.odId = 'wbm-per-bruk';
+  ok.addEventListener('click', function(){
+    PERIODISERING.status = 'brukt'; renderAlt();
+    si('Utkastet ligger i uke 33 som stiplede blokker og bekreftes der.');
+    toast('Utkast lagt i uke 33 · bekreftes der');
+  });
+  var nei = el('button', 'btn sm', 'Avvis');
+  nei.dataset.odId = 'wbm-per-avvis';
+  nei.addEventListener('click', function(){
+    PERIODISERING.status = 'avvist'; renderAlt();
+    si('Søndagsforslaget er avvist. Neste skrives søndag 18:00.');
+  });
+  acts.appendChild(ok); acts.appendChild(nei);
+  g.appendChild(acts);
+  return g;
+}
+
+/* ── F4: composer → ghost-utkast. Parseren gjetter aldri tema. ── */
+var CX_EKS = [ '3 putteøkter à 45 min før søndag', 'innspill 90 min lørdag',
+               '2 fysøkter à 30 min i helgen' ];
+var CX_TEMA = [
+  { re:/putt/, navn:'Putt · startlinje', akse:'TEK', drill:'Portputt 3–5 ft',
+    formel:{pyramide:'TEK',omrade:'PUTT_3_5',motorikk:'AUTO',belastning:'TRENINGSOMRADE',press:'OBSERVERT'} },
+  { re:/innspill/, navn:'Innspill · lengdekontroll', akse:'TEK', drill:'Avstandsstige 50–100 m',
+    formel:{pyramide:'TEK',omrade:'INNSPILL_50',motorikk:'LAV_HAST',belastning:'TRENINGSOMRADE',press:'ALENE'} },
+  { re:/tee|driver/, navn:'Tee · ballhastighet', akse:'SLAG', drill:'Tee · ballhastighet',
+    formel:{pyramide:'SLAG',omrade:'TEE_TOTAL',motorikk:'AUTO',belastning:'TRENINGSOMRADE',press:'ALENE'} },
+  { re:/nærspill|chip/, navn:'Nærspill · landingspunkt', akse:'TEK', drill:'Landingsflekk · chip',
+    formel:{pyramide:'TEK',omrade:'CHIP',motorikk:'LAV_HAST',belastning:'TRENINGSOMRADE',press:'ALENE'} },
+  { re:/fys|styrke|mobilitet/, navn:'Fysisk økt', akse:'FYS', fysisk:true }
+];
+var CX_DAG = { man:0, tir:1, ons:2, tor:3, fre:4, 'lør':5, lor:5, 'søn':6, son:6 };
+function cxParse(t){
+  var rest = t.toLowerCase();
+  var varM = rest.match(/(\d+)\s*min/);
+  var varighet = varM ? Math.max(15, Math.min(240, +varM[1])) : 45;
+  rest = rest.replace(/(à\s*)?\d+\s*min/, ' ');
+  var antM = rest.match(/\d+/);
+  var antall = antM ? Math.max(1, Math.min(6, +antM[0])) : 1;
+  var tema = null;
+  CX_TEMA.forEach(function(x){ if (!tema && x.re.test(rest)) tema = x; });
+  var dager = [], i;
+  var forM = rest.match(/før\s+(man|tir|ons|tor|fre|lør|lor|søn|son)/);
+  if (forM){ for (i = NAA.dag; i < CX_DAG[forM[1]]; i++) dager.push(i); }
+  else if (/helg/.test(rest)) dager = [5, 6];
+  else {
+    var paM = rest.match(/(man|tir|ons|tor|fre|lør|lor|søn|son)/);
+    if (paM) dager = [CX_DAG[paM[1]]];
+    else for (i = NAA.dag; i <= 6; i++) dager.push(i);
+  }
+  if (!dager.length) dager = [NAA.dag];
+  return { antall:antall, varighet:varighet, tema:tema, dager:dager };
+}
+function cxLedig(dag, varighet){
+  var fra = dag === NAA.dag ? Math.max(15 * 60, snap(NAA.min + SLOT)) : 15 * 60;
+  for (var m = fra; m + varighet <= 21 * 60; m += SLOT){
+    var fri = true;
+    OKTER.forEach(function(o){
+      if (o.dag !== dag) return;
+      var f = minutter(o.start);
+      if (m < f + sumTid(o) && f < m + varighet) fri = false;
+    });
+    (OPPTATT[dag] || []).forEach(function(bz){
+      if (m < minutter(bz.slutt) && minutter(bz.start) < m + varighet) fri = false;
+    });
+    if (fri) return klokke(m);
+  }
+  return null;
+}
+function cxLag(){
+  var inp = document.getElementById('cxInput');
+  var t = inp.value.trim();
+  if (!t){ si('Skriv hva du vil legge inn — for eksempel «3 putteøkter à 45 min før søndag».'); inp.focus(); return; }
+  var p = cxParse(t);
+  if (!p.tema){
+    toast('Fant ikke tema — prøv putt, innspill, tee, nærspill eller fys');
+    si('Composeren forsto ikke temaet. Den gjetter aldri.');
+    return;
+  }
+  pushUndo();
+  var kand = [], r;
+  for (r = 0; r < 3 && kand.length < p.antall * 3; r++)
+    p.dager.forEach(function(dg){ kand.push(dg); });
+  var lagt = [];
+  kand.forEach(function(dg){
+    if (lagt.length >= p.antall) return;
+    var start = cxLedig(dg, p.varighet);
+    if (!start) return;
+    var id = 'gx' + (Date.now() % 100000) + '_' + lagt.length;
+    OKTER.push({ id:id, dag:dg, start:start, navn:p.tema.navn,
+      dato:'2026-08-0' + (3 + dg), sted:'', maal:'', akse:p.tema.akse,
+      done:false, ghost:true,
+      drills: p.tema.fysisk
+        ? [{ type:'fysisk', navn:'Styrke helkropp', sett:3, reps:8, tidMin:p.varighet, logget:null }]
+        : [{ type:'golf', navn:p.tema.drill, formel:JSON.parse(JSON.stringify(p.tema.formel)),
+             reps:0, tidMin:p.varighet, logget:null }] });
+    lagt.push({ id:id, dag:dg });
+  });
+  if (!lagt.length){
+    UNDO.pop();
+    toast('Fant ikke ledig rom i de dagene');
+    si('Ingen ledige rom før fristen — skole, bookinger og økter fyller dagene.');
+    return;
+  }
+  lukk();
+  valgtDag = lagt[0].dag;
+  renderAlt();
+  var msg = lagt.length + (lagt.length === 1 ? ' økt' : ' økter') + ' lagt inn som utkast';
+  si(msg + '. De ligger stiplet i uka og bekreftes i banneret øverst.' +
+    (lagt.length < p.antall ? ' Fant bare ' + lagt.length + ' av ' + p.antall + ' ledige rom.' : ''));
+  toastAngre(msg);
+}
+function cxBanner(n){
+  var g = el('div', 'ghost');
+  g.appendChild(el('div', 'gh', 'utkast fra composer'));
+  g.appendChild(el('h4', null, n + (n === 1 ? ' økt' : ' økter') + ' venter på bekreftelse'));
+  g.appendChild(el('p', null, 'Utkastene teller ikke i målingene og følger ikke med i publisering før du bekrefter.'));
+  var acts = el('div', 'gacts');
+  var ok = el('button', 'btn ink sm', 'Bekreft ' + n);
+  ok.dataset.odId = 'wbm-cx-bekreft';
+  ok.addEventListener('click', cxBekreft);
+  var nei = el('button', 'btn sm', 'Forkast');
+  nei.dataset.odId = 'wbm-cx-forkast';
+  nei.addEventListener('click', cxForkast);
+  acts.appendChild(ok); acts.appendChild(nei);
+  g.appendChild(acts);
+  return g;
+}
+function cxBekreft(){
+  pushUndo();
+  var n = 0;
+  OKTER.forEach(function(o){ if (o.ghost){ delete o.ghost; n++; } });
+  renderAlt();
+  si(n + ' økter er bekreftet og er nå en del av planen.');
+  toastAngre('Bekreftet · ' + n + ' økter i planen');
+}
+function cxForkast(){
+  pushUndo();
+  OKTER = OKTER.filter(function(o){ return !o.ghost; });
+  if (valgtId && !OKTER.some(function(o){ return o.id === valgtId; })) valgtId = null;
+  renderAlt();
+  si('Utkastene er forkastet. Ingenting ble skrevet til planen.');
+  toastAngre('Utkast forkastet');
+}
+function apneCx(){
+  var b = document.getElementById('cxBody');
+  b.innerHTML = '';
+  b.appendChild(el('p', 'hint', 'Skriv planen i naturlig språk. Utkastene legges stiplet inn ' +
+    'i ledige rom utenom skole og bookinger, og bekreftes før de teller.'));
+  var f = el('div', 'field');
+  var lab = el('label', null, 'Plan'); lab.setAttribute('for', 'cxInput');
+  var inp = document.createElement('input');
+  inp.type = 'text'; inp.id = 'cxInput';
+  inp.placeholder = '3 putteøkter à 45 min før søndag';
+  inp.dataset.odId = 'wbm-cx-input';
+  inp.addEventListener('keydown', function(e){ if (e.key === 'Enter'){ e.preventDefault(); cxLag(); } });
+  f.appendChild(lab); f.appendChild(inp);
+  b.appendChild(f);
+  var chips = el('div', 'cxchips');
+  CX_EKS.forEach(function(t, i){
+    var c = el('button', 'chip', t);
+    c.type = 'button';
+    c.dataset.odId = 'wbm-cx-eks-' + i;
+    c.addEventListener('click', function(){ document.getElementById('cxInput').value = t; });
+    chips.appendChild(c);
+  });
+  b.appendChild(chips);
+  var go = el('button', 'btn ink full', 'Lag utkast');
+  go.dataset.odId = 'wbm-cx-lag';
+  go.addEventListener('click', cxLag);
+  b.appendChild(go);
+  apne('sheetCx');
+}
+
+/* Dra for å flytte innen dagen — snap 30 min. Angre-knappen i toasten tar tilbake. */
+function festFlytt(b, o){
+  b.style.touchAction = 'none';
+  b.addEventListener('pointerdown', function(ev){
+    var y0 = ev.clientY, dro = false, fra0 = minutter(o.start);
+    function mv(e2){
+      if (!dro && Math.abs(e2.clientY - y0) < 8) return;
+      if (!dro){ dro = true; b.classList.add('flyttes'); pushUndo(); }
+      e2.preventDefault();
+      var ny = snap(fra0 + (e2.clientY - y0) / SLOT_H * SLOT);
+      b.style.top = yFor(ny) + 'px';
+      b.dataset.ny = ny;
+    }
+    function opp(){
+      document.removeEventListener('pointermove', mv);
+      document.removeEventListener('pointerup', opp);
+      if (!dro) return;
+      b.classList.remove('flyttes'); b.dataset.dro = '1';
+      o.start = klokke(+b.dataset.ny);
+      renderAlt();
+      si(o.navn + ' er flyttet til ' + o.start + '.');
+      toastAngre('Flyttet til ' + o.start);
+    }
+    document.addEventListener('pointermove', mv);
+    document.addEventListener('pointerup', opp);
+  });
+}
+
 var OKTER = [
   { id:'o1', dag:0, start:'16:00', navn:'Styrke · underkropp', dato:'2026-08-03', sted:'Treningsrom',
-    maal:'Holde maks-styrke gjennom spesialiseringsperioden.', akse:'FYS', done:false,
+    maal:'Holde maks-styrke gjennom spesialiseringsperioden.', akse:'FYS', done:true,
     drills:[
-      { type:'fysisk', navn:'Knebøy',       sett:4, reps:5, tidMin:25, logget:null },
-      { type:'fysisk', navn:'Hoftehengsel', sett:3, reps:8, tidMin:20, logget:null }
+      { type:'fysisk', navn:'Knebøy',       sett:4, reps:5, tidMin:25, logget:25 },
+      { type:'fysisk', navn:'Hoftehengsel', sett:3, reps:8, tidMin:20, logget:18 }
     ] },
+  /* F4-demo: hoppet økt — spillerens aktive nei fra PlayerHQ. */
+  { id:'o6', dag:2, start:'06:30', navn:'Mobilitet · morgen', dato:'2026-08-05', sted:'Hjemme',
+    maal:'Ti minutter hofte, ti rygg, ti skulder.', akse:'FYS', done:false, hoppet:true,
+    drills:[ { type:'fysisk', navn:'Mobilitetsserie', sett:3, reps:10, tidMin:30, logget:null } ] },
   { id:'o2', dag:1, start:'15:00', navn:'Innspill · lengdekontroll', dato:'2026-08-04', sted:'Gamle Fredrikstad GK',
-    maal:'Ni av tolv innenfor fire meter fra 50–100 m.', akse:'TEK', done:false,
+    maal:'Ni av tolv innenfor fire meter fra 50–100 m.', akse:'TEK', done:true,
     drills:[
       /* Tre drills i samme økt, tre ULIKE formler. Motorikk og press stiger. */
       { type:'golf', navn:'Halv sving · kalibrering', formel:{pyramide:'TEK',omrade:'INNSPILL_50',motorikk:'UTEN_BALL',belastning:'INNENDORS',press:'ALENE'},
-        reps:15, tidMin:30, logget:null },
+        reps:15, tidMin:30, logget:30 },
       { type:'golf', navn:'Avstandsstige 50–100 m', formel:{pyramide:'TEK',omrade:'INNSPILL_50',motorikk:'LAV_HAST',belastning:'TRENINGSOMRADE',press:'ALENE'},
-        reps:30, tidMin:35, logget:null },
+        reps:30, tidMin:35, logget:20 },
       { type:'golf', navn:'Én ball · én sjanse', formel:{pyramide:'SLAG',omrade:'INNSPILL_100',motorikk:'AUTO',belastning:'BANE',press:'KONKURRANSE'},
-        reps:12, tidMin:25, logget:null }
+        reps:12, tidMin:25, logget:20 }
     ] },
   { id:'o3', dag:3, start:'16:00', navn:'Nærspill · landingspunkt', dato:'2026-08-06', sted:'Gamle Fredrikstad GK · nærspillsområde',
     maal:'Treffe landingspunktet på åtte av ti chip.', akse:'TEK', done:false,
@@ -762,12 +1134,22 @@ var LIB = {
 /* Regler og låser er ute (se desktop-fila). Kun målinger. */
 function erTurnering(d){ return erGolf(d) && d.formel.pyramide === 'TURN'; }
 function maal(){
-  var treningMin = 0, turneringMin = 0, drills = 0;
-  OKTER.forEach(function(o){ o.drills.forEach(function(d){
-    drills++;
-    if (erTurnering(d)) turneringMin += d.tidMin; else treningMin += d.tidMin;
-  }); });
-  return { treningMin:treningMin, turneringMin:turneringMin, drills:drills, okter:OKTER.length };
+  var treningMin = 0, turneringMin = 0, drills = 0, okter = 0, passert = 0, fullfort = 0;
+  OKTER.forEach(function(o){
+    if (o.ghost) return;                 /* utkast teller ikke som plan */
+    okter++;
+    o.drills.forEach(function(d){
+      drills++;
+      if (erTurnering(d)) turneringMin += d.tidMin; else treningMin += d.tidMin;
+    });
+    var slutt = minutter(o.start) + sumTid(o);
+    if (o.dag < NAA.dag || (o.dag === NAA.dag && slutt <= NAA.min)){
+      passert++;
+      if (o.done) fullfort++;
+    }
+  });
+  return { treningMin:treningMin, turneringMin:turneringMin, drills:drills,
+           okter:okter, passert:passert, fullfort:fullfort };
 }
 
 /* ── Mobil-spesifikk visning. Datamodell og taksonomi er DELT med desktop
@@ -781,6 +1163,16 @@ var toastEl = document.getElementById('toast'), toastT;
 function toast(t){
   toastEl.textContent = t; toastEl.hidden = false;
   clearTimeout(toastT); toastT = setTimeout(function(){ toastEl.hidden = true; }, 2600);
+}
+/* Toast med Angre-knapp — mobilens ⌘Z. */
+function toastAngre(t){
+  toastEl.textContent = ''; toastEl.hidden = false;
+  toastEl.appendChild(document.createTextNode(t));
+  var a = el('button', 'ang', 'Angre');
+  a.dataset.odId = 'wbm-toast-angre';
+  a.addEventListener('click', function(){ angre(); toastEl.hidden = true; });
+  toastEl.appendChild(a);
+  clearTimeout(toastT); toastT = setTimeout(function(){ toastEl.hidden = true; }, 5000);
 }
 function el(tag, cls, txt){
   var e = document.createElement(tag);
@@ -838,7 +1230,7 @@ function renderDaystrip(){
   var s = document.getElementById('daystrip');
   s.innerHTML = '';
   DAGER.forEach(function(d, i){
-    var b = el('button', 'dpill' + (i === 0 ? ' idag' : ''));
+    var b = el('button', 'dpill' + (i === NAA.dag ? ' idag' : ''));
     b.setAttribute('role', 'tab');
     b.setAttribute('aria-current', i === valgtDag ? 'true' : 'false');
     b.dataset.odId = 'wbm-dag-' + i;
@@ -860,12 +1252,14 @@ function renderDag(){
   body.innerHTML = '';
 
   var dagens = OKTER.filter(function(o){ return o.dag === valgtDag; });
-  var mins = dagens.reduce(function(s, o){ return s + sumTid(o); }, 0);
+  var mins = dagens.reduce(function(s, o){ return s + (o.ghost ? 0 : sumTid(o)); }, 0);
 
   var meta = el('div', 'dagmeta');
   meta.appendChild(el('span', 'd', DAGER[valgtDag].dw + ' ' + DAGER[valgtDag].dd));
   meta.appendChild(el('span', 't num', mins ? tid(mins) + ' · ' + dagens.length + ' økter' : 'ingen økter'));
   body.appendChild(meta);
+  var ghN = OKTER.filter(function(o){ return o.ghost; }).length;
+  if (ghN) body.appendChild(cxBanner(ghN));
 
   var tidW = el('div', 'tid');
   for (var k = 0; k <= N_SLOT; k++){
@@ -886,21 +1280,39 @@ function renderDag(){
 
   dagens.forEach(function(o){
     var fra = minutter(o.start), varighet = sumTid(o);
-    var b = el('button', 'mokt ax-' + o.akse + (o.done ? ' done' : ''));
+    var b = el('button', 'mokt ax-' + o.akse + (o.done ? ' done' : '') +
+      (o.ghost ? ' ghost' : '') + (o.hoppet ? ' hoppet' : ''));
     b.dataset.odId = 'wbm-okt-' + o.id;
     b.style.top = yFor(fra) + 'px';
     b.style.height = Math.max(44, varighet / SLOT * SLOT_H - 2) + 'px';
     b.appendChild(el('span', 't', o.navn));
     b.appendChild(el('span', 'm', o.start + '–' + klokke(fra + varighet) + ' · ' +
       tid(varighet) + ' · ' + o.drills.length + ' drills'));
-    b.addEventListener('click', function(){ valgtId = o.id; apneOkt(); });
+    if (FORSLAG.status === 'venter' && FORSLAG.oktId === o.id){
+      b.classList.add('har-forslag');
+      b.appendChild(el('span', 'fslag', 'forslag venter'));
+    }
+    /* F4: utkast-etikett og faktisk-mot-planlagt */
+    if (o.ghost) b.appendChild(el('span', 'ghlab', 'utkast · ikke bekreftet'));
+    else if (o.done){
+      var fakt = o.drills.reduce(function(s2, d2){ return s2 + (d2.logget || 0); }, 0);
+      b.appendChild(el('span', 'floggr', '✓ faktisk ' + tid(fakt) +
+        (fakt === varighet ? '' : ' av ' + tid(varighet))));
+    } else if (o.hoppet) b.appendChild(el('span', 'hoplab', 'hoppet — ikke gjennomført'));
+    else if (o.dag < NAA.dag || (o.dag === NAA.dag && fra + varighet <= NAA.min))
+      b.appendChild(el('span', 'hoplab', 'passert · ikke logget'));
+    b.addEventListener('click', function(){
+      if (b.dataset.dro) return;
+      valgtId = o.id; apneOkt();
+    });
+    if (!o.done && !o.hoppet) festFlytt(b, o);
     lag.appendChild(b);
   });
 
-  if (valgtDag === 0){
+  if (valgtDag === NAA.dag){
     var nu = el('div', 'mnow');
-    nu.style.top = yFor(9 * 60 + 12) + 'px';
-    nu.appendChild(el('span', null, 'nå 09:12'));
+    nu.style.top = yFor(NAA.min) + 'px';
+    nu.appendChild(el('span', null, 'nå ' + klokke(NAA.min)));
     lag.appendChild(nu);
   }
 
@@ -929,7 +1341,8 @@ function renderMaal(){
   var m = maal(), w = document.getElementById('maal');
   w.innerHTML = '';
   [['trening', tid(m.treningMin)], ['turnering', m.turneringMin ? tid(m.turneringMin) : '—'],
-   ['økter', m.okter], ['drills', m.drills]].forEach(function(p){
+   ['økter', m.okter], ['drills', m.drills],
+   ['etterlevelse', m.passert ? m.fullfort + '/' + m.passert : '—']].forEach(function(p){
     var d = el('div');
     d.appendChild(el('span', 'k', p[0]));
     d.appendChild(el('span', 'v num', p[1]));
@@ -958,12 +1371,61 @@ function apneSlot(tittel, liste, gjeldende, gruppert, velg){
 }
 
 /* ── Øktarket ────────────────────────────────────────────────── */
+/* ── Agenda — uka som liste, mobilens standard ─────────────── */
+function renderAgenda(){
+  var body = document.getElementById('dagbody');
+  body.innerHTML = '';
+  var w = el('div', 'agendaL');
+  if (PERIODISERING.status === 'venter') w.appendChild(periodiseringKort());
+  var ghN = OKTER.filter(function(o){ return o.ghost; }).length;
+  if (ghN) w.appendChild(cxBanner(ghN));
+  DAGER.forEach(function(d, i){
+    var dagens = OKTER.filter(function(o){ return o.dag === i; })
+      .sort(function(a, b2){ return minutter(a.start) - minutter(b2.start); });
+    if (!dagens.length) return;
+    w.appendChild(el('div', 'ad', d.dw + ' ' + d.dd + (i === NAA.dag ? ' · i dag' : '')));
+    dagens.forEach(function(o){
+      var r = el('button', 'ar ax-' + o.akse + (o.done ? ' done' : '') +
+        (o.ghost ? ' ghost' : '') + (o.hoppet ? ' hoppet' : ''));
+      r.dataset.odId = 'wbm-agenda-' + o.id;
+      r.appendChild(el('span', 'at num', o.start + '–' + klokke(minutter(o.start) + sumTid(o))));
+      r.appendChild(el('span', 'an', o.navn + (o.ghost ? ' · utkast' :
+        (o.done ? ' · logget' : (o.hoppet ? ' · hoppet' : '')))));
+      if (FORSLAG.status === 'venter' && FORSLAG.oktId === o.id) r.appendChild(el('span', 'fslag', 'forslag'));
+      r.appendChild(el('span', 'af', tid(sumTid(o))));
+      r.addEventListener('click', function(){ valgtDag = o.dag; valgtId = o.id; apneOkt(); });
+      w.appendChild(r);
+    });
+  });
+  body.appendChild(w);
+}
+
 function apneOkt(){
   var o = OKTER.filter(function(x){ return x.id === valgtId; })[0];
   if (!o) return;
   document.getElementById('oktTitle').textContent = o.navn;
   var b = document.getElementById('oktBody');
   b.innerHTML = '';
+
+  /* Forslags-diff øverst når agenten har et venterende forslag på akkurat denne økta. */
+  if (FORSLAG.status === 'venter' && FORSLAG.oktId === o.id){
+    var dk = el('div', 'ghost');
+    dk.appendChild(el('div', 'gh', 'forslag venter · ' + FORSLAG.agent.toLowerCase()));
+    dk.appendChild(el('h4', null, FORSLAG.tittel));
+    var fd = el('div', 'fdiff');
+    fd.appendChild(el('code', 'df fra', FORSLAG.fra));
+    fd.appendChild(el('span', 'pil', '→'));
+    fd.appendChild(el('code', 'df', FORSLAG.til));
+    dk.appendChild(fd);
+    dk.appendChild(el('p', null, FORSLAG.hvorfor));
+    var da = el('div', 'gacts');
+    var d1 = el('button', 'btn ink', 'Godkjenn'); d1.dataset.odId = 'wbm-diff-godkjenn';
+    d1.addEventListener('click', brukForslag);
+    var d2 = el('button', 'btn', 'Avvis'); d2.dataset.odId = 'wbm-diff-avvis';
+    d2.addEventListener('click', avvisForslag);
+    da.appendChild(d1); da.appendChild(d2); dk.appendChild(da);
+    b.appendChild(dk);
+  }
 
   [['Navn','navn','text'],['Dato','dato','date'],['Starttid','start','time'],['Sted','sted','text']]
   .forEach(function(f){
@@ -1020,6 +1482,10 @@ function apneOkt(){
     if (erGolf(d)){
       var f = d.formel;
       var strip = el('div', 'dformel');
+      var frad = el('div', 'flabrad');
+      frad.appendChild(el('span', 'flab', 'ak-formel for denne drillen'));
+      frad.appendChild(hjelp(FORKLARING.formel, 'wbm-hjelp-formel-' + i));
+      strip.appendChild(frad);
       var c = document.createElement('code'); c.textContent = formelStr(f);
       strip.appendChild(c); inner.appendChild(strip);
 
@@ -1031,7 +1497,10 @@ function apneOkt(){
        ['Belastning', BELASTNING, 'belastning', false],
        ['Press', PRESS, 'press', false]].forEach(function(sl){
         var w = el('div', 'field');
-        w.appendChild(el('span', 'flab', sl[0]));
+        var lr = el('div', 'flabrad');
+        lr.appendChild(el('span', 'flab', sl[0]));
+        lr.appendChild(hjelp(FORKLARING[sl[2]], 'wbm-hjelp-' + sl[2] + '-' + i));
+        w.appendChild(lr);
         var btn = el('button', 'srad', navn(sl[1], f[sl[2]]));
         btn.dataset.odId = 'wbm-slot-open-' + sl[2] + '-' + i;
         btn.appendChild(el('span', 'mark', 'endre'));
@@ -1175,6 +1644,7 @@ document.getElementById('backThread').addEventListener('click', function(){
 var KEY = 'akhq-theme-agencyos';
 var saved = localStorage.getItem(KEY);
 if (saved) document.documentElement.dataset.theme = saved;
+document.getElementById('cxOpen').addEventListener('click', apneCx);
 document.getElementById('themeBtn').addEventListener('click', function(){
   var next = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
   document.documentElement.dataset.theme = next;
@@ -1184,13 +1654,21 @@ document.getElementById('themeBtn').addEventListener('click', function(){
 
 document.querySelectorAll('.zooms button').forEach(function(x){
   x.addEventListener('click', function(){
-    document.querySelectorAll('.zooms button').forEach(function(y){ y.setAttribute('aria-current','false'); });
-    x.setAttribute('aria-current','true');
-    if (x.dataset.zoom !== 'dag') toast(x.textContent + '-zoom er ikke tegnet ennå.');
+    var z = x.dataset.zoom;
+    if (z !== 'agenda' && z !== 'dag'){ toast(x.textContent + '-zoom er ikke tegnet ennå.'); return; }
+    visning = z;
+    document.querySelectorAll('.zooms button').forEach(function(y){
+      y.setAttribute('aria-current', String(y.dataset.zoom === z)); });
+    renderAlt();
   });
 });
 
-function renderAlt(){ renderDaystrip(); renderDag(); renderMaal(); }
+function renderAlt(){
+  document.getElementById('daystrip').style.display = (visning === 'agenda') ? 'none' : '';
+  renderDaystrip();
+  if (visning === 'agenda') renderAgenda(); else renderDag();
+  renderMaal();
+}
 renderAlt();
 
 })();

@@ -77,8 +77,25 @@
         <div class="kort">
           <h3>Ukerapport fra coach</h3>
           <p>Emil har hatt en god uke på nærspill, og de siste to øktene har vært konsentrerte. Vi holder volumet der det er fram til klubbmesterskapet 23. august — han trenger ikke mer, han trenger jevnhet.</p>
-          <div class="linje">Sendt<span class="v">søn 03.08</span></div>
+          <div class="linje">Gjennomført<span class="v">3 av 4 publiserte økter med passert slutt</span></div>
+          <div class="linje">Endringer fra coach<span class="v">2 denne uka · begge varslet</span></div>
+          <div class="linje">Betaling<span class="v">ingenting utestående</span></div>
+          <div class="linje">Sendt<span class="v">søn 03.08 · delt av coachen, aldri automatisk</span></div>
           <div class="linje">Neste rapport<span class="v">søn 10.08</span></div>
+          <p style="margin-top:var(--s3)">Tallene er de samme som i Emils egen digest — samme nevnere. Du ser aldri andre spilleres tall her.</p>
+        </div>
+
+        <div class="kort">
+          <h3>Skoletid · høsten 2026</h3>
+          <p style="font-family:var(--body);font-size:13px;color:var(--muted)">Coachen planlegger rundt skoletiden. Emils skole deler ikke timeplanen automatisk — derfor bekrefter du den her én gang per semester. Ubekreftet semester vises som «skoletid mangler» hos coachen; vi bruker aldri forrige semesters tider.</p>
+          <div class="linje">Man–tor<span class="v">08:15–14:00</span></div>
+          <div class="linje">Fredag<span class="v">08:15–12:30</span></div>
+          <div class="linje">Status<span class="v" id="sktStatus">ikke bekreftet for høsten</span></div>
+          <div style="display:flex;gap:var(--s2);margin-top:var(--s3);flex-wrap:wrap">
+            <button class="btn ink" type="button" id="sktBekreft" data-od-id="cta-skoletid-bekreft">Bekreft timeplanen</button>
+            <button class="btn" type="button" data-od-id="cta-skoletid-endre">Endre tidene</button>
+          </div>
+          <p style="margin-top:var(--s3);font-family:var(--body);font-size:13px;color:var(--muted)">Bekreftet timeplan tegnes som bakteppe i coachens planlegging — økter i skoletid varsles, de sperres ikke.</p>
         </div>
 
         <button class="rad" type="button" data-od-id="list-neste-okt">
@@ -151,5 +168,18 @@
   </div>
 </div>
 <script src="../felles/w5-demo.js"></script>
+<script>
+(function(){'use strict';
+/* D6: skoletidsbekreftelse — én bekreftelse per semester, logget med dato.
+   Løser GFGK-hullet (masterplanens punkt 3) uten skoleintegrasjon. */
+var b = document.getElementById('sktBekreft');
+if (b) b.addEventListener('click', function(){
+  document.getElementById('sktStatus').textContent = 'bekreftet av deg i dag · gjelder til 20.12';
+  b.disabled = true; b.textContent = 'Bekreftet';
+  var live = document.getElementById('live');
+  if (live) live.textContent = 'Timeplanen er bekreftet og vises som bakteppe i coachens planlegging.';
+});
+})();
+</script>
 </body>
 </html>

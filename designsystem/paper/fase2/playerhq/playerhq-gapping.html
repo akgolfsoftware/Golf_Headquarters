@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="nb" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Gapping · PlayerHQ · AK Golf HQ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Lora:ital,wght@0,400;0,500;1,400&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="w3-base.css">
+<style>
+/* ═══ PlayerHQ · Gapping-kart (D5 i funksjonspotensial-planen) ═══
+   Rute: /portal/analyse/gapping. Kilde: TrackMan-økter (carry per kølle,
+   siste 90 dager) mot køllene i Utstyr. Kartet MÅLER og FLAGGER — det gir
+   aldri kjøpsråd. Terskelen står i kortet, ikke i hodet til leseren:
+   et gap flagges når det er over 22 m OG begge køllene har minst 20 slag.
+   Køller med under 20 slag måles, men flagges aldri — for få slag er
+   et ærlig svar, ikke et hull. */
+.gkort{ background:var(--surface); border:1px solid var(--border); border-radius:var(--r);
+  padding:var(--s4); margin-bottom:var(--s3); }
+.gaxis{ display:flex; justify-content:space-between; margin:0 0 var(--s2) 76px;
+  font-family:var(--mono); font-size:9px; color:var(--mid); }
+.grow{ display:grid; grid-template-columns:64px minmax(0,1fr) 44px; gap:var(--s3);
+  align-items:center; min-height:34px; }
+.grow .kn{ font-family:var(--mono); font-size:11px; }
+.grow .kv{ font-family:var(--mono); font-size:11px; font-weight:600; text-align:right; }
+.grow .kv .n{ display:block; font-size:8.5px; font-weight:400; color:var(--mid); }
+.spor{ position:relative; height:14px; background:var(--softer); border-radius:var(--r-pill); }
+.spor .band{ position:absolute; top:3px; bottom:3px; background:color-mix(in srgb, var(--info-raw) 45%, var(--soft));
+  border-radius:var(--r-pill); }
+.spor .med{ position:absolute; top:0; bottom:0; width:3px; border-radius:2px; background:var(--info); }
+.grow.tynn .band{ background:var(--soft); border:1px dashed var(--hairline); }
+.grow.tynn .med{ background:var(--mid); }
+.gap{ display:flex; align-items:center; gap:var(--s2); margin:2px 0 2px 76px;
+  padding:var(--s1) var(--s3); border:1px dashed var(--dn); border-radius:var(--r-sm);
+  font-family:var(--mono); font-size:10px; color:var(--dn); }
+.glegend{ display:flex; flex-wrap:wrap; gap:var(--s3); margin-top:var(--s3);
+  font-family:var(--mono); font-size:9.5px; color:var(--muted); align-items:center; }
+.glegend i{ display:inline-block; width:14px; height:8px; border-radius:var(--r-pill);
+  background:color-mix(in srgb, var(--info-raw) 45%, var(--soft)); }
+.glegend .m{ width:3px; height:12px; border-radius:2px; background:var(--info); display:inline-block; }
+.hjelp{ font-family:var(--mono); font-size:10px; color:var(--mid); margin-top:var(--s3); letter-spacing:.03em; }
+</style>
+</head>
+<body>
+<p class="framehint">PlayerHQ · Gapping · 430 px. Under 641 px fyller den skjermen.</p>
+<div class="phone" data-demo-only="true">
+  <header class="topp">
+    <a class="ikon" href="playerhq-trackman-liste.html" aria-label="Til TrackMan" data-od-id="gap-tilbake"><svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg></a>
+    <div style="min-width:0"><h1>Gapping</h1><span class="sub">carry per kølle · siste 90 dager · 431 slag</span></div>
+    <span style="flex:1"></span>
+    <div data-demo-only="true" style="display:flex;gap:4px">
+      <button class="ikon" data-tilstand="fylt" aria-pressed="true" aria-label="Demo: målt" data-od-id="gap-demo-fylt"><span class="num" style="font-size:10px">F</span></button>
+      <button class="ikon" data-tilstand="tom" aria-pressed="false" aria-label="Demo: for få slag" data-od-id="gap-demo-tom"><span class="num" style="font-size:10px">T</span></button>
+    </div>
+    <button class="ikon" id="themeBtn" aria-label="Bytt til mørk modus" data-od-id="gap-theme"><svg viewBox="0 0 24 24"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></button>
+  </header>
+
+  <main class="kropp">
+    <section data-vis="fylt">
+      <div class="gkort">
+        <span class="eyebrow">Slik leses kartet</span>
+        <p style="margin:var(--s2) 0 0;font-family:var(--body);font-size:13px;color:var(--muted)">Båndet er midtre halvdel av slagene dine (25.–75. persentil), streken er medianen. Et gap flagges når avstanden mellom to nabokøller er over 22 m og begge har minst 20 slag — driveren står utenfor flaggingen, den slås fra tee, ikke til innspill. Kartet måler — det anbefaler aldri kjøp.</p>
+        <div class="glegend"><i></i><span>midtre halvdel</span><span class="m"></span><span>median</span><span style="color:var(--dn)">╌ gap over terskel</span></div>
+      </div>
+
+      <div class="gkort">
+        <div class="gaxis"><span>60 m</span><span>105</span><span>150</span><span>195</span><span>240 m</span></div>
+        <div id="gkart"></div>
+        <p class="hjelp">Kilde: TrackMan-øktene dine mot køllene i Utstyr. 58° har 19 slag — den måles, men flagges ikke før den når 20. Nevneren står på hver kølle.</p>
+      </div>
+
+      <div class="gkort">
+        <span class="eyebrow">Ett flagget gap</span>
+        <p style="margin:var(--s2) 0 0;font-family:var(--body);font-size:13px">Mellom 5-jern (172 m) og 4-hybrid (196 m) er det 24 m — over terskelen. Det betyr at innspill rundt 185 m mangler en kølle å lande på. Dette er et målt hull, ikke et kjøpsråd: snakk med Anders om det skal løses med sving, kølle eller gameplan.</p>
+        <a class="btn full" href="playerhq-coach-hub.html" style="margin-top:var(--s3)" data-od-id="gap-til-coach">Ta det med coachen</a>
+      </div>
+    </section>
+
+    <section data-vis="tom" hidden>
+      <div class="tom">
+        <h3>For få slag til å tegne kartet</h3>
+        <p>Gapping trenger minst 20 slag per kølle fra TrackMan-økter siste 90 dager. Du har 14 slag fordelt på 3 køller — kartet tegnes etter hvert som du logger økter, og det gjetter aldri i mellomtiden.</p>
+        <a class="btn full" href="playerhq-trackman-liste.html" data-od-id="gap-tom-tm">Se TrackMan-øktene dine</a>
+      </div>
+    </section>
+  </main>
+</div>
+<div class="sr" id="live" aria-live="polite"></div>
+<script src="w3-demo.js"></script>
+<script>
+(function(){
+'use strict';
+/* Kartdata: median + p25/p75 carry per kølle, antall slag som nevner.
+   Skala 60–240 m. Flaggregel: gap > 22 m og begge køller >= 20 slag. */
+var SKALA = [60, 240];
+var KOLLER = [
+  { n:'Driver',   med:232, p25:224, p75:239, slag:48 },
+  { n:'3-tre',    med:208, p25:200, p75:214, slag:26 },
+  { n:'4-hybrid', med:196, p25:189, p75:202, slag:31 },
+  { n:'5-jern',   med:172, p25:166, p75:178, slag:38 },
+  { n:'6-jern',   med:161, p25:155, p75:166, slag:34 },
+  { n:'7-jern',   med:150, p25:145, p75:155, slag:52 },
+  { n:'8-jern',   med:138, p25:133, p75:143, slag:41 },
+  { n:'9-jern',   med:126, p25:121, p75:131, slag:37 },
+  { n:'PW',       med:112, p25:107, p75:117, slag:44 },
+  { n:'50°',      med:96,  p25:91,  p75:101, slag:28 },
+  { n:'54°',      med:82,  p25:77,  p75:87,  slag:33 },
+  { n:'58°',      med:68,  p25:62,  p75:74,  slag:19 }
+];
+var TERSKEL_M = 22, TERSKEL_SLAG = 20;
+function pst(v){ return Math.max(0, Math.min(100, (v - SKALA[0]) / (SKALA[1] - SKALA[0]) * 100)); }
+function el(t, c, x){ var e = document.createElement(t);
+  if (c) e.className = c; if (x != null) e.textContent = x; return e; }
+var w = document.getElementById('gkart');
+KOLLER.forEach(function(k, i){
+  var tynn = k.slag < TERSKEL_SLAG;
+  var r = el('div', 'grow' + (tynn ? ' tynn' : ''));
+  r.appendChild(el('span', 'kn', k.n));
+  var sp = el('div', 'spor');
+  var band = el('span', 'band');
+  band.style.left = pst(k.p25) + '%';
+  band.style.width = (pst(k.p75) - pst(k.p25)) + '%';
+  sp.appendChild(band);
+  var med = el('span', 'med');
+  med.style.left = 'calc(' + pst(k.med) + '% - 1px)';
+  sp.appendChild(med);
+  r.appendChild(sp);
+  var kv = el('span', 'kv num', k.med + ' m');
+  kv.appendChild(el('span', 'n num', k.slag + ' slag' + (tynn ? ' · under 20' : '')));
+  r.appendChild(kv);
+  r.setAttribute('aria-label', k.n + ': median ' + k.med + ' meter av ' + k.slag + ' slag' +
+    (tynn ? ' — under måleterskelen på 20 slag' : ''));
+  w.appendChild(r);
+  var neste = KOLLER[i + 1];
+  if (neste){
+    var diff = k.med - neste.med;
+    if (k.n !== 'Driver' && diff > TERSKEL_M && k.slag >= TERSKEL_SLAG && neste.slag >= TERSKEL_SLAG){
+      var g = el('div', 'gap', 'gap ' + diff + ' m · ' + neste.n + ' → ' + k.n + ' · over terskelen på ' + TERSKEL_M + ' m');
+      w.appendChild(g);
+    }
+  }
+});
+})();
+</script>
+</body>
+</html>

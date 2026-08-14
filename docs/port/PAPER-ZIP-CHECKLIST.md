@@ -130,6 +130,32 @@ er erstattet av `fase1/`-skjermene, som allerede er bygget. Filtypeforklaring:
 
 ---
 
+## D1–D6 · Funksjonspotensial (ny i zip 4 — 14.08.2026)
+
+Seks leveranser fra `Plan - skjermer for funksjonspotensialet.html`. Kvitteringer per leveranse
+i `designsystem/paper/kart/`. Arbeidsordre: `kart/prompt-code-session-implementering.md`.
+**Steg 0 er kjørt** — funn i `docs/taksonomi-verifikasjon.md` + `docs/fasit-avvik.md`.
+
+- [ ] **D1 · Workbench F4** — `fase1/workbench-desktop.html` + `-mobil` + `workbench-stall(-mobil)`
+      (composer→ghost, periodiseringsforslag, faktisk-mot-planlagt + etterlevelse).
+      DELVIS BLOKKERT: `SessionStatusV2` mangler utkast-tilstand, økt mangler publiserings- og
+      faktisk-tid-felter. `SKIPPED` finnes — hoppet-mot-ulogget kan bygges i dag.
+- [ ] **D2 · Booking → faktura** — `fase2/agencyos/agencyos-okonomi.html` + `playerhq-betaling.html`.
+      Kjeden finnes (`Booking.trainingSessionV2Id` → `Payment.bookingId`). ÅPENT: «forfalt» er
+      ingen `PaymentStatus` og har ingen forfallsdato — hentes fra Stripe eller nytt felt.
+- [ ] **D3 · Ukesrapport + digest** — `agencyos-godkjenninger.html` + `playerhq-ukesdigest.html`
+      + `forelder-barn.html`. Ingen blokkeringer. Klar til bygging.
+- [ ] **D4 · Test → drill + forfall** — `playerhq-test-detalj.html` + `playerhq-hjem-varsler.html`
+      + `workbench-desktop.html`. **BLOKKERT:** `TestDefinition` har kun `pyramidArea`, ingen
+      områdekode — oppslag i delt taksonomi er umulig. Krever ett additivt felt + Anders'
+      backfill av 36 testdefinisjoner.
+- [ ] **D5 · Gapping** — `fase2/playerhq/playerhq-gapping.html`. Carry per kølle finnes
+      (`TrackManShot.club` + `.carryDistance`). Bygges med TrackMan-utledet køllelista;
+      `EquipmentBag` er fritekst og egner seg ikke til matching.
+- [ ] **D6 · Skoletidsbekreftelse** — `fase2/forelder/forelder-barn.html`. Ingen blokkeringer.
+
+---
+
 ## Sync-metadata
 
 | | |

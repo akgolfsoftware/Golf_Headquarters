@@ -141,6 +141,15 @@ button{ font:inherit; color:inherit; }
   font-family:var(--body); font-size:13px; color:var(--muted); }
 .why li{ margin-bottom:var(--s2); }
 
+/* D4: anbefalte drills — et OPPSLAG i samme taksonomi, aldri en vurdering.
+   Drillen deler område-slot med testen; begrunnelsen står i klartekst. */
+.fdrill{ padding:var(--s3) 0; border-bottom:1px solid var(--border-soft); }
+.fdrill:last-child{ border-bottom:0; padding-bottom:0; }
+.fdrill .fn{ font-size:13.5px; font-weight:600; }
+.fdrill code{ display:block; font-family:var(--mono); font-size:10.5px; word-break:break-all;
+  background:var(--softer); border:1px solid var(--border-soft); border-radius:var(--r-sm);
+  padding:var(--s2) var(--s3); margin:var(--s2) 0; }
+.fdrill .fb{ margin:0 0 var(--s2); font-family:var(--body); font-size:13px; color:var(--muted); }
 .tom{ padding:var(--s5) var(--s4); background:var(--soft); border:1px dashed var(--border);
   border-radius:var(--r); }
 .tom h3{ margin:0 0 var(--s2); font-family:var(--disp); font-size:15px; font-weight:600; }
@@ -283,6 +292,41 @@ function render(){
    .forEach(function(x){ ul.appendChild(el('li', null, x)); });
   wd.appendChild(ul); hk.appendChild(wd);
   w.appendChild(hk);
+
+  /* D4: test → drill. Oppslaget peker på drills som deler område-slot med
+     testen — samme taksonomi som hele appen (AK-formelens fem slots).
+     «Legg i uka» legger drillen som UTKAST i workbench, aldri rett i planen. */
+  var ak = el('div', 'kort');
+  ak.appendChild(el('div', 'eyebrow', 'tren mot neste måling'));
+  var kr = el('div', 'rad');
+  kr.appendChild(el('span', null, 'Siste måling'));
+  kr.appendChild(el('span', 'v num', '14 av 20 · kravet for kategorien din er 16'));
+  ak.appendChild(kr);
+  [ { n:'Putt 5–10 ft · ni kuler', f:'SLAG_PUTT_5_10_AUTO_TRENINGSOMRADE_OBSERVERT',
+      b:'Testens eget bånd — 6 fot ligger i 5–10 ft. Samme press som testen: observert.' },
+    { n:'Portputt 3–5 ft', f:'TEK_PUTT_3_5_AUTO_TRENINGSOMRADE_OBSERVERT',
+      b:'Båndet under testavstanden — startlinja gjennom samme gate, kortere avstand.' }
+  ].forEach(function(d, i){
+    var fd = el('div', 'fdrill');
+    fd.appendChild(el('span', 'fn', d.n));
+    var c = document.createElement('code'); c.textContent = d.f; fd.appendChild(c);
+    fd.appendChild(el('p', 'fb', d.b));
+    var lg = el('a', 'btn', 'Legg i uka som utkast');
+    lg.href = '../../fase1/workbench-mobil.html';
+    lg.dataset.odId = 'testd-legg-drill-' + i;
+    fd.appendChild(lg);
+    ak.appendChild(fd);
+  });
+  var wd2 = el('details', 'why'); wd2.dataset.odId = 'testd-why-anbefaling';
+  wd2.appendChild(el('summary', null, 'Hvorfor akkurat disse'));
+  var ul2 = document.createElement('ul');
+  ['Oppslaget er taksonomi, ikke vurdering: drills som deler område-slot (putt, samme fot-bånd) med testen.',
+   'Rekkefølgen er nærmeste bånd først. Ingen skjult skåring.',
+   '«Legg i uka» legger drillen som utkast i workbench — du bekrefter før den teller.']
+   .forEach(function(x){ ul2.appendChild(el('li', null, x)); });
+  wd2.appendChild(ul2);
+  ak.appendChild(wd2);
+  w.appendChild(ak);
 
   /* Kontrakt §3: skjermens ene aksenthandling — start testen. */
   var b2 = el('a', 'btn now full', 'Start testen');
