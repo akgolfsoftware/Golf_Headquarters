@@ -103,5 +103,19 @@ tmp/
 .env*.local
 tmp-handoff/
 
-# Sign-off-galleri: mellomfiler (app/fasit hver for seg) — kun montasjene committes
-screenshots/paper/signoff/_raw-*.png
+# Skjermbilder og visuelle referansebilder holdes UTENFOR git (2026-08-14).
+# De veide 86 MB av et 228 MB repo og endrer seg ved hver designrunde, så hver
+# oppdatering la en ny kopi i historikken.
+#
+# screenshots/ (58 MB, 449 filer) er arkivert i Google Drive:
+#   AK Golf Group/akgolf-hq/screenshots-arkiv-2026-08-14/
+#   (byte-identisk kopi, sjekksum-verifisert før fjerning)
+#
+# Playwright-snapshots (28 MB, 432 filer) regenereres lokalt — se
+# tests/e2e/paper-visual/README.md. De kjørte aldri i CI.
+#
+# Merk: historikken er IKKE omskrevet, så .git inneholder fortsatt de gamle
+# versjonene. Å krympe .git krever filter-repo + force-push og er en egen
+# beslutning som må tas bevisst.
+screenshots/
+**/*-snapshots/
