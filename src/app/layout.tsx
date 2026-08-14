@@ -151,7 +151,10 @@ function erAppPath(path: string): boolean {
   return (
     path.startsWith("/portal") ||
     path.startsWith("/admin") ||
-    path.startsWith("/forelder")
+    path.startsWith("/forelder") ||
+    // Auth følger landingssidene/fasiten (fase1/innlogging.html): lys default.
+    // Anders' beslutning 2026-08-13.
+    path.startsWith("/auth")
   );
 }
 
@@ -159,8 +162,8 @@ function erAppPath(path: string): boolean {
 function onsketMorkTema(path: string, temaCookie: string | undefined): boolean {
   const mork = temaCookie === "dark";
   const lysCk = temaCookie === "light";
-  // App: lys default, mørk kun med dark-cookie.
-  // Marketing/auth: mørk default, lys kun med light-cookie.
+  // App + auth: lys default, mørk kun med dark-cookie.
+  // Marketing: mørk default, lys kun med light-cookie.
   return erAppPath(path) ? mork : !lysCk;
 }
 
