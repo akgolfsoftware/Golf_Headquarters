@@ -25,25 +25,25 @@
 - [x] `agencyos-spillere-mobil.html` — PP-2.3 signert av Anders 13.08.2026 (galleri mot prod)
 - [x] `agencyos-spillere.html` — PP-2.3 signert av Anders 13.08.2026 (galleri mot prod)
 - [~] `booking.html` — PP-1.7 READY_SIGN. Kan ikke signeres mot prod før BOOKING_PUBLIC slås på (prod viser interim-siden med vilje, jf. #431) — designet ligger ferdig bak bryteren
-- [~] `fangstsheet.html` — overnight slug/CTA READY_SIGN
-- [~] `foreldreportal.html` — overnight slug/CTA READY_SIGN
+- [x] `fangstsheet.html` — B2-fangst signert av Anders 14.08.2026 (galleri mot prod, arket åpnet via klikk)
+- [x] `foreldreportal.html` — B2-forelder signert av Anders 14.08.2026 (galleri mot prod, innlogget test-forelder)
 - [x] `innlogging.html` — PP-1.6 signert av Anders 13.08.2026 (galleri mot prod)
 - [x] `playerhq-analyse.html` — PP-1.3 signert av Anders 13.08.2026 (galleri mot prod)
 - [x] `playerhq-booking.html` — PP-1.5 signert av Anders 13.08.2026 (galleri mot prod)
 - [x] `playerhq-chat-desktop.html` — PP-1.1 signert av Anders 13.08.2026 (galleri mot prod)
 - [x] `playerhq-chat-mobil.html` — PP-1.1 signert av Anders 13.08.2026 (galleri mot prod)
-- [~] `playerhq-live-brief.html` — overnight slug/CTA READY_SIGN
-- [~] `playerhq-live-okt.html` — overnight slug/CTA READY_SIGN
-- [~] `playerhq-live-summary.html` — overnight slug/CTA READY_SIGN
+- [x] `playerhq-live-brief.html` — B2-liveb signert av Anders 14.08.2026 (galleri mot prod)
+- [x] `playerhq-live-okt.html` — B2-livea signert av Anders 14.08.2026 (galleri mot prod)
+- [x] `playerhq-live-summary.html` — B2-lives signert av Anders 14.08.2026 (galleri mot prod)
 - [x] `playerhq-meg.html` — PP-1.4 signert av Anders 13.08.2026 (galleri mot prod)
 - [x] `playerhq-plan.html` — PP-1.2 signert av Anders 13.08.2026 (galleri mot prod)
 - [~] `playerhq-runde-live.html`
 - [x] `playerhq-runde-logg.html` — NT-417 signert av Anders 13.08.2026 (galleri mot prod)
 - [~] `playerhq-test-gjennomfor.html`
 - [~] `spillerprofil.html` — full ombygging merget i #414 (12.08)
-- [~] `workbench-desktop.html` — overnight slug/CTA READY_SIGN
-- [~] `workbench-mobil.html` — overnight slug/CTA READY_SIGN
-- [~] `workbench-turnering.html` — overnight slug/CTA READY_SIGN
+- [x] `workbench-desktop.html` — B2-wb signert av Anders 14.08.2026 (galleri mot prod, spiller-workbench d1280)
+- [x] `workbench-mobil.html` — B2-wb signert av Anders 14.08.2026 (galleri mot prod, spiller-workbench m390)
+- [~] `workbench-turnering.html` — KAN IKKE SIGNERES ennå: turneringsvarianten finnes ikke i koden (rutekart: fane/modus på spiller-workbench). Anders bestilte bygging 14.08.2026 — under arbeid
 
 ## Fase 2 · PlayerHQ W1 (drill/plan/test/turnering)
 

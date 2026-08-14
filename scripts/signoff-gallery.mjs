@@ -71,6 +71,14 @@ const SCREENS = [
   { id: "W4-442b", navn: "Ny planmal", rute: "/admin/plan-templates/ny", bruker: COACH, fasitM: "../fase2/agencyos/agencyos-planbibliotek.html", fasitD: "../fase2/agencyos/agencyos-planbibliotek.html" },
   { id: "W4-442c", navn: "Ny turnering", rute: "/admin/tournaments/ny", bruker: COACH, fasitM: "../fase2/agencyos/agencyos-turneringer.html", fasitD: "../fase2/agencyos/agencyos-turneringer.html" },
   { id: "W4-442d", navn: "Turnering-dubletter", rute: "/admin/tournaments/dubletter", bruker: COACH, fasitM: "../fase2/agencyos/agencyos-turneringer.html", fasitD: "../fase2/agencyos/agencyos-turneringer.html" },
+  // Bølge 2 — 14.08, fase1-rester. Økt-/spiller-IDene er screentest-brukerens
+  // (Øyvind Rohjan) i prod — kun til fotografering, ingen skriving.
+  { id: "B2-liveb", navn: "Live brief", rute: "/portal/live/cmseta469002e8ubpchfgs6ef/brief", bruker: SPILLER, fasitM: "playerhq-live-brief.html", fasitD: "playerhq-live-brief.html" },
+  { id: "B2-livea", navn: "Live økt (aktiv)", rute: "/portal/live/cmseta469002e8ubpchfgs6ef/active", bruker: SPILLER, fasitM: "playerhq-live-okt.html", fasitD: "playerhq-live-okt.html" },
+  { id: "B2-lives", navn: "Live summary", rute: "/portal/live/cmseta1bl00278ubpcqcfio9y/summary", bruker: SPILLER, fasitM: "playerhq-live-summary.html", fasitD: "playerhq-live-summary.html" },
+  { id: "B2-wb", navn: "Spiller-workbench", rute: "/admin/spillere/c7e2811d-86e1-49fe-9100-d33d5056eac2/workbench", bruker: COACH, fasitM: "workbench-mobil.html", fasitD: "workbench-desktop.html" },
+  { id: "B2-fangst", navn: "FangstSheet", rute: "/portal", bruker: SPILLER, klikk: 'button[aria-label="Fang en observasjon"]', fasitM: "fangstsheet.html", fasitD: "fangstsheet.html" },
+  { id: "B2-forelder", navn: "Foreldreportal", rute: "/forelder", bruker: "screentest-parent@akgolf.test", fasitM: "foreldreportal.html", fasitD: "foreldreportal.html" },
 ];
 
 const only = (process.argv[2] || "").trim();
@@ -138,11 +146,15 @@ async function loggInnEnGang(ctx, epost) {
  * etter at tre feil på rad (cookie-banner, bunndokk, konsoll-composer) alle satt i
  * bunnen og alle slapp gjennom fullsidebildene.
  */
-async function appShot(ctx, rute, fil, { vindu = false } = {}) {
+async function appShot(ctx, rute, fil, { vindu = false, klikk = null } = {}) {
   const page = await ctx.newPage();
   await page.goto(`${BASE}${rute}`, { waitUntil: "domcontentloaded", timeout: 60000 });
   await page.waitForLoadState("networkidle", { timeout: 15000 }).catch(() => {});
   await page.waitForTimeout(1200);
+  if (klikk) {
+    await page.click(klikk, { timeout: 8000 }).catch(() => {});
+    await page.waitForTimeout(900);
+  }
   await page.mouse.move(0, 0);
   if (!vindu) await page.evaluate(() => window.scrollTo(0, 0));
   await page.addStyleTag({ content: SKJUL_DEV }).catch(() => {});
@@ -212,8 +224,8 @@ for (const s of kø) {
     try {
       const ctx = await hentKontekst(device, "light", s.bruker);
       if (!ctx) { logg.push(`FEIL  ${s.id} ${device} — innlogging feilet`); continue; }
-      const tekst = await appShot(ctx, s.rute, appFil);
-      await appShot(ctx, s.rute, `${OUT}/vindu-${s.id}-${device}-light.png`, { vindu: true });
+      const tekst = await appShot(ctx, s.rute, appFil, { klikk: s.klikk });
+      await appShot(ctx, s.rute, `${OUT}/vindu-${s.id}-${device}-light.png`, { vindu: true, klikk: s.klikk });
       const harFasit = await fasitShot(ctx, fasitNavn, fasitFil);
       await sideOmSide(appFil, harFasit ? fasitFil : null, `${OUT}/${s.id}-${device}.png`, VP[device].width);
       logg.push(`OK    ${s.id} ${device.padEnd(6)} ${s.rute} — "${tekst.slice(0, 70)}"${harFasit ? "" : "  (FASIT MANGLER)"}`);
@@ -225,8 +237,8 @@ for (const s of kø) {
   try {
     const ctx = await hentKontekst("m390", "dark", s.bruker);
     if (ctx) {
-      await appShot(ctx, s.rute, `${OUT}/${s.id}-m390-dark.png`);
-      await appShot(ctx, s.rute, `${OUT}/vindu-${s.id}-m390-dark.png`, { vindu: true });
+      await appShot(ctx, s.rute, `${OUT}/${s.id}-m390-dark.png`, { klikk: s.klikk });
+      await appShot(ctx, s.rute, `${OUT}/vindu-${s.id}-m390-dark.png`, { vindu: true, klikk: s.klikk });
     }
   } catch (e) {
     logg.push(`FEIL  ${s.id} m390 mørk — ${String(e.message).split("\n")[0]}`);
