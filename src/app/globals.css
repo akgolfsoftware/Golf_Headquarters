@@ -49,7 +49,7 @@
   /* Form og fokus — DS --border er rgba(0,0,0,.08); trippel m/ alfa gir samme farge */
   --border: 0 0% 0% / 0.08;
   --input: 0 0% 0% / 0.08;
-  --ring: 163.6 100% 17.3%;        /* = DS --signal */
+  --ring: 15 63% 60%;              /* #D97757 = Paper --p-focus (clay) */
 
   /* Radius — peker på DS --radius-card (16px); pill håndteres via rounded-full */
   --radius: 16px;
@@ -84,7 +84,7 @@ html[data-v2-tema="dark"] {
 
   --border: 0 0% 100% / 0.08;      /* DS --border (mørk) = rgba(255,255,255,.08) */
   --input: 0 0% 100% / 0.08;
-  --ring: 72.9 92.8% 61.8%;
+  --ring: 15 63% 60%;              /* #D97757 = Paper --p-focus (clay) */
 
   /* ---- Mørk-overstyringer for DS-aliasene (varm nær-svart rampe, 2026-06-26).
    * («Terminal»-stacken --t-* er slettet 2026-08-03 — kun disse fire verdiene
