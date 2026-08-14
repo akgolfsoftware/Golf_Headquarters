@@ -91,6 +91,10 @@ export function KonsollChat({
   const [input, setInput] = useState("");
   const bunnRef = useRef<HTMLDivElement>(null);
   const taRef = useRef<HTMLTextAreaElement>(null);
+  const toppRef = useRef<HTMLElement>(null);
+  // Autoscroll er en chat-affordans som først gir mening etter at DU har sendt
+  // noe. Ved sidelasting skal konsollen møte deg på toppen.
+  const harSendt = useRef(false);
 
   const { messages, status, sendMessage, updateToolApproval } = useCaddieChat({ conversationId: "" });
   const [avvisteGodkjenninger, setAvvisteGodkjenninger] = useState<Set<string>>(() => new Set());
@@ -98,10 +102,38 @@ export function KonsollChat({
 
   // Siden hele siden ruller (sticky composer, ikke fast-høyde flex), rulles
   // det til et ankerelement nederst i tråden — ikke på en scroll-container.
+  //
+  // Kjørte tidligere ubetinget på `messages.length`, og siden lagrede meldinger
+  // kommer inn asynkront rett etter mount, dro den HELE dokumentet til bunn ved
+  // sidelasting. Da lå de øverste 112 px av siste skjermbilde bak den sticky
+  // toppbaren, og «Åpne AgenticOS» ble klippet på midten (målt i prod 14.08:
+  // scrollY 2076 = maxScroll, lenka på top 93 under en header som slutter på
+  // 112). Guarden gjør scrollen til det den skal være: et svar på DIN sending.
   useEffect(() => {
-    if (messages.length === 0) return;
+    if (!harSendt.current || messages.length === 0) return;
     bunnRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
   }, [messages.length]);
+
+  // Toppbaren er `position: sticky` over dokumentrullen og spiser derfor de
+  // øverste px-ene av viewporten. Uten `scroll-padding-top` lander ethvert
+  // anker-hopp (scrollIntoView, #fragment, tastaturfokus) bak den. Samme
+  // prinsipp som `--ak-cookie-h` i bunnen: forskyv rullen, aldri legg innhold
+  // oppå. Høyden måles fordi toppbaren wrapper til flere rader på 390 px.
+  useEffect(() => {
+    const el = toppRef.current;
+    const rot = document.documentElement;
+    if (!el) return;
+    const oppdater = () => {
+      rot.style.setProperty("--ak-topbar-h", `${Math.ceil(el.getBoundingClientRect().height)}px`);
+    };
+    oppdater();
+    const ro = new ResizeObserver(oppdater);
+    ro.observe(el);
+    return () => {
+      ro.disconnect();
+      rot.style.removeProperty("--ak-topbar-h");
+    };
+  }, []);
 
   const ventendeGodkjenning = useMemo<CaddieToolCall | null>(() => {
     for (const m of messages) {
@@ -124,6 +156,7 @@ export function KonsollChat({
   async function send(tekst: string) {
     const t = tekst.trim();
     if (!t || busy || !kanChatte) return;
+    harSendt.current = true;
     setInput("");
     await sendMessage(t);
   }
@@ -207,6 +240,8 @@ export function KonsollChat({
         }}
       >
         <header
+          ref={toppRef}
+          data-paper-topbar="konsoll"
           style={{
             display: "flex",
             flexWrap: "wrap",

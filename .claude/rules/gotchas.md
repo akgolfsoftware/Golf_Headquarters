@@ -4,6 +4,28 @@ Flyttet fra CLAUDE.md 2026-06-14. Les denne FØR du skriver kode. Når noe brekk
 (Eldre PRISMA-7- og Supabase-detaljer finnes også i git-historikken.)
 Ingen låst designkanon per 2026-07-25 — nytt system utvikles i Open Design (CLAUDE.md invariant 2).
 
+### Chat-autoscroll dro HELE dokumentet til bunn og gjemte innhold bak sticky toppbar (oppdaget 2026-08-14)
+- **Symptom:** `/admin/agencyos` på 390px — «Åpne AgenticOS» ble klippet på midten rett under
+  toppbaren, i både lys og mørk, i både prod og PR-preview.
+- **Rotårsak (målt i prod):** `KonsollChat` kjørte `bunnRef.scrollIntoView({block:"end"})` ubetinget
+  på `messages.length`. Lagrede meldinger kommer inn asynkront rett etter mount, så effekten fyrte
+  ved sidelasting og smooth-scrollet dokumentet til `scrollY 2076 = maxScroll`. Toppbaren er
+  `position: sticky; top: 0` og 112px høy på 390px (den wrapper til tre rader), så de øverste 112px
+  av det siste skjermbildet lå bak den — lenka målt på `top 93`, altså 19 av 40px skjult.
+- **Fiks:** autoscroll krever nå at brukeren faktisk har sendt noe (`harSendt`-ref settes i `send()`).
+  Ved sidelasting møter du toppen av konsollen. I tillegg publiserer toppbaren sin målte høyde som
+  `--ak-topbar-h` (ResizeObserver), og `html` har `scroll-padding-top: var(--ak-topbar-h, 0px)`.
+- **Regel:** en `position: sticky; top: 0`-toppbar over DOKUMENT-rullen må publisere høyden sin som
+  `--ak-topbar-h`, ellers lander alle anker-hopp (scrollIntoView, `#fragment`, tastaturfokus) bak
+  den. Speilvendt `--ak-cookie-h` i bunnen — samme prinsipp: forskyv rullen, aldri legg noe oppå.
+  Autoscroll-til-bunn hører hjemme i en EGEN scroll-container (mønsteret i
+  `portal/v2/chat/PortalChatHjem.tsx`, som scroller `trådRef`), ikke på dokumentet.
+- Regresjonstest: `tests/e2e/agencyos-toppbar-overlapp.spec.ts`.
+- **Ikke løst (samme klasse):** 18 andre flater har `position: sticky; top: 0` uten å publisere
+  `--ak-topbar-h` (bl.a. `portal/v2/AnalysereV2.tsx`, `admin/v2/innboks/InnboksSaker.tsx`,
+  `(marketing)/stats/*`). De er trygge så lenge ingenting scroller dokumentet programmatisk —
+  men innfører du et anker-hopp der, må toppbaren publisere høyden først.
+
 ### Cookie-banneret lå oppå sticky bunn-chrome på mobil (oppdaget 2026-08-10)
 - **Symptom:** på 390px med tomt samtykke kunne skjermens primære handling ikke trykkes —
   Playwright fikk «element intercepts pointer events» fra
