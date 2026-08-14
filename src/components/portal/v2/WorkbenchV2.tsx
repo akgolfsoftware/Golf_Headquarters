@@ -73,6 +73,16 @@ import type { WorkbenchInsights } from "@/lib/workbench/types";
 import type { WeekEvent } from "@/lib/workbench/week-types";
 import type { PlanStatus, LFase } from "@/generated/prisma/client";
 import { fmtVarighet, fmtTimer, toKl } from "@/lib/workbench/v2-format";
+import {
+  sesongvindu,
+  prosentAvVindu,
+  vurderKollisjon,
+  dagerMellom,
+  vinduMaaneder,
+  datoSpenn,
+  type TurneringPaamelding,
+  type PeriodeBlokk as TurneringPeriodeBlokk,
+} from "@/lib/workbench/turnering-plan";
 import { WEEK_OFFSET_MIN, WEEK_OFFSET_MAX } from "@/lib/workbench/session-move-math";
 import { setWbMode } from "@/lib/workbench/wb-mode-action";
 import { faseLabel } from "@/lib/ak-formel-visning";
@@ -1434,69 +1444,342 @@ function Felt({ label, children }: { label: string; children: React.ReactNode })
 /* ── Selve Workbench ───────────────────────────────────── */
 
 /** Paper fasit workbench-turnering.html — turneringsliste inne i Workbench. */
-function WBTurneringNivaa({ data }: { data: WorkbenchData }) {
-  const liste = data.tournaments ?? [];
-  const snart = liste.find((t) => t.soon) ?? liste[0];
+/* ── Turneringsfanen (fasit: fase1/workbench-turnering.html) ─────
+   Poenget med flata: turneringene ligger OPPÅ periodiseringen, så en
+   turnering i feil periode er synlig som kollisjon — ikke gjemt i en
+   egen skjerm. Kollisjonsvurderingen bor i lib/workbench/turnering-plan.ts.
+   Fasitens to «mangler i basen»-felter (påmeldingsfrist, reise/opphold)
+   vises som ærlig manglende — de finnes ikke som kolonner og diktes ikke. */
+function WBTurneringNivaa({ data, actions }: { data: WorkbenchData; actions?: WorkbenchV2Actions }) {
+  const router = useRouter();
+  // «I dag» som norsk kalenderdag — komponenten kan rendres på Vercel (UTC).
+  const iDag = useMemo(
+    () =>
+      new Intl.DateTimeFormat("en-CA", { timeZone: "Europe/Oslo", year: "numeric", month: "2-digit", day: "2-digit" }).format(
+        new Date(),
+      ),
+    [],
+  );
+  const paameldinger = useMemo(() => data.turneringPlan ?? [], [data.turneringPlan]);
+  const blokker = useMemo<TurneringPeriodeBlokk[]>(
+    () => (data.seasonBlocks ?? []).map((b) => ({ lPhase: b.lPhase, startDate: b.startDate, endDate: b.endDate })),
+    [data.seasonBlocks],
+  );
+  const vindu = useMemo(() => sesongvindu(blokker), [blokker]);
+  const lphaseLabel = (l: TurneringPeriodeBlokk["lPhase"]) => LPHASE_LABEL_KANON[l] ?? l;
+  const vurder = (p: TurneringPaamelding) => vurderKollisjon(p.fra, blokker, lphaseLabel);
+
+  const [filter, setFilter] = useState<"alle" | "tentativ">("alle");
+  const [valgt, setValgt] = useState<TurneringPaamelding | null>(null);
+  const [bekrefter, setBekrefter] = useState(false);
+  const [arkFeil, setArkFeil] = useState<string | null>(null);
+
+  const tentative = paameldinger.filter((p) => p.uavklart);
+  const synlige = filter === "tentativ" ? tentative : paameldinger;
+  const kollisjoner = blokker.length > 0 ? paameldinger.filter((p) => vurder(p).ja) : [];
+  const nesteUavklart = tentative
+    .filter((p) => p.fra >= iDag)
+    .sort((a, b) => a.fra.localeCompare(b.fra))[0];
+
+  const apneArk = (p: TurneringPaamelding) => {
+    setArkFeil(null);
+    setValgt(p);
+  };
+  const bekreft = async (p: TurneringPaamelding) => {
+    if (!actions?.bekreftTurnering || bekrefter) return;
+    setBekrefter(true);
+    setArkFeil(null);
+    const res = await actions.bekreftTurnering(p.id);
+    setBekrefter(false);
+    if (!res.ok) {
+      setArkFeil(res.error ?? "Kunne ikke bekrefte påmeldingen.");
+      return;
+    }
+    setValgt(null);
+    router.refresh();
+  };
+
+  const statusTag = (tekst: string, tone: "ok" | "avvik" | "noytral" = "noytral") => (
+    <span
+      style={{
+        display: "inline-flex", alignItems: "center", padding: "2px 8px", borderRadius: 9999,
+        fontFamily: T.mono, fontSize: 10, letterSpacing: "0.04em", textTransform: "uppercase",
+        background: T.panel2, border: `1px solid ${T.border}`,
+        color: tone === "avvik" ? T.down : tone === "ok" ? T.up : T.mut,
+      }}
+    >
+      {tekst}
+    </span>
+  );
+  const detaljRad = (k: string, v: string, sub?: string) => (
+    <div style={{ display: "flex", alignItems: "baseline", gap: 12, padding: "9px 0", borderBottom: `1px solid ${T.border}` }}>
+      <div style={{ flex: 1, minWidth: 0 }}>
+        <span style={{ fontFamily: T.ui, fontSize: 13, color: T.fg }}>{k}</span>
+        {sub && <span style={{ display: "block", fontFamily: T.ui, fontSize: 11.5, color: T.mut, marginTop: 2 }}>{sub}</span>}
+      </div>
+      <span style={{ fontFamily: T.mono, fontSize: 12.5, color: T.fg, textAlign: "right", flex: "none" }}>{v}</span>
+    </div>
+  );
+
   return (
-    <div data-paper-workbench-turnering data-paper-slug="workbench-desktop" data-paper-wave-f="workbench-turnering" style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
-      {snart && (
+    <div data-paper-workbench-turnering data-paper-slug="workbench-turnering" data-paper-wave-f="workbench-turnering" style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 1080 }}>
+      {/* Én ting nå — nærmeste turnering der noe faktisk er uavklart. En
+          avklart turnering krever ingen handling og får ikke blokka. */}
+      {nesteUavklart && (
         <Kort
           pad="16px 18px"
           style={{
             border: `1px solid color-mix(in srgb, ${T.handling} 35%, ${T.border})`,
+            borderLeft: `3px solid ${T.handling}`,
             background: `color-mix(in srgb, ${T.handling} 6%, ${T.panel})`,
           }}
         >
           <Caps size={9} color={T.handling}>Én ting nå</Caps>
           <div style={{ marginTop: 8, fontFamily: T.disp, fontSize: 18, fontWeight: 600, color: T.fg, letterSpacing: "-0.02em" }}>
-            {snart.soon ? "Bekreft påmelding" : "Neste turnering"}
+            {nesteUavklart.navn} om {dagerMellom(iDag, nesteUavklart.fra)} dager
           </div>
-          <p style={{ margin: "6px 0 0", fontFamily: T.ui, fontSize: 13, color: T.fg2, lineHeight: 1.45 }}>
-            {snart.tn} · {snart.td}
+          <p style={{ margin: "6px 0 0", fontFamily: T.ui, fontSize: 13, color: T.fg2, lineHeight: 1.5, maxWidth: "62ch" }}>
+            Påmeldingen står fortsatt som tentativ{nesteUavklart.notat ? `: ${nesteUavklart.notat}` : "."} Blir den ikke
+            avklart, planlegger du en uke som kanskje ikke skal brukes til turnering — og skal det reises, er det for
+            sent å bestille billig.
           </p>
           <div style={{ marginTop: 14 }}>
-            <span
-              style={{
-                display: "inline-flex",
-                alignItems: "center",
-                justifyContent: "center",
-                gap: 8,
-                minHeight: 56,
-                padding: "10px 16px",
-                borderRadius: 12,
-                background: T.fg,
-                color: T.bg,
-                fontFamily: T.ui,
-                fontSize: 13,
-                fontWeight: 600,
-              }}
-            >
-              {/* PP-3: ink, ikke clay — Publiser i bunnsonen eier clay-monopolet. */}
-              Bekreft påmelding
-            </span>
+            {/* PP-3: ink, ikke clay — Publiser i bunnsonen eier clay-monopolet. */}
+            <Knapp icon="trophy" onClick={() => apneArk(nesteUavklart)}>Avklar påmeldingen</Knapp>
           </div>
         </Kort>
       )}
-      <Kort eyebrow="Turneringer">
-        {liste.length === 0 ? (
+
+      {/* Sesongen: perioder som bånd, turneringer som merker oppå. */}
+      <Kort eyebrow="Sesongen">
+        {vindu ? (
+          <>
+            <p style={{ margin: "0 0 12px", fontFamily: T.ui, fontSize: 12.5, color: T.mut, lineHeight: 1.5 }}>
+              Turneringene ligger oppå periodiseringen. Rødt merke betyr at turneringen faller i en periode som ikke er
+              satt av til å konkurrere.
+            </p>
+            <div
+              style={{
+                display: "grid", gridAutoFlow: "column", gridAutoColumns: "1fr", gap: 1,
+                fontFamily: T.mono, fontSize: 9.5, color: T.mut, textTransform: "uppercase",
+                letterSpacing: "0.06em", marginBottom: 4,
+              }}
+            >
+              {vinduMaaneder(vindu).map((m, i) => (
+                <span key={`${m}-${i}`} style={{ paddingLeft: 2 }}>{m}</span>
+              ))}
+            </div>
+            <div style={{ position: "relative", height: 34, borderRadius: 8, overflow: "hidden", background: T.panel2, border: `1px solid ${T.border}`, marginBottom: 8 }}>
+              {blokker.map((b, i) => {
+                const fra = prosentAvVindu(b.startDate.slice(0, 10), vindu);
+                const til = prosentAvVindu(b.endDate.slice(0, 10), vindu);
+                const farge = LPHASE_FARGE_KANON[b.lPhase] ?? T.mut;
+                return (
+                  <div
+                    key={`${b.lPhase}-${b.startDate}-${i}`}
+                    title={`${lphaseLabel(b.lPhase)} · ${datoSpenn(b.startDate, b.endDate)}`}
+                    style={{
+                      position: "absolute", top: 0, bottom: 0, left: `${fra}%`, width: `${Math.max(til - fra, 1)}%`,
+                      display: "flex", alignItems: "center", padding: "0 8px", overflow: "hidden",
+                      whiteSpace: "nowrap", fontFamily: T.mono, fontSize: 10, letterSpacing: "0.04em",
+                      textTransform: "uppercase", color: T.fg2,
+                      background: `color-mix(in srgb, ${farge} 22%, ${T.panel})`,
+                      borderRight: `1px solid ${T.panel}`,
+                    }}
+                  >
+                    {lphaseLabel(b.lPhase)}
+                  </div>
+                );
+              })}
+            </div>
+            <div style={{ position: "relative", height: 26 }}>
+              {Array.from(new Map(paameldinger.map((p) => [`${p.navn}|${p.fra}`, p])).values()).map((p) => {
+                const kol = vurder(p);
+                return (
+                  <span
+                    key={`${p.navn}|${p.fra}`}
+                    title={`${p.navn} · ${datoSpenn(p.fra, p.til)}${kol.ja ? ` · ${kol.grunn}` : ""}`}
+                    style={{
+                      position: "absolute", top: 0, left: `${prosentAvVindu(p.fra, vindu)}%`,
+                      width: 12, height: 12, marginLeft: -6, borderRadius: 9999,
+                      background: kol.ja ? T.down : T.info, border: `2px solid ${T.panel}`,
+                    }}
+                  />
+                );
+              })}
+            </div>
+            <div style={{ display: "flex", flexWrap: "wrap", gap: 14, fontFamily: T.mono, fontSize: 10, color: T.mut }}>
+              {([["i turneringsperiode", T.info], ["utenfor turneringsperiode", T.down]] as const).map(([tekst, farge]) => (
+                <span key={tekst} style={{ display: "inline-flex", alignItems: "center", gap: 5 }}>
+                  <span style={{ width: 9, height: 9, borderRadius: 9999, background: farge }} />
+                  {tekst}
+                </span>
+              ))}
+            </div>
+          </>
+        ) : (
+          <TomTilstand
+            icon="calendar"
+            title="Ingen periodisering å tegne turneringene oppå"
+            sub="Kollisjonssjekken trenger en årsplan med perioder. Legg inn perioder i Årsplan-fanen først."
+          />
+        )}
+      </Kort>
+
+      {/* Påmeldinger med filter + kollisjonsmerking. */}
+      <Kort eyebrow="Påmeldinger">
+        {paameldinger.length === 0 ? (
           <TomTilstand
             icon="trophy"
             title="Ingen turneringer planlagt"
             sub="Når turneringer er koblet til planen, dukker de opp her."
           />
         ) : (
-          liste.map((t, i) => (
-            <Rad
-              key={`${t.tn}-${t.td}-${i}`}
-              leading={<Icon name="trophy" size={14} style={{ color: t.soon ? T.handling : T.mut }} />}
-              title={t.tn}
-              sub={t.td}
-              meta={t.soon ? <StatusPill tone="warn">Snart</StatusPill> : undefined}
-              last={i === liste.length - 1}
-            />
-          ))
+          <>
+            <div style={{ marginBottom: 10 }}>
+              <PillVelger
+                options={[
+                  { v: "alle", l: "Alle" },
+                  { v: "tentativ", l: tentative.length > 0 ? `Tentative (${tentative.length})` : "Tentative" },
+                ]}
+                value={filter}
+                onChange={(v) => setFilter(v as "alle" | "tentativ")}
+              />
+            </div>
+            {synlige.length === 0 ? (
+              <TomTilstand icon="trophy" title="Ingen påmeldinger i dette filteret" sub="Velg et annet filter." />
+            ) : (
+              synlige.map((p, i) => {
+                const kol = vurder(p);
+                return (
+                  <div key={p.id} style={kol.ja ? { borderLeft: `3px solid ${T.down}`, paddingLeft: 9, marginLeft: -12 } : undefined}>
+                    <Rad
+                      onClick={() => apneArk(p)}
+                      leading={<span style={{ fontFamily: T.mono, fontSize: 11.5, color: T.mut, minWidth: 84, flex: "none" }}>{datoSpenn(p.fra, p.til)}</span>}
+                      title={p.navn}
+                      sub={p.sted ? `${p.sted}` : undefined}
+                      meta={
+                        <span style={{ display: "inline-flex", gap: 6, alignItems: "center" }}>
+                          {p.uavklart && statusTag("tentativ", "avvik")}
+                          {kol.ja && statusTag(kol.grunn.includes("testuka") ? "testuke" : "utenfor TURN", "avvik")}
+                          {statusTag(p.prioritet.toLowerCase())}
+                        </span>
+                      }
+                      last={i === synlige.length - 1}
+                    />
+                  </div>
+                );
+              })
+            )}
+          </>
         )}
       </Kort>
+
+      {/* Null kollisjoner sies høyt — en sjekk som bare snakker når den finner
+          noe, er ikke til å skille fra en sjekk som ikke kjørte. */}
+      {paameldinger.length > 0 && blokker.length > 0 && (
+        <div style={{ display: "flex", gap: 10, padding: "12px 14px", background: T.panel2, border: `1px solid ${T.border}`, borderRadius: 12 }}>
+          <Icon name={kollisjoner.length > 0 ? "alert-triangle" : "check"} size={15} style={{ color: kollisjoner.length > 0 ? T.down : T.up, flex: "none", marginTop: 2 }} />
+          <p style={{ margin: 0, fontFamily: T.ui, fontSize: 12.5, color: T.mut, lineHeight: 1.5 }}>
+            {kollisjoner.length > 0
+              ? `${kollisjoner.length} av ${paameldinger.length} påmeldinger ligger utenfor en turneringsperiode. Det er ikke feil i seg selv — men det er en avveining som bør tas bevisst, ikke oppdages i ettertid.`
+              : `Alle ${paameldinger.length} påmeldingene ligger i en turneringsperiode. Ingen kollisjon med periodiseringen nå — sjekken kjører hver gang du åpner fanen.`}
+          </p>
+        </div>
+      )}
+
+      {/* To felt fasiten krever, som ikke finnes i basen — vises som ærlig
+          manglende, aldri som plausible tall ingen har lagt inn. */}
+      <Kort eyebrow="Ikke i basen ennå">
+        <p style={{ margin: "0 0 6px", fontFamily: T.ui, fontSize: 12.5, color: T.mut, lineHeight: 1.5 }}>
+          To ting hører hjemme i en turneringsplanlegger, men finnes ikke som felter i dag. De står her som tomme, ikke
+          som antatte.
+        </p>
+        {detaljRad("Påmeldingsfrist", "mangler", "Ingen kolonne i påmeldingene. Fristene ligger hos arrangøren.")}
+        {detaljRad("Reise og opphold", "mangler", "Må planlegges utenfor appen inntil feltene finnes.")}
+      </Kort>
+
+      {/* Detalj-ark for valgt påmelding. */}
+      {valgt && (
+        <div style={{ position: "fixed", inset: 0, zIndex: 70, display: "flex", alignItems: "center", justifyContent: "center", padding: 16 }}>
+          <div
+            onClick={bekrefter ? undefined : () => setValgt(null)}
+            style={{ position: "absolute", inset: 0, background: T.farge.nestenSvartA62, backdropFilter: "blur(2px)" }}
+          />
+          <div
+            className="v2-sheet-in"
+            style={{
+              position: "relative", width: "min(520px, 100%)", maxHeight: "88vh", overflowY: "auto",
+              background: T.panel, border: `1px solid ${T.borderS}`, borderRadius: 20, padding: "20px 22px",
+              boxShadow: `0 24px 60px ${T.farge.svartA50}`,
+            }}
+          >
+            <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 12 }}>
+              <div style={{ minWidth: 0 }}>
+                <h2 style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 18, letterSpacing: "-0.02em", color: T.fg, margin: 0 }}>
+                  {valgt.navn}
+                </h2>
+                <span style={{ fontFamily: T.mono, fontSize: 11.5, color: T.mut, display: "block", marginTop: 4 }}>
+                  {datoSpenn(valgt.fra, valgt.til)}
+                  {valgt.sted ? ` · ${valgt.sted}` : ""}
+                </span>
+              </div>
+              <button
+                type="button"
+                onClick={() => setValgt(null)}
+                disabled={bekrefter}
+                aria-label="Lukk"
+                style={{
+                  appearance: "none", cursor: "pointer", width: 28, height: 28, borderRadius: 8,
+                  background: T.panel2, border: `1px solid ${T.border}`, display: "inline-flex",
+                  alignItems: "center", justifyContent: "center", flex: "none",
+                }}
+              >
+                <Icon name="x" size={14} style={{ color: T.fg2 }} />
+              </button>
+            </div>
+            <div style={{ marginTop: 12 }}>
+              {detaljRad("Prioritet", valgt.prioritet.toLowerCase())}
+              {detaljRad("Status", valgt.uavklart ? "tentativ" : "bekreftet")}
+              {valgt.kategori && detaljRad("Kategori", valgt.kategori)}
+              {(() => {
+                const kol = vurder(valgt);
+                return detaljRad("Periode", kol.periode ? lphaseLabel(kol.periode.lPhase) : blokker.length > 0 ? "utenfor sesongplanen" : "ingen periodisering");
+              })()}
+              {detaljRad("Om", `${Math.max(0, dagerMellom(iDag, valgt.fra))} dager`)}
+            </div>
+            {valgt.notat && (
+              <p style={{ margin: "12px 0 0", padding: "10px 12px", background: T.panel2, border: `1px solid ${T.border}`, borderRadius: 10, fontFamily: T.ui, fontSize: 12.5, color: T.mut, lineHeight: 1.5 }}>
+                {valgt.notat}
+              </p>
+            )}
+            {(() => {
+              const kol = vurder(valgt);
+              if (!kol.ja) return null;
+              return (
+                <div style={{ display: "flex", gap: 10, margin: "12px 0 0", padding: "10px 12px", background: T.panel2, border: `1px solid ${T.border}`, borderRadius: 10 }}>
+                  <Icon name="alert-triangle" size={14} style={{ color: T.down, flex: "none", marginTop: 2 }} />
+                  <p style={{ margin: 0, fontFamily: T.ui, fontSize: 12.5, color: T.mut, lineHeight: 1.5 }}>{kol.grunn}</p>
+                </div>
+              );
+            })()}
+            <p style={{ margin: "12px 0 0", fontFamily: T.ui, fontSize: 11.5, color: T.mut }}>
+              Påmeldingsfrist og reise mangler i basen og kan ikke fylles ut herfra ennå.
+            </p>
+            {arkFeil && (
+              <p style={{ margin: "10px 0 0", fontFamily: T.ui, fontSize: 12, color: T.down }}>{arkFeil}</p>
+            )}
+            <div style={{ display: "flex", gap: 8, marginTop: 16 }}>
+              <Knapp ghost full onClick={() => setValgt(null)} disabled={bekrefter}>Lukk</Knapp>
+              {valgt.uavklart && actions?.bekreftTurnering && (
+                <Knapp full icon="check" onClick={() => bekreft(valgt)} disabled={bekrefter}>
+                  {bekrefter ? "Bekrefter…" : "Bekreft påmelding"}
+                </Knapp>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
@@ -2590,7 +2873,7 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions, w
             </div>
           )}
           {nivaa === "maned" && <div key="maned" className="v2-fade-in"><MndNivaa data={data} onVelgDato={velgDatoFraMnd} /></div>}
-          {nivaa === "turnering" && <div key="turnering" className="v2-fade-in"><WBTurneringNivaa data={data} /></div>}
+          {nivaa === "turnering" && <div key="turnering" className="v2-fade-in"><WBTurneringNivaa data={data} actions={actions} /></div>}
             </div>
           </div>
           {/* INSPEKTØR (fasit .insp): faner Økt | Innboks | Caddie */}
