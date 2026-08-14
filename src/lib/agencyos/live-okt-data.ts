@@ -10,6 +10,7 @@
  */
 
 import { prisma } from "@/lib/prisma";
+import { AnalyseResultatSchema } from "@/lib/coaching-analysis";
 
 export type LiveOktData = {
   id: string;
@@ -27,7 +28,9 @@ export type LiveOktData = {
     status: string;
     durationSec: number | null;
     transcript: string | null;
-    aiAnalysis: unknown;
+    /** Ferdig zod-validert på serveren — klientkomponenten skal aldri importere
+     *  coaching-analysis (den drar med seg Anthropic SDK + fs inn i bundelen). */
+    coachAnalyse: string | null;
   } | null;
   driller: { id: string; navn: string; varighetMin: number; pyramide: string }[];
 };
@@ -82,7 +85,12 @@ export async function lastLiveOktData(sessionId: string): Promise<LiveOktData | 
     varighetPlanlagtMin: varighetMin,
     malsetning: okt.maalsetning,
     opptak: opptak
-      ? { status: opptak.status, durationSec: opptak.durationSec, transcript: opptak.transcript, aiAnalysis: opptak.aiAnalysis }
+      ? {
+          status: opptak.status,
+          durationSec: opptak.durationSec,
+          transcript: opptak.transcript,
+          coachAnalyse: AnalyseResultatSchema.safeParse(opptak.aiAnalysis).data?.coachAnalyse ?? null,
+        }
       : null,
     driller: okt.drills.map((d) => ({ id: d.id, navn: d.name, varighetMin: d.durationMinutes, pyramide: d.pyramide })),
   };

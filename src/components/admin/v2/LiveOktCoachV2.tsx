@@ -12,7 +12,6 @@
 
 import Link from "next/link";
 import { T, Caps, Kort, TomTilstand } from "@/components/v2";
-import { AnalyseResultatSchema } from "@/lib/coaching-analysis";
 import type { LiveOktData } from "@/lib/agencyos/live-okt-data";
 
 const MMILJO_LABEL: Record<string, string> = {
@@ -36,7 +35,6 @@ function fmtVarighet(sec: number | null): string {
 }
 
 export function LiveOktCoachV2({ data }: { data: LiveOktData }) {
-  const analyse = AnalyseResultatSchema.safeParse(data.opptak?.aiAnalysis);
   const varighet = `${data.varighetPlanlagtMin} min planlagt`;
 
   return (
@@ -142,8 +140,8 @@ export function LiveOktCoachV2({ data }: { data: LiveOktData }) {
           </Kort>
 
           <Kort eyebrow="Siste analyse">
-            {analyse.success ? (
-              <p style={{ margin: 0, fontFamily: T.ui, fontSize: 12.5, color: T.mut, lineHeight: 1.5 }}>{analyse.data.coachAnalyse}</p>
+            {data.opptak?.coachAnalyse ? (
+              <p style={{ margin: 0, fontFamily: T.ui, fontSize: 12.5, color: T.mut, lineHeight: 1.5 }}>{data.opptak.coachAnalyse}</p>
             ) : (
               <>
                 <div style={{ fontFamily: T.disp, fontSize: 14, fontWeight: 600, color: T.fg }}>Ingen analyse for denne økta</div>

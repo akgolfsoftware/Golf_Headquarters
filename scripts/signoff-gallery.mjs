@@ -85,6 +85,10 @@ const SCREENS = [
   { id: "B4-okonomi", navn: "AgencyOS økonomi", rute: "/admin/agencyos/okonomi", bruker: COACH, fasitM: "agencyos-okonomi.html", fasitD: "agencyos-okonomi.html" },
   { id: "B4-akstigen", navn: "AK-stigen", rute: "/admin/agencyos/ak-stigen", bruker: COACH, fasitM: "agencyos-ak-stigen.html", fasitD: "agencyos-ak-stigen.html" },
   { id: "B4-spillerprofil", navn: "Spillerprofil", rute: "/admin/spillere/c7e2811d-86e1-49fe-9100-d33d5056eac2", bruker: COACH, fasitM: "spillerprofil.html", fasitD: "spillerprofil.html" },
+  // Bølge 4b — 14.08, etter bygging av de tre innholdsgapene (PR #464).
+  { id: "B4b-akstigen", navn: "AK-stigen (bygget)", rute: "/admin/agencyos/ak-stigen", bruker: COACH, fasitM: "agencyos-ak-stigen.html", fasitD: "agencyos-ak-stigen.html" },
+  { id: "B4b-okonomi", navn: "Økonomi (bygget)", rute: "/admin/agencyos/okonomi", bruker: COACH, fasitM: "agencyos-okonomi.html", fasitD: "agencyos-okonomi.html" },
+  { id: "B4b-liveokt", navn: "Live-økt coach (ny)", rute: "/admin/agencyos/live/cmseta6mk002k8ubppqbosuve", bruker: COACH, fasitM: "agencyos-live-session.html", fasitD: "agencyos-live-session.html" },
 ];
 
 const only = (process.argv[2] || "").trim();
