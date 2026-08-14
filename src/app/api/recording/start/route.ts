@@ -1,6 +1,10 @@
 // POST /api/recording/start
-// Oppretter en SessionRecording. To modi:
+// Oppretter en SessionRecording. Tre modi:
 //   { bookingId } — knytter opptaket til en booking (spiller hentes derfra).
+//   { sessionId } — knytter opptaket til en treningsøkt (TrainingSessionV2);
+//                   spiller hentes fra økta. Gjør at coachens live-økt-flate
+//                   (/admin/agencyos/live/[sessionId]) faktisk kan vise
+//                   opptak, transkript og analyse for økta.
 //   { playerId }  — fritt opptak fra /admin/recording uten booking.
 // Validerer at innlogget bruker er coach på booking.serviceType eller ADMIN.
 // Returnerer { recordingId }.
@@ -12,6 +16,7 @@ import { harCoachTilgangTilSpiller } from "@/lib/auth/coached";
 import { prisma } from "@/lib/prisma";
 import { audit } from "@/lib/audit";
 import { rateLimit } from "@/lib/rate-limit";
+import { vurderOktOpptakTilgang } from "@/lib/recording/okt-tilgang";
 import {
   hentLydSamtykkeStatus,
   lydSamtykkeMelding,
@@ -21,10 +26,11 @@ import {
 const Body = z
   .object({
     bookingId: z.string().min(1).optional(),
+    sessionId: z.string().min(1).optional(),
     playerId: z.string().min(1).optional(),
   })
-  .refine((v) => !!v.bookingId || !!v.playerId, {
-    message: "bookingId eller playerId må oppgis",
+  .refine((v) => !!v.bookingId || !!v.sessionId || !!v.playerId, {
+    message: "bookingId, sessionId eller playerId må oppgis",
   });
 
 /** Hard gate: uten LydSamtykke status GITT → 403. Klient kan ikke omgå. */
@@ -67,6 +73,58 @@ export async function POST(req: Request) {
     const parsed = Body.safeParse(await req.json().catch(() => ({})));
     if (!parsed.success) {
       return NextResponse.json({ error: "Ugyldig body" }, { status: 400 });
+    }
+
+    // Treningsøkt — opptak knyttet til en TrainingSessionV2. Spilleren hentes
+    // fra økta, så coachen aldri kan koble opptaket til feil person.
+    if (parsed.data.sessionId) {
+      const okt = await prisma.trainingSessionV2.findUnique({
+        where: { id: parsed.data.sessionId },
+        select: { id: true, studentId: true, coachId: true },
+      });
+      if (!okt) {
+        return NextResponse.json({ error: "Økta finnes ikke" }, { status: 404 });
+      }
+      const tilgang = vurderOktOpptakTilgang({
+        viewerRole: user.role,
+        viewerId: user.id,
+        oktCoachId: okt.coachId,
+        oktStudentId: okt.studentId,
+        // Slås kun opp når økta faktisk har en spiller.
+        harTilgangTilSpiller: okt.studentId
+          ? await harCoachTilgangTilSpiller(user, okt.studentId)
+          : false,
+      });
+      if (!tilgang.ok) {
+        return tilgang.grunn === "mangler-spiller"
+          ? NextResponse.json(
+              { error: "Økta mangler spiller", message: "Økta har ingen spiller å knytte opptaket til." },
+              { status: 400 },
+            )
+          : NextResponse.json({ error: "Du har ikke tilgang til denne økta" }, { status: 403 });
+      }
+
+      const sperre = await avvisUtenLydSamtykke(tilgang.playerId);
+      if (sperre) return sperre;
+
+      const recording = await prisma.sessionRecording.create({
+        data: {
+          sessionId: okt.id,
+          uploadedById: user.id,
+          playerId: tilgang.playerId,
+          status: "RECORDING",
+        },
+        select: { id: true },
+      });
+
+      await audit({
+        actorId: user.id,
+        action: "recording.started",
+        target: `SessionRecording:${recording.id}`,
+        metadata: { sessionId: okt.id, playerId: tilgang.playerId, kilde: "treningsokt" },
+      });
+
+      return NextResponse.json({ recordingId: recording.id });
     }
 
     // Fritt opptak — spiller valgt direkte i /admin/recording.

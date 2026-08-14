@@ -4,10 +4,9 @@
  * Coachens per-økt live-visning. Paper-fasit: fase1/agencyos-live-session.html.
  * «UNDER-flata mens økta pågår», søsterflate til FangstSheet.
  *
- * Opptak er ikke koblet til denne økta i dag — /api/recording/start setter
- * aldri sessionId på SessionRecording, kun bookingId eller fritt playerId.
- * «Start opptak» lenker derfor til det ekte, frie opptaksverktøyet
- * (/admin/recording) i stedet for å late som en kobling som ikke finnes.
+ * «Start opptak» sender coachen til opptaksverktøyet med økta i URL-en
+ * (/admin/recording?okt=<id>). Opptaket knyttes da til økta, og transkript
+ * + analyse dukker opp på denne flata når det er ferdig behandlet.
  */
 
 import Link from "next/link";
@@ -72,7 +71,7 @@ export function LiveOktCoachV2({ data }: { data: LiveOktData }) {
           </p>
           <div style={{ marginTop: 14 }}>
             <Link
-              href="/admin/recording"
+              href={`/admin/recording?okt=${data.id}`}
               className="v2-press v2-focus"
               style={{
                 display: "inline-flex", alignItems: "center", gap: 8, minHeight: 56, padding: "10px 16px",
@@ -134,7 +133,7 @@ export function LiveOktCoachV2({ data }: { data: LiveOktData }) {
               </>
             ) : (
               <p style={{ margin: "10px 0 0", fontFamily: T.ui, fontSize: 12.5, color: T.mut, lineHeight: 1.5 }}>
-                Ingen opptak på denne økta. Opptaket startes fra Én ting nå øverst.
+                Ingen opptak på denne økta ennå. Opptaket startes fra Én ting nå øverst.
               </p>
             )}
           </Kort>
@@ -148,7 +147,7 @@ export function LiveOktCoachV2({ data }: { data: LiveOktData }) {
                 <p style={{ margin: "6px 0 0", fontFamily: T.ui, fontSize: 12.5, color: T.mut, lineHeight: 1.5 }}>
                   {data.opptak
                     ? "Analysen lages av opptaket. Kjøres når opptaket er ferdig transkribert."
-                    : "Analysen lages av opptaket. Denne økta har ikke noe opptak knyttet til seg ennå."}
+                    : "Analysen lages av opptaket. Start opptaket øverst, så kommer analysen hit når den er ferdig."}
                 </p>
               </>
             )}

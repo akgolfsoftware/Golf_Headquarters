@@ -61,6 +61,12 @@ type Props = {
   spillere: SpillerValg[];
   topbar: ReactNode;
   stage: ReactNode;
+  /**
+   * Treningsøkt opptaket hører til (fra ?okt=). Når satt, knyttes opptaket til
+   * økta, spilleren er låst til øktas spiller, og coachens live-økt-flate kan
+   * vise transkript og analyse for nettopp denne økta.
+   */
+  okt?: { sessionId: string; playerId: string; tittel: string } | null;
 };
 
 const CHUNK_MS = 30_000;
@@ -105,6 +111,7 @@ export function RecordingControls({
   spillere,
   topbar,
   stage,
+  okt = null,
 }: Props) {
   const router = useRouter();
   const [skjult, setSkjult] = useState(false);
@@ -114,7 +121,9 @@ export function RecordingControls({
     if (recoveryRecordingId) return "recovery";
     return "idle";
   });
-  const [valgtSpiller, setValgtSpiller] = useState<string>("");
+  // Kommer opptaket fra en økt, er spilleren gitt — coachen skal ikke kunne
+  // velge feil person for en økt som allerede vet hvem den gjelder.
+  const [valgtSpiller, setValgtSpiller] = useState<string>(okt?.playerId ?? "");
   const [elapsedSec, setElapsedSec] = useState(0);
   const [chunkInfo, setChunkInfo] = useState<string | null>(null);
   const [batteryWarn, setBatteryWarn] = useState(false);
@@ -364,7 +373,9 @@ export function RecordingControls({
       const res = await fetch("/api/recording/start", {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify({ playerId: valgtSpiller }),
+        body: JSON.stringify(
+          okt ? { sessionId: okt.sessionId } : { playerId: valgtSpiller },
+        ),
       });
       const j = (await res.json().catch(() => ({}))) as {
         recordingId?: string;

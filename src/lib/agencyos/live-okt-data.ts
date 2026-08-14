@@ -4,9 +4,8 @@
  *
  * Kilder: training_sessions_v2 · session_recordings · session_drills.
  * Ingen tall fabrikeres — mangler opptak/analyse/driller for økta, vises det
- * som ærlig tomt, akkurat som fasiten selv gjør (dens egen snapshot 02.08
- * viste "Ingen opptak" fordi ingen SessionRecording pekte på en økt — det
- * feltet er fortsatt aldri satt av /api/recording/start i dag).
+ * som ærlig tomt. Opptak knyttes til økta via /api/recording/start
+ * ({ sessionId }), som startes fra «Start opptak» på denne flata.
  */
 
 import { prisma } from "@/lib/prisma";
