@@ -186,6 +186,8 @@ export type AdminRecordingV2Data = {
   behandles: number;
   feilet: number;
   recordings: AdminRecordingRad[];
+  /** Satt når opptaket startes fra en treningsøkt (?okt=) — se RecordingControls. */
+  okt?: { sessionId: string; playerId: string; tittel: string } | null;
 };
 
 export function AdminRecordingV2({ data }: { data: AdminRecordingV2Data }) {
@@ -230,6 +232,7 @@ export function AdminRecordingV2({ data }: { data: AdminRecordingV2Data }) {
         recoveryRecordingId={data.recoveryRecordingId}
         recoveryStartedAt={data.recoveryStartedAtLabel}
         spillere={data.spillere}
+        okt={data.okt ?? null}
         topbar={
           <>
             {aktivProsesserer ? (

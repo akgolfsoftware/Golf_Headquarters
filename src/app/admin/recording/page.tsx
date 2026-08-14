@@ -22,7 +22,7 @@ import {
 } from "@/components/admin/v2/AdminRecordingV2";
 import { hentLydSamtykkeKart } from "@/lib/recording/lyd-samtykke";
 
-type SearchParams = Promise<{ id?: string }>;
+type SearchParams = Promise<{ id?: string; okt?: string }>;
 
 function parseAnalyse(json: unknown): AnalyseResultat | null {
   if (!json) return null;
@@ -34,6 +34,21 @@ export default async function RecordingAdmin({ searchParams }: { searchParams?: 
   const user = await requirePortalUser({ allow: ["COACH", "ADMIN"] });
   const sp = (await searchParams) ?? {};
   const activeRecordingId = sp.id ?? null;
+
+  // ?okt= — opptaket startes fra en treningsøkt. Spilleren låses til øktas
+  // spiller, og /api/recording/start knytter opptaket til økta, slik at
+  // coachens live-økt-flate kan vise transkript og analyse for nettopp den.
+  // Tilgang håndheves i API-et; her henter vi kun visningsdata.
+  const oktRad = sp.okt
+    ? await prisma.trainingSessionV2.findUnique({
+        where: { id: sp.okt },
+        select: { id: true, title: true, studentId: true },
+      })
+    : null;
+  const okt =
+    oktRad?.studentId != null
+      ? { sessionId: oktRad.id, playerId: oktRad.studentId, tittel: oktRad.title }
+      : null;
 
   const [recordings, spillere] = await Promise.all([
     prisma.sessionRecording.findMany({
@@ -168,6 +183,7 @@ export default async function RecordingAdmin({ searchParams }: { searchParams?: 
     behandles: recordings.filter((r) => r.status === "PROCESSING").length,
     feilet: recordings.filter((r) => r.status === "FAILED").length,
     recordings: rader,
+    okt,
   };
 
   return (
