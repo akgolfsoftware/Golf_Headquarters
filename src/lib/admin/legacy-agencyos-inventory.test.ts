@@ -25,12 +25,31 @@ const SKAL_REDIRECTE: string[] = [
   "plans/new/page.tsx",
   "agenter/page.tsx",
   "okonomi/page.tsx",
-  "mer/page.tsx",
-  "ai/page.tsx",
-  "risiko/page.tsx",
   "kapasitet/page.tsx",
-  "tilstander/page.tsx",
-  "prosjekter/page.tsx",
+];
+
+/**
+ * Ruter som VAR redirect()-stubber i (legacy) og ble slettet 2026-08-14.
+ * Videresendingen lever videre i next.config.ts — billigere enn en rute, og
+ * gamle bokmerker virker fortsatt. Testen låser at de ikke forsvinner stille.
+ */
+const FLYTTET_TIL_NEXT_CONFIG: string[] = [
+  "/admin/ai",
+  "/admin/mer",
+  "/admin/risiko",
+  "/admin/board",
+  "/admin/prosjekter",
+  "/admin/tilstander",
+  "/portal/reach",
+  "/portal/mal/statistikk",
+  "/portal/mal/milepaeler",
+  "/portal/coach/plans/perioder",
+  "/portal/tren/turneringer/ny",
+  "/portal/mal/sg-hub/benchmark",
+  "/portal/mal/sg-hub/best-vs-now",
+  "/portal/mal/sg-hub/conditions",
+  "/portal/mal/sg-hub/strategy",
+  "/portal/mal/sg-hub/yardage",
 ];
 
 test("legacy-inventar: kjente redirect-ruter redirecter fortsatt", () => {
@@ -45,11 +64,22 @@ test("legacy-inventar: kjente redirect-ruter redirecter fortsatt", () => {
   }
 });
 
+test("legacy-inventar: slettede redirect-stubber lever videre i next.config.ts", () => {
+  const cfg = readFileSync(path.join(process.cwd(), "next.config.ts"), "utf8");
+  for (const kilde of FLYTTET_TIL_NEXT_CONFIG) {
+    assert.ok(
+      cfg.includes(`source: "${kilde}"`) || cfg.includes(`source: "${kilde}/:`),
+      `${kilde} mangler i next.config.ts — gamle bokmerker vil gi 404`,
+    );
+  }
+});
+
 test("legacy-inventar: antall page.tsx er dokumentert (regresser ikke stille)", () => {
   const pages = [...walkPages(LEGACY_ROOT)];
-  // 49 pr 2026-07-25. Hvis tallet stiger mye uten plan, er det tech debt.
+  // 49 pr 2026-07-25, 32 etter legacy-oppryddingen 2026-08-14. Tallet skal
+  // ned over tid, aldri opp — stiger det, er ny tech debt på vei inn.
   assert.ok(
-    pages.length >= 40 && pages.length <= 80,
+    pages.length >= 20 && pages.length <= 40,
     `uventet antall legacy pages: ${pages.length}`,
   );
   const utenRedirect = pages.filter((p) => {

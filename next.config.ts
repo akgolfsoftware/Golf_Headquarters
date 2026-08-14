@@ -93,6 +93,30 @@ const nextConfig: NextConfig = {
       // /portal/tren/turneringer er nå direkte tilgjengelige (var skjult bak ?tab=-redirects).
       { source: "/portal/tren/ovelser", destination: "/portal/drills", permanent: true },
       { source: "/portal/tren/ovelser/:path*", destination: "/portal/drills/:path*", permanent: true },
+
+      // Legacy-opprydding 2026-08-14: disse rutene var rene redirect()-stubber i
+      // src/app/**/(legacy)/. Sidene er slettet, men videresendingen består —
+      // flyttet hit så gamle bokmerker fortsatt virker uten å koste en rute i
+      // bygget. permanent: false (307) er bevisst og speiler oppførselen de
+      // hadde som redirect() fra next/navigation, som også er 307. Skal ikke
+      // gjøres permanent mens Paper-porten fortsatt flytter på adresser.
+      { source: "/admin/ai", destination: "/admin/agencyos", permanent: false },
+      { source: "/admin/mer", destination: "/admin/agencyos", permanent: false },
+      { source: "/admin/risiko", destination: "/admin/agencyos", permanent: false },
+      { source: "/admin/board", destination: "/admin/spillere?view=tavle", permanent: false },
+      { source: "/admin/prosjekter", destination: "/admin/agent-team", permanent: false },
+      { source: "/admin/tilstander", destination: "/admin/gjennomfore", permanent: false },
+      { source: "/portal/reach", destination: "/portal", permanent: false },
+      { source: "/portal/mal/statistikk", destination: "/portal/analysere", permanent: false },
+      { source: "/portal/mal/milepaeler", destination: "/portal/talent", permanent: false },
+      { source: "/portal/coach/notes/:noteId", destination: "/portal/coach", permanent: false },
+      { source: "/portal/coach/plans/perioder", destination: "/portal/planlegge/workbench?zoom=ar", permanent: false },
+      { source: "/portal/tren/turneringer/ny", destination: "/portal/tren/turneringer", permanent: false },
+      { source: "/portal/mal/sg-hub/benchmark", destination: "/portal/coach/sg-hub", permanent: false },
+      { source: "/portal/mal/sg-hub/best-vs-now", destination: "/portal/coach/sg-hub", permanent: false },
+      { source: "/portal/mal/sg-hub/conditions", destination: "/portal/coach/sg-hub", permanent: false },
+      { source: "/portal/mal/sg-hub/strategy", destination: "/portal/coach/sg-hub", permanent: false },
+      { source: "/portal/mal/sg-hub/yardage", destination: "/portal/coach/sg-hub", permanent: false },
       // /portal/tren/tester: dedikert test-batteri-skjerm (redesign 2026-06-01) — loop-redirect fjernet.
       { source: "/portal/tren/kalender", destination: "/portal/gjennomfore?tab=kalender", permanent: true },
       { source: "/portal/tren/kalender/:path*", destination: "/portal/gjennomfore?tab=kalender", permanent: true },
