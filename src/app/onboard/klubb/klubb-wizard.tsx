@@ -163,7 +163,7 @@ export function KlubbWizard({
             }}
           >
             <svg viewBox="0 0 520 180">
-              <rect x="180" y="40" width="160" height="120" rx="12" fill="#FAFAF7" />
+              <rect x="180" y="40" width="160" height="120" rx="12" fill="var(--p-bg)" />
               <path d="M 200 60 L 320 60 L 320 80 L 260 80 L 260 100 L 320 100 L 320 120 L 200 120 Z" fill="var(--p-fg)" />
               <rect x="220" y="130" width="80" height="14" rx="3" fill={T.farge.limeMerke} />
               <text
@@ -173,7 +173,7 @@ export function KlubbWizard({
                 style={{ fontFamily: "var(--p-mono)" }}
                 fontSize="8"
                 fontWeight="800"
-                fill="#FAFAF7"
+                fill="var(--p-bg)"
                 letterSpacing="0.10em"
               >
                 KLUBB-OPPSETT
@@ -316,7 +316,7 @@ export function KlubbWizard({
             }}
           >
             <svg viewBox="0 0 520 180">
-              <g fill="#003A2A">
+              <g fill="var(--p-fg)">
                 {[
                   { x: 200, r: 18 },
                   { x: 260, r: 22 },
@@ -337,7 +337,7 @@ export function KlubbWizard({
                 style={{ fontFamily: "var(--p-mono)" }}
                 fontSize="8"
                 fontWeight="800"
-                fill="#FAFAF7"
+                fill="var(--p-bg)"
                 letterSpacing="0.10em"
               >
                 COACH-TEAM
@@ -607,7 +607,7 @@ export function KlubbWizard({
             }}
           >
             <svg viewBox="0 0 520 180">
-              <rect x="140" y="50" width="240" height="80" rx="10" fill="#635BFF" />
+              <rect x="140" y="50" width="240" height="80" rx="10" fill={T.stripeMerke} />
               <text
                 x="260"
                 y="100"
@@ -730,14 +730,14 @@ export function KlubbWizard({
             }}
           >
             <svg viewBox="0 0 520 180">
-              <ellipse cx="260" cy="160" rx="180" ry="10" fill="#003A2A" opacity="0.25" />
+              <ellipse cx="260" cy="160" rx="180" ry="10" fill="var(--p-fg)" opacity="0.25" />
               {[
                 { x: 170, label: "GC" },
                 { x: 260, label: "N" },
                 { x: 350, label: "R" },
               ].map((p, i) => (
                 <g key={i}>
-                  <circle cx={p.x} cy={80} r={32} fill="#003A2A" />
+                  <circle cx={p.x} cy={80} r={32} fill="var(--p-fg)" />
                   <text
                     x={p.x}
                     y={88}
@@ -751,8 +751,8 @@ export function KlubbWizard({
                   </text>
                 </g>
               ))}
-              <line x1={202} y1={80} x2={228} y2={80} stroke="#003A2A" strokeWidth={3} />
-              <line x1={292} y1={80} x2={318} y2={80} stroke="#003A2A" strokeWidth={3} />
+              <line x1={202} y1={80} x2={228} y2={80} stroke="var(--p-fg)" strokeWidth={3} />
+              <line x1={292} y1={80} x2={318} y2={80} stroke="var(--p-fg)" strokeWidth={3} />
             </svg>
           </div>
           <h2 className="ob-step-title">

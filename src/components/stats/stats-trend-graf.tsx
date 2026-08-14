@@ -100,7 +100,7 @@ export function StatsTrendGraf({ data, height = 240 }: StatsTrendGrafProps) {
               y1={ty}
               x2={pad.l + cw}
               y2={ty}
-              stroke="#E5E3DD"
+              stroke="var(--p-border)"
               strokeWidth={1}
               strokeDasharray="4 4"
             />
@@ -110,7 +110,7 @@ export function StatsTrendGraf({ data, height = 240 }: StatsTrendGrafProps) {
               textAnchor="end"
               fontFamily="var(--font-mono)"
               fontSize={10}
-              fill="#5E5C57"
+              fill="var(--p-muted)"
             >
               {tick.toFixed(1)}
             </text>
@@ -144,7 +144,7 @@ export function StatsTrendGraf({ data, height = 240 }: StatsTrendGrafProps) {
             textAnchor="middle"
             fontFamily="var(--font-mono)"
             fontSize={10}
-            fill="#5E5C57"
+            fill="var(--p-muted)"
           >
             {p.d.aar}
           </text>

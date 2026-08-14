@@ -432,7 +432,7 @@ export function WorkspaceHero({
   }>;
 }) {
   return (
-    <header className="-mx-4 -mt-4 border-b border-border bg-gradient-to-b from-[#FBFAF5] to-background px-4 py-8 md:-mx-8 md:-mt-8 md:px-8">
+    <header className="-mx-4 -mt-4 border-b border-border bg-gradient-to-b from-[var(--p-bg)] to-background px-4 py-8 md:-mx-8 md:-mt-8 md:px-8">
       <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
         <div>
           <div className="font-mono text-[10.5px] font-bold uppercase tracking-[0.14em] text-muted-foreground">

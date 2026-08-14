@@ -148,7 +148,7 @@ function HeroScatter({
           <line
             x1={H.px(0, maxHours)} y1={H.py(regression.intercept)}
             x2={H.px(maxHours, maxHours)} y2={H.py(regression.slope * maxHours + regression.intercept)}
-            stroke="#003A2A" strokeWidth={2.4} fill="none"
+            stroke="var(--p-fg)" strokeWidth={2.4} fill="none"
           />
         )}
 
@@ -387,7 +387,7 @@ export function SgTrainingScatter({ data }: { data: SgScatterPayload }) {
               {[
                 { dot: "bg-primary border-card border-[1.5px]", label: "Tidlig periode" },
                 { dot: "bg-accent border-primary border-[1.5px]", label: "Siste 4 uker" },
-                { dot: "bg-[#003A2A]", label: "Regresjon (OLS)", isLine: true },
+                { dot: "", label: "Regresjon (OLS)", isLine: true },
                 { dot: "bg-[rgba(0,88,64,0.20)]", label: "Konfidens-bånd (95 %)", isRect: true },
               ].map(({ dot, label, isLine, isRect }) => (
                 <div key={label} className="grid grid-cols-[14px_1fr] items-center gap-2 font-mono text-[10px] font-bold text-foreground tracking-[0.04em]">

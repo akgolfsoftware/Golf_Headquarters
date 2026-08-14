@@ -67,6 +67,10 @@ export const T = {
   chartFaint: "#B8B5AC",
   // Lys mint-bakgrunn for "college"-tier-badge på stats/spillere (fg = forest)
   tierCollegeBg: "#E8F5F0",
+  // Stripe sin merkelilla, brukt i betalings-illustrasjonen i klubb-onboarding.
+  // Tredjeparts merkevare — skal IKKE temafarges, men bor her så skjermfila
+  // holder seg hex-fri (lint-porten i scripts/check-token-gap.mjs).
+  stripeMerke: "#635BFF",
   // Bakgrunnsgradienter + tekstfarger for stats-wrapped-slide/-player (delt
   // Spotify Wrapped-stil delekort). Faste farger uavhengig av tema — kortet
   // eksporteres som bilde og kan derfor IKKE lese var(--p-*). Verdiene er

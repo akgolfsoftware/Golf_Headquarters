@@ -178,7 +178,7 @@ export function CoachWizard({
             style={{ background: `linear-gradient(160deg, ${T.farge.illuForestMork} 0%, ${T.farge.illuForestLys} 100%)` }}
           >
             <svg viewBox="0 0 520 180">
-              <rect x="160" y="40" width="200" height="100" rx="12" fill="#FAFAF7" />
+              <rect x="160" y="40" width="200" height="100" rx="12" fill="var(--p-bg)" />
               <circle cx="200" cy="78" r="22" fill={T.farge.limeMerke} />
               <rect x="234" y="62" width="100" height="8" rx="3" fill="var(--p-fg)" opacity="0.30" />
               <rect x="234" y="78" width="80" height="6" rx="2" fill="var(--p-fg)" opacity="0.20" />
@@ -191,7 +191,7 @@ export function CoachWizard({
                 style={{ fontFamily: "var(--p-mono)" }}
                 fontSize="7"
                 fontWeight="800"
-                fill="#0A1F17"
+                fill="var(--p-fg)"
                 letterSpacing="0.10em"
               >
                 COACH-INVITASJON
@@ -464,10 +464,10 @@ export function CoachWizard({
             style={{ background: `linear-gradient(160deg, ${T.farge.illuForestMork} 0%, ${T.farge.illuForestLys} 100%)` }}
           >
             <svg viewBox="0 0 520 180">
-              <rect x="160" y="30" width="200" height="120" rx="12" fill="#FAFAF7" />
+              <rect x="160" y="30" width="200" height="120" rx="12" fill="var(--p-bg)" />
               <rect x="160" y="30" width="200" height="22" rx="12 12 0 0" fill="var(--p-fg)" />
               <rect x="160" y="44" width="200" height="8" fill="var(--p-fg)" />
-              <g fill="#E5E3DD">
+              <g fill="var(--p-border)">
                 {[0, 1, 2, 3, 4, 5, 6].map((d) => (
                   <rect key={d} x={172 + d * 26} y={60} width={20} height={16} rx={2} />
                 ))}
@@ -625,10 +625,10 @@ export function CoachWizard({
 function ShieldCheckIllust() {
   return (
     <g>
-      <ellipse cx="260" cy="160" rx="120" ry="10" fill="#003A2A" opacity="0.25" />
+      <ellipse cx="260" cy="160" rx="120" ry="10" fill="var(--p-fg)" opacity="0.25" />
       <path
         d="M260 30 L320 50 V100 Q320 145 260 160 Q200 145 200 100 V50 Z"
-        fill="#003A2A"
+        fill="var(--p-fg)"
       />
       <path
         d="M230 95 L255 118 L295 78"
