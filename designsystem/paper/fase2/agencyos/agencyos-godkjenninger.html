@@ -25,6 +25,17 @@
 .meta .tid{ margin-left:auto; font-family:var(--mono); font-size:11px; color:var(--muted); }
 .kort h3{ margin:0 0 var(--s1); font-size:14.5px; }
 .lost .linje .v{ color:var(--muted); font-size:11px; }
+/* D3: ukesrapporten er et LESEELEMENT — den har ingen Godkjenn-knapp, for den
+   ber ikke om noen beslutning. Agenten leser alt, skriver ingenting; å dele
+   digesten er en manuell handling. Info-kant skiller den fra beslutningskort. */
+.kort.rapport{ box-shadow:inset 3px 0 0 var(--info); }
+.kort.rapport .kilde{ color:var(--info); }
+.rtall{ display:flex; gap:var(--s4); flex-wrap:wrap; margin-top:var(--s3); }
+.rtall div{ min-width:120px; }
+.rtall .k{ display:block; font-family:var(--mono); font-size:9px; letter-spacing:.07em;
+  text-transform:uppercase; color:var(--muted); }
+.rtall .v{ font-family:var(--mono); font-size:15px; font-weight:600; }
+.rtall .w{ display:block; font-family:var(--mono); font-size:9.5px; color:var(--muted); }
 </style>
 </head>
 <body>
@@ -50,24 +61,25 @@
 
     <div class="riggbar" data-demo-only>
       <span>Tilstand</span>
-      <button class="chip" type="button" data-tilstand="ko">Kø (7)</button>
+      <button class="chip" type="button" data-tilstand="ko">Kø (8)</button>
       <button class="chip" type="button" data-tilstand="tom">Tom</button>
       <button class="chip" type="button" data-tilstand="laster">Laster</button>
       <span class="sr" id="live" role="status" aria-live="polite"></span>
     </div>
 
     <div class="filters">
-      <button class="chip" type="button" aria-pressed="true" data-od-id="filter-alle">Alle <span class="n">7</span></button>
+      <button class="chip" type="button" aria-pressed="true" data-od-id="filter-alle">Alle <span class="n">8</span></button>
       <button class="chip" type="button" aria-pressed="false" data-od-id="filter-agent">Agent <span class="n">4</span></button>
       <button class="chip" type="button" aria-pressed="false" data-od-id="filter-caddie">Caddie-utkast <span class="n">2</span></button>
       <button class="chip" type="button" aria-pressed="false" data-od-id="filter-foresporsel">Økt-forespørsler <span class="n">1</span></button>
+      <button class="chip" type="button" aria-pressed="false" data-od-id="filter-rapport">Rapport <span class="n">1</span></button>
     </div>
 
     <div class="flate midt">
       <section data-vis="ko">
         <div class="kohode">
           <span class="n num">7</span>
-          <span class="eyebrow">venter på deg</span>
+          <span class="eyebrow">venter på deg · pluss én rapport til lesing</span>
           <button class="btn" type="button" data-od-id="cta-godkjenn-lavrisiko">Godkjenn 3 lavrisiko samlet</button>
         </div>
 
@@ -94,6 +106,35 @@
             <button class="btn" type="button" data-od-id="cta-endre-1">Endre først</button>
             <button class="btn" type="button" data-od-id="cta-utsett-1">Utsett</button>
             <button class="btn fare" type="button" data-od-id="cta-avvis-1">Avvis</button>
+          </div>
+        </article>
+
+        <article class="kort rapport" data-od-id="panel-ukesrapport">
+          <div class="meta">
+            <span class="navn">Ukesrapport · uke 31</span>
+            <span class="kilde">agent · leses, ikke godkjennes</span>
+            <span class="tid num">søn 18:00</span>
+          </div>
+          <h3>Uke 31 oppsummert — hele stallen</h3>
+          <p>Rapportagenten leser plan, logg, runder og tester — den skriver aldri noe selv. Alt under er telt, ikke vurdert.</p>
+          <div class="rtall">
+            <div><span class="k">etterlevelse</span><span class="v num">14/16</span><span class="w">publiserte økter, passert slutt</span></div>
+            <div><span class="k">sg-trend</span><span class="v num">−0,8</span><span class="w">innspill · tredje uka på rad</span></div>
+            <div><span class="k">testforfall</span><span class="v num">2</span><span class="w">forfaller før 21.08</span></div>
+            <div><span class="k">neste uke</span><span class="v num">uke 33</span><span class="w">turneringsuke · NM Junior</span></div>
+          </div>
+          <details class="why" data-od-id="panel-hvorfor-rapport">
+            <summary>Hvorfor?</summary>
+            <ul>
+              <li>Agent: Rapportagent · kjørt søn 02.08.2026 kl. 18:00 · leser, skriver aldri</li>
+              <li>Data: publisert plan uke 31 · loggede økter · 5 runder · testbatteriets intervaller</li>
+              <li>Nevner: etterlevelse = fullførte av publiserte økter med passert sluttid</li>
+            </ul>
+          </details>
+          <div class="handlinger">
+            <a class="btn ink" href="#" data-od-id="cta-rapport-apne">Åpne hele rapporten</a>
+            <button class="btn" type="button" data-od-id="cta-rapport-del">Del digest med spillere og foresatte</button>
+            <button class="btn" type="button" data-od-id="cta-rapport-arkiver">Arkivér</button>
           </div>
         </article>
 

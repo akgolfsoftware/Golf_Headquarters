@@ -1,0 +1,1854 @@
+<!doctype html>
+<html lang="nb" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Workbench mobil · Coach-modusene · AgencyOS · AK Golf HQ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Lora:ital,wght@0,400;0,500;1,400&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ═══ akhq-tokens.css v3.1 — KOPIERT VERBATIM. Eneste tokenkilde. ═══ */
+/* ─────────────────────────────────────────────────────────────
+   AK Golf HQ · Claude Paper tokens v3
+   Anthropic-justert (offentlige kilder) + AK produktregler
+
+   Én kilde. Kopier verbatim inn i hver HTML/skjerm, eller @import.
+   Se SCOPE.md for hva «offisiell» betyr (vi er JUSTERT, ikke Anthropic).
+
+   Kilder:
+   - Anthropic brand-guidelines: ink/paper/mid/light + clay/sky/olive
+   - anthropic.com DESIGN.md (shadcn reverse-eng): full 21-farge + 8 aksenter
+   - Fase 1 (2026-07/08): chat-først, radius 12 for tett app, Én ting nå
+
+   v3.1 · 2026-08-01 (Bølge 1)
+   - --rail-hover / --rail-active løftet inn (var lokale i Fase 1-filene)
+   - Ingen andre verdiendringer. --muted er #5e5d59 (vinner over Fase 1 #5F5B53)
+
+   v3 · 2026-08-01
+   - Full Anthropic surface + accent ladder
+   - Radius-stige: sm 8 · app 12 · md 16 · lg 24 · pill
+   - Type-tokens for marketing + produkt
+   - Motion, z-index, tap-targets, hairline
+   - Dark theme (produkt; marketing er primært lys)
+   ───────────────────────────────────────────────────────────── */
+
+:root {
+  /* ─── Surfaces (Anthropic cream ladder) ─── */
+  --bg: #faf9f5;                    /* canvas / ivory */
+  --surface: #ffffff;               /* elevated white (produkt-kort) */
+  --soft: #f0eee6;                  /* surface-secondary — kort uten skygge */
+  --soft-hover: #e8e6dc;            /* surface-secondary-hover */
+  --surface-warm: #e3dacc;          /* oat */
+  --surface-manilla: #ebdbbc;
+  --surface-kraft: #d4a27f;
+  --border: #e8e6dc;                /* light gray (brand skill) */
+  --hairline: #d1cfc5;              /* finere skille enn --border */
+  --inverse: #000000;               /* full-bleed marketing-bånd */
+
+  /* ─── Text (Anthropic slate ladder) ─── */
+  --fg: #141413;                    /* ink — primær tekst + CTA-fill */
+  --ink-soft: #3d3d3a;              /* hover på primærknapp */
+  --muted: #5e5d59;                 /* text-muted (brand skill ~ #5f5b53; Anthropic #5e5d59) */
+  --mid: #b0aea5;                   /* text-secondary / cloud medium — IKKE brødtekst i lys */
+  --text-tertiary: #87867f;
+
+  /* ─── Rail (produkt, alltid mørk) ─── */
+  --rail: #141413;
+  --rail-fg: #b0aea5;
+  --rail-on: #faf9f5;
+  --rail-hover: rgba(250, 249, 245, 0.08);   /* v3.1 — løftet fra Fase 1 */
+  --rail-active: rgba(250, 249, 245, 0.14);  /* v3.1 — løftet fra Fase 1 */
+
+  /* ─── Actions ─── */
+  --cta: #141413;                   /* Anthropic: CTA er blekk, ikke farge */
+  --on-cta: #faf9f5;
+  --cta-hover: #3d3d3a;
+
+  /* Clay = sterkeste kromatiske aksent (Anthropic clay) */
+  --accent: #d97757;                /* kun «Én ting nå» + focus i app */
+  --accent-soft: rgba(217, 119, 87, 0.12);
+  --accent-fg: #b85c3d;             /* AA-tekst på paper */
+  --on-accent: #141413;             /* tekst på fylt clay — sparsomt */
+  --accent-deep: #c6613f;           /* burnt sienna */
+
+  /* ─── Dormant accent swatches (Anthropic research palette)
+       Brukes sparsomt: chart, kategori, badges — aldri som primær CTA ─── */
+  --accent-coral: #ebcece;
+  --accent-fig: #c46686;
+  --accent-cactus: #bcd1ca;
+  --accent-olive: #788c5d;
+  --accent-sky: #6a9bcc;
+  --accent-heather: #cbcadb;
+
+  /* ─── Datasemantikk (produkt — mørknede for AA-tekst) ─── */
+  --up: #63784a;                    /* olive mørknet for tekst */
+  --up-raw: #788c5d;                /* olive rå — fyll/sparkline */
+  --dn: #a85536;                    /* leire av clay — aldri ren rød */
+  --info: #46719f;                  /* sky mørknet for tekst */
+  --info-raw: #6a9bcc;
+
+  /* ─── Typography families
+       Anthropic proprietary (Serif/Sans/Mono) er IKKE offentlige.
+       Brand skill: Poppins + Lora. Mono: IBM Plex Mono (produkt-tall). ─── */
+  --font-sans: "Poppins", Arial, system-ui, sans-serif;
+  --font-serif: "Lora", Georgia, "Times New Roman", serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, monospace;
+
+  /* Aliases brukt i eksisterende skjermer */
+  --disp: var(--font-sans);
+  --ui: var(--font-sans);
+  --body: var(--font-serif);
+  --mono: var(--font-mono);
+
+  /* ─── Type scale · Produkt (tett) ─── */
+  --text-display: 32px;
+  --text-title: 22px;
+  --text-card: 16px;
+  --text-panel: 14.5px;
+  --text-body-agency: 13.5px;       /* AgencyOS desktop */
+  --text-body-player: 14px;         /* PlayerHQ mobil */
+  --text-label: 10px;               /* versaler + tracking */
+  --text-kpi: 40px;                 /* mono */
+
+  /* ─── Type scale · Marketing (editorial, Anthropic-rytme) ─── */
+  --text-hero: 56px;                /* nedskalert fra 88 — web-vennlig */
+  --text-section: 40px;             /* nedskalert fra 90 */
+  --text-prose: 18px;               /* serif body marketing */
+  --text-prose-lg: 22px;
+  --text-nav: 16px;
+  --text-eyebrow: 12px;
+
+  /* ─── Spacing · 4px base (Anthropic 4/8/12/16/24/32/48/96) ─── */
+  --s1: 4px;
+  --s2: 8px;
+  --s3: 12px;
+  --s4: 16px;
+  --s5: 24px;
+  --s6: 32px;
+  --s7: 48px;
+  --s8: 64px;
+  --s9: 96px;                       /* section padding marketing */
+
+  /* ─── Radius
+       Anthropic marketing: sm 8 · md 16 · lg 24
+       AK produkt (Fase 1 låst): app 12 for kort/composer ─── */
+  --r-none: 0px;
+  --r-sm: 8px;                      /* knapper, inputs, chips */
+  --r: 12px;                        /* app-default (Fase 1) */
+  --r-md: 16px;                     /* editorial cards / marketing */
+  --r-lg: 24px;                     /* store flater, pille-CTA unntak */
+  --r-pill: 999px;
+
+  /* ─── Elevation
+       Anthropic marketing: NULL shadow — flater via cream-steg
+       Produkt: én myk skygge tillatt (valgfri) ─── */
+  --shadow: 0 1px 0 rgba(20, 20, 19, 0.03), 0 18px 40px rgba(20, 20, 19, 0.05);
+  --shadow-none: none;
+  --scrim: rgba(20, 20, 19, 0.4);
+
+  /* ─── Interaction ─── */
+  --focus: #d97757;
+  --ease: cubic-bezier(0.16, 1, 0.3, 1);
+  --dur: 160ms;
+  --dur-slow: 280ms;
+
+  /* Tap targets */
+  --tap: 44px;
+  --tap-lg: 48px;
+  --tap-capture: 60px;              /* fangst-mikrofon mobil */
+
+  /* ─── Logo (AK Golf — ikke Anthropic) ─── */
+  --logo-mark: #141413;
+  --logo-dot: #b85c3d;
+
+  /* ─── Z-index ─── */
+  --z-sticky: 10;
+  --z-rail: 20;
+  --z-sheet: 40;
+  --z-modal: 50;
+  --z-toast: 100;
+  --z-command: 110;
+}
+
+/* ─── Dark (produkt) ─── */
+[data-theme="dark"] {
+  color: #faf9f5;
+  --bg: #141413;
+  --surface: #1d1c1a;
+  --soft: #26241f;
+  --soft-hover: #2e2c28;
+  --surface-warm: #2a2824;
+  --border: rgba(250, 249, 245, 0.10);
+  --hairline: rgba(250, 249, 245, 0.08);
+  --inverse: #000000;
+
+  --fg: #faf9f5;
+  --ink-soft: #e8e6dc;
+  --muted: #b0aea5;
+  --mid: #6b675e;
+  --text-tertiary: #87867f;
+
+  --rail: #0e0d0c;
+  --rail-fg: #97938a;
+  --rail-on: #faf9f5;
+  --rail-hover: rgba(250, 249, 245, 0.06);
+  --rail-active: rgba(250, 249, 245, 0.12);
+
+  --cta: #faf9f5;
+  --on-cta: #141413;
+  --cta-hover: #e8e6dc;
+
+  --accent: #d97757;
+  --accent-soft: rgba(217, 119, 87, 0.18);
+  --accent-fg: #e5a184;
+  --on-accent: #141413;
+
+  --up: #9db284;
+  --up-raw: #788c5d;
+  --dn: #de9e82;
+  --info: #93b7dc;
+  --info-raw: #6a9bcc;
+
+  --shadow: none;
+  --focus: #d97757;
+
+  --logo-mark: #faf9f5;
+  --logo-dot: #d97757;
+}
+
+[data-theme="light"] {
+  color: #141413;
+}
+
+/* Rail always dark */
+.rail {
+  --logo-mark: #faf9f5;
+  --logo-dot: #d97757;
+}
+
+/* Aksentflate — marketing/innlogging sparsomt */
+.on-accent-surface {
+  --logo-mark: #141413;
+  --logo-dot: #141413;
+}
+
+/* Full-bleed inverse band (marketing) */
+.band-inverse {
+  background: var(--inverse);
+  color: var(--bg);
+}
+
+/* Skriftimport — lim i <head> på alle skjermer:
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Lora:ital,wght@0,400;0,500;1,400&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+*/
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Gulvregel: min treffmål på touch */
+@media (pointer: coarse) {
+  :root {
+    --floor: var(--tap);
+  }
+}
+
+:root{ --softer:#f6f4ee; --border-soft:#efede4; }
+[data-theme="dark"]{ --softer:#1a1917; --border-soft:rgba(250,249,245,.06); }
+/* ═══ Workbench · AgencyOS · MOBIL ═══
+   LOKASJON rettet 02.08.2026: Mulligan Indoor er active = false i locations og skal ikke vises ved lansering. Erstattet med Gamle Fredrikstad GK, som er eneste synlige lokasjon.
+   Alle funksjoner, ingen reduksjon — men tenkt på nytt for tommelen.
+   Kalender og lerret har EGNE komponenter her, ikke skalerte desktop-varianter:
+   desktop har et sju-kolonners tidsrutenett, mobil har dagpiller + vertikal
+   tidsakse for ÉN dag. Sju kolonner à 124px krever 1000px. Det finnes ikke.
+   Enheter: ≤640 er denne fila. 641+ styrer workbench-desktop.html. */
+
+*,*::before,*::after{ box-sizing:border-box; }
+html,body{ margin:0; height:100%; }
+body{
+  background:var(--bg); color:var(--fg);
+  font-family:var(--ui); font-size:var(--text-body-player); line-height:1.5;
+  -webkit-font-smoothing:antialiased;
+}
+[hidden]{ display:none !important; }
+button{ font:inherit; color:inherit; }
+.num{ font-family:var(--mono); font-variant-numeric:tabular-nums; }
+.eyebrow{ font-family:var(--mono); font-size:var(--text-label); font-weight:500;
+  letter-spacing:.09em; text-transform:uppercase; color:var(--muted); }
+.sr{ position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); }
+:where(a,button,input,select,textarea,[tabindex]):focus-visible{
+  outline:2px solid var(--focus); outline-offset:2px; border-radius:var(--r-sm); }
+
+.btn{ display:inline-flex; align-items:center; justify-content:center; gap:var(--s2);
+  min-height:var(--tap-lg); padding:0 var(--s4); font-size:14px; font-weight:500;
+  background:transparent; border:1px solid var(--border); border-radius:var(--r);
+  cursor:pointer; white-space:nowrap; }
+.btn.ink{ background:var(--cta); color:var(--on-cta); border-color:var(--cta); }
+.btn.now{ background:var(--accent); color:var(--on-accent); border-color:var(--accent);
+  font-weight:600; min-height:56px; }
+.btn.sm{ min-height:var(--tap); font-size:13px; padding:0 var(--s3); }
+.btn.full{ width:100%; }
+.chip{ display:inline-flex; align-items:center; min-height:var(--tap);
+  padding:0 var(--s4); font-size:13px; background:var(--surface);
+  border:1px solid var(--border); border-radius:var(--r-pill); cursor:pointer; }
+.chip[aria-pressed="true"]{ background:var(--fg); color:var(--bg); border-color:var(--fg); }
+
+/* Telefonramme — demo-chrome, forsvinner under 641px */
+.phone{ width:430px; max-width:100%; height:920px; margin:0 auto; position:relative;
+  overflow:hidden; background:var(--bg); border:1px solid var(--border);
+  border-radius:var(--r-lg); display:flex; flex-direction:column; }
+@media (max-width:640px){
+  body{ background:var(--bg); }
+  .phone{ width:100%; height:100dvh; max-width:none; border:0; border-radius:0; }
+  .framehint{ display:none; }
+}
+.framehint{ text-align:center; font-size:11px; color:var(--muted); padding:var(--s3); }
+.phone .scrim,.phone .sheet{ position:absolute; }
+
+/* ── Topp ────────────────────────────────────────────────────── */
+.top{ flex:none; display:flex; align-items:center; gap:var(--s2);
+  padding:calc(var(--s2) + env(safe-area-inset-top)) var(--s3) var(--s2);
+  border-bottom:1px solid var(--border); background:var(--surface); }
+.top h1{ margin:0; font-family:var(--disp); font-size:15px; font-weight:600; }
+.top .sub{ display:block; font-family:var(--mono); font-size:10px; color:var(--muted);
+  letter-spacing:.06em; text-transform:uppercase; }
+.iconbtn{ flex:none; width:var(--tap); height:var(--tap); display:grid; place-items:center;
+  background:transparent; border:1px solid var(--border); border-radius:var(--r); cursor:pointer; }
+.iconbtn svg{ width:18px; height:18px; fill:none; stroke:currentColor; stroke-width:1.7; }
+
+/* ── Zoom som sveipbar pille-rad ─────────────────────────────── */
+.zooms{ flex:none; display:flex; gap:var(--s2); padding:var(--s2) var(--s3);
+  overflow-x:auto; border-bottom:1px solid var(--border-soft); background:var(--softer);
+  scrollbar-width:none; }
+.zooms::-webkit-scrollbar{ display:none; }
+.zooms button{ flex:none; min-height:var(--tap); padding:0 var(--s4); font-size:13px;
+  background:var(--surface); border:1px solid var(--border); border-radius:var(--r-pill);
+  color:var(--muted); cursor:pointer; }
+.zooms button[aria-current="true"]{ background:var(--fg); color:var(--bg); border-color:var(--fg); }
+
+/* ── Dagpiller — mobilens egen kalenderkomponent ─────────────── */
+.daystrip{ flex:none; display:flex; gap:var(--s2); padding:var(--s3);
+  overflow-x:auto; scrollbar-width:none; border-bottom:1px solid var(--border); }
+.daystrip::-webkit-scrollbar{ display:none; }
+.dpill{ flex:none; width:52px; min-height:64px; display:flex; flex-direction:column;
+  align-items:center; justify-content:center; gap:2px; padding:var(--s2) 0;
+  background:var(--surface); border:1px solid var(--border); border-radius:var(--r);
+  cursor:pointer; }
+.dpill .dw{ font-family:var(--mono); font-size:9.5px; letter-spacing:.08em;
+  text-transform:uppercase; color:var(--muted); }
+.dpill .dd{ font-family:var(--mono); font-size:15px; font-weight:600; }
+.dpill .dot{ width:5px; height:5px; border-radius:var(--r-pill); background:var(--mid); }
+.dpill[aria-current="true"]{ background:var(--fg); border-color:var(--fg); }
+.dpill[aria-current="true"] .dw,.dpill[aria-current="true"] .dd{ color:var(--bg); }
+.dpill[aria-current="true"] .dot{ background:var(--bg); }
+.dpill.idag .dd{ text-decoration:underline; text-underline-offset:3px; }
+
+/* ── Dagens tidsakse — vertikal, én dag ──────────────────────── */
+.dagbody{ flex:1; min-height:0; overflow-y:auto;
+  padding:0 var(--s3) calc(var(--s6) + env(safe-area-inset-bottom)); }
+.dagmeta{ display:flex; align-items:baseline; gap:var(--s2); padding:var(--s3) 0 var(--s2); }
+.dagmeta .d{ font-family:var(--disp); font-size:15px; font-weight:600; }
+.dagmeta .t{ margin-left:auto; font-family:var(--mono); font-size:12px; color:var(--muted); }
+
+.tid{ position:relative; }
+.trad{ display:grid; grid-template-columns:52px minmax(0,1fr); align-items:start;
+  min-height:22px; }
+.trad .kl{ font-family:var(--mono); font-size:10px; color:var(--muted);
+  padding-top:0; transform:translateY(-5px); }
+.trad .sp{ border-top:1px solid var(--border-soft); height:100%; }
+.trad.hel .kl{ color:var(--fg); font-weight:500; }
+.trad.hel .sp{ border-top-color:var(--hairline); }
+.tlag{ position:absolute; left:52px; right:0; top:0; bottom:0; pointer-events:none; }
+.tlag > *{ pointer-events:auto; }
+
+.mbusy{ position:absolute; left:0; right:0; border-radius:var(--r-sm);
+  background:var(--soft); border:1px dashed var(--border);
+  font-size:10.5px; color:var(--muted); padding:3px 6px; overflow:hidden; }
+.mokt{ position:absolute; left:0; right:0; text-align:left; padding:6px 8px;
+  border-radius:var(--r-sm); background:var(--surface);
+  border:1px solid var(--border); border-left:3px solid var(--mid);
+  cursor:pointer; overflow:hidden; }
+.mokt .t{ display:block; font-size:13px; font-weight:600; line-height:1.25;
+  overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.mokt .m{ display:block; font-family:var(--mono); font-size:10px; color:var(--muted); }
+.mokt.done{ opacity:.6; } .mokt.done .t{ text-decoration:line-through; }
+.mnow{ position:absolute; left:0; right:0; border-top:1px solid var(--fg); }
+.mnow::before{ content:""; position:absolute; left:-3px; top:-3px; width:6px; height:6px;
+  border-radius:var(--r-pill); background:var(--fg); }
+.mnow span{ position:absolute; right:0; top:-14px; font-family:var(--mono);
+  font-size:9px; background:var(--bg); padding:0 3px; }
+
+/* ── F1: forslag, agenda, hjelp, flytting ────────────────── */
+.mokt.har-forslag{ border-style:dashed; border-color:var(--accent); }
+.fslag{ display:block; font-family:var(--mono); font-size:9px; letter-spacing:.05em;
+  text-transform:uppercase; color:var(--accent-fg); flex:none; }
+.mokt.flyttes{ opacity:.75; box-shadow:0 6px 18px rgba(20,20,19,.16); z-index:3; }
+.agendaL{ padding:var(--s2) 0 var(--s5); }
+.agendaL .ad{ font-family:var(--mono); font-size:10px; letter-spacing:.09em;
+  text-transform:uppercase; color:var(--muted); margin:var(--s4) 0 var(--s2); }
+.agendaL .ar{ display:flex; align-items:center; gap:var(--s2); width:100%; text-align:left;
+  min-height:var(--tap-lg); padding:var(--s2) var(--s3); margin-bottom:var(--s1);
+  background:var(--surface); border:1px solid var(--border); border-left:3px solid var(--mid);
+  border-radius:var(--r-sm); cursor:pointer; }
+.agendaL .ar.done{ opacity:.6; }
+.agendaL .ar .at{ font-family:var(--mono); font-size:11px; flex:none; width:88px; }
+.agendaL .ar .an{ font-size:13px; font-weight:500; min-width:0; overflow:hidden;
+  text-overflow:ellipsis; white-space:nowrap; }
+.agendaL .ar .af{ margin-left:auto; flex:none; font-family:var(--mono); font-size:9.5px; color:var(--muted); }
+.flabrad{ display:flex; align-items:center; gap:var(--s2); }
+.flabrad .flab{ margin-bottom:0; }
+.hjelp{ flex:none; width:24px; height:24px; min-height:24px; padding:0; border-radius:var(--r-pill);
+  border:1px solid var(--border); background:transparent; color:var(--muted);
+  font:600 11px/1 var(--mono); cursor:pointer; }
+.hjelp[aria-expanded="true"]{ color:var(--fg); border-color:var(--mid); }
+.hint.forklaring{ margin:var(--s1) 0 var(--s2); }
+.ghost{ border:1px dashed var(--accent); background:var(--accent-soft);
+  border-radius:var(--r); padding:var(--s3); margin-bottom:var(--s3); }
+.ghost .gh{ font-family:var(--mono); font-size:9px; letter-spacing:.06em;
+  text-transform:uppercase; color:var(--accent-fg); margin-bottom:var(--s1); }
+.ghost h4{ margin:0 0 var(--s1); font-size:13.5px; }
+.ghost p{ margin:0 0 var(--s2); font-size:12.5px; font-family:var(--body); }
+.fdiff{ display:flex; align-items:center; gap:var(--s2); flex-wrap:wrap; margin:0 0 var(--s2); }
+.fdiff .df{ font-family:var(--mono); font-size:9.5px; word-break:break-all; }
+.fdiff .fra{ text-decoration:line-through; color:var(--muted); }
+.fdiff .pil{ color:var(--muted); }
+.gacts{ display:flex; gap:var(--s2); }
+.toast .ang{ margin-left:var(--s3); background:transparent; border:0; color:var(--bg);
+  text-decoration:underline; text-underline-offset:2px; font:inherit; cursor:pointer;
+  min-height:0; padding:0; }
+
+.ax-FYS{ border-left-color:var(--accent-sky); }
+.ax-TEK{ border-left-color:var(--accent-olive); }
+.ax-SLAG{ border-left-color:var(--accent-fig); }
+.ax-SPILL{ border-left-color:var(--accent-cactus); }
+.ax-TURN{ border-left-color:var(--accent-heather); }
+
+/* ── Bunnlinje: målinger + Én ting nå ────────────────────────── */
+.bunn{ flex:none; border-top:1px solid var(--border); background:var(--surface);
+  padding:var(--s2) var(--s3) calc(var(--s3) + env(safe-area-inset-bottom)); }
+.maal{ display:flex; gap:var(--s4); overflow-x:auto; padding-bottom:var(--s2);
+  scrollbar-width:none; }
+.maal::-webkit-scrollbar{ display:none; }
+.maal div{ flex:none; }
+.maal .k{ display:block; font-family:var(--mono); font-size:9px; letter-spacing:.08em;
+  text-transform:uppercase; color:var(--muted); }
+.maal .v{ display:block; font-family:var(--mono); font-size:15px; font-weight:600; }
+.statusnote{ font-size:10.5px; color:var(--muted); margin:0 0 var(--s2); }
+
+/* ── Ark ─────────────────────────────────────────────────────── */
+.scrim{ position:fixed; inset:0; background:var(--scrim); z-index:var(--z-sheet); display:none; }
+.scrim.on{ display:block; }
+.sheet{ position:fixed; left:0; right:0; bottom:0; z-index:calc(var(--z-sheet) + 1);
+  max-height:92%; background:var(--surface); border-top:1px solid var(--border);
+  border-radius:var(--r-lg) var(--r-lg) 0 0; display:none; flex-direction:column;
+  padding-bottom:env(safe-area-inset-bottom); }
+.sheet.on{ display:flex; }
+.grab{ flex:none; width:36px; height:4px; border-radius:var(--r-pill);
+  background:var(--border); margin:var(--s3) auto var(--s2); }
+.shead{ flex:none; display:flex; align-items:center; gap:var(--s2);
+  padding:0 var(--s4) var(--s3); border-bottom:1px solid var(--border); }
+.shead h2{ margin:0; font-family:var(--disp); font-size:15px; font-weight:600; }
+.sbody{ flex:1; min-height:0; overflow-y:auto; padding:var(--s4); }
+.sfoot{ flex:none; display:flex; gap:var(--s2); padding:var(--s3) var(--s4);
+  border-top:1px solid var(--border); }
+.sfoot .btn{ flex:1; }
+
+/* ── Felt og seksjoner ───────────────────────────────────────── */
+.field{ margin-bottom:var(--s4); }
+.field label,.flab{ display:block; font-family:var(--mono); font-size:var(--text-label);
+  letter-spacing:.09em; text-transform:uppercase; color:var(--muted); margin-bottom:var(--s2); }
+.field input,.field textarea{ width:100%; min-height:var(--tap-lg);
+  padding:var(--s3); background:var(--bg); color:var(--fg);
+  border:1px solid var(--border); border-radius:var(--r-sm); font:inherit; font-size:15px; }
+.field textarea{ min-height:76px; font-family:var(--body); resize:vertical; }
+.hint{ font-size:12px; color:var(--muted); margin:var(--s1) 0 0; font-family:var(--body); }
+
+.sek{ margin-bottom:var(--s5); }
+.sekhead{ display:flex; align-items:center; gap:var(--s2); margin-bottom:var(--s2); }
+.sekhead .flab{ margin-bottom:0; }
+.sekn{ margin-left:auto; font-family:var(--mono); font-size:12px; color:var(--muted); }
+
+.drill{ border:1px solid var(--border); border-radius:var(--r); margin-bottom:var(--s2);
+  background:var(--bg); overflow:hidden; }
+.dsum{ display:flex; align-items:center; gap:var(--s2); min-height:var(--tap-lg);
+  padding:var(--s2) var(--s3); cursor:pointer; list-style:none; }
+.dsum::-webkit-details-marker{ display:none; }
+.drill[open] .dsum{ border-bottom:1px solid var(--border); background:var(--soft); }
+.dn{ font-size:13.5px; font-weight:600; min-width:0; overflow:hidden;
+  text-overflow:ellipsis; white-space:nowrap; }
+.dtyp{ flex:none; font-family:var(--mono); font-size:9px; letter-spacing:.05em;
+  text-transform:uppercase; padding:2px 6px; border-radius:var(--r-pill);
+  border:1px solid var(--border); color:var(--muted); }
+.dtyp.golf{ color:var(--up); } .dtyp.fys{ color:var(--info); } .dtyp.test{ color:var(--accent-fg); }
+.dtid{ margin-left:auto; flex:none; font-family:var(--mono); font-size:12px; }
+.dbody{ padding:var(--s3); }
+.dformel{ padding:var(--s2) var(--s3); margin-bottom:var(--s3); background:var(--softer);
+  border:1px solid var(--border-soft); border-radius:var(--r-sm); }
+.dformel code{ display:block; font-family:var(--mono); font-size:11px; word-break:break-all; }
+
+/* Slot-velger på mobil: fullbreddes rader, ikke chips i klynge.
+   En 18-verdis liste som chips gir 40px treffmål og feilklikk med tommel. */
+.slot{ display:flex; flex-direction:column; gap:var(--s1); }
+.slot .gsep{ font-family:var(--mono); font-size:9px; letter-spacing:.08em;
+  text-transform:uppercase; color:var(--mid); margin:var(--s2) 0 2px; }
+.srad{ display:flex; align-items:center; gap:var(--s2); width:100%; text-align:left;
+  min-height:var(--tap-lg); padding:0 var(--s3); background:var(--surface);
+  border:1px solid var(--border); border-radius:var(--r-sm); cursor:pointer; font-size:14px; }
+.srad[aria-pressed="true"]{ background:var(--fg); color:var(--bg); border-color:var(--fg); }
+.srad .mark{ margin-left:auto; font-family:var(--mono); font-size:11px; opacity:.7; }
+
+.testrad{ display:flex; align-items:center; gap:var(--s2); width:100%; text-align:left;
+  min-height:var(--tap-lg); padding:0 var(--s3); margin-bottom:var(--s1);
+  background:var(--bg); border:1px solid var(--border); border-radius:var(--r-sm);
+  cursor:pointer; font-size:14px; }
+.testrad .tk{ margin-left:auto; font-family:var(--mono); font-size:10px; color:var(--muted); }
+
+.toast{ position:fixed; left:50%; bottom:96px; transform:translateX(-50%);
+  z-index:var(--z-toast); background:var(--fg); color:var(--bg);
+  padding:var(--s3) var(--s4); border-radius:var(--r); font-size:13px; }
+
+button,.chip,summary,input,textarea,[role="button"]{ min-height:var(--tap); }
+.dtyp,.num,.eyebrow,.maal .v{ min-height:0; }
+
+/* ══ F3 MOBIL: coach-modusene for tommelen ═══════════════════════
+   Desktop viser stallen som spillerkolonner side om side. Fem kolonner
+   à 118 px krever 652 px. Det finnes ikke på 430.
+   Mobilens svar er ikke smalere kolonner — det er en annen tegning:
+   hver spiller er en RAD med dagen sin som en tett tidsstripe. Du ser
+   hvem som er travel når, og trykker deg inn i den ene dagen du skal endre.
+   Ingen funksjoner er fjernet: flytting, tidsforslag, konflikter, RSVP,
+   ukemal og publisering er alle her, som ark i stedet for paneler. */
+
+.modus{ flex:none; display:flex; gap:var(--s2); padding:var(--s2) var(--s3);
+  overflow-x:auto; border-bottom:1px solid var(--border-soft); background:var(--softer);
+  scrollbar-width:none; }
+.modus::-webkit-scrollbar{ display:none; }
+.modus button{ flex:none; min-height:var(--tap); padding:0 var(--s4); font-size:13px; white-space:nowrap;
+  background:var(--surface); border:1px solid var(--border); border-radius:var(--r-pill);
+  color:var(--muted); cursor:pointer; }
+.modus button[aria-current="true"]{ background:var(--fg); color:var(--bg); border-color:var(--fg); }
+
+/* Verktøyrad: laget som endrer hva du ser, ikke hva som står i planen */
+.verkt{ flex:none; display:flex; align-items:center; gap:var(--s2); padding:var(--s2) var(--s3);
+  border-bottom:1px solid var(--border); }
+.verkt .chip.sm{ min-height:var(--tap); padding:0 var(--s3); font-size:12px; white-space:nowrap; }
+.verkt .cnt{ white-space:nowrap; }
+.verkt .cnt{ margin-left:auto; font-family:var(--mono); font-size:10px; color:var(--muted);
+  letter-spacing:.06em; text-transform:uppercase; }
+
+/* ── Stallraden: én spiller, én dag, som tidsstripe ──────────────
+   Stripa er 06:00–22:00. Den er ikke en kalender du redigerer i — den er
+   en tetthetsvisning som svarer «når er hun ledig?» på et blikk.
+   Redigering skjer i arket, der treffmålene er 48 px. */
+.stall{ padding:var(--s2) 0 var(--s5); }
+.srow{ display:block; width:100%; text-align:left; padding:var(--s3);
+  margin-bottom:var(--s2); background:var(--surface); border:1px solid var(--border);
+  border-radius:var(--r); cursor:pointer; }
+.srow.meg{ background:var(--softer); }
+.srow .hd{ display:flex; align-items:center; gap:var(--s2); margin-bottom:var(--s2); }
+.srow .av{ flex:none; width:30px; height:30px; border-radius:var(--r-pill);
+  background:var(--soft); border:1px solid var(--border); display:grid; place-items:center;
+  font-family:var(--mono); font-size:10.5px; font-weight:600; color:var(--muted); }
+.srow .nm{ font-size:14px; font-weight:600; min-width:0; overflow:hidden;
+  text-overflow:ellipsis; white-space:nowrap; }
+.srow .sum{ margin-left:auto; flex:none; font-family:var(--mono); font-size:12px; white-space:nowrap; }
+.srow .adv{ flex:none; font-family:var(--mono); font-size:9px; letter-spacing:.06em;
+  text-transform:uppercase; color:var(--dn); }
+
+.stripe{ position:relative; height:26px; border-radius:var(--r-sm);
+  background:var(--bg); border:1px solid var(--border-soft); overflow:hidden; }
+.stripe .seg{ position:absolute; top:0; bottom:0; border-radius:2px; }
+.stripe .seg.skole{ background:repeating-linear-gradient(45deg,
+  rgba(20,20,19,.10) 0 4px, transparent 4px 8px); }
+[data-theme="dark"] .stripe .seg.skole{ background:repeating-linear-gradient(45deg,
+  rgba(250,249,245,.12) 0 4px, transparent 4px 8px); }
+.stripe .seg.okt{ background:var(--accent-olive); }
+.stripe .seg.gruppe{ background:var(--accent-heather); }
+.stripe .seg.booking{ background:var(--accent-sky); }
+.stripe .seg.test{ background:var(--accent-fg); }
+.stripe .seg.rsvp{ background:var(--surface); border:1px dashed var(--accent-sky); }
+.stripe .seg.slot{ background:var(--accent-soft); border:1px dashed var(--accent); }
+.stripe .seg.kol{ box-shadow:inset 0 0 0 2px var(--dn); }
+.stripe .naa{ position:absolute; top:0; bottom:0; width:1px; background:var(--fg); }
+.stripe .naa::before{ content:""; position:absolute; top:0; left:-2px; width:5px; height:5px;
+  border-radius:var(--r-pill); background:var(--fg); }
+.akse{ display:flex; justify-content:space-between; margin-top:3px; }
+.akse span{ font-family:var(--mono); font-size:9px; color:var(--mid); }
+
+/* Tegnforklaring: stripa er meningsløs uten den, og den skal stå der
+   stripa er — ikke i en hjelpetekst et annet sted. */
+.tegn{ display:flex; flex-wrap:wrap; gap:var(--s3); padding:0 0 var(--s3); }
+.tegn span{ display:inline-flex; align-items:center; gap:var(--s1);
+  font-family:var(--mono); font-size:9.5px; color:var(--muted); }
+.tegn i{ width:10px; height:10px; border-radius:2px; display:block; }
+
+/* ── Agenda: gruppe-, spiller- og min-modus ─────────────────── */
+.ag{ padding:var(--s2) 0 var(--s5); }
+.ag .dag{ display:flex; align-items:baseline; gap:var(--s2); margin:var(--s4) 0 var(--s2); }
+.ag .dag .dw{ font-family:var(--mono); font-size:10px; letter-spacing:.09em;
+  text-transform:uppercase; color:var(--muted); }
+.ag .dag .dt{ margin-left:auto; font-family:var(--mono); font-size:10px; color:var(--muted); }
+.ag .dag.idag .dw{ color:var(--fg); font-weight:600; }
+.arad{ display:flex; align-items:center; gap:var(--s3); width:100%; text-align:left;
+  min-height:var(--tap-lg); padding:var(--s2) var(--s3); margin-bottom:var(--s1);
+  background:var(--surface); border:1px solid var(--border); border-left:3px solid var(--mid);
+  border-radius:var(--r-sm); cursor:pointer; }
+.arad.gruppe{ border-left-color:var(--accent-heather); }
+.arad.booking{ border-left-color:var(--accent-sky); }
+.arad.test{ border-left-color:var(--accent-fg); }
+.arad.okt{ border-left-color:var(--accent-olive); }
+.arad.rsvp{ border-left-color:var(--accent-sky); border-style:dashed; border-left-style:solid; }
+.arad.mal{ border-style:dashed; background:var(--softer); }
+.arad.kol{ border-color:var(--dn); }
+.arad .at{ flex:none; width:76px; font-family:var(--mono); font-size:11px; }
+.arad .ab{ min-width:0; flex:1; }
+.arad .an{ display:block; font-size:13.5px; font-weight:500; overflow:hidden;
+  text-overflow:ellipsis; white-space:nowrap; }
+.arad .ak{ display:block; font-family:var(--mono); font-size:9px; letter-spacing:.06em;
+  text-transform:uppercase; color:var(--muted); }
+.arad .ak.varsel{ color:var(--dn); }
+.tomdag{ font-family:var(--body); font-size:12.5px; color:var(--mid);
+  padding:var(--s2) var(--s3); }
+
+/* Coach-merknaden: over planen, før du rører noe */
+.cvarsel{ padding:var(--s3); margin:var(--s3) 0; background:var(--soft);
+  border:1px solid var(--border); border-radius:var(--r); }
+.cvarsel .flab{ margin-bottom:var(--s1); }
+.cvarsel p{ margin:0; font-family:var(--body); font-size:12.5px; color:var(--muted); }
+.cvarsel .gacts{ margin-top:var(--s3); }
+
+/* Kort i ark: konflikt, forespørsel, forslag */
+.kort{ padding:var(--s3); margin-bottom:var(--s3); background:var(--bg);
+  border:1px solid var(--border); border-radius:var(--r); }
+.kort .kv{ font-family:var(--mono); font-size:9px; letter-spacing:.07em;
+  text-transform:uppercase; color:var(--dn); }
+.kort .kv.rolig{ color:var(--muted); }
+.kort h4{ margin:2px 0 0; font-size:13.5px; }
+.kort p{ margin:var(--s1) 0 0; font-family:var(--body); font-size:12.5px; color:var(--muted); }
+.kort .gacts{ margin-top:var(--s3); }
+.kort .gacts .btn{ flex:1; }
+
+.delt{ display:flex; flex-wrap:wrap; gap:var(--s1); margin-top:var(--s2); }
+.delt span{ padding:2px var(--s2); border-radius:var(--r-pill); background:var(--surface);
+  border:1px solid var(--border); font-size:11px; }
+.delt span.kol{ border-color:var(--dn); color:var(--dn); }
+
+.logg{ list-style:none; margin:0; padding:0; }
+.logg li{ display:flex; gap:var(--s3); padding:var(--s3) 0; border-bottom:1px solid var(--border-soft); }
+.logg li:last-child{ border-bottom:0; }
+.logg .lt{ flex:none; width:46px; font-family:var(--mono); font-size:10px; color:var(--muted); }
+.logg .lx{ display:block; font-size:12.5px; }
+.logg .lw{ font-family:var(--mono); font-size:9px; letter-spacing:.06em;
+  text-transform:uppercase; color:var(--accent-fg); }
+.logg .lv{ font-family:var(--mono); font-size:9px; letter-spacing:.06em;
+  text-transform:uppercase; color:var(--muted); }
+
+/* Valgrader i ark (varighet, frist, spiller, dag) */
+.velg{ display:flex; flex-wrap:wrap; gap:var(--s2); margin-bottom:var(--s4); }
+.velg button{ min-height:var(--tap); padding:0 var(--s3); font-size:13px;
+  background:var(--surface); border:1px solid var(--border); border-radius:var(--r-pill);
+  cursor:pointer; }
+.velg button[aria-pressed="true"]{ background:var(--fg); color:var(--bg); border-color:var(--fg); }
+.srad .sh{ margin-left:auto; font-family:var(--mono); font-size:9.5px; color:var(--muted);
+  letter-spacing:.05em; text-transform:uppercase; }
+
+/* Faneknapper i bunnen av arket når ett ark har flere lister */
+.arkfaner{ display:flex; gap:var(--s2); margin-bottom:var(--s4); }
+.arkfaner button{ flex:1; min-height:var(--tap); font-size:12.5px; background:transparent;
+  border:1px solid var(--border); border-radius:var(--r-sm); cursor:pointer; color:var(--muted); }
+.arkfaner button[aria-selected="true"]{ background:var(--fg); color:var(--bg); border-color:var(--fg); }
+
+.tom{ padding:var(--s5) var(--s3); text-align:center; }
+.tom h4{ margin:0 0 var(--s1); font-size:14px; }
+.tom p{ margin:0; font-family:var(--body); font-size:12.5px; color:var(--muted); }
+
+</style>
+</head>
+<body>
+<p class="framehint">Workbench · coach-modusene · 430 px. Under 641 px fyller den skjermen.</p>
+<div class="phone" data-demo-only="true">
+
+  <header class="top">
+    <button class="iconbtn" id="backThread" aria-label="Tilbake til tråden" data-od-id="wbsm-back">
+      <svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>
+    </button>
+    <div style="min-width:0">
+      <h1>Workbench</h1>
+      <span class="sub" id="whoSub">stall · uke <span class="num">32</span></span>
+    </div>
+    <span style="flex:1"></span>
+    <button class="iconbtn" id="themeBtn" aria-label="Bytt til mørk modus" data-od-id="wbsm-theme">
+      <svg viewBox="0 0 24 24"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+    </button>
+  </header>
+
+  <div class="modus" role="group" aria-label="Modus">
+    <button data-modus="stall" aria-current="true" data-od-id="wbsm-modus-stall">Stall</button>
+    <button data-modus="gruppe" aria-current="false" data-od-id="wbsm-modus-gruppe">Gruppe</button>
+    <button data-modus="spiller" aria-current="false" data-od-id="wbsm-modus-spiller">Spiller</button>
+    <button data-modus="min" aria-current="false" data-od-id="wbsm-modus-min">Min tid</button>
+  </div>
+
+  <div class="verkt">
+    <button class="chip sm" id="btnFinn" data-od-id="wbsm-finn">Finn tid</button>
+    <button class="chip sm" id="btnKonf" data-od-id="wbsm-konflikt">Konflikt&nbsp;<span class="num" id="cKonf">0</span></button>
+    <button class="chip sm" id="btnMer" data-od-id="wbsm-mer">Mer</button>
+    <span class="cnt" id="verktCnt">4 spillere</span>
+  </div>
+
+  <div class="daystrip" id="daystrip" role="tablist" aria-label="Velg dag"></div>
+
+  <main class="dagbody" id="body"></main>
+
+  <div class="bunn">
+    <p class="statusnote" id="statusnote">Regler og låser er midlertidig ute. Ingenting er validert.</p>
+    <div class="maal" id="maal"></div>
+    <button class="btn now full" id="nowBtn" data-od-id="wbsm-one-thing-now">—</button>
+  </div>
+
+  <div class="scrim" id="scrim"></div>
+
+  <section class="sheet" id="sheet" role="dialog" aria-modal="true" aria-labelledby="sheetTitle">
+    <div class="grab"></div>
+    <div class="shead">
+      <h2 id="sheetTitle">Ark</h2>
+      <span style="flex:1"></span>
+      <button class="iconbtn" data-sheet-close="1" aria-label="Lukk" data-od-id="wbsm-ark-lukk">
+        <svg viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <div class="sbody" id="sheetBody"></div>
+    <div class="sfoot" id="sheetFoot"></div>
+  </section>
+</div>
+
+<div class="toast" id="toast" hidden role="status"></div>
+<div class="sr" id="live" aria-live="polite"></div>
+
+<script>
+(function(){
+'use strict';
+
+/* ═══════════════════════════════════════════════════════════════
+   Workbench · COACH-MODUSENE · MOBIL (F3)
+   Samme datamodell og samme regler som fase1/workbench-stall.html.
+   Forskjellen er tegningen, ikke funksjonen:
+
+   desktop  stallen som spillerkolonner i et tidsrutenett
+   mobil    stallen som spillerrader med dagen som tidsstripe
+
+   Alt som endrer plan skjer i ark med 48 px treffmål — ingen dra-og-slipp
+   med tommel på en 26 px stripe, det ville produsere feilflyttinger.
+   ═══════════════════════════════════════════════════════════════ */
+
+var STALL = [
+  { id:'oyvind', n:'Øyvind Rohjan', ini:'ØR', alder:17, skole:'WANG', gr:['perf'] },
+  { id:'emma',   n:'Emma Sæther',   ini:'ES', alder:15, skole:'WANG', gr:['perf','jc'] },
+  { id:'markus', n:'Markus Lien',   ini:'ML', alder:16, skole:'WANG', gr:['jc'] },
+  { id:'sara',   n:'Sara Bø',       ini:'SB', alder:14, skole:'GFGK', gr:['jc'] },
+  { id:'jonas',  n:'Jonas Five',    ini:'JF', alder:15, skole:'WANG', gr:['jc'] },
+  { id:'thea',   n:'Thea Aas',      ini:'TA', alder:17, skole:'WANG', gr:['perf'] }
+];
+var COACH = { id:'coach', n:'Anders K.', ini:'AK' };
+var GRUPPER = [
+  { k:'jc',   n:'Junior Academy gruppe C' },
+  { k:'perf', n:'Performance' }
+];
+function sp(id){ if (id === 'coach') return COACH;
+  return STALL.filter(function(x){ return x.id === id; })[0] || COACH; }
+function gruppeNavn(k){ return GRUPPER.filter(function(g){ return g.k === k; })[0].n; }
+function medlemmer(k){ return STALL.filter(function(s){ return s.gr.indexOf(k) > -1; }); }
+
+var DAGER = [
+  {dw:'man', dd:'3.8'}, {dw:'tir', dd:'4.8'}, {dw:'ons', dd:'5.8'},
+  {dw:'tor', dd:'6.8'}, {dw:'fre', dd:'7.8'}, {dw:'lør', dd:'8.8'}, {dw:'søn', dd:'9.8'}
+];
+
+var HEND = [
+  { id:'h1', sp:'oyvind', dag:0, start:'16:00', min:90, n:'Innspill · lengdekontroll', omr:'TEK', kilde:'okt' },
+  { id:'h2', sp:'oyvind', dag:2, start:'06:30', min:45, n:'Styrke underkropp',         omr:'FYS', kilde:'okt' },
+  { id:'h3', sp:'oyvind', dag:3, start:'15:00', min:90, n:'Nærspill · fire meter',     omr:'SLAG',kilde:'okt' },
+  { id:'h4', sp:'emma',   dag:0, start:'17:00', min:60, n:'Putt 5–10 ft under press',  omr:'SLAG',kilde:'okt' },
+  { id:'h5', sp:'emma',   dag:3, start:'09:00', min:60, n:'Test · Inspill 120 m',      omr:'TEK', kilde:'test' },
+  { id:'h6', sp:'emma',   dag:3, start:'16:00', min:90, n:'Teknikk tee',               omr:'TEK', kilde:'okt' },
+  { id:'h7', sp:'markus', dag:3, start:'15:30', min:60, n:'Wedge 40–90 m',             omr:'SLAG',kilde:'okt' },
+  { id:'h8', sp:'thea',   dag:3, start:'18:00', min:60, n:'Mobilitet',                 omr:'FYS', kilde:'okt' },
+  { id:'h9', sp:'jonas',  dag:1, start:'16:30', min:60, n:'Chip · landingspunkt',      omr:'SLAG',kilde:'okt' },
+  { id:'g1', gruppe:'jc',   dag:1, start:'16:30', min:60, n:'Gruppe C · nærspill', omr:'SLAG', kilde:'gruppe' },
+  { id:'g2', gruppe:'jc',   dag:3, start:'16:30', min:60, n:'Gruppe C · putting',  omr:'SLAG', kilde:'gruppe' },
+  { id:'g3', gruppe:'perf', dag:5, start:'10:00', min:120,n:'Performance · banespill', omr:'SPILL', kilde:'gruppe' },
+  { id:'b1', sp:'coach',  dag:4, start:'11:00', min:60, n:'Coachtime · Gamle Fredrikstad GK', kilde:'booking', laast:true },
+  { id:'b2', sp:'coach',  dag:3, start:'13:00', min:60, n:'Coachtime · Nora Dahl',            kilde:'booking', laast:true },
+  { id:'b3', sp:'oyvind', dag:4, start:'11:00', min:60, n:'Coachtime · med Anders',           kilde:'booking', laast:true },
+  { id:'r1', sp:'coach', dag:3, start:'17:00', min:60, n:'Forespørsel · Nora Dahl',
+    kilde:'rsvp', fra:'Nora Dahl · utenfor stallen', sendt:'i går 20:14' },
+  { id:'r2', sp:'coach', dag:1, start:'18:00', min:90, n:'Forespørsel · Foreldremøte JC',
+    kilde:'rsvp', fra:'Foreldregruppa Junior C', sendt:'2 t siden' }
+];
+
+/* WANG har tid-på-dag i timeplanen. GFGK har det ikke i dagens datamodell —
+   da tegnes ingen skolestripe, og raden sier det høyt. Vi gjetter ikke. */
+var SKOLETID = { WANG:{ start:'08:00', slutt:'14:00', dager:[0,1,2,3,4] } };
+var TILGJENGELIG = { start:'08:00', slutt:'18:00', dager:[0,1,2,3,4] };
+var KAPASITET = { simer:2 };
+
+var MALER = [
+  { n:'Ukemal · Spesialisering 5 økter', f:'TEK 2 · SLAG 2 · FYS 1 · 5 t 30 min',
+    okter:[ {dag:0,start:'16:00',min:90,n:'Teknikk tee',omr:'TEK'},
+            {dag:1,start:'16:30',min:60,n:'Wedge 40–90 m',omr:'SLAG'},
+            {dag:2,start:'06:30',min:45,n:'Styrke underkropp',omr:'FYS'},
+            {dag:3,start:'16:00',min:90,n:'Nærspill · fire meter',omr:'SLAG'},
+            {dag:5,start:'10:00',min:75,n:'Ni hull med scorekort',omr:'SPILL'} ] },
+  { n:'Ukemal · Turneringsuke', f:'TURN 1 · SLAG 1 · nedtrapping · 3 t',
+    okter:[ {dag:1,start:'17:00',min:60,n:'Putt · rullelengde',omr:'SLAG'},
+            {dag:3,start:'16:00',min:60,n:'Nedtrapping tee',omr:'TEK'},
+            {dag:5,start:'09:00',min:60,n:'Oppvarmingsrutine',omr:'TURN'} ] },
+  { n:'Ukemal · Skolestart lav belastning', f:'FYS 2 · TEK 1 · 2 t 15 min',
+    okter:[ {dag:0,start:'06:30',min:45,n:'Mobilitet og core',omr:'FYS'},
+            {dag:2,start:'16:00',min:45,n:'Teknikk innendørs',omr:'TEK'},
+            {dag:4,start:'06:30',min:45,n:'Styrke helkropp',omr:'FYS'} ] }
+];
+
+var LOGG = [
+  { t:'08:41', x:'Gruppe C · putting flyttet fra 16:00 til 16:30 torsdag', hvem:'coach', varsel:'4 spillere varslet' },
+  { t:'i går', x:'Coachtime med Nora Dahl bekreftet torsdag 13:00', hvem:'booking', varsel:null }
+];
+
+/* Stripa dekker 06:00–22:00. Timene før og etter finnes i planen, men ikke
+   i stripa — de vises i arket, der plassen er. */
+var S_FRA = 6 * 60, S_TIL = 22 * 60;
+var NAA = { dag:3, min:17 * 60 + 24 };
+
+function minutter(hhmm){ var p = String(hhmm).split(':'); return (+p[0]) * 60 + (+p[1]); }
+function klokke(min){
+  var t = Math.floor(min / 60), m = min % 60;
+  return (t < 10 ? '0' : '') + t + ':' + (m < 10 ? '0' : '') + m;
+}
+function tid(min){
+  var t = Math.floor(min/60), m = min%60;
+  if (!t) return m + ' min';
+  return m ? t + ' t ' + m + ' min' : t + ' t';
+}
+function pst(min){ return Math.max(0, Math.min(100, (min - S_FRA) / (S_TIL - S_FRA) * 100)); }
+function overlapper(a1,a2,b1,b2){ return a1 < b2 && b1 < a2; }
+
+var MODUS = 'stall', visDag = 3, visGruppe = 'jc', visSpiller = 'emma';
+var slots = null, malUtkast = [], publisert = false, visTilgj = true;
+var UNDO = [];
+/* Hele den redigerbare tilstanden, ikke bare planen: loggen er det
+   spilleren leser, og den skal aldri vise en endring som er angret. */
+function pushUndo(){
+  UNDO.push(JSON.stringify({ h:HEND, l:LOGG, m:malUtkast, p:publisert }));
+  if (UNDO.length > 30) UNDO.shift();
+}
+
+var live = document.getElementById('live'), toastEl = document.getElementById('toast'), toastT;
+function si(t){ live.textContent = t; }
+function toast(t, angre){
+  toastEl.innerHTML = '';
+  toastEl.appendChild(document.createTextNode(t));
+  if (angre){
+    var a = el('button', 'ang', 'Angre');
+    a.dataset.odId = 'wbsm-angre';
+    a.addEventListener('click', function(){
+      if (!UNDO.length) return;
+      var f = JSON.parse(UNDO.pop());
+      HEND = f.h; LOGG = f.l; malUtkast = f.m; publisert = f.p;
+      toastEl.hidden = true; renderAll();
+      si('Angret. Loggen er rullet tilbake — varselet står ikke igjen.');
+    });
+    toastEl.appendChild(a);
+  }
+  toastEl.hidden = false;
+  clearTimeout(toastT); toastT = setTimeout(function(){ toastEl.hidden = true; }, 4000);
+}
+function el(tag, cls, txt){
+  var e = document.createElement(tag);
+  if (cls) e.className = cls;
+  if (txt != null) e.textContent = txt;
+  return e;
+}
+function logg(x, hvem, varsel){
+  LOGG.unshift({ t:klokke(NAA.min), x:x, hvem:hvem || 'coach', varsel:varsel || null });
+}
+
+/* ── Hendelser per person og dag ─────────────────────────────── */
+function hendFor(pid, dag, taRsvp){
+  var ut = [];
+  HEND.forEach(function(h){
+    if (h.dag !== dag) return;
+    if (h.kilde === 'rsvp' && !taRsvp) return;
+    if (h.kilde === 'gruppe'){
+      if (pid === 'coach' || medlemmer(h.gruppe).filter(function(m){ return m.id === pid; }).length)
+        ut.push(h);
+      return;
+    }
+    if (h.sp === pid) ut.push(h);
+  });
+  return ut.sort(function(a,b){ return minutter(a.start) - minutter(b.start); });
+}
+function gruppeUke(k){
+  return HEND.filter(function(h){
+    return (h.kilde === 'gruppe' && h.gruppe === k) || h.sp === 'coach';
+  });
+}
+function skoleFor(pid, dag){
+  if (pid === 'coach') return null;
+  var st = SKOLETID[sp(pid).skole];
+  if (!st || st.dager.indexOf(dag) === -1) return null;
+  return { start:st.start, slutt:st.slutt, navn:'Skole · ' + sp(pid).skole };
+}
+function planlagt(pid, dag){
+  return hendFor(pid, dag, false).filter(function(h){
+    return h.kilde === 'okt' || h.kilde === 'gruppe'; })
+    .reduce(function(s, h){ return s + h.min; }, 0);
+}
+
+/* Konflikter regnes, aldri skrives. Skole gir varsel, ikke sperre. */
+function konflikter(){
+  var ut = [], personer = STALL.map(function(s){ return s.id; }).concat(['coach']);
+  personer.forEach(function(pid){
+    for (var d = 0; d < 7; d++){
+      var liste = hendFor(pid, d, false);
+      for (var i = 0; i < liste.length; i++)
+        for (var j = i + 1; j < liste.length; j++){
+          var a = liste[i], b = liste[j];
+          if (overlapper(minutter(a.start), minutter(a.start) + a.min,
+                         minutter(b.start), minutter(b.start) + b.min))
+            ut.push({ pid:pid, dag:d, a:a, b:b, slag:'plan' });
+        }
+      var sk = skoleFor(pid, d);
+      if (!sk) continue;
+      liste.forEach(function(h){
+        if (h.kilde === 'booking') return;
+        if (overlapper(minutter(h.start), minutter(h.start) + h.min,
+                       minutter(sk.start), minutter(sk.slutt)))
+          ut.push({ pid:pid, dag:d, a:h, b:{ n:sk.navn, start:sk.start,
+            min:minutter(sk.slutt) - minutter(sk.start) }, slag:'skole' });
+      });
+    }
+  });
+  return ut;
+}
+function konflikterISyn(){
+  var k = konflikter();
+  if (MODUS === 'stall') return k.filter(function(x){ return x.dag === visDag; });
+  if (MODUS === 'min') return k.filter(function(x){ return x.pid === 'coach'; });
+  if (MODUS === 'spiller') return k.filter(function(x){ return x.pid === visSpiller; });
+  return k.filter(function(x){ return medlemmer(visGruppe)
+    .filter(function(m){ return m.id === x.pid; }).length; });
+}
+function harKonflikt(h, pid){
+  return konflikter().filter(function(k){
+    return (!pid || k.pid === pid) && (k.a.id === h.id || (k.b && k.b.id === h.id)); }).length > 0;
+}
+
+/* ── Tidsforslag: samme motor som desktop ────────────────────── */
+function opptatt(pid, dag){
+  var ut = hendFor(pid, dag, false).map(function(h){
+    return { fra:minutter(h.start), til:minutter(h.start) + h.min }; });
+  var sk = skoleFor(pid, dag);
+  if (sk) ut.push({ fra:minutter(sk.start), til:minutter(sk.slutt) });
+  return ut;
+}
+function finnLedig(varighet, innenDag){
+  var med = (MODUS === 'gruppe' ? medlemmer(visGruppe).map(function(m){ return m.id; })
+    : (MODUS === 'spiller' ? [visSpiller] : STALL.map(function(s){ return s.id; })))
+    .concat(['coach']);
+  var ut = [];
+  for (var d = 0; d <= innenDag && ut.length < 8; d++){
+    var travle = {};
+    med.forEach(function(pid){ travle[pid] = opptatt(pid, d); });
+    for (var m = 5 * 60; m + varighet <= 23 * 60; m += 30){
+      var fri = true, ukjent = [];
+      med.forEach(function(pid){
+        travle[pid].forEach(function(b){ if (overlapper(m, m + varighet, b.fra, b.til)) fri = false; });
+        if (pid !== 'coach' && !SKOLETID[sp(pid).skole]) ukjent.push(sp(pid).n);
+      });
+      if (!fri) continue;
+      if (TILGJENGELIG.dager.indexOf(d) > -1){
+        if (m < minutter(TILGJENGELIG.start) || m + varighet > minutter(TILGJENGELIG.slutt)) continue;
+      } else if (m < 9 * 60 || m + varighet > 16 * 60) continue;
+      var samtidige = HEND.filter(function(h){
+        return h.dag === d && (h.kilde === 'okt' || h.kilde === 'gruppe') &&
+          overlapper(m, m + varighet, minutter(h.start), minutter(h.start) + h.min);
+      }).length;
+      if (samtidige >= KAPASITET.simer) continue;
+      ut.push({ dag:d, start:klokke(m), min:varighet, ukjent:ukjent,
+        merk: d > 4 ? 'utebane · kapasitet ukjent' : null });
+      m += varighet - 30;
+    }
+  }
+  return ut;
+}
+
+/* ── Ark ─────────────────────────────────────────────────────── */
+var scrim = document.getElementById('scrim'), sheet = document.getElementById('sheet');
+var sheetBody = document.getElementById('sheetBody'), sheetFoot = document.getElementById('sheetFoot');
+var arkSist = null;
+function openArk(tittel, bygg, foten){
+  arkSist = document.activeElement;
+  document.getElementById('sheetTitle').textContent = tittel;
+  sheetBody.innerHTML = ''; sheetFoot.innerHTML = '';
+  bygg(sheetBody);
+  if (foten){ foten(sheetFoot); sheetFoot.hidden = false; } else sheetFoot.hidden = true;
+  scrim.classList.add('on'); sheet.classList.add('on');
+  sheetBody.scrollTop = 0;
+  var f = sheet.querySelector('button:not([data-sheet-close])');
+  (f || sheet.querySelector('[data-sheet-close]')).focus();
+}
+function lukkArk(){
+  scrim.classList.remove('on'); sheet.classList.remove('on');
+  if (arkSist && arkSist.focus) arkSist.focus();
+}
+scrim.addEventListener('click', lukkArk);
+document.querySelectorAll('[data-sheet-close]').forEach(function(b){
+  b.addEventListener('click', lukkArk);
+});
+document.addEventListener('keydown', function(e){
+  if (e.key === 'Escape' && sheet.classList.contains('on')) lukkArk();
+});
+
+/* ── Stallvisning: rader med tidsstripe ──────────────────────── */
+function renderStall(b){
+  var wrap = el('div', 'stall');
+  var tegn = el('div', 'tegn');
+  [['okt','egen økt'],['gruppe','gruppeøkt'],['booking','booking'],
+   ['test','test'],['skole','skole'],['slot','ledig forslag']].forEach(function(p){
+    var s = el('span');
+    var i = el('i'); i.className = p[0];
+    if (p[0] === 'okt') i.style.background = 'var(--accent-olive)';
+    if (p[0] === 'gruppe') i.style.background = 'var(--accent-heather)';
+    if (p[0] === 'booking') i.style.background = 'var(--accent-sky)';
+    if (p[0] === 'test') i.style.background = 'var(--accent-fg)';
+    if (p[0] === 'skole'){ i.style.background = 'var(--soft)'; i.style.border = '1px solid var(--border)'; }
+    if (p[0] === 'slot'){ i.style.background = 'var(--accent-soft)'; i.style.border = '1px dashed var(--accent)'; }
+    s.appendChild(i); s.appendChild(document.createTextNode(p[1]));
+    tegn.appendChild(s);
+  });
+  wrap.appendChild(tegn);
+
+  STALL.concat([COACH]).forEach(function(p){
+    var meg = p.id === 'coach';
+    var r = el('button', 'srow' + (meg ? ' meg' : ''));
+    r.type = 'button';
+    r.dataset.odId = 'wbsm-srow-' + p.id;
+    var hd = el('div', 'hd');
+    hd.appendChild(el('span', 'av', p.ini));
+    hd.appendChild(el('span', 'nm', meg ? p.n + ' · meg' : p.n));
+    var mins = planlagt(p.id, visDag);
+    hd.appendChild(el('span', 'sum num', mins ? tid(mins) : 'ingen økt'));
+    r.appendChild(hd);
+
+    var st = el('div', 'stripe');
+    if (visTilgj && meg){
+      var inn = TILGJENGELIG.dager.indexOf(visDag) > -1;
+      if (inn){
+        [[S_FRA, minutter(TILGJENGELIG.start)], [minutter(TILGJENGELIG.slutt), S_TIL]]
+        .forEach(function(sp2){
+          if (sp2[1] <= sp2[0]) return;
+          var d = el('div', 'seg skole');
+          d.style.left = pst(sp2[0]) + '%';
+          d.style.width = (pst(sp2[1]) - pst(sp2[0])) + '%';
+          st.appendChild(d);
+        });
+      }
+    }
+    var sk = skoleFor(p.id, visDag);
+    if (sk){
+      var d2 = el('div', 'seg skole');
+      d2.style.left = pst(minutter(sk.start)) + '%';
+      d2.style.width = (pst(minutter(sk.slutt)) - pst(minutter(sk.start))) + '%';
+      st.appendChild(d2);
+    }
+    hendFor(p.id, visDag, true).forEach(function(h){
+      var seg = el('div', 'seg ' + (h.kilde === 'okt' ? 'okt' : h.kilde) +
+        (harKonflikt(h, p.id) ? ' kol' : ''));
+      seg.style.left = pst(minutter(h.start)) + '%';
+      seg.style.width = Math.max(1.5, pst(minutter(h.start) + h.min) - pst(minutter(h.start))) + '%';
+      st.appendChild(seg);
+    });
+    if (slots) slots.filter(function(s){ return s.dag === visDag; }).forEach(function(s){
+      var seg2 = el('div', 'seg slot');
+      seg2.style.left = pst(minutter(s.start)) + '%';
+      seg2.style.width = (pst(minutter(s.start) + s.min) - pst(minutter(s.start))) + '%';
+      st.appendChild(seg2);
+    });
+    if (visDag === NAA.dag){
+      var nu = el('div', 'naa'); nu.style.left = pst(NAA.min) + '%'; st.appendChild(nu);
+    }
+    r.appendChild(st);
+    var ak = el('div', 'akse');
+    ['06','10','14','18','22'].forEach(function(t){ ak.appendChild(el('span', null, t)); });
+    r.appendChild(ak);
+    if (!meg && !SKOLETID[sp(p.id).skole]){
+      var adv = el('div', 'akse');
+      adv.appendChild(el('span', null, 'skoletid mangler i datamodellen'));
+      r.appendChild(adv);
+    }
+    r.addEventListener('click', function(){ arkDag(p.id); });
+    wrap.appendChild(r);
+  });
+  b.appendChild(wrap);
+}
+
+/* Dagsarket for én person: hele dagen som liste, med handlinger. */
+function arkDag(pid){
+  openArk(sp(pid).n + ' · ' + DAGER[visDag].dw + ' ' + DAGER[visDag].dd, function(b){
+    var sk = skoleFor(pid, visDag);
+    if (sk) b.appendChild(el('p', 'hint', sk.navn + ' ' + sk.start + '–' + sk.slutt +
+      ' · bakteppe, ikke sperre'));
+    else if (pid !== 'coach')
+      b.appendChild(el('p', 'hint', 'Skoletid for ' + sp(pid).skole +
+        ' finnes ikke i datamodellen — bekreft med hjemmet før du legger økt i skoletiden.'));
+    var liste = hendFor(pid, visDag, true);
+    if (!liste.length){
+      var t = el('div', 'tom');
+      t.appendChild(el('h4', null, 'Ingen økter denne dagen'));
+      t.appendChild(el('p', null, 'Legg inn en økt, eller finn felles ledig tid.'));
+      b.appendChild(t);
+    }
+    liste.forEach(function(h){ b.appendChild(agRad(h, pid, true)); });
+  }, function(f){
+    var ny = el('button', 'btn ink', 'Legg inn økt');
+    ny.dataset.odId = 'wbsm-ny-okt';
+    ny.addEventListener('click', function(){
+      pushUndo();
+      var id = 'n' + Date.now() % 10000;
+      HEND.push({ id:id, sp:pid, dag:visDag, start:'16:00', min:60,
+        n: pid === 'coach' ? 'Egen tid' : 'Ny økt', omr:'TEK',
+        kilde: pid === 'coach' ? 'booking' : 'okt' });
+      logg('Ny økt lagt inn ' + DAGER[visDag].dw + ' 16:00 for ' + sp(pid).n, 'coach',
+        pid === 'coach' ? null : sp(pid).n + ' varslet');
+      renderAll(); arkOkt(HEND[HEND.length - 1], pid);
+      toast('Lagt inn 16:00', true);
+    });
+    var lukk = el('button', 'btn', 'Ferdig');
+    lukk.dataset.odId = 'wbsm-dag-ferdig';
+    lukk.addEventListener('click', lukkArk);
+    f.appendChild(lukk); f.appendChild(ny);
+  });
+}
+
+/* ── Agendarad: samme rad i alle modusene ────────────────────── */
+function agRad(h, pid, medDag){
+  var r = el('button', 'arad ' + h.kilde + (h.mal ? ' mal' : '') +
+    (harKonflikt(h, pid) ? ' kol' : ''));
+  r.type = 'button';
+  r.dataset.odId = 'wbsm-rad-' + h.id;
+  r.appendChild(el('span', 'at num', (medDag ? '' : DAGER[h.dag].dw + ' ') + h.start));
+  var bx = el('div', 'ab');
+  bx.appendChild(el('span', 'an', h.n));
+  var k = h.kilde === 'gruppe' ? 'gruppe · ' + medlemmer(h.gruppe).length + ' spillere'
+    : (h.kilde === 'booking' ? 'booking · låst'
+    : (h.kilde === 'rsvp' ? 'forespørsel · svar mangler'
+    : (h.kilde === 'test' ? 'test' : tid(h.min) + (h.sp && h.sp !== pid ? ' · ' + sp(h.sp).n : ''))));
+  if (h.mal) k = 'fra ukemal · ikke bekreftet';
+  var kk = el('span', 'ak' + (harKonflikt(h, pid) ? ' varsel' : ''),
+    harKonflikt(h, pid) ? k + ' · kolliderer' : k);
+  bx.appendChild(kk);
+  r.appendChild(bx);
+  r.addEventListener('click', function(){
+    if (h.kilde === 'rsvp') arkRsvp(h); else arkOkt(h, pid);
+  });
+  return r;
+}
+
+/* Øktarket: flytt dag, flytt klokke, flytt spiller, varighet, slett.
+   Alt med 44–48 px treffmål. Ingen dra-og-slipp på mobil. */
+function arkOkt(h, pid){
+  openArk(h.n, function(b){
+    b.appendChild(el('p', 'hint', DAGER[h.dag].dw + ' ' + DAGER[h.dag].dd + ' · ' +
+      h.start + '–' + klokke(minutter(h.start) + h.min) + ' · ' + tid(h.min) +
+      (h.kilde === 'gruppe' ? ' · ' + gruppeNavn(h.gruppe) : (h.sp ? ' · ' + sp(h.sp).n : ''))));
+
+    if (h.kilde === 'gruppe'){
+      b.appendChild(el('span', 'flab', 'deltakere · skrives til alle'));
+      var d = el('div', 'delt');
+      medlemmer(h.gruppe).forEach(function(p){
+        var kol = harKonflikt(h, p.id);
+        d.appendChild(el('span', kol ? 'kol' : null, p.n + (kol ? ' · kolliderer' : '')));
+      });
+      b.appendChild(d);
+    }
+    if (h.laast){
+      var lk = el('div', 'cvarsel');
+      lk.appendChild(el('span', 'flab', 'låst blokk'));
+      lk.appendChild(el('p', null, 'Bookinger eies av bookingflaten. Endring skjer der, ' +
+        'med kvittering og varsel til den som booket.'));
+      b.appendChild(lk);
+      return;
+    }
+    if (MODUS === 'spiller' || (pid && pid !== 'coach')){
+      var cv = el('div', 'cvarsel');
+      cv.appendChild(el('span', 'flab', 'coach-endring'));
+      cv.appendChild(el('p', null, 'Endringen merkes «coach» i loggen ' +
+        (h.kilde === 'gruppe' ? 'alle i gruppa' : sp(h.sp || pid).n.split(' ')[0]) +
+        ' ser i PlayerHQ, med tidspunkt.'));
+      b.appendChild(cv);
+    }
+
+    b.appendChild(el('span', 'flab', 'flytt til dag'));
+    var vd = el('div', 'velg');
+    DAGER.forEach(function(dg, i){
+      var bt = el('button', null, dg.dw);
+      bt.dataset.odId = 'wbsm-okt-dag-' + i;
+      bt.setAttribute('aria-pressed', String(i === h.dag));
+      bt.addEventListener('click', function(){
+        pushUndo(); h.dag = i;
+        logg(h.n + ' flyttet til ' + dg.dw, 'coach', h.kilde === 'gruppe'
+          ? medlemmer(h.gruppe).length + ' spillere varslet' : sp(h.sp).n + ' varslet');
+        renderAll(); arkOkt(h, pid);
+        si(h.n + ' er flyttet til ' + dg.dw + '.');
+        toast('Flyttet til ' + dg.dw, true);
+      });
+      vd.appendChild(bt);
+    });
+    b.appendChild(vd);
+
+    b.appendChild(el('span', 'flab', 'start'));
+    var vk = el('div', 'velg');
+    ['06:30','09:00','15:00','15:30','16:00','16:30','17:00','18:00'].forEach(function(t){
+      var bt2 = el('button', null, t);
+      bt2.dataset.odId = 'wbsm-okt-kl-' + t.replace(':','');
+      bt2.setAttribute('aria-pressed', String(t === h.start));
+      bt2.addEventListener('click', function(){
+        pushUndo(); h.start = t;
+        logg(h.n + ' flyttet til ' + t, 'coach', h.kilde === 'gruppe'
+          ? medlemmer(h.gruppe).length + ' spillere varslet' : sp(h.sp).n + ' varslet');
+        renderAll(); arkOkt(h, pid);
+        toast('Flyttet til ' + t, true);
+      });
+      vk.appendChild(bt2);
+    });
+    b.appendChild(vk);
+
+    b.appendChild(el('span', 'flab', 'varighet'));
+    b.appendChild(el('p', 'hint', 'Varigheten er summen av drill-tidene. Endrer du den her, ' +
+      'skrives differansen til siste drill i økta.'));
+    var vv = el('div', 'velg');
+    [45,60,75,90,120].forEach(function(m){
+      var bt3 = el('button', null, m + ' min');
+      bt3.dataset.odId = 'wbsm-okt-min-' + m;
+      bt3.setAttribute('aria-pressed', String(m === h.min));
+      bt3.addEventListener('click', function(){
+        pushUndo(); h.min = m;
+        logg(h.n + ' er nå ' + tid(m), 'coach', null);
+        renderAll(); arkOkt(h, pid);
+      });
+      vv.appendChild(bt3);
+    });
+    b.appendChild(vv);
+
+    if (h.kilde !== 'gruppe'){
+      b.appendChild(el('span', 'flab', 'flytt til spiller'));
+      b.appendChild(el('p', 'hint', 'Begge parter varsles. På desktop er dette å dra ' +
+        'blokken til en annen kolonne.'));
+      var vs = el('div', 'velg');
+      STALL.forEach(function(s2){
+        var bt4 = el('button', null, s2.ini);
+        bt4.dataset.odId = 'wbsm-okt-sp-' + s2.id;
+        bt4.setAttribute('aria-label', s2.n);
+        bt4.setAttribute('aria-pressed', String(s2.id === h.sp));
+        bt4.addEventListener('click', function(){
+          if (s2.id === h.sp) return;
+          pushUndo();
+          var fra = h.sp; h.sp = s2.id;
+          logg(h.n + ' flyttet fra ' + sp(fra).n + ' til ' + s2.n, 'coach', 'begge varslet');
+          renderAll(); arkOkt(h, pid);
+          si(h.n + ' er flyttet til ' + s2.n + '. Begge er varslet.');
+          toast('Flyttet til ' + s2.n, true);
+        });
+        vs.appendChild(bt4);
+      });
+      b.appendChild(vs);
+    }
+  }, function(f){
+    if (h.laast){
+      var l = el('button', 'btn', 'Lukk');
+      l.dataset.odId = 'wbsm-okt-lukk2';
+      l.addEventListener('click', lukkArk);
+      f.appendChild(l);
+      return;
+    }
+    var sl = el('button', 'btn', 'Slett');
+    sl.dataset.odId = 'wbsm-okt-slett';
+    sl.addEventListener('click', function(){
+      pushUndo();
+      HEND = HEND.filter(function(x){ return x.id !== h.id; });
+      logg(h.n + ' er slettet', 'coach', null);
+      lukkArk(); renderAll(); toast('Slettet', true);
+    });
+    var ok = el('button', 'btn ink', 'Ferdig');
+    ok.dataset.odId = 'wbsm-okt-ferdig';
+    ok.addEventListener('click', lukkArk);
+    f.appendChild(sl); f.appendChild(ok);
+  });
+}
+
+/* ── Agenda for gruppe, spiller og min tid ───────────────────── */
+function renderAgenda(b){
+  var wrap = el('div', 'ag');
+  if (MODUS === 'spiller'){
+    var cv = el('div', 'cvarsel');
+    cv.appendChild(el('span', 'flab', 'planlegger for ' + sp(visSpiller).n));
+    cv.appendChild(el('p', null, 'Alt du endrer merkes «coach» i loggen ' +
+      sp(visSpiller).n.split(' ')[0] + ' ser i PlayerHQ, med tidspunkt og hva som ble endret.'));
+    var ga = el('div', 'gacts');
+    var bytt = el('button', 'btn sm', 'Bytt spiller');
+    bytt.dataset.odId = 'wbsm-bytt-spiller';
+    bytt.addEventListener('click', arkVelgSpiller);
+    var lg = el('button', 'btn sm', 'Se loggen');
+    lg.dataset.odId = 'wbsm-se-logg';
+    lg.addEventListener('click', arkLogg);
+    ga.appendChild(bytt); ga.appendChild(lg);
+    cv.appendChild(ga);
+    wrap.appendChild(cv);
+  }
+  if (MODUS === 'gruppe'){
+    var gv = el('div', 'cvarsel');
+    gv.appendChild(el('span', 'flab', gruppeNavn(visGruppe)));
+    gv.appendChild(el('p', null, medlemmer(visGruppe).length +
+      ' spillere. Gruppeøkter skrives til alle, og bookingene mine står som opptatt tid.'));
+    var ga2 = el('div', 'gacts');
+    GRUPPER.forEach(function(g){
+      var bt = el('button', 'btn sm', g.n.split(' ').slice(-2).join(' '));
+      bt.dataset.odId = 'wbsm-gr-' + g.k;
+      bt.addEventListener('click', function(){ visGruppe = g.k; slots = null; renderAll(); });
+      ga2.appendChild(bt);
+    });
+    gv.appendChild(ga2);
+    wrap.appendChild(gv);
+  }
+  if (malUtkast.length){
+    var mv = el('div', 'cvarsel');
+    mv.appendChild(el('span', 'flab', 'ukemal · utkast'));
+    mv.appendChild(el('p', null, malUtkast.length + ' økter er lagt inn som utkast. ' +
+      'Ingenting er skrevet til spillerne før du bekrefter.'));
+    var ga3 = el('div', 'gacts');
+    var ok2 = el('button', 'btn ink sm', 'Bekreft');
+    ok2.dataset.odId = 'wbsm-mal-bekreft';
+    ok2.addEventListener('click', bekreftMal);
+    var no = el('button', 'btn sm', 'Forkast');
+    no.dataset.odId = 'wbsm-mal-forkast';
+    no.addEventListener('click', forkastMal);
+    ga3.appendChild(ok2); ga3.appendChild(no);
+    mv.appendChild(ga3);
+    wrap.appendChild(mv);
+  }
+
+  var pid = MODUS === 'spiller' ? visSpiller : 'coach';
+  DAGER.forEach(function(dg, i){
+    var liste = MODUS === 'gruppe'
+      ? gruppeUke(visGruppe).filter(function(h){ return h.dag === i; })
+          .sort(function(a,b2){ return minutter(a.start) - minutter(b2.start); })
+      : hendFor(pid, i, true);
+    var hd = el('div', 'dag' + (i === NAA.dag ? ' idag' : ''));
+    hd.appendChild(el('span', 'dw', dg.dw + ' ' + dg.dd + (i === NAA.dag ? ' · i dag' : '')));
+    var mins = MODUS === 'gruppe'
+      ? liste.filter(function(h){ return h.kilde === 'gruppe'; })
+          .reduce(function(s, h){ return s + h.min; }, 0)
+      : planlagt(pid, i);
+    hd.appendChild(el('span', 'dt num', mins ? tid(mins) : '—'));
+    wrap.appendChild(hd);
+    if (!liste.length){ wrap.appendChild(el('div', 'tomdag', 'Ingen økter')); return; }
+    liste.forEach(function(h){ wrap.appendChild(agRad(h, pid, false)); });
+    if (slots) slots.filter(function(s){ return s.dag === i; }).forEach(function(s, idx){
+      var r = el('button', 'arad rsvp');
+      r.type = 'button';
+      r.style.borderColor = 'var(--accent)';
+      r.dataset.odId = 'wbsm-agslot-' + i + '-' + idx;
+      r.appendChild(el('span', 'at num', s.start));
+      var bx = el('div', 'ab');
+      bx.appendChild(el('span', 'an', 'Ledig · ' + tid(s.min)));
+      bx.appendChild(el('span', 'ak', s.merk ? s.merk : 'alle er ledige'));
+      r.appendChild(bx);
+      r.addEventListener('click', function(){ arkSlot(s); });
+      wrap.appendChild(r);
+    });
+  });
+  b.appendChild(wrap);
+}
+
+/* ── Ark: velg spiller ───────────────────────────────────────── */
+function arkVelgSpiller(){
+  openArk('Planlegg for', function(b){
+    b.appendChild(el('p', 'hint', 'Du redigerer én spillers uke. Endringene merkes coach.'));
+    STALL.forEach(function(s){
+      var r = el('button', 'srad');
+      r.dataset.odId = 'wbsm-velg-' + s.id;
+      r.setAttribute('aria-pressed', String(s.id === visSpiller));
+      r.appendChild(el('span', null, s.n));
+      r.appendChild(el('span', 'sh', s.alder + ' år · ' + s.skole));
+      r.addEventListener('click', function(){
+        visSpiller = s.id; slots = null; lukkArk(); renderAll();
+        si('Planlegger for ' + s.n + '.');
+      });
+      b.appendChild(r);
+    });
+  });
+}
+
+/* ── Ark: finn ledig tid ─────────────────────────────────────── */
+var fVar = 90, fInnen = 4;
+function arkFinn(){
+  openArk('Finn felles ledig tid', function(b){
+    b.appendChild(el('span', 'flab', 'varighet'));
+    var v1 = el('div', 'velg');
+    [45,60,90,120].forEach(function(m){
+      var bt = el('button', null, m + ' min');
+      bt.dataset.odId = 'wbsm-finn-var-' + m;
+      bt.setAttribute('aria-pressed', String(m === fVar));
+      bt.addEventListener('click', function(){ fVar = m; arkFinn(); });
+      v1.appendChild(bt);
+    });
+    b.appendChild(v1);
+    b.appendChild(el('span', 'flab', 'innen'));
+    var v2 = el('div', 'velg');
+    DAGER.forEach(function(d, i){
+      var bt2 = el('button', null, d.dw);
+      bt2.dataset.odId = 'wbsm-finn-innen-' + i;
+      bt2.setAttribute('aria-pressed', String(i === fInnen));
+      bt2.addEventListener('click', function(){ fInnen = i; arkFinn(); });
+      v2.appendChild(bt2);
+    });
+    b.appendChild(v2);
+    b.appendChild(el('p', 'hint', MODUS === 'gruppe'
+      ? 'Søker for alle ' + medlemmer(visGruppe).length + ' i gruppa + meg.'
+      : (MODUS === 'spiller' ? 'Søker for ' + sp(visSpiller).n + ' + meg.'
+      : 'Søker for hele stallen + meg. Skole, bookinger, arbeidsuka 08–18 og ' +
+        'to simulatorer er regnet inn.')));
+    if (slots){
+      if (!slots.length){
+        var t = el('div', 'tom');
+        t.appendChild(el('h4', null, 'Ingen felles ledig tid'));
+        t.appendChild(el('p', null, 'Skole, bookinger og arbeidsuka spiser perioden. ' +
+          'Kortere varighet eller senere frist løser det.'));
+        b.appendChild(t);
+      } else {
+        b.appendChild(el('span', 'flab', slots.length + ' tidsrom'));
+        slots.forEach(function(s){
+          var r = el('button', 'srad');
+          r.dataset.odId = 'wbsm-slot-' + s.dag + '-' + s.start.replace(':','');
+          r.appendChild(el('span', null, DAGER[s.dag].dw + ' ' + s.start));
+          r.appendChild(el('span', 'sh', s.merk ? 'kap. ukjent'
+            : (s.ukjent.length ? 'skoletid?' : tid(s.min))));
+          r.addEventListener('click', function(){ arkSlot(s); });
+          b.appendChild(r);
+        });
+      }
+    }
+  }, function(f){
+    var kj = el('button', 'btn ink', 'Søk');
+    kj.dataset.odId = 'wbsm-finn-sok';
+    kj.addEventListener('click', function(){
+      slots = finnLedig(fVar, fInnen);
+      if (slots.length && MODUS === 'stall') visDag = slots[0].dag;
+      renderAll(); arkFinn();
+      si(slots.length ? slots.length + ' tidsrom funnet. De er tegnet i stripene også.'
+                      : 'Ingen felles ledig tid i perioden.');
+    });
+    var lu = el('button', 'btn', 'Lukk');
+    lu.dataset.odId = 'wbsm-finn-lukk';
+    lu.addEventListener('click', lukkArk);
+    f.appendChild(lu); f.appendChild(kj);
+  });
+}
+
+function arkSlot(s){
+  var deltakere = MODUS === 'gruppe' ? medlemmer(visGruppe)
+    : (MODUS === 'spiller' ? [sp(visSpiller)] : medlemmer('jc'));
+  openArk('Ledig ' + DAGER[s.dag].dw + ' ' + s.start, function(b){
+    b.appendChild(el('p', 'hint', s.start + '–' + klokke(minutter(s.start) + s.min) + ' · ' +
+      tid(s.min) + '. Ledig for alle, innenfor arbeidsuka, og anlegget har kapasitet.'));
+    if (s.merk) b.appendChild(el('p', 'hint',
+      'Merk: helgeforslag forutsetter utebane. Kapasitet der er ikke strukturert i dagens data.'));
+    if (s.ukjent.length) b.appendChild(el('p', 'hint',
+      'Merk: skoletid mangler for ' + s.ukjent.join(', ') + ' — bekreft med hjemmet.'));
+    b.appendChild(el('span', 'flab', 'skrives til'));
+    var d = el('div', 'delt');
+    deltakere.forEach(function(p){ d.appendChild(el('span', null, p.n)); });
+    b.appendChild(d);
+  }, function(f){
+    var lu = el('button', 'btn', 'Forkast');
+    lu.dataset.odId = 'wbsm-slot-forkast';
+    lu.addEventListener('click', function(){ lukkArk(); });
+    var leg = el('button', 'btn ink', 'Legg gruppeøkt');
+    leg.dataset.odId = 'wbsm-slot-legg';
+    leg.addEventListener('click', function(){
+      pushUndo();
+      HEND.push({ id:'gs' + Date.now() % 10000, gruppe: MODUS === 'gruppe' ? visGruppe : 'jc',
+        dag:s.dag, start:s.start, min:s.min, n:'Gruppeøkt · felles tid', omr:'SLAG', kilde:'gruppe' });
+      slots = null; visDag = s.dag;
+      logg('Gruppeøkt lagt ' + DAGER[s.dag].dw + ' ' + s.start, 'coach',
+        deltakere.length + ' spillere varslet');
+      lukkArk(); renderAll();
+      si('Gruppeøkt lagt inn. ' + deltakere.length + ' spillere er varslet.');
+      toast('Lagt inn · alle varslet', true);
+    });
+    f.appendChild(lu); f.appendChild(leg);
+  });
+}
+
+/* ── Ark: konflikter ─────────────────────────────────────────── */
+function arkKonflikt(){
+  var konf = konflikterISyn();
+  openArk('Konflikter', function(b){
+    if (!konf.length){
+      var t = el('div', 'tom');
+      t.appendChild(el('h4', null, 'Ingen konflikter i visningen'));
+      t.appendChild(el('p', null, 'Regnet mot skole, bookinger, gruppeøkter og egne økter.'));
+      b.appendChild(t);
+      return;
+    }
+    konf.forEach(function(k, i){
+      var c = el('div', 'kort');
+      c.appendChild(el('span', 'kv', (k.slag === 'skole' ? 'skole · varsel' : 'dobbeltbooket') +
+        ' · ' + DAGER[k.dag].dw));
+      c.appendChild(el('h4', null, sp(k.pid).n));
+      c.appendChild(el('p', null, k.a.n + ' (' + k.a.start + ') mot ' + k.b.n + ' (' + k.b.start + '). ' +
+        (k.slag === 'skole'
+          ? 'Skole er bakteppe, ikke sperre — men hjemmet skal informeres.'
+          : 'Den som ble lagt inn sist viker som regel.')));
+      var ga = el('div', 'gacts');
+      var aa = el('button', 'btn sm', 'Åpne økta');
+      aa.dataset.odId = 'wbsm-konf-apne-' + i;
+      aa.addEventListener('click', function(){
+        visDag = k.dag; renderAll(); arkOkt(k.a, k.pid);
+      });
+      ga.appendChild(aa);
+      if (k.slag !== 'skole'){
+        var fl = el('button', 'btn sm', 'Flytt 60 min');
+        fl.dataset.odId = 'wbsm-konf-flytt-' + i;
+        fl.addEventListener('click', function(){
+          pushUndo();
+          var h = HEND.filter(function(x){ return x.id === k.a.id; })[0];
+          if (!h) return;
+          h.start = klokke(minutter(h.start) + 60);
+          logg(h.n + ' flyttet 60 min for å løse kollisjon', 'coach', sp(k.pid).n + ' varslet');
+          renderAll(); arkKonflikt();
+          toast('Flyttet · konflikten er løst', true);
+        });
+        ga.appendChild(fl);
+      }
+      c.appendChild(ga);
+      b.appendChild(c);
+    });
+  });
+}
+
+/* ── Ark: forespørsel ────────────────────────────────────────── */
+function arkRsvp(h){
+  openArk('Forespørsel', function(b){
+    var c = el('div', 'kort');
+    c.appendChild(el('span', 'kv rolig', 'tentativ · ' + h.sendt));
+    c.appendChild(el('h4', null, h.n));
+    c.appendChild(el('p', null, h.fra + ' ber om ' + DAGER[h.dag].dw + ' ' + h.start + '–' +
+      klokke(minutter(h.start) + h.min) + ' (' + tid(h.min) + '). ' +
+      (minutter(h.start) + h.min > minutter(TILGJENGELIG.slutt)
+        ? 'Tidspunktet ligger utenfor arbeidsuka di.'
+        : 'Innenfor arbeidsuka, og du har ingen annen blokk der.')));
+    b.appendChild(c);
+    b.appendChild(el('p', 'hint', 'En forespørsel er ikke opptatt tid før du godtar den — ' +
+      'den blokkerer ingen tidsforslag.'));
+  }, function(f){
+    var nei = el('button', 'btn', 'Avslå');
+    nei.dataset.odId = 'wbsm-rsvp-nei';
+    nei.addEventListener('click', function(){ arkAvslaa(h); });
+    var ja = el('button', 'btn ink', 'Godta');
+    ja.dataset.odId = 'wbsm-rsvp-ja';
+    ja.addEventListener('click', function(){
+      pushUndo();
+      h.kilde = 'booking'; h.laast = true; h.n = h.n.replace('Forespørsel · ', 'Coachtime · ');
+      logg(h.n + ' godtatt ' + DAGER[h.dag].dw + ' ' + h.start, 'booking', 'kvittering sendt');
+      lukkArk(); renderAll();
+      si('Forespørselen er godtatt. Blokken er nå en bekreftet booking.');
+      toast('Godtatt · kvittering sendt', true);
+    });
+    f.appendChild(nei); f.appendChild(ja);
+  });
+}
+function arkAvslaa(h){
+  openArk('Avslå forespørselen', function(b){
+    b.appendChild(el('p', 'hint', h.fra + ' får svaret med begrunnelsen din. ' +
+      'Forslag til andre tider følger automatisk med.'));
+    var fl = el('div', 'field');
+    fl.appendChild(el('label', null, 'Begrunnelse'));
+    var ta = document.createElement('textarea');
+    ta.id = 'avslaGrunn';
+    ta.placeholder = 'Hva er grunnen?';
+    fl.appendChild(ta);
+    b.appendChild(fl);
+  }, function(f){
+    var av = el('button', 'btn', 'Behold');
+    av.dataset.odId = 'wbsm-avsla-behold';
+    av.addEventListener('click', lukkArk);
+    var ok = el('button', 'btn ink', 'Send avslag');
+    ok.dataset.odId = 'wbsm-avsla-send';
+    ok.addEventListener('click', function(){
+      var g = document.getElementById('avslaGrunn').value.trim();
+      if (!g){ si('Begrunnelse er påkrevd.'); document.getElementById('avslaGrunn').focus(); return; }
+      pushUndo();
+      HEND = HEND.filter(function(x){ return x.id !== h.id; });
+      logg('Forespørsel fra ' + h.fra + ' avslått: ' + g, 'booking', 'svar sendt');
+      lukkArk(); renderAll();
+      si('Forespørselen er avslått, og svaret er sendt.');
+      toast('Avslått · svar sendt', true);
+    });
+    f.appendChild(av); f.appendChild(ok);
+  });
+}
+
+/* ── Ark: mer (ukemaler, lag, logg) ──────────────────────────── */
+function arkMer(){
+  openArk('Mer', function(b){
+    b.appendChild(el('span', 'flab', 'ukemaler'));
+    b.appendChild(el('p', 'hint', MODUS === 'stall' || MODUS === 'min'
+      ? 'En ukemal hører til en uke. Bytt til Gruppe eller Spiller for å legge den inn.'
+      : 'Legges inn som utkast. Ingenting skrives til spillerne før du bekrefter.'));
+    MALER.forEach(function(m, i){
+      var r = el('button', 'srad');
+      r.dataset.odId = 'wbsm-mal-' + i;
+      r.appendChild(el('span', null, m.n.replace('Ukemal · ', '')));
+      r.appendChild(el('span', 'sh', m.f.split(' · ').pop()));
+      r.addEventListener('click', function(){
+        if (MODUS === 'stall' || MODUS === 'min'){
+          toast('Bytt til Gruppe eller Spiller først'); return;
+        }
+        pushUndo();
+        malUtkast = [];
+        m.okter.forEach(function(o, j){
+          var id = 'm' + Date.now() % 10000 + '_' + j;
+          var h = { id:id, dag:o.dag, start:o.start, min:o.min, n:o.n, omr:o.omr, mal:true,
+            kilde: MODUS === 'gruppe' ? 'gruppe' : 'okt' };
+          if (MODUS === 'gruppe') h.gruppe = visGruppe; else h.sp = visSpiller;
+          HEND.push(h); malUtkast.push(id);
+        });
+        lukkArk(); renderAll();
+        si(m.n + ' er lagt inn som utkast. ' + malUtkast.length + ' økter venter på bekreftelse.');
+        toast('Utkast lagt inn');
+      });
+      b.appendChild(r);
+    });
+
+    b.appendChild(el('span', 'flab', 'lag'));
+    var lg = el('button', 'srad');
+    lg.dataset.odId = 'wbsm-lag-tilgj';
+    lg.setAttribute('aria-pressed', String(visTilgj));
+    lg.appendChild(el('span', null, 'Vis tilgjengelighet'));
+    lg.appendChild(el('span', 'sh', visTilgj ? 'på' : 'av'));
+    lg.addEventListener('click', function(){
+      visTilgj = !visTilgj; lukkArk(); renderAll();
+      si('Tilgjengelighetslaget er ' + (visTilgj ? 'på' : 'av') + '.');
+    });
+    b.appendChild(lg);
+
+    b.appendChild(el('span', 'flab', 'historikk'));
+    var lo = el('button', 'srad');
+    lo.dataset.odId = 'wbsm-mer-logg';
+    lo.appendChild(el('span', null, 'Endringslogg'));
+    lo.appendChild(el('span', 'sh', LOGG.length + ' hendelser'));
+    lo.addEventListener('click', arkLogg);
+    b.appendChild(lo);
+  });
+}
+
+function arkLogg(){
+  openArk('Endringslogg', function(b){
+    b.appendChild(el('p', 'hint', 'Hver endring merkes «coach» med tidspunkt. ' +
+      'Dette er den samme loggen spilleren leser i PlayerHQ — ingen skjulte endringer.'));
+    var ul = el('ul', 'logg');
+    LOGG.forEach(function(l){
+      var li = el('li');
+      li.appendChild(el('span', 'lt num', l.t));
+      var bx = el('div');
+      bx.appendChild(el('span', 'lx', l.x));
+      bx.appendChild(el('span', l.hvem === 'coach' ? 'lw' : 'lv',
+        l.hvem + (l.varsel ? ' · ' + l.varsel : '')));
+      li.appendChild(bx);
+      ul.appendChild(li);
+    });
+    b.appendChild(ul);
+  });
+}
+
+function bekreftMal(){
+  pushUndo();
+  HEND.forEach(function(h){ if (malUtkast.indexOf(h.id) > -1) delete h.mal; });
+  var n = malUtkast.length; malUtkast = [];
+  logg('Ukemal bekreftet · ' + n + ' økter', 'coach', MODUS === 'gruppe'
+    ? medlemmer(visGruppe).length + ' spillere varslet' : sp(visSpiller).n + ' varslet');
+  renderAll(); toast('Ukemal bekreftet', true);
+}
+function forkastMal(){
+  pushUndo();
+  HEND = HEND.filter(function(h){ return malUtkast.indexOf(h.id) === -1; });
+  malUtkast = []; renderAll(); toast('Utkast forkastet', true);
+}
+
+/* ── Dagpiller, målinger, Én ting nå ─────────────────────────── */
+function renderDaystrip(){
+  var d = document.getElementById('daystrip');
+  d.hidden = !(MODUS === 'stall' || MODUS === 'min');
+  if (d.hidden) return;
+  d.innerHTML = '';
+  DAGER.forEach(function(x, i){
+    var b = el('button', 'dpill' + (i === NAA.dag ? ' idag' : ''));
+    b.type = 'button';
+    b.setAttribute('role', 'tab');
+    b.dataset.odId = 'wbsm-dag-' + i;
+    b.setAttribute('aria-current', String(i === visDag));
+    var treff = slots ? slots.filter(function(s){ return s.dag === i; }).length : 0;
+    b.setAttribute('aria-label', x.dw + ' ' + x.dd +
+      (treff ? ', ' + treff + ' ledige tidsrom' : ''));
+    b.appendChild(el('span', 'dw', x.dw));
+    b.appendChild(el('span', 'dd', x.dd.split('.')[0]));
+    var dot = el('span', 'dot');
+    if (treff) dot.style.background = 'var(--accent)';
+    else if (!HEND.filter(function(h){ return h.dag === i; }).length) dot.style.background = 'transparent';
+    b.appendChild(dot);
+    b.addEventListener('click', function(){ visDag = i; renderAll();
+      si('Viser ' + x.dw + ' ' + x.dd + '.'); });
+    d.appendChild(b);
+  });
+}
+
+function renderMaal(){
+  var m = document.getElementById('maal');
+  m.innerHTML = '';
+  var konf = konflikterISyn();
+  var rsvp = HEND.filter(function(h){ return h.kilde === 'rsvp'; }).length;
+  var mins = 0;
+  if (MODUS === 'stall') STALL.concat([COACH]).forEach(function(p){ mins += planlagt(p.id, visDag); });
+  else if (MODUS === 'gruppe') mins = gruppeUke(visGruppe)
+    .filter(function(h){ return h.kilde === 'gruppe'; })
+    .reduce(function(s, h){ return s + h.min; }, 0);
+  else { var pid = MODUS === 'spiller' ? visSpiller : 'coach';
+    for (var i = 0; i < 7; i++) mins += planlagt(pid, i); }
+  [ ['i visning', MODUS === 'stall' ? String(STALL.length + 1)
+       : (MODUS === 'gruppe' ? String(medlemmer(visGruppe).length) : '1'),
+     MODUS === 'stall' ? 'personer' : (MODUS === 'gruppe' ? 'i gruppa' : 'person')],
+    ['planlagt', mins ? tid(mins) : '—', MODUS === 'stall' ? DAGER[visDag].dw : 'uke 32'],
+    ['konflikt', String(konf.length), 'i visningen'],
+    ['svar', String(rsvp), 'venter'],
+    ['ledig', slots ? String(slots.length) : '—', slots ? 'funnet' : 'ikke søkt']
+  ].forEach(function(x){
+    var d = el('div');
+    d.appendChild(el('span', 'k', x[0]));
+    d.appendChild(el('span', 'v num', x[1]));
+    d.appendChild(el('span', 'k', x[2]));
+    m.appendChild(d);
+  });
+  document.getElementById('cKonf').textContent = konf.length;
+  document.getElementById('verktCnt').textContent = MODUS === 'stall'
+    ? DAGER[visDag].dw + ' · hele stallen'
+    : (MODUS === 'gruppe' ? medlemmer(visGruppe).length + ' i gruppa'
+    : (MODUS === 'spiller' ? sp(visSpiller).n : 'min uke'));
+}
+
+function renderNow(){
+  var nb = document.getElementById('nowBtn');
+  var konf = konflikterISyn();
+  var rsvp = HEND.filter(function(h){ return h.kilde === 'rsvp'; });
+  nb.className = 'btn now full';
+  if (rsvp.length){
+    nb.textContent = 'Svar på ' + rsvp.length + (rsvp.length === 1 ? ' forespørsel' : ' forespørsler');
+    nb.onclick = function(){ arkRsvp(rsvp[0]); };
+    return;
+  }
+  if (konf.length){
+    nb.textContent = 'Løs ' + konf.length + (konf.length === 1 ? ' konflikt' : ' konflikter');
+    nb.onclick = arkKonflikt;
+    return;
+  }
+  if (malUtkast.length){
+    nb.textContent = 'Bekreft ' + malUtkast.length + ' økter fra ukemal';
+    nb.onclick = bekreftMal;
+    return;
+  }
+  if (publisert){
+    nb.className = 'btn ink full';
+    nb.textContent = 'Publisert ' + klokke(NAA.min) + ' · se logg';
+    nb.onclick = arkLogg;
+    return;
+  }
+  var antall = MODUS === 'gruppe' ? medlemmer(visGruppe).length
+    : (MODUS === 'spiller' ? 1 : STALL.length);
+  nb.textContent = MODUS === 'spiller'
+    ? 'Publiser uka til ' + sp(visSpiller).n.split(' ')[0]
+    : 'Publiser uke 32 til ' + antall + ' spillere';
+  nb.onclick = function(){
+    openArk('Publiser uke 32', function(b){
+      b.appendChild(el('p', 'hint', 'Spillerne ser planen i PlayerHQ med én gang, med ' +
+        'coach-merking på alt du har endret. Endrer du etterpå, får de varsel.'));
+    }, function(f){
+      var av = el('button', 'btn', 'Ikke nå');
+      av.dataset.odId = 'wbsm-pub-avbryt';
+      av.addEventListener('click', lukkArk);
+      var ok = el('button', 'btn ink', 'Publiser');
+      ok.dataset.odId = 'wbsm-pub-ok';
+      ok.addEventListener('click', function(){
+        publisert = true;
+        logg('Uke 32 publisert til ' + antall + (antall === 1 ? ' spiller' : ' spillere'),
+          'coach', 'alle varslet');
+        lukkArk(); renderAll();
+        si('Uke 32 er publisert. Planen er synlig i PlayerHQ.');
+        toast('Publisert');
+      });
+      f.appendChild(av); f.appendChild(ok);
+    });
+  };
+}
+
+function renderAll(){
+  var b = document.getElementById('body');
+  var sy = b.scrollTop;
+  b.innerHTML = '';
+  if (MODUS === 'stall') renderStall(b); else renderAgenda(b);
+  renderDaystrip(); renderMaal(); renderNow();
+  b.scrollTop = sy;
+}
+
+function settModus(m){
+  MODUS = m; slots = null;
+  document.querySelectorAll('.modus button').forEach(function(x){
+    x.setAttribute('aria-current', String(x.dataset.modus === m));
+  });
+  document.getElementById('whoSub').textContent = {
+    stall:'stall · uke 32', gruppe:'gruppe · uke 32',
+    spiller:'for ' + sp(visSpiller).n, min:'min tid · uke 32' }[m];
+  renderAll();
+  si({ stall:'Stallvisning: hver spiller er en rad med dagen som tidsstripe.',
+       gruppe:'Gruppevisning: gruppas uke som agenda.',
+       spiller:'Spillervisning: ' + sp(visSpiller).n + ' sin uke, med coach-merking.',
+       min:'Min tid: bookinger, forespørsler og tilgjengelighet.' }[m]);
+}
+
+document.querySelectorAll('.modus button').forEach(function(b){
+  b.addEventListener('click', function(){ settModus(b.dataset.modus); });
+});
+document.getElementById('btnFinn').addEventListener('click', arkFinn);
+document.getElementById('btnKonf').addEventListener('click', arkKonflikt);
+document.getElementById('btnMer').addEventListener('click', arkMer);
+document.getElementById('backThread').addEventListener('click', function(){
+  window.location.href = 'agencyos-innboks-mobil.html';
+});
+var KEY = 'akhq-theme-agencyos';
+var saved = localStorage.getItem(KEY);
+if (saved) document.documentElement.dataset.theme = saved;
+document.getElementById('themeBtn').addEventListener('click', function(){
+  var next = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
+  document.documentElement.dataset.theme = next;
+  localStorage.setItem(KEY, next);
+  this.setAttribute('aria-label', next === 'dark' ? 'Bytt til lys modus' : 'Bytt til mørk modus');
+});
+
+settModus('stall');
+})();
+</script>
+</body>
+</html>
