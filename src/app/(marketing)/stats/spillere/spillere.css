@@ -87,7 +87,7 @@
 }
 .spillere-searchbox:focus {
   border-color: var(--s-accent);
-  box-shadow: 0 0 0 3px rgba(209, 248, 67, 0.22);
+  box-shadow: 0 0 0 3px rgba(217, 119, 87, 0.22);
 }
 .spillere-searchbox::placeholder {
   color: var(--s-muted-fg);
@@ -329,7 +329,7 @@
 .stats-tier-college {
   background: var(--s-tier-college-bg);
   color: var(--s-tier-college-fg);
-  border: 1px solid rgba(0, 88, 64, 0.15);
+  border: 1px solid rgba(20, 20, 19, 0.15);
 }
 .stats-tier-junior {
   background: var(--s-secondary);

@@ -142,7 +142,7 @@ export function FaseTimeline({ faser }: { faser: Fase[] }) {
             key={f.key}
             left={(i / faser.length) * 100}
             width={100 / faser.length}
-            color={`rgba(209,248,67,${0.2 + (f.slagPct / 100) * 0.75})`}
+            color={`rgba(99,120,74,${0.2 + (f.slagPct / 100) * 0.75})`}
           />
         ))}
       </TimelineBar>

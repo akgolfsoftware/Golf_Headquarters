@@ -126,8 +126,8 @@ async function hentKohortData(aar: number): Promise<KohortData> {
   const TOUR_COLORS = [
     "var(--s-primary)",
     "var(--s-accent)",
-    "rgba(0,88,64,0.4)",
-    "rgba(0,88,64,0.2)",
+    "rgba(20,20,19,0.4)",
+    "rgba(20,20,19,0.2)",
   ];
 
   // Ekte tour-fordeling fra entries — mest aktive tour først, topp 4.
@@ -137,7 +137,7 @@ async function hentKohortData(aar: number): Promise<KohortData> {
     .map(([slug, value], i) => ({
       label: TOUR_LABEL[slug] ?? slug,
       value,
-      color: TOUR_COLORS[i] ?? "rgba(0,88,64,0.2)",
+      color: TOUR_COLORS[i] ?? "rgba(20,20,19,0.2)",
     }));
 
   // Fallback data for when DB is empty
@@ -200,8 +200,8 @@ async function hentKohortData(aar: number): Promise<KohortData> {
         : [
             { label: "Srixon Tour", value: 47, color: "var(--s-primary)" },
             { label: "OLYO Øst", value: 32, color: "var(--s-accent)" },
-            { label: "Østlandstour", value: 22, color: "rgba(0,88,64,0.4)" },
-            { label: "NGC", value: 8, color: "rgba(0,88,64,0.2)" },
+            { label: "Østlandstour", value: 22, color: "rgba(20,20,19,0.4)" },
+            { label: "NGC", value: 8, color: "rgba(20,20,19,0.2)" },
           ],
     college: [
       { navn: "Anders Halvorsen", universitet: "University of Denver", div: "NCAA Division I" },

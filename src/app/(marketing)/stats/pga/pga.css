@@ -70,7 +70,7 @@
   border-color: var(--accent);
   color: var(--accent);
 }
-.stats-btn-outline:hover { background: rgba(209, 248, 67, 0.1); }
+.stats-btn-outline:hover { background: rgba(99, 120, 74, 0.1); }
 
 /* ─── Section wrappers ─── */
 .pga-section {
@@ -239,7 +239,7 @@
 .bento-card:hover {
   border-color: var(--primary);
   transform: translateY(-3px);
-  box-shadow: 0 8px 24px rgba(0, 88, 64, 0.12);
+  box-shadow: 0 8px 24px rgba(20, 20, 19, 0.12);
 }
 .bento-card:hover .bento-arrow { transform: translate(4px, -4px); color: var(--primary); }
 .bento-card:hover .bento-icon { background: var(--accent); }
@@ -438,7 +438,7 @@
   padding: 20px;
   background: rgba(255, 255, 255, 0.04);
   border-radius: 16px;
-  border: 1px solid rgba(209, 248, 67, 0.15);
+  border: 1px solid rgba(99, 120, 74, 0.15);
 }
 .putt-col {
   flex: 1;
@@ -461,7 +461,7 @@
   min-height: 4px;
 }
 .putt-bar-tour { background: var(--accent); }
-.putt-bar-am   { background: rgba(209, 248, 67, 0.25); }
+.putt-bar-am   { background: rgba(99, 120, 74, 0.25); }
 .putt-col-label {
   font-family: var(--font-mono);
   font-size: 10px;
@@ -528,7 +528,7 @@
 }
 .mersalg-card {
   background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(209, 248, 67, 0.18);
+  border: 1px solid rgba(99, 120, 74, 0.18);
   border-radius: 16px;
   padding: 28px;
   backdrop-filter: blur(8px);
@@ -543,7 +543,7 @@
   font-weight: 500;
 }
 .mersalg-price {
-  border-top: 1px solid rgba(209, 248, 67, 0.18);
+  border-top: 1px solid rgba(99, 120, 74, 0.18);
   margin-top: 22px;
   padding-top: 16px;
   font-family: var(--font-mono);
@@ -574,7 +574,7 @@
 .du-vs-track {
   position: relative;
   height: 6px;
-  background: rgba(209, 248, 67, 0.12);
+  background: rgba(99, 120, 74, 0.12);
   border-radius: 3px;
 }
 .du-vs-center {
@@ -583,7 +583,7 @@
   top: -3px;
   bottom: -3px;
   width: 1px;
-  background: rgba(209, 248, 67, 0.4);
+  background: rgba(99, 120, 74, 0.4);
 }
 .du-vs-bar {
   position: absolute;

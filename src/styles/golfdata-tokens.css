@@ -96,7 +96,7 @@
   --signal: var(--forest-700);
   --signal-press: var(--forest-800);
   --on-signal: #FFFFFF;
-  --glow-signal: 0 0 0 1px rgba(0, 88, 64, 0.35);
+  --glow-signal: 0 0 0 1px rgba(217, 119, 87, 0.35);
   --primary-fill: var(--sand-900);
   --primary-text: var(--sand-0);
   --primary-press: #2A2C30;
@@ -119,7 +119,7 @@
   /* ---- Pyramide-akser — LYS (data-viz.css .light-blokken) ---- */
   --axis-fys: #788C5D;      /* Paper --p-accent-olive */
   --axis-fys-text: #63784A;
-  --axis-fys-soft: rgba(0, 88, 64, 0.13);
+  --axis-fys-soft: rgba(20, 20, 19, 0.13);
   --axis-tek: #B8852A;
   --axis-tek-text: #8A6316;
   --axis-tek-soft: rgba(184, 133, 42, 0.13);
@@ -128,7 +128,7 @@
   --axis-slag-soft: rgba(37, 99, 235, 0.13);
   --axis-spill: #C46686;    /* Paper --p-accent-fig */
   --axis-spill-text: #55680A;
-  --axis-spill-soft: rgba(209, 248, 67, 0.22);
+  --axis-spill-soft: rgba(99, 120, 74, 0.22);
   --axis-turn: #A32D2D;
   --axis-turn-text: #A32D2D;
   --axis-turn-soft: rgba(163, 45, 45, 0.13);
@@ -175,7 +175,7 @@ html[data-v2-tema="dark"] .golfdata-scope {
   --signal: var(--lime-500);
   --signal-press: var(--lime-600);
   --on-signal: var(--graphite-0);
-  --glow-signal: 0 0 0 1px rgba(209, 248, 67, 0.4);
+  --glow-signal: 0 0 0 1px rgba(217, 119, 87, 0.4);
   --primary-fill: var(--graphite-900);
   --primary-text: var(--graphite-0);
   --primary-press: #E2E4E6;
@@ -207,7 +207,7 @@ html[data-v2-tema="dark"] .golfdata-scope {
      hotfix #DFF982 (samme problem løst, men denne er umulig å forveksle med -fill
      ved siden av). Verifisert: 14,07:1 mot --surface, 15,57:1 mot --bg. */
   --axis-spill-text: #F0E6A8;
-  --axis-spill-soft: rgba(209, 248, 67, 0.16);
+  --axis-spill-soft: rgba(99, 120, 74, 0.16);
   --axis-turn: #F2908C;
   --axis-turn-text: #F5A8A4;
   --axis-turn-soft: rgba(242, 144, 140, 0.16);

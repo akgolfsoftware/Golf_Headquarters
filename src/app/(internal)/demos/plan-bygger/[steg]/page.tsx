@@ -556,7 +556,7 @@ function MiniCal({ title, weeks, month }: { title: string; weeks: string; month:
           if (c.state === "muted") cls += " text-muted-foreground/50";
           else if (c.state === "start" || c.state === "end")
             cls += " bg-[var(--brand-primary,#141413)] text-white font-semibold";
-          else if (c.state === "in-range") cls += " bg-[rgba(0,88,64,0.10)] rounded-none";
+          else if (c.state === "in-range") cls += " bg-[rgba(20,20,19,0.10)] rounded-none";
           else if (c.state === "peak")
             cls +=
               " bg-accent text-[var(--brand-accent-on,#141413)] font-bold outline outline-2 -outline-offset-2 outline-accent";
@@ -787,7 +787,7 @@ function Step4() {
   return (
     <>
       <div
-        className="mb-6 flex items-center gap-4 rounded-lg border border-[rgba(0,88,64,0.18)] border-l-4 border-l-[var(--brand-primary,#141413)] px-4 py-4"
+        className="mb-6 flex items-center gap-4 rounded-lg border border-[rgba(20,20,19,0.18)] border-l-4 border-l-[var(--brand-primary,#141413)] px-4 py-4"
         style={{
           backgroundImage:
             `linear-gradient(135deg, ${T.farge.forestMerkeA6} 0%, color-mix(in srgb, var(--v2-lime) 10%, transparent) 100%)`,
@@ -850,7 +850,7 @@ function Step4() {
             label="teknikk"
             value={15}
             historyPct={32}
-            historyBg="rgba(0,88,64,0.30)"
+            historyBg="rgba(20,20,19,0.30)"
             historyLabel="Faktisk siste 4 u: 32 %"
           />
           <SliderBlock
@@ -1191,7 +1191,7 @@ function WeekRow({ name, range, phase, phaseColor, phaseBg, days }: WeekProps) {
 function DayCellBlock({ dn, title, meta, kind }: DayCell) {
   const styles: Record<DayKind, { bg: string; border: string }> = {
     fys: { bg: "rgba(22,163,74,0.10)", border: "rgba(22,163,74,0.30)" },
-    tek: { bg: "rgba(0,88,64,0.10)", border: "rgba(0,88,64,0.30)" },
+    tek: { bg: "rgba(20,20,19,0.10)", border: "rgba(20,20,19,0.30)" },
     slag: { bg: "color-mix(in srgb, var(--v2-lime) 20%, transparent)", border: "color-mix(in srgb, var(--v2-lime) 50%, transparent)" },
     spill: { bg: "rgba(184,133,42,0.12)", border: "rgba(184,133,42,0.35)" },
     turn: { bg: "rgba(94,92,87,0.12)", border: "rgba(94,92,87,0.30)" },
@@ -1362,7 +1362,7 @@ function SumRow({
 function AgentStrip({ label, body }: { label: string; body: React.ReactNode }) {
   return (
     <div
-      className="mb-6 flex items-center gap-4 rounded-lg border border-[rgba(0,88,64,0.18)] border-l-4 border-l-[var(--brand-primary,#141413)] px-4 py-4"
+      className="mb-6 flex items-center gap-4 rounded-lg border border-[rgba(20,20,19,0.18)] border-l-4 border-l-[var(--brand-primary,#141413)] px-4 py-4"
       style={{
         backgroundImage:
           `linear-gradient(135deg, ${T.farge.forestMerkeA6} 0%, color-mix(in srgb, var(--v2-lime) 10%, transparent) 100%)`,

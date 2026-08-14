@@ -116,7 +116,7 @@
 .tp-btn.primary {
   background: hsl(var(--accent));
   color: hsl(var(--accent-foreground));
-  box-shadow: 0 6px 14px rgba(209, 248, 67, 0.30);
+  box-shadow: 0 6px 14px rgba(20, 20, 19, 0.30);
 }
 .tp-btn.primary:hover { background: #BFE933; }
 .tp-btn.outline {
@@ -179,7 +179,7 @@
   letter-spacing: 0.08em;
   text-transform: uppercase;
 }
-.tp-group-pill.active { background: rgba(209, 248, 67, 0.40); color: #3B4310; }
+.tp-group-pill.active { background: rgba(99, 120, 74, 0.40); color: #3B4310; }
 .tp-group-pill.active .dot {
   width: 6px; height: 6px; border-radius: 50%;
   background: hsl(var(--primary)); animation: tp-pulse 1.8s infinite;
@@ -194,7 +194,7 @@
   background: hsl(var(--muted-foreground));
 }
 .tp-group-pill.done {
-  background: rgba(0, 88, 64, 0.08);
+  background: rgba(20, 20, 19, 0.08);
   color: hsl(var(--primary));
 }
 @keyframes tp-pulse {
@@ -232,7 +232,7 @@
 }
 .tp-plan-card:hover {
   box-shadow: 0 6px 20px rgba(10, 31, 24, 0.06);
-  border-color: rgba(0, 88, 64, 0.18);
+  border-color: rgba(20, 20, 19, 0.18);
 }
 .tp-plan-card.featured {
   border-left: 3px solid hsl(var(--primary));
@@ -266,7 +266,7 @@
   white-space: nowrap;
 }
 .tp-plan-card .plan-status.active {
-  background: rgba(209, 248, 67, 0.40);
+  background: rgba(99, 120, 74, 0.40);
   color: #3B4310;
 }
 .tp-plan-card .plan-status.active .dot {
@@ -283,7 +283,7 @@
   background: hsl(var(--muted-foreground));
 }
 .tp-plan-card .plan-status.archived {
-  background: rgba(0, 88, 64, 0.08);
+  background: rgba(20, 20, 19, 0.08);
   color: hsl(var(--primary));
 }
 .tp-plan-card .plan-meta {
@@ -485,7 +485,7 @@
   overflow: hidden;
   transition: border-color 160ms, box-shadow 160ms;
 }
-.tp-p-row:hover { border-color: rgba(0, 88, 64, 0.18); }
+.tp-p-row:hover { border-color: rgba(20, 20, 19, 0.18); }
 .tp-p-row.high-prio {
   border-left: 3px solid hsl(var(--accent));
 }
@@ -591,7 +591,7 @@
 }
 .tp-task.new {
   border-color: hsl(var(--accent));
-  background: rgba(209, 248, 67, 0.05);
+  background: rgba(99, 120, 74, 0.05);
 }
 .tp-task .grip {
   cursor: grab;
@@ -659,13 +659,13 @@
   border: 1px solid hsl(var(--border));
 }
 .tp-tag.pyr-fys { background: rgba(26, 77, 46, 0.10); color: var(--tp-pyr-fys); border-color: transparent; }
-.tp-tag.pyr-tek { background: rgba(0, 88, 64, 0.10); color: var(--tp-pyr-tek); border-color: transparent; }
+.tp-tag.pyr-tek { background: rgba(20, 20, 19, 0.10); color: var(--tp-pyr-tek); border-color: transparent; }
 .tp-tag.pyr-slag { background: rgba(44, 125, 82, 0.10); color: var(--tp-pyr-slag); border-color: transparent; }
 .tp-tag.pyr-spill { background: rgba(136, 180, 90, 0.16); color: #4F6E25; border-color: transparent; }
-.tp-tag.pyr-turn { background: rgba(209, 248, 67, 0.35); color: #4A5710; border-color: transparent; }
-.tp-tag.area { background: rgba(0, 88, 64, 0.06); color: hsl(var(--primary)); border-color: transparent; }
+.tp-tag.pyr-turn { background: rgba(99, 120, 74, 0.35); color: #4A5710; border-color: transparent; }
+.tp-tag.area { background: rgba(20, 20, 19, 0.06); color: hsl(var(--primary)); border-color: transparent; }
 .tp-tag.club { background: rgba(184, 133, 42, 0.10); color: var(--tp-warn); border-color: transparent; }
-.tp-tag.cs-high, .tp-tag.cs { background: rgba(0, 88, 64, 0.06); color: hsl(var(--primary)); border-color: transparent; }
+.tp-tag.cs-high, .tp-tag.cs { background: rgba(20, 20, 19, 0.06); color: hsl(var(--primary)); border-color: transparent; }
 .tp-tag.lphase { background: rgba(136, 180, 90, 0.14); color: #4F6E25; border-color: transparent; }
 
 .tp-reps {
@@ -741,7 +741,7 @@
   color: hsl(var(--primary));
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  background: rgba(0, 88, 64, 0.08);
+  background: rgba(20, 20, 19, 0.08);
   padding: 3px 8px;
   border-radius: 999px;
 }
@@ -801,7 +801,7 @@
   width: 24px;
   height: 24px;
   border-radius: 50%;
-  background: rgba(0, 88, 64, 0.08);
+  background: rgba(20, 20, 19, 0.08);
   color: hsl(var(--primary));
   display: inline-flex;
   align-items: center;
@@ -842,9 +842,9 @@
   white-space: nowrap;
 }
 .tp-status .dot { width: 5px; height: 5px; border-radius: 50%; }
-.tp-status.ok { background: rgba(209, 248, 67, 0.40); color: #3B4310; }
+.tp-status.ok { background: rgba(99, 120, 74, 0.40); color: #3B4310; }
 .tp-status.ok .dot { background: hsl(var(--primary)); }
-.tp-status.path { background: rgba(0, 88, 64, 0.08); color: hsl(var(--primary)); }
+.tp-status.path { background: rgba(20, 20, 19, 0.08); color: hsl(var(--primary)); }
 .tp-status.path .dot { background: hsl(var(--primary)); }
 .tp-status.todo { background: hsl(var(--secondary)); color: hsl(var(--muted-foreground)); }
 .tp-status.todo .dot { background: hsl(var(--muted-foreground)); }
@@ -925,6 +925,6 @@
   border-radius: 999px;
   letter-spacing: 0.06em;
 }
-.tp-activity-row .badge.add { background: rgba(209, 248, 67, 0.40); color: #3B4310; }
-.tp-activity-row .badge.comment { background: rgba(0, 88, 64, 0.08); color: hsl(var(--primary)); }
+.tp-activity-row .badge.add { background: rgba(99, 120, 74, 0.40); color: #3B4310; }
+.tp-activity-row .badge.comment { background: rgba(20, 20, 19, 0.08); color: hsl(var(--primary)); }
 .tp-activity-row .badge.edit { background: hsl(var(--secondary)); color: hsl(var(--muted-foreground)); }

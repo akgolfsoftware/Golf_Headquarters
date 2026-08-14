@@ -27,8 +27,8 @@
   /* Brand */
   --primary: 60 2.6% 7.6%;         /* #141413 = Paper --p-cta (blekk) */
   --primary-foreground: 48 33% 97%; /* #FAF9F5 = Paper --p-on-cta (papir) */
-  --accent: 48 25% 92%;            /* #F0EEE6 = Paper --p-soft (dempet hover-flate) */
-  --accent-foreground: 60 2.6% 7.6%; /* #141413 = Paper --p-fg */
+  --accent: 87 24% 38%;            /* #63784A = Paper --p-up (høydepunkt, tekst OG flate) */
+  --accent-foreground: 48 33% 97%; /* #FAF9F5 = papir på fylt --p-up */
 
   /* Neutrals */
   --secondary: 60 6.7% 94.1%;      /* #F1F1EF = DS --surface-2 (sand-100) */
@@ -65,8 +65,8 @@ html[data-v2-tema="dark"] {
 
   --primary: 48 33% 97%;           /* #FAF9F5 = Paper --p-cta (mørk = papir) */
   --primary-foreground: 60 2.6% 7.6%; /* #141413 = Paper --p-on-cta */
-  --accent: 43 10% 13.5%;          /* #26241F = Paper --p-soft (mørk) */
-  --accent-foreground: 48 33% 97%; /* #FAF9F5 = Paper --p-fg (mørk) */
+  --accent: 87 23% 61%;            /* #9DB284 = Paper --p-up (mørk) */
+  --accent-foreground: 60 2.6% 7.6%; /* #141413 = blekk på fylt --p-up */
 
   --secondary: 70 7.9% 14.9%;      /* #282923 = DS --surface-2 (graphite-100) */
   --secondary-foreground: 0 0% 94.1%;
@@ -178,7 +178,7 @@ html[data-v2-tema="dark"] {
   --signal: var(--forest-700);
   --signal-press: var(--forest-800);
   --on-signal: #FFFFFF;
-  --glow-signal: 0 0 0 1px rgba(0, 88, 64, 0.35);
+  --glow-signal: 0 0 0 1px rgba(217, 119, 87, 0.35);
   --primary-fill: var(--sand-900);
   --primary-text: var(--sand-0);
   --primary-press: #2A2C30;
@@ -237,7 +237,7 @@ html[data-v2-tema="dark"] {
   --signal: var(--lime-500);
   --signal-press: var(--lime-600);
   --on-signal: var(--graphite-0);
-  --glow-signal: 0 0 0 1px rgba(209, 248, 67, 0.4);
+  --glow-signal: 0 0 0 1px rgba(217, 119, 87, 0.4);
   --primary-fill: var(--graphite-900);
   --primary-text: var(--graphite-0);
   --primary-press: #E2E4E6;
@@ -342,10 +342,10 @@ html[data-v2-tema="dark"] {
   --pyr-turn: var(--axis-turn);
 
   /* Pyramide-track (lette versjoner for bg, matchet til nye farger) */
-  --color-pyr-fys-track: rgba(0, 88, 64, 0.10);
+  --color-pyr-fys-track: rgba(20, 20, 19, 0.10);
   --color-pyr-tek-track: rgba(184, 133, 42, 0.14);
   --color-pyr-slag-track: rgba(37, 99, 235, 0.12);
-  --color-pyr-spill-track: rgba(209, 248, 67, 0.28);
+  --color-pyr-spill-track: rgba(99, 120, 74, 0.28);
   --color-pyr-turn-track: rgba(163, 45, 45, 0.12);
 
   /* Wireframe-tokens overført fra base.css */
@@ -398,10 +398,10 @@ html[data-v2-tema="dark"] {
   --color-brand-accent-hover: #C6613F;
   --color-brand-accent-on: #141413;
   --color-accent-bg: rgba(217, 119, 87, 0.12);
-  --color-accent-fill: rgba(209, 248, 67, 0.25);
+  --color-accent-fill: rgba(99, 120, 74, 0.25);
   --color-accent-soft: #ECFCC0;
   --color-accent-deep: #BFE933;
-  --color-tab-active-bg: rgba(209, 248, 67, 0.35);
+  --color-tab-active-bg: rgba(99, 120, 74, 0.35);
   --color-tab-active-text: #3B4310;
 
   --color-surface: #FAFAF7;
@@ -427,7 +427,7 @@ html[data-v2-tema="dark"] {
   --color-rail-bg: #101110;        /* nær-svart rail (handover 2026-06-26) */
   --color-rail-bg-cockpit: #101110; /* nær-svart cockpit-rail (handover) */
   --color-nav-bg: #FAFAF7;
-  --color-nav-active: rgba(209, 248, 67, 0.30);
+  --color-nav-active: rgba(99, 120, 74, 0.30);
 
   --shadow-card: 0 1px 2px rgba(15, 31, 24, 0.04), 0 4px 12px rgba(15, 31, 24, 0.04);
   --shadow-card-hover: 0 1px 2px rgba(15, 31, 24, 0.06), 0 14px 32px rgba(15, 31, 24, 0.08);
@@ -466,7 +466,7 @@ html[data-v2-tema="dark"] {
   --sh-sm:     0 1px 2px rgba(10,31,23,.05);
   --sh-md:     0 4px 16px -4px rgba(10,31,23,.08), 0 1px 3px rgba(10,31,23,.05);
   --sh-lg:     0 18px 48px -12px rgba(10,31,23,.18);
-  --sh-forest: 0 14px 40px -12px rgba(0,88,64,.45);
+  --sh-forest: 0 14px 40px -12px rgba(20,20,19,.45);
 }
 
 /* ---------- Base ----------

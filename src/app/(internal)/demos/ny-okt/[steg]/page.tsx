@@ -316,7 +316,7 @@ function Chip({
   active?: boolean;
 }) {
   const toneBg: Record<string, string> = {
-    tek: "rgba(0,88,64,0.12)",
+    tek: "rgba(20,20,19,0.12)",
     slag: "color-mix(in srgb, var(--v2-lime) 25%, transparent)",
     spill: "rgba(184,133,42,0.15)",
   };
@@ -817,7 +817,7 @@ function ExerciseLine({
         style={
           added
             ? { background: "color-mix(in srgb, var(--v2-lime) 32%, transparent)", color: "#5C6B0E" }
-            : { background: "rgba(0,88,64,0.12)", color: "hsl(var(--primary))" }
+            : { background: "rgba(20,20,19,0.12)", color: "hsl(var(--primary))" }
         }
       >
         {pill}

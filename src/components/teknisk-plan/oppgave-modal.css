@@ -323,7 +323,7 @@
 .tp-modal .media-slot:hover { border-color: hsl(var(--primary)); }
 .tp-modal .media-slot.has-file {
   border: 1px solid hsl(var(--primary));
-  background: rgba(0, 88, 64, 0.04);
+  background: rgba(20, 20, 19, 0.04);
   color: hsl(var(--foreground));
 }
 .tp-modal .media-slot .ic {
@@ -478,7 +478,7 @@
 .tp-tm-pill.secondary .dot { background: #B8852A; }
 .tp-tm-pill.causal { background: rgba(122, 94, 168, 0.14); color: #5C447F; }
 .tp-tm-pill.causal .dot { background: #7A5EA8; }
-.tp-tm-pill.hit-rate { background: rgba(209, 248, 67, 0.40); color: #3B4310; }
+.tp-tm-pill.hit-rate { background: rgba(99, 120, 74, 0.40); color: #3B4310; }
 .tp-tm-pill.hit-rate .dot { background: hsl(var(--primary)); }
 
 /* === Hit-rate-rad (Mekanisme 7) === */

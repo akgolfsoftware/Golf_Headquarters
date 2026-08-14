@@ -231,7 +231,16 @@ export default async function SammenlignSpillerePage({ searchParams }: Props) {
       {/* ── MERSALG ──────────────────────────────────────────────── */}
       <section
         className="stats-section stats-section-divider"
-        style={{ background: "hsl(var(--primary))", color: "hsl(var(--background))" }}
+        // Invers band: flaten er papir, ikke skinnesvart. Snu derfor --accent
+        // til lys-verdien, ellers arver kursiv-aksenten scopets mørke
+        // --p-up (#9DB284) og lander på 2,2:1 mot papir.
+        style={
+          {
+            background: "hsl(var(--primary))",
+            color: "hsl(var(--background))",
+            "--accent": "87 24% 38%",
+          } as React.CSSProperties
+        }
       >
         <div
           style={{

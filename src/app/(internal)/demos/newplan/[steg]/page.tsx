@@ -338,7 +338,7 @@ function Steg2() {
   return (
     <>
       {/* Selected summary */}
-      <div className="grid grid-cols-[auto_1fr_auto] items-center gap-2 rounded-xl bg-[var(--brand-primary-soft,rgba(0,88,64,0.08))] px-4 py-2">
+      <div className="grid grid-cols-[auto_1fr_auto] items-center gap-2 rounded-xl bg-[var(--brand-primary-soft,rgba(20,20,19,0.08))] px-4 py-2">
         <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary font-display text-[12px] font-semibold text-primary-foreground">
           MP
         </div>
@@ -447,7 +447,7 @@ function ChoiceCard({
             ? "bg-accent text-[var(--brand-accent-on,#141413)]"
             : muted
               ? "bg-[var(--surface-alt,#F1EEE5)] text-muted-foreground"
-              : "bg-[var(--brand-primary-soft,rgba(0,88,64,0.08))] text-primary"
+              : "bg-[var(--brand-primary-soft,rgba(20,20,19,0.08))] text-primary"
         }`}
       >
         {icon}
@@ -520,7 +520,7 @@ function Steg3() {
         <ExerciseRow num="12" name="Hastighet — driver swing speed" sub="SuperSpeed · 3 sets" cat="fys" dur="30 min" />
       </ExerciseSection>
 
-      <button className="inline-flex w-fit items-center gap-2 rounded-lg border-2 border-dashed border-border bg-transparent px-4 py-2.5 text-[13px] font-semibold text-primary transition-colors hover:border-primary hover:bg-[var(--brand-primary-soft,rgba(0,88,64,0.08))]">
+      <button className="inline-flex w-fit items-center gap-2 rounded-lg border-2 border-dashed border-border bg-transparent px-4 py-2.5 text-[13px] font-semibold text-primary transition-colors hover:border-primary hover:bg-[var(--brand-primary-soft,rgba(20,20,19,0.08))]">
         <span className="text-base leading-none">+</span>
         Legg til øvelse
       </button>
@@ -594,7 +594,7 @@ function ExerciseRow({
 }) {
   const catStyles: Record<CatKind, string> = {
     fys: "bg-[rgba(22,163,74,0.12)] text-success",
-    tek: "bg-[var(--brand-primary-soft,rgba(0,88,64,0.08))] text-primary",
+    tek: "bg-[var(--brand-primary-soft,rgba(20,20,19,0.08))] text-primary",
     slag: "bg-[color-mix(in srgb, var(--v2-lime) 20%, transparent)] text-[var(--brand-accent-on,#141413)] border border-[rgba(184,200,46,0.4)]",
     spill: "bg-[rgba(244,196,48,0.14)] text-warning",
     turn: "bg-[var(--surface-alt,#F1EEE5)] text-muted-foreground",
@@ -603,7 +603,7 @@ function ExerciseRow({
     <div
       className={`grid grid-cols-[20px_36px_1fr_auto_auto_28px] items-center gap-2 rounded-lg px-4 py-2.5 transition-all ${
         dragging
-          ? "border-2 border-primary bg-[var(--brand-primary-soft,rgba(0,88,64,0.08))] shadow-md"
+          ? "border-2 border-primary bg-[var(--brand-primary-soft,rgba(20,20,19,0.08))] shadow-md"
           : "border border-border bg-[var(--surface,#FAFAF7)] hover:border-muted-foreground"
       }`}
     >

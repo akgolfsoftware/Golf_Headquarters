@@ -35,14 +35,32 @@ function* walk(dir, exts = [".tsx", ".ts"]) {
 }
 
 /* ─────────────────────────────────────────────────────────────────────────
- * PORT 2 (steg 10) — de to avviklede Presis-fargene.
+ * PORT 2 (steg 10) — de to avviklede Presis-fargene, i ALLE notasjoner.
  * Forest #005840 og lime #D1F843 er den gamle Presis-paletten. Paper er
  * eneste designfasit (CLAUDE.md invariant 2), så disse to skal ikke finnes
  * noe sted i src/ — heller ikke som fallback inne i var(), i en kommentar
  * eller i e-post-HTML. INGEN allowlist: dukker en av dem opp igjen, er det
  * enten en regresjon eller en bevisst omkamp som skal tas med Anders.
+ *
+ * TRE notasjoner, ikke én (lærdom 2026-08-14, docs/feillogg.md): en ren
+ * hex-grep meldte «0 igjen» mens nettleseren fortsatt viste neon-lime på
+ * /stats/*. Samme to farger levde også som rgb()-desimaler (189 stk) og som
+ * shadcn hsl-tripletter (3 stk). Legger du til en ny farge her: ta med alle
+ * skrivemåtene den kan ha.
  * ───────────────────────────────────────────────────────────────────────── */
-const PRESIS_RE = /#005840\b|#D1F843\b/gi;
+const PRESIS_RE = new RegExp(
+  [
+    "#005840\\b",
+    "#D1F843\\b",
+    // rgb()/rgba()-desimal, med eller uten mellomrom
+    "0,\\s*88,\\s*64",
+    "209,\\s*248,\\s*67",
+    // shadcn hsl-tripletter (konsumeres via hsl(var(--x)))
+    "163\\.6 100% 17\\.3%",
+    "72\\.9 92\\.8% 61\\.8%",
+  ].join("|"),
+  "gi"
+);
 const presisTreff = [];
 for (const file of walk(ROOT, [".tsx", ".ts", ".css", ".mjs", ".js"])) {
   const rel = file.replace(/\\/g, "/");
@@ -150,7 +168,7 @@ let rødt = false;
 if (presisTreff.length) {
   rødt = true;
   console.error(
-    "check-token-gap: avviklede Presis-farger (#005840 / #D1F843) funnet.\n" +
+    "check-token-gap: avviklede Presis-farger funnet (hex, rgb() eller hsl-triplett).\n" +
       "Paper er eneste designfasit — bruk et semantisk --p-*-token valgt etter\n" +
       "FUNKSJON (opp/ned/info/kategori), ikke etter fargelikhet.\n"
   );

@@ -44,7 +44,7 @@ export default function PlanByggerDemo() {
 
         {/* Agent strip */}
         <div
-          className="mb-6 flex items-center gap-4 rounded-lg border border-[rgba(0,88,64,0.18)] border-l-4 border-l-[var(--brand-primary,#141413)] px-4 py-4"
+          className="mb-6 flex items-center gap-4 rounded-lg border border-[rgba(20,20,19,0.18)] border-l-4 border-l-[var(--brand-primary,#141413)] px-4 py-4"
           style={{
             backgroundImage:
               `linear-gradient(135deg, ${T.farge.forestMerkeA6} 0%, color-mix(in srgb, var(--v2-lime) 10%, transparent) 100%)`,
