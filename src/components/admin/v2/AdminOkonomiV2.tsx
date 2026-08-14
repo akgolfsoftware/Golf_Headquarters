@@ -83,6 +83,12 @@ export interface AdminOkonomiV2Data {
   /** Spillere uten abonnement (GRATIS). ELITE finnes ikke. */
   gratisSpillere: number;
   tjenesterHref: string;
+  /** Konsernmålet (CLAUDE.md §3): 500 000 USD netto profitt/år. Kursen ligger
+   *  ikke i basen — antatt, ikke hentet, akkurat som fasitens egen løsning. */
+  konsernMaal: { usd: number; antattKurs: number };
+  /** «Hull i tallene»: hvor mange av betalingene mangler koblet bruker, og om
+   *  konsernstrukturen (selskap per betaling) finnes i basen ennå. */
+  hull: { betalingerTotalt: number; betalingerUtenBruker: number; harSelskapskobling: boolean };
 }
 
 const STATUS: Record<BetalingStatusKey, { label: string; tone: StatusTone }> = {
@@ -156,6 +162,15 @@ function BetalingRad({ b, last, mobile }: { b: AdminOkonomiV2Betaling; last: boo
       trailing={null}
       last={last}
     />
+  );
+}
+
+function Merknad({ children }: { children: ReactNode }) {
+  return (
+    <div style={{ display: "flex", gap: 10, padding: "12px 14px", background: T.panel2, border: `1px solid ${T.border}`, borderRadius: 12 }}>
+      <Icon name="alert-triangle" size={14} style={{ color: T.mut, flex: "none", marginTop: 2 }} />
+      <p style={{ margin: 0, fontFamily: T.ui, fontSize: 12.5, color: T.mut, lineHeight: 1.5 }}>{children}</p>
+    </div>
   );
 }
 
@@ -315,8 +330,14 @@ export function AdminOkonomiV2({ data }: { data: AdminOkonomiV2Data }) {
       ? `${kr(data.utestaendeKr)} står ute fordelt på ${pl(data.utestaendeAntall, "faktura", "fakturaer")} — følg dem opp for å sikre innbetalingen.`
       : `${pl(data.betalteAntall, "betaling", "betalinger")} innfridd denne måneden. MRR ${kr(data.mrrKr)} løpende fra ${pl(data.proAktive, "PRO-abonnement", "PRO-abonnement")}.`;
 
-  // ── Faner (fasit okonomi.html: seks faner, Oversikt først) ────
-  // Fanene bytter panel lokalt — ingen ny rute, ingen ny meny-rad.
+  // ── Feilede betalinger — «Én ting nå» (fasit: 2 betalinger feilet 28. juli) ──
+  const feilede = data.betalinger.filter((b) => b.status === "FAILED");
+  const feiletKr = feilede.reduce((s, b) => s + b.belopKr, 0);
+
+  // ── Faner (fasit agencyos-okonomi.html: Oversikt · Betalinger · Mot
+  // målet · Hull i tallene). Belegg/Rapporter/Abonnement sitt eneste innhold
+  // som ikke allerede dekkes av Oversikt-sidekolonnen er flyttet til
+  // «Mer her»-lenkene under — sjeldent brukt, derfor lenke, ikke egen fane.
   const linje = (k: string, v: ReactNode) => (
     <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: 12, padding: "9px 0", borderBottom: `1px solid ${T.border}` }}>
       <span style={{ fontFamily: T.ui, fontSize: 12.5, color: T.fg2 }}>{k}</span>
@@ -331,15 +352,52 @@ export function AdminOkonomiV2({ data }: { data: AdminOkonomiV2Data }) {
       <Link href={data.tjenesterHref} style={{ textDecoration: "none" }}>
         <CTAPill ghost icon="credit-card">Tjenester og priser</CTAPill>
       </Link>
+      <Link href="/admin/availability" style={{ textDecoration: "none" }}>
+        <CTAPill ghost icon="calendar">Tilgjengelighet</CTAPill>
+      </Link>
       <a href={data.stripeHref} target="_blank" rel="noopener noreferrer" style={{ textDecoration: "none" }}>
-        <CTAPill ghost icon="arrow-up-right">Stripe-dashboard</CTAPill>
+        <CTAPill ghost icon="arrow-up-right">Stripe-dashboard / eksport</CTAPill>
       </a>
     </div>
   );
 
+  const belopKompakt = (v: number) => new Intl.NumberFormat("nb-NO").format(Math.round(v));
+
   const paneler: Record<string, ReactNode> = {
     oversikt: (
       <>
+        {feilede.length > 0 && (
+          <Kort
+            pad="16px 18px"
+            style={{
+              border: `1px solid color-mix(in srgb, ${T.handling} 35%, ${T.border})`,
+              borderLeft: `3px solid ${T.handling}`,
+              background: `color-mix(in srgb, ${T.handling} 6%, ${T.panel})`,
+            }}
+          >
+            <Caps size={9} color={T.handling}>Én ting nå</Caps>
+            <div style={{ marginTop: 8, fontFamily: T.disp, fontSize: 18, fontWeight: 600, color: T.fg }}>
+              {pl(feilede.length, "betaling feilet", "betalinger feilet")}
+            </div>
+            <p style={{ margin: "6px 0 0", fontFamily: T.ui, fontSize: 13, color: T.fg2, lineHeight: 1.5 }}>
+              {kr(feiletKr)} kom aldri inn. Ingen har fulgt dem opp, fordi de ikke ligger i noen kø.
+            </p>
+            <div style={{ marginTop: 14 }}>
+              <button
+                type="button"
+                onClick={() => setFane("betalinger")}
+                className="v2-press v2-focus"
+                style={{
+                  display: "inline-flex", alignItems: "center", gap: 8, minHeight: 56, padding: "10px 16px",
+                  borderRadius: 12, background: T.handling, color: T.onHandling, fontFamily: T.ui, fontSize: 14,
+                  fontWeight: 600, border: 0, cursor: "pointer",
+                }}
+              >
+                Se {pl(feilede.length, "den feilede", "de feilede")}
+              </button>
+            </div>
+          </Kort>
+        )}
         {trendKort}
         <div className="grid grid-cols-1 lg:grid-cols-[1.5fr_1fr]" style={{ gap: T.gap, alignItems: "start" }}>
           {liste}
@@ -354,55 +412,102 @@ export function AdminOkonomiV2({ data }: { data: AdminOkonomiV2Data }) {
         {merHer}
       </>
     ),
-    belegg: (
-      <Kort eyebrow="Belegg · booking og kapasitet">
-        {linje("Denne uka", beleggTekst)}
-        {linje("Bookinger denne uka", data.bookingerUka)}
-        {data.beleggPct == null && (
-          <p style={{ fontFamily: T.ui, fontSize: 12, color: T.mut, margin: "12px 0 0", lineHeight: 1.5 }}>
-            Belegg krever registrerte tilgjengelighets-vinduer på coach. Uten dem finnes ingen
-            kapasitet å måle mot — derfor {TOM_TALL} og ikke et anslag.
-          </p>
-        )}
-        <div style={{ marginTop: 14 }}>
-          <Link href="/admin/availability" style={{ textDecoration: "none" }}>
-            <CTAPill ghost icon="calendar">Tilgjengelighet</CTAPill>
-          </Link>
-        </div>
-      </Kort>
-    ),
-    inntekt: (
+    betalinger: (
       <>
-        {trendKort}
-        <Kort eyebrow="Inntekt · måned for måned">
-          {data.serie.map((m) => linje(m.label, kr(m.kr)))}
+        <Kort
+          eyebrow="Betalinger"
+          action={<Caps size={9}>{pl(data.betalinger.length, "rad", "rader")}</Caps>}
+          pad="4px 20px"
+        >
+          {data.betalinger.length === 0 ? (
+            <div style={{ padding: "16px 0" }}>
+              <TomTilstand icon="credit-card" title="Ingen transaksjoner ennå" sub="Betalinger dukker opp her når spillere blir fakturert." />
+            </div>
+          ) : (
+            // Feilede først — det er det eneste som krever en handling.
+            data.betalinger
+              .slice()
+              .sort((a, b) => {
+                const v: Record<BetalingStatusKey, number> = { FAILED: 0, PENDING: 1, PARTIALLY_REFUNDED: 2, REFUNDED: 3, SUCCEEDED: 4 };
+                return v[a.status] - v[b.status];
+              })
+              .map((b, i, arr) => <BetalingRad key={b.id} b={b} last={i === arr.length - 1} mobile={mobile} />)
+          )}
+        </Kort>
+        <Kort eyebrow="Belegg · booking og kapasitet">
+          {linje("Denne uka", beleggTekst)}
+          {linje("Bookinger denne uka", data.bookingerUka)}
+          {data.beleggPct == null && (
+            <p style={{ fontFamily: T.ui, fontSize: 12, color: T.mut, margin: "12px 0 0", lineHeight: 1.5 }}>
+              Belegg krever registrerte tilgjengelighets-vinduer på coach. Uten dem finnes ingen
+              kapasitet å måle mot — derfor {TOM_TALL} og ikke et anslag.
+            </p>
+          )}
         </Kort>
       </>
     ),
-    abo: (
-      <Kort eyebrow="Abonnement · GRATIS / PRO">
-        {linje("PRO aktive", data.proAktive)}
-        {linje("MRR", kr(data.mrrKr))}
-        {linje("GRATIS-spillere", data.gratisSpillere)}
-        <p style={{ fontFamily: T.ui, fontSize: 12, color: T.mut, margin: "12px 0 0", lineHeight: 1.5 }}>
-          Churn og fornyelser krever abonnementshistorikk som ikke lagres ennå — derfor ikke vist.
-        </p>
-      </Kort>
-    ),
-    faktura: liste,
-    rapport: (
-      <Kort eyebrow="Rapporter">
-        <TomTilstand
-          icon="download"
-          title="Eksport kommer"
-          sub="Månedsrapport, klubb-eksport og CSV. Sjeldent brukt — derfor fane, ikke egen Mer-rad."
-        />
-        <div style={{ marginTop: 6, display: "flex", justifyContent: "center" }}>
-          <a href={data.stripeHref} target="_blank" rel="noopener noreferrer" style={{ textDecoration: "none" }}>
-            <CTAPill ghost icon="arrow-up-right">Eksporter i Stripe</CTAPill>
-          </a>
-        </div>
-      </Kort>
+    maal: (() => {
+      const iKr = data.konsernMaal.usd * data.konsernMaal.antattKurs;
+      const aarTakt = data.innbetaltMndKr * 12;
+      const andelPct = iKr > 0 ? (aarTakt / iKr) * 100 : 0;
+      return (
+        <>
+          <Kort eyebrow="Konsernmålet">
+            <div style={{ fontFamily: T.disp, fontSize: 18, fontWeight: 600, color: T.fg }}>
+              {belopKompakt(data.konsernMaal.usd)} USD netto per år
+            </div>
+            <p style={{ margin: "8px 0 16px", fontFamily: T.ui, fontSize: 12.5, color: T.mut, lineHeight: 1.5 }}>
+              Målet er i dollar, omsetningen er i kroner, og kursen ligger ikke i basen. Regnestykket under bruker{" "}
+              {data.konsernMaal.antattKurs} — en forutsetning, ikke et hentet tall.
+            </p>
+            {linje("Mål i kroner", `${belopKompakt(iKr)} kr`)}
+            {linje("Denne mnd × 12", `${belopKompakt(aarTakt)} kr`)}
+            <div style={{ marginTop: 12, height: 8, borderRadius: 9999, background: T.panel2, border: `1px solid ${T.border}`, overflow: "hidden" }}>
+              <div style={{ height: "100%", width: `${Math.max(0.4, Math.min(100, andelPct))}%`, background: T.handling, borderRadius: 9999 }} />
+            </div>
+            {linje("Andel av målet", `${andelPct.toFixed(1).replace(".", ",")} %`)}
+          </Kort>
+          <Merknad>
+            Én måned ganget med tolv er ikke en prognose. Det er det eneste tallet dataene tåler — et pent estimat
+            med samme grunnlag ville vært en påstand, ikke en måling.
+          </Merknad>
+          <Kort eyebrow="Abonnement · GRATIS / PRO">
+            {linje("PRO aktive", data.proAktive)}
+            {linje("MRR", kr(data.mrrKr))}
+            {linje("GRATIS-spillere", data.gratisSpillere)}
+            <p style={{ fontFamily: T.ui, fontSize: 12, color: T.mut, margin: "12px 0 0", lineHeight: 1.5 }}>
+              Churn og fornyelser krever abonnementshistorikk som ikke lagres ennå — derfor ikke vist.
+            </p>
+          </Kort>
+        </>
+      );
+    })(),
+    hull: (
+      <>
+        <Kort eyebrow="Hull i tallene">
+          <p style={{ margin: "0 0 12px", fontFamily: T.ui, fontSize: 12.5, color: T.mut, lineHeight: 1.5 }}>
+            Det som gjør at denne skjermen ikke kan svare på alt du egentlig spør om. Databaseendringer, ikke
+            designvalg.
+          </p>
+          {linje(
+            "Betalinger uten bruker",
+            `${data.hull.betalingerUtenBruker} av ${data.hull.betalingerTotalt}`,
+          )}
+          {linje("Selskap", data.hull.harSelskapskobling ? "koblet" : "finnes ikke")}
+        </Kort>
+        {data.hull.betalingerUtenBruker > 0 && (
+          <Merknad>
+            {data.hull.betalingerUtenBruker} av {data.hull.betalingerTotalt} betalinger mangler koblet bruker.
+            Uten den kan de verken fordeles per spiller eller per selskap.
+          </Merknad>
+        )}
+        {!data.hull.harSelskapskobling && (
+          <Merknad>
+            Ingen tabell knytter en betaling til AK Golf Academy, Mulligan eller Skarpnord. Konsernstrukturen finnes
+            bare i Notion — en selskapsfordeling her ville vært gjettet.
+          </Merknad>
+        )}
+      </>
     ),
   };
 
@@ -429,11 +534,9 @@ export function AdminOkonomiV2({ data }: { data: AdminOkonomiV2Data }) {
       <PillTabs
         tabs={[
           { id: "oversikt", l: "Oversikt" },
-          { id: "belegg", l: "Belegg" },
-          { id: "inntekt", l: "Inntekt" },
-          { id: "abo", l: "Abonnement" },
-          { id: "faktura", l: "Faktura" },
-          { id: "rapport", l: "Rapporter" },
+          { id: "betalinger", l: "Betalinger" },
+          { id: "maal", l: "Mot målet" },
+          { id: "hull", l: data.hull.betalingerUtenBruker > 0 ? `Hull i tallene (${data.hull.betalingerUtenBruker})` : "Hull i tallene" },
         ]}
         value={fane}
         onChange={setFane}

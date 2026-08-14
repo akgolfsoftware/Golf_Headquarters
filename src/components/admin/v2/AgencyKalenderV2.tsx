@@ -1232,6 +1232,14 @@ export function AgencyKalenderV2({ data }: { data: KalenderData }) {
             ? { label: "Åpne avtalen", href: valgtOkt.href }
             : null;
 
+  // Treningsøkter får en andrehandling: coachens live-flate for økta
+  // (opptak/analyse/transkript). Kalenderen er inngangen dit — det er her
+  // coachen står når økta skal begynne.
+  const detaljSekundaer: DetaljHandling | null =
+    valgtOkt?.treningsSessionId && !valgtOkt.erGoogle
+      ? { label: "Åpne live-økt", href: `/admin/agencyos/live/${valgtOkt.treningsSessionId}`, ikon: "mic" }
+      : null;
+
   const flyttTilTid = async (forslag: FlyttForslag) => {
     const res = await flyttBookingTilTid(forslag.bookingId, klokke(forslag.startMin));
     if (res.ok) router.refresh();
@@ -1266,6 +1274,7 @@ export function AgencyKalenderV2({ data }: { data: KalenderData }) {
       foot={
         <KalenderDetaljFot
           handling={detaljHandling}
+          sekundaer={detaljSekundaer}
           forslag={flyttForslag}
           onFlytt={flyttTilTid}
         />
