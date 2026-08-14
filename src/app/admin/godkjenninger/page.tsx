@@ -36,6 +36,16 @@ import {
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Godkjenninger · AgencyOS (v2)" };
 
+/** KPI-panelets «Eldste» — kompakt dager-etikett (fasit: «3 dg»), ikke narTekst()s «3 dg siden». */
+function dagerSidenLabel(d: Date): string {
+  const dager = Math.floor((Date.now() - d.getTime()) / 86_400_000);
+  if (dager <= 0) return "I dag";
+  return dager === 1 ? "1 dg" : `${dager} dg`;
+}
+
+function syvDagerSidenGrense(): Date {
+  return new Date(Date.now() - 7 * 86_400_000);
+}
 
 export default async function V2AdminGodkjenningerPage() {
   const user = await requirePortalUser({ allow: ["ADMIN", "COACH"] });
@@ -43,8 +53,22 @@ export default async function V2AdminGodkjenningerPage() {
   // A1: ÉN kø — fire kilder (PlanAction + CaddieDraft + SessionRequest;
   // e-postutkast bor i innboks-epost-flaten med egen godkjenning der).
   const spillerScope = coachScopedPlayerWhere(user);
+  const syvDagerSiden = syvDagerSidenGrense();
+  const erAdmin = user.role === "ADMIN";
 
-  const [actions, caddieDraftsRaw, sessionRequests, ko, mineSpillere] = await Promise.all([
+  const [
+    actions,
+    caddieDraftsRaw,
+    sessionRequests,
+    ko,
+    mineSpillere,
+    planGodkjent7d,
+    planAvvist7d,
+    caddieGodkjent7d,
+    caddieAvvist7d,
+    sessionGodkjent7d,
+    sessionAvvist7d,
+  ] = await Promise.all([
     prisma.planAction.findMany({
       where: {
         status: "PENDING",
@@ -79,6 +103,29 @@ export default async function V2AdminGodkjenningerPage() {
       where: spillerScope,
       select: { id: true },
     }),
+    // Køen i tall (høyrekolonne) — «Godkjent 7 dg»/«N avvist», ærlig telt per kilde.
+    prisma.planAction.count({
+      where: { status: "ACCEPTED", decidedAt: { gte: syvDagerSiden }, OR: [{ coachId: user.id }, { coachId: null }], user: spillerScope },
+    }),
+    prisma.planAction.count({
+      where: { status: "REJECTED", decidedAt: { gte: syvDagerSiden }, OR: [{ coachId: user.id }, { coachId: null }], user: spillerScope },
+    }),
+    erAdmin
+      ? prisma.caddieDraft.count({ where: { status: "APPROVED", resolvedAt: { gte: syvDagerSiden } } })
+      : Promise.resolve(0),
+    erAdmin
+      ? prisma.caddieDraft.count({ where: { status: "REJECTED", resolvedAt: { gte: syvDagerSiden } } })
+      : Promise.resolve(0),
+    prisma.sessionRequest
+      .count({
+        where: { status: "APPROVED", respondedAt: { gte: syvDagerSiden }, OR: [{ coachId: user.id }, { coachId: null }], user: spillerScope },
+      })
+      .catch(() => 0),
+    prisma.sessionRequest
+      .count({
+        where: { status: "DECLINED", respondedAt: { gte: syvDagerSiden }, OR: [{ coachId: user.id }, { coachId: null }], user: spillerScope },
+      })
+      .catch(() => 0),
   ]);
   // CaddieDraft.userId er EIEREN (Anders/ADMIN) — spilleren utkastet gjelder
   // ligger i toolInput (playerId/spillerId). Vis spilleren i køen når den finnes.
@@ -202,7 +249,18 @@ export default async function V2AdminGodkjenningerPage() {
     kilde: "forespørsel" as const,
     eksternHref: "/admin/foresporsler",
   }));
-  const alleRows = [...rows.map((r) => ({ ...r, kilde: "agent" as const })), ...caddieRows, ...requestRows];
+  // Fasitens kø er ÉN tidsordnet liste på tvers av kilder, ikke tre blokker
+  // etter hverandre — sorter på faktisk opprettelsestidspunkt, nyeste først.
+  const alleRowsMedTid: (AdminGodkjenningV2Row & { _opprettet: Date })[] = [
+    ...rows.map((r, i) => ({ ...r, kilde: "agent" as const, _opprettet: actions[i].createdAt })),
+    ...caddieRows.map((r, i) => ({ ...r, _opprettet: caddieDrafts[i].createdAt })),
+    ...requestRows.map((r, i) => ({ ...r, _opprettet: sessionRequests[i].createdAt })),
+  ];
+  alleRowsMedTid.sort((a, b) => b._opprettet.getTime() - a._opprettet.getTime());
+  const alleRows: AdminGodkjenningV2Row[] = alleRowsMedTid.map(({ _opprettet, ...rest }) => {
+    void _opprettet;
+    return rest;
+  });
 
   // Løst: nylig godkjente sjekkpunkter (ETTER → FØR-tråd).
   const lostRader = await prisma.planAction.findMany({
@@ -229,15 +287,32 @@ export default async function V2AdminGodkjenningerPage() {
       when: narTekst(r.updatedAt),
     }));
 
+  // Køen i tall — «Eldste»: ærlig eldste rad i køen (ikke bare PlanAction).
+  const eldsteKandidat = [
+    ...actions.map((a) => ({ createdAt: a.createdAt, who: a.user.name ?? "Spiller" })),
+    ...caddieDrafts.map((d) => ({
+      createdAt: d.createdAt,
+      who: caddieBrukere.get(draftSpillerId(d.toolInput) ?? d.userId) ?? "Spiller",
+    })),
+    ...sessionRequests.map((r) => ({ createdAt: r.createdAt, who: r.user?.name ?? "Spiller" })),
+  ].reduce<{ createdAt: Date; who: string } | null>(
+    (eldste, r) => (eldste === null || r.createdAt < eldste.createdAt ? r : eldste),
+    null,
+  );
+
   const data: AdminGodkjenningerV2Data = {
     rows: alleRows,
     lowRiskCount,
     totalt: ko.totalt,
     lostSjekkpunkter,
+    kilder: { agent: ko.planActions, caddie: ko.caddieDrafts, forespørsel: ko.sessionRequests },
+    eldste: eldsteKandidat ? { dagerLabel: dagerSidenLabel(eldsteKandidat.createdAt), who: eldsteKandidat.who } : null,
+    godkjent7Dager: planGodkjent7d + caddieGodkjent7d + sessionGodkjent7d,
+    avvist7Dager: planAvvist7d + caddieAvvist7d + sessionAvvist7d,
   };
 
   return (
-    <V2Shell bredde="kolonne" aktiv="innboks" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>
+    <V2Shell bredde="full" aktiv="innboks" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>
       <KoHubNav />
       <AdminGodkjenningerV2 data={data} />
     </V2Shell>

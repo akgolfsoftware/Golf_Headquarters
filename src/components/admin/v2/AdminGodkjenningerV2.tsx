@@ -1,29 +1,34 @@
 "use client";
 
 /**
- * AgencyOS Godkjenninger — v2 Presis + B-pakke (status + én primær CTA, tom = vei).
- * Kø av agent-/caddie-/forespørsel-saker. T.* only.
+ * AgencyOS Godkjenninger — 1:1 port av
+ * designsystem/paper/fase2/agencyos/agencyos-godkjenninger.html.
+ *
+ * Fasitens form: filterpiller PER KILDE (Alle/Agent/Caddie-utkast/
+ * Økt-forespørsler) med reelle tellinger, «N VENTER PÅ DEG» + ghost
+ * «Godkjenn N lavrisiko samlet», en tidsordnet, flat kø av saks-kort (ikke
+ * gruppert per spiller), «Løst nylig», og en fast 380px høyrekolonne
+ * («Køen i tall») på desktop ≥1024px. Tilstand-riggbaren i fasiten er
+ * demo-chrome og er ikke bygget.
+ *
+ * Avvik fra fasiten (data-ærlighet, se sluttrapport):
+ *  - «Utsett» finnes ikke — ingen server action for å utsette en PlanAction.
+ *  - «Rediger utkast» (caddie) er slått sammen med «Åpne i Caddie» — det
+ *    finnes ingen egen inline-redigeringsflate for et CaddieDraft.
+ *  - «Foreslå annen tid» (forespørsel) lenker til /admin/foresporsler —
+ *    ingen egen «foreslå tid»-handling finnes ennå.
+ *  - «Hvorfor?» viser én sammenhengende forklaringslinje (provenanceLesbarTekst),
+ *    ikke fasitens tre strukturerte punkter (Agent/Data/Regel) — provenance-
+ *    modellen lagrer ikke de tre feltene separat.
+ *  - «Løst nylig» viser faktisk godkjenningstidspunkt, ikke fasitens
+ *    fremtidige «sjekk DATO» — vi lagrer ikke en fremtidig sjekk-dato.
  */
 
-import { useEffect, useMemo, useState, useTransition, type ReactNode } from "react";
-import { handlingstypeLabel } from "@/lib/labels/handlingstyper";
+import { useEffect, useMemo, useState, useTransition } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import {
-  Caps,
-  Tittel,
-  Kort,
-  StatusPill,
-  Knapp,
-  FilterChips,
-  AvatarInit,
-  TomTilstand,
-  InnsiktChip,
-  CTAPill,
-  HjelpTips,
-  Icon,
-  T,
-} from "@/components/v2";
+import { Caps, Icon, T } from "@/components/v2";
+import { handlingstypeLabel } from "@/lib/labels/handlingstyper";
 import { acceptPlanAction, rejectPlanAction } from "@/lib/agents/actions";
 import { avvisProaktivtForslag, godkjennCaddieDraft } from "@/app/admin/agencyos/caddie/dashbord/actions";
 import { avslaaForespørsel, markerSomPlanlagt } from "@/app/admin/(legacy)/foresporsler/actions";
@@ -63,45 +68,55 @@ export interface AdminGodkjenningerV2Data {
     sjekkpunkt: string;
     when: string;
   }[];
+  /** Fasitens kildefaner-tellinger (agent/caddie-utkast/økt-forespørsler). */
+  kilder?: { agent: number; caddie: number; forespørsel: number };
+  /** Eldste sak i køen — «Køen i tall». Null når køen er tom. */
+  eldste?: { dagerLabel: string; who: string } | null;
+  /** Godkjent/avvist siste 7 dager på tvers av alle tre kilder. */
+  godkjent7Dager?: number;
+  avvist7Dager?: number;
 }
 
-/** Dedupliseret sak: første rad + alle id-ene bak («×N»). Handlinger bruker
- *  KUN ids[0] (første sak) — resten blir i køen til de behandles eksplisitt. */
-type SakMedAntall = AdminGodkjenningV2Row & { antall: number; ids: string[] };
+type FilterKey = "alle" | "agent" | "caddie" | "forespørsel";
 
 const pl = (n: number, en: string, flere: string) => `${n} ${n === 1 ? en : flere}`;
 
-/* Hover-understrek for tekstlenker (.v2-tekstlenke) bor statisk i
-   src/styles/v2/motion.css — inline styles kan ikke uttrykke :hover. */
-
-/** Sekundærnavigasjon per sak — stille tekstlenke (12px, dempet), aldri knapp. */
-function TekstLenke({ href, children }: { href: string; children: ReactNode }) {
-  return (
-    <Link
-      href={href}
-      className="v2-tekstlenke v2-focus"
-      style={{ fontFamily: T.ui, fontSize: 12, fontWeight: 500, color: T.mut, display: "inline-flex", alignItems: "center", minHeight: 44, padding: "0 2px" }}
-    >
-      {children}
-    </Link>
-  );
-}
-
-/** md-breakpoint-speil (matcher V2Shell/AdminBookingerV2). */
-function useMobile(): boolean {
-  const [m, setM] = useState(false);
+/** md-breakpoint (kortenes handlingsrad: full bredde vs. inline). */
+function useMediaQuery(query: string): boolean {
+  const [match, setMatch] = useState(false);
   useEffect(() => {
-    const mq = window.matchMedia("(max-width: 767px)");
-    const oppdater = () => setM(mq.matches);
+    const mq = window.matchMedia(query);
+    const oppdater = () => setMatch(mq.matches);
     oppdater();
     mq.addEventListener("change", oppdater);
     return () => mq.removeEventListener("change", oppdater);
-  }, []);
-  return m;
+  }, [query]);
+  return match;
 }
 
-/** Massehandling: godkjenn alle lav-risiko-forslag i køen. B: primær CTAPill. */
-function GodkjennLavRisiko({ count }: { count: number }) {
+function knappStil(fyll: "ink" | "ghost" | "fare", extra?: React.CSSProperties): React.CSSProperties {
+  const base: React.CSSProperties = {
+    display: "inline-flex",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 8,
+    minHeight: 44,
+    padding: "0 16px",
+    borderRadius: T.rTag,
+    fontFamily: T.ui,
+    fontSize: 12.5,
+    fontWeight: 600,
+    cursor: "pointer",
+    whiteSpace: "nowrap",
+    textDecoration: "none",
+  };
+  if (fyll === "ink") return { ...base, background: T.cta, color: T.onCta, border: `1px solid ${T.cta}`, ...extra };
+  if (fyll === "fare") return { ...base, background: "transparent", color: T.down, border: `1px solid ${T.border}`, ...extra };
+  return { ...base, background: T.panel, color: T.fg, border: `1px solid ${T.border}`, ...extra };
+}
+
+/** Massehandling: godkjenn alle lav-risiko-forslag i køen (fasitens ren `.btn`, ikke ink). */
+function GodkjennLavRisikoKnapp({ count, full }: { count: number; full?: boolean }) {
   const router = useRouter();
   const [busy, start] = useTransition();
   if (count === 0) return null;
@@ -110,68 +125,39 @@ function GodkjennLavRisiko({ count }: { count: number }) {
       type="button"
       disabled={busy}
       onClick={() => start(async () => { await batchApproveLowRisk(); router.refresh(); })}
-      style={{
-        all: "unset",
-        cursor: busy ? "wait" : "pointer",
-        opacity: busy ? 0.55 : 1,
-        display: "block",
-        width: "100%",
-      }}
-      aria-label={`Godkjenn lav-risiko (${count})`}
+      className="v2-press v2-focus"
+      data-od-id="cta-godkjenn-lavrisiko"
+      style={{ ...knappStil("ghost"), width: full ? "100%" : undefined, opacity: busy ? 0.55 : 1 }}
     >
-      <CTAPill icon="check-circle" full>
-        {busy ? "Godkjenner …" : `Godkjenn lav-risiko (${count})`}
-      </CTAPill>
+      {busy ? "Godkjenner …" : `Godkjenn ${pl(count, "lavrisiko", "lavrisiko")} samlet`}
     </button>
   );
 }
 
-/** Godkjenn/avvis + lenker for én sak. Mobil: fullbredde 2×2, desktop: inline.
- *  Avvis på agent-saker er to-stegs med valgfri grunn (eval-data) — bekreftes
- *  uansett med tomt felt, så flyten forblir like rask som før. */
+/** Handlingsraden per sak — settet avhenger av kilden (agent/caddie/forespørsel). */
 function SakHandlinger({ row, mobile }: { row: AdminGodkjenningV2Row; mobile: boolean }) {
   const router = useRouter();
   const [pending, start] = useTransition();
   const [avvisModus, setAvvisModus] = useState(false);
   const [avvisGrunn, setAvvisGrunn] = useState("");
+  const kilde = row.kilde ?? "agent";
 
-  const erAgent = (row.kilde ?? "agent") === "agent";
-  // A2: caddie-utkast godkjennes (og UTFØRES med re-validering) rett fra køen.
-  const kanGodkjenneInline = erAgent || row.kilde === "forespørsel" || row.kilde === "caddie";
-  const godkjenn = () => start(async () => {
-    if (erAgent) await acceptPlanAction(row.id);
-    else if (row.kilde === "forespørsel") await markerSomPlanlagt(row.id);
-    else if (row.kilde === "caddie") await godkjennCaddieDraft(row.id);
-    router.refresh();
-  });
-  const utforAvvis = () => start(async () => {
-    if (erAgent) await rejectPlanAction(row.id, avvisGrunn.trim() || undefined);
-    else if (row.kilde === "caddie") await avvisProaktivtForslag(row.id);
-    else if (row.kilde === "forespørsel") await avslaaForespørsel(row.id);
-    setAvvisModus(false);
-    setAvvisGrunn("");
-    router.refresh();
-  });
-  // Kun agent-saker samler grunn; caddie/forespørsel avvises direkte som før.
-  const avvis = () => (erAgent && !avvisModus ? setAvvisModus(true) : utforAvvis());
+  const kjor = (fn: () => Promise<unknown>) => start(async () => { await fn(); router.refresh(); });
 
-  const detaljer = erAgent ? `/admin/godkjenninger/${row.id}` : (row.eksternHref ?? "/admin/godkjenninger");
-  const profil = `/admin/spillere/${row.playerId}`;
-
-  const avvisGrunnFelt = avvisModus ? (
-    <div style={{ display: "flex", gap: 8, marginTop: 8, alignItems: "center" }}>
+  const avvisFelt = avvisModus ? (
+    <div style={{ display: "flex", gap: 8, marginTop: 8, alignItems: "center", width: "100%" }}>
       <input
         type="text"
         value={avvisGrunn}
         onChange={(e) => setAvvisGrunn(e.target.value)}
-        onKeyDown={(e) => { if (e.key === "Enter") utforAvvis(); }}
+        onKeyDown={(e) => { if (e.key === "Enter") kjor(() => rejectPlanAction(row.id, avvisGrunn.trim() || undefined)); }}
         placeholder="Hvorfor avvises forslaget? (valgfritt)"
         maxLength={500}
         autoFocus
         style={{
           flex: 1,
           minWidth: 0,
-          borderRadius: 10,
+          borderRadius: T.rInput,
           border: `1px solid ${T.border}`,
           background: T.panel2,
           padding: "10px 14px",
@@ -180,410 +166,364 @@ function SakHandlinger({ row, mobile }: { row: AdminGodkjenningV2Row; mobile: bo
           color: T.fg,
         }}
       />
-      <Knapp icon="x" ghost style={{ minHeight: 44 }} disabled={pending} onClick={utforAvvis}>Avvis</Knapp>
-      <Knapp ghost style={{ minHeight: 44 }} disabled={pending} onClick={() => { setAvvisModus(false); setAvvisGrunn(""); }}>Angre</Knapp>
+      <button
+        type="button"
+        className="v2-press v2-focus"
+        disabled={pending}
+        onClick={() => kjor(() => rejectPlanAction(row.id, avvisGrunn.trim() || undefined))}
+        style={knappStil("fare")}
+      >
+        Avvis
+      </button>
+      <button
+        type="button"
+        className="v2-press v2-focus"
+        disabled={pending}
+        onClick={() => { setAvvisModus(false); setAvvisGrunn(""); }}
+        style={knappStil("ghost")}
+      >
+        Angre
+      </button>
     </div>
   ) : null;
 
-  if (mobile) {
-    return (
-      <div style={{ display: "flex", flexDirection: "column", gap: 4, marginTop: 14, opacity: pending ? 0.5 : 1 }}>
-        {!avvisModus && (
-          <div style={{ display: "flex", gap: 8 }}>
-            {kanGodkjenneInline && (
-              <div style={{ flex: 1, minWidth: 0 }}>
-                <Knapp icon="check" full style={{ minHeight: 44 }} disabled={pending} onClick={godkjenn}>Godkjenn</Knapp>
-              </div>
-            )}
-            <div style={{ flex: 1, minWidth: 0 }}>
-              <Knapp icon="x" ghost full style={{ minHeight: 44 }} disabled={pending} onClick={avvis}>Avvis</Knapp>
-            </div>
-          </div>
-        )}
-        {avvisGrunnFelt}
-        <div style={{ display: "flex", gap: 18 }}>
-          <TekstLenke href={detaljer}>Detaljer</TekstLenke>
-          <TekstLenke href={profil}>Se profil</TekstLenke>
-        </div>
-      </div>
-    );
-  }
+  const knapper: { key: string; label: string; fyll: "ink" | "ghost" | "fare"; onClick?: () => void; href?: string }[] =
+    kilde === "agent"
+      ? [
+          { key: "godkjenn", label: "Godkjenn", fyll: "ink", onClick: () => kjor(() => acceptPlanAction(row.id)) },
+          { key: "endre", label: "Endre først", fyll: "ghost", href: `/admin/godkjenninger/${row.id}` },
+          ...(avvisModus
+            ? []
+            : [{ key: "avvis", label: "Avvis", fyll: "fare" as const, onClick: () => setAvvisModus(true) }]),
+        ]
+      : kilde === "caddie"
+        ? [
+            { key: "send", label: "Send", fyll: "ink", onClick: () => kjor(() => godkjennCaddieDraft(row.id)) },
+            { key: "apne", label: "Åpne i Caddie", fyll: "ghost", href: row.eksternHref ?? "/admin/agencyos/caddie/dashbord" },
+            { key: "forkast", label: "Forkast", fyll: "fare", onClick: () => kjor(() => avvisProaktivtForslag(row.id)) },
+          ]
+        : [
+            { key: "kalender", label: "Legg i kalenderen", fyll: "ink", onClick: () => kjor(() => markerSomPlanlagt(row.id)) },
+            { key: "tid", label: "Foreslå annen tid", fyll: "ghost", href: row.eksternHref ?? "/admin/foresporsler" },
+            { key: "kanikke", label: "Kan ikke", fyll: "fare", onClick: () => kjor(() => avslaaForespørsel(row.id)) },
+          ];
 
   return (
-    <div style={{ marginTop: 8, opacity: pending ? 0.5 : 1 }}>
-      <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: "0 12px" }}>
-        {kanGodkjenneInline && !avvisModus && <Knapp icon="check" style={{ minHeight: 44 }} disabled={pending} onClick={godkjenn}>Godkjenn</Knapp>}
-        {!avvisModus && <Knapp icon="x" ghost style={{ minHeight: 44 }} disabled={pending} onClick={avvis}>Avvis</Knapp>}
-        <TekstLenke href={detaljer}>Detaljer</TekstLenke>
-        <TekstLenke href={profil}>Se profil</TekstLenke>
+    <div style={{ marginTop: 12, opacity: pending ? 0.5 : 1 }}>
+      <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+        {knapper.map((k) =>
+          k.href ? (
+            <Link key={k.key} href={k.href} className="v2-press v2-focus" style={{ ...knappStil(k.fyll), flex: mobile ? "1 1 45%" : undefined }}>
+              {k.label}
+            </Link>
+          ) : (
+            <button
+              key={k.key}
+              type="button"
+              className="v2-press v2-focus"
+              disabled={pending}
+              onClick={k.onClick}
+              style={{ ...knappStil(k.fyll), flex: mobile ? "1 1 45%" : undefined }}
+            >
+              {k.label}
+            </button>
+          ),
+        )}
       </div>
-      {avvisGrunnFelt}
+      {avvisFelt}
     </div>
   );
 }
 
-/** Én sak-kort: tittel/flagg + meta + forklaring + signal + diff + handlinger.
- *  Spilleren navngis av seksjonshodet — kortet dropper derfor egen avatar.
- *  antall > 1 → «×N»-badge; Godkjenn/Avvis gjelder kun første sak. */
-function SakKort({ row, mobile }: { row: SakMedAntall; mobile: boolean }) {
-  // Samme kø-språk som AI-dispatch: strek + tint for haster (Superhuman/Linear)
-  const kildeLabel =
-    row.kilde === "caddie" ? "Caddie" : row.kilde === "forespørsel" ? "Forespørsel" : "Agent";
+/** Fasitens .kort — meta (navn/tag/kilde/tid) → tittel → forklaring → «Dette
+ *  endres» → «Hvorfor?» → handlinger. `forste` speiler .kort.forste. */
+function SakKort({ row, forste, mobile }: { row: AdminGodkjenningV2Row; forste: boolean; mobile: boolean }) {
+  const kilde = row.kilde ?? "agent";
+  const kildeLabel = kilde === "caddie" ? "caddie-utkast · melding" : kilde === "forespørsel" ? "forespørsel · fra spiller" : "agent · handlingssenter";
   return (
-    <Kort
-      pad={mobile ? "14px 15px" : "16px 18px"}
+    <article
+      data-od-id={`panel-godkjenning-${row.id}`}
       style={{
-        overflow: "hidden",
-        borderLeft: row.urgent ? `3px solid ${T.warn}` : undefined,
-        background: row.urgent
-          ? `color-mix(in srgb, ${T.warn} 6%, ${T.panel})`
-          : undefined,
-        borderColor: row.urgent
-          ? `color-mix(in srgb, ${T.warn} 28%, ${T.border})`
-          : undefined,
+        background: T.panel,
+        border: `1px solid ${forste ? T.fg : T.border}`,
+        borderRadius: T.rCard,
+        padding: mobile ? "14px 15px" : "16px 18px",
+        boxShadow: forste ? `inset 3px 0 0 ${T.fg}` : undefined,
       }}
     >
-      <div style={{ display: "flex", alignItems: "flex-start", gap: 12 }}>
-        <div style={{ flex: 1, minWidth: 0 }}>
-          <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: 8 }}>
-            <Caps size={9} color={row.urgent ? T.warn : T.mut}>
-              {kildeLabel}
-            </Caps>
-            {row.urgent && <StatusPill tone="warn">Haster</StatusPill>}
-            {row.lowRisk && <StatusPill tone="info">Lav risiko</StatusPill>}
-            {row.antall > 1 && (
-              <span
-                title={`${row.antall} like saker — Godkjenn/Avvis gjelder den første, resten blir i køen`}
-                style={{
-                  fontFamily: T.mono,
-                  fontSize: 10,
-                  fontWeight: 700,
-                  color: T.fg2,
-                  background: T.panel2,
-                  border: `1px solid ${T.border}`,
-                  borderRadius: 5,
-                  padding: "2px 6px",
-                }}
-              >
-                ×{row.antall}
-              </span>
-            )}
-          </div>
-
-          <div
-            style={{
-              fontFamily: T.disp,
-              fontSize: 16,
-              fontWeight: 700,
-              letterSpacing: "-0.015em",
-              color: T.fg,
-              marginTop: 8,
-              lineHeight: 1.25,
-            }}
-          >
-            {row.title}
-          </div>
-
-          <div
-            style={{
-              fontFamily: T.mono,
-              fontSize: 10,
-              fontWeight: 700,
-              letterSpacing: "0.04em",
-              color: T.mut,
-              marginTop: 6,
-            }}
-          >
-            {row.who} · {row.when} · {handlingstypeLabel(row.actionType)}
-          </div>
-
-          {row.detail && (
-            <p
-              style={{
-                fontFamily: T.ui,
-                fontSize: 13,
-                lineHeight: 1.55,
-                color: T.fg2,
-                margin: "10px 0 0",
-              }}
-            >
-              {row.detail}
-            </p>
-          )}
-
-          {row.signalKind && (
-            <div
-              style={{
-                fontFamily: T.mono,
-                fontSize: 10,
-                fontWeight: 700,
-                color: T.mut,
-                marginTop: 8,
-              }}
-            >
-              <span style={{ display: "inline-flex", alignItems: "center", gap: 5 }}>
-                Signal: {row.signalKind}
-                {row.signalValue != null ? ` = ${row.signalValue}` : ""}
-                <HjelpTips k="signalVerdi" size={11} />
-              </span>
-            </div>
-          )}
-
-          {row.hvorfor && (
-            <div
-              style={{
-                fontFamily: T.ui,
-                fontSize: 11,
-                lineHeight: 1.5,
-                color: T.mut,
-                marginTop: 6,
-              }}
-            >
-              <span style={{ fontWeight: 700 }}>Hvorfor dette forslaget: </span>
-              {row.hvorfor}
-            </div>
-          )}
-
-          {row.diffPreview && (
-            <div
-              style={{
-                display: "flex",
-                alignItems: "flex-start",
-                gap: 8,
-                marginTop: 10,
-                padding: "8px 11px",
-                borderRadius: 10,
-                background: T.panel2,
-                border: `1px solid ${T.border}`,
-              }}
-            >
-              <Icon name="layers" size={13} style={{ color: T.lime, flex: "none", marginTop: 1 }} />
-              <span
-                style={{
-                  fontFamily: T.mono,
-                  fontSize: 11,
-                  lineHeight: 1.5,
-                  color: T.fg2,
-                  minWidth: 0,
-                  overflowWrap: "anywhere",
-                }}
-              >
-                {row.diffPreview}
-              </span>
-            </div>
-          )}
-
-          <SakHandlinger row={row} mobile={mobile} />
-        </div>
+      <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: 8 }}>
+        <span style={{ fontFamily: T.ui, fontSize: 13.5, fontWeight: 600, color: T.fg }}>{row.who}</span>
+        {row.urgent && (
+          <span style={{ fontFamily: T.mono, fontSize: 10, fontWeight: 700, letterSpacing: "0.04em", textTransform: "uppercase", color: T.warn, border: `1px solid ${T.warn}`, borderRadius: T.rTag, padding: "2px 7px" }}>
+            Haster
+          </span>
+        )}
+        {row.lowRisk && (
+          <span style={{ fontFamily: T.mono, fontSize: 10, fontWeight: 700, letterSpacing: "0.04em", textTransform: "uppercase", color: T.mut, border: `1px solid ${T.border}`, borderRadius: T.rTag, padding: "2px 7px" }}>
+            Lavrisiko
+          </span>
+        )}
+        <span style={{ fontFamily: T.mono, fontSize: 10, letterSpacing: "0.04em", textTransform: "uppercase", color: T.mut }}>{kildeLabel}</span>
+        <span style={{ marginLeft: "auto", fontFamily: T.mono, fontSize: 11, color: T.mut }}>{row.when}</span>
       </div>
-    </Kort>
+
+      <h3 style={{ margin: "8px 0 0", fontFamily: T.disp, fontSize: 14.5, fontWeight: 600, color: T.fg }}>{row.title}</h3>
+      {row.detail && (
+        <p style={{ margin: "6px 0 0", fontFamily: T.ui, fontSize: 13, lineHeight: 1.55, color: T.fg2 }}>{row.detail}</p>
+      )}
+      <div style={{ fontFamily: T.mono, fontSize: 10, color: T.mut, marginTop: 6 }}>{handlingstypeLabel(row.actionType)}</div>
+
+      {row.diffPreview && (
+        <div style={{ margin: "10px 0 0", padding: "10px 14px", background: T.panel2, border: `1px solid ${T.borderS}`, borderRadius: T.rTag }}>
+          <span style={{ display: "block", fontFamily: T.mono, fontSize: 9, letterSpacing: "0.07em", textTransform: "uppercase", color: T.mut, marginBottom: 4 }}>
+            Dette endres
+          </span>
+          <span style={{ fontFamily: T.mono, fontSize: 12, color: T.fg, overflowWrap: "anywhere" }}>{row.diffPreview}</span>
+        </div>
+      )}
+
+      {row.hvorfor && (
+        <details style={{ marginTop: 10 }}>
+          <summary style={{ cursor: "pointer", fontFamily: T.ui, fontSize: 12, fontWeight: 600, color: T.mut }}>Hvorfor?</summary>
+          <p style={{ margin: "6px 0 0", fontFamily: T.ui, fontSize: 12, lineHeight: 1.55, color: T.mut }}>{row.hvorfor}</p>
+        </details>
+      )}
+
+      <SakHandlinger row={row} mobile={mobile} />
+    </article>
   );
+}
+
+/** Fasitens aside — «Køen i tall»: KPI-rad, forklaring, kilder, bunn-CTA. */
+function KøenITall({ data }: { data: AdminGodkjenningerV2Data }) {
+  const totalt = data.totalt ?? data.rows.length;
+  const kilder = data.kilder ?? { agent: 0, caddie: 0, forespørsel: 0 };
+  return (
+    <aside
+      aria-label="Køens tall"
+      style={{
+        position: "sticky",
+        top: 16,
+        display: "flex",
+        flexDirection: "column",
+        gap: 16,
+        background: T.panel,
+        border: `1px solid ${T.border}`,
+        borderRadius: T.rCard,
+        padding: 16,
+        minWidth: 0,
+      }}
+    >
+      <Caps>Køen i tall</Caps>
+
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
+        <Kpi label="Venter" verdi={String(totalt)} sub={`${kilder.agent} agent · ${kilder.caddie} caddie · ${kilder.forespørsel} fsp`} />
+        <Kpi label="Lavrisiko" verdi={String(data.lowRiskCount)} sub="kan godkjennes samlet" />
+        <Kpi label="Eldste" verdi={data.eldste?.dagerLabel ?? "—"} sub={data.eldste?.who ?? "Ingen i kø"} />
+        <Kpi label="Godkjent 7 dg" verdi={String(data.godkjent7Dager ?? 0)} sub={`${data.avvist7Dager ?? 0} avvist`} />
+      </div>
+
+      <div style={{ background: T.panel2, border: `1px solid ${T.borderS}`, borderRadius: T.rTag, padding: 12 }}>
+        <Caps size={9}>Slik leses køen</Caps>
+        <p style={{ margin: "8px 0 0", fontFamily: T.ui, fontSize: 12, lineHeight: 1.55, color: T.mut }}>
+          Hvert forslag viser hva som faktisk endres før du sier ja. Har et forslag ingen «Dette endres»-linje, er
+          det ingen planendring — da er det en melding eller en forespørsel.
+        </p>
+      </div>
+
+      <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+        <Caps size={9}>Kilder</Caps>
+        <KildeLinje label="Agent (PlanAction)" verdi={String(kilder.agent)} />
+        <KildeLinje label="Caddie-utkast" verdi={String(kilder.caddie)} />
+        <KildeLinje label="Økt-forespørsel" verdi={String(kilder.forespørsel)} />
+        <KildeLinje label="E-postutkast" verdi="innboks" href="/admin/innboks" />
+      </div>
+
+      {data.lowRiskCount > 0 && <GodkjennLavRisikoKnapp count={data.lowRiskCount} full />}
+    </aside>
+  );
+}
+
+function Kpi({ label, verdi, sub }: { label: string; verdi: string; sub: string }) {
+  return (
+    <div style={{ background: T.panel2, border: `1px solid ${T.borderS}`, borderRadius: T.rTag, padding: 12, minWidth: 0 }}>
+      <Caps size={9}>{label}</Caps>
+      <div style={{ fontFamily: T.mono, fontSize: 22, fontWeight: 600, color: T.fg, marginTop: 6 }}>{verdi}</div>
+      <div style={{ fontFamily: T.ui, fontSize: 11, color: T.mut, marginTop: 2, overflowWrap: "anywhere" }}>{sub}</div>
+    </div>
+  );
+}
+
+function KildeLinje({ label, verdi, href }: { label: string; verdi: string; href?: string }) {
+  const content = (
+    <>
+      <span style={{ fontFamily: T.ui, fontSize: 12.5, color: T.fg }}>{label}</span>
+      <span style={{ fontFamily: T.mono, fontSize: 12, color: T.mut }}>{verdi}</span>
+    </>
+  );
+  if (href) {
+    return (
+      <Link href={href} style={{ display: "flex", justifyContent: "space-between", gap: 8, textDecoration: "none" }}>
+        {content}
+      </Link>
+    );
+  }
+  return <div style={{ display: "flex", justifyContent: "space-between", gap: 8 }}>{content}</div>;
 }
 
 export function AdminGodkjenningerV2({ data }: { data: AdminGodkjenningerV2Data }) {
-  const mobile = useMobile();
-  const [filtre, setFiltre] = useState<string[]>([]);
-  /** Klientside-paginering: antall spillerseksjoner som vises. */
-  const [visSeksjoner, setVisSeksjoner] = useState(10);
+  const mobile = useMediaQuery("(max-width: 767px)");
+  const visAside = useMediaQuery("(min-width: 1024px)");
+  const [filter, setFilter] = useState<FilterKey>("alle");
 
-  // Kanonisk kø-tall (koTelling) — samme som innboks-banneret og varsler-siden.
+  const kilder = data.kilder ?? { agent: 0, caddie: 0, forespørsel: 0 };
   const totalt = data.totalt ?? data.rows.length;
-
-  const antallHaster = useMemo(() => data.rows.filter((r) => r.urgent).length, [data.rows]);
-  const antallLav = useMemo(() => data.rows.filter((r) => r.lowRisk).length, [data.rows]);
-
-  const tilgjengeligeFiltre = useMemo(() => {
-    const f: string[] = [];
-    if (antallHaster > 0) f.push("Haster");
-    if (antallLav > 0) f.push("Lav risiko");
-    return f;
-  }, [antallHaster, antallLav]);
+  const antallKilder = [kilder.agent, kilder.caddie, kilder.forespørsel].filter((n) => n > 0).length || 3;
 
   const filtrert = useMemo(
-    () =>
-      data.rows.filter((r) => {
-        if (filtre.length === 0) return true;
-        if (filtre.indexOf("Haster") !== -1 && r.urgent) return true;
-        if (filtre.indexOf("Lav risiko") !== -1 && r.lowRisk) return true;
-        return false;
-      }),
-    [data.rows, filtre],
+    () => (filter === "alle" ? data.rows : data.rows.filter((r) => (r.kilde ?? "agent") === filter)),
+    [data.rows, filter],
   );
 
-  // Dedupliser identiske saker (who + tittel + actionType) → «×N», og grupper
-  // per spiller med seksjonshode. Rekkefølge = første forekomst (nyeste først).
-  const seksjoner = useMemo(() => {
-    const dedup = new Map<string, SakMedAntall>();
-    const orden: SakMedAntall[] = [];
-    for (const r of filtrert) {
-      const key = `${r.who}|${r.title}|${r.actionType}`;
-      const eks = dedup.get(key);
-      if (eks) {
-        eks.antall += 1;
-        eks.ids.push(r.id);
-      } else {
-        const ny: SakMedAntall = { ...r, antall: 1, ids: [r.id] };
-        dedup.set(key, ny);
-        orden.push(ny);
-      }
-    }
-    const grupper = new Map<string, SakMedAntall[]>();
-    for (const r of orden) {
-      const g = grupper.get(r.who);
-      if (g) g.push(r);
-      else grupper.set(r.who, [r]);
-    }
-    return Array.from(grupper.entries()).map(([who, saker]) => ({ who, saker }));
-  }, [filtrert]);
-
-  const synlige = seksjoner.slice(0, visSeksjoner);
-  const skjulteSaker = seksjoner.slice(visSeksjoner).reduce((n, s) => n + s.saker.length, 0);
-
-  const toggle = (x: string) => {
-    setFiltre((prev) => (prev.indexOf(x) !== -1 ? prev.filter((y) => y !== x) : prev.concat(x)));
-    setVisSeksjoner(10);
-  };
-
-  // ── Hode — B: status ──────────────────────────────────────────
-  const hode = (
-    <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 14, flexWrap: "wrap" }}>
-      <div>
-        <div data-paper-pattern-topp data-paper-slug="agencyos-godkjenninger">
-          <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>Godkjenninger</h1>
-          <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>Kø · AgencyOS</span>
-        </div>
-        <p style={{ fontFamily: T.ui, fontSize: 13, lineHeight: 1.55, color: T.mut, margin: "10px 0 0", maxWidth: 560 }}>
-          AI foreslår — du godkjenner — systemet utfører. Plan-endringer, Caddie-utkast og forespørsler i én kø.
-        </p>
-      </div>
-      <StatusPill tone={totalt === 0 ? "lime" : antallHaster > 0 ? "warn" : "info"}>
-        {totalt === 0 ? "Kø tom" : antallHaster > 0 ? `${antallHaster} haster` : `${totalt} i kø`}
-      </StatusPill>
-    </div>
-  );
-
-  // GO V3: primær følger KØEN, ikke skjermen. Rekkefølge:
-  //   1) noe haster → vis haster-saken(e) først  2) lav-risiko → godkjenn samlet
-  //   3) kø med vanlige saker → ingen konkurrerende primær (Godkjenn i kortet ER
-  //      handlingen — innboks blir en stille tekstlenke)  4) tom kø → vei videre.
-  const haasterAktivt = filtre.indexOf("Haster") !== -1;
-  const primaerCta =
-    antallHaster > 0 && !haasterAktivt ? (
-      <button
-        type="button"
-        onClick={() => toggle("Haster")}
-        style={{ all: "unset", cursor: "pointer", display: "block", width: "100%" }}
-        aria-label={`Vis ${antallHaster} som haster`}
-      >
-        <CTAPill icon="alert-circle" full>
-          {`Ta ${pl(antallHaster, "sak", "saker")} som haster`}
-        </CTAPill>
-      </button>
-    ) : data.lowRiskCount > 0 ? (
-      <GodkjennLavRisiko count={data.lowRiskCount} />
-    ) : totalt > 0 ? (
-      <div style={{ display: "flex", justifyContent: "center" }}>
-        <TekstLenke href="/admin/innboks">Åpne innboks</TekstLenke>
-      </div>
-    ) : (
-      <Link href="/admin/innboks" style={{ textDecoration: "none", display: "block" }}>
-        <CTAPill icon="inbox" full>
-          Åpne innboks
-        </CTAPill>
-      </Link>
-    );
+  const filtre: { k: FilterKey; n: string; antall: number }[] = [
+    { k: "alle", n: "Alle", antall: data.rows.length },
+    { k: "agent", n: "Agent", antall: kilder.agent },
+    { k: "caddie", n: "Caddie-utkast", antall: kilder.caddie },
+    { k: "forespørsel", n: "Økt-forespørsler", antall: kilder.forespørsel },
+  ];
 
   return (
-    <div data-paper-wave-h="godkjenninger" data-paper-pattern style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 960, margin: "0 auto", width: "100%" }}>
-      {hode}
-      {primaerCta}
-
-      {tilgjengeligeFiltre.length > 0 && (
-        <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
-          <Caps size={9} style={{ width: 48, flex: "none" }}>Vis</Caps>
-          <FilterChips items={tilgjengeligeFiltre} active={filtre} onToggle={toggle} />
+    <div
+      data-paper-slug="agencyos-godkjenninger"
+      data-od-id="agencyos-godkjenninger"
+      style={{
+        display: "grid",
+        gridTemplateColumns: visAside ? "minmax(0,1fr) 380px" : "1fr",
+        alignItems: "start",
+        gap: visAside ? 20 : 0,
+        minWidth: 0,
+      }}
+    >
+      <div style={{ display: "flex", flexDirection: "column", gap: 16, minWidth: 0 }}>
+        {/* ── Hode ── */}
+        <div data-paper-pattern-topp>
+          <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>Godkjenninger</h1>
+          <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>
+            agencyos · én kø · {antallKilder} kilder
+          </span>
         </div>
-      )}
 
-      {filtrert.length === 0 ? (
-        <Kort>
-          <TomTilstand
-            icon="check-circle"
-            title="Ingenting venter på deg"
-            sub={
-              data.rows.length === 0
-                ? "Alt er behandlet — køen er tom."
-                : "Ingen saker passer filteret akkurat nå."
-            }
-          />
-        </Kort>
-      ) : (
-        <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
-          {synlige.map((seksjon) => (
-            <div key={seksjon.who} style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-              {/* Seksjonshode: spillernavn + antall saker */}
-              <div style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 4 }}>
-                <AvatarInit navn={seksjon.who} size={26} />
-                <span style={{ fontFamily: T.disp, fontSize: 14, fontWeight: 700, color: T.fg }}>{seksjon.who}</span>
-                <Caps size={9}>{pl(seksjon.saker.reduce((n, s) => n + s.antall, 0), "sak", "saker")}</Caps>
-              </div>
-              {seksjon.saker.map((r) => (
-                <SakKort key={r.id} row={r} mobile={mobile} />
-              ))}
+        {/* ── Kildefaner ── */}
+        <div role="group" aria-label="Kilder" style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+          {filtre.map((f) => {
+            const aktiv = f.k === filter;
+            return (
+              <button
+                key={f.k}
+                type="button"
+                aria-pressed={aktiv}
+                onClick={() => setFilter(f.k)}
+                className="v2-press v2-focus"
+                data-od-id={`filter-${f.k}`}
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: 8,
+                  minHeight: 44,
+                  padding: "0 16px",
+                  borderRadius: T.rPill,
+                  border: `1px solid ${aktiv ? T.fg : T.border}`,
+                  background: aktiv ? T.fg : T.panel,
+                  color: aktiv ? T.bg : T.fg,
+                  fontFamily: T.ui,
+                  fontSize: 12.5,
+                  cursor: "pointer",
+                  whiteSpace: "nowrap",
+                }}
+              >
+                <span>{f.n}</span>
+                <span style={{ fontFamily: T.mono, fontSize: 11, opacity: 0.75 }}>{f.antall}</span>
+              </button>
+            );
+          })}
+        </div>
+
+        {/* ── Kø-hode: N venter på deg + ghost «godkjenn lavrisiko samlet» ── */}
+        <div style={{ display: "flex", alignItems: "center", gap: 14, flexWrap: "wrap" }}>
+          <span style={{ fontFamily: T.mono, fontSize: 22, fontWeight: 600, color: T.fg }}>{totalt}</span>
+          <Caps size={9}>venter på deg</Caps>
+          {data.lowRiskCount > 0 && (
+            <div style={{ marginLeft: mobile ? undefined : "auto", width: mobile ? "100%" : undefined }}>
+              <GodkjennLavRisikoKnapp count={data.lowRiskCount} full={mobile} />
             </div>
-          ))}
-          {skjulteSaker > 0 && (
-            <Knapp
-              icon="chevron-down"
-              ghost
-              full
-              style={{ minHeight: 44 }}
-              onClick={() => setVisSeksjoner((v) => v + 10)}
-            >
-              Vis flere ({skjulteSaker})
-            </Knapp>
           )}
         </div>
-      )}
 
-      {(data.lostSjekkpunkter?.length ?? 0) > 0 && (
-        <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-          <Caps>Løst · sjekkpunkt (ETTER → FØR)</Caps>
-          {data.lostSjekkpunkter!.map((l) => (
-            <Kort key={l.id}>
-              <div
-                style={{
-                  fontFamily: T.mono,
-                  fontSize: 10,
-                  fontWeight: 700,
-                  color: T.mut,
-                  letterSpacing: "0.04em",
-                }}
-              >
-                {l.who} · {l.when}
-              </div>
-              <p
-                style={{
-                  margin: "8px 0 0",
-                  fontFamily: T.ui,
-                  fontSize: 13,
-                  lineHeight: 1.5,
-                  color: T.fg,
-                }}
-              >
-                {l.sjekkpunkt}
-              </p>
-            </Kort>
-          ))}
-        </div>
-      )}
+        {/* ── Kø ── */}
+        {filtrert.length === 0 ? (
+          <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 8, textAlign: "center", padding: "34px 24px", background: T.panel2, border: `1px dashed ${T.border}`, borderRadius: T.rCard }}>
+            <Icon name="check-circle" size={20} style={{ color: T.mut }} />
+            <h3 style={{ margin: "6px 0 0", fontFamily: T.disp, fontSize: 14.5, fontWeight: 600, color: T.fg }}>
+              {data.rows.length === 0 ? "Køen er tom" : "Ingen saker i dette filteret"}
+            </h3>
+            <p style={{ margin: 0, maxWidth: "44ch", fontFamily: T.ui, fontSize: 12.5, color: T.mut, lineHeight: 1.55 }}>
+              {data.rows.length === 0
+                ? "Ingenting venter på godkjenning akkurat nå. Agentene sender nye forslag når det kommer inn nye runder, tester eller signaler fra spillerne dine."
+                : "Bytt filter for å se resten av køen."}
+            </p>
+            {data.rows.length === 0 && (
+              <Link href="/admin/spillere" className="v2-press v2-focus" style={{ ...knappStil("ghost"), marginTop: 6 }}>
+                Gå til stallen
+              </Link>
+            )}
+          </div>
+        ) : (
+          <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+            {filtrert.map((r, i) => (
+              <SakKort key={r.id} row={r} forste={i === 0} mobile={mobile} />
+            ))}
+          </div>
+        )}
 
-      <InnsiktChip>
-        {totalt === 0
-          ? "Køen er tom. Nye agent-forslag dukker opp her når de kommer."
-          : `${pl(totalt, "sak venter", "saker venter")} på behandling` +
-            (data.lowRiskCount > 0 ? ` — ${data.lowRiskCount} av dem er lav-risiko og kan godkjennes samlet.` : ".")}
-      </InnsiktChip>
+        {/* ── Løst nylig ── */}
+        {(data.lostSjekkpunkter?.length ?? 0) > 0 && (
+          <div style={{ display: "flex", flexDirection: "column", gap: 10, marginTop: 4 }}>
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10 }}>
+              <h2 style={{ margin: 0, fontFamily: T.disp, fontSize: 14.5, fontWeight: 600, color: T.fg }}>Løst nylig</h2>
+              <span style={{ fontFamily: T.mono, fontSize: 11, color: T.mut }}>
+                {pl(data.lostSjekkpunkter!.length, "sjekkpunkt", "sjekkpunkter")}
+              </span>
+            </div>
+            <p style={{ margin: 0, fontFamily: T.ui, fontSize: 12, color: T.mut }}>
+              Godkjente forslag med sjekkpunkt — de kommer tilbake hit når fristen er nådd.
+            </p>
+            <div style={{ background: T.panel, border: `1px solid ${T.border}`, borderRadius: T.rCard, padding: "4px 16px" }}>
+              {data.lostSjekkpunkter!.map((l, i) => (
+                <div
+                  key={l.id}
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    gap: 12,
+                    padding: "10px 0",
+                    borderTop: i === 0 ? undefined : `1px solid ${T.borderS}`,
+                    fontFamily: T.ui,
+                    fontSize: 12.5,
+                    color: T.fg,
+                  }}
+                >
+                  <span style={{ minWidth: 0 }}>
+                    {l.who} · {l.sjekkpunkt}
+                  </span>
+                  <span style={{ flex: "none", fontFamily: T.mono, fontSize: 11, color: T.mut }}>{l.when}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
+
+      {visAside && <KøenITall data={data} />}
     </div>
   );
 }
