@@ -1,8 +1,26 @@
 "use client";
 
 /**
- * Foreldreportal · Barn-profil — v2 Presis + B-pakke (status først, én vei).
- * Read-only. Kun v2 + T.*. Enklere foreldre-språk. Faner uendret.
+ * Foreldreportal · Barn-profil — Paper-port (W5).
+ * Fasit: designsystem/paper/fase2/forelder/forelder-barn.html, data-vis="barn".
+ *
+ * Struktur per fasit: hode (avatar + navn + alder/HCP) → fanerad (Uka/Plan/
+ * Økonomi/Varsler/Samtykke — Uka er denne siden, resten lenker til
+ * søsterrutene) → personvernlinje → kpirad → «Denne uka»-grid → ukerapport
+ * fra coach → neste økt-rad → neste turnering-rad → CTA «Send melding til
+ * coach». De gamle fanene (oversikt/uke/mål/økonomi) beholdes UNDER
+ * fasit-innholdet — de dekker mer historikk enn malen viser, og URL-en
+ * (?tab=) skal ikke fjernes.
+ *
+ * Ærlige avvik fra fasiten (dokumentert, ikke fabrikkert):
+ * - Ingen "klasse"-felt (fasitens «Elite 1») finnes i datamodellen — droppet.
+ * - Ingen fast tilknyttet coach-relasjon per spiller — «coach X»-teksten i
+ *   fasitens undertittel er droppet, se ForelderCoachV2 for samme avgrensning.
+ * - «Ukerapport fra coach» viser siste Notification (type="melding") — samme
+ *   kilde som hentForelderUkerapport/ForelderCoachV2 — ikke en egen
+ *   ukerapport-modell. «Neste rapport»-datoen i fasiten er ikke modellert.
+ * - Samtykke leses fra User.guardianConsentGivenAt (ekte GuardianConsent-felt,
+ *   satt av guardian-consent-token-flyten) — ikke fabrikkert.
  */
 
 import { useEffect, useState } from "react";
@@ -24,6 +42,7 @@ import {
   HjelpTips,
   Icon,
   Knapp,
+  Rad,
   type StatusTone,
 } from "@/components/v2";
 
@@ -38,7 +57,22 @@ export type ForelderBarnDetaljData = {
     avatarUrl: string | null;
     hcp: number | null;
     homeClub: string | null;
+    /** Fra dateOfBirth — kun vist når fødselsdato er kjent. */
+    alder: number | null;
   };
+  /** Ekte GuardianConsent-felt (User.guardianConsentGivenAt != null). */
+  samtykkeGitt: boolean;
+  /** Denne uka, Ma–Sø — time=null betyr ingen økt planlagt den dagen. */
+  ukeGrid: { dato: Date; time: Date | null }[];
+  nesteOkt: {
+    title: string;
+    scheduledAt: Date;
+    durationMin: number;
+    location: string | null;
+  } | null;
+  /** Siste coach-melding (Notification type="melding") — samme kilde som ForelderCoachV2. */
+  coachMelding: { forfatter: string; tekst: string; sendtAt: Date } | null;
+  nesteTurnering: { navn: string; dato: Date; status: string } | null;
   tab: BarnDetaljTab;
   antallRunder: number;
   /** Snitt SG over runder med sgTotal, eller null når ingen. */
@@ -102,6 +136,125 @@ function ore(n: number): string {
     currency: "NOK",
     maximumFractionDigits: 0,
   }).format(n / 100);
+}
+
+// To-bokstavs ukedagsforkortelse (Ma/Ti/On/To/Fr/Lø/Sø), Oslo-korrekt.
+const NB_UKEDAG_KORT = new Intl.DateTimeFormat("nb-NO", {
+  timeZone: "Europe/Oslo",
+  weekday: "short",
+});
+const NB_KL = new Intl.DateTimeFormat("nb-NO", {
+  timeZone: "Europe/Oslo",
+  hour: "2-digit",
+  minute: "2-digit",
+});
+
+function ukedagKort(d: Date): string {
+  const s = NB_UKEDAG_KORT.format(d).replace(".", "");
+  return s.charAt(0).toUpperCase() + s.slice(1);
+}
+
+const TURNERING_STATUS: Record<string, string> = {
+  PLANNED: "På planen",
+  CLAIMED_REGISTERED: "Meldt på",
+  CONFIRMED: "Påmeldt",
+  WITHDRAWN: "Trukket",
+  COMPLETED: "Gjennomført",
+  DNF: "Fullførte ikke",
+};
+
+/* ── Faner til Paper-fasitens sider (Uka er denne siden) ─────────────── */
+
+const FASIT_FANER: { label: string; href: (barnId: string) => string; aktiv?: true }[] = [
+  { label: "Uka", href: (id) => `/forelder/barn/${id}`, aktiv: true },
+  { label: "Plan", href: () => "/forelder/ukerapport" },
+  { label: "Økonomi", href: () => "/forelder/okonomi" },
+  { label: "Varsler", href: () => "/forelder/varsler" },
+  { label: "Samtykke", href: () => "/forelder/samtykke" },
+];
+
+function FaneRad({ barnId }: { barnId: string }) {
+  return (
+    <nav
+      aria-label="Visning"
+      style={{ display: "flex", gap: 20, overflowX: "auto", borderBottom: `1px solid ${T.border}` }}
+    >
+      {FASIT_FANER.map((f) => (
+        <Link
+          key={f.label}
+          href={f.href(barnId)}
+          aria-pressed={f.aktiv ? "true" : "false"}
+          style={{
+            display: "block",
+            padding: "0 2px 10px",
+            fontFamily: T.ui,
+            fontSize: 14,
+            fontWeight: f.aktiv ? 600 : 500,
+            color: f.aktiv ? T.fg : T.mut,
+            borderBottom: f.aktiv ? `2px solid ${T.fg}` : "2px solid transparent",
+            whiteSpace: "nowrap",
+            textDecoration: "none",
+          }}
+        >
+          {f.label}
+        </Link>
+      ))}
+    </nav>
+  );
+}
+
+/* ── Personvernlinje (fasit — hva forelder ser, aldri redigert) ──────── */
+
+function Personvernlinje({ fornavn }: { fornavn: string }) {
+  return (
+    <div
+      style={{
+        display: "flex",
+        gap: 10,
+        padding: "12px 14px",
+        background: T.panel2,
+        borderRadius: T.rCard,
+        fontFamily: T.ui,
+        fontSize: 12.5,
+        color: T.mut,
+        lineHeight: 1.5,
+      }}
+    >
+      <Icon name="shield-check" size={14} style={{ color: T.mut, flex: "none", marginTop: 1 }} />
+      <span>
+        Du ser oppmøte, plan og økonomi. {fornavn}s egne notater, meldinger til coachen og velværelogg er
+        hans/hennes — de vises ikke her.
+      </span>
+    </div>
+  );
+}
+
+function UtenSamtykke({ fornavn }: { fornavn: string }) {
+  return (
+    <>
+      <Kort>
+        <TomTilstand
+          icon="lock"
+          title="Vi mangler samtykket ditt"
+          sub={`${fornavn} har laget konto, men den åpnes ikke før foreldresamtykket er bekreftet. Sjekk e-posten din for lenken, eller les hva vi lagrer.`}
+        />
+        <div style={{ display: "flex", gap: 10, flexWrap: "wrap", justifyContent: "center", marginTop: 4 }}>
+          <Link href="/forelder/samtykke" style={{ textDecoration: "none" }}>
+            <Knapp icon="shield-check">Gå til samtykke</Knapp>
+          </Link>
+          <Link href="/personvern" style={{ textDecoration: "none" }}>
+            <Knapp ghost icon="file-text">Les hva vi lagrer</Knapp>
+          </Link>
+        </div>
+      </Kort>
+      <Kort eyebrow="Dette ser du når samtykket er på plass">
+        <p style={{ fontFamily: T.ui, fontSize: 13, color: T.mut, margin: 0, lineHeight: 1.6 }}>
+          Oppmøte og treningstider, ukerapport fra coachen, plan for perioden, turneringer{" "}
+          {fornavn} er påmeldt, og alt som gjelder betaling.
+        </p>
+      </Kort>
+    </>
+  );
 }
 
 const TABS: { key: BarnDetaljTab; label: string }[] = [
@@ -259,7 +412,12 @@ export function ForelderBarnDetaljV2({ data }: { data: ForelderBarnDetaljData })
   const hcpStr = barn.hcp != null ? barn.hcp.toFixed(1).replace(".", ",") : "—";
 
   return (
-    <div data-paper-wave-e="forelder-sub" data-paper-portal-forelder-barn-detalj style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
+    <div
+      data-paper-slug="forelder-barn"
+      data-paper-wave-e="forelder-sub"
+      data-paper-portal-forelder-barn-detalj
+      style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}
+    >
       {/* Tilbake + hode */}
       <div>
         <TilbakeLenke href="/forelder/barn">Mine barn</TilbakeLenke>
@@ -291,42 +449,105 @@ export function ForelderBarnDetaljV2({ data }: { data: ForelderBarnDetaljData })
               color: T.mut,
             }}
           >
-            HCP <span style={{ fontVariantNumeric: "tabular-nums" }}>{hcpStr}</span>
+            {barn.alder != null ? `${barn.alder} år · ` : ""}HCP{" "}
+            <span style={{ fontVariantNumeric: "tabular-nums" }}>{hcpStr}</span>
             <HjelpTips k="hcp" size={11} />
             · {barn.homeClub ?? "Ingen hjemmeklubb"}
           </span>
         </div>
       </div>
 
-      {/* Status først — HCP · runder · form */}
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: T.gap }}>
-        <KpiFlis label="HCP" value={hcpStr} hjelp="hcp" instant />
-        <KpiFlis label="Runder" value={data.antallRunder} instant />
-        <KpiFlis
-          label="Form (SG)"
-          value={data.avgSg != null ? fmtSg(data.avgSg) : "—"}
-          hjelp="sgTotal"
-          instant
-        />
-      </div>
+      <FaneRad barnId={barn.id} />
 
-      {/* Én primær vei videre (B) */}
-      <div>
-        <Knapp
-          icon={tab === "uke" ? "message-circle" : "calendar"}
-          full={mobile}
-          onClick={() =>
-            router.push(
-              tab === "uke"
-                ? "/forelder/coach"
-                : `/forelder/barn/${barn.id}?tab=uke`,
-            )
-          }
-        >
-          {tab === "uke" ? "Kontakt coach" : `Se uka til ${fornavn}`}
-        </Knapp>
-      </div>
+      {!data.samtykkeGitt ? (
+        <UtenSamtykke fornavn={fornavn} />
+      ) : (
+        <>
+          <Personvernlinje fornavn={fornavn} />
 
+          {/* Oppmøte-proxy — samme kilde som «Uke»-fanen under, løftet opp per fasit */}
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: T.gap }}>
+            <KpiFlis label="Økter · 4 uker" value={data.uke.antall} instant />
+            <KpiFlis label="Timer trent" value={String(Math.round((data.uke.totalMinutter / 60) * 10) / 10).replace(".", ",")} sub="siste 7 dager" instant />
+            <KpiFlis label="Runder" value={data.antallRunder} sub="siste 30 dager" instant />
+          </div>
+
+          {/* Denne uka — Ma–Sø */}
+          <Kort eyebrow="Denne uka">
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(7, 1fr)", gap: 4 }}>
+              {data.ukeGrid.map((d) => (
+                <div
+                  key={d.dato.toISOString()}
+                  style={{
+                    padding: "8px 0",
+                    borderRadius: T.rTag,
+                    background: d.time ? T.panel2 : "transparent",
+                    border: d.time ? "none" : `1px dashed ${T.border}`,
+                    fontFamily: T.mono,
+                    fontSize: 10,
+                    color: d.time ? T.fg : T.mut,
+                    textAlign: "center",
+                  }}
+                >
+                  {ukedagKort(d.dato)}
+                  <br />
+                  {d.time ? NB_KL.format(d.time) : ""}
+                </div>
+              ))}
+            </div>
+            <p style={{ marginTop: 12, fontFamily: T.ui, fontSize: 12.5, color: T.mut, marginBottom: 0 }}>
+              {data.ukeGrid.filter((d) => d.time != null).length} økter planlagt denne uka.
+            </p>
+          </Kort>
+
+          {/* Ukerapport fra coach (siste melding) */}
+          <Kort eyebrow="Ukerapport fra coach">
+            {data.coachMelding ? (
+              <>
+                <p style={{ fontFamily: T.bodyFont, fontSize: 14, color: T.fg, lineHeight: 1.6, margin: 0 }}>
+                  {data.coachMelding.tekst || data.coachMelding.forfatter}
+                </p>
+                <div style={{ display: "flex", justifyContent: "space-between", marginTop: 12, fontFamily: T.mono, fontSize: 10.5, color: T.mut }}>
+                  <span>Sendt</span>
+                  <span>{NB_KORT.format(data.coachMelding.sendtAt)}</span>
+                </div>
+              </>
+            ) : (
+              <TomTilstand icon="message-circle" title="Ingen ukerapport ennå" sub="Coachen har ikke sendt en melding ennå." />
+            )}
+          </Kort>
+
+          {data.nesteOkt && (
+            <Rad
+              onClick={() => router.push(`/forelder/barn/${barn.id}?tab=uke`)}
+              title={`Neste økt · ${data.nesteOkt.title}`}
+              sub={`${NB_KORT.format(data.nesteOkt.scheduledAt)} · ${NB_KL.format(data.nesteOkt.scheduledAt)}${data.nesteOkt.location ? ` · ${data.nesteOkt.location}` : ""}`}
+              trailing={<Icon name="chevron-right" size={16} style={{ color: T.mut }} />}
+            />
+          )}
+
+          {data.nesteTurnering && (
+            <Rad
+              onClick={() => router.push("/forelder/ukerapport")}
+              title={data.nesteTurnering.navn}
+              sub={`${NB_KORT.format(data.nesteTurnering.dato)} · ${TURNERING_STATUS[data.nesteTurnering.status] ?? data.nesteTurnering.status}`}
+              trailing={<Icon name="chevron-right" size={16} style={{ color: T.mut }} />}
+            />
+          )}
+
+          <Link href="/forelder/coach" style={{ textDecoration: "none" }}>
+            <Knapp icon="message-circle" full>
+              Send melding til coach
+            </Knapp>
+          </Link>
+        </>
+      )}
+
+      {/* ── Under fasit-innholdet: eksisterende dybdedata (uendret). Samme
+          samtykke-gate som over — ingen treningsdata vises uten bekreftet
+          foreldresamtykke. ── */}
+      {data.samtykkeGitt && (
+      <>
       {/* Treningsfordeling fra aktiv plan */}
       <Kort
         eyebrow={
@@ -612,6 +833,8 @@ export function ForelderBarnDetaljV2({ data }: { data: ForelderBarnDetaljData })
             })
           )}
         </Kort>
+      )}
+      </>
       )}
     </div>
   );

@@ -1,12 +1,22 @@
 "use client";
 
 /**
- * Foreldreportal · Barn — v2 Presis + B-pakke (status først, én vei videre).
+ * Foreldreportal · Barn-lista — Paper-port (W5).
+ * Fasit: designsystem/paper/fase2/forelder/forelder-barn.html, data-vis="flere"
+ * (listen over flere koblede barn — demoens faste «Emil Berg»-topptekst i
+ * .topp hører til barn-DETALJ-siden og er derfor bevisst ikke kopiert hit;
+ * lista bruker en generisk «Mine barn»-topptekst siden ingen enkeltbarn er
+ * valgt ennå. Personvernlinjen fra fasiten står uendret).
+ *
  * Trykkbare kort per barn. Kun v2 + T.*. Enklere foreldre-språk.
+ * Samtykke leses fra User.guardianConsentGivenAt (ekte GuardianConsent-felt)
+ * — barn uten bekreftet samtykke vises som egen «uten samtykke»-rad i stedet
+ * for stall-tallene (aldri fabrikkert).
  */
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import type { PyramidArea } from "@/generated/prisma/client";
 import {
   T,
@@ -30,6 +40,10 @@ export type ForelderBarnRad = {
   avatarUrl: string | null;
   relationship: string;
   hcp: number | null;
+  /** Fra dateOfBirth — kun vist når fødselsdato er kjent. */
+  alder: number | null;
+  /** Ekte GuardianConsent-felt (User.guardianConsentGivenAt != null). */
+  samtykkeGitt: boolean;
   /** Fullførte økter siste 30 dager. */
   okter30d: number;
   /** Pyramide-fordeling (apex→base: TURN øverst, FYS fundament), verdi = antall økter. */
@@ -130,6 +144,52 @@ function Stat({
   );
 }
 
+/* ── Personvernlinje (fasit — hva forelder ser, aldri redigert) ──────── */
+
+function Personvernlinje() {
+  return (
+    <div
+      style={{
+        display: "flex",
+        gap: 10,
+        padding: "12px 14px",
+        background: T.panel2,
+        borderRadius: T.rCard,
+        fontFamily: T.ui,
+        fontSize: 12.5,
+        color: T.mut,
+        lineHeight: 1.5,
+      }}
+    >
+      <Icon name="shield-check" size={14} style={{ color: T.mut, flex: "none", marginTop: 1 }} />
+      <span>Du ser oppmøte, plan og økonomi. Barnas egne notater, meldinger til coachen og velværelogg vises ikke her.</span>
+    </div>
+  );
+}
+
+/* ── Uten samtykke — egen rad i stedet for stall-tall ─────────────────── */
+
+function UtenSamtykkeKort({ b }: { b: ForelderBarnRad }) {
+  return (
+    <Kort tint pad="16px 18px">
+      <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
+        <AvatarFoto src={b.avatarUrl} navn={b.navn} size={44} />
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <span style={{ display: "block", fontFamily: T.disp, fontSize: 15, fontWeight: 700, color: T.fg }}>
+            {b.navn}
+          </span>
+          <span style={{ display: "block", marginTop: 2, fontFamily: T.ui, fontSize: 12, color: T.mut }}>
+            Vi mangler samtykket ditt — kontoen åpnes ikke før det er bekreftet.
+          </span>
+        </div>
+        <Link href="/forelder/samtykke" style={{ textDecoration: "none" }}>
+          <Knapp icon="shield-check">Gi samtykke</Knapp>
+        </Link>
+      </div>
+    </Kort>
+  );
+}
+
 /* ── Ett barn-kort ─────────────────────────────────────────────────── */
 
 function BarnKort({
@@ -180,7 +240,8 @@ function BarnKort({
               color: T.mut,
             }}
           >
-            {b.relationship} · HCP{" "}
+            {b.relationship}
+            {b.alder != null ? ` · ${b.alder} år` : ""} · HCP{" "}
             <span style={{ fontVariantNumeric: "tabular-nums" }}>
               {b.hcp != null ? b.hcp.toFixed(1) : "—"}
             </span>
@@ -261,7 +322,12 @@ export function ForelderBarnV2({ data }: { data: ForelderBarnData }) {
   const forste = barn[0];
 
   return (
-    <div data-paper-wave-e="forelder-sub" data-paper-portal-forelder-barn style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
+    <div
+      data-paper-slug="forelder-barn"
+      data-paper-wave-e="forelder-sub"
+      data-paper-portal-forelder-barn
+      style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}
+    >
       {/* Hode + status */}
       <div
         style={{
@@ -310,6 +376,8 @@ export function ForelderBarnV2({ data }: { data: ForelderBarnData }) {
         </Kort>
       ) : (
         <>
+          <Personvernlinje />
+
           {forste && (
             <div>
               <Knapp
@@ -322,14 +390,18 @@ export function ForelderBarnV2({ data }: { data: ForelderBarnData }) {
             </div>
           )}
           <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
-            {barn.map((b) => (
-              <BarnKort
-                key={b.id}
-                b={b}
-                mobile={mobile}
-                onOpen={() => router.push(`/forelder/barn/${b.id}`)}
-              />
-            ))}
+            {barn.map((b) =>
+              b.samtykkeGitt ? (
+                <BarnKort
+                  key={b.id}
+                  b={b}
+                  mobile={mobile}
+                  onOpen={() => router.push(`/forelder/barn/${b.id}`)}
+                />
+              ) : (
+                <UtenSamtykkeKort key={b.id} b={b} />
+              ),
+            )}
           </div>
         </>
       )}
