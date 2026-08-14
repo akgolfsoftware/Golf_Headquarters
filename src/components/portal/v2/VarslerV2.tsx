@@ -285,7 +285,7 @@ export function VarslerV2({ data }: { data: VarslerV2Data }) {
                           {v.ulest && (
                             <i
                               aria-label="Ulest"
-                              style={{ flex: "none", width: 7, height: 7, borderRadius: "50%", background: T.handling }}
+                              style={{ flex: "none", width: 7, height: 7, borderRadius: "50%", background: T.fg }}
                             />
                           )}
                         </span>

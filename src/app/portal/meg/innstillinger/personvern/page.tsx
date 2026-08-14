@@ -6,8 +6,9 @@
 import Link from "next/link";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { T } from "@/lib/v2/tokens";
-import { Caps, Tittel, Kort, TilbakeLenke, StatusPill, Icon } from "@/components/v2";
+import { Kort, StatusPill, Icon } from "@/components/v2";
 import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
+import { InnstillingerHode } from "@/components/portal/v2/InnstillingerHode";
 import { hentSamtykkeStatus } from "@/lib/health/samtykke";
 import { maaHaForesattSamtykke } from "@/lib/health/samtykke-regler";
 import { HelseSamtykkeKort } from "@/components/portal/v2/HelseSamtykkeKort";
@@ -34,20 +35,15 @@ export default async function PersonvernPage() {
         gap: T.gap,
       }}
     >
-      <TilbakeLenke href="/portal/meg/innstillinger">Innstillinger</TilbakeLenke>
-
-      <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
-        <div>
-          <Caps>Innstillinger · Personvern</Caps>
-          <div style={{ marginTop: 10 }}>
-            <Tittel em="kontroll">Dine data, din</Tittel>
-          </div>
-          <p style={{ fontFamily: T.ui, fontSize: 13, color: T.fg2, margin: "8px 0 0", lineHeight: 1.45, maxWidth: "42ch" }}>
-            Last ned dine data, se hvordan vi lagrer dem, eller be om sletting.
-          </p>
-        </div>
-        <StatusPill tone="info">GDPR</StatusPill>
-      </div>
+      <InnstillingerHode
+        tittel="Personvern og data"
+        undertekst="Innstillinger"
+        tilbakeHref="/portal/meg/innstillinger"
+        action={<StatusPill tone="info">GDPR</StatusPill>}
+      />
+      <p style={{ fontFamily: T.ui, fontSize: 13, color: T.fg2, margin: 0, lineHeight: 1.45, maxWidth: "42ch" }}>
+        Last ned dine data, se hvordan vi lagrer dem, eller be om sletting.
+      </p>
 
       <HelseSamtykkeKort
         data={{

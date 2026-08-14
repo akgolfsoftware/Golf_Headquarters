@@ -11,7 +11,7 @@
  */
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
-import { hentBarnForForelder } from "@/lib/forelder";
+import { hentBarnForForelder, alderFraFodselsdato } from "@/lib/forelder";
 import { prisma } from "@/lib/prisma";
 import { V2Shell, FORELDER_NAV } from "@/components/v2/shell";
 import {
@@ -130,6 +130,11 @@ export default async function V2ForelderBarnPreviewPage() {
         avatarUrl: b.child.avatarUrl,
         relationship: b.relationship,
         hcp: b.child.hcp,
+        alder: alderFraFodselsdato(b.child.dateOfBirth),
+        // Reelt samtykke — ParentRelation-koblingen krever bekreftet
+        // foreldresamtykke (guardian-consent-token), men feltet settes på
+        // barnet selv. Aldri fabrikkert.
+        samtykkeGitt: b.child.guardianConsentGivenAt != null,
         okter30d: okterPerBarn.get(id) ?? 0,
         pyramide: AKSE_APEX.map((akse) => ({ akse, value: fordeling[akse] })),
         nesteOkt: nesteOktPerBarn.get(id) ?? null,

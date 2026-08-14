@@ -51,7 +51,7 @@ export function PuttingFocusBanner({
             fontWeight: 700,
             letterSpacing: "0.06em",
             textTransform: "uppercase",
-            color: focus.confidence === "high" ? T.handling : T.mut,
+            color: focus.confidence === "high" ? T.fg : T.mut,
           }}
         >
           {focus.confidence === "high" ? "Høy" : focus.confidence === "medium" ? "Middels" : "Lav"} signal

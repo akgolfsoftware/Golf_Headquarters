@@ -78,7 +78,7 @@ export function PRail({ posisjoner = DEMO_RAIL, kompakt = false, onVelg }: PRail
                 color: on ? T.onLime : done ? T.lime : T.mut }}>
                 {done ? <Icon name="check" size={kompakt ? 11 : 13} /> : x.p}
               </span>
-              {!kompakt && <span style={{ fontFamily: T.mono, fontSize: 8, fontWeight: 700, color: on ? T.fg : T.mut }}>{x.p}</span>}
+              {!kompakt && <span style={{ fontFamily: T.mono, fontSize: 8.5, fontWeight: 700, color: on ? T.fg : T.mut }}>{x.p}</span>}
             </div>
           </Fragment>
         );
@@ -239,7 +239,7 @@ export function LaeringsTrapp({ trinn = DEMO_TRAPP, aktiv = 1, tittel = "Læring
             <div key={t.l} style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column", gap: 7 }}>
               <div style={{ textAlign: "center" }}>
                 <span style={{ fontFamily: T.mono, fontSize: 9.5, fontWeight: 700, color: on ? T.lime : done ? T.fg2 : T.mut, display: "block", whiteSpace: "nowrap" }}>{t.l}</span>
-                <span style={{ fontFamily: T.mono, fontSize: 8, color: T.mut, display: "block", marginTop: 2 }}>{t.cs}</span>
+                <span style={{ fontFamily: T.mono, fontSize: 8.5, color: T.mut, display: "block", marginTop: 2 }}>{t.cs}</span>
               </div>
               <div style={{ height: H0 + i * dH, borderRadius: "10px 10px 4px 4px", position: "relative",
                 background: on ? "color-mix(in srgb, var(--v2-lime) 14%, transparent)" : done ? T.panel3 : T.panel2,

@@ -114,6 +114,9 @@ const STATUS_TONE: Record<AgentDetaljStatusBadge, "up" | "warn" | "info"> = {
  * som AdminAgenticosHubV2s KpiCell — KpiFlis fra `@/components/v2` har ingen
  * sub-linje, og fasiten krever én under hver verdi. */
 function KpiCell({ label, value, sub }: { label: string; value: string | number; sub?: string }) {
+  // Lange tekstverdier (f.eks. trigger «Etter ny runde (event)») får mindre
+  // grad + brytning — KPI-størrelsen er for tall og korte verdier.
+  const langTekst = typeof value === "string" && value.length > 10;
   return (
     <Kort pad="16px">
       <Caps size={9}>{label}</Caps>
@@ -121,12 +124,13 @@ function KpiCell({ label, value, sub }: { label: string; value: string | number;
         style={{
           display: "block",
           fontFamily: T.mono,
-          fontSize: "clamp(22px, 2.2vw, 26px)",
+          fontSize: langTekst ? 14 : "clamp(22px, 2.2vw, 26px)",
           fontWeight: 600,
           letterSpacing: "-0.03em",
           color: T.fg,
-          lineHeight: 1,
+          lineHeight: langTekst ? 1.35 : 1,
           marginTop: 12,
+          overflowWrap: "break-word",
           fontVariantNumeric: "tabular-nums",
         }}
       >

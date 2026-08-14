@@ -9,6 +9,7 @@ import { useRouter } from "next/navigation";
 import type { DrillFasilitet } from "@/generated/prisma/client";
 import { lagreFasilitetProfil } from "@/app/portal/meg/innstillinger/actions";
 import { T, Caps, Kort, Knapp, StatusPill, Icon } from "@/components/v2";
+import { InnstillingerHode } from "@/components/portal/v2/InnstillingerHode";
 
 /* ── Katalog (uendret innhold fra fasilitet-profil-form.tsx) ───────── */
 
@@ -260,14 +261,18 @@ export function InnstillingerAnleggV2({ data }: { data: InnstillingerAnleggData 
 
   return (
     <div data-paper-wave-g="innstillingeranlegg" data-paper-portal-innstillinger-anlegg data-paper-slug="playerhq-innstillinger" style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
-        <div data-paper-pattern-topp>
-        <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>Anlegg</h1>
-        <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>Innstillinger</span>
-      </div>
-        {status === "lagret" && <StatusPill tone="up">Lagret</StatusPill>}
-        {status === "feil" && <StatusPill tone="down">Noe gikk galt — prøv igjen</StatusPill>}
-      </div>
+      <InnstillingerHode
+        tittel="Anlegg"
+        undertekst="Innstillinger"
+        tilbakeHref="/portal/meg/innstillinger"
+        action={
+          status === "lagret" ? (
+            <StatusPill tone="up">Lagret</StatusPill>
+          ) : status === "feil" ? (
+            <StatusPill tone="down">Noe gikk galt — prøv igjen</StatusPill>
+          ) : undefined
+        }
+      />
 
       {/* B: status først */}
       <Kort pad="12px">

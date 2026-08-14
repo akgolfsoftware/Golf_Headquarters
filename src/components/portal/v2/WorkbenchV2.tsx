@@ -59,6 +59,7 @@ import {
   snapYToSlot,
 } from "@/components/v2";
 import { PalettSok } from "@/components/v2/wb-composer";
+import { TemaHeaderKnapp } from "@/components/v2/tema";
 import { ForslagArk, NyOktArk, RedigerOktArk, ValgtOktSeksjon, type WorkbenchV2Actions, type NyOktInput, type OktArkDrill, type SpillerStedValg, type DrillTreff } from "./WorkbenchV2Sheets";
 import { WorkbenchAarsplan, PeriodePalett, WBPeriodeStrip } from "./WorkbenchAarsplan";
 import type { WeekSuggestion } from "@/lib/ai-plan/week-suggest";
@@ -185,14 +186,14 @@ function TLBlokkInnhold({ o, kompakt, h, col }: { o: WeekEvent; kompakt: boolean
   return (
     <>
       <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
-        <span style={{ fontFamily: T.mono, fontSize: 7.5, fontWeight: 700, letterSpacing: "0.03em", color: `color-mix(in srgb, ${col} 55%, ${T.fg})`, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{AKSE_NAVN[ak] || o.eb} · {toKl(o.h, o.m)}</span>
+        <span style={{ fontFamily: T.mono, fontSize: 8.5, fontWeight: 700, letterSpacing: "0.03em", color: `color-mix(in srgb, ${col} 55%, ${T.fg})`, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{AKSE_NAVN[ak] || o.eb} · {toKl(o.h, o.m)}</span>
         {done && <Icon name="check" size={9} style={{ color: T.up, marginLeft: "auto", flex: "none" }} />}
         {avvik && <Icon name="alert-triangle" size={9} style={{ color: T.down, marginLeft: "auto", flex: "none" }} />}
       </div>
       {!kompakt && <div style={{ fontFamily: T.ui, fontSize: 10.5, fontWeight: 600, color: T.fg, marginTop: 2, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{o.ttl}</div>}
-      {!kompakt && h >= 58 && <div style={{ fontFamily: T.mono, fontSize: 8, color: T.mut, marginTop: 2 }}>{toKl(o.h, o.m)} · {fmtVarighet(o.durMin)}</div>}
+      {!kompakt && h >= 58 && <div style={{ fontFamily: T.mono, fontSize: 8.5, color: T.mut, marginTop: 2 }}>{toKl(o.h, o.m)} · {fmtVarighet(o.durMin)}</div>}
       {formelLinje ? (
-        <div style={{ fontFamily: T.mono, fontSize: 7.5, fontWeight: 700, color: T.fg2, marginTop: 2, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+        <div style={{ fontFamily: T.mono, fontSize: 8.5, fontWeight: 700, color: T.fg2, marginTop: 2, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
           {formelLinje}
         </div>
       ) : null}
@@ -544,7 +545,7 @@ export function WBBibliotek({ data, tab, setTab, sok, setSok, onVelgOkt, onBrukM
           {([null, "FYS", "TEK", "SLAG", "SPILL", "TURN"] as (AkseKey | null)[]).map((f) => {
             const on = akseFilter === f;
             return (
-              <button key={f ?? "alle"} type="button" onClick={() => setAkseFilter(f)} className="v2-press" style={{ appearance: "none", cursor: "pointer", fontFamily: T.mono, fontSize: 8, fontWeight: 700, padding: "4px 8px", borderRadius: 9999, border: `1px solid ${on ? "transparent" : T.border}`, background: on ? (f ? T.ax[f] : T.fg) : T.panel2, color: on ? (f ? T.onLime : T.bg) : T.mut, letterSpacing: "0.04em" }}>
+              <button key={f ?? "alle"} type="button" onClick={() => setAkseFilter(f)} className="v2-press" style={{ appearance: "none", cursor: "pointer", fontFamily: T.mono, fontSize: 8.5, fontWeight: 700, padding: "4px 8px", borderRadius: 9999, border: `1px solid ${on ? "transparent" : T.border}`, background: on ? (f ? T.ax[f] : T.fg) : T.panel2, color: on ? (f ? T.onLime : T.bg) : T.mut, letterSpacing: "0.04em" }}>
                 {f ?? "ALLE"}
               </button>
             );
@@ -742,7 +743,7 @@ export function WBBelastning({ data }: { data: WorkbenchData }) {
             border: `1px solid ${T.border}`,
           }}
         >
-          <div style={{ fontFamily: T.mono, fontSize: 8, fontWeight: 700, color: T.mut, letterSpacing: "0.06em", textTransform: "uppercase" }}>
+          <div style={{ fontFamily: T.mono, fontSize: 8.5, fontWeight: 700, color: T.mut, letterSpacing: "0.06em", textTransform: "uppercase" }}>
             Planlagt
           </div>
           <div style={{ fontFamily: T.mono, fontSize: 15, fontWeight: 700, color: T.fg, marginTop: 4, fontVariantNumeric: "tabular-nums" }}>
@@ -764,7 +765,7 @@ export function WBBelastning({ data }: { data: WorkbenchData }) {
           }}
         >
           <div style={{ display: "flex", alignItems: "center", gap: 5 }}>
-            <span style={{ fontFamily: T.mono, fontSize: 8, fontWeight: 700, color: T.mut, letterSpacing: "0.06em", textTransform: "uppercase" }}>
+            <span style={{ fontFamily: T.mono, fontSize: 8.5, fontWeight: 700, color: T.mut, letterSpacing: "0.06em", textTransform: "uppercase" }}>
               ACWR
             </span>
             <HjelpTips k="acwr" size={10} />
@@ -785,7 +786,7 @@ export function WBBelastning({ data }: { data: WorkbenchData }) {
             border: `1px solid ${turnering?.soon ? `color-mix(in srgb, ${T.warn} 40%, ${T.border})` : T.border}`,
           }}
         >
-          <div style={{ fontFamily: T.mono, fontSize: 8, fontWeight: 700, color: T.mut, letterSpacing: "0.06em", textTransform: "uppercase" }}>
+          <div style={{ fontFamily: T.mono, fontSize: 8.5, fontWeight: 700, color: T.mut, letterSpacing: "0.06em", textTransform: "uppercase" }}>
             Neste turnering
           </div>
           {turnering ? (
@@ -856,7 +857,7 @@ function KoachNotatSeksjon({ coachNotat }: { coachNotat: NonNullable<WorkbenchV2
         {notater.map((n) => (
           <div key={n.id} style={{ padding: "8px 10px", borderRadius: 10, background: T.panel2, border: `1px solid ${T.border}` }}>
             <p style={{ margin: 0, fontFamily: T.ui, fontSize: 11.5, color: T.fg, lineHeight: 1.45 }}>{n.content}</p>
-            <span style={{ fontFamily: T.mono, fontSize: 8, color: T.mut }}>{new Date(n.createdAt).toLocaleDateString("nb-NO", { day: "numeric", month: "short" })}</span>
+            <span style={{ fontFamily: T.mono, fontSize: 8.5, color: T.mut }}>{new Date(n.createdAt).toLocaleDateString("nb-NO", { day: "numeric", month: "short" })}</span>
           </div>
         ))}
         <textarea
@@ -1059,7 +1060,7 @@ function MndNivaa({ data, onVelgDato }: { data: WorkbenchData; onVelgDato: (dato
                       <span key={x.ax} title={`${AKSE_NAVN[x.ax.toUpperCase() as AkseKey] ?? x.ax} · ${fmtVarighet(x.min)}`} style={{ width: 7, height: 7, borderRadius: 9999, background: T.ax[x.ax.toUpperCase() as AkseKey] ?? T.mut }} />
                     ))}
                   </span>
-                  <span style={{ fontFamily: T.mono, fontSize: 8, color: T.mut }}>{c.count} · {fmtVarighet(totMin)}</span>
+                  <span style={{ fontFamily: T.mono, fontSize: 8.5, color: T.mut }}>{c.count} · {fmtVarighet(totMin)}</span>
                 </>
               ) : null}
             </button>
@@ -1099,7 +1100,7 @@ export function DagNivaa({ dag, valgt, onVelg, dager, onFlytt }: {
               <div onClick={() => o.id && !pending && onVelg(o.id)} style={{ cursor: pending ? "default" : "pointer" }}>
                 <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
                   <span style={{ fontFamily: T.mono, fontSize: 9, fontWeight: 700, color: T.fg2 }}>{toKl(o.h, o.m)}</span>
-                  <span style={{ fontFamily: T.mono, fontSize: 8, fontWeight: 700, color: `color-mix(in srgb, ${col} 55%, ${T.fg})` }}>{AKSE_NAVN[ak] || o.eb}</span>
+                  <span style={{ fontFamily: T.mono, fontSize: 8.5, fontWeight: 700, color: `color-mix(in srgb, ${col} 55%, ${T.fg})` }}>{AKSE_NAVN[ak] || o.eb}</span>
                   <span style={{ marginLeft: "auto", fontFamily: T.mono, fontSize: 8.5, color: T.mut }}>{fmtVarighet(o.durMin)}</span>
                 </div>
                 <div style={{ fontFamily: T.ui, fontSize: 12.5, fontWeight: 600, color: T.fg, marginTop: 5 }}>{o.ttl}</div>
@@ -1425,7 +1426,7 @@ function byggDager(data: WorkbenchData): DagKol[] {
 function Felt({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 5 }}>
-      <span style={{ fontFamily: T.mono, fontSize: 8, fontWeight: 700, letterSpacing: "0.11em", textTransform: "uppercase", color: T.mut }}>{label}</span>
+      <span style={{ fontFamily: T.mono, fontSize: 8.5, fontWeight: 700, letterSpacing: "0.11em", textTransform: "uppercase", color: T.mut }}>{label}</span>
       {children}
     </div>
   );
@@ -1615,6 +1616,11 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions, w
   const [forslag, setForslag] = useState<{ suggestions: WeekSuggestion[]; usedAi: boolean } | null>(null);
   const [dupLoading, setDupLoading] = useState(false);
   const [merApen, setMerApen] = useState(false);
+  /* PP-desktop: fasitens `.top` har ingen egen mer-meny — men Std/Pro-modus,
+     plan-etterlevelse og status-badge er heller ikke i fasitens hode. Samme
+     løsning som mobilens `merApen` (Foreslå/Gjenta): flyttet inn i en
+     overflow-meny ved «Ny økt», i stedet for fjernet. */
+  const [merApenDesktop, setMerApenDesktop] = useState(false);
   // PP-3 fasit: inspektør-kolonnen har faner (Økt | Innboks | Caddie).
   const [inspTab, setInspTab] = useState<"okt" | "innboks" | "caddie">("okt");
   // PP-3 fasit mobil: Bibliotek/Balanse er bottom-sheets, ikke akkordeoner.
@@ -2330,53 +2336,124 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions, w
         data-paper-slug="workbench-desktop"
         style={{ gridTemplateRows: "auto auto minmax(0, 1fr) auto", height: "calc(100dvh - 60px - env(safe-area-inset-top, 0px))", minHeight: 520 }}
       >
-        {/* TOPP-BAR (fasit .top) — Publiser er flyttet til bunnsonen */}
+        {/* TOPP-BAR (fasit .top, workbench-desktop.html): tilbake · tittel/undertekst ·
+            zoom · Ny økt/foreslå · mer-meny · tema. Std/Pro-modus, plan-etterlevelse og
+            status-badge er IKKE i fasitens hode — flyttet inn i «mer»-menyen ved «Ny
+            økt» i stedet for fjernet (samme mønster som mobilens `merApen`). */}
         <div
           style={{
             display: "flex",
             alignItems: "center",
-          gap: 16,
-          flexWrap: "wrap",
-          minHeight: 60,
-          padding: "10px 0 14px",
-          borderBottom: `1px solid ${T.border}`,
-          background: T.bg,
-        }}
-      >
-        <div style={{ minWidth: 0 }}>
-          <h1 style={{ margin: 0, fontFamily: T.disp, fontWeight: 600, fontSize: 17, color: T.fg, letterSpacing: "-0.02em" }}>Workbench</h1>
-          <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>
-            {playerName} · {role === "player" ? "PlayerHQ" : "AgencyOS"}
-          </span>
-          <div style={{ marginTop: 6 }}><StatusPill tone={st.tone}>{st.l}</StatusPill></div>
-        </div>
-        <Felt label="Zoom"><PillVelger options={zoomOptions} value={nivaa} onChange={setNivaa} /></Felt>
-        <Felt label="Modus">
-          <PillVelger
-            options={[{ v: "standard", l: "Standard" }, { v: "pro", l: "Pro" }]}
-            value={wbMode ?? "pro"}
-            onChange={(v) => byttWbMode(v === "standard" ? "standard" : "pro")}
-          />
-        </Felt>
-        <div style={{ display: "flex", alignItems: "center", gap: 12, padding: "6px 14px", minHeight: 44, borderRadius: T.rRow, background: `color-mix(in srgb, ${harAvvik ? T.warn : T.up} 6%, transparent)`, border: `1px solid color-mix(in srgb, ${harAvvik ? T.warn : T.up} 32%, transparent)`, flex: "none" }}>
-          <span style={{ fontFamily: T.mono, fontSize: 26, fontWeight: 700, color: T.fg, lineHeight: 0.9, fontVariantNumeric: "tabular-nums", flex: "none" }}>{adher != null ? `${adherDisp}%` : "—"}</span>
-          <div style={{ flex: "none", maxWidth: 150 }}>
-            <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}>
-              <span style={{ fontFamily: T.mono, fontSize: 8, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: T.mut, whiteSpace: "nowrap" }}>Plan-etterlevelse</span>
-              <HjelpTips k="planEtterlevelse" size={11} />
+            gap: 12,
+            flexWrap: "wrap",
+            minHeight: 60,
+            padding: "10px 0 14px",
+            borderBottom: `1px solid ${T.border}`,
+            background: T.bg,
+          }}
+        >
+          <button
+            type="button"
+            onClick={() => router.back()}
+            className="v2-press v2-focus"
+            aria-label="Tilbake til tråden"
+            title="Tilbake til tråden"
+            data-od-id="wb-back-thread"
+            style={{
+              flex: "none",
+              display: "inline-flex",
+              alignItems: "center",
+              gap: 8,
+              minHeight: 40,
+              padding: "0 14px",
+              borderRadius: T.rPill,
+              border: `1px solid ${T.border}`,
+              background: "transparent",
+              color: T.fg,
+              fontFamily: T.ui,
+              fontSize: 12.5,
+              fontWeight: 500,
+              cursor: "pointer",
+            }}
+          >
+            <Icon name="chevron-left" size={15} />
+            Tilbake til tråden
+          </button>
+          <div style={{ minWidth: 0 }}>
+            <h1 style={{ margin: 0, fontFamily: T.disp, fontWeight: 600, fontSize: 17, color: T.fg, letterSpacing: "-0.02em" }}>Workbench</h1>
+            <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, letterSpacing: "0.06em", textTransform: "uppercase", color: T.mut, marginTop: 2 }}>
+              {playerName} · uke {weekNumber}
             </span>
-            <span style={{ fontFamily: T.mono, fontSize: 9, fontWeight: 700, color: harAvvik ? T.warn : T.up, display: "block", marginTop: 2, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{avvikTekst}</span>
+          </div>
+          <Felt label="Zoom"><PillVelger options={zoomOptions} value={nivaa} onChange={setNivaa} /></Felt>
+          <div style={{ display: "flex", alignItems: "center", gap: 8, marginLeft: "auto" }}>
+            {actions && (
+              <button type="button" onClick={() => setNyOktApen(true)} className="v2-press v2-focus" style={{ appearance: "none", cursor: "pointer", display: "inline-flex", alignItems: "center", gap: 7, minHeight: 44, padding: "0 16px", borderRadius: T.rPill, background: T.panel3, border: `1px solid ${T.border}`, fontFamily: T.ui, fontSize: 12.5, fontWeight: 600, color: T.fg }}><Icon name="plus" size={14} />Ny økt</button>
+            )}
+            {actions?.suggestWeek && (
+              <button type="button" onClick={handleSuggest} disabled={suggestLoading} title="AI-forslag for uka" className="v2-press v2-focus" style={{ appearance: "none", cursor: suggestLoading ? "default" : "pointer", minWidth: 44, minHeight: 44, borderRadius: T.rPill, background: T.panel3, border: `1px solid ${T.border}`, display: "inline-flex", alignItems: "center", justifyContent: "center", opacity: suggestLoading ? 0.5 : 1 }}><Icon name="sparkles" size={15} style={{ color: T.handling }} /></button>
+            )}
+            <div style={{ position: "relative" }}>
+              <button
+                type="button"
+                onClick={() => setMerApenDesktop((v) => !v)}
+                title="Mer: status, modus og etterlevelse"
+                aria-label="Flere valg: status, modus og etterlevelse"
+                aria-haspopup="true"
+                aria-expanded={merApenDesktop}
+                className="v2-press v2-focus"
+                style={{ appearance: "none", cursor: "pointer", minWidth: 44, minHeight: 44, borderRadius: T.rPill, background: merApenDesktop ? T.panel2 : T.panel3, border: `1px solid ${T.border}`, display: "inline-flex", alignItems: "center", justifyContent: "center" }}
+              >
+                <Icon name="more-horizontal" size={16} style={{ color: T.fg2 }} />
+              </button>
+              {merApenDesktop && (
+                <div
+                  role="menu"
+                  aria-label="Status, modus og etterlevelse"
+                  style={{
+                    position: "absolute",
+                    top: "calc(100% + 8px)",
+                    right: 0,
+                    zIndex: 20,
+                    width: 260,
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: 10,
+                    padding: 14,
+                    borderRadius: T.rCard,
+                    background: T.panel,
+                    border: `1px solid ${T.borderS}`,
+                    boxShadow: `0 16px 40px ${T.farge.svartA50}`,
+                  }}
+                >
+                  <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                    <span style={{ fontFamily: T.mono, fontSize: 9, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: T.mut }}>Status</span>
+                    <StatusPill tone={st.tone}>{st.l}</StatusPill>
+                  </div>
+                  <div>
+                    <span style={{ display: "block", fontFamily: T.mono, fontSize: 9, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: T.mut, marginBottom: 6 }}>Modus</span>
+                    <PillVelger
+                      options={[{ v: "standard", l: "Standard" }, { v: "pro", l: "Pro" }]}
+                      value={wbMode ?? "pro"}
+                      onChange={(v) => byttWbMode(v === "standard" ? "standard" : "pro")}
+                    />
+                  </div>
+                  <div style={{ display: "flex", alignItems: "center", gap: 10, padding: "8px 10px", borderRadius: T.rRow, background: `color-mix(in srgb, ${harAvvik ? T.warn : T.up} 6%, transparent)`, border: `1px solid color-mix(in srgb, ${harAvvik ? T.warn : T.up} 32%, transparent)` }}>
+                    <span style={{ fontFamily: T.mono, fontSize: 18, fontWeight: 700, color: T.fg, fontVariantNumeric: "tabular-nums", flex: "none" }}>{adher != null ? `${adherDisp}%` : "—"}</span>
+                    <div style={{ minWidth: 0 }}>
+                      <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}>
+                        <span style={{ fontFamily: T.mono, fontSize: 8.5, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: T.mut, whiteSpace: "nowrap" }}>Plan-etterlevelse</span>
+                        <HjelpTips k="planEtterlevelse" size={11} />
+                      </span>
+                      <span style={{ fontFamily: T.mono, fontSize: 9, fontWeight: 700, color: harAvvik ? T.warn : T.up, display: "block", marginTop: 2, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{avvikTekst}</span>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+            <TemaHeaderKnapp />
           </div>
         </div>
-        <div style={{ display: "flex", alignItems: "center", gap: 8, marginLeft: "auto" }}>
-          {actions && (
-            <button type="button" onClick={() => setNyOktApen(true)} className="v2-press v2-focus" style={{ appearance: "none", cursor: "pointer", display: "inline-flex", alignItems: "center", gap: 7, minHeight: 44, padding: "0 16px", borderRadius: T.rPill, background: T.panel3, border: `1px solid ${T.border}`, fontFamily: T.ui, fontSize: 12.5, fontWeight: 600, color: T.fg }}><Icon name="plus" size={14} />Ny økt</button>
-          )}
-          {actions?.suggestWeek && (
-            <button type="button" onClick={handleSuggest} disabled={suggestLoading} title="AI-forslag for uka" className="v2-press v2-focus" style={{ appearance: "none", cursor: suggestLoading ? "default" : "pointer", minWidth: 44, minHeight: 44, borderRadius: T.rPill, background: T.panel3, border: `1px solid ${T.border}`, display: "inline-flex", alignItems: "center", justifyContent: "center", opacity: suggestLoading ? 0.5 : 1 }}><Icon name="sparkles" size={15} style={{ color: T.handling }} /></button>
-          )}
-        </div>
-      </div>
 
         {/* KPI-STRIPE (fasit .kpis): rene målinger av uka — regnet av ekte ukedata */}
         <div role="group" aria-label="Målinger" data-wb-kpistripe style={{ display: "flex", alignItems: "stretch", overflowX: "auto", borderBottom: `1px solid ${T.border}`, background: T.panel2 }}>
@@ -2576,33 +2653,34 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions, w
 
       {/* Mobil (<md): fasit workbench-mobil — top · zooms · daystrip · dagbody · bunnlinje; Bibliotek/Balanse som bottom-sheets */}
       <div className="flex md:hidden" data-paper-slug="workbench-mobil" style={{ flexDirection: "column", gap: T.gap }}>
-        {/* TOPP-BAR — mobil: to kompakte rader + «Mer» for Foreslå/Gjenta */}
+        {/* TOPP-BAR — mobil: fasit .top (workbench-mobil.html) er kun tilbake ·
+            tittel/undertekst · tema. Std/Pro-modus, plan-etterlevelse og
+            status-badge er IKKE i fasitens hode — flyttet inn i «mer»-menyen
+            ved «Ny økt» sammen med Foreslå/Gjenta, i stedet for fjernet. */}
         <div style={{ display: "flex", flexDirection: "column", gap: 10, paddingBottom: 14, borderBottom: `1px solid ${T.border}` }}>
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+          <button
+            type="button"
+            onClick={() => router.back()}
+            className="v2-press v2-focus"
+            aria-label="Tilbake til tråden"
+            title="Tilbake til tråden"
+            data-od-id="wbm-back"
+            style={{ flex: "none", width: 40, height: 40, display: "inline-flex", alignItems: "center", justifyContent: "center", borderRadius: 12, background: "transparent", border: `1px solid ${T.border}`, color: T.fg, cursor: "pointer" }}
+          >
+            <Icon name="chevron-left" size={18} />
+          </button>
           <div style={{ minWidth: 0, flex: 1 }}>
             <h1 style={{ margin: 0, fontFamily: T.disp, fontWeight: 600, fontSize: 17, color: T.fg }}>Workbench</h1>
-            <div style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 2, minWidth: 0 }}>
-              <span style={{ fontFamily: T.mono, fontSize: 10.5, color: T.mut, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{playerName}</span>
-              <StatusPill tone={st.tone}>{st.l}</StatusPill>
-            </div>
+            <span style={{ display: "block", fontFamily: T.mono, fontSize: 10, letterSpacing: "0.06em", textTransform: "uppercase", color: T.mut, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+              {playerName} · uke {weekNumber}
+            </span>
           </div>
-          <div style={{ display: "flex", alignItems: "center", gap: 6, padding: "6px 10px", borderRadius: 10, background: `color-mix(in srgb, ${harAvvik ? T.warn : T.up} 8%, transparent)`, border: `1px solid color-mix(in srgb, ${harAvvik ? T.warn : T.up} 32%, transparent)`, flex: "none" }}>
-            <span style={{ fontFamily: T.mono, fontSize: 15, fontWeight: 700, color: T.fg, fontVariantNumeric: "tabular-nums" }}>{adher != null ? `${adherDisp}%` : "–"}</span>
-            <span style={{ fontFamily: T.mono, fontSize: 7.5, fontWeight: 700, letterSpacing: "0.05em", textTransform: "uppercase", color: T.mut, whiteSpace: "nowrap" }}>etterlevelse</span>
-          </div>
+          <TemaHeaderKnapp />
         </div>
 
-        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-          <div style={{ overflowX: "auto", paddingBottom: 1, flex: 1, minWidth: 0 }}>
-            <PillVelger options={zoomOptionsMobil} value={nivaa} onChange={setNivaa} />
-          </div>
-          <div style={{ flex: "none" }}>
-            <PillVelger
-              options={[{ v: "standard", l: "Std" }, { v: "pro", l: "Pro" }]}
-              value={wbMode ?? "pro"}
-              onChange={(v) => byttWbMode(v === "standard" ? "standard" : "pro")}
-            />
-          </div>
+        <div style={{ overflowX: "auto", paddingBottom: 1 }}>
+          <PillVelger options={zoomOptionsMobil} value={nivaa} onChange={setNivaa} />
         </div>
 
         <div style={{ display: "flex", gap: 8 }}>
@@ -2611,26 +2689,44 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions, w
               <Knapp icon="plus" ghost full onClick={() => setNyOktApen(true)}>Ny økt</Knapp>
             </div>
           )}
-          {(actions?.suggestWeek || actions?.duplicateWeek) && (
-            <button
-              type="button"
-              onClick={() => setMerApen((v) => !v)}
-              title="Mer"
-              className="v2-press v2-focus"
-              style={{ appearance: "none", cursor: "pointer", width: 44, height: 44, flex: "none", borderRadius: 12, background: merApen ? T.panel2 : T.panel3, border: `1px solid ${T.borderS}`, display: "inline-flex", alignItems: "center", justifyContent: "center" }}
-            >
-              <Icon name="more-horizontal" size={17} style={{ color: T.fg2 }} />
-            </button>
-          )}
+          <button
+            type="button"
+            onClick={() => setMerApen((v) => !v)}
+            title="Mer: status, modus, etterlevelse og forslag"
+            aria-label="Flere valg: status, modus, etterlevelse og forslag"
+            aria-haspopup="true"
+            aria-expanded={merApen}
+            className="v2-press v2-focus"
+            style={{ appearance: "none", cursor: "pointer", width: 44, height: 44, flex: "none", borderRadius: 12, background: merApen ? T.panel2 : T.panel3, border: `1px solid ${T.borderS}`, display: "inline-flex", alignItems: "center", justifyContent: "center" }}
+          >
+            <Icon name="more-horizontal" size={17} style={{ color: T.fg2 }} />
+          </button>
         </div>
 
         {merApen && (
-          <div style={{ display: "flex", gap: 8, flexWrap: "wrap", padding: 12, borderRadius: 12, background: T.panel2, border: `1px solid ${T.border}` }}>
-            {actions?.suggestWeek && (
-              <Knapp icon="sparkles" ghost onClick={handleSuggest} disabled={suggestLoading}>{suggestLoading ? "Foreslår…" : "Foreslå uke"}</Knapp>
-            )}
-            {actions?.duplicateWeek && (
-              <Knapp icon="repeat" ghost onClick={handleDuplicate} disabled={dupLoading}>{dupLoading ? "Kopierer…" : "Gjenta forrige uke"}</Knapp>
+          <div style={{ display: "flex", flexDirection: "column", gap: 10, padding: 12, borderRadius: 12, background: T.panel2, border: `1px solid ${T.border}` }}>
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+              <span style={{ fontFamily: T.mono, fontSize: 9, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: T.mut }}>Status</span>
+              <StatusPill tone={st.tone}>{st.l}</StatusPill>
+            </div>
+            <PillVelger
+              options={[{ v: "standard", l: "Std" }, { v: "pro", l: "Pro" }]}
+              value={wbMode ?? "pro"}
+              onChange={(v) => byttWbMode(v === "standard" ? "standard" : "pro")}
+            />
+            <div style={{ display: "flex", alignItems: "center", gap: 8, padding: "6px 10px", borderRadius: 10, background: `color-mix(in srgb, ${harAvvik ? T.warn : T.up} 8%, transparent)`, border: `1px solid color-mix(in srgb, ${harAvvik ? T.warn : T.up} 32%, transparent)` }}>
+              <span style={{ fontFamily: T.mono, fontSize: 15, fontWeight: 700, color: T.fg, fontVariantNumeric: "tabular-nums" }}>{adher != null ? `${adherDisp}%` : "–"}</span>
+              <span style={{ fontFamily: T.mono, fontSize: 8.5, fontWeight: 700, letterSpacing: "0.05em", textTransform: "uppercase", color: T.mut, whiteSpace: "nowrap" }}>etterlevelse · {avvikTekst}</span>
+            </div>
+            {(actions?.suggestWeek || actions?.duplicateWeek) && (
+              <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+                {actions?.suggestWeek && (
+                  <Knapp icon="sparkles" ghost onClick={handleSuggest} disabled={suggestLoading}>{suggestLoading ? "Foreslår…" : "Foreslå uke"}</Knapp>
+                )}
+                {actions?.duplicateWeek && (
+                  <Knapp icon="repeat" ghost onClick={handleDuplicate} disabled={dupLoading}>{dupLoading ? "Kopierer…" : "Gjenta forrige uke"}</Knapp>
+                )}
+              </div>
             )}
           </div>
         )}
@@ -2724,7 +2820,7 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions, w
               ["drills", String(ukeKpi.drills)],
             ] as const).map(([k, v]) => (
               <div key={k} style={{ flex: "none" }}>
-                <span style={{ display: "block", fontFamily: T.mono, fontSize: 8, letterSpacing: "0.08em", textTransform: "uppercase", color: T.mut }}>{k}</span>
+                <span style={{ display: "block", fontFamily: T.mono, fontSize: 8.5, letterSpacing: "0.08em", textTransform: "uppercase", color: T.mut }}>{k}</span>
                 <span style={{ display: "block", fontFamily: T.mono, fontSize: 15, fontWeight: 700, color: T.fg, fontVariantNumeric: "tabular-nums" }}>{v}</span>
               </div>
             ))}

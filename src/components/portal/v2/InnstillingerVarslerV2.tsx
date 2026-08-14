@@ -9,6 +9,7 @@ import { useRouter } from "next/navigation";
 import type { UserPreferences } from "@/lib/preferences";
 import { oppdaterPreferences } from "@/app/portal/meg/actions";
 import { VAPID_PUBLIC_KEY } from "@/lib/push/vapid";
+import { InnstillingerHode } from "@/components/portal/v2/InnstillingerHode";
 import {
   detectPushStatus,
   aktiverPush,
@@ -161,13 +162,12 @@ export function InnstillingerVarslerV2({ data }: { data: InnstillingerVarslerDat
 
   return (
     <div data-paper-wave-g="innstillingervarsler" data-paper-portal-innstillinger-varsler data-paper-slug="playerhq-innstillinger" style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
-        <div data-paper-pattern-topp>
-        <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>Varsler</h1>
-        <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>Innstillinger</span>
-      </div>
-        {lagret && <StatusPill tone="lime">Lagret</StatusPill>}
-      </div>
+      <InnstillingerHode
+        tittel="Varsler"
+        undertekst="Innstillinger"
+        tilbakeHref="/portal/meg/innstillinger"
+        action={lagret ? <StatusPill tone="lime">Lagret</StatusPill> : undefined}
+      />
 
       {/* B: status først */}
       <div className="grid grid-cols-2" style={{ gap: 8 }}>

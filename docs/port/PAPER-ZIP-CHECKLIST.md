@@ -24,26 +24,26 @@
 - [~] `agencyos-okonomi.html`
 - [x] `agencyos-spillere-mobil.html` — PP-2.3 signert av Anders 13.08.2026 (galleri mot prod)
 - [x] `agencyos-spillere.html` — PP-2.3 signert av Anders 13.08.2026 (galleri mot prod)
-- [~] `booking.html` — PP-1.7 READY_SIGN
-- [~] `fangstsheet.html` — overnight slug/CTA READY_SIGN
-- [~] `foreldreportal.html` — overnight slug/CTA READY_SIGN
+- [~] `booking.html` — PP-1.7 READY_SIGN. Kan ikke signeres mot prod før BOOKING_PUBLIC slås på (prod viser interim-siden med vilje, jf. #431) — designet ligger ferdig bak bryteren
+- [x] `fangstsheet.html` — B2-fangst signert av Anders 14.08.2026 (galleri mot prod, arket åpnet via klikk)
+- [x] `foreldreportal.html` — B2-forelder signert av Anders 14.08.2026 (galleri mot prod, innlogget test-forelder)
 - [x] `innlogging.html` — PP-1.6 signert av Anders 13.08.2026 (galleri mot prod)
 - [x] `playerhq-analyse.html` — PP-1.3 signert av Anders 13.08.2026 (galleri mot prod)
 - [x] `playerhq-booking.html` — PP-1.5 signert av Anders 13.08.2026 (galleri mot prod)
 - [x] `playerhq-chat-desktop.html` — PP-1.1 signert av Anders 13.08.2026 (galleri mot prod)
 - [x] `playerhq-chat-mobil.html` — PP-1.1 signert av Anders 13.08.2026 (galleri mot prod)
-- [~] `playerhq-live-brief.html` — overnight slug/CTA READY_SIGN
-- [~] `playerhq-live-okt.html` — overnight slug/CTA READY_SIGN
-- [~] `playerhq-live-summary.html` — overnight slug/CTA READY_SIGN
+- [x] `playerhq-live-brief.html` — B2-liveb signert av Anders 14.08.2026 (galleri mot prod)
+- [x] `playerhq-live-okt.html` — B2-livea signert av Anders 14.08.2026 (galleri mot prod)
+- [x] `playerhq-live-summary.html` — B2-lives signert av Anders 14.08.2026 (galleri mot prod)
 - [x] `playerhq-meg.html` — PP-1.4 signert av Anders 13.08.2026 (galleri mot prod)
 - [x] `playerhq-plan.html` — PP-1.2 signert av Anders 13.08.2026 (galleri mot prod)
 - [~] `playerhq-runde-live.html`
 - [x] `playerhq-runde-logg.html` — NT-417 signert av Anders 13.08.2026 (galleri mot prod)
 - [~] `playerhq-test-gjennomfor.html`
-- [~] `spillerprofil.html` — full ombygging ligger i åpen PR #414
-- [~] `workbench-desktop.html` — overnight slug/CTA READY_SIGN
-- [~] `workbench-mobil.html` — overnight slug/CTA READY_SIGN
-- [~] `workbench-turnering.html` — overnight slug/CTA READY_SIGN
+- [~] `spillerprofil.html` — full ombygging merget i #414 (12.08)
+- [x] `workbench-desktop.html` — B2-wb signert av Anders 14.08.2026 (galleri mot prod, spiller-workbench d1280)
+- [x] `workbench-mobil.html` — B2-wb signert av Anders 14.08.2026 (galleri mot prod, spiller-workbench m390)
+- [~] `workbench-turnering.html` — KAN IKKE SIGNERES ennå: turneringsvarianten finnes ikke i koden (rutekart: fane/modus på spiller-workbench). Anders bestilte bygging 14.08.2026 — under arbeid
 
 ## Fase 2 · PlayerHQ W1 (drill/plan/test/turnering)
 
@@ -51,13 +51,13 @@
 - [~] `fase2/playerhq/playerhq-drills.html` — tilstands-pass 11.08 (#412)
 - [~] `fase2/playerhq/playerhq-feiring.html` — natt 11.08 (#394) READY_SIGN
 - [~] `fase2/playerhq/playerhq-fys-plan.html` — natt 11.08 (#394) READY_SIGN
-- [~] `fase2/playerhq/playerhq-live-tapper.html` — bygget (#398), fiks i åpen #413
-- [~] `fase2/playerhq/playerhq-okt-detalj.html` — bygget (#399), fiks i åpen #413
+- [~] `fase2/playerhq/playerhq-live-tapper.html` — bygget (#398), fiks merget i #413 (11.08)
+- [~] `fase2/playerhq/playerhq-okt-detalj.html` — bygget (#399), fiks merget i #413 (11.08)
 - [~] `fase2/playerhq/playerhq-teknisk-plan.html` — tilstands-pass 11.08 (#412)
 - [~] `fase2/playerhq/playerhq-test-detalj.html` — tilstands-pass 11.08 (#412)
 - [~] `fase2/playerhq/playerhq-tester-hub.html` — tilstands-pass 11.08 (#412)
-- [~] `fase2/playerhq/playerhq-turnering-detalj.html` — bygget (#398), fiks i åpen #413
-- [~] `fase2/playerhq/playerhq-turneringer.html` — bygget (#398), fiks i åpen #413
+- [~] `fase2/playerhq/playerhq-turnering-detalj.html` — bygget (#398), fiks merget i #413 (11.08)
+- [~] `fase2/playerhq/playerhq-turneringer.html` — bygget (#398), fiks merget i #413 (11.08)
 
 ## Fase 2 · W2 Analysere-dybde (ny i zip 2)
 
@@ -68,7 +68,7 @@
 - [~] `fase2/playerhq/playerhq-gameplan-banekart.html` — bygget 11.08 (#408)
 - [~] `fase2/playerhq/playerhq-datagolf.html` → DataGolfV2 — pixel-pass (#411)
 - [~] `fase2/playerhq/playerhq-trackman-liste.html` — bygget 11.08 (#405)
-- [~] `fase2/playerhq/playerhq-trackman-detalj.html` — bygget 11.08 (#405), fiks i åpen #414
+- [~] `fase2/playerhq/playerhq-trackman-detalj.html` — bygget 11.08 (#405), fiks merget i #414 (12.08)
 - [~] `fase2/playerhq/playerhq-putte-lab.html` → PutteLabV2 — pixel-pass (#409)
 - [~] `fase2/playerhq/playerhq-historikk-filter-sheet.html` — bygget 11.08 (#407)
 - [~] `fase2/playerhq/playerhq-hjem-rest.html` — bygget 11.08 (#407)
@@ -86,14 +86,14 @@
 
 ## Fase 2 · W4 AgencyOS (ny i zip 2)
 
-- [~] `fase2/agencyos/agencyos-godkjenninger.html` → AdminGodkjenningerV2
-- [~] `fase2/agencyos/agencyos-gruppe-detalj.html` → GruppeDetaljV2
-- [~] `fase2/agencyos/agencyos-bookinger.html` → AdminBookingerV2
-- [x] `fase2/agencyos/agencyos-planbibliotek.html` — NT-416a signert av Anders 13.08.2026 (galleri mot prod)
-- [x] `fase2/agencyos/agencyos-turneringer.html` — NT-416b signert av Anders 13.08.2026 (galleri mot prod)
-- [~] `fase2/agencyos/agencyos-oppsett.html` → AdminSettingsV2
-- [~] `fase2/agencyos/agencyos-agenticos-hub.html` — bygget natt 13.08 (#433, galleri NT-433) READY_SIGN
-- [~] `fase2/agencyos/agencyos-agent-detalj.html` — bygget natt 13.08 (#435, galleri NT-435) READY_SIGN
+- [x] `fase2/agencyos/agencyos-godkjenninger.html` → AdminGodkjenningerV2 — W4-437a/b/c signert av Anders 14.08.2026 (galleri mot prod: godkjenninger, handlingssenter, oppfølgingskø)
+- [x] `fase2/agencyos/agencyos-gruppe-detalj.html` → GruppeDetaljV2 — W4-440a signert av Anders 14.08.2026 (galleri mot prod)
+- [x] `fase2/agencyos/agencyos-bookinger.html` → AdminBookingerV2 — W4-438a/b signert av Anders 14.08.2026 (galleri mot prod: bookinger, ny booking)
+- [x] `fase2/agencyos/agencyos-planbibliotek.html` — NT-416a signert av Anders 13.08.2026; tilleggsruter W4-442a/b (økter, ny planmal) signert 14.08.2026
+- [x] `fase2/agencyos/agencyos-turneringer.html` — NT-416b signert av Anders 13.08.2026; tilleggsruter W4-442c/d (ny turnering, dubletter) signert 14.08.2026
+- [x] `fase2/agencyos/agencyos-oppsett.html` → AdminSettingsV2 — W4-441a/b/c signert av Anders 14.08.2026 (galleri mot prod: innstillinger, GDPR-kø, audit-logg)
+- [x] `fase2/agencyos/agencyos-agenticos-hub.html` — bygget natt 13.08 (#433); NT-433 signert av Anders 14.08.2026 (galleri mot prod)
+- [x] `fase2/agencyos/agencyos-agent-detalj.html` — bygget natt 13.08 (#435); NT-435 signert av Anders 14.08.2026 (galleri mot prod)
 
 ## Fase 2 · W5 Marketing/Auth/Forelder/System (ny i zip 2)
 
@@ -106,21 +106,27 @@
 
 ## Fase 2 · W6 WANG + GFGK (eget chrome — ikke Paper-shell)
 
-- [~] `fase2/wang/wang-coach-arsplan.html` — pixel-pass natt 12.08, åpen PR #419 (layoutspørsmål til Anders i PR)
+- [~] `fase2/wang/wang-coach-arsplan.html` — pixel-pass natt 12.08, merget i #419 (layoutspørsmål til Anders står åpent)
 - [ ] `fase2/wang/wang-logg-inn.html` — BLOKKERT: filene eies av åpen #406 + fasitens OTP-flyt er produktbeslutning
 - [x] `fase2/gfgk/gfgk-kalender.html` — NT-419b signert av Anders 13.08.2026 (galleri mot prod)
-- [~] `fase2/gfgk/gfgk-veileder-artikkel.html` — pixel-pass natt 12.08, åpen PR #419
+- [~] `fase2/gfgk/gfgk-veileder-artikkel.html` — pixel-pass natt 12.08, merget i #419
 
-## Templates (struktur)
+## Templates (struktur) — GJELDER IKKE (Anders' beslutning 14.08.2026)
 
-- [ ] `templates/agencyos-alt/AgencyosAlt.dc.html`
-- [ ] `templates/agencyos-dashboard/AgencyosDashboard.dc.html`
-- [ ] `templates/agencyos-hjem/AgencyosHjem.dc.html`
-- [ ] `templates/agencyos-kalender/AgencyosKalender.dc.html`
-- [ ] `templates/agencyos-ko/AgencyosKo.dc.html`
-- [ ] `templates/agencyos-stall/AgencyosStall.dc.html`
-- [ ] `templates/agencyos-workbench/AgencyosWorkbench.dc.html`
-- [ ] `templates/playerhq-idag/PlayerhqIdag.dc.html`
+De åtte `.dc.html`-filene er Open Design-komponentkontrakter (maler for designverktøyets
+egen plukker), ikke skjermfasiter, og skal IKKE portes til kode. Fasiten selv stempler
+mappen som historikk (`designsystem/paper/templates/_UTGÅTT.md`, 01.08.2026): alt innholdet
+er erstattet av `fase1/`-skjermene, som allerede er bygget. Filtypeforklaring:
+`designsystem/paper/guidelines/kompilerte-filtyper.md`. Radene beholdes som historikk:
+
+- [-] `templates/agencyos-alt/AgencyosAlt.dc.html` — gjelder ikke
+- [-] `templates/agencyos-dashboard/AgencyosDashboard.dc.html` — gjelder ikke
+- [-] `templates/agencyos-hjem/AgencyosHjem.dc.html` — gjelder ikke
+- [-] `templates/agencyos-kalender/AgencyosKalender.dc.html` — gjelder ikke
+- [-] `templates/agencyos-ko/AgencyosKo.dc.html` — gjelder ikke
+- [-] `templates/agencyos-stall/AgencyosStall.dc.html` — gjelder ikke
+- [-] `templates/agencyos-workbench/AgencyosWorkbench.dc.html` — gjelder ikke
+- [-] `templates/playerhq-idag/PlayerhqIdag.dc.html` — gjelder ikke
 
 ---
 

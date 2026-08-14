@@ -16,6 +16,8 @@ export async function hentBarnForForelder(parentUserId: string) {
           email: true,
           avatarUrl: true,
           hcp: true,
+          dateOfBirth: true,
+          guardianConsentGivenAt: true,
         },
       },
     },
@@ -26,6 +28,13 @@ export async function hentBarnForForelder(parentUserId: string) {
     relationship: l.relationship,
     child: l.child,
   }));
+}
+
+/** Alder fra fødselsdato (kun hvis kjent — aldri gjettet). Delt av barn-lista og barn-detalj. */
+export function alderFraFodselsdato(dateOfBirth: Date | null): number | null {
+  if (!dateOfBirth) return null;
+  const diff = Date.now() - dateOfBirth.getTime();
+  return Math.floor(diff / (365.25 * 24 * 3600 * 1000));
 }
 
 export async function assertBarnTilhorerForelder(
