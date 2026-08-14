@@ -18,7 +18,6 @@
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
-import { TilbakeLenke } from "@/components/v2";
 import { InnstillingerSikkerhetV2 } from "@/components/portal/v2/InnstillingerSikkerhetV2";
 
 export const dynamic = "force-dynamic";
@@ -44,7 +43,6 @@ export default async function SikkerhetPage() {
 
   return (
     <V2Shell aktiv="meg" bredde="kolonne" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
-      <TilbakeLenke href="/portal/meg/innstillinger">Innstillinger</TilbakeLenke>
       <InnstillingerSikkerhetV2 data={{ score, sisteInnlogging: formatSiste(user.lastLoginAt) }} />
     </V2Shell>
   );

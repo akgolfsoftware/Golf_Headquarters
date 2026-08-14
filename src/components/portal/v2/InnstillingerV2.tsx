@@ -12,12 +12,12 @@ import { oppdaterPreferences } from "@/app/portal/meg/actions";
 import {
   T,
   Caps,
-  Tittel,
   Kort,
   Rad,
   StatusPill,
   Icon,
 } from "@/components/v2";
+import { InnstillingerHode } from "@/components/portal/v2/InnstillingerHode";
 
 /* ── Datakontrakt ──────────────────────────────────────────────────── */
 
@@ -120,23 +120,6 @@ function Seksjon({ label, children }: { label: string; children: ReactNode }) {
   );
 }
 
-/** «?»-hjelpen for abonnement — HVEM får gratis (kanon: gratis eller 299). */
-function AboHjelp() {
-  return (
-    <div style={{ padding: "12px 14px", borderRadius: 12, background: T.panel2, border: `1px solid ${T.border}`, margin: "2px 0 12px" }}>
-      <div style={{ display: "flex", gap: 8, alignItems: "flex-start" }}>
-        <Icon name="info" size={13} style={{ color: T.lime, flex: "none", marginTop: 2 }} />
-        <div style={{ fontFamily: T.ui, fontSize: 12, color: T.fg2, lineHeight: 1.6 }}>
-          <strong style={{ color: T.fg, fontWeight: 600 }}>Hvem får PlayerHQ gratis?</strong>
-          <div style={{ marginTop: 5 }}>· Ny bruker — 1 måned prøveperiode</div>
-          <div>· Coaching-pakke hos AK Golf (Performance eller Performance Pro)</div>
-          <div>· Gruppetrening via AK Golf</div>
-          <div style={{ marginTop: 5, color: T.mut }}>Alle andre: 299 kr/mnd. Ingen nivåer — alle har hele appen.</div>
-        </div>
-      </div>
-    </div>
-  );
-}
 
 /* ── Hjelpere ──────────────────────────────────────────────────────── */
 
@@ -180,67 +163,33 @@ export function InnstillingerV2({ data }: { data: InnstillingerData }) {
     });
   }
 
-  const konto = (
-    <Seksjon label="Konto">
-      <Link href="/portal/meg/profil" style={{ textDecoration: "none", color: "inherit", display: "block" }}>
-        <Rad leading={<SeksjonIkon name="mail" />} title="E-post" sub={epost} />
-      </Link>
-      <Link href="/auth/forgot-password" style={{ textDecoration: "none", color: "inherit", display: "block" }}>
-        <Rad last leading={<SeksjonIkon name="lock" />} title="Passord" sub="Trykk for å endre passordet ditt" />
-      </Link>
-    </Seksjon>
-  );
-
-  const preferanser = (
-    <Seksjon label="Preferanser">
-      <Link href="/portal/meg/innstillinger/anlegg" style={{ textDecoration: "none", color: "inherit", display: "block" }}>
-        <Rad leading={<SeksjonIkon name="map-pin" />} title="Mitt treningsanlegg" sub="Utstyr og fasiliteter du har tilgang til" />
-      </Link>
-      <Link href="/portal/meg/innstillinger/integrasjoner" style={{ textDecoration: "none", color: "inherit", display: "block" }}>
-        <Rad leading={<SeksjonIkon name="link-2" />} title="Integrasjoner" sub="TrackMan, Google Kalender og flere" />
-      </Link>
-      <Link href="/portal/meg/innstillinger/sprak" style={{ textDecoration: "none", color: "inherit", display: "block" }}>
-        <Rad last leading={<SeksjonIkon name="globe" />} title="Språk og region" sub="Velg hvilket språk appen vises på" />
-      </Link>
-    </Seksjon>
-  );
-
-  const varsler = (
-    <Seksjon label="Varsler">
-      <Rad
-        leading={<SeksjonIkon name="bell" />}
-        title="Økt-påminnelse"
-        sub="Kvelden før planlagt økt"
-        trailing={<Toggle on={notif.paaminnelse} onToggle={() => veksle("paaminnelse")} label="Økt-påminnelse" />}
-      />
-      <Rad
-        leading={<SeksjonIkon name="user" />}
-        title="Melding fra coach"
-        sub="Når coachen din sender deg noe"
-        trailing={<Toggle on={notif.nyMeldingFraCoach} onToggle={() => veksle("nyMeldingFraCoach")} label="Melding fra coach" />}
-      />
-      <Rad
-        leading={<SeksjonIkon name="calendar" />}
-        title="Plan publisert"
-        sub="Når en ny ukeplan er klar"
-        trailing={<Toggle on={notif.treningsplanOppdatert} onToggle={() => veksle("treningsplanOppdatert")} label="Plan publisert" />}
-      />
-      <Rad
-        last
-        leading={<SeksjonIkon name="activity" />}
-        title="Vis mine økter for venner"
-        sub="Venner ser KUN at du har trent — aldri plan, fagkoder eller coach-notater"
-        trailing={<Toggle on={venneOktSynlig} onToggle={vekslVenneSynlig} label="Vis mine økter for venner" />}
-      />
-    </Seksjon>
-  );
+  // Abonnement — kanon: gratis (pakke/prøve/gruppe) ELLER 299 kr/mnd.
+  const aboSub = abonnement.gratis
+    ? abonnement.pakkeNavn
+      ? `Gratis — inkludert i coaching-pakken din (${abonnement.pakkeNavn})`
+      : "Gratis — hele PlayerHQ, uten kostnad"
+    : abonnement.nesteTrekk
+      ? `299 kr/mnd — fornyes ${abonnement.nesteTrekk}`
+      : "299 kr/mnd";
 
   const samtykkeSub = samtykke.godkjentDato
     ? `${samtykke.godkjentAv ? `Godkjent av ${samtykke.godkjentAv}` : "Godkjent"} · ${samtykke.godkjentDato}`
     : "Venter på godkjenning fra en forelder";
 
-  const personvern = (
-    <Seksjon label="Personvern">
+  // «Kontoen din» — e-post (lenke til redigering, ingen fabrikkert inline-
+  // endringsflyt), abonnement (ekte data) og passord/pålogging. Ingen 2FA-
+  // felt finnes på User ennå (se InnstillingerSikkerhetV2-kommentar), så
+  // raden holder seg til det vi faktisk vet — avvik fra fasitens «Tofaktor
+  // er på · sist endret 12.03».
+  const kontoenDin = (
+    <Seksjon label="Kontoen din">
+      <div style={{ padding: "2px 0 12px" }}>
+        <div style={{ fontFamily: T.ui, fontSize: 12, fontWeight: 600, color: T.mut, marginBottom: 4 }}>E-post</div>
+        <div style={{ fontFamily: T.ui, fontSize: 13.5, fontWeight: 600, color: T.fg }}>{epost}</div>
+        <p style={{ fontFamily: T.ui, fontSize: 11.5, color: T.mut, margin: "6px 0 0", lineHeight: 1.5 }}>
+          E-posten er innloggingen din. Vil du endre den, gjør du det fra profilen din.
+        </p>
+      </div>
       {samtykke.kreves && (
         <Rad
           leading={<SeksjonIkon name="shield" />}
@@ -253,116 +202,101 @@ export function InnstillingerV2({ data }: { data: InnstillingerData }) {
           }
         />
       )}
-      <Link href="/portal/meg/innstillinger/personvern" style={{ textDecoration: "none", color: "inherit", display: "block" }}>
-        <Rad last leading={<SeksjonIkon name="download" />} title="Last ned dataene mine" sub="Alt vi har lagret om deg, som én fil" />
+      <Link href="/portal/meg/abonnement" style={{ textDecoration: "none", color: "inherit", display: "block" }}>
+        <Rad leading={<SeksjonIkon name="sparkles" farge={T.lime} />} title="Abonnement" sub={aboSub} />
+      </Link>
+      <Link href="/portal/meg/profil" style={{ textDecoration: "none", color: "inherit", display: "block" }}>
+        <Rad leading={<SeksjonIkon name="mail" />} title="Rediger profil" sub="Endre e-post, navn og bilde" />
+      </Link>
+      <Link href="/portal/meg/innstillinger/sikkerhet" style={{ textDecoration: "none", color: "inherit", display: "block" }}>
+        <Rad last leading={<SeksjonIkon name="lock" />} title="Passord og tofaktor" sub="Endre passord, se pålogginger" />
       </Link>
     </Seksjon>
   );
 
-  // Abonnement — kanon: gratis (pakke/prøve/gruppe) ELLER 299 kr/mnd.
-  const aboSub = abonnement.gratis
-    ? abonnement.pakkeNavn
-      ? `Gratis — inkludert i coaching-pakken din (${abonnement.pakkeNavn})`
-      : "Gratis — hele PlayerHQ, uten kostnad"
-    : abonnement.nesteTrekk
-      ? `299 kr/mnd — fornyes ${abonnement.nesteTrekk}`
-      : "299 kr/mnd";
-  const abo = (
-    <div>
-      <Caps size={9} style={{ margin: "0 4px 8px" }}>Abonnement</Caps>
-      <Kort tint pad="4px 20px 14px">
-        <Link href="/portal/meg/abonnement" style={{ textDecoration: "none", color: "inherit", display: "block" }}>
-          <Rad
-            leading={<SeksjonIkon name="sparkles" farge={T.lime} />}
-            title="PlayerHQ-tilgang"
-            sub={aboSub}
-            meta={<StatusPill tone={abonnement.gratis ? "lime" : "up"}>{abonnement.gratis ? "Gratis" : "Aktiv"}</StatusPill>}
-          />
-        </Link>
-        <AboHjelp />
-      </Kort>
-    </div>
-  );
-
-  const utseende = (
-    <Seksjon label="Utseende">
+  // «Varsler» — kun de tre varseltypene fasiten viser på hub-nivå (full
+  // liste med alle notif-felt bor på .../innstillinger/varsler).
+  const varsler = (
+    <Seksjon label="Varsler">
+      <Rad
+        leading={<SeksjonIkon name="bell" />}
+        title="Økt-påminnelse"
+        sub="Få påminnelse rett før en planlagt økt starter"
+        trailing={<Toggle on={notif.paaminnelse} onToggle={() => veksle("paaminnelse")} label="Økt-påminnelse" />}
+      />
+      <Rad
+        leading={<SeksjonIkon name="user" />}
+        title="Melding fra coach"
+        sub="Varsles når coachen din sender deg en melding"
+        trailing={<Toggle on={notif.nyMeldingFraCoach} onToggle={() => veksle("nyMeldingFraCoach")} label="Melding fra coach" />}
+      />
       <Rad
         last
-        leading={<SeksjonIkon name="sun" />}
-        title="Tema"
-        sub="PlayerHQ er alltid lyst — enklere å lese ute og innendørs"
-        trailing={
-          <span style={{ fontFamily: T.mono, fontSize: 10, fontWeight: 700, color: T.fg2, background: T.panel3, border: `1px solid ${T.borderS}`, borderRadius: 9999, padding: "5px 11px", whiteSpace: "nowrap" }}>
-            Lys (fast)
-          </span>
-        }
+        leading={<SeksjonIkon name="calendar" />}
+        title="Ukesoppsummering"
+        sub="Oppsummering av uken — trening, mål og fremgang"
+        trailing={<Toggle on={notif.ukentligRapport} onToggle={() => veksle("ukentligRapport")} label="Ukesoppsummering" />}
       />
     </Seksjon>
   );
 
-  const farlig = (
-    <div>
-      <Caps size={9} color={T.down} style={{ margin: "0 4px 8px" }}>Farlig sone</Caps>
-      <Kort pad="4px 20px 6px" style={{ borderColor: `color-mix(in srgb, ${T.down} 30%, transparent)` }}>
-        <Link href="/portal/meg/innstillinger/personvern" style={{ textDecoration: "none", color: "inherit", display: "block" }}>
-          <Rad
-            last
-            leading={
-              <span style={{ width: 32, height: 32, borderRadius: 10, background: `color-mix(in srgb, ${T.down} 12%, transparent)`, display: "inline-flex", alignItems: "center", justifyContent: "center", flex: "none" }}>
-                <Icon name="trash-2" size={14} style={{ color: T.down }} />
-              </span>
-            }
-            title={<span style={{ color: T.down }}>Slett kontoen min</span>}
-            sub="Alt slettes for godt etter 30 dager. Coachen din varsles."
-          />
-        </Link>
-      </Kort>
+  // «Synlighet» — kun venneOktSynlig har et reelt boolsk felt på User i dag.
+  // Fasitens «Helse-loggen»-bryter finnes ikke her: helsesamtykke er en
+  // append-only GDPR art. 9-flyt (HelseSamtykke-modellen), ikke en enkel
+  // av/på-bryter — den håndteres i .../innstillinger/personvern.
+  const synlighet = (
+    <Seksjon label="Synlighet">
+      <Rad
+        last
+        leading={<SeksjonIkon name="activity" />}
+        title="La venner se øktene mine"
+        sub="Venner ser at du har trent, ikke tallene dine"
+        trailing={<Toggle on={venneOktSynlig} onToggle={vekslVenneSynlig} label="La venner se øktene mine" />}
+      />
+    </Seksjon>
+  );
+
+  const mer = (
+    <Seksjon label="Mer">
+      <Link href="/portal/meg/innstillinger/anlegg" style={{ textDecoration: "none", color: "inherit", display: "block" }}>
+        <Rad leading={<SeksjonIkon name="map-pin" />} title="Anlegg" sub="Utstyr og fasiliteter du har tilgang til" />
+      </Link>
+      <Link href="/portal/meg/innstillinger/ai-coach" style={{ textDecoration: "none", color: "inherit", display: "block" }}>
+        <Rad leading={<SeksjonIkon name="sparkles" />} title="AI-coach" sub="Tone og hvor mye den skal foreslå" />
+      </Link>
+      <Link href="/portal/meg/innstillinger/integrasjoner" style={{ textDecoration: "none", color: "inherit", display: "block" }}>
+        <Rad leading={<SeksjonIkon name="link-2" />} title="Integrasjoner" sub="TrackMan, Google Kalender og flere" />
+      </Link>
+      <Link href="/portal/meg/innstillinger/personvern" style={{ textDecoration: "none", color: "inherit", display: "block" }}>
+        <Rad leading={<SeksjonIkon name="download" />} title="Personvern og data" sub="Samtykker, eksport og sletting" />
+      </Link>
+      <Link href="/portal/meg/innstillinger/sprak" style={{ textDecoration: "none", color: "inherit", display: "block" }}>
+        <Rad last leading={<SeksjonIkon name="globe" />} title="Språk" sub="Norsk bokmål" />
+      </Link>
+    </Seksjon>
+  );
+
+  const info = (
+    <div style={{ display: "flex", gap: 10, padding: "12px 16px", borderRadius: 12, background: T.panel2, border: `1px solid ${T.border}` }}>
+      <Icon name="info" size={14} style={{ color: T.mut, flex: "none", marginTop: 2 }} />
+      <span style={{ fontFamily: T.ui, fontSize: 12, color: T.mut, lineHeight: 1.5 }}>
+        Endringer lagres med én gang. Du får aldri en «Lagre»-knapp du kan gå fra uten å trykke.
+      </span>
     </div>
   );
 
-  const aboStatusLabel = abonnement.gratis ? "Gratis" : "Pro";
-  const aboStatusSub = abonnement.gratis
-    ? abonnement.pakkeNavn ?? "Hele appen uten kostnad"
-    : abonnement.nesteTrekk
-      ? `Neste trekk ${abonnement.nesteTrekk}`
-      : "299 kr/mnd";
-
   return (
     <div data-paper-portal-innstillinger data-paper-wave-f="innstillinger-player" data-od-id="playerhq-innstillinger" data-paper-slug="playerhq-innstillinger" style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
-      <div>
-        <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>Innstillinger</h1>
-        <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>Konto, varsler og preferanser</span>
-      </div>
-
-      {/* B: status først */}
-      <div className="grid grid-cols-2" style={{ gap: 8 }}>
-        <Kort pad="12px">
-          <Caps size={9}>Tilgang</Caps>
-          <div style={{ fontFamily: T.mono, fontWeight: 700, fontSize: 16, marginTop: 8, color: T.fg }}>{aboStatusLabel}</div>
-          <div style={{ fontFamily: T.ui, fontSize: 11, color: T.mut, marginTop: 4, lineHeight: 1.4 }}>{aboStatusSub}</div>
-        </Kort>
-        <Kort pad="12px">
-          <Caps size={9}>Konto</Caps>
-          <div style={{ fontFamily: T.ui, fontWeight: 600, fontSize: 13, marginTop: 8, color: T.fg, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{epost}</div>
-          <div style={{ fontFamily: T.ui, fontSize: 11, color: T.mut, marginTop: 4 }}>E-post og passord under</div>
-        </Kort>
-      </div>
-
-      <Link href="/portal/meg" style={{ textDecoration: "none", display: "block" }}>
-        <span style={{
-            display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, minHeight: 48, width: "100%", padding: "10px 16px",
-            borderRadius: 10, background: T.panel3, color: T.fg, border: `1px solid ${T.borderS}`, fontFamily: T.ui, fontSize: 14, fontWeight: 600,
-          }}>Tilbake til Meg</span>
-      </Link>
+      <InnstillingerHode tittel="Innstillinger" undertekst="Meg · konto, varsler og personvern" tilbakeHref="/portal/meg" />
 
       {mobile ? (
         <div style={{ display: "flex", flexDirection: "column", gap: 18 }}>
-          {konto}{preferanser}{varsler}{personvern}{abo}{utseende}{farlig}
+          {kontoenDin}{varsler}{synlighet}{mer}{info}
         </div>
       ) : (
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "18px 16px", alignItems: "start" }}>
-          <div style={{ display: "flex", flexDirection: "column", gap: 18, minWidth: 0 }}>{konto}{preferanser}{varsler}{personvern}</div>
-          <div style={{ display: "flex", flexDirection: "column", gap: 18, minWidth: 0 }}>{abo}{utseende}{farlig}</div>
+          <div style={{ display: "flex", flexDirection: "column", gap: 18, minWidth: 0 }}>{kontoenDin}{mer}</div>
+          <div style={{ display: "flex", flexDirection: "column", gap: 18, minWidth: 0 }}>{varsler}{synlighet}{info}</div>
         </div>
       )}
     </div>

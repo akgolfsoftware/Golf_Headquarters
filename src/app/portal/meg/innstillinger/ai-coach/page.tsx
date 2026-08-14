@@ -6,8 +6,9 @@
 import Link from "next/link";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { T } from "@/lib/v2/tokens";
-import { Caps, Tittel, Kort, TilbakeLenke, StatusPill, CTAPill, Icon } from "@/components/v2";
+import { Caps, Kort, StatusPill, CTAPill, Icon } from "@/components/v2";
 import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
+import { InnstillingerHode } from "@/components/portal/v2/InnstillingerHode";
 
 export const dynamic = "force-dynamic";
 
@@ -39,20 +40,15 @@ export default async function AiCoachPage() {
         gap: T.gap,
       }}
     >
-      <TilbakeLenke href="/portal/meg/innstillinger">Innstillinger</TilbakeLenke>
-
-      <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
-        <div>
-          <Caps>Innstillinger · AI</Caps>
-          <div style={{ marginTop: 10 }}>
-            <Tittel em="coach">AI</Tittel>
-          </div>
-          <p style={{ fontFamily: T.ui, fontSize: 13, color: T.fg2, margin: "8px 0 0", lineHeight: 1.45, maxWidth: "36ch" }}>
-            Personlig assistent som leser dataene dine og foreslår neste steg.
-          </p>
-        </div>
-        <StatusPill tone="info">Kommer snart</StatusPill>
-      </div>
+      <InnstillingerHode
+        tittel="AI-coach"
+        undertekst="Innstillinger"
+        tilbakeHref="/portal/meg/innstillinger"
+        action={<StatusPill tone="info">Kommer snart</StatusPill>}
+      />
+      <p style={{ fontFamily: T.ui, fontSize: 13, color: T.fg2, margin: 0, lineHeight: 1.45, maxWidth: "36ch" }}>
+        Personlig assistent som leser dataene dine og foreslår neste steg.
+      </p>
 
       <Kort>
         <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
