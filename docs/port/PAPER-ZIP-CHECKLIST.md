@@ -11,11 +11,11 @@
 
 ## Fase 1 (33)
 
-- [~] `agencyos-agenticos.html`
+- [-] `agencyos-agenticos.html` — GJELDER IKKE: gammel rail (før 13.08-beslutningen), erstattet av `fase2/agencyos/agencyos-agenticos-hub.html` (allerede signert NT-433, /admin/agenticos)
 - [~] `agencyos-ak-stigen.html`
 - [x] `agencyos-innboks-mobil.html` — PP-2.2 signert av Anders 13.08.2026 (galleri mot prod)
 - [x] `agencyos-innboks.html` — PP-2.2 signert av Anders 13.08.2026 (galleri mot prod)
-- [~] `agencyos-innstillinger.html`
+- [-] `agencyos-innstillinger.html` — GJELDER IKKE: gammel rail, erstattet av `fase2/agencyos/agencyos-oppsett.html` (allerede signert W4-441a/b/c, /admin/settings)
 - [x] `agencyos-kalender-mobil.html` — PP-2.4 signert av Anders 13.08.2026 (galleri mot prod)
 - [x] `agencyos-kalender.html` — PP-2.4 signert av Anders 13.08.2026 (galleri mot prod)
 - [x] `agencyos-konsoll-desktop.html` — PP-2.1 signert av Anders 13.08.2026 (galleri mot prod)
