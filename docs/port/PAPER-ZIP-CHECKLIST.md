@@ -40,7 +40,7 @@
 - [~] `playerhq-runde-live.html`
 - [x] `playerhq-runde-logg.html` — NT-417 signert av Anders 13.08.2026 (galleri mot prod)
 - [~] `playerhq-test-gjennomfor.html`
-- [~] `spillerprofil.html` — full ombygging ligger i åpen PR #414
+- [~] `spillerprofil.html` — full ombygging merget i #414 (12.08)
 - [~] `workbench-desktop.html` — overnight slug/CTA READY_SIGN
 - [~] `workbench-mobil.html` — overnight slug/CTA READY_SIGN
 - [~] `workbench-turnering.html` — overnight slug/CTA READY_SIGN
@@ -51,13 +51,13 @@
 - [~] `fase2/playerhq/playerhq-drills.html` — tilstands-pass 11.08 (#412)
 - [~] `fase2/playerhq/playerhq-feiring.html` — natt 11.08 (#394) READY_SIGN
 - [~] `fase2/playerhq/playerhq-fys-plan.html` — natt 11.08 (#394) READY_SIGN
-- [~] `fase2/playerhq/playerhq-live-tapper.html` — bygget (#398), fiks i åpen #413
-- [~] `fase2/playerhq/playerhq-okt-detalj.html` — bygget (#399), fiks i åpen #413
+- [~] `fase2/playerhq/playerhq-live-tapper.html` — bygget (#398), fiks merget i #413 (11.08)
+- [~] `fase2/playerhq/playerhq-okt-detalj.html` — bygget (#399), fiks merget i #413 (11.08)
 - [~] `fase2/playerhq/playerhq-teknisk-plan.html` — tilstands-pass 11.08 (#412)
 - [~] `fase2/playerhq/playerhq-test-detalj.html` — tilstands-pass 11.08 (#412)
 - [~] `fase2/playerhq/playerhq-tester-hub.html` — tilstands-pass 11.08 (#412)
-- [~] `fase2/playerhq/playerhq-turnering-detalj.html` — bygget (#398), fiks i åpen #413
-- [~] `fase2/playerhq/playerhq-turneringer.html` — bygget (#398), fiks i åpen #413
+- [~] `fase2/playerhq/playerhq-turnering-detalj.html` — bygget (#398), fiks merget i #413 (11.08)
+- [~] `fase2/playerhq/playerhq-turneringer.html` — bygget (#398), fiks merget i #413 (11.08)
 
 ## Fase 2 · W2 Analysere-dybde (ny i zip 2)
 
@@ -68,7 +68,7 @@
 - [~] `fase2/playerhq/playerhq-gameplan-banekart.html` — bygget 11.08 (#408)
 - [~] `fase2/playerhq/playerhq-datagolf.html` → DataGolfV2 — pixel-pass (#411)
 - [~] `fase2/playerhq/playerhq-trackman-liste.html` — bygget 11.08 (#405)
-- [~] `fase2/playerhq/playerhq-trackman-detalj.html` — bygget 11.08 (#405), fiks i åpen #414
+- [~] `fase2/playerhq/playerhq-trackman-detalj.html` — bygget 11.08 (#405), fiks merget i #414 (12.08)
 - [~] `fase2/playerhq/playerhq-putte-lab.html` → PutteLabV2 — pixel-pass (#409)
 - [~] `fase2/playerhq/playerhq-historikk-filter-sheet.html` — bygget 11.08 (#407)
 - [~] `fase2/playerhq/playerhq-hjem-rest.html` — bygget 11.08 (#407)
@@ -106,10 +106,10 @@
 
 ## Fase 2 · W6 WANG + GFGK (eget chrome — ikke Paper-shell)
 
-- [~] `fase2/wang/wang-coach-arsplan.html` — pixel-pass natt 12.08, åpen PR #419 (layoutspørsmål til Anders i PR)
+- [~] `fase2/wang/wang-coach-arsplan.html` — pixel-pass natt 12.08, merget i #419 (layoutspørsmål til Anders står åpent)
 - [ ] `fase2/wang/wang-logg-inn.html` — BLOKKERT: filene eies av åpen #406 + fasitens OTP-flyt er produktbeslutning
 - [x] `fase2/gfgk/gfgk-kalender.html` — NT-419b signert av Anders 13.08.2026 (galleri mot prod)
-- [~] `fase2/gfgk/gfgk-veileder-artikkel.html` — pixel-pass natt 12.08, åpen PR #419
+- [~] `fase2/gfgk/gfgk-veileder-artikkel.html` — pixel-pass natt 12.08, merget i #419
 
 ## Templates (struktur)
 

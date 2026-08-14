@@ -113,7 +113,7 @@ export function AdminAuditLogV2({ data }: { data: AdminAuditLogV2Data }) {
   // B: én primær CTA
   const primaerCta = (
     <Link href="/admin/settings/sikkerhet" style={{ textDecoration: "none", display: "block" }}>
-      <CTAPill icon="shield" full enTing>
+      <CTAPill icon="shield" full>
         Åpne sikkerhet
       </CTAPill>
     </Link>

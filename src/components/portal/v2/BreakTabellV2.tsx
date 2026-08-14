@@ -321,10 +321,10 @@ function AimDiagram({ lenCm, breakCm }: { lenCm: number; breakCm: number }) {
           <circle cx={holeX} cy={holeY} r="3" fill={T.fg} />
           <circle cx={cx} cy={holeY} r="6" fill={T.lime} stroke={T.forest} strokeWidth="1.5" />
           <circle cx={cx} cy={ballY} r="5" fill={T.forest} stroke={T.borderS} strokeWidth="1" />
-          <text x={(cx + holeX) / 2} y={holeY - 10} textAnchor="middle" fontSize="12" fontWeight="800" fill={T.fg} fontFamily="JetBrains Mono, monospace">{breakCm} cm</text>
-          <text x={cx} y={ballY + 20} textAnchor="middle" fontSize="10" fontWeight="700" fill={T.mut} fontFamily="JetBrains Mono, monospace">BALL</text>
-          <text x={holeX} y={holeY + 24} textAnchor="middle" fontSize="10" fontWeight="700" fill={T.mut} fontFamily="JetBrains Mono, monospace">HULL</text>
-          <text x={cx} y={holeY - 26} textAnchor="middle" fontSize="9" fontWeight="700" fill={T.lime} fontFamily="JetBrains Mono, monospace">SIKT</text>
+          <text x={(cx + holeX) / 2} y={holeY - 10} textAnchor="middle" fontSize="12" fontWeight="800" fill={T.fg} fontFamily={T.mono}>{breakCm} cm</text>
+          <text x={cx} y={ballY + 20} textAnchor="middle" fontSize="10" fontWeight="700" fill={T.mut} fontFamily={T.mono}>BALL</text>
+          <text x={holeX} y={holeY + 24} textAnchor="middle" fontSize="10" fontWeight="700" fill={T.mut} fontFamily={T.mono}>HULL</text>
+          <text x={cx} y={holeY - 26} textAnchor="middle" fontSize="9" fontWeight="700" fill={T.lime} fontFamily={T.mono}>SIKT</text>
         </svg>
       </div>
       <p style={{ margin: "8px 0 0", fontFamily: T.mono, fontSize: 10, color: T.mut, textAlign: "center", letterSpacing: "0.02em" }}>

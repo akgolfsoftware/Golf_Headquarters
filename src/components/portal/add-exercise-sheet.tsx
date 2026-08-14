@@ -227,7 +227,7 @@ export function AddExerciseSheet({
           {/* YouTube / Vimeo */}
           <Field label="YouTube / Vimeo-lenke" optional>
             <div className="relative">
-              <span className="absolute left-3.5 top-1/2 -translate-y-1/2 flex h-5 w-6 items-center justify-center rounded bg-[#FF0000] text-white">
+              <span className="absolute left-3.5 top-1/2 -translate-y-1/2 flex h-5 w-6 items-center justify-center rounded bg-foreground text-background">
                 <Play size={10} fill="white" strokeWidth={0} />
               </span>
               <input

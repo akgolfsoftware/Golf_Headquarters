@@ -737,7 +737,6 @@ em.editorial {
   --v2-on-lime: var(--p-on-cta);
   /* C smalt: monopol på «Én ting nå». Paper sin accent er samme oransje — nå via token. */
   --v2-handling: var(--p-accent);
-  --v2-brand: #D1F843; /* neon AK — status/logo only */
   --v2-on-handling: var(--p-on-accent);
   --v2-handling-soft: var(--p-accent-soft);
   --handling: var(--v2-handling);

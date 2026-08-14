@@ -158,7 +158,7 @@ function IntegrasjonKort({ integrasjon }: { integrasjon: Integrasjon }) {
               <Link href="/portal/meg/help/kontakt" style={{ textDecoration: "none" }}>
                 <span style={{
             display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, minHeight: 56, width: "100%", padding: "10px 16px",
-            borderRadius: 12, background: T.handling, color: T.onHandling, fontFamily: T.ui, fontSize: 14, fontWeight: 600,
+            borderRadius: 12, background: T.panel3, color: T.fg, border: `1px solid ${T.borderS}`, fontFamily: T.ui, fontSize: 14, fontWeight: 600,
           }}>Administrer</span>
               </Link>
             </span>
@@ -175,7 +175,7 @@ function IntegrasjonKort({ integrasjon }: { integrasjon: Integrasjon }) {
               <Link href="/portal/meg/help/kontakt" style={{ textDecoration: "none" }}>
                 <span style={{
             display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, minHeight: 56, width: "100%", padding: "10px 16px",
-            borderRadius: 12, background: T.handling, color: T.onHandling, fontFamily: T.ui, fontSize: 14, fontWeight: 600,
+            borderRadius: 12, background: T.panel3, color: T.fg, border: `1px solid ${T.borderS}`, fontFamily: T.ui, fontSize: 14, fontWeight: 600,
           }}>Be om tilgang</span>
               </Link>
             </span>
@@ -344,7 +344,7 @@ export function InnstillingerIntegrasjonerV2({ data }: { data: InnstillingerInte
             <Link href="/portal/meg/help/kontakt" style={{ textDecoration: "none", display: "block", marginBottom: 8 }}>
               <span style={{
             display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, minHeight: 56, width: "100%", padding: "10px 16px",
-            borderRadius: 12, background: T.handling, color: T.onHandling, fontFamily: T.ui, fontSize: 14, fontWeight: 600,
+            borderRadius: 12, background: T.panel3, color: T.fg, border: `1px solid ${T.borderS}`, fontFamily: T.ui, fontSize: 14, fontWeight: 600,
           }}>Be om tilkobling</span>
             </Link>
           </>
@@ -379,7 +379,7 @@ export function InnstillingerIntegrasjonerV2({ data }: { data: InnstillingerInte
               <Link href="/portal/meg/help/kontakt" style={{ textDecoration: "none" }}>
                 <span style={{
             display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, minHeight: 56, width: "100%", padding: "10px 16px",
-            borderRadius: 12, background: T.handling, color: T.onHandling, fontFamily: T.ui, fontSize: 14, fontWeight: 600,
+            borderRadius: 12, background: T.panel3, color: T.fg, border: `1px solid ${T.borderS}`, fontFamily: T.ui, fontSize: 14, fontWeight: 600,
           }}>Kontakt support</span>
               </Link>
             </div>
