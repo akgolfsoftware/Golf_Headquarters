@@ -31,12 +31,30 @@ export interface WangElev {
 }
 
 export interface WangPeriodeDb {
+  id: string;
   fase: WangFase;
   startIso: string; // yyyy-mm-dd (Oslo)
   endIso: string;
   fokus: string | null;
   ukevolMin: number | null;
   ukevolMax: number | null;
+}
+
+/**
+ * Elevens EGET fokusområde for én periode — det andre sporet i årsplanen,
+ * avtalt med trener i IUP-samtalen. Én rad per fokusområde per periode.
+ */
+export interface WangFokusomraadeDb {
+  id: string;
+  periodeId: string;
+  akse: "FYS" | "TEK" | "SLAG" | "SPILL" | "TURN";
+  tittel: string;
+  egentidMinUke: number;
+  maalemetode: string | null;
+  status: "IKKE_STARTET" | "PAA_VEI" | "NAADD";
+  egenvurdering: number | null;
+  trenervurdering: number | null;
+  kommentar: string | null;
 }
 
 export interface WangHendelseDb {
@@ -73,6 +91,12 @@ export interface WangLiveData {
   hendelser: WangHendelseDb[]; // ikke-ukentlige enkelthendelser (samlinger, tester, sosialt …)
   fasteOkter: WangFastOkt[]; // ukentlig rullerende treningstider
   skoleDager: WangSkoleDagDb[]; // ferier/planleggingsdager/siste skoledag
+  /**
+   * Den innloggede elevens egne fokusområder. Tom liste når ingen er avtalt
+   * ennå, eller når kalleren ikke sendte inn en bruker (f.eks. trenerflaten,
+   * som ser gruppa og ikke én elev).
+   */
+  fokusomraader: WangFokusomraadeDb[];
   oppdatertIso: string; // sist synket (Oslo-dato)
 }
 
@@ -115,7 +139,10 @@ function skoleAr(perioder: { startIso: string; endIso: string }[]): string | nul
  * feiler — kalleren faller da tilbake til ren demo. Kun elevnavn (PII om
  * mindreårige) — kall dette KUN fra auth-gatede sider.
  */
-export async function hentWangGruppe(): Promise<WangLiveData | null> {
+export async function hentWangGruppe(
+  /** Innlogget elev. Uten den hentes ingen fokusområder — de er personlige. */
+  brukerId?: string,
+): Promise<WangLiveData | null> {
   try {
     const gruppe = await prisma.group.findFirst({
       where: { name: GRUPPE_NAVN },
@@ -146,6 +173,7 @@ export async function hentWangGruppe(): Promise<WangLiveData | null> {
       where: { groupId: gruppe.id },
       orderBy: { startDate: "asc" },
       select: {
+        id: true,
         lPhase: true,
         startDate: true,
         endDate: true,
@@ -164,6 +192,7 @@ export async function hentWangGruppe(): Promise<WangLiveData | null> {
       .sort((a, b) => a.navn.localeCompare(b.navn, "nb"));
 
     const perioder: WangPeriodeDb[] = perioderRader.map((p) => ({
+      id: p.id,
       fase: p.lPhase as WangFase,
       startIso: osloDato(p.startDate),
       endIso: osloDato(p.endDate),
@@ -211,6 +240,44 @@ export async function hentWangGruppe(): Promise<WangLiveData | null> {
       notat: s.note,
     }));
 
+    // Fokusområdene er personlige: hentes kun for den innloggede eleven, og
+    // kun for denne gruppas perioder. Uten brukerId er lista tom.
+    const fokusRader =
+      brukerId && perioder.length > 0
+        ? await prisma.groupPeriodGoal.findMany({
+            where: {
+              userId: brukerId,
+              periodBlockId: { in: perioder.map((p) => p.id) },
+            },
+            orderBy: { createdAt: "asc" },
+            select: {
+              id: true,
+              periodBlockId: true,
+              akse: true,
+              tittel: true,
+              egentidMinUke: true,
+              maalemetode: true,
+              status: true,
+              egenvurdering: true,
+              trenervurdering: true,
+              kommentar: true,
+            },
+          })
+        : [];
+
+    const fokusomraader: WangFokusomraadeDb[] = fokusRader.map((f) => ({
+      id: f.id,
+      periodeId: f.periodBlockId,
+      akse: f.akse,
+      tittel: f.tittel,
+      egentidMinUke: f.egentidMinUke,
+      maalemetode: f.maalemetode,
+      status: f.status,
+      egenvurdering: f.egenvurdering,
+      trenervurdering: f.trenervurdering,
+      kommentar: f.kommentar,
+    }));
+
     return {
       gruppeNavn: gruppe.name,
       antallElever: elever.length,
@@ -219,6 +286,7 @@ export async function hentWangGruppe(): Promise<WangLiveData | null> {
       hendelser,
       fasteOkter,
       skoleDager,
+      fokusomraader,
       oppdatertIso: osloDato(new Date()),
     };
   } catch {

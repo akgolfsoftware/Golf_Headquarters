@@ -23,6 +23,13 @@
   --cat-purple: #7f1975;
   --cat-gray: #d2d2d2;
 
+  /* Mørkere varianter, kun til TEKST på tilhørende tint-flate. Oransje og blå
+     er for lyse til å leses som tekst på --tint-*. Hentet fra PY_FG i
+     årsplan-fasiten (designsystem/wang/fasit/). */
+  --cat-orange-text: #b4571a;
+  --cat-blue-text: #00618a;
+  --cat-yellow-text: #7a6200;
+
   /* ---- Flater og tekst ---- */
   --bg-app: #f4f6f8;
   --surface-card: #ffffff;
