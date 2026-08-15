@@ -92,25 +92,40 @@ export const KONDISJON_AKTIVITETER = [
 // GOLF-spesifikke typer
 // ---------------------------------------------------------------------------
 
-export type SGKategori = "TEE" | "TILNAERMING" | "KORT_SPILL" | "PUTTING" | "SPILL";
+export type SGKategori = "TEE" | "TILNAERMING" | "KORT_SPILL" | "PUTTING";
 
+/**
+ * Måleenhet for et treningsområdes avstandsbånd. Tee/innspill/nærspill i
+ * meter, putt i fot (Anders 2026-08-15) — enheten ligger i selve taksonomien
+ * slik at ingen konsument kan gjette feil.
+ */
+export type Enhet = "m" | "ft";
+
+/**
+ * 17 treningsområder (AK-formel v3, bekreftet av Anders 2026-08-15):
+ * 1 tee + 5 innspill + 4 nærspill + 7 putt. Innspill-kodene bruker NEDRE
+ * avstandsgrense ("INNSPILL_150" = 150-200 m) — motsatt av den gamle listen.
+ * Putt-bånd er i fot, ikke meter. `SPILL` er fjernet som eget treningsområde.
+ * Kilde: docs/testomrader-forslag-2026-08-15.md.
+ */
 export const TRENINGSOMRADER = [
-  { kode: "TEE",     label: "Tee-slag",         sgKategori: "TEE" as SGKategori },
-  { kode: "INN200",  label: "Innspill 150-200m", sgKategori: "TILNAERMING" as SGKategori },
-  { kode: "INN150",  label: "Innspill 100-150m", sgKategori: "TILNAERMING" as SGKategori },
-  { kode: "INN100",  label: "Innspill 50-100m",  sgKategori: "TILNAERMING" as SGKategori },
-  { kode: "INN50",   label: "Innspill 0-50m",    sgKategori: "KORT_SPILL" as SGKategori },
-  { kode: "CHIP",    label: "Chip",              sgKategori: "KORT_SPILL" as SGKategori },
-  { kode: "PITCH",   label: "Pitch",             sgKategori: "KORT_SPILL" as SGKategori },
-  { kode: "LOB",     label: "Lob",               sgKategori: "KORT_SPILL" as SGKategori },
-  { kode: "BUNKER",  label: "Bunker",            sgKategori: "KORT_SPILL" as SGKategori },
-  { kode: "PUTT0_3", label: "Putt 0-3m",         sgKategori: "PUTTING" as SGKategori },
-  { kode: "PUTT3_6", label: "Putt 3-6m",         sgKategori: "PUTTING" as SGKategori },
-  { kode: "PUTT6_10",label: "Putt 6-10m",        sgKategori: "PUTTING" as SGKategori },
-  { kode: "PUTT10_20",label:"Putt 10-20m",       sgKategori: "PUTTING" as SGKategori },
-  { kode: "PUTT20_40",label:"Putt 20-40m",       sgKategori: "PUTTING" as SGKategori },
-  { kode: "PUTT40P", label: "Putt 40m+",         sgKategori: "PUTTING" as SGKategori },
-  { kode: "SPILL",   label: "Spill (simulert)",  sgKategori: "SPILL" as SGKategori },
+  { kode: "TEE",           label: "Tee-slag",          sgKategori: "TEE" as SGKategori,         enhet: "m" as Enhet },
+  { kode: "INNSPILL_0_50", label: "Innspill 0-50m",    sgKategori: "KORT_SPILL" as SGKategori,  enhet: "m" as Enhet },
+  { kode: "INNSPILL_50",   label: "Innspill 50-100m",  sgKategori: "TILNAERMING" as SGKategori, enhet: "m" as Enhet },
+  { kode: "INNSPILL_100",  label: "Innspill 100-150m", sgKategori: "TILNAERMING" as SGKategori, enhet: "m" as Enhet },
+  { kode: "INNSPILL_150",  label: "Innspill 150-200m", sgKategori: "TILNAERMING" as SGKategori, enhet: "m" as Enhet },
+  { kode: "INNSPILL_200",  label: "Innspill 200m+",    sgKategori: "TILNAERMING" as SGKategori, enhet: "m" as Enhet },
+  { kode: "CHIP",          label: "Chip",              sgKategori: "KORT_SPILL" as SGKategori,  enhet: "m" as Enhet },
+  { kode: "PITCH",         label: "Pitch",             sgKategori: "KORT_SPILL" as SGKategori,  enhet: "m" as Enhet },
+  { kode: "LOB",           label: "Lob",               sgKategori: "KORT_SPILL" as SGKategori,  enhet: "m" as Enhet },
+  { kode: "BUNKER",        label: "Bunker",            sgKategori: "KORT_SPILL" as SGKategori,  enhet: "m" as Enhet },
+  { kode: "PUTT_0_3",      label: "Putt 0-3 fot",      sgKategori: "PUTTING" as SGKategori,     enhet: "ft" as Enhet },
+  { kode: "PUTT_3_5",      label: "Putt 3-5 fot",      sgKategori: "PUTTING" as SGKategori,     enhet: "ft" as Enhet },
+  { kode: "PUTT_5_10",     label: "Putt 5-10 fot",     sgKategori: "PUTTING" as SGKategori,     enhet: "ft" as Enhet },
+  { kode: "PUTT_10_15",    label: "Putt 10-15 fot",    sgKategori: "PUTTING" as SGKategori,     enhet: "ft" as Enhet },
+  { kode: "PUTT_15_25",    label: "Putt 15-25 fot",    sgKategori: "PUTTING" as SGKategori,     enhet: "ft" as Enhet },
+  { kode: "PUTT_25_40",    label: "Putt 25-40 fot",    sgKategori: "PUTTING" as SGKategori,     enhet: "ft" as Enhet },
+  { kode: "PUTT_40",       label: "Putt 40 fot+",      sgKategori: "PUTTING" as SGKategori,     enhet: "ft" as Enhet },
 ] as const;
 
 export type Treningsomrade = (typeof TRENINGSOMRADER)[number]["kode"];
@@ -322,13 +337,13 @@ export const SPILLERKATEGORIER = [
 // ---------------------------------------------------------------------------
 
 export const TEMPLATE_FOCUS = [
-  { kode: "FULL_BAG",      label: "Full bag",           omraader: ["TEE", "INN200", "INN150", "INN100", "INN50", "CHIP", "PITCH", "PUTT0_3", "PUTT3_6"] as Treningsomrade[] },
-  { kode: "KORT_SPILL",    label: "Nærspill",           omraader: ["INN50", "CHIP", "PITCH", "LOB", "BUNKER"] as Treningsomrade[] },
-  { kode: "PUTTING",       label: "Putting",            omraader: ["PUTT0_3", "PUTT3_6", "PUTT6_10", "PUTT10_20", "PUTT20_40", "PUTT40P"] as Treningsomrade[] },
-  { kode: "LANG_SPILL",    label: "Langt spill",        omraader: ["TEE", "INN200", "INN150"] as Treningsomrade[] },
-  { kode: "TILNAERMING",   label: "Tilnærming",         omraader: ["INN200", "INN150", "INN100", "INN50"] as Treningsomrade[] },
+  { kode: "FULL_BAG",      label: "Full bag",           omraader: ["TEE", "INNSPILL_200", "INNSPILL_150", "INNSPILL_100", "INNSPILL_50", "INNSPILL_0_50", "CHIP", "PITCH", "PUTT_0_3", "PUTT_3_5"] as Treningsomrade[] },
+  { kode: "KORT_SPILL",    label: "Nærspill",           omraader: ["INNSPILL_0_50", "CHIP", "PITCH", "LOB", "BUNKER"] as Treningsomrade[] },
+  { kode: "PUTTING",       label: "Putting",            omraader: ["PUTT_0_3", "PUTT_3_5", "PUTT_5_10", "PUTT_10_15", "PUTT_15_25", "PUTT_25_40", "PUTT_40"] as Treningsomrade[] },
+  { kode: "LANG_SPILL",    label: "Langt spill",        omraader: ["TEE", "INNSPILL_200", "INNSPILL_150"] as Treningsomrade[] },
+  { kode: "TILNAERMING",   label: "Tilnærming",         omraader: ["INNSPILL_200", "INNSPILL_150", "INNSPILL_100", "INNSPILL_50", "INNSPILL_0_50"] as Treningsomrade[] },
   { kode: "BUNKER_FOKUS",  label: "Bunker",             omraader: ["BUNKER"] as Treningsomrade[] },
-  { kode: "TURNERINGSPREP", label: "Turneringsforberedelse", omraader: ["SPILL"] as Treningsomrade[] },
+  { kode: "TURNERINGSPREP", label: "Turneringsforberedelse", omraader: [] as Treningsomrade[] },
 ] as const;
 
 export function getOmraaderForFokus(fokusKode: string): Treningsomrade[] {
