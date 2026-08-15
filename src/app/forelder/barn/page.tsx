@@ -20,6 +20,15 @@ import {
   type ForelderBarnRad,
 } from "@/components/portal/v2/ForelderBarnV2";
 import type { PyramidArea } from "@/generated/prisma/client";
+import { hentSkoletid } from "@/lib/forelder-skoletid";
+import { semesterFor } from "@/lib/domain/skoletid";
+
+/** «20.12» — semesterets siste dag, vist etter bekreftelse. */
+const SEMESTER_SLUTT_FMT = new Intl.DateTimeFormat("nb-NO", {
+  day: "numeric",
+  month: "numeric",
+  timeZone: "Europe/Oslo",
+});
 
 export const dynamic = "force-dynamic";
 
@@ -116,6 +125,26 @@ export default async function V2ForelderBarnPreviewPage() {
       }
     }
 
+    /* D6: skoletid per barn. Hentes parallelt — ett oppslag per barn, og
+       foreldre har typisk 1–3. Fravær av bekreftelse er et ærlig «mangler»,
+       ikke en feil. */
+    const skoletidPerBarn = new Map(
+      await Promise.all(
+        barn.map(async (b) => {
+          const s = await hentSkoletid(b.child.id);
+          return [
+            b.child.id,
+            {
+              semesterVisning: s.semesterVisning,
+              semesterSlutt: SEMESTER_SLUTT_FMT.format(semesterFor(new Date()).slutt),
+              status: { bekreftet: s.status.bekreftet, tekst: s.status.tekst },
+              blokker: s.blokker,
+            },
+          ] as const;
+        }),
+      ),
+    );
+
     const rader: ForelderBarnRad[] = barn.map((b) => {
       const id = b.child.id;
       const fordeling =
@@ -139,6 +168,7 @@ export default async function V2ForelderBarnPreviewPage() {
         pyramide: AKSE_APEX.map((akse) => ({ akse, value: fordeling[akse] })),
         nesteOkt: nesteOktPerBarn.get(id) ?? null,
         utestaaende: utestaaendePerBarn.get(id) ?? { antall: 0, ore: 0 },
+        skoletid: skoletidPerBarn.get(id) ?? null,
       };
     });
 

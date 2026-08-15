@@ -17,6 +17,8 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { toast } from "sonner";
+import { bekreftSkoletidAction } from "@/app/forelder/barn/skoletid-actions";
 import type { PyramidArea } from "@/generated/prisma/client";
 import {
   T,
@@ -52,6 +54,17 @@ export type ForelderBarnRad = {
   nesteOkt: { scheduledAt: Date; title: string } | null;
   /** Utestående betaling (PENDING/FAILED). */
   utestaaende: { antall: number; ore: number };
+  /** D6 · skoletid for inneværende semester. Null = flaten er ikke koblet. */
+  skoletid?: SkoletidVisning | null;
+};
+
+/** D6 · det komponenten trenger om skoletid — datoene er alt formatert. */
+export type SkoletidVisning = {
+  semesterVisning: string;
+  /** «20.12» — til «gjelder til …» etter bekreftelse. */
+  semesterSlutt: string;
+  status: { bekreftet: boolean; tekst: string; bekreftetAt?: Date };
+  blokker: { dager: string; fra: string; til: string }[];
 };
 
 export type ForelderBarnData = { barn: ForelderBarnRad[] };
@@ -308,7 +321,169 @@ function BarnKort({
           alert={utest.antall > 0}
         />
       </div>
+
+      {b.skoletid && (
+        <SkoletidKort barnId={b.id} fornavn={b.navn.split(" ")[0]} data={b.skoletid} mobile={mobile} />
+      )}
     </Kort>
+  );
+}
+
+/**
+ * D6 · skoletidsbekreftelse.
+ * Fasit: designsystem/paper/fase2/forelder/forelder-barn.html
+ *
+ * Én bekreftelse per semester, logget med dato. Ubekreftet semester vises som
+ * «skoletid mangler» hos coachen — forrige semesters tider brukes aldri.
+ * Bekreftet timeplan er bakteppe det varsles mot, ikke en sperre (invariant 1).
+ */
+function SkoletidKort({
+  barnId,
+  fornavn,
+  data,
+  mobile,
+}: {
+  barnId: string;
+  fornavn: string;
+  data: SkoletidVisning;
+  mobile: boolean;
+}) {
+  const [status, setStatus] = useState(data.status);
+  const [sender, setSender] = useState(false);
+
+  return (
+    <div
+      style={{
+        borderTop: `1px solid ${T.border}`,
+        padding: mobile ? "14px 16px" : "14px 20px",
+      }}
+    >
+      <h3
+        style={{
+          margin: 0,
+          fontFamily: T.disp,
+          fontSize: 14,
+          fontWeight: 600,
+          color: T.fg,
+        }}
+      >
+        Skoletid · {data.semesterVisning}
+      </h3>
+      <p
+        style={{
+          margin: "6px 0 0",
+          fontFamily: T.ui,
+          fontSize: 12.5,
+          color: T.mut,
+          lineHeight: 1.55,
+        }}
+      >
+        Coachen planlegger rundt skoletiden. {fornavn} sin skole deler ikke timeplanen
+        automatisk — derfor bekrefter du den her én gang per semester. Ubekreftet semester
+        vises som «skoletid mangler» hos coachen; vi bruker aldri forrige semesters tider.
+      </p>
+
+      <div style={{ marginTop: 10 }}>
+        {data.blokker.length > 0 ? (
+          data.blokker.map((blokk) => (
+            <Linje key={blokk.dager} navn={blokk.dager} verdi={`${blokk.fra}–${blokk.til}`} />
+          ))
+        ) : (
+          <Linje navn="Timeplan" verdi="ingen tider lagt inn ennå" />
+        )}
+        <Linje navn="Status" verdi={status.tekst} />
+      </div>
+
+      <div style={{ display: "flex", gap: 8, marginTop: 12, flexWrap: "wrap" }}>
+        <button
+          type="button"
+          className="v2-press v2-focus"
+          disabled={sender || status.bekreftet}
+          onClick={async () => {
+            setSender(true);
+            try {
+              const res = await bekreftSkoletidAction(barnId);
+              if (res.ok) {
+                toast.success(res.melding);
+                setStatus({
+                  bekreftet: true,
+                  bekreftetAt: new Date(),
+                  tekst: `bekreftet i dag · gjelder til ${data.semesterSlutt}`,
+                });
+              } else {
+                toast.error(res.melding);
+              }
+            } catch {
+              toast.error("Kunne ikke bekrefte. Prøv igjen.");
+            } finally {
+              setSender(false);
+            }
+          }}
+          style={{
+            padding: "9px 16px",
+            borderRadius: T.rInput,
+            border: "none",
+            background: status.bekreftet ? T.panel3 : T.fg,
+            color: status.bekreftet ? T.mut : T.bg,
+            fontFamily: T.ui,
+            fontSize: 12.5,
+            fontWeight: 600,
+            cursor: status.bekreftet ? "default" : sender ? "wait" : "pointer",
+          }}
+        >
+          {status.bekreftet ? "Bekreftet" : sender ? "Bekrefter …" : "Bekreft timeplanen"}
+        </button>
+        <Link
+          href="/forelder/innstillinger"
+          className="v2-press v2-focus"
+          style={{
+            padding: "9px 16px",
+            borderRadius: T.rInput,
+            border: `1px solid ${T.border}`,
+            background: T.panel,
+            color: T.fg,
+            fontFamily: T.ui,
+            fontSize: 12.5,
+            textDecoration: "none",
+          }}
+        >
+          Endre tidene
+        </Link>
+      </div>
+
+      <p
+        style={{
+          margin: "12px 0 0",
+          fontFamily: T.ui,
+          fontSize: 12,
+          color: T.mut,
+          lineHeight: 1.55,
+        }}
+      >
+        Bekreftet timeplan tegnes som bakteppe i coachens planlegging — økter i skoletid
+        varsles, de sperres ikke.
+      </p>
+    </div>
+  );
+}
+
+/** Navn til venstre, verdi til høyre — fasitens `.linje`. */
+function Linje({ navn, verdi }: { navn: string; verdi: string }) {
+  return (
+    <div
+      style={{
+        display: "flex",
+        justifyContent: "space-between",
+        gap: 12,
+        padding: "5px 0",
+        fontFamily: T.ui,
+        fontSize: 12.5,
+        color: T.fg,
+      }}
+    >
+      <span style={{ flex: "none" }}>{navn}</span>
+      <span style={{ color: T.mut, textAlign: "right", minWidth: 0 }}>{verdi}</span>
+    </div>
   );
 }
 
