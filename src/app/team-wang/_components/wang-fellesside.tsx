@@ -11,15 +11,10 @@ import { useToppbarHoyde } from "@/components/v2/toppbar-hoyde";
 
 import {
   COMPS,
-  MONTH_ORDER,
-  MON_SHORT,
   PERIODS,
-  PERIOD_COL,
   SESSIONS,
   SESSION_BY_ID,
   SPAN_START_ISO,
-  TIMELINE_MARKS,
-  TIMELINE_SEGS,
   TOTAL_WEEKS,
   byggHandlinger,
   daysLabel,
@@ -27,9 +22,6 @@ import {
   fmtComp,
   iso,
   klampTilSesong,
-  monthInfo,
-  monthPk,
-  pct,
   periodKey,
   rangeLabel,
   seasonWeek,
@@ -38,19 +30,12 @@ import {
 } from "../_data/wang-plan";
 import type { WangLiveData } from "../_data/hent-wang-gruppe";
 import {
-  type LivePeriode,
   byggLivePerioder,
-  liveMonthInfo,
-  monthPkLive,
-  periodeFarge,
   periodeForDato,
-  pctFraSpenn,
-  spennFraPerioder,
-  tidslinjeMerker,
-  tidslinjeSegs,
   turneringerFraHendelser,
 } from "../_data/live-sesong";
-import { Arshjul } from "./arshjul";
+import { fokusPerPeriode as byggFokusPerPeriode } from "../_data/fokusomraader";
+import { PlanSesong } from "./plan-sesong";
 import { FaneForeldre } from "./fane-foreldre";
 import { FaneKalender } from "./fane-kalender";
 import { FaneSamlinger } from "./fane-samlinger";
@@ -91,8 +76,6 @@ export function WangFellesside({ startFane, live = null }: { startFane: Fane; li
   const [detaljId, setDetaljId] = useState<string | null>(null);
   const [hendelseDetalj, setHendelseDetalj] = useState<HendelseDetaljData | null>(null);
   const [planMain, setPlanMain] = useState<"Sesong" | "Kalender" | "Samlinger">("Sesong");
-  const [planSub, setPlanSub] = useState<"Årshjul" | "Tidslinje">("Årshjul");
-  const [selMonth, setSelMonth] = useState<string>(`${naa.getFullYear()}-${naa.getMonth()}`);
   const [weekOffset, setWeekOffset] = useState(0);
 
   const detalj: Okt | null = detaljId ? SESSION_BY_ID[detaljId] ?? null : null;
@@ -164,10 +147,6 @@ export function WangFellesside({ startFane, live = null }: { startFane: Fane; li
             naaIso={naaIso}
             planMain={planMain}
             setPlanMain={setPlanMain}
-            planSub={planSub}
-            setPlanSub={setPlanSub}
-            selMonth={selMonth}
-            setSelMonth={setSelMonth}
             onOpen={aapne}
             live={live}
           />
@@ -388,59 +367,16 @@ function Plan({
   naaIso,
   planMain,
   setPlanMain,
-  planSub,
-  setPlanSub,
-  selMonth,
-  setSelMonth,
   onOpen,
   live,
 }: {
   naaIso: string;
   planMain: "Sesong" | "Kalender" | "Samlinger";
   setPlanMain: (v: "Sesong" | "Kalender" | "Samlinger") => void;
-  planSub: "Årshjul" | "Tidslinje";
-  setPlanSub: (v: "Årshjul" | "Tidslinje") => void;
-  selMonth: string;
-  setSelMonth: (v: string) => void;
   onOpen: (id: string) => void;
   live: WangLiveData | null;
 }) {
-  const [selY, selM] = selMonth.split("-").map(Number);
-  const [kalenderHopp, setKalenderHopp] = useState<string | null>(null);
-  const hoppTilKalenderDag = (iso: string) => {
-    setPlanMain("Kalender");
-    setKalenderHopp(iso);
-  };
-
-  const livePerioder = live && live.perioder.length > 0 ? byggLivePerioder(live.perioder) : null;
-  const isLive = livePerioder !== null;
-  const spenn = livePerioder ? spennFraPerioder(livePerioder) : null;
-  const liveTurneringer = live ? turneringerFraHendelser(live.hendelser) : [];
-
-  const md = isLive
-    ? liveMonthInfo({
-        m: selM,
-        y: selY,
-        naaIso,
-        perioder: livePerioder!,
-        startIso: spenn!.startIso,
-        endIso: spenn!.endIso,
-        hendelser: live!.hendelser,
-        turneringer: liveTurneringer,
-        skoleDager: live!.skoleDager,
-        fasteOkter: live!.fasteOkter,
-      })
-    : monthInfo(selM, selY, naaIso);
-
-  const nowLeft = isLive
-    ? `${Math.max(0, Math.min(100, pctFraSpenn(naaIso, spenn!.startIso, spenn!.endIso)))}%`
-    : `${Math.max(0, Math.min(100, pct(naaIso)))}%`;
-
-  const timelineSegs = isLive ? tidslinjeSegs(livePerioder!, spenn!.startIso, spenn!.endIso) : TIMELINE_SEGS;
-  const timelineMarks = isLive
-    ? tidslinjeMerker(liveTurneringer, spenn!.startIso, spenn!.endIso)
-    : TIMELINE_MARKS.map((m) => ({ left: m.left, count: 1 }));
-  const periodeFargeKart: Record<string, string> = isLive ? periodeFarge(livePerioder!) : PERIOD_COL;
+  const [kalenderHopp] = useState<string | null>(null);
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 22 }}>
@@ -450,91 +386,12 @@ function Plan({
       </div>
 
       {planMain === "Sesong" ? (
-        <>
-          <div style={{ display: "flex", justifyContent: "flex-end" }}>
-            <Tabs options={["Årshjul", "Tidslinje"]} value={planSub} onChange={(v) => setPlanSub(v as typeof planSub)} />
-          </div>
-
-          {planSub === "Årshjul" ? (
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(320px,1fr))", gap: 22, alignItems: "stretch" }}>
-              <section className="wang-card" style={{ padding: "26px 24px", display: "flex", flexDirection: "column" }}>
-                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10, marginBottom: 6 }}>
-                  <div style={{ fontFamily: "var(--font-brand)", fontWeight: 700, fontSize: 16, color: "var(--text-primary)" }}>Årshjul 2026–2027</div>
-                  <span style={{ fontFamily: "var(--font-body)", fontSize: 12, color: "var(--text-secondary)" }}>Trykk på en måned</span>
-                </div>
-                <div style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", padding: "8px 0" }}>
-                  <Arshjul
-                    selMonth={selMonth}
-                    naaIso={naaIso}
-                    onSelect={(m, y) => setSelMonth(`${y}-${m}`)}
-                    perioder={livePerioder ?? undefined}
-                    turneringer={isLive ? liveTurneringer : undefined}
-                    liveInfo={isLive ? (md as ReturnType<typeof liveMonthInfo>) : undefined}
-                  />
-                </div>
-                <PeriodeLegende perioder={livePerioder} />
-              </section>
-              <MaanedDetalj md={md} onOpenDag={hoppTilKalenderDag} />
-            </div>
-          ) : (
-            <>
-              <section className="wang-card" style={{ padding: 26 }}>
-                <div style={{ fontFamily: "var(--font-brand)", fontWeight: 700, fontSize: 16, marginBottom: 24, color: "var(--text-primary)" }}>Sesongtidslinje 2026–2027</div>
-                <div style={{ position: "relative", paddingTop: 26, paddingBottom: 34 }}>
-                  <div style={{ display: "flex", height: 44, borderRadius: 14, overflow: "hidden", boxShadow: "var(--shadow-card-sm)" }}>
-                    {timelineSegs.map((g, i) => (
-                      <div key={i} style={{ flex: `${g.w} 0 0%`, background: g.color, display: "flex", alignItems: "center", justifyContent: "center", minWidth: 0 }}>
-                        <span style={{ fontFamily: "var(--font-brand)", fontWeight: 700, fontSize: 11.5, color: "var(--white)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", padding: "0 6px" }}>{g.short}</span>
-                      </div>
-                    ))}
-                  </div>
-                  {/* Turneringsmerker UNDER baren (aldri oppå periodenavnet). Tette datoer slås
-                      sammen til ÉN klynge med tallbadge (tidslinjeMerker) — aldri flere separate
-                      prikker på samme sted, som kan leses som duplikate hendelser. */}
-                  {timelineMarks.map((m, i) => (
-                    <div key={i} style={{ position: "absolute", top: 76, left: m.left, transform: "translateX(-50%)", pointerEvents: "none" }}>
-                      <span
-                        style={{
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-                          width: m.count > 1 ? 15 : 9,
-                          height: m.count > 1 ? 15 : 9,
-                          borderRadius: 999,
-                          background: "var(--cat-orange)",
-                          border: "2px solid var(--surface-card)",
-                          boxSizing: "border-box",
-                        }}
-                      >
-                        {m.count > 1 ? (
-                          <span className="wang-num" style={{ fontFamily: "var(--font-brand)", fontWeight: 800, fontSize: 8, lineHeight: 1, color: "var(--white)" }}>{m.count}</span>
-                        ) : null}
-                      </span>
-                    </div>
-                  ))}
-                  <div style={{ position: "absolute", top: 0, left: nowLeft, transform: "translateX(-50%)", display: "flex", flexDirection: "column", alignItems: "center", pointerEvents: "none" }}>
-                    <span style={{ display: "inline-flex", alignItems: "center", height: 20, padding: "0 9px", borderRadius: 999, background: "var(--wang-navy)", fontFamily: "var(--font-brand)", fontWeight: 700, fontSize: 10.5, color: "var(--white)", whiteSpace: "nowrap", marginBottom: 3 }}>Du er her</span>
-                    <span style={{ width: 2.5, height: 50, background: "var(--wang-navy)", borderRadius: 999 }} />
-                  </div>
-                </div>
-                <div style={{ display: "grid", gridTemplateColumns: "repeat(12,1fr)", gap: 5, marginTop: 16 }}>
-                  {MONTH_ORDER.map((mo) => {
-                    const key = `${mo[1]}-${mo[0]}`;
-                    const pk = isLive ? monthPkLive(mo[0], mo[1], livePerioder!) : monthPk(mo[0], mo[1]);
-                    const isSel = key === selMonth;
-                    return (
-                      <button key={key} onClick={() => setSelMonth(key)} className="wang-pressable" style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 5, padding: "8px 2px 6px", borderRadius: 12, border: "none", cursor: "pointer", background: isSel ? "var(--wang-navy)" : "var(--neutral-50)", color: isSel ? "var(--white)" : "var(--text-secondary)", fontFamily: "var(--font-brand)", fontWeight: 700, fontSize: 11.5 }}>
-                        <span style={{ width: 6, height: 6, borderRadius: 999, background: isSel ? "var(--white)" : (periodeFargeKart[pk] ?? "var(--neutral-300)") }} />
-                        {MON_SHORT[mo[0]].charAt(0).toUpperCase() + MON_SHORT[mo[0]].slice(1)}
-                      </button>
-                    );
-                  })}
-                </div>
-              </section>
-              <MaanedDetalj md={md} onOpenDag={hoppTilKalenderDag} />
-            </>
-          )}
-        </>
+        <PlanSesong
+          naaIso={naaIso}
+          fokusPerPeriode={
+            live ? byggFokusPerPeriode(live.perioder, live.fokusomraader) : null
+          }
+        />
       ) : planMain === "Kalender" ? (
         <FaneKalender key={kalenderHopp ?? "std"} onOpen={onOpen} naaIso={naaIso} live={live} startValgtDag={kalenderHopp} />
       ) : (
@@ -566,87 +423,5 @@ function RundKnapp({ children, label, onClick }: { children: React.ReactNode; la
     <button onClick={onClick} aria-label={label} className="wang-pressable" style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", width: 36, height: 36, borderRadius: 999, border: "none", cursor: "pointer", background: "var(--neutral-50)", color: "var(--text-primary)", fontSize: 15 }}>
       {children}
     </button>
-  );
-}
-
-function PeriodeLegende({ perioder }: { perioder: LivePeriode[] | null }) {
-  const liste = perioder ?? PERIODS;
-  return (
-    <div style={{ display: "flex", flexWrap: "wrap", gap: 14, justifyContent: "center", marginTop: 12, paddingTop: 14, borderTop: "1px solid var(--border-subtle)" }}>
-      {liste.map((p) => (
-        <div key={p.key} style={{ display: "flex", alignItems: "center", gap: 6 }}>
-          <span style={{ width: 10, height: 10, borderRadius: 999, background: p.color }} />
-          <span style={{ fontFamily: "var(--font-body)", fontSize: 12.5, color: "var(--text-secondary)" }}>{p.name}</span>
-        </div>
-      ))}
-      <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-        <span style={{ width: 10, height: 10, borderRadius: 999, background: "var(--cat-orange)", boxShadow: "0 0 0 2px var(--surface-card)" }} />
-        <span style={{ fontFamily: "var(--font-body)", fontSize: 12.5, color: "var(--text-secondary)" }}>Turnering</span>
-      </div>
-    </div>
-  );
-}
-
-function MaanedDetalj({
-  md,
-  onOpenDag,
-}: {
-  md: ReturnType<typeof monthInfo> | ReturnType<typeof liveMonthInfo>;
-  onOpenDag: (iso: string) => void;
-}) {
-  return (
-    <section className="wang-card" style={{ padding: 24, display: "flex", flexDirection: "column", gap: 16 }}>
-      <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 12 }}>
-        <div>
-          <div className="t-label" style={{ color: "var(--text-secondary)" }}>Måned i sesongen</div>
-          <div style={{ fontFamily: "var(--font-brand)", fontWeight: 800, fontSize: 23, color: "var(--text-primary)", marginTop: 3 }}>{md.name} {md.year}</div>
-        </div>
-        <span style={{ display: "inline-flex", alignItems: "center", gap: 7, height: 32, padding: "0 14px", borderRadius: 999, background: "var(--neutral-50)", fontFamily: "var(--font-brand)", fontWeight: 700, fontSize: 12, color: "var(--text-primary)", whiteSpace: "nowrap" }}>
-          <span style={{ width: 9, height: 9, borderRadius: 999, background: md.periodColor }} />{md.periodName}
-        </span>
-      </div>
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 10 }}>
-        <TallRute value={md.sessionCount} label="Økter" bg="var(--neutral-50)" fg="var(--text-primary)" lblFg="var(--text-secondary)" />
-        <TallRute value={md.compCount} label="Turneringer" bg="var(--tint-orange)" fg="var(--cat-orange)" lblFg="var(--cat-orange)" />
-        <TallRute value={md.testCount} label="Tester" bg="var(--tint-purple)" fg="var(--cat-purple)" lblFg="var(--cat-purple)" />
-      </div>
-      <p style={{ margin: 0, fontFamily: "var(--font-body)", fontSize: 13.5, lineHeight: 1.55, color: "var(--text-secondary)" }}>{md.focus}</p>
-      {md.hasEvents ? (
-        <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-          <div className="t-label" style={{ color: "var(--text-secondary)" }}>Nøkkelhendelser</div>
-          {md.events.map((e, i) => (
-            <div
-              key={i}
-              onClick={() => onOpenDag(e.iso)}
-              className="wang-pressable"
-              style={{ display: "flex", alignItems: "center", gap: 12, padding: "11px 13px", borderRadius: 14, background: "var(--neutral-50)", cursor: "pointer" }}
-            >
-              <IconChip icon={e.icon} color={e.color} size={38} />
-              <div style={{ flex: 1, minWidth: 0 }}>
-                <div style={{ fontFamily: "var(--font-brand)", fontWeight: 700, fontSize: 13.5, color: "var(--text-primary)" }}>{e.title}</div>
-                <div style={{ fontFamily: "var(--font-body)", fontSize: 12, color: "var(--text-secondary)", marginTop: 1 }}>{e.sub}</div>
-              </div>
-              <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 2, flexShrink: 0 }}>
-                <span className="wang-num" style={{ fontFamily: "var(--font-body)", fontWeight: 600, fontSize: 12.5, color: "var(--text-secondary)", whiteSpace: "nowrap" }}>{e.dateShort}</span>
-                <span style={{ fontFamily: "var(--font-brand)", fontWeight: 700, fontSize: 10.5, color: "var(--wang-teal-text)", whiteSpace: "nowrap" }}>Se i kalender →</span>
-              </div>
-            </div>
-          ))}
-        </div>
-      ) : (
-        <div style={{ display: "flex", alignItems: "center", gap: 10, padding: 14, borderRadius: 14, background: "var(--neutral-50)" }}>
-          <span style={{ fontFamily: "var(--font-body)", fontSize: 13, color: "var(--text-secondary)" }}>Ingen turneringer, tester eller samlinger denne måneden.</span>
-        </div>
-      )}
-    </section>
-  );
-}
-
-function TallRute({ value, label, bg, fg, lblFg }: { value: number; label: string; bg: string; fg: string; lblFg: string }) {
-  return (
-    <div style={{ padding: "14px 12px", borderRadius: 16, background: bg }}>
-      <div className="wang-num" style={{ fontFamily: "var(--font-brand)", fontWeight: 800, fontSize: 24, color: fg }}>{value}</div>
-      <div className="t-label" style={{ color: lblFg, marginTop: 2 }}>{label}</div>
-    </div>
   );
 }
