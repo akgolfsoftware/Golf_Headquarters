@@ -1518,6 +1518,9 @@ model TestDefinition {
   name        String
   description String?
   pyramidArea PyramidArea
+  /// Treningsomrade-kode fra src/lib/taxonomy.ts (TRENINGSOMRADER), f.eks. "CHIP" eller "PUTT_5_10".
+  /// Null for FYS-tester (delferdighet, ikke omrade) og tester som spenner flere omrader.
+  omraade     String?
   scoringRule String
   protocol    Json?
   createdAt   DateTime    @default(now())
