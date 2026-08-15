@@ -1,13 +1,14 @@
 import { notFound } from "next/navigation";
 
-import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { IupSamtale, type IupPeriode, type IupMaaling } from "./iup-samtale";
 
 /**
- * IUP-samtalen for én elev. Coach/admin only — dette er vurderinger om
- * mindreårige. Skjermen er delt mellom elev og trener i samme rom, derfor står
- * egenvurdering og trenervurdering side om side i stedet for i hver sin visning.
+ * IUP-samtalen for én elev. MIDLERTIDIG åpnet uten innlogging (Anders
+ * 2026-08-15, «pr nå») — reverserer COACH/ADMIN-sperren. Dette er vurderinger
+ * om mindreårige, nå åpent tilgjengelig for alle med lenken. Skjermen er delt
+ * mellom elev og trener i samme rom, derfor står egenvurdering og
+ * trenervurdering side om side i stedet for i hver sin visning.
  */
 export const dynamic = "force-dynamic";
 
@@ -39,10 +40,6 @@ export default async function IupPage({
 }: {
   params: Promise<{ elevId: string }>;
 }) {
-  await requirePortalUser({
-    allow: ["ADMIN", "COACH"],
-    redirectTo: "/team-wang/logg-inn",
-  });
   const { elevId } = await params;
 
   const elev = await prisma.user.findUnique({
