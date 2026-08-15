@@ -1,7 +1,7 @@
 "use client";
 import { T } from "@/lib/v2/tokens";
 
-import { useState, useTransition } from "react";
+import { useRef, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import {
   Check,
@@ -20,6 +20,7 @@ import {
   saveKlubbOnboardingStep,
   markKlubbStepComplete,
   completeKlubbOnboarding,
+  uploadKlubbLogo,
   type KlubbOnboardingData,
 } from "./actions";
 import "@/components/onboarding/onboarding.css";
@@ -36,12 +37,15 @@ type Props = {
   initialStep?: number;
   initialContactName: string;
   initialContactEmail: string;
+  /** Allerede opplastet logo (gjenopptatt onboarding). */
+  initialLogoUrl?: string;
 };
 
 export function KlubbWizard({
   initialStep = 1,
   initialContactName,
   initialContactEmail,
+  initialLogoUrl,
 }: Props) {
   const router = useRouter();
   const [step, setStep] = useState(initialStep);
@@ -54,6 +58,10 @@ export function KlubbWizard({
   const [klubbKontaktNavn, setKlubbKontaktNavn] = useState(initialContactName);
   const [klubbKontaktEpost, setKlubbKontaktEpost] = useState(initialContactEmail);
   const [klubbKontaktTelefon, setKlubbKontaktTelefon] = useState("");
+  const [klubbLogoUrl, setKlubbLogoUrl] = useState(initialLogoUrl ?? "");
+  const [logoLaster, setLogoLaster] = useState(false);
+  const [logoFeil, setLogoFeil] = useState<string | null>(null);
+  const logoInputRef = useRef<HTMLInputElement>(null);
 
   // Steg 2
   const [coachInvites, setCoachInvites] = useState<CoachInvite[]>([
@@ -80,7 +88,7 @@ export function KlubbWizard({
       klubbKontaktNavn: klubbKontaktNavn || undefined,
       klubbKontaktEpost: klubbKontaktEpost || undefined,
       klubbKontaktTelefon: klubbKontaktTelefon || undefined,
-      klubbLogoUrl: undefined,
+      klubbLogoUrl: klubbLogoUrl || undefined,
       coachInvites: coachInvites.filter((c) => c.navn && c.epost),
       spillerImportValg: importValg,
       stripeConnected,
@@ -132,6 +140,28 @@ export function KlubbWizard({
         router.refresh();
       }
     });
+  }
+
+  async function velgLogo(e: React.ChangeEvent<HTMLInputElement>) {
+    const fil = e.target.files?.[0];
+    // Nullstill inputen med én gang, ellers gir «velg samme fil på nytt»
+    // ingen change-hendelse etter en feilet opplasting.
+    e.target.value = "";
+    if (!fil) return;
+
+    setLogoFeil(null);
+    setLogoLaster(true);
+    try {
+      const fd = new FormData();
+      fd.append("file", fil);
+      const res = await uploadKlubbLogo(fd);
+      if (res.ok) setKlubbLogoUrl(res.url);
+      else setLogoFeil(res.error);
+    } catch {
+      setLogoFeil("Opplasting feilet. Prøv igjen.");
+    } finally {
+      setLogoLaster(false);
+    }
   }
 
   function leggTilCoachInvite() {
@@ -257,7 +287,21 @@ export function KlubbWizard({
           <div className="ob-connect-box">
             <div style={{ display: "flex", gap: 12, alignItems: "center" }}>
               <div className="ob-connect-icon">
-                <Upload size={24} />
+                {klubbLogoUrl ? (
+                  // eslint-disable-next-line @next/next/no-img-element -- logoen ligger på Supabase Storage og skal vises rått (også SVG)
+                  <img
+                    src={klubbLogoUrl}
+                    alt="Klubbens logo"
+                    style={{
+                      width: "100%",
+                      height: "100%",
+                      objectFit: "contain",
+                      borderRadius: 14,
+                    }}
+                  />
+                ) : (
+                  <Upload size={24} />
+                )}
               </div>
               <span
                 style={{
@@ -277,17 +321,34 @@ export function KlubbWizard({
                 textAlign: "center",
               }}
             >
-              Last opp logo for å vise i portalen og på fakturaer.
+              {klubbLogoUrl
+                ? "Logoen er lagret. Du kan bytte den når som helst."
+                : "Last opp logo for å vise i portalen og på fakturaer. JPG, PNG, WEBP eller SVG — maks 1 MB."}
             </p>
+            <input
+              ref={logoInputRef}
+              type="file"
+              accept="image/jpeg,image/png,image/webp,image/svg+xml"
+              style={{ display: "none" }}
+              onChange={velgLogo}
+            />
             <button
               className="ob-btn-outline"
               type="button"
-              onClick={() => {
-                // TODO: logo-upload med Supabase storage
-              }}
+              disabled={logoLaster}
+              onClick={() => logoInputRef.current?.click()}
             >
-              Last opp logo (kan gjøres senere)
+              {logoLaster
+                ? "Laster opp…"
+                : klubbLogoUrl
+                  ? "Bytt logo"
+                  : "Last opp logo (kan gjøres senere)"}
             </button>
+            {logoFeil && (
+              <p className="ob-error" role="alert">
+                {logoFeil}
+              </p>
+            )}
           </div>
 
           {error && (

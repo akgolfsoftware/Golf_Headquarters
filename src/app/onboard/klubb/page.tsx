@@ -12,6 +12,7 @@ const KLUBB_TOTAL_STEPS = 5;
 type KlubbOnboardingPrefs = {
   stepCompleted?: number;
   completedAt?: string;
+  klubbLogoUrl?: string;
 };
 
 export default async function KlubbOnboardingPage() {
@@ -42,6 +43,11 @@ export default async function KlubbOnboardingPage() {
         initialStep={resumeStep}
         initialContactName={user.name}
         initialContactEmail={user.email}
+        initialLogoUrl={
+          typeof klubbOnboarding.klubbLogoUrl === "string"
+            ? klubbOnboarding.klubbLogoUrl
+            : undefined
+        }
       />
     </OnboardingShell>
   );
