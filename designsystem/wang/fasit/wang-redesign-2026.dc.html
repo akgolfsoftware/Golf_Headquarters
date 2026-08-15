@@ -1,0 +1,2061 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="design_doc_mode" content="canvas">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800&family=Quattrocento+Sans:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  body { margin:0; background:#e6eaee; color:#1e293b; font-family:"Quattrocento Sans",system-ui,sans-serif; -webkit-font-smoothing:antialiased; }
+  a { color:#226f67; text-decoration:none; }
+  a:hover { color:#17446f; }
+  button { font: inherit; }
+</style>
+</helmet>
+
+<section style="padding:40px 40px 72px; display:flex; flex-direction:column; gap:26px;">
+
+  <!-- Dokumenthode -->
+  <div style="display:flex; flex-direction:column; gap:12px; max-width:70ch;">
+    <div style="display:flex; align-items:center; gap:10px;">
+      <span style="display:inline-flex; align-items:center; justify-content:center; height:24px; padding:0 10px; border-radius:999px; background:#17446f; color:#ffffff; font-family:Montserrat,sans-serif; font-weight:800; font-size:11px; letter-spacing:0.06em;">1a</span>
+      <span style="font-family:Montserrat,sans-serif; font-weight:700; font-size:11px; letter-spacing:0.09em; text-transform:uppercase; color:#475569;">WANG Toppidrett Fredrikstad · Golfgruppa</span>
+    </div>
+    <h1 style="font-family:Montserrat,sans-serif; font-weight:800; font-size:32px; letter-spacing:-0.02em; margin:0;">Årsplanflaten — redesign</h1>
+    <p style="margin:0; color:#475569; font-size:15.5px; line-height:1.65; text-wrap:pretty;">Årsplanen er to ting samtidig: gruppetreningen for golfgruppa, og fokusområdene eleven selv skal jobbe med i utviklingsplanen sin. De ligger side om side på samme periodeakse. Seks flater, mobil 390 og desktop 1280, fire tilstander per skjerm.</p>
+  </div>
+
+  <!-- Kontrollrad -->
+  <div style="display:flex; flex-wrap:wrap; gap:22px; align-items:flex-end; padding:16px 18px; background:#ffffff; border-radius:20px; box-shadow:0 4px 14px rgba(23,68,111,0.06);">
+    <div style="display:flex; flex-direction:column; gap:8px; min-width:0;">
+      <span style="font-family:Montserrat,sans-serif; font-weight:700; font-size:10.5px; letter-spacing:0.08em; text-transform:uppercase; color:#475569;">Skjerm</span>
+      <div style="display:flex; gap:6px; flex-wrap:wrap;">
+        <sc-for list="{{ skjermer }}" as="s" hint-placeholder-count="5">
+          <button type="button" onClick="{{ s.velg }}" style="{{ s.knappStil }}">{{ s.l }}</button>
+        </sc-for>
+      </div>
+    </div>
+    <div style="display:flex; flex-direction:column; gap:8px; min-width:0;">
+      <span style="font-family:Montserrat,sans-serif; font-weight:700; font-size:10.5px; letter-spacing:0.08em; text-transform:uppercase; color:#475569;">Tilstand</span>
+      <div style="display:flex; gap:6px; flex-wrap:wrap;">
+        <sc-for list="{{ tilstander }}" as="t" hint-placeholder-count="4">
+          <button type="button" onClick="{{ t.velg }}" style="{{ t.knappStil }}">{{ t.l }}</button>
+        </sc-for>
+      </div>
+    </div>
+  </div>
+
+  <!-- Rammer -->
+  <div style="display:flex; gap:34px; align-items:flex-start; flex-wrap:wrap;">
+
+    <!-- ============ MOBIL 390 ============ -->
+    <sc-if value="{{ visMobil }}" hint-placeholder-val="{{ true }}">
+    <div data-screen-label="Mobil 390" style="display:flex; flex-direction:column; gap:10px; flex:none;">
+      <span style="font-family:Montserrat,sans-serif; font-weight:700; font-size:10.5px; letter-spacing:0.08em; text-transform:uppercase; color:#475569;">Mobil 390 · {{ skjermTittel }}</span>
+      <div style="width:390px; height:844px; background:#f4f6f8; border-radius:34px; box-shadow:0 18px 40px rgba(15,23,42,0.22); overflow:hidden; display:flex; flex-direction:column; flex:none;">
+
+        <!-- Toppbar -->
+        <div style="background:#ffffff; box-shadow:0 4px 14px rgba(23,68,111,0.06); flex:none; z-index:3;">
+          <div style="display:flex; align-items:center; gap:11px; padding:14px 16px; min-width:0;">
+            <img src="./wang-crest.svg" alt="WANG Toppidrett" style="height:34px; width:auto; display:block; flex:none;">
+            <span style="min-width:0; flex:1;">
+              <span style="display:block; font-family:Montserrat,sans-serif; font-weight:800; font-size:14px; line-height:1.2; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">Toppidrett Fredrikstad</span>
+              <span style="display:block; font-family:Montserrat,sans-serif; font-weight:700; font-size:10px; letter-spacing:0.07em; text-transform:uppercase; color:#475569; margin-top:2px;">Golf · {{ rolleLabel }}</span>
+            </span>
+            <span style="display:inline-flex; align-items:center; gap:6px; height:27px; padding:0 11px; border-radius:999px; background:#e4efee; color:#226f67; font-family:Montserrat,sans-serif; font-weight:700; font-size:10.5px; white-space:nowrap; flex:none; font-variant-numeric:tabular-nums;">
+              <span style="width:6px; height:6px; border-radius:999px; background:#49ca9f;"></span>26/27
+            </span>
+          </div>
+        </div>
+
+        <div style="flex:1; overflow-y:auto; overflow-x:hidden; padding:13px 14px 16px; display:flex; flex-direction:column; gap:11px; min-height:0; -webkit-overflow-scrolling:touch;">
+
+          <!-- Undervelger -->
+          <sc-if value="{{ visUndervelger }}" hint-placeholder-val="{{ true }}">
+            <div style="display:flex; background:#e2e8ef; border-radius:999px; padding:3px; gap:2px; flex:none;">
+              <sc-for list="{{ undervalg }}" as="u" hint-placeholder-count="3">
+                <button type="button" onClick="{{ u.velg }}" style="{{ u.stil }}">{{ u.l }}</button>
+              </sc-for>
+            </div>
+          </sc-if>
+
+          <!-- ---------- SUKSESS ---------- -->
+          <sc-if value="{{ erOk }}" hint-placeholder-val="{{ true }}">
+
+            <!-- Plan · Sesong -->
+            <sc-if value="{{ mSesong }}" hint-placeholder-val="{{ true }}">
+              <div style="background:linear-gradient(160deg,#215883 0%,#17446f 55%,#113659 100%); border-radius:24px; box-shadow:0 18px 40px rgba(15,23,42,0.22); padding:17px 18px 16px; color:#ffffff; flex:none;">
+                <span style="display:block; font-family:Montserrat,sans-serif; font-weight:700; font-size:10px; letter-spacing:0.09em; text-transform:uppercase; color:#49ca9f; font-variant-numeric:tabular-nums;">Uke 4 av 45 · Periode 1 av 3</span>
+                <span style="display:block; font-family:Montserrat,sans-serif; font-weight:800; font-size:23px; letter-spacing:-0.015em; margin-top:5px;">Grunnperiode</span>
+                <span style="display:block; font-size:13px; line-height:1.5; color:rgba(255,255,255,0.74); margin-top:5px;">12 uker igjen. Neste milepæl: Klubbmesterskap 11. september.</span>
+                <span style="display:flex; gap:3px; margin-top:15px;">
+                  <sc-for list="{{ perioder }}" as="p" hint-placeholder-count="3">
+                    <span style="{{ p.stripStil }}"></span>
+                  </sc-for>
+                </span>
+                <span style="display:block; position:relative; height:16px; margin-top:4px;">
+                  <span style="position:absolute; left:7.3%; transform:translateX(-50%); display:inline-flex; align-items:center; height:16px; padding:0 7px; border-radius:999px; background:#ffffff; color:#17446f; font-family:Montserrat,sans-serif; font-weight:800; font-size:8.5px; letter-spacing:0.05em; text-transform:uppercase; white-space:nowrap;">Du er her</span>
+                </span>
+                <span style="display:flex; justify-content:space-between; margin-top:2px; font-family:Montserrat,sans-serif; font-weight:700; font-size:9px; letter-spacing:0.05em; text-transform:uppercase; color:rgba(255,255,255,0.55);">
+                  <span>Aug</span><span>Des</span><span>Mar</span><span>Jun</span>
+                </span>
+              </div>
+
+              <div style="background:#ffffff; border-radius:20px; box-shadow:0 4px 14px rgba(23,68,111,0.06); padding:13px 15px; flex:none;">
+                <span style="display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:4px;">
+                  <span style="font-family:Montserrat,sans-serif; font-weight:700; font-size:10.5px; letter-spacing:0.08em; text-transform:uppercase; color:#17446f;">Gruppetrening · tre perioder</span>
+                  <span style="font-family:Montserrat,sans-serif; font-weight:700; font-size:10px; color:#64748b; white-space:nowrap;">3 økter/uke</span>
+                </span>
+                <sc-for list="{{ perioder }}" as="p" hint-placeholder-count="3">
+                  <span style="{{ p.radStil }}">
+                    <span style="{{ p.barStil }}"></span>
+                    <span style="min-width:0; flex:1;">
+                      <span style="display:flex; align-items:center; gap:7px; min-width:0;">
+                        <b style="font-family:Montserrat,sans-serif; font-weight:700; font-size:14px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; min-width:0;">{{ p.name }}</b>
+                        <sc-if value="{{ p.naa }}" hint-placeholder-val="{{ false }}">
+                          <span style="font-family:Montserrat,sans-serif; font-weight:800; font-size:8.5px; letter-spacing:0.06em; text-transform:uppercase; padding:3px 7px; border-radius:999px; background:#f47b20; color:#ffffff; flex:none;">Nå</span>
+                        </sc-if>
+                      </span>
+                      <span style="display:block; font-family:Montserrat,sans-serif; font-weight:700; font-size:10px; letter-spacing:0.05em; text-transform:uppercase; color:#475569; margin-top:3px; font-variant-numeric:tabular-nums;">{{ p.dato }} · {{ p.uker }}</span>
+                      <span style="display:block; font-size:12.5px; color:#475569; line-height:1.5; margin-top:4px;">{{ p.focus }}</span>
+                      <span style="display:inline-flex; align-items:center; gap:5px; margin-top:6px; font-size:11.5px; color:#64748b;">
+                        <svg viewBox="0 0 24 24" style="width:12px; height:12px; stroke:#94a3b8; fill:none; stroke-width:2.2; stroke-linecap:round; stroke-linejoin:round; flex:none;"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0z"></path><path d="M12 13a3 3 0 1 0 0-6 3 3 0 0 0 0 6"></path></svg>
+                        {{ p.loc }}
+                      </span>
+                    </span>
+                  </span>
+                </sc-for>
+              </div>
+
+              <div style="background:#ffffff; border-radius:20px; box-shadow:0 4px 14px rgba(23,68,111,0.06); padding:13px 15px; flex:none;">
+                <span style="display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:4px;">
+                  <span style="font-family:Montserrat,sans-serif; font-weight:700; font-size:10.5px; letter-spacing:0.08em; text-transform:uppercase; color:#226f67;">Min utviklingsplan · nå</span>
+                  <span style="display:inline-flex; align-items:center; height:22px; padding:0 9px; border-radius:999px; background:#e4efee; color:#226f67; font-family:Montserrat,sans-serif; font-weight:700; font-size:10px; white-space:nowrap; font-variant-numeric:tabular-nums;">{{ iupAktiv.egentid }} egentid/uke</span>
+                </span>
+                <sc-for list="{{ iupAktiv.liste }}" as="f" hint-placeholder-count="3">
+                  <span style="{{ f.radStil }}">
+                    <span style="{{ f.aksStil }}">{{ f.akse }}</span>
+                    <span style="min-width:0; flex:1;">
+                      <span style="display:block; font-size:13px; color:#1e293b; line-height:1.45;">{{ f.tittel }}</span>
+                      <span style="display:block; font-family:Montserrat,sans-serif; font-weight:700; font-size:10.5px; color:#64748b; margin-top:3px; font-variant-numeric:tabular-nums;">{{ f.egentid }} egentrening</span>
+                    </span>
+                    <span style="{{ f.statusStil }}">{{ f.status }}</span>
+                  </span>
+                </sc-for>
+                <span style="display:block; font-size:11.5px; color:#64748b; line-height:1.5; margin-top:10px; padding-top:10px; border-top:1px solid #e9edf1;">{{ iupAktiv.maaling }}</span>
+                <sc-for list="{{ iupSenere }}" as="s" hint-placeholder-count="2">
+                  <span style="display:flex; align-items:center; gap:9px; margin-top:9px;">
+                    <span style="{{ s.prikk }}"></span>
+                    <span style="min-width:0; flex:1; font-family:Montserrat,sans-serif; font-weight:700; font-size:11.5px; color:#1e293b; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">{{ s.name }}</span>
+                    <span style="font-size:11px; color:#64748b; white-space:nowrap; flex:none;">{{ s.tekst }}</span>
+                  </span>
+                </sc-for>
+              </div>
+
+              <div style="background:#ffffff; border-radius:20px; box-shadow:0 4px 14px rgba(23,68,111,0.06); padding:13px 15px; flex:none;">
+                <span style="display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:9px;">
+                  <span style="font-family:Montserrat,sans-serif; font-weight:700; font-size:10.5px; letter-spacing:0.08em; text-transform:uppercase; color:#475569;">Neste milepæler</span>
+                  <span style="font-family:Montserrat,sans-serif; font-weight:700; font-size:11px; color:#17446f;">Alle →</span>
+                </span>
+                <sc-for list="{{ milepaelerKort }}" as="m" hint-placeholder-count="3">
+                  <span style="{{ m.radStil }}">
+                    <span style="{{ m.icStil }}">
+                      <svg viewBox="0 0 24 24" style="width:17px; height:17px; stroke:currentColor; fill:none; stroke-width:2; stroke-linecap:round; stroke-linejoin:round;"><path d="{{ m.d }}"></path></svg>
+                    </span>
+                    <span style="min-width:0; flex:1;">
+                      <b style="display:block; font-family:Montserrat,sans-serif; font-weight:700; font-size:13.5px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">{{ m.navn }}</b>
+                      <span style="display:block; font-size:12px; color:#475569; margin-top:1px;">{{ m.sted }}</span>
+                    </span>
+                    <span style="display:flex; flex-direction:column; align-items:flex-end; gap:2px; flex:none;">
+                      <span style="font-family:Montserrat,sans-serif; font-weight:700; font-size:12px; color:#1e293b; font-variant-numeric:tabular-nums; white-space:nowrap;">{{ m.dato }}</span>
+                      <span style="font-family:Montserrat,sans-serif; font-weight:700; font-size:10px; color:#475569; white-space:nowrap;">{{ m.om }}</span>
+                    </span>
+                  </span>
+                </sc-for>
+              </div>
+
+              <button type="button" onClick="{{ tilKalender }}" style="flex:none; height:50px; border:none; border-radius:999px; background:#17446f; color:#ffffff; font-family:Montserrat,sans-serif; font-weight:700; font-size:14.5px; cursor:pointer;">Se uke 36</button>
+            </sc-if>
+
+            <!-- Plan · Kalender -->
+            <sc-if value="{{ mKalender }}" hint-placeholder-val="{{ false }}">
+              <div style="display:flex; align-items:center; gap:8px; flex:none;">
+                <button type="button" style="width:40px; height:40px; border:none; border-radius:999px; background:#ffffff; box-shadow:0 4px 14px rgba(23,68,111,0.06); display:grid; place-items:center; cursor:pointer; flex:none;">
+                  <svg viewBox="0 0 24 24" style="width:17px; height:17px; stroke:#1e293b; fill:none; stroke-width:2.2; stroke-linecap:round; stroke-linejoin:round;"><path d="m15 18-6-6 6-6"></path></svg>
+                </button>
+                <span style="flex:1; min-width:0; text-align:center;">
+                  <b style="display:block; font-family:Montserrat,sans-serif; font-weight:800; font-size:16px;">September 2026</b>
+                  <span style="display:block; font-family:Montserrat,sans-serif; font-weight:700; font-size:10px; letter-spacing:0.06em; text-transform:uppercase; color:#475569; margin-top:2px;">Grunnperiode · 12 økter</span>
+                </span>
+                <button type="button" style="width:40px; height:40px; border:none; border-radius:999px; background:#ffffff; box-shadow:0 4px 14px rgba(23,68,111,0.06); display:grid; place-items:center; cursor:pointer; flex:none;">
+                  <svg viewBox="0 0 24 24" style="width:17px; height:17px; stroke:#1e293b; fill:none; stroke-width:2.2; stroke-linecap:round; stroke-linejoin:round;"><path d="m9 18 6-6-6-6"></path></svg>
+                </button>
+              </div>
+
+              <sc-for list="{{ kalUker }}" as="u" hint-placeholder-count="4">
+                <div style="background:#ffffff; border-radius:20px; box-shadow:0 4px 14px rgba(23,68,111,0.06); padding:12px 14px; flex:none;">
+                  <span style="display:flex; align-items:center; gap:8px; margin-bottom:8px;">
+                    <span style="font-family:Montserrat,sans-serif; font-weight:800; font-size:11px; letter-spacing:0.06em; text-transform:uppercase; color:#17446f; white-space:nowrap;">Uke {{ u.uke }}</span>
+                    <span style="height:1px; flex:1; background:#e9edf1;"></span>
+                    <span style="font-family:Montserrat,sans-serif; font-weight:700; font-size:10.5px; color:#475569; white-space:nowrap; font-variant-numeric:tabular-nums;">{{ u.spenn }}</span>
+                  </span>
+                  <sc-for list="{{ u.rader }}" as="r" hint-placeholder-count="3">
+                    <span style="{{ r.radStil }}" onClick="{{ r.aapne }}">
+                      <span style="{{ r.omrStil }}"></span>
+                      <span style="width:38px; flex:none; font-family:Montserrat,sans-serif; font-weight:700; font-size:12px; color:#17446f; font-variant-numeric:tabular-nums;">{{ r.dag }}</span>
+                      <span style="min-width:0; flex:1;">
+                        <b style="display:block; font-family:Montserrat,sans-serif; font-weight:600; font-size:13px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">{{ r.tittel }}</b>
+                        <span style="display:block; font-size:11.5px; color:#475569; margin-top:1px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">{{ r.sub }}</span>
+                      </span>
+                      <sc-if value="{{ r.merke }}" hint-placeholder-val="{{ false }}">
+                        <span style="{{ r.merkeStil }}">{{ r.merkeTekst }}</span>
+                      </sc-if>
+                      <sc-if value="{{ r.pil }}" hint-placeholder-val="{{ true }}">
+                        <svg viewBox="0 0 24 24" style="width:15px; height:15px; stroke:#94a3b8; fill:none; stroke-width:2.2; stroke-linecap:round; stroke-linejoin:round; flex:none;"><path d="m9 18 6-6-6-6"></path></svg>
+                      </sc-if>
+                    </span>
+                  </sc-for>
+                </div>
+              </sc-for>
+            </sc-if>
+
+            <!-- Plan · Samlinger -->
+            <sc-if value="{{ mSamlinger }}" hint-placeholder-val="{{ false }}">
+              <div style="background:#e4efee; border-radius:20px; padding:13px 15px; flex:none; display:flex; gap:11px; align-items:flex-start;">
+                <span style="width:36px; height:36px; border-radius:14px; background:#ffffff; color:#226f67; display:grid; place-items:center; flex:none;">
+                  <svg viewBox="0 0 24 24" style="width:17px; height:17px; stroke:currentColor; fill:none; stroke-width:2; stroke-linecap:round; stroke-linejoin:round;"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><path d="M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8"></path><path d="M22 21v-2a4 4 0 0 0-3-3.87"></path></svg>
+                </span>
+                <span style="min-width:0; flex:1;">
+                  <b style="display:block; font-family:Montserrat,sans-serif; font-weight:700; font-size:13.5px; color:#17446f;">Oppmøte er obligatorisk</b>
+                  <span style="display:block; font-size:12.5px; color:#3f6b66; line-height:1.5; margin-top:3px;">Meld fra til trener ved fravær. Program legges ut før hver samling.</span>
+                </span>
+              </div>
+
+              <sc-for list="{{ samlinger }}" as="c" hint-placeholder-count="4">
+                <div style="background:#ffffff; border-radius:20px; box-shadow:0 4px 14px rgba(23,68,111,0.06); padding:14px 15px; flex:none; display:flex; flex-direction:column; gap:9px;">
+                  <span style="display:flex; align-items:flex-start; justify-content:space-between; gap:9px;">
+                    <b style="font-family:Montserrat,sans-serif; font-weight:700; font-size:15px; min-width:0;">{{ c.name }}</b>
+                    <span style="{{ c.statusStil }}">{{ c.status }}</span>
+                  </span>
+                  <span style="display:block; font-size:12.5px; color:#475569; line-height:1.5;">{{ c.desc }}</span>
+                  <span style="display:flex; flex-wrap:wrap; gap:6px;">
+                    <span style="display:inline-flex; align-items:center; gap:5px; height:26px; padding:0 10px; border-radius:999px; background:#f4f6f8; font-family:Montserrat,sans-serif; font-weight:700; font-size:11px; color:#1e293b; font-variant-numeric:tabular-nums;">
+                      <svg viewBox="0 0 24 24" style="width:12px; height:12px; stroke:#64748b; fill:none; stroke-width:2.2; stroke-linecap:round; stroke-linejoin:round;"><path d="M8 2v4M16 2v4M3 10h18M5 4h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"></path></svg>
+                      {{ c.dato }}
+                    </span>
+                    <span style="display:inline-flex; align-items:center; height:26px; padding:0 10px; border-radius:999px; background:#f4f6f8; font-size:11.5px; color:#475569;">{{ c.hvor }}</span>
+                  </span>
+                  <span style="display:flex; justify-content:space-between; gap:10px; padding-top:8px; border-top:1px solid #e9edf1;">
+                    <span style="font-size:12px; color:#475569;">Frist {{ c.pamfrist }}</span>
+                    <b style="font-family:Montserrat,sans-serif; font-weight:700; font-size:12.5px; color:#226f67; font-variant-numeric:tabular-nums;">{{ c.egenandel }}</b>
+                  </span>
+                </div>
+              </sc-for>
+            </sc-if>
+
+            <!-- Skole · Skoleår -->
+            <sc-if value="{{ mSkoleRute }}" hint-placeholder-val="{{ false }}">
+              <div style="background:#ffffff; border-radius:20px; box-shadow:0 4px 14px rgba(23,68,111,0.06); padding:13px 15px; flex:none;">
+                <span style="display:block; font-family:Montserrat,sans-serif; font-weight:700; font-size:10.5px; letter-spacing:0.08em; text-transform:uppercase; color:#475569; margin-bottom:9px;">Skoleruta 2026–2027</span>
+                <sc-for list="{{ skoleRute }}" as="s" hint-placeholder-count="6">
+                  <span style="{{ s.radStil }}">
+                    <span style="{{ s.prikkStil }}"></span>
+                    <span style="min-width:0; flex:1;">
+                      <b style="display:block; font-family:Montserrat,sans-serif; font-weight:600; font-size:13px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">{{ s.name }}</b>
+                      <span style="display:block; font-size:11.5px; color:#475569; margin-top:1px; font-variant-numeric:tabular-nums;">{{ s.dato }}</span>
+                    </span>
+                    <span style="font-family:Montserrat,sans-serif; font-weight:700; font-size:10px; letter-spacing:0.05em; text-transform:uppercase; color:#64748b; flex:none;">{{ s.type }}</span>
+                  </span>
+                </sc-for>
+              </div>
+              <div style="background:#ffffff; border-radius:20px; box-shadow:0 4px 14px rgba(23,68,111,0.06); padding:13px 15px; flex:none;">
+                <span style="display:block; font-family:Montserrat,sans-serif; font-weight:700; font-size:10.5px; letter-spacing:0.08em; text-transform:uppercase; color:#475569; margin-bottom:9px;">Prøveplan</span>
+                <sc-for list="{{ prover }}" as="e" hint-placeholder-count="6">
+                  <span style="{{ e.radStil }}">
+                    <span style="min-width:0; flex:1;">
+                      <b style="display:block; font-family:Montserrat,sans-serif; font-weight:600; font-size:13px;">{{ e.fag }}</b>
+                      <span style="display:block; font-size:11.5px; color:#475569; margin-top:1px;">{{ e.type }} · {{ e.dato }}</span>
+                    </span>
+                    <span style="display:inline-flex; align-items:center; height:23px; padding:0 9px; border-radius:999px; background:#e3e9ee; color:#17446f; font-family:Montserrat,sans-serif; font-weight:700; font-size:10.5px; flex:none;">{{ e.klasse }}</span>
+                  </span>
+                </sc-for>
+              </div>
+            </sc-if>
+
+            <!-- Skole · Timeplan -->
+            <sc-if value="{{ mSkoleTime }}" hint-placeholder-val="{{ false }}">
+              <div style="display:flex; gap:6px; flex:none;">
+                <sc-for list="{{ trinn }}" as="t" hint-placeholder-count="3">
+                  <button type="button" onClick="{{ t.velg }}" style="{{ t.stil }}">{{ t.l }}</button>
+                </sc-for>
+              </div>
+              <sc-for list="{{ timeplanDager }}" as="d" hint-placeholder-count="5">
+                <div style="background:#ffffff; border-radius:20px; box-shadow:0 4px 14px rgba(23,68,111,0.06); padding:12px 14px; flex:none;">
+                  <span style="display:flex; align-items:center; gap:8px; margin-bottom:7px;">
+                    <span style="font-family:Montserrat,sans-serif; font-weight:800; font-size:11px; letter-spacing:0.06em; text-transform:uppercase; color:#17446f;">{{ d.dag }}</span>
+                    <span style="height:1px; flex:1; background:#e9edf1;"></span>
+                  </span>
+                  <sc-for list="{{ d.timer }}" as="t" hint-placeholder-count="4">
+                    <span style="{{ t.radStil }}">
+                      <span style="width:44px; flex:none; font-family:Montserrat,sans-serif; font-weight:700; font-size:10.5px; color:#64748b; font-variant-numeric:tabular-nums;">{{ t.klokke }}</span>
+                      <span style="{{ t.fagStil }}">{{ t.fag }}</span>
+                    </span>
+                  </sc-for>
+                </div>
+              </sc-for>
+            </sc-if>
+
+            <!-- Skole · Vurdering -->
+            <sc-if value="{{ mSkoleVurd }}" hint-placeholder-val="{{ false }}">
+              <div style="background:#ffffff; border-radius:20px; box-shadow:0 4px 14px rgba(23,68,111,0.06); padding:14px 15px; flex:none;">
+                <b style="display:block; font-family:Montserrat,sans-serif; font-weight:800; font-size:16px;">Toppidrett 1</b>
+                <span style="display:block; font-size:12px; color:#475569; margin-top:2px;">VG1 · fra WANGs vurderingsdokument</span>
+                <span style="display:flex; gap:5px; flex-wrap:wrap; margin-top:11px;">
+                  <span style="display:inline-flex; align-items:center; height:25px; padding:0 10px; border-radius:999px; background:#fffbe8; color:#7a6200; font-family:Montserrat,sans-serif; font-weight:700; font-size:10.5px;">Lav</span>
+                  <span style="display:inline-flex; align-items:center; height:25px; padding:0 10px; border-radius:999px; background:#e4efee; color:#226f67; font-family:Montserrat,sans-serif; font-weight:700; font-size:10.5px;">God</span>
+                  <span style="display:inline-flex; align-items:center; height:25px; padding:0 10px; border-radius:999px; background:#e3e9ee; color:#17446f; font-family:Montserrat,sans-serif; font-weight:700; font-size:10.5px;">Fremragende</span>
+                </span>
+              </div>
+              <sc-for list="{{ maalomraader }}" as="o" hint-placeholder-count="3">
+                <div style="background:#ffffff; border-radius:20px; box-shadow:0 4px 14px rgba(23,68,111,0.06); padding:13px 15px; flex:none;">
+                  <span style="display:flex; align-items:center; gap:11px;">
+                    <span style="{{ o.icStil }}">
+                      <svg viewBox="0 0 24 24" style="width:17px; height:17px; stroke:currentColor; fill:none; stroke-width:2; stroke-linecap:round; stroke-linejoin:round;"><path d="{{ o.d }}"></path></svg>
+                    </span>
+                    <span style="min-width:0; flex:1;">
+                      <b style="display:block; font-family:Montserrat,sans-serif; font-weight:700; font-size:13.5px;">{{ o.navn }}</b>
+                      <span style="display:block; font-size:11.5px; color:#475569; margin-top:1px;">{{ o.meta }}</span>
+                    </span>
+                    <span style="{{ o.nivaaStil }}">{{ o.nivaa }}</span>
+                  </span>
+                  <sc-for list="{{ o.maal }}" as="m" hint-placeholder-count="2">
+                    <span style="display:block; margin-top:9px; padding:10px 12px; border-radius:14px; background:#f4f6f8;">
+                      <b style="display:block; font-family:Montserrat,sans-serif; font-weight:700; font-size:11.5px; color:#17446f;">{{ m.t }}</b>
+                      <span style="display:block; font-size:12px; color:#475569; line-height:1.5; margin-top:3px;">{{ m.mal }}</span>
+                    </span>
+                  </sc-for>
+                </div>
+              </sc-for>
+            </sc-if>
+
+            <!-- Foreldre -->
+            <sc-if value="{{ mForeldre }}" hint-placeholder-val="{{ false }}">
+              <div style="background:linear-gradient(160deg,#215883 0%,#17446f 55%,#113659 100%); border-radius:24px; box-shadow:0 18px 40px rgba(15,23,42,0.22); padding:17px 18px; color:#ffffff; flex:none;">
+                <span style="display:block; font-family:Montserrat,sans-serif; font-weight:700; font-size:10px; letter-spacing:0.09em; text-transform:uppercase; color:#49ca9f;">Neste foreldremøte · om 6 dager</span>
+                <span style="display:block; font-family:Montserrat,sans-serif; font-weight:800; font-size:21px; letter-spacing:-0.015em; margin-top:5px;">Oppstart og sesongplan</span>
+                <span style="display:block; font-size:13px; line-height:1.5; color:rgba(255,255,255,0.74); margin-top:5px;">8. september kl. 18:00 · WANG Fredrikstad, auditoriet</span>
+                <button type="button" style="margin-top:14px; height:42px; padding:0 20px; border:none; border-radius:999px; background:#ffffff; color:#17446f; font-family:Montserrat,sans-serif; font-weight:700; font-size:13.5px; cursor:pointer;">Meld deltakelse</button>
+              </div>
+              <div style="background:#ffffff; border-radius:20px; box-shadow:0 4px 14px rgba(23,68,111,0.06); padding:13px 15px; flex:none;">
+                <span style="display:block; font-family:Montserrat,sans-serif; font-weight:700; font-size:10.5px; letter-spacing:0.08em; text-transform:uppercase; color:#475569; margin-bottom:9px;">Møter i sesongen</span>
+                <sc-for list="{{ foreldremoter }}" as="p" hint-placeholder-count="4">
+                  <span style="{{ p.radStil }}">
+                    <span style="width:52px; flex:none; font-family:Montserrat,sans-serif; font-weight:700; font-size:11px; color:#17446f; font-variant-numeric:tabular-nums; line-height:1.35;">{{ p.kort }}</span>
+                    <span style="min-width:0; flex:1;">
+                      <b style="display:block; font-family:Montserrat,sans-serif; font-weight:600; font-size:13px;">{{ p.tema }}</b>
+                      <span style="display:block; font-size:11.5px; color:#475569; margin-top:1px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">kl. {{ p.tid }} · {{ p.hvor }}</span>
+                    </span>
+                  </span>
+                </sc-for>
+              </div>
+              <div style="background:#ffffff; border-radius:20px; box-shadow:0 4px 14px rgba(23,68,111,0.06); padding:13px 15px 12px; flex:none; display:flex; flex-direction:column; gap:11px;">
+                <span style="display:flex; align-items:center; justify-content:space-between; gap:10px;">
+                  <span style="font-family:Montserrat,sans-serif; font-weight:700; font-size:10.5px; letter-spacing:0.08em; text-transform:uppercase; color:#475569;">Gruppechat</span>
+                  <span style="display:inline-flex; align-items:center; gap:5px; font-family:Montserrat,sans-serif; font-weight:700; font-size:10px; color:#226f67;">
+                    <span style="width:6px; height:6px; border-radius:999px; background:#49ca9f;"></span>3 trenere
+                  </span>
+                </span>
+                <sc-for list="{{ chat }}" as="m" hint-placeholder-count="3">
+                  <span style="{{ m.wrapStil }}">
+                    <sc-if value="{{ m.visNavn }}" hint-placeholder-val="{{ true }}">
+                      <span style="display:block; font-family:Montserrat,sans-serif; font-weight:700; font-size:10.5px; color:#64748b; padding:0 4px 3px;">{{ m.sender }}</span>
+                    </sc-if>
+                    <span style="{{ m.boblStil }}">{{ m.text }}</span>
+                  </span>
+                </sc-for>
+                <span style="display:flex; gap:9px; align-items:center; padding-top:10px; border-top:1px solid #e9edf1;">
+                  <span style="flex:1; min-width:0; height:44px; border-radius:999px; background:#f4f6f8; display:flex; align-items:center; padding:0 15px; font-size:13.5px; color:#94a3b8;">Skriv en melding …</span>
+                  <span style="width:44px; height:44px; border-radius:999px; background:#17446f; color:#ffffff; display:grid; place-items:center; flex:none;">
+                    <svg viewBox="0 0 24 24" style="width:17px; height:17px; stroke:currentColor; fill:none; stroke-width:2.2; stroke-linecap:round; stroke-linejoin:round;"><path d="m22 2-7 20-4-9-9-4z"></path><path d="M22 2 11 13"></path></svg>
+                  </span>
+                </span>
+              </div>
+            </sc-if>
+
+            <!-- Økt-detalj -->
+            <sc-if value="{{ mOkt }}" hint-placeholder-val="{{ false }}">
+              <button type="button" onClick="{{ tilKalender }}" style="align-self:flex-start; flex:none; display:inline-flex; align-items:center; gap:7px; height:40px; padding:0 15px; border:none; border-radius:999px; background:#ffffff; box-shadow:0 4px 14px rgba(23,68,111,0.06); font-family:Montserrat,sans-serif; font-weight:700; font-size:12.5px; color:#1e293b; cursor:pointer;">
+                <svg viewBox="0 0 24 24" style="width:15px; height:15px; stroke:currentColor; fill:none; stroke-width:2.4; stroke-linecap:round; stroke-linejoin:round;"><path d="m15 18-6-6 6-6"></path></svg>
+                Uke 36
+              </button>
+              <div style="background:linear-gradient(160deg,#215883 0%,#17446f 55%,#113659 100%); border-radius:24px; box-shadow:0 18px 40px rgba(15,23,42,0.22); padding:17px 18px; color:#ffffff; flex:none;">
+                <span style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+                  <span style="font-family:Montserrat,sans-serif; font-weight:700; font-size:10px; letter-spacing:0.09em; text-transform:uppercase; color:#49ca9f; font-variant-numeric:tabular-nums;">Man 31. aug · 08:00–10:00</span>
+                  <span style="display:inline-flex; align-items:center; height:20px; padding:0 9px; border-radius:999px; background:rgba(73,202,159,0.2); color:#49ca9f; font-family:Montserrat,sans-serif; font-weight:700; font-size:9.5px;">Gjennomført</span>
+                </span>
+                <span style="display:block; font-family:Montserrat,sans-serif; font-weight:800; font-size:21px; line-height:1.2; letter-spacing:-0.015em; margin-top:7px;">Grep, oppsett og ballposisjon</span>
+                <span style="display:block; font-size:13px; line-height:1.55; color:rgba(255,255,255,0.78); margin-top:7px;">Etablere et nøytralt grep, balansert oppsett og riktig ballposisjon for jern.</span>
+                <span style="display:flex; flex-wrap:wrap; gap:6px; margin-top:13px;">
+                  <span style="display:inline-flex; align-items:center; height:29px; padding:0 12px; border-radius:999px; background:rgba(255,255,255,0.12); font-size:12px; font-weight:600;">Golfteknikk</span>
+                  <span style="display:inline-flex; align-items:center; height:29px; padding:0 12px; border-radius:999px; background:rgba(255,255,255,0.12); font-size:12px; font-weight:600;">Gamle Fredrikstad GK</span>
+                  <span style="display:inline-flex; align-items:center; height:29px; padding:0 12px; border-radius:999px; background:rgba(255,255,255,0.12); font-size:12px; font-weight:600;">Grunnperiode</span>
+                </span>
+              </div>
+              <div style="background:#ffffff; border-radius:20px; box-shadow:0 4px 14px rgba(23,68,111,0.06); padding:13px 15px; flex:none;">
+                <span style="display:block; font-family:Montserrat,sans-serif; font-weight:700; font-size:10.5px; letter-spacing:0.08em; text-transform:uppercase; color:#475569; margin-bottom:6px;">Oppvarming · 25 min</span>
+                <span style="display:block; font-size:13px; color:#475569; line-height:1.55;">10 min dynamisk mobilitet for skuldre, hofter og rygg, deretter 15 rolige puttinger for følelse.</span>
+              </div>
+              <div style="background:#ffffff; border-radius:20px; box-shadow:0 4px 14px rgba(23,68,111,0.06); padding:13px 15px; flex:none;">
+                <span style="display:block; font-family:Montserrat,sans-serif; font-weight:700; font-size:10.5px; letter-spacing:0.08em; text-transform:uppercase; color:#475569; margin-bottom:9px;">Hoveddel · 3 øvelser</span>
+                <sc-for list="{{ drills }}" as="dr" hint-placeholder-count="3">
+                  <span style="{{ dr.radStil }}">
+                    <span style="{{ dr.numStil }}">{{ dr.num }}</span>
+                    <span style="min-width:0; flex:1;">
+                      <span style="display:block; font-size:13px; color:#1e293b; line-height:1.45;">{{ dr.name }}</span>
+                      <sc-if value="{{ dr.harVol }}" hint-placeholder-val="{{ true }}">
+                        <span style="{{ dr.volStil }}">{{ dr.vol }}</span>
+                      </sc-if>
+                    </span>
+                  </span>
+                </sc-for>
+              </div>
+              <div style="background:#e4efee; border-radius:20px; padding:13px 15px; flex:none;">
+                <span style="display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:9px;">
+                  <span style="font-family:Montserrat,sans-serif; font-weight:700; font-size:10.5px; letter-spacing:0.08em; text-transform:uppercase; color:#226f67;">Fra din utviklingsplan</span>
+                  <span style="{{ oktFokus.statusStil }}">{{ oktFokus.status }}</span>
+                </span>
+                <span style="display:flex; align-items:flex-start; gap:11px;">
+                  <span style="{{ oktFokus.aksStil }}">{{ oktFokus.akse }}</span>
+                  <span style="min-width:0; flex:1;">
+                    <span style="display:block; font-size:13px; color:#1e293b; line-height:1.45;">{{ oktFokus.tittel }}</span>
+                    <span style="display:block; font-size:11.5px; color:#3f6b66; line-height:1.5; margin-top:4px;">Denne økta jobber direkte med fokusområdet ditt. {{ oktFokus.egentid }} egentrening i tillegg.</span>
+                  </span>
+                </span>
+              </div>
+              <div style="background:#ffffff; border-radius:20px; box-shadow:0 4px 14px rgba(23,68,111,0.06); padding:13px 15px; flex:none;">
+                <span style="display:block; font-family:Montserrat,sans-serif; font-weight:700; font-size:10.5px; letter-spacing:0.08em; text-transform:uppercase; color:#475569; margin-bottom:6px;">Test og måling</span>
+                <span style="display:block; font-size:13px; color:#475569; line-height:1.55;">Baseline treffpunkt på 7-jern (impact-tape) registreres i PlayerHQ.</span>
+              </div>
+              <div style="background:#ffffff; border-radius:20px; box-shadow:0 4px 14px rgba(23,68,111,0.06); padding:13px 15px; flex:none;">
+                <span style="display:block; font-family:Montserrat,sans-serif; font-weight:700; font-size:10.5px; letter-spacing:0.08em; text-transform:uppercase; color:#475569; margin-bottom:9px;">Kompetansemål per trinn</span>
+                <sc-for list="{{ komp }}" as="k" hint-placeholder-count="3">
+                  <span style="display:flex; gap:10px; align-items:baseline; margin-bottom:7px;">
+                    <b style="font-family:Montserrat,sans-serif; font-weight:800; font-size:11px; color:#17446f; min-width:30px; flex:none;">{{ k.vg }}</b>
+                    <span style="font-size:12.5px; color:#475569; line-height:1.5;">{{ k.t }}</span>
+                  </span>
+                </sc-for>
+              </div>
+            </sc-if>
+
+            <!-- IUP-samtale -->
+            <sc-if value="{{ mIup }}" hint-placeholder-val="{{ false }}">
+              <div style="display:flex; align-items:center; gap:6px; flex:none; flex-wrap:wrap; row-gap:6px;">
+                <sc-for list="{{ iupSteg }}" as="st" hint-placeholder-count="3">
+                  <span style="{{ st.mobilStil }}">
+                    <span style="{{ st.numStil }}">{{ st.n }}</span>
+                    <span style="{{ st.tekstStil }}">{{ st.kort }}</span>
+                  </span>
+                </sc-for>
+              </div>
+
+              <div style="background:linear-gradient(160deg,#215883 0%,#17446f 55%,#113659 100%); border-radius:24px; box-shadow:0 18px 40px rgba(15,23,42,0.22); padding:17px 18px; color:#ffffff; flex:none;">
+                <span style="display:block; font-family:Montserrat,sans-serif; font-weight:700; font-size:10px; letter-spacing:0.09em; text-transform:uppercase; color:#49ca9f;">IUP-samtale · 26. november 2026</span>
+                <span style="display:block; font-family:Montserrat,sans-serif; font-weight:800; font-size:21px; letter-spacing:-0.015em; margin-top:6px;">Grunnperiode → Spesialisering</span>
+                <span style="display:block; font-size:13px; line-height:1.5; color:rgba(255,255,255,0.74); margin-top:5px;">Nora Kristiansen VG2 og Anders (trener) går gjennom perioden og avtaler nye fokusområder.</span>
+              </div>
+
+              <div style="background:#ffffff; border-radius:20px; box-shadow:0 4px 14px rgba(23,68,111,0.06); padding:13px 15px; flex:none;">
+                <span style="display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:2px;">
+                  <span style="font-family:Montserrat,sans-serif; font-weight:700; font-size:10.5px; letter-spacing:0.08em; text-transform:uppercase; color:#475569;">Perioden som avsluttes</span>
+                  <span style="display:inline-flex; align-items:center; gap:10px; font-family:Montserrat,sans-serif; font-weight:700; font-size:9.5px; letter-spacing:0.05em; text-transform:uppercase; color:#64748b;">
+                    <span style="display:inline-flex; align-items:center; gap:4px;"><span style="width:8px; height:8px; border-radius:999px; background:#2e857d;"></span>Deg</span>
+                    <span style="display:inline-flex; align-items:center; gap:4px;"><span style="width:8px; height:8px; border-radius:999px; background:#17446f;"></span>Trener</span>
+                  </span>
+                </span>
+                <sc-for list="{{ iupEval }}" as="e" hint-placeholder-count="3">
+                  <span style="{{ e.radStil }}">
+                    <span style="display:flex; align-items:flex-start; gap:11px;">
+                      <span style="{{ e.aksStil }}">{{ e.akse }}</span>
+                      <span style="min-width:0; flex:1; font-size:13px; color:#1e293b; line-height:1.45;">{{ e.tittel }}</span>
+                      <span style="{{ e.statusStil }}">{{ e.status }}</span>
+                    </span>
+                    <span style="display:flex; align-items:center; gap:14px; margin-top:9px; padding-left:55px;">
+                      <span style="display:flex; align-items:center; gap:4px;">
+                        <sc-for list="{{ e.egenPrikker }}" as="p" hint-placeholder-count="5">
+                          <span style="{{ p.stil }}"></span>
+                        </sc-for>
+                      </span>
+                      <span style="display:flex; align-items:center; gap:4px;">
+                        <sc-for list="{{ e.trenerPrikker }}" as="p" hint-placeholder-count="5">
+                          <span style="{{ p.stil }}"></span>
+                        </sc-for>
+                      </span>
+                    </span>
+                  </span>
+                </sc-for>
+              </div>
+
+              <div style="background:#ffffff; border-radius:20px; box-shadow:0 4px 14px rgba(23,68,111,0.06); padding:13px 15px; flex:none;">
+                <span style="display:block; font-family:Montserrat,sans-serif; font-weight:700; font-size:10.5px; letter-spacing:0.08em; text-transform:uppercase; color:#475569; margin-bottom:4px;">Målt siden forrige samtale</span>
+                <sc-for list="{{ iupTall }}" as="t" hint-placeholder-count="3">
+                  <span style="{{ t.radStil }}">
+                    <span style="min-width:0; flex:1;">
+                      <b style="display:block; font-family:Montserrat,sans-serif; font-weight:600; font-size:13px;">{{ t.l }}</b>
+                      <span style="display:block; font-size:11px; color:#64748b; margin-top:1px;">{{ t.kilde }}</span>
+                    </span>
+                    <span style="{{ t.verdiStil }}">{{ t.v }}</span>
+                  </span>
+                </sc-for>
+              </div>
+
+              <div style="background:#ffffff; border-radius:20px; box-shadow:0 4px 14px rgba(23,68,111,0.06); padding:13px 15px; flex:none;">
+                <span style="display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:10px;">
+                  <span style="font-family:Montserrat,sans-serif; font-weight:700; font-size:10.5px; letter-spacing:0.08em; text-transform:uppercase; color:#226f67;">Nye fokusområder</span>
+                  <span style="display:inline-flex; align-items:center; height:22px; padding:0 9px; border-radius:999px; background:#e4efee; color:#226f67; font-family:Montserrat,sans-serif; font-weight:700; font-size:10px; white-space:nowrap; font-variant-numeric:tabular-nums;">5,5 t egentid/uke</span>
+                </span>
+                <span style="display:flex; flex-direction:column; gap:9px;">
+                  <sc-for list="{{ iupNye }}" as="f" hint-placeholder-count="3">
+                    <span style="{{ f.kortStil }}">
+                      <span style="display:flex; align-items:flex-start; gap:11px;">
+                        <span style="{{ f.aksStil }}">{{ f.akse }}</span>
+                        <span style="min-width:0; flex:1; font-size:13px; color:#1e293b; line-height:1.45;">{{ f.tittel }}</span>
+                      </span>
+                      <span style="display:flex; align-items:center; gap:8px; margin-top:8px; padding-left:55px; flex-wrap:wrap;">
+                        <span style="display:inline-flex; align-items:center; height:24px; padding:0 10px; border-radius:999px; background:#ffffff; font-family:Montserrat,sans-serif; font-weight:700; font-size:10.5px; color:#1e293b; font-variant-numeric:tabular-nums;">{{ f.egentid }}</span>
+                        <span style="display:inline-flex; align-items:center; height:24px; padding:0 10px; border-radius:999px; background:#ffffff; font-size:11px; color:#475569;">{{ f.maaling }}</span>
+                      </span>
+                    </span>
+                  </sc-for>
+                  <span style="display:flex; align-items:center; justify-content:center; gap:7px; height:44px; border-radius:16px; background:#ffffff; box-shadow:inset 0 0 0 1.5px #dce3ea; font-family:Montserrat,sans-serif; font-weight:700; font-size:12.5px; color:#475569;">
+                    <svg viewBox="0 0 24 24" style="width:15px; height:15px; stroke:currentColor; fill:none; stroke-width:2.4; stroke-linecap:round; stroke-linejoin:round;"><path d="M12 5v14M5 12h14"></path></svg>
+                    Legg til fokusområde
+                  </span>
+                </span>
+              </div>
+
+              <button type="button" style="flex:none; height:50px; border:none; border-radius:999px; background:#17446f; color:#ffffff; font-family:Montserrat,sans-serif; font-weight:700; font-size:14.5px; cursor:pointer;">Lagre og del med Nora</button>
+            </sc-if>
+
+            <!-- Trener -->
+            <sc-if value="{{ mTrener }}" hint-placeholder-val="{{ false }}">
+              <div style="background:linear-gradient(160deg,#215883 0%,#17446f 55%,#113659 100%); border-radius:24px; box-shadow:0 18px 40px rgba(15,23,42,0.22); padding:17px 18px 16px; color:#ffffff; flex:none;">
+                <span style="display:flex; align-items:center; justify-content:space-between; gap:10px;">
+                  <span style="font-family:Montserrat,sans-serif; font-weight:700; font-size:10px; letter-spacing:0.09em; text-transform:uppercase; color:#49ca9f;">Golfgruppa · 14 elever</span>
+                  <span style="display:inline-flex; align-items:center; height:20px; padding:0 9px; border-radius:999px; background:rgba(255,255,255,0.16); font-family:Montserrat,sans-serif; font-weight:700; font-size:9.5px; letter-spacing:0.05em; text-transform:uppercase;">Trener</span>
+                </span>
+                <span style="display:block; font-family:Montserrat,sans-serif; font-weight:800; font-size:22px; letter-spacing:-0.015em; margin-top:6px;">Årsplan 2026–2027</span>
+                <span style="display:block; font-size:13px; line-height:1.5; color:rgba(255,255,255,0.74); margin-top:5px;">Fire perioder, AK-pyramide per periode. Uke 4 av 45.</span>
+                <span style="display:flex; gap:3px; margin-top:15px;">
+                  <sc-for list="{{ coachPerioder }}" as="c" hint-placeholder-count="4">
+                    <span style="{{ c.stripStil }}"></span>
+                  </sc-for>
+                </span>
+                <span style="display:block; position:relative; height:16px; margin-top:4px;">
+                  <span style="position:absolute; left:5.5%; transform:translateX(-50%); display:inline-flex; align-items:center; height:16px; padding:0 7px; border-radius:999px; background:#ffffff; color:#17446f; font-family:Montserrat,sans-serif; font-weight:800; font-size:8.5px; letter-spacing:0.05em; text-transform:uppercase; white-space:nowrap;">Du er her</span>
+                </span>
+              </div>
+              <sc-for list="{{ coachPerioder }}" as="c" hint-placeholder-count="4">
+                <div style="{{ c.kortStil }}">
+                  <span style="display:flex; align-items:center; gap:8px;">
+                    <span style="{{ c.prikkStil }}"></span>
+                    <b style="font-family:Montserrat,sans-serif; font-weight:800; font-size:15px; min-width:0; flex:1;">{{ c.name }}</b>
+                    <sc-if value="{{ c.naa }}" hint-placeholder-val="{{ true }}">
+                      <span style="font-family:Montserrat,sans-serif; font-weight:800; font-size:8.5px; letter-spacing:0.06em; text-transform:uppercase; padding:3px 7px; border-radius:999px; background:#f47b20; color:#ffffff; flex:none;">Nå</span>
+                    </sc-if>
+                  </span>
+                  <span style="display:block; font-family:Montserrat,sans-serif; font-weight:700; font-size:10px; letter-spacing:0.05em; text-transform:uppercase; color:#475569; margin-top:5px; font-variant-numeric:tabular-nums;">{{ c.spenn }} · fase: {{ c.faseFokus }}</span>
+                  <span style="display:block; font-size:12.5px; color:#475569; line-height:1.5; margin-top:6px;">{{ c.fokus }}</span>
+                  <span style="display:flex; height:9px; border-radius:999px; overflow:hidden; margin-top:11px;">
+                    <sc-for list="{{ c.pyr }}" as="a" hint-placeholder-count="5">
+                      <span style="{{ a.stil }}"></span>
+                    </sc-for>
+                  </span>
+                  <span style="display:flex; gap:9px; flex-wrap:wrap; margin-top:8px;">
+                    <sc-for list="{{ c.pyr }}" as="a" hint-placeholder-count="5">
+                      <span style="display:inline-flex; align-items:center; gap:5px; font-family:Montserrat,sans-serif; font-weight:700; font-size:9.5px; letter-spacing:0.04em; color:#475569; white-space:nowrap;">
+                        <span style="{{ a.prikkStil }}"></span>{{ a.k }} {{ a.v }}
+                      </span>
+                    </sc-for>
+                  </span>
+                  <span style="display:block; margin-top:11px; padding-top:10px; border-top:1px solid #e9edf1;">
+                    <span style="display:block; font-family:Montserrat,sans-serif; font-weight:700; font-size:9.5px; letter-spacing:0.07em; text-transform:uppercase; color:#64748b;">Mål</span>
+                    <sc-for list="{{ c.maal }}" as="m" hint-placeholder-count="3">
+                      <span style="display:flex; gap:7px; align-items:flex-start; margin-top:6px;">
+                        <svg viewBox="0 0 24 24" style="width:13px; height:13px; margin-top:2px; stroke:#2e857d; fill:none; stroke-width:2.6; stroke-linecap:round; stroke-linejoin:round; flex:none;"><path d="M20 6 9 17l-5-5"></path></svg>
+                        <span style="font-size:12px; color:#475569; line-height:1.45;">{{ m }}</span>
+                      </span>
+                    </sc-for>
+                  </span>
+                </div>
+              </sc-for>
+            </sc-if>
+
+          </sc-if>
+
+          <!-- ---------- LASTER ---------- -->
+          <sc-if value="{{ erLaster }}" hint-placeholder-val="{{ false }}">
+            <div style="background:#20507d; border-radius:24px; padding:18px; flex:none;">
+              <span style="display:block; width:46%; height:10px; border-radius:6px; background:rgba(255,255,255,0.18);"></span>
+              <span style="display:block; width:64%; height:22px; border-radius:8px; background:rgba(255,255,255,0.18); margin-top:10px;"></span>
+              <span style="display:block; width:86%; height:12px; border-radius:6px; background:rgba(255,255,255,0.18); margin-top:10px;"></span>
+              <span style="display:flex; gap:3px; margin-top:16px;">
+                <span style="flex:1; height:7px; border-radius:3px; background:rgba(255,255,255,0.16);"></span>
+                <span style="flex:1; height:7px; border-radius:3px; background:rgba(255,255,255,0.16);"></span>
+                <span style="flex:1; height:7px; border-radius:3px; background:rgba(255,255,255,0.16);"></span>
+              </span>
+            </div>
+            <div style="background:#ffffff; border-radius:20px; box-shadow:0 4px 14px rgba(23,68,111,0.06); padding:15px; flex:none;">
+              <span style="display:block; width:42%; height:9px; border-radius:5px; background:#e9edf1;"></span>
+              <span style="display:block; width:88%; height:12px; border-radius:6px; background:#eef1f4; margin-top:13px;"></span>
+              <span style="display:block; width:70%; height:12px; border-radius:6px; background:#eef1f4; margin-top:9px;"></span>
+              <span style="display:block; width:54%; height:12px; border-radius:6px; background:#eef1f4; margin-top:9px;"></span>
+            </div>
+            <div style="background:#ffffff; border-radius:20px; box-shadow:0 4px 14px rgba(23,68,111,0.06); padding:15px; flex:none;">
+              <span style="display:block; width:36%; height:9px; border-radius:5px; background:#e9edf1;"></span>
+              <span style="display:block; width:80%; height:12px; border-radius:6px; background:#eef1f4; margin-top:13px;"></span>
+              <span style="display:block; width:66%; height:12px; border-radius:6px; background:#eef1f4; margin-top:9px;"></span>
+            </div>
+            <span style="align-self:center; margin-top:4px; font-family:Montserrat,sans-serif; font-weight:700; font-size:11px; letter-spacing:0.06em; text-transform:uppercase; color:#94a3b8;">Henter {{ skjermTittelLav }} …</span>
+          </sc-if>
+
+          <!-- ---------- TOM ---------- -->
+          <sc-if value="{{ erTom }}" hint-placeholder-val="{{ false }}">
+            <div style="background:#ffffff; border-radius:24px; box-shadow:0 8px 24px rgba(23,68,111,0.08); padding:34px 24px; flex:none; text-align:center; margin-top:8px;">
+              <span style="width:60px; height:60px; border-radius:999px; background:#e4efee; color:#226f67; display:grid; place-items:center; margin:0 auto;">
+                <svg viewBox="0 0 24 24" style="width:26px; height:26px; stroke:currentColor; fill:none; stroke-width:2; stroke-linecap:round; stroke-linejoin:round;"><path d="{{ tomIkon }}"></path></svg>
+              </span>
+              <span style="display:block; font-family:Montserrat,sans-serif; font-weight:800; font-size:17px; margin-top:15px;">{{ tomTittel }}</span>
+              <span style="display:block; font-size:13.5px; color:#475569; line-height:1.6; margin-top:8px; text-wrap:pretty;">{{ tomTekst }}</span>
+            </div>
+          </sc-if>
+
+          <!-- ---------- FEIL ---------- -->
+          <sc-if value="{{ erFeil }}" hint-placeholder-val="{{ false }}">
+            <div style="flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; padding:20px 22px;">
+              <span style="width:64px; height:64px; border-radius:999px; background:#fef3eb; color:#b4571a; display:grid; place-items:center;">
+                <svg viewBox="0 0 24 24" style="width:28px; height:28px; stroke:currentColor; fill:none; stroke-width:2; stroke-linecap:round; stroke-linejoin:round;"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><path d="M12 9v4"></path><path d="M12 17h.01"></path></svg>
+              </span>
+              <span style="display:block; font-family:Montserrat,sans-serif; font-weight:800; font-size:17.5px; margin-top:16px;">{{ feilTittel }}</span>
+              <span style="display:block; font-size:13.5px; color:#475569; line-height:1.6; margin-top:8px; max-width:32ch; text-wrap:pretty;">{{ feilTekst }}</span>
+              <button type="button" style="margin-top:20px; height:48px; padding:0 26px; border:none; border-radius:999px; background:#17446f; color:#ffffff; font-family:Montserrat,sans-serif; font-weight:700; font-size:14px; cursor:pointer;">Prøv igjen</button>
+            </div>
+          </sc-if>
+
+        </div>
+
+        <!-- Bunnmeny -->
+        <div style="flex:none; background:#ffffff; box-shadow:0 -6px 20px rgba(23,68,111,0.09); display:grid; grid-template-columns:repeat(3,1fr); padding:8px 6px 16px;">
+          <sc-for list="{{ bunnmeny }}" as="b" hint-placeholder-count="3">
+            <button type="button" onClick="{{ b.velg }}" style="{{ b.stil }}">
+              <svg viewBox="0 0 24 24" style="width:21px; height:21px; stroke:currentColor; fill:none; stroke-width:2; stroke-linecap:round; stroke-linejoin:round;"><path d="{{ b.d }}"></path></svg>
+              <span style="font-family:Montserrat,sans-serif; font-weight:700; font-size:10px;">{{ b.l }}</span>
+              <span style="{{ b.strekStil }}"></span>
+            </button>
+          </sc-for>
+        </div>
+      </div>
+    </div>
+    </sc-if>
+
+    <!-- ============ DESKTOP 1280 ============ -->
+    <sc-if value="{{ visDesktop }}" hint-placeholder-val="{{ true }}">
+    <div data-screen-label="Desktop 1280" style="display:flex; flex-direction:column; gap:10px; flex:none;">
+      <span style="font-family:Montserrat,sans-serif; font-weight:700; font-size:10.5px; letter-spacing:0.08em; text-transform:uppercase; color:#475569;">Desktop 1280 · {{ skjermTittel }}</span>
+      <div style="width:1280px; height:1060px; background:#f4f6f8; border-radius:20px; box-shadow:0 18px 40px rgba(15,23,42,0.22); overflow:hidden; display:flex; flex-direction:column; flex:none;">
+
+        <div style="background:#ffffff; box-shadow:0 4px 14px rgba(23,68,111,0.06); flex:none; z-index:3;">
+          <div style="display:flex; align-items:center; gap:14px; padding:16px 34px 13px; min-width:0;">
+            <img src="./wang-logo-horizontal.svg" alt="WANG Toppidrett" style="height:42px; width:auto; display:block; flex:none;">
+            <span style="width:1px; height:36px; background:#e9edf1; flex:none;"></span>
+            <span style="min-width:0; flex:1;">
+              <span style="display:block; font-family:Montserrat,sans-serif; font-weight:800; font-size:16px; line-height:1.2;">Toppidrett Fredrikstad</span>
+              <span style="display:block; font-family:Montserrat,sans-serif; font-weight:700; font-size:10.5px; letter-spacing:0.08em; text-transform:uppercase; color:#475569; margin-top:3px;">Golf · {{ rolleUndertekst }}</span>
+            </span>
+            <span style="display:inline-flex; align-items:center; gap:7px; height:30px; padding:0 13px; border-radius:999px; background:#e4efee; color:#226f67; font-family:Montserrat,sans-serif; font-weight:700; font-size:11.5px; white-space:nowrap; flex:none;">
+              <span style="width:7px; height:7px; border-radius:999px; background:#49ca9f;"></span>Sesong 2026–2027
+            </span>
+          </div>
+          <div style="display:flex; gap:8px; padding:0 34px 13px;">
+            <sc-for list="{{ toppmeny }}" as="t" hint-placeholder-count="3">
+              <button type="button" onClick="{{ t.velg }}" style="{{ t.stil }}">{{ t.l }}</button>
+            </sc-for>
+          </div>
+        </div>
+
+        <div style="flex:1; overflow-y:auto; overflow-x:hidden; padding:24px 34px 30px; display:flex; flex-direction:column; gap:16px; min-height:0;">
+
+          <div style="display:flex; align-items:center; justify-content:space-between; gap:16px; flex:none;">
+            <span style="font-family:Montserrat,sans-serif; font-weight:800; font-size:25px; letter-spacing:-0.02em;">{{ skjermTittel }}</span>
+            <sc-if value="{{ visUndervelger }}" hint-placeholder-val="{{ true }}">
+              <span style="display:inline-flex; gap:4px; padding:4px; border-radius:999px; background:#ffffff; box-shadow:0 4px 14px rgba(23,68,111,0.06);">
+                <sc-for list="{{ undervalg }}" as="u" hint-placeholder-count="3">
+                  <button type="button" onClick="{{ u.velg }}" style="{{ u.stilD }}">{{ u.l }}</button>
+                </sc-for>
+              </span>
+            </sc-if>
+          </div>
+
+          <!-- ---------- SUKSESS ---------- -->
+          <sc-if value="{{ erOk }}" hint-placeholder-val="{{ true }}">
+
+            <!-- Plan · Sesong -->
+            <sc-if value="{{ mSesong }}" hint-placeholder-val="{{ true }}">
+              <div style="background:linear-gradient(160deg,#215883 0%,#17446f 55%,#113659 100%); border-radius:26px; box-shadow:0 18px 40px rgba(15,23,42,0.22); padding:24px 28px 22px; color:#ffffff; flex:none; display:flex; gap:34px; align-items:flex-start;">
+                <span style="flex:none; min-width:250px;">
+                  <span style="display:block; font-family:Montserrat,sans-serif; font-weight:700; font-size:11px; letter-spacing:0.09em; text-transform:uppercase; color:#49ca9f; font-variant-numeric:tabular-nums;">Uke 4 av 45 · Periode 1 av 3</span>
+                  <span style="display:block; font-family:Montserrat,sans-serif; font-weight:800; font-size:30px; letter-spacing:-0.02em; margin-top:7px;">Grunnperiode</span>
+                  <span style="display:block; font-size:14.5px; line-height:1.55; color:rgba(255,255,255,0.74); margin-top:7px;">12 uker igjen av perioden.<br>Neste milepæl: Klubbmesterskap 11. sep.</span>
+                </span>
+                <span style="flex:1; min-width:0;">
+                  <span style="display:grid; grid-template-columns:repeat(12,1fr); gap:3px; font-family:Montserrat,sans-serif; font-weight:700; font-size:9.5px; letter-spacing:0.05em; text-transform:uppercase; color:rgba(255,255,255,0.55); margin-bottom:7px;">
+                    <sc-for list="{{ maaneder }}" as="m" hint-placeholder-count="12">
+                      <span style="text-align:center; overflow:hidden;">{{ m }}</span>
+                    </sc-for>
+                  </span>
+                  <span style="display:flex; gap:4px;">
+                    <sc-for list="{{ perioder }}" as="p" hint-placeholder-count="3">
+                      <span style="{{ p.bandStil }}">{{ p.name }}</span>
+                    </sc-for>
+                  </span>
+                  <span style="display:block; position:relative; height:20px; margin-top:5px;">
+                    <span style="position:absolute; left:7.3%; transform:translateX(-50%); display:inline-flex; align-items:center; height:19px; padding:0 9px; border-radius:999px; background:#ffffff; color:#17446f; font-family:Montserrat,sans-serif; font-weight:800; font-size:9.5px; letter-spacing:0.05em; text-transform:uppercase; white-space:nowrap;">Du er her · 2. sep</span>
+                  </span>
+                </span>
+              </div>
+
+              <!-- To spor side om side: gruppetrening og elevens IUP, låst til samme periodeakse -->
+              <div style="display:grid; grid-template-columns:104px repeat(3,minmax(0,1fr)); gap:12px 14px; flex:none; align-items:start;">
+                <span style="display:flex; flex-direction:column; gap:4px; padding-top:16px;">
+                  <span style="font-family:Montserrat,sans-serif; font-weight:800; font-size:11px; letter-spacing:0.07em; text-transform:uppercase; color:#17446f;">Gruppetrening</span>
+                  <span style="font-size:11.5px; color:#64748b; line-height:1.4;">Fellesøkter for hele golfgruppa</span>
+                </span>
+                <sc-for list="{{ perioder }}" as="p" hint-placeholder-count="3">
+                  <div style="{{ p.laneKortStil }}">
+                    <span style="{{ p.laneTopStil }}">
+                      <span style="{{ p.laneDot }}"></span>
+                      <b style="font-family:Montserrat,sans-serif; font-weight:700; font-size:15px; min-width:0; flex:1; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">{{ p.name }}</b>
+                      <sc-if value="{{ p.naa }}" hint-placeholder-val="{{ false }}">
+                        <span style="font-family:Montserrat,sans-serif; font-weight:800; font-size:9px; letter-spacing:0.06em; text-transform:uppercase; padding:3px 8px; border-radius:999px; background:#f47b20; color:#ffffff; flex:none;">Uke 4/16</span>
+                      </sc-if>
+                    </span>
+                    <span style="display:block; font-family:Montserrat,sans-serif; font-weight:700; font-size:10px; letter-spacing:0.06em; text-transform:uppercase; color:#475569; margin-top:9px; font-variant-numeric:tabular-nums;">{{ p.dato }} · {{ p.uker }}</span>
+                    <span style="display:block; font-size:13px; color:#475569; line-height:1.55; margin-top:7px;">{{ p.focus }}</span>
+                    <span style="display:flex; flex-wrap:wrap; gap:6px; margin-top:11px;">
+                      <span style="display:inline-flex; align-items:center; height:24px; padding:0 10px; border-radius:999px; background:#f4f6f8; font-family:Montserrat,sans-serif; font-weight:700; font-size:10.5px; color:#1e293b;">3 fellesøkter i uka</span>
+                      <span style="display:inline-flex; align-items:center; height:24px; padding:0 10px; border-radius:999px; background:#f4f6f8; font-size:11.5px; color:#475569;">{{ p.loc }}</span>
+                    </span>
+                  </div>
+                </sc-for>
+
+                <span style="display:flex; flex-direction:column; gap:4px; padding-top:16px;">
+                  <span style="font-family:Montserrat,sans-serif; font-weight:800; font-size:11px; letter-spacing:0.07em; text-transform:uppercase; color:#226f67;">Min utviklingsplan</span>
+                  <span style="font-size:11.5px; color:#64748b; line-height:1.4;">Avtalt med trener i IUP-samtalen</span>
+                </span>
+                <sc-for list="{{ perioder }}" as="p" hint-placeholder-count="3">
+                  <div style="{{ p.laneKortStil }}">
+                    <span style="{{ p.laneTopStil }}">
+                      <span style="font-family:Montserrat,sans-serif; font-weight:700; font-size:10.5px; letter-spacing:0.07em; text-transform:uppercase; color:#475569; min-width:0; flex:1;">{{ p.iup.antall }}</span>
+                      <span style="display:inline-flex; align-items:center; height:23px; padding:0 10px; border-radius:999px; background:#e4efee; color:#226f67; font-family:Montserrat,sans-serif; font-weight:700; font-size:10.5px; flex:none; font-variant-numeric:tabular-nums;">{{ p.iup.egentid }} egentid/uke</span>
+                    </span>
+                    <sc-for list="{{ p.iup.liste }}" as="f" hint-placeholder-count="3">
+                      <span style="{{ f.radStil }}">
+                        <span style="{{ f.aksStil }}">{{ f.akse }}</span>
+                        <span style="min-width:0; flex:1;">
+                          <span style="display:block; font-size:13px; color:#1e293b; line-height:1.45;">{{ f.tittel }}</span>
+                          <span style="display:block; font-family:Montserrat,sans-serif; font-weight:700; font-size:11px; color:#64748b; margin-top:3px; font-variant-numeric:tabular-nums;">{{ f.egentid }} egentrening</span>
+                        </span>
+                        <span style="{{ f.statusStil }}">{{ f.status }}</span>
+                      </span>
+                    </sc-for>
+                    <span style="display:block; font-size:11.5px; color:#64748b; line-height:1.5; margin-top:10px; padding-top:10px; border-top:1px solid #e9edf1;">{{ p.iup.maaling }}</span>
+                  </div>
+                </sc-for>
+              </div>
+
+              <div style="display:flex; align-items:center; gap:10px; flex:none;">
+                <span style="font-family:Montserrat,sans-serif; font-weight:800; font-size:11px; letter-spacing:0.07em; text-transform:uppercase; color:#475569; width:94px; flex:none;">Milepæler</span>
+                <sc-for list="{{ milepaelStrip }}" as="m" hint-placeholder-count="6">
+                  <span style="{{ m.stil }}">
+                    <span style="{{ m.prikkStil }}"></span>
+                    <b style="font-family:Montserrat,sans-serif; font-weight:700; font-size:11.5px; color:#1e293b; min-width:0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">{{ m.navn }}</b>
+                    <span style="font-size:11px; color:#64748b; white-space:nowrap; flex:none; font-variant-numeric:tabular-nums;">{{ m.dato }}</span>
+                  </span>
+                </sc-for>
+              </div>
+            </sc-if>
+
+            <!-- Plan · Kalender -->
+            <sc-if value="{{ mKalender }}" hint-placeholder-val="{{ false }}">
+              <div style="display:grid; grid-template-columns:minmax(0,1fr) 340px; gap:16px; flex:1; min-height:0;">
+                <div style="background:#ffffff; border-radius:26px; box-shadow:0 8px 24px rgba(23,68,111,0.08); padding:20px 22px; display:flex; flex-direction:column; gap:12px; min-height:0;">
+                  <span style="display:flex; align-items:center; gap:12px;">
+                    <b style="font-family:Montserrat,sans-serif; font-weight:800; font-size:18px;">September 2026</b>
+                    <span style="display:inline-flex; align-items:center; gap:6px; height:26px; padding:0 11px; border-radius:999px; background:#e4efee; color:#226f67; font-family:Montserrat,sans-serif; font-weight:700; font-size:11px;">
+                      <span style="width:7px; height:7px; border-radius:999px; background:#2e857d;"></span>Grunnperiode
+                    </span>
+                    <span style="flex:1;"></span>
+                    <span style="font-family:Montserrat,sans-serif; font-weight:700; font-size:11.5px; color:#475569; font-variant-numeric:tabular-nums;">12 økter · 1 samling · 1 turnering</span>
+                  </span>
+                  <span style="display:grid; grid-template-columns:repeat(7,1fr); gap:6px;">
+                    <sc-for list="{{ ukedager }}" as="d" hint-placeholder-count="7">
+                      <span style="text-align:center; font-family:Montserrat,sans-serif; font-weight:700; font-size:10px; letter-spacing:0.07em; text-transform:uppercase; color:#64748b;">{{ d }}</span>
+                    </sc-for>
+                  </span>
+                  <span style="display:grid; grid-template-columns:repeat(7,1fr); gap:6px; flex:1; min-height:0;">
+                    <sc-for list="{{ kalCeller }}" as="c" hint-placeholder-count="35">
+                      <span style="{{ c.stil }}" onClick="{{ c.aapne }}">
+                        <span style="{{ c.numStil }}">{{ c.num }}</span>
+                        <sc-if value="{{ c.harOkt }}" hint-placeholder-val="{{ false }}">
+                          <span style="{{ c.oktStil }}">{{ c.oktKort }}</span>
+                        </sc-if>
+                        <sc-if value="{{ c.harMerke }}" hint-placeholder-val="{{ false }}">
+                          <span style="{{ c.merkeStil }}">{{ c.merkeTekst }}</span>
+                        </sc-if>
+                      </span>
+                    </sc-for>
+                  </span>
+                </div>
+                <div style="background:#ffffff; border-radius:26px; box-shadow:0 8px 24px rgba(23,68,111,0.08); padding:20px 22px; display:flex; flex-direction:column; gap:12px; min-height:0;">
+                  <span style="font-family:Montserrat,sans-serif; font-weight:700; font-size:11px; letter-spacing:0.08em; text-transform:uppercase; color:#475569;">Uke 36 · 31. aug – 6. sep</span>
+                  <span style="display:flex; gap:8px;">
+                    <sc-if value="{{ true }}" hint-placeholder-val="{{ true }}">
+                      <span style="flex:1; padding:11px 12px; border-radius:16px; background:#f4f6f8;">
+                        <b style="display:block; font-family:Montserrat,sans-serif; font-weight:800; font-size:19px; font-variant-numeric:tabular-nums;">4</b>
+                        <span style="display:block; font-family:Montserrat,sans-serif; font-weight:700; font-size:9.5px; letter-spacing:0.07em; text-transform:uppercase; color:#64748b; margin-top:2px;">Økter</span>
+                      </span>
+                    </sc-if>
+                    <span style="flex:1; padding:11px 12px; border-radius:16px; background:#e4efee;">
+                      <b style="display:block; font-family:Montserrat,sans-serif; font-weight:800; font-size:19px; color:#226f67; font-variant-numeric:tabular-nums;">1</b>
+                      <span style="display:block; font-family:Montserrat,sans-serif; font-weight:700; font-size:9.5px; letter-spacing:0.07em; text-transform:uppercase; color:#226f67; margin-top:2px;">Gjennomført</span>
+                    </span>
+                    <span style="flex:1; padding:11px 12px; border-radius:16px; background:#f4f6f8;">
+                      <b style="display:block; font-family:Montserrat,sans-serif; font-weight:800; font-size:19px; font-variant-numeric:tabular-nums;">6</b>
+                      <span style="display:block; font-family:Montserrat,sans-serif; font-weight:700; font-size:9.5px; letter-spacing:0.07em; text-transform:uppercase; color:#64748b; margin-top:2px;">Timer</span>
+                    </span>
+                  </span>
+                  <sc-for list="{{ ukeRader }}" as="r" hint-placeholder-count="4">
+                    <span style="{{ r.dRadStil }}" onClick="{{ r.aapne }}">
+                      <span style="{{ r.omrStil }}"></span>
+                      <span style="width:44px; flex:none; font-family:Montserrat,sans-serif; font-weight:700; font-size:12px; color:#17446f; font-variant-numeric:tabular-nums;">{{ r.dag }}</span>
+                      <span style="min-width:0; flex:1;">
+                        <b style="display:block; font-family:Montserrat,sans-serif; font-weight:600; font-size:13px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">{{ r.tittel }}</b>
+                        <span style="display:block; font-size:11.5px; color:#475569; margin-top:1px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">{{ r.sub }}</span>
+                      </span>
+                      <sc-if value="{{ r.merke }}" hint-placeholder-val="{{ false }}">
+                        <span style="{{ r.merkeStil }}">{{ r.merkeTekst }}</span>
+                      </sc-if>
+                    </span>
+                  </sc-for>
+                </div>
+              </div>
+            </sc-if>
+
+            <!-- Plan · Samlinger -->
+            <sc-if value="{{ mSamlinger }}" hint-placeholder-val="{{ false }}">
+              <div style="display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:16px; flex:none;">
+                <sc-for list="{{ samlinger }}" as="c" hint-placeholder-count="6">
+                  <div style="background:#ffffff; border-radius:26px; box-shadow:0 8px 24px rgba(23,68,111,0.08); padding:20px 22px; display:flex; flex-direction:column; gap:10px;">
+                    <span style="display:flex; align-items:flex-start; justify-content:space-between; gap:10px;">
+                      <b style="font-family:Montserrat,sans-serif; font-weight:700; font-size:16px; min-width:0;">{{ c.name }}</b>
+                      <span style="{{ c.statusStil }}">{{ c.status }}</span>
+                    </span>
+                    <span style="display:block; font-size:13px; color:#475569; line-height:1.55;">{{ c.desc }}</span>
+                    <span style="display:flex; flex-direction:column; gap:7px; margin-top:2px;">
+                      <span style="display:flex; justify-content:space-between; gap:10px;">
+                        <span style="font-size:12.5px; color:#64748b;">Dato</span>
+                        <b style="font-family:Montserrat,sans-serif; font-weight:700; font-size:12.5px; font-variant-numeric:tabular-nums;">{{ c.dato }}</b>
+                      </span>
+                      <span style="display:flex; justify-content:space-between; gap:10px;">
+                        <span style="font-size:12.5px; color:#64748b;">Sted</span>
+                        <span style="font-size:12.5px; text-align:right;">{{ c.hvor }}</span>
+                      </span>
+                      <span style="display:flex; justify-content:space-between; gap:10px;">
+                        <span style="font-size:12.5px; color:#64748b;">Påmelding</span>
+                        <span style="font-size:12.5px; text-align:right;">{{ c.pamelding }}</span>
+                      </span>
+                      <span style="display:flex; justify-content:space-between; gap:10px; padding-top:9px; border-top:1px solid #e9edf1;">
+                        <span style="font-size:12.5px; color:#64748b;">Frist {{ c.pamfrist }}</span>
+                        <b style="font-family:Montserrat,sans-serif; font-weight:700; font-size:13px; color:#226f67; font-variant-numeric:tabular-nums;">{{ c.egenandel }}</b>
+                      </span>
+                    </span>
+                  </div>
+                </sc-for>
+              </div>
+              <div style="background:#ffffff; border-radius:26px; box-shadow:0 8px 24px rgba(23,68,111,0.08); padding:20px 22px; flex:none;">
+                <span style="display:block; font-family:Montserrat,sans-serif; font-weight:700; font-size:11px; letter-spacing:0.08em; text-transform:uppercase; color:#475569; margin-bottom:10px;">Heldagssamlinger</span>
+                <span style="display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:10px;">
+                  <sc-for list="{{ heldager }}" as="h" hint-placeholder-count="3">
+                    <span style="display:flex; align-items:center; gap:12px; padding:12px 14px; border-radius:18px; background:#f4f6f8;">
+                      <span style="display:inline-flex; align-items:center; justify-content:center; min-width:86px; height:36px; border-radius:12px; background:#e3e9ee; color:#17446f; font-family:Montserrat,sans-serif; font-weight:700; font-size:12.5px; flex:none; font-variant-numeric:tabular-nums;">{{ h.dato }}</span>
+                      <span style="min-width:0; flex:1;">
+                        <b style="display:block; font-family:Montserrat,sans-serif; font-weight:700; font-size:13px;">{{ h.tema }}</b>
+                        <span style="display:block; font-size:12px; color:#475569; margin-top:1px;">{{ h.hvor }}</span>
+                      </span>
+                    </span>
+                  </sc-for>
+                </span>
+              </div>
+            </sc-if>
+
+            <!-- Skole · Skoleår -->
+            <sc-if value="{{ mSkoleRute }}" hint-placeholder-val="{{ false }}">
+              <div style="display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:16px; flex:1; min-height:0;">
+                <div style="background:#ffffff; border-radius:26px; box-shadow:0 8px 24px rgba(23,68,111,0.08); padding:20px 22px; display:flex; flex-direction:column; gap:10px; min-height:0;">
+                  <span style="font-family:Montserrat,sans-serif; font-weight:700; font-size:11px; letter-spacing:0.08em; text-transform:uppercase; color:#475569;">Skoleruta 2026–2027</span>
+                  <sc-for list="{{ skoleRute }}" as="s" hint-placeholder-count="10">
+                    <span style="{{ s.dRadStil }}">
+                      <span style="{{ s.prikkStil }}"></span>
+                      <span style="min-width:130px; flex:none; font-size:12.5px; color:#475569; font-variant-numeric:tabular-nums;">{{ s.dato }}</span>
+                      <b style="min-width:0; flex:1; font-family:Montserrat,sans-serif; font-weight:600; font-size:13.5px;">{{ s.name }}</b>
+                      <span style="font-family:Montserrat,sans-serif; font-weight:700; font-size:10px; letter-spacing:0.06em; text-transform:uppercase; color:#64748b; flex:none;">{{ s.type }}</span>
+                    </span>
+                  </sc-for>
+                </div>
+                <div style="background:#ffffff; border-radius:26px; box-shadow:0 8px 24px rgba(23,68,111,0.08); padding:20px 22px; display:flex; flex-direction:column; gap:10px; min-height:0;">
+                  <span style="font-family:Montserrat,sans-serif; font-weight:700; font-size:11px; letter-spacing:0.08em; text-transform:uppercase; color:#475569;">Prøveplan</span>
+                  <sc-for list="{{ prover }}" as="e" hint-placeholder-count="6">
+                    <span style="{{ e.dRadStil }}">
+                      <span style="min-width:110px; flex:none; font-size:12.5px; color:#475569; font-variant-numeric:tabular-nums;">{{ e.dato }}</span>
+                      <span style="min-width:0; flex:1;">
+                        <b style="display:block; font-family:Montserrat,sans-serif; font-weight:600; font-size:13.5px;">{{ e.fag }}</b>
+                        <span style="display:block; font-size:12px; color:#475569; margin-top:1px;">{{ e.type }}</span>
+                      </span>
+                      <span style="display:inline-flex; align-items:center; height:24px; padding:0 10px; border-radius:999px; background:#e3e9ee; color:#17446f; font-family:Montserrat,sans-serif; font-weight:700; font-size:11px; flex:none;">{{ e.klasse }}</span>
+                    </span>
+                  </sc-for>
+                </div>
+              </div>
+            </sc-if>
+
+            <!-- Skole · Timeplan -->
+            <sc-if value="{{ mSkoleTime }}" hint-placeholder-val="{{ false }}">
+              <div style="display:flex; gap:8px; flex:none;">
+                <sc-for list="{{ trinn }}" as="t" hint-placeholder-count="3">
+                  <button type="button" onClick="{{ t.velg }}" style="{{ t.stilD }}">{{ t.l }}</button>
+                </sc-for>
+              </div>
+              <div style="background:#ffffff; border-radius:26px; box-shadow:0 8px 24px rgba(23,68,111,0.08); padding:22px; flex:none;">
+                <span style="display:grid; grid-template-columns:120px repeat(5,minmax(0,1fr)); gap:8px; margin-bottom:8px;">
+                  <span></span>
+                  <sc-for list="{{ ttDager }}" as="d" hint-placeholder-count="5">
+                    <span style="text-align:center; font-family:Montserrat,sans-serif; font-weight:700; font-size:10.5px; letter-spacing:0.07em; text-transform:uppercase; color:#64748b;">{{ d }}</span>
+                  </sc-for>
+                </span>
+                <sc-for list="{{ timeplanRader }}" as="r" hint-placeholder-count="4">
+                  <span style="display:grid; grid-template-columns:120px repeat(5,minmax(0,1fr)); gap:8px; margin-bottom:8px;">
+                    <span style="display:flex; align-items:center; font-family:Montserrat,sans-serif; font-weight:700; font-size:11.5px; color:#64748b; font-variant-numeric:tabular-nums;">{{ r.klokke }}</span>
+                    <sc-for list="{{ r.celler }}" as="c" hint-placeholder-count="5">
+                      <span style="{{ c.stil }}">{{ c.t }}</span>
+                    </sc-for>
+                  </span>
+                </sc-for>
+              </div>
+            </sc-if>
+
+            <!-- Skole · Vurdering -->
+            <sc-if value="{{ mSkoleVurd }}" hint-placeholder-val="{{ false }}">
+              <div style="background:#ffffff; border-radius:26px; box-shadow:0 8px 24px rgba(23,68,111,0.08); padding:20px 22px; flex:none; display:flex; align-items:flex-start; justify-content:space-between; gap:20px;">
+                <span>
+                  <b style="display:block; font-family:Montserrat,sans-serif; font-weight:800; font-size:19px;">Toppidrett 1</b>
+                  <span style="display:block; font-size:13px; color:#475569; margin-top:3px;">VG1 · kompetansemål og kjennetegn fra WANGs vurderingsdokument</span>
+                </span>
+                <span style="display:flex; gap:6px; flex-wrap:wrap; flex:none;">
+                  <span style="display:inline-flex; align-items:center; height:27px; padding:0 12px; border-radius:999px; background:#fffbe8; color:#7a6200; font-family:Montserrat,sans-serif; font-weight:700; font-size:11px;">Lav måloppnåelse</span>
+                  <span style="display:inline-flex; align-items:center; height:27px; padding:0 12px; border-radius:999px; background:#e4efee; color:#226f67; font-family:Montserrat,sans-serif; font-weight:700; font-size:11px;">God</span>
+                  <span style="display:inline-flex; align-items:center; height:27px; padding:0 12px; border-radius:999px; background:#e3e9ee; color:#17446f; font-family:Montserrat,sans-serif; font-weight:700; font-size:11px;">Fremragende</span>
+                </span>
+              </div>
+              <div style="display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:16px; flex:none;">
+                <sc-for list="{{ maalomraader }}" as="o" hint-placeholder-count="3">
+                  <div style="background:#ffffff; border-radius:26px; box-shadow:0 8px 24px rgba(23,68,111,0.08); padding:20px 22px; display:flex; flex-direction:column; gap:12px;">
+                    <span style="display:flex; align-items:center; gap:12px;">
+                      <span style="{{ o.icStil }}">
+                        <svg viewBox="0 0 24 24" style="width:18px; height:18px; stroke:currentColor; fill:none; stroke-width:2; stroke-linecap:round; stroke-linejoin:round;"><path d="{{ o.d }}"></path></svg>
+                      </span>
+                      <span style="min-width:0; flex:1;">
+                        <b style="display:block; font-family:Montserrat,sans-serif; font-weight:700; font-size:14.5px;">{{ o.navn }}</b>
+                        <span style="display:block; font-size:12px; color:#475569; margin-top:1px;">{{ o.meta }}</span>
+                      </span>
+                      <span style="{{ o.nivaaStil }}">{{ o.nivaa }}</span>
+                    </span>
+                    <sc-for list="{{ o.maal }}" as="m" hint-placeholder-count="2">
+                      <span style="display:block; padding:12px 14px; border-radius:16px; background:#f4f6f8;">
+                        <b style="display:block; font-family:Montserrat,sans-serif; font-weight:700; font-size:12px; color:#17446f;">{{ m.t }}</b>
+                        <span style="display:block; font-size:12.5px; color:#475569; line-height:1.5; margin-top:4px;">{{ m.mal }}</span>
+                      </span>
+                    </sc-for>
+                  </div>
+                </sc-for>
+              </div>
+            </sc-if>
+
+            <!-- Foreldre -->
+            <sc-if value="{{ mForeldre }}" hint-placeholder-val="{{ false }}">
+              <div style="display:grid; grid-template-columns:minmax(0,1fr) 420px; gap:16px; flex:1; min-height:0;">
+                <div style="display:flex; flex-direction:column; gap:16px; min-height:0;">
+                  <div style="background:linear-gradient(160deg,#215883 0%,#17446f 55%,#113659 100%); border-radius:26px; box-shadow:0 18px 40px rgba(15,23,42,0.22); padding:24px 28px; color:#ffffff; flex:none; display:flex; align-items:flex-end; justify-content:space-between; gap:20px;">
+                    <span>
+                      <span style="display:block; font-family:Montserrat,sans-serif; font-weight:700; font-size:11px; letter-spacing:0.09em; text-transform:uppercase; color:#49ca9f;">Neste foreldremøte · om 6 dager</span>
+                      <span style="display:block; font-family:Montserrat,sans-serif; font-weight:800; font-size:27px; letter-spacing:-0.02em; margin-top:7px;">Oppstart og sesongplan</span>
+                      <span style="display:block; font-size:14px; color:rgba(255,255,255,0.74); margin-top:6px;">8. september kl. 18:00 · WANG Fredrikstad, auditoriet</span>
+                    </span>
+                    <button type="button" style="flex:none; height:44px; padding:0 22px; border:none; border-radius:999px; background:#ffffff; color:#17446f; font-family:Montserrat,sans-serif; font-weight:700; font-size:14px; cursor:pointer;">Meld deltakelse</button>
+                  </div>
+                  <div style="background:#ffffff; border-radius:26px; box-shadow:0 8px 24px rgba(23,68,111,0.08); padding:20px 22px; flex:1; min-height:0; display:flex; flex-direction:column; gap:10px;">
+                    <span style="font-family:Montserrat,sans-serif; font-weight:700; font-size:11px; letter-spacing:0.08em; text-transform:uppercase; color:#475569;">Foreldremøter i sesongen</span>
+                    <sc-for list="{{ foreldremoter }}" as="p" hint-placeholder-count="4">
+                      <span style="{{ p.dRadStil }}">
+                        <span style="min-width:120px; flex:none; font-family:Montserrat,sans-serif; font-weight:700; font-size:12.5px; color:#17446f; font-variant-numeric:tabular-nums;">{{ p.dato }}</span>
+                        <span style="min-width:0; flex:1;">
+                          <b style="display:block; font-family:Montserrat,sans-serif; font-weight:600; font-size:14px;">{{ p.tema }}</b>
+                          <span style="display:block; font-size:12.5px; color:#475569; margin-top:1px;">kl. {{ p.tid }} · {{ p.hvor }}</span>
+                        </span>
+                      </span>
+                    </sc-for>
+                  </div>
+                </div>
+                <div style="background:#ffffff; border-radius:26px; box-shadow:0 8px 24px rgba(23,68,111,0.08); padding:20px 22px 18px; display:flex; flex-direction:column; gap:12px; min-height:0;">
+                  <span style="display:flex; align-items:center; justify-content:space-between; gap:10px;">
+                    <span style="font-family:Montserrat,sans-serif; font-weight:700; font-size:11px; letter-spacing:0.08em; text-transform:uppercase; color:#475569;">Gruppechat</span>
+                    <span style="display:inline-flex; align-items:center; gap:6px; font-family:Montserrat,sans-serif; font-weight:700; font-size:11px; color:#226f67;">
+                      <span style="width:7px; height:7px; border-radius:999px; background:#49ca9f;"></span>3 trenere · 22 foresatte
+                    </span>
+                  </span>
+                  <span style="flex:1; min-height:0; display:flex; flex-direction:column; gap:12px;">
+                    <sc-for list="{{ chat }}" as="m" hint-placeholder-count="3">
+                      <span style="{{ m.wrapStil }}">
+                        <sc-if value="{{ m.visNavn }}" hint-placeholder-val="{{ true }}">
+                          <span style="display:block; font-family:Montserrat,sans-serif; font-weight:700; font-size:11px; color:#64748b; padding:0 4px 3px;">{{ m.sender }}</span>
+                        </sc-if>
+                        <span style="{{ m.boblStilD }}">{{ m.text }}</span>
+                      </span>
+                    </sc-for>
+                  </span>
+                  <span style="display:flex; gap:10px; align-items:center; padding-top:12px; border-top:1px solid #e9edf1;">
+                    <span style="flex:1; min-width:0; height:44px; border-radius:999px; background:#f4f6f8; display:flex; align-items:center; padding:0 16px; font-size:14px; color:#94a3b8;">Skriv en melding …</span>
+                    <span style="width:44px; height:44px; border-radius:999px; background:#17446f; color:#ffffff; display:grid; place-items:center; flex:none;">
+                      <svg viewBox="0 0 24 24" style="width:18px; height:18px; stroke:currentColor; fill:none; stroke-width:2.2; stroke-linecap:round; stroke-linejoin:round;"><path d="m22 2-7 20-4-9-9-4z"></path><path d="M22 2 11 13"></path></svg>
+                    </span>
+                  </span>
+                </div>
+              </div>
+            </sc-if>
+
+            <!-- Økt-detalj -->
+            <sc-if value="{{ mOkt }}" hint-placeholder-val="{{ false }}">
+              <div style="background:linear-gradient(160deg,#215883 0%,#17446f 55%,#113659 100%); border-radius:26px; box-shadow:0 18px 40px rgba(15,23,42,0.22); padding:24px 28px; color:#ffffff; flex:none;">
+                <span style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
+                  <span style="font-family:Montserrat,sans-serif; font-weight:700; font-size:11px; letter-spacing:0.09em; text-transform:uppercase; color:#49ca9f; font-variant-numeric:tabular-nums;">Mandag 31. august 2026 · 08:00–10:00</span>
+                  <span style="display:inline-flex; align-items:center; height:22px; padding:0 10px; border-radius:999px; background:rgba(73,202,159,0.2); color:#49ca9f; font-family:Montserrat,sans-serif; font-weight:700; font-size:10.5px;">Gjennomført</span>
+                </span>
+                <span style="display:block; font-family:Montserrat,sans-serif; font-weight:800; font-size:29px; letter-spacing:-0.02em; margin-top:9px;">Grep, oppsett og ballposisjon</span>
+                <span style="display:block; font-size:15px; line-height:1.55; color:rgba(255,255,255,0.78); margin-top:8px; max-width:70ch;">Etablere et nøytralt grep, balansert oppsett og riktig ballposisjon for jern.</span>
+                <span style="display:flex; flex-wrap:wrap; gap:8px; margin-top:16px;">
+                  <span style="display:inline-flex; align-items:center; height:32px; padding:0 14px; border-radius:999px; background:rgba(255,255,255,0.12); font-size:13px; font-weight:600;">Golfteknikk</span>
+                  <span style="display:inline-flex; align-items:center; height:32px; padding:0 14px; border-radius:999px; background:rgba(255,255,255,0.12); font-size:13px; font-weight:600;">Gamle Fredrikstad GK</span>
+                  <span style="display:inline-flex; align-items:center; height:32px; padding:0 14px; border-radius:999px; background:rgba(255,255,255,0.12); font-size:13px; font-weight:600;">Grunnperiode · uke 4</span>
+                </span>
+              </div>
+              <div style="display:grid; grid-template-columns:minmax(0,1.25fr) minmax(0,1fr); gap:16px; flex:1; min-height:0;">
+                <div style="background:#ffffff; border-radius:26px; box-shadow:0 8px 24px rgba(23,68,111,0.08); padding:20px 22px; display:flex; flex-direction:column; gap:10px; min-height:0;">
+                  <span style="font-family:Montserrat,sans-serif; font-weight:700; font-size:11px; letter-spacing:0.08em; text-transform:uppercase; color:#475569;">Hoveddel · 3 øvelser</span>
+                  <sc-for list="{{ drills }}" as="dr" hint-placeholder-count="3">
+                    <span style="{{ dr.dRadStil }}">
+                      <span style="{{ dr.numStil }}">{{ dr.num }}</span>
+                      <span style="min-width:0; flex:1;">
+                        <span style="display:block; font-size:13.5px; color:#1e293b; line-height:1.5;">{{ dr.name }}</span>
+                        <sc-if value="{{ dr.harVol }}" hint-placeholder-val="{{ true }}">
+                          <span style="{{ dr.volStil }}">{{ dr.vol }}</span>
+                        </sc-if>
+                      </span>
+                    </span>
+                  </sc-for>
+                  <span style="display:block; margin-top:4px; padding:14px 16px; border-radius:18px; background:#f4f6f8;">
+                    <span style="display:block; font-family:Montserrat,sans-serif; font-weight:700; font-size:10.5px; letter-spacing:0.08em; text-transform:uppercase; color:#475569;">Oppvarming · 25 min</span>
+                    <span style="display:block; font-size:13.5px; color:#475569; line-height:1.55; margin-top:5px;">10 min dynamisk mobilitet for skuldre, hofter og rygg, deretter 15 rolige puttinger for følelse.</span>
+                  </span>
+                </div>
+                <div style="display:flex; flex-direction:column; gap:16px; min-height:0;">
+                  <div style="background:#e4efee; border-radius:26px; padding:20px 22px; flex:none;">
+                    <span style="display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:11px;">
+                      <span style="font-family:Montserrat,sans-serif; font-weight:700; font-size:11px; letter-spacing:0.08em; text-transform:uppercase; color:#226f67;">Fra din utviklingsplan</span>
+                      <span style="{{ oktFokus.statusStil }}">{{ oktFokus.status }}</span>
+                    </span>
+                    <span style="display:flex; align-items:flex-start; gap:12px;">
+                      <span style="{{ oktFokus.aksStil }}">{{ oktFokus.akse }}</span>
+                      <span style="min-width:0; flex:1;">
+                        <span style="display:block; font-size:14px; color:#1e293b; line-height:1.45;">{{ oktFokus.tittel }}</span>
+                        <span style="display:block; font-size:12.5px; color:#3f6b66; line-height:1.55; margin-top:5px;">Denne økta jobber direkte med fokusområdet ditt — {{ oktFokus.egentid }} egentrening kommer i tillegg til fellesøktene.</span>
+                      </span>
+                    </span>
+                  </div>
+                  <div style="background:#ffffff; border-radius:26px; box-shadow:0 8px 24px rgba(23,68,111,0.08); padding:20px 22px; flex:none;">
+                    <span style="display:block; font-family:Montserrat,sans-serif; font-weight:700; font-size:11px; letter-spacing:0.08em; text-transform:uppercase; color:#475569; margin-bottom:7px;">Test og måling</span>
+                    <span style="display:block; font-size:13.5px; color:#475569; line-height:1.55;">Baseline treffpunkt på 7-jern (impact-tape) registreres i PlayerHQ.</span>
+                    <span style="display:block; font-family:Montserrat,sans-serif; font-weight:700; font-size:11px; letter-spacing:0.08em; text-transform:uppercase; color:#475569; margin:16px 0 7px;">Evaluering</span>
+                    <span style="display:block; font-size:13.5px; color:#475569; line-height:1.55;">Egenvurdering av oppsett 1–5 og ett fokuspunkt til neste økt.</span>
+                  </div>
+                  <div style="background:#ffffff; border-radius:26px; box-shadow:0 8px 24px rgba(23,68,111,0.08); padding:20px 22px; flex:1; min-height:0;">
+                    <span style="display:block; font-family:Montserrat,sans-serif; font-weight:700; font-size:11px; letter-spacing:0.08em; text-transform:uppercase; color:#475569; margin-bottom:11px;">Kompetansemål per trinn</span>
+                    <sc-for list="{{ komp }}" as="k" hint-placeholder-count="3">
+                      <span style="display:flex; gap:12px; align-items:baseline; margin-bottom:10px;">
+                        <b style="font-family:Montserrat,sans-serif; font-weight:800; font-size:12px; color:#17446f; min-width:34px; flex:none;">{{ k.vg }}</b>
+                        <span style="font-size:13px; color:#475569; line-height:1.5;">{{ k.t }}</span>
+                      </span>
+                    </sc-for>
+                  </div>
+                </div>
+              </div>
+            </sc-if>
+
+            <!-- IUP-samtale -->
+            <sc-if value="{{ mIup }}" hint-placeholder-val="{{ false }}">
+              <div style="background:linear-gradient(160deg,#215883 0%,#17446f 55%,#113659 100%); border-radius:26px; box-shadow:0 18px 40px rgba(15,23,42,0.22); padding:24px 28px; color:#ffffff; flex:none; display:flex; align-items:flex-end; justify-content:space-between; gap:24px;">
+                <span style="min-width:0; flex:1;">
+                  <span style="display:block; font-family:Montserrat,sans-serif; font-weight:700; font-size:11px; letter-spacing:0.09em; text-transform:uppercase; color:#49ca9f;">IUP-samtale · 26. november 2026 · Nora Kristiansen VG2 og Anders</span>
+                  <span style="display:block; font-family:Montserrat,sans-serif; font-weight:800; font-size:29px; letter-spacing:-0.02em; margin-top:7px;">Grunnperiode → Spesialisering</span>
+                  <span style="display:block; font-size:14px; color:rgba(255,255,255,0.74); margin-top:6px; max-width:74ch;">Evaluer perioden som avsluttes, les tallene som faktisk er målt, og avtal fokusområdene som skrives inn i Noras årsplan.</span>
+                </span>
+                <span style="display:flex; align-items:center; gap:8px; flex:none; flex-wrap:wrap; justify-content:flex-end; max-width:340px;">
+                  <sc-for list="{{ iupSteg }}" as="st" hint-placeholder-count="3">
+                    <span style="display:flex; align-items:center; gap:9px; min-width:0;">
+                      <span style="display:inline-flex; align-items:center; gap:7px; height:32px; padding:0 13px; border-radius:999px; background:rgba(255,255,255,0.14);">
+                        <span style="{{ st.numStil }}">{{ st.n }}</span>
+                        <span style="font-family:Montserrat,sans-serif; font-weight:700; font-size:11.5px; color:#ffffff; white-space:nowrap;">{{ st.l }}</span>
+                      </span>
+                    </span>
+                  </sc-for>
+                </span>
+              </div>
+
+              <div style="display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:16px; flex:1; min-height:0; align-items:stretch;">
+                <div style="display:flex; flex-direction:column; gap:16px; min-width:0;">
+                  <div style="background:#ffffff; border-radius:26px; box-shadow:0 8px 24px rgba(23,68,111,0.08); padding:20px 22px;">
+                    <span style="display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:2px;">
+                      <span style="font-family:Montserrat,sans-serif; font-weight:700; font-size:11px; letter-spacing:0.08em; text-transform:uppercase; color:#475569;">Grunnperioden · slik gikk det</span>
+                      <span style="display:inline-flex; align-items:center; gap:14px; font-family:Montserrat,sans-serif; font-weight:700; font-size:10px; letter-spacing:0.06em; text-transform:uppercase; color:#64748b;">
+                        <span style="display:inline-flex; align-items:center; gap:5px;"><span style="width:9px; height:9px; border-radius:999px; background:#2e857d;"></span>Egenvurdering</span>
+                        <span style="display:inline-flex; align-items:center; gap:5px;"><span style="width:9px; height:9px; border-radius:999px; background:#17446f;"></span>Trener</span>
+                      </span>
+                    </span>
+                    <sc-for list="{{ iupEval }}" as="e" hint-placeholder-count="3">
+                      <span style="{{ e.radStil }}">
+                        <span style="display:flex; align-items:flex-start; gap:12px;">
+                          <span style="{{ e.aksStil }}">{{ e.akse }}</span>
+                          <span style="min-width:0; flex:1; font-size:14px; color:#1e293b; line-height:1.45;">{{ e.tittel }}</span>
+                          <span style="{{ e.statusStil }}">{{ e.status }}</span>
+                        </span>
+                        <span style="display:flex; align-items:center; gap:18px; margin-top:10px; padding-left:56px;">
+                          <span style="display:flex; align-items:center; gap:5px;">
+                            <sc-for list="{{ e.egenPrikker }}" as="p" hint-placeholder-count="5">
+                              <span style="{{ p.stil }}"></span>
+                            </sc-for>
+                          </span>
+                          <span style="display:flex; align-items:center; gap:5px;">
+                            <sc-for list="{{ e.trenerPrikker }}" as="p" hint-placeholder-count="5">
+                              <span style="{{ p.stil }}"></span>
+                            </sc-for>
+                          </span>
+                        </span>
+                      </span>
+                    </sc-for>
+                  </div>
+                  <div style="background:#ffffff; border-radius:26px; box-shadow:0 8px 24px rgba(23,68,111,0.08); padding:20px 22px;">
+                    <span style="display:block; font-family:Montserrat,sans-serif; font-weight:700; font-size:11px; letter-spacing:0.08em; text-transform:uppercase; color:#475569; margin-bottom:4px;">Målt siden forrige samtale</span>
+                    <sc-for list="{{ iupTall }}" as="t" hint-placeholder-count="3">
+                      <span style="{{ t.radStil }}">
+                        <span style="min-width:0; flex:1;">
+                          <b style="display:block; font-family:Montserrat,sans-serif; font-weight:600; font-size:14px;">{{ t.l }}</b>
+                          <span style="display:block; font-size:12px; color:#64748b; margin-top:1px;">{{ t.kilde }}</span>
+                        </span>
+                        <span style="{{ t.verdiStil }}">{{ t.v }}</span>
+                      </span>
+                    </sc-for>
+                  </div>
+                </div>
+
+                <div style="background:#ffffff; border-radius:26px; box-shadow:0 8px 24px rgba(23,68,111,0.08); padding:20px 22px; display:flex; flex-direction:column; gap:12px; min-width:0;">
+                  <span style="display:flex; align-items:center; justify-content:space-between; gap:12px;">
+                    <span style="font-family:Montserrat,sans-serif; font-weight:700; font-size:11px; letter-spacing:0.08em; text-transform:uppercase; color:#226f67;">Fokusområder for spesialiseringsperioden</span>
+                    <span style="display:inline-flex; align-items:center; height:24px; padding:0 11px; border-radius:999px; background:#e4efee; color:#226f67; font-family:Montserrat,sans-serif; font-weight:700; font-size:11px; white-space:nowrap; font-variant-numeric:tabular-nums; flex:none;">5,5 t egentid/uke</span>
+                  </span>
+                  <sc-for list="{{ iupNye }}" as="f" hint-placeholder-count="3">
+                    <span style="{{ f.kortStil }}">
+                      <span style="display:flex; align-items:flex-start; gap:12px;">
+                        <span style="{{ f.aksStil }}">{{ f.akse }}</span>
+                        <span style="min-width:0; flex:1; font-size:14px; color:#1e293b; line-height:1.45;">{{ f.tittel }}</span>
+                      </span>
+                      <span style="display:flex; align-items:center; gap:8px; margin-top:9px; padding-left:56px; flex-wrap:wrap;">
+                        <span style="display:inline-flex; align-items:center; height:26px; padding:0 11px; border-radius:999px; background:#ffffff; font-family:Montserrat,sans-serif; font-weight:700; font-size:11px; color:#1e293b; font-variant-numeric:tabular-nums; white-space:nowrap;">{{ f.egentid }}</span>
+                        <span style="display:inline-flex; align-items:center; height:26px; padding:0 11px; border-radius:999px; background:#ffffff; font-size:11.5px; color:#475569;">{{ f.maaling }}</span>
+                      </span>
+                    </span>
+                  </sc-for>
+                  <span style="display:flex; align-items:center; justify-content:center; gap:8px; height:46px; border-radius:16px; background:#ffffff; box-shadow:inset 0 0 0 1.5px #dce3ea; font-family:Montserrat,sans-serif; font-weight:700; font-size:13px; color:#475569;">
+                    <svg viewBox="0 0 24 24" style="width:16px; height:16px; stroke:currentColor; fill:none; stroke-width:2.4; stroke-linecap:round; stroke-linejoin:round;"><path d="M12 5v14M5 12h14"></path></svg>
+                    Legg til fokusområde
+                  </span>
+                  <span style="display:flex; align-items:center; justify-content:space-between; gap:14px; margin-top:auto; padding-top:14px; border-top:1px solid #e9edf1;">
+                    <span style="font-size:12.5px; color:#64748b; line-height:1.5; min-width:0;">Skrives inn i Noras årsplan og måles i sesongtesten 28. mai.</span>
+                    <button type="button" style="flex:none; height:46px; padding:0 24px; border:none; border-radius:999px; background:#17446f; color:#ffffff; font-family:Montserrat,sans-serif; font-weight:700; font-size:14px; cursor:pointer;">Lagre og del med Nora</button>
+                  </span>
+                </div>
+              </div>
+            </sc-if>
+
+            <!-- Trener -->
+            <sc-if value="{{ mTrener }}" hint-placeholder-val="{{ false }}">
+              <div style="background:linear-gradient(160deg,#215883 0%,#17446f 55%,#113659 100%); border-radius:26px; box-shadow:0 18px 40px rgba(15,23,42,0.22); padding:24px 28px 22px; color:#ffffff; flex:none;">
+                <span style="display:flex; align-items:flex-end; justify-content:space-between; gap:24px;">
+                  <span>
+                    <span style="display:block; font-family:Montserrat,sans-serif; font-weight:700; font-size:11px; letter-spacing:0.09em; text-transform:uppercase; color:#49ca9f;">Golfgruppa · 14 elever · uke 4 av 45</span>
+                    <span style="display:block; font-family:Montserrat,sans-serif; font-weight:800; font-size:29px; letter-spacing:-0.02em; margin-top:7px;">Årsplan 2026–2027</span>
+                    <span style="display:block; font-size:14px; color:rgba(255,255,255,0.74); margin-top:6px;">Samme sesong som eleven ser — periodefarger, uketall og milepæler er identiske.</span>
+                  </span>
+                  <span style="display:inline-flex; align-items:center; gap:7px; height:32px; padding:0 14px; border-radius:999px; background:rgba(255,255,255,0.16); font-family:Montserrat,sans-serif; font-weight:700; font-size:11.5px; flex:none;">Trenervisning</span>
+                </span>
+                <span style="display:grid; grid-template-columns:repeat(12,1fr); gap:3px; font-family:Montserrat,sans-serif; font-weight:700; font-size:9.5px; letter-spacing:0.05em; text-transform:uppercase; color:rgba(255,255,255,0.55); margin-top:18px; margin-bottom:7px;">
+                  <sc-for list="{{ maaneder }}" as="m" hint-placeholder-count="12">
+                    <span style="text-align:center; overflow:hidden;">{{ m }}</span>
+                  </sc-for>
+                </span>
+                <span style="display:flex; gap:4px;">
+                  <sc-for list="{{ coachPerioder }}" as="c" hint-placeholder-count="4">
+                    <span style="{{ c.bandStil }}">{{ c.name }}</span>
+                  </sc-for>
+                </span>
+                <span style="display:block; position:relative; height:20px; margin-top:5px;">
+                  <span style="position:absolute; left:5.5%; transform:translateX(-50%); display:inline-flex; align-items:center; height:19px; padding:0 9px; border-radius:999px; background:#ffffff; color:#17446f; font-family:Montserrat,sans-serif; font-weight:800; font-size:9.5px; letter-spacing:0.05em; text-transform:uppercase; white-space:nowrap;">Du er her · 2. sep</span>
+                </span>
+              </div>
+              <div style="display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:14px; flex:none; align-items:start;">
+                <sc-for list="{{ coachPerioder }}" as="c" hint-placeholder-count="4">
+                  <div style="{{ c.dKortStil }}">
+                    <span style="display:flex; align-items:center; gap:8px;">
+                      <span style="{{ c.prikkStil }}"></span>
+                      <b style="font-family:Montserrat,sans-serif; font-weight:800; font-size:16px; min-width:0; flex:1;">{{ c.name }}</b>
+                      <sc-if value="{{ c.naa }}" hint-placeholder-val="{{ true }}">
+                        <span style="font-family:Montserrat,sans-serif; font-weight:800; font-size:9px; letter-spacing:0.06em; text-transform:uppercase; padding:3px 8px; border-radius:999px; background:#f47b20; color:#ffffff; flex:none;">Nå</span>
+                      </sc-if>
+                    </span>
+                    <span style="display:block; font-family:Montserrat,sans-serif; font-weight:700; font-size:10px; letter-spacing:0.06em; text-transform:uppercase; color:#475569; margin-top:6px; font-variant-numeric:tabular-nums;">{{ c.spenn }}</span>
+                    <span style="display:block; font-size:12.5px; color:#475569; line-height:1.5; margin-top:8px;">{{ c.fokus }}</span>
+                    <span style="display:flex; height:9px; border-radius:999px; overflow:hidden; margin-top:12px;">
+                      <sc-for list="{{ c.pyr }}" as="a" hint-placeholder-count="5">
+                        <span style="{{ a.stil }}"></span>
+                      </sc-for>
+                    </span>
+                    <span style="display:flex; gap:8px; flex-wrap:wrap; margin-top:9px;">
+                      <sc-for list="{{ c.pyr }}" as="a" hint-placeholder-count="5">
+                        <span style="display:inline-flex; align-items:center; gap:5px; font-family:Montserrat,sans-serif; font-weight:700; font-size:9.5px; color:#475569; white-space:nowrap;">
+                          <span style="{{ a.prikkStil }}"></span>{{ a.k }} {{ a.v }}
+                        </span>
+                      </sc-for>
+                    </span>
+                    <span style="display:block; margin-top:12px; padding-top:11px; border-top:1px solid #e9edf1;">
+                      <span style="display:block; font-family:Montserrat,sans-serif; font-weight:700; font-size:9.5px; letter-spacing:0.07em; text-transform:uppercase; color:#64748b;">Læringsfase</span>
+                      <span style="display:block; font-family:Montserrat,sans-serif; font-weight:700; font-size:12.5px; color:#17446f; margin-top:4px;">{{ c.faseFokus }}</span>
+                      <span style="display:block; font-family:Montserrat,sans-serif; font-weight:700; font-size:9.5px; letter-spacing:0.07em; text-transform:uppercase; color:#64748b; margin-top:12px;">Mål</span>
+                      <sc-for list="{{ c.maal }}" as="m" hint-placeholder-count="3">
+                        <span style="display:flex; gap:7px; align-items:flex-start; margin-top:6px;">
+                          <svg viewBox="0 0 24 24" style="width:13px; height:13px; margin-top:2px; stroke:#2e857d; fill:none; stroke-width:2.6; stroke-linecap:round; stroke-linejoin:round; flex:none;"><path d="M20 6 9 17l-5-5"></path></svg>
+                          <span style="font-size:12px; color:#475569; line-height:1.45;">{{ m }}</span>
+                        </span>
+                      </sc-for>
+                      <span style="display:block; font-family:Montserrat,sans-serif; font-weight:700; font-size:9.5px; letter-spacing:0.07em; text-transform:uppercase; color:#64748b; margin-top:12px;">Tester</span>
+                      <sc-for list="{{ c.tester }}" as="t" hint-placeholder-count="2">
+                        <span style="display:block; font-size:12px; color:#475569; line-height:1.45; margin-top:5px;">{{ t }}</span>
+                      </sc-for>
+                    </span>
+                  </div>
+                </sc-for>
+              </div>
+            </sc-if>
+
+          </sc-if>
+
+          <!-- ---------- LASTER ---------- -->
+          <sc-if value="{{ erLaster }}" hint-placeholder-val="{{ false }}">
+            <div style="background:#20507d; border-radius:26px; padding:26px 28px; flex:none;">
+              <span style="display:block; width:22%; height:11px; border-radius:6px; background:rgba(255,255,255,0.18);"></span>
+              <span style="display:block; width:34%; height:26px; border-radius:8px; background:rgba(255,255,255,0.18); margin-top:12px;"></span>
+              <span style="display:block; width:46%; height:13px; border-radius:6px; background:rgba(255,255,255,0.18); margin-top:12px;"></span>
+              <span style="display:flex; gap:4px; margin-top:20px;">
+                <span style="flex:16; height:26px; border-radius:8px; background:rgba(255,255,255,0.14);"></span>
+                <span style="flex:17; height:26px; border-radius:8px; background:rgba(255,255,255,0.14);"></span>
+                <span style="flex:12; height:26px; border-radius:8px; background:rgba(255,255,255,0.14);"></span>
+              </span>
+            </div>
+            <div style="display:grid; grid-template-columns:minmax(0,1.35fr) minmax(0,1fr); gap:16px; flex:1; min-height:0;">
+              <div style="background:#ffffff; border-radius:26px; box-shadow:0 8px 24px rgba(23,68,111,0.08); padding:22px;">
+                <span style="display:block; width:28%; height:10px; border-radius:5px; background:#e9edf1;"></span>
+                <span style="display:block; width:82%; height:14px; border-radius:6px; background:#eef1f4; margin-top:18px;"></span>
+                <span style="display:block; width:64%; height:14px; border-radius:6px; background:#eef1f4; margin-top:11px;"></span>
+                <span style="display:block; width:74%; height:14px; border-radius:6px; background:#eef1f4; margin-top:11px;"></span>
+                <span style="display:block; width:56%; height:14px; border-radius:6px; background:#eef1f4; margin-top:11px;"></span>
+              </div>
+              <div style="background:#ffffff; border-radius:26px; box-shadow:0 8px 24px rgba(23,68,111,0.08); padding:22px;">
+                <span style="display:block; width:36%; height:10px; border-radius:5px; background:#e9edf1;"></span>
+                <span style="display:block; width:88%; height:14px; border-radius:6px; background:#eef1f4; margin-top:18px;"></span>
+                <span style="display:block; width:70%; height:14px; border-radius:6px; background:#eef1f4; margin-top:11px;"></span>
+                <span style="display:block; width:60%; height:14px; border-radius:6px; background:#eef1f4; margin-top:11px;"></span>
+              </div>
+            </div>
+          </sc-if>
+
+          <!-- ---------- TOM ---------- -->
+          <sc-if value="{{ erTom }}" hint-placeholder-val="{{ false }}">
+            <div style="flex:1; min-height:0; background:#ffffff; border-radius:26px; box-shadow:0 8px 24px rgba(23,68,111,0.08); display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; padding:40px;">
+              <span style="width:72px; height:72px; border-radius:999px; background:#e4efee; color:#226f67; display:grid; place-items:center;">
+                <svg viewBox="0 0 24 24" style="width:31px; height:31px; stroke:currentColor; fill:none; stroke-width:2; stroke-linecap:round; stroke-linejoin:round;"><path d="{{ tomIkon }}"></path></svg>
+              </span>
+              <span style="display:block; font-family:Montserrat,sans-serif; font-weight:800; font-size:22px; margin-top:18px;">{{ tomTittel }}</span>
+              <span style="display:block; font-size:14.5px; color:#475569; line-height:1.65; margin-top:10px; max-width:52ch; text-wrap:pretty;">{{ tomTekst }}</span>
+            </div>
+          </sc-if>
+
+          <!-- ---------- FEIL ---------- -->
+          <sc-if value="{{ erFeil }}" hint-placeholder-val="{{ false }}">
+            <div style="flex:1; min-height:0; background:#ffffff; border-radius:26px; box-shadow:0 8px 24px rgba(23,68,111,0.08); display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; padding:40px;">
+              <span style="width:76px; height:76px; border-radius:999px; background:#fef3eb; color:#b4571a; display:grid; place-items:center;">
+                <svg viewBox="0 0 24 24" style="width:33px; height:33px; stroke:currentColor; fill:none; stroke-width:2; stroke-linecap:round; stroke-linejoin:round;"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><path d="M12 9v4"></path><path d="M12 17h.01"></path></svg>
+              </span>
+              <span style="display:block; font-family:Montserrat,sans-serif; font-weight:800; font-size:23px; margin-top:18px;">{{ feilTittel }}</span>
+              <span style="display:block; font-size:14.5px; color:#475569; line-height:1.65; margin-top:10px; max-width:48ch; text-wrap:pretty;">{{ feilTekst }}</span>
+              <button type="button" style="margin-top:22px; height:48px; padding:0 28px; border:none; border-radius:999px; background:#17446f; color:#ffffff; font-family:Montserrat,sans-serif; font-weight:700; font-size:14.5px; cursor:pointer;">Prøv igjen</button>
+            </div>
+          </sc-if>
+
+        </div>
+      </div>
+    </div>
+    </sc-if>
+  </div>
+
+  <!-- Designnotat -->
+  <sc-if value="{{ visNotater }}" hint-placeholder-val="{{ true }}">
+    <div style="background:#ffffff; border-radius:26px; box-shadow:0 8px 24px rgba(23,68,111,0.08); padding:26px 30px; max-width:1100px; display:flex; flex-direction:column; gap:20px;">
+      <span style="font-family:Montserrat,sans-serif; font-weight:700; font-size:11px; letter-spacing:0.09em; text-transform:uppercase; color:#475569;">Designnotat · {{ skjermTittel }}</span>
+      <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(320px,1fr)); gap:22px;">
+        <span style="border-left:3px solid #c5d0da; padding-left:16px;">
+          <span style="display:block; font-family:Montserrat,sans-serif; font-weight:700; font-size:11px; letter-spacing:0.07em; text-transform:uppercase; color:#475569; margin-bottom:8px;">Slik er det i dag</span>
+          <span style="display:block; font-size:13.5px; line-height:1.65; color:#475569; text-wrap:pretty;">{{ notatFor }}</span>
+        </span>
+        <span style="border-left:3px solid #49ca9f; padding-left:16px;">
+          <span style="display:block; font-family:Montserrat,sans-serif; font-weight:700; font-size:11px; letter-spacing:0.07em; text-transform:uppercase; color:#475569; margin-bottom:8px;">Slik blir det</span>
+          <span style="display:block; font-size:13.5px; line-height:1.65; color:#475569; text-wrap:pretty;">{{ notatEtter }}</span>
+        </span>
+      </div>
+      <span style="display:flex; flex-direction:column; gap:9px; padding-top:6px;">
+        <sc-for list="{{ notatPunkter }}" as="n" hint-placeholder-count="3">
+          <span style="display:flex; gap:10px; align-items:flex-start;">
+            <svg viewBox="0 0 24 24" style="width:15px; height:15px; margin-top:3px; stroke:#2e857d; fill:none; stroke-width:2.6; stroke-linecap:round; stroke-linejoin:round; flex:none;"><path d="M20 6 9 17l-5-5"></path></svg>
+            <span style="font-size:13.5px; line-height:1.6; color:#475569; text-wrap:pretty;">{{ n }}</span>
+          </span>
+        </sc-for>
+      </span>
+    </div>
+  </sc-if>
+
+</section>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1800,&quot;height&quot;:1200},&quot;visning&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Begge&quot;,&quot;Mobil&quot;,&quot;Desktop&quot;],&quot;default&quot;:&quot;Begge&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Visning&quot;},&quot;visNotater&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Visning&quot;}}">
+const NAVY = "#17446f", TEAL = "#2e857d", MINT = "#49ca9f", TEALT = "#226f67";
+const ORANGE = "#f47b20", BLUE = "#007db1", PURPLE = "#7f1975", YELLOW = "#fcd700";
+const T_NAVY = "#e3e9ee", T_TEAL = "#e4efee", T_MINT = "#e7f8f3", T_ORANGE = "#fef3eb",
+      T_BLUE = "#e6f2f7", T_PURPLE = "#f2e8f1", T_YELLOW = "#fffbe8", GREY50 = "#f4f6f8";
+const BRAND = "Montserrat,sans-serif";
+
+const D = {
+  cal: "M8 2v4M16 2v4M3 10h18M5 4h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z",
+  target: "M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20zM12 18a6 6 0 1 0 0-12 6 6 0 0 0 0 12zM12 14a2 2 0 1 0 0-4 2 2 0 0 0 0 4",
+  clip: "M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2M9 2h6a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1H9a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1zM12 11h4M12 16h4M8 11h.01M8 16h.01",
+  flag: "M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1zM4 22v-7",
+  trophy: "M6 9H4.5a2.5 2.5 0 0 1 0-5H6M18 9h1.5a2.5 2.5 0 0 0 0-5H18M4 22h16M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22M18 2H6v7a6 6 0 0 0 12 0z",
+  users: "M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75",
+  cap: "M22 9 12 4 2 9l10 5zM6 11.5V17c0 1.5 2.7 3 6 3s6-1.5 6-3v-5.5",
+  chart: "M3 3v18h18M7 15l4-4 3 3 5-6",
+  clock: "M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20zM12 6v6l4 2",
+  act: "M22 12h-4l-3 9L9 3l-3 9H2",
+  heart: "M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8l8.8 8.8 8.8-8.8a5.5 5.5 0 0 0 0-7.8z",
+};
+
+const PERIODS = [
+  { key: "grunn", name: "Grunnperiode", color: TEAL, dato: "10. aug – 30. nov 2026", uker: "16 uker", vekt: 16,
+    focus: "Bygge et solid teknisk og fysisk fundament. Mengdetrening, grunnleggende svingteknikk, nærspill og bevegelighet.",
+    loc: "GFGK ute → Salatamesteren inne", naa: true },
+  { key: "spes", name: "Spesialiseringsperiode", color: BLUE, dato: "1. des 2026 – 31. mar 2027", uker: "17 uker", vekt: 17,
+    focus: "Spisse ferdigheter innendørs. Simulator og launch monitor, maksstyrke, scoringsspill og teknisk finpuss.",
+    loc: "Salatamesteren inne + Active Trening", naa: false },
+  { key: "turn", name: "Turneringsperiode", color: ORANGE, dato: "1. apr – 19. jun 2027", uker: "12 uker", vekt: 12,
+    focus: "Omsette trening til score. Banespill, konkurransesimulering, scoringsspill under press og turneringer.",
+    loc: "GFGK ute + turneringer", naa: false },
+];
+
+const MILEPAELER = [
+  { dato: "28. aug", navn: "Fysiske inngangstester", sted: "Active Trening", ikon: "chart", farge: "yellow", om: "Gjennomført" },
+  { dato: "11. sep", navn: "Klubbmesterskap", sted: "GFGK", ikon: "trophy", farge: "orange", om: "Om 9 dager" },
+  { dato: "23. okt", navn: "Høstavslutning – matchspill", sted: "GFGK", ikon: "trophy", farge: "orange", om: "Om 51 dager" },
+  { dato: "15. jan", navn: "Vintertester – teknikk og fysisk", sted: "Salatamesteren", ikon: "chart", farge: "yellow", om: "Om 135 dager" },
+  { dato: "24. apr", navn: "Sesongåpning Srixon Tour", sted: "Onsøy GK", ikon: "trophy", farge: "orange", om: "" },
+  { dato: "8. mai", navn: "Regionsmesterskap Øst", sted: "Borregaard GK", ikon: "trophy", farge: "orange", om: "" },
+  { dato: "22. mai", navn: "Lag-NM kvalifisering", sted: "GFGK", ikon: "trophy", farge: "orange", om: "" },
+  { dato: "5. jun", navn: "NM Junior", sted: "Larvik GK", ikon: "trophy", farge: "orange", om: "" },
+];
+
+const SAMLINGER = [
+  { name: "Oppstartssamling", dato: "22.–24. aug 2026", hvor: "GFGK, Fredrikstad", status: "Bekreftet",
+    desc: "Sparke i gang sesongen med teknikk, testing og bli-kjent.", pamelding: "Automatisk påmeldt", pamfrist: "—", egenandel: "Ingen" },
+  { name: "Høstsamling", dato: "17.–18. okt 2026", hvor: "GFGK + Salatamesteren", status: "Bekreftet",
+    desc: "Overgang til innendørs – teknisk gjennomgang og fysisk testing.", pamelding: "Via PlayerHQ", pamfrist: "10. okt", egenandel: "200 kr" },
+  { name: "Vintersamling", dato: "9.–11. jan 2027", hvor: "Salatamesteren + Active Trening", status: "Bekreftet",
+    desc: "Simulator, styrke og spisstrening midt i spesialiseringsperioden.", pamelding: "Via PlayerHQ", pamfrist: "2. jan", egenandel: "300 kr" },
+  { name: "Treningsleir – Spania", dato: "22.–28. feb 2027", hvor: "La Cala Resort, Spania", status: "Planlegges",
+    desc: "Uke 8: banespill i varmen. Bindende påmelding.", pamelding: "Bindende via PlayerHQ", pamfrist: "1. des", egenandel: "9 500 kr" },
+  { name: "Vårsamling", dato: "17.–18. apr 2027", hvor: "GFGK, Fredrikstad", status: "Bekreftet",
+    desc: "Ut på banen igjen – klargjøring mot turneringssesongen.", pamelding: "Via PlayerHQ", pamfrist: "10. apr", egenandel: "200 kr" },
+  { name: "Sesongavslutning", dato: "19. jun 2027", hvor: "GFGK, Fredrikstad", status: "Planlegges",
+    desc: "Oppsummering, sosialt og planer for neste sesong.", pamelding: "Åpen for foreldre", pamfrist: "12. jun", egenandel: "Ingen" },
+];
+
+const HELDAGER = [
+  { dato: "5. sep", tema: "Banestrategi og course management", hvor: "GFGK" },
+  { dato: "3. okt", tema: "Launch monitor og teknisk analyse", hvor: "Salatamesteren" },
+  { dato: "14. nov", tema: "Fysisk testing og treningslære", hvor: "Active Trening" },
+];
+
+const SKOLE = [
+  { dato: "17. aug 2026", name: "Skolestart", type: "Oppstart", f: MINT },
+  { dato: "28. sep – 2. okt", name: "Høstferie (uke 40)", type: "Ferie", f: "#c5d0da" },
+  { dato: "13. nov 2026", name: "Planleggingsdag", type: "Elevfri", f: YELLOW },
+  { dato: "21. des – 2. jan", name: "Juleferie", type: "Ferie", f: "#c5d0da" },
+  { dato: "22. – 26. feb", name: "Vinterferie (uke 8)", type: "Ferie", f: "#c5d0da" },
+  { dato: "22. – 28. mar", name: "Påskeferie", type: "Ferie", f: "#c5d0da" },
+  { dato: "1. mai 2027", name: "Offentlig fridag", type: "Fridag", f: YELLOW },
+  { dato: "6. mai 2027", name: "Kristi himmelfartsdag", type: "Fridag", f: YELLOW },
+  { dato: "17. mai 2027", name: "Grunnlovsdag", type: "Fridag", f: YELLOW },
+  { dato: "18. jun 2027", name: "Siste skoledag", type: "Avslutning", f: MINT },
+];
+
+const PROVER = [
+  { dato: "16. sep 2026", fag: "Norsk", type: "Skriftlig prøve", klasse: "VG2" },
+  { dato: "14. okt 2026", fag: "Matematikk", type: "Heldagsprøve", klasse: "VG1" },
+  { dato: "20. nov 2026", fag: "Treningslære", type: "Prøve", klasse: "VG3" },
+  { dato: "15. jan 2027", fag: "Engelsk", type: "Muntlig", klasse: "VG2" },
+  { dato: "3. mar 2027", fag: "Toppidrett", type: "Praktisk vurdering", klasse: "VG3" },
+  { dato: "20. mai 2027", fag: "Skriftlig eksamen", type: "Eksamensperiode", klasse: "VG3" },
+];
+
+const TT_DAGER = ["Man", "Tir", "Ons", "Tor", "Fre"];
+const TT_TIDER = ["08:00–10:00", "10:15–11:45", "12:15–13:45", "14:00–15:30"];
+const TT = {
+  VG1: [
+    [["Toppidrett golf", 1], ["Matematikk", 0], ["Toppidrett golf", 1], ["Naturfag", 0], ["Toppidrett golf", 1]],
+    [["Norsk", 0], ["Norsk", 0], ["Engelsk", 0], ["Historie", 0], ["Treningslære", 0]],
+    [["Matematikk", 0], ["Engelsk", 0], ["Kroppsøving", 0], ["Naturfag", 0], ["Samfunnsfag", 0]],
+    [["Naturfag", 0], ["Valgfag", 0], ["Historie", 0], ["Toppidrett teori", 0], ["Fri", 0]],
+  ],
+  VG2: [
+    [["Toppidrett golf", 1], ["Norsk", 0], ["Toppidrett golf", 1], ["Matematikk", 0], ["Toppidrett golf", 1]],
+    [["Engelsk", 0], ["Matematikk", 0], ["Historie", 0], ["Norsk", 0], ["Treningslære", 0]],
+    [["Norsk", 0], ["Kjemi", 0], ["Kroppsøving", 0], ["Engelsk", 0], ["Samfunnsfag", 0]],
+    [["Historie", 0], ["Valgfag", 0], ["Biologi", 0], ["Toppidrett teori", 0], ["Fri", 0]],
+  ],
+  VG3: [
+    [["Toppidrett golf", 1], ["Matematikk R2", 0], ["Toppidrett golf", 1], ["Norsk", 0], ["Toppidrett golf", 1]],
+    [["Treningslære", 0], ["Fysikk", 0], ["Norsk", 0], ["Historie", 0], ["Treningslære", 0]],
+    [["Norsk", 0], ["Kroppsøving", 0], ["Biologi", 0], ["Engelsk", 0], ["Samfunnsfag", 0]],
+    [["Historie", 0], ["Valgfag", 0], ["Toppidrett teori", 0], ["Eksamenstrening", 0], ["Fri", 0]],
+  ],
+};
+
+const OMRAADER = [
+  { navn: "Ferdighetstrening", ikon: "target", meta: "1 kompetansemål · 3 delkompetanser", nivaa: "God", nivaaF: [T_TEAL, TEALT],
+    maal: [{ t: "1. Ferdigheter i spesialidretten", mal: "Vise og anvende kunnskaper om spesialidretten for å utvikle egne ferdigheter, enten alene eller med andre til stede." }] },
+  { navn: "Basistrening", ikon: "act", meta: "2 kompetansemål · 3 delkompetanser", nivaa: "Fremragende", nivaaF: [T_NAVY, NAVY],
+    maal: [
+      { t: "2. Utfordre egen kapasitet", mal: "Utvikle sin fysiske og mentale kapasitet gjennom varierte og ulike former for trening." },
+      { t: "3. Skadeforebyggende trening", mal: "Gjennomføre skadeforebyggende trening." }] },
+  { navn: "Konkurransetrening", ikon: "trophy", meta: "2 kompetansemål · 2 delkompetanser", nivaa: "Lav", nivaaF: [T_YELLOW, "#7a6200"],
+    maal: [
+      { t: "4. Konkurranseforberedelser", mal: "Forstå sin egen fysiske og mentale utvikling gjennom treningsdokumentasjon." },
+      { t: "5. Trene og leve som 24-timersutøver", mal: "Kunne reflektere over sitt eget treningsregime og speile det mot livet som toppidrettsutøver." }] },
+];
+
+const MOTER = [
+  { dato: "8. sep 2026", kort: "8. sep", tid: "18:00", hvor: "WANG, auditoriet", tema: "Oppstart og sesongplan" },
+  { dato: "26. nov 2026", kort: "26. nov", tid: "18:00", hvor: "Digitalt (Teams)", tema: "Status og vinterperiode" },
+  { dato: "11. mar 2027", kort: "11. mar", tid: "18:00", hvor: "WANG, auditoriet", tema: "Turneringssesong og reise" },
+  { dato: "3. jun 2027", kort: "3. jun", tid: "18:00", hvor: "GFGK klubbhus", tema: "Sesongavslutning" },
+];
+
+const CHAT = [
+  { sender: "Anders (trener)", text: "Hei alle! Oppstartssamlingen 22.–24. august er bekreftet. Program kommer i PlayerHQ på fredag.", own: false },
+  { sender: "Marit, mor til Nora", text: "Takk! Trenger de egen transport til GFGK på lørdag?", own: false },
+  { sender: "Anders (trener)", text: "Vi setter opp felles avreise fra skolen 08:15. Ingen egen transport nødvendig.", own: false },
+];
+
+const DRILLS = [
+  { num: 1, name: "Speil- og alignment-drill: grep og oppsett", vol: "Repetisjoner: 3×10", f: BLUE, t: T_BLUE },
+  { num: 2, name: "Halvsvinger med 7-jern mot nærmål", vol: "Baller: 3×10", f: TEAL, t: T_TEAL },
+  { num: 3, name: "Video av oppsett forfra og bakfra – sammenlign med referansebilde", vol: "", f: PURPLE, t: T_PURPLE },
+];
+
+const KOMP = [
+  { vg: "VG1", t: "Vise korrekt grep og oppsett uten veiledning." },
+  { vg: "VG2", t: "Beholde oppsett og balanse gjennom fulle jernsvinger." },
+  { vg: "VG3", t: "Tilpasse oppsett til ulike køller, lies og ønsket ballflukt." },
+];
+
+const COACH = [
+  { name: "TURN-rest", color: ORANGE, spenn: "17. aug – 30. sep 2026", vekt: 6.5, naa: true, faseFokus: "Auto",
+    fokus: "Runde av høstens konkurransesesong og gli over i grunntrening. Vedlikehold av spill, gradvis økt fysisk volum.",
+    pyr: { FYS: 10, TEK: 10, SLAG: 20, SPILL: 25, TURN: 35 },
+    maal: ["Fullføre høstturneringene skadefri", "Etablere NGF-baseline på fysiske tester", "Beholde scoringsspill mens FYS-volum øker"],
+    tester: ["NGF fysiske inngangstester (aug)", "Baseline TrackMan 7-jern"] },
+  { name: "GRUNN", color: NAVY, spenn: "1. okt 2026 – 15. mar 2027", vekt: 24, naa: false, faseFokus: "Uten ball / Lav hastighet",
+    fokus: "Bygg teknisk og fysisk fundament. Mest FYS og TEK. Læringsfasen prioriteres over data og turnering.",
+    pyr: { FYS: 50, TEK: 35, SLAG: 10, SPILL: 5, TURN: 0 },
+    maal: ["Øke CS-baseline 3 % på driver", "Knebøy 1RM +7,5 kg med bevart teknikk", "Automatisere nøytral P1/P4 uten ball"],
+    tester: ["Vintertester teknikk + fysisk (jan)", "Retest maksstyrke (des)"] },
+  { name: "SPES", color: TEAL, spenn: "16. mar – 30. apr 2027", vekt: 6.5, naa: false, faseFokus: "Lav hastighet / Auto",
+    fokus: "Spesialisér mot slag og scoringsspill. Mer «Auto»-fase, høyere CS og miljø. Press økes mot Krav og Utfordring.",
+    pyr: { FYS: 15, TEK: 20, SLAG: 35, SPILL: 25, TURN: 5 },
+    maal: ["Wedge-spredning 60 m under 6 m", "Smash factor 7-jern ≥ 1,38", "«Auto»-fase på tre nøkkelslag"],
+    tester: ["Sesongtester (mai)", "Launch monitor – full wedge-matrise"] },
+  { name: "TURN", color: ORANGE, spenn: "1. mai – 21. jun 2027", vekt: 7.5, naa: false, faseFokus: "Auto",
+    fokus: "Omsett trening til score. Konkurransesimulering, «Auto»-fase, press mot Konkurranse. Toppe form mot prioriterte turneringer.",
+    pyr: { FYS: 10, TEK: 10, SLAG: 20, SPILL: 25, TURN: 35 },
+    maal: ["Snittscore under 76 i tellende runder", "GIR ≥ 55 % i turnering", "Opp-og-inn ≥ 60 %"],
+    tester: ["Konkurransestatistikk per runde"] },
+];
+
+const PY_FARGE = { FYS: NAVY, TEK: TEAL, SLAG: ORANGE, SPILL: BLUE, TURN: PURPLE };
+const PY_TINT = { FYS: T_NAVY, TEK: T_TEAL, SLAG: T_ORANGE, SPILL: T_BLUE, TURN: T_PURPLE };
+const PY_FG = { FYS: NAVY, TEK: TEALT, SLAG: "#b4571a", SPILL: "#00618a", TURN: PURPLE };
+
+// Individuell utviklingsplan (IUP) — avtalt mellom elev og trener i IUP-samtalen.
+const FOKUS = {
+  grunn: {
+    egentid: "6,5 t", antall: "3 fokusområder",
+    maaling: "Egenvurdering 1–5 ved periodeslutt 30. november. Måles i vintertesten 15. januar.",
+    kommentar: "IUP-checkpoint desember: Anders kommenterer hvert fokusområde skriftlig.",
+    liste: [
+      { akse: "TEK", tittel: "Nøytralt grep og oppsett i P1", egentid: "2 t/uke", status: "På vei" },
+      { akse: "FYS", tittel: "Knebøy 1RM +7,5 kg med bevart teknikk", egentid: "3 t/uke", status: "På vei" },
+      { akse: "SLAG", tittel: "Samle treffpunktspredning på 7-jern", egentid: "1,5 t/uke", status: "Ikke startet" },
+    ],
+  },
+  spes: {
+    egentid: "5,5 t", antall: "3 fokusområder",
+    maaling: "Egenvurdering 1–5 ved periodeslutt 31. mars. Måles i sesongtesten 28. mai.",
+    kommentar: "IUP-checkpoint mars: justeres etter vintertesten.",
+    liste: [
+      { akse: "SLAG", tittel: "Wedge-spredning 60 m under 6 m", egentid: "2 t/uke", status: "Ikke startet" },
+      { akse: "SPILL", tittel: "Opp-og-inn over 60 % i scoringsspill", egentid: "1,5 t/uke", status: "Ikke startet" },
+      { akse: "FYS", tittel: "Vedlikeholde maksstyrke gjennom vinteren", egentid: "2 t/uke", status: "Ikke startet" },
+    ],
+  },
+  turn: {
+    egentid: "3,5 t", antall: "2 fokusområder",
+    maaling: "Egenvurdering 1–5 ved sesongslutt. Måles på turneringsstatistikk per runde.",
+    kommentar: "IUP-checkpoint juni: oppsummering og mål for neste sesong.",
+    liste: [
+      { akse: "SPILL", tittel: "Snittscore under 76 i tellende runder", egentid: "2 t/uke", status: "Ikke startet" },
+      { akse: "TURN", tittel: "Fullføre preshot-rutinen på hvert slag", egentid: "1,5 t/uke", status: "Ikke startet" },
+    ],
+  },
+};
+const STATUS_F = { "Nådd": [T_TEAL, TEALT], "På vei": [T_ORANGE, "#b4571a"], "Ikke startet": ["#eef2f6", "#64748b"] };
+
+// IUP-samtalen: gjennomgang av perioden som avsluttes, og avtale om nye fokusområder.
+const IUP_EVAL = [
+  { akse: "TEK", tittel: "Nøytralt grep og oppsett i P1", egen: 4, trener: 4, status: "Nådd" },
+  { akse: "FYS", tittel: "Knebøy 1RM +7,5 kg med bevart teknikk", egen: 3, trener: 3, status: "På vei" },
+  { akse: "SLAG", tittel: "Samle treffpunktspredning på 7-jern", egen: 2, trener: 3, status: "På vei" },
+];
+const IUP_TALL = [
+  { l: "Køllehastighet driver", v: "+2,1 %", d: "opp", kilde: "TrackMan · 15. jan" },
+  { l: "Knebøy 1RM", v: "+5,0 kg", d: "opp", kilde: "Vintertest · 15. jan" },
+  { l: "Spredning 7-jern", v: "9,4 → 7,8 m", d: "opp", kilde: "TrackMan · 15. jan" },
+];
+const IUP_NYE = [
+  { akse: "SLAG", tittel: "Wedge-spredning 60 m under 6 m", egentid: "2 t/uke", maaling: "Launch monitor – full wedge-matrise" },
+  { akse: "SPILL", tittel: "Opp-og-inn over 60 % i scoringsspill", egentid: "1,5 t/uke", maaling: "Turneringsstatistikk per runde" },
+  { akse: "FYS", tittel: "Vedlikeholde maksstyrke gjennom vinteren", egentid: "2 t/uke", maaling: "Retest maksstyrke i mai" },
+];
+const IUP_STEG = ["Evaluering", "Nye fokusområder", "Del med eleven"];
+
+const OKT_TYPER = {
+  1: { tittel: "Golfteknikk", f: BLUE },
+  3: { tittel: "Test og spilløvelser", f: NAVY },
+  5: { tittel: "Spill og nærspill", f: TEAL },
+};
+const DAGNAVN = ["Søn", "Man", "Tir", "Ons", "Tor", "Fre", "Lør"];
+
+const META = {
+  plan_sesong: {
+    tittel: "Årsplan", ikon: "chart",
+    tom: ["Årsplanen er ikke lagt inn", "Treneren legger inn periodene for sesongen. Da ser du hele året her — hvor du er, hva som kommer, og hva hver periode bygger mot."],
+    feil: ["Fikk ikke lastet årsplanen", "Sjekk at du er på nett. Planen ligger trygt lagret."],
+    notat: [
+      "Årsplanen viser bare fellesøktene, og bare som kalender. Elevens individuelle utviklingsplan lever i IUP-samtalen og i et dokument ved siden av — eleven ser aldri hva hun selv skal jobbe med i denne perioden, eller hvor mye egentrening den krever.",
+      "Årsplanen er to spor låst til samme periodeakse: gruppetreningen øverst, elevens IUP rett under. Per periode ser eleven 2–3 fokusområder med pyramideakse, planlagt egentid og status — og hvordan de måles.",
+      ["Sporene deler kolonner, så «hva trener gruppa på» og «hva skal jeg jobbe med» leses i samme blikk. Det er hele poenget: årsplanen er begge deler.",
+       "Fokusområdene henger på AK-pyramiden (FYS/TEK/SLAG/SPILL/TURN) med fast farge per akse — samme kanon som trenerens periodekort.",
+       "Egentiden summeres per periode («6,5 t egentid/uke») ved siden av de tre fellesøktene, så totalbelastningen er synlig før perioden starter.",
+       "Status er tre trinn (ikke startet / på vei / nådd), satt i IUP-samtalen og oppdatert i checkpointene. Egenvurdering 1–5 ved periodeslutt, harde tall i testukene.",
+       "Nye felter kreves: GroupPeriodGoal per elev (tekst, pyramideakse, egentid, status) koblet til GroupPeriodBlock. Additivt — men ikke i en autonom økt."]],
+  },
+  plan_kalender: {
+    tittel: "Kalender", ikon: "cal",
+    tom: ["Ingen økter i september", "Fellesøktene legges inn av treneren. Ferier og fridager vises uansett, så hullet i planen er forklart."],
+    feil: ["Fikk ikke lastet kalenderen", "Sjekk at du er på nett, så henter vi måneden på nytt."],
+    notat: [
+      "Kalenderen er én lang liste på mobil, uten uketall og uten skille mellom økt, turnering og prøve. Måneden mangler et rutenett, så eleven mister følelsen av hvor tett uka er.",
+      "Mobil får agenda gruppert på uke med fargekode per økttype; desktop får månedsrutenett med detaljpanel for valgt uke. Samme farger som periodene i årsplanen.",
+      ["Øktene er man/ons/fre 08:00–10:00 gjennom sesongen, generert utenom skoleferier — samme regel som SESSIONS i wang-plan.ts.",
+       "Ferieuker er tonet ned, ikke skjult. En uke uten trening er informasjon.",
+       "Turnering (oransje) og prøve (lilla) ligger som merke i cellen, aldri som prikk uten forklaring.",
+       "Hele dagsceller er trykkbare — 44px minimum også i rutenettet."]],
+  },
+  plan_samlinger: {
+    tittel: "Samlinger", ikon: "users",
+    tom: ["Ingen samlinger planlagt", "Samlinger og heldagsøkter legges ut i god tid før påmeldingsfristen."],
+    feil: ["Fikk ikke lastet samlingene", "Sjekk at du er på nett. Påmeldingene dine er trygge."],
+    notat: [
+      "Samlingene er kort som må trykkes for å vise påmeldingsfrist og egenandel. Det viktigste for en forelder — frist og pris — er skjult bak et klikk.",
+      "Frist og egenandel står alltid synlig i kortfoten. Status (Bekreftet / Planlegges) er en chip, ikke en farge man må tolke.",
+      ["Egenandelen er teal og tabulær — den sammenlignes mellom kort.",
+       "Bindende påmelding står i teksten, ikke bare i statusen: Spania-turen koster 9 500 kr og fristen er 1. desember.",
+       "Desktop viser tre kort i bredden, mobil ett — samme innhold, ingen kolonne skjules."]],
+  },
+  skole_rute: {
+    tittel: "Skoleår", ikon: "cap",
+    tom: ["Skoleruta er ikke publisert", "Skolen legger inn ferier, fridager og prøveplan for skoleåret. Treningsplanen vises uansett."],
+    feil: ["Fikk ikke lastet skoleåret", "Sjekk at du er på nett, så henter vi skoleruta på nytt."],
+    notat: [
+      "Skoleruta og prøveplanen er to lister med samme vekt, uten visuell forskjell på ferie, fridag og prøve. På mobil skyves datokolonnen sammen.",
+      "Fargeprikk skiller ferie, fridag og milepæl. Prøveplanen står ved siden av på desktop og under på mobil — samme rekkefølge, aldri sidestilt scroll.",
+      ["Skoledagene grupperes til spenn («28. sep – 2. okt»), slik grupperSkoleDager gjør i dag — én rad per ferie, ikke fem.",
+       "Trinnmerket (VG1–VG3) er en chip, så eleven kan skanne etter sitt eget trinn.",
+       "Datoene er tabulære så listen ikke hopper."]],
+  },
+  skole_timeplan: {
+    tittel: "Timeplan", ikon: "clock",
+    tom: ["Timeplanen er ikke lagt inn", "Timeplanen for trinnet ditt publiseres før skolestart."],
+    feil: ["Fikk ikke lastet timeplanen", "Sjekk at du er på nett."],
+    notat: [
+      "Timeplanen er et rutenett på 620px som må sidescrolles på mobil — det er den tetteste flaten i dag, og den er bygget desktop-først.",
+      "Mobil får ett kort per dag med loddrett timeliste; desktop beholder rutenettet. Golføktene er teal i begge visninger.",
+      ["Ingen horisontal scroll på 390px. Rutenettet finnes bare der det er plass til det.",
+       "Golføktene (man/ons/fre 08:00–10:00) er merket teal — de er koblingen mellom skole og treningsplan.",
+       "Trinnvelgeren er teal-pille, samme mønster som yearPillStyle i primitiver.tsx."]],
+  },
+  skole_vurdering: {
+    tittel: "Vurdering", ikon: "clip",
+    tom: ["Ingen vurdering registrert", "Kompetansemålene vises så snart faglærer har lagt inn vurderingen for terminen."],
+    feil: ["Fikk ikke lastet vurderingen", "Sjekk at du er på nett."],
+    notat: [
+      "Vurderingen er tre nivåer av trekkspill: fag → målområde → kompetansekode. Eleven ser aldri hvor hun står — bare måldokumentet.",
+      "Nivået per målområde vises som chip på kortet, med kompetansemålene under. Skalaen forklares én gang øverst, ikke per rad.",
+      ["Måloppnåelsen er gjenbruk av KM_LEVEL_COLORS — gul lav, teal god, navy fremragende.",
+       "Kompetansemålteksten står ordrett fra WANGs vurderingsdokument. Ingen omskriving.",
+       "Kun ett trekkspill-nivå igjen (kjennetegn per kode) — området og målene er alltid åpne."]],
+  },
+  foreldre: {
+    tittel: "Foreldre", ikon: "users",
+    tom: ["Ingen foreldremøter satt opp", "Møtene for sesongen publiseres her, sammen med gruppechatten til trenerne."],
+    feil: ["Fikk ikke lastet foreldresiden", "Sjekk at du er på nett. Meldingene dine er lagret."],
+    notat: [
+      "Foreldresiden åpner med en informasjonsboks og en liste over møter. Neste møte er ikke løftet fram, og chatten ligger nederst etter all annen tekst.",
+      "Neste møte er hero med én primær handling: «Meld deltakelse». Chatten står som egen kolonne på desktop og som eget kort på mobil.",
+      ["Én primær handling per skjerm — «Meld deltakelse». Alt annet er lenker og lesing.",
+       "Nedtellingen («om 6 dager») bruker samme daysLabel-hjelper som fristene på oversikten.",
+       "Chatten er merket som demo til PlayerHQ-koblingen er på plass — teksten står i kortfoten, ikke som blokkerende varsel."]],
+  },
+  okt: {
+    tittel: "Økt-detalj", ikon: "target",
+    tom: ["Økten har ingen plan ennå", "Treneren fyller ut oppvarming, hoveddel og test før økten starter. Tid og sted er satt."],
+    feil: ["Fant ikke økten", "Den kan ha blitt flyttet eller fjernet fra planen. Gå tilbake til uka for å se hva som gjelder nå."],
+    notat: [
+      "Øktdetaljen er en lang loddrett stabel: hero, oppvarming, hoveddel med lukkede trekkspill, test, evaluering, kompetansemål. På desktop blir det én smal kolonne midt på en tom skjerm.",
+      "Volumtallene ligger synlig på hver øvelse i stedet for bak et trekkspill, og desktop bruker to kolonner: hoveddel til venstre, måling og kompetansemål til høyre.",
+      ["Alt innhold er ekte: teksten er OktMal-en «Grep, oppsett og ballposisjon» fra TEMPLATES.grunn.teknikk.",
+       "Statusen (Gjennomført / I dag / Kommende) er beregnet mot Oslo-dato — samme regel som i OktDetalj i dag.",
+       "Drill-nummeret bærer periodefargen, så økten kan gjenkjennes fra kalenderen.",
+       "Forrige/neste-navigasjon beholdes, men flyttes til bunnen på mobil der tommelen er."]],
+  },
+  iup: {
+    tittel: "IUP-samtale", ikon: "users",
+    tom: ["Ingen IUP-samtale planlagt", "Samtalen settes opp ved periodeslutt. Da evaluerer dere perioden som gikk og avtaler nye fokusområder."],
+    feil: ["Fikk ikke lastet IUP-samtalen", "Sjekk tilkoblingen. Fokusområdene og egenvurderingene ligger trygt lagret."],
+    notat: [
+      "IUP-samtalen skjer i dag i et dokument ved siden av produktet. Fokusområdene som avtales havner aldri i årsplanen eleven ser, og evalueringen av forrige periode finnes bare som notat hos treneren.",
+      "Samtalen er en skjerm med tre steg: evaluer perioden som avsluttes (egenvurdering + trenervurdering side om side), les testtallene som faktisk er målt, og avtal 2–3 nye fokusområder med akse, egentid og målemetode. Resultatet skrives rett inn i elevens årsplan.",
+      ["Skjermen er delt mellom elev og trener i samme rom — derfor står egenvurdering og trenervurdering ved siden av hverandre, ikke i hver sin visning.",
+       "Testtallene hentes fra målingene som allerede er planlagt i testukene, så vurderingen har tall å hvile på og ikke bare følelse.",
+       "Ny tabell: GroupPeriodGoal (elevId, periodBlockId, akse, tittel, egentidPerUke, maalemetode, status, egenvurdering, trenervurdering, kommentar). Én rad per fokusområde per periode — ingen JSON-blob, så historikken kan spørres opp over sesonger.",
+       "Statusverdiene er de samme tre som i årsplanen (ikke startet / på vei / nådd) — én kanon, ikke to.",
+       "Én primær handling: «Lagre og del med eleven». Alt annet er lesing og justering."]],
+  },
+  trener: {
+    tittel: "Trener · årsplan", ikon: "flag",
+    tom: ["Ingen periodeplan for gruppa", "Legg inn perioder med pyramidefordeling, mål og tester for å starte årsplanen. Elevene ser den samme sesongen med én gang."],
+    feil: ["Fikk ikke lastet årsplanen", "Sjekk tilkoblingen til AgencyOS. Periodene ligger trygt lagret."],
+    notat: [
+      "Trenerflaten og elevflaten deler plan, men ikke språk: treneren ser AK-perioder (TURN-rest, GRUNN, SPES), eleven ser Grunn/Spesialisering/Turnering, med egne farger og egen tidslinje. Samme sesong ser ut som to produkter.",
+      "Samme sesongbånd, samme «du er her», samme uketall og samme periodefarger i begge roller. Treneren får pyramiden, læringsfasen, målene og testene i tillegg — ikke i stedet.",
+      ["Sesongbåndet er én komponent brukt i to roller. Fikser svakhet 2 i designnotatet: elev- og trenerflaten er nå visuelt koblet.",
+       "Pyramiden (FYS/TEK/SLAG/SPILL/TURN) er fast farge per akse, som PY_AXES i coach-arsplan.ts — aldri farge etter verdi.",
+       "Læringsfasen står øverst i periodekortet fordi den styrer resten (CS, miljø, press).",
+       "Denne visningen beholder WANG-merkevaren. AgencyOS-verktøyet er utenfor dette designet."]],
+  },
+};
+
+class Component extends DCLogic {
+  state = { skjerm: "plan", sub: "sesong", skoleSub: "rute", trinn: "VG1", tilstand: "ok" };
+
+  velgSkjerm(k) { this.setState({ skjerm: k }); }
+  velgSub(k) { this.setState({ sub: k }); }
+  velgSkole(k) { this.setState({ skoleSub: k }); }
+
+  pilleStil(aktiv, hoy) {
+    const h = hoy || 34;
+    return "display:inline-flex;align-items:center;height:" + h + "px;padding:0 15px;border-radius:999px;border:none;cursor:pointer;white-space:nowrap;font-family:" + BRAND +
+      ";font-weight:700;font-size:12.5px;background:" + (aktiv ? NAVY : GREY50) + ";color:" + (aktiv ? "#ffffff" : "#475569") + ";";
+  }
+  segStil(aktiv) {
+    return "flex:1;min-width:0;height:36px;border-radius:999px;border:none;cursor:pointer;font-family:" + BRAND +
+      ";font-weight:700;font-size:12px;background:" + (aktiv ? "#ffffff" : "transparent") + ";color:" + (aktiv ? NAVY : "#475569") +
+      ";box-shadow:" + (aktiv ? "0 4px 14px rgba(23,68,111,0.12)" : "none") + ";";
+  }
+  segStilD(aktiv) {
+    return "display:inline-flex;align-items:center;height:36px;padding:0 18px;border-radius:999px;border:none;cursor:pointer;white-space:nowrap;font-family:" + BRAND +
+      ";font-weight:700;font-size:13px;background:" + (aktiv ? NAVY : "transparent") + ";color:" + (aktiv ? "#ffffff" : "#475569") + ";";
+  }
+  aarStil(aktiv, d) {
+    return "display:inline-flex;align-items:center;height:" + (d ? 38 : 36) + "px;padding:0 18px;border-radius:999px;border:none;cursor:pointer;font-family:" + BRAND +
+      ";font-weight:700;font-size:13px;background:" + (aktiv ? TEAL : "#ffffff") + ";color:" + (aktiv ? "#ffffff" : "#475569") +
+      ";box-shadow:0 4px 14px rgba(23,68,111,0.06);";
+  }
+  rad(siste, klikk) {
+    return "display:flex;align-items:center;gap:11px;min-width:0;padding:10px 0;" +
+      (siste ? "" : "border-bottom:1px solid #e9edf1;") + (klikk ? "cursor:pointer;" : "");
+  }
+  chip(bg, fg, str) {
+    return "display:inline-flex;align-items:center;height:22px;padding:0 9px;border-radius:999px;background:" + bg + ";color:" + fg +
+      ";font-family:" + BRAND + ";font-weight:700;font-size:" + (str || 10) + "px;white-space:nowrap;flex:none;";
+  }
+  ic(bg, fg, s) {
+    const n = s || 38;
+    return "width:" + n + "px;height:" + n + "px;border-radius:14px;background:" + bg + ";color:" + fg +
+      ";display:grid;place-items:center;flex:none;";
+  }
+
+  renderVals() {
+    const s = this.state;
+    const P = this.props || {};
+    const visning = P.visning || "Begge";
+    const skjerm = s.skjerm;
+    const nokkel = skjerm === "plan" ? "plan_" + s.sub : skjerm === "skole" ? "skole_" + s.skoleSub : skjerm;
+    const meta = META[nokkel] || META.plan_sesong;
+    const tot = 45;
+
+    const skjermer = [["plan", "Plan"], ["skole", "Skole"], ["foreldre", "Foreldre"], ["okt", "Økt-detalj"], ["iup", "IUP-samtale"], ["trener", "Trener · årsplan"]]
+      .map(([k, l]) => ({ k, l, velg: () => this.velgSkjerm(k), knappStil: this.pilleStil(skjerm === k, 36) }));
+
+    const tilstander = [["ok", "Suksess"], ["laster", "Laster"], ["tom", "Tom"], ["feil", "Feil"]]
+      .map(([k, l]) => ({ k, l, velg: () => this.setState({ tilstand: k }), knappStil: this.pilleStil(s.tilstand === k, 36) }));
+
+    let undervalg = [];
+    if (skjerm === "plan") {
+      undervalg = [["sesong", "Sesong"], ["kalender", "Kalender"], ["samlinger", "Samlinger"]]
+        .map(([k, l]) => ({ k, l, velg: () => this.velgSub(k), stil: this.segStil(s.sub === k), stilD: this.segStilD(s.sub === k) }));
+    } else if (skjerm === "skole") {
+      undervalg = [["rute", "Skoleår"], ["timeplan", "Timeplan"], ["vurdering", "Vurdering"]]
+        .map(([k, l]) => ({ k, l, velg: () => this.velgSkole(k), stil: this.segStil(s.skoleSub === k), stilD: this.segStilD(s.skoleSub === k) }));
+    }
+
+    const aktivFane = skjerm === "okt" || skjerm === "iup" ? "plan" : skjerm;
+    const prikker = (n, farge) => [1, 2, 3, 4, 5].map((i) => ({
+      stil: "width:9px;height:9px;border-radius:999px;flex:none;background:" + (i <= n ? farge : "#dce3ea") + ";",
+    }));
+    const iupEval = IUP_EVAL.map((x, i) => ({
+      ...x,
+      aksStil: "display:inline-flex;align-items:center;justify-content:center;min-width:44px;height:22px;padding:0 8px;border-radius:7px;background:" +
+        PY_TINT[x.akse] + ";color:" + PY_FG[x.akse] + ";font-family:" + BRAND + ";font-weight:800;font-size:9.5px;letter-spacing:0.05em;flex:none;",
+      statusStil: this.chip(STATUS_F[x.status][0], STATUS_F[x.status][1], 9.5),
+      egenPrikker: prikker(x.egen, TEAL), trenerPrikker: prikker(x.trener, NAVY),
+      radStil: "display:block;padding:12px 0;" + (i === IUP_EVAL.length - 1 ? "" : "border-bottom:1px solid #e9edf1;"),
+    }));
+    const iupNye = IUP_NYE.map((x) => ({
+      ...x,
+      aksStil: "display:inline-flex;align-items:center;justify-content:center;min-width:44px;height:22px;padding:0 8px;border-radius:7px;background:" +
+        PY_TINT[x.akse] + ";color:" + PY_FG[x.akse] + ";font-family:" + BRAND + ";font-weight:800;font-size:9.5px;letter-spacing:0.05em;flex:none;",
+      kortStil: "display:block;padding:13px 14px;border-radius:16px;background:" + GREY50 + ";",
+      egentidNo: x.egentid,
+    }));
+    const iupSteg = IUP_STEG.map((l, i) => ({
+      l, n: i + 1, kort: ["Evaluering", "Nye fokus", "Del"][i],
+      mobilStil: "display:inline-flex;align-items:center;gap:6px;height:30px;padding:0 11px 0 6px;border-radius:999px;min-width:0;background:" +
+        (i < 2 ? "#e3e9ee" : "#eef2f6") + ";",
+      numStil: "display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:999px;flex:none;font-family:" + BRAND +
+        ";font-weight:800;font-size:10.5px;background:" + (i < 2 ? NAVY : "#dce3ea") + ";color:" + (i < 2 ? "#ffffff" : "#64748b") + ";",
+      tekstStil: "font-family:" + BRAND + ";font-weight:700;font-size:11px;white-space:nowrap;color:" + (i < 2 ? NAVY : "#64748b") + ";",
+      strekStil: "height:2px;flex:1;min-width:12px;border-radius:999px;background:" + (i < 1 ? NAVY : "#dce3ea") + ";",
+      visStrek: i < IUP_STEG.length - 1,
+    }));
+    const iupTall = IUP_TALL.map((t, i) => ({
+      ...t, radStil: this.rad(i === IUP_TALL.length - 1) + "padding:10px 0;",
+      verdiStil: "font-family:" + BRAND + ";font-weight:800;font-size:14px;color:" + TEALT + ";font-variant-numeric:tabular-nums;white-space:nowrap;flex:none;",
+    }));
+    const bunnmeny = [["plan", "Plan", D.cal], ["skole", "Skole", D.cap], ["foreldre", "Foreldre", D.users]].map(([k, l, d]) => {
+      const av = aktivFane === k && skjerm !== "trener";
+      return { k, l, d, velg: () => this.velgSkjerm(k),
+        stil: "display:flex;flex-direction:column;align-items:center;gap:4px;padding:7px 2px 5px;border:none;background:transparent;cursor:pointer;position:relative;color:" + (av ? NAVY : "#475569") + ";",
+        strekStil: "position:absolute;top:0;width:22px;height:3px;border-radius:999px;background:" + (av ? MINT : "transparent") + ";" };
+    });
+
+    const toppmeny = [["plan", "Plan"], ["skole", "Skole"], ["foreldre", "Foreldre"]].map(([k, l]) => ({
+      k, l, velg: () => this.velgSkjerm(k), stil: this.pilleStil(aktivFane === k && skjerm !== "trener", 40),
+    }));
+
+    const iupKort = (key) => {
+      const f = FOKUS[key];
+      return {
+        ...f,
+        liste: f.liste.map((x, i) => ({
+          ...x,
+          aksStil: "display:inline-flex;align-items:center;justify-content:center;min-width:44px;height:22px;padding:0 8px;border-radius:7px;background:" +
+            PY_TINT[x.akse] + ";color:" + PY_FG[x.akse] + ";font-family:" + BRAND + ";font-weight:800;font-size:9.5px;letter-spacing:0.05em;flex:none;",
+          statusStil: this.chip(STATUS_F[x.status][0], STATUS_F[x.status][1], 9.5),
+          radStil: this.rad(i === f.liste.length - 1) + "align-items:flex-start;padding:10px 0;",
+        })),
+      };
+    };
+
+    const perioder = PERIODS.map((p, i) => ({
+      ...p,
+      iup: iupKort(p.key),
+      stripStil: "flex:" + p.vekt + ";height:7px;border-radius:3px;background:" + (p.naa ? p.color : p.color) + ";opacity:" + (p.naa ? 1 : 0.55) + ";",
+      bandStil: "flex:" + p.vekt + ";height:30px;border-radius:9px;display:flex;align-items:center;padding:0 11px;background:" + p.color +
+        ";opacity:" + (p.naa ? 1 : 0.62) + ";font-family:" + BRAND + ";font-weight:700;font-size:11px;color:#ffffff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0;",
+      barStil: "width:4px;border-radius:999px;flex:none;align-self:stretch;min-height:44px;background:" + p.color + ";",
+      radStil: this.rad(i === PERIODS.length - 1) + "align-items:flex-start;",
+      dRadStil: this.rad(i === PERIODS.length - 1) + "align-items:flex-start;padding:14px 0;",
+      laneKortStil: "background:#ffffff;border-radius:22px;box-shadow:0 4px 14px rgba(23,68,111,0.06);padding:14px 18px;min-width:0;overflow:hidden;" +
+        (p.naa ? "box-shadow:0 8px 24px rgba(23,68,111,0.13);" : ""),
+      laneTopStil: "display:flex;align-items:center;gap:8px;padding-bottom:9px;border-bottom:1px solid #e9edf1;",
+      laneDot: "width:10px;height:10px;border-radius:999px;flex:none;background:" + p.color + ";",
+    }));
+
+    const mp = (m) => ({
+      ...m, d: D[m.ikon],
+      icStil: this.ic(m.farge === "orange" ? T_ORANGE : T_YELLOW, m.farge === "orange" ? "#b4571a" : "#7a6200"),
+    });
+    const milepaelerKort = MILEPAELER.slice(1, 4).map((m, i) => ({ ...mp(m), radStil: this.rad(i === 2) }));
+    const milepaeler = MILEPAELER.slice(0, 6).map((m, i) => ({ ...mp(m), dRadStil: this.rad(i === 5) }));
+
+    const samlinger = SAMLINGER.map((c) => ({
+      ...c,
+      statusStil: c.status === "Bekreftet" ? this.chip(T_TEAL, TEALT, 10.5) : this.chip(T_ORANGE, "#b4571a", 10.5),
+    }));
+
+    // Kalender: september 2026, rutenett fra man 31. aug
+    const FERIE_START = "2026-09-28", FERIE_SLUTT = "2026-10-02", NAA = "2026-09-02";
+    const HENDELSER = {
+      "2026-09-05": ["Samling", T_TEAL, TEALT],
+      "2026-09-11": ["Turnering", T_ORANGE, "#b4571a"],
+      "2026-09-16": ["Prøve", T_PURPLE, PURPLE],
+    };
+    const dager = [];
+    const cur = new Date(Date.UTC(2026, 7, 31));
+    for (let i = 0; i < 35; i++) {
+      const y = cur.getUTCFullYear(), mo = cur.getUTCMonth(), dd = cur.getUTCDate(), wd = cur.getUTCDay();
+      const iso = y + "-" + String(mo + 1).padStart(2, "0") + "-" + String(dd).padStart(2, "0");
+      const ferie = iso >= FERIE_START && iso <= FERIE_SLUTT;
+      const typ = OKT_TYPER[wd];
+      dager.push({
+        iso, dd, mo, wd, ferie, naa: iso === NAA, iMnd: mo === 8,
+        okt: !!typ && !ferie, typ: typ || null, hend: HENDELSER[iso] || null,
+        uke: 36 + Math.floor(i / 7),
+        dagKort: DAGNAVN[wd] + " " + dd + ".",
+      });
+      cur.setUTCDate(dd + 1);
+    }
+
+    const kalCeller = dager.map((c) => {
+      const bg = c.naa ? T_ORANGE : c.ferie ? "#eef2f6" : c.iMnd ? GREY50 : "#fafbfc";
+      return {
+        num: c.dd, harOkt: c.okt, harMerke: !!c.hend,
+        oktKort: c.okt ? c.typ.tittel : "", merkeTekst: c.hend ? c.hend[0] : "",
+        aapne: c.okt ? () => this.velgSkjerm("okt") : undefined,
+        stil: "display:flex;flex-direction:column;gap:4px;padding:8px 8px 9px;border-radius:14px;min-height:44px;min-width:0;box-sizing:border-box;background:" + bg +
+          ";opacity:" + (c.iMnd ? 1 : 0.5) + ";" + (c.naa ? "box-shadow:inset 0 0 0 2px " + ORANGE + ";" : "") + (c.okt ? "cursor:pointer;" : ""),
+        numStil: "font-family:" + BRAND + ";font-weight:" + (c.naa ? 800 : 700) + ";font-size:12px;color:" + (c.naa ? "#b4571a" : "#1e293b") + ";font-variant-numeric:tabular-nums;",
+        oktStil: c.typ ? "display:block;font-family:" + BRAND + ";font-weight:700;font-size:9.5px;line-height:1.25;padding:3px 6px;border-radius:7px;background:" + c.typ.f +
+          ";color:#ffffff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;" : "",
+        merkeStil: c.hend ? "display:block;font-family:" + BRAND + ";font-weight:700;font-size:9.5px;line-height:1.25;padding:3px 6px;border-radius:7px;background:" + c.hend[1] +
+          ";color:" + c.hend[2] + ";white-space:nowrap;overflow:hidden;text-overflow:ellipsis;" : "",
+      };
+    });
+
+    const lagRad = (c, siste, d) => {
+      const merke = c.naa ? ["Nå", T_ORANGE, "#b4571a"] : c.hend ? c.hend : c.iso < NAA ? ["Gjennomført", T_TEAL, TEALT] : null;
+      return {
+        dag: c.dagKort, tittel: c.okt ? c.typ.tittel : c.hend ? c.hend[0] : "—",
+        sub: c.okt ? "08:00–10:00 · Gamle Fredrikstad GK" : "Heldagssamling · GFGK",
+        merke: !!merke, merkeTekst: merke ? merke[0] : "", merkeStil: merke ? this.chip(merke[1], merke[2], 10) : "",
+        pil: !merke,
+        aapne: () => this.velgSkjerm("okt"),
+        omrStil: "width:4px;height:30px;border-radius:999px;flex:none;background:" + (c.okt ? c.typ.f : TEAL) + ";",
+        radStil: this.rad(siste, true) + (d ? "" : "padding:9px 0;"),
+        dRadStil: this.rad(siste, true),
+      };
+    };
+
+    const kalUker = [];
+    for (let u = 0; u < 5; u++) {
+      const uker = dager.slice(u * 7, u * 7 + 7);
+      const akt = uker.filter((c) => c.okt || c.hend);
+      if (akt.length === 0) continue;
+      const f = uker[0], l = uker[6];
+      kalUker.push({
+        uke: f.uke,
+        spenn: f.dd + ". – " + l.dd + ".",
+        rader: akt.map((c, i) => lagRad(c, i === akt.length - 1)),
+      });
+    }
+    const ukeRader = dager.slice(0, 7).filter((c) => c.okt || c.hend).map((c, i, a) => lagRad(c, i === a.length - 1, true));
+
+    const skoleRute = SKOLE.map((x, i) => ({
+      ...x,
+      prikkStil: "width:10px;height:10px;border-radius:999px;flex:none;background:" + x.f + ";",
+      radStil: this.rad(i === SKOLE.length - 1) + "padding:9px 0;",
+      dRadStil: this.rad(i === SKOLE.length - 1) + "padding:11px 0;",
+    }));
+    const prover = PROVER.map((x, i) => ({
+      ...x, radStil: this.rad(i === PROVER.length - 1) + "padding:9px 0;", dRadStil: this.rad(i === PROVER.length - 1) + "padding:11px 0;",
+    }));
+
+    const rows = TT[s.trinn];
+    const trinn = ["VG1", "VG2", "VG3"].map((l) => ({
+      l, velg: () => this.setState({ trinn: l }), stil: this.aarStil(s.trinn === l), stilD: this.aarStil(s.trinn === l, true),
+    }));
+    const cellStil = (g) => "display:flex;align-items:center;justify-content:center;text-align:center;min-height:52px;padding:6px 8px;border-radius:12px;box-sizing:border-box;font-size:12.5px;line-height:1.25;background:" +
+      (g ? T_TEAL : GREY50) + ";color:" + (g ? TEALT : "#1e293b") + ";font-weight:" + (g ? 700 : 400) + ";";
+    const timeplanRader = TT_TIDER.map((klokke, i) => ({
+      klokke, celler: rows[i].map(([t, g]) => ({ t, stil: cellStil(g) })),
+    }));
+    const timeplanDager = TT_DAGER.map((dag, di) => ({
+      dag,
+      timer: TT_TIDER.map((klokke, ti) => {
+        const c = rows[ti][di];
+        return {
+          klokke: klokke.slice(0, 5), fag: c[0],
+          radStil: this.rad(ti === TT_TIDER.length - 1) + "padding:7px 0;",
+          fagStil: "min-width:0;flex:1;font-family:" + (c[1] ? BRAND : "inherit") + ";font-weight:" + (c[1] ? 700 : 400) +
+            ";font-size:13px;color:" + (c[1] ? TEALT : "#1e293b") + ";white-space:nowrap;overflow:hidden;text-overflow:ellipsis;",
+        };
+      }),
+    }));
+
+    const maalomraader = OMRAADER.map((o) => ({
+      ...o, d: D[o.ikon], icStil: this.ic(T_NAVY, NAVY, 40),
+      nivaaStil: this.chip(o.nivaaF[0], o.nivaaF[1], 10.5),
+    }));
+
+    const foreldremoter = MOTER.map((p, i) => ({
+      ...p, radStil: this.rad(i === MOTER.length - 1) + "padding:10px 0;", dRadStil: this.rad(i === MOTER.length - 1) + "padding:13px 0;",
+    }));
+
+    const chat = CHAT.map((m) => ({
+      ...m, visNavn: !m.own,
+      wrapStil: "display:flex;flex-direction:column;align-items:" + (m.own ? "flex-end" : "flex-start") + ";min-width:0;",
+      boblStil: "max-width:82%;padding:10px 13px;border-radius:18px;border-bottom-left-radius:" + (m.own ? 18 : 4) + "px;border-bottom-right-radius:" +
+        (m.own ? 4 : 18) + "px;background:" + (m.own ? NAVY : GREY50) + ";color:" + (m.own ? "#ffffff" : "#1e293b") + ";font-size:13px;line-height:1.45;",
+      boblStilD: "max-width:88%;padding:12px 15px;border-radius:20px;border-bottom-left-radius:" + (m.own ? 20 : 5) + "px;border-bottom-right-radius:" +
+        (m.own ? 5 : 20) + "px;background:" + (m.own ? NAVY : GREY50) + ";color:" + (m.own ? "#ffffff" : "#1e293b") + ";font-size:13.5px;line-height:1.5;",
+    }));
+
+    const drills = DRILLS.map((dr, i) => ({
+      ...dr, harVol: dr.vol !== "",
+      numStil: "display:inline-flex;align-items:center;justify-content:center;width:30px;height:30px;border-radius:10px;flex:none;background:" + dr.t +
+        ";color:" + dr.f + ";font-family:" + BRAND + ";font-weight:800;font-size:13px;",
+      volStil: "display:block;margin-top:4px;font-family:" + BRAND + ";font-weight:700;font-size:11.5px;color:" + dr.f + ";font-variant-numeric:tabular-nums;",
+      radStil: this.rad(i === DRILLS.length - 1) + "align-items:flex-start;",
+      dRadStil: this.rad(i === DRILLS.length - 1) + "align-items:flex-start;padding:13px 0;",
+    }));
+
+    const coachPerioder = COACH.map((c) => {
+      const sum = c.pyr.FYS + c.pyr.TEK + c.pyr.SLAG + c.pyr.SPILL + c.pyr.TURN;
+      return {
+        ...c,
+        stripStil: "flex:" + c.vekt + ";height:7px;border-radius:3px;background:" + c.color + ";opacity:" + (c.naa ? 1 : 0.55) + ";",
+        bandStil: "flex:" + c.vekt + ";height:30px;border-radius:9px;display:flex;align-items:center;padding:0 11px;background:" + c.color +
+          ";opacity:" + (c.naa ? 1 : 0.62) + ";font-family:" + BRAND + ";font-weight:700;font-size:11px;color:#ffffff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0;",
+        prikkStil: "width:11px;height:11px;border-radius:999px;flex:none;background:" + c.color + ";",
+        kortStil: "background:#ffffff;border-radius:20px;box-shadow:0 4px 14px rgba(23,68,111,0.06);padding:14px 15px;flex:none;" +
+          (c.naa ? "box-shadow:0 8px 24px rgba(244,123,32,0.18);" : ""),
+        dKortStil: "background:#ffffff;border-radius:26px;box-shadow:0 8px 24px rgba(23,68,111,0.08);padding:18px 20px;min-width:0;",
+        pyr: Object.keys(c.pyr).map((k) => ({
+          k, v: c.pyr[k] + " %",
+          stil: "flex:" + (c.pyr[k] || 0.001) + ";background:" + PY_FARGE[k] + ";",
+          prikkStil: "width:8px;height:8px;border-radius:2px;flex:none;background:" + PY_FARGE[k] + ";",
+        })),
+      };
+    });
+
+    return {
+      visMobil: visning !== "Desktop", visDesktop: visning !== "Mobil",
+      visNotater: P.visNotater !== false,
+      skjermer, tilstander, undervalg, visUndervelger: undervalg.length > 0,
+      bunnmeny, toppmeny,
+      rolleLabel: skjerm === "trener" ? "Trener" : "Elev",
+      rolleUndertekst: skjerm === "trener" ? "Trenerens årsplan for golfgruppa" : "Fellesside for elever og foreldre",
+      skjermTittel: meta.tittel, skjermTittelLav: meta.tittel.toLowerCase(),
+      erOk: s.tilstand === "ok", erLaster: s.tilstand === "laster", erTom: s.tilstand === "tom", erFeil: s.tilstand === "feil",
+      mSesong: skjerm === "plan" && s.sub === "sesong",
+      mKalender: skjerm === "plan" && s.sub === "kalender",
+      mSamlinger: skjerm === "plan" && s.sub === "samlinger",
+      mSkoleRute: skjerm === "skole" && s.skoleSub === "rute",
+      mSkoleTime: skjerm === "skole" && s.skoleSub === "timeplan",
+      mSkoleVurd: skjerm === "skole" && s.skoleSub === "vurdering",
+      mForeldre: skjerm === "foreldre", mOkt: skjerm === "okt", mTrener: skjerm === "trener", mIup: skjerm === "iup",
+      iupEval, iupNye, iupSteg, iupTall,
+      tilKalender: () => this.setState({ skjerm: "plan", sub: "kalender" }),
+      perioder, milepaeler, milepaelerKort, samlinger, heldager: HELDAGER,
+      iupAktiv: iupKort("grunn"),
+      oktFokus: iupKort("grunn").liste[0],
+      iupSenere: [
+        { name: "Spesialiseringsperiode", tekst: "3 fokusområder · 5,5 t egentid i uka", prikk: "width:9px;height:9px;border-radius:999px;flex:none;background:" + BLUE + ";" },
+        { name: "Turneringsperiode", tekst: "2 fokusområder · 3,5 t egentid i uka", prikk: "width:9px;height:9px;border-radius:999px;flex:none;background:" + ORANGE + ";" },
+      ],
+      milepaelStrip: MILEPAELER.slice(0, 6).map((m) => ({
+        ...m, d: D[m.ikon],
+        stil: "display:flex;align-items:center;gap:8px;min-width:0;flex:1;height:36px;padding:0 12px;border-radius:999px;background:" + GREY50 + ";",
+        prikkStil: "width:8px;height:8px;border-radius:999px;flex:none;background:" + (m.farge === "orange" ? ORANGE : YELLOW) + ";",
+      })),
+      maaneder: ["Aug", "Sep", "Okt", "Nov", "Des", "Jan", "Feb", "Mar", "Apr", "Mai", "Jun", "Jul"],
+      ukedager: ["Man", "Tir", "Ons", "Tor", "Fre", "Lør", "Søn"],
+      ttDager: TT_DAGER,
+      sesongTall: [{ v: "45", l: "Treningsuker" }, { v: "3", l: "Perioder" }, { v: "6", l: "Samlinger" }, { v: "7", l: "Turneringer" }],
+      kalCeller, kalUker, ukeRader,
+      skoleRute, prover, trinn, timeplanRader, timeplanDager, maalomraader,
+      foreldremoter, chat, drills, komp: KOMP, coachPerioder,
+      tomIkon: D[meta.ikon], tomTittel: meta.tom[0], tomTekst: meta.tom[1],
+      feilTittel: meta.feil[0], feilTekst: meta.feil[1],
+      notatFor: meta.notat[0], notatEtter: meta.notat[1], notatPunkter: meta.notat[2],
+    };
+  }
+}
+</script>
+</body>
+</html>
