@@ -31,6 +31,13 @@
  * `BUILT_CONTENT_SELECTOR` under er en generisk gjetning (`main`) — bytt til
  * den faktiske innholds-wrapperen i den bygde ruta (ikke rail/nav-chrome)
  * hvis appens layout skiller seg fra fasitens.
+ *
+ * KREVER INNLOGGING (rettet 15.08.2026): `/portal/analysere` er bak auth, så
+ * uten spiller-credentials havner steg 2 på `/auth/login` og fotograferer
+ * innloggingsskjemaet i stedet for skjermen. Mangler credentials, hopper
+ * testen over — samme mønster som portal-hjem/meg/planlegge. Det er også det
+ * som gjør den trygg i prod-røyktesten (`playwright.yml`), som ikke har
+ * credentials og heller ikke har referansebildene (de er gitignorert).
  */
 
 import { test, expect } from "@playwright/test";
@@ -42,6 +49,7 @@ import {
   PAPER_VIEWPORTS,
   type PaperTema,
 } from "../_paper-fasit-helpers";
+import { playerCredentials, dismissCookieBanner } from "../_auth-helpers";
 
 const FASIT_ABS_PATH = path.resolve(
   __dirname,
@@ -58,6 +66,20 @@ const CASES: Array<{ viewport: keyof typeof PAPER_VIEWPORTS; tema: PaperTema }> 
   { viewport: "desktop", tema: "light" },
   { viewport: "desktop", tema: "dark" },
 ];
+
+async function loginIfNeeded(page: import("@playwright/test").Page) {
+  const creds = playerCredentials();
+  if (!creds) {
+    test.skip(true, "mangler spiller-credentials");
+    return;
+  }
+  await page.goto("/auth/login");
+  await dismissCookieBanner(page);
+  await page.locator('input[type="email"]').fill(creds.email);
+  await page.locator('input[type="password"]').fill(creds.password);
+  await page.locator('button[type="submit"]').click();
+  await page.waitForURL(/\/(portal|auth\/etter-innlogging)/, { timeout: 30_000 });
+}
 
 for (const { viewport, tema } of CASES) {
   const snapshotName = `portal-analysere-${viewport}-${tema}.png`;
@@ -79,6 +101,7 @@ for (const { viewport, tema } of CASES) {
       return;
     }
 
+    await loginIfNeeded(page);
     await page.goto(BUILT_ROUTE, { waitUntil: "domcontentloaded" });
     await page.evaluate((t) => {
       document.cookie = `ak-v2-tema=${t}; path=/`;

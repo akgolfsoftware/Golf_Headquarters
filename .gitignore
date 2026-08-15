@@ -112,7 +112,10 @@ tmp-handoff/
 #   (byte-identisk kopi, sjekksum-verifisert før fjerning)
 #
 # Playwright-snapshots (28 MB, 432 filer) regenereres lokalt — se
-# tests/e2e/paper-visual/README.md. De kjørte aldri i CI.
+# tests/e2e/paper-visual/README.md. Fram til 15.08.2026 sto det her at de
+# «aldri kjørte i CI». Det var feil: prod-røyktesten kjørte hele tests/e2e/,
+# og én spec uten skip-vakt holdt den rød i 195 kjøringer. Nå filtreres
+# paper-visual/ bort i playwright.config.ts når CI er satt.
 #
 # Merk: historikken er IKKE omskrevet, så .git inneholder fortsatt de gamle
 # versjonene. Å krympe .git krever filter-repo + force-push og er en egen
