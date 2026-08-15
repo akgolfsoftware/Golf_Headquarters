@@ -1647,6 +1647,30 @@ model TrackManSession {
 
 /// B5: arkiverte månedsrapporter (én per kalendermåned). payload er
 /// zod-validert ved lesing (MaanedsrapportSchema i lib/agents/maanedsrapport).
+/// D6 · skoletidsbekreftelse. Forelderen bekrefter barnets timeplan én gang
+/// per semester, og bekreftelsen logges med dato.
+///
+/// Fravær av rad betyr «skoletid mangler» hos coachen — vi bruker ALDRI
+/// forrige semesters tider. Selve klokkeslettene ligger som PlayerBusyBlock
+/// med kind = "SKOLE"; denne tabellen svarer bare på om noen har stått inne
+/// for dem i inneværende semester.
+///
+/// Bevisst uten @relation (jf. gotchas §Schema-endringer): additiv tabell.
+model SkoletidBekreftelse {
+  id String @id @default(cuid())
+  /// Barnet timeplanen gjelder.
+  playerId String
+  /// Forelderen som bekreftet.
+  bekreftetAvId String
+  /// «2026H» / «2027V» — ett semester, ikke et skoleår.
+  semester   String
+  bekreftetAt DateTime @default(now())
+
+  @@unique([playerId, semester])
+  @@index([bekreftetAvId])
+  @@map("skoletid_bekreftelser")
+}
+
 model MonthlyReport {
   id        String   @id @default(cuid())
   year      Int
