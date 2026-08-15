@@ -193,3 +193,16 @@
     grid-template-columns: minmax(0, 1fr) !important;
   }
 }
+
+/* Øktdetaljen: hoveddel til venstre, måling og kompetansemål til høyre.
+   Én kolonne under 900px — to smale kolonner er verre enn én bred. */
+.wang-tp .wang-okt-kolonner {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+@media (min-width: 900px) {
+  .wang-tp .wang-okt-kolonner {
+    grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
+    align-items: start;
+  }
+}

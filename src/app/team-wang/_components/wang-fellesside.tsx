@@ -27,6 +27,7 @@ import {
   seasonWeek,
   weekStartOf,
   type Okt,
+  type PeriodeKey,
 } from "../_data/wang-plan";
 import type { WangLiveData } from "../_data/hent-wang-gruppe";
 import {
@@ -34,7 +35,10 @@ import {
   periodeForDato,
   turneringerFraHendelser,
 } from "../_data/live-sesong";
-import { fokusPerPeriode as byggFokusPerPeriode } from "../_data/fokusomraader";
+import {
+  FOKUS_DEMO,
+  fokusPerPeriode as byggFokusPerPeriode,
+} from "../_data/fokusomraader";
 import { PlanSesong } from "./plan-sesong";
 import { FaneForeldre } from "./fane-foreldre";
 import { FaneKalender } from "./fane-kalender";
@@ -112,6 +116,13 @@ export function WangFellesside({
     setHendelseDetalj(data);
     if (typeof window !== "undefined") window.scrollTo(0, 0);
   };
+
+  // Elevens fokusområder, brukt både av årsplanen og av øktdetaljen — så en
+  // økt kan vise hva eleven selv jobber med i akkurat den perioden.
+  const fokusKart = live
+    ? byggFokusPerPeriode(live.perioder, live.fokusomraader)
+    : null;
+  const fokusFor = (pk: PeriodeKey) => (fokusKart ?? FOKUS_DEMO)[pk] ?? null;
 
   return (
     <div style={{ minHeight: "100vh", background: "var(--bg-app)" }}>
@@ -256,6 +267,7 @@ export function WangFellesside({
             onNext={nesteOkt ? () => aapne(nesteOkt.id) : undefined}
             forrigeLabel={forrigeOkt?.short}
             nesteLabel={nesteOkt?.short}
+            fokus={fokusFor(detalj.periodKey)}
           />
         ) : hendelseDetalj ? (
           <HendelseDetalj
