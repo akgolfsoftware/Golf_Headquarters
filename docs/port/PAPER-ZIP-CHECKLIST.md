@@ -157,10 +157,22 @@ i `designsystem/paper/kart/`. Arbeidsordre: `kart/prompt-code-session-implemente
       + `workbench-desktop.html`. **BLOKKERT:** `TestDefinition` har kun `pyramidArea`, ingen
       områdekode — oppslag i delt taksonomi er umulig. Krever ett additivt felt + Anders'
       backfill av 36 testdefinisjoner.
-- [ ] **D5 · Gapping** — `fase2/playerhq/playerhq-gapping.html`. Carry per kølle finnes
-      (`TrackManShot.club` + `.carryDistance`). Bygges med TrackMan-utledet køllelista;
-      `EquipmentBag` er fritekst og egner seg ikke til matching.
-- [ ] **D6 · Skoletidsbekreftelse** — `fase2/forelder/forelder-barn.html`. Ingen blokkeringer.
+- [~] **D5 · Gapping** — `fase2/playerhq/playerhq-gapping.html`. BYGGET 15.08.2026 (PR #474).
+      Rute: `/portal/mal/trackman/gapping` — IKKE `/portal/trackman/*`, som redirecter
+      permanent til Analyse (`next.config.ts`). Flaggregelen (gap > 22 m, begge køller
+      ≥ 20 slag, driver unntatt) ligger i `src/lib/domain/gapping.ts` med 12 tester.
+      Køllelista utledes fra TrackMan-dataene, ikke fra `EquipmentBag` (fritekst).
+      Basen hadde 0 TrackManShot-rader — `scripts/seed-screentest-trackman.ts` seeder
+      431 slag på 12 køller for screentest-spilleren (idempotent, `--slett` reverserer).
+      **Venter på pixel-signering.**
+- [~] **D6 · Skoletidsbekreftelse** — `fase2/forelder/forelder-barn.html`. BYGGET 15.08.2026.
+      Skoletid-kort i barn-lista: timeplan (slått sammen til «Man–tor»/«Fredag»), status,
+      Bekreft/Endre. Semesterlogikken i `src/lib/domain/skoletid.ts` med 8 tester —
+      høst = juli–desember, vår = januar–juni, og en bekreftelse arves ALDRI til neste
+      semester. Klokkeslettene leses fra `PlayerBusyBlock` (kind SKOLE, recurring WEEKLY);
+      bekreftelsen lagres i ny tabell `skoletid_bekreftelser` (Anders godkjente 15.08).
+      **Ikke fotografert:** Playwright-nettleseren manglet lokalt, og installasjonen ble
+      avbrutt. Skjermbilde-gaten er derfor IKKE kjørt for denne.
 
 ---
 
