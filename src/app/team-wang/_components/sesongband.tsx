@@ -86,7 +86,14 @@ function NaaMarkor({
 }) {
   const klemt = Math.min(96, Math.max(4, pct));
   return (
-    <span style={{ display: "block", position: "relative", height: hoyde + 1, marginTop: 4 }}>
+    <span
+      style={{
+        display: "block",
+        position: "relative",
+        height: hoyde + 1,
+        marginTop: 4,
+      }}
+    >
       <span
         style={{
           position: "absolute",
@@ -145,7 +152,9 @@ export function Sesongband({
           {tittel}
         </span>
         {undertittel ? (
-          <span style={{ ...undertittelStil, fontSize: 13, marginTop: 5 }}>{undertittel}</span>
+          <span style={{ ...undertittelStil, fontSize: 13, marginTop: 5 }}>
+            {undertittel}
+          </span>
         ) : null}
 
         <span style={{ display: "flex", gap: 3, marginTop: 15 }}>
@@ -163,7 +172,12 @@ export function Sesongband({
           ))}
         </span>
 
-        <NaaMarkor pct={naaPct} label={kortNaaLabel} hoyde={16} fontSize={8.5} />
+        <NaaMarkor
+          pct={naaPct}
+          label={kortNaaLabel}
+          hoyde={16}
+          fontSize={8.5}
+        />
 
         <span
           style={{
@@ -207,7 +221,9 @@ export function Sesongband({
             {tittel}
           </span>
           {undertittel ? (
-            <span style={{ ...undertittelStil, fontSize: 14.5, marginTop: 7 }}>{undertittel}</span>
+            <span style={{ ...undertittelStil, fontSize: 14.5, marginTop: 7 }}>
+              {undertittel}
+            </span>
           ) : null}
         </span>
 
@@ -223,7 +239,10 @@ export function Sesongband({
             }}
           >
             {maaneder.map((m, i) => (
-              <span key={`${m}-${i}`} style={{ textAlign: "center", overflow: "hidden" }}>
+              <span
+                key={`${m}-${i}`}
+                style={{ textAlign: "center", overflow: "hidden" }}
+              >
                 {m}
               </span>
             ))}

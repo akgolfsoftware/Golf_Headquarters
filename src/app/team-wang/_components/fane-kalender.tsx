@@ -24,7 +24,10 @@ import {
   SESSIONS,
   weekStartOf,
 } from "../_data/wang-plan";
-import { byggLiveKalenderHendelser, type DagHendelse } from "../_data/live-sesong";
+import {
+  byggLiveKalenderHendelser,
+  type DagHendelse,
+} from "../_data/live-sesong";
 import type { WangLiveData } from "../_data/hent-wang-gruppe";
 import { Arshjul } from "./arshjul";
 
@@ -94,7 +97,8 @@ function HendelseRad({
   const sesjon = h.type === "okt" ? SESSION_BY_ISO[dagIso] : undefined;
   const klikkbar = !!sesjon;
   const d = new Date(`${dagIso}T12:00:00`);
-  const merke = h.type === "konkurranse" || h.type === "prove" || h.type === "samling";
+  const merke =
+    h.type === "konkurranse" || h.type === "prove" || h.type === "samling";
 
   const innhold = (
     <>
@@ -256,7 +260,9 @@ function UkeAgenda({
             style={{
               padding: "12px 14px",
               opacity: tom ? 0.62 : 1,
-              border: harNaa ? "2px solid var(--wang-teal)" : "2px solid transparent",
+              border: harNaa
+                ? "2px solid var(--wang-teal)"
+                : "2px solid transparent",
               boxSizing: "border-box",
             }}
           >
@@ -291,12 +297,24 @@ function UkeAgenda({
               </span>
             </div>
             {tom ? (
-              <p style={{ margin: "6px 0 0", fontSize: 12.5, color: "var(--text-secondary)" }}>
+              <p
+                style={{
+                  margin: "6px 0 0",
+                  fontSize: 12.5,
+                  color: "var(--text-secondary)",
+                }}
+              >
                 Ingen trening denne uka.
               </p>
             ) : (
               rader.map(({ dIso, h }, i) => (
-                <HendelseRad key={`${dIso}-${i}`} dagIso={dIso} h={h} onOpen={onOpen} visDag />
+                <HendelseRad
+                  key={`${dIso}-${i}`}
+                  dagIso={dIso}
+                  h={h}
+                  onOpen={onOpen}
+                  visDag
+                />
               ))
             )}
           </section>
@@ -339,12 +357,22 @@ function MaanedRutenett({
         }}
       >
         {UKEDAG_KORT.map((d) => (
-          <span key={d} className="t-label" style={{ color: "var(--text-secondary)" }}>
+          <span
+            key={d}
+            className="t-label"
+            style={{ color: "var(--text-secondary)" }}
+          >
             {d}
           </span>
         ))}
       </div>
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(7,1fr)", gap: 6 }}>
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(7,1fr)",
+          gap: 6,
+        }}
+      >
         {Array.from({ length: startOffset }).map((_, i) => (
           <span key={`t${i}`} />
         ))}
@@ -355,7 +383,9 @@ function MaanedRutenett({
           const uke = isoUke(d);
           const evs = hendelser[dIso] ?? [];
           const okt = evs.find((e) => e.type === "okt");
-          const merke = evs.find((e) => e.type === "konkurranse" || e.type === "prove");
+          const merke = evs.find(
+            (e) => e.type === "konkurranse" || e.type === "prove",
+          );
           const erIDag = dIso === naaIso;
           const iValgtUke = valgtUke === uke;
 
@@ -375,11 +405,15 @@ function MaanedRutenett({
                 gap: 3,
                 padding: "5px 5px 6px",
                 borderRadius: 12,
-                border: erIDag ? "2px solid var(--wang-teal)" : "2px solid transparent",
+                border: erIDag
+                  ? "2px solid var(--wang-teal)"
+                  : "2px solid transparent",
                 boxSizing: "border-box",
                 cursor: "pointer",
                 textAlign: "left",
-                background: iValgtUke ? "var(--tint-navy)" : "var(--neutral-50)",
+                background: iValgtUke
+                  ? "var(--tint-navy)"
+                  : "var(--neutral-50)",
               }}
             >
               <span
@@ -464,14 +498,19 @@ function UkePanel({
   const slutt = new Date(start);
   slutt.setDate(slutt.getDate() + 6);
 
-  const rader = dager.flatMap((dIso) => (hendelser[dIso] ?? []).map((h) => ({ dIso, h })));
+  const rader = dager.flatMap((dIso) =>
+    (hendelser[dIso] ?? []).map((h) => ({ dIso, h })),
+  );
   const antallOkter = rader.filter((r) => r.h.type === "okt").length;
   const antallMerker = rader.filter(
     (r) => r.h.type === "konkurranse" || r.h.type === "prove",
   ).length;
 
   return (
-    <section className="wang-card" style={{ padding: "16px 18px", alignSelf: "start" }}>
+    <section
+      className="wang-card"
+      style={{ padding: "16px 18px", alignSelf: "start" }}
+    >
       <span
         style={{
           display: "block",
@@ -492,12 +531,24 @@ function UkePanel({
 
       <div style={{ marginTop: 8 }}>
         {rader.length === 0 ? (
-          <p style={{ margin: "10px 0 0", fontSize: 12.5, color: "var(--text-secondary)" }}>
+          <p
+            style={{
+              margin: "10px 0 0",
+              fontSize: 12.5,
+              color: "var(--text-secondary)",
+            }}
+          >
             Ingen hendelser denne uka.
           </p>
         ) : (
           rader.map(({ dIso, h }, i) => (
-            <HendelseRad key={`${dIso}-${i}`} dagIso={dIso} h={h} onOpen={onOpen} visDag />
+            <HendelseRad
+              key={`${dIso}-${i}`}
+              dagIso={dIso}
+              h={h}
+              onOpen={onOpen}
+              visDag
+            />
           ))
         )}
       </div>
@@ -528,7 +579,10 @@ function Telle({ verdi, label }: { verdi: number; label: string }) {
       >
         {verdi}
       </div>
-      <div className="t-label" style={{ color: "var(--text-secondary)", marginTop: 1 }}>
+      <div
+        className="t-label"
+        style={{ color: "var(--text-secondary)", marginTop: 1 }}
+      >
         {label}
       </div>
     </div>
@@ -549,11 +603,15 @@ export function FaneKalender({
   /** Hopper rett til den dagens måned (bruk `key` for å tvinge remount). */
   startValgtDag?: string | null;
 }) {
-  const startAar = startValgtDag ? Number(startValgtDag.slice(0, 4)) : Number(naaIso.slice(0, 4));
+  const startAar = startValgtDag
+    ? Number(startValgtDag.slice(0, 4))
+    : Number(naaIso.slice(0, 4));
   const startMnd = startValgtDag
     ? Number(startValgtDag.slice(5, 7)) - 1
     : Number(naaIso.slice(5, 7)) - 1;
-  const gyldigStart = MONTH_ORDER.some(([m, y]) => m === startMnd && y === startAar)
+  const gyldigStart = MONTH_ORDER.some(
+    ([m, y]) => m === startMnd && y === startAar,
+  )
     ? ([startAar, startMnd] as [number, number])
     : ([MONTH_ORDER[0][1], MONTH_ORDER[0][0]] as [number, number]);
 
@@ -568,12 +626,14 @@ export function FaneKalender({
   // måneden, ellers månedens første uke.
   const naaUke = isoUke(new Date(`${naaIso}T12:00:00`));
   const forsteUke = isoUke(new Date(`${isoOf(y, m, 1)}T12:00:00`));
-  const iDenneMnd = naaIso.slice(0, 7) === `${y}-${String(m + 1).padStart(2, "0")}`;
+  const iDenneMnd =
+    naaIso.slice(0, 7) === `${y}-${String(m + 1).padStart(2, "0")}`;
   const [valgtUke, setValgtUke] = useState<number | null>(null);
   const aktivUke = valgtUke ?? (iDenneMnd ? naaUke : forsteUke);
 
   const bytt = (retning: -1 | 1) => {
-    const neste = MONTH_ORDER[Math.min(MONTH_ORDER.length - 1, Math.max(0, idx + retning))];
+    const neste =
+      MONTH_ORDER[Math.min(MONTH_ORDER.length - 1, Math.max(0, idx + retning))];
     setYm([neste[1], neste[0]]);
     setValgtUke(null);
   };
@@ -581,7 +641,9 @@ export function FaneKalender({
   const mndIso = isoOf(y, m, 15);
   const periode = periodeForIso(mndIso);
   const antallOkter = Object.entries(hendelser).filter(
-    ([k, v]) => k.startsWith(`${y}-${String(m + 1).padStart(2, "0")}`) && v.some((e) => e.type === "okt"),
+    ([k, v]) =>
+      k.startsWith(`${y}-${String(m + 1).padStart(2, "0")}`) &&
+      v.some((e) => e.type === "okt"),
   ).length;
 
   return (
@@ -691,13 +753,23 @@ export function FaneKalender({
         <>
           {/* Mobil: agenda per uke. Ingen rutenett som må sidescrolles. */}
           <div className="wang-vis-mobil">
-            <UkeAgenda y={y} m={m} hendelser={hendelser} naaIso={naaIso} onOpen={onOpen} />
+            <UkeAgenda
+              y={y}
+              m={m}
+              hendelser={hendelser}
+              naaIso={naaIso}
+              onOpen={onOpen}
+            />
           </div>
 
           {/* Desktop: rutenett + panel for valgt uke. */}
           <div
             className="wang-vis-desktop"
-            style={{ display: "grid", gridTemplateColumns: "minmax(0,1.6fr) minmax(0,1fr)", gap: 16 }}
+            style={{
+              display: "grid",
+              gridTemplateColumns: "minmax(0,1.6fr) minmax(0,1fr)",
+              gap: 16,
+            }}
           >
             <section className="wang-card" style={{ padding: 20 }}>
               <MaanedRutenett
@@ -709,7 +781,13 @@ export function FaneKalender({
                 setValgtUke={setValgtUke}
               />
             </section>
-            <UkePanel uke={aktivUke} y={y} m={m} hendelser={hendelser} onOpen={onOpen} />
+            <UkePanel
+              uke={aktivUke}
+              y={y}
+              m={m}
+              hendelser={hendelser}
+              onOpen={onOpen}
+            />
           </div>
         </>
       )}
@@ -728,11 +806,27 @@ function Legende() {
     ["samling", "Samling"],
   ];
   return (
-    <div style={{ display: "flex", flexWrap: "wrap", gap: 16, alignItems: "center" }}>
+    <div
+      style={{
+        display: "flex",
+        flexWrap: "wrap",
+        gap: 16,
+        alignItems: "center",
+      }}
+    >
       {rader.map(([t, l]) => (
         <div key={t} style={{ display: "flex", alignItems: "center", gap: 6 }}>
-          <span style={{ width: 9, height: 9, borderRadius: 999, background: TYPE_FARGE[t] }} />
-          <span style={{ fontSize: 12.5, color: "var(--text-secondary)" }}>{l}</span>
+          <span
+            style={{
+              width: 9,
+              height: 9,
+              borderRadius: 999,
+              background: TYPE_FARGE[t],
+            }}
+          />
+          <span style={{ fontSize: 12.5, color: "var(--text-secondary)" }}>
+            {l}
+          </span>
         </div>
       ))}
     </div>

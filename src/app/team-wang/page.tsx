@@ -19,7 +19,9 @@ export default async function TeamWangPage({
   searchParams: Promise<{ fane?: string }>;
 }) {
   const { fane } = await searchParams;
-  const start: Fane = FANER.includes(fane as Fane) ? (fane as Fane) : "oversikt";
+  const start: Fane = FANER.includes(fane as Fane)
+    ? (fane as Fane)
+    : "oversikt";
   // proxy.ts sperrer allerede /team-wang, men vi trenger brukeren her for å
   // hente elevens EGNE fokusområder — de er personlige og hentes aldri for
   // gruppa som helhet.

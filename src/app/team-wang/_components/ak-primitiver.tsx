@@ -15,15 +15,44 @@ import type { CSSProperties } from "react";
 export type AkAkse = "FYS" | "TEK" | "SLAG" | "SPILL" | "TURN";
 
 /** Fast farge per akse. Speiler PY_AXES i _data/coach-arsplan.ts. */
-export const AKSE_FARGE: Record<AkAkse, { bg: string; fg: string; ren: string }> = {
-  FYS: { bg: "var(--tint-navy)", fg: "var(--wang-navy)", ren: "var(--wang-navy)" },
-  TEK: { bg: "var(--tint-teal)", fg: "var(--wang-teal-text)", ren: "var(--wang-teal)" },
-  SLAG: { bg: "var(--tint-orange)", fg: "var(--cat-orange-text)", ren: "var(--cat-orange)" },
-  SPILL: { bg: "var(--tint-blue)", fg: "var(--cat-blue-text)", ren: "var(--cat-blue)" },
-  TURN: { bg: "var(--tint-purple)", fg: "var(--cat-purple)", ren: "var(--cat-purple)" },
+export const AKSE_FARGE: Record<
+  AkAkse,
+  { bg: string; fg: string; ren: string }
+> = {
+  FYS: {
+    bg: "var(--tint-navy)",
+    fg: "var(--wang-navy)",
+    ren: "var(--wang-navy)",
+  },
+  TEK: {
+    bg: "var(--tint-teal)",
+    fg: "var(--wang-teal-text)",
+    ren: "var(--wang-teal)",
+  },
+  SLAG: {
+    bg: "var(--tint-orange)",
+    fg: "var(--cat-orange-text)",
+    ren: "var(--cat-orange)",
+  },
+  SPILL: {
+    bg: "var(--tint-blue)",
+    fg: "var(--cat-blue-text)",
+    ren: "var(--cat-blue)",
+  },
+  TURN: {
+    bg: "var(--tint-purple)",
+    fg: "var(--cat-purple)",
+    ren: "var(--cat-purple)",
+  },
 };
 
-export const AKSE_REKKEFOLGE: AkAkse[] = ["FYS", "TEK", "SLAG", "SPILL", "TURN"];
+export const AKSE_REKKEFOLGE: AkAkse[] = [
+  "FYS",
+  "TEK",
+  "SLAG",
+  "SPILL",
+  "TURN",
+];
 
 /** Full tekst til tooltip — aksene er forkortelser, ikke alle kan dem utenat. */
 export const AKSE_NAVN: Record<AkAkse, string> = {
@@ -53,7 +82,13 @@ const STATUS_FARGE: Record<MaalStatus, { bg: string; fg: string }> = {
 // ---- Komponenter -------------------------------------------------------
 
 /** Firkantet akse-merke, f.eks. «TEK». Fast bredde så listen ikke hopper. */
-export function AkseChip({ akse, size = 9.5 }: { akse: AkAkse; size?: number }) {
+export function AkseChip({
+  akse,
+  size = 9.5,
+}: {
+  akse: AkAkse;
+  size?: number;
+}) {
   const f = AKSE_FARGE[akse];
   return (
     <span
@@ -81,7 +116,13 @@ export function AkseChip({ akse, size = 9.5 }: { akse: AkAkse; size?: number }) 
 }
 
 /** Statuspille i de tre trinnene. Aldri en fjerde verdi. */
-export function MaalStatusChip({ status, size = 9.5 }: { status: MaalStatus; size?: number }) {
+export function MaalStatusChip({
+  status,
+  size = 9.5,
+}: {
+  status: MaalStatus;
+  size?: number;
+}) {
   const f = STATUS_FARGE[status];
   return (
     <span
@@ -122,7 +163,9 @@ export function VurderingPrikker({
     <span
       style={{ display: "inline-flex", alignItems: "center", gap: 4 }}
       role="img"
-      aria-label={verdi === null ? `${label}: ikke satt` : `${label}: ${verdi} av 5`}
+      aria-label={
+        verdi === null ? `${label}: ikke satt` : `${label}: ${verdi} av 5`
+      }
     >
       {[1, 2, 3, 4, 5].map((i) => (
         <span
@@ -132,7 +175,8 @@ export function VurderingPrikker({
             height: 9,
             borderRadius: "var(--radius-chip)",
             flex: "none",
-            background: verdi !== null && i <= verdi ? farge : "var(--neutral-200)",
+            background:
+              verdi !== null && i <= verdi ? farge : "var(--neutral-200)",
           }}
         />
       ))}

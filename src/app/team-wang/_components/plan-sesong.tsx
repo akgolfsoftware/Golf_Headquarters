@@ -40,7 +40,9 @@ import {
 const MS_UKE = 7 * 864e5;
 
 function ukerMellom(startIso: string, sluttIso: string): number {
-  const ms = new Date(`${sluttIso}T00:00:00Z`).getTime() - new Date(`${startIso}T00:00:00Z`).getTime();
+  const ms =
+    new Date(`${sluttIso}T00:00:00Z`).getTime() -
+    new Date(`${startIso}T00:00:00Z`).getTime();
   return Math.max(1, Math.round(ms / MS_UKE));
 }
 
@@ -52,8 +54,16 @@ function kortDato(iso: string): string {
 /** Milepælene er ekte data: turneringer og testuker slått sammen og sortert. */
 function byggMilepaeler(naaIso: string) {
   return [
-    ...TESTS.map((t) => ({ iso: t.iso, navn: t.name, farge: "var(--cat-yellow)" })),
-    ...COMPS.map((c) => ({ iso: c.iso, navn: c.name, farge: "var(--cat-orange)" })),
+    ...TESTS.map((t) => ({
+      iso: t.iso,
+      navn: t.name,
+      farge: "var(--cat-yellow)",
+    })),
+    ...COMPS.map((c) => ({
+      iso: c.iso,
+      navn: c.name,
+      farge: "var(--cat-orange)",
+    })),
   ]
     .filter((m) => m.iso >= naaIso)
     .sort((a, b) => a.iso.localeCompare(b.iso))
@@ -72,7 +82,9 @@ function SporHode({
   ikon: string;
 }) {
   return (
-    <div style={{ display: "flex", alignItems: "center", gap: 10, minWidth: 0 }}>
+    <div
+      style={{ display: "flex", alignItems: "center", gap: 10, minWidth: 0 }}
+    >
       <span
         style={{
           width: 32,
@@ -135,7 +147,9 @@ function GruppeKort({
         boxShadow: naa ? "var(--shadow-float)" : "var(--shadow-card-sm)",
       }}
     >
-      <div style={{ display: "flex", alignItems: "center", gap: 8, minWidth: 0 }}>
+      <div
+        style={{ display: "flex", alignItems: "center", gap: 8, minWidth: 0 }}
+      >
         <span
           style={{
             width: 11,
@@ -291,7 +305,14 @@ function IupKort({
           borderLeft: `3px solid ${farge}`,
         }}
       >
-        <p style={{ margin: 0, fontSize: 12.5, lineHeight: 1.55, color: "var(--text-secondary)" }}>
+        <p
+          style={{
+            margin: 0,
+            fontSize: 12.5,
+            lineHeight: 1.55,
+            color: "var(--text-secondary)",
+          }}
+        >
           {tom}
         </p>
       </div>
@@ -326,7 +347,8 @@ function IupKort({
             color: "var(--text-primary)",
           }}
         >
-          {fokus.omraader.length} fokusområde{fokus.omraader.length === 1 ? "" : "r"}
+          {fokus.omraader.length} fokusområde
+          {fokus.omraader.length === 1 ? "" : "r"}
         </span>
         {/* Totalbelastningen skal være synlig FØR perioden starter. */}
         <span
@@ -374,7 +396,11 @@ function Milepaeler({ naaIso }: { naaIso: string }) {
     <section className="wang-card" style={{ padding: "14px 16px" }}>
       <span
         className="t-label"
-        style={{ display: "block", color: "var(--text-secondary)", marginBottom: 10 }}
+        style={{
+          display: "block",
+          color: "var(--text-secondary)",
+          marginBottom: 10,
+        }}
       >
         Milepæler
       </span>
@@ -457,7 +483,10 @@ export function PlanSesong({ naaIso, fokusPerPeriode }: PlanSesongProps) {
     perioderMedUker.findIndex((p) => p.naa),
   );
   const aktiv = perioderMedUker[aktivIndeks];
-  const ukeIPeriode = Math.max(1, Math.ceil((daysUntil(naaIso, aktiv.start) + 1) / 7));
+  const ukeIPeriode = Math.max(
+    1,
+    Math.ceil((daysUntil(naaIso, aktiv.start) + 1) / 7),
+  );
   const ukerIgjen = Math.max(0, Math.ceil(daysUntil(aktiv.end, naaIso) / 7));
 
   const nesteMilepael = byggMilepaeler(naaIso)[0];
@@ -496,7 +525,12 @@ export function PlanSesong({ naaIso, fokusPerPeriode }: PlanSesongProps) {
       {/* De to sporene deler kolonner så de leses i samme blikk. */}
       <section
         className="wang-card"
-        style={{ padding: "16px 16px 18px", display: "flex", flexDirection: "column", gap: 14 }}
+        style={{
+          padding: "16px 16px 18px",
+          display: "flex",
+          flexDirection: "column",
+          gap: 14,
+        }}
       >
         <SporHode
           tittel="Gruppetrening"

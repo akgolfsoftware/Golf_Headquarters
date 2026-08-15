@@ -19,7 +19,12 @@ export function FaneSamlinger() {
     <div style={{ display: "flex", flexDirection: "column", gap: 22 }}>
       <div
         className="wang-card"
-        style={{ padding: 20, display: "flex", gap: 14, alignItems: "flex-start" }}
+        style={{
+          padding: 20,
+          display: "flex",
+          gap: 14,
+          alignItems: "flex-start",
+        }}
       >
         <IconChip icon="users" color="navy" size={46} />
         <div style={{ flex: 1, minWidth: 0 }}>
@@ -44,9 +49,14 @@ export function FaneSamlinger() {
             }}
           >
             Meld fra til trener ved fravær. Program legges ut før hver samling.{" "}
-            <strong style={{ color: "var(--text-primary)" }}>Treningssamlinger</strong> går over
-            flere dager, mens{" "}
-            <strong style={{ color: "var(--text-primary)" }}>heldagssamlinger</strong> er temadager.
+            <strong style={{ color: "var(--text-primary)" }}>
+              Treningssamlinger
+            </strong>{" "}
+            går over flere dager, mens{" "}
+            <strong style={{ color: "var(--text-primary)" }}>
+              heldagssamlinger
+            </strong>{" "}
+            er temadager.
           </p>
         </div>
       </div>
@@ -94,7 +104,11 @@ export function FaneSamlinger() {
                   >
                     {c.name}
                   </div>
-                  <StatusChip color={st.statusColor} icon={st.statusIcon} label={st.statusLabel} />
+                  <StatusChip
+                    color={st.statusColor}
+                    icon={st.statusIcon}
+                    label={st.statusLabel}
+                  />
                 </div>
 
                 <p
@@ -109,7 +123,9 @@ export function FaneSamlinger() {
                   {c.desc}
                 </p>
 
-                <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+                <div
+                  style={{ display: "flex", flexDirection: "column", gap: 8 }}
+                >
                   <InfoRad
                     ikon={<Calendar size={15} strokeWidth={2} aria-hidden />}
                     label="Dato"
@@ -121,7 +137,11 @@ export function FaneSamlinger() {
                     label="Hvor"
                     verdi={c.hvor}
                   />
-                  <InfoRad label="Påmelding" verdi={c.pamelding} sterk={bindende} />
+                  <InfoRad
+                    label="Påmelding"
+                    verdi={c.pamelding}
+                    sterk={bindende}
+                  />
                 </div>
 
                 {/* Kortfoten: de to tallene en forelder faktisk leter etter. */}
@@ -282,7 +302,11 @@ function InfoRad({
       }}
     >
       {ikon ? (
-        <span style={{ display: "inline-flex", alignSelf: "center", flex: "none" }}>{ikon}</span>
+        <span
+          style={{ display: "inline-flex", alignSelf: "center", flex: "none" }}
+        >
+          {ikon}
+        </span>
       ) : (
         <span style={{ width: 15, flex: "none" }} />
       )}

@@ -13,12 +13,16 @@ export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "WANG Årsplan — Coach",
-  description: "Trenerens periodiserte årsplan for golfgruppa ved WANG Toppidrett Fredrikstad.",
+  description:
+    "Trenerens periodiserte årsplan for golfgruppa ved WANG Toppidrett Fredrikstad.",
   robots: { index: false, follow: false },
 };
 
 export default async function WangCoachPage() {
-  await requirePortalUser({ allow: ["ADMIN", "COACH"], redirectTo: "/team-wang/logg-inn" });
+  await requirePortalUser({
+    allow: ["ADMIN", "COACH"],
+    redirectTo: "/team-wang/logg-inn",
+  });
   const live = await hentWangGruppe();
   return <CoachArsplan live={live} />;
 }
