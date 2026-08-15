@@ -153,10 +153,13 @@ function Knapp({
 function BrandPanel() {
   return (
     <div
- data-paper-slug="auth-samtykke-venter"       className="hidden md:flex"
+ data-paper-slug="auth-samtykke-venter"       className="hidden lg:flex"
       style={{
-        width: 520,
-        flex: "none",
+        // Deler plassen proporsjonalt. Fast 520px ga skjemaet kun 204px
+        // brukbar bredde på iPad stående (målt på prod 2026-08-15).
+        flex: "1 1 0",
+        maxWidth: 720,
+        minWidth: 420,
         position: "relative",
         overflow: "hidden",
         borderRight: `1px solid ${T.border}`,
@@ -441,7 +444,9 @@ export function SamtykkeVenterV2({ spillerNavn, invitasjonEmail }: Props) {
       style={{
         minHeight: "100vh",
         display: "flex",
-        colorScheme: "dark",
+        // Flaten er Paper LYS — "dark" fikk nettleseren til å tegne autofyll,
+        // passordikon og rullefelt mørkt oppå en lys side.
+        colorScheme: "light",
         color: T.fg,
         fontFamily: T.ui,
         background: T.bg,
