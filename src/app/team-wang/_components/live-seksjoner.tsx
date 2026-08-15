@@ -5,6 +5,8 @@
 // KUN `import type` fra det server-only datamodulen — typene er slettet ved
 // kompilering, så ingenting server-only havner i klientbundelen.
 
+import Link from "next/link";
+
 import type { WangLiveData } from "../_data/hent-wang-gruppe";
 import { erTurneringstittel } from "../_data/live-sesong";
 import { IconChip } from "./primitiver";
@@ -241,7 +243,14 @@ function initialer(navn: string): string {
   return (deler[0][0] + deler[deler.length - 1][0]).toUpperCase();
 }
 
-export function GruppeRoster({ live }: { live: WangLiveData | null }) {
+export function GruppeRoster({
+  live,
+  iupLenke = false,
+}: {
+  live: WangLiveData | null;
+  /** Trenerflaten: vis inngang til IUP-samtalen per elev. */
+  iupLenke?: boolean;
+}) {
   if (!live) return null;
   return (
     <section>
@@ -338,6 +347,31 @@ export function GruppeRoster({ live }: { live: WangLiveData | null }) {
                   {e.rolle === "ASSISTANT" ? "Assistent" : "Spiller"}
                 </div>
               </div>
+              {iupLenke && e.rolle !== "ASSISTANT" ? (
+                <Link
+                  href={`/team-wang/coach/iup/${e.id}`}
+                  className="wang-pressable"
+                  style={{
+                    marginLeft: "auto",
+                    flexShrink: 0,
+                    display: "inline-flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    minHeight: 32,
+                    padding: "0 11px",
+                    borderRadius: 999,
+                    background: "var(--tint-teal)",
+                    color: "var(--wang-teal-text)",
+                    fontFamily: "var(--font-brand)",
+                    fontWeight: 700,
+                    fontSize: 11,
+                    textDecoration: "none",
+                    whiteSpace: "nowrap",
+                  }}
+                >
+                  IUP
+                </Link>
+              ) : null}
             </div>
           ))}
         </div>

@@ -22,6 +22,8 @@ import {
 } from "../_data/coach-arsplan";
 import type { WangLiveData } from "../_data/hent-wang-gruppe";
 import { GruppeRoster } from "../_components/live-seksjoner";
+import { Sesongband, type SesongbandPeriode } from "../_components/sesongband";
+import { MONTH_ORDER, MON_SHORT } from "../_data/wang-plan";
 import { HelpDot, Ikon } from "../_components/primitiver";
 
 // Overlegg: ekte periode-datoer + fokus fra AgencyOS oppå demo-pyramiden.
@@ -56,6 +58,48 @@ function isoUke(d: Date): number {
         7,
     )
   );
+}
+
+// ---- Sesongbåndet: trenerens perioder inn i den delte komponenten --------
+
+const BAND_MAANEDER = MONTH_ORDER.map(([m]) => {
+  const n = MON_SHORT[m];
+  return n.charAt(0).toUpperCase() + n.slice(1);
+});
+
+function osloIdagIso(): string {
+  return new Intl.DateTimeFormat("en-CA", { timeZone: "Europe/Oslo" }).format(
+    new Date(),
+  );
+}
+
+function ukerMellom(a: string, b: string): number {
+  const ms =
+    new Date(`${b}T00:00:00Z`).getTime() - new Date(`${a}T00:00:00Z`).getTime();
+  return Math.max(1, Math.round(ms / (7 * 864e5)));
+}
+
+function bandPerioder(perioder: CoachPeriode[]): SesongbandPeriode[] {
+  const iDag = osloIdagIso();
+  return perioder.map((p) => ({
+    key: p.key,
+    navn: p.name,
+    farge: p.color,
+    vekt: ukerMellom(p.start, p.end),
+    naa: p.start <= iDag && iDag <= p.end,
+  }));
+}
+
+/** Posisjon 0–100 over hele trenerens sesongspenn. */
+function naaProsent(perioder: CoachPeriode[]): number {
+  if (perioder.length === 0) return 0;
+  const start = new Date(`${perioder[0].start}T00:00:00Z`).getTime();
+  const slutt = new Date(
+    `${perioder[perioder.length - 1].end}T00:00:00Z`,
+  ).getTime();
+  const naa = new Date(`${osloIdagIso()}T00:00:00Z`).getTime();
+  if (slutt <= start) return 0;
+  return Math.max(0, Math.min(100, ((naa - start) / (slutt - start)) * 100));
 }
 
 function aktivPeriode(perioder: CoachPeriode[]): CoachPeriode | null {
@@ -412,97 +456,61 @@ function Oversikt({
     : null;
   return (
     <>
-      <section
-        style={{
-          background: "var(--grad-hero-line)",
-          borderRadius: "var(--radius-card)",
-          boxShadow: "var(--shadow-hero)",
-          padding: "clamp(22px,4vw,30px)",
-          color: "var(--text-on-dark)",
-        }}
-      >
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-            gap: 10,
-            flexWrap: "wrap",
-            marginBottom: 10,
-          }}
-        >
-          <div className="t-label" style={{ color: "var(--wang-mint)" }}>
-            Årsplan · Sesong 2026–2027
-          </div>
-          {live ? (
+      {/* Samme sesongbånd som eleven ser. Det er dette som gjør at trener og
+          elev opplever én sesong og ikke to produkter — treneren får pyramide,
+          læringsfase, mål og tester i TILLEGG, ikke i stedet. */}
+      <Sesongband
+        overtittel={`Uke ${isoUke(new Date())} · Sesong 2026–2027`}
+        tittel={aktiv ? aktiv.name : "Periodisert årsplan"}
+        undertittel={
+          aktiv
+            ? aktiv.fokus
+            : "Fire perioder fra august til juni. Trykk på en periode for detaljer."
+        }
+        perioder={bandPerioder(perioder)}
+        naaPct={naaProsent(perioder)}
+        naaLabel={`Du er her · ${dato(osloIdagIso())}`}
+        maaneder={BAND_MAANEDER}
+      />
+
+      <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
+        {live ? (
+          <span
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              gap: 6,
+              height: 26,
+              padding: "0 12px",
+              borderRadius: 999,
+              background: "var(--tint-teal)",
+              color: "var(--wang-teal-text)",
+              fontFamily: "var(--font-brand)",
+              fontWeight: 700,
+              fontSize: 11,
+              whiteSpace: "nowrap",
+            }}
+          >
             <span
               style={{
-                display: "inline-flex",
-                alignItems: "center",
-                gap: 6,
-                height: 24,
-                padding: "0 11px",
+                width: 7,
+                height: 7,
                 borderRadius: 999,
-                background: T.farge.myntGronnA18,
-                color: "var(--wang-mint)",
-                fontFamily: "var(--font-brand)",
-                fontWeight: 700,
-                fontSize: 11,
-                whiteSpace: "nowrap",
+                background: "var(--wang-mint)",
               }}
-            >
-              <span
-                style={{
-                  width: 7,
-                  height: 7,
-                  borderRadius: 999,
-                  background: "var(--wang-mint)",
-                }}
-              />
-              Ekte datoer synket fra AgencyOS
-            </span>
-          ) : null}
-        </div>
-        <h1
-          style={{
-            margin: "0 0 8px",
-            fontFamily: "var(--font-brand)",
-            fontWeight: 800,
-            fontSize: "clamp(24px,4vw,32px)",
-            lineHeight: 1.12,
-          }}
-        >
-          Periodisert årsplan – golfgruppa
-        </h1>
-        <p
-          style={{
-            margin: 0,
-            fontFamily: "var(--font-body)",
-            fontSize: 14.5,
-            lineHeight: 1.55,
-            color: T.farge.hvitA90,
-            maxWidth: 620,
-          }}
-        >
-          Fire perioder fra august til juni. Hver periode har sin egen
-          treningsfordeling (pyramide), læringsfase-fokus og mål. Trykk på en
-          periode for detaljer.
-        </p>
-        <div
-          style={{ display: "flex", gap: 10, flexWrap: "wrap", marginTop: 20 }}
-        >
-          <HeroChip label="UKE" verdi={String(isoUke(new Date()))} />
-          {aktiv ? <HeroChip label="PERIODE" verdi={aktiv.name} /> : null}
-          {live ? (
-            <HeroChip label="ELEVER" verdi={String(live.antallElever)} />
-          ) : null}
-          {samlingerIgjen != null ? (
-            <HeroChip label="SAMLINGER" verdi={`${samlingerIgjen} igjen`} />
-          ) : null}
-        </div>
-      </section>
+            />
+            Ekte datoer synket fra AgencyOS
+          </span>
+        ) : null}
+        {live ? (
+          <HeroChip label="ELEVER" verdi={String(live.antallElever)} />
+        ) : null}
+        {samlingerIgjen != null ? (
+          <HeroChip label="SAMLINGER" verdi={`${samlingerIgjen} igjen`} />
+        ) : null}
+      </div>
 
-      <GruppeRoster live={live} />
+      <GruppeRoster live={live} iupLenke />
 
       <div
         style={{

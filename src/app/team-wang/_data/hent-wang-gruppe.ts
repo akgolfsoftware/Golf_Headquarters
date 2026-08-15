@@ -26,6 +26,8 @@ export type WangFase =
   | "HELDAGSSAMLING";
 
 export interface WangElev {
+  /** Bruker-id. Trengs for å åpne IUP-samtalen for én elev fra trenerflaten. */
+  id: string;
   navn: string;
   rolle: string; // PLAYER | ASSISTANT
 }
@@ -161,7 +163,10 @@ export async function hentWangGruppe(
         name: true,
         members: {
           orderBy: { joinedAt: "asc" },
-          select: { role: true, user: { select: { name: true, email: true } } },
+          select: {
+            role: true,
+            user: { select: { id: true, name: true, email: true } },
+          },
         },
         schedules: {
           orderBy: { startAt: "asc" },
@@ -195,6 +200,7 @@ export async function hentWangGruppe(
 
     const elever: WangElev[] = gruppe.members
       .map((m) => ({
+        id: m.user.id,
         navn: m.user.name?.trim() || m.user.email,
         rolle: m.role,
       }))
