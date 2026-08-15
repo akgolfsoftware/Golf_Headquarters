@@ -9,8 +9,19 @@ De 432 snapshot-filene veide 28 MB og lå tidligere i repoet. Siden hver
 designrunde skrev nye bilder, la hver oppdatering en ny kopi i historikken.
 De er gitignorert siden 14.08.2026 (`**/*-snapshots/` i `.gitignore`).
 
-**Testene kjører ikke i CI** — verken `ci.yml` eller `playwright.yml` refererer
-til dem. De er et lokalt verktøy for designporten, ikke en gate.
+**Testene kjører ikke i CI.** `ci.yml` kjører ikke Playwright i det hele tatt.
+`playwright.yml` (prod-røyktesten) kjører `npx playwright test` over hele
+`tests/e2e/`, men `playwright.config.ts` filtrerer bort `paper-visual/` når
+`CI` er satt. De er et lokalt verktøy for designporten, ikke en gate.
+
+Denne setningen var lenge feil, og det kostet: fram til 15.08.2026 sa filen at
+`playwright.yml` ikke rørte mappa. Den gjorde det. 104 av spec-ene hoppet over
+seg selv (`test.skip` uten seed eller credentials), men
+`portal-analysere.visual.spec.ts` manglet vakten. Den navigerte uinnlogget til
+`/portal/analysere`, ble sendt til `/auth/login`, og lette etter et
+referansebilde som ikke fantes på Linux. Resultat: prod-røyktesten sto rød i
+195 kjøringer fra 06.08 til 15.08 — hele tiden det eneste automatiske signalet
+på at produksjon var ødelagt.
 
 ## Generere referansebildene
 
