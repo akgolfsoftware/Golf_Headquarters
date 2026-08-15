@@ -46,6 +46,45 @@ Eksempel: `session-move-math.ts` framstår som udekket, men dekkes av
 
 ---
 
+## Status per steg
+
+| Steg | Status |
+|---|---|
+| 1 | Ikke startet — venter på secrets fra Anders |
+| 2 | **Ferdig** 2026-08-15 — globben er `src/**/*.test.ts` |
+| 3 | **Ferdig** 2026-08-15 — 70 tester over 5 moduler, to ekte feil funnet (se under) |
+| 4–8 | Ikke startet |
+
+### Funn fra steg 3 (2026-08-15)
+
+Testene avdekket to feil i produksjonskode. Begge er rettet i samme PR som testene.
+
+**1. Alle wedger ble klassifisert som «wood» — `yardage-calc.ts`.**
+`classifyClub` sjekket `c.endsWith("w")` FØR wedge-lista. Alle fem wedge-navnene
+(`pw`/`aw`/`gw`/`sw`/`lw`) slutter på «w», så wedge-grenen var **død kode** og samtlige wedger
+falt til «wood». Verifisert kjørende før fiks: `PW → wood`, `SW → wood`, `LW → wood`.
+
+Konsekvensen traff tre steder, alle spiller-synlige:
+- `carryFactor` ga 0.93 i stedet for 0.98 → for kort carry i yardage-tabellen.
+- `estimateApex` ga 0.17 × total i stedet for 0.30 × → for lav apex.
+- `same-distance-strategy.ts` §`scoreOption` gir «stop-on-green»-bonus til `wedge`/`iron`.
+  Wedgene fikk den aldri. De ble altså dobbelt straffet — underestimert apex, og så ingen
+  apex-bonus — i anbefalingen av hvilken kølle spilleren bør slå.
+
+Fikset ved å flytte de eksakte treffene (driver/putter/wedge) foran `endsWith`-fallbacken.
+**Merk: dette endrer tall som allerede vises i appen.** Wedge-carry går opp, wedge-apex går opp,
+og same-distance-anbefalingen kan nå peke på en annen kølle enn før. Det er den riktige
+oppførselen, men det er en synlig endring — ikke en ren intern opprydding.
+
+**2. NaN lakk ut i smash-grafen — `smash-curve.ts`.**
+Med null spredning i kølle-fart (alle slag på samme fart) blir normalligningene singulære.
+Gauss-elimineringen delte på 0, og NaN forplantet seg til `optimumSpeed` og alle 20
+kurvepunktene. Målt før fiks: `optimumSpeed: NaN`, `curvePoints[0].smashFactor: NaN`.
+Grafen viste NaN i stedet for en tom tilstand. Fikset med en tidlig retur når måleområdet er
+null — da finnes det ingen kurve å tilpasse.
+
+---
+
 ## Stegene
 
 ### Steg 1 — Gjør de autentiserte e2e-testene ekte
