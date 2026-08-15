@@ -167,9 +167,18 @@ eier status, vi lagrer referanse» — peker mot Stripe som kilde.
 3. **Ny tabell `ukesrapport_delinger`** (godkjent av Anders 15.08). Additiv, uten `@relation`,
    opprettet med `scripts/add-ukesrapport-deling-2026-08-15.ts` per gotchas §Schema-endringer.
 
-## Åpne spørsmål til Anders
+## Anders' svar 15.08.2026
 
-1. **36 testdefinisjoner trenger hver sin områdekode.** Skal jeg lage en liste med forslag du kan
-   rette, eller vil du sette dem selv? (Forslag-lista er raskest — du retter det som er feil.)
-2. **16 eller 17 områder?** Koden har 16. CLAUDE.md sier 17.
-3. **Forfalt-status i D2:** hentes fra Stripe ved visning, eller egen forfallsdato i vår base?
+1. **Forslagsliste:** JA — levert i `docs/testomrader-forslag-2026-08-15.md`.
+   13 av 36 er entydige og kan legges inn straks spørsmålene under er avklart;
+   8 er FYS og skal ikke ha område; 15 trenger Anders' vurdering.
+2. **17 områder** — men se advarselen i forslagsdokumentet: «17» peker på to ULIKE
+   lister (v3-ordrens sett vs. kodens sett + ett), og `docs/ordre-ak-formel-v3-2026-08-03.md`
+   §6.4/§6.5/§6.7 dokumenterer at innspill-konvensjonen er motsatt, putt-bøttene har
+   fire ulike grenser, og enheten spriker (fot vs. meter). **Fortsatt uavklart hvilken.**
+3. **«Forfalt» hentes fra STRIPE ved visning** (Anders 15.08). Ingen `dueDate` legges til
+   i vår base. Følger fasitens egen regel: «Stripe eier status, vi lagrer referanse.»
+   Konsekvens for D2: fakturalinjene må berike visningen med Stripe-status ved render,
+   ikke lese den fra `PaymentStatus` alene.
+
+## Åpne spørsmål (fortsatt ubesvart)
