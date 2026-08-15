@@ -503,10 +503,10 @@ function Oversikt({
           </span>
         ) : null}
         {live ? (
-          <HeroChip label="ELEVER" verdi={String(live.antallElever)} />
+          <FaktaChip label="ELEVER" verdi={String(live.antallElever)} />
         ) : null}
         {samlingerIgjen != null ? (
-          <HeroChip label="SAMLINGER" verdi={`${samlingerIgjen} igjen`} />
+          <FaktaChip label="SAMLINGER" verdi={`${samlingerIgjen} igjen`} />
         ) : null}
       </div>
 
@@ -617,17 +617,23 @@ function Oversikt({
   );
 }
 
-function HeroChip({ label, verdi }: { label: string; verdi: string }) {
+/**
+ * Nøkkeltall ved siden av sesongbåndet. Sto tidligere som HeroChip, en
+ * komponent bygget for den marineblå heroen — hvit tekst på hvit-transparent
+ * flate. Da båndet overtok heroen havnet chipsene på lys bakgrunn og ble
+ * praktisk talt usynlige i prod 15.08.2026. Denne er laget for lys flate.
+ */
+function FaktaChip({ label, verdi }: { label: string; verdi: string }) {
   return (
     <span
       style={{
         display: "inline-flex",
         alignItems: "center",
-        gap: 6,
-        height: 30,
+        gap: 7,
+        height: 26,
         padding: "0 12px",
         borderRadius: 999,
-        background: T.farge.hvitA12,
+        background: "var(--neutral-50)",
       }}
     >
       <b
@@ -637,8 +643,7 @@ function HeroChip({ label, verdi }: { label: string; verdi: string }) {
           fontWeight: 800,
           fontSize: 10,
           letterSpacing: "0.06em",
-          opacity: 0.75,
-          color: "var(--white)",
+          color: "var(--text-secondary)",
         }}
       >
         {label}
@@ -648,8 +653,8 @@ function HeroChip({ label, verdi }: { label: string; verdi: string }) {
         style={{
           fontFamily: "var(--font-brand)",
           fontWeight: 700,
-          fontSize: 12.5,
-          color: "var(--white)",
+          fontSize: 12,
+          color: "var(--text-primary)",
         }}
       >
         {verdi}

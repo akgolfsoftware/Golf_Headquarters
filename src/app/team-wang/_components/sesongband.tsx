@@ -65,6 +65,14 @@ const undertittelStil: CSSProperties = {
   color: "var(--text-on-dark-dim)",
 };
 
+/**
+ * Båndet ligger på en marineblå gradient. En periode som SELV er marineblå
+ * (trenerens GRUNN) forsvinner da helt — den var 304px bred og usynlig i prod
+ * 15.08.2026. Ringen gir hvert segment en synlig kant uansett hvilken
+ * merkevarefarge det har, uten å endre selve fargen.
+ */
+const SEGMENT_RING = "inset 0 0 0 1px rgba(255,255,255,0.45)";
+
 const maanedStil: CSSProperties = {
   fontFamily: "var(--font-brand)",
   fontWeight: 700,
@@ -167,7 +175,8 @@ export function Sesongband({
                 height: 7,
                 borderRadius: 3,
                 background: p.farge,
-                opacity: p.naa ? 1 : 0.55,
+                boxShadow: SEGMENT_RING,
+                opacity: p.naa ? 1 : 0.7,
               }}
             />
           ))}
@@ -263,7 +272,8 @@ export function Sesongband({
                   alignItems: "center",
                   padding: "0 11px",
                   background: p.farge,
-                  opacity: p.naa ? 1 : 0.62,
+                  boxShadow: SEGMENT_RING,
+                  opacity: p.naa ? 1 : 0.75,
                   fontFamily: "var(--font-brand)",
                   fontWeight: 700,
                   fontSize: 11,
