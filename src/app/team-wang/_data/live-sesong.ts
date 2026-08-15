@@ -3,8 +3,23 @@
 // hardkodede PERIODS/COMPS/TIMELINE_*/monthInfo fra wang-plan.ts når live-data
 // finnes. Ingen DB-import her (kalles fra klientkomponenter også).
 
-import { COMPS, TESTS, SCHOOL, TRAINING_CAMPS, FULL_DAY_CAMPS, PARENT_MEETINGS, type WangFarge, type Okt } from "./wang-plan";
-import type { WangHendelseDb, WangPeriodeDb, WangSkoleDagDb, WangFastOkt, WangLiveData } from "./hent-wang-gruppe";
+import {
+  COMPS,
+  TESTS,
+  SCHOOL,
+  TRAINING_CAMPS,
+  FULL_DAY_CAMPS,
+  PARENT_MEETINGS,
+  type WangFarge,
+  type Okt,
+} from "./wang-plan";
+import type {
+  WangHendelseDb,
+  WangPeriodeDb,
+  WangSkoleDagDb,
+  WangFastOkt,
+  WangLiveData,
+} from "./hent-wang-gruppe";
 
 export interface LivePeriode {
   key: string;
@@ -28,13 +43,29 @@ const PERIODE_STIL: { key: string; navn: string; color: string }[] = [
 export function byggLivePerioder(db: WangPeriodeDb[]): LivePeriode[] {
   return db.map((p, i) => {
     const stil = PERIODE_STIL[i] ?? PERIODE_STIL[PERIODE_STIL.length - 1];
-    return { key: stil.key, name: stil.navn, color: stil.color, start: p.startIso, end: p.endIso, focus: p.fokus ?? "" };
+    return {
+      key: stil.key,
+      name: stil.navn,
+      color: stil.color,
+      start: p.startIso,
+      end: p.endIso,
+      focus: p.fokus ?? "",
+    };
   });
 }
 
-export function spennFraPerioder(perioder: LivePeriode[]): { startIso: string; endIso: string } {
-  const startIso = perioder.reduce((min, p) => (p.start < min ? p.start : min), perioder[0].start);
-  const endIso = perioder.reduce((max, p) => (p.end > max ? p.end : max), perioder[0].end);
+export function spennFraPerioder(perioder: LivePeriode[]): {
+  startIso: string;
+  endIso: string;
+} {
+  const startIso = perioder.reduce(
+    (min, p) => (p.start < min ? p.start : min),
+    perioder[0].start,
+  );
+  const endIso = perioder.reduce(
+    (max, p) => (p.end > max ? p.end : max),
+    perioder[0].end,
+  );
   return { startIso, endIso };
 }
 
@@ -47,17 +78,28 @@ export function totalUker(startIso: string, endIso: string): number {
 }
 
 /** Posisjon 0–100 % for en ISO-dato langs det ekte sesongspennet. */
-export function pctFraSpenn(iso: string, startIso: string, endIso: string): number {
+export function pctFraSpenn(
+  iso: string,
+  startIso: string,
+  endIso: string,
+): number {
   return ((ms(iso) - ms(startIso)) / (ms(endIso) - ms(startIso))) * 100;
 }
 
-export function klampTilLiveSesong(isoStr: string, startIso: string, endIso: string): string {
+export function klampTilLiveSesong(
+  isoStr: string,
+  startIso: string,
+  endIso: string,
+): string {
   if (isoStr < startIso) return startIso;
   if (isoStr > endIso) return endIso;
   return isoStr;
 }
 
-export function periodeForDato(perioder: LivePeriode[], iso: string): LivePeriode | null {
+export function periodeForDato(
+  perioder: LivePeriode[],
+  iso: string,
+): LivePeriode | null {
   return perioder.find((p) => iso >= p.start && iso <= p.end) ?? null;
 }
 
@@ -67,7 +109,11 @@ export function periodeForDato(perioder: LivePeriode[], iso: string): LivePeriod
  * En enkelt representativ dag (f.eks. 15.) bommer når en periode starter
  * midt i måneden (TURN-rest starter 17. aug) — flertallstelling er robust.
  */
-export function monthPkLive(m: number, y: number, perioder: LivePeriode[]): string | "pause" {
+export function monthPkLive(
+  m: number,
+  y: number,
+  perioder: LivePeriode[],
+): string | "pause" {
   const dagerIMaaned = new Date(Date.UTC(y, m + 1, 0)).getUTCDate();
   const opptelling: Record<string, number> = {};
   for (let d = 1; d <= dagerIMaaned; d++) {
@@ -97,9 +143,15 @@ export interface LiveTidslinjeSeg {
   color: string;
   short: string;
 }
-export function tidslinjeSegs(perioder: LivePeriode[], startIso: string, endIso: string): LiveTidslinjeSeg[] {
+export function tidslinjeSegs(
+  perioder: LivePeriode[],
+  startIso: string,
+  endIso: string,
+): LiveTidslinjeSeg[] {
   return perioder.map((p) => ({
-    w: pctFraSpenn(p.end, startIso, endIso) - pctFraSpenn(p.start, startIso, endIso),
+    w:
+      pctFraSpenn(p.end, startIso, endIso) -
+      pctFraSpenn(p.start, startIso, endIso),
     color: p.color,
     short: p.name,
   }));
@@ -117,10 +169,14 @@ export interface LiveTurnering {
  * BYGGE turneringslisten og til å EKSKLUDERE turneringer fra andre hendelseslister
  * (f.eks. «Kommende samlinger og tester»), slik at samme hendelse aldri vises to steder. */
 export function erTurneringstittel(tittel: string): boolean {
-  return tittel.startsWith("Turnering:") || tittel.startsWith("Klubbmesterskap");
+  return (
+    tittel.startsWith("Turnering:") || tittel.startsWith("Klubbmesterskap")
+  );
 }
 
-export function turneringerFraHendelser(hendelser: WangHendelseDb[]): LiveTurnering[] {
+export function turneringerFraHendelser(
+  hendelser: WangHendelseDb[],
+): LiveTurnering[] {
   return hendelser
     .filter((h) => erTurneringstittel(h.tittel))
     .map((h) => ({
@@ -140,7 +196,11 @@ export interface LiveTidslinjeMerke {
 
 /** Slår sammen turneringer som ligger tettere enn TERSKEL prosentpoeng til én klynge — unngår at
  * tette datoer (f.eks. flere turneringer samme uke) vises som mange overlappende/duplikat-aktige prikker. */
-export function tidslinjeMerker(turneringer: LiveTurnering[], startIso: string, endIso: string): LiveTidslinjeMerke[] {
+export function tidslinjeMerker(
+  turneringer: LiveTurnering[],
+  startIso: string,
+  endIso: string,
+): LiveTidslinjeMerke[] {
   const TERSKEL = 2.5;
   const posisjoner = turneringer
     .map((t) => pctFraSpenn(t.startIso, startIso, endIso))
@@ -170,13 +230,43 @@ export interface LiveMonthInfo {
   testCount: number;
   focus: string;
   hasEvents: boolean;
-  events: { iso: string; icon: string; color: WangFarge; title: string; sub: string; dateShort: string }[];
+  events: {
+    iso: string;
+    icon: string;
+    color: WangFarge;
+    title: string;
+    sub: string;
+    dateShort: string;
+  }[];
 }
 
-const MND_KORT = ["jan", "feb", "mar", "apr", "mai", "jun", "jul", "aug", "sep", "okt", "nov", "des"];
+const MND_KORT = [
+  "jan",
+  "feb",
+  "mar",
+  "apr",
+  "mai",
+  "jun",
+  "jul",
+  "aug",
+  "sep",
+  "okt",
+  "nov",
+  "des",
+];
 const MND_LANG = [
-  "januar", "februar", "mars", "april", "mai", "juni",
-  "juli", "august", "september", "oktober", "november", "desember",
+  "januar",
+  "februar",
+  "mars",
+  "april",
+  "mai",
+  "juni",
+  "juli",
+  "august",
+  "september",
+  "oktober",
+  "november",
+  "desember",
 ];
 
 function inMaaned(dato: string, m: number, y: number): boolean {
@@ -213,34 +303,83 @@ export function liveMonthInfo(params: {
   skoleDager: WangSkoleDagDb[];
   fasteOkter: WangFastOkt[];
 }): LiveMonthInfo {
-  const { m, y, naaIso, perioder, hendelser, turneringer, skoleDager, fasteOkter } = params;
+  const {
+    m,
+    y,
+    naaIso,
+    perioder,
+    hendelser,
+    turneringer,
+    skoleDager,
+    fasteOkter,
+  } = params;
   const pk = monthPkLive(m, y, perioder);
-  const periode = pk === "pause" ? null : (perioder.find((p) => p.key === pk) ?? null);
+  const periode =
+    pk === "pause" ? null : (perioder.find((p) => p.key === pk) ?? null);
 
-  const testerIMaaned = hendelser.filter((h) => inMaaned(h.startIso, m, y) && /test/i.test(h.tittel));
-  const samlingerIMaaned = hendelser.filter(
-    (h) => inMaaned(h.startIso, m, y) && (h.kind === "SAMLING" || h.kind === "HELDAGSSAMLING"),
+  const testerIMaaned = hendelser.filter(
+    (h) => inMaaned(h.startIso, m, y) && /test/i.test(h.tittel),
   );
-  const turneringerIMaaned = turneringer.filter((t) => inMaaned(t.startIso, m, y));
+  const samlingerIMaaned = hendelser.filter(
+    (h) =>
+      inMaaned(h.startIso, m, y) &&
+      (h.kind === "SAMLING" || h.kind === "HELDAGSSAMLING"),
+  );
+  const turneringerIMaaned = turneringer.filter((t) =>
+    inMaaned(t.startIso, m, y),
+  );
   const skoleIMaaned = skoleDager.filter((s) => inMaaned(s.dato, m, y));
 
-  const sessionCount = fasteOkter.reduce((sum, f) => sum + ukedagAntallIMaaned(f.ukedag, m, y), 0);
-
-  const ev: { iso: string; icon: string; color: WangFarge; title: string; sub: string }[] = [];
-  turneringerIMaaned.forEach((t) =>
-    ev.push({ iso: t.startIso, icon: "trophy", color: "orange", title: t.navn, sub: "Turnering" + (t.sted ? " · " + t.sted : "") }),
+  const sessionCount = fasteOkter.reduce(
+    (sum, f) => sum + ukedagAntallIMaaned(f.ukedag, m, y),
+    0,
   );
-  testerIMaaned.forEach((t) => ev.push({ iso: t.startIso, icon: "clipboard-list", color: "purple", title: t.tittel, sub: "Testdag" }));
+
+  const ev: {
+    iso: string;
+    icon: string;
+    color: WangFarge;
+    title: string;
+    sub: string;
+  }[] = [];
+  turneringerIMaaned.forEach((t) =>
+    ev.push({
+      iso: t.startIso,
+      icon: "trophy",
+      color: "orange",
+      title: t.navn,
+      sub: "Turnering" + (t.sted ? " · " + t.sted : ""),
+    }),
+  );
+  testerIMaaned.forEach((t) =>
+    ev.push({
+      iso: t.startIso,
+      icon: "clipboard-list",
+      color: "purple",
+      title: t.tittel,
+      sub: "Testdag",
+    }),
+  );
   samlingerIMaaned.forEach((s) =>
     ev.push({
       iso: s.startIso,
       icon: s.kind === "HELDAGSSAMLING" ? "sun" : "users",
       color: s.kind === "HELDAGSSAMLING" ? "teal" : "navy",
       title: s.tittel,
-      sub: (s.kind === "HELDAGSSAMLING" ? "Heldagssamling" : "Samling") + (s.sted ? " · " + s.sted : ""),
+      sub:
+        (s.kind === "HELDAGSSAMLING" ? "Heldagssamling" : "Samling") +
+        (s.sted ? " · " + s.sted : ""),
     }),
   );
-  skoleIMaaned.forEach((s) => ev.push({ iso: s.dato, icon: "calendar", color: "blue", title: s.tittel, sub: "Skolerute" }));
+  skoleIMaaned.forEach((s) =>
+    ev.push({
+      iso: s.dato,
+      icon: "calendar",
+      color: "blue",
+      title: s.tittel,
+      sub: "Skolerute",
+    }),
+  );
   ev.sort((a, b) => (a.iso < b.iso ? -1 : 1));
 
   const naa = naaIso;
@@ -248,15 +387,27 @@ export function liveMonthInfo(params: {
     key: `${y}-${m}`,
     name: MND_LANG[m].charAt(0).toUpperCase() + MND_LANG[m].slice(1),
     year: y,
-    isNow: naa !== null && Number(naa.slice(0, 4)) === y && Number(naa.slice(5, 7)) - 1 === m,
+    isNow:
+      naa !== null &&
+      Number(naa.slice(0, 4)) === y &&
+      Number(naa.slice(5, 7)) - 1 === m,
     periodName: periode ? periode.name : "Utenom sesong",
     periodColor: periode ? periode.color : "var(--neutral-300)",
     sessionCount,
     compCount: turneringerIMaaned.length,
     testCount: testerIMaaned.length,
-    focus: periode ? periode.focus : "Ingen registrert AK-periode denne måneden — utenom sesongspennet i AgencyOS.",
+    focus: periode
+      ? periode.focus
+      : "Ingen registrert AK-periode denne måneden — utenom sesongspennet i AgencyOS.",
     hasEvents: ev.length > 0,
-    events: ev.map((e) => ({ iso: e.iso, icon: e.icon, color: e.color, title: e.title, sub: e.sub, dateShort: kortDato(e.iso) })),
+    events: ev.map((e) => ({
+      iso: e.iso,
+      icon: e.icon,
+      color: e.color,
+      title: e.title,
+      sub: e.sub,
+      dateShort: kortDato(e.iso),
+    })),
   };
 }
 
@@ -288,11 +439,15 @@ function isoRange(startIso: string, sluttIso: string): string[] {
  * brukes til å undertrykke den faste man/ons/fre-øktchipen på disse datoene, slik at en
  * samling aldri vises side om side med en vanlig øktchip samme dag (samme prinsipp som
  * erTurneringstittel()-eksklusjonen over, bare for okt-vs-samling i stedet for turnering). */
-export function samlingsdatoerFraHendelser(hendelser: WangHendelseDb[]): Set<string> {
+export function samlingsdatoerFraHendelser(
+  hendelser: WangHendelseDb[],
+): Set<string> {
   const datoer = new Set<string>();
   hendelser
     .filter((h) => h.kind === "SAMLING" || h.kind === "HELDAGSSAMLING")
-    .forEach((h) => isoRange(h.startIso, h.sluttIso).forEach((d) => datoer.add(d)));
+    .forEach((h) =>
+      isoRange(h.startIso, h.sluttIso).forEach((d) => datoer.add(d)),
+    );
   return datoer;
 }
 
@@ -310,34 +465,68 @@ export function byggLiveKalenderHendelser(
     (out[iso] ??= []).push(h);
   };
 
-  const samlingsdatoer = live ? samlingsdatoerFraHendelser(live.hendelser) : DEMO_SAMLINGSDATOER;
+  const samlingsdatoer = live
+    ? samlingsdatoerFraHendelser(live.hendelser)
+    : DEMO_SAMLINGSDATOER;
   sessions.forEach((s) => {
-    if (!samlingsdatoer.has(s.iso)) push(s.iso, { type: "okt", label: s.short, time: s.timeLabel });
+    if (!samlingsdatoer.has(s.iso))
+      push(s.iso, { type: "okt", label: s.short, time: s.timeLabel });
   });
 
   if (live) {
     const turneringer = turneringerFraHendelser(live.hendelser);
-    turneringer.forEach((t) => push(t.startIso, { type: "konkurranse", label: t.navn, sted: t.sted }));
+    turneringer.forEach((t) =>
+      push(t.startIso, { type: "konkurranse", label: t.navn, sted: t.sted }),
+    );
 
     live.hendelser
       .filter((h) => /test/i.test(h.tittel) && !erTurneringstittel(h.tittel))
-      .forEach((h) => push(h.startIso, { type: "prove", label: h.tittel, time: h.startTid, sted: h.sted }));
+      .forEach((h) =>
+        push(h.startIso, {
+          type: "prove",
+          label: h.tittel,
+          time: h.startTid,
+          sted: h.sted,
+        }),
+      );
 
     live.hendelser
       .filter((h) => h.kind === "SAMLING" || h.kind === "HELDAGSSAMLING")
-      .forEach((h) => push(h.startIso, { type: "samling", label: h.tittel, time: h.startTid, sted: h.sted }));
+      .forEach((h) =>
+        push(h.startIso, {
+          type: "samling",
+          label: h.tittel,
+          time: h.startTid,
+          sted: h.sted,
+        }),
+      );
 
-    live.skoleDager.forEach((s) => push(s.dato, { type: "skole", label: s.tittel }));
+    live.skoleDager.forEach((s) =>
+      push(s.dato, { type: "skole", label: s.tittel }),
+    );
   } else {
     // Demo-fallback (ingen AgencyOS-data tilgjengelig) — samme kategorier
     // som live-grenen, hentet fra sesongplan-malen i wang-plan.ts, slik at
     // kalenderen og «Nøkkelhendelser» (monthInfo) alltid viser samme hendelser.
-    COMPS.forEach((c) => push(c.iso, { type: "konkurranse", label: c.name, sted: c.place }));
+    COMPS.forEach((c) =>
+      push(c.iso, { type: "konkurranse", label: c.name, sted: c.place }),
+    );
     TESTS.forEach((t) => push(t.iso, { type: "prove", label: t.name }));
     SCHOOL.forEach((s) => push(s.iso, { type: "skole", label: s.name }));
-    TRAINING_CAMPS.forEach((c) => push(c.iso, { type: "samling", label: c.name, sted: c.hvor }));
-    FULL_DAY_CAMPS.forEach((c) => push(c.iso, { type: "samling", label: c.tema, sted: c.hvor }));
-    PARENT_MEETINGS.forEach((p) => push(p.iso, { type: "skole", label: "Foreldremøte: " + p.tema, time: p.tid, sted: p.hvor }));
+    TRAINING_CAMPS.forEach((c) =>
+      push(c.iso, { type: "samling", label: c.name, sted: c.hvor }),
+    );
+    FULL_DAY_CAMPS.forEach((c) =>
+      push(c.iso, { type: "samling", label: c.tema, sted: c.hvor }),
+    );
+    PARENT_MEETINGS.forEach((p) =>
+      push(p.iso, {
+        type: "skole",
+        label: "Foreldremøte: " + p.tema,
+        time: p.tid,
+        sted: p.hvor,
+      }),
+    );
   }
 
   return out;

@@ -5,12 +5,27 @@
 // KUN `import type` fra det server-only datamodulen — typene er slettet ved
 // kompilering, så ingenting server-only havner i klientbundelen.
 
+import Link from "next/link";
+
 import type { WangLiveData } from "../_data/hent-wang-gruppe";
 import { erTurneringstittel } from "../_data/live-sesong";
 import { IconChip } from "./primitiver";
 import type { HendelseDetaljData } from "./hendelse-detalj";
 
-const MND_KORT = ["jan", "feb", "mar", "apr", "mai", "jun", "jul", "aug", "sep", "okt", "nov", "des"];
+const MND_KORT = [
+  "jan",
+  "feb",
+  "mar",
+  "apr",
+  "mai",
+  "jun",
+  "jul",
+  "aug",
+  "sep",
+  "okt",
+  "nov",
+  "des",
+];
 
 function fmtDato(iso: string): string {
   const [, m, d] = iso.split("-").map(Number);
@@ -31,9 +46,29 @@ function kindFarge(kind: string | null): "orange" | "purple" | "navy" {
 function SyncStempel({ oppdatertIso }: { oppdatertIso: string }) {
   return (
     <span
-      style={{ display: "inline-flex", alignItems: "center", gap: 6, height: 24, padding: "0 11px", borderRadius: 999, background: "var(--tint-teal)", color: "var(--wang-teal-text)", fontFamily: "var(--font-brand)", fontWeight: 700, fontSize: 11, whiteSpace: "nowrap" }}
+      style={{
+        display: "inline-flex",
+        alignItems: "center",
+        gap: 6,
+        height: 24,
+        padding: "0 11px",
+        borderRadius: 999,
+        background: "var(--tint-teal)",
+        color: "var(--wang-teal-text)",
+        fontFamily: "var(--font-brand)",
+        fontWeight: 700,
+        fontSize: 11,
+        whiteSpace: "nowrap",
+      }}
     >
-      <span style={{ width: 7, height: 7, borderRadius: 999, background: "var(--wang-mint)" }} />
+      <span
+        style={{
+          width: 7,
+          height: 7,
+          borderRadius: 999,
+          background: "var(--wang-mint)",
+        }}
+      />
       Synket fra AgencyOS · {fmtDato(oppdatertIso)}
     </span>
   );
@@ -59,13 +94,40 @@ export function AgencyOsHendelser({
 
   return (
     <section>
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10, flexWrap: "wrap", margin: "2px 2px 12px" }}>
-        <div style={{ fontFamily: "var(--font-brand)", fontWeight: 700, fontSize: 17, color: "var(--text-primary)" }}>Kommende samlinger og tester</div>
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          gap: 10,
+          flexWrap: "wrap",
+          margin: "2px 2px 12px",
+        }}
+      >
+        <div
+          style={{
+            fontFamily: "var(--font-brand)",
+            fontWeight: 700,
+            fontSize: 17,
+            color: "var(--text-primary)",
+          }}
+        >
+          Kommende samlinger og tester
+        </div>
         <SyncStempel oppdatertIso={live.oppdatertIso} />
       </div>
       {kommende.length === 0 ? (
-        <div className="wang-card" style={{ padding: "18px 20px", fontFamily: "var(--font-body)", fontSize: 13.5, color: "var(--text-secondary)" }}>
-          Ingen kommende samlinger eller tester registrert i AgencyOS akkurat nå.
+        <div
+          className="wang-card"
+          style={{
+            padding: "18px 20px",
+            fontFamily: "var(--font-body)",
+            fontSize: 13.5,
+            color: "var(--text-secondary)",
+          }}
+        >
+          Ingen kommende samlinger eller tester registrert i AgencyOS akkurat
+          nå.
         </div>
       ) : (
         <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
@@ -77,30 +139,93 @@ export function AgencyOsHendelser({
                 onOpen({
                   tittel: h.tittel,
                   kategori: kindLabel(h.kind),
-                  ikon: h.kind === "HELDAGSSAMLING" || h.kind === "SAMLING" ? "users" : "clipboard-check",
+                  ikon:
+                    h.kind === "HELDAGSSAMLING" || h.kind === "SAMLING"
+                      ? "users"
+                      : "clipboard-check",
                   farge: kindFarge(h.kind),
-                  datoLabel: h.sluttIso !== h.startIso ? `${fmtDato(h.startIso)}–${fmtDato(h.sluttIso)}` : fmtDato(h.startIso),
+                  datoLabel:
+                    h.sluttIso !== h.startIso
+                      ? `${fmtDato(h.startIso)}–${fmtDato(h.sluttIso)}`
+                      : fmtDato(h.startIso),
                   tid: h.startTid,
                   sted: h.sted,
                   beskrivelse: h.beskrivelse,
                 })
               }
-              style={{ padding: "14px 16px", display: "flex", alignItems: "center", gap: 12, cursor: "pointer" }}
+              style={{
+                padding: "14px 16px",
+                display: "flex",
+                alignItems: "center",
+                gap: 12,
+                cursor: "pointer",
+              }}
             >
-              <IconChip icon={h.kind === "HELDAGSSAMLING" || h.kind === "SAMLING" ? "users" : "clipboard-check"} color={kindFarge(h.kind)} size={42} />
+              <IconChip
+                icon={
+                  h.kind === "HELDAGSSAMLING" || h.kind === "SAMLING"
+                    ? "users"
+                    : "clipboard-check"
+                }
+                color={kindFarge(h.kind)}
+                size={42}
+              />
               <div style={{ flex: 1, minWidth: 0 }}>
-                <div style={{ fontFamily: "var(--font-brand)", fontWeight: 700, fontSize: 14.5, color: "var(--text-primary)" }}>{h.tittel}</div>
-                <div style={{ fontFamily: "var(--font-body)", fontSize: 12.5, color: "var(--text-secondary)", marginTop: 2 }}>
+                <div
+                  style={{
+                    fontFamily: "var(--font-brand)",
+                    fontWeight: 700,
+                    fontSize: 14.5,
+                    color: "var(--text-primary)",
+                  }}
+                >
+                  {h.tittel}
+                </div>
+                <div
+                  style={{
+                    fontFamily: "var(--font-body)",
+                    fontSize: 12.5,
+                    color: "var(--text-secondary)",
+                    marginTop: 2,
+                  }}
+                >
                   {kindLabel(h.kind)}
                   {h.sted ? ` · ${h.sted}` : ""}
                 </div>
               </div>
-              <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 3, flexShrink: 0 }}>
-                <span className="wang-num" style={{ fontFamily: "var(--font-brand)", fontWeight: 700, fontSize: 13, color: "var(--text-primary)", whiteSpace: "nowrap" }}>
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "flex-end",
+                  gap: 3,
+                  flexShrink: 0,
+                }}
+              >
+                <span
+                  className="wang-num"
+                  style={{
+                    fontFamily: "var(--font-brand)",
+                    fontWeight: 700,
+                    fontSize: 13,
+                    color: "var(--text-primary)",
+                    whiteSpace: "nowrap",
+                  }}
+                >
                   {fmtDato(h.startIso)}
                   {h.sluttIso !== h.startIso ? `–${fmtDato(h.sluttIso)}` : ""}
                 </span>
-                <span className="wang-num" style={{ fontFamily: "var(--font-body)", fontWeight: 600, fontSize: 11.5, color: "var(--text-secondary)" }}>{h.startTid}</span>
+                <span
+                  className="wang-num"
+                  style={{
+                    fontFamily: "var(--font-body)",
+                    fontWeight: 600,
+                    fontSize: 11.5,
+                    color: "var(--text-secondary)",
+                  }}
+                >
+                  {h.startTid}
+                </span>
               </div>
             </div>
           ))}
@@ -118,35 +243,149 @@ function initialer(navn: string): string {
   return (deler[0][0] + deler[deler.length - 1][0]).toUpperCase();
 }
 
-export function GruppeRoster({ live }: { live: WangLiveData | null }) {
+export function GruppeRoster({
+  live,
+  iupLenke = false,
+}: {
+  live: WangLiveData | null;
+  /** Trenerflaten: vis inngang til IUP-samtalen per elev. */
+  iupLenke?: boolean;
+}) {
   if (!live) return null;
   return (
     <section>
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10, flexWrap: "wrap", margin: "2px 2px 12px" }}>
-        <div style={{ fontFamily: "var(--font-brand)", fontWeight: 700, fontSize: 17, color: "var(--text-primary)" }}>
-          Gruppa · {live.antallElever} {live.antallElever === 1 ? "elev" : "elever"}
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          gap: 10,
+          flexWrap: "wrap",
+          margin: "2px 2px 12px",
+        }}
+      >
+        <div
+          style={{
+            fontFamily: "var(--font-brand)",
+            fontWeight: 700,
+            fontSize: 17,
+            color: "var(--text-primary)",
+          }}
+        >
+          Gruppa · {live.antallElever}{" "}
+          {live.antallElever === 1 ? "elev" : "elever"}
         </div>
         <SyncStempel oppdatertIso={live.oppdatertIso} />
       </div>
       {live.elever.length === 0 ? (
-        <div className="wang-card" style={{ padding: "18px 20px", fontFamily: "var(--font-body)", fontSize: 13.5, color: "var(--text-secondary)" }}>
+        <div
+          className="wang-card"
+          style={{
+            padding: "18px 20px",
+            fontFamily: "var(--font-body)",
+            fontSize: 13.5,
+            color: "var(--text-secondary)",
+          }}
+        >
           Ingen elever registrert i gruppa i AgencyOS ennå.
         </div>
       ) : (
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill,minmax(200px,1fr))", gap: 10 }}>
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fill,minmax(200px,1fr))",
+            gap: 10,
+          }}
+        >
           {live.elever.map((e, i) => (
-            <div key={e.navn + i} className="wang-card" style={{ padding: "12px 14px", display: "flex", alignItems: "center", gap: 11 }}>
-              <span style={{ flexShrink: 0, display: "inline-flex", alignItems: "center", justifyContent: "center", width: 38, height: 38, borderRadius: 999, background: "var(--tint-navy)", color: "var(--wang-navy)", fontFamily: "var(--font-brand)", fontWeight: 800, fontSize: 13 }}>{initialer(e.navn)}</span>
+            <div
+              key={e.navn + i}
+              className="wang-card"
+              style={{
+                padding: "12px 14px",
+                display: "flex",
+                alignItems: "center",
+                gap: 11,
+              }}
+            >
+              <span
+                style={{
+                  flexShrink: 0,
+                  display: "inline-flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  width: 38,
+                  height: 38,
+                  borderRadius: 999,
+                  background: "var(--tint-navy)",
+                  color: "var(--wang-navy)",
+                  fontFamily: "var(--font-brand)",
+                  fontWeight: 800,
+                  fontSize: 13,
+                }}
+              >
+                {initialer(e.navn)}
+              </span>
               <div style={{ minWidth: 0 }}>
-                <div style={{ fontFamily: "var(--font-brand)", fontWeight: 700, fontSize: 13.5, color: "var(--text-primary)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{e.navn}</div>
-                <div className="t-label" style={{ color: "var(--text-secondary)", marginTop: 1 }}>{e.rolle === "ASSISTANT" ? "Assistent" : "Spiller"}</div>
+                <div
+                  style={{
+                    fontFamily: "var(--font-brand)",
+                    fontWeight: 700,
+                    fontSize: 13.5,
+                    color: "var(--text-primary)",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    whiteSpace: "nowrap",
+                  }}
+                >
+                  {e.navn}
+                </div>
+                <div
+                  className="t-label"
+                  style={{ color: "var(--text-secondary)", marginTop: 1 }}
+                >
+                  {e.rolle === "ASSISTANT" ? "Assistent" : "Spiller"}
+                </div>
               </div>
+              {iupLenke && e.rolle !== "ASSISTANT" ? (
+                <Link
+                  href={`/team-wang/coach/iup/${e.id}`}
+                  className="wang-pressable"
+                  style={{
+                    marginLeft: "auto",
+                    flexShrink: 0,
+                    display: "inline-flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    minHeight: 32,
+                    padding: "0 11px",
+                    borderRadius: 999,
+                    background: "var(--tint-teal)",
+                    color: "var(--wang-teal-text)",
+                    fontFamily: "var(--font-brand)",
+                    fontWeight: 700,
+                    fontSize: 11,
+                    textDecoration: "none",
+                    whiteSpace: "nowrap",
+                  }}
+                >
+                  IUP
+                </Link>
+              ) : null}
             </div>
           ))}
         </div>
       )}
-      <p style={{ margin: "10px 2px 0", fontFamily: "var(--font-body)", fontSize: 12, color: "var(--text-secondary)" }}>
-        Elevlisten hentes fra AgencyOS-gruppa «{live.gruppeNavn}». VG-trinn og individuelle planer vises i AgencyOS.
+      <p
+        style={{
+          margin: "10px 2px 0",
+          fontFamily: "var(--font-body)",
+          fontSize: 12,
+          color: "var(--text-secondary)",
+        }}
+      >
+        Elevlisten hentes fra AgencyOS-gruppa «{live.gruppeNavn}». VG-trinn og
+        individuelle planer vises i AgencyOS.
       </p>
     </section>
   );

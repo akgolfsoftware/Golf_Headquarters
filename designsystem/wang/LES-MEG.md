@@ -1,7 +1,13 @@
 # `designsystem/wang/` — lokalt speil
 
-Speil av Claude Design-prosjektet **«WANG Golf — Årsplan (redesign 2026)»**
-(`3935e216-ee5b-4d83-8fbd-30e0ec5e7d98`).
+Speil av to Claude Design-prosjekter:
+
+| Mappe | Prosjekt | Gjelder |
+|---|---|---|
+| `fasit/` | `6061a53c` «WANG årsplan redesign» (15.08.2026) | **Gjeldende fasit** for årsplan (elev + trener), kalender, samlinger, Skole, foreldre, økt-detalj og IUP-samtalen. Se `fasit/SYNC-STATUS.md`. |
+| `skjermer/`, `komponenter/`, `grunnlag/`, `tokens/` | `3935e216` «WANG Golf — Årsplan (redesign 2026)» (10.08.2026) | Skjermer `6061a53c` ikke dekker (bl.a. `a1-skall`, `a2-hjem`) + merkevaregrunnlaget. |
+
+Ved konflikt om en skjerm begge dekker vinner `6061a53c`.
 
 **Dette er IKKE kilden.** Samme regel som for `designsystem/paper/`: Claude Design-prosjektet
 er fasiten, dette speilet ligger her for rask lesing og for at designet skal være synlig i

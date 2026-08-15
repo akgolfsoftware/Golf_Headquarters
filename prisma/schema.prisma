@@ -75,6 +75,13 @@ enum PyramidArea {
   TURN
 }
 
+// Tre trinn, samme kanon i årsplanen og i IUP-samtalen — aldri to skalaer.
+enum PeriodGoalStatus {
+  IKKE_STARTET
+  PAA_VEI
+  NAADD
+}
+
 enum LPhase {
   GRUNN
   SPESIAL
@@ -2815,6 +2822,35 @@ model GroupPeriodBlock {
 
   @@index([groupId, startDate])
   @@map("group_period_blocks")
+}
+
+// WANG-årsplan (Anders 2026-08-15): elevens EGNE fokusområder for én periode —
+// det andre sporet i årsplanen, avtalt med trener i IUP-samtalen.
+// Én rad per fokusområde per periode, aldri en JSON-blob, slik at historikken
+// kan spørres opp på tvers av sesonger.
+// Plain userId/periodBlockId (FK håndheves i DB-DDL; ingen @relation for å
+// holde endringen isolert — jf. gotcha-regelen for additive tabeller).
+model GroupPeriodGoal {
+  id            String            @id @default(cuid())
+  userId        String
+  periodBlockId String
+  akse          PyramidArea
+  tittel        String
+  // Planlagt egentrening i MINUTTER per uke. Lagres som tall så det kan
+  // summeres per periode («6,5 t egentid/uke»); formateres i UI.
+  egentidMinUke Int
+  maalemetode   String?
+  status        PeriodGoalStatus  @default(IKKE_STARTET)
+  // Settes ved periodeslutt i IUP-samtalen, 1–5. Null før den er gjennomført.
+  egenvurdering Int?
+  trenervurdering Int?
+  kommentar     String?
+  createdAt     DateTime          @default(now())
+  updatedAt     DateTime          @updatedAt
+
+  @@index([userId, periodBlockId])
+  @@index([periodBlockId])
+  @@map("group_period_goals")
 }
 
 model TournamentEntry {

@@ -1,3 +1,4 @@
+import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { WangFellesside, type Fane } from "./_components/wang-fellesside";
 import { hentWangGruppe } from "./_data/hent-wang-gruppe";
 
@@ -18,7 +19,13 @@ export default async function TeamWangPage({
   searchParams: Promise<{ fane?: string }>;
 }) {
   const { fane } = await searchParams;
-  const start: Fane = FANER.includes(fane as Fane) ? (fane as Fane) : "oversikt";
-  const live = await hentWangGruppe();
+  const start: Fane = FANER.includes(fane as Fane)
+    ? (fane as Fane)
+    : "oversikt";
+  // proxy.ts sperrer allerede /team-wang, men vi trenger brukeren her for å
+  // hente elevens EGNE fokusområder — de er personlige og hentes aldri for
+  // gruppa som helhet.
+  const bruker = await requirePortalUser({ redirectTo: "/team-wang/logg-inn" });
+  const live = await hentWangGruppe(bruker.id);
   return <WangFellesside startFane={start} live={live} />;
 }

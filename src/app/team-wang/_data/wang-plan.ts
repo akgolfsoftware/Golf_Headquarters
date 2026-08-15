@@ -59,16 +59,34 @@ export function d(isoStr: string): Date {
 }
 
 export function iso(dt: Date): string {
-  return dt.getUTCFullYear() + "-" + pad(dt.getUTCMonth() + 1) + "-" + pad(dt.getUTCDate());
+  return (
+    dt.getUTCFullYear() +
+    "-" +
+    pad(dt.getUTCMonth() + 1) +
+    "-" +
+    pad(dt.getUTCDate())
+  );
 }
 
 export function fmt(dt: Date): string {
-  return WD_SHORT[dt.getUTCDay()] + ". " + dt.getUTCDate() + ". " + MON_SHORT[dt.getUTCMonth()];
+  return (
+    WD_SHORT[dt.getUTCDay()] +
+    ". " +
+    dt.getUTCDate() +
+    ". " +
+    MON_SHORT[dt.getUTCMonth()]
+  );
 }
 
 export function fmtComp(s: string): string {
   const dt = d(s);
-  return dt.getUTCDate() + ". " + MON_SHORT[dt.getUTCMonth()] + " " + dt.getUTCFullYear();
+  return (
+    dt.getUTCDate() +
+    ". " +
+    MON_SHORT[dt.getUTCMonth()] +
+    " " +
+    dt.getUTCFullYear()
+  );
 }
 
 export const SPAN_START_ISO = "2026-08-10";
@@ -92,14 +110,7 @@ export function klampTilSesong(isoStr: string): string {
 // ---- Steder ------------------------------------------------------------
 
 export type WangFarge =
-  | "navy"
-  | "teal"
-  | "mint"
-  | "blue"
-  | "orange"
-  | "purple"
-  | "pink"
-  | "gray";
+  "navy" | "teal" | "mint" | "blue" | "orange" | "purple" | "pink" | "gray";
 
 export type LokKey = "gfgk" | "salat" | "active";
 
@@ -194,7 +205,9 @@ export const PERIODS: Periode[] = [
   },
 ];
 PERIODS.forEach((p) => {
-  p.weeks = Math.round((d(p.end).getTime() - d(p.start).getTime()) / (7 * 864e5));
+  p.weeks = Math.round(
+    (d(p.end).getTime() - d(p.start).getTime()) / (7 * 864e5),
+  );
 });
 
 export function periodKey(dt: Date): PeriodeKey {
@@ -230,9 +243,27 @@ export const DAYTYPE: Record<
   DagType,
   { icon: string; color: WangFarge; label: string; short: string; card: string }
 > = {
-  teknikk: { icon: "target", color: "blue", label: "Golfteknikk", short: "Golfteknikk", card: "teknikk" },
-  test: { icon: "clipboard-list", color: "navy", label: "Test og spilløvelser", short: "Test", card: "test" },
-  spill: { icon: "flag", color: "teal", label: "Spill og nærspill", short: "Nærspill", card: "utholdenhet" },
+  teknikk: {
+    icon: "target",
+    color: "blue",
+    label: "Golfteknikk",
+    short: "Golfteknikk",
+    card: "teknikk",
+  },
+  test: {
+    icon: "clipboard-list",
+    color: "navy",
+    label: "Test og spilløvelser",
+    short: "Test",
+    card: "test",
+  },
+  spill: {
+    icon: "flag",
+    color: "teal",
+    label: "Spill og nærspill",
+    short: "Nærspill",
+    card: "utholdenhet",
+  },
 };
 
 export interface OktMal {
@@ -274,7 +305,8 @@ export const TEMPLATES: Record<PeriodeKey, Record<DagType, OktMal[]>> = {
           VG2: "Holde jevnt treffpunkt gjennom en kurv med baller.",
           VG3: "Styre treffpunkt og lavpunkt bevisst for ulike slag.",
         },
-        warmup: "Bevegelighet for rygg og hofter, deretter stigende svinger fra 50 % til 90 % fart.",
+        warmup:
+          "Bevegelighet for rygg og hofter, deretter stigende svinger fra 50 % til 90 % fart.",
         main: [
           "Tee-gate-drill for sentrert treff, 3×8",
           "Trinnvis fra halv til full sving med 7-jern",
@@ -293,7 +325,8 @@ export const TEMPLATES: Record<PeriodeKey, Record<DagType, OktMal[]>> = {
           VG2: "Gjennomføre testbatteriet selvstendig og notere resultat fortløpende.",
           VG3: "Analysere eget resultat og peke ut svakeste ledd selv.",
         },
-        warmup: "Kort, strukturert oppvarming i samme rekkefølge som testprotokollen — for sammenlignbare tall fra gang til gang.",
+        warmup:
+          "Kort, strukturert oppvarming i samme rekkefølge som testprotokollen — for sammenlignbare tall fra gang til gang.",
         main: [
           "Golfslag Basic-testbatteri: utslag, innspill 100 m, nærspill, putting",
           "Notér rådata fortløpende — ingen «runding» underveis",
@@ -403,7 +436,8 @@ export const TEMPLATES: Record<PeriodeKey, Record<DagType, OktMal[]>> = {
           VG2: "Prestere stabilt uavhengig av plassering underveis.",
           VG3: "Bruke rangeringen til å sette et konkret mål for neste uke.",
         },
-        warmup: "Samme faste protokoll som testbatteriet, men med tidsfrist (konkurranse-simulering).",
+        warmup:
+          "Samme faste protokoll som testbatteriet, men med tidsfrist (konkurranse-simulering).",
         main: [
           "Ukens testøvelse gjennomføres med skåring og løpende rangering",
           "To tabeller føres: Best resultat + Best resultat etter nivå (VG1/VG2/VG3)",
@@ -420,7 +454,8 @@ export const TEMPLATES: Record<PeriodeKey, Record<DagType, OktMal[]>> = {
           VG2: "Bruke statistikk til å justere køllevalg underveis.",
           VG3: "Sette egne måltall før økta og evaluere mot dem etterpå.",
         },
-        warmup: "Kort banespesifikk oppvarming — samme køller som brukes i øvelsen.",
+        warmup:
+          "Kort banespesifikk oppvarming — samme køller som brukes i øvelsen.",
         main: [
           "Spilløvelse fra utvalgte posisjoner (tee/innspill/nærspill) med poengsystem",
           "Statistikk føres slag for slag (truffet mål, opp-og-inn, treputt)",
@@ -585,7 +620,8 @@ export const AK_TIPS = {
   pyr: "Hva økten trener på — én av FYS · TEK · SLAG · SPILL · TURN. Vektingen følger periodens pyramide.",
   fase: "Læringsfase — styrer resten av formelen. Uten ball → Lav hastighet → Auto. Tidlig fase prioriteres over data og turnering.",
   cs: "Køllehastighet i % av maks. Uten ball = lav · Lav hastighet = CS50–80 · Auto = CS80–100.",
-  miljo: "Miljø/kontekst fra M0 (isolert) til M5 (helt banelikt). Følger fasen.",
+  miljo:
+    "Miljø/kontekst fra M0 (isolert) til M5 (helt banelikt). Følger fasen.",
   press:
     "Konsekvens-trapp: Fri (feil er gratis) → Krav (score mot deg selv) → Utfordring (én sjanse) → Konkurranse (poeng teller).",
   p: "MORAD svingposisjon P1–P10 (halvsteg tillatt). P1 Setup · P4 Top · P7 Impact er viktigst diagnostisk.",
@@ -620,15 +656,78 @@ export function akChipsFrom(a: AkVerdier): AkChipData[] {
 }
 
 const AK_BY_OKT: Record<string, AkVerdier> = {
-  grunn_teknikk: { pyr: "TEK", fase: "Uten ball", cs: "—", miljo: "M1", press: "Fri", p: "P4" },
-  grunn_test: { pyr: "SLAG", fase: "Lav hastighet", cs: "CS60", miljo: "M2", press: "Krav", p: "—" },
-  grunn_spill: { pyr: "SPILL", fase: "Lav hastighet", cs: "CS60", miljo: "M2", press: "Krav", p: "—" },
-  spes_teknikk: { pyr: "SLAG", fase: "Lav hastighet", cs: "CS70", miljo: "M3", press: "Krav", p: "P7" },
-  spes_test: { pyr: "SLAG", fase: "Auto", cs: "CS80", miljo: "M3", press: "Utfordring", p: "—" },
-  spes_spill: { pyr: "SLAG", fase: "Auto", cs: "CS85", miljo: "M4", press: "Utfordring", p: "—" },
-  turn_teknikk: { pyr: "SPILL", fase: "Auto", cs: "CS90", miljo: "M5", press: "Utfordring", p: "—" },
-  turn_test: { pyr: "TURN", fase: "Auto", cs: "CS90", miljo: "M4", press: "Konkurranse", p: "—" },
-  turn_spill: { pyr: "TURN", fase: "Auto", cs: "CS95", miljo: "M5", press: "Konkurranse", p: "—" },
+  grunn_teknikk: {
+    pyr: "TEK",
+    fase: "Uten ball",
+    cs: "—",
+    miljo: "M1",
+    press: "Fri",
+    p: "P4",
+  },
+  grunn_test: {
+    pyr: "SLAG",
+    fase: "Lav hastighet",
+    cs: "CS60",
+    miljo: "M2",
+    press: "Krav",
+    p: "—",
+  },
+  grunn_spill: {
+    pyr: "SPILL",
+    fase: "Lav hastighet",
+    cs: "CS60",
+    miljo: "M2",
+    press: "Krav",
+    p: "—",
+  },
+  spes_teknikk: {
+    pyr: "SLAG",
+    fase: "Lav hastighet",
+    cs: "CS70",
+    miljo: "M3",
+    press: "Krav",
+    p: "P7",
+  },
+  spes_test: {
+    pyr: "SLAG",
+    fase: "Auto",
+    cs: "CS80",
+    miljo: "M3",
+    press: "Utfordring",
+    p: "—",
+  },
+  spes_spill: {
+    pyr: "SLAG",
+    fase: "Auto",
+    cs: "CS85",
+    miljo: "M4",
+    press: "Utfordring",
+    p: "—",
+  },
+  turn_teknikk: {
+    pyr: "SPILL",
+    fase: "Auto",
+    cs: "CS90",
+    miljo: "M5",
+    press: "Utfordring",
+    p: "—",
+  },
+  turn_test: {
+    pyr: "TURN",
+    fase: "Auto",
+    cs: "CS90",
+    miljo: "M4",
+    press: "Konkurranse",
+    p: "—",
+  },
+  turn_spill: {
+    pyr: "TURN",
+    fase: "Auto",
+    cs: "CS95",
+    miljo: "M5",
+    press: "Konkurranse",
+    p: "—",
+  },
 };
 
 export function akForOkt(pk: PeriodeKey, dt: DagType): AkVerdier {
@@ -771,7 +870,12 @@ function buildSession(
     cardType: meta.card,
     dateLabel: fmt(dt),
     dateShort: dt.getUTCDate() + ". " + MON_SHORT[dt.getUTCMonth()],
-    longDate: dt.getUTCDate() + ". " + MONTHS_NO[dt.getUTCMonth()] + " " + dt.getUTCFullYear(),
+    longDate:
+      dt.getUTCDate() +
+      ". " +
+      MONTHS_NO[dt.getUTCMonth()] +
+      " " +
+      dt.getUTCFullYear(),
     weekdayName: WD_LONG[wd],
     timeLabel: "08:00–10:00",
     locKey,
@@ -804,12 +908,17 @@ export const SESSIONS: Okt[] = (() => {
     const wd = cur.getUTCDay();
     const s = iso(cur);
     if ((wd === 1 || wd === 3 || wd === 5) && !inHoliday(s)) {
-      const dagType: DagType = wd === 1 ? "teknikk" : wd === 3 ? "test" : "spill";
+      const dagType: DagType =
+        wd === 1 ? "teknikk" : wd === 3 ? "test" : "spill";
       const pk = periodKey(cur);
       const locKey: LokKey = golfLoc(cur);
-      const weeks = Math.floor((cur.getTime() - SPAN_START.getTime()) / (7 * 864e5));
+      const weeks = Math.floor(
+        (cur.getTime() - SPAN_START.getTime()) / (7 * 864e5),
+      );
       const tpl = TEMPLATES[pk][dagType][weeks % 2];
-      ut.push(buildSession(new Date(cur.getTime()), wd, dagType, pk, locKey, tpl));
+      ut.push(
+        buildSession(new Date(cur.getTime()), wd, dagType, pk, locKey, tpl),
+      );
     }
     cur.setUTCDate(cur.getUTCDate() + 1);
   }
@@ -849,17 +958,72 @@ export const TESTS: { iso: string; name: string }[] = [
   { iso: "2027-05-28", name: "Sesongtester" },
 ];
 
-export const SCHOOL: { iso: string; dato: string; name: string; type: string }[] = [
-  { iso: "2026-08-17", dato: "17. aug 2026", name: "Skolestart", type: "Oppstart" },
-  { iso: "2026-09-28", dato: "28. sep – 2. okt", name: "Høstferie (uke 40)", type: "Ferie" },
-  { iso: "2026-11-13", dato: "13. nov 2026", name: "Planleggingsdag (elevfri)", type: "Elevfri" },
-  { iso: "2026-12-21", dato: "21. des – 2. jan", name: "Juleferie", type: "Ferie" },
-  { iso: "2027-02-23", dato: "22. – 26. feb", name: "Vinterferie (uke 8)", type: "Ferie" },
-  { iso: "2027-03-22", dato: "22. – 28. mar", name: "Påskeferie", type: "Ferie" },
-  { iso: "2027-05-01", dato: "1. mai 2027", name: "Offentlig fridag", type: "Fridag" },
-  { iso: "2027-05-06", dato: "6. mai 2027", name: "Kristi himmelfartsdag", type: "Fridag" },
-  { iso: "2027-05-17", dato: "17. mai 2027", name: "Grunnlovsdag", type: "Fridag" },
-  { iso: "2027-06-18", dato: "18. jun 2027", name: "Siste skoledag", type: "Avslutning" },
+export const SCHOOL: {
+  iso: string;
+  dato: string;
+  name: string;
+  type: string;
+}[] = [
+  {
+    iso: "2026-08-17",
+    dato: "17. aug 2026",
+    name: "Skolestart",
+    type: "Oppstart",
+  },
+  {
+    iso: "2026-09-28",
+    dato: "28. sep – 2. okt",
+    name: "Høstferie (uke 40)",
+    type: "Ferie",
+  },
+  {
+    iso: "2026-11-13",
+    dato: "13. nov 2026",
+    name: "Planleggingsdag (elevfri)",
+    type: "Elevfri",
+  },
+  {
+    iso: "2026-12-21",
+    dato: "21. des – 2. jan",
+    name: "Juleferie",
+    type: "Ferie",
+  },
+  {
+    iso: "2027-02-23",
+    dato: "22. – 26. feb",
+    name: "Vinterferie (uke 8)",
+    type: "Ferie",
+  },
+  {
+    iso: "2027-03-22",
+    dato: "22. – 28. mar",
+    name: "Påskeferie",
+    type: "Ferie",
+  },
+  {
+    iso: "2027-05-01",
+    dato: "1. mai 2027",
+    name: "Offentlig fridag",
+    type: "Fridag",
+  },
+  {
+    iso: "2027-05-06",
+    dato: "6. mai 2027",
+    name: "Kristi himmelfartsdag",
+    type: "Fridag",
+  },
+  {
+    iso: "2027-05-17",
+    dato: "17. mai 2027",
+    name: "Grunnlovsdag",
+    type: "Fridag",
+  },
+  {
+    iso: "2027-06-18",
+    dato: "18. jun 2027",
+    name: "Siste skoledag",
+    type: "Avslutning",
+  },
 ];
 
 export const PARENT_MEETINGS: {
@@ -906,18 +1070,59 @@ export const EXAM_PLAN: {
   type: string;
   klasse: string;
 }[] = [
-  { iso: "2026-09-16", dato: "16. sep 2026", fag: "Norsk", type: "Skriftlig prøve", klasse: "VG2" },
-  { iso: "2026-10-14", dato: "14. okt 2026", fag: "Matematikk", type: "Heldagsprøve", klasse: "VG1" },
-  { iso: "2026-11-20", dato: "20. nov 2026", fag: "Treningslære", type: "Prøve", klasse: "VG3" },
-  { iso: "2027-01-15", dato: "15. jan 2027", fag: "Engelsk", type: "Muntlig", klasse: "VG2" },
-  { iso: "2027-03-03", dato: "3. mar 2027", fag: "Toppidrett", type: "Praktisk vurdering", klasse: "VG3" },
-  { iso: "2027-05-20", dato: "20. mai 2027", fag: "Skriftlig eksamen", type: "Eksamensperiode", klasse: "VG3" },
+  {
+    iso: "2026-09-16",
+    dato: "16. sep 2026",
+    fag: "Norsk",
+    type: "Skriftlig prøve",
+    klasse: "VG2",
+  },
+  {
+    iso: "2026-10-14",
+    dato: "14. okt 2026",
+    fag: "Matematikk",
+    type: "Heldagsprøve",
+    klasse: "VG1",
+  },
+  {
+    iso: "2026-11-20",
+    dato: "20. nov 2026",
+    fag: "Treningslære",
+    type: "Prøve",
+    klasse: "VG3",
+  },
+  {
+    iso: "2027-01-15",
+    dato: "15. jan 2027",
+    fag: "Engelsk",
+    type: "Muntlig",
+    klasse: "VG2",
+  },
+  {
+    iso: "2027-03-03",
+    dato: "3. mar 2027",
+    fag: "Toppidrett",
+    type: "Praktisk vurdering",
+    klasse: "VG3",
+  },
+  {
+    iso: "2027-05-20",
+    dato: "20. mai 2027",
+    fag: "Skriftlig eksamen",
+    type: "Eksamensperiode",
+    klasse: "VG3",
+  },
 ];
 
 // ---- Timeplan ----------------------------------------------------------
 
 export const TT_DAYS = ["Man", "Tir", "Ons", "Tor", "Fre"];
-export const TT_TIMES = ["08:00–10:00", "10:15–11:45", "12:15–13:45", "14:00–15:30"];
+export const TT_TIMES = [
+  "08:00–10:00",
+  "10:15–11:45",
+  "12:15–13:45",
+  "14:00–15:30",
+];
 
 export interface TimeplanCelle {
   t: string;
@@ -931,22 +1136,82 @@ export type Trinn = "VG1" | "VG2" | "VG3";
 
 export const TIMETABLE: Record<Trinn, TimeplanCelle[][]> = {
   VG1: [
-    [G("Toppidrett golf"), S("Matematikk"), G("Toppidrett golf"), S("Naturfag"), G("Toppidrett golf")],
+    [
+      G("Toppidrett golf"),
+      S("Matematikk"),
+      G("Toppidrett golf"),
+      S("Naturfag"),
+      G("Toppidrett golf"),
+    ],
     [S("Norsk"), S("Norsk"), S("Engelsk"), S("Historie"), S("Treningslære")],
-    [S("Matematikk"), S("Engelsk"), S("Kroppsøving"), S("Naturfag"), S("Samfunnsfag")],
-    [S("Naturfag"), S("Valgfag"), S("Historie"), S("Toppidrett teori"), S("Fri")],
+    [
+      S("Matematikk"),
+      S("Engelsk"),
+      S("Kroppsøving"),
+      S("Naturfag"),
+      S("Samfunnsfag"),
+    ],
+    [
+      S("Naturfag"),
+      S("Valgfag"),
+      S("Historie"),
+      S("Toppidrett teori"),
+      S("Fri"),
+    ],
   ],
   VG2: [
-    [G("Toppidrett golf"), S("Norsk"), G("Toppidrett golf"), S("Matematikk"), G("Toppidrett golf")],
-    [S("Engelsk"), S("Matematikk"), S("Historie"), S("Norsk"), S("Treningslære")],
+    [
+      G("Toppidrett golf"),
+      S("Norsk"),
+      G("Toppidrett golf"),
+      S("Matematikk"),
+      G("Toppidrett golf"),
+    ],
+    [
+      S("Engelsk"),
+      S("Matematikk"),
+      S("Historie"),
+      S("Norsk"),
+      S("Treningslære"),
+    ],
     [S("Norsk"), S("Kjemi"), S("Kroppsøving"), S("Engelsk"), S("Samfunnsfag")],
-    [S("Historie"), S("Valgfag"), S("Biologi"), S("Toppidrett teori"), S("Fri")],
+    [
+      S("Historie"),
+      S("Valgfag"),
+      S("Biologi"),
+      S("Toppidrett teori"),
+      S("Fri"),
+    ],
   ],
   VG3: [
-    [G("Toppidrett golf"), S("Matematikk R2"), G("Toppidrett golf"), S("Norsk"), G("Toppidrett golf")],
-    [S("Treningslære"), S("Fysikk"), S("Norsk"), S("Historie"), S("Treningslære")],
-    [S("Norsk"), S("Kroppsøving"), S("Biologi"), S("Engelsk"), S("Samfunnsfag")],
-    [S("Historie"), S("Valgfag"), S("Toppidrett teori"), S("Eksamenstrening"), S("Fri")],
+    [
+      G("Toppidrett golf"),
+      S("Matematikk R2"),
+      G("Toppidrett golf"),
+      S("Norsk"),
+      G("Toppidrett golf"),
+    ],
+    [
+      S("Treningslære"),
+      S("Fysikk"),
+      S("Norsk"),
+      S("Historie"),
+      S("Treningslære"),
+    ],
+    [
+      S("Norsk"),
+      S("Kroppsøving"),
+      S("Biologi"),
+      S("Engelsk"),
+      S("Samfunnsfag"),
+    ],
+    [
+      S("Historie"),
+      S("Valgfag"),
+      S("Toppidrett teori"),
+      S("Eksamenstrening"),
+      S("Fri"),
+    ],
   ],
 };
 
@@ -1055,12 +1320,42 @@ export interface Heldagssamling {
 }
 
 export const FULL_DAY_CAMPS: Heldagssamling[] = [
-  { dato: "5. sep 2026", hvor: "GFGK", tema: "Banestrategi og course management", iso: "2026-09-05" },
-  { dato: "3. okt 2026", hvor: "Salatamesteren", tema: "Launch monitor og teknisk analyse", iso: "2026-10-03" },
-  { dato: "14. nov 2026", hvor: "Active Trening", tema: "Fysisk testing og treningslære", iso: "2026-11-14" },
-  { dato: "6. feb 2027", hvor: "Salatamesteren", tema: "Mentaltrening og pre-shot-rutiner", iso: "2027-02-06" },
-  { dato: "13. mar 2027", hvor: "Salatamesteren", tema: "Scoringsspill og wedge-avstander", iso: "2027-03-13" },
-  { dato: "8. mai 2027", hvor: "GFGK", tema: "Turneringsforberedelse og regler", iso: "2027-05-08" },
+  {
+    dato: "5. sep 2026",
+    hvor: "GFGK",
+    tema: "Banestrategi og course management",
+    iso: "2026-09-05",
+  },
+  {
+    dato: "3. okt 2026",
+    hvor: "Salatamesteren",
+    tema: "Launch monitor og teknisk analyse",
+    iso: "2026-10-03",
+  },
+  {
+    dato: "14. nov 2026",
+    hvor: "Active Trening",
+    tema: "Fysisk testing og treningslære",
+    iso: "2026-11-14",
+  },
+  {
+    dato: "6. feb 2027",
+    hvor: "Salatamesteren",
+    tema: "Mentaltrening og pre-shot-rutiner",
+    iso: "2027-02-06",
+  },
+  {
+    dato: "13. mar 2027",
+    hvor: "Salatamesteren",
+    tema: "Scoringsspill og wedge-avstander",
+    iso: "2027-03-13",
+  },
+  {
+    dato: "8. mai 2027",
+    hvor: "GFGK",
+    tema: "Turneringsforberedelse og regler",
+    iso: "2027-05-08",
+  },
 ];
 
 export function campStatus(s: Treningssamling["status"]): {
@@ -1069,7 +1364,11 @@ export function campStatus(s: Treningssamling["status"]): {
   statusLabel: string;
 } {
   return s === "Bekreftet"
-    ? { statusColor: "teal", statusIcon: "check-circle", statusLabel: "Bekreftet" }
+    ? {
+        statusColor: "teal",
+        statusIcon: "check-circle",
+        statusLabel: "Bekreftet",
+      }
     : { statusColor: "orange", statusIcon: "clock", statusLabel: "Planlegges" };
 }
 
@@ -1093,7 +1392,9 @@ export function byggHandlinger(naaIso: string): Handling[] {
         iso: c.fristIso,
         icon: "flag",
         title: "Påmeldingsfrist · " + c.name,
-        sub: c.pamelding + (c.egenandel !== "Ingen" ? " · egenandel " + c.egenandel : ""),
+        sub:
+          c.pamelding +
+          (c.egenandel !== "Ingen" ? " · egenandel " + c.egenandel : ""),
         fane: "samlinger",
         short: c.name,
       });
@@ -1145,7 +1446,9 @@ export function rangeLabel(a: Date, b: Date): string {
 export const TOTAL_WEEKS = Math.floor(SPAN_MS / (7 * 864e5)) + 1;
 
 export function seasonWeek(naaIso: string): number {
-  return Math.floor((d(naaIso).getTime() - SPAN_START.getTime()) / (7 * 864e5)) + 1;
+  return (
+    Math.floor((d(naaIso).getTime() - SPAN_START.getTime()) / (7 * 864e5)) + 1
+  );
 }
 
 // ---- Kalenderhendelser -------------------------------------------------
@@ -1162,15 +1465,26 @@ export const EVENTS: Record<string, KalenderHendelse[]> = {};
 function pushEv(k: string, ev: KalenderHendelse) {
   (EVENTS[k] = EVENTS[k] || []).push(ev);
 }
-SESSIONS.forEach((s) => pushEv(s.iso, { type: "okt", label: s.short, time: "08:00" }));
+SESSIONS.forEach((s) =>
+  pushEv(s.iso, { type: "okt", label: s.short, time: "08:00" }),
+);
 COMPS.forEach((c) => pushEv(c.iso, { type: "konkurranse", label: c.name }));
 TESTS.forEach((t) => pushEv(t.iso, { type: "prove", label: t.name }));
 SCHOOL.forEach((s) => pushEv(s.iso, { type: "skole", label: s.name }));
-PARENT_MEETINGS.forEach((p) => pushEv(p.iso, { type: "skole", label: "Foreldremøte" }));
+PARENT_MEETINGS.forEach((p) =>
+  pushEv(p.iso, { type: "skole", label: "Foreldremøte" }),
+);
 EXAM_PLAN.forEach((e) => pushEv(e.iso, { type: "prove", label: e.fag }));
-const EV_PRIORITY: Record<HendelseType, number> = { konkurranse: 0, prove: 1, skole: 2, okt: 3 };
+const EV_PRIORITY: Record<HendelseType, number> = {
+  konkurranse: 0,
+  prove: 1,
+  skole: 2,
+  okt: 3,
+};
 Object.keys(EVENTS).forEach((k) =>
-  EVENTS[k].sort((a, b) => (EV_PRIORITY[a.type] ?? 9) - (EV_PRIORITY[b.type] ?? 9)),
+  EVENTS[k].sort(
+    (a, b) => (EV_PRIORITY[a.type] ?? 9) - (EV_PRIORITY[b.type] ?? 9),
+  ),
 );
 
 export const EVENT_FARGER: Record<HendelseType, string> = {
@@ -1188,7 +1502,9 @@ export const TIMELINE_SEGS = PERIODS.map((p) => ({
   short: p.name.replace("periode", ""),
 }));
 
-export const TIMELINE_MARKS = COMPS.map((c) => ({ left: pct(c.iso).toFixed(1) + "%" }));
+export const TIMELINE_MARKS = COMPS.map((c) => ({
+  left: pct(c.iso).toFixed(1) + "%",
+}));
 
 // ---- Årshjul / måneddetalj ---------------------------------------------
 
@@ -1240,11 +1556,22 @@ export interface MonthInfo {
   campCount: number;
   focus: string;
   locLabel: string;
-  events: { iso: string; icon: string; color: WangFarge; title: string; sub: string; dateShort: string }[];
+  events: {
+    iso: string;
+    icon: string;
+    color: WangFarge;
+    title: string;
+    sub: string;
+    dateShort: string;
+  }[];
   hasEvents: boolean;
 }
 
-export function monthInfo(m: number, y: number, naaIso: string | null): MonthInfo {
+export function monthInfo(
+  m: number,
+  y: number,
+  naaIso: string | null,
+): MonthInfo {
   const mid = new Date(Date.UTC(y, m, 15));
   const pk = monthPk(m, y);
   const P = pk === "pause" ? null : PERIODS.find((p) => p.key === pk)!;
@@ -1255,21 +1582,57 @@ export function monthInfo(m: number, y: number, naaIso: string | null): MonthInf
   const fulldays = FULL_DAY_CAMPS.filter((c) => inMonth(c.iso, m, y));
   const meetings = PARENT_MEETINGS.filter((c) => inMonth(c.iso, m, y));
   const golf = LOCATIONS[golfLoc(mid)];
-  const ev: { iso: string; icon: string; color: WangFarge; title: string; sub: string }[] = [];
+  const ev: {
+    iso: string;
+    icon: string;
+    color: WangFarge;
+    title: string;
+    sub: string;
+  }[] = [];
   comps.forEach((c) =>
-    ev.push({ iso: c.iso, icon: "trophy", color: "orange", title: c.name, sub: "Turnering · " + c.place }),
+    ev.push({
+      iso: c.iso,
+      icon: "trophy",
+      color: "orange",
+      title: c.name,
+      sub: "Turnering · " + c.place,
+    }),
   );
   tests.forEach((t) =>
-    ev.push({ iso: t.iso, icon: "clipboard-list", color: "purple", title: t.name, sub: "Testdag" }),
+    ev.push({
+      iso: t.iso,
+      icon: "clipboard-list",
+      color: "purple",
+      title: t.name,
+      sub: "Testdag",
+    }),
   );
   camps.forEach((c) =>
-    ev.push({ iso: c.iso, icon: "users", color: "navy", title: c.name, sub: "Samling · " + c.hvor }),
+    ev.push({
+      iso: c.iso,
+      icon: "users",
+      color: "navy",
+      title: c.name,
+      sub: "Samling · " + c.hvor,
+    }),
   );
   fulldays.forEach((c) =>
-    ev.push({ iso: c.iso, icon: "sun", color: "teal", title: c.tema, sub: "Heldagssamling · " + c.hvor }),
+    ev.push({
+      iso: c.iso,
+      icon: "sun",
+      color: "teal",
+      title: c.tema,
+      sub: "Heldagssamling · " + c.hvor,
+    }),
   );
   meetings.forEach((c) =>
-    ev.push({ iso: c.iso, icon: "message-circle", color: "blue", title: "Foreldremøte", sub: c.tema }),
+    ev.push({
+      iso: c.iso,
+      icon: "message-circle",
+      color: "blue",
+      title: "Foreldremøte",
+      sub: c.tema,
+    }),
   );
   ev.sort((a, b) => (a.iso < b.iso ? -1 : 1));
   const hasSport = sessions.length > 0;
@@ -1278,7 +1641,8 @@ export function monthInfo(m: number, y: number, naaIso: string | null): MonthInf
     key: y + "-" + m,
     name: MONTHS_NO[m].charAt(0).toUpperCase() + MONTHS_NO[m].slice(1),
     year: y,
-    isNow: naa !== null && m === naa.getUTCMonth() && y === naa.getUTCFullYear(),
+    isNow:
+      naa !== null && m === naa.getUTCMonth() && y === naa.getUTCFullYear(),
     periodName: pk === "pause" ? "Utenom sesong" : P!.name,
     periodShort: pk === "pause" ? "Pause" : P!.name.replace("periode", ""),
     periodColor: PERIOD_COL[pk],
@@ -1296,7 +1660,8 @@ export function monthInfo(m: number, y: number, naaIso: string | null): MonthInf
       color: e.color,
       title: e.title,
       sub: e.sub,
-      dateShort: d(e.iso).getUTCDate() + ". " + MON_SHORT[d(e.iso).getUTCMonth()],
+      dateShort:
+        d(e.iso).getUTCDate() + ". " + MON_SHORT[d(e.iso).getUTCMonth()],
     })),
     hasEvents: ev.length > 0,
   };
@@ -1495,7 +1860,12 @@ export const KM: Record<FagKey, Fag> = {
           },
         ],
         koder: {
-          A: ["Vise og videreutvikle ferdigheter som er sentrale for å prestere i konkurranser i idretten", "", "", ""],
+          A: [
+            "Vise og videreutvikle ferdigheter som er sentrale for å prestere i konkurranser i idretten",
+            "",
+            "",
+            "",
+          ],
           B: [
             "Gjennomføre systematisk og målrettet trening, og dokumentere og analysere resultatet av denne treningen",
             "",
@@ -1544,7 +1914,12 @@ export const KM: Record<FagKey, Fag> = {
             "",
             "",
           ],
-          J: ["Opptre på en måte som bidrar til et godt lærings- og utviklingsmiljø", "", "", ""],
+          J: [
+            "Opptre på en måte som bidrar til et godt lærings- og utviklingsmiljø",
+            "",
+            "",
+            "",
+          ],
           K: [
             "Utvikle spisskompetanse i spesialidretten i tråd med egne utviklingsmål",
             "Klarer i varierende grad å utvikle spisskompetanse i spesialidretten.",
@@ -1557,7 +1932,12 @@ export const KM: Record<FagKey, Fag> = {
             "Kan i middels grad reflektere over gjennomføringen av egne treningsøkter basert på egen opplevelse og/eller tilbakemelding fra trener.",
             "Kan i høy grad reflektere over gjennomføringen av egne treningsøkter basert både på egen opplevelse og tilbakemelding fra trener.",
           ],
-          M: ["Reflektere over grunnleggende verdier som forventes av en toppidrettsutøver", "", "", ""],
+          M: [
+            "Reflektere over grunnleggende verdier som forventes av en toppidrettsutøver",
+            "",
+            "",
+            "",
+          ],
           N: [
             "Utarbeide en plan for best mulig forberedelse til gjennomføring av konkurranse og kunne reflektere over denne planen",
             "Har utarbeidet en enkel plan for gjennomføring av konkurranse.",
@@ -1636,7 +2016,12 @@ export const KM: Record<FagKey, Fag> = {
           },
         ],
         koder: {
-          A: ["Vise og utvikle ferdigheter som kan forbedre prestasjonen i konkurransesituasjoner", "", "", ""],
+          A: [
+            "Vise og utvikle ferdigheter som kan forbedre prestasjonen i konkurransesituasjoner",
+            "",
+            "",
+            "",
+          ],
           B: [
             "Dokumentere, analysere og reflektere over gjennomført trening i lys av egne mål og resultater",
             "",
@@ -1673,8 +2058,18 @@ export const KM: Record<FagKey, Fag> = {
             "",
             "",
           ],
-          H: ["Videreutvikle spisskompetanse i spesialidretten i tråd med egne utviklingsmål", "", "", ""],
-          I: ["Analysere egen forberedelse til og gjennomføring av konkurranser", "", "", ""],
+          H: [
+            "Videreutvikle spisskompetanse i spesialidretten i tråd med egne utviklingsmål",
+            "",
+            "",
+            "",
+          ],
+          I: [
+            "Analysere egen forberedelse til og gjennomføring av konkurranser",
+            "",
+            "",
+            "",
+          ],
           J: [
             "Reflektere over egen adferd som idrettsutøver med bakgrunn i verdier og krav til livsstil og adferd som stilles til en toppidrettsutøver på treningssamling",
             "",

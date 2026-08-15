@@ -23,6 +23,13 @@
   --cat-purple: #7f1975;
   --cat-gray: #d2d2d2;
 
+  /* Mørkere varianter, kun til TEKST på tilhørende tint-flate. Oransje og blå
+     er for lyse til å leses som tekst på --tint-*. Hentet fra PY_FG i
+     årsplan-fasiten (designsystem/wang/fasit/). */
+  --cat-orange-text: #b4571a;
+  --cat-blue-text: #00618a;
+  --cat-yellow-text: #7a6200;
+
   /* ---- Flater og tekst ---- */
   --bg-app: #f4f6f8;
   --surface-card: #ffffff;
@@ -159,14 +166,17 @@
   outline-offset: 2px;
 }
 
-/* ---- Responsiv synlighet (header-logo, kalender-etiketter) ---- */
+/* ---- Responsiv synlighet (header-logo, kalender-etiketter) ----
+   `!important` i begge retninger med vilje: uten det slår en inline
+   `display` på elementet ut skjulingen, og mobilvisningen lekker inn på
+   desktop. Sett layouten på et barn, ikke på selve bryteren. */
 .wang-tp .wang-vis-mobil {
-  display: none;
+  display: none !important;
 }
 
 @media (max-width: 640px) {
   .wang-tp .wang-vis-mobil {
-    display: block;
+    display: block !important;
   }
 
   .wang-tp .wang-vis-desktop {
@@ -175,5 +185,24 @@
 
   .wang-tp .wang-skjul-mobil {
     display: none !important;
+  }
+
+  /* Årsplanens to spor står side om side per periode på desktop. På mobil
+     stables de — aldri horisontal scroll, aldri en kolonne som klippes. */
+  .wang-tp .wang-spor {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+}
+
+/* Øktdetaljen: hoveddel til venstre, måling og kompetansemål til høyre.
+   Én kolonne under 900px — to smale kolonner er verre enn én bred. */
+.wang-tp .wang-okt-kolonner {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+@media (min-width: 900px) {
+  .wang-tp .wang-okt-kolonner {
+    grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
+    align-items: start;
   }
 }
