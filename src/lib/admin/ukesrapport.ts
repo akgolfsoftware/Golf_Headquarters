@@ -13,7 +13,7 @@
 import type { Prisma } from "@/generated/prisma/client";
 
 import { prisma } from "@/lib/prisma";
-import { startOfWeek, endOfWeek } from "@/lib/uke-helpers";
+import { startOfWeek, endOfWeek, ukenummer } from "@/lib/uke-helpers";
 import {
   etterlevelse,
   NEVNER_TEKST,
@@ -33,14 +33,6 @@ const DATO_FMT = new Intl.DateTimeFormat("nb-NO", {
   month: "short",
   timeZone: "Europe/Oslo",
 });
-
-function ukenummer(d: Date): number {
-  const dato = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
-  const dag = dato.getUTCDay() || 7;
-  dato.setUTCDate(dato.getUTCDate() + 4 - dag);
-  const arsstart = new Date(Date.UTC(dato.getUTCFullYear(), 0, 1));
-  return Math.ceil(((dato.getTime() - arsstart.getTime()) / 86_400_000 + 1) / 7);
-}
 
 /**
  * Bygger rapport-kortet, eller null når det ikke finnes noe å rapportere —
