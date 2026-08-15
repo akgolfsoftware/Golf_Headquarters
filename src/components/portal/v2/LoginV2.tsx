@@ -228,14 +228,24 @@ function Lenke({ href, children }: { href: string; children: ReactNode }) {
   );
 }
 
-/** Venstre brand-panel (Neon/Cosmos-idiomet). Skjult under md (stablet mobil). */
+/**
+ * Venstre brand-panel (Neon/Cosmos-idiomet). Skjult under `lg` — IKKE `md`.
+ *
+ * Målt på prod 2026-08-15: med `md` (768px) og fast bredde 520px fikk skjema-
+ * kolonnen bare 204px brukbar bredde på iPad stående, og kortet ble klippet av
+ * skjermkanten. Panelet slippes derfor først inn på 1024px, og deler plassen
+ * proporsjonalt i stedet for å ta en fast luns av den.
+ */
 function BrandPanel() {
   return (
     <div
-      className="hidden md:flex"
+      className="hidden lg:flex"
       style={{
-        width: 520,
-        flex: "none",
+        flex: "1 1 0",
+        // Taket hindrer at panelet blir en smal stripe ved siden av et enormt
+        // tomrom på ultrabred skjerm (målt 520 mot 1400 på 1920px før fiksen).
+        maxWidth: 720,
+        minWidth: 420,
         position: "relative",
         overflow: "hidden",
         borderRight: `1px solid ${T.border}`,
@@ -571,7 +581,11 @@ export function LoginV2 /* wave A fasit: innlogging.html */() {
       style={{
         minHeight: "100vh",
         display: "flex",
-        colorScheme: "dark",
+        // Flaten er Paper LYS (målt på prod: bakgrunnen er --p-bg, ikke mørk).
+        // Sto tidligere "dark", som fikk nettleseren til å tegne sin egen
+        // native UI mørk oppå en lys side — autofyll-bakgrunn, passord-
+        // avsløringsikon og rullefelt. Gjaldt alle enheter.
+        colorScheme: "light",
         color: T.fg,
         fontFamily: T.ui,
         background: T.bg,
@@ -580,7 +594,11 @@ export function LoginV2 /* wave A fasit: innlogging.html */() {
       <BrandPanel />
       <main
         style={{
-          flex: 1,
+          // «1 1 0» (ikke «1») så skjemaet får nøyaktig halve plassen ved
+          // siden av brand-panelet, i stedet for å arve resten av en fast
+          // deling. Sammen med panelets tak gir det en balansert splitt på
+          // alle bredder over 1024.
+          flex: "1 1 0",
           minWidth: 0,
           display: "flex",
           alignItems: "center",
