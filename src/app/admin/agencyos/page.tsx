@@ -82,7 +82,7 @@ export default async function V2CockpitPage() {
   };
 
   return (
-    <V2Shell bredde="full" aktiv="cockpit" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"} vekslerData={vekslerData}>
+    <V2Shell bredde="full" hoyde="skjerm" aktiv="cockpit" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"} vekslerData={vekslerData}>
       <KonsollChat
         data={data}
         innboks={innboks}

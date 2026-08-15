@@ -213,6 +213,21 @@ export interface V2ShellProps {
    * settes til `"kolonne"` én om gangen, verifisert.
    */
   bredde?: "kolonne" | "full";
+  /**
+   * `"dokument"` (default, uendret) — siden vokser og hele dokumentet
+   * scroller. Riktig for innholdsskjermer, og eneste som virker sammen med
+   * `--ak-topbar-h`-mekanismen (sticky toppbarer over dokumentrullen).
+   *
+   * `"skjerm"` — skallet låses til skjermhøyden og siden eier sin egen
+   * rulling. Skjermer med bunnforankret chrome (chat-komposer) MÅ bruke
+   * denne: uten den har ingen forelder bunden høyde, barnets `height: 100%`
+   * faller tilbake til innholdshøyde, og komposeren blir stående midt på
+   * siden med død luft under (målt 230 px på 390×844 før fiksen).
+   *
+   * Merk at høydekjeden må være ubrutt HELE veien ned — det var nettopp
+   * `.v2-fade-in`-wrapperen uten høyde som brøt den her.
+   */
+  hoyde?: "dokument" | "skjerm";
   children: ReactNode;
 }
 
@@ -737,7 +752,7 @@ function AgencyBunnNav({ aktiv, nav, mer, rom }: { aktiv?: string; nav: V2NavIte
  * BunnNav. Innholdet stables med T.gap — skjermkomponentene rendrer bare
  * stacken, shellen leverer chrome.
  */
-export function V2Shell({ aktiv, nav = PLAYERHQ_NAV, mer, rom, navn = "Øyvind Rohjan", avatarUrl, vekslerData, bredde = "full", children }: V2ShellProps) {
+export function V2Shell({ aktiv, nav = PLAYERHQ_NAV, mer, rom, navn = "Øyvind Rohjan", avatarUrl, vekslerData, bredde = "full", hoyde = "dokument", children }: V2ShellProps) {
   // AgencyOS: auto-koble Mer-menyen uten å måtte endre ~50 kallsteder
   // (alle importerer samme AGENCYOS_NAV-konstant → ref-likhet).
   // Ikke ref-likhet: withAgencyOsNavBadges() returnerer ny array med badge.
@@ -875,7 +890,11 @@ export function V2Shell({ aktiv, nav = PLAYERHQ_NAV, mer, rom, navn = "Øyvind R
       data-paper-chrome="v2-shell"
       suppressHydrationWarning
       style={{
-        minHeight: "100vh",
+        // «skjerm» binder høyden til viewporten (dvh, ikke vh — iOS' adresse-
+        // linje endrer vh og ville latt komposeren skli under nav-en).
+        ...(hoyde === "skjerm"
+          ? { height: "100dvh", overflow: "hidden" }
+          : { minHeight: "100vh" }),
         background: T.bg,
         color: T.fg,
         fontFamily: T.ui,
@@ -892,7 +911,16 @@ export function V2Shell({ aktiv, nav = PLAYERHQ_NAV, mer, rom, navn = "Øyvind R
           nav-høyden på notch-iPhone → siste innholdselement lå bak nav-en. */}
       <div
         className="px-4 md:px-8 pb-[calc(96px+env(safe-area-inset-bottom))] md:pb-9"
-        style={{ flex: 1, minWidth: 0, paddingTop: "calc(24px + env(safe-area-inset-top))" }}
+        style={{
+          flex: 1,
+          minWidth: 0,
+          paddingTop: "calc(24px + env(safe-area-inset-top))",
+          // Uten minHeight: 0 nekter en flex-item å krympe under innholdet sitt,
+          // og «egen rulling» blir til dokumentrulling likevel.
+          ...(hoyde === "skjerm"
+            ? { display: "flex", flexDirection: "column", minHeight: 0, overflow: "hidden" }
+            : null),
+        }}
       >
         {/* GO V6 — navigasjonsovergang: innholdet toner inn ved hvert rutebytte
             (key = pathname remonterer wrapperen, .v2-fade-in eier bevegelsen fra
@@ -901,7 +929,16 @@ export function V2Shell({ aktiv, nav = PLAYERHQ_NAV, mer, rom, navn = "Øyvind R
         <div
           key={pathname}
           className="v2-fade-in"
-          style={{ width: "100%", display: "flex", flexDirection: "column", gap: T.gap }}
+          style={{
+            width: "100%",
+            display: "flex",
+            flexDirection: "column",
+            gap: T.gap,
+            // Leddet som brøt høydekjeden: uten dette har wrapperen auto
+            // høyde, og barnets `height: 100%` faller tilbake til innholds-
+            // høyde — komposeren havnet 230 px over bunn-nav-en.
+            ...(hoyde === "skjerm" ? { flex: 1, minHeight: 0 } : null),
+          }}
         >
           {/* D2: kontekst-veksler i toppraden — kun AgencyOS og kun når data er
               gitt (usatt prop ⇒ skjult ⇒ ingen kallsted må endres). */}
@@ -909,7 +946,16 @@ export function V2Shell({ aktiv, nav = PLAYERHQ_NAV, mer, rom, navn = "Øyvind R
           {bredde === "kolonne" ? (
             <div
               data-paper-column={erAgency ? "agency" : "player"}
-              style={{ width: "100%", maxWidth: erAgency ? "74ch" : "720px", marginLeft: "auto", marginRight: "auto" }}
+              style={{
+                width: "100%",
+                maxWidth: erAgency ? "74ch" : "720px",
+                marginLeft: "auto",
+                marginRight: "auto",
+                // Kolonne-varianten er også et ledd i kjeden.
+                ...(hoyde === "skjerm"
+                  ? { flex: 1, minHeight: 0, display: "flex", flexDirection: "column" }
+                  : null),
+              }}
             >
               {children}
             </div>
