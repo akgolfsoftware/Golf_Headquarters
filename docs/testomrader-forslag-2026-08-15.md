@@ -30,32 +30,39 @@ dublett er dermed avkreftet. Regnestykket går opp: 1 tee + 5 innspill + 4 nærs
 bygges om før backfillen kjøres — ellers peker halvparten av innspillstestene på
 nabobåndet.
 
-## AVKLART 15.08: ALT er i meter
+## AVKLART 15.08: innspill i meter, PUTT I FOT
 
-Anders 15.08: «alt her er i m». Putt-tallene i v3-ordren skal altså leses som
-**meter**, ikke fot — ordrens §4.5 («enhet for putt-tallene: FOT») er dermed
-overstyrt.
+Anders 15.08, to meldinger: «alt her er i m» og deretter **«putter er ft»**.
 
-De sju puttbøttene:
+Enhetene er altså delt:
 
-| Kode | Bånd |
+| Gruppe | Enhet |
 |---|---|
-| `PUTT_0_3` | 0–3 m |
-| `PUTT_3_5` | 3–5 m |
-| `PUTT_5_10` | 5–10 m |
-| `PUTT_10_15` | 10–15 m |
-| `PUTT_15_25` | 15–25 m |
-| `PUTT_25_40` | 25–40 m |
-| `PUTT_40` | 40 m + |
+| Tee, innspill, nærspill | **meter** |
+| Putt | **fot** |
 
-**Ingen datamigrering nødvendig.** All eksisterende puttdata ligger allerede i
-meter, så §6.5s advarsel om tapt presisjon ved m → ft faller bort. Det som
-gjenstår er en ren utvidelse fra 6 til 7 bøtter, der kodens `3-6` og `6-10`
-erstattes av `3-5`, `5-10` og `10-15`.
+Det bekrefter v3-ordrens §4.5 («enhet for putt-tallene: FOT») og CANON v3.5,
+som bruker fot for putting.
 
-**Merk at én grense flyttes:** kodens `PUTT10_20` deles i `PUTT_10_15` og
-`PUTT_15_25`. Historiske rader i `10-20 m` kan ikke splittes eksakt — men det
-gjelder aggregerte visninger, ikke testdefinisjonene denne lista handler om.
+De sju puttbøttene, i fot:
+
+| Kode | Bånd | ≈ meter |
+|---|---|---|
+| `PUTT_0_3` | 0–3 ft | 0–0,9 m |
+| `PUTT_3_5` | 3–5 ft | 0,9–1,5 m |
+| `PUTT_5_10` | 5–10 ft | 1,5–3,0 m |
+| `PUTT_10_15` | 10–15 ft | 3,0–4,6 m |
+| `PUTT_15_25` | 15–25 ft | 4,6–7,6 m |
+| `PUTT_25_40` | 25–40 ft | 7,6–12,2 m |
+| `PUTT_40` | 40 ft + | 12,2 m + |
+
+**Datamigrering er dermed nødvendig likevel** — §6.5 gjelder. All eksisterende
+puttdata i appen ligger i **meter** i seks bøtter med andre grenser. Den
+konverteringen er en egen jobb og er ikke besluttet kjørt. Til den er gjort:
+**vis alltid enheten eksplisitt i UI, aldri et bart tall** (v3-ordrens egen regel).
+
+Testdefinisjonene under er oppgitt i meter i databasen, så mappingen krever
+omregning (1 m = 3,281 ft).
 
 **Alle tre spørsmålene er dermed lukket.**
 
@@ -144,24 +151,29 @@ Disse måler over flere områder. Ett område per test er kanskje feil modell fo
 
 ---
 
-## D. Putt — nå mappbart (8 tester)
+## D. Putt — omregnet til fot (8 tester)
 
-Enhetsspørsmålet er lukket: alt er i meter.
+Testene er lagret i meter. Omregnet med 1 m = 3,281 ft:
 
-| Test | Pyramide | Avstand | Forslag | Sikkerhet |
-|---|---|---|---|---|
-| Putt 2 m | SLAG | 2 m | `PUTT_0_3` | Entydig |
-| Putt 1-3m | SPILL | 1 / 1,5 / 2 / 2,5 / 3 m | `PUTT_0_3` | Entydig — alle fem innenfor 0–3 |
-| TN Putt Gate | TEK | 40 cm gate, start-retning | `PUTT_0_3` | Trolig — måler retning, ikke avstand. Bekreft |
-| Putt Speed 1x5 | SPILL | 3 / 5 / 7 m | `PUTT_5_10` | Spenner 3–5 og 5–10. Tyngdepunkt i 5–10 |
-| Putt Speed 3x3 | SPILL | 3 / 5 / 7 m | `PUTT_5_10` | Samme |
-| TN VISA Express | TEK | «tre avstander» | — | Avstandene står ikke i beskrivelsen |
-| 9 hull lengde | SPILL | lengdekontroll | — | Er dette putt i det hele tatt? |
-| TN Slagtest | TURN | 18 slag jern 7 | `INNSPILL_100` | Ikke putt — jern 7 ≈ 130–150 m |
+| Test | Pyramide | Avstand (m) | I fot | Forslag | Sikkerhet |
+|---|---|---|---|---|---|
+| Putt 2 m | SLAG | 2 | 6,6 | `PUTT_5_10` | Entydig |
+| Putt 1-3m | SPILL | 1 / 1,5 / 2 / 2,5 / 3 | 3,3 / 4,9 / 6,6 / 8,2 / 9,8 | `PUTT_5_10` | **Blandet** — 1 og 1,5 m faller i `PUTT_3_5` |
+| TN Putt Gate | TEK | 40 cm gate | (retning) | `PUTT_3_5` | Trolig kort putt. Bekreft |
+| Putt Speed 1x5 | SPILL | 3 / 5 / 7 | 9,8 / 16,4 / 23,0 | `PUTT_15_25` | **Blandet** — hopper over `PUTT_10_15` |
+| Putt Speed 3x3 | SPILL | 3 / 5 / 7 | samme | `PUTT_15_25` | Samme |
+| TN VISA Express | TEK | «tre avstander» | — | — | Avstandene står ikke i basen |
+| 9 hull lengde | SPILL | lengdekontroll | — | — | Er dette putt i det hele tatt? |
+| TN Slagtest | TURN | 18 slag jern 7 | — | `INNSPILL_100` | Ikke putt — jern 7 ≈ 130–150 m |
 
-**«Putt Speed»-testene** måler 3, 5 og 7 m og krysser dermed grensen mellom
-`PUTT_3_5` og `PUTT_5_10`. Jeg foreslår `PUTT_5_10` fordi to av tre avstander
-ligger der — men de er egentlig blandede, som 8-ball-testene.
+**Omregningen flytter tre av testene** i forhold til et meter-utgangspunkt. «Putt 2 m»
+er 6,6 fot og havner i `PUTT_5_10`, ikke `PUTT_0_3` — `PUTT_0_3` er under én meter og
+brukes knapt av noen av testene.
+
+**«Putt Speed»-testene hopper over et helt bånd:** 3 m er 9,8 ft (like under 10) og
+5 m er 16,4 ft (i 15–25). Ingen av avstandene lander i `PUTT_10_15`. Det tyder på at
+testene er designet i meter uten hensyn til fot-båndene — verdt å vite når du vurderer
+om de skal ha ett område eller merkes som blandede.
 
 ---
 
@@ -172,7 +184,9 @@ ligger der — men de er egentlig blandede, som 8-ball-testene.
 ~~**2. Er `INNSPILL_50` og `INNSPILL_0_50` samme bøtte?**~~ **AVKLART:** nei —
 0–50 og 50–100.
 
-~~**3. Fot eller meter?**~~ **AVKLART 15.08:** meter. Ingen datamigrering.
+~~**3. Fot eller meter?**~~ **AVKLART 15.08:** innspill i meter, **putt i fot**.
+   Konverteringen av eksisterende puttdata (meter → fot, seks bøtter → sju) er en
+   egen jobb som ikke er besluttet kjørt.
 
 **Gjenstår — din vurdering, ikke en blokkering:**
 
@@ -191,12 +205,16 @@ ligger der — men de er egentlig blandede, som 8-ball-testene.
 
 - **8 FYS** — ingen områdekode (avklart)
 - **13 entydige** i del B
-- **6 mappbare** i del D (Putt 2 m, Putt 1-3m, TN Putt Gate, Putt Speed ×2, TN Slagtest)
+- **6 mappbare** i del D — men tre av dem er blandede etter omregning til fot
 - **9 venter** på din vurdering (6 i del C + 3 løse tråder i del D)
 
 **Neste tekniske steg:** bygg om `src/lib/taxonomy.ts` til v3-lista — 17 områder,
-innspill med nedre grense, 7 puttbøtter i meter, `SPILL` ut av TEK/SLAG. Deretter
-`ALTER TABLE test_definitions ADD COLUMN omraade TEXT` og backfill av de 19.
+innspill med nedre grense i meter, 7 puttbøtter **i fot**, `SPILL` ut av TEK/SLAG.
+Enheten må ligge i selve taksonomien, ellers arver hver konsument tvetydigheten.
+Deretter `ALTER TABLE test_definitions ADD COLUMN omraade TEXT` og backfill.
+
+**Egen jobb, ikke besluttet:** konvertering av eksisterende puttdata fra meter til
+fot. Til den er kjørt skal UI vise enheten eksplisitt.
 
 ---
 
