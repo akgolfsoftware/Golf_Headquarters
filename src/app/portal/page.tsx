@@ -37,7 +37,7 @@ export default async function PortalHjemPage() {
   const naaTekst = { ukedag: dagNavnKort(naa), dato: OSLO_DATO_FMT.format(naa), klokke: OSLO_KLOKKE_FMT.format(naa) };
 
   return (
-    <V2Shell bredde="full" aktiv="hjem" nav={PLAYERHQ_NAV} navn={data.user.name} avatarUrl={data.user.avatarUrl}>
+    <V2Shell bredde="full" hoyde="skjerm" aktiv="hjem" nav={PLAYERHQ_NAV} navn={data.user.name} avatarUrl={data.user.avatarUrl}>
       <PortalChatHjem data={data} gjennomfore={gjennomfore} naaTekst={naaTekst} />
     </V2Shell>
   );
