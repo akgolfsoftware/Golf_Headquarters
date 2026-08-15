@@ -26,7 +26,8 @@ import {
   type FagKey,
   type Trinn,
 } from "../_data/wang-plan";
-import type { WangLiveData, WangSkoleDagDb } from "../_data/hent-wang-gruppe";
+import type { WangLiveData } from "../_data/hent-wang-gruppe";
+import { grupperSkoleDager } from "@/lib/domain/wang-skolerute";
 import { IconChip, Tabs, yearPillStyle } from "./primitiver";
 
 const OMR_IKON: Record<string, string> = {
@@ -111,51 +112,21 @@ function kortDato(iso: string): string {
   const [y, m, d] = iso.split("-").map(Number);
   return `${d}. ${MND_KORT[m - 1]} ${y}`;
 }
-function nesteDag(iso: string): string {
-  const d = new Date(iso + "T00:00:00Z");
-  d.setUTCDate(d.getUTCDate() + 1);
-  return d.toISOString().slice(0, 10);
-}
-function skoleType(tittel: string): string {
-  const t = tittel.toLowerCase();
-  if (t === "siste skoledag") return "Avslutning";
-  if (t === "skolestart") return "Oppstart";
-  if (t.includes("planleggingsdag")) return "Elevfri";
-  if (t.includes("ferie")) return "Ferie";
-  return "Fridag";
-}
-/** Sammenhengende dager med samme tittel blir én rad («28. sep – 2. okt»). */
-function grupperSkoleDager(
-  dager: WangSkoleDagDb[],
-): { iso: string; dato: string; name: string; type: string }[] {
-  const sortert = [...dager].sort((a, b) => a.dato.localeCompare(b.dato));
-  const grupper: { start: string; slutt: string; tittel: string }[] = [];
-  for (const d of sortert) {
-    const siste = grupper[grupper.length - 1];
-    if (
-      siste &&
-      siste.tittel === d.tittel &&
-      nesteDag(siste.slutt) === d.dato
-    ) {
-      siste.slutt = d.dato;
-    } else {
-      grupper.push({ start: d.dato, slutt: d.dato, tittel: d.tittel });
-    }
-  }
-  return grupper.map((g) => ({
-    iso: g.start,
-    dato:
-      g.start === g.slutt
-        ? kortDato(g.start)
-        : `${kortDato(g.start)} – ${kortDato(g.slutt)}`,
-    name: g.tittel,
-    type: skoleType(g.tittel),
-  }));
-}
-
 function Skoleaar({ live }: { live: WangLiveData | null }) {
   const synket = !!live && live.skoleDager.length > 0;
-  const liste = synket ? grupperSkoleDager(live!.skoleDager) : SCHOOL;
+  // Grupperingen gir spenn i ISO; visningsdatoen formateres her.
+  const liste: { iso: string; dato: string; name: string; type: string }[] =
+    synket
+      ? grupperSkoleDager(live!.skoleDager).map((g) => ({
+          iso: g.iso,
+          dato:
+            g.startIso === g.sluttIso
+              ? kortDato(g.startIso)
+              : `${kortDato(g.startIso)} – ${kortDato(g.sluttIso)}`,
+          name: g.name,
+          type: g.type,
+        }))
+      : SCHOOL;
 
   return (
     <div
