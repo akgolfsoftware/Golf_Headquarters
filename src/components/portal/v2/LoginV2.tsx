@@ -581,7 +581,7 @@ export function LoginV2 /* wave A fasit: innlogging.html */() {
       style={{
         minHeight: "100vh",
         display: "flex",
-        // Flaten er Paper LYS (målt på prod: bakgrunn rgb(250,249,245)).
+        // Flaten er Paper LYS (målt på prod: bakgrunnen er --p-bg, ikke mørk).
         // Sto tidligere "dark", som fikk nettleseren til å tegne sin egen
         // native UI mørk oppå en lys side — autofyll-bakgrunn, passord-
         // avsløringsikon og rullefelt. Gjaldt alle enheter.
