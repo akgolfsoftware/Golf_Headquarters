@@ -17,6 +17,7 @@ import { handlingstypeLabel } from "@/lib/labels/handlingstyper";
 import { prisma } from "@/lib/prisma";
 import { LOW_RISK_ACTION_TYPES } from "@/lib/training/skills";
 import { koTelling } from "@/lib/admin/ko-telling";
+import { hentUkesrapport } from "@/lib/admin/ukesrapport";
 import {
   buildDiffPreview,
   erHasterHandling,
@@ -300,9 +301,13 @@ export default async function V2AdminGodkjenningerPage() {
     null,
   );
 
+  // D3: ukesrapporten er et leseelement i køen — den leses, ikke godkjennes.
+  const ukesrapport = await hentUkesrapport(spillerScope);
+
   const data: AdminGodkjenningerV2Data = {
     rows: alleRows,
     lowRiskCount,
+    ukesrapport,
     totalt: ko.totalt,
     lostSjekkpunkter,
     kilder: { agent: ko.planActions, caddie: ko.caddieDrafts, forespørsel: ko.sessionRequests },

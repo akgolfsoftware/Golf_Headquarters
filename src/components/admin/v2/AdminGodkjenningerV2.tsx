@@ -33,6 +33,8 @@ import { acceptPlanAction, rejectPlanAction } from "@/lib/agents/actions";
 import { avvisProaktivtForslag, godkjennCaddieDraft } from "@/app/admin/agencyos/caddie/dashbord/actions";
 import { avslaaForespørsel, markerSomPlanlagt } from "@/app/admin/(legacy)/foresporsler/actions";
 import { batchApproveLowRisk } from "@/app/admin/(legacy)/approvals/actions";
+import { toast } from "sonner";
+import { delUkesdigestAction } from "@/app/admin/godkjenninger/del-digest-action";
 
 // ── Datakontrakt (mappes fra Prisma i ruten) ────────────────────
 export interface AdminGodkjenningV2Row {
@@ -75,9 +77,28 @@ export interface AdminGodkjenningerV2Data {
   /** Godkjent/avvist siste 7 dager på tvers av alle tre kilder. */
   godkjent7Dager?: number;
   avvist7Dager?: number;
+  /** D3: ukesrapporten — et LESEELEMENT i køen, ikke en beslutning. */
+  ukesrapport?: AdminUkesrapportKort | null;
 }
 
-type FilterKey = "alle" | "agent" | "caddie" | "forespørsel";
+/**
+ * D3 · ukesrapport-kortet.
+ * Fasit: designsystem/paper/fase2/agencyos/agencyos-godkjenninger.html
+ *
+ * Rapporten ber ikke om noen beslutning — den har derfor ingen Godkjenn-knapp
+ * og bærer info-kant i stedet for beslutningskortenes fg-kant. Agenten leser
+ * alt og skriver ingenting; å dele digesten er en manuell handling.
+ */
+export interface AdminUkesrapportKort {
+  ukenummer: number;
+  when: string;
+  /** Talte nøkkeltall — hver med sin nevner i klartekst. */
+  tall: { key: string; verdi: string; nevner: string }[];
+  /** «Hvorfor?» — agent, kjøretid, datagrunnlag, nevner. */
+  hvorfor: string[];
+}
+
+type FilterKey = "alle" | "agent" | "caddie" | "forespørsel" | "rapport";
 
 const pl = (n: number, en: string, flere: string) => `${n} ${n === 1 ? en : flere}`;
 
@@ -237,6 +258,111 @@ function SakHandlinger({ row, mobile }: { row: AdminGodkjenningV2Row; mobile: bo
 
 /** Fasitens .kort — meta (navn/tag/kilde/tid) → tittel → forklaring → «Dette
  *  endres» → «Hvorfor?» → handlinger. `forste` speiler .kort.forste. */
+/**
+ * D3 · ukesrapporten i køen — LESEELEMENT.
+ *
+ * Skiller seg bevisst fra SakKort: info-kant i stedet for fg-kant, kilden sier
+ * «leses, ikke godkjennes», og det finnes ingen Godkjenn-knapp. Deling av
+ * digesten er en manuell handling, aldri automatikk.
+ */
+function RapportKort({ rapport }: { rapport: AdminUkesrapportKort }) {
+  return (
+    <article
+      data-od-id="panel-ukesrapport"
+      style={{
+        background: T.panel,
+        border: `1px solid ${T.border}`,
+        borderRadius: T.rCard,
+        padding: "16px 18px",
+        boxShadow: `inset 3px 0 0 ${T.info}`,
+        marginBottom: 10,
+      }}
+    >
+      <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: 8 }}>
+        <span style={{ fontFamily: T.ui, fontSize: 13.5, fontWeight: 600, color: T.fg }}>
+          Ukesrapport · uke {rapport.ukenummer}
+        </span>
+        <span style={{ fontFamily: T.mono, fontSize: 10, letterSpacing: "0.04em", textTransform: "uppercase", color: T.info }}>
+          agent · leses, ikke godkjennes
+        </span>
+        <span style={{ marginLeft: "auto", fontFamily: T.mono, fontSize: 11, color: T.mut }}>{rapport.when}</span>
+      </div>
+
+      <h3 style={{ margin: "8px 0 0", fontFamily: T.disp, fontSize: 14.5, fontWeight: 600, color: T.fg }}>
+        Uke {rapport.ukenummer} oppsummert — hele stallen
+      </h3>
+      <p style={{ margin: "6px 0 0", fontFamily: T.ui, fontSize: 12.5, color: T.mut, lineHeight: 1.55 }}>
+        Rapportagenten leser plan, logg, runder og tester — den skriver aldri noe selv. Alt under er
+        telt, ikke vurdert.
+      </p>
+
+      <div style={{ display: "flex", gap: 16, flexWrap: "wrap", marginTop: 12 }}>
+        {rapport.tall.map((t) => (
+          <div key={t.key} style={{ minWidth: 120 }}>
+            <span style={{ display: "block", fontFamily: T.mono, fontSize: 9, letterSpacing: "0.07em", textTransform: "uppercase", color: T.mut }}>
+              {t.key}
+            </span>
+            <span style={{ fontFamily: T.mono, fontSize: 15, fontWeight: 600, color: T.fg }}>{t.verdi}</span>
+            <span style={{ display: "block", fontFamily: T.mono, fontSize: 9.5, color: T.mut }}>{t.nevner}</span>
+          </div>
+        ))}
+      </div>
+
+      {rapport.hvorfor.length > 0 && (
+        <details style={{ marginTop: 12 }}>
+          <summary style={{ cursor: "pointer", fontFamily: T.ui, fontSize: 12, color: T.mut }}>Hvorfor?</summary>
+          <ul style={{ margin: "8px 0 0", paddingLeft: 18, fontFamily: T.ui, fontSize: 12, color: T.mut, lineHeight: 1.6 }}>
+            {rapport.hvorfor.map((h, i) => (
+              <li key={i}>{h}</li>
+            ))}
+          </ul>
+        </details>
+      )}
+
+      <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginTop: 14 }}>
+        <DelDigestKnapp />
+      </div>
+    </article>
+  );
+}
+
+/**
+ * Deling er en manuell handling — knappen finnes nettopp for at det ALDRI skal
+ * skje automatisk. Ingen bekreftelsesdialog: handlingen er additiv og
+ * idempotent, så en ekstra trykk deler ikke noe på nytt.
+ */
+function DelDigestKnapp() {
+  const [sender, setSender] = useState(false);
+
+  return (
+    <button
+      type="button"
+      className="v2-press v2-focus"
+      disabled={sender}
+      data-od-id="cta-rapport-del"
+      onClick={async () => {
+        setSender(true);
+        try {
+          const res = await delUkesdigestAction();
+          if (res.ok) toast.success(res.melding);
+          else toast.error(res.melding);
+        } catch {
+          toast.error("Kunne ikke dele digesten. Prøv igjen.");
+        } finally {
+          setSender(false);
+        }
+      }}
+      style={{
+        ...knappStil("ghost"),
+        opacity: sender ? 0.6 : 1,
+        cursor: sender ? "wait" : "pointer",
+      }}
+    >
+      {sender ? "Deler …" : "Del digest med spillere og foresatte"}
+    </button>
+  );
+}
+
 function SakKort({ row, forste, mobile }: { row: AdminGodkjenningV2Row; forste: boolean; mobile: boolean }) {
   const kilde = row.kilde ?? "agent";
   const kildeLabel = kilde === "caddie" ? "caddie-utkast · melding" : kilde === "forespørsel" ? "forespørsel · fra spiller" : "agent · handlingssenter";
@@ -385,12 +511,19 @@ export function AdminGodkjenningerV2({ data }: { data: AdminGodkjenningerV2Data 
     [data.rows, filter],
   );
 
+  const rapport = data.ukesrapport ?? null;
+
   const filtre: { k: FilterKey; n: string; antall: number }[] = [
-    { k: "alle", n: "Alle", antall: data.rows.length },
+    { k: "alle", n: "Alle", antall: data.rows.length + (rapport ? 1 : 0) },
     { k: "agent", n: "Agent", antall: kilder.agent },
     { k: "caddie", n: "Caddie-utkast", antall: kilder.caddie },
     { k: "forespørsel", n: "Økt-forespørsler", antall: kilder.forespørsel },
+    ...(rapport ? [{ k: "rapport" as FilterKey, n: "Rapport", antall: 1 }] : []),
   ];
+
+  /* Rapporten vises under «Alle» og sitt eget filter — den er ikke en sak, så
+     den skal ikke dukke opp under kilde-filtrene for beslutninger. */
+  const visRapport = rapport != null && (filter === "alle" || filter === "rapport");
 
   return (
     <div
@@ -460,7 +593,8 @@ export function AdminGodkjenningerV2({ data }: { data: AdminGodkjenningerV2Data 
         </div>
 
         {/* ── Kø ── */}
-        {filtrert.length === 0 ? (
+        {visRapport && <RapportKort rapport={rapport!} />}
+        {filtrert.length === 0 && !visRapport ? (
           <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 8, textAlign: "center", padding: "34px 24px", background: T.panel2, border: `1px dashed ${T.border}`, borderRadius: T.rCard }}>
             <Icon name="check-circle" size={20} style={{ color: T.mut }} />
             <h3 style={{ margin: "6px 0 0", fontFamily: T.disp, fontSize: 14.5, fontWeight: 600, color: T.fg }}>

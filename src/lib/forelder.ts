@@ -4,6 +4,11 @@ import { prisma } from "@/lib/prisma";
 import type { PaymentStatus, PyramidArea } from "@/generated/prisma/client";
 import { startOfWeek, endOfWeek, ukenummer } from "@/lib/uke-helpers";
 import { computeStreak, aktivStreak } from "@/lib/streak";
+import {
+  etterlevelse,
+  etterlevelseTekst,
+  NEVNER_TEKST,
+} from "@/lib/domain/etterlevelse";
 
 export async function hentBarnForForelder(parentUserId: string) {
   const links = await prisma.parentRelation.findMany({
@@ -325,6 +330,17 @@ export type ForelderUkerapport = {
   ukeSg: number | null;
   /** Beste testresultat (navn + score) — null hvis ingen tester. */
   hoydepunkt: { testNavn: string; score: number } | null;
+
+  /* ── D3 · ukerapport-kortet ──
+     Samme tall og samme nevner som barnets egen digest. Foreldre ser aldri
+     andre spilleres tall — spørringene er alltid scopet til eget barn. */
+
+  /** «3/4» — eller null når ingen økter er forfalt ennå. */
+  etterlevelseTekst: string | null;
+  /** Nevneren i klartekst, vist ved siden av tallet. */
+  nevnerTekst: string;
+  /** Utestående beløp i øre for barnets bookinger. 0 = ingenting utestående. */
+  utestaendeOre: number;
 };
 
 const AKSE_NAVN: Record<PyramidArea, string> = {
@@ -408,6 +424,21 @@ export async function hentForelderUkerapport(
   const oppmotePct =
     oktPlanlagt > 0 ? Math.round((oktFullfort / oktPlanlagt) * 100) : null;
 
+  /* D3: samme etterlevelse som barnets egen digest og coachens ukesrapport.
+     Skiller seg fra oppmotePct over ved at fremtidige økter holdes utenfor
+     nevneren — ellers ser uka ut som et etterslep alt på mandag. */
+  const etterlevelseUke = etterlevelse(
+    ukeOkter.map((o) => ({
+      scheduledAt: o.startTime,
+      durationMin: Math.max(
+        0,
+        Math.round((o.endTime.getTime() - o.startTime.getTime()) / 60_000),
+      ),
+      status: o.status,
+    })),
+    now,
+  );
+
   // Timer trent denne uka (sum av fullførte øktvarigheter).
   const trentMs = fullforte.reduce(
     (s, o) => s + (o.endTime.getTime() - o.startTime.getTime()),
@@ -485,6 +516,14 @@ export async function hentForelderUkerapport(
         ) / 10
       : null;
 
+  /* D3: utestående for barnets bookinger. Stripe eier statusen — vi leser den,
+     regner ingenting om, og summerer bare det som fortsatt står åpent. */
+  const apneBetalinger = await prisma.payment.findMany({
+    where: { userId: childId, status: "PENDING" },
+    select: { amountOre: true },
+  });
+  const utestaendeOre = apneBetalinger.reduce((s, p) => s + p.amountOre, 0);
+
   return {
     childFirstName,
     childName,
@@ -493,6 +532,9 @@ export async function hentForelderUkerapport(
     ukenummer: ukenummer(now),
     oktFullfort,
     oktPlanlagt,
+    etterlevelseTekst: etterlevelseTekst(etterlevelseUke),
+    nevnerTekst: NEVNER_TEKST,
+    utestaendeOre,
     fokusOmrade,
     sgRetning,
     oppmotePct,
