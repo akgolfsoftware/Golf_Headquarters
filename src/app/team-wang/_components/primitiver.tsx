@@ -329,7 +329,13 @@ export function AkChip({
       >
         {label}
       </span>
-      <span style={{ fontFamily: "var(--font-brand)", fontWeight: 700, fontSize: 12 }}>
+      <span
+        style={{
+          fontFamily: "var(--font-brand)",
+          fontWeight: 700,
+          fontSize: 12,
+        }}
+      >
         {value}
       </span>
     </span>

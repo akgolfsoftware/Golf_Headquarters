@@ -59,8 +59,12 @@ export function Arshjul({
   const now = new Date(naaIso + "T12:00:00");
   const [selY, selM] = selMonth.split("-").map(Number);
   const live = !!(perioder && perioder.length > 0);
-  const farger: Record<string, string> = live ? periodeFarge(perioder!) : PERIOD_COL;
-  const comps = live ? (turneringer ?? []).map((t) => ({ iso: t.startIso })) : COMPS;
+  const farger: Record<string, string> = live
+    ? periodeFarge(perioder!)
+    : PERIOD_COL;
+  const comps = live
+    ? (turneringer ?? []).map((t) => ({ iso: t.startIso }))
+    : COMPS;
 
   const demoInfo = live ? null : monthInfo(selM, selY, naaIso);
   const isNow = live ? liveInfo!.isNow : demoInfo!.isNow;
@@ -73,7 +77,14 @@ export function Arshjul({
   return (
     <svg
       viewBox={`0 0 ${SIZE} ${SIZE}`}
-      style={{ width: "100%", maxWidth: 380, height: "auto", display: "block", margin: "0 auto", overflow: "visible" }}
+      style={{
+        width: "100%",
+        maxWidth: 380,
+        height: "auto",
+        display: "block",
+        margin: "0 auto",
+        overflow: "visible",
+      }}
       role="img"
       aria-label={`Årshjul – valgt måned ${infoName} ${infoYear}`}
     >
@@ -83,10 +94,15 @@ export function Arshjul({
         const gap = 1.8;
         const a0 = k * 30 + gap;
         const a1 = (k + 1) * 30 - gap;
-        const pk = live ? monthPkLive(mo[0], mo[1], perioder!) : monthPk(mo[0], mo[1]);
+        const pk = live
+          ? monthPkLive(mo[0], mo[1], perioder!)
+          : monthPk(mo[0], mo[1]);
         const col = farger[pk] ?? "var(--neutral-300)";
         const ro = isSel ? R_OUT + 9 : R_OUT;
-        const lp = pol((isSel ? R_OUT + 9 + R_IN : R_OUT + R_IN) / 2, (a0 + a1) / 2);
+        const lp = pol(
+          (isSel ? R_OUT + 9 + R_IN : R_OUT + R_IN) / 2,
+          (a0 + a1) / 2,
+        );
         const nm = MON_SHORT[mo[0]];
         const handler = () => onSelect(mo[0], mo[1]);
         return (
@@ -111,7 +127,10 @@ export function Arshjul({
                 fontFamily: "var(--font-brand)",
                 fontWeight: isSel ? 800 : 600,
                 fontSize: isSel ? "12.5px" : "11px",
-                fill: pk === "pause" && !isSel ? "var(--text-secondary)" : "var(--white)",
+                fill:
+                  pk === "pause" && !isSel
+                    ? "var(--text-secondary)"
+                    : "var(--white)",
                 pointerEvents: "none",
               }}
             >
@@ -123,35 +142,107 @@ export function Arshjul({
 
       {comps.map((c, i) => {
         const cd = new Date(c.iso + "T12:00:00");
-        const idx = MONTH_ORDER.findIndex((o) => o[0] === cd.getMonth() && o[1] === cd.getFullYear());
+        const idx = MONTH_ORDER.findIndex(
+          (o) => o[0] === cd.getMonth() && o[1] === cd.getFullYear(),
+        );
         if (idx < 0) return null;
         const ang = (idx + (cd.getDate() - 1) / 31) * 30;
         const p = pol(R_OUT + 18, ang);
         return (
-          <circle key={`c${i}`} cx={p[0]} cy={p[1]} r={4} fill="var(--cat-orange)" stroke="var(--surface-card)" strokeWidth={2} />
+          <circle
+            key={`c${i}`}
+            cx={p[0]}
+            cy={p[1]}
+            r={4}
+            fill="var(--cat-orange)"
+            stroke="var(--surface-card)"
+            strokeWidth={2}
+          />
         );
       })}
 
       {(() => {
-        const idx = MONTH_ORDER.findIndex((o) => o[0] === now.getMonth() && o[1] === now.getFullYear());
+        const idx = MONTH_ORDER.findIndex(
+          (o) => o[0] === now.getMonth() && o[1] === now.getFullYear(),
+        );
         if (idx < 0) return null;
         const nIdx = idx + (now.getDate() - 1) / 31;
         const np = pol(R_IN - 2, nIdx * 30);
-        return <line x1={CX} y1={CY} x2={np[0]} y2={np[1]} stroke="var(--wang-navy)" strokeWidth={2.5} strokeLinecap="round" opacity={0.35} />;
+        return (
+          <line
+            x1={CX}
+            y1={CY}
+            x2={np[0]}
+            y2={np[1]}
+            stroke="var(--wang-navy)"
+            strokeWidth={2.5}
+            strokeLinecap="round"
+            opacity={0.35}
+          />
+        );
       })()}
 
       <circle cx={CX} cy={CY} r={R_IN - 10} fill="var(--surface-card)" />
-      <circle cx={CX} cy={CY} r={R_IN - 10} fill="none" stroke={periodColor} strokeWidth={2} opacity={0.5} />
-      <text x={CX} y={CY - 34} textAnchor="middle" style={{ fontFamily: "var(--font-brand)", fontWeight: 800, fontSize: "9.5px", letterSpacing: "0.12em", textTransform: "uppercase", fill: periodColor }}>
+      <circle
+        cx={CX}
+        cy={CY}
+        r={R_IN - 10}
+        fill="none"
+        stroke={periodColor}
+        strokeWidth={2}
+        opacity={0.5}
+      />
+      <text
+        x={CX}
+        y={CY - 34}
+        textAnchor="middle"
+        style={{
+          fontFamily: "var(--font-brand)",
+          fontWeight: 800,
+          fontSize: "9.5px",
+          letterSpacing: "0.12em",
+          textTransform: "uppercase",
+          fill: periodColor,
+        }}
+      >
         {isNow ? "NÅ · " + periodLabel : periodLabel}
       </text>
-      <text x={CX} y={CY - 8} textAnchor="middle" style={{ fontFamily: "var(--font-brand)", fontWeight: 800, fontSize: "21px", fill: "var(--text-primary)" }}>
+      <text
+        x={CX}
+        y={CY - 8}
+        textAnchor="middle"
+        style={{
+          fontFamily: "var(--font-brand)",
+          fontWeight: 800,
+          fontSize: "21px",
+          fill: "var(--text-primary)",
+        }}
+      >
         {infoName}
       </text>
-      <text x={CX} y={CY + 11} textAnchor="middle" style={{ fontFamily: "var(--font-body)", fontSize: "11px", fill: "var(--text-secondary)" }}>
+      <text
+        x={CX}
+        y={CY + 11}
+        textAnchor="middle"
+        style={{
+          fontFamily: "var(--font-body)",
+          fontSize: "11px",
+          fill: "var(--text-secondary)",
+        }}
+      >
         {infoYear}
       </text>
-      <text x={CX} y={CY + 38} textAnchor="middle" style={{ fontFamily: "var(--font-brand)", fontWeight: 800, fontSize: "17px", fill: "var(--text-primary)" }}>
+      <text
+        x={CX}
+        y={CY + 38}
+        textAnchor="middle"
+        style={{
+          fontFamily: "var(--font-brand)",
+          fontWeight: 800,
+          fontSize: "17px",
+          fill: "var(--text-primary)",
+        }}
+      >
         {sessionCount} økter
       </text>
     </svg>

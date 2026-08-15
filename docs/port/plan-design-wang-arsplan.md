@@ -15,7 +15,7 @@ Claude Paper.
 | # | Beslutning | Anbefaling |
 |---|---|---|
 | B1 | Egen git-repo for WANG? | **Nei — behold i monorepoet.** Se §1. |
-| B2 | Hvilket Claude Design-prosjekt er fasit? | **AVGJORT 2026-08-10: nytt prosjekt** — `3935e216` «WANG Golf — Årsplan (redesign 2026)». Anders overstyrte anbefalingen om å utvide `be77fcdb`. Se §3. |
+| B2 | Hvilket Claude Design-prosjekt er fasit? | **OPPDATERT 2026-08-15: `6061a53c` «WANG årsplan redesign»** for de ti skjermene den dekker (speil: `designsystem/wang/fasit/`). `3935e216` gjelder fortsatt der `6061a53c` ikke rekker (bl.a. `a1-skall`, `a2-hjem`). Ved konflikt vinner `6061a53c`. Se §3. |
 | B3 | Skal AgencyOS-skjermene WANG-brandes? | **Nei — AgencyOS forblir Claude Paper.** WANG-merkevaren gjelder kun elev-/foreldreflaten. Se §2. |
 
 **Omfanget er avklart (B6, 2026-08-10):** flaten dekker **kun golfgruppa**, ikke skolens
@@ -111,8 +111,21 @@ WANG-drakt, eller (b) en redirect til AgencyOS. Dette er beslutning **B4** — s
 
 ## 3. Designkilde og fasit
 
-**Fasit (Anders 2026-08-10): Claude Design-prosjektet
-`3935e216-ee5b-4d83-8fbd-30e0ec5e7d98` — «WANG Golf — Årsplan (redesign 2026)».**
+**Fasit (Anders 2026-08-15): Claude Design-prosjektet
+`6061a53c-659e-42a9-ae34-031a69b61843` — «WANG årsplan redesign».**
+Speil i repoet: `designsystem/wang/fasit/` (se `SYNC-STATUS.md` for ferskhet og skjermliste).
+
+Det avløser `3935e216` for de ti skjermene den nye filen dekker — årsplanen (elev og trener),
+kalender, samlinger, hele Skole-fanen, foreldresiden, økt-detaljen og den nye IUP-samtalen.
+`3935e216` er ikke avviklet: den dekker fortsatt skjermer det nye prosjektet ikke tar for seg,
+og speilet under `designsystem/wang/skjermer/` blir stående. Ved konflikt om en skjerm begge
+dekker vinner `6061a53c`.
+
+**Den nye fasiten forutsetter én ny tabell:** `GroupPeriodGoal` — ett fokusområde per elev per
+periode. Uten den har elevsporet «Min utviklingsplan» og hele IUP-samtalen ingen kilde.
+
+Historikk (2026-08-10): `3935e216` ble valgt som fasit da Anders overstyrte anbefalingen i
+§3.1 om å utvide `be77fcdb`.
 
 Anders overstyrte anbefalingen i §3.1 om å utvide `be77fcdb`: designet skal **forbedres**, ikke
 bare porteres, og redesignet får derfor et eget prosjekt. Nye skjermer designes der.

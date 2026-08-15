@@ -41,7 +41,13 @@ function InfoPill({ children }: { children: React.ReactNode }) {
   );
 }
 
-export function HendelseDetalj({ data, onBack }: { data: HendelseDetaljData; onBack: () => void }) {
+export function HendelseDetalj({
+  data,
+  onBack,
+}: {
+  data: HendelseDetaljData;
+  onBack: () => void;
+}) {
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 18 }}>
       <button
@@ -68,12 +74,32 @@ export function HendelseDetalj({ data, onBack }: { data: HendelseDetaljData; onB
         <ArrowLeft size={16} strokeWidth={2.2} aria-hidden /> Tilbake
       </button>
 
-      <div className="wang-card" style={{ padding: "clamp(20px,4vw,28px)", display: "flex", flexDirection: "column", gap: 16 }}>
+      <div
+        className="wang-card"
+        style={{
+          padding: "clamp(20px,4vw,28px)",
+          display: "flex",
+          flexDirection: "column",
+          gap: 16,
+        }}
+      >
         <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
           <IconChip icon={data.ikon} color={data.farge} size={52} />
           <div style={{ minWidth: 0 }}>
-            <div className="t-label" style={{ color: "var(--text-secondary)" }}>{data.kategori}</div>
-            <div style={{ fontFamily: "var(--font-brand)", fontWeight: 800, fontSize: 19, color: "var(--text-primary)", marginTop: 2 }}>{data.tittel}</div>
+            <div className="t-label" style={{ color: "var(--text-secondary)" }}>
+              {data.kategori}
+            </div>
+            <div
+              style={{
+                fontFamily: "var(--font-brand)",
+                fontWeight: 800,
+                fontSize: 19,
+                color: "var(--text-primary)",
+                marginTop: 2,
+              }}
+            >
+              {data.tittel}
+            </div>
           </div>
         </div>
 
@@ -84,7 +110,17 @@ export function HendelseDetalj({ data, onBack }: { data: HendelseDetaljData; onB
         </div>
 
         {data.beskrivelse ? (
-          <p style={{ margin: 0, fontFamily: "var(--font-body)", fontSize: 14.5, lineHeight: 1.6, color: "var(--text-secondary)" }}>{data.beskrivelse}</p>
+          <p
+            style={{
+              margin: 0,
+              fontFamily: "var(--font-body)",
+              fontSize: 14.5,
+              lineHeight: 1.6,
+              color: "var(--text-secondary)",
+            }}
+          >
+            {data.beskrivelse}
+          </p>
         ) : null}
       </div>
     </div>
