@@ -1,8 +1,12 @@
 // Server-only: henter ekte gruppedata for WANG Toppidrett Fredrikstad fra basen
-// (AgencyOS-gruppa Anders la inn 19.7 via seed-wang-aarsplan-2026). Brukes av de
-// auth-gatede /team-wang-sidene til å vise ekte elevliste, perioder og
-// samlinger/hendelser oppå den rike skjermtekst-demoen (der basen mangler felt
-// — drill-nivå, KM-matrise, timeplan — beholdes demo).
+// (AgencyOS-gruppa Anders la inn 19.7 via seed-wang-aarsplan-2026). Brukes av
+// /team-wang-sidene til å vise ekte elevliste, perioder og samlinger/hendelser
+// oppå den rike skjermtekst-demoen (der basen mangler felt — drill-nivå,
+// KM-matrise, timeplan — beholdes demo).
+//
+// MERK (2026-08-15): /team-wang-sidene er MIDLERTIDIG uten auth-sperre
+// («pr nå», Anders) — elevnavn herfra er dermed åpent tilgjengelig for alle
+// med lenken, ikke kun innloggede. Se proxy.ts.
 //
 // Ingen kall ved build: /team-wang-sidene er dynamiske (auth via cookies), og
 // alt her er pakket i try/catch → null slik at en manglende gruppe/DB gir ren
@@ -149,7 +153,8 @@ function skoleAr(
 /**
  * Henter ekte WANG-gruppedata. Returnerer null hvis gruppa ikke finnes eller DB
  * feiler — kalleren faller da tilbake til ren demo. Kun elevnavn (PII om
- * mindreårige) — kall dette KUN fra auth-gatede sider.
+ * mindreårige) — normalt kun for auth-gatede sider, men /team-wang er
+ * midlertidig uten sperre (2026-08-15, «pr nå») — se proxy.ts.
  */
 export async function hentWangGruppe(
   /** Innlogget elev. Uten den hentes ingen fokusområder — de er personlige. */

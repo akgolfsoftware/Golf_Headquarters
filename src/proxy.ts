@@ -142,16 +142,16 @@ export async function proxy(request: NextRequest) {
   const nonce = Buffer.from(crypto.randomUUID()).toString("base64");
   const response = await updateSession(request, nonce);
 
-  // /team-wang/logg-inn er selve innloggingssiden — unntas fra sperren for å
-  // unngå redirect-loop. Resten av /team-wang (elevdata om mindreårige) krever
-  // innlogging siden 2026-08-02 (tidligere bevisst åpnet for demo/deling).
-  const erTeamWangLogin = path === "/team-wang/logg-inn" || path.startsWith("/team-wang/logg-inn/");
+  // /team-wang er MIDLERTIDIG åpnet uten innlogging igjen (Anders 2026-08-15,
+  // «pr nå») — reverserer 2026-08-02-sperren. Elevdata om mindreårige er
+  // dermed åpent tilgjengelig for alle med lenken (også /team-wang/coach og
+  // IUP-samtaler). Se hentWangGruppe()-kommentaren i _data/hent-wang-gruppe.ts.
+  // Sperr på nytt ved å legge `path.startsWith("/team-wang")` tilbake her.
   const erBeskyttet =
     path.startsWith("/portal") ||
     path.startsWith("/admin") ||
     path.startsWith("/intern") ||
-    path.startsWith("/dev-banekart") ||
-    (path.startsWith("/team-wang") && !erTeamWangLogin);
+    path.startsWith("/dev-banekart");
 
   if (erBeskyttet) {
     // Sjekk auth-status via samme cookies som updateSession nettopp refresjet.
