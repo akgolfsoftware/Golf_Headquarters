@@ -13,32 +13,15 @@
 
 import { revalidatePath } from "next/cache";
 import { requireCoachActionUser } from "@/lib/auth/action-guards";
+import {
+  coachBookingScope,
+  kanBekrefteUtenStripeLeak,
+} from "@/lib/auth/booking-scope";
 import { prisma } from "@/lib/prisma";
-import type { Prisma, User } from "@/generated/prisma/client";
 
 function revalidateBookingFlater() {
   revalidatePath("/admin/bookinger");
   revalidatePath("/admin/kalender");
-}
-
-/** Prisma-filter: ADMIN = alt, COACH = bare egne. */
-function coachBookingScope(user: User): Prisma.BookingWhereInput {
-  if (user.role === "ADMIN") return {};
-  return {
-    OR: [{ coachId: user.id }, { serviceType: { coachUserId: user.id } }],
-  };
-}
-
-/** Kan manuell bekreftelse tillates uten å gi gratis betalte timer? */
-function kanBekrefteUtenStripeLeak(b: {
-  priceOre: number;
-  stripePaymentIntentId: string | null;
-  subscriptionId: string | null;
-}): boolean {
-  if (b.priceOre <= 0) return true;
-  if (b.stripePaymentIntentId) return true;
-  if (b.subscriptionId) return true;
-  return false;
 }
 
 export async function bekreftBooking(id: string) {

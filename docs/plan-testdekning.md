@@ -53,7 +53,39 @@ Eksempel: `session-move-math.ts` framstår som udekket, men dekkes av
 | 1 | Ikke startet — venter på secrets fra Anders |
 | 2 | **Ferdig** 2026-08-15 — globben er `src/**/*.test.ts` |
 | 3 | **Ferdig** 2026-08-15 — 70 tester over 5 moduler, to ekte feil funnet (se under) |
-| 4–8 | Ikke startet |
+| 4 | **Ferdig** 2026-08-15 — speilet avviklet, 13 avvis-tester på fire guarder (se under) |
+| 5–8 | Ikke startet |
+
+### Funn fra steg 4 (2026-08-15)
+
+**Speilet i `coach-scope-idor.test.ts` hadde allerede drevet — det testet kode som ikke finnes.**
+Planen antok at speilet var en *risiko* for drift. Målingen viste at driften alt hadde skjedd:
+
+- Speilet `coachKanRoreBooking` leste et felt `serviceCoachId`. Det finnes ingen steder i
+  `schema.prisma` eller i `src/` — kun i testfilen selv. Den ekte koden filtrerer på relasjonen
+  `serviceType.coachUserId`.
+- Speilet ga tilgang via `booking.userId === user.id` (spilleren på bookingen). Den ekte
+  `coachBookingScope` har aldri hatt den grenen — staff-tilgang gis kun via `coachId` eller egen
+  tjenestetype.
+- Den ekte funksjonen returnerer et **Prisma-filter**, ikke en boolean. Speilet testet altså en
+  funksjonssignatur som ikke eksisterer.
+
+De to funksjonene er flyttet ut i `src/lib/auth/booking-scope.ts` (ren modul, ingen ny logikk) og
+importeres nå av både actions-filen og testen. Utflyttingen var nødvendig, ikke kosmetisk:
+actions-filen er `"use server"` og kan kun eksportere async-funksjoner, så de synkrone helperne
+kunne ikke testes der de sto — det var nettopp derfor speilet oppsto.
+
+**Falskt grønne tester i første utkast av guard-testene.** Per-test `t.mock.module()` ga 3 av 9
+grønne tester som ikke testet noe: ESM cacher moduler per spesifikator, så den FØRSTE
+mock-registreringen vant for alle senere tester, og «utlogget»-tilfellene kjørte mot en innlogget
+bruker. Løst ved å registrere mockene én gang på modulnivå og la hvert testtilfelle sette delt
+tilstand. Mønsteret er dokumentert i toppen av `guards-avvis.test.ts` — samme felle rammer enhver
+ny testfil som mocker samme modul i flere tester.
+
+**Mutasjonssjekk (nytt her).** Testene er verifisert ved å ødelegge produksjonskoden med vilje og
+se dem bli røde: COACH-scope → tomt filter (ser alt) ga 1 rød; `assertCanViewPlayerData` → slipper
+alle gjennom ga 3 røde; Mission Control → slipper inn COACH ga 1 rød. Kildene er gjenopprettet.
+Uten dette steget vet man ikke om en grønn test kan bli rød — som var hele problemet steg 4 løser.
 
 ### Funn fra steg 3 (2026-08-15)
 
