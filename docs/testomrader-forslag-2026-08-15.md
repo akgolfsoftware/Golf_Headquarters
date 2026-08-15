@@ -6,10 +6,64 @@ test → drill kan slå opp i delt taksonomi (D4).
 
 ---
 
-## Les dette først: «17 områder» peker på to ulike lister
+## AVKLART 15.08: innspill bruker NEDRE grense
 
-Anders bekreftet 17 den 15.08. Men repoet har allerede dokumentert at tallet er
-tvetydig — se `docs/ordre-ak-formel-v3-2026-08-03.md` §6.4, §6.5 og §6.7:
+Anders 15.08: «innspill 50-100 er nederste grense». Det lukker to av de tre
+spørsmålene under, og bekrefter **v3-ordrens liste** (lesning a).
+
+De fem innspillsbøttene er dermed entydige:
+
+| Kode | Bånd |
+|---|---|
+| `INNSPILL_0_50` | 0–50 m |
+| `INNSPILL_50` | 50–100 m |
+| `INNSPILL_100` | 100–150 m |
+| `INNSPILL_150` | 150–200 m |
+| `INNSPILL_200` | 200 m + |
+
+**`INNSPILL_50` og `INNSPILL_0_50` er IKKE samme bøtte** — §6.4s mistanke om en
+dublett er dermed avkreftet. Regnestykket går opp: 1 tee + 5 innspill + 4 nærspill
++ 7 putt = **17**.
+
+**Konsekvens: `src/lib/taxonomy.ts` er feil.** Den bruker øvre grense
+(`INN150 = "Innspill 100-150m"`) og har fire innspillsbøtter, ikke fem. Lista må
+bygges om før backfillen kjøres — ellers peker halvparten av innspillstestene på
+nabobåndet.
+
+## AVKLART 15.08: ALT er i meter
+
+Anders 15.08: «alt her er i m». Putt-tallene i v3-ordren skal altså leses som
+**meter**, ikke fot — ordrens §4.5 («enhet for putt-tallene: FOT») er dermed
+overstyrt.
+
+De sju puttbøttene:
+
+| Kode | Bånd |
+|---|---|
+| `PUTT_0_3` | 0–3 m |
+| `PUTT_3_5` | 3–5 m |
+| `PUTT_5_10` | 5–10 m |
+| `PUTT_10_15` | 10–15 m |
+| `PUTT_15_25` | 15–25 m |
+| `PUTT_25_40` | 25–40 m |
+| `PUTT_40` | 40 m + |
+
+**Ingen datamigrering nødvendig.** All eksisterende puttdata ligger allerede i
+meter, så §6.5s advarsel om tapt presisjon ved m → ft faller bort. Det som
+gjenstår er en ren utvidelse fra 6 til 7 bøtter, der kodens `3-6` og `6-10`
+erstattes av `3-5`, `5-10` og `10-15`.
+
+**Merk at én grense flyttes:** kodens `PUTT10_20` deles i `PUTT_10_15` og
+`PUTT_15_25`. Historiske rader i `10-20 m` kan ikke splittes eksakt — men det
+gjelder aggregerte visninger, ikke testdefinisjonene denne lista handler om.
+
+**Alle tre spørsmålene er dermed lukket.**
+
+---
+
+## Bakgrunn: hvorfor tallet var tvetydig
+
+Se `docs/ordre-ak-formel-v3-2026-08-03.md` §6.4, §6.5 og §6.7:
 
 | | v3-ordren (03.08) | `src/lib/taxonomy.ts` i dag |
 |---|---|---|
@@ -61,12 +115,13 @@ Disse treffer samme bånd i begge lesninger.
 | TN Nærspill Gate | TEK | `CHIP` | 3 launch-høyder × 3 carry-soner |
 | 8-ball Blocked | SLAG | `CHIP` | 24 nærspill, chip 10/30 m + wedge |
 | 8-ball Variation | SLAG | `CHIP` | chip · wedge · lobb · bunker, rotert |
-| Inspill 160m | SLAG | Innspill 150–200 | 5 slag fra 160 m |
-| Inspill 120m | SLAG | Innspill 100–150 | 5 slag fra 120 m |
+| Inspill 160m | SLAG | `INNSPILL_150` | 160 m ligger i 150–200 |
+| Inspill 120m | SLAG | `INNSPILL_100` | 120 m ligger i 100–150 |
+| Inspill Variation | SLAG | `INNSPILL_100` | 100–130 m ligger helt innenfor 100–150 |
 
-**Merk de to siste:** båndet er entydig (160 m ligger i 150–200, 120 m i 100–150),
-men *kodenavnet* avhenger av konvensjonen — `INNSPILL_200`/`INNSPILL_150` i v3-lesning,
-`INN200`/`INN150` i kode-lesning. Innholdet er det samme.
+De tre siste er entydige etter avklaringen 15.08. **Merk at «Inspill 120m» blir
+`INNSPILL_100`, ikke `INNSPILL_150`** — det er nettopp forskjellen konvensjonen
+avgjør, og den ville gått feil vei uten Anders' svar.
 
 **8-ball-testene** dekker fire nærspillstyper i én test. Jeg foreslår `CHIP` som
 primærområde siden chip er tyngst representert — men de kunne like gjerne vært
@@ -80,9 +135,8 @@ Disse måler over flere områder. Ett område per test er kanskje feil modell fo
 
 | Test | Pyramide | Spennet | Spørsmål |
 |---|---|---|---|
-| Inspill Basis | SLAG | 100–200 m | Splittes, eller merkes med det bredeste båndet? |
-| Inspill Variation | SLAG | 100–130 m | Krysser 100-grensen |
-| 18-hull Inspill | TURN | fra 49 m og opp | Dekker trolig alle innspillsbånd |
+| Inspill Basis | SLAG | 100–200 m | Spenner `INNSPILL_100` + `INNSPILL_150`. Splittes, eller merkes med det bredeste? |
+| 18-hull Inspill | TURN | fra 49 m og opp | Dekker trolig alle fem innspillsbånd |
 | PEI Test Bane | TURN | 18 hull, reelle forhold | Samme |
 | PGA Tour 27 Shots | TURN | «hele registeret» | Dekker alt — eget område, eller ingen? |
 | Golfslag Bane | SLAG | innspill + wedge + bunker | Tre grupper i én test |
@@ -90,46 +144,59 @@ Disse måler over flere områder. Ett område per test er kanskje feil modell fo
 
 ---
 
-## D. Putt — blokkert på enhet og bøtte-grenser (8 tester)
+## D. Putt — nå mappbart (8 tester)
 
-Alle putt-testene er oppgitt i **meter**. v3 vil ha **fot**. Til enhetsspørsmålet er
-avklart, kan ingen av disse mappes trygt.
+Enhetsspørsmålet er lukket: alt er i meter.
 
-| Test | Pyramide | Oppgitt avstand | I fot (÷0,305) |
-|---|---|---|---|
-| Putt 2 m | SLAG | 2 m | ~6,6 ft |
-| TN Putt Gate | TEK | 40 cm gate, start-retning | (retning, ikke avstand) |
-| TN VISA Express | TEK | tre avstander | ukjente |
-| Putt 1-3m | SPILL | 1 / 1,5 / 2 / 2,5 / 3 m | 3,3–9,8 ft |
-| Putt Speed 1x5 | SPILL | 3 / 5 / 7 m | 9,8 / 16,4 / 23 ft |
-| Putt Speed 3x3 | SPILL | 3 / 5 / 7 m | samme |
-| 9 hull lengde | SPILL | lengdekontroll | ikke putt-spesifikk? |
-| TN Slagtest | TURN | 18 slag jern 7 | ikke putt — se under |
+| Test | Pyramide | Avstand | Forslag | Sikkerhet |
+|---|---|---|---|---|
+| Putt 2 m | SLAG | 2 m | `PUTT_0_3` | Entydig |
+| Putt 1-3m | SPILL | 1 / 1,5 / 2 / 2,5 / 3 m | `PUTT_0_3` | Entydig — alle fem innenfor 0–3 |
+| TN Putt Gate | TEK | 40 cm gate, start-retning | `PUTT_0_3` | Trolig — måler retning, ikke avstand. Bekreft |
+| Putt Speed 1x5 | SPILL | 3 / 5 / 7 m | `PUTT_5_10` | Spenner 3–5 og 5–10. Tyngdepunkt i 5–10 |
+| Putt Speed 3x3 | SPILL | 3 / 5 / 7 m | `PUTT_5_10` | Samme |
+| TN VISA Express | TEK | «tre avstander» | — | Avstandene står ikke i beskrivelsen |
+| 9 hull lengde | SPILL | lengdekontroll | — | Er dette putt i det hele tatt? |
+| TN Slagtest | TURN | 18 slag jern 7 | `INNSPILL_100` | Ikke putt — jern 7 ≈ 130–150 m |
 
-**«Putt 1-3m» krysser en bøttegrense i begge lesninger:** 1 m (3,3 ft) og 3 m (9,8 ft)
-faller i ulike bånd uansett om vi bruker v3s `3-5`/`5-10` eller kodens `0-3`/`3-6`.
-
-**«TN Slagtest»** (18 slag med jern 7) hører til innspill, ikke putt — jeg har listet
-den her kun fordi den kom i samme bolk. Foreslått: Innspill 100–150 (jern 7 ≈ 150 m
-for en god junior). Bekreft.
+**«Putt Speed»-testene** måler 3, 5 og 7 m og krysser dermed grensen mellom
+`PUTT_3_5` og `PUTT_5_10`. Jeg foreslår `PUTT_5_10` fordi to av tre avstander
+ligger der — men de er egentlig blandede, som 8-ball-testene.
 
 ---
 
 ## Hva jeg trenger fra deg
 
-**1. Hvilken 17-liste gjelder?**
-   - (a) v3-ordrens liste (nedre-grense-konvensjon, putt i fot, ingen SPILL), eller
-   - (b) kodens liste utvidet med ett område — og i så fall hvilket?
+~~**1. Hvilken 17-liste gjelder?**~~ **AVKLART 15.08:** v3-ordrens liste, nedre grense.
 
-**2. Er `INNSPILL_50` og `INNSPILL_0_50` samme bøtte?** Er de det, er v3 egentlig 16.
+~~**2. Er `INNSPILL_50` og `INNSPILL_0_50` samme bøtte?**~~ **AVKLART:** nei —
+0–50 og 50–100.
 
-**3. Skal putt-tallene være fot eller meter?** Fot krever datamigrering av all
-   historisk puttdata, og §6.5 sier den ikke kan gjøres uten tap.
+~~**3. Fot eller meter?**~~ **AVKLART 15.08:** meter. Ingen datamigrering.
 
-**4. De 7 testene i del C** — ett område per test, eller flere?
+**Gjenstår — din vurdering, ikke en blokkering:**
 
-Når 1–3 er avklart kan del B legges inn umiddelbart (13 tester), og del C+D
-gjennomgås med deg.
+**4. De 6 testene i del C** spenner flere bånd (Inspill Basis, 18-hull Inspill,
+   PEI Test Bane, PGA Tour 27 Shots, Golfslag Bane, Teknikktest Spredning).
+   Ett område per test, eller trenger de en «blandet»-merking?
+
+**5. Tre løse tråder i del D:** TN VISA Express (avstandene står ikke i basen),
+   «9 hull lengde» (er det putt?), og om TN Putt Gate skal ha `PUTT_0_3` når den
+   egentlig måler startretning.
+
+**6. 8-ball-testene og Putt Speed-testene** er blandede på samme måte — samme
+   spørsmål som punkt 4.
+
+## Status: 19 av 36 er klare
+
+- **8 FYS** — ingen områdekode (avklart)
+- **13 entydige** i del B
+- **6 mappbare** i del D (Putt 2 m, Putt 1-3m, TN Putt Gate, Putt Speed ×2, TN Slagtest)
+- **9 venter** på din vurdering (6 i del C + 3 løse tråder i del D)
+
+**Neste tekniske steg:** bygg om `src/lib/taxonomy.ts` til v3-lista — 17 områder,
+innspill med nedre grense, 7 puttbøtter i meter, `SPILL` ut av TEK/SLAG. Deretter
+`ALTER TABLE test_definitions ADD COLUMN omraade TEXT` og backfill av de 19.
 
 ---
 
