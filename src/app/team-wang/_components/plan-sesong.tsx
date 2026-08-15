@@ -13,7 +13,12 @@
  */
 
 import { Sesongband, type SesongbandPeriode } from "./sesongband";
-import { AkseChip, MaalStatusChip, formaterEgentid } from "./ak-primitiver";
+import {
+  AkseChip,
+  MaalStatusChip,
+  VurderingPrikker,
+  formaterEgentid,
+} from "./ak-primitiver";
 import { Ikon } from "./primitiver";
 import {
   COMPS,
@@ -280,6 +285,30 @@ function FokusRad({ f, siste }: { f: Fokusomraade; siste: boolean }) {
         >
           {formaterEgentid(f.egentidMinUke)} egentrening
         </span>
+        {/* Er perioden evaluert i IUP-samtalen, vises begge vurderingene her —
+            eleven skal se sin egen og trenerens ved siden av hverandre. */}
+        {f.egenvurdering !== null || f.trenervurdering !== null ? (
+          <span
+            style={{
+              display: "flex",
+              flexWrap: "wrap",
+              gap: "4px 14px",
+              marginTop: 6,
+              alignItems: "center",
+            }}
+          >
+            <VurderingPrikker
+              verdi={f.egenvurdering}
+              farge="var(--wang-teal)"
+              label="Egenvurdering"
+            />
+            <VurderingPrikker
+              verdi={f.trenervurdering}
+              farge="var(--wang-navy)"
+              label="Trenervurdering"
+            />
+          </span>
+        ) : null}
       </span>
       <MaalStatusChip status={f.status} />
     </div>

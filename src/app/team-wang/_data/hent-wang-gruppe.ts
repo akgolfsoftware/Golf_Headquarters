@@ -103,7 +103,9 @@ export interface WangLiveData {
 // ---- Oslo-korrekte formatterere (server kjører UTC på Vercel) -------------
 function osloDato(d: Date): string {
   // en-CA gir yyyy-mm-dd
-  return new Intl.DateTimeFormat("en-CA", { timeZone: "Europe/Oslo" }).format(d);
+  return new Intl.DateTimeFormat("en-CA", { timeZone: "Europe/Oslo" }).format(
+    d,
+  );
 }
 function osloTid(d: Date): string {
   return d.toLocaleTimeString("en-GB", {
@@ -123,14 +125,22 @@ const NB_UKEDAG: Record<string, number> = {
   sunday: 6,
 };
 function osloUkedag(d: Date): number {
-  const engelsk = d.toLocaleDateString("en-US", { weekday: "long", timeZone: "Europe/Oslo" }).toLowerCase();
+  const engelsk = d
+    .toLocaleDateString("en-US", { weekday: "long", timeZone: "Europe/Oslo" })
+    .toLowerCase();
   return NB_UKEDAG[engelsk] ?? 0;
 }
 // "2026/2027" fra periodenes datospenn — matcher SchoolScheduleEntry.schoolYear.
-function skoleAr(perioder: { startIso: string; endIso: string }[]): string | null {
+function skoleAr(
+  perioder: { startIso: string; endIso: string }[],
+): string | null {
   if (perioder.length === 0) return null;
-  const startAar = Math.min(...perioder.map((p) => Number(p.startIso.slice(0, 4))));
-  const sluttAar = Math.max(...perioder.map((p) => Number(p.endIso.slice(0, 4))));
+  const startAar = Math.min(
+    ...perioder.map((p) => Number(p.startIso.slice(0, 4))),
+  );
+  const sluttAar = Math.max(
+    ...perioder.map((p) => Number(p.endIso.slice(0, 4))),
+  );
   return `${startAar}/${sluttAar}`;
 }
 

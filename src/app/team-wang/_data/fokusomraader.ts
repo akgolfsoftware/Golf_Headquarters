@@ -38,7 +38,8 @@ export const FOKUS_DEMO: Record<PeriodeKey, PeriodeFokus> = {
   grunn: {
     maaling:
       "Egenvurdering 1–5 ved periodeslutt 30. november. Måles i vintertesten 15. januar.",
-    kommentar: "IUP-checkpoint desember: Anders kommenterer hvert fokusområde skriftlig.",
+    kommentar:
+      "IUP-checkpoint desember: Anders kommenterer hvert fokusområde skriftlig.",
     omraader: [
       {
         id: "demo-grunn-1",
@@ -73,8 +74,10 @@ export const FOKUS_DEMO: Record<PeriodeKey, PeriodeFokus> = {
     ],
   },
   spes: {
-    maaling: "Egenvurdering 1–5 ved periodeslutt 31. mars. Måles i sesongtesten 28. mai.",
-    kommentar: "IUP-checkpoint februar: status på hvert fokusområde før turneringsperioden.",
+    maaling:
+      "Egenvurdering 1–5 ved periodeslutt 31. mars. Måles i sesongtesten 28. mai.",
+    kommentar:
+      "IUP-checkpoint februar: status på hvert fokusområde før turneringsperioden.",
     omraader: [
       {
         id: "demo-spes-1",
@@ -109,7 +112,8 @@ export const FOKUS_DEMO: Record<PeriodeKey, PeriodeFokus> = {
     ],
   },
   turn: {
-    maaling: "Egenvurdering 1–5 ved sesongslutt. Måles på turneringsstatistikk per runde.",
+    maaling:
+      "Egenvurdering 1–5 ved sesongslutt. Måles på turneringsstatistikk per runde.",
     kommentar: "IUP-checkpoint juni: oppsummering og mål for neste sesong.",
     omraader: [
       {
@@ -196,7 +200,11 @@ export function fokusPerPeriode(
   // faktisk måles på, og de er allerede avtalt i IUP-samtalen.
   for (const key of ["grunn", "spes", "turn"] as PeriodeKey[]) {
     const metoder = [
-      ...new Set(kart[key].omraader.map((o) => o.maalemetode).filter((m): m is string => !!m)),
+      ...new Set(
+        kart[key].omraader
+          .map((o) => o.maalemetode)
+          .filter((m): m is string => !!m),
+      ),
     ];
     kart[key].maaling =
       metoder.length > 0
