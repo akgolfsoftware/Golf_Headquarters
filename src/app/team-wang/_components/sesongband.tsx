@@ -1,4 +1,5 @@
 "use client";
+import { T } from "@/lib/v2/tokens";
 
 import type { CSSProperties } from "react";
 
@@ -69,7 +70,7 @@ const maanedStil: CSSProperties = {
   fontWeight: 700,
   letterSpacing: "0.05em",
   textTransform: "uppercase",
-  color: "rgba(255,255,255,0.55)",
+  color: T.farge.hvitA55,
 };
 
 /** Hvit pille som markerer nåtid. Klemmes inn fra kantene så den ikke stikker ut. */

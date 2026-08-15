@@ -1,4 +1,5 @@
 "use client";
+import { T } from "@/lib/v2/tokens";
 
 /**
  * IUP-samtalen — tre steg i én skjerm.
@@ -244,7 +245,7 @@ export function IupSamtale({
                   height: 28,
                   padding: "0 13px",
                   borderRadius: 999,
-                  background: "rgba(255,255,255,0.14)",
+                  background: T.farge.hvitA14,
                   fontFamily: "var(--font-brand)",
                   fontWeight: 700,
                   fontSize: 12,
