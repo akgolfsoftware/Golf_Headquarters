@@ -166,14 +166,17 @@
   outline-offset: 2px;
 }
 
-/* ---- Responsiv synlighet (header-logo, kalender-etiketter) ---- */
+/* ---- Responsiv synlighet (header-logo, kalender-etiketter) ----
+   `!important` i begge retninger med vilje: uten det slår en inline
+   `display` på elementet ut skjulingen, og mobilvisningen lekker inn på
+   desktop. Sett layouten på et barn, ikke på selve bryteren. */
 .wang-tp .wang-vis-mobil {
-  display: none;
+  display: none !important;
 }
 
 @media (max-width: 640px) {
   .wang-tp .wang-vis-mobil {
-    display: block;
+    display: block !important;
   }
 
   .wang-tp .wang-vis-desktop {
@@ -182,5 +185,11 @@
 
   .wang-tp .wang-skjul-mobil {
     display: none !important;
+  }
+
+  /* Årsplanens to spor står side om side per periode på desktop. På mobil
+     stables de — aldri horisontal scroll, aldri en kolonne som klippes. */
+  .wang-tp .wang-spor {
+    grid-template-columns: minmax(0, 1fr) !important;
   }
 }
