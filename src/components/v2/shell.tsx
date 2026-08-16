@@ -241,6 +241,15 @@ export interface V2ShellProps {
    * `.v2-fade-in`-wrapperen uten høyde som brøt den her.
    */
   hoyde?: "dokument" | "skjerm";
+  /**
+   * PP-B3 (rutefasit §Claude-følelsen: «festet spørrefelt nederst på alle
+   * desktop-flater, mobil kun Hjem»): valgfri `Composer`-node
+   * (components/v2/composer.tsx) som skallet fester nederst på desktop.
+   * Skjult på mobil (`hidden md:block`) — mobil-composeren eies av flaten
+   * selv. Ingen flate sender prop-en ennå; C-bølgene kobler den på skjerm
+   * for skjerm, med fasit side om side.
+   */
+  composer?: ReactNode;
   children: ReactNode;
 }
 
@@ -767,7 +776,7 @@ function AgencyBunnNav({ aktiv, nav, mer, rom }: { aktiv?: string; nav: V2NavIte
  * BunnNav. Innholdet stables med T.gap — skjermkomponentene rendrer bare
  * stacken, shellen leverer chrome.
  */
-export function V2Shell({ aktiv, nav = PLAYERHQ_NAV, mer, rom, navn = "Øyvind Rohjan", avatarUrl, vekslerData, bredde = "full", hoyde = "dokument", children }: V2ShellProps) {
+export function V2Shell({ aktiv, nav = PLAYERHQ_NAV, mer, rom, navn = "Øyvind Rohjan", avatarUrl, vekslerData, bredde = "full", hoyde = "dokument", composer, children }: V2ShellProps) {
   // AgencyOS: auto-koble Mer-menyen uten å måtte endre ~50 kallsteder
   // (alle importerer samme AGENCYOS_NAV-konstant → ref-likhet).
   // Ikke ref-likhet: withAgencyOsNavBadges() returnerer ny array med badge.
@@ -976,6 +985,30 @@ export function V2Shell({ aktiv, nav = PLAYERHQ_NAV, mer, rom, navn = "Øyvind R
           )}
         </div>
       </div>
+      {/* PP-B3: skallets composer-feste — fast nederst, kun desktop (mobil-
+          composeren eies av flaten selv, jf. rutefasit §Claude-følelsen).
+          Gotchas §Cookie-banneret: bunnforankret chrome forskyver seg med
+          env(safe-area-inset-bottom) + var(--ak-cookie-h); selve 12–16px-
+          bunnluften eier Composer-noden selv. left:64 = railbredden — rail og
+          feste deler md-brytepunktet. zIndex 30: under bunn-nav (40) og
+          Mer-panelet (90/91), over innholdet. */}
+      {composer != null && (
+        <div
+          className="hidden md:block"
+          data-paper-shell-composer
+          style={{
+            position: "fixed",
+            left: 64,
+            right: 0,
+            bottom: 0,
+            zIndex: 30,
+            background: T.bg,
+            paddingBottom: "calc(env(safe-area-inset-bottom) + var(--ak-cookie-h, 0px))",
+          }}
+        >
+          {composer}
+        </div>
+      )}
       {/* Mobil-bunnnav: AgencyOS får dedikert nav + full-høyde «Mer»-skuff (M1);
           PlayerHQ/forelder beholder BunnNavLenker uendret. */}
       {erAgency

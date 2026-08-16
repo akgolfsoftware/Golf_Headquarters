@@ -3,12 +3,14 @@
 // Agenter-modul: chat mot valgt modell (Claude/Gemini/Grok/Ollama).
 // Speiler caddie-mønsteret (useChat + DefaultChatTransport). Modell + samtale-id
 // sendes per melding via body-opsjonen så modellbyttet treffer rett provider.
+// Skrivefeltet er den delte Composer-komponenten (PP-B3) — samme chrome som
+// PlayerHQ-hjem og AgencyOS-konsollen.
 
 import { useState } from "react";
 import { useChat } from "@ai-sdk/react";
 import { DefaultChatTransport } from "ai";
-import { Send } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { Composer } from "@/components/v2/composer";
 import { KOMMANDO_MODELS, DEFAULT_MODEL, type KommandoModelId } from "@/lib/kommando/models";
 
 type TextPart = { type: "text"; text: string };
@@ -22,7 +24,6 @@ function messageText(parts: ReadonlyArray<{ type: string }>): string {
 
 export function AgentChat({ conversationId }: { conversationId: string }) {
   const [model, setModel] = useState<KommandoModelId>(DEFAULT_MODEL);
-  const [input, setInput] = useState("");
 
   const { messages, status, sendMessage } = useChat({
     transport: new DefaultChatTransport({ api: "/api/kommando/chat" }),
@@ -30,14 +31,6 @@ export function AgentChat({ conversationId }: { conversationId: string }) {
   });
 
   const busy = status === "streaming" || status === "submitted";
-
-  async function submit(e: React.FormEvent) {
-    e.preventDefault();
-    const text = input.trim();
-    if (!text || busy) return;
-    setInput("");
-    await sendMessage({ text }, { body: { conversationId, model } });
-  }
 
   return (
     <div className="flex h-[calc(100vh-9rem)] flex-col">
@@ -89,22 +82,16 @@ export function AgentChat({ conversationId }: { conversationId: string }) {
         )}
       </div>
 
-      <form onSubmit={submit} className="mt-3 flex items-center gap-2">
-        <input
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
+      {/* Delt Composer (PP-B3) — modell + samtale-id følger hver sending. */}
+      <div className="mt-3">
+        <Composer
+          label="Skriv til agenten"
           placeholder="Skriv en melding…"
-          className="h-11 flex-1 rounded-lg border border-border bg-card px-3.5 text-sm text-foreground outline-none placeholder:text-muted-foreground focus:border-accent"
+          onSend={(tekst) => sendMessage({ text: tekst }, { body: { conversationId, model } })}
+          sender={busy}
+          snarveier={false}
         />
-        <button
-          type="submit"
-          disabled={busy || input.trim().length === 0}
-          aria-label="Send"
-          className="flex h-11 w-11 items-center justify-center rounded-lg bg-accent text-accent-foreground transition-opacity disabled:opacity-40"
-        >
-          <Send className="h-5 w-5" strokeWidth={1.5} />
-        </button>
-      </form>
+      </div>
     </div>
   );
 }
