@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="nb" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Varsler · AK Golf HQ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Lora:ital,wght@0,400;0,500;1,400&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="w3-base.css">
+<style>
+.tilbake-rad{flex:none;padding:var(--s3) var(--s4) 0;background:var(--surface)}
+.tilbake{display:inline-flex;align-items:center;gap:4px;min-height:var(--tap);font-family:var(--mono);font-size:11px;color:var(--muted);text-decoration:none}
+.btn.ink{background:var(--cta);color:var(--on-cta);border-color:var(--cta)}
+.nu{background:var(--accent-soft);border:1px solid transparent;border-radius:var(--r);padding:var(--s4);margin-bottom:var(--s4)}
+.nu .eyebrow{display:block;color:var(--accent-fg);margin-bottom:var(--s2)}
+.nu h2{margin:0 0 var(--s1);font-family:var(--disp);font-size:16px;font-weight:600}
+.nu p{margin:0 0 var(--s3);font-family:var(--body);font-size:13.5px;color:var(--muted);max-width:46ch;text-wrap:pretty}
+.seksjon{margin-bottom:var(--s5)}
+.seksjonstopp{display:flex;align-items:baseline;justify-content:space-between;gap:var(--s2);margin-bottom:var(--s2)}
+.vrad{display:flex;gap:var(--s3);background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:var(--s3) var(--s4);margin-bottom:var(--s2);width:100%;text-align:left;cursor:pointer;color:inherit;align-items:flex-start}
+.vrad:hover{border-color:var(--mid)}
+.vrad.ulest{background:var(--softer)}
+.vrad .ikonboks{flex:none;width:34px;height:34px;border-radius:var(--r-sm);background:var(--soft);border:1px solid var(--border);display:grid;place-items:center;margin-top:2px}
+.vrad .ikonboks svg{width:16px;height:16px;fill:none;stroke:var(--muted);stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.vrad .tx{flex:1;min-width:0}
+.vrad .tn{display:flex;align-items:center;gap:6px;font-size:13.5px;font-weight:600}
+.vrad .tb{display:block;font-family:var(--body);font-size:13px;color:var(--muted);margin-top:2px;text-wrap:pretty}
+.vrad .tt{display:block;font-family:var(--mono);font-size:10px;color:var(--mid);margin-top:6px;letter-spacing:.04em;text-transform:uppercase}
+.prikk{flex:none;width:7px;height:7px;border-radius:50%;background:var(--accent)}
+.svarrad{display:flex;gap:var(--s2);margin-top:var(--s3);flex-wrap:wrap}
+.svarrad .btn{min-height:40px;font-size:12.5px;padding:0 var(--s3)}
+.filtre{display:flex;gap:var(--s2);margin-bottom:var(--s4);overflow-x:auto;padding-bottom:2px}
+.filtre button{flex:none;min-height:36px;padding:0 var(--s3);border:1px solid var(--border);border-radius:var(--r-pill);background:var(--surface);font-family:var(--mono);font-size:11px;cursor:pointer;color:inherit}
+.filtre button[aria-pressed="true"]{background:var(--soft);border-color:var(--hairline);font-weight:600}
+.faner{flex:none;display:flex;background:#141413;z-index:20;padding-bottom:env(safe-area-inset-bottom)}
+.faner a{flex:1;min-height:56px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;color:#b0aea5;text-decoration:none;font-size:10px;position:relative}
+.faner a svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+.faner a[aria-current="page"]{color:#faf9f5}
+.faner a[aria-current="page"]::before{content:"";position:absolute;top:0;left:24%;right:24%;height:2px;background:#faf9f5;border-radius:var(--r-pill)}
+.toast{position:fixed;left:50%;bottom:96px;transform:translateX(-50%);z-index:var(--z-toast);background:var(--fg);color:var(--bg);padding:var(--s3) var(--s4);border-radius:var(--r);font-size:13px}
+</style>
+</head>
+<body>
+<p class="framehint">PlayerHQ · I dag → Varsler (fangst) · 430 px. Under 641 px fyller den skjermen.</p>
+<div class="phone">
+  <div class="tilbake-rad"><a class="tilbake" href="../../fase1/playerhq-chat-mobil.html" data-od-id="varsler-tilbake">‹ I dag</a></div>
+  <header class="topp">
+    <div style="min-width:0"><h1>Varsler</h1><span class="sub" id="undertekst">Øyvind Rohjan · 3 uleste</span></div>
+    <span style="flex:1"></span>
+    <div style="display:flex;gap:4px">
+      <button class="ikon" data-tilstand="fylt" aria-pressed="true" aria-label="Demo: med varsler" data-od-id="varsler-demo-fylt"><span class="num" style="font-size:10px">S</span></button>
+      <button class="ikon" data-tilstand="tom" aria-pressed="false" aria-label="Demo: tom" data-od-id="varsler-demo-tom"><span class="num" style="font-size:10px">T</span></button>
+      <button class="ikon" id="themeBtn" aria-label="Bytt til mørk modus" data-od-id="varsler-theme"><svg viewBox="0 0 24 24"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></button>
+    </div>
+  </header>
+  <main class="kropp" id="kropp"></main>
+  <nav class="faner" aria-label="Hovednavigasjon"><a href="../../fase1/playerhq-chat-mobil.html" aria-current="page" data-od-id="tab-idag"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>I dag</a><a href="../../fase1/playerhq-plan.html" data-od-id="tab-plan"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>Plan</a><a href="../../fase1/playerhq-analyse.html" data-od-id="tab-analyse"><svg viewBox="0 0 24 24"><path d="M3 3v18h18M7 15l4-4 3 3 5-6"/></svg>Analyse</a><a href="../../fase1/playerhq-meg.html" data-od-id="tab-meg"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21v-1a6 6 0 0 1 6-6h4a6 6 0 0 1 6 6v1"/></svg>Meg</a></nav>
+</div>
+<div class="toast" id="toast" hidden role="status"></div>
+<div class="sr" id="live" aria-live="polite"></div>
+<script>
+(function(){
+'use strict';
+var live=document.getElementById('live'),toastEl=document.getElementById('toast'),toastT;
+function toast(t){toastEl.textContent=t;toastEl.hidden=false;clearTimeout(toastT);toastT=setTimeout(function(){toastEl.hidden=true},2600)}
+function el(t,c,x){var e=document.createElement(t);if(c)e.className=c;if(x!=null)e.textContent=x;return e}
+function svg(d){var s=document.createElementNS('http://www.w3.org/2000/svg','svg');s.setAttribute('viewBox','0 0 24 24');var p=document.createElementNS('http://www.w3.org/2000/svg','path');p.setAttribute('d',d);s.appendChild(p);return s}
+var IKON={melding:'M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z',kalender:'M3 10h18M8 3v4M16 3v4M5 5h14a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2z',test:'M3 3v18h18M7 15l4-4 3 3 5-6',fangst:'M12 3v18M5 10l7-7 7 7',betaling:'M3 7h18v10H3zM3 11h18'};
+var tilstand='fylt',filter='alle';
+var VARSLER=[
+ {id:'v1',gr:'I dag',kat:'melding',ulest:true,t:'Anders Kristiansen',b:'«Så på TrackMan-økta di fra torsdag — angrepsvinkelen med driver er 2° for negativ. Ta med det til fredagsøkta.»',tid:'For 40 min siden',svar:['Svar','Åpne økta']},
+ {id:'v2',gr:'I dag',kat:'kalender',ulest:true,t:'Time flyttet',b:'Fredag 22. mai er flyttet fra 15:00 til 16:30, Bogstad. Bekreft at det passer.',tid:'For 2 timer siden',svar:['Bekreft','Foreslå ny tid']},
+ {id:'v3',gr:'I dag',kat:'fangst',ulest:true,t:'Runde ikke ferdig ført',b:'Runden på Emigrant 18. mai mangler putter på hull 12–18. Fullfør så SG-tallene blir riktige.',tid:'I morges',svar:['Fullfør føring']},
+ {id:'v4',gr:'Denne uka',kat:'test',ulest:false,t:'Test forfaller · TN Putt Gate',b:'Testintervallet er 4 uker — sist målt 26. april (12 av 20). Forfaller 24. mai, 6 dager igjen. «Legg i uka» legger en testblokk som utkast du bekrefter.',tid:'Tirsdag',svar:['Legg i uka','Se testen']},
+ {id:'v5',gr:'Denne uka',kat:'melding',ulest:false,t:'Anders Kristiansen',b:'«Bra jobbet på nærspill-økta. 8 av 10 innenfor 2 meter er ditt beste så langt i år.»',tid:'Mandag',svar:['Svar']},
+ {id:'v6',gr:'Tidligere',kat:'betaling',ulest:false,t:'Faktura betalt',b:'Timepakke 10 økter · 8 500 kr er registrert betalt. Kvittering ligger under Meg.',tid:'12. mai',svar:[]},
+ {id:'v7',gr:'Tidligere',kat:'kalender',ulest:false,t:'Ny time booket',b:'Torsdag 14. mai 17:00, teknisk økt med Anders Kristiansen, Bogstad.',tid:'9. mai',svar:[]}
+];
+function synlige(){return VARSLER.filter(function(v){return filter==='alle'?true:filter==='ulest'?v.ulest:v.kat===filter})}
+function render(){
+ var w=document.getElementById('kropp');w.innerHTML='';
+ if(tilstand==='tom'){
+  document.getElementById('undertekst').textContent='Øyvind Rohjan · ingen uleste';
+  var tk=el('div','kort');var t=el('div','tom');
+  t.appendChild(el('h3','','Alt er lest'));
+  t.appendChild(el('p','','Ingen nye varsler. Meldinger fra coachen, timeendringer og påminnelser om føring dukker opp her.'));
+  var a=el('a','btn','Gå til I dag');a.href='../../fase1/playerhq-chat-mobil.html';a.dataset.odId='varsler-tom-idag';t.appendChild(a);
+  tk.appendChild(t);w.appendChild(tk);return;
+ }
+ var uleste=VARSLER.filter(function(v){return v.ulest}).length;
+ document.getElementById('undertekst').textContent='Øyvind Rohjan · '+(uleste?uleste+' uleste':'ingen uleste');
+ var nu=el('div','nu');
+ nu.appendChild(el('span','eyebrow','én ting nå'));
+ nu.appendChild(el('h2','','Bekreft flyttet time på fredag'));
+ nu.appendChild(el('p','','Anders har flyttet fredagsøkta til 16:30. Uten bekreftelse frigis tiden i morgen kl. 12.'));
+ var nb=el('button','btn now full','Bekreft 16:30 fredag 22. mai');nb.dataset.odId='varsler-nu-bekreft';
+ nb.addEventListener('click',function(){var v=VARSLER.filter(function(x){return x.id==='v2'})[0];v.ulest=false;v.b='Bekreftet: fredag 22. mai 16:30, Bogstad.';v.svar=['Legg i kalender'];toast('Time bekreftet.');render()});
+ nu.appendChild(nb);w.appendChild(nu);
+ var f=el('div','filtre');
+ [['alle','Alle'],['ulest','Uleste'],['melding','Coach'],['kalender','Timer'],['fangst','Føring'],['test','Tester'],['betaling','Betaling']].forEach(function(k){
+  var b=el('button',null,k[1]);b.setAttribute('aria-pressed',String(filter===k[0]));b.dataset.odId='varsler-filter-'+k[0];
+  b.addEventListener('click',function(){filter=k[0];render()});f.appendChild(b)});
+ w.appendChild(f);
+ var liste=synlige();
+ if(!liste.length){var tk2=el('div','kort');var t2=el('div','tom');t2.appendChild(el('h3','','Ingen varsler i denne kategorien'));t2.appendChild(el('p','','Bytt filter for å se resten.'));tk2.appendChild(t2);w.appendChild(tk2);return}
+ ['I dag','Denne uka','Tidligere'].forEach(function(gr){
+  var g=liste.filter(function(v){return v.gr===gr});if(!g.length)return;
+  var s=el('section','seksjon');
+  var st=el('div','seksjonstopp');st.appendChild(el('span','eyebrow',gr));st.appendChild(el('span','num',String(g.length)));s.appendChild(st);
+  g.forEach(function(v){
+   var r=el('div','vrad'+(v.ulest?' ulest':''));r.dataset.odId='varsler-rad-'+v.id;
+   var ib=el('span','ikonboks');ib.appendChild(svg(IKON[v.kat]));r.appendChild(ib);
+   var tx=el('div','tx');var tn=el('span','tn');tn.appendChild(document.createTextNode(v.t));if(v.ulest)tn.appendChild(el('i','prikk'));
+   tx.appendChild(tn);tx.appendChild(el('span','tb',v.b));tx.appendChild(el('span','tt',v.tid));
+   if(v.svar.length){var sr=el('div','svarrad');v.svar.forEach(function(s2,i){
+    var b=el('button','btn'+(i===0?' ink':''),s2);b.dataset.odId='varsler-'+v.id+'-'+s2.toLowerCase().replace(/[^a-z]/g,'');
+    b.addEventListener('click',function(){v.ulest=false;toast(s2+' — «'+v.t+'»');render()});sr.appendChild(b)});tx.appendChild(sr)}
+   r.appendChild(tx);s.appendChild(r);
+  });
+  w.appendChild(s);
+ });
+ live.textContent=liste.length+' varsler';
+}
+document.querySelectorAll('[data-tilstand]').forEach(function(b){b.addEventListener('click',function(){tilstand=b.dataset.tilstand;document.querySelectorAll('[data-tilstand]').forEach(function(x){x.setAttribute('aria-pressed',String(x.dataset.tilstand===tilstand))});render()})});
+var KEY='akhq-theme-playerhq',saved=localStorage.getItem(KEY);if(saved)document.documentElement.dataset.theme=saved;
+document.getElementById('themeBtn').addEventListener('click',function(){var n=document.documentElement.dataset.theme==='dark'?'light':'dark';document.documentElement.dataset.theme=n;localStorage.setItem(KEY,n);this.setAttribute('aria-label',n==='dark'?'Bytt til lys modus':'Bytt til mørk modus')});
+render();
+})();
+</script>
+</body>
+</html>

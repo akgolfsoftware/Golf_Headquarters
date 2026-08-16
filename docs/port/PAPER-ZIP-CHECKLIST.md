@@ -83,6 +83,19 @@
 - [~] `fase2/playerhq/playerhq-booking-mine.html`
 - [x] `fase2/playerhq/playerhq-coach-hub.html` — NT-415 signert av Anders 13.08.2026 (galleri mot prod)
 - [~] `fase2/playerhq/playerhq-talent.html` → TalentV2
+- [ ] `fase2/playerhq/playerhq-profil.html` → `/portal/meg/profil` — NY i zip 16.08 (konsolidering: profil/konto/kontakt → én flate, §8 skjema. HCP er lesefelt — eies av forbundet/Golfbox)
+- [ ] `fase2/playerhq/playerhq-utstyr.html` → `/portal/meg/utstyr` (i dag `utstyrsbag`) — NY i zip 16.08 (konsolidering: utstyr/bag/lengder → én flate; lengdetrapp er modul. Målte lengder, aldri ønsketall — kølle med for få slag viser «—»)
+- [ ] `fase2/playerhq/playerhq-coach-tilbakemelding.html` → `/portal/coach/tilbakemelding/[oktId]` — NY i zip 16.08 (konsolidering: coach notat/video/oppsummering → én flate; video er modul. Prosa i Lora, «Send svar» er clay)
+
+### W3-konsolideringer (fra `fase2/manifest-w3-komplett.md`, zip 16.08 — rutekonsekvens for C4-bølgen)
+
+- 8 innstillings-undersider (varsler/sprak/okter/anlegg/ai-coach/personvern/sikkerhet/integrasjoner) → **én mal, åtte instanser** (`playerhq-innstillinger.html`, §10)
+- `/portal/meg/profil` + `/meg/konto` + `/meg/kontakt` → én profilflate (§8)
+- `/portal/meg/betaling` + `/meg/kvitteringer` + `/meg/klipp` → én betalingsflate; klipp er modul øverst (§9). Timeklipp ≠ app-tier — skillet står i UI, må ikke slås sammen
+- `/portal/meg/utstyr` + `/meg/bag` + `/meg/lengder` → én flate; lengdetrapp er modul (§9)
+- `/portal/coach/notat/[id]` + `/coach/video/[id]` + `/coach/oppsummering` → én tilbakemeldingsflate (§12)
+- `/portal/talent/*` undersider → faner i én flate (§12)
+- Merk (manifest-w2 rettet i samme zip): `playerhq-talent-stige.html` er UTGÅTT som talent-fasit — `playerhq-talent.html` (W3) er fasit. Maks én clay per tilstand: kun coach-tilbakemelding («Send svar») og betaling («Betal forfalt faktura») har solid clay i W3.
 
 ## Fase 2 · W4 AgencyOS (ny i zip 2)
 
