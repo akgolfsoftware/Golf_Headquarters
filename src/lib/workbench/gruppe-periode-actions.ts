@@ -11,6 +11,8 @@ import { revalidatePath } from "next/cache";
 import { Prisma } from "@/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
+import { assertCapability } from "@/lib/auth/effective-capabilities";
+import { Capability } from "@/lib/auth/cbac";
 import { PeriodeInputSchema } from "@/lib/workbench/perioder";
 import { skalHoppeOverPeriode } from "@/lib/domain/gruppeplan-dedup";
 
@@ -27,7 +29,8 @@ export async function coachLagreGruppePeriode(
   input: unknown,
   periodeId?: string,
 ): Promise<{ ok: boolean; periodeId?: string; error?: string }> {
-  await requirePortalUser({ allow: ["COACH", "ADMIN"] });
+  const aktor = await requirePortalUser({ allow: ["COACH", "ADMIN"] });
+  await assertCapability(aktor, Capability.EDIT_GROUP_PLANS);
   const parsed = PeriodeInputSchema.safeParse(input);
   if (!parsed.success) return { ok: false, error: "Ugyldig periode-input" };
   const v = parsed.data;
@@ -60,7 +63,8 @@ export async function coachSlettGruppePeriode(
   groupId: string,
   periodeId: string,
 ): Promise<{ ok: boolean; error?: string }> {
-  await requirePortalUser({ allow: ["COACH", "ADMIN"] });
+  const aktor = await requirePortalUser({ allow: ["COACH", "ADMIN"] });
+  await assertCapability(aktor, Capability.EDIT_GROUP_PLANS);
   const eier = await prisma.groupPeriodBlock.findFirst({ where: { id: periodeId, groupId }, select: { id: true } });
   if (!eier) return { ok: false, error: "Perioden finnes ikke" };
   await prisma.groupPeriodBlock.delete({ where: { id: periodeId } });
@@ -88,7 +92,8 @@ export type RullUtHoppet = {
 export async function coachRullUtGruppeAarsplan(
   groupId: string,
 ): Promise<{ ok: boolean; spillere?: number; perioderLagt?: number; hoppet?: RullUtHoppet[]; error?: string }> {
-  await requirePortalUser({ allow: ["COACH", "ADMIN"] });
+  const aktor = await requirePortalUser({ allow: ["COACH", "ADMIN"] });
+  await assertCapability(aktor, Capability.EDIT_GROUP_PLANS);
 
   const [blokker, medlemmer] = await Promise.all([
     prisma.groupPeriodBlock.findMany({

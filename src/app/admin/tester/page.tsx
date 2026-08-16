@@ -13,7 +13,8 @@
  * er ren presentasjon. Ingen fabrikerte tall — mangler i schemaet vises ærlig.
  */
 
-import { requirePortalUser } from "@/lib/auth/requirePortalUser";
+import { requireCapability } from "@/lib/auth/requireCapability";
+import { Capability } from "@/lib/auth/cbac";
 import { prisma } from "@/lib/prisma";
 import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
 import { InnsiktHubNav } from "@/components/admin/v2/agency-hub-subnav";
@@ -37,7 +38,8 @@ function fmtScore(n: number): string {
 }
 
 export default async function V2AdminTesterPage() {
-  const user = await requirePortalUser({ allow: ["ADMIN", "COACH"] });
+  // G6: MANAGE_TESTS ligger i COACH-defaulten — kan trekkes per trener.
+  const user = await requireCapability(Capability.MANAGE_TESTS);
 
   const naa = new Date();
   const d30 = new Date(naa.getTime() - 30 * 86_400_000);

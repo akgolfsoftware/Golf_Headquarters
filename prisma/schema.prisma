@@ -5409,6 +5409,30 @@ model CoachPinnedPlayer {
   @@map("coach_pinned_players")
 }
 
+// Per-bruker capability-override (G6, 2026-08-16). Rolle-defaulten i
+// src/lib/auth/cbac.ts er utgangspunktet; en rad her legger til (GRANT) eller
+// fjerner (REVOKE) én capability for én bruker. ADMIN er immun — overrides
+// leses aldri for ADMIN (effective-capabilities.ts), så Anders kan aldri låse
+// seg ute. capability og mode lagres som String (ikke Prisma-enum) for å holde
+// endringen additiv — nye capabilities skal ikke kreve migrasjon. Plain felt,
+// ingen @relation, per gotcha-regelen; FK-ene legges av DDL-scriptet
+// (scripts/add-user-capabilities-2026-08-16.ts).
+model UserCapability {
+  id          String   @id @default(cuid())
+  userId      String
+  capability  String
+  // "GRANT" | "REVOKE"
+  mode        String
+  grantedById String?
+  note        String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@unique([userId, capability])
+  @@index([userId])
+  @@map("user_capabilities")
+}
+
 // Coach-satt pyramide-fordeling per periode (fase 1, godkjent 2026-07-18).
 // Global akademi-standard: én rad per PeriodeType med min/maks-% per pyramide-
 // område. Overstyrer de hardkodede defaultene i periode-constraints.ts via en
