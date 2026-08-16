@@ -47,7 +47,7 @@ export default async function ArtikkelPage({
 }: {
   params: Promise<{ slug: string }>;
 }) {
-  const user = await requirePortalUser();
+  const user = await requirePortalUser({ kreverTilgang: "INGEN" });
   const { slug } = await params;
   const a = ARTIKLER[slug];
 

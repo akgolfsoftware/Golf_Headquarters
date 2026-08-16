@@ -14,7 +14,7 @@ export default async function KontaktSupportPage({
 }: {
   searchParams: Promise<{ ticket?: string }>;
 }) {
-  const user = await requirePortalUser();
+  const user = await requirePortalUser({ kreverTilgang: "INGEN" });
   const sp = await searchParams;
 
   return (

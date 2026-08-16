@@ -10,7 +10,7 @@ import { Caps, Tittel, CTAPill, Kort, StatusPill } from "@/components/v2";
 import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
 
 export default async function MineBookinger() {
-  const user = await requirePortalUser({ allow: ["PLAYER", "COACH", "ADMIN"] });
+  const user = await requirePortalUser({ kreverTilgang: "INGEN", allow: ["PLAYER", "COACH", "ADMIN"] });
 
   const subscription = await prisma.subscription.findUnique({
     where: { userId_kind: { userId: user.id, kind: "COACHING" } },

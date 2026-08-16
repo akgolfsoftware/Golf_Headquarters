@@ -30,7 +30,7 @@ function formatSync(d: Date | null | undefined): string {
 }
 
 export default async function IntegrasjonerPage() {
-  const user = await requirePortalUser();
+  const user = await requirePortalUser({ kreverTilgang: "INGEN" });
 
   const [tmCount, tmLast, gcal] = await Promise.all([
     prisma.trackManSession.count({ where: { userId: user.id } }).catch(() => 0),

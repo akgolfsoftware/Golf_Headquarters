@@ -50,7 +50,7 @@ function TrendTag({ delta }: { delta: NonNullable<TestRow["delta"]> }) {
 }
 
 export default async function TesterHubPage() {
-  const user = await requirePortalUser();
+  const user = await requirePortalUser({ kreverTilgang: "TALENT" });
   if (user.role === "PARENT") redirect("/forelder");
   if (user.role === "GUEST") redirect("/admin/kalender");
 

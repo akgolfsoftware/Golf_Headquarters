@@ -23,7 +23,7 @@ function formatNesteBelastning(dato: Date | null): string {
 }
 
 export default async function NyttKortPage() {
-  const user = await requirePortalUser();
+  const user = await requirePortalUser({ kreverTilgang: "INGEN" });
 
   // A1: kortbytte gjelder raden med aktiv Stripe-kobling.
   const subscription = await prisma.subscription.findFirst({
