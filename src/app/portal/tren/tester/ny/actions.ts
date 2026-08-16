@@ -5,6 +5,7 @@ import { z } from "zod";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { triggerTestAgent } from "@/lib/agents/triggers";
+import { syncTalentEtterTest } from "@/lib/talent/test-sync";
 
 /**
  * Zod-schema for ny test. Resultatet-feltet er en åpen record fordi de
@@ -82,7 +83,14 @@ export async function logTest(input: unknown) {
 
   triggerTestAgent(user.id);
 
+  // T4: logget CANON-resultat oppdaterer talentprofilen — best-effort, en
+  // feilet synk skal aldri velte registreringen av selve resultatet.
+  await syncTalentEtterTest(user.id).catch((err) => {
+    console.error("[logTest] talent-sync feilet", err);
+  });
+
   revalidatePath("/portal/tren/tester");
+  revalidatePath("/portal/talent");
   revalidatePath(`/portal/tren/tester/${created.testId}`);
 
   return { ok: true as const, resultId: created.id, testId: created.testId };
