@@ -84,7 +84,7 @@ export async function lastAkStigenData(): Promise<AkStigenData> {
       level: true,
       maxParticipants: true,
       coach: { select: { name: true } },
-      _count: { select: { members: true, schedules: true } },
+      _count: { select: { members: { where: { endedAt: null } }, schedules: true } },
       schedules: {
         where: { recurring: "WEEKLY" },
         orderBy: { startAt: "asc" },

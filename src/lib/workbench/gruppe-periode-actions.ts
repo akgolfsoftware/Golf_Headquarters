@@ -93,7 +93,7 @@ export async function coachRullUtGruppeAarsplan(
       },
     }),
     prisma.groupMember.findMany({
-      where: { groupId, role: "PLAYER" },
+      where: { groupId, role: "PLAYER", endedAt: null },
       select: { userId: true, user: { select: { name: true } } },
     }),
   ]);

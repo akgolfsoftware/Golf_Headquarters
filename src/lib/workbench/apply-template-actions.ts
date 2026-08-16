@@ -203,7 +203,16 @@ export async function coachApplyTemplateToGroup(
   const [gruppe, mal] = await Promise.all([
     prisma.group.findUnique({
       where: { id: groupId },
-      select: { id: true, name: true, members: { select: { user: { select: { id: true, name: true } } } } },
+      select: {
+        id: true,
+        name: true,
+        // Kun aktive SPILLERE — utrulling til trenere/utmeldte ville gitt dem
+        // spillerplaner (plan G1/G3).
+        members: {
+          where: { endedAt: null, role: "PLAYER" },
+          select: { user: { select: { id: true, name: true } } },
+        },
+      },
     }),
     prisma.planTemplate.findUnique({
       where: { id: templateId },

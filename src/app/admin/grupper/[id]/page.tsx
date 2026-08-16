@@ -65,6 +65,8 @@ export default async function GruppeDetaljPage({
     include: {
       coach: { select: { id: true, name: true, email: true, avatarUrl: true } },
       members: {
+        // Kun aktive medlemskap — utmeldte (endedAt satt) er historikk.
+        where: { endedAt: null },
         include: {
           user: {
             select: {

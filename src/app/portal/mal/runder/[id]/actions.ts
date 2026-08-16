@@ -51,7 +51,7 @@ export async function shareRound(roundId: string, input: ShareRoundInput) {
   // Hvis coach skal varsles, hent alle coach-er via gruppe-medlemskap.
   if (input.visibility === "coach") {
     const memberships = await prisma.groupMember.findMany({
-      where: { userId: user.id },
+      where: { userId: user.id, endedAt: null },
       select: { group: { select: { coachId: true } } },
     });
     const coachIds = Array.from(

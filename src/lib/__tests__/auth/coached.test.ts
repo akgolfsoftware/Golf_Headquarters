@@ -23,10 +23,14 @@ test("porten slipper ALDRI gjennom PLATFORM_ONLY-enrollment alene", () => {
   assert.equal(some.endedAt, null, "kun AKTIV enrollment teller");
 });
 
-test("gruppemedlemskap er den andre lovlige veien inn", () => {
+test("gruppemedlemskap er den andre lovlige veien inn — kun AKTIVE spiller-medlemskap", () => {
   const w = coachedPlayerWhere();
   const gruppe = (w.OR ?? []).find((g) => "groupMemberships" in g);
   assert.ok(gruppe, "gruppe-grenen finnes");
+  const some = (gruppe as { groupMemberships: { some: Record<string, unknown> } })
+    .groupMemberships.some;
+  assert.equal(some.endedAt, null, "utmeldte (endedAt satt) er stengt ute — soft-end, plan G1");
+  assert.equal(some.role, "PLAYER", "trenere/hjelpetrenere i gruppa er ikke coachede spillere");
 });
 
 test("coach-scoping: ADMIN ser alle coachede (identisk med basisporten)", () => {
@@ -49,11 +53,13 @@ test("coach-scoping: COACH ser kun egne via enrollment (coachId på aktiv enroll
   assert.equal(some.endedAt, null, "kun AKTIV enrollment teller");
 });
 
-test("coach-scoping: COACH ser kun egne via gruppe (Group.coachId)", () => {
+test("coach-scoping: COACH ser kun egne via gruppe (Group.coachId) — kun aktive medlemskap", () => {
   const w = coachScopedPlayerWhere({ id: "coach-1", role: "COACH" });
   const gruppe = (w.OR ?? []).find((g) => "groupMemberships" in g);
   assert.ok(gruppe, "gruppe-grenen finnes");
   const some = (gruppe as { groupMemberships: { some: Record<string, unknown> } })
     .groupMemberships.some;
   assert.deepEqual(some.group, { coachId: "coach-1" }, "gruppen må eies av coachen selv");
+  assert.equal(some.endedAt, null, "utmeldte er stengt ute (soft-end, plan G1)");
+  assert.equal(some.role, "PLAYER", "kun spiller-medlemskap gir coach-innsyn");
 });

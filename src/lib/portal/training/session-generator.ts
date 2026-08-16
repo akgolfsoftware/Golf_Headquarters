@@ -124,7 +124,7 @@ export async function genererOkter(input: GenererInput): Promise<GenererResultat
       select: { id: true, startTime: true, endTime: true },
     }),
     prisma.groupMember.findMany({
-      where: { userId: spilllerId },
+      where: { userId: spilllerId, endedAt: null },
       select: { groupId: true },
     }),
     hentEffektivePeriodeConstraints(),

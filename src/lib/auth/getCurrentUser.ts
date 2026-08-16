@@ -74,7 +74,11 @@ async function withEffektivTilgang(user: User): Promise<User> {
     prisma.subscription
       .findUnique({ where: { userId: user.id }, select: { monthlyCredits: true, status: true } })
       .catch(() => null),
-    prisma.groupMember.count({ where: { userId: user.id } }).catch(() => 0),
+    prisma.groupMember
+      // Kun aktive spiller-medlemskap teller for gratis-via-gruppe (plan G1).
+      // A3 strammer videre til managedByAkGolf-grupper i resolveTilgang.
+      .count({ where: { userId: user.id, endedAt: null, role: "PLAYER" } })
+      .catch(() => 0),
   ]);
   const effektiv = resolveTier({
     tier: user.tier,

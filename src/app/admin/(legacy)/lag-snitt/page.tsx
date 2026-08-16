@@ -22,7 +22,7 @@ export default async function LagSnittPage() {
 
   const grupper = await prisma.group.findMany({
     where: user.role === "COACH" ? { coachId: user.id } : {},
-    select: { id: true, name: true, members: { select: { userId: true } } },
+    select: { id: true, name: true, members: { where: { endedAt: null }, select: { userId: true } } },
     orderBy: { name: "asc" },
   });
 
