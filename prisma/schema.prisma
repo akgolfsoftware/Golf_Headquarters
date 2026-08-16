@@ -3131,7 +3131,9 @@ model GroupMember {
   id       String   @id @default(cuid())
   groupId  String
   userId   String
-  // PLAYER | ASSISTANT
+  // PLAYER | ASSISTANT | COACH — kanon + zod-port i src/lib/domain/grupper.ts
+  // (gruppemedlemRolleSchema). ASSISTANT = hjelpetrener (kun innsyn),
+  // COACH = trener (innsyn + redigering via eierGruppen).
   role     String   @default("PLAYER")
   joinedAt DateTime @default(now())
   // null = aktivt medlemskap; satt = utmeldt (soft-end — raden beholdes for

@@ -5,6 +5,7 @@ import { revalidatePath } from "next/cache";
 import { Prisma } from "@/generated/prisma/client";
 import { requireCoachActionUser } from "@/lib/auth/action-guards";
 import { coachScopedPlayerWhere } from "@/lib/auth/coached";
+import { gruppemedlemRolleSchema, type GruppemedlemRolle } from "@/lib/domain/grupper";
 import { prisma } from "@/lib/prisma";
 import { audit } from "@/lib/audit";
 import { pushGruppeTime } from "@/lib/google-calendar-kilder";
@@ -20,70 +21,112 @@ async function krevCoach() {
 }
 
 /**
- * Eierskapsporten for gruppe-actions: en COACH kan kun endre grupper hun selv
- * eier (Group.coachId), ADMIN kan endre alle. Alle actions i denne fila tar en
- * groupId fra klienten — uten porten kunne en coach endre en annen coachs
- * gruppe ved å bytte id-en.
+ * Eierskapsporten for gruppe-actions: en COACH har redigeringstilgang når hun
+ * er hovedtrener (Group.coachId) ELLER selv er aktivt COACH-medlem i gruppen
+ * (GroupMember.role "COACH", endedAt null — plan G5). ASSISTANT-medlemskap gir
+ * IKKE redigering, kun innsyn via scoping-grenen i coached.ts. ADMIN kan endre
+ * alle. Alle actions i denne fila tar en groupId fra klienten — uten porten
+ * kunne en coach endre en annen coachs gruppe ved å bytte id-en.
  */
 async function eierGruppen(
   coach: { id: string; role: string },
   groupId: string,
 ): Promise<boolean> {
   const treff = await prisma.group.findFirst({
-    where: { id: groupId, ...(coach.role === "COACH" ? { coachId: coach.id } : {}) },
+    where: {
+      id: groupId,
+      ...(coach.role === "COACH"
+        ? {
+            OR: [
+              { coachId: coach.id },
+              { members: { some: { userId: coach.id, role: "COACH", endedAt: null } } },
+            ],
+          }
+        : {}),
+    },
     select: { id: true },
   });
   return treff != null;
 }
 
 /**
- * Legger en eksisterende spiller (role PLAYER) inn i en treningsgruppe.
+ * Legger en eksisterende bruker inn i en treningsgruppe.
+ * Rolle (plan G5): PLAYER (default, uendret spiller-flyt), ASSISTANT
+ * (hjelpetrener) eller COACH (trener). Trenerrollene krever at målbrukeren
+ * selv har User.role COACH eller ADMIN — og porten `eierGruppen` over sikrer
+ * at kun gruppeeier, aktivt COACH-medlem eller ADMIN gjør innmeldingen.
  * Dedup mot @@unique([groupId, userId]): fanges som P2002 → vennlig feil.
  */
 export async function leggTilGruppemedlem(
   groupId: string,
   userId: string,
+  rolle: GruppemedlemRolle = "PLAYER",
 ): Promise<ActionResult> {
   const coach = await krevCoach();
   if (!coach) return { ok: false, feil: "Ikke tilgang." };
 
+  // Aldri stol på klient-verdien: role skrives rett i GroupMember.role og
+  // styrer både innsyn (coached.ts) og redigering (eierGruppen). Zod ved
+  // grensen (invariant 6).
+  const rolleParse = gruppemedlemRolleSchema.safeParse(rolle);
+  if (!rolleParse.success) return { ok: false, feil: "Ugyldig rolle." };
+  const valgtRolle = rolleParse.data;
+
   if (!(await eierGruppen(coach, groupId))) return { ok: false, feil: "Fant ikke gruppen." };
 
-  // Coach-scoping. Dette er IKKE bare en lesetilgangs-sjekk: gruppemedlemskap
-  // er selv en av de to tingene som gjør en spiller «coachet» av deg
-  // (coached.ts). Uten porten kunne en coach legge en annen coachs spiller inn
-  // i egen gruppe og dermed skaffe seg full tilgang til spilleren — hele
-  // scopingen omgått i ett kall.
-  const spiller = await prisma.user.findFirst({
-    where: { AND: [coachScopedPlayerWhere(coach), { id: userId }] },
-    select: { id: true, role: true, deletedAt: true },
-  });
-  if (!spiller || spiller.deletedAt) return { ok: false, feil: "Fant ikke spilleren." };
-  if (spiller.role !== "PLAYER") return { ok: false, feil: "Bare spillere kan legges til i en gruppe." };
+  if (valgtRolle === "PLAYER") {
+    // Coach-scoping. Dette er IKKE bare en lesetilgangs-sjekk: gruppemedlemskap
+    // er selv en av tingene som gjør en spiller «coachet» av deg
+    // (coached.ts). Uten porten kunne en coach legge en annen coachs spiller inn
+    // i egen gruppe og dermed skaffe seg full tilgang til spilleren — hele
+    // scopingen omgått i ett kall.
+    const spiller = await prisma.user.findFirst({
+      where: { AND: [coachScopedPlayerWhere(coach), { id: userId }] },
+      select: { id: true, role: true, deletedAt: true },
+    });
+    if (!spiller || spiller.deletedAt) return { ok: false, feil: "Fant ikke spilleren." };
+    if (spiller.role !== "PLAYER") return { ok: false, feil: "Bare spillere kan legges til i en gruppe." };
+  } else {
+    // Trenerroller (COACH/ASSISTANT): målbrukeren må selv være trener i
+    // systemet — en spiller kan aldri gis trenerinnsyn i andre spillere via
+    // et gruppemedlemskap. Ærlig feil fremfor stille nedgradering.
+    const trener = await prisma.user.findFirst({
+      where: { id: userId, role: { in: ["COACH", "ADMIN"] } },
+      select: { id: true, deletedAt: true },
+    });
+    if (!trener || trener.deletedAt) {
+      return { ok: false, feil: "Bare brukere med trenerrolle (COACH eller ADMIN) kan legges til som trener." };
+    }
+  }
 
-  // Soft-end-modellen (plan G1): raden per (groupId, userId) er unik og
-  // gjenbrukes — re-innmelding nuller endedAt og stempler nytt joinedAt.
+  const hvem = valgtRolle === "PLAYER" ? "Spilleren" : "Treneren";
+
+  // Soft-end-modellen (plan G1, gjelder alle roller): raden per
+  // (groupId, userId) er unik og gjenbrukes — re-innmelding nuller endedAt og
+  // stempler nytt joinedAt.
   const eksisterende = await prisma.groupMember.findUnique({
     where: { groupId_userId: { groupId, userId } },
     select: { id: true, endedAt: true },
   });
   if (eksisterende && eksisterende.endedAt === null) {
-    return { ok: false, feil: "Spilleren er allerede medlem av gruppen." };
+    return { ok: false, feil: `${hvem} er allerede medlem av gruppen.` };
   }
   if (eksisterende) {
+    // Reaktivering: rollen følger valget i DETTE kallet — beholdes når den er
+    // lik, oppdateres når innmeldingen nå gjelder en annen rolle (G5).
     await prisma.groupMember.update({
       where: { id: eksisterende.id },
-      data: { endedAt: null, joinedAt: new Date() },
+      data: { endedAt: null, joinedAt: new Date(), role: valgtRolle },
     });
   } else {
     try {
       await prisma.groupMember.create({
-        data: { groupId, userId },
+        data: { groupId, userId, role: valgtRolle },
       });
     } catch (e) {
       // P2002: unique constraint — kappløp med et parallelt kall.
       if (e instanceof Prisma.PrismaClientKnownRequestError && e.code === "P2002") {
-        return { ok: false, feil: "Spilleren er allerede medlem av gruppen." };
+        return { ok: false, feil: `${hvem} er allerede medlem av gruppen.` };
       }
       throw e;
     }
@@ -93,6 +136,7 @@ export async function leggTilGruppemedlem(
     actorId: coach.id,
     action: "group_member.added",
     target: `Group:${groupId}/User:${userId}`,
+    metadata: { role: valgtRolle },
   });
 
   revalidatePath(`/admin/grupper/${groupId}`);

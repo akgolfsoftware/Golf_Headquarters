@@ -34,7 +34,7 @@ export interface WangElev {
   /** Bruker-id. Trengs for å åpne IUP-samtalen for én elev fra trenerflaten. */
   id: string;
   navn: string;
-  rolle: string; // PLAYER | ASSISTANT
+  rolle: string; // PLAYER | ASSISTANT | COACH (kanon: src/lib/domain/grupper.ts)
 }
 
 export interface WangPeriodeDb {
