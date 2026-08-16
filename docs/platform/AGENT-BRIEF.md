@@ -26,48 +26,67 @@ AK Golf HQ er en monorepo-plattform som samler fire produkter under ett Next.js-
 
 ## Mappestruktur
 
+(Flyttet hit fra CLAUDE.md 2026-08-16 — denne filen eier strukturkartet.)
+
+Størrelsesorden: ~449 `page.tsx`-ruter, ~161 filer med server actions, 158 Prisma-modeller, 81 migrasjoner,
+110 enhetstest-filer, 54 agent-filer. Sjekk filsystemet før du oppretter nye ruter — det finnes flere
+top-level-mapper enn de fire «offisielle» produktene.
+
 ```
-src/app/
-  (marketing)/     Marketing og public stats (akgolf.no)
-  admin/           AgencyOS — coachens kontrolltårn (/admin/*)
-  portal/          PlayerHQ — spillerportal (/portal/*)
-  booking/         Offentlig booking-flyt
-  auth/            Innlogging, registrering, BankID, onboarding
-  api/             Route handlers
-  globals.css      ENESTE kilde for design-tokens
-
-  # Merk: denne listen er ikke uttømmende. Andre top-level app-mapper
-  # som finnes i kodebasen inkluderer blant annet: forelder/, onboard/,
-  # inviter/, intern/, team-gfgk/, meg/, fullscreen/.
-  # Sjekk filsystemet (src/app/) før du oppretter nye ruter for å unngå
-  # konflikter med eksisterende mønstre.
-
-src/components/
-  ui/              shadcn-primitiver (Button, Dialog, Input, Tabs, etc.)
-  athletic/        Branded AK Golf-komponenter. golfdata/ (v13) er overgangslag;
-                   resten av athletic/ er vedlikeholdsmodus
-  shared/          Utility-komponenter (cookie-banner, cmd-palette, mobile-nav)
-  admin*/          AgencyOS-spesifikke komponenter
-  portal*/         PlayerHQ-spesifikke komponenter
-
-src/lib/
-  v2/tokens.ts     TS-speil (T) av CSS-variablene — les herfra i TS/charts, definer aldri farger her
-  prisma.ts        Prisma-klient
-  utils.ts         cn()
-  supabase/        Supabase-helpers
-  domain/sg.ts     SG-beregning (Broadie + Team Norway IUP-kalibrert)
-
-docs/
-  port/                  Designport: fasit-liste-paper.md (designdekning) +
-                         plan-designport-alle-skjermer.md (plan + ferdig-definisjon)
-                         — LES FØR skjerm-arbeid
-  platform/              Agent-kontekst (denne filen)
-
-designsystem/paper/      Lokalt SPEIL av Paper-fasiten (fase1/ + guidelines/ + components/).
-                         Speilet er ikke kilden — Claude Design 605a48cc er alltid fasit.
-public/design-handover/  SLETTET 2026-07 — fantes ikke lenger, ikke let etter den
-wireframe/               SLETTET — ikke les eller importer herfra
+src/
+├── app/            # App Router — ~449 ruter
+│   ├── page.tsx              # Marketing (landing)
+│   ├── (marketing)/          # Offentlige sider (layout med markeds-header)
+│   ├── (internal)/           # Interne demoer/labs — ikke prod-flater
+│   ├── auth/  onboard/  inviter/   # Auth-flyter, onboarding, invitasjoner
+│   ├── portal/               # PlayerHQ (spiller-appen)
+│   │   ├── (legacy)/         # Eldre flater under migrering
+│   │   ├── (fullscreen)/     # Fullskjerm-moduser (live/gjennomføring)
+│   │   └── …hovedflater      # planlegge · gjennomfore · analysere · meg · trackman · gameplan m.fl.
+│   ├── admin/                # AgencyOS (coach/admin) — agencyos (cockpit), grupper,
+│   │                         # godkjenninger, kalender, innboks, finance, agent-team m.fl.
+│   ├── forelder/             # Foreldreportal (lese-først)
+│   ├── booking-flyt          # /booking under (marketing) + /portal/booking + /admin/bookinger
+│   ├── team-wang/  team-gfgk/  gfgk-junior/   # Klubb-/skolespesifikke flater
+│   ├── kommando/  meg/  intern/  offline/     # Agent-chat, personlig, intern, PWA-offline
+│   ├── api/                  # REST (cron, webhooks, trackman, booking, public)
+│   ├── sw.ts                 # Serwist service worker-kilde
+│   └── layout.tsx            # Fonter, metadata, PWA-manifest
+├── components/
+│   ├── ui/                   # 21 primitiver (shadcn-basert): button, dialog, sheet, popover,
+│   │                         # dropdown-menu, tabs, toast, input, kpi-card, progress-ring …
+│   ├── v2/                   # Delte v2-primitiver (shell, kalender, datavis, hjelp, domene …)
+│   ├── athletic/             # Kun to undermapper igjen: golfdata/ (v13, overgangslag) + calendars/
+│   ├── shared/               # Utility-komponenter (cookie-banner, cmd-palette, mobile-bottom-nav)
+│   └── admin/ portal/ marketing/ forelder/ coachhq/ hubs/ workbench-hybrid/ planlegge-v2/
+│       sg-hub/ gameplan/ fys-plan/ teknisk-plan/ turneringer/ kommando/ meg/ …
+├── lib/            # domain/ (ferdighetslogikk — SG, hcp, ak-kategori, fys-score, pyramide) ·
+│                   # validation/schemas.ts · auth · prisma.ts · stripe · email · agents/ ·
+│                   # workbench/ · uke-helpers.ts (Oslo-tid) · scrapers/ · trackman/ · portal-*/ · admin-*/
+│                   # v2/tokens.ts = TS-speil av CSS-variablene — les herfra i TS/charts,
+│                   # definer aldri farger der
+├── proxy.ts        # Next 16 «middleware» — auth-guards (proxy.ts, IKKE middleware.ts)
+└── app/globals.css # Tailwind v4-tema
+prisma/
+├── schema.prisma   # 158 modeller: User · TrainingPlan(+Session) · Round → Shot → HoleScore ·
+│                   # Subscription · Booking · Lead · CoachAvailability · TestDefinition/TestResult ·
+│                   # DrillMal/OktMal · TrackManSession/TrackManShot · SeasonPlan · PeriodBlock · KommandoTask …
+├── migrations/     # 81 kjørte SQL-migrasjoner
+├── sql/  scripts/  seed-data/
+└── seed.ts · seed-drills.ts · seed-gfgk-facilities.ts …
+scripts/            # Engangs-/driftsscript: seed-screentest*.ts (Øyvind Rohjan) · drill-qa ·
+                    # retag-drill-kategorier · check-action-auth.mjs · audit-rls · …
+docs/               # platform/ (NORDSTJERNE, AGENT-BRIEF, BUSINESS-RULES, DATA-MODEL, PLATFORM-PRD) ·
+                    # port/ (designport: fasit-liste + plan — LES FØR skjerm-arbeid) ·
+                    # skjermtekst/ (copy-kilde) · design-system/TEMA-LYS-MORK.md (tema-fasit) ·
+                    # gdpr/ · juridisk/ · sikkerhet/ · arkiv/
+designsystem/paper/ # Lokalt speil av Paper-fasiten — ARBEIDSFASIT siden 2026-08-12
+                    # (beslutninger.md §Design-fasit); Claude Design 605a48cc er original ved uenighet
+tests/e2e/          # Én samlet e2e-suite (32 specs, siden 2026-08-03): a11y, PWA, ruter, meta/OG,
+                    # offline, ikoner + auth-guard, IDOR, booking, workbench (fra gamle e2e/)
 ```
+
+Slettede mapper det ikke skal letes etter: `public/design-handover/`, `wireframe/`.
 
 ---
 
