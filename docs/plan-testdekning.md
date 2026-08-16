@@ -54,7 +54,58 @@ Eksempel: `session-move-math.ts` framstår som udekket, men dekkes av
 | 2 | **Ferdig** 2026-08-15 — globben er `src/**/*.test.ts` |
 | 3 | **Ferdig** 2026-08-15 — 70 tester over 5 moduler, to ekte feil funnet (se under) |
 | 4 | **Ferdig** 2026-08-15 — speilet avviklet, 13 avvis-tester på fire guarder (se under) |
-| 5–8 | Ikke startet |
+| 5 | **Ferdig** 2026-08-16 — delt cron-auth (8 ruter), zod på 3 API-grenser |
+| 6 | **Ferdig** 2026-08-16 — tidsvindu-hjelper + `uke-helpers` dekket (se avvik under) |
+| 7 | **Ferdig** 2026-08-16 — Stripe-regresjon + GDPR-kontrakt-test |
+| 8 | **Delvis** 2026-08-16 — `testing.md` rettet mot målte tall; skip-gaten venter på steg 1 |
+
+### Funn fra steg 5–8 (2026-08-16)
+
+**Steg 5.** Cron-sjekken var håndkopiert i **åtte** rutefiler, ikke bare de fem
+planen nevnte. `notion-sync` bar en kommentar om den opprinnelige buggen:
+`if (process.env.CRON_SECRET && auth !== forventet)` hoppet over hele sjekken når
+env-variabelen manglet, og slapp dermed alle gjennom. Alle åtte bruker nå
+`src/lib/cron/auth.ts`, som er eksplisitt fail-closed og testet på nettopp det.
+
+Av de fem rutene planen ville zod-dekke, viste `health/ingest` seg å allerede
+validere gjennom `parseAppleHealth` (kaster → 400). De tre som faktisk manglet
+validering er dekket: `inbox/inbound` skrev rå webhook-felt rett til
+`prisma.innboksEpost.create` (en `subject: 42` ga 500 i DB-laget), og de to
+chat-rutene castet med `as ChatRequestBody`. Castene er borte — zod validerer
+formen, og den eksisterende type guarden smalner typen uten `as unknown as`
+(invariant 6).
+
+**Steg 6 — planen tok feil om omfanget.** Den navnga seks workbench-moduler som
+neste mål. Målt: bare `session-update.ts` er faktisk ren; `duplicate-week`,
+`insights`, `load-workbench` og `periode-core` importerer Prisma eller
+server-only, og `compliance.ts` har ingen datomatte i det hele tatt. De hører
+altså til de 123 server-koblede, ikke de 20 rene.
+
+Det viktigste funnet er et annet: **`uke-helpers.ts` sto uten en eneste test.**
+Det er modulen `gotchas.md` sier at ALL dato/uke-logikk skal gå gjennom — altså
+var repoets svar på tre separate tidssonefeil selv udekket. Den har nå 10 tester
+som kjører i fire tidsvinduer, og de er verifisert grønne under både `TZ=UTC`
+(Vercel) og `TZ=Europe/Oslo` (lokal dev). Mutasjonssjekk: bytter man
+Oslo-formatteren til UTC, blir 1 test rød under UTC og 5 under Oslo.
+
+**Steg 7.** Stripe-regelen lå inline i `syncSubscription`, som treffer Prisma og
+derfor ikke kunne testes. Den er flyttet til `abonnement-status.ts` (ren
+flytting) og har nå regresjonstesten `gotchas.md` etterlyste. Mutasjonssjekk:
+fjerner man `cancel_at_period_end`-grenen, blir 2 tester røde.
+
+For GDPR ble det bevisst en **kontrakt-test mot `schema.prisma`** framfor en
+Prisma-mock. Å mocke hele kjeden ville bevist at funksjonen kaller `update` — men
+det er ikke det som brekker. Det som brekker er drift: et nytt PII-felt på `User`
+som ingen legger inn i `ANONYMISERTE_BRUKERFELTER`, hvorpå sletting rapporterer
+suksess mens feltet blir liggende, og audit-loggen lyver. Testen fanger det, med
+en melding som sier hva du skal gjøre. Mutasjonssjekk: fjerner man `phone` fra
+lista, blir 3 tester røde.
+
+**Steg 8 er bevisst bare delvis.** `docs/testing.md` er rettet mot målte tall
+(påsto 110 enhetstestfiler og 32 specer; faktisk 183 og 34) og de to slettede
+specene er fjernet. **Skip-gaten er IKKE bygget** — en gate som feiler på skip
+gir mening først når secretene finnes, ellers gjør den bare CI rød på noe ingen
+kan fikse. Den hører til steg 1.
 
 ### Funn fra steg 4 (2026-08-15)
 

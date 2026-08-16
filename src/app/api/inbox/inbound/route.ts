@@ -15,15 +15,15 @@ import { NextResponse, after } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { genererUtkast } from "@/lib/innboks/generer-utkast";
 import { logError } from "@/lib/error-tracking";
+import {
+  inboundEpostSchema,
+  type InboundEpost,
+} from "@/lib/validation/api-schemas";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
-type InboundPayload = {
-  from?: string | { email?: string; name?: string };
-  subject?: string;
-  text?: string;
-};
+type InboundPayload = InboundEpost;
 
 function parseAvsender(from: InboundPayload["from"]): { epost: string; navn: string | null } | null {
   if (!from) return null;
@@ -54,12 +54,24 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "unauthorized" }, { status: 401 });
   }
 
-  let payload: InboundPayload;
+  let rå: unknown;
   try {
-    payload = await request.json();
+    rå = await request.json();
   } catch {
     return NextResponse.json({ error: "invalid-json" }, { status: 400 });
   }
+
+  // zod ved API-grensen (gotchas.md): før dette gikk rå webhook-felt rett inn i
+  // prisma.innboksEpost.create uten formsjekk. Ugyldig form skal gi 400, ikke
+  // en 500 lenger inne i DB-laget.
+  const validert = inboundEpostSchema.safeParse(rå);
+  if (!validert.success) {
+    return NextResponse.json(
+      { error: "invalid-payload", detaljer: validert.error.issues },
+      { status: 400 },
+    );
+  }
+  const payload: InboundPayload = validert.data;
 
   const avsender = parseAvsender(payload.from);
   if (!avsender) {

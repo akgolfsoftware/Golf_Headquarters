@@ -5,20 +5,15 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { syncNotionDatabase } from "@/lib/notion/sync";
 import { rateLimit } from "@/lib/rate-limit";
+import { avvisUgyldigCron } from "@/lib/cron/auth";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 export const maxDuration = 60;
 
 export async function GET(req: Request): Promise<NextResponse> {
-  const auth = req.headers.get("authorization");
-  const expectedAuth = `Bearer ${process.env.CRON_SECRET}`;
-  // VIKTIG: manglende CRON_SECRET i env er en konfigurasjonsfeil — avvis alltid.
-  // Original bug: `if (process.env.CRON_SECRET && ...)` tillot tilgang hvis
-  // env-variabelen MANGLER (tom string = falsy). Riktig: avvis hvis den mangler.
-  if (!process.env.CRON_SECRET || auth !== expectedAuth) {
-    return NextResponse.json({ error: "unauthorized" }, { status: 401 });
-  }
+  const avvist = avvisUgyldigCron(req);
+  if (avvist) return avvist;
   const rl = await rateLimit({ key: `cron-notion-sync`, max: 5, windowMs: 60_000 });
   if (!rl.ok) {
     return NextResponse.json(

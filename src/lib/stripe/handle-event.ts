@@ -28,6 +28,10 @@ import {
 import { notify } from "@/lib/notifications";
 import { resendKlient, FRA_EPOST } from "@/lib/email";
 import { creditsForPriceId, tierForPriceId } from "@/lib/stripe";
+import {
+  mapStripeStatus,
+  effektivAbonnementStatus,
+} from "./abonnement-status";
 
 export const STRIPE_KILDE = "stripe";
 
@@ -79,22 +83,6 @@ export async function angreBehandlet(eventId: string): Promise<void> {
     .catch(() => undefined);
 }
 
-function mapStripeStatus(s: string): SubscriptionStatus {
-  switch (s) {
-    case "active":
-    case "trialing":
-      return "ACTIVE";
-    case "past_due":
-    case "unpaid":
-      return "PAST_DUE";
-    case "canceled":
-    case "incomplete_expired":
-      return "CANCELLED";
-    default:
-      return "ACTIVE";
-  }
-}
-
 export async function syncSubscription(stripeSub: Stripe.Subscription) {
   const userId = stripeSub.metadata?.userId;
   if (!userId) {
@@ -108,10 +96,10 @@ export async function syncSubscription(stripeSub: Stripe.Subscription) {
   // avbestilles på nytt) — ellers overskriver denne webhooken CANCELLED-en
   // cancelPro() nettopp satte. Tier/credits beholdes ut den betalte perioden;
   // customer.subscription.deleted («canceled») nedgraderer til GRATIS.
-  const status: SubscriptionStatus =
-    stripeStatus === "ACTIVE" && stripeSub.cancel_at_period_end
-      ? "CANCELLED"
-      : stripeStatus;
+  const status: SubscriptionStatus = effektivAbonnementStatus(
+    stripeStatus,
+    stripeSub.cancel_at_period_end,
+  );
   const priceId = stripeSub.items.data[0]?.price?.id ?? null;
   // Inaktive abonnement skal alltid være GRATIS-tier uavhengig av pris-ID.
   const tier = stripeStatus === "ACTIVE" ? tierForPriceId(priceId) : "GRATIS";
