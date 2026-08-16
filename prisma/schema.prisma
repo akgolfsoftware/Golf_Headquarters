@@ -345,6 +345,10 @@ model User {
   // Utløp for prøveperioden. null => createdAt + 30 dager (resolveTilgang).
   // Eget felt så prøven kan forlenges/nullstilles per bruker av admin.
   trialEndsAt        DateTime?
+  // Sporing av registreringskilde: "TALENTHQ" for kontoer som kom via gamle
+  // TalentHQ/Intelligence-appen eller ?kilde=talenthq-registrering. Kun
+  // analyse/sporing — tilgangsnivået styres av profilType.
+  profilKilde        String?
   lastLoginAt        DateTime?
   // Spiller-profil (Fase 1.4)
   hcp                Float?
@@ -632,6 +636,15 @@ model TalentTracking {
   // Milepæler som JSON-array: [{ tittel, dato, beskrivelse }, ...]
   milepaeler   Json?
   notater      String?
+  // Auto-beregnede testflater (plan T4) — per pyramideområde fra CANON-
+  // testresultater + benchmark-stigen. Skrives KUN av talent-syncen og rører
+  // ALDRI radar-aksene over (de er coachens kvalitative vurdering).
+  // Form håndheves med zod i src/lib/domain/talent-sync.ts.
+  testNivaaer     Json?
+  sisteTestSyncAt DateTime?
+  // Opprettet automatisk ved første testresultat for program-gruppemedlem
+  // (ikke manuelt av coach fra discovery-flaten).
+  autoInnmeldt    Boolean  @default(false)
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
@@ -640,6 +653,46 @@ model TalentTracking {
   @@index([niva, region])
   @@index([klubb])
   @@map("talent_tracking")
+}
+
+// Delingssamtykke til tredjepart (Team Norway / WANG — plan T8). APPEND-ONLY
+// etter HelseSamtykke-mønsteret: trekk = ny rad med gitt=false, aldri update.
+// Nyeste rad per (user, scope, mottakerGruppe) vinner. Mottaker er en Group
+// (org-light: WANG/TN finnes som kanoniske grupper). For mindreårige
+// (requiresGuardianConsent) kreves gittAvRolle=FORESATT — håndheves i
+// ekstern-leser-scopet, aldri bare i UI. Ingen @relation — additiv isolasjon.
+model DelingsSamtykke {
+  id                String   @id @default(cuid())
+  userId            String
+  // TEST_RESULTATER | STATS
+  scope             String
+  mottakerGruppeId  String
+  // false = trukket (ny rad, aldri update av gamle)
+  gitt              Boolean
+  tekstVersjon      String
+  gittAvUserId      String
+  // SELV | FORESATT
+  gittAvRolle       String
+  createdAt         DateTime @default(now())
+
+  @@index([userId, scope, mottakerGruppeId, createdAt])
+  @@map("delings_samtykker")
+}
+
+// Ekstern leser (Team Norway-/WANG-ansvarlig, plan T8): en GUEST-bruker med
+// lesetilgang til samtykkede data for medlemmene i tildelte grupper.
+// revokedAt = tilgangen er trukket. Ingen @relation — additiv isolasjon.
+model EksternLeserGruppe {
+  id            String    @id @default(cuid())
+  userId        String
+  groupId       String
+  opprettetAvId String?
+  createdAt     DateTime  @default(now())
+  revokedAt     DateTime?
+
+  @@unique([userId, groupId])
+  @@index([userId, revokedAt])
+  @@map("ekstern_leser_grupper")
 }
 
 // Ressurs-bibliotek for talent-program. Videoer, artikler, podcasts.
@@ -1537,6 +1590,10 @@ model TestDefinition {
   /// Treningsomrade-kode fra src/lib/taxonomy.ts (TRENINGSOMRADER), f.eks. "CHIP" eller "PUTT_5_10".
   /// Null for FYS-tester (delferdighet, ikke omrade) og tester som spenner flere omrader.
   omraade     String?
+  /// CANON v3.5-testbatteriet (20 protokoller; Putt Speed Control ligger som
+  /// to gjennomforingsvarianter => 21 rader). Spillere ser KUN erCanon +
+  /// egne isCustom-tester; coach ser alle (Anders 2026-08-16).
+  erCanon     Boolean     @default(false)
   scoringRule String
   protocol    Json?
   createdAt   DateTime    @default(now())
