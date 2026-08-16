@@ -4,6 +4,8 @@ import { revalidatePath } from "next/cache";
 
 import { Prisma } from "@/generated/prisma/client";
 import { requireCoachActionUser } from "@/lib/auth/action-guards";
+import { assertCapability } from "@/lib/auth/effective-capabilities";
+import { Capability } from "@/lib/auth/cbac";
 import { coachScopedPlayerWhere } from "@/lib/auth/coached";
 import { gruppemedlemRolleSchema, type GruppemedlemRolle } from "@/lib/domain/grupper";
 import { prisma } from "@/lib/prisma";
@@ -14,7 +16,11 @@ type ActionResult = { ok: true } | { ok: false; feil: string };
 
 async function krevCoach() {
   try {
-    return await requireCoachActionUser();
+    const user = await requireCoachActionUser();
+    // G6: alle actions her endrer grupper/medlemmer → MANAGE_GROUPS
+    // (i COACH-defaulten; kan trekkes per trener via REVOKE).
+    await assertCapability(user, Capability.MANAGE_GROUPS);
+    return user;
   } catch {
     return null;
   }

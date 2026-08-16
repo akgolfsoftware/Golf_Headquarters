@@ -11,7 +11,8 @@
  * Server component.
  */
 
-import { requirePortalUser } from "@/lib/auth/requirePortalUser";
+import { requireCapability } from "@/lib/auth/requireCapability";
+import { Capability } from "@/lib/auth/cbac";
 import { prisma } from "@/lib/prisma";
 import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
 import { GrupperV2, type GrupperData, type GruppeV2, type FastTid } from "@/components/admin/v2/GrupperV2";
@@ -42,7 +43,9 @@ function minutter(hhmm: string): number {
 }
 
 export default async function V2GrupperPage() {
-  const user = await requirePortalUser({ allow: ["ADMIN", "COACH"] });
+  // G6: capability-gate (MANAGE_GROUPS ligger i COACH-defaulten — ingen
+  // eksisterende coach mister tilgang; kan trekkes per trener via REVOKE).
+  const user = await requireCapability(Capability.MANAGE_GROUPS);
 
   const coachesRaw = await prisma.user.findMany({
     where: { role: "COACH", deletedAt: null },

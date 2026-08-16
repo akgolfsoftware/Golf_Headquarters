@@ -5,7 +5,8 @@
  */
 
 import { notFound } from "next/navigation";
-import { requirePortalUser } from "@/lib/auth/requirePortalUser";
+import { requireCapability } from "@/lib/auth/requireCapability";
+import { Capability } from "@/lib/auth/cbac";
 import { prisma } from "@/lib/prisma";
 import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
 import { GruppeTimeplanV2, type GruppeTimeplanV2Data } from "@/components/admin/v2/GruppeTimeplanV2";
@@ -21,7 +22,7 @@ export default async function GruppeTimeplanPage({
   params: Promise<{ id: string }>;
   searchParams: Promise<{ focus?: string }>;
 }) {
-  const user = await requirePortalUser({ allow: ["COACH", "ADMIN"] });
+  const user = await requireCapability(Capability.MANAGE_GROUPS);
   const { id } = await params;
   const { focus } = await searchParams;
 

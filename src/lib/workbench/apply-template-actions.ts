@@ -7,6 +7,8 @@
 
 import { revalidatePath } from "next/cache";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
+import { assertCapability } from "@/lib/auth/effective-capabilities";
+import { Capability } from "@/lib/auth/cbac";
 import { harCoachTilgangTilSpiller } from "@/lib/auth/coached";
 import { prisma } from "@/lib/prisma";
 import { upsertV2ForPlanSession } from "@/lib/workbench/v2-sync";
@@ -269,6 +271,8 @@ export async function coachApplyTemplateToGroup(
   hoppet?: { navn: string; uke: number; okt?: string; grunn?: "KRYSSKILDE" | "FEIL" }[];
 }> {
   const coach = await requirePortalUser({ allow: ["COACH", "ADMIN"] });
+  // G6: utrulling av mal til gruppe endrer gruppeplanen → EDIT_GROUP_PLANS.
+  await assertCapability(coach, Capability.EDIT_GROUP_PLANS);
   const startWeekOffset = Math.max(0, Math.min(12, Math.trunc(opts.startWeekOffset ?? 0)));
 
   const [gruppe, mal] = await Promise.all([

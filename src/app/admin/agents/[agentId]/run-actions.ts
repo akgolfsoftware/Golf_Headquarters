@@ -6,6 +6,8 @@
 
 import { revalidatePath } from "next/cache";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
+import { assertCapability } from "@/lib/auth/effective-capabilities";
+import { Capability } from "@/lib/auth/cbac";
 import { harCoachTilgangTilSpiller } from "@/lib/auth/coached";
 import { prisma } from "@/lib/prisma";
 import { runPlanRevisjon } from "@/lib/agents/plan-revisjon-agent";
@@ -32,6 +34,7 @@ export async function kjorPlanRevisjon(
   trigger: string,
 ): Promise<PlanRevisjonResultat> {
   const coach = await requirePortalUser({ allow: ["COACH", "ADMIN"] });
+  await assertCapability(coach, Capability.USE_AGENTS);
   if (!planId) return { ok: false, melding: "Velg en treningsplan" };
   if (!TRIGGERE.includes(trigger as PlanRevisionTrigger)) {
     return { ok: false, melding: "Ugyldig trigger" };
@@ -64,6 +67,7 @@ export async function kjorPeaking(
   tournamentId: string,
 ): Promise<PeakingResultat> {
   const coach = await requirePortalUser({ allow: ["COACH", "ADMIN"] });
+  await assertCapability(coach, Capability.USE_AGENTS);
   if (!spillerId || !tournamentId) {
     return { ok: false, melding: "Velg både spiller og turnering" };
   }

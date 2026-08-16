@@ -17,7 +17,8 @@
 
 import { coachScopedPlayerWhere } from "@/lib/auth/coached";
 import { notFound } from "next/navigation";
-import { requirePortalUser } from "@/lib/auth/requirePortalUser";
+import { requireCapability } from "@/lib/auth/requireCapability";
+import { Capability } from "@/lib/auth/cbac";
 import { prisma } from "@/lib/prisma";
 import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
 import {
@@ -212,7 +213,8 @@ export default async function AgentDetaljPage({
 }: {
   params: Promise<{ agentId: string }>;
 }) {
-  const user = await requirePortalUser({ allow: ["COACH", "ADMIN"] });
+  // G6: USE_AGENTS — utenfor COACH-defaulten, grantes per trener.
+  const user = await requireCapability(Capability.USE_AGENTS);
   const { agentId } = await params;
   const konfig = AGENT_KONFIG[agentId];
   if (!konfig) notFound();

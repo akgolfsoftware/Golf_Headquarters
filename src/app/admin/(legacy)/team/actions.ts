@@ -2,16 +2,26 @@
 
 import { z } from "zod";
 import { revalidatePath } from "next/cache";
-import { requireAdminActionUser } from "@/lib/auth/action-guards";
+import { requireCoachActionUser } from "@/lib/auth/action-guards";
+import { assertCapability } from "@/lib/auth/effective-capabilities";
+import { Capability, ROLE_CAPABILITIES } from "@/lib/auth/cbac";
 import { prisma } from "@/lib/prisma";
 import { audit } from "@/lib/audit";
 import { FRA_EPOST, resendKlient } from "@/lib/email";
 import { nonEmpty, email } from "@/lib/validation/schemas";
 import { logError } from "@/lib/error-tracking";
 
+const CAPABILITY_VERDIER = Object.values(Capability) as [
+  Capability,
+  ...Capability[],
+];
+
 const InviterCoachSchema = z.object({
   email: email,
   name: nonEmpty(200),
+  // G6: valgfrie ekstra-tilganger utover COACH-defaulten, skrives som
+  // GRANT-overrides ved opprettelse. Kun ADMIN kan sende disse.
+  capabilities: z.array(z.enum(CAPABILITY_VERDIER)).max(50).optional(),
 });
 
 export type InviterCoachResult =
@@ -28,8 +38,13 @@ export type InviterCoachResult =
 export async function inviterCoach(
   emailInput: string,
   name: string,
+  capabilities?: Capability[],
 ): Promise<InviterCoachResult> {
-  const zodResult = InviterCoachSchema.safeParse({ email: emailInput, name });
+  const zodResult = InviterCoachSchema.safeParse({
+    email: emailInput,
+    name,
+    capabilities,
+  });
   if (!zodResult.success) {
     const fieldErrors: Record<string, string> = {};
     for (const err of zodResult.error.issues) {
@@ -41,11 +56,24 @@ export async function inviterCoach(
 
   let aktor;
   try {
-    aktor = await requireAdminActionUser();
+    // G6: gates på INVITE_USERS (utenfor COACH-defaulten — i praksis ADMIN
+    // pluss trenere med eksplisitt GRANT invite_users).
+    aktor = await requireCoachActionUser();
+    await assertCapability(aktor, Capability.INVITE_USERS);
   } catch (err) {
     return {
       ok: false,
       error: err instanceof Error ? err.message : "forbidden",
+    };
+  }
+
+  // Kun ADMIN kan tildele ekstra-tilganger — en coach med INVITE_USERS skal
+  // ikke kunne gi bort capabilities hen ikke selv styrer.
+  const onskedeCapabilities = zodResult.data.capabilities ?? [];
+  if (onskedeCapabilities.length > 0 && aktor.role !== "ADMIN") {
+    return {
+      ok: false,
+      error: "Kun admin kan tildele ekstra tilganger ved invitasjon.",
     };
   }
 
@@ -75,6 +103,25 @@ export async function inviterCoach(
     select: { id: true, email: true, name: true },
   });
 
+  // G6: skriv GRANT-overrides for valgte ekstra-tilganger. Caps som allerede
+  // ligger i COACH-defaulten hoppes over — de er effektive uten override.
+  const coachDefault = new Set<Capability>(ROLE_CAPABILITIES.COACH);
+  const ekstra = [...new Set(onskedeCapabilities)].filter(
+    (cap) => !coachDefault.has(cap),
+  );
+  if (ekstra.length > 0) {
+    await prisma.userCapability.createMany({
+      data: ekstra.map((cap) => ({
+        userId: ny.id,
+        capability: cap,
+        mode: "GRANT",
+        grantedById: aktor.id,
+        note: "Gitt ved invitasjon",
+      })),
+      skipDuplicates: true,
+    });
+  }
+
   // Send invitasjons-epost via Resend hvis konfigurert.
   let epostSendt = false;
   if (process.env.RESEND_API_KEY) {
@@ -102,7 +149,7 @@ export async function inviterCoach(
     actorId: aktor.id,
     action: "user.invited",
     target: `User:${ny.id}`,
-    metadata: { role: "COACH", email: ny.email, epostSendt },
+    metadata: { role: "COACH", email: ny.email, epostSendt, ekstraTilganger: ekstra },
   });
 
   revalidatePath("/admin/team");

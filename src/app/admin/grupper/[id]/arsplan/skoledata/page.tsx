@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
-import { requirePortalUser } from "@/lib/auth/requirePortalUser";
+import { requireCapability } from "@/lib/auth/requireCapability";
+import { Capability } from "@/lib/auth/cbac";
 import { prisma } from "@/lib/prisma";
 import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
 import { TilbakeLenke } from "@/components/v2";
@@ -9,7 +10,8 @@ import { SkoledataForm } from "./skoledata-form";
 export const dynamic = "force-dynamic";
 
 export default async function SkoledataPage({ params }: { params: Promise<{ id: string }> }) {
-  const user = await requirePortalUser({ allow: ["COACH", "ADMIN"] });
+  // G6: skoledata redigerer årsplan-grunnlaget → EDIT_GROUP_PLANS.
+  const user = await requireCapability(Capability.EDIT_GROUP_PLANS);
   const { id } = await params;
 
   const gruppe = await prisma.group.findUnique({ where: { id }, select: { id: true } });
