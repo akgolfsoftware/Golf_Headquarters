@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!--
+  Saker-innsamler (Gmail) — Jarvis steg 2, DEL A. Kjører hvert 10. minutt,
+  døgnet rundt (jf. jarvis-masterplan.md steg 2: "e-post ... → køen hvert
+  10. min").
+
+  Installasjon (Mac Mini):
+    1. Juster stien under WorkingDirectory til repoets plassering.
+    2. cp com.akgolf.saker-gmail.plist ~/Library/LaunchAgents/
+    3. launchctl load ~/Library/LaunchAgents/com.akgolf.saker-gmail.plist
+
+  KUN Gmail-delen er installert av denne LaunchAgenten. iMessage/SMS-
+  innsamleren (scripts/saker-innsamling/imessage.ts) har ingen egen
+  LaunchAgent ennå — den venter på Full Disk Access (se README).
+-->
+<plist version="1.0">
+<dict>
+  <key>Label</key>
+  <string>com.akgolf.saker-gmail</string>
+  <key>ProgramArguments</key>
+  <array>
+    <string>/usr/local/bin/npm</string>
+    <string>run</string>
+    <string>saker:gmail</string>
+  </array>
+  <key>WorkingDirectory</key>
+  <string>/Users/anderskristiansen/Developer/akgolf-hq</string>
+  <key>StartInterval</key>
+  <integer>600</integer>
+  <key>RunAtLoad</key>
+  <true/>
+  <key>StandardOutPath</key>
+  <string>/tmp/saker-gmail.log</string>
+  <key>StandardErrorPath</key>
+  <string>/tmp/saker-gmail.err</string>
+</dict>
+</plist>
