@@ -9,6 +9,7 @@ import { beregnSgFraShots, beregnGranulaerSgFraShots } from "@/lib/runde-logg/sh
 import { hullSchema } from "@/lib/runde-logg/schema";
 import { byggShotRader } from "@/lib/runde-logg/bygg-shot-rader";
 import { deriverRundeScore } from "@/lib/runde-logg/deriver-hullscore";
+import { synkroniserSgFraRunder } from "@/lib/portal-stats/sg-bro";
 import { ShotLie, ShotType, WindDir } from "@/generated/prisma/client";
 import { logError } from "@/lib/error-tracking";
 
@@ -112,7 +113,7 @@ async function recomputeRoundSg(roundId: string): Promise<void> {
   try {
     const round = await prisma.round.findUnique({
       where: { id: roundId },
-      select: { sgSource: true },
+      select: { sgSource: true, userId: true },
     });
     if (!round || round.sgSource === "manual") return;
 
@@ -178,6 +179,13 @@ async function recomputeRoundSg(roundId: string): Promise<void> {
           sgSource: null,
         },
       });
+    }
+
+    // SG-broen (T6): rundens SG kan ha endret seg (skrevet eller nullstilt) —
+    // synk DataGolf-grunnlaget (BrukerSgInput, kilde PLAYERHQ). Best-effort,
+    // kaster aldri. Skipper når ingen skriving skjedde.
+    if (sg || round.sgSource === "beregnet") {
+      await synkroniserSgFraRunder(round.userId);
     }
   } catch (error) {
     await logError({
