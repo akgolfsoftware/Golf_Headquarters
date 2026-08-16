@@ -18,7 +18,6 @@ import { after } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { pushBooking } from "@/lib/google-calendar-kilder";
 import { varsleNyBooking } from "@/lib/booking/varsle-ny-booking";
-import type { SubscriptionStatus } from "@/generated/prisma/client";
 import {
   recordPaymentIntent,
   recordCheckoutSession,
@@ -27,11 +26,7 @@ import {
 } from "@/lib/payments/record";
 import { notify } from "@/lib/notifications";
 import { resendKlient, FRA_EPOST } from "@/lib/email";
-import { creditsForPriceId, tierForPriceId } from "@/lib/stripe";
-import {
-  mapStripeStatus,
-  effektivAbonnementStatus,
-} from "./abonnement-status";
+import { beregnSubscriptionSync } from "./beregn-subscription-sync";
 
 export const STRIPE_KILDE = "stripe";
 
@@ -90,75 +85,59 @@ export async function syncSubscription(stripeSub: Stripe.Subscription) {
     return;
   }
 
-  const stripeStatus = mapStripeStatus(stripeSub.status);
-  // Avbestilt-men-betalt: Stripe rapporterer «active» + cancel_at_period_end
-  // frem til periodeslutt. Appen skal vise CANCELLED (fornyes ikke, kan ikke
-  // avbestilles på nytt) — ellers overskriver denne webhooken CANCELLED-en
-  // cancelPro() nettopp satte. Tier/credits beholdes ut den betalte perioden;
-  // customer.subscription.deleted («canceled») nedgraderer til GRATIS.
-  const status: SubscriptionStatus = effektivAbonnementStatus(
-    stripeStatus,
-    stripeSub.cancel_at_period_end,
-  );
   const priceId = stripeSub.items.data[0]?.price?.id ?? null;
-  // Inaktive abonnement skal alltid være GRATIS-tier uavhengig av pris-ID.
-  const tier = stripeStatus === "ACTIVE" ? tierForPriceId(priceId) : "GRATIS";
-  const monthlyCredits = stripeStatus === "ACTIVE" ? creditsForPriceId(priceId) : 0;
-  // Kind utledes fra PRISEN, aldri fra monthlyCredits-feltet — et kansellert
-  // Performance-abonnement har credits 0 men er fortsatt COACHING-raden (A1).
-  const kind = creditsForPriceId(priceId) > 0 ? "COACHING" : "PLAYERHQ";
-  const plan =
-    creditsForPriceId(priceId) >= 4
-      ? "PERFORMANCE_PRO"
-      : creditsForPriceId(priceId) > 0
-        ? "PERFORMANCE"
-        : "PLAYERHQ_MND";
-  const interval = stripeSub.items.data[0]?.price?.recurring?.interval ?? "month";
-  const periodEnd = stripeSub.items.data[0]?.current_period_end;
-  const newPeriodEnd = periodEnd ? new Date(periodEnd * 1000) : null;
+  // All regel-logikk (kind/plan/tier/status/credits) er ren og testbar i
+  // beregnSubscriptionSync — se filhodet der for reglene (A2).
+  const v = beregnSubscriptionSync({
+    stripeStatus: stripeSub.status,
+    cancelAtPeriodEnd: stripeSub.cancel_at_period_end,
+    priceId,
+    interval: stripeSub.items.data[0]?.price?.recurring?.interval ?? null,
+    currentPeriodEnd: stripeSub.items.data[0]?.current_period_end ?? null,
+  });
 
   // Reset credits-saldo kun ved førstegangs-opprettelse eller når
   // faktureringsperioden har rullet — ellers beholder kunden gjenværende saldo.
   const existing = await prisma.subscription.findUnique({
-    where: { userId_kind: { userId, kind } },
+    where: { userId_kind: { userId, kind: v.kind } },
     select: { currentPeriodEnd: true },
   });
 
   const periodRolled =
     !existing?.currentPeriodEnd ||
-    (newPeriodEnd && existing.currentPeriodEnd.getTime() !== newPeriodEnd.getTime());
+    (v.currentPeriodEnd && existing.currentPeriodEnd.getTime() !== v.currentPeriodEnd.getTime());
 
   await prisma.subscription.upsert({
-    where: { userId_kind: { userId, kind } },
+    where: { userId_kind: { userId, kind: v.kind } },
     create: {
       userId,
-      kind,
-      plan,
-      interval,
-      cancelAtPeriodEnd: stripeSub.cancel_at_period_end,
+      kind: v.kind,
+      plan: v.plan,
+      interval: v.interval,
+      cancelAtPeriodEnd: v.cancelAtPeriodEnd,
       stripePriceId: priceId,
-      tier,
-      status,
+      tier: v.tier,
+      status: v.status,
       stripeSubscriptionId: stripeSub.id,
       stripeCustomerId:
         typeof stripeSub.customer === "string"
           ? stripeSub.customer
           : stripeSub.customer.id,
-      currentPeriodEnd: newPeriodEnd,
-      monthlyCredits,
-      creditsRemaining: monthlyCredits,
+      currentPeriodEnd: v.currentPeriodEnd,
+      monthlyCredits: v.monthlyCredits,
+      creditsRemaining: v.monthlyCredits,
     },
     update: {
-      plan,
-      interval,
-      cancelAtPeriodEnd: stripeSub.cancel_at_period_end,
+      plan: v.plan,
+      interval: v.interval,
+      cancelAtPeriodEnd: v.cancelAtPeriodEnd,
       stripePriceId: priceId,
-      tier,
-      status,
+      tier: v.tier,
+      status: v.status,
       stripeSubscriptionId: stripeSub.id,
-      currentPeriodEnd: newPeriodEnd,
-      monthlyCredits,
-      ...(periodRolled ? { creditsRemaining: monthlyCredits } : {}),
+      currentPeriodEnd: v.currentPeriodEnd,
+      monthlyCredits: v.monthlyCredits,
+      ...(periodRolled ? { creditsRemaining: v.monthlyCredits } : {}),
     },
   });
 
@@ -171,6 +150,58 @@ export async function syncSubscription(stripeSub: Stripe.Subscription) {
   });
   const effektivTier = alleRader.some((s) => s.tier !== "GRATIS") ? "PRO" : "GRATIS";
   await prisma.user.update({ where: { id: userId }, data: { tier: effektivTier } });
+
+  // Academy-forslag (Anders 2026-08-16, manuell kuratering med forslag-kø):
+  // aktiv coaching-pakke uten aktivt medlemskap i AK Golf Academy-gruppen →
+  // én-gangs varsel til ADMIN med lenke til gruppen. Best-effort.
+  if (v.kind === "COACHING" && v.status === "ACTIVE") {
+    await foreslaAcademyMedlemskap(userId).catch(() => undefined);
+  }
+}
+
+/**
+ * Forslag-køen for AK Golf Academy-medlemskap: Performance-kunder foreslås
+ * (aldri auto-innmeldes — gruppen kurateres manuelt). Dedup: hopp over hvis
+ * det finnes et ulest varsel med samme groupKey-lenke fra før.
+ */
+async function foreslaAcademyMedlemskap(userId: string): Promise<void> {
+  const gruppe = await prisma.group.findUnique({
+    where: { slug: "ak-golf-academy" },
+    select: { id: true },
+  });
+  if (!gruppe) return;
+
+  const erMedlem = await prisma.groupMember.findFirst({
+    where: { userId, groupId: gruppe.id, endedAt: null },
+    select: { id: true },
+  });
+  if (erMedlem) return;
+
+  const spiller = await prisma.user.findUnique({
+    where: { id: userId },
+    select: { name: true },
+  });
+  const admin = await prisma.user.findFirst({
+    where: { role: "ADMIN", deletedAt: null },
+    orderBy: { createdAt: "asc" },
+    select: { id: true },
+  });
+  if (!admin || !spiller) return;
+
+  const lenke = `/admin/grupper/${gruppe.id}`;
+  const finnesUlest = await prisma.notification.findFirst({
+    where: { userId: admin.id, link: lenke, readAt: null, body: { contains: spiller.name } },
+    select: { id: true },
+  });
+  if (finnesUlest) return;
+
+  await notify({
+    userId: admin.id,
+    type: "system",
+    title: "Forslag: nytt Academy-medlem",
+    body: `${spiller.name} har aktiv coaching-pakke, men er ikke medlem av AK Golf Academy-gruppen. Legg til?`,
+    link: lenke,
+  });
 }
 
 /**
