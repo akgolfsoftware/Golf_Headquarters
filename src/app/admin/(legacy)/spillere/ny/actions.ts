@@ -206,9 +206,14 @@ export async function createSpiller(
     });
 
     if (data.tier === "PRO") {
+      // A5: manuelt opprettede abonnement merkes MANUELL — girPlayerHqTilgang
+      // krever plan-verdi, og cancelPro viser «ta kontakt» for rader uten
+      // Stripe-kobling i stedet for å feile.
       await tx.subscription.create({
         data: {
           userId: u.id,
+          kind: "PLAYERHQ",
+          plan: "MANUELL",
           tier: "PRO",
           status: "ACTIVE",
         },

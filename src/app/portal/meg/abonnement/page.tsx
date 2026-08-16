@@ -15,6 +15,7 @@ import { getAbonnementData } from "@/lib/portal-abonnement/abonnement-data";
 import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
 import { MegAbonnementV2, type MegAbonnementData } from "@/components/portal/v2/MegAbonnementV2";
 import { TilbakeLenke } from "@/components/v2";
+import { pakkeNavn } from "@/lib/domain/abonnement";
 
 export const dynamic = "force-dynamic";
 
@@ -37,7 +38,7 @@ export default async function AbonnementPage({
 
   // Avledninger — 1:1 med den tidligere src/app/portal/meg/abonnement/page.tsx.
   const harPakke = abo.monthlyCredits > 0;
-  const planNavn = abo.monthlyCredits >= 4 ? "Performance Pro" : harPakke ? "Performance" : null;
+  const planNavn = pakkeNavn(abo.monthlyCredits);
   const gratis = harPakke || !abo.erPro;
   const betalingFeilet = abo.status === "PAST_DUE";
   const kanOppgradere = !abo.erPro && !betalingFeilet;
