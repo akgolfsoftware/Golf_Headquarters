@@ -5,7 +5,7 @@
  * bak hullet. Kladd i localStorage, SG beregnes server-side ved lagring.
  */
 
-import { requireConsentingUser } from "@/lib/auth/requireConsentingUser";
+import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { RundeLiveKlient } from "@/components/portal/runde-logg/runde-live-klient";
 import { sisteSpilteBaneId } from "@/lib/portal/siste-spilte-bane";
@@ -14,7 +14,12 @@ import { medForst } from "@/lib/portal/baneliste-med-prefill";
 export const metadata = { title: "Runde live — AK Golf HQ" };
 
 export default async function RundeLivePage() {
-  const user = await requireConsentingUser();
+  // (fullscreen)-layouten krever kun innlogging (17.08) — tilgangsnivået
+  // håndheves her. Runde-føring står ikke på talent-allowlisten: FULL.
+  // requirePortalUser dekker også foreldresamtykket requireConsentingUser
+  // gjorde før, men REDIRECTER til venterommet i stedet for å kaste — riktig
+  // for en side (requireConsentingUser er skrevet for server actions).
+  const user = await requirePortalUser({ kreverTilgang: "FULL" });
 
   const [alleBaner, sisteBaneId] = await Promise.all([
     prisma.courseDefinition.findMany({

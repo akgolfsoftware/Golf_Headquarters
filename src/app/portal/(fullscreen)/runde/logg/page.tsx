@@ -5,7 +5,7 @@
  * loggførte rundene (ekte data). KUN brutto score.
  */
 
-import { requireConsentingUser } from "@/lib/auth/requireConsentingUser";
+import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { RundeEtterregistreringKlient } from "@/components/portal/runde-logg/runde-etterregistrering-klient";
 import { sisteSpilteBaneId } from "@/lib/portal/siste-spilte-bane";
@@ -20,7 +20,12 @@ const OSLO_DATO = new Intl.DateTimeFormat("nb-NO", {
 });
 
 export default async function RundeLoggPage() {
-  const user = await requireConsentingUser();
+  // (fullscreen)-layouten krever kun innlogging (17.08) — tilgangsnivået
+  // håndheves her. Runde-logging står ikke på talent-allowlisten: FULL.
+  // requirePortalUser dekker også foreldresamtykket requireConsentingUser
+  // gjorde før, men REDIRECTER til venterommet i stedet for å kaste — riktig
+  // for en side (requireConsentingUser er skrevet for server actions).
+  const user = await requirePortalUser({ kreverTilgang: "FULL" });
 
   const [alleBaner, sisteBaneId, sisteRunder] = await Promise.all([
     prisma.courseDefinition.findMany({
