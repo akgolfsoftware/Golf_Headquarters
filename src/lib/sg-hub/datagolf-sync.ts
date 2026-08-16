@@ -1,6 +1,15 @@
 // Data Golf API — ukentlig sync av PGA Tour approach-skill benchmarks.
 // Kjøres via /api/cron/[agent] (agent = "datagolf-sync").
 // Upsert-er SgBaseline med @@unique([category, distanceBucket, lie]).
+//
+// SEMANTIKK (AP0.2 i docs/plan-baneguide-sg-app-2026-08-16.md): DataGolf-
+// feltet `sg_gained` er PGA-snittets strokes gained per slag fra posisjonen
+// (HØYERE = bedre). Kolonnen i SgBaseline heter `expectedStrokes` — et
+// historisk feilnavn som IKKE kan renames uten DB-endring (skjema-endringer
+// er egne beslutninger, jf. PB7). Verdien lagres som den er; alle
+// konsumenter (same-distance-strategy, insight-engine, StrategyCards) leser
+// den nå som SG-snitt, aldri som «forventet antall slag». Rettes for godt
+// når SgReferanse-tabellen (AP3) erstatter denne.
 
 import { prisma } from "@/lib/prisma";
 import type { ShotLie } from "@/generated/prisma/client";

@@ -10,11 +10,6 @@ import { computeTempo } from "@/lib/sg-hub/tempo";
 import { detectDrift } from "@/lib/sg-hub/drift-detection";
 import { computeFatigueCurve } from "@/lib/sg-hub/fatigue";
 import { computeClubFit } from "@/lib/sg-hub/equipment-fit";
-import { buildYardageRows } from "@/lib/sg-hub/yardage-calc";
-import {
-  buildStrategy,
-  makeBaselineLookup,
-} from "@/lib/sg-hub/same-distance-strategy";
 
 type EvaluatorResult = {
   category: InsightCategory;
@@ -497,62 +492,14 @@ async function evaluateProgressionTrend(userId: string): Promise<EvaluatorResult
   };
 }
 
-// Phase 3: Same-Distance Opportunity — bruk SgBaseline for å se om spilleren
-// kan vinne SG ved å bytte kølle på vanlige approach-distanser.
-async function evaluateSameDistanceOpportunity(userId: string): Promise<EvaluatorResult> {
-  const sessions = await getSessions(userId);
-  if (sessions.length === 0) return null;
-
-  const baselines = await prisma.sgBaseline.findMany({
-    where: { category: "APP" },
-    select: { distanceBucket: true, expectedStrokes: true },
-  });
-
-  if (baselines.length === 0) return null;
-
-  const rows = buildYardageRows(sessions);
-  if (rows.length === 0) return null;
-
-  const lookupBaseline = makeBaselineLookup(baselines);
-
-  // Sjekk på 3 vanlige approach-distanser (yards → meter)
-  const targetsYards = [100, 125, 150];
-  type Finding = { distanceY: number; best: string; recommended: string; sgDelta: number };
-  const findings: Finding[] = [];
-
-  for (const yardTarget of targetsYards) {
-    const meterTarget = yardTarget / 1.0936;
-    const options = buildStrategy(rows, meterTarget, 10, lookupBaseline);
-    if (options.length < 2) continue;
-
-    const best = options[0];
-    const second = options[1];
-    if (best.expectedSgVsBest != null && second.expectedSgVsBest != null) {
-      const sgDelta = Math.abs(second.expectedSgVsBest - best.expectedSgVsBest);
-      if (sgDelta > 0.05) {
-        findings.push({
-          distanceY: yardTarget,
-          best: best.club,
-          recommended: best.club,
-          sgDelta: Math.round(sgDelta * 100) / 100,
-        });
-      }
-    }
-  }
-
-  if (findings.length === 0) return null;
-
-  findings.sort((a, b) => b.sgDelta - a.sgDelta);
-  const worst = findings[0];
-
-  return {
-    category: "SAME_DISTANCE_OPPORTUNITY",
-    severity: 2,
-    title: `SG-mulighet på ${worst.distanceY} yards`,
-    body: `På ${worst.distanceY}y er ${worst.best} statistisk beste valg basert på din distribusjon vs PGA-baseline (potensial: +${worst.sgDelta} SG vs nest beste alternativ). Bruk Same-Distance-verktøyet for å se hele rangeringen.`,
-    payload: { findings } as unknown as Prisma.InputJsonObject,
-  };
-}
+// «Same-Distance Opportunity»-evaluatoren er FJERNET 2026-08-16 (AP0.2 i
+// docs/plan-baneguide-sg-app-2026-08-16.md): den sammenlignet kandidatenes
+// `expectedSgVsBest`, men baseline-oppslaget bruker mål-distansen (felles for
+// alle kandidater), så deltaet var matematisk alltid 0 og innsikten kunne
+// aldri fyre — død kode som i tillegg leste SgBaseline med feil semantikk
+// (sg_gained tolket som forventet slag). En meningsfull kølle-mot-kølle-
+// SG-modell (σ-basert) hører til AP3; hent gjerne den gamle koden fra
+// git-historikken som utgangspunkt.
 
 const EVALUATORS: Array<(userId: string) => Promise<EvaluatorResult>> = [
   evaluateDistanceGapping,
@@ -564,7 +511,6 @@ const EVALUATORS: Array<(userId: string) => Promise<EvaluatorResult>> = [
   evaluateEquipmentFit,
   evaluateTempoVariance,
   evaluateProgressionTrend,
-  evaluateSameDistanceOpportunity,
 ];
 
 export async function generateInsights(userId: string): Promise<void> {

@@ -1,6 +1,15 @@
 // Same-Distance Strategy.
 // For en gitt mål-distanse, finn alle køller som kan dekke distansen og
-// rangér etter expected SG (Strokes Gained) fra `SgBaseline`.
+// rangér etter presisjon (σ), avvik fra mål, apex og modus.
+//
+// SEMANTIKK-RETTELSE (AP0.2, 2026-08-16): SgBaseline-verdien er DataGolf
+// `sg_gained` — PGA-snittets SG per slag fra distansen (HØYERE = bedre),
+// IKKE «forventet antall slag». Feltet het `expectedStrokes` her og ble
+// dokumentert «lavere = bedre»; det ga feil fortegn i visning. Verdien er
+// dessuten identisk for alle kandidater (oppslaget bruker mål-distansen,
+// som er felles), så den kan aldri skille køller — den er KONTEKST
+// («touren snitter +0,02 SG herfra»), ikke rangeringsgrunnlag. Det gamle
+// `expectedSgVsBest`-feltet var derfor alltid 0/null og er fjernet.
 
 import type { YardageRow } from "./yardage-calc";
 
@@ -14,11 +23,11 @@ export type StrategyOption = {
   sigma: number; // ±1σ — presisjon
   apex: number; // Apex (m) — for stop-on-green
   deltaFromTarget: number; // expectedDistance − target (m)
-  expectedStrokes: number | null; // fra SgBaseline (lavere = bedre)
-  expectedSgVsBest: number | null; // sg-delta vs den beste i settet
+  tourSgSnitt: number | null; // DataGolf approach-skill: PGA-snittets SG fra mål-distansen (høyere = bedre). Kontekst, felles for alle kandidatene.
   rank: number; // 1 = anbefalt
 };
 
+/** Slår opp PGA-snittets SG (sg_gained) for en distanse — se semantikk-notatet over. */
 export type BaselineLookup = (params: {
   distanceM: number;
 }) => number | null;
@@ -76,7 +85,7 @@ export function buildStrategy(
           ? r.totalSigma * 0.85
           : r.totalSigma * 0.78;
 
-    const expectedStrokes = lookupBaseline
+    const tourSgSnitt = lookupBaseline
       ? lookupBaseline({ distanceM: targetM })
       : null;
 
@@ -88,36 +97,31 @@ export function buildStrategy(
       sigma: Math.round(modeSigma * 10) / 10,
       apex: r.apex,
       deltaFromTarget: Math.round((expectedDistance - targetM) * 10) / 10,
-      expectedStrokes,
-      expectedSgVsBest: null,
+      tourSgSnitt,
       rank: 0,
     });
   }
 
   // Rangér: lavere σ = bedre, mer apex = bedre stop-on-green (vekt for wedge/iron).
-  // Hvis vi har SgBaseline-data, bruk den som primær sorter.
   const scored = candidates.map((c) => ({
     candidate: c,
-    score: scoreOption(c, targetM),
+    score: scoreOption(c),
   }));
 
   scored.sort((a, b) => a.score - b.score);
-
-  // Beregn SG-delta vs beste alternativ
-  const bestStrokes = scored[0]?.candidate.expectedStrokes ?? null;
   scored.forEach((s, i) => {
     s.candidate.rank = i + 1;
-    if (s.candidate.expectedStrokes != null && bestStrokes != null) {
-      s.candidate.expectedSgVsBest =
-        Math.round((bestStrokes - s.candidate.expectedStrokes) * 100) / 100;
-    }
   });
 
   return scored.slice(0, 4).map((s) => s.candidate);
 }
 
 // Lavere score = bedre kandidat.
-function scoreOption(opt: StrategyOption, targetM: number): number {
+// NB: baseline-verdien (tourSgSnitt) inngår BEVISST ikke — den er lik for
+// alle kandidatene (samme mål-distanse) og kan aldri skille dem. Den gamle
+// `expectedStrokes * 2`-straffen var derfor et konstant ledd uten effekt på
+// rangeringen — fjernet 2026-08-16 (AP0.2), rangeringen er uendret.
+function scoreOption(opt: StrategyOption): number {
   // 1) Avvik fra mål — lavere er bedre
   const distancePenalty = Math.abs(opt.deltaFromTarget);
 
@@ -134,14 +138,7 @@ function scoreOption(opt: StrategyOption, targetM: number): number {
   const modePenalty =
     opt.mode === "full" ? 0 : opt.mode === "three-quarter" ? 1.5 : 3;
 
-  // 5) Hvis vi har SG-baseline-data, vekt det høyt
-  const sgPenalty =
-    opt.expectedStrokes != null ? opt.expectedStrokes * 2 : 0;
-
-  // 6) Justering for distanse fra target
-  const _ = targetM;
-
-  return distancePenalty + sigmaPenalty + apexBonus + modePenalty + sgPenalty;
+  return distancePenalty + sigmaPenalty + apexBonus + modePenalty;
 }
 
 // Slå opp expected-strokes fra et SgBaseline-array.

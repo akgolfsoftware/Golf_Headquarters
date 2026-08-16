@@ -3,8 +3,12 @@
  * leverer chrome-en, AnalysereHullV2 rendrer innholds-stacken (to faner:
  * Sone-kart + Hull for hull).
  *
- * Dataloader er uendret fra den gamle skjermen:
- *   - SG: BrukerSgInput (siste 8) → siste verdi + trend per sone.
+ * Dataloader:
+ *   - SG: kanonisk selector `hentSpillerSg` (én SG-sannhet, AP0.1 i
+ *     docs/plan-baneguide-sg-app-2026-08-16.md) — beregnede runder primært,
+ *     selvrapportert kun som fallback, alltid med kilde-merke. (Frem til
+ *     2026-08-16 leste skjermen BrukerSgInput direkte og spriket mot
+ *     Analysere/Hjem som bruker runde-snitt.)
  *   - Trening: TrainingPlanSession per skillArea (siste 30 d) → økter/minutter.
  *   - Siste runde (nyeste med hull-score) → hull-for-hull (ekte HoleScore-data,
  *     ingen fabrikkering).
@@ -21,6 +25,7 @@ import {
 } from "@/components/portal/v2/AnalysereHullV2";
 import { aggregerHullVarme } from "@/lib/domain/hole-heatmap";
 import { hentSpillerAkKategori } from "@/lib/domain/spiller-kategori";
+import { hentSpillerSg } from "@/lib/domain/spiller-sg";
 
 export const dynamic = "force-dynamic";
 
@@ -32,13 +37,8 @@ export default async function HullAnalysePage() {
   const tretti = new Date();
   tretti.setDate(tretti.getDate() - 30);
 
-  const [sgInputs, sessions, sisteRunde, alleHullScores, akKategori] = await Promise.all([
-    prisma.brukerSgInput.findMany({
-      where: { userId: user.id },
-      orderBy: { dato: "desc" },
-      take: 8,
-      select: { sgOtt: true, sgApp: true, sgArg: true, sgPutt: true },
-    }),
+  const [spillerSg, sessions, sisteRunde, alleHullScores, akKategori] = await Promise.all([
+    hentSpillerSg(user.id),
     prisma.trainingPlanSession.findMany({
       where: { plan: { userId: user.id }, scheduledAt: { gte: tretti } },
       select: { skillArea: true, durationMin: true },
@@ -81,54 +81,53 @@ export default async function HullAnalysePage() {
     }
   }
 
-  const latest = sgInputs[0] ?? null;
-  // sgInputs er nyeste først → reverser for trend (eldste → nyeste).
-  const trendOf = (pick: (i: (typeof sgInputs)[number]) => number | null) =>
-    [...sgInputs].reverse().map(pick).filter((v): v is number => v != null);
-
   const soner: HullSone[] = [
     {
       id: "tee",
       kode: "OTT",
       label: "Tee total",
       sub: "Tee-slag",
-      sg: latest?.sgOtt ?? null,
+      sg: spillerSg?.ott.sg ?? null,
       ...trening.TEE_TOTAL,
-      trend: trendOf((i) => i.sgOtt),
+      trend: spillerSg?.ott.trend ?? [],
     },
     {
       id: "app",
       kode: "APP",
       label: "Innspill",
       sub: "Tilnærming",
-      sg: latest?.sgApp ?? null,
+      sg: spillerSg?.app.sg ?? null,
       ...trening.TILNAERMING,
-      trend: trendOf((i) => i.sgApp),
+      trend: spillerSg?.app.trend ?? [],
     },
     {
       id: "arg",
       kode: "ARG",
       label: "Nærspill",
       sub: "Chip, pitch, bunker",
-      sg: latest?.sgArg ?? null,
+      sg: spillerSg?.arg.sg ?? null,
       ...trening.AROUND_GREEN,
-      trend: trendOf((i) => i.sgArg),
+      trend: spillerSg?.arg.trend ?? [],
     },
     {
       id: "putt",
       kode: "PUTT",
       label: "Putt",
       sub: "Putting",
-      sg: latest?.sgPutt ?? null,
+      sg: spillerSg?.putt.sg ?? null,
       ...trening.PUTTING,
-      trend: trendOf((i) => i.sgPutt),
+      trend: spillerSg?.putt.trend ?? [],
     },
   ];
 
   // Siste runde → hull-for-hull (ekte HoleScore-data, ingen fabrikkering).
   const data: AnalysereHullV2Data = {
     soner,
-    sgRegistreringer: sgInputs.length,
+    // Klarspråk-grunnlag med tillitsnivå («10 runder · beregnet» /
+    // «3 registreringer · selvrapportert») — null når SG-data mangler.
+    sgGrunnlag: spillerSg
+      ? `${spillerSg.grunnlag} · ${spillerSg.kilde === "BEREGNET" ? "beregnet" : "selvrapportert"}`
+      : null,
     runde: sisteRunde
       ? {
           courseName: sisteRunde.course.name,

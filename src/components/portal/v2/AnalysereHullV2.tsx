@@ -10,7 +10,6 @@ import {
   T,
   fmtSg,
   Caps,
-  Tittel,
   Kort,
   KpiFlis,
   PillTabs,
@@ -58,8 +57,12 @@ export interface HullRunde {
 
 export interface AnalysereHullV2Data {
   soner: HullSone[];
-  /** Antall SG-registreringer datagrunnlaget bygger på. */
-  sgRegistreringer: number;
+  /**
+   * Klarspråk-grunnlag for SG-tallene med tillitsnivå, fra den kanoniske
+   * selectoren (hentSpillerSg): «10 runder · beregnet» eller
+   * «3 registreringer · selvrapportert». null = ingen SG-data.
+   */
+  sgGrunnlag: string | null;
   runde: HullRunde | null;
   /** Varmekart-aggregat (snitt avvik fra par per hull) — se src/lib/domain/hole-heatmap.ts. */
   hullVarme: HullVarmeResultat;
@@ -247,8 +250,8 @@ function SoneDiagram({ soner, harData }: { soner: HullSone[]; harData: boolean }
 
 /* ── Fane 1: Sone-kart (SG + trening per sone) ─────────────────────────── */
 
-function SoneFane({ soner, sgRegistreringer }: { soner: HullSone[]; sgRegistreringer: number }) {
-  const harData = sgRegistreringer > 0;
+function SoneFane({ soner, sgGrunnlag }: { soner: HullSone[]; sgGrunnlag: string | null }) {
+  const harData = sgGrunnlag != null;
   const kategorier = soner
     .filter((s): s is HullSone & { sg: number } => s.sg != null)
     .map((s) => ({ akse: s.kode, sg: s.sg }));
@@ -323,7 +326,7 @@ function SoneFane({ soner, sgRegistreringer }: { soner: HullSone[]; sgRegistreri
         eyebrow="Per sone"
         action={
           <span style={{ fontFamily: T.mono, fontSize: 9, color: T.mut }}>
-            {sgRegistreringer} SG-registreringer
+            {sgGrunnlag ?? "ingen SG-data"}
           </span>
         }
       >
@@ -579,7 +582,7 @@ export function AnalysereHullV2({ data }: { data: AnalysereHullV2Data }) {
       </p>
 
       {tab === "sone" ? (
-        <SoneFane soner={data.soner} sgRegistreringer={data.sgRegistreringer} />
+        <SoneFane soner={data.soner} sgGrunnlag={data.sgGrunnlag} />
       ) : (
         <HullFane runde={data.runde} hullVarme={data.hullVarme} />
       )}

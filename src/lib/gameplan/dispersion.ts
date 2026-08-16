@@ -244,12 +244,20 @@ export function ellipseGpsPunkter(
     const ux = r * Math.cos(a);
     const uy = r * Math.sin(a);
     // Roter og skaler til ellipsens akser, offset fra ellipsens eget senter.
+    // FORTEGN (rettet 2026-08-16): computeDispersion definerer angleRad som
+    // storaksens vinkel fra distance-aksen MOT lateral (positiv = høyre-lang).
+    // Rotasjonen må derfor sende storakse-enden (0, semiMajor) til
+    // (+semiMajor·sinA, +semiMajor·cosA). Den gamle matrisen (ex·cosA − ey·sinA,
+    // ex·sinA + ey·cosA) sendte den til MINUS lateral og speilvendte hele
+    // ellipsen om siktelinjen: en fade-bias (høyre-lang) ble simulert som
+    // venstre-lang, så pctAldri/pctBra i Gameplan pekte mot feil side av hullet.
+    // Regresjonstest: «rundtur bevarer rotasjonsvinkelen» i dispersion.test.ts.
     const cosA = Math.cos(ellipse.angleRad);
     const sinA = Math.sin(ellipse.angleRad);
     const ex = ux * ellipse.semiMinor; // lateral-akse
     const ey = uy * ellipse.semiMajor; // distance-akse
-    const lateral = ellipse.centerLateral + (ex * cosA - ey * sinA);
-    const distance = ellipse.centerDistance + (ex * sinA + ey * cosA);
+    const lateral = ellipse.centerLateral + (ex * cosA + ey * sinA);
+    const distance = ellipse.centerDistance + (-ex * sinA + ey * cosA);
     // distance langs ny sikte-retning fra TEE (ikke fra sikte) — offset er
     // relativt til historisk mål-avstand, så vi ankrer på ny sikte i stedet.
     const langsSikte = destinationPoint(sikte, aimBearing, distance);
