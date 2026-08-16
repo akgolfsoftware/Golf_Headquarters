@@ -32,7 +32,7 @@
     "prepare": "husky",
     "meg:tilbakeskriv": "tsx scripts/meg-tilbakeskriving/run.ts",
     "meg:morgen": "tsx scripts/meg-tilbakeskriving/morgen.ts",
-    "mulligan:triage": "tsx scripts/mulligan-triage/run.ts",
+    "mulligan:triage": "tsx --conditions=react-server scripts/mulligan-triage/run.ts",
     "check:critical-imports": "node scripts/check-critical-imports.mjs"
   },
   "dependencies": {
