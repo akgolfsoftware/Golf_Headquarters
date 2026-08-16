@@ -252,9 +252,9 @@ async function main() {
 
   // 9. Coaching-abonnement (Performance Pro = 4 credits) → gratis app-tilgang via coaching.
   await prisma.subscription.upsert({
-    where: { userId: player.id },
-    update: { tier: "PRO", status: "ACTIVE", monthlyCredits: 4, creditsRemaining: 3 },
-    create: { userId: player.id, tier: "PRO", status: "ACTIVE", monthlyCredits: 4, creditsRemaining: 3 },
+    where: { userId_kind: { userId: player.id, kind: "COACHING" } },
+    update: { tier: "PRO", status: "ACTIVE", monthlyCredits: 4, creditsRemaining: 3, plan: "MANUELL" },
+    create: { userId: player.id, kind: "COACHING", plan: "MANUELL", tier: "PRO", status: "ACTIVE", monthlyCredits: 4, creditsRemaining: 3 },
   });
 
   // 10. Utstyrsbag (Meg → Utstyrsbag)

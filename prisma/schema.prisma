@@ -338,6 +338,13 @@ model User {
   avatarUrl          String?
   role               UserRole  @default(PLAYER)
   tier               Tier      @default(GRATIS)
+  // STANDARD | TALENT — TALENT er den gratis, låste TalentHQ-profilen (kun
+  // tester/stats/SG-registrering åpent; resolveTilgang gir nivå TALENT).
+  // Settes ved registrering via ?kilde=talenthq eller gruppe-invitasjon.
+  profilType         String    @default("STANDARD")
+  // Utløp for prøveperioden. null => createdAt + 30 dager (resolveTilgang).
+  // Eget felt så prøven kan forlenges/nullstilles per bruker av admin.
+  trialEndsAt        DateTime?
   lastLoginAt        DateTime?
   // Spiller-profil (Fase 1.4)
   hcp                Float?
@@ -418,7 +425,9 @@ model User {
   testAssignments       TestAssignment[] @relation("PlayerTestAssignments")
   coachTestAssignments  TestAssignment[] @relation("CoachTestAssignments")
   trackManSessions TrackManSession[]
-  subscription     Subscription?
+  // Flertall siden A1: én rad per kind (COACHING | PLAYERHQ). Bruk
+  // src/lib/domain/abonnement/ for oppslag — aldri [0] eller findFirst uten kind.
+  subscriptions    Subscription[]
   publicPlayer     PublicPlayer?     @relation(fields: [publicPlayerId], references: [id], onDelete: SetNull)
 
   // Coaching-relasjoner
@@ -1971,7 +1980,21 @@ model CoachingSession {
 
 model Subscription {
   id                   String             @id @default(cuid())
-  userId               String             @unique
+  userId               String
+  // COACHING | PLAYERHQ — én rad per (bruker, kind). Skillet gjør at en
+  // spiller kan si opp coaching-pakken og samtidig ha/få et eget
+  // PlayerHQ-abonnement (vinn-tilbake, plan A1/A4).
+  kind                 String             @default("PLAYERHQ")
+  // PLAYERHQ_MND | PLAYERHQ_AAR | PERFORMANCE | PERFORMANCE_PRO | MANUELL.
+  // null = anker-rad (kun stripeCustomerId fra checkout) — gir ALDRI tilgang.
+  plan                 String?
+  // month | year — fra Stripe price.recurring.interval.
+  interval             String?
+  // Rå Stripe-verdi. Bevares som eget felt (kollapses ikke lenger inn i
+  // status) så «sagt opp, løper ut perioden» kan vises presist i UI.
+  cancelAtPeriodEnd    Boolean            @default(false)
+  // Stripe price-id abonnementet står på — sporbarhet ved prisendringer.
+  stripePriceId        String?
   tier                 Tier               @default(GRATIS)
   status               SubscriptionStatus @default(ACTIVE)
   currentPeriodEnd     DateTime?
@@ -1991,7 +2014,35 @@ model Subscription {
   bookings Booking[]
   payments Payment[]
 
+  @@unique([userId, kind])
+  @@index([userId])
   @@map("subscriptions")
+}
+
+// Vinn-tilbake-tilbud ved oppsigelse av coaching-pakke (plan A4): spilleren
+// tilbys å beholde PlayerHQ til 299 kr/mnd eller 2 690 kr/år. Én rad per
+// (bruker, coaching-abonnement) — idempotent trigger fra webhook + cancelPro.
+// Ingen @relation — additiv isolasjon (gotchas.md §Schema-endringer).
+model WinbackTilbud {
+  id                     String    @id @default(cuid())
+  userId                 String
+  coachingSubscriptionId String
+  stripeSubscriptionId   String?
+  // Tilbudet gjelder til coaching-periodens slutt.
+  utlopsDato             DateTime?
+  // TILBUDT | AKSEPTERT | AVSLAATT | UTLOPT
+  status                 String    @default("TILBUDT")
+  sendtAt                DateTime?
+  paaminnelseSendtAt     DateTime?
+  besvartAt              DateTime?
+  // PLAYERHQ_MND | PLAYERHQ_AAR — satt ved aksept.
+  akseptertPlan          String?
+  createdAt              DateTime  @default(now())
+  updatedAt              DateTime  @updatedAt
+
+  @@unique([userId, coachingSubscriptionId])
+  @@index([status, utlopsDato])
+  @@map("winback_tilbud")
 }
 
 // Program-enrollering — kobler spiller til program + coach.

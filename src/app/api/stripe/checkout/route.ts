@@ -70,12 +70,15 @@ export async function POST(req: Request) {
     "",
   );
 
-  // Hent eller opprett Stripe customer for brukeren
-  let subscription = await prisma.subscription.findUnique({
-    where: { userId: user.id },
+  // Hent eller opprett Stripe customer for brukeren. Kunde-ankeret kan ligge
+  // på hvilken som helst av radene (A1: én per kind — COACHING | PLAYERHQ).
+  const kind = plan === "pro" ? "PLAYERHQ" : "COACHING";
+  const eksisterende = await prisma.subscription.findFirst({
+    where: { userId: user.id, stripeCustomerId: { not: null } },
+    select: { stripeCustomerId: true },
   });
 
-  let customerId = subscription?.stripeCustomerId;
+  let customerId = eksisterende?.stripeCustomerId;
   if (!customerId) {
     const customer = await stripe.customers.create({
       email: user.email,
@@ -84,21 +87,19 @@ export async function POST(req: Request) {
     });
     customerId = customer.id;
 
-    if (!subscription) {
-      subscription = await prisma.subscription.create({
-        data: {
-          userId: user.id,
-          tier: user.tier,
-          status: "ACTIVE",
-          stripeCustomerId: customerId,
-        },
-      });
-    } else {
-      await prisma.subscription.update({
-        where: { userId: user.id },
-        data: { stripeCustomerId: customerId },
-      });
-    }
+    // Anker-rad for kunde-id-en på riktig kind. plan forblir null til
+    // webhooken fyller den — en anker-rad gir ALDRI tilgang (domain/abonnement).
+    await prisma.subscription.upsert({
+      where: { userId_kind: { userId: user.id, kind } },
+      create: {
+        userId: user.id,
+        kind,
+        tier: user.tier,
+        status: "ACTIVE",
+        stripeCustomerId: customerId,
+      },
+      update: { stripeCustomerId: customerId },
+    });
   }
 
   const session = await stripe.checkout.sessions.create({

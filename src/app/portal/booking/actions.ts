@@ -46,7 +46,9 @@ export type OpprettBookingResult =
 export async function opprettBooking(input: OpprettBookingInput): Promise<OpprettBookingResult> {
   const user = await requirePortalUser({ allow: ["PLAYER", "COACH", "ADMIN"] });
 
-  const subscription = await prisma.subscription.findUnique({ where: { userId: user.id } });
+  const subscription = await prisma.subscription.findUnique({
+    where: { userId_kind: { userId: user.id, kind: "COACHING" } },
+  });
   const harCredits =
     !!subscription &&
     kanBrukeCredits(subscription) &&

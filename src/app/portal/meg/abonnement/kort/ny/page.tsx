@@ -25,8 +25,9 @@ function formatNesteBelastning(dato: Date | null): string {
 export default async function NyttKortPage() {
   const user = await requirePortalUser();
 
-  const subscription = await prisma.subscription.findUnique({
-    where: { userId: user.id },
+  // A1: kortbytte gjelder raden med aktiv Stripe-kobling.
+  const subscription = await prisma.subscription.findFirst({
+    where: { userId: user.id, stripeSubscriptionId: { not: null } },
     select: { currentPeriodEnd: true, status: true },
   });
 

@@ -21,8 +21,9 @@ function datoDag(d: Date) {
 
 export default async function AvbestillPage() {
   const user = await requirePortalUser();
-  const subscription = await prisma.subscription.findUnique({
-    where: { userId: user.id },
+  // A1: vis raden med Stripe-kobling (den som faktisk kan avbestilles).
+  const subscription = await prisma.subscription.findFirst({
+    where: { userId: user.id, stripeSubscriptionId: { not: null } },
   });
   const naa = new Date();
   const proAktivTil =

@@ -157,7 +157,7 @@ export default async function V2AdminOkonomiPage() {
     prisma.coachAvailability.findMany({
       select: { weekday: true, date: true, startTime: true, endTime: true },
     }),
-    prisma.user.count({ where: { subscription: null } }),
+    prisma.user.count({ where: { subscriptions: { none: {} } } }),
     // Hull i tallene (fasit agencyos-okonomi.html): hvor mange betalinger
     // mangler koblet bruker, og finnes en selskapskobling i det hele tatt.
     prisma.payment.count(),

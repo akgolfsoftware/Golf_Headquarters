@@ -104,13 +104,23 @@ export async function syncSubscription(stripeSub: Stripe.Subscription) {
   // Inaktive abonnement skal alltid være GRATIS-tier uavhengig av pris-ID.
   const tier = stripeStatus === "ACTIVE" ? tierForPriceId(priceId) : "GRATIS";
   const monthlyCredits = stripeStatus === "ACTIVE" ? creditsForPriceId(priceId) : 0;
+  // Kind utledes fra PRISEN, aldri fra monthlyCredits-feltet — et kansellert
+  // Performance-abonnement har credits 0 men er fortsatt COACHING-raden (A1).
+  const kind = creditsForPriceId(priceId) > 0 ? "COACHING" : "PLAYERHQ";
+  const plan =
+    creditsForPriceId(priceId) >= 4
+      ? "PERFORMANCE_PRO"
+      : creditsForPriceId(priceId) > 0
+        ? "PERFORMANCE"
+        : "PLAYERHQ_MND";
+  const interval = stripeSub.items.data[0]?.price?.recurring?.interval ?? "month";
   const periodEnd = stripeSub.items.data[0]?.current_period_end;
   const newPeriodEnd = periodEnd ? new Date(periodEnd * 1000) : null;
 
   // Reset credits-saldo kun ved førstegangs-opprettelse eller når
   // faktureringsperioden har rullet — ellers beholder kunden gjenværende saldo.
   const existing = await prisma.subscription.findUnique({
-    where: { userId },
+    where: { userId_kind: { userId, kind } },
     select: { currentPeriodEnd: true },
   });
 
@@ -119,9 +129,14 @@ export async function syncSubscription(stripeSub: Stripe.Subscription) {
     (newPeriodEnd && existing.currentPeriodEnd.getTime() !== newPeriodEnd.getTime());
 
   await prisma.subscription.upsert({
-    where: { userId },
+    where: { userId_kind: { userId, kind } },
     create: {
       userId,
+      kind,
+      plan,
+      interval,
+      cancelAtPeriodEnd: stripeSub.cancel_at_period_end,
+      stripePriceId: priceId,
       tier,
       status,
       stripeSubscriptionId: stripeSub.id,
@@ -134,6 +149,10 @@ export async function syncSubscription(stripeSub: Stripe.Subscription) {
       creditsRemaining: monthlyCredits,
     },
     update: {
+      plan,
+      interval,
+      cancelAtPeriodEnd: stripeSub.cancel_at_period_end,
+      stripePriceId: priceId,
       tier,
       status,
       stripeSubscriptionId: stripeSub.id,
@@ -143,7 +162,15 @@ export async function syncSubscription(stripeSub: Stripe.Subscription) {
     },
   });
 
-  await prisma.user.update({ where: { id: userId }, data: { tier } });
+  // user.tier rekalkuleres fra ALLE radene — ellers ville f.eks. sletting av
+  // coaching-abonnementet nedgradere en bruker som fortsatt betaler for
+  // PlayerHQ (A1). PRO hvis minst én rad står som betalt.
+  const alleRader = await prisma.subscription.findMany({
+    where: { userId },
+    select: { tier: true },
+  });
+  const effektivTier = alleRader.some((s) => s.tier !== "GRATIS") ? "PRO" : "GRATIS";
+  await prisma.user.update({ where: { id: userId }, data: { tier: effektivTier } });
 }
 
 /**
