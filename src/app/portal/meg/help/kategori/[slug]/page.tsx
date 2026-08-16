@@ -265,7 +265,7 @@ export default async function KategoriPage({
   params: Promise<{ slug: string }>;
   searchParams: Promise<{ sort?: string }>;
 }) {
-  const user = await requirePortalUser();
+  const user = await requirePortalUser({ kreverTilgang: "INGEN" });
   const { slug } = await params;
   const sp = await searchParams;
   const sort: KategoriSort =

@@ -48,7 +48,7 @@ async function resolveCoach(coachId: string) {
 }
 
 export default async function BookingCoachPage({ params }: Props) {
-  const user = await requirePortalUser({ allow: ["PLAYER", "COACH", "ADMIN"] });
+  const user = await requirePortalUser({ kreverTilgang: "TALENT", allow: ["PLAYER", "COACH", "ADMIN"] });
   const { coachId } = await params;
 
   const coach = await resolveCoach(coachId);

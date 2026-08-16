@@ -24,7 +24,7 @@ function formatDato(d: Date | null): string | null {
 }
 
 export default async function InnstillingerPage() {
-  const user = await requirePortalUser();
+  const user = await requirePortalUser({ kreverTilgang: "INGEN" });
   if (user.role === "PARENT") redirect("/forelder");
   if (user.role === "GUEST") redirect("/admin/kalender");
 

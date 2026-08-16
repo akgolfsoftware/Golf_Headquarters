@@ -44,7 +44,7 @@ export default async function BekreftetPage({ searchParams }: Props) {
 
   if (!bookingId) notFound();
 
-  const user = await requirePortalUser({ allow: ["PLAYER", "COACH", "ADMIN"] });
+  const user = await requirePortalUser({ kreverTilgang: "TALENT", allow: ["PLAYER", "COACH", "ADMIN"] });
 
   const booking = await prisma.booking.findUnique({
     where: { id: bookingId },

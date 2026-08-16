@@ -18,7 +18,7 @@ export async function GET(
   _req: Request,
   { params }: { params: Promise<{ id: string }> },
 ) {
-  const user = await requirePortalUser();
+  const user = await requirePortalUser({ kreverTilgang: "INGEN" });
   const { id } = await params;
 
   // Samme eierskaps-scope som page.tsx: kun brukerens egen Payment.

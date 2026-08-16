@@ -37,7 +37,7 @@ export type LogTestInput = z.infer<typeof LogTestInput>;
  * lagres i `details` som JSON, validert mot et åpent schema (record).
  */
 export async function logTest(input: unknown) {
-  const user = await requirePortalUser();
+  const user = await requirePortalUser({ kreverTilgang: "TALENT" });
   const parsed = LogTestInput.safeParse(input);
   if (!parsed.success) {
     throw new Error(

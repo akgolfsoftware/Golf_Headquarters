@@ -26,7 +26,7 @@ import { hentLydSamtykkeStatus } from "@/lib/recording/lyd-samtykke";
 export const dynamic = "force-dynamic";
 
 export default async function V2MegPreviewPage() {
-  const user = await requirePortalUser();
+  const user = await requirePortalUser({ kreverTilgang: "INGEN" });
   if (user.role === "PARENT") redirect("/forelder");
   if (user.role === "GUEST") redirect("/admin/kalender");
 

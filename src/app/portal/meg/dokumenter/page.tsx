@@ -24,7 +24,7 @@ function formatDato(d: Date): string {
 }
 
 export default async function DokumenterPage() {
-  const user = await requirePortalUser();
+  const user = await requirePortalUser({ kreverTilgang: "INGEN" });
 
   const documents = await prisma.document.findMany({
     where: { OR: [{ userId: null }, { userId: user.id }] },
