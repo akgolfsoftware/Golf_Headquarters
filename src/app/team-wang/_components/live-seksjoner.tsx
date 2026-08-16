@@ -344,10 +344,11 @@ export function GruppeRoster({
                   className="t-label"
                   style={{ color: "var(--text-secondary)", marginTop: 1 }}
                 >
-                  {e.rolle === "ASSISTANT" ? "Assistent" : "Spiller"}
+                  {e.rolle === "COACH" ? "Trener" : e.rolle === "ASSISTANT" ? "Assistent" : "Spiller"}
                 </div>
               </div>
-              {iupLenke && e.rolle !== "ASSISTANT" ? (
+              {/* IUP gjelder kun spillere — trenere/hjelpetrenere (G5) har ingen. */}
+              {iupLenke && e.rolle === "PLAYER" ? (
                 <Link
                   href={`/team-wang/coach/iup/${e.id}`}
                   className="wang-pressable"
