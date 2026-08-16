@@ -9,14 +9,19 @@ import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
 import { TilbakeLenke } from "@/components/v2";
-import { MegAvbestillV2, type MegAvbestillData } from "@/components/portal/v2/MegAvbestillV2";
+import { pakkeNavn } from "@/lib/domain/abonnement";
+import {
+  MegAvbestillV2,
+  type MegAvbestillData,
+  type MegAvbestillKonsekvens,
+} from "@/components/portal/v2/MegAvbestillV2";
 
 function ukedag(d: Date) {
-  return d.toLocaleDateString("nb-NO", { weekday: "long" });
+  return d.toLocaleDateString("nb-NO", { weekday: "long", timeZone: "Europe/Oslo" });
 }
 
 function datoDag(d: Date) {
-  return d.toLocaleDateString("nb-NO", { day: "numeric", month: "long", year: "numeric" });
+  return d.toLocaleDateString("nb-NO", { day: "numeric", month: "long", year: "numeric", timeZone: "Europe/Oslo" });
 }
 
 export default async function AvbestillPage() {
@@ -33,10 +38,29 @@ export default async function AvbestillPage() {
     Math.ceil((proAktivTil.getTime() - naa.getTime()) / (24 * 60 * 60 * 1000)),
   );
 
+  // A4: konsekvensene bygges fra det FAKTISKE abonnementet — en 299-kunde
+  // skal ikke se «fra 4 credits til 0», og en coaching-kunde skal se pakken sin.
+  const pakke = pakkeNavn(subscription?.monthlyCredits ?? 0);
+  const konsekvenser: MegAvbestillKonsekvens[] = [
+    ...(pakke
+      ? [
+          {
+            tittel: `Coaching-pakken ${pakke}`,
+            detalj: `fra ${subscription?.monthlyCredits ?? 0} økter/mnd til 0`,
+            etterpaa: "→ 0",
+          },
+        ]
+      : []),
+    { tittel: "AI-coach", detalj: "låses når perioden utløper", etterpaa: "→ låst" },
+    { tittel: "Videoanalyse fra coach", detalj: "opplastinger låses", etterpaa: "→ låst" },
+    { tittel: "Treningsplan og workbench", detalj: "låses når perioden utløper", etterpaa: "→ låst" },
+  ];
+
   const data: MegAvbestillData = {
     ukedag: ukedag(proAktivTil),
     dato: datoDag(proAktivTil),
     dagerIgjen,
+    konsekvenser,
   };
 
   return (

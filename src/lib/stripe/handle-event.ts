@@ -26,7 +26,9 @@ import {
 } from "@/lib/payments/record";
 import { notify } from "@/lib/notifications";
 import { resendKlient, FRA_EPOST } from "@/lib/email";
+import { creditsForPriceId } from "@/lib/stripe";
 import { beregnSubscriptionSync } from "./beregn-subscription-sync";
+import { opprettWinbackTilbud } from "@/lib/winback/opprett";
 
 export const STRIPE_KILDE = "stripe";
 
@@ -296,7 +298,33 @@ export async function handleStripeEvent(
     case "customer.subscription.created":
     case "customer.subscription.updated":
     case "customer.subscription.deleted": {
-      await syncSubscription(event.data.object as Stripe.Subscription);
+      const stripeSub = event.data.object as Stripe.Subscription;
+      await syncSubscription(stripeSub);
+      // Vinn-tilbake (A4): oppsigelse av COACHING-pris (i appen, Billing
+      // Portal eller Stripe-dashbordet) → opprett tilbudet idempotent.
+      // checkout.session.completed med winback-metadata markerer aksept.
+      await kjørSenere(async () => {
+        const prisId = stripeSub.items.data[0]?.price?.id ?? null;
+        const erCoaching = creditsForPriceId(prisId) > 0;
+        const erOppsigelse =
+          event.type === "customer.subscription.deleted" ||
+          (event.type === "customer.subscription.updated" && stripeSub.cancel_at_period_end);
+        const userId = stripeSub.metadata?.userId;
+        if (!erCoaching || !erOppsigelse || !userId) return;
+        const coachingRad = await prisma.subscription.findUnique({
+          where: { userId_kind: { userId, kind: "COACHING" } },
+          select: { id: true, currentPeriodEnd: true },
+        });
+        if (!coachingRad) return;
+        await opprettWinbackTilbud({
+          userId,
+          coachingSubscriptionId: coachingRad.id,
+          stripeSubscriptionId: stripeSub.id,
+          utlopsDato: coachingRad.currentPeriodEnd,
+        }).catch((err) => {
+          console.error("[stripe-webhook] winback-opprettelse feilet", err);
+        });
+      });
       break;
     }
 
@@ -340,6 +368,24 @@ export async function handleStripeEvent(
           await recordCheckoutSession(session);
         } catch (err) {
           console.error("[stripe-webhook] recordCheckoutSession failed", err);
+        }
+
+        // Vinn-tilbake (A4): checkout med winback-metadata = tilbudet akseptert.
+        const winbackUserId = session.metadata?.userId;
+        const winbackPlan = session.metadata?.plan;
+        if (session.metadata?.winback === "1" && winbackUserId) {
+          await prisma.winbackTilbud
+            .updateMany({
+              where: { userId: winbackUserId, status: "TILBUDT" },
+              data: {
+                status: "AKSEPTERT",
+                besvartAt: new Date(),
+                akseptertPlan: winbackPlan === "pro_aar" ? "PLAYERHQ_AAR" : "PLAYERHQ_MND",
+              },
+            })
+            .catch((err) => {
+              console.error("[stripe-webhook] winback-aksept feilet", err);
+            });
         }
 
         if (session.subscription) {
