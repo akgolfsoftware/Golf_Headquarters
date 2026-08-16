@@ -10,6 +10,7 @@
  * Server component.
  */
 
+import Link from "next/link";
 import { coachScopedPlayerWhere } from "@/lib/auth/coached";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
@@ -67,6 +68,17 @@ export default async function V2AdminTeamPage() {
     <V2Shell bredde="kolonne" aktiv="cockpit" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>
       <TilbakeLenke href="/admin/agencyos">Cockpit</TilbakeLenke>
       <AdminTeamV2 data={data} />
+      {/* T8: eksterne lesere (Team Norway/WANG) — kun ADMIN oppretter/trekker. */}
+      {user.role === "ADMIN" && (
+        <div style={{ maxWidth: 960, margin: "0 auto", width: "100%" }}>
+          <Link
+            href="/admin/team/ekstern"
+            style={{ fontSize: 13, fontWeight: 600, textDecoration: "none", color: "inherit" }}
+          >
+            Eksterne lesere (Team Norway/WANG) →
+          </Link>
+        </div>
+      )}
     </V2Shell>
   );
 }
