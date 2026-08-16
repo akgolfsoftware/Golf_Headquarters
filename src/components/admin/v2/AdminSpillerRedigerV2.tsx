@@ -145,7 +145,7 @@ export function AdminSpillerRedigerV2({ data }: { data: AdminSpillerRedigerV2Dat
       <form id="rediger-form" action={lagreSpiller} style={{ gap: T.gap, alignItems: "start" }} className="grid grid-cols-1 lg:grid-cols-[3fr_2fr]">
         <input type="hidden" name="id" value={data.spillerId} />
 
-        <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+        <div className="min-w-0" style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
           <Kort>
             <Caps>Personalia</Caps>
             <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: 14, marginTop: 14 }}>
@@ -208,7 +208,7 @@ export function AdminSpillerRedigerV2({ data }: { data: AdminSpillerRedigerV2Dat
           </Kort>
         </div>
 
-        <aside style={{ display: "flex", flexDirection: "column", gap: T.gap }} className="lg:sticky lg:top-32 lg:self-start">
+        <aside style={{ display: "flex", flexDirection: "column", gap: T.gap }} className="min-w-0 lg:sticky lg:top-32 lg:self-start">
           <Kort>
             <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", marginBottom: 10 }}>
               <Caps>Endrings-historikk</Caps>
