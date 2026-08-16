@@ -197,7 +197,7 @@ Håndheves deterministisk, uavhengig av hva modellen tror:
 Generiske design-skills og de gamle kanonlåste design-skillene er bevisst fjernet (2026-07-19/25).
 
 ## Agenter
-- **Kommando** (`/kommando`, `src/lib/kommando/`) — chat med alle agenter (autonomi 1–3, `KommandoTask`
+- **Kommando** (`/kommando`, `src/lib/kommando/`) — chat med alle agenter (`KommandoTask`
   DB-persistert).
 - **Cron-agenter** — 54 filer i `src/lib/agents/` (booking-alerts, churn-radar, daily-brief, availability-monitor,
   drill-forslag m.fl.), trigges via `/api/cron/[agent]` + dedikerte cron-ruter.
