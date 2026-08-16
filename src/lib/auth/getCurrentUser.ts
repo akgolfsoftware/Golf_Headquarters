@@ -7,15 +7,19 @@ import { createClient } from "@/lib/supabase/server";
 import { prisma } from "@/lib/prisma";
 import { ensureUser } from "./ensureUser";
 import { isAwaitingGuardianConsent } from "./minor";
-import { resolveTier } from "@/lib/feature-flags";
+import { resolveTilgang, type Tilgang } from "@/lib/feature-flags";
+import { aktivtAkGruppeMedlemskapWhere } from "@/lib/domain/grupper";
 import type { User } from "@/generated/prisma/client";
+
+/** Prisma-bruker + beregnet tilgangsnivå (A3). tier er alltid EFFEKTIV tier. */
+export type UserMedTilgang = User & { tilgang: Tilgang };
 
 // Henter innlogget Prisma-bruker UTEN samtykke-håndheving. Brukes KUN av
 // samtykke-flyten (samtykke-venter-siden + onboarding der den mindreårige
 // setter fødselsdato og resender invitasjon MENS hen venter på samtykke) og av
 // requirePortalUser/requireCapability (som gjør sin egen samtykke-redirect).
 // All annen kode skal bruke getCurrentUser, som arver samtykke-gaten under.
-export const getCurrentUserRaw = cache(async (): Promise<User | null> => {
+export const getCurrentUserRaw = cache(async (): Promise<UserMedTilgang | null> => {
   const supabase = await createClient();
   const {
     data: { user: authUser },
@@ -57,7 +61,7 @@ export const getCurrentUserRaw = cache(async (): Promise<User | null> => {
 // kjøre data-mutasjoner. Dette lukker gapet der ~67 server-actions kalte rå
 // getCurrentUser uten requirePortalUser/requireCapability. Returnerer aldri en
 // bruker som venter på samtykke (redirect kaster før retur).
-export const getCurrentUser = cache(async (): Promise<User | null> => {
+export const getCurrentUser = cache(async (): Promise<UserMedTilgang | null> => {
   const user = await getCurrentUserRaw();
   if (user && isAwaitingGuardianConsent(user)) {
     redirect("/auth/samtykke-venter");
@@ -65,31 +69,41 @@ export const getCurrentUser = cache(async (): Promise<User | null> => {
   return user;
 });
 
-// Overskriver `tier` med EFFEKTIV tier etter de låste reglene (se lib/feature-flags.ts):
-// PRO = har PlayerHQ-tilgang (gratis ELLER betalt), GRATIS = må betale 299 kr/mnd.
-// Laster coaching-pakke (Subscription) + gruppemedlemskap for å avgjøre gratis-tilgang.
+// Beregner tilgangsnivået (FULL/TALENT/INGEN — plan A3) og overskriver `tier`
+// med EFFEKTIV tier (PRO = FULL). Laster begge abonnementsrader + aktive
+// AK-gruppe-medlemskap (managedByAkGolf, plan G1-kontrakten).
 // /portal/meg/abonnement viser FAKTISK tier ved å lese prisma.user direkte.
-async function withEffektivTilgang(user: User): Promise<User> {
-  const [sub, gruppeCount] = await Promise.all([
+async function withEffektivTilgang(user: User): Promise<UserMedTilgang> {
+  const [coaching, playerhq, akGruppeCount] = await Promise.all([
     prisma.subscription
-      // Regel (b) i resolveTier gjelder coaching-pakken — COACHING-raden (A1).
       .findUnique({
         where: { userId_kind: { userId: user.id, kind: "COACHING" } },
-        select: { monthlyCredits: true, status: true },
+        select: { monthlyCredits: true, status: true, currentPeriodEnd: true },
+      })
+      .catch(() => null),
+    prisma.subscription
+      .findUnique({
+        where: { userId_kind: { userId: user.id, kind: "PLAYERHQ" } },
+        select: {
+          status: true,
+          currentPeriodEnd: true,
+          plan: true,
+          stripeSubscriptionId: true,
+        },
       })
       .catch(() => null),
     prisma.groupMember
-      // Kun aktive spiller-medlemskap teller for gratis-via-gruppe (plan G1).
-      // A3 strammer videre til managedByAkGolf-grupper i resolveTilgang.
-      .count({ where: { userId: user.id, endedAt: null, role: "PLAYER" } })
+      .count({ where: { userId: user.id, ...aktivtAkGruppeMedlemskapWhere() } })
       .catch(() => 0),
   ]);
-  const effektiv = resolveTier({
+  const tilgang = resolveTilgang({
     tier: user.tier,
+    profilType: user.profilType,
     createdAt: user.createdAt,
-    subscription: sub,
-    groupMembershipsCount: gruppeCount,
+    trialEndsAt: user.trialEndsAt,
+    coaching,
+    playerhq,
+    akGruppeCount,
   });
-  if (effektiv === user.tier) return user;
-  return { ...user, tier: effektiv };
+  return { ...user, tier: tilgang.effektivTier, tilgang };
 }
