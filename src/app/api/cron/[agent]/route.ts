@@ -6,6 +6,7 @@ import { runPlanWatcher } from "@/lib/agents/plan-watcher";
 import { runWeeklyPlanProposals } from "@/lib/agents/weekly-plan-proposals";
 import { runChurnRadar } from "@/lib/agents/churn-radar";
 import { runBetalingsPurring } from "@/lib/agents/betalings-purring";
+import { runWinbackAgent } from "@/lib/agents/winback-agent";
 import { runUkesoppsummering } from "@/lib/agents/ukesoppsummering";
 import { runMaanedsrapport } from "@/lib/agents/maanedsrapport";
 import { runLeadOppfolging } from "@/lib/agents/lead-oppfolging";
@@ -67,6 +68,7 @@ const AGENTS: Record<string, () => Promise<unknown>> = {
   "weekly-plan-proposals": runWeeklyPlanProposals,
   "churn-radar": runChurnRadar,
   "betalings-purring": () => runBetalingsPurring(),
+  "winback-oppfolging": () => runWinbackAgent(),
   ukesoppsummering: runUkesoppsummering,
   maanedsrapport: () => runMaanedsrapport(),
   "lead-oppfolging": runLeadOppfolging,

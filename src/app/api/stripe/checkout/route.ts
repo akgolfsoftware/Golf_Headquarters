@@ -129,7 +129,7 @@ export async function POST(req: Request) {
     success_url: `${origin}/portal/meg/abonnement?ok=1&plan=${plan}`,
     cancel_url: `${origin}/portal/meg/abonnement?cancelled=1`,
     locale: "nb",
-    metadata: { userId: user.id, plan },
+    metadata: { userId: user.id, plan, ...(startEtterCoaching ? { winback: "1" } : {}) },
     subscription_data: {
       metadata: { userId: user.id, plan },
       ...(trialEnd ? { trial_end: trialEnd } : {}),
