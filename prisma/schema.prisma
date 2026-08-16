@@ -2371,11 +2371,17 @@ model Notification {
   link      String?
   // Når brukeren markerte den som lest. Null = ulest.
   readAt    DateTime?
+  // Batching (G4 plan-varsling): grupperingsnøkkel for samlevarsler, f.eks.
+  // «plan-endring:<spillerId>:<YYYY-MM-DD>» (Oslo-dag). Null = vanlig enkeltvarsel.
+  groupKey  String?
+  // Antall hendelser samlet i denne raden — inkrementeres i stedet for ny rad.
+  count     Int       @default(1)
   createdAt DateTime  @default(now())
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId, readAt, createdAt])
+  @@index([userId, groupKey, readAt])
   @@map("notifications")
 }
 
