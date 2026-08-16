@@ -295,7 +295,7 @@ export function WangFellesside({
         ) : fane === "skole" ? (
           <FaneSkole live={live} />
         ) : (
-          <FaneForeldre live={live} naaIso={naaIso} />
+          <FaneForeldre naaIso={naaIso} />
         )}
       </main>
     </div>
