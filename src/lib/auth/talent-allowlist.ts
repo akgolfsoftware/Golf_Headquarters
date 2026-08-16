@@ -17,6 +17,10 @@ export const TALENT_APNE_PREFIKSER: readonly string[] = [
   "/portal/tren/tester",
   // Stats og analyse — lesing.
   "/portal/analysere",
+  // Gammel adresse for det samme: /portal/analyse er en ren redirect til
+  // /portal/analysere. Aliaset viser ingenting selv, så det arver målrutens
+  // nivå — ellers ville gamle bokmerker stengt en flate som ER åpen.
+  "/portal/analyse",
   "/portal/statistikk",
   "/portal/stats",
   // SG-/runderegistrering.
