@@ -90,7 +90,9 @@ export async function getBookingHubData(userId: string): Promise<BookingHubData>
   const now = new Date();
 
   const [subscription, upcomingRows, pastRows, coachRows] = await Promise.all([
-    prisma.subscription.findUnique({ where: { userId } }),
+    prisma.subscription.findUnique({
+      where: { userId_kind: { userId, kind: "COACHING" } },
+    }),
     prisma.booking.findMany({
       where: {
         userId,

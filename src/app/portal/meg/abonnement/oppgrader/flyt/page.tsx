@@ -20,7 +20,7 @@ import { OppgraderFlytWizard } from "./oppgrader-flyt-wizard";
 export const dynamic = "force-dynamic";
 
 export default async function OppgraderFlytPage() {
-  const user = await requirePortalUser();
+  const user = await requirePortalUser({ kreverTilgang: "INGEN" });
 
   const { erPro, status } = await getAbonnementData(user.id);
   if (erPro) {

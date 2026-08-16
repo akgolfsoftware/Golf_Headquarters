@@ -39,7 +39,7 @@ const FASILITET_TYPE_LABEL: Record<FacilityType, string> = {
 };
 
 export default async function AnleggDetaljPage({ params }: Props) {
-  const user = await requirePortalUser({ allow: ["PLAYER", "COACH", "ADMIN"] });
+  const user = await requirePortalUser({ kreverTilgang: "TALENT", allow: ["PLAYER", "COACH", "ADMIN"] });
   const { anleggId } = await params;
 
   const anlegg = await prisma.location.findUnique({

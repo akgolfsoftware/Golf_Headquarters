@@ -20,7 +20,13 @@ export const dynamic = "force-dynamic";
 export const metadata = { title: "Utstyr · PlayerHQ" };
 
 export default async function UtstyrPage() {
-  const user = await requirePortalUser({ allow: ["PLAYER", "COACH", "ADMIN"] });
+  // kreverTilgang: "INGEN" som nabosiden /portal/meg/utstyrsbag — hele
+  // /portal/meg står på talent-allowlisten (konto- og betalingsveien MÅ være
+  // nåbar). Manglet her i T2-sweepen; siden arvet FULL-defaulten.
+  const user = await requirePortalUser({
+    kreverTilgang: "INGEN",
+    allow: ["PLAYER", "COACH", "ADMIN"],
+  });
   if (user.role === "PARENT") redirect("/forelder");
 
   const data = await hentUtstyrFlate(user.id);

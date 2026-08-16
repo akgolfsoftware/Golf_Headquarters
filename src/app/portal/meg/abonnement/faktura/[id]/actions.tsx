@@ -21,7 +21,7 @@ export type SendFakturaResultat =
 export async function sendFakturaPaaEpost(
   paymentId: string,
 ): Promise<SendFakturaResultat> {
-  const user = await requirePortalUser();
+  const user = await requirePortalUser({ kreverTilgang: "INGEN" });
 
   if (!user.email) {
     return { ok: false, feil: "Kontoen din mangler e-postadresse." };

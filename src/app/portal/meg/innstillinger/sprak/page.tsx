@@ -16,7 +16,7 @@ import { InnstillingerSprakV2 } from "@/components/portal/v2/InnstillingerSprakV
 export const dynamic = "force-dynamic";
 
 export default async function SprakPage() {
-  const user = await requirePortalUser();
+  const user = await requirePortalUser({ kreverTilgang: "INGEN" });
   const fullUser = await prisma.user.findUnique({
     where: { id: user.id },
     select: { preferences: true },

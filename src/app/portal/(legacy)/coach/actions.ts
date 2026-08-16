@@ -5,6 +5,7 @@ import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import type { Prisma } from "@/generated/prisma/client";
 import { getCurrentUser } from "@/lib/auth/getCurrentUser";
+import { resolveValgtCoachId } from "@/lib/domain/valgt-coach";
 import { prisma } from "@/lib/prisma";
 import { nonEmpty } from "@/lib/validation/schemas";
 
@@ -72,43 +73,19 @@ function initials(name: string) {
 }
 
 async function resolvePrimaryCoach(playerId: string): Promise<CoachProfile> {
-  // 1. Prøv aktiv program-enrollering med coach
-  const enrollment = await prisma.playerEnrollment.findFirst({
-    where: { userId: playerId, endedAt: null, coachId: { not: null } },
-    orderBy: { enrolledAt: "desc" },
-    include: { coach: { select: { id: true, name: true, email: true, phone: true, avatarUrl: true, role: true } } },
-  });
+  // G2: valgt coach-resolveren (src/lib/domain/valgt-coach.ts) eier HVEM som
+  // er coachen — aldri «første coach alfabetisk» lenger. Her hentes kun
+  // profilfeltene rundt id-en; ingen valgt coach → null (som før).
+  const coachId = await resolveValgtCoachId(playerId);
+  if (!coachId) return null;
 
-  if (enrollment?.coach) {
-    return {
-      ...enrollment.coach,
-      initials: initials(enrollment.coach.name),
-    };
-  }
-
-  // 2. Siste direkte coaching-session
-  const session = await prisma.coachingSession.findFirst({
-    where: { userId: playerId, kind: "DIRECT" },
-    orderBy: { updatedAt: "desc" },
-    include: { coach: { select: { id: true, name: true, email: true, phone: true, avatarUrl: true, role: true } } },
-  });
-
-  if (session?.coach) {
-    return { ...session.coach, initials: initials(session.coach.name) };
-  }
-
-  // 3. Fallback: første coach i systemet
-  const firstCoach = await prisma.user.findFirst({
-    where: { role: "COACH", deletedAt: null },
+  const coach = await prisma.user.findUnique({
+    where: { id: coachId },
     select: { id: true, name: true, email: true, phone: true, avatarUrl: true, role: true },
-    orderBy: { name: "asc" },
   });
+  if (!coach) return null;
 
-  if (firstCoach) {
-    return { ...firstCoach, initials: initials(firstCoach.name) };
-  }
-
-  return null;
+  return { ...coach, initials: initials(coach.name) };
 }
 
 async function resolveDirectThread(playerId: string, coachId: string) {

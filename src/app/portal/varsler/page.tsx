@@ -71,7 +71,7 @@ function relTid(d: Date, now: Date): string {
 }
 
 export default async function VarslerPage() {
-  const user = await requirePortalUser();
+  const user = await requirePortalUser({ kreverTilgang: "TALENT" });
 
   const rows = await prisma.notification.findMany({
     where: { userId: user.id },

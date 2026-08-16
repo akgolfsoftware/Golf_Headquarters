@@ -25,6 +25,7 @@ import { sanitizeAkFormel, type AkFormelInput } from "@/lib/workbench/ak-formel"
 import { duplicateWeekCore } from "@/lib/workbench/duplicate-week";
 import { opprettPeriodeCore, oppdaterPeriodeCore, slettPeriodeCore } from "@/lib/workbench/periode-core";
 import { duplicateSessionCore } from "@/lib/workbench/duplicate-session";
+import { varsleCoachOmPlanendring } from "@/lib/notifications/plan-endring";
 
 // ============================================================================
 // PERIODE
@@ -132,6 +133,8 @@ export async function setActivePlanVariant(planId: string) {
     where: { id: planId },
     data: { status: "ACTIVE", isDraft: false },
   });
+  // G4: valgt coach varsles i cockpiten (batched per Oslo-dag, kaster aldri).
+  await varsleCoachOmPlanendring(user.id, "PLANBYTTE");
 
   revalidatePath("/portal/planlegge/workbench");
   return { ok: true };
@@ -286,6 +289,7 @@ export async function applySuggestedWeek(
     });
     count++;
   }
+  if (count > 0) await varsleCoachOmPlanendring(user.id, "OPPRETTET");
 
   revalidatePath("/portal/planlegge/workbench");
   return { ok: true, count };
@@ -431,6 +435,7 @@ export async function createTrainingPlanSession(formData: FormData): Promise<{
     },
     select: { id: true },
   });
+  await varsleCoachOmPlanendring(user.id, "OPPRETTET");
 
   revalidatePath("/portal/planlegge/workbench");
   return { ok: true, sessionId: session.id };
@@ -523,6 +528,7 @@ export async function moveWorkbenchSession(
     refDate: weekRefDate(weekOffset),
   });
   if (!result.ok) return result;
+  await varsleCoachOmPlanendring(user.id, "FLYTTET");
   revalidatePath("/portal/planlegge/workbench");
   return { ok: true };
 }
@@ -538,6 +544,7 @@ export async function updateWorkbenchSession(
     patch,
   });
   if (!result.ok) return result;
+  await varsleCoachOmPlanendring(user.id, "FLYTTET");
   revalidatePath("/portal/planlegge/workbench");
   return { ok: true };
 }
@@ -638,6 +645,7 @@ export async function addWorkbenchSession(input: {
     location: created.location,
     maalsetning: created.maalsetning,
   });
+  await varsleCoachOmPlanendring(user.id, "OPPRETTET");
 
   revalidatePath("/portal/planlegge/workbench");
   return { ok: true, sessionId: created.id };
@@ -656,6 +664,7 @@ export async function removeWorkbenchSession(
   }
   await deleteV2ForPlanSession(sessionId);
   await prisma.trainingPlanSession.delete({ where: { id: sessionId } });
+  await varsleCoachOmPlanendring(user.id, "SLETTET");
   revalidatePath("/portal/planlegge/workbench");
   return { ok: true };
 }
@@ -666,7 +675,10 @@ export async function duplicateWorkbenchWeek(
 ): Promise<{ ok: boolean; count?: number; error?: string }> {
   const user = await requirePortalUser();
   const result = await duplicateWeekCore(user.id, targetWeekOffset);
-  if (result.ok) revalidatePath("/portal/planlegge/workbench");
+  if (result.ok) {
+    await varsleCoachOmPlanendring(user.id, "OPPRETTET");
+    revalidatePath("/portal/planlegge/workbench");
+  }
   return result;
 }
 
@@ -700,6 +712,9 @@ export async function duplicateWorkbenchSession(
 ): Promise<{ ok: boolean; sessionId?: string; error?: string }> {
   const user = await requirePortalUser();
   const result = await duplicateSessionCore(user.id, sessionId);
-  if (result.ok) revalidatePath("/portal/planlegge/workbench");
+  if (result.ok) {
+    await varsleCoachOmPlanendring(user.id, "OPPRETTET");
+    revalidatePath("/portal/planlegge/workbench");
+  }
   return result;
 }

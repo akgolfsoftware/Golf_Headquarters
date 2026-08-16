@@ -21,7 +21,7 @@ import { InnstillingerAnleggV2 } from "@/components/portal/v2/InnstillingerAnleg
 export const dynamic = "force-dynamic";
 
 export default async function AnleggPage() {
-  const user = await requirePortalUser({ allow: ["PLAYER", "PARENT", "COACH", "ADMIN"] });
+  const user = await requirePortalUser({ kreverTilgang: "INGEN", allow: ["PLAYER", "PARENT", "COACH", "ADMIN"] });
 
   const dbUser = await prisma.user.findUnique({
     where: { id: user.id },

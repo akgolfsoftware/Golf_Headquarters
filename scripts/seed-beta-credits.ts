@@ -26,9 +26,9 @@ async function main() {
     const user = await prisma.user.findUnique({ where: { email }, select: { id: true } });
     if (!user) { console.log(`MANGLER bruker: ${email}`); continue; }
     await prisma.subscription.upsert({
-      where: { userId: user.id },
+      where: { userId_kind: { userId: user.id, kind: "COACHING" } },
       update: { status: "ACTIVE", monthlyCredits: 3, creditsRemaining: 3, currentPeriodEnd: periodeSlutt },
-      create: { userId: user.id, tier: "GRATIS", status: "ACTIVE", monthlyCredits: 3, creditsRemaining: 3, currentPeriodEnd: periodeSlutt },
+      create: { userId: user.id, kind: "COACHING", plan: "MANUELL", tier: "GRATIS", status: "ACTIVE", monthlyCredits: 3, creditsRemaining: 3, currentPeriodEnd: periodeSlutt },
     });
     ok++;
   }

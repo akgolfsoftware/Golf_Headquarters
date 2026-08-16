@@ -54,10 +54,16 @@ via `claude-design`-MCP-verktøyet) er designfasit; full port til `src/` kjører
 ## Skjermarbeid (gjeldende prosess)
 
 **Designfasit:** Claude Paper — Claude Design-prosjektet `605a48cc` er **originalen**.
-**Arbeidsfasiten er det lokale speilet `designsystem/paper/`** (208 HTML, `fase1/` + `fase2/`) —
-det er den du leser, differ og sammenligner mot. Speilet gjelder så lenge
-`designsystem/paper/SYNC-STATUS.md` viser at det er målt mot siste zip fra Anders (nå: zip (3),
-09.08.2026, byte-identisk med zip (2) — 0 avvik).
+**Arbeidsfasiten er det lokale speilet `designsystem/paper/`** (254 HTML: `fase1/` + `fase2/` +
+`jarvis/`) — det er den du leser, differ og sammenligner mot. Speilet gjelder så lenge
+`designsystem/paper/SYNC-STATUS.md` viser at det er målt mot siste zip fra Anders (nå: zip
+levert 16.08.2026 21:11, 839 filer — 0 avvik).
+**Opprett aldri en parallell kopi av fasiten** (`docs/port/paper/` e.l.) — to kopier av samme HTML
+er to sannheter om samme skjerm, og alle `docs/port/`-dokumentene peker allerede hit med
+`designsystem/paper/…`-stier. Speilet skal være byte-identisk med zip-en; ligger det interne
+duplikater INNE i speilet (f.eks. `design_handoff_rutefasit_agenticos/docs-port/rutefasit.md`),
+er de en del av leveransen og skal stå — men de **styrer ingenting**. Ved motstrid gjelder
+`docs/port/`-versjonen, aldri speilets kopi.
 
 **Resynk skjer når Anders leverer ny zip, ikke før hver skjerm.** Den gamle regelen krevde henting
 via `claude-design`-MCP før hver sammenligning. Den koblingen er ikke tilgjengelig i alle økter, så
@@ -67,8 +73,11 @@ det er ikke et krav for å jobbe.
 
 **Dekningsregnskap:** `docs/port/fasit-liste-paper.md` — hvilke skjermer har fasit, hvilke må designes uten.
 
-**Plan og rekkefølge:** `docs/port/plan-designport-alle-skjermer.md` — bølger, status per steg, og
-§«Ferdig-definisjon per skjerm» som er den gjeldende kvalitetsporten.
+**Plan og rekkefølge:** `docs/port/PORTPLAN.md` — én sesjon per mal-fasit, avhengighetsrekkefølge,
+og hva som blokkerer hva. Kvalitetsporten er skjermbilde-gaten rett under + `PAPER-ZIP-CHECKLIST.md`.
+(`docs/port/plan-designport-alle-skjermer.md` er **UTGÅTT 12.08.2026** — den er stemplet slik i
+egen header og listet som erstattet i `docs/port/GYLDIGHET.md`. CLAUDE.md pekte på den som
+gjeldende kvalitetsport frem til 17.08; ikke gjeninnfør den henvisningen.)
 
 **Skjermbilde-gaten:** ingen skjerm-PR merges uten at Anders har SETT skjermen. Skjermbilde i samtalen
 (synlig fra iPhone), mobil 390px alltid først, deretter desktop, lys OG mørk, fasit-utsnittet ved siden av,
@@ -77,6 +86,38 @@ fotografert.
 
 (Den gamle `docs/MASTER-SKJERMPLAN.md` med 6 haker per skjerm er slettet 05.08.2026 — hakene var satt mot et
 avviklet designprosjekt. Ligger i git-historikken.)
+
+### Kontrakten — slik bygges en rute fra en mal-fasit
+Flyttet hit fra `docs/port/rutefasit.md` 16.08.2026. **Gjelder alltid, skal aldri gjentas i en prompt.**
+
+1. Finn ruten i `docs/port/rutefasit.md`. Åpne **mal-fasiten** (`designsystem/paper/…`) side om side m390 + d1280.
+2. Bygg malen 1:1; **avvikslinjen** er ALT som skiller ruten fra malen. Står det ikke der, finnes det ikke.
+3. Tilstander arves fra malens riggbar (tom/laster/feil er tegnet — bruk dem, aldri fake data).
+4. **Én-linje-testen:** klarer du ikke beskrive rutens avvik i én setning, STOPP — ruten trenger egen fasit.
+   Meld den, ikke improviser.
+5. Skjermen er ferdig når variant-raden er ført i `PP-W*-VARIANTS` med m390 + d1280-skjermbilde
+   (i tillegg til skjermbilde-gaten over).
+
+### Claude-følelsen (bindende for alle varianter)
+Flyttet hit fra `docs/port/rutefasit.md` 16.08.2026. Målet er at plattformen kjennes som Claude
+desktop/mobil: samtale først, artefakter ved siden, kommando under fingrene.
+
+- **Chat-først:** `/portal` ER samtalen (fasit `playerhq-chat-*`); konsollen er samtale + artefaktkolonne
+  (PP-2.1-briefen). En variantrute bygger aldri en oppslagstavle der malen har en samtale.
+- **Composer:** festet spørrefelt nederst på alle desktop-flater, mobil kun Hjem (komponent `Composer`).
+  Varianter fjerner den aldri.
+- **⌘K overalt:** CommandPalette (S6 «Alt») er inngangen til alt uten meny-plass — varianter lenker dit
+  i stedet for å legge til nav.
+- **Artefaktkolonnen:** detaljpanelet til høyre (380 px) forklarer og avgjør valgt sak — galleriets
+  hovedfunn var at den manglet. Master–detalj-varianter fyller panelet, aldri en ny side.
+- **Mobil = app:** 430 px-kolonne, TabBar, BottomSheet i stedet for modal, 44 px trykkflater. Ingen
+  desktop-tabell presset inn i 390 px — bruk malens mobiltilstand.
+- **Skall-monopol (F1):** ingen rute bygger egen header/nav/chrome. Avvik = bug.
+- **Paper:** papir/blekk, maks én clay-CTA per skjerm, Poppins/Lora/Plex Mono, alle tall mono med
+  komma-desimal, norsk bokmål, aldri emoji.
+
+**Porteringsrekkefølge og sesjonsinndeling:** `docs/port/PORTPLAN.md` — én sesjon per mal-fasit,
+aldri per rute.
 
 ## Stack
 - **Next.js 16.2.6** (App Router, Turbopack, TS strict) + **React 19.2.4** + Vercel. Node 24 i CI.

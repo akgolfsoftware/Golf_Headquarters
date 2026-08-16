@@ -27,7 +27,7 @@ export const dynamic = "force-dynamic";
 type Area = "TEE_TOTAL" | "TILNAERMING" | "AROUND_GREEN" | "PUTTING";
 
 export default async function HullAnalysePage() {
-  const user = await requirePortalUser();
+  const user = await requirePortalUser({ kreverTilgang: "TALENT" });
 
   const tretti = new Date();
   tretti.setDate(tretti.getDate() - 30);

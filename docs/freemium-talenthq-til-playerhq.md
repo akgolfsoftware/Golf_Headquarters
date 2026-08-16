@@ -1,5 +1,15 @@
 # Freemium-flyt: TalentHQ → PlayerHQ (spec, utkast 2026-07-31)
 
+> ⚠ **ERSTATTET 2026-08-16 — IKKE BYGG MOT DENNE.** Anders besluttet en annen
+> gate enn spec-en foreslår: den gratis, låste profilen åpner KUN
+> testregistrering (CANON-protokollene), stats-/analyse-lesing,
+> SG-/runderegistrering, DataGolf-sammenligning, talent-flatene, booking og
+> konto — ikke spec-ens «3 gratis økter»-modell. Gjeldende fasit:
+> `docs/platform/BUSINESS-RULES.md` §Abonnement og tilgang (nivået TALENT),
+> `src/lib/feature-flags.ts` (resolveTilgang) og
+> `src/lib/auth/talent-allowlist.ts` (rutekontrakten).
+> Fila beholdes kun som historikk for utredningen bak beslutningen.
+
 **Status:** FORSLAG — venter på Anders' godkjenning før implementering.
 **Forfatter:** Kimi Code, på bakgrunn av arkitektur-beslutninger 2026-07-31.
 

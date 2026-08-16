@@ -6,6 +6,7 @@ import { runPlanWatcher } from "@/lib/agents/plan-watcher";
 import { runWeeklyPlanProposals } from "@/lib/agents/weekly-plan-proposals";
 import { runChurnRadar } from "@/lib/agents/churn-radar";
 import { runBetalingsPurring } from "@/lib/agents/betalings-purring";
+import { runWinbackAgent } from "@/lib/agents/winback-agent";
 import { runUkesoppsummering } from "@/lib/agents/ukesoppsummering";
 import { runMaanedsrapport } from "@/lib/agents/maanedsrapport";
 import { runLeadOppfolging } from "@/lib/agents/lead-oppfolging";
@@ -55,6 +56,7 @@ import { runWagrSync } from "@/lib/agents/wagr-sync";
 import { runLonnSjekkliste, runLonnPurring } from "@/lib/agents/tripletex-lonn-agent";
 import { runMaanedsavslutning } from "@/lib/agents/tripletex-maanedsavslutning-agent";
 import { runBallplukkingSjekk } from "@/lib/agents/gfgk-ballplukking-agent";
+import { runSyncVaktbikkje } from "@/lib/agents/sync-vaktbikkje";
 import { runVaskelisteSjekk } from "@/lib/agents/mulligan-vaskeliste-agent";
 import { rateLimit } from "@/lib/rate-limit";
 import { avvisUgyldigCron } from "@/lib/cron/auth";
@@ -67,6 +69,7 @@ const AGENTS: Record<string, () => Promise<unknown>> = {
   "weekly-plan-proposals": runWeeklyPlanProposals,
   "churn-radar": runChurnRadar,
   "betalings-purring": () => runBetalingsPurring(),
+  "winback-oppfolging": () => runWinbackAgent(),
   ukesoppsummering: runUkesoppsummering,
   maanedsrapport: () => runMaanedsrapport(),
   "lead-oppfolging": runLeadOppfolging,
@@ -128,6 +131,8 @@ const AGENTS: Record<string, () => Promise<unknown>> = {
   "gfgk-ballplukking-sjekk": runBallplukkingSjekk,
   // Mulligan vaskeliste-rotasjon (mandag) — se .claude/rules/mulligan-drift.md.
   "mulligan-vaskeliste-sjekk": runVaskelisteSjekk,
+  // T7 — vaktbikkje for data-syncene (mandag, etter alle mandagssyncene).
+  "sync-vaktbikkje": runSyncVaktbikkje,
 };
 
 export async function GET(

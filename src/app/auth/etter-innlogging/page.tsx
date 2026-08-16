@@ -13,6 +13,8 @@
 
 import { getCurrentUser } from "@/lib/auth/getCurrentUser";
 import { recordLastLogin } from "@/lib/auth/record-last-login";
+import { effectiveCapabilities } from "@/lib/auth/effective-capabilities";
+import { Capability } from "@/lib/auth/cbac";
 import { redirect } from "next/navigation";
 
 export const dynamic = "force-dynamic";
@@ -30,5 +32,16 @@ export default async function EtterInnloggingPage() {
 
   if (user.role === "PARENT") redirect("/forelder");
   if (user.role === "ADMIN" || user.role === "COACH") redirect("/admin/agencyos");
+  // T8: ekstern leser (GUEST med view-shared-caps) hører hjemme på /innsyn —
+  // uten dette havner hen i GUEST-redirect-sløyfen /portal → /admin/kalender.
+  if (user.role === "GUEST") {
+    const caps = await effectiveCapabilities(user);
+    if (
+      caps.has(Capability.VIEW_SHARED_TEST_RESULTS) ||
+      caps.has(Capability.VIEW_SHARED_STATS)
+    ) {
+      redirect("/innsyn");
+    }
+  }
   redirect("/portal");
 }

@@ -1,6 +1,17 @@
 # Sync status
 
-- **Zip:** AK Golf HQ — Claude Paper.zip — levert 16.08.2026 15:41 (824 filer)
+- **Zip:** «AK Golf HQ — Claude Paper (1).zip» — levert 16.08.2026 21:11 (839 filer).
+  Diffet mot 15:41-speilet: **0 endret, 0 slettet, 20 nye** — speilet er nå byte-identisk
+  med zip-en (verifisert med `find`-sammenligning + `diff -r` på `jarvis/`).
+  De 20 nye: **`jarvis/` (15 filer)** — 12 `/meg`-skjermer + `jarvis-base.css`/`.js` +
+  `claude-code-nattsesjon-prompt.md` — og 5 skjermbilder i
+  `design_handoff_rutefasit_agenticos/screenshots/`.
+  **Merk:** de 5 skjermbildene ligger på disk, men er `.gitignore`-t (`screenshots/`, linje 123),
+  så de er IKKE versjonert. I git er speilet derfor 15 filer større, ikke 20 — det er bevisst
+  (repoet versjonerer ikke skjermbilder), men betyr at en fersk `git clone` mangler dem.
+  **`jarvis/`-skjermene er IKKE dekket av `docs/port/rutefasit.md`** (den kjenner bare
+  `/admin/brief (+ meg/dispatch, meg/morgenbrief)`). De styres av `docs/port/PORTPLAN.md` §S0.
+- **Zip (forrige):** AK Golf HQ — Claude Paper.zip — levert 16.08.2026 15:41 (824 filer)
 - **Dato i repo:** 2026-08-16 — **full resynk**, sha256-diffet mot forrige speil:
   761 identiske · 0 slettet · 6 metafiler endret (`readme.md`, `github.md`,
   `fase1/FASE-1.md` — økt-ID-eksempler rettet til AK-formel v2, `fase2/manifest-w2-komplett.md`

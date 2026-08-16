@@ -10,6 +10,7 @@ import { redirect } from "next/navigation";
 import { z } from "zod";
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
+import { requireCoachActionUser } from "@/lib/auth/action-guards";
 import { assertCoachTilgangTilSpiller } from "@/lib/auth/coached";
 import { prisma } from "@/lib/prisma";
 import { audit } from "@/lib/audit";
@@ -95,6 +96,57 @@ export async function lagreSpiller(formData: FormData): Promise<void> {
   }
 
   redirect(`/admin/spillere/${data.id}`);
+}
+
+const ValgtCoachSchema = z.object({
+  spillerId: z.string().min(1),
+  coachId: z.string().min(1).nullable(),
+});
+
+/**
+ * Sett spillerens valgte coach (plan G2). Skriver User.primaryCoachId —
+ * feltet leses KUN via resolveValgtCoachId (src/lib/domain/valgt-coach.ts).
+ * `coachId: null` fjerner valget (resolveren faller da tilbake til
+ * enrollment/gruppe/plan-kjeden).
+ */
+export async function settValgtCoach(
+  spillerId: string,
+  coachId: string | null,
+): Promise<{ ok: boolean; error?: string }> {
+  try {
+    const actor = await requireCoachActionUser();
+    const parsed = ValgtCoachSchema.parse({ spillerId, coachId });
+    await assertCoachTilgangTilSpiller(actor, parsed.spillerId);
+
+    if (parsed.coachId) {
+      const coach = await prisma.user.findFirst({
+        where: { id: parsed.coachId, role: { in: ["COACH", "ADMIN"] }, deletedAt: null },
+        select: { id: true },
+      });
+      if (!coach) {
+        return { ok: false, error: "Coachen finnes ikke eller mangler coach-rolle." };
+      }
+    }
+
+    await prisma.user.update({
+      where: { id: parsed.spillerId },
+      data: { primaryCoachId: parsed.coachId },
+    });
+
+    await audit({
+      actorId: actor.id,
+      action: "PLAYER_VALGT_COACH",
+      target: `user:${parsed.spillerId}`,
+      metadata: { coachId: parsed.coachId },
+    });
+
+    revalidatePath(`/admin/spillere/${parsed.spillerId}`);
+    revalidatePath(`/admin/spillere/${parsed.spillerId}/rediger`);
+
+    return { ok: true };
+  } catch (e) {
+    return { ok: false, error: e instanceof Error ? e.message : "Ukjent feil" };
+  }
 }
 
 /**

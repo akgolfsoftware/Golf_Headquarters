@@ -4,6 +4,7 @@
 // Etter kjøring er AgencyOS (/admin/grupper + Workbench) master — gfgkjunior.no-
 // sidene bytter automatisk fra design-fallback til live data (ISR 5 min).
 import { prisma } from "@/lib/prisma";
+import { kanoniskGruppe, type KanoniskGruppeSlug } from "@/lib/domain/grupper";
 
 // Kanonisk ukeplan (design-prosjektets CLAUDE.md): alle grupper tirsdag+torsdag.
 // Tidene lagres som Oslo-veggklokke på referansedatoer i utesesongen (CEST) —
@@ -18,8 +19,9 @@ interface Okt {
   location: string;
 }
 
-export const GFGK_BOOTSTRAP_GRUPPER: { navn: string; level: string; okter: Okt[] }[] = [
+export const GFGK_BOOTSTRAP_GRUPPER: { slug: KanoniskGruppeSlug; navn: string; level: string; okter: Okt[] }[] = [
   {
+    slug: "gfgk-mini",
     navn: "GFGK Junior Mini U10",
     level: "A5",
     okter: [
@@ -28,6 +30,7 @@ export const GFGK_BOOTSTRAP_GRUPPER: { navn: string; level: string; okter: Okt[]
     ],
   },
   {
+    slug: "gfgk-basis",
     navn: "GFGK Junior Basis U13",
     level: "A4",
     okter: [
@@ -36,6 +39,7 @@ export const GFGK_BOOTSTRAP_GRUPPER: { navn: string; level: string; okter: Okt[]
     ],
   },
   {
+    slug: "gfgk-utvikling",
     navn: "GFGK Junior Utvikling U15",
     level: "A3",
     okter: [
@@ -44,6 +48,7 @@ export const GFGK_BOOTSTRAP_GRUPPER: { navn: string; level: string; okter: Okt[]
     ],
   },
   {
+    slug: "gfgk-elite",
     navn: "GFGK Junior Elite U19",
     level: "A2",
     okter: [
@@ -82,11 +87,36 @@ export async function kjorGfgkJuniorBootstrap(): Promise<BootstrapResultat> {
   };
 
   for (const g of GFGK_BOOTSTRAP_GRUPPER) {
-    let gruppe = await prisma.group.findFirst({ where: { name: g.navn } });
+    // Slug er identiteten (domain/grupper.ts). Navn-fallback fanger rader fra
+    // før taksonomien fikk slug — de migreres ved å få slug satt her.
+    const kanon = kanoniskGruppe(g.slug);
+    let gruppe =
+      (await prisma.group.findUnique({ where: { slug: g.slug } })) ??
+      (await prisma.group.findFirst({ where: { name: g.navn, slug: null } }));
     if (!gruppe) {
-      gruppe = await prisma.group.create({ data: { name: g.navn, level: g.level } });
+      gruppe = await prisma.group.create({
+        data: {
+          name: g.navn,
+          slug: g.slug,
+          level: g.level,
+          program: kanon.program,
+          kind: kanon.kind,
+          managedByAkGolf: true,
+        },
+      });
       resultat.grupperOpprettet.push(g.navn);
     } else {
+      if (!gruppe.slug) {
+        gruppe = await prisma.group.update({
+          where: { id: gruppe.id },
+          data: {
+            slug: g.slug,
+            program: kanon.program,
+            kind: kanon.kind,
+            managedByAkGolf: true,
+          },
+        });
+      }
       resultat.grupperFantes.push(g.navn);
     }
 

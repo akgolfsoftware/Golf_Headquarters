@@ -3,25 +3,18 @@
 **Skrevet:** 2026-08-12 · **Kilde:** konsolideringsgatene W3/W4/W5/drift i `kart/` (talt mot kode på `main`)
 **Legg denne i repoet som `docs/port/rutefasit.md`** og hold den i synk med `PAPER-ZIP-CHECKLIST.md`.
 
-## Slik brukes den (kontrakten)
+## Kontrakten og Claude-følelsen → flyttet til `CLAUDE.md`
 
-1. Finn ruten i tabellen. Åpne **mal-fasiten** (designsystem/paper/…) side om side m390 + d1280.
-2. Bygg malen 1:1; **avvikslinjen** er ALT som skiller ruten fra malen. Står det ikke der, finnes det ikke.
-3. Tilstander arves fra malens riggbar (tom/laster/feil er tegnet — bruk dem, aldri fake data).
-4. **Én-linje-testen:** klarer du ikke beskrive rutens avvik i én setning, STOPP — ruten trenger egen fasit. Meld den, ikke improviser.
-5. Skjermen er ferdig når variant-raden er ført i PP-W*-VARIANTS med m390 + d1280-skjermbilde.
+**Flyttet 16.08.2026.** «Slik brukes den (kontrakten)» og «Claude-følelsen» sto her, men er
+regler som gjelder ALT skjermarbeid — ikke bare rutene i tabellene under. De bor nå i
+`CLAUDE.md` §Skjermarbeid, som lastes i hver økt, slik at de aldri trenger gjentas i en prompt.
 
-## Claude-følelsen (bindende for alle varianter)
+Denne fila eier **tabellene**: rute → mal-fasit → avvik. Ikke dupliser reglene tilbake hit —
+to kopier gir to sannheter, og den ene blir stille utdatert.
 
-Målet er at plattformen kjennes som Claude desktop/mobil: samtale først, artefakter ved siden, kommando under fingrene.
-
-- **Chat-først:** `/portal` ER samtalen (fasit `playerhq-chat-*`); konsollen er samtale + artefaktkolonne (PP-2.1-briefen). En variantrute bygger aldri en oppslagstavle der malen har en samtale.
-- **Composer:** festet spørrefelt nederst på alle desktop-flater, mobil kun Hjem (komponent `Composer`). Varianter fjerner den aldri.
-- **⌘K overalt:** CommandPalette (S6 «Alt») er inngangen til alt uten meny-plass — varianter lenker dit i stedet for å legge til nav.
-- **Artefaktkolonnen:** detaljpanelet til høyre (380 px) forklarer og avgjør valgt sak — galleriets hovedfunn var at den manglet. Master–detalj-varianter fyller panelet, aldri en ny side.
-- **Mobil = app:** 430 px-kolonne, TabBar, BottomSheet i stedet for modal, 44 px trykkflater. Ingen desktop-tabell presset inn i 390 px — bruk malens mobiltilstand.
-- **Skall-monopol (F1):** ingen rute bygger egen header/nav/chrome. Avvik = bug.
-- **Paper:** papir/blekk, maks én clay-CTA per skjerm, Poppins/Lora/Plex Mono, alle tall mono med komma-desimal, norsk bokmål, aldri emoji.
+> Bevisst lokalt avvik fra zip-leveransen: `kart/rutefasit-for-claude-code.md` i designprosjektet
+> inneholder fortsatt begge seksjonene. Ved neste resynk — behold denne pekeren, ikke gjenopprett
+> seksjonene.
 
 ---
 

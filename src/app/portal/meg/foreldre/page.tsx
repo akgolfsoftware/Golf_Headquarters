@@ -24,7 +24,7 @@ function relasjonLabel(r: string): string {
 }
 
 export default async function ForeldrePage() {
-  const user = await requirePortalUser();
+  const user = await requirePortalUser({ kreverTilgang: "INGEN" });
   if (user.role === "PARENT") redirect("/forelder");
   if (user.role === "GUEST") redirect("/admin/kalender");
 

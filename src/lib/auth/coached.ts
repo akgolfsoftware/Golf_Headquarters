@@ -1,5 +1,9 @@
 import type { Prisma } from "@/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
+import {
+  aktivtSpillerMedlemskapWhere,
+  aktivtTrenerMedlemskapWhere,
+} from "@/lib/domain/grupper";
 
 /**
  * Tilgangsskillet selvbetjent vs. coachet (I0 — LÅST forretningsregel,
@@ -36,7 +40,9 @@ export function coachedPlayerWhere(): Prisma.UserWhereInput {
           some: { endedAt: null, program: { not: "PLATFORM_ONLY" } },
         },
       },
-      { groupMemberships: { some: {} } },
+      // Kun AKTIVE spiller-medlemskap (endedAt null) — utmeldte spillere skal
+      // ut av AgencyOS samme øyeblikk som de meldes ut (soft-end, plan G1).
+      { groupMemberships: { some: aktivtSpillerMedlemskapWhere() } },
     ],
   };
 }
@@ -52,8 +58,15 @@ export async function erCoachetSpiller(userId: string): Promise<boolean> {
 
 /**
  * Coach-scoping (Anders 2026-07-13): en COACH ser og redigerer KUN sine egne
- * spillere — aktiv PlayerEnrollment med coachId = coachen, eller medlemskap i
- * en gruppe coachen eier (Group.coachId). ADMIN ser alle coachede spillere.
+ * spillere. Tre lovlige veier inn (OR-grenene under):
+ *   1. Aktiv PlayerEnrollment med coachId = coachen.
+ *   2. Aktivt spiller-medlemskap i en gruppe coachen eier (Group.coachId).
+ *   3. (G5) Aktivt spiller-medlemskap i en gruppe der coachen selv er aktivt
+ *      COACH- eller ASSISTANT-medlem — trenere lagt inn som gruppemedlemmer
+ *      får innsyn i gruppens spillere uten å eie gruppen. Innsyn, ikke
+ *      redigering av gruppen: den porten er `eierGruppen` i gruppe-actions,
+ *      og den krever role COACH (ASSISTANT gir aldri redigering).
+ * ADMIN ser alle coachede spillere.
  *
  * Bruk denne i AgencyOS-loadere i stedet for `coachedPlayerWhere()` når
  * innholdet er per-spiller-data; bruk `assertCoachTilgangTilSpiller` i
@@ -75,7 +88,19 @@ export function coachScopedPlayerWhere(viewer: {
           some: { endedAt: null, program: { not: "PLATFORM_ONLY" }, coachId: viewer.id },
         },
       },
-      { groupMemberships: { some: { group: { coachId: viewer.id } } } },
+      {
+        groupMemberships: {
+          some: { ...aktivtSpillerMedlemskapWhere(), group: { coachId: viewer.id } },
+        },
+      },
+      {
+        groupMemberships: {
+          some: {
+            ...aktivtSpillerMedlemskapWhere(),
+            group: { members: { some: aktivtTrenerMedlemskapWhere(viewer.id) } },
+          },
+        },
+      },
     ],
   };
 }

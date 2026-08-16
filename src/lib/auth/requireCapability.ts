@@ -1,10 +1,14 @@
 // Server-side guard som gater på en CBAC-capability i stedet for rå rolle.
 // Brukes der policyen bor i cbac.ts (f.eks. VIEW_FINANCE = kun ADMIN), så
 // håndhevingen matcher matrisen som vises i /admin/settings/tilgang.
+// G6 (2026-08-16): sjekker EFFEKTIVE capabilities (rolle-default ±
+// per-bruker-overrides fra user_capabilities). Den synkrone can(role, cap)
+// i cbac.ts består for matrise-visningen av rolle-defaults.
 
 import { redirect } from "next/navigation";
 import { getCurrentUserRaw } from "./getCurrentUser";
-import { can, type Capability } from "./cbac";
+import type { Capability } from "./cbac";
+import { canUser } from "./effective-capabilities";
 import { isAwaitingGuardianConsent } from "./minor";
 
 type Options = {
@@ -25,7 +29,7 @@ export async function requireCapability(
   // getCurrentUserRaw fordi denne guarden gjør sin egen samtykke-redirect under.
   const user = await getCurrentUserRaw();
   if (!user) redirect(redirectTo);
-  if (!can(user.role, capability)) {
+  if (!(await canUser(user, capability))) {
     // Send til riktig hjemmeside basert på rolle for å unngå redirect-loops.
     if (user.role === "PARENT") redirect("/forelder");
     if (user.role === "ADMIN" || user.role === "COACH") redirect("/admin");

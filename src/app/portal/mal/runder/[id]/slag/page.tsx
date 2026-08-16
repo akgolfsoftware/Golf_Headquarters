@@ -22,7 +22,7 @@ export default async function SlagRegistreringPage({
 }: {
   params: Promise<{ id: string }>;
 }) {
-  const user = await requirePortalUser();
+  const user = await requirePortalUser({ kreverTilgang: "TALENT" });
   const { id } = await params;
 
   const runde = await prisma.round.findUnique({
