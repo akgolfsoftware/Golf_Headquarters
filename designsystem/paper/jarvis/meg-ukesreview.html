@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="nb" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ukesreview · Jarvis · AK Golf HQ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Lora:ital,wght@0,400;0,500;1,400&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../tokens/akhq-tokens.css">
+<link rel="stylesheet" href="jarvis-base.css">
+<style>
+/* Ukesreview — høy data-ink-ratio: mono-tall, flate token-barer, ingen ny chart-stil */
+.brief h2{margin:var(--s4) 0 var(--s2);font-family:var(--disp);font-size:13px;font-weight:600}
+.brief h2:first-child{margin-top:0}
+.brief p,.brief li{font-family:var(--body);font-size:14px;line-height:1.62}
+.brief p{margin:0 0 var(--s3);max-width:56ch}
+.brief ol{margin:0 0 var(--s3);padding-left:var(--s5)}
+.brief li{margin-bottom:var(--s2)}
+.kpi2{display:grid;grid-template-columns:1fr 1fr;gap:var(--s2);margin-bottom:var(--s4)}
+.kpi2 .c{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:var(--s3) var(--s4)}
+.kpi2 .tall{font-family:var(--mono);font-size:30px;font-weight:600;line-height:1.1;font-variant-numeric:tabular-nums}
+.kpi2 .lab{font-family:var(--mono);font-size:9.5px;letter-spacing:.07em;text-transform:uppercase;color:var(--muted)}
+.kpi2 .delta{font-family:var(--mono);font-size:11px;margin-top:2px}
+.kpi2 .delta.opp{color:var(--up)}
+.bar{height:8px;background:var(--soft);border-radius:var(--r-pill);overflow:hidden;margin:var(--s2) 0 var(--s1)}
+.bar i{display:block;height:100%;background:var(--fg);border-radius:var(--r-pill)}
+.kanalrad{display:grid;grid-template-columns:110px 1fr 44px;gap:var(--s2);align-items:center;padding:var(--s1) 0;font-size:12.5px}
+.kanalrad .n{font-family:var(--mono);font-size:11px;text-align:right;color:var(--muted);font-variant-numeric:tabular-nums}
+.kanalrad .b{height:8px;background:var(--soft);border-radius:var(--r-pill);overflow:hidden}
+.kanalrad .b i{display:block;height:100%;background:var(--info-raw);border-radius:var(--r-pill)}
+</style>
+</head>
+<body class="art-open">
+<a class="skip" href="#thread" data-od-id="skip-to-thread">Hopp til tråden</a>
+<div class="shell">
+  <main class="stage" data-od-id="panel-meg" data-screen-label="Meg — ukesreview">
+    <header class="top">
+      <div class="brand">AK<span>.</span></div>
+      <div class="who">
+        <h1>Meg</h1>
+        <div class="eyebrow">fredag 14. august · <span class="num">17:02</span></div>
+      </div>
+      <button class="qind" id="qind" data-od-id="cta-open-saker" aria-controls="artifactPanel" aria-expanded="true">
+        <span class="num">0 venter</span><span class="lang eyebrow" style="letter-spacing:.05em">saker</span>
+      </button>
+      <button class="kbdhint" id="palBtn" data-od-id="cta-open-palett" aria-haspopup="dialog" aria-expanded="false">Kommandoer <kbd>⌘K</kbd></button>
+      <button class="icbtn" id="themeToggle" data-od-id="theme-toggle" aria-label="Bytt tema">
+        <svg class="ic" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4.2"></circle><path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M19.1 4.9l-1.4 1.4M6.3 17.7l-1.4 1.4"></path></svg></button>
+    </header>
+
+    <div class="thread" id="thread" role="log" aria-live="polite" aria-label="Samtale" tabindex="-1">
+      <div class="tw" id="turns">
+        <article class="turn">
+          <div class="you"><div class="av">AK</div><div class="msg">Hvordan gikk uka?</div></div>
+          <div class="ai">
+            <ul class="steps">
+              <li><svg viewBox="0 0 24 24"><path d="M4 12l5 5 11-11"></path></svg>Gjorde opp uke 33: 50 saker, 5 kalenderavvik, tokenbruk<span class="t">17:00</span></li>
+            </ul>
+            <p class="say">Beste SLA-uke hittil: <span class="num">94 %</span> under 6 timer, opp fra <span class="num">88 %</span>. De tre som glapp var alle fredag ettermiddag — det er et mønster nå, forslag ligger i reviewen.</p>
+          </div>
+        </article>
+      </div>
+    </div>
+
+    <div class="composer" data-od-id="panel-composer">
+      <div class="cwrap">
+        <button class="mic" id="mic" data-od-id="cta-mic" aria-pressed="false" aria-label="Snakk til Jarvis">
+          <svg class="ic" viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="10" rx="3"></rect><path d="M5 11a7 7 0 0 0 14 0M12 18v3"></path></svg>
+        </button>
+        <div class="box">
+          <textarea id="ta" rows="1" placeholder="«Legg fredagsblokk 15:00 inn fast», «vis forrige uke» …" aria-label="Melding til Jarvis"></textarea>
+          <div class="boxbar"><span class="hint">⏎ send · ⇧⏎ ny linje</span><span class="sp"></span>
+            <button class="send" id="send" data-od-id="cta-send" aria-label="Send">
+              <svg class="ic" viewBox="0 0 24 24"><path d="M5 12h13M13 6l6 6-6 6"></path></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="recline"><span class="recdot"></span>Lytter … trykk mikrofonen igjen for å stoppe</div>
+    </div>
+  </main>
+
+  <aside class="artifact" id="artifactPanel" data-od-id="panel-ukesreview" role="dialog" aria-label="Ukesreview">
+    <div class="ahead">
+      <span class="t">Ukesreview</span><span class="n num">uke 33 · 10.–14. august</span>
+      <button class="btn sm lukk" id="artClose" data-od-id="cta-lukk-review">Lukk</button>
+    </div>
+    <div class="abody brief">
+      <div class="kpi2" data-od-id="panel-sla-uke">
+        <div class="c">
+          <div class="tall">94&nbsp;%</div>
+          <div class="lab">under 6t · 47 av 50 saker</div>
+          <div class="delta opp">▲ +6 pp vs uke 32</div>
+        </div>
+        <div class="c">
+          <div class="tall">2t&nbsp;12m</div>
+          <div class="lab">median svartid · uke 33</div>
+          <div class="delta opp">▲ 38m raskere vs uke 32</div>
+        </div>
+      </div>
+      <h2>Token-forbruk mot målet</h2>
+      <div class="bar" role="img" aria-label="118,4 av 150 millioner tokens brukt"><i style="width:79%"></i></div>
+      <p class="astatus"><span class="num">118,4 M av 150 M</span> · uke 33 · <span class="num">79 %</span> av budsjettet</p>
+      <h2>Saker per kanal · uke 33</h2>
+      <div data-od-id="panel-kanalfordeling">
+        <div class="kanalrad"><span>E-post</span><span class="b"><i style="width:100%"></i></span><span class="n">26</span></div>
+        <div class="kanalrad"><span>SMS/iMessage</span><span class="b"><i style="width:54%"></i></span><span class="n">14</span></div>
+        <div class="kanalrad"><span>Telegram</span><span class="b"><i style="width:23%"></i></span><span class="n">6</span></div>
+        <div class="kanalrad"><span>Kalender</span><span class="b"><i style="width:15%"></i></span><span class="n">4</span></div>
+        <div class="kanalrad"><span>Anrop</span><span class="b"><i style="width:12%"></i></span><span class="n">3</span></div>
+      </div>
+      <h2>Kalenderavvik fanget</h2>
+      <p><span class="num">5</span> denne uken — 3 konflikter, 2 uten reisetid. Alle fikset før de traff deg.</p>
+      <h2>Tre ting som gled</h2>
+      <ol>
+        <li>Innboksblokkene 11:30 og 16:00 holdt — ingen kø-sjekking utenom.</li>
+        <li>Anrop ble ringt tilbake samme formiddag, alle tre.</li>
+        <li>Null forfalte saker mandag–torsdag.</li>
+      </ol>
+      <h2>Tre ting til neste uke</h2>
+      <ol>
+        <li>Fredag 14–16 er svake timer — legg inn en tredje innboksblokk 15:00.</li>
+        <li>WANG-e-poster bør få egen utkastmal; du omskriver dem mest.</li>
+        <li>Kommune-saker tar lengst — be Jarvis foreslå ferdig vedlegg.</li>
+      </ol>
+    </div>
+    <div class="afoot"><span class="astatus">Generert fre <span class="num">17:00</span> · neste fre 21. aug</span></div>
+  </aside>
+</div>
+<div id="artScrim"></div>
+<script src="jarvis-base.js"></script>
+</body>
+</html>
