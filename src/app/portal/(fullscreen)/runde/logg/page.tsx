@@ -25,7 +25,7 @@ export default async function RundeLoggPage() {
   // requirePortalUser dekker også foreldresamtykket requireConsentingUser
   // gjorde før, men REDIRECTER til venterommet i stedet for å kaste — riktig
   // for en side (requireConsentingUser er skrevet for server actions).
-  const user = await requirePortalUser({ kreverTilgang: "FULL" });
+  const user = await requirePortalUser({ kreverTilgang: "TALENT" });
 
   const [alleBaner, sisteBaneId, sisteRunder] = await Promise.all([
     prisma.courseDefinition.findMany({

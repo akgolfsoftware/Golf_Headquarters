@@ -23,8 +23,13 @@ export const TALENT_APNE_PREFIKSER: readonly string[] = [
   "/portal/analyse",
   "/portal/statistikk",
   "/portal/stats",
-  // SG-/runderegistrering.
+  // SG-/runderegistrering. Registreringen skjer TO steder og begge må være
+  // åpne: /portal/mal/runder er listen og etterregistreringen, mens selve
+  // loggingen under spill bor i /portal/runde (live + logg, fullskjerm).
+  // Rettet 2026-08-17: kun den første sto her, så en gratisprofil kunne se
+  // runder den ikke hadde noen vei til å logge.
   "/portal/mal/runder",
+  "/portal/runde",
   "/portal/datagolf",
   // Talent-flatene (det gamle TalentHQ-produktet).
   "/portal/talent",
