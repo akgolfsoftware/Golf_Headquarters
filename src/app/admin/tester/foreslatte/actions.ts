@@ -9,6 +9,8 @@
 import { z } from "zod";
 import { revalidatePath } from "next/cache";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
+import { assertCapability } from "@/lib/auth/effective-capabilities";
+import { Capability } from "@/lib/auth/cbac";
 import { prisma } from "@/lib/prisma";
 import { audit } from "@/lib/audit";
 import { notify } from "@/lib/notifications";
@@ -17,6 +19,7 @@ const idSchema = z.object({ id: z.string().min(1) });
 
 export async function godkjennForslag(input: unknown) {
   const coach = await requirePortalUser({ allow: ["COACH", "ADMIN"] });
+  await assertCapability(coach, Capability.MANAGE_TESTS);
   const { id } = idSchema.parse(input);
 
   const test = await prisma.testDefinition.findUnique({
@@ -69,6 +72,7 @@ export async function godkjennForslag(input: unknown) {
 
 export async function avvisForslag(input: unknown) {
   const coach = await requirePortalUser({ allow: ["COACH", "ADMIN"] });
+  await assertCapability(coach, Capability.MANAGE_TESTS);
   const { id } = idSchema.parse(input);
 
   const test = await prisma.testDefinition.findUnique({
