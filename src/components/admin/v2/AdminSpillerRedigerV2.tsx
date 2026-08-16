@@ -3,6 +3,7 @@ import { Caps, Kort, Knapp, StatusPill, TomTilstand, T } from "@/components/v2";
 import { Icon } from "@/components/v2/icon";
 import { ToppbarHoyde } from "@/components/v2/toppbar-hoyde";
 import { AdminSlettSpillerKnappV2 } from "./AdminSlettSpillerKnappV2";
+import { AdminValgtCoachSelectV2, type CoachValg } from "./AdminValgtCoachSelectV2";
 import { lagreSpiller } from "@/app/admin/(legacy)/spillere/[id]/rediger/actions";
 
 /**
@@ -35,6 +36,9 @@ export interface AdminSpillerRedigerV2Data {
   klassetrinn: string;
   hcpInput: string;
   ambisjon: string;
+  // «Valgt coach» (G2) — null = ikke valgt, resolveren utleder fra program/gruppe.
+  valgtCoachId: string | null;
+  coacher: CoachValg[];
   foreldre: RedigerForelder[];
   historikk: RedigerHistorikk[];
 }
@@ -174,6 +178,11 @@ export function AdminSpillerRedigerV2({ data }: { data: AdminSpillerRedigerV2Dat
           <Kort>
             <Caps>Coaching</Caps>
             <div style={{ display: "flex", flexDirection: "column", gap: 14, marginTop: 14 }}>
+              <AdminValgtCoachSelectV2
+                spillerId={data.spillerId}
+                valgtCoachId={data.valgtCoachId}
+                coacher={data.coacher}
+              />
               <Felt label="Ambisjon" name="ambisjon" defaultValue={data.ambisjon} hint="Hva spilleren jobber mot — vises i hero" />
               <FeltOmraade label="Interne notater" name="notater" defaultValue="" hint="Kun coach ser dette" />
             </div>

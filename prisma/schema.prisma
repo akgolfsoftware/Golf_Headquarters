@@ -361,6 +361,13 @@ model User {
   schoolYear         String?
   // Snittscore forrige sesong — brukes som baseline for fremgang.
   prevSeasonAvgScore Int?
+  // «Valgt coach» (plan G2): spillerens ENE valgte coach — settes av admin-UI
+  // (settValgtCoach) og backfill-scriptet, aldri implisitt. Plain FK mot
+  // users.id (ON DELETE SET NULL + indeks via scripts/add-primary-coach-
+  // 2026-08-16.ts — ingen @relation, kirurgisk endring per gotchas
+  // §Schema-endringer). resolveValgtCoachId i src/lib/domain/valgt-coach.ts
+  // er ENESTE lovlige leser — les aldri feltet direkte i flater/agenter.
+  primaryCoachId     String?
   // Kanonisk kobling til turneringsidentitet (PublicPlayer) — settes automatisk
   // ved registrering via navn-matching. Gir spilleren turneringshistorikk i profilen.
   publicPlayerId     String?   @unique
@@ -592,6 +599,8 @@ model User {
   // Performance: hot path — filtrere aktive spillere/coacher
   // (PlayerHQ-lister, CoachHQ-portefølje, talent-tracking).
   @@index([role, deletedAt])
+  // Valgt coach (G2): oppslag «hvilke spillere har denne coachen som valgt».
+  @@index([primaryCoachId])
   @@map("users")
 }
 
