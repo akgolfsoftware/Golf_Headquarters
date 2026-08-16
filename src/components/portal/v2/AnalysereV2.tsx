@@ -268,6 +268,23 @@ function TabSG({ data, mobile }: { data: AnalysereData; mobile: boolean }) {
         </Kort>
       )}
 
+      {/* DataGolf-inngangen (T6): samme videre-lenke-kort som dybdelaget —
+          skjermen bor på /portal/analysere/datagolf og fylles av SG-broen. */}
+      <Link href="/portal/analysere/datagolf" className="v2-press v2-focus" style={{ textDecoration: "none", gridColumn: "1 / -1" }}>
+        <Kort>
+          <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+            <span style={{ width: 36, height: 36, borderRadius: 10, background: T.panel3, display: "inline-flex", alignItems: "center", justifyContent: "center", flex: "none" }}>
+              <Icon name="trophy" size={16} style={{ color: T.lime }} />
+            </span>
+            <div style={{ flex: 1, minWidth: 0 }}>
+              <div style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 14, color: T.fg }}>DataGolf</div>
+              <div style={{ fontFamily: T.ui, fontSize: 11.5, color: T.mut, marginTop: 2 }}>Deg mot touren — din SG mot en PGA-referansespiller</div>
+            </div>
+            <Icon name="chevron-right" size={15} style={{ color: T.mut, flex: "none" }} />
+          </div>
+        </Kort>
+      </Link>
+
     </div>
   );
 }
@@ -328,7 +345,7 @@ function AnalyseDybde({ data, mobile }: { data: AnalysereData; mobile: boolean }
         {[
           { href: "/portal/analysere/hull", ic: "map", l: "Hull-analyse", s: "Hvor taper du slag — hull for hull" },
           { href: "/portal/gameplan", ic: "crosshair", l: "Gameplan", s: "Banekart, spredning og hull-for-hull sikte" },
-          { href: "/portal/datagolf", ic: "trophy", l: "Sammenlign med proffer", s: "Din SG mot DataGolf-baseline" },
+          { href: "/portal/analysere/datagolf", ic: "trophy", l: "Sammenlign med proffer", s: "Din SG mot DataGolf-baseline" },
         ].map((c) => (
           <Link key={c.href} href={c.href} className="v2-press v2-focus" style={{ textDecoration: "none" }}>
             <Kort>

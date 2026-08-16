@@ -95,6 +95,10 @@ export function DataGolfV2({ data, spillerNavn }: DataGolfProps) {
   const navn = spillerNavn?.trim();
 
   if (!data.harData) {
+    // "MANGLER_REF" (T6): SG-grunnlaget finnes (f.eks. fra SG-broen) — det
+    // eneste som mangler er valget av referansespiller. Samme skjelett som
+    // helt tom, men med riktig budskap og én vei videre.
+    const manglerRef = data.tilstand === "MANGLER_REF";
     return (
       <div data-paper-slug="playerhq-datagolf" data-paper-wave-g="datagolf" data-paper-portal-datagolf style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
         <div data-paper-pattern-topp>
@@ -106,20 +110,28 @@ export function DataGolfV2({ data, spillerNavn }: DataGolfProps) {
         <div className="grid grid-cols-3" style={{ gap: 8 }}>
           <KpiFlis label="Gap" value="—" instant />
           <KpiFlis label="Kategorier" value="—" instant />
-          <KpiFlis label="Status" value="Ingen data" instant />
+          <KpiFlis label="Status" value={manglerRef ? "Klar" : "Ingen data"} instant />
         </div>
         <Kort>
-          <TomTilstand
-            icon="bar-chart"
-            title="Ingen sammenligning ennå"
-            sub="Registrer SG på runder — da fylles gap mot touren per kategori."
-          />
+          {manglerRef ? (
+            <TomTilstand
+              icon="bar-chart"
+              title="Tallene dine er klare"
+              sub="SG-grunnlaget ditt er registrert — velg en referansespiller for å se gap mot touren per kategori."
+            />
+          ) : (
+            <TomTilstand
+              icon="bar-chart"
+              title="Ingen sammenligning ennå"
+              sub="Registrer SG på runder — da fylles gap mot touren per kategori."
+            />
+          )}
           <div style={{ marginTop: 12, display: "flex", flexDirection: "column", gap: 8 }}>
-            <Link href="/portal/runde/live" style={{ textDecoration: "none", display: "block" }}>
+            <Link href={manglerRef ? "/stats/sg-sammenlign/start" : "/portal/runde/live"} style={{ textDecoration: "none", display: "block" }}>
               <span style={{
                 display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, width: "100%", padding: "10px 16px",
                 borderRadius: 12, background: T.cta, color: T.onCta, fontFamily: T.ui, fontSize: 14, fontWeight: 600, minHeight: 48,
-              }}>Start live-føring
+              }}>{manglerRef ? "Velg referansespiller" : "Start live-føring"}
               </span>
             </Link>
             <Link href="/portal/analysere" style={{ textDecoration: "none", display: "block" }}>
