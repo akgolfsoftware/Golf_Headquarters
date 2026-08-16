@@ -211,7 +211,10 @@ Push til `main` deployer automatisk via **Vercel git-integrasjon**. GitHub Actio
 
 ### Åpne produktbeslutninger (ikke lanseringsblokkere)
 - **A4 Fase 2:** anbefalingsmotor for periode-fordeling (venter data).
-- **D8:** ekte banekart-geometri (blokkert på datakilde).
+- **D8:** ekte banekart-geometri — datakilden ER løst (OSM/Overpass, 9 Østfold-baner importert via
+  `scripts/import-bane-osm.ts`); det åpne er dekning/kvalitet per bane + rette-editor (`/admin/baner`,
+  fase 2 i `docs/plan-baneguide-sg-app-2026-08-16.md`). Linjen sa «blokkert på datakilde» frem til
+  16.08 — det var utdatert.
 - **Elite Fase 2 / talent-dispersion:** bevisst utsatt.
 - **Marketing (~50) + offentlig stats (~40):** egen merkevare-bølge.
 - **Bølge 7 AI Coach:** først etter at loopen produserer gjennomføringsdata.

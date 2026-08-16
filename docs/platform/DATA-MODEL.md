@@ -36,13 +36,13 @@ Each session holds `TrainingDrillV2` records with all coaching parameters: `lFas
 
 ## Scoring og SG-analyse
 
-`Round` belongs to a player and a `CourseDefinition`. It stores gross `score` plus 14 SG sub-fields: `sgOtt`, `sgApp`, `sgArg`, `sgPutt`, and detailed distance breakdowns (`sgApp200`, `sgPutt0_3`, etc.).
+`Round` belongs to a player and a `CourseDefinition`. It stores gross `score` plus 21 SG fields: `sgTotal`, `sgOtt`, `sgApp`, `sgArg`, `sgPutt`, and detailed distance breakdowns (`sgApp200`, `sgPutt0_3`, etc.). `sgSource` ("manual" | "beregnet") records where the numbers came from — manual values are never overwritten by recomputation. `CourseDefinition.baneId` is the optional bridge to `Bane` (course geometry); no code path sets it today (see `scripts/koble-runder-til-baner-2026-08-16.ts`).
 
-`Shot` stores individual shots within a round: `holeNumber`, `shotNumber`, `lie`, `club`, `distanceToPin`, and `shotType`.
+`Shot` stores individual shots within a round: `holeNumber`, `shotNumber`, `lie`, `club`, `distanceToPin`, `shotType`, `mentalScore`, plus GPS positions `startX/startY`, `endX/endY`, `targetX/targetY` (WGS84, X=lng / Y=lat — see `src/lib/gameplan/shot-coords.ts`). Unique key `(roundId, holeNumber, shotNumber)`.
 
 `TrackManSession` aggregates raw launch-monitor data for a player. Each shot is a `TrackManShot` with ball metrics (`ballSpeed`, `smashFactor`, `spinRate`, `carryDistance`) and club metrics (`clubPath`, `faceAngle`, `dynamicLoft`).
 
-`SgBaseline` holds PGA Tour benchmark values per `SgCategory` and distance bucket — the reference table used by `src/lib/domain/sg.ts` to compute strokes gained.
+`SgBaseline` holds DataGolf approach-skill values per `SgCategory` and distance bucket (today only `APP`, synced weekly). NB: the column `expectedStrokes` actually stores DataGolf's `sg_gained` (average SG per shot, higher = better) — a historical misnomer kept until the `SgReferanse` table (plan AP3) replaces it. It is NOT used by `src/lib/domain/sg.ts`, which computes strokes gained from its own hardcoded Broadie/Team Norway tables.
 
 `SgInsight` stores AI-generated coaching insights per player, categorised by `InsightCategory` (e.g. DISTANCE_GAPPING, CONSISTENCY_LEAK). Insights have `severity`, `acknowledgedAt`, and `resolvedAt`.
 
