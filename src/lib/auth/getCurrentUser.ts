@@ -72,7 +72,11 @@ export const getCurrentUser = cache(async (): Promise<User | null> => {
 async function withEffektivTilgang(user: User): Promise<User> {
   const [sub, gruppeCount] = await Promise.all([
     prisma.subscription
-      .findUnique({ where: { userId: user.id }, select: { monthlyCredits: true, status: true } })
+      // Regel (b) i resolveTier gjelder coaching-pakken — COACHING-raden (A1).
+      .findUnique({
+        where: { userId_kind: { userId: user.id, kind: "COACHING" } },
+        select: { monthlyCredits: true, status: true },
+      })
       .catch(() => null),
     prisma.groupMember
       // Kun aktive spiller-medlemskap teller for gratis-via-gruppe (plan G1).

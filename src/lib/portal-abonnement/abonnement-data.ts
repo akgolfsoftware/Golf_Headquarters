@@ -55,8 +55,11 @@ export async function getAbonnementData(
       where: { id: userId },
       select: { tier: true },
     }),
-    prisma.subscription.findUnique({
+    prisma.subscription.findFirst({
       where: { userId },
+      // A1: COACHING sorterer først — siden viser pakken (credits) når den
+      // finnes, ellers PlayerHQ-raden. Full to-raders view-model kommer i A4.
+      orderBy: { kind: "asc" },
       select: {
         tier: true,
         status: true,

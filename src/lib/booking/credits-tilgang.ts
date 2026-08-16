@@ -11,6 +11,11 @@ import type { SubscriptionStatus } from "@/generated/prisma/client";
  *
  * Brukes av ALLE credit-porter (server-håndhevelse + UI-visning) så regelen
  * bor ett sted.
+ *
+ * NB (A1): tilgangs-varianten er `harAktivPakke` i src/lib/domain/abonnement.ts
+ * — den godtar også TRIALING (vinn-tilbake-broen). Credits gjør BEVISST ikke
+ * det: en pakke i prøvetid har ikke betalt for timer ennå. Siden A1 gjelder
+ * denne kun COACHING-raden (hent via src/lib/abonnement/oppslag.ts).
  */
 export function kanBrukeCredits(
   sub: { status: SubscriptionStatus; currentPeriodEnd: Date | null } | null,

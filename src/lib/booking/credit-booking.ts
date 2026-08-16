@@ -42,7 +42,7 @@ export async function createCreditBooking(
   const user = await requirePortalUser();
 
   const subscription = await prisma.subscription.findUnique({
-    where: { userId: user.id },
+    where: { userId_kind: { userId: user.id, kind: "COACHING" } },
   });
 
   if (!subscription) {

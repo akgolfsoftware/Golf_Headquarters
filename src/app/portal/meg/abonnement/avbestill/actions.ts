@@ -15,8 +15,10 @@ export async function cancelPro(): Promise<{ ok: boolean; error?: string }> {
   const user = await requireConsentingUser();
 
   // Marker subscription som cancelAtPeriodEnd. Sluttbruker beholder Pro til periodEnd.
-  const sub = await prisma.subscription.findUnique({
-    where: { userId: user.id },
+  // A1: raden med Stripe-kobling er den som kan avbestilles; kind-bevisst
+  // avbestilling (coaching vs. PlayerHQ hver for seg) kommer i A4.
+  const sub = await prisma.subscription.findFirst({
+    where: { userId: user.id, stripeSubscriptionId: { not: null } },
   });
 
   if (sub) {

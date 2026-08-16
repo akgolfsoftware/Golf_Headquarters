@@ -267,7 +267,8 @@ export async function loadStallen(
         take: 1,
       },
       // Pakke + «skylder» (B2): abonnement og feilede betalinger.
-      subscription: { select: { tier: true, status: true } },
+      // A1: COACHING først — stallen viser coaching-pakken når den finnes.
+      subscriptions: { select: { tier: true, status: true }, orderBy: { kind: "asc" as const }, take: 1 },
       _count: { select: { payments: { where: { status: "FAILED" } } } },
       // Treningsplan-økter for uke (adherence + økter) og 30 d (timer).
       trainingPlans: {
@@ -386,8 +387,8 @@ export async function loadStallen(
       statusLabel,
       neverLoggedIn: days == null,
       dagerSiden: days,
-      pakke: p.subscription?.tier ?? "Drop-in",
-      pakkeAktiv: p.subscription?.status === "ACTIVE",
+      pakke: p.subscriptions[0]?.tier ?? "Drop-in",
+      pakkeAktiv: p.subscriptions[0]?.status === "ACTIVE",
       skylder: p._count.payments > 0,
     };
   });
