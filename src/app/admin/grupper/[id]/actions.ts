@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { z } from "zod";
 
 import { Prisma } from "@/generated/prisma/client";
 import { requireCoachActionUser } from "@/lib/auth/action-guards";
@@ -8,6 +9,9 @@ import { coachScopedPlayerWhere } from "@/lib/auth/coached";
 import { prisma } from "@/lib/prisma";
 import { audit } from "@/lib/audit";
 import { pushGruppeTime } from "@/lib/google-calendar-kilder";
+import { FRA_EPOST, resendKlient } from "@/lib/email";
+import { email as epostSchema } from "@/lib/validation/schemas";
+import { logError } from "@/lib/error-tracking";
 
 type ActionResult = { ok: true } | { ok: false; feil: string };
 
@@ -97,6 +101,152 @@ export async function leggTilGruppemedlem(
 
   revalidatePath(`/admin/grupper/${groupId}`);
   return { ok: true };
+}
+
+const InviterSpillereSchema = z.object({
+  groupId: z.string().min(1),
+  epostliste: z
+    .array(z.string())
+    .min(1, "Oppgi minst én e-postadresse.")
+    .max(50, "Maks 50 e-postadresser per invitasjon."),
+});
+
+export type InviterSpillereResultat =
+  | {
+      ok: true;
+      /** Eksisterende spillere lagt til (eller reaktivert) i gruppen. */
+      lagtTil: string[];
+      /** Nye pending-profiler opprettet + invitasjons-e-post forsøkt sendt. */
+      invitert: string[];
+      /** E-poster som ikke gikk gjennom, med årsak per rad. */
+      feilet: { epost: string; feil: string }[];
+    }
+  | { ok: false; feil: string };
+
+/**
+ * Batch-gruppeinvitasjon på e-post (plan T3).
+ *
+ * Per e-post: finnes brukeren allerede → gjenbruk HELE porten i
+ * leggTilGruppemedlem (coach-scoping + soft-end-reaktivering + audit) — en
+ * annen coachs spiller gir «Fant ikke spilleren», bevisst: e-postinvitasjon
+ * skal ikke omgå coach-scopingen. Finnes ingen bruker → opprett pending-User
+ * (mønsteret fra admin «Ny spiller»/inviter coach: placeholder-authId som
+ * claimPendingAccountByEmail kobler til ekte Supabase-konto ved første
+ * innlogging) med profilType TALENT / profilKilde TALENTHQ (gratis låst
+ * testprofil), meld inn i gruppen og send invitasjons-e-post via Resend.
+ */
+export async function inviterSpillereTilGruppe(
+  groupId: string,
+  epostliste: string[],
+): Promise<InviterSpillereResultat> {
+  const coach = await krevCoach();
+  if (!coach) return { ok: false, feil: "Ikke tilgang." };
+
+  const parsed = InviterSpillereSchema.safeParse({ groupId, epostliste });
+  if (!parsed.success) {
+    return { ok: false, feil: parsed.error.issues[0]?.message ?? "Ugyldig input." };
+  }
+
+  // Eierskap + gruppenavn (til e-posten) i samme spørring — samme port som
+  // eierGruppen(): COACH når kun egne grupper, ADMIN alle.
+  const gruppe = await prisma.group.findFirst({
+    where: {
+      id: parsed.data.groupId,
+      ...(coach.role === "COACH" ? { coachId: coach.id } : {}),
+    },
+    select: { id: true, name: true },
+  });
+  if (!gruppe) return { ok: false, feil: "Fant ikke gruppen." };
+
+  // Normaliser + dedup — samme e-post to ganger i lista skal ikke gi to rader.
+  const eposter = [...new Set(epostliste.map((e) => e.trim().toLowerCase()).filter(Boolean))];
+
+  const lagtTil: string[] = [];
+  const invitert: string[] = [];
+  const feilet: { epost: string; feil: string }[] = [];
+
+  for (const epost of eposter) {
+    if (!epostSchema.safeParse(epost).success) {
+      feilet.push({ epost, feil: "Ugyldig e-postadresse." });
+      continue;
+    }
+
+    const eksisterende = await prisma.user.findFirst({
+      where: { email: { equals: epost, mode: "insensitive" } },
+      select: { id: true },
+    });
+
+    if (eksisterende) {
+      const res = await leggTilGruppemedlem(gruppe.id, eksisterende.id);
+      if (res.ok) lagtTil.push(epost);
+      else feilet.push({ epost, feil: res.feil });
+      continue;
+    }
+
+    try {
+      const ny = await prisma.$transaction(async (tx) => {
+        const u = await tx.user.create({
+          data: {
+            authId: `pending-${crypto.randomUUID()}`,
+            email: epost,
+            name: epost,
+            role: "PLAYER",
+            profilType: "TALENT",
+            profilKilde: "TALENTHQ",
+          },
+          select: { id: true, email: true },
+        });
+        await tx.groupMember.create({ data: { groupId: gruppe.id, userId: u.id } });
+        return u;
+      });
+
+      // Invitasjons-e-post via Resend hvis konfigurert — feiler aldri hardt
+      // (mønster fra inviterCoach). ?epost= prefiller registreringsskjemaet.
+      if (process.env.RESEND_API_KEY) {
+        try {
+          const klient = resendKlient();
+          await klient.emails.send({
+            from: FRA_EPOST,
+            to: ny.email,
+            subject: `Du er invitert til ${gruppe.name} i AK Golf HQ`,
+            html: `<!doctype html>
+<html lang="nb"><body style="font-family: system-ui, sans-serif; max-width: 580px; margin: 32px auto; color: #0A1F17;">
+  <h1 style="font-size: 24px; font-weight: 600;">Hei —</h1>
+  <p>${coach.name} har invitert deg til gruppen «${gruppe.name}» i AK Golf HQ.</p>
+  <p>Opprett en gratis testprofil — testbatteri, stats og SG-registrering — med denne e-postadressen (${ny.email}):</p>
+  <p><a href="https://akgolf.no/auth/signup?kilde=talenthq&epost=${encodeURIComponent(ny.email)}" style="display:inline-block;padding:12px 24px;background:#141413;color:#FAF9F5;text-decoration:none;border-radius:6px;font-weight:600;">Opprett profil</a></p>
+</body></html>`,
+          });
+        } catch (error) {
+          await logError({
+            context: "admin.grupper.inviterSpillere.epost",
+            error,
+            severity: "warn",
+          });
+        }
+      }
+
+      await audit({
+        actorId: coach.id,
+        action: "group_member.invited",
+        target: `Group:${gruppe.id}/User:${ny.id}`,
+        metadata: { epost, profilType: "TALENT" },
+      });
+
+      invitert.push(epost);
+    } catch (e) {
+      // P2002: kappløp på unik e-post (parallell invitasjon/registrering).
+      if (e instanceof Prisma.PrismaClientKnownRequestError && e.code === "P2002") {
+        feilet.push({ epost, feil: "E-posten er allerede i bruk." });
+      } else {
+        await logError({ context: "admin.grupper.inviterSpillere", error: e, severity: "error" });
+        feilet.push({ epost, feil: "Kunne ikke invitere. Prøv igjen." });
+      }
+    }
+  }
+
+  revalidatePath(`/admin/grupper/${gruppe.id}`);
+  return { ok: true, lagtTil, invitert, feilet };
 }
 
 /**

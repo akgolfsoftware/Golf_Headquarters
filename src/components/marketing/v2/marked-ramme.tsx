@@ -47,9 +47,13 @@ const MNAV: { id: string; l: string; href: string }[] = [
   { id: "priser", l: "Priser", href: "/priser" },
 ];
 
-/** TalentHQ (talent/scouting) — egen app; innlogging via landing. */
-export const TALENTHQ_LOGIN_URL =
-  "https://ak-golf-intelligence.vercel.app/innlogging";
+/**
+ * TalentHQ (talent/scouting) — nå gratis låst profil i PlayerHQ (plan T3).
+ * Intern registreringsrute; den gamle appen (ak-golf-intelligence.vercel.app)
+ * redirectes hit. Gamle brukere logger inn via /auth/login (delt Supabase
+ * Auth) — ensureUser oppretter Prisma-raden lazy ved første innlogging.
+ */
+export const TALENTHQ_LOGIN_URL = "/auth/signup?kilde=talenthq";
 
 /**
  * Ekte mobilmeny (hamburger → fullskjerms-panel). Erstatter det tidligere rene
