@@ -412,10 +412,11 @@ async function main() {
   const proPakker: Record<string, number> = { "Sofie Kvam": 4, "Emilie Borg": 4, "Karl Ludvig": 4, "Jonas Hauge": 2, "Mia Nilsen": 2 };
   for (const p of stallPlayers) {
     const credits = proPakker[p.name] ?? 0;
+    const kind = credits > 0 ? "COACHING" : "PLAYERHQ";
     await prisma.subscription.upsert({
-      where: { userId: p.id },
-      update: { tier: "PRO", status: "ACTIVE", monthlyCredits: credits, creditsRemaining: credits },
-      create: { userId: p.id, tier: "PRO", status: "ACTIVE", monthlyCredits: credits, creditsRemaining: credits },
+      where: { userId_kind: { userId: p.id, kind } },
+      update: { tier: "PRO", status: "ACTIVE", monthlyCredits: credits, creditsRemaining: credits, plan: "MANUELL" },
+      create: { userId: p.id, kind, plan: "MANUELL", tier: "PRO", status: "ACTIVE", monthlyCredits: credits, creditsRemaining: credits },
     });
   }
   const proCount = await prisma.subscription.count({ where: { tier: "PRO", status: { in: ["ACTIVE", "TRIALING", "PAST_DUE"] } } });

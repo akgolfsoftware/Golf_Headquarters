@@ -150,6 +150,9 @@ export async function proxy(request: NextRequest) {
   const erBeskyttet =
     path.startsWith("/portal") ||
     path.startsWith("/admin") ||
+    // T8: /innsyn (ekstern leser) — capability-sjekken bor i layouten,
+    // proxyen stopper kun uautentiserte (samme arbeidsdeling som /admin).
+    path.startsWith("/innsyn") ||
     path.startsWith("/intern") ||
     path.startsWith("/dev-banekart");
 

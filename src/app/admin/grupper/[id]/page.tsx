@@ -6,7 +6,8 @@
  */
 
 import { notFound } from "next/navigation";
-import { requirePortalUser } from "@/lib/auth/requirePortalUser";
+import { requireCapability } from "@/lib/auth/requireCapability";
+import { Capability } from "@/lib/auth/cbac";
 import { coachScopedPlayerWhere } from "@/lib/auth/coached";
 import { prisma } from "@/lib/prisma";
 import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
@@ -53,15 +54,28 @@ export default async function GruppeDetaljPage({
   params: Promise<{ id: string }>;
   searchParams: Promise<{ trinn?: string }>;
 }) {
-  const user = await requirePortalUser({ allow: ["COACH", "ADMIN"] });
+  const user = await requireCapability(Capability.MANAGE_GROUPS);
   const { id } = await params;
   const { trinn } = await searchParams;
 
-  // Eierskap: uten filteret kunne en coach åpne en annen coachs gruppe og se
-  // medlemmenes navn, handicap og planstatus — og alle knappene ville feilet
-  // uansett, siden actions nå håndhever eierskap. notFound() nedenfor tar null.
+  // Eierskap/innsyn: uten filteret kunne en coach åpne en annen coachs gruppe
+  // og se medlemmenes navn, handicap og planstatus — og alle knappene ville
+  // feilet uansett, siden actions håndhever eierskap. G5: en coach som selv er
+  // aktivt COACH-/ASSISTANT-medlem i gruppen har innsyn og ser siden;
+  // redigering håndheves fortsatt av eierGruppen i actions (kun eier eller
+  // COACH-medlem). notFound() nedenfor tar null.
   const gruppe = await prisma.group.findFirst({
-    where: { id, ...(user.role === "COACH" ? { coachId: user.id } : {}) },
+    where: {
+      id,
+      ...(user.role === "COACH"
+        ? {
+            OR: [
+              { coachId: user.id },
+              { members: { some: { userId: user.id, role: { in: ["COACH", "ASSISTANT"] }, endedAt: null } } },
+            ],
+          }
+        : {}),
+    },
     include: {
       coach: { select: { id: true, name: true, email: true, avatarUrl: true } },
       members: {
@@ -120,6 +134,15 @@ export default async function GruppeDetaljPage({
     orderBy: { name: "asc" },
   });
   const kandidater = kandidaterRaw.map((k) => ({ ...k, name: k.name ?? "Ukjent" }));
+
+  // G5: kandidater til trenerrollene (COACH/ASSISTANT-medlemskap) — brukere
+  // med trenerrolle i systemet. Samme regel håndheves i leggTilGruppemedlem.
+  const trenerKandidaterRaw = await prisma.user.findMany({
+    where: { role: { in: ["COACH", "ADMIN"] }, deletedAt: null, id: { notIn: memberIds } },
+    select: { id: true, name: true, hcp: true, homeClub: true },
+    orderBy: { name: "asc" },
+  });
+  const trenerKandidater = trenerKandidaterRaw.map((k) => ({ ...k, name: k.name ?? "Ukjent" }));
 
   const nesteSamling = gruppe.schedules.find((s) => s.startAt > naa) ?? gruppe.schedules[0] ?? null;
   const kommendeSamlinger = gruppe.schedules.filter((s) => s.startAt > naa).slice(0, 5);
@@ -186,6 +209,7 @@ export default async function GruppeDetaljPage({
         avatarUrl: m.user.avatarUrl,
         homeClub: m.user.homeClub,
         erHjelpetrener: m.role === "ASSISTANT",
+        erTrener: m.role === "COACH",
         erPro: m.user.tier === "PRO",
         schoolYear: m.user.schoolYear,
         hcp: m.user.hcp,
@@ -199,6 +223,7 @@ export default async function GruppeDetaljPage({
     trinnValg,
     aktivtTrinn: trinn ?? null,
     kandidater,
+    trenerKandidater,
   };
 
   return (

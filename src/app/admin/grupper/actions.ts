@@ -8,6 +8,8 @@
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
+import { assertCapability } from "@/lib/auth/effective-capabilities";
+import { Capability } from "@/lib/auth/cbac";
 import {
   kjorGfgkJuniorBootstrap,
   type BootstrapResultat,
@@ -35,6 +37,7 @@ export async function createGroup(
   input: CreateGroupInput,
 ): Promise<ActionResult<{ groupId: string }>> {
   const user = await requirePortalUser({ allow: ["ADMIN", "COACH"] });
+  await assertCapability(user, Capability.MANAGE_GROUPS);
 
   const parsed = CreateGroupSchema.safeParse(input);
   if (!parsed.success) {
@@ -85,6 +88,7 @@ export async function deleteGroup(
   groupId: string,
 ): Promise<ActionResult<{ groupId: string }>> {
   const user = await requirePortalUser({ allow: ["ADMIN", "COACH"] });
+  await assertCapability(user, Capability.MANAGE_GROUPS);
 
   const gruppe = await prisma.group.findUnique({
     where: { id: groupId },
@@ -122,6 +126,7 @@ export async function bootstrapGfgkJuniorGrupper(): Promise<
   ActionResult<BootstrapResultat>
 > {
   const user = await requirePortalUser({ allow: ["ADMIN", "COACH"] });
+  await assertCapability(user, Capability.MANAGE_GROUPS);
 
   try {
     const resultat = await kjorGfgkJuniorBootstrap();

@@ -27,10 +27,10 @@ type Props = {
 
 export default async function NyBookingPage({ searchParams }: Props) {
   const { dato: datoParam, service: serviceParam } = await searchParams;
-  const user = await requirePortalUser({ allow: ["PLAYER", "COACH", "ADMIN"] });
+  const user = await requirePortalUser({ kreverTilgang: "TALENT", allow: ["PLAYER", "COACH", "ADMIN"] });
 
   const subscription = await prisma.subscription.findUnique({
-    where: { userId: user.id },
+    where: { userId_kind: { userId: user.id, kind: "COACHING" } },
   });
 
   // Ingen betalt abonnement (aktivt, eller avbestilt med tid igjen av perioden)

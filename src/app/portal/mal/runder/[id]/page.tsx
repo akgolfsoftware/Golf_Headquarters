@@ -19,7 +19,7 @@ export default async function RundeDetaljPage({
   params: Promise<{ id: string }>;
   searchParams: Promise<{ lagret?: string }>;
 }) {
-  const user = await requirePortalUser();
+  const user = await requirePortalUser({ kreverTilgang: "TALENT" });
   const { id } = await params;
   const sp = await searchParams;
   const nettoppLagret = sp.lagret === "1";

@@ -33,6 +33,7 @@ import { canonDeviationChip } from "@/lib/workbench/canon-period-adjustment";
 import { kjorInvarianter, INVARIANTER, type KanonOkt, type KanonPeriode } from "@/lib/canon/invarianter";
 import { tilPeriodeType, alderFra } from "@/lib/canon/valider-plan";
 import { hentEffektivePeriodeConstraints } from "@/lib/portal/training/periode-fordeling";
+import { dedupGruppeSlots, overlapper } from "@/lib/domain/gruppeplan-dedup";
 import {
   mergeWeekSessions,
   type V2WeekSessionInput,
@@ -227,6 +228,9 @@ const SESSION_SELECT = {
   lFase: true,
   csNivaa: true,
   miljo: true,
+  // G3: kildesporing — brukes til å undertrykke gruppeslots som alt er
+  // rullet ut som plan-økter (vis planøkta, ikke gruppetiden i tillegg).
+  sourceGroupId: true,
   _count: { select: { drills: true } },
 } as const;
 
@@ -506,13 +510,18 @@ export async function loadWorkbenchData(
     effectivenessAvg: t.effectivenessAvg ?? null,
   }));
 
-  const groupSlotsEarly: WorkbenchGroupSlot[] = [];
+  // G3: (1) undertrykk gruppeslots der en plan-økt fra SAMME gruppe alt ligger
+  // i overlappende tidsrom denne uka — utrullet betyr at planøkta vises, ikke
+  // gruppetiden i tillegg. (2) slå sammen slots med identisk tidsrom fra flere
+  // grupper til én («GFGK Elite + WANG»). Ekte tidsoverlapp, aldri samme-dag.
+  const raaSlots: (WorkbenchGroupSlot & { groupId: string })[] = [];
   for (const m of groupMemberships) {
     for (const sch of m.group.schedules) {
-      groupSlotsEarly.push({
+      raaSlots.push({
         id: sch.id,
         title: sch.title,
         groupName: m.group.name,
+        groupId: m.group.id,
         startAt: sch.startAt.toISOString(),
         endAt: sch.endAt.toISOString(),
         location: sch.location,
@@ -520,6 +529,21 @@ export async function loadWorkbenchData(
       });
     }
   }
+  const groupSlotsEarly: WorkbenchGroupSlot[] = dedupGruppeSlots(
+    raaSlots.filter(
+      (slot) =>
+        !weekSessions.some(
+          (s) =>
+            s.sourceGroupId === slot.groupId &&
+            overlapper(
+              s.scheduledAt,
+              new Date(s.scheduledAt.getTime() + s.durationMin * 60_000),
+              slot.startAt,
+              slot.endAt,
+            ),
+        ),
+    ),
+  ).map(({ groupId: _groupId, ...slot }) => slot);
 
   // Tom uke → eksplisitt tom tilstand, men behold maler/gruppetider.
   // KUN for inneværende uke: når brukeren har navigert til en annen uke skal

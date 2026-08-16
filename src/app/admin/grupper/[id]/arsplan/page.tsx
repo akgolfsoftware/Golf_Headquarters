@@ -7,7 +7,8 @@
 
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { requirePortalUser } from "@/lib/auth/requirePortalUser";
+import { requireCapability } from "@/lib/auth/requireCapability";
+import { Capability } from "@/lib/auth/cbac";
 import { prisma } from "@/lib/prisma";
 import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
 import { TilbakeLenke } from "@/components/v2";
@@ -26,7 +27,8 @@ export default async function GruppeArsplanPage({
   params: Promise<{ id: string }>;
   searchParams: Promise<{ trinn?: string }>;
 }) {
-  const user = await requirePortalUser({ allow: ["COACH", "ADMIN"] });
+  // G6: årsplan-flaten er lesevisning av gruppeplanen → VIEW_GROUP_PLANS.
+  const user = await requireCapability(Capability.VIEW_GROUP_PLANS);
   const { id } = await params;
   const { trinn } = await searchParams;
 

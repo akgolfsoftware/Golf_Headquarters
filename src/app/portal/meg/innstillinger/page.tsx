@@ -15,6 +15,7 @@ import { lesPreferences } from "@/lib/preferences";
 import { prisma } from "@/lib/prisma";
 import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
 import { InnstillingerV2, type InnstillingerData } from "@/components/portal/v2/InnstillingerV2";
+import { pakkeNavn } from "@/lib/domain/abonnement";
 
 export const dynamic = "force-dynamic";
 
@@ -24,7 +25,7 @@ function formatDato(d: Date | null): string | null {
 }
 
 export default async function InnstillingerPage() {
-  const user = await requirePortalUser();
+  const user = await requirePortalUser({ kreverTilgang: "INGEN" });
   if (user.role === "PARENT") redirect("/forelder");
   if (user.role === "GUEST") redirect("/admin/kalender");
 
@@ -41,7 +42,7 @@ export default async function InnstillingerPage() {
   // Abonnement-kanon: gratis via coaching-pakke (credits) / prøve / gruppe,
   // ellers 299 kr/mnd. «betaler» = FAKTISK PRO uten coaching-pakke.
   const harPakke = abo.monthlyCredits > 0;
-  const pakkeNavn = abo.monthlyCredits >= 4 ? "Performance Pro" : harPakke ? "Performance" : null;
+  const pakke = pakkeNavn(abo.monthlyCredits);
   const gratis = harPakke || !abo.erPro;
   const betaler = abo.erPro && !harPakke;
 
@@ -56,7 +57,7 @@ export default async function InnstillingerPage() {
     },
     abonnement: {
       gratis,
-      pakkeNavn,
+      pakkeNavn: pakke,
       betaler,
       nesteTrekk: betaler ? formatDato(abo.nesteTrekk) : null,
     },

@@ -13,7 +13,22 @@
  * Ren modul (ingen IO) — trygg å importere fra klient og server.
  */
 
+import { z } from "zod";
+
 import type { PlayerProgram, Prisma } from "@/generated/prisma/client";
+
+/**
+ * Gruppemedlem-roller (plan G5). `GroupMember.role` er et String-felt i DB —
+ * denne lista er kanon for lovlige verdier, og zod-schemaet er porten ved
+ * API-/action-grensene (invariant 6: aldri `as`-cast på forretningsdata).
+ * PLAYER = spiller · ASSISTANT = hjelpetrener (kun innsyn) · COACH = trener
+ * (innsyn + redigering av gruppen).
+ */
+export const GRUPPEMEDLEM_ROLLER = ["PLAYER", "ASSISTANT", "COACH"] as const;
+
+export type GruppemedlemRolle = (typeof GRUPPEMEDLEM_ROLLER)[number];
+
+export const gruppemedlemRolleSchema = z.enum(GRUPPEMEDLEM_ROLLER);
 
 export type KanoniskGruppeSlug =
   | "gfgk-mini"
@@ -62,6 +77,16 @@ export function aktivtMedlemskapWhere(): Prisma.GroupMemberWhereInput {
 /** Aktivt SPILLER-medlemskap — utrulling av planer og tilgangsregler. */
 export function aktivtSpillerMedlemskapWhere(): Prisma.GroupMemberWhereInput {
   return { endedAt: null, role: "PLAYER" };
+}
+
+/**
+ * Aktivt TRENER-medlemskap (COACH eller ASSISTANT) for en gitt bruker —
+ * innsynsporten i G5: en coach som selv er trener/hjelpetrener i en gruppe
+ * ser gruppens spillere (coachScopedPlayerWhere, tredje gren). Gir IKKE
+ * redigering alene — den porten (eierGruppen) krever role COACH.
+ */
+export function aktivtTrenerMedlemskapWhere(userId: string): Prisma.GroupMemberWhereInput {
+  return { userId, role: { in: ["COACH", "ASSISTANT"] }, endedAt: null };
 }
 
 /**

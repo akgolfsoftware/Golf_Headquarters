@@ -6,6 +6,7 @@ import { z } from "zod";
 import { requireConsentingUser } from "@/lib/auth/requireConsentingUser";
 import { prisma } from "@/lib/prisma";
 import { parTemplate } from "@/lib/portal-runder/par-template";
+import { synkroniserSgFraRunder } from "@/lib/portal-stats/sg-bro";
 
 /**
  * Hull-for-hull-detaljer fra det valgfrie logge-steget (D6a, 17. juli 2026).
@@ -160,6 +161,11 @@ export async function logRoundManual(input: LogRoundManualInput) {
       });
     }
   });
+
+  // SG-broen (T6): oppdater DataGolf-grunnlaget (BrukerSgInput, kilde
+  // PLAYERHQ) fra runde-SG. Best-effort — kaster aldri, og må stå FØR
+  // redirect (redirect kaster). Uten SG på runden er den en no-op.
+  await synkroniserSgFraRunder(user.id);
 
   revalidatePath("/portal/mal/runder");
   redirect("/portal/mal/runder");

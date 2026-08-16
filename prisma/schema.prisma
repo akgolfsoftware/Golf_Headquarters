@@ -338,6 +338,17 @@ model User {
   avatarUrl          String?
   role               UserRole  @default(PLAYER)
   tier               Tier      @default(GRATIS)
+  // STANDARD | TALENT — TALENT er den gratis, låste TalentHQ-profilen (kun
+  // tester/stats/SG-registrering åpent; resolveTilgang gir nivå TALENT).
+  // Settes ved registrering via ?kilde=talenthq eller gruppe-invitasjon.
+  profilType         String    @default("STANDARD")
+  // Utløp for prøveperioden. null => createdAt + 30 dager (resolveTilgang).
+  // Eget felt så prøven kan forlenges/nullstilles per bruker av admin.
+  trialEndsAt        DateTime?
+  // Sporing av registreringskilde: "TALENTHQ" for kontoer som kom via gamle
+  // TalentHQ/Intelligence-appen eller ?kilde=talenthq-registrering. Kun
+  // analyse/sporing — tilgangsnivået styres av profilType.
+  profilKilde        String?
   lastLoginAt        DateTime?
   // Spiller-profil (Fase 1.4)
   hcp                Float?
@@ -350,6 +361,13 @@ model User {
   schoolYear         String?
   // Snittscore forrige sesong — brukes som baseline for fremgang.
   prevSeasonAvgScore Int?
+  // «Valgt coach» (plan G2): spillerens ENE valgte coach — settes av admin-UI
+  // (settValgtCoach) og backfill-scriptet, aldri implisitt. Plain FK mot
+  // users.id (ON DELETE SET NULL + indeks via scripts/add-primary-coach-
+  // 2026-08-16.ts — ingen @relation, kirurgisk endring per gotchas
+  // §Schema-endringer). resolveValgtCoachId i src/lib/domain/valgt-coach.ts
+  // er ENESTE lovlige leser — les aldri feltet direkte i flater/agenter.
+  primaryCoachId     String?
   // Kanonisk kobling til turneringsidentitet (PublicPlayer) — settes automatisk
   // ved registrering via navn-matching. Gir spilleren turneringshistorikk i profilen.
   publicPlayerId     String?   @unique
@@ -418,7 +436,9 @@ model User {
   testAssignments       TestAssignment[] @relation("PlayerTestAssignments")
   coachTestAssignments  TestAssignment[] @relation("CoachTestAssignments")
   trackManSessions TrackManSession[]
-  subscription     Subscription?
+  // Flertall siden A1: én rad per kind (COACHING | PLAYERHQ). Bruk
+  // src/lib/domain/abonnement/ for oppslag — aldri [0] eller findFirst uten kind.
+  subscriptions    Subscription[]
   publicPlayer     PublicPlayer?     @relation(fields: [publicPlayerId], references: [id], onDelete: SetNull)
 
   // Coaching-relasjoner
@@ -579,6 +599,8 @@ model User {
   // Performance: hot path — filtrere aktive spillere/coacher
   // (PlayerHQ-lister, CoachHQ-portefølje, talent-tracking).
   @@index([role, deletedAt])
+  // Valgt coach (G2): oppslag «hvilke spillere har denne coachen som valgt».
+  @@index([primaryCoachId])
   @@map("users")
 }
 
@@ -623,6 +645,15 @@ model TalentTracking {
   // Milepæler som JSON-array: [{ tittel, dato, beskrivelse }, ...]
   milepaeler   Json?
   notater      String?
+  // Auto-beregnede testflater (plan T4) — per pyramideområde fra CANON-
+  // testresultater + benchmark-stigen. Skrives KUN av talent-syncen og rører
+  // ALDRI radar-aksene over (de er coachens kvalitative vurdering).
+  // Form håndheves med zod i src/lib/domain/talent-sync.ts.
+  testNivaaer     Json?
+  sisteTestSyncAt DateTime?
+  // Opprettet automatisk ved første testresultat for program-gruppemedlem
+  // (ikke manuelt av coach fra discovery-flaten).
+  autoInnmeldt    Boolean  @default(false)
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
@@ -631,6 +662,46 @@ model TalentTracking {
   @@index([niva, region])
   @@index([klubb])
   @@map("talent_tracking")
+}
+
+// Delingssamtykke til tredjepart (Team Norway / WANG — plan T8). APPEND-ONLY
+// etter HelseSamtykke-mønsteret: trekk = ny rad med gitt=false, aldri update.
+// Nyeste rad per (user, scope, mottakerGruppe) vinner. Mottaker er en Group
+// (org-light: WANG/TN finnes som kanoniske grupper). For mindreårige
+// (requiresGuardianConsent) kreves gittAvRolle=FORESATT — håndheves i
+// ekstern-leser-scopet, aldri bare i UI. Ingen @relation — additiv isolasjon.
+model DelingsSamtykke {
+  id                String   @id @default(cuid())
+  userId            String
+  // TEST_RESULTATER | STATS
+  scope             String
+  mottakerGruppeId  String
+  // false = trukket (ny rad, aldri update av gamle)
+  gitt              Boolean
+  tekstVersjon      String
+  gittAvUserId      String
+  // SELV | FORESATT
+  gittAvRolle       String
+  createdAt         DateTime @default(now())
+
+  @@index([userId, scope, mottakerGruppeId, createdAt])
+  @@map("delings_samtykker")
+}
+
+// Ekstern leser (Team Norway-/WANG-ansvarlig, plan T8): en GUEST-bruker med
+// lesetilgang til samtykkede data for medlemmene i tildelte grupper.
+// revokedAt = tilgangen er trukket. Ingen @relation — additiv isolasjon.
+model EksternLeserGruppe {
+  id            String    @id @default(cuid())
+  userId        String
+  groupId       String
+  opprettetAvId String?
+  createdAt     DateTime  @default(now())
+  revokedAt     DateTime?
+
+  @@unique([userId, groupId])
+  @@index([userId, revokedAt])
+  @@map("ekstern_leser_grupper")
 }
 
 // Ressurs-bibliotek for talent-program. Videoer, artikler, podcasts.
@@ -1082,6 +1153,11 @@ model TrainingPlanSession {
   maalsetning   String?
   status        SessionStatus       @default(PLANNED)
   liveSnapshot  Json? // Løpende live-fremdrift (reps/tid per drill). Nulles ved completeSession.
+  // G3: kildesporing for gruppeutrulling — satt når økten ble opprettet av en
+  // gruppe-malutrulling (coachApplyTemplateToGroup). Null = spillerens egen /
+  // individuell coach-økt. Plain FK → groups.id (ON DELETE SET NULL i DDL;
+  // ingen @relation — jf. gotcha-regelen for additive endringer).
+  sourceGroupId String?
   createdAt     DateTime            @default(now())
   updatedAt     DateTime            @updatedAt
 
@@ -1091,6 +1167,7 @@ model TrainingPlanSession {
   clubsPracticed ClubsPracticed[]
 
   @@index([planId, scheduledAt])
+  @@index([sourceGroupId])
   @@map("training_plan_sessions")
 }
 
@@ -1528,6 +1605,10 @@ model TestDefinition {
   /// Treningsomrade-kode fra src/lib/taxonomy.ts (TRENINGSOMRADER), f.eks. "CHIP" eller "PUTT_5_10".
   /// Null for FYS-tester (delferdighet, ikke omrade) og tester som spenner flere omrader.
   omraade     String?
+  /// CANON v3.5-testbatteriet (20 protokoller; Putt Speed Control ligger som
+  /// to gjennomforingsvarianter => 21 rader). Spillere ser KUN erCanon +
+  /// egne isCustom-tester; coach ser alle (Anders 2026-08-16).
+  erCanon     Boolean     @default(false)
   scoringRule String
   protocol    Json?
   createdAt   DateTime    @default(now())
@@ -1971,7 +2052,21 @@ model CoachingSession {
 
 model Subscription {
   id                   String             @id @default(cuid())
-  userId               String             @unique
+  userId               String
+  // COACHING | PLAYERHQ — én rad per (bruker, kind). Skillet gjør at en
+  // spiller kan si opp coaching-pakken og samtidig ha/få et eget
+  // PlayerHQ-abonnement (vinn-tilbake, plan A1/A4).
+  kind                 String             @default("PLAYERHQ")
+  // PLAYERHQ_MND | PLAYERHQ_AAR | PERFORMANCE | PERFORMANCE_PRO | MANUELL.
+  // null = anker-rad (kun stripeCustomerId fra checkout) — gir ALDRI tilgang.
+  plan                 String?
+  // month | year — fra Stripe price.recurring.interval.
+  interval             String?
+  // Rå Stripe-verdi. Bevares som eget felt (kollapses ikke lenger inn i
+  // status) så «sagt opp, løper ut perioden» kan vises presist i UI.
+  cancelAtPeriodEnd    Boolean            @default(false)
+  // Stripe price-id abonnementet står på — sporbarhet ved prisendringer.
+  stripePriceId        String?
   tier                 Tier               @default(GRATIS)
   status               SubscriptionStatus @default(ACTIVE)
   currentPeriodEnd     DateTime?
@@ -1991,7 +2086,35 @@ model Subscription {
   bookings Booking[]
   payments Payment[]
 
+  @@unique([userId, kind])
+  @@index([userId])
   @@map("subscriptions")
+}
+
+// Vinn-tilbake-tilbud ved oppsigelse av coaching-pakke (plan A4): spilleren
+// tilbys å beholde PlayerHQ til 299 kr/mnd eller 2 690 kr/år. Én rad per
+// (bruker, coaching-abonnement) — idempotent trigger fra webhook + cancelPro.
+// Ingen @relation — additiv isolasjon (gotchas.md §Schema-endringer).
+model WinbackTilbud {
+  id                     String    @id @default(cuid())
+  userId                 String
+  coachingSubscriptionId String
+  stripeSubscriptionId   String?
+  // Tilbudet gjelder til coaching-periodens slutt.
+  utlopsDato             DateTime?
+  // TILBUDT | AKSEPTERT | AVSLAATT | UTLOPT
+  status                 String    @default("TILBUDT")
+  sendtAt                DateTime?
+  paaminnelseSendtAt     DateTime?
+  besvartAt              DateTime?
+  // PLAYERHQ_MND | PLAYERHQ_AAR — satt ved aksept.
+  akseptertPlan          String?
+  createdAt              DateTime  @default(now())
+  updatedAt              DateTime  @updatedAt
+
+  @@unique([userId, coachingSubscriptionId])
+  @@index([status, utlopsDato])
+  @@map("winback_tilbud")
 }
 
 // Program-enrollering — kobler spiller til program + coach.
@@ -2248,11 +2371,17 @@ model Notification {
   link      String?
   // Når brukeren markerte den som lest. Null = ulest.
   readAt    DateTime?
+  // Batching (G4 plan-varsling): grupperingsnøkkel for samlevarsler, f.eks.
+  // «plan-endring:<spillerId>:<YYYY-MM-DD>» (Oslo-dag). Null = vanlig enkeltvarsel.
+  groupKey  String?
+  // Antall hendelser samlet i denne raden — inkrementeres i stedet for ny rad.
+  count     Int       @default(1)
   createdAt DateTime  @default(now())
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId, readAt, createdAt])
+  @@index([userId, groupKey, readAt])
   @@map("notifications")
 }
 
@@ -2798,10 +2927,16 @@ model PeriodBlock {
   // JSON — zod-valideres ved lesing (lib/workbench/perioder.ts).
   weeklySessionBudget Json?
   notes        String?
+  // G3: kildesporing for gruppeutrulling — satt når perioden ble rullet ut fra
+  // en gruppes årsplan (coachRullUtGruppeAarsplan). Null = spillerens egen.
+  // Plain FK → groups.id (ON DELETE SET NULL i DDL; ingen @relation for å
+  // holde endringen isolert — jf. gotcha-regelen for additive endringer).
+  sourceGroupId String?
 
   seasonPlan SeasonPlan @relation(fields: [seasonPlanId], references: [id], onDelete: Cascade)
 
   @@index([seasonPlanId])
+  @@index([sourceGroupId])
   @@map("period_blocks")
 }
 
@@ -3011,7 +3146,9 @@ model GroupMember {
   id       String   @id @default(cuid())
   groupId  String
   userId   String
-  // PLAYER | ASSISTANT
+  // PLAYER | ASSISTANT | COACH — kanon + zod-port i src/lib/domain/grupper.ts
+  // (gruppemedlemRolleSchema). ASSISTANT = hjelpetrener (kun innsyn),
+  // COACH = trener (innsyn + redigering via eierGruppen).
   role     String   @default("PLAYER")
   joinedAt DateTime @default(now())
   // null = aktivt medlemskap; satt = utmeldt (soft-end — raden beholdes for
@@ -5270,6 +5407,30 @@ model CoachPinnedPlayer {
   @@unique([coachId, playerId])
   @@index([coachId])
   @@map("coach_pinned_players")
+}
+
+// Per-bruker capability-override (G6, 2026-08-16). Rolle-defaulten i
+// src/lib/auth/cbac.ts er utgangspunktet; en rad her legger til (GRANT) eller
+// fjerner (REVOKE) én capability for én bruker. ADMIN er immun — overrides
+// leses aldri for ADMIN (effective-capabilities.ts), så Anders kan aldri låse
+// seg ute. capability og mode lagres som String (ikke Prisma-enum) for å holde
+// endringen additiv — nye capabilities skal ikke kreve migrasjon. Plain felt,
+// ingen @relation, per gotcha-regelen; FK-ene legges av DDL-scriptet
+// (scripts/add-user-capabilities-2026-08-16.ts).
+model UserCapability {
+  id          String   @id @default(cuid())
+  userId      String
+  capability  String
+  // "GRANT" | "REVOKE"
+  mode        String
+  grantedById String?
+  note        String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@unique([userId, capability])
+  @@index([userId])
+  @@map("user_capabilities")
 }
 
 // Coach-satt pyramide-fordeling per periode (fase 1, godkjent 2026-07-18).

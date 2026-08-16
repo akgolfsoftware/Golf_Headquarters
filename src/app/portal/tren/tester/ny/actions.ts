@@ -4,7 +4,9 @@ import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
+import { testTilgangWhere } from "@/lib/portal-tester/test-tilgang";
 import { triggerTestAgent } from "@/lib/agents/triggers";
+import { syncTalentEtterTest } from "@/lib/talent/test-sync";
 
 /**
  * Zod-schema for ny test. Resultatet-feltet er en åpen record fordi de
@@ -37,7 +39,7 @@ export type LogTestInput = z.infer<typeof LogTestInput>;
  * lagres i `details` som JSON, validert mot et åpent schema (record).
  */
 export async function logTest(input: unknown) {
-  const user = await requirePortalUser();
+  const user = await requirePortalUser({ kreverTilgang: "TALENT" });
   const parsed = LogTestInput.safeParse(input);
   if (!parsed.success) {
     throw new Error(
@@ -47,8 +49,10 @@ export async function logTest(input: unknown) {
   }
   const data = parsed.data;
 
-  const test = await prisma.testDefinition.findUnique({
-    where: { id: data.testId },
+  // T5: samme tilgangsregel som katalogen — spilleren logger kun mot
+  // CANON-tester og egne isCustom-tester (K6-klassen tettet også her).
+  const test = await prisma.testDefinition.findFirst({
+    where: { id: data.testId, AND: [testTilgangWhere(user.id)] },
     select: { id: true, name: true },
   });
   if (!test) throw new Error("Test ikke funnet");
@@ -82,7 +86,14 @@ export async function logTest(input: unknown) {
 
   triggerTestAgent(user.id);
 
+  // T4: logget CANON-resultat oppdaterer talentprofilen — best-effort, en
+  // feilet synk skal aldri velte registreringen av selve resultatet.
+  await syncTalentEtterTest(user.id).catch((err) => {
+    console.error("[logTest] talent-sync feilet", err);
+  });
+
   revalidatePath("/portal/tren/tester");
+  revalidatePath("/portal/talent");
   revalidatePath(`/portal/tren/tester/${created.testId}`);
 
   return { ok: true as const, resultId: created.id, testId: created.testId };

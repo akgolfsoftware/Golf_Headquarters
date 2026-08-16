@@ -11,7 +11,10 @@ import { revalidatePath } from "next/cache";
 import { Prisma } from "@/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
+import { assertCapability } from "@/lib/auth/effective-capabilities";
+import { Capability } from "@/lib/auth/cbac";
 import { PeriodeInputSchema } from "@/lib/workbench/perioder";
+import { skalHoppeOverPeriode } from "@/lib/domain/gruppeplan-dedup";
 
 /** YYYY-MM-DD → UTC-midnatt. MÅ være UTC, ikke serverens lokale midnatt:
  * lokal dev (Oslo) skriver ellers 22:00Z dagen FØR til samme DB som prod
@@ -26,7 +29,8 @@ export async function coachLagreGruppePeriode(
   input: unknown,
   periodeId?: string,
 ): Promise<{ ok: boolean; periodeId?: string; error?: string }> {
-  await requirePortalUser({ allow: ["COACH", "ADMIN"] });
+  const aktor = await requirePortalUser({ allow: ["COACH", "ADMIN"] });
+  await assertCapability(aktor, Capability.EDIT_GROUP_PLANS);
   const parsed = PeriodeInputSchema.safeParse(input);
   if (!parsed.success) return { ok: false, error: "Ugyldig periode-input" };
   const v = parsed.data;
@@ -59,7 +63,8 @@ export async function coachSlettGruppePeriode(
   groupId: string,
   periodeId: string,
 ): Promise<{ ok: boolean; error?: string }> {
-  await requirePortalUser({ allow: ["COACH", "ADMIN"] });
+  const aktor = await requirePortalUser({ allow: ["COACH", "ADMIN"] });
+  await assertCapability(aktor, Capability.EDIT_GROUP_PLANS);
   const eier = await prisma.groupPeriodBlock.findFirst({ where: { id: periodeId, groupId }, select: { id: true } });
   if (!eier) return { ok: false, error: "Perioden finnes ikke" };
   await prisma.groupPeriodBlock.delete({ where: { id: periodeId } });
@@ -67,16 +72,28 @@ export async function coachSlettGruppePeriode(
   return { ok: true };
 }
 
+/** Rapportrad for «hoppet over» i utrullingen — grunn + kilde (G3). */
+export type RullUtHoppet = {
+  navn: string;
+  grunn: "KRYSSKILDE" | "FEIL";
+  /** Perioden som ble hoppet over, f.eks. «GRUNN 01.11–20.12». */
+  periode?: string;
+};
+
 /**
  * Å1: rull ut gruppens årsplan til medlemmenes individuelle SeasonPlan.
- * Duplikat-vern: spillere som alt har en overlappende periode av samme
- * type hoppes over (rapporteres) — aldri overskriving. try/catch per
- * spiller så én feil ikke stopper resten.
+ * Duplikat-vern (G3, to-lags-regelen i domain/gruppeplan-dedup):
+ * - IDEMPOTENT: perioden fra SAMME gruppe finnes alt → hopp stille (re-kjøring trygg).
+ * - KRYSSKILDE: kolliderer med annen kilde (annen gruppe / spillerens egen)
+ *   → hopp KUN perioden + rapporter. Aldri overskriving.
+ * Nye rader stemples med sourceGroupId. try/catch per spiller så én feil
+ * ikke stopper resten.
  */
 export async function coachRullUtGruppeAarsplan(
   groupId: string,
-): Promise<{ ok: boolean; spillere?: number; perioderLagt?: number; hoppet?: string[]; error?: string }> {
-  await requirePortalUser({ allow: ["COACH", "ADMIN"] });
+): Promise<{ ok: boolean; spillere?: number; perioderLagt?: number; hoppet?: RullUtHoppet[]; error?: string }> {
+  const aktor = await requirePortalUser({ allow: ["COACH", "ADMIN"] });
+  await assertCapability(aktor, Capability.EDIT_GROUP_PLANS);
 
   const [blokker, medlemmer] = await Promise.all([
     prisma.groupPeriodBlock.findMany({
@@ -100,9 +117,12 @@ export async function coachRullUtGruppeAarsplan(
   if (blokker.length === 0) return { ok: false, error: "Gruppen har ingen perioder å rulle ut" };
   if (medlemmer.length === 0) return { ok: false, error: "Gruppen har ingen medlemmer" };
 
-  const hoppet: string[] = [];
+  const hoppet: RullUtHoppet[] = [];
   let perioderLagt = 0;
   let spillereTruffet = 0;
+
+  const fmtDag = (d: Date) =>
+    `${String(d.getUTCDate()).padStart(2, "0")}.${String(d.getUTCMonth() + 1).padStart(2, "0")}`;
 
   for (const m of medlemmer) {
     try {
@@ -116,17 +136,29 @@ export async function coachRullUtGruppeAarsplan(
             select: { id: true },
           });
         }
-        // Duplikat-vern: samme type med overlappende datoer → hopp.
-        const overlapp = await prisma.periodBlock.findFirst({
+        // G3 duplikat-vern: hent dato-overlappende kandidater og la
+        // domenefunksjonen avgjøre (IDEMPOTENT stille, KRYSSKILDE rapporteres).
+        const kandidater = await prisma.periodBlock.findMany({
           where: {
             seasonPlanId: plan.id,
-            lPhase: b.lPhase,
             startDate: { lte: b.endDate },
             endDate: { gte: b.startDate },
           },
-          select: { id: true },
+          select: { lPhase: true, startDate: true, endDate: true, sourceGroupId: true },
         });
-        if (overlapp) continue;
+        const vurdering = kandidater
+          .map((k) => skalHoppeOverPeriode(k, b, groupId))
+          .find((v) => v.hopp);
+        if (vurdering) {
+          if (vurdering.grunn === "KRYSSKILDE") {
+            hoppet.push({
+              navn: m.user.name ?? m.userId,
+              grunn: "KRYSSKILDE",
+              periode: `${b.lPhase} ${fmtDag(b.startDate)}–${fmtDag(b.endDate)}`,
+            });
+          }
+          continue;
+        }
         await prisma.periodBlock.create({
           data: {
             seasonPlanId: plan.id,
@@ -137,15 +169,15 @@ export async function coachRullUtGruppeAarsplan(
             weeklyVolMin: b.weeklyVolMin,
             weeklyVolMax: b.weeklyVolMax,
             weeklySessionBudget: b.weeklySessionBudget ?? undefined,
+            sourceGroupId: groupId,
           },
         });
         laLokalt++;
       }
       if (laLokalt > 0) spillereTruffet++;
-      else hoppet.push(m.user.name ?? m.userId);
       perioderLagt += laLokalt;
     } catch {
-      hoppet.push(m.user.name ?? m.userId);
+      hoppet.push({ navn: m.user.name ?? m.userId, grunn: "FEIL" });
     }
   }
 

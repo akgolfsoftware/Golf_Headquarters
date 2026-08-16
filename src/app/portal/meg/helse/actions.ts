@@ -21,7 +21,7 @@ const InputSchema = z.object({
 export type HelseInput = z.infer<typeof InputSchema>;
 
 export async function lagreHelseEntry(input: HelseInput) {
-  const user = await requirePortalUser();
+  const user = await requirePortalUser({ kreverTilgang: "INGEN" });
 
   // Hvilepuls, HRV, søvn og vekt er «særlig kategori» (GDPR art. 9) — samme
   // opplysninger som en treningsklokke gir, bare tastet inn for hånd. At

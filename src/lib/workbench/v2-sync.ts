@@ -2,6 +2,7 @@ import "server-only";
 
 import { Prisma, type PyramidArea, type MMiljo } from "@/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
+import { resolveValgtCoachIdEllerAdmin } from "@/lib/domain/valgt-coach";
 import { GENERERT_FRA, syncDrillsToV2 } from "./v2-drill-mirror";
 import { validerOkt } from "@/lib/canon/valider-plan";
 
@@ -17,32 +18,19 @@ const PYR_TO_PRACTICE: Record<PyramidArea, "BLOKK" | "RANDOM" | "KONKURRANSE" | 
   TURN: "KONKURRANSE",
 };
 
-/** Finn coachId for V2-økt: gruppe.coachId → plan.createdById → første coach. */
+/**
+ * Finn coachId for V2-økt. Delegerer til valgt coach-resolveren (G2) —
+ * fallback-kjeden (primaryCoachId → enrollment → gruppe → plan → eldste ADMIN)
+ * bor i src/lib/domain/valgt-coach.ts, aldri «første coach»-gjetting her.
+ * Garantien «returnerer alltid en id» (TrainingSessionV2.coachId er NOT NULL)
+ * bevares: finnes verken coach eller ADMIN, returneres spillerens egen id.
+ */
 export async function resolveCoachIdForPlayer(
   playerId: string,
   explicitCoachId?: string | null,
 ): Promise<string> {
   if (explicitCoachId) return explicitCoachId;
-
-  const membership = await prisma.groupMember.findFirst({
-    where: { userId: playerId, endedAt: null },
-    include: { group: { select: { coachId: true } } },
-  });
-  if (membership?.group.coachId) return membership.group.coachId;
-
-  const plan = await prisma.trainingPlan.findFirst({
-    where: { userId: playerId, createdById: { not: null } },
-    orderBy: [{ isActive: "desc" }, { updatedAt: "desc" }],
-    select: { createdById: true },
-  });
-  if (plan?.createdById) return plan.createdById;
-
-  const coach = await prisma.user.findFirst({
-    where: { role: { in: ["COACH", "ADMIN"] }, deletedAt: null },
-    select: { id: true },
-    orderBy: { createdAt: "asc" },
-  });
-  return coach?.id ?? playerId;
+  return resolveValgtCoachIdEllerAdmin(playerId);
 }
 
 /** Opprett eller oppdater TrainingSessionV2 koblet til TrainingPlanSession. */
@@ -61,6 +49,9 @@ export async function upsertV2ForPlanSession(input: {
   /** Hvor økten skjer + hva den skal oppnå — speiles så live-økta viser det samme. */
   location?: string | null;
   maalsetning?: string | null;
+  /** G3: satt når kilden er en gruppeutrulling — speiles til TrainingSessionV2.groupId.
+   *  Utelatt/null = individuell økt; et eksisterende groupId røres da IKKE. */
+  sourceGroupId?: string | null;
 }): Promise<void> {
   const coachId = await resolveCoachIdForPlayer(input.playerId, input.coachId);
   const endTime = new Date(input.scheduledAt.getTime() + input.durationMin * 60_000);
@@ -72,6 +63,8 @@ export async function upsertV2ForPlanSession(input: {
 
   // Felles data for create + update. Status settes KUN ved create — en
   // update skal aldri nullstille COMPLETED/CANCELLED/SKIPPED til PLANNED.
+  // groupId settes KUN når kilden faktisk er en gruppeutrulling (G3) —
+  // undefined betyr «ikke rør feltet» i update-grenen.
   const data = {
     title: input.title,
     studentId: input.playerId,
@@ -85,6 +78,7 @@ export async function upsertV2ForPlanSession(input: {
     isCoachCreated: coachId !== input.playerId,
     generertFra: GENERERT_FRA,
     generertFraId: input.planSessionId,
+    ...(input.sourceGroupId ? { groupId: input.sourceGroupId } : {}),
   };
 
   let v2Id: string;
@@ -134,6 +128,7 @@ export async function syncV2FromPlanSessionId(planSessionId: string): Promise<vo
       miljo: true,
       location: true,
       maalsetning: true,
+      sourceGroupId: true,
       plan: { select: { userId: true, createdById: true } },
     },
   });
@@ -149,6 +144,7 @@ export async function syncV2FromPlanSessionId(planSessionId: string): Promise<vo
     miljo: s.miljo,
     location: s.location,
     maalsetning: s.maalsetning,
+    sourceGroupId: s.sourceGroupId,
   });
 }
 

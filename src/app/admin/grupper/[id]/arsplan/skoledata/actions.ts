@@ -3,6 +3,8 @@
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 import { requireCoachActionUser } from "@/lib/auth/action-guards";
+import { assertCapability } from "@/lib/auth/effective-capabilities";
+import { Capability } from "@/lib/auth/cbac";
 
 const GYLDIGE_KATEGORIER = ["TIME", "PROVE", "HELDAGSPROVE", "EKSAMEN", "FERIE", "SKOLETUR", "ANNET"];
 const GYLDIGE_TRINN = ["VG1", "VG2", "VG3"];
@@ -73,7 +75,9 @@ export async function importerSkoledata(
   groupId: string,
   formData: FormData,
 ): Promise<{ ok: true; antall: number; feil: string[] } | { ok: false; feil: string[] }> {
-  await requireCoachActionUser();
+  const aktor = await requireCoachActionUser();
+  // G6: skoledata er årsplan-grunnlag → EDIT_GROUP_PLANS.
+  await assertCapability(aktor, Capability.EDIT_GROUP_PLANS);
   const schoolYear = (formData.get("schoolYear") as string) ?? "";
   const raatekst = (formData.get("data") as string) ?? "";
 

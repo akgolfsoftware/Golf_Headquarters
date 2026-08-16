@@ -186,6 +186,13 @@ export const TRIGGERS = {
     channels: ["in-app"],
     priority: "low",
   },
+  PLAN_CHANGED_BY_PLAYER: {
+    key: "plan-changed-by-player",
+    label: "Spiller endret planen sin",
+    category: "coach",
+    channels: ["in-app", "push"],
+    priority: "normal",
+  },
   PLAYER_COMPLETED_TEST: {
     key: "player-completed-test",
     label: "Spiller fullført test",

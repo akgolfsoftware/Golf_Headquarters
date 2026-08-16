@@ -38,6 +38,14 @@ export type DataGolfKategori = {
 export type DataGolfData = {
   /** True kun når minst én registrert sammenligning finnes. */
   harData: boolean;
+  /**
+   * Tomtilstands-markør (T6):
+   *  - "KLAR"        → sammenligning finnes (harData: true)
+   *  - "MANGLER_REF" → SG-grunnlag (BrukerSgInput, f.eks. fra SG-broen)
+   *                    finnes, men ingen referansespiller er valgt ennå
+   *  - "INGEN_DATA"  → verken SG-grunnlag eller sammenligning
+   */
+  tilstand: "KLAR" | "MANGLER_REF" | "INGEN_DATA";
   /** Referansespillerens navn (fra sammenligningen). */
   refNavn: string | null;
   refAar: number | null;
@@ -75,6 +83,7 @@ const KAT_NAVN: Record<DataGolfKode, string> = {
 
 const TOM: DataGolfData = {
   harData: false,
+  tilstand: "INGEN_DATA",
   refNavn: null,
   refAar: null,
   refTour: null,
@@ -99,7 +108,15 @@ export async function hentDataGolf(userId: string): Promise<DataGolfData> {
     include: { sgInput: true },
   });
 
-  if (sammenligninger.length === 0) return TOM;
+  if (sammenligninger.length === 0) {
+    // Har spilleren SG-grunnlag (f.eks. fra SG-broen som aggregerer runde-SG)
+    // mangler bare valget av referansespiller — skill det fra helt tomt.
+    const harSgInput = await prisma.brukerSgInput.findFirst({
+      where: { userId },
+      select: { id: true },
+    });
+    return harSgInput ? { ...TOM, tilstand: "MANGLER_REF" } : TOM;
+  }
 
   const siste = sammenligninger[sammenligninger.length - 1];
   const sg = siste.sgInput;
@@ -163,6 +180,7 @@ export async function hentDataGolf(userId: string): Promise<DataGolfData> {
 
   return {
     harData: true,
+    tilstand: "KLAR",
     refNavn: siste.refPlayerName,
     refAar: siste.refYear,
     refTour: siste.refTour,
