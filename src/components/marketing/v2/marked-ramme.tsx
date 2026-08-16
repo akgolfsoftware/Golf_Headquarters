@@ -135,7 +135,7 @@ export function MMobilMeny({ aktiv }: { aktiv: string }) {
               className="v2-press"
               style={{ display: "flex", alignItems: "center", justifyContent: "center", fontFamily: T.ui, fontSize: 15, fontWeight: 600, color: T.fg, background: T.panel2, border: `1px solid ${T.borderS}`, borderRadius: 9999, padding: "14px 28px", textDecoration: "none" }}
             >
-              Logg inn (TalentHQ)
+              Gratis testprofil
             </a>
             <Link
               href="/auth/signup"
@@ -210,7 +210,7 @@ export function MNav({ mobile, aktiv, cta = STANDARD_CTA }: { mobile: boolean; a
               href={TALENTHQ_LOGIN_URL}
               style={{ fontFamily: T.ui, fontSize: 13.5, fontWeight: 600, color: T.fg2, textDecoration: "none" }}
             >
-              TalentHQ
+              Gratis testprofil
             </a>
           </>
         )}
@@ -259,7 +259,7 @@ export function MFot({ mobile }: { mobile: boolean }) {
           href={TALENTHQ_LOGIN_URL}
           style={{ fontFamily: T.ui, fontSize: 12.5, color: T.fg2, textDecoration: "none" }}
         >
-          TalentHQ
+          Gratis testprofil
         </a>
       </div>
     </div>

@@ -186,7 +186,7 @@ export default async function TestDetaljSpillerPage({
       >
         {/* Kvittering etter gjennomføring — fasit playerhq-test-gjennomfor.html
             (serveren redirecter hit ved lagring; kvitteringen bor derfor her).
-            TalentHQ-lenken vises kun når TalentHQ-flaten faktisk er skrudd på. */}
+            Talentprofil-lenken vises kun når talent-flaten faktisk er skrudd på. */}
         {lagret && (
           <div
             style={{
@@ -222,7 +222,7 @@ export default async function TestDetaljSpillerPage({
                   textDecoration: "none",
                 }}
               >
-                Se utviklingen i TalentHQ →
+                Se utviklingen i talentprofilen →
               </Link>
             )}
           </div>
