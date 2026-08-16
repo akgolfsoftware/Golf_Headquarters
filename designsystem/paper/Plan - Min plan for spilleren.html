@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="nb" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Plan — «Min plan»: spillerens mål, progresjon og tekniske utvikling</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&family=Lora:ital,wght@0,400;0,500;1,400&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#FAF9F5;--surface:#FFFFFF;--soft:#F0EEE6;--border:#E5E2D9;--fg:#141413;--mid:#77736B;--faint:#A9A49A;--accent:#D97757;--accent-fg:#B5573A;--accent-soft:#FBEDE7;--up:#3D7A5A;--dn:#B0603F;--info:#4A6FA5;--display:'Poppins',system-ui,sans-serif;--prose:'Lora',Georgia,serif;--mono:'IBM Plex Mono',monospace}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--fg);font-family:var(--display);font-size:14px;line-height:1.55;-webkit-font-smoothing:antialiased}
+a{color:var(--accent-fg)}a:hover{color:var(--accent)}
+.wrap{max-width:1080px;margin:0 auto;padding:56px 32px 96px}
+.kicker{font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--mid)}
+h1{font-size:34px;font-weight:600;letter-spacing:-.02em;margin:10px 0 8px;text-wrap:pretty}
+h2{font-size:20px;font-weight:600;margin:56px 0 6px;letter-spacing:-.01em;scroll-margin-top:20px}
+h3{font-size:15px;font-weight:600;margin:28px 0 8px}
+h4{font-size:13px;font-weight:600;margin:18px 0 6px;font-family:var(--mono);letter-spacing:.04em;text-transform:uppercase;color:var(--mid)}
+p{font-family:var(--prose);font-size:14.5px;line-height:1.65;color:var(--fg);max-width:74ch;margin-bottom:10px;text-wrap:pretty}
+p.lede{font-size:16px;color:var(--mid)}
+ul,ol{margin:8px 0 12px 18px;font-family:var(--prose);font-size:14.5px;line-height:1.6;max-width:74ch}
+li{margin-bottom:5px}
+code{font-family:var(--mono);font-size:12px;background:var(--soft);padding:1px 5px;border-radius:4px}
+table{width:100%;border-collapse:collapse;font-size:12.5px;margin:14px 0 6px}
+th{text-align:left;font-family:var(--mono);font-size:9.5px;letter-spacing:.09em;text-transform:uppercase;color:var(--mid);font-weight:600;padding:0 10px 8px;border-bottom:1px solid var(--border);vertical-align:bottom}
+td{padding:9px 10px;border-bottom:1px solid var(--border);vertical-align:top}
+tr:last-child td{border-bottom:0}
+.tag{font-family:var(--mono);font-size:9.5px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;padding:2px 7px;border-radius:999px;white-space:nowrap;display:inline-block}
+.a{background:#E7F0EA;color:var(--up)}.b{background:var(--accent-soft);color:var(--accent-fg)}.c{background:#EDE9E1;color:var(--mid)}.i{background:#E8EEF5;color:var(--info)}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:18px 22px;margin:16px 0}
+.card.warn{border-left:3px solid var(--accent)}
+.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:22px 0}
+.stat{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:14px 16px}
+.stat .v{font-family:var(--mono);font-size:30px;font-weight:500;letter-spacing:-.03em;line-height:1;margin-bottom:6px}
+.stat .l{font-size:11.5px;color:var(--mid);line-height:1.35}
+.toc{display:grid;grid-template-columns:repeat(2,1fr);gap:4px 22px;margin:24px 0 0;font-size:12.5px}
+.toc a{text-decoration:none;color:var(--mid);padding:4px 0;border-bottom:1px solid var(--border);display:block}
+.toc a:hover{color:var(--fg)}
+.toc a b{color:var(--fg);font-family:var(--mono);font-size:10px;margin-right:8px}
+.blokk{display:grid;grid-template-columns:36px 1fr;gap:16px;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:16px 18px;margin:10px 0}
+.blokk .nr{font-family:var(--mono);font-size:20px;font-weight:500;color:var(--faint);line-height:1.1}
+.blokk h3{margin:0 0 4px}
+.blokk .meta{font-family:var(--mono);font-size:10.5px;color:var(--mid);letter-spacing:.03em;margin-bottom:8px}
+.blokk p{margin-bottom:8px}
+.blokk .kopi{font-family:var(--prose);font-size:13px;color:var(--fg);background:var(--soft);border-radius:6px;padding:10px 12px;max-width:62ch}
+.blokk .kopi b{font-family:var(--display);font-size:12px;display:block;color:var(--mid);font-weight:500;margin-bottom:3px}
+.par{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:16px 0}
+@media(max-width:820px){.grid{grid-template-columns:repeat(2,1fr)}.toc,.par{grid-template-columns:1fr}.wrap{padding:36px 20px 64px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="kicker">Skjermplan · 15. august 2026</div>
+<h1>«Min plan» — resultatmål, prosessmål og progresjon i PlayerHQ</h1>
+<p class="lede">Komplett plan for spillerens egen utviklingsplan: hva skjermen viser, i hvilken rekkefølge, hvilke komponenter som gjør jobben, hvilke felter som må finnes, og i hvilken rekkefølge det bygges. Bygger på analysen 15.08 og på de seks IUP-lagene der. Én bærende beslutning ligger under alt: <b>resultatmål og prosessmål er to forskjellige ting og skal aldri vises på samme måte</b>. Resultatmålet er dit vi skal, og spilleren kan ikke trene på det direkte. Prosessmålet er det hun faktisk gjør, og det er det eneste hun kan lykkes med hver uke. Blander vi dem, får vi en 16-åring som føler seg mislykket i uker der hun gjorde alt riktig.</p>
+
+<div class="toc">
+  <a href="#ramme"><b>01</b>Rammen: rute, nivå, én jobb</a>
+  <a href="#maaltyper"><b>02</b>De to måltypene — regelen</a>
+  <a href="#blokker"><b>03</b>Skjermen: åtte blokker i rekkefølge</a>
+  <a href="#progresjon"><b>04</b>Hvordan progresjon tegnes</a>
+  <a href="#data"><b>05</b>Datamodell og felter</a>
+  <a href="#tilstander"><b>06</b>Tilstander og tomme visninger</a>
+  <a href="#komponenter"><b>07</b>Komponenter</a>
+  <a href="#coach"><b>08</b>Coachsiden — der målene settes</a>
+  <a href="#leveranser"><b>09</b>Fem leveranser</a>
+  <a href="#beslutninger"><b>10</b>Beslutninger eier må ta</a>
+</div>
+
+<h2 id="ramme">01 · Rammen: rute, nivå, én jobb</h2>
+<div class="grid">
+  <div class="stat"><div class="v">430</div><div class="l">px kolonne · mobil-først, samme som resten av PlayerHQ</div></div>
+  <div class="stat"><div class="v">8</div><div class="l">blokker, én skjerm, rulling — ikke faner</div></div>
+  <div class="stat"><div class="v">8–52</div><div class="l">uker · revisjonsintervallet settes per plan, ikke av systemet</div></div>
+  <div class="stat"><div class="v">2</div><div class="l">eiere: spilleren eier prosessmålene, coachen setter resultatmålene</div></div>
+</div>
+<p>Rute: <code>/portal/plan/min-plan</code>, under den eksisterende Plan-flaten i tab-baren. Ingen ny hovedflate — de fire i PlayerHQ (I dag · Plan · Analyse · Meg) er låst. Skjermens ene jobb, formulert som spilleren ville sagt det: <b>«hva jobber jeg mot, hvordan ligger jeg an, og hva skal jeg gjøre denne uka for å komme dit».</b> Alt som ikke svarer på det, hører i Analyse-fanen eller i profilen på coachsiden.</p>
+<p>Én regel om rulling: skjermen er lang, og det er greit. Faner ville tvunget spilleren til å velge mellom mål og progresjon, som er samme sak sett fra to sider. Blokk 1 og 2 skal være ferdig lest før hun må skrolle — resten er dybde hun oppsøker.</p>
+
+<h2 id="maaltyper">02 · De to måltypene — regelen</h2>
+<p>Dette er planens grammatikk, og den skal være synlig i typografien før den forklares i tekst.</p>
+<table>
+<thead><tr><th style="width:16%"></th><th style="width:42%">Resultatmål</th><th>Prosessmål</th></tr></thead>
+<tbody>
+<tr><td><b>Svarer på</b></td><td>Hvor skal dette ende</td><td>Hva gjør jeg med det</td></tr>
+<tr><td><b>Eksempler</b></td><td>Snittscore ≤ 73,0 innen uke 43 · HCP under +1,5 · topp 10 i NM Junior · SG nærspill ≥ 0 mot kategori C</td><td>3 nærspillsøkter i uka · film P4.0 hver teknikkøkt · logg alle runder samme dag · 2 TrackMan-økter i uka · søvn over 7 t fem netter</td></tr>
+<tr><td><b>Horisont</b></td><td>Sesong eller periode — 8 uker til 2 år</td><td>Uke. Alltid uke.</td></tr>
+<tr><td><b>Kontroll</b></td><td>Delvis. Avhenger av bane, vær, felt, dagsform</td><td>Full. Spilleren bestemmer selv om det ble gjort</td></tr>
+<tr><td><b>Eier</b></td><td>Coachen setter, spilleren kan legge til egne. Antallet er ikke begrenset</td><td><b>Spilleren.</b> Coachen kan foreslå, aldri pålegge</td></tr>
+<tr><td><b>Kobling</b></td><td>Pyramideområde og AK-formel — målet vet hvilken trening som betaler det inn</td><td>Samme kobling. Det er den som gjør etterlevelse regnbar</td></tr>
+<tr><td><b>Progresjon vises som</b></td><td>Avstand til terskel + trend over tidsvindu. Aldri prosent av et mål</td><td>Etterlevelse: gjort av planlagt, per uke, med rekke bakover</td></tr>
+<tr><td><b>Ved brudd</b></td><td>Informasjon. Coachen justerer ved revisjon — ingen varsling til spilleren</td><td>Synlig samme uke, i du-form, uten pekefinger: «to av tre nærspillsøkter ble gjort»</td></tr>
+<tr><td><b>Typografi</b></td><td>Mono-tall, stort. Terskelen står som eget merke</td><td>Prikkrekke eller hake per uke. Ingen store tall</td></tr>
+<tr><td><b>Kilde</b></td><td><code>Round</code> · <code>SgInsight</code> · <code>TestResult</code> · <code>TournamentResult</code> · HCP fra golfbox</td><td><code>TrainingPlanSession</code> mot <code>TrainingLog</code> — regnes, settes ikke</td></tr>
+</tbody>
+</table>
+<div class="card warn">
+<p><b>Konsekvensen som er lett å glemme:</b> prosessmålene er de eneste målene som kan bli grønne hver uke. Derfor står de <i>over</i> resultatmålene på skjermen, selv om resultatmålene er viktigere for coachen. Rekkefølgen på skjermen følger hva spilleren kan gjøre noe med i dag — ikke hva som betyr mest på sikt.</p>
+</div>
+
+<h2 id="blokker">03 · Skjermen: åtte blokker i rekkefølge</h2>
+
+<div class="blokk">
+<span class="nr">01</span>
+<div>
+<h3>Planhode</h3>
+<div class="meta">SectionLabel + h1 + KeyValueGrid · kilde: IUPPlan</div>
+<p>Fire mono-linjer og ingenting mer: gjeldende versjon, hvem som skrev den, hva perioden heter, når den revideres. Dette er det som gjør planen til en avtale i stedet for en visning.</p>
+<div class="kopi"><b>Kopi</b>Min plan · v3 · gjeldende fra 27.07<br>Skrevet av Anders · SPES-perioden, uke 27–34<br>Revideres uke 43 · 16 uker — du får si din del først<br>Foresatt ser hele planen</div>
+</div>
+</div>
+
+<div class="blokk">
+<span class="nr">02</span>
+<div>
+<h3>Denne uka: prosessmålene</h3>
+<div class="meta">ListRow + DotMatrix + ProgressBar · kilde: TrainingPlanSession × TrainingLog</div>
+<p>Tre til fem rader, hver med navn, ukens status og en prikkrekke som viser de siste åtte ukene. Rekken er hele poenget: én dårlig uke i en god rekke ser ut som en dårlig uke i en god rekke, ikke som et brudd.</p>
+<p>Sorteres på gjenstående, ikke alfabetisk — det som mangler denne uka står øverst. Ferdige prosessmål faller nederst med hake, aldri bort.</p>
+<p><b>Spilleren eier disse.</b> Hun legger til, endrer og fjerner selv, og coachen kan foreslå — et forslag ligger som rad med «foreslått av Anders» og to valg: ta det inn, eller la det ligge. Ingen prosessmål kommer inn i lista uten at hun har sagt ja. Det er hele grunnen til at etterlevelse betyr noe: hun brøt sitt eget løfte, ikke noen andres regel.</p>
+<div class="kopi"><b>Kopi</b>Nærspill 30–70 m · 2 av 3 økter denne uka · ●●●●●○●● siste 8 uker<br>Film P4.0 · gjort i begge teknikkøkter · ●●●●●●●●<br>Logg runder samme dag · 3 av 4 runder · ●●○●●●○●</div>
+</div>
+</div>
+
+<div class="blokk">
+<span class="nr">03</span>
+<div>
+<h3>Resultatmålene med avstand</h3>
+<div class="meta">MaalRad (ny) + TrendBand · kilde: IUPMaal × Round/SgInsight/TestResult</div>
+<p>Én rad per mål: navn, nåverdi med tidsvindu, terskel som eget merke, frist, og trenden bak. Aldri en prosentbar mot målet — 68 % av veien til en snittscore betyr ingenting. Avstand og retning betyr noe.</p>
+<p><b>Ingen øvre grense på antall.</b> Spilleren bestemmer hvor mange mål hun vil ha, og de er ikke begrenset til det coachen har satt — hun kan legge til egne. Skjermen viser de fem med nærmeste frist og feller resten ut under «Se alle mål · 9». Rekkefølgen er frist, ikke viktighet: det som forfaller først står først.</p>
+<p>Hvert mål bærer <b>pyramideområde og AK-formel</b> som chip, og det er ikke pynt — det er koblingen som lar et mål peke på trening som faktisk betaler det inn, og som gjør at et mål uten en eneste økt bak seg er synlig som nettopp det. Mål med samme område grupperes visuelt, slik at fire mål på nærspill leser som ett arbeidsområde og ikke som fire krav.</p>
+<div class="kopi"><b>Kopi</b>Snittscore · 74,1 siste 10 runder · mål ≤ 73,0 innen uke 43 · −0,5 siste åtte uker<br>SG nærspill · −1,20 siste 5 runder · mål ≥ 0,00 mot kategori C · +0,3 siste åtte uker<br>HCP · +2,1 registrert 28.07 · mål under +1,5 innen sesongslutt</div>
+</div>
+</div>
+
+<div class="blokk">
+<span class="nr">04</span>
+<div>
+<h3>Hvorfor vi jobber med dette</h3>
+<div class="meta">DiagnoseKort → NesteFokusKort · kilde: SgInsight + coachens tekst</div>
+<p>Årsakskjeden i prosa, i du-form, i Lora. Én blokk, tre–fire setninger, som binder resultatmålet i blokk 3 til prosessmålet i blokk 2. Dette er den eneste blokken som ikke er tall, og den er den viktigste for at planen skal føles som noens plan for henne.</p>
+<p>Coachen kan overstyre teksten. Står det ingen coachtekst, viser blokken agentens diagnose med «Hvorfor?»-utfelling og proveniens — aldri uten kilde.</p>
+<div class="kopi"><b>Kopi</b>Du taper 1,2 slag per runde rundt greenen mot kategori C. Utslag og putting holder nivået allerede. Flytter vi treningstid til nærspill 30–70 m, flytter scoren seg mest — det er derfor tre av fem økter ligger der nå.</div>
+</div>
+</div>
+
+<div class="blokk">
+<span class="nr">05</span>
+<div>
+<h3>Teknisk plan og progresjon</h3>
+<div class="meta">PPositionRail + fokuskort med stolpe · kilde: TekniskPlan → PositionTask</div>
+<p>Finnes ferdig tegnet i <code>fase2/playerhq/playerhq-teknisk-plan.html</code> og skal ikke gjentas her — blokken er et sammendrag med lenke: P-posisjonene i arbeid, fremdrift per fokus, og forbeholdet som allerede står der: fremdrift måler gjennomføring, ikke kvalitet.</p>
+<p>Tillegget denne planen krever er koblingen oppover: hvert fokusområde viser hvilket resultatmål det betaler inn på. Uten den linjen er teknisk plan en egen øy.</p>
+<div class="kopi"><b>Kopi</b>P4.0 · overgangen · 3 av 12 økter gjort · betaler inn på: SG nærspill<br>Om P4.0 faktisk sitter, avgjøres på film og TrackMan — sammen med Anders.</div>
+</div>
+</div>
+
+<div class="blokk">
+<span class="nr">06</span>
+<div>
+<h3>Stats og SG over tid</h3>
+<div class="meta">SgBreakdown + Sparkline + CompareChart · kilde: Round · Shot · SgInsight</div>
+<p>Fem SG-områder med trend, og snittscore som egen linje. Regelen fra biblioteket gjelder uendret: over benchmark er oliven, under er leire på 35 %, aldri rødt — og referansen som sammenlignes mot står alltid skrevet ut («mot kategori C»), fordi et SG-tall uten referanse er et tall uten mening.</p>
+<p>Denne blokken er et <i>vindu</i> inn i Analyse-fanen, ikke en kopi av den. Tre tall og en trend; dybden ligger ett tapp unna.</p>
+<div class="kopi"><b>Kopi</b>SG totalt +2,92 · siste 10 runder · mot kategori D<br>Tee +0,81 · Innspill −0,44 · Nærspill −1,20 · Putt +1,35<br>Se hele nedbrytningen i Analyse →</div>
+</div>
+</div>
+
+<div class="blokk">
+<span class="nr">07</span>
+<div>
+<h3>Turneringer: resultater og det neste</h3>
+<div class="meta">TurneringNedtelling + ListRow + Scorekort-lenke · kilde: TournamentEntry · TournamentResult</div>
+<p>To deler i én blokk. Øverst det neste med nedtelling og prioritet (A/B/C), fordi det er det som styrer treningen nå. Under, spilte turneringer i år som liste: dato, bane, plassering, runder, og SG for turneringen der den finnes.</p>
+<p>Plassering er brutto og faktisk — ingen «personlig beste»-ramme rundt et middels resultat. Feiringen har egen flate og eget språk; her står tallene.</p>
+<p><b>Plassering kan være resultatmål</b> — men bare for turneringer i kategorien PRESTASJON. Der er konkurransen selve oppdraget, og «topp 10 i NM Junior» er et ærlig mål. I utviklings- og erfaringsturneringer er plassering støy: feltet, banen og været avgjør for mye, og et plasseringsmål der straffer en spiller som gjorde alt riktig. Kategorien styrer dette i grensesnittet: velger coachen en ikke-PRESTASJON-turnering som målekilde, tilbys plassering ikke som alternativ — og forklaringen står i klartekst, ikke som en grå knapp.</p>
+<div class="kopi"><b>Kopi</b>NM Junior · Losby · 14.–16.08 · prioritet A · om 13 dager<br>Regionstour 2 · 12.07 · 4. plass · 68 · 74 · SG +3,1<br>Sørlandsslaget · 21.06 · 11. plass · 75 · 72</div>
+</div>
+</div>
+
+<div class="blokk">
+<span class="nr">08</span>
+<div>
+<h3>Min del av planen</h3>
+<div class="meta">Textarea i FormField + OneThingNow ved forfall · kilde: IUPRevisjon.spillerNotat</div>
+<p>Ett fritekstfelt per revisjon: hva vil du bli bedre på de neste åtte ukene. Lagres når spilleren skriver, sendes ikke — coachen ser den i revisjonsarbeidsflaten. Skjermens eneste bruk av oransje, og bare når revisjonen nærmer seg: planen spør før den skrives om.</p>
+<p>Forrige svar står under, med dato. Å se hva hun skrev i mai når hun skriver i august er halve verdien av feltet.</p>
+<div class="kopi"><b>Kopi</b>Én ting nå — Anders skriver ny plan i uke 43. Hva vil du jobbe med?<br>I mai skrev du: «vil slå driver rettere under press, og bli tryggere på putter mellom 2 og 4 meter.»</div>
+</div>
+</div>
+
+<h2 id="progresjon">04 · Hvordan progresjon tegnes</h2>
+<p>Fem regler som gjør at progresjon leses likt overalt i planen. De er en presisering av eksisterende systemregler, ikke nye påfunn.</p>
+<table>
+<thead><tr><th style="width:22%">Regel</th><th>Utslag</th></tr></thead>
+<tbody>
+<tr><td><b>Tidsvindu alltid synlig</b></td><td>«74,1 siste 10 runder», aldri «74,1». Et snitt uten vindu kan ikke etterprøves, og spilleren vet ikke om gårsdagens runde er med.</td></tr>
+<tr><td><b>Terskel som merke, ikke som mållinje i en bar</b></td><td>Målverdien står som eget mono-merke ved siden av nåverdien. Ingen fyllbar bar mot et resultatmål — den lyver om lineær fremgang.</td></tr>
+<tr><td><b>Delta med grunnlag</b></td><td>«−0,5 siste åtte uker», ikke «−0,5». Retning uten periode er en påstand.</td></tr>
+<tr><td><b>Retning før farge</b></td><td>Piltegn og fortegn bærer retningen; oliven og leire forsterker. En skjermleser eller en fargeblind spiller skal få samme informasjon.</td></tr>
+<tr><td><b>Prosessmål har rekke, resultatmål har trend</b></td><td>Prikkrekke bakover for det hun gjorde; trendbånd for det tallene gjorde. To visuelle språk, konsekvent.</td></tr>
+</tbody>
+</table>
+<p>Og én ting som ikke skal finnes: <b>ingen samlet progresjonsprosent for planen</b>. «Du er 62 % ferdig med utviklingsplanen din» er meningsløst, umulig å beregne redelig, og gjør en plan til et spill.</p>
+
+<h2 id="data">05 · Datamodell og felter</h2>
+<p>To nye modeller, én utvidelse, resten er lesning av det som finnes.</p>
+<h4>IUPMaal — resultatmål <span class="tag b">ny</span></h4>
+<ul>
+<li><code>type</code>: resultat | prosess — samme tabell, ulik visning, fordi de deler livssyklus (settes ved revisjon, følger en plan)</li>
+<li><code>eier</code>: spiller | coach — prosessmål er alltid spiller; resultatmål kan være begge. Eieren avgjør hvem som kan endre og slette</li>
+<li><code>tittel</code> · <code>enhet</code> · <code>terskel</code> · <code>retning</code> (lavere/høyere er bedre) · <code>frist</code> (uke eller dato)</li>
+<li><code>pyramideomraade</code> + <code>akFormel</code>: koblingen til treningsspråket. Samme taksonomi som <code>SessionCard</code> og drill-biblioteket bruker — den finnes, den skal ikke gjenoppfinnes</li>
+<li><code>maalekilde</code>: hvilken beregning som gir nåverdien (snittscore, SG-område, HCP, testresultat, plassering) — <b>ingen manuelt vedlikeholdt nåverdi</b>, den regnes alltid</li>
+<li><code>turneringId</code> + gyldighetsregel: plassering som målekilde er kun lovlig når turneringens kategori er PRESTASJON. Regelen hører i modellen, ikke i skjemaet — ellers må hver ny flate huske den</li>
+<li><code>referanse</code>: kategorien eller benchmarken tallet måles mot</li>
+<li><code>vindu</code>: tidsvinduet nåverdien beregnes over (10 runder, 5 runder, siste 90 dager)</li>
+<li><code>planId</code> · <code>fokusIds[]</code>: koblingen som gjør årsakskjeden mulig</li>
+</ul>
+<h4>IUPPlan + IUPRevisjon — versjon og avtale <span class="tag b">ny</span></h4>
+<ul>
+<li><code>IUPPlan</code>: spiller, versjon, gjeldendeFra, periode, skrevetAv, <code>revisjonsintervallUker</code> (8–52), nesteRevisjon</li>
+<li><code>IUPRevisjon</code>: planId, dato, <code>spillerNotat</code>, <code>coachNotat</code>, endringer (diff mot forrige), settAvSpiller, settAvForesatt</li>
+<li>Historikk er poenget: forrige versjon skal kunne leses, ellers er «revidert» bare «endret»</li>
+<li><b>Intervallet er en plan-egenskap, ikke en systemkonstant.</b> Alt fra 8 til 52 uker skal være lovlig: en 12-åring på Basis kan ha årsplan med én revisjon, en WANG-spiller i sesong kan ha åtte uker. <code>nesteRevisjon</code> regnes fra <code>gjeldendeFra</code> + intervallet, men kan overstyres til en dato i årsplanen — uke 43 står der alt, og en plan som revideres midt i en turneringsperiode er feil uansett hva intervallet sier</li>
+</ul>
+<h4>Prosessmål regnes, lagres ikke <span class="tag a">ingen ny modell</span></h4>
+<p>Et prosessmål er en <i>spørring</i>: «økter merket nærspill i publisert plan» mot «logget fullført» per uke. Underlaget finnes i <code>TrainingPlanSession</code> og <code>TrainingLog</code>. Det som lagres er kun definisjonen (område, antall per uke), som er en <code>IUPMaal</code> med <code>type: prosess</code> og <code>eier: spiller</code>. Etterlevelse skal aldri kunne redigeres for hånd — heller ikke av spilleren som eier målet. Hun eier løftet; loggen eier fasit.</p>
+<p>To ting følger av at spilleren eier dem: definisjonen må kunne skrives fra PlayerHQ (én ny skrivevei på spillersiden, den eneste i planen), og et prosessmål må kunne <i>arkiveres</i> uten å slettes. Rekken bakover er verdifull historie; et mål hun gikk bort fra i mai skal fortsatt kunne leses i revisjonen.</p>
+<h4>Utvidelse: fokus → mål <span class="tag a">felt</span></h4>
+<p><code>PositionTask</code> eller <code>TechnicalPlan</code> trenger én referanse til <code>IUPMaal</code>. Ett felt, og hele blokk 5 får linjen «betaler inn på».</p>
+
+<h2 id="tilstander">06 · Tilstander og tomme visninger</h2>
+<p>Fire tilstander per region er huskravet i prosjektet. Denne skjermen har i tillegg tre <i>ekte</i> tomtilstander som ikke er feil, og som er de viktigste å skrive godt.</p>
+<table>
+<thead><tr><th style="width:22%">Tilstand</th><th>Visning</th></tr></thead>
+<tbody>
+<tr><td><b>Ingen plan ennå</b></td><td>Ny spiller. Hele skjermen er én blokk: «Anders skriver planen din etter første testrunde. Til da finner du ukas økter under Plan.» Ingen tomme kortskjeletter — de ser ut som feil.</td></tr>
+<tr><td><b>Plan uten resultatmål</b></td><td>Vanlig i starten, og helt greit: prosessmålene kan stå alene. Blokk 3 skjules helt heller enn å vise en tom liste. Utviklingen begynner med vaner.</td></tr>
+<tr><td><b>For få runder for SG</b></td><td>Under fem runder i vinduet: «SG regnes fra fem runder. Du har tre — de to neste gir bildet.» Tallet vises ikke som anslag i planen, kun i Analyse der forbeholdet får plass.</td></tr>
+<tr><td><b>Laster</b></td><td><code>Skeleton</code> med kjent geometri per blokk. Planhodet lastes først og alene — det er det raskeste og gir umiddelbar bekreftelse på at planen finnes.</td></tr>
+<tr><td><b>Feil</b></td><td>Per blokk, aldri hele skjermen: «Klarte ikke å hente turneringene. Resten av planen er hentet.» Samme holdning som spillerprofilen har i dag.</td></tr>
+</tbody>
+</table>
+
+<h2 id="komponenter">07 · Komponenter</h2>
+<table>
+<thead><tr><th style="width:24%">Blokk</th><th>Komponenter</th><th style="width:12%">Status</th></tr></thead>
+<tbody>
+<tr><td>01 Planhode</td><td><code>SectionLabel</code> · <code>PageHeader</code> · <code>KeyValueGrid</code></td><td><span class="tag a">finnes</span></td></tr>
+<tr><td>02 Prosessmål</td><td><code>ListGroup</code> + <code>ListRow</code> · <code>DotMatrix</code> · <code>ProgressBar</code></td><td><span class="tag a">finnes</span></td></tr>
+<tr><td>03 Resultatmål</td><td><b>MaalRad</b> (ny) · <code>TrendBand</code> · <code>Sparkline</code></td><td><span class="tag b">én ny</span></td></tr>
+<tr><td>04 Hvorfor</td><td><code>DiagnoseKort</code> → <code>NesteFokusKort</code> · <code>ProvenanceDisclosure</code></td><td><span class="tag a">finnes</span></td></tr>
+<tr><td>05 Teknisk</td><td><code>PPositionRail</code> · <code>ProgressBar</code> · <code>AKFormelChip</code></td><td><span class="tag a">finnes</span></td></tr>
+<tr><td>06 Stats og SG</td><td><code>SgBreakdown</code> · <code>SgBar</code> · <code>Sparkline</code> · <code>CompareChart</code></td><td><span class="tag a">finnes</span></td></tr>
+<tr><td>07 Turneringer</td><td><code>TurneringNedtelling</code> · <code>ListRow</code> · <code>StatusBadge</code></td><td><span class="tag a">finnes</span></td></tr>
+<tr><td>08 Min del</td><td><code>FormField</code> + <code>Textarea</code> · <code>OneThingNow</code></td><td><span class="tag a">finnes</span></td></tr>
+</tbody>
+</table>
+<p><b>MaalRad</b> er den eneste nye komponenten skjermen krever. Grensen mot <code>GoalProgress</code>, som finnes: GoalProgress viser fremdrift mot ett tall som andel. MaalRad viser <i>avstand</i> — nåverdi med vindu, terskel som merke, frist, retning — og har ingen fyllbar bar. Det er ikke en variant, det er motsatt holdning: fremdrift mot et resultatmål er ikke en andel.</p>
+
+<h2 id="coach">08 · Coachsiden — der resultatmålene settes</h2>
+<p>Arbeidsdelingen etter beslutningene 15.08: <b>coachen setter resultatmål, spilleren eier prosessmål, begge kan foreslå til den andre.</b> Revisjonsarbeidsflaten på coachsiden (S2 i analysen) er der resultatmålene skrives, og planen for den er kort:</p>
+<ul>
+<li><b>Agenten foreslår først.</b> Fra SG-gap mot neste kategori, kategorikravene og testhistorikken kan et forslag til resultatmål regnes ut, hvert med pyramideområde og AK-formel ferdig satt. Med proveniens: agent, data, regel.</li>
+<li><b>Coachen redigerer og forkaster fritt.</b> Forslaget er et utkast, ikke en anbefaling som må avvises formelt. Ingen øvre grense på antall mål — men flaten viser hvor mange som ikke har en eneste økt bak seg, fordi tolv mål uten dose er null mål.</li>
+<li><b>Plassering krever PRESTASJON.</b> Velger coachen turneringsplassering som målekilde, tilbys bare turneringer i den kategorien. Er den ønskede turneringen ikke der, er svaret å endre turneringens kategori — ikke å omgå regelen i målet.</li>
+<li><b>Spillerens prosessmål står som lesefelt.</b> Coachen ser hva hun har lovet seg selv og etterlevelsen på det, men kan ikke endre det. Vil han noe annet, sender han et forslag hun kan ta inn.</li>
+<li><b>Diff før publisering.</b> Hva endres fra v3 til v4, i klartekst. <code>DiffKort</code> gjør jobben.</li>
+<li><b>Intervallet settes her.</b> 8 til 52 uker, med årsplanens datoer som forslag. Flaten skal advare, ikke sperre, når neste revisjon lander midt i en turneringsperiode.</li>
+<li><b>Publisering varsler, og foresatt får hele planen.</b> Spilleren får «ny plan»; foresatt får full innsikt — mål, dose, diagnose, coachnotat og progresjon — gjennom foreldreportalen. Beslutningen 15.08 er at det ikke finnes en redigert foreldreversjon: en plan som må skjules for hjemmet, er feil skrevet. Spillerens eget notat er det ene unntaket verdt å stille spørsmål ved — se forbeholdet nederst.</li>
+<li><b>Revisjonen ligger i køen.</b> Uke 43 er allerede i årsplanen; kø-elementet skrives derfra, ikke fra en påminnelse noen må huske å sette.</li>
+</ul>
+
+<h2 id="leveranser">09 · Fem leveranser</h2>
+<table>
+<thead><tr><th style="width:8%">#</th><th style="width:30%">Leveranse</th><th>Innhold og begrunnelse</th></tr></thead>
+<tbody>
+<tr><td><b>L1</b></td><td>MaalRad + IUPMaal</td><td>Komponent og modell for resultat- og prosessmål, med <code>eier</code>, pyramideområde og AK-formel fra første versjon. Alt annet henger på at et mål har terskel, frist, vindu, referanse og eier. Spesimenkort i begge moduser og to containerbredder, som regelen krever.</td></tr>
+<tr><td><b>L2</b></td><td>«Min plan» blokk 1–4</td><td>Planhode, prosessmål, resultatmål, hvorfor. Dette er en fungerende skjerm alene, og den innfrir løftet de fem øktskjermene allerede har gitt om at IUP-en finnes.</td></tr>
+<tr><td><b>L3</b></td><td>Blokk 5–7 + spillerens skrivevei</td><td>Teknisk sammendrag med «betaler inn på»-linjen, SG-vinduet, turneringene med PRESTASJON-regelen — og skjemaet der spilleren legger til sitt eget prosessmål. Den skriveveien hører her, ikke i L2: prosessmål må kunne <i>vises</i> før de kan settes.</td></tr>
+<tr><td><b>L4</b></td><td>Blokk 8 + IUPRevisjon</td><td>Spillerens notat og versjonsmodellen. Her blir planen en avtale, og først nå er PDF til foreldresamtalen forsvarlig.</td></tr>
+<tr><td><b>L5</b></td><td>Coachens revisjonsflate</td><td>Agentforslag, redigering, diff, publisering, kø-element i uke 43. Sist, fordi den er den eneste med skrivetilgang.</td></tr>
+</tbody>
+</table>
+<p>L1–L3 gir en komplett lesbar utviklingsplan for spilleren uten at coachen får noe nytt verktøy — målene settes i mellomtiden manuelt i basen eller via profilen. Det er et bevisst mellomsteg: skjermen som skaper verdi først, verktøyet som skalerer den etterpå.</p>
+
+<h2 id="beslutninger">10 · Beslutninger — avklart 15.08.2026</h2>
+<p>Alle fem punktene er avgjort av eier. De står her som bindende, med hva de utløser i designet.</p>
+<table>
+<thead><tr><th style="width:26%">Beslutning</th><th>Konsekvens i designet</th></tr></thead>
+<tbody>
+<tr><td><b>1 · Ingen øvre grense på antall mål.</b> Spilleren kan ha så mange hun vil, og de kobles til pyramideområde og AK-formel.</td><td>Blokk 3 viser de fem med nærmeste frist og feller resten ut. <code>IUPMaal</code> får <code>pyramideomraade</code> + <code>akFormel</code> som førsteklasses felter, ikke som fritekst. Mål med samme område grupperes visuelt. Kravet som følger: et mål uten trening bak seg må være synlig som det — uten grense på antall er dette den eneste beskyttelsen mot en ønskeliste.</td></tr>
+<tr><td><b>2 · Spilleren eier prosessmålene.</b></td><td>Blokk 2 blir skrivbar fra PlayerHQ — planens eneste skrivevei på spillersiden. Coachens innspill kommer som forslag hun tar inn eller lar ligge. Etterlevelsen er fortsatt regnet, aldri redigerbar: hun eier løftet, loggen eier fasit. Prosessmål arkiveres, slettes ikke.</td></tr>
+<tr><td><b>3 · Turneringsplassering er lovlig mål — kun for PRESTASJON-turneringer.</b></td><td>Regelen ligger i modellen (<code>turneringId</code> + kategorisjekk), ikke i skjemaet. Utviklings- og erfaringsturneringer tilbyr ikke plassering som målekilde, og forklaringen skrives i klartekst der valget ikke finnes. Turneringskategorien blir dermed en <i>designbeslutning med følger</i>: den må settes riktig ved påmelding.</td></tr>
+<tr><td><b>4 · Foresatt har innsikt i hele planen.</b></td><td>Ingen redigert foreldreversjon, ingen felter som skjules. Foreldreportalen får mål, dose, diagnose, coachnotat og progresjon. Det forenkler både modell og skjerm — én plan, tre lesere. Gir også foreldresamtalen et dokument i stedet for en følelse.</td></tr>
+<tr><td><b>5 · Revisjonsintervall 8–52 uker, per plan.</b></td><td><code>revisjonsintervallUker</code> på <code>IUPPlan</code>, satt i coachens flate, med årsplanens datoer som forslag. Planhodet skriver alltid ut både intervall og dato: «revideres uke 43 · 16 uker». En årsplan med én revisjon er en gyldig plan — for en 12-åring på Basis er det ofte den riktige.</td></tr>
+</tbody>
+</table>
+<div class="card warn">
+<p><b>Étt spørsmål beslutning 4 åpner, og som bør avgjøres før L4:</b> gjelder full innsikt også spillerens eget notat i blokk 8? Argumentet for å inkludere det er konsistens — én plan, ingen skjulte felter. Argumentet mot er at feltet er det eneste stedet en 16-åring skriver fritt, og at verdien av det faller hvis hun vet at hjemmet leser. Anbefalingen er å la notatet være mellom spiller og coach, og si det til henne i klartekst i feltet — men det er eiers valg, ikke designets.</p>
+</div>
+
+<h2>Forbehold</h2>
+<p>Planen er skrevet ut av filene i dette prosjektet, ikke målt mot produksjonsdata. Alle tall i kopieksemplene er demo-kanon Øyvind Rohjan, hentet fra spillerprofilen og teknisk plan slik de står i dag — de er illustrasjon, ikke fasit. Terskelverdiene for kategori C må komme fra CANON før noe av dette kodes. Beslutningene i kapittel 10 er eiers, tatt 15.08.2026; én avledet grense står fortsatt åpen — om spillerens eget notat omfattes av foresatts fulle innsikt.</p>
+
+</div>
+</body>
+</html>

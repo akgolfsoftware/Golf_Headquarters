@@ -3,9 +3,17 @@ branch: main
 path: docs/port
 
 ## Last sync
-date: 2026-08-09T10:48:00Z
+date: 2026-08-12T20:34:15Z
 
 ### Updated in this project
+- Lest hele `docs/port/` på main (nattrapport 12.08, PIXEL-PERFECT-PLAN, PAPER-ZIP-CHECKLIST, portstatus, LANSERINGSGAP) og skrevet samlet analyse- og utviklingsplan: `Plan - komplett utvikling og implementering.html`.
+- Tegnet drift/AgenticOS-sporet (19 ruter talt mot kode, 9 reelle): `fase2/agencyos/agencyos-agenticos-hub.html` (ny samleflate `/admin/agenticos`) + `agencyos-agent-detalj.html`. Konsolideringsnotat: `kart/drift-agenticos-2026-08-12.md`.
+- Skrevet rutefasit-registeret for alle mal-dekkede ruter: `Rutekart - alle ruter uten egen fasit.html` + `kart/rutefasit-for-claude-code.md` (legges i repoet som `docs/port/rutefasit.md`).
+- Status i kode 12.08: 0 `[x]` · 78 `[~]` · 9 `[ ]`; 6 grønne PR-er (#415–#420) venter sign-off; blokkert: WANG-innlogging, PR-E, PR-F. Designkø her: drift/AgenticOS-samleflate, W7-stats (etter PR-F), fasit-rettelser (Meg-samtykke, innboks-angre, planbibliotek mobil).
+
+## Sync history
+
+### 2026-08-09 (W5)
 - W5 (Marketing · Forelder · Auth · System) konsolideringsgate mot kode: `(marketing)/stats/*` (~45 ruter) skilt ut som eget produktspor — resten er 63 reelle ruter dækket av 6 maler. Notat: `kart/w5-marketing-auth-forelder-2026-08-09.md`.
 - Tegnet 6 W5-wireframes: `fase2/marketing/marketing-side.html`, `marketing-katalog.html`, `fase2/auth/auth-flyt.html`, `auth-samtykke.html`, `fase2/forelder/forelder-barn.html`, `fase2/system/system-tilstander.html`. Delt `fase2/felles/w5-base.css` + `w5-demo.js`.
 - Bølgeplanen W1–W6 er dermed gjennomført. Gjenstår: stats-sporet (~45, blokkert av PR-F) og drift/AgenticOS-sporet (~14).
@@ -50,6 +58,8 @@ date: 2026-08-09T10:48:00Z
 | `fase2/wang/wang-logg-inn.html` | `src/app/team-wang/logg-inn/page.tsx`, `logg-inn/wang-login.tsx` |
 | `fase2/gfgk/gfgk-kalender.html` | `src/app/gfgk-junior/kalender/page.tsx`, `src/styles/gfgk-junior-tokens.css` |
 | `fase2/gfgk/gfgk-veileder-artikkel.html` | `src/app/gfgk-junior/veileder/[slug]/page.tsx`, `_data/veileder-artikler.ts` |
+| `fase2/agencyos/agencyos-agenticos-hub.html` | `src/app/admin/agents/page.tsx`, `agent-team/page.tsx`, `brief/page.tsx`, `recording/page.tsx`, `workspace/*`, `marketing`, `reports`, `kommando/*` (stubber) |
+| `fase2/agencyos/agencyos-agent-detalj.html` | `src/app/admin/agents/[agentId]/page.tsx`, `agent-team/page.tsx` (kjøringer med steg) |
 | `fase2/playerhq/playerhq-analyse-hull.html` | `src/app/portal/analysere/hull/page.tsx`, `src/components/portal/v2/AnalysereHullV2.tsx`, `src/lib/domain/hole-heatmap.ts` |
 | `fase1/playerhq-analyse.html` (urørt) | `src/app/portal/analysere/page.tsx` |
 | `fase2/playerhq/playerhq-runder-liste.html` | `src/app/portal/mal/runder/page.tsx`, `src/components/portal/v2/RunderV2.tsx` |

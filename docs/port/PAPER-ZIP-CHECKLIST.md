@@ -1,9 +1,11 @@
 # Paper zip checklist — kryss når DONE (pixel m390 + d1280)
 
-> Oppdatert: **2026-08-09** etter sync av **Claude Paper (2).zip** → `designsystem/paper/`  
-> **Styrende plan:** `docs/port/PIXEL-PERFECT-PLAN-COMPLETE.md` (PP-0…PP-10 → 79/79 `[x]`)  
-> Gap-rapport: `PAPER-ZIP2-SYNC-2026-08-09.md`  
-> Skjermer **uten** fasit: `PAPER-PATTERN-CHECKLIST.md`
+> Oppdatert: **2026-08-16** etter full resynk av **AK Golf HQ — Claude Paper.zip (16.08)**
+> → `designsystem/paper/` (se `SYNC-STATUS.md`)  
+> **Styrende plan:** `docs/port/PIXEL-PERFECT-PLAN-COMPLETE.md` v2.0 — regnskapet er
+> **88 aktive rader** (85 + 3 nye W3-fasiter 16.08) + 72 variant-rader i
+> `PP-W3/W4/W5-VARIANTS.md`. Templates (8) er ute (vedtak 14.08).  
+> Skjermer **uten** egen fasit: `rutefasit.md` (mal + avvikslinje per rute)
 
 **Legend:** `[ ]` ikke portet · `[~]` struktur/PaperChrome (ikke pixel) · `[x]` pixel sign-off
 
@@ -83,6 +85,19 @@
 - [~] `fase2/playerhq/playerhq-booking-mine.html`
 - [x] `fase2/playerhq/playerhq-coach-hub.html` — NT-415 signert av Anders 13.08.2026 (galleri mot prod)
 - [~] `fase2/playerhq/playerhq-talent.html` → TalentV2
+- [ ] `fase2/playerhq/playerhq-profil.html` → `/portal/meg/profil` — NY i zip 16.08 (konsolidering: profil/konto/kontakt → én flate, §8 skjema. HCP er lesefelt — eies av forbundet/Golfbox)
+- [ ] `fase2/playerhq/playerhq-utstyr.html` → `/portal/meg/utstyr` (i dag `utstyrsbag`) — NY i zip 16.08 (konsolidering: utstyr/bag/lengder → én flate; lengdetrapp er modul. Målte lengder, aldri ønsketall — kølle med for få slag viser «—»)
+- [ ] `fase2/playerhq/playerhq-coach-tilbakemelding.html` → `/portal/coach/tilbakemelding/[oktId]` — NY i zip 16.08 (konsolidering: coach notat/video/oppsummering → én flate; video er modul. Prosa i Lora, «Send svar» er clay)
+
+### W3-konsolideringer (fra `fase2/manifest-w3-komplett.md`, zip 16.08 — rutekonsekvens for C4-bølgen)
+
+- 8 innstillings-undersider (varsler/sprak/okter/anlegg/ai-coach/personvern/sikkerhet/integrasjoner) → **én mal, åtte instanser** (`playerhq-innstillinger.html`, §10)
+- `/portal/meg/profil` + `/meg/konto` + `/meg/kontakt` → én profilflate (§8)
+- `/portal/meg/betaling` + `/meg/kvitteringer` + `/meg/klipp` → én betalingsflate; klipp er modul øverst (§9). Timeklipp ≠ app-tier — skillet står i UI, må ikke slås sammen
+- `/portal/meg/utstyr` + `/meg/bag` + `/meg/lengder` → én flate; lengdetrapp er modul (§9)
+- `/portal/coach/notat/[id]` + `/coach/video/[id]` + `/coach/oppsummering` → én tilbakemeldingsflate (§12)
+- `/portal/talent/*` undersider → faner i én flate (§12)
+- Merk (manifest-w2 rettet i samme zip): `playerhq-talent-stige.html` er UTGÅTT som talent-fasit — `playerhq-talent.html` (W3) er fasit. Maks én clay per tilstand: kun coach-tilbakemelding («Send svar») og betaling («Betal forfalt faktura») har solid clay i W3.
 
 ## Fase 2 · W4 AgencyOS (ny i zip 2)
 
@@ -141,8 +156,10 @@ i `designsystem/paper/kart/`. Arbeidsordre: `kart/prompt-code-session-implemente
       DELVIS BLOKKERT: `SessionStatusV2` mangler utkast-tilstand, økt mangler publiserings- og
       faktisk-tid-felter. `SKIPPED` finnes — hoppet-mot-ulogget kan bygges i dag.
 - [ ] **D2 · Booking → faktura** — `fase2/agencyos/agencyos-okonomi.html` + `playerhq-betaling.html`.
-      Kjeden finnes (`Booking.trainingSessionV2Id` → `Payment.bookingId`). ÅPENT: «forfalt» er
-      ingen `PaymentStatus` og har ingen forfallsdato — hentes fra Stripe eller nytt felt.
+      Kjeden finnes (`Booking.trainingSessionV2Id` → `Payment.bookingId`). AVKLART av Anders
+      15.08 (`docs/taksonomi-verifikasjon.md` §Anders' svar): «forfalt» hentes fra **Stripe ved
+      visning** — ingen `dueDate` i basen. Ingen blokker igjen; visningsberikelsen + de to
+      flatene kan bygges nå (PP-D).
 - [~] **D3 · Ukesrapport + digest** — `agencyos-godkjenninger.html` + `playerhq-ukesdigest.html`
       + `forelder-barn.html`. BYGGET 15.08.2026: ukesrapport-kortet som leseelement i køen
       (info-kant, ingen Godkjenn-knapp), NY rute `/portal/ukesdigest`, og ukerapport-kortet i

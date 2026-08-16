@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="nb" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Plan — alle komponenter og skjermer, fra design til kode</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&family=Lora:ital,wght@0,400;0,500;1,400&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#FAF9F5;--surface:#FFFFFF;--soft:#F0EEE6;--border:#E5E2D9;--fg:#141413;--mid:#77736B;--faint:#A9A49A;--accent:#D97757;--accent-fg:#B5573A;--accent-soft:#FBEDE7;--up:#3D7A5A;--dn:#B0603F;--info:#4A6FA5;--display:'Poppins',system-ui,sans-serif;--prose:'Lora',Georgia,serif;--mono:'IBM Plex Mono',monospace}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--fg);font-family:var(--display);font-size:14px;line-height:1.55;-webkit-font-smoothing:antialiased}
+a{color:var(--accent-fg)}a:hover{color:var(--accent)}
+.wrap{max-width:1080px;margin:0 auto;padding:56px 32px 96px}
+.kicker{font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--mid)}
+h1{font-size:34px;font-weight:600;letter-spacing:-.02em;margin:10px 0 8px;text-wrap:pretty}
+h2{font-size:20px;font-weight:600;margin:56px 0 6px;letter-spacing:-.01em;scroll-margin-top:20px}
+h3{font-size:15px;font-weight:600;margin:28px 0 8px}
+p{font-family:var(--prose);font-size:14.5px;line-height:1.65;color:var(--fg);max-width:74ch;margin-bottom:10px;text-wrap:pretty}
+p.lede{font-size:16px;color:var(--mid)}
+ul,ol{margin:8px 0 12px 18px;font-family:var(--prose);font-size:14.5px;line-height:1.6;max-width:74ch}
+li{margin-bottom:5px}
+code{font-family:var(--mono);font-size:12px;background:var(--soft);padding:1px 5px;border-radius:4px}
+table{width:100%;border-collapse:collapse;font-size:12.5px;margin:14px 0 6px}
+th{text-align:left;font-family:var(--mono);font-size:9.5px;letter-spacing:.09em;text-transform:uppercase;color:var(--mid);font-weight:600;padding:0 10px 8px;border-bottom:1px solid var(--border);vertical-align:bottom}
+td{padding:9px 10px;border-bottom:1px solid var(--border);vertical-align:top}
+tr:last-child td{border-bottom:0}
+td.n,th.n{font-family:var(--mono);text-align:right;font-variant-numeric:tabular-nums}
+.tag{font-family:var(--mono);font-size:9.5px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;padding:2px 7px;border-radius:999px;white-space:nowrap;display:inline-block}
+.a{background:#E7F0EA;color:var(--up)}.b{background:var(--accent-soft);color:var(--accent-fg)}.c{background:#EDE9E1;color:var(--mid)}.x{background:#F6E4DC;color:var(--dn)}.i{background:#E8EDF5;color:var(--info)}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:18px 22px;margin:16px 0}
+.card.warn{border-left:3px solid var(--accent)}
+.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:22px 0}
+.stat{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:14px 16px}
+.stat .v{font-family:var(--mono);font-size:30px;font-weight:500;letter-spacing:-.03em;line-height:1;margin-bottom:6px}
+.stat .l{font-size:11.5px;color:var(--mid);line-height:1.35}
+.toc{display:grid;grid-template-columns:repeat(2,1fr);gap:4px 22px;margin:24px 0 0;font-size:12.5px}
+.toc a{text-decoration:none;color:var(--mid);padding:4px 0;border-bottom:1px solid var(--border);display:block}
+.toc a:hover{color:var(--fg)}
+.toc a b{color:var(--fg);font-family:var(--mono);font-size:10px;margin-right:8px}
+@media(max-width:820px){.grid{grid-template-columns:repeat(2,1fr)}.toc{grid-template-columns:1fr}.wrap{padding:36px 20px 64px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="kicker">Analyse og plan · 12. august 2026 · mot main @ 12.08</div>
+<h1>Alle komponenter og skjermer — hvor løpet står, og hva som gjenstår</h1>
+<p class="lede">Hele <code>docs/port/</code> på main er lest (nattrapport 12.08, PP-planen, checklisten, portstatus, lanseringsgjennomgangen) og holdt opp mot dette designprosjektets egen status. Konklusjonen i én setning: <b>byggefasen er i praksis ferdig — flaskehalsen er ikke lenger design eller kode, men sign-off, åtte produktbeslutninger og to bevisst utsatte spor.</b></p>
+
+<div class="toc">
+  <a href="#tall"><b>01</b>Tallgrunnlaget</a>
+  <a href="#funn"><b>02</b>Hovedfunn — hvor flaskehalsen faktisk er</a>
+  <a href="#spor"><b>03</b>Skjermsporene — status og rest</a>
+  <a href="#beslutninger"><b>04</b>Beslutningene som blokkerer</a>
+  <a href="#design"><b>05</b>Nye designleveranser (dette prosjektet)</a>
+  <a href="#komponenter"><b>06</b>Komponentbiblioteket — forbedringer og vakter</a>
+  <a href="#grunnmur"><b>07</b>Grunnmuren i koden</a>
+  <a href="#rekkefolge"><b>08</b>Anbefalt rekkefølge — tre horisonter</a>
+</div>
+
+<h2 id="tall">01 · Tallgrunnlaget</h2>
+<div class="grid">
+  <div class="stat"><div class="v">145</div><div class="l">komponenter i designsystemet, kompilert og i synk</div></div>
+  <div class="stat"><div class="v">79 + 8</div><div class="l">fasit-HTML + templates = 87 rader i checklisten</div></div>
+  <div class="stat"><div class="v">78</div><div class="l">bygget og venter pixel-sign-off <code>[~]</code> etter natten 12.08</div></div>
+  <div class="stat"><div class="v">9</div><div class="l">åpne <code>[ ]</code> — 8 er templates-validering, 1 er blokkert (WANG-innlogging)</div></div>
+  <div class="stat"><div class="v">6</div><div class="l">grønne PR-er fra natten (#415–#420), verify + 968/968 tester</div></div>
+  <div class="stat"><div class="v">7 / 2</div><div class="l">galleriets dom: GODKJENN / FIKS (én fiks alt pushet)</div></div>
+  <div class="stat"><div class="v">~100</div><div class="l">mal-varianter igjen à 15 min sjekk (W3–W5-rutene)</div></div>
+  <div class="stat"><div class="v">~59</div><div class="l">ruter i to bevisst utsatte spor: stats (~45) + drift/AgenticOS (~14)</div></div>
+</div>
+
+<h2 id="funn">02 · Hovedfunn — hvor flaskehalsen faktisk er</h2>
+<p>Bølgeplanen W1–W6 er gjennomført i design, og PP-planen (pixel-perfekt-porten) har nådd punktet der <b>ingen in-scope skjerm står ubygget</b> — nattrapporten 12.08 dokumenterer at alt som gjensto enten er bygget, verifisert i samsvar, eller blokkert av en beslutning bare Anders kan ta. Checklisten var stale (10 rader var alt merget) og er rettet.</p>
+<p>Det betyr at «utvikle og forbedre alle komponenter og skjermer» nå er fire ulike jobber, med fire ulike eiere:</p>
+<ul>
+<li><b>Sign-off-gjeld</b> — 78 skjermer står på <code>[~]</code> fordi bare Anders kan sette <code>[x]</code>. Dette er ikke arbeid, det er godkjenning: galleriet finnes, PR-ene er grønne.</li>
+<li><b>Beslutningsgjeld</b> — 8 åpne spørsmål fra natten + PR-E, PR-F og WANG-OTP. Ingen blokkerer merge av nattens PR-er, men tre av dem blokkerer hele spor.</li>
+<li><b>Designgjeld</b> — to spor uten fasit (stats, drift/AgenticOS-samleflaten) og fem fasit-filer koden har avslørt som feil eller ufullstendige. Det er dette prosjektets jobb.</li>
+<li><b>Grunnmursgjeld</b> — lanseringsgjennomgangen 06.08 fant to røde GDPR-hull og en feilfanger som bare fanger det koden velger å logge. Ikke design, men det avgjør når noe av dette kan lanseres.</li>
+</ul>
+<div class="card warn">
+<h3 style="margin-top:0">Den viktigste enkeltinnsikten</h3>
+<p style="margin-bottom:0">Systemet er nå i en tilstand der <b>mer bygging uten sign-off øker risiko i stedet for fremdrift</b>: checklisten var alt stale én gang, to sannheter om samme skjerm er en kjent feilklasse, og 6 + 4 åpne PR-er begynner å eie hverandres filer (WANG-innlogging er blokkert av nettopp det). Første prioritet er å tømme godkjenningskøen — ikke å tegne eller kode noe nytt.</p>
+</div>
+
+<h2 id="spor">03 · Skjermsporene — status og hva som faktisk gjenstår</h2>
+<table>
+<thead><tr><th>Spor</th><th>Status</th><th>Rest</th><th>Eier</th></tr></thead>
+<tbody>
+<tr><td><b>Fase 1</b> — PlayerHQ + AgencyOS kjerne, live, workbench, auth (33)</td><td><span class="tag a">Bygget</span></td><td>Sign-off; spillerprofil og trackman-detalj ligger i åpne #413/#414</td><td>Anders</td></tr>
+<tr><td><b>W1</b> — drills, tester, planer, turneringer (11)</td><td><span class="tag a">Bygget</span></td><td>Sign-off; fikser i #413</td><td>Anders</td></tr>
+<tr><td><b>W2</b> — Analysere-dybde: hull, runder, gameplan, DataGolf, TrackMan, putte (12)</td><td><span class="tag a">Bygget</span></td><td>Sign-off</td><td>Anders</td></tr>
+<tr><td><b>W3</b> — Meg, booking, talent, coach-hub (7 maler → 17 ruter)</td><td><span class="tag a">Bygget</span></td><td>Sign-off #415 + variant-pass per rute</td><td>Anders + agent</td></tr>
+<tr><td><b>W4</b> — AgencyOS-maler: godkjenninger, grupper, bookinger, planbibliotek, turneringer, oppsett (6 maler)</td><td><span class="tag b">1 fiks</span></td><td>Planbibliotek mangler kompakt mobilvisning (92 utvidede kort = 30&nbsp;000&nbsp;px). Sign-off #416 + varianter</td><td>Agent, så Anders</td></tr>
+<tr><td><b>W5</b> — marketing, auth, forelder, system (6 maler → 63 ruter)</td><td><span class="tag a">Bygget</span></td><td>Sign-off #418 + varianter; «vedlikehold» og «403» mangler ruter (spørsmål 8)</td><td>Anders</td></tr>
+<tr><td><b>W6</b> — WANG + GFGK microsites (4)</td><td><span class="tag b">1 blokkert</span></td><td>GFGK-kalender-fiksen er pushet til #419; WANG-innlogging venter OTP-beslutning + #406</td><td>Anders</td></tr>
+<tr><td><b>Templates</b> — shell-validering (8)</td><td><span class="tag c">Ikke startet</span></td><td>PP-10.1: live shells måles mot <code>templates/</code> — validering, ikke bygging</td><td>Agent</td></tr>
+<tr><td><b>Mal-varianter</b> — ~100 småruter under W3–W5</td><td><span class="tag c">Stikkprøvet</span></td><td>15 min per rute: tittel, tomtilstand, primærhandling. Føres i PP-W3/W4/W5-VARIANTS</td><td>Agent, løpende</td></tr>
+<tr><td><b>W7-stats</b> — DataGolf-produktet (~45 ruter)</td><td><span class="tag x">Uten fasit</span></td><td>Blokkert av PR-F. Trenger egen designrunde — datatung, ligner AgencyOS mer enn marketing</td><td>Dette prosjektet</td></tr>
+<tr><td><b>Drift/AgenticOS</b> (~14 ruter)</td><td><span class="tag x">Uten fasit</span></td><td>Samleflaten <code>/admin/agenticos</code> er vedtatt som NY flate — må tegnes; slug-konflikten <code>agents</code>/<code>agent-team</code> ryddes samtidig</td><td>Dette prosjektet</td></tr>
+</tbody>
+</table>
+
+<h2 id="beslutninger">04 · Beslutningene som blokkerer</h2>
+<p>Tre gamle og åtte nye. De tre gamle blokkerer hele spor; de åtte nye er små, men fem av dem avgjør om en fasit skal endres — de hører derfor hjemme i dette prosjektets kø like mye som i kodens.</p>
+<table>
+<thead><tr><th>Beslutning</th><th>Blokkerer</th><th>Konsekvens for design</th></tr></thead>
+<tbody>
+<tr><td><b>PR-F</b> — hvor bor DataGolf/stats i PlayerHQ?</td><td>Hele W7-stats (~45 ruter)</td><td>Designrunden kan ikke starte før plassering er valgt</td></tr>
+<tr><td><b>PR-E</b> — 20, 21 eller 25 testprotokoller?</td><td>Testbatteriet i Workbench i full dybde</td><td>Fasiten har ærlig plassholder; ingen tegning trengs, bare tallet</td></tr>
+<tr><td><b>WANG-innlogging</b> — OTP-e-post (fasit) eller admin-elevliste (kode)?</td><td>Siste W6-skjerm; filene eies av #406</td><td>Enten står fasiten, eller <code>fase2/wang/wang-logg-inn.html</code> tegnes om</td></tr>
+<tr><td>Meg-skjermen: kodens aldersbaserte samtykketekst er riktigere enn fasitens</td><td>—</td><td><b>Fasiten bør oppdateres</b> — koden har avslørt en reell mangel i designet</td></tr>
+<tr><td>Innboks: ti-sekunders «Angre» kan ikke bygges (ingen omvendt operasjon)</td><td>—</td><td>Fasiten bør bytte angre-løftet med løst-tilstanden koden faktisk har</td></tr>
+<tr><td>Planbibliotek: inline master-detalj vs liste→detalj; skal <code>[planId]</code> til v2?</td><td>W4-varianten</td><td>Én av delene: fasiten justeres, eller koden bygger inline-panelet</td></tr>
+<tr><td>WANG årsplan: beholde kodens rikere sidebar eller fasitens to-kolonne?</td><td>—</td><td>Nattens valg (rikere sidebar) er fornuftig — fasit bør følge etter</td></tr>
+<tr><td>GFGK: forke kalenderkomponenten med egne tokens? Utvide <code>Artikkel</code>-typen?</td><td>—</td><td>Små; artikkelfeltene (oppdatert/forfatter) står alt i fasiten</td></tr>
+</tbody>
+</table>
+
+<h2 id="design">05 · Nye designleveranser — dette prosjektets kø</h2>
+<p>I prioritert rekkefølge. 1–2 er de eneste som produserer <i>nye</i> skjermer; resten er vedlikehold av fasit som sannhetskilde — og den disiplinen er billigere enn å la app og fasit drive fra hverandre.</p>
+<ol>
+<li><b>Drift/AgenticOS-samleflaten</b> (~14 ruter) — vedtatt som ny flate. Én hub-fasit + 1–2 undermaler i W4-stil: agentliste med kjøringer (<code>agent_runs</code> har ekte data), kostnads-/modelloversikt, daglig brief. Gjenbruker QueueCard, ProvenanceDisclosure, DataTable, KpiStripe — trolig <b>null nye komponenter</b>. Kan starte nå; blokkeres ikke av PR-F.</li>
+<li><b>W7-stats</b> (~45 ruter) — etter PR-F. Egen visuell avklaring først (åpent punkt fra W5): datatunge tabeller og utforskere, nærmere AgencyOS enn marketing. Konsolideringsgate mot kode først, som i W3–W5 — anslaget er at ~45 ruter blir 5–7 maler (spillerprofil, turnering, leaderboard, sammenligning, verktøy, wrapped, quiz).</li>
+<li><b>Fasit-rettelser fra kodefunn</b> — én samlet runde: Meg-samtykketeksten, innboksens angre→løst, planbibliotekets kompakte mobilvisning (kravet fra galleriets FIKS), ev. WANG-årsplanens sidebar. Hver rettelse er liten; poenget er at fasiten forblir dom.</li>
+<li><b>System-tilstander som mønster</b> — koden har <code>not-found.tsx</code> på 6 av 455 ruter (P4 i lanseringsgjennomgangen). Fasiten <code>system-tilstander.html</code> finnes alt; leveransen er å få den vedtatt som ett globalt 404/500/403-mønster i rot-layoutene, ikke per rute.</li>
+</ol>
+
+<h2 id="komponenter">06 · Komponentbiblioteket — forbedringer og vakter</h2>
+<p>Biblioteket er i god stand: 145 komponenter, 0 ulagrede klassenavn, fokuskontrakten delt som kode. Restansene er få og kjente:</p>
+<table>
+<thead><tr><th>Restanse</th><th>Type</th><th>Aktør</th></tr></thead>
+<tbody>
+<tr><td><b>Port A-krav 2</b> — craft-måling mot referanse-HTML er aldri utført av noen som kunne se den</td><td>Verifisering</td><td>Verifikatør, alene</td></tr>
+<tr><td><b>DispersionMap</b> — baseline-ellipse/målsone-utvidelsen mangler spesimenkort</td><td>Dokumentasjon</td><td>Forfatter + verifikatør</td></tr>
+<tr><td><b>K2</b> — eier kort-chromen komponenten eller konsumenten (StatTile-spørsmålet)?</td><td>Beslutning</td><td>Anders</td></tr>
+<tr><td><b>LFaseBadge</b> — konflikt med Bølge 1-fjerningen av L-faser; bruk avventer eier</td><td>Beslutning</td><td>Anders</td></tr>
+<tr><td><b>Klasseinventaret</b> — beregnet 345/0 etter Input-slettingen, ikke målt på nytt</td><td>Måling</td><td>Verifikatør</td></tr>
+</tbody>
+</table>
+<p><b>Vaktene i koden er den reelle forbedringen.</b> Designregler uten håndheving forfaller (P5-funnet: 280 sider kunne mangle kolonnebredde uten at noen merket det). Det som bør stå i CI før variant-utrullingen fullføres:</p>
+<ul>
+<li>CTA-lint (finnes) + token-gate (finnes) — behold, ikke svekk.</li>
+<li><b>Bredde-gate:</b> feile på <code>&lt;V2Shell&gt;</code> uten eksplisitt bredde — lukker P5.</li>
+<li><b><code>data-paper-slug</code>-krav</b> på hver eierkomponents rot (D11) — gjør galleriet kjørbart per slug for alltid.</li>
+<li><b>Screenshot-CI</b> per slug m390/d1280 mot visual seeds — etter at checklisten er grønn, så regresjon fanges maskinelt i stedet for med nye netter.</li>
+<li><b>Fiktive navn i preview-data</b> — PII-hendelsen fra natten (ekte elevnavn på mindreårige i skjermbilder) gjentar seg ellers ved neste galleri.</li>
+</ul>
+
+<h2 id="grunnmur">07 · Grunnmuren i koden — det som avgjør lansering</h2>
+<p>Utenfor design, men to av funnene fra 06.08 er blokkerende og ett er oransje: GDPR-sletting som ikke kaskaderer til Auth/Storage/Stripe (B1 — helsedata om mindreårige), ufullstendig dataeksport (B2), og en feilfanger som bare fanger logget feil (B3 — P1001-hendelsen som holdt prod nede i ~3 uker ville ikke blitt fanget i dag heller). I tillegg: CI står (P2), main mangler branch protection (P3) — og uten de to er hele sign-off-disiplinen én travel dag unna å ryke. Disse bør gå parallelt med sign-off-uka, og B1 krever en våken person, ikke en nattagent.</p>
+
+<h2 id="rekkefolge">08 · Anbefalt rekkefølge — tre horisonter</h2>
+<h3>Nå (denne uka) — tøm køen, ikke bygg nytt</h3>
+<ol>
+<li>Galleri-gjennomgang → GODKJENN/FIKS per skjerm → merge #415–#420, rydd #413/#414/#406/#382.</li>
+<li>Svar de åtte spørsmålene + PR-E. Fem av dem lukker fasit-rettelsene i §05.3 samtidig.</li>
+<li>Planbibliotekets mobilfiks (eneste gjenværende FIKS) + WANG-preview med fiktive navn.</li>
+<li>Parallelt, av menneske: B1/B3 fra grunnmuren; CI + branch protection i gang.</li>
+</ol>
+<h3>Neste 2–3 uker — lukk planen mekanisk</h3>
+<ol>
+<li>Variant-utrulling: ~100 småruter à 15 min, løpende i PP-W3/W4/W5-VARIANTS.</li>
+<li>PP-10: templates-validering, smoke, stikkprøver, prod-verify, Acuity-redirect ut (PP-10.7).</li>
+<li>Vaktene fra §06 inn i CI; deretter screenshot-CI mot seeds.</li>
+<li>Designprosjektet tegner drift/AgenticOS-samleflaten (§05.1) mens koden lukker varianter.</li>
+</ol>
+<h3>Etter COMPLETE — de to siste sporene</h3>
+<ol>
+<li>PR-F avgjøres → W7-stats: visuell avklaring, konsolideringsgate, 5–7 maler, port.</li>
+<li>Komponentbibliotekets restanser (§06-tabellen) tas i én verifikatørrunde.</li>
+<li>Kvalitetsheving fra lanseringsgjennomgangens del 4: domenetestdekning, a11y på ekte enhet, IA-konsolidering av de 8 konkurrerende «venter på deg»-flatene.</li>
+</ol>
+
+<div class="card">
+<h3 style="margin-top:0">Én setning</h3>
+<p style="margin-bottom:0">Godkjenn det som er bygget, ta de elleve beslutningene, la agentene lukke varianter og regresjon — og bruk dette prosjektet til de to tingene bare det kan gjøre: tegne drift- og stats-sporene, og holde fasiten sann når koden lærer oss noe.</p>
+</div>
+
+</div>
+</body>
+</html>
