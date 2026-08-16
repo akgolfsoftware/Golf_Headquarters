@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
+import { testTilgangWhere } from "@/lib/portal-tester/test-tilgang";
 import { triggerTestAgent } from "@/lib/agents/triggers";
 import { syncTalentEtterTest } from "@/lib/talent/test-sync";
 
@@ -48,8 +49,10 @@ export async function logTest(input: unknown) {
   }
   const data = parsed.data;
 
-  const test = await prisma.testDefinition.findUnique({
-    where: { id: data.testId },
+  // T5: samme tilgangsregel som katalogen — spilleren logger kun mot
+  // CANON-tester og egne isCustom-tester (K6-klassen tettet også her).
+  const test = await prisma.testDefinition.findFirst({
+    where: { id: data.testId, AND: [testTilgangWhere(user.id)] },
     select: { id: true, name: true },
   });
   if (!test) throw new Error("Test ikke funnet");
