@@ -18,12 +18,13 @@ export default async function MegPage() {
   if (!user || user.role !== "ADMIN") notFound();
 
   const repo = lagPrismaRepository();
-  const saker = await repo.hentSaker();
+  const [saker, systemHelse] = await Promise.all([repo.hentSaker(), repo.hentSystemHelse()]);
 
   return (
     <MegApp
       brukernavn={user.name ?? "Anders"}
       saker={saker}
+      systemHelse={systemHelse}
       naServertid={new Date().toISOString()}
       godkjennSak={godkjennSak}
       avvisSak={avvisSak}

@@ -31,6 +31,8 @@ import { DatabaseSync } from "node:sqlite";
 import { homedir } from "node:os";
 import { join } from "node:path";
 import { prisma } from "@/lib/prisma";
+import { runAgent } from "@/lib/agents/agent-runner";
+import { JARVIS_AGENT_NAVN } from "@/lib/jarvis/agent-navn";
 import { SAKER_SLA_TIMER } from "./env";
 import type { $Enums } from "@/generated/prisma/client";
 
@@ -104,8 +106,14 @@ async function sendTelegramOppsummering(tekst: string): Promise<void> {
   }
 }
 
-async function main() {
-  const naa = new Date();
+/**
+ * Selve innsamlingen — kjøres inne i runAgent() slik at resultatet/feilen
+ * logges til AgentRun (`jarvis-imessage-innsamling`), som Maskinrommet-
+ * skjermen leser helsen sin fra (src/lib/jarvis/repository.ts). Kaster på
+ * feil som bør telle som en FEILET-kjøring — runAgent fanger, logger
+ * AgentRun status ERROR og rethrower til main().
+ */
+async function samleInn(naa: Date) {
   const cutoffApple = Math.floor(
     (naa.getTime() - TO_DAGER_MS) / 1000 - APPLE_EPOKE_FORSKYVNING_SEKUNDER,
   ) * 1_000_000_000;
@@ -114,14 +122,10 @@ async function main() {
   try {
     db = new DatabaseSync(CHAT_DB_PATH, { readOnly: true });
   } catch (err) {
-    console.error(
-      "[saker-imessage] Kan ikke åpne chat.db — mangler sannsynligvis Full Disk Access. Avbryter:",
-      err instanceof Error ? err.message : err,
-    );
     await sendTelegramOppsummering(
       "⚠️ Saker-innsamler (iMessage/SMS) kunne ikke åpne Meldinger-databasen. Full Disk Access mangler trolig — se README-sjekkliste.",
     );
-    return;
+    throw err;
   }
 
   let rader: ChatDbRad[] = [];
@@ -137,10 +141,9 @@ async function main() {
     `);
     rader = stmt.all(cutoffApple) as unknown as ChatDbRad[];
   } catch (err) {
-    console.error("[saker-imessage] Spørring mot chat.db feilet:", err instanceof Error ? err.message : err);
     await sendTelegramOppsummering("⚠️ Saker-innsamler (iMessage/SMS) — spørring mot chat.db feilet. Sjekk manuelt.");
     db.close();
-    return;
+    throw err;
   }
   db.close();
 
@@ -197,6 +200,12 @@ async function main() {
     `${hoppetOverUleselig} uleselig innhold · ${feilet} feilet.`;
   console.log(`[saker-imessage] ${oppsummering}`);
   await sendTelegramOppsummering(oppsummering);
+
+  return { output: { nyeSaker, hoppetOverDuplikat, hoppetOverUleselig, feilet } };
+}
+
+async function main() {
+  await runAgent(JARVIS_AGENT_NAVN.imessage, null, () => samleInn(new Date()));
 }
 
 main()

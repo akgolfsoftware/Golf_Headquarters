@@ -10,7 +10,7 @@
 // spillerdata») er dermed holdt, ikke bare unngått.
 import type { Sak } from "@/generated/prisma/client";
 import { SakKanal, SakStatus } from "@/generated/prisma/enums";
-import type { Avvik, InnsamlerStatus, LoggRad } from "@/lib/jarvis/types";
+import type { Avvik, InnsamlerStatus, LoggRad, SystemHelse } from "@/lib/jarvis/types";
 
 const NA = () => new Date();
 const timerFraNa = (t: number) => new Date(NA().getTime() + t * 60 * 60 * 1000);
@@ -178,17 +178,29 @@ export const demoLoggRader: LoggRad[] = demoSaker
   }));
 
 export const demoInnsamlere: InnsamlerStatus[] = [
-  { id: "gmail", navn: "Gmail", helse: "OK", sistKjort: timerFraNa(-0.1).toISOString(), feilmelding: null },
-  { id: "imessage", navn: "iMessage/SMS", helse: "OK", sistKjort: timerFraNa(-0.2).toISOString(), feilmelding: null },
   {
-    id: "telegram",
-    navn: "Telegram",
-    helse: "FEILET",
-    sistKjort: timerFraNa(-6).toISOString(),
-    feilmelding: "Webhook svarte 401 — sjekk MEG_TELEGRAM_ALLOWED_CHAT_ID.",
+    id: "gmail",
+    navn: "Gmail",
+    helse: "OK",
+    sistKjort: timerFraNa(-0.1).toISOString(),
+    feilmelding: null,
+    frekvens: "hvert 10. min",
   },
-  { id: "kalender", navn: "Kalendervakt", helse: "KJORER", sistKjort: null, feilmelding: null },
+  {
+    id: "imessage",
+    navn: "iMessage/SMS",
+    helse: "FEILET",
+    sistKjort: timerFraNa(-3.5).toISOString(),
+    feilmelding: "Full Disk Access mangler — chat.db kan ikke åpnes.",
+    frekvens: "manuell (ingen LaunchAgent ennå)",
+  },
 ];
+
+export const demoSystemHelse: SystemHelse = {
+  innsamlere: demoInnsamlere,
+  aiKostSum: { inputTokens: 84213, outputTokens: 19042, costUsd: 0.62, antallKall: 11 },
+  lokalHelseTilgjengelig: false,
+};
 
 /** Repository-grensesnittet UI-en programmerer mot — bytt implementasjon uten UI-endring. */
 export interface JarvisRepository {
@@ -196,7 +208,7 @@ export interface JarvisRepository {
   hentSak(id: string): Promise<Sak | null>;
   hentAvvik(): Promise<Avvik[]>;
   hentLogg(): Promise<LoggRad[]>;
-  hentInnsamlere(): Promise<InnsamlerStatus[]>;
+  hentSystemHelse(): Promise<SystemHelse>;
 }
 
 /** Demo-implementasjon — statisk fixture-data, ingen nettverk/DB. */
@@ -214,8 +226,8 @@ export function lagDemoRepository(): JarvisRepository {
     async hentLogg() {
       return demoLoggRader;
     },
-    async hentInnsamlere() {
-      return demoInnsamlere;
+    async hentSystemHelse() {
+      return demoSystemHelse;
     },
   };
 }

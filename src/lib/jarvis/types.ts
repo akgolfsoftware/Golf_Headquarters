@@ -36,7 +36,8 @@ export interface LoggRad {
   sakId: string | null;
 }
 
-export type InnsamlerHelse = "OK" | "FEILET" | "KJORER";
+/** UKJENT = ingen AgentRun-rad funnet ennå (aldri kjørt, eller ikke instrumentert). */
+export type InnsamlerHelse = "OK" | "FEILET" | "KJORER" | "UKJENT";
 
 export interface InnsamlerStatus {
   id: string;
@@ -45,4 +46,15 @@ export interface InnsamlerStatus {
   helse: InnsamlerHelse;
   sistKjort: string | null; // ISO
   feilmelding: string | null;
+  /** Kjøreplan i klartekst, f.eks. «hvert 10. min» — vises uansett helse. */
+  frekvens: string | null;
+}
+
+/** Maskinrommets «Agent og kjøretid»-gruppe — helsesignaler Vercel kan/ikke kan lese selv. */
+export interface SystemHelse {
+  innsamlere: InnsamlerStatus[];
+  /** Sum siste 7 dager for Jarvis-relaterte agentnavn (agentName som starter med «jarvis»). Tom = ingen kostnad logget ennå. */
+  aiKostSum: { inputTokens: number; outputTokens: number; costUsd: number | null; antallKall: number };
+  /** Ollama/LaunchAgent-helse kan aldri leses fra Vercel (Tailscale-only, se gotchas.md) — alltid "ukjent lokalt" herfra. */
+  lokalHelseTilgjengelig: false;
 }

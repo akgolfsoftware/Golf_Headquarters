@@ -26,20 +26,24 @@ import { EnTingNaKort } from "@/components/meg/EnTingNaKort";
 import { MegPalett } from "@/components/meg/MegPalett";
 import { SakerArtefakt } from "@/components/meg/artefakter/SakerArtefakt";
 import { SakArtefakt } from "@/components/meg/artefakter/SakArtefakt";
+import { MaskinromArtefakt } from "@/components/meg/artefakter/MaskinromArtefakt";
 import type { Sak } from "@/generated/prisma/client";
 import { SakStatus } from "@/generated/prisma/enums";
+import type { SystemHelse } from "@/lib/jarvis/types";
 
 type MutasjonSvar = { ok: true } | { ok: false; feil: string };
 
 export function MegApp({
   brukernavn,
   saker,
+  systemHelse,
   naServertid,
   godkjennSak,
   avvisSak,
 }: {
   brukernavn: string;
   saker: Sak[];
+  systemHelse: SystemHelse;
   /** ISO-streng fra serveren — unngår klient/server-hydreringsavvik (Oslo vs UTC, samme mønster som KonsollChat sin `klokke`-prop). */
   naServertid: string;
   godkjennSak: (id: string) => Promise<MutasjonSvar>;
@@ -92,6 +96,8 @@ export function MegApp({
     artefaktInnhold = (
       <SakArtefakt key={valgtSak?.id ?? "none"} sak={valgtSak} onGodkjenn={godkjennSak} onAvvis={avvisSak} />
     );
+  } else if (activeArtifact === "maskinrom") {
+    artefaktInnhold = <MaskinromArtefakt data={systemHelse} na={na} />;
   } else {
     artefaktInnhold = (
       <InspektorTom
