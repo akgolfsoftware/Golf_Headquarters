@@ -811,3 +811,39 @@ html[data-v2-tema="dark"] {
 html[data-v2-tema="light"] {
   color-scheme: light;
 }
+
+/* ---------- «Vri telefonen»-overlay (beslutning 16.08.2026, beslutninger.md §PP-A) ----------
+   Mobil i liggende (Safari-fane kan ikke låses til portrett — manifestets
+   orientation: portrait gjelder kun installert PWA): dekk flaten med en rolig
+   Paper-melding. Høyde-gaten (≤ 500px) treffer telefoner på siden, aldri iPad. */
+.ak-vri-telefonen {
+  display: none;
+}
+@media screen and (orientation: landscape) and (max-height: 500px) {
+  .ak-vri-telefonen {
+    position: fixed;
+    inset: 0;
+    z-index: 10000; /* over cookie-banneret (9999) — i liggende er dette hele UI-et */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 24px;
+    text-align: center;
+    background: var(--p-bg);
+    color: var(--p-fg);
+  }
+}
+.ak-vri-telefonen-tittel {
+  font-family: var(--p-font-sans);
+  font-weight: 600;
+  font-size: 17px;
+  margin: 4px 0 0;
+}
+.ak-vri-telefonen-tekst {
+  font-family: var(--p-font-sans);
+  font-size: 13.5px;
+  color: var(--p-muted);
+  margin: 0;
+}
