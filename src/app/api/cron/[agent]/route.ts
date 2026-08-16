@@ -55,6 +55,7 @@ import { runWagrSync } from "@/lib/agents/wagr-sync";
 import { runLonnSjekkliste, runLonnPurring } from "@/lib/agents/tripletex-lonn-agent";
 import { runMaanedsavslutning } from "@/lib/agents/tripletex-maanedsavslutning-agent";
 import { runBallplukkingSjekk } from "@/lib/agents/gfgk-ballplukking-agent";
+import { runSyncVaktbikkje } from "@/lib/agents/sync-vaktbikkje";
 import { runVaskelisteSjekk } from "@/lib/agents/mulligan-vaskeliste-agent";
 import { rateLimit } from "@/lib/rate-limit";
 import { avvisUgyldigCron } from "@/lib/cron/auth";
@@ -128,6 +129,8 @@ const AGENTS: Record<string, () => Promise<unknown>> = {
   "gfgk-ballplukking-sjekk": runBallplukkingSjekk,
   // Mulligan vaskeliste-rotasjon (mandag) — se .claude/rules/mulligan-drift.md.
   "mulligan-vaskeliste-sjekk": runVaskelisteSjekk,
+  // T7 — vaktbikkje for data-syncene (mandag, etter alle mandagssyncene).
+  "sync-vaktbikkje": runSyncVaktbikkje,
 };
 
 export async function GET(

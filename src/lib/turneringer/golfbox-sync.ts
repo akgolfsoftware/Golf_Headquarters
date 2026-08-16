@@ -31,6 +31,7 @@ const GOLFBOX_ORIGINS = [
   "SRIXON",
   "NORGESCUP",
   "OLYO",
+  "NARVESEN",
   "MIDAM",
   "SENIOR",
   "NM",
