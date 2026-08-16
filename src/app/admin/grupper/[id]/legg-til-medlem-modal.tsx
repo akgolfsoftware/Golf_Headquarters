@@ -2,10 +2,10 @@
 
 import { useEffect, useMemo, useRef, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { Search, UserPlus, X } from "lucide-react";
+import { Mail, Search, UserPlus, X } from "lucide-react";
 
 import { avatarBg } from "@/lib/avatar-colors";
-import { leggTilGruppemedlem } from "./actions";
+import { inviterSpillereTilGruppe, leggTilGruppemedlem } from "./actions";
 
 export type Kandidat = {
   id: string;
@@ -42,6 +42,13 @@ export function LeggTilMedlemModal({
   const [feil, setFeil] = useState<string | null>(null);
   const [sok, setSok] = useState("");
   const [valgt, setValgt] = useState<string | null>(null);
+
+  // «Inviter på e-post» (plan T3) — batch-invitasjon; nye e-poster får
+  // pending TalentHQ-profil (gratis låst testprofil) + invitasjons-e-post.
+  const [inviterTekst, setInviterTekst] = useState("");
+  const [inviterStatus, setInviterStatus] = useState<string | null>(null);
+  const [inviterFeil, setInviterFeil] = useState<string[]>([]);
+  const [inviterPending, startInviterTransition] = useTransition();
 
   useEffect(() => {
     dialogRef.current?.showModal();
@@ -86,6 +93,34 @@ export function LeggTilMedlemModal({
       }
       router.refresh();
       lukk();
+    });
+  }
+
+  function sendInvitasjoner() {
+    const eposter = inviterTekst
+      .split(/[\s,;]+/)
+      .map((e) => e.trim())
+      .filter(Boolean);
+    if (eposter.length === 0) {
+      setInviterStatus(null);
+      setInviterFeil(["Oppgi minst én e-postadresse."]);
+      return;
+    }
+    setInviterStatus(null);
+    setInviterFeil([]);
+    startInviterTransition(async () => {
+      const res = await inviterSpillereTilGruppe(groupId, eposter);
+      if (!res.ok) {
+        setInviterFeil([res.feil]);
+        return;
+      }
+      const deler: string[] = [];
+      if (res.lagtTil.length > 0) deler.push(`${res.lagtTil.length} lagt til`);
+      if (res.invitert.length > 0) deler.push(`${res.invitert.length} invitert`);
+      setInviterStatus(deler.length > 0 ? deler.join(" · ") : null);
+      setInviterFeil(res.feilet.map((f) => `${f.epost}: ${f.feil}`));
+      if (res.feilet.length === 0) setInviterTekst("");
+      router.refresh();
     });
   }
 
@@ -201,6 +236,50 @@ export function LeggTilMedlemModal({
             {feil}
           </div>
         )}
+
+        {/* Inviter på e-post (plan T3) — funksjonell inngang, gjenbruker
+            modalens eksisterende idiom. Skjermen skal gjennom fasit-runde. */}
+        <div className="mt-6 border-t border-border pt-4">
+          <div className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
+            Eller inviter på e-post
+          </div>
+          <p className="mt-1 text-xs text-muted-foreground">
+            Nye e-poster får en gratis testprofil (testbatteri, stats og
+            SG-registrering) og invitasjon på e-post.
+          </p>
+          <textarea
+            value={inviterTekst}
+            onChange={(e) => setInviterTekst(e.target.value)}
+            placeholder={"navn@klubb.no, navn2@klubb.no …"}
+            rows={2}
+            className="mt-2 w-full rounded-md border border-input bg-card px-3 py-2 text-sm text-foreground outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:border-ring focus:ring-2 focus:ring-ring/30"
+            aria-label="E-postadresser som skal inviteres"
+          />
+          {inviterStatus && (
+            <div className="mt-2 rounded-md border border-border bg-secondary px-3 py-2 text-xs text-foreground">
+              {inviterStatus}
+            </div>
+          )}
+          {inviterFeil.length > 0 && (
+            <div
+              role="alert"
+              className="mt-2 rounded-md border border-destructive/30 bg-destructive/10 px-3 py-2 text-xs text-destructive"
+            >
+              {inviterFeil.map((f) => (
+                <div key={f}>{f}</div>
+              ))}
+            </div>
+          )}
+          <button
+            type="button"
+            onClick={sendInvitasjoner}
+            disabled={inviterPending}
+            className="mt-2 inline-flex items-center gap-1.5 rounded-md border border-border bg-card px-4 py-2 text-[13px] font-medium text-foreground transition-colors hover:border-primary disabled:cursor-not-allowed disabled:opacity-40"
+          >
+            <Mail className="h-3.5 w-3.5" strokeWidth={1.75} />
+            {inviterPending ? "Inviterer…" : "Send invitasjon"}
+          </button>
+        </div>
 
         {/* Footer */}
         <div className="mt-6 flex items-center justify-end gap-2 border-t border-border pt-4">
