@@ -6,6 +6,9 @@ import { prisma } from "@/lib/prisma";
 import { audit } from "@/lib/audit";
 import { registrerHelseSamtykke } from "@/lib/health/samtykke";
 import { erHelseSamtykkeType } from "@/lib/health/samtykke-regler";
+import { registrerDelingsSamtykke } from "@/lib/deling/samtykke";
+import { erDelingScope } from "@/lib/deling/samtykke-regler";
+import { aktivtSpillerMedlemskapWhere } from "@/lib/domain/grupper";
 
 /**
  * Lagre samtykker for et barn. Krever at innloggede bruker er foresatt
@@ -99,6 +102,68 @@ export async function settHelseSamtykkeForBarn(
   revalidatePath("/forelder/samtykke");
   revalidatePath(`/admin/spillere/${childId}`);
 
+  return { ok: true };
+}
+
+/**
+ * Foresatt gir eller trekker barnets delingssamtykke til tredjepart
+ * (Team Norway/WANG — plan T8). Krever godkjent ParentRelation. Append-only
+ * rad med gittAvRolle=FORESATT og gittAvUserId=foresattes id — for mindreårige
+ * (requiresGuardianConsent) er dette den ENESTE raden som teller i
+ * ekstern-leser-scopet.
+ */
+export async function settDelingsSamtykkeForBarn(
+  childId: string,
+  scope: string,
+  mottakerGruppeId: string,
+  gitt: boolean,
+): Promise<{ ok: true } | { ok: false; feil: string }> {
+  const user = await requirePortalUser({ allow: ["PARENT", "ADMIN"] });
+
+  if (user.role === "PARENT") {
+    const relasjon = await prisma.parentRelation.findFirst({
+      where: { parentId: user.id, childId, approved: true },
+    });
+    if (!relasjon) {
+      return { ok: false, feil: "Du er ikke godkjent foresatt for dette barnet" };
+    }
+  }
+
+  if (!erDelingScope(scope)) {
+    return { ok: false, feil: "Ukjent samtykketype." };
+  }
+
+  // Mottakergruppen må være en gruppe barnet faktisk er aktivt medlem i.
+  const medlemskap = await prisma.groupMember.findFirst({
+    where: {
+      ...aktivtSpillerMedlemskapWhere(),
+      userId: childId,
+      groupId: mottakerGruppeId,
+    },
+    select: { id: true },
+  });
+  if (!medlemskap) {
+    return { ok: false, feil: "Barnet er ikke medlem av denne gruppen." };
+  }
+
+  try {
+    await registrerDelingsSamtykke({
+      userId: childId,
+      scope,
+      mottakerGruppeId,
+      gitt,
+      gittAvUserId: user.id,
+      gittAvRolle: "FORESATT",
+    });
+  } catch (err) {
+    return {
+      ok: false,
+      feil: err instanceof Error ? err.message : "Kunne ikke lagre samtykket.",
+    };
+  }
+
+  revalidatePath("/forelder/samtykke");
+  revalidatePath("/portal/meg/innstillinger/personvern");
   return { ok: true };
 }
 
