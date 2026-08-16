@@ -9,6 +9,7 @@ import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { syncV2FromPlanSessionId } from "@/lib/workbench/v2-sync";
+import { varsleCoachOmPlanendring } from "@/lib/notifications/plan-endring";
 import { z } from "zod";
 import type {
   Axis,
@@ -298,6 +299,8 @@ export async function updateSessionTime(formData: FormData): Promise<{
     data: { scheduledAt: new Date(scheduledAt), durationMin },
   });
   await syncV2FromPlanSessionId(sessionId);
+  // G4: valgt coach varsles i cockpiten (batched per Oslo-dag, kaster aldri).
+  await varsleCoachOmPlanendring(user.id, "FLYTTET");
 
   revalidatePath("/portal/planlegge");
   return { ok: true };
@@ -360,6 +363,7 @@ export async function createSession(formData: FormData): Promise<{
     select: { id: true },
   });
   await syncV2FromPlanSessionId(session.id);
+  await varsleCoachOmPlanendring(user.id, "OPPRETTET");
 
   revalidatePath("/portal/planlegge");
   return { ok: true, sessionId: session.id };
@@ -443,6 +447,7 @@ export async function addStandardSessionToCalendar(formData: FormData): Promise<
     select: { id: true },
   });
   await syncV2FromPlanSessionId(session.id);
+  await varsleCoachOmPlanendring(user.id, "OPPRETTET");
 
   revalidatePath("/portal/planlegge");
   return { ok: true, sessionId: session.id };
@@ -468,6 +473,7 @@ export async function setActivePlan(planId: string): Promise<{ ok: boolean }> {
     where: { id: planId },
     data: { isActive: true },
   });
+  await varsleCoachOmPlanendring(user.id, "PLANBYTTE");
 
   revalidatePath("/portal/planlegge");
   return { ok: true };

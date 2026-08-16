@@ -26,6 +26,12 @@ export type NotifyInput = {
   title: string;
   body?: string;
   link?: string;
+  /**
+   * Batching (G4): grupperingsnøkkel for samlevarsler. Kallere som batcher
+   * (se lib/notifications/plan-endring.ts) slår selv opp eksisterende ulest
+   * rad på nøkkelen og inkrementerer count — notify() oppretter kun ny rad.
+   */
+  groupKey?: string;
 };
 
 /**
@@ -40,6 +46,7 @@ export async function notify(input: NotifyInput): Promise<void> {
         title: input.title,
         body: input.body ?? null,
         link: input.link ?? null,
+        groupKey: input.groupKey ?? null,
       },
     });
   } catch (error) {
