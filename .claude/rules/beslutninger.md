@@ -16,13 +16,32 @@ Gjelder til Anders endrer dem.
 
 ## Beslutningene (august 2026)
 
+- **Beslutningsgaten PP-A besvart (Anders 2026-08-16, i økt — låser pixel-portens systemfikser):**
+  - **A1 · Admin-rail = FASE2-railen.** Fase2-fasitenes rail (7 punkter, Cockpit/Stall/Plan…,
+    fasitens casing) vinner over fase1-railen/dagens kode. Implementeres én gang i `V2Shell`
+    (PP-B1) — alle admin-flater arver. Fase1-fasitenes rail-avvik er dermed avgjort, ikke en
+    konflikt: admin-skjermer måles heretter mot fase2-skallet.
+  - **A2 · Master–detalj = fasitens inspektørpanel.** Godkjenninger, planbibliotek og bookinger
+    bygger 380px-inspektørpanelet (desktop) slik fasitene tegner det; mobil beholder
+    liste→detalj. Ikke tegn fasitene om.
+  - **A3 · Clay-normen bekreftet.** Clay `#D97757` KUN i «Én ting nå»-kortet + fokus-tilstander.
+    Skjermens øvrige handlinger («Ny plan», «Ny booking» osv.) er ink-knapper i topplinjen.
+    `enTing`-som-liste-CTA er et brudd — sweep (PP-B2) + variant-dokumentene rettes.
+  - **A4 · Innlogging/auth = LYS** (Paper `#FAF9F5`, slik prod er — målt i #484).
+  - **Desktop-bredde = fasitens d1280 per skjerm.** «Full bredde» betyr å bygge nøyaktig
+    fasitens desktop-visning (paneler/kolonner der fasiten har det) — aldri strekke innhold
+    utover det fasiten tegner, og aldri smalere enn fasiten.
+  - **iPhone landscape = «Vri telefonen»-overlay.** Mobil i liggende (Safari-fane) får et
+    Paper-stilet overlay; innholdet designes alltid for stående. PWA-manifestets
+    `orientation: "portrait"` består (og legges også i team-wang/gfgk-manifestene).
+    Overlayet treffer kun lav høyde (telefon-landscape), aldri iPad.
 - **Navigasjon følger Paper: FIRE PlayerHQ-faner (Anders 2026-08-05).** «I dag · Plan ·
   Analyse · Meg» — per `fase1/KONTRAKT.md` §10. Fanen **«Gjør» utgår som egen fane**;
   gjennomføring (live-økt, runde, test) åpnes fra Hjem eller Plan, ikke fra bunn-navigasjonen.
   Koden har i dag fem faner i `src/components/v2/shell.tsx` (`PORTAL_TABS`) og må bygges om.
   Bakgrunn: navnene spriker i tre kilder (KONTRAKT §10 · fasit-HTML · `kodeordre-agencyos.md`),
   og skallet ligger på hver eneste skjerm — spriket måtte lukkes før skjerm-PR-ene kunne kjøre.
-  AgencyOS-railen avklares tilsvarende når steg 8 starter (koden: Hjem/Stall/Kalender/Kø/Innsikt).
+  AgencyOS-railen er nå avklart: se **A1-beslutningen 2026-08-16** øverst (fase2-railen vinner).
 - **Kort-ramme (K2): golfdata-kortene er rammeløse (Anders 2026-08-05).** `Panel` eier flaten;
   kortene er innholdslag uten egen ramme. Dette er allerede byggets standard i alle 12
   golfdata-komponenter, så beslutningen bekrefter tilstanden framfor å endre den. Aldri legg

@@ -82,20 +82,17 @@ avviklet designprosjekt. Ligger i git-historikken.)
 - **Next.js 16.2.6** (App Router, Turbopack, TS strict) + **React 19.2.4** + Vercel. Node 24 i CI.
 - **Prisma 7.8** + `@prisma/adapter-pg` + **Supabase** Postgres (RLS) — Supabase Auth (Google + e-post/passord).
 - **Tailwind CSS v4** (CSS-first `@theme`, ingen config-fil) — uttrykk via `src/app/globals.css`.
-- **Fonter (verifisert mot kode 2026-08-06 — dette avløser tidligere «fontbyttet er ikke gjennomført»):**
+- **Fonter (re-verifisert mot kode 2026-08-16 — fontporten er GJENNOMFØRT):**
   Paper-fasiten er **Poppins** (UI/titler) + **Lora** (prosa/AI-svar) + **IBM Plex Mono** (tall). Alle tre
   lastes i `src/app/layout.tsx` og eksponeres som `--font-poppins`/`--font-lora`/`--font-ibm-plex-mono`,
   videre som `--p-font-sans`/`--p-font-serif`/`--p-font-mono` i `src/styles/paper-tokens.css`.
-  **Byttet er gjort i de globale tokenene** (`src/app/globals.css`): `--font-sans`/`--font-display` →
-  Poppins, `--font-mono` → IBM Plex Mono (kommentert i koden som gjort 2026-08-06).
-  **Byttet er IKKE fullført i alle scoped stylesheets** — disse hardkoder fortsatt gamle fonter direkte
-  i stedet for å lese `--font-sans`/`--font-display`/`--font-mono`: `src/styles/golfdata-tokens.css`,
-  `src/components/hubs/hubs.css`, `src/components/planlegge-v2/styles.css`,
-  `src/components/teknisk-plan/*.css`, `src/components/onboarding/onboarding.css`, samt inline
-  `fontFamily`-styling i bl.a. `admin-hero.tsx`, `player-hero.tsx`, `cookie-banner.tsx`,
-  `onboard/klubb/klubb-wizard.tsx`, `onboard/coach/coach-wizard.tsx`. Den eldre `--font-ui`-tokenen
-  (fortsatt Inter) brukes fortsatt bredt i `golfdata/`- og `workbench-hybrid/`-komponenter.
-  Åpent punkt i porten: migrer disse til de nye tokenene skjerm for skjerm, ikke i én stor commit.
+  De globale tokenene (`--font-sans`/`--font-display`/`--font-mono` i `globals.css`) OG de scoped
+  stylesheetene (`golfdata-tokens.css`, `onboarding.css`, wizardene) leser alle Paper-fontene;
+  `--font-ui` er broet til `var(--p-ui)` (Poppins). Tidligere avvikslister her (hubs.css,
+  admin-hero/player-hero m.fl.) gjaldt filer som ikke lenger finnes — ikke gjenopprett dem.
+  Kjente småresten (ufarlige): `teknisk-plan.css:16` har Inter kun som *fallback* bak
+  `var(--font-sans)`; `klubb-wizard.tsx:676` har én `fontFamily="Inter"` i en SVG-illustrasjon;
+  `src/components/planlegge-v2/` er død kode uten konsumenter (slettes i PP-B5).
   **Inter Tight er fjernet** — ikke gjeninnfør. Bygg nytt mot Paper-fasiten (dvs. de globale tokenene,
   aldri `--font-familjen-grotesk`/`--font-jetbrains-mono`/`--font-inter` direkte i ny kode).
 - **Lucide React** — eneste ikon-bibliotek. **npm** — pakkebehandler.

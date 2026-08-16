@@ -1,9 +1,11 @@
 # Paper zip checklist — kryss når DONE (pixel m390 + d1280)
 
-> Oppdatert: **2026-08-09** etter sync av **Claude Paper (2).zip** → `designsystem/paper/`  
-> **Styrende plan:** `docs/port/PIXEL-PERFECT-PLAN-COMPLETE.md` (PP-0…PP-10 → 79/79 `[x]`)  
-> Gap-rapport: `PAPER-ZIP2-SYNC-2026-08-09.md`  
-> Skjermer **uten** fasit: `PAPER-PATTERN-CHECKLIST.md`
+> Oppdatert: **2026-08-16** etter full resynk av **AK Golf HQ — Claude Paper.zip (16.08)**
+> → `designsystem/paper/` (se `SYNC-STATUS.md`)  
+> **Styrende plan:** `docs/port/PIXEL-PERFECT-PLAN-COMPLETE.md` v2.0 — regnskapet er
+> **88 aktive rader** (85 + 3 nye W3-fasiter 16.08) + 72 variant-rader i
+> `PP-W3/W4/W5-VARIANTS.md`. Templates (8) er ute (vedtak 14.08).  
+> Skjermer **uten** egen fasit: `rutefasit.md` (mal + avvikslinje per rute)
 
 **Legend:** `[ ]` ikke portet · `[~]` struktur/PaperChrome (ikke pixel) · `[x]` pixel sign-off
 
@@ -154,8 +156,10 @@ i `designsystem/paper/kart/`. Arbeidsordre: `kart/prompt-code-session-implemente
       DELVIS BLOKKERT: `SessionStatusV2` mangler utkast-tilstand, økt mangler publiserings- og
       faktisk-tid-felter. `SKIPPED` finnes — hoppet-mot-ulogget kan bygges i dag.
 - [ ] **D2 · Booking → faktura** — `fase2/agencyos/agencyos-okonomi.html` + `playerhq-betaling.html`.
-      Kjeden finnes (`Booking.trainingSessionV2Id` → `Payment.bookingId`). ÅPENT: «forfalt» er
-      ingen `PaymentStatus` og har ingen forfallsdato — hentes fra Stripe eller nytt felt.
+      Kjeden finnes (`Booking.trainingSessionV2Id` → `Payment.bookingId`). AVKLART av Anders
+      15.08 (`docs/taksonomi-verifikasjon.md` §Anders' svar): «forfalt» hentes fra **Stripe ved
+      visning** — ingen `dueDate` i basen. Ingen blokker igjen; visningsberikelsen + de to
+      flatene kan bygges nå (PP-D).
 - [~] **D3 · Ukesrapport + digest** — `agencyos-godkjenninger.html` + `playerhq-ukesdigest.html`
       + `forelder-barn.html`. BYGGET 15.08.2026: ukesrapport-kortet som leseelement i køen
       (info-kant, ingen Godkjenn-knapp), NY rute `/portal/ukesdigest`, og ukerapport-kortet i
