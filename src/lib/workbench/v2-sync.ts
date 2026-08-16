@@ -49,6 +49,9 @@ export async function upsertV2ForPlanSession(input: {
   /** Hvor økten skjer + hva den skal oppnå — speiles så live-økta viser det samme. */
   location?: string | null;
   maalsetning?: string | null;
+  /** G3: satt når kilden er en gruppeutrulling — speiles til TrainingSessionV2.groupId.
+   *  Utelatt/null = individuell økt; et eksisterende groupId røres da IKKE. */
+  sourceGroupId?: string | null;
 }): Promise<void> {
   const coachId = await resolveCoachIdForPlayer(input.playerId, input.coachId);
   const endTime = new Date(input.scheduledAt.getTime() + input.durationMin * 60_000);
@@ -60,6 +63,8 @@ export async function upsertV2ForPlanSession(input: {
 
   // Felles data for create + update. Status settes KUN ved create — en
   // update skal aldri nullstille COMPLETED/CANCELLED/SKIPPED til PLANNED.
+  // groupId settes KUN når kilden faktisk er en gruppeutrulling (G3) —
+  // undefined betyr «ikke rør feltet» i update-grenen.
   const data = {
     title: input.title,
     studentId: input.playerId,
@@ -73,6 +78,7 @@ export async function upsertV2ForPlanSession(input: {
     isCoachCreated: coachId !== input.playerId,
     generertFra: GENERERT_FRA,
     generertFraId: input.planSessionId,
+    ...(input.sourceGroupId ? { groupId: input.sourceGroupId } : {}),
   };
 
   let v2Id: string;
@@ -122,6 +128,7 @@ export async function syncV2FromPlanSessionId(planSessionId: string): Promise<vo
       miljo: true,
       location: true,
       maalsetning: true,
+      sourceGroupId: true,
       plan: { select: { userId: true, createdById: true } },
     },
   });
@@ -137,6 +144,7 @@ export async function syncV2FromPlanSessionId(planSessionId: string): Promise<vo
     miljo: s.miljo,
     location: s.location,
     maalsetning: s.maalsetning,
+    sourceGroupId: s.sourceGroupId,
   });
 }
 
