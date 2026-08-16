@@ -15,7 +15,7 @@ W2-bølgen er lukket. 12 flater totalt, fordelt på tre leveranser. `fase1/` ur�
 | 9 | `playerhq-historikk-filter-sheet.html` | `/portal/analysere/historikk` | §9 + bunn-sheet | Suksess · Tomt treff | — (ink «Vis N treff») |
 | 10 | `playerhq-hjem-varsler.html` | `/portal/varsler` | §11 fangst-hub | Suksess · Alt lest · Tom kategori | **Bekreft flyttet time** |
 | 11 | `playerhq-putte-lab.html` | `/portal/analysere/putting` | §12 m/ faner | Suksess · Tom (datakrav) | — |
-| 12 | `playerhq-talent-stige.html` | `/portal/talent` | §12 m/ faner | Suksess · Ikke plassert | — |
+| 12 | `playerhq-talent.html` (W3-fil) | `/portal/talent/*` | §12 m/ faner | Suksess · Ikke plassert | — |
 | 13 | `playerhq-hjem-rest.html` | `/portal/utenfor-banen` | §11 hub m/ faner | Suksess · Ingenting aktivt | **Start dagens fysiske økt** |
 
 ## Konsolideringsvedtak i W2

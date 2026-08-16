@@ -118,7 +118,7 @@
   color: hsl(var(--accent-foreground));
   box-shadow: 0 6px 14px rgba(20, 20, 19, 0.30);
 }
-.tp-btn.primary:hover { background: #BFE933; }
+.tp-btn.primary:hover { background: var(--p-cta-hover); }
 .tp-btn.outline {
   background: hsl(var(--card));
   color: hsl(var(--foreground));

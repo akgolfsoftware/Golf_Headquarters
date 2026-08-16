@@ -82,20 +82,17 @@ avviklet designprosjekt. Ligger i git-historikken.)
 - **Next.js 16.2.6** (App Router, Turbopack, TS strict) + **React 19.2.4** + Vercel. Node 24 i CI.
 - **Prisma 7.8** + `@prisma/adapter-pg` + **Supabase** Postgres (RLS) — Supabase Auth (Google + e-post/passord).
 - **Tailwind CSS v4** (CSS-first `@theme`, ingen config-fil) — uttrykk via `src/app/globals.css`.
-- **Fonter (verifisert mot kode 2026-08-06 — dette avløser tidligere «fontbyttet er ikke gjennomført»):**
+- **Fonter (re-verifisert mot kode 2026-08-16 — fontporten er GJENNOMFØRT):**
   Paper-fasiten er **Poppins** (UI/titler) + **Lora** (prosa/AI-svar) + **IBM Plex Mono** (tall). Alle tre
   lastes i `src/app/layout.tsx` og eksponeres som `--font-poppins`/`--font-lora`/`--font-ibm-plex-mono`,
   videre som `--p-font-sans`/`--p-font-serif`/`--p-font-mono` i `src/styles/paper-tokens.css`.
-  **Byttet er gjort i de globale tokenene** (`src/app/globals.css`): `--font-sans`/`--font-display` →
-  Poppins, `--font-mono` → IBM Plex Mono (kommentert i koden som gjort 2026-08-06).
-  **Byttet er IKKE fullført i alle scoped stylesheets** — disse hardkoder fortsatt gamle fonter direkte
-  i stedet for å lese `--font-sans`/`--font-display`/`--font-mono`: `src/styles/golfdata-tokens.css`,
-  `src/components/hubs/hubs.css`, `src/components/planlegge-v2/styles.css`,
-  `src/components/teknisk-plan/*.css`, `src/components/onboarding/onboarding.css`, samt inline
-  `fontFamily`-styling i bl.a. `admin-hero.tsx`, `player-hero.tsx`, `cookie-banner.tsx`,
-  `onboard/klubb/klubb-wizard.tsx`, `onboard/coach/coach-wizard.tsx`. Den eldre `--font-ui`-tokenen
-  (fortsatt Inter) brukes fortsatt bredt i `golfdata/`- og `workbench-hybrid/`-komponenter.
-  Åpent punkt i porten: migrer disse til de nye tokenene skjerm for skjerm, ikke i én stor commit.
+  De globale tokenene (`--font-sans`/`--font-display`/`--font-mono` i `globals.css`) OG de scoped
+  stylesheetene (`golfdata-tokens.css`, `onboarding.css`, wizardene) leser alle Paper-fontene;
+  `--font-ui` er broet til `var(--p-ui)` (Poppins). Tidligere avvikslister her (hubs.css,
+  admin-hero/player-hero m.fl.) gjaldt filer som ikke lenger finnes — ikke gjenopprett dem.
+  Kjente småresten (ufarlige): `teknisk-plan.css:16` har Inter kun som *fallback* bak
+  `var(--font-sans)`; `klubb-wizard.tsx:676` har én `fontFamily="Inter"` i en SVG-illustrasjon;
+  `src/components/planlegge-v2/` er død kode uten konsumenter (slettes i PP-B5).
   **Inter Tight er fjernet** — ikke gjeninnfør. Bygg nytt mot Paper-fasiten (dvs. de globale tokenene,
   aldri `--font-familjen-grotesk`/`--font-jetbrains-mono`/`--font-inter` direkte i ny kode).
 - **Lucide React** — eneste ikon-bibliotek. **npm** — pakkebehandler.
@@ -110,58 +107,10 @@ avviklet designprosjekt. Ligger i git-historikken.)
 
 ## Mappestruktur
 
-Størrelsesorden: ~449 `page.tsx`-ruter, ~161 filer med server actions, 158 Prisma-modeller, 81 migrasjoner,
-110 enhetstest-filer, 54 agent-filer. Sjekk filsystemet før du oppretter nye ruter — det finnes flere
-top-level-mapper enn de fire «offisielle» produktene.
-
-```
-src/
-├── app/            # App Router — ~449 ruter
-│   ├── page.tsx              # Marketing (landing)
-│   ├── (marketing)/          # Offentlige sider (layout med markeds-header)
-│   ├── (internal)/           # Interne demoer/labs — ikke prod-flater
-│   ├── auth/  onboard/  inviter/   # Auth-flyter, onboarding, invitasjoner
-│   ├── portal/               # PlayerHQ (spiller-appen)
-│   │   ├── (legacy)/         # Eldre flater under migrering
-│   │   ├── (fullscreen)/     # Fullskjerm-moduser (live/gjennomføring)
-│   │   └── …hovedflater      # planlegge · gjennomfore · analysere · meg · trackman · gameplan m.fl.
-│   ├── admin/                # AgencyOS (coach/admin) — agencyos (cockpit), grupper,
-│   │                         # godkjenninger, kalender, innboks, finance, agent-team m.fl.
-│   ├── forelder/             # Foreldreportal (lese-først)
-│   ├── booking-flyt          # /booking under (marketing) + /portal/booking + /admin/bookinger
-│   ├── team-wang/  team-gfgk/  gfgk-junior/   # Klubb-/skolespesifikke flater
-│   ├── kommando/  meg/  intern/  offline/     # Agent-chat, personlig, intern, PWA-offline
-│   ├── api/                  # REST (cron, webhooks, trackman, booking, public)
-│   ├── sw.ts                 # Serwist service worker-kilde
-│   └── layout.tsx            # Fonter, metadata, PWA-manifest
-├── components/
-│   ├── ui/                   # 21 primitiver (shadcn-basert): button, dialog, sheet, popover,
-│   │                         # dropdown-menu, tabs, toast, input, kpi-card, progress-ring …
-│   ├── v2/                   # Delte v2-primitiver (shell, kalender, datavis, hjelp, domene …)
-│   ├── athletic/             # Kun to undermapper igjen: golfdata/ (v13, overgangslag) + calendars/
-│   ├── shared/               # Utility-komponenter (cookie-banner, cmd-palette, mobile-bottom-nav)
-│   └── admin/ portal/ marketing/ forelder/ coachhq/ hubs/ workbench-hybrid/ planlegge-v2/
-│       sg-hub/ gameplan/ fys-plan/ teknisk-plan/ turneringer/ kommando/ meg/ …
-├── lib/            # domain/ (ferdighetslogikk — SG, hcp, ak-kategori, fys-score, pyramide) ·
-│                   # validation/schemas.ts · auth · prisma.ts · stripe · email · agents/ ·
-│                   # workbench/ · uke-helpers.ts (Oslo-tid) · scrapers/ · trackman/ · portal-*/ · admin-*/
-├── proxy.ts        # Next 16 «middleware» — auth-guards (proxy.ts, IKKE middleware.ts)
-└── app/globals.css # Tailwind v4-tema
-prisma/
-├── schema.prisma   # 158 modeller: User · TrainingPlan(+Session) · Round → Shot → HoleScore ·
-│                   # Subscription · Booking · Lead · CoachAvailability · TestDefinition/TestResult ·
-│                   # DrillMal/OktMal · TrackManSession/TrackManShot · SeasonPlan · PeriodBlock · KommandoTask …
-├── migrations/     # 81 kjørte SQL-migrasjoner
-├── sql/  scripts/  seed-data/
-└── seed.ts · seed-drills.ts · seed-gfgk-facilities.ts …
-scripts/            # Engangs-/driftsscript: seed-screentest*.ts (Øyvind Rohjan) · drill-qa ·
-                    # retag-drill-kategorier · check-action-auth.mjs · audit-rls · …
-docs/               # platform/ (NORDSTJERNE, AGENT-BRIEF, BUSINESS-RULES, DATA-MODEL, PLATFORM-PRD) ·
-                    # skjermtekst/ (copy-kilde) · design-system/TEMA-LYS-MORK.md (tema-fasit) ·
-                    # gdpr/ · juridisk/ · sikkerhet/ · arkiv/
-tests/e2e/          # Én samlet e2e-suite (32 specs, siden 2026-08-03): a11y, PWA, ruter, meta/OG,
-                    # offline, ikoner + auth-guard, IDOR, booking, workbench (fra gamle e2e/)
-```
+Strukturkartet bor i `docs/platform/AGENT-BRIEF.md` §Mappestruktur (flyttet dit 2026-08-16
+— den fila eier agent-konteksten). Kort: fire produkter (marketing, booking, PlayerHQ under
+`portal/`, AgencyOS under `admin/`) + flere top-level-flater — sjekk filsystemet før du
+oppretter nye ruter.
 
 ## Arbeidsregler
 1. **Ikke be om tillatelse for små endringer** — typoverifisering, lint, feilretting.

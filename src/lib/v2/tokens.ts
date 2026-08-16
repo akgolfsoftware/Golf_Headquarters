@@ -207,7 +207,6 @@ export const T = {
     hvitA28: "rgba(255,255,255,0.28)",
     hvitA35: "rgba(255,255,255,0.35)",
     limeMerkeA0: "rgba(99,120,74,0)",
-    limeHover: "#C2EE2F",
     inkMerke2A62: "rgba(10,31,24,0.62)",
     kremMerkeA85: "rgba(245,244,238,0.85)",
     taakeMerkeA65: "rgba(238,240,236,0.65)",

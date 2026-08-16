@@ -212,7 +212,7 @@ export function AdminSpillerTesterV2({
       {kpi}
       <div className="grid grid-cols-1 lg:grid-cols-[3fr_2fr]" style={{ gap: T.gap, alignItems: "start" }}>
         {radarKort}
-        <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+        <div className="min-w-0" style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
           {nesteTest}
           {liste}
         </div>

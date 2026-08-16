@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="nb" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Profil · PlayerHQ · AK Golf HQ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Lora:ital,wght@0,400;0,500;1,400&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="w3-base.css">
+<style>
+/* ═══ PlayerHQ · Meg · Profil (fase2/W3) ═══
+   Rute: /portal/meg/profil. Kilde: User + PlayerProfile + Club + GolfboxSync.
+   HCP er LESEFELT — den eies av golfbox/NGF og kan ikke redigeres i appen.
+   «Ufullstendig» er ikke en feil: profilen fungerer, men coachen mangler noe. */
+.hero{ display:flex; gap:var(--s4); align-items:center; background:var(--surface);
+  border:1px solid var(--border); border-radius:var(--r); padding:var(--s4); margin-bottom:var(--s3); }
+.avatar{ flex:none; width:64px; height:64px; border-radius:var(--r-pill); background:var(--soft);
+  border:1px solid var(--border); display:grid; place-items:center; font-family:var(--mono);
+  font-size:20px; font-weight:600; }
+.hero .hx{ flex:1; min-width:0; }
+.hero .hn{ font-family:var(--disp); font-size:17px; font-weight:600; }
+.hero .hm{ display:block; font-family:var(--mono); font-size:10.5px; color:var(--muted); margin-top:2px; }
+.les{ display:flex; align-items:baseline; justify-content:space-between; gap:var(--s3);
+  padding:var(--s3) 0; border-bottom:1px solid var(--border-soft); }
+.les:last-of-type{ border-bottom:0; }
+.les .ln{ font-size:13px; }
+.les .lm{ display:block; font-family:var(--mono); font-size:10px; color:var(--mid); margin-top:1px; }
+.les .lv{ font-family:var(--mono); font-size:13.5px; font-weight:600; text-align:right; flex:none; }
+.mangler{ display:flex; gap:var(--s3); padding:var(--s3) var(--s4); border-radius:var(--r);
+  background:var(--accent-soft); margin-bottom:var(--s3); }
+.mangler .mx{ flex:1; min-width:0; font-family:var(--body); font-size:13px; color:var(--ink-soft); }
+.par{ display:grid; grid-template-columns:1fr 1fr; gap:var(--s3); }
+.hjelp{ font-family:var(--mono); font-size:10px; color:var(--mid); margin:-6px 0 var(--s3); letter-spacing:.03em; }
+</style>
+</head>
+<body>
+<p class="framehint">PlayerHQ · Meg · Profil · 430 px. Under 641 px fyller den skjermen.</p>
+<div class="phone" data-demo-only="true">
+  <header class="topp">
+    <a class="ikon" href="../../fase1/playerhq-meg.html" aria-label="Til Meg" data-od-id="profil-tilbake"><svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg></a>
+    <div style="min-width:0"><h1>Profil</h1><span class="sub">Navn, klubb, handicap og mål</span></div>
+    <span style="flex:1"></span>
+    <div data-demo-only="true" style="display:flex;gap:4px">
+      <button class="ikon" data-tilstand="fylt" aria-pressed="true" aria-label="Demo: komplett" data-od-id="profil-demo-fylt"><span class="num" style="font-size:10px">F</span></button>
+      <button class="ikon" data-tilstand="ufullstendig" aria-pressed="false" aria-label="Demo: ufullstendig" data-od-id="profil-demo-ufull"><span class="num" style="font-size:10px">U</span></button>
+    </div>
+    <button class="ikon" id="themeBtn" aria-label="Bytt til mørk modus" data-od-id="profil-theme"><svg viewBox="0 0 24 24"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></button>
+  </header>
+
+  <main class="kropp">
+
+    <div class="hero">
+      <span class="avatar num">ØR</span>
+      <div class="hx"><span class="hn">Øyvind Rohjan</span><span class="hm">Spiller siden mars 2024 · Emigrant Golfklubb</span><span class="tag akt" style="margin-top:6px">Stall Bogstad</span></div>
+    </div>
+
+    <section data-vis="ufullstendig" hidden>
+      <div class="mangler"><div class="mx"><b>Tre felt mangler</b> — fødselsdato, klubb og målsetting. Coachen bruker dem til å sette riktig nivå og turneringsklasse. Du kan bruke appen som normalt uten.</div></div>
+    </section>
+
+    <div class="kort">
+      <span class="eyebrow">Hentet fra Golfbox</span>
+      <div class="les"><div><span class="ln">Handicap</span><span class="lm">Sist oppdatert 19. mai 2026</span></div><span class="lv num">12,4</span></div>
+      <div class="les"><div><span class="ln">Registrerte runder i år</span><span class="lm">Tellende for HCP</span></div><span class="lv num">9</span></div>
+      <div class="les"><div><span class="ln">Golfbox-ID</span><span class="lm">Koblet 2. april 2024</span></div><span class="lv num">NO-48213</span></div>
+      <p class="hjelp" style="margin-top:var(--s3)">Handicap eies av forbundet og kan ikke endres her. Er tallet feil, meld det til klubben din.</p>
+    </div>
+
+    <div class="kort">
+      <span class="eyebrow">Om deg</span>
+      <label class="felt" style="margin-top:var(--s3)"><span>Fullt navn</span><input type="text" value="Øyvind Rohjan" data-od-id="profil-navn"></label>
+      <div class="par">
+        <label class="felt"><span>Fødselsdato</span><input type="date" value="2009-06-14" data-od-id="profil-fodt"></label>
+        <label class="felt"><span>Kjønn</span><select data-od-id="profil-kjonn"><option>Mann</option><option>Kvinne</option><option>Oppgir ikke</option></select></label>
+      </div>
+      <label class="felt"><span>Hjemmeklubb</span><select data-od-id="profil-klubb"><option>Emigrant Golfklubb</option><option>Bogstad Golfklubb</option><option>Oslo Golfklubb</option><option>Ingen klubb</option></select></label>
+      <label class="felt"><span>Dominant hånd</span><select data-od-id="profil-hand"><option>Høyre</option><option>Venstre</option></select></label>
+      <p class="hjelp">Klubben avgjør hvilke turneringer og klasser du kan meldes på.</p>
+    </div>
+
+    <div class="kort">
+      <span class="eyebrow">Mål for sesongen</span>
+      <label class="felt" style="margin-top:var(--s3)"><span>Handicap-mål</span><input type="text" value="9,0 innen oktober" data-od-id="profil-mal-hcp"></label>
+      <label class="felt"><span>Hva vil du bli bedre på?</span><textarea data-od-id="profil-mal-tekst">Putting fra 1–3 meter, og å tåle press på de siste fem hullene.</textarea></label>
+      <p class="hjelp">Coachen ser dette og bruker det når planen legges.</p>
+    </div>
+
+    <div class="kort">
+      <span class="eyebrow">Kontakt</span>
+      <label class="felt" style="margin-top:var(--s3)"><span>E-post</span><input type="email" value="oyvind.rohjan@example.no" data-od-id="profil-epost"></label>
+      <label class="felt"><span>Mobil</span><input type="tel" value="+47 412 08 553" data-od-id="profil-mobil"></label>
+      <p class="hjelp">Brukes til timevarsler og innlogging. Endrer du e-post, må du bekrefte den nye.</p>
+    </div>
+
+    <button class="btn now full" data-od-id="profil-lagre">Lagre profilen</button>
+
+    <div class="kort" style="margin-top:var(--s3)">
+      <span class="eyebrow">Videre</span>
+      <a class="rad" href="playerhq-utstyr.html" style="margin-top:var(--s3)" data-od-id="profil-til-utstyr"><div class="tx"><span class="tn">Utstyr og bag</span><span class="tm">14 køller registrert</span></div><svg class="pil" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></a>
+      <a class="rad" href="playerhq-innstillinger.html" data-od-id="profil-til-innst"><div class="tx"><span class="tn">Personvern og data</span><span class="tm">Hva som deles med stallen</span></div><svg class="pil" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></a>
+    </div>
+
+  </main>
+</div>
+<div class="sr" id="live" aria-live="polite"></div>
+<script src="w3-demo.js"></script>
+</body>
+</html>
