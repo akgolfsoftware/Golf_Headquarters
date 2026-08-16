@@ -2,6 +2,7 @@ import "server-only";
 
 import { Prisma, type PyramidArea, type MMiljo } from "@/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
+import { resolveValgtCoachIdEllerAdmin } from "@/lib/domain/valgt-coach";
 import { GENERERT_FRA, syncDrillsToV2 } from "./v2-drill-mirror";
 import { validerOkt } from "@/lib/canon/valider-plan";
 
@@ -17,32 +18,19 @@ const PYR_TO_PRACTICE: Record<PyramidArea, "BLOKK" | "RANDOM" | "KONKURRANSE" | 
   TURN: "KONKURRANSE",
 };
 
-/** Finn coachId for V2-økt: gruppe.coachId → plan.createdById → første coach. */
+/**
+ * Finn coachId for V2-økt. Delegerer til valgt coach-resolveren (G2) —
+ * fallback-kjeden (primaryCoachId → enrollment → gruppe → plan → eldste ADMIN)
+ * bor i src/lib/domain/valgt-coach.ts, aldri «første coach»-gjetting her.
+ * Garantien «returnerer alltid en id» (TrainingSessionV2.coachId er NOT NULL)
+ * bevares: finnes verken coach eller ADMIN, returneres spillerens egen id.
+ */
 export async function resolveCoachIdForPlayer(
   playerId: string,
   explicitCoachId?: string | null,
 ): Promise<string> {
   if (explicitCoachId) return explicitCoachId;
-
-  const membership = await prisma.groupMember.findFirst({
-    where: { userId: playerId, endedAt: null },
-    include: { group: { select: { coachId: true } } },
-  });
-  if (membership?.group.coachId) return membership.group.coachId;
-
-  const plan = await prisma.trainingPlan.findFirst({
-    where: { userId: playerId, createdById: { not: null } },
-    orderBy: [{ isActive: "desc" }, { updatedAt: "desc" }],
-    select: { createdById: true },
-  });
-  if (plan?.createdById) return plan.createdById;
-
-  const coach = await prisma.user.findFirst({
-    where: { role: { in: ["COACH", "ADMIN"] }, deletedAt: null },
-    select: { id: true },
-    orderBy: { createdAt: "asc" },
-  });
-  return coach?.id ?? playerId;
+  return resolveValgtCoachIdEllerAdmin(playerId);
 }
 
 /** Opprett eller oppdater TrainingSessionV2 koblet til TrainingPlanSession. */
