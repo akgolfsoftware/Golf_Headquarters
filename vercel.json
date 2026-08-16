@@ -191,6 +191,10 @@
       "schedule": "0 5 * * *"
     },
     {
+      "path": "/api/cron/winback-oppfolging",
+      "schedule": "30 5 * * *"
+    },
+    {
       "path": "/api/cron/ukesoppsummering",
       "schedule": "0 17 * * 0"
     },

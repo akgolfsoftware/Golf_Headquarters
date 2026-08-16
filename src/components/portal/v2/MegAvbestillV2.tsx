@@ -11,21 +11,22 @@ import { useRouter } from "next/navigation";
 import { T, Caps, Kort, Knapp, Icon } from "@/components/v2";
 import { cancelPro } from "@/app/portal/meg/abonnement/avbestill/actions";
 
+export type MegAvbestillKonsekvens = {
+  tittel: string;
+  detalj: string;
+  etterpaa: string;
+};
+
 export type MegAvbestillData = {
   /** Ukedag for siste Pro-dag, f.eks. «onsdag». */
   ukedag: string;
   /** Dato for siste Pro-dag, f.eks. «12. august 2026». */
   dato: string;
   dagerIgjen: number;
+  /** Konsekvensene bygges SERVER-SIDE fra faktisk abonnement (A4) —
+   *  aldri hardkodet («fra 4 credits til 0» var feil for 299-kunder). */
+  konsekvenser: MegAvbestillKonsekvens[];
 };
-
-const KONSEKVENSER = [
-  { tittel: "AI-coach ubegrenset", detalj: "låses etter 1 måned", etterpaa: "→ låst" },
-  { tittel: "Coaching-credits", detalj: "fra 4 / mnd til 0", etterpaa: "→ 0" },
-  { tittel: "Videoanalyse fra coach", detalj: "opplastinger låses", etterpaa: "→ låst" },
-  { tittel: "Komplett historikk", detalj: "kuttes til siste 30 dager", etterpaa: "→ 30 dgr" },
-  { tittel: "Familiekonto", detalj: "far/mor mister tilgang", etterpaa: "→ utløper" },
-];
 
 export function MegAvbestillV2({ data }: { data: MegAvbestillData }) {
   const router = useRouter();
@@ -94,7 +95,7 @@ export function MegAvbestillV2({ data }: { data: MegAvbestillData }) {
 
       {/* Dette mister du */}
       <Kort eyebrow="Dette mister du">
-        {KONSEKVENSER.map((k, i) => (
+        {data.konsekvenser.map((k, i) => (
           <div
             key={k.tittel}
             style={{
@@ -102,7 +103,7 @@ export function MegAvbestillV2({ data }: { data: MegAvbestillData }) {
               alignItems: "center",
               gap: 12,
               padding: "10px 0",
-              borderBottom: i === KONSEKVENSER.length - 1 ? "none" : `1px solid ${T.border}`,
+              borderBottom: i === data.konsekvenser.length - 1 ? "none" : `1px solid ${T.border}`,
             }}
           >
             <Icon name="x-circle" size={15} style={{ color: T.down, flex: "none" }} />
@@ -129,35 +130,6 @@ export function MegAvbestillV2({ data }: { data: MegAvbestillData }) {
             </span>
           </div>
         ))}
-      </Kort>
-
-      {/* Pause-alternativ (samme informasjon som kildeskjermen) */}
-      <Kort tint>
-        <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-          <span
-            style={{
-              width: 36,
-              height: 36,
-              borderRadius: 9999,
-              background: T.handling,
-              color: T.onHandling,
-              display: "inline-flex",
-              alignItems: "center",
-              justifyContent: "center",
-              flex: "none",
-            }}
-          >
-            <Icon name="pause" size={16} />
-          </span>
-          <div style={{ flex: 1, minWidth: 0 }}>
-            <div style={{ fontFamily: T.disp, fontSize: 13.5, fontWeight: 700, color: T.fg }}>
-              Vil du heller pause i 1 måned?
-            </div>
-            <div style={{ fontFamily: T.ui, fontSize: 12, color: T.mut, lineHeight: 1.5, marginTop: 2 }}>
-              Behold all data — ingen belastning før august. Ta kontakt med support, så ordner vi det.
-            </div>
-          </div>
-        </div>
       </Kort>
 
       {/* B: én grønn primær (behold) + farlig sekundær under */}
