@@ -15,7 +15,7 @@ import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
 import { T } from "@/lib/v2/tokens";
-import { Kort, Rad, CTAPill, TomTilstand, TilbakeLenke } from "@/components/v2";
+import { Kort, Rad, CTAPill, TomTilstand, TilbakeLenke, Icon } from "@/components/v2";
 import { TrackmanImportModal } from "@/components/shared/trackman-import-modal";
 import { TrackManTrendSeksjon, byggTrendData } from "./trend-seksjon";
 import type { TrackManEnvironment } from "@/generated/prisma/client";
@@ -147,6 +147,18 @@ export default async function TrackManListePage() {
 
         {/* Trend — enkel sparkline, kun ved ≥ 2 økter med målt køllehastighet */}
         <TrackManTrendSeksjon punkter={byggTrendData(okter)} />
+
+        {/* Videre-lenke — gapping mellom køllene, tallene kommer herfra */}
+        <Link href="/portal/mal/trackman/gapping" style={{ textDecoration: "none", color: "inherit", display: "block" }}>
+          <Kort hover>
+            <Rad
+              leading={<Icon name="sliders" size={16} style={{ color: T.mut }} />}
+              title="Gapping"
+              sub="Avstand mellom køllene dine"
+              last
+            />
+          </Kort>
+        </Link>
 
         {/* Sesjonsliste */}
         <Kort pad="6px 18px">

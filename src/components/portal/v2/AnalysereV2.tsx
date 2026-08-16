@@ -285,6 +285,25 @@ function TabSG({ data, mobile }: { data: AnalysereData; mobile: boolean }) {
         </Kort>
       </Link>
 
+      {/* Putteverktøy — videre-lenker til de to putt-kalkulatorene */}
+      <Kort eyebrow="Putteverktøy" style={{ gridColumn: "1 / -1" }}>
+        <Link href="/portal/trening/putte-laboratoriet" style={{ textDecoration: "none", color: "inherit", display: "block" }}>
+          <Rad
+            leading={<Icon name="target" size={16} style={{ color: T.mut }} />}
+            title="Putte-laboratoriet"
+            sub="Sannsynlighet for å sette putten"
+          />
+        </Link>
+        <Link href="/portal/trening/break-tabell" style={{ textDecoration: "none", color: "inherit", display: "block" }}>
+          <Rad
+            leading={<Icon name="sliders" size={16} style={{ color: T.mut }} />}
+            title="Break-tabell"
+            sub="Hvor mye putten bryter"
+            last
+          />
+        </Link>
+      </Kort>
+
     </div>
   );
 }
