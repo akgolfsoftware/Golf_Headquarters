@@ -7,12 +7,11 @@
  * ny auth-vei). Mønsteret er KOPIERT hit, ikke importert derfra, fordi
  * src/lib/meg/connectors/google.ts har `import "server-only"` — den pakken
  * kaster en hard feil ved import med mindre "react-server"-export-
- * conditionen er aktiv (slik `npm test` setter den med
- * `--conditions=react-server`). Dette scriptet kjøres derimot som et rent
- * tsx-script via LaunchAgent/cron uten den flagget, så server-only-filer kan
- * ikke lastes direkte. src/lib/google-gmail.ts og src/lib/google-calendar.ts
- * har IKKE server-only-guard og importeres derfor rett fra scriptets øvrige
- * filer.
+ * conditionen er aktiv. `mulligan:triage`-scriptet kjører derfor med
+ * `tsx --conditions=react-server` (samme mønster som `npm test`) — nødvendig
+ * fordi src/lib/google-calendar.ts transitivt drar inn server-only-filer
+ * (notifications → push/send, error-tracking). Kopien her beholdes likevel
+ * for å holde scriptets egen importflate minimal.
  */
 import { prisma } from "@/lib/prisma";
 import type { GoogleCalendarConnection } from "@/generated/prisma/client";
