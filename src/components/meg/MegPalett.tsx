@@ -94,7 +94,7 @@ export function MegPalett({
         justifyContent: "center",
         alignItems: "flex-start",
         paddingTop: "12vh",
-        background: "rgba(0,0,0,0.4)",
+        background: T.farge.svartA40,
       }}
       onMouseDown={(e) => {
         if (e.target === e.currentTarget) lukk();
@@ -110,7 +110,7 @@ export function MegPalett({
           border: `1px solid ${T.border}`,
           borderRadius: T.rCard,
           overflow: "hidden",
-          boxShadow: "0 12px 32px rgba(0,0,0,0.25)",
+          boxShadow: `0 12px 32px ${T.farge.svartA25}`,
         }}
       >
         <div style={{ display: "flex", alignItems: "center", gap: 8, padding: "10px 14px", borderBottom: `1px solid ${T.borderS}` }}>
