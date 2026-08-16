@@ -51,7 +51,7 @@ export function V2Feil({ reset, tilbakeHref, tittel = "Noe gikk galt" }: V2FeilP
 /* ── V2Laster ─────────────────────────────────────────── */
 /* .v2-skel-pulsen bor statisk i src/styles/v2/motion.css (FASIT §4b). */
 
-const PANEL_STYLE: CSSProperties = { background: T.panel, border: `1px solid ${T.border}`, borderRadius: T.rCard, padding: "18px 20px" };
+const PANEL_STYLE: CSSProperties = { background: T.panel, border: `1px solid ${T.border}`, borderRadius: T.rCard, padding: "18px 20px", minWidth: 0 };
 
 function SkelBlock({ w, h, r = 8, style }: { w?: number | string; h: number; r?: number; style?: CSSProperties }) {
   return <div className="v2-skel" style={{ width: w ?? "100%", height: h, borderRadius: r, flex: "none", ...style }} />;
