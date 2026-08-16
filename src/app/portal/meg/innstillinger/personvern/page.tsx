@@ -12,6 +12,11 @@ import { InnstillingerHode } from "@/components/portal/v2/InnstillingerHode";
 import { hentSamtykkeStatus } from "@/lib/health/samtykke";
 import { maaHaForesattSamtykke } from "@/lib/health/samtykke-regler";
 import { HelseSamtykkeKort } from "@/components/portal/v2/HelseSamtykkeKort";
+import { DelingSamtykkeKort } from "@/components/portal/v2/DelingSamtykkeKort";
+import {
+  grupperMedEksterneLesereForSpiller,
+  hentDelingsStatus,
+} from "@/lib/deling/samtykke";
 import { PersonvernActions } from "./personvern-actions";
 
 export const dynamic = "force-dynamic";
@@ -21,6 +26,14 @@ export default async function PersonvernPage() {
 
   const samtykke = await hentSamtykkeStatus(user.id);
   const krevesForesatt = maaHaForesattSamtykke(user);
+
+  // T8: delingssamtykke per gruppe med aktive eksterne lesere (Team Norway/WANG).
+  const delingGrupper = await grupperMedEksterneLesereForSpiller(user.id);
+  const delingStatus = await hentDelingsStatus(
+    user.id,
+    delingGrupper.map((g) => g.id),
+  );
+  const delingKart = new Map(delingStatus.map((s) => [s.gruppeId, s]));
 
   return (
     <V2Shell aktiv="meg" bredde="kolonne" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
@@ -60,6 +73,17 @@ export default async function PersonvernPage() {
               ?.toISOString() ?? null,
           krevesForesatt,
         }}
+      />
+
+      <DelingSamtykkeKort
+        grupper={delingGrupper.map((g) => ({
+          gruppeId: g.id,
+          gruppeNavn: g.name,
+          testResultater: delingKart.get(g.id)?.testResultater ?? false,
+          stats: delingKart.get(g.id)?.stats ?? false,
+        }))}
+        krevesForesatt={user.requiresGuardianConsent}
+        modus={{ type: "spiller" }}
       />
 
       <Kort>

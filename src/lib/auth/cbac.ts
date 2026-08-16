@@ -26,6 +26,12 @@ export const Capability = {
   USE_AGENTS: "use_agents",
   INVITE_USERS: "invite_users",
   VIEW_REPORTS: "view_reports",
+  // T8 (2026-08-16): ekstern lesetilgang (Team Norway/WANG). INGEN rolle-default
+  // får disse — de grantes eksplisitt per bruker (GUEST + GRANT-override) av
+  // opprettEksternLeser. Dataporten er src/lib/auth/ekstern-leser-scope.ts:
+  // capability åpner /innsyn-flaten, samtykke (DelingsSamtykke) åpner dataene.
+  VIEW_SHARED_TEST_RESULTS: "view_shared_test_results",
+  VIEW_SHARED_STATS: "view_shared_stats",
 } as const;
 
 export type Capability = (typeof Capability)[keyof typeof Capability];
@@ -54,6 +60,8 @@ export const CAPABILITY_BESKRIVELSER: Record<Capability, string> = {
   [Capability.USE_AGENTS]: "Bruke AI-agenter (AgenticOS, Caddie)",
   [Capability.INVITE_USERS]: "Invitere nye brukere",
   [Capability.VIEW_REPORTS]: "Se rapporter",
+  [Capability.VIEW_SHARED_TEST_RESULTS]: "Se delte testresultater (ekstern leser)",
+  [Capability.VIEW_SHARED_STATS]: "Se delt statistikk (ekstern leser)",
 };
 
 export const ROLE_CAPABILITIES: Record<UserRole, Capability[]> = {
