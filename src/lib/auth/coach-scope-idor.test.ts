@@ -1,32 +1,26 @@
 /**
  * IDOR-regresjoner — rene enhetstester uten DB.
- * Speiler reglene vi innførte i booking/agents/coachScoped.
+ *
+ * Importerer den EKTE produksjonskoden. Frem til 2026-08-15 speilet denne
+ * filen `kanBekrefteUtenStripeLeak` og booking-eierskapet med lokale kopier;
+ * speilet hadde drevet fra originalen (testet et `serviceCoachId`-felt som
+ * ikke finnes i skjemaet, og en `booking.userId`-gren den ekte koden aldri
+ * har hatt), så testene var grønne på kode som ikke kjører. Speilene er
+ * erstattet med import fra `./booking-scope` — legg aldri inn en lokal kopi
+ * av produksjonslogikk her igjen.
  */
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { coachScopedPlayerWhere } from "./coached";
+import {
+  coachBookingScope,
+  kanBekrefteUtenStripeLeak,
+} from "./booking-scope";
+import type { User } from "@/generated/prisma/client";
 
-/** Speil av kanBekrefteUtenStripeLeak i bookinger/actions. */
-function kanBekrefteUtenStripeLeak(b: {
-  priceOre: number;
-  stripePaymentIntentId: string | null;
-  subscriptionId: string | null;
-}): boolean {
-  if (b.priceOre <= 0) return true;
-  if (b.stripePaymentIntentId) return true;
-  if (b.subscriptionId) return true;
-  return false;
-}
-
-/** Speil av booking staff-eierskap. */
-function coachKanRoreBooking(
-  user: { id: string; role: string },
-  booking: { userId: string | null; coachId: string | null; serviceCoachId: string | null },
-): boolean {
-  if (booking.userId === user.id) return true;
-  if (user.role === "ADMIN") return true;
-  if (user.role !== "COACH") return false;
-  return booking.coachId === user.id || booking.serviceCoachId === user.id;
+/** Minimal staff-bruker — kun feltene scope-filteret leser. */
+function staff(id: string, role: "ADMIN" | "COACH"): User {
+  return { id, role } as User;
 }
 
 test("booking: betalt time uten PI/credit kan ikke bekreftes manuelt", () => {
@@ -67,25 +61,32 @@ test("booking: gratis / PI / credit kan bekreftes", () => {
   );
 });
 
-test("booking: coach A kan ikke røre coach B sin booking", () => {
-  const coachA = { id: "coach-a", role: "COACH" };
-  const bookingB = {
-    userId: "player-1",
-    coachId: "coach-b",
-    serviceCoachId: "coach-b",
-  };
-  assert.equal(coachKanRoreBooking(coachA, bookingB), false);
-  assert.equal(
-    coachKanRoreBooking(
-      { id: "coach-b", role: "COACH" },
-      bookingB,
-    ),
-    true,
-  );
-  assert.equal(
-    coachKanRoreBooking({ id: "admin", role: "ADMIN" }, bookingB),
-    true,
-  );
+test("booking: COACH låses til egne bookinger (direkte + via tjenestetype)", () => {
+  const w = coachBookingScope(staff("coach-a", "COACH"));
+  // Coachen skal aldri få et tomt filter — tomt = hele systemet.
+  assert.notDeepEqual(w, {});
+  const grener = w.OR ?? [];
+  assert.equal(grener.length, 2);
+  assert.equal(grener[0]?.coachId, "coach-a");
+  assert.equal(grener[1]?.serviceType?.coachUserId, "coach-a");
+});
+
+test("booking: COACH-filteret nevner ingen annen coach enn seg selv", () => {
+  // IDOR-kjernen: coach A sitt filter skal ikke kunne treffe coach B sine rader.
+  const w = coachBookingScope(staff("coach-a", "COACH"));
+  assert.equal(JSON.stringify(w).includes("coach-b"), false);
+});
+
+test("booking: staff-tilgang gis ALDRI via booking.userId", () => {
+  // Å være spilleren på bookingen er ikke staff-tilgang. Det gamle speilet i
+  // denne filen hadde en `booking.userId === user.id`-gren; den finnes ikke
+  // i produksjonskoden, og skal ikke snike seg inn igjen.
+  const w = coachBookingScope(staff("coach-a", "COACH"));
+  assert.equal(JSON.stringify(w).includes("userId"), false);
+});
+
+test("booking: ADMIN har tomt filter (ser alt)", () => {
+  assert.deepEqual(coachBookingScope(staff("admin-1", "ADMIN")), {});
 });
 
 test("coachScopedPlayerWhere: COACH har deletedAt null + coachId-filter", () => {

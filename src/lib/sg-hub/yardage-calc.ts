@@ -33,12 +33,17 @@ export function clubSortKey(club: string): number {
   return i === -1 ? 999 : i;
 }
 
+// REKKEFØLGEN ER KRITISK: de eksakte treffene (driver/putter/wedge) må stå FØR
+// `endsWith("w")`-fallbacken. Alle fem wedge-navnene (pw/aw/gw/sw/lw) slutter på
+// «w», så med fallbacken først ble hele wedge-grenen død kode og samtlige wedger
+// klassifisert som «wood» — feil carryFactor (0.93 i stedet for 0.98) og feil
+// apex-estimat (0.17× i stedet for 0.30×) i yardage-tabellen.
 export function classifyClub(club: string): ClubFamily {
   const c = club.toLowerCase();
   if (c === "driver" || c === "1w") return "driver";
-  if (c.endsWith("w")) return "wood";
   if (c === "pt" || c === "putter") return "putter";
   if (["pw", "aw", "gw", "sw", "lw"].includes(c)) return "wedge";
+  if (c.endsWith("w")) return "wood";
   return "iron";
 }
 

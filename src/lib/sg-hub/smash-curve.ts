@@ -72,12 +72,27 @@ export function computeSmashCurve(shots: ShotData[]): SmashCurveResult {
   const xs = valid.map((s) => s.clubSpeed);
   const ys = valid.map((s) => s.smashFactor);
 
+  const minX = Math.min(...xs);
+  const maxX = Math.max(...xs);
+
+  // Null spredning i kølle-fart gjør normalligningene singulære: Gauss-
+  // elimineringen deler på 0, og NaN forplanter seg videre til optimumSpeed og
+  // hvert eneste kurvepunkt (målt — grafen viste NaN, ikke en tom tilstand).
+  // Uten spredning finnes det ingen kurve å tilpasse, så vi svarer med farten
+  // slagene faktisk ble slått i.
+  if (maxX - minX < 1e-9) {
+    return {
+      points: valid.map((s) => ({ clubSpeed: s.clubSpeed, smashFactor: s.smashFactor })),
+      optimumSpeed: Math.round(minX * 10) / 10,
+      curvePoints: [],
+      aboveOptimumPct: 0,
+    };
+  }
+
   const [a, b, c] = polyFit2(xs, ys);
 
   // Optimum ved -b/(2a). Klem til realistisk range.
   const rawOptimum = a !== 0 ? -b / (2 * a) : xs.reduce((s, x) => s + x, 0) / xs.length;
-  const minX = Math.min(...xs);
-  const maxX = Math.max(...xs);
   const optimumSpeed = Math.round(Math.max(minX, Math.min(maxX, rawOptimum)) * 10) / 10;
 
   // 20 jevnt fordelte kurve-punkter
