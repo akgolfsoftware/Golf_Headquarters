@@ -5406,3 +5406,47 @@ model AiCost {
   @@index([createdAt])
   @@map("ai_costs")
 }
+
+// Jarvis steg 1 — samlet "venter på deg"-kø. Erstatter spredte siloer
+// (e-post/SMS/iMessage/Telegram) med ett sted. Kun modellen her — innsamlere
+// (Gmail/iMessage) kommer i steg 2, UI i steg 7. Vurdert mot KommandoTask
+// (personlige to-dos i kommando/-appen, se scripts/add-sak-tabell-2026-08-16.ts
+// for begrunnelsen om hvorfor den IKKE gjenbrukes): Sak dekker et helt annet
+// domene (innkommende kommunikasjon på tvers av kanaler, med SLA og
+// foreslått svar), så en ny modell er riktigere enn å overlaste KommandoTask.
+enum SakKanal {
+  EPOST
+  SMS
+  IMESSAGE
+  TELEGRAM
+  ANROP
+  KALENDER
+  TASK
+}
+
+enum SakStatus {
+  VENTER
+  GODKJENT
+  AVVIST
+  UTFORT
+  UTLOPT
+}
+
+model Sak {
+  id            String    @id @default(cuid())
+  kanal         SakKanal
+  avsender      String?
+  emne          String?
+  innhold       String    @db.Text
+  foreslattSvar String?   @db.Text
+  status        SakStatus @default(VENTER)
+  kildeId       String? // ekstern id (Gmail message-id, Telegram update-id, etc.)
+  frist         DateTime? // SLA-frist — default 6 timer fra opprettet
+  opprettet     DateTime  @default(now())
+  oppdatert     DateTime  @updatedAt
+  provenance    Json? // hvilken agent/kilde som opprettet saken
+
+  @@index([status, frist])
+  @@index([kanal, status])
+  @@map("saker")
+}
