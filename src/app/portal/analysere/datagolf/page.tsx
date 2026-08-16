@@ -1,0 +1,33 @@
+/**
+ * DataGolf under Analyse (T6, 2026-08-16) — flyttet fra /portal/datagolf per
+ * beslutningen «DataGolf-skjermene skal inn i PlayerHQ» (Anders 2026-08-04,
+ * plassering valgt 2026-08-16: fane/inngang i Analyse). V2Shell leverer
+ * chrome-en (IkonRail/BunnNav), DataGolfV2 rendrer innholds-stacken.
+ *
+ * Auth + dataloader gjenbrukt: requirePortalUser + hentDataGolf (ekte data fra
+ * BrukerSammenligning + BrukerSgInput + PgaPlayerSeason).
+ */
+
+import { redirect } from "next/navigation";
+import { requirePortalUser } from "@/lib/auth/requirePortalUser";
+import { hentDataGolf } from "@/lib/portal-stats/datagolf-data";
+import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
+import { DataGolfV2 } from "@/components/portal/v2/DataGolfV2";
+import { TilbakeLenke } from "@/components/v2";
+
+export const dynamic = "force-dynamic";
+
+export default async function AnalysereDataGolfPage() {
+  const user = await requirePortalUser({ kreverTilgang: "TALENT" });
+  if (user.role === "GUEST") redirect("/admin/kalender");
+  if (user.role === "PARENT") redirect("/forelder");
+
+  const data = await hentDataGolf(user.id);
+
+  return (
+    <V2Shell bredde="kolonne" aktiv="analyse" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
+      <TilbakeLenke href="/portal/analysere">Analyse</TilbakeLenke>
+      <DataGolfV2 data={data} spillerNavn={user.name ?? undefined} />
+    </V2Shell>
+  );
+}
