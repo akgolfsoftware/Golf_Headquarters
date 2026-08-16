@@ -29,7 +29,7 @@ export default async function AbonnementPage({
   searchParams: Promise<{ ok?: string; cancelled?: string; avbestilt?: string }>;
 }) {
   const sp = await searchParams;
-  const user = await requirePortalUser();
+  const user = await requirePortalUser({ kreverTilgang: "INGEN" });
   if (user.role === "PARENT") redirect("/forelder");
   if (user.role === "GUEST") redirect("/admin/kalender");
 

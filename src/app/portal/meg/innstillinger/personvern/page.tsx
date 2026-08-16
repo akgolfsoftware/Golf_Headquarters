@@ -17,7 +17,7 @@ import { PersonvernActions } from "./personvern-actions";
 export const dynamic = "force-dynamic";
 
 export default async function PersonvernPage() {
-  const user = await requirePortalUser();
+  const user = await requirePortalUser({ kreverTilgang: "INGEN" });
 
   const samtykke = await hentSamtykkeStatus(user.id);
   const krevesForesatt = maaHaForesattSamtykke(user);

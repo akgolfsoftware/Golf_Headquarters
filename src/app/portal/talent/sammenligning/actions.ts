@@ -10,7 +10,7 @@ import { prisma } from "@/lib/prisma";
  * under nøkkelen `talent.anonymiserSammenligning` (boolean).
  */
 export async function toggleAnonymiser(neste: boolean) {
-  const user = await requirePortalUser({ allow: ["PLAYER"] });
+  const user = await requirePortalUser({ kreverTilgang: "TALENT", allow: ["PLAYER"] });
 
   const eksisterende =
     user.preferences && typeof user.preferences === "object" && !Array.isArray(user.preferences)

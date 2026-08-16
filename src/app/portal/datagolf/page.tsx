@@ -17,7 +17,7 @@ import { TilbakeLenke } from "@/components/v2";
 export const dynamic = "force-dynamic";
 
 export default async function V2DataGolfPreviewPage() {
-  const user = await requirePortalUser();
+  const user = await requirePortalUser({ kreverTilgang: "TALENT" });
   if (user.role === "GUEST") redirect("/admin/kalender");
   if (user.role === "PARENT") redirect("/forelder");
 

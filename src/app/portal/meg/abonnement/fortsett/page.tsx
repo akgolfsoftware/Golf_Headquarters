@@ -14,7 +14,7 @@ import { MegFortsettV2 } from "@/components/portal/v2/MegFortsettV2";
 export const dynamic = "force-dynamic";
 
 export default async function FortsettPage() {
-  const user = await requirePortalUser();
+  const user = await requirePortalUser({ kreverTilgang: "INGEN" });
 
   const tilbud = await prisma.winbackTilbud.findFirst({
     where: { userId: user.id, status: "TILBUDT" },

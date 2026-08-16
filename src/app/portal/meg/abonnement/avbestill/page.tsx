@@ -25,7 +25,7 @@ function datoDag(d: Date) {
 }
 
 export default async function AvbestillPage() {
-  const user = await requirePortalUser();
+  const user = await requirePortalUser({ kreverTilgang: "INGEN" });
   // A1: vis raden med Stripe-kobling (den som faktisk kan avbestilles).
   const subscription = await prisma.subscription.findFirst({
     where: { userId: user.id, stripeSubscriptionId: { not: null } },

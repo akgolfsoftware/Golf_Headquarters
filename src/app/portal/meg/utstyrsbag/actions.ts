@@ -27,7 +27,7 @@ function rens(v: string | undefined): string | null {
 }
 
 export async function lagreUtstyrsbag(data: UtstyrsbagInput): Promise<void> {
-  const user = await requirePortalUser({
+  const user = await requirePortalUser({ kreverTilgang: "INGEN",
     allow: ["PLAYER", "COACH", "ADMIN"],
   });
 
