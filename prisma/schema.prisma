@@ -1144,6 +1144,11 @@ model TrainingPlanSession {
   maalsetning   String?
   status        SessionStatus       @default(PLANNED)
   liveSnapshot  Json? // Løpende live-fremdrift (reps/tid per drill). Nulles ved completeSession.
+  // G3: kildesporing for gruppeutrulling — satt når økten ble opprettet av en
+  // gruppe-malutrulling (coachApplyTemplateToGroup). Null = spillerens egen /
+  // individuell coach-økt. Plain FK → groups.id (ON DELETE SET NULL i DDL;
+  // ingen @relation — jf. gotcha-regelen for additive endringer).
+  sourceGroupId String?
   createdAt     DateTime            @default(now())
   updatedAt     DateTime            @updatedAt
 
@@ -1153,6 +1158,7 @@ model TrainingPlanSession {
   clubsPracticed ClubsPracticed[]
 
   @@index([planId, scheduledAt])
+  @@index([sourceGroupId])
   @@map("training_plan_sessions")
 }
 
@@ -2906,10 +2912,16 @@ model PeriodBlock {
   // JSON — zod-valideres ved lesing (lib/workbench/perioder.ts).
   weeklySessionBudget Json?
   notes        String?
+  // G3: kildesporing for gruppeutrulling — satt når perioden ble rullet ut fra
+  // en gruppes årsplan (coachRullUtGruppeAarsplan). Null = spillerens egen.
+  // Plain FK → groups.id (ON DELETE SET NULL i DDL; ingen @relation for å
+  // holde endringen isolert — jf. gotcha-regelen for additive endringer).
+  sourceGroupId String?
 
   seasonPlan SeasonPlan @relation(fields: [seasonPlanId], references: [id], onDelete: Cascade)
 
   @@index([seasonPlanId])
+  @@index([sourceGroupId])
   @@map("period_blocks")
 }
 

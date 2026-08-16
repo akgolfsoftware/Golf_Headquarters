@@ -3,9 +3,9 @@
 /**
  * Å3 · «Rull ut mal til gruppa» — planleggings-pyramidens masseoperasjon:
  * velg planmal + antall uker + startuke → alle medlemmene får ukene lagt inn
- * i én operasjon (coachApplyTemplateToGroup). Uker der en spiller alt har
- * plan-økter hoppes over og rapporteres ærlig (aldri overskriving).
- * Kun v2-komponenter.
+ * i én operasjon (coachApplyTemplateToGroup). Dedup PER ØKT (G3): økter som
+ * kolliderer med en annen kilde hoppes over og rapporteres ærlig; re-kjøring
+ * av samme gruppe er stille idempotent (aldri overskriving). Kun v2-komponenter.
  */
 
 import { useState } from "react";
@@ -32,7 +32,7 @@ export function RullUtMalPanel({ groupId, maler, antallMedlemmer }: {
   const [start, setStart] = useState<"0" | "1">("1");
   const [kjorer, setKjorer] = useState(false);
   const [resultat, setResultat] = useState<string | null>(null);
-  const [hoppet, setHoppet] = useState<{ navn: string; uke: number }[]>([]);
+  const [hoppet, setHoppet] = useState<{ navn: string; uke: number; okt?: string; grunn?: "KRYSSKILDE" | "FEIL" }[]>([]);
   const [feil, setFeil] = useState<string | null>(null);
 
   const valgtMal = maler.find((m) => m.id === malId) ?? null;
@@ -119,7 +119,7 @@ export function RullUtMalPanel({ groupId, maler, antallMedlemmer }: {
             </div>
           </div>
           <span style={{ fontFamily: T.mono, fontSize: 9, color: T.mut }}>
-            Uker der en spiller allerede har planlagte økter hoppes over — ingenting overskrives.
+            Økter som kolliderer med noe spilleren alt har hoppes over — ingenting overskrives.
           </span>
 
           {feil && <span style={{ fontFamily: T.ui, fontSize: 12, color: T.down }}>{feil}</span>}
@@ -130,7 +130,13 @@ export function RullUtMalPanel({ groupId, maler, antallMedlemmer }: {
               </span>
               {hoppet.length > 0 && (
                 <span style={{ fontFamily: T.mono, fontSize: 9.5, color: T.mut }}>
-                  Hoppet over (hadde alt økter): {hoppet.map((h) => `${h.navn} (uke +${h.uke})`).join(" · ")}
+                  Hoppet over: {hoppet
+                    .map((h) =>
+                      h.grunn === "FEIL"
+                        ? `${h.navn} (uke +${h.uke} · feil)`
+                        : `${h.navn} (uke +${h.uke}${h.okt ? ` · ${h.okt}` : ""} · kolliderte)`,
+                    )
+                    .join(" · ")}
                 </span>
               )}
             </div>
