@@ -25,7 +25,7 @@ export async function resolveCoachIdForPlayer(
   if (explicitCoachId) return explicitCoachId;
 
   const membership = await prisma.groupMember.findFirst({
-    where: { userId: playerId },
+    where: { userId: playerId, endedAt: null },
     include: { group: { select: { coachId: true } } },
   });
   if (membership?.group.coachId) return membership.group.coachId;

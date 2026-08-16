@@ -388,7 +388,7 @@ export async function loadWorkbenchData(
         })
       : Promise.resolve([] as { id: string }[]),
     prisma.groupMember.findMany({
-      where: { userId },
+      where: { userId, endedAt: null },
       select: {
         group: {
           select: {

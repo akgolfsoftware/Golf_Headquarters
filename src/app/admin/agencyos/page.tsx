@@ -52,7 +52,7 @@ export default async function V2CockpitPage() {
     }),
     prisma.group.findMany({
       where: user.role === "COACH" ? { coachId: user.id } : {},
-      select: { id: true, name: true, _count: { select: { members: true } } },
+      select: { id: true, name: true, _count: { select: { members: { where: { endedAt: null } } } } },
       orderBy: { name: "asc" },
     }),
   ]);

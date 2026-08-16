@@ -61,16 +61,32 @@ export async function leggTilGruppemedlem(
   if (!spiller || spiller.deletedAt) return { ok: false, feil: "Fant ikke spilleren." };
   if (spiller.role !== "PLAYER") return { ok: false, feil: "Bare spillere kan legges til i en gruppe." };
 
-  try {
-    await prisma.groupMember.create({
-      data: { groupId, userId },
+  // Soft-end-modellen (plan G1): raden per (groupId, userId) er unik og
+  // gjenbrukes — re-innmelding nuller endedAt og stempler nytt joinedAt.
+  const eksisterende = await prisma.groupMember.findUnique({
+    where: { groupId_userId: { groupId, userId } },
+    select: { id: true, endedAt: true },
+  });
+  if (eksisterende && eksisterende.endedAt === null) {
+    return { ok: false, feil: "Spilleren er allerede medlem av gruppen." };
+  }
+  if (eksisterende) {
+    await prisma.groupMember.update({
+      where: { id: eksisterende.id },
+      data: { endedAt: null, joinedAt: new Date() },
     });
-  } catch (e) {
-    // P2002: unique constraint — spilleren er allerede medlem.
-    if (e instanceof Prisma.PrismaClientKnownRequestError && e.code === "P2002") {
-      return { ok: false, feil: "Spilleren er allerede medlem av gruppen." };
+  } else {
+    try {
+      await prisma.groupMember.create({
+        data: { groupId, userId },
+      });
+    } catch (e) {
+      // P2002: unique constraint — kappløp med et parallelt kall.
+      if (e instanceof Prisma.PrismaClientKnownRequestError && e.code === "P2002") {
+        return { ok: false, feil: "Spilleren er allerede medlem av gruppen." };
+      }
+      throw e;
     }
-    throw e;
   }
 
   await audit({
@@ -94,17 +110,19 @@ export async function fjernGruppemedlem(
   if (!coach) return { ok: false, feil: "Ikke tilgang." };
   if (!(await eierGruppen(coach, groupId))) return { ok: false, feil: "Fant ikke gruppen." };
 
-  try {
-    await prisma.groupMember.delete({
-      where: { groupId_userId: { groupId, userId } },
-    });
-  } catch (e) {
-    // P2025: record not found — medlemskapet finnes ikke (lenger).
-    if (e instanceof Prisma.PrismaClientKnownRequestError && e.code === "P2025") {
-      return { ok: false, feil: "Spilleren er ikke medlem av gruppen." };
-    }
-    throw e;
+  // Soft-end (plan G1): raden beholdes for historikk, endedAt markerer
+  // utmeldingen. Alle «medlem nå»-spørringer filtrerer på endedAt: null.
+  const medlem = await prisma.groupMember.findUnique({
+    where: { groupId_userId: { groupId, userId } },
+    select: { id: true, endedAt: true },
+  });
+  if (!medlem || medlem.endedAt !== null) {
+    return { ok: false, feil: "Spilleren er ikke medlem av gruppen." };
   }
+  await prisma.groupMember.update({
+    where: { id: medlem.id },
+    data: { endedAt: new Date() },
+  });
 
   await audit({
     actorId: coach.id,

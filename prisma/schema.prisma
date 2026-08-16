@@ -2895,12 +2895,19 @@ model TournamentEntry {
 model Group {
   id              String   @id @default(cuid())
   name            String
+  // Kanonisk oppslagsnøkkel (src/lib/domain/grupper.ts) — null for adhoc-grupper.
+  slug            String?  @unique
   // A1 | A2 | A3 | A4 | A5
   level           String?
   coachId         String?
   // kontrakt | program | adhoc — datakilde for GroupCards tre varianter.
   // NB: GroupSchedule.kind er et annet, urelatert felt (SAMLING/HELDAGSSAMLING).
   kind            String   @default("adhoc")
+  // PlayerProgram-kobling for kanoniske grupper — null for adhoc.
+  program         PlayerProgram?
+  // Administrert av AK Golf: aktivt PLAYER-medlemskap gir gratis full
+  // PlayerHQ-tilgang (resolveTilgang). Settes kun av bootstrap/admin.
+  managedByAkGolf Boolean  @default(false)
   maxParticipants Int?     // max deltagere for gruppe-treninger
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
@@ -3007,12 +3014,18 @@ model GroupMember {
   // PLAYER | ASSISTANT
   role     String   @default("PLAYER")
   joinedAt DateTime @default(now())
+  // null = aktivt medlemskap; satt = utmeldt (soft-end — raden beholdes for
+  // historikk, re-innmelding nuller feltet). Alle spørringer som mener
+  // «medlem nå» MÅ filtrere på endedAt: null — bruk fragmentene i
+  // src/lib/domain/grupper.ts, aldri håndskrevne where-klausuler.
+  endedAt  DateTime?
 
   group Group @relation(fields: [groupId], references: [id], onDelete: Cascade)
   user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([groupId, userId])
   @@index([userId])
+  @@index([groupId, role, endedAt])
   @@map("group_members")
 }
 

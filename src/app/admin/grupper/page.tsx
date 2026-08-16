@@ -59,7 +59,7 @@ export default async function V2GrupperPage() {
     select: {
       id: true,
       name: true,
-      _count: { select: { members: true } },
+      _count: { select: { members: { where: { endedAt: null } } } },
       schedules: {
         where: { recurring: "WEEKLY" },
         select: { id: true, title: true, startAt: true, endAt: true, location: true },

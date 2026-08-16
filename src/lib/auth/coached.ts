@@ -1,5 +1,6 @@
 import type { Prisma } from "@/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
+import { aktivtSpillerMedlemskapWhere } from "@/lib/domain/grupper";
 
 /**
  * Tilgangsskillet selvbetjent vs. coachet (I0 — LÅST forretningsregel,
@@ -36,7 +37,9 @@ export function coachedPlayerWhere(): Prisma.UserWhereInput {
           some: { endedAt: null, program: { not: "PLATFORM_ONLY" } },
         },
       },
-      { groupMemberships: { some: {} } },
+      // Kun AKTIVE spiller-medlemskap (endedAt null) — utmeldte spillere skal
+      // ut av AgencyOS samme øyeblikk som de meldes ut (soft-end, plan G1).
+      { groupMemberships: { some: aktivtSpillerMedlemskapWhere() } },
     ],
   };
 }
@@ -75,7 +78,11 @@ export function coachScopedPlayerWhere(viewer: {
           some: { endedAt: null, program: { not: "PLATFORM_ONLY" }, coachId: viewer.id },
         },
       },
-      { groupMemberships: { some: { group: { coachId: viewer.id } } } },
+      {
+        groupMemberships: {
+          some: { ...aktivtSpillerMedlemskapWhere(), group: { coachId: viewer.id } },
+        },
+      },
     ],
   };
 }

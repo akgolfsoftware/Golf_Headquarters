@@ -29,7 +29,7 @@ export default async function GruppeWorkbenchPage({ params }: { params: Promise<
     select: {
       id: true,
       name: true,
-      _count: { select: { members: true } },
+      _count: { select: { members: { where: { endedAt: null } } } },
       schedules: { select: { startAt: true, endAt: true, location: true }, orderBy: { startAt: "asc" }, take: 6 },
     },
   });
