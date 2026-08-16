@@ -22,6 +22,7 @@ export * from "./spesialviz";
 export * from "./utviklingsplan";
 export * from "./fysisk";
 export * from "./wb-composer";
+export * from "./composer";
 export * from "./samtale";
 export * from "./dropzone";
 export * from "./bunn-ark";

@@ -41,6 +41,7 @@ import { useCaddieChat } from "@/components/admin/caddie/use-caddie-chat";
 import { CaddieApprovalModal } from "@/components/admin/caddie/caddie-approval-modal";
 import type { CaddieToolCall } from "@/components/admin/caddie/types";
 import { SamtaleBoble, SamtaleSkriver } from "@/components/v2/samtale";
+import { Composer } from "@/components/v2/composer";
 import { TemaHeaderKnapp } from "@/components/v2/tema";
 import { useToppbarHoyde } from "@/components/v2/toppbar-hoyde";
 import { StallOkterWidget } from "@/components/widgets";
@@ -89,9 +90,7 @@ export function KonsollChat({
 }) {
   const mobil = useErMobil();
   const [artefaktApen, setArtefaktApen] = useState(false);
-  const [input, setInput] = useState("");
   const bunnRef = useRef<HTMLDivElement>(null);
-  const taRef = useRef<HTMLTextAreaElement>(null);
   // Toppbaren er sticky over dokumentrullen — publiser høyden så anker-hopp
   // lander under den (se components/v2/toppbar-hoyde.tsx).
   const toppRef = useToppbarHoyde<HTMLElement>();
@@ -140,27 +139,7 @@ export function KonsollChat({
     const t = tekst.trim();
     if (!t || busy || !kanChatte) return;
     harSendt.current = true;
-    setInput("");
     await sendMessage(t);
-  }
-
-  /** Fasitens `/`- og `@`-knapper (`toggle-slash`/`toggle-at`): setter inn
-   * tegnet ved markøren og gir feltet fokus tilbake — samme mønster som
-   * kommando-/spillerchip-ene i agencyos-konsoll-desktop.html. */
-  function settInnTegn(tegn: string) {
-    const el = taRef.current;
-    if (!el) {
-      setInput((v) => v + tegn);
-      return;
-    }
-    const start = el.selectionStart ?? el.value.length;
-    const end = el.selectionEnd ?? el.value.length;
-    const neste = input.slice(0, start) + tegn + input.slice(end);
-    setInput(neste);
-    requestAnimationFrame(() => {
-      el.focus();
-      el.selectionStart = el.selectionEnd = start + tegn.length;
-    });
   }
 
   // ── Avledet ────────────────────────────────────────────────────────
@@ -598,9 +577,9 @@ export function KonsollChat({
             nøyaktig oppå bunnfanenes overkant — 6+56+10 px nav + safe-area +
             cookie-bannerets høyde (gotchas §Cookie-banneret). På desktop er
             midtkolonnen gitt viewport-høyde, så `marginTop:auto` + sticky
-            faktisk fester feltet i bunnen. */}
+            faktisk fester feltet i bunnen. Selve chromet er den delte
+            `Composer`-komponenten (PP-B3) — wrapperen her eier KUN plassering. */}
         <div
-          data-paper-composer
           style={{
             position: mobil ? "fixed" : "sticky",
             ...(mobil
@@ -611,195 +590,52 @@ export function KonsollChat({
                 }
               : { bottom: 0 }),
             zIndex: 6,
-            borderTop: `1px solid ${T.border}`,
-            background: T.bg,
-            padding: "8px 12px 12px",
             marginTop: "auto",
           }}
         >
-          <div style={{ maxWidth: 760, margin: "0 auto", display: "flex", flexDirection: "column", gap: 8 }}>
-            {/* Fasitens `.box` + `.boxbar` (agencyos-konsoll-desktop.html):
-                felt, deretter mikrofon · / · @ · spacer · Send i én rad. */}
-            <div
-              style={{
-                background: T.bg,
-                border: `1px solid ${T.border}`,
-                borderRadius: T.rCard,
-                padding: 10,
-              }}
-            >
-              <label htmlFor="konsoll-input" className="sr-only" style={srOnly}>
-                Skriv til AgencyOS
-              </label>
-              <textarea
-                id="konsoll-input"
-                ref={taRef}
-                value={input}
-                disabled={!kanChatte}
-                onChange={(e) => setInput(e.target.value)}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter" && !e.shiftKey) {
-                    e.preventDefault();
-                    void send(input);
-                  }
-                }}
-                rows={1}
-                placeholder={
-                  kanChatte
-                    ? "Skriv hva du vil ha gjort. / for kommandoer, @ for spiller."
-                    : "Chat i konsollen er foreløpig åpen for administratorer."
-                }
-                data-od-id="composer-input"
+          <Composer
+            mobil={mobil}
+            label="Skriv til AgencyOS"
+            placeholder={
+              kanChatte
+                ? "Skriv hva du vil ha gjort. / for kommandoer, @ for spiller."
+                : "Chat i konsollen er foreløpig åpen for administratorer."
+            }
+            onSend={send}
+            sender={busy}
+            disabled={!kanChatte}
+            kontekst={<>Ser: stallen · {data.activePlayersCount} spillere · {data.dayLabel}</>}
+            snarveier={{ slashLabel: "Sett inn kommando", atLabel: "Nevn en spiller" }}
+            maksBredde={760}
+            verktoy={
+              /* Mikrofon: ingen fangst-/diktatmekanisme finnes i AgencyOS i
+                 dag (kun FangstSheet i PlayerHQ, koblet til spillerens
+                 øktnotat — ikke konsollens tråd). Synlig, ærlig deaktivert
+                 fremfor utelatt, som fasiten krever. */
+              <button
+                type="button"
+                disabled
+                title="Diktering er ikke koblet til konsollen ennå"
+                aria-label="Start fangst og diktat"
+                data-od-id="open-capture"
                 style={{
-                  width: "100%",
-                  border: "none",
-                  outline: "none",
-                  resize: "none",
-                  background: "transparent",
-                  color: T.fg,
-                  fontFamily: T.bodyFont,
-                  fontSize: 14.5,
-                  lineHeight: 1.5,
-                  minHeight: 32,
-                }}
-              />
-              <div style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 8 }}>
-                {/* Mikrofon: ingen fangst-/diktatmekanisme finnes i AgencyOS i
-                    dag (kun FangstSheet i PlayerHQ, koblet til spillerens
-                    øktnotat — ikke konsollens tråd). Synlig, ærlig deaktivert
-                    fremfor utelatt, som fasiten krever. */}
-                <button
-                  type="button"
-                  disabled
-                  title="Diktering er ikke koblet til konsollen ennå"
-                  aria-label="Start fangst og diktat"
-                  data-od-id="open-capture"
-                  style={{
-                    width: 40,
-                    height: 40,
-                    flex: "none",
-                    display: "inline-flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    background: T.panel2,
-                    border: `1px solid ${T.border}`,
-                    borderRadius: T.rTag,
-                    color: T.mut,
-                    cursor: "not-allowed",
-                  }}
-                >
-                  <Icon name="mic" size={18} strokeWidth={1.6} />
-                </button>
-                <button
-                  type="button"
-                  onClick={() => settInnTegn("/")}
-                  disabled={!kanChatte}
-                  aria-label="Sett inn kommando"
-                  data-od-id="toggle-slash"
-                  className="v2-press v2-focus"
-                  style={{
-                    minHeight: 36,
-                    minWidth: 36,
-                    padding: "0 12px",
-                    flex: "none",
-                    fontFamily: T.ui,
-                    fontSize: 13,
-                    fontWeight: 500,
-                    color: T.fg,
-                    background: "transparent",
-                    border: `1px solid ${T.border}`,
-                    borderRadius: T.rTag,
-                    cursor: kanChatte ? "pointer" : "default",
-                    opacity: kanChatte ? 1 : 0.45,
-                  }}
-                >
-                  /
-                </button>
-                <button
-                  type="button"
-                  onClick={() => settInnTegn("@")}
-                  disabled={!kanChatte}
-                  aria-label="Nevn en spiller"
-                  data-od-id="toggle-at"
-                  className="v2-press v2-focus"
-                  style={{
-                    minHeight: 36,
-                    minWidth: 36,
-                    padding: "0 12px",
-                    flex: "none",
-                    fontFamily: T.ui,
-                    fontSize: 13,
-                    fontWeight: 500,
-                    color: T.fg,
-                    background: "transparent",
-                    border: `1px solid ${T.border}`,
-                    borderRadius: T.rTag,
-                    cursor: kanChatte ? "pointer" : "default",
-                    opacity: kanChatte ? 1 : 0.45,
-                  }}
-                >
-                  @
-                </button>
-                <span style={{ flex: 1 }} />
-                {/* Fasitens `.btn.ink` — blekkfylt tekstknapp, ikke pil-CTA. */}
-                <button
-                  type="button"
-                  onClick={() => void send(input)}
-                  disabled={!(kanChatte && Boolean(input.trim()) && !busy)}
-                  data-od-id="send-message"
-                  className="v2-press v2-focus"
-                  style={{
-                    minHeight: 36,
-                    padding: "0 18px",
-                    flex: "none",
-                    fontFamily: T.ui,
-                    fontSize: 13,
-                    fontWeight: 500,
-                    color: kanChatte && input.trim() && !busy ? T.onCta : T.mut,
-                    background: kanChatte && input.trim() && !busy ? T.cta : T.panel3,
-                    border: `1px solid ${kanChatte && input.trim() && !busy ? T.cta : T.border}`,
-                    borderRadius: T.rTag,
-                    cursor: kanChatte && input.trim() && !busy ? "pointer" : "default",
-                  }}
-                >
-                  Send
-                </button>
-              </div>
-            </div>
-
-            {/* Fasitens `.ctxline` — kontekst-pill + tastatur-hint. */}
-            <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap", padding: "0 4px" }}>
-              <span
-                data-od-id="toggle-context"
-                style={{
+                  width: 40,
+                  height: 40,
+                  flex: "none",
                   display: "inline-flex",
                   alignItems: "center",
-                  minHeight: 28,
-                  padding: "0 10px",
-                  fontFamily: T.mono,
-                  fontSize: 10.5,
-                  letterSpacing: "0.05em",
-                  color: T.mut,
+                  justifyContent: "center",
+                  background: T.panel2,
                   border: `1px solid ${T.border}`,
-                  borderRadius: T.rPill,
-                }}
-              >
-                Ser: stallen · {data.activePlayersCount} spillere · {data.dayLabel}
-              </span>
-              <span
-                style={{
-                  fontFamily: T.mono,
-                  fontSize: 10,
-                  fontWeight: 500,
-                  letterSpacing: "0.09em",
-                  textTransform: "uppercase",
+                  borderRadius: T.rTag,
                   color: T.mut,
+                  cursor: "not-allowed",
                 }}
               >
-                Enter sender · Shift+Enter ny linje
-              </span>
-            </div>
-          </div>
+                <Icon name="mic" size={18} strokeWidth={1.6} />
+              </button>
+            }
+          />
         </div>
       </div>
 
@@ -864,15 +700,6 @@ export function KonsollChat({
     </div>
   );
 }
-
-const srOnly: React.CSSProperties = {
-  position: "absolute",
-  width: 1,
-  height: 1,
-  overflow: "hidden",
-  clip: "rect(0 0 0 0)",
-  whiteSpace: "nowrap",
-};
 
 /** Fasitens .empty — ærlig tom tilstand med tre konkrete veier videre. */
 function TomKonsoll({ kanChatte, onForslag }: { kanChatte: boolean; onForslag: (s: string) => void }) {
