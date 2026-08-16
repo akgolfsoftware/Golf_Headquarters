@@ -361,6 +361,13 @@ model User {
   schoolYear         String?
   // Snittscore forrige sesong — brukes som baseline for fremgang.
   prevSeasonAvgScore Int?
+  // «Valgt coach» (plan G2): spillerens ENE valgte coach — settes av admin-UI
+  // (settValgtCoach) og backfill-scriptet, aldri implisitt. Plain FK mot
+  // users.id (ON DELETE SET NULL + indeks via scripts/add-primary-coach-
+  // 2026-08-16.ts — ingen @relation, kirurgisk endring per gotchas
+  // §Schema-endringer). resolveValgtCoachId i src/lib/domain/valgt-coach.ts
+  // er ENESTE lovlige leser — les aldri feltet direkte i flater/agenter.
+  primaryCoachId     String?
   // Kanonisk kobling til turneringsidentitet (PublicPlayer) — settes automatisk
   // ved registrering via navn-matching. Gir spilleren turneringshistorikk i profilen.
   publicPlayerId     String?   @unique
@@ -592,6 +599,8 @@ model User {
   // Performance: hot path — filtrere aktive spillere/coacher
   // (PlayerHQ-lister, CoachHQ-portefølje, talent-tracking).
   @@index([role, deletedAt])
+  // Valgt coach (G2): oppslag «hvilke spillere har denne coachen som valgt».
+  @@index([primaryCoachId])
   @@map("users")
 }
 
@@ -1144,6 +1153,11 @@ model TrainingPlanSession {
   maalsetning   String?
   status        SessionStatus       @default(PLANNED)
   liveSnapshot  Json? // Løpende live-fremdrift (reps/tid per drill). Nulles ved completeSession.
+  // G3: kildesporing for gruppeutrulling — satt når økten ble opprettet av en
+  // gruppe-malutrulling (coachApplyTemplateToGroup). Null = spillerens egen /
+  // individuell coach-økt. Plain FK → groups.id (ON DELETE SET NULL i DDL;
+  // ingen @relation — jf. gotcha-regelen for additive endringer).
+  sourceGroupId String?
   createdAt     DateTime            @default(now())
   updatedAt     DateTime            @updatedAt
 
@@ -1153,6 +1167,7 @@ model TrainingPlanSession {
   clubsPracticed ClubsPracticed[]
 
   @@index([planId, scheduledAt])
+  @@index([sourceGroupId])
   @@map("training_plan_sessions")
 }
 
@@ -2906,10 +2921,16 @@ model PeriodBlock {
   // JSON — zod-valideres ved lesing (lib/workbench/perioder.ts).
   weeklySessionBudget Json?
   notes        String?
+  // G3: kildesporing for gruppeutrulling — satt når perioden ble rullet ut fra
+  // en gruppes årsplan (coachRullUtGruppeAarsplan). Null = spillerens egen.
+  // Plain FK → groups.id (ON DELETE SET NULL i DDL; ingen @relation for å
+  // holde endringen isolert — jf. gotcha-regelen for additive endringer).
+  sourceGroupId String?
 
   seasonPlan SeasonPlan @relation(fields: [seasonPlanId], references: [id], onDelete: Cascade)
 
   @@index([seasonPlanId])
+  @@index([sourceGroupId])
   @@map("period_blocks")
 }
 

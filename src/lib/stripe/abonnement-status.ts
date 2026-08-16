@@ -18,12 +18,20 @@ import type { SubscriptionStatus } from "@/generated/prisma/client";
  * Ren flytting — reglene er identiske med originalen.
  */
 
-/** Stripe sin status → vår enum. Ukjent status behandles som ACTIVE (som før). */
+/**
+ * Stripe sin status → vår enum. Ukjent status behandles som ACTIVE (som før).
+ * A2: `trialing` mapper nå til TRIALING (var ACTIVE) — vinn-tilbake-broen
+ * (nytt PlayerHQ-abonnement som starter når coaching-perioden utløper) skal
+ * vises ærlig som «starter {dato}». Tilgang: harAktivPakke godtar TRIALING;
+ * credits gjør BEVISST ikke (kanBrukeCredits) — en pakke i prøvetid har ikke
+ * betalt for timer ennå.
+ */
 export function mapStripeStatus(s: string): SubscriptionStatus {
   switch (s) {
     case "active":
-    case "trialing":
       return "ACTIVE";
+    case "trialing":
+      return "TRIALING";
     case "past_due":
     case "unpaid":
       return "PAST_DUE";
@@ -47,6 +55,10 @@ export function effektivAbonnementStatus(
   stripeStatus: SubscriptionStatus,
   cancelAtPeriodEnd: boolean | null | undefined,
 ): SubscriptionStatus {
-  if (stripeStatus === "ACTIVE" && cancelAtPeriodEnd) return "CANCELLED";
+  // A2: også en TRIALING-rad (vinn-tilbake-broen) kan sies opp før start —
+  // da skal den vises som CANCELLED, ikke bli stående som «starter snart».
+  if ((stripeStatus === "ACTIVE" || stripeStatus === "TRIALING") && cancelAtPeriodEnd) {
+    return "CANCELLED";
+  }
   return stripeStatus;
 }

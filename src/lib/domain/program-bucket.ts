@@ -9,6 +9,10 @@
  *
  * PLATFORM_ONLY er bevisst null: det er en plattformkonto uten program, ikke
  * et fjerde program.
+ *
+ * NB: dette er en VISNINGS-bøtte (filtre/etiketter). Skal du finne spillerens
+ * COACH (varsling, V2-økter, meldinger), bruk resolveValgtCoachId i
+ * ./valgt-coach.ts — aldri utled coach fra bøtta her.
  */
 
 import type { PlayerProgram } from "@/generated/prisma/client";
