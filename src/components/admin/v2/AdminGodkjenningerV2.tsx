@@ -11,6 +11,10 @@
  * («Køen i tall») på desktop ≥1024px. Tilstand-riggbaren i fasiten er
  * demo-chrome og er ikke bygget.
  *
+ * A2 (16.08.2026): panelet er master–detalj — klikk på et saks-kort velger
+ * saken inn i inspektørpanelet (SakInspektor, samme handlinger/server actions
+ * som kortet); ingen valgt → fasitens «Køen i tall». Mobil uendret.
+ *
  * Avvik fra fasiten (data-ærlighet, se sluttrapport):
  *  - «Utsett» finnes ikke — ingen server action for å utsette en PlanAction.
  *  - «Rediger utkast» (caddie) er slått sammen med «Åpne i Caddie» — det
@@ -27,7 +31,16 @@
 import { useEffect, useMemo, useState, useTransition } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Caps, Icon, T } from "@/components/v2";
+import {
+  Caps,
+  Icon,
+  Inspektorpanel,
+  InspektorBlokk,
+  InspektorKpi,
+  MasterDetalj,
+  useInspektorSynlig,
+  T,
+} from "@/components/v2";
 import { handlingstypeLabel } from "@/lib/labels/handlingstyper";
 import { acceptPlanAction, rejectPlanAction } from "@/lib/agents/actions";
 import { avvisProaktivtForslag, godkjennCaddieDraft } from "@/app/admin/agencyos/caddie/dashbord/actions";
@@ -230,7 +243,9 @@ function SakHandlinger({ row, mobile }: { row: AdminGodkjenningV2Row; mobile: bo
           ];
 
   return (
-    <div style={{ marginTop: 12, opacity: pending ? 0.5 : 1 }}>
+    /* stopPropagation: kortet bak er klikkbart (velger sak i inspektørpanelet)
+       — en handling skal aldri også endre valget. */
+    <div onClick={(e) => e.stopPropagation()} style={{ marginTop: 12, opacity: pending ? 0.5 : 1 }}>
       <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
         {knapper.map((k) =>
           k.href ? (
@@ -363,18 +378,35 @@ function DelDigestKnapp() {
   );
 }
 
-function SakKort({ row, forste, mobile }: { row: AdminGodkjenningV2Row; forste: boolean; mobile: boolean }) {
+function SakKort({
+  row,
+  markert,
+  mobile,
+  kanVelges,
+  onVelg,
+}: {
+  row: AdminGodkjenningV2Row;
+  /** Fasitens `.kort.forste`-kant — følger valgt sak, ellers første i køen. */
+  markert: boolean;
+  mobile: boolean;
+  /** true når inspektørpanelet er synlig (≥1024px) — klikk velger saken inn i panelet. */
+  kanVelges: boolean;
+  onVelg: (id: string) => void;
+}) {
   const kilde = row.kilde ?? "agent";
   const kildeLabel = kilde === "caddie" ? "caddie-utkast · melding" : kilde === "forespørsel" ? "forespørsel · fra spiller" : "agent · handlingssenter";
   return (
     <article
       data-od-id={`panel-godkjenning-${row.id}`}
+      aria-current={markert ? "true" : undefined}
+      onClick={kanVelges ? () => onVelg(row.id) : undefined}
       style={{
         background: T.panel,
-        border: `1px solid ${forste ? T.fg : T.border}`,
+        border: `1px solid ${markert ? T.fg : T.border}`,
         borderRadius: T.rCard,
         padding: mobile ? "14px 15px" : "16px 18px",
-        boxShadow: forste ? `inset 3px 0 0 ${T.fg}` : undefined,
+        boxShadow: markert ? `inset 3px 0 0 ${T.fg}` : undefined,
+        cursor: kanVelges ? "pointer" : undefined,
       }}
     >
       <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: 8 }}>
@@ -409,7 +441,7 @@ function SakKort({ row, forste, mobile }: { row: AdminGodkjenningV2Row; forste: 
       )}
 
       {row.hvorfor && (
-        <details style={{ marginTop: 10 }}>
+        <details onClick={(e) => e.stopPropagation()} style={{ marginTop: 10 }}>
           <summary style={{ cursor: "pointer", fontFamily: T.ui, fontSize: 12, fontWeight: 600, color: T.mut }}>Hvorfor?</summary>
           <p style={{ margin: "6px 0 0", fontFamily: T.ui, fontSize: 12, lineHeight: 1.55, color: T.mut }}>{row.hvorfor}</p>
         </details>
@@ -420,33 +452,80 @@ function SakKort({ row, forste, mobile }: { row: AdminGodkjenningV2Row; forste: 
   );
 }
 
+/**
+ * Sak-inspektøren (A2) — valgt sak i 380px-panelet: nok til å FORSTÅ
+ * («Dette endres», «Hvorfor?») og AVGJØRE (samme handlinger som kortet,
+ * samme server actions). Rutefasit.md §Claude-følelsen: panelet forklarer og
+ * avgjør valgt sak — aldri en ny side. Ingen sak valgt → «Køen i tall»
+ * (fasitens panelinnhold i agencyos-godkjenninger.html).
+ */
+function SakInspektor({ row }: { row: AdminGodkjenningV2Row }) {
+  const kilde = row.kilde ?? "agent";
+  const kildeLabel = kilde === "caddie" ? "caddie-utkast · melding" : kilde === "forespørsel" ? "forespørsel · fra spiller" : "agent · handlingssenter";
+  return (
+    <Inspektorpanel
+      tittel={row.who}
+      ariaLabel={`Valgt sak: ${row.who}`}
+      tag={
+        row.urgent ? (
+          <span style={{ fontFamily: T.mono, fontSize: 10, fontWeight: 700, letterSpacing: "0.04em", textTransform: "uppercase", color: T.warn, border: `1px solid ${T.warn}`, borderRadius: T.rTag, padding: "2px 7px" }}>
+            Haster
+          </span>
+        ) : row.lowRisk ? (
+          <span style={{ fontFamily: T.mono, fontSize: 10, fontWeight: 700, letterSpacing: "0.04em", textTransform: "uppercase", color: T.mut, border: `1px solid ${T.border}`, borderRadius: T.rTag, padding: "2px 7px" }}>
+            Lavrisiko
+          </span>
+        ) : undefined
+      }
+    >
+      <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
+        <span style={{ fontFamily: T.mono, fontSize: 10, letterSpacing: "0.04em", textTransform: "uppercase", color: T.mut }}>{kildeLabel}</span>
+        <span style={{ marginLeft: "auto", fontFamily: T.mono, fontSize: 11, color: T.mut }}>{row.when}</span>
+      </div>
+
+      <div>
+        <h3 style={{ margin: 0, fontFamily: T.disp, fontSize: 14.5, fontWeight: 600, color: T.fg }}>{row.title}</h3>
+        {row.detail && (
+          <p style={{ margin: "6px 0 0", fontFamily: T.ui, fontSize: 12.5, lineHeight: 1.55, color: T.fg2 }}>{row.detail}</p>
+        )}
+        <div style={{ fontFamily: T.mono, fontSize: 10, color: T.mut, marginTop: 6 }}>{handlingstypeLabel(row.actionType)}</div>
+      </div>
+
+      {row.diffPreview && (
+        <div style={{ padding: "10px 14px", background: T.panel2, border: `1px solid ${T.borderS}`, borderRadius: T.rTag }}>
+          <span style={{ display: "block", fontFamily: T.mono, fontSize: 9, letterSpacing: "0.07em", textTransform: "uppercase", color: T.mut, marginBottom: 4 }}>
+            Dette endres
+          </span>
+          <span style={{ fontFamily: T.mono, fontSize: 12, color: T.fg, overflowWrap: "anywhere" }}>{row.diffPreview}</span>
+        </div>
+      )}
+
+      {row.hvorfor && (
+        <InspektorBlokk label="Hvorfor?">
+          <p style={{ margin: 0, fontFamily: T.ui, fontSize: 12, lineHeight: 1.55, color: T.mut }}>{row.hvorfor}</p>
+        </InspektorBlokk>
+      )}
+
+      <SakHandlinger row={row} mobile={false} />
+    </Inspektorpanel>
+  );
+}
+
 /** Fasitens aside — «Køen i tall»: KPI-rad, forklaring, kilder, bunn-CTA. */
 function KøenITall({ data }: { data: AdminGodkjenningerV2Data }) {
   const totalt = data.totalt ?? data.rows.length;
   const kilder = data.kilder ?? { agent: 0, caddie: 0, forespørsel: 0 };
   return (
-    <aside
-      aria-label="Køens tall"
-      style={{
-        position: "sticky",
-        top: 16,
-        display: "flex",
-        flexDirection: "column",
-        gap: 16,
-        background: T.panel,
-        border: `1px solid ${T.border}`,
-        borderRadius: T.rCard,
-        padding: 16,
-        minWidth: 0,
-      }}
+    <Inspektorpanel
+      tittel="Køen i tall"
+      ariaLabel="Køens tall"
+      fot={data.lowRiskCount > 0 ? <GodkjennLavRisikoKnapp count={data.lowRiskCount} full /> : undefined}
     >
-      <Caps>Køen i tall</Caps>
-
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
-        <Kpi label="Venter" verdi={String(totalt)} sub={`${kilder.agent} agent · ${kilder.caddie} caddie · ${kilder.forespørsel} fsp`} />
-        <Kpi label="Lavrisiko" verdi={String(data.lowRiskCount)} sub="kan godkjennes samlet" />
-        <Kpi label="Eldste" verdi={data.eldste?.dagerLabel ?? "—"} sub={data.eldste?.who ?? "Ingen i kø"} />
-        <Kpi label="Godkjent 7 dg" verdi={String(data.godkjent7Dager ?? 0)} sub={`${data.avvist7Dager ?? 0} avvist`} />
+        <InspektorKpi label="Venter" verdi={String(totalt)} sub={`${kilder.agent} agent · ${kilder.caddie} caddie · ${kilder.forespørsel} fsp`} />
+        <InspektorKpi label="Lavrisiko" verdi={String(data.lowRiskCount)} sub="kan godkjennes samlet" />
+        <InspektorKpi label="Eldste" verdi={data.eldste?.dagerLabel ?? "—"} sub={data.eldste?.who ?? "Ingen i kø"} />
+        <InspektorKpi label="Godkjent 7 dg" verdi={String(data.godkjent7Dager ?? 0)} sub={`${data.avvist7Dager ?? 0} avvist`} />
       </div>
 
       <div style={{ background: T.panel2, border: `1px solid ${T.borderS}`, borderRadius: T.rTag, padding: 12 }}>
@@ -457,26 +536,13 @@ function KøenITall({ data }: { data: AdminGodkjenningerV2Data }) {
         </p>
       </div>
 
-      <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-        <Caps size={9}>Kilder</Caps>
+      <InspektorBlokk label="Kilder">
         <KildeLinje label="Agent (PlanAction)" verdi={String(kilder.agent)} />
         <KildeLinje label="Caddie-utkast" verdi={String(kilder.caddie)} />
         <KildeLinje label="Økt-forespørsel" verdi={String(kilder.forespørsel)} />
         <KildeLinje label="E-postutkast" verdi="innboks" href="/admin/innboks" />
-      </div>
-
-      {data.lowRiskCount > 0 && <GodkjennLavRisikoKnapp count={data.lowRiskCount} full />}
-    </aside>
-  );
-}
-
-function Kpi({ label, verdi, sub }: { label: string; verdi: string; sub: string }) {
-  return (
-    <div style={{ background: T.panel2, border: `1px solid ${T.borderS}`, borderRadius: T.rTag, padding: 12, minWidth: 0 }}>
-      <Caps size={9}>{label}</Caps>
-      <div style={{ fontFamily: T.mono, fontSize: 22, fontWeight: 600, color: T.fg, marginTop: 6 }}>{verdi}</div>
-      <div style={{ fontFamily: T.ui, fontSize: 11, color: T.mut, marginTop: 2, overflowWrap: "anywhere" }}>{sub}</div>
-    </div>
+      </InspektorBlokk>
+    </Inspektorpanel>
   );
 }
 
@@ -499,8 +565,12 @@ function KildeLinje({ label, verdi, href }: { label: string; verdi: string; href
 
 export function AdminGodkjenningerV2({ data }: { data: AdminGodkjenningerV2Data }) {
   const mobile = useMediaQuery("(max-width: 767px)");
-  const visAside = useMediaQuery("(min-width: 1024px)");
+  const visPanel = useInspektorSynlig();
   const [filter, setFilter] = useState<FilterKey>("alle");
+  // A2: valgt sak fyller inspektørpanelet; ingen valgt → «Køen i tall» (fasitens
+  // panelinnhold). Klikk på valgt sak igjen går tilbake til køtallene. Godkjennes/
+  // avvises saken, forsvinner den fra rows og panelet faller tilbake av seg selv.
+  const [valgtId, setValgtId] = useState<string | null>(null);
 
   const kilder = data.kilder ?? { agent: 0, caddie: 0, forespørsel: 0 };
   const totalt = data.totalt ?? data.rows.length;
@@ -525,17 +595,13 @@ export function AdminGodkjenningerV2({ data }: { data: AdminGodkjenningerV2Data 
      den skal ikke dukke opp under kilde-filtrene for beslutninger. */
   const visRapport = rapport != null && (filter === "alle" || filter === "rapport");
 
+  const valgtSak = valgtId ? (data.rows.find((r) => r.id === valgtId) ?? null) : null;
+
   return (
-    <div
+    <MasterDetalj
       data-paper-slug="agencyos-godkjenninger"
       data-od-id="agencyos-godkjenninger"
-      style={{
-        display: "grid",
-        gridTemplateColumns: visAside ? "minmax(0,1fr) 380px" : "1fr",
-        alignItems: "start",
-        gap: visAside ? 20 : 0,
-        minWidth: 0,
-      }}
+      panel={valgtSak ? <SakInspektor row={valgtSak} /> : <KøenITall data={data} />}
     >
       <div style={{ display: "flex", flexDirection: "column", gap: 16, minWidth: 0 }}>
         {/* ── Hode ── */}
@@ -614,7 +680,14 @@ export function AdminGodkjenningerV2({ data }: { data: AdminGodkjenningerV2Data 
         ) : (
           <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
             {filtrert.map((r, i) => (
-              <SakKort key={r.id} row={r} forste={i === 0} mobile={mobile} />
+              <SakKort
+                key={r.id}
+                row={r}
+                markert={valgtSak ? r.id === valgtSak.id : i === 0}
+                mobile={mobile}
+                kanVelges={visPanel}
+                onVelg={(id) => setValgtId((cur) => (cur === id ? null : id))}
+              />
             ))}
           </div>
         )}
@@ -656,8 +729,6 @@ export function AdminGodkjenningerV2({ data }: { data: AdminGodkjenningerV2Data 
           </div>
         )}
       </div>
-
-      {visAside && <KøenITall data={data} />}
-    </div>
+    </MasterDetalj>
   );
 }

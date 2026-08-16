@@ -6,15 +6,21 @@
  */
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import {
   Kort,
   Knapp,
   StatusPill,
   TomTilstand,
   Icon,
-  Caps,
   AKSE_NAVN,
+  Inspektorpanel,
+  InspektorBlokk,
+  InspektorKpi,
+  InspektorLinje,
+  InspektorTom,
+  MasterDetalj,
+  useInspektorSynlig,
   T,
 } from "@/components/v2";
 import type { AkseKey } from "@/lib/v2/tokens";
@@ -89,19 +95,6 @@ const pl = (n: number, en: string, flere: string) => `${n} ${n === 1 ? en : fler
  * navn, én metalinje, tynn andelsstripe og prosentnøkler. Ikke et kort.
  * Utkast vises uten stripe (fasit viser den kun for godkjente maler).
  */
-/** ≥1024px: brekkpunkt der inspektørpanelet vises ved siden av lista. */
-function useMediaQuery(query: string): boolean {
-  const [match, setMatch] = useState(false);
-  useEffect(() => {
-    const mq = window.matchMedia(query);
-    const oppdater = () => setMatch(mq.matches);
-    oppdater();
-    mq.addEventListener("change", oppdater);
-    return () => mq.removeEventListener("change", oppdater);
-  }, [query]);
-  return match;
-}
-
 function MalRad({
   m,
   last,
@@ -346,20 +339,9 @@ function FilterChip({
   );
 }
 
-/** Kompakt KPI-flis inne i inspektørpanelet — samme geometri som `KøenITall` i AdminGodkjenningerV2. */
-function InspektorKpi({ label, verdi, sub }: { label: string; verdi: string; sub: string }) {
-  return (
-    <div style={{ background: T.panel2, border: `1px solid ${T.borderS}`, borderRadius: T.rTag, padding: 12, minWidth: 0 }}>
-      <Caps size={9}>{label}</Caps>
-      <div style={{ fontFamily: T.mono, fontSize: 22, fontWeight: 600, color: T.fg, marginTop: 6 }}>{verdi}</div>
-      <div style={{ fontFamily: T.ui, fontSize: 11, color: T.mut, marginTop: 2 }}>{sub}</div>
-    </div>
-  );
-}
-
 /**
- * Inspektørpanel — fasitens `<aside class="panel">` (agencyos-planbibliotek.html).
- * Vises kun ≥1024px (samme brekkpunkt som AdminGodkjenningerV2 sin «Køen i tall»).
+ * Malinspektøren — fasitens `<aside class="panel">` (agencyos-planbibliotek.html),
+ * bygget på det delte Inspektorpanel-primitivet (A2). Vises kun ≥1024px.
  *
  * Avvik fra fasit (dokumentert per CLAUDE.md-regel — aldri oppdiktede tall):
  * - «Brukes nå av»-lista er utelatt. Det finnes ingen relasjon fra TrainingPlan
@@ -376,41 +358,24 @@ function InspektorKpi({ label, verdi, sub }: { label: string; verdi: string; sub
  */
 function PlanMalInspektor({ mal }: { mal: PlanMalRad }) {
   return (
-    <aside
-      aria-label={mal.navn}
-      style={{
-        position: "sticky",
-        top: 16,
-        display: "flex",
-        flexDirection: "column",
-        gap: 16,
-        background: T.panel,
-        border: `1px solid ${T.border}`,
-        borderRadius: T.rCard,
-        padding: 16,
-        minWidth: 0,
-      }}
+    <Inspektorpanel
+      tittel={mal.navn}
+      tag={<StatusPill tone={mal.godkjent ? "up" : "warn"}>{mal.godkjent ? "Godkjent" : "Utkast"}</StatusPill>}
+      fot={
+        <>
+          <Link href={`/admin/plan-templates/${mal.id}/rediger`} style={{ textDecoration: "none" }}>
+            <Knapp ghost full icon="pencil">
+              Rediger
+            </Knapp>
+          </Link>
+          <Link href="/admin/grupper" style={{ textDecoration: "none" }}>
+            <Knapp full icon="send">
+              Rull ut
+            </Knapp>
+          </Link>
+        </>
+      }
     >
-      <div style={{ display: "flex", alignItems: "center", gap: 8, minWidth: 0 }}>
-        <span
-          style={{
-            fontFamily: T.disp,
-            fontSize: 15,
-            fontWeight: 600,
-            color: T.fg,
-            minWidth: 0,
-            overflow: "hidden",
-            textOverflow: "ellipsis",
-            whiteSpace: "nowrap",
-          }}
-        >
-          {mal.navn}
-        </span>
-        <span style={{ marginLeft: "auto", flex: "none" }}>
-          <StatusPill tone={mal.godkjent ? "up" : "warn"}>{mal.godkjent ? "Godkjent" : "Utkast"}</StatusPill>
-        </span>
-      </div>
-
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
         <InspektorKpi
           label="Varighet"
@@ -425,9 +390,8 @@ function PlanMalInspektor({ mal }: { mal: PlanMalRad }) {
       </div>
 
       {mal.effektAvg != null && mal.effektAntall > 0 && (
-        <div style={{ background: T.panel2, border: `1px solid ${T.borderS}`, borderRadius: T.rTag, padding: 12 }}>
-          <Caps size={9}>Effekt</Caps>
-          <p style={{ margin: "8px 0 0", fontFamily: T.ui, fontSize: 12, lineHeight: 1.55, color: T.mut }}>
+        <InspektorBlokk label="Effekt">
+          <p style={{ margin: 0, fontFamily: T.ui, fontSize: 12, lineHeight: 1.55, color: T.mut }}>
             Spillere som fullførte malen endret SG-Total med{" "}
             <span style={{ color: T.fg, fontWeight: 600 }}>
               {mal.effektAvg >= 0 ? "+" : ""}
@@ -435,42 +399,25 @@ function PlanMalInspektor({ mal }: { mal: PlanMalRad }) {
             </span>{" "}
             i snitt, målt over {pl(mal.effektAntall, "fullført plan", "fullførte planer")}.
           </p>
-        </div>
+        </InspektorBlokk>
       )}
 
-      <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-        <Caps size={9}>Uke for uke</Caps>
+      <InspektorBlokk label="Uke for uke">
         {mal.ukeOversikt.length === 0 ? (
           <p style={{ margin: 0, fontFamily: T.ui, fontSize: 12, color: T.mut }}>
             Ingen økter lagt inn i malen ennå.
           </p>
         ) : (
           mal.ukeOversikt.map((b, i) => (
-            <div key={i} style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: 8 }}>
-              <span style={{ fontFamily: T.ui, fontSize: 12.5, color: T.fg, minWidth: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
-                {b.fraUke === b.tilUke ? `Uke ${b.fraUke}` : `Uke ${b.fraUke}–${b.tilUke}`} · {AKSE_NAVN[b.omrade]}
-              </span>
-              <span style={{ fontFamily: T.mono, fontSize: 12, color: T.mut, flex: "none" }}>
-                {pl(b.oktAntall, "økt", "økter")}
-              </span>
-            </div>
+            <InspektorLinje
+              key={i}
+              label={`${b.fraUke === b.tilUke ? `Uke ${b.fraUke}` : `Uke ${b.fraUke}–${b.tilUke}`} · ${AKSE_NAVN[b.omrade]}`}
+              verdi={pl(b.oktAntall, "økt", "økter")}
+            />
           ))
         )}
-      </div>
-
-      <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
-        <Link href={`/admin/plan-templates/${mal.id}/rediger`} style={{ textDecoration: "none", flex: 1 }}>
-          <Knapp ghost full icon="pencil">
-            Rediger
-          </Knapp>
-        </Link>
-        <Link href="/admin/grupper" style={{ textDecoration: "none", flex: 1 }}>
-          <Knapp full icon="send">
-            Rull ut
-          </Knapp>
-        </Link>
-      </div>
-    </aside>
+      </InspektorBlokk>
+    </Inspektorpanel>
   );
 }
 
@@ -482,7 +429,7 @@ export function AdminPlanMalerV2({ data }: { data: AdminPlanMalerData }) {
   const [valgtId, setValgtId] = useState<string | null>(
     () => data.maler.find((m) => m.godkjent)?.id ?? data.maler[0]?.id ?? null,
   );
-  const visPanel = useMediaQuery("(min-width: 1024px)");
+  const visPanel = useInspektorSynlig();
 
   const toggle = (x: string) =>
     setFase((arr) => (arr.indexOf(x) !== -1 ? arr.filter((y) => y !== x) : arr.concat(x)));
@@ -639,21 +586,23 @@ export function AdminPlanMalerV2({ data }: { data: AdminPlanMalerData }) {
   const valgtMal = data.maler.find((m) => m.id === valgtId) ?? null;
 
   return (
-    <div
-      style={{
-        display: "grid",
-        gridTemplateColumns: visPanel ? "minmax(0,1fr) 380px" : "1fr",
-        alignItems: "start",
-        gap: visPanel ? 20 : 0,
-        minWidth: 0,
-      }}
+    <MasterDetalj
+      panel={
+        valgtMal ? (
+          <PlanMalInspektor mal={valgtMal} />
+        ) : (
+          <InspektorTom
+            tittel="Ingen mal valgt"
+            tekst="Velg en mal i lista, så ser du innhold, effekt og utrulling her."
+          />
+        )
+      }
     >
       <div style={{ display: "flex", flexDirection: "column", gap: T.gap, minWidth: 0 }}>
         {hode}
         {filtre}
         {liste}
       </div>
-      {visPanel && valgtMal && <PlanMalInspektor mal={valgtMal} />}
-    </div>
+    </MasterDetalj>
   );
 }
