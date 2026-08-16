@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="nb" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Workbench — masterplan for all planlegging</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&family=Lora:ital,wght@0,400;0,500;1,400&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#FAF9F5;--surface:#FFFFFF;--soft:#F0EEE6;--border:#E5E2D9;--fg:#141413;--mid:#77736B;--accent:#D97757;--accent-fg:#B5573A;--accent-soft:#FBEDE7;--up:#3D7A5A;--dn:#B0603F;--info:#4A6FA5;--display:'Poppins',system-ui,sans-serif;--prose:'Lora',Georgia,serif;--mono:'IBM Plex Mono',monospace}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--fg);font-family:var(--display);font-size:14px;line-height:1.55;-webkit-font-smoothing:antialiased}
+a{color:var(--accent-fg)}a:hover{color:var(--accent)}
+.wrap{max-width:1080px;margin:0 auto;padding:56px 32px 96px}
+.kicker{font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--mid)}
+h1{font-size:34px;font-weight:600;letter-spacing:-.02em;margin:10px 0 8px;text-wrap:pretty}
+h2{font-size:20px;font-weight:600;margin:56px 0 6px;letter-spacing:-.01em;scroll-margin-top:20px}
+h3{font-size:15px;font-weight:600;margin:28px 0 8px}
+p{font-family:var(--prose);font-size:14.5px;line-height:1.65;max-width:74ch;margin-bottom:10px;text-wrap:pretty}
+p.lede{font-size:16px;color:var(--mid)}
+ul,ol{margin:8px 0 12px 18px;font-family:var(--prose);font-size:14.5px;line-height:1.6;max-width:74ch}
+li{margin-bottom:5px}
+code{font-family:var(--mono);font-size:12px;background:var(--soft);padding:1px 5px;border-radius:4px}
+kbd{font-family:var(--mono);font-size:11px;background:var(--surface);border:1px solid var(--border);border-bottom-width:2px;border-radius:4px;padding:0 5px}
+table{width:100%;border-collapse:collapse;font-size:12.5px;margin:14px 0 6px}
+th{text-align:left;font-family:var(--mono);font-size:9.5px;letter-spacing:.09em;text-transform:uppercase;color:var(--mid);font-weight:600;padding:0 10px 8px;border-bottom:1px solid var(--border)}
+td{padding:8px 10px;border-bottom:1px solid var(--border);vertical-align:top}
+tr:last-child td{border-bottom:0}
+.tag{font-family:var(--mono);font-size:9.5px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;padding:2px 7px;border-radius:999px;white-space:nowrap;display:inline-block}
+.a{background:#E7F0EA;color:var(--up)}.b{background:var(--accent-soft);color:var(--accent-fg)}.c{background:#EDE9E1;color:var(--mid)}.i{background:#E8EDF5;color:var(--info)}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:18px 22px;margin:16px 0}
+.card.warn{border-left:3px solid var(--accent)}
+.skisse{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:14px;margin:18px 0;font-family:var(--mono);font-size:10.5px;line-height:1.5;color:var(--mid);overflow-x:auto;white-space:pre}
+.toc{display:grid;grid-template-columns:repeat(2,1fr);gap:4px 22px;margin:24px 0 0;font-size:12.5px}
+.toc a{text-decoration:none;color:var(--mid);padding:4px 0;border-bottom:1px solid var(--border);display:block}
+.toc a:hover{color:var(--fg)}
+.toc a b{color:var(--fg);font-family:var(--mono);font-size:10px;margin-right:8px}
+@media(max-width:820px){.toc{grid-template-columns:1fr}.wrap{padding:36px 20px 64px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="kicker">Masterplan · 13. august 2026 · workbench som planleggingsmotor</div>
+<h1>Workbench — én planleggingsflate for spiller, gruppe og AgencyOS</h1>
+<p class="lede">Workbench slutter å være «treningsplan-redigering» og blir <b>kalenderen alt planarbeid skjer i</b> — Notion Calendar-følelsen: kilder til venstre, døgnet 05:00–23:00 i midten, den valgte saken forklart og avgjort i artefaktkolonnen til høyre. Samme motor i tre moduser; det eneste som endres er hvem sin tid du ser.</p>
+
+<div class="toc">
+  <a href="#prinsipp"><b>01</b>Prinsippet — én motor, tre moduser</a>
+  <a href="#layout"><b>02</b>Layouten</a>
+  <a href="#kalender"><b>03</b>Kalenderfunksjonene (Notion/Google-paritet)</a>
+  <a href="#kilder"><b>04</b>Alt som kan ligge i kalenderen</a>
+  <a href="#spiller"><b>05</b>Spiller-modus</a>
+  <a href="#coach"><b>06</b>Gruppe- og AgencyOS-modus</a>
+  <a href="#agenter"><b>07</b>Agentene i workbench</a>
+  <a href="#faser"><b>08</b>Byggefaser F1–F4</a>
+  <a href="#beslutninger"><b>09</b>Beslutninger og datamodell</a>
+</div>
+
+<h2 id="prinsipp">01 · Prinsippet — én motor, tre moduser</h2>
+<p>I dag er planlegging spredt på ni flater (workbench, teknisk plan, fys-plan, planbibliotek, grupper/timeplan, årsplan, bookinger, turneringer, kalender). Masterplanen samler dem: <b>alle beholder sin rute, men redigering av tid skjer alltid i workbench-motoren.</b> «Rediger uka» fra en hvilken som helst flate åpner samme kalender med riktig kontekst forhåndsvalgt.</p>
+<table>
+<thead><tr><th>Modus</th><th>Hvem sin tid</th><th>Nås fra</th><th>Kilder på</th></tr></thead>
+<tbody>
+<tr><td><b>Spiller</b> (PlayerHQ)</td><td>Min uke</td><td>/portal/planlegge</td><td>Økter, skole, bookinger, turneringer, tester, helse</td></tr>
+<tr><td><b>Gruppe</b> (AgencyOS)</td><td>Én gruppe / én spiller i stallen</td><td>/admin/grupper/[id]/workbench</td><td>+ timeplan/skoledata, coach-tilgjengelighet, anleggskapasitet</td></tr>
+<tr><td><b>Byrå</b> (AgencyOS)</td><td>Hele stallen + meg som coach</td><td>/admin/workbench</td><td>+ alle bookinger, alle turneringer, agentforslag på tvers</td></tr>
+</tbody>
+</table>
+<p>Regel: <b>én sannhet om tid.</b> En booking, en økt og en skoletime er samme slags blokk i samme rutenett — aldri tre kalendere som må stemmes av manuelt. Google-synk går gjennom Calendar Sync-agenten (finnes) i begge retninger.</p>
+
+<h2 id="layout">02 · Layouten</h2>
+<div class="skisse">┌──────────┬──────────────────────────────────────────────┬─────────────────┐
+│ KILDER   │  ma 11   ti 12   on 13   to 14   fr 15  lø sø │ INSPEKTØR (380) │
+│          │ 05:00 ─────────────────────────────────────── │                 │
+│ ☑ Økter  │ 06:00  ┌────────┐                             │ Valgt blokk:    │
+│ ☑ Skole  │  :30   │ FYS 45′│         ┊school┊            │ mål · drills ·  │
+│ ☑ Booking│ 07:00  └────────┘         ┊ 08–14┊            │ AK-formler m/?  │
+│ ☑ Turner.│   ⋮                        ┊(dim) ┊            │ · budsjett ·    │
+│ ☐ Tester │ 16:00          ┌─────────┐                    │ forslag-diff    │
+│ ☐ Helse  │  :30           │TEK 90′ ⚠│← forslag venter    │ Godkjenn/Avvis  │
+│ ──────── │ 17:00          └─────────┘                    │ ─────────────── │
+│ Ukesmål  │   ⋮      ─── nå-linje 17:24 ───               │ Faner: Økt ·    │
+│ Budsjett │ 21:00                                         │ Caddie · Uke    │
+│ Bibliotek│ 23:00 ─────────────────────────────────────── │                 │
+│ (dra inn)│        [ Composer: «legg 3×putt før 14.08» ]  │                 │
+└──────────┴──────────────────────────────────────────────┴─────────────────┘</div>
+<ul>
+<li><b>Venstre (240 px):</b> kildeliste med av/på per lag (som Notion Calendars venstremarg) + ukesmål/budsjettlinje + planbiblioteket som dra-kilde. Kollapser til ikonrail.</li>
+<li><b>Midten:</b> rutenettet. 05:00–23:00, 30-min rader (<code>SLOT=30</code>), snap til raster. Visninger: dag · 3 dager · uke (standard) · måned (kompakt) · agenda (liste, mobilens standard).</li>
+<li><b>Høyre (380 px):</b> artefaktkolonnen — alt om valgt blokk: mål, drills med AK-formel-chips og ?-forklaringer (bygget 12.08), budsjett-konsekvens, agentdiff med Godkjenn/Avvis. Panelet er der beslutninger tas; rutenettet er der tid flyttes.</li>
+<li><b>Composer nederst:</b> naturlig språk → utkast: «legg tre putteøkter à 45 min før sjekkpunktet torsdag» tegner tre ghost-blokker du bekrefter. Samme mønster som chat-først ellers i appen.</li>
+</ul>
+
+<h2 id="kalender">03 · Kalenderfunksjonene — Notion/Google-paritet</h2>
+<table>
+<thead><tr><th>Funksjon</th><th>Oppførsel hos oss</th><th>Status</th></tr></thead>
+<tbody>
+<tr><td>Dra for å opprette</td><td>Dra over tomme slots → ny blokk, type velges i inspektøren (økt er standard)</td><td><span class="tag b">Ny</span></td></tr>
+<tr><td>Flytt med drag &amp; drop</td><td>Blokk flyttes fritt, snap 30 min; <kbd>⇧</kbd> under drag = fri snapping 5 min</td><td><span class="tag a">Delvis i fasit</span></td></tr>
+<tr><td>Resize i kantene</td><td>Topp/bunn-håndtak endrer varighet; budsjettlinjen oppdateres live</td><td><span class="tag b">Ny</span></td></tr>
+<tr><td>Dupliser</td><td><kbd>⌥</kbd>+dra kopierer (Google-oppførsel); <kbd>⌘D</kbd> på valgt blokk</td><td><span class="tag b">Ny</span></td></tr>
+<tr><td>Gjentakelse</td><td>«Hver uke til …» på blokk; serien redigeres som én/alle (Google-dialogen)</td><td><span class="tag b">Ny</span></td></tr>
+<tr><td>Overlapp-håndtering</td><td>Kollisjon = side-om-side-spalter + varsel i budsjettlinjen; skole er dimmet bakteppe det varsles mot, ikke blokkeres</td><td><span class="tag b">Ny</span></td></tr>
+<tr><td>Nå-linje + i dag-kolonne</td><td>Rød tidslinje (Google), i dag svakt tonet; <kbd>T</kbd> hopper til nå</td><td><span class="tag b">Ny</span></td></tr>
+<tr><td>Tastatur</td><td><kbd>←→</kbd> uke, <kbd>1/3/7/M/A</kbd> visning, piler flytter valgt blokk 30 min, <kbd>⏎</kbd> åpner inspektør, <kbd>⌫</kbd> sletter (med angre-toast), <kbd>⌘Z</kbd> angre-stack</td><td><span class="tag b">Ny</span></td></tr>
+<tr><td>⌘K i kalenderen</td><td>«flytt til torsdag», «ny test», «gå til uke 34», «vis Emil» — kommandoer, ikke bare navigasjon</td><td><span class="tag i">Kobles</span></td></tr>
+<tr><td>Flere personer side om side</td><td>Coach-modus: kolonner per spiller (Google «meet with»-følelsen) for å finne felles ledig tid</td><td><span class="tag b">Ny</span></td></tr>
+<tr><td>Tilgjengelighet/booking-lag</td><td>Coach-tilgjengelighet og anleggskapasitet som skravert lag; booking-forespørsler lander som tentative blokker (RSVP godta/avslå)</td><td><span class="tag i">Kobles</span></td></tr>
+<tr><td>Google-synk</td><td>To-veis via Calendar Sync-agenten; eksterne hendelser er låste blokker med kilde-merke</td><td><span class="tag a">Agent finnes</span></td></tr>
+<tr><td>Mini-måned + datohopp</td><td>Mini-kalender i venstremargen (Notion), klikk = hopp</td><td><span class="tag b">Ny</span></td></tr>
+<tr><td>Tidsforslag</td><td>«Finn 90 min ledig før fredag» — motoren foreslår slots utenfor skole/booking</td><td><span class="tag a">F3 tegnet</span></td></tr>
+</tbody>
+</table>
+<p class="kicker" style="margin-top:10px">Avgrensning</p>
+<p>Tidssone-veksling, gjeste-invitasjon utenfor plattformen og video-lenker er Google-funksjoner vi bevisst IKKE bygger — bookingen eier møtelogikk. Alt annet over er paritet.</p>
+
+<h2 id="kilder">04 · Alt som kan ligge i kalenderen</h2>
+<table>
+<thead><tr><th>Lag</th><th>Kilde i appen</th><th>Oppførsel</th></tr></thead>
+<tbody>
+<tr><td>Treningsøkter</td><td>Plan/økter (workbench i dag)</td><td>Fullt redigerbare; drills + AK-formel v2 i inspektøren</td></tr>
+<tr><td>Skole</td><td>gruppers skoledata/timeplan (WANG)</td><td>Dimmet bakteppe, låst; kollisjon varsler</td></tr>
+<tr><td>Bookinger</td><td>booking (spiller) / bookinger (admin)</td><td>Bekreftet = låst med lenke til kvittering; forespørsel = tentativ RSVP-blokk</td></tr>
+<tr><td>Turneringer</td><td>tournaments + turneringsplan</td><td>Heldagsbånd øverst (Google all-day-raden); reiseblokker under</td></tr>
+<tr><td>Tester</td><td>testprotokoller (PR-E avgjør antall)</td><td>Test-blokk med protokollvalg; resultat vises på blokken etterpå</td></tr>
+<tr><td>Sjekkpunkter/periode</td><td>Periodeplan</td><td>Bånd over uka: fase, ukens fokus, neste sjekkpunkt</td></tr>
+<tr><td>Helse</td><td>meg/helse</td><td>Symptom/skade som diskret markør; agentene ser den (peaking, belastning)</td></tr>
+<tr><td>Agentforslag</td><td>PlanAction PENDING</td><td>Diff-blokk på berørt økt (bygget i fasit 12.08) — godkjenn/avvis i inspektøren</td></tr>
+<tr><td>Gruppeøkter</td><td>grupper</td><td>I spiller-modus låst («coach eier»); i gruppe-modus redigerbar og skrives til alle</td></tr>
+</tbody>
+</table>
+
+<h2 id="spiller">05 · Spiller-modus — hva spilleren kan gjøre</h2>
+<ul>
+<li>Planlegge egne økter rundt låste lag (skole, gruppeøkter, bookinger) — budsjettlinjen viser minutter per pyramideområde mot ukesmål, live under drag.</li>
+<li>Dra drills fra biblioteket (høyre-fanen «Bibliotek») inn i en økt; AK-formelen følger med og kan justeres chip for chip med ?-forklaringer.</li>
+<li>Be caddien om utkast i composeren; svar kommer som ghost-blokker som bekreftes eller forkastes.</li>
+<li>Godkjenne/avvise agentforslag der de rammer (diff på økta) — aldri i en separat kø.</li>
+<li>Starte økt fra blokken (→ underveis-flyten), logge etterpå; blokk får fullført-hake og faktisk-mot-planlagt-tid.</li>
+<li>Mobil: agenda-listen er standard, dagvisning ved rotasjon; redigering via BottomSheet — samme motor, aldri en klemt desktop.</li>
+</ul>
+
+<h2 id="coach">06 · Gruppe- og AgencyOS-modus — hva du kan gjøre</h2>
+<ul>
+<li><b>Stall-oversikt:</b> spillere som kolonner (velg 2–6) — finn felles ledig tid, dra en gruppeøkt inn i alles uke i én bevegelse. Konflikter per spiller listes i inspektøren før du bekrefter.</li>
+<li><b>Gruppe-uka:</b> timeplan/skoledata ligger bak; årsplanens perioder som bånd. Endring i gruppeøkt varsler berørte spillere (godkjenningsflyt for tidsbytte).</li>
+<li><b>Planlegge FOR en spiller:</b> åpne spillerens uke med full redigering; alt du endrer merkes «coach» i loggen spilleren ser.</li>
+<li><b>Maler:</b> dra en ukemal fra planbiblioteket over uka (Effekt-blokka får dermed ekte datakilde: mal → resultat). Lagre en god uke som ny mal fra <kbd>⌘K</kbd>.</li>
+<li><b>Din egen tid:</b> tilgjengelighet tegnes som lag; booking-forespørsler lander som RSVP-blokker du godtar/avslår uten å forlate flaten.</li>
+<li><b>Turnering:</b> turneringsbåndet + reiseblokker; peaking-agenten kan bes lage nedtrappingsuke mot valgt turnering (manuelt agentkjør fra inspektøren).</li>
+</ul>
+
+<h2 id="agenter">07 · Agentene i workbench</h2>
+<p>Workbench er flaten der agentarbeid blir synlig og avgjøres — aldri en agent som «endrer planen din»:</p>
+<ul>
+<li><b>Plan Watcher</b> → diff på berørt økt (bygget i fasit). <b>Plan-revisjon</b> og <b>peaking</b> kjøres manuelt fra inspektøren med kjøringsskjemaet fra agent-detalj-fasiten.</li>
+<li><b>Periodiseringsagenten</b> foreslår neste ukes skjelett når uka lukkes søndag — hel-ukes ghost du godtar/redigerer.</li>
+<li><b>Calendar Sync</b> holder Google i synk; feiler den vises varselet fra AgenticOS-huben også i workbench-statuslinjen.</li>
+<li>Alt skrives som PlanAction PENDING → godkjenning; regel-forklaringen («hvorfor») følger alltid med, som i godkjenningskøen.</li>
+</ul>
+
+<h2 id="faser">08 · Byggefaser F1–F4 — fra dagens fasit til master</h2>
+<table>
+<thead><tr><th>Fase</th><th>Innhold</th><th>Krever</th></tr></thead>
+<tbody>
+<tr><td><b>F1 · Motor-paritet</b></td><td>05:00–23:00-rasteret (i dag 06–22), resize, ⌥-dupliser, nå-linje, tastatur + angre-stack, mini-måned, dag/3-dagers/agenda-visning</td><td>Kun fasit-oppdatering av workbench-desktop/-mobil + port</td></tr>
+<tr><td><b>F2 · Lagene</b></td><td>Kildeliste med av/på, skole som bakteppe, bookinger + turneringsbånd + tester inn, overlapp-håndtering, gjentakelse</td><td>Loadere finnes; gjentakelse trenger felt i datamodellen</td></tr>
+<tr><td><b>F3 · Coach-modusene</b> <span class="tag a">Tegnet 14.08</span></td><td>Stall-kolonner, gruppe-uka, planlegge-for-spiller m/logg, mal-dra fra bibliotek, RSVP-blokker, tidsforslag</td><td>Fasit: <code>fase1/workbench-stall.html</code> · mobil: <code>fase1/workbench-stall-mobil.html</code>. Åpne punkter i <code>kart/f3-coachmodus-2026-08-14.md</code>; tilgjengelighets-lag fra booking</td></tr>
+<tr><td><b>F4 · Intelligens</b></td><td>Composer-til-ghost, periodiserings-ghost søndag, peaking mot turnering, faktisk-mot-planlagt</td><td>Agentene finnes; composer-tolking er ny kodeleveranse</td></tr>
+</tbody>
+</table>
+<p>F1+F2 gjenbruker dagens workbench-fasit og er i hovedsak variantarbeid; F3 er den ene nye tegningen (stall-visningen); F4 er kode, ikke design.</p>
+
+<h2 id="beslutninger">09 · Beslutninger og datamodell (Anders)</h2>
+<ol>
+<li><b>Én rute eller tre?</b> Anbefalt: motoren bor i én komponent; /portal/planlegge, grupper/[id]/workbench og /admin/workbench er tre innganger med modus-prop. (Merk: /admin/workbench i dag er Notion-oppgaver — den flyttes inn som eget lag eller får nytt navn; henger på KommandoTask-vs-Notion-valget.)</li>
+<li><b>Gjentakelse</b> trenger <code>recurrenceRule</code> på økt — ny migrasjon.</li>
+<li><b>Skole-laget</b> forutsetter at skoledata får tid-på-dag (WANG-timeplanen har det; GFGK?).</li>
+<li><b>Tidsforslag/kapasitet</b> krever at anleggskapasitet er strukturert (kapasitet-ruta finnes, datakvalitet ukjent).</li>
+<li><b>PR-E</b> (testantall) avgjør test-blokkens protokollvelger.</li>
+<li>05:00–23:00 og 30 min er vedtatt her — skal turneringsdager kunne utvide til 04:00 (tidlige starter)?</li>
+</ol>
+
+<div class="card warn">
+<h3 style="margin-top:0">Anbefalt start</h3>
+<p style="margin-bottom:0">F1 er ren fasit-oppdatering av eksisterende workbench-filer og kan tegnes nå. Si ja, så oppdaterer jeg workbench-desktop til 05:00–23:00-rasteret med resize, dupliser, nå-linje, mini-måned og kildeliste — det blir samtidig fasiten Claude Code porter fra.</p>
+</div>
+
+</div>
+</body>
+</html>

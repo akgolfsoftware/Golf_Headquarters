@@ -86,7 +86,7 @@ export async function sendSlackAlert({
             ([k, v]) =>
               `<tr>
                 <td style="padding:4px 12px 4px 0;color:#5E5C57;font-family:monospace;font-size:11px;text-transform:uppercase;letter-spacing:0.06em;">${k}</td>
-                <td style="padding:4px 0;color:#0A1F18;font-family:monospace;font-size:12px;">${
+                <td style="padding:4px 0;color:#141413;font-family:monospace;font-size:12px;">${
                   typeof v === "string" ? v : JSON.stringify(v)
                 }</td>
               </tr>`,
@@ -96,15 +96,15 @@ export async function sendSlackAlert({
     : "";
 
   const html = `<!DOCTYPE html>
-<html><body style="margin:0;padding:24px;background:#FAFAF7;font-family:'Inter',-apple-system,sans-serif;">
+<html><body style="margin:0;padding:24px;background:#FAF9F5;font-family:'Poppins',-apple-system,sans-serif;">
   <div style="max-width:600px;margin:0 auto;background:#FFFFFF;border-radius:16px;border:1px solid #E5E3DD;padding:24px;">
     <div style="font-family:monospace;font-size:11px;color:#A32D2D;text-transform:uppercase;letter-spacing:0.10em;font-weight:600;">
       🚨 SYSTEM ALERT · ${env.toUpperCase()}
     </div>
-    <h1 style="margin:8px 0 4px 0;font-family:'Familjen Grotesk',sans-serif;font-size:22px;color:#0A1F18;line-height:1.2;">
+    <h1 style="margin:8px 0 4px 0;font-family:'Poppins',-apple-system,sans-serif;font-size:22px;color:#141413;line-height:1.2;">
       ${title}
     </h1>
-    <p style="margin:12px 0;color:#0A1F18;font-size:14px;line-height:1.5;">
+    <p style="margin:12px 0;color:#141413;font-size:14px;line-height:1.5;">
       ${message.slice(0, 1000)}
     </p>
     ${metaHtml}

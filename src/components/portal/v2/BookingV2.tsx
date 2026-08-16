@@ -513,8 +513,9 @@ function StegBekreft({ tjeneste, coachNavn, dato, tid, credits, onBook, onBetalM
   const pakke = tjeneste.betalesMedCredit;
   const klar = !!dato && !!tid;
   const sluttTid = tid ? sluttKl(tid, tjeneste.varighetMin) : null;
+  // CSS-responsiv grid i tillegg til mobile-bryteren: SSR/first-paint på 390px traff desktop-griden før hydrering
   return (
-    <div style={{ display: "grid", gridTemplateColumns: mobile ? "1fr" : "3fr 2fr", gap: T.gap }}>
+    <div className="grid grid-cols-1 md:grid-cols-[3fr_2fr]" style={{ gap: T.gap }}>
       <Kort tint eyebrow="Oppsummering">
         <div style={{ fontFamily: T.disp, fontWeight: 700, fontSize: mobile ? 18 : 21, color: T.fg, lineHeight: 1.25 }}>
           {tjeneste.navn}{dato && <> <em style={{ fontStyle: "italic", color: T.lime }}>{formatDato(dato)}</em></>}

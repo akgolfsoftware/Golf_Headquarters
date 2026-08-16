@@ -672,7 +672,7 @@ export function StallV2({ data }: { data: StallV2Data }) {
       {tilstandKort}
       {filtre}
       <div className="grid grid-cols-1 lg:grid-cols-[3fr_2fr]" style={{ gap: T.gap, alignItems: "start" }}>
-        <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+        <div className="min-w-0" style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
           {aktivListe}
           {venterSeksjon}
         </div>

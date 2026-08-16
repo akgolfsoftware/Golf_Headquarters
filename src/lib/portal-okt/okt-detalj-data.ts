@@ -104,7 +104,7 @@ export type OktDetaljData =
       } | null;
     };
 
-const MILJO_LABEL: Record<string, string> = {
+export const MILJO_LABEL: Record<string, string> = {
   M0: "Studio", M1: "Range", M2: "Range", M3: "Bane", M4: "Bane", M5: "Turnering",
 };
 

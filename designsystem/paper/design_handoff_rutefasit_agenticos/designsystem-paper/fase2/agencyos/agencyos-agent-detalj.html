@@ -1,0 +1,179 @@
+<!doctype html>
+<html lang="nb" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Agent-detalj · AgenticOS · AK Golf HQ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Lora:ital,wght@0,400;0,500;1,400&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="w4-base.css">
+<style>
+/* Agent-detalj — fasit for /admin/agents/[agentId] og agent-team-kjøringer med steg.
+   Én mal for cron-, hendelses- og manuelle agenter; manuelle får kjøringsskjemaet. */
+a{ color:var(--fg); text-decoration:underline; text-underline-offset:2px; text-decoration-color:var(--mid); }
+a:hover{ color:var(--accent-fg); text-decoration-color:var(--accent-fg); }
+a.btn,a.rad,a.rbtn,a.chip{ text-decoration:none; }
+a.btn:hover,a.rad:hover,a.rbtn:hover{ color:inherit; }
+.varsel{ border-color:var(--dn); box-shadow:inset 3px 0 0 var(--dn); }
+.varsel .feilm{ font-family:var(--mono); font-size:11.5px; color:var(--dn); }
+.steg .linje .rolle{ font-family:var(--mono); font-size:10px; letter-spacing:.05em; text-transform:uppercase; color:var(--muted); min-width:88px; }
+.kjorform{ display:flex; gap:var(--s2); align-items:flex-end; flex-wrap:wrap; }
+.kjorform .felt{ flex:1; min-width:220px; margin-bottom:0; }
+</style>
+</head>
+<body>
+<div class="app med-panel">
+  <nav class="rail" aria-label="AgencyOS">
+    <div class="logo">AK<span>.</span></div>
+    <a class="rbtn" href="#" data-od-id="nav-cockpit"><svg viewBox="0 0 24 24"><path d="M4 12l8-7 8 7"/><path d="M6 11v8h12v-8"/></svg>Cockpit</a>
+    <a class="rbtn" href="#" data-od-id="nav-innboks"><svg viewBox="0 0 24 24"><path d="M3 12h5l2 3h4l2-3h5"/><path d="M5 6h14l2 6v6H3v-6z"/></svg>Innboks<span class="cnt">7</span></a>
+    <a class="rbtn" href="#" data-od-id="nav-kalender"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M8 3v4M16 3v4M3 11h18"/></svg>Kalender</a>
+    <a class="rbtn" href="#" data-od-id="nav-stall"><svg viewBox="0 0 24 24"><circle cx="9" cy="9" r="3"/><path d="M3 20a6 6 0 0112 0"/><path d="M16 8h5M16 12h5M16 16h5"/></svg>Stall</a>
+    <a class="rbtn" href="#" data-od-id="nav-plan"><svg viewBox="0 0 24 24"><path d="M5 4h14v16H5z"/><path d="M9 9h6M9 13h6M9 17h3"/></svg>Plan</a>
+    <a class="rbtn" href="#" data-od-id="nav-innsikt"><svg viewBox="0 0 24 24"><path d="M4 19V9M10 19V5M16 19v-7M22 19H2"/></svg>Innsikt</a>
+    <a class="rbtn" href="#" data-od-id="nav-oppsett"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3"/></svg>Oppsett</a>
+  </nav>
+
+  <main class="stage">
+    <header class="top">
+      <a class="btn sm" href="agencyos-agenticos-hub.html" data-od-id="cta-tilbake">← AgenticOS</a>
+      <div><h1>Plan Watcher</h1><span class="sub">agenticos · agent-detalj · cron man 06:00</span></div>
+      <div class="hoyre">
+        <button class="ikon" id="themeBtn" type="button" aria-label="Bytt til mørk modus" data-od-id="cta-tema"><svg viewBox="0 0 24 24"><path d="M20 14a8 8 0 01-10-10 8 8 0 1010 10z"/></svg></button>
+      </div>
+    </header>
+
+    <div class="riggbar" data-demo-only>
+      <span>Tilstand</span>
+      <button class="chip" type="button" data-tilstand="aktiv">Aktiv</button>
+      <button class="chip" type="button" data-tilstand="feilet">Feilet</button>
+      <button class="chip" type="button" data-tilstand="manuell">Manuell agent</button>
+      <button class="chip" type="button" data-tilstand="ingen">Ingen data</button>
+      <span class="sr" id="live" role="status" aria-live="polite"></span>
+    </div>
+
+    <div class="flate midt">
+      <section data-vis="aktiv">
+        <div class="kpirad">
+          <div class="kpi"><span class="k">Kjøringer 30 d</span><span class="v num">4</span><span class="w">4 OK · 0 feil</span></div>
+          <div class="kpi"><span class="k">Snitt-tid</span><span class="v num">2,1&nbsp;s</span><span class="w">siste 4 kjøringer</span></div>
+          <div class="kpi"><span class="k">Forslag laget</span><span class="v num">7</span><span class="w">3 godkjent · 1 avvist</span></div>
+          <div class="kpi"><span class="k">Neste kjøring</span><span class="v num">man 06:00</span><span class="w">cron ukentlig</span></div>
+        </div>
+
+        <article class="kort">
+          <div class="korthode"><span class="t">Om agenten</span><span class="tag up">Aktiv</span></div>
+          <p>Sjekker forrige uke mot planen og genererer PYRAMID_ADJUST-forslag ved avvik. Skriver aldri direkte i planen — alt går via godkjenningskøen.</p>
+          <details class="why" data-od-id="panel-regel">
+            <summary>Regelen</summary>
+            <ul>
+              <li>Data: forrige ukes økter per pyramideområde mot planlagt fordeling</li>
+              <li>Terskel: avvik over 20&nbsp;% på ett område to uker på rad</li>
+              <li>Skriver til: PlanAction (PENDING) → <a href="agencyos-godkjenninger.html">godkjenningskøen</a></li>
+            </ul>
+          </details>
+          <div style="display:flex;gap:var(--s2);margin-top:var(--s3);flex-wrap:wrap">
+            <button class="btn ink" type="button" data-od-id="cta-kjor-naa">Kjør nå</button>
+            <a class="btn" href="agencyos-godkjenninger.html" data-od-id="cta-til-ko">Forslagene i køen</a>
+          </div>
+        </article>
+
+        <div class="grp">
+          <div class="grphead"><h2>Kjøringer</h2><span class="n num">siste 30 dager</span></div>
+          <table class="tab">
+            <thead><tr><th>Når</th><th class="n">Varighet</th><th>Resultat</th><th>Output</th></tr></thead>
+            <tbody>
+              <tr><td>man 11.08 · 06:00</td><td class="n">2,3&nbsp;s</td><td><span class="tag up">OK</span></td><td>2 forslag · Emil Berg, Nora Lie</td></tr>
+              <tr><td>man 04.08 · 06:00</td><td class="n">2,0&nbsp;s</td><td><span class="tag up">OK</span></td><td>1 forslag · Jonas Aas</td></tr>
+              <tr><td>man 28.07 · 06:00</td><td class="n">1,9&nbsp;s</td><td><span class="tag up">OK</span></td><td>Ingen avvik funnet</td></tr>
+              <tr><td>man 21.07 · 06:00</td><td class="n">2,2&nbsp;s</td><td><span class="tag up">OK</span></td><td>4 forslag</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="grp steg">
+          <div class="grphead"><h2>Siste kjøring i detalj</h2><span class="n num">man 11.08 · 06:00 · 2,3&nbsp;s</span></div>
+          <p class="grpnote">Stegene vises for agent-team-kjøringer med flere modeller; en enkel agent har ett steg.</p>
+          <div class="kort">
+            <div class="linje"><span class="rolle">analyse</span>Ukens økter mot plan · 6 spillere lest<span class="v"><span class="tag up">OK</span></span></div>
+            <div class="linje"><span class="rolle">vurdering</span>Avvik funnet: Emil Berg (PUTT −28&nbsp;%), Nora Lie (FYS −22&nbsp;%)<span class="v"><span class="tag up">OK</span></span></div>
+            <div class="linje"><span class="rolle">forslag</span>2 PlanAction opprettet → godkjenningskøen<span class="v"><span class="tag up">OK</span></span></div>
+          </div>
+        </div>
+      </section>
+
+      <section data-vis="feilet" hidden>
+        <article class="kort varsel" data-od-id="panel-feil">
+          <div class="korthode"><span class="t">Siste kjøring feilet</span><span class="tag dn">Feil</span></div>
+          <p>Man 11.08 kl. 06:00 etter 0,4 sekunder. Forrige vellykkede kjøring var 04.08 — forslagene derfra står fortsatt i køen.</p>
+          <p class="feilm">prisma: P2024 — tidsavbrudd mot databasen etter 10&nbsp;000 ms</p>
+          <div style="display:flex;gap:var(--s2);flex-wrap:wrap">
+            <button class="btn ink" type="button" data-od-id="cta-kjor-paa-nytt">Kjør på nytt</button>
+            <a class="btn" href="#" data-od-id="cta-feillogg">Åpne feilloggen</a>
+          </div>
+        </article>
+        <div class="grp">
+          <div class="grphead"><h2>Kjøringer</h2></div>
+          <div class="kort">
+            <div class="linje"><span class="tag dn">Feil</span> man 11.08 · 06:00<span class="v">0,4&nbsp;s</span></div>
+            <div class="linje"><span class="tag up">OK</span> man 04.08 · 06:00<span class="v">2,0&nbsp;s</span></div>
+            <div class="linje"><span class="tag up">OK</span> man 28.07 · 06:00<span class="v">1,9&nbsp;s</span></div>
+          </div>
+        </div>
+      </section>
+
+      <section data-vis="manuell" hidden>
+        <article class="kort">
+          <div class="korthode"><span class="t">Plan-revisjon</span><span class="tag">Manuell</span></div>
+          <p>Foreslår konkrete plan-justeringer for en valgt treningsplan. Kjøres herfra — resultatet lander i godkjenningskøen, aldri rett i planen.</p>
+          <div class="kjorform">
+            <label class="felt"><span>Treningsplan</span>
+              <select data-od-id="felt-plan"><option>Emil Berg · Høstplan 2026</option><option>Nora Lie · Kvalifisering NM</option><option>Jonas Aas · Retur til spill</option></select>
+            </label>
+            <label class="felt"><span>Utløser</span>
+              <select data-od-id="felt-utloser"><option>Siste runde</option><option>Skade</option><option>Turneringsprep</option></select>
+            </label>
+            <button class="btn ink" type="button" data-od-id="cta-kjor-manuell">Kjør nå</button>
+          </div>
+        </article>
+        <div class="tom">
+          <h3>Ingen kjøringer ennå</h3>
+          <p>Manuelle agenter kjører bare når du ber om det. Den første kjøringen og stegene dens dukker opp her.</p>
+        </div>
+      </section>
+
+      <section data-vis="ingen" hidden>
+        <div class="tom">
+          <h3>Ingen kjøringer siste 30 dager</h3>
+          <p>Agenten er registrert, men utløseren har ikke truffet ennå. Den kjører etter neste hendelse — eller kjør den manuelt.</p>
+          <button class="btn" type="button" data-od-id="cta-tom-kjor">Kjør nå</button>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <aside class="panel" aria-label="Agenten i tall">
+    <div class="phead"><span class="t">Agenten i tall</span></div>
+    <div class="pbody">
+      <div class="kpirad" style="grid-template-columns:repeat(2,1fr)">
+        <div class="kpi"><span class="k">Godkjent-rate</span><span class="v num">75&nbsp;%</span><span class="w">3 av 4 avgjorte</span></div>
+        <div class="kpi"><span class="k">Eldste i kø</span><span class="v num">3 dg</span><span class="w">1 forslag venter</span></div>
+      </div>
+      <div class="blokk">
+        <span class="flab">Skriver til</span>
+        <div class="linje">PlanAction<span class="v">forslag</span></div>
+        <div class="linje">Signal<span class="v">beregninger</span></div>
+        <div class="linje">AgentRun<span class="v">logg</span></div>
+      </div>
+      <div class="blokk">
+        <span class="flab">Slik leses statusen</span>
+        <p>«Feil» betyr at en kjøring stoppet — aldri at noe ble endret uten deg. En agent kan ikke endre en plan; den kan bare foreslå.</p>
+      </div>
+    </div>
+    <div class="pfoot">
+      <button class="btn ink" type="button" data-od-id="cta-panel-kjor">Kjør nå</button>
+    </div>
+  </aside>
+</div>
+<script src="w4-demo.js"></script>
+</body>
+</html>

@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="nb" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Analyse — funksjonspotensial for PlayerHQ og AgencyOS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&family=Lora:ital,wght@0,400;0,500;1,400&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#FAF9F5;--surface:#FFFFFF;--soft:#F0EEE6;--border:#E5E2D9;--fg:#141413;--mid:#77736B;--faint:#A9A49A;--accent:#D97757;--accent-fg:#B5573A;--accent-soft:#FBEDE7;--up:#3D7A5A;--dn:#B0603F;--info:#4A6FA5;--display:'Poppins',system-ui,sans-serif;--prose:'Lora',Georgia,serif;--mono:'IBM Plex Mono',monospace}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--fg);font-family:var(--display);font-size:14px;line-height:1.55;-webkit-font-smoothing:antialiased}
+a{color:var(--accent-fg)}a:hover{color:var(--accent)}
+.wrap{max-width:1080px;margin:0 auto;padding:56px 32px 96px}
+.kicker{font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--mid)}
+h1{font-size:34px;font-weight:600;letter-spacing:-.02em;margin:10px 0 8px;text-wrap:pretty}
+h2{font-size:20px;font-weight:600;margin:56px 0 6px;letter-spacing:-.01em;scroll-margin-top:20px}
+h3{font-size:15px;font-weight:600;margin:28px 0 8px}
+p{font-family:var(--prose);font-size:14.5px;line-height:1.65;color:var(--fg);max-width:74ch;margin-bottom:10px;text-wrap:pretty}
+p.lede{font-size:16px;color:var(--mid)}
+ul{margin:8px 0 12px 18px;font-family:var(--prose);font-size:14.5px;line-height:1.6;max-width:74ch}
+li{margin-bottom:5px}
+code{font-family:var(--mono);font-size:12px;background:var(--soft);padding:1px 5px;border-radius:4px}
+table{width:100%;border-collapse:collapse;font-size:12.5px;margin:14px 0 6px}
+th{text-align:left;font-family:var(--mono);font-size:9.5px;letter-spacing:.09em;text-transform:uppercase;color:var(--mid);font-weight:600;padding:0 10px 8px;border-bottom:1px solid var(--border);vertical-align:bottom}
+td{padding:9px 10px;border-bottom:1px solid var(--border);vertical-align:top}
+tr:last-child td{border-bottom:0}
+.tag{font-family:var(--mono);font-size:9.5px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;padding:2px 7px;border-radius:999px;white-space:nowrap;display:inline-block}
+.a{background:#E7F0EA;color:var(--up)}.b{background:var(--accent-soft);color:var(--accent-fg)}.c{background:#EDE9E1;color:var(--mid)}.i{background:#E8EEF5;color:var(--info)}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:18px 22px;margin:16px 0}
+.card.warn{border-left:3px solid var(--accent)}
+.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:22px 0}
+.stat{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:14px 16px}
+.stat .v{font-family:var(--mono);font-size:30px;font-weight:500;letter-spacing:-.03em;line-height:1;margin-bottom:6px}
+.stat .l{font-size:11.5px;color:var(--mid);line-height:1.35}
+.legend{display:flex;gap:14px;flex-wrap:wrap;margin:14px 0 0;font-size:11.5px;color:var(--mid);align-items:center}
+.toc{display:grid;grid-template-columns:repeat(2,1fr);gap:4px 22px;margin:24px 0 0;font-size:12.5px}
+.toc a{text-decoration:none;color:var(--mid);padding:4px 0;border-bottom:1px solid var(--border);display:block}
+.toc a:hover{color:var(--fg)}
+.toc a b{color:var(--fg);font-family:var(--mono);font-size:10px;margin-right:8px}
+@media(max-width:820px){.grid{grid-template-columns:repeat(2,1fr)}.toc{grid-template-columns:1fr}.wrap{padding:36px 20px 64px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="kicker">Designanalyse · 14. august 2026</div>
+<h1>Funksjonspotensial — hva PlayerHQ og AgencyOS kan bli med det som allerede finnes</h1>
+<p class="lede">Grunnlaget er de tegnede flatene i dette prosjektet (fase 1 og 2), Workbench-masterplanen med F1–F3 levert, og kodebase-analysen fra 1. august (158 Prisma-modeller). Hovedfunnet i én setning: <b>det største potensialet er ikke nye funksjoner, men løkker mellom funksjoner som i dag står hver for seg</b> — plan møter aldri logg, test møter aldri drill, booking møter aldri faktura. Ni av de fjorten mulighetene under — fire kryssløkker og ti kandidater — krever null nye datamodeller.</p>
+
+<div class="toc">
+  <a href="#tall"><b>01</b>Tallgrunnlaget</a>
+  <a href="#prinsipp"><b>02</b>Prinsippet: løkker, ikke flater</a>
+  <a href="#playerhq"><b>03</b>PlayerHQ — uforløst i det som finnes</a>
+  <a href="#agencyos"><b>04</b>AgencyOS — uforløst i det som finnes</a>
+  <a href="#kryss"><b>05</b>Kryssløkkene — der verdien bor</a>
+  <a href="#nye"><b>06</b>Nye funksjoner, rangert etter dataunderlag</a>
+  <a href="#ikke"><b>07</b>Det vi bevisst ikke bør bygge</a>
+  <a href="#rekkefolge"><b>08</b>Anbefalt rekkefølge</a>
+</div>
+
+<h2 id="tall">01 · Tallgrunnlaget</h2>
+<div class="grid">
+  <div class="stat"><div class="v">34</div><div class="l">PlayerHQ-flater tegnet i fase 2 — talt i <code>fase2/playerhq/</code></div></div>
+  <div class="stat"><div class="v">13+</div><div class="l">AgencyOS-flater i fase 1 og 2, inkl. Workbench F1–F3</div></div>
+  <div class="stat"><div class="v">158</div><div class="l">Prisma-modeller i kodebasen (analysen 01.08)</div></div>
+  <div class="stat"><div class="v">9/14</div><div class="l">av mulighetene under (4 løkker + 10 kandidater) er klasse A — ingen ny datamodell</div></div>
+</div>
+<div class="legend">
+  <span><span class="tag a">A</span> data og flate finnes — mangler kobling</span>
+  <span><span class="tag b">B</span> data finnes delvis — kjent hull</span>
+  <span><span class="tag c">C</span> krever ny datamodell</span>
+  <span><span class="tag i">Agent</span> best løst som agentforslag i kø, ikke ny skjerm</span>
+</div>
+<p>Merk premisset: dette er en <i>design</i>-analyse. «Data finnes» betyr at modellen er bekreftet i kodebase-analysen 01.08 eller at flaten som produserer dataene er tegnet og vedtatt. Ingenting under er målt mot produksjonsdata.</p>
+
+<h2 id="prinsipp">02 · Prinsippet: løkker, ikke flater</h2>
+<p>PlayerHQ har 34 flater og dekker hele spillerhverdagen: runder (<code>live-tapper</code>, <code>runde-detalj</code>), slagdata (<code>trackman-*</code>), tester (<code>tester-hub</code>, <code>test-detalj</code>), trening (<code>drills</code>, <code>okt-detalj</code>, <code>putte-lab</code>), planer (<code>teknisk-plan</code>, <code>fys-plan</code>, <code>gameplan-*</code>), kropp (<code>helse</code>), økonomi (<code>abonnement</code>, <code>betaling</code>), relasjon (<code>coach-hub</code>, <code>coach-tilbakemelding</code>, <code>booking-*</code>). Bredden er ikke problemet. Problemet er at flatene er <b>innsamlingspunkter uten retur</b>: spilleren taster en runde, og runden endrer ingenting i planen; hun tar en test, og testen anbefaler ingen drill; hun booker en time, og timen fakturerer seg ikke selv.</p>
+<p>Workbench-arbeidet (F1–F3) har allerede etablert svaret arkitektonisk: <b>én sannhet om tid</b>, der booking, økt, skole og turnering er samme blokk i samme rutenett. Potensial-analysen er den samme ideen anvendt på data: én sannhet om <i>slaget</i> (TrackMan + test + runde peker på samme områdetaksonomi — AK-formelens fem slots finnes alt) og én sannhet om <i>pengene</i> (booking → faktura → abonnement). Der taksonomien alt deles, er løkken en kobling, ikke et nybygg.</p>
+
+<h2 id="playerhq">03 · PlayerHQ — uforløst potensial i eksisterende funksjoner</h2>
+<table>
+<thead><tr><th style="width:20%">Finnes i dag</th><th>Uforløst potensial</th><th style="width:10%">Klasse</th></tr></thead>
+<tbody>
+<tr><td><b>Runder</b> · live-tapper, runde-detalj, analyse-hull</td><td>Runden er kilden til Strokes Gained per område — men SG-tallene stopper i runde-detaljen. Potensial: hver runde skriver til samme områdetaksonomi som drills og tester bruker, slik at «SG APP −1,8 siste fire runder» kan peke direkte på innspill-drills i biblioteket. Visualiseringen finnes (<code>SgBreakdown</code> i golfviz).</td><td><span class="tag a">A</span></td></tr>
+<tr><td><b>TrackMan</b> · liste, detalj</td><td>Avstandskart («gapping»): faktisk carry per kølle av eksisterende TrackMan-økter, mot utstyrslista i <code>utstyr</code>. Hull i settet (30 m mellom to køller) er et kjøpsråd og et gameplan-innspill. Ingen ny datainnsamling — bare en ny lesning av data spilleren alt har.</td><td><span class="tag a">A</span></td></tr>
+<tr><td><b>Tester</b> · hub, detalj</td><td>Testbatteriet har intervaller; ingen flate eier «neste test forfaller». Potensial: forfallslogikk som legger testforslag i workbench-uka (F3-motoren tar imot dem som blokker i dag) og varsler i <code>hjem-varsler</code>. Pluss: test-resultat → baseline i putte-lab, som i dag står uten referanse.</td><td><span class="tag a">A</span></td></tr>
+<tr><td><b>Gameplan</b> · banekart, liste</td><td>Gameplan og turnering er ukoblet: planen vet ikke hvilken turnering den gjelder. Kobling gameplan ↔ <code>turnering-detalj</code> gir «lag gameplan for NM Junior» som handling på turneringssiden, og post-runde-sammenligning: spilte hun planen? Datagrunnlaget (hull-for-hull i live-tapper) finnes.</td><td><span class="tag a">A</span></td></tr>
+<tr><td><b>Helse</b> · helse, fys-plan</td><td>Helse er i dag en logg. Den er tegnet som kilde-lag i workbench-masterplanen — potensialet er belastningsstyring: sum treningsminutter per uke mot selvrapportert form, med varsel til coach når kurven bryter. Krever ingen ny modell, bare aggregering.</td><td><span class="tag a">A</span></td></tr>
+<tr><td><b>Feiring, talent</b></td><td>Feiring fyrer i dag på enkelthendelser. Potensial: koble til etterlevelse (fullførte økter mot publisert plan — loggen fra F3 er skrevet for nettopp dette) slik at det som feires er prosess, ikke bare resultat. Billig, og riktig for aldersgruppen.</td><td><span class="tag b">B</span></td></tr>
+<tr><td><b>Coach-relasjon</b> · coach-hub, tilbakemelding</td><td>F3 ga coachen logg med varsler inn i PlayerHQ. Returretningen mangler: spillerens «hvorfor»-kommentar på en flyttet/hoppet økt, synlig i coachens kø. Én tekstlinje på en eksisterende hendelse — ikke en meldingsflate til.</td><td><span class="tag a">A</span></td></tr>
+<tr><td><b>Betaling</b> · abonnement, betaling</td><td>Se kryssløkke K3 — potensialet ligger på byråsiden.</td><td><span class="tag a">A</span></td></tr>
+</tbody>
+</table>
+
+<h2 id="agencyos">04 · AgencyOS — uforløst potensial i eksisterende funksjoner</h2>
+<table>
+<thead><tr><th style="width:20%">Finnes i dag</th><th>Uforløst potensial</th><th style="width:10%">Klasse</th></tr></thead>
+<tbody>
+<tr><td><b>Workbench F1–F3</b></td><td>F4 er allerede besluttet (composer-til-ghost, periodiserings-ghost søndag, peaking, faktisk-mot-planlagt) og er den enkeltinvesteringen som forløser mest: den gjør kalenderen fra redigeringsflate til planleggings<i>motor</i>. Restansene fra F2/F3 hører her: gjentakelse (<code>recurrenceRule</code>), godkjenningsflyt for tidsbytte, GFGK-skoletid, utebanekapasitet.</td><td><span class="tag a">A</span></td></tr>
+<tr><td><b>Innboks + godkjenninger</b></td><td>Køen er bygget for agentforslag, men de fleste forslag i demoene er manuelle. Potensial: la de eksisterende regnestykkene (konfliktmotor, tidsforslag, testforfall, belastning) produsere <i>køelementer</i> med diff og Godkjenn/Avvis — mønsteret finnes ferdig i <code>godkjenninger</code>.</td><td><span class="tag i">Agent</span></td></tr>
+<tr><td><b>Bookinger</b></td><td>RSVP-flyten fra F3 stopper ved «godtatt». Potensial: godtatt booking → faktureringslinje → betalingsstatus i samme kort. PlayerHQ har alt <code>betaling</code>-flaten; byrået mangler motposten. Dette er den mest direkte veien fra design til kroner.</td><td><span class="tag a">A</span></td></tr>
+<tr><td><b>Planbibliotek</b></td><td>Ukemalene ble ekte nyttelast i F3 (dager + tider + områder). Potensial: bruksstatistikk tilbake til biblioteket — hvilke maler overlever kontakt med virkeligheten (etterlevelse per mal), hvilke redigeres alltid. Gjør biblioteket selvforbedrende uten AI.</td><td><span class="tag b">B</span></td></tr>
+<tr><td><b>Grupper + AK-stigen</b></td><td>Stigen er i dag en visning. Potensial: nivåkriterier koblet til testbatteriet, slik at «klar for opprykk» blir et regnet forslag i køen i stedet for et skjønn — og et foreldreargument ved reforhandling av abonnement.</td><td><span class="tag b">B</span></td></tr>
+<tr><td><b>Turneringer</b></td><td>Turneringsuka finnes som ukemal og som F1-fasit (<code>workbench-turnering</code>). Potensial: turnering → automatisk nedtrappingsforslag i workbench (peaking hører til F4), og resultat tilbake til talent/stigen.</td><td><span class="tag a">A</span></td></tr>
+<tr><td><b>Forelder-flaten</b> · forelder-barn</td><td>Underbrukt: den er den naturlige mottakeren av ukesdigest (publisert plan + endringer med coach-merking — alt logget i F3), skoletidsbekreftelse (GFGK-hullet: spør hjemmet i stedet for å gjette) og betalingsstatus.</td><td><span class="tag a">A</span></td></tr>
+</tbody>
+</table>
+
+<h2 id="kryss">05 · Kryssløkkene — der verdien bor</h2>
+<p>De fire løkkene under binder eksisterende flater i par. Hver har en produsent som alt er tegnet, en konsument som alt er tegnet, og et manglende ledd i midten.</p>
+<div class="card">
+<p><b>K1 · Plan → logg → plan (etterlevelse).</b> Coach publiserer uka (F3) → spilleren fullfører/hopper økter (<code>okt-detalj</code>) → <b>manglende ledd:</b> etterlevelses-tall tilbake i workbench («faktisk mot planlagt» er F4-punktet) og i gruppens oversikt. Dette er den viktigste enkeltløkken: uten den er publisering et rop ut i mørket.</p>
+</div>
+<div class="card">
+<p><b>K2 · Test → svakhet → drill → retest.</b> Testbatteriet måler per område → <b>manglende ledd:</b> områdesvakhet peker på drills med samme AK-formel-slots (taksonomien er identisk — det er designet slik) → drillen legges i uka → retest ved neste forfall viser om det virket. Hele kjeden bruker eksisterende modeller.</p>
+</div>
+<div class="card">
+<p><b>K3 · Booking → faktura → abonnement.</b> RSVP godtas i workbench (F3) → <b>manglende ledd:</b> faktureringslinjen → PlayerHQs <code>betaling</code>-flate viser den → byrået ser utestående per familie. Eneste løkke med direkte omsetningseffekt; bør prioriteres deretter.</p>
+</div>
+<div class="card">
+<p><b>K4 · Runde → gameplan → neste runde.</b> Live-tapper samler hull-for-hull → <b>manglende ledd:</b> avviket fra gameplanen («du la deg opp på 7 som planlagt, men slo driver på 12») → justert plan før neste turneringsrunde. Krever kobling K4a (gameplan ↔ turnering) først.</p>
+</div>
+
+<h2 id="nye">06 · Nye funksjoner, rangert etter dataunderlag</h2>
+<table>
+<thead><tr><th style="width:24%">Kandidat</th><th>Hva den gjør — og hvorfor/hvorfor ikke</th><th style="width:10%">Klasse</th></tr></thead>
+<tbody>
+<tr><td><b>Ukesrapport-agent</b></td><td>Søndag kveld: etterlevelse, SG-trend, neste ukes plan, testforfall — som køelement til coach og digest til spiller/forelder. Ren aggregering av eksisterende data; den beste første «agenten» fordi den ikke kan gjøre skade (leser, skriver aldri).</td><td><span class="tag a">A</span> <span class="tag i">Agent</span></td></tr>
+<tr><td><b>Gapping-kart</b></td><td>Carry per kølle fra TrackMan-økter, hull i settet flagget. Én ny visning i <code>utstyr</code> + <code>trackman-detalj</code>; <code>DispersionMap</code>-utvidelsen (K10 i dekningsvurderingen) er halve jobben.</td><td><span class="tag a">A</span></td></tr>
+<tr><td><b>Testforfall + retest-syklus</b></td><td>Intervall-logikk på testbatteriet, forslag inn i uka. Forutsetter K2-koblingen for å være mer enn en påminnelse.</td><td><span class="tag a">A</span></td></tr>
+<tr><td><b>Etterlevelses-måling</b></td><td>F4-punktet «faktisk mot planlagt» som tall per spiller/gruppe/mal. Nevneren må defineres ærlig: publiserte økter, ikke alle økter.</td><td><span class="tag a">A</span></td></tr>
+<tr><td><b>Belastnings-varsel</b></td><td>Ukesminutter + helse-logg → varsel i coach-kø ved brudd på trend. Terskler må eies av coach, ikke av oss — innstilling, ikke hardkode.</td><td><span class="tag a">A</span></td></tr>
+<tr><td><b>Skoletid fra hjemmet</b></td><td>GFGK-hullet (masterplanens punkt 3) løst uten integrasjon: forelder bekrefter timeplan i forelder-flaten én gang per semester. Datamodellen finnes (WANG-varianten); kilden er ny.</td><td><span class="tag b">B</span></td></tr>
+<tr><td><b>NGF/GolfBox-import</b></td><td>Turneringsresultater og WHS-handicap automatisk inn. Verdifullt, men avhenger av tredjeparts API-tilgang — klassisk B som ser ut som A til avtalen er signert.</td><td><span class="tag b">B</span></td></tr>
+<tr><td><b>Video på drill og økt</b></td><td>Svingvideo mot drill-instruksjon. <code>VideoScrubber</code> (K12) er planlagt komponent, men lagring, personvern for mindreårige og opplastingsflyt er nye modeller og nye vedtak. Stort, ekte, men ikke billig.</td><td><span class="tag c">C</span></td></tr>
+<tr><td><b>AI-caddie i runden</b></td><td>Gameplan + gapping + vær → køllevalg live. Krever K4 og gapping først; uten dem er det en gimmick oppå manglende grunnmur.</td><td><span class="tag c">C</span></td></tr>
+<tr><td><b>Wearables/søvn</b></td><td>Utsettes. Helse-loggen må først bevise at noen leser den manuelt før vi importerer mer av den automatisk.</td><td><span class="tag c">C</span></td></tr>
+</tbody>
+</table>
+
+<h2 id="ikke">07 · Det vi bevisst ikke bør bygge</h2>
+<ul>
+<li><b>Sosial feed / spillere-imellom.</b> Målgruppen er mindreårige; moderasjonsplikten er reell og verdien udokumentert. Feiring + gruppe-flatene dekker lagfølelsen uten fri tekst mellom barn.</li>
+<li><b>Generell chat-kanal coach↔spiller.</b> Kommentar-på-hendelse (03, coach-relasjon) gir returkanalen uten å bygge en meldingsapp — og holder samtalen festet til saken, som er hele poenget med logg-designet fra F3.</li>
+<li><b>Egen videoanalyse-suite.</b> Se video-raden over: gjør K12-komponenten når vedtakene om lagring og samtykke er tatt, ikke før.</li>
+<li><b>Flere innsamlingsflater generelt.</b> Hver ny logg uten løkke øker gapet analysen beskriver. Regel fremover: en ny flate må navngi sin konsument før den tegnes.</li>
+</ul>
+
+<h2 id="rekkefolge">08 · Anbefalt rekkefølge</h2>
+<table>
+<thead><tr><th style="width:8%">Nr</th><th>Leveranse</th><th>Begrunnelse</th></tr></thead>
+<tbody>
+<tr><td>1</td><td><b>Workbench F4</b> (vedtatt)</td><td>Forløser K1 og gjør motoren komplett; alt annet skriver forslag inn i den.</td></tr>
+<tr><td>2</td><td><b>K3 booking → faktura</b></td><td>Omsetning. Kortest vei: begge endene er tegnet.</td></tr>
+<tr><td>3</td><td><b>Ukesrapport-agent</b></td><td>Første agent i køen; leser alt, skriver ingenting, bygger tillit til agent-mønsteret.</td></tr>
+<tr><td>4</td><td><b>K2 test → drill</b> + testforfall</td><td>Den sportsfaglige kjernen; taksonomien er alt delt.</td></tr>
+<tr><td>5</td><td><b>Gapping-kart</b></td><td>Billig, synlig, og forutsetning for alt caddie-aktig senere.</td></tr>
+<tr><td>6</td><td><b>Forelder-digest + skoletidsbekreftelse</b></td><td>Lukker GFGK-hullet og gir betaleren grunn til å åpne appen.</td></tr>
+</tbody>
+</table>
+<div class="card warn">
+<p><b>Forbehold.</b> Klassifiseringen A/B/C hviler på kodebase-analysen fra 1. august og på at de tegnede flatene vedtas som de står. Før noe av dette planlegges som utvikling, bør A-påstandene verifiseres mot faktisk skjema — særlig at runde-, test- og drilldata deler områdetaksonomi i basen og ikke bare i designet. Det er én dags verifikasjon som kan spare uker.</p>
+</div>
+
+</div>
+</body>
+</html>
