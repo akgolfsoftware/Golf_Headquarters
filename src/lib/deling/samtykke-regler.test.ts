@@ -13,6 +13,8 @@ import {
   erDelingScope,
   DELING_SAMTYKKE_TEKST,
   DELING_SCOPES,
+  DELING_SAMTYKKE_ROLLER,
+  SAMTYKKE_TEKST_VERSJON,
   type DelingSamtykkeRad,
   type SamtykkeKandidat,
 } from "./samtykke-regler";
@@ -210,5 +212,109 @@ describe("scope-kanon", () => {
       assert.ok(tekst.forklaring.length > 0);
       assert.ok(tekst.punkter.length > 0);
     }
+  });
+});
+
+/**
+ * Kanttilfeller som sto udekket etter T8 (kartlagt 2026-08-16). De handler om
+ * RANDSONEN av samtykkereglene — der en feil ikke gir et rart svar, men gir
+ * feil person innsyn i data om et barn.
+ */
+describe("kanttilfeller (lagt til 2026-08-16)", () => {
+  it("ukjent scope-streng i en rad teller aldri med", () => {
+    // `DelingSamtykkeRad.scope` er `string`, ikke `DelingScope` — radene kommer
+    // fra DB der kolonnen er fritekst. En rad med et scope vi ikke kjenner
+    // (gammelt navn, skrivefeil i en migrasjon) skal ignoreres, ikke tolkes.
+    assert.equal(
+      harGyldigSamtykke([rad({ scope: "TEST_RESULTATER_GAMMEL" })], KRAV_VOKSEN),
+      false,
+    );
+  });
+
+  it("ukjent gittAvRolle teller ikke som foresatt-samtykke", () => {
+    assert.equal(
+      harGyldigSamtykke([rad({ gittAvRolle: "TRENER" })], {
+        ...KRAV_VOKSEN,
+        kreverForesatt: true,
+      }),
+      false,
+      "Kun FORESATT kan samtykke på vegne av en mindreårig (GDPR art. 8)",
+    );
+  });
+
+  it("kandidat uten gruppemedlemskap gir ingen oppføringer", () => {
+    const kart = velgSamtykkedeSpillerePerGruppe(
+      [{ userId: "s1", kreverForesatt: false, gruppeIder: [], samtykkeRader: [rad({})] }],
+      "TEST_RESULTATER",
+    );
+    assert.equal(kart.size, 0);
+  });
+
+  it("kartet får ingen tom liste for en gruppe uten samtykke", () => {
+    // Subtil forskjell verdt å låse: `eksternLeserSpillerIderPerGruppe`
+    // pre-seeder tomme arrays per gruppe, denne funksjonen gjør det ikke.
+    // Blandes de to, ser en gruppe uten samtykke ut som «finnes ikke» i det
+    // ene laget og «finnes, men tom» i det andre.
+    const kart = velgSamtykkedeSpillerePerGruppe(
+      [{ userId: "s1", kreverForesatt: false, gruppeIder: ["gruppe-b"], samtykkeRader: [] }],
+      "TEST_RESULTATER",
+    );
+    assert.equal(kart.has("gruppe-b"), false);
+  });
+
+  /**
+   * KARAKTERISERING — dette er ikke en velsignelse av oppførselen.
+   *
+   * `harGyldigSamtykke` sammenligner med streng `>`, så to rader med IDENTISK
+   * createdAt avgjøres av rekkefølgen i arrayet — altså av `orderBy` i den
+   * Prisma-spørringen som tilfeldigvis hentet dem. Prisma kan skrive to rader
+   * i samme transaksjon med samme tidsstempel, så tilfellet er reelt.
+   *
+   * GDPR art. 7-3 tilsier at et TREKK bør vinne uansett rekkefølge. Å endre
+   * det er en beslutning for Anders, ikke noe denne testen avgjør — men uten
+   * denne testen kan en `orderBy`-endring snu svaret uten at noe blir rødt.
+   */
+  it("likt tidsstempel: første rad i listen vinner (rekkefølgeavhengig)", () => {
+    const samtidig = new Date("2026-08-10T12:00:00Z");
+    assert.equal(
+      harGyldigSamtykke(
+        [rad({ gitt: false, createdAt: samtidig }), rad({ gitt: true, createdAt: samtidig })],
+        KRAV_VOKSEN,
+      ),
+      false,
+    );
+    assert.equal(
+      harGyldigSamtykke(
+        [rad({ gitt: true, createdAt: samtidig }), rad({ gitt: false, createdAt: samtidig })],
+        KRAV_VOKSEN,
+      ),
+      true,
+      "Samme to rader, motsatt rekkefølge, motsatt svar — se kommentaren over",
+    );
+  });
+});
+
+describe("samtykke-kanon", () => {
+  it("SAMTYKKE_TEKST_VERSJON er en sorterbar ISO-dato", () => {
+    // Versjonen lagres på hver samtykkerad som bevis for HVILKEN ordlyd
+    // brukeren sa ja til. Er den ikke sorterbar, kan vi ikke svare på
+    // «hvem samtykket til den gamle teksten?» når teksten endres.
+    assert.match(SAMTYKKE_TEKST_VERSJON, /^\d{4}-\d{2}-\d{2}$/);
+    assert.ok(!Number.isNaN(new Date(SAMTYKKE_TEKST_VERSJON).getTime()));
+  });
+
+  it("rollene er nøyaktig SELV og FORESATT", () => {
+    // harGyldigSamtykke sammenligner mot strengen "FORESATT" direkte. Døpes
+    // rollen om i konstanten uten å rette funksjonen, faller foresatt-kravet
+    // stille bort og mindreåriges data deles på et SELV-samtykke.
+    assert.deepEqual([...DELING_SAMTYKKE_ROLLER], ["SELV", "FORESATT"]);
+  });
+
+  it("hvert scope har tekst, og hver tekst hører til et scope", () => {
+    assert.deepEqual(
+      Object.keys(DELING_SAMTYKKE_TEKST).sort(),
+      [...DELING_SCOPES].sort(),
+      "Et scope uten samtykketekst gir en tom samtykkedialog",
+    );
   });
 });
