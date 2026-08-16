@@ -7,9 +7,9 @@ Alle rader: m390/d1280 sign-off = Anders.
 
 | Rute | Kode-komponent | `data-paper-slug` | Tittel | Tom-tilstand | Primær handling | Sign-off |
 |---|---|---|---|---|---|---|
-| `/admin/plans` | `AdminPlansV2` | ja (allerede) | «Planer» | ja (`TomTilstand`, vei til Workbench/mal) | «Ny plan» (`enTing`) | [ ] |
-| `/admin/plan-templates` | `AdminPlanMalerV2` | **lagt til i natt** | «Planmaler» | ja (`TomTilstand`) | «Ny mal» (`enTing`) | [ ] |
-| `/admin/teknisk-plan` | `AdminTekniskPlanV2` | **lagt til i natt** (kun tagging — layout uendret) | «Teknisk plan.» | ja, to lister (spillere/maler) | «Ny mal» (ghost, ikke enTing — sekundær) | [ ] |
+| `/admin/plans` | `AdminPlansV2` | ja (allerede) | «Planer» | ja (`TomTilstand`, vei til Workbench/mal) | «Ny plan» (ink-knapp i topplinjen — A3: clay aldri som liste-CTA) | [ ] |
+| `/admin/plan-templates` | `AdminPlanMalerV2` | **lagt til i natt** | «Planmaler» | ja (`TomTilstand`) | «Ny mal» (ink-knapp i topplinjen — A3) | [ ] |
+| `/admin/teknisk-plan` | `AdminTekniskPlanV2` | **lagt til i natt** (kun tagging — layout uendret) | «Teknisk plan.» | ja, to lister (spillere/maler) | «Ny mal» (ghost — sekundær) | [ ] |
 | `/admin/plans/[planId]` | bespoke (`_timeline`, `_phase-card`, `_kpi-card`, `_pyramide-fordeling`, `_completed-sessions`) | nei | ja (`Tittel`) | delvis — ikke sjekket i denne runden | ikke sjekket | [ ] — **åpent: ikke v2-komponentisert, egen fil-familie i `plans/[planId]/`** |
 | `/admin/plan-templates/[id]` | `AdminPlanMalDetaljV2` | nei | ja | ja | ja (`CTAPill`) | [ ] |
 | `/admin/plan-templates/[id]/rediger` | (skjema, ikke sjekket i detalj) | nei | ikke sjekket | n/a (skjema) | lagre-knapp forventet | [ ] |
@@ -75,7 +75,7 @@ Alle rader: m390/d1280 sign-off = Anders. `npm run verify` grønn i hovedrepo pe
 
 | Rute | Komponent | `data-paper-slug` | Tittel | Tom-tilstand | Primær handling | Sign-off |
 |---|---|---|---|---|---|---|
-| `/admin/godkjenninger` | `AdminGodkjenningerV2` | ja (allerede) | «Godkjenninger» | ja (`TomTilstand`) | gjensidig utelukkende enTing (haster/lav-risiko/innboks) | [ ] |
+| `/admin/godkjenninger` | `AdminGodkjenningerV2` | ja (allerede) | «Godkjenninger» | ja (`TomTilstand`) | gjensidig utelukkende ink-/ghost-knapper (haster/lav-risiko/innboks) — A3: clay kun i «Én ting nå»-kortet | [ ] |
 | `/admin/godkjenninger/[id]` | `AdminGodkjenningDetaljV2` | lagt til 13.08 | ja | ja (`ApprovalNotFound`) | «Godkjenn» (sticky bar) | [ ] |
 | `/admin/handlingssenter` | `AdminHandlingssenterV2` | lagt til 13.08 (kun tagging) | «Handlingssenter» | ja | «Ny oppgave» | [ ] |
 | `/admin/queue` | inline page.tsx | lagt til 13.08 (kun tagging) | «Hvem trenger en samtale» | delvis (tomme kanban-kolonner) | ingen primær (ghost) | [ ] |

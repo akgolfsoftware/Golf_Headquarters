@@ -32,10 +32,11 @@ export function InnstillingerOkterV2() {
         />
       </Kort>
 
+      {/* A3 (16.08): ren navigasjon = ink-knapp, aldri clay. */}
       <Link href="/portal/meg/innstillinger/sikkerhet" style={{ textDecoration: "none", display: "block" }}>
         <span style={{
             display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, minHeight: 56, width: "100%", padding: "10px 16px",
-            borderRadius: 12, background: T.handling, color: T.onHandling, fontFamily: T.ui, fontSize: 14, fontWeight: 600,
+            borderRadius: 12, background: T.cta, color: T.onCta, fontFamily: T.ui, fontSize: 14, fontWeight: 600,
           }}>Åpne sikkerhet</span>
       </Link>
     </div>
