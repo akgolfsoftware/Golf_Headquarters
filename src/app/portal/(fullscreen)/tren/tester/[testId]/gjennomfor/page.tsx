@@ -15,24 +15,19 @@ import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { testTilgangWhere } from "@/lib/portal-tester/test-tilgang";
 import { fallbackScorekortSpec, parseProtocol } from "@/lib/portal-tester/protocol";
+import { parseSessionScoring, tilScorekortState } from "@/lib/portal-tester/session-data";
 import { T } from "@/lib/v2/tokens";
 import { ScorekortKlient } from "./scorekort-klient";
 
 export const dynamic = "force-dynamic";
-
-/** Splitter testnavnet så siste ord kan rendres i kursiv lime-aksent (v2-idiom). */
-function delTittel(navn: string): { foran: string; accent: string } {
-  const ord = navn.trim().split(/\s+/);
-  if (ord.length < 2) return { foran: "", accent: navn };
-  return { foran: ord.slice(0, -1).join(" "), accent: ord[ord.length - 1] };
-}
 
 export default async function GjennomforTestPage({
   params,
 }: {
   params: Promise<{ testId: string }>;
 }) {
-  const user = await requirePortalUser();
+  // TALENT: testene er åpne for gratisprofilen (T2-gaten slipper TALENT gjennom).
+  const user = await requirePortalUser({ kreverTilgang: "TALENT" });
   const { testId } = await params;
 
   // Tilgang: samme regel som katalogen — andres private tester gir 404 (K6).
@@ -51,13 +46,28 @@ export default async function GjennomforTestPage({
 
   // Forrige resultat for samme test — kilden til «Foreslått mål» og
   // «Hvorfor dette tallet» (fasit: forrige resultat + IUP + forbehold).
-  const forrige = await prisma.testResult.findFirst({
-    where: { userId: user.id, testId: test.id },
-    orderBy: { takenAt: "desc" },
-    select: { score: true, takenAt: true },
-  });
+  // Pågående økt (TestSession IN_PROGRESS) gjenopptas: de førte forsøkene
+  // legges inn som utgangsstate i scorekortet (T5).
+  const [forrige, paagaaende] = await Promise.all([
+    prisma.testResult.findFirst({
+      where: { userId: user.id, testId: test.id },
+      orderBy: { takenAt: "desc" },
+      select: { score: true, takenAt: true },
+    }),
+    prisma.testSession.findFirst({
+      where: { userId: user.id, testId: test.id, status: "IN_PROGRESS" },
+      orderBy: { startedAt: "desc" },
+      select: { id: true, scoringData: true },
+    }),
+  ]);
 
   const spec = parseProtocol(test.protocol) ?? fallbackScorekortSpec();
+  const gjenopptak = paagaaende
+    ? {
+        sessionId: paagaaende.id,
+        verdier: tilScorekortState(parseSessionScoring(paagaaende.scoringData)),
+      }
+    : null;
   return (
     <div data-paper-wave-d="test-gjennomfor" style={{ minHeight: "100dvh", background: T.bg, color: T.fg, fontFamily: T.ui }}>
       <div
@@ -95,6 +105,7 @@ export default async function GjennomforTestPage({
             }
             spec={spec}
             protocol={test.protocol}
+            gjenopptak={gjenopptak}
           />
         </div>
       </div>
