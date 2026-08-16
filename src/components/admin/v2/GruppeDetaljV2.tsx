@@ -39,6 +39,7 @@ export type MedlemRad = {
   avatarUrl: string | null;
   homeClub: string | null;
   erHjelpetrener: boolean;
+  erTrener: boolean;
   erPro: boolean;
   schoolYear: string | null;
   hcp: number | null;
@@ -67,11 +68,13 @@ export type GruppeDetaljV2Data = {
   trinnValg: string[];
   aktivtTrinn: string | null;
   kandidater: { id: string; name: string; hcp: number | null; homeClub: string | null }[];
+  /** G5: kandidater til trenerrollene (brukere med role COACH/ADMIN). */
+  trenerKandidater: { id: string; name: string; hcp: number | null; homeClub: string | null }[];
 };
 
 export type GruppeDetaljV2Actions = {
   StartOktButton: React.ComponentType;
-  LeggTilSpillerButton: React.ComponentType<{ groupId: string; kandidater: { id: string; name: string; hcp: number | null; homeClub: string | null }[] }>;
+  LeggTilSpillerButton: React.ComponentType<{ groupId: string; kandidater: { id: string; name: string; hcp: number | null; homeClub: string | null }[]; trenerKandidater: { id: string; name: string; hcp: number | null; homeClub: string | null }[] }>;
   FjernMedlemButton: React.ComponentType<{ groupId: string; userId: string; navn: string }>;
   SeAlleTimePlanButton: React.ComponentType<{ groupId: string }>;
   DetaljerButton: React.ComponentType<{ groupId: string; scheduleId: string }>;
@@ -141,7 +144,7 @@ export function GruppeDetaljV2({
         <Link href={`/admin/grupper/${data.id}/arsplan`} style={{ textDecoration: "none" }}>
           <CTAPill ghost icon="calendar">Årsplan</CTAPill>
         </Link>
-        <A.LeggTilSpillerButton groupId={data.id} kandidater={data.kandidater} />
+        <A.LeggTilSpillerButton groupId={data.id} kandidater={data.kandidater} trenerKandidater={data.trenerKandidater} />
         <A.SlettGruppeButton
           groupId={data.id}
           navn={data.navn}
@@ -265,7 +268,7 @@ export function GruppeDetaljV2({
                         {m.navn}
                       </div>
                       <div style={{ fontFamily: T.mono, fontSize: 10, textTransform: "uppercase", letterSpacing: "0.06em", color: T.mut, marginTop: 2 }}>
-                        {m.homeClub ?? "Klubb ukjent"} · {m.erHjelpetrener ? "Hjelpecoach" : "Spiller"}
+                        {m.homeClub ?? "Klubb ukjent"} · {m.erTrener ? "Trener" : m.erHjelpetrener ? "Hjelpecoach" : "Spiller"}
                         {m.schoolYear && ` · ${m.schoolYear}`}
                       </div>
                     </div>

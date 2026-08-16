@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { Search, UserPlus, X } from "lucide-react";
 
 import { avatarBg } from "@/lib/avatar-colors";
+import type { GruppemedlemRolle } from "@/lib/domain/grupper";
 import { leggTilGruppemedlem } from "./actions";
 
 export type Kandidat = {
@@ -13,6 +14,13 @@ export type Kandidat = {
   hcp: number | null;
   homeClub: string | null;
 };
+
+/** G5: rollevalg ved innmelding — etikett + hvilken kandidatliste som gjelder. */
+const ROLLEVALG: { rolle: GruppemedlemRolle; label: string; entall: string }[] = [
+  { rolle: "PLAYER", label: "Spiller", entall: "spiller" },
+  { rolle: "ASSISTANT", label: "Hjelpetrener", entall: "hjelpetrener" },
+  { rolle: "COACH", label: "Trener", entall: "trener" },
+];
 
 function initialer(name: string): string {
   const parts = name.trim().split(/\s+/);
@@ -28,10 +36,12 @@ function fmtHcp(h: number | null): string {
 export function LeggTilMedlemModal({
   groupId,
   kandidater,
+  trenerKandidater,
   onClose,
 }: {
   groupId: string;
   kandidater: Kandidat[];
+  trenerKandidater: Kandidat[];
   onClose: () => void;
 }) {
   const router = useRouter();
@@ -42,6 +52,19 @@ export function LeggTilMedlemModal({
   const [feil, setFeil] = useState<string | null>(null);
   const [sok, setSok] = useState("");
   const [valgt, setValgt] = useState<string | null>(null);
+  const [rolle, setRolle] = useState<GruppemedlemRolle>("PLAYER");
+
+  // Spillere og trenere er ulike kandidatlister — valget nullstilles ved bytte
+  // så en spiller-id aldri sendes inn som trener (og omvendt).
+  const aktiveKandidater = rolle === "PLAYER" ? kandidater : trenerKandidater;
+  const rolleValg = ROLLEVALG.find((r) => r.rolle === rolle) ?? ROLLEVALG[0];
+
+  function velgRolle(neste: GruppemedlemRolle) {
+    if (neste === rolle) return;
+    setRolle(neste);
+    setValgt(null);
+    setFeil(null);
+  }
 
   useEffect(() => {
     dialogRef.current?.showModal();
@@ -59,13 +82,13 @@ export function LeggTilMedlemModal({
 
   const filtrerte = useMemo(() => {
     const q = sok.trim().toLowerCase();
-    if (!q) return kandidater;
-    return kandidater.filter((k) => {
+    if (!q) return aktiveKandidater;
+    return aktiveKandidater.filter((k) => {
       const navn = k.name.toLowerCase();
       const klubb = (k.homeClub ?? "").toLowerCase();
       return navn.includes(q) || klubb.includes(q);
     });
-  }, [kandidater, sok]);
+  }, [aktiveKandidater, sok]);
 
   function lukk() {
     dialogRef.current?.close();
@@ -74,12 +97,12 @@ export function LeggTilMedlemModal({
 
   function bekreft() {
     if (!valgt) {
-      setFeil("Velg en spiller.");
+      setFeil(`Velg en ${rolleValg.entall}.`);
       return;
     }
     setFeil(null);
     startTransition(async () => {
-      const res = await leggTilGruppemedlem(groupId, valgt);
+      const res = await leggTilGruppemedlem(groupId, valgt, rolle);
       if (!res.ok) {
         setFeil(res.feil);
         return;
@@ -109,7 +132,7 @@ export function LeggTilMedlemModal({
               className="mt-1 font-display text-[22px] font-semibold leading-tight tracking-tight"
             >
               Legg til{" "}
-              <span className="font-display italic text-primary">spiller</span>
+              <span className="font-display italic text-primary">{rolleValg.entall}</span>
             </h3>
           </div>
           <button
@@ -120,6 +143,33 @@ export function LeggTilMedlemModal({
           >
             <X className="h-4 w-4" strokeWidth={1.75} />
           </button>
+        </div>
+
+        {/* Rollevalg (G5) */}
+        <div
+          role="radiogroup"
+          aria-label="Rolle i gruppen"
+          className="mb-4 flex flex-wrap items-center gap-2"
+        >
+          {ROLLEVALG.map((r) => {
+            const aktiv = r.rolle === rolle;
+            return (
+              <button
+                key={r.rolle}
+                type="button"
+                role="radio"
+                aria-checked={aktiv}
+                onClick={() => velgRolle(r.rolle)}
+                className={`rounded-full border px-4 py-1.5 text-xs font-semibold transition-colors ${
+                  aktiv
+                    ? "border-transparent bg-primary text-primary-foreground"
+                    : "border-border bg-card text-muted-foreground hover:bg-secondary hover:text-foreground"
+                }`}
+              >
+                {r.label}
+              </button>
+            );
+          })}
         </div>
 
         {/* Søkefelt */}
@@ -136,19 +186,21 @@ export function LeggTilMedlemModal({
             placeholder="Søk på navn eller klubb…"
             className="w-full rounded-md border border-input bg-card py-2 pl-8 pr-4 text-sm text-foreground outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus:border-ring focus:ring-2 focus:ring-ring/30"
             autoComplete="off"
-            aria-label="Søk spillere"
+            aria-label="Søk kandidater"
           />
         </div>
 
         {/* Kandidat-liste */}
         <div className="max-h-[50vh] sm:max-h-[360px] overflow-y-auto rounded-md border border-border bg-background">
-          {kandidater.length === 0 ? (
+          {aktiveKandidater.length === 0 ? (
             <div className="px-4 py-8 text-center text-sm text-muted-foreground">
-              Alle spillere er allerede medlem av gruppen.
+              {rolle === "PLAYER"
+                ? "Alle spillere er allerede medlem av gruppen."
+                : "Alle trenere er allerede medlem av gruppen."}
             </div>
           ) : filtrerte.length === 0 ? (
             <div className="px-4 py-8 text-center text-sm text-muted-foreground">
-              Ingen spillere matcher.
+              Ingen kandidater matcher.
             </div>
           ) : (
             <ul className="divide-y divide-border">
