@@ -155,51 +155,29 @@ test("ingen lekkasje: sider utenfor allowlisten er låst til FULL", () => {
  * MOTSATT RETNING: står ruten på allowlisten, skal den faktisk være nåbar.
  * Rot-layouten holdes utenfor her av samme grunn som over.
  *
- * KJENTE_AVVIK er fryst med vilje: lista skal gå NED, aldri opp. Nytt avvik
- * = rød test. Rettet avvik = også rød test, med beskjed om å fjerne linja.
- *
- * De fem som står igjen er ALLE samme feil som rot-layouten hadde, ett hakk
- * lenger ned: et mellomliggende layout-ledd arver FULL-defaulten og stenger
- * ruter allowlisten har åpnet. Fiksen krever samme rekkefølge som rot-jobben
- * gjorde 16.08 — først egen `kreverTilgang: "FULL"` på hver side under leddet
- * som ikke står på allowlisten, DERETTER løsne selve layouten. Sidene som
- * mangler egen guard i dag: under (fullscreen) er det /portal/live/[sessionId]/
- * logger, /portal/runde/live og /portal/runde/logg; under (legacy) er det
- * /portal/agent-pipeline, /portal/coach/** (9 sider), /portal/ny-okt,
- * /portal/tren/[sessionId], /portal/tren/aarsplan, /portal/tren/fys-plan/
- * [planId] og /portal/utfordringer/ny.
+ * KJENTE_AVVIK-unntakslista er BORTE (17.08.2026). De fem som sto igjen var
+ * ALLE samme feil som rot-layouten hadde, ett hakk lenger ned: et mellomliggende
+ * layout-ledd — `(legacy)/layout.tsx` og `(fullscreen)/layout.tsx` — arvet
+ * FULL-defaulten og stengte ruter allowlisten hadde åpnet, deriblant selve
+ * test-gjennomføringen. Begge er nå løsnet til "INGEN" etter samme rekkefølge
+ * som rot-jobben brukte 16.08: først egen guard på hver av de 23 sidene under
+ * dem, DERETTER løsne layouten. Lista ble fjernet i stedet for å stå igjen tom,
+ * så enhver ny allowlistet rute som stenges er rød med én gang.
  */
-const KJENTE_AVVIK: readonly string[] = [
-  // Blokkert av src/app/portal/(fullscreen)/layout.tsx (krever FULL):
-  "/portal/tren/tester/[testId]/gjennomfor",
-  // Blokkert av src/app/portal/(legacy)/layout.tsx (krever FULL):
-  "/portal/mal/runder/[id]/fullfor",
-  "/portal/mal/runder/[id]/shot-by-shot",
-  "/portal/statistikk",
-  "/portal/tren/tester/katalog",
-] as const;
-
 test("allowlisten holder det den lover (rot-layout holdt utenfor)", () => {
   const blokkert = SIDER.filter((f) => erApenForTalent(tilRute(f))).flatMap((f) => {
     const e = strengeste(guardKjede(f, false));
     return e.niva === "FULL" ? [{ rute: tilRute(f), hvem: e.hvem }] : [];
   });
-  const nye = blokkert.filter((b) => !KJENTE_AVVIK.includes(b.rute));
   assert.deepEqual(
-    nye.map((b) => `  ${b.rute}  (blokkeres av ${b.hvem})`),
+    blokkert.map((b) => b.rute),
     [],
     `Ruter som står på talent-allowlisten, men som en FULL-guard stenger:\n` +
-      `${nye.map((b) => `  ${b.rute}  (${b.hvem})`).join("\n")}\n\n` +
+      `${blokkert.map((b) => `  ${b.rute}  (${b.hvem})`).join("\n")}\n\n` +
       `Legg kreverTilgang: "TALENT" (eller "INGEN") på siden — ellers lyver ` +
-      `allowlisten om hva den gratis TALENT-profilen faktisk kommer inn på.`,
-  );
-
-  const fikset = KJENTE_AVVIK.filter((r) => !blokkert.some((b) => b.rute === r));
-  assert.deepEqual(
-    fikset,
-    [],
-    `Disse står i KJENTE_AVVIK, men er ikke lenger blokkert:\n  ${fikset.join("\n  ")}\n` +
-      `Fjern dem fra lista i denne fila — den skal krympe, ikke bli utdatert.`,
+      `allowlisten om hva den gratis TALENT-profilen faktisk kommer inn på. ` +
+      `Er det et LAYOUT-ledd som stenger, skal ikke layouten få nivået: guard ` +
+      `hver side under den først, så løsne layouten til "INGEN".`,
   );
 });
 
