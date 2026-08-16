@@ -9,6 +9,7 @@ interface Manifest {
   short_name?: string;
   theme_color?: string;
   background_color?: string;
+  orientation?: string;
   icons?: Array<{ src: string; sizes: string; type: string }>;
 }
 
@@ -32,4 +33,19 @@ test.describe("PWA manifest", () => {
     expect(sizes.some((s) => s.includes("192"))).toBeTruthy();
     expect(sizes.some((s) => s.includes("512"))).toBeTruthy();
   });
+
+  // Plattformbeslutning 16.08.2026 (beslutninger.md §PP-A): appen designes for
+  // stående — installert PWA låses til portrett på alle tre manifestene.
+  for (const sti of [
+    "/manifest.webmanifest",
+    "/team-wang/manifest.webmanifest",
+    "/gfgk-junior/manifest.webmanifest",
+  ]) {
+    test(`${sti} låser orientation til portrait`, async ({ request }) => {
+      const res = await request.get(sti);
+      expect(res.status()).toBe(200);
+      const manifest = (await res.json()) as Manifest;
+      expect(manifest.orientation).toBe("portrait");
+    });
+  }
 });
