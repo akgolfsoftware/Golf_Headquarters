@@ -17,7 +17,7 @@ export const KOMMANDO_MODELS: KommandoModel[] = [
   { id: "claude", label: "Claude · Sonnet 4.6", role: "Kode & bygg", provider: "anthropic", modelName: "claude-sonnet-4-6" },
   { id: "gemini", label: "Gemini 2.5", role: "Research", provider: "gemini", modelName: "gemini-2.5-flash" },
   { id: "grok", label: "Grok", role: "Marked & nyheter", provider: "grok", modelName: "grok-2-latest" },
-  { id: "ollama", label: "Ollama · lokal", role: "Privat / raskt", provider: "ollama", modelName: "llama3.1" },
+  { id: "ollama", label: "Ollama · lokal", role: "Privat / raskt", provider: "ollama", modelName: "llama3.1:8b" },
 ];
 
 export const DEFAULT_MODEL: KommandoModelId = "claude";
