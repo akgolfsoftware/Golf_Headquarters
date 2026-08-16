@@ -250,7 +250,13 @@ export async function hentWangGruppe(
         kind: s.kind,
         recurring: s.recurring,
         sted: s.location,
-        beskrivelse: s.description,
+        // Coach-skrevet fritekst. Målt 2026-08-16 på preview: 5 av 28
+        // hendelsesbeskrivelser inneholdt fulle elevnavn (gruppeinndelinger
+        // skrevet rett inn i kalenderteksten). `medElevnavn: false` tømte
+        // `elever`, men navnene lakk ut her i stedet — samme PII, annen vei.
+        // Fritekst kan inneholde hva som helst, så den åpne flaten får den
+        // ikke i det hele tatt.
+        beskrivelse: medElevnavn ? s.description : null,
       }));
 
     const fasteOkter: WangFastOkt[] = gruppe.schedules
