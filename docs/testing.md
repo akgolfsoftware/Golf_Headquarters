@@ -6,8 +6,27 @@ Kort guide for hvordan kjøre tester lokalt og hva som dekkes.
 
 | Type | Verktøy | Hvor | Antall |
 |---|---|---|---|
-| Unit | `node:test` + `tsx` | `src/lib/**/*.test.ts` | 110 filer |
-| E2E | Playwright (chromium + webkit) | `tests/e2e/*.spec.ts` (én mappe siden 2026-08-03) | 32 specs / 104 tester |
+| Unit | `node:test` + `tsx` | `src/**/*.test.ts` | 183 filer / 1187 tester |
+| E2E | Playwright (chromium + webkit) | `tests/e2e/*.spec.ts` (én mappe siden 2026-08-03) | 34 specs |
+
+> Tallene er MÅLT 2026-08-16, ikke anslått. Fram til da påsto denne fila 110
+> enhetstestfiler og 32 specer, og listet to specer som ikke finnes lenger
+> (`auth-redirect.spec.ts`, `marketing.spec.ts`). Stemmer ikke tallene når du
+> leser dette, mål dem på nytt framfor å stole på tabellen:
+> `find src -name "*.test.ts" | wc -l` og `ls tests/e2e/*.spec.ts | wc -l`.
+
+### To konvensjoner for hvor tester skal ligge
+
+1. **Ved siden av koden** — `src/lib/auth/coached.ts` → `src/lib/auth/coached.test.ts`.
+   Foretrukket for ny kode: testen er synlig når du redigerer modulen.
+2. **I `__tests__/`** — `src/lib/__tests__/workbench/session-move.test.ts`.
+   Brukes der flere moduler testes sammen, eller der testen trenger delte
+   hjelpere fra `src/lib/__tests__/_hjelpere/`.
+
+Begge plukkes opp av `npm test`. **Globben er `src/**/*.test.ts` siden
+2026-08-15** — den var `src/lib/**` fram til da, så tester utenfor `src/lib/`
+ble aldri kjørt (og en test som aldri kjører er verre enn ingen test: den ser
+ut som dekning).
 
 ## Kommandoer
 
@@ -28,24 +47,72 @@ npm run e2e:headed   # med synlig browser
 
 Kjører in-memory uten DB eller nettverk. Brukes for ren logikk og biblioteks-integrasjon.
 
-Dekker:
-- `rate-limit.ts` — no-op fallback uten Upstash-config (2 tester).
-- `plan-template-schema.ts` — Zod-validering av plan-forslag (6 tester).
-- `stripe-webhook` — `stripe.webhooks.constructEvent` med gyldig/ugyldig signatur (4 tester).
+Tyngdepunktet ligger i `src/lib/domain/` (SG, hcp, ak-kategori, fys-score),
+`src/lib/sg-hub/` (yardage, smash, same-distance) og `src/lib/auth/`
+(guard-avvisning). Noen som er verdt å kjenne til:
 
-For nye unit-tester: legg dem i `src/lib/__tests__/*.test.ts`. `npm test` plukker dem opp automatisk.
+- `src/lib/auth/guards-avvis.test.ts` — beviser at guardene AVVISER, ikke bare at
+  de importeres. `scripts/check-action-auth.mjs` dekker importen; den sier
+  ingenting om oppførsel.
+- `src/lib/auth/coach-scope-idor.test.ts` — IDOR-regresjoner. Importerer ekte
+  produksjonskode fra `booking-scope.ts`. **Legg aldri en lokal kopi av
+  produksjonslogikk her** — det var nettopp et slikt speil som drev fra
+  originalen og testet et felt (`serviceCoachId`) som ikke finnes i skjemaet.
+- `src/lib/uke-helpers.test.ts` — kjører hver påstand i fire tidsvinduer via
+  `src/lib/__tests__/_hjelpere/tid.ts`. Tidssonefeil er usynlige lokalt (Oslo) og
+  dukker først opp på Vercel (UTC).
+- `src/lib/stripe/abonnement-status.test.ts` — regresjon for `active` +
+  `cancel_at_period_end` → `CANCELLED`. Feilen har skjedd før og er stille.
+- `src/lib/gdpr/anonymiser-felter.test.ts` — kontrakt-test mot `schema.prisma`:
+  fanger et nytt PII-felt på `User` som ikke er lagt inn i anonymiseringen.
+- `src/lib/cron/auth.test.ts` — fail-closed når `CRON_SECRET` mangler. Den
+  motsatte bugen (fail-open) har vært i koden før.
+
+For nye unit-tester: se de to konvensjonene over. `npm test` plukker opp begge.
+
+**Mutasjonssjekk nye sikkerhetstester.** Ødelegg produksjonskoden med vilje og
+se testen bli rød før du stoler på den. En grønn test som ikke kan bli rød er
+verre enn ingen — den ser ut som dekning. Dette er ikke automatisert; det er en
+vane, og den har allerede avslørt tre falskt grønne tester i denne suiten.
 
 ## E2E-tester
 
 Playwright starter `npm run dev` automatisk lokalt (se `playwright.config.ts`).
 I CI antas appen å allerede kjøre på `PLAYWRIGHT_BASE_URL`.
 
-Dekker:
-- `auth-redirect.spec.ts` — `/portal` + `/admin` redirect uten login (4 tester, grønne).
-- `auth-guard.spec.ts` — PLAYER-rolle blokkeres fra `/admin` (1 grønn + 1 betinget skip).
-- `marketing.spec.ts` — forside, vilkår, personvern, sitemap, robots (6 grønne; `/priser` skip ved 404).
-- `booking-drop-in.spec.ts` — gjeste-booking-flyt (3 grønne, full Stripe-checkout `test.skip`).
-- `credit-booking.spec.ts` — Pro-credit-flyt (2 betinget skip).
+De 34 specene (målt 2026-08-16). `auth-redirect.spec.ts` og `marketing.spec.ts`
+sto listet her fram til da, men finnes ikke lenger — dekningen deres ligger i
+`auth.spec.ts`, `routes-redirect.spec.ts` og `landing-page.spec.ts`.
+
+**Auth og tilgang:** `auth.spec.ts` · `auth-guard.spec.ts` ·
+`coach-scope-idor.spec.ts` · `i0-selvbetjent-gate.spec.ts`
+**Booking:** `booking-drop-in.spec.ts` · `credit-booking.spec.ts`
+**Ruter og respons:** `routes-public.spec.ts` · `routes-redirect.spec.ts` ·
+`pages-render.spec.ts` · `404-handling.spec.ts` · `https-redirect.spec.ts` ·
+`api-health.spec.ts` · `kjerne-klikk.spec.ts`
+**PWA og offline:** `pwa-manifest.spec.ts` · `service-worker.spec.ts` ·
+`offline-page.spec.ts` · `icons-pwa.spec.ts` · `splash-screens.spec.ts` ·
+`static-assets.spec.ts`
+**Meta og marketing:** `meta-tags.spec.ts` · `og-tags.spec.ts` ·
+`robots-sitemap.spec.ts` · `landing-page.spec.ts` · `marketing-cta.spec.ts` ·
+`marketing-turneringer.spec.ts`
+**A11y:** `accessibility-landing.spec.ts` · `accessibility-portal.spec.ts` ·
+`accessibility-v2-smoke.spec.ts`
+**Layout-regresjoner:** `agencyos-toppbar-overlapp.spec.ts` (`--ak-topbar-h`) ·
+`cookie-banner-dokk.spec.ts` (`--ak-cookie-h`) · `viewport-mobile.spec.ts`
+**Flate-spesifikt:** `portal-hubs.spec.ts` · `workbench-suggest.spec.ts` ·
+`pilot-recording-smoke.spec.ts`
+
+> **De to layout-specene er verdt å merke seg:** begge de siste layoutfeilene
+> (`--ak-topbar-h`-overlappen og `min-width: 0`-utblåsningen) ble fanget av
+> **e2e**, ikke av skjermbilde-gaten. Skriv slike regresjonsspecer framfor å
+> innføre en komponent-testramme.
+
+⚠️ **`auth-guard.spec.ts`, `coach-scope-idor.spec.ts` og `kjerne-klikk.spec.ts`
+skipper stille i CI** fordi `E2E_TEST_USER_*` / `E2E_COACH_*` /
+`SCREENTEST_PASSWORD` ikke er lagt inn som Actions-secrets. De rapporterer grønt
+uten å kjøre en eneste assertion. Se steg 1 i `docs/plan-testdekning.md` — det er
+den eneste gjenstående oppgaven som krever et menneske.
 
 ### Env-vars som påvirker E2E
 

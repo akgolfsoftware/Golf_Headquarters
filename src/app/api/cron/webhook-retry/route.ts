@@ -24,6 +24,7 @@ import {
 } from "@/lib/stripe/handle-event";
 import { sendSlackAlert } from "@/lib/slack-alert";
 import { rateLimit } from "@/lib/rate-limit";
+import { avvisUgyldigCron } from "@/lib/cron/auth";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -33,11 +34,8 @@ const MAKS_FORSOK = 5;
 const MAKS_PER_KJORING = 20;
 
 export async function GET(req: Request): Promise<NextResponse> {
-  const auth = req.headers.get("authorization");
-  const expectedAuth = `Bearer ${process.env.CRON_SECRET}`;
-  if (!process.env.CRON_SECRET || auth !== expectedAuth) {
-    return NextResponse.json({ error: "unauthorized" }, { status: 401 });
-  }
+  const avvist = avvisUgyldigCron(req);
+  if (avvist) return avvist;
   const rl = await rateLimit({ key: `cron-webhook-retry`, max: 5, windowMs: 60_000 });
   if (!rl.ok) {
     return NextResponse.json(

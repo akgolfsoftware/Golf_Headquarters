@@ -10,6 +10,7 @@ import { rateLimit } from "@/lib/rate-limit";
 import { resolveKommandoModel } from "@/lib/kommando/providers";
 import { DEFAULT_MODEL, isKommandoModelId } from "@/lib/kommando/models";
 import { logError } from "@/lib/error-tracking";
+import { chatBodySchema } from "@/lib/validation/api-schemas";
 
 export const runtime = "nodejs";
 export const maxDuration = 60;
@@ -17,12 +18,6 @@ export const maxDuration = 60;
 const SYSTEM_PROMPT =
   "Du er en assistent i Anders' personlige kommandosenter (AK Agency OS). " +
   "Svar kort, konkret og på norsk bokmål. Vær praktisk og handlingsorientert.";
-
-type ChatRequestBody = {
-  messages?: unknown;
-  conversationId?: unknown;
-  model?: unknown;
-};
 
 function isUIMessageArray(value: unknown): value is UIMessage[] {
   return (
@@ -70,23 +65,28 @@ export async function POST(req: Request) {
     });
   }
 
-  let body: ChatRequestBody;
+  let rå: unknown;
   try {
-    body = (await req.json()) as ChatRequestBody;
+    rå = await req.json();
   } catch {
     return new Response("Ugyldig JSON-payload", { status: 400 });
   }
 
-  if (!isUIMessageArray(body.messages)) {
+  // zod ved API-grensen (gotchas.md) — erstatter `as ChatRequestBody` + den
+  // håndskrevne type guarden. Ugyldig form gir 400, ikke en 500 lenger inne.
+  const validert = chatBodySchema.safeParse(rå);
+  if (!validert.success) {
     return new Response("`messages` må være en liste med UI-meldinger", { status: 400 });
   }
 
-  const modelId = isKommandoModelId(body.model) ? body.model : DEFAULT_MODEL;
-  const conversationId =
-    typeof body.conversationId === "string" && body.conversationId.length > 0
-      ? body.conversationId
-      : null;
-  const messages = body.messages;
+  const modelId = isKommandoModelId(validert.data.model) ? validert.data.model : DEFAULT_MODEL;
+  const conversationId = validert.data.conversationId ?? null;
+  // zod har bekreftet FORMEN; type guarden smalner typen uten cast
+  // (`as unknown as T` er forbudt for forretningskritiske data, CLAUDE.md invariant 6).
+  if (!isUIMessageArray(validert.data.messages)) {
+    return new Response("`messages` må være en liste med UI-meldinger", { status: 400 });
+  }
+  const messages = validert.data.messages;
 
   // Persister siste bruker-melding hvis vi har en samtale-id.
   if (conversationId) {

@@ -12,6 +12,7 @@ import { prisma } from "@/lib/prisma";
 import { sendSlackAlert } from "@/lib/slack-alert";
 import { logError } from "@/lib/error-tracking";
 import { rateLimit } from "@/lib/rate-limit";
+import { avvisUgyldigCron } from "@/lib/cron/auth";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -19,12 +20,8 @@ export const dynamic = "force-dynamic";
 const STUCK_THRESHOLD_MS = 30 * 60 * 1000; // 30 min
 
 export async function GET(req: Request): Promise<NextResponse> {
-  // Beskytt cron-endpoint
-  const auth = req.headers.get("authorization");
-  const expectedAuth = `Bearer ${process.env.CRON_SECRET}`;
-  if (!process.env.CRON_SECRET || auth !== expectedAuth) {
-    return NextResponse.json({ error: "unauthorized" }, { status: 401 });
-  }
+  const avvist = avvisUgyldigCron(req);
+  if (avvist) return avvist;
   const rl = await rateLimit({ key: `cron-check-stuck-bookings`, max: 5, windowMs: 60_000 });
   if (!rl.ok) {
     return NextResponse.json(

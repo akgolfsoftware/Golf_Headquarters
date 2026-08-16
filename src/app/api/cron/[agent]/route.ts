@@ -57,6 +57,7 @@ import { runMaanedsavslutning } from "@/lib/agents/tripletex-maanedsavslutning-a
 import { runBallplukkingSjekk } from "@/lib/agents/gfgk-ballplukking-agent";
 import { runVaskelisteSjekk } from "@/lib/agents/mulligan-vaskeliste-agent";
 import { rateLimit } from "@/lib/rate-limit";
+import { avvisUgyldigCron } from "@/lib/cron/auth";
 
 export const runtime = "nodejs";
 export const maxDuration = 300;
@@ -133,12 +134,8 @@ export async function GET(
   req: Request,
   { params }: { params: Promise<{ agent: string }> }
 ) {
-  // Verifiser cron-secret
-  const auth = req.headers.get("authorization");
-  const expected = `Bearer ${process.env.CRON_SECRET ?? ""}`;
-  if (!process.env.CRON_SECRET || auth !== expected) {
-    return NextResponse.json({ error: "unauthorized" }, { status: 401 });
-  }
+  const avvist = avvisUgyldigCron(req);
+  if (avvist) return avvist;
 
   const { agent } = await params;
   const fn = AGENTS[agent];
