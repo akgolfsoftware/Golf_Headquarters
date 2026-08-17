@@ -123,6 +123,22 @@ sjekketidspunktet — kan skyldes at Region Tour-kvalifiseringen ikke er lagt ut
 ennå denne sesongen, ikke at kilden mangler der. `classifyTour()` fanger navnet uansett hvilken
 kunde det kommer fra.
 
+**Golfstat-empiri (2026-08-17):** Playwright IKKE nødvendig — samme mønster som GolfBox/WAGR.
+`robots.txt` tillater all crawling. Verifisert med ren fetch:
+- Forsiden (`golfstat.com`) har `<script src=".../miniboards/pleaderboard_{tid}.html">`-tagger for
+  hver aktiv/nylig turnering, direkte i statisk HTML — ~210 turnerings-ID-er ved sjekketidspunktet.
+  Dette er KUN aktive/nylige turneringer, ikke dyp historikk (stemmer med docs-notatet om at dyp
+  historikk krever betalt abonnement) — full kjøring er derfor billig, ingen batching nødvendig.
+- `results.golfstat.com/public/leaderboards/gsnav.cfm?pg=player&tid={tid}` gir FULL individuell
+  leaderboard med runde-for-runde BRUTTO-score (`<round_score>70</round_score>`), server-rendret.
+  Parser i `src/lib/golfstat/golfstat-client.ts` (`parsePlayerScoresHtml`), verifisert mot ekte
+  fanget HTML (fixture i `src/lib/golfstat/__fixtures__/`).
+- **Navnematching-felle oppdaget i dry-run (rettet før noe ble skrevet til prod):** `navnLikhet()`
+  (bygget for Clippds smale søkeresultat-scenario) gir falske treff når den sveipes mot store,
+  ukjente feltvis-lister (60-150 spillere per turnering) — felles fornavn alene (f.eks. "Thomas")
+  ga score 0.53-0.65 for helt urelaterte personer. Terskel satt til 0.75 etter observert klart
+  skille mot ekte treff (0.77+) i verifiseringen.
+
 ### Tier 4 — College
 
 | Kilde | Dekker | Tilgang |
