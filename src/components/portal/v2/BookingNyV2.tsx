@@ -307,22 +307,28 @@ export function BookingNyV2({ data }: { data: BookingNyV2Data }) {
         </Kort>
       )}
 
-      {/* Credit-saldo */}
-      <Kort tint eyebrow="Min saldo" action={fornyerLabel ? <Caps size={9}>Fornyer · {fornyerLabel}</Caps> : undefined}>
-        <div style={{ display: "flex", alignItems: "baseline", gap: 8 }}>
-          <span style={{ fontFamily: T.mono, fontSize: 40, fontWeight: 700, color: T.fg, lineHeight: 0.9, letterSpacing: "-0.02em", fontVariantNumeric: "tabular-nums" }}>
-            {creditsRemaining}
-          </span>
-          <span style={{ fontFamily: T.mono, fontSize: 14, fontWeight: 600, color: T.mut, fontVariantNumeric: "tabular-nums" }}>
-            / {monthlyCredits} igjen
-          </span>
-        </div>
-        <div style={{ marginTop: 12 }}>
-          <CreditMeter remaining={creditsRemaining} total={monthlyCredits} showLabel={false} />
-        </div>
-      </Kort>
+      {/* Credit-saldo — kun steg 1, jf. fasit (saldo-banneret lever inne i
+          data-vis="steg1"; fra steg 2 erstattes den av saldo-linjen i
+          kontekst-kortet under). */}
+      {aktivtSteg === 1 && (
+        <Kort tint eyebrow="Min saldo" action={fornyerLabel ? <Caps size={9}>Fornyer · {fornyerLabel}</Caps> : undefined}>
+          <div style={{ display: "flex", alignItems: "baseline", gap: 8 }}>
+            <span style={{ fontFamily: T.mono, fontSize: 40, fontWeight: 700, color: T.fg, lineHeight: 0.9, letterSpacing: "-0.02em", fontVariantNumeric: "tabular-nums" }}>
+              {creditsRemaining}
+            </span>
+            <span style={{ fontFamily: T.mono, fontSize: 14, fontWeight: 600, color: T.mut, fontVariantNumeric: "tabular-nums" }}>
+              / {monthlyCredits} igjen
+            </span>
+          </div>
+          <div style={{ marginTop: 12 }}>
+            <CreditMeter remaining={creditsRemaining} total={monthlyCredits} showLabel={false} />
+          </div>
+        </Kort>
+      )}
 
-      {/* Steg 1 — tjeneste */}
+      {/* Steg 1 — tjeneste (fasit: data-vis="steg1" — skjules helt fra steg 2,
+          erstattet av kontekst-kortet under). */}
+      {aktivtSteg === 1 && (
       <section>
         <StegTittel nr={1}>Velg tjeneste</StegTittel>
         <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
@@ -369,6 +375,7 @@ export function BookingNyV2({ data }: { data: BookingNyV2Data }) {
           })}
         </div>
       </section>
+      )}
 
       {/* Kontekst-kort — valgt tjeneste (synlig fra steg 2) */}
       {aktivtSteg >= 2 && (
@@ -389,7 +396,9 @@ export function BookingNyV2({ data }: { data: BookingNyV2Data }) {
         </Kort>
       )}
 
-      {/* Steg 2 — tid (dag + slot) */}
+      {/* Steg 2 — tid (dag + slot). Fasit: samme data-vis="steg3"-seksjon som
+          kontekst-kortet over — begge skjules til en tjeneste er valgt. */}
+      {aktivtSteg >= 2 && (
       <section>
         <StegTittel nr={2}>Velg tid</StegTittel>
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10, marginBottom: 8 }}>
@@ -414,6 +423,7 @@ export function BookingNyV2({ data }: { data: BookingNyV2Data }) {
           </div>
         </div>
       </section>
+      )}
 
       {/* Steg 3 — bekreft (oppsummering før slot-trykk fullfører) */}
       {aktivtSteg === 3 && (
