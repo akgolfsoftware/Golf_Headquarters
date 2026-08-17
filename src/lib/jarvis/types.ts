@@ -58,3 +58,34 @@ export interface SystemHelse {
   /** Ollama/LaunchAgent-helse kan aldri leses fra Vercel (Tailscale-only, se gotchas.md) — alltid "ukjent lokalt" herfra. */
   lokalHelseTilgjengelig: false;
 }
+
+/**
+ * Dagen-artefaktets tidslinje. "avtale" = ekte Google-kalenderhendelse,
+ * "innboksblokk" = fast rytmepunkt (11:30/16:00) med et snapshot av
+ * Sak-køen, "ledig" = utledet luke mellom to opptatte elementer. "reise"
+ * (fasitens reisetid-segmenter) og "vaktavvik"-kobling til en ekte Avvik
+ * er bevisst utelatt inntil geokoding/kalendervakt-agent finnes — se
+ * src/lib/jarvis/dagen.ts.
+ */
+export type DagenElementType = "avtale" | "innboksblokk" | "ledig";
+
+export interface DagenElement {
+  id: string;
+  type: DagenElementType;
+  start: string; // ISO
+  slutt: string | null; // ISO — null for punkthendelser
+  tittel: string;
+  undertekst: string | null;
+  /** slutt (eller start hvis punkthendelse) er før "nå". */
+  ferdig: boolean;
+  lenke?: "saker";
+}
+
+export interface DagenData {
+  /** false = Google-tilkoblingen mangler eller kalender-kallet feilet — IKKE det samme som "ingen avtaler". */
+  kalenderTilgjengelig: boolean;
+  kalenderFeil: string | null;
+  elementer: DagenElement[];
+  /** Resterende ledig tid i dag (minutter), summert fra "ledig"-elementene som ikke er ferdig. */
+  ledigMinutterIgjen: number;
+}

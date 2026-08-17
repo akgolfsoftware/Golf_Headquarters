@@ -18,10 +18,11 @@ export default async function MegPage() {
   if (!user || user.role !== "ADMIN") notFound();
 
   const repo = lagPrismaRepository();
-  const [saker, systemHelse, avvik] = await Promise.all([
-    repo.hentSaker(),
+  const saker = await repo.hentSaker();
+  const [systemHelse, avvik, dagen] = await Promise.all([
     repo.hentSystemHelse(),
     repo.hentAvvik(),
+    repo.hentDagen(saker),
   ]);
 
   return (
@@ -30,6 +31,7 @@ export default async function MegPage() {
       saker={saker}
       systemHelse={systemHelse}
       avvik={avvik}
+      dagen={dagen}
       naServertid={new Date().toISOString()}
       godkjennSak={godkjennSak}
       avvisSak={avvisSak}

@@ -9,7 +9,7 @@
  * Alle ti artefaktene (saker, sak, vakt, dagen, brief, journal, review,
  * maskinrom, historikk, innstillinger) + fangst styres av activeArtifact,
  * IKKE egne ruter (nattsesjon-prompt Fase 2 punkt 1). «saker», «sak»,
- * «maskinrom» og «vakt» har ekte innhold — resten viser en ærlig
+ * «maskinrom», «vakt» og «dagen» har ekte innhold — resten viser en ærlig
  * «kommer snart»-tilstand, se natt-rapport.md for hva som gjenstår.
  */
 import { useCallback, useRef, useState } from "react";
@@ -28,9 +28,10 @@ import { SakerArtefakt } from "@/components/meg/artefakter/SakerArtefakt";
 import { SakArtefakt } from "@/components/meg/artefakter/SakArtefakt";
 import { MaskinromArtefakt } from "@/components/meg/artefakter/MaskinromArtefakt";
 import { KalendervaktArtefakt } from "@/components/meg/artefakter/KalendervaktArtefakt";
+import { DagenArtefakt } from "@/components/meg/artefakter/DagenArtefakt";
 import type { Sak } from "@/generated/prisma/client";
 import { SakStatus } from "@/generated/prisma/enums";
-import type { Avvik, SystemHelse } from "@/lib/jarvis/types";
+import type { Avvik, DagenData, SystemHelse } from "@/lib/jarvis/types";
 
 type MutasjonSvar = { ok: true } | { ok: false; feil: string };
 
@@ -39,6 +40,7 @@ export function MegApp({
   saker,
   systemHelse,
   avvik,
+  dagen,
   naServertid,
   godkjennSak,
   avvisSak,
@@ -47,6 +49,7 @@ export function MegApp({
   saker: Sak[];
   systemHelse: SystemHelse;
   avvik: Avvik[];
+  dagen: DagenData;
   /** ISO-streng fra serveren — unngår klient/server-hydreringsavvik (Oslo vs UTC, samme mønster som KonsollChat sin `klokke`-prop). */
   naServertid: string;
   godkjennSak: (id: string) => Promise<MutasjonSvar>;
@@ -103,6 +106,8 @@ export function MegApp({
     artefaktInnhold = <MaskinromArtefakt data={systemHelse} na={na} />;
   } else if (activeArtifact === "vakt") {
     artefaktInnhold = <KalendervaktArtefakt avvik={avvik} />;
+  } else if (activeArtifact === "dagen") {
+    artefaktInnhold = <DagenArtefakt data={dagen} na={na} onApneSaker={() => apneArtefakt("saker")} />;
   } else {
     artefaktInnhold = (
       <InspektorTom

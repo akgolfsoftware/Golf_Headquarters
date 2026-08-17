@@ -16,10 +16,19 @@
 import "server-only";
 import { prisma } from "@/lib/prisma";
 import { SakStatus } from "@/generated/prisma/enums";
-import type { Avvik, InnsamlerStatus, LoggRad, SystemHelse } from "@/lib/jarvis/types";
+import type { Sak } from "@/generated/prisma/client";
+import type { Avvik, DagenData, InnsamlerStatus, LoggRad, SystemHelse } from "@/lib/jarvis/types";
 import type { JarvisRepository } from "@/fixtures/jarvis-demo";
 import { JARVIS_AGENT_NAVN } from "@/lib/jarvis/agent-navn";
 import { avledInnsamlerHelse } from "@/lib/jarvis/innsamler-helse";
+import { hentKalenderHendelser } from "@/lib/meg/connectors/google";
+import {
+  osloDagGrenser,
+  byggAvtaleElementer,
+  byggInnboksblokker,
+  byggLedigElementer,
+  summerLedigMinutterIgjen,
+} from "@/lib/jarvis/dagen";
 
 const AVGJORTE_STATUSER = [SakStatus.GODKJENT, SakStatus.AVVIST, SakStatus.UTFORT] as const;
 
@@ -104,6 +113,30 @@ export function lagPrismaRepository(): JarvisRepository {
           antallKall: kost._count,
         },
         lokalHelseTilgjengelig: false,
+      };
+    },
+    async hentDagen(saker: Sak[]): Promise<DagenData> {
+      const na = new Date();
+      const grenser = osloDagGrenser(na);
+      const res = await hentKalenderHendelser(grenser.start, grenser.slutt);
+
+      if (!res.ok) {
+        return { kalenderTilgjengelig: false, kalenderFeil: res.feil, elementer: [], ledigMinutterIgjen: 0 };
+      }
+
+      const avtaler = byggAvtaleElementer(res.hendelser, na);
+      const innboksblokker = byggInnboksblokker(saker, grenser.start, na);
+      const opptatt = [...avtaler, ...innboksblokker];
+      const ledig = byggLedigElementer(opptatt, grenser, na);
+      const elementer = [...opptatt, ...ledig].sort(
+        (a, b) => new Date(a.start).getTime() - new Date(b.start).getTime(),
+      );
+
+      return {
+        kalenderTilgjengelig: true,
+        kalenderFeil: null,
+        elementer,
+        ledigMinutterIgjen: summerLedigMinutterIgjen(ledig, na),
       };
     },
   };

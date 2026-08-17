@@ -10,7 +10,15 @@
 // spillerdata») er dermed holdt, ikke bare unngått.
 import type { Sak } from "@/generated/prisma/client";
 import { SakKanal, SakStatus } from "@/generated/prisma/enums";
-import type { Avvik, InnsamlerStatus, LoggRad, SystemHelse } from "@/lib/jarvis/types";
+import type { Avvik, DagenData, InnsamlerStatus, LoggRad, SystemHelse } from "@/lib/jarvis/types";
+import type { KalenderHendelse } from "@/lib/meg/connectors/google";
+import {
+  osloDagGrenser,
+  byggAvtaleElementer,
+  byggInnboksblokker,
+  byggLedigElementer,
+  summerLedigMinutterIgjen,
+} from "@/lib/jarvis/dagen";
 
 const NA = () => new Date();
 const timerFraNa = (t: number) => new Date(NA().getTime() + t * 60 * 60 * 1000);
@@ -202,6 +210,28 @@ export const demoSystemHelse: SystemHelse = {
   lokalHelseTilgjengelig: false,
 };
 
+export const demoKalenderHendelser: KalenderHendelse[] = [
+  { id: "cal-1", tittel: "Trening: Filip", sted: "GFGK simulator", start: timerFraNa(0.3).toISOString(), slutt: timerFraNa(1.8).toISOString(), heldag: false },
+  { id: "cal-2", tittel: "Juniorgruppa", sted: "GFGK range", start: timerFraNa(2.8).toISOString(), slutt: timerFraNa(4.3).toISOString(), heldag: false },
+  { id: "cal-3", tittel: "Møte: Øyvind Rossbach", sted: "WANG", start: timerFraNa(5).toISOString(), slutt: timerFraNa(6).toISOString(), heldag: false },
+];
+
+function byggDemoDagen(): DagenData {
+  const na = NA();
+  const grenser = osloDagGrenser(na);
+  const avtaler = byggAvtaleElementer(demoKalenderHendelser, na);
+  const innboksblokker = byggInnboksblokker(demoSaker, grenser.start, na);
+  const opptatt = [...avtaler, ...innboksblokker];
+  const ledig = byggLedigElementer(opptatt, grenser, na);
+  const elementer = [...opptatt, ...ledig].sort((a, b) => new Date(a.start).getTime() - new Date(b.start).getTime());
+  return {
+    kalenderTilgjengelig: true,
+    kalenderFeil: null,
+    elementer,
+    ledigMinutterIgjen: summerLedigMinutterIgjen(ledig, na),
+  };
+}
+
 /** Repository-grensesnittet UI-en programmerer mot — bytt implementasjon uten UI-endring. */
 export interface JarvisRepository {
   hentSaker(): Promise<Sak[]>;
@@ -209,6 +239,7 @@ export interface JarvisRepository {
   hentAvvik(): Promise<Avvik[]>;
   hentLogg(): Promise<LoggRad[]>;
   hentSystemHelse(): Promise<SystemHelse>;
+  hentDagen(saker: Sak[]): Promise<DagenData>;
 }
 
 /** Demo-implementasjon — statisk fixture-data, ingen nettverk/DB. */
@@ -228,6 +259,9 @@ export function lagDemoRepository(): JarvisRepository {
     },
     async hentSystemHelse() {
       return demoSystemHelse;
+    },
+    async hentDagen() {
+      return byggDemoDagen();
     },
   };
 }
