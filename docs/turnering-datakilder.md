@@ -86,7 +86,22 @@ men lister **kun sertifiserte counting events** (~4 300/år) — ikke alle amat�
 | Srixon Tour (WAGR-tellende) | GolfBox via NGF (customer 18) | **LIVE** via `scrape-golfbox.ts` |
 | Garmin Norgescup | GolfBox via NGF (customer 18) | **LIVE** via `scrape-golfbox.ts` |
 | Østlandstour | GolfBox-kunde 895 | **LIVE** via `scrape-golfbox.ts` (kartlagt 2026-07-18) |
+| Region Tour (Garmin Norgescup-kval) | GolfBox-kunder 873–878, samme som Olyo | **LIVE** via `scrape-golfbox.ts` (kartlagt 2026-08-17, egen `sourceOrigin: REGIONTOUR`) |
 | GJGT / Global Junior Golf | **IKKE GolfBox** — `globaljuniorgolflive.com` | `import-gjgt.ts` |
+
+**7-dagers-vindu-fellen (fikset 2026-08-17):** `syncGolfBoxLeaderboards()` hentet tidligere kun
+resultater for COMPLETED-turneringer med `endDate` innenfor siste 7 dager. Enhver turnering som
+ikke rakk å få resultater i det vinduet, falt permanent ut av scope — verifisert mot prod: 214
+COMPLETED-turneringer uten resultater på tvers av alle GolfBox-kilder (SENIOR 75, OLYO 52, NM 44,
+GOLFBOX 22, SRIXON 8, NORGESCUP 7, OSTLANDS 6). Fiksen la til en selvhelbredende gren
+(`COMPLETED` + `publicEntries: { none: {} }`, uansett alder) i `golfBoxLeaderboardScope()` —
+se `src/lib/turneringer/golfbox-sync.ts`. Etterslepet dekkes av `scripts/backfill-golfbox-results.ts`.
+
+**Region Tour-empiri (2026-08-17):** verifisert direkte mot `getSchedule()` for kundene 873–878.
+Treff på 873 (Midt, 5 stk), 874 (Vestland, 7 stk), 876 (Sør, 9 stk). Ingen treff på 875/877/878 på
+sjekketidspunktet — kan skyldes at Region Tour-kvalifiseringen ikke er lagt ut for de regionene
+ennå denne sesongen, ikke at kilden mangler der. `classifyTour()` fanger navnet uansett hvilken
+kunde det kommer fra.
 
 ### Tier 4 — College
 

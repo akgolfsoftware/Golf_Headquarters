@@ -32,6 +32,7 @@ const SCRAPER_ORIGINS = new Set([
   "SENIOR",
   "NM",
   "GJGT",
+  "OLYO",
 ]);
 
 function log(...a: unknown[]) {

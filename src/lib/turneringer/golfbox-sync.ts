@@ -8,7 +8,7 @@
  * Se docs/turnering-datakilder.md (§ VERIFISERT).
  */
 
-import type { PrismaClient } from "@/generated/prisma/client";
+import type { Prisma, PrismaClient } from "@/generated/prisma/client";
 import {
   getSchedule,
   getLeaderboard,
@@ -26,7 +26,7 @@ import {
   mirrorTournamentResultForLinkedUser,
 } from "@/lib/turneringer/materialize-entry";
 
-const GOLFBOX_ORIGINS = [
+export const GOLFBOX_ORIGINS = [
   "GOLFBOX",
   "SRIXON",
   "NORGESCUP",
@@ -36,6 +36,7 @@ const GOLFBOX_ORIGINS = [
   "SENIOR",
   "NM",
   "OSTLANDS",
+  "REGIONTOUR",
 ] as const;
 
 export type SyncSchedulesResult = {
@@ -188,28 +189,177 @@ export type SyncLeaderboardsResult = {
   resultsMirrored: number;
 };
 
+/** Prisma where-klausul for GolfBox-turneringer som mangler et leaderboard-forsøk akkurat nå. */
+export function golfBoxLeaderboardScope(now: Date): Prisma.TournamentWhereInput {
+  const sevenDaysAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+  return {
+    sourceOrigin: { in: [...GOLFBOX_ORIGINS] },
+    sourceId: { not: null },
+    OR: [
+      { status: "IN_PROGRESS" },
+      { status: "COMPLETED", endDate: { gte: sevenDaysAgo } },
+      // Selvhelbredende: COMPLETED uten resultater blir værende i scope uansett
+      // alder, i stedet for å falle permanent ut etter 7 dager (se gotchas/feillogg
+      // 2026-08-17 — hele fjorårets Olyo/Norgescup/Srixon-sesong forsvant slik).
+      { status: "COMPLETED", publicEntries: { none: {} } },
+    ],
+  };
+}
+
+/** Øvre grense på hvor mange "COMPLETED uten resultater uansett alder"-turneringer én kjøring henter. */
+const BACKFILL_SAFETY_LIMIT = 60;
+
 /**
- * Leaderboard-sync for live + nylig fullførte GolfBox-turneringer.
- * Materialiserer PublicPlayerRound og speiler TournamentResult ved linkedUser.
+ * Hent + upsert leaderboard for én turnering. Delt kjerne brukt av både den
+ * tilbakevendende syncen og backfill-scriptet.
+ */
+export async function processLeaderboardForTournament(
+  prisma: PrismaClient,
+  t: { id: string; name: string; tour: string | null; sourceId: string | null; status: string | null },
+  now: Date,
+): Promise<{
+  entries: number;
+  playersCreated: number;
+  roundsMaterialized: number;
+  resultsMirrored: number;
+}> {
+  let entries = 0;
+  let playersCreated = 0;
+  let roundsMaterialized = 0;
+  let resultsMirrored = 0;
+
+  const competitionId = Number(t.sourceId);
+  if (!competitionId) return { entries, playersCreated, roundsMaterialized, resultsMirrored };
+
+  const lb = await getLeaderboard(competitionId);
+  if (!lb || lb.entries.length === 0) return { entries, playersCreated, roundsMaterialized, resultsMirrored };
+
+  const cls = classifyTour(
+    t.name,
+    t.tour === "junior-no" ? "junior-no" : "amateur-no",
+  );
+  const completed = t.status === "COMPLETED";
+  let norske = 0;
+
+  for (const e of lb.entries) {
+    const fullName = `${e.firstName} ${e.lastName}`.trim();
+    if (!fullName) continue;
+    const country = (e.nationality ?? "").toUpperCase() || "XX";
+    if (country === "NO") norske++;
+
+    const { player, created } = await resolvePlayer(prisma, {
+      name: fullName,
+      country,
+      tier: cls.playerTier,
+      birthYear: e.birthYear ?? null,
+    });
+    if (created) playersCreated++;
+
+    const roundsJson = {
+      today: e.todayText,
+      thru: e.thru,
+      thruText: e.thruText,
+      roundNames: lb.roundNames,
+      roundScores: e.roundScores,
+    };
+
+    const entry = await prisma.publicPlayerEntry.upsert({
+      where: {
+        playerId_tournamentId: {
+          playerId: player.id,
+          tournamentId: t.id,
+        },
+      },
+      create: {
+        playerId: player.id,
+        tournamentId: t.id,
+        status: entryStatus(e, completed),
+        position: e.position,
+        scoreToPar: e.toParValue,
+        rounds: roundsJson,
+      },
+      update: {
+        status: entryStatus(e, completed),
+        position: e.position,
+        scoreToPar: e.toParValue,
+        rounds: roundsJson,
+      },
+    });
+    entries++;
+
+    const { rounds } = await materializePublicPlayerRounds(prisma, {
+      entryId: entry.id,
+      roundScores: e.roundScores,
+      source: "GOLFBOX",
+    });
+    roundsMaterialized += rounds;
+
+    const mir = await mirrorTournamentResultForLinkedUser(prisma, {
+      tournamentId: t.id,
+      publicPlayerId: player.id,
+      position: e.position,
+      scoreToPar: e.toParValue,
+      totalScore: null,
+      publicEntryStatus: entryStatus(e, completed),
+    });
+    if (mir.mirrored) resultsMirrored++;
+  }
+
+  await prisma.tournament.update({
+    where: { id: t.id },
+    data: { norskeAntall: norske, lastSyncAt: now },
+  });
+
+  return { entries, playersCreated, roundsMaterialized, resultsMirrored };
+}
+
+export type LeaderboardScopeCandidate = {
+  status: string | null;
+  endDate: Date | null;
+};
+
+/**
+ * Del kandidatlisten (allerede filtrert av golfBoxLeaderboardScope) i "live/nylig"
+ * (aldri kuttet) og "backfill" (eldre COMPLETED uten resultater, kuttet ved
+ * BACKFILL_SAFETY_LIMIT). Ren funksjon — testbar uten DB.
+ */
+export function partitionLiveRecentAndBackfill<T extends LeaderboardScopeCandidate>(
+  candidates: T[],
+  now: Date,
+): { liveOrRecent: T[]; backfill: T[] } {
+  const sevenDaysAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+  const liveOrRecent = candidates.filter(
+    (t) =>
+      t.status === "IN_PROGRESS" ||
+      (t.status === "COMPLETED" && (t.endDate == null || t.endDate.getTime() >= sevenDaysAgo.getTime())),
+  );
+  const backfill = candidates.filter((t) => !liveOrRecent.includes(t));
+  return { liveOrRecent, backfill };
+}
+
+/**
+ * Leaderboard-sync for live + nylig fullførte GolfBox-turneringer, pluss en
+ * selvhelbredende backfill-gren for eldre COMPLETED-turneringer som aldri fikk
+ * resultater (se golfBoxLeaderboardScope).
  */
 export async function syncGolfBoxLeaderboards(
   prisma: PrismaClient,
   opts: { limit?: number; now?: Date } = {},
 ): Promise<SyncLeaderboardsResult> {
   const now = opts.now ?? new Date();
-  const sevenDaysAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
 
-  let tournaments = await prisma.tournament.findMany({
-    where: {
-      sourceOrigin: { in: [...GOLFBOX_ORIGINS] },
-      sourceId: { not: null },
-      OR: [
-        { status: "IN_PROGRESS" },
-        { status: "COMPLETED", endDate: { gte: sevenDaysAgo } },
-      ],
-    },
+  const candidates = await prisma.tournament.findMany({
+    where: golfBoxLeaderboardScope(now),
     orderBy: { startDate: "desc" },
   });
+
+  // IN_PROGRESS / nylig COMPLETED er alltid en liten, tidsbegrenset mengde og
+  // skal aldri kuttes. Sikkerhetsgrensen gjelder kun backfill-grenen (eldre
+  // COMPLETED-turneringer uten resultater), slik at én time med feil på mange
+  // gamle turneringer aldri lar jobben vokse ukontrollert.
+  const { liveOrRecent, backfill } = partitionLiveRecentAndBackfill(candidates, now);
+  let tournaments = [...liveOrRecent, ...backfill.slice(0, BACKFILL_SAFETY_LIMIT)];
+
   if (opts.limit && opts.limit > 0) tournaments = tournaments.slice(0, opts.limit);
 
   let entries = 0;
@@ -218,87 +368,11 @@ export async function syncGolfBoxLeaderboards(
   let resultsMirrored = 0;
 
   for (const t of tournaments) {
-    const competitionId = Number(t.sourceId);
-    if (!competitionId) continue;
-
-    const lb = await getLeaderboard(competitionId);
-    if (!lb || lb.entries.length === 0) continue;
-
-    const cls = classifyTour(
-      t.name,
-      t.tour === "junior-no" ? "junior-no" : "amateur-no",
-    );
-    const completed = t.status === "COMPLETED";
-    let norske = 0;
-
-    for (const e of lb.entries) {
-      const fullName = `${e.firstName} ${e.lastName}`.trim();
-      if (!fullName) continue;
-      const country = (e.nationality ?? "").toUpperCase() || "XX";
-      if (country === "NO") norske++;
-
-      const { player, created } = await resolvePlayer(prisma, {
-        name: fullName,
-        country,
-        tier: cls.playerTier,
-        birthYear: e.birthYear ?? null,
-      });
-      if (created) playersCreated++;
-
-      const roundsJson = {
-        today: e.todayText,
-        thru: e.thru,
-        thruText: e.thruText,
-        roundNames: lb.roundNames,
-        roundScores: e.roundScores,
-      };
-
-      const entry = await prisma.publicPlayerEntry.upsert({
-        where: {
-          playerId_tournamentId: {
-            playerId: player.id,
-            tournamentId: t.id,
-          },
-        },
-        create: {
-          playerId: player.id,
-          tournamentId: t.id,
-          status: entryStatus(e, completed),
-          position: e.position,
-          scoreToPar: e.toParValue,
-          rounds: roundsJson,
-        },
-        update: {
-          status: entryStatus(e, completed),
-          position: e.position,
-          scoreToPar: e.toParValue,
-          rounds: roundsJson,
-        },
-      });
-      entries++;
-
-      const { rounds } = await materializePublicPlayerRounds(prisma, {
-        entryId: entry.id,
-        roundScores: e.roundScores,
-        source: "GOLFBOX",
-      });
-      roundsMaterialized += rounds;
-
-      const mir = await mirrorTournamentResultForLinkedUser(prisma, {
-        tournamentId: t.id,
-        publicPlayerId: player.id,
-        position: e.position,
-        scoreToPar: e.toParValue,
-        totalScore: null,
-        publicEntryStatus: entryStatus(e, completed),
-      });
-      if (mir.mirrored) resultsMirrored++;
-    }
-
-    await prisma.tournament.update({
-      where: { id: t.id },
-      data: { norskeAntall: norske, lastSyncAt: now },
-    });
+    const res = await processLeaderboardForTournament(prisma, t, now);
+    entries += res.entries;
+    playersCreated += res.playersCreated;
+    roundsMaterialized += res.roundsMaterialized;
+    resultsMirrored += res.resultsMirrored;
   }
 
   return {

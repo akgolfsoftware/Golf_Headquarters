@@ -40,14 +40,16 @@ export const NO_TOUR_CUSTOMERS: GolfBoxCustomerSource[] = [
   { customerId: 18, label: "Norges Golfforbund", defaultTour: "amateur-no" },
   { customerId: 154, label: "Norsk Senior Golf", defaultTour: "amateur-no" },
   { customerId: 184, label: "Mid Am Tour", defaultTour: "amateur-no" },
-  // Olyo Juniortour — én kunde per NGF-region. onlyMatching holder Region Tour-
-  // kval o.l. ute; region festes i notes for regionfiltrering.
-  { customerId: 878, label: "Olyo Region Øst", defaultTour: "junior-no", region: "Øst", onlyMatching: /olyo/i },
-  { customerId: 877, label: "Olyo Region Viken Vest", defaultTour: "junior-no", region: "Viken Vest", onlyMatching: /olyo/i },
-  { customerId: 876, label: "Olyo Region Sør", defaultTour: "junior-no", region: "Sør", onlyMatching: /olyo/i },
-  { customerId: 875, label: "Olyo Region Rogaland", defaultTour: "junior-no", region: "Rogaland", onlyMatching: /olyo/i },
-  { customerId: 874, label: "Olyo Region Vestland", defaultTour: "junior-no", region: "Vestland", onlyMatching: /olyo/i },
-  { customerId: 873, label: "Olyo Region Midt", defaultTour: "junior-no", region: "Midt", onlyMatching: /olyo/i },
+  // Olyo Juniortour — én kunde per NGF-region. onlyMatching holder disse kundene
+  // til Olyo + Region Tour (Garmin Norgescup-kvalifisering, verifisert 2026-08-17
+  // å faktisk ligge her — se docs/turnering-datakilder.md); region festes i notes
+  // for regionfiltrering.
+  { customerId: 878, label: "Olyo Region Øst", defaultTour: "junior-no", region: "Øst", onlyMatching: /olyo|region.?tour/i },
+  { customerId: 877, label: "Olyo Region Viken Vest", defaultTour: "junior-no", region: "Viken Vest", onlyMatching: /olyo|region.?tour/i },
+  { customerId: 876, label: "Olyo Region Sør", defaultTour: "junior-no", region: "Sør", onlyMatching: /olyo|region.?tour/i },
+  { customerId: 875, label: "Olyo Region Rogaland", defaultTour: "junior-no", region: "Rogaland", onlyMatching: /olyo|region.?tour/i },
+  { customerId: 874, label: "Olyo Region Vestland", defaultTour: "junior-no", region: "Vestland", onlyMatching: /olyo|region.?tour/i },
+  { customerId: 873, label: "Olyo Region Midt", defaultTour: "junior-no", region: "Midt", onlyMatching: /olyo|region.?tour/i },
   // Østlandstour — egen serie-kunde (amatør/junior, flere WAGR-tellende runder).
   { customerId: 895, label: "Østlandstour", defaultTour: "amateur-no" },
 ];
@@ -80,6 +82,11 @@ export function classifyTour(
   const isJunior =
     /\bjr\b|junior|future camp|\bgu\d|\bju\d|gutter|jenter|norgeslekene/.test(n);
 
+  // Region Tour (Garmin Norgescup-kvalifisering, kartlagt 2026-08-17): sjekkes FØR
+  // norgescup/nm-mønstrene, fordi navn som "Region Tour 4 - Kval til Garmin
+  // Norgescup 5 - NM" ellers ville truffet NORGESCUP/NM-grenen i stedet.
+  if (/region.?tour/.test(n))
+    return { tour: "junior-no", sourceOrigin: "REGIONTOUR", playerTier: "junior" };
   if (/srixon/.test(n))
     return { tour: isJunior ? "junior-no" : "amateur-no", sourceOrigin: "SRIXON", playerTier: isJunior ? "junior" : "amateur" };
   if (/norgescup|norges ?cup/.test(n))
