@@ -40,7 +40,8 @@ export type InnboksKilde =
   | "caddieDraft"
   | "sessionRequest"
   | "notification"
-  | "appFeedback";
+  | "appFeedback"
+  | "sak";
 
 /** Anbefalingskontrakten fra fasiten — fire deler, alltid samme rekkefølge. */
 export type InnboksKontrakt = {
@@ -72,6 +73,8 @@ export type InnboksSak = {
   lost: boolean;
   lostTekst: string | null;
   kontrakt: InnboksKontrakt | null;
+  /** Kun Sak (Jarvis-triage) setter denne — AI-skrevet svarutkast, vist rått i detaljpanelet. */
+  foreslattSvar?: string | null;
   grunnlag: string[];
   href: string | null;
   hrefTekst: string | null;
@@ -123,6 +126,34 @@ function fristTekst(opprettet: Date, now: Date, haster: boolean): { frist: strin
   if (haster) return { frist: "haster", snart: true };
   if (dager >= 3) return { frist: `ventet ${dager} dager`, snart: true };
   return { frist: narTekst(opprettet, now), snart: false };
+}
+
+const SAK_KANAL_LABEL: Record<string, string> = {
+  EPOST: "e-post",
+  SMS: "SMS",
+  IMESSAGE: "iMessage",
+  TELEGRAM: "Telegram",
+  ANROP: "anrop",
+  KALENDER: "kalender",
+  TASK: "oppgave",
+};
+
+/**
+ * Sak.frist er en ABSOLUTT SLA-frist (6 timer fra innsamling, satt av
+ * scripts/saker-innsamling/gmail.ts) — motsatt av de andre sak-typenes
+ * alder-baserte frist over. «Snart» er her under 2 timer igjen, ikke antall
+ * dager saken har ligget (jf. steg 5 i jarvis-masterplan.md).
+ */
+function sakFristTekst(frist: Date | null, now: Date): { frist: string; snart: boolean } {
+  if (!frist) return { frist: "ingen frist satt", snart: false };
+  const timerIgjen = (frist.getTime() - now.getTime()) / (1000 * 60 * 60);
+  if (timerIgjen <= 0) return { frist: "fristen er ute", snart: true };
+  if (timerIgjen < 2) {
+    const minutterIgjen = Math.max(1, Math.round(timerIgjen * 60));
+    return { frist: `frist om ${minutterIgjen} min`, snart: true };
+  }
+  if (timerIgjen < 24) return { frist: `frist om ${Math.round(timerIgjen)} t`, snart: false };
+  return { frist: `frist om ${Math.round(timerIgjen / 24)} d`, snart: false };
 }
 
 /** Fasitens rekkefølge: det som kan avgjøres først, deretter det som kun opplyser. */
@@ -253,6 +284,20 @@ export async function loadInnboksSaker(user: {
       })
     ).map((u) => [u.id, u.name ?? "Ukjent spiller"] as const),
   );
+
+  // ── Sak (Jarvis) — Anders' egen Gmail/SMS/iMessage-triage-kø ─────────
+  // Ingen coach-scoping å arve (Sak er ikke knyttet til en spiller) — i
+  // stedet begrenses hele kilden til ADMIN, samme prinsipp som
+  // CaddieDraft-filteret over: en coach skal ikke se Anders' private/
+  // forretningsmessige korrespondanse i sin egen innboks.
+  const sakRader =
+    user.role === "ADMIN"
+      ? await prisma.sak.findMany({
+          where: { status: "VENTER" },
+          orderBy: { opprettet: "desc" },
+          take: 40,
+        })
+      : [];
 
   const saker: InnboksSak[] = [];
 
@@ -436,6 +481,34 @@ export async function loadInnboksSaker(user: {
       hrefTekst: null,
       primaer: erNy ? { label: "Kvitter ut", slag: "godkjenn" } : null,
       sekundaer: null,
+    });
+  }
+
+  // ── forespørsel · Sak (Jarvis-triage) ────────────────────────────────
+  for (const s of sakRader) {
+    const kanalLabel = SAK_KANAL_LABEL[s.kanal] ?? s.kanal.toLowerCase();
+    const { frist, snart } = sakFristTekst(s.frist, now);
+    saker.push({
+      id: `sak:${s.id}`,
+      kilde: "sak",
+      type: "forespørsel",
+      tittel: s.emne?.trim() || `Henvendelse via ${kanalLabel}`,
+      sub: s.innhold.slice(0, 200),
+      hvem: s.avsender ?? "Ukjent avsender",
+      frist,
+      snart,
+      lost: false,
+      lostTekst: null,
+      kontrakt: null,
+      foreslattSvar: s.foreslattSvar,
+      grunnlag: [`Kilde: ${kanalLabel}`, `Kom ${narTekst(s.opprettet, now)}`],
+      href: null,
+      hrefTekst: null,
+      primaer: {
+        label: s.kanal === "EPOST" ? "Godkjenn og opprett utkast" : "Godkjenn",
+        slag: "godkjenn",
+      },
+      sekundaer: { label: "Avvis", slag: "avvis" },
     });
   }
 

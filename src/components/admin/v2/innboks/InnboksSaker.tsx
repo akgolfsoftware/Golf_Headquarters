@@ -589,6 +589,45 @@ function InnboksDetalj({
         <Blokk label="hva dette er">{sak.sub}</Blokk>
       )}
 
+      {/* Kun Sak (Jarvis-triage) setter foreslattSvar — AI-skrevet
+          svarutkast. Vist rått, ikke redigerbart her: Anders redigerer i
+          Gmail-kladden etter Godkjenn, ikke i AgencyOS. */}
+      {sak.foreslattSvar && sak.foreslattSvar.trim() && (
+        <div
+          style={{
+            border: `1px solid ${T.border}`,
+            borderRadius: T.rCard,
+            padding: "12px 16px",
+            background: T.panel2,
+          }}
+        >
+          <span
+            style={{
+              display: "block",
+              fontFamily: T.mono,
+              fontSize: 9.5,
+              letterSpacing: "0.09em",
+              textTransform: "uppercase",
+              color: T.mut,
+              marginBottom: 6,
+            }}
+          >
+            Foreslått svar
+          </span>
+          <p
+            style={{
+              margin: 0,
+              fontFamily: T.bodyFont,
+              fontSize: 13,
+              color: T.fg,
+              whiteSpace: "pre-wrap",
+            }}
+          >
+            {sak.foreslattSvar}
+          </p>
+        </div>
+      )}
+
       {sak.grunnlag.length > 0 && (
         <div
           style={{

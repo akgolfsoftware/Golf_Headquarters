@@ -1,14 +1,15 @@
-# Saker-innsamling (Jarvis steg 2)
+# Saker-innsamling og -triage (Jarvis steg 2–4)
 
 Lokale Mac-mini-script (samme mønster som `scripts/mulligan-triage/`) som fyller
 den samlede "venter på deg"-køen (steg 1, tabellen `saker`) med nye
-henvendelser. Bygget etter `~/Documents/Claude/akgolf-hq/kunnskap/jarvis-masterplan.md`,
-DEL A steg 2.
+henvendelser (steg 2, `gmail.ts`/`imessage.ts`) og skriver svarutkast på dem
+(steg 3+4, `triage.ts`). Bygget etter
+`~/Documents/Claude/akgolf-hq/kunnskap/jarvis-masterplan.md`, DEL A.
 
-**Gjør KUN innsamling.** Ingen klassifisering, ingen `foreslattSvar` — det er
-steg 3 (triage-agenten). Hver ny henvendelse blir en `Sak`-rad med status
-`VENTER` og en 6-timers SLA-frist. Sender/oppretter ALDRI noe selv i
-Gmail/Meldinger — kun leser.
+**Innsamlerne (`gmail.ts`/`imessage.ts`) gjør KUN innsamling.** Ingen
+klassifisering, ingen `foreslattSvar` — det er `triage.ts` sin jobb. Hver ny
+henvendelse blir en `Sak`-rad med status `VENTER` og en 6-timers SLA-frist.
+Innsamlerne sender/oppretter ALDRI noe selv i Gmail/Meldinger — kun leser.
 
 ## Hvorfor lokalt script, ikke Vercel/cron
 
@@ -38,6 +39,37 @@ scriptene er derfor samlet i én lokal Mac Mini-mappe for konsistens.
    (`{kilde: "gmail-innsamler", kjort: <ISO-tid>}`).
 5. Sender én kort Telegram-oppsummering til Anders på slutten (kun antall —
    aldri innhold/PII i selve meldingen).
+
+## Hva triage-agenten gjør per kjøring (`triage.ts`, `npm run saker:triage`)
+
+Plukker opptil `SAKER_TRIAGE_BATCH_LIMIT` (default 20) `Sak`-rader med
+`status=VENTER` og `foreslattSvar=null`, eldste først:
+
+1. Lokal Ollama klassifiserer saken (kategori, hastegrad, om det er en ren
+   bekreftelse/kvittering) OG lister personnavnene den finner i innholdet.
+   Klarer ikke Ollama dette (nede/timeout), hoppes saken over — den prøves
+   igjen neste kjøring. Ingen sky-AI ser rå innhold på dette steget.
+2. **Enkle saker** (ren bekreftelse/kvittering): svarutkastet skrives HELT av
+   den lokale Ollama-modellen, på rå tekst (forlater aldri maskinen).
+3. **Komplekse saker**: personnavnene fra steg 1 erstattes lokalt og
+   deterministisk med `[PERSON1]`, `[PERSON2]` osv.
+   (`src/lib/saker/anonymiser.ts`, egne tester) — KUN denne anonymiserte
+   teksten sendes til Claude. Svaret får navnene satt tilbake lokalt før det
+   lagres.
+4. `Sak.foreslattSvar` skrives, `Sak.provenance` får et `triage`-felt
+   (kategori/hastegrad/motor/tidspunkt) i tillegg til det innsamleren
+   allerede skrev — ingenting overskrives.
+5. Anders varsles på Telegram (kort sammendrag + selve utkastet), og én
+   ventende BEKREFT-handling registreres (`tool_name: "sak_godkjenn"`) —
+   svarer han BEKREFT, kjører `src/lib/saker/godkjenn.ts` og oppretter et
+   Gmail-UTKAST. Samme funksjon som Godkjenn-knappen i AgencyOS → Innboks.
+   **Sender ALDRI noe automatisk**, uansett sakstype.
+6. Hele kjøringen logges via `runAgent("saker-triage", …)` til `AgentRun`.
+
+`me_pending_action` (BEKREFT-lageret) har kun én "siste ventende
+handling"-plass per person — kjøres flere saker i samme runde, er det kun
+den SISTE som er BEKREFT-bar direkte fra Telegram. De øvrige godkjennes fra
+AgencyOS → Innboks i stedet. Kjent og akseptert begrensning, ikke en bug.
 
 ## iMessage/SMS — status (undersøkt 2026-08-16)
 
@@ -91,14 +123,18 @@ Alle er valgfrie med fornuftige defaults:
 
 ```
 SAKER_GMAIL_QUERY=in:inbox is:unread newer_than:2d -from:me   # default
+SAKER_TRIAGE_BATCH_LIMIT=20                                   # default, kun triage.ts
 ```
 
-Google-tilgang og Telegram gjenbruker EKSISTERENDE Meg-bot-konfigurasjon —
-ingen nye secrets trengs:
+Google-tilgang, Telegram, Ollama og Claude gjenbruker EKSISTERENDE
+Meg-bot/AI-konfigurasjon — ingen nye secrets trengs:
 
 ```
 GOOGLE_OAUTH_CLIENT_ID / GOOGLE_OAUTH_CLIENT_SECRET / GOOGLE_OAUTH_REDIRECT_URI / GOOGLE_TOKEN_ENCRYPTION_KEY
-MEG_TELEGRAM_BOT_TOKEN / MEG_TELEGRAM_ALLOWED_CHAT_ID
+MEG_TELEGRAM_BOT_TOKEN / MEG_TELEGRAM_ALLOWED_CHAT_ID / MEG_ALLOWED_PEOPLE
+MEG_OLLAMA_URL / MEG_OLLAMA_MODEL       (kun triage.ts — mangler denne, hoppes klassifisering over)
+ANTHROPIC_API_KEY                       (kun triage.ts, kun komplekse saker)
+MEG_SUPABASE_URL / MEG_SUPABASE_SERVICE_ROLE_KEY   (kun triage.ts — BEKREFT-lageret)
 ```
 
 ## Kjør manuelt
@@ -106,29 +142,35 @@ MEG_TELEGRAM_BOT_TOKEN / MEG_TELEGRAM_ALLOWED_CHAT_ID
 ```bash
 npm run saker:gmail
 npm run saker:imessage   # krever Full Disk Access, se sjekkliste over
+npm run saker:triage
 ```
 
-## Installer LaunchAgent (KUN Gmail, hvert 10. minutt)
+## Installer LaunchAgent (Gmail hvert 10. min, triage hvert 30. min)
 
 ```bash
 cp scripts/saker-innsamling/com.akgolf.saker-gmail.plist \
+   scripts/saker-innsamling/com.akgolf.saker-triage.plist \
    ~/Library/LaunchAgents/
 
 launchctl load ~/Library/LaunchAgents/com.akgolf.saker-gmail.plist
-launchctl list | grep saker-gmail
+launchctl load ~/Library/LaunchAgents/com.akgolf.saker-triage.plist
+launchctl list | grep saker-
 ```
 
 Kjør manuelt nå (som ved en planlagt kjøring):
 
 ```bash
 launchctl start com.akgolf.saker-gmail
+launchctl start com.akgolf.saker-triage
 ```
 
 Avinstaller:
 
 ```bash
 launchctl unload ~/Library/LaunchAgents/com.akgolf.saker-gmail.plist
+launchctl unload ~/Library/LaunchAgents/com.akgolf.saker-triage.plist
 rm ~/Library/LaunchAgents/com.akgolf.saker-gmail.plist
+rm ~/Library/LaunchAgents/com.akgolf.saker-triage.plist
 ```
 
 ## Loggfiler
@@ -136,24 +178,30 @@ rm ~/Library/LaunchAgents/com.akgolf.saker-gmail.plist
 ```bash
 tail -50 /tmp/saker-gmail.log
 tail -50 /tmp/saker-gmail.err
+tail -50 /tmp/saker-triage.log
+tail -50 /tmp/saker-triage.err
 ```
 
 ## Filer
 
-- `env.ts` — miljøkonfigurasjon med defaults (delt av begge innsamlerne).
+- `env.ts` — miljøkonfigurasjon med defaults (delt av alle tre scriptene).
 - `google-tilkobling.ts` — henter ADMIN-brukerens Google-tilkobling (kopi
   av mønsteret i `scripts/mulligan-triage/google-tilkobling.ts` — se
   filhodet der for hvorfor det er en kopi og ikke en import).
 - `gmail.ts` — Gmail-innsamleren, kjøres av `npm run saker:gmail`.
 - `imessage.ts` — iMessage/SMS-innsamleren, kjøres av `npm run saker:imessage`.
   Se "iMessage/SMS — status" over.
+- `triage.ts` — klassifiserings- og svarutkast-agenten, kjøres av
+  `npm run saker:triage`. Se "Hva triage-agenten gjør" over. Anonymiserings-
+  logikken den bruker ligger i `src/lib/saker/anonymiser.ts` (testet), og
+  godkjenn/avvis-logikken (både AgencyOS-knappen og Telegram BEKREFT) i
+  `src/lib/saker/godkjenn.ts`.
 - `node-sqlite.d.ts` — minimal ambient type-shim for `node:sqlite` (prosjektets
   `@types/node`-versjon mangler ennå disse typene).
 - `com.akgolf.saker-gmail.plist` — LaunchAgent for Gmail-delen (hvert 10. min).
+- `com.akgolf.saker-triage.plist` — LaunchAgent for triage (hvert 30. min).
 
 ## Ikke del av denne bølgen
 
-- Klassifisering, svarutkast og godkjenningsflyt — det er steg 3 og 4 i
-  masterplanen.
 - LaunchAgent for iMessage/SMS — venter på Full Disk Access-avklaring
   (se over).
