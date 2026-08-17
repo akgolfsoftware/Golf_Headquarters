@@ -140,3 +140,44 @@ export interface UkesreviewData {
   kalenderavvikFanget: number;
   aiKost: { inputTokens: number; outputTokens: number; costUsd: number | null; antallKall: number };
 }
+
+/**
+ * Innstillingene (skjerm 11) — «fire ting du kan skru på» (fasitens egen
+ * formulering, ikke et admin-panel). Persisteres i JarvisInnstilling
+ * (prisma/schema.prisma), men INGEN forbruker leser feltene ennå — se
+ * repository.ts sin doc-kommentar for hvilke steder som fortsatt er
+ * hardkodet. STANDARD_INNSTILLINGER speiler skjemaets @default-verdier
+ * eksakt — brukes når ingen rad finnes ennå (aldri lagret noe valg).
+ */
+export interface Innstillinger {
+  kanalGmail: boolean;
+  kanalImessage: boolean;
+  kanalTelegram: boolean;
+  kanalAnrop: boolean;
+  kanalKalender: boolean;
+  slaTerskelTimer: number;
+  stemmeAktivert: boolean;
+  stilleTidsromAktivert: boolean;
+}
+
+export const STANDARD_INNSTILLINGER: Innstillinger = {
+  kanalGmail: true,
+  kanalImessage: true,
+  kanalTelegram: true,
+  kanalAnrop: true,
+  kanalKalender: true,
+  slaTerskelTimer: 6,
+  stemmeAktivert: true,
+  stilleTidsromAktivert: true,
+};
+
+export type InnstillingBoolFelt =
+  | "kanalGmail"
+  | "kanalImessage"
+  | "kanalTelegram"
+  | "kanalAnrop"
+  | "kanalKalender"
+  | "stemmeAktivert"
+  | "stilleTidsromAktivert";
+
+export type InnstillingEndring = { felt: InnstillingBoolFelt; verdi: boolean } | { felt: "slaTerskelTimer"; verdi: number };

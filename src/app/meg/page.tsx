@@ -9,7 +9,7 @@ import { notFound } from "next/navigation";
 import { getCurrentUser } from "@/lib/auth/getCurrentUser";
 import { lagPrismaRepository } from "@/lib/jarvis/repository";
 import { MegApp } from "@/components/meg/MegApp";
-import { godkjennSak, avvisSak, opprettFangst } from "./actions";
+import { godkjennSak, avvisSak, opprettFangst, oppdaterInnstilling } from "./actions";
 
 export const dynamic = "force-dynamic";
 
@@ -19,7 +19,7 @@ export default async function MegPage() {
 
   const repo = lagPrismaRepository();
   const saker = await repo.hentSaker();
-  const [systemHelse, avvik, dagen, logg, morgenbrief, kveldsjournal, ukesreview] = await Promise.all([
+  const [systemHelse, avvik, dagen, logg, morgenbrief, kveldsjournal, ukesreview, innstillinger] = await Promise.all([
     repo.hentSystemHelse(),
     repo.hentAvvik(),
     repo.hentDagen(saker),
@@ -27,6 +27,7 @@ export default async function MegPage() {
     repo.hentBrief("morgenbrief"),
     repo.hentBrief("kveldsjournal"),
     repo.hentUkesreview(),
+    repo.hentInnstillinger(user.id),
   ]);
 
   return (
@@ -40,10 +41,12 @@ export default async function MegPage() {
       morgenbrief={morgenbrief}
       kveldsjournal={kveldsjournal}
       ukesreview={ukesreview}
+      innstillinger={innstillinger}
       naServertid={new Date().toISOString()}
       godkjennSak={godkjennSak}
       avvisSak={avvisSak}
       opprettFangst={opprettFangst}
+      oppdaterInnstilling={oppdaterInnstilling}
     />
   );
 }

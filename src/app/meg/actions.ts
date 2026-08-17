@@ -19,7 +19,8 @@ import { notFound } from "next/navigation";
 import { getCurrentUser } from "@/lib/auth/getCurrentUser";
 import { prisma } from "@/lib/prisma";
 import { SakKanal, SakStatus } from "@/generated/prisma/enums";
-import { FANGST_TYPER, FANGST_TYPE_LABEL, type FangstType } from "@/lib/jarvis/types";
+import { FANGST_TYPER, FANGST_TYPE_LABEL, STANDARD_INNSTILLINGER, type FangstType, type InnstillingEndring } from "@/lib/jarvis/types";
+import type { Prisma } from "@/generated/prisma/client";
 
 async function kreverAdmin() {
   const user = await getCurrentUser();
@@ -86,6 +87,58 @@ export async function opprettFangst(
       provenance: { kilde: "fangst", type, opprettet: naa.toISOString() },
     },
   });
+  revalidatePath("/meg");
+  return { ok: true };
+}
+
+/**
+ * Fullt typet felt → Prisma-data-mapping — unngår `{ [felt]: verdi }` mot en
+ * union-nøkkel, som ikke lar seg typesjekke uten en usikker cast (forbudt
+ * for forretningskritiske data, CLAUDE.md invariant 6 — behandlet likt her
+ * selv om innstillinger er lavere risiko enn Sak-data).
+ */
+function endringTilData(e: InnstillingEndring): Prisma.JarvisInnstillingUpdateInput {
+  switch (e.felt) {
+    case "kanalGmail":
+      return { kanalGmail: e.verdi };
+    case "kanalImessage":
+      return { kanalImessage: e.verdi };
+    case "kanalTelegram":
+      return { kanalTelegram: e.verdi };
+    case "kanalAnrop":
+      return { kanalAnrop: e.verdi };
+    case "kanalKalender":
+      return { kanalKalender: e.verdi };
+    case "stemmeAktivert":
+      return { stemmeAktivert: e.verdi };
+    case "stilleTidsromAktivert":
+      return { stilleTidsromAktivert: e.verdi };
+    case "slaTerskelTimer":
+      return { slaTerskelTimer: e.verdi };
+  }
+}
+
+/**
+ * Innstillingene (skjerm 11) — én bryter/valg om gangen, autolagres (fasitens
+ * "Lagres automatisk"). Ekte skriving til JarvisInnstilling, men INGEN
+ * forbruker leser feltene tilbake ennå (se repository.ts sin doc-kommentar)
+ * — verdien persisteres, men endrer ikke faktisk innsamler-/SLA-/stemme-
+ * oppførsel i denne PR-en.
+ */
+export async function oppdaterInnstilling(endring: InnstillingEndring): Promise<{ ok: true } | { ok: false; feil: string }> {
+  const user = await kreverAdmin();
+  try {
+    await prisma.jarvisInnstilling.upsert({
+      where: { userId: user.id },
+      // Full create-payload fra STANDARD_INNSTILLINGER + det ene endrede feltet —
+      // ikke en spredning av UpdateInput (feltene der aksepterer også Prisma sine
+      // *FieldUpdateOperationsInput-varianter, som ikke er gyldige i CreateInput).
+      create: { userId: user.id, ...STANDARD_INNSTILLINGER, [endring.felt]: endring.verdi },
+      update: endringTilData(endring),
+    });
+  } catch {
+    return { ok: false, feil: "Kunne ikke lagre innstillingen." };
+  }
   revalidatePath("/meg");
   return { ok: true };
 }

@@ -5624,3 +5624,29 @@ model Sak {
   @@index([kanal, status])
   @@map("saker")
 }
+
+// Jarvis-innstillinger (skjerm 11 av 12, meg-innstillinger.html) — "fire
+// ting du kan skru på", ikke et admin-panel (fasitens egen formulering).
+// Singleton per bruker (/meg er ADMIN-only, én bruker i praksis) — plain
+// userId String uten @relation, samme mønster som Sak, isolert fra User-
+// modellen med vilje (se gotchas.md §Schema-endringer).
+// Persisterer ekte valg, men INGEN forbruker leser feltene ennå — Gmail-
+// intervallet, SLA-fristen på nye Sak-rader (SAKER_SLA_TIMER) og stille-
+// tidsrom-varsling er fortsatt hardkodet i scripts/saker-innsamling/env.ts
+// og andre steder. Å koble alle de stedene til denne tabellen er utenfor
+// denne PR-ens omfang — se PR-beskrivelsen.
+model JarvisInnstilling {
+  id                    String   @id @default(cuid())
+  userId                String   @unique
+  kanalGmail            Boolean  @default(true)
+  kanalImessage         Boolean  @default(true)
+  kanalTelegram         Boolean  @default(true)
+  kanalAnrop            Boolean  @default(true)
+  kanalKalender         Boolean  @default(true)
+  slaTerskelTimer       Int      @default(6)
+  stemmeAktivert        Boolean  @default(true)
+  stilleTidsromAktivert Boolean  @default(true)
+  oppdatert             DateTime @updatedAt
+
+  @@map("jarvis_innstillinger")
+}

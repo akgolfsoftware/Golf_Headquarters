@@ -10,7 +10,18 @@
 // spillerdata») er dermed holdt, ikke bare unngått.
 import type { Sak } from "@/generated/prisma/client";
 import { SakKanal, SakStatus } from "@/generated/prisma/enums";
-import type { Avvik, BriefKind, BriefSnapshot, DagenData, InnsamlerStatus, LoggRad, SystemHelse, UkesreviewData } from "@/lib/jarvis/types";
+import type {
+  Avvik,
+  BriefKind,
+  BriefSnapshot,
+  DagenData,
+  Innstillinger,
+  InnsamlerStatus,
+  LoggRad,
+  SystemHelse,
+  UkesreviewData,
+} from "@/lib/jarvis/types";
+import { STANDARD_INNSTILLINGER } from "@/lib/jarvis/types";
 import type { KalenderHendelse } from "@/lib/meg/connectors/google";
 import {
   osloDagGrenser,
@@ -277,6 +288,7 @@ export interface JarvisRepository {
   hentDagen(saker: Sak[]): Promise<DagenData>;
   hentBrief(kind: BriefKind): Promise<BriefSnapshot>;
   hentUkesreview(): Promise<UkesreviewData>;
+  hentInnstillinger(userId: string): Promise<Innstillinger>;
 }
 
 /** Demo-implementasjon — statisk fixture-data, ingen nettverk/DB. */
@@ -305,6 +317,9 @@ export function lagDemoRepository(): JarvisRepository {
     },
     async hentUkesreview() {
       return byggDemoUkesreview();
+    },
+    async hentInnstillinger() {
+      return STANDARD_INNSTILLINGER;
     },
   };
 }

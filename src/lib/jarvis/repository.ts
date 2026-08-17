@@ -23,11 +23,28 @@
 // hentAvvik() over, ingen kalendervakt-agent finnes. "Tre ting som
 // gledet"/"til neste uke" og 150M-tokenbudsjettet fra fasiten er utelatt
 // helt (se UkesreviewData sin doc-kommentar i types.ts).
+// hentInnstillinger(): leser JarvisInnstilling (skjema lagt til 17.08,
+// migrasjonsscript IKKE kjørt mot ekte DB ennå — se
+// scripts/add-jarvis-innstillinger-2026-08-17.ts). Ingen rad ennå = STANDARD_
+// INNSTILLINGER (skjemaets egne @default-verdier), ikke en feiltilstand.
+// Selve TOGGLINGEN (oppdaterInnstilling i src/app/meg/actions.ts) er ekte
+// skriving — men INGEN forbruker leser feltene tilbake ennå.
 import "server-only";
 import { prisma } from "@/lib/prisma";
 import { SakStatus } from "@/generated/prisma/enums";
 import type { Sak } from "@/generated/prisma/client";
-import type { Avvik, BriefKind, BriefSnapshot, DagenData, InnsamlerStatus, LoggRad, SystemHelse, UkesreviewData } from "@/lib/jarvis/types";
+import type {
+  Avvik,
+  BriefKind,
+  BriefSnapshot,
+  DagenData,
+  Innstillinger,
+  InnsamlerStatus,
+  LoggRad,
+  SystemHelse,
+  UkesreviewData,
+} from "@/lib/jarvis/types";
+import { STANDARD_INNSTILLINGER } from "@/lib/jarvis/types";
 import type { JarvisRepository } from "@/fixtures/jarvis-demo";
 import { JARVIS_AGENT_NAVN } from "@/lib/jarvis/agent-navn";
 import { avledInnsamlerHelse } from "@/lib/jarvis/innsamler-helse";
@@ -207,6 +224,20 @@ export function lagPrismaRepository(): JarvisRepository {
           costUsd: kost._sum.costUsd,
           antallKall: kost._count,
         },
+      };
+    },
+    async hentInnstillinger(userId: string): Promise<Innstillinger> {
+      const rad = await prisma.jarvisInnstilling.findUnique({ where: { userId } });
+      if (!rad) return STANDARD_INNSTILLINGER;
+      return {
+        kanalGmail: rad.kanalGmail,
+        kanalImessage: rad.kanalImessage,
+        kanalTelegram: rad.kanalTelegram,
+        kanalAnrop: rad.kanalAnrop,
+        kanalKalender: rad.kanalKalender,
+        slaTerskelTimer: rad.slaTerskelTimer,
+        stemmeAktivert: rad.stemmeAktivert,
+        stilleTidsromAktivert: rad.stilleTidsromAktivert,
       };
     },
   };
