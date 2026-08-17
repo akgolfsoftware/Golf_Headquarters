@@ -145,7 +145,7 @@ export function AdminLiveActiveV2({ data }: { data: AdminLiveActiveV2Data }) {
 
   const avslutt = (
     <Link href={data.summaryHref} style={{ display: "contents" }}>
-      <CTAPill icon="flag" full enTing>Avslutt og se sammendrag</CTAPill>
+      <CTAPill icon="flag" full>Avslutt og se sammendrag</CTAPill>
     </Link>
   );
 

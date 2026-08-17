@@ -9,7 +9,6 @@ import Link from "next/link";
 import {
   T,
   Caps,
-  Tittel,
   Kort,
   CTAPill,
   StatusPill,
@@ -106,7 +105,7 @@ function ForslagKort({ t }: { t: TournamentSuggestion }) {
 }
 
 export function ForeslaTurneringV2({ data }: { data: ForeslaTurneringV2Data }) {
-  const { playerFirstName, hcpLabel, catalogCount, suggestions } = data;
+  const { hcpLabel, catalogCount, suggestions } = data;
   return (
     <div data-paper-wave-g="foreslaturnering" data-paper-pattern style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
       <div>
@@ -139,7 +138,7 @@ export function ForeslaTurneringV2({ data }: { data: ForeslaTurneringV2Data }) {
           />
           <div style={{ marginTop: 12 }}>
             <Link href="/portal/tren/turneringer" style={{ textDecoration: "none", display: "block" }}>
-              <CTAPill icon="calendar-plus" full enTing>
+              <CTAPill icon="calendar-plus" full>
                 Se turneringer
               </CTAPill>
             </Link>

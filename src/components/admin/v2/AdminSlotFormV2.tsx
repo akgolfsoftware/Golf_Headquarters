@@ -152,7 +152,7 @@ export function SlotFormV2({ locations, initial, defaultWeekday, triggerLabel, t
           style={{ all: "unset", cursor: "pointer", display: "block", width: "100%" }}
           aria-label={triggerLabel}
         >
-          <CTAPill icon="plus" full enTing>
+          <CTAPill icon="plus" full>
             {triggerLabel}
           </CTAPill>
         </button>

@@ -491,7 +491,7 @@ export function SpillerDashboardV2({ data }: { data: SpillerDashboardV2Data }) {
                   <TomTilstand icon="calendar" title="Ingen aktiv plan" sub="Start fra mal i Workbench for å gi spilleren ukentlig program." />
                   <div style={{ display: "flex", justifyContent: "center", marginTop: 4 }}>
                     <Link href={data.wbHref} style={{ textDecoration: "none" }}>
-                      <CTAPill icon="plus" enTing full>Lag plan i Workbench</CTAPill>
+                      <CTAPill icon="plus" full>Lag plan i Workbench</CTAPill>
                     </Link>
                   </div>
                 </>

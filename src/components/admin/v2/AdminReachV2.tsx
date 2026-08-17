@@ -7,7 +7,7 @@
 
 import { useMemo, useState } from "react";
 import Link from "next/link";
-import { Caps, Tittel, Kort, Knapp, StatusPill, AvatarFoto, TomTilstand, CTAPill, T } from "@/components/v2";
+import { Caps, Kort, Knapp, StatusPill, AvatarFoto, TomTilstand, CTAPill, T } from "@/components/v2";
 import { Icon } from "@/components/v2/icon";
 
 export interface ReachSpiller {
@@ -163,7 +163,7 @@ export function AdminReachV2({ data }: { data: AdminReachV2Data }) {
 
       {/* B: én primær CTA */}
       <Link href="/admin/innboks" style={{ textDecoration: "none", display: "block" }}>
-        <CTAPill icon="message-circle" full enTing>
+        <CTAPill icon="message-circle" full>
           Åpne innboks
         </CTAPill>
       </Link>

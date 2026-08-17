@@ -7,7 +7,7 @@
 
 import { useTransition } from "react";
 import Link from "next/link";
-import { Caps, Tittel, Kort, Knapp, StatusPill, AvatarInit, TomTilstand, CTAPill, T } from "@/components/v2";
+import { Kort, Knapp, StatusPill, AvatarInit, TomTilstand, CTAPill, T } from "@/components/v2";
 import { markerSomPlanlagt, avslaaForespørsel } from "@/app/admin/(legacy)/foresporsler/actions";
 
 export interface AdminForesporselRad {
@@ -57,7 +57,7 @@ export function AdminForesporslerV2({ data }: { data: AdminForesporslerV2Data })
 
   const primaerCta = (
     <Link href="/admin/bookinger/ny" style={{ textDecoration: "none", display: "block" }}>
-      <CTAPill icon="calendar-plus" full enTing>
+      <CTAPill icon="calendar-plus" full>
         Ny booking
       </CTAPill>
     </Link>

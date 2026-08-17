@@ -139,7 +139,7 @@ export function AdminSpillerProfilV2({ data, variant = "full" }: { data: AdminSp
       <p style={{ fontFamily: T.ui, fontSize: 13, color: T.fg2, lineHeight: 1.55, margin: 0 }}>{data.flagg.tekst}</p>
       <div style={{ display: "flex", gap: 8, marginTop: 14 }}>
         <Link href={data.flagg.ctaHref} style={{ textDecoration: "none" }}>
-          <CTAPill icon="plus" enTing full>{data.flagg.ctaLabel}</CTAPill>
+          <CTAPill icon="plus" full>{data.flagg.ctaLabel}</CTAPill>
         </Link>
       </div>
     </Kort>
@@ -197,7 +197,7 @@ export function AdminSpillerProfilV2({ data, variant = "full" }: { data: AdminSp
       <div style={{ marginTop: 4, display: "flex", justifyContent: "center" }}>
         <Link href={data.wbHref} style={{ textDecoration: "none" }}>
           {/* Full-variant: primær. Seksjoner (dashboard eier Workbench): ghost. */}
-          <CTAPill icon="plus" enTing={variant !== "seksjoner"} ghost={variant === "seksjoner"} full={variant !== "seksjoner"}>Lag plan i Workbench</CTAPill>
+          <CTAPill icon="plus" ghost={variant === "seksjoner"} full={variant !== "seksjoner"}>Lag plan i Workbench</CTAPill>
         </Link>
       </div>
     </Kort>

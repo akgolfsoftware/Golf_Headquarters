@@ -176,7 +176,7 @@ export function AdminAgenterV2({ data }: { data: AdminAgenterV2Data }) {
       : "Se AgenticOS";
   const primaerCta = (
     <Link href={primaerHref} style={{ textDecoration: "none", display: "block" }}>
-      <CTAPill icon="arrow-right" full enTing>
+      <CTAPill icon="arrow-right" full>
         {primaerTekst}
       </CTAPill>
     </Link>

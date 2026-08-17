@@ -9,7 +9,6 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import {
   Caps,
-  Tittel,
   Kort,
   Rad,
   KpiFlis,
@@ -118,7 +117,7 @@ export function AdminSpillerPlanV2({ data }: { data: AdminSpillerPlanData }) {
   // B: én primær
   const primaerCta = (
     <Link href={workbenchHref} style={{ textDecoration: "none", display: "block" }}>
-      <CTAPill icon="plus" full enTing>
+      <CTAPill icon="plus" full>
         {sortert.length === 0 ? "Lag første plan" : "Lag plan"}
       </CTAPill>
     </Link>

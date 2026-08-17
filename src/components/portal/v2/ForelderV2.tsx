@@ -329,7 +329,6 @@ export function ForelderV2({ data }: { data: ForelderPortalData }) {
               : `Blir det stående ubetalt, kan abonnementet stanses — og da mister ${fornavn} både øktene og PlayerHQ.`}
           </p>
           <Knapp
-            enTing
             full
             icon="credit-card"
             onClick={() => {
@@ -372,7 +371,7 @@ export function ForelderV2({ data }: { data: ForelderPortalData }) {
           <p style={{ margin: "0 0 12px", fontFamily: T.bodyFont, fontSize: 13, color: T.mut, lineHeight: 1.55 }}>
             {s.d}
           </p>
-          <Knapp enTing full icon="shield" onClick={() => router.push("/forelder/samtykke")}>
+          <Knapp full icon="shield" onClick={() => router.push("/forelder/samtykke")}>
             Gå til samtykke
           </Knapp>
         </div>

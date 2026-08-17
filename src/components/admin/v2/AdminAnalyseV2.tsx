@@ -8,7 +8,6 @@
 import Link from "next/link";
 import {
   Caps,
-  Tittel,
   Kort,
   Rad,
   TallHero,
@@ -100,7 +99,7 @@ export function AdminAnalyseV2({ data }: { data: AnalyseV2Data }) {
 
   const primaerCta = (
     <Link href="/admin/stall" style={{ textDecoration: "none", display: "block" }}>
-      <CTAPill icon="users" full enTing>
+      <CTAPill icon="users" full>
         Åpne stall
       </CTAPill>
     </Link>

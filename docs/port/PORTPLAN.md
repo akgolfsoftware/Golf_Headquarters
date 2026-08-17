@@ -112,7 +112,7 @@ Sorteringen er avhengighetsdrevet: det som låser opp mest, først.
 
 | # | Sesjon | Mal-fasit | Ruter | Stryker | Blokkeres av | Scope |
 |---|---|---|---|---|---|---|
-| S1 | **Admin-rail → fase2** (PP-B1) | `fase2/agencyos/w4-base.css` | alle admin | — | A1.1 | M — én endring i `V2Shell`, 261 konsumenter arver |
+| S1 | **Admin-rail → fase2** (PP-B1) | `fase2/agencyos/w4-base.css` | alle admin | — | A1.1 | **GJORT — verifisert 17.08.** `AGENCYOS_NAV` i `src/components/v2/shell.tsx` er identisk med fasitens 7 rail-punkter (Cockpit · Innboks · Kalender · Stall · Plan · Innsikt · Oppsett) i alle 9 fase2-agencyos-fasiter; eneste bevisste avvik er logoen. Alle admin-flater arver den via `V2Shell`. |
 | S2 | **Auth-skall** | `auth-flyt.html` | 13 | 1 | A3.2, A2 (to maler) | L — skallet mangler helt |
 | S3 | **Systemtilstander** | `system-tilstander.html` | 6 | 1 | — | M — Next-spesialfiler, ikke layouts |
 
@@ -160,8 +160,8 @@ Dette er ikke pixel-arbeid; det er manglende design.
 
 | # | Sesjon | Mal-fasit | Ruter | Stryker | Merknad |
 |---|---|---|---|---|---|
-| S22 | AgenticOS-hub | `agencyos-agenticos-hub.html` | 9 | 0 | Klar. Ny samleflate + redirects fra agents/agent-team/kommando. |
-| S23 | Agent-detalj | `agencyos-agent-detalj.html` | 1 | 0 | Klar. |
+| S22 | AgenticOS-hub | `agencyos-agenticos-hub.html` | 9 | 0 | **GJORT** — PR #555. Ny samleflate + redirects fra agents/agent-team/kommando. Venter kun signering. |
+| S23 | Agent-detalj | `agencyos-agent-detalj.html` | 1 | 0 | **GJORT** — PR #435 (13.08): `/admin/agents/[agentId]` er pixel-passet mot fasiten. Venter kun signering. |
 | S24 | «Eksisterende V2» ×4 | **ingen mal-fil** | 9 | **4** | `/admin/brief`, `/recording`, `/workspace`, `/marketing·reports`. «Pixel-pass mot Paper-mønsteret» navngir ingen fasit — kan ikke bygges. Trenger enten fasit eller strykning. |
 
 ### B6 · Jarvis `/meg` — utenfor rutefasiten
@@ -182,12 +182,13 @@ innstillinger, fangst. Egen plan i `natt-rapport.md` på den grenen.
 ```
 A0 (ikke slett legacy) → A1 (10 beslutninger) → A2 (rydd dok.) → A3 (komponenter)
    → S1 rail → S2 auth-skall → S3 systemtilstander
-   → S22–S23 (klare nå) → S17, S9, S8 (0 stryker)
+   → S22–S23 (GJORT) → S17, S9 (GJORT) → S8 (0 stryker)
    → resten av W3 → W4 → W5 (blokkert til design leveres)
 ```
 
-**Kan startes umiddelbart uten nye svar:** S3, S17, S22, S23 og S9 — fem sesjoner, 25 ruter.
-Alt annet venter på Fase A.
+**Lista er tom.** Alle fem sesjonene som sto her er merget siden 13.08: S23 (#435),
+S3 (#549), S9 (#553), S17 (#554), S22 (#555). De venter nå kun på signering
+(skjermbilde-gaten), ikke på bygging. Alt annet venter på Fase A.
 
 ---
 

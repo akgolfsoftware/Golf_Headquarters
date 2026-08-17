@@ -110,7 +110,7 @@ export function ServiceFormV2({ initial, triggerLabel, triggerVariant = "cta" }:
           style={{ all: "unset", cursor: "pointer", display: "block", width: "100%" }}
           aria-label={triggerLabel}
         >
-          <CTAPill icon="plus" full enTing>
+          <CTAPill icon="plus" full>
             {triggerLabel}
           </CTAPill>
         </button>

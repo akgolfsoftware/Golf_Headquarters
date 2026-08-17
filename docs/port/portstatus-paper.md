@@ -22,11 +22,15 @@
 1. **Signering er flaskehalsen, ikke bygging.** 41 rader venter kun på galleri + Anders' `[x]`.
    Blokkert av `SCREENTEST_PASSWORD`-rotasjonen (Anders).
 2. **W4-variantene (38 ruter) kan kvitteres nå** — alle 8 maler er signert.
-3. **PP-B-rest:** montér `Composer` i `V2Shell` (komponent finnes, 0 kallsteder) ·
-   fullfør clay-sweep (44 filer med `enTing`) · verifiser B4 chrome-rest.
+3. **PP-B-rest:** montér `Composer` i `V2Shell` (komponent finnes, 0 kallsteder — IKKE gjort;
+   `onSend`-mål per flate er en C-bølge-beslutning) · clay-sweepen er **gjort 17.08**
+   (32 `enTing`-forekomster i 27 filer fjernet — liste-/skjerm-CTA-er er ink, «Én ting nå»-kortene
+   urørt; A3), rest av B2 er `error.tsx` → `V2Feil`, clay-prikken i `VarslerV2` og
+   `InnstillingerIntegrasjonerV2` 4 → 1 · verifiser B4 chrome-rest.
 4. **25 av 54 rutefasit-rader stryker én-linje-testen** — venter på design (W5) eller
    A1-beslutninger (PORTPLAN §A1, 10 spørsmål til Anders).
-5. **Sesjoner klare uten nye svar:** S3 (#549 åpen) · S9 · S17 · S22 · S23.
+5. **Sesjoner klare uten nye svar: ingen igjen.** S23 (#435), S3 (#549), S9 (#553), S17 (#554)
+   og S22 (#555) er alle merget — de venter kun på signering, ikke bygging.
 
 ## Historikk
 
