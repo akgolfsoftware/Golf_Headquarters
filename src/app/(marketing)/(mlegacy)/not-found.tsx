@@ -1,23 +1,17 @@
-import { Compass } from "lucide-react";
-import Link from "next/link";
-import { Button, Eyebrow } from "@/components/athletic/golfdata";
+/**
+ * 404 for ruter under (marketing)/(mlegacy) — Paper, samme mønster som
+ * src/app/not-found.tsx (samme publikum: marketing/offentlig). (mlegacy)
+ * er en rutegruppe og eier sin egen not-found-grense i Next.js'
+ * nærmeste-ancestor-mønster — duplisert fil, ikke duplisert design.
+ */
 
-export default function MarketingNotFound() {
-  return (
-    <div className="mx-auto flex min-h-[60vh] max-w-2xl flex-col justify-center gap-4 px-6 py-16">
-      <Compass className="h-10 w-10 text-primary" strokeWidth={1.5} aria-hidden />
-      <Eyebrow as="span">404 · Ikke funnet</Eyebrow>
-      <h1 className="font-display text-4xl font-bold leading-tight tracking-tight text-foreground md:text-5xl">
-        Siden <em className="font-normal italic text-primary">finnes ikke</em>
-      </h1>
-      <p className="max-w-md text-sm text-muted-foreground">
-        Sjekk URLen eller gå tilbake til forsiden.
-      </p>
-      <div className="mt-4 flex flex-col gap-2 sm:flex-row">
-        <Button as={Link} href="/" variant="primary">
-          Til forsiden
-        </Button>
-      </div>
-    </div>
-  );
+import type { Metadata } from "next";
+import { IkkeFunnet } from "@/components/system/ikke-funnet";
+
+export const metadata: Metadata = {
+  title: "Side ikke funnet — AK Golf Academy",
+};
+
+export default function MarketingLegacyNotFound() {
+  return <IkkeFunnet />;
 }
