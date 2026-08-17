@@ -3,15 +3,20 @@ branch: main
 path: docs/port
 
 ## Last sync
-date: 2026-08-12T20:34:15Z
+date: 2026-08-16
 
 ### Updated in this project
+- Rutekart v2: `Rutekart v2 - portering og komponentfasit.html` — porteringsstrategi (én sesjon per mal, varianter uten fasit-HTML), modellvalg per oppgaveklasse (Opus/Sonnet/Haiku), skall-pakker, og komponentfasit per rute uten egen fasit (designsystemets komponentnavn).
+- `kart/rutefasit-for-claude-code.md` omskrevet til v2 med samme innhold — legges i repoet som `docs/port/rutefasit.md`; kontrakten + Claude-følelsen anbefales inn i repoets `CLAUDE.md`.
+
+## Sync history
+
+### 2026-08-12
+
 - Lest hele `docs/port/` på main (nattrapport 12.08, PIXEL-PERFECT-PLAN, PAPER-ZIP-CHECKLIST, portstatus, LANSERINGSGAP) og skrevet samlet analyse- og utviklingsplan: `Plan - komplett utvikling og implementering.html`.
 - Tegnet drift/AgenticOS-sporet (19 ruter talt mot kode, 9 reelle): `fase2/agencyos/agencyos-agenticos-hub.html` (ny samleflate `/admin/agenticos`) + `agencyos-agent-detalj.html`. Konsolideringsnotat: `kart/drift-agenticos-2026-08-12.md`.
 - Skrevet rutefasit-registeret for alle mal-dekkede ruter: `Rutekart - alle ruter uten egen fasit.html` + `kart/rutefasit-for-claude-code.md` (legges i repoet som `docs/port/rutefasit.md`).
 - Status i kode 12.08: 0 `[x]` · 78 `[~]` · 9 `[ ]`; 6 grønne PR-er (#415–#420) venter sign-off; blokkert: WANG-innlogging, PR-E, PR-F. Designkø her: drift/AgenticOS-samleflate, W7-stats (etter PR-F), fasit-rettelser (Meg-samtykke, innboks-angre, planbibliotek mobil).
-
-## Sync history
 
 ### 2026-08-09 (W5)
 - W5 (Marketing · Forelder · Auth · System) konsolideringsgate mot kode: `(marketing)/stats/*` (~45 ruter) skilt ut som eget produktspor — resten er 63 reelle ruter dækket av 6 maler. Notat: `kart/w5-marketing-auth-forelder-2026-08-09.md`.
