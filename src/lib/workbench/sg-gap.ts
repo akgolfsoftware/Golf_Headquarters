@@ -1,76 +1,41 @@
-import { prisma } from "@/lib/prisma";
+import { hentSpillerSg } from "@/lib/domain/spiller-sg";
 import type { SgKategori } from "./fokus";
-
-type SgFelter = {
-  sgOtt: number | null;
-  sgApp: number | null;
-  sgArg: number | null;
-  sgPutt: number | null;
-};
-
-const KATEGORI_FELT: [SgKategori, keyof SgFelter][] = [
-  ["OTT", "sgOtt"],
-  ["APP", "sgApp"],
-  ["ARG", "sgArg"],
-  ["PUTT", "sgPutt"],
-];
-
-function lavesteKategori(verdier: Partial<Record<SgKategori, number>>): {
-  kategori: SgKategori;
-  sg: number;
-} | null {
-  let svakest: { kategori: SgKategori; sg: number } | null = null;
-  for (const [kategori] of KATEGORI_FELT) {
-    const sg = verdier[kategori];
-    if (sg == null) continue;
-    if (svakest === null || sg < svakest.sg) svakest = { kategori, sg };
-  }
-  return svakest;
-}
 
 /**
  * Størst SG-gap for en spiller: laveste strokes gained-kategori (OTT/APP/ARG/PUTT).
- * Kilde (samme prioritering som stallen bruker for SG-trend):
- *   1. Nyeste BrukerSgInput med kategoritall (manuell/TrackMan/NLB-import).
- *   2. Ellers snitt per kategori over siste 8 runder (Round.sgOtt osv.).
+ *
+ * Kilde: den kanoniske SG-selectoren (`hentSpillerSg` — én SG-sannhet, AP0.1
+ * i docs/plan-baneguide-sg-app-2026-08-16.md): beregnede Round.sg* primært,
+ * BrukerSgInput kun som fallback når runder med SG mangler.
+ * (Frem til 2026-08-16 prioriterte denne fila selvrapporterte tall FORAN
+ * beregnede runder — motsatt av Analysere/Hjem.)
+ *
+ * NB — kun SPILLER-flatene er lagt om så langt (denne, hull-analysen, drills,
+ * Workbench-fokus, plan-engine). Coach-flatene har fortsatt motsatt regel:
+ * `src/lib/admin/stallen-data.ts` (SG-trend), `benchmark-provider.ts` og
+ * `admin-compare/multi-compare-data.ts` leser BrukerSgInput først//kun. Coach
+ * og spiller kan derfor se ulike SG-tall for samme person til AP5.1 legger
+ * dem om — ikke anta at hele plattformen deler kilde ennå.
+ *
  * Null når ingen kategori-SG finnes.
  */
 export async function beregnSgGap(
   userId: string,
 ): Promise<{ kategori: SgKategori; sg: number } | null> {
-  const harKategoritall = [
-    { sgOtt: { not: null } },
-    { sgApp: { not: null } },
-    { sgArg: { not: null } },
-    { sgPutt: { not: null } },
+  const sg = await hentSpillerSg(userId);
+  if (!sg) return null;
+
+  const verdier: [SgKategori, number | null][] = [
+    ["OTT", sg.ott.sg],
+    ["APP", sg.app.sg],
+    ["ARG", sg.arg.sg],
+    ["PUTT", sg.putt.sg],
   ];
 
-  const input = await prisma.brukerSgInput.findFirst({
-    where: { userId, OR: harKategoritall },
-    orderBy: { dato: "desc" },
-    select: { sgOtt: true, sgApp: true, sgArg: true, sgPutt: true },
-  });
-  if (input) {
-    const verdier: Partial<Record<SgKategori, number>> = {};
-    for (const [kategori, felt] of KATEGORI_FELT) {
-      const v = input[felt];
-      if (v != null) verdier[kategori] = v;
-    }
-    return lavesteKategori(verdier);
+  let svakest: { kategori: SgKategori; sg: number } | null = null;
+  for (const [kategori, verdi] of verdier) {
+    if (verdi == null) continue;
+    if (svakest === null || verdi < svakest.sg) svakest = { kategori, sg: verdi };
   }
-
-  const runder = await prisma.round.findMany({
-    where: { userId, OR: harKategoritall },
-    orderBy: { playedAt: "desc" },
-    take: 8,
-    select: { sgOtt: true, sgApp: true, sgArg: true, sgPutt: true },
-  });
-  if (runder.length === 0) return null;
-
-  const snitt: Partial<Record<SgKategori, number>> = {};
-  for (const [kategori, felt] of KATEGORI_FELT) {
-    const tall = runder.map((r) => r[felt]).filter((v): v is number => v != null);
-    if (tall.length > 0) snitt[kategori] = tall.reduce((a, b) => a + b, 0) / tall.length;
-  }
-  return lavesteKategori(snitt);
+  return svakest;
 }

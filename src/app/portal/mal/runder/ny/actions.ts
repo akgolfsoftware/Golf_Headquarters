@@ -5,6 +5,7 @@ import { redirect } from "next/navigation";
 import { z } from "zod";
 import { requireConsentingUser } from "@/lib/auth/requireConsentingUser";
 import { prisma } from "@/lib/prisma";
+import { sikreBaneBro } from "@/lib/portal/bane-bro";
 import { parTemplate } from "@/lib/portal-runder/par-template";
 import { synkroniserSgFraRunder } from "@/lib/portal-stats/sg-bro";
 
@@ -161,6 +162,10 @@ export async function logRoundManual(input: LogRoundManualInput) {
       });
     }
   });
+
+  // Bygg/behold broen til banegeometrien (AP0.4). Må stå FØR redirect —
+  // redirect() kaster NEXT_REDIRECT. Kaster aldri selv.
+  await sikreBaneBro(input.courseId);
 
   // SG-broen (T6): oppdater DataGolf-grunnlaget (BrukerSgInput, kilde
   // PLAYERHQ) fra runde-SG. Best-effort — kaster aldri, og må stå FØR

@@ -170,22 +170,17 @@ function OptionCard({ option }: { option: StrategyOption }) {
         <Stat label="Apex" value={`${option.apex} m`} />
       </div>
 
-      {option.expectedStrokes != null && (
+      {option.tourSgSnitt != null && (
         <footer className="border-t border-border pt-2">
           <div className="flex items-center justify-between">
             <span className="font-mono text-[10px] uppercase tracking-[0.10em] text-muted-foreground">
-              PGA exp. strokes
+              PGA-snitt SG herfra
             </span>
             <span className="font-mono text-sm tabular-nums">
-              {formatNumber(option.expectedStrokes, 2)}
+              {option.tourSgSnitt > 0 ? "+" : ""}
+              {formatNumber(option.tourSgSnitt, 2)}
             </span>
           </div>
-          {option.expectedSgVsBest != null && option.expectedSgVsBest !== 0 && (
-            <p className="mt-1 font-mono text-[10px] text-muted-foreground">
-              SG vs #1: {option.expectedSgVsBest > 0 ? "+" : ""}
-              {formatNumber(option.expectedSgVsBest, 2)}
-            </p>
-          )}
         </footer>
       )}
     </article>

@@ -6,6 +6,7 @@ import { requireConsentingUser } from "@/lib/auth/requireConsentingUser";
 import { prisma } from "@/lib/prisma";
 import { notifyMany } from "@/lib/notifications";
 import { beregnSgFraShots, beregnGranulaerSgFraShots } from "@/lib/runde-logg/shots-til-sg";
+import { avgjorSgSkriving } from "@/lib/domain/sg-skriving";
 import { hullSchema } from "@/lib/runde-logg/schema";
 import { byggShotRader } from "@/lib/runde-logg/bygg-shot-rader";
 import { deriverRundeScore } from "@/lib/runde-logg/deriver-hullscore";
@@ -104,10 +105,12 @@ async function assertRoundOwner(roundId: string, userId: string) {
 
 /**
  * SG-autoberegning fra slag-kjeden (kalles etter hver slag-endring).
- * Presedens: sgSource='manual' (håndtastet) overskrives ALDRI. Komplett kjede
- * → skriv sg* + 'beregnet'; ufullstendig kjede der tallene var 'beregnet' →
- * nullstill (stale tall er verre enn ingen). Feil svelges — slag-lagringen
- * skal aldri velte på beregningen.
+ *
+ * Selve presedensen (manual røres aldri; komplett kjede skriver; ufullstendig
+ * kjede nullstiller det som var beregnet) er en ren funksjon i domenelaget:
+ * `avgjorSgSkriving` i src/lib/domain/sg-skriving.ts — der den også er testet.
+ * Her ligger kun I/O. Feil svelges — slag-lagringen skal aldri velte på
+ * beregningen.
  */
 async function recomputeRoundSg(roundId: string): Promise<void> {
   try {
@@ -115,7 +118,9 @@ async function recomputeRoundSg(roundId: string): Promise<void> {
       where: { id: roundId },
       select: { sgSource: true, userId: true },
     });
-    if (!round || round.sgSource === "manual") return;
+    if (!round) return;
+    // Kortslutning: manuelle tall trenger ingen slag-spørring i det hele tatt.
+    if (round.sgSource === "manual") return;
 
     const [shots, holeScores] = await Promise.all([
       prisma.shot.findMany({
@@ -136,48 +141,13 @@ async function recomputeRoundSg(roundId: string): Promise<void> {
     ]);
 
     const sg = beregnSgFraShots(shots, holeScores);
-    if (sg) {
-      const gran = beregnGranulaerSgFraShots(shots, holeScores);
+    const gran = sg ? beregnGranulaerSgFraShots(shots, holeScores) : null;
+    const beslutning = avgjorSgSkriving(round.sgSource, sg, gran);
+
+    if (beslutning.handling === "skriv") {
       await prisma.round.update({
         where: { id: roundId },
-        data: {
-          sgTotal: sg.total,
-          sgOtt: sg.ott,
-          sgApp: sg.app,
-          sgArg: sg.arg,
-          sgPutt: sg.putt,
-          sgSource: "beregnet",
-          // Granulære buckets (15 — sgLob krever kølledata og settes ikke her)
-          sgTee: gran?.sgTee ?? null,
-          sgApp200: gran?.sgApp200 ?? null,
-          sgApp150: gran?.sgApp150 ?? null,
-          sgApp100: gran?.sgApp100 ?? null,
-          sgApp50: gran?.sgApp50 ?? null,
-          sgChip: gran?.sgChip ?? null,
-          sgPitch: gran?.sgPitch ?? null,
-          sgBunker: gran?.sgBunker ?? null,
-          sgPutt0_3: gran?.sgPutt0_3 ?? null,
-          sgPutt3_5: gran?.sgPutt3_5 ?? null,
-          sgPutt5_10: gran?.sgPutt5_10 ?? null,
-          sgPutt10_15: gran?.sgPutt10_15 ?? null,
-          sgPutt15_25: gran?.sgPutt15_25 ?? null,
-          sgPutt25_40: gran?.sgPutt25_40 ?? null,
-          sgPutt40plus: gran?.sgPutt40plus ?? null,
-        },
-      });
-    } else if (round.sgSource === "beregnet") {
-      // Ufullstendig kjede: nullstill ALLE beregnede felter (5 + 15) —
-      // stale tall er verre enn ingen.
-      await prisma.round.update({
-        where: { id: roundId },
-        data: {
-          sgTotal: null, sgOtt: null, sgApp: null, sgArg: null, sgPutt: null,
-          sgTee: null, sgApp200: null, sgApp150: null, sgApp100: null, sgApp50: null,
-          sgChip: null, sgPitch: null, sgBunker: null,
-          sgPutt0_3: null, sgPutt3_5: null, sgPutt5_10: null, sgPutt10_15: null,
-          sgPutt15_25: null, sgPutt25_40: null, sgPutt40plus: null,
-          sgSource: null,
-        },
+        data: beslutning.felter,
       });
     }
 
