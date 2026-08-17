@@ -19,7 +19,14 @@ import { createClient } from "@supabase/supabase-js";
 
 const URL = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const SERVICE = process.env.SUPABASE_SERVICE_ROLE_KEY!;
-const BRUKERE = ["screentest@akgolf.test", "coachtest@akgolf.test"];
+// Alle tre deler SCREENTEST_PASSWORD. Forelder-brukeren manglet her fram til
+// 17.08.2026, så sign-off-galleriets foreldreportal-rad («B2-forelder») feilet på
+// innlogging etter hver rotasjon mens de to andre virket.
+const BRUKERE = [
+  "screentest@akgolf.test",
+  "coachtest@akgolf.test",
+  "screentest-parent@akgolf.test",
+];
 
 async function main() {
   if (!URL || !SERVICE) throw new Error("Mangler NEXT_PUBLIC_SUPABASE_URL / SUPABASE_SERVICE_ROLE_KEY i .env.local");
