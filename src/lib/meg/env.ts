@@ -88,3 +88,22 @@ export function readMegOllamaEnv(
     model: parsed.data.MEG_OLLAMA_MODEL,
   };
 }
+
+// Perplexity Sonar-env (nett_sok-verktøyet). Valgfri — uten nøkkel blir
+// verktøyet ikke registrert i tools.ts (se isPerplexityEnabled i perplexity.ts).
+const perplexityEnvSchema = z.object({
+  PERPLEXITY_API_KEY: z.string().min(1),
+});
+
+export type MegPerplexityEnv = {
+  apiKey: string;
+};
+
+/** Leser Perplexity-env defensivt. Returnerer null hvis ikke konfigurert. */
+export function readMegPerplexityEnv(
+  source: NodeJS.ProcessEnv | Record<string, string | undefined> = process.env,
+): MegPerplexityEnv | null {
+  const parsed = perplexityEnvSchema.safeParse(source);
+  if (!parsed.success) return null;
+  return { apiKey: parsed.data.PERPLEXITY_API_KEY };
+}
