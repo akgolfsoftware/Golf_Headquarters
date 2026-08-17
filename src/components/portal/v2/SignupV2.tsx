@@ -444,6 +444,38 @@ function PakkeVelger({
   );
 }
 
+/**
+ * TalentHQ-varianten (?kilde=talenthq, plan T3): gratis låst testprofil i
+ * stedet for pakkevalg. Samme panel-idiom som PakkeVelger-kortene.
+ */
+function TalentInfo() {
+  return (
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        gap: 4,
+        padding: 14,
+        borderRadius: 12,
+        background: T.panel2,
+        border: `1px solid ${T.border}`,
+      }}
+    >
+      <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: 8 }}>
+        <span style={{ fontFamily: T.disp, fontSize: 14, fontWeight: 600, color: T.fg }}>
+          Gratis testprofil
+        </span>
+        <span style={{ fontFamily: T.mono, fontSize: 11.5, fontWeight: 700, color: T.lime }}>
+          0 kr
+        </span>
+      </div>
+      <span style={{ fontFamily: T.ui, fontSize: 12, lineHeight: 1.4, color: T.fg2 }}>
+        Testbatteri, stats og SG-registrering.
+      </span>
+    </div>
+  );
+}
+
 /** Rolle-toggle — «Spiller»/«Foresatt», 1:1 intent med gamle signup-form.tsx. */
 function RolleVelger({
   value,
@@ -571,12 +603,15 @@ function BrandPanel() {
 function SignupKort({
   defaultEmail,
   subscribe,
+  kilde,
 }: {
   defaultEmail?: string;
   subscribe?: string;
+  kilde?: "talenthq";
 }) {
   const router = useRouter();
   const supabase = createClient();
+  const erTalent = kilde === "talenthq";
   const [pkg, setPkg] = useState<PackageValue>("PERFORMANCE_PRO");
   const [rolle, setRolle] = useState<UserRole>("PLAYER");
   const [fornavn, setFornavn] = useState("");
@@ -609,18 +644,31 @@ function SignupKort({
 
     setLaster(true);
     const valgt = PAKKER.find((p) => p.value === pkg)!;
-    const { data, error: err } = await supabase.auth.signUp({
-      email,
-      password: passord,
-      options: {
-        data: {
+    // TalentHQ (?kilde=talenthq): gratis låst testprofil — ingen pakke.
+    // `kilde` i user_metadata leses av ensureUser, som setter profilType
+    // TALENT ved opprettelse av Prisma-raden (plan T3). Tier tvinges uansett
+    // til GRATIS server-side i ensureUser.
+    const metadata = erTalent
+      ? {
+          role: rolle,
+          tier: "GRATIS" satisfies Tier,
+          kilde: "talenthq",
+          firstName: fornavn,
+          lastName: etternavn,
+        }
+      : {
           role: rolle,
           tier: "PRO" satisfies Tier,
           package: valgt.value,
           monthlyCredits: valgt.monthlyCredits,
           firstName: fornavn,
           lastName: etternavn,
-        },
+        };
+    const { data, error: err } = await supabase.auth.signUp({
+      email,
+      password: passord,
+      options: {
+        data: metadata,
       },
     });
     setLaster(false);
@@ -690,6 +738,7 @@ function SignupKort({
           Lag konto
         </h1>
         <p style={{ fontFamily: T.ui, fontSize: 12.5, color: T.mut, margin: "8px 0 0" }}>
+          {erTalent && "Gratis testprofil — testbatteri, stats og SG-registrering. "}
           Har du konto? <Lenke href="/auth/login">Logg inn</Lenke>
         </p>
       </div>
@@ -707,7 +756,7 @@ function SignupKort({
           boxShadow: `inset 0 1px 0 ${T.farge.hvitA5}, 0 12px 32px ${T.farge.svartA35}`,
         }}
       >
-        <PakkeVelger value={pkg} onChange={setPkg} />
+        {erTalent ? <TalentInfo /> : <PakkeVelger value={pkg} onChange={setPkg} />}
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
           <Felt
             label="Fornavn"
@@ -832,7 +881,8 @@ function SignupKort({
 export function SignupV2({
   defaultEmail,
   subscribe,
-}: { defaultEmail?: string; subscribe?: string } = {}) {
+  kilde,
+}: { defaultEmail?: string; subscribe?: string; kilde?: "talenthq" } = {}) {
   return (
     <div
       style={{
@@ -858,7 +908,7 @@ export function SignupV2({
           background: `radial-gradient(700px 420px at 60% -12%, ${T.handlingSoft}, transparent 62%), ${T.bg}`,
         }}
       >
-        <SignupKort defaultEmail={defaultEmail} subscribe={subscribe} />
+        <SignupKort defaultEmail={defaultEmail} subscribe={subscribe} kilde={kilde} />
       </main>
     </div>
   );

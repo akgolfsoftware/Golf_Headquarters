@@ -33,7 +33,7 @@ function formatSiste(d: Date | null | undefined): string {
 }
 
 export default async function SikkerhetPage() {
-  const user = await requirePortalUser();
+  const user = await requirePortalUser({ kreverTilgang: "INGEN" });
 
   // Ærlig score: passord (Supabase-konto) gir basis, e-post bekreftet løfter,
   // 2FA-aktivering gir resten. Vi har ikke 2FA-flagg på User enda, så toppen

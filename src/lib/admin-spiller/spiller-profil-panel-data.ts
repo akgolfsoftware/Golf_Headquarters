@@ -113,6 +113,7 @@ export async function loadSpillerProfilPanel(
       dateOfBirth: true,
       lastLoginAt: true,
       groupMemberships: {
+        where: { endedAt: null },
         select: { group: { select: { name: true } } },
         orderBy: { joinedAt: "asc" },
       },

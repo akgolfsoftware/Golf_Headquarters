@@ -53,7 +53,7 @@ function formatDato(d: Date): string {
 
 export default async function OktDetalj({ params }: Props) {
   const { bookingId } = await params;
-  const user = await requirePortalUser({ allow: ["PLAYER", "COACH", "ADMIN"] });
+  const user = await requirePortalUser({ kreverTilgang: "TALENT", allow: ["PLAYER", "COACH", "ADMIN"] });
 
   const booking = await prisma.booking.findUnique({
     where: { id: bookingId },

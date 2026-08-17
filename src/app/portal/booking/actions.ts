@@ -26,7 +26,7 @@ import { APP_URL } from "@/lib/app-url";
 
 
 export async function hentSlotVindu(tjenesteId: string): Promise<SlotVindu> {
-  await requirePortalUser({ allow: ["PLAYER", "COACH", "ADMIN"] });
+  await requirePortalUser({ kreverTilgang: "TALENT", allow: ["PLAYER", "COACH", "ADMIN"] });
   return beregnSlotVindu(tjenesteId);
 }
 
@@ -44,9 +44,11 @@ export type OpprettBookingResult =
   | { ok: false; grunn: string };
 
 export async function opprettBooking(input: OpprettBookingInput): Promise<OpprettBookingResult> {
-  const user = await requirePortalUser({ allow: ["PLAYER", "COACH", "ADMIN"] });
+  const user = await requirePortalUser({ kreverTilgang: "TALENT", allow: ["PLAYER", "COACH", "ADMIN"] });
 
-  const subscription = await prisma.subscription.findUnique({ where: { userId: user.id } });
+  const subscription = await prisma.subscription.findUnique({
+    where: { userId_kind: { userId: user.id, kind: "COACHING" } },
+  });
   const harCredits =
     !!subscription &&
     kanBrukeCredits(subscription) &&
@@ -119,7 +121,7 @@ export type KortBetalingResult = { ok: true; url: string } | { ok: false; grunn:
 export async function opprettBookingMedKort(
   input: OpprettBookingInput,
 ): Promise<KortBetalingResult> {
-  const user = await requirePortalUser({ allow: ["PLAYER", "COACH", "ADMIN"] });
+  const user = await requirePortalUser({ kreverTilgang: "TALENT", allow: ["PLAYER", "COACH", "ADMIN"] });
 
   const [t, m] = input.kl.split(":").map(Number);
   if (Number.isNaN(t) || Number.isNaN(m)) return { ok: false, grunn: "Ugyldig klokkeslett." };

@@ -69,7 +69,7 @@ function datoTekst(d: Date): string {
 export default async function RoadmapPage() {
   if (!FEATURES.TALENT) notFound();
 
-  const user = await requirePortalUser({ allow: ["PLAYER"] });
+  const user = await requirePortalUser({ kreverTilgang: "TALENT", allow: ["PLAYER"] });
 
   const ar = new Date().getFullYear();
 

@@ -15,26 +15,47 @@ import { useState, useTransition } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
-  Caps,
-  Tittel,
   Kort,
   SkjemaFelt,
   Inndata,
   Knapp,
   CTAPill,
   ValideringsChip,
+  Avkryssing,
   T,
 } from "@/components/v2";
+import { Capability, CAPABILITY_BESKRIVELSER } from "@/lib/auth/cbac";
 import { inviterCoach } from "@/app/admin/(legacy)/team/actions";
 
-export function AdminInviterCoachV2() {
+// G6: ekstra-tilganger utover COACH-defaulten som ADMIN kan gi ved invitasjon.
+// Skrives som GRANT-overrides i user_capabilities av inviterCoach.
+const EKSTRA_TILGANGER: Capability[] = [
+  Capability.VIEW_FINANCE,
+  Capability.MANAGE_FACILITIES,
+  Capability.MANAGE_USERS,
+  Capability.USE_AGENTS,
+  Capability.INVITE_USERS,
+];
+
+export function AdminInviterCoachV2({
+  kanTildeleTilganger = false,
+}: {
+  kanTildeleTilganger?: boolean;
+}) {
   const router = useRouter();
   const [pending, startTransition] = useTransition();
   const [navn, setNavn] = useState("");
   const [epost, setEpost] = useState("");
+  const [valgte, setValgte] = useState<Capability[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
   const [success, setSuccess] = useState<string | null>(null);
+
+  function toggleTilgang(cap: Capability, on: boolean) {
+    setValgte((prev) =>
+      on ? [...new Set([...prev, cap])] : prev.filter((c) => c !== cap),
+    );
+  }
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -47,7 +68,11 @@ export function AdminInviterCoachV2() {
     const epostVerdi = epost.trim();
 
     startTransition(async () => {
-      const res = await inviterCoach(epostVerdi, navnVerdi);
+      const res = await inviterCoach(
+        epostVerdi,
+        navnVerdi,
+        kanTildeleTilganger && valgte.length > 0 ? valgte : undefined,
+      );
       if (!res.ok) {
         setError(res.error);
         setFieldErrors(res.fieldErrors ?? {});
@@ -88,6 +113,28 @@ export function AdminInviterCoachV2() {
           <SkjemaFelt label="E-post" hjelp={undefined} feil={fieldErrors.email}>
             <Inndata label={null} type="email" value={epost} onChange={setEpost} placeholder="coach@akgolf.no" />
           </SkjemaFelt>
+
+          {kanTildeleTilganger && (
+            <div>
+              {/* G6 — funksjonelt; trenger fasit-runde for endelig utseende. */}
+              <div style={{ fontFamily: T.ui, fontSize: 13, fontWeight: 600, color: T.fg }}>
+                Ekstra tilganger
+              </div>
+              <p style={{ margin: "2px 0 6px", fontFamily: T.ui, fontSize: 11.5, color: T.mut, lineHeight: 1.5 }}>
+                Standard trenertilgang (grupper, planer, tester, spillerdata,
+                booking) følger med automatisk. Kryss av for det ekstra denne
+                treneren skal ha.
+              </p>
+              {EKSTRA_TILGANGER.map((cap) => (
+                <Avkryssing
+                  key={cap}
+                  label={CAPABILITY_BESKRIVELSER[cap]}
+                  checked={valgte.includes(cap)}
+                  onChange={(on) => toggleTilgang(cap, on)}
+                />
+              ))}
+            </div>
+          )}
 
           {error && !Object.keys(fieldErrors).length && (
             <ValideringsChip tone="advarsel" tekst={error} />

@@ -6,14 +6,20 @@ Kort guide for hvordan kjøre tester lokalt og hva som dekkes.
 
 | Type | Verktøy | Hvor | Antall |
 |---|---|---|---|
-| Unit | `node:test` + `tsx` | `src/**/*.test.ts` | 183 filer / 1187 tester |
-| E2E | Playwright (chromium + webkit) | `tests/e2e/*.spec.ts` (én mappe siden 2026-08-03) | 34 specs |
+| Unit | `node:test` + `tsx` | `src/**/*.test.ts` | 203 filer / 1379 tester |
+| E2E | Playwright (chromium + webkit) | `tests/e2e/*.spec.ts` (én mappe siden 2026-08-03) | 36 specs |
 
-> Tallene er MÅLT 2026-08-16, ikke anslått. Fram til da påsto denne fila 110
-> enhetstestfiler og 32 specer, og listet to specer som ikke finnes lenger
-> (`auth-redirect.spec.ts`, `marketing.spec.ts`). Stemmer ikke tallene når du
-> leser dette, mål dem på nytt framfor å stole på tabellen:
+> Tallene er MÅLT på `integrasjon/alt-16-08` 2026-08-16, ikke anslått. De sto
+> på 183/34 tidligere samme dag — målt før integrasjonsgrenen samlet
+> grupper, abonnement v2, tilgangsnivåer, varsling, capabilities og /innsyn.
+> Stemmer ikke tallene når du leser dette, mål dem på nytt framfor å stole på
+> tabellen:
 > `find src -name "*.test.ts" | wc -l` og `ls tests/e2e/*.spec.ts | wc -l`.
+>
+> **I en worktree må du kjøre `prisma generate` først** (med dummy
+> `DIRECT_URL`/`DATABASE_URL` i skallet, aldri i en fil — se
+> `.claude/rules/gotchas.md`). Uten `src/generated/prisma` feiler ~63 tester
+> på `Cannot find module`, og det ser ut som ekte regresjoner.
 
 ### To konvensjoner for hvor tester skal ligge
 
@@ -80,12 +86,14 @@ vane, og den har allerede avslørt tre falskt grønne tester i denne suiten.
 Playwright starter `npm run dev` automatisk lokalt (se `playwright.config.ts`).
 I CI antas appen å allerede kjøre på `PLAYWRIGHT_BASE_URL`.
 
-De 34 specene (målt 2026-08-16). `auth-redirect.spec.ts` og `marketing.spec.ts`
+De 36 specene (målt 2026-08-16). `auth-redirect.spec.ts` og `marketing.spec.ts`
 sto listet her fram til da, men finnes ikke lenger — dekningen deres ligger i
 `auth.spec.ts`, `routes-redirect.spec.ts` og `landing-page.spec.ts`.
 
 **Auth og tilgang:** `auth.spec.ts` · `auth-guard.spec.ts` ·
-`coach-scope-idor.spec.ts` · `i0-selvbetjent-gate.spec.ts`
+`coach-scope-idor.spec.ts` · `i0-selvbetjent-gate.spec.ts` ·
+`tilgang-uinnlogget.spec.ts` (nye 16.08-flater, bl.a. `/innsyn` — krever
+verken innlogging eller DB-state, så den skipper ikke i CI)
 **Booking:** `booking-drop-in.spec.ts` · `credit-booking.spec.ts`
 **Ruter og respons:** `routes-public.spec.ts` · `routes-redirect.spec.ts` ·
 `pages-render.spec.ts` · `404-handling.spec.ts` · `https-redirect.spec.ts` ·
@@ -177,6 +185,75 @@ Det finnes p.t. ikke en dedikert seed-fil for E2E-bruker. `prisma/seed.ts` bruke
 2. Playwright mot dummy-built `npm start` med `continue-on-error: true` (krever live Supabase + Stripe-test-nøkler for full grønn — derfor non-blocking til CI-secrets er på plass).
 
 E2E-rapporten lastes opp som artifact (`playwright-report/`).
+
+## Kontrakttester mot kildekoden (16.08.2026)
+
+Tre av flatene fra 16.08-integrasjonen er **rutekontrakter**, ikke skjermer.
+De brytes ikke av noe man ser i en nettleser, men av at neste side som legges
+til glemmer en gate. Slikt fanges av å lese koden, ikke av å klikke i den:
+
+| Test | Fanger |
+|---|---|
+| `src/lib/__tests__/tilgang/portal-tilgang-kontrakt.test.ts` | Ny `/portal`-side uten `kreverTilgang`, eller en side åpnet for TALENT uten å stå i `talent-allowlist.ts` |
+| `src/lib/__tests__/tilgang/admin-capability-kontrakt.test.ts` | Ny side/server action under `/admin/grupper|tester|agents|agenticos` uten `requireCapability`/`assertCapability`, og nye capabilities uten kallsted |
+| `src/lib/notifications/triggers.test.ts` | Duplikat `key` eller `emailSlug`, email-kanal uten mal |
+
+**Hvorfor ikke e2e:** talent-gaten er sovende til 1. september 2026
+(`gratisForAlle()` i `src/lib/feature-flags.ts` gir alle FULL frem til da).
+En e2e-test av gaten ville vært grønn uansett hvor ødelagt kontrakten var.
+
+De to første fila har **fryste unntakslister** (`KJENTE_AVVIK`, `UGUARDEDE`,
+`IKKE_HANDHEVET`). De skal krympe. Både et nytt avvik og et rettet avvik gjør
+testen rød — det siste med beskjed om å fjerne linja.
+
+> ⚠️ **Funnet av disse testene (16.08, IKKE rettet):** `src/app/portal/layout.tsx`
+> kaller `requirePortalUser()` uten `kreverTilgang` og låser dermed HELE
+> `/portal` til FULL. En TALENT-bruker sendes til `/portal/oppgrader`, som selv
+> ligger under samme layout — altså en redirect-løkke, og alle 60
+> `kreverTilgang: "TALENT"`-merkingene er unåelige. Sovende til 01.09.
+> **Fiksen er ikke ett linjeskift:** 11 ruter utenfor allowlisten har ingen
+> egen guard og lever kun på rot-layouten (se `UGUARDEDE`-lista). De må få
+> `kreverTilgang: "FULL"` FØR rot-layouten løsnes, ellers blir en fail-closed
+> feil til en ekte lekkasje.
+
+## Manuell verifisering av tilgangsflytene 16.08
+
+Disse krever innlogget bruker + DB-rader og er bevisst IKKE automatisert — en
+spec som skipper stille når credentials mangler rapporterer grønt uten å kjøre
+en eneste assertion, og ser dermed ut som dekning den ikke er.
+
+**Forutsetning for 1–3:** sett systemklokken forbi 01.09.2026, eller flytt
+`BETALING_STARTER` i `src/lib/feature-flags.ts` midlertidig. Ellers gir
+`gratisForAlle()` alle FULL og ingenting av dette er observerbart.
+
+1. **Talent-gaten (T2).** Spiller med `profilType = "TALENT"`:
+   `/portal/tren/tester` og `/portal/analysere` skal ÅPNE ·
+   `/portal/planlegge` og `/portal/gjennomfore` skal sende til
+   `/portal/oppgrader?fra=laast` · oppgraderingssiden skal LASTE, ikke løkke.
+2. **Tilgangsnivå-kilder (A3).** Sjekk at `resolveTilgang` gir FULL for hver
+   kilde hver for seg: aktivt abonnement · coaching-pakke · gruppemedlemskap ·
+   prøveperiode. En TALENT-profil som meldes inn i en gruppe skal bli FULL.
+3. **Oppgraderingsveien (A2/A4).** `/portal/meg/abonnement` skal alltid være
+   nåbar uansett nivå — det er veien ut av en låst konto.
+4. **Ekstern lesetilgang (T8).** Innlogget GUEST med `VIEW_SHARED_STATS`:
+   `/innsyn` viser kun spillere med gyldig samtykke MOT DEN GRUPPEN ·
+   `/innsyn/<annen-spiller-id>` gir `notFound()`, ikke 403 (skal ikke røpe
+   hvem som finnes) · trekk samtykket → spilleren forsvinner · revoker
+   `EksternLeserGruppe` (`revokedAt`) → hele gruppen forsvinner.
+5. **Planendrings-varsling (G4).** Flytt en økt i spillerens workbench → coach
+   får ÉTT varsel per spiller per dag (`groupKey`-batching, ikke ett per økt) ·
+   coach åpner spillerens workbench → varselet kvitteres.
+6. **Gruppe-dedup (G3).** Rull ut samme gruppeplan to ganger → ingen duplikater
+   (`IDEMPOTENT`) · to grupper med overlappende periode på samme spiller →
+   `KRYSSKILDE` hopper over den andre. Regelen selv er dekket av
+   `src/lib/domain/gruppeplan-dedup.test.ts`; det manuelle er utrullingen.
+7. **Per-trener-capabilities (G6).** ADMIN fjerner `MANAGE_GROUPS` fra en
+   coach i `/admin/settings/tilgang` → `/admin/grupper` redirecter for den
+   coachen, OG server-actionen avvises (test begge — layout-guarden kjører
+   ikke for server actions).
+8. **E-postmaler.** Hver `emailSlug` i `src/lib/notifications/triggers.ts` må
+   ha en matchende `EmailTemplate.slug`-rad. Registeret er formsjekket i
+   `triggers.test.ts`, men koblingen til DB kan bare verifiseres mot databasen.
 
 ## Det som per nå krever manuell oppfølging
 

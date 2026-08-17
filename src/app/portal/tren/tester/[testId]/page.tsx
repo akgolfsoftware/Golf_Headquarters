@@ -21,7 +21,7 @@ import { parseProtocol, type ScorekortForsok } from "@/lib/portal-tester/protoco
 import { parseForScoring, lavereErBedre } from "@/lib/portal-tester/test-scoring";
 import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
 import { T } from "@/lib/v2/tokens";
-import { Caps, Kort, StatusPill, MikroMeta, TilbakeLenke } from "@/components/v2";
+import { Kort, StatusPill, MikroMeta, TilbakeLenke } from "@/components/v2";
 
 export const dynamic = "force-dynamic";
 
@@ -60,7 +60,7 @@ export default async function TestDetaljSpillerPage({
   params: Promise<{ testId: string }>;
   searchParams: Promise<{ lagret?: string }>;
 }) {
-  const user = await requirePortalUser();
+  const user = await requirePortalUser({ kreverTilgang: "TALENT" });
   const [{ testId }, sp] = await Promise.all([params, searchParams]);
   const lagret = sp.lagret === "1";
 
@@ -186,7 +186,7 @@ export default async function TestDetaljSpillerPage({
       >
         {/* Kvittering etter gjennomføring — fasit playerhq-test-gjennomfor.html
             (serveren redirecter hit ved lagring; kvitteringen bor derfor her).
-            TalentHQ-lenken vises kun når TalentHQ-flaten faktisk er skrudd på. */}
+            Talentprofil-lenken vises kun når talent-flaten faktisk er skrudd på. */}
         {lagret && (
           <div
             style={{
@@ -222,7 +222,7 @@ export default async function TestDetaljSpillerPage({
                   textDecoration: "none",
                 }}
               >
-                Se utviklingen i TalentHQ →
+                Se utviklingen i talentprofilen →
               </Link>
             )}
           </div>

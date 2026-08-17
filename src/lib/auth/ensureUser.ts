@@ -34,6 +34,13 @@ export async function ensureUser(authUser: AuthUser): Promise<User | null> {
       ? requestedRole
       : "PLAYER";
 
+  // TalentHQ-registrering (?kilde=talenthq, plan T3): gratis LÅST profil —
+  // profilType TALENT gir tilgangsnivå TALENT i resolveTilgang, aldri mer.
+  // Settes KUN i create-grenen: update er tom, så en eksisterende brukers
+  // profilType røres aldri ved senere innlogginger. Trygt selv om metadata
+  // er klient-kontrollert — TALENT er en INNSNEVRING av gratis-tilgangen.
+  const erTalent = meta.kilde === "talenthq";
+
   return prisma.user.upsert({
     where: { authId: authUser.id },
     update: {},
@@ -43,6 +50,7 @@ export async function ensureUser(authUser: AuthUser): Promise<User | null> {
       name,
       role,
       tier: "GRATIS",
+      ...(erTalent ? { profilType: "TALENT", profilKilde: "TALENTHQ" } : {}),
     },
   });
 }

@@ -9,12 +9,16 @@
  */
 
 import { redirect } from "next/navigation";
+import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 
 export default async function OktPlanlagtRedirect({
   params,
 }: {
   params: Promise<{ sessionId: string }>;
-}) {
+}): Promise<never> {
+  // Rot-layouten krever kun innlogging (16.08) — tilgangsnivået håndheves her.
+  // Målruten /portal/gjennomfore/[id] krever FULL; aliaset speiler den.
+  await requirePortalUser({ kreverTilgang: "FULL" });
   const { sessionId } = await params;
   redirect(`/portal/gjennomfore/${sessionId}`);
 }

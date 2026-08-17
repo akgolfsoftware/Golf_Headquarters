@@ -60,7 +60,7 @@ function fmtSg(v: number): string {
 }
 
 export default async function HistorikkPage() {
-  const user = await requirePortalUser();
+  const user = await requirePortalUser({ kreverTilgang: "TALENT" });
   if (user.role === "GUEST") redirect("/admin/kalender");
   if (user.role === "PARENT") redirect("/forelder");
 

@@ -21,6 +21,9 @@ const FORDELER: { icon: string; tittel: string; meta: string }[] = [
 export function OppgraderFlytWizard() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  // Månedlig eller årlig (Anders 2026-08-16): 299 kr/mnd eller 2 690 kr/år —
+  // årsprisen tilsvarer ni månedspriser («tre måneder gratis, spar 898 kr»).
+  const [intervall, setIntervall] = useState<"mnd" | "aar">("mnd");
 
   async function handleBekreft() {
     setLoading(true);
@@ -29,7 +32,7 @@ export function OppgraderFlytWizard() {
       const res = await fetch("/api/stripe/checkout", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ plan: "pro" }),
+        body: JSON.stringify({ plan: intervall === "aar" ? "pro_aar" : "pro" }),
       });
       if (!res.ok) {
         const data = await res.json().catch(() => ({}));
@@ -69,7 +72,40 @@ export function OppgraderFlytWizard() {
             AI-coach, videoanalyse og komplett historikk. Avbryt når som helst.
           </p>
         </div>
-        <StatusPill tone="lime">299 kr/mnd</StatusPill>
+        <StatusPill tone="lime">{intervall === "aar" ? "2 690 kr/år" : "299 kr/mnd"}</StatusPill>
+      </div>
+
+      <div
+        role="radiogroup"
+        aria-label="Betalingsintervall"
+        style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}
+      >
+        {(
+          [
+            { key: "mnd", label: "Månedlig", pris: "299 kr/mnd", under: "Avbryt når som helst" },
+            { key: "aar", label: "Årlig", pris: "2 690 kr/år", under: "Tre måneder gratis — spar 898 kr" },
+          ] as const
+        ).map((v) => (
+          <button
+            key={v.key}
+            type="button"
+            role="radio"
+            aria-checked={intervall === v.key}
+            onClick={() => setIntervall(v.key)}
+            style={{
+              textAlign: "left",
+              borderRadius: T.rRow,
+              border: `2px solid ${intervall === v.key ? T.forest : T.border}`,
+              background: intervall === v.key ? T.panel3 : T.panel,
+              padding: "12px 14px",
+              cursor: "pointer",
+            }}
+          >
+            <div style={{ fontFamily: T.ui, fontSize: 13, fontWeight: 700, color: T.fg }}>{v.label}</div>
+            <div style={{ fontFamily: T.mono, fontSize: 14, fontWeight: 800, color: T.fg, marginTop: 4 }}>{v.pris}</div>
+            <div style={{ fontFamily: T.ui, fontSize: 11.5, color: T.mut, marginTop: 2 }}>{v.under}</div>
+          </button>
+        ))}
       </div>
 
       <Kort
@@ -81,14 +117,16 @@ export function OppgraderFlytWizard() {
         <Caps color="color-mix(in srgb, var(--v2-on-lime) 70%, transparent)">Din pris</Caps>
         <div style={{ display: "flex", alignItems: "baseline", gap: 8, marginTop: 8 }}>
           <span style={{ fontFamily: T.mono, fontSize: 48, fontWeight: 800, letterSpacing: "-0.03em", color: T.onLime, lineHeight: 1 }}>
-            299
+            {intervall === "aar" ? "2 690" : "299"}
           </span>
           <span style={{ fontFamily: T.mono, fontSize: 14, fontWeight: 700, color: "color-mix(in srgb, var(--v2-on-lime) 70%, transparent)" }}>
-            kr / mnd
+            {intervall === "aar" ? "kr / år" : "kr / mnd"}
           </span>
         </div>
         <p style={{ margin: "10px 0 0", fontFamily: T.ui, fontSize: 13, color: "color-mix(in srgb, var(--v2-on-lime) 80%, transparent)", lineHeight: 1.45 }}>
-          Alt inkludert. Fri pause, fri avbestilling.
+          {intervall === "aar"
+            ? "Tre måneder gratis mot månedspris. Alt inkludert."
+            : "Alt inkludert. Fri pause, fri avbestilling."}
         </p>
         <div style={{ marginTop: 14, display: "flex", flexWrap: "wrap", gap: 6 }}>
           {["AI-coach", "4 credits", "Video", "Familie"].map((c) => (

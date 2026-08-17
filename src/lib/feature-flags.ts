@@ -1,18 +1,28 @@
-// Tilgangsregler for PlayerHQ.
+// Tilgangsregler for PlayerHQ (v2 siden plan A3, 2026-08-16).
 //
-// LÅST forretningsregel (CLAUDE.md): PlayerHQ-tilgang er GRATIS hvis brukeren
-//   (a) er i lanserings-vinduet — ALLE er gratis frem til betaling starter 1. september 2026,
-//   (b) har aktiv coaching-pakke (Performance / Performance Pro → monthlyCredits > 0),
-//   (c) er medlem av en gruppe gjennom AK Golf (aktivt GroupMember), eller
-//   (d) er i prøveperiode (30 dager fra registrering).
-// Ellers koster PlayerHQ 299 kr/mnd (faktisk tier PRO = betaler).
+// LÅSTE forretningsregler (BUSINESS-RULES.md + Anders' beslutninger 2026-08-16):
+// PlayerHQ har tre tilgangsnivåer:
+//   FULL   — hele appen. Gratis for (a) lanserings-vinduet (alle frem til
+//            1. september 2026), (b) betalt PlayerHQ-abonnement (299 kr/mnd
+//            eller 2 690 kr/år), (c) aktiv coaching-pakke (Performance /
+//            Performance Pro — også CANCELLED med resttid: tilgangen følger
+//            pakken UT perioden), (d) aktivt spiller-medlemskap i AK Golf-
+//            administrert gruppe (GFGK, WANG, WANG UNG, Academy, Junior
+//            Academy), (e) prøveperiode (trialEndsAt, ellers 30 dager fra
+//            registrering).
+//   TALENT — gratis, låst TalentHQ-profil (User.profilType = "TALENT"):
+//            kun tester, stats-lesing, SG-/runderegistrering, DataGolf-
+//            sammenligning, talent-flatene, booking og konto. Utløper aldri.
+//   INGEN  — må betale (eller registrere TalentHQ-profil).
 //
-// "Effektiv tier": PRO = HAR tilgang (gratis ELLER betalt) · GRATIS = MÅ betale.
-// Beregnes ETT sted (lib/auth/getCurrentUser) og overskriver user.tier, slik at
-// alle gates (som leser user.tier) automatisk reflekterer reell tilgang.
+// "Effektiv tier": PRO = FULL tilgang · GRATIS = ikke FULL. Beregnes ETT sted
+// (lib/auth/getCurrentUser withEffektivTilgang) og overskriver user.tier slik
+// at eksisterende gates (som leser user.tier) fungerer uendret. Nivået
+// (FULL/TALENT/INGEN) håndheves sentralt i requirePortalUser (plan T2).
 // /portal/meg/abonnement viser FAKTISK tier ved å lese prisma.user direkte.
 
 import type { Tier, SubscriptionStatus } from "@/generated/prisma/client";
+import { harAktivPakke, girPlayerHqTilgang } from "@/lib/domain/abonnement";
 
 // Betaling starter 1. september 2026 (Europe/Oslo). Frem til da har ALLE full tilgang.
 const BETALING_STARTER = new Date("2026-09-01T00:00:00.000+02:00");
@@ -22,46 +32,106 @@ export function gratisForAlle(now: Date = new Date()): boolean {
   return now.getTime() < BETALING_STARTER.getTime();
 }
 
+export type TilgangsNivaa = "FULL" | "TALENT" | "INGEN";
+
+export type TilgangsKilde =
+  | "LANSERING"
+  | "PLAYERHQ_ABONNEMENT"
+  | "COACHING_PAKKE"
+  | "AK_GRUPPE"
+  | "PROVEPERIODE"
+  | "TALENT_PROFIL"
+  | "INGEN";
+
+export interface Tilgang {
+  nivaa: TilgangsNivaa;
+  kilde: TilgangsKilde;
+  /** PRO = FULL tilgang, GRATIS = ikke FULL — det gamle tier-språket. */
+  effektivTier: Tier;
+}
+
 /**
- * Bruker-formet input til resolveTier — nøyaktig det som trengs for å avgjøre
- * effektiv tilgang. Trial utledes av createdAt (+ 30 dager), ikke et eget felt.
+ * Bruker-formet input til resolveTilgang — nøyaktig det som trengs.
+ * Lastes av withEffektivTilgang (lib/auth/getCurrentUser).
  */
-export type ResolveTierInput = {
-  /** Faktisk tier fra DB. PRO = betaler 299 kr/mnd for app-tilgang. */
+export type ResolveTilgangInput = {
+  /** Faktisk tier fra DB. PRO = betaler (settes av Stripe-webhooken). */
   tier: Tier;
-  /** Registreringsdato — grunnlag for prøveperiode (createdAt + 30 dager). */
+  /** STANDARD | TALENT (User.profilType). */
+  profilType: string;
+  /** Registreringsdato — prøveperiode-fallback (createdAt + 30 dager). */
   createdAt: Date;
-  /** Brukerens coaching-abonnement (Performance/Pro). null hvis ingen rad. */
-  subscription?: { status: SubscriptionStatus; monthlyCredits: number } | null;
-  /** Antall aktive gruppemedlemskap (gruppe via AK Golf). */
-  groupMembershipsCount: number;
-  /** Overstyr "nå" (for test/SSR-determinisme). */
+  /** Eksplisitt prøveperiode-utløp (User.trialEndsAt) — vinner over createdAt. */
+  trialEndsAt?: Date | null;
+  /** COACHING-raden (Performance/Pro). null hvis ingen. */
+  coaching?: {
+    status: SubscriptionStatus;
+    monthlyCredits: number;
+    currentPeriodEnd: Date | null;
+  } | null;
+  /** PLAYERHQ-raden. null hvis ingen. */
+  playerhq?: {
+    status: SubscriptionStatus;
+    currentPeriodEnd: Date | null;
+    plan: string | null;
+    stripeSubscriptionId: string | null;
+  } | null;
+  /** Antall AKTIVE spiller-medlemskap i AK Golf-administrerte grupper
+   *  (aktivtAkGruppeMedlemskapWhere fra src/lib/domain/grupper.ts). */
+  akGruppeCount: number;
+  /** Overstyr "nå" (test/SSR-determinisme). */
   now?: Date;
 };
 
 /**
- * Eneste sannhetskilde for effektiv PlayerHQ-tilgang (de låste reglene, BUSINESS-RULES.md).
- * Returnerer PRO (har tilgang: gratis ELLER betalt) eller GRATIS (må betale 299 kr/mnd).
- * Beregnes ETT sted (lib/auth/getCurrentUser) og overskriver user.tier, slik at alle
- * /portal/*-gater (som leser user.tier) automatisk reflekterer reell tilgang.
+ * Eneste sannhetskilde for effektiv PlayerHQ-tilgang. Regelrekkefølgen er
+ * bevisst: sterkeste kilde vinner, og TALENT ligger NEST SIST — en
+ * TalentHQ-profil som kjøper abonnement eller meldes inn i gruppe får FULL
+ * automatisk uten at profilType røres.
  */
-export function resolveTier(user: ResolveTierInput): Tier {
+export function resolveTilgang(user: ResolveTilgangInput): Tilgang {
   const now = user.now ?? new Date();
-  // (a) Lanserings-vindu: ALLE gratis frem til betaling starter 1. september 2026.
-  if (gratisForAlle(now)) return "PRO";
-  // Betaler app-abonnement (PRO; ELITE er dødt enum, men behandles som betalt om satt).
-  if (user.tier !== "GRATIS") return "PRO";
-  // (b) Aktiv coaching-pakke (Performance/Pro) ⇒ gratis app.
-  if (user.subscription?.status === "ACTIVE" && user.subscription.monthlyCredits > 0) {
-    return "PRO";
+  const full = (kilde: TilgangsKilde): Tilgang => ({ nivaa: "FULL", kilde, effektivTier: "PRO" });
+
+  // (a) Lanserings-vindu: ALLE har full tilgang frem til 1. september 2026.
+  if (gratisForAlle(now)) return full("LANSERING");
+  // (b) Betalt PlayerHQ-abonnement (mnd/år, TRIALING-broen, MANUELL).
+  if (user.playerhq && girPlayerHqTilgang(user.playerhq, now)) {
+    return full("PLAYERHQ_ABONNEMENT");
   }
-  // (c) Gruppe via AK Golf ⇒ gratis app.
-  if (user.groupMembershipsCount > 0) return "PRO";
-  // (d) Prøveperiode: 30 dager fra registrering.
-  const proveSlutt = user.createdAt.getTime() + PROVEPERIODE_DAGER * 86_400_000;
-  if (now.getTime() < proveSlutt) return "PRO";
-  // Ingen gratis-vei og betaler ikke ⇒ må betale.
-  return "GRATIS";
+  // Betaler-flagget på brukeren (settes av webhooken fra ALLE rader) — fanger
+  // manuelt PRO-satte brukere uten gyldig abonnementsrad.
+  if (user.tier !== "GRATIS") return full("PLAYERHQ_ABONNEMENT");
+  // (c) Coaching-pakke — OGSÅ oppsagt med resttid: tilgang ut perioden.
+  if (
+    user.coaching &&
+    user.coaching.monthlyCredits > 0 &&
+    harAktivPakke(user.coaching, now)
+  ) {
+    return full("COACHING_PAKKE");
+  }
+  // (d) Aktivt spiller-medlemskap i AK Golf-administrert gruppe.
+  if (user.akGruppeCount > 0) return full("AK_GRUPPE");
+  // (e) Prøveperiode: trialEndsAt vinner; ellers createdAt + 30 dager.
+  const proveSlutt =
+    user.trialEndsAt?.getTime() ??
+    user.createdAt.getTime() + PROVEPERIODE_DAGER * 86_400_000;
+  if (now.getTime() < proveSlutt) return full("PROVEPERIODE");
+  // TalentHQ-profilen: gratis, låst, utløper aldri.
+  if (user.profilType === "TALENT") {
+    return { nivaa: "TALENT", kilde: "TALENT_PROFIL", effektivTier: "GRATIS" };
+  }
+  return { nivaa: "INGEN", kilde: "INGEN", effektivTier: "GRATIS" };
+}
+
+/**
+ * Bakoverkompatibel wrapper — alle eksisterende gates leser tier.
+ * PRO = FULL tilgang (gratis ELLER betalt), GRATIS = ikke FULL.
+ */
+export type ResolveTierInput = ResolveTilgangInput;
+
+export function resolveTier(user: ResolveTierInput): Tier {
+  return resolveTilgang(user).effektivTier;
 }
 
 /** Banner-info: gratis for alle frem til betaling starter 1. september. */

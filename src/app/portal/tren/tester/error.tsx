@@ -34,7 +34,7 @@ export default function Error({
         </h3>
         <p style={{ margin: "0 0 12px", fontFamily: T.bodyFont, fontSize: 13.5, color: T.mut }}>
           Resultatlageret svarte ikke innen 30 sekunder. Loggede resultater er trygge — også de
-          som alt er sendt til TalentHQ.
+          som alt er sendt til talentprofilen din.
         </p>
         <button
           type="button"

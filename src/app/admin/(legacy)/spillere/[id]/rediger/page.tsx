@@ -29,7 +29,7 @@ export default async function RedigerSpiller({ params }: { params: Promise<{ id:
   const viewer = await requirePortalUser({ allow: ["COACH", "ADMIN"] });
   const { id } = await params;
 
-  const [player, history, parents] = await Promise.all([
+  const [player, history, parents, coacher] = await Promise.all([
     // Coach-scoping: uten porten kunne en coach åpne og endre en annen
     // coachs spiller ved å bytte id-en i URL-en.
     prisma.user.findFirst({ where: { AND: [coachScopedPlayerWhere(viewer), { id }] } }),
@@ -42,6 +42,12 @@ export default async function RedigerSpiller({ params }: { params: Promise<{ id:
     prisma.parentRelation.findMany({
       where: { childId: id },
       include: { parent: { select: { id: true, name: true, phone: true, email: true } } },
+    }),
+    // Valglisten for «Valgt coach» (G2): alle aktive COACH/ADMIN.
+    prisma.user.findMany({
+      where: { role: { in: ["COACH", "ADMIN"] }, deletedAt: null },
+      select: { id: true, name: true },
+      orderBy: { name: "asc" },
     }),
   ]);
 
@@ -63,6 +69,8 @@ export default async function RedigerSpiller({ params }: { params: Promise<{ id:
     klassetrinn: player.schoolYear ?? "",
     hcpInput: formatHcpInput(player.hcp),
     ambisjon: player.ambition ?? "",
+    valgtCoachId: player.primaryCoachId,
+    coacher: coacher.map((c) => ({ id: c.id, navn: c.name })),
     foreldre: parents.map((pr) => ({ id: pr.id, navn: pr.parent.name, relasjon: pr.relationship })),
     historikk: history.map((h) => ({
       id: h.id,

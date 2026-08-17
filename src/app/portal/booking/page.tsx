@@ -25,7 +25,7 @@ export const dynamic = "force-dynamic";
 export const metadata = { title: "Booking · AK Golf" };
 
 export default async function BookingHubPage() {
-  const user = await requirePortalUser({ allow: ["PLAYER", "COACH", "ADMIN"] });
+  const user = await requirePortalUser({ kreverTilgang: "TALENT", allow: ["PLAYER", "COACH", "ADMIN"] });
   if (user.role === "PARENT") redirect("/forelder");
 
   const hub = await getBookingHubData(user.id);

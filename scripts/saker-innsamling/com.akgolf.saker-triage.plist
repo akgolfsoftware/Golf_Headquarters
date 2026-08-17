@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!--
+  Saker-triage — Jarvis steg 3+4. Kjører hvert 30. minutt, døgnet rundt.
+  Plukker VENTER-saker uten foreslattSvar og skriver et svarutkast (lokal
+  Ollama for enkle bekreftelser, Claude på anonymisert innhold for resten),
+  varsler Anders på Telegram og registrerer en BEKREFT-handling. Se
+  triage.ts og README.md i denne mappen for hele flyten.
+
+  Installasjon (Mac Mini):
+    1. cp com.akgolf.saker-triage.plist ~/Library/LaunchAgents/
+    2. launchctl load ~/Library/LaunchAgents/com.akgolf.saker-triage.plist
+    3. launchctl list | grep saker-triage
+-->
+<plist version="1.0">
+<dict>
+  <key>Label</key>
+  <string>com.akgolf.saker-triage</string>
+  <key>ProgramArguments</key>
+  <array>
+    <string>/opt/homebrew/bin/npm</string>
+    <string>run</string>
+    <string>saker:triage</string>
+  </array>
+  <key>WorkingDirectory</key>
+  <string>/Users/anderskristiansen/Developer/akgolf-hq</string>
+  <key>StartInterval</key>
+  <integer>1800</integer>
+  <key>RunAtLoad</key>
+  <true/>
+  <key>StandardOutPath</key>
+  <string>/tmp/saker-triage.log</string>
+  <key>StandardErrorPath</key>
+  <string>/tmp/saker-triage.err</string>
+</dict>
+</plist>

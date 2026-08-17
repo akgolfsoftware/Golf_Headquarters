@@ -74,13 +74,16 @@ export async function slettEksterneBrukerdata(
     }
     plan.push("ville vaske guestName/guestEmail/guestPhone på egne bookinger");
     try {
-      const sub = await prisma.subscription.findUnique({
+      // Siden A1 kan brukeren ha to abonnement (COACHING + PLAYERHQ) — begge tas.
+      const subs = await prisma.subscription.findMany({
         where: { userId },
         select: { stripeCustomerId: true, stripeSubscriptionId: true },
       });
-      if (sub?.stripeCustomerId) {
+      const kunde = subs.find((s) => s.stripeCustomerId)?.stripeCustomerId;
+      if (kunde) {
+        const subIds = subs.map((s) => s.stripeSubscriptionId).filter(Boolean);
         plan.push(
-          `ville kansellere Stripe-sub ${sub.stripeSubscriptionId ?? "—"} og slette kunde ${sub.stripeCustomerId}`,
+          `ville kansellere Stripe-sub ${subIds.length ? subIds.join(", ") : "—"} og slette kunde ${kunde}`,
         );
       } else {
         plan.push("ingen Stripe-kunde å slette");
@@ -190,22 +193,27 @@ export async function slettEksterneBrukerdata(
 
   // ── 5. Stripe: avslutt abonnement + slett kunde ──
   try {
-    const sub = await prisma.subscription.findUnique({
+    // Siden A1 kan brukeren ha to abonnement (COACHING + PLAYERHQ) — begge
+    // kanselleres eksplisitt før kunden slettes.
+    const subs = await prisma.subscription.findMany({
       where: { userId },
       select: { stripeCustomerId: true, stripeSubscriptionId: true },
     });
-    if (sub?.stripeCustomerId) {
+    const kunde = subs.find((s) => s.stripeCustomerId)?.stripeCustomerId;
+    if (kunde) {
       const stripe = stripeKlient();
       // Å slette kunden avslutter alle abonnementene automatisk, men vi
       // kansellerer eksplisitt først for tydelighet i Stripe-loggen.
-      if (sub.stripeSubscriptionId) {
-        await stripe.subscriptions
-          .cancel(sub.stripeSubscriptionId)
-          .catch(() => {
-            /* allerede kansellert / ukjent — kunde-slett håndterer resten */
-          });
+      for (const sub of subs) {
+        if (sub.stripeSubscriptionId) {
+          await stripe.subscriptions
+            .cancel(sub.stripeSubscriptionId)
+            .catch(() => {
+              /* allerede kansellert / ukjent — kunde-slett håndterer resten */
+            });
+        }
       }
-      await stripe.customers.del(sub.stripeCustomerId);
+      await stripe.customers.del(kunde);
       stripeKundeSlettet = true;
     }
   } catch (err) {

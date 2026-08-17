@@ -47,7 +47,7 @@ const STIGE_BESKRIVELSER: Record<string, string> = {
 };
 
 export default async function TalentPage() {
-  const user = await requirePortalUser();
+  const user = await requirePortalUser({ kreverTilgang: "TALENT" });
 
   const [tracking, goals, roundsRaw, sessionLogs] = await Promise.all([
     prisma.talentTracking.findUnique({

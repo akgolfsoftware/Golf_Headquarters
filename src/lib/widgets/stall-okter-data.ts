@@ -93,7 +93,7 @@ export async function getStallOkterData(coach: {
     prisma.group
       .findMany({
         where: isAdmin ? {} : { coachId: coach.id },
-        select: { id: true, name: true, _count: { select: { members: true } } },
+        select: { id: true, name: true, _count: { select: { members: { where: { endedAt: null } } } } },
         take: 200,
       })
       .catch(() => [] as { id: string; name: string; _count: { members: number } }[]),

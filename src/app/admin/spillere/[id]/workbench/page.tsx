@@ -32,6 +32,7 @@ import {
   coachSlettPeriode,
 } from "@/lib/workbench/session-actions";
 import { coachSokTekniskOppgaver } from "@/lib/workbench/teknisk-oppgave-sok";
+import { kvitterPlanendringVarsler } from "@/lib/notifications/plan-endring";
 import { coachBekreftTurneringEntry } from "@/lib/workbench/turnering-actions";
 import { lesPreferences } from "@/lib/preferences";
 import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
@@ -85,6 +86,10 @@ export default async function CoachWorkbenchPage({ params, searchParams }: Props
   ]);
   if (!spiller) notFound();
   if (ctx === null) notFound();
+
+  // G4: coach har nå sett spillerens plan — kvitter ut planendrings-varslene
+  // (batchede «plan-endring:<spillerId>:*»-rader). Best-effort, kaster aldri.
+  await kvitterPlanendringVarsler(user.id, id);
 
   const players: CoachRosterPlayer[] = rosterRows.map((p) => ({
     id: p.id,

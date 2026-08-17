@@ -17,7 +17,8 @@
  * Server component.
  */
 
-import { requirePortalUser } from "@/lib/auth/requirePortalUser";
+import { requireCapability } from "@/lib/auth/requireCapability";
+import { Capability } from "@/lib/auth/cbac";
 import { prisma } from "@/lib/prisma";
 import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
 import { AGENT_INFO, MANUELLE_AGENTER } from "@/lib/agencyos/agent-registry";
@@ -42,7 +43,9 @@ const ROM: { navn: string; href: string; meta: string }[] = [
 ];
 
 export default async function AdminAgenticosPage() {
-  const user = await requirePortalUser({ allow: ["ADMIN", "COACH"] });
+  // G6: USE_AGENTS er BEVISST utenfor COACH-defaulten — AI-laget grantes
+  // per trener av Anders. ADMIN har alt.
+  const user = await requireCapability(Capability.USE_AGENTS);
 
   const idag = new Date();
   idag.setHours(0, 0, 0, 0);

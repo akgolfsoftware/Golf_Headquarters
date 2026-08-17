@@ -12,6 +12,7 @@ import { createPending } from "@/lib/meg/pending";
 import { bekreftLonn } from "@/lib/agents/tripletex-lonn-agent";
 import { bekreftBallplukking } from "@/lib/agents/gfgk-ballplukking-agent";
 import { bekreftVaskeliste } from "@/lib/agents/mulligan-vaskeliste-agent";
+import { isPerplexityEnabled, perplexitySok } from "@/lib/meg/perplexity";
 
 // ────────────────────────────────────────────────────────────────────────────
 // Tool-definisjoner (Anthropic SDK-format)
@@ -416,6 +417,28 @@ export const vaskelisteBekreftTool: Tool = {
   },
 };
 
+// ── Nett-søk (Perplexity Sonar) ──────────────────────────────────────────────
+// Se src/lib/meg/perplexity.ts. Valgfritt verktøy — registreres KUN når
+// PERPLEXITY_API_KEY er satt (isPerplexityEnabled), se sammensetningen av
+// MEG_ALL_TOOLS under. PII-regel: spør ALDRI med spiller-/elevnavn, se
+// .claude/rules/wang-toppidrett.md og .claude/rules/gfgk-junior.md.
+
+export const nettSokTool: Tool = {
+  name: "nett_sok",
+  description:
+    "Søk på nettet etter fersk informasjon med kildehenvisninger — bruk ved " +
+    "spørsmål om nyheter, resultater, priser eller fakta som endrer seg. " +
+    "ALDRI søk med spiller- eller elevnavn (PII) — formuler spørsmålet uten " +
+    "personnavn på spillere/elever.",
+  input_schema: {
+    type: "object",
+    properties: {
+      sporsmal: { type: "string", description: "Spørsmålet som skal søkes opp (uten personnavn på spillere/elever)" },
+    },
+    required: ["sporsmal"],
+  },
+};
+
 export const MEG_ALL_TOOLS: Tool[] = [
   loggTool,
   hentNyligeTool,
@@ -443,6 +466,7 @@ export const MEG_ALL_TOOLS: Tool[] = [
   lonnBekreftTool,
   ballplukkingBekreftTool,
   vaskelisteBekreftTool,
+  ...(isPerplexityEnabled() ? [nettSokTool] : []),
 ];
 
 // ────────────────────────────────────────────────────────────────────────────
@@ -484,6 +508,7 @@ type DiskLesFilInput = { fileId: string };
 type DiskOpprettInput = { navn: string; innhold: string };
 type BallplukkingBekreftInput = { ansvarlig?: string };
 type VaskelisteBekreftInput = { ansvarlig?: string };
+type NettSokInput = { sporsmal: string };
 
 // ────────────────────────────────────────────────────────────────────────────
 // Executor-tabell
@@ -666,6 +691,16 @@ export function megExecutorsFor(
   vaskeliste_bekreft: async (raw) => {
     const args = raw as VaskelisteBekreftInput;
     return bekreftVaskeliste(args?.ansvarlig);
+  },
+
+  // ── Nett-søk (kjøres direkte — se nettSokTool over, kun registrert når
+  //     PERPLEXITY_API_KEY er satt) ──
+  nett_sok: async (raw) => {
+    const args = raw as NettSokInput;
+    const resultat = await perplexitySok(args.sporsmal);
+    if (!resultat) return "Nett-søk er ikke konfigurert eller feilet akkurat nå.";
+    if (resultat.kilder.length === 0) return resultat.svar;
+    return `${resultat.svar}\n\nKilder:\n${resultat.kilder.map((k) => `- ${k}`).join("\n")}`;
   },
   };
 }

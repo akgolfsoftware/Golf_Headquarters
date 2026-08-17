@@ -70,7 +70,7 @@ function HelseSamtykkeMangler() {
 }
 
 export default async function HelsePage() {
-  const user = await requirePortalUser();
+  const user = await requirePortalUser({ kreverTilgang: "INGEN" });
 
   // Uten art. 9-samtykke lagrer vi ingenting her, og da skal skjemaet heller
   // ikke stå framme og invitere til å fylle det ut. Serveren avviser uansett

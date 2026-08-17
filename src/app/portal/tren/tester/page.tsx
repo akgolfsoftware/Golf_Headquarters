@@ -4,7 +4,7 @@
  *
  * Struktur per fasit: «Én ting nå» (neste test — pågående/planlagt økt, ellers
  * åpen tildeling fra coach) → «testene dine · siste resultat» med akse, dato,
- * verdi og trend-tag → sync-note om Workbench/TalentHQ → ærlig tom tilstand.
+ * verdi og trend-tag → sync-note om Workbench/talentprofil → ærlig tom tilstand.
  * Antall protokoller vises ALLTID fra databasen (loadTesterScreen.totalTests)
  * — aldri hardkodet. Dataloadere gjenbrukt: loadTesterScreen + TestAssignment.
  */
@@ -50,7 +50,7 @@ function TrendTag({ delta }: { delta: NonNullable<TestRow["delta"]> }) {
 }
 
 export default async function TesterHubPage() {
-  const user = await requirePortalUser();
+  const user = await requirePortalUser({ kreverTilgang: "TALENT" });
   if (user.role === "PARENT") redirect("/forelder");
   if (user.role === "GUEST") redirect("/admin/kalender");
 
@@ -85,11 +85,11 @@ export default async function TesterHubPage() {
         data-od-id="playerhq-tester-hub"
         style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}
       >
-        {/* Topp — fasit: Tester / Testbatteriet ditt · resultater går til TalentHQ */}
+        {/* Topp — fasit: Tester / Testbatteriet ditt · resultater går til talentprofilen din */}
         <div>
           <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>Tester</h1>
           <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>
-            Testbatteriet ditt · resultater går til TalentHQ
+            Testbatteriet ditt · resultater går til talentprofilen din
           </span>
         </div>
 
@@ -151,7 +151,7 @@ export default async function TesterHubPage() {
                   {neste.navn} står for tur
                 </h3>
                 <p style={{ margin: "0 0 16px", fontFamily: T.bodyFont, fontSize: 14, color: T.mut, maxWidth: "52ch" }}>
-                  {neste.meta}. Resultatet går rett inn i TalentHQ når du logger det.
+                  {neste.meta}. Resultatet går rett inn i talentprofilen din når du logger det.
                 </p>
                 {/* Kontrakt §3: skjermens ene aksenthandling — starter testen */}
                 <Link
@@ -250,7 +250,7 @@ export default async function TesterHubPage() {
               )}
             </div>
 
-            {/* Sync-note — Workbench planlegger, TalentHQ mottar */}
+            {/* Sync-note — Workbench planlegger, talentprofilen mottar */}
             <div
               style={{
                 display: "flex",
@@ -267,7 +267,7 @@ export default async function TesterHubPage() {
               <Icon name="refresh-cw" size={16} style={{ color: T.mut, flex: "none", marginTop: 2 }} />
               <span>
                 Nye tester legges inn i Workbenchs Testbatteri-ark — sammen med Anders. Hvert
-                logget resultat oppdaterer TalentHQ automatisk.
+                logget resultat oppdaterer talentprofilen din automatisk.
               </span>
             </div>
           </>

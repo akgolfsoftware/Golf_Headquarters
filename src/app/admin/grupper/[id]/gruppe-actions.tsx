@@ -26,9 +26,11 @@ export function StartOktButton() {
 export function LeggTilSpillerButton({
   groupId,
   kandidater,
+  trenerKandidater,
 }: {
   groupId: string;
   kandidater: Kandidat[];
+  trenerKandidater: Kandidat[];
 }) {
   const [aapen, setAapen] = useState(false);
   return (
@@ -38,12 +40,13 @@ export function LeggTilSpillerButton({
         onClick={() => setAapen(true)}
         className="inline-flex items-center gap-1.5 rounded-full bg-primary px-4 py-2 text-[13px] font-semibold text-primary-foreground transition-opacity hover:opacity-90"
       >
-        Legg til spiller
+        Legg til medlem
       </button>
       {aapen && (
         <LeggTilMedlemModal
           groupId={groupId}
           kandidater={kandidater}
+          trenerKandidater={trenerKandidater}
           onClose={() => setAapen(false)}
         />
       )}
