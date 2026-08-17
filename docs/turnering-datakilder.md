@@ -66,6 +66,26 @@ PGA/KFT Q-School (pgatour.com), DP World Q-School (europeantour.com), LPGA Q-Ser
 (lpgascoring.com), Asian/Japan Q-Schools (TIC / jgto-qt.jp). Ingen dedikert DataGolf-dekning.
 Ad-hoc scraping per sesong.
 
+**WAGR-resultatempiri (2026-08-17):** Playwright network-trace mot ekte wagr.com-sider viste at
+Playwright IKKE er nødvendig i drift — kun brukt til selve reconen. To rene fetch-endepunkter dekker
+alt vi trenger (`src/lib/wagr/wagr-client.ts`):
+- `https://worldgolfranking2021api.wagr.com/api/wagr/playerprofile/getPlayerEvents?profileId={id}&tab=Counting&pageSize=N&pageNumber=1`
+  — JSON, ingen auth. Gir en spillers turneringsliste (event-navn, uke, plassering, `eventDetailsLink`-slug).
+- `https://www.wagr.com/events/{eventDetailsLink}` — SSR-HTML, `__NEXT_DATA__` inneholder
+  `pageProps.eventResultsData.eventResults.results[]` med FULL leaderboard for arrangementet: alle
+  deltageres navn, nasjonalitet, plassering, totalscore OG `roundByRoundScores` (brutto per runde) —
+  ikke bare spilleren man startet fra.
+- `wagr_snapshots` var tom (0 rader) i prod — ukesynken (`wagr-sync.ts`) oppdaterer kun eksisterende
+  rader, oppretter aldri nye. `scripts/sync-wagr-results.ts` løser dette event-drevet: start med noen få
+  kjente norske WAGR-ID-er, hent deres events, hent hvert events fulle leaderboard, ta vare på ALLE
+  deltagere med `nationality: "Norway"` (ikke bare startspilleren) — dette oppdager nye norske spillere
+  organisk, uten et fungerende "filtrer global ranking på land"-endepunkt (forsøkt: `getRankings` med
+  `country`/`nationality`/`countryName`-parametre ignoreres alle stille og returnerer uendret global
+  topp-50-liste — funksjonen finnes tilsynelatende ikke, eller heter noe vi ikke traff).
+- `/rankings?country=NOR` og `/rankings` (direkte URL) gir 404 — "Rankings" i toppmenyen er en
+  dropdown, ikke en direkte lenke, og ingen underlenke ble funnet i denne økten. Uløst: hvordan nå
+  et fullt land-filtrert rankingsøk direkte. Ikke kritisk — event-drevet oppdagelse dekker behovet.
+
 ### Tier 2 — Amatør globalt (WAGR)
 
 | Kilde | Hva | Tilgang |

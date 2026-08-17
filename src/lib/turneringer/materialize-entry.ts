@@ -11,7 +11,7 @@ export type MaterializeRoundsInput = {
   entryId: string;
   /** Brutto-score per runde (R1, R2, …). null = ikke spilt. */
   roundScores: (number | null)[];
-  source: "GOLFBOX" | "DATAGOLF" | "NGF" | "MANUAL";
+  source: "GOLFBOX" | "DATAGOLF" | "NGF" | "MANUAL" | "WAGR";
 };
 
 /**

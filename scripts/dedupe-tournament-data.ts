@@ -191,10 +191,32 @@ async function dedupeTournaments() {
           where: { tournamentId: src.id },
           data: { tournamentId: target.id },
         });
-        await prisma.tournamentResult.updateMany({
+
+        // TournamentResult har @@unique([tournamentId, userId]) — samme guard som
+        // publicPlayerEntry over: dropp duplikatet på target, flytt resten.
+        const srcResults = await prisma.tournamentResult.findMany({
           where: { tournamentId: src.id },
-          data: { tournamentId: target.id },
+          select: { id: true, userId: true },
         });
+        const targetUsers = new Set(
+          (
+            await prisma.tournamentResult.findMany({
+              where: { tournamentId: target.id },
+              select: { userId: true },
+            })
+          ).map((r) => r.userId),
+        );
+        for (const r of srcResults) {
+          if (targetUsers.has(r.userId)) {
+            await prisma.tournamentResult.delete({ where: { id: r.id } });
+          } else {
+            await prisma.tournamentResult.update({
+              where: { id: r.id },
+              data: { tournamentId: target.id },
+            });
+          }
+        }
+
         await prisma.tournament.update({
           where: { id: src.id },
           data: { mergedIntoId: target.id },
