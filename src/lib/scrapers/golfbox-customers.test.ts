@@ -29,6 +29,28 @@ describe("classifyTour — Olyo og Østlandstour", () => {
   });
 });
 
+describe("classifyTour — Region Tour (verifisert 2026-08-17 mot ekte GolfBox-data)", () => {
+  it("Region Tour → REGIONTOUR / junior-no, selv når navnet også inneholder norgescup/nm", () => {
+    const c = classifyTour(
+      "Region Tour 4 - Kval til Garmin Norgescup 5 - NM",
+      "amateur-no",
+    );
+    assert.equal(c.sourceOrigin, "REGIONTOUR");
+    assert.equal(c.tour, "junior-no");
+    assert.equal(c.playerTier, "junior");
+  });
+
+  it("Region Tour Sør #1 → REGIONTOUR", () => {
+    const c = classifyTour("Region Tour Sør #1 - Kristiansand GK", "junior-no");
+    assert.equal(c.sourceOrigin, "REGIONTOUR");
+  });
+
+  it("Region Tour med bindestrek-navnerekkefølge → REGIONTOUR", () => {
+    const c = classifyTour("Herdla GK - Region Tour Vestland", "junior-no");
+    assert.equal(c.sourceOrigin, "REGIONTOUR");
+  });
+});
+
 describe("classifyTour — Narvesen Tour", () => {
   it("Narvesen Tour → NARVESEN / junior-no uansett fallback", () => {
     const c = classifyTour("Narvesen Tour - Avd. 3 - Drøbak GK", "amateur-no");
@@ -53,6 +75,9 @@ describe("NO_TOUR_CUSTOMERS — Olyo-regioner + Østlandstour koblet", () => {
       assert.ok(c.region, `${c.label} mangler region`);
       assert.ok(c.onlyMatching instanceof RegExp, `${c.label} mangler onlyMatching`);
       assert.ok(c.onlyMatching!.test("Olyo Juniortour Mørk GK"));
+      // Region Tour-kval ligger på samme kunder som Olyo (verifisert 2026-08-17)
+      // og skal IKKE lenger filtreres bort.
+      assert.ok(c.onlyMatching!.test("Region Tour Sør #1 - Kristiansand GK"));
     }
     const ids = olyo.map((c) => c.customerId).sort((a, b) => a - b);
     assert.deepEqual(ids, [873, 874, 875, 876, 877, 878]);

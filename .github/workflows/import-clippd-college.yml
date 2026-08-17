@@ -1,0 +1,55 @@
+name: Importer Clippd college-resultater
+
+# Henter turneringsresultater for norske college-spillere (NCAA) fra
+# scoreboard.clippd.com sitt offentlige API. Ren fetch, ingen Playwright.
+# Delsystem C — se docs/turnering-datakilder.md Tier 4.
+#
+# scripts/import-clippd-college.ts kjørte tidligere kun manuelt og hadde
+# derfor 0 rader i prod (Tournament sourceOrigin='NCAA'), verifisert 2026-08-17.
+
+on:
+  schedule:
+    # Mandag + torsdag 07:00 UTC — NCAA-turneringer er 2-4 dager sammenhengende,
+    # ikke ukentlige som norske juniortourer, så to ganger i uka er nok til å
+    # fange nye events uten unødig belastning på Clippd.
+    - cron: "0 7 * * 1,4"
+  workflow_dispatch:
+    inputs:
+      dryRun:
+        description: "Kjør som dry-run (ingen DB-skriving)"
+        required: false
+        default: "false"
+      limit:
+        description: "Maks antall spillere denne kjøringen (tomt = alle)"
+        required: false
+        default: ""
+
+concurrency:
+  group: import-clippd-college
+  cancel-in-progress: false
+
+jobs:
+  import:
+    runs-on: ubuntu-latest
+    env:
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      DIRECT_URL: ${{ secrets.DIRECT_URL }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Generate Prisma client
+        run: npx prisma generate
+
+      - name: Importer Clippd college-resultater
+        run: >
+          npx tsx scripts/import-clippd-college.ts
+          ${{ github.event.inputs.dryRun == 'true' && '--dry-run' || '' }}
+          ${{ github.event.inputs.limit != '' && format('--limit={0}', github.event.inputs.limit) || '' }}

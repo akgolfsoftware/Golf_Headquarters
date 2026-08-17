@@ -1,0 +1,54 @@
+name: Scrape Golfstat (NCAA college-resultater)
+
+# Supplement til Clippd-importeren — dekker turneringer/spillere Clippd ikke
+# har. Ren fetch (src/lib/golfstat/golfstat-client.ts), ingen Playwright.
+# Delsystem C — se docs/turnering-datakilder.md Tier 4.
+#
+# Golfstat sin forside lister kun AKTIVE/nylige turneringer (~200 stk ved
+# verifisering 2026-08-17) — ikke dyp historikk, så full kjøring er billig
+# nok til å ikke trenge batching/matrix.
+
+on:
+  schedule:
+    # Onsdag 07:00 UTC — samme ukentlige rytme som WAGR-synken.
+    - cron: "0 7 * * 3"
+  workflow_dispatch:
+    inputs:
+      dryRun:
+        description: "Kjør som dry-run (ingen DB-skriving)"
+        required: false
+        default: "false"
+      limit:
+        description: "Maks antall turneringer denne kjøringen (tomt = alle)"
+        required: false
+        default: ""
+
+concurrency:
+  group: scrape-golfstat-ncaa
+  cancel-in-progress: false
+
+jobs:
+  scrape:
+    runs-on: ubuntu-latest
+    env:
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      DIRECT_URL: ${{ secrets.DIRECT_URL }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Generate Prisma client
+        run: npx prisma generate
+
+      - name: Scrape Golfstat NCAA
+        run: >
+          npx tsx scripts/scrape-golfstat-ncaa.ts
+          ${{ github.event.inputs.dryRun == 'true' && '--dry-run' || '' }}
+          ${{ github.event.inputs.limit != '' && format('--limit={0}', github.event.inputs.limit) || '' }}

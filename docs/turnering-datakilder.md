@@ -66,6 +66,26 @@ PGA/KFT Q-School (pgatour.com), DP World Q-School (europeantour.com), LPGA Q-Ser
 (lpgascoring.com), Asian/Japan Q-Schools (TIC / jgto-qt.jp). Ingen dedikert DataGolf-dekning.
 Ad-hoc scraping per sesong.
 
+**WAGR-resultatempiri (2026-08-17):** Playwright network-trace mot ekte wagr.com-sider viste at
+Playwright IKKE er nødvendig i drift — kun brukt til selve reconen. To rene fetch-endepunkter dekker
+alt vi trenger (`src/lib/wagr/wagr-client.ts`):
+- `https://worldgolfranking2021api.wagr.com/api/wagr/playerprofile/getPlayerEvents?profileId={id}&tab=Counting&pageSize=N&pageNumber=1`
+  — JSON, ingen auth. Gir en spillers turneringsliste (event-navn, uke, plassering, `eventDetailsLink`-slug).
+- `https://www.wagr.com/events/{eventDetailsLink}` — SSR-HTML, `__NEXT_DATA__` inneholder
+  `pageProps.eventResultsData.eventResults.results[]` med FULL leaderboard for arrangementet: alle
+  deltageres navn, nasjonalitet, plassering, totalscore OG `roundByRoundScores` (brutto per runde) —
+  ikke bare spilleren man startet fra.
+- `wagr_snapshots` var tom (0 rader) i prod — ukesynken (`wagr-sync.ts`) oppdaterer kun eksisterende
+  rader, oppretter aldri nye. `scripts/sync-wagr-results.ts` løser dette event-drevet: start med noen få
+  kjente norske WAGR-ID-er, hent deres events, hent hvert events fulle leaderboard, ta vare på ALLE
+  deltagere med `nationality: "Norway"` (ikke bare startspilleren) — dette oppdager nye norske spillere
+  organisk, uten et fungerende "filtrer global ranking på land"-endepunkt (forsøkt: `getRankings` med
+  `country`/`nationality`/`countryName`-parametre ignoreres alle stille og returnerer uendret global
+  topp-50-liste — funksjonen finnes tilsynelatende ikke, eller heter noe vi ikke traff).
+- `/rankings?country=NOR` og `/rankings` (direkte URL) gir 404 — "Rankings" i toppmenyen er en
+  dropdown, ikke en direkte lenke, og ingen underlenke ble funnet i denne økten. Uløst: hvordan nå
+  et fullt land-filtrert rankingsøk direkte. Ikke kritisk — event-drevet oppdagelse dekker behovet.
+
 ### Tier 2 — Amatør globalt (WAGR)
 
 | Kilde | Hva | Tilgang |
@@ -86,7 +106,38 @@ men lister **kun sertifiserte counting events** (~4 300/år) — ikke alle amat�
 | Srixon Tour (WAGR-tellende) | GolfBox via NGF (customer 18) | **LIVE** via `scrape-golfbox.ts` |
 | Garmin Norgescup | GolfBox via NGF (customer 18) | **LIVE** via `scrape-golfbox.ts` |
 | Østlandstour | GolfBox-kunde 895 | **LIVE** via `scrape-golfbox.ts` (kartlagt 2026-07-18) |
+| Region Tour (Garmin Norgescup-kval) | GolfBox-kunder 873–878, samme som Olyo | **LIVE** via `scrape-golfbox.ts` (kartlagt 2026-08-17, egen `sourceOrigin: REGIONTOUR`) |
 | GJGT / Global Junior Golf | **IKKE GolfBox** — `globaljuniorgolflive.com` | `import-gjgt.ts` |
+
+**7-dagers-vindu-fellen (fikset 2026-08-17):** `syncGolfBoxLeaderboards()` hentet tidligere kun
+resultater for COMPLETED-turneringer med `endDate` innenfor siste 7 dager. Enhver turnering som
+ikke rakk å få resultater i det vinduet, falt permanent ut av scope — verifisert mot prod: 214
+COMPLETED-turneringer uten resultater på tvers av alle GolfBox-kilder (SENIOR 75, OLYO 52, NM 44,
+GOLFBOX 22, SRIXON 8, NORGESCUP 7, OSTLANDS 6). Fiksen la til en selvhelbredende gren
+(`COMPLETED` + `publicEntries: { none: {} }`, uansett alder) i `golfBoxLeaderboardScope()` —
+se `src/lib/turneringer/golfbox-sync.ts`. Etterslepet dekkes av `scripts/backfill-golfbox-results.ts`.
+
+**Region Tour-empiri (2026-08-17):** verifisert direkte mot `getSchedule()` for kundene 873–878.
+Treff på 873 (Midt, 5 stk), 874 (Vestland, 7 stk), 876 (Sør, 9 stk). Ingen treff på 875/877/878 på
+sjekketidspunktet — kan skyldes at Region Tour-kvalifiseringen ikke er lagt ut for de regionene
+ennå denne sesongen, ikke at kilden mangler der. `classifyTour()` fanger navnet uansett hvilken
+kunde det kommer fra.
+
+**Golfstat-empiri (2026-08-17):** Playwright IKKE nødvendig — samme mønster som GolfBox/WAGR.
+`robots.txt` tillater all crawling. Verifisert med ren fetch:
+- Forsiden (`golfstat.com`) har `<script src=".../miniboards/pleaderboard_{tid}.html">`-tagger for
+  hver aktiv/nylig turnering, direkte i statisk HTML — ~210 turnerings-ID-er ved sjekketidspunktet.
+  Dette er KUN aktive/nylige turneringer, ikke dyp historikk (stemmer med docs-notatet om at dyp
+  historikk krever betalt abonnement) — full kjøring er derfor billig, ingen batching nødvendig.
+- `results.golfstat.com/public/leaderboards/gsnav.cfm?pg=player&tid={tid}` gir FULL individuell
+  leaderboard med runde-for-runde BRUTTO-score (`<round_score>70</round_score>`), server-rendret.
+  Parser i `src/lib/golfstat/golfstat-client.ts` (`parsePlayerScoresHtml`), verifisert mot ekte
+  fanget HTML (fixture i `src/lib/golfstat/__fixtures__/`).
+- **Navnematching-felle oppdaget i dry-run (rettet før noe ble skrevet til prod):** `navnLikhet()`
+  (bygget for Clippds smale søkeresultat-scenario) gir falske treff når den sveipes mot store,
+  ukjente feltvis-lister (60-150 spillere per turnering) — felles fornavn alene (f.eks. "Thomas")
+  ga score 0.53-0.65 for helt urelaterte personer. Terskel satt til 0.75 etter observert klart
+  skille mot ekte treff (0.77+) i verifiseringen.
 
 ### Tier 4 — College
 
