@@ -1546,7 +1546,7 @@ model Shot {
   notes         String?
   createdAt     DateTime @default(now())
 
-  // For shot-map og runde-statistikk (GPS: X=lng, Y=lat — lib/baneguide/shot-coords.ts)
+  // For shot-map og runde-statistikk (GPS: X=lng, Y=lat — src/lib/gameplan/shot-coords.ts)
   startX        Float?
   startY        Float?
   endX          Float?

@@ -153,8 +153,7 @@ export async function proxy(request: NextRequest) {
     // T8: /innsyn (ekstern leser) — capability-sjekken bor i layouten,
     // proxyen stopper kun uautentiserte (samme arbeidsdeling som /admin).
     path.startsWith("/innsyn") ||
-    path.startsWith("/intern") ||
-    path.startsWith("/dev-banekart");
+    path.startsWith("/intern");
 
   if (erBeskyttet) {
     // Sjekk auth-status via samme cookies som updateSession nettopp refresjet.
