@@ -17,12 +17,12 @@
   <string>com.akgolf.mulligan-triage</string>
   <key>ProgramArguments</key>
   <array>
-    <string>/usr/local/bin/npm</string>
+    <string>/opt/homebrew/bin/npm</string>
     <string>run</string>
     <string>mulligan:triage</string>
   </array>
   <key>WorkingDirectory</key>
-  <string>/Users/anderskristiansen/Developer/Golf_Headquarters</string>
+  <string>/Users/anderskristiansen/Developer/akgolf-hq</string>
   <key>StartCalendarInterval</key>
   <array>
     <dict><key>Hour</key><integer>8</integer><key>Minute</key><integer>0</integer></dict>

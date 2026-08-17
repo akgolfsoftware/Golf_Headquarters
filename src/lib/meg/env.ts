@@ -69,7 +69,7 @@ export function readMegEmbeddingsEnv(
 // når MEG_OLLAMA_URL er satt. Uten den faller alt tilbake til Claude (som i dag).
 const ollamaEnvSchema = z.object({
   MEG_OLLAMA_URL: z.string().url(),
-  MEG_OLLAMA_MODEL: z.string().default("llama3.2"),
+  MEG_OLLAMA_MODEL: z.string().default("qwen2.5:7b"),
 });
 
 export type MegOllamaEnv = {
