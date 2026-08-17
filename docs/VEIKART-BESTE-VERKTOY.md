@@ -465,4 +465,4 @@ menneske må huske å gjøre noe. Hullene er lista under.
 
 > Vedlikehold: når et punkt leveres — oppdater status her i samme commit.
 > (AGENCYOS-INVENTAR er arkivert 2026-08-03; skjermplanen med 6 haker er slettet
-> 05.08.2026 — skjermarbeid følger nå `docs/port/plan-designport-alle-skjermer.md`.)
+> 05.08.2026 — skjermarbeid følger nå `docs/port/PORTPLAN.md`.)

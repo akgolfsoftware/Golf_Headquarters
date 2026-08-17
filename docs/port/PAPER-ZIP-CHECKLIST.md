@@ -85,9 +85,9 @@
 - [~] `fase2/playerhq/playerhq-booking-mine.html`
 - [x] `fase2/playerhq/playerhq-coach-hub.html` — NT-415 signert av Anders 13.08.2026 (galleri mot prod)
 - [~] `fase2/playerhq/playerhq-talent.html` → TalentV2
-- [ ] `fase2/playerhq/playerhq-profil.html` → `/portal/meg/profil` — NY i zip 16.08 (konsolidering: profil/konto/kontakt → én flate, §8 skjema. HCP er lesefelt — eies av forbundet/Golfbox)
-- [ ] `fase2/playerhq/playerhq-utstyr.html` → `/portal/meg/utstyr` (i dag `utstyrsbag`) — NY i zip 16.08 (konsolidering: utstyr/bag/lengder → én flate; lengdetrapp er modul. Målte lengder, aldri ønsketall — kølle med for få slag viser «—»)
-- [ ] `fase2/playerhq/playerhq-coach-tilbakemelding.html` → `/portal/coach/tilbakemelding/[oktId]` — NY i zip 16.08 (konsolidering: coach notat/video/oppsummering → én flate; video er modul. Prosa i Lora, «Send svar» er clay)
+- [~] `fase2/playerhq/playerhq-profil.html` → `/portal/meg/profil` — BYGGET 16.08 (#507), venter signering. NY i zip 16.08 (konsolidering: profil/konto/kontakt → én flate, §8 skjema. HCP er lesefelt — eies av forbundet/Golfbox)
+- [~] `fase2/playerhq/playerhq-utstyr.html` → `/portal/meg/utstyr` (i dag `utstyrsbag`) — BYGGET 16.08 (#507), venter signering. NY i zip 16.08 (konsolidering: utstyr/bag/lengder → én flate; lengdetrapp er modul. Målte lengder, aldri ønsketall — kølle med for få slag viser «—»)
+- [~] `fase2/playerhq/playerhq-coach-tilbakemelding.html` → `/portal/coach/tilbakemelding/[oktId]` — BYGGET 16.08 (#505), venter signering. NY i zip 16.08 (konsolidering: coach notat/video/oppsummering → én flate; video er modul. Prosa i Lora, «Send svar» er clay)
 
 ### W3-konsolideringer (fra `fase2/manifest-w3-komplett.md`, zip 16.08 — rutekonsekvens for C4-bølgen)
 
@@ -171,9 +171,10 @@ i `designsystem/paper/kart/`. Arbeidsordre: `kart/prompt-code-session-implemente
       Avvik fra fasit, bevisst: testforfall viser forfallsdato uten «intervall N uker», fordi
       intervallet ikke finnes i basen (`TestAssignment` har kun `dueDate`).
 - [ ] **D4 · Test → drill + forfall** — `playerhq-test-detalj.html` + `playerhq-hjem-varsler.html`
-      + `workbench-desktop.html`. **BLOKKERT:** `TestDefinition` har kun `pyramidArea`, ingen
-      områdekode — oppslag i delt taksonomi er umulig. Krever ett additivt felt + Anders'
-      backfill av 36 testdefinisjoner.
+      + `workbench-desktop.html`. **DELVIS UBLOKKERT 16.08 (#477/#478):** `TestDefinition.omraade`
+      finnes nå (AK-formel v3-taksonomien, 17 treningsområder) og backfill er kjørt for 16 av 36
+      tester. Rest: Anders' avklaringer for de øvrige (forslag ligger i
+      `docs/testomrader-forslag-2026-08-15.md`) — deretter kan flatene bygges.
 - [~] **D5 · Gapping** — `fase2/playerhq/playerhq-gapping.html`. BYGGET 15.08.2026 (PR #474).
       Rute: `/portal/mal/trackman/gapping` — IKKE `/portal/trackman/*`, som redirecter
       permanent til Analyse (`next.config.ts`). Flaggregelen (gap > 22 m, begge køller

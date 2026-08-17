@@ -1,8 +1,15 @@
-# MASTERPLAN LANSERING — oppdatert 12.08.2026
+# MASTERPLAN LANSERING — oppdatert 12.08.2026 (statuskorrigert 17.08)
 
-**Skrevet:** 2026-08-12 · **Avløser:** `masterplan-lansering-2026-08-11.md` (nattens mål er nådd —
-denne planen dekker det som gjenstår fra bygget produkt til lansert produkt).
+**Skrevet:** 2026-08-12 · **Avløser:** `masterplan-lansering-2026-08-11.md` (slettet 17.08 — git-historikk).
 **Styrende underplaner:** `PIXEL-PERFECT-PLAN-COMPLETE.md` (skjerm-køen) · `docs/STATUS-NÅ.md` (snapshot).
+
+> ⚠ **Statuskorreksjon 17.08.2026** (tallene i §0 under er fra 12.08 og står som historikk):
+> checklisten er nå **40 `[x]` · 44 `[~]` · 4 `[ ]`** (18 skjermer + push-banner signert 13.08,
+> booking + workbench-turnering 14.08). Fase 2-signeringen av galleriene 11/12.08 ER gjort.
+> Fase 1 pkt. 3 («bytt elevnavn i testdata») skal IKKE utføres — preview leser PROD-databasen,
+> så det ville endret ekte mindreåriges navn (se STATUS-NÅ 12.08-notatet); riktig tiltak er å
+> ikke fotografere WANG-flater mot ekte data. WANG-PII håndteres nå av **PR #490**.
+> Gjeldende samlet plan: `docs/MASTERPLAN-GJENSTAAENDE.md`. P0-fasene 3–6 under står uendret.
 
 ---
 

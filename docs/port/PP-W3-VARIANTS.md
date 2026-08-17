@@ -23,7 +23,7 @@ Oppdateres fortløpende under overnight.
 Slug-sporing (`data-paper-slug`) + lint-rydding på variantflatene under — ingen
 funksjons-/layoutendring (flatene var alt bygget i tidligere bølger; rutefasit-avvikene
 deres var allerede dekket eller står på STOPP-lista). Skjermbilder: rutene er
-attributt-endringer uten visuell diff — galleri ikke tatt per rute, jf. NATTRAPPORT-2026-08-13.
+attributt-endringer uten visuell diff — galleri ikke tatt per rute, jf. NATTRAPPORT-2026-08-13 (slettet 17.08.2026 — git-historikk).
 
 | Rute(r) | Mal | Avvik (fra rutefasit.md) | Status |
 |---|---|---|---|

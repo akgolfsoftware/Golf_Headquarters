@@ -1,6 +1,6 @@
 # AK Golf HQ — Komplett funksjons- og agent-oversikt
 
-**Verifisert mot koden 2026-07-30** · Kilder: `src/app/portal/**` (~170 ruter), `src/app/admin/**`, `src/lib/agents/` (~55 filer), `vercel.json`, `src/lib/{ai,caddie,kommando,masterbrain,plan-engine,sg-hub,intelligence}/`
+**Verifisert mot koden 2026-07-30 — ⚠ delvis utdatert 17.08: `/admin/agents` og `/admin/agent-team` er nå redirects til `/admin/agenticos` (huben); `Sak`/Jarvis finnes ikke i dette dokumentet — se `docs/plan-agenticos-jarvis-2026-08-17.md`. `src/lib/agents/` er nå 63 filer** · Kilder: `src/app/portal/**` (~170 ruter), `src/app/admin/**`, `src/lib/agents/` (~55 filer), `vercel.json`, `src/lib/{ai,caddie,kommando,masterbrain,plan-engine,sg-hub,intelligence}/`
 
 Alt under er lest ut av faktisk kode — ikke filnavn eller antakelser. Der noe er en stub eller plassholder står det eksplisitt.
 
@@ -137,13 +137,13 @@ Hovednavigasjon: **Hjem · Stall · Kalender · Kø · Innsikt** + «Mer» (`src
 ## 2.7 AI / agenter / Caddie (AgenticOS)
 | Funksjon | Adresse | Hva coachen gjør |
 |---|---|---|
-| Agent-oversikt | `/admin/agents` | Ser alle agenter, Signal/PlanAction-tellinger, siste 30 AgentRun |
+| Agent-oversikt | `/admin/agenticos` (`/admin/agents` redirecter dit siden 16.08) | Ser alle agenter, Signal/PlanAction-tellinger, siste 30 AgentRun, AiCost |
 | Agent-detalj | `/admin/agents/[agentId]` | Kjører agent manuelt, gir tommel opp/ned, godkjenner forslag |
 | Godkjenningskø | `/admin/godkjenninger` | Behandler PENDING PlanAction fra agentene med diff-preview (lav-risiko-typer markert) |
 | Caddie-chat | `/admin/agencyos/caddie` | Direkte chat med AI-Caddie (ADMIN-only) |
 | Caddie-dashbord | `/admin/agencyos/caddie/dashbord` | Proaktive forslag + co-agent-rammeverk (utkast/fleet/audit) |
 | Caddie-aktivitet | `/admin/agencyos/caddie/aktivitet` | Aktivitetslogg + agent-feil siste 7 dager |
-| Agent-team | `/admin/agent-team` | Kommando: multi-modell panel (Claude/Gemini/Grok/Ollama) med prosjekt/oppgaver |
+| Agent-team | `/admin/agent-team` → redirect til `/admin/agenticos` (16.08) | Kommando-panelet er ikke lenger egen flate |
 | Opptak | `/admin/recording` | Tar opp coaching-økt: Whisper-transkripsjon + Claude-analyse |
 | Mission Control | `/admin/agencyos/live` | **Plassholder** — visuelt skall med seed-data foreløpig |
 

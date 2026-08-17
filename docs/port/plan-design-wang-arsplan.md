@@ -5,7 +5,7 @@ Omfang låst 2026-08-10: **kun golfgruppa** ved WANG Toppidrett Fredrikstad (avk
 
 Dekker alle skjermer i WANG-flaten (elev/foreldre + trener) og grensesnittet mot AgencyOS,
 der innholdet i treningsplanen faktisk skal lages. Skrevet etter samme mal som
-`docs/port/plan-designport-alle-skjermer.md`, men med WANG-merkevaren som fasit i stedet for
+`docs/port/PORTPLAN.md` (tidl. plan-designport, slettet 17.08.2026), men med WANG-merkevaren som fasit i stedet for
 Claude Paper.
 
 ---
@@ -87,7 +87,7 @@ AgencyOS.
 
 **Konsekvens:** AgencyOS-skjermene i §4.C skal **ikke** redesignes med WANG-farger. De skal
 redesignes etter Claude Paper-fasiten, som all annen AgencyOS-kode, og hører derfor hjemme i
-`docs/port/plan-designport-alle-skjermer.md` — ikke her. De står i skjermregnskapet under
+`docs/port/PAPER-ZIP-CHECKLIST.md` — ikke her. De står i skjermregnskapet under
 fordi de eier dataene WANG-flaten viser, og fordi feltdekningen deres bestemmer hva
 WANG-flaten kan vise uten demo-data.
 
@@ -385,7 +385,7 @@ Dette berører ikke **B5** (skole-/foreldredata modelleres eller forblir demo) �
 
 ## 8. Ferdig-definisjon per skjerm
 
-Arves fra `docs/port/plan-designport-alle-skjermer.md` §Ferdig-definisjon, med to WANG-tillegg.
+Arves fra skjermbilde-gaten i `CLAUDE.md` §Skjermarbeid, med to WANG-tillegg.
 
 En skjerm er ferdig når **alle** punktene er sanne:
 

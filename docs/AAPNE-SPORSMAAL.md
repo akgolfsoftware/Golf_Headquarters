@@ -4,7 +4,8 @@
 >
 > Status: **ÅPEN** (trenger beslutning) · **PARKERT** (bevisst, ikke rør uoppfordret) · **LØST** (avklart — ikke flagg på nytt).
 >
-> **Sist oppdatert:** 2026-07-17 (kveld). Alle Del 4-beslutninger tatt av Anders: A4 (invariant-liste skrives ned), A5 (forretningstall bekreftet), D5 (slette-veier konsolideres + slug anonymiseres), D8 (banekart = ekte geometri, blokkert på datakilde). D2/D6 bygget + migrasjoner kjørt mot prod. Råmateriale: tidligere `PLATFORM.md` §14 (arkivert) + kodeverifisering 2026-06-14 / agent-pipeline 2026-07-10.
+> **Sist oppdatert:** 2026-08-17 (plan-opprydding — se tillegget nederst; hovedlisten under er fra 17.07).
+> Forrige oppdatering 2026-07-17 (kveld): alle Del 4-beslutninger tatt av Anders: A4 (invariant-liste skrives ned), A5 (forretningstall bekreftet), D5 (slette-veier konsolideres + slug anonymiseres), D8 (banekart = ekte geometri, blokkert på datakilde). D2/D6 bygget + migrasjoner kjørt mot prod. Råmateriale: tidligere `PLATFORM.md` §14 (arkivert) + kodeverifisering 2026-06-14 / agent-pipeline 2026-07-10.
 
 ---
 
@@ -55,3 +56,41 @@ Disse kan en agent IKKE løse selv — de er produkt-/metodikkvalg.
 | C11 | D1: Live/skjult per skjerm | **LØST 2026-07-15.** 14. juli-listen (11+5 kandidater) var stort sett utdatert ved ny sjekk — Økonomi, Caddie-AI og «Ny spiller» var alt blitt ekte data. Kun 2 hadde fortsatt et ekte demo-varsel i appen: AgencyOS Live/Mission Control og PlayerHQ Talent. Begge fjernet fra menyen (PR #37). Beslutning Anders 2026-07-15. |
 | C12 | Design vs. kode ved mismatch (porting) | Når et Claude Design-mockup og faktisk kodefunksjon spriker (feil rolle/handling/manglende steg), **er koden fasit** — designet skal rettes til å matche faktisk funksjon, ikke omvendt. Gjelder `coach/ovelser/ny`, `tren/turneringer/ny`, `utfordringer/ny` (funnet natt til 15. juli). Beslutning Anders 2026-07-15. |
 | C13 | `/admin/godkjenn-portal/review` | Bekreftet internt QA-verktøy for utviklingsteamet (side-ved-side live vs. designfil), ikke produkt-UI for sluttbrukere. Merkes 🛠 out-of-scope for design, ingen videre jobb. Beslutning Anders 2026-07-15. |
+
+---
+
+## Tillegg 2026-08-17 — lukket og åpnet siden 17.07 (plan-oppryddingen)
+
+### LØST siden forrige oppdatering (ikke re-flagg)
+
+- **Testprotokoll-antallet** (Anders 21 vs CANON 20): LØST 16.08 (T5) — spilleren ser 21
+  CANON-rader (20 protokoller; Putt Speed Control har to varianter) + egne tester.
+  Kodet i `src/lib/portal-tester/test-tilgang.ts`.
+- **TestResult → talentprofil-sync**: BYGGET 16.08 (T4) — `src/lib/talent/test-sync.ts`.
+  (Rest: skjermene leser ikke `testNivaaer` ennå — se MASTERPLAN-GJENSTAAENDE.)
+- **Freemium-modellen**: BESLUTTET 16.08 — FULL/TALENT/INGEN via `resolveTilgang`;
+  fasit i `BUSINESS-RULES.md` §Abonnement og tilgang. Spec-en fra 31.07 er forkastet og slettet.
+- **Årspris**: 2 690 kr/år innført (A2, 16.08).
+- **D8 banekart-datakilde**: LØST — OSM/Overpass, 9 Østfold-baner importert
+  (`scripts/import-bane-osm.ts`); det åpne nå er dekning/kvalitet + rette-editor (fase 2 i
+  `docs/plan-baneguide-sg-app-2026-08-16.md`, PR #514).
+- **PP-A-gaten A1–A4**: BESVART 16.08 — se `beslutninger.md` §august 2026.
+- **D2 Booking→faktura-blokkeringen**: AVKLART 15.08 — «forfalt» hentes fra Stripe ved visning.
+
+### ÅPNE spørsmål per 17.08 (kanonisk liste — pekere, ikke duplikater)
+
+1. **PORTPLAN §A1 — 10 portbeslutninger** (talent-hub vs redirect, godkjenninger én-vs-fem,
+   booking 3-vs-5 steg, årsplan-fane, coach-tråd-modell, Stripe Elements vs Billing Portal,
+   help-skall, `utstyr` vs `utstyrsbag`, ukesdigest-URL, PP-A-gatens formelle status).
+2. **WANG B4/B5** (`docs/port/plan-design-wang-arsplan.md`): overlever `/team-wang/coach`
+   eller redirect til AgencyOS? Skal skole-/foreldredata modelleres eller forbli demo?
+3. **PR-F: DataGolf/stats-plassering i PlayerHQ** — blokkerer W7-stats (~45 ruter) og resten
+   av 04.08-beslutningen om DataGolf inn i PlayerHQ.
+4. **KommandoTask vs Notion-cache** (`docs/port/drift-agenticos-konsolidering.md` pkt. 4).
+5. **FYS-formelen** — fortsatt AVVENTER (v1 stall-relativ er plassholder, merket i UI).
+6. **D4-backfill** — områdekode for de resterende testdefinisjonene
+   (`docs/testomrader-forslag-2026-08-15.md`).
+7. **Team-wang-tilgangen** — «åpen pr nå» (15.08) må enten bekreftes varig (med #490-fiksen
+   merget) eller sperres igjen (`src/proxy.ts`).
+8. **Jarvis `/meg` i IA-en** — ulenket rute i dag; egen flate eller inn i AgencyOS-nav?
+   (Se `docs/plan-agenticos-jarvis-2026-08-17.md`.)

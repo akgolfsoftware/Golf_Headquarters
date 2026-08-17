@@ -17,5 +17,5 @@ Ingen dobbeltføring, ingen «to sannheter».
 
 ## Relaterte kilder i akgolf-hq
 - `docs/audit-treningsplanlegger-2026-07-05.md` — fersk gjennomgang av Workbench/driller/tester
-- `docs/port/fasit-liste-paper.md` + `docs/port/plan-designport-alle-skjermer.md` — designdekning, porteringsplan og ferdig-definisjon per skjerm
+- `docs/port/fasit-liste-paper.md` + `docs/port/PORTPLAN.md` — designdekning og porteringsplan (ferdig-definisjon: skjermbilde-gaten i `CLAUDE.md` §Skjermarbeid)
 - `.claude/rules/arkitektur.md` — produkter og mappestruktur

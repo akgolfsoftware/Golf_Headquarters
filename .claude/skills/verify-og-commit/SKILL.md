@@ -29,7 +29,7 @@ Du sikrer at ingenting ukontrollert når repoet. Rekkefølgen er låst.
    aldri `--no-verify`.
 5. **Commit:** Conventional Commits på engelsk (`feat:`, `fix:`, `chore:`, `docs:` …),
    én logisk endring per commit. Skjerm-endringer: ferdig-definisjonen per skjerm i
-   `docs/port/plan-designport-alle-skjermer.md` §Ferdig-definisjon må være oppfylt før
+   skjermbilde-gaten i `CLAUDE.md` §Skjermarbeid må være oppfylt før
    skjermen regnes som ferdig (skjermbilde til Anders, mobil 390px + desktop, lys + mørk,
    fasit ved siden av, alle fire tilstander, én oransje handling, klikk-verifisert).
 6. **Push grenen:** `git push -u origin <gren>`. Ved nettverksfeil: retry 4× med

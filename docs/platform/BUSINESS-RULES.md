@@ -3,7 +3,7 @@
 **Dette er ENESTE fasit for låste produktbeslutninger.** Andre dokumenter (`CLAUDE.md`, `AGENT-BRIEF.md`, `PLATFORM-PRD.md`) gir kun et sammendrag og peker hit. Ved konflikt vinner denne fila. Nye låste regler legges KUN her — ikke dupliser til andre filer.
 
 Dokumenterer forretningsregler som ikke kan utledes fra kode alene.
-Sist oppdatert: 2026-06-14.
+Sist oppdatert: 2026-08-17 (dato rettet — §Abonnement og tilgang er fra 2026-08-16; headeren sa 2026-06-14 og fikk fila til å se gammel ut).
 
 > ⚠ **Status per 2026-07-06** (fulgte opp 2026-06-22-opplåsingen — historikken lever i git
 > for full historikk): 3 av 4 daværende «låst opp»-regler er nå **avklart og bygget** — tema-toggle
@@ -271,7 +271,7 @@ AK Golf Academy bruker en 5-trinns trenings-pyramide:
 > **Design (LÅST — Paper vinner alltid, Anders 2026-08-03):** Claude Design-prosjektet
 > «AK Golf HQ — Claude Paper» (`605a48cc`, skjermer i `fase1/`) er eneste designfasit, og
 > full port til `src/` kjører nå. Tidsplanen fra 31.07 («C, smalt» til etter FØR/UNDER/ETTER-piloten)
-> er **overstyrt** — `docs/gjenstaaende-plan-2026-07-31.md` §1.1 er historikk, ikke gjeldende regel.
+> er **overstyrt** — `docs/gjenstaaende-plan-2026-07-31.md` §1.1 er historikk (slettet 17.08.2026, git-historikk), ikke gjeldende regel.
 > Mangler en skjerm fasit: `docs/port/monsterdokument-paper.md` er eneste designkilde.
 > Ved konflikt mellom et dokument og Paper-fasiten vinner Paper-fasiten.
 >

@@ -1,11 +1,9 @@
-# Steg 2 — fasit-listen: Paper-skjerm ↔ ekte rute
+# Fasit-listen: Paper-skjerm ↔ ekte rute
 
-**Skrevet:** 02.08.2026 · **Oppdatert:** 2026-08-10 (tegningen er FERDIG — W1–W6 er alle
-tegnet, 79 fasit-HTML. Tallene under sto på «25 av 343» fra 06.08 og var da over fire dager
-utdaterte).
-**Gjelder:** steg 2 i `docs/port/plan-designport-alle-skjermer.md`.
-**Denne fila** = fasit ↔ rute. **`portstatus-paper.md`** = hva som er portet og godkjent.
-**Styrende plan er ikke lenger denne** — det er `PIXEL-PERFECT-PLAN-COMPLETE.md` (PP-0…PP-10).
+**Skrevet:** 02.08.2026 · **Oppdatert:** 2026-08-17 (jarvis/-sporet inn, tall mot checklisten;
+tegningen er FERDIG — W1–W6 er alle tegnet, + 12 Jarvis-fasiter i zip 16.08).
+**Denne fila** = fasit ↔ rute. **`PAPER-ZIP-CHECKLIST.md`** = hva som er portet og godkjent.
+**Styrende plan:** `PORTPLAN.md` (rekkefølge) + `PIXEL-PERFECT-PLAN-COMPLETE.md` (metode).
 
 Kilder: Claude Design-prosjektet `605a48cc` (hentet via `claude-design`-MCP, sist listet
 **2026-08-10**) og speilet `designsystem/paper/`. Speilet er verifisert i synk med prosjektet
@@ -16,18 +14,20 @@ Designprosjektets `kart/wf/` og `uploads/` er IKKE kilde, og `templates/` er str
 
 ---
 
-## Det korte svaret (2026-08-10)
+## Det korte svaret (2026-08-17)
 
 | | Antall |
 |---|---:|
 | **Tegnede Paper-fasitskjermer** | **79** — 33 i `fase1/` + 46 i `fase2/` |
 | …av disse i fase2 | PlayerHQ 30 · AgencyOS 6 · marketing 2 · auth 2 · WANG 2 · GFGK 2 · forelder 1 · system 1 |
-| Templates (shell-fasit, ikke egne ruter) | 8 |
+| **Jarvis-fasiter** (`jarvis/`, zip 16.08 — eget spor, PORTPLAN §B6) | **12** — 3 portet (#532), +1 i draft #547 |
+| Templates (shell-fasit, ikke egne ruter) | 8 — `[-]` GJELDER IKKE siden 14.08 |
 | Komponenter i biblioteket | 138 |
-| **Tegning gjenstående** | **0 for in-scope** — W1–W6 er alle tegnet |
-| **Pixel-signert av Anders** | **0 av 79** |
-| Kodet chrome, ikke signert (`[~]`) | 52 |
-| Ikke bygget (`[ ]`) | 35 (inkl. de 8 templates-radene) |
+| Hele speilet `designsystem/paper/` | 254 HTML (zip 16.08 21:11 — 0 avvik) |
+| **Tegning gjenstående** | **0 for in-scope** — men 25 av 54 rutefasit-rader stryker én-linje-testen og trenger design/beslutning (PORTPLAN §A) |
+| **Pixel-signert av Anders** (aktive checklist-rader) | **40 av 88** |
+| Kodet, ikke signert (`[~]`) | 41 |
+| Ikke bygget (`[ ]`) | 4 reelle (2 blokkert) |
 
 **Dekningen er ikke lenger «25 av 343».** Strategien endret seg 09.08: kjernen (fase1 + W1 + W2)
 har 1:1-fasit, og resten dekkes av **maler** — 6 maler i W3 dekker 17 Meg/Booking-ruter, 6 i W4
@@ -136,7 +136,7 @@ PlayerHQ Planlegge og AgencyOS Planlegge.
 ### W1-wireframes, batch-godkjent av Anders 05.08.2026 (11 filer → 11 ruter)
 
 Tegnet i `fase2/playerhq/` i Claude Design (605a48cc) etter konsolideringsgaten
-(18 → 11 skjermer, fire vedtak — se `docs/port/skjermplan-tegnet-og-wireframe.md` §W1).
+(18 → 11 skjermer, fire vedtak — sto i `skjermplan-tegnet-og-wireframe.md` §W1, slettet 17.08.2026 — git-historikk).
 Godkjent wireframe = fasit, samme status som `fase1/`-filene.
 
 | Paper-fil (fase2/playerhq/) | Ekte rute | Merknad |
