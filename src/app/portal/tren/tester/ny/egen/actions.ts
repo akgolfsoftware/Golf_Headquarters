@@ -48,7 +48,7 @@ const opprettCustomTestSchema = z.object({
 export type OpprettCustomTestInput = z.infer<typeof opprettCustomTestSchema>;
 
 export async function opprettCustomTest(input: unknown) {
-  const user = await requirePortalUser({ allow: ["PLAYER", "COACH", "ADMIN"] });
+  const user = await requirePortalUser({ kreverTilgang: "TALENT", allow: ["PLAYER", "COACH", "ADMIN"] });
   const parsed = opprettCustomTestSchema.safeParse(input);
   if (!parsed.success) {
     throw new Error(

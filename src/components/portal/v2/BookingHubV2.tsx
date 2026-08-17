@@ -28,6 +28,7 @@ import {
   TomTilstand,
   Icon,
 } from "@/components/v2";
+import { pakkeNavn } from "@/lib/domain/abonnement";
 import { PaperPage, PaperTopp, PaperKropp, PaperDokk } from "./PaperChrome";
 import type { HubCredits, HubBooking, HubCoach, HubForsteLedige } from "@/lib/portal-booking/hub-data";
 
@@ -81,11 +82,9 @@ function AboRad({ label, verdi, last }: { label: string; verdi: string; last?: b
   );
 }
 
-const TIER_NAVN: Record<string, string> = {
-  GRATIS: "Gratis",
-  PRO: "Performance",
-  ELITE: "Performance Pro",
-};
+// Pakkenavnet utledes av credits-tallet (pakkeNavn, domain/abonnement.ts) —
+// aldri av tier: ELITE er dødt enum og skal aldri vises (BUSINESS-RULES),
+// og tier-verdiene er app-nivåer, ikke coaching-pakker.
 
 export function BookingHubV2({ data }: { data: BookingHubV2Data }) {
   const { credits, upcoming, coaches, forsteLedige } = data;
@@ -259,7 +258,7 @@ export function BookingHubV2({ data }: { data: BookingHubV2Data }) {
           uten kilde er en gjetning. */}
       {harPakke && (
         <Kort eyebrow="Abonnement">
-          <AboRad label={TIER_NAVN[credits.tier] ?? "Coaching-pakke"} verdi={`${credits.monthlyCredits} timer per måned`} />
+          <AboRad label={pakkeNavn(credits.monthlyCredits) ?? "Coaching-pakke"} verdi={`${credits.monthlyCredits} timer per måned`} />
           <AboRad
             label="Brukt i perioden"
             verdi={`${credits.monthlyCredits - credits.creditsRemaining} av ${credits.monthlyCredits}`}

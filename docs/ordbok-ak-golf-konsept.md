@@ -365,6 +365,9 @@ Sentrale modeller og ALLE status-enums fra `prisma/schema.prisma` (komplett per 
 | AK-formelen | (CS · L-fase · M · PR) | Firedelt koding av slag/drill: hvor hardt, hvor innlært, hvor virkelighetsnært, hvor mye press. Felles «adresse» for enhver øvelse. |
 | Breaking Point | *(ikke i koden)* | Punktet der teknikken bryter sammen når hastigheten økes — tren like under, skyv gradvis opp. Håndteres i praksis via `csMax` + CS-progresjon. |
 | Spor A / Spor B (live-økt) | `TrainingPlanSession` / `TrainingSessionV2` | To live-økt-systemer som sameksisterer BEVISST (PlayerHQ `/portal/live` vs Workbench `/admin/live`). Skal ikke merges uoppfordret. |
+| Gameplan | `/portal/gameplan`, `GameplanHull`, `GameplanSone` | FØR-runden-flaten: banebibliotek → banekart → hull-detalj med spillerens dispersjonsellipse, sikte og bra/aldri-soner. Het «Baneguide» frem til 16.07.2026. UI-navnet i dag. |
+| Baneguide | `/portal/baneguide/*` (redirects), `docs/baneguide-produktdokument-2026-08-02.md` | Paraplybegrep for FØR/UNDER/ETTER-sløyfen på banen (Gameplan + live kart-føring + analyse). Rutene redirecter til `/portal/gameplan`. Om «Baneguide» skal tilbake som UI-navn er åpen beslutning (B1 i produktdokumentet §13 / PB5 i `docs/plan-baneguide-sg-app-2026-08-16.md`). |
+| Dispersion / spredning | `src/lib/gameplan/dispersion.ts` | Spillerens spredningsmønster (kovarians-ellipse, bias side/lengde) fra bane-GPS (`Shot`) og TrackMan (`side`/`carryDistance`). Begge norske former OK (jf. B3-vokabularet). |
 
 ---
 

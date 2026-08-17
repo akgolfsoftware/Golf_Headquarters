@@ -1,6 +1,7 @@
 // Gameplan (B30, 16. jul 2026) — "Baneguide" er det gamle navnet på funksjonen.
 // Ruten lever videre kun som redirect for gamle lenker/bokmerker (bevarer ?type=).
 import { redirect } from "next/navigation";
+import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 
 export default async function BaneguideHoleRedirect({
   params,
@@ -9,6 +10,8 @@ export default async function BaneguideHoleRedirect({
   params: Promise<{ baneId: string; nr: string }>;
   searchParams: Promise<{ type?: string }>;
 }): Promise<never> {
+  // Rot-layouten krever kun innlogging (16.08) — tilgangsnivået håndheves her.
+  await requirePortalUser({ kreverTilgang: "FULL" });
   const { baneId, nr } = await params;
   const { type } = await searchParams;
   redirect(`/portal/gameplan/${baneId}/hull/${nr}${type ? `?type=${type}` : ""}`);

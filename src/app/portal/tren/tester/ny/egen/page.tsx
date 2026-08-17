@@ -13,7 +13,7 @@ import { NyTestEgenV2 } from "@/components/portal/v2/NyTestEgenV2";
 export const dynamic = "force-dynamic";
 
 export default async function NyEgenTestPage() {
-  const user = await requirePortalUser({ allow: ["PLAYER", "COACH", "ADMIN"] });
+  const user = await requirePortalUser({ kreverTilgang: "TALENT", allow: ["PLAYER", "COACH", "ADMIN"] });
 
   return (
     <V2Shell bredde="kolonne" aktiv="gjor" nav={PLAYERHQ_NAV} navn={user.name ?? undefined} avatarUrl={user.avatarUrl}>

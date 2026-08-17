@@ -17,8 +17,9 @@ import "server-only";
 
 import { prisma } from "@/lib/prisma";
 
-// Gruppa fra seed-scriptet. Slår opp på navn (robust på tvers av miljøer);
-// id-en er kun en kommentar for sporbarhet. (seed: cmp28uk1b000l99e5m764g2wx)
+// Kanonisk slug (src/lib/domain/grupper.ts). Navn-fallback beholdes til
+// bootstrap-kanoniske-grupper-scriptet har satt slug i alle miljøer.
+const GRUPPE_SLUG = "wang-toppidrett";
 const GRUPPE_NAVN = "WANG Toppidrett Fredrikstad";
 
 export type WangFase =
@@ -34,7 +35,7 @@ export interface WangElev {
   /** Bruker-id. Trengs for å åpne IUP-samtalen for én elev fra trenerflaten. */
   id: string;
   navn: string;
-  rolle: string; // PLAYER | ASSISTANT
+  rolle: string; // PLAYER | ASSISTANT | COACH (kanon: src/lib/domain/grupper.ts)
 }
 
 export interface WangPeriodeDb {
@@ -174,11 +175,13 @@ export async function hentWangGruppe(
 ): Promise<WangLiveData | null> {
   try {
     const gruppe = await prisma.group.findFirst({
-      where: { name: GRUPPE_NAVN },
+      where: { OR: [{ slug: GRUPPE_SLUG }, { name: GRUPPE_NAVN, slug: null }] },
       select: {
         id: true,
         name: true,
         members: {
+          // Kun aktive medlemmer — utmeldte elever skal ikke vises (soft-end).
+          where: { endedAt: null },
           orderBy: { joinedAt: "asc" },
           select: {
             role: true,

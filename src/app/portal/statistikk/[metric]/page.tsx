@@ -176,7 +176,7 @@ export default async function MetricDrillDownPage({
 }: {
   params: Promise<{ metric: string }>;
 }) {
-  const user = await requirePortalUser();
+  const user = await requirePortalUser({ kreverTilgang: "TALENT" });
   const { metric } = await params;
   const info = resolveMetric(metric);
   if (!info) notFound();

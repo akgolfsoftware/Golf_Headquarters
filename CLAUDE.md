@@ -54,21 +54,38 @@ via `claude-design`-MCP-verktøyet) er designfasit; full port til `src/` kjører
 ## Skjermarbeid (gjeldende prosess)
 
 **Designfasit:** Claude Paper — Claude Design-prosjektet `605a48cc` er **originalen**.
-**Arbeidsfasiten er det lokale speilet `designsystem/paper/`** (208 HTML, `fase1/` + `fase2/`) —
-det er den du leser, differ og sammenligner mot. Speilet gjelder så lenge
-`designsystem/paper/SYNC-STATUS.md` viser at det er målt mot siste zip fra Anders (nå: zip (3),
-09.08.2026, byte-identisk med zip (2) — 0 avvik).
+**Arbeidsfasiten er det lokale speilet `designsystem/paper/`** (254 HTML: `fase1/` + `fase2/` +
+`jarvis/`) — det er den du leser, differ og sammenligner mot. Speilet gjelder så lenge
+`designsystem/paper/SYNC-STATUS.md` viser at det er målt mot siste zip fra Anders (nå: zip
+levert 16.08.2026 21:11, 839 filer — 0 avvik).
+**Opprett aldri en parallell kopi av fasiten** (`docs/port/paper/` e.l.) — to kopier av samme HTML
+er to sannheter om samme skjerm, og alle `docs/port/`-dokumentene peker allerede hit med
+`designsystem/paper/…`-stier. Speilet skal være byte-identisk med zip-en; ligger det interne
+duplikater INNE i speilet (f.eks. `design_handoff_rutefasit_agenticos/docs-port/rutefasit.md`),
+er de en del av leveransen og skal stå — men de **styrer ingenting**. Ved motstrid gjelder
+`docs/port/`-versjonen, aldri speilets kopi.
 
 **Resynk skjer når Anders leverer ny zip, ikke før hver skjerm.** Den gamle regelen krevde henting
 via `claude-design`-MCP før hver sammenligning. Den koblingen er ikke tilgjengelig i alle økter, så
 regelen sendte arbeidet inn i en blindvei og sådde tvil om det ene som faktisk virker. Endret
-12.08.2026 etter Anders' beslutning. Er MCP-en tilgjengelig og du er i tvil: verifiser gjerne — men
-det er ikke et krav for å jobbe.
+12.08.2026 etter Anders' beslutning. Du kan jobbe mot speilet uten MCP.
+
+**MEN: en zip kan være utdatert mot designprosjektet — målt 17.08.2026.** Zip-en fra 16.08 21:11
+inneholdt `kart/rutefasit-for-claude-code.md` **v1** (9 382 B, datert 12.08), mens prosjektet
+allerede hadde **v2** (12 543 B, datert 16.08) med en helt ny **Komponenter-kolonne**,
+porteringsstrategi, modellvalg-tabell og skall-pakker. En hel styringsdimensjon manglet i zip-en,
+og en verifisering som kun målte zip mot speil ville aldri sett det — begge var «0 avvik».
+**Regel:** før en ny portbølge planlegges, kjør ÉN MCP-sammenligning
+(`list_files` med `depth: -1` → diff stier + `size` mot speilet). Den koster ett kall og fanger
+akkurat denne klassen drift. Er MCP-en utilgjengelig: si det i rapporten, ikke anta at zip = fasit.
 
 **Dekningsregnskap:** `docs/port/fasit-liste-paper.md` — hvilke skjermer har fasit, hvilke må designes uten.
 
-**Plan og rekkefølge:** `docs/port/plan-designport-alle-skjermer.md` — bølger, status per steg, og
-§«Ferdig-definisjon per skjerm» som er den gjeldende kvalitetsporten.
+**Plan og rekkefølge:** `docs/port/PORTPLAN.md` — én sesjon per mal-fasit, avhengighetsrekkefølge,
+og hva som blokkerer hva. Kvalitetsporten er skjermbilde-gaten rett under + `PAPER-ZIP-CHECKLIST.md`.
+(`docs/port/plan-designport-alle-skjermer.md` er **UTGÅTT 12.08.2026** — den er stemplet slik i
+egen header og listet som erstattet i `docs/port/GYLDIGHET.md`. CLAUDE.md pekte på den som
+gjeldende kvalitetsport frem til 17.08; ikke gjeninnfør den henvisningen.)
 
 **Skjermbilde-gaten:** ingen skjerm-PR merges uten at Anders har SETT skjermen. Skjermbilde i samtalen
 (synlig fra iPhone), mobil 390px alltid først, deretter desktop, lys OG mørk, fasit-utsnittet ved siden av,
@@ -78,24 +95,58 @@ fotografert.
 (Den gamle `docs/MASTER-SKJERMPLAN.md` med 6 haker per skjerm er slettet 05.08.2026 — hakene var satt mot et
 avviklet designprosjekt. Ligger i git-historikken.)
 
+### Kontrakten — slik bygges en rute fra en mal-fasit
+Flyttet hit fra `docs/port/rutefasit.md` 16.08.2026, oppdatert til **rutefasit v2** 17.08.2026.
+**Gjelder alltid, skal aldri gjentas i en prompt** (det er hele poenget: 0 tokens per sesjon).
+
+1. Finn ruten i `docs/port/rutefasit.md`. Åpne mal-fasiten m390 + d1280 — **kun i mal-sesjonen**.
+2. Bygg malen 1:1; **avvikslinjen er ALT** som skiller ruten fra malen. Står det ikke der, finnes det ikke.
+3. Tilstander (tom/laster/feil) arves fra malens riggbar. Aldri fake data.
+4. **Én-linje-testen:** kan ikke avviket sies i én setning → egen skjerm → stopp og meld.
+5. Ferdig = variant-rad i `PP-W*-VARIANTS` med m390 + d1280-skjermbilde (i tillegg til
+   skjermbilde-gaten over).
+
+**Token-økonomi (v2, bindende):** én sesjon per mal-fasit, aldri per rute. **Variantruter åpner
+aldri fasit-HTML** — de kodes fra avvikslinjen + komponentkolonnen + mal-komponentens fil i repoet.
+Trenger de mer, har de strøket én-linje-testen: stopp og meld. Les komponenter, ikke skjermer —
+slå opp props i komponentfila. Full strategi + modellvalg per oppgaveklasse: `rutefasit.md` §1–2.
+
+### Claude-følelsen (bindende for alle varianter)
+Flyttet hit fra `docs/port/rutefasit.md` 16.08.2026. Målet er at plattformen kjennes som Claude
+desktop/mobil: samtale først, artefakter ved siden, kommando under fingrene.
+
+- **Chat-først:** `/portal` ER samtalen (fasit `playerhq-chat-*`); konsollen er samtale + artefaktkolonne
+  (PP-2.1-briefen). En variantrute bygger aldri en oppslagstavle der malen har en samtale.
+- **Composer:** festet spørrefelt nederst på alle desktop-flater, mobil kun Hjem (komponent `Composer`).
+  Varianter fjerner den aldri.
+- **⌘K overalt:** CommandPalette (S6 «Alt») er inngangen til alt uten meny-plass — varianter lenker dit
+  i stedet for å legge til nav.
+- **Artefaktkolonnen:** detaljpanelet til høyre (380 px) forklarer og avgjør valgt sak — galleriets
+  hovedfunn var at den manglet. Master–detalj-varianter fyller panelet, aldri en ny side.
+- **Mobil = app:** 430 px-kolonne, TabBar, BottomSheet i stedet for modal, 44 px trykkflater. Ingen
+  desktop-tabell presset inn i 390 px — bruk malens mobiltilstand.
+- **Skall-monopol (F1):** ingen rute bygger egen header/nav/chrome. Avvik = bug.
+- **Paper:** papir/blekk, maks én clay-CTA per skjerm, Poppins/Lora/Plex Mono, alle tall mono med
+  komma-desimal, norsk bokmål, aldri emoji.
+
+**Porteringsrekkefølge og sesjonsinndeling:** `docs/port/PORTPLAN.md` — én sesjon per mal-fasit,
+aldri per rute.
+
 ## Stack
 - **Next.js 16.2.6** (App Router, Turbopack, TS strict) + **React 19.2.4** + Vercel. Node 24 i CI.
 - **Prisma 7.8** + `@prisma/adapter-pg` + **Supabase** Postgres (RLS) — Supabase Auth (Google + e-post/passord).
 - **Tailwind CSS v4** (CSS-first `@theme`, ingen config-fil) — uttrykk via `src/app/globals.css`.
-- **Fonter (verifisert mot kode 2026-08-06 — dette avløser tidligere «fontbyttet er ikke gjennomført»):**
+- **Fonter (re-verifisert mot kode 2026-08-16 — fontporten er GJENNOMFØRT):**
   Paper-fasiten er **Poppins** (UI/titler) + **Lora** (prosa/AI-svar) + **IBM Plex Mono** (tall). Alle tre
   lastes i `src/app/layout.tsx` og eksponeres som `--font-poppins`/`--font-lora`/`--font-ibm-plex-mono`,
   videre som `--p-font-sans`/`--p-font-serif`/`--p-font-mono` i `src/styles/paper-tokens.css`.
-  **Byttet er gjort i de globale tokenene** (`src/app/globals.css`): `--font-sans`/`--font-display` →
-  Poppins, `--font-mono` → IBM Plex Mono (kommentert i koden som gjort 2026-08-06).
-  **Byttet er IKKE fullført i alle scoped stylesheets** — disse hardkoder fortsatt gamle fonter direkte
-  i stedet for å lese `--font-sans`/`--font-display`/`--font-mono`: `src/styles/golfdata-tokens.css`,
-  `src/components/hubs/hubs.css`, `src/components/planlegge-v2/styles.css`,
-  `src/components/teknisk-plan/*.css`, `src/components/onboarding/onboarding.css`, samt inline
-  `fontFamily`-styling i bl.a. `admin-hero.tsx`, `player-hero.tsx`, `cookie-banner.tsx`,
-  `onboard/klubb/klubb-wizard.tsx`, `onboard/coach/coach-wizard.tsx`. Den eldre `--font-ui`-tokenen
-  (fortsatt Inter) brukes fortsatt bredt i `golfdata/`- og `workbench-hybrid/`-komponenter.
-  Åpent punkt i porten: migrer disse til de nye tokenene skjerm for skjerm, ikke i én stor commit.
+  De globale tokenene (`--font-sans`/`--font-display`/`--font-mono` i `globals.css`) OG de scoped
+  stylesheetene (`golfdata-tokens.css`, `onboarding.css`, wizardene) leser alle Paper-fontene;
+  `--font-ui` er broet til `var(--p-ui)` (Poppins). Tidligere avvikslister her (hubs.css,
+  admin-hero/player-hero m.fl.) gjaldt filer som ikke lenger finnes — ikke gjenopprett dem.
+  Kjente småresten (ufarlige): `teknisk-plan.css:16` har Inter kun som *fallback* bak
+  `var(--font-sans)`; `klubb-wizard.tsx:676` har én `fontFamily="Inter"` i en SVG-illustrasjon;
+  `src/components/planlegge-v2/` er død kode uten konsumenter (slettes i PP-B5).
   **Inter Tight er fjernet** — ikke gjeninnfør. Bygg nytt mot Paper-fasiten (dvs. de globale tokenene,
   aldri `--font-familjen-grotesk`/`--font-jetbrains-mono`/`--font-inter` direkte i ny kode).
 - **Lucide React** — eneste ikon-bibliotek. **npm** — pakkebehandler.
@@ -110,58 +161,10 @@ avviklet designprosjekt. Ligger i git-historikken.)
 
 ## Mappestruktur
 
-Størrelsesorden: ~449 `page.tsx`-ruter, ~161 filer med server actions, 158 Prisma-modeller, 81 migrasjoner,
-110 enhetstest-filer, 54 agent-filer. Sjekk filsystemet før du oppretter nye ruter — det finnes flere
-top-level-mapper enn de fire «offisielle» produktene.
-
-```
-src/
-├── app/            # App Router — ~449 ruter
-│   ├── page.tsx              # Marketing (landing)
-│   ├── (marketing)/          # Offentlige sider (layout med markeds-header)
-│   ├── (internal)/           # Interne demoer/labs — ikke prod-flater
-│   ├── auth/  onboard/  inviter/   # Auth-flyter, onboarding, invitasjoner
-│   ├── portal/               # PlayerHQ (spiller-appen)
-│   │   ├── (legacy)/         # Eldre flater under migrering
-│   │   ├── (fullscreen)/     # Fullskjerm-moduser (live/gjennomføring)
-│   │   └── …hovedflater      # planlegge · gjennomfore · analysere · meg · trackman · gameplan m.fl.
-│   ├── admin/                # AgencyOS (coach/admin) — agencyos (cockpit), grupper,
-│   │                         # godkjenninger, kalender, innboks, finance, agent-team m.fl.
-│   ├── forelder/             # Foreldreportal (lese-først)
-│   ├── booking-flyt          # /booking under (marketing) + /portal/booking + /admin/bookinger
-│   ├── team-wang/  team-gfgk/  gfgk-junior/   # Klubb-/skolespesifikke flater
-│   ├── kommando/  meg/  intern/  offline/     # Agent-chat, personlig, intern, PWA-offline
-│   ├── api/                  # REST (cron, webhooks, trackman, booking, public)
-│   ├── sw.ts                 # Serwist service worker-kilde
-│   └── layout.tsx            # Fonter, metadata, PWA-manifest
-├── components/
-│   ├── ui/                   # 21 primitiver (shadcn-basert): button, dialog, sheet, popover,
-│   │                         # dropdown-menu, tabs, toast, input, kpi-card, progress-ring …
-│   ├── v2/                   # Delte v2-primitiver (shell, kalender, datavis, hjelp, domene …)
-│   ├── athletic/             # Kun to undermapper igjen: golfdata/ (v13, overgangslag) + calendars/
-│   ├── shared/               # Utility-komponenter (cookie-banner, cmd-palette, mobile-bottom-nav)
-│   └── admin/ portal/ marketing/ forelder/ coachhq/ hubs/ workbench-hybrid/ planlegge-v2/
-│       sg-hub/ gameplan/ fys-plan/ teknisk-plan/ turneringer/ kommando/ meg/ …
-├── lib/            # domain/ (ferdighetslogikk — SG, hcp, ak-kategori, fys-score, pyramide) ·
-│                   # validation/schemas.ts · auth · prisma.ts · stripe · email · agents/ ·
-│                   # workbench/ · uke-helpers.ts (Oslo-tid) · scrapers/ · trackman/ · portal-*/ · admin-*/
-├── proxy.ts        # Next 16 «middleware» — auth-guards (proxy.ts, IKKE middleware.ts)
-└── app/globals.css # Tailwind v4-tema
-prisma/
-├── schema.prisma   # 158 modeller: User · TrainingPlan(+Session) · Round → Shot → HoleScore ·
-│                   # Subscription · Booking · Lead · CoachAvailability · TestDefinition/TestResult ·
-│                   # DrillMal/OktMal · TrackManSession/TrackManShot · SeasonPlan · PeriodBlock · KommandoTask …
-├── migrations/     # 81 kjørte SQL-migrasjoner
-├── sql/  scripts/  seed-data/
-└── seed.ts · seed-drills.ts · seed-gfgk-facilities.ts …
-scripts/            # Engangs-/driftsscript: seed-screentest*.ts (Øyvind Rohjan) · drill-qa ·
-                    # retag-drill-kategorier · check-action-auth.mjs · audit-rls · …
-docs/               # platform/ (NORDSTJERNE, AGENT-BRIEF, BUSINESS-RULES, DATA-MODEL, PLATFORM-PRD) ·
-                    # skjermtekst/ (copy-kilde) · design-system/TEMA-LYS-MORK.md (tema-fasit) ·
-                    # gdpr/ · juridisk/ · sikkerhet/ · arkiv/
-tests/e2e/          # Én samlet e2e-suite (32 specs, siden 2026-08-03): a11y, PWA, ruter, meta/OG,
-                    # offline, ikoner + auth-guard, IDOR, booking, workbench (fra gamle e2e/)
-```
+Strukturkartet bor i `docs/platform/AGENT-BRIEF.md` §Mappestruktur (flyttet dit 2026-08-16
+— den fila eier agent-konteksten). Kort: fire produkter (marketing, booking, PlayerHQ under
+`portal/`, AgencyOS under `admin/`) + flere top-level-flater — sjekk filsystemet før du
+oppretter nye ruter.
 
 ## Arbeidsregler
 1. **Ikke be om tillatelse for små endringer** — typoverifisering, lint, feilretting.
@@ -192,7 +195,11 @@ tests/e2e/          # Én samlet e2e-suite (32 specs, siden 2026-08-03): a11y, P
 npm run verify && npm test    # FULL sjekk før commit — dekker hele CI-jobben «verify»
 ```
 `verify` = `prisma validate && prisma generate && tsc --noEmit && eslint --quiet src &&
-node scripts/check-action-auth.mjs && npm run build`.
+node scripts/check-action-auth.mjs && node scripts/check-token-gap.mjs &&
+node scripts/check-critical-imports.mjs && npm run build`. Kjør `npm run verify` som
+scriptet (les fra `package.json` ved tvil) — å sette sammen stegene fra denne
+prosebeskrivelsen i hukommelsen har to ganger (2026-08-15, 2026-08-16) gitt en falsk
+grønn lokalt fordi token-gap/critical-imports-stegene ble glemt (se `docs/feillogg.md`).
 `npm run build` = `prisma generate && next build && serwist build serwist.config.mjs` (rekkefølgen er kritisk —
 precache-manifestet globber `.next/`-output).
 

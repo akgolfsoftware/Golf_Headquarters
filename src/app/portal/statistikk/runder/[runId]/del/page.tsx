@@ -18,7 +18,7 @@ type Props = {
 
 export default async function DelRundePage({ params }: Props) {
   const { runId } = await params;
-  const user = await requirePortalUser();
+  const user = await requirePortalUser({ kreverTilgang: "TALENT" });
 
   const runde = await prisma.round.findFirst({
     where: { id: runId, userId: user.id },

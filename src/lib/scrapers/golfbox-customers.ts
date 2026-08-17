@@ -64,6 +64,12 @@ export type TourClassification = {
 /**
  * Klassifiser en turnering ut fra navnet til riktig tour/origin/tier.
  * Junior-signaler (Jr NM, GU/JU-klasser, "junior") → junior-no.
+ *
+ * Narvesen Tour (NGFs nasjonale juniortour) ligger under NGF-kunden (18) i
+ * GolfBox — samme kunde som Srixon/Norgescup — og fanges derfor på navn her,
+ * ikke via egen customerId. Dekningen må verifiseres mot ekte GolfBox-data
+ * ved neste scraper-kjøring (customer-rommet er ikke re-enumerert for
+ * Narvesen spesifikt).
  */
 export function classifyTour(
   name: string,
@@ -80,6 +86,9 @@ export function classifyTour(
     return { tour: isJunior ? "junior-no" : "amateur-no", sourceOrigin: "NORGESCUP", playerTier: isJunior ? "junior" : "amateur" };
   if (/olyo/.test(n))
     return { tour: "junior-no", sourceOrigin: "OLYO", playerTier: "junior" };
+  // Narvesen Tour er alltid junior — uavhengig av junior-signal i navnet.
+  if (/narvesen/.test(n))
+    return { tour: "junior-no", sourceOrigin: "NARVESEN", playerTier: "junior" };
   if (/østlandstour|ostlandstour/.test(n))
     return { tour: isJunior ? "junior-no" : "amateur-no", sourceOrigin: "OSTLANDS", playerTier: isJunior ? "junior" : "amateur" };
   if (/mid ?am/.test(n))

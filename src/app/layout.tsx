@@ -8,6 +8,7 @@ import { SwRegister } from "@/components/sw-register";
 // S-14: CookieBanner + AnalyticsLoader erstatter hardkodet Plausible <Script>.
 // Plausible lastes nå kun etter eksplisitt samtykke fra bruker.
 import { CookieBanner } from "@/components/shared/cookie-banner";
+import { VriTelefonen } from "@/components/shared/vri-telefonen";
 import { AnalyticsLoader } from "@/components/shared/analytics-loader";
 import "./globals.css";
 
@@ -163,6 +164,8 @@ export default async function RootLayout({
         <SpeedInsights />
         {/* S-14: cookie-samtykke + betinget Plausible-lasting */}
         <CookieBanner />
+        {/* Mobil i liggende (Safari-fane): ren CSS-overlay, se globals.css §ak-vri-telefonen */}
+        <VriTelefonen />
         {process.env.NEXT_PUBLIC_PLAUSIBLE_DOMAIN && (
           <AnalyticsLoader domain={process.env.NEXT_PUBLIC_PLAUSIBLE_DOMAIN} />
         )}

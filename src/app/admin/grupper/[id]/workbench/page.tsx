@@ -8,7 +8,8 @@
 
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { requirePortalUser } from "@/lib/auth/requirePortalUser";
+import { requireCapability } from "@/lib/auth/requireCapability";
+import { Capability } from "@/lib/auth/cbac";
 import { prisma } from "@/lib/prisma";
 import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
 import { TilbakeLenke, Kort, Caps } from "@/components/v2";
@@ -21,7 +22,8 @@ export const dynamic = "force-dynamic";
 const DAGNAVN = ["man", "tir", "ons", "tor", "fre", "lør", "søn"];
 
 export default async function GruppeWorkbenchPage({ params }: { params: Promise<{ id: string }> }) {
-  const user = await requirePortalUser({ allow: ["COACH", "ADMIN"] });
+  // G6: gruppe-workbench redigerer gruppens årsplan → EDIT_GROUP_PLANS.
+  const user = await requireCapability(Capability.EDIT_GROUP_PLANS);
   const { id } = await params;
 
   const gruppe = await prisma.group.findUnique({
@@ -29,7 +31,7 @@ export default async function GruppeWorkbenchPage({ params }: { params: Promise<
     select: {
       id: true,
       name: true,
-      _count: { select: { members: true } },
+      _count: { select: { members: { where: { endedAt: null } } } },
       schedules: { select: { startAt: true, endAt: true, location: true }, orderBy: { startAt: "asc" }, take: 6 },
     },
   });

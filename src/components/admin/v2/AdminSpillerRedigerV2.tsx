@@ -3,6 +3,7 @@ import { Caps, Kort, Knapp, StatusPill, TomTilstand, T } from "@/components/v2";
 import { Icon } from "@/components/v2/icon";
 import { ToppbarHoyde } from "@/components/v2/toppbar-hoyde";
 import { AdminSlettSpillerKnappV2 } from "./AdminSlettSpillerKnappV2";
+import { AdminValgtCoachSelectV2, type CoachValg } from "./AdminValgtCoachSelectV2";
 import { lagreSpiller } from "@/app/admin/(legacy)/spillere/[id]/rediger/actions";
 
 /**
@@ -35,6 +36,9 @@ export interface AdminSpillerRedigerV2Data {
   klassetrinn: string;
   hcpInput: string;
   ambisjon: string;
+  // «Valgt coach» (G2) — null = ikke valgt, resolveren utleder fra program/gruppe.
+  valgtCoachId: string | null;
+  coacher: CoachValg[];
   foreldre: RedigerForelder[];
   historikk: RedigerHistorikk[];
 }
@@ -145,7 +149,7 @@ export function AdminSpillerRedigerV2({ data }: { data: AdminSpillerRedigerV2Dat
       <form id="rediger-form" action={lagreSpiller} style={{ gap: T.gap, alignItems: "start" }} className="grid grid-cols-1 lg:grid-cols-[3fr_2fr]">
         <input type="hidden" name="id" value={data.spillerId} />
 
-        <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+        <div className="min-w-0" style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
           <Kort>
             <Caps>Personalia</Caps>
             <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: 14, marginTop: 14 }}>
@@ -174,6 +178,11 @@ export function AdminSpillerRedigerV2({ data }: { data: AdminSpillerRedigerV2Dat
           <Kort>
             <Caps>Coaching</Caps>
             <div style={{ display: "flex", flexDirection: "column", gap: 14, marginTop: 14 }}>
+              <AdminValgtCoachSelectV2
+                spillerId={data.spillerId}
+                valgtCoachId={data.valgtCoachId}
+                coacher={data.coacher}
+              />
               <Felt label="Ambisjon" name="ambisjon" defaultValue={data.ambisjon} hint="Hva spilleren jobber mot — vises i hero" />
               <FeltOmraade label="Interne notater" name="notater" defaultValue="" hint="Kun coach ser dette" />
             </div>
@@ -208,7 +217,7 @@ export function AdminSpillerRedigerV2({ data }: { data: AdminSpillerRedigerV2Dat
           </Kort>
         </div>
 
-        <aside style={{ display: "flex", flexDirection: "column", gap: T.gap }} className="lg:sticky lg:top-32 lg:self-start">
+        <aside style={{ display: "flex", flexDirection: "column", gap: T.gap }} className="min-w-0 lg:sticky lg:top-32 lg:self-start">
           <Kort>
             <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", marginBottom: 10 }}>
               <Caps>Endrings-historikk</Caps>

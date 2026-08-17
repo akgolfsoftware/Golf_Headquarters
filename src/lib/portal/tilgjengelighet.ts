@@ -107,7 +107,7 @@ export async function hentOpptattTid(
   const [grupper, egne, fravaer, okter, skole] = await Promise.all([
     prisma.groupSchedule.findMany({
       where: {
-        group: { members: { some: { userId: spillerId } } },
+        group: { members: { some: { userId: spillerId, endedAt: null } } },
         // Ukentlige tas med selv om startAt er før vinduet — de gjentas inn i det.
         OR: [{ startAt: { lte: til } }],
       },

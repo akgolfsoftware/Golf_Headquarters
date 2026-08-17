@@ -120,9 +120,10 @@ export function AdminLiveBriefV2({ data }: { data: AdminLiveBriefV2Data }) {
   return (
     <div data-paper-wave-h="live-brief" data-paper-pattern style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 1180, margin: "0 auto", width: "100%" }}>
       {hode}
-      <div style={{ display: "grid", gridTemplateColumns: "3fr 2fr", gap: T.gap, alignItems: "start" }}>
-        <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>{kommentarKort}</div>
-        <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>{notaterKort}{start}</div>
+      {/* CSS-responsiv i tillegg til useMobile: SSR/first-paint på 390px traff desktop-griden før hydrering */}
+      <div className="grid grid-cols-1 lg:grid-cols-[3fr_2fr]" style={{ gap: T.gap, alignItems: "start" }}>
+        <div className="min-w-0" style={{ display: "flex", flexDirection: "column", gap: T.gap }}>{kommentarKort}</div>
+        <div className="min-w-0" style={{ display: "flex", flexDirection: "column", gap: T.gap }}>{notaterKort}{start}</div>
       </div>
     </div>
   );

@@ -112,9 +112,7 @@ html[data-v2-tema="dark"] {
 :root {
   /* Råskalaer (tema-uavhengige) */
   --lime-500: #63784A;      /* var Presis-lime — Paper --p-up (mater --compliance-on) */
-  --lime-600: #BCE234;
   --forest-700: #141413;    /* var Presis-grønn — Paper --p-cta (blekk) */
-  --forest-800: #073A2A;
   --graphite-0: #141513;
   --graphite-50: #202120;
   --graphite-100: #282923;
@@ -176,7 +174,7 @@ html[data-v2-tema="dark"] {
   --text-muted: var(--sand-600);
   --text-faint: #686A66;
   --signal: var(--forest-700);
-  --signal-press: var(--forest-800);
+  --signal-press: var(--p-cta-hover); /* Paper: press på blekk-CTA (siste Presis-rest fjernet 16.08) */
   --on-signal: #FFFFFF;
   --glow-signal: 0 0 0 1px rgba(217, 119, 87, 0.35);
   --primary-fill: var(--sand-900);
@@ -235,7 +233,7 @@ html[data-v2-tema="dark"] {
   --text-muted: var(--graphite-600);
   --text-faint: #8A8C86;
   --signal: var(--lime-500);
-  --signal-press: var(--lime-600);
+  --signal-press: var(--p-up); /* Paper mørk: lysere grønn press på signal-knappen */
   --on-signal: var(--graphite-0);
   --glow-signal: 0 0 0 1px rgba(217, 119, 87, 0.4);
   --primary-fill: var(--graphite-900);
@@ -810,4 +808,40 @@ html[data-v2-tema="dark"] {
 /* Bakoverkompat: gammel light-attributt → samme som default (lys) */
 html[data-v2-tema="light"] {
   color-scheme: light;
+}
+
+/* ---------- «Vri telefonen»-overlay (beslutning 16.08.2026, beslutninger.md §PP-A) ----------
+   Mobil i liggende (Safari-fane kan ikke låses til portrett — manifestets
+   orientation: portrait gjelder kun installert PWA): dekk flaten med en rolig
+   Paper-melding. Høyde-gaten (≤ 500px) treffer telefoner på siden, aldri iPad. */
+.ak-vri-telefonen {
+  display: none;
+}
+@media screen and (orientation: landscape) and (max-height: 500px) {
+  .ak-vri-telefonen {
+    position: fixed;
+    inset: 0;
+    z-index: 10000; /* over cookie-banneret (9999) — i liggende er dette hele UI-et */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 24px;
+    text-align: center;
+    background: var(--p-bg);
+    color: var(--p-fg);
+  }
+}
+.ak-vri-telefonen-tittel {
+  font-family: var(--p-font-sans);
+  font-weight: 600;
+  font-size: 17px;
+  margin: 4px 0 0;
+}
+.ak-vri-telefonen-tekst {
+  font-family: var(--p-font-sans);
+  font-size: 13.5px;
+  color: var(--p-muted);
+  margin: 0;
 }

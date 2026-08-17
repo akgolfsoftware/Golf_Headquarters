@@ -99,8 +99,8 @@ Komponenten produktet finnes for. Ett komponentkort med ni seksjoner, fire leven
 
 | Formel | Chips |
 |---|---|
-| `TEK_INNSPILL_L-BALL_CS60_M2_PR2` | traff CS60 · for kort · tempo ustabilt · bra kontakt · vondt |
-| `TEK_PUTT_L-AUTO_CS80_M3_PR3` | startlinjen traff · åpen kølleflate i treff · gikk på autopilot · sto i presset · vondt · sliten |
+| `TEK_INNSPILL_50_LAV_HAST_TRENINGSOMRADE_ALENE` | traff målet · for kort · tempo ustabilt · bra kontakt · vondt |
+| `TEK_PUTT_3_5_AUTO_TRENINGSOMRADE_OBSERVERT` | startlinjen traff · åpen kølleflate i treff · gikk på autopilot · sto i presset · vondt · sliten |
 
 Regelen: 4–6 chips, alltid minst én positiv, én negativ og én kroppslig.
 

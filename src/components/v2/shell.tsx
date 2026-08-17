@@ -78,19 +78,24 @@ export const PLAYERHQ_NAV: V2NavItem[] = [
 ];
 
 /**
- * AgencyOS primær-nav — SJU punkter (Anders 2026-08-13): fase 2-fasitens rail
- * (`fase2/agencyos/*.html`) som grunnmønster, men med Workbench og AgenticOS
- * i stedet for fasitens Innsikt og Oppsett («må nås raskere»). Logoen er
- * appens egen AK-logo, ikke fasitens wordmark.
+ * AgencyOS primær-nav — SJU punkter = fase 2-fasitens rail 1:1
+ * (A1-beslutningen, Anders 2026-08-16, beslutninger.md §PP-A):
+ * Cockpit · Innboks · Kalender · Stall · Plan · Innsikt · Oppsett —
+ * samme punkter, navn og rekkefølge som `fase2/agencyos/*.html`.
+ * Logoen er appens egen AK-logo, ikke fasitens wordmark.
  *
- * Ute av railen, fortsatt fullt tilgjengelige:
- * - Innsikt (/admin/analyse): Cmd+K + «Innsikt»-knappen i konsollens artefaktpanel.
- * - Oppsett (/admin/settings) og Økonomi: AGENCYOS_ROM («Mer» på mobil) + Cmd+K.
- * Sider som sender aktiv="innsikt"/"innstillinger" får ingen markert fane —
+ * Dette reverserer 13.08-avviket (Workbench/AgenticOS i railen). De to er
+ * fortsatt fullt tilgjengelige:
+ * - Workbench: mobil-bunnfanene (egen signert fasit, se WORKBENCH_ITEM) +
+ *   «Plan»-rommet i AGENCYOS_ROM + Cmd+K.
+ * - AgenticOS: eget rom i AGENCYOS_ROM («Mer») + Cmd+K.
+ * Sider som sender aktiv="workbench"/"agenticos" får ingen markert rail-fane —
  * samme bevisste mønster som PlayerHQ-«gjor».
  *
  * «Plan» bruker id "planlegge" fordi hele plan-familien (plans, teknisk-plan,
- * okter, tournaments) allerede sender aktiv="planlegge".
+ * okter, tournaments) allerede sender aktiv="planlegge". «Innsikt» og «Oppsett»
+ * bruker id-ene "innsikt"/"innstillinger" som analyse- og settings-sidene
+ * allerede sender — fanene lyser uten endring i noe kallsted.
  */
 export const AGENCYOS_NAV: V2NavItem[] = [
   { id: "cockpit", label: "Cockpit", icon: "home", href: "/admin/agencyos" },
@@ -98,9 +103,17 @@ export const AGENCYOS_NAV: V2NavItem[] = [
   { id: "kalender", label: "Kalender", icon: "calendar", href: "/admin/kalender" },
   { id: "spillere", label: "Stall", icon: "users", href: "/admin/spillere" },
   { id: "planlegge", label: "Plan", icon: "file-text", href: "/admin/plans" },
-  { id: "workbench", label: "Workbench", icon: "target", href: "/admin/planlegge" },
-  { id: "agenticos", label: "AgenticOS", icon: "bot", href: "/admin/agenticos" },
+  { id: "innsikt", label: "Innsikt", icon: "bar-chart", href: "/admin/analyse" },
+  { id: "innstillinger", label: "Oppsett", icon: "settings", href: "/admin/settings" },
 ];
+
+/**
+ * Workbench i mobil-bunnfanene: fasiten `agencyos-konsoll-mobil.html`
+ * §BUNNFANER (signert 12.08) har Workbench som femte fane — den er en EGEN
+ * fasit og påvirkes ikke av A1-desktoprailen. Etter A1 finnes ikke Workbench
+ * i AGENCYOS_NAV lenger, så mobilnav-en henter den herfra.
+ */
+const WORKBENCH_ITEM: V2NavItem = { id: "workbench", label: "Workbench", icon: "target", href: "/admin/planlegge" };
 
 /** Påfør kø-badge uten å mutere AGENCYOS_NAV-konstanten. erAgency sjekker id/href. */
 export function withAgencyOsNavBadges(koTotalt: number): V2NavItem[] {
@@ -228,6 +241,15 @@ export interface V2ShellProps {
    * `.v2-fade-in`-wrapperen uten høyde som brøt den her.
    */
   hoyde?: "dokument" | "skjerm";
+  /**
+   * PP-B3 (rutefasit §Claude-følelsen: «festet spørrefelt nederst på alle
+   * desktop-flater, mobil kun Hjem»): valgfri `Composer`-node
+   * (components/v2/composer.tsx) som skallet fester nederst på desktop.
+   * Skjult på mobil (`hidden md:block`) — mobil-composeren eies av flaten
+   * selv. Ingen flate sender prop-en ennå; C-bølgene kobler den på skjerm
+   * for skjerm, med fasit side om side.
+   */
+  composer?: ReactNode;
   children: ReactNode;
 }
 
@@ -666,8 +688,10 @@ const AGENCY_MOBIL_PRIMÆR = ["cockpit", "innboks", "spillere", "kalender", "wor
 function AgencyBunnNav({ aktiv, nav, mer, rom }: { aktiv?: string; nav: V2NavItem[]; mer?: V2NavGruppe[]; rom?: V2Rom[] }) {
   const [skuffOpen, setSkuffOpen] = useState(false);
   // Primærseksjoner i kanonisk rekkefølge; hopp over det som ikke finnes i nav-en.
+  // Workbench er fast femte fane per mobil-fasiten (signert 12.08) selv om den
+  // ikke lenger står i desktop-railen (A1 2026-08-16) — hentes fra WORKBENCH_ITEM.
   const primær = AGENCY_MOBIL_PRIMÆR
-    .map((id) => nav.find((n) => n.id === id))
+    .map((id) => nav.find((n) => n.id === id) ?? (id === "workbench" ? WORKBENCH_ITEM : undefined))
     .filter((n): n is V2NavItem => n != null);
   const primærIds = new Set(primær.map((n) => n.id));
   // Alt annet i hovednav-en legges øverst i skuffen — ingen seksjon faller bort.
@@ -752,7 +776,7 @@ function AgencyBunnNav({ aktiv, nav, mer, rom }: { aktiv?: string; nav: V2NavIte
  * BunnNav. Innholdet stables med T.gap — skjermkomponentene rendrer bare
  * stacken, shellen leverer chrome.
  */
-export function V2Shell({ aktiv, nav = PLAYERHQ_NAV, mer, rom, navn = "Øyvind Rohjan", avatarUrl, vekslerData, bredde = "full", hoyde = "dokument", children }: V2ShellProps) {
+export function V2Shell({ aktiv, nav = PLAYERHQ_NAV, mer, rom, navn = "Øyvind Rohjan", avatarUrl, vekslerData, bredde = "full", hoyde = "dokument", composer, children }: V2ShellProps) {
   // AgencyOS: auto-koble Mer-menyen uten å måtte endre ~50 kallsteder
   // (alle importerer samme AGENCYOS_NAV-konstant → ref-likhet).
   // Ikke ref-likhet: withAgencyOsNavBadges() returnerer ny array med badge.
@@ -809,11 +833,8 @@ export function V2Shell({ aktiv, nav = PLAYERHQ_NAV, mer, rom, navn = "Øyvind R
       { prefix: "/admin/bookinger", id: "kalender" },
       { prefix: "/admin/agencyos/uka", id: "kalender" },
       { prefix: "/admin/availability", id: "kalender" },
-      /* «innsikt» er ikke lenger et rail-punkt (fasiten har åtte, uten den).
-         Mappingen står igjen med vilje: id-en treffer ingen rail-knapp, så
-         analyse-rutene får ingen markert seksjon — samme bevisste tomrom som
-         PlayerHQ har for «gjor». Ikke «rett» dette ved å legge Innsikt
-         tilbake i railen; fasiten må endres først. */
+      /* «innsikt» er igjen et rail-punkt (A1 2026-08-16: fase2-railen 1:1) —
+         analyse-familien lyser Innsikt-fanen. */
       { prefix: "/admin/analyse", id: "innsikt" },
       { prefix: "/admin/tester", id: "innsikt" },
       { prefix: "/admin/trackman", id: "innsikt" },
@@ -964,6 +985,30 @@ export function V2Shell({ aktiv, nav = PLAYERHQ_NAV, mer, rom, navn = "Øyvind R
           )}
         </div>
       </div>
+      {/* PP-B3: skallets composer-feste — fast nederst, kun desktop (mobil-
+          composeren eies av flaten selv, jf. rutefasit §Claude-følelsen).
+          Gotchas §Cookie-banneret: bunnforankret chrome forskyver seg med
+          env(safe-area-inset-bottom) + var(--ak-cookie-h); selve 12–16px-
+          bunnluften eier Composer-noden selv. left:64 = railbredden — rail og
+          feste deler md-brytepunktet. zIndex 30: under bunn-nav (40) og
+          Mer-panelet (90/91), over innholdet. */}
+      {composer != null && (
+        <div
+          className="hidden md:block"
+          data-paper-shell-composer
+          style={{
+            position: "fixed",
+            left: 64,
+            right: 0,
+            bottom: 0,
+            zIndex: 30,
+            background: T.bg,
+            paddingBottom: "calc(env(safe-area-inset-bottom) + var(--ak-cookie-h, 0px))",
+          }}
+        >
+          {composer}
+        </div>
+      )}
       {/* Mobil-bunnnav: AgencyOS får dedikert nav + full-høyde «Mer»-skuff (M1);
           PlayerHQ/forelder beholder BunnNavLenker uendret. */}
       {erAgency

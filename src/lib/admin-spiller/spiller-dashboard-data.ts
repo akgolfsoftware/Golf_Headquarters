@@ -154,8 +154,10 @@ export async function loadSpillerDashboardEkstra(playerId: string): Promise<Spil
       take: 5,
       select: { reason: true, startAt: true, endAt: true, isInjury: true, returnedAt: true, description: true },
     }),
-    prisma.subscription.findUnique({
+    prisma.subscription.findFirst({
       where: { userId: playerId },
+      // COACHING sorterer før PLAYERHQ — coach-flaten viser pakken først.
+      orderBy: { kind: "asc" },
       select: { tier: true, status: true, currentPeriodEnd: true, monthlyCredits: true, creditsRemaining: true },
     }),
     prisma.payment.findMany({

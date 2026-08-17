@@ -16,10 +16,28 @@ type Options = {
    * Brukes ikke per nå, men eksponeres for fremtidig fleksibilitet.
    */
   allowAwaitingConsent?: boolean;
+  /**
+   * Minste tilgangsnivå siden krever (plan T2, FAIL-CLOSED):
+   *   "FULL"   (default) — betalende/gratis-full; TALENT og INGEN sendes til
+   *            oppgraderingssiden. En NY side er dermed låst til den
+   *            eksplisitt åpnes.
+   *   "TALENT" — åpen for den låste gratisprofilen (tester, stats, SG-
+   *            registrering, datagolf, talent, booking — talent-allowlist.ts
+   *            er rutekontrakten e2e verifiserer mot).
+   *   "INGEN"  — alle innloggede (konto-/betalingssider: oppgraderingsveien
+   *            MÅ alltid være nåbar).
+   * Gjelder kun PLAYER — coach/admin/forelder har egne flater og rammes ikke.
+   */
+  kreverTilgang?: "FULL" | "TALENT" | "INGEN";
 };
 
 export async function requirePortalUser(options: Options = {}) {
-  const { allow, redirectTo = "/auth/login", allowAwaitingConsent = false } = options;
+  const {
+    allow,
+    redirectTo = "/auth/login",
+    allowAwaitingConsent = false,
+    kreverTilgang = "FULL",
+  } = options;
   // P0-4 (GDPR): getCurrentUser er eneste innloggings-sti for portal/admin og
   // returnerer null for soft-slettet konto (deletedAt satt) — så !user-redirecten
   // under stenger slettede kontoer ute. Ikke dupliser deletedAt-sjekken her: user
@@ -39,6 +57,18 @@ export async function requirePortalUser(options: Options = {}) {
   // sendes til venterom-side i stedet for portalen.
   if (!allowAwaitingConsent && isAwaitingGuardianConsent(user)) {
     redirect("/auth/samtykke-venter");
+  }
+  // T2: tilgangsnivå-gaten (kun spillere — coach/admin har egne flater).
+  // gratisForAlle-vinduet gir alle FULL frem til 1. september, så gaten er
+  // i praksis sovende til da (resolveTilgang eier den logikken).
+  if (user.role === "PLAYER") {
+    const nivaa = user.tilgang.nivaa;
+    if (nivaa === "INGEN" && kreverTilgang !== "INGEN") {
+      redirect("/portal/oppgrader");
+    }
+    if (nivaa === "TALENT" && kreverTilgang === "FULL") {
+      redirect("/portal/oppgrader?fra=laast");
+    }
   }
   return user;
 }

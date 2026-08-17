@@ -6,6 +6,8 @@
 
 import { revalidatePath } from "next/cache";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
+import { assertCapability } from "@/lib/auth/effective-capabilities";
+import { Capability } from "@/lib/auth/cbac";
 import { audit } from "@/lib/audit";
 
 type Result = { ok: true } | { ok: false; feil: string };
@@ -16,6 +18,8 @@ export async function gisFeedback(
   comment?: string,
 ): Promise<Result> {
   const user = await requirePortalUser({ allow: ["COACH", "ADMIN"] });
+  // G6: USE_AGENTS — utenfor COACH-defaulten, grantes per trener.
+  await assertCapability(user, Capability.USE_AGENTS);
   if (!auditId || (rating !== 1 && rating !== -1)) {
     return { ok: false, feil: "Ugyldig input." };
   }

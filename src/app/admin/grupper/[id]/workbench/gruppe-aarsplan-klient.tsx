@@ -12,6 +12,7 @@ import { T, Caps, Kort, Knapp, Icon } from "@/components/v2";
 import { WorkbenchAarsplan, PeriodePalett } from "@/components/portal/v2/WorkbenchAarsplan";
 import type { WorkbenchData } from "@/lib/workbench/load-workbench";
 import type { PeriodeInput } from "@/lib/workbench/perioder";
+import type { RullUtHoppet } from "@/lib/workbench/gruppe-periode-actions";
 
 export function GruppeAarsplanKlient({ gruppeNavn, medlemmer, seasonBlocks, onLagre, onSlett, onRullUt }: {
   gruppeNavn: string;
@@ -20,7 +21,7 @@ export function GruppeAarsplanKlient({ gruppeNavn, medlemmer, seasonBlocks, onLa
   onLagre: (input: PeriodeInput, periodeId?: string) => Promise<{ ok: boolean; periodeId?: string; error?: string }>;
   onSlett: (periodeId: string) => Promise<{ ok: boolean; error?: string }>;
   /** Å1: kopier gruppens perioder til medlemmenes individuelle årsplaner. */
-  onRullUt?: () => Promise<{ ok: boolean; spillere?: number; perioderLagt?: number; hoppet?: string[]; error?: string }>;
+  onRullUt?: () => Promise<{ ok: boolean; spillere?: number; perioderLagt?: number; hoppet?: RullUtHoppet[]; error?: string }>;
 }) {
   const router = useRouter();
   const data: WorkbenchData = { seasonBlocks, weekStartISO: undefined };
@@ -33,9 +34,19 @@ export function GruppeAarsplanKlient({ gruppeNavn, medlemmer, seasonBlocks, onLa
     const res = await onRullUt();
     setRuller(false);
     setRullBekreft(false);
+    const hoppetTekst =
+      res.hoppet && res.hoppet.length > 0
+        ? ` Hoppet over: ${res.hoppet
+            .map((h) =>
+              h.grunn === "KRYSSKILDE"
+                ? `${h.navn} (kolliderer med annen plan${h.periode ? `: ${h.periode}` : ""})`
+                : `${h.navn} (feil)`,
+            )
+            .join(" · ")}.`
+        : "";
     setRullResultat(
       res.ok
-        ? `Rullet ut til ${res.spillere} spillere (${res.perioderLagt} perioder).${res.hoppet && res.hoppet.length > 0 ? ` Hoppet over (hadde alt): ${res.hoppet.join(", ")}.` : ""}`
+        ? `Rullet ut til ${res.spillere} spillere (${res.perioderLagt} perioder).${hoppetTekst}`
         : res.error ?? "Utrulling feilet.",
     );
     router.refresh();

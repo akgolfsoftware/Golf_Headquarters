@@ -29,7 +29,7 @@ export default async function FakturaDetaljPage({
 }: {
   params: Promise<{ id: string }>;
 }) {
-  const user = await requirePortalUser();
+  const user = await requirePortalUser({ kreverTilgang: "INGEN" });
   const { id } = await params;
 
   // Hent faktisk Payment fra DB (kun brukerens egne).

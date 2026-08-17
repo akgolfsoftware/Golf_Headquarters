@@ -265,7 +265,6 @@ Totalt `page.tsx` i app: 457
 - [ ] `/auth/reset-password` — pattern
 - [ ] `/auth/samtykke-venter` — pattern
 - [ ] `/auth/signup` — pattern
-- [ ] `/dev-banekart` — pattern
 - [ ] `/forelder/barn/[childId]` — pattern
 - [ ] `/forelder/barn` — pattern
 - [ ] `/forelder/bookinger` — pattern

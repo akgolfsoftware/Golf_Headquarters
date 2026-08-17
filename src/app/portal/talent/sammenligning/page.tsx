@@ -56,7 +56,7 @@ export default async function SammenligningPage({
 }) {
   if (!FEATURES.TALENT) notFound();
 
-  const user = await requirePortalUser({ allow: ["PLAYER"] });
+  const user = await requirePortalUser({ kreverTilgang: "TALENT", allow: ["PLAYER"] });
   const { q, spiller, periode } = await searchParams;
 
   const mineData = await prisma.talentTracking.findUnique({

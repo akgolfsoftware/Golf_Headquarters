@@ -5,6 +5,12 @@
  * Fasit: designsystem/paper/fase2/agencyos/agencyos-bookinger.html.
  * Hode (Forrige uke + Ny booking) → KPI-rad (5) → «Når er det trykk?»-varmekart
  * → anleggsfaner → bookingtabell (desktop) / kortliste (mobil) → tjenester-kort.
+ *
+ * A2 (16.08.2026): master–detalj på desktop ≥1024px — klikk på en rad velger
+ * bookingen inn i inspektørpanelet (380px, delt primitiv) der den kan forstås
+ * og avgjøres (bekreft/avvis, åpne detaljruten). Bookinger-fasiten selv har
+ * ikke `med-panel`; panelform følger fasitens delte panelmønster (w4-base.css)
+ * per A2-beslutningen. Mobil og 768–1023px beholder liste→detalj uendret.
  */
 
 import { Fragment, useMemo, useState, useTransition, type CSSProperties } from "react";
@@ -20,6 +26,12 @@ import {
   AvatarInit,
   VarmeKart,
   TomTilstand,
+  Inspektorpanel,
+  InspektorBlokk,
+  InspektorLinje,
+  InspektorTom,
+  MasterDetalj,
+  useInspektorSynlig,
   T,
   type StatusTone,
 } from "@/components/v2";
@@ -84,8 +96,9 @@ const STATUS: Record<BookingStatusKey, { label: string; tone: StatusTone }> = {
 
 const pl = (n: number, en: string, flere: string) => `${n} ${n === 1 ? en : flere}`;
 
-/** Inline bekreft/avvis for én PENDING-booking (server-actions + optimistisk dimming). */
-function BekreftAvvis({ id }: { id: string }) {
+/** Inline bekreft/avvis for én PENDING-booking (server-actions + optimistisk dimming).
+ *  `stor`: full knappstørrelse for inspektørpanelets fot (ellers kompakt tabell-variant). */
+function BekreftAvvis({ id, stor }: { id: string; stor?: boolean }) {
   const [pending, start] = useTransition();
   const [feil, setFeil] = useState(false);
   const kjor = (fn: (id: string) => Promise<unknown>) =>
@@ -97,19 +110,79 @@ function BekreftAvvis({ id }: { id: string }) {
         setFeil(true);
       }
     });
+  const kompakt = stor ? undefined : { minHeight: 32, padding: "6px 12px", fontSize: 11.5 };
   return (
     <div
       onClick={(e) => e.stopPropagation()}
-      style={{ display: "inline-flex", gap: 6, opacity: pending ? 0.5 : 1, flex: "none" }}
+      style={{ display: stor ? "grid" : "inline-flex", gridAutoFlow: "column", gridAutoColumns: stor ? "1fr" : undefined, gap: stor ? 8 : 6, opacity: pending ? 0.5 : 1, flex: "none" }}
     >
-      <Knapp icon="check" disabled={pending} onClick={() => kjor(bekreftBooking)} style={{ minHeight: 32, padding: "6px 12px", fontSize: 11.5 }}>
+      <Knapp icon="check" full={stor} disabled={pending} onClick={() => kjor(bekreftBooking)} style={kompakt}>
         Bekreft
       </Knapp>
-      <Knapp ghost disabled={pending} onClick={() => kjor(avvisBooking)} style={{ minHeight: 32, padding: "6px 12px", fontSize: 11.5 }}>
+      <Knapp ghost full={stor} disabled={pending} onClick={() => kjor(avvisBooking)} style={kompakt}>
         Avvis
       </Knapp>
       {feil && <span style={{ fontFamily: T.ui, fontSize: 11, color: T.down, alignSelf: "center" }}>Feilet</span>}
     </div>
+  );
+}
+
+/**
+ * Booking-inspektøren (A2) — valgt rad i 380px-panelet: nok til å forstå og
+ * avgjøre bookingen uten å forlate flaten. Detaljruten (/admin/bookinger/[id])
+ * beholdes og nås fra panelets fot. Kun feltene lista faktisk har — gjest-
+ * kontakt, notat og opprettet-tidspunkt bor på detaljruten (ikke i rad-data,
+ * og skal ikke diktes opp her).
+ */
+function BookingInspektor({ b }: { b: AdminBookingV2Row }) {
+  const st = STATUS[b.status];
+  return (
+    <Inspektorpanel
+      tittel={b.navn}
+      ariaLabel={`Valgt booking: ${b.navn}`}
+      tag={<StatusPill tone={st.tone}>{st.label}</StatusPill>}
+      fot={
+        b.status === "PENDING" ? (
+          <BekreftAvvis id={b.id} stor />
+        ) : (
+          <>
+            <Link href={`/admin/bookinger/${b.id}`} style={{ textDecoration: "none" }}>
+              <Knapp full icon="arrow-right">
+                Åpne booking
+              </Knapp>
+            </Link>
+            {b.planHref && (
+              <Link href={b.planHref} style={{ textDecoration: "none" }}>
+                <Knapp ghost full icon="file-text">
+                  Se plan
+                </Knapp>
+              </Link>
+            )}
+          </>
+        )
+      }
+    >
+      <InspektorBlokk label="Booking">
+        <InspektorLinje label="Når" verdi={b.tid} />
+        <InspektorLinje label="Tjeneste" verdi={b.tjeneste} />
+        <InspektorLinje label="Anlegg" verdi={b.anlegg} />
+        <InspektorLinje label="Pris" verdi={b.prisKr > 0 ? krLabel(b.prisKr) : "0"} />
+      </InspektorBlokk>
+
+      {b.status === "PENDING" && (
+        <p style={{ margin: 0, fontFamily: T.ui, fontSize: 12, lineHeight: 1.55, color: T.mut }}>
+          Forespørselen venter på svar — bekreft eller avvis under.
+        </p>
+      )}
+
+      <Link
+        href={`/admin/bookinger/${b.id}`}
+        className="v2-focus"
+        style={{ fontFamily: T.ui, fontSize: 12, fontWeight: 600, color: T.mut, textDecoration: "none", width: "fit-content" }}
+      >
+        Kontakt, notat og historikk → detaljruten
+      </Link>
+    </Inspektorpanel>
   );
 }
 
@@ -141,6 +214,10 @@ const krLabel = (kr: number) => `${kr.toLocaleString("nb-NO")} kr`;
 export function AdminBookingerV2({ data }: { data: AdminBookingerV2Data }) {
   const router = useRouter();
   const [anleggFilter, setAnleggFilter] = useState<string | null>(null);
+  // A2: valgt booking fyller inspektørpanelet på desktop; klikk igjen fjerner
+  // valget. Under lg finnes ikke panelet — der navigerer radklikk som før.
+  const [valgtId, setValgtId] = useState<string | null>(null);
+  const visPanel = useInspektorSynlig();
 
   const filtrert = useMemo(
     () => (anleggFilter ? data.bookinger.filter((b) => b.anleggType === anleggFilter) : data.bookinger),
@@ -148,6 +225,10 @@ export function AdminBookingerV2({ data }: { data: AdminBookingerV2Data }) {
   );
 
   const gaTilDetalj = (id: string) => router.push(`/admin/bookinger/${id}`);
+  const radKlikk = (id: string) => {
+    if (visPanel) setValgtId((cur) => (cur === id ? null : id));
+    else gaTilDetalj(id);
+  };
 
   // ── Hode ─────────────────────────────────────────────────────
   const hode = (
@@ -332,12 +413,18 @@ export function AdminBookingerV2({ data }: { data: AdminBookingerV2Data }) {
           {filtrert.map((b, i) => {
             const st = STATUS[b.status];
             const sist = i === filtrert.length - 1;
+            const valgt = visPanel && b.id === valgtId;
             return (
               <tr
                 key={b.id}
-                onClick={() => gaTilDetalj(b.id)}
+                onClick={() => radKlikk(b.id)}
                 className="v2-row-h"
-                style={{ cursor: "pointer", borderBottom: sist ? "none" : `1px solid ${T.border}` }}
+                data-valgt={valgt ? "true" : undefined}
+                style={{
+                  cursor: "pointer",
+                  borderBottom: sist ? "none" : `1px solid ${T.border}`,
+                  background: valgt ? T.panel3 : undefined,
+                }}
               >
                 <td style={{ ...td, fontFamily: T.mono, fontVariantNumeric: "tabular-nums", whiteSpace: "nowrap" }}>{b.tid}</td>
                 <td style={{ ...td, minWidth: 0, maxWidth: 200, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{b.navn}</td>
@@ -414,8 +501,24 @@ export function AdminBookingerV2({ data }: { data: AdminBookingerV2Data }) {
     </div>
   );
 
+  const valgtBooking = valgtId ? (data.bookinger.find((b) => b.id === valgtId) ?? null) : null;
+
   return (
-    <div data-paper-wave-h="bookinger" data-paper-pattern style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+    <MasterDetalj
+      data-paper-wave-h="bookinger"
+      data-paper-pattern
+      panel={
+        valgtBooking ? (
+          <BookingInspektor b={valgtBooking} />
+        ) : (
+          <InspektorTom
+            tittel="Ingen booking valgt"
+            tekst="Velg en rad i lista, så ser og avgjør du bookingen her."
+          />
+        )
+      }
+    >
+      <div style={{ display: "flex", flexDirection: "column", gap: T.gap, minWidth: 0 }}>
       {hode}
       {kpi}
       {heatmap}
@@ -446,6 +549,7 @@ export function AdminBookingerV2({ data }: { data: AdminBookingerV2Data }) {
 
       {tjenesterKort}
       {primaerCta}
-    </div>
+      </div>
+    </MasterDetalj>
   );
 }

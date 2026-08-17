@@ -59,7 +59,7 @@ function formatDato(iso?: string): string | null {
 export default async function MinPlanPage() {
   if (!FEATURES.TALENT) notFound();
 
-  const user = await requirePortalUser({ allow: ["PLAYER"] });
+  const user = await requirePortalUser({ kreverTilgang: "TALENT", allow: ["PLAYER"] });
 
   const tracking = await prisma.talentTracking.findUnique({
     where: { userId: user.id },

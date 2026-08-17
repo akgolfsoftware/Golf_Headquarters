@@ -17,7 +17,7 @@ import type { UtstyrsbagInput } from "./actions";
 export const dynamic = "force-dynamic";
 
 export default async function UtstyrsbagPage() {
-  const user = await requirePortalUser({ allow: ["PLAYER", "COACH", "ADMIN"] });
+  const user = await requirePortalUser({ kreverTilgang: "INGEN", allow: ["PLAYER", "COACH", "ADMIN"] });
 
   const bag = await prisma.equipmentBag.findUnique({ where: { userId: user.id } });
 

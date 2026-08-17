@@ -10,9 +10,10 @@
  * Matcher Paper-fasiten (designsystem/paper/fase1/playerhq-chat-desktop.html)
  * strukturelt: rail(V2Shell) + tråd(≤720px lesebredde) + FAST artefaktpanel
  * 360px ved ≥1121px, composer festet nederst. Bygget med EKSISTERENDE
- * v2-primitiver (SamtaleBoble/Skrivefelt/ForslagRad fra components/v2/samtale.tsx,
- * BunnArk) i stedet for å kopiere Paper sin egen rå CSS — appen står fortsatt
- * på v2-tokens (CLAUDE.md invariant 2).
+ * v2-primitiver (SamtaleBoble/ForslagRad fra components/v2/samtale.tsx,
+ * Composer fra components/v2/composer.tsx (PP-B3), BunnArk) i stedet for å
+ * kopiere Paper sin egen rå CSS — appen står fortsatt på v2-tokens
+ * (CLAUDE.md invariant 2).
  *
  * A1-rettelser (2026-08-06): (1) artefaktpanelet er nå en FAST grid-kolonne på
  * desktop — ikke en toggle (useErMobil delt med ArtefaktPanel, samme
@@ -35,7 +36,8 @@ import Link from "next/link";
 import { T } from "@/lib/v2/tokens";
 import { TemaHeaderKnapp } from "@/components/v2/tema";
 import { useToppbarHoyde } from "@/components/v2/toppbar-hoyde";
-import { SamtaleBoble, SamtaleSkriver, SamtaleFeil, Skrivefelt, ForslagRad, SendKnapp } from "@/components/v2/samtale";
+import { SamtaleBoble, SamtaleSkriver, SamtaleFeil, ForslagRad } from "@/components/v2/samtale";
+import { Composer } from "@/components/v2/composer";
 import { Icon } from "@/components/v2/icon";
 import { kategoriFraSnittscore } from "@/lib/domain/ak-kategori";
 import { formatSg } from "@/lib/sg";
@@ -50,12 +52,6 @@ import { FangstSheet } from "./FangstSheet";
 import type { PortalChatMessage } from "./types";
 
 const FORSLAG = ["Hva skal jeg trene i dag?", "Hva var resultatet sist?", "Hva står på ukeplanen?"];
-
-/** Paper .cmini — hintene fasiten viser under skrivefeltet. */
-const SNARVEIER = [
-  { tegn: "/", merkelapp: "Kommandoer", odId: "toggle-slash" },
-  { tegn: "@", merkelapp: "Øvelser og drills", odId: "toggle-at" },
-] as const;
 
 function meldingTekst(m: PortalChatMessage): string {
   return m.parts
@@ -391,7 +387,6 @@ export function PortalChatHjem({
   naaTekst: { ukedag: string; dato: string; klokke: string };
 }) {
   const { messages, status, error, sendMessage } = usePortalChat();
-  const [input, setInput] = useState("");
   const [artefaktApen, setArtefaktApen] = useState(false);
   const [fangstApen, setFangstApen] = useState(false);
   const mobil = useErMobil();
@@ -405,7 +400,6 @@ export function PortalChatHjem({
   }, [messages.length]);
 
   async function send(tekst: string) {
-    setInput("");
     await sendMessage(tekst);
   }
 
@@ -613,133 +607,85 @@ export function PortalChatHjem({
           </div>
         </div>
 
-        {/* ── Composer (Paper: ctxline + field + capture mic monopoly) ── */}
-        <div
-          data-paper-composer
-          style={{
-            flex: "none",
-            borderTop: `1px solid ${T.border}`,
-            background: T.bg,
-            padding: "8px 12px max(12px, env(safe-area-inset-bottom))",
-          }}
-        >
-          <div style={{ maxWidth: 720, margin: "0 auto", display: "flex", flexDirection: "column", gap: 8 }}>
-            <div
-              style={{
-                fontFamily: T.mono,
-                fontSize: 10.5,
-                letterSpacing: "0.06em",
-                textTransform: "uppercase",
-                color: T.mut,
-                padding: "4px 4px 0",
-              }}
-              data-od-id="toggle-context"
-            >
-              Ser: min plan · uke {data.weekNumber}
-              {gjennomfore.nesteOkt ? ` · neste ${gjennomfore.nesteOkt.tid}` : " · ingen økt i dag"}
-            </div>
-            <div style={{ display: "flex", gap: 10, alignItems: "flex-end" }}>
-              {/* Paper .cbox — rammen eier paddingen, textarea er naken inni */}
-              <div
-                style={{
-                  flex: 1,
-                  minWidth: 0,
-                  background: T.panel,
-                  border: `1px solid ${T.border}`,
-                  borderRadius: T.rCard,
-                  padding: "8px 12px",
-                }}
-              >
-                <Skrivefelt
-                  variant="bare"
-                  value={input}
-                  onChange={setInput}
-                  onSend={() => send(input)}
-                  sender={busy}
-                  placeholder="Spør om hva som helst. / for kommandoer, @ for øvelse."
-                />
-                {/* Paper .cmini — hintene er trykkflater som setter tegnet i feltet */}
-                <div style={{ display: "flex", gap: 4, marginTop: 4 }}>
-                  {SNARVEIER.map((snarvei) => (
-                    <button
-                      key={snarvei.tegn}
-                      type="button"
-                      onClick={() => setInput(input.endsWith(snarvei.tegn) ? input : input + snarvei.tegn)}
-                      aria-label={snarvei.merkelapp}
-                      data-od-id={snarvei.odId}
-                      className="v2-press v2-focus"
-                      style={{
-                        width: 44,
-                        height: 44,
-                        minHeight: 44,
-                        display: "grid",
-                        placeItems: "center",
-                        border: "none",
-                        borderRadius: T.rRow,
-                        background: "transparent",
-                        color: T.mut,
-                        fontFamily: T.mono,
-                        fontSize: 14,
-                        cursor: "pointer",
-                      }}
-                    >
-                      {snarvei.tegn}
-                    </button>
-                  ))}
-                </div>
-              </div>
-              {/* Paper: mic = eneste T.handling på Hjem, og står FØR send */}
-              <button
-                type="button"
-                onClick={() => setFangstApen(true)}
-                data-od-id="open-capture"
-                aria-label="Fang en observasjon"
-                aria-haspopup="dialog"
-                className="v2-press v2-focus"
-                style={{
-                  /* Paper .btn.now.mic — --p-tap-capture 60px, only clay on Hjem */
-                  flex: "none",
-                  width: 60,
-                  height: 60,
-                  minHeight: 60,
-                  borderRadius: 9999,
-                  border: "none",
-                  background: T.handling,
-                  color: T.onHandling,
-                  display: "inline-flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  cursor: "pointer",
-                  boxShadow: "0 2px 10px color-mix(in srgb, var(--v2-handling) 40%, transparent)",
-                }}
-                data-paper-en-ting="true"
-              >
-                <Icon name="mic" size={24} />
-              </button>
-              {/* Paper .sendbtn — rund, blekkfylt, med pil. Knappen bodde
-                  inline her etter PP-1.1; den er nå den delte `SendKnapp`, slik
-                  at konsollen (PP-2.1) bruker nøyaktig samme knapp. */}
-              <SendKnapp
-                onClick={() => {
-                  if (input.trim() && !busy) void send(input);
-                }}
-                aktiv={Boolean(input.trim()) && !busy}
-              />
-            </div>
-            {/* Paper .eyebrow under composeren */}
-            <div
-              style={{
-                fontFamily: T.mono,
-                fontSize: 10,
-                fontWeight: 500,
-                letterSpacing: "0.09em",
-                textTransform: "uppercase",
-                color: T.mut,
-              }}
-            >
-              Enter sender · shift+enter ny linje
-            </div>
-          </div>
+        {/* ── Composer — delt komponent (PP-B3), fasit-tro per brytepunkt:
+            mobil = playerhq-chat-mobil.html (ctxline øverst, cbox + clay-mic +
+            pilknapp — mic er skjermens ene T.handling, Kontrakt §3), desktop =
+            playerhq-chat-desktop.html (box + boxbar med nøytral .mic-knapp og
+            «Send» som btn.ink, ctxline under). */}
+        <div style={{ flex: "none" }}>
+          <Composer
+            mobil={mobil}
+            label="Skriv til PlayerHQ"
+            placeholder="Spør om hva som helst. / for kommandoer, @ for øvelse."
+            onSend={send}
+            sender={busy}
+            kontekst={
+              <>
+                Ser: min plan · uke {data.weekNumber}
+                {gjennomfore.nesteOkt ? ` · neste ${gjennomfore.nesteOkt.tid}` : " · ingen økt i dag"}
+              </>
+            }
+            snarveier={{ slashLabel: "Kommandoer", atLabel: "Øvelser og drills" }}
+            maksBredde={720}
+            verktoy={
+              mobil ? (
+                /* Paper .btn.now.mic — --p-tap-capture 60px; clay er mic-ens
+                   monopol på Hjem-mobil (Kontrakt §3). */
+                <button
+                  type="button"
+                  onClick={() => setFangstApen(true)}
+                  data-od-id="open-capture"
+                  aria-label="Fang en observasjon"
+                  aria-haspopup="dialog"
+                  className="v2-press v2-focus"
+                  data-paper-en-ting="true"
+                  style={{
+                    flex: "none",
+                    width: 60,
+                    height: 60,
+                    minHeight: 60,
+                    borderRadius: 9999,
+                    border: "none",
+                    background: T.handling,
+                    color: T.onHandling,
+                    display: "inline-flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    cursor: "pointer",
+                    boxShadow: "0 2px 10px color-mix(in srgb, var(--v2-handling) 40%, transparent)",
+                  }}
+                >
+                  <Icon name="mic" size={24} />
+                </button>
+              ) : (
+                /* Desktop-fasitens .mic — nøytral 60px-flate i boxbaren
+                   (--tap-capture, soft bakgrunn); clay hører mobilen til. */
+                <button
+                  type="button"
+                  onClick={() => setFangstApen(true)}
+                  data-od-id="open-capture"
+                  aria-label="Fang en observasjon"
+                  aria-haspopup="dialog"
+                  className="v2-press v2-focus"
+                  style={{
+                    flex: "none",
+                    width: 60,
+                    height: 60,
+                    minHeight: 60,
+                    display: "grid",
+                    placeItems: "center",
+                    background: T.panel2,
+                    border: `1px solid ${T.border}`,
+                    borderRadius: T.rCard,
+                    color: T.fg,
+                    cursor: "pointer",
+                  }}
+                >
+                  <Icon name="mic" size={22} strokeWidth={1.6} />
+                </button>
+              )
+            }
+          />
         </div>
       </div>
 

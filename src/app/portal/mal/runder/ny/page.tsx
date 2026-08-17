@@ -15,7 +15,7 @@ import { sisteSpilteBaneId } from "@/lib/portal/siste-spilte-bane";
 import { medForst } from "@/lib/portal/baneliste-med-prefill";
 
 export default async function NyRundePage() {
-  const user = await requirePortalUser();
+  const user = await requirePortalUser({ kreverTilgang: "TALENT" });
   const [alleCourses, sisteBaneId] = await Promise.all([
     prisma.courseDefinition.findMany({
       orderBy: { name: "asc" },

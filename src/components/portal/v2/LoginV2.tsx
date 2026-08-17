@@ -425,11 +425,16 @@ function LoginKort() {
           position: "relative",
         }}
       >
+        {/* Kant-til-kant-flate uten å sprenge dokumentbredden: 100vw sentrert,
+            ikke negative inset-marger (ga scrollWidth 428 på 390 — bredde-gaten) */}
         <div
           aria-hidden
           style={{
             position: "absolute",
-            inset: "-24px -60px auto",
+            top: -24,
+            left: "50%",
+            transform: "translateX(-50%)",
+            width: "100vw",
             height: 140,
             background: T.panel2,
             pointerEvents: "none",

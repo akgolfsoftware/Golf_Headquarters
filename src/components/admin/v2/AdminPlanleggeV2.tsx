@@ -9,7 +9,6 @@ import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import {
   Caps,
-  Tittel,
   Kort,
   Rad,
   KpiFlis,
@@ -97,8 +96,9 @@ export function AdminPlanleggeV2({ data }: { data: AdminPlanleggeData }) {
             sub="Når en spiller kobles til deg, planlegger du for hen i Workbench."
           />
         </Kort>
+        {/* A3 (16.08): skjermhandling = ink, aldri clay — clay er reservert «Én ting nå»-kortet. */}
         <Link href="/admin/spillere/ny" style={{ textDecoration: "none", display: "block" }}>
-          <CTAPill icon="user-plus" full enTing>
+          <CTAPill icon="user-plus" full>
             Legg til spiller
           </CTAPill>
         </Link>
@@ -115,10 +115,10 @@ export function AdminPlanleggeV2({ data }: { data: AdminPlanleggeData }) {
     </div>
   );
 
-  // ── B: én primær CTA ──────────────────────────────────────────
+  // ── B: én primær CTA — ink per A3 (clay kun i «Én ting nå»-kortet) ──
   const primaerCta = primaer ? (
     <Link href={workbenchHref(primaer.id)} style={{ textDecoration: "none", display: "block" }}>
-      <CTAPill icon="arrow-right" full enTing>
+      <CTAPill icon="arrow-right" full>
         {primaerTekst}
       </CTAPill>
     </Link>

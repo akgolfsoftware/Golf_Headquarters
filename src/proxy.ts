@@ -159,7 +159,9 @@ export async function proxy(request: NextRequest) {
     path.startsWith("/portal") ||
     path.startsWith("/admin") ||
     path.startsWith("/intern") ||
-    path.startsWith("/dev-banekart") ||
+    // T8: /innsyn (ekstern leser) — capability-sjekken bor i layouten,
+    // proxyen stopper kun uautentiserte (samme arbeidsdeling som /admin).
+    path.startsWith("/innsyn") ||
     erTeamWangCoach;
 
   if (erBeskyttet) {

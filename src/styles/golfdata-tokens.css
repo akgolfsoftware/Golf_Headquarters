@@ -18,9 +18,7 @@
 .golfdata-scope {
   /* ---- Råskalaer (tema-uavhengige, fra colors.css) ---- */
   --lime-500: #63784A;      /* Paper --p-up */
-  --lime-600: #BCE234;
   --forest-700: #141413;    /* Paper --p-cta */
-  --forest-800: #073A2A;
   /* v14-synk (2026-07-08): bakgrunn variant B "løftet" — LÅST etter Anders' fysiske
      sollys-test («ikke for mørkt»). Historie: #0A0B0A → #060706 → #141513 (låst). */
   --graphite-0: #141513;
@@ -94,7 +92,7 @@
   --up: #00753A;
   --down: #C0392F;
   --signal: var(--forest-700);
-  --signal-press: var(--forest-800);
+  --signal-press: var(--p-cta-hover); /* Paper: press på blekk-CTA */
   --on-signal: #FFFFFF;
   --glow-signal: 0 0 0 1px rgba(217, 119, 87, 0.35);
   --primary-fill: var(--sand-900);
@@ -173,7 +171,7 @@ html[data-v2-tema="dark"] .golfdata-scope {
   --up: var(--lime-500);
   --down: #FF6B5A;
   --signal: var(--lime-500);
-  --signal-press: var(--lime-600);
+  --signal-press: var(--p-up); /* Paper mørk: lysere grønn press */
   --on-signal: var(--graphite-0);
   --glow-signal: 0 0 0 1px rgba(217, 119, 87, 0.4);
   --primary-fill: var(--graphite-900);

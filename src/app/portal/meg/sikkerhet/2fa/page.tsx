@@ -10,7 +10,7 @@ import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
 import { TwoFaClient } from "./twofa-client";
 
 export default async function TwoFaPage() {
-  const user = await requirePortalUser();
+  const user = await requirePortalUser({ kreverTilgang: "INGEN" });
 
   return (
     <V2Shell aktiv="meg" bredde="kolonne" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
