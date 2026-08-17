@@ -89,3 +89,14 @@ export interface DagenData {
   /** Resterende ledig tid i dag (minutter), summert fra "ledig"-elementene som ikke er ferdig. */
   ledigMinutterIgjen: number;
 }
+
+/** Fangst-typene fra fasiten — styrer kun emne-teksten på den opprettede Saken (TASK-kanal), ingen egen kolonne. */
+export const FANGST_TYPER = ["oppgave", "avtale", "notat", "husk"] as const;
+export type FangstType = (typeof FANGST_TYPER)[number];
+
+export const FANGST_TYPE_LABEL: Record<FangstType, string> = {
+  oppgave: "Oppgave",
+  avtale: "Avtale",
+  notat: "Notat",
+  husk: "Husk til i morgen",
+};

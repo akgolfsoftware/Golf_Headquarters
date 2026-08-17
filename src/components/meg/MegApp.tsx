@@ -9,9 +9,9 @@
  * Alle ti artefaktene (saker, sak, vakt, dagen, brief, journal, review,
  * maskinrom, historikk, innstillinger) + fangst styres av activeArtifact,
  * IKKE egne ruter (nattsesjon-prompt Fase 2 punkt 1). «saker», «sak»,
- * «maskinrom», «vakt», «dagen» og «historikk» har ekte innhold — resten
- * viser en ærlig «kommer snart»-tilstand, se natt-rapport.md for hva som
- * gjenstår.
+ * «maskinrom», «vakt», «dagen», «historikk» og «fangst» har ekte innhold —
+ * resten viser en ærlig «kommer snart»-tilstand, se natt-rapport.md for
+ * hva som gjenstår.
  */
 import { useCallback, useRef, useState } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
@@ -31,9 +31,10 @@ import { MaskinromArtefakt } from "@/components/meg/artefakter/MaskinromArtefakt
 import { KalendervaktArtefakt } from "@/components/meg/artefakter/KalendervaktArtefakt";
 import { DagenArtefakt } from "@/components/meg/artefakter/DagenArtefakt";
 import { HistorikkArtefakt } from "@/components/meg/artefakter/HistorikkArtefakt";
+import { FangstArtefakt } from "@/components/meg/artefakter/FangstArtefakt";
 import type { Sak } from "@/generated/prisma/client";
 import { SakStatus } from "@/generated/prisma/enums";
-import type { Avvik, DagenData, LoggRad, SystemHelse } from "@/lib/jarvis/types";
+import type { Avvik, DagenData, FangstType, LoggRad, SystemHelse } from "@/lib/jarvis/types";
 
 type MutasjonSvar = { ok: true } | { ok: false; feil: string };
 
@@ -47,6 +48,7 @@ export function MegApp({
   naServertid,
   godkjennSak,
   avvisSak,
+  opprettFangst,
 }: {
   brukernavn: string;
   saker: Sak[];
@@ -58,6 +60,7 @@ export function MegApp({
   naServertid: string;
   godkjennSak: (id: string) => Promise<MutasjonSvar>;
   avvisSak: (id: string) => Promise<MutasjonSvar>;
+  opprettFangst: (type: FangstType, tekst: string) => Promise<MutasjonSvar>;
 }) {
   const router = useRouter();
   const pathname = usePathname();
@@ -114,6 +117,8 @@ export function MegApp({
     artefaktInnhold = <DagenArtefakt data={dagen} na={na} onApneSaker={() => apneArtefakt("saker")} />;
   } else if (activeArtifact === "historikk") {
     artefaktInnhold = <HistorikkArtefakt logg={logg} na={na} onVelgSak={velgSak} />;
+  } else if (activeArtifact === "fangst") {
+    artefaktInnhold = <FangstArtefakt onFang={opprettFangst} />;
   } else {
     artefaktInnhold = (
       <InspektorTom

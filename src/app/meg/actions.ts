@@ -18,13 +18,23 @@ import { revalidatePath } from "next/cache";
 import { notFound } from "next/navigation";
 import { getCurrentUser } from "@/lib/auth/getCurrentUser";
 import { prisma } from "@/lib/prisma";
-import { SakStatus } from "@/generated/prisma/enums";
+import { SakKanal, SakStatus } from "@/generated/prisma/enums";
+import { FANGST_TYPER, FANGST_TYPE_LABEL, type FangstType } from "@/lib/jarvis/types";
 
 async function kreverAdmin() {
   const user = await getCurrentUser();
   if (!user || user.role !== "ADMIN") notFound();
   return user;
 }
+
+/**
+ * Fangsten-frist: ingen tredjepart venter på svar (dette er Anders' egen
+ * notering, ikke en innkommende henvendelse), så SAKER_SLA_TIMER (6t,
+ * scripts/saker-innsamling/env.ts) passer ikke. 24t er en enkel, forklarbar
+ * standard — nok tid til at «husk til i morgen»-fangster fortsatt vises som
+ * "venter" gjennom morgendagen.
+ */
+const FANGST_FRIST_MS = 24 * 60 * 60 * 1000;
 
 export async function godkjennSak(id: string): Promise<{ ok: true } | { ok: false; feil: string }> {
   await kreverAdmin();
@@ -44,6 +54,38 @@ export async function avvisSak(id: string): Promise<{ ok: true } | { ok: false; 
   } catch {
     return { ok: false, feil: "Fant ikke saken — den kan allerede være behandlet." };
   }
+  revalidatePath("/meg");
+  return { ok: true };
+}
+
+/**
+ * Fangsten (skjerm 12) — under 20 sekunder, én hånd: en rask notering havner
+ * som ny Sak (kanal TASK, status VENTER) i den vanlige køen, «triage sorterer
+ * resten» (fasitens formulering — ingen egen klassifisering skjer her, det er
+ * samme jobb triage-agenten allerede gjør for de andre kanalene).
+ */
+export async function opprettFangst(
+  type: FangstType,
+  tekst: string,
+): Promise<{ ok: true } | { ok: false; feil: string }> {
+  await kreverAdmin();
+  const renTekst = tekst.trim();
+  if (!renTekst) return { ok: false, feil: "Tom tekst — ingenting å fange." };
+  if (!FANGST_TYPER.includes(type)) return { ok: false, feil: "Ukjent fangst-type." };
+
+  const naa = new Date();
+  await prisma.sak.create({
+    data: {
+      kanal: SakKanal.TASK,
+      avsender: "Egen fangst",
+      emne: FANGST_TYPE_LABEL[type],
+      innhold: renTekst,
+      status: SakStatus.VENTER,
+      kildeId: null,
+      frist: new Date(naa.getTime() + FANGST_FRIST_MS),
+      provenance: { kilde: "fangst", type, opprettet: naa.toISOString() },
+    },
+  });
   revalidatePath("/meg");
   return { ok: true };
 }

@@ -9,7 +9,7 @@ import { notFound } from "next/navigation";
 import { getCurrentUser } from "@/lib/auth/getCurrentUser";
 import { lagPrismaRepository } from "@/lib/jarvis/repository";
 import { MegApp } from "@/components/meg/MegApp";
-import { godkjennSak, avvisSak } from "./actions";
+import { godkjennSak, avvisSak, opprettFangst } from "./actions";
 
 export const dynamic = "force-dynamic";
 
@@ -37,6 +37,7 @@ export default async function MegPage() {
       naServertid={new Date().toISOString()}
       godkjennSak={godkjennSak}
       avvisSak={avvisSak}
+      opprettFangst={opprettFangst}
     />
   );
 }
