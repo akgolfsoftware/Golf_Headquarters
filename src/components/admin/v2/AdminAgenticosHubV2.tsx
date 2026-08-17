@@ -254,7 +254,8 @@ function DriftPanel({ data }: { data: AgenticosHubData }) {
       <Kort eyebrow="Ruter som samles her" pad="4px 16px">
         <Rad title="/admin/agents" meta={<Caps size={9}>→ hit</Caps>} last={false} />
         <Rad title="/admin/agent-team" meta={<Caps size={9}>→ hit</Caps>} last={false} />
-        <Rad title="/kommando/*" meta={<Caps size={9}>4 stubber ut</Caps>} last />
+        <Rad title="/kommando/*" meta={<Caps size={9}>4 stubber ut</Caps>} last={false} />
+        <Rad title="/meg/dispatch + morgenbrief" meta={<Caps size={9}>→ brief</Caps>} last />
       </Kort>
 
       <Link href={data.godkjenningerHref} style={{ textDecoration: "none" }}>
