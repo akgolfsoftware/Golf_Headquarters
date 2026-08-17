@@ -49,7 +49,16 @@ export default async function DubletterPage() {
 
   const kandidater = await prisma.tournament.findMany({
     where: { sourceOrigin: { not: "MANUAL" }, mergedIntoId: null },
-    select: { id: true, name: true, startDate: true, endDate: true, location: true, sourceOrigin: true, tour: true },
+    select: {
+      id: true,
+      name: true,
+      startDate: true,
+      endDate: true,
+      location: true,
+      sourceOrigin: true,
+      tour: true,
+      _count: { select: { entries: true, results: true, publicEntries: true } },
+    },
   });
 
   const liste: MergeKandidat[] = manuals.map((m) => {
@@ -67,9 +76,13 @@ export default async function DubletterPage() {
           id: k.id,
           name: k.name,
           startDate: k.startDate,
+          endDate: k.endDate,
           location: k.location,
           sourceOrigin: k.sourceOrigin,
           tour: k.tour,
+          antallEntries: k._count.entries,
+          antallResults: k._count.results,
+          antallPublicEntries: k._count.publicEntries,
           score: overlap * 100 - Math.floor(datoDiff / (24 * 60 * 60 * 1000)),
         };
       })
@@ -95,9 +108,13 @@ export default async function DubletterPage() {
         id: f.id,
         name: f.name,
         startDate: f.startDate.toISOString(),
+        endDate: f.endDate?.toISOString() ?? null,
         location: f.location,
         sourceOrigin: f.sourceOrigin,
         tour: f.tour,
+        antallEntries: f.antallEntries,
+        antallResults: f.antallResults,
+        antallPublicEntries: f.antallPublicEntries,
         score: f.score,
       })),
     };

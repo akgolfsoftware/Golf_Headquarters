@@ -118,6 +118,23 @@ export default async function TurneringerPage() {
     where: { sourceOrigin: "MANUAL", mergedIntoId: null },
   });
 
+  // KPI-rad (fasit agencyos-turneringer.html): stallens dekning + synk-hull,
+  // ikke bare listen under. Stallstørrelse = aktive PLAYER-brukere.
+  const [stallStorrelse, paameldteSpillere, utenKobling] = await Promise.all([
+    prisma.user.count({ where: { role: "PLAYER" } }),
+    prisma.tournamentEntry
+      .findMany({ where: { entryStatus: { not: "WITHDRAWN" } }, select: { userId: true }, distinct: ["userId"] })
+      .then((rows) => rows.length),
+    // Scrapet resultat (PublicPlayerEntry) uten kobling til en PlayerHQ-bruker
+    // — spilleren finnes i turneringen, men ikke koblet til en konto her.
+    prisma.publicPlayerEntry.count({
+      where: {
+        tournament: { startDate: { gte: new Date(now.getFullYear(), 0, 1) }, mergedIntoId: null },
+        player: { linkedUser: null },
+      },
+    }),
+  ]);
+
   return (
     <V2Shell bredde="kolonne" aktiv="planlegge" nav={AGENCYOS_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
       <div style={{ marginBottom: 12 }}>
@@ -125,7 +142,14 @@ export default async function TurneringerPage() {
           <Caps size={10}>Norge-data · dekning og toppliste →</Caps>
         </Link>
       </div>
-      <AdminTurneringerV2 data={{ sesong: now.getFullYear(), rader, dublettAntall }} />
+      <AdminTurneringerV2
+        data={{
+          sesong: now.getFullYear(),
+          rader,
+          dublettAntall,
+          kpi: { paameldteSpillere, stallStorrelse, utenKobling },
+        }}
+      />
     </V2Shell>
   );
 }
