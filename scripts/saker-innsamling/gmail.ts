@@ -13,6 +13,8 @@ import "../_env";
 import type { gmail_v1 } from "googleapis";
 import { getGmailApi } from "@/lib/google-gmail";
 import { prisma } from "@/lib/prisma";
+import { runAgent } from "@/lib/agents/agent-runner";
+import { JARVIS_AGENT_NAVN } from "@/lib/jarvis/agent-navn";
 import { hentAdminGoogleTilkobling } from "./google-tilkobling";
 import { lesSakerInnsamlingEnv, SAKER_SLA_TIMER } from "./env";
 
@@ -98,16 +100,20 @@ async function sendTelegramOppsummering(tekst: string): Promise<void> {
   }
 }
 
-async function main() {
-  const env = lesSakerInnsamlingEnv();
-
+/**
+ * Selve innsamlingen — kjøres inne i runAgent() slik at resultatet/feilen
+ * logges til AgentRun (`jarvis-gmail-innsamling`), som Maskinrommet-skjermen
+ * leser helsen sin fra (src/lib/jarvis/repository.ts). Kaster på feil som
+ * bør telle som en FEILET-kjøring (manglende tilkobling, listing feilet) —
+ * runAgent fanger, logger AgentRun status ERROR og rethrower til main().
+ */
+async function samleInn(env: ReturnType<typeof lesSakerInnsamlingEnv>) {
   const conn = await hentAdminGoogleTilkobling();
   if (!conn) {
-    console.error("[saker-gmail] Ingen aktiv Google-tilkobling (ADMIN) — kan ikke hente e-post. Avbryter.");
     await sendTelegramOppsummering(
       "⚠️ Saker-innsamler (Gmail) kunne ikke kjøre: ingen aktiv Google-tilkobling. Koble til på nytt i AgencyOS.",
     );
-    return;
+    throw new Error("Ingen aktiv Google-tilkobling (ADMIN)");
   }
 
   const gmail = getGmailApi(conn);
@@ -116,9 +122,8 @@ async function main() {
     const liste = await gmail.users.messages.list({ userId: "me", q: env.gmailQuery, maxResults: 50 });
     meldinger = liste.data.messages ?? [];
   } catch (err) {
-    console.error("[saker-gmail] Kunne ikke liste e-post:", err instanceof Error ? err.message : err);
     await sendTelegramOppsummering("⚠️ Saker-innsamler (Gmail) kunne ikke liste e-post fra Gmail. Sjekk manuelt.");
-    return;
+    throw err;
   }
 
   console.log(`[saker-gmail] Fant ${meldinger.length} e-post(er) å vurdere (søk: "${env.gmailQuery}").`);
@@ -178,6 +183,13 @@ async function main() {
     `${hoppetOverStoy} filtrert som støy · ${feilet} feilet.`;
   console.log(`[saker-gmail] ${oppsummering}`);
   await sendTelegramOppsummering(oppsummering);
+
+  return { output: { nyeSaker, hoppetOverDuplikat, hoppetOverStoy, feilet } };
+}
+
+async function main() {
+  const env = lesSakerInnsamlingEnv();
+  await runAgent(JARVIS_AGENT_NAVN.gmail, null, () => samleInn(env));
 }
 
 main()

@@ -8,9 +8,8 @@
  *
  * Alle ti artefaktene (saker, sak, vakt, dagen, brief, journal, review,
  * maskinrom, historikk, innstillinger) + fangst styres av activeArtifact,
- * IKKE egne ruter (nattsesjon-prompt Fase 2 punkt 1). Kun «saker» og «sak»
- * har ekte innhold ennå — resten viser en ærlig «kommer snart»-tilstand,
- * se natt-rapport.md for hva som gjenstår.
+ * IKKE egne ruter (nattsesjon-prompt Fase 2 punkt 1). Alle elleve har nå
+ * ekte innhold — se natt-rapport.md for historikken.
  */
 import { useCallback, useRef, useState } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
@@ -18,7 +17,6 @@ import { T } from "@/lib/v2/tokens";
 import { Icon } from "@/components/v2/icon";
 import { TemaHeaderKnapp } from "@/components/v2/tema";
 import { Composer } from "@/components/v2/composer";
-import { InspektorTom } from "@/components/v2/inspektorpanel";
 import { ArtefaktPanel, useErMobil } from "@/components/portal/v2/chat/ArtefaktPanel";
 import { ARTEFAKT_TITTEL, erArtefaktType, type ArtefaktType } from "@/lib/jarvis/artefakt";
 import { enTingNa } from "@/lib/jarvis/en-ting-na";
@@ -26,24 +24,64 @@ import { EnTingNaKort } from "@/components/meg/EnTingNaKort";
 import { MegPalett } from "@/components/meg/MegPalett";
 import { SakerArtefakt } from "@/components/meg/artefakter/SakerArtefakt";
 import { SakArtefakt } from "@/components/meg/artefakter/SakArtefakt";
+import { MaskinromArtefakt } from "@/components/meg/artefakter/MaskinromArtefakt";
+import { KalendervaktArtefakt } from "@/components/meg/artefakter/KalendervaktArtefakt";
+import { DagenArtefakt } from "@/components/meg/artefakter/DagenArtefakt";
+import { HistorikkArtefakt } from "@/components/meg/artefakter/HistorikkArtefakt";
+import { FangstArtefakt } from "@/components/meg/artefakter/FangstArtefakt";
+import { MorgenbriefArtefakt } from "@/components/meg/artefakter/MorgenbriefArtefakt";
+import { KveldsjournalArtefakt } from "@/components/meg/artefakter/KveldsjournalArtefakt";
+import { UkesreviewArtefakt } from "@/components/meg/artefakter/UkesreviewArtefakt";
+import { InnstillingerArtefakt } from "@/components/meg/artefakter/InnstillingerArtefakt";
 import type { Sak } from "@/generated/prisma/client";
 import { SakStatus } from "@/generated/prisma/enums";
+import type {
+  Avvik,
+  BriefSnapshot,
+  DagenData,
+  FangstType,
+  Innstillinger,
+  InnstillingEndring,
+  LoggRad,
+  SystemHelse,
+  UkesreviewData,
+} from "@/lib/jarvis/types";
 
 type MutasjonSvar = { ok: true } | { ok: false; feil: string };
 
 export function MegApp({
   brukernavn,
   saker,
+  systemHelse,
+  avvik,
+  dagen,
+  logg,
+  morgenbrief,
+  kveldsjournal,
+  ukesreview,
+  innstillinger,
   naServertid,
   godkjennSak,
   avvisSak,
+  opprettFangst,
+  oppdaterInnstilling,
 }: {
   brukernavn: string;
   saker: Sak[];
+  systemHelse: SystemHelse;
+  avvik: Avvik[];
+  dagen: DagenData;
+  logg: LoggRad[];
+  morgenbrief: BriefSnapshot;
+  kveldsjournal: BriefSnapshot;
+  ukesreview: UkesreviewData;
+  innstillinger: Innstillinger;
   /** ISO-streng fra serveren — unngår klient/server-hydreringsavvik (Oslo vs UTC, samme mønster som KonsollChat sin `klokke`-prop). */
   naServertid: string;
   godkjennSak: (id: string) => Promise<MutasjonSvar>;
   avvisSak: (id: string) => Promise<MutasjonSvar>;
+  opprettFangst: (type: FangstType, tekst: string) => Promise<MutasjonSvar>;
+  oppdaterInnstilling: (endring: InnstillingEndring) => Promise<MutasjonSvar>;
 }) {
   const router = useRouter();
   const pathname = usePathname();
@@ -92,13 +130,26 @@ export function MegApp({
     artefaktInnhold = (
       <SakArtefakt key={valgtSak?.id ?? "none"} sak={valgtSak} onGodkjenn={godkjennSak} onAvvis={avvisSak} />
     );
-  } else {
+  } else if (activeArtifact === "maskinrom") {
+    artefaktInnhold = <MaskinromArtefakt data={systemHelse} na={na} />;
+  } else if (activeArtifact === "vakt") {
+    artefaktInnhold = <KalendervaktArtefakt avvik={avvik} />;
+  } else if (activeArtifact === "dagen") {
+    artefaktInnhold = <DagenArtefakt data={dagen} na={na} onApneSaker={() => apneArtefakt("saker")} />;
+  } else if (activeArtifact === "historikk") {
+    artefaktInnhold = <HistorikkArtefakt logg={logg} na={na} onVelgSak={velgSak} />;
+  } else if (activeArtifact === "fangst") {
+    artefaktInnhold = <FangstArtefakt onFang={opprettFangst} />;
+  } else if (activeArtifact === "brief") {
     artefaktInnhold = (
-      <InspektorTom
-        tittel={`${ARTEFAKT_TITTEL[activeArtifact]} kommer snart`}
-        tekst="Denne flaten er ikke portet ennå — se natt-rapport.md for status og prioritert rekkefølge."
-      />
+      <MorgenbriefArtefakt saker={saker} dagen={dagen} brief={morgenbrief} na={na} onVelgSak={velgSak} onApneDagen={() => apneArtefakt("dagen")} />
     );
+  } else if (activeArtifact === "journal") {
+    artefaktInnhold = <KveldsjournalArtefakt saker={saker} logg={logg} brief={kveldsjournal} na={na} onVelgSak={velgSak} />;
+  } else if (activeArtifact === "review") {
+    artefaktInnhold = <UkesreviewArtefakt data={ukesreview} />;
+  } else {
+    artefaktInnhold = <InnstillingerArtefakt innstillinger={innstillinger} onEndre={oppdaterInnstilling} />;
   }
 
   return (

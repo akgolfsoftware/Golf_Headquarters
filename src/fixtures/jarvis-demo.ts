@@ -10,7 +10,28 @@
 // spillerdata») er dermed holdt, ikke bare unngått.
 import type { Sak } from "@/generated/prisma/client";
 import { SakKanal, SakStatus } from "@/generated/prisma/enums";
-import type { Avvik, InnsamlerStatus, LoggRad } from "@/lib/jarvis/types";
+import type {
+  Avvik,
+  BriefKind,
+  BriefSnapshot,
+  DagenData,
+  Innstillinger,
+  InnsamlerStatus,
+  LoggRad,
+  SystemHelse,
+  UkesreviewData,
+} from "@/lib/jarvis/types";
+import { STANDARD_INNSTILLINGER } from "@/lib/jarvis/types";
+import type { KalenderHendelse } from "@/lib/meg/connectors/google";
+import {
+  osloDagGrenser,
+  byggAvtaleElementer,
+  byggInnboksblokker,
+  byggLedigElementer,
+  summerLedigMinutterIgjen,
+} from "@/lib/jarvis/dagen";
+import { osloUkeGrenser, beregnSlaEtterlevelse, tellPerKanal } from "@/lib/jarvis/ukesreview";
+import { ukenummer } from "@/lib/uke-helpers";
 
 const NA = () => new Date();
 const timerFraNa = (t: number) => new Date(NA().getTime() + t * 60 * 60 * 1000);
@@ -178,17 +199,84 @@ export const demoLoggRader: LoggRad[] = demoSaker
   }));
 
 export const demoInnsamlere: InnsamlerStatus[] = [
-  { id: "gmail", navn: "Gmail", helse: "OK", sistKjort: timerFraNa(-0.1).toISOString(), feilmelding: null },
-  { id: "imessage", navn: "iMessage/SMS", helse: "OK", sistKjort: timerFraNa(-0.2).toISOString(), feilmelding: null },
   {
-    id: "telegram",
-    navn: "Telegram",
-    helse: "FEILET",
-    sistKjort: timerFraNa(-6).toISOString(),
-    feilmelding: "Webhook svarte 401 — sjekk MEG_TELEGRAM_ALLOWED_CHAT_ID.",
+    id: "gmail",
+    navn: "Gmail",
+    helse: "OK",
+    sistKjort: timerFraNa(-0.1).toISOString(),
+    feilmelding: null,
+    frekvens: "hvert 10. min",
   },
-  { id: "kalender", navn: "Kalendervakt", helse: "KJORER", sistKjort: null, feilmelding: null },
+  {
+    id: "imessage",
+    navn: "iMessage/SMS",
+    helse: "FEILET",
+    sistKjort: timerFraNa(-3.5).toISOString(),
+    feilmelding: "Full Disk Access mangler — chat.db kan ikke åpnes.",
+    frekvens: "manuell (ingen LaunchAgent ennå)",
+  },
 ];
+
+export const demoSystemHelse: SystemHelse = {
+  innsamlere: demoInnsamlere,
+  aiKostSum: { inputTokens: 84213, outputTokens: 19042, costUsd: 0.62, antallKall: 11 },
+  lokalHelseTilgjengelig: false,
+};
+
+export const demoKalenderHendelser: KalenderHendelse[] = [
+  { id: "cal-1", tittel: "Trening: Filip", sted: "GFGK simulator", start: timerFraNa(0.3).toISOString(), slutt: timerFraNa(1.8).toISOString(), heldag: false },
+  { id: "cal-2", tittel: "Juniorgruppa", sted: "GFGK range", start: timerFraNa(2.8).toISOString(), slutt: timerFraNa(4.3).toISOString(), heldag: false },
+  { id: "cal-3", tittel: "Møte: Øyvind Rossbach", sted: "WANG", start: timerFraNa(5).toISOString(), slutt: timerFraNa(6).toISOString(), heldag: false },
+];
+
+function byggDemoDagen(): DagenData {
+  const na = NA();
+  const grenser = osloDagGrenser(na);
+  const avtaler = byggAvtaleElementer(demoKalenderHendelser, na);
+  const innboksblokker = byggInnboksblokker(demoSaker, grenser.start, na);
+  const opptatt = [...avtaler, ...innboksblokker];
+  const ledig = byggLedigElementer(opptatt, grenser, na);
+  const elementer = [...opptatt, ...ledig].sort((a, b) => new Date(a.start).getTime() - new Date(b.start).getTime());
+  return {
+    kalenderTilgjengelig: true,
+    kalenderFeil: null,
+    elementer,
+    ledigMinutterIgjen: summerLedigMinutterIgjen(ledig, na),
+  };
+}
+
+export const demoBrief: Record<BriefKind, BriefSnapshot> = {
+  morgenbrief: {
+    innhold:
+      "Tett fra 10 til 15:30 i dag, så rolig kveld frem til styremøtet. Øyvind venter fortsatt på svar om uttaket — ta den først. Bekreft simulatortiden til GFGK før 13:21.",
+    generert: timerFraNa(-1.2).toISOString(),
+  },
+  kveldsjournal: {
+    innhold: "Tre saker lukket i dag, alle innen frist. Restansen til i morgen er kort — ingenting haster ved dagens slutt.",
+    generert: timerFraNa(-9).toISOString(),
+  },
+};
+
+function byggDemoUkesreview(): UkesreviewData {
+  const na = NA();
+  const grenser = osloUkeGrenser(na);
+  const avgjorte = demoSaker.filter((s) => s.status !== SakStatus.VENTER && s.status !== SakStatus.UTLOPT);
+  const sla = beregnSlaEtterlevelse(avgjorte);
+  return {
+    ukenummer: ukenummer(na),
+    periodeStart: grenser.start.toISOString(),
+    periodeSlutt: grenser.slutt.toISOString(),
+    slaEtterlevelse: {
+      prosentUnderFrist: sla.prosentUnderFrist,
+      avgjorteMedFrist: sla.antall,
+      medianSvartidMin: sla.medianSvartidMin,
+      prosentUnderFristForrigeUke: 88,
+    },
+    sakerPerKanal: tellPerKanal(demoSaker),
+    kalenderavvikFanget: 0,
+    aiKost: { inputTokens: 84213, outputTokens: 19042, costUsd: 0.62, antallKall: 11 },
+  };
+}
 
 /** Repository-grensesnittet UI-en programmerer mot — bytt implementasjon uten UI-endring. */
 export interface JarvisRepository {
@@ -196,7 +284,11 @@ export interface JarvisRepository {
   hentSak(id: string): Promise<Sak | null>;
   hentAvvik(): Promise<Avvik[]>;
   hentLogg(): Promise<LoggRad[]>;
-  hentInnsamlere(): Promise<InnsamlerStatus[]>;
+  hentSystemHelse(): Promise<SystemHelse>;
+  hentDagen(saker: Sak[]): Promise<DagenData>;
+  hentBrief(kind: BriefKind): Promise<BriefSnapshot>;
+  hentUkesreview(): Promise<UkesreviewData>;
+  hentInnstillinger(userId: string): Promise<Innstillinger>;
 }
 
 /** Demo-implementasjon — statisk fixture-data, ingen nettverk/DB. */
@@ -214,8 +306,20 @@ export function lagDemoRepository(): JarvisRepository {
     async hentLogg() {
       return demoLoggRader;
     },
-    async hentInnsamlere() {
-      return demoInnsamlere;
+    async hentSystemHelse() {
+      return demoSystemHelse;
+    },
+    async hentDagen() {
+      return byggDemoDagen();
+    },
+    async hentBrief(kind: BriefKind) {
+      return demoBrief[kind];
+    },
+    async hentUkesreview() {
+      return byggDemoUkesreview();
+    },
+    async hentInnstillinger() {
+      return STANDARD_INNSTILLINGER;
     },
   };
 }

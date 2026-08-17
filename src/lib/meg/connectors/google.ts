@@ -105,13 +105,38 @@ export function kalenderNavnMatcher(summary: string | null | undefined, filter: 
   return summary.toLowerCase().includes(filter.toLowerCase());
 }
 
-export async function kalenderAgenda(dager = 1, kalenderNavn?: string): Promise<string> {
+/** Én kalenderhendelse, strukturert (brukt av Dagen-artefaktet i /meg — se src/lib/jarvis/dagen.ts). */
+export interface KalenderHendelse {
+  id: string;
+  tittel: string;
+  sted: string | null;
+  /** ISO-tidspunkt, eller YYYY-MM-DD for heldagshendelser. */
+  start: string;
+  slutt: string | null;
+  heldag: boolean;
+}
+
+export type KalenderHendelserResultat =
+  | { ok: true; hendelser: KalenderHendelse[] }
+  | { ok: false; feil: string };
+
+/**
+ * Strukturert henting av kalenderhendelser i et gitt intervall, på tvers av
+ * alle kalendere ADMIN-tilkoblingen har tilgang til (samme spørre-/dedup-
+ * mønster som kalenderAgenda(), som nå er en tynn tekst-formatterer over
+ * denne). Fail-closed: nettverksfeil/manglende tilkobling gir `ok:false`
+ * med en lesbar feilmelding — kalleren skal ALDRI tolke det som «ingen
+ * hendelser» (samme prinsipp som CalendarBusyResult i google-calendar.ts).
+ */
+export async function hentKalenderHendelser(
+  fra: Date,
+  til: Date,
+  kalenderNavn?: string,
+): Promise<KalenderHendelserResultat> {
   const conn = await getOwnerConnection();
-  if (!conn) return "Google er ikke koblet (ingen aktiv ADMIN-tilkobling).";
+  if (!conn) return { ok: false, feil: "Google er ikke koblet (ingen aktiv ADMIN-tilkobling)." };
   try {
     const cal = getCalendarApi(conn);
-    const naa = new Date();
-    const til = new Date(naa.getTime() + Math.min(Math.max(dager, 1), 30) * 24 * 60 * 60 * 1000);
 
     // Hent alle kalendere og spørr hver enkelt — "primary" er bare én av mange
     const kalListRes = await cal.calendarList.list({ maxResults: 50 });
@@ -121,37 +146,29 @@ export async function kalenderAgenda(dager = 1, kalenderNavn?: string): Promise<
       : kalenderItems;
     const kalenderIds = filtrerte.map((k) => k.id).filter((id): id is string => !!id);
 
-    type EventItem = { start: string; tekst: string; eid: string };
-    const alle: EventItem[] = [];
+    const alle: KalenderHendelse[] = [];
 
     // allSettled: én 403 (delt kalender) kansellerer ikke de andre
     await Promise.allSettled(
       kalenderIds.map(async (calendarId) => {
         const res = await cal.events.list({
           calendarId,
-          timeMin: naa.toISOString(),
+          timeMin: fra.toISOString(),
           timeMax: til.toISOString(),
           singleEvents: true,
           orderBy: "startTime",
-          maxResults: 20,
+          maxResults: 50,
         });
         for (const e of res.data.items ?? []) {
           const start = e.start?.dateTime ?? e.start?.date ?? "";
-          const naar =
-            start.length > 10
-              ? new Date(start).toLocaleString("sv-SE", {
-                  timeZone: "Europe/Oslo",
-                  year: "numeric",
-                  month: "2-digit",
-                  day: "2-digit",
-                  hour: "2-digit",
-                  minute: "2-digit",
-                })
-              : start;
+          if (!start) continue;
           alle.push({
+            id: e.iCalUID ?? e.id ?? `${calendarId}-${start}`,
+            tittel: e.summary ?? "(uten tittel)",
+            sted: e.location ?? null,
             start,
-            tekst: `- ${naar}: ${e.summary ?? "(uten tittel)"}${e.location ? ` @ ${e.location}` : ""}`,
-            eid: e.iCalUID ?? e.id ?? "",
+            slutt: e.end?.dateTime ?? e.end?.date ?? null,
+            heldag: !e.start?.dateTime,
           });
         }
       }),
@@ -160,18 +177,38 @@ export async function kalenderAgenda(dager = 1, kalenderNavn?: string): Promise<
     // Dedup: samme hendelse kan dukke opp fra primary + delte kalendere
     const seenIds = new Set<string>();
     const deduped = alle.filter((e) => {
-      if (!e.eid) return true;
-      if (seenIds.has(e.eid)) return false;
-      seenIds.add(e.eid);
+      if (seenIds.has(e.id)) return false;
+      seenIds.add(e.id);
       return true;
     });
-
-    if (deduped.length === 0) return `Ingen hendelser de neste ${dager} dagene.`;
     deduped.sort((a, b) => a.start.localeCompare(b.start));
-    return deduped.map((e) => e.tekst).join("\n");
+    return { ok: true, hendelser: deduped };
   } catch (err) {
-    return `Kunne ikke lese kalender: ${err instanceof Error ? err.message : String(err)}`;
+    return { ok: false, feil: err instanceof Error ? err.message : String(err) };
   }
+}
+
+export async function kalenderAgenda(dager = 1, kalenderNavn?: string): Promise<string> {
+  const naa = new Date();
+  const til = new Date(naa.getTime() + Math.min(Math.max(dager, 1), 30) * 24 * 60 * 60 * 1000);
+  const res = await hentKalenderHendelser(naa, til, kalenderNavn);
+  if (!res.ok) return res.feil.startsWith("Google er ikke koblet") ? res.feil : `Kunne ikke lese kalender: ${res.feil}`;
+  if (res.hendelser.length === 0) return `Ingen hendelser de neste ${dager} dagene.`;
+  return res.hendelser
+    .map((e) => {
+      const naar = e.heldag
+        ? e.start
+        : new Date(e.start).toLocaleString("sv-SE", {
+            timeZone: "Europe/Oslo",
+            year: "numeric",
+            month: "2-digit",
+            day: "2-digit",
+            hour: "2-digit",
+            minute: "2-digit",
+          });
+      return `- ${naar}: ${e.tittel}${e.sted ? ` @ ${e.sted}` : ""}`;
+    })
+    .join("\n");
 }
 
 // ── Disk: les (direkte) ──────────────────────────────────────────────────────
