@@ -9,7 +9,7 @@
 import { PaperTilstand, PaperIkon } from "@/components/system/paper-tilstand";
 
 export type IkkeFunnetProps = {
-  /** Lenke bak primær-CTA-en — vanligvis marketing-forsiden. */
+  /** Lenke bak primær-CTA-en — vanligvis produktets hjem/oversikt. */
   hjemHref?: string;
   /** Tekst på primær-CTA-en. */
   knappTekst?: string;
@@ -17,6 +17,10 @@ export type IkkeFunnetProps = {
   tittel?: string;
   /** Forklarende undertekst. */
   beskrivelse?: string;
+  /** Tekst på sekundær-CTA-en. */
+  sekundarKnappTekst?: string;
+  /** Lenke bak sekundær-CTA-en. */
+  sekundarHref?: string;
 };
 
 export function IkkeFunnet({
@@ -24,6 +28,8 @@ export function IkkeFunnet({
   knappTekst = "Til hjem",
   tittel = "Denne siden finnes ikke",
   beskrivelse = "Lenken kan være gammel, eller siden kan ha flyttet. Fant du den i en e-post fra oss, er den trolig utdatert.",
+  sekundarKnappTekst = "Kontakt oss",
+  sekundarHref = "/kontakt",
 }: IkkeFunnetProps) {
   return (
     <PaperTilstand
@@ -33,7 +39,7 @@ export function IkkeFunnet({
       tekst={beskrivelse}
       knapper={[
         { label: knappTekst, href: hjemHref, primary: true },
-        { label: "Kontakt oss", href: "/kontakt" },
+        { label: sekundarKnappTekst, href: sekundarHref },
       ]}
       kode="404"
     />
