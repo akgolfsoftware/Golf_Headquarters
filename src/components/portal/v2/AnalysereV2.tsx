@@ -196,7 +196,11 @@ function TabSG({ data, mobile }: { data: AnalysereData; mobile: boolean }) {
               </div>
             )}
             <HvorforDette
-              kilde={`Dine ${sgStatus.runder} siste registrerte runder, brutto score.`}
+              kilde={
+                sgStatus.kilde === "SELVRAPPORTERT"
+                  ? `Basert på ${sgStatus.grunnlag ?? `${sgStatus.runder} registreringer`} (selvrapportert — du har ikke logget en runde med SG ennå), brutto score.`
+                  : `Dine ${sgStatus.grunnlag ?? `${sgStatus.runder} runder`}, brutto score.`
+              }
               beregning={`SG måler slag spart mot ${sgStatus.baseline}, ikke mot par. Delene summerer til totalen.`}
               forbehold={`Baseline er ${sgStatus.baseline} — et annet nivå ville gitt et annet tall for akkurat disse rundene.`}
             />
