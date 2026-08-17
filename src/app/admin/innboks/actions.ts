@@ -13,6 +13,7 @@ import {
   markerSomPlanlagt,
 } from "@/app/admin/(legacy)/foresporsler/actions";
 import { markerVarselLest } from "@/app/admin/varsler/actions";
+import { godkjennSak, avvisSak } from "@/lib/saker/godkjenn";
 import type { InnboksKilde } from "@/lib/admin/innboks-saker";
 
 /** Marker en AppFeedback-rad (tilbakemelding/support) som sett. */
@@ -32,6 +33,7 @@ const KILDER: InnboksKilde[] = [
   "sessionRequest",
   "notification",
   "appFeedback",
+  "sak",
 ];
 
 /**
@@ -45,7 +47,7 @@ export async function avgjorInnboksSak(
   valg: "godkjenn" | "avvis",
   grunn?: string,
 ): Promise<{ ok: boolean; feil?: string }> {
-  await requirePortalUser({ allow: ["COACH", "ADMIN"] });
+  const user = await requirePortalUser({ allow: ["COACH", "ADMIN"] });
 
   const skille = sakId.indexOf(":");
   const kilde = skille > 0 ? sakId.slice(0, skille) : "";
@@ -74,6 +76,19 @@ export async function avgjorInnboksSak(
       case "appFeedback":
         await markerAppFeedbackSett(id);
         break;
+      case "sak": {
+        // Sak-radene er Anders' egen Gmail/SMS/iMessage-triage-kø, ikke
+        // spillerdata (jf. loaderens ADMIN-filter i innboks-saker.ts) — en
+        // coach skal ikke kunne godkjenne/avvise dem selv med en gjettet id.
+        if (user.role !== "ADMIN") {
+          return { ok: false, feil: "Kun ADMIN kan avgjøre denne saken." };
+        }
+        const res = valg === "godkjenn" ? await godkjennSak(id) : await avvisSak(id);
+        if (!res.ok) {
+          return { ok: false, feil: res.feil ?? "Handlingen gikk ikke gjennom." };
+        }
+        break;
+      }
     }
   } catch (e) {
     // Kilder med strengere tilgang enn innboksen (Caddie-utkast krever ADMIN)

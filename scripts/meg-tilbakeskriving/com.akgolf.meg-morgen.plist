@@ -13,12 +13,12 @@
   <string>com.akgolf.meg-morgen</string>
   <key>ProgramArguments</key>
   <array>
-    <string>/usr/local/bin/npm</string>
+    <string>/opt/homebrew/bin/npm</string>
     <string>run</string>
     <string>meg:morgen</string>
   </array>
   <key>WorkingDirectory</key>
-  <string>/Users/anderskristiansen/Developer/Golf_Headquarters</string>
+  <string>/Users/anderskristiansen/Developer/akgolf-hq</string>
   <key>StartCalendarInterval</key>
   <dict>
     <key>Hour</key>

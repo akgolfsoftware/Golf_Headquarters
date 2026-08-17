@@ -20,7 +20,7 @@
   <string>com.akgolf.saker-gmail</string>
   <key>ProgramArguments</key>
   <array>
-    <string>/usr/local/bin/npm</string>
+    <string>/opt/homebrew/bin/npm</string>
     <string>run</string>
     <string>saker:gmail</string>
   </array>

@@ -6,6 +6,7 @@
 
 export const SAKER_GMAIL_QUERY_DEFAULT = "in:inbox is:unread newer_than:2d -from:me";
 export const SAKER_SLA_TIMER = 6;
+export const SAKER_TRIAGE_BATCH_LIMIT_DEFAULT = 20;
 
 export type SakerInnsamlingEnv = {
   /**
@@ -15,10 +16,18 @@ export type SakerInnsamlingEnv = {
    * er kjent (samme mønster som MULLIGAN_GMAIL_QUERY).
    */
   gmailQuery: string;
+  /**
+   * Maks antall VENTER-saker uten foreslattSvar triage.ts behandler i ÉN
+   * kjøring (steg 3). Holder en enkeltkjøring rask og forutsigbar selv om
+   * køen har bygget seg opp — resten tas neste kjøring (30 min senere).
+   */
+  triageBatchLimit: number;
 };
 
 export function lesSakerInnsamlingEnv(): SakerInnsamlingEnv {
+  const batchLimit = Number(process.env.SAKER_TRIAGE_BATCH_LIMIT);
   return {
     gmailQuery: process.env.SAKER_GMAIL_QUERY ?? SAKER_GMAIL_QUERY_DEFAULT,
+    triageBatchLimit: Number.isFinite(batchLimit) && batchLimit > 0 ? batchLimit : SAKER_TRIAGE_BATCH_LIMIT_DEFAULT,
   };
 }

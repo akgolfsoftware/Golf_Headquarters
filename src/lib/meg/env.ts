@@ -65,11 +65,31 @@ export function readMegEmbeddingsEnv(
   };
 }
 
+// Shortcut-env (Fase 7) — «Spør Jarvis» fra iOS Snarveier (Siri/Watch/bil).
+// Valgfri: uten MEG_SHORTCUT_TOKEN svarer ruten 503 «ikke konfigurert» i
+// stedet for å krasje resten av appen.
+const shortcutEnvSchema = z.object({
+  MEG_SHORTCUT_TOKEN: z.string().min(1),
+});
+
+export type MegShortcutEnv = {
+  token: string;
+};
+
+/** Leser Shortcut-env defensivt. Returnerer null hvis ikke konfigurert. */
+export function readMegShortcutEnv(
+  source: NodeJS.ProcessEnv | Record<string, string | undefined> = process.env,
+): MegShortcutEnv | null {
+  const parsed = shortcutEnvSchema.safeParse(source);
+  if (!parsed.success) return null;
+  return { token: parsed.data.MEG_SHORTCUT_TOKEN };
+}
+
 // Ollama-env (lokal/gratis modell for enkle oppgaver). Valgfri — aktiveres kun
 // når MEG_OLLAMA_URL er satt. Uten den faller alt tilbake til Claude (som i dag).
 const ollamaEnvSchema = z.object({
   MEG_OLLAMA_URL: z.string().url(),
-  MEG_OLLAMA_MODEL: z.string().default("llama3.2"),
+  MEG_OLLAMA_MODEL: z.string().default("qwen2.5:7b"),
 });
 
 export type MegOllamaEnv = {
@@ -87,4 +107,23 @@ export function readMegOllamaEnv(
     url: parsed.data.MEG_OLLAMA_URL.replace(/\/$/, ""),
     model: parsed.data.MEG_OLLAMA_MODEL,
   };
+}
+
+// Perplexity Sonar-env (nett_sok-verktøyet). Valgfri — uten nøkkel blir
+// verktøyet ikke registrert i tools.ts (se isPerplexityEnabled i perplexity.ts).
+const perplexityEnvSchema = z.object({
+  PERPLEXITY_API_KEY: z.string().min(1),
+});
+
+export type MegPerplexityEnv = {
+  apiKey: string;
+};
+
+/** Leser Perplexity-env defensivt. Returnerer null hvis ikke konfigurert. */
+export function readMegPerplexityEnv(
+  source: NodeJS.ProcessEnv | Record<string, string | undefined> = process.env,
+): MegPerplexityEnv | null {
+  const parsed = perplexityEnvSchema.safeParse(source);
+  if (!parsed.success) return null;
+  return { apiKey: parsed.data.PERPLEXITY_API_KEY };
 }

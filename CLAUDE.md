@@ -68,8 +68,16 @@ er de en del av leveransen og skal stå — men de **styrer ingenting**. Ved mot
 **Resynk skjer når Anders leverer ny zip, ikke før hver skjerm.** Den gamle regelen krevde henting
 via `claude-design`-MCP før hver sammenligning. Den koblingen er ikke tilgjengelig i alle økter, så
 regelen sendte arbeidet inn i en blindvei og sådde tvil om det ene som faktisk virker. Endret
-12.08.2026 etter Anders' beslutning. Er MCP-en tilgjengelig og du er i tvil: verifiser gjerne — men
-det er ikke et krav for å jobbe.
+12.08.2026 etter Anders' beslutning. Du kan jobbe mot speilet uten MCP.
+
+**MEN: en zip kan være utdatert mot designprosjektet — målt 17.08.2026.** Zip-en fra 16.08 21:11
+inneholdt `kart/rutefasit-for-claude-code.md` **v1** (9 382 B, datert 12.08), mens prosjektet
+allerede hadde **v2** (12 543 B, datert 16.08) med en helt ny **Komponenter-kolonne**,
+porteringsstrategi, modellvalg-tabell og skall-pakker. En hel styringsdimensjon manglet i zip-en,
+og en verifisering som kun målte zip mot speil ville aldri sett det — begge var «0 avvik».
+**Regel:** før en ny portbølge planlegges, kjør ÉN MCP-sammenligning
+(`list_files` med `depth: -1` → diff stier + `size` mot speilet). Den koster ett kall og fanger
+akkurat denne klassen drift. Er MCP-en utilgjengelig: si det i rapporten, ikke anta at zip = fasit.
 
 **Dekningsregnskap:** `docs/port/fasit-liste-paper.md` — hvilke skjermer har fasit, hvilke må designes uten.
 
@@ -88,15 +96,20 @@ fotografert.
 avviklet designprosjekt. Ligger i git-historikken.)
 
 ### Kontrakten — slik bygges en rute fra en mal-fasit
-Flyttet hit fra `docs/port/rutefasit.md` 16.08.2026. **Gjelder alltid, skal aldri gjentas i en prompt.**
+Flyttet hit fra `docs/port/rutefasit.md` 16.08.2026, oppdatert til **rutefasit v2** 17.08.2026.
+**Gjelder alltid, skal aldri gjentas i en prompt** (det er hele poenget: 0 tokens per sesjon).
 
-1. Finn ruten i `docs/port/rutefasit.md`. Åpne **mal-fasiten** (`designsystem/paper/…`) side om side m390 + d1280.
-2. Bygg malen 1:1; **avvikslinjen** er ALT som skiller ruten fra malen. Står det ikke der, finnes det ikke.
-3. Tilstander arves fra malens riggbar (tom/laster/feil er tegnet — bruk dem, aldri fake data).
-4. **Én-linje-testen:** klarer du ikke beskrive rutens avvik i én setning, STOPP — ruten trenger egen fasit.
-   Meld den, ikke improviser.
-5. Skjermen er ferdig når variant-raden er ført i `PP-W*-VARIANTS` med m390 + d1280-skjermbilde
-   (i tillegg til skjermbilde-gaten over).
+1. Finn ruten i `docs/port/rutefasit.md`. Åpne mal-fasiten m390 + d1280 — **kun i mal-sesjonen**.
+2. Bygg malen 1:1; **avvikslinjen er ALT** som skiller ruten fra malen. Står det ikke der, finnes det ikke.
+3. Tilstander (tom/laster/feil) arves fra malens riggbar. Aldri fake data.
+4. **Én-linje-testen:** kan ikke avviket sies i én setning → egen skjerm → stopp og meld.
+5. Ferdig = variant-rad i `PP-W*-VARIANTS` med m390 + d1280-skjermbilde (i tillegg til
+   skjermbilde-gaten over).
+
+**Token-økonomi (v2, bindende):** én sesjon per mal-fasit, aldri per rute. **Variantruter åpner
+aldri fasit-HTML** — de kodes fra avvikslinjen + komponentkolonnen + mal-komponentens fil i repoet.
+Trenger de mer, har de strøket én-linje-testen: stopp og meld. Les komponenter, ikke skjermer —
+slå opp props i komponentfila. Full strategi + modellvalg per oppgaveklasse: `rutefasit.md` §1–2.
 
 ### Claude-følelsen (bindende for alle varianter)
 Flyttet hit fra `docs/port/rutefasit.md` 16.08.2026. Målet er at plattformen kjennes som Claude

@@ -208,6 +208,33 @@ Alt annet venter på Fase A.
    `designsystem/paper/`, som `CLAUDE.md` utpeker som arbeidsfasit. En andre kopi ville vært
    nøyaktig de «to sannheter om samme skjerm» oppdraget selv ber om å flagge. Synket inn i det
    eksisterende speilet i stedet.
-2. **Rutefasiten har ingen «Komponenter»-kolonne.** Kolonnene er Rute | Mal-fasit | Avvik.
-   Komponentbehovet er i stedet utledet fra Claude-følelsen, de tre `*-base.css`-filene og
-   `designsystem/paper/components/` (18 familier, ~140 komponenter).
+
+## ⚠ RETTELSE 17.08.2026 — zip-en var utdatert, v2 hentet fra MCP
+
+Denne planen ble først skrevet mot zip-ens rutefasit. En MCP-sammenligning mot selve
+designprosjektet avdekket at **zip-en inneholdt v1 (12.08) mens prosjektet hadde v2 (16.08)**:
+
+| | v1 (zip) | v2 (MCP, gjeldende) |
+|---|---|---|
+| Størrelse | 9 382 B | 12 543 B |
+| Kolonner | Rute · Mal-fasit · Avvik | **+ Komponenter** |
+| Porteringsstrategi | — | 6 punkter (token-økonomi) |
+| Modellvalg | — | Tabell: Opus / Sonnet / Haiku per oppgaveklasse |
+| Skall-pakker | — | Tabell: PlayerHQ · AgencyOS · Marketing/Auth · Forelder |
+
+**Rettet påstand:** planen sa først at rutefasiten «ikke har en Komponenter-kolonne». Det gjaldt
+v1. **v2 har den**, og den er nå i `docs/port/rutefasit.md`. Komponentanalysen i §A3 under står
+seg — den ble utledet fra Claude-følelsen og `*-base.css` — men er nå **supplert** av v2s
+autoritative komponentnavn per rute. Bruk v2-kolonnen som fasit; §A3 sier hvilke av dem som
+mangler repo-motstykke.
+
+**v2 bekrefter uavhengig to valg denne planen tok:** «én sesjon per mal-fasit, aldri per rute»,
+og at kontrakten skal ligge i `CLAUDE.md` («koster da 0 tokens per sesjon»).
+
+**Ny regel av dette:** før hver portbølge, kjør én MCP-sammenligning
+(`list_files` `depth: -1` → diff sti + `size` mot speilet). Zip mot speil var «0 avvik» hele tiden;
+driften lå mellom zip og prosjekt. Se `CLAUDE.md` §Skjermarbeid.
+
+Øvrige filer som drifter (mindre kritisk, ikke synket): `_ds_bundle.js` (+8 857 B),
+`github.md` (+473 B), `_adherence.oxlintrc.json` (+27 B), og en ny
+`Rutekart v2 - portering og komponentfasit.html` (20 060 B, menneskelesbar utgave av v2).
