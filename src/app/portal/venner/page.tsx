@@ -7,6 +7,7 @@ import { VennerClient } from "./VennerClient";
 import { T } from "@/lib/v2/tokens";
 import { Caps, Tittel, Kort } from "@/components/v2";
 import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
+import { FEATURES } from "@/lib/features";
 
 export const dynamic = "force-dynamic";
 
@@ -27,7 +28,7 @@ export default async function VennerPage() {
           </p>
         </div>
         <Kort>
-          <VennerClient initial={data} />
+          <VennerClient initial={data} visLeaderboard={FEATURES.LEADERBOARD} />
         </Kort>
       </div>
     </V2Shell>

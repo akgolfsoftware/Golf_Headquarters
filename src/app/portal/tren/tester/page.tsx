@@ -107,8 +107,8 @@ export default async function TesterHubPage() {
               Ingen tester i batteriet ditt ennå
             </h3>
             <p style={{ margin: "0 0 12px", fontFamily: T.bodyFont, fontSize: 13.5, color: T.mut }}>
-              Testbatteriet settes opp sammen med Anders i Workbench — der velger dere hvilke
-              tester som hører til nivået ditt.
+              Testene avtaler du med Anders i Workbench — legg dem inn som vanlige økter der,
+              sammen med resten av planen din.
             </p>
             {/* Kontrakt §3: skjermens ene aksenthandling */}
             <Link
@@ -131,7 +131,7 @@ export default async function TesterHubPage() {
                 fontWeight: 600,
               }}
             >
-              Åpne Testbatteriet i Workbench
+              Åpne Workbench
             </Link>
           </div>
         ) : (
@@ -266,7 +266,7 @@ export default async function TesterHubPage() {
             >
               <Icon name="refresh-cw" size={16} style={{ color: T.mut, flex: "none", marginTop: 2 }} />
               <span>
-                Nye tester legges inn i Workbenchs Testbatteri-ark — sammen med Anders. Hvert
+                Nye tester planlegges i Workbench, sammen med Anders — som vanlige økter. Hvert
                 logget resultat oppdaterer talentprofilen din automatisk.
               </span>
             </div>

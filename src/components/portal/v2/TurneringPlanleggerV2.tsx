@@ -330,6 +330,36 @@ export function TurneringPlanleggerV2({
         </div>
       )}
 
+      {/* Videre-lenke — AI-forslag basert på HCP + katalog. Ordinær rad,
+          ingen ny clay-CTA (skjermen har allerede sin ene i «Én ting nå»). */}
+      <Link
+        href="/portal/ai/foresla-turnering"
+        data-od-id="turn-ai-foresla"
+        className="v2-press v2-focus"
+        style={{
+          display: "flex",
+          alignItems: "center",
+          gap: 10,
+          background: T.panel,
+          border: `1px solid ${T.border}`,
+          borderRadius: T.rCard,
+          padding: "12px 16px",
+          textDecoration: "none",
+          color: "inherit",
+        }}
+      >
+        <Icon name="sparkles" size={16} style={{ color: T.mut, flex: "none" }} />
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <span style={{ display: "block", fontFamily: T.ui, fontSize: 13, fontWeight: 600, color: T.fg }}>
+            La AI foreslå turneringer
+          </span>
+          <span style={{ display: "block", fontFamily: T.ui, fontSize: 11.5, color: T.mut, marginTop: 1 }}>
+            Rangert etter nivået og planen din
+          </span>
+        </div>
+        <Icon name="chevron-right" size={15} style={{ color: T.mut, flex: "none" }} />
+      </Link>
+
       {/* Katalogen */}
       <div>
         <Caps>katalogen · {iKatalogen.length}</Caps>
