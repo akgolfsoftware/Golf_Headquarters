@@ -13,15 +13,28 @@
 // her (MaskinromArtefakt viser dem separat som "ikke bygget", ikke som
 // oppdiktede statusrader). Ollama/LaunchAgent-helse kan aldri leses herfra
 // — Vercel når aldri Tailscale-nettet på Mac Minien (se gotchas.md).
+// hentBrief(): leser siste lagrede morgenbrief/kveldsjournal fra me_brief —
+// EGET Supabase-prosjekt (src/lib/meg/supabase.ts), ikke golf-DB'en resten
+// av denne fila bruker. hentBriefer() returnerer allerede ærlig tom liste
+// hvis Meg-databasen ikke er konfigurert eller ingen brief er generert —
+// innhold:null dekker begge tilfellene identisk (samme prinsipp som
+// InnsamlerHelse sin UKJENT-verdi).
+// hentUkesreview(): kalenderavvikFanget er hardkodet 0 — samme grunn som
+// hentAvvik() over, ingen kalendervakt-agent finnes. "Tre ting som
+// gledet"/"til neste uke" og 150M-tokenbudsjettet fra fasiten er utelatt
+// helt (se UkesreviewData sin doc-kommentar i types.ts).
 import "server-only";
 import { prisma } from "@/lib/prisma";
 import { SakStatus } from "@/generated/prisma/enums";
 import type { Sak } from "@/generated/prisma/client";
-import type { Avvik, DagenData, InnsamlerStatus, LoggRad, SystemHelse } from "@/lib/jarvis/types";
+import type { Avvik, BriefKind, BriefSnapshot, DagenData, InnsamlerStatus, LoggRad, SystemHelse, UkesreviewData } from "@/lib/jarvis/types";
 import type { JarvisRepository } from "@/fixtures/jarvis-demo";
 import { JARVIS_AGENT_NAVN } from "@/lib/jarvis/agent-navn";
 import { avledInnsamlerHelse } from "@/lib/jarvis/innsamler-helse";
 import { hentKalenderHendelser } from "@/lib/meg/connectors/google";
+import { hentBriefer } from "@/lib/meg/read";
+import { adminSubject } from "@/lib/meg/access";
+import { ukenummer } from "@/lib/uke-helpers";
 import {
   osloDagGrenser,
   byggAvtaleElementer,
@@ -29,6 +42,7 @@ import {
   byggLedigElementer,
   summerLedigMinutterIgjen,
 } from "@/lib/jarvis/dagen";
+import { osloUkeGrenser, beregnSlaEtterlevelse, tellPerKanal } from "@/lib/jarvis/ukesreview";
 
 const AVGJORTE_STATUSER = [SakStatus.GODKJENT, SakStatus.AVVIST, SakStatus.UTFORT] as const;
 
@@ -137,6 +151,62 @@ export function lagPrismaRepository(): JarvisRepository {
         kalenderFeil: null,
         elementer,
         ledigMinutterIgjen: summerLedigMinutterIgjen(ledig, na),
+      };
+    },
+    async hentBrief(kind: BriefKind): Promise<BriefSnapshot> {
+      const subject = adminSubject();
+      if (!subject) return { innhold: null, generert: null };
+      const [siste] = await hentBriefer(subject, 1, kind);
+      if (!siste) return { innhold: null, generert: null };
+      return { innhold: siste.content, generert: siste.created_at };
+    },
+    async hentUkesreview(): Promise<UkesreviewData> {
+      const na = new Date();
+      const denneUken = osloUkeGrenser(na);
+      const forrigeUken = osloUkeGrenser(new Date(denneUken.start.getTime() - 24 * 60 * 60 * 1000));
+
+      const [mottattDenneUken, avgjortDenneUken, avgjortForrigeUken, kost] = await Promise.all([
+        prisma.sak.findMany({ where: { opprettet: { gte: denneUken.start, lt: denneUken.slutt } } }),
+        prisma.sak.findMany({
+          where: {
+            status: { in: [...AVGJORTE_STATUSER] },
+            oppdatert: { gte: denneUken.start, lt: denneUken.slutt },
+          },
+        }),
+        prisma.sak.findMany({
+          where: {
+            status: { in: [...AVGJORTE_STATUSER] },
+            oppdatert: { gte: forrigeUken.start, lt: forrigeUken.slutt },
+          },
+        }),
+        prisma.aiCost.aggregate({
+          where: { agentName: { startsWith: "jarvis" }, createdAt: { gte: denneUken.start, lt: denneUken.slutt } },
+          _sum: { inputTokens: true, outputTokens: true, costUsd: true },
+          _count: true,
+        }),
+      ]);
+
+      const sla = beregnSlaEtterlevelse(avgjortDenneUken);
+      const slaForrige = beregnSlaEtterlevelse(avgjortForrigeUken);
+
+      return {
+        ukenummer: ukenummer(na),
+        periodeStart: denneUken.start.toISOString(),
+        periodeSlutt: denneUken.slutt.toISOString(),
+        slaEtterlevelse: {
+          prosentUnderFrist: sla.prosentUnderFrist,
+          avgjorteMedFrist: sla.antall,
+          medianSvartidMin: sla.medianSvartidMin,
+          prosentUnderFristForrigeUke: slaForrige.prosentUnderFrist,
+        },
+        sakerPerKanal: tellPerKanal(mottattDenneUken),
+        kalenderavvikFanget: 0,
+        aiKost: {
+          inputTokens: kost._sum.inputTokens ?? 0,
+          outputTokens: kost._sum.outputTokens ?? 0,
+          costUsd: kost._sum.costUsd,
+          antallKall: kost._count,
+        },
       };
     },
   };

@@ -21,7 +21,7 @@ const MIN_LEDIG_LUKE_MS = 15 * 60 * 1000;
  * med avviket. Robust nok for et fast klokkeslett samme dag (aldri en DST-
  * overgang mellom 10:00 og 19:00 i Norge).
  */
-function osloInstant(aar: number, maned: number, dag: number, time: number, minutt: number): Date {
+export function osloInstant(aar: number, maned: number, dag: number, time: number, minutt: number): Date {
   const naiv = new Date(Date.UTC(aar, maned - 1, dag, time, minutt, 0));
   const fmt = new Intl.DateTimeFormat("en-US", {
     timeZone: "Europe/Oslo",
@@ -46,7 +46,7 @@ function osloInstant(aar: number, maned: number, dag: number, time: number, minu
   return new Date(naiv.getTime() - avvikMs);
 }
 
-const OSLO_YMD_FMT = new Intl.DateTimeFormat("en-CA", {
+export const OSLO_YMD_FMT = new Intl.DateTimeFormat("en-CA", {
   timeZone: "Europe/Oslo",
   year: "numeric",
   month: "2-digit",

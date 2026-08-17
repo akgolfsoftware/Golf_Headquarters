@@ -100,3 +100,43 @@ export const FANGST_TYPE_LABEL: Record<FangstType, string> = {
   notat: "Notat",
   husk: "Husk til i morgen",
 };
+
+/**
+ * Morgenbrief/kveldsjournal-innhold — hentes fra `me_brief` i Meg-Supabase
+ * (EGET prosjekt, ikke golf-DB'en /meg ellers bruker, se src/lib/meg/supabase.ts).
+ * `innhold: null` dekker BEGGE "aldri generert ennå" OG "Meg-databasen er ikke
+ * konfigurert" — samme ærlige, ikke-spesifiserende tomtilstand som resten av
+ * Jarvis-portens datakilder som ikke finnes ennå (se Maskinrommet/Kalendervakt).
+ */
+export type BriefKind = "morgenbrief" | "kveldsjournal";
+
+export interface BriefSnapshot {
+  innhold: string | null;
+  generert: string | null; // ISO
+}
+
+/**
+ * Ukesreview — ren aggregat-statistikk, ingen AI-tekst. Fasitens «tre ting
+ * som gledet»/«tre ting til neste uke» er bevisst utelatt: det er
+ * menneskelig refleksjon appen ikke har noen kilde til, og å generere den
+ * ville vært oppdiktet innhold presentert som ekte. Fasitens «118,4 M av
+ * 150 M tokens» er også utelatt — 150M er et tall fra designprompten, ikke
+ * et budsjett appen faktisk sporer noe sted i kode.
+ */
+export interface UkesreviewData {
+  ukenummer: number;
+  periodeStart: string; // ISO, mandag
+  periodeSlutt: string; // ISO, søndag (eksklusiv)
+  slaEtterlevelse: {
+    /** null = ingen avgjorte saker med frist denne uken — ikke 0 %. */
+    prosentUnderFrist: number | null;
+    avgjorteMedFrist: number;
+    /** Median tid fra opprettet til oppdatert for avgjorte saker denne uken, i minutter. Null = ingen data. */
+    medianSvartidMin: number | null;
+    /** Samme mål for forrige uke — til sammenligning. Null = ingen data den uken. */
+    prosentUnderFristForrigeUke: number | null;
+  };
+  sakerPerKanal: { kanal: SakKanal; antall: number }[];
+  kalenderavvikFanget: number;
+  aiKost: { inputTokens: number; outputTokens: number; costUsd: number | null; antallKall: number };
+}

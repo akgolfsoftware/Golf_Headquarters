@@ -10,7 +10,7 @@
 // spillerdata») er dermed holdt, ikke bare unngått.
 import type { Sak } from "@/generated/prisma/client";
 import { SakKanal, SakStatus } from "@/generated/prisma/enums";
-import type { Avvik, DagenData, InnsamlerStatus, LoggRad, SystemHelse } from "@/lib/jarvis/types";
+import type { Avvik, BriefKind, BriefSnapshot, DagenData, InnsamlerStatus, LoggRad, SystemHelse, UkesreviewData } from "@/lib/jarvis/types";
 import type { KalenderHendelse } from "@/lib/meg/connectors/google";
 import {
   osloDagGrenser,
@@ -19,6 +19,8 @@ import {
   byggLedigElementer,
   summerLedigMinutterIgjen,
 } from "@/lib/jarvis/dagen";
+import { osloUkeGrenser, beregnSlaEtterlevelse, tellPerKanal } from "@/lib/jarvis/ukesreview";
+import { ukenummer } from "@/lib/uke-helpers";
 
 const NA = () => new Date();
 const timerFraNa = (t: number) => new Date(NA().getTime() + t * 60 * 60 * 1000);
@@ -232,6 +234,39 @@ function byggDemoDagen(): DagenData {
   };
 }
 
+export const demoBrief: Record<BriefKind, BriefSnapshot> = {
+  morgenbrief: {
+    innhold:
+      "Tett fra 10 til 15:30 i dag, så rolig kveld frem til styremøtet. Øyvind venter fortsatt på svar om uttaket — ta den først. Bekreft simulatortiden til GFGK før 13:21.",
+    generert: timerFraNa(-1.2).toISOString(),
+  },
+  kveldsjournal: {
+    innhold: "Tre saker lukket i dag, alle innen frist. Restansen til i morgen er kort — ingenting haster ved dagens slutt.",
+    generert: timerFraNa(-9).toISOString(),
+  },
+};
+
+function byggDemoUkesreview(): UkesreviewData {
+  const na = NA();
+  const grenser = osloUkeGrenser(na);
+  const avgjorte = demoSaker.filter((s) => s.status !== SakStatus.VENTER && s.status !== SakStatus.UTLOPT);
+  const sla = beregnSlaEtterlevelse(avgjorte);
+  return {
+    ukenummer: ukenummer(na),
+    periodeStart: grenser.start.toISOString(),
+    periodeSlutt: grenser.slutt.toISOString(),
+    slaEtterlevelse: {
+      prosentUnderFrist: sla.prosentUnderFrist,
+      avgjorteMedFrist: sla.antall,
+      medianSvartidMin: sla.medianSvartidMin,
+      prosentUnderFristForrigeUke: 88,
+    },
+    sakerPerKanal: tellPerKanal(demoSaker),
+    kalenderavvikFanget: 0,
+    aiKost: { inputTokens: 84213, outputTokens: 19042, costUsd: 0.62, antallKall: 11 },
+  };
+}
+
 /** Repository-grensesnittet UI-en programmerer mot — bytt implementasjon uten UI-endring. */
 export interface JarvisRepository {
   hentSaker(): Promise<Sak[]>;
@@ -240,6 +275,8 @@ export interface JarvisRepository {
   hentLogg(): Promise<LoggRad[]>;
   hentSystemHelse(): Promise<SystemHelse>;
   hentDagen(saker: Sak[]): Promise<DagenData>;
+  hentBrief(kind: BriefKind): Promise<BriefSnapshot>;
+  hentUkesreview(): Promise<UkesreviewData>;
 }
 
 /** Demo-implementasjon — statisk fixture-data, ingen nettverk/DB. */
@@ -262,6 +299,12 @@ export function lagDemoRepository(): JarvisRepository {
     },
     async hentDagen() {
       return byggDemoDagen();
+    },
+    async hentBrief(kind: BriefKind) {
+      return demoBrief[kind];
+    },
+    async hentUkesreview() {
+      return byggDemoUkesreview();
     },
   };
 }

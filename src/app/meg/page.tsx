@@ -19,11 +19,14 @@ export default async function MegPage() {
 
   const repo = lagPrismaRepository();
   const saker = await repo.hentSaker();
-  const [systemHelse, avvik, dagen, logg] = await Promise.all([
+  const [systemHelse, avvik, dagen, logg, morgenbrief, kveldsjournal, ukesreview] = await Promise.all([
     repo.hentSystemHelse(),
     repo.hentAvvik(),
     repo.hentDagen(saker),
     repo.hentLogg(),
+    repo.hentBrief("morgenbrief"),
+    repo.hentBrief("kveldsjournal"),
+    repo.hentUkesreview(),
   ]);
 
   return (
@@ -34,6 +37,9 @@ export default async function MegPage() {
       avvik={avvik}
       dagen={dagen}
       logg={logg}
+      morgenbrief={morgenbrief}
+      kveldsjournal={kveldsjournal}
+      ukesreview={ukesreview}
       naServertid={new Date().toISOString()}
       godkjennSak={godkjennSak}
       avvisSak={avvisSak}

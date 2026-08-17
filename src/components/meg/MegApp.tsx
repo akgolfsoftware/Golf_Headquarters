@@ -9,9 +9,9 @@
  * Alle ti artefaktene (saker, sak, vakt, dagen, brief, journal, review,
  * maskinrom, historikk, innstillinger) + fangst styres av activeArtifact,
  * IKKE egne ruter (nattsesjon-prompt Fase 2 punkt 1). «saker», «sak»,
- * «maskinrom», «vakt», «dagen», «historikk» og «fangst» har ekte innhold —
- * resten viser en ærlig «kommer snart»-tilstand, se natt-rapport.md for
- * hva som gjenstår.
+ * «maskinrom», «vakt», «dagen», «historikk», «fangst», «brief», «journal»
+ * og «review» har ekte innhold — kun «innstillinger» gjenstår (blokkert på
+ * en skjema-avklaring, se natt-rapport.md).
  */
 import { useCallback, useRef, useState } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
@@ -32,9 +32,12 @@ import { KalendervaktArtefakt } from "@/components/meg/artefakter/KalendervaktAr
 import { DagenArtefakt } from "@/components/meg/artefakter/DagenArtefakt";
 import { HistorikkArtefakt } from "@/components/meg/artefakter/HistorikkArtefakt";
 import { FangstArtefakt } from "@/components/meg/artefakter/FangstArtefakt";
+import { MorgenbriefArtefakt } from "@/components/meg/artefakter/MorgenbriefArtefakt";
+import { KveldsjournalArtefakt } from "@/components/meg/artefakter/KveldsjournalArtefakt";
+import { UkesreviewArtefakt } from "@/components/meg/artefakter/UkesreviewArtefakt";
 import type { Sak } from "@/generated/prisma/client";
 import { SakStatus } from "@/generated/prisma/enums";
-import type { Avvik, DagenData, FangstType, LoggRad, SystemHelse } from "@/lib/jarvis/types";
+import type { Avvik, BriefSnapshot, DagenData, FangstType, LoggRad, SystemHelse, UkesreviewData } from "@/lib/jarvis/types";
 
 type MutasjonSvar = { ok: true } | { ok: false; feil: string };
 
@@ -45,6 +48,9 @@ export function MegApp({
   avvik,
   dagen,
   logg,
+  morgenbrief,
+  kveldsjournal,
+  ukesreview,
   naServertid,
   godkjennSak,
   avvisSak,
@@ -56,6 +62,9 @@ export function MegApp({
   avvik: Avvik[];
   dagen: DagenData;
   logg: LoggRad[];
+  morgenbrief: BriefSnapshot;
+  kveldsjournal: BriefSnapshot;
+  ukesreview: UkesreviewData;
   /** ISO-streng fra serveren — unngår klient/server-hydreringsavvik (Oslo vs UTC, samme mønster som KonsollChat sin `klokke`-prop). */
   naServertid: string;
   godkjennSak: (id: string) => Promise<MutasjonSvar>;
@@ -119,6 +128,14 @@ export function MegApp({
     artefaktInnhold = <HistorikkArtefakt logg={logg} na={na} onVelgSak={velgSak} />;
   } else if (activeArtifact === "fangst") {
     artefaktInnhold = <FangstArtefakt onFang={opprettFangst} />;
+  } else if (activeArtifact === "brief") {
+    artefaktInnhold = (
+      <MorgenbriefArtefakt saker={saker} dagen={dagen} brief={morgenbrief} na={na} onVelgSak={velgSak} onApneDagen={() => apneArtefakt("dagen")} />
+    );
+  } else if (activeArtifact === "journal") {
+    artefaktInnhold = <KveldsjournalArtefakt saker={saker} logg={logg} brief={kveldsjournal} na={na} onVelgSak={velgSak} />;
+  } else if (activeArtifact === "review") {
+    artefaktInnhold = <UkesreviewArtefakt data={ukesreview} />;
   } else {
     artefaktInnhold = (
       <InspektorTom
