@@ -215,8 +215,30 @@ export async function genererOkter(input: GenererInput): Promise<GenererResultat
   }
 
   // ---------------------------------------------------------------------------
-  // Lag 2: RecurringPattern (RRULE)
+  // Lag 2: RecurringPattern (RRULE) — hopper over skoleferier for spillere med
+  // registrert trinn (WANG/GFGK m.fl.). SchoolScheduleEntry.category "FERIE"
+  // gjelder enten spillerens trinn eller hele skolen (classYear: null), samme
+  // oppslag som hentOpptattTid bruker for SKOLE-blokker.
   // ---------------------------------------------------------------------------
+  let ferieDatoer = new Set<string>();
+  if (mønstre.length > 0) {
+    const spillerSkole = await prisma.user.findUnique({
+      where: { id: spilllerId },
+      select: { schoolYear: true },
+    });
+    if (spillerSkole?.schoolYear) {
+      const ferieRader = await prisma.schoolScheduleEntry.findMany({
+        where: {
+          category: "FERIE",
+          date: { gte: startDato, lte: sluttDato },
+          OR: [{ classYear: spillerSkole.schoolYear }, { classYear: null }],
+        },
+        select: { date: true },
+      });
+      ferieDatoer = new Set(ferieRader.map((f) => f.date.toISOString().slice(0, 10)));
+    }
+  }
+
   for (const mønster of mønstre) {
     let datoer: Date[] = [];
     try {
@@ -233,6 +255,10 @@ export async function genererOkter(input: GenererInput): Promise<GenererResultat
     }
 
     for (const d of datoer) {
+      if (ferieDatoer.has(d.toISOString().slice(0, 10))) {
+        hoppetOver.push({ dato: d, grunn: `Mønster '${mønster.navn}' - skoleferie` });
+        continue;
+      }
       const [timer, minutter] = mønster.startTid.split(":").map((s) => Number(s));
       const startTime = new Date(d);
       startTime.setHours(timer ?? 0, minutter ?? 0, 0, 0);
