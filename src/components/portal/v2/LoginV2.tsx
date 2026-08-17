@@ -413,11 +413,14 @@ function LoginKort() {
 
   return (
     <div style={{ width: "100%", maxWidth: 400, display: "flex", flexDirection: "column", gap: 14 }}>
-      {/* Mobil-logo (BrandPanel er skjult under md) — subtil ambient forest-glød */}
+      {/* Mobil-logo (BrandPanel er skjult under md) — subtil ambient forest-glød.
+          display styres KUN av Tailwind-klassen (flex md:hidden) — en inline
+          display:flex her ville hatt høyere presedens enn md:hidden og latt
+          100vw-glød-diven under lekke inn på desktop (målt i prod 2026-08-17,
+          Anders' skjermbilde: en beige stripe over hele bredden på login). */}
       <div
-        className="md:hidden"
+        className="flex md:hidden"
         style={{
-          display: "flex",
           flexDirection: "column",
           alignItems: "center",
           gap: 18,
