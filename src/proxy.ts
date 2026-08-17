@@ -142,18 +142,27 @@ export async function proxy(request: NextRequest) {
   const nonce = Buffer.from(crypto.randomUUID()).toString("base64");
   const response = await updateSession(request, nonce);
 
-  // /team-wang er MIDLERTIDIG åpnet uten innlogging igjen (Anders 2026-08-15,
-  // «pr nå») — reverserer 2026-08-02-sperren. Elevdata om mindreårige er
-  // dermed åpent tilgjengelig for alle med lenken (også /team-wang/coach og
-  // IUP-samtaler). Se hentWangGruppe()-kommentaren i _data/hent-wang-gruppe.ts.
-  // Sperr på nytt ved å legge `path.startsWith("/team-wang")` tilbake her.
+  // /team-wang: fellessiden er ÅPEN uten innlogging — den skal kunne deles med
+  // elever og foreldre. Det er trygt fordi siden ikke viser navn:
+  // `hentWangGruppe()` utelater elevlista som standard, og fellessiden ber
+  // aldri om den. Sperren fra 2026-08-02 gjaldt nettopp elevnavn (PII om
+  // mindreårige) — premisset er fjernet, ikke omgått.
+  //
+  // /team-wang/coach viser roster med navn og IUP-lenker, og er derfor sperret
+  // her OG av requirePortalUser i coach/page.tsx. Mellom 2026-08-15 og denne
+  // endringen var BEGGE lagene av, slik at elevnavn lå åpent for alle med
+  // lenken — ikke gjenta det. Skal noe på fellessiden vise en person (navn,
+  // e-post, bilde, initialer koblet til én elev), skal sperren utvides tilbake
+  // til hele `/team-wang` i SAMME endring.
+  const erTeamWangCoach = path === "/team-wang/coach" || path.startsWith("/team-wang/coach/");
   const erBeskyttet =
     path.startsWith("/portal") ||
     path.startsWith("/admin") ||
+    path.startsWith("/intern") ||
     // T8: /innsyn (ekstern leser) — capability-sjekken bor i layouten,
     // proxyen stopper kun uautentiserte (samme arbeidsdeling som /admin).
     path.startsWith("/innsyn") ||
-    path.startsWith("/intern");
+    erTeamWangCoach;
 
   if (erBeskyttet) {
     // Sjekk auth-status via samme cookies som updateSession nettopp refresjet.

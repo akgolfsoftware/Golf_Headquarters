@@ -19,36 +19,10 @@ interface DemoBruker {
   foreldre: string[];
 }
 
-const SEED: DemoBruker[] = [
-  {
-    id: 1,
-    navn: "Emma Larsen",
-    klasse: "VG2",
-    epost: "emma.larsen@wang.no",
-    foreldre: ["ida.strand@gmail.com", "per.larsen@gmail.com"],
-  },
-  {
-    id: 2,
-    navn: "Jonas Bakke",
-    klasse: "VG1",
-    epost: "jonas.bakke@wang.no",
-    foreldre: ["marius.dahl@gmail.com"],
-  },
-  {
-    id: 3,
-    navn: "Sofie Holm",
-    klasse: "VG3",
-    epost: "sofie.holm@wang.no",
-    foreldre: ["kari.holm@gmail.com", "tom.holm@gmail.com"],
-  },
-  {
-    id: 4,
-    navn: "Marius Dahl",
-    klasse: "VG2",
-    epost: "marius.dahl@wang.no",
-    foreldre: ["anne.dahl@gmail.com"],
-  },
-];
+// Tom med vilje: siden er åpen, og oppdiktede elevnavn med @wang.no-adresser
+// leses som ekte elever ved en ekte skole. Lista fylles av det du legger inn
+// i denne økten (lokal state, lagres ikke).
+const SEED: DemoBruker[] = [];
 
 function initialer(navn: string): string {
   return navn
@@ -355,30 +329,9 @@ function Admin({ onBack }: { onBack: () => void }) {
       </div>
 
       <section className="wang-card" style={{ padding: 22 }}>
-        <div
-          style={{
-            fontFamily: "var(--font-brand)",
-            fontWeight: 700,
-            fontSize: 16,
-            marginBottom: 16,
-            color: "var(--text-primary)",
-          }}
-        >
-          Ny elev
-        </div>
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fit,minmax(220px,1fr))",
-            gap: 14,
-          }}
-        >
-          <Felt
-            label="Elevens navn"
-            placeholder="Emma Larsen"
-            value={navn}
-            onChange={setNavn}
-          />
+        <div style={{ fontFamily: "var(--font-brand)", fontWeight: 700, fontSize: 16, marginBottom: 16, color: "var(--text-primary)" }}>Ny elev</div>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(220px,1fr))", gap: 14 }}>
+          <Felt label="Elevens navn" placeholder="Fornavn Etternavn" value={navn} onChange={setNavn} />
           <div>
             <label
               className="t-label"
@@ -410,27 +363,9 @@ function Admin({ onBack }: { onBack: () => void }) {
               <option>VG3</option>
             </select>
           </div>
-          <Felt
-            label="WANG-epost"
-            type="email"
-            placeholder="emma.larsen@wang.no"
-            value={wangEpost}
-            onChange={setWangEpost}
-          />
-          <Felt
-            label="Forelder 1 – e-post"
-            type="email"
-            placeholder="forelder@epost.no"
-            value={f1}
-            onChange={setF1}
-          />
-          <Felt
-            label="Forelder 2 – e-post (valgfritt)"
-            type="email"
-            placeholder="forelder@epost.no"
-            value={f2}
-            onChange={setF2}
-          />
+          <Felt label="WANG-epost" type="email" placeholder="navn@wang.no" value={wangEpost} onChange={setWangEpost} />
+          <Felt label="Forelder 1 – e-post" type="email" placeholder="forelder@epost.no" value={f1} onChange={setF1} />
+          <Felt label="Forelder 2 – e-post (valgfritt)" type="email" placeholder="forelder@epost.no" value={f2} onChange={setF2} />
         </div>
         <button
           onClick={leggTil}
@@ -487,6 +422,11 @@ function Admin({ onBack }: { onBack: () => void }) {
           </span>
         </div>
         <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+          {brukere.length === 0 ? (
+            <div className="wang-card" style={{ padding: "18px 20px", fontFamily: "var(--font-body)", fontSize: 13.5, color: "var(--text-secondary)" }}>
+              Ingen elever lagt inn ennå. Bruk skjemaet over for å prøve flyten — oppføringene lagres ikke.
+            </div>
+          ) : null}
           {brukere.map((u) => (
             <div
               key={u.id}
