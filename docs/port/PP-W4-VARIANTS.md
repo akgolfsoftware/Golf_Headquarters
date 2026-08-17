@@ -102,7 +102,7 @@ konvensjonen, server-drevne lenker). STOPP: workbench-fanen (drag-drop-canvas, i
 
 | Rute | Komponent | `data-paper-slug` | Tittel | Tom-tilstand | Primær handling | Sign-off |
 |---|---|---|---|---|---|---|
-| `/admin/bookinger` | `AdminBookingerV2` (+ nytt «Tjenester og åpningstid»-kort) | ja (allerede) | «Bookinger» | ja | «Ny booking» (clay) | [ ] |
+| `/admin/bookinger` | `AdminBookingerV2` (+ nytt «Tjenester og åpningstid»-kort) | ja (allerede) | «Bookinger» | ja | «Ny booking» (ink-knapp i topplinjen — A3: clay aldri som liste-CTA; verifisert i kode 17.08: `CTAPill` uten `enTing` er allerede ink) | [ ] |
 | `…/bookinger/[id]` | `AdminBookingDetaljV2` | lagt til 13.08 | «Booking · {dato}» | notFound() | åpne spiller / tilbake | [ ] |
 | `…/bookinger/ny` | `NyBookingWizard` | lagt til 13.08 | «Ny booking» | n/a (veiviser) | opprett (steg 5/5) | [ ] |
 | `(legacy)` services · anlegg · availability | `AdminServicesV2`/`AdminAnleggV2`/`AdminAvailabilityV2` | lagt til 13.08 | ja | ja | ja | [ ] |
