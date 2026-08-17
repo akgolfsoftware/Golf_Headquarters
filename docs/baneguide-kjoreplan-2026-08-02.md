@@ -214,7 +214,7 @@ Ikke merge uten mitt ja.
 ## Økt 7 — Offline-fallback og sluttverifisering
 
 **Leverer:** skjematisk SVG-hullvisning fra geojson når kartfliser mangler (steg 1.8);
-skjermene målt mot ferdig-definisjonen i `docs/port/plan-designport-alle-skjermer.md` (steg 1.9); full
+skjermene målt mot skjermbilde-gaten i `CLAUDE.md` §Skjermarbeid (steg 1.9); full
 regresjonsrunde. (Produktdok §7.5 lag 3, §14 teknisk.)
 
 **Ferdig når:** flymodus uten cachede fliser viser hull-formen (fairway/green/bunkere) i stedet
@@ -226,13 +226,13 @@ felt er verifisert og listet i PR-beskrivelsen.
 
 ```
 Les docs/baneguide-produktdokument-2026-08-02.md (§7.5 punkt 3, §14) og
-docs/port/plan-designport-alle-skjermer.md (§Ferdig-definisjon per skjerm).
+skjermbilde-gaten i CLAUDE.md §Skjermarbeid.
 Oppgave: Baneguide Økt 7 av 7 — offline-fallback og sluttverifisering. Gren
 feature/baneguide-okt7-fallback. (1) Skjematisk hull-fallback: SVG tegnet fra Bane.geojson
 (fairway/green/bunkere som former, farger fra map-colors-tankegangen men i CSS/SVG — her KAN
 v2-tokens brukes siden det ikke er Mapbox-canvas) som vises i kart-foring.tsx når Mapbox ikke
 laster. (2) Mål kart-føringen og de endrede Gameplan-skjermene mot ferdig-definisjonen i
-docs/port/plan-designport-alle-skjermer.md — skjermbilder (mobil 390px + desktop, lys og mørk)
+skjermbilde-gaten i CLAUDE.md §Skjermarbeid — skjermbilder (mobil 390px + desktop, lys og mørk)
 til Anders før noe merges. (3) Full
 regresjon: npm run verify && npm test, manuell sjekk av /portal/gameplan-flatene og tekst-føring.
 List §14-suksesskriteriene punkt 1–8 i PR-beskrivelsen med status. Commit, push, PR.

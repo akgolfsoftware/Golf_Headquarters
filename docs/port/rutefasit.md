@@ -93,7 +93,7 @@ Komponentkolonnene under lister kun det som er unikt for skjermen.
 | /admin/klubb/innstillinger · integrasjoner · team(+inviter) | agencyos-oppsett.html | team/inviter = én rad i skjema | StatusBadge (integrasjoner), FormField, ListRow |
 | /admin/gdpr · audit-log · feillogg | agencyos-oppsett.html | «System og logg» — destruktivt nederst, aldri aksent | DataTable, ConfirmDialog, Callout |
 
-**Utgår (Haiku):** ~38 redirect-stubber (<600 B) · ~26 `(legacy)`-ruter med v2-erstatning.
+**Utgår (Haiku):** ~38 redirect-stubber (<600 B) · ⚠ «~26 `(legacy)`-ruter med v2-erstatning» er MOTBEVIST mot kode 17.08 — 21 legacy-admin-ruter har ekte innhold, kun ÉN har faktisk v2-erstatning. IKKE bruk som slettliste, se PORTPLAN §A0.
 
 ## W5 — Marketing · Auth · Forelder · System (`fase2/marketing|auth|forelder|system/`)
 

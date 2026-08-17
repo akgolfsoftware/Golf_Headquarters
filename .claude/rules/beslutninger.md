@@ -38,7 +38,8 @@ Gjelder til Anders endrer dem.
 - **Navigasjon følger Paper: FIRE PlayerHQ-faner (Anders 2026-08-05).** «I dag · Plan ·
   Analyse · Meg» — per `fase1/KONTRAKT.md` §10. Fanen **«Gjør» utgår som egen fane**;
   gjennomføring (live-økt, runde, test) åpnes fra Hjem eller Plan, ikke fra bunn-navigasjonen.
-  Koden har i dag fem faner i `src/components/v2/shell.tsx` (`PORTAL_TABS`) og må bygges om.
+  **IMPLEMENTERT (verifisert mot kode 17.08.2026):** `PLAYERHQ_NAV` i `src/components/v2/shell.tsx`
+  har nøyaktig de fire fanene. (`PORTAL_TABS`-symbolet finnes ikke lenger.)
   Bakgrunn: navnene spriker i tre kilder (KONTRAKT §10 · fasit-HTML · `kodeordre-agencyos.md`),
   og skallet ligger på hver eneste skjerm — spriket måtte lukkes før skjerm-PR-ene kunne kjøre.
   AgencyOS-railen er nå avklart: se **A1-beslutningen 2026-08-16** øverst (fase2-railen vinner).
@@ -70,8 +71,9 @@ Gjelder til Anders endrer dem.
   resynkes når Anders leverer ny zip. Sjekk `SYNC-STATUS.md` for ferskhet.
   Bakgrunn for selve 1:1-kravet: steg 7 PR1–PR4 ble merget med riktige
   tokens men feil skall («Én ting nå» manglet på alle fire, Hjem manglet artefaktkolonne/tom
-  tilstand, Planlegge hadde 5 konkurrerende CTA-er). Full avviksliste og ombyggingsplan:
-  `docs/port/plan-designport-alle-skjermer.md` §Avvik.
+  tilstand, Planlegge hadde 5 konkurrerende CTA-er). Full avviksliste og ombyggingsplan sto i
+  `docs/port/plan-designport-alle-skjermer.md` §Avvik (slettet 17.08.2026 — git-historikk);
+  gjeldende plan er `docs/port/PORTPLAN.md`.
 - **Skjermbilde-gate (Anders 2026-08-04, FAST REGEL — presisert samme dag):** ingen skjerm-PR
   i designporten merges uten at Anders har SETT skjermen. Konkret leveranse per ferdig skjerm:
   (1) faktisk skjermbilde av den kjørende appen (Vercel-preview, innlogget testbruker med ekte
@@ -80,34 +82,44 @@ Gjelder til Anders endrer dem.
   førsteinntrykket på iPhone) + desktop 1280px, (3) lys OG mørk modus (kjent felle:
   primary=accent-kollisjonen), (4) fasitens tilsvarende skjerm ved siden av. CI måler typer og
   bygg — ikke layout. Dette tetter hullet som lot PR1–PR4 passere som «ferdige».
-  Ferdig-definisjonen per skjerm står i `docs/port/plan-designport-alle-skjermer.md`
-  §Ferdig-definisjon.
+  Ferdig-definisjonen per skjerm er skjermbilde-gaten i `CLAUDE.md` §Skjermarbeid.
 - **Tester planlegges i Workbench, resultat syncer til TalentHQ (Anders 2026-08-04):** spilleren
   legger tester inn i planen sin via Workbench (fasiten `workbench-mobil.html` har allerede
   «Testbatteriet» som eget ark med egen Tester-seksjon per økt — design finnes, kode mangler).
   Når en test gjennomføres og logges (`/portal/tren/tester/[testId]/gjennomfor`), skal resultatet
   synces direkte til TalentHQ (`/portal/talent/*` — 5 skjermer, live men skjult fra meny siden
-  D1 2026-07-15). Sync-koblingen TestResult → TalentHQ finnes ikke i kode i dag og må bygges.
-  Uavklart: hvilke av de 36 testprotokollene i DB spilleren skal se (Anders nevner 21, CANON
-  sier 20) — spør før noe ryddes. **Fasit for test-gjennomføringsskjermen finnes nå**
+  D1 2026-07-15). **Sync-koblingen er BYGGET 2026-08-16 (T4):** `src/lib/talent/test-sync.ts` +
+  `src/lib/domain/talent-sync.ts` skriver `TalentTracking.testNivaaer` fra begge loggeveiene.
+  Gjenstår: talent-skjermene LESER ikke `testNivaaer` ennå, og Workbench-halvdelen
+  (testbatteri-ark) er ikke bygget — se `docs/MASTERPLAN-GJENSTAAENDE.md`.
+  **Protokoll-avklaringen er LØST 2026-08-16 (T5):** spilleren ser 21 CANON-rader (20 protokoller;
+  Putt Speed Control har to gjennomføringsvarianter) + egne tester — kodet i
+  `src/lib/portal-tester/test-tilgang.ts`. **Fasit for test-gjennomføringsskjermen finnes nå**
   (`playerhq-test-gjennomfor.html`, levert 2026-08-04, viser TN Putt Gate) — men avklaringen over
   blokkerer fortsatt PR-en, se `kart/status-gjennomfore-2026-08-04.md` i Claude Design-prosjektet.
 - **AI-laget samles på ÉN adresse (Anders 2026-08-04, Fase 1):** fasiten
   `agencyos-agenticos.html` bygges som ny samleflate som erstatter spredningen over
   `/admin/agent-team`, `/admin/agents`, `/admin/godkjenninger` og AI-panelet på konsollen —
   de gamle adressene blir redirects dit. Kun redesign av agent-team alene er IKKE beslutningen.
+  **Status 17.08.2026:** `/admin/agenticos` er bygget; `agent-team` og `agents` redirecter.
+  Gjenstår: `/admin/godkjenninger` (fortsatt egen side) og konsollens AI-panel — se
+  `docs/plan-agenticos-jarvis-2026-08-17.md`.
 - **Turneringsplanlegging inn i Workbench (Anders 2026-08-04, Fase 1):** fasiten
   `workbench-turnering.html` bygges som del av `WorkbenchV2` (coach planlegger turnering samme
   sted som trening) — ikke som ombygging av `/admin/tournaments`.
 - **Fase 2 av designporten kjøres i ny økt med Sonnet 5 (Anders 2026-08-04):** token-effektivt,
-  uten irrelevante skills/plugins/gammel kontekst. Fase 1-plan + rekkefølge:
-  `docs/port/plan-designport-alle-skjermer.md` §Fase 1-planlegging. Mønsterdokument for skjermer
+  uten irrelevante skills/plugins/gammel kontekst. (Fase 1-planen lå i
+  `plan-designport-alle-skjermer.md`, slettet 17.08.2026 — gjeldende rekkefølge og modellvalg:
+  `docs/port/PORTPLAN.md` + `docs/port/rutefasit.md` §1–2.) Mønsterdokument for skjermer
   uten fasit: `docs/port/monsterdokument-paper.md`.
 - **DataGolf-skjermene skal inn i PlayerHQ (Anders 2026-08-04):** i dag ligger de under
   marketing (`/stats/*` — spillere, turneringer, sg-sammenlign, verktøy m.fl.); `/portal/stats`
   er kun en redirect ut av portalen, og `/portal/datagolf` er én enkelt side. Skjermene skal
   finnes i PlayerHQ. Omfang/plassering (egen flate vs. faner i Analyse) er ikke avgjort — legges
   inn i porteringsplanens steg 7-omfang som egen avklaring.
+  **Status 17.08.2026:** første skjerm flyttet (T6, 16.08) — `/portal/analysere/datagolf` er ekte
+  skjerm med SG-bro fra runder; `/portal/stats` redirecter nå inn i portalen. Resten av
+  `/stats/*`-flyttingen venter fortsatt på PR-F-plasseringsbeslutningen (PORTPLAN §A1).
 
 ## Beslutningene (juni–juli 2026)
 
@@ -119,11 +131,12 @@ Gjelder til Anders endrer dem.
   Presis/FASIT-låser er fortsatt avviklet. Tidsplanen fra 31.07 sa full Paper-port til `src/`
   skulle vente til FØR/UNDER/ETTER-piloten var evaluert — **Anders overstyrte dette eksplisitt
   2026-08-03** etter at steg 1–6 + steg 7 PR1 allerede var merget på løpende «ja» per PR.
-  Full skjermport kjører nå aktivt per `docs/port/plan-designport-alle-skjermer.md` (10 steg,
-  én PR per skjerm/steg, aldri merge til main uten Anders' «ja»). `designsystem/paper/` er et
+  Full skjermport kjører nå aktivt per `docs/port/PORTPLAN.md` (én sesjon per mal-fasit,
+  aldri merge til main uten Anders' «ja»). `designsystem/paper/` er et
   lokalt speil hentet ned i repoet 02.08.2026 (PR #254, ikke lenger kun på `chore/paper-speil-lokal`)
-  — og er siden 12.08.2026 **arbeidsfasiten**, se speilregelen over. Se også `docs/gjenstaaende-plan-2026-07-31.md` §1.1
-  (historisk — skrevet før overstyringen) og `docs/for-under-etter-spec.md` §2 for historikken.
+  — og er siden 12.08.2026 **arbeidsfasiten**, se speilregelen over. (Historikk:
+  `docs/gjenstaaende-plan-2026-07-31.md` er slettet 17.08.2026 — git-historikk;
+  `docs/for-under-etter-spec.md` §2 står.)
 - **Navne-kanon (demo):** spiller = **Øyvind Rohjan**, coach = **Anders Kristiansen** — alltid fulle
   navn, gamle demo-navn skal bort. Unntak: ekte coach **«Markus Røinås Pedersen»** på markedssidene,
   ikke bytt ham ut.
@@ -134,10 +147,16 @@ Gjelder til Anders endrer dem.
   dit, ikke en meny av 6 kort. Samme i coachens spiller-Workbench.
 - **Analyse samlet:** Analysere + TrackMan + Runder + SG er én flate med faner — ikke separate
   moduler. Mål bor i Oversikt, redigeres i Workbench.
-- **Abonnement (ingen tier-nivåer):** PlayerHQ-tilgang er gratis eller 299 kr/mnd. **Gratis** hvis:
-  1 mnd prøveperiode, ELLER coaching-pakke (Performance / Performance Pro), ELLER gruppe via AK Golf.
-  **299 kr/mnd** for alle andre. «Performance / Performance Pro» er **coaching-pakker** (antall
-  økter), IKKE app-nivåer. **ELITE finnes ikke** (dødt Prisma-enum — vis aldri i UI).
+- **Abonnement og tilgang (OPPDATERT 2026-08-16 — fasit er BUSINESS-RULES §Abonnement og tilgang):**
+  tre tilgangsnivåer **FULL / TALENT / INGEN**, avgjort av `resolveTilgang` i `src/lib/feature-flags.ts`
+  (eneste sannhetskilde). **TALENT** (gratis, utløper aldri) åpner KUN testbatteriet (CANON),
+  stats-/analyse-lesing, SG-/runderegistrering, DataGolf-sammenligning, talent-flatene, booking av
+  enkelttimer og konto — alt annet låst med oppgraderingsvei (fail-closed i `requirePortalUser`).
+  Pris FULL: **299 kr/mnd eller 2 690 kr/år**. FULL gratis ved: 1 mnd prøveperiode, ELLER
+  coaching-pakke (Performance / Performance Pro), ELLER AK-administrert gruppe, ELLER
+  lanseringsvinduet til 1. sep 2026 (`gratisForAlle`). «Performance / Performance Pro» er
+  **coaching-pakker** (antall økter), IKKE app-nivåer. **ELITE finnes ikke** (dødt Prisma-enum —
+  vis aldri i UI). Én `Subscription`-rad per `(userId, kind)` — COACHING og PLAYERHQ kan sameksistere.
 - **FYS-resultatformel avventer:** Bygg testskjermer med plassholder-tall. Ikke hardkod
   referanseverdier før Anders gir grønt lys.
 - **Design-kilde (oppdatert 2026-08-05 — PAPER VINNER ALLTID):** **Claude Paper** (Claude Design

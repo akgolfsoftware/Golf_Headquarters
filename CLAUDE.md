@@ -14,7 +14,8 @@ CLAUDE.md og ak-master.md vinner ak-master.md.
 - **`docs/platform/AGENT-BRIEF.md`** — agent-onboarding: stack, eksakte versjoner, prosjektkart. Les FØR arbeid.
 - **`docs/STATUS-NÅ.md`** — hva er levert/ikke levert akkurat nå. (Ligger i `docs/`, ikke `docs/platform/`.)
 - **`docs/port/fasit-liste-paper.md`** — designdekning: hvilke skjermer har Paper-fasit, hvilke mangler.
-- **`docs/port/plan-designport-alle-skjermer.md`** — porteringsplan, status per bølge og ferdig-definisjon per skjerm.
+- **`docs/port/PORTPLAN.md`** — porteringsplan: én sesjon per mal-fasit, rekkefølge og blokkeringer.
+- **`docs/MASTERPLAN-GJENSTAAENDE.md`** — samlet gjenstående-plan på tvers av alle spor (17.08.2026).
 - **`docs/platform/BUSINESS-RULES.md`** — forretningsregler som ikke kan utledes fra kode (abonnement, booking, GDPR, dual-track, demo-data, tema m.fl.).
 - **`docs/platform/DATA-MODEL.md`** — datamodell (tabeller, felter, relasjoner, server actions, API).
 - **`docs/testing.md`** — testinfrastruktur og plan.
@@ -27,16 +28,17 @@ Sju filer, alle aktive: `arkitektur.md` (produkter, ruter, mappestruktur) · `go
 ikke kode).
 
 `beslutninger.md` dekker: invarianter-aldri-sperrer, AgencyOS-navnet, navne-kanon, Workbench-planlegging,
-analyse-samling, abonnement 299/gratis, FYS-avventing. **Design (LÅST 2026-07-31, OVERSTYRT 2026-08-03
+analyse-samling, abonnement (FULL/TALENT/INGEN — 299 kr/mnd eller 2 690 kr/år, fasit i
+BUSINESS-RULES §Abonnement og tilgang), FYS-avventing. **Design (LÅST 2026-07-31, OVERSTYRT 2026-08-03
 — se invariant 2 under):** Claude Design-prosjektet **«AK Golf HQ — Claude Paper»** (`605a48cc`, hentet
 via `claude-design`-MCP-verktøyet) er designfasit; full port til `src/` kjører nå aktivt, se
-`docs/port/plan-designport-alle-skjermer.md`. Ved konflikt vinner `docs/platform/BUSINESS-RULES.md`.
+`docs/port/PORTPLAN.md`. Ved konflikt vinner `docs/platform/BUSINESS-RULES.md`.
 
 ## Harde invarianter (brytes aldri)
 1. **Anbefalinger sperrer aldri:** ingenting i appen blokkerer trening. Aldri «kan ikke brytes»-kode/tekst.
 2. **Claude Paper vinner alltid (LÅST 2026-08-03/05).** Claude Design-prosjektet «AK Golf HQ — Claude
    Paper» (`605a48cc`, skjermer i `fase1/`) er eneste designfasit — for design OG produksjonskode.
-   Full porten kjører nå, skjerm for skjerm, per `docs/port/plan-designport-alle-skjermer.md`.
+   Full porten kjører nå, skjerm for skjerm, per `docs/port/PORTPLAN.md`.
    Tidsplanen fra 31.07 («C, smalt» til etter piloten) er **overstyrt** og skal ikke følges.
    Mangler skjermen fasit: `docs/port/monsterdokument-paper.md` er eneste designkilde.
    **Sier et dokument, en skill eller en kodekommentar noe annet enn Paper-fasiten, vinner
@@ -83,9 +85,9 @@ akkurat denne klassen drift. Er MCP-en utilgjengelig: si det i rapporten, ikke a
 
 **Plan og rekkefølge:** `docs/port/PORTPLAN.md` — én sesjon per mal-fasit, avhengighetsrekkefølge,
 og hva som blokkerer hva. Kvalitetsporten er skjermbilde-gaten rett under + `PAPER-ZIP-CHECKLIST.md`.
-(`docs/port/plan-designport-alle-skjermer.md` er **UTGÅTT 12.08.2026** — den er stemplet slik i
-egen header og listet som erstattet i `docs/port/GYLDIGHET.md`. CLAUDE.md pekte på den som
-gjeldende kvalitetsport frem til 17.08; ikke gjeninnfør den henvisningen.)
+(Den gamle `plan-designport-alle-skjermer.md` er UTGÅTT 12.08.2026 og **slettet 17.08.2026**
+sammen med øvrige utgåtte plandokumenter — alt lever i git-historikken. Ikke gjeninnfør
+henvisninger til den; `PORTPLAN.md` + skjermbilde-gaten under er kvalitetsporten.)
 
 **Skjermbilde-gaten:** ingen skjerm-PR merges uten at Anders har SETT skjermen. Skjermbilde i samtalen
 (synlig fra iPhone), mobil 390px alltid først, deretter desktop, lys OG mørk, fasit-utsnittet ved siden av,

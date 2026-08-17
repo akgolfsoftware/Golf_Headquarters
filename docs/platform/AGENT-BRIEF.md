@@ -100,7 +100,7 @@ Slettede mapper det ikke skal letes etter: `public/design-handover/`, `wireframe
   «AK Golf HQ — Claude Paper» (`605a48cc`, skjermer i `fase1/`) er eneste designfasit. Full port
   til `src/` kjører NÅ. Den gamle tidsplanen «C, smalt til etter piloten» (31.07) er **overstyrt**
   og skal ikke følges. Mangler skjermen fasit: `docs/port/monsterdokument-paper.md` er eneste
-  designkilde. Plan + ferdig-definisjon: `docs/port/plan-designport-alle-skjermer.md`.
+  designkilde. Plan: `docs/port/PORTPLAN.md`; ferdig-definisjon: skjermbilde-gaten i `CLAUDE.md` §Skjermarbeid.
   Ved konflikt mellom et dokument og Paper-fasiten **vinner Paper-fasiten**.
 - **Farger/flater:** Paper-tokens (`--p-*` i `src/styles/paper-tokens.css`), som `--v2-*` peker på
   etter steg 5A. Aksent `#D97757` har monopol på «Én ting nå» — maks én per skjerm.
@@ -132,7 +132,7 @@ Slettede mapper det ikke skal letes etter: `public/design-handover/`, `wireframe
 
 Listen under er fra Presis-æraen og gjaldt den gamle fasiten. **Utgått 2026-08-05** — den forrige
 lenken gikk dessuten til `.claude/rules/design-produktbeslutninger.md`, som ikke finnes.
-Gjeldende avvikshåndtering står i `docs/port/plan-designport-alle-skjermer.md` §Ferdig-definisjon.
+Gjeldende avvikshåndtering: kontrakten + skjermbilde-gaten i `CLAUDE.md` §Skjermarbeid.
 Beholdt kun som historikk:
 
 - PlayerHQ-hjem hero: profilbilde + tier-pill øverst (ikke dato-eyebrow + vær fra designet).
@@ -165,8 +165,7 @@ Fasiten er Claude Paper i Claude Design `605a48cc` (skjermer i `fase1/`, lokalt 
 Deretter: bygg fra fasiten (element-liste først), screenshot med Playwright (PlayerHQ 430px,
 AgencyOS ~1280px, full-page), spawn en adversarial diff-subagent som FINNER avvik (ikke bekrefter),
 og fiks til 0 avvik. En skjerm regnes som ferdig først når
-ferdig-definisjonen i `docs/port/plan-designport-alle-skjermer.md` §Ferdig-definisjon er oppfylt og
-Anders har sett skjermbildet.
+skjermbilde-gaten i `CLAUDE.md` §Skjermarbeid er oppfylt og Anders har sett skjermbildet.
 
 ---
 

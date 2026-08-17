@@ -39,7 +39,7 @@ Ingen eksplisitt trinn-felt i dag. **Default (ingen ny data):** beregn trinn fra
 
 ## akgolf-hq-regler som gjelder
 - Isolert branch (WIP fra annen økt ligger på main — ikke bland inn).
-- `docs/port/plan-designport-alle-skjermer.md` §Ferdig-definisjon per skjerm gjelder for hver ny skjerm.
+- Skjermbilde-gaten i `CLAUDE.md` §Skjermarbeid gjelder for hver ny skjerm.
 - v13-design: komponér fra `athletic/golfdata/` + design-handover-kontrakter; meld gap, ikke improviser.
 - Verifiser: `npx prisma validate && npx prisma generate && npx tsc --noEmit && npm run build` + `npm test`.
 - Design dømmes av `.claude/skills/ak-designekspert`.

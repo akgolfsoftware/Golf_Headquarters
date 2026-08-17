@@ -1,7 +1,7 @@
 # Plan — spilleren setter sin egen pyramidefordeling
 
 Bestilt av Anders 2026-08-02, som oppfølger til tiltak 4 i
-`docs/kvalitetsaudit-2026-08-02.md`: «prosentfordelingen skal ikke være låst —
+`docs/kvalitetsaudit-2026-08-02.md` (slettet 17.08.2026 — git-historikk): «prosentfordelingen skal ikke være låst —
 spilleren skal sette sine egne verdier».
 
 Alt under nåtilstand er verifisert mot koden 2026-08-02, ikke antatt.
@@ -59,7 +59,7 @@ forslag fra en agent. Spilleren har ingen vei inn.
 | 6 | **Varsel, ikke sperre:** avvik fra CANON (TEK under 15 % m.m.) vises som setning under baren. Lagring blokkeres aldri. | Test: fordeling med TEK 5 % lagres, og varselet vises |
 | 7 | **Coach-siden:** samme redigering i coachens spiller-Workbench (`admin`), setter kilde `COACH`. Coach ser hvem som satte gjeldende fordeling og når. | Klikk-test i AgencyOS |
 | 8 | **Periodiseringen blir et forslag:** `allocationForPeriod()` leverer forslag til skjermen i stedet for å skrive rett til planen. Agentenes `PYRAMID_ADJUST` går via godkjenning som i dag. | Enhetstest + gjennomgang av kallstedene |
-| 9 | **Ferdig-definisjon:** mål Workbench-skjermene (spiller + coach) mot `docs/port/plan-designport-alle-skjermer.md` §Ferdig-definisjon per skjerm. | Skjermbilder (mobil 390px + desktop, lys og mørk) godkjent av Anders |
+| 9 | **Ferdig-definisjon:** mål Workbench-skjermene (spiller + coach) mot skjermbilde-gaten i `CLAUDE.md` §Skjermarbeid. | Skjermbilder (mobil 390px + desktop, lys og mørk) godkjent av Anders |
 | 10 | **Full gate + PR:** `npm run verify && npm test`, egen gren, PR, og Anders sier ja før hovedversjonen. | CI grønn på PR |
 
 ## Rekkefølge og risiko

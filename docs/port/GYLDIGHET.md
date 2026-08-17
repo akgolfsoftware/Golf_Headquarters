@@ -1,4 +1,4 @@
-# GYLDIGHET — hvilke dokumenter som styrer skjermbygging (12.08.2026)
+# GYLDIGHET — hvilke dokumenter som styrer skjermbygging (oppdatert 17.08.2026)
 
 **Legges som `docs/port/GYLDIGHET.md`.** Én rangordning, så ingen gammel plan kan
 overstyre designet. Ved konflikt vinner høyere nummer ALDRI over lavere.
@@ -7,32 +7,29 @@ overstyre designet. Ved konflikt vinner høyere nummer ALDRI over lavere.
 
 | # | Dokument | Rolle |
 |---|---|---|
-| 1 | `designsystem/paper/` | **Fasiten selv** — speil av Claude Design `605a48cc`. Vinner alltid på layout, CTA, logo, tokens |
+| 1 | `designsystem/paper/` | **Fasiten selv** — speil av Claude Design `605a48cc` (+ `jarvis/`-skjermene). Vinner alltid på layout, CTA, logo, tokens |
 | 2 | `docs/port/PAPER-ZIP-CHECKLIST.md` | Status per fasit-fil. `[x]` settes kun av Anders |
-| 3 | `docs/port/PIXEL-PERFECT-PLAN-COMPLETE.md` | Metoden: D1–D12, PP-faser, fabrikk-løypa |
-| 4 | `docs/port/rutefasit.md` | **Alle ruter UTEN egen fasit-fil** — rute → mal → avvikslinje. NY 12.08 |
-| 5 | `docs/port/PP-W3/W4/W5-VARIANTS.md` | Kvittering per variantrute (m390 + d1280) |
-| 6 | `docs/port/portstatus-paper.md` + `fasit-liste-paper.md` | Levende status/oppslagslister |
+| 3 | `docs/port/PORTPLAN.md` | **Rekkefølgen og blokkeringen** — én sesjon per mal-fasit, hva som kan startes nå. NY 17.08 |
+| 4 | `docs/port/PIXEL-PERFECT-PLAN-COMPLETE.md` | Metoden: D1–D12, PP-faser, fabrikk-løypa |
+| 5 | `docs/port/rutefasit.md` | **Alle ruter UTEN egen fasit-fil** — rute → mal → avvikslinje → komponenter (v2, 16.08). ⚠ «Utgår»-linjene er IKKE en slettliste — les PORTPLAN §A0 først |
+| 6 | `docs/port/PP-W3/W4/W5-VARIANTS.md` | Kvittering per variantrute (m390 + d1280) |
+| 7 | `docs/port/portstatus-paper.md` + `fasit-liste-paper.md` | Levende status/oppslagslister |
 
-## UTGÅTT — styrer IKKE bygging (stemples, slettes ikke)
+Kontrakten (slik en rute bygges fra en mal-fasit) og skjermbilde-gaten bor i
+`CLAUDE.md` §Skjermarbeid — de gjentas ikke her.
 
-Hver av disse får denne linjen øverst i fila:
+## UTGÅTT — slettes, ikke stemples (regel endret av Anders 17.08.2026)
 
-```
-> ⚠️ UTGÅTT (12.08.2026) — styrer ikke skjermbygging. Se docs/port/GYLDIGHET.md.
-```
+Tidligere regel var «stemples, slettes ikke». Anders ba 17.08.2026 om at gamle og
+utgåtte dokumenter **slettes** — git-historikken bevarer alt. Samme dato ble hele
+UTGÅTT-lista fra 12.08 slettet (33 stemplede filer), sammen med kjøringslogger,
+nattrapporter, signeringsgallerier, Wave-statusfilene og erstattede planer
+(~78 filer totalt — se PR-en «plan-opprydding 17.08» for full liste).
 
-| Fil | Hvorfor utgått |
-|---|---|
-| `PAPER-PATTERN-CHECKLIST.md` | Erstattet av `rutefasit.md` (samme jobb, talt mot kode) |
-| `skjermplan-tegnet-og-wireframe.md` | Rutetallene erstattet av konsolideringsgatene (kart/w3–w6 + drift) |
-| `plan-designport-alle-skjermer.md` | Erstattet av PIXEL-PERFECT-PLAN |
-| `WAVE-STATUS-MASTER.md` | Chrome-historikk (Wave A–I) — underordnet PP; «PORT» ≠ DONE |
-| `GROK-BUILD-BRIEF.md`, `GROK-NATTORDRE-*` | Historiske ordrer — metoden bor i PP-planen |
-| `OVERNIGHT-*`, `NATTPLAN-*`, `NATTRAPPORT-*`, `MORGENSJEKK-*`, `IPHONE-*`, `AUTONOMOUS-*` | Kjøringslogger, ikke plan |
-| `CLAUDE-DESIGN-PROMPT-*` | Bestillinger til designprosjektet — levert |
-| `fase0–fase4`, `steg5-kontroll`, kontroll-filene | Alt frosset (README sier det selv) |
-| `PP-0/1/2-STATUS.md`, `PP-0-ROUTE-MAP.md`, `PAPER-ZIP*-SYNC-*.md` | Øyeblikksbilder — riktig da, status bor i checklisten |
+**Regelen fremover:** når et dokument erstattes, slett det i samme PR som innfører
+erstatteren, og rett alle pekere. Ikke la to sannheter om samme tema leve samtidig.
+Unntak: ingenting under `designsystem/` slettes — det er speil av Claude Design og
+skal være byte-identisk med siste zip.
 
 ## Konfliktregler (uendret fra PP §8)
 

@@ -72,7 +72,7 @@ Disse er ikke tekniske valg — de kan ikke avgjøres i en kodesesjon.
 
 | Konflikt | Handling |
 |---|---|
-| `CLAUDE.md` peker på `plan-designport-alle-skjermer.md` som gjeldende kvalitetsport — filen er **stemplet UTGÅTT** og listet som utgått i `GYLDIGHET.md`. To konkurrerende ferdig-definisjoner i hver eneste økt. | **Rettet i denne sesjonen** — se §Gjort |
+| `CLAUDE.md` peker på `plan-designport-alle-skjermer.md` som gjeldende kvalitetsport — filen var stemplet UTGÅTT og er slettet 17.08.2026. To konkurrerende ferdig-definisjoner i hver eneste økt. | **Rettet i denne sesjonen** — se §Gjort |
 | Andre fysiske kopi av rutefasit: `designsystem/paper/design_handoff_rutefasit_agenticos/docs-port/rutefasit.md` med den gamle kontrakt-seksjonen. | **Rettet i denne sesjonen** — se §Gjort |
 | `agencyos-okonomi.html` finnes i BÅDE `fase1/` (43 kB) og `fase2/agencyos/` (12 kB), samme `<title>`, begge referert. | Anders/eier må stryke den ene |
 | `/auth/login`: `fase1/innlogging.html` (signert ferdig) vs `fase2/auth/auth-flyt.html` (ikke signert). Samme skjerm, to maler, motsatt status. | Anders/eier må stryke den ene |

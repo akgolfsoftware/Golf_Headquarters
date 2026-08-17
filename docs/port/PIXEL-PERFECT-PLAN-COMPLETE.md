@@ -26,32 +26,35 @@ v1.1 ble skrevet da **ingen** skjerm var signert (0 `[x]` · 52 `[~]` · 35 `[ ]
    «bygg skjermer» til «fell beslutninger + systemfikser + signer restene».
 6. **Vaktverk er delvis på plass:** typografi-vakt (#462, warning-modus), token-gate i `verify`,
    Presis-farger ute av `src/` (#465), taksonomi v3 med 17 treningsområder (#477).
-7. Regnskapsenheten er nå **checklist-rader (85 aktive)**, ikke «79 fasit-HTML» — de tre nye
-   14.08-filene (`playerhq-betaling`, `-gapping`, `-ukesdigest`) får sin DONE via D-radene,
-   og `workbench-stall(-mobil)` via D1-raden.
+7. Regnskapsenheten er nå **checklist-rader (88 aktive — rettet 17.08)**, ikke «79 fasit-HTML» —
+   de tre nye 14.08-filene (`playerhq-betaling`, `-gapping`, `-ukesdigest`) får sin DONE via
+   D-radene, og `workbench-stall(-mobil)` via D1-raden. Zip 16.08 la til tre nye W3-rader
+   (`playerhq-profil`, `-utstyr`, `-coach-tilbakemelding`) — derfor 88, ikke 85. Checklisten
+   er fasiten for antallet.
 
 ---
 
-## STATUS-SNAPSHOT (16.08.2026 — talt mot checklist og git, ikke antatt)
+## STATUS-SNAPSHOT (oppdatert 17.08.2026 — talt mot checklist og git, ikke antatt)
 
 | Blokk | `[x]` | `[~]` | `[ ]` | Ute (`[-]`) |
 |---|---:|---:|---:|---:|
 | Fase 1 (33 rader) | 28 | 3 | 0 | 2 |
 | W1 PlayerHQ (11) | 0 | 11 | 0 | — |
 | W2 Analysere-dybde (12) | 0 | 12 | 0 | — |
-| W3 Meg/Booking/Talent/Coach (7) | 1 | 6 | 0 | — |
+| W3 Meg/Booking/Talent/Coach (10 — +3 fra zip 16.08) | 1 | 9 | 0 | — |
 | W4 AgencyOS (8) | 8 | 0 | 0 | — |
 | W5 Marketing/Auth/Forelder/System (6) | 2 | 4 | 0 | — |
 | W6 WANG + GFGK (4) | 1 | 2 | 1 | — |
 | D1–D6 Funksjonspotensial (6) | 0 | 3 | 3 | — |
 | Templates (8) | — | — | — | 8 |
-| **SUM (85 aktive rader)** | **40** | **41** | **4** | **10** |
+| **SUM (88 aktive rader)** | **40** | **44** | **4** | **10** |
 
 **Mal-varianter:** 0 kvittert — W3 **9** · W4 **38** · W5 **25** = **72** rader gjenstår i
 `PP-W3/W4/W5-VARIANTS.md` (m390 + d1280 per rad).
 
-**Åpne PR-er (16.08):** kun #406 + #490 (begge WANG-deling/elevnavn). Merge-køen ellers er tom —
-main ER siste kjente tilstand.
+**Åpne PR-er (17.08):** #549 (S3 systemtilstander) · #547 (Jarvis maskinrom, draft) ·
+#542 (innganger skjulte flater) · #534 (AP0 SG-grunnmur, draft) · #514 (SG-app-plan, draft) ·
+#490 (WANG PII-fiks — **haster**, #406 lukkes som overflødig når den merges).
 
 **Verktøystatus:**
 
@@ -100,7 +103,7 @@ sub-pixel font/antialiasing tillatt · innhold er ekte data — layout skal tål
 
 ### 1.1 IN — dette regnskapet skal til 100 %
 
-1. **De 85 aktive radene i `PAPER-ZIP-CHECKLIST.md`** (40 `[x]` i dag). Dette er eneste
+1. **De 88 aktive radene i `PAPER-ZIP-CHECKLIST.md`** (40 `[x]` i dag). Dette er eneste
    fasit-regnskap — «79 fasit-HTML» fra v1.1 er avløst (templates ute, D-rader inne).
 2. **De 72 variant-radene** i PP-W3/W4/W5-VARIANTS (mal-arv: malen 100 % pixel → 15-min
    variant-sjekk per rute med `rutefasit.md`-avvikslinjen som hele forskjellen).
@@ -129,9 +132,9 @@ Avstanden som gjenstår er IKKE token-drift eller speil-drift (begge avkreftet m
 
 | # | Rotårsak | Status 16.08 | Lukkes av |
 |---|---|---|---|
-| 1 | **Rail-konflikten:** fase2-fasitene tegner en annen admin-rail (7 punkter, mixed case) enn fase1 + koden (8–9, versaler). Forgifter hver eneste admin-sammenligning | ÅPEN — mest lønnsomme enkeltbeslutning i porten | Beslutning A1 + én endring i `V2Shell` eller fasit |
-| 2 | **Master–detalj/artefaktkolonnen:** fasitens inspektørpanel (380 px) mangler på godkjenninger/planbibliotek/bookinger; appen bruker liste→detaljrute | ÅPEN beslutning | Beslutning A2 + ombygging (L) eller fasit-retting |
-| 3 | **Clay-normen:** «Én ting nå»-komponenten brukes som vanlig liste-CTA (307 forekomster, flere per flate i 10+ filer); variant-dokumentene har kodifisert avviket | ÅPEN beslutning + mekanisk sweep | Beslutning A3 + PP-B2 |
+| 1 | **Rail-konflikten:** fase2-fasitene tegner en annen admin-rail (7 punkter, mixed case) enn fase1 + koden (8–9, versaler). Forgifter hver eneste admin-sammenligning | **LUKKET 16.08** — A1 besvart (fase2-railen), implementert i #500 | — |
+| 2 | **Master–detalj/artefaktkolonnen:** fasitens inspektørpanel (380 px) mangler på godkjenninger/planbibliotek/bookinger; appen bruker liste→detaljrute | **BESVART 16.08 (A2)** — delt primitiv `inspektorpanel.tsx` bygget i #524, tre flater; resterende flater kobles i PP-C/E | Ombygging per flate |
+| 3 | **Clay-normen:** «Én ting nå»-komponenten brukes som vanlig liste-CTA (307 forekomster, flere per flate i 10+ filer); variant-dokumentene har kodifisert avviket | **BESVART 16.08 (A3)** — sweep kjørt i #502; 44 filer bruker fortsatt `enTing`, variant-dokumentene ikke rettet | PP-B2-rest + dok-retting |
 | 4 | **Typografi:** 61 % av inline `fontSize` utenfor skalaen (13px/12.5px vanligst) | Vakt på plass (#462, warning) · kjernebiblioteket ryddet · restansen nedarbeides skjerm for skjerm | PP-B5 + PP-F1 (STRENG-vipp) |
 | 5 | **Chrome-rest:** `(legacy)`-SubNav i to layouts, `/meg` utenfor skall-monopolet, døde chrome-komponenter | Delvis (#466 tok 25 døde ruter) — rest ikke verifisert | PP-B4 (verifiser mot avviksrapport §1.5 først) |
 
@@ -147,11 +150,15 @@ Avstanden som gjenstår er IKKE token-drift eller speil-drift (begge avkreftet m
 
 ---
 
-## 4. PP-A · Beslutningsgaten (Anders — én samlet økt, alt står her)
+## 4. PP-A · Beslutningsgaten — **A1–A4 BESVART av Anders 16.08.2026**
 
-Uten disse svarene stopper de tunge fiksene. Alt annet i planen kan starte, men **COMPLETE er
-umulig uten A1–A4.** Svar kan gis punktvis; hvert svar nedfelles i `beslutninger.md` og fasiten
-rettes ved behov (aldri to sannheter).
+> Svarene er nedfelt i `.claude/rules/beslutninger.md` §august 2026: **A1** fase2-railen
+> (implementert #500) · **A2** fasitens inspektørpanel (primitiv bygget #524, tre flater) ·
+> **A3** clay-normen bekreftet (sweep kjørt #502, restanse gjenstår) · **A4** innlogging LYS.
+> B/C/D-spørsmålene under er delvis fortsatt åpne — **gjeldende åpne-spørsmål-liste er
+> `PORTPLAN.md` §A1 (10 spørsmål)**; ikke gjenåpne A1–A4.
+
+Historisk tekst (slik gaten sto før svarene):
 
 ### A · Skall og mønster (retter flest skjermer per svar)
 
@@ -204,7 +211,7 @@ Rekkefølgen er avhengighetsstyrt; B3–B6 kan starte FØR beslutningsgaten.
 |---|---|---|---|
 | B1 | **Rail-implementasjon:** én endring i `V2Shell` (eller fasit-retting) etter A1 — retter «feil skall» på samtlige admin-flater samtidig | A1 | S kode / M hvis fasit rettes |
 | B2 | **Clay-sweep:** `enTing`-bannerne på plans/bookinger/godkjenninger/innstillinger → ink-header-knapper · de 5 `error.tsx` → `V2Feil` · clay-prikken i `VarslerV2` → nøytral · `InnstillingerIntegrasjonerV2` 4 → 1. Deretter rettes variant-dokumentene («Ny plan (enTing)» o.l.) | A3 | M, mekanisk |
-| B3 | **`Composer` som delt komponent:** finnes fortsatt ikke (inline på 3 chat-flater); #482 ga V2Shell skjermhøyde-modus som grunnlag. Ekstraher, monter i skallet — alle desktop-flater arver (rutefasit-krav) | — | M |
+| B3 | **`Composer` som delt komponent:** DELVIS 17.08 — ekstrahert i #523 (`src/components/v2/composer.tsx`, 4 flater importerer), men IKKE montert i `V2Shell` (`composer`-propen har 0 kallsteder). Monteringen gjenstår — alle desktop-flater skal arve (rutefasit-krav) | — | S (rest) |
 | B4 | **Chrome-rest:** verifiser mot avviksrapport §1.5 hva #466 IKKE tok — `SubNav` i `(legacy)/mal`- og `coach`-layoutene, `/meg` uten `V2Shell`, gjenlevende døde chrome-komponenter | — | S–M |
 | B5 | **Småfiks fra `fasit-avvik.md` (10 min, null risiko):** `planlegge-v2/styles.css:42` (siste Inter-linje) → `var(--p-body)` · de 7 inline radius-verdiene → stigen · `slack-alert.ts:104` (Familjen Grotesk i e-post) | — | S |
 | B6 | **Typografi-rest:** kjør `check-typografi.mjs --alle`, nedarbeid restansen bibliotek-først (`datavis.tsx`/`domene.tsx` er alt ryddet — resten skjerm for skjerm i PP-C-bølgene) | — | Løpende |
@@ -275,7 +282,7 @@ ingenting mer. Kvitteres i variant-filene med m390 + d1280.
 
 ## 10. PP-G · Full regresjon + COMPLETE
 
-1. Alle 85 rader `[x]` + 72 variant-rader kvittert — full gjennomgang av checklisten.
+1. Alle 88 rader `[x]` + 72 variant-rader kvittert — full gjennomgang av checklisten.
 2. Playwright smoke P0+P1 grønn + `paper-visual` grønn med `PAPER_SEED=1`.
 3. Visuell stikkprøve: 10 tilfeldige variant-ruter.
 4. Verifiser prod: `main` = prod-commit, `akgolf.no` viser plattformen (10.7 er utført — bekreft
@@ -287,8 +294,9 @@ ingenting mer. Kvitteres i variant-filene med m390 + d1280.
 
 ## 11. Dokument-hygiene (del av planen, egen liten dok-PR)
 
-- `PAPER-ZIP-CHECKLIST.md`-headeren: «79/79» → 85-rader-regnskapet; «Oppdatert 2026-08-09» →
-  riktig dato; referansen til `PAPER-PATTERN-CHECKLIST.md` (utgått) → `rutefasit.md`.
+- `PAPER-ZIP-CHECKLIST.md`-headeren: «79/79» → 88-rader-regnskapet; «Oppdatert 2026-08-09» →
+  riktig dato; referansen til `PAPER-PATTERN-CHECKLIST.md` (slettet 17.08) → `rutefasit.md`.
+  *(Delvis gjort i plan-oppryddingen 17.08 — checklistens tre feilførte `[ ]`-rader er rettet.)*
 - Stale PR-referanser i checklist-rader (avviksrapport §3-lista: #413/#414/#419 er merget).
 - `CLAUDE.md` §Stack: de to utdaterte font-påstandene (fastslått i `fasit-avvik.md` §1 — byttet ER
   gjennomført; kun `planlegge-v2/styles.css:42` gjensto, som B5 tar).
@@ -371,7 +379,7 @@ Maks 1–3 skjermer per PR. `npm run verify && npm test` grønt før hver PR. Al
 
 Alle må være sanne:
 
-1. `PAPER-ZIP-CHECKLIST.md`: **85/85 aktive rader `[x]`** (40 i dag).
+1. `PAPER-ZIP-CHECKLIST.md`: **88/88 aktive rader `[x]`** (40 i dag).
 2. PP-W3/W4/W5-VARIANTS: **72/72 kvittert** (m390 + d1280).
 3. Beslutningsgaten §4 A–D besvart og nedfelt (`beslutninger.md` + evt. fasit-rettelser).
 4. Vaktene F1–F6 aktive i CI (F7/F8 etablert som spec/natt-jobb).
@@ -398,12 +406,12 @@ Alle må være sanne:
 | Doc | Rolle |
 |---|---|
 | `designsystem/paper/` + `SYNC-STATUS.md` | Fasiten + speilstatus (rang 1) |
-| `docs/port/PAPER-ZIP-CHECKLIST.md` | Regnskapet — 85 rader, `[x]` kun av Anders (rang 2) |
+| `docs/port/PAPER-ZIP-CHECKLIST.md` | Regnskapet — 88 rader, `[x]` kun av Anders (rang 2) |
 | `docs/port/rutefasit.md` | Alle ruter uten egen fasit-fil (rang 4) |
 | `docs/port/PP-W3/W4/W5-VARIANTS.md` | Variant-kvitteringer (rang 5) |
 | `docs/port/AVVIKSRAPPORT-2026-08-13.md` | De fem rotårsakene — kunnskapsgrunnlaget for §2 |
 | `docs/taksonomi-verifikasjon.md` + `docs/fasit-avvik.md` | Steg 0 for D1–D6 |
-| `docs/port/plan-gjenstaaende-bygg-2026-08-13.md` | Forløperen til §4/§7 (spørsmålene er innarbeidet her) |
+| `docs/port/plan-gjenstaaende-bygg-2026-08-13.md` | Forløperen til §4/§7 — innarbeidet her og slettet 17.08.2026 (git-historikk) |
 | `docs/port/GYLDIGHET.md` | Rangordningen |
 
 ---
