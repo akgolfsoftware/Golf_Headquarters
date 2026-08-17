@@ -63,6 +63,7 @@ export function MegApp({
   naServertid,
   godkjennSak,
   avvisSak,
+  oppdaterForeslattSvar,
   opprettFangst,
   oppdaterInnstilling,
 }: {
@@ -80,6 +81,7 @@ export function MegApp({
   naServertid: string;
   godkjennSak: (id: string) => Promise<MutasjonSvar>;
   avvisSak: (id: string) => Promise<MutasjonSvar>;
+  oppdaterForeslattSvar: (id: string, tekst: string) => Promise<MutasjonSvar>;
   opprettFangst: (type: FangstType, tekst: string) => Promise<MutasjonSvar>;
   oppdaterInnstilling: (endring: InnstillingEndring) => Promise<MutasjonSvar>;
 }) {
@@ -128,7 +130,13 @@ export function MegApp({
     artefaktInnhold = <SakerArtefakt saker={saker} na={na} onVelgSak={velgSak} />;
   } else if (activeArtifact === "sak") {
     artefaktInnhold = (
-      <SakArtefakt key={valgtSak?.id ?? "none"} sak={valgtSak} onGodkjenn={godkjennSak} onAvvis={avvisSak} />
+      <SakArtefakt
+        key={valgtSak?.id ?? "none"}
+        sak={valgtSak}
+        onGodkjenn={godkjennSak}
+        onAvvis={avvisSak}
+        onOppdaterSvar={oppdaterForeslattSvar}
+      />
     );
   } else if (activeArtifact === "maskinrom") {
     artefaktInnhold = <MaskinromArtefakt data={systemHelse} na={na} />;

@@ -1,8 +1,11 @@
 // Ekte (Prisma-baserte) implementasjon av JarvisRepository — se
 // src/fixtures/jarvis-demo.ts for grensesnittet og demo-varianten.
 //
-// hentAvvik(): ingen tabell ennå (kalendervakt-agenten er ikke bygget) —
-// returnerer tom liste, ærlig, ikke oppdiktet.
+// hentAvvik(): kalendervakten — leser neste 7 dagers kalenderhendelser og
+// detekterer KONFLIKT/REISETID med finnAvvik() (src/lib/jarvis/kalendervakt.ts,
+// se hodekommentaren der for hvorfor VARSEL er utelatt). Fail-closed: feiler
+// kalender-kallet returneres tom liste, samme prinsipp som hentDagen() —
+// aldri oppdiktede avvik. Funnene persisteres ikke (regnes ut per lasting).
 // hentLogg(): ingen egen revisjonslogg-tabell — utledes av Sak sin egen
 // status+oppdatert-historikk. /meg er ADMIN-only (kun Anders), så
 // godkjentAv er alltid ham; feltet persisteres ikke separat.
@@ -19,8 +22,11 @@
 // hvis Meg-databasen ikke er konfigurert eller ingen brief er generert —
 // innhold:null dekker begge tilfellene identisk (samme prinsipp som
 // InnsamlerHelse sin UKJENT-verdi).
-// hentUkesreview(): kalenderavvikFanget er hardkodet 0 — samme grunn som
-// hentAvvik() over, ingen kalendervakt-agent finnes. "Tre ting som
+// hentUkesreview(): kalenderavvikFanget er fortsatt 0 — «fanget denne uka»
+// krever persistens av vaktens funn, og hentAvvik() over regner kun ut
+// AKTIVE avvik ved lasting. Å telle dagens funn som ukestall ville vært
+// feil etikett, så 0 + ærlig note i UkesreviewArtefakt er minst løgn
+// inntil funnene lagres et sted. "Tre ting som
 // gledet"/"til neste uke" og 150M-tokenbudsjettet fra fasiten er utelatt
 // helt (se UkesreviewData sin doc-kommentar i types.ts).
 // hentInnstillinger(): leser JarvisInnstilling (skjema lagt til 17.08,
@@ -60,6 +66,7 @@ import {
   summerLedigMinutterIgjen,
 } from "@/lib/jarvis/dagen";
 import { osloUkeGrenser, beregnSlaEtterlevelse, tellPerKanal } from "@/lib/jarvis/ukesreview";
+import { finnAvvik } from "@/lib/jarvis/kalendervakt";
 
 const AVGJORTE_STATUSER = [SakStatus.GODKJENT, SakStatus.AVVIST, SakStatus.UTFORT] as const;
 
@@ -102,7 +109,10 @@ export function lagPrismaRepository(): JarvisRepository {
       return prisma.sak.findUnique({ where: { id } });
     },
     async hentAvvik(): Promise<Avvik[]> {
-      return [];
+      const na = new Date();
+      const res = await hentKalenderHendelser(na, new Date(na.getTime() + 7 * 24 * 60 * 60 * 1000));
+      if (!res.ok) return [];
+      return finnAvvik(res.hendelser, na);
     },
     async hentLogg(): Promise<LoggRad[]> {
       const avgjorte = await prisma.sak.findMany({

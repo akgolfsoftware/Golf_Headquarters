@@ -22,7 +22,11 @@ import { prisma } from "@/lib/prisma";
 import { resendKlient, FRA_EPOST } from "@/lib/email";
 import { isMinor } from "@/lib/auth/minor";
 import { notify } from "@/lib/notifications";
+import { runAgent } from "./agent-runner";
 
+// Filnavnet er kanonisk agentnavn i loggen — cron-sluggen «winback-oppfolging»
+// er en alias i ruten, ikke navnet i AgentRun.
+const AGENT_NAME = "winback-agent";
 const MAL_SLUG = "vinn-tilbake-playerhq";
 const PAAMINNELSE_DAGER = 7;
 
@@ -59,10 +63,24 @@ function fyll(mal: string, verdier: Record<string, string>): string {
   );
 }
 
-export async function runWinbackAgent(opts?: {
+type WinbackOpts = {
   /** Test-modus: hopp over Resend-utsendelse (alt annet kjører som normalt). */
   dryRunEpost?: boolean;
-}): Promise<{ sendt: number; paaminnet: number; utlopt: number; hoppet: number; feilet: number }> {
+};
+
+type WinbackResultat = { sendt: number; paaminnet: number; utlopt: number; hoppet: number; feilet: number };
+
+/** Logger kjøringen til AgentRun (maskinrommet) — logikken er uendret. */
+export async function runWinbackAgent(opts?: WinbackOpts): Promise<WinbackResultat> {
+  let resultat!: WinbackResultat;
+  await runAgent(AGENT_NAME, null, async () => {
+    resultat = await winbackKjerne(opts);
+    return { output: resultat };
+  });
+  return resultat;
+}
+
+async function winbackKjerne(opts?: WinbackOpts): Promise<WinbackResultat> {
   const now = new Date();
   const resultat = { sendt: 0, paaminnet: 0, utlopt: 0, hoppet: 0, feilet: 0 };
   const mal = await hentEllerOpprettMal();

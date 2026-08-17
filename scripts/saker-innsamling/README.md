@@ -4,7 +4,7 @@ Lokale Mac-mini-script (samme mønster som `scripts/mulligan-triage/`) som fylle
 den samlede "venter på deg"-køen (steg 1, tabellen `saker`) med nye
 henvendelser (steg 2, `gmail.ts`/`imessage.ts`) og skriver svarutkast på dem
 (steg 3+4, `triage.ts`). Bygget etter
-`~/Documents/Claude/akgolf-hq/kunnskap/jarvis-masterplan.md`, DEL A.
+`docs/jarvis-masterplan.md`, DEL A.
 
 **Innsamlerne (`gmail.ts`/`imessage.ts`) gjør KUN innsamling.** Ingen
 klassifisering, ingen `foreslattSvar` — det er `triage.ts` sin jobb. Hver ny
@@ -61,15 +61,20 @@ Plukker opptil `SAKER_TRIAGE_BATCH_LIMIT` (default 20) `Sak`-rader med
    allerede skrev — ingenting overskrives.
 5. Anders varsles på Telegram (kort sammendrag + selve utkastet), og én
    ventende BEKREFT-handling registreres (`tool_name: "sak_godkjenn"`) —
-   svarer han BEKREFT, kjører `src/lib/saker/godkjenn.ts` og oppretter et
-   Gmail-UTKAST. Samme funksjon som Godkjenn-knappen i AgencyOS → Innboks.
-   **Sender ALDRI noe automatisk**, uansett sakstype.
+   kun hvis ingen åpen `sak_godkjenn`-pending finnes fra før, se avsnittet
+   under. Svarer han BEKREFT, kjører `src/lib/saker/godkjenn.ts` og
+   oppretter et Gmail-UTKAST. Samme funksjon som Godkjenn-knappen i
+   AgencyOS → Innboks. **Sender ALDRI noe automatisk**, uansett sakstype.
 6. Hele kjøringen logges via `runAgent("saker-triage", …)` til `AgentRun`.
 
-`me_pending_action` (BEKREFT-lageret) har kun én "siste ventende
-handling"-plass per person — kjøres flere saker i samme runde, er det kun
-den SISTE som er BEKREFT-bar direkte fra Telegram. De øvrige godkjennes fra
-AgencyOS → Innboks i stedet. Kjent og akseptert begrensning, ikke en bug.
+`me_pending_action` (BEKREFT-lageret) leses med «siste ventende handling
+vinner» (`getLatestPending`) — derfor registrerer triage aldri mer enn én
+`sak_godkjenn`-pending om gangen: finnes en åpen fra før
+(`harVentendePending` i `src/lib/meg/pending.ts`), hoppes registreringen
+over og Telegram-meldingen sier «Flere saker venter — godkjenn i
+AgencyOS → Innboks» i stedet for BEKREFT-instruksjonen. BEKREFT treffer
+dermed alltid en deterministisk sak (den først registrerte), aldri blindt
+bakover i en stabel.
 
 ## iMessage/SMS — status (undersøkt 2026-08-16)
 

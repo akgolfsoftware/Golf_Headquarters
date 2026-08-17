@@ -220,7 +220,7 @@ const ACTIONS: Action[] = [
   // hadde ellers mistet all vei inn, og fasiten sier eksplisitt at resten skal
   // leve i søket. Rene navigate-handlinger — ingen ny logikk.
   { id: "s-caddie", label: "Caddie", description: "AI-assistenten i AgencyOS", keywords: ["caddie", "ai", "chat", "assistent"], icon: MessageSquare, kind: { type: "navigate", href: "/admin/agencyos/caddie" } },
-  { id: "s-agent-team", label: "Agent-team", description: "Oppdrag og status for agentene", keywords: ["agent", "team", "oppdrag", "agenter"], icon: Bot, kind: { type: "navigate", href: "/admin/agent-team" } },
+  { id: "s-agent-team", label: "AgenticOS", description: "Agentene — status, kjøringer og godkjenninger", keywords: ["agent", "team", "oppdrag", "agenter", "agenticos"], icon: Bot, kind: { type: "navigate", href: "/admin/agenticos" } },
   { id: "s-brief", label: "Daglig brief", description: "Dagens oppsummering", keywords: ["brief", "daglig", "morgen", "oppsummering"], icon: FileText, kind: { type: "navigate", href: "/admin/brief" } },
   { id: "s-plan-maler", label: "Plan-maler", description: "Maler for treningsplaner", keywords: ["mal", "maler", "template", "plan"], icon: Copy, kind: { type: "navigate", href: "/admin/plan-templates" } },
   { id: "s-drills", label: "Drills", description: "Drill-biblioteket", keywords: ["drill", "drills", "ovelse", "øvelse", "bibliotek"], icon: Dumbbell, kind: { type: "navigate", href: "/admin/drills" } },

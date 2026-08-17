@@ -23,7 +23,9 @@ import { prisma } from "@/lib/prisma";
 import { coachedPlayerWhere } from "@/lib/auth/coached";
 import { isAwaitingGuardianConsent } from "@/lib/auth/minor";
 import { byggProvenance } from "./provenance";
+import { runAgent } from "./agent-runner";
 
+const AGENT_NAME = "churn-radar";
 const INAKTIV_DAGER = 14;
 const DEDUP_DAGER = 14;
 
@@ -48,12 +50,24 @@ export function churnMeldingsutkast(name: string | null, dager: number): {
   };
 }
 
-export async function runChurnRadar(): Promise<{
+type ChurnRadarResultat = {
   kandidater: number;
   varsler: number;
   hoppet: number;
   feilet: number;
-}> {
+};
+
+/** Logger kjøringen til AgentRun (maskinrommet) — logikken er uendret. */
+export async function runChurnRadar(): Promise<ChurnRadarResultat> {
+  let resultat!: ChurnRadarResultat;
+  await runAgent(AGENT_NAME, null, async () => {
+    resultat = await churnRadarKjerne();
+    return { output: resultat };
+  });
+  return resultat;
+}
+
+async function churnRadarKjerne(): Promise<ChurnRadarResultat> {
   const now = new Date();
   const terskel = new Date(now.getTime() - INAKTIV_DAGER * 86_400_000);
   const dedupGrense = new Date(now.getTime() - DEDUP_DAGER * 86_400_000);

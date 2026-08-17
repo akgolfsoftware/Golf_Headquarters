@@ -13,6 +13,9 @@
 import { z } from "zod";
 import type { Prisma } from "@/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
+import { runAgent } from "./agent-runner";
+
+const AGENT_NAME = "maanedsrapport";
 
 export const MaanedsrapportSchema = z.object({
   year: z.number(),
@@ -40,11 +43,27 @@ export function parseMaanedsrapport(payload: unknown): Maanedsrapport | null {
   return r.success ? r.data : null;
 }
 
-/** Bygg og arkiver rapport for gitt måned (default: forrige måned). */
-export async function runMaanedsrapport(opts?: {
-  year?: number;
-  month?: number;
-}): Promise<{ year: number; month: number; selskaper: number }> {
+type MaanedsrapportOpts = { year?: number; month?: number };
+type MaanedsrapportResultat = { year: number; month: number; selskaper: number };
+
+/**
+ * Bygg og arkiver rapport for gitt måned (default: forrige måned).
+ * Logger kjøringen til AgentRun (maskinrommet) — logikken er uendret.
+ */
+export async function runMaanedsrapport(
+  opts?: MaanedsrapportOpts,
+): Promise<MaanedsrapportResultat> {
+  let resultat!: MaanedsrapportResultat;
+  await runAgent(AGENT_NAME, null, async () => {
+    resultat = await maanedsrapportKjerne(opts);
+    return { output: resultat };
+  });
+  return resultat;
+}
+
+async function maanedsrapportKjerne(
+  opts?: MaanedsrapportOpts,
+): Promise<MaanedsrapportResultat> {
   const now = new Date();
   const forrige = new Date(now.getFullYear(), now.getMonth() - 1, 1);
   const year = opts?.year ?? forrige.getFullYear();

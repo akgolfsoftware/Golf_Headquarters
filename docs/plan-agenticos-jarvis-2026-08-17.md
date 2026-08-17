@@ -49,17 +49,21 @@ Jarvis er produktnavnet; koden ligger under `meg`/`saker`/`jarvis`:
 
 ### 1.3 Kjente hull (målt)
 
-| # | Hull | Hvor |
-|---|---|---|
-| H1 | `/meg` er **ulenket** — ingen `href="/meg"` i appen; nås kun ved å skrive URL | IA-beslutning |
-| H2 | **To ulike `godkjennSak`**: `src/app/meg/actions.ts` setter kun status; `src/lib/saker/godkjenn.ts` (innboks + Telegram) oppretter Gmail-utkast. Samme knapp, to sideeffekter | Samles til én |
-| H3 | Telegram-godkjenning holder kun ÉN ventende handling per person (`getLatestPending`) — ved flere saker i samme triage-runde er bare siste BEKREFT-bar | `src/lib/meg/pending.ts` |
-| H4 | Godkjenn-flyten mangler Gmail-**send**-scope (fasiten tegner «Sendt via Gmail»; appen kan bare lage utkast) | Google-tilkoblingen |
-| H5 | `/kommando/agenter` → `/admin/agenter` = 404 | Død redirect |
-| H6 | Agent-registeret (13) dekker ikke flåten (57) — huben underrapporterer | `agent-registry.ts` |
-| H7 | 8 agenter logger ikke `AgentRun` → usynlige i maskinrom/hub | `runAgent()`-adopsjon |
-| H8 | Jarvis' 12 skjermer står utenfor rutefasit/checklist-regnskapet | PORTPLAN §B6 eier dem |
-| H9 | **Jarvis-masterplanen ligger UTENFOR repoet** (`~/Documents/Claude/akgolf-hq/kunnskap/jarvis-masterplan.md`, referert fra `scripts/saker-innsamling/`) | Må inn i `docs/` |
+Status oppdatert 17.08 (denne PR-en): **H2, H3, H5, H6, H7 og H9 er lukket**;
+H1, H4 og H8 står fortsatt åpne (H1/H4 venter på Anders-beslutningene J-A/J-B,
+H8 eies av PORTPLAN §B6).
+
+| # | Hull | Hvor | Status |
+|---|---|---|---|
+| H1 | `/meg` er **ulenket** — ingen `href="/meg"` i appen; nås kun ved å skrive URL | IA-beslutning | Åpen (J-A) |
+| H2 | **To ulike `godkjennSak`**: `src/app/meg/actions.ts` setter kun status; `src/lib/saker/godkjenn.ts` (innboks + Telegram) oppretter Gmail-utkast. Samme knapp, to sideeffekter | Samles til én | Lukket i denne PR-en |
+| H3 | Telegram-godkjenning holder kun ÉN ventende handling per person (`getLatestPending`) — ved flere saker i samme triage-runde er bare siste BEKREFT-bar | `src/lib/meg/pending.ts` | Lukket i denne PR-en |
+| H4 | Godkjenn-flyten mangler Gmail-**send**-scope (fasiten tegner «Sendt via Gmail»; appen kan bare lage utkast) | Google-tilkoblingen | Åpen (J-B) |
+| H5 | `/kommando/agenter` → `/admin/agenter` = 404 | Død redirect | Lukket i denne PR-en |
+| H6 | Agent-registeret (13) dekker ikke flåten (57) — huben underrapporterer | `agent-registry.ts` | Lukket i denne PR-en |
+| H7 | 8 agenter logger ikke `AgentRun` → usynlige i maskinrom/hub | `runAgent()`-adopsjon | Lukket i denne PR-en |
+| H8 | Jarvis' 12 skjermer står utenfor rutefasit/checklist-regnskapet | PORTPLAN §B6 eier dem | Åpen (§B6) |
+| H9 | **Jarvis-masterplanen ligger UTENFOR repoet** (`~/Documents/Claude/akgolf-hq/kunnskap/jarvis-masterplan.md`, referert fra `scripts/saker-innsamling/`) | Må inn i `docs/` | Lukket i denne PR-en (`docs/jarvis-masterplan.md`) |
 
 ---
 
@@ -68,27 +72,31 @@ Jarvis er produktnavnet; koden ligger under `meg`/`saker`/`jarvis`:
 ### Fase J1 — Jarvis-skjermene ferdig (design finnes, ingen blokkeringer)
 
 1. Merge **#547** (maskinrommet) etter skjermbilde-gate.
-2. Port de 8 gjenværende skjermene i naturlige par (rekkefølgen fra #547):
-   kalendervakt + dagen → morgenbrief + kveldsjournal + ukesreview (kan gjenbruke
-   `hentBriefer`/`hentNylige` i `src/lib/meg/read.ts`) → historikk + innstillinger → fangst.
-   Kalendervakt trenger i tillegg en **kalendervakt-agent** (avvik-detektor) — i dag returnerer
-   `hentAvvik()` bevisst tom liste.
-3. Samle `godkjennSak` (H2) til `src/lib/saker/godkjenn.ts` som eneste implementasjon.
-4. Utvid Telegram-pending til kø (H3) — eller vis «N saker venter, åpne innboksen» ved >1.
+2. **GJORT (17.08):** alle 12 skjermer var allerede merget i #547 — port-punktet er lukket.
+   Kalendervakt-detektoren (avvik-detektor bak `hentAvvik()`) bygges i denne PR-en.
+3. **GJORT (17.08, denne PR-en):** `godkjennSak` samles til `src/lib/saker/godkjenn.ts`
+   som eneste implementasjon (H2).
+4. **GJORT (17.08, denne PR-en):** Telegram viser «N saker venter, åpne innboksen» ved >1 (H3).
 
 ### Fase J2 — AgenticOS-konsolideringen fullført (beslutning 04.08)
 
 5. `/admin/godkjenninger` → inn i AgenticOS-flaten/inspektørpanelet (NB: PORTPLAN §A1 har
    det åpne spørsmålet «godkjenninger én flate eller fem» — avklar med Anders først).
-6. Konsollens AI-panel → flytt til `/admin/agenticos` (resten av 04.08-beslutningen).
-7. Fiks H5 (død redirect) — pek `/kommando/agenter` til `/admin/agenticos`.
-8. Registry-løft: utvid `AGENT_INFO` til å dekke flåten (H6) og la de 8 siste agentene
-   logge via `runAgent()` (H7) — da blir maskinrommet og huben sanne.
+6. **OVERSTYRT (17.08):** PP-2.1-Paper-fasiten (`fase1/agencyos-konsoll-desktop.html`) tegner
+   «Én ting nå» + AI-kø i selve konsolltråden — per invariant 2 vinner fasiten over
+   04.08-beslutningen. Dispatch-INNHOLDET blir i konsollen (KonsollChat); i stedet er den
+   døde komponent-koden (`CockpitV2`/`AiDispatchPanelV2`) slettet i denne PR-en.
+7. **GJORT (17.08, denne PR-en):** H5 lukket — hele redirect-kjeden
+   (`/kommando/agenter`, `/admin/agenter` (legacy), KonsollChat-lenken, søk, cockpit,
+   ai-dispatch-hrefs) peker nå direkte på `/admin/agenticos`.
+8. **GJORT (17.08, denne PR-en):** registry-løftet — `AGENT_INFO` dekker flåten (H6) og de
+   8 siste agentene logger via `runAgent()` (H7) — maskinrommet og huben er sanne.
 
 ### Fase J3 — grunnlag og styring
 
-9. Hent **Jarvis-masterplanen inn i repoet** (H9) — `docs/jarvis-masterplan.md`; til den er
-   hentet er dette dokumentet + `natt-rapport.md` eneste sporbare plan.
+9. **GJORT (17.08, denne PR-en):** Jarvis-masterplanen hentet inn i repoet (H9) —
+   `docs/jarvis-masterplan.md` er nå kanonisk; `scripts/saker-innsamling/README.md`
+   peker dit.
 10. IA-beslutning for `/meg` (H1): egen flate (dagens design forutsetter det) — og hvor lenkes
     den fra? (Forslag: AgencyOS-railens «Oppsett»-område eller ⌘K. Ren Anders-beslutning.)
 11. Gmail-send-scope (H4): utvid Google-tilkoblingen (`/api/google-calendar/connect?meg=1`)

@@ -135,7 +135,7 @@ export default async function V2IntegrasjonerPage() {
       description:
         "Claude-modeller for AI-agenter, godkjennelser og innholdsgenerering.",
       ctaLabel: "Se agenter",
-      ctaHref: "/admin/agents",
+      ctaHref: "/admin/agenticos",
     },
     {
       key: "resend",

@@ -1,7 +1,9 @@
 /**
  * AgencyOS Agent-detalj — v2 pixel-pass mot Paper-fasiten. Auth/Prisma-loader
- * og agent-konfig (statisk beskrivelse per agent) bevart 1:1 fra forrige
- * versjon. AgentRunPanel (manuell kjøring for plan-revisjon/peaking) og
+ * bevart 1:1 fra forrige versjon; den lokale AGENT_KONFIG er slått inn i det
+ * kanoniske registeret (H6, 2026-08-17) — siden leser nå AGENT_INFO fra
+ * `src/lib/agencyos/agent-registry.ts` og virker for alle registrerte slugs.
+ * AgentRunPanel (manuell kjøring for plan-revisjon/peaking) og
  * ApprovalActions (godkjenn/avvis forslag) gjenbrukes uendret — begge har
  * ekte server actions bak seg (run-actions.ts / approval-actions.tsx).
  *
@@ -21,6 +23,7 @@ import { requireCapability } from "@/lib/auth/requireCapability";
 import { Capability } from "@/lib/auth/cbac";
 import { prisma } from "@/lib/prisma";
 import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
+import { AGENT_INFO, agentNavnFor } from "@/lib/agencyos/agent-registry";
 import {
   AdminAgentDetaljV2,
   type AgentDetaljData,
@@ -29,105 +32,6 @@ import {
   type AgentDetaljSteg,
   type AgentDetaljTilstand,
 } from "@/components/admin/v2/AdminAgentDetaljV2";
-
-type AgentKonfig = {
-  navn: string;
-  beskrivelse: string;
-  status: "aktiv" | "beta" | "planlagt";
-  trigger: string;
-};
-
-const AGENT_KONFIG: Record<string, AgentKonfig> = {
-  "round-agent": {
-    navn: "Round Agent",
-    beskrivelse:
-      "Beregner SG-snitt siste 30 dager og skriver SG_TOTAL/OTT/APP/ARG/PUTT til Signal-tabellen etter at spiller logger en ny runde.",
-    status: "aktiv",
-    trigger: "Etter ny runde (event)",
-  },
-  "test-agent": {
-    navn: "Test Agent",
-    beskrivelse:
-      "Sammenligner siste testresultat mot snitt av forrige 3 og skriver TEST_TREND-signal. Krever minst 1 tidligere resultat.",
-    status: "aktiv",
-    trigger: "Etter ny test (event)",
-  },
-  "trackman-agent": {
-    navn: "TrackMan Agent",
-    beskrivelse: "Grupperer slag per kølle fra rawJson etter CSV-import og skriver CLUB_AVG-signal per kølle.",
-    status: "aktiv",
-    trigger: "Etter CSV-import (event)",
-  },
-  "plan-watcher": {
-    navn: "Plan Watcher",
-    beskrivelse:
-      "Sjekker forrige ukes pyramide-fordeling mot måltall (FYS15/TEK20/SLAG35/SPILL20/TURN10). Genererer PYRAMID_ADJUST-forslag ved >8 pp avvik.",
-    status: "aktiv",
-    trigger: "Cron mandag 06:00",
-  },
-  periodiseringsagent: {
-    navn: "Periodiseringsagent",
-    beskrivelse:
-      "Foreslår initial uke-allokering for nye treningsplaner basert på MAL_PROSENT-fordeling. Kjører kun for planer uten eksisterende økter.",
-    status: "aktiv",
-    trigger: "Ved ny TrainingPlan (event)",
-  },
-  "achievement-agent": {
-    navn: "Achievement Agent",
-    beskrivelse:
-      "Sjekker milepæler (FIRST_ROUND, FIRST_TEST, SG_POSITIVE_30D, STREAK_7/14) etter runde eller test. Dedup mot eksisterende achievements.",
-    status: "aktiv",
-    trigger: "Etter runde/test (event)",
-  },
-  "training-gap": {
-    navn: "Training Gap",
-    beskrivelse:
-      "Finner svakeste SG-område og sjekker om spillere trener nok der. Genererer TRAINING_GAP-forslag hvis svakeste område får < 20 % av treningstid.",
-    status: "aktiv",
-    trigger: "Cron mandag 06:30",
-  },
-  "turnering-agent": {
-    navn: "Turnering-agent",
-    beskrivelse: "Spillere med turnering innen 7 dager får PERIOD_SWITCH-forslag.",
-    status: "aktiv",
-    trigger: "Cron daglig 07:00",
-  },
-  "calendar-sync": {
-    navn: "Calendar Sync",
-    beskrivelse:
-      "2-veis synkronisering med Google Calendar hvert 15. minutt. Pull: henter events oppdatert siden siste sync og reflekterer kansellering/tidsendring tilbake til Booking-tabellen. Push: reparerer bookinger som mangler googleEventId (missede push-forsøk).",
-    status: "aktiv",
-    trigger: "Cron hvert 15. min",
-  },
-  "daily-brief": {
-    navn: "Daily Brief",
-    beskrivelse:
-      "Genererer morgenbrief per coach (dagens økter, flagg, neste turnering) og varsler coach + Anders på Telegram ved hastefunn (severity 4+).",
-    status: "aktiv",
-    trigger: "Cron daglig 05:30",
-  },
-  "drill-forslag": {
-    navn: "Drill-forslag",
-    beskrivelse:
-      "Finner stallens svakeste SG-område siste 60 dager og foreslår 5 driller via Claude (YouTube-video når YOUTUBE_API_KEY er satt). Godkjennes på /admin/drills/forslag.",
-    status: "aktiv",
-    trigger: "Cron mandag 08:00",
-  },
-  "plan-revisjon": {
-    navn: "Plan-revisjon",
-    beskrivelse:
-      "Foreslår konkrete plan-justeringer for en valgt treningsplan og trigger (siste runde / skade / turneringsprep). Velg plan under og kjør.",
-    status: "aktiv",
-    trigger: "Manuell (velg plan)",
-  },
-  peaking: {
-    navn: "Peaking",
-    beskrivelse:
-      "Foreslår uke-for-uke periodisering (Bompa) frem mot en valgt turnering for en spiller. Velg spiller og turnering under og kjør.",
-    status: "aktiv",
-    trigger: "Manuell (velg spiller)",
-  },
-};
 
 const ACTION_LABEL: Record<string, string> = {
   PYRAMID_ADJUST: "Juster pyramide",
@@ -216,8 +120,12 @@ export default async function AgentDetaljPage({
   // G6: USE_AGENTS — utenfor COACH-defaulten, grantes per trener.
   const user = await requireCapability(Capability.USE_AGENTS);
   const { agentId } = await params;
-  const konfig = AGENT_KONFIG[agentId];
+  const konfig = AGENT_INFO[agentId];
   if (!konfig) notFound();
+
+  // Fler-navns-agenter (Tripletex-lønn, ballplukking, vaskeliste) logger
+  // purring/bekreftet-kjøringer under aliaser — statistikken her dekker alle.
+  const alleNavn = agentNavnFor(agentId);
 
   const na = new Date();
   const tretti_dager_siden = new Date();
@@ -225,23 +133,23 @@ export default async function AgentDetaljPage({
 
   const [sisteKjoring, kjoringerVindu, planActions, pendingCount, acceptedCount, rejectedCount, eldstePending] =
     await Promise.all([
-      prisma.agentRun.findFirst({ where: { agentName: agentId }, orderBy: { createdAt: "desc" } }),
+      prisma.agentRun.findFirst({ where: { agentName: { in: alleNavn } }, orderBy: { createdAt: "desc" } }),
       prisma.agentRun.findMany({
-        where: { agentName: agentId, createdAt: { gte: tretti_dager_siden } },
+        where: { agentName: { in: alleNavn }, createdAt: { gte: tretti_dager_siden } },
         orderBy: { createdAt: "desc" },
         take: 30,
       }),
       prisma.planAction.findMany({
-        where: { agentName: agentId },
+        where: { agentName: { in: alleNavn } },
         orderBy: { createdAt: "desc" },
         take: 10,
         include: { user: { select: { id: true, name: true } } },
       }),
-      prisma.planAction.count({ where: { agentName: agentId, status: "PENDING" } }),
-      prisma.planAction.count({ where: { agentName: agentId, status: "ACCEPTED" } }),
-      prisma.planAction.count({ where: { agentName: agentId, status: "REJECTED" } }),
+      prisma.planAction.count({ where: { agentName: { in: alleNavn }, status: "PENDING" } }),
+      prisma.planAction.count({ where: { agentName: { in: alleNavn }, status: "ACCEPTED" } }),
+      prisma.planAction.count({ where: { agentName: { in: alleNavn }, status: "REJECTED" } }),
       prisma.planAction.findFirst({
-        where: { agentName: agentId, status: "PENDING" },
+        where: { agentName: { in: alleNavn }, status: "PENDING" },
         orderBy: { createdAt: "asc" },
         select: { createdAt: true },
       }),
@@ -394,9 +302,9 @@ export default async function AgentDetaljPage({
   const data: AgentDetaljData = {
     agentId,
     navn: konfig.navn,
-    beskrivelse: konfig.beskrivelse,
+    beskrivelse: konfig.langBeskrivelse ?? konfig.beskrivelse,
     trigger: konfig.trigger,
-    statusBadge: konfig.status,
+    statusBadge: konfig.status ?? "aktiv",
     tilstand,
     agentDetaljHref: "/admin/agenticos",
     godkjenningerHref: "/admin/godkjenninger",

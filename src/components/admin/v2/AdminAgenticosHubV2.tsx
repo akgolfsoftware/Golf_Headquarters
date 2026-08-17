@@ -344,8 +344,8 @@ export function AdminAgenticosHubV2({ data }: { data: AgenticosHubData }) {
   const agentTabellMedLenker = (
     <Kort eyebrow="Agenter" action={<Caps size={9}>{pl(data.agenter.length, "registrert", "registrert")}</Caps>} pad="4px 20px">
       <p style={{ fontFamily: T.ui, fontSize: 11.5, color: T.mut, margin: "10px 0" }}>
-        Statusen regnes fra de siste 30 kjøringene: feil betyr minst én feilet kjøring i vinduet, ikke
-        at agenten er nede.
+        Statusen regnes fra kjøringene de siste 30 dagene: feil betyr minst én feilet kjøring i
+        vinduet, ikke at agenten er nede.
       </p>
       {data.agenter.map((a, i) => {
         const stats =

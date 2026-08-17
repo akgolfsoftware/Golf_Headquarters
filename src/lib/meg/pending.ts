@@ -57,6 +57,28 @@ export async function getLatestPending(subject: string): Promise<PendingAction |
   return v.success ? v.data : null;
 }
 
+/**
+ * Sjekker om det allerede finnes en åpen (pending, ikke utløpt) handling av
+ * gitt type for én person — samme klient og utløpsfilter som
+ * getLatestPending, men uten å hente raden. Additiv helper for
+ * triage-agentens «kun én BEKREFT-bar sak om gangen»-regel
+ * (scripts/saker-innsamling/triage.ts) — endrer ikke adferden til de øvrige
+ * verktøyene som bruker createPending/getLatestPending.
+ */
+export async function harVentendePending(subject: string, toolName: string): Promise<boolean> {
+  const db = megSupabase();
+  if (!db) return false;
+  const { count, error } = await db
+    .from("me_pending_action")
+    .select("id", { count: "exact", head: true })
+    .eq("subject", subject)
+    .eq("tool_name", toolName)
+    .eq("status", "pending")
+    .gt("expires_at", new Date().toISOString());
+  if (error) return false;
+  return (count ?? 0) > 0;
+}
+
 async function setStatus(id: string, status: "done" | "cancelled"): Promise<void> {
   const db = megSupabase();
   if (!db) return;

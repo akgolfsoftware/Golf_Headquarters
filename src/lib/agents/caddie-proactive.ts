@@ -14,6 +14,9 @@
 
 import { prisma } from "@/lib/prisma";
 import { identifiserInaktiveSpillere } from "@/lib/ai/agents/vinn-tilbake";
+import { runAgent } from "./agent-runner";
+
+const AGENT_NAME = "caddie-proactive";
 
 export type CaddieProactiveResult = {
   ok: boolean;
@@ -23,7 +26,17 @@ export type CaddieProactiveResult = {
   skipped?: number;
 };
 
+/** Logger kjøringen til AgentRun (maskinrommet) — logikken er uendret. */
 export async function runCaddieProactive(): Promise<CaddieProactiveResult> {
+  let resultat!: CaddieProactiveResult;
+  await runAgent(AGENT_NAME, null, async () => {
+    resultat = await caddieProactiveKjerne();
+    return { output: resultat };
+  });
+  return resultat;
+}
+
+async function caddieProactiveKjerne(): Promise<CaddieProactiveResult> {
   // Caddie er Anders' personlige agent — finn ADMIN-brukeren.
   const admin = await prisma.user.findFirst({
     where: { role: "ADMIN", deletedAt: null },

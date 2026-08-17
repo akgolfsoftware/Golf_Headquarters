@@ -46,7 +46,7 @@ export async function triggerAgentManually(
   if (!fn) return { ok: false, melding: `Ukjent agent: ${agentName}` };
   try {
     await fn();
-    revalidatePath("/admin/agents");
+    revalidatePath("/admin/agenticos");
     return { ok: true, melding: "Kjørt — se siste kjøringer under." };
   } catch (err) {
     return {

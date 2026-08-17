@@ -9,8 +9,10 @@
  * Fasit: designsystem/paper/fase2/agencyos/agencyos-agenticos-hub.html.
  *
  * Data fra AGENT_INFO/MANUELLE_AGENTER (`src/lib/agencyos/agent-registry.ts`,
- * flyttet ut av /admin/agents da den siden ble en redirect), siste 30 AgentRun
- * (samme spørring som den gamle /admin/agents-siden), PlanAction-tellinger,
+ * flyttet ut av /admin/agents da den siden ble en redirect), per-agent-
+ * statistikk fra groupBy over siste 30 dager (H6 — de siste 30 kjøringene
+ * globalt dekket ikke hele flåten), siste 30 AgentRun som kjøringsliste,
+ * PlanAction-tellinger,
  * og ai_costs-aggregater (datamodell vedtatt 13.08 — agenter logger via
  * `registrerAiKost`). Ingen kostdata → ekte tom-tilstand, aldri fabrikkerte tall.
  *
@@ -21,7 +23,7 @@ import { requireCapability } from "@/lib/auth/requireCapability";
 import { Capability } from "@/lib/auth/cbac";
 import { prisma } from "@/lib/prisma";
 import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
-import { AGENT_INFO, MANUELLE_AGENTER } from "@/lib/agencyos/agent-registry";
+import { AGENT_INFO, MANUELLE_AGENTER, kanoniskSlug } from "@/lib/agencyos/agent-registry";
 import {
   AdminAgenticosHubV2,
   type AgenticosHubData,
@@ -51,10 +53,21 @@ export default async function AdminAgenticosPage() {
   idag.setHours(0, 0, 0, 0);
   const sju_dager_siden = new Date();
   sju_dager_siden.setDate(sju_dager_siden.getDate() - 7);
+  const tretti_dager_siden = new Date();
+  tretti_dager_siden.setDate(tretti_dager_siden.getDate() - 30);
 
-  const [recentRuns, pendingCount, forslagIdag, kjoringerIdag, kjoringerIdagFeil, signaler7d, planForslag7d, kostIdag, kost7d, kallUtenPris7d] =
+  const [recentRuns, runGrupper30d, pendingCount, forslagIdag, kjoringerIdag, kjoringerIdagFeil, signaler7d, planForslag7d, kostIdag, kost7d, kallUtenPris7d] =
     await Promise.all([
       prisma.agentRun.findMany({ orderBy: { createdAt: "desc" }, take: 30 }),
+      // Per-agent-statistikk: groupBy over siste 30 DAGER — de siste 30
+      // kjøringene globalt (recentRuns) dekker bare en brøkdel av flåten
+      // nå som registeret er komplett (H6).
+      prisma.agentRun.groupBy({
+        by: ["agentName", "status"],
+        where: { createdAt: { gte: tretti_dager_siden } },
+        _count: { _all: true },
+        _sum: { duration: true },
+      }),
       prisma.planAction.count({ where: { status: "PENDING" } }),
       prisma.planAction.count({ where: { createdAt: { gte: idag } } }),
       prisma.agentRun.count({ where: { createdAt: { gte: idag } } }),
@@ -74,15 +87,17 @@ export default async function AdminAgenticosPage() {
       prisma.aiCost.count({ where: { createdAt: { gte: sju_dager_siden }, costUsd: null } }),
     ]);
 
-  // Aggreger per agent (fra siste 30 kjøringer) — samme mønster som den
-  // gamle /admin/agents-siden.
+  // Aggreger per agent fra groupBy-vinduet (siste 30 dager). Aliaser
+  // (purring/bekreftet-kjøringer fra samme fil) telles inn under
+  // hovedagentens slug via kanoniskSlug.
   const perAgent = new Map<string, { ok: number; error: number; totalDuration: number }>();
-  for (const r of recentRuns) {
-    const eks = perAgent.get(r.agentName) ?? { ok: 0, error: 0, totalDuration: 0 };
-    if (r.status === "OK") eks.ok++;
-    else eks.error++;
-    eks.totalDuration += r.duration;
-    perAgent.set(r.agentName, eks);
+  for (const g of runGrupper30d) {
+    const slug = kanoniskSlug(g.agentName);
+    const eks = perAgent.get(slug) ?? { ok: 0, error: 0, totalDuration: 0 };
+    if (g.status === "OK") eks.ok += g._count._all;
+    else eks.error += g._count._all;
+    eks.totalDuration += g._sum.duration ?? 0;
+    perAgent.set(slug, eks);
   }
 
   const agenter: AgenticosAgentRow[] = Object.entries(AGENT_INFO).map(([slug, info]) => {
@@ -113,7 +128,7 @@ export default async function AdminAgenticosPage() {
 
   const runs: AgenticosRun[] = recentRuns.map((r) => ({
     id: r.id,
-    agentNavn: AGENT_INFO[r.agentName]?.navn ?? r.agentName,
+    agentNavn: AGENT_INFO[kanoniskSlug(r.agentName)]?.navn ?? r.agentName,
     ok: r.status === "OK",
     durationMs: r.duration,
     naar: r.createdAt.toLocaleString("nb-NO", {
