@@ -22,15 +22,17 @@ import { getAbonnementData } from "@/lib/portal-abonnement/abonnement-data";
 import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
 import { MegV2, type MegData } from "@/components/portal/v2/MegV2";
 import { hentLydSamtykkeStatus } from "@/lib/recording/lyd-samtykke";
+import { pakkeNavn } from "@/lib/domain/abonnement";
+import { FEATURES } from "@/lib/features";
 
 export const dynamic = "force-dynamic";
 
 export default async function V2MegPreviewPage() {
-  const user = await requirePortalUser();
+  const user = await requirePortalUser({ kreverTilgang: "INGEN" });
   if (user.role === "PARENT") redirect("/forelder");
   if (user.role === "GUEST") redirect("/admin/kalender");
 
-  const [profil, goals, agg, identitet, aktivEnrollment, abo, lydSjekk] = await Promise.all([
+  const [profil, goals, agg, identitet, aktivEnrollment, abo, lydSjekk, talentRad] = await Promise.all([
     hentProfil(),
     getGoals(user.id, 3),
     prisma.round.aggregate({
@@ -60,6 +62,9 @@ export default async function V2MegPreviewPage() {
     }),
     getAbonnementData(user.id),
     hentLydSamtykkeStatus(user.id),
+    // Talentprofil-inngangen vises kun når featuren er på OG spilleren
+    // faktisk har en TalentTracking-rad — aldri en lenke til en tom side.
+    FEATURES.TALENT ? prisma.talentTracking.findUnique({ where: { userId: user.id }, select: { userId: true } }) : null,
   ]);
 
   const data: MegData = {
@@ -93,7 +98,7 @@ export default async function V2MegPreviewPage() {
     abo: {
       erPro: abo.erPro,
       // Samme utledning som /portal/meg/abonnement/page.tsx — pakke (credits) vinner over ren Pro.
-      planNavn: abo.monthlyCredits >= 4 ? "Performance Pro" : abo.monthlyCredits > 0 ? "Performance" : null,
+      planNavn: pakkeNavn(abo.monthlyCredits),
       status: abo.status,
       nesteTrekk: abo.nesteTrekk,
     },
@@ -103,6 +108,7 @@ export default async function V2MegPreviewPage() {
       status: lydSjekk.status,
       gittAt: lydSjekk.gittAt,
     },
+    visTalent: talentRad != null,
   };
 
   return (

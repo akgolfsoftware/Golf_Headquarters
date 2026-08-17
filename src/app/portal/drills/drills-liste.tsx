@@ -13,7 +13,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { T } from "@/lib/v2/tokens";
-import { Caps } from "@/components/v2";
+import { Caps, Icon } from "@/components/v2";
 
 export type DrillRad = {
   id: string;
@@ -134,6 +134,37 @@ export function DrillsListe({
           </details>
         </div>
       )}
+
+      {/* Videre-lenke — AI-forslag på tvers av alle svake områder (ikke bare
+          størst gap som «Én ting nå» over). Ordinær rad, ingen ny clay-CTA. */}
+      <Link
+        href="/portal/ai/foresla-drill"
+        data-od-id="drills-ai-foresla"
+        className="v2-press v2-focus"
+        style={{
+          display: "flex",
+          alignItems: "center",
+          gap: 10,
+          background: T.panel,
+          border: `1px solid ${T.border}`,
+          borderRadius: T.rCard,
+          padding: "12px 16px",
+          marginBottom: 12,
+          textDecoration: "none",
+          color: "inherit",
+        }}
+      >
+        <Icon name="sparkles" size={16} style={{ color: T.mut, flex: "none" }} />
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <span style={{ display: "block", fontFamily: T.ui, fontSize: 13, fontWeight: 600, color: T.fg }}>
+            La AI foreslå driller
+          </span>
+          <span style={{ display: "block", fontFamily: T.ui, fontSize: 11.5, color: T.mut, marginTop: 1 }}>
+            Rangert liste på tvers av svakhetene dine
+          </span>
+        </div>
+        <Icon name="chevron-right" size={15} style={{ color: T.mut, flex: "none" }} />
+      </Link>
 
       {/* Filterchips — aria-pressed inverterer til blekk (fasit §5) */}
       <div

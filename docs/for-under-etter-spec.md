@@ -44,7 +44,7 @@ Ting briefen ikke nevner, som jeg fant:
 
 ## 2. Designsystem-beslutning: C, smalt definert
 
-**LÅST 2026-07-31 av Anders** (samme beslutning som `docs/gjenstaaende-plan-2026-07-31.md` §1.1).
+**LÅST 2026-07-31 av Anders** (samme beslutning som `docs/gjenstaaende-plan-2026-07-31.md` §1.1 — slettet 17.08.2026, git-historikk).
 
 **Valget er C (hybrid), men med en mye smalere migrering enn briefen legger opp til.**
 

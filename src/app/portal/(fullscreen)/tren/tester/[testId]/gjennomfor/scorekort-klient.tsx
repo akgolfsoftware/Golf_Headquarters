@@ -15,25 +15,35 @@
  * beholder feltinput inline i raden — ingen funksjon fjernes. Kontekst og
  * notat består (sammenslått under scorekortet).
  *
- * Lagring gjenbruker actions.ts UENDRET. Serveren krever verdi på alle
- * innsendte forsøk, så «lagre når som helst» sendes som de registrerte
- * forsøkene alene — og kun når de er en sammenhengende rekke fra forsøk 1
- * (avbrutt test = stoppet underveis). Da er indeks-paringen mot protokollens
- * mål per slag fortsatt korrekt for alle scoring-typer. Hull i rekka →
- * forklarende toast, aldri korrupt lagring.
+ * Lagring: serveren krever verdi på alle innsendte forsøk, så «lagre når som
+ * helst» sendes som de registrerte forsøkene alene — og kun når de er en
+ * sammenhengende rekke fra forsøk 1 (avbrutt test = stoppet underveis). Da er
+ * indeks-paringen mot protokollens mål per slag fortsatt korrekt for alle
+ * scoring-typer. Hull i rekka → forklarende toast, aldri korrupt lagring.
+ *
+ * Live-økt (T5, TestSession): første registrering starter en IN_PROGRESS-økt;
+ * hvert førte forsøk speiles dit (debounced, best effort — klient-staten er
+ * fasit). Går du ut midt i testen, gjenopptas økta med det som var ført.
+ * «Lagre testen» fullfører økta (TestResult + COMPLETED + talent-sync);
+ * «Avbryt uten å lagre» setter den ABORTED.
  *
  * Ved suksess redirecter serveren til testsiden (?lagret=1) — kvitteringen
  * bor der (samme mønster som før porten).
  */
 
-import { useMemo, useRef, useState, useTransition } from "react";
+import { useEffect, useMemo, useRef, useState, useTransition } from "react";
 import type { CSSProperties, ReactNode } from "react";
-import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { T, Knapp, TekstOmraade } from "@/components/v2";
 import { Icon } from "@/components/v2/icon";
 import type { ScorekortFelt, ScorekortForsok, ScorekortSpec } from "@/lib/portal-tester/protocol";
 import { scoreTest } from "@/lib/portal-tester/test-scoring";
-import { lagreTestResultat } from "./actions";
+import {
+  avbrytTestSession,
+  fullforTestSession,
+  lagreSteg,
+  startTestSession,
+} from "./actions";
 
 /** Verdi-state: tallfelt som rå streng (norsk komma), checkbox som boolean.
  *  Fravær av nøkkel = uregistrert. */
@@ -116,6 +126,7 @@ export function ScorekortKlient({
   sist,
   spec,
   protocol,
+  gjenopptak,
 }: {
   testId: string;
   beskrivelse: string | null;
@@ -127,10 +138,13 @@ export function ScorekortKlient({
   spec: ScorekortSpec;
   /** Rå protokoll-JSON — sendes til motoren for live-score (samme som server). */
   protocol: unknown;
+  /** Pågående TestSession (T5) — førte forsøk gjenopptas som utgangsstate. */
+  gjenopptak: { sessionId: string; verdier: Verdier } | null;
 }) {
+  const router = useRouter();
   const [pending, startTransition] = useTransition();
 
-  const [verdier, setVerdier] = useState<Verdier>({});
+  const [verdier, setVerdier] = useState<Verdier>(gjenopptak?.verdier ?? {});
   const [historikk, setHistorikk] = useState<Verdier[]>([]);
   const [notat, setNotat] = useState("");
   const [feil, setFeil] = useState<string | null>(null);
@@ -185,6 +199,62 @@ export function ScorekortKlient({
   /** Registrerte forsøk er en sammenhengende rekke fra forsøk 1. */
   const erPrefiks = fortMaske.every((fort, i) => fort === (i < antallFort));
 
+  // ── Live-økt (T5): speiling til TestSession — best effort ────────
+  // Klient-staten er fasit; speilingens jobb er gjenopptak og «Pågår»-
+  // banneret på tester-huben. Feil her velter aldri selve gjennomføringen.
+  const sessionIdRef = useRef<string | null>(gjenopptak?.sessionId ?? null);
+  const starterOkt = useRef(false);
+  const skitneForsok = useRef<Set<number>>(new Set());
+  const speilTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const forsokDataRef = useRef(forsokData);
+  useEffect(() => {
+    forsokDataRef.current = forsokData;
+  }, [forsokData]);
+
+  /** Merk et forsøk endret og planlegg debounced speiling til økta. */
+  function speilForsok(nr: number) {
+    skitneForsok.current.add(nr);
+    if (speilTimer.current) clearTimeout(speilTimer.current);
+    speilTimer.current = setTimeout(() => {
+      void flushSpeiling();
+    }, 600);
+  }
+
+  async function flushSpeiling() {
+    if (skitneForsok.current.size === 0) return;
+    let sid = sessionIdRef.current;
+    if (!sid) {
+      if (starterOkt.current) {
+        // Økt-start pågår i et annet flush — prøv igjen straks.
+        speilTimer.current = setTimeout(() => {
+          void flushSpeiling();
+        }, 600);
+        return;
+      }
+      starterOkt.current = true;
+      try {
+        const res = await startTestSession({ testId });
+        if (res.ok) sid = sessionIdRef.current = res.sessionId;
+      } catch {
+        // Offline/feil: prøves igjen ved neste endring — fullføringen sender alt.
+      } finally {
+        starterOkt.current = false;
+      }
+      if (!sid) return;
+    }
+    const nrs = [...skitneForsok.current];
+    skitneForsok.current.clear();
+    for (const nr of nrs) {
+      const f = forsokDataRef.current.find((x) => x.nr === nr);
+      if (!f) continue;
+      try {
+        await lagreSteg({ sessionId: sid, stegIndex: nr - 1, verdier: f.verdier });
+      } catch {
+        // Best effort — klient-staten er fasit til fullføring.
+      }
+    }
+  }
+
   // Live-score via SAMME motor som serveren → preview kan ikke avvike fra fasit.
   const motor = useMemo(() => scoreTest(protocol, forsokData), [protocol, forsokData]);
   const scoringKind = motor.details.scoring;
@@ -217,6 +287,7 @@ export function ScorekortKlient({
   function settVerdi(nr: number, key: string, verdi: string | boolean, medHistorikk: boolean) {
     if (medHistorikk) pushHistorikk();
     setVerdier((prev) => ({ ...prev, [nr]: { ...prev[nr], [key]: verdi } }));
+    speilForsok(nr);
   }
 
   /** Syklus for én-checkbox-rader: uregistrert → OK → bom → uregistrert. */
@@ -230,11 +301,20 @@ export function ScorekortKlient({
       else delete rad[key];
       return { ...prev, [nr]: rad };
     });
+    speilForsok(nr);
   }
 
   function angreSiste() {
     if (historikk.length === 0) return;
-    setVerdier(historikk[historikk.length - 1]);
+    const forrige = historikk[historikk.length - 1];
+    // Speil radene angringen faktisk endrer (normalt nøyaktig én).
+    const nrs = new Set([...Object.keys(verdier), ...Object.keys(forrige)].map(Number));
+    for (const nr of nrs) {
+      if (JSON.stringify(verdier[nr] ?? null) !== JSON.stringify(forrige[nr] ?? null)) {
+        speilForsok(nr);
+      }
+    }
+    setVerdier(forrige);
     setHistorikk(historikk.slice(0, -1));
   }
 
@@ -255,7 +335,7 @@ export function ScorekortKlient({
     const sendes = forsokData.filter((_, i) => fortMaske[i]);
     startTransition(async () => {
       try {
-        const res = await lagreTestResultat({
+        const res = await fullforTestSession({
           testId,
           notes: notat.trim() === "" ? undefined : notat.trim(),
           ...(kontekstInn ? { kontekst: kontekstInn } : {}),
@@ -266,6 +346,23 @@ export function ScorekortKlient({
       } catch {
         setFeil("Kunne ikke lagre resultatet. Prøv igjen.");
       }
+    });
+  }
+
+  /** «Avbryt uten å lagre» — setter en påbegynt økt ABORTED før retur. */
+  function avbryt() {
+    if (speilTimer.current) clearTimeout(speilTimer.current);
+    skitneForsok.current.clear();
+    const sid = sessionIdRef.current;
+    startTransition(async () => {
+      if (sid) {
+        try {
+          await avbrytTestSession({ sessionId: sid });
+        } catch {
+          // Best effort — økta ryddes uansett ved neste fullføring.
+        }
+      }
+      router.push(`/portal/tren/tester/${testId}`);
     });
   }
 
@@ -491,9 +588,16 @@ export function ScorekortKlient({
       </p>
 
       <div style={{ marginTop: 8, display: "flex", justifyContent: "center" }}>
-        <Link
-          href={`/portal/tren/tester/${testId}`}
+        <button
+          type="button"
+          onClick={avbryt}
+          disabled={pending}
+          className="v2-focus"
           style={{
+            appearance: "none",
+            background: "transparent",
+            border: 0,
+            cursor: "pointer",
             display: "inline-flex",
             alignItems: "center",
             gap: 6,
@@ -502,12 +606,11 @@ export function ScorekortKlient({
             fontFamily: T.ui,
             fontSize: 13,
             color: T.mut,
-            textDecoration: "none",
           }}
         >
           <Icon name="x" size={14} />
           Avbryt uten å lagre
-        </Link>
+        </button>
       </div>
 
       <FysPlassholderNote />

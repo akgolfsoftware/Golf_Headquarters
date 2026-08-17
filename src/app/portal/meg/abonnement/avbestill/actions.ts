@@ -7,17 +7,28 @@ import { prisma } from "@/lib/prisma";
 import { audit } from "@/lib/audit";
 import { stripeKlient } from "@/lib/stripe";
 import { logError } from "@/lib/error-tracking";
+import { opprettWinbackTilbud } from "@/lib/winback/opprett";
 
 // Returnerer { ok: false, error } ved feil — throw ville gitt generisk
 // error-boundary (og prod maskerer Error-meldinger fra server actions),
 // så meldingen må tilbake som verdi for at kalleren skal kunne vise den.
-export async function cancelPro(): Promise<{ ok: boolean; error?: string }> {
+// A4: kind-bevisst — ?kind=coaching avbestiller pakken (og utløser
+// vinn-tilbake-tilbudet som exit-skjerm), ?kind=playerhq avbestiller appen.
+export async function cancelPro(
+  kind: "COACHING" | "PLAYERHQ" = "COACHING",
+): Promise<{ ok: boolean; error?: string }> {
   const user = await requireConsentingUser();
 
   // Marker subscription som cancelAtPeriodEnd. Sluttbruker beholder Pro til periodEnd.
-  const sub = await prisma.subscription.findUnique({
-    where: { userId: user.id },
-  });
+  // Foretrekk raden for etterspurt kind; fall tilbake til den som faktisk har
+  // Stripe-kobling (dekker rader fra før A1-skillet).
+  const sub =
+    (await prisma.subscription.findFirst({
+      where: { userId: user.id, kind, stripeSubscriptionId: { not: null } },
+    })) ??
+    (await prisma.subscription.findFirst({
+      where: { userId: user.id, stripeSubscriptionId: { not: null } },
+    }));
 
   if (sub) {
     // Uten Stripe-abonnements-id kan vi ikke stoppe faktureringen — feil ærlig
@@ -68,10 +79,25 @@ export async function cancelPro(): Promise<{ ok: boolean; error?: string }> {
     actorId: user.id,
     action: "pro.cancelled",
     target: user.id,
-    metadata: { subscriptionId: sub?.id ?? null },
+    metadata: { subscriptionId: sub?.id ?? null, kind: sub?.kind ?? null },
   });
 
   revalidatePath("/portal/meg/abonnement");
+
+  // Vinn-tilbake (A4): coaching-oppsigelse → opprett tilbudet umiddelbart og
+  // vis det som exit-skjerm (beste konvertering: tilbudet møter spilleren i
+  // samme sekund som oppsigelsen). Webhooken oppretter også (idempotent) —
+  // dette kallet gir bare raskere respons.
+  if (sub && sub.kind === "COACHING") {
+    await opprettWinbackTilbud({
+      userId: user.id,
+      coachingSubscriptionId: sub.id,
+      stripeSubscriptionId: sub.stripeSubscriptionId,
+      utlopsDato: sub.currentPeriodEnd,
+    }).catch(() => undefined);
+    redirect("/portal/meg/abonnement/fortsett?fra=avbestilling");
+  }
+
   // ?avbestilt=1 — egen banner for avbestilt abonnement.
   // (?cancelled=1 er reservert for avbrutt Stripe Checkout.)
   redirect("/portal/meg/abonnement?avbestilt=1");

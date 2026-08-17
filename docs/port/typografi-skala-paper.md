@@ -4,7 +4,7 @@ Kanonisk liste over tillatte fontstørrelser i AK Golf HQ. Utledet ved måling a
 `designsystem/paper/` (fase1 + fase2, 752 filer, CRC-identisk med zip (3) per SYNC-STATUS.md) —
 ikke fra eldre token-dokumenter. Per CLAUDE.md invariant 2 vinner Paper-fasiten ved konflikt.
 
-## Korreksjon av premisset i AVVIKSRAPPORT-2026-08-13 §Rotårsak 4
+## Korreksjon av premisset i AVVIKSRAPPORT-2026-08-13 §Rotårsak 4 (rapporten er slettet 17.08.2026 — git-historikk)
 
 Rapporten målte «2 398 av 3 937 inline fontSize (61 %) utenfor token-skalaen» — mot den gamle
 `--text-*`-lista i `globals.css` (11/12/13/14/16/18/20/24/30/36/48/60). Den lista er IKKE

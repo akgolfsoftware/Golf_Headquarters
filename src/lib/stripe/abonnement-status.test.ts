@@ -27,11 +27,16 @@ test("REGRESJON: active + cancel_at_period_end lagres som CANCELLED", () => {
 });
 
 test("REGRESJON: trialing + cancel_at_period_end lagres som CANCELLED", () => {
-  // `trialing` mapper også til ACTIVE, så den har nøyaktig samme fallgruve.
+  // A2: trialing mapper nå til TRIALING (vinn-tilbake-broen), men en trial
+  // som sies opp før start skal fortsatt vises som CANCELLED.
   assert.equal(
     effektivAbonnementStatus(mapStripeStatus("trialing"), true),
     "CANCELLED",
   );
+});
+
+test("A2: trialing uten cancel lagres som TRIALING (vinn-tilbake-broen vises som «starter {dato}»)", () => {
+  assert.equal(effektivAbonnementStatus(mapStripeStatus("trialing"), false), "TRIALING");
 });
 
 test("active uten cancel_at_period_end forblir ACTIVE", () => {
@@ -76,7 +81,7 @@ test("canceled forblir CANCELLED uansett flagg", () => {
 
 test("mapStripeStatus dekker alle Stripe-statusene vi håndterer", () => {
   assert.equal(mapStripeStatus("active"), "ACTIVE");
-  assert.equal(mapStripeStatus("trialing"), "ACTIVE");
+  assert.equal(mapStripeStatus("trialing"), "TRIALING");
   assert.equal(mapStripeStatus("past_due"), "PAST_DUE");
   assert.equal(mapStripeStatus("unpaid"), "PAST_DUE");
   assert.equal(mapStripeStatus("canceled"), "CANCELLED");

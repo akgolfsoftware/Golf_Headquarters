@@ -21,7 +21,7 @@ type Props = {
 export default async function ReschedulePage({ params, searchParams }: Props) {
   const { bookingId } = await params;
   const { dato: datoParam } = await searchParams;
-  const user = await requirePortalUser({ allow: ["PLAYER", "COACH", "ADMIN"] });
+  const user = await requirePortalUser({ kreverTilgang: "INGEN", allow: ["PLAYER", "COACH", "ADMIN"] });
 
   const booking = await prisma.booking.findUnique({
     where: { id: bookingId },

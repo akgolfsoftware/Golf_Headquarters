@@ -13,7 +13,6 @@
 import { useState } from "react";
 import { Send } from "lucide-react";
 
-import type { WangLiveData } from "../_data/hent-wang-gruppe";
 import {
   CHAT_SEED,
   PARENT_MEETINGS,
@@ -21,15 +20,14 @@ import {
   daysUntil,
   type ChatMelding,
 } from "../_data/wang-plan";
-import { GruppeRoster } from "./live-seksjoner";
 
-export function FaneForeldre({
-  live = null,
-  naaIso,
-}: {
-  live?: WangLiveData | null;
-  naaIso: string;
-}) {
+// Ingen elevliste her: fellessiden er åpen uten innlogging, og navn pa
+// mindreårige skal ikke ligge bak en delbar lenke. Roster med navn finnes kun
+// på den auth-gatede /team-wang/coach. Ikke gjeninnfør rosteret her.
+//
+// `live` tas heller ikke inn lenger: rosteret var eneste bruk av den, og en
+// ubrukt WangLiveData-prop er en åpen invitasjon til å rendre navn igjen.
+export function FaneForeldre({ naaIso }: { naaIso: string }) {
   const [meldinger, setMeldinger] = useState<ChatMelding[]>(CHAT_SEED);
   const [tekst, setTekst] = useState("");
   const [meldtPaa, setMeldtPaa] = useState(false);
@@ -413,7 +411,6 @@ export function FaneForeldre({
         </section>
       </div>
 
-      <GruppeRoster live={live} />
     </div>
   );
 }

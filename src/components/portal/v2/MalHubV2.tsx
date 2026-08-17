@@ -10,8 +10,6 @@ import { useEffect, useState } from "react";
 import {
   T,
   Caps,
-  Tittel,
-  CTAPill,
   Kort,
   StatusPill,
   ProgresjonsBar,
@@ -76,7 +74,9 @@ function useMobile(): boolean {
 /* ── Skjerm ────────────────────────────────────────────────────────── */
 
 export function MalHubV2({ data }: { data: MalHubData }) {
-  const mobile = useMobile();
+  // Pre-eksisterende, ubrukt (jf. JSDoc over) — rørt kun for å unngå
+  // lint-max-warnings-0 på filen, ikke ryddet bort (ikke del av denne PR-en).
+  const _mobile = useMobile();
   const { antall, goals, milepael } = data;
 
   return (
@@ -101,6 +101,26 @@ export function MalHubV2({ data }: { data: MalHubData }) {
                 borderRadius: 12, background: T.handling, color: T.onHandling, fontFamily: T.ui, fontSize: 14, fontWeight: 600, minHeight: 56,
               }}>{goals.length === 0 ? "Sett første mål" : "Nytt mål"}
         </span>
+      </Link>
+
+      {/* Videre-lenke — SMART-veiviser (skiller seg fra CTA-en over: den bygger
+          en hel treningsplan fra mal, denne formulerer ett SMART-mål med AI-hjelp).
+          Ordinær rad, ingen ny clay-CTA. */}
+      <Link href="/portal/ai/mal-bygger" style={{ textDecoration: "none", display: "block" }}>
+        <Kort hover>
+          <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+            <Icon name="sparkles" size={16} style={{ color: T.mut, flex: "none" }} />
+            <div style={{ flex: 1, minWidth: 0 }}>
+              <span style={{ display: "block", fontFamily: T.ui, fontSize: 13, fontWeight: 600, color: T.fg }}>
+                AI mål-bygger
+              </span>
+              <span style={{ display: "block", fontFamily: T.ui, fontSize: 11.5, color: T.mut, marginTop: 1 }}>
+                Formuler ett SMART-mål steg for steg
+              </span>
+            </div>
+            <Icon name="chevron-right" size={15} style={{ color: T.mut, flex: "none" }} />
+          </div>
+        </Kort>
       </Link>
 
       {/* Siste milepæl */}

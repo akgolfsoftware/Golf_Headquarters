@@ -8,7 +8,7 @@
 
 import Link from "next/link";
 import { useState, type CSSProperties } from "react";
-import { Kort, Rad, StatusPill, TomTilstand, T, CTAPill, PillTabs, type StatusTone } from "@/components/v2";
+import { Kort, Rad, StatusPill, TomTilstand, T, CTAPill, PillTabs, KpiFlis, type StatusTone } from "@/components/v2";
 import { Icon } from "@/components/v2/icon";
 import { useMobile } from "./turnering-ui";
 
@@ -31,6 +31,15 @@ export interface AdminTurneringerV2Data {
   rader: AdminTurneringV2Row[];
   /** Manuelt registrerte turneringer uten kobling mot en kanonisk kilde ennå (se /admin/tournaments/dubletter). */
   dublettAntall: number;
+  /** KPI-rad (fasit agencyos-turneringer.html) — synk-/dekningstall utover listen under. */
+  kpi: {
+    /** Distinkte spillere med minst én ikke-trukket påmelding denne sesongen. */
+    paameldteSpillere: number;
+    /** Aktive PLAYER-brukere totalt — nevneren i "X av Y i stallen". */
+    stallStorrelse: number;
+    /** Scrapet turneringsresultat (PublicPlayerEntry) uten kobling til en PlayerHQ-bruker. */
+    utenKobling: number;
+  };
 }
 
 const pl = (n: number, en: string, flere: string) => `${n} ${n === 1 ? en : flere}`;
@@ -82,7 +91,7 @@ function TurneringTittel({ r }: { r: AdminTurneringV2Row }) {
 
 export function AdminTurneringerV2({ data }: { data: AdminTurneringerV2Data }) {
   const mobile = useMobile();
-  const { sesong, rader, dublettAntall } = data;
+  const { sesong, rader, dublettAntall, kpi } = data;
   const antall = rader.length;
   const statusTone: StatusTone = antall > 0 ? "lime" : "warn";
   const statusTekst = antall === 0 ? "Ingen påmeldte" : antall === 1 ? "1 turnering" : `${antall} turneringer`;
@@ -137,10 +146,36 @@ export function AdminTurneringerV2({ data }: { data: AdminTurneringerV2Data }) {
     </div>
   );
 
+  // KPI-rad (fasit): kommende/dekning/synk-hull/dubletter — måler stallens
+  // turneringsbilde utover raden av påmeldte turneringer under.
+  const kpiRad = (
+    <div className="grid grid-cols-2 lg:grid-cols-4" style={{ gap: T.gap }}>
+      <KpiFlis label="Kommende" value={kommende.length} sub={pl(spilte.length, "spilt", "spilte")} />
+      <KpiFlis
+        label="Påmeldte spillere"
+        value={kpi.paameldteSpillere}
+        sub={`av ${kpi.stallStorrelse} i stallen`}
+      />
+      <KpiFlis
+        label="Uten kobling"
+        value={kpi.utenKobling}
+        varsle={kpi.utenKobling > 0}
+        sub="resultat mangler spiller"
+      />
+      <KpiFlis
+        label="Mulige dubletter"
+        value={dublettAntall}
+        varsle={dublettAntall > 0}
+        sub="samme dato og bane"
+      />
+    </div>
+  );
+
   if (antall === 0) {
     return (
       <div data-paper-wave-h="turneringer" data-paper-pattern  style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
         {hode}
+        {kpiRad}
         {dublettBanner}
         <Kort>
           <TomTilstand
@@ -157,6 +192,7 @@ export function AdminTurneringerV2({ data }: { data: AdminTurneringerV2Data }) {
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
       {hode}
+      {kpiRad}
       {dublettBanner}
       {primaerCta}
 

@@ -20,8 +20,9 @@ export async function POST() {
   }
 
 
-  const subscription = await prisma.subscription.findUnique({
-    where: { userId: user.id },
+  // Kunde-ankeret kan ligge på hvilken som helst av radene (A1: én per kind).
+  const subscription = await prisma.subscription.findFirst({
+    where: { userId: user.id, stripeCustomerId: { not: null } },
   });
   if (!subscription?.stripeCustomerId) {
     return NextResponse.json({ error: "no-customer" }, { status: 400 });

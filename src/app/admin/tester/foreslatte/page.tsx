@@ -9,7 +9,8 @@
  * protokoll-JSON parses her (serverside, samme feltplukk som gamle
  * test-kort.tsx) så klientkomponenten er ren presentasjon.
  */
-import { requirePortalUser } from "@/lib/auth/requirePortalUser";
+import { requireCapability } from "@/lib/auth/requireCapability";
+import { Capability } from "@/lib/auth/cbac";
 import { prisma } from "@/lib/prisma";
 import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
 import { TilbakeLenke } from "@/components/v2";
@@ -64,7 +65,7 @@ function malverdier(protocol: unknown): { nivaa: string; verdi: string }[] {
 }
 
 export default async function ForeslatteTesterPage() {
-  const user = await requirePortalUser({ allow: ["COACH", "ADMIN"] });
+  const user = await requireCapability(Capability.MANAGE_TESTS);
 
   const foreslåtte = await prisma.testDefinition.findMany({
     where: {

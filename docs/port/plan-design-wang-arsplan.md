@@ -5,7 +5,7 @@ Omfang låst 2026-08-10: **kun golfgruppa** ved WANG Toppidrett Fredrikstad (avk
 
 Dekker alle skjermer i WANG-flaten (elev/foreldre + trener) og grensesnittet mot AgencyOS,
 der innholdet i treningsplanen faktisk skal lages. Skrevet etter samme mal som
-`docs/port/plan-designport-alle-skjermer.md`, men med WANG-merkevaren som fasit i stedet for
+`docs/port/PORTPLAN.md` (tidl. plan-designport, slettet 17.08.2026), men med WANG-merkevaren som fasit i stedet for
 Claude Paper.
 
 ---
@@ -87,7 +87,7 @@ AgencyOS.
 
 **Konsekvens:** AgencyOS-skjermene i §4.C skal **ikke** redesignes med WANG-farger. De skal
 redesignes etter Claude Paper-fasiten, som all annen AgencyOS-kode, og hører derfor hjemme i
-`docs/port/plan-designport-alle-skjermer.md` — ikke her. De står i skjermregnskapet under
+`docs/port/PAPER-ZIP-CHECKLIST.md` — ikke her. De står i skjermregnskapet under
 fordi de eier dataene WANG-flaten viser, og fordi feltdekningen deres bestemmer hva
 WANG-flaten kan vise uten demo-data.
 
@@ -332,6 +332,7 @@ datamodeller ligger sist.
 | B4 | Skal `/team-wang/coach` overleve, eller redirecte til AgencyOS? | Bølge 4 |
 | B5 | Skal skole-/foreldredata (A9, A10, A12) modelleres, eller forbli merket demo? | Bølge 5 |
 | ~~B6~~ | ~~Er WANG-flaten kun golf, eller alle idretter ved skolen?~~ | **AVKLART** |
+| ~~B7~~ | ~~Skal fellessiden være innlogget eller delbar?~~ | **AVGJORT** — åpen og navnefri, se under |
 
 ### B6 — avklart 2026-08-10: kun golfgruppa
 
@@ -350,11 +351,41 @@ Følger av dette:
 - **Ingen prematur generalisering:** bygg mot golf konkret. `Group`-modellen bærer allerede
   en eventuell fremtidig idrett nr. 2 uten at noe abstraheres nå.
 
+### B7 — avgjort 2026-08-11: fellessiden er åpen, og navnefri
+
+Anders: «Fjern innlogging til WANG årsplan felles siden og fjern alle elev navn.»
+
+De to halvdelene henger sammen. Sperren som ble satt på `/team-wang` 02.08.2026 var begrunnet
+i elevnavn — PII om mindreårige. Fjernes navnene, faller begrunnelsen bort, og lenken kan deles
+med elever og foreldre uten at noen må ha konto. Rekkefølgen er poenget: navnene ut **først**,
+sperren av **etterpå**.
+
+Slik ble grensen trukket:
+
+- **Åpent:** `/team-wang` (alle fire faner) og `/team-wang/logg-inn`.
+- **Fortsatt sperret:** `/team-wang/coach` — den viser roster med navn, og har både `proxy.ts`
+  og `requirePortalUser({ allow: ["ADMIN","COACH"] })` foran seg.
+- **`hentWangGruppe()` henter ikke navn som standard.** Elevlista er opt-in via
+  `medElevnavn: true`, og coach-siden er eneste kaller som ber om den. Standarden er den
+  trygge — en ny side som glemmer å tenke på PII får tom liste, ikke en lekkasje.
+- **`antallElever` beholdes.** Aggregat, ikke personopplysning.
+- **`<GruppeRoster />` er fjernet fra `fane-foreldre.tsx`** og skal ikke tilbake dit.
+- **Oppdiktede navn er også borte.** «Emma Larsen» m.fl. i `wang-login.tsx` og
+  foreldrechatten i `wang-plan.ts` var demo-data, men leste som ekte elever ved en ekte skole.
+  Chatten viser nå «Forelder»/«Trener»; demo-brukerlista starter tom.
+- **`noindex` står.** Delbar via lenke er ikke det samme som søkbar i Google.
+
+**Regel videre:** legger du noe på fellessiden som viser en person — navn, e-post, bilde,
+initialer koblet til én elev — skal sperren i `proxy.ts` tilbake i samme PR. Denne flaten er
+åpen fordi den er anonym, ikke fordi åpenhet er målet i seg selv.
+
+Dette berører ikke **B5** (skole-/foreldredata modelleres eller forblir demo) — den står åpen.
+
 ---
 
 ## 8. Ferdig-definisjon per skjerm
 
-Arves fra `docs/port/plan-designport-alle-skjermer.md` §Ferdig-definisjon, med to WANG-tillegg.
+Arves fra skjermbilde-gaten i `CLAUDE.md` §Skjermarbeid, med to WANG-tillegg.
 
 En skjerm er ferdig når **alle** punktene er sanne:
 

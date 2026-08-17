@@ -1,8 +1,8 @@
 # Baneguide i PlayerHQ — komplett produktdokument
 
 > Skrevet 2026-08-02. Forankret i kodebasen slik den faktisk er (verifisert mot `prisma/schema.prisma`,
-> `src/lib/gameplan/`, `src/lib/runde-logg/`, `src/lib/domain/sg.ts`, `docs/port/plan-designport-alle-skjermer.md` og
-> `docs/plan-baneguide-dispersion.md`). Dokumentet er skrevet slik at designer og utvikler kan starte
+> `src/lib/gameplan/`, `src/lib/runde-logg/`, `src/lib/domain/sg.ts`, `docs/port/PORTPLAN.md` (tidl. plan-designport) og
+> `docs/plan-baneguide-dispersion.md`, slettet 17.08.2026 — git-historikk). Dokumentet er skrevet slik at designer og utvikler kan starte
 > direkte. Ingen kopiering av UpGame/Trackman — kun samme problemklasse, løst selvstendig.
 
 ---
@@ -130,7 +130,7 @@ foreslår, spilleren bestemmer.
 ### Flyt C — Etterregistrer med kart (finnes delvis)
 1. `/portal/runde/logg` (etterpå-modus) — som i dag, men med samme kart-modus tilgjengelig:
    spilleren tapper slagene på satellitt fra minnet (dagens `slag-wizard`-mønster, flyttet inn i hovedflyten)
-2. Dette er **primærflyten for GPS-data i praksis** (låst beslutning fra `docs/plan-baneguide-dispersion.md`:
+2. Dette er **primærflyten for GPS-data i praksis** (låst beslutning fra `docs/plan-baneguide-dispersion.md`, slettet 17.08.2026 — git-historikk:
    etter-runde-plotting på satellitt er primær, live-GPS er bonus) — MVP bygger begge, men designes slik at
    etterregistrering er like god
 
@@ -168,7 +168,7 @@ COACH  /admin/spillere/[id]/baneguide        (NY fase 2)
 
 - `/portal/baneguide/**` er allerede redirects til `/portal/gameplan/**` — behold dem
 - Navnespørsmålet (Gameplan vs. Baneguide i UI) er en åpen beslutning → §13
-- Nye skjermer måles mot ferdig-definisjonen i `docs/port/plan-designport-alle-skjermer.md`
+- Nye skjermer måles mot skjermbilde-gaten i `CLAUDE.md` §Skjermarbeid
   §Ferdig-definisjon per skjerm; sjekk `docs/port/fasit-liste-paper.md` for om Gameplan-flatene har fasit
 
 ---
@@ -595,7 +595,7 @@ go/no-go for resten av fase 1-rekkefølgen.
 ---
 
 *Vedlikehold: dette dokumentet beskriver målbildet per 2026-08-02. Ved bygging gjelder
-`docs/port/plan-designport-alle-skjermer.md` for skjermstatus og `.claude/rules/gotchas.md` for tekniske feller.
+`docs/port/PAPER-ZIP-CHECKLIST.md` for skjermstatus og `.claude/rules/gotchas.md` for tekniske feller.
 Kjente doc-avvik funnet under research (rettes separat): `docs/platform/DATA-MODEL.md` sier 14
 SG-felter (er 21) og utelater Shot-GPS-feltene; schema-kommentaren på `Shot` peker på utdatert sti
 `lib/baneguide/shot-coords.ts` (er `src/lib/gameplan/shot-coords.ts`).*

@@ -46,7 +46,7 @@ Designfasit er Claude Paper (Claude Design-prosjekt `605a48cc`, skjermer i `fase
 
 **FØR** du bygger, endrer eller kobler en skjerm:
 1. Sjekk `docs/port/fasit-liste-paper.md` — har skjermen fasit, eller må den designes uten?
-2. Sjekk `docs/port/plan-designport-alle-skjermer.md` — hvilken bølge hører skjermen til, og hva er status?
+2. Sjekk `docs/port/PORTPLAN.md` + `docs/port/PAPER-ZIP-CHECKLIST.md` — hvilken sesjon hører skjermen til, og hva er status?
 3. Jobb mot ferdig-definisjonen i samme plan (§Ferdig-definisjon per skjerm).
 
 En skjerm er **ikke ferdig** før ferdig-definisjonen er oppfylt og Anders har SETT skjermbildet:

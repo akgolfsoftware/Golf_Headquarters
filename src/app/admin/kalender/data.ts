@@ -263,6 +263,7 @@ export async function hentAgencyKalenderData(
           // Programmet til en gruppeserie er medlemmenes program. Vi leser
           // noen få medlemmer og bruker det programmet flest av dem står i.
           members: {
+            where: { endedAt: null },
             select: {
               user: {
                 select: {

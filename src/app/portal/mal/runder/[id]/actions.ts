@@ -10,6 +10,7 @@ import { avgjorSgSkriving } from "@/lib/domain/sg-skriving";
 import { hullSchema } from "@/lib/runde-logg/schema";
 import { byggShotRader } from "@/lib/runde-logg/bygg-shot-rader";
 import { deriverRundeScore } from "@/lib/runde-logg/deriver-hullscore";
+import { synkroniserSgFraRunder } from "@/lib/portal-stats/sg-bro";
 import { ShotLie, ShotType, WindDir } from "@/generated/prisma/client";
 import { logError } from "@/lib/error-tracking";
 
@@ -52,7 +53,7 @@ export async function shareRound(roundId: string, input: ShareRoundInput) {
   // Hvis coach skal varsles, hent alle coach-er via gruppe-medlemskap.
   if (input.visibility === "coach") {
     const memberships = await prisma.groupMember.findMany({
-      where: { userId: user.id },
+      where: { userId: user.id, endedAt: null },
       select: { group: { select: { coachId: true } } },
     });
     const coachIds = Array.from(
@@ -115,7 +116,7 @@ async function recomputeRoundSg(roundId: string): Promise<void> {
   try {
     const round = await prisma.round.findUnique({
       where: { id: roundId },
-      select: { sgSource: true },
+      select: { sgSource: true, userId: true },
     });
     if (!round) return;
     // Kortslutning: manuelle tall trenger ingen slag-spørring i det hele tatt.
@@ -148,6 +149,13 @@ async function recomputeRoundSg(roundId: string): Promise<void> {
         where: { id: roundId },
         data: beslutning.felter,
       });
+    }
+
+    // SG-broen (T6): rundens SG kan ha endret seg (skrevet eller nullstilt) —
+    // synk DataGolf-grunnlaget (BrukerSgInput, kilde PLAYERHQ). Best-effort,
+    // kaster aldri. Skipper når ingen skriving skjedde.
+    if (sg || round.sgSource === "beregnet") {
+      await synkroniserSgFraRunder(round.userId);
     }
   } catch (error) {
     await logError({

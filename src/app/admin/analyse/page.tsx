@@ -122,7 +122,7 @@ async function loadStallAnalyse(viewer: { id: string; role: string }): Promise<A
     }),
     prisma.group.findMany({
       where: viewer.role === "COACH" ? { coachId: viewer.id } : {},
-      select: { id: true, name: true, members: { select: { userId: true } } },
+      select: { id: true, name: true, members: { where: { endedAt: null }, select: { userId: true } } },
       orderBy: { name: "asc" },
     }),
   ]);

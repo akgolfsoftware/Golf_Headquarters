@@ -84,6 +84,9 @@ export type MegData = {
     status: string;
     gittAt: Date | null;
   };
+  /** FEATURES.TALENT på + en faktisk TalentTracking-rad — uten begge deler
+   *  vises ingen inngang til talentprofilen (aldri en lenke til en tom side). */
+  visTalent: boolean;
 };
 
 const PROGRAM_LABEL: Record<PlayerProgram, string> = {
@@ -216,7 +219,7 @@ type KontoRad = { ic: string; l: string; sub?: string; href: string };
 
 export function MegV2({ data }: { data: MegData }) {
   const router = useRouter();
-  const { navn, hcp, homeClub, goals, sesong, identitet, program, abo, notif, lydSamtykke } = data;
+  const { navn, hcp, homeClub, goals, sesong, identitet, program, abo, notif, lydSamtykke, visTalent } = data;
 
   // Avatar direkte klikkbar her (Anders-krav: bytt bilde skal ikke kreve
   // omvei via Profil og innstillinger) — samme uploadAvatar-action og
@@ -552,6 +555,27 @@ export function MegV2({ data }: { data: MegData }) {
             leading={<Icon name="trending-up" size={16} style={{ color: T.mut }} />}
             title="Åpne utviklingsplan"
             sub="Talent og teknisk plan"
+            last={!visTalent}
+          />
+        </Link>
+        {visTalent && (
+          <Link href="/portal/talent" style={{ textDecoration: "none", color: "inherit", display: "block" }}>
+            <Rad
+              leading={<Icon name="trophy" size={16} style={{ color: T.mut }} />}
+              title="Talentprofil"
+              sub="Nivå, reise og sammenligning"
+              last
+            />
+          </Link>
+        )}
+      </Kort>
+
+      <Kort eyebrow="Uka di">
+        <Link href="/portal/ukesdigest" style={{ textDecoration: "none", color: "inherit", display: "block" }}>
+          <Rad
+            leading={<Icon name="calendar" size={16} style={{ color: T.mut }} />}
+            title="Se ukesdigesten"
+            sub="Samme tall som Anders' ukesrapport"
             last
           />
         </Link>

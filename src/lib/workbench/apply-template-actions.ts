@@ -7,6 +7,8 @@
 
 import { revalidatePath } from "next/cache";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
+import { assertCapability } from "@/lib/auth/effective-capabilities";
+import { Capability } from "@/lib/auth/cbac";
 import { harCoachTilgangTilSpiller } from "@/lib/auth/coached";
 import { prisma } from "@/lib/prisma";
 import { upsertV2ForPlanSession } from "@/lib/workbench/v2-sync";
@@ -17,6 +19,7 @@ import {
 } from "@/lib/workbench/map-template-week";
 import { hentPlayerSignals } from "@/lib/plan-engine/load-signals";
 import { adaptTemplateWeek } from "@/lib/plan-engine/adapt-template";
+import { overlapper } from "@/lib/domain/gruppeplan-dedup";
 
 const PYRAMID_AREAS = ["FYS", "TEK", "SLAG", "SPILL", "TURN"] as const;
 
@@ -41,6 +44,9 @@ function revalidateWorkbench(playerId: string) {
 }
 
 export type AppliedTemplateSession = ScheduledTemplateSession & { sessionId: string };
+
+/** Økt hoppet over av G3-dedupen i en gruppeutrulling (KRYSSKILDE rapporteres, IDEMPOTENT er stille). */
+export type HoppetOkt = { title: string; grunn: "KRYSSKILDE" };
 
 async function ensurePlanForPlayer(playerId: string, createdById?: string) {
   let plan = await prisma.trainingPlan.findFirst({
@@ -70,7 +76,16 @@ async function applyTemplateCore(
   coachId: string | null,
   weekNr = 1,
   weekOffset = 0,
-): Promise<{ ok: boolean; sessions?: AppliedTemplateSession[]; error?: string; justeringer?: string[] }> {
+  // G3: satt når kilden er en gruppeutrulling — skrur på per-økt-dedup og
+  // stempler radene (TrainingPlanSession.sourceGroupId + TrainingSessionV2.groupId).
+  sourceGroupId: string | null = null,
+): Promise<{
+  ok: boolean;
+  sessions?: AppliedTemplateSession[];
+  error?: string;
+  justeringer?: string[];
+  hoppetOkter?: HoppetOkt[];
+}> {
   const template = await prisma.planTemplate.findUnique({
     where: { id: templateId },
     select: {
@@ -122,19 +137,68 @@ async function applyTemplateCore(
 
   const plan = await ensurePlanForPlayer(playerId, coachId ?? undefined);
   const created: AppliedTemplateSession[] = [];
+  const hoppetOkter: HoppetOkt[] = [];
+
+  // G3 per-økt-dedup (kun gruppeutrulling): hent spillerens eksisterende
+  // plan-økter i målvinduet ÉN gang, og sjekk EKTE tidsoverlapp per ny økt —
+  // aldri «hopp hele uka». Samme dag uten overlapp (WANG morgen + GFGK kveld)
+  // er legitimt. 24 t bakover-buffer fanger økter som starter før vinduet men
+  // strekker seg inn i det.
+  let eksisterende: { scheduledAt: Date; durationMin: number; sourceGroupId: string | null }[] = [];
+  if (sourceGroupId && scheduled.length > 0) {
+    const starter = scheduled.map((r) =>
+      dateForDayIndex(r.dayIndex, r.hour, r.minute, weekOffset).getTime(),
+    );
+    const slutter = scheduled.map(
+      (r, i) => starter[i] + r.durMin * 60_000,
+    );
+    eksisterende = await prisma.trainingPlanSession.findMany({
+      where: {
+        plan: { userId: playerId },
+        scheduledAt: {
+          gte: new Date(Math.min(...starter) - 24 * 60 * 60_000),
+          lt: new Date(Math.max(...slutter)),
+        },
+      },
+      select: { scheduledAt: true, durationMin: true, sourceGroupId: true },
+    });
+  }
 
   for (const row of scheduled) {
     const area = PYRAMID_AREAS.includes(row.area as (typeof PYRAMID_AREAS)[number])
       ? row.area
       : "TEK";
+    const scheduledAt = dateForDayIndex(row.dayIndex, row.hour, row.minute, weekOffset);
+
+    if (sourceGroupId) {
+      const nyStart = scheduledAt;
+      const nySlutt = new Date(scheduledAt.getTime() + row.durMin * 60_000);
+      const kollisjon = eksisterende.find((e) =>
+        overlapper(
+          e.scheduledAt,
+          new Date(e.scheduledAt.getTime() + e.durationMin * 60_000),
+          nyStart,
+          nySlutt,
+        ),
+      );
+      if (kollisjon) {
+        // Samme gruppe → stille idempotens (re-kjøring). Annen kilde → rapporter.
+        if (kollisjon.sourceGroupId !== sourceGroupId) {
+          hoppetOkter.push({ title: row.title, grunn: "KRYSSKILDE" });
+        }
+        continue;
+      }
+    }
+
     const session = await prisma.trainingPlanSession.create({
       data: {
         planId: plan.id,
         title: row.title.slice(0, 120),
-        scheduledAt: dateForDayIndex(row.dayIndex, row.hour, row.minute, weekOffset),
+        scheduledAt,
         durationMin: row.durMin,
         pyramidArea: area,
         status: "PLANNED",
+        sourceGroupId,
       },
       select: {
         id: true,
@@ -153,6 +217,7 @@ async function applyTemplateCore(
       durationMin: session.durationMin,
       pyramidArea: session.pyramidArea,
       coachId: coachId ?? undefined,
+      sourceGroupId,
     });
 
     created.push({
@@ -167,7 +232,12 @@ async function applyTemplateCore(
   });
 
   revalidateWorkbench(playerId);
-  return { ok: true, sessions: created, justeringer };
+  return {
+    ok: true,
+    sessions: created,
+    justeringer,
+    hoppetOkter: hoppetOkter.length > 0 ? hoppetOkter : undefined,
+  };
 }
 
 /** Spiller bruker mal på egen plan. */
@@ -182,9 +252,12 @@ export async function applyWorkbenchTemplate(
 /**
  * Å3 · Rull ut en mal til en HEL gruppe over flere uker i én operasjon
  * (planleggings-pyramiden: aldri taste 40 like uker). Mal-uke w legges i
- * kalenderuke startWeekOffset+(w-1) for hvert medlem. Duplikat-vern per
- * spiller-uke: har spilleren alt plan-økter i måluka hoppes den over
- * (rapporteres — anbefaling, aldri overskriving). try/catch per spiller.
+ * kalenderuke startWeekOffset+(w-1) for hvert medlem.
+ *
+ * Duplikat-vern (G3): PER ØKT med ekte tidsoverlapp — aldri «hopp hele uka».
+ * Økt fra SAMME gruppe i overlappende tidsrom → hopp stille (re-kjøring trygg).
+ * Økt fra annen kilde (annen gruppe / spillerens egen) → hopp KUN den økten
+ * + rapporter. Aldri overskriving. try/catch per spiller.
  */
 export async function coachApplyTemplateToGroup(
   groupId: string,
@@ -195,15 +268,26 @@ export async function coachApplyTemplateToGroup(
   error?: string;
   spillere?: number;
   okterOpprettet?: number;
-  hoppet?: { navn: string; uke: number }[];
+  hoppet?: { navn: string; uke: number; okt?: string; grunn?: "KRYSSKILDE" | "FEIL" }[];
 }> {
   const coach = await requirePortalUser({ allow: ["COACH", "ADMIN"] });
+  // G6: utrulling av mal til gruppe endrer gruppeplanen → EDIT_GROUP_PLANS.
+  await assertCapability(coach, Capability.EDIT_GROUP_PLANS);
   const startWeekOffset = Math.max(0, Math.min(12, Math.trunc(opts.startWeekOffset ?? 0)));
 
   const [gruppe, mal] = await Promise.all([
     prisma.group.findUnique({
       where: { id: groupId },
-      select: { id: true, name: true, members: { select: { user: { select: { id: true, name: true } } } } },
+      select: {
+        id: true,
+        name: true,
+        // Kun aktive SPILLERE — utrulling til trenere/utmeldte ville gitt dem
+        // spillerplaner (plan G1/G3).
+        members: {
+          where: { endedAt: null, role: "PLAYER" },
+          select: { user: { select: { id: true, name: true } } },
+        },
+      },
     }),
     prisma.planTemplate.findUnique({
       where: { id: templateId },
@@ -216,28 +300,24 @@ export async function coachApplyTemplateToGroup(
   const uker = Math.max(1, Math.min(opts.uker ?? mal.varighetUker, malUker.length || mal.varighetUker));
 
   let okterOpprettet = 0;
-  const hoppet: { navn: string; uke: number }[] = [];
+  const hoppet: { navn: string; uke: number; okt?: string; grunn?: "KRYSSKILDE" | "FEIL" }[] = [];
 
   for (const m of gruppe.members) {
     for (let w = 0; w < uker; w++) {
       const malUke = malUker[w] ?? w + 1;
       const offset = startWeekOffset + w;
       try {
-        // Duplikat-vern: finnes det alt plan-økter i denne kalenderuka?
-        const ukeStart = mondayOf(new Date());
-        ukeStart.setDate(ukeStart.getDate() + offset * 7);
-        const ukeSlutt = new Date(ukeStart);
-        ukeSlutt.setDate(ukeSlutt.getDate() + 7);
-        const eksisterende = await prisma.trainingPlanSession.count({
-          where: { plan: { userId: m.user.id }, scheduledAt: { gte: ukeStart, lt: ukeSlutt } },
-        });
-        if (eksisterende > 0) {
-          hoppet.push({ navn: m.user.name ?? "Ukjent", uke: offset });
-          continue;
+        // G3: per-økt-dedup skjer inne i applyTemplateCore (sourceGroupId satt) —
+        // samme gruppe hoppes stille, krysskilde-kollisjoner rapporteres per økt.
+        const res = await applyTemplateCore(templateId, m.user.id, coach.id, malUke, offset, groupId);
+        if (res.ok) {
+          okterOpprettet += res.sessions?.length ?? 0;
+          for (const h of res.hoppetOkter ?? []) {
+            hoppet.push({ navn: m.user.name ?? "Ukjent", uke: offset, okt: h.title, grunn: h.grunn });
+          }
+        } else {
+          hoppet.push({ navn: m.user.name ?? "Ukjent", uke: offset, grunn: "FEIL" });
         }
-        const res = await applyTemplateCore(templateId, m.user.id, coach.id, malUke, offset);
-        if (res.ok) okterOpprettet += res.sessions?.length ?? 0;
-        else hoppet.push({ navn: m.user.name ?? "Ukjent", uke: offset });
       } catch (error) {
         await logError({
           context: "workbench.applyTemplate.utrulling",
@@ -245,7 +325,7 @@ export async function coachApplyTemplateToGroup(
           meta: { userId: m.user.id, uke: offset, templateId, groupId },
           severity: "warn",
         });
-        hoppet.push({ navn: m.user.name ?? "Ukjent", uke: offset });
+        hoppet.push({ navn: m.user.name ?? "Ukjent", uke: offset, grunn: "FEIL" });
       }
     }
   }

@@ -31,10 +31,10 @@ export default async function BekreftCreditBookingPage({
 
   if (!serviceSlug || !start || !coachId) notFound();
 
-  const user = await requirePortalUser({ allow: ["PLAYER", "COACH", "ADMIN"] });
+  const user = await requirePortalUser({ kreverTilgang: "TALENT", allow: ["PLAYER", "COACH", "ADMIN"] });
 
   const subscription = await prisma.subscription.findUnique({
-    where: { userId: user.id },
+    where: { userId_kind: { userId: user.id, kind: "COACHING" } },
   });
   if (
     !subscription ||

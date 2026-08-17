@@ -3,7 +3,7 @@
 **Dette er ENESTE fasit for låste produktbeslutninger.** Andre dokumenter (`CLAUDE.md`, `AGENT-BRIEF.md`, `PLATFORM-PRD.md`) gir kun et sammendrag og peker hit. Ved konflikt vinner denne fila. Nye låste regler legges KUN her — ikke dupliser til andre filer.
 
 Dokumenterer forretningsregler som ikke kan utledes fra kode alene.
-Sist oppdatert: 2026-06-14.
+Sist oppdatert: 2026-08-17 (dato rettet — §Abonnement og tilgang er fra 2026-08-16; headeren sa 2026-06-14 og fikk fila til å se gammel ut).
 
 > ⚠ **Status per 2026-07-06** (fulgte opp 2026-06-22-opplåsingen — historikken lever i git
 > for full historikk): 3 av 4 daværende «låst opp»-regler er nå **avklart og bygget** — tema-toggle
@@ -17,19 +17,48 @@ Sist oppdatert: 2026-06-14.
 
 ## Abonnement og tilgang til PlayerHQ
 
-### Gratis tilgang — tre eksakte tilfeller
+> Oppdatert 2026-08-16 (Anders' beslutninger i hovedplanen): tilgang har nå TRE nivåer —
+> FULL, TALENT (gratis låst profil) og INGEN. Eneste sannhetskilde i kode:
+> `resolveTilgang` i `src/lib/feature-flags.ts`.
 
-1. **Prøveperiode:** 1 måneds gratis tilgang etter registrering.
+### FULL tilgang gratis — fire eksakte tilfeller
+
+1. **Prøveperiode:** 1 måneds gratis tilgang etter registrering
+   (`User.trialEndsAt` kan forlenge/forkorte per bruker).
 2. **Coaching-pakke:** Spiller har aktiv Performance- eller Performance Pro-pakke.
-3. **Gruppe via AK Golf:** Spiller er medlem av en gruppe administrert av AK Golf.
+   **Oppsagt pakke gir tilgang UT den betalte perioden.**
+3. **Gruppe via AK Golf:** Spiller har AKTIVT spiller-medlemskap (`GroupMember.endedAt`
+   null) i en AK Golf-administrert gruppe (`Group.managedByAkGolf` — GFGK-stigen,
+   WANG Toppidrett, WANG UNG, AK Golf Academy, AK Golf Junior Academy).
+4. **Lanseringsvinduet:** alle frem til 1. september 2026 (`gratisForAlle`).
+
+### TALENT — gratis, låst profil (Anders 2026-08-16)
+
+- `User.profilType = "TALENT"` (TalentHQ-inngangen: `?kilde=talenthq`-registrering eller
+  gruppe-invitasjon). Utløper aldri.
+- ÅPENT: testbatteriet (CANON-protokollene), stats-/analyse-lesing, SG-/runderegistrering,
+  DataGolf-sammenligning, talent-flatene, **booking av enkelttimer**, konto/abonnement.
+- ALT annet låst med oppgraderingsvei. Håndheves FAIL-CLOSED i `requirePortalUser`
+  (`kreverTilgang`); rutekontrakten står i `src/lib/auth/talent-allowlist.ts`.
+- Kjøper spilleren abonnement eller meldes inn i AK-gruppe, vinner FULL automatisk.
 
 ### Betalt tilgang
 
-- **299 kr/mnd** for alle som ikke faller inn under de tre gratis-tilfellene.
-  (Anders-beslutning 2026-07-07: prisen endret fra 300 til 299 kr/mnd — løser konflikten mot
-  design-prosjektets B09. Årsabonnement er fortsatt IKKE besluttet innført; designets
-  «2690 kr/år»-demoer er ikke kanon før Anders sier ja.)
-- Betaling via Stripe. Abonnement lagres i `Subscription`-tabellen.
+- **299 kr/mnd** eller **2 690 kr/år** (Anders-beslutning 2026-08-16 — årsprisen ER nå
+  kanon: «tre måneder gratis — spar 898 kr»; 299 × 9 = 2 691).
+- Betaling via Stripe. Abonnement lagres i `Subscription`-tabellen — én rad per
+  `(userId, kind)` der kind er `COACHING` eller `PLAYERHQ` (siden 2026-08-16 kan en
+  spiller ha begge samtidig).
+
+### Vinn-tilbake ved coaching-oppsigelse (Anders 2026-08-16)
+
+- Når coaching-pakken sies opp (i appen, Billing Portal eller Stripe-dashbordet), får
+  spilleren AUTOMATISK tilbud om å beholde PlayerHQ til 299 kr/mnd eller 2 690 kr/år.
+- Tilbudet vises som exit-skjerm ved oppsigelse og sendes på e-post (mindreårige:
+  til godkjent foresatt — aldri barnet). Påminnelse < 7 dager før coaching-perioden
+  utløper. Aksept gir nytt PlayerHQ-abonnement med `trial_end` = periodens slutt —
+  **aldri dobbelbetaling**.
+- Dette er et bevisst unntak fra «kun purring sendes automatisk»-regelen for e-post.
 
 ### Coaching-pakker (IKKE app-nivåer)
 
@@ -242,7 +271,7 @@ AK Golf Academy bruker en 5-trinns trenings-pyramide:
 > **Design (LÅST — Paper vinner alltid, Anders 2026-08-03):** Claude Design-prosjektet
 > «AK Golf HQ — Claude Paper» (`605a48cc`, skjermer i `fase1/`) er eneste designfasit, og
 > full port til `src/` kjører nå. Tidsplanen fra 31.07 («C, smalt» til etter FØR/UNDER/ETTER-piloten)
-> er **overstyrt** — `docs/gjenstaaende-plan-2026-07-31.md` §1.1 er historikk, ikke gjeldende regel.
+> er **overstyrt** — `docs/gjenstaaende-plan-2026-07-31.md` §1.1 er historikk (slettet 17.08.2026, git-historikk), ikke gjeldende regel.
 > Mangler en skjerm fasit: `docs/port/monsterdokument-paper.md` er eneste designkilde.
 > Ved konflikt mellom et dokument og Paper-fasiten vinner Paper-fasiten.
 >

@@ -14,7 +14,8 @@ CLAUDE.md og ak-master.md vinner ak-master.md.
 - **`docs/platform/AGENT-BRIEF.md`** — agent-onboarding: stack, eksakte versjoner, prosjektkart. Les FØR arbeid.
 - **`docs/STATUS-NÅ.md`** — hva er levert/ikke levert akkurat nå. (Ligger i `docs/`, ikke `docs/platform/`.)
 - **`docs/port/fasit-liste-paper.md`** — designdekning: hvilke skjermer har Paper-fasit, hvilke mangler.
-- **`docs/port/plan-designport-alle-skjermer.md`** — porteringsplan, status per bølge og ferdig-definisjon per skjerm.
+- **`docs/port/PORTPLAN.md`** — porteringsplan: én sesjon per mal-fasit, rekkefølge og blokkeringer.
+- **`docs/MASTERPLAN-GJENSTAAENDE.md`** — samlet gjenstående-plan på tvers av alle spor (17.08.2026).
 - **`docs/platform/BUSINESS-RULES.md`** — forretningsregler som ikke kan utledes fra kode (abonnement, booking, GDPR, dual-track, demo-data, tema m.fl.).
 - **`docs/platform/DATA-MODEL.md`** — datamodell (tabeller, felter, relasjoner, server actions, API).
 - **`docs/testing.md`** — testinfrastruktur og plan.
@@ -27,16 +28,17 @@ Sju filer, alle aktive: `arkitektur.md` (produkter, ruter, mappestruktur) · `go
 ikke kode).
 
 `beslutninger.md` dekker: invarianter-aldri-sperrer, AgencyOS-navnet, navne-kanon, Workbench-planlegging,
-analyse-samling, abonnement 299/gratis, FYS-avventing. **Design (LÅST 2026-07-31, OVERSTYRT 2026-08-03
+analyse-samling, abonnement (FULL/TALENT/INGEN — 299 kr/mnd eller 2 690 kr/år, fasit i
+BUSINESS-RULES §Abonnement og tilgang), FYS-avventing. **Design (LÅST 2026-07-31, OVERSTYRT 2026-08-03
 — se invariant 2 under):** Claude Design-prosjektet **«AK Golf HQ — Claude Paper»** (`605a48cc`, hentet
 via `claude-design`-MCP-verktøyet) er designfasit; full port til `src/` kjører nå aktivt, se
-`docs/port/plan-designport-alle-skjermer.md`. Ved konflikt vinner `docs/platform/BUSINESS-RULES.md`.
+`docs/port/PORTPLAN.md`. Ved konflikt vinner `docs/platform/BUSINESS-RULES.md`.
 
 ## Harde invarianter (brytes aldri)
 1. **Anbefalinger sperrer aldri:** ingenting i appen blokkerer trening. Aldri «kan ikke brytes»-kode/tekst.
 2. **Claude Paper vinner alltid (LÅST 2026-08-03/05).** Claude Design-prosjektet «AK Golf HQ — Claude
    Paper» (`605a48cc`, skjermer i `fase1/`) er eneste designfasit — for design OG produksjonskode.
-   Full porten kjører nå, skjerm for skjerm, per `docs/port/plan-designport-alle-skjermer.md`.
+   Full porten kjører nå, skjerm for skjerm, per `docs/port/PORTPLAN.md`.
    Tidsplanen fra 31.07 («C, smalt» til etter piloten) er **overstyrt** og skal ikke følges.
    Mangler skjermen fasit: `docs/port/monsterdokument-paper.md` er eneste designkilde.
    **Sier et dokument, en skill eller en kodekommentar noe annet enn Paper-fasiten, vinner
@@ -54,21 +56,38 @@ via `claude-design`-MCP-verktøyet) er designfasit; full port til `src/` kjører
 ## Skjermarbeid (gjeldende prosess)
 
 **Designfasit:** Claude Paper — Claude Design-prosjektet `605a48cc` er **originalen**.
-**Arbeidsfasiten er det lokale speilet `designsystem/paper/`** (208 HTML, `fase1/` + `fase2/`) —
-det er den du leser, differ og sammenligner mot. Speilet gjelder så lenge
-`designsystem/paper/SYNC-STATUS.md` viser at det er målt mot siste zip fra Anders (nå: zip (3),
-09.08.2026, byte-identisk med zip (2) — 0 avvik).
+**Arbeidsfasiten er det lokale speilet `designsystem/paper/`** (254 HTML: `fase1/` + `fase2/` +
+`jarvis/`) — det er den du leser, differ og sammenligner mot. Speilet gjelder så lenge
+`designsystem/paper/SYNC-STATUS.md` viser at det er målt mot siste zip fra Anders (nå: zip
+levert 16.08.2026 21:11, 839 filer — 0 avvik).
+**Opprett aldri en parallell kopi av fasiten** (`docs/port/paper/` e.l.) — to kopier av samme HTML
+er to sannheter om samme skjerm, og alle `docs/port/`-dokumentene peker allerede hit med
+`designsystem/paper/…`-stier. Speilet skal være byte-identisk med zip-en; ligger det interne
+duplikater INNE i speilet (f.eks. `design_handoff_rutefasit_agenticos/docs-port/rutefasit.md`),
+er de en del av leveransen og skal stå — men de **styrer ingenting**. Ved motstrid gjelder
+`docs/port/`-versjonen, aldri speilets kopi.
 
 **Resynk skjer når Anders leverer ny zip, ikke før hver skjerm.** Den gamle regelen krevde henting
 via `claude-design`-MCP før hver sammenligning. Den koblingen er ikke tilgjengelig i alle økter, så
 regelen sendte arbeidet inn i en blindvei og sådde tvil om det ene som faktisk virker. Endret
-12.08.2026 etter Anders' beslutning. Er MCP-en tilgjengelig og du er i tvil: verifiser gjerne — men
-det er ikke et krav for å jobbe.
+12.08.2026 etter Anders' beslutning. Du kan jobbe mot speilet uten MCP.
+
+**MEN: en zip kan være utdatert mot designprosjektet — målt 17.08.2026.** Zip-en fra 16.08 21:11
+inneholdt `kart/rutefasit-for-claude-code.md` **v1** (9 382 B, datert 12.08), mens prosjektet
+allerede hadde **v2** (12 543 B, datert 16.08) med en helt ny **Komponenter-kolonne**,
+porteringsstrategi, modellvalg-tabell og skall-pakker. En hel styringsdimensjon manglet i zip-en,
+og en verifisering som kun målte zip mot speil ville aldri sett det — begge var «0 avvik».
+**Regel:** før en ny portbølge planlegges, kjør ÉN MCP-sammenligning
+(`list_files` med `depth: -1` → diff stier + `size` mot speilet). Den koster ett kall og fanger
+akkurat denne klassen drift. Er MCP-en utilgjengelig: si det i rapporten, ikke anta at zip = fasit.
 
 **Dekningsregnskap:** `docs/port/fasit-liste-paper.md` — hvilke skjermer har fasit, hvilke må designes uten.
 
-**Plan og rekkefølge:** `docs/port/plan-designport-alle-skjermer.md` — bølger, status per steg, og
-§«Ferdig-definisjon per skjerm» som er den gjeldende kvalitetsporten.
+**Plan og rekkefølge:** `docs/port/PORTPLAN.md` — én sesjon per mal-fasit, avhengighetsrekkefølge,
+og hva som blokkerer hva. Kvalitetsporten er skjermbilde-gaten rett under + `PAPER-ZIP-CHECKLIST.md`.
+(Den gamle `plan-designport-alle-skjermer.md` er UTGÅTT 12.08.2026 og **slettet 17.08.2026**
+sammen med øvrige utgåtte plandokumenter — alt lever i git-historikken. Ikke gjeninnfør
+henvisninger til den; `PORTPLAN.md` + skjermbilde-gaten under er kvalitetsporten.)
 
 **Skjermbilde-gaten:** ingen skjerm-PR merges uten at Anders har SETT skjermen. Skjermbilde i samtalen
 (synlig fra iPhone), mobil 390px alltid først, deretter desktop, lys OG mørk, fasit-utsnittet ved siden av,
@@ -77,6 +96,43 @@ fotografert.
 
 (Den gamle `docs/MASTER-SKJERMPLAN.md` med 6 haker per skjerm er slettet 05.08.2026 — hakene var satt mot et
 avviklet designprosjekt. Ligger i git-historikken.)
+
+### Kontrakten — slik bygges en rute fra en mal-fasit
+Flyttet hit fra `docs/port/rutefasit.md` 16.08.2026, oppdatert til **rutefasit v2** 17.08.2026.
+**Gjelder alltid, skal aldri gjentas i en prompt** (det er hele poenget: 0 tokens per sesjon).
+
+1. Finn ruten i `docs/port/rutefasit.md`. Åpne mal-fasiten m390 + d1280 — **kun i mal-sesjonen**.
+2. Bygg malen 1:1; **avvikslinjen er ALT** som skiller ruten fra malen. Står det ikke der, finnes det ikke.
+3. Tilstander (tom/laster/feil) arves fra malens riggbar. Aldri fake data.
+4. **Én-linje-testen:** kan ikke avviket sies i én setning → egen skjerm → stopp og meld.
+5. Ferdig = variant-rad i `PP-W*-VARIANTS` med m390 + d1280-skjermbilde (i tillegg til
+   skjermbilde-gaten over).
+
+**Token-økonomi (v2, bindende):** én sesjon per mal-fasit, aldri per rute. **Variantruter åpner
+aldri fasit-HTML** — de kodes fra avvikslinjen + komponentkolonnen + mal-komponentens fil i repoet.
+Trenger de mer, har de strøket én-linje-testen: stopp og meld. Les komponenter, ikke skjermer —
+slå opp props i komponentfila. Full strategi + modellvalg per oppgaveklasse: `rutefasit.md` §1–2.
+
+### Claude-følelsen (bindende for alle varianter)
+Flyttet hit fra `docs/port/rutefasit.md` 16.08.2026. Målet er at plattformen kjennes som Claude
+desktop/mobil: samtale først, artefakter ved siden, kommando under fingrene.
+
+- **Chat-først:** `/portal` ER samtalen (fasit `playerhq-chat-*`); konsollen er samtale + artefaktkolonne
+  (PP-2.1-briefen). En variantrute bygger aldri en oppslagstavle der malen har en samtale.
+- **Composer:** festet spørrefelt nederst på alle desktop-flater, mobil kun Hjem (komponent `Composer`).
+  Varianter fjerner den aldri.
+- **⌘K overalt:** CommandPalette (S6 «Alt») er inngangen til alt uten meny-plass — varianter lenker dit
+  i stedet for å legge til nav.
+- **Artefaktkolonnen:** detaljpanelet til høyre (380 px) forklarer og avgjør valgt sak — galleriets
+  hovedfunn var at den manglet. Master–detalj-varianter fyller panelet, aldri en ny side.
+- **Mobil = app:** 430 px-kolonne, TabBar, BottomSheet i stedet for modal, 44 px trykkflater. Ingen
+  desktop-tabell presset inn i 390 px — bruk malens mobiltilstand.
+- **Skall-monopol (F1):** ingen rute bygger egen header/nav/chrome. Avvik = bug.
+- **Paper:** papir/blekk, maks én clay-CTA per skjerm, Poppins/Lora/Plex Mono, alle tall mono med
+  komma-desimal, norsk bokmål, aldri emoji.
+
+**Porteringsrekkefølge og sesjonsinndeling:** `docs/port/PORTPLAN.md` — én sesjon per mal-fasit,
+aldri per rute.
 
 ## Stack
 - **Next.js 16.2.6** (App Router, Turbopack, TS strict) + **React 19.2.4** + Vercel. Node 24 i CI.
@@ -141,7 +197,11 @@ oppretter nye ruter.
 npm run verify && npm test    # FULL sjekk før commit — dekker hele CI-jobben «verify»
 ```
 `verify` = `prisma validate && prisma generate && tsc --noEmit && eslint --quiet src &&
-node scripts/check-action-auth.mjs && npm run build`.
+node scripts/check-action-auth.mjs && node scripts/check-token-gap.mjs &&
+node scripts/check-critical-imports.mjs && npm run build`. Kjør `npm run verify` som
+scriptet (les fra `package.json` ved tvil) — å sette sammen stegene fra denne
+prosebeskrivelsen i hukommelsen har to ganger (2026-08-15, 2026-08-16) gitt en falsk
+grønn lokalt fordi token-gap/critical-imports-stegene ble glemt (se `docs/feillogg.md`).
 `npm run build` = `prisma generate && next build && serwist build serwist.config.mjs` (rekkefølgen er kritisk —
 precache-manifestet globber `.next/`-output).
 
@@ -197,7 +257,7 @@ Håndheves deterministisk, uavhengig av hva modellen tror:
 Generiske design-skills og de gamle kanonlåste design-skillene er bevisst fjernet (2026-07-19/25).
 
 ## Agenter
-- **Kommando** (`/kommando`, `src/lib/kommando/`) — chat med alle agenter (autonomi 1–3, `KommandoTask`
+- **Kommando** (`/kommando`, `src/lib/kommando/`) — chat med alle agenter (`KommandoTask`
   DB-persistert).
 - **Cron-agenter** — 54 filer i `src/lib/agents/` (booking-alerts, churn-radar, daily-brief, availability-monitor,
   drill-forslag m.fl.), trigges via `/api/cron/[agent]` + dedikerte cron-ruter.

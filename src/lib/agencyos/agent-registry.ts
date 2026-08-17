@@ -7,25 +7,31 @@
  * egen `AGENT_KONFIG` (lengre beskrivelser) — se den filens kommentar for
  * hvorfor de to registrene ikke er slått sammen ennå (PR «agent-detalj»).
  *
- * MANUELLE_AGENTER speiler MANUELT-nøklene i
- * `src/app/admin/agents/actions.ts` — kan ikke importeres direkte derfra
- * fordi "use server"-filer kun kan eksportere async funksjoner, ikke
- * konstanter.
+ * MANUELLE_AGENTER (ryddet 2026-08-17): `src/app/admin/agents/actions.ts`
+ * sin MANUELT-map lister 11 agent-slugs som ALLE kan tvinges i gang fra
+ * Mission Control («Kjør nå») — men det er en annen egenskap enn å IKKE ha
+ * en tidsplan. 9 av de 11 (plan-watcher, training-gap, daily-brief,
+ * drill-forslag, availability-gap-filler, booking-conflict-monitor,
+ * ai-code-reviewer, demand-predictor, 24-7-booking-alerts) har egen
+ * cron-oppføring i `vercel.json` og kjører altså automatisk — å telle dem
+ * som «manuelle» i KPI-en («N kan kjøres manuelt») ga coachen inntrykk av at
+ * de MÅ trigges for hånd. MANUELLE_AGENTER speiler derfor ikke lenger
+ * actions.ts 1:1 — den er kuttet ned til agentene som faktisk mangler en
+ * tidsplan (se AGENTER_UTEN_TIDSPLAN under, samme innhold, eksportert under
+ * begge navn for lesbarhet på kallstedet).
  */
 
-export const MANUELLE_AGENTER = [
-  "plan-watcher",
-  "training-gap",
-  "daily-brief",
-  "drill-forslag",
-  "booking-optimizer",
-  "availability-24-7-monitor",
-  "availability-gap-filler",
-  "booking-conflict-monitor",
-  "ai-code-reviewer",
-  "demand-predictor",
-  "24-7-booking-alerts",
-];
+/**
+ * Agenter UTEN tidsplan: registrert i AGENTS-map
+ * (`src/app/api/cron/[agent]/route.ts`) og i Mission Controls MANUELT-map
+ * (kan tvinges i gang fra /admin/agents), men har INGEN oppføring i
+ * `vercel.json` sine `crons` — kjører altså kun når noen trykker «Kjør nå».
+ * Ikke legg dem i vercel.json uten Anders' eksplisitte beslutning.
+ */
+export const AGENTER_UTEN_TIDSPLAN = ["booking-optimizer", "availability-24-7-monitor"];
+
+/** Bakoverkompatibelt navn — samme innhold som AGENTER_UTEN_TIDSPLAN. */
+export const MANUELLE_AGENTER = AGENTER_UTEN_TIDSPLAN;
 
 export const AGENT_INFO: Record<string, { navn: string; trigger: string; beskrivelse: string }> = {
   "round-agent": {

@@ -13,7 +13,7 @@ import {
   type SokResultat,
 } from "@/lib/venner/actions";
 import { T } from "@/lib/v2/tokens";
-import { Caps, TomTilstand, Icon, AvatarInit, StatusPill } from "@/components/v2";
+import { Caps, TomTilstand, Icon, AvatarInit, StatusPill, Kort, Rad } from "@/components/v2";
 
 function vennSub(v: { hcp: number | null; kategori: string | null }): string {
   const deler: string[] = [];
@@ -367,7 +367,7 @@ function VennRadKomponent({ v }: { v: VennRad }) {
   );
 }
 
-export function VennerClient({ initial }: { initial: VennerData }) {
+export function VennerClient({ initial, visLeaderboard }: { initial: VennerData; visLeaderboard: boolean }) {
   const { venner, innkommende, utgaende } = initial;
 
   return (
@@ -421,6 +421,19 @@ export function VennerClient({ initial }: { initial: VennerData }) {
           </div>
         )}
       </section>
+
+      {visLeaderboard && (
+        <Link href="/portal/mal/leaderboard?tab=venner" style={{ textDecoration: "none", color: "inherit", display: "block" }}>
+          <Kort hover>
+            <Rad
+              leading={<Icon name="bar-chart" size={16} style={{ color: T.mut }} />}
+              title="Se ledertavlen"
+              sub="Hvor du ligger blant venner"
+              last
+            />
+          </Kort>
+        </Link>
+      )}
 
       <div
         style={{

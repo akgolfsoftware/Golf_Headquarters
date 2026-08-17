@@ -13,6 +13,20 @@ import {
 } from "@/lib/meg/pending";
 import { notionOpprettOppgave, notionFullforOppgave, notionOpprettProsjekt } from "@/lib/meg/connectors/notion";
 import { gmailSend, diskOpprett } from "@/lib/meg/connectors/google";
+import { godkjennSak } from "@/lib/saker/godkjenn";
+
+/**
+ * Triage-agenten (scripts/saker-innsamling/triage.ts) registrerer én
+ * ventende "sak_godkjenn" per Sak den har skrevet et foreslattSvar for —
+ * BEKREFT her kjører SAMME godkjennSak() som Godkjenn-knappen i AgencyOS
+ * (src/app/admin/innboks/actions.ts), slik at det kun finnes én vei inn til
+ * å opprette Gmail-utkastet.
+ */
+async function sakGodkjennForConfirm(args: { sakId: string }): Promise<string> {
+  const res = await godkjennSak(args.sakId);
+  if (!res.ok) return `Kunne ikke godkjenne saken: ${res.feil ?? "ukjent feil"}.`;
+  return "Sak godkjent. Utkastet ligger i Gmail-kladdene, klart til gjennomlesing — sendes aldri automatisk.";
+}
 
 // Registret over faktiske skrive-handlinger. Kalles KUN etter bekreftelse.
 const WRITE_DISPATCH: Record<string, (args: never) => Promise<string>> = {
@@ -21,6 +35,7 @@ const WRITE_DISPATCH: Record<string, (args: never) => Promise<string>> = {
   notion_opprett_prosjekt: (args) => notionOpprettProsjekt(args),
   gmail_send: (args) => gmailSend(args),
   disk_opprett: (args) => diskOpprett(args),
+  sak_godkjenn: (args) => sakGodkjennForConfirm(args),
 };
 
 export async function handleConfirmation(text: string, subject: string): Promise<string | null> {

@@ -13,7 +13,7 @@ import { TilbakeLenke, Caps, Tittel, T } from "@/components/v2";
 import { NyTestV2 } from "@/components/portal/v2/NyTestV2";
 
 export default async function NyTestPage() {
-  const user = await requirePortalUser();
+  const user = await requirePortalUser({ kreverTilgang: "TALENT" });
 
   const tests = await prisma.testDefinition.findMany({
     orderBy: { name: "asc" },

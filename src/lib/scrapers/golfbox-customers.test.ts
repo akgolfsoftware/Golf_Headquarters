@@ -29,6 +29,22 @@ describe("classifyTour — Olyo og Østlandstour", () => {
   });
 });
 
+describe("classifyTour — Narvesen Tour", () => {
+  it("Narvesen Tour → NARVESEN / junior-no uansett fallback", () => {
+    const c = classifyTour("Narvesen Tour - Avd. 3 - Drøbak GK", "amateur-no");
+    assert.equal(c.sourceOrigin, "NARVESEN");
+    assert.equal(c.tour, "junior-no");
+    assert.equal(c.playerTier, "junior");
+  });
+
+  it("Narvesen uten junior-signal i navnet er fortsatt junior", () => {
+    const c = classifyTour("Narvesen Tour Finale", "amateur-no");
+    assert.equal(c.sourceOrigin, "NARVESEN");
+    assert.equal(c.tour, "junior-no");
+    assert.equal(c.playerTier, "junior");
+  });
+});
+
 describe("NO_TOUR_CUSTOMERS — Olyo-regioner + Østlandstour koblet", () => {
   it("alle 6 Olyo-regioner (873–878) er med, hver med region + onlyMatching", () => {
     const olyo = NO_TOUR_CUSTOMERS.filter((c) => c.region);
