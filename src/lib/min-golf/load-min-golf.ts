@@ -5,7 +5,12 @@
 // eget nivå) og AgencyOS spilleranalyse (coach → alltid «elite»).
 
 import { prisma } from "@/lib/prisma";
-import { aggregateSg } from "@/lib/sg";
+import {
+  byggSpillerSgFraRunder,
+  hentSelvrapportertSg,
+  SPILLER_SG_RUNDER,
+  type SpillerSg,
+} from "@/lib/domain/spiller-sg";
 import {
   AK_BANDS,
   kategoriFraSnittscore,
@@ -50,6 +55,10 @@ export type MinGolfData = {
     begrunnelse: string | null;
     kategorier: { akse: SgAkse; sg: number }[];
     trendPunkter: { label: string; sg: number }[];
+    /** Tillitsnivå fra den kanoniske selectoren — null når ingen SG finnes. */
+    kilde: "BEREGNET" | "SELVRAPPORTERT" | null;
+    /** Klarspråk-grunnlag, f.eks. «10 runder» eller «3 registreringer». */
+    grunnlag: string | null;
   };
   nesteFokus: {
     akse: SgAkse;
@@ -177,11 +186,16 @@ export async function loadMinGolf(
     }),
   ]);
 
-  // SG-status skal vise SAMME vindu som Hjem (getKpiStats: siste 10 runder) — «runder»
-  // hentes med take:20 for Tiger Five/hull-historikk, men SG-snittet aggregeres kun
-  // over de 10 nyeste så tallet og «X runder»-etiketten stemmer overens på tvers av skjermer.
-  const SG_VINDU = 10;
-  const agg = aggregateSg(runder.slice(0, SG_VINDU));
+  // SG-status: samme kanoniske kilde som sg-gap.ts og hull-analysen
+  // (hentSpillerSg — én SG-sannhet, AP0.1 i docs/plan-baneguide-sg-app-2026-08-16.md).
+  // Rundene er allerede hentet i Promise.all over, så vi bygger BEREGNET-grenen
+  // lokalt på samme vindu («runder» hentes med take:20 for Tiger Five/
+  // hull-historikk, men SG-snittet bygges kun over de SPILLER_SG_RUNDER
+  // nyeste — samme vindu Hjem/getKpiStats bruker) og faller kun tilbake til
+  // et prisma-kall (selvrapportert) når ingen av de rundene har SG-tall.
+  const spillerSg: SpillerSg | null =
+    byggSpillerSgFraRunder(runder.slice(0, SPILLER_SG_RUNDER)) ??
+    (await hentSelvrapportertSg(userId));
 
   // ---- Nivå (A–K fra snittscore inneværende sesong; fallback: alle runder) ----
   const iAar = runder.filter(
@@ -208,10 +222,10 @@ export async function loadMinGolf(
   // ---- SG-status ----
   const kategorier = (
     [
-      ["OTT", agg.ott],
-      ["APP", agg.app],
-      ["ARG", agg.arg],
-      ["PUTT", agg.putt],
+      ["OTT", spillerSg?.ott.sg ?? null],
+      ["APP", spillerSg?.app.sg ?? null],
+      ["ARG", spillerSg?.arg.sg ?? null],
+      ["PUTT", spillerSg?.putt.sg ?? null],
     ] as const
   )
     .filter((k): k is [SgAkse, number] => k[1] !== null)
@@ -255,11 +269,11 @@ export async function loadMinGolf(
       formelAkse: `${SG_TO_PYRAMID[svakest.akse]}_${svakest.akse}`,
       handlingHref: "/portal/planlegge/workbench?zoom=uke",
       lekkasjeBaand,
-      grunnlag: `${agg.rundeAntall} runder`,
+      grunnlag: spillerSg?.grunnlag ?? "0 runder",
       diagnose: verste
         ? {
             symptom: `Mister ${fmtSg(Math.abs(verste.sg)).replace("+", "")} slag på ${verste.label.toLowerCase()} per runde`,
-            grunnlag: `${agg.rundeAntall} runder`,
+            grunnlag: spillerSg?.grunnlag ?? "0 runder",
             resept: {
               akse: SG_TO_PYRAMID[svakest.akse],
               tekst:
@@ -400,13 +414,15 @@ export async function loadMinGolf(
     nivaa,
     kategori,
     sgStatus: {
-      verdi: agg.total !== null ? fmtSg(agg.total) : null,
+      verdi: spillerSg?.total.sg != null ? fmtSg(spillerSg.total.sg) : null,
       trend,
-      runder: agg.rundeAntall,
+      runder: spillerSg?.antall ?? 0,
       baseline: SG_BASELINE_NAVN,
       begrunnelse: ferskesteInnsikt?.body ?? null,
       kategorier,
       trendPunkter,
+      kilde: spillerSg?.kilde ?? null,
+      grunnlag: spillerSg?.grunnlag ?? null,
     },
     nesteFokus,
     runder: { hull, sammendrag, tigerFive },

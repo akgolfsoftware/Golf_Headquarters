@@ -17,20 +17,14 @@
 import "./_env";
 import { PrismaPg } from "@prisma/adapter-pg";
 import { PrismaClient } from "../src/generated/prisma/client";
+// Samme matcher som runtime-broen (src/lib/portal/bane-bro.ts) — ellers ville
+// scriptet kunne koble baner runtime bevisst nekter å koble.
+import { velgEntydigBane } from "../src/lib/domain/bane-bro";
 
 const adapter = new PrismaPg({ connectionString: process.env.DIRECT_URL });
 const prisma = new PrismaClient({ adapter });
 
 const APPLY = process.argv.includes("--apply");
-
-/** «Onsøy Golfklubb» / «Onsøy GK» / «Onsøy golfbane» → «onsøy». */
-function normaliser(navn: string): string {
-  return navn
-    .toLowerCase()
-    .replace(/golfklubb|golfbane|golfpark|golfsenter|\bgk\b/g, "")
-    .replace(/[^a-zæøå0-9]+/g, " ")
-    .trim();
-}
 
 async function main() {
   const [definisjoner, baner] = await Promise.all([
@@ -45,34 +39,37 @@ async function main() {
 
   console.log(`Ukoblede CourseDefinition: ${definisjoner.length} · Baner: ${baner.length}\n`);
 
-  // Nøkkel → bane. Både navn og klubb kan bære det gjenkjennelige navnet.
-  const baneIndex = new Map<string, (typeof baner)[number]>();
-  for (const bane of baner) {
-    for (const kandidat of [bane.navn, bane.kortNavn, bane.klubb].filter(
-      (v): v is string => !!v,
-    )) {
-      const nokkel = normaliser(kandidat);
-      if (nokkel && !baneIndex.has(nokkel)) baneIndex.set(nokkel, bane);
-    }
-  }
+  const baneMap = new Map(baner.map((b) => [b.id, b]));
 
   let koblet = 0;
   const uavklarte: string[] = [];
 
   for (const def of definisjoner) {
-    const treff = baneIndex.get(normaliser(def.name));
-    if (!treff) {
+    const treff = velgEntydigBane(def.name, baner);
+
+    if (treff.status === "flertydig") {
+      uavklarte.push(
+        `  — «${def.name}» (${def._count.rounds} runder): ${treff.antall} baner matcher` +
+          ` — kobles manuelt (aldri gjett)`,
+      );
+      continue;
+    }
+    if (treff.status === "ingen") {
       uavklarte.push(`  — «${def.name}» (${def._count.rounds} runder): ingen bane matcher`);
       continue;
     }
+
+    const bane = baneMap.get(treff.baneId);
     console.log(
-      `  ✓ «${def.name}» (${def._count.rounds} runder) → ${treff.navn}` +
-        ` [geometri: ${treff.geometrySource ?? "ingen"}]${APPLY ? "" : "  (tørrkjøring)"}`,
+      `  ✓ «${def.name}» (${def._count.rounds} runder) → ${bane?.navn ?? treff.baneId}` +
+        ` [geometri: ${bane?.geometrySource ?? "ingen"}]${APPLY ? "" : "  (tørrkjøring)"}`,
     );
     if (APPLY) {
-      await prisma.courseDefinition.update({
-        where: { id: def.id },
-        data: { baneId: treff.id },
+      // Samme idempotente skriving som runtime-broen — rører aldri en
+      // kobling som alt er satt.
+      await prisma.courseDefinition.updateMany({
+        where: { id: def.id, baneId: null },
+        data: { baneId: treff.baneId },
       });
     }
     koblet++;

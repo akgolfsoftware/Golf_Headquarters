@@ -149,6 +149,16 @@ export async function hentSpillerSg(userId: string): Promise<SpillerSg | null> {
   const fraRunder = byggSpillerSgFraRunder(runder);
   if (fraRunder) return fraRunder;
 
+  return hentSelvrapportertSg(userId);
+}
+
+/**
+ * Fallback-grenen alene — for kallere som allerede har rundene sine i minnet
+ * (f.eks. load-min-golf.ts, som spør Round i en Promise.all) og derfor kan
+ * kjøre `byggSpillerSgFraRunder` selv uten et ekstra prisma-kall. Kalles kun
+ * når den grenen ga null, akkurat som i `hentSpillerSg`.
+ */
+export async function hentSelvrapportertSg(userId: string): Promise<SpillerSg | null> {
   const registreringer = await prisma.brukerSgInput.findMany({
     where: {
       userId,

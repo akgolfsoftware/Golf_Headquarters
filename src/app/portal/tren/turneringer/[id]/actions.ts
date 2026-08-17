@@ -17,6 +17,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
+import { sikreBaneBro } from "@/lib/portal/bane-bro";
 import { sisteSpilteBaneId } from "@/lib/portal/siste-spilte-bane";
 
 export async function startTurneringsrunde(turneringId: string): Promise<void> {
@@ -70,6 +71,10 @@ export async function startTurneringsrunde(turneringId: string): Promise<void> {
     },
     select: { id: true },
   });
+
+  // Bygg/behold broen til banegeometrien (AP0.4). Må stå FØR redirect —
+  // redirect() kaster NEXT_REDIRECT. Kaster aldri selv.
+  await sikreBaneBro(courseId);
 
   revalidatePath(`/portal/tren/turneringer/${turneringId}`);
   redirect(`/portal/mal/runder/${runde.id}/hull`);

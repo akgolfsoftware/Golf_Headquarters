@@ -14,6 +14,7 @@ import { z } from "zod";
 import { requireConsentingUser } from "@/lib/auth/requireConsentingUser";
 import { prisma } from "@/lib/prisma";
 import { triggerRoundAgent } from "@/lib/agents/triggers";
+import { sikreBaneBro } from "@/lib/portal/bane-bro";
 import { beregnSg } from "@/lib/domain/sg";
 import { rundeTilSgShots } from "@/lib/runde-logg/til-sg-shots";
 import { deriverRundeScore } from "@/lib/runde-logg/deriver-hullscore";
@@ -122,6 +123,10 @@ export async function lagreLoggetRunde(
     return opprettet;
   });
 
+  // Bygg/behold broen til banegeometrien (AP0.4). Utenfor transaksjonen og
+  // aldri kastende — en manglende bro skal ikke kunne velte en lagret runde.
+  await sikreBaneBro(runde.courseId);
+
   await triggerRoundAgent(user.id);
 
   revalidatePath("/portal/mal");
@@ -134,22 +139,21 @@ export async function lagreLoggetRunde(
  * Henter hull-oppsettet for en bane (par + lengde per hull) til oppstarts-
  * steget i live-føringen. Tar CourseDefinition-id (det rundene bruker) og
  * resolver til Bane via courseDefinition.baneId — hull-geometrien bor på
- * CourseHole under Bane. Baner uten kobling/hulldata → tom liste (UI lar
- * spilleren sette par manuelt).
+ * CourseHole under Bane. Broen settes av `sikreBaneBro` ved behov (AP0.4), så
+ * første gang en bane velges kobles den, og spilleren får ekte par/lengde i
+ * stedet for standardverdier. Baner uten entydig navnetreff eller uten
+ * hulldata → tom liste (UI lar spilleren sette par manuelt).
  */
 export async function hentBaneHull(
   courseId: string,
 ): Promise<Array<{ holeNumber: number; par: number | null; lengdeMeter: number | null }>> {
   await requireConsentingUser();
 
-  const course = await prisma.courseDefinition.findUnique({
-    where: { id: courseId },
-    select: { baneId: true },
-  });
-  if (!course?.baneId) return [];
+  const baneId = await sikreBaneBro(courseId);
+  if (!baneId) return [];
 
   const hull = await prisma.courseHole.findMany({
-    where: { baneId: course.baneId },
+    where: { baneId },
     orderBy: { holeNumber: "asc" },
     select: { holeNumber: true, par: true, lengthMeter: true },
   });
