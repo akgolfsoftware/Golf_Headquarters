@@ -28,6 +28,7 @@
 import { PrismaPg } from "@prisma/adapter-pg";
 import { PrismaClient } from "../src/generated/prisma/client";
 import { config as loadEnv } from "dotenv";
+import { navnLikhet } from "../src/lib/scrapers/navn-matching";
 
 loadEnv({ path: ".env.local" });
 
@@ -59,61 +60,6 @@ const PLAYER_FILTER = args.find((a) => a.startsWith("--player="))
 
 async function sleep(ms: number): Promise<void> {
   return new Promise((r) => setTimeout(r, ms));
-}
-
-function normaliserNavn(navn: string): string {
-  return navn
-    .toLowerCase()
-    .replace(/[åä]/g, "a")
-    // Clippd bruker gammel norsk translitterasjon: å → aa, ø → oe, æ → ae
-    // Normaliser dette til enkelt bokstav slik at "Baard" → "bard" matcher "Bård" → "bard"
-    .replace(/aa/g, "a")
-    .replace(/oe/g, "o")
-    .replace(/[øö]/g, "o")
-    .replace(/[æ]/g, "ae")
-    .replace(/[éèê]/g, "e")
-    .replace(/[íì]/g, "i")
-    .replace(/[úù]/g, "u")
-    .replace(/\s+/g, " ")
-    .trim();
-}
-
-// Beregn Dice-koeffisient mellom to strenger (karakter-bigram overlapp)
-function diceKoeffisient(a: string, b: string): number {
-  if (a.length < 2 || b.length < 2) return a === b ? 1.0 : 0.0;
-  const bigramA = new Set<string>();
-  for (let i = 0; i < a.length - 1; i++) bigramA.add(a.slice(i, i + 2));
-  const bigramB: string[] = [];
-  for (let i = 0; i < b.length - 1; i++) bigramB.push(b.slice(i, i + 2));
-  const felles = bigramB.filter((g) => bigramA.has(g)).length;
-  return (2 * felles) / (bigramA.size + bigramB.length);
-}
-
-function navnLikhet(a: string, b: string): number {
-  const na = normaliserNavn(a);
-  const nb = normaliserNavn(b);
-  if (na === nb) return 1.0;
-
-  const partsA = na.split(" ");
-  const partsB = nb.split(" ");
-
-  // Første navn (fornavn) MÅ ha minst 60% karakter-likhet for å gi match.
-  // Dette forhindrer "Frithjof" → "Alex" via felles etternavn "Rasmussen".
-  const fornavnA = partsA[0];
-  const fornavnB = partsB[0];
-  const fornavnLikhet = diceKoeffisient(fornavnA, fornavnB);
-
-  if (fornavnLikhet < 0.60) {
-    // Fornavn matcher ikke — returnér 0 uansett etternavn
-    return 0.0;
-  }
-
-  // Fornavn godkjent — beregn samlet overlapp på ord-nivå (for mellomnavn)
-  const felles = partsA.filter((p) => partsB.includes(p)).length;
-  const maxLen = Math.max(partsA.length, partsB.length);
-  // Vektet: 70% ord-overlapp + 30% fornavn-likhet
-  const ordScore = felles / maxLen;
-  return 0.7 * ordScore + 0.3 * fornavnLikhet;
 }
 
 async function fetchJson<T>(url: string): Promise<T | null> {
