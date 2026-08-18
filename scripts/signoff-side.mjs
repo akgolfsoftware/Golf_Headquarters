@@ -123,6 +123,10 @@ function sideHtml({ tittel, undertittel, seksjoner, nøkkel }) {
     <button id="nullstill">Nullstill</button>
   </div>
 
+  <p id="lagringsvarsel" class="tips" hidden>Denne visningen får ikke lagre lokalt, så
+  avkryssingen forsvinner hvis du laster siden på nytt. Listen under oppdateres som normalt —
+  kopier den før du lukker.</p>
+
   <textarea id="utdata" readonly placeholder="Kryss av over — listen dukker opp her, klar til å lime inn i chatten."></textarea>
 
 ${seksjoner.map((s) => s.html).join("\n\n")}
@@ -132,7 +136,22 @@ ${seksjoner.map((s) => s.html).join("\n\n")}
 </div>
 <script>
   const NØKKEL = "${nøkkel}";
-  const lagret = new Set(JSON.parse(localStorage.getItem(NØKKEL) || "[]"));
+
+  // Siden publiseres i en sandkasse der localStorage kan kaste ved oppslag. Uten
+  // denne innpakningen døde hele scriptet på første linje: avkryssingen så ut til
+  // å virke (nettleserens egen oppførsel), men telleren sto på 0 og lista var tom.
+  const lager = {
+    les() {
+      try { return JSON.parse(localStorage.getItem(NØKKEL) || "[]"); }
+      catch { return []; }
+    },
+    skriv(v) {
+      try { localStorage.setItem(NØKKEL, JSON.stringify(v)); return true; }
+      catch { return false; }
+    },
+  };
+
+  const lagret = new Set(lager.les());
   const bokser = [...document.querySelectorAll('input[type=checkbox][data-id]')];
 
   function tegn() {
@@ -147,10 +166,14 @@ ${seksjoner.map((s) => s.html).join("\n\n")}
       : '';
   }
 
+  let advart = false;
   for (const b of bokser) {
     b.addEventListener('change', () => {
       b.checked ? lagret.add(b.dataset.id) : lagret.delete(b.dataset.id);
-      localStorage.setItem(NØKKEL, JSON.stringify([...lagret]));
+      if (!lager.skriv([...lagret]) && !advart) {
+        advart = true;
+        document.getElementById('lagringsvarsel').hidden = false;
+      }
       tegn();
     });
   }
@@ -164,7 +187,7 @@ ${seksjoner.map((s) => s.html).join("\n\n")}
   });
 
   document.getElementById('nullstill').addEventListener('click', () => {
-    lagret.clear(); localStorage.setItem(NØKKEL, '[]'); tegn();
+    lagret.clear(); lager.skriv([]); tegn();
   });
 
   tegn();
