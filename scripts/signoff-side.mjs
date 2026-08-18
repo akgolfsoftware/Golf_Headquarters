@@ -45,6 +45,25 @@ async function lesSkjermer() {
   }));
 }
 
+/**
+ * Rader der fasiten IKKE kan brukes som fasit slik den står. Måles og begrunnes i
+ * `docs/MASTERPLAN-GJENSTAAENDE.md` §2.1. Vises som en gul stripe over bildene, slik
+ * at ingen bruker tid på å vurdere en sammenligning som ikke er rettferdig.
+ */
+const RAIL_UTGÅTT =
+  "Fasitens meny er utgått. A1-beslutningen (16.08) gjorde fase2-railen gjeldende "
+  + "(Cockpit · Innboks · Kalender · Stall · Plan · Innsikt · Oppsett), og appen har den. "
+  + "Her er det FASITEN som er gammel — vurder innholdet, ikke menyen.";
+
+const MERKNADER = {
+  "PP-2.1": RAIL_UTGÅTT, "PP-2.2": RAIL_UTGÅTT, "PP-2.3": RAIL_UTGÅTT,
+  "PP-2.4": RAIL_UTGÅTT, "B3-turnering": RAIL_UTGÅTT, "B4-okonomi": RAIL_UTGÅTT,
+  "B4-akstigen": RAIL_UTGÅTT, "B4b-akstigen": RAIL_UTGÅTT, "B4b-okonomi": RAIL_UTGÅTT,
+  "B4b-liveokt": RAIL_UTGÅTT,
+  "B4-live": "Feil fasit: /admin/agencyos/live er Mission Control, mens fasiten viser "
+    + "live-session — to ulike flater. Hopp over denne; den trenger egen fasit.",
+};
+
 const tmp = await mkdtemp(path.join(os.tmpdir(), "signoff-"));
 
 /** Full oppløsning, kvalitet 85. Returnerer {b64, bytes} eller null. */
@@ -66,16 +85,19 @@ function sideHtml({ tittel, undertittel, seksjoner, nøkkel }) {
   :root {
     --ground:#FAF9F5; --flate:#FFF; --ink:#1D1B18; --ink2:#55514A; --mut:#79746B;
     --linje:#E6E2D8; --clay:#C15F3C; --ok:#4A7C59; --ok-myk:#E4EEE7;
+    --advarsel:#A07B22; --advarsel-myk:#F7F0DC;
     --sans:"Poppins","Avenir Next","Segoe UI",system-ui,sans-serif;
     --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
   }
   @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
     --ground:#131210; --flate:#1C1A17; --ink:#EDE9E1; --ink2:#BCB6AA; --mut:#948E82;
     --linje:#2E2B25; --clay:#E08B66; --ok:#8FBB9C; --ok-myk:#22301F;
+    --advarsel:#D3AC55; --advarsel-myk:#332A12;
   } }
   :root[data-theme="dark"] {
     --ground:#131210; --flate:#1C1A17; --ink:#EDE9E1; --ink2:#BCB6AA; --mut:#948E82;
     --linje:#2E2B25; --clay:#E08B66; --ok:#8FBB9C; --ok-myk:#22301F;
+    --advarsel:#D3AC55; --advarsel-myk:#332A12;
   }
   *{box-sizing:border-box}
   body{margin:0;background:var(--ground);color:var(--ink);font-family:var(--sans);line-height:1.55}
@@ -99,6 +121,8 @@ function sideHtml({ tittel, undertittel, seksjoner, nøkkel }) {
   .kvitt{display:flex;align-items:center;gap:8px;font-size:14.5px;cursor:pointer;
     padding:8px 13px;border:1px solid var(--linje);border-radius:6px;background:var(--ground);white-space:nowrap}
   .kvitt input{width:19px;height:19px;accent-color:var(--ok);cursor:pointer}
+  .merknad{font-size:13.5px;line-height:1.5;color:var(--ink2);background:var(--advarsel-myk);
+    border-left:3px solid var(--advarsel);border-radius:0 6px 6px 0;padding:10px 13px;margin:0 0 13px;max-width:74ch}
   figure{margin:0 0 13px}
   figcaption{font-family:var(--mono);font-size:11px;color:var(--mut);text-transform:uppercase;
     letter-spacing:.06em;margin-bottom:5px}
@@ -225,6 +249,7 @@ for (const s of skjermer) {
     <div><span class="id">${s.id}</span><h2>${s.navn}</h2><span class="rute">${s.rute}</span></div>
     <label class="kvitt"><input type="checkbox" data-id="${s.id}"><span>Godkjent</span></label>
   </header>
+  ${MERKNADER[s.id] ? `<p class="merknad">${MERKNADER[s.id]}</p>` : ""}
   ${bilder.join("\n  ")}
 </section>`,
   });
