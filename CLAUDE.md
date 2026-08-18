@@ -14,7 +14,9 @@ CLAUDE.md og ak-master.md vinner ak-master.md.
 - **`docs/platform/AGENT-BRIEF.md`** — agent-onboarding: stack, eksakte versjoner, prosjektkart. Les FØR arbeid.
 - **`docs/STATUS-NÅ.md`** — hva er levert/ikke levert akkurat nå. (Ligger i `docs/`, ikke `docs/platform/`.)
 - **`docs/port/fasit-liste-paper.md`** — designdekning: hvilke skjermer har Paper-fasit, hvilke mangler.
-- **`docs/port/plan-designport-alle-skjermer.md`** — porteringsplan, status per bølge og ferdig-definisjon per skjerm.
+- **`docs/port/GYLDIGHET.md`** — rangordning av styrende porteringsdokumenter (rettet 18.08.2026 —
+  pekte tidligere på `plan-designport-alle-skjermer.md`, som er UTGÅTT/arkivert; erstattet av
+  `docs/port/PIXEL-PERFECT-PLAN-COMPLETE.md`, se GYLDIGHET.md).
 - **`docs/platform/BUSINESS-RULES.md`** — forretningsregler som ikke kan utledes fra kode (abonnement, booking, GDPR, dual-track, demo-data, tema m.fl.).
 - **`docs/platform/DATA-MODEL.md`** — datamodell (tabeller, felter, relasjoner, server actions, API).
 - **`docs/testing.md`** — testinfrastruktur og plan.
@@ -30,13 +32,15 @@ ikke kode).
 analyse-samling, abonnement 299/gratis, FYS-avventing. **Design (LÅST 2026-07-31, OVERSTYRT 2026-08-03
 — se invariant 2 under):** Claude Design-prosjektet **«AK Golf HQ — Claude Paper»** (`605a48cc`, hentet
 via `claude-design`-MCP-verktøyet) er designfasit; full port til `src/` kjører nå aktivt, se
-`docs/port/plan-designport-alle-skjermer.md`. Ved konflikt vinner `docs/platform/BUSINESS-RULES.md`.
+`docs/port/GYLDIGHET.md` (rettet 18.08.2026, pekte tidligere på arkivert dokument).
+Ved konflikt vinner `docs/platform/BUSINESS-RULES.md`.
 
 ## Harde invarianter (brytes aldri)
 1. **Anbefalinger sperrer aldri:** ingenting i appen blokkerer trening. Aldri «kan ikke brytes»-kode/tekst.
 2. **Claude Paper vinner alltid (LÅST 2026-08-03/05).** Claude Design-prosjektet «AK Golf HQ — Claude
    Paper» (`605a48cc`, skjermer i `fase1/`) er eneste designfasit — for design OG produksjonskode.
-   Full porten kjører nå, skjerm for skjerm, per `docs/port/plan-designport-alle-skjermer.md`.
+   Full porten kjører nå, skjerm for skjerm, per `docs/port/PIXEL-PERFECT-PLAN-COMPLETE.md`
+   (rettet 18.08.2026 — pekte tidligere på et arkivert dokument, se `docs/port/GYLDIGHET.md`).
    Tidsplanen fra 31.07 («C, smalt» til etter piloten) er **overstyrt** og skal ikke følges.
    Mangler skjermen fasit: `docs/port/monsterdokument-paper.md` er eneste designkilde.
    **Sier et dokument, en skill eller en kodekommentar noe annet enn Paper-fasiten, vinner
@@ -69,8 +73,9 @@ det er ikke et krav for å jobbe.
 
 **Dekningsregnskap:** `docs/port/fasit-liste-paper.md` — hvilke skjermer har fasit, hvilke må designes uten.
 
-**Plan og rekkefølge:** `docs/port/plan-designport-alle-skjermer.md` — bølger, status per steg, og
-§«Ferdig-definisjon per skjerm» som er den gjeldende kvalitetsporten.
+**Plan og rekkefølge:** `docs/port/PIXEL-PERFECT-PLAN-COMPLETE.md` (rettet 18.08.2026 — den gamle
+`plan-designport-alle-skjermer.md` er UTGÅTT/arkivert, se `docs/port/GYLDIGHET.md`) — D1–D12,
+PP-faser og §0 «pixel-perfekt DONE»-definisjonen som er den gjeldende kvalitetsporten.
 
 **Skjermbilde-gaten:** ingen skjerm-PR merges uten at Anders har SETT skjermen. Skjermbilde i samtalen
 (synlig fra iPhone), mobil 390px alltid først, deretter desktop, lys OG mørk, fasit-utsnittet ved siden av,

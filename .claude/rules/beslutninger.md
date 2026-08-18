@@ -71,7 +71,8 @@ Gjelder til Anders endrer dem.
   Bakgrunn for selve 1:1-kravet: steg 7 PR1–PR4 ble merget med riktige
   tokens men feil skall («Én ting nå» manglet på alle fire, Hjem manglet artefaktkolonne/tom
   tilstand, Planlegge hadde 5 konkurrerende CTA-er). Full avviksliste og ombyggingsplan:
-  `docs/port/plan-designport-alle-skjermer.md` §Avvik.
+  `docs/port/plan-designport-alle-skjermer.md` §Avvik (fila er arkivert 18.08.2026, se
+  `docs/port/GYLDIGHET.md` — bruk `PIXEL-PERFECT-PLAN-COMPLETE.md` for gjeldende status).
 - **Skjermbilde-gate (Anders 2026-08-04, FAST REGEL — presisert samme dag):** ingen skjerm-PR
   i designporten merges uten at Anders har SETT skjermen. Konkret leveranse per ferdig skjerm:
   (1) faktisk skjermbilde av den kjørende appen (Vercel-preview, innlogget testbruker med ekte
@@ -81,7 +82,8 @@ Gjelder til Anders endrer dem.
   primary=accent-kollisjonen), (4) fasitens tilsvarende skjerm ved siden av. CI måler typer og
   bygg — ikke layout. Dette tetter hullet som lot PR1–PR4 passere som «ferdige».
   Ferdig-definisjonen per skjerm står i `docs/port/plan-designport-alle-skjermer.md`
-  §Ferdig-definisjon.
+  §Ferdig-definisjon (fila er arkivert 18.08.2026 — bruk `PIXEL-PERFECT-PLAN-COMPLETE.md`
+  §0 for gjeldende definisjon).
 - **Tester planlegges i Workbench, resultat syncer til TalentHQ (Anders 2026-08-04):** spilleren
   legger tester inn i planen sin via Workbench (fasiten `workbench-mobil.html` har allerede
   «Testbatteriet» som eget ark med egen Tester-seksjon per økt — design finnes, kode mangler).
@@ -101,7 +103,8 @@ Gjelder til Anders endrer dem.
   sted som trening) — ikke som ombygging av `/admin/tournaments`.
 - **Fase 2 av designporten kjøres i ny økt med Sonnet 5 (Anders 2026-08-04):** token-effektivt,
   uten irrelevante skills/plugins/gammel kontekst. Fase 1-plan + rekkefølge:
-  `docs/port/plan-designport-alle-skjermer.md` §Fase 1-planlegging. Mønsterdokument for skjermer
+  `docs/port/plan-designport-alle-skjermer.md` §Fase 1-planlegging (fila er arkivert
+  18.08.2026 — bruk `PIXEL-PERFECT-PLAN-COMPLETE.md` for gjeldende plan). Mønsterdokument for skjermer
   uten fasit: `docs/port/monsterdokument-paper.md`.
 - **DataGolf-skjermene skal inn i PlayerHQ (Anders 2026-08-04):** i dag ligger de under
   marketing (`/stats/*` — spillere, turneringer, sg-sammenlign, verktøy m.fl.); `/portal/stats`
@@ -119,7 +122,8 @@ Gjelder til Anders endrer dem.
   Presis/FASIT-låser er fortsatt avviklet. Tidsplanen fra 31.07 sa full Paper-port til `src/`
   skulle vente til FØR/UNDER/ETTER-piloten var evaluert — **Anders overstyrte dette eksplisitt
   2026-08-03** etter at steg 1–6 + steg 7 PR1 allerede var merget på løpende «ja» per PR.
-  Full skjermport kjører nå aktivt per `docs/port/plan-designport-alle-skjermer.md` (10 steg,
+  Full skjermport kjører nå aktivt per `docs/port/PIXEL-PERFECT-PLAN-COMPLETE.md` (rettet
+  18.08.2026 — den opprinnelig pekte planen på 10 steg er arkivert, se `docs/port/GYLDIGHET.md`;
   én PR per skjerm/steg, aldri merge til main uten Anders' «ja»). `designsystem/paper/` er et
   lokalt speil hentet ned i repoet 02.08.2026 (PR #254, ikke lenger kun på `chore/paper-speil-lokal`)
   — og er siden 12.08.2026 **arbeidsfasiten**, se speilregelen over. Se også `docs/gjenstaaende-plan-2026-07-31.md` §1.1

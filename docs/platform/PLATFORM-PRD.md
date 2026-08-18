@@ -46,8 +46,9 @@ Designfasit er Claude Paper (Claude Design-prosjekt `605a48cc`, skjermer i `fase
 
 **FØR** du bygger, endrer eller kobler en skjerm:
 1. Sjekk `docs/port/fasit-liste-paper.md` — har skjermen fasit, eller må den designes uten?
-2. Sjekk `docs/port/plan-designport-alle-skjermer.md` — hvilken bølge hører skjermen til, og hva er status?
-3. Jobb mot ferdig-definisjonen i samme plan (§Ferdig-definisjon per skjerm).
+2. Sjekk `docs/port/PIXEL-PERFECT-PLAN-COMPLETE.md` (rettet 18.08.2026 — gammel pekt fil
+   er arkivert, se `docs/port/GYLDIGHET.md`) — hvilken bølge/blokk hører skjermen til, og hva er status?
+3. Jobb mot «pixel-perfekt DONE»-definisjonen i samme plan (§0).
 
 En skjerm er **ikke ferdig** før ferdig-definisjonen er oppfylt og Anders har SETT skjermbildet:
 mobil 390px + desktop, lys og mørk, fasit ved siden av, alle fire tilstander, maks én oransje handling,
