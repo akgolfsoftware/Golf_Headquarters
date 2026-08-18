@@ -54,10 +54,12 @@ via `claude-design`-MCP-verktøyet) er designfasit; full port til `src/` kjører
 ## Skjermarbeid (gjeldende prosess)
 
 **Designfasit:** Claude Paper — Claude Design-prosjektet `605a48cc` er **originalen**.
-**Arbeidsfasiten er det lokale speilet `designsystem/paper/`** (208 HTML, `fase1/` + `fase2/`) —
-det er den du leser, differ og sammenligner mot. Speilet gjelder så lenge
-`designsystem/paper/SYNC-STATUS.md` viser at det er målt mot siste zip fra Anders (nå: zip (3),
-09.08.2026, byte-identisk med zip (2) — 0 avvik).
+**Arbeidsfasiten er det lokale speilet `designsystem/paper/`** (96 skjerm-HTML — 35 i `fase1/` +
+61 i `fase2/`; 248 HTML totalt i mappen inkl. `components/`, `guidelines/`, `templates/`, rettet
+18.08.2026 — tallet 208 var feil) — det er den du leser, differ og sammenligner mot. Speilet
+gjelder så lenge `designsystem/paper/SYNC-STATUS.md` viser at det er målt mot siste zip fra
+Anders (nå: full resynk 16.08.2026, 824 filer, 761 identiske / 0 slettet / 57 nye — se
+`SYNC-STATUS.md` for detaljer; erstatter den gamle «zip (3), 09.08»-referansen).
 
 **Resynk skjer når Anders leverer ny zip, ikke før hver skjerm.** Den gamle regelen krevde henting
 via `claude-design`-MCP før hver sammenligning. Den koblingen er ikke tilgjengelig i alle økter, så
