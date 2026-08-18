@@ -1,5 +1,11 @@
 # Go-live sjekkliste (Fase E) — AK Golf HQ
 
+> UTGÅTT (18.08.2026) — prod-tilstanden under er fra 30.05.2026, ikke re-verifisert siden.
+> E6 spesifikt: `vercel --prod` som manuelt valg er nå FORBUDT, hook-blokkert
+> (CLAUDE.md §CI/CD: «ALDRI `vercel deploy --prod` manuelt»). Git auto-deploy på `main` er
+> gjeldende og eneste rutine. Resten av lista er ikke verifisert på nytt i denne ryddingen —
+> behandle som historikk, ikke som sjekkliste, inntil noen kjører den mot dagens prod.
+
 Steg-for-steg til lansering. Gjør ett punkt om gangen, hak av `[x]` når ferdig.
 Verifisert prod-tilstand 2026-05-30 — det meste er allerede på plass.
 
@@ -65,8 +71,9 @@ SEO/URL (🔴 må fikses):
   - [ ] Forelder-samtykke-flyt for mindreårig
 
 ## E6 — Deploy-rutine
-- [ ] Bestem: behold manuell (`vercel --prod`) eller skru på **git auto-deploy til production** (Vercel → Settings → Git → Production Branch = `main`, auto-deploy på).
-- [ ] Hvis auto-deploy på: verifiser at CI (lint/typecheck/test) er grønt før merge til `main`.
+- [x] Avgjort: git auto-deploy til production (Vercel → Settings → Git → Production Branch = `main`).
+  Manuell `vercel --prod` er FORBUDT og hook-blokkert — se CLAUDE.md §CI/CD.
+- [ ] Verifiser at CI (lint/typecheck/test) er grønt før merge til `main`.
 
 ## E7 — Observability
 - [ ] Trigger en testfeil → verifiser at den dukker opp i **Sentry**.

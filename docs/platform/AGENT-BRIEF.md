@@ -104,9 +104,11 @@ Slettede mapper det ikke skal letes etter: `public/design-handover/`, `wireframe
   Ved konflikt mellom et dokument og Paper-fasiten **vinner Paper-fasiten**.
 - **Farger/flater:** Paper-tokens (`--p-*` i `src/styles/paper-tokens.css`), som `--v2-*` peker på
   etter steg 5A. Aksent `#D97757` har monopol på «Én ting nå» — maks én per skjerm.
-- **Fonter:** Paper-fasiten er Poppins (UI/titler) · Lora (prosa/AI-svar) · IBM Plex Mono (tall).
-  Koden bruker fortsatt Inter / Familjen Grotesk / JetBrains Mono — fontbyttet er ikke gjennomført
-  ennå (åpent punkt i porten). Inter Tight er FJERNET — ikke gjeninnfør.
+- **Fonter (re-verifisert 2026-08-16 — fontporten er GJENNOMFØRT):** Paper-fasiten er Poppins
+  (UI/titler) · Lora (prosa/AI-svar) · IBM Plex Mono (tall). Alle tre lastes i `src/app/layout.tsx`
+  og eksponeres som `--font-poppins`/`--font-lora`/`--font-ibm-plex-mono`, videre som
+  `--p-font-sans`/`--p-font-serif`/`--p-font-mono`. Se CLAUDE.md §Stack for full status og kjente
+  småunntak. Inter Tight er FJERNET — ikke gjeninnfør.
 
 **FORBUDT:** lage ny `tokens.css`, importere fra `wireframe/`, lage `tokens.ts` i komponent-mapper.
 
@@ -115,7 +117,11 @@ Slettede mapper det ikke skal letes etter: `public/design-handover/`, `wireframe
 ## Låste beslutninger (ikke diskuter — bare følg)
 
 - **App-navn:** Coach-appen heter **AgencyOS** (`/admin`). «CoachHQ» er gammelt navn — aldri i ny UI-tekst.
-- **Tema:** PlayerHQ alltid **lyst**, AgencyOS alltid **mørkt** (`.dark`). Ingen toggle.
+- **Tema (rettet 2026-08-18, var feil siden 2026-08-03-tema-ryddingen):** `html[data-v2-tema]` er
+  ENESTE mekanisme, med en fungerende Cmd+K-toggle (skriver samme cookie `ak-v2-tema` som railen).
+  Default per path: `/portal|/admin|/forelder` = lys, alt annet = mørk — men brukeren kan bytte.
+  Se `.claude/rules/gotchas.md` §«data-v2-tema på `<html>` er ENESTE mekanisme» for detaljer.
+  `className="dark"` skal ALDRI settes for å låse en flate mørk.
 - **Planlegging → Workbench:** ÉN inngangspunkt. Ikke en meny av 6 kort. Workbench har **fem nivå**: årsplan → periodisering → måned → uke → økt.
 - **Analyse samlet:** Analysere + TrackMan + Runder + SG er én flate med faner.
 - **Demo-navn:** Spiller = **Øyvind Rohjan**, coach = **Anders Kristiansen**. Fulle navn alltid. Gamle navn (Markus Berg, Magnus, Andreas Kragerud) skal bort. NB: ekte coach «Markus Røinås Pedersen» på markedssider beholdes.

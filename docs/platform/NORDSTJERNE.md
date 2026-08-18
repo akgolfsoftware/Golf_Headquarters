@@ -36,19 +36,19 @@ God nok er ikke god nok. Hver flate skal tåle gransking fra en krevende coach,
 en krevende spiller og en krevende investor. Ved tvil: ville Anders vist dette
 frem som bevis på at systemet er bedre enn konkurrentene?
 
-## Design (åpent — nytt system under arbeid)
+## Design (LÅST — Paper vinner alltid)
 
-Et komplett nytt designsystem utvikles parallelt i Open Design (2026-07-25).
-Den gamle v2-kanonen (retning C «Presis», FASIT, hex-gate, 8pt-grid,
-designdommer) er bevisst avviklet — **ingen designregler er låst** inntil det
-nye systemet er klart og godkjent av Anders. Det som er bygget i koden gjelder
-i mellomtiden; kvalitetsstandarden (skal tåle å selges for millionsum) er uendret.
+> UTGÅTT (18.08.2026) — denne seksjonen beskrev tilstanden 25.07.2026, før designet ble låst.
+> Gjeldende: **Claude Paper vinner alltid** (CLAUDE.md invariant 2, låst 2026-08-03/05).
+> Claude Design-prosjektet «AK Golf HQ — Claude Paper» (`605a48cc`) er eneste designfasit,
+> full port kjører nå per `docs/port/GYLDIGHET.md`. «Ingen designregler er låst» stemmer ikke lenger.
 
 ## Forretningsramme
 
 - Abonnement: gratis (prøve/pakke/gruppe) eller 299 kr/mnd. Coaching-pakker
   (Performance / Performance Pro) er økt-credits, ikke app-nivåer. ELITE vises aldri.
-- Betaling slås på 1. august 2026. Før det: produksjonsherding.
+- Betaling slås på **1. september 2026** (`gratisForAlle`-lanseringsvindu). Før det: produksjonsherding.
+  (Rettet 18.08.2026 — sto tidligere som 1. august, se `docs/platform/BUSINESS-RULES.md` §4.)
 - Detaljer: `docs/platform/BUSINESS-RULES.md`.
 
 ## Metodikk
