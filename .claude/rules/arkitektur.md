@@ -58,7 +58,8 @@ akgolf-hq/
 │   │                         # Produkt-/flate-spesifikke komponenter. Flere har
 │   │                         # egen v2/-undermappe (admin/v2, portal/v2,
 │   │                         # marketing/v2) for pågående v2-porting, pluss
-│   │                         # frittstående planlegge-v2/ og test-modul-v2/.
+│   │                         # frittstående test-modul-v2/ (planlegge-v2/ var død kode,
+│   │                         # slettet 18.08.2026 — ingen konsumenter).
 │   ├── lib/
 │   │   ├── v2/tokens.ts      # TS-speil (T) av CSS-variablene — les herfra i TS
 │   │   ├── prisma.ts

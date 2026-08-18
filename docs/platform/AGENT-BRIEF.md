@@ -58,8 +58,9 @@ src/
 │   ├── v2/                   # Delte v2-primitiver (shell, kalender, datavis, hjelp, domene …)
 │   ├── athletic/             # Kun to undermapper igjen: golfdata/ (v13, overgangslag) + calendars/
 │   ├── shared/               # Utility-komponenter (cookie-banner, cmd-palette, mobile-bottom-nav)
-│   └── admin/ portal/ marketing/ forelder/ coachhq/ hubs/ workbench-hybrid/ planlegge-v2/
+│   └── admin/ portal/ marketing/ forelder/ coachhq/ hubs/ workbench-hybrid/
 │       sg-hub/ gameplan/ fys-plan/ teknisk-plan/ turneringer/ kommando/ meg/ …
+│       (planlegge-v2/ var død kode, slettet 18.08.2026 — ingen konsumenter)
 ├── lib/            # domain/ (ferdighetslogikk — SG, hcp, ak-kategori, fys-score, pyramide) ·
 │                   # validation/schemas.ts · auth · prisma.ts · stripe · email · agents/ ·
 │                   # workbench/ · uke-helpers.ts (Oslo-tid) · scrapers/ · trackman/ · portal-*/ · admin-*/

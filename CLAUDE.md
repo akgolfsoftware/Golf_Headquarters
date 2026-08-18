@@ -94,7 +94,6 @@ avviklet designprosjekt. Ligger i git-historikken.)
   admin-hero/player-hero m.fl.) gjaldt filer som ikke lenger finnes — ikke gjenopprett dem.
   Kjente småresten (ufarlige): `teknisk-plan.css:16` har Inter kun som *fallback* bak
   `var(--font-sans)`; `klubb-wizard.tsx:676` har én `fontFamily="Inter"` i en SVG-illustrasjon;
-  `src/components/planlegge-v2/` er død kode uten konsumenter (slettes i PP-B5).
   **Inter Tight er fjernet** — ikke gjeninnfør. Bygg nytt mot Paper-fasiten (dvs. de globale tokenene,
   aldri `--font-familjen-grotesk`/`--font-jetbrains-mono`/`--font-inter` direkte i ny kode).
 - **Lucide React** — eneste ikon-bibliotek. **npm** — pakkebehandler.
