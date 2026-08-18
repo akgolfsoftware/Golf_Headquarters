@@ -145,7 +145,9 @@ oppretter nye ruter.
 npm run verify && npm test    # FULL sjekk før commit — dekker hele CI-jobben «verify»
 ```
 `verify` = `prisma validate && prisma generate && tsc --noEmit && eslint --quiet src &&
-node scripts/check-action-auth.mjs && npm run build`.
+node scripts/check-action-auth.mjs && node scripts/check-token-gap.mjs &&
+node scripts/check-critical-imports.mjs && npm run build` (rettet 18.08.2026 — de to
+siste stegene manglet i denne beskrivelsen, men lå allerede i `package.json`).
 `npm run build` = `prisma generate && next build && serwist build serwist.config.mjs` (rekkefølgen er kritisk —
 precache-manifestet globber `.next/`-output).
 
