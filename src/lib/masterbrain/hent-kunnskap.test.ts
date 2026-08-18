@@ -77,11 +77,13 @@ test("periodisering inkluderer oversettelsestabellen for periodenavn", () => {
   assert.match(tekst, /Skriv aldri CANON-strengen rått/);
 });
 
-test("plan-generering inkluderer invariantene", () => {
+test("plan-generering siterer ikke invarianter som regler", () => {
+  // Alle treningsplanregler er fjernet (Anders 18.08.2026) — spilleren står
+  // fritt. CANON-blokken skal fortsatt bære pyramide og perioder som fagstoff.
   const k = hentMasterbrainKunnskap("plan-generering");
   const tekst = k.blokker.join("\n");
-  assert.match(tekst, /inv_5/);
-  assert.match(tekst, /inv_3/);
+  assert.doesNotMatch(tekst, /inv_5/);
+  assert.match(tekst, /Pyramidens standardfordeling/);
 });
 
 test("plan-generering rommer alle tre kildene innenfor budsjettet i generate.ts", () => {

@@ -2171,28 +2171,6 @@
     "word_count": 148
   },
   {
-    "chunk_id": "morad-010",
-    "file_path": "rag-corpus/morad/canon-invariants-13.md",
-    "source": "knowledge/entities + processed/rules",
-    "section": "CANON — 13 invarianter",
-    "tags": [
-      "canon",
-      "invariant",
-      "rules"
-    ],
-    "topics": [
-      "invariant",
-      "blocking"
-    ],
-    "relevance": [
-      "AiPlanGeneration",
-      "CoachHQ",
-      "RAG",
-      "MORAD"
-    ],
-    "word_count": 109
-  },
-  {
     "chunk_id": "morad-011",
     "file_path": "rag-corpus/morad/canon-l-fase-overrides.md",
     "source": "knowledge/entities + processed/rules",

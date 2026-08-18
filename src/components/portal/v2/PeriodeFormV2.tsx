@@ -12,7 +12,6 @@ import { T, Caps, Kort, Knapp, StatusPill } from "@/components/v2";
 import { Inndata, TekstOmraade } from "@/components/v2/skjema";
 import { Icon } from "@/components/v2/icon";
 import { HjelpTips } from "@/components/v2/hjelp";
-import { PERIODE_TYPER, L_FASER } from "@/lib/taxonomy";
 import { CANON_PERIOD_ADJUSTMENT } from "@/lib/workbench/canon-period-adjustment";
 import {
   opprettPeriode,
@@ -106,36 +105,6 @@ function TypePille({
   );
 }
 
-/** Liten constraint-chip (CS ≤ 70%, ≥ 2 hviledager …). */
-function ConstraintChip({
-  children,
-  tone = "noytral",
-}: {
-  children: React.ReactNode;
-  tone?: "noytral" | "warn";
-}) {
-  const farge = tone === "warn" ? T.warn : T.mut;
-  return (
-    <span
-      style={{
-        display: "inline-flex",
-        alignItems: "center",
-        fontFamily: T.mono,
-        fontSize: 10,
-        fontWeight: 600,
-        letterSpacing: "0.02em",
-        color: farge,
-        background: `color-mix(in srgb, ${farge} 12%, transparent)`,
-        border: `1px solid color-mix(in srgb, ${farge} 26%, transparent)`,
-        borderRadius: 9999,
-        padding: "3px 9px",
-      }}
-    >
-      {children}
-    </span>
-  );
-}
-
 /** Feltetikett i v2-stil (mono-caps), med valgfri HjelpTips og «påkrevd»-markør. */
 function FeltEtikett({
   children,
@@ -161,7 +130,6 @@ export function PeriodeFormV2(props: Props) {
   const router = useRouter();
   const [pending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
-  const [warnings, setWarnings] = useState<string[]>([]);
 
   const initial = props.mode === "rediger" ? props.initial : undefined;
   const [lPhase, setLPhase] = useState<LPhase>(initial?.lPhase ?? "GRUNN");
@@ -172,15 +140,10 @@ export function PeriodeFormV2(props: Props) {
   const [volMin, setVolMin] = useState(initial?.weeklyVolMin?.toString() ?? "");
   const [volMax, setVolMax] = useState(initial?.weeklyVolMax?.toString() ?? "");
 
-  const c = PERIODE_TYPER[lPhase];
   const canonHint = canonHintFor(lPhase);
-  const lFaseLabels = c.lFaserTillatt
-    .map((kode) => L_FASER.find((l) => l.kode === kode)?.label ?? kode)
-    .join(", ");
 
   function lagre() {
     setError(null);
-    setWarnings([]);
     startTransition(async () => {
       const felles = {
         lPhase,
@@ -199,7 +162,6 @@ export function PeriodeFormV2(props: Props) {
         setError(res.error ?? "Kunne ikke lagre perioden.");
         return;
       }
-      if (res.warnings?.length) setWarnings(res.warnings);
       router.push("/portal/tren/aarsplan");
       router.refresh();
     });
@@ -231,24 +193,6 @@ export function PeriodeFormV2(props: Props) {
           ))}
           <HjelpTips k="periodetype" />
         </div>
-
-        {/* CANON-anbefalinger (aldri sperrer — kun veiledning). */}
-        <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginTop: 14 }}>
-          <ConstraintChip>CS ≤ {c.csMax}%</ConstraintChip>
-          {c.maxVolumMin != null && <ConstraintChip>{c.maxVolumMin} min/uke</ConstraintChip>}
-          {c.maxOkterUke != null && <ConstraintChip>≤ {c.maxOkterUke} økter/uke</ConstraintChip>}
-          <ConstraintChip>≥ {c.minHviledager} hviledager</ConstraintChip>
-          {c.turneringsLaas && <ConstraintChip tone="warn">Turneringslås</ConstraintChip>}
-        </div>
-
-        {lFaseLabels && (
-          <div style={{ display: "flex", alignItems: "center", gap: 6, marginTop: 10 }}>
-            <span style={{ fontFamily: T.mono, fontSize: 10, fontWeight: 600, letterSpacing: "0.04em", textTransform: "uppercase", color: T.mut }}>
-              Tillatte L-faser: {lFaseLabels}
-            </span>
-            <HjelpTips k="lFase" />
-          </div>
-        )}
 
         {canonHint && (
           <p style={{ fontFamily: T.mono, fontSize: 10.5, fontWeight: 600, letterSpacing: "0.02em", color: T.lime, margin: "12px 0 0" }}>
@@ -291,25 +235,6 @@ export function PeriodeFormV2(props: Props) {
           <TekstOmraade label={null} value={notes} onChange={setNotes} rows={4} placeholder="Notater til denne perioden …" />
         </div>
       </Kort>
-
-      {/* ── Anbefalings-varsler (aldri sperrer — perioden er lagret) ── */}
-      {warnings.length > 0 && (
-        <Kort style={{ border: `1px solid color-mix(in srgb, ${T.warn} 40%, transparent)` }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
-            <StatusPill tone="warn">Merk</StatusPill>
-            <span style={{ fontFamily: T.ui, fontSize: 12.5, fontWeight: 600, color: T.fg }}>
-              Dette er kun en anbefaling — perioden er lagret.
-            </span>
-          </div>
-          <ul style={{ margin: 0, paddingLeft: 18, display: "flex", flexDirection: "column", gap: 4 }}>
-            {warnings.map((w) => (
-              <li key={w} style={{ fontFamily: T.ui, fontSize: 12.5, color: T.fg2, lineHeight: 1.5 }}>
-                {w}
-              </li>
-            ))}
-          </ul>
-        </Kort>
-      )}
 
       {error && (
         <div role="alert" style={{ display: "flex", alignItems: "center", gap: 10 }}>

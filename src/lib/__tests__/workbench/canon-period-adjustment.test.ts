@@ -1,9 +1,6 @@
 import { describe, it } from "node:test";
 import assert from "node:assert/strict";
-import {
-  CANON_PERIOD_ADJUSTMENT,
-  canonDeviationChip,
-} from "@/lib/workbench/canon-period-adjustment";
+import { CANON_PERIOD_ADJUSTMENT } from "@/lib/workbench/canon-period-adjustment";
 
 describe("CANON_PERIOD_ADJUSTMENT", () => {
   it("dekker alle 7 periodetyper med 5 PyramidArea-retninger hver", () => {
@@ -34,27 +31,5 @@ describe("CANON_PERIOD_ADJUSTMENT", () => {
     assert.equal(CANON_PERIOD_ADJUSTMENT.TURNERING.TURN, "opp");
     assert.equal(CANON_PERIOD_ADJUSTMENT.TURNERING.TEK, "ned");
     assert.equal(CANON_PERIOD_ADJUSTMENT.TURNERING.FYS, "ned");
-  });
-});
-
-describe("canonDeviationChip", () => {
-  it("returnerer null når fordelingen stemmer med CANON", () => {
-    const chip = canonDeviationChip({ FYS: 30, TEK: 30, SPILL: 10, TURN: 5 }, "GRUNN");
-    assert.equal(chip, null);
-  });
-
-  it("flagger avvik når FYS er lavere enn CANON anbefaler i GRUNN-periode", () => {
-    const chip = canonDeviationChip({ FYS: 10, TEK: 30 }, "GRUNN");
-    assert.ok(chip?.includes("FYS"));
-  });
-
-  it("gir aldri avvik for områder uten CANON-retning ('lik')", () => {
-    // SLAG er "lik" i GRUNN — uansett faktisk prosent skal det ikke gi avvik.
-    const chip = canonDeviationChip({ SLAG: 2 }, "GRUNN");
-    assert.equal(chip, null);
-  });
-
-  it("returnerer null når ingen av de relevante områdene har data", () => {
-    assert.equal(canonDeviationChip({}, "TURNERING"), null);
   });
 });
