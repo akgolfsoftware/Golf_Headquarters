@@ -16,6 +16,21 @@ Gjelder til Anders endrer dem.
 
 ## Beslutningene (august 2026)
 
+- **ALLE TRENINGSPLANREGLER LÅST OPP (Anders 2026-08-18, i økt — «Ingenting skal være låst
+  eller canon. Spiller står helt fritt»):** All regel-håndheving i planlegging er SLETTET fra
+  koden (gren `feat/laas-opp-alle-regler`): de 9 invariantene (`src/lib/canon/` — hele mappen),
+  PERIODE_CONSTRAINTS med min/maks-prosenter/volumtak/CS-tak/L-fase-fordeling,
+  plan-validering av AI-forslag mot regler, junior-guard-sperren, admin-siden for
+  periode-fordeling, og «CANON anbefaler»-hint. **CANON som overstyrende fasit-begrep er
+  pensjonert.** Vokabularet består (pyramide, områder, motorikk/belastning/press, perioder,
+  blokk-typer, kategorier) — som frie merkelapper, aldri krav. Eneste regler som gjenstår er
+  tekniske forretningsregler (dobbelbooking-sperre, credits, GDPR) — de er ikke treningsregler.
+  Fasit for ordforrådet: `docs/vokabular-planlegging-2026-08-18.md`. Gjeninnfør ALDRI en
+  treningsregel (tak, minimum, sperre, «invariant», validering av plan mot metodikk) uten ny,
+  eksplisitt beslutning fra Anders. Utgått samtidig: L-fasene (både L-CTRL/L-BALL/L-COMP og
+  L_KROPP…L_AUTO som UI-begrep), CS-nivåer, M0–M5, PR1–PR5 — formelen er
+  `PYRAMIDE_OMRADE_MOTORIKK_BELASTNING_PRESS` med motorikk UTEN_BALL/LAV_HAST/AUTO og press
+  ALENE/OBSERVERT/KONKURRANSE/TURNERING.
 - **Beslutningsgaten PP-A besvart (Anders 2026-08-16, i økt — låser pixel-portens systemfikser):**
   - **A1 · Admin-rail = FASE2-railen.** Fase2-fasitenes rail (7 punkter, Cockpit/Stall/Plan…,
     fasitens casing) vinner over fase1-railen/dagens kode. Implementeres én gang i `V2Shell`

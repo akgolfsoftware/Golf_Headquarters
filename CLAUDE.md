@@ -35,7 +35,11 @@ via `claude-design`-MCP-verktøyet) er designfasit; full port til `src/` kjører
 `docs/port/PORTPLAN.md`. Ved konflikt vinner `docs/platform/BUSINESS-RULES.md`.
 
 ## Harde invarianter (brytes aldri)
-1. **Anbefalinger sperrer aldri:** ingenting i appen blokkerer trening. Aldri «kan ikke brytes»-kode/tekst.
+1. **Ingen treningsregler (skjerpet 2026-08-18):** ALL regel-håndheving i planlegging er slettet
+   — ingen invarianter, ingen periode-constraints, ingen plan-validering mot metodikk, ingen
+   «CANON». Spilleren står helt fritt. Vokabular (pyramide, perioder, formel) er frie
+   merkelapper. Gjeninnfør aldri en treningsregel uten ny beslutning fra Anders — se
+   `.claude/rules/beslutninger.md` §2026-08-18 og `docs/vokabular-planlegging-2026-08-18.md`.
 2. **Claude Paper vinner alltid (LÅST 2026-08-03/05).** Claude Design-prosjektet «AK Golf HQ — Claude
    Paper» (`605a48cc`, skjermer i `fase1/`) er eneste designfasit — for design OG produksjonskode.
    Full porten kjører nå, skjerm for skjerm, per `docs/port/PORTPLAN.md`.
