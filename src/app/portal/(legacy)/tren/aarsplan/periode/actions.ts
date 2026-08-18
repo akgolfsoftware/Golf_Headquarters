@@ -7,16 +7,12 @@
  *
  * Tilgang: spilleren som eier SeasonPlan, eller COACH/ADMIN (samme mønster som
  * `sessionForAccess` i workbench/drill-actions.ts).
- *
- * Validering (`validerPeriodBlock`) er ALLTID en anbefaling, aldri en sperre —
- * perioden lagres uansett; advarsler sendes tilbake til UI som klarspråk.
  */
 
 import { revalidatePath } from "next/cache";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { harCoachTilgangTilSpiller } from "@/lib/auth/coached";
 import { prisma } from "@/lib/prisma";
-import { validerPeriodBlock } from "@/lib/taxonomy";
 import type { LPhase } from "@/generated/prisma/client";
 
 export type PeriodeInput = {
@@ -30,7 +26,7 @@ export type PeriodeInput = {
   weeklyVolMax?: number | null;
 };
 
-export type PeriodeResult = { ok: boolean; error?: string; warnings?: string[] };
+export type PeriodeResult = { ok: boolean; error?: string };
 
 async function seasonPlanAccess(seasonPlanId: string) {
   const user = await requirePortalUser({ allow: ["PLAYER", "COACH", "ADMIN"] });
@@ -80,8 +76,6 @@ export async function opprettPeriode(input: PeriodeInput): Promise<PeriodeResult
   const access = await seasonPlanAccess(input.seasonPlanId);
   if (!access.ok) return { ok: false, error: access.error };
 
-  const validering = validerPeriodBlock(input.lPhase, { weeklyVolMax: input.weeklyVolMax });
-
   await prisma.periodBlock.create({
     data: {
       seasonPlanId: input.seasonPlanId,
@@ -96,7 +90,7 @@ export async function opprettPeriode(input: PeriodeInput): Promise<PeriodeResult
   });
 
   revalidatePerioder();
-  return { ok: true, warnings: validering.advarsler.length ? validering.advarsler : undefined };
+  return { ok: true };
 }
 
 /** Oppdater en eksisterende periode. Kun felt som er med i input endres. */
@@ -105,11 +99,6 @@ export async function oppdaterPeriode(
 ): Promise<PeriodeResult> {
   const access = await periodeAccess(input.id);
   if (!access.ok) return { ok: false, error: access.error };
-
-  const lPhase = input.lPhase ?? access.periode.lPhase;
-  const weeklyVolMax =
-    input.weeklyVolMax !== undefined ? input.weeklyVolMax : access.periode.weeklyVolMax;
-  const validering = validerPeriodBlock(lPhase, { weeklyVolMax });
 
   await prisma.periodBlock.update({
     where: { id: input.id },
@@ -125,7 +114,7 @@ export async function oppdaterPeriode(
   });
 
   revalidatePerioder();
-  return { ok: true, warnings: validering.advarsler.length ? validering.advarsler : undefined };
+  return { ok: true };
 }
 
 /** Slett en periode. */

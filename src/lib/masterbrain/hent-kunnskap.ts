@@ -66,8 +66,8 @@ export type MasterbrainKunnskap = {
 export type HentOptions = {
   /**
    * Maks antall tegn på tvers av alle blokker. Blokker droppes HELE fra
-   * slutten av rutinglista, aldri kuttet midt i — halve invarianter eller en
-   * avkortet hypotese-regel er farligere enn å mangle blokken.
+   * slutten av rutinglista, aldri kuttet midt i — en avkortet hypotese-regel
+   * er farligere enn å mangle blokken.
    * Rutinglista er sortert med mest oppgavekritiske fil først.
    */
   maksTegn?: number;
@@ -107,16 +107,13 @@ const CANON: Fasitfil = {
   status: "FASIT",
   blokk: () =>
     [
-      "## CANON — kategorier, pyramide, L-faser og invarianter",
+      "## CANON — kategorier, pyramide, L-faser og perioder",
       "",
-      "Pyramidens standardfordeling (sum må alltid bli 100 %):",
+      "Pyramidens standardfordeling:",
       json(canonMethodology.pyramid_defaults),
       "",
-      "L-faser (CS-spenn, miljø, TEK-andel, overstyringsregel):",
+      "L-faser (CS-spenn, miljø, TEK-andel):",
       json(canonMethodology.l_faser),
-      "",
-      "Invarianter som ALDRI kan brytes:",
-      json(canonMethodology.invariants),
       "",
       "Perioder:",
       json(canonMethodology.periods),

@@ -78,8 +78,8 @@ function byggSystemPromptMedKunnskap(ctx: SpillerKontekst): {
       : "";
 
   // Strukturert fasit fra Masterbrain. Utfyller RAG-friteksten over: den gir
-  // forklarende MORAD-tekst per SG-område, denne gir reglene som ikke kan
-  // brytes (invarianter, pyramide, L-fase-tak, periodenavn-oversettelse).
+  // forklarende MORAD-tekst per SG-område, denne gir det strukturerte
+  // fagstoffet (pyramide, L-faser, periodenavn-oversettelse).
   const fasit = hentMasterbrainKunnskap("plan-generering", {
     maksTegn: MASTERBRAIN_MAKS_TEGN,
   });

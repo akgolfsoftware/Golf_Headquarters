@@ -242,7 +242,6 @@ const ACTIONS: Action[] = [
   { id: "s-okter", label: "Økter", description: "Alle økter", keywords: ["okt", "økt", "okter", "økter", "session"], icon: Clock, kind: { type: "navigate", href: "/admin/okter" } },
   { id: "s-opptak", label: "Opptak", description: "Opptak av coaching-økter med AI-sammendrag", keywords: ["opptak", "lyd", "mikrofon", "transkribering", "sammendrag", "referat", "recording"], icon: Mic, kind: { type: "navigate", href: "/admin/recording" } },
   { id: "s-gjennomfore", label: "Gjennomføre", description: "Gjennomføring av økter", keywords: ["gjennomfore", "gjennomføre", "utfor", "live"], icon: Play, kind: { type: "navigate", href: "/admin/gjennomfore" } },
-  { id: "s-periode", label: "Periode-fordeling", description: "Fordeling per periodetype", keywords: ["periode", "fordeling", "pyramide", "grunn", "spes"], icon: SlidersHorizontal, kind: { type: "navigate", href: "/admin/settings/periode-fordeling" } },
   { id: "s-periode-navn", label: "Periodenavn", description: "Koble ukjente periodenavn til periodetype", keywords: ["periode", "navn", "ukjent", "grunn", "spes", "turn"], icon: Tag, kind: { type: "navigate", href: "/admin/settings/periode-navn" } },
   { id: "s-live", label: "Live", description: "Live-økter nå", keywords: ["live", "na", "nå", "direkte"], icon: Monitor, kind: { type: "navigate", href: "/admin/agencyos/live" } },
   { id: "s-workspace", label: "Workspace", description: "Arbeidsflate", keywords: ["workspace", "arbeid", "flate"], icon: LayoutDashboard, kind: { type: "navigate", href: "/admin/workspace" } },

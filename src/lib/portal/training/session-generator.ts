@@ -30,11 +30,6 @@ import type {
   PracticeType,
   MMiljo,
 } from "@/generated/prisma/client";
-import { validateSessionConstraints, type Periode } from "./periode-constraints";
-import { periodeTypeFraNavnMedEkstra } from "./periode-navn";
-import { hentEffektivePeriodeConstraints } from "./periode-fordeling";
-import { hentEkstraPeriodeNavn } from "./periode-navn-mapping";
-import { tilPeriodeType } from "@/lib/canon/valider-plan";
 import { logError } from "@/lib/error-tracking";
 
 // ---------------------------------------------------------------------------
@@ -49,12 +44,10 @@ export type GenererInput = {
 };
 
 export type HoppetOver = { dato: Date; grunn: string };
-export type RegelBrudd = { sessionId: string; brudd: string[] };
 
 export type GenererResultat = {
   okter: TrainingSessionV2[];
   hoppetOver: HoppetOver[];
-  regelBrudd: RegelBrudd[];
 };
 
 // Mellomliggende representasjon før vi skriver til DB.
@@ -90,10 +83,6 @@ export async function genererOkter(input: GenererInput): Promise<GenererResultat
     oppskrift,
     regler,
     eksisterendeOkter,
-    spillerGrupper,
-    effektiveConstraints,
-    ekstraPeriodeNavn,
-    seasonPlans,
   ] = await Promise.all([
     prisma.trainingPlan.findUniqueOrThrow({
       where: { id: planId },
@@ -123,48 +112,7 @@ export async function genererOkter(input: GenererInput): Promise<GenererResultat
       },
       select: { id: true, startTime: true, endTime: true },
     }),
-    prisma.groupMember.findMany({
-      where: { userId: spilllerId, endedAt: null },
-      select: { groupId: true },
-    }),
-    hentEffektivePeriodeConstraints(),
-    hentEkstraPeriodeNavn(),
-    prisma.seasonPlan.findMany({
-      where: { userId: spilllerId },
-      select: { periodBlocks: { select: { lPhase: true, startDate: true, endDate: true } } },
-    }),
   ]);
-
-  // Perioder for validering, fra to kilder:
-  //  1) TrainingPeriod (gruppestyrt, fritekst-navn — periode-navn-mapping.ts):
-  //     spillerens grupper + gruppeuavhengige perioder. Ukjente periodenavn
-  //     filtreres bort her — de valideres rett og slett ikke.
-  //  2) SeasonPlan.periodBlocks (spillerens egen sesongplan, L-fase-styrt —
-  //     CANON-invariantene, PR #198).
-  // Begge kilder kan gjelde samtidig for samme spiller — slås sammen.
-  const periodeRader = await prisma.trainingPeriod.findMany({
-    where: {
-      OR: [{ groupId: null }, { groupId: { in: spillerGrupper.map((g) => g.groupId) } }],
-      startDate: { lte: sluttDato },
-      endDate: { gte: startDato },
-    },
-  });
-  const perioderFraGrupper: Periode[] = periodeRader
-    .map((p) => {
-      const type = periodeTypeFraNavnMedEkstra(p.name, ekstraPeriodeNavn);
-      return type ? { type, startDato: p.startDate, sluttDato: p.endDate } : null;
-    })
-    .filter((p): p is Periode => p !== null);
-
-  const perioderFraSesongplan: Periode[] = seasonPlans
-    .flatMap((sp) => sp.periodBlocks)
-    .map((pb) => {
-      const type = tilPeriodeType(pb.lPhase);
-      return type ? { type, startDato: pb.startDate, sluttDato: pb.endDate } : null;
-    })
-    .filter((p): p is Periode => p !== null);
-
-  const perioder: Periode[] = [...perioderFraGrupper, ...perioderFraSesongplan];
 
   const coachId = plan.createdById ?? plan.userId;
   const hoppetOver: HoppetOver[] = [];
@@ -302,7 +250,7 @@ export async function genererOkter(input: GenererInput): Promise<GenererResultat
   // Skriv til DB i én batch
   // ---------------------------------------------------------------------------
   if (modifiserteSlots.length === 0) {
-    return { okter: [], hoppetOver, regelBrudd: [] };
+    return { okter: [], hoppetOver };
   }
 
   // Lag deterministiske cuid-er ved å la Prisma generere id-er — vi får dem
@@ -335,35 +283,7 @@ export async function genererOkter(input: GenererInput): Promise<GenererResultat
   });
   const okter = etter.filter((o) => !førSet.has(o.id));
 
-  // Anbefaling, aldri sperre: brudd flagges til coach, genereringen stoppes ikke.
-  // periode-constraints (pyramide-maks per økt + volum-tak per uke) mot
-  // coach-satte andeler (effektiveConstraints) der de finnes, ellers
-  // hardkodede defaults. Merk: genererte økter har ingen drills ennå (kun
-  // coach-nivå blokk-planlegging), så drill-baserte prosenter blir 0 %
-  // inntil en drill-fordeling legges til denne genereringsveien — ærlig
-  // «ingen brudd», ikke en fasit på at planen er balansert.
-  const okterMedDrills: (TrainingSessionV2 & { drills: TrainingDrillV2[] })[] = okter.map((o) => ({
-    ...o,
-    drills: [],
-  }));
-  const { bruddBeskrivelser: regelBrudd } = validateSessionConstraints(
-    okterMedDrills,
-    perioder,
-    effektiveConstraints,
-  );
-
-  if (regelBrudd.length > 0) {
-    await Promise.all(
-      regelBrudd.map((b) =>
-        prisma.trainingSessionV2.update({
-          where: { id: b.sessionId },
-          data: { regelBrudd: b.brudd, trengerOppmerksomhet: true },
-        }),
-      ),
-    );
-  }
-
-  return { okter, hoppetOver, regelBrudd };
+  return { okter, hoppetOver };
 }
 
 // ---------------------------------------------------------------------------

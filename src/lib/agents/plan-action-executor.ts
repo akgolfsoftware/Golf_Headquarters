@@ -9,8 +9,6 @@ import { prisma } from "@/lib/prisma";
 import { PYR_LABEL } from "@/lib/pyramide";
 import {
   runDrillSelectionSkill,
-  runJuniorGuardSkill,
-  runPeriodizationSkill,
   SG_TO_PYRAMID,
   SG_TO_SKILL,
 } from "@/lib/training/skills";
@@ -18,7 +16,6 @@ import {
   allocationForPeriod,
   isPeriodType,
 } from "@/lib/training/period-allocation";
-import { validateExecutorDelta } from "@/lib/training/invariants";
 import { deleteV2ForPlanSession, syncV2FromPlanSessionId } from "@/lib/workbench/v2-sync";
 import { sjekkpunktFraSuggestion } from "@/lib/recording/fangst-suggestion";
 
@@ -494,32 +491,6 @@ async function fetchDrillCandidates(
   return pickDrillsFromCandidates(skill, drills);
 }
 
-/** Eksportert for enhetstester — sjekker om action bryter teknisk-periode-guard. */
-export function actionErTekniskEndring(
-  actionType: string,
-  suggestion: unknown,
-  delta: ExecutorDelta,
-): boolean {
-  if (delta.sessionsToAdd.some((s) => s.pyramidArea === "TEK")) return true;
-
-  switch (actionType) {
-    case "PYRAMID_ADJUST": {
-      const s = pyramidAdjustSchema.safeParse(suggestion);
-      return s.success && s.data.omrade === "TEK";
-    }
-    case "SESSION_ADD": {
-      const s = sessionAddSchema.safeParse(suggestion);
-      return s.success && s.data.pyramidArea === "TEK";
-    }
-    case "FOCUS_CHANGE": {
-      const s = focusChangeSchema.safeParse(suggestion);
-      return s.success && s.data.pyramidArea === "TEK";
-    }
-    default:
-      return false;
-  }
-}
-
 /** C3/C4: drill-pakke MED navn — agentene legger den i suggestion så
  *  coachen ser konkrete driller i køen FØR godkjenning. */
 export async function resolveDrillPakke(
@@ -837,41 +808,12 @@ export async function executePlanAction(actionId: string): Promise<ExecuteResult
 
   const user = await prisma.user.findUnique({
     where: { id: action.userId },
-    select: { id: true, dateOfBirth: true },
+    select: { id: true },
   });
   if (!user) throw new Error("bruker-mangler");
 
   const ctx = await loadPlanContext(action.userId, action.planId);
   const delta = computeDelta(action.actionType, action.suggestion, ctx);
-
-  const period = runPeriodizationSkill({
-    ukeStart: new Date(),
-    skadeAktiv: false,
-    dagerTilTurnering:
-      action.actionType === "PERIOD_SWITCH" ? 5 : null,
-  });
-
-  if (
-    !period.tillatTekniskeEndringer &&
-    actionErTekniskEndring(action.actionType, action.suggestion, delta)
-  ) {
-    throw new Error("periodisering-blokkerer-tekniske-endringer");
-  }
-
-  const guard = runJuniorGuardSkill({
-    dateOfBirth: user.dateOfBirth,
-    planlagteOkterNesteUke: ctx.planlagteOkterNesteUke,
-    sessionsToAdd: delta.sessionsToAdd.length,
-    csTarget: delta.sessionsToModify.find((m) => m.csTarget)?.csTarget,
-  });
-  if (!guard.tillatt) {
-    throw new Error(guard.avslagGrunn ?? "junior-guard");
-  }
-
-  const inv = validateExecutorDelta(delta, ctx);
-  if (!inv.ok) {
-    throw new Error(inv.reason ?? "executor-invariant");
-  }
 
   const result = await applyExecutorDelta(delta, ctx);
 

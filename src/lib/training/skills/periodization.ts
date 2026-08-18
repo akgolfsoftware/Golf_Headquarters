@@ -1,4 +1,3 @@
-import { tekAnbefalingsVarsel } from "@/lib/training/invariants";
 import { z } from "zod";
 
 export const periodTypeSchema = z.enum([
@@ -34,18 +33,11 @@ export type PeriodizationOutput = {
   begrensninger: string[];
 };
 
-/**
- * Skillen foreslår en pyramidefordeling. Den låser den ikke: ligger TEK under
- * CANON-anbefalingen, legges det et varsel i `begrensninger` — verdiene står.
- */
+/** Skillen foreslår en pyramidefordeling. Den låser ingenting — verdiene står. */
 export function runPeriodizationSkill(
   input: PeriodizationInput,
 ): PeriodizationOutput {
-  const ut = beregnPeriodisering(input);
-  const varsel = tekAnbefalingsVarsel(ut.pyramidOverride);
-  return varsel
-    ? { ...ut, begrensninger: [...ut.begrensninger, varsel] }
-    : ut;
+  return beregnPeriodisering(input);
 }
 
 function beregnPeriodisering(

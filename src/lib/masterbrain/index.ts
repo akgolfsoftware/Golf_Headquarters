@@ -46,8 +46,8 @@ export const periodenavnOversettelse =
  * `masterbrain`-objektet over og selv må huske reglene fra MANIFEST.
  *
  * Utfyller `selectKnowledgeFiles` i ai-coach/rag-select.ts — den henter
- * fritekst fra rag-corpus per SG-område, denne henter de strukturerte
- * reglene (invarianter, pyramide, L-faser, hypotese-regel) per oppgavetype.
+ * fritekst fra rag-corpus per SG-område, denne henter det strukturerte
+ * fagstoffet (pyramide, L-faser, hypotese-regel) per oppgavetype.
  */
 export {
   hentMasterbrainKunnskap,

@@ -115,7 +115,7 @@ describe("adaptTemplateWeek", () => {
     assert.ok(res.okter.every((o) => o.varighetMin === 45)); // 60 × 0.85 → rund 15
   });
 
-  it("CANON-merknad når mal-fase ≠ aktiv fase — rådgivende, aldri sperre", () => {
+  it("merknad når mal-fase ≠ aktiv fase — ren observasjon, ingen anbefaling", () => {
     const res = adaptTemplateWeek(standardUke(), "SPESIAL", {
       ...INGEN_SIGNALER,
       aktivFase: "GRUNN",
@@ -123,7 +123,7 @@ describe("adaptTemplateWeek", () => {
     assert.equal(res.okter.length, 4); // ingenting fjernet
     assert.equal(res.justeringer.length, 1);
     assert.match(res.justeringer[0], /annen periode/);
-    assert.match(res.justeringer[0], /FYS og TEK/);
+    assert.doesNotMatch(res.justeringer[0], /anbefal/i);
   });
 
   it("taper trumfer compliance-skalering (ikke dobbel reduksjon)", () => {

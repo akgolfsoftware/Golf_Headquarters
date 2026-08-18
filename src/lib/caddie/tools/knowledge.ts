@@ -37,8 +37,8 @@ export const KNOWLEDGE_TOOLS = {
   getGolfKnowledge: tool({
     description:
       "Slå opp autoritativ AK Golf-fagkunnskap fra Masterbrain: MORAD-terminologi og " +
-      "svingposisjoner, Strokes Gained-prinsipper og svingfeil, CANON-invarianter, " +
-      "pyramidefordeling, L-faser og periodiseringsregler. Bruk denne FØR du svarer " +
+      "svingposisjoner, Strokes Gained-prinsipper og svingfeil, " +
+      "pyramidefordeling, L-faser og periodisering. Bruk denne FØR du svarer " +
       "på noe golffaglig — finn aldri på metodikk, tall eller begreper selv.",
     inputSchema: z.object({
       emne: z
@@ -47,7 +47,7 @@ export const KNOWLEDGE_TOOLS = {
           "terminologi = MORAD-begreper og P-posisjoner. " +
             "sg-diagnose = Strokes Gained og svingfeil. " +
             "periodisering = perioder, L-faser, ukesstruktur. " +
-            "plan-generering = invarianter, pyramide, volumtak. " +
+            "plan-generering = pyramide og periodestruktur. " +
             "drill-forslag = drill-bankens status og hva en drill skal rette.",
         ),
     }),

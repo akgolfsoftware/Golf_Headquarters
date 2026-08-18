@@ -4,15 +4,13 @@
  * Konsollens artefaktinnhold — høyre kolonne (PP-2.1).
  *
  * Fasit: `<aside class="artifact">` i agencyos-konsoll-desktop.html. Fasitens
- * artefakt er en ukeplan under arbeid: metadata-piller → dagkort → invariant-
+ * artefakt er en ukeplan under arbeid: metadata-piller → dagkort → regel-
  * sjekk → sløyfen → bunnhandlinger.
  *
  * Her er artefaktet coachens DAG: de samme radene, men fylt med det vi
- * faktisk har i CockpitData. Fasitens «invariant-sjekk» er byttet med
- * stall-nøkkeltall, fordi invarianter gjelder én spillers ukeplan — ikke en
- * coach-dag. Å vise hakemerker for regler vi ikke regner ut ville vært
- * fabrikkering (CLAUDE.md invariant 1: aldri sperre-språk, aldri påstander
- * uten grunnlag).
+ * faktisk har i CockpitData. Fasitens «regel-sjekk» er byttet med
+ * stall-nøkkeltall — appen har ingen planregler å sjekke mot, og å vise
+ * hakemerker for regler vi ikke regner ut ville vært fabrikkering.
  *
  * Panel-rammen (topplinje, scroll, mobil-bunnark) leveres av ArtefaktPanel —
  * denne filen er kun innholdet.

@@ -9,7 +9,6 @@ import { runWeaknessSkill } from "./weakness";
 import { runPeriodizationSkill } from "./periodization";
 import { runProgressionSkill } from "./progression";
 import { runDrillSelectionSkill } from "./drill-selection";
-import { runJuniorGuardSkill } from "./junior-guard";
 
 test("pyramid skill finner gap under terskel", () => {
   const out = runPyramidSkill({
@@ -81,28 +80,4 @@ test("drill-selection ekskluderer siste 4 duplikater", () => {
   });
   assert.equal(out.valgte.length, 1);
   assert.equal(out.valgte[0].id, "d3");
-});
-
-test("junior-guard blokkerer for mange økter", () => {
-  const dob = new Date();
-  dob.setFullYear(dob.getFullYear() - 14);
-  const out = runJuniorGuardSkill({
-    dateOfBirth: dob,
-    planlagteOkterNesteUke: 4,
-    sessionsToAdd: 1,
-  });
-  assert.equal(out.erJunior, true);
-  assert.equal(out.tillatt, false);
-});
-
-test("junior-guard tillater voksen", () => {
-  const dob = new Date();
-  dob.setFullYear(dob.getFullYear() - 20);
-  const out = runJuniorGuardSkill({
-    dateOfBirth: dob,
-    planlagteOkterNesteUke: 5,
-    sessionsToAdd: 2,
-  });
-  assert.equal(out.erJunior, false);
-  assert.equal(out.tillatt, true);
 });
