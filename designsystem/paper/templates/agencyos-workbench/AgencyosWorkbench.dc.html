@@ -15,7 +15,7 @@
 <x-import component-from-global-scope="AKGolfHQClaudePaper_605a48.Topbar" theme="{{ theme }}" onToggleTheme="{{ toggleTheme }}" searchPlaceholder="Søk i økter, drills og spillere" hint-size="100%,56px"></x-import>
 <div style="flex:1;min-width:0;display:flex;align-items:stretch">
 <main data-rsp="pad" style="flex:1;min-width:0;padding:24px 28px 32px;display:flex;flex-direction:column;gap:14px">
-<x-import component-from-global-scope="AKGolfHQClaudePaper_605a48.PageHeader" kicker="Uke 31 · 31. juli – 6. august · P3 SPESIALISERING" title="Workbench" lead="Emma Sæther. Flytt økter mellom dager fra editoren, og se budsjettet endre seg mens du gjør det." meta="{{ headerMeta }}" actions="{{ headerActions }}" dataOdId="page-header" hint-size="100%,120px"></x-import>
+<x-import component-from-global-scope="AKGolfHQClaudePaper_605a48.PageHeader" kicker="Uke 31 · 31. juli – 6. august · P3 SPESIALISERING" title="Workbench" lead="Øyvind Rohjan. Flytt økter mellom dager fra editoren, og se budsjettet endre seg mens du gjør det." meta="{{ headerMeta }}" actions="{{ headerActions }}" dataOdId="page-header" hint-size="100%,120px"></x-import>
 
 <x-import component-from-global-scope="AKGolfHQClaudePaper_605a48.BudgetBar" hours="{{ timer }}" min="{{ 5 }}" max="{{ 8 }}" distribution="{{ fordeling }}" keyFigures="{{ nokkeltall }}" violations="{{ brudd }}" onOverride="{{ overstyr }}" dataOdId="budsjett" hint-size="100%,220px"></x-import>
 
@@ -77,7 +77,7 @@
 <sc-if value="{{ visCaddie }}" hint-placeholder-val="{{ false }}">
 <div style="display:flex;flex-direction:column;gap:10px">
 <span style="font-family:var(--mono);font-size:9.5px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)">caddie · utkast</span>
-<p style="margin:0;font-size:12.5px;line-height:1.5;color:var(--muted)">Forslag bygget på testloggen 12.07 og lastavviket. Legg dem inn der de hører hjemme — ingenting når Emma før du har godkjent.</p>
+<p style="margin:0;font-size:12.5px;line-height:1.5;color:var(--muted)">Forslag bygget på testloggen 12.07 og lastavviket. Legg dem inn der de hører hjemme — ingenting når Øyvind før du har godkjent.</p>
 <sc-for list="{{ utkast }}" as="u" hint-placeholder-count="3">
 <div style="display:flex;flex-direction:column;gap:6px">
 <x-import component-from-global-scope="AKGolfHQClaudePaper_605a48.SessionCard" time="{{ u.time }}" area="{{ u.area }}" title="{{ u.title }}" formula="{{ u.formula }}" duration="{{ u.duration }}" draft="{{ true }}" note="{{ u.note }}" onClick="{{ u.apne }}" dataOdId="okt-utkast" hint-size="100%,96px"></x-import>
@@ -215,7 +215,7 @@ class Component extends DCLogic {
     const smal = typeof window !== "undefined" && window.matchMedia && window.matchMedia("(max-width: 880px)").matches;
     const synligeDager = smal ? [dager[this.state.valgtDagIdx]] : dager;
     const innboks = [
-      { id: "i1", title: "Emma: kan vi flytte torsdag til 16:30?", meta: "øktforespørsel · 2 t siden" },
+      { id: "i1", title: "Øyvind: kan vi flytte torsdag til 16:30?", meta: "øktforespørsel · 2 t siden" },
       { id: "i2", title: "Plan-vakten: foreslår +30 min SLAG onsdag", meta: "planjustering · 4 t siden" },
       { id: "i3", title: "Markus: gruppetime kolliderer tirsdag 16:00", meta: "planjustering · 1 d siden" }
     ].filter((i) => !this.state.godkjent[i.id]).map((i) => Object.assign({}, i, {
@@ -241,7 +241,7 @@ class Component extends DCLogic {
       overstyr: (v) => this.setState((s) => ({ overstyrt: Object.assign({}, s.overstyrt, { [v.id]: true }) })),
       dager: dager, synligeDager: synligeDager,
       headerMeta: okter.length + "\u00A0økter · " + med(timer, "t"),
-      headerActions: lenke("wb-publiser", "Publiser til Emma"),
+      headerActions: lenke("wb-publiser", "Publiser til Øyvind"),
       soner: soner, sone: sone,
       setSone: (v) => this.setState({ sone: v }),
       visEditor: sone.indexOf("Editor") === 0,
@@ -282,7 +282,7 @@ class Component extends DCLogic {
       spor: () => {},
       toggleCtx: () => {},
       kontekst: [
-        { id: "emma", label: "Emma S.", active: true },
+        { id: "emma", label: "Øyvind R.", active: true },
         { id: "u31", label: "uke 31", active: true },
         { id: "p3", label: "P3 SPES", active: false }
       ],
