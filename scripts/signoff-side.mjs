@@ -137,7 +137,7 @@ function sideHtml({ tittel, undertittel, seksjoner, nøkkel }) {
 <div class="wrap">
   <h1>${tittel}</h1>
   <p class="lede">${undertittel}</p>
-  <p class="tips">Appen er til venstre i hvert bilde, Paper-fasiten til høyre. Bildene er i full
+  <p class="tips"><strong>Hva avkryssingen betyr:</strong> at appen er blitt lik nok fasiten, altså at porteringen av den skjermen er ferdig. Den betyr ikke at dagens utseende blir ny fasit — Paper vinner alltid, og appen er det som endres.<br><br>Appen er til venstre i hvert bilde, Paper-fasiten til høyre. Bildene er i full
   oppløsning — knip for å zoome på mobil. Desktop-bildet er bredere enn skjermen og kan dras
   sidelengs.</p>
 
@@ -247,7 +247,7 @@ for (const s of skjermer) {
     html: `<section class="skjerm" id="s-${s.id}">
   <header class="skjermtopp">
     <div><span class="id">${s.id}</span><h2>${s.navn}</h2><span class="rute">${s.rute}</span></div>
-    <label class="kvitt"><input type="checkbox" data-id="${s.id}"><span>Godkjent</span></label>
+    <label class="kvitt" title="Appen er lik nok fasiten — porteringen av denne skjermen er ferdig"><input type="checkbox" data-id="${s.id}"><span>Appen matcher fasiten</span></label>
   </header>
   ${MERKNADER[s.id] ? `<p class="merknad">${MERKNADER[s.id]}</p>` : ""}
   ${bilder.join("\n  ")}
