@@ -1,5 +1,24 @@
 # Åpne spørsmål — natt 06.–07.08.2026
 
+> Levende fil (oppdatert 18.08.2026) — `docs/AAPNE-SPORSMAAL.md` (17.07) er den gamle,
+> nå redusert til en peker hit. Nedenfor: rute-konsolideringsspørsmålene fra natt 06.–07.08
+> (uendret), pluss de gjenstående ÅPEN-punktene flettet inn fra den gamle fila som fortsatt
+> ikke er avklart.
+
+## Flettet inn fra docs/AAPNE-SPORSMAAL.md (fortsatt ÅPEN 18.08.2026)
+
+### A4 · Fase 2: anbefalingsmotor for periode-fordeling
+**Spørsmål:** når bygges anbefalingsmotoren som foreslår TEK/pyramide-fordeling ut fra SG/tester/L-fase?
+**Status:** Fase 1 bygget og i drift (`PeriodeFordeling`-modell + `/admin/settings/periode-fordeling`).
+Fase 2 venter på at nok data er samlet — ingen dato satt.
+
+### D8 · Banekart i hull-analysen — ekte geometri
+**Spørsmål:** hvor kommer tee/green/fairway-koordinatene per hull per bane fra —
+manuell inntasting i AgencyOS, import fra GolfBox/ekstern, eller generering?
+**Status:** BESLUTTET at ekte geometri skal bygges (Anders 2026-07-17), men BLOKKERT på
+datakilde-valget over. Egen prosjektbølge. Shot-map (`CourseMap`) er allerede klar til å
+bruke geometrien når `CourseDefinition.geojson` finnes.
+
 ## /portal/mal/bygger vs /portal/ai/mal-bygger
 **Spørsmål:** Skal disse slås til én AI-målbygger?
 **Hvorfor det blokkerer:** To skjermer med samme jobb — porte begge er bortkastet.

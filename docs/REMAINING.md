@@ -1,3 +1,5 @@
+> UTGÅTT 18.08.2026 — styrer ingenting. Gjeldende: se docs/STATUS-NÅ.md og docs/port/GYLDIGHET.md.
+
 # REMAINING — pekere
 
 **Komplett plan (alt som gjenstår):** [`docs/COMPLETE-REMAINING-PLAN.md`](./COMPLETE-REMAINING-PLAN.md)

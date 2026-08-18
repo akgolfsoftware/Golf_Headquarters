@@ -1,3 +1,5 @@
+> UTGÅTT 18.08.2026 — styrer ingenting. Gjeldende: se docs/STATUS-NÅ.md og docs/port/GYLDIGHET.md.
+
 # Komplett gjenstående plan — AK Golf HQ
 
 **Oppdatert:** 2026-08-09 · **Eier:** Anders Kristiansen · **Agent-kilde:** én fil  
