@@ -15,7 +15,7 @@
 <x-import component-from-global-scope="AKGolfHQClaudePaper_605a48.Topbar" theme="{{ theme }}" onToggleTheme="{{ toggleTheme }}" searchPlaceholder="Søk i økter, drills og spillere" hint-size="100%,56px"></x-import>
 <div style="flex:1;min-width:0;display:flex;align-items:stretch">
 <main data-rsp="pad" style="flex:1;min-width:0;padding:24px 28px 32px;display:flex;flex-direction:column;gap:14px">
-<x-import component-from-global-scope="AKGolfHQClaudePaper_605a48.PageHeader" kicker="Uke 31 · 31. juli – 6. august · P3 SPESIALISERING" title="Workbench" lead="Emma Sæther. Flytt økter mellom dager fra editoren, og se budsjettet endre seg mens du gjør det." meta="{{ headerMeta }}" actions="{{ headerActions }}" dataOdId="page-header" hint-size="100%,120px"></x-import>
+<x-import component-from-global-scope="AKGolfHQClaudePaper_605a48.PageHeader" kicker="Uke 31 · 31. juli – 6. august · P3 SPESIALISERING" title="Workbench" lead="Øyvind Rohjan. Flytt økter mellom dager fra editoren, og se budsjettet endre seg mens du gjør det." meta="{{ headerMeta }}" actions="{{ headerActions }}" dataOdId="page-header" hint-size="100%,120px"></x-import>
 
 <x-import component-from-global-scope="AKGolfHQClaudePaper_605a48.BudgetBar" hours="{{ timer }}" min="{{ 5 }}" max="{{ 8 }}" distribution="{{ fordeling }}" keyFigures="{{ nokkeltall }}" violations="{{ brudd }}" onOverride="{{ overstyr }}" dataOdId="budsjett" hint-size="100%,220px"></x-import>
 
@@ -49,7 +49,7 @@
 <sc-if value="{{ visEditor }}" hint-placeholder-val="{{ true }}">
 <div style="display:flex;flex-direction:column;gap:12px">
 <div><span style="font-family:var(--mono);font-size:9.5px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)">økt-editor</span><h2 style="font-family:var(--disp);font-size:16px;font-weight:600;margin:4px 0 0;line-height:1.25">{{ valgtTittel }}</h2><p style="font-family:var(--mono);font-size:10.5px;color:var(--muted);margin:4px 0 0">{{ valgtFormel }}</p></div>
-<x-import component-from-global-scope="AKGolfHQClaudePaper_605a48.FormField" label="L-fase" hint-size="100%,72px"><x-import component-from-global-scope="AKGolfHQClaudePaper_605a48.SegmentControl" options="{{ lfaser }}" value="{{ lfase }}" onChange="{{ setLfase }}" dataOdId="felt-lfase" hint-size="100%,44px"></x-import></x-import>
+<x-import component-from-global-scope="AKGolfHQClaudePaper_605a48.FormField" label="Motorikk" hint-size="100%,72px"><x-import component-from-global-scope="AKGolfHQClaudePaper_605a48.SegmentControl" options="{{ motorikker }}" value="{{ motorikk }}" onChange="{{ setMotorikk }}" dataOdId="felt-motorikk" hint-size="100%,44px"></x-import></x-import>
 <x-import component-from-global-scope="AKGolfHQClaudePaper_605a48.FormField" label="Pyramideområde" hint-size="100%,72px"><x-import component-from-global-scope="AKGolfHQClaudePaper_605a48.SegmentControl" options="{{ omrader }}" value="{{ omrade }}" onChange="{{ setOmrade }}" dataOdId="felt-omrade" hint-size="100%,44px"></x-import></x-import>
 <x-import component-from-global-scope="AKGolfHQClaudePaper_605a48.FormField" label="Drill" hint="Filtrert på kategori C og Mulligan-fasilitetene" hint-size="100%,88px"><x-import component-from-global-scope="AKGolfHQClaudePaper_605a48.Combobox" options="{{ drills }}" value="{{ drill }}" onChange="{{ setDrill }}" placeholder="Søk i drills" dataOdId="felt-drill" hint-size="100%,44px"></x-import></x-import>
 <x-import component-from-global-scope="AKGolfHQClaudePaper_605a48.FormField" label="Varighet" hint-size="100%,96px"><x-import component-from-global-scope="AKGolfHQClaudePaper_605a48.Slider" min="{{ 30 }}" max="{{ 180 }}" step="{{ 15 }}" value="{{ varighet }}" unit="min" onChange="{{ setVarighet }}" note="{{ varighetNote }}" dataOdId="felt-varighet" hint-size="100%,72px"></x-import></x-import>
@@ -77,7 +77,7 @@
 <sc-if value="{{ visCaddie }}" hint-placeholder-val="{{ false }}">
 <div style="display:flex;flex-direction:column;gap:10px">
 <span style="font-family:var(--mono);font-size:9.5px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)">caddie · utkast</span>
-<p style="margin:0;font-size:12.5px;line-height:1.5;color:var(--muted)">Forslag bygget på testloggen 12.07 og lastavviket. Legg dem inn der de hører hjemme — ingenting når Emma før du har godkjent.</p>
+<p style="margin:0;font-size:12.5px;line-height:1.5;color:var(--muted)">Forslag bygget på testloggen 12.07 og lastavviket. Legg dem inn der de hører hjemme — ingenting når Øyvind før du har godkjent.</p>
 <sc-for list="{{ utkast }}" as="u" hint-placeholder-count="3">
 <div style="display:flex;flex-direction:column;gap:6px">
 <x-import component-from-global-scope="AKGolfHQClaudePaper_605a48.SessionCard" time="{{ u.time }}" area="{{ u.area }}" title="{{ u.title }}" formula="{{ u.formula }}" duration="{{ u.duration }}" draft="{{ true }}" note="{{ u.note }}" onClick="{{ u.apne }}" dataOdId="okt-utkast" hint-size="100%,96px"></x-import>
@@ -100,7 +100,7 @@ class Component extends DCLogic {
   state = {
     theme: "light", nav: "plan", tab: "alt", sone: "Editor",
     valgtOkt: "tek-man", valgtDagIdx: 0,
-    lfase: "L-BALL", omrade: "TEK", drill: "Tee gate 60/40", varighet: 90,
+    motorikk: "LAV_HAST", omrade: "TEK", drill: "Tee gate 60/40", varighet: 90,
     overstyrt: {}, godkjent: {}, lagtInn: {},
     okter: null
   };
@@ -128,19 +128,19 @@ class Component extends DCLogic {
 
   kilde() {
     return [
-      { id: "tek-man", dag: 0, time: "07:00–08:30", area: "TEK", title: "Teknikk tee — P5 til P7", formula: "TEK_TEE_L-BALL_CS60_M2_PR2", min: 90, locked: true, note: "Mulligan 3" },
+      { id: "tek-man", dag: 0, time: "07:00–08:30", area: "TEK", title: "Teknikk tee — P5 til P7", formula: "TEK_TEE_LAV_HAST_INNENDORS_ALENE", min: 90, locked: true, note: "Mulligan 3" },
       { id: "fys-man", dag: 0, time: "17:00–17:45", area: "FYS", title: "Styrke underkropp", min: 45, note: "WANG hall" },
-      { id: "slag-tir", dag: 1, time: "16:00–17:00", area: "SLAG", title: "Wedge 40–90 m", formula: "SLAG_WEDGE_CS70_M3_PR1", min: 60, recurring: true },
-      { id: "tek-ons", dag: 2, time: "15:00–16:30", area: "TEK", title: "Nærspill — P2 kontroll", formula: "TEK_ARG_L-CTRL_CS50_M1_PR3", min: 90 },
+      { id: "slag-tir", dag: 1, time: "16:00–17:00", area: "SLAG", title: "Wedge 40–90 m", formula: "SLAG_WEDGE_LAV_HAST_TRENINGSOMRADE_ALENE", min: 60, recurring: true },
+      { id: "tek-ons", dag: 2, time: "15:00–16:30", area: "TEK", title: "Nærspill — P2 kontroll", formula: "TEK_CHIP_UTEN_BALL_TRENINGSOMRADE_OBSERVERT", min: 90 },
       { id: "spill-tor", dag: 3, time: "15:00–17:00", area: "SPILL", title: "Ni hull med scorekort", min: 120, participants: 3 },
       { id: "fys-fre", dag: 4, time: "07:00–07:45", area: "FYS", title: "Mobilitet og core", min: 45, recurring: true },
-      { id: "slag-lor", dag: 5, time: "10:00–11:30", area: "SLAG", title: "Putting under press", formula: "SLAG_PUTT_CS80_M2_PR2", min: 90 }
+      { id: "slag-lor", dag: 5, time: "10:00–11:30", area: "SLAG", title: "Putting under press", formula: "SLAG_PUTT_3_5_AUTO_TRENINGSOMRADE_KONKURRANSE", min: 90 }
     ];
   }
 
   utkastKilde() {
     return [
-      { id: "u1", dag: 1, dagNavn: "tirsdag", time: "18:00", area: "TEK", title: "Videoøkt: P6 håndledd", formula: "TEK_TEE_L-BALL_CS40_M1_PR1", duration: "45 min", note: "fra testlogg 12.07" },
+      { id: "u1", dag: 1, dagNavn: "tirsdag", time: "18:00", area: "TEK", title: "Videoøkt: P6 håndledd", formula: "TEK_TEE_LAV_HAST_INNENDORS_ALENE", duration: "45 min", note: "fra testlogg 12.07" },
       { id: "u2", dag: 4, dagNavn: "fredag", time: "16:00", area: "SPILL", title: "Banespill 6 hull, scorepress", duration: "90 min", note: "lastavvik +1,5 t" },
       { id: "u3", dag: 6, dagNavn: "søndag", time: "11:00", area: "FYS", title: "Restitusjon og tøy", duration: "30 min", note: "etter turneringshelg" }
     ];
@@ -215,7 +215,7 @@ class Component extends DCLogic {
     const smal = typeof window !== "undefined" && window.matchMedia && window.matchMedia("(max-width: 880px)").matches;
     const synligeDager = smal ? [dager[this.state.valgtDagIdx]] : dager;
     const innboks = [
-      { id: "i1", title: "Emma: kan vi flytte torsdag til 16:30?", meta: "øktforespørsel · 2 t siden" },
+      { id: "i1", title: "Øyvind: kan vi flytte torsdag til 16:30?", meta: "øktforespørsel · 2 t siden" },
       { id: "i2", title: "Plan-vakten: foreslår +30 min SLAG onsdag", meta: "planjustering · 4 t siden" },
       { id: "i3", title: "Markus: gruppetime kolliderer tirsdag 16:00", meta: "planjustering · 1 d siden" }
     ].filter((i) => !this.state.godkjent[i.id]).map((i) => Object.assign({}, i, {
@@ -241,7 +241,7 @@ class Component extends DCLogic {
       overstyr: (v) => this.setState((s) => ({ overstyrt: Object.assign({}, s.overstyrt, { [v.id]: true }) })),
       dager: dager, synligeDager: synligeDager,
       headerMeta: okter.length + "\u00A0økter · " + med(timer, "t"),
-      headerActions: lenke("wb-publiser", "Publiser til Emma"),
+      headerActions: lenke("wb-publiser", "Publiser til Øyvind"),
       soner: soner, sone: sone,
       setSone: (v) => this.setState({ sone: v }),
       visEditor: sone.indexOf("Editor") === 0,
@@ -249,8 +249,8 @@ class Component extends DCLogic {
       visCaddie: sone.indexOf("Caddie") === 0,
       valgtTittel: valgt.title || "Ingen økt valgt",
       valgtFormel: valgt.formula || "ingen AK-formel satt",
-      lfaser: ["L-CTRL", "L-BALL", "L-COMP"], lfase: this.state.lfase,
-      setLfase: (v) => this.setState({ lfase: v }),
+      motorikker: ["UTEN_BALL", "LAV_HAST", "AUTO"], motorikk: this.state.motorikk,
+      setMotorikk: (v) => this.setState({ motorikk: v }),
       omrader: ["FYS", "TEK", "SLAG", "SPILL"], omrade: this.state.omrade,
       setOmrade: (v) => this.setState({ omrade: v }),
       drills: [
@@ -282,7 +282,7 @@ class Component extends DCLogic {
       spor: () => {},
       toggleCtx: () => {},
       kontekst: [
-        { id: "emma", label: "Emma S.", active: true },
+        { id: "emma", label: "Øyvind R.", active: true },
         { id: "u31", label: "uke 31", active: true },
         { id: "p3", label: "P3 SPES", active: false }
       ],
