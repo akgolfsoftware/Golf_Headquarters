@@ -128,10 +128,13 @@ oppretter nye ruter.
    parallelle token-systemer; vent på Open Design.
 6. **Følg gotchas-listen** (`.claude/rules/gotchas.md`) — Prisma 7 driver adapter, `pg.Pool`, zod ved
    API-grenser, Oslo-tid via `uke-helpers.ts`, `proxy.ts` ikke `middleware.ts`.
-7. **Feillogg (ny praksis 2026-08-06):** kostet noe i økten ekstra tid (feilslått antagelse, gjentatt feil,
+8. **`STATUS-NÅ.md` skrives alltid komplett på nytt fra regnskapet, aldri lagvis** (2026-08-18)
+   — kilde er `docs/port/PAPER-ZIP-CHECKLIST.md` + `docs/port/PIXEL-PERFECT-PLAN-COMPLETE.md`.
+   Aldri legg et nytt tidsstempel-avsnitt oppå et gammelt; overskriv hele filen.
+9. **Feillogg (ny praksis 2026-08-06):** kostet noe i økten ekstra tid (feilslått antagelse, gjentatt feil,
    fasit-avvik) — legg én linje i `docs/feillogg.md` (format øverst i filen), lagt inn av `/pr` ved behov.
    Ingen feil i økten: ikke rør filen. Formålet er å finne mønstre over tid, ikke logge hver økt.
-8. **Token-økonomi (2026-08-06):** se `.claude/rules/gotchas.md` §Token-økonomi — korte versjon: aldri
+10. **Token-økonomi (2026-08-06):** se `.claude/rules/gotchas.md` §Token-økonomi — korte versjon: aldri
    la lange kommandoer (build/test/`npm ci`) strømme rått inn i samtalen (redirect til fil, tail/grep),
    grep i store dokumenter fremfor å lese dem hele, stol på PR-webhooks fremfor å polle GitHub Actions.
    Senker ALDRI kvalitetsgaten (`npm run verify` er fortsatt obligatorisk) — kun hvordan output håndteres.
