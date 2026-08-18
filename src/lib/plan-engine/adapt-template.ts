@@ -11,7 +11,6 @@
 import type { LPhase, PyramidArea, SkillArea, SessionEnvironment } from "@/generated/prisma/client";
 import type { WorkbenchFokus, SgKategori } from "@/lib/workbench/fokus";
 import { SG_FOKUS_LABEL } from "@/lib/workbench/fokus";
-import { CANON_PERIOD_ADJUSTMENT } from "@/lib/workbench/canon-period-adjustment";
 
 /** Mal-økt slik den kommer fra PlanTemplateSession (én uke). */
 export interface MalOkt {
@@ -236,12 +235,11 @@ export function adaptTemplateWeek(
   okter = flyttet;
   if (dagJustering) justeringer.push(dagJustering);
 
-  // 6. CANON-avvik: mal-fase vs spillerens aktive fase — kun rådgivende, aldri sperre.
+  // 6. Ren observasjon: malen er laget for en annen periode enn den du står i.
+  //    Ingen anbefaling og ingen justering — bare synlig, så valget er ditt.
   if (signaler.aktivFase && signaler.aktivFase !== malFase) {
-    const retninger = CANON_PERIOD_ADJUSTMENT[signaler.aktivFase];
-    const opp = (Object.keys(retninger) as PyramidArea[]).filter((a) => retninger[a] === "opp");
     justeringer.push(
-      `Malen er laget for en annen periode enn den du er i nå — i din periode anbefales mer ${opp.join(" og ")}. Du kan fint bruke den likevel.`,
+      "Malen er laget for en annen periode enn den du er i nå. Du kan fint bruke den likevel.",
     );
   }
 

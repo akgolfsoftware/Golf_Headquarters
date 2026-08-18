@@ -12,21 +12,11 @@ import { T, Caps, Kort, Knapp, StatusPill } from "@/components/v2";
 import { Inndata, TekstOmraade } from "@/components/v2/skjema";
 import { Icon } from "@/components/v2/icon";
 import { HjelpTips } from "@/components/v2/hjelp";
-import { CANON_PERIOD_ADJUSTMENT } from "@/lib/workbench/canon-period-adjustment";
 import {
   opprettPeriode,
   oppdaterPeriode,
   slettPeriode,
 } from "@/app/portal/(legacy)/tren/aarsplan/periode/actions";
-
-/** «CANON anbefaler: FYS opp · SPILL ned» — kun retninger som avviker fra «lik». */
-function canonHintFor(lPhase: LPhase): string | null {
-  const retninger = CANON_PERIOD_ADJUSTMENT[lPhase];
-  const deler = Object.entries(retninger)
-    .filter(([, retning]) => retning !== "lik")
-    .map(([area, retning]) => `${area} ${retning}`);
-  return deler.length > 0 ? `CANON anbefaler: ${deler.join(" · ")}` : null;
-}
 
 const LPHASE_META: Record<LPhase, string> = {
   GRUNN: "Grunnperiode",
@@ -140,8 +130,6 @@ export function PeriodeFormV2(props: Props) {
   const [volMin, setVolMin] = useState(initial?.weeklyVolMin?.toString() ?? "");
   const [volMax, setVolMax] = useState(initial?.weeklyVolMax?.toString() ?? "");
 
-  const canonHint = canonHintFor(lPhase);
-
   function lagre() {
     setError(null);
     startTransition(async () => {
@@ -193,12 +181,6 @@ export function PeriodeFormV2(props: Props) {
           ))}
           <HjelpTips k="periodetype" />
         </div>
-
-        {canonHint && (
-          <p style={{ fontFamily: T.mono, fontSize: 10.5, fontWeight: 600, letterSpacing: "0.02em", color: T.lime, margin: "12px 0 0" }}>
-            {canonHint}
-          </p>
-        )}
 
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, marginTop: 16 }}>
           <div>
