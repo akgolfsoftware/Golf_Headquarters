@@ -13,12 +13,6 @@
  */
 
 import { Sesongband, type SesongbandPeriode } from "./sesongband";
-import {
-  AkseChip,
-  MaalStatusChip,
-  VurderingPrikker,
-  formaterEgentid,
-} from "./ak-primitiver";
 import { Ikon } from "./primitiver";
 import {
   COMPS,
@@ -31,14 +25,7 @@ import {
   daysUntil,
   pct,
   seasonWeek,
-  type PeriodeKey,
 } from "../_data/wang-plan";
-import {
-  FOKUS_DEMO,
-  summerEgentid,
-  type Fokusomraade,
-  type PeriodeFokus,
-} from "../_data/fokusomraader";
 
 // ---- Hjelpere ----------------------------------------------------------
 
@@ -246,175 +233,6 @@ function GruppeKort({
   );
 }
 
-// ---- Spor 2: elevens utviklingsplan ------------------------------------
-
-function FokusRad({ f, siste }: { f: Fokusomraade; siste: boolean }) {
-  return (
-    <div
-      style={{
-        display: "flex",
-        alignItems: "flex-start",
-        gap: 10,
-        padding: "10px 0",
-        borderBottom: siste ? "none" : "1px solid var(--border-subtle)",
-        minWidth: 0,
-      }}
-    >
-      <AkseChip akse={f.akse} />
-      <span style={{ flex: 1, minWidth: 0 }}>
-        <span
-          style={{
-            display: "block",
-            fontFamily: "var(--font-brand)",
-            fontWeight: 700,
-            fontSize: 13,
-            color: "var(--text-primary)",
-            lineHeight: 1.4,
-          }}
-        >
-          {f.tittel}
-        </span>
-        <span
-          style={{
-            display: "block",
-            marginTop: 2,
-            fontSize: 11.5,
-            color: "var(--text-secondary)",
-            fontVariantNumeric: "tabular-nums",
-          }}
-        >
-          {formaterEgentid(f.egentidMinUke)} egentrening
-        </span>
-        {/* Er perioden evaluert i IUP-samtalen, vises begge vurderingene her —
-            eleven skal se sin egen og trenerens ved siden av hverandre. */}
-        {f.egenvurdering !== null || f.trenervurdering !== null ? (
-          <span
-            style={{
-              display: "flex",
-              flexWrap: "wrap",
-              gap: "4px 14px",
-              marginTop: 6,
-              alignItems: "center",
-            }}
-          >
-            <VurderingPrikker
-              verdi={f.egenvurdering}
-              farge="var(--wang-teal)"
-              label="Egenvurdering"
-            />
-            <VurderingPrikker
-              verdi={f.trenervurdering}
-              farge="var(--wang-navy)"
-              label="Trenervurdering"
-            />
-          </span>
-        ) : null}
-      </span>
-      <MaalStatusChip status={f.status} />
-    </div>
-  );
-}
-
-function IupKort({
-  fokus,
-  farge,
-  tom,
-}: {
-  fokus: PeriodeFokus | null;
-  farge: string;
-  tom: string;
-}) {
-  if (!fokus || fokus.omraader.length === 0) {
-    return (
-      <div
-        className="wang-card"
-        style={{
-          padding: "14px 16px",
-          boxShadow: "var(--shadow-card-sm)",
-          borderLeft: `3px solid ${farge}`,
-        }}
-      >
-        <p
-          style={{
-            margin: 0,
-            fontSize: 12.5,
-            lineHeight: 1.55,
-            color: "var(--text-secondary)",
-          }}
-        >
-          {tom}
-        </p>
-      </div>
-    );
-  }
-
-  const sum = summerEgentid(fokus.omraader);
-
-  return (
-    <div
-      className="wang-card"
-      style={{
-        padding: "14px 16px",
-        boxShadow: "var(--shadow-card-sm)",
-        borderLeft: `3px solid ${farge}`,
-      }}
-    >
-      <div
-        style={{
-          display: "flex",
-          alignItems: "baseline",
-          justifyContent: "space-between",
-          gap: 10,
-          flexWrap: "wrap",
-        }}
-      >
-        <span
-          style={{
-            fontFamily: "var(--font-brand)",
-            fontWeight: 800,
-            fontSize: 12,
-            color: "var(--text-primary)",
-          }}
-        >
-          {fokus.omraader.length} fokusområde
-          {fokus.omraader.length === 1 ? "" : "r"}
-        </span>
-        {/* Totalbelastningen skal være synlig FØR perioden starter. */}
-        <span
-          style={{
-            fontFamily: "var(--font-brand)",
-            fontWeight: 700,
-            fontSize: 12,
-            color: "var(--wang-teal-text)",
-            fontVariantNumeric: "tabular-nums",
-          }}
-        >
-          {formaterEgentid(sum)} egentid/uke
-        </span>
-      </div>
-
-      <div style={{ marginTop: 6 }}>
-        {fokus.omraader.map((f, i) => (
-          <FokusRad key={f.id} f={f} siste={i === fokus.omraader.length - 1} />
-        ))}
-      </div>
-
-      <p
-        style={{
-          margin: "10px 0 0",
-          paddingTop: 10,
-          borderTop: "1px solid var(--border-subtle)",
-          fontSize: 11.5,
-          lineHeight: 1.5,
-          color: "var(--text-secondary)",
-        }}
-      >
-        {fokus.maaling}
-      </p>
-    </div>
-  );
-}
-
 // ---- Milepælstripe -----------------------------------------------------
 
 function Milepaeler({ naaIso }: { naaIso: string }) {
@@ -491,14 +309,9 @@ function Milepaeler({ naaIso }: { naaIso: string }) {
 
 export interface PlanSesongProps {
   naaIso: string;
-  /**
-   * Elevens lagrede fokusområder gruppert på periodenøkkel. Null = ingen
-   * IUP-samtale kjørt ennå → demoen vises, med tydelig merking.
-   */
-  fokusPerPeriode: Record<PeriodeKey, PeriodeFokus> | null;
 }
 
-export function PlanSesong({ naaIso, fokusPerPeriode }: PlanSesongProps) {
+export function PlanSesong({ naaIso }: PlanSesongProps) {
   const uke = Math.min(TOTAL_WEEKS, Math.max(1, seasonWeek(naaIso)));
 
   const perioderMedUker = PERIODS.map((p) => ({
@@ -535,9 +348,6 @@ export function PlanSesong({ naaIso, fokusPerPeriode }: PlanSesongProps) {
     const n = MON_SHORT[m];
     return n.charAt(0).toUpperCase() + n.slice(1);
   });
-
-  const brukerDemo = fokusPerPeriode === null;
-  const fokus = fokusPerPeriode ?? FOKUS_DEMO;
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 18 }}>
@@ -581,35 +391,6 @@ export function PlanSesong({ naaIso, fokusPerPeriode }: PlanSesongProps) {
               naa={p.naa}
               ukeIPeriode={ukeIPeriode}
               antallUker={p.antallUker}
-            />
-          ))}
-        </div>
-
-        <div style={{ height: 1, background: "var(--border-subtle)" }} />
-
-        <SporHode
-          tittel="Min utviklingsplan"
-          undertittel={
-            brukerDemo
-              ? "Eksempel — settes i IUP-samtalen med trener"
-              : "Avtalt med trener i IUP-samtalen"
-          }
-          ikon="target"
-        />
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: `repeat(${PERIODS.length}, minmax(0, 1fr))`,
-            gap: 12,
-          }}
-          className="wang-spor"
-        >
-          {perioderMedUker.map((p) => (
-            <IupKort
-              key={p.key}
-              fokus={fokus[p.key] ?? null}
-              farge={PERIOD_COL[p.key]}
-              tom="Fokusområdene for denne perioden settes i IUP-samtalen med treneren."
             />
           ))}
         </div>

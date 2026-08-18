@@ -1041,12 +1041,7 @@ function Plan({
       </div>
 
       {planMain === "Sesong" ? (
-        <PlanSesong
-          naaIso={naaIso}
-          fokusPerPeriode={
-            live ? byggFokusPerPeriode(live.perioder, live.fokusomraader) : null
-          }
-        />
+        <PlanSesong naaIso={naaIso} />
       ) : planMain === "Kalender" ? (
         <FaneKalender
           key={kalenderHopp ?? "std"}
