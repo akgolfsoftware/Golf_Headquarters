@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="nb" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Fortsett med PlayerHQ · AK Golf HQ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Lora:ital,wght@0,400;0,500;1,400&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="w3-base.css">
+<style>
+/* ═══ PlayerHQ · Meg · Abonnement · Fortsett (fase3 — ny 2026-08-17) ═══
+   Rute: /portal/meg/abonnement/fortsett. FØRSTE fasit for §8-underskjermene
+   nevnt i playerhq-abonnement.html sin kommentar (avbestill/oppgrader/kort/
+   faktura mangler ennå egen tegning — se rutefasit-for-claude-code.md).
+   Vises som exit-skjerm rett etter at en spiller avbestiller en coaching-
+   pakke (Performance/Performance Pro), ELLER fra e-postlenken i vinn-
+   tilbake-utsendelsen. Kilde: WinbackTilbud (kind=COACHING, status=TILBUDT).
+   Abonnementet starter FØRST når coaching-perioden utløper (Stripe
+   trial_end) — derfor «du betaler aldri dobbelt» gjennomgående i teksten.
+   Prisene er kanon (Anders 2026-08-16): 299 kr/mnd · 2 690 kr/år
+   («tre måneder gratis» — 299×9=2 691, avrundet til 2 690, spar 898 kr). */
+.valgrad{ display:flex; align-items:center; justify-content:space-between; gap:var(--s3);
+  width:100%; text-align:left; padding:var(--s4); margin-bottom:var(--s2);
+  background:var(--surface); border:2px solid var(--border); border-radius:var(--r);
+  cursor:pointer; color:inherit; }
+.valgrad[aria-checked="true"]{ border-color:var(--fg); background:var(--soft); }
+.valgrad .vx{ min-width:0; }
+.valgrad .vn{ display:flex; align-items:center; gap:var(--s2); font-size:13.5px; font-weight:700; }
+.valgrad .vu{ display:block; font-family:var(--body); font-size:12px; color:var(--muted); margin-top:3px; }
+.valgrad .vp{ flex:none; font-family:var(--mono); font-size:16px; font-weight:700; white-space:nowrap; }
+.prisboks{ background:var(--fg); color:var(--bg); border-radius:var(--r); padding:var(--s5) var(--s4);
+  margin:var(--s3) 0 var(--s4); text-align:center; }
+.prisboks .pv{ font-family:var(--mono); font-size:40px; font-weight:700; line-height:1; }
+.prisboks .pv span{ font-size:15px; font-weight:500; opacity:.7; margin-left:var(--s1); }
+.prisboks .pu{ display:block; margin-top:var(--s2); font-family:var(--body); font-size:13px;
+  color:var(--bg); opacity:.75; }
+.avslaa{ display:block; width:100%; text-align:center; background:transparent; border:0;
+  font-family:var(--body); font-size:13px; color:var(--muted); text-decoration:underline;
+  text-underline-offset:3px; padding:var(--s3); cursor:pointer; }
+</style>
+</head>
+<body>
+<p class="framehint">PlayerHQ · Meg · Abonnement · Fortsett · 430 px. Under 641 px fyller den skjermen.</p>
+<div class="phone" data-demo-only="true">
+  <header class="topp">
+    <a class="ikon" href="playerhq-abonnement.html" aria-label="Til abonnement" data-od-id="fts-tilbake"><svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg></a>
+    <div style="min-width:0"><h1>Fortsett med PlayerHQ</h1><span class="sub">Coaching-pakken din avsluttes snart</span></div>
+    <span style="flex:1"></span>
+    <div data-demo-only="true" style="display:flex;gap:4px">
+      <button class="ikon" data-tilstand="tilbud" aria-pressed="true" aria-label="Demo: tilbud aktivt" data-od-id="fts-demo-tilbud"><span class="num" style="font-size:10px">T</span></button>
+      <button class="ikon" data-tilstand="avslatt" aria-pressed="false" aria-label="Demo: avslo tilbudet" data-od-id="fts-demo-avslatt"><span class="num" style="font-size:10px">A</span></button>
+    </div>
+    <button class="ikon" id="themeBtn" aria-label="Bytt til mørk modus" data-od-id="fts-theme"><svg viewBox="0 0 24 24"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></button>
+  </header>
+
+  <main class="kropp">
+
+    <section data-vis="tilbud">
+      <div class="kort tint">
+        <span class="eyebrow">Performance Pro avsluttes 2. september</span>
+        <p style="margin-top:var(--s2)">Treningsplanen, statistikken og hele historikken din i PlayerHQ ligger klar til deg videre. Fortsett for 299 kr i måneden — eller spar ved å betale for et helt år.</p>
+      </div>
+
+      <div role="radiogroup" aria-label="Velg abonnement" style="margin-top:var(--s4)">
+        <button class="valgrad" type="button" role="radio" aria-checked="false" data-pris="mnd" data-od-id="fts-velg-mnd">
+          <span class="vx"><span class="vn">Månedlig</span><span class="vu">Avbryt når som helst</span></span>
+          <span class="vp num">299 kr</span>
+        </button>
+        <button class="valgrad" type="button" role="radio" aria-checked="true" data-pris="aar" data-od-id="fts-velg-aar">
+          <span class="vx"><span class="vn">Årlig <span class="tag akt">Beste pris</span></span><span class="vu">Tre måneder gratis — spar 898 kr</span></span>
+          <span class="vp num">2 690 kr</span>
+        </button>
+      </div>
+
+      <div class="prisboks">
+        <div class="pv num" data-visning-pris>2 690<span>kr / år</span></div>
+        <span class="pu" data-visning-tekst>Starter 2. september — når coaching-perioden din utløper. Du betaler aldri dobbelt.</span>
+      </div>
+
+      <button class="btn now full" data-od-id="fts-fortsett" data-tekst-mnd="Fortsett med månedlig · 299 kr" data-tekst-aar="Fortsett med årlig · 2 690 kr">Fortsett med årlig · 2 690 kr</button>
+      <button class="avslaa" type="button" data-od-id="fts-nei-takk">Nei takk, avslutt tilgangen når perioden utløper</button>
+
+      <div class="kort" style="margin-top:var(--s4)">
+        <h3>Dette beholder du</h3>
+        <div class="ytelse"><svg viewBox="0 0 24 24" style="width:15px;height:15px;stroke:var(--up);stroke-width:2;fill:none"><path d="M20 6L9 17l-5-5"/></svg><span>Treningsplanen og hele historikken din</span></div>
+        <div class="ytelse"><svg viewBox="0 0 24 24" style="width:15px;height:15px;stroke:var(--up);stroke-width:2;fill:none"><path d="M20 6L9 17l-5-5"/></svg><span>Statistikk, runder og Strokes Gained</span></div>
+        <div class="ytelse"><svg viewBox="0 0 24 24" style="width:15px;height:15px;stroke:var(--up);stroke-width:2;fill:none"><path d="M20 6L9 17l-5-5"/></svg><span>Testbatteriet og utviklingen din</span></div>
+        <div class="ytelse"><svg viewBox="0 0 24 24" style="width:15px;height:15px;stroke:var(--up);stroke-width:2;fill:none"><path d="M20 6L9 17l-5-5"/></svg><span>Booking av enkelttimer når du trenger coach</span></div>
+      </div>
+
+      <details class="why" style="border:1px solid var(--border);border-radius:var(--r);margin-top:var(--s3)">
+        <summary style="display:flex;align-items:center;min-height:var(--tap);padding:0 var(--s4);cursor:pointer;list-style:none;font-size:12.5px;font-weight:500;color:var(--muted)">Hvorfor ser jeg dette?</summary>
+        <div style="padding:0 var(--s4) var(--s4);font-family:var(--body);font-size:12.5px;color:var(--muted)">Coaching-pakken din er sagt opp og avsluttes ved periodens slutt. PlayerHQ-tilgangen har fulgt med pakken — uten et eget abonnement stenges den samtidig. Sier du ja her, starter det nye abonnementet automatisk samme dag pakken slutter, aldri før.</div>
+      </details>
+    </section>
+
+    <section data-vis="avslatt" hidden>
+      <div class="tom">
+        <h3>Greit, vi lar det være</h3>
+        <p>PlayerHQ-tilgangen din avsluttes 2. september sammen med coaching-pakken. Alt du har registrert blir liggende — endrer du mening, er tilbudet tilgjengelig fra Abonnement helt til fristen.</p>
+        <a class="btn full" href="playerhq-abonnement.html" data-od-id="fts-avslatt-tilbake">Tilbake til abonnement</a>
+      </div>
+    </section>
+
+  </main>
+</div>
+<div class="sr" id="live" aria-live="polite"></div>
+<script src="w3-demo.js"></script>
+<script>
+(function(){
+  document.querySelectorAll('.valgrad').forEach(function(r){
+    r.addEventListener('click', function(){
+      document.querySelectorAll('.valgrad').forEach(function(x){ x.setAttribute('aria-checked','false'); });
+      this.setAttribute('aria-checked','true');
+      var aar = this.dataset.pris === 'aar';
+      document.querySelector('[data-visning-pris]').innerHTML = aar ? '2 690<span>kr / år</span>' : '299<span>kr / mnd</span>';
+      document.querySelector('[data-visning-tekst]').textContent = aar
+        ? 'Starter 2. september — når coaching-perioden din utløper. Du betaler aldri dobbelt.'
+        : 'Starter 2. september. Avbryt når som helst — ingen bindingstid.';
+      var cta = document.querySelector('[data-od-id="fts-fortsett"]');
+      cta.textContent = aar ? cta.dataset.tekstAar : cta.dataset.tekstMnd;
+    });
+  });
+})();
+</script>
+</body>
+</html>
