@@ -1,10 +1,10 @@
 # Treningsplanlegging — systemspec
 
-**Status: FASE 0 NESTEN LUKKET (20.08.2026).** Bygget punkt for punkt fra Anders' svar
-19.–20.08.2026. Relevans-matrisen, de tre åpne punktene og FYS-øvelsesbanken er godkjent
-(runde 1–3, 20.08). **Gjenstår kun:** de ti spørsmålene i «Fortsatt uavklart før KOMPLETT»
-under — hver har et forslått default, ingen er eksplisitt bekreftet ennå. Alt her er
-besluttet av Anders med mindre annet er merket.
+**Status: KOMPLETT (20.08.2026).** Bygget punkt for punkt fra Anders' svar 19.–20.08.2026.
+Fase 0 lukket samme dag: relevans-matrisen, de tre åpne punktene, FYS-øvelsesbanken og de
+ti gjenstående defaultspørsmålene fra analysen er alle godkjent (runde 1–4, 20.08). Alt her
+er besluttet av Anders med mindre annet er merket. Nye avklaringer legges til som nye
+rettelser under, historikken over skrives ikke om.
 
 ---
 
@@ -468,13 +468,11 @@ utvidelse, ingen enhet er koblet nå.
 
 ---
 
-## Kontrakt for bygging (DRAFT — fase 0.4, venter «spec komplett»)
+## Kontrakt for bygging (GJELDENDE — fase 0.4 lukket 20.08.2026)
 
-**Ikke gjeldende ennå.** Denne seksjonen er et utkast til kontrakten Fase 1–3 i
-`docs/plan-treningsplanlegging-til-kode-2026-08-20.md` skal bygge mot. Hentet rett fra
-fasering og risikovurdering i `docs/analyse-treningsplanlegger-2026-08-20.md` §3/§5.
-Spec-en markeres KOMPLETT først når Anders sier det eksplisitt (fase 0.4) — når det skjer,
-fjernes «DRAFT» og «UNDER INTERVJU»-status-linjen øverst oppdateres.
+Kontrakten Fase 1–3 i `docs/plan-treningsplanlegging-til-kode-2026-08-20.md` bygger mot.
+Hentet rett fra fasering og risikovurdering i
+`docs/analyse-treningsplanlegger-2026-08-20.md` §3/§5.
 
 ### Hva v1 ER
 
@@ -541,10 +539,29 @@ treningsblokk uten å falle tilbake på Notion/regneark.
 - **Skjermbilde-gaten gjelder uendret** for alle skjermer i fase 3 — ingen merge uten at
   Anders har SETT skjermen (390px, lys/mørk, fasit ved siden).
 
-### Fortsatt uavklart før KOMPLETT
+### De ti siste punktene — bekreftet 20.08 (runde 4, «Ja godkjent»)
 
-De ti spørsmålene i `docs/analyse-treningsplanlegger-2026-08-20.md` §7 (ukemerker,
-M0–M5-mapping, blandet økt, fargekode, feiringskort, rep-mål-planlegging, P-oppgave-tak,
-vurdering hoppbar, godkjenning som status, FYS samme øktmodell) — alle har foreslåtte
-defaults i kilden, ingen er eksplisitt bekreftet av Anders ennå. Pluss de tre punktene og
-relevans-matrisen over. Spec-en kan ikke markeres KOMPLETT før disse er avklart.
+Defaultene fra `docs/analyse-treningsplanlegger-2026-08-20.md` §7 er alle godkjent uten
+korrigering — bindende fra nå av, ikke lenger forslag:
+
+1. Ukemerkene UTVIKLING/FORBEREDELSER/KONKURRANSE legges inn i `FASIT-AK-GOLF-HQ.md`.
+2. Historisk mapping: M0/M1 → INNENDØRS, M2/M3 → TRENINGSOMRÅDE, M4 → BANE,
+   M5 → KONKURRANSE; DRY/LAV/FULL → UTEN_BALL/LAV_HAST/AUTO 1:1; CS arkiveres som
+   historisk lesefelt uten arvtaker.
+3. Blandet økt telles på pyramiden med mest planlagt tid (avledet dominant akse), med
+   valgfri økt-merkelapp som overstyring.
+4. Fargekoden i teknisk plan er binær: farget = prioritert denne uka, grå = ikke.
+5. Nådd rep-mål gir kun feiringskort (ren beskrivelse) — automatisk neste-trinn-forslag
+   krever egen, eksplisitt beslutning senere (er ikke tatt nå).
+6. Reps planlegges kun mot totalmål, ikke per økt — auto-tellingen dekker resten.
+7. «Maks 15 oppgaver per P» er veiledning (mykt hint ved 15+), aldri en sperre.
+8. FOKUS/GJENNOMFØRING/MESTRING er hoppbar — ubesvart lagres tomt, aldri som 3.
+9. Godkjenning er kun en statusmerkelapp — spilleren planlegger, trener og logger
+   uavbrutt; re-godkjenning utløses kun av endringer på periode-/blokknivå.
+10. FYS bruker samme økt- og innslagsmodell som golf, med egen logger-variant
+    (STYRKE: sett × reps × vekt; KONDISJON: segment/sone, se rettelse 20.08 runde 3;
+    BEVEGELIGHET: timer) — aldri to øktfamilier.
+
+Spec-en er dermed **KOMPLETT**. Videre avklaringer (relevans-matrisens gjenstående
+(?)-celler, egne dimensjoner for bunker/fullsving, varsling/signal-lag) tas som nye,
+daterte rettelser etter dette punktet — de blokkerer ikke fase 1.
