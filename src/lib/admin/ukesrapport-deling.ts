@@ -46,17 +46,49 @@ export async function delUkesdigest(
   return res.count;
 }
 
-/** Når uka ble delt med denne spilleren — null når den ikke er delt. */
-export async function hentDeling(
+/**
+ * Sist delte uke for denne spilleren — inneværende uke, ellers forrige.
+ * Null når ingen av dem er delt.
+ *
+ * Hvorfor forrige uke også: coachen deler søndag kveld, for uka som da
+ * avsluttes. Åpner spilleren appen mandag morgen står han i NESTE uke, og et
+ * oppslag på inneværende uke alene finner ingenting — digesten var usynlig
+ * resten av uka selv om den var delt. Vi stopper ved forrige uke med vilje:
+ * en digest som er eldre enn det er ikke «uka di» lenger.
+ *
+ * `ukeStart` forteller kalleren hvilken uke svaret gjelder, slik at resten av
+ * digesten regnes for samme uke som ble delt.
+ */
+export async function hentSisteDeling(
   playerId: string,
   now = new Date(),
-): Promise<{ deltAt: Date; coachId: string } | null> {
-  const { ar, uke } = isoUke(startOfWeek(now));
+): Promise<{ deltAt: Date; coachId: string; ukeStart: Date } | null> {
+  const denne = startOfWeek(now);
+  // Midt i forrige uke → startOfWeek: trygt over sommertid-skiftet, der et
+  // rått «minus sju døgn» ellers kan bomme med en time.
+  const forrige = startOfWeek(new Date(denne.getTime() - 3 * 86_400_000));
+  const d = isoUke(denne);
+  const f = isoUke(forrige);
 
-  const rad = await prisma.ukesrapportDeling.findUnique({
-    where: { playerId_ar_uke: { playerId, ar, uke } },
-    select: { deltAt: true, coachId: true },
+  const rad = await prisma.ukesrapportDeling.findFirst({
+    where: {
+      playerId,
+      OR: [
+        { ar: d.ar, uke: d.uke },
+        { ar: f.ar, uke: f.uke },
+      ],
+    },
+    // Nyeste først — er begge uker delt, er inneværende den riktige.
+    orderBy: [{ ar: "desc" }, { uke: "desc" }],
+    select: { deltAt: true, coachId: true, ar: true, uke: true },
   });
 
-  return rad ?? null;
+  if (!rad) return null;
+
+  const erDenne = rad.ar === d.ar && rad.uke === d.uke;
+  return {
+    deltAt: rad.deltAt,
+    coachId: rad.coachId,
+    ukeStart: erDenne ? denne : forrige,
+  };
 }

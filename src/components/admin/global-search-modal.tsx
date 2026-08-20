@@ -52,7 +52,6 @@ import {
   Layers,
   Clock,
   Play,
-  SlidersHorizontal,
   Monitor,
   LayoutDashboard,
   CreditCard,

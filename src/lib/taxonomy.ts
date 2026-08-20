@@ -1,5 +1,5 @@
 import { z } from "zod";
-import type { PyramidArea, LPhase } from "@/generated/prisma/client";
+import type { PyramidArea } from "@/generated/prisma/client";
 
 // ---------------------------------------------------------------------------
 // Drill-modus: FYS vs GOLF

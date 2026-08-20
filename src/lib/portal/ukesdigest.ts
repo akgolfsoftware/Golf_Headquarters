@@ -12,7 +12,7 @@
 
 import { prisma } from "@/lib/prisma";
 import { startOfWeek, endOfWeek } from "@/lib/uke-helpers";
-import { hentDeling } from "@/lib/admin/ukesrapport-deling";
+import { hentSisteDeling } from "@/lib/admin/ukesrapport-deling";
 import {
   etterlevelse,
   etterlevelseTekst,
@@ -82,12 +82,19 @@ export async function hentUkesdigest(
   userId: string,
   now = new Date(),
 ): Promise<UkesdigestData> {
-  const ukeStart = startOfWeek(now);
+  /* Hvilken uke digesten gjelder avgjøres av DELINGEN, ikke av dagens dato.
+     Coachen deler søndag kveld for uka som avsluttes; åpner spilleren appen
+     mandag står han i neste uke. Et blindt `startOfWeek(now)` spurte da etter
+     en uke ingen hadde delt, og digesten var usynlig resten av uka.
+     Uten deling faller vi tilbake på inneværende uke — det er rammen den
+     tomme tilstanden skal vise. */
+  const deling = await hentSisteDeling(userId, now);
+  const ukeStart = deling?.ukeStart ?? startOfWeek(now);
   /* endOfWeek gir MANDAG NESTE UKE kl. 00:00 — en eksklusiv øvre grense.
      Spørringene bruker den derfor med `lt`, aldri `lte`, ellers drar de med
      seg økter som ligger på mandagen etter. Til visning trekkes ett døgn fra
      så perioden leses som mandag–søndag. */
-  const nesteStart = endOfWeek(now);
+  const nesteStart = endOfWeek(ukeStart);
   const nesteSlutt = new Date(nesteStart.getTime() + 7 * 86_400_000);
   const sisteDag = new Date(nesteStart.getTime() - 86_400_000);
   const femRunderSiden = new Date(now.getTime() - 90 * 86_400_000);
@@ -126,21 +133,15 @@ export async function hentUkesdigest(
     }),
   ]);
 
-  /* Delingen avgjør om digesten vises i det hele tatt — coachen deler manuelt,
-     aldri automatikk. Coachnavnet slås opp separat fordi delingstabellen er
-     bevisst uten @relation (additiv, jf. gotchas §Schema-endringer). */
-  const delingRad = await hentDeling(userId, now);
-  const deling = delingRad
-    ? {
-        deltAt: delingRad.deltAt,
-        coachNavn:
-          (
-            await prisma.user.findUnique({
-              where: { id: delingRad.coachId },
-              select: { name: true },
-            })
-          )?.name ?? null,
-      }
+  /* Coachnavnet slås opp separat fordi delingstabellen er bevisst uten
+     @relation (additiv, jf. gotchas §Schema-endringer). */
+  const deltAv = deling
+    ? (
+        await prisma.user.findUnique({
+          where: { id: deling.coachId },
+          select: { name: true },
+        })
+      )?.name ?? null
     : null;
 
   const okter = ukeOkter.map((o) => ({
@@ -205,7 +206,7 @@ export async function hentUkesdigest(
     ukenummer: ukenummer(ukeStart),
     periode: `${DATO_FMT.format(ukeStart)} – ${DATO_FMT.format(sisteDag)}`,
     deltAt: deling?.deltAt ?? null,
-    deltAv: deling?.coachNavn ?? null,
+    deltAv,
 
     etterlevelse: e,
     etterlevelseTekst: etterlevelseTekst(e),

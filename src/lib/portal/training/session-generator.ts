@@ -21,7 +21,6 @@ import {
 import { prisma } from "@/lib/prisma";
 import type {
   TrainingSessionV2,
-  TrainingDrillV2,
   LockedAnchor,
   PeriodVolumeRecipe,
   PeriodRecipeOkt,
