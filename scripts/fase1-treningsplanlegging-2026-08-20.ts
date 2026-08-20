@@ -63,6 +63,7 @@ async function main() {
   await lagEnum("InnslagType", ["DRILL", "OVELSE", "TEST", "TEKNISK_OPPGAVE"]);
   await lagEnum("OktAvbruddAarsak", ["SYK", "SKADE", "REISE", "VAER", "ANNET"]);
   await lagEnum("FasilitetType", ["KLUBBANLEGG", "SIMULATOR", "TRENINGSSENTER", "HJEMME"]);
+  await lagEnum("KondisjonSegmentType", ["OPPVARMING", "DRAG", "HVILE", "NEDJOGG"]);
 
   // --- training_drills_v2: formelen bæres av innslaget ----------------------
   const drillKolonner: [string, string][] = [
@@ -138,6 +139,31 @@ async function main() {
   );
   await prisma.$executeRawUnsafe(
     `CREATE INDEX IF NOT EXISTS "position_task_maal_taskId_idx" ON position_task_maal ("taskId");`,
+  );
+
+  // --- kondisjonssegmenter (Anders 20.08, runde 3) --------------------------
+  // En kondisjonsøkt er en sekvens av segmenter med hver sin timer og sone,
+  // ikke ett varighetstall. Totalvarighet beregnes fra segmentene.
+  await prisma.$executeRawUnsafe(`
+    CREATE TABLE IF NOT EXISTS kondisjon_segmenter (
+      "id"               text PRIMARY KEY,
+      "drillId"          text NOT NULL,
+      "sortOrder"        integer NOT NULL,
+      "type"             "KondisjonSegmentType" NOT NULL,
+      "varighetMin"      integer,
+      "distanseM"        integer,
+      "sone"             integer,
+      "faktiskSek"       integer,
+      "faktiskDistanseM" integer,
+      "createdAt"        timestamp(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+      "updatedAt"        timestamp(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+      CONSTRAINT "kondisjon_segmenter_drillId_fkey"
+        FOREIGN KEY ("drillId") REFERENCES training_drills_v2("id") ON DELETE CASCADE
+    );
+  `);
+  await prisma.$executeRawUnsafe(
+    `CREATE INDEX IF NOT EXISTS "kondisjon_segmenter_drillId_sortOrder_idx"
+       ON kondisjon_segmenter ("drillId", "sortOrder");`,
   );
 
   // --- fasiliteter, gruppe, bruker -----------------------------------------

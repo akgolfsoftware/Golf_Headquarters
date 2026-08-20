@@ -377,6 +377,15 @@ enum OktAvbruddAarsak {
   ANNET
 }
 
+/// Segmenttypene i en kondisjonsøkt (bekreftet av Anders 20.08, runde 3).
+/// En kondisjonsøkt er en SEKVENS av segmenter, ikke ett varighetstall.
+enum KondisjonSegmentType {
+  OPPVARMING
+  DRAG
+  HVILE
+  NEDJOGG
+}
+
 /// Type treningssted (onboarding). Styrer hvilke øvelser som kan foreslås —
 /// et mulighetsfilter, aldri en treningsregel.
 enum FasilitetType {
@@ -3742,6 +3751,9 @@ model TrainingDrillV2 {
   // Pause etter dette innslaget (live-øktas automatiske pause-timer).
   pauseSekunder Int?
 
+  // Kondisjonsøkter logges som en sekvens av segmenter, ikke som reps.
+  kondisjonSegmenter KondisjonSegment[]
+
   @@index([sessionId])
   @@index([positionTaskId])
   @@map("training_drills_v2")
@@ -4813,6 +4825,45 @@ model PositionTaskMaal {
   @@unique([taskId, motorikk, belastning])
   @@index([taskId])
   @@map("position_task_maal")
+}
+
+// ----------------------------------------------------------------------------
+// KondisjonSegment — én bolk i en kondisjonsøkt
+// ----------------------------------------------------------------------------
+//
+// Anders 20.08 (runde 3): en kondisjonsøkt er ikke én varighet, men en sekvens
+// av segmenter med hver sin timer og sone — «5 drag á 4 min i sone 4».
+// Strukturen matcher norsk utholdenhetstrening (Olympiatoppens sonemodell), ikke
+// en AK Golf HQ-oppfinnelse.
+//
+// Skiller seg bevisst fra STYRKE-loggingen (serier × reps × vekt) og fra
+// BEVEGELIGHET, som er en enkel timer uten segmenter og soner.
+//
+// Totalvarighet og gjennomsnittssone BEREGNES fra segmentene, aldri tastet.
+model KondisjonSegment {
+  id      String @id @default(cuid())
+  drillId String
+
+  sortOrder Int
+  type      KondisjonSegmentType
+
+  // Planlagt. Et DRAG kan planlegges i minutter ELLER distanse.
+  varighetMin Int?
+  distanseM   Int?
+  // 1–5. Settes manuelt av spilleren i v1 — ingen pulsklokke er koblet.
+  sone        Int?
+
+  // Faktisk, fra live-øktas timer.
+  faktiskSek       Int?
+  faktiskDistanseM Int?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  drill TrainingDrillV2 @relation(fields: [drillId], references: [id], onDelete: Cascade)
+
+  @@index([drillId, sortOrder])
+  @@map("kondisjon_segmenter")
 }
 
 // ----------------------------------------------------------------------------

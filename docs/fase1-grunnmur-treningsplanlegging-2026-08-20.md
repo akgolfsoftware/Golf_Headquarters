@@ -90,6 +90,18 @@ klasser, så ingen ny funksjon kan bryte lenken ved et uhell.
 - Ved gruppe-exit slettes kun fremtidige lenkede kopier. Innmelding synker kun
   fremover.
 
+### Kondisjonssegmenter — `KondisjonSegment`
+
+Bekreftet av Anders 20.08 (fase 0, runde 3) mens denne økta pågikk, og lagt inn
+før PR-en ble merget: en kondisjonsøkt er ikke ett varighetstall, men en sekvens
+av segmenter med hver sin timer og sone — «5 drag á 4 min i sone 4». Strukturen
+følger Olympiatoppens sonemodell, ikke en AK Golf HQ-oppfinnelse.
+
+Skiller seg bevisst fra STYRKE (serier × reps × vekt) og fra BEVEGELIGHET (enkel
+timer, ingen segmenter). Totalvarighet og gjennomsnittssone beregnes fra
+segmentene, aldri tastet direkte. Sonen settes manuelt i v1 — ingen pulsklokke
+er koblet.
+
 ### Øktstatus og etterlevelse — `src/lib/domain/okt-status.ts`
 
 - Avlyst med årsak (`SYK/SKADE/REISE/VAER/ANNET`) vises, men telles aldri som
@@ -131,9 +143,9 @@ I tillegg: treningstid-estimatet fra onboarding (`User.treningTimerPerUke` +
    (`TestDefinition`/`TestResult`) er ikke rørt — den henger sammen med
    FYS-programmet og FYS-øvelsesbanken, som fortsatt er under arbeid i fase 0
    (`docs/fys-ovelsesbank-2026-08-20.md`). Bør tas som én sammenhengende jobb.
-4. **Loggeenhet for KONDISJON** er kodet som `MINUTTER` i `repsEnhet`, men
-   relevans-matrisen v2 merker dette som uavklart. Endres uten datamigrering
-   siden ingenting er logget ennå.
+4. **Segment-editoren for kondisjon** — modellen finnes
+   (`KondisjonSegment`), men UI-en for å bygge «5 drag á 4 min i sone 4»
+   hører til fase 3.
 5. **`src/lib/taxonomy.ts` er ikke oppdatert til fasiten.** Fasiten sier den
    skal det; det er et bredere inngrep i eksisterende UI og hører hjemme i
    samme opprydding som 1.1.
@@ -144,11 +156,11 @@ I tillegg: treningstid-estimatet fra onboarding (`User.treningTimerPerUke` +
 `DIRECT_URL`, idempotent. `prisma migrate dev`/`db push`/`migrate deploy` er
 alle blokkert i dette prosjektet (gotchas §Schema-endringer).
 
-Kjørt 20.08.2026: 9 nye enums, 35 nye kolonner, 1 ny tabell, verifisert mot
+Kjørt 20.08.2026: 10 nye enums, 35 nye kolonner, 2 nye tabeller, verifisert mot
 `information_schema`. Backfill: 4 belastning + 1 press fra v1-verdier.
 
 ## Tester
 
-37 nye enhetstester i fem filer (`ak-formel-v2` · `omrade-relevans` ·
+38 nye enhetstester i fem filer (`ak-formel-v2` · `omrade-relevans` ·
 `teknisk-maalmatrise` · `gruppesynk` · `okt-status`). `npm run verify` og
 `npm test` (1526 tester) grønt.

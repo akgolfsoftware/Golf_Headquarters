@@ -55,10 +55,12 @@ export type Enhet = "m" | "ft" | null;
 /**
  * Hva en rep er på dette området.
  *
- * KONDISJON er merket uavklart i relevans-matrisen v2 §Åpne punkter — «serier ×
- * reps» passer ikke løping/sykling/roing. Minutter er forslaget, ikke bekreftet.
+ * KONDISJON er `SEGMENTER` (bekreftet av Anders 20.08, runde 3): en kondisjonsøkt
+ * er en sekvens av segmenter med hver sin timer og sone — «5 drag á 4 min i sone
+ * 4» — ikke ett varighetstall. BEVEGELIGHET er derimot en enkel timer uten
+ * segmenter, og STYRKE beholder serier × reps.
  */
-export type RepsEnhet = "SLAG" | "PUTTER" | "HULL" | "SERIER_REPS" | "MINUTTER";
+export type RepsEnhet = "SLAG" | "PUTTER" | "HULL" | "SERIER_REPS" | "MINUTTER" | "SEGMENTER";
 
 export type OmraadeDef = {
   kode: OmraadeKode;
@@ -109,7 +111,7 @@ export const OMRAADER: readonly OmraadeDef[] = [
   { kode: "PUTT_25_40", label: "Putt 25–40 fot", familie: "PUTT", enhet: "ft", repsEnhet: "PUTTER" },
   { kode: "PUTT_40_PLUSS", label: "Putt 40+ fot", familie: "PUTT", enhet: "ft", repsEnhet: "PUTTER" },
   { kode: "STYRKE", label: "Styrke", familie: "FYS", enhet: null, repsEnhet: "SERIER_REPS" },
-  { kode: "KONDISJON", label: "Kondisjon", familie: "FYS", enhet: null, repsEnhet: "MINUTTER" },
+  { kode: "KONDISJON", label: "Kondisjon", familie: "FYS", enhet: null, repsEnhet: "SEGMENTER" },
   { kode: "BEVEGELIGHET", label: "Bevegelighet", familie: "FYS", enhet: null, repsEnhet: "MINUTTER" },
   { kode: "BANE", label: "Banespill", familie: "BANE", enhet: null, repsEnhet: "HULL" },
 ] as const;

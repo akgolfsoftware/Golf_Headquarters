@@ -31,6 +31,16 @@ test("fasitens 19 områder — seks puttebånd og tre FYS-områder", () => {
   assert.deepEqual(fys, ["STYRKE", "KONDISJON", "BEVEGELIGHET"]);
 });
 
+test("KONDISJON logges i segmenter, ikke i minutter (runde 3)", () => {
+  const finn = (k: string) => OMRAADER.find((o) => o.kode === k);
+  assert.equal(finn("KONDISJON")?.repsEnhet, "SEGMENTER");
+  assert.equal(finn("BEVEGELIGHET")?.repsEnhet, "MINUTTER");
+  assert.equal(finn("STYRKE")?.repsEnhet, "SERIER_REPS");
+  assert.equal(finn("BANE")?.repsEnhet, "HULL");
+  assert.equal(finn("PUTT_25_40")?.repsEnhet, "PUTTER");
+  assert.equal(finn("TEE_TOTAL")?.repsEnhet, "SLAG");
+});
+
 test("putteavstander i fot, resten i meter", () => {
   for (const o of OMRAADER) {
     if (o.familie === "PUTT") assert.equal(o.enhet, "ft", o.kode);
