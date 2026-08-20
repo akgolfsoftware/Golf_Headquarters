@@ -437,3 +437,86 @@ punkt «v2 — VIKTIG»). Ingen endring i denne bekreftelsen — kun eksplisitt 
   venter Anders' godkjenning
 - Relevans-matrisens (?)-celler i v2-matrisen (fase 0.1) korrigeres av Anders
 - De tre punktene i «Fase 0 — forslag til lukking» over venter Anders' svar
+
+---
+
+## Kontrakt for bygging (DRAFT — fase 0.4, venter «spec komplett»)
+
+**Ikke gjeldende ennå.** Denne seksjonen er et utkast til kontrakten Fase 1–3 i
+`docs/plan-treningsplanlegging-til-kode-2026-08-20.md` skal bygge mot. Hentet rett fra
+fasering og risikovurdering i `docs/analyse-treningsplanlegger-2026-08-20.md` §3/§5.
+Spec-en markeres KOMPLETT først når Anders sier det eksplisitt (fase 0.4) — når det skjer,
+fjernes «DRAFT» og «UNDER INTERVJU»-status-linjen øverst oppdateres.
+
+### Hva v1 ER
+
+v1 er **sammenkobling og opprydding, ikke nybygg** — 80 prosent av grunnmuren finnes
+allerede i koden (V2-øktfamilien, teknisk plan med auto-telling, årsplan-tidslinje,
+målmodell). Suksesskriteriet: coach og en 16-åring bruker det daglig i én hel
+treningsblokk uten å falle tilbake på Notion/regneark.
+
+**Må med fra dag én:**
+
+1. V2-øktmodellen (`TrainingSessionV2` → `TrainingDrillV2` → `DrillLogV2`) gjøres
+   kanonisk. Dobbeltskriving til de tre andre øktfamiliene fjernes. v2-vokabular og typet
+   17-område i skjema. Nytt belastnings-felt.
+2. Tre plannivåer i lagringen: årsplan, periode, økt. Uke og dag er **beregnede
+   visninger** av øktdatoen (uke-helpers, Oslo-korrekt) — ikke egne rader.
+3. Kalender: uke (mobil-standard) + måned (desktop) + eksisterende årsplan-tidslinje med
+   test-/samlingsmarkører.
+4. Øktmal + «kopier forrige uke/blokk» som én handling.
+5. Live-økt-kjernen: start, automatiske timere, +5/+10/+25 med angre, hopp over, spontan
+   drill (to-trykks minimum: pyramide + område, resten arves fra kontekst), oppsummerings-
+   kort, hoppbar FOKUS/GJENNOMFØRING/MESTRING-vurdering — og **offline for hele
+   live-flyten** (lokal-først, siste lokale logg vinner ved synk).
+6. Teknisk plan med 1–3 aktive oppgaver løftet frem per slag/P-posisjon, eksisterende
+   auto-telling videreført, målmatrise-baren (f.eks. 300/1000 UTEN_BALL) synlig live i
+   drill-kortet.
+7. To analysekort: Treningsmiksen (pyramide × område, plan vs. faktisk) og
+   P-progresjonen (målmatrise-barene, live-oppdatert).
+8. TrackMan-nøkkelen (session-/slag-id) lagret stille per innslag fra dag én — kan aldri
+   retro-merkes.
+9. «Sett av coach»-kvitteringen tilbake til spilleren — én boolean som lukker
+   motivasjonsloopen.
+10. De åtte «KRITISK»-radene fra gap-evalueringens AI-kartlegging (§2): TrackMan-nøkkel,
+    full v2-formel typet (planlagt + faktisk), fasilitets-dimensjoner, trening/konkurranse-
+    flagg på runder, HOPPET_OVER + spontan-merking, målmatrisene strukturert, fysiske
+    tester typet, tidsstempler overalt.
+
+### Hva som venter (v1.1 / v1.5 / v2 — IKKE i v1)
+
+| Når | Hva |
+|---|---|
+| v1.1 | Talenotat med transkripsjon, ukemal, hurtigsvar fra stall-innboksen |
+| v1.5 | Treningsblokk (etter at UTVIKLING/FORBEREDELSER/KONKURRANSE er lagt i
+  `FASIT-AK-GOLF-HQ.md`), periodemal med skall-økter og fyll-senere-kø, oppgavebank for
+  teknisk plan, gruppe-utvidelse med løsrivelsesregelen |
+| v2 | AI/Caddie (all plan-generering, justering, drill-forslag — kun forslag, aldri
+  auto-apply), resten av analysekortene (pressetrapp, test-mot-trening, blokkrapport,
+  øktkvalitet-trend), 3-dagersvisning og øvrige tidslinjer, automatisk FYS-programforslag |
+
+**Kuttes helt (ikke bygget i noen v1.x uten ny beslutning):** 3-dagersvisning på mobil
+(uke dekker behovet), obligatorisk sted/fasilitet (valgfritt med default fra forrige
+økt), felt-diff i godkjenningskøen.
+
+### Bindende prinsipper for hele bygget (gjelder alle faser)
+
+- **Ingen treningsregler håndheves** (18.08-beslutningen, uendret) — all avviksvisning er
+  beskrivende («planlagt 4, gjennomført 2»), aldri rødt/grønt utover ekte feil, ingen
+  automatiske forslag uten ny, eksplisitt beslutning fra Anders.
+- **Formelen arves alltid som defaults** — spilleren skal aldri se ordet «belastning»;
+  maks tre trykk per drill i live-flyt (jf. registreringsbyrde-risikoen).
+- **Loggene er alltid fasit** — telleren (målmatrise, treningsmiks) er en avledet cache
+  som rekalkuleres ved enhver redigering, aldri en selvstendig sannhet.
+- **Gruppesynk-regelen er bevisst dum:** løsrivelse ved første planendring, aldri delvis
+  fletting eller konfliktdialog.
+- **Skjermbilde-gaten gjelder uendret** for alle skjermer i fase 3 — ingen merge uten at
+  Anders har SETT skjermen (390px, lys/mørk, fasit ved siden).
+
+### Fortsatt uavklart før KOMPLETT
+
+De ti spørsmålene i `docs/analyse-treningsplanlegger-2026-08-20.md` §7 (ukemerker,
+M0–M5-mapping, blandet økt, fargekode, feiringskort, rep-mål-planlegging, P-oppgave-tak,
+vurdering hoppbar, godkjenning som status, FYS samme øktmodell) — alle har foreslåtte
+defaults i kilden, ingen er eksplisitt bekreftet av Anders ennå. Pluss de tre punktene og
+relevans-matrisen over. Spec-en kan ikke markeres KOMPLETT før disse er avklart.
