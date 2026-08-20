@@ -81,7 +81,7 @@ export function MarkedPriserV2() {
           </div>
 
           <p className="pk-ing pk-ing-fot">
-            Eller 2 690 kr/år, to måneder gratis. Coaching-pakker kjøpes separat: Performance og
+            Eller 2 690 kr/år — tre måneder gratis (299 kr × 9). Coaching-pakker kjøpes separat: Performance og
             Performance Pro er antall økter med coach, ikke app-nivåer. Har du pakke, er appen
             inkludert. Les mer på <Link href="/coaching">coaching-siden</Link>.
           </p>
