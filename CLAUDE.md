@@ -248,7 +248,13 @@ Håndheves deterministisk, uavhengig av hva modellen tror:
   - *Nivå 2 — ask:* `prisma/schema.prisma`, `src/lib/env.ts` og andre schema-/auth-/deploy-kritiske filer.
   - *Main-porten — ask:* `git push … main` krever Anders' eksplisitte «ja» i samtalen.
   - *Deny:* `prisma migrate dev` og `prisma db push` (begge ødelagte her — bruk kirurgisk `db execute`,
-    se gotchas §Schema-endringer), manuell prod-deploy, force-push, remote-grensletting, `.env.local`-kommandoer.
+    se gotchas §Schema-endringer) og manuell prod-deploy.
+  - *Ask (ikke deny):* force-push, `git merge`, `reset --hard`, `rebase main`, `git push --delete`,
+    `git branch -D`, `.env.local`-kommandoer. **Rettet 2026-08-20:** denne linja sa tidligere at
+    force-push og remote-grensletting var *deny*. Det stemte ikke med koden — `beskytt.mjs` har alltid
+    hatt dem i `askMønstre`. Feilen kostet en økt: agenten leste «deny», konkluderte at gren-rydding på
+    GitHub var umulig, og ba Anders gjøre det manuelt — mens kommandoen faktisk gikk gjennom på første
+    forsøk. Les hooken, ikke denne oppsummeringen, når du er i tvil om hva som er sperret.
 - **`kvalitet.mjs`** (PostToolUse på Edit/Write): kjører eslint på endret `.ts`/`.tsx` og rapporterer feil
   tilbake umiddelbart. (Hex-gaten ble fjernet herfra 2026-07-25 — men lever fortsatt i CI, se over.)
 - **`logg.mjs`** (logging) og **`varsle-telegram.mjs`** (Stop-varsel til Anders).
