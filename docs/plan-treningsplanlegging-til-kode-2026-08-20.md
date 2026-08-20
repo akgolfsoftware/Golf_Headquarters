@@ -52,6 +52,13 @@ Claude Paper-prosjektet (`605a48cc`), zip leveres, speilet resynkes.
 | 2.2 | Anders kjører designet i Claude Design; skjermene tegnes m390 + d1280, lys + mørk |
 | 2.3 | Zip → resynk `designsystem/paper/` + `SYNC-STATUS.md` + én MCP-sammenligning (CLAUDE.md-regelen mot utdatert zip) |
 
+> **RETTET 20.08.2026 etter måling:** seks av de åtte har allerede fasit, delvis.
+> Jobben er **utvid seks, tegn to** — ikke tegn åtte. Full tabell med gap per skjerm:
+> `docs/gap-designfasit-workbench-2026-08-20.md`. Tegnes de åtte fra bunnen får vi
+> duplikat-fasit, som CLAUDE.md §Skjermarbeid forbyr. Helt nye: **2** (periodemal-flyten)
+> og **8** (Standard/Tour + onboarding). Skjerm 2 tegnes først — den produserer
+> skall-øktene som skjerm 1 mangler visning for på mobil.
+
 **Skjermene som må tegnes (fra spec-en):**
 
 1. Workbench-kalender: uke (mobil-standard) + måned (desktop) + årstidslinje med perioder,
