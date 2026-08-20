@@ -138,8 +138,8 @@ export default function HqPage() {
           </h2>
           <p className="mx-auto mt-4 max-w-md font-mk-serif text-lg text-mk-muted">
             Trener du med en av coachene våre, er plattformen inkludert. Vil du
-            bruke den på egen hånd, koster den 299 kr i måneden — ingen
-            binding.
+            bruke den på egen hånd, koster den 299 kr i måneden eller 2 690 kr
+            i året — ingen binding. Første måned er alltid gratis.
           </p>
           <div className="mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row">
             <Link
@@ -149,10 +149,10 @@ export default function HqPage() {
               Kom i gang
             </Link>
             <Link
-              href="/auth/login"
+              href="/priser"
               className="inline-block rounded-full border border-mk-hairline px-8 py-3 font-medium transition-colors hover:border-mk-fg"
             >
-              Har konto? Logg inn
+              Se alle priser
             </Link>
           </div>
         </div>
