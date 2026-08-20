@@ -3,6 +3,7 @@ import { headers } from "next/headers";
 import { PlausibleScript } from "@/components/marketing/plausible";
 import { MarkedFot } from "@/components/marketing/paper/MarkedFot";
 import { MarkedNav } from "@/components/marketing/paper/MarkedNav";
+import { kanBrukeInnebygdBooking } from "@/lib/booking/offentlig-booking";
 
 /**
  * TOPP-layout for markedssidene.
@@ -17,15 +18,23 @@ import { MarkedNav } from "@/components/marketing/paper/MarkedNav";
  * fra /coacher forsvant PlayerHQ/Junior/Om oss. Det er hele grunnen til at
  * skallet er flyttet hit.
  *
- * TO UNNTAK, begge midlertidige:
- *  - `/stats/*` (~45 ruter) er et eget produkt med egen mørk MRamme-ramme og
- *    egen designbølge (W7). De beholder sitt skall til den bølgen kjører.
- *  - `/booking` porteres i neste PR (steg 6–7 i landingssideplanen), sammen
- *    med resten av sidene. Til da beholder den MRamme.
- * Begge ville fått DOBBELT skall om de ikke sto her.
+ * UNNTAK — flater som tegner sitt eget skall og ville fått DOBBELT her:
+ *  - `/stats/*` (~45 ruter): eget produkt, egen mørk MRamme, egen designbølge
+ *    (W7). Beholder sitt skall til den bølgen kjører.
+ *  - `/booking` KUN når den innebygde bookingen er åpen: da rendres
+ *    `MarkedBookingPaperV2`, som har egen topplinje fordi fasiten
+ *    `designsystem/paper/fase1/booking.html` tegner en — pixel-signert av
+ *    Anders 14.08.2026. Er bookingen pauset (dagens tilstand for alle utenom
+ *    ADMIN), er `/booking` en helt vanlig landingsside og får skallet.
+ *    Åpen sak: fasitens egen topplinje er et skall-monopol-brudd. Den ble
+ *    signert før landingssidene fikk ett felles skall, og bør enten rettes i
+ *    designprosjektet eller bekreftes som bevisst unntak — Anders' avgjørelse.
+ *  - Bookingens undersider (`/booking/[slug]`, `…/bekreft`, `…/kvittering`)
+ *    bruker fortsatt MRamme og er derfor mørke. De er kun nåbare når
+ *    bookingen er åpen, og porteres når den åpnes.
  */
 
-const EGET_SKALL = ["/stats", "/booking"];
+const EGET_SKALL = ["/stats"];
 
 export default async function MarketingLayout({
   children,
@@ -33,9 +42,11 @@ export default async function MarketingLayout({
   children: React.ReactNode;
 }) {
   const path = (await headers()).get("x-pathname") ?? "";
-  const harEgetSkall = EGET_SKALL.some(
-    (p) => path === p || path.startsWith(`${p}/`),
-  );
+  const erBookingFlate = path === "/booking" || path.startsWith("/booking/");
+  const harEgetSkall =
+    EGET_SKALL.some((p) => path === p || path.startsWith(`${p}/`)) ||
+    // Bookingflatene tegner eget skall først når bookingen faktisk er åpen.
+    (erBookingFlate && (await kanBrukeInnebygdBooking()));
 
   if (harEgetSkall) {
     return (

@@ -122,7 +122,12 @@
   font-weight: 500;
   letter-spacing: 0.09em;
   text-transform: uppercase;
-  color: var(--p-muted);
+  /* Clay, ikke muted. AVVIK fra w5-base.css i Paper-speilet (som har
+     `color: var(--muted)`), bevisst valgt 20.08.2026: landingssidenes fasit er
+     `ak-golf-website`, der eyebrow er accent-fg. Forsiden, /mulligan, /playerhq
+     og /booking er bygget slik — uten denne linja ville de fire hatt clay
+     eyebrow og de nitten andre sidene grå, på samme nettsted. */
+  color: var(--p-accent-fg);
 }
 h1.pk-hero {
   margin: 0 0 var(--p-s4);

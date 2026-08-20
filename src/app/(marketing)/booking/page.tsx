@@ -12,7 +12,7 @@ import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
 import { BOOKING_ACUITY_URL, kanBrukeInnebygdBooking } from "@/lib/booking/offentlig-booking";
 import { finnNesteLedige } from "./ledige-tider";
-import { MarkedBookingV2 } from "@/components/marketing/v2/MarkedBookingV2";
+import { MarkedBookingPauset } from "@/components/marketing/paper/MarkedBookingPauset";
 import {
   MarkedBookingPaperV2,
   type PaperAbonnement,
@@ -69,7 +69,7 @@ export default async function BookingLanding() {
   // Pauset for publikum: alle domener sendes til Acuity. Kun ADMIN ser flyten
   // (til BOOKING_PUBLIC=true) — se src/lib/booking/offentlig-booking.ts.
   if (!(await kanBrukeInnebygdBooking())) {
-    return <MarkedBookingV2 paused acuityUrl={BOOKING_ACUITY_URL} />;
+    return <MarkedBookingPauset acuityUrl={BOOKING_ACUITY_URL} />;
   }
 
   const [services, lokasjonRad] = await Promise.all([
