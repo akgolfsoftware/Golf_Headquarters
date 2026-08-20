@@ -137,13 +137,38 @@ på de fem fullsving-områdene, ingen unntak.
 | Putting (alle seks bånd) | Putter |
 | BANE | Hull |
 | STYRKE | Serier × reps |
-| KONDISJON | **(?) uavklart** — «serier × reps» passer ikke løping/sykling/roing. Forslag:
-  minutter (varighet) som hovedenhet, distanse (km) som valgfritt tilleggsfelt |
+| KONDISJON | **Bekreftet 20.08 (runde 3):** ikke minutter/distanse alene — **segment-
+  strukturert med timer og sone.** Se eget avsnitt under. |
 | BEVEGELIGHET | Minutter (varighet) — mobilitetsøkter måles i tid, ikke reps, i praksis |
 
 Live-øktas +5/+10/+25-knapper gjelder golfområdene (slag/putter); STYRKE logger per serie
-(allerede besluttet i spec-en); BANE logger per hull; KONDISJON/BEVEGELIGHET trenger egen
-loggemekanikk i live-økta (timer-basert, ikke reps-basert) — se åpne punkter.
+(allerede besluttet i spec-en); BANE logger per hull; KONDISJON har egen segment-/sone-
+logg (under); BEVEGELIGHET er timer-basert som KONDISJON, men uten segmenter/soner.
+
+### KONDISJON — segment- og sonestruktur (bekreftet 20.08, runde 3)
+
+Ikke en enkelt varighet — en kondisjonsøkt er bygget av **segmenter**, hvert med egen
+timer og egen sone. Matcher norsk utholdenhetstrening (Olympiatoppens sonemodell) og
+strukturen Anders beskrev: Timer → Minutter → Oppvarming → Drag → Hvile → Sone.
+
+| Segmenttype | Betyr | Felter |
+|---|---|---|
+| OPPVARMING | Oppvarming før hoveddelen | Varighet (min), sone |
+| DRAG | Ett arbeidsintervall («5 drag á 4 min i sone 4») | Varighet (min) **eller** distanse, sone |
+| HVILE | Pause mellom drag | Varighet (min), sone (lav/aktiv restitusjon) |
+| NEDJOGG | Nedtrapping etter siste drag | Varighet (min), sone |
+
+- **Sone:** 1–5, samme skala som Olympiatoppen/Team Norway bruker — ikke en AK Golf HQ-
+  oppfinnelse. Settes manuelt av spiller (mål-sone) i v1; automatisk fra pulsklokke er en
+  senere utvidelse, ikke v1 (ingen enhet er koblet — kun manuell registrering nå).
+- **Timer:** samme automatiske start/stopp-mønster som golf-drillene i live-økta — «Start
+  segment» → timer løper → «Neste segment». Rene løpeøkter uten intervaller er ett
+  segment (type DRAG eller ingen oppvarming/hvile).
+- **En kondisjonsøkt = en sekvens av segmenter**, ikke ett tall. Totalvarighet og
+  gjennomsnittssone beregnes fra segmentene, aldri tastet direkte.
+- **Datamodell:** eget `KondisjonSegment`-mønster (type, varighet, sone, valgfri
+  distanse) — skiller seg fra `FysOvelseRad` (reps × vekt), som fortsatt gjelder STYRKE.
+  BEVEGELIGHET forblir enkel timer uten segmenter/soner (ingen intervallstruktur der).
 
 ---
 

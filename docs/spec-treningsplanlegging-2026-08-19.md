@@ -442,13 +442,20 @@ punkt «v2 — VIKTIG»). Ingen endring i denne bekreftelsen — kun eksplisitt 
 
 Fullt utdypet i `docs/relevans-matrise-treningsplanlegging-2026-08-20-v2.md`.
 
+## Rettelse 20.08, runde 3 (Anders) — KONDISJON er segment- og sonestrukturert
+
+Svar på det åpne punktet fra runde 2 («loggeenhet for KONDISJON»). Ikke minutter/distanse
+som ett tall — en kondisjonsøkt bygges av segmenter, hver med egen timer og sone:
+**Timer → Oppvarming → Drag (arbeidsintervall) → Hvile → Sone (1–5, Olympiatoppens
+skala).** Full struktur i `docs/relevans-matrise-treningsplanlegging-2026-08-20-v2.md`
+§KONDISJON. Sone settes manuelt av spiller i v1 — automatisk fra pulsklokke er en senere
+utvidelse, ingen enhet er koblet nå.
+
 ## Ikke avklart ennå (intervjuet fortsetter)
 
 - Egne dimensjoner for bunker og fullsving — utkast i
   `docs/relevans-matrise-treningsplanlegging-2026-08-20-v2.md` (fase 0.1), venter Anders'
   korrigering
-- **Loggeenhet for KONDISJON** (nytt FYS-område) — minutter + valgfri distanse er
-  forslaget, ikke bekreftet
 - Varslinger og signal-lag — utsatt (Anders 20.08: ses på senere)
 - FYS-øvelsesbanken: innlastingsplanen i `docs/fys-ovelsesbank-2026-08-20.md` (fase 0.3)
   venter Anders' godkjenning, inkl. om Power/plyometri og Stabilitet/balanse hører under

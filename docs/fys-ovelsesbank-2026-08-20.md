@@ -178,9 +178,12 @@ innlasting.
 
 ## Kondisjon (14)
 
-**Loggeenhet uavklart (jf. relevans-matrise v2 §åpne punkter):** disse øvelsene passer
-ikke serier × reps. Forslag: minutter som hovedenhet, distanse (km) som valgfritt
-tilleggsfelt — venter Anders' bekreftelse før `FysOvelseRad` utvides.
+**Loggeenhet bekreftet 20.08 (runde 3):** ikke minutter/distanse alene — segment- og
+sonestrukturert (Timer → Oppvarming → Drag → Hvile → Sone), utdypet i
+`docs/relevans-matrise-treningsplanlegging-2026-08-20-v2.md` §KONDISJON. En rad i denne
+banken er én øvelsestype (f.eks. «Intervall 4×4 min»); når den legges i et program, brytes
+den ned i segmenter (oppvarming/drag/hvile/nedjogg) med varighet og sone per segment —
+ikke i `FysOvelseRad` (reps × vekt), men i den nye `KondisjonSegment`-strukturen.
 
 | Øvelse | Type | Notat |
 |---|---|---|
