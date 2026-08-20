@@ -1,3 +1,4 @@
+<!-- FIDELITET: MAL — avvik per rute i fase2/manifest-w3-komplett.md. Mørk modus og tilstander er IKKE definert her; de ligger i fase2/playerhq/w3-base.css. -->
 <!doctype html>
 <html lang="nb" data-theme="light">
 <head>
@@ -69,6 +70,19 @@
       </div>
 
       <div class="gruppe">
+        <!-- Standard/Tour (20.08.2026): visningsnivå, aldri en sperre — samme data,
+             ulik mengde. Byttes fritt, virker umiddelbart på alle flater. -->
+        <span class="eyebrow">Visning</span>
+        <div class="kort">
+          <div class="valg" role="radiogroup" aria-label="Visningsnivå">
+            <button class="rad" role="radio" aria-checked="true" data-visning data-od-id="innst-visning-standard"><div class="tx"><span class="tn">Standard</span><span class="tm">Det viktigste, enkelt — økter, mål og fremdrift.</span></div></button>
+            <button class="rad" role="radio" aria-checked="false" data-visning data-od-id="innst-visning-tour"><div class="tx"><span class="tn">Tour</span><span class="tm">Alle tall — strokes gained, spredning, målmatrise og soner.</span></div></button>
+          </div>
+          <p>Samme data i begge — Tour viser mer av dem. Du kan bytte når som helst, og ingenting låses.</p>
+        </div>
+      </div>
+
+      <div class="gruppe">
         <span class="eyebrow">Mer</span>
         <button class="rad" data-od-id="innst-til-anlegg"><div class="tx"><span class="tn">Anlegg</span><span class="tm">Gamle Fredrikstad GK · Mulligan Indoor</span></div><svg class="pil" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
         <button class="rad" data-od-id="innst-til-ai"><div class="tx"><span class="tn">AI-coach</span><span class="tm">Tone og hvor mye den skal foreslå</span></div><svg class="pil" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
@@ -110,5 +124,17 @@
 </div>
 <div class="sr" id="live" aria-live="polite"></div>
 <script src="w3-demo.js"></script>
+<script>
+(function(){'use strict';
+document.querySelectorAll('[data-visning]').forEach(function(b){
+  b.addEventListener('click', function(){
+    document.querySelectorAll('[data-visning]').forEach(function(x){
+      x.setAttribute('aria-checked', String(x === b)); });
+    var live = document.getElementById('live');
+    if (live) live.textContent = 'Visning: ' + b.querySelector('.tn').textContent;
+  });
+});
+})();
+</script>
 </body>
 </html>

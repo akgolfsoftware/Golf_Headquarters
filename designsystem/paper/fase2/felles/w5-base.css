@@ -183,6 +183,7 @@ p.ing{ margin:0 0 var(--s5); font-family:var(--body); font-size:var(--text-prose
 .kpi .v{ display:block; font-family:var(--mono); font-size:26px; font-weight:600;
   font-variant-numeric:tabular-nums; line-height:1.25; }
 .kpi .w{ display:block; font-family:var(--mono); font-size:10.5px; color:var(--muted); }
+.v.pos{ color:var(--up); } .v.neg{ color:var(--dn); }
 .tom{ display:flex; flex-direction:column; align-items:flex-start; gap:var(--s3);
   padding:var(--s6) var(--s5); background:var(--soft); border:1px dashed var(--border);
   border-radius:var(--r); }

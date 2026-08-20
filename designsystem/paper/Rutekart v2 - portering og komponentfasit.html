@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="nb" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Rutekart v2 — portering og komponentfasit</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&family=Lora:ital,wght@0,400;0,500;1,400&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#FAF9F5;--surface:#FFFFFF;--soft:#F0EEE6;--border:#E5E2D9;--fg:#141413;--mid:#77736B;--accent:#D97757;--accent-fg:#B5573A;--accent-soft:#FBEDE7;--up:#3D7A5A;--display:'Poppins',system-ui,sans-serif;--prose:'Lora',Georgia,serif;--mono:'IBM Plex Mono',monospace}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--fg);font-family:var(--display);font-size:14px;line-height:1.55;-webkit-font-smoothing:antialiased}
+a{color:var(--accent-fg)}a:hover{color:var(--accent)}
+.wrap{max-width:1120px;margin:0 auto;padding:56px 32px 96px}
+.kicker{font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--mid)}
+h1{font-size:34px;font-weight:600;letter-spacing:-.02em;margin:10px 0 8px;text-wrap:pretty}
+h2{font-size:20px;font-weight:600;margin:56px 0 6px;letter-spacing:-.01em;scroll-margin-top:20px}
+h3{font-size:15px;font-weight:600;margin:28px 0 8px}
+p{font-family:var(--prose);font-size:14.5px;line-height:1.65;max-width:76ch;margin-bottom:10px;text-wrap:pretty}
+p.lede{font-size:16px;color:var(--mid)}
+ul,ol{margin:8px 0 12px 18px;font-family:var(--prose);font-size:14.5px;line-height:1.6;max-width:76ch}
+li{margin-bottom:5px}
+code{font-family:var(--mono);font-size:12px;background:var(--soft);padding:1px 5px;border-radius:4px}
+table{width:100%;border-collapse:collapse;font-size:12.5px;margin:14px 0 6px;table-layout:fixed}
+th{text-align:left;font-family:var(--mono);font-size:9.5px;letter-spacing:.09em;text-transform:uppercase;color:var(--mid);font-weight:600;padding:0 10px 8px;border-bottom:1px solid var(--border);vertical-align:bottom}
+td{padding:9px 10px;border-bottom:1px solid var(--border);vertical-align:top}
+tr:last-child td{border-bottom:0}
+td.m{font-family:var(--mono);font-size:11px;overflow-wrap:anywhere}
+td.k{font-family:var(--mono);font-size:10.5px;color:var(--mid);line-height:1.7;overflow-wrap:anywhere}
+td.k b{color:var(--fg);font-weight:600}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:18px 22px;margin:16px 0}
+.card.warn{border-left:3px solid var(--accent)}
+.ut{font-family:var(--prose);font-size:13px;color:var(--mid);margin:6px 0 0}
+.pill{display:inline-block;font-family:var(--mono);font-size:9.5px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;padding:2px 8px;border-radius:99px;border:1px solid var(--border);background:var(--surface)}
+.pill.opus{background:var(--accent-soft);border-color:#EAC5B4;color:var(--accent-fg)}
+.pill.sonnet{background:#EDF3EE;border-color:#CBDDD0;color:var(--up)}
+.pill.haiku{background:var(--soft);color:var(--mid)}
+.toc{display:grid;grid-template-columns:repeat(2,1fr);gap:4px 22px;margin:24px 0 0;font-size:12.5px}
+.toc a{text-decoration:none;color:var(--mid);padding:4px 0;border-bottom:1px solid var(--border);display:block}
+.toc a:hover{color:var(--fg)}
+.toc a b{color:var(--fg);font-family:var(--mono);font-size:10px;margin-right:8px}
+@media(max-width:900px){.toc{grid-template-columns:1fr}.wrap{padding:36px 20px 64px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="kicker">Rutefasit v2 · 16. august 2026 · erstatter rutekartet av 12.08</div>
+<h1>Rutekart v2 — portering, modellvalg og komponentfasit</h1>
+<p class="lede">Alt Claude Code trenger for å portere resten uten å åpne fasit-HTML mer enn én gang per mal: rute → mal → avvik i én setning → komponentene skjermen består av. Maskinlesbar kopi: <code>kart/rutefasit-for-claude-code.md</code> → legges i repoet som <code>docs/port/rutefasit.md</code>.</p>
+
+<div class="toc">
+  <a href="#strategi"><b>01</b>Porteringsstrategi — token-økonomi</a>
+  <a href="#modell"><b>02</b>Modellvalg per oppgaveklasse</a>
+  <a href="#kontrakt"><b>03</b>Kontrakten + Claude-følelsen</a>
+  <a href="#skall"><b>04</b>Skall-pakkene (skrives aldri per rute)</a>
+  <a href="#w3"><b>05</b>W3 — PlayerHQ</a>
+  <a href="#w4"><b>06</b>W4 — AgencyOS</a>
+  <a href="#w5"><b>07</b>W5 — Marketing · Auth · Forelder · System</a>
+  <a href="#drift"><b>08</b>Drift/AgenticOS</a>
+  <a href="#ut"><b>09</b>Utenfor kartet</a>
+</div>
+
+<h2 id="strategi">01 · Porteringsstrategi — mest skjerm per token</h2>
+<p>Den dyreste feilen i porten hittil er å lese fasit-HTML (1–3 000 linjer) på nytt i hver sesjon. Oppskriften under gjør fasiten til noe som leses <b>maks én gang per mal</b> — variantruter kodes fra avvikslinjen og komponentlisten alene.</p>
+<ol>
+<li><b>Flytt sannheten inn i repoet.</b> <code>docs/port/rutefasit.md</code> (denne fila) + kontrakten og Claude-følelsen i repoets <code>CLAUDE.md</code>. Da koster kontrakten null tokens per sesjon — den ligger i systemkonteksten, ikke i prompten.</li>
+<li><b>Én sesjon per mal-fasit, aldri per rute.</b> Sesjonen leser malens fasit-HTML én gang, bygger/verifiserer mal-komponenten, og tar deretter alle variantrutene som rene diffs i samme kontekst. 29 W3-ruter = 8 sesjoner, ikke 29.</li>
+<li><b>Variantruter åpner aldri fasit-HTML.</b> De trenger tre linjer: avvikslinjen, komponentlisten (05–08 under), og mal-komponentens fil i repoet. Trenger en variant mer enn det, har den strøket én-linje-testen — stopp og meld.</li>
+<li><b>Les komponenter, ikke skjermer.</b> Designsystemets navn (kolonnen «Komponenter») er vokabularet; repo-motstykkene finnes allerede fra fase 1. Slå opp props i komponentfila, ikke i fasit-HTML.</li>
+<li><b>Verifiser samlet.</b> m390 + d1280-skjermbilder tas i én batch på slutten av sesjonen og føres i PP-W*-VARIANTS — ikke skjermbilde per rute underveis.</li>
+<li><b>Parallelliser per bølge, ikke per rute.</b> Én arbeider per mappe (<code>portal/meg</code>, <code>admin/bookinger</code>, …) så to sesjoner aldri skriver i samme filer. Godkjenning skjer på variants-loggen.</li>
+<li><b>Plan-modus kun der det tas beslutninger.</b> Variantruter har ingen beslutninger igjen — hopp rett til bygging. Planlegging brukes bare på mal-skjermer og ruter som stryker én-linje-testen.</li>
+</ol>
+
+<h2 id="modell">02 · Modellvalg per oppgaveklasse</h2>
+<table>
+<thead><tr><th>Oppgaveklasse</th><th>Modell</th><th>Hvorfor</th></tr></thead>
+<tbody>
+<tr><td>Mal-skjermer førstegang (bygge malen 1:1 fra fasit-HTML) og alt som stryker én-linje-testen</td><td><span class="pill opus">Opus · plan-modus</span></td><td class="k">Leser 1–3k linjer fasit + tar layoutbeslutninger. Feil her arves av alle variantene — dyreste sted å spare.</td></tr>
+<tr><td>Variantruter (≈90 % av volumet): mal + avvikslinje + komponentliste</td><td><span class="pill sonnet">Sonnet</span></td><td class="k">Ingen beslutninger igjen — mekanisk diff mot eksisterende mal-komponent. Rask og billig; kvaliteten sikres av kontrakten, ikke modellen.</td></tr>
+<tr><td>Redirect-stubber, aliaser, lint-fiks, variants-logg, skjermbilde-kjøring</td><td><span class="pill haiku">Haiku / script</span></td><td class="k">Ren mekanikk. Stubber er &lt;600 B — alt over Haiku er sløsing.</td></tr>
+<tr><td>Pixel-pass på eksisterende V2 (brief, recording, workspace)</td><td><span class="pill sonnet">Sonnet</span></td><td class="k">Koden finnes; jobben er å bytte tokens/komponenter mot Paper. Opus kun hvis strukturen må skrives om.</td></tr>
+<tr><td>Gate-review før merge (sjekke variants-logg mot kontrakten)</td><td><span class="pill opus">Opus</span></td><td class="k">Én kort sesjon per bølge; fanger drift før den multipliseres.</td></tr>
+</tbody>
+</table>
+
+<h2 id="kontrakt">03 · Kontrakten — og Claude-følelsen</h2>
+<ol>
+<li>Finn ruten. Åpne mal-fasiten side om side, m390 + d1280 — <b>kun i mal-sesjonen.</b></li>
+<li>Bygg malen 1:1. <b>Avvikslinjen er hele forskjellen</b> — står det ikke der, finnes det ikke.</li>
+<li>Tilstander (tom/laster/feil) arves fra malens riggbar. Aldri fake data.</li>
+<li><b>Én-linje-testen:</b> kan ikke avviket sies i én setning, er ruten en egen skjerm — stopp og meld, ikke improviser.</li>
+<li>Ferdig = variant-rad i PP-W*-VARIANTS med skjermbilder.</li>
+</ol>
+<div class="card warn">
+<h3 style="margin-top:0">Claude-følelsen er bindende for alle varianter</h3>
+<ul style="margin-bottom:0">
+<li><b>Chat-først:</b> <code>/portal</code> ER samtalen; konsollen er samtale + artefaktkolonne. En variant bygger aldri en oppslagstavle der malen har en samtale.</li>
+<li><b>Composer</b> festet nederst på alle desktop-flater (mobil: kun Hjem) — fjernes aldri av en variant.</li>
+<li><b>⌘K overalt:</b> alt uten meny-plass nås via CommandPalette — varianter lenker dit i stedet for å legge til nav.</li>
+<li><b>Artefaktkolonnen</b> (380 px) forklarer og avgjør valgt sak — master–detalj fyller panelet, aldri en ny side.</li>
+<li><b>Mobil = app:</b> 430 px-kolonne, TabBar, BottomSheet i stedet for modal, 44 px trykkflater.</li>
+<li><b>Skall-monopol:</b> ingen rute bygger egen header/nav. Paper-reglene (papir/blekk, én clay-CTA, mono-tall med komma) står.</li>
+</ul>
+</div>
+
+<h2 id="skall">04 · Skall-pakkene — arves, skrives aldri per rute</h2>
+<p>Komponentkolonnene i 05–08 lister kun det som er <b>unikt for skjermen</b>. Skallet kommer fra layouten:</p>
+<table>
+<thead><tr><th>Skall</th><th>Desktop</th><th>Mobil</th></tr></thead>
+<tbody>
+<tr><td>PlayerHQ (<code>/portal</code>)</td><td class="k"><b>Topbar · Rail · Composer · CommandPalette · StatusBar</b></td><td class="k"><b>TabBar · BottomSheet</b> (Composer kun Hjem)</td></tr>
+<tr><td>AgencyOS (<code>/admin</code>)</td><td class="k"><b>Topbar · Rail · Composer · CommandPalette · Panel</b> (artefaktkolonne 380 px) <b>· SpillerGruppeVeksler</b></td><td class="k"><b>TabBar · BottomSheet</b></td></tr>
+<tr><td>Marketing / Auth</td><td class="k">eget lett skall i malen — ingen Rail/Composer</td><td class="k">samme, én kolonne</td></tr>
+<tr><td>Forelder</td><td class="k"><b>Topbar · Tabs</b> — ingen Composer</td><td class="k"><b>TabBar</b></td></tr>
+</tbody>
+</table>
+
+<h2 id="w3">05 · W3 — PlayerHQ <span class="kicker" style="letter-spacing:.08em">· fase2/playerhq/</span></h2>
+<table>
+<thead><tr><th style="width:22%">Rute</th><th style="width:16%">Mal-fasit</th><th style="width:34%">Avvik (hele forskjellen)</th><th>Komponenter</th></tr></thead>
+<tbody>
+<tr><td class="m">/meg/innstillinger + 8 undersider</td><td class="m">playerhq-innstillinger</td><td>hub = malen; varsler=kun varselgruppa · sprak=radio nb/en · okter=varighet+påminnelse · anlegg=hjemmeanlegg først · ai-coach=tone+mengde+av/på · personvern=samtykker+eksport+sletting nederst · sikkerhet=passord+2FA · integrasjoner=status per rad</td><td class="k"><b>ListGroup·ListRow·Toggle·Radio·Select·FormField</b>·SegmentControl·StatusBadge (integrasjoner)·ConfirmDialog (sletting)·StickyActionBar</td></tr>
+<tr><td class="m">/meg/abonnement + 4 undersider</td><td class="m">playerhq-abonnement</td><td>faktura/[id]=kvittering m/PDF · kort/ny=Stripe-skjema · avbestill=hva du mister og når · oppgrader/flyt=pakkevalg→betaling</td><td class="k"><b>KeyValueGrid·ListRow·Button</b>·FormField·TextInput (kort/ny)·Callout (avbestill)·Stepper (flyt)</td></tr>
+<tr><td class="m">/meg/helse (+ symptom/ny)</td><td class="m">playerhq-helse</td><td>symptom/ny er BottomSheet-ark; FYS-score «—» til formelen er vedtatt</td><td class="k"><b>VelvaereKort·TrendBand·Sparkline</b>·BottomSheet·Slider·FormField·EmptyState</td></tr>
+<tr><td class="m">/booking/ny (+bekreft, bekreftet)</td><td class="m">playerhq-booking-ny</td><td>query-drevet veiviser; uten pakke → redirect /coaching</td><td class="k"><b>Stepper·DayStrip·TimeGrid·SessionCard</b>·SegmentControl·StickyActionBar</td></tr>
+<tr><td class="m">/booking/[id] · coach/[id] · anlegg/[id]</td><td class="m">playerhq-booking-mine</td><td>§12 kvitterings-/detaljkort</td><td class="k"><b>KeyValueGrid·SessionCard·StatusBadge</b>·Avatar·ListGroup</td></tr>
+<tr><td class="m">/coach + melding, ai, ovelser, videoer, plans, sg-hub, sporsmal</td><td class="m">playerhq-coach-hub</td><td>ai=tråd med AI-avsender · ovelser/videoer=§10 liste · plans=periodeliste · sg-hub=§9 tabell · sporsmal=liste+tråd+skjema</td><td class="k"><b>MeldingsTraad·ListRow·Tabs</b>·FilterPills·DataTable (sg-hub)·Periodeplan (plans)·Textarea (skjema)·EmptyState</td></tr>
+<tr><td class="m">/talent/* (5 ruter)</td><td class="m">playerhq-talent</td><td>mitt-niva + roadmap = malens to tilstander; sammenligning=§9 kohorttabell; FEATURES.TALENT av → notFound</td><td class="k"><b>NivaStige·PyramidProgress·BenchmarkBadge</b>·GoalProgress·DataTable (sammenligning)</td></tr>
+<tr><td class="m">/meg/help (+3)</td><td class="m">gfgk-veileder-artikkel</td><td>GFGK-artikkelmalen med PlayerHQ-chrome</td><td class="k"><b>Breadcrumbs·SectionHeader·SearchField</b>·ListRow (kategorier)·prosa</td></tr>
+</tbody>
+</table>
+<p class="ut">Utgår: 10 legacy-coach-stubber · 3 meg-stubber · 5 aliaser — <span class="pill haiku">Haiku</span>.</p>
+
+<h2 id="w4">06 · W4 — AgencyOS <span class="kicker" style="letter-spacing:.08em">· fase2/agencyos/</span></h2>
+<table>
+<thead><tr><th style="width:22%">Rute</th><th style="width:16%">Mal-fasit</th><th style="width:34%">Avvik</th><th>Komponenter</th></tr></thead>
+<tbody>
+<tr><td class="m">/admin/godkjenninger · handlingssenter · queue · approvals(+[id]) · foresporsler</td><td class="m">agencyos-godkjenninger</td><td>ÉN flate — rutene bak pillene nås fra ⌘K</td><td class="k"><b>QueueCard·ProvenanceDisclosure·FilterPills</b>·Panel (avgjørelse)·ConfirmDialog·Toast</td></tr>
+<tr><td class="m">/admin/grupper (+[id], arsplan, skoledata, timeplan, workbench)</td><td class="m">agencyos-gruppe-detalj</td><td>lista er §9; resten er faner på samme flate, samme loader</td><td class="k"><b>Tabs·SpillerKort·DataTable</b>·PageHeader·Periodeplan/YearTimeline (arsplan)·TimeGrid (timeplan)·KanbanKolonne (workbench)</td></tr>
+<tr><td class="m">/admin/bookinger (+[id], ny) · availability · kapasitet · services · anlegg</td><td class="m">agencyos-bookinger</td><td>[id]=§12 kvittering · ny=tjeneste→tid→spiller · services/anlegg=«Tjenester og åpningstid»-kortet som flate</td><td class="k"><b>UkeKalender·TimeGrid·VisningsVelger·AgendaRow</b>·SessionCard·BudgetBar (kapasitet)·KeyValueGrid ([id])·Stepper (ny)·ListGroup</td></tr>
+<tr><td class="m">/admin/plans (+[planId]) · plan-templates(+3) · teknisk-plan · okter</td><td class="m">agencyos-planbibliotek</td><td>[planId]=inspektørpanelet i full bredde · ny/rediger=skjema · effectiveness=Effekt-blokka · okter=§9</td><td class="k"><b>CardGrid·FilterPills·Panel</b> (inspektør)·OektKort·FormField·Textarea (rediger)·BarChart (effekt)·DataTable (okter)</td></tr>
+<tr><td class="m">/admin/tournaments (+[id], ny, dubletter) · turnering-kart</td><td class="m">agencyos-turneringer</td><td>dubletter=§12-sammenslåing i malen</td><td class="k"><b>DataTable·TurneringNedtelling·StatusBadge</b>·MaanedKalender (kart)·ConfirmDialog (sammenslåing)</td></tr>
+<tr><td class="m">/admin/settings(+6) · klubb/innstillinger · integrasjoner · team(+inviter) · gdpr · audit-log · feillogg</td><td class="m">agencyos-oppsett</td><td>fane-avvik står i malen; System og logg: destruktivt nederst, aldri aksent</td><td class="k"><b>Tabs·FormField·Toggle·Select·KeyValueGrid</b>·StatusBadge (integrasjoner)·DataTable (audit/feillogg)·ConfirmDialog (destruktivt)</td></tr>
+</tbody>
+</table>
+<p class="ut">Utgår: ~38 redirect-stubber (&lt;600 B) · ~26 legacy-ruter med v2-erstatning — <span class="pill haiku">Haiku</span>.</p>
+
+<h2 id="w5">07 · W5 — Marketing · Auth · Forelder · System</h2>
+<table>
+<thead><tr><th style="width:22%">Rute</th><th style="width:16%">Mal-fasit</th><th style="width:34%">Avvik</th><th>Komponenter</th></tr></thead>
+<tbody>
+<tr><td class="m">14 marketing-sider</td><td class="m">marketing-side</td><td>tre skallvarianter i malen: hero+bevis / pris / prosa — velg per rute</td><td class="k"><b>FeaturedCard·CardGrid·KpiStripe</b> (bevis)·Accordion (faq)·Button·Divider</td></tr>
+<tr><td class="m">coacher · anlegg · blogg · cases · turneringer (+[slug])</td><td class="m">marketing-katalog</td><td>§10 liste + §12 detalj, samme mal uansett innholdstype</td><td class="k"><b>CardGrid·ListRow·FilterPills·SearchField</b>·Avatar·Pagination·KeyValueGrid ([slug])</td></tr>
+<tr><td class="m">13 auth-ruter + /onboard/*</td><td class="m">auth-flyt</td><td>tilstander i malen; logg-inn/login er alias (åpent: redirect)</td><td class="k"><b>FormField·TextInput·Button·Callout</b>·CodeInput (engangskode/bankid)·Banner·FieldMessage</td></tr>
+<tr><td class="m">guardian-consent · lyd-samtykke · samtykke-venter · onboarding/forelder · inviter/forelder</td><td class="m">auth-samtykke</td><td>samtykke aldri forhåndshuket, punkt for punkt</td><td class="k"><b>Checkbox·ListGroup·Callout·Button</b>·StatusBadge (venter)</td></tr>
+<tr><td class="m">/forelder/* (9 undersider)</td><td class="m">forelder-barn</td><td>én mal med fanevisninger; personvernlinjen i selve visningen</td><td class="k"><b>Tabs·KpiCard·ListRow·KeyValueGrid</b>·Banner (personvernlinjen)·DataTable (fakturaer)·StatusBadge</td></tr>
+<tr><td class="m">offline · 404 · 500 · vedlikehold · 403 · feature-gate</td><td class="m">system-tilstander</td><td>globalt mønster i rot-layoutene, ikke per rute (lukker P4); vedlikehold/403 mangler ruter</td><td class="k"><b>EmptyState·Banner·Button</b>·Skeleton (laster)</td></tr>
+</tbody>
+</table>
+
+<h2 id="drift">08 · Drift/AgenticOS <span class="kicker" style="letter-spacing:.08em">· fase2/agencyos/</span></h2>
+<table>
+<thead><tr><th style="width:22%">Rute</th><th style="width:16%">Mal-fasit</th><th style="width:34%">Avvik</th><th>Komponenter</th></tr></thead>
+<tbody>
+<tr><td class="m">/admin/agenticos (NY)</td><td class="m">agencyos-agenticos-hub</td><td>malen som den er; redirects fra agents, agent-team, kommando/*</td><td class="k"><b>QueueCard·StatusCircleRow·LiveStatus</b>·KpiStripe·ListRow·Panel</td></tr>
+<tr><td class="m">/admin/agents/[agentId]</td><td class="m">agencyos-agent-detalj</td><td>én mal; manuelle agenter får kjøringsskjemaet</td><td class="k"><b>Tidslinje (kjøringssteg)·StatusBadge·ProvenanceDisclosure</b>·FormField (kjøringsskjema)·DataTable (historikk)</td></tr>
+<tr><td class="m">/admin/brief · recording · workspace</td><td class="m">eksisterende V2</td><td>pixel-pass mot Paper-mønsteret, huben er inngangen; oppgavesystem-valget er åpent</td><td class="k"><b>MeldingsTraad·Composer</b> (brief)·<b>VideoScrubber·PositionMarker</b> (recording)·KanbanKolonne (workspace)</td></tr>
+<tr><td class="m">/admin/marketing · reports</td><td class="m">agencyos-oppsett-mønsteret</td><td>inngang fra huben; egen fasit kun hvis én-linje-testen stryker</td><td class="k"><b>Tabs·KpiCard·DataTable</b>·FilterPills</td></tr>
+</tbody>
+</table>
+
+<h2 id="ut">09 · Utenfor kartet</h2>
+<ul>
+<li><b>Stats (~45 ruter):</b> blokkert av PR-F — egen designrunde W7, ikke mal-varianter.</li>
+<li><b>Ruter med egen fasit:</b> styres av <code>PAPER-ZIP-CHECKLIST.md</code>. Aldri to sannheter om samme skjerm.</li>
+<li><b>Redirect-stubber og legacy:</b> kodes aldri mot dette kartet.</li>
+<li><b>Komponentnavnene</b> er designsystemets vokabular (526 filer i <code>components/</code> her). Finnes ikke repo-motstykket ennå, bygges komponenten først — én gang — og gjenbrukes; aldri inline per skjerm.</li>
+</ul>
+
+</div>
+</body>
+</html>

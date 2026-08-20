@@ -10,7 +10,7 @@
 <!-- @template name="AgencyOS · Hjem" description="Samtale som standardflate: dispatch som første melding, «Én ting nå» øverst, KPI-rad, «trenger deg», og komponist + statuslinje som del av skallet." -->
 <helmet><script src="./ds-base.js"></script><style>html,body{margin:0;padding:0}body{background:var(--bg)}a{color:var(--fg)}a:hover{color:var(--accent-fg)}[data-rsp=rail]{display:flex;flex:none}[data-rsp=tab]{display:none}[data-rsp=col2]{grid-template-columns:minmax(0,1.35fr) minmax(0,1fr)}@media(max-width:1080px){[data-rsp=col2]{grid-template-columns:minmax(0,1fr)}}@media(max-width:880px){[data-rsp=rail]{display:none}[data-rsp=pad]{padding:16px 14px 20px}[data-rsp=tab]{display:block}[data-rsp=sbar]{display:none}}</style></helmet>
 <div style="display:flex;min-height:100vh;background:var(--bg);color:var(--fg);font-family:var(--ui);font-size:13.5px;-webkit-font-smoothing:antialiased">
-<div data-rsp="rail"><x-import component-from-global-scope="AKGolfHQClaudePaper_605a48.Rail" items="{{ railItems }}" current="{{ nav }}" onNavigate="{{ go }}" initials="AK" hint-size="64px,100vh"></x-import></div>
+<div data-rsp="rail"><x-import component-from-global-scope="AKGolfHQClaudePaper_605a48.Rail" items="{{ railItems }}" current="{{ nav }}" onNavigate="{{ go }}" initials="AK" hint-size="232px,100vh"></x-import></div>
 <div style="flex:1;min-width:0;display:flex;flex-direction:column">
 <x-import component-from-global-scope="AKGolfHQClaudePaper_605a48.Topbar" theme="{{ theme }}" onToggleTheme="{{ toggleTheme }}" searchPlaceholder="Søk i stall og økter" hint-size="100%,56px"></x-import>
 <main data-rsp="pad" style="flex:1;padding:24px 28px 28px;display:flex;flex-direction:column;gap:14px;max-width:1240px;width:100%;box-sizing:border-box">

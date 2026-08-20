@@ -1,2443 +1,446 @@
+<!-- FIDELITET: FASIT — Workbench-kalenderen (skjerm 1 av 8, treningsplanlegging 20.08.2026).
+     Erstatter forrige workbench-desktop-fasit OG workbench-mobil (m390-rammen her er mobilfasiten).
+     Uke er standard på mobil, måned på desktop. Årstidslinje: perioder · treningsblokker
+     (utvikling/forberedelser/konkurranse) · turneringer · tester. Egen farge per pyramide
+     (SessionCard-mappingen: FYS --info · TEK --fg · SLAG --mid · SPILL --muted · TURN --up).
+     Skall-økter vises med kun pyramide-merkelapp. Gruppeøkter merkes med gruppens navn.
+     Tilstander: normal · tom · laster · feil. Clay har monopol: kun tomtilstandens ene vei videre. -->
 <!doctype html>
 <html lang="nb" data-theme="light">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Workbench · AgencyOS · AK Golf HQ</title>
+<title>Workbench · Kalender · AK Golf HQ</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Lora:ital,wght@0,400;0,500;1,400&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../tokens/akhq-tokens.css">
 <style>
-/* ═══ akhq-tokens.css v3.1 — KOPIERT VERBATIM. Eneste tokenkilde. ═══ */
-/* ─────────────────────────────────────────────────────────────
-   AK Golf HQ · Claude Paper tokens v3
-   Anthropic-justert (offentlige kilder) + AK produktregler
-
-   Én kilde. Kopier verbatim inn i hver HTML/skjerm, eller @import.
-   Se SCOPE.md for hva «offisiell» betyr (vi er JUSTERT, ikke Anthropic).
-
-   Kilder:
-   - Anthropic brand-guidelines: ink/paper/mid/light + clay/sky/olive
-   - anthropic.com DESIGN.md (shadcn reverse-eng): full 21-farge + 8 aksenter
-   - Fase 1 (2026-07/08): chat-først, radius 12 for tett app, Én ting nå
-
-   v3.1 · 2026-08-01 (Bølge 1)
-   - --rail-hover / --rail-active løftet inn (var lokale i Fase 1-filene)
-   - Ingen andre verdiendringer. --muted er #5e5d59 (vinner over Fase 1 #5F5B53)
-
-   v3 · 2026-08-01
-   - Full Anthropic surface + accent ladder
-   - Radius-stige: sm 8 · app 12 · md 16 · lg 24 · pill
-   - Type-tokens for marketing + produkt
-   - Motion, z-index, tap-targets, hairline
-   - Dark theme (produkt; marketing er primært lys)
-   ───────────────────────────────────────────────────────────── */
-
-:root {
-  /* ─── Surfaces (Anthropic cream ladder) ─── */
-  --bg: #faf9f5;                    /* canvas / ivory */
-  --surface: #ffffff;               /* elevated white (produkt-kort) */
-  --soft: #f0eee6;                  /* surface-secondary — kort uten skygge */
-  --soft-hover: #e8e6dc;            /* surface-secondary-hover */
-  --surface-warm: #e3dacc;          /* oat */
-  --surface-manilla: #ebdbbc;
-  --surface-kraft: #d4a27f;
-  --border: #e8e6dc;                /* light gray (brand skill) */
-  --hairline: #d1cfc5;              /* finere skille enn --border */
-  --inverse: #000000;               /* full-bleed marketing-bånd */
-
-  /* ─── Text (Anthropic slate ladder) ─── */
-  --fg: #141413;                    /* ink — primær tekst + CTA-fill */
-  --ink-soft: #3d3d3a;              /* hover på primærknapp */
-  --muted: #5e5d59;                 /* text-muted (brand skill ~ #5f5b53; Anthropic #5e5d59) */
-  --mid: #b0aea5;                   /* text-secondary / cloud medium — IKKE brødtekst i lys */
-  --text-tertiary: #87867f;
-
-  /* ─── Rail (produkt, alltid mørk) ─── */
-  --rail: #141413;
-  --rail-fg: #b0aea5;
-  --rail-on: #faf9f5;
-  --rail-hover: rgba(250, 249, 245, 0.08);   /* v3.1 — løftet fra Fase 1 */
-  --rail-active: rgba(250, 249, 245, 0.14);  /* v3.1 — løftet fra Fase 1 */
-
-  /* ─── Actions ─── */
-  --cta: #141413;                   /* Anthropic: CTA er blekk, ikke farge */
-  --on-cta: #faf9f5;
-  --cta-hover: #3d3d3a;
-
-  /* Clay = sterkeste kromatiske aksent (Anthropic clay) */
-  --accent: #d97757;                /* kun «Én ting nå» + focus i app */
-  --accent-soft: rgba(217, 119, 87, 0.12);
-  --accent-fg: #b85c3d;             /* AA-tekst på paper */
-  --on-accent: #141413;             /* tekst på fylt clay — sparsomt */
-  --accent-deep: #c6613f;           /* burnt sienna */
-
-  /* ─── Dormant accent swatches (Anthropic research palette)
-       Brukes sparsomt: chart, kategori, badges — aldri som primær CTA ─── */
-  --accent-coral: #ebcece;
-  --accent-fig: #c46686;
-  --accent-cactus: #bcd1ca;
-  --accent-olive: #788c5d;
-  --accent-sky: #6a9bcc;
-  --accent-heather: #cbcadb;
-
-  /* ─── Datasemantikk (produkt — mørknede for AA-tekst) ─── */
-  --up: #63784a;                    /* olive mørknet for tekst */
-  --up-raw: #788c5d;                /* olive rå — fyll/sparkline */
-  --dn: #a85536;                    /* leire av clay — aldri ren rød */
-  --info: #46719f;                  /* sky mørknet for tekst */
-  --info-raw: #6a9bcc;
-
-  /* ─── Typography families
-       Anthropic proprietary (Serif/Sans/Mono) er IKKE offentlige.
-       Brand skill: Poppins + Lora. Mono: IBM Plex Mono (produkt-tall). ─── */
-  --font-sans: "Poppins", Arial, system-ui, sans-serif;
-  --font-serif: "Lora", Georgia, "Times New Roman", serif;
-  --font-mono: "IBM Plex Mono", ui-monospace, monospace;
-
-  /* Aliases brukt i eksisterende skjermer */
-  --disp: var(--font-sans);
-  --ui: var(--font-sans);
-  --body: var(--font-serif);
-  --mono: var(--font-mono);
-
-  /* ─── Type scale · Produkt (tett) ─── */
-  --text-display: 32px;
-  --text-title: 22px;
-  --text-card: 16px;
-  --text-panel: 14.5px;
-  --text-body-agency: 13.5px;       /* AgencyOS desktop */
-  --text-body-player: 14px;         /* PlayerHQ mobil */
-  --text-label: 10px;               /* versaler + tracking */
-  --text-kpi: 40px;                 /* mono */
-
-  /* ─── Type scale · Marketing (editorial, Anthropic-rytme) ─── */
-  --text-hero: 56px;                /* nedskalert fra 88 — web-vennlig */
-  --text-section: 40px;             /* nedskalert fra 90 */
-  --text-prose: 18px;               /* serif body marketing */
-  --text-prose-lg: 22px;
-  --text-nav: 16px;
-  --text-eyebrow: 12px;
-
-  /* ─── Spacing · 4px base (Anthropic 4/8/12/16/24/32/48/96) ─── */
-  --s1: 4px;
-  --s2: 8px;
-  --s3: 12px;
-  --s4: 16px;
-  --s5: 24px;
-  --s6: 32px;
-  --s7: 48px;
-  --s8: 64px;
-  --s9: 96px;                       /* section padding marketing */
-
-  /* ─── Radius
-       Anthropic marketing: sm 8 · md 16 · lg 24
-       AK produkt (Fase 1 låst): app 12 for kort/composer ─── */
-  --r-none: 0px;
-  --r-sm: 8px;                      /* knapper, inputs, chips */
-  --r: 12px;                        /* app-default (Fase 1) */
-  --r-md: 16px;                     /* editorial cards / marketing */
-  --r-lg: 24px;                     /* store flater, pille-CTA unntak */
-  --r-pill: 999px;
-
-  /* ─── Elevation
-       Anthropic marketing: NULL shadow — flater via cream-steg
-       Produkt: én myk skygge tillatt (valgfri) ─── */
-  --shadow: 0 1px 0 rgba(20, 20, 19, 0.03), 0 18px 40px rgba(20, 20, 19, 0.05);
-  --shadow-none: none;
-  --scrim: rgba(20, 20, 19, 0.4);
-
-  /* ─── Interaction ─── */
-  --focus: #d97757;
-  --ease: cubic-bezier(0.16, 1, 0.3, 1);
-  --dur: 160ms;
-  --dur-slow: 280ms;
-
-  /* Tap targets */
-  --tap: 44px;
-  --tap-lg: 48px;
-  --tap-capture: 60px;              /* fangst-mikrofon mobil */
-
-  /* ─── Logo (AK Golf — ikke Anthropic) ─── */
-  --logo-mark: #141413;
-  --logo-dot: #b85c3d;
-
-  /* ─── Z-index ─── */
-  --z-sticky: 10;
-  --z-rail: 20;
-  --z-sheet: 40;
-  --z-modal: 50;
-  --z-toast: 100;
-  --z-command: 110;
-}
-
-/* ─── Dark (produkt) ─── */
-[data-theme="dark"] {
-  color: #faf9f5;
-  --bg: #141413;
-  --surface: #1d1c1a;
-  --soft: #26241f;
-  --soft-hover: #2e2c28;
-  --surface-warm: #2a2824;
-  --border: rgba(250, 249, 245, 0.10);
-  --hairline: rgba(250, 249, 245, 0.08);
-  --inverse: #000000;
-
-  --fg: #faf9f5;
-  --ink-soft: #e8e6dc;
-  --muted: #b0aea5;
-  --mid: #6b675e;
-  --text-tertiary: #87867f;
-
-  --rail: #0e0d0c;
-  --rail-fg: #97938a;
-  --rail-on: #faf9f5;
-  --rail-hover: rgba(250, 249, 245, 0.06);
-  --rail-active: rgba(250, 249, 245, 0.12);
-
-  --cta: #faf9f5;
-  --on-cta: #141413;
-  --cta-hover: #e8e6dc;
-
-  --accent: #d97757;
-  --accent-soft: rgba(217, 119, 87, 0.18);
-  --accent-fg: #e5a184;
-  --on-accent: #141413;
-
-  --up: #9db284;
-  --up-raw: #788c5d;
-  --dn: #de9e82;
-  --info: #93b7dc;
-  --info-raw: #6a9bcc;
-
-  --shadow: none;
-  --focus: #d97757;
-
-  --logo-mark: #faf9f5;
-  --logo-dot: #d97757;
-}
-
-[data-theme="light"] {
-  color: #141413;
-}
-
-/* Rail always dark */
-.rail {
-  --logo-mark: #faf9f5;
-  --logo-dot: #d97757;
-}
-
-/* Aksentflate — marketing/innlogging sparsomt */
-.on-accent-surface {
-  --logo-mark: #141413;
-  --logo-dot: #141413;
-}
-
-/* Full-bleed inverse band (marketing) */
-.band-inverse {
-  background: var(--inverse);
-  color: var(--bg);
-}
-
-/* Skriftimport — lim i <head> på alle skjermer:
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Lora:ital,wght@0,400;0,500;1,400&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-*/
-
-@media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-    scroll-behavior: auto !important;
-  }
-}
-
-/* Gulvregel: min treffmål på touch */
-@media (pointer: coarse) {
-  :root {
-    --floor: var(--tap);
-  }
-}
-
-/* v3.1-tillegg foreslått fra agencyoshq.html — mellomtrinn i cream-stigen.
-   Skal inn i tokens-fila hvis Anders godkjenner. */
-:root{ --softer:#f6f4ee; --border-soft:#efede4; }
-[data-theme="dark"]{ --softer:#1a1917; --border-soft:rgba(250,249,245,.06); }
-/* ═══ Workbench · AgencyOS · desktop full bredde ═══
-   LOKASJON rettet 02.08.2026: Mulligan Indoor er active = false i locations og skal ikke vises ved lansering. Erstattet med Gamle Fredrikstad GK, som er eneste synlige lokasjon.
-   Åpnes fra tråden i Konsoll. Ikke en flate man navigerer til blindt —
-   man kommer hit med en intensjon («lag treningsplan for Filip»).
-   Derfor har toppbaren tilbake-til-tråd, ikke bare en tittel. */
-
-*,*::before,*::after{ box-sizing:border-box; }
-html,body{ margin:0; height:100%; }
-body{
-  background:var(--bg); color:var(--fg);
-  font-family:var(--ui); font-size:var(--text-body-agency); line-height:1.5;
-  -webkit-font-smoothing:antialiased;
-}
-[hidden]{ display:none !important; }
-button{ font:inherit; color:inherit; }
-.num{ font-family:var(--mono); font-variant-numeric:tabular-nums; }
-.eyebrow{ font-family:var(--mono); font-size:var(--text-label); font-weight:500;
-  letter-spacing:.09em; text-transform:uppercase; color:var(--muted); }
-.sr{ position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; }
-:where(a,button,input,select,textarea,[tabindex]):focus-visible{
-  outline:2px solid var(--focus); outline-offset:2px; border-radius:var(--r-sm); }
-
-/* ── Knapper ─────────────────────────────────────────────────── */
-.btn{ display:inline-flex; align-items:center; justify-content:center; gap:var(--s2);
-  min-height:var(--tap); padding:0 var(--s4); font-size:13px; font-weight:500;
-  background:transparent; border:1px solid var(--border); border-radius:var(--r);
-  cursor:pointer; white-space:nowrap; text-decoration:none;
-  transition:background var(--dur) var(--ease), border-color var(--dur) var(--ease); }
-.btn:hover{ background:var(--soft); border-color:var(--mid); }
-.btn:active{ transform:translateY(1px); }
-.btn[disabled],.btn[aria-disabled="true"]{ opacity:.45; pointer-events:none; }
-.btn.ink{ background:var(--cta); color:var(--on-cta); border-color:var(--cta); }
-.btn.ink:hover{ background:var(--cta-hover); border-color:var(--cta-hover); }
-/* Én ting nå — maks én per skjerm. Klikk MÅ endre tilstand. */
-.btn.now{ background:var(--accent); color:var(--on-accent); border-color:var(--accent);
-  min-height:var(--tap-lg); font-weight:600; padding:0 var(--s5); }
-.btn.now:hover{ filter:brightness(1.04); }
-.btn.sm{ min-height:var(--tap); padding:0 var(--s3); font-size:12px; }
-.btn.icon{ width:var(--tap); padding:0; }
-
-.chip{ display:inline-flex; align-items:center; gap:var(--s1); min-height:var(--tap);
-  padding:0 var(--s3); font-size:12.5px; background:var(--surface);
-  border:1px solid var(--border); border-radius:var(--r-pill); cursor:pointer; }
-.chip[aria-pressed="true"]{ background:var(--fg); color:var(--bg); border-color:var(--fg); }
-.chip.sm{ min-height:var(--tap); padding:0 var(--s3); font-size:11.5px; }
-.tag{ display:inline-flex; align-items:center; gap:var(--s1); padding:3px var(--s2);
-  border-radius:var(--r-pill); font-family:var(--mono); font-size:10.5px;
-  letter-spacing:.04em; text-transform:uppercase; background:var(--soft);
-  color:var(--muted); border:1px solid var(--border); }
-.tag.up{ color:var(--up); } .tag.dn{ color:var(--dn); } .tag.info{ color:var(--info); }
-
-/* ── Skall ───────────────────────────────────────────────────────
-   Full bredde, ingen rail: Workbench åpnes FRA tråden og eier hele vinduet.
-   Tilbake-til-tråd i toppbaren er utgangen. Bibliotek 232 + lerret + inspektør 340.
-   min-height:0 på alle flex/grid-barn — uten det scroller dokumentet
-   i stedet for sonene, og bunnsonen mister festet. */
-.wb{ display:grid; grid-template-rows:auto auto minmax(0,1fr) auto; height:100vh; }
-.wbmid{ display:grid; grid-template-columns:232px minmax(0,1fr) 340px; min-height:0; }
-@media (max-width:1400px){ .wbmid{ grid-template-columns:200px minmax(0,1fr) 320px; } }
-
-/* ── Toppbar ─────────────────────────────────────────────────── */
-.top{ display:flex; align-items:center; gap:var(--s3); padding:var(--s3) var(--s4);
-  border-bottom:1px solid var(--border); background:var(--surface); }
-.back{ display:inline-flex; align-items:center; gap:var(--s2); min-height:var(--tap);
-  padding:0 var(--s3); border:1px solid var(--border); border-radius:var(--r);
-  background:transparent; cursor:pointer; font-size:12.5px; color:var(--muted); }
-.back:hover{ background:var(--soft); color:var(--fg); }
-.back svg{ width:14px; height:14px; fill:none; stroke:currentColor; stroke-width:2; }
-.who{ display:flex; align-items:baseline; gap:var(--s2); }
-.who h1{ margin:0; font-family:var(--disp); font-size:15px; font-weight:600; }
-.zooms{ display:flex; gap:2px; padding:3px; background:var(--soft);
-  border-radius:var(--r-pill); margin-left:var(--s2); }
-.zooms button{ min-height:var(--tap); padding:0 var(--s4); border:0; background:transparent;
-  border-radius:var(--r-pill); font-size:12.5px; cursor:pointer; color:var(--muted); }
-.zooms button[aria-current="true"]{ background:var(--surface); color:var(--fg); font-weight:600;
-  box-shadow:0 1px 2px rgba(20,20,19,.06); }
-.spacer{ flex:1; }
-
-/* ── KPI-stripe ──────────────────────────────────────────────── */
-.kpis{ display:flex; align-items:stretch; gap:0; border-bottom:1px solid var(--border);
-  background:var(--softer); overflow-x:auto; }
-.kpi{ display:flex; flex-direction:column; gap:2px; padding:var(--s3) var(--s4);
-  border-right:1px solid var(--border-soft); min-width:118px; }
-.kpi .k{ font-family:var(--mono); font-size:var(--text-label); letter-spacing:.09em;
-  text-transform:uppercase; color:var(--muted); }
-.kpi .v{ font-family:var(--mono); font-size:19px; font-weight:600; letter-spacing:-.02em; }
-.kpi .v small{ font-size:11px; font-weight:400; color:var(--muted); margin-left:2px; }
-.kpi .w{ font-size:10.5px; color:var(--muted); }
-.kpiact{ display:flex; align-items:center; gap:var(--s2); padding:var(--s3) var(--s4); margin-left:auto; }
-
-/* Ankomstbanner: sier hvor du kom fra og hva som skjer nå. */
-.ankomst{ display:flex; align-items:center; gap:var(--s3);
-  padding:var(--s2) var(--s4); background:var(--accent-soft);
-  border-bottom:1px solid var(--border); font-size:12.5px; }
-.ankomst .eyebrow{ flex:none; color:var(--accent-fg); }
-.ankomst > span:nth-child(2){ font-family:var(--body); }
-.ankomst .btn{ margin-left:auto; flex:none; }
-
-/* ── Bibliotek (venstre) ─────────────────────────────────────── */
-.lib{ display:flex; flex-direction:column; min-height:0; min-width:0;
-  border-right:1px solid var(--border); background:var(--surface); }
-.libtabs{ display:flex; border-bottom:1px solid var(--border); }
-.libtabs button{ flex:1; min-height:var(--tap); border:0; background:transparent;
-  font-size:12px; cursor:pointer; color:var(--muted); border-bottom:2px solid transparent; }
-.libtabs button[aria-selected="true"]{ color:var(--fg); font-weight:600; border-bottom-color:var(--fg); }
-.libbody{ flex:1; min-height:0; overflow-y:auto; padding:var(--s3); }
-.libitem{ display:block; width:100%; text-align:left; padding:var(--s3);
-  margin-bottom:var(--s2); background:var(--bg); border:1px solid var(--border);
-  border-radius:var(--r); cursor:grab; }
-.libitem:hover{ border-color:var(--mid); }
-.libitem:active{ cursor:grabbing; }
-.libitem .n{ font-size:12.5px; font-weight:500; margin-bottom:2px; }
-.libitem .f{ font-family:var(--mono); font-size:10px; color:var(--muted); word-break:break-all; }
-
-/* ── Lerret (senter) ─────────────────────────────────────────── */
-.canvas{ display:flex; flex-direction:column; min-height:0; min-width:0; background:var(--bg); }
-.period{ display:flex; align-items:center; gap:var(--s2); padding:var(--s2) var(--s4);
-  border-bottom:1px solid var(--border-soft); background:var(--softer); font-size:11.5px; }
-.pband{ display:inline-flex; align-items:center; gap:var(--s2); padding:2px var(--s3);
-  border-radius:var(--r-pill); background:var(--surface); border:1px solid var(--border); }
-.pband .dot{ width:7px; height:7px; border-radius:var(--r-pill); }
-.canvasbody{ flex:1; min-height:0; overflow:auto; }
-
-/* ── Tidsrutenett ────────────────────────────────────────────────
-   Tidsakse i sidemenyen: 05:00–23:00 i 30-minutters intervaller.
-   36 luker à 22px = 792px lerret. Aksen er sticky til venstre og
-   dagoverskriftene sticky på toppen, slik at man aldri mister hvilken
-   dag eller hvilket klokkeslett man ser på når man ruller.
-   Blokkene posisjoneres av faktisk starttid og faktisk varighet —
-   varigheten er summen av drill-tidene, ikke et tall man skriver inn. */
-.tg{ display:grid; grid-template-columns:62px repeat(7, minmax(124px, 1fr));
-  min-width:1000px; position:relative; }
-
-.tg-corner{ position:sticky; top:0; left:0; z-index:4; background:var(--bg);
-  border-bottom:1px solid var(--border); border-right:1px solid var(--border); }
-.tg-dayhead{ position:sticky; top:0; z-index:3; background:var(--bg);
-  border-bottom:1px solid var(--border); border-left:1px solid var(--border-soft);
-  padding:var(--s2) var(--s3); display:flex; align-items:baseline; gap:var(--s2); }
-.tg-dayhead .dw{ font-family:var(--mono); font-size:10px; letter-spacing:.09em;
-  text-transform:uppercase; color:var(--muted); }
-.tg-dayhead .dd{ font-family:var(--mono); font-size:13px; font-weight:600; }
-.tg-dayhead .dt{ margin-left:auto; font-family:var(--mono); font-size:10.5px; color:var(--muted); }
-.tg-dayhead.today{ background:var(--soft); }
-.tg-dayhead.today .dd{ text-decoration:underline; text-underline-offset:3px; }
-
-/* Tidsakse */
-.tg-axis{ position:sticky; left:0; z-index:2; background:var(--bg);
-  border-right:1px solid var(--border); }
-.tg-tick{ height:22px; position:relative; }
-.tg-tick span{ position:absolute; top:-6px; right:var(--s2);
-  font-family:var(--mono); font-size:10px; color:var(--muted); background:var(--bg);
-  padding:0 2px; font-variant-numeric:tabular-nums; }
-.tg-tick.hel span{ color:var(--fg); font-weight:500; }
-
-/* Dagkolonne. Hel time = tydeligere strek enn halvtime. */
-.tg-col{ position:relative; border-left:1px solid var(--border-soft);
-  background:
-    repeating-linear-gradient(to bottom,
-      var(--hairline) 0 1px, transparent 1px 44px),
-    repeating-linear-gradient(to bottom,
-      var(--border-soft) 0 1px, transparent 1px 22px);
-  background-color:var(--surface); }
-.tg-col.drop{ background-color:var(--accent-soft); }
-
-/* Opptatt tid — bakgrunnsvirkelighet, ikke plan */
-.tg-busy{ position:absolute; left:2px; right:2px; border-radius:var(--r-sm);
-  background:var(--soft); border:1px dashed var(--border);
-  font-size:10px; color:var(--muted); padding:3px 5px; overflow:hidden; z-index:1; }
-
-/* Øktblokk */
-.tg-okt{ position:absolute; left:3px; right:3px; z-index:2; text-align:left;
-  padding:4px 6px; border-radius:var(--r-sm); background:var(--bg);
-  border:1px solid var(--border); border-left:3px solid var(--mid);
-  cursor:pointer; overflow:hidden; }
-.tg-okt:hover{ border-color:var(--mid); }
-.tg-okt[aria-current="true"]{ border-color:var(--fg); background:var(--soft); }
-.tg-okt .t{ display:block; font-size:11.5px; font-weight:600; line-height:1.25;
-  overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
-.tg-okt .m{ display:block; font-family:var(--mono); font-size:9.5px; color:var(--muted); }
-.tg-okt .f{ display:block; font-family:var(--mono); font-size:9px; color:var(--mid);
-  overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
-.tg-okt.done{ opacity:.6; }
-.tg-okt.done .t{ text-decoration:line-through; }
-
-/* Nå-linje. Ikke lime (finnes ikke i Paper) og ikke clay (monopolet).
-   Blekk med en liten prikk — den skal leses, ikke rope. */
-.tg-now{ position:absolute; left:0; right:0; height:0; z-index:3;
-  border-top:1px solid var(--fg); pointer-events:none; }
-.tg-now::before{ content:""; position:absolute; left:-3px; top:-3px;
-  width:6px; height:6px; border-radius:var(--r-pill); background:var(--fg); }
-.tg-now span{ position:absolute; right:3px; top:-14px; font-family:var(--mono);
-  font-size:9px; color:var(--fg); background:var(--bg); padding:0 3px; }
-
-/* ── F1: flytt, resize, dupliser (Notion Calendar-paritet) ────── */
-.tg-okt{ touch-action:none; }
-.tg-okt.flyttes{ opacity:.75; z-index:5; cursor:grabbing; user-select:none;
-  box-shadow:0 6px 18px rgba(20,20,19,.14); }
-.tg-okt .rz{ position:absolute; left:0; right:0; height:7px; cursor:ns-resize; }
-.tg-okt .rz.topp{ top:-2px; } .tg-okt .rz.bunn{ bottom:-2px; }
-.tg-okt .rz::after{ content:""; position:absolute; left:50%; top:2px; width:22px; height:3px;
-  margin-left:-11px; border-radius:var(--r-pill); background:var(--mid); opacity:0; }
-.tg-okt:hover .rz::after{ opacity:.55; }
-
-/* ── F2: kildeliste, heldagsbånd, konflikt, gjentakelse ─────── */
-.kilder{ padding:var(--s2) var(--s3); border-bottom:1px solid var(--border); }
-.kilder .flab{ display:block; font-family:var(--mono); font-size:var(--text-label);
-  letter-spacing:.09em; text-transform:uppercase; color:var(--muted); margin:var(--s1) 0 var(--s2); }
-.krad{ display:flex; align-items:center; gap:var(--s2); width:100%; min-height:32px;
-  padding:2px var(--s1); border:0; background:transparent; border-radius:var(--r-sm);
-  cursor:pointer; font-size:12px; text-align:left; color:var(--fg); }
-.krad:hover{ background:var(--soft); }
-.krad .kdot{ flex:none; width:9px; height:9px; border-radius:2px; border:1px solid var(--border); }
-.krad[aria-pressed="true"] .kdot{ border-color:transparent; }
-.krad .kn{ min-width:0; }
-.krad .khint{ margin-left:auto; font-family:var(--mono); font-size:9px; color:var(--muted); }
-.krad[aria-pressed="false"]{ color:var(--muted); }
-.krad[aria-pressed="false"] .kdot{ background:transparent !important; }
-
-.tg-adcorner{ position:sticky; left:0; z-index:2; background:var(--bg);
-  border-right:1px solid var(--border); border-bottom:1px solid var(--border);
-  font-family:var(--mono); font-size:8.5px; letter-spacing:.07em; text-transform:uppercase;
-  color:var(--muted); display:flex; align-items:center; justify-content:flex-end;
-  padding-right:var(--s2); }
-.tg-adcell{ border-left:1px solid var(--border-soft); border-bottom:1px solid var(--border);
-  background:var(--softer); min-height:26px; padding:3px var(--s2);
-  font-size:10.5px; color:var(--muted); font-family:var(--body); }
-.tg-adcell .tband{ display:inline-flex; align-items:center; gap:var(--s1);
-  font-family:var(--mono); font-size:9.5px; color:var(--fg);
-  background:var(--surface); border:1px solid var(--accent-heather);
-  border-left:3px solid var(--accent-heather); border-radius:var(--r-sm); padding:1px var(--s2); }
-
-.tg-okt .konf{ display:block; font-family:var(--mono); font-size:9px;
-  letter-spacing:.04em; text-transform:uppercase; color:var(--dn); }
-.tg-okt .rep{ font-family:var(--mono); font-size:9px; color:var(--muted); }
-.tg-okt .tmark{ display:inline-block; font-family:var(--mono); font-size:9px;
-  letter-spacing:.05em; text-transform:uppercase; color:var(--accent-fg); }
-
-/* Mini-måned (Notion): datohopp i venstremargen */
-.mini{ padding:var(--s3) var(--s3) var(--s2); border-bottom:1px solid var(--border); }
-.mini .mh{ display:flex; align-items:baseline; gap:var(--s2); margin-bottom:var(--s1); }
-.mini .mh .t{ font-size:12px; font-weight:600; }
-.mini .mh .u{ margin-left:auto; font-family:var(--mono); font-size:10px; color:var(--muted); }
-.mini table{ width:100%; border-collapse:collapse; }
-.mini th{ font-family:var(--mono); font-size:9px; font-weight:500; color:var(--muted);
-  text-transform:uppercase; padding:2px 0; text-align:center; }
-.mini td{ padding:0; text-align:center; }
-.mini td.un{ font-family:var(--mono); font-size:9px; color:var(--muted); }
-.mini td button{ width:100%; min-height:24px; border:0; background:transparent;
-  border-radius:var(--r-sm); font-family:var(--mono); font-size:10.5px;
-  font-variant-numeric:tabular-nums; color:var(--muted); cursor:pointer; }
-.mini td button:hover{ background:var(--soft); color:var(--fg); }
-.mini tr.uke32 td button{ color:var(--fg); background:var(--softer); }
-.mini td button[aria-current="date"]{ background:var(--fg); color:var(--bg); font-weight:600; }
-
-/* Agenda-visningen: uka som liste */
-.agenda{ padding:var(--s3) var(--s4) var(--s5); max-width:660px; }
-.agenda .ad{ font-family:var(--mono); font-size:10px; letter-spacing:.09em; text-transform:uppercase;
-  color:var(--muted); margin:var(--s4) 0 var(--s2); }
-.agenda .ar{ display:flex; align-items:center; gap:var(--s3); width:100%; text-align:left;
-  min-height:var(--tap); padding:var(--s2) var(--s3); margin-bottom:var(--s1);
-  background:var(--surface); border:1px solid var(--border); border-radius:var(--r); cursor:pointer; }
-.agenda .ar:hover{ border-color:var(--mid); }
-.agenda .ar .at{ font-family:var(--mono); font-size:11px; flex:none; width:96px; }
-.agenda .ar .an{ font-size:12.5px; font-weight:500; min-width:0; overflow:hidden;
-  text-overflow:ellipsis; white-space:nowrap; }
-.agenda .ar .af{ margin-left:auto; flex:none; font-family:var(--mono); font-size:9.5px; color:var(--muted); }
-
-/* ── Inspektør (høyre) ───────────────────────────────────────── */
-.insp{ display:flex; flex-direction:column; min-height:0; min-width:0;
-  border-left:1px solid var(--border); background:var(--surface); }
-.insptabs{ display:flex; border-bottom:1px solid var(--border); }
-.insptabs button{ flex:1; min-height:var(--tap); border:0; background:transparent;
-  font-size:12px; cursor:pointer; color:var(--muted); border-bottom:2px solid transparent;
-  display:inline-flex; align-items:center; justify-content:center; gap:6px; }
-.insptabs button[aria-selected="true"]{ color:var(--fg); font-weight:600; border-bottom-color:var(--fg); }
-.insptabs .badge{ font-family:var(--mono); font-size:10px; min-width:17px; height:17px;
-  display:inline-grid; place-items:center; border-radius:var(--r-pill);
-  background:var(--fg); color:var(--bg); }
-.inspbody{ flex:1; min-height:0; overflow-y:auto; padding:var(--s4); }
-.field{ margin-bottom:var(--s4); }
-.field > label,.flab{ display:block; font-family:var(--mono); font-size:var(--text-label);
-  letter-spacing:.09em; text-transform:uppercase; color:var(--muted); margin-bottom:var(--s2); }
-.field input[type="text"],.field input[type="date"],.field textarea,.field select{
-  width:100%; min-height:var(--tap); padding:var(--s2) var(--s3);
-  background:var(--bg); color:var(--fg);
-  border:1px solid var(--border); border-radius:var(--r-sm); font:inherit; font-size:13px; }
-.field textarea{ min-height:64px; resize:vertical; font-family:var(--body); }
-.segs{ display:flex; flex-wrap:wrap; gap:var(--s1); }
-.hint{ font-size:11px; color:var(--muted); margin:var(--s1) 0 0; font-family:var(--body); }
-
-/* ── Drills ──────────────────────────────────────────────────────
-   <details> per drill: sammendrag alltid synlig, redigering på klikk.
-   Gir tastatur og skjermleser gratis, og summary er ≥44px av seg selv. */
-.drill{ border:1px solid var(--border); border-radius:var(--r);
-  margin-bottom:var(--s2); background:var(--bg); overflow:hidden; }
-.drill[open]{ border-color:var(--mid); }
-.dsum{ display:flex; align-items:center; gap:var(--s2); min-height:var(--tap);
-  padding:var(--s2) var(--s3); cursor:pointer; list-style:none; }
-.dsum::-webkit-details-marker{ display:none; }
-.drill[open] .dsum{ border-bottom:1px solid var(--border); background:var(--soft); }
-.drill .dn{ font-size:12.5px; font-weight:600; min-width:0;
-  overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
-.dtyp{ flex:none; font-family:var(--mono); font-size:9px; letter-spacing:.06em;
-  text-transform:uppercase; padding:2px 6px; border-radius:var(--r-pill);
-  border:1px solid var(--border); color:var(--muted); background:var(--surface); }
-.dtyp.golf{ color:var(--up); }
-.dtyp.fys{ color:var(--info); }
-.drill .dtid{ margin-left:auto; flex:none; font-family:var(--mono); font-size:11.5px; }
-.dbody{ padding:var(--s3); }
-.dbody .field{ margin-bottom:var(--s3); }
-.dbody .field:last-of-type{ margin-bottom:var(--s3); }
-/* Formelen tilhører drillen — den vises inne i drillen, aldri på økta. */
-.dformel{ padding:var(--s2) var(--s3); margin-bottom:var(--s3);
-  background:var(--softer); border:1px solid var(--border-soft); border-radius:var(--r-sm); }
-.dformel .df{ display:block; font-family:var(--mono); font-size:10.5px;
-  color:var(--fg); word-break:break-all; }
-/* Tre seksjoner under økta: Golf · Fysisk · Tester */
-.sek{ margin-bottom:var(--s5); padding-bottom:var(--s4);
-  border-bottom:1px solid var(--border-soft); }
-.sek:last-of-type{ border-bottom:0; }
-.sekhead{ display:flex; align-items:center; gap:var(--s2); margin-bottom:var(--s2); }
-.sekhead .flab{ margin-bottom:0; }
-.sekn{ margin-left:auto; font-size:11px; color:var(--muted); }
-.sek > .btn{ width:100%; margin-top:var(--s2); }
-.dtyp.test{ color:var(--accent-fg); }
-/* Gruppeskille i lange slot-lister (Tee · Innspill · Nærspill · Putt) */
-.gsep{ flex-basis:100%; font-family:var(--mono); font-size:9px; letter-spacing:.09em;
-  text-transform:uppercase; color:var(--mid); margin:var(--s2) 0 2px; }
-/* Testvelger */
-.testliste{ max-height:46vh; overflow-y:auto; margin-bottom:var(--s4); }
-.testrad{ display:flex; align-items:center; gap:var(--s3); width:100%; text-align:left;
-  min-height:var(--tap); padding:var(--s2) var(--s3); margin-bottom:var(--s1);
-  background:var(--bg); border:1px solid var(--border); border-radius:var(--r-sm); cursor:pointer; }
-.testrad:hover{ border-color:var(--mid); background:var(--soft); }
-.testrad .tn{ font-size:12.5px; font-weight:500; }
-.testrad .tk{ margin-left:auto; font-size:10px; color:var(--muted); }
-.reps{ display:grid; grid-template-columns:repeat(3,1fr); gap:var(--s2); }
-.rep{ text-align:center; padding:var(--s2) var(--s1); background:var(--surface);
-  border:1px solid var(--border-soft); border-radius:var(--r-sm); }
-.rep .rn{ display:block; width:100%; text-align:center; font-family:var(--mono);
-  font-size:15px; font-weight:600; background:transparent; color:var(--fg);
-  border:0; border-bottom:1px solid var(--border); padding:2px 0; }
-.rep .rn:focus{ outline:2px solid var(--focus); outline-offset:2px; }
-.rep .rl{ display:block; font-size:9px; color:var(--muted); letter-spacing:.02em; margin-top:1px; }
-.logged{ margin-top:var(--s2); padding-top:var(--s2); border-top:1px dashed var(--border);
-  font-family:var(--mono); font-size:10.5px; color:var(--muted); }
-.sumline{ display:flex; align-items:baseline; gap:var(--s2); padding:var(--s3);
-  background:var(--soft); border-radius:var(--r); margin-top:var(--s3); }
-.sumline .sv{ margin-left:auto; font-family:var(--mono); font-size:15px; font-weight:600; }
-
-/* Tomtilstand — aldri en tom region uten neste steg */
-.empty{ display:flex; flex-direction:column; align-items:flex-start; gap:var(--s3);
-  padding:var(--s5); background:var(--soft); border:1px dashed var(--border);
-  border-radius:var(--r); }
-.empty h3{ margin:0; font-family:var(--disp); font-size:14px; font-weight:600; }
-.empty p{ margin:0; max-width:40ch; font-family:var(--body); font-size:13px; color:var(--muted); }
-
-/* Caddie-utkast */
-.ghost{ border:1px dashed var(--accent); background:var(--accent-soft);
-  border-radius:var(--r); padding:var(--s3); margin-bottom:var(--s2); }
-/* Forklarings-? og forslag-diff */
-.flabrad{ display:flex; align-items:center; gap:var(--s2); margin-bottom:var(--s2); }
-.flabrad .flab{ margin-bottom:0; }
-.hjelp{ flex:none; width:18px; height:18px; padding:0; border-radius:var(--r-pill);
-  border:1px solid var(--border); background:transparent; color:var(--muted);
-  font:600 11px/1 var(--mono); cursor:pointer; }
-.hjelp:hover,.hjelp[aria-expanded="true"]{ color:var(--fg); border-color:var(--mid); }
-.hint.forklaring{ margin:0 0 var(--s2); }
-.tg-okt.har-forslag{ border-style:dashed; border-color:var(--accent); }
-.tg-okt .fslag{ display:block; font-family:var(--mono); font-size:9px; letter-spacing:.05em;
-  text-transform:uppercase; color:var(--accent-fg); }
-.fdiff{ display:flex; align-items:center; gap:var(--s2); flex-wrap:wrap; margin:0 0 var(--s3); }
-.fdiff .df{ font-family:var(--mono); font-size:10px; word-break:break-all; }
-.fdiff .fra{ text-decoration:line-through; color:var(--muted); }
-.fdiff .pil{ color:var(--muted); }
-.ghost .gh{ font-family:var(--mono); font-size:10px; letter-spacing:.09em;
-  text-transform:uppercase; color:var(--accent-fg); margin-bottom:var(--s2); }
-.ghost h4{ margin:0 0 var(--s1); font-size:13px; font-weight:600; }
-.ghost p{ margin:0 0 var(--s3); font-family:var(--body); font-size:12.5px; color:var(--muted); }
-.gacts{ display:flex; gap:var(--s2); }
-
-/* ── Bunnsone: brudd fra validatePlan() ──────────────────────── */
-.bunn{ border-top:1px solid var(--border); background:var(--surface);
-  padding:var(--s3) var(--s4); display:flex; align-items:center; gap:var(--s3);
-  flex-wrap:wrap; padding-bottom:calc(var(--s3) + env(safe-area-inset-bottom)); }
-.brudd{ display:flex; gap:var(--s2); flex-wrap:wrap; flex:1; min-width:0; }
-.bmyk{ display:inline-flex; align-items:center; gap:var(--s2); padding:var(--s2) var(--s3);
-  border-radius:var(--r-pill); background:var(--soft); border:1px solid var(--border);
-  font-size:11.5px; color:var(--muted); }
-.bok{ color:var(--up); }
-
-/* Overlegg */
-.scrim{ position:fixed; inset:0; background:var(--scrim); z-index:var(--z-sheet); }
-.dialog{ position:fixed; left:50%; top:50%; transform:translate(-50%,-50%);
-  width:min(560px,92vw); max-height:86vh; overflow:auto; z-index:var(--z-modal);
-  background:var(--surface); border:1px solid var(--border); border-radius:var(--r);
-  box-shadow:var(--shadow); padding:var(--s5); }
-.dialog h2{ margin:0 0 var(--s2); font-family:var(--disp); font-size:16px; }
-.dialog p{ margin:0 0 var(--s4); font-family:var(--body); font-size:13.5px; color:var(--muted); }
-.dacts{ display:flex; gap:var(--s2); justify-content:flex-end; }
-
-.toast{ position:fixed; left:50%; bottom:var(--s5); transform:translateX(-50%);
-  z-index:var(--z-toast); background:var(--fg); color:var(--bg);
-  padding:var(--s3) var(--s4); border-radius:var(--r); font-size:12.5px; }
-
-/* Trykkflate-gulv — gjelder uansett pekertype */
-.btn,.chip,button,[role="button"],summary,select,input:not([type="hidden"]),textarea{
-  min-height:var(--tap); }
-.tag,.num,.eyebrow,.kpi .v,.rep .rn,.dtyp{ min-height:0; }
-
-/* ══ F4: composer, ghost-utkast og faktisk-mot-planlagt ═══════════
-   Et utkast KAN aldri forveksles med plan: stiplet kant, egen etikett,
-   teller ikke i målingene, følger ikke med i publisering. Clay brukes
-   ikke — monopolet («Én ting nå» + fokus) står. */
-.composer{ flex:none; display:flex; gap:var(--s2); align-items:center;
-  padding:var(--s2) var(--s3); border-top:1px solid var(--border); background:var(--surface); }
-.composer input{ flex:1; min-width:0; min-height:var(--tap); padding:0 var(--s3);
-  font:inherit; font-size:12.5px; background:var(--bg); color:var(--fg);
-  border:1px solid var(--border); border-radius:var(--r-sm); }
-.cxeks{ flex:none; display:flex; align-items:center; gap:var(--s2); flex-wrap:wrap;
-  padding:var(--s1) var(--s3) var(--s2); background:var(--surface); }
-.tg-okt.ghost{ border:1px dashed var(--accent); border-left:3px solid var(--accent);
-  background:var(--surface); }
-.ghlab,.hoplab,.floggr{ display:block; font-family:var(--mono); font-size:9px;
-  letter-spacing:.05em; text-transform:uppercase; }
-.ghlab{ color:var(--accent-fg); }
-.tg-okt.hoppet{ opacity:.72; }
-.hoplab{ color:var(--dn); }
-.floggr{ color:var(--up); }
-.pghost ul{ list-style:none; margin:var(--s2) 0; padding:0; }
-.pghost li{ font-family:var(--mono); font-size:10.5px; padding:2px 0; }
-
-
+*{box-sizing:border-box}
+body{margin:0;background:var(--soft);color:var(--fg);font-family:var(--ui);font-size:13.5px;line-height:1.5}
+a{color:var(--fg);text-decoration:none}a:hover{color:var(--accent-fg)}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+[hidden]{display:none!important}
+/* ── riggbar (demo-only) ── */
+.rigg{display:flex;align-items:center;gap:var(--s2);flex-wrap:wrap;padding:var(--s3) var(--s5);font-family:var(--mono);font-size:11px;color:var(--muted)}
+.rigg .chip{padding:5px 12px;border:1px solid var(--border);border-radius:var(--r-pill);background:var(--surface);font-family:var(--mono);font-size:11px;color:var(--fg)}
+.rigg .chip[aria-pressed="true"]{background:var(--cta);color:var(--on-cta);border-color:var(--cta)}
+.rigg .sep{margin-left:var(--s4)}
+/* ── artboards ── */
+.brett{display:flex;gap:40px;align-items:flex-start;padding:var(--s4) var(--s5) 64px;overflow-x:auto}
+.ramme{flex:none;background:var(--bg);border:1px solid var(--hairline);border-radius:var(--r);overflow:hidden;box-shadow:var(--shadow)}
+.ramme-lab{font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);padding:6px 12px;border-bottom:1px solid var(--border);background:var(--soft)}
+/* ── AgencyOS-skall d1280 ── */
+.d1280{width:1280px}
+.app{display:grid;grid-template-columns:232px 1fr;min-height:860px}
+.rail{background:var(--rail);color:var(--rail-fg);padding:var(--s4) var(--s2);display:flex;flex-direction:column;gap:2px}
+.logo{font-family:var(--disp);font-weight:600;font-size:17px;color:var(--rail-on);padding:var(--s2) var(--s3) var(--s4)}
+.logo span{color:var(--accent)}
+.rbtn{display:flex;align-items:center;gap:10px;padding:8px 12px;border-radius:var(--r-sm);color:var(--rail-fg);font-size:13px}
+.rbtn:hover{background:var(--rail-hover);color:var(--rail-on)}
+.rbtn[aria-current]{background:var(--rail-active);color:var(--rail-on)}
+.rbtn svg{width:18px;height:18px;stroke:currentColor;stroke-width:1.5;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.stage{padding:var(--s5) var(--s6);min-width:0}
+.top{display:flex;align-items:flex-start;gap:var(--s4);margin-bottom:var(--s4)}
+.top h1{margin:0;font-family:var(--disp);font-size:32px;font-weight:600;line-height:1.15}
+.top .sub{display:block;font-family:var(--mono);font-size:11px;color:var(--muted);margin-top:2px}
+.top .hoyre{margin-left:auto;display:flex;align-items:center;gap:var(--s2)}
+.spillerv{display:inline-flex;align-items:center;gap:var(--s2);padding:6px 12px;border:1px solid var(--border);border-radius:var(--r-sm);background:var(--surface);font-size:12.5px}
+.spillerv .av{width:24px;height:24px;border-radius:999px;background:var(--soft);display:grid;place-items:center;font-family:var(--mono);font-size:10px;font-weight:600}
+.spillerv .kat{font-family:var(--mono);font-size:10.5px;color:var(--muted)}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:8px 14px;border-radius:var(--r-sm);background:var(--cta);color:var(--on-cta);font-weight:500;font-size:13px}
+.btn:hover{background:var(--cta-hover)}
+.btn.ghost{background:none;color:var(--fg);border:1px solid var(--border)}
+.btn.ghost:hover{border-color:var(--fg);background:none}
+.btn.clay{background:var(--accent);color:var(--on-accent)}
+.btn.clay:hover{background:color-mix(in srgb,var(--accent) 88%,var(--bg))}
+.vvelg{display:inline-flex;border:1px solid var(--border);border-radius:var(--r-sm);overflow:hidden;background:var(--surface)}
+.vvelg button{padding:7px 14px;font-size:12.5px;color:var(--muted)}
+.vvelg button[aria-pressed="true"]{background:var(--cta);color:var(--on-cta)}
+/* ── årstidslinje ── */
+.aar{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:var(--s3) var(--s4) var(--s4);margin-bottom:var(--s4)}
+.aar .hode{display:flex;align-items:baseline;gap:var(--s3);margin-bottom:var(--s2)}
+.aar .hode .t{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;font-weight:600;color:var(--muted)}
+.aar .hode .aa{font-family:var(--mono);font-size:11px;color:var(--fg);margin-left:auto}
+.mnd{display:grid;grid-template-columns:repeat(12,1fr);font-family:var(--mono);font-size:9px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);margin-bottom:4px}
+.spor{position:relative;height:18px;margin-bottom:3px}
+.spor .lab{position:absolute;left:0;top:0;bottom:0;display:flex;align-items:center;font-family:var(--mono);font-size:8.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);width:74px}
+.spor .felt{position:relative;margin-left:74px;height:100%}
+.bit{position:absolute;top:2px;bottom:2px;border-radius:3px;display:flex;align-items:center;padding:0 6px;font-family:var(--mono);font-size:9px;white-space:nowrap;overflow:hidden}
+.per{background:var(--soft);color:var(--fg)}
+.per.aktiv{background:var(--surface-warm)}
+.blokk{border:1px solid var(--hairline);background:none;color:var(--muted)}
+.blokk.kon{border-style:solid;border-color:var(--fg);color:var(--fg)}
+.merk{position:absolute;top:1px;width:9px;height:9px;transform:rotate(45deg);background:var(--up);border-radius:2px}
+.merk.test{transform:none;border-radius:999px;background:var(--info)}
+.navind{position:absolute;top:-2px;bottom:-2px;border:1.5px solid var(--fg);border-radius:4px;pointer-events:none}
+.aar .tegn{display:flex;gap:var(--s4);margin-top:var(--s2);font-family:var(--mono);font-size:9.5px;color:var(--muted);flex-wrap:wrap}
+.aar .tegn i{display:inline-block;width:8px;height:8px;border-radius:2px;margin-right:4px;vertical-align:-1px}
+/* ── pyramidefarger (SessionCard-mappingen) ── */
+.p-fys{--pyr:var(--info)}.p-tek{--pyr:var(--fg)}.p-slag{--pyr:var(--mid)}.p-spill{--pyr:var(--muted)}.p-turn{--pyr:var(--up)}
+/* ── fordelingslinje ── */
+.ford{display:flex;align-items:center;gap:var(--s4);margin-bottom:var(--s3);font-family:var(--mono);font-size:10.5px;color:var(--muted);flex-wrap:wrap}
+.ford b{color:var(--fg);font-weight:600}
+.ford .del{display:inline-flex;align-items:center;gap:5px}
+.ford .del i{width:8px;height:8px;border-radius:2px;background:var(--pyr)}
+/* ── månedsgrid ── */
+.mgrid{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);overflow:hidden}
+.mgrid .uhode{display:grid;grid-template-columns:34px repeat(7,1fr);border-bottom:1px solid var(--border);font-family:var(--mono);font-size:9.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.mgrid .uhode div{padding:7px 8px}
+.mrad{display:grid;grid-template-columns:34px repeat(7,1fr)}
+.mrad:not(:last-child){border-bottom:1px solid var(--border)}
+.ukenr{padding:8px;font-family:var(--mono);font-size:10px;color:var(--mid);border-right:1px solid var(--border)}
+.dag{min-width:0;min-height:104px;padding:6px 6px 8px;border-right:1px solid var(--border);display:flex;flex-direction:column;gap:3px;cursor:pointer}
+.dag:last-child{border-right:0}
+.dag:hover{background:var(--soft)}
+.dag .dnr{font-family:var(--mono);font-size:10.5px;color:var(--muted);margin-bottom:1px}
+.dag.ute .dnr{color:var(--mid)}.dag.ute{background:none}
+.dag.idag .dnr{display:inline-grid;place-items:center;width:20px;height:20px;border-radius:999px;background:var(--cta);color:var(--on-cta);font-weight:600}
+.okt{border-left:3px solid var(--pyr,var(--mid));border-radius:3px;background:var(--soft);padding:2px 6px;font-size:10.5px;line-height:1.35;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.okt .kl{font-family:var(--mono);font-size:9px;color:var(--muted);margin-right:4px}
+.okt.skall{border-left-style:dashed;background:none;border:1px dashed var(--hairline);border-left:3px dashed var(--pyr);color:var(--muted);font-family:var(--mono);font-size:9.5px;letter-spacing:.04em}
+.okt.gruppe .grp{display:inline-block;font-family:var(--mono);font-size:8.5px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);border:1px solid var(--hairline);border-radius:999px;padding:0 5px;margin-left:4px;vertical-align:1px}
+.okt.turn{background:color-mix(in srgb,var(--up-raw) 14%,var(--surface));font-weight:500}
+.okt.test{border-left-color:var(--info)}
+.okt.skole{border-left-color:transparent;background:none;border:1px solid var(--border);color:var(--mid)}
+/* ── m390 PlayerHQ-lignende mobilskall (Workbench mobil = coachens uke) ── */
+.m390{width:390px}
+.mapp{min-height:844px;display:flex;flex-direction:column;background:var(--bg)}
+.mtop{padding:var(--s4) var(--s4) var(--s3);display:flex;align-items:center;gap:var(--s3)}
+.mtop h1{margin:0;font-family:var(--disp);font-size:22px;font-weight:600}
+.mtop .hoyre{margin-left:auto;display:flex;gap:var(--s2)}
+.mtop .ikonbtn{width:36px;height:36px;border:1px solid var(--border);border-radius:var(--r-sm);display:grid;place-items:center;background:var(--surface)}
+.mtop .ikonbtn svg{width:16px;height:16px;stroke:currentColor;stroke-width:1.5;fill:none}
+.maars{margin:0 var(--s4) var(--s3);overflow:hidden}
+.dstrip{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;padding:0 var(--s4) var(--s3)}
+.dstrip button{display:flex;flex-direction:column;align-items:center;gap:2px;padding:7px 0;border-radius:var(--r-sm);border:1px solid transparent;min-height:44px}
+.dstrip .ud{font-family:var(--mono);font-size:9px;text-transform:uppercase;color:var(--muted)}
+.dstrip .dn{font-family:var(--mono);font-size:13px;font-weight:500}
+.dstrip .pr{display:flex;gap:2px;min-height:4px}
+.dstrip .pr i{width:4px;height:4px;border-radius:999px;background:var(--pyr)}
+.dstrip button[aria-pressed="true"]{background:var(--cta);border-color:var(--cta)}
+.dstrip button[aria-pressed="true"] .ud,.dstrip button[aria-pressed="true"] .dn{color:var(--on-cta)}
+.mliste{flex:1;padding:0 var(--s4) var(--s5);display:flex;flex-direction:column;gap:var(--s3);overflow-y:auto}
+.mdag{margin-top:var(--s2)}
+.mdag .dt{display:flex;align-items:baseline;gap:var(--s2);font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:var(--s2)}
+.mdag .dt b{color:var(--fg);font-weight:600}
+.mdag .dt .idagm{color:var(--accent-fg)}
+.arad{display:grid;grid-template-columns:52px 1fr auto;gap:var(--s3);align-items:center;background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--pyr,var(--mid));border-radius:var(--r-sm);padding:10px var(--s3);min-height:56px;cursor:pointer}
+.arad:not(:last-child){margin-bottom:var(--s2)}
+.arad:hover{background:var(--soft)}
+.arad .tid{font-family:var(--mono);font-size:11px;color:var(--muted);line-height:1.4}
+.arad .tt{font-size:13.5px;font-weight:500;line-height:1.3}
+.arad .mt{font-family:var(--mono);font-size:10px;color:var(--muted);margin-top:2px}
+.arad .var{font-family:var(--mono);font-size:10.5px;color:var(--muted)}
+.arad.skall{border:1px dashed var(--hairline);border-left:3px dashed var(--pyr);background:none}
+.arad.skall .tt{font-family:var(--mono);font-size:11px;letter-spacing:.04em;color:var(--muted);font-weight:400}
+.arad.skole{border-left-color:transparent;color:var(--mid);background:none}
+.arad.skole .tt{color:var(--mid);font-weight:400}
+.arad.turn{background:color-mix(in srgb,var(--up-raw) 12%,var(--surface))}
+.grp-tag{display:inline-block;font-family:var(--mono);font-size:8.5px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);border:1px solid var(--hairline);border-radius:999px;padding:1px 6px;margin-left:5px;vertical-align:1px}
+/* ── tilstander ── */
+.tomt{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:72px var(--s6);gap:var(--s2)}
+.tomt h2{margin:0;font-family:var(--disp);font-size:18px;font-weight:600}
+.tomt p{margin:0 0 var(--s3);font-family:var(--body);font-size:14px;color:var(--muted);max-width:38ch}
+.skel{border-radius:var(--r-sm);background:var(--soft);animation:puls 1.6s var(--ease) infinite}
+@keyframes puls{0%,100%{opacity:1}50%{opacity:.55}}
+@media (prefers-reduced-motion:reduce){.skel{animation:none}}
+.feilk{display:flex;gap:var(--s3);align-items:flex-start;background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:var(--s4) var(--s5);margin:var(--s6) auto;max-width:460px}
+.feilk svg{width:18px;height:18px;stroke:var(--dn);stroke-width:1.5;fill:none;flex:none;margin-top:2px}
+.feilk h2{margin:0 0 2px;font-size:14.5px;font-weight:600}
+.feilk p{margin:0 0 var(--s3);font-family:var(--body);font-size:13.5px;color:var(--muted)}
 </style>
 </head>
 <body>
-<div class="wb">
+<div class="rigg" data-demo-only>
+  <span>Tilstand</span>
+  <button class="chip" type="button" data-tilstand="normal">Normal</button>
+  <button class="chip" type="button" data-tilstand="tom">Tom</button>
+  <button class="chip" type="button" data-tilstand="laster">Laster</button>
+  <button class="chip" type="button" data-tilstand="feil">Feil</button>
+  <span class="sep">Tema</span>
+  <button class="chip" type="button" id="themeBtn" data-od-id="cta-tema">Lys / mørk</button>
+  <span class="sr" id="live" role="status" aria-live="polite"></span>
+</div>
 
-  <!-- ══ TOPPBAR ══
-       Tilbake-til-tråd står først, fordi Workbench åpnes FRA en samtale.
-       Man kommer hit med en intensjon, ikke ved å bla i en meny. -->
-  <header class="top">
-    <button class="back" id="backThread" data-od-id="wb-back-thread">
-      <svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg> Tilbake til tråden
-    </button>
-    <div class="who">
-      <h1>Workbench</h1>
-      <span class="eyebrow">Øyvind Rohjan · uke <span class="num">32</span></span>
+<div class="brett">
+<!-- ═══════════════ d1280 · måned er standard på desktop ═══════════════ -->
+<section class="ramme d1280" data-screen-label="Workbench kalender d1280">
+<div class="ramme-lab">d1280 · Workbench · månedsvisning</div>
+<div class="app">
+  <nav class="rail" aria-label="AgencyOS">
+    <div class="logo">AK<span>.</span></div>
+    <a class="rbtn" href="#" data-od-id="nav-cockpit"><svg viewBox="0 0 24 24"><path d="M4 12l8-7 8 7"/><path d="M6 11v8h12v-8"/></svg>Cockpit</a>
+    <a class="rbtn" href="#" data-od-id="nav-innboks"><svg viewBox="0 0 24 24"><path d="M3 12h5l2 3h4l2-3h5"/><path d="M5 6h14l2 6v6H3v-6z"/></svg>Innboks</a>
+    <a class="rbtn" href="#" aria-current="page" data-od-id="nav-kalender"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M8 3v4M16 3v4M3 11h18"/></svg>Kalender</a>
+    <a class="rbtn" href="#" data-od-id="nav-stall"><svg viewBox="0 0 24 24"><circle cx="9" cy="9" r="3"/><path d="M3 20a6 6 0 0112 0"/><path d="M16 8h5M16 12h5M16 16h5"/></svg>Stall</a>
+    <a class="rbtn" href="#" data-od-id="nav-plan"><svg viewBox="0 0 24 24"><path d="M5 4h14v16H5z"/><path d="M9 9h6M9 13h6M9 17h3"/></svg>Plan</a>
+    <a class="rbtn" href="#" data-od-id="nav-innsikt"><svg viewBox="0 0 24 24"><path d="M4 19V9M10 19V5M16 19v-7M22 19H2"/></svg>Innsikt</a>
+    <a class="rbtn" href="#" data-od-id="nav-oppsett"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3"/></svg>Oppsett</a>
+  </nav>
+  <main class="stage">
+    <header class="top">
+      <div><h1>Kalender</h1><span class="sub">workbench · august 2026</span></div>
+      <div class="hoyre">
+        <button class="spillerv" type="button" aria-haspopup="menu" aria-expanded="false" data-od-id="cta-spillervelger"><span class="av">ER</span>Emma Ruud<span class="kat">Kat. C</span></button>
+        <div class="vvelg" role="group" aria-label="Visning">
+          <button type="button" aria-pressed="false" data-od-id="nav-vis-uke">Uke</button>
+          <button type="button" aria-pressed="true" data-od-id="nav-vis-maned">Måned</button>
+          <button type="button" aria-pressed="false" data-od-id="nav-vis-aar">År</button>
+        </div>
+        <button class="btn ghost" type="button" data-od-id="cta-ny-okt-d">Ny økt</button>
+      </div>
+    </header>
+
+    <section class="aar" aria-label="Årstidslinje 2026">
+      <div class="hode"><span class="t">Årstidslinje</span><span class="aa">2026</span></div>
+      <div class="mnd"><div>jan</div><div>feb</div><div>mar</div><div>apr</div><div>mai</div><div>jun</div><div>jul</div><div>aug</div><div>sep</div><div>okt</div><div>nov</div><div>des</div></div>
+      <div class="spor"><span class="lab">Periode</span><div class="felt">
+        <div class="bit per" style="left:0;width:24%">Grunn</div>
+        <div class="bit per" style="left:25%;width:16%">Spesialisering</div>
+        <div class="bit per aktiv" style="left:42%;width:33%">Turnering</div>
+        <div class="bit per" style="left:76%;width:12%">Evaluering</div>
+        <div class="bit per" style="left:89%;width:11%">Grunn</div>
+        <div class="navind" style="left:58.3%;width:8.4%" aria-hidden="true"></div>
+      </div></div>
+      <div class="spor"><span class="lab">Blokker</span><div class="felt">
+        <div class="bit blokk" style="left:2%;width:20%">Utvikling</div>
+        <div class="bit blokk" style="left:27%;width:13%">Forberedelser</div>
+        <div class="bit blokk kon" style="left:44%;width:28%">Konkurranse</div>
+        <div class="bit blokk" style="left:78%;width:16%">Utvikling</div>
+      </div></div>
+      <div class="spor"><span class="lab">Turneringer</span><div class="felt">
+        <span class="merk" style="left:46%" title="NM junior · 12.–14. juni"></span>
+        <span class="merk" style="left:53%" title="Østlandstour 4 · 11. juli"></span>
+        <span class="merk" style="left:63.8%" title="Srixon Tour 5 · Miklagard · 22.–23. august"></span>
+        <span class="merk" style="left:69%" title="Lag-NM · 12. september"></span>
+      </div></div>
+      <div class="spor"><span class="lab">Tester</span><div class="felt">
+        <span class="merk test" style="left:8%" title="Testuke · januar"></span>
+        <span class="merk test" style="left:40%" title="TrackMan-test · mai"></span>
+        <span class="merk test" style="left:65.5%" title="TrackMan-test · 28. august"></span>
+        <span class="merk test" style="left:80%" title="Testuke · oktober"></span>
+      </div></div>
+      <div class="tegn">
+        <span><i style="background:var(--surface-warm)"></i>aktiv periode</span>
+        <span><i style="background:none;border:1px solid var(--fg);width:7px;height:7px"></i>treningsblokk</span>
+        <span><i style="background:var(--up);transform:rotate(45deg)"></i>turnering</span>
+        <span><i style="background:var(--info);border-radius:999px"></i>test</span>
+      </div>
+    </section>
+
+    <div data-vis="normal">
+      <div class="ford" aria-label="Fordeling uke 34">
+        <span>Uke 34</span>
+        <span class="del p-fys"><i></i>FYS <b>1</b></span>
+        <span class="del p-tek"><i></i>TEK <b>2</b></span>
+        <span class="del p-slag"><i></i>SLAG <b>2</b></span>
+        <span class="del p-spill"><i></i>SPILL <b>1</b></span>
+        <span class="del p-turn"><i></i>TURN <b>2</b></span>
+        <span style="margin-left:auto">planlagt <b>9,5 t</b> · 1 skall-økt igjen å fylle</span>
+      </div>
+      <div class="mgrid">
+        <div class="uhode"><div></div><div>man</div><div>tir</div><div>ons</div><div>tor</div><div>fre</div><div>lør</div><div>søn</div></div>
+        <div class="mrad">
+          <div class="ukenr">31</div>
+          <div class="dag ute" data-od-id="dag-0727"><span class="dnr">27</span></div>
+          <div class="dag ute" data-od-id="dag-0728"><span class="dnr">28</span></div>
+          <div class="dag ute" data-od-id="dag-0729"><span class="dnr">29</span></div>
+          <div class="dag ute" data-od-id="dag-0730"><span class="dnr">30</span></div>
+          <div class="dag ute" data-od-id="dag-0731"><span class="dnr">31</span></div>
+          <div class="dag" data-od-id="dag-0801"><span class="dnr">1</span><div class="okt p-spill"><span class="kl">10:00</span>Ni hull, scorekort</div></div>
+          <div class="dag" data-od-id="dag-0802"><span class="dnr">2</span></div>
+        </div>
+        <div class="mrad">
+          <div class="ukenr">32</div>
+          <div class="dag" data-od-id="dag-0803"><span class="dnr">3</span><div class="okt p-fys"><span class="kl">07:00</span>Styrke underkropp</div><div class="okt p-tek gruppe"><span class="kl">15:00</span>Teknikk tee<span class="grp">WANG Toppidrett</span></div></div>
+          <div class="dag" data-od-id="dag-0804"><span class="dnr">4</span><div class="okt p-slag"><span class="kl">15:00</span>Wedge 40–90 m</div></div>
+          <div class="dag" data-od-id="dag-0805"><span class="dnr">5</span><div class="okt p-tek"><span class="kl">15:00</span>Chip, landingspunkt</div></div>
+          <div class="dag" data-od-id="dag-0806"><span class="dnr">6</span><div class="okt p-spill"><span class="kl">13:00</span>Banespill 9 hull</div><div class="okt p-fys"><span class="kl">17:00</span>Kondisjon, intervall</div></div>
+          <div class="dag" data-od-id="dag-0807"><span class="dnr">7</span></div>
+          <div class="dag" data-od-id="dag-0808"><span class="dnr">8</span><div class="okt p-turn turn"><span class="kl">08:10</span>Østlandstour, r1</div></div>
+          <div class="dag" data-od-id="dag-0809"><span class="dnr">9</span><div class="okt p-turn turn"><span class="kl">09:00</span>Østlandstour, r2</div></div>
+        </div>
+        <div class="mrad">
+          <div class="ukenr">33</div>
+          <div class="dag" data-od-id="dag-0810"><span class="dnr">10</span></div>
+          <div class="dag" data-od-id="dag-0811"><span class="dnr">11</span><div class="okt p-tek"><span class="kl">15:00</span>Tee, startretning</div></div>
+          <div class="dag" data-od-id="dag-0812"><span class="dnr">12</span><div class="okt skall p-fys" data-od-id="okt-skall-0812">FYS-økt</div></div>
+          <div class="dag" data-od-id="dag-0813"><span class="dnr">13</span><div class="okt p-slag"><span class="kl">15:00</span>Putt 5–10 fot</div></div>
+          <div class="dag" data-od-id="dag-0814"><span class="dnr">14</span></div>
+          <div class="dag" data-od-id="dag-0815"><span class="dnr">15</span><div class="okt p-spill"><span class="kl">10:00</span>18 hull med gameplan</div></div>
+          <div class="dag" data-od-id="dag-0816"><span class="dnr">16</span></div>
+        </div>
+        <div class="mrad">
+          <div class="ukenr">34</div>
+          <div class="dag" data-od-id="dag-0817"><span class="dnr">17</span><div class="okt p-fys"><span class="kl">07:00</span>Styrke underkropp</div><div class="okt p-tek gruppe"><span class="kl">15:00</span>Teknikk tee<span class="grp">WANG Toppidrett</span></div></div>
+          <div class="dag" data-od-id="dag-0818"><span class="dnr">18</span><div class="okt p-slag"><span class="kl">15:00</span>Wedge 40–90 m</div></div>
+          <div class="dag" data-od-id="dag-0819"><span class="dnr">19</span><div class="okt skall p-fys" data-od-id="okt-skall-0819">FYS-økt</div><div class="okt p-spill"><span class="kl">16:00</span>Ni hull, scorekort</div></div>
+          <div class="dag idag" data-od-id="dag-0820"><span class="dnr">20</span><div class="okt skole"><span class="kl">08:30</span>Skole</div><div class="okt p-tek"><span class="kl">15:00</span>Chip, landingspunkt</div></div>
+          <div class="dag" data-od-id="dag-0821"><span class="dnr">21</span><div class="okt p-slag"><span class="kl">14:00</span>Putt 5–10 fot</div><div class="okt p-turn"><span class="kl">17:00</span>Reise Miklagard</div></div>
+          <div class="dag" data-od-id="dag-0822"><span class="dnr">22</span><div class="okt p-turn turn"><span class="kl">08:40</span>Srixon Tour 5, r1</div></div>
+          <div class="dag" data-od-id="dag-0823"><span class="dnr">23</span><div class="okt p-turn turn"><span class="kl">09:10</span>Srixon Tour 5, r2</div></div>
+        </div>
+        <div class="mrad">
+          <div class="ukenr">35</div>
+          <div class="dag" data-od-id="dag-0824"><span class="dnr">24</span></div>
+          <div class="dag" data-od-id="dag-0825"><span class="dnr">25</span><div class="okt skall p-tek" data-od-id="okt-skall-0825">TEK-økt</div></div>
+          <div class="dag" data-od-id="dag-0826"><span class="dnr">26</span><div class="okt skall p-slag" data-od-id="okt-skall-0826">SLAG-økt</div></div>
+          <div class="dag" data-od-id="dag-0827"><span class="dnr">27</span><div class="okt p-fys"><span class="kl">07:00</span>Styrke underkropp</div></div>
+          <div class="dag" data-od-id="dag-0828"><span class="dnr">28</span><div class="okt test"><span class="kl">15:00</span>TrackMan-test</div></div>
+          <div class="dag" data-od-id="dag-0829"><span class="dnr">29</span></div>
+          <div class="dag" data-od-id="dag-0830"><span class="dnr">30</span><div class="okt p-spill"><span class="kl">10:00</span>18 hull med gameplan</div></div>
+        </div>
+        <div class="mrad">
+          <div class="ukenr">36</div>
+          <div class="dag" data-od-id="dag-0831"><span class="dnr">31</span><div class="okt p-fys"><span class="kl">07:00</span>Styrke underkropp</div></div>
+          <div class="dag ute" data-od-id="dag-0901"><span class="dnr">1</span></div>
+          <div class="dag ute" data-od-id="dag-0902"><span class="dnr">2</span></div>
+          <div class="dag ute" data-od-id="dag-0903"><span class="dnr">3</span></div>
+          <div class="dag ute" data-od-id="dag-0904"><span class="dnr">4</span></div>
+          <div class="dag ute" data-od-id="dag-0905"><span class="dnr">5</span></div>
+          <div class="dag ute" data-od-id="dag-0906"><span class="dnr">6</span></div>
+        </div>
+      </div>
     </div>
-    <div class="zooms" role="group" aria-label="Zoom-nivå">
-      <button data-zoom="ar" aria-current="false" data-od-id="wb-zoom-ar">Årsplan</button>
-      <button data-zoom="dag" aria-current="false" data-od-id="wb-zoom-dag">Dag</button>
-      <button data-zoom="3d" aria-current="false" data-od-id="wb-zoom-3d">3 dager</button>
-      <button data-zoom="uke" aria-current="true" data-od-id="wb-zoom-uke">Uke</button>
-      <button data-zoom="agenda" aria-current="false" data-od-id="wb-zoom-agenda">Agenda</button>
-      <!-- Turnering er en egen flate, ikke et zoom-nivå: den viser turneringene
-           oppå periodiseringen, ikke planen i en annen oppløsning. -->
-      <button data-zoom="turnering" aria-current="false" data-od-id="wb-zoom-turnering"
-        onclick="location.href='workbench-turnering.html'">Turnering</button>
-      <!-- Coach-modusene (F3) er samme motor med andre kolonner: stall, gruppe,
-           planlegge-for-spiller og min tid. Egen flate, ikke et zoom-nivå. -->
-      <button data-zoom="coach" aria-current="false" data-od-id="wb-zoom-coach"
-        onclick="location.href='workbench-stall.html'">Coach</button>
+
+    <div data-vis="tom" hidden>
+      <div class="mgrid"><div class="tomt">
+        <h2>Ingen økter planlagt i august</h2>
+        <p>Emma har ingen økter i kalenderen ennå. Start med en periodemal, så får uka form på under et minutt.</p>
+        <button class="btn clay" type="button" data-od-id="cta-periodemal-d">Planlegg fra periodemal</button>
+      </div></div>
     </div>
-    <span class="spacer"></span>
-    <button class="chip" id="proToggle" aria-pressed="false" data-od-id="wb-pro">Pro</button>
-    <button class="btn icon" id="themeBtn" aria-label="Bytt til mørk modus" data-od-id="wb-theme">
-      <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.7">
-        <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
-    </button>
+
+    <div data-vis="laster" hidden aria-busy="true">
+      <div class="ford"><span class="skel" style="width:320px;height:14px"></span></div>
+      <div class="mgrid" style="padding:var(--s4);display:grid;grid-template-columns:repeat(7,1fr);gap:var(--s2)">
+        <div class="skel" style="height:104px"></div><div class="skel" style="height:104px"></div><div class="skel" style="height:104px"></div><div class="skel" style="height:104px"></div><div class="skel" style="height:104px"></div><div class="skel" style="height:104px"></div><div class="skel" style="height:104px"></div>
+        <div class="skel" style="height:104px"></div><div class="skel" style="height:104px"></div><div class="skel" style="height:104px"></div><div class="skel" style="height:104px"></div><div class="skel" style="height:104px"></div><div class="skel" style="height:104px"></div><div class="skel" style="height:104px"></div>
+      </div>
+    </div>
+
+    <div data-vis="feil" hidden>
+      <div class="feilk" role="alert">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16.5v.5"/></svg>
+        <div>
+          <h2>Kalenderen kunne ikke hentes</h2>
+          <p>Noe sviktet hos oss, ikke hos deg. Øktene dine er trygge — prøv igjen om et øyeblikk.</p>
+          <button class="btn ghost" type="button" data-od-id="cta-provigjen-d">Prøv igjen</button>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+</section>
+
+<!-- ═══════════════ m390 · uke er standard på mobil ═══════════════ -->
+<section class="ramme m390" data-screen-label="Workbench kalender m390">
+<div class="ramme-lab">m390 · Workbench · ukevisning</div>
+<div class="mapp">
+  <header class="mtop">
+    <div><h1>Kalender</h1><span class="sub" style="font-family:var(--mono);font-size:10.5px;color:var(--muted)">uke 34 · 17.–23. august</span></div>
+    <div class="hoyre">
+      <button class="ikonbtn" type="button" aria-label="Ny økt" data-od-id="cta-ny-okt-m"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></button>
+      <button class="ikonbtn" type="button" aria-label="Månedsvisning" data-od-id="nav-vis-maned-m"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M8 3v4M16 3v4M3 11h18"/></svg></button>
+    </div>
   </header>
 
-  <!-- ══ KPI-STRIPE ══
-       Fem tall som alle kan forsvares. CANON er validatePlan() gjort til
-       ett tall du leser på 300 ms. «Overstyr med begrunnelse» står synlig
-       fordi anbefalinger aldri sperrer — men overstyring skal koste en setning. -->
-  <!-- ══ MÅLINGER ══
-       Regler og låser er tatt ut 01.08.2026 på Anders' beskjed — de skal
-       arbeides gjennom nøyaktig først. Her står bare målte tall: ingen tak,
-       ingen terskler, ingen CANON-score, ingen «overstyr». -->
-  <div class="kpis" role="group" aria-label="Målinger">
-    <div class="kpi"><span class="k">trening</span><span class="v num" id="kVolum">3 t 30 min</span><span class="w">uke 32</span></div>
-    <div class="kpi"><span class="k">turnering</span><span class="v num" id="kTurn">4 t</span><span class="w">uke 32</span></div>
-    <div class="kpi"><span class="k">økter</span><span class="v num" id="kOkter">5</span><span class="w" id="kOkterW">3 golf · 2 fysisk</span></div>
-    <div class="kpi"><span class="k">drills</span><span class="v num" id="kDrills">9</span><span class="w">i uka</span></div>
-    <!-- F4: nevneren er publiserte økter med passert sluttid — aldri alle økter. -->
-    <div class="kpi"><span class="k">etterlevelse</span><span class="v num" id="kEtter">—</span><span class="w">publiserte økter, passert slutt</span></div>
+  <div class="maars aar" aria-label="Årstidslinje" style="padding:var(--s2) var(--s3) var(--s3)">
+    <div class="spor" style="margin:0"><span class="lab" style="width:0"></span><div class="felt" style="margin-left:0">
+      <div class="bit per" style="left:0;width:18%">Spes.</div>
+      <div class="bit per aktiv" style="left:19%;width:56%">Turnering</div>
+      <div class="bit per" style="left:76%;width:24%">Evaluering</div>
+      <span class="merk" style="left:41%" title="Srixon Tour 5 · 22.–23. august"></span>
+      <span class="merk test" style="left:46%" title="TrackMan-test · 28. august"></span>
+      <div class="navind" style="left:36%;width:9%" aria-hidden="true"></div>
+    </div></div>
   </div>
 
-  <div class="wbmid">
-
-    <!-- ══ BIBLIOTEK ══ -->
-    <aside class="lib" aria-label="Bibliotek">
-      <div class="mini" id="mini" aria-label="Kalender · august 2026"><!-- fylles av JS --></div>
-      <div class="kilder" id="kilder" aria-label="Kilder"><!-- fylles av JS --></div>
-      <div class="libtabs" role="tablist" aria-label="Bibliotek">
-        <button role="tab" aria-selected="true" data-lib="maler" data-od-id="wb-lib-maler">Maler</button>
-        <button role="tab" aria-selected="false" data-lib="okter" data-od-id="wb-lib-okter">Økter</button>
-        <button role="tab" aria-selected="false" data-lib="drills" data-od-id="wb-lib-drills">Drills</button>
-        <button role="tab" aria-selected="false" data-lib="turneringer" data-od-id="wb-lib-turneringer">Turn.</button>
-      </div>
-      <div class="libbody" id="libBody"><!-- fylles av JS --></div>
-    </aside>
-
-    <!-- ══ LERRET ══ -->
-    <main class="canvas" aria-label="Ukelerret">
-      <div class="period">
-        <span class="eyebrow">periode</span>
-        <span class="pband"><span class="dot" style="background:var(--accent-olive)"></span> Spesialiseringsperiode</span>
-        <span class="eyebrow" style="margin-left:auto">neste</span>
-        <span class="pband"><span class="dot" style="background:var(--accent-heather)"></span> Turneringsperiode · fra uke <span class="num">35</span></span>
-      </div>
-      <div class="canvasbody">
-        <div class="week" id="week"><!-- fylles av JS --></div>
-      </div>
-      <!-- ══ F4: COMPOSER ══  Naturlig språk → stiplede ghost-blokker i uka.
-           Samme chat-først-mønster som resten av appen: utkast, aldri fasit. -->
-      <div class="composer">
-        <input id="cxInput" type="text" data-od-id="wb-cx-input"
-          placeholder="Skriv planen: «3 putteøkter à 45 min før søndag»"
-          aria-label="Composer — beskriv økter i naturlig språk">
-        <button class="btn ink sm" id="cxGo" data-od-id="wb-cx-lag">Lag utkast</button>
-      </div>
-      <div class="cxeks" id="cxEks"><span class="flab" style="margin:0">prøv</span></div>
-    </main>
-
-    <!-- ══ INSPEKTØR ══ -->
-    <aside class="insp" aria-label="Inspektør">
-      <div class="insptabs" role="tablist" aria-label="Inspektør">
-        <button role="tab" aria-selected="true" data-insp="okt" data-od-id="wb-insp-okt">Økt</button>
-        <button role="tab" aria-selected="false" data-insp="innboks" data-od-id="wb-insp-innboks">Innboks <span class="badge num">2</span></button>
-        <button role="tab" aria-selected="false" data-insp="caddie" data-od-id="wb-insp-caddie">Caddie <span class="badge num" id="bCaddie">2</span></button>
-      </div>
-      <div class="inspbody" id="inspBody"><!-- fylles av JS --></div>
-    </aside>
+  <div class="dstrip" role="group" aria-label="Velg dag">
+    <button type="button" data-od-id="nav-dag-man"><span class="ud">man</span><span class="dn">17</span><span class="pr"><i class="p-fys"></i><i class="p-tek"></i></span></button>
+    <button type="button" data-od-id="nav-dag-tir"><span class="ud">tir</span><span class="dn">18</span><span class="pr"><i class="p-slag"></i></span></button>
+    <button type="button" data-od-id="nav-dag-ons"><span class="ud">ons</span><span class="dn">19</span><span class="pr"><i class="p-fys"></i><i class="p-spill"></i></span></button>
+    <button type="button" aria-pressed="true" data-od-id="nav-dag-tor"><span class="ud">tor</span><span class="dn">20</span><span class="pr"></span></button>
+    <button type="button" data-od-id="nav-dag-fre"><span class="ud">fre</span><span class="dn">21</span><span class="pr"><i class="p-slag"></i><i class="p-turn"></i></span></button>
+    <button type="button" data-od-id="nav-dag-lor"><span class="ud">lør</span><span class="dn">22</span><span class="pr"><i class="p-turn"></i></span></button>
+    <button type="button" data-od-id="nav-dag-son"><span class="ud">søn</span><span class="dn">23</span><span class="pr"><i class="p-turn"></i></span></button>
   </div>
 
-  <!-- ══ BUNNSONE ══ -->
-  <div class="bunn">
-    <span class="eyebrow">status</span>
-    <div class="brudd" id="brudd">
-      <span class="bmyk">Regler og låser er midlertidig ute. Ingenting i denne planen er validert.</span>
+  <div class="mliste" data-vis="normal">
+    <div class="mdag"><div class="dt"><b>Mandag</b>17. august</div>
+      <div class="arad p-fys" data-od-id="okt-m-0817-fys" role="button" tabindex="0"><span class="tid">07:00<br>07:45</span><span><span class="tt">Styrke underkropp</span><span class="mt">WANG hall</span></span><span class="var">45 min</span></div>
+      <div class="arad p-tek" data-od-id="okt-m-0817-tek" role="button" tabindex="0"><span class="tid">15:00<br>16:30</span><span><span class="tt">Teknikk tee — P5 til P7<span class="grp-tag">WANG Toppidrett</span></span><span class="mt">Mulligan 3 · Øyvind Rohjan</span></span><span class="var">90 min</span></div>
     </div>
-    <button class="btn now" id="nowBtn" data-od-id="wb-one-thing-now">Publiser uke 32 til Øyvind</button>
+    <div class="mdag"><div class="dt"><b>Tirsdag</b>18. august</div>
+      <div class="arad p-slag" data-od-id="okt-m-0818-slag" role="button" tabindex="0"><span class="tid">15:00<br>16:00</span><span><span class="tt">Wedge 40–90 m, hit-rate</span></span><span class="var">60 min</span></div>
+    </div>
+    <div class="mdag"><div class="dt"><b>Onsdag</b>19. august</div>
+      <div class="arad skall p-fys" data-od-id="okt-m-0819-skall" role="button" tabindex="0"><span class="tid">—</span><span><span class="tt">FYS-økt · ikke fylt ennå</span></span><span class="var"></span></div>
+      <div class="arad p-spill" data-od-id="okt-m-0819-spill" role="button" tabindex="0"><span class="tid">16:00<br>18:00</span><span><span class="tt">Ni hull med scorekort</span><span class="mt">Grini GK</span></span><span class="var">120 min</span></div>
+    </div>
+    <div class="mdag"><div class="dt"><b>Torsdag</b>20. august<span class="idagm">· i dag</span></div>
+      <div class="arad skole" data-od-id="okt-m-0820-skole"><span class="tid">08:30<br>14:00</span><span><span class="tt">Skole</span></span><span class="var"></span></div>
+      <div class="arad p-tek" data-od-id="okt-m-0820-tek" role="button" tabindex="0"><span class="tid">15:00<br>16:00</span><span><span class="tt">Chip — landingspunkt</span><span class="mt">4 driller · fra teknisk plan</span></span><span class="var">60 min</span></div>
+    </div>
+    <div class="mdag"><div class="dt"><b>Fredag</b>21. august</div>
+      <div class="arad p-slag" data-od-id="okt-m-0821-slag" role="button" tabindex="0"><span class="tid">14:00<br>15:00</span><span><span class="tt">Putt 5–10 fot — ballstart</span></span><span class="var">60 min</span></div>
+      <div class="arad p-turn" data-od-id="okt-m-0821-reise" role="button" tabindex="0"><span class="tid">17:00</span><span><span class="tt">Reise til Miklagard</span></span><span class="var"></span></div>
+    </div>
+    <div class="mdag"><div class="dt"><b>Lørdag</b>22. august</div>
+      <div class="arad p-turn turn" data-od-id="okt-m-0822-turn" role="button" tabindex="0"><span class="tid">08:40</span><span><span class="tt">Srixon Tour 5 — runde 1</span><span class="mt">Miklagard GK · start hull 1</span></span><span class="var"></span></div>
+    </div>
+    <div class="mdag"><div class="dt"><b>Søndag</b>23. august</div>
+      <div class="arad p-turn turn" data-od-id="okt-m-0823-turn" role="button" tabindex="0"><span class="tid">09:10</span><span><span class="tt">Srixon Tour 5 — runde 2</span><span class="mt">Miklagard GK</span></span><span class="var"></span></div>
+    </div>
   </div>
-</div>
 
-<div class="scrim" id="scrim" hidden></div>
-<div class="dialog" id="dialog" role="dialog" aria-modal="true" aria-labelledby="dlgTitle" hidden>
-  <h2 id="dlgTitle"></h2>
-  <p id="dlgBody"></p>
-  <div class="field" id="dlgField" hidden>
-    <label for="dlgInput">Begrunnelse</label>
-    <textarea id="dlgInput" placeholder="Hvorfor overstyrer du anbefalingen?"></textarea>
+  <div class="mliste" data-vis="tom" hidden>
+    <div class="tomt" style="padding:96px var(--s4)">
+      <h2>Uka er tom</h2>
+      <p>Ingen økter planlagt denne uka. Start med en periodemal, så får uka form på under et minutt.</p>
+      <button class="btn clay" type="button" data-od-id="cta-periodemal-m">Planlegg fra periodemal</button>
+    </div>
   </div>
-  <div class="dacts">
-    <button class="btn" id="dlgCancel" data-od-id="wb-dlg-cancel">Avbryt</button>
-    <button class="btn ink" id="dlgOk" data-od-id="wb-dlg-ok">Bekreft</button>
+
+  <div class="mliste" data-vis="laster" hidden aria-busy="true">
+    <div class="skel" style="height:56px"></div><div class="skel" style="height:56px"></div><div class="skel" style="height:56px"></div><div class="skel" style="height:56px"></div><div class="skel" style="height:56px"></div>
+  </div>
+
+  <div class="mliste" data-vis="feil" hidden>
+    <div class="feilk" role="alert" style="margin:var(--s5) 0">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16.5v.5"/></svg>
+      <div>
+        <h2>Kalenderen kunne ikke hentes</h2>
+        <p>Noe sviktet hos oss, ikke hos deg. Øktene dine er trygge — prøv igjen om et øyeblikk.</p>
+        <button class="btn ghost" type="button" data-od-id="cta-provigjen-m">Prøv igjen</button>
+      </div>
+    </div>
   </div>
 </div>
-<div class="toast" id="toast" hidden role="status"></div>
-<div class="sr" id="live" aria-live="polite"></div>
+</section>
+</div>
 
 <script>
-(function(){
-'use strict';
-
-/* ═══════════════════════════════════════════════════════════════
-   Workbench · datamodell
-   Én plan-kilde per spiller. FYS, golf og turnering skriver til SAMME
-   struktur — aldri to datamodeller for samme økt.
-
-   Økt:   { id, dag, navn, dato, sted, maal, akse, drills[], done }
-   Drill golf:   { type:'golf',   navn, formel{...}, reps, tidMin, logget }
-   Drill fysisk: { type:'fysisk', navn, sett, reps, tidMin, logget }
-
-   AK-formelen hører til DEN ENKELTE GOLFDRILLEN, ikke til økta.
-   En økt kan inneholde drills med ulik formel — det er poenget med en økt.
-   En FYSISK drill har ingen AK-formel. Den har sett, reps og tid.
-
-   Reps er ETT tall. Motorikk-slotten i formelen sier hvilket nivå repsene
-   kjøres på (uten ball / lav hastighet / auto). Skal en drill kjøres på to
-   nivåer, er det to drills — ellers ville formelen påstå noe som ikke stemmer.
-
-   Totaltid regnes ALLTID som sum av drill-tid. Den skrives aldri inn.
-   CS gjelder kun for TEE og INNSPILL (beslutning 01.08.2026) — for alle
-   andre områder finnes ikke feltet, det er ikke satt til null.
-   ═══════════════════════════════════════════════════════════════ */
-
-/* ── AK-formelens taksonomi (Anders 01.08.2026) ─────────────────
-   Fem slots: Pyramide · Område · Motorikk · Belastning · Press.
-   Motorikk erstatter CS-nivå. M0–M5 er erstattet av Belastning, PR1–PR5 av Press.
-   L-FASENE ER DØDE (Anders 01.08.2026) — ikke gjeninnfør dem noe sted.
-   Ingen betingede slots — alle fem gjelder alltid, for alle områder. */
-
-var PYRAMIDE = [
-  {k:'FYS',   n:'Fysisk'},
-  {k:'TEK',   n:'Teknikk'},
-  {k:'SLAG',  n:'Golfslag'},
-  {k:'SPILL', n:'Spill'},
-  {k:'TURN',  n:'Turnering'}
-];
-
-var OMRADE = [
-  {k:'TEE_TOTAL',      n:'Tee Total',        g:'Tee'},
-  {k:'INNSPILL_200',   n:'Innspill 200+',    g:'Innspill'},
-  {k:'INNSPILL_150',   n:'Innspill 150–200', g:'Innspill'},
-  {k:'INNSPILL_100',   n:'Innspill 100–150', g:'Innspill'},
-  {k:'INNSPILL_50',    n:'Innspill 50–100',  g:'Innspill'},
-  /* Innspill 0–50 finnes IKKE (Anders 01.08.2026). Alt under 50 m er
-     nærspill: pitch, chip, lob eller bunker. Ikke gjeninnfør båndet. */
-  {k:'PITCH',          n:'Pitch',            g:'Nærspill'},
-  {k:'BUNKER',         n:'Bunker',           g:'Nærspill'},
-  {k:'LOB',            n:'Lob',              g:'Nærspill'},
-  {k:'CHIP',           n:'Chip',             g:'Nærspill'},
-  /* Putt lagres og oppgis i FOT. Meter står i parentes som lesehjelp
-     (Anders 01.08.2026). 1 ft = 0,3048 m — parentesen er avledet, aldri lagret. */
-  {k:'PUTT_40',        n:'Putt 40+ ft (12,2 m+)',        g:'Putt'},
-  {k:'PUTT_25_40',     n:'Putt 25–40 ft (7,6–12,2 m)',   g:'Putt'},
-  {k:'PUTT_15_25',     n:'Putt 15–25 ft (4,6–7,6 m)',    g:'Putt'},
-  {k:'PUTT_10_15',     n:'Putt 10–15 ft (3,0–4,6 m)',    g:'Putt'},
-  {k:'PUTT_5_10',      n:'Putt 5–10 ft (1,5–3,0 m)',     g:'Putt'},
-  {k:'PUTT_3_5',       n:'Putt 3–5 ft (0,9–1,5 m)',      g:'Putt'},
-  {k:'PUTT_0_3',       n:'Putt 0–3 ft (0–0,9 m)',        g:'Putt'},
-  /* Spill beholdes som område (Anders 01.08.2026) — simulert spill og
-     banespill som ikke lar seg plassere i ett slagområde. */
-  {k:'SPILL',          n:'Spill',                        g:'Spill'}
-];
-
-var MOTORIKK   = [{k:'UTEN_BALL',n:'Uten ball'},{k:'LAV_HAST',n:'Lav hastighet'},{k:'AUTO',n:'Auto'}];
-var BELASTNING = [{k:'INNENDORS',n:'Innendørs'},{k:'TRENINGSOMRADE',n:'Treningsområde'},
-                  {k:'BANE',n:'Bane'},{k:'KONKURRANSE',n:'Konkurranse'}];
-var PRESS      = [{k:'ALENE',n:'Alene'},{k:'OBSERVERT',n:'Observert'},
-                  {k:'KONKURRANSE',n:'Konkurranse'},{k:'TURNERING',n:'Turnering'}];
-
-/* Forklaringer bak ?-knappene. Kort, i Anders' språk — ikke lærebok. */
-var FORKLARING = {
-  formel:     'Formelen er drillens identitet: PYRAMIDE_OMRÅDE_MOTORIKK_BELASTNING_PRESS. Den bygges av valgene under — endrer du en chip, endres formelen med en gang.',
-  pyramide:   'Hvilken etasje i pyramiden drillen trener: Fysisk, Teknikk, Slag, Spill eller Turnering.',
-  omrade:     'Hvor på banen: utslag, innspill (aldri under 50 m — det er nærspill), nærspill, putt (i fot) eller spill.',
-  motorikk:   'Hvor automatisert bevegelsen kjøres: uten ball, lav hastighet eller auto. Reps på to nivåer = to drills.',
-  belastning: 'Miljøet drillen kjøres i: innendørs, treningsområde, bane eller konkurranse.',
-  press:      'Hvor mye det står på spill mens du gjør det: alene, observert, konkurranse eller turnering.'
-};
-
-/* Agentforslag (PlanAction PENDING) — vises som diff PÅ berørt økt i uka,
-   ikke bare i Køen. Godkjenn/avvis der beslutningen har kontekst. */
-var FORSLAG = { oktId:'o3', status:'venter', agent:'Plan Watcher',
-  tittel:'Bytt torsdag fra nærspill til innspill',
-  hvorfor:'SG innspill er ditt svakeste område siste 10 runder, og sjekkpunktet 14.08 måler nettopp innspill. Samme varighet — volumet er uendret.',
-  fra:'TEK_CHIP_LAV_HAST_TRENINGSOMRADE_ALENE',
-  til:'TEK_INNSPILL_50_LAV_HAST_TRENINGSOMRADE_ALENE' };
-
-function brukForslag(){
-  pushUndo();
-  var o = OKTER.filter(function(x){ return x.id === FORSLAG.oktId; })[0];
-  if (o){
-    o.navn = 'Innspill · lengdekontroll';
-    o.maal = 'Ni av tolv innenfor fire meter fra 50–100 m.';
-    o.drills[0].formel = {pyramide:'TEK',omrade:'INNSPILL_50',motorikk:'LAV_HAST',
-                          belastning:'TRENINGSOMRADE',press:'ALENE'};
-    o.drills[0].navn = 'Avstandsstige 50–100 m';
-  }
-  FORSLAG.status = 'brukt';
-  valgtId = FORSLAG.oktId; inspTab = 'okt'; renderAll();
-  si('Forslaget er brukt. Torsdag er endret til innspill, og planen er revalidert.');
-  toast('Forslaget er skrevet inn i planen.');
+(function(){'use strict';
+var knapper=document.querySelectorAll('[data-tilstand]');
+function sett(navn){
+  document.querySelectorAll('[data-vis]').forEach(function(s){s.hidden=s.dataset.vis!==navn;});
+  knapper.forEach(function(b){b.setAttribute('aria-pressed',String(b.dataset.tilstand===navn));});
+  var live=document.getElementById('live');if(live)live.textContent='Tilstand: '+navn;
 }
-function avvisForslag(){
-  FORSLAG.status = 'avvist'; renderAll();
-  si('Forslaget er avvist. Ingen spor lagret.');
-}
-
-/* ── F4: periodiserings-ghost — søndagsforslaget ─────────────────
-   Hver søndag 18:00 skriver motoren et utkast for neste uke av periode +
-   mal + etterlevelse. Uke 33 er turneringsuke (NM Junior 14.–16.08), så
-   forslaget er nedtrappingsmalen med peaking mot torsdag. Utkastet legges
-   ALDRI inn selv — det venter i Caddie-fanen til det legges, og bekreftes
-   så i uke 33. Prototypen viser uke 32; mini-kalenderen merker uka. */
-var PERIODISERING = { status:'venter', uke:33,
-  tittel:'Uke 33 er turneringsuke — utkastet ligger klart',
-  hvorfor:'NM Junior spilles 14.–16.08 (uke 33). Utkastet bygger på malen ' +
-    '«Turneringsuke · nedtrapping» og periodens peaking-regel: siste harde økt ' +
-    'tirsdag, deretter fallende volum inn mot torsdag.',
-  okter:[ 'tir 17:00 · Putt · rullelengde · 60 min',
-          'ons 16:00 · Nedtrapping tee · 60 min',
-          'tor 09:00 · Oppvarmingsrutine · 60 min',
-          'fre–søn · NM Junior · Losby (fra turneringslaget)' ] };
-function periodiseringKort(){
-  var m = maal();
-  var g = el('div', 'ghost pghost');
-  g.appendChild(el('div', 'gh', 'periodisering · søndagsforslaget'));
-  g.appendChild(el('h4', null, PERIODISERING.tittel));
-  g.appendChild(el('p', null, PERIODISERING.hvorfor + ' Etterlevelsen i uke 32 så langt er ' +
-    m.fullfort + ' av ' + m.passert + ' — volumet i nedtrappingen er satt deretter.'));
-  var ul = el('ul');
-  PERIODISERING.okter.forEach(function(x){ ul.appendChild(el('li', null, x)); });
-  g.appendChild(ul);
-  var acts = el('div', 'gacts');
-  var ok = el('button', 'btn ink', 'Legg utkastet i uke 33');
-  ok.dataset.odId = 'wb-per-bruk';
-  ok.addEventListener('click', function(){
-    PERIODISERING.status = 'brukt'; renderAll();
-    si('Utkastet ligger i uke 33 som stiplede blokker og bekreftes der. Mini-kalenderen merker uka.');
-    toast('Utkast lagt i uke 33 · bekreftes der');
-  });
-  var nei = el('button', 'btn', 'Avvis');
-  nei.dataset.odId = 'wb-per-avvis';
-  nei.addEventListener('click', function(){
-    PERIODISERING.status = 'avvist'; renderAll();
-    si('Søndagsforslaget er avvist. Neste skrives søndag 18:00.');
-  });
-  acts.appendChild(ok); acts.appendChild(nei);
-  g.appendChild(acts);
-  return g;
-}
-
-/* ── D4: testforfall — intervallet er nevneren, forslaget er en ghost-blokk.
-   Sist målt 22.07 (14 av 20, samme tall som test-detaljen viser) + 4 ukers
-   intervall = forfall 19.08. Å legge den inn skriver et UTKAST i uka. */
-var TESTFORFALL = { status:'venter',
-  tittel:'TN Putt Gate forfaller 19.08',
-  hvorfor:'Testintervallet er 4 uker, og siste måling er 22.07 (14 av 20). ' +
-    'Forslaget legger en testblokk lørdag 13:30, etter testrunden — 20 min.',
-  dag:5, start:'13:30' };
-function testforfallKort(){
-  var g = el('div', 'ghost');
-  g.appendChild(el('div', 'gh', 'testforfall · fra testbatteriets intervaller'));
-  g.appendChild(el('h4', null, TESTFORFALL.tittel));
-  g.appendChild(el('p', null, TESTFORFALL.hvorfor));
-  var acts = el('div', 'gacts');
-  var ok = el('button', 'btn ink', 'Legg testblokk som utkast');
-  ok.dataset.odId = 'wb-tf-legg';
-  ok.addEventListener('click', function(){
-    pushUndo();
-    OKTER.push({ id:'tf1', dag:TESTFORFALL.dag, start:TESTFORFALL.start,
-      navn:'Test · TN Putt Gate', dato:'2026-08-08', sted:'', maal:'', akse:'TEK',
-      done:false, ghost:true,
-      drills:[{ type:'test', navn:'Putt Gate', testK:'putt_gate', omr:'Putting', tidMin:20, logget:null }] });
-    TESTFORFALL.status = 'brukt';
-    valgtId = 'tf1'; inspTab = 'okt';
-    renderAll();
-    si('Testblokk lagt lørdag 13:30 som utkast. Den bekreftes i inspektøren før den teller.');
-    toast('Utkast lagt · bekreft i inspektøren');
-  });
-  var nei = el('button', 'btn', 'Avvis');
-  nei.dataset.odId = 'wb-tf-avvis';
-  nei.addEventListener('click', function(){
-    TESTFORFALL.status = 'avvist'; renderAll();
-    si('Forslaget er avvist. Testen står som forfalt i testbatteriet til den måles.');
-  });
-  acts.appendChild(ok); acts.appendChild(nei);
-  g.appendChild(acts);
-  return g;
-}
-
-/* ── F4: composer → ghost-blokker ────────────────────────────────
-   Naturlig språk til utkast. Parseren er bevisst liten: antall, tema,
-   varighet og frist. Alt den ikke forstår, sier den fra om — den gjetter
-   aldri et tema. Plassering: første ledige rom utenom skole, bookinger
-   og eksisterende økter, spredt over dagene før fristen. */
-var CX_EKS = [ '3 putteøkter à 45 min før søndag', 'innspill 90 min lørdag',
-               '2 fysøkter à 30 min i helgen' ];
-var CX_TEMA = [
-  { re:/putt/, navn:'Putt · startlinje', akse:'TEK', drill:'Portputt 3–5 ft',
-    formel:{pyramide:'TEK',omrade:'PUTT_3_5',motorikk:'AUTO',belastning:'TRENINGSOMRADE',press:'OBSERVERT'} },
-  { re:/innspill/, navn:'Innspill · lengdekontroll', akse:'TEK', drill:'Avstandsstige 50–100 m',
-    formel:{pyramide:'TEK',omrade:'INNSPILL_50',motorikk:'LAV_HAST',belastning:'TRENINGSOMRADE',press:'ALENE'} },
-  { re:/tee|driver/, navn:'Tee · ballhastighet', akse:'SLAG', drill:'Tee · ballhastighet',
-    formel:{pyramide:'SLAG',omrade:'TEE_TOTAL',motorikk:'AUTO',belastning:'TRENINGSOMRADE',press:'ALENE'} },
-  { re:/nærspill|chip/, navn:'Nærspill · landingspunkt', akse:'TEK', drill:'Landingsflekk · chip',
-    formel:{pyramide:'TEK',omrade:'CHIP',motorikk:'LAV_HAST',belastning:'TRENINGSOMRADE',press:'ALENE'} },
-  { re:/fys|styrke|mobilitet/, navn:'Fysisk økt', akse:'FYS', fysisk:true }
-];
-var CX_DAG = { man:0, tir:1, ons:2, tor:3, fre:4, 'lør':5, lor:5, 'søn':6, son:6 };
-function cxParse(t){
-  var rest = t.toLowerCase();
-  var varM = rest.match(/(\d+)\s*min/);
-  var varighet = varM ? Math.max(15, Math.min(240, +varM[1])) : 45;
-  rest = rest.replace(/(à\s*)?\d+\s*min/, ' ');
-  var antM = rest.match(/\d+/);
-  var antall = antM ? Math.max(1, Math.min(6, +antM[0])) : 1;
-  var tema = null;
-  CX_TEMA.forEach(function(x){ if (!tema && x.re.test(rest)) tema = x; });
-  var dager = [], i;
-  var forM = rest.match(/før\s+(man|tir|ons|tor|fre|lør|lor|søn|son)/);
-  if (forM){ for (i = NAA.dag; i < CX_DAG[forM[1]]; i++) dager.push(i); }
-  else if (/helg/.test(rest)) dager = [5, 6];
-  else {
-    var paM = rest.match(/(man|tir|ons|tor|fre|lør|lor|søn|son)/);
-    if (paM) dager = [CX_DAG[paM[1]]];
-    else for (i = NAA.dag; i <= 6; i++) dager.push(i);
-  }
-  if (!dager.length) dager = [NAA.dag];
-  return { antall:antall, varighet:varighet, tema:tema, dager:dager };
-}
-function cxLedig(dag, varighet){
-  var fra = dag === NAA.dag ? Math.max(15 * 60, snap(NAA.min + SLOT, false)) : 15 * 60;
-  for (var m = fra; m + varighet <= 21 * 60; m += SLOT){
-    var fri = true;
-    OKTER.forEach(function(o){
-      if (o.dag !== dag) return;
-      var f = minutter(o.start);
-      if (m < f + sumTid(o) && f < m + varighet) fri = false;
-    });
-    (SKOLE[dag] || []).concat(BOOKINGER[dag] || []).forEach(function(bz){
-      if (m < minutter(bz.slutt) && minutter(bz.start) < m + varighet) fri = false;
-    });
-    if (fri) return klokke(m);
-  }
-  return null;
-}
-function cxLag(){
-  var inp = document.getElementById('cxInput');
-  var t = inp.value.trim();
-  if (!t){ si('Skriv hva du vil legge inn — for eksempel «3 putteøkter à 45 min før søndag».'); inp.focus(); return; }
-  var p = cxParse(t);
-  if (!p.tema){
-    toast('Fant ikke tema — prøv putt, innspill, tee, nærspill eller fys');
-    si('Composeren forsto ikke temaet. Den gjetter aldri — prøv putt, innspill, tee, nærspill eller fys.');
-    return;
-  }
-  pushUndo();
-  var kand = [], r;
-  for (r = 0; r < 3 && kand.length < p.antall * 3; r++)
-    p.dager.forEach(function(dg){ kand.push(dg); });
-  var lagt = [];
-  kand.forEach(function(dg){
-    if (lagt.length >= p.antall) return;
-    var start = cxLedig(dg, p.varighet);
-    if (!start) return;
-    var id = 'gx' + (Date.now() % 100000) + '_' + lagt.length;
-    OKTER.push({ id:id, dag:dg, start:start, navn:p.tema.navn,
-      dato:'2026-08-0' + (3 + dg), sted:'', maal:'', akse:p.tema.akse,
-      done:false, ghost:true,
-      drills: p.tema.fysisk
-        ? [{ type:'fysisk', navn:'Styrke helkropp', sett:3, reps:8, tidMin:p.varighet, logget:null }]
-        : [{ type:'golf', navn:p.tema.drill, formel:JSON.parse(JSON.stringify(p.tema.formel)),
-             reps:0, tidMin:p.varighet, logget:null }] });
-    lagt.push(id);
-  });
-  if (!lagt.length){
-    UNDO.pop();
-    toast('Fant ikke ledig rom i de dagene');
-    si('Ingen ledige rom før fristen — skole, bookinger og økter fyller dagene. Prøv en annen dag.');
-    return;
-  }
-  inp.value = '';
-  valgtId = lagt[0]; inspTab = 'okt';
-  renderAll();
-  var msg = lagt.length + (lagt.length === 1 ? ' økt' : ' økter') + ' lagt inn som utkast';
-  si(msg + '. De ligger stiplet i uka og bekreftes i inspektøren.' +
-    (lagt.length < p.antall ? ' Fant bare ' + lagt.length + ' av ' + p.antall + ' ledige rom.' : ''));
-  toast(msg + (lagt.length < p.antall ? ' · fant ikke rom til alle' : ''));
-}
-function cxBekreft(){
-  pushUndo();
-  var n = 0;
-  OKTER.forEach(function(o){ if (o.ghost){ delete o.ghost; n++; } });
-  renderAll();
-  si(n + ' økter er bekreftet og er nå en del av planen.');
-  toast('Bekreftet · ' + n + ' økter i planen');
-}
-function cxForkast(){
-  pushUndo();
-  OKTER = OKTER.filter(function(o){ return !o.ghost; });
-  if (valgtId && !OKTER.some(function(o){ return o.id === valgtId; })) valgtId = null;
-  renderAll();
-  si('Utkastene er forkastet. Ingenting ble skrevet til planen.');
-  toast('Utkast forkastet');
-}
-
-/* ?-knapp som feller ut én forklaring rett under sitt eget felt. */
-function hjelp(tekst, od){
-  var btn = el('button', 'hjelp', '?'); btn.type = 'button';
-  btn.dataset.odId = od;
-  btn.setAttribute('aria-label', 'Forklaring');
-  btn.setAttribute('aria-expanded', 'false');
-  var p = null;
-  btn.addEventListener('click', function(ev){
-    ev.stopPropagation();
-    if (p){ p.remove(); p = null; btn.setAttribute('aria-expanded','false'); return; }
-    p = el('p', 'hint forklaring', tekst);
-    btn.parentNode.parentNode.insertBefore(p, btn.parentNode.nextSibling);
-    btn.setAttribute('aria-expanded','true');
-  });
-  return btn;
-}
-
-/* CS-nivå er ERSTATTET av Motorikk (Anders 01.08.2026).
-   Motorikk gjelder alle områder — også nærspill og putt, der CS aldri ga mening.
-   Putteavstander er ALLTID i fot (ordliste B23). */
-
-function navn(liste, k){
-  for (var i=0;i<liste.length;i++) if (liste[i].k === k) return liste[i].n;
-  return k;
-}
-
-/* Testbatteriet — ekte koder fra prisma/seed-data/ngf-test-battery.json.
-   Utdrag av de 20; hele lista hentes fra basen ved integrasjon. */
-var TESTBATTERI = [
-  {k:'driver_basic',         n:'Driver Basic',            omr:'Utslag'},
-  {k:'driver_gate',          n:'Driver Gate',             omr:'Utslag'},
-  {k:'inspill_basic',        n:'Inspill Basic',           omr:'Innspill'},
-  {k:'inspill_120',          n:'Inspill 120 m',           omr:'Innspill'},
-  {k:'inspill_160',          n:'Inspill 160 m',           omr:'Innspill'},
-  {k:'inspill_variation',    n:'Inspill Variation',       omr:'Innspill'},
-  {k:'wedge_variation',      n:'Wedge Variation',         omr:'Wedge'},
-  {k:'wedge_gate',           n:'Wedge Gate',              omr:'Wedge'},
-  {k:'eight_ball_variation', n:'8-Ball Variation',        omr:'Nærspill'},
-  {k:'naerspill_gate',       n:'Nærspill Gate',           omr:'Nærspill'},
-  {k:'visa_express',         n:'VISA Express',            omr:'Nærspill'},
-  {k:'putt_1_3m',            n:'Putt 1–3 m',              omr:'Putting'},
-  {k:'putt_gate',            n:'Putt Gate',               omr:'Putting'},
-  {k:'putt_speed',           n:'Putt Speed Control',      omr:'Putting'},
-  {k:'chs',                  n:'Clubhead Speed (CHS)',    omr:'Golfspesifikk'},
-  {k:'pei_bane',             n:'PEI Test Bane',           omr:'Bane'},
-  {k:'trapbar_deadlift',     n:'Trapbarmarkløft',         omr:'Styrke'},
-  {k:'bench_press',          n:'Benkpress',               omr:'Styrke'},
-  {k:'standing_long_jump',   n:'Stille lengde',           omr:'Eksplosivitet'},
-  {k:'ball_throw_kneeling',  n:'Ballkast knestående',     omr:'Eksplosivitet'}
-];
-
-function erGolf(d){ return d.type === 'golf'; }
-function erTest(d){ return d.type === 'test'; }
-function formelStr(f){
-  return [f.pyramide, f.omrade, f.motorikk, f.belastning, f.press].join('_');
-}
-function sumTid(o){ return o.drills.reduce(function(s,d){ return s + d.tidMin; }, 0); }
-function tid(min){
-  var t = Math.floor(min/60), m = min%60;
-  if (!t) return m + ' min';
-  return m ? t + ' t ' + m + ' min' : t + ' t';
-}
-function komma(n){ return String(n).replace('.', ','); }
-
-var DAGER = [
-  {dw:'man', dd:'3.8'}, {dw:'tir', dd:'4.8'}, {dw:'ons', dd:'5.8'},
-  {dw:'tor', dd:'6.8'}, {dw:'fre', dd:'7.8'}, {dw:'lør', dd:'8.8'}, {dw:'søn', dd:'9.8'}
-];
-
-/* Bakgrunnsvirkelighet: tid som allerede er opptatt. Ikke plan, men finnes.
-   Planen tegnes inn i tiden som faktisk er ledig.
-   F2: delt i KILDELAG som slås av/på i venstremargen — én sannhet om tid:
-   skole og bookinger er låste lag, øktene er planen, turneringer er båndet. */
-var KILDER = [
-  { k:'okter',       n:'Økter',      farge:'var(--accent-olive)',   paa:true, laast:true },
-  /* F4: faktisk-mot-planlagt er et LAG — det sier hva som skjedde, oppå
-     hva som var planlagt. Slås av når man bare vil se planen. */
-  { k:'logg',        n:'Logg — faktisk', farge:'var(--up)',          paa:true },
-  { k:'skole',       n:'Skole',      farge:'var(--mid)',            paa:true },
-  { k:'bookinger',   n:'Bookinger',  farge:'var(--accent-sky)',     paa:true },
-  { k:'turneringer', n:'Turneringer',farge:'var(--accent-heather)', paa:true },
-  { k:'tester',      n:'Tester',     farge:'var(--accent-fg)',      paa:false }
-];
-function kildePaa(k){ return KILDER.filter(function(x){ return x.k === k; })[0].paa; }
-
-var SKOLE = {
-  0:[{navn:'Skole', start:'08:00', slutt:'14:00'}],
-  1:[{navn:'Skole', start:'08:00', slutt:'14:00'}],
-  2:[{navn:'Skole', start:'08:00', slutt:'14:00'}],
-  3:[{navn:'Skole', start:'08:00', slutt:'14:00'}],
-  4:[{navn:'Skole', start:'08:00', slutt:'14:00'}],
-  5:[], 6:[]
-};
-var BOOKINGER = {
-  4:[{navn:'Coachtime · Gamle Fredrikstad GK', start:'11:00', slutt:'12:00'}],
-  5:[], 6:[]
-};
-/* Turneringsbåndet leser fra samme kilde som biblioteket (LIB.turneringer).
-   Uke 32 har ingen turnering — båndet sier det ærlig og peker på neste. */
-var TURNERING_UKA = null;
-var NESTE_TURNERING = 'NM Junior · Losby · 14.–16.08 (uke 33)';
-
-/* ── Tidsakse ────────────────────────────────────────────────────
-   05:00–23:00 i 30-minutters intervaller (beslutning Anders 01.08.2026).
-   36 luker. Alt posisjoneres mot denne aksen — ingen kortstabling. */
-var T_START = 5 * 60, T_SLUTT = 23 * 60, SLOT = 30, SLOT_H = 22;
-var N_SLOT = (T_SLUTT - T_START) / SLOT;
-function minutter(hhmm){ var p = String(hhmm).split(':'); return (+p[0]) * 60 + (+p[1]); }
-function klokke(min){
-  var t = Math.floor(min / 60), m = min % 60;
-  return (t < 10 ? '0' : '') + t + ':' + (m < 10 ? '0' : '') + m;
-}
-function yFor(min){ return (min - T_START) / SLOT * SLOT_H; }
-
-/* Demo-nå: torsdag i uke 32, 17:24. Nå-linje og «i dag» tegnes mot denne. */
-var NAA = { dag:3, min:17 * 60 + 24 };
-/* Visning: uke (standard) · dag · 3 dager · agenda. Tastatur: 1/3/7/A. */
-var visning = 'uke', visDag = NAA.dag;
-function synligeDager(){
-  if (visning === 'dag') return [visDag];
-  if (visning === '3d'){ var s = Math.min(visDag, 4); return [s, s + 1, s + 2]; }
-  return [0, 1, 2, 3, 4, 5, 6];
-}
-function snap(min, fin){
-  var steg = fin ? 5 : SLOT;
-  return Math.max(T_START, Math.min(T_SLUTT - SLOT, Math.round(min / steg) * steg));
-}
-
-/* Angre-stack: hele planen snapshottes før hver mutasjon. ⌘Z tar tilbake. */
-var UNDO = [];
-function pushUndo(){ UNDO.push(JSON.stringify(OKTER)); if (UNDO.length > 40) UNDO.shift(); }
-function angre(){
-  if (!UNDO.length){ toast('Ingenting å angre.'); return; }
-  OKTER = JSON.parse(UNDO.pop());
-  if (valgtId && !OKTER.some(function(o){ return o.id === valgtId; })) valgtId = null;
-  renderAll(); si('Siste endring er angret.'); toast('Angret');
-}
-
-var OKTER = [
-  { id:'o1', dag:0, start:'16:00', navn:'Styrke · underkropp', dato:'2026-08-03', sted:'Treningsrom',
-    maal:'Holde maks-styrke gjennom spesialiseringsperioden.', akse:'FYS', done:true, gjenta:'UKENTLIG',
-    drills:[
-      { type:'fysisk', navn:'Knebøy',       sett:4, reps:5, tidMin:25, logget:25 },
-      { type:'fysisk', navn:'Hoftehengsel', sett:3, reps:8, tidMin:20, logget:18 }
-    ] },
-  /* F4-demo: hoppet økt — spilleren markerte den som ikke gjennomført i
-     PlayerHQ. Den flyttes ikke og logges ikke; den ER svaret «nei». */
-  { id:'o6', dag:2, start:'06:30', navn:'Mobilitet · morgen', dato:'2026-08-05', sted:'Hjemme',
-    maal:'Ti minutter hofte, ti rygg, ti skulder.', akse:'FYS', done:false, hoppet:true,
-    drills:[ { type:'fysisk', navn:'Mobilitetsserie', sett:3, reps:10, tidMin:30, logget:null } ] },
-  { id:'o2', dag:1, start:'15:00', navn:'Innspill · lengdekontroll', dato:'2026-08-04', sted:'Gamle Fredrikstad GK',
-    maal:'Ni av tolv innenfor fire meter fra 50–100 m.', akse:'TEK', done:true,
-    drills:[
-      /* Tre drills i samme økt, tre ULIKE formler. Motorikk og press stiger. */
-      { type:'golf', navn:'Halv sving · kalibrering', formel:{pyramide:'TEK',omrade:'INNSPILL_50',motorikk:'UTEN_BALL',belastning:'INNENDORS',press:'ALENE'},
-        reps:15, tidMin:30, logget:30 },
-      { type:'golf', navn:'Avstandsstige 50–100 m', formel:{pyramide:'TEK',omrade:'INNSPILL_50',motorikk:'LAV_HAST',belastning:'TRENINGSOMRADE',press:'ALENE'},
-        reps:30, tidMin:35, logget:20 },
-      { type:'golf', navn:'Én ball · én sjanse', formel:{pyramide:'SLAG',omrade:'INNSPILL_100',motorikk:'AUTO',belastning:'BANE',press:'KONKURRANSE'},
-        reps:12, tidMin:25, logget:20 }
-    ] },
-  { id:'o3', dag:3, start:'16:00', navn:'Nærspill · landingspunkt', dato:'2026-08-06', sted:'Gamle Fredrikstad GK · nærspillsområde',
-    maal:'Treffe landingspunktet på åtte av ti chip.', akse:'TEK', done:false,
-    drills:[
-      /* Ingen CS her: NÆRSPILL er ikke et CS-område. Feltet finnes ikke. */
-      { type:'golf', navn:'Landingsflekk · chip', formel:{pyramide:'TEK',omrade:'CHIP',motorikk:'LAV_HAST',belastning:'TRENINGSOMRADE',press:'ALENE'},
-        reps:20, tidMin:30, logget:null },
-      { type:'golf', navn:'Portputt 3–5 ft', formel:{pyramide:'TEK',omrade:'PUTT_3_5',motorikk:'AUTO',belastning:'TRENINGSOMRADE',press:'OBSERVERT'},
-        reps:30, tidMin:20, logget:null },
-      { type:'test', navn:'Putt Gate', testK:'putt_gate', omr:'Putting', tidMin:15, logget:null }
-    ] },
-  { id:'o4', dag:4, start:'06:30', navn:'Spenst og hurtighet', dato:'2026-08-07', sted:'Treningsrom',
-    maal:'RFD framfor 1RM. Kvalitet over volum.', akse:'FYS', done:false,
-    drills:[
-      { type:'fysisk', navn:'Hoppserie', sett:5, reps:3, tidMin:25, logget:null }
-    ] },
-  { id:'o5', dag:5, start:'09:00', navn:'Testrunde · 18 hull', dato:'2026-08-08', sted:'Hovedbanen',
-    maal:'Spille etter gameplan. Kun brutto score.', akse:'TURN', done:false,
-    drills:[
-      { type:'golf', navn:'18 hull · turneringsmodus', formel:{pyramide:'TURN',omrade:'TEE_TOTAL',motorikk:'AUTO',belastning:'KONKURRANSE',press:'TURNERING'},
-        reps:0, tidMin:240, logget:null }
-    ] }
-];
-
-var LIB = {
-  maler: [
-    {n:'Spesialisering · uke A', f:'3 golf · 2 fysisk · 14,5 t'},
-    {n:'Turneringsuke · nedtrapping', f:'2 golf · 1 fysisk · 8,0 t'},
-    {n:'Grunnperiode · volumuke', f:'4 golf · 3 fysisk · 16,0 t'}
-  ],
-  okter: [
-    {n:'Innspill · lengdekontroll', f:'TEK_INNSPILL_50_LAV_HAST_TRENINGSOMRADE_ALENE'},
-    {n:'Putt · startlinje', f:'TEK_PUTT_3_5_AUTO_TRENINGSOMRADE_OBSERVERT'},
-    {n:'Tee · ballhastighet', f:'SLAG_TEE_TOTAL_AUTO_TRENINGSOMRADE_ALENE'}
-  ],
-  drills: [
-    {n:'Avstandsstige 50–100 m', f:'TEK_INNSPILL_50_LAV_HAST_TRENINGSOMRADE_ALENE'},
-    {n:'Landingsflekk · chip', f:'TEK_CHIP_LAV_HAST_TRENINGSOMRADE_ALENE'},
-    {n:'Portputt 3–5 ft', f:'TEK_PUTT_3_5_AUTO_TRENINGSOMRADE_OBSERVERT'},
-    /* Fysisk drill har INGEN AK-formel — den har sett, reps og tid. */
-    {n:'Knebøy', f:'fysisk · 4 × 5'},
-    {n:'Hoppserie', f:'fysisk · 5 × 3'}
-  ],
-  /* Turneringer er ankerpunktene i årsplanen. De dras inn på lerretet
-     som alle andre elementer og skriver til samme plan-kilde. */
-  turneringer: [
-    {n:'NM Junior · Losby',      f:'14.–16.08 · prio A · påmeldt'},
-    {n:'Regionstour 4 · Onsøy',  f:'23.08 · prio B · frist 16.08'},
-    {n:'Klubbmesterskap · GFGK', f:'30.–31.08 · prio C · ikke påmeldt'}
-  ]
-};
-
-var valgtId = 'o2', libTab = 'maler', inspTab = 'okt', published = false;
-
-/* ── Utility ─────────────────────────────────────────────────── */
-var live = document.getElementById('live');
-function si(t){ live.textContent = t; }
-var toastEl = document.getElementById('toast'), toastT;
-function toast(t){
-  toastEl.textContent = t; toastEl.hidden = false;
-  clearTimeout(toastT); toastT = setTimeout(function(){ toastEl.hidden = true; }, 2600);
-}
-function el(tag, cls, txt){
-  var e = document.createElement(tag);
-  if (cls) e.className = cls;
-  if (txt != null) e.textContent = txt;
-  return e;
-}
-
-/* ── Regler og låser: TATT UT 01.08.2026 ─────────────────────────
-   Anders: «Fjern alle regler og låser nå. Alt dette må jobbes med mer
-   nøyaktig.»
-
-   Bakgrunnen, kort: reglene i repoet er ikke entydige ennå.
-   `src/lib/canon/invarianter.ts` implementerer ni invarianter der bare tre
-   finnes i `canon-invariants-13.md`. Periodetaket (spesialisering 840 min)
-   og aldersregelen (timer ≤ alder) gir ulike svar for samme spiller, og
-   aldersregelen teller turneringsrunder med — som er i strid med
-   beslutningen 01.08. TEK-minimum varierer per periode (grunn 25 %,
-   spesialisering 15 %), ikke 15 % flatt.
-
-   Å tegne en halvriktig validering er verre enn å tegne ingen: den blir
-   kodet som fasit. Derfor viser Workbench nå MÅLINGER, ikke DOMMER.
-   Ingen CANON-score, ingen tak, ingen terskler, ingen «overstyr».
-
-   Når reglene er gjennomarbeidet settes de tilbake her.
-   ─────────────────────────────────────────────────────────────── */
-function erTurnering(d){ return erGolf(d) && d.formel.pyramide === 'TURN'; }
-
-/** Rene målinger. Ingen grenser, ingen vurdering.
-    F4: composer-utkast (ghost) teller IKKE — de er ikke plan ennå.
-    Etterlevelse: fullførte av publiserte økter med PASSERT sluttid.
-    Fremtidige økter kan ikke være etterlevd eller brutt. */
-function maal(){
-  var treningMin = 0, turneringMin = 0, drills = 0, okter = 0, passert = 0, fullfort = 0;
-  OKTER.forEach(function(o){
-    if (o.ghost) return;
-    okter++;
-    o.drills.forEach(function(d){
-      drills++;
-      if (erTurnering(d)) turneringMin += d.tidMin; else treningMin += d.tidMin;
-    });
-    var slutt = minutter(o.start) + sumTid(o);
-    if (o.dag < NAA.dag || (o.dag === NAA.dag && slutt <= NAA.min)){
-      passert++;
-      if (o.done) fullfort++;
-    }
-  });
-  return { treningMin: treningMin, turneringMin: turneringMin,
-           drills: drills, okter: okter, passert: passert, fullfort: fullfort };
-}
-
-/* ── Render: KPI + bunnsone ──────────────────────────────────── */
-function renderKpi(){
-  var m = maal();
-  document.getElementById('kVolum').innerHTML = tid(m.treningMin);
-  document.getElementById('kTurn').innerHTML  = m.turneringMin ? tid(m.turneringMin) : '—';
-  document.getElementById('kOkter').textContent = m.okter;
-  var nFys = OKTER.filter(function(o){ return !o.ghost && o.akse === 'FYS'; }).length;
-  document.getElementById('kOkterW').textContent = (m.okter - nFys) + ' golf · ' + nFys + ' fysisk';
-  document.getElementById('kDrills').textContent = m.drills;
-  document.getElementById('kEtter').textContent = m.passert ? m.fullfort + '/' + m.passert : '—';
-}
-
-/* ── Render: lerret ──────────────────────────────────────────── */
-function renderWeek(){
-  var w = document.getElementById('week');
-  w.innerHTML = '';
-  if (visning === 'agenda'){ w.className = 'agenda'; w.style.gridTemplateColumns = ''; renderAgenda(w); return; }
-  var syn = synligeDager();
-  w.className = 'tg';
-  w.style.gridTemplateColumns = '62px repeat(' + syn.length + ', minmax(124px, 1fr))';
-
-  /* Hjørne + dagoverskrifter, alle sticky. «I dag» følger nå-linjen. */
-  w.appendChild(el('div', 'tg-corner'));
-  syn.forEach(function(i){
-    var d = DAGER[i];
-    var h = el('div', 'tg-dayhead' + (i === NAA.dag ? ' today' : ''));
-    h.appendChild(el('span', 'dw', d.dw));
-    h.appendChild(el('span', 'dd num', d.dd));
-    var mins = OKTER.filter(function(o){ return o.dag === i && !o.ghost; })
-                    .reduce(function(s2,o){ return s2 + sumTid(o); }, 0);
-    h.appendChild(el('span', 'dt num', mins ? tid(mins) : '—'));
-    w.appendChild(h);
-  });
-
-  /* F2: heldagsbåndet (turneringer) — egen rad under dagoverskriftene */
-  if (kildePaa('turneringer')){
-    var adc = el('div', 'tg-adcorner', 'turn.');
-    w.appendChild(adc);
-    if (TURNERING_UKA === null){
-      var cell = el('div', 'tg-adcell', 'Ingen turnering denne uka · neste: ' + NESTE_TURNERING);
-      cell.style.gridColumn = '2 / -1';
-      w.appendChild(cell);
-    } else {
-      syn.forEach(function(){ w.appendChild(el('div', 'tg-adcell')); });
-    }
-  }
-
-  /* Tidsakse 05:00–23:00, 30-minutters intervaller */
-  var axis = el('div', 'tg-axis');
-  for (var k = 0; k <= N_SLOT; k++){
-    var min = T_START + k * SLOT;
-    var t = el('div', 'tg-tick' + (min % 60 === 0 ? ' hel' : ''));
-    t.appendChild(el('span', null, klokke(min)));
-    axis.appendChild(t);
-  }
-  axis.style.height = (N_SLOT * SLOT_H) + 'px';
-  w.appendChild(axis);
-
-  /* Sju dagkolonner */
-  DAGER.forEach(function(d, i){
-    if (syn.indexOf(i) === -1) return;
-    var col = el('div', 'tg-col');
-    col.dataset.dag = i;
-    col.style.height = (N_SLOT * SLOT_H) + 'px';
-
-    if (kildePaa('skole')) (SKOLE[i] || []).forEach(function(bz){
-      var e = el('div', 'tg-busy', bz.navn + ' ' + bz.start + '–' + bz.slutt);
-      e.style.top = yFor(minutter(bz.start)) + 'px';
-      e.style.height = ((minutter(bz.slutt) - minutter(bz.start)) / SLOT * SLOT_H - 2) + 'px';
-      col.appendChild(e);
-    });
-    if (kildePaa('bookinger')) (BOOKINGER[i] || []).forEach(function(bz){
-      var e = el('div', 'tg-busy', bz.navn + ' ' + bz.start + '–' + bz.slutt);
-      e.style.borderStyle = 'solid'; e.style.borderLeft = '3px solid var(--accent-sky)';
-      e.style.top = yFor(minutter(bz.start)) + 'px';
-      e.style.height = ((minutter(bz.slutt) - minutter(bz.start)) / SLOT * SLOT_H - 2) + 'px';
-      col.appendChild(e);
-    });
-
-    /* F2: overlapp økt-mot-økt → side-om-side-spalter (Google-oppførsel) */
-    var dagens = OKTER.filter(function(o){ return o.dag === i; })
-      .sort(function(a, b2){ return minutter(a.start) - minutter(b2.start); });
-    var spalte = {}, sluttForrige = -1;
-    dagens.forEach(function(o){
-      var fra = minutter(o.start);
-      spalte[o.id] = (fra < sluttForrige) ? 1 : 0;
-      sluttForrige = Math.max(sluttForrige, fra + sumTid(o));
-    });
-    var harKollisjon = dagens.some(function(o){ return spalte[o.id] === 1; });
-
-    dagens.forEach(function(o){
-      var fra = minutter(o.start), varighet = sumTid(o);
-      var b = el('button', 'tg-okt ax-' + o.akse + (o.done ? ' done' : '') +
-        (o.ghost ? ' ghost' : '') + (o.hoppet ? ' hoppet' : ''));
-      b.dataset.odId = 'wb-okt-' + o.id;
-      b.setAttribute('aria-current', o.id === valgtId ? 'true' : 'false');
-      b.style.top = yFor(fra) + 'px';
-      b.style.height = Math.max(SLOT_H - 2, varighet / SLOT * SLOT_H - 2) + 'px';
-      if (harKollisjon){
-        b.style.left = 'calc(' + (spalte[o.id] * 50) + '% + 3px)';
-        b.style.right = 'auto';
-        b.style.width = 'calc(50% - 6px)';
-      }
-      b.appendChild(el('span', 't', o.navn));
-      var mrad = el('span', 'm', o.start + '–' + klokke(fra + varighet) + ' · ' + tid(varighet));
-      if (o.gjenta) mrad.appendChild(el('span', 'rep', ' · ↻ hver uke'));
-      b.appendChild(mrad);
-      var omr = o.drills.filter(erGolf).map(function(x){ return x.formel.omrade; });
-      var unike = omr.filter(function(x,j){ return omr.indexOf(x) === j; });
-      var fys = o.drills.filter(function(x){ return !erGolf(x); }).length;
-      var etikett = unike.join(' · ') || (fys ? 'fysisk' : '');
-      if (unike.length && fys) etikett += ' · fysisk';
-      if (varighet / SLOT * SLOT_H > 44) b.appendChild(el('span', 'f', etikett));
-      /* F2: tester-laget markerer økter med test fra batteriet */
-      if (kildePaa('tester')){
-        var tester = o.drills.filter(erTest);
-        if (tester.length) b.appendChild(el('span', 'tmark', 'test: ' + tester.map(function(x){ return x.navn; }).join(', ')));
-      }
-      /* F2: konflikt mot låste lag — varsel, aldri blokkering */
-      var krokk = [];
-      if (kildePaa('skole')) (SKOLE[i] || []).forEach(function(bz){
-        if (fra < minutter(bz.slutt) && fra + varighet > minutter(bz.start)) krokk.push('skole');
-      });
-      if (kildePaa('bookinger')) (BOOKINGER[i] || []).forEach(function(bz){
-        if (fra < minutter(bz.slutt) && fra + varighet > minutter(bz.start)) krokk.push('booking');
-      });
-      if (krokk.length) b.appendChild(el('span', 'konf', '⚠ krokk med ' + krokk.join(' og ')));
-      /* F4: utkast-etikett og faktisk-mot-planlagt-laget */
-      if (o.ghost) b.appendChild(el('span', 'ghlab', 'utkast · bekreft i inspektøren'));
-      if (kildePaa('logg') && !o.ghost){
-        if (o.done){
-          var fakt = o.drills.reduce(function(s2, d2){ return s2 + (d2.logget || 0); }, 0);
-          b.appendChild(el('span', 'floggr', '✓ logget · faktisk ' + tid(fakt) +
-            (fakt === varighet ? '' : ' av ' + tid(varighet))));
-        } else if (o.hoppet){
-          b.appendChild(el('span', 'hoplab', 'hoppet — ikke gjennomført'));
-        } else if (o.dag < NAA.dag || (o.dag === NAA.dag && fra + varighet <= NAA.min)){
-          b.appendChild(el('span', 'hoplab', 'passert · ikke logget'));
-        }
-      }
-      if (FORSLAG.status === 'venter' && FORSLAG.oktId === o.id){
-        b.classList.add('har-forslag');
-        b.appendChild(el('span', 'fslag', 'forslag venter'));
-      }
-      b.dataset.okt = o.id;
-      b.addEventListener('click', function(){
-        if (b.dataset.dro) return;
-        valgtId = o.id; inspTab = 'okt'; renderAll();
-      });
-      b.addEventListener('keydown', function(ev){ blokkTast(ev, o); });
-      if (!o.done && !o.hoppet){
-        festFlytt(b, o);
-        var rt = el('span', 'rz topp'), rb = el('span', 'rz bunn');
-        festResize(rt, o, 'topp'); festResize(rb, o, 'bunn');
-        b.appendChild(rt); b.appendChild(rb);
-      }
-      col.appendChild(b);
-    });
-
-    /* Nå-linje kun på i dag. T ruller hit. */
-    if (i === NAA.dag){
-      var nu = el('div', 'tg-now'); nu.id = 'nowline';
-      nu.style.top = yFor(NAA.min) + 'px';
-      nu.appendChild(el('span', null, 'nå ' + klokke(NAA.min)));
-      col.appendChild(nu);
-    }
-
-    /* Klikk i tom luke = ny økt på det klokkeslettet */
-    col.addEventListener('click', function(ev){
-      if (ev.target !== col) return;
-      var y = ev.offsetY;
-      var min = T_START + Math.floor(y / SLOT_H) * SLOT;
-      leggTilOkt(i, null, klokke(min));
-    });
-
-    col.addEventListener('dragover', function(ev){ ev.preventDefault(); col.classList.add('drop'); });
-    col.addEventListener('dragleave', function(){ col.classList.remove('drop'); });
-    col.addEventListener('drop', function(ev){
-      ev.preventDefault(); col.classList.remove('drop');
-      var navn = ev.dataTransfer.getData('text/plain');
-      var min = T_START + Math.floor(ev.offsetY / SLOT_H) * SLOT;
-      if (navn) leggTilOkt(i, navn, klokke(min));
-    });
-
-    w.appendChild(col);
-  });
-}
-
-/* ── F1: flytt og dupliser (⌥) med peker — snap 30 min, ⇧ = 5 min ── */
-function festFlytt(b, o){
-  b.addEventListener('pointerdown', function(ev){
-    if (ev.target.classList && ev.target.classList.contains('rz')) return;
-    var y0 = ev.clientY, x0 = ev.clientX, dro = false;
-    var fra0 = minutter(o.start);
-    function mv(e2){
-      if (!dro && Math.abs(e2.clientY - y0) + Math.abs(e2.clientX - x0) < 5) return;
-      if (!dro){ dro = true; b.classList.add('flyttes'); pushUndo(); }
-      e2.preventDefault();
-      var ny = snap(fra0 + (e2.clientY - y0) / SLOT_H * SLOT, e2.shiftKey);
-      b.style.top = yFor(ny) + 'px';
-      b.style.transform = 'translateX(' + (e2.clientX - x0) + 'px)';
-      b.dataset.ny = ny;
-      var kol = document.elementsFromPoint(e2.clientX, e2.clientY).filter(function(n){
-        return n.classList && n.classList.contains('tg-col'); })[0];
-      if (kol) b.dataset.nyDag = kol.dataset.dag;
-    }
-    function opp(e2){
-      document.removeEventListener('pointermove', mv);
-      document.removeEventListener('pointerup', opp);
-      if (!dro) return;
-      b.classList.remove('flyttes'); b.dataset.dro = '1';
-      var ny = +b.dataset.ny, nyDag = b.dataset.nyDag != null ? +b.dataset.nyDag : o.dag;
-      if (e2.altKey){
-        /* ⌥-slipp = dupliser (Google-oppførsel) */
-        var kopi = JSON.parse(JSON.stringify(o));
-        kopi.id = o.id + '_k' + (Date.now() % 1000); kopi.done = false;
-        kopi.dag = nyDag; kopi.start = klokke(ny);
-        OKTER.push(kopi); valgtId = kopi.id;
-        si('Økta er duplisert til ' + DAGER[nyDag].dw + ' ' + klokke(ny) + '.');
-        toast('Duplisert (⌥) · ⌘Z angrer');
-      } else {
-        o.dag = nyDag; o.start = klokke(ny);
-        si(o.navn + ' er flyttet til ' + DAGER[nyDag].dw + ' ' + klokke(ny) + '.');
-      }
-      renderAll();
-    }
-    document.addEventListener('pointermove', mv);
-    document.addEventListener('pointerup', opp);
-  });
-}
-
-/* Resize. Varigheten EIES av drillene (aldri et fritt tall): bunnhåndtaket
-   justerer siste drill sin tid, topphåndtaket flytter start og justerer
-   første drill tilsvarende. Minimum 5 min per drill. */
-function festResize(h, o, kant){
-  h.addEventListener('pointerdown', function(ev){
-    ev.stopPropagation(); ev.preventDefault();
-    var y0 = ev.clientY, gjort = false;
-    var fra0 = minutter(o.start), var0 = sumTid(o);
-    var drill = kant === 'bunn' ? o.drills[o.drills.length - 1] : o.drills[0];
-    var t0 = drill.tidMin;
-    function mv(e2){
-      if (!gjort){ gjort = true; pushUndo(); }
-      var steg = e2.shiftKey ? 5 : SLOT;
-      var d = Math.round((e2.clientY - y0) / SLOT_H * SLOT / steg) * steg;
-      if (kant === 'bunn'){
-        if (t0 + d < 5 || fra0 + t0 + d + (var0 - t0) > T_SLUTT) return;
-        drill.tidMin = t0 + d;
-      } else {
-        var nyFra = fra0 + d;
-        if (nyFra < T_START || t0 - d < 5) return;
-        o.start = klokke(nyFra); drill.tidMin = t0 - d;
-      }
-      renderKpi(); tegnBlokk(o);
-    }
-    function opp(){
-      document.removeEventListener('pointermove', mv);
-      document.removeEventListener('pointerup', opp);
-      if (gjort){
-        renderAll();
-        si(o.navn + ': ' + drill.navn + ' er nå ' + tid(drill.tidMin) + '. Totalt ' + tid(sumTid(o)) + '.');
-      }
-    }
-    document.addEventListener('pointermove', mv);
-    document.addEventListener('pointerup', opp);
-  });
-}
-function tegnBlokk(o){
-  var b = document.querySelector('.tg-okt[data-okt="' + o.id + '"]');
-  if (!b) return;
-  var fra = minutter(o.start), varighet = sumTid(o);
-  b.style.top = yFor(fra) + 'px';
-  b.style.height = Math.max(SLOT_H - 2, varighet / SLOT * SLOT_H - 2) + 'px';
-  var m = b.querySelector('.m');
-  if (m) m.textContent = o.start + '–' + klokke(fra + varighet) + ' · ' + tid(varighet);
-}
-
-/* Tastatur på fokusert blokk: piler flytter (⇧ = 5 min), ⌫ sletter, ⌘D dupliserer. */
-function blokkTast(ev, o){
-  if ((ev.metaKey || ev.ctrlKey) && ev.key.toLowerCase() === 'd'){
-    ev.preventDefault(); pushUndo();
-    var kopi = JSON.parse(JSON.stringify(o));
-    kopi.id = o.id + '_k' + (Date.now() % 1000); kopi.done = false;
-    OKTER.push(kopi); valgtId = kopi.id;
-    renderAll(); toast('Duplisert · ⌘Z angrer'); return;
-  }
-  if (ev.key === 'Delete' || ev.key === 'Backspace'){
-    ev.preventDefault(); pushUndo();
-    OKTER = OKTER.filter(function(x){ return x.id !== o.id; });
-    if (valgtId === o.id) valgtId = null;
-    renderAll(); si(o.navn + ' er slettet. ⌘Z angrer.'); toast('Slettet · ⌘Z angrer'); return;
-  }
-  var dMin = { ArrowUp:-1, ArrowDown:1 }[ev.key];
-  if (dMin){
-    ev.preventDefault(); pushUndo();
-    o.start = klokke(snap(minutter(o.start) + dMin * (ev.shiftKey ? 5 : SLOT), ev.shiftKey));
-    renderAll(); fokusBlokk(o.id); return;
-  }
-  var dDag = { ArrowLeft:-1, ArrowRight:1 }[ev.key];
-  if (dDag){
-    ev.preventDefault(); pushUndo();
-    o.dag = Math.max(0, Math.min(6, o.dag + dDag));
-    renderAll(); fokusBlokk(o.id);
-  }
-}
-function fokusBlokk(id){
-  var b = document.querySelector('.tg-okt[data-okt="' + id + '"]');
-  if (b) b.focus();
-}
-
-/* Agenda-visningen: uka som liste — mobilens standard, desktopens oversikt. */
-function renderAgenda(w){
-  var noe = false;
-  DAGER.forEach(function(d, i){
-    var dagens = OKTER.filter(function(o){ return o.dag === i; })
-      .sort(function(a, b2){ return minutter(a.start) - minutter(b2.start); });
-    if (!dagens.length) return;
-    noe = true;
-    w.appendChild(el('div', 'ad', d.dw + ' ' + d.dd + (i === NAA.dag ? ' · i dag' : '')));
-    dagens.forEach(function(o){
-      var r = el('button', 'ar');
-      r.dataset.odId = 'wb-agenda-' + o.id;
-      var fra = minutter(o.start);
-      r.appendChild(el('span', 'at num', o.start + '–' + klokke(fra + sumTid(o))));
-      if (o.ghost) r.style.borderStyle = 'dashed';
-      r.appendChild(el('span', 'an', o.navn + (o.ghost ? ' · utkast' :
-        (o.done ? ' · logget' : (o.hoppet ? ' · hoppet' : '')))));
-      r.appendChild(el('span', 'af', tid(sumTid(o))));
-      r.addEventListener('click', function(){
-        valgtId = o.id; inspTab = 'okt';
-        visning = 'dag'; visDag = o.dag; settZoom('dag'); renderAll();
-      });
-      w.appendChild(r);
-    });
-  });
-  if (!noe) w.appendChild(el('p', 'hint', 'Ingen økter i uka ennå.'));
-}
-
-/* Mini-måned. Uke 32 er prototypens uke — klikk på en dag hopper til dagvisningen. */
-function renderMini(){
-  var m = document.getElementById('mini');
-  m.innerHTML = '';
-  var mh = el('div', 'mh');
-  mh.appendChild(el('span', 't', 'August 2026'));
-  mh.appendChild(el('span', 'u', 'uke 32'));
-  m.appendChild(mh);
-  var tb = el('table'), tr0 = el('tr');
-  tr0.appendChild(el('th', null, ''));
-  ['m','t','o','t','f','l','s'].forEach(function(x){ tr0.appendChild(el('th', null, x)); });
-  tb.appendChild(tr0);
-  [ { nr:31, dg:[27,28,29,30,31,1,2], inn:[0,0,0,0,0,1,1] },
-    { nr:32, dg:[3,4,5,6,7,8,9],      inn:[1,1,1,1,1,1,1] },
-    { nr:33, dg:[10,11,12,13,14,15,16], inn:[1,1,1,1,1,1,1] },
-    { nr:34, dg:[17,18,19,20,21,22,23], inn:[1,1,1,1,1,1,1] },
-    { nr:35, dg:[24,25,26,27,28,29,30], inn:[1,1,1,1,1,1,1] },
-    { nr:36, dg:[31,1,2,3,4,5,6],     inn:[1,0,0,0,0,0,0] }
-  ].forEach(function(u){
-    var tr = el('tr', u.nr === 32 ? 'uke32' : null);
-    var un = el('td', 'un num', String(u.nr));
-    if (u.nr === 33 && PERIODISERING.status === 'brukt'){
-      un.style.color = 'var(--accent-fg)'; un.style.fontWeight = '600';
-      un.title = 'Utkast fra periodiseringen venter i uke 33';
-    }
-    tr.appendChild(un);
-    u.dg.forEach(function(dnum, j){
-      var td = el('td');
-      var bt = el('button', null, String(dnum));
-      bt.dataset.odId = 'wb-mini-' + u.nr + '-' + dnum;
-      if (!u.inn[j]) bt.style.opacity = '.35';
-      if (u.nr === 32 && j === NAA.dag) bt.setAttribute('aria-current', 'date');
-      if (u.nr === 32){
-        bt.addEventListener('click', function(){
-          visDag = j; visning = 'dag'; settZoom('dag'); renderAll();
-          si('Viser ' + DAGER[j].dw + ' ' + DAGER[j].dd + ' i dagvisning.');
-        });
-      } else {
-        bt.addEventListener('click', function(){ toast('Prototypen viser uke 32.'); });
-      }
-      td.appendChild(bt); tr.appendChild(td);
-    });
-    tb.appendChild(tr);
-  });
-  m.appendChild(tb);
-}
-
-/* ── F2: kildeliste — lagene slås av/på, øktene er alltid på ──── */
-function renderKilder(){
-  var k = document.getElementById('kilder');
-  k.innerHTML = '';
-  k.appendChild(el('span', 'flab', 'kilder'));
-  KILDER.forEach(function(x){
-    var r = el('button', 'krad');
-    r.type = 'button';
-    r.dataset.odId = 'wb-kilde-' + x.k;
-    r.setAttribute('aria-pressed', String(x.paa));
-    if (x.laast) r.setAttribute('aria-disabled', 'true');
-    var dot = el('span', 'kdot');
-    if (x.paa) dot.style.background = x.farge;
-    r.appendChild(dot);
-    r.appendChild(el('span', 'kn', x.n));
-    r.appendChild(el('span', 'khint', x.laast ? 'alltid på' : (x.paa ? 'på' : 'av')));
-    r.addEventListener('click', function(){
-      if (x.laast){ toast('Øktene er planen — laget kan ikke slås av.'); return; }
-      x.paa = !x.paa;
-      renderKilder(); renderWeek();
-      si(x.n + '-laget er ' + (x.paa ? 'på' : 'av') + '.');
-    });
-    k.appendChild(r);
-  });
-}
-
-function leggTilOkt(dag, navn, start){
-  pushUndo();
-  var id = 'o' + (OKTER.length + 1) + '_' + dag;
-  OKTER.push({ id:id, dag:dag, start:start || '16:00', navn:navn || 'Ny økt', dato:'2026-08-0' + (3 + dag),
-    sted:'', maal:'', akse:'TEK', done:false,
-    drills:[{ type:'golf', navn:'Ny drill',
-      formel:{pyramide:'TEK',omrade:'INNSPILL_50',motorikk:'LAV_HAST',belastning:'TRENINGSOMRADE',press:'ALENE'},
-      reps:0, tidMin:30, logget:null }] });
-  valgtId = id; inspTab = 'okt';
-  renderAll();
-  si('Ny økt lagt til ' + DAGER[dag].dw + ' ' + (start || '16:00') + '.');
-}
-
-/* ── Render: bibliotek ───────────────────────────────────────── */
-function renderLib(){
-  var b = document.getElementById('libBody');
-  b.innerHTML = '';
-  LIB[libTab].forEach(function(it, i){
-    var d = el('div', 'libitem');
-    d.setAttribute('draggable', 'true');
-    d.dataset.odId = 'wb-lib-' + libTab + '-' + i;
-    d.appendChild(el('span', 'n', it.n));
-    d.appendChild(el('span', 'f', it.f));
-    d.addEventListener('dragstart', function(ev){ ev.dataTransfer.setData('text/plain', it.n); });
-    b.appendChild(d);
-  });
-}
-
-/* ── Render: inspektør ───────────────────────────────────────── */
-function seg(labels, aktiv, odBase){
-  var wrap = el('div', 'segs');
-  labels.forEach(function(l){
-    var c = el('button', 'chip sm', l);
-    c.setAttribute('aria-pressed', String(l === aktiv));
-    c.dataset.odId = odBase + '-' + String(l).toLowerCase();
-    c.addEventListener('click', function(){
-      wrap.querySelectorAll('.chip').forEach(function(x){ x.setAttribute('aria-pressed','false'); });
-      c.setAttribute('aria-pressed','true');
-    });
-    wrap.appendChild(c);
-  });
-  return wrap;
-}
-
-function renderInsp(){
-  var b = document.getElementById('inspBody');
-  b.innerHTML = '';
-
-  if (inspTab === 'innboks'){
-    ['Øyvind ba om å flytte torsdagsøkta', 'Foreldresamtykke mangler for videoanalyse'].forEach(function(t){
-      var d = el('div', 'drill');
-      d.appendChild(el('div', 'dn', t));
-      var a = el('div', 'gacts'); a.style.marginTop = 'var(--s2)';
-      var s = el('button', 'btn sm', 'Svar i tråden');
-      s.dataset.odId = 'wb-innboks-svar';
-      s.addEventListener('click', function(){ toast('Åpner tråden med saken vedlagt.'); });
-      a.appendChild(s); d.appendChild(a);
-      b.appendChild(d);
-    });
-    return;
-  }
-
-  if (inspTab === 'caddie'){
-    if (FORSLAG.status !== 'venter' && PERIODISERING.status !== 'venter' && TESTFORFALL.status !== 'venter'){
-      var tomC = el('div', 'empty');
-      tomC.appendChild(el('h3', null, 'Ingen forslag venter'));
-      tomC.appendChild(el('p', null, 'Agentene skriver nye utkast hit når de finner avvik mellom plan og spilledata. Ingenting endres uten at du godkjenner det.'));
-      b.appendChild(tomC);
-      return;
-    }
-    if (PERIODISERING.status === 'venter') b.appendChild(periodiseringKort());
-    if (TESTFORFALL.status === 'venter') b.appendChild(testforfallKort());
-    if (FORSLAG.status !== 'venter') return;
-    var g = el('div', 'ghost');
-    g.appendChild(el('div', 'gh', 'utkast fra agenten'));
-    g.appendChild(el('h4', null, 'Bytt torsdag fra nærspill til innspill'));
-    var p = el('p', null,
-      'Hvorfor: SG innspill er ditt svakeste område siste 10 runder. ' +
-      'Hva: samme varighet, formel TEK_INNSPILL_50_LAV_HAST_TRENINGSOMRADE_ALENE. ' +
-      'Forventet effekt: TEK-andelen holder seg på 18 %, volumet er uendret. ' +
-      'Hvorfor nå: sjekkpunktet 14.08 måler nettopp innspill.');
-    g.appendChild(p);
-    var acts = el('div', 'gacts');
-    var bruk = el('button', 'btn ink', 'Bruk forslag');
-    bruk.dataset.odId = 'wb-caddie-bruk';
-    bruk.addEventListener('click', brukForslag);
-    var avvis = el('button', 'btn', 'Avvis');
-    avvis.dataset.odId = 'wb-caddie-avvis';
-    avvis.addEventListener('click', avvisForslag);
-    acts.appendChild(bruk); acts.appendChild(avvis);
-    g.appendChild(acts);
-    b.appendChild(g);
-    return;
-  }
-
-  /* F4: composer-utkast venter — banneret står over alt annet i økt-fanen. */
-  var ghosts = OKTER.filter(function(x){ return x.ghost; });
-  if (ghosts.length){
-    var gb = el('div', 'ghost');
-    gb.appendChild(el('div', 'gh', 'utkast fra composer'));
-    gb.appendChild(el('h4', null, ghosts.length + (ghosts.length === 1 ? ' økt' : ' økter') + ' venter på bekreftelse'));
-    gb.appendChild(el('p', null, 'Utkastene ligger stiplet i uka. De teller ikke i målingene og følger ' +
-      'ikke med i publisering før du bekrefter. Flytt dem gjerne først — de oppfører seg som blokker.'));
-    var gba = el('div', 'gacts');
-    var gb1 = el('button', 'btn ink', 'Bekreft ' + ghosts.length);
-    gb1.dataset.odId = 'wb-cx-bekreft';
-    gb1.addEventListener('click', cxBekreft);
-    var gb2 = el('button', 'btn', 'Forkast');
-    gb2.dataset.odId = 'wb-cx-forkast';
-    gb2.addEventListener('click', cxForkast);
-    gba.appendChild(gb1); gba.appendChild(gb2);
-    gb.appendChild(gba);
-    b.appendChild(gb);
-  }
-
-  var o = OKTER.filter(function(x){ return x.id === valgtId; })[0];
-  if (!o){
-    var e = el('div', 'empty');
-    e.appendChild(el('h3', null, 'Ingen økt valgt'));
-    e.appendChild(el('p', null, 'Velg en økt på lerretet for å redigere den, eller dra et Caddie-utkast inn på en dag.'));
-    b.appendChild(e);
-    return;
-  }
-
-  /* Forslags-diff øverst når agenten har et venterende forslag på akkurat denne økta. */
-  if (FORSLAG.status === 'venter' && FORSLAG.oktId === o.id){
-    var dk = el('div', 'ghost');
-    dk.appendChild(el('div', 'gh', 'forslag venter · ' + FORSLAG.agent.toLowerCase()));
-    dk.appendChild(el('h4', null, FORSLAG.tittel));
-    var fd = el('div', 'fdiff');
-    fd.appendChild(el('code', 'df fra', FORSLAG.fra));
-    fd.appendChild(el('span', 'pil', '→'));
-    fd.appendChild(el('code', 'df', FORSLAG.til));
-    dk.appendChild(fd);
-    dk.appendChild(el('p', null, FORSLAG.hvorfor));
-    var da = el('div', 'gacts');
-    var d1 = el('button', 'btn ink', 'Godkjenn'); d1.dataset.odId = 'wb-diff-godkjenn';
-    d1.addEventListener('click', brukForslag);
-    var d2 = el('button', 'btn', 'Avvis'); d2.dataset.odId = 'wb-diff-avvis';
-    d2.addEventListener('click', avvisForslag);
-    da.appendChild(d1); da.appendChild(d2); dk.appendChild(da);
-    b.appendChild(dk);
-  }
-
-  /* Fire faste felt på hver økt: navn, dato, sted, målsetning. */
-  [['Navn','text','navn'],['Dato','date','dato'],['Starttid','time','start'],['Sted','text','sted']].forEach(function(f){
-    var d = el('div', 'field');
-    var lab = el('label', null, f[0]); lab.setAttribute('for', 'fld-' + f[2]);
-    var inp = document.createElement('input');
-    inp.type = f[1]; inp.id = 'fld-' + f[2]; inp.value = o[f[2]] || '';
-    inp.dataset.odId = 'wb-fld-' + f[2];
-    if (f[1] === 'time'){ inp.step = 1800; }
-    inp.addEventListener('input', function(){ o[f[2]] = inp.value; renderWeek(); });
-    d.appendChild(lab); d.appendChild(inp); b.appendChild(d);
-  });
-  var dm = el('div', 'field');
-  var lm = el('label', null, 'Målsetning'); lm.setAttribute('for','fld-maal');
-  var tm = document.createElement('textarea');
-  tm.id = 'fld-maal'; tm.value = o.maal || ''; tm.dataset.odId = 'wb-fld-maal';
-  tm.placeholder = 'Hva skal denne økta oppnå?';
-  tm.addEventListener('input', function(){ o.maal = tm.value; });
-  dm.appendChild(lm); dm.appendChild(tm); b.appendChild(dm);
-
-  /* F2: gjentakelse. Serien redigeres som én eller alle (Google-dialogen);
-     feltet krever recurrenceRule i datamodellen — vedtak i masterplan §09. */
-  var gj = el('div', 'field');
-  var lg = el('label', null, 'Gjentakelse'); lg.setAttribute('for', 'fld-gjenta');
-  var sg = document.createElement('select');
-  sg.id = 'fld-gjenta'; sg.dataset.odId = 'wb-fld-gjenta';
-  [['','Ingen — én gang'],['UKENTLIG','Hver uke til periodeslutt']].forEach(function(v){
-    var op = document.createElement('option');
-    op.value = v[0]; op.textContent = v[1];
-    if ((o.gjenta || '') === v[0]) op.selected = true;
-    sg.appendChild(op);
-  });
-  sg.addEventListener('change', function(){
-    pushUndo();
-    o.gjenta = sg.value || null;
-    renderWeek();
-    if (o.gjenta){
-      si('Økta gjentas hver uke. Endrer du en senere utgave, spør vi om én eller alle.');
-      toast('↻ Hver uke · til periodeslutt');
-    } else { toast('Gjentakelse fjernet'); }
-  });
-  gj.appendChild(lg); gj.appendChild(sg);
-  gj.appendChild(el('p', 'hint', 'Serien redigeres som én utgave eller alle — du får spørsmålet når du endrer.'));
-  b.appendChild(gj);
-
-  /* ── Tre seksjoner under økta: Golf · Fysisk · Tester ────────
-     AK-formelen hører til den enkelte GOLFDRILLEN. Fysiske drills har
-     sett/reps/tid. Tester hentes fra testbatteriet og har hverken
-     formel eller reps — de har protokoll og resultat. */
-
-  function tegnDrill(d, i){
-    var box = el('details', 'drill');
-    box.dataset.odId = 'wb-drill-' + i;
-    var sum = el('summary', 'dsum');
-    sum.appendChild(el('span', 'dn', d.navn));
-    var typ = erGolf(d) ? 'golf' : (erTest(d) ? 'test' : 'fys');
-    sum.appendChild(el('span', 'dtyp ' + typ, erGolf(d) ? 'golf' : (erTest(d) ? 'test' : 'fysisk')));
-    sum.appendChild(el('span', 'dtid num', tid(d.tidMin)));
-    box.appendChild(sum);
-    var inner = el('div', 'dbody');
-
-    function tekstfelt(tit, key, type, attrs){
-      var f = el('div', 'field');
-      var l = el('label', null, tit); l.setAttribute('for', 'd' + i + '-' + key);
-      var inp = document.createElement('input');
-      inp.type = type || 'text'; inp.id = 'd' + i + '-' + key; inp.value = d[key];
-      inp.dataset.odId = 'wb-drill-' + key + '-' + i;
-      if (attrs) Object.keys(attrs).forEach(function(a){ inp[a] = attrs[a]; });
-      inp.addEventListener('input', function(){
-        d[key] = (type === 'number') ? (parseInt(inp.value, 10) || 0) : inp.value;
-        if (key === 'navn') sum.querySelector('.dn').textContent = inp.value;
-        if (key === 'tidMin'){
-          sum.querySelector('.dtid').textContent = tid(d.tidMin);
-          renderKpi(); renderWeek();
-          var sv = b.querySelector('.sumline .sv'); if (sv) sv.textContent = tid(sumTid(o));
-        }
-      });
-      f.appendChild(l); f.appendChild(inp); inner.appendChild(f);
-    }
-    tekstfelt('Navn', 'navn');
-    tekstfelt('Tid i minutter', 'tidMin', 'number', {min:'5', step:'5'});
-
-    if (erGolf(d)){
-      var f = d.formel;
-      var strip = el('div', 'dformel');
-      var frad = el('div', 'flabrad');
-      frad.appendChild(el('span', 'flab', 'ak-formel for denne drillen'));
-      frad.appendChild(hjelp(FORKLARING.formel, 'wb-hjelp-formel-' + i));
-      strip.appendChild(frad);
-      strip.appendChild(el('code', 'df', formelStr(f)));
-      inner.appendChild(strip);
-      function oppdater(){ strip.querySelector('.df').textContent = formelStr(f); }
-
-      function slot(tittel, liste, key, od, gruppert){
-        var w = el('div', 'field');
-        var lr = el('div', 'flabrad');
-        lr.appendChild(el('span', 'flab', tittel));
-        lr.appendChild(hjelp(FORKLARING[key], od + '-hjelp-' + i));
-        w.appendChild(lr);
-        var segs = el('div', 'segs');
-        var forrigeG = null;
-        liste.forEach(function(v){
-          if (gruppert && v.g !== forrigeG){
-            forrigeG = v.g;
-            var g = el('span', 'gsep', v.g); segs.appendChild(g);
-          }
-          var c = el('button', 'chip sm', v.n); c.type = 'button';
-          c.setAttribute('aria-pressed', String(f[key] === v.k));
-          c.dataset.odId = od + '-' + i + '-' + v.k.toLowerCase();
-          c.addEventListener('click', function(){
-            f[key] = v.k;
-            segs.querySelectorAll('.chip').forEach(function(x){ x.setAttribute('aria-pressed','false'); });
-            c.setAttribute('aria-pressed','true');
-            if (key === 'pyramide') renderKpi();
-            oppdater();
-          });
-          segs.appendChild(c);
-        });
-        w.appendChild(segs);
-        inner.appendChild(w);
-      }
-      slot('Pyramide', PYRAMIDE, 'pyramide', 'wb-d-pyr');
-      slot('Område', OMRADE, 'omrade', 'wb-d-omr', true);
-
-      slot('Motorikk', MOTORIKK, 'motorikk', 'wb-d-mot');
-      slot('Belastning', BELASTNING, 'belastning', 'wb-d-bel');
-      slot('Press', PRESS, 'press', 'wb-d-pr');
-
-      var rw = el('div', 'field');
-      var rl = el('label', null, 'Reps'); rl.setAttribute('for', 'd' + i + '-reps');
-      var rinp = document.createElement('input');
-      rinp.type='number'; rinp.min='0'; rinp.id='d'+i+'-reps'; rinp.value=d.reps;
-      rinp.dataset.odId='wb-rep-'+i;
-      rinp.addEventListener('input', function(){ d.reps = parseInt(rinp.value,10) || 0; });
-      rw.appendChild(rl); rw.appendChild(rinp);
-      rw.appendChild(el('p','hint','Repsene kjøres på motorikk-nivået i formelen: ' +
-        navn(MOTORIKK, f.motorikk).toLowerCase() + '. To nivåer i samme drill = to drills.'));
-      inner.appendChild(rw);
-
-    } else if (erTest(d)){
-      inner.appendChild(el('p', 'hint',
-        'Test fra testbatteriet. Den har hverken AK-formel eller reps — protokollen ' +
-        'bestemmer utførelsen, og resultatet måles mot kravet for spillerens kategori.'));
-      var tw = el('div', 'field');
-      tw.appendChild(el('span', 'flab', 'protokoll'));
-      var code = el('code', 'df'); code.textContent = d.testK + ' · ' + d.omr;
-      tw.appendChild(code);
-      inner.appendChild(tw);
-
-    } else {
-      inner.appendChild(el('p', 'hint',
-        'Fysisk drill. Den har ingen AK-formel — sett, reps og tid er hele beskrivelsen.'));
-      var sr = el('div','field');
-      sr.appendChild(el('span','flab','sett og reps'));
-      var g2 = el('div','reps'); g2.style.gridTemplateColumns='repeat(2,1fr)';
-      [['sett','sett'],['reps','reps']].forEach(function(r){
-        var c = el('div','rep');
-        var inp = document.createElement('input');
-        inp.type='number'; inp.min='1'; inp.className='rn num'; inp.value=d[r[0]];
-        inp.setAttribute('aria-label', r[1] + ' for ' + d.navn);
-        inp.dataset.odId='wb-fys-'+i+'-'+r[0];
-        inp.addEventListener('input', function(){ d[r[0]] = parseInt(inp.value,10) || 0; });
-        c.appendChild(inp); c.appendChild(el('span','rl',r[1]));
-        g2.appendChild(c);
-      });
-      sr.appendChild(g2); inner.appendChild(sr);
-    }
-
-    if (d.logget != null){
-      var lg = el('div','logged');
-      lg.textContent = 'logget: ' + tid(d.logget) + ' · planlagt ' + tid(d.tidMin);
-      inner.appendChild(lg);
-    }
-    var del = el('button','btn sm','Fjern');
-    del.dataset.odId = 'wb-drill-fjern-' + i;
-    del.addEventListener('click', function(){
-      o.drills.splice(o.drills.indexOf(d), 1); renderAll(); si('Fjernet fra økta.');
-    });
-    inner.appendChild(del);
-    box.appendChild(inner);
-    return box;
-  }
-
-  function seksjon(tittel, filter, tomTekst, knapp){
-    var sec = el('div', 'sek');
-    var h = el('div', 'sekhead');
-    var liste = o.drills.filter(filter);
-    h.appendChild(el('span', 'flab', tittel));
-    h.appendChild(el('span', 'sekn num', liste.length));
-    sec.appendChild(h);
-    if (!liste.length) sec.appendChild(el('p', 'hint', tomTekst));
-    liste.forEach(function(d){ sec.appendChild(tegnDrill(d, o.drills.indexOf(d))); });
-    sec.appendChild(knapp);
-    b.appendChild(sec);
-  }
-
-  var kGolf = el('button', 'btn sm', '+ Legg til golfdrill');
-  kGolf.dataset.odId = 'wb-add-golfdrill';
-  kGolf.addEventListener('click', function(){
-    o.drills.push({ type:'golf', navn:'Ny golfdrill',
-      formel:{pyramide:'TEK',omrade:'INNSPILL_50',motorikk:'LAV_HAST',
-              belastning:'TRENINGSOMRADE',press:'ALENE'},
-      reps:0, tidMin:20, logget:null });
-    renderAll(); si('Golfdrill lagt til. Den har sin egen AK-formel.');
-  });
-
-  var kFys = el('button', 'btn sm', '+ Legg til fysisk drill');
-  kFys.dataset.odId = 'wb-add-fysdrill';
-  kFys.addEventListener('click', function(){
-    o.drills.push({ type:'fysisk', navn:'Ny fysisk drill', sett:3, reps:8, tidMin:20, logget:null });
-    renderAll(); si('Fysisk drill lagt til. Den har ingen AK-formel.');
-  });
-
-  var kTest = el('button', 'btn sm', '+ Legg til test fra testbatteriet');
-  kTest.dataset.odId = 'wb-add-test';
-  kTest.addEventListener('click', function(){ apneTestvelger(o); });
-
-  seksjon('Golf', erGolf, 'Ingen golfdrills ennå.', kGolf);
-  seksjon('Fysisk', function(d){ return d.type === 'fysisk'; }, 'Ingen fysiske drills ennå.', kFys);
-  seksjon('Tester', erTest, 'Ingen tester i denne økta.', kTest);
-
-  /* Totaltid er summen. Aldri skrevet inn. */
-  var sumL = el('div', 'sumline');
-  sumL.appendChild(el('span', null, 'Totaltid'));
-  sumL.appendChild(el('span', 'sv num', tid(sumTid(o))));
-  b.appendChild(sumL);
-  b.appendChild(el('p', 'hint', 'Totaltiden er summen av drill-tidene og kan ikke skrives inn direkte.'));
-
-  /* Timer: logger hele økta OG tid per drill. */
-  var t = el('div', 'field');
-  t.appendChild(el('span', 'flab', 'gjennomføring'));
-  /* FØR → UNDER. «Start økta» går til fangstflata — det er der økta faktisk
-     gjennomføres. Uten denne lenken er UNDER-leddet i sløyfen en skjerm
-     ingen kommer til. Formelen til første golfdrill sendes med, slik at
-     fangsten kan avlede riktige chips uten å gjette. */
-  var forsteGolf = o.drills.filter(erGolf)[0];
-  var start = el('a', 'btn ink', o.done ? 'Åpne fangst igjen' : 'Start økta');
-  start.dataset.odId = 'wb-start-okt';
-  start.href = 'fangstsheet.html?okt=' + encodeURIComponent(o.id) +
-    (forsteGolf ? '&formel=' + encodeURIComponent(formelStr(forsteGolf.formel)) : '');
-  t.appendChild(start);
-
-  var logg = el('button', 'btn', o.done ? 'Økta er logget' : 'Marker som logget');
-  logg.dataset.odId = 'wb-logg-okt';
-  if (o.done) logg.setAttribute('aria-disabled', 'true');
-  logg.addEventListener('click', function(){
-    if (o.done) return;
-    o.done = true;
-    o.drills.forEach(function(d){ d.logget = d.tidMin; });
-    renderAll();
-    si('Økta er logget. Tid per drill og for hele økta er registrert.');
-    toast('Logget · tid per drill');
-  });
-  t.appendChild(logg);
-  t.appendChild(el('p', 'hint', 'Timeren logger hele økta og tiden på hver enkelt drill.'));
-  b.appendChild(t);
-}
-
-/* ── Testvelger — henter fra testbatteriet, finner ikke på tester ── */
-function apneTestvelger(o){
-  var liste = el('div', 'testliste');
-  var grupper = {};
-  TESTBATTERI.forEach(function(t){ (grupper[t.omr] = grupper[t.omr] || []).push(t); });
-  Object.keys(grupper).forEach(function(g){
-    liste.appendChild(el('div', 'flab', g));
-    grupper[g].forEach(function(t){
-      var r = el('button', 'testrad');
-      r.dataset.odId = 'wb-test-' + t.k;
-      r.appendChild(el('span', 'tn', t.n));
-      r.appendChild(el('span', 'tk num', t.k));
-      r.addEventListener('click', function(){
-        o.drills.push({ type:'test', navn:t.n, testK:t.k, omr:t.omr, tidMin:15, logget:null });
-        closeDlg(); renderAll();
-        si(t.n + ' lagt til i økta som test.');
-      });
-      liste.appendChild(r);
-    });
-  });
-  openDlg('Legg til test fra testbatteriet',
-    'Tjue standardiserte protokoller. Testen måles mot kravet for spillerens kategori — den har hverken AK-formel eller reps.',
-    false, function(){});
-  var body = document.getElementById('dlgBody');
-  body.parentElement.insertBefore(liste, document.querySelector('.dacts'));
-  document.getElementById('dlgOk').textContent = 'Lukk';
-  document.getElementById('dlgOk').onclick = closeDlg;
-  document.getElementById('dlgCancel').hidden = true;
-}
-
-function renderAll(){
-  renderKpi(); renderWeek(); renderLib(); renderInsp(); renderMini(); renderKilder();
-  document.querySelectorAll('.libtabs button').forEach(function(x){
-    x.setAttribute('aria-selected', String(x.dataset.lib === libTab)); });
-  document.querySelectorAll('.insptabs button').forEach(function(x){
-    x.setAttribute('aria-selected', String(x.dataset.insp === inspTab)); });
-  var bC = document.getElementById('bCaddie');
-  var nC = (FORSLAG.status === 'venter' ? 1 : 0) + (PERIODISERING.status === 'venter' ? 1 : 0) +
-    (TESTFORFALL.status === 'venter' ? 1 : 0);
-  bC.textContent = nC; bC.hidden = !nC;
-  var br = document.getElementById('brudd');
-  br.innerHTML = '<span class="bmyk">Regler og låser er midlertidig ute. Ingenting i denne planen er validert.</span>';
-  var gh = OKTER.filter(function(x){ return x.ghost; }).length;
-  if (gh) br.appendChild(el('span', 'bmyk', gh + ' utkast fra composer er ikke bekreftet'));
-}
-
-/* ── Faner ───────────────────────────────────────────────────── */
-document.querySelectorAll('.libtabs button').forEach(function(x){
-  x.addEventListener('click', function(){ libTab = x.dataset.lib; renderAll(); });
+knapper.forEach(function(b){b.addEventListener('click',function(){sett(b.dataset.tilstand);});});
+sett('normal');
+var KEY='akhq-theme-agencyos',saved=null;
+try{saved=localStorage.getItem(KEY);}catch(e){}
+if(saved)document.documentElement.dataset.theme=saved;
+var tb=document.getElementById('themeBtn');
+if(tb)tb.addEventListener('click',function(){
+  var next=document.documentElement.dataset.theme==='dark'?'light':'dark';
+  document.documentElement.dataset.theme=next;
+  try{localStorage.setItem(KEY,next);}catch(e){}
 });
-document.querySelectorAll('.insptabs button').forEach(function(x){
-  x.addEventListener('click', function(){ inspTab = x.dataset.insp; renderAll(); });
-});
-function settZoom(z){
-  document.querySelectorAll('.zooms button').forEach(function(y){
-    y.setAttribute('aria-current', String(y.dataset.zoom === z));
-  });
-}
-document.querySelectorAll('.zooms button').forEach(function(x){
-  x.addEventListener('click', function(){
-    var z = x.dataset.zoom;
-    if (['dag','3d','uke','agenda'].indexOf(z) === -1){
-      if (z !== 'turnering') toast(x.textContent + '-zoom er ikke tegnet ennå.');
-      return;
-    }
-    visning = z; settZoom(z); renderWeek();
-  });
-});
-
-/* Globalt tastatur: 1/3/7/A bytter visning · T ruller til nå · ⌘Z angrer.
-   Aldri når man skriver eller dialogen er åpen. */
-document.addEventListener('keydown', function(e){
-  var tag = (document.activeElement || {}).tagName;
-  if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'z'){
-    if (tag === 'INPUT' || tag === 'TEXTAREA') return;
-    e.preventDefault(); angre(); return;
-  }
-  if (e.metaKey || e.ctrlKey || e.altKey) return;
-  if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT' || !dlg.hidden) return;
-  var vz = { '1':'dag', '3':'3d', '7':'uke', 'a':'agenda', 'A':'agenda' }[e.key];
-  if (vz){ visning = vz; settZoom(vz); renderWeek(); si('Visning: ' + vz + '.'); return; }
-  if (e.key === 't' || e.key === 'T'){
-    visning = 'uke'; settZoom('uke'); renderWeek();
-    var nl = document.getElementById('nowline');
-    if (nl){
-      var cb = document.querySelector('.canvasbody');
-      cb.scrollTop = Math.max(0, nl.offsetTop - cb.clientHeight / 2);
-    }
-    si('Rullet til nå, ' + klokke(NAA.min) + '.');
-  }
-});
-
-/* ── Dialog ──────────────────────────────────────────────────── */
-var scrim = document.getElementById('scrim'), dlg = document.getElementById('dialog'), dlgLast = null;
-function openDlg(tittel, tekst, felt, onOk){
-  dlgLast = document.activeElement;
-  document.getElementById('dlgTitle').textContent = tittel;
-  document.getElementById('dlgBody').textContent = tekst;
-  document.getElementById('dlgField').hidden = !felt;
-  document.getElementById('dlgInput').value = '';
-  scrim.hidden = false; dlg.hidden = false;
-  dlg.dataset.ok = '';
-  document.getElementById('dlgOk').onclick = function(){
-    if (felt && !document.getElementById('dlgInput').value.trim()){
-      si('Begrunnelse er påkrevd for å overstyre.'); document.getElementById('dlgInput').focus(); return;
-    }
-    onOk(document.getElementById('dlgInput').value.trim()); closeDlg();
-  };
-  (felt ? document.getElementById('dlgInput') : document.getElementById('dlgOk')).focus();
-}
-function closeDlg(){
-  scrim.hidden = true; dlg.hidden = true;
-  var tl = dlg.querySelector('.testliste'); if (tl) tl.remove();
-  document.getElementById('dlgCancel').hidden = false;
-  document.getElementById('dlgOk').textContent = 'Bekreft';
-  if (dlgLast && dlgLast.focus) dlgLast.focus();
-}
-document.getElementById('dlgCancel').addEventListener('click', closeDlg);
-scrim.addEventListener('click', closeDlg);
-dlg.addEventListener('keydown', function(e){
-  if (e.key !== 'Tab') return;
-  var f = dlg.querySelectorAll('button, textarea, input');
-  var first = f[0], last = f[f.length-1];
-  if (e.shiftKey && document.activeElement === first){ e.preventDefault(); last.focus(); }
-  else if (!e.shiftKey && document.activeElement === last){ e.preventDefault(); first.focus(); }
-});
-document.addEventListener('keydown', function(e){
-  if (e.key === 'Escape' && !dlg.hidden){ e.preventDefault(); closeDlg(); }
-});
-
-/* ── Én ting nå: publiser. Endrer faktisk tilstand. ──────────── */
-var nowBtn = document.getElementById('nowBtn');
-nowBtn.addEventListener('click', function(){
-  if (published) return;
-  var m = maal();
-  var ghN = OKTER.filter(function(x){ return x.ghost; }).length;
-  openDlg('Publiser uke 32 til Øyvind',
-    'Øyvind ser planen i PlayerHQ med én gang. ' + m.okter + ' økter, ' + m.drills +
-    ' drills, ' + tid(m.treningMin) + ' trening' +
-    (m.turneringMin ? ' og ' + tid(m.turneringMin) + ' turnering' : '') +
-    '. Du kan endre etterpå — da får han varsel om at planen er endret.' +
-    (ghN ? ' NB: ' + ghN + ' composer-utkast følger ikke med før de bekreftes.' : ''),
-    false, function(){
-      published = true;
-      nowBtn.className = 'btn ink';
-      nowBtn.textContent = 'Publisert 09:12 · se diff';
-      si('Uke 32 er publisert til Øyvind. Planen er nå synlig i PlayerHQ.');
-      toast('Publisert til Øyvind');
-    });
-});
-
-document.getElementById('backThread').addEventListener('click', function(){
-  window.location.href = 'agencyos-konsoll-desktop.html';
-});
-
-/* ── Ankomst fra tråden ──────────────────────────────────────────
-   Konsoll sender ?agent=1 (agenten skriver utkastet) eller ?agent=0
-   (du bygger selv). Uten parameter er Workbench åpnet direkte fra rail-en.
-   Dette er den lenkede overgangen chat → verktøy — ikke en beskrivelse. */
-(function ankomst(){
-  var p = new URLSearchParams(location.search);
-  if (!p.has('agent')) return;
-  var banner = document.createElement('div');
-  banner.className = 'ankomst';
-  if (p.get('agent') === '1'){
-    banner.innerHTML = '<span class="eyebrow">fra tråden</span>' +
-      '<span>Agenten skriver utkastet for uke 32. Du ser arbeidet i Caddie-fanen — ' +
-      'ingenting publiseres før du trykker på det.</span>';
-    inspTab = 'caddie';
-    si('Kom fra tråden. Agenten skriver utkastet. Forslaget ligger i Caddie-fanen.');
-  } else {
-    banner.innerHTML = '<span class="eyebrow">fra tråden</span>' +
-      '<span>Du bygger uke 32 selv. Biblioteket til venstre, drills i inspektøren. ' +
-      'Vil du likevel ha hjelp, ligger agenten i Caddie-fanen.</span>';
-    inspTab = 'okt';
-    si('Kom fra tråden. Du bygger planen selv.');
-  }
-  var lukk = document.createElement('button');
-  lukk.className = 'btn sm'; lukk.textContent = 'Skjul';
-  lukk.dataset.odId = 'wb-ankomst-lukk';
-  lukk.addEventListener('click', function(){ banner.remove(); });
-  banner.appendChild(lukk);
-  document.querySelector('.kpis').insertAdjacentElement('afterend', banner);
-  renderAll();
 })();
-
-/* ── Tema: lys default, mørk som toggle ──────────────────────── */
-var KEY = 'akhq-theme-agencyos';
-var saved = localStorage.getItem(KEY);
-if (saved) document.documentElement.dataset.theme = saved;
-document.getElementById('themeBtn').addEventListener('click', function(){
-  var next = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
-  document.documentElement.dataset.theme = next;
-  localStorage.setItem(KEY, next);
-  this.setAttribute('aria-label', next === 'dark' ? 'Bytt til lys modus' : 'Bytt til mørk modus');
-});
-
-document.getElementById('cxGo').addEventListener('click', cxLag);
-document.getElementById('cxInput').addEventListener('keydown', function(e){
-  if (e.key === 'Enter'){ e.preventDefault(); cxLag(); }
-});
-CX_EKS.forEach(function(t, i){
-  var c = el('button', 'chip sm', t);
-  c.type = 'button';
-  c.dataset.odId = 'wb-cx-eks-' + i;
-  c.addEventListener('click', function(){
-    document.getElementById('cxInput').value = t;
-    cxLag();
-  });
-  document.getElementById('cxEks').appendChild(c);
-});
-
-document.getElementById('proToggle').addEventListener('click', function(){
-  var on = this.getAttribute('aria-pressed') === 'true';
-  this.setAttribute('aria-pressed', String(!on));
-  toast(on ? 'Standard-modus' : 'Pro-modus: årsplan, belastning og TrackMan-parametre');
-});
-
-renderAll();
-})();
-
 </script>
 </body>
 </html>

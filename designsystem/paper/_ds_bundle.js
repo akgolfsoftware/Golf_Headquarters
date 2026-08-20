@@ -1,4 +1,4 @@
-/* @ds-bundle: {"format":4,"namespace":"AKGolfHQClaudePaper_605a48","components":[{"name":"Button","sourcePath":"components/actions/Button.jsx"},{"name":"Chip","sourcePath":"components/actions/Chip.jsx"},{"name":"FAB","sourcePath":"components/actions/FAB.jsx"},{"name":"OneThingNow","sourcePath":"components/actions/OneThingNow.jsx"},{"name":"AgendaRow","sourcePath":"components/calendar/AgendaRow.jsx"},{"name":"BudgetBar","sourcePath":"components/calendar/BudgetBar.jsx"},{"name":"DayStrip","sourcePath":"components/calendar/DayStrip.jsx"},{"name":"MaanedKalender","sourcePath":"components/calendar/MaanedKalender.jsx"},{"name":"Periodeplan","sourcePath":"components/calendar/Periodeplan.jsx"},{"name":"SessionCard","sourcePath":"components/calendar/SessionCard.jsx"},{"name":"Tidslinje","sourcePath":"components/calendar/Tidslinje.jsx"},{"name":"TimeGrid","sourcePath":"components/calendar/TimeGrid.jsx"},{"name":"UkeKalender","sourcePath":"components/calendar/UkeKalender.jsx"},{"name":"VISNINGER","sourcePath":"components/calendar/VisningsVelger.jsx"},{"name":"VisningsVelger","sourcePath":"components/calendar/VisningsVelger.jsx"},{"name":"YearTimeline","sourcePath":"components/calendar/YearTimeline.jsx"},{"name":"Region","sourcePath":"components/data/viz.jsx"},{"name":"AiRecap","sourcePath":"components/data/AiRecap.jsx"},{"name":"AiTipCard","sourcePath":"components/data/AiTipCard.jsx"},{"name":"DataPreview","sourcePath":"components/data/DataPreview.jsx"},{"name":"DataTable","sourcePath":"components/data/DataTable.jsx"},{"name":"KpiCard","sourcePath":"components/data/KpiCard.jsx"},{"name":"KpiStripe","sourcePath":"components/data/KpiStripe.jsx"},{"name":"NowNext","sourcePath":"components/data/NowNext.jsx"},{"name":"StatusCircleRow","sourcePath":"components/data/StatusCircleRow.jsx"},{"name":"AkseFordelingsBar","sourcePath":"components/datavis/AkseFordelingsBar.jsx"},{"name":"BarChart","sourcePath":"components/datavis/BarChart.jsx"},{"name":"CompareChart","sourcePath":"components/datavis/CompareChart.jsx"},{"name":"Heatmap","sourcePath":"components/datavis/Heatmap.jsx"},{"name":"KategoriFjell","sourcePath":"components/datavis/KategoriFjell.jsx"},{"name":"LengdeAvvik","sourcePath":"components/datavis/LengdeAvvik.jsx"},{"name":"LoadChart","sourcePath":"components/datavis/LoadChart.jsx"},{"name":"PPositionRail","sourcePath":"components/datavis/PPositionRail.jsx"},{"name":"PyramideFasett","sourcePath":"components/datavis/PyramideFasett.jsx"},{"name":"AKFormelChip","sourcePath":"components/domene/AKFormelChip.jsx"},{"name":"BenchmarkBadge","sourcePath":"components/domene/BenchmarkBadge.jsx"},{"name":"DiffKort","sourcePath":"components/domene/DiffKort.jsx"},{"name":"FleksMerke","sourcePath":"components/domene/FleksMerke.jsx"},{"name":"LFASER","sourcePath":"components/domene/LFaseBadge.jsx"},{"name":"LFaseBadge","sourcePath":"components/domene/LFaseBadge.jsx"},{"name":"LiveBar","sourcePath":"components/domene/LiveBar.jsx"},{"name":"LiveStatus","sourcePath":"components/domene/LiveStatus.jsx"},{"name":"NivaStige","sourcePath":"components/domene/NivaStige.jsx"},{"name":"OektKort","sourcePath":"components/domene/OektKort.jsx"},{"name":"SpillerKort","sourcePath":"components/domene/SpillerKort.jsx"},{"name":"TurneringNedtelling","sourcePath":"components/domene/TurneringNedtelling.jsx"},{"name":"VelvaereKort","sourcePath":"components/domene/VelvaereKort.jsx"},{"name":"Banner","sourcePath":"components/feedback/Banner.jsx"},{"name":"TONES","sourcePath":"components/feedback/Callout.jsx"},{"name":"Callout","sourcePath":"components/feedback/Callout.jsx"},{"name":"EmptyState","sourcePath":"components/feedback/EmptyState.jsx"},{"name":"Skeleton","sourcePath":"components/feedback/Skeleton.jsx"},{"name":"AK_STRUKTUR","sourcePath":"components/forms/AkFormelVelger.jsx"},{"name":"AK_MOTORIKK","sourcePath":"components/forms/AkFormelVelger.jsx"},{"name":"AK_BELASTNING","sourcePath":"components/forms/AkFormelVelger.jsx"},{"name":"AK_PRESS","sourcePath":"components/forms/AkFormelVelger.jsx"},{"name":"AK_P_POSISJONER","sourcePath":"components/forms/AkFormelVelger.jsx"},{"name":"AkFormelVelger","sourcePath":"components/forms/AkFormelVelger.jsx"},{"name":"AkFormelLinje","sourcePath":"components/forms/AkFormelVelger.jsx"},{"name":"Checkbox","sourcePath":"components/forms/Checkbox.jsx"},{"name":"CodeInput","sourcePath":"components/forms/CodeInput.jsx"},{"name":"Combobox","sourcePath":"components/forms/Combobox.jsx"},{"name":"DatePicker","sourcePath":"components/forms/DatePicker.jsx"},{"name":"FieldMessage","sourcePath":"components/forms/FieldMessage.jsx"},{"name":"FormField","sourcePath":"components/forms/FormField.jsx"},{"name":"Radio","sourcePath":"components/forms/Radio.jsx"},{"name":"RadioGroup","sourcePath":"components/forms/Radio.jsx"},{"name":"SearchField","sourcePath":"components/forms/SearchField.jsx"},{"name":"SegmentControl","sourcePath":"components/forms/SegmentControl.jsx"},{"name":"Select","sourcePath":"components/forms/Select.jsx"},{"name":"Slider","sourcePath":"components/forms/Slider.jsx"},{"name":"TextInput","sourcePath":"components/forms/TextInput.jsx"},{"name":"Textarea","sourcePath":"components/forms/Textarea.jsx"},{"name":"Toggle","sourcePath":"components/forms/Toggle.jsx"},{"name":"DiagnoseKort","sourcePath":"components/golfdata/DiagnoseKort.jsx"},{"name":"KategoriKravKort","sourcePath":"components/golfdata/KategoriKravKort.jsx"},{"name":"LaunchWindowKort","sourcePath":"components/golfdata/LaunchWindowKort.jsx"},{"name":"NesteFokusKort","sourcePath":"components/golfdata/NesteFokusKort.jsx"},{"name":"PuttModellKort","sourcePath":"components/golfdata/PuttModellKort.jsx"},{"name":"Scorekort","sourcePath":"components/golfdata/Scorekort.jsx"},{"name":"SgTotalKort","sourcePath":"components/golfdata/SgTotalKort.jsx"},{"name":"SlagLekkasjeKart","sourcePath":"components/golfdata/SlagLekkasjeKart.jsx"},{"name":"SpillerTilstandKort","sourcePath":"components/golfdata/SpillerTilstandKort.jsx"},{"name":"StrikeSmashKort","sourcePath":"components/golfdata/StrikeSmashKort.jsx"},{"name":"TigerFiveKort","sourcePath":"components/golfdata/TigerFiveKort.jsx"},{"name":"DispersionMap","sourcePath":"components/golfviz/DispersionMap.jsx"},{"name":"GappingChart","sourcePath":"components/golfviz/GappingChart.jsx"},{"name":"HoleStrip","sourcePath":"components/golfviz/HoleStrip.jsx"},{"name":"PuttLab","sourcePath":"components/golfviz/PuttLab.jsx"},{"name":"PyramidProgress","sourcePath":"components/golfviz/PyramidProgress.jsx"},{"name":"SgBar","sourcePath":"components/golfviz/SgBreakdown.jsx"},{"name":"SgBreakdown","sourcePath":"components/golfviz/SgBreakdown.jsx"},{"name":"SkillRadarLive","sourcePath":"components/golfviz/SkillRadarLive.jsx"},{"name":"Sparkline","sourcePath":"components/golfviz/Sparkline.jsx"},{"name":"TrendBand","sourcePath":"components/golfviz/TrendBand.jsx"},{"name":"Accordion","sourcePath":"components/layout/Accordion.jsx"},{"name":"CardGrid","sourcePath":"components/layout/CardGrid.jsx"},{"name":"Divider","sourcePath":"components/layout/Divider.jsx"},{"name":"FeaturedCard","sourcePath":"components/layout/FeaturedCard.jsx"},{"name":"FilterPills","sourcePath":"components/layout/FilterPills.jsx"},{"name":"KanbanKolonne","sourcePath":"components/layout/KanbanKolonne.jsx"},{"name":"KeyValueGrid","sourcePath":"components/layout/KeyValueGrid.jsx"},{"name":"ListGroup","sourcePath":"components/layout/ListGroup.jsx"},{"name":"ListRow","sourcePath":"components/layout/ListRow.jsx"},{"name":"PageHeader","sourcePath":"components/layout/PageHeader.jsx"},{"name":"Pagination","sourcePath":"components/layout/Pagination.jsx"},{"name":"Panel","sourcePath":"components/layout/Panel.jsx"},{"name":"SectionHeader","sourcePath":"components/layout/SectionHeader.jsx"},{"name":"Stepper","sourcePath":"components/layout/Stepper.jsx"},{"name":"StickyActionBar","sourcePath":"components/layout/StickyActionBar.jsx"},{"name":"Breadcrumbs","sourcePath":"components/navigation/Breadcrumbs.jsx"},{"name":"RailIcons","sourcePath":"components/navigation/Icon.jsx"},{"name":"Icon","sourcePath":"components/navigation/Icon.jsx"},{"name":"QuickLinkBar","sourcePath":"components/navigation/QuickLinkBar.jsx"},{"name":"Rail","sourcePath":"components/navigation/Rail.jsx"},{"name":"SkipLink","sourcePath":"components/navigation/SkipLink.jsx"},{"name":"SpillerGruppeVeksler","sourcePath":"components/navigation/SpillerGruppeVeksler.jsx"},{"name":"TabBar","sourcePath":"components/navigation/TabBar.jsx"},{"name":"Tabs","sourcePath":"components/navigation/Tabs.jsx"},{"name":"TabPanel","sourcePath":"components/navigation/Tabs.jsx"},{"name":"ThemeToggle","sourcePath":"components/navigation/ThemeToggle.jsx"},{"name":"Topbar","sourcePath":"components/navigation/Topbar.jsx"},{"name":"BottomSheet","sourcePath":"components/overlays/BottomSheet.jsx"},{"name":"ConfirmDialog","sourcePath":"components/overlays/ConfirmDialog.jsx"},{"name":"Drawer","sourcePath":"components/overlays/Drawer.jsx"},{"name":"DropdownMenu","sourcePath":"components/overlays/DropdownMenu.jsx"},{"name":"HjelpPopover","sourcePath":"components/overlays/HjelpPopover.jsx"},{"name":"Modal","sourcePath":"components/overlays/Modal.jsx"},{"name":"Popover","sourcePath":"components/overlays/Popover.jsx"},{"name":"Toast","sourcePath":"components/overlays/Toast.jsx"},{"name":"Tooltip","sourcePath":"components/overlays/Tooltip.jsx"},{"name":"Avatar","sourcePath":"components/primitives/Avatar.jsx"},{"name":"SectionLabel","sourcePath":"components/primitives/SectionLabel.jsx"},{"name":"StatusBadge","sourcePath":"components/primitives/StatusBadge.jsx"},{"name":"DotMatrix","sourcePath":"components/progress/DotMatrix.jsx"},{"name":"GoalProgress","sourcePath":"components/progress/GoalProgress.jsx"},{"name":"PercentileGauge","sourcePath":"components/progress/PercentileGauge.jsx"},{"name":"PersonalBest","sourcePath":"components/progress/PersonalBest.jsx"},{"name":"ProgramLadder","sourcePath":"components/progress/ProgramLadder.jsx"},{"name":"ProgressBar","sourcePath":"components/progress/ProgressBar.jsx"},{"name":"ScoreGauge","sourcePath":"components/progress/ScoreGauge.jsx"},{"name":"ProvenanceDisclosure","sourcePath":"components/queue/ProvenanceDisclosure.jsx"},{"name":"QueueCard","sourcePath":"components/queue/QueueCard.jsx"},{"name":"CommandPalette","sourcePath":"components/shell/CommandPalette.jsx"},{"name":"Composer","sourcePath":"components/shell/Composer.jsx"},{"name":"MeldingsTraad","sourcePath":"components/shell/MeldingsTraad.jsx"},{"name":"StatusBar","sourcePath":"components/shell/StatusBar.jsx"},{"name":"KolleStatKort","sourcePath":"components/trackman/KolleStatKort.jsx"},{"name":"TrackmanSammendrag","sourcePath":"components/trackman/TrackmanSammendrag.jsx"},{"name":"TrajectoryPlot","sourcePath":"components/trackman/TrajectoryPlot.jsx"},{"name":"PositionMarker","sourcePath":"components/video/PositionMarker.jsx"},{"name":"VideoScrubber","sourcePath":"components/video/VideoScrubber.jsx"}],"sourceHashes":{"components/actions/Button.jsx":"d761dee18370","components/actions/Chip.jsx":"b9f50ab9586c","components/actions/FAB.jsx":"fae9e58f4f32","components/actions/OneThingNow.jsx":"87c91b5515bd","components/calendar/AgendaRow.jsx":"5053fcbf3b90","components/calendar/BudgetBar.jsx":"4ddb49c2f9d3","components/calendar/DayStrip.jsx":"ca15d796fc5b","components/calendar/MaanedKalender.jsx":"23e8b7bc3e40","components/calendar/Periodeplan.jsx":"20ed93cac7b1","components/calendar/SessionCard.jsx":"84ccd38d4298","components/calendar/Tidslinje.jsx":"a5fd9df6b748","components/calendar/TimeGrid.jsx":"3470a5716fc8","components/calendar/UkeKalender.jsx":"55735fca6972","components/calendar/VisningsVelger.jsx":"798e872a7b5e","components/calendar/YearTimeline.jsx":"81cc62a00918","components/calendar/viz.jsx":"4716f3177234","components/data/AiRecap.jsx":"52616f6c8cf7","components/data/AiTipCard.jsx":"de4ee37b5c0b","components/data/DataPreview.jsx":"a4acaf6c39b6","components/data/DataTable.jsx":"0bf29f3ee192","components/data/KpiCard.jsx":"3481abeb22bb","components/data/KpiStripe.jsx":"60e08bcf1576","components/data/NowNext.jsx":"87a298fe492d","components/data/StatusCircleRow.jsx":"c241eb83f3d2","components/data/viz.jsx":"88552b0bbb07","components/datavis/AkseFordelingsBar.jsx":"4ea8a1ce70ed","components/datavis/BarChart.jsx":"ae56d234a194","components/datavis/CompareChart.jsx":"f4b2d87bdb6e","components/datavis/Heatmap.jsx":"b3df57eb23f9","components/datavis/KategoriFjell.jsx":"9acf589521e7","components/datavis/LengdeAvvik.jsx":"e735bf1e8a2d","components/datavis/LoadChart.jsx":"6b7cf141b60e","components/datavis/PPositionRail.jsx":"0288c174e1ee","components/datavis/PyramideFasett.jsx":"2c95808caaef","components/datavis/viz.jsx":"4716f3177234","components/domene/AKFormelChip.jsx":"801ca842cebd","components/domene/BenchmarkBadge.jsx":"f6c6e8d7caee","components/domene/DiffKort.jsx":"c29af5dff366","components/domene/FleksMerke.jsx":"e38982c4f87d","components/domene/LFaseBadge.jsx":"07a915461c95","components/domene/LiveBar.jsx":"0e04aaa4ed42","components/domene/LiveStatus.jsx":"cd8e6611d95f","components/domene/NivaStige.jsx":"944ee1d92d90","components/domene/OektKort.jsx":"effcdc4f5cc1","components/domene/SpillerKort.jsx":"8ba0c43ea140","components/domene/TurneringNedtelling.jsx":"bd5e5e8d3d7e","components/domene/VelvaereKort.jsx":"b12bbb4822bd","components/domene/viz.jsx":"4716f3177234","components/feedback/Banner.jsx":"fe673f6d5dc3","components/feedback/Callout.jsx":"a247b2642666","components/feedback/EmptyState.jsx":"ecc0bf87d7f8","components/feedback/Skeleton.jsx":"9a92cbcc6f16","components/forms/AkFormelVelger.jsx":"56a097a2608a","components/forms/Checkbox.jsx":"a61f39b57719","components/forms/CodeInput.jsx":"4cf0188dd7b9","components/forms/Combobox.jsx":"9e21617c04e1","components/forms/DatePicker.jsx":"ffcb0f7ef83b","components/forms/FieldMessage.jsx":"0673bcb79d78","components/forms/FormField.jsx":"0a1969748c20","components/forms/Radio.jsx":"1bd2f6e785eb","components/forms/SearchField.jsx":"e7ed28d608ca","components/forms/SegmentControl.jsx":"36112d6ba924","components/forms/Select.jsx":"2ce722c7d401","components/forms/Slider.jsx":"7b0dc8133f87","components/forms/TextInput.jsx":"a143a26ac490","components/forms/Textarea.jsx":"ee303252d1a6","components/forms/Toggle.jsx":"e85d032e120b","components/golfdata/DiagnoseKort.jsx":"fccce2f11634","components/golfdata/KategoriKravKort.jsx":"c1135a46cb5d","components/golfdata/LaunchWindowKort.jsx":"af1d2cb81447","components/golfdata/NesteFokusKort.jsx":"56d437ffeb80","components/golfdata/PuttModellKort.jsx":"e3d8d9f3429e","components/golfdata/Scorekort.jsx":"5e7de3d858e2","components/golfdata/SgTotalKort.jsx":"3ad382842287","components/golfdata/SlagLekkasjeKart.jsx":"bb4ee1d39ec4","components/golfdata/SpillerTilstandKort.jsx":"5fd2720b65a6","components/golfdata/StrikeSmashKort.jsx":"8082fad50ee9","components/golfdata/TigerFiveKort.jsx":"2bd96d3681df","components/golfdata/viz.jsx":"4716f3177234","components/golfviz/DispersionMap.jsx":"a4d79b9f44f8","components/golfviz/GappingChart.jsx":"da5d841bb0c3","components/golfviz/HoleStrip.jsx":"60683f28e530","components/golfviz/PuttLab.jsx":"46fc6c3a45ee","components/golfviz/PyramidProgress.jsx":"6ca56d9e6771","components/golfviz/SgBreakdown.jsx":"70657fd12e7a","components/golfviz/SkillRadarLive.jsx":"54ff1b6d0380","components/golfviz/Sparkline.jsx":"b872d951f4ab","components/golfviz/TrendBand.jsx":"9a2a2507e72d","components/golfviz/viz.jsx":"4716f3177234","components/layout/Accordion.jsx":"7fa7e7eeb3ba","components/layout/CardGrid.jsx":"6ae62ab90343","components/layout/Divider.jsx":"9cb9a7a11500","components/layout/FeaturedCard.jsx":"917f7262f3ab","components/layout/FilterPills.jsx":"18609e681ba4","components/layout/KanbanKolonne.jsx":"0040b7c85ded","components/layout/KeyValueGrid.jsx":"f3422a8e414e","components/layout/ListGroup.jsx":"d9ed3db05798","components/layout/ListRow.jsx":"18a6b9749d2e","components/layout/PageHeader.jsx":"3e3b7c5e0b70","components/layout/Pagination.jsx":"cdbc739c36be","components/layout/Panel.jsx":"49e1bc1e7976","components/layout/SectionHeader.jsx":"d07692798089","components/layout/Stepper.jsx":"67a2ea28c34b","components/layout/StickyActionBar.jsx":"64b9b1cb71e7","components/navigation/Breadcrumbs.jsx":"8c5aa64ec284","components/navigation/Icon.jsx":"0c54466ab50d","components/navigation/QuickLinkBar.jsx":"af4b86518b38","components/navigation/Rail.jsx":"4079e95bad4e","components/navigation/SkipLink.jsx":"2b5e9a927c77","components/navigation/SpillerGruppeVeksler.jsx":"6c8455f02a69","components/navigation/TabBar.jsx":"926fced4d11a","components/navigation/Tabs.jsx":"c8d7c671fdaf","components/navigation/ThemeToggle.jsx":"58ee8ade2098","components/navigation/Topbar.jsx":"1f0cacacc8fe","components/overlays/BottomSheet.jsx":"511abb3ed927","components/overlays/ConfirmDialog.jsx":"2e91b43f520e","components/overlays/Drawer.jsx":"897872ddab3e","components/overlays/DropdownMenu.jsx":"9f95898556ae","components/overlays/HjelpPopover.jsx":"2a432d3c5f0a","components/overlays/Modal.jsx":"cd6ea1cacde2","components/overlays/Popover.jsx":"3cb2ebaa5a0f","components/overlays/Toast.jsx":"7b82aaa22a6d","components/overlays/Tooltip.jsx":"1dc79844eb9f","components/overlays/overlay-focus.jsx":"62fe89a8f0ea","components/primitives/Avatar.jsx":"e518b932dca2","components/primitives/SectionLabel.jsx":"645cef000902","components/primitives/StatusBadge.jsx":"596f98551907","components/progress/DotMatrix.jsx":"91f139b099d2","components/progress/GoalProgress.jsx":"dba0c2f9f8d0","components/progress/PercentileGauge.jsx":"200c18233c68","components/progress/PersonalBest.jsx":"e284af0852d6","components/progress/ProgramLadder.jsx":"a7fd380c517b","components/progress/ProgressBar.jsx":"a984b86575c0","components/progress/ScoreGauge.jsx":"6a9de0ef623d","components/progress/viz.jsx":"4716f3177234","components/queue/ProvenanceDisclosure.jsx":"8d29be5a28da","components/queue/QueueCard.jsx":"bc0b2df2f8ff","components/shell/CommandPalette.jsx":"d2965e89f402","components/shell/Composer.jsx":"e0c0f8d7d0b3","components/shell/MeldingsTraad.jsx":"5cf660a5824e","components/shell/StatusBar.jsx":"2820fd53a71f","components/trackman/KolleStatKort.jsx":"c7a1aae58c0f","components/trackman/TrackmanSammendrag.jsx":"c65cc05389af","components/trackman/TrajectoryPlot.jsx":"b85bfebb5e5f","components/trackman/viz.jsx":"4716f3177234","components/video/PositionMarker.jsx":"d56ba5462728","components/video/VideoScrubber.jsx":"7aa5db46e86a","design_handoff_rutefasit_agenticos/designsystem-paper/fase2/agencyos/w4-demo.js":"999df15f0aeb","export/design-zip/fase2/agencyos/w4-demo.js":"999df15f0aeb","export/design-zip/fase2/felles/w5-demo.js":"bd3a2ba1b3b1","export/design-zip/fase2/playerhq/w3-demo.js":"550e73b39f05","fase2/agencyos/w4-demo.js":"999df15f0aeb","fase2/felles/w5-demo.js":"bd3a2ba1b3b1","fase2/playerhq/w3-demo.js":"550e73b39f05","guidelines/lagsjekk.mjs":"bfa0acc8c09d"},"inlinedExternals":[],"unexposedExports":[{"name":"analyserFil","sourcePath":"guidelines/lagsjekk.mjs"},{"name":"delferdighetsListe","sourcePath":"components/forms/AkFormelVelger.jsx"},{"name":"delta","sourcePath":"components/data/viz.jsx"},{"name":"ensureCss","sourcePath":"components/data/viz.jsx"},{"name":"finnDuplikater","sourcePath":"guidelines/lagsjekk.mjs"},{"name":"finnUdeklarerte","sourcePath":"guidelines/lagsjekk.mjs"},{"name":"finnUgyldige","sourcePath":"guidelines/lagsjekk.mjs"},{"name":"focusablesIn","sourcePath":"components/overlays/overlay-focus.jsx"},{"name":"formelSlots","sourcePath":"components/forms/AkFormelVelger.jsx"},{"name":"formelStreng","sourcePath":"components/forms/AkFormelVelger.jsx"},{"name":"harPPosisjon","sourcePath":"components/forms/AkFormelVelger.jsx"},{"name":"initialsFrom","sourcePath":"components/primitives/Avatar.jsx"},{"name":"isTopLayer","sourcePath":"components/overlays/overlay-focus.jsx"},{"name":"nf","sourcePath":"components/data/viz.jsx"},{"name":"nfi","sourcePath":"components/data/viz.jsx"},{"name":"omradeObjekt","sourcePath":"components/forms/AkFormelVelger.jsx"},{"name":"pEkspandert","sourcePath":"components/forms/AkFormelVelger.jsx"},{"name":"samleDeklarasjoner","sourcePath":"guidelines/lagsjekk.mjs"},{"name":"sg","sourcePath":"components/data/viz.jsx"},{"name":"ukenummer","sourcePath":"components/forms/DatePicker.jsx"},{"name":"useOverlayLayer","sourcePath":"components/overlays/overlay-focus.jsx"},{"name":"useRovingKeys","sourcePath":"components/overlays/overlay-focus.jsx"},{"name":"vurder","sourcePath":"guidelines/lagsjekk.mjs"}]} */
+/* @ds-bundle: {"format":4,"namespace":"AKGolfHQClaudePaper_605a48","components":[{"name":"Button","sourcePath":"components/actions/Button.jsx"},{"name":"Chip","sourcePath":"components/actions/Chip.jsx"},{"name":"FAB","sourcePath":"components/actions/FAB.jsx"},{"name":"OneThingNow","sourcePath":"components/actions/OneThingNow.jsx"},{"name":"AgendaRow","sourcePath":"components/calendar/AgendaRow.jsx"},{"name":"BudgetBar","sourcePath":"components/calendar/BudgetBar.jsx"},{"name":"DayStrip","sourcePath":"components/calendar/DayStrip.jsx"},{"name":"MaanedKalender","sourcePath":"components/calendar/MaanedKalender.jsx"},{"name":"Periodeplan","sourcePath":"components/calendar/Periodeplan.jsx"},{"name":"SessionCard","sourcePath":"components/calendar/SessionCard.jsx"},{"name":"Tidslinje","sourcePath":"components/calendar/Tidslinje.jsx"},{"name":"TimeGrid","sourcePath":"components/calendar/TimeGrid.jsx"},{"name":"UkeKalender","sourcePath":"components/calendar/UkeKalender.jsx"},{"name":"VISNINGER","sourcePath":"components/calendar/VisningsVelger.jsx"},{"name":"VisningsVelger","sourcePath":"components/calendar/VisningsVelger.jsx"},{"name":"YearTimeline","sourcePath":"components/calendar/YearTimeline.jsx"},{"name":"Region","sourcePath":"components/data/viz.jsx"},{"name":"AiRecap","sourcePath":"components/data/AiRecap.jsx"},{"name":"AiTipCard","sourcePath":"components/data/AiTipCard.jsx"},{"name":"DataPreview","sourcePath":"components/data/DataPreview.jsx"},{"name":"DataTable","sourcePath":"components/data/DataTable.jsx"},{"name":"KpiCard","sourcePath":"components/data/KpiCard.jsx"},{"name":"KpiStripe","sourcePath":"components/data/KpiStripe.jsx"},{"name":"NowNext","sourcePath":"components/data/NowNext.jsx"},{"name":"StatusCircleRow","sourcePath":"components/data/StatusCircleRow.jsx"},{"name":"AkseFordelingsBar","sourcePath":"components/datavis/AkseFordelingsBar.jsx"},{"name":"BarChart","sourcePath":"components/datavis/BarChart.jsx"},{"name":"CompareChart","sourcePath":"components/datavis/CompareChart.jsx"},{"name":"Heatmap","sourcePath":"components/datavis/Heatmap.jsx"},{"name":"KategoriFjell","sourcePath":"components/datavis/KategoriFjell.jsx"},{"name":"LengdeAvvik","sourcePath":"components/datavis/LengdeAvvik.jsx"},{"name":"LoadChart","sourcePath":"components/datavis/LoadChart.jsx"},{"name":"PPositionRail","sourcePath":"components/datavis/PPositionRail.jsx"},{"name":"PyramideFasett","sourcePath":"components/datavis/PyramideFasett.jsx"},{"name":"AKFormelChip","sourcePath":"components/domene/AKFormelChip.jsx"},{"name":"BenchmarkBadge","sourcePath":"components/domene/BenchmarkBadge.jsx"},{"name":"DiffKort","sourcePath":"components/domene/DiffKort.jsx"},{"name":"FleksMerke","sourcePath":"components/domene/FleksMerke.jsx"},{"name":"LFASER","sourcePath":"components/domene/LFaseBadge.jsx"},{"name":"LFaseBadge","sourcePath":"components/domene/LFaseBadge.jsx"},{"name":"LiveBar","sourcePath":"components/domene/LiveBar.jsx"},{"name":"LiveStatus","sourcePath":"components/domene/LiveStatus.jsx"},{"name":"NivaStige","sourcePath":"components/domene/NivaStige.jsx"},{"name":"OektKort","sourcePath":"components/domene/OektKort.jsx"},{"name":"SpillerKort","sourcePath":"components/domene/SpillerKort.jsx"},{"name":"TurneringNedtelling","sourcePath":"components/domene/TurneringNedtelling.jsx"},{"name":"VelvaereKort","sourcePath":"components/domene/VelvaereKort.jsx"},{"name":"Banner","sourcePath":"components/feedback/Banner.jsx"},{"name":"TONES","sourcePath":"components/feedback/Callout.jsx"},{"name":"Callout","sourcePath":"components/feedback/Callout.jsx"},{"name":"EmptyState","sourcePath":"components/feedback/EmptyState.jsx"},{"name":"Skeleton","sourcePath":"components/feedback/Skeleton.jsx"},{"name":"AK_STRUKTUR","sourcePath":"components/forms/AkFormelVelger.jsx"},{"name":"AK_MOTORIKK","sourcePath":"components/forms/AkFormelVelger.jsx"},{"name":"AK_BELASTNING","sourcePath":"components/forms/AkFormelVelger.jsx"},{"name":"AK_PRESS","sourcePath":"components/forms/AkFormelVelger.jsx"},{"name":"AK_P_POSISJONER","sourcePath":"components/forms/AkFormelVelger.jsx"},{"name":"AkFormelVelger","sourcePath":"components/forms/AkFormelVelger.jsx"},{"name":"AkFormelLinje","sourcePath":"components/forms/AkFormelVelger.jsx"},{"name":"Checkbox","sourcePath":"components/forms/Checkbox.jsx"},{"name":"CodeInput","sourcePath":"components/forms/CodeInput.jsx"},{"name":"Combobox","sourcePath":"components/forms/Combobox.jsx"},{"name":"DatePicker","sourcePath":"components/forms/DatePicker.jsx"},{"name":"FieldMessage","sourcePath":"components/forms/FieldMessage.jsx"},{"name":"FormField","sourcePath":"components/forms/FormField.jsx"},{"name":"Radio","sourcePath":"components/forms/Radio.jsx"},{"name":"RadioGroup","sourcePath":"components/forms/Radio.jsx"},{"name":"SearchField","sourcePath":"components/forms/SearchField.jsx"},{"name":"SegmentControl","sourcePath":"components/forms/SegmentControl.jsx"},{"name":"Select","sourcePath":"components/forms/Select.jsx"},{"name":"Slider","sourcePath":"components/forms/Slider.jsx"},{"name":"TextInput","sourcePath":"components/forms/TextInput.jsx"},{"name":"Textarea","sourcePath":"components/forms/Textarea.jsx"},{"name":"Toggle","sourcePath":"components/forms/Toggle.jsx"},{"name":"DiagnoseKort","sourcePath":"components/golfdata/DiagnoseKort.jsx"},{"name":"KategoriKravKort","sourcePath":"components/golfdata/KategoriKravKort.jsx"},{"name":"LaunchWindowKort","sourcePath":"components/golfdata/LaunchWindowKort.jsx"},{"name":"NesteFokusKort","sourcePath":"components/golfdata/NesteFokusKort.jsx"},{"name":"PuttModellKort","sourcePath":"components/golfdata/PuttModellKort.jsx"},{"name":"Scorekort","sourcePath":"components/golfdata/Scorekort.jsx"},{"name":"SgTotalKort","sourcePath":"components/golfdata/SgTotalKort.jsx"},{"name":"SlagLekkasjeKart","sourcePath":"components/golfdata/SlagLekkasjeKart.jsx"},{"name":"SpillerTilstandKort","sourcePath":"components/golfdata/SpillerTilstandKort.jsx"},{"name":"StrikeSmashKort","sourcePath":"components/golfdata/StrikeSmashKort.jsx"},{"name":"TigerFiveKort","sourcePath":"components/golfdata/TigerFiveKort.jsx"},{"name":"DispersionMap","sourcePath":"components/golfviz/DispersionMap.jsx"},{"name":"GappingChart","sourcePath":"components/golfviz/GappingChart.jsx"},{"name":"HoleStrip","sourcePath":"components/golfviz/HoleStrip.jsx"},{"name":"PuttLab","sourcePath":"components/golfviz/PuttLab.jsx"},{"name":"PyramidProgress","sourcePath":"components/golfviz/PyramidProgress.jsx"},{"name":"SgBar","sourcePath":"components/golfviz/SgBreakdown.jsx"},{"name":"SgBreakdown","sourcePath":"components/golfviz/SgBreakdown.jsx"},{"name":"SkillRadarLive","sourcePath":"components/golfviz/SkillRadarLive.jsx"},{"name":"Sparkline","sourcePath":"components/golfviz/Sparkline.jsx"},{"name":"TrendBand","sourcePath":"components/golfviz/TrendBand.jsx"},{"name":"Accordion","sourcePath":"components/layout/Accordion.jsx"},{"name":"CardGrid","sourcePath":"components/layout/CardGrid.jsx"},{"name":"Divider","sourcePath":"components/layout/Divider.jsx"},{"name":"FeaturedCard","sourcePath":"components/layout/FeaturedCard.jsx"},{"name":"FilterPills","sourcePath":"components/layout/FilterPills.jsx"},{"name":"KanbanKolonne","sourcePath":"components/layout/KanbanKolonne.jsx"},{"name":"KeyValueGrid","sourcePath":"components/layout/KeyValueGrid.jsx"},{"name":"ListGroup","sourcePath":"components/layout/ListGroup.jsx"},{"name":"ListRow","sourcePath":"components/layout/ListRow.jsx"},{"name":"PageHeader","sourcePath":"components/layout/PageHeader.jsx"},{"name":"Pagination","sourcePath":"components/layout/Pagination.jsx"},{"name":"Panel","sourcePath":"components/layout/Panel.jsx"},{"name":"SectionHeader","sourcePath":"components/layout/SectionHeader.jsx"},{"name":"Stepper","sourcePath":"components/layout/Stepper.jsx"},{"name":"StickyActionBar","sourcePath":"components/layout/StickyActionBar.jsx"},{"name":"Breadcrumbs","sourcePath":"components/navigation/Breadcrumbs.jsx"},{"name":"RailIcons","sourcePath":"components/navigation/Icon.jsx"},{"name":"Icon","sourcePath":"components/navigation/Icon.jsx"},{"name":"QuickLinkBar","sourcePath":"components/navigation/QuickLinkBar.jsx"},{"name":"Rail","sourcePath":"components/navigation/Rail.jsx"},{"name":"SkipLink","sourcePath":"components/navigation/SkipLink.jsx"},{"name":"SpillerGruppeVeksler","sourcePath":"components/navigation/SpillerGruppeVeksler.jsx"},{"name":"TabBar","sourcePath":"components/navigation/TabBar.jsx"},{"name":"Tabs","sourcePath":"components/navigation/Tabs.jsx"},{"name":"TabPanel","sourcePath":"components/navigation/Tabs.jsx"},{"name":"ThemeToggle","sourcePath":"components/navigation/ThemeToggle.jsx"},{"name":"Topbar","sourcePath":"components/navigation/Topbar.jsx"},{"name":"BottomSheet","sourcePath":"components/overlays/BottomSheet.jsx"},{"name":"ConfirmDialog","sourcePath":"components/overlays/ConfirmDialog.jsx"},{"name":"Drawer","sourcePath":"components/overlays/Drawer.jsx"},{"name":"DropdownMenu","sourcePath":"components/overlays/DropdownMenu.jsx"},{"name":"HjelpPopover","sourcePath":"components/overlays/HjelpPopover.jsx"},{"name":"Modal","sourcePath":"components/overlays/Modal.jsx"},{"name":"Popover","sourcePath":"components/overlays/Popover.jsx"},{"name":"Toast","sourcePath":"components/overlays/Toast.jsx"},{"name":"Tooltip","sourcePath":"components/overlays/Tooltip.jsx"},{"name":"Avatar","sourcePath":"components/primitives/Avatar.jsx"},{"name":"SectionLabel","sourcePath":"components/primitives/SectionLabel.jsx"},{"name":"StatusBadge","sourcePath":"components/primitives/StatusBadge.jsx"},{"name":"DotMatrix","sourcePath":"components/progress/DotMatrix.jsx"},{"name":"GoalProgress","sourcePath":"components/progress/GoalProgress.jsx"},{"name":"PercentileGauge","sourcePath":"components/progress/PercentileGauge.jsx"},{"name":"PersonalBest","sourcePath":"components/progress/PersonalBest.jsx"},{"name":"ProgramLadder","sourcePath":"components/progress/ProgramLadder.jsx"},{"name":"ProgressBar","sourcePath":"components/progress/ProgressBar.jsx"},{"name":"ScoreGauge","sourcePath":"components/progress/ScoreGauge.jsx"},{"name":"ProvenanceDisclosure","sourcePath":"components/queue/ProvenanceDisclosure.jsx"},{"name":"QueueCard","sourcePath":"components/queue/QueueCard.jsx"},{"name":"CommandPalette","sourcePath":"components/shell/CommandPalette.jsx"},{"name":"Composer","sourcePath":"components/shell/Composer.jsx"},{"name":"MeldingsTraad","sourcePath":"components/shell/MeldingsTraad.jsx"},{"name":"StatusBar","sourcePath":"components/shell/StatusBar.jsx"},{"name":"KolleStatKort","sourcePath":"components/trackman/KolleStatKort.jsx"},{"name":"TrackmanSammendrag","sourcePath":"components/trackman/TrackmanSammendrag.jsx"},{"name":"TrajectoryPlot","sourcePath":"components/trackman/TrajectoryPlot.jsx"},{"name":"PositionMarker","sourcePath":"components/video/PositionMarker.jsx"},{"name":"VideoScrubber","sourcePath":"components/video/VideoScrubber.jsx"}],"sourceHashes":{"components/actions/Button.jsx":"d761dee18370","components/actions/Chip.jsx":"b9f50ab9586c","components/actions/FAB.jsx":"fae9e58f4f32","components/actions/OneThingNow.jsx":"87c91b5515bd","components/calendar/AgendaRow.jsx":"5053fcbf3b90","components/calendar/BudgetBar.jsx":"635793c26297","components/calendar/DayStrip.jsx":"ca15d796fc5b","components/calendar/MaanedKalender.jsx":"23e8b7bc3e40","components/calendar/Periodeplan.jsx":"20ed93cac7b1","components/calendar/SessionCard.jsx":"84ccd38d4298","components/calendar/Tidslinje.jsx":"a5fd9df6b748","components/calendar/TimeGrid.jsx":"646936b22e99","components/calendar/UkeKalender.jsx":"55735fca6972","components/calendar/VisningsVelger.jsx":"798e872a7b5e","components/calendar/YearTimeline.jsx":"81cc62a00918","components/calendar/viz.jsx":"4716f3177234","components/data/AiRecap.jsx":"52616f6c8cf7","components/data/AiTipCard.jsx":"de4ee37b5c0b","components/data/DataPreview.jsx":"a4acaf6c39b6","components/data/DataTable.jsx":"0bf29f3ee192","components/data/KpiCard.jsx":"3481abeb22bb","components/data/KpiStripe.jsx":"60e08bcf1576","components/data/NowNext.jsx":"87a298fe492d","components/data/StatusCircleRow.jsx":"c241eb83f3d2","components/data/viz.jsx":"88552b0bbb07","components/datavis/AkseFordelingsBar.jsx":"4ea8a1ce70ed","components/datavis/BarChart.jsx":"ae56d234a194","components/datavis/CompareChart.jsx":"f4b2d87bdb6e","components/datavis/Heatmap.jsx":"b3df57eb23f9","components/datavis/KategoriFjell.jsx":"9acf589521e7","components/datavis/LengdeAvvik.jsx":"e735bf1e8a2d","components/datavis/LoadChart.jsx":"6b7cf141b60e","components/datavis/PPositionRail.jsx":"0288c174e1ee","components/datavis/PyramideFasett.jsx":"2c95808caaef","components/datavis/viz.jsx":"4716f3177234","components/domene/AKFormelChip.jsx":"801ca842cebd","components/domene/BenchmarkBadge.jsx":"f6c6e8d7caee","components/domene/DiffKort.jsx":"c29af5dff366","components/domene/FleksMerke.jsx":"e38982c4f87d","components/domene/LFaseBadge.jsx":"07a915461c95","components/domene/LiveBar.jsx":"0e04aaa4ed42","components/domene/LiveStatus.jsx":"cd8e6611d95f","components/domene/NivaStige.jsx":"944ee1d92d90","components/domene/OektKort.jsx":"effcdc4f5cc1","components/domene/SpillerKort.jsx":"8ba0c43ea140","components/domene/TurneringNedtelling.jsx":"bd5e5e8d3d7e","components/domene/VelvaereKort.jsx":"b12bbb4822bd","components/domene/viz.jsx":"4716f3177234","components/feedback/Banner.jsx":"fe673f6d5dc3","components/feedback/Callout.jsx":"a247b2642666","components/feedback/EmptyState.jsx":"ecc0bf87d7f8","components/feedback/Skeleton.jsx":"9a92cbcc6f16","components/forms/AkFormelVelger.jsx":"56a097a2608a","components/forms/Checkbox.jsx":"a61f39b57719","components/forms/CodeInput.jsx":"4cf0188dd7b9","components/forms/Combobox.jsx":"9e21617c04e1","components/forms/DatePicker.jsx":"ffcb0f7ef83b","components/forms/FieldMessage.jsx":"0673bcb79d78","components/forms/FormField.jsx":"0a1969748c20","components/forms/Radio.jsx":"1bd2f6e785eb","components/forms/SearchField.jsx":"e7ed28d608ca","components/forms/SegmentControl.jsx":"36112d6ba924","components/forms/Select.jsx":"2ce722c7d401","components/forms/Slider.jsx":"7b0dc8133f87","components/forms/TextInput.jsx":"a143a26ac490","components/forms/Textarea.jsx":"ee303252d1a6","components/forms/Toggle.jsx":"e85d032e120b","components/golfdata/DiagnoseKort.jsx":"fccce2f11634","components/golfdata/KategoriKravKort.jsx":"c1135a46cb5d","components/golfdata/LaunchWindowKort.jsx":"af1d2cb81447","components/golfdata/NesteFokusKort.jsx":"56d437ffeb80","components/golfdata/PuttModellKort.jsx":"e3d8d9f3429e","components/golfdata/Scorekort.jsx":"5e7de3d858e2","components/golfdata/SgTotalKort.jsx":"3ad382842287","components/golfdata/SlagLekkasjeKart.jsx":"bb4ee1d39ec4","components/golfdata/SpillerTilstandKort.jsx":"5fd2720b65a6","components/golfdata/StrikeSmashKort.jsx":"8082fad50ee9","components/golfdata/TigerFiveKort.jsx":"2bd96d3681df","components/golfdata/viz.jsx":"4716f3177234","components/golfviz/DispersionMap.jsx":"a4d79b9f44f8","components/golfviz/GappingChart.jsx":"da5d841bb0c3","components/golfviz/HoleStrip.jsx":"60683f28e530","components/golfviz/PuttLab.jsx":"46fc6c3a45ee","components/golfviz/PyramidProgress.jsx":"6ca56d9e6771","components/golfviz/SgBreakdown.jsx":"70657fd12e7a","components/golfviz/SkillRadarLive.jsx":"54ff1b6d0380","components/golfviz/Sparkline.jsx":"b872d951f4ab","components/golfviz/TrendBand.jsx":"9a2a2507e72d","components/golfviz/viz.jsx":"4716f3177234","components/layout/Accordion.jsx":"7fa7e7eeb3ba","components/layout/CardGrid.jsx":"6ae62ab90343","components/layout/Divider.jsx":"9cb9a7a11500","components/layout/FeaturedCard.jsx":"917f7262f3ab","components/layout/FilterPills.jsx":"18609e681ba4","components/layout/KanbanKolonne.jsx":"0040b7c85ded","components/layout/KeyValueGrid.jsx":"f3422a8e414e","components/layout/ListGroup.jsx":"d9ed3db05798","components/layout/ListRow.jsx":"18a6b9749d2e","components/layout/PageHeader.jsx":"3e3b7c5e0b70","components/layout/Pagination.jsx":"cdbc739c36be","components/layout/Panel.jsx":"49e1bc1e7976","components/layout/SectionHeader.jsx":"d07692798089","components/layout/Stepper.jsx":"67a2ea28c34b","components/layout/StickyActionBar.jsx":"64b9b1cb71e7","components/navigation/Breadcrumbs.jsx":"8c5aa64ec284","components/navigation/Icon.jsx":"0c54466ab50d","components/navigation/QuickLinkBar.jsx":"af4b86518b38","components/navigation/Rail.jsx":"313bc9c59fb5","components/navigation/SkipLink.jsx":"2b5e9a927c77","components/navigation/SpillerGruppeVeksler.jsx":"6c8455f02a69","components/navigation/TabBar.jsx":"926fced4d11a","components/navigation/Tabs.jsx":"c8d7c671fdaf","components/navigation/ThemeToggle.jsx":"58ee8ade2098","components/navigation/Topbar.jsx":"1f0cacacc8fe","components/overlays/BottomSheet.jsx":"511abb3ed927","components/overlays/ConfirmDialog.jsx":"2e91b43f520e","components/overlays/Drawer.jsx":"897872ddab3e","components/overlays/DropdownMenu.jsx":"9f95898556ae","components/overlays/HjelpPopover.jsx":"2a432d3c5f0a","components/overlays/Modal.jsx":"cd6ea1cacde2","components/overlays/Popover.jsx":"3cb2ebaa5a0f","components/overlays/Toast.jsx":"7b82aaa22a6d","components/overlays/Tooltip.jsx":"1dc79844eb9f","components/overlays/overlay-focus.jsx":"62fe89a8f0ea","components/primitives/Avatar.jsx":"e518b932dca2","components/primitives/SectionLabel.jsx":"645cef000902","components/primitives/StatusBadge.jsx":"596f98551907","components/progress/DotMatrix.jsx":"91f139b099d2","components/progress/GoalProgress.jsx":"dba0c2f9f8d0","components/progress/PercentileGauge.jsx":"200c18233c68","components/progress/PersonalBest.jsx":"e284af0852d6","components/progress/ProgramLadder.jsx":"a7fd380c517b","components/progress/ProgressBar.jsx":"a984b86575c0","components/progress/ScoreGauge.jsx":"6a9de0ef623d","components/progress/viz.jsx":"4716f3177234","components/queue/ProvenanceDisclosure.jsx":"8d29be5a28da","components/queue/QueueCard.jsx":"bc0b2df2f8ff","components/shell/CommandPalette.jsx":"d2965e89f402","components/shell/Composer.jsx":"e0c0f8d7d0b3","components/shell/MeldingsTraad.jsx":"5cf660a5824e","components/shell/StatusBar.jsx":"2820fd53a71f","components/trackman/KolleStatKort.jsx":"c7a1aae58c0f","components/trackman/TrackmanSammendrag.jsx":"c65cc05389af","components/trackman/TrajectoryPlot.jsx":"b85bfebb5e5f","components/trackman/viz.jsx":"4716f3177234","components/video/PositionMarker.jsx":"d56ba5462728","components/video/VideoScrubber.jsx":"7aa5db46e86a","fase2/agencyos/w4-demo.js":"999df15f0aeb","fase2/felles/w5-demo.js":"bd3a2ba1b3b1","fase2/playerhq/w3-demo.js":"550e73b39f05","guidelines/lagsjekk.mjs":"bfa0acc8c09d","jarvis/jarvis-base.js":"83790d4f3b9b"},"inlinedExternals":[],"unexposedExports":[{"name":"analyserFil","sourcePath":"guidelines/lagsjekk.mjs"},{"name":"delferdighetsListe","sourcePath":"components/forms/AkFormelVelger.jsx"},{"name":"delta","sourcePath":"components/data/viz.jsx"},{"name":"ensureCss","sourcePath":"components/data/viz.jsx"},{"name":"finnDuplikater","sourcePath":"guidelines/lagsjekk.mjs"},{"name":"finnUdeklarerte","sourcePath":"guidelines/lagsjekk.mjs"},{"name":"finnUgyldige","sourcePath":"guidelines/lagsjekk.mjs"},{"name":"focusablesIn","sourcePath":"components/overlays/overlay-focus.jsx"},{"name":"formelSlots","sourcePath":"components/forms/AkFormelVelger.jsx"},{"name":"formelStreng","sourcePath":"components/forms/AkFormelVelger.jsx"},{"name":"harPPosisjon","sourcePath":"components/forms/AkFormelVelger.jsx"},{"name":"initialsFrom","sourcePath":"components/primitives/Avatar.jsx"},{"name":"isTopLayer","sourcePath":"components/overlays/overlay-focus.jsx"},{"name":"nf","sourcePath":"components/data/viz.jsx"},{"name":"nfi","sourcePath":"components/data/viz.jsx"},{"name":"omradeObjekt","sourcePath":"components/forms/AkFormelVelger.jsx"},{"name":"pEkspandert","sourcePath":"components/forms/AkFormelVelger.jsx"},{"name":"samleDeklarasjoner","sourcePath":"guidelines/lagsjekk.mjs"},{"name":"sg","sourcePath":"components/data/viz.jsx"},{"name":"ukenummer","sourcePath":"components/forms/DatePicker.jsx"},{"name":"useOverlayLayer","sourcePath":"components/overlays/overlay-focus.jsx"},{"name":"useRovingKeys","sourcePath":"components/overlays/overlay-focus.jsx"},{"name":"vurder","sourcePath":"guidelines/lagsjekk.mjs"}]} */
 
 (() => {
 
@@ -368,8 +368,10 @@ const med = (n, e) => tall(n) + "\u00A0" + e;
    «overstyr med begrunnelse» — aldri som sperre. Sperren er teknisk billig
    og faglig feil: coachen vet ting modellen ikke vet.
 
-   Komponenten regner ikke. Den viser tall konsumenten har regnet, fordi
-   invariantene bor i CANON og ikke i et UI-bibliotek. */
+   Komponenten regner ikke. Den viser tall konsumenten har regnet.
+
+   18.08.2026: treningsreglene er låst opp. Uten min/max finnes det ingen
+   ramme å fylle — da tegnes verken spor eller skala, bare tall og fordeling. */
 function BudgetBar({
   hours = 0,
   min,
@@ -381,6 +383,7 @@ function BudgetBar({
   onOverride,
   dataOdId = "budsjett"
 }) {
+  const harVindu = min !== undefined || max !== undefined;
   const tak = Math.max(max || 0, hours) * 1.15 || 1;
   const pct = v => Math.max(0, Math.min(100, v / tak * 100));
   const over = max !== undefined && hours > max;
@@ -396,7 +399,7 @@ function BudgetBar({
     className: "akhq-bb-lab"
   }, "Ukevolum"), /*#__PURE__*/React.createElement("span", {
     className: "akhq-bb-sum"
-  }, med(hours, unit), min !== undefined && max !== undefined ? " av " + tall(min) + "–" + med(max, unit) : "")), /*#__PURE__*/React.createElement("div", {
+  }, med(hours, unit), min !== undefined && max !== undefined ? " av " + tall(min) + "–" + med(max, unit) : "")), harVindu && /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("div", {
     className: "akhq-bb-spor",
     role: "img",
     "aria-label": "Ukevolum " + tall(hours) + " " + unit + (min !== undefined ? ", periodens vindu " + tall(min) + " til " + tall(max) + " " + unit : "") + (over ? ", over taket" : under ? ", under minimum" : ", innenfor")
@@ -413,7 +416,7 @@ function BudgetBar({
     }
   })), /*#__PURE__*/React.createElement("div", {
     className: "akhq-bb-skala"
-  }, /*#__PURE__*/React.createElement("span", null, "0"), /*#__PURE__*/React.createElement("span", null, min !== undefined ? "min " + med(min, unit) : ""), /*#__PURE__*/React.createElement("span", null, max !== undefined ? "maks " + med(max, unit) : "")), distribution.length > 0 && /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("div", {
+  }, /*#__PURE__*/React.createElement("span", null, "0"), /*#__PURE__*/React.createElement("span", null, min !== undefined ? "min " + med(min, unit) : ""), /*#__PURE__*/React.createElement("span", null, max !== undefined ? "maks " + med(max, unit) : ""))), distribution.length > 0 && /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("div", {
     className: "akhq-bb-fordeling",
     role: "img",
     "aria-label": "Fordeling: " + distribution.map(d => d.area + " " + tall(d.hours) + " " + unit).join(", ")
@@ -1471,6 +1474,8 @@ __ds_scope.ensureCss("akhq-css-tg", `
 }
 @layer akhq-modifier{
 .akhq-tg--tall{--tg-h:720px}
+.akhq-tg-ev--kort{grid-auto-flow:column;grid-template-columns:auto minmax(0,1fr);align-content:center;align-items:baseline;gap:6px;padding-top:0;padding-bottom:0}
+.akhq-tg-ev--kort .akhq-tg-ev-title{white-space:nowrap;text-overflow:ellipsis}
 .akhq-tg--compact .akhq-tg-ev-title{font-size:11px}
 }`);
 const toMin = t => {
@@ -1608,7 +1613,7 @@ function TimeGrid({
       key: e.id ?? k,
       type: "button",
       onClick: onEventClick ? () => onEventClick(e) : undefined,
-      className: "akhq-tg-ev" + (e.kind === "free" ? " akhq-tg-ev--free" : ""),
+      className: "akhq-tg-ev" + (e.kind === "free" ? " akhq-tg-ev--free" : "") + (e.e - e.s < 45 ? " akhq-tg-ev--kort" : ""),
       "data-od-id": "cta-okt-" + (e.id ?? i + "-" + k),
       style: {
         top: e.s - min0 + "px",
@@ -8768,23 +8773,35 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
 const css = `
 @layer akhq-base, akhq-container, akhq-modifier;
 @layer akhq-base{
-.akhq-rail{--w:64px;width:var(--w);flex:none;background:var(--rail);border-right:1px solid color-mix(in srgb,var(--rail-on) 6%,transparent);display:flex;flex-direction:column;align-items:center;padding:var(--s4) 0 14px;gap:2px;position:sticky;top:0;height:100vh;height:100dvh;z-index:var(--z-rail);font-family:var(--ui);--logo-mark:var(--rail-on);--logo-dot:var(--accent)}
-.akhq-rail-brand{width:36px;height:36px;display:grid;place-items:center;margin-bottom:14px;flex:none}
-.akhq-rail-brand svg{width:26px;height:26px}
-.akhq-rail-item{--h:44px;--floor:0px;min-height:max(var(--h),var(--floor));width:48px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;padding:var(--s2) 0 6px;border-radius:var(--r);color:var(--rail-fg);background:transparent;border:0;text-decoration:none;cursor:pointer;transition:color var(--dur) var(--ease),background var(--dur) var(--ease);font-family:inherit}
-.akhq-rail-item span{font-family:var(--mono);font-size:9px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;line-height:1.1}
-.akhq-rail-item svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
-.akhq-rail-item:hover{color:var(--rail-on);background:color-mix(in srgb,var(--rail-on) 5%,transparent)}
-.akhq-rail-item:active{background:color-mix(in srgb,var(--rail-on) 8%,transparent)}
-.akhq-rail-item[aria-current=page]{color:var(--rail-on);background:color-mix(in srgb,var(--rail-on) 9%,transparent)}
+.akhq-rail{--w:232px;width:var(--w);flex:none;background:var(--soft);border-right:1px solid var(--border);display:flex;flex-direction:column;padding:var(--s5) var(--s3) 14px;gap:1px;position:sticky;top:0;height:100dvh;z-index:var(--z-rail);font-family:var(--ui);--logo-mark:var(--fg);--logo-dot:var(--accent)}
+.akhq-rail-brand{display:flex;align-items:center;gap:10px;padding:0 10px;margin-bottom:var(--s5);min-width:0}
+.akhq-rail-brand svg{width:24px;height:24px;flex:none}
+.akhq-rail-brand b{font-size:14px;font-weight:600;letter-spacing:-.01em;color:var(--fg);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.akhq-rail-sec{font-family:var(--mono);font-size:9.5px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--text-tertiary);padding:var(--s4) 10px 6px}
+.akhq-rail-item{--h:38px;--floor:0px;min-height:max(var(--h),var(--floor));width:100%;display:flex;align-items:center;gap:10px;padding:0 10px;border-radius:var(--r-sm);color:var(--muted);background:transparent;border:0;text-decoration:none;cursor:pointer;text-align:left;font-family:inherit;font-size:13.5px;font-weight:500;transition:color var(--dur) var(--ease),background var(--dur) var(--ease)}
+.akhq-rail-item svg{width:17px;height:17px;flex:none;stroke:currentColor;fill:none;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
+.akhq-rail-label{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.akhq-rail-item:hover{color:var(--fg);background:var(--soft-hover)}
+.akhq-rail-item:active{background:var(--border)}
+.akhq-rail-item[aria-current=page]{color:var(--fg);background:var(--surface);font-weight:600;box-shadow:0 1px 0 rgba(20,20,19,.04)}
 .akhq-rail-item:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
-.akhq-rail-spacer{flex:1;min-height:var(--s2)}
-.akhq-rail-avatar{width:32px;height:32px;border-radius:50%;border:1px solid color-mix(in srgb,var(--rail-on) 14%,transparent);background:color-mix(in srgb,var(--rail-on) 8%,transparent);color:var(--rail-on);display:grid;place-items:center;font-family:var(--mono);font-size:10px;font-weight:600;flex:none}
+.akhq-rail-spacer{flex:1;min-height:var(--s4)}
+.akhq-rail-me{display:flex;align-items:center;gap:10px;padding:10px;border-top:1px solid var(--border);min-width:0}
+.akhq-rail-avatar{width:28px;height:28px;border-radius:50%;background:var(--fg);color:var(--bg);display:grid;place-items:center;font-family:var(--mono);font-size:10px;font-weight:600;flex:none}
+.akhq-rail-me-t{display:flex;flex-direction:column;gap:1px;min-width:0}
+.akhq-rail-me-t b{font-size:12.5px;font-weight:600;color:var(--fg);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.akhq-rail-me-t span{font-family:var(--mono);font-size:9px;letter-spacing:.08em;text-transform:uppercase;color:var(--text-tertiary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 }
 @layer akhq-container{
-/* Skallkomponent: vindusbredde er RIKTIG her — railens bredde er en
+/* Skallkomponent: vindusbredde er RIKTIG her — sidemenyens bredde er en
    skallbeslutning, ikke en containertilpasning (beslutning 36). */
-@media(max-width:640px){.akhq-rail{--w:56px}.akhq-rail-item{width:44px}}
+@media(max-width:1080px){
+.akhq-rail{--w:64px;padding:var(--s4) var(--s2) 14px;align-items:center}
+.akhq-rail-brand{justify-content:center;padding:0}
+.akhq-rail-item{justify-content:center;padding:0;width:48px}
+.akhq-rail-brand b,.akhq-rail-label,.akhq-rail-sec,.akhq-rail-me-t{display:none}
+.akhq-rail-me{justify-content:center;padding:12px 0 0}
+}
 @media(pointer:coarse){.akhq-rail-item{--floor:48px}}
 /* Stand-in: coarse pointer kan ikke simuleres. Samme lag og vekt som
    spørringen over, slik at en modifikator som nuller gulvet vinner her
@@ -8819,31 +8836,47 @@ function Rail({
   current,
   onNavigate,
   initials = "AK",
+  title = "AgencyOS",
+  name = "Anders Kristiansen",
+  role = "AK Golf Group",
   dataOdId = "rail",
   ...rest
 }) {
+  let seen = null;
   return /*#__PURE__*/React.createElement("nav", _extends({
-    className: "akhq-rail rail",
+    className: "akhq-rail",
     "aria-label": "AgencyOS meny",
     "data-od-id": dataOdId
   }, rest), /*#__PURE__*/React.createElement("div", {
-    className: "akhq-rail-brand",
-    "aria-label": "AK Golf"
-  }, /*#__PURE__*/React.createElement(Logo, null)), items.map(it => /*#__PURE__*/React.createElement("button", {
-    type: "button",
-    key: it.id,
-    className: "akhq-rail-item",
-    "aria-current": it.id === current ? "page" : undefined,
-    "aria-label": it.label,
-    "data-od-id": "nav-" + it.id,
-    onClick: () => onNavigate && onNavigate(it.id)
-  }, it.icon, /*#__PURE__*/React.createElement("span", null, it.label))), /*#__PURE__*/React.createElement("div", {
+    className: "akhq-rail-brand"
+  }, /*#__PURE__*/React.createElement(Logo, null), /*#__PURE__*/React.createElement("b", null, title)), items.map(it => {
+    const head = it.section && it.section !== seen ? it.section : null;
+    if (it.section) seen = it.section;
+    return /*#__PURE__*/React.createElement(React.Fragment, {
+      key: it.id
+    }, head ? /*#__PURE__*/React.createElement("div", {
+      className: "akhq-rail-sec"
+    }, head) : null, /*#__PURE__*/React.createElement("button", {
+      type: "button",
+      className: "akhq-rail-item",
+      "aria-current": it.id === current ? "page" : undefined,
+      "aria-label": it.label,
+      "data-od-id": "nav-" + it.id,
+      onClick: () => onNavigate && onNavigate(it.id)
+    }, it.icon, /*#__PURE__*/React.createElement("span", {
+      className: "akhq-rail-label"
+    }, it.label)));
+  }), /*#__PURE__*/React.createElement("div", {
     className: "akhq-rail-spacer",
     "aria-hidden": "true"
   }), /*#__PURE__*/React.createElement("div", {
+    className: "akhq-rail-me"
+  }, /*#__PURE__*/React.createElement("div", {
     className: "akhq-rail-avatar",
-    "aria-label": "Profil: " + initials
-  }, initials));
+    "aria-hidden": "true"
+  }, initials), /*#__PURE__*/React.createElement("div", {
+    className: "akhq-rail-me-t"
+  }, /*#__PURE__*/React.createElement("b", null, name), /*#__PURE__*/React.createElement("span", null, role))));
 }
 Object.assign(__ds_scope, { Rail });
 })(); } catch (e) { __ds_ns.__errors.push({ path: "components/navigation/Rail.jsx", error: String((e && e.message) || e) }); }
@@ -12609,224 +12642,6 @@ function VideoScrubber({
 Object.assign(__ds_scope, { VideoScrubber });
 })(); } catch (e) { __ds_ns.__errors.push({ path: "components/video/VideoScrubber.jsx", error: String((e && e.message) || e) }); }
 
-// design_handoff_rutefasit_agenticos/designsystem-paper/fase2/agencyos/w4-demo.js
-try { (() => {
-(function () {
-  'use strict';
-
-  /* Delt demo-rigg for W4-wireframene: tilstandsbryter, faner, tema, brytere.
-     Alt merket data-demo-only fjernes ved integrasjon. */
-  var knapper = document.querySelectorAll('[data-tilstand]');
-  function sett(navn) {
-    document.querySelectorAll('[data-vis]').forEach(function (s) {
-      s.hidden = s.dataset.vis !== navn;
-    });
-    knapper.forEach(function (b) {
-      b.setAttribute('aria-pressed', String(b.dataset.tilstand === navn));
-    });
-    var live = document.getElementById('live');
-    if (live) live.textContent = 'Tilstand: ' + navn;
-  }
-  knapper.forEach(function (b) {
-    b.addEventListener('click', function () {
-      sett(b.dataset.tilstand);
-    });
-  });
-  if (knapper.length) sett(knapper[0].dataset.tilstand);
-  document.querySelectorAll('[data-faner]').forEach(function (gruppe) {
-    var faner = gruppe.querySelectorAll('.fane');
-    faner.forEach(function (f) {
-      f.addEventListener('click', function () {
-        faner.forEach(function (a) {
-          a.setAttribute('aria-selected', String(a === f));
-        });
-        var mål = f.dataset.fane;
-        document.querySelectorAll('[data-fanepanel]').forEach(function (p) {
-          p.hidden = p.dataset.fanepanel !== mål;
-        });
-      });
-    });
-  });
-  var KEY = 'akhq-theme-agencyos',
-    saved = null;
-  try {
-    saved = localStorage.getItem(KEY);
-  } catch (e) {}
-  if (saved) document.documentElement.dataset.theme = saved;
-  var tb = document.getElementById('themeBtn');
-  if (tb) tb.addEventListener('click', function () {
-    var next = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
-    document.documentElement.dataset.theme = next;
-    try {
-      localStorage.setItem(KEY, next);
-    } catch (e) {}
-    this.setAttribute('aria-label', next === 'dark' ? 'Bytt til lys modus' : 'Bytt til mørk modus');
-  });
-  document.querySelectorAll('.sw').forEach(function (s) {
-    s.addEventListener('click', function () {
-      this.setAttribute('aria-checked', this.getAttribute('aria-checked') === 'true' ? 'false' : 'true');
-    });
-  });
-})();
-})(); } catch (e) { __ds_ns.__errors.push({ path: "design_handoff_rutefasit_agenticos/designsystem-paper/fase2/agencyos/w4-demo.js", error: String((e && e.message) || e) }); }
-
-// export/design-zip/fase2/agencyos/w4-demo.js
-try { (() => {
-(function () {
-  'use strict';
-
-  /* Delt demo-rigg for W4-wireframene: tilstandsbryter, faner, tema, brytere.
-     Alt merket data-demo-only fjernes ved integrasjon. */
-  var knapper = document.querySelectorAll('[data-tilstand]');
-  function sett(navn) {
-    document.querySelectorAll('[data-vis]').forEach(function (s) {
-      s.hidden = s.dataset.vis !== navn;
-    });
-    knapper.forEach(function (b) {
-      b.setAttribute('aria-pressed', String(b.dataset.tilstand === navn));
-    });
-    var live = document.getElementById('live');
-    if (live) live.textContent = 'Tilstand: ' + navn;
-  }
-  knapper.forEach(function (b) {
-    b.addEventListener('click', function () {
-      sett(b.dataset.tilstand);
-    });
-  });
-  if (knapper.length) sett(knapper[0].dataset.tilstand);
-  document.querySelectorAll('[data-faner]').forEach(function (gruppe) {
-    var faner = gruppe.querySelectorAll('.fane');
-    faner.forEach(function (f) {
-      f.addEventListener('click', function () {
-        faner.forEach(function (a) {
-          a.setAttribute('aria-selected', String(a === f));
-        });
-        var mål = f.dataset.fane;
-        document.querySelectorAll('[data-fanepanel]').forEach(function (p) {
-          p.hidden = p.dataset.fanepanel !== mål;
-        });
-      });
-    });
-  });
-  var KEY = 'akhq-theme-agencyos',
-    saved = null;
-  try {
-    saved = localStorage.getItem(KEY);
-  } catch (e) {}
-  if (saved) document.documentElement.dataset.theme = saved;
-  var tb = document.getElementById('themeBtn');
-  if (tb) tb.addEventListener('click', function () {
-    var next = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
-    document.documentElement.dataset.theme = next;
-    try {
-      localStorage.setItem(KEY, next);
-    } catch (e) {}
-    this.setAttribute('aria-label', next === 'dark' ? 'Bytt til lys modus' : 'Bytt til mørk modus');
-  });
-  document.querySelectorAll('.sw').forEach(function (s) {
-    s.addEventListener('click', function () {
-      this.setAttribute('aria-checked', this.getAttribute('aria-checked') === 'true' ? 'false' : 'true');
-    });
-  });
-})();
-})(); } catch (e) { __ds_ns.__errors.push({ path: "export/design-zip/fase2/agencyos/w4-demo.js", error: String((e && e.message) || e) }); }
-
-// export/design-zip/fase2/felles/w5-demo.js
-try { (() => {
-(function () {
-  'use strict';
-
-  /* Delt demo-rigg for W5-wireframene: tilstandsbryter + tema.
-     Alt merket data-demo-only fjernes ved integrasjon. Marketing er primært lys —
-     tema-toggle finnes bare på produktflatene (auth/forelder/system). */
-  var knapper = document.querySelectorAll('[data-tilstand]');
-  function sett(navn) {
-    document.querySelectorAll('[data-vis]').forEach(function (s) {
-      s.hidden = s.dataset.vis !== navn;
-    });
-    knapper.forEach(function (b) {
-      b.setAttribute('aria-pressed', String(b.dataset.tilstand === navn));
-    });
-    var live = document.getElementById('live');
-    if (live) live.textContent = 'Tilstand: ' + navn;
-  }
-  knapper.forEach(function (b) {
-    b.addEventListener('click', function () {
-      sett(b.dataset.tilstand);
-    });
-  });
-  if (knapper.length) sett(knapper[0].dataset.tilstand);
-
-  /* Tema gjenopprettes KUN på flater som selv oppgir en temanøkkel. Marketing er
-     primært lys og har ingen nøkkel — uten denne porten arvet den PlayerHQs
-     lagrede mørke tema og rendret hele forsiden på blekk. */
-  var KEY = document.documentElement.dataset.temanokkel,
-    saved = null;
-  if (KEY) {
-    try {
-      saved = localStorage.getItem(KEY);
-    } catch (e) {}
-    if (saved) document.documentElement.dataset.theme = saved;
-  }
-  var tb = document.getElementById('themeBtn');
-  if (tb) tb.addEventListener('click', function () {
-    var next = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
-    document.documentElement.dataset.theme = next;
-    try {
-      if (KEY) localStorage.setItem(KEY, next);
-    } catch (e) {}
-    this.setAttribute('aria-label', next === 'dark' ? 'Bytt til lys modus' : 'Bytt til mørk modus');
-  });
-})();
-})(); } catch (e) { __ds_ns.__errors.push({ path: "export/design-zip/fase2/felles/w5-demo.js", error: String((e && e.message) || e) }); }
-
-// export/design-zip/fase2/playerhq/w3-demo.js
-try { (() => {
-(function () {
-  'use strict';
-
-  /* Delt demo-rigg for W3-wireframene: tilstandsbryter + tema. Alt merket
-     data-demo-only fjernes ved integrasjon. */
-  var knapper = document.querySelectorAll('[data-tilstand]');
-  function sett(navn) {
-    document.querySelectorAll('[data-vis]').forEach(function (s) {
-      s.hidden = s.dataset.vis !== navn;
-    });
-    knapper.forEach(function (b) {
-      b.setAttribute('aria-pressed', String(b.dataset.tilstand === navn));
-    });
-    var live = document.getElementById('live');
-    if (live) live.textContent = 'Tilstand: ' + navn;
-  }
-  knapper.forEach(function (b) {
-    b.addEventListener('click', function () {
-      sett(b.dataset.tilstand);
-    });
-  });
-  if (knapper.length) sett(knapper[0].dataset.tilstand);
-  var KEY = 'akhq-theme-playerhq',
-    saved = null;
-  try {
-    saved = localStorage.getItem(KEY);
-  } catch (e) {}
-  if (saved) document.documentElement.dataset.theme = saved;
-  var tb = document.getElementById('themeBtn');
-  if (tb) tb.addEventListener('click', function () {
-    var next = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
-    document.documentElement.dataset.theme = next;
-    try {
-      localStorage.setItem(KEY, next);
-    } catch (e) {}
-    this.setAttribute('aria-label', next === 'dark' ? 'Bytt til lys modus' : 'Bytt til mørk modus');
-  });
-  document.querySelectorAll('.sw').forEach(function (s) {
-    s.addEventListener('click', function () {
-      this.setAttribute('aria-checked', this.getAttribute('aria-checked') === 'true' ? 'false' : 'true');
-    });
-  });
-})();
-})(); } catch (e) { __ds_ns.__errors.push({ path: "export/design-zip/fase2/playerhq/w3-demo.js", error: String((e && e.message) || e) }); }
-
 // fase2/agencyos/w4-demo.js
 try { (() => {
 (function () {
@@ -13238,6 +13053,271 @@ function finnUdeklarerte(komponentKilder, deklarerte) {
  * av samme klasse som de tre rettede feilene. */
 Object.assign(__ds_scope, { analyserFil, finnDuplikater, finnUgyldige, vurder, samleDeklarasjoner, finnUdeklarerte });
 })(); } catch (e) { __ds_ns.__errors.push({ path: "guidelines/lagsjekk.mjs", error: String((e && e.message) || e) }); }
+
+// jarvis/jarvis-base.js
+try { (() => {
+/* ═══ Jarvis · /meg — delt oppførsel. Tema, artefakt, composer, ⌘K. ═══ */
+(function () {
+  var d = document,
+    b = d.body;
+  /* Tema — egen nøkkel for den personlige flaten */
+  var KEY = 'akhq-theme-meg',
+    root = d.documentElement;
+  try {
+    var t = localStorage.getItem(KEY);
+    if (t) root.setAttribute('data-theme', t);
+  } catch (e) {}
+  var tt = d.getElementById('themeToggle');
+  if (tt) tt.addEventListener('click', function () {
+    var n = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+    root.setAttribute('data-theme', n);
+    try {
+      localStorage.setItem(KEY, n);
+    } catch (e) {}
+  });
+  /* Artefakt: åpne/lukk med fokusretur (fokuskontrakt pkt 2+5) */
+  var art = d.getElementById('artifactPanel'),
+    qind = d.getElementById('qind'),
+    scrim = d.getElementById('artScrim'),
+    sist = null;
+  function openArt(fra) {
+    if (!art) return;
+    sist = fra || qind;
+    art.hidden = false;
+    b.classList.add('art-open');
+    if (qind) qind.setAttribute('aria-expanded', 'true');
+    var f = art.querySelector('button,[tabindex="-1"],a,input,textarea');
+    (f || art).focus();
+  }
+  function closeArt() {
+    if (!art) return;
+    b.classList.remove('art-open');
+    if (qind) qind.setAttribute('aria-expanded', 'false');
+    art.hidden = true;
+    if (sist && d.contains(sist)) sist.focus();else {
+      var p = d.querySelector('[data-od-id="panel-composer"] textarea');
+      if (p) p.focus();
+    }
+  }
+  window.JARVIS = {
+    openArt: openArt,
+    closeArt: closeArt
+  };
+  if (qind && art) qind.addEventListener('click', function () {
+    b.classList.contains('art-open') ? closeArt() : openArt(qind);
+  });
+  d.querySelectorAll('[data-open-art]').forEach(function (el) {
+    el.addEventListener('click', function () {
+      openArt(el);
+    });
+  });
+  var ac = d.getElementById('artClose');
+  if (ac) ac.addEventListener('click', closeArt);
+  if (scrim) scrim.addEventListener('click', closeArt);
+  /* Composer */
+  var ta = d.querySelector('.box textarea');
+  if (ta) {
+    ta.addEventListener('input', function () {
+      ta.style.height = 'auto';
+      ta.style.height = Math.min(ta.scrollHeight, 120) + 'px';
+    });
+    var send = d.getElementById('send');
+    function sendMsg() {
+      var v = ta.value.trim();
+      if (!v) return;
+      var turns = d.getElementById('turns');
+      if (!turns) return;
+      var el = d.createElement('article');
+      el.className = 'turn';
+      el.innerHTML = '<div class="you"><div class="av">AK</div><div class="msg"></div></div><div class="ai"><ul class="steps"><li><svg viewBox="0 0 24 24"><path d="M4 12l5 5 11-11"></path></svg>Notert<span class="t">nå</span></li></ul><p class="say">Mottatt — jeg tar det derfra og melder tilbake her.</p></div>';
+      el.querySelector('.msg').textContent = v;
+      turns.appendChild(el);
+      ta.value = '';
+      ta.style.height = 'auto';
+      var th = d.getElementById('thread');
+      if (th) th.scrollTop = th.scrollHeight;
+    }
+    if (send) send.addEventListener('click', sendMsg);
+    ta.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        sendMsg();
+      }
+    });
+  }
+  /* Mikrofon — ett trykk rett i opptak */
+  var mic = d.getElementById('mic');
+  if (mic) mic.addEventListener('click', function () {
+    var on = mic.getAttribute('aria-pressed') === 'true';
+    mic.setAttribute('aria-pressed', String(!on));
+    b.classList.toggle('rec', !on);
+    if (on && ta) {
+      ta.value = 'Hva sa Henrik om TrackMan-økten?';
+      ta.dispatchEvent(new Event('input'));
+      ta.focus();
+    }
+  });
+  /* Demo-brytere: grupper på data-demo, sider lytter på 'jarvis:demo' */
+  d.querySelectorAll('.state-switch').forEach(function (gr) {
+    gr.querySelectorAll('[data-demo]').forEach(function (ch) {
+      ch.addEventListener('click', function () {
+        gr.querySelectorAll('[data-demo]').forEach(function (x) {
+          x.setAttribute('aria-pressed', 'false');
+        });
+        ch.setAttribute('aria-pressed', 'true');
+        d.dispatchEvent(new CustomEvent('jarvis:demo', {
+          detail: ch.dataset.demo
+        }));
+      });
+    });
+  });
+  /* ⌘K-palett — fangst-verbene i nivå 1 (agent-flate) */
+  var CMDS = [{
+    t: 'Fang en oppgave',
+    u: 'meg-fangst.html?type=oppgave',
+    l: '1'
+  }, {
+    t: 'Fang en avtale',
+    u: 'meg-fangst.html?type=avtale',
+    l: '1'
+  }, {
+    t: 'Fang et notat',
+    u: 'meg-fangst.html?type=notat',
+    l: '1'
+  }, {
+    t: 'Husk til i morgen',
+    u: 'meg-fangst.html?type=husk',
+    l: '1'
+  }, {
+    t: 'Åpne saker',
+    u: 'meg-saker.html',
+    l: '1'
+  }, {
+    t: 'Dagen — tidslinje',
+    u: 'meg-dagen.html',
+    l: '1'
+  }, {
+    t: 'Morgenbriefen',
+    u: 'meg-morgenbrief.html',
+    l: '2'
+  }, {
+    t: 'Kveldsjournalen',
+    u: 'meg-kveldsjournal.html',
+    l: '2'
+  }, {
+    t: 'Kalender-vakten',
+    u: 'meg-kalendervakt.html',
+    l: '2'
+  }, {
+    t: 'Ukesreview',
+    u: 'meg-ukesreview.html',
+    l: '2'
+  }, {
+    t: 'Historikken — revisjonslogg',
+    u: 'meg-historikk.html',
+    l: '3'
+  }, {
+    t: 'Maskinrommet',
+    u: 'meg-maskinrom.html',
+    l: '3'
+  }, {
+    t: 'Innstillinger',
+    u: 'meg-innstillinger.html',
+    l: '3'
+  }, {
+    t: 'Til hjem (/meg)',
+    u: 'meg-hjem.html',
+    l: '1'
+  }];
+  var palOpenBtn = d.getElementById('palBtn'),
+    palWrap = null,
+    palTrigger = null;
+  function buildPal() {
+    palWrap = d.createElement('div');
+    palWrap.className = 'palwrap';
+    palWrap.hidden = true;
+    palWrap.innerHTML = '<div class="pal" role="dialog" aria-modal="true" aria-label="Kommandoer" data-od-id="panel-palett"><div class="pf"><svg class="ic" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"></circle><path d="M21 21l-4.3-4.3"></path></svg><input id="palInput" placeholder="Hva vil du gjøre?" aria-label="Søk i kommandoer"></div><div class="plist" id="palList" role="listbox"></div><div class="pfoot"><span>↑↓ velg</span><span>⏎ åpne</span><span>esc lukk</span></div></div>';
+    d.body.appendChild(palWrap);
+    var list = palWrap.querySelector('#palList'),
+      inp = palWrap.querySelector('#palInput'),
+      idx = 0,
+      vis = [];
+    function render(q) {
+      q = (q || '').toLowerCase();
+      list.innerHTML = '';
+      vis = [];
+      CMDS.forEach(function (c) {
+        if (q && c.t.toLowerCase().indexOf(q) < 0) return;
+        var btn = d.createElement('button');
+        btn.className = 'pitem';
+        btn.setAttribute('role', 'option');
+        btn.innerHTML = '<span></span><span class="lvl"></span>';
+        btn.firstChild.textContent = c.t;
+        btn.lastChild.textContent = 'nivå ' + c.l;
+        btn.addEventListener('click', function () {
+          location.href = c.u;
+        });
+        list.appendChild(btn);
+        vis.push(btn);
+      });
+      idx = 0;
+      mark();
+    }
+    function mark() {
+      vis.forEach(function (el, i) {
+        el.setAttribute('aria-selected', String(i === idx));
+      });
+    }
+    inp.addEventListener('input', function () {
+      render(inp.value);
+    });
+    inp.addEventListener('keydown', function (e) {
+      if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        idx = Math.min(idx + 1, vis.length - 1);
+        mark();
+      } else if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        idx = Math.max(idx - 1, 0);
+        mark();
+      } else if (e.key === 'Enter' && vis[idx]) {
+        vis[idx].click();
+      }
+    });
+    palWrap.addEventListener('click', function (e) {
+      if (e.target === palWrap) closePal();
+    });
+    render('');
+  }
+  function openPal(fra) {
+    if (!palWrap) buildPal();
+    palTrigger = fra || palOpenBtn;
+    palWrap.hidden = false;
+    if (palOpenBtn) palOpenBtn.setAttribute('aria-expanded', 'true');
+    var inp = palWrap.querySelector('#palInput');
+    inp.value = '';
+    inp.dispatchEvent(new Event('input'));
+    inp.focus();
+  }
+  function closePal() {
+    if (!palWrap || palWrap.hidden) return;
+    palWrap.hidden = true;
+    if (palOpenBtn) palOpenBtn.setAttribute('aria-expanded', 'false');
+    if (palTrigger && d.contains(palTrigger)) palTrigger.focus();
+  }
+  if (palOpenBtn) palOpenBtn.addEventListener('click', function () {
+    openPal(palOpenBtn);
+  });
+  d.addEventListener('keydown', function (e) {
+    if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
+      e.preventDefault();
+      palWrap && !palWrap.hidden ? closePal() : openPal(d.activeElement);
+    } else if (e.key === 'Escape') {
+      if (palWrap && !palWrap.hidden) closePal();else if (b.classList.contains('art-open')) closeArt();
+    }
+  });
+})();
+})(); } catch (e) { __ds_ns.__errors.push({ path: "jarvis/jarvis-base.js", error: String((e && e.message) || e) }); }
 
 __ds_ns.Button = __ds_scope.Button;
 

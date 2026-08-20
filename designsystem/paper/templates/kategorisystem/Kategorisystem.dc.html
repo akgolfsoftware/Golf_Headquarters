@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<!-- @template name="A–K Kategorisystem" description="Snittscore-basert kategoristige med full spillerprofil, tidsfordeling, SG-profil og testnivå." -->
+<helmet>
+  <script src="./ds-base.js"></script>
+  <style>
+    html,body{margin:0;padding:0}
+    @keyframes akreveal{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:translateY(0)}}
+    @keyframes akpulse{0%,100%{box-shadow:0 0 0 0 rgba(217,119,87,.5)}50%{box-shadow:0 0 0 9px rgba(217,119,87,0)}}
+  </style>
+</helmet>
+<div data-theme="{{ themeAttr }}" style="min-height:100vh;background:var(--bg);font-family:var(--font-sans);color:var(--fg);padding:56px 24px 96px">
+<div style="max-width:1120px;margin:0 auto">
+
+<div style="display:flex;justify-content:space-between;align-items:flex-end;gap:24px;flex-wrap:wrap">
+<div>
+<span style="font-family:var(--font-mono);font-size:10px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--accent-fg);display:block;margin-bottom:14px">AK Golf Intelligence</span>
+<h1 style="font-family:var(--font-sans);font-size:var(--text-display);font-weight:600;letter-spacing:-.02em;color:var(--fg);margin:0;line-height:1.12">A&ndash;K Kategorisystem<span style="font-family:var(--font-serif);font-style:italic;font-weight:400;color:var(--accent-fg)"> &mdash; reisen opp fjellet</span></h1>
+<p style="font-family:var(--font-serif);font-size:17px;line-height:1.6;color:var(--muted);margin:18px 0 0;max-width:62ch;text-wrap:pretty">Snittscore-basert stige fra verdenseliten til ny junior. Klikk en kategori for full profil &mdash; nivå, banevanskelighet, tidsfordeling, strokes&nbsp;gained, estimert testnivå og turneringsanbefaling.</p>
+</div>
+<div style="display:flex;align-items:center;gap:9px;font-family:var(--font-mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--text-tertiary);white-space:nowrap">
+<span style="width:6px;height:6px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)"></span>Alle tall er estimat
+</div>
+</div>
+
+<div style="margin-top:36px;background:var(--surface);border:1px solid var(--border);border-radius:var(--r-md);box-shadow:var(--shadow);overflow:hidden">
+
+<div style="display:grid;grid-template-columns:72px minmax(0,1fr) 128px 112px 92px 32px;gap:14px;align-items:center;padding:15px 24px;border-bottom:1px solid var(--hairline)">
+<span style="font-family:var(--font-mono);font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--text-tertiary);font-weight:600">Kat</span>
+<span style="font-family:var(--font-mono);font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--text-tertiary);font-weight:600">Nivå</span>
+<span style="font-family:var(--font-mono);font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--text-tertiary);font-weight:600">Snittscore</span>
+<span style="font-family:var(--font-mono);font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--text-tertiary);font-weight:600">Handicap</span>
+<span style="font-family:var(--font-mono);font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--text-tertiary);font-weight:600">Alder</span>
+<span></span>
+</div>
+
+<sc-for list="{{ cats }}" as="cat" hint-placeholder-count="11">
+<sc-if value="{{ cat.showSection }}" hint-placeholder-val="{{ false }}">
+<div style="padding:15px 24px 9px;display:flex;align-items:center;gap:12px;background:var(--soft)">
+<span style="font-family:var(--font-mono);font-size:9.5px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)">{{ cat.sectionLabel }}</span>
+<span style="flex:1;height:1px;background:var(--border)"></span>
+</div>
+</sc-if>
+
+<div data-cat="{{ cat.id }}" data-cat-row="{{ cat.id }}" onClick="{{ onRowClick }}" role="button" tabindex="0" style-hover="background:var(--soft)">
+<div style="display:grid;grid-template-columns:72px minmax(0,1fr) 128px 112px 92px 32px;gap:14px;align-items:center;padding:15px 24px;cursor:pointer;border-bottom:1px solid var(--border)">
+<sc-if value="{{ cat.isApex }}" hint-placeholder-val="{{ false }}"><span style="width:36px;height:36px;border-radius:8px;display:inline-flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-weight:700;font-size:15px;background:var(--accent);color:#141413">{{ cat.id }}</span></sc-if>
+<sc-if value="{{ cat.notApex }}" hint-placeholder-val="{{ true }}"><span style="width:36px;height:36px;border-radius:8px;display:inline-flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-weight:700;font-size:15px;background:var(--fg);color:var(--bg)">{{ cat.id }}</span></sc-if>
+<span style="display:flex;flex-direction:column;gap:2px;min-width:0">
+<span style="font-size:16.5px;font-weight:600;letter-spacing:-.01em;color:var(--fg)">{{ cat.niva }}</span>
+<span style="font-family:var(--font-serif);font-size:12.5px;color:var(--text-tertiary);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ cat.players }}</span>
+</span>
+<span style="font-family:var(--font-mono);font-variant-numeric:tabular-nums;font-size:15px;font-weight:600;color:var(--fg)">{{ cat.score }}</span>
+<span style="font-family:var(--font-mono);font-variant-numeric:tabular-nums;font-size:13px;color:var(--muted)">{{ cat.hcp }}</span>
+<span style="font-family:var(--font-mono);font-variant-numeric:tabular-nums;font-size:13px;color:var(--muted)">{{ cat.alder }}</span>
+<span style="display:flex;justify-content:flex-end;color:var(--text-tertiary)">
+<sc-if value="{{ cat.isOpen }}" hint-placeholder-val="{{ false }}"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="transform:rotate(90deg)"><path d="m9 18 6-6-6-6"></path></svg></sc-if>
+<sc-if value="{{ cat.notOpen }}" hint-placeholder-val="{{ true }}"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"></path></svg></sc-if>
+</span>
+</div>
+
+<sc-if value="{{ cat.isOpen }}" hint-placeholder-val="{{ false }}">
+<div style="padding:20px 24px 30px;background:var(--surface);border-bottom:1px solid var(--hairline);animation:akreveal var(--dur-slow) var(--ease)">
+<div style="display:flex;flex-direction:column">
+
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:34px;padding-bottom:24px;border-bottom:1px solid var(--border)">
+<div>
+<span style="font-family:var(--font-mono);font-size:9.5px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--accent-fg)">Nivå</span>
+<div style="font-size:21px;font-weight:600;letter-spacing:-.015em;color:var(--fg);margin-top:8px">{{ cat.niva }}</div>
+<p style="font-family:var(--font-serif);font-size:14px;line-height:1.6;color:var(--muted);margin:8px 0 0;text-wrap:pretty">{{ cat.players }}</p>
+<div style="font-family:var(--font-mono);font-size:10.5px;letter-spacing:.06em;color:var(--text-tertiary);margin-top:12px;line-height:1.7">{{ cat.tours }}</div>
+
+<div style="margin-top:20px;padding-top:16px;border-top:1px solid var(--border)">
+<span style="font-family:var(--font-mono);font-size:9.5px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)">Turneringsanbefaling</span>
+<div style="font-family:var(--font-mono);font-size:11.5px;font-weight:600;color:var(--fg);margin-top:8px;line-height:1.7">{{ cat.turRec.tur }}</div>
+<p style="font-family:var(--font-serif);font-size:13px;line-height:1.6;color:var(--muted);margin:7px 0 0;text-wrap:pretty">{{ cat.turRec.note }}</p>
+</div>
+
+<sc-if value="{{ cat.pgaNote }}" hint-placeholder-val="{{ false }}">
+<div style="margin-top:16px;padding:14px 16px;background:var(--accent-soft);border-left:2px solid var(--accent-deep);border-radius:0 var(--r-sm) var(--r-sm) 0">
+<span style="font-family:var(--font-mono);font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent-fg);font-weight:700;display:block;margin-bottom:6px">Husk</span>
+<p style="font-family:var(--font-serif);font-size:12.5px;line-height:1.65;color:var(--fg);margin:0;text-wrap:pretty">Snittscore 70 på <strong>PGA Tour</strong> er ikke det samme som snittscore 70 på norske baner. PGA Tour spilles på baner med CR 75&ndash;76+ mot verdens beste under turneringspress. En norsk snittscore 70 tilsvarer ca. +4 til +8 mot par på norsk mesterskapsoppsett.</p>
+</div>
+</sc-if>
+</div>
+
+<div>
+<span style="font-family:var(--font-mono);font-size:9.5px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)">Banevanskelighet</span>
+<div style="display:flex;gap:28px;margin-top:12px">
+<span style="display:flex;flex-direction:column;gap:4px">
+<span style="font-family:var(--font-mono);font-variant-numeric:tabular-nums;font-size:24px;font-weight:600;color:var(--fg);line-height:1">{{ cat.course.cr }}</span>
+<span style="font-family:var(--font-mono);font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--text-tertiary)">Course rating</span>
+</span>
+<span style="display:flex;flex-direction:column;gap:4px">
+<span style="font-family:var(--font-mono);font-variant-numeric:tabular-nums;font-size:24px;font-weight:600;color:var(--fg);line-height:1">{{ cat.course.slope }}</span>
+<span style="font-family:var(--font-mono);font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--text-tertiary)">Slope</span>
+</span>
+</div>
+<p style="font-family:var(--font-serif);font-size:13.5px;line-height:1.6;color:var(--fg);margin:16px 0 0;text-wrap:pretty">{{ cat.course.setup }}</p>
+<div style="font-family:var(--font-mono);font-size:10.5px;letter-spacing:.04em;color:var(--text-tertiary);margin-top:10px">{{ cat.course.venues }}</div>
+</div>
+</div>
+
+<div style="padding:24px 0;border-bottom:1px solid var(--border)">
+<div style="display:flex;align-items:baseline;gap:9px;margin-bottom:10px">
+<span style="font-family:var(--font-mono);font-size:9.5px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)">Anbefalt tidsfordeling — timer/år</span>
+<span style="font-family:var(--font-mono);font-size:9px;color:var(--text-tertiary)">klikk et nivå</span>
+</div>
+<p style="font-family:var(--font-serif);font-size:13.5px;line-height:1.7;color:var(--fg);margin:0 0 22px;max-width:70ch;border-left:2px solid var(--border);padding-left:14px;text-wrap:pretty">{{ cat.pyrNote }}</p>
+<div style="display:grid;grid-template-columns:minmax(340px,1fr) 320px;gap:34px;align-items:center">
+<div style="display:flex;flex-direction:column;align-items:center;gap:6px">
+<sc-if value="{{ selTurn }}" hint-placeholder-val="{{ true }}"><div data-lvl="turn" onClick="{{ onLevelClick }}" style="width:64%;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:space-between;padding:0 14px;cursor:pointer;background:#c6613f;color:#141413;border:1.5px solid #141413;box-shadow:0 0 0 3px rgba(217,119,87,.22)"><span style="font-size:13px;font-weight:600">Turnering</span><span style="display:flex;align-items:baseline;gap:6px;font-family:var(--font-mono);font-variant-numeric:tabular-nums;white-space:nowrap"><span style="font-size:14px;font-weight:600">{{ cat.lv.turn.hoursFmt }} t</span><span style="font-size:10px;opacity:.7">{{ cat.lv.turn.pct }} %</span></span></div></sc-if>
+<sc-if value="{{ offTurn }}" hint-placeholder-val="{{ false }}"><div data-lvl="turn" onClick="{{ onLevelClick }}" style="width:64%;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:space-between;padding:0 14px;cursor:pointer;background:#c6613f;color:#141413;border:1.5px solid transparent"><span style="font-size:13px;font-weight:600">Turnering</span><span style="display:flex;align-items:baseline;gap:6px;font-family:var(--font-mono);font-variant-numeric:tabular-nums;white-space:nowrap"><span style="font-size:14px;font-weight:600">{{ cat.lv.turn.hoursFmt }} t</span><span style="font-size:10px;opacity:.7">{{ cat.lv.turn.pct }} %</span></span></div></sc-if>
+<sc-if value="{{ selSpill }}" hint-placeholder-val="{{ false }}"><div data-lvl="spill" onClick="{{ onLevelClick }}" style="width:73%;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:space-between;padding:0 14px;cursor:pointer;background:#d97757;color:#141413;border:1.5px solid #141413;box-shadow:0 0 0 3px rgba(217,119,87,.22)"><span style="font-size:13px;font-weight:600">Spill</span><span style="display:flex;align-items:baseline;gap:6px;font-family:var(--font-mono);font-variant-numeric:tabular-nums;white-space:nowrap"><span style="font-size:14px;font-weight:600">{{ cat.lv.spill.hoursFmt }} t</span><span style="font-size:10px;opacity:.7">{{ cat.lv.spill.pct }} %</span></span></div></sc-if>
+<sc-if value="{{ offSpill }}" hint-placeholder-val="{{ true }}"><div data-lvl="spill" onClick="{{ onLevelClick }}" style="width:73%;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:space-between;padding:0 14px;cursor:pointer;background:#d97757;color:#141413;border:1.5px solid transparent"><span style="font-size:13px;font-weight:600">Spill</span><span style="display:flex;align-items:baseline;gap:6px;font-family:var(--font-mono);font-variant-numeric:tabular-nums;white-space:nowrap"><span style="font-size:14px;font-weight:600">{{ cat.lv.spill.hoursFmt }} t</span><span style="font-size:10px;opacity:.7">{{ cat.lv.spill.pct }} %</span></span></div></sc-if>
+<sc-if value="{{ selSlag }}" hint-placeholder-val="{{ false }}"><div data-lvl="slag" onClick="{{ onLevelClick }}" style="width:82%;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:space-between;padding:0 14px;cursor:pointer;background:#d4a27f;color:#141413;border:1.5px solid #141413;box-shadow:0 0 0 3px rgba(217,119,87,.22)"><span style="font-size:13px;font-weight:600">Golfslag</span><span style="display:flex;align-items:baseline;gap:6px;font-family:var(--font-mono);font-variant-numeric:tabular-nums;white-space:nowrap"><span style="font-size:14px;font-weight:600">{{ cat.lv.slag.hoursFmt }} t</span><span style="font-size:10px;opacity:.7">{{ cat.lv.slag.pct }} %</span></span></div></sc-if>
+<sc-if value="{{ offSlag }}" hint-placeholder-val="{{ true }}"><div data-lvl="slag" onClick="{{ onLevelClick }}" style="width:82%;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:space-between;padding:0 14px;cursor:pointer;background:#d4a27f;color:#141413;border:1.5px solid transparent"><span style="font-size:13px;font-weight:600">Golfslag</span><span style="display:flex;align-items:baseline;gap:6px;font-family:var(--font-mono);font-variant-numeric:tabular-nums;white-space:nowrap"><span style="font-size:14px;font-weight:600">{{ cat.lv.slag.hoursFmt }} t</span><span style="font-size:10px;opacity:.7">{{ cat.lv.slag.pct }} %</span></span></div></sc-if>
+<sc-if value="{{ selTek }}" hint-placeholder-val="{{ false }}"><div data-lvl="tek" onClick="{{ onLevelClick }}" style="width:91%;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:space-between;padding:0 14px;cursor:pointer;background:#ebdbbc;color:#141413;border:1.5px solid #141413;box-shadow:0 0 0 3px rgba(217,119,87,.22)"><span style="font-size:13px;font-weight:600">Teknisk</span><span style="display:flex;align-items:baseline;gap:6px;font-family:var(--font-mono);font-variant-numeric:tabular-nums;white-space:nowrap"><span style="font-size:14px;font-weight:600">{{ cat.lv.tek.hoursFmt }} t</span><span style="font-size:10px;opacity:.7">{{ cat.lv.tek.pct }} %</span></span></div></sc-if>
+<sc-if value="{{ offTek }}" hint-placeholder-val="{{ true }}"><div data-lvl="tek" onClick="{{ onLevelClick }}" style="width:91%;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:space-between;padding:0 14px;cursor:pointer;background:#ebdbbc;color:#141413;border:1.5px solid transparent"><span style="font-size:13px;font-weight:600">Teknisk</span><span style="display:flex;align-items:baseline;gap:6px;font-family:var(--font-mono);font-variant-numeric:tabular-nums;white-space:nowrap"><span style="font-size:14px;font-weight:600">{{ cat.lv.tek.hoursFmt }} t</span><span style="font-size:10px;opacity:.7">{{ cat.lv.tek.pct }} %</span></span></div></sc-if>
+<sc-if value="{{ selFys }}" hint-placeholder-val="{{ false }}"><div data-lvl="fys" onClick="{{ onLevelClick }}" style="width:100%;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:space-between;padding:0 14px;cursor:pointer;background:#e3dacc;color:#141413;border:1.5px solid #141413;box-shadow:0 0 0 3px rgba(217,119,87,.22)"><span style="font-size:13px;font-weight:600">Fysisk</span><span style="display:flex;align-items:baseline;gap:6px;font-family:var(--font-mono);font-variant-numeric:tabular-nums;white-space:nowrap"><span style="font-size:14px;font-weight:600">{{ cat.lv.fys.hoursFmt }} t</span><span style="font-size:10px;opacity:.7">{{ cat.lv.fys.pct }} %</span></span></div></sc-if>
+<sc-if value="{{ offFys }}" hint-placeholder-val="{{ true }}"><div data-lvl="fys" onClick="{{ onLevelClick }}" style="width:100%;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:space-between;padding:0 14px;cursor:pointer;background:#e3dacc;color:#141413;border:1.5px solid transparent"><span style="font-size:13px;font-weight:600">Fysisk</span><span style="display:flex;align-items:baseline;gap:6px;font-family:var(--font-mono);font-variant-numeric:tabular-nums;white-space:nowrap"><span style="font-size:14px;font-weight:600">{{ cat.lv.fys.hoursFmt }} t</span><span style="font-size:10px;opacity:.7">{{ cat.lv.fys.pct }} %</span></span></div></sc-if>
+</div>
+<div style="border:1px solid var(--accent-deep);background:var(--accent-soft);border-radius:var(--r);padding:18px">
+<span style="font-family:var(--font-mono);font-size:9.5px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--accent-fg)">Valgt nivå</span>
+<div style="display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin-top:8px">
+<span style="font-size:20px;font-weight:600;color:var(--fg)">{{ cat.rec.name }}</span>
+<span style="font-family:var(--font-mono);font-variant-numeric:tabular-nums;font-weight:600;color:var(--fg);white-space:nowrap"><span style="font-size:22px">{{ cat.rec.hours }}</span> <span style="font-size:12px;color:var(--muted)">t/år</span></span>
+</div>
+<div style="margin-top:12px"><x-import component-from-global-scope="AKGolfHQClaudePaper_605a48.ProgressBar" value="{{ cat.rec.barPct }}" max="{{ hundre }}" valueText="{{ cat.rec.pctText }}" hint-size="100%,26px"></x-import></div>
+<p style="font-family:var(--font-serif);font-size:13px;line-height:1.6;color:var(--fg);margin:12px 0 0;text-wrap:pretty">{{ cat.rec.note }}</p>
+<sc-if value="{{ cat.rec.isTurn }}" hint-placeholder-val="{{ true }}">
+<div style="margin-top:12px;padding-top:12px;border-top:1px dashed var(--accent-deep);font-family:var(--font-mono);font-size:11px;color:var(--accent-fg);line-height:1.6">{{ cat.rec.tnote }}</div>
+</sc-if>
+<div style="margin-top:12px;font-family:var(--font-mono);font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--text-tertiary)">Totalt ≈ {{ cat.annualTotalFmt }} t/år · {{ cat.hoursTotal }} t/uke</div>
+</div>
+</div>
+</div>
+
+<div style="padding:24px 0;border-bottom:1px solid var(--border)">
+<div style="display:flex;align-items:baseline;gap:9px;margin-bottom:16px">
+<span style="font-family:var(--font-mono);font-size:9.5px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)">Forventet SG-profil</span>
+<span style="font-family:var(--font-mono);font-size:9px;color:var(--text-tertiary)">vs scratch</span>
+</div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:14px 44px">
+<sc-for list="{{ cat.sgList }}" as="sg" hint-placeholder-count="4">
+<x-import component-from-global-scope="AKGolfHQClaudePaper_605a48.SgBar" label="{{ sg.name }}" value="{{ sg.value }}" max="{{ sgMax }}" hint-size="100%,30px"></x-import>
+</sc-for>
+</div>
+</div>
+
+<sc-if value="{{ visTest }}" hint-placeholder-val="{{ true }}">
+<div style="padding:24px 0 4px">
+<div style="display:flex;align-items:baseline;gap:10px;margin-bottom:16px">
+<span style="font-family:var(--font-mono);font-size:9.5px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)">Estimat testnivå</span>
+<span style="font-family:var(--font-mono);font-size:9px;color:var(--text-tertiary)">Team Norway testprotokoll · alle tall er estimat</span>
+</div>
+<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px">
+<div style="background:var(--soft);border-radius:var(--r-sm);padding:12px 14px">
+<div style="font-family:var(--font-mono);font-size:8.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--text-tertiary);margin-bottom:6px">Clubspeed</div>
+<div style="font-family:var(--font-mono);font-variant-numeric:tabular-nums;font-size:19px;font-weight:600;color:var(--fg)">{{ cat.tests.speed }}<span style="font-size:11px;color:var(--muted);margin-left:3px">mph</span></div>
+</div>
+<div style="background:var(--soft);border-radius:var(--r-sm);padding:12px 14px">
+<div style="font-family:var(--font-mono);font-size:8.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--text-tertiary);margin-bottom:6px">Ballspeed</div>
+<div style="font-family:var(--font-mono);font-variant-numeric:tabular-nums;font-size:19px;font-weight:600;color:var(--fg)">{{ cat.tests.ball }}<span style="font-size:11px;color:var(--muted);margin-left:3px">mph</span></div>
+</div>
+<div style="background:var(--soft);border-radius:var(--r-sm);padding:12px 14px">
+<div style="font-family:var(--font-mono);font-size:8.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--text-tertiary);margin-bottom:6px">Variable FTP</div>
+<div style="font-family:var(--font-mono);font-variant-numeric:tabular-nums;font-size:19px;font-weight:600;color:var(--fg)">{{ cat.tests.vftp }}<span style="font-size:11px;color:var(--muted);margin-left:3px">W</span></div>
+</div>
+<div style="background:var(--soft);border-radius:var(--r-sm);padding:12px 14px">
+<div style="font-family:var(--font-mono);font-size:8.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--text-tertiary);margin-bottom:6px">Fysiske testene</div>
+<div style="font-family:var(--font-mono);font-variant-numeric:tabular-nums;font-size:19px;font-weight:600;color:var(--fg)">{{ cat.tests.fys }}<span style="font-size:11px;color:var(--muted);margin-left:3px">pkt</span></div>
+</div>
+</div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px">
+<div style="background:var(--soft);border-radius:var(--r-sm);padding:12px 14px">
+<div style="font-family:var(--font-mono);font-size:8.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--text-tertiary);margin-bottom:6px">PEI Basic test</div>
+<sc-if value="{{ cat.peiUp }}" hint-placeholder-val="{{ false }}"><div style="font-family:var(--font-mono);font-variant-numeric:tabular-nums;font-size:19px;font-weight:600;color:var(--up)">{{ cat.pei }}<span style="font-size:11px;margin-left:3px">%</span></div></sc-if>
+<sc-if value="{{ cat.peiDown }}" hint-placeholder-val="{{ true }}"><div style="font-family:var(--font-mono);font-variant-numeric:tabular-nums;font-size:19px;font-weight:600;color:var(--dn)">{{ cat.pei }}<span style="font-size:11px;margin-left:3px">%</span></div></sc-if>
+</div>
+<div style="background:var(--soft);border-radius:var(--r-sm);padding:12px 14px">
+<div style="font-family:var(--font-mono);font-size:8.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--text-tertiary);margin-bottom:6px">8 ball variation</div>
+<div style="font-family:var(--font-mono);font-variant-numeric:tabular-nums;font-size:19px;font-weight:600;color:var(--fg)">{{ cat.eightBall }}<span style="font-size:11px;color:var(--muted);margin-left:3px">/32</span></div>
+</div>
+</div>
+</div>
+</sc-if>
+
+</div>
+</div>
+</sc-if>
+</div>
+</sc-for>
+</div>
+
+<sc-if value="{{ showMountain }}" hint-placeholder-val="{{ true }}">
+<div style="margin-top:56px">
+<div style="display:flex;justify-content:space-between;align-items:flex-end;gap:20px;margin-bottom:18px">
+<div>
+<span style="font-family:var(--font-mono);font-size:10px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--accent-fg);display:block;margin-bottom:10px">Reisen</span>
+<h2 style="font-size:var(--text-title);font-weight:600;letter-spacing:-.02em;color:var(--fg);margin:0">Stigningen</h2>
+<p style="font-family:var(--font-serif);font-size:14.5px;line-height:1.6;color:var(--muted);margin:8px 0 0;max-width:52ch">Fra Golfstart i foten til Verdenselite på toppen. Klikk en markør for å åpne profilen.</p>
+</div>
+<span style="font-family:var(--font-mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--text-tertiary);white-space:nowrap">A = toppen · K = foten</span>
+</div>
+
+<div style="position:relative;width:100%;aspect-ratio:16/9;min-height:420px;border-radius:var(--r-lg);overflow:hidden;background:#141413">
+<svg viewBox="0 0 100 100" preserveAspectRatio="none" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:1">
+<polyline points="34,82 40,76 45,70 51,63 56,57 62,51 68,45 73,39 79,32 84,26 90,20" fill="none" stroke="rgba(250,249,245,.22)" stroke-width="0.4" stroke-dasharray="1.4,2.2" stroke-linecap="round" vector-effect="non-scaling-stroke"></polyline>
+<polyline points="8,96 26,86 44,64 58,48 72,34 84,22 96,10" fill="none" stroke="rgba(250,249,245,.09)" stroke-width="1" vector-effect="non-scaling-stroke"></polyline>
+</svg>
+<div style="position:absolute;top:24px;left:26px;font-family:var(--font-mono);font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);z-index:4">Topp 50 i verden</div>
+<div style="position:absolute;bottom:24px;left:26px;font-family:var(--font-mono);font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;color:rgba(250,249,245,.55);z-index:4">Foten &mdash; Golfstart</div>
+
+<button type="button" data-cat="A" onClick="{{ onMarkerClick }}" title="Verdenselite" style="position:absolute;left:90%;top:20%;transform:translate(-50%,-50%);background:none;border:none;padding:0;cursor:pointer;z-index:3;transition:transform 160ms cubic-bezier(.16,1,.3,1)" style-hover="transform:translate(-50%,-50%) scale(1.15)">
+<sc-if value="{{ m.Apulse }}" hint-placeholder-val="{{ true }}"><span style="width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-weight:700;font-size:15px;background:var(--accent);color:#141413;border:1px solid var(--accent-deep);animation:akpulse 2.8s cubic-bezier(.16,1,.3,1) infinite">A</span></sc-if>
+<sc-if value="{{ m.Aring }}" hint-placeholder-val="{{ false }}"><span style="width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-weight:700;font-size:15px;background:var(--accent);color:#141413;border:1px solid var(--accent-deep);box-shadow:0 0 0 4px rgba(217,119,87,.3)">A</span></sc-if>
+<sc-if value="{{ m.Aplain }}" hint-placeholder-val="{{ false }}"><span style="width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-weight:700;font-size:15px;background:var(--accent);color:#141413;border:1px solid var(--accent-deep)">A</span></sc-if>
+</button>
+<button type="button" data-cat="B" onClick="{{ onMarkerClick }}" title="Tour-profesjonell" style="position:absolute;left:84%;top:26%;transform:translate(-50%,-50%);background:none;border:none;padding:0;cursor:pointer;z-index:3;transition:transform 160ms cubic-bezier(.16,1,.3,1)" style-hover="transform:translate(-50%,-50%) scale(1.15)">
+<sc-if value="{{ m.Bon }}" hint-placeholder-val="{{ false }}"><span style="width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-weight:700;font-size:15px;background:var(--accent);color:#141413;border:1px solid var(--accent-deep);box-shadow:0 0 0 4px rgba(217,119,87,.3)">B</span></sc-if>
+<sc-if value="{{ m.Boff }}" hint-placeholder-val="{{ true }}"><span style="width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-weight:700;font-size:13px;background:rgba(250,249,245,.1);color:rgba(250,249,245,.85);border:1px solid rgba(250,249,245,.28)">B</span></sc-if>
+</button>
+<button type="button" data-cat="C" onClick="{{ onMarkerClick }}" title="Proff-amatør" style="position:absolute;left:79%;top:32%;transform:translate(-50%,-50%);background:none;border:none;padding:0;cursor:pointer;z-index:3;transition:transform 160ms cubic-bezier(.16,1,.3,1)" style-hover="transform:translate(-50%,-50%) scale(1.15)">
+<sc-if value="{{ m.Con }}" hint-placeholder-val="{{ false }}"><span style="width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-weight:700;font-size:15px;background:var(--accent);color:#141413;border:1px solid var(--accent-deep);box-shadow:0 0 0 4px rgba(217,119,87,.3)">C</span></sc-if>
+<sc-if value="{{ m.Coff }}" hint-placeholder-val="{{ true }}"><span style="width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-weight:700;font-size:13px;background:rgba(250,249,245,.1);color:rgba(250,249,245,.85);border:1px solid rgba(250,249,245,.28)">C</span></sc-if>
+</button>
+<button type="button" data-cat="D" onClick="{{ onMarkerClick }}" title="Topp-amatør" style="position:absolute;left:73%;top:39%;transform:translate(-50%,-50%);background:none;border:none;padding:0;cursor:pointer;z-index:3;transition:transform 160ms cubic-bezier(.16,1,.3,1)" style-hover="transform:translate(-50%,-50%) scale(1.15)">
+<sc-if value="{{ m.Don }}" hint-placeholder-val="{{ false }}"><span style="width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-weight:700;font-size:15px;background:var(--accent);color:#141413;border:1px solid var(--accent-deep);box-shadow:0 0 0 4px rgba(217,119,87,.3)">D</span></sc-if>
+<sc-if value="{{ m.Doff }}" hint-placeholder-val="{{ true }}"><span style="width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-weight:700;font-size:13px;background:rgba(250,249,245,.1);color:rgba(250,249,245,.85);border:1px solid rgba(250,249,245,.28)">D</span></sc-if>
+</button>
+<button type="button" data-cat="E" onClick="{{ onMarkerClick }}" title="Junior aspirant" style="position:absolute;left:68%;top:45%;transform:translate(-50%,-50%);background:none;border:none;padding:0;cursor:pointer;z-index:3;transition:transform 160ms cubic-bezier(.16,1,.3,1)" style-hover="transform:translate(-50%,-50%) scale(1.15)">
+<sc-if value="{{ m.Eon }}" hint-placeholder-val="{{ false }}"><span style="width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-weight:700;font-size:15px;background:var(--accent);color:#141413;border:1px solid var(--accent-deep);box-shadow:0 0 0 4px rgba(217,119,87,.3)">E</span></sc-if>
+<sc-if value="{{ m.Eoff }}" hint-placeholder-val="{{ true }}"><span style="width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-weight:700;font-size:13px;background:rgba(250,249,245,.1);color:rgba(250,249,245,.85);border:1px solid rgba(250,249,245,.28)">E</span></sc-if>
+</button>
+<button type="button" data-cat="F" onClick="{{ onMarkerClick }}" title="Enkeltsiffer HCP" style="position:absolute;left:62%;top:51%;transform:translate(-50%,-50%);background:none;border:none;padding:0;cursor:pointer;z-index:3;transition:transform 160ms cubic-bezier(.16,1,.3,1)" style-hover="transform:translate(-50%,-50%) scale(1.15)">
+<sc-if value="{{ m.Fon }}" hint-placeholder-val="{{ false }}"><span style="width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-weight:700;font-size:15px;background:var(--accent);color:#141413;border:1px solid var(--accent-deep);box-shadow:0 0 0 4px rgba(217,119,87,.3)">F</span></sc-if>
+<sc-if value="{{ m.Foff }}" hint-placeholder-val="{{ true }}"><span style="width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-weight:700;font-size:13px;background:rgba(250,249,245,.1);color:rgba(250,249,245,.85);border:1px solid rgba(250,249,245,.28)">F</span></sc-if>
+</button>
+<button type="button" data-cat="G" onClick="{{ onMarkerClick }}" title="Junior enkeltsiffer" style="position:absolute;left:56%;top:57%;transform:translate(-50%,-50%);background:none;border:none;padding:0;cursor:pointer;z-index:3;transition:transform 160ms cubic-bezier(.16,1,.3,1)" style-hover="transform:translate(-50%,-50%) scale(1.15)">
+<sc-if value="{{ m.Gon }}" hint-placeholder-val="{{ false }}"><span style="width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-weight:700;font-size:15px;background:var(--accent);color:#141413;border:1px solid var(--accent-deep);box-shadow:0 0 0 4px rgba(217,119,87,.3)">G</span></sc-if>
+<sc-if value="{{ m.Goff }}" hint-placeholder-val="{{ true }}"><span style="width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-weight:700;font-size:13px;background:rgba(250,249,245,.1);color:rgba(250,249,245,.85);border:1px solid rgba(250,249,245,.28)">G</span></sc-if>
+</button>
+<button type="button" data-cat="H" onClick="{{ onMarkerClick }}" title="Aktiv senior" style="position:absolute;left:51%;top:63%;transform:translate(-50%,-50%);background:none;border:none;padding:0;cursor:pointer;z-index:3;transition:transform 160ms cubic-bezier(.16,1,.3,1)" style-hover="transform:translate(-50%,-50%) scale(1.15)">
+<sc-if value="{{ m.Hon }}" hint-placeholder-val="{{ false }}"><span style="width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-weight:700;font-size:15px;background:var(--accent);color:#141413;border:1px solid var(--accent-deep);box-shadow:0 0 0 4px rgba(217,119,87,.3)">H</span></sc-if>
+<sc-if value="{{ m.Hoff }}" hint-placeholder-val="{{ true }}"><span style="width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-weight:700;font-size:13px;background:rgba(250,249,245,.1);color:rgba(250,249,245,.85);border:1px solid rgba(250,249,245,.28)">H</span></sc-if>
+</button>
+<button type="button" data-cat="I" onClick="{{ onMarkerClick }}" title="Aktiv junior" style="position:absolute;left:45%;top:70%;transform:translate(-50%,-50%);background:none;border:none;padding:0;cursor:pointer;z-index:3;transition:transform 160ms cubic-bezier(.16,1,.3,1)" style-hover="transform:translate(-50%,-50%) scale(1.15)">
+<sc-if value="{{ m.Ion }}" hint-placeholder-val="{{ false }}"><span style="width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-weight:700;font-size:15px;background:var(--accent);color:#141413;border:1px solid var(--accent-deep);box-shadow:0 0 0 4px rgba(217,119,87,.3)">I</span></sc-if>
+<sc-if value="{{ m.Ioff }}" hint-placeholder-val="{{ true }}"><span style="width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-weight:700;font-size:13px;background:rgba(250,249,245,.1);color:rgba(250,249,245,.85);border:1px solid rgba(250,249,245,.28)">I</span></sc-if>
+</button>
+<button type="button" data-cat="J" onClick="{{ onMarkerClick }}" title="Grønt kort senior" style="position:absolute;left:40%;top:76%;transform:translate(-50%,-50%);background:none;border:none;padding:0;cursor:pointer;z-index:3;transition:transform 160ms cubic-bezier(.16,1,.3,1)" style-hover="transform:translate(-50%,-50%) scale(1.15)">
+<sc-if value="{{ m.Jon }}" hint-placeholder-val="{{ false }}"><span style="width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-weight:700;font-size:15px;background:var(--accent);color:#141413;border:1px solid var(--accent-deep);box-shadow:0 0 0 4px rgba(217,119,87,.3)">J</span></sc-if>
+<sc-if value="{{ m.Joff }}" hint-placeholder-val="{{ true }}"><span style="width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-weight:700;font-size:13px;background:rgba(250,249,245,.1);color:rgba(250,249,245,.85);border:1px solid rgba(250,249,245,.28)">J</span></sc-if>
+</button>
+<button type="button" data-cat="K" onClick="{{ onMarkerClick }}" title="Golfstart" style="position:absolute;left:34%;top:82%;transform:translate(-50%,-50%);background:none;border:none;padding:0;cursor:pointer;z-index:3;transition:transform 160ms cubic-bezier(.16,1,.3,1)" style-hover="transform:translate(-50%,-50%) scale(1.15)">
+<sc-if value="{{ m.Kon }}" hint-placeholder-val="{{ false }}"><span style="width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-weight:700;font-size:15px;background:var(--accent);color:#141413;border:1px solid var(--accent-deep);box-shadow:0 0 0 4px rgba(217,119,87,.3)">K</span></sc-if>
+<sc-if value="{{ m.Koff }}" hint-placeholder-val="{{ true }}"><span style="width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-weight:700;font-size:13px;background:rgba(250,249,245,.1);color:rgba(250,249,245,.85);border:1px solid rgba(250,249,245,.28)">K</span></sc-if>
+</button>
+
+<sc-if value="{{ hasPreview }}" hint-placeholder-val="{{ false }}">
+<div style="position:absolute;bottom:24px;right:24px;width:300px;background:var(--bg);border-radius:var(--r);box-shadow:0 18px 50px rgba(0,0,0,.45);padding:18px;z-index:6;animation:akreveal var(--dur-slow) var(--ease)">
+<div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px">
+<div style="display:flex;align-items:center;gap:11px">
+<span style="width:38px;height:38px;border-radius:var(--r-sm);display:inline-flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-weight:700;font-size:16px;background:var(--accent);color:#141413">{{ preview.id }}</span>
+<span style="display:flex;flex-direction:column;gap:3px">
+<span style="font-size:16.5px;font-weight:600;color:var(--fg);line-height:1.05">{{ preview.niva }}</span>
+<span style="font-family:var(--font-mono);font-size:9px;letter-spacing:.08em;color:var(--accent-fg)">{{ preview.tours }}</span>
+</span>
+</div>
+<button type="button" onClick="{{ closePreview }}" style="background:none;border:none;color:var(--text-tertiary);cursor:pointer;padding:2px;line-height:0" style-hover="color:var(--fg)">
+<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg>
+</button>
+</div>
+<p style="font-family:var(--font-serif);font-size:12.5px;line-height:1.55;color:var(--muted);margin:12px 0 0">{{ preview.players }}</p>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:1px;margin-top:14px;background:var(--border);border-radius:var(--r-sm);overflow:hidden">
+<div style="background:var(--surface);padding:10px 12px">
+<div style="font-family:var(--font-mono);font-size:8px;letter-spacing:.1em;text-transform:uppercase;color:var(--text-tertiary);margin-bottom:4px">Snittscore</div>
+<div style="font-family:var(--font-mono);font-variant-numeric:tabular-nums;font-size:16px;font-weight:600;color:var(--fg)">{{ preview.score }}</div>
+</div>
+<div style="background:var(--surface);padding:10px 12px">
+<div style="font-family:var(--font-mono);font-size:8px;letter-spacing:.1em;text-transform:uppercase;color:var(--text-tertiary);margin-bottom:4px">Handicap</div>
+<div style="font-family:var(--font-mono);font-variant-numeric:tabular-nums;font-size:16px;font-weight:600;color:var(--fg)">{{ preview.hcp }}</div>
+</div>
+<div style="background:var(--surface);padding:10px 12px">
+<div style="font-family:var(--font-mono);font-size:8px;letter-spacing:.1em;text-transform:uppercase;color:var(--text-tertiary);margin-bottom:4px">Volum</div>
+<div style="font-family:var(--font-mono);font-variant-numeric:tabular-nums;font-size:16px;font-weight:600;color:var(--fg)">{{ preview.hoursTotal }}<span style="font-size:10px;color:var(--accent-fg);margin-left:2px">t/uke</span></div>
+</div>
+<div style="background:var(--surface);padding:10px 12px">
+<div style="font-family:var(--font-mono);font-size:8px;letter-spacing:.1em;text-transform:uppercase;color:var(--text-tertiary);margin-bottom:4px">Bane CR / Slope</div>
+<div style="font-family:var(--font-mono);font-variant-numeric:tabular-nums;font-size:16px;font-weight:600;color:var(--fg)">{{ preview.cr }} / {{ preview.slope }}</div>
+</div>
+</div>
+<button type="button" onClick="{{ openFullProfile }}" style="margin-top:14px;width:100%;display:flex;align-items:center;justify-content:center;gap:7px;background:var(--cta);color:var(--on-cta);border:none;border-radius:var(--r-sm);padding:11px 14px;font-family:var(--font-mono);font-size:10.5px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;transition:background var(--dur) var(--ease)" style-hover="background:var(--cta-hover)">
+Se full profil
+<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg>
+</button>
+</div>
+</sc-if>
+</div>
+</div>
+</sc-if>
+
+</div>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1180,&quot;height&quot;:900},&quot;theme&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;light&quot;,&quot;dark&quot;],&quot;default&quot;:&quot;light&quot;,&quot;tsType&quot;:&quot;'light' | 'dark'&quot;},&quot;showMountain&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;},&quot;visTestniva&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Innhold&quot;}}">
+const DATA = [
+  { id:'A', niva:'Verdenselite', score:'< 70', hcp:'+4 til −2', alder:'18–30', pgaNote:true,
+    players:'Viktor Hovland · Kristoffer Reitan — WAGR topp 50, proffspillere på de største tourene.',
+    tours:'PGA TOUR · DP WORLD TOUR · LIV GOLF',
+    turRec:{ tur:'PGA Tour · DP World Tour · LIV Golf · Asian Tour', note:'Snittscore < 70 mot par på CR 75+ championship-baner. Rangering og tourkort avhenger av scoring her.' },
+    pyrNote:'All teknikk er fullautomatisert — kun L_AUTO-fase. Treningen vedlikeholder FYS-kapasiteten og maksimerer Turnering-volum. TEK er minimalt: kun pressede finjusteringer. Ingenting bygges fra grunnen.',
+    course:{ cr:'75+', slope:'145+', setup:'Championship-oppsett: bakerste tee, 7 200+ m, raske greener (12+ på stimpmeter), tett ruff og presise pinneplasseringer.', venues:'Tour-baner · Oslo GK · Miklagard' },
+    hoursTotal:'30', sg:{ ott:0.9, app:1.1, arg:0.5, putt:0.6 },
+    tests:{ speed:'120', ball:'178', vftp:'380', fys:'94' }, pei:'+32', eightBall:'29', mx:90, my:20 },
+  { id:'B', niva:'Tour-profesjonell', score:'70–72', hcp:'+2 til 1', alder:'17–24', pgaNote:false,
+    players:'Challenge Tour-spillere, DP World Tour aspiranter og norske proff-amatører på vei mot tourkortet.',
+    tours:'CHALLENGE TOUR · DP WORLD TOUR · NORDIC GOLF LEAGUE',
+    turRec:{ tur:'Challenge Tour · Nordic Golf League · DP World Tour qualifier', note:'Kjemper om tourtilgang. WAGR-rangering og europeiske qualifying-turneringer er avgjørende for karriereutvikling.' },
+    pyrNote:'Høyt Turnering-volum er kritisk for å bygge verdensranking. FYS holder kroppen gjennom tett reisesesong og turneringspress. TEK er kun presslukking og slagspesifikke finjusteringer — aldri fundamentalt arbeid.',
+    course:{ cr:'73–75', slope:'140–150', setup:'Mesterskapsoppsett, tee bakerst, hurtige greener og krevende pinneplasseringer.', venues:'European Tour-baner · Nasjonale mesterskapsbaner' },
+    hoursTotal:'26', sg:{ ott:0.6, app:0.7, arg:0.3, putt:0.4 },
+    tests:{ speed:'116', ball:'172', vftp:'350', fys:'88' }, pei:'+20', eightBall:'25', mx:84, my:26 },
+  { id:'C', niva:'Proff-amatør', score:'72–74', hcp:'0 til 2', alder:'16–22', pgaNote:false,
+    players:'Landslag senior, NCAA Division I college-spillere og topp Nordic Golf League-deltakere.',
+    tours:'NORDIC GOLF LEAGUE · WAGR-TURNERINGER · GLOBAL JUNIOR GOLF',
+    turRec:{ tur:'Nordic Golf League · WAGR-turneringer · Global Junior Golf (elite)', note:'WAGR-rangering og college-rekruttering styrer turneringsvalget. Internasjonale erfaringer og rankingpoeng prioriteres.' },
+    pyrNote:'Overgangsfasen mellom toppjunior og proff. Golfslag og Spill øker for å bygge skarphet under press. TEK er stilsikring — ikke fundamentalt arbeid. FYS er avgjørende for å tåle en tett internasjonal turneringskalender.',
+    course:{ cr:'72–74', slope:'135–145', setup:'Turneringsoppsett full lengde, faste greener og krevende pinneplasseringer.', venues:'Nordic League-baner · Internasjonale amatørbaner' },
+    hoursTotal:'23', sg:{ ott:0.3, app:0.4, arg:0.2, putt:0.2 },
+    tests:{ speed:'113', ball:'167', vftp:'320', fys:'81' }, pei:'+10', eightBall:'21', mx:79, my:32 },
+  { id:'D', niva:'Topp-amatør', score:'74–76', hcp:'1 til 4', alder:'15–22', pgaNote:false,
+    players:'Garmin Norges Cup A-klasse spillere, regionlandslag og sterke klubbamatører.',
+    tours:'GARMIN NORGES CUP · NM AMATØR · NORDIC LEAGUE',
+    turRec:{ tur:'Garmin Norges Cup · NM amatør · Nordic League · Regionale mesterskap', note:'Norsk mesterskapsformat mot landets beste amatører. CR 71–73-baner er naturlig utfordringsnivå. Fra spillerprofiler: topp OLYO Øst-spillere som Max Risvåg (73,3) og Axel Larsen (75,1) tilhører kategori C–D.' },
+    pyrNote:'TEK er fortsatt sentralt — mange golfbevegelser repeteres strukturert på range med video og TrackMan. Slag og Spill øker gradvis mot tettere turneringskalender. FYS styrkes systematisk for å tåle helge-turneringer.',
+    course:{ cr:'71–73', slope:'130–140', setup:'Regionalt turneringsoppsett, full lengde, standard pinneplassering.', venues:'Regionbaner · Norges Cup-baner' },
+    hoursTotal:'20', sg:{ ott:0.1, app:0.2, arg:0.0, putt:0.1 },
+    tests:{ speed:'110', ball:'162', vftp:'295', fys:'74' }, pei:'+2', eightBall:'17', mx:73, my:39 },
+  { id:'E', niva:'Junior aspirant', score:'76–78', hcp:'3 til 6', alder:'14–18', pgaNote:false,
+    players:'Distriktslag U18, Srixon Tour J19-deltakere og aktive Østlandstour-spillere.',
+    tours:'ØSTLANDSTOUR · SRIXON TOUR J19 · GARMIN NORGES CUP',
+    turRec:{ tur:'Østlandstour · Srixon Tour J19 · Garmin Norges Cup (B-klasse)', note:'Topp Srixon Tour J19 og Østlandstour (Titleist/Callaway) er naturlig arena. Anders Rafshol (76,4) og Sebastian Henriksen (74,6) representerer overgangen E–D.' },
+    pyrNote:'TEK dominerer — golfbevegelsene er i L_BALL-fase og trenger strukturert slag-trening. FYS bygges systematisk i vekstsesong. Turnering-volum starter å gi viktig lærings-feedback som supplerer range-arbeidet.',
+    course:{ cr:'70–72', slope:'125–135', setup:'Junior-/regionoppsett med noe fremskutt tee.', venues:'Klubb- og regionbaner · Srixon Tour-baner' },
+    hoursTotal:'16', sg:{ ott:-0.2, app:-0.2, arg:-0.1, putt:-0.1 },
+    tests:{ speed:'107', ball:'158', vftp:'268', fys:'66' }, pei:'-15', eightBall:'13', mx:68, my:45 },
+  { id:'F', niva:'Enkeltsiffer HCP', score:'78–80', hcp:'5 til 9', alder:'15–35', pgaNote:false,
+    players:'Aktiv klubbspiller med enkeltsiffer handicap og jevn treningsrytme.',
+    tours:'ØSTLANDSTOUR · SRIXON TOUR J19/G19 · OLYO TOUR',
+    turRec:{ tur:'Østlandstour · Srixon Tour J19/G19 · OLYO Tour (topp)', note:'Topp OLYO Tour Øst scorer ~77–80. Østlandstour (Titleist/Callaway) er riktig utfordringsnivå. Jakob Holm (80,0 2025) er typisk F-spiller.' },
+    pyrNote:'TEK er klart størst enkeltbidrag. Golfslag-driller i mengde konsoliderer fremgangen. Spill og Turnering er lave, men øker gradvis for å gi treningseffekt under press. FYS holdes vedlike med enkel ukentlig økt.',
+    course:{ cr:'69–71', slope:'120–130', setup:'Ordinært klubboppsett (gul/hvit tee), standard lengde.', venues:'Hjemmeklubb · Full bane' },
+    hoursTotal:'12', sg:{ ott:-0.5, app:-0.5, arg:-0.3, putt:-0.2 },
+    tests:{ speed:'103', ball:'152', vftp:'240', fys:'57' }, pei:'-28', eightBall:'10', mx:62, my:51 },
+  { id:'G', niva:'Junior enkeltsiffer', score:'80–85', hcp:'8 til 14', alder:'13–17', pgaNote:false,
+    players:'Aktiv klubbjunior med enkeltsiffer eller lavt tosifret handicap og fast turneringsrutine.',
+    tours:'SRIXON TOUR J15 · OLYO TOUR · SRIXON TOUR G15',
+    turRec:{ tur:'Srixon Tour J15 · OLYO Tour · Srixon Tour G15', note:'Srixon Tour J15 og OLYO Tour er primærarena. Bruttoscore 80–85 er kompetitivt i J15-klassen. OLYO-resultater gir god pekepinn på progresjon.' },
+    pyrNote:'TEK er klart tyngst — grunnbevegelsene er under innlæring og trenger mange strukturerte repetisjoner. FYS bygges forsiktig i takt med alder. Spill-trening øker gjennom treningsrunder med tilstedeværende coach.',
+    course:{ cr:'68–70', slope:'115–125', setup:'Klubboppsett med fremskutt tee og redusert lengde for aldersgruppen.', venues:'Hjemmeklubb · Junior-baner' },
+    hoursTotal:'9', sg:{ ott:-0.8, app:-0.8, arg:-0.5, putt:-0.4 },
+    tests:{ speed:'99', ball:'146', vftp:'210', fys:'48' }, pei:'-45', eightBall:'7', mx:56, my:57 },
+  { id:'H', niva:'Aktiv senior', score:'85–90', hcp:'13 til 20', alder:'12–50', pgaNote:false,
+    players:'Aktiv senior eller rekrutt med fast ukentlig trening og første turneringserfaringer.',
+    tours:'OLYO TOUR · SRIXON TOUR J12 · KLUBBTURNERINGER',
+    turRec:{ tur:'OLYO Tour · Srixon Tour J12 · Klubbmesterskap', note:'OLYO Tour og klubbmesterskapet gir riktig motstand og konkurranseformat for første turneringssesong. Score er sekundært — opplevelsen er primær.' },
+    pyrNote:'TEK er grunnleggende fokus — koordinasjon og grunnmønster etableres fra L_KROPP og L_ARM. FYS er begrenset og alderstilpasset. Golfslag starter å bli meningsfullt læringsverktøy med enkle repetisjoner.',
+    course:{ cr:'67–69', slope:'110–120', setup:'Forkortet bane med rød/fremskutt tee.', venues:'Korthull · Full bane (fremskutt)' },
+    hoursTotal:'7', sg:{ ott:-1.1, app:-1.2, arg:-0.7, putt:-0.6 },
+    tests:{ speed:'95', ball:'140', vftp:'180', fys:'39' }, pei:'-62', eightBall:'5', mx:51, my:63 },
+  { id:'I', niva:'Aktiv junior', score:'90–95', hcp:'18 til 28', alder:'11–15', pgaNote:false,
+    players:'Aktiv junior med første turneringer og jevn treningsrytme gjennom sesongen.',
+    tours:'OLYO TOUR · KLUBBTURNERINGER',
+    turRec:{ tur:'OLYO Tour (nybegynnerklasser) · Klubbturneringer · Srixon J12', note:'Tilvenning til turneringsformat er viktigere enn score. OLYO nybegynnerklasser er ideelt startpunkt — trygt og alderstilpasset.' },
+    pyrNote:'TEK er nærmest alt. Kroppen er i L_KROPP/L_ARM-fase. Lek, glede og mestring er like viktig som strukturert drill. Korte baner og redusert lengde gir succesopplevelse og holder motivasjonen oppe gjennom sesongen.',
+    course:{ cr:'66–68', slope:'105–115', setup:'Fremskutt tee, redusert bane, par-3-innslag.', venues:'Korthullsbane · 9-hull' },
+    hoursTotal:'6', sg:{ ott:-1.4, app:-1.5, arg:-0.9, putt:-0.8 },
+    tests:{ speed:'90', ball:'133', vftp:'155', fys:'31' }, pei:'-78', eightBall:'3', mx:45, my:70 },
+  { id:'J', niva:'Grønt kort senior', score:'95–100', hcp:'26 til 40', alder:'10–65', pgaNote:false,
+    players:'Ny voksen spiller, nettopp grønt kort. Lærer å fullføre hull og bruke reglene.',
+    tours:'KLUBBKVELDER · BANETILVENNING',
+    turRec:{ tur:'Klubbkvelder · Vennekapper · Pay & play', note:'Uformell spill prioriteres over turneringsformat. Fokus er banemøteetikette, regelkunnskap og gleden av å fullføre hull.' },
+    pyrNote:'TEK dominerer fullstendig. Grunnbevegelse læres fra L_KROPP med sakte og bevisst tempo. Golfslag er nybegynnernivå med enkle mål. Turnering er ikke aktuelt — fokus er å fullføre hull uten frustrasjon.',
+    course:{ cr:'—', slope:'100–110', setup:'Pay & play, 9-hull eller par-3-format for mestring.', venues:'Par-3 · 9-hullsbane' },
+    hoursTotal:'4', sg:{ ott:-1.7, app:-1.8, arg:-1.1, putt:-1.0 },
+    tests:{ speed:'85', ball:'125', vftp:'130', fys:'23' }, pei:'-95', eightBall:'2', mx:40, my:76 },
+  { id:'K', niva:'Golfstart', score:'100+', hcp:'36 til 54', alder:'8–12', pgaNote:false,
+    players:'Nybegynner junior i Golfstart-programmet. Lek, motorikk og mestring i fokus.',
+    tours:'GOLFSTART · TRENINGSDAGER · LEK PÅ BANE',
+    turRec:{ tur:'Golfstart-turneringer · Treningsdager · Junior-lek', note:'Score er ikke relevant på dette nivået. Fokus er glede, mestring av enklere hull og kjærlighet til sporten.' },
+    pyrNote:'Kun L_KROPP-fase. Alt er lek og motorisk utvikling. Strukturert drill er minimal og alltid lekbasert. FYS handler om barneidrett og koordinasjon — aldri prestasjonspress. Opplevelsen av mestring er alt.',
+    course:{ cr:'—', slope:'—', setup:'Banetilvenning: par-3, korthull og treningsfelt.', venues:'Treningsområde · Par-3' },
+    hoursTotal:'3', sg:{ ott:-2.0, app:-2.1, arg:-1.3, putt:-1.2 },
+    tests:{ speed:'80', ball:'118', vftp:'105', fys:'15' }, pei:'-115', eightBall:'1', mx:34, my:82 },
+];
+
+const LEVELS = [
+  { key:'turn',  name:'Turnering', w:64,  color:'#c6613f' },
+  { key:'spill', name:'Spill',     w:73,  color:'#d97757' },
+  { key:'slag',  name:'Golfslag',  w:82,  color:'#d4a27f' },
+  { key:'tek',   name:'Teknisk',   w:91,  color:'#ebdbbc' },
+  { key:'fys',   name:'Fysisk',    w:100, color:'#e3dacc' },
+];
+
+const LEVEL_NOTE = {
+  fys:  'Fysisk kapasitet — styrke, kondisjon, bevegelighet og spenst. Fundament som bærer alle andre treningsområder.',
+  tek:  'Teknisk svingarbeid — bevegelsesmønster, L-fase og P-posisjoner. Drives med video og TrackMan på range.',
+  slag: 'Golfslag i mengde — avstandskontroll, kurveforming og utstyrsvalg. Omsetter teknikk til reelle slag mot mål.',
+  spill:'Spilltrening — treningsrunder, banespill og nærspill i realistiske situasjoner med aktive beslutninger.',
+  turn: 'Turnering — konkurranserunder. Størst enkeltbidrag i timer; gir uerstattelig læringserfaring under press.',
+};
+
+const ANNUAL = {
+  A:{ fys:180, tek:200, slag:230, spill:270, turn:420, total:1300, tw:20, rd:4, rh:'5,25' },
+  B:{ fys:150, tek:180, slag:200, spill:214, turn:336, total:1080, tw:16, rd:4, rh:'5,25' },
+  C:{ fys:140, tek:175, slag:200, spill:195, turn:210, total:920,  tw:14, rd:3, rh:'5,0'  },
+  D:{ fys:120, tek:165, slag:170, spill:125, turn:180, total:760,  tw:12, rd:3, rh:'5,0'  },
+  E:{ fys:110, tek:150, slag:130, spill:60,  turn:90,  total:540,  tw:10, rd:2, rh:'4,5'  },
+  F:{ fys:70,  tek:115, slag:85,  spill:42,  turn:72,  total:384,  tw:8,  rd:2, rh:'4,5'  },
+  G:{ fys:48,  tek:90,  slag:60,  spill:24,  turn:48,  total:270,  tw:6,  rd:2, rh:'4,0'  },
+  H:{ fys:30,  tek:75,  slag:40,  spill:11,  turn:40,  total:196,  tw:5,  rd:2, rh:'4,0'  },
+  I:{ fys:25,  tek:70,  slag:38,  spill:7,   turn:16,  total:156,  tw:4,  rd:1, rh:'4,0'  },
+  J:{ fys:12,  tek:45,  slag:22,  spill:2,   turn:7,   total:88,   tw:2,  rd:1, rh:'3,5'  },
+  K:{ fys:8,   tek:30,  slag:12,  spill:1,   turn:3,   total:54,   tw:1,  rd:1, rh:'3,0'  },
+};
+
+function fmtNum(n){ return String(n).replace(/\B(?=(\d{3})+(?!\d))/g,' '); }
+
+class Component extends DCLogic {
+  state = { expanded:'A', selLevel:'turn', mtnSel:null };
+
+  onRowClick = (e) => {
+    const id = e.currentTarget.dataset.cat;
+    this.setState((s) => ({ expanded: s.expanded === id ? null : id }));
+  };
+
+  onMarkerClick = (e) => {
+    const id = e.currentTarget.dataset.cat;
+    this.setState((s) => ({ mtnSel: s.mtnSel === id ? null : id }));
+  };
+
+  closePreview = (e) => {
+    if (e) e.stopPropagation();
+    this.setState({ mtnSel:null });
+  };
+
+  openFullProfile = (e) => {
+    if (e) e.stopPropagation();
+    const id = this.state.mtnSel;
+    if (!id) return;
+    this.setState({ expanded:id }, () => {
+      const el = document.querySelector('[data-cat-row="' + id + '"]');
+      if (el) {
+        const top = el.getBoundingClientRect().top + window.scrollY - 24;
+        window.scrollTo({ top, behavior:'smooth' });
+      }
+    });
+  };
+
+  onLevelClick = (e) => {
+    e.stopPropagation();
+    this.setState({ selLevel: e.currentTarget.dataset.lvl });
+  };
+
+  renderVals() {
+    const open = this.state.expanded;
+    const selLevel = this.state.selLevel;
+    const mtnSel = this.state.mtnSel;
+
+    const cats = DATA.map((c) => {
+      const isOpen = open === c.id;
+      const isApex = c.id === 'A';
+      const isMtnSel = mtnSel === c.id;
+      const an = ANNUAL[c.id];
+      const maxH = Math.max(an.fys, an.tek, an.slag, an.spill, an.turn);
+
+      const lv = {};
+      LEVELS.forEach((L) => {
+        lv[L.key] = { hoursFmt:fmtNum(an[L.key]), pct:Math.round((an[L.key] / an.total) * 100) };
+      });
+
+      const selMeta = LEVELS.find((L) => L.key === selLevel);
+      const selH = an[selLevel];
+      const rec = {
+        name:selMeta.name, hours:fmtNum(selH),
+        pct:Math.round((selH / an.total) * 100),
+        note:LEVEL_NOTE[selLevel], isTurn:selLevel === 'turn',
+        tnote:an.tw + (an.tw === 1 ? ' uke' : ' uker') + ' × ' + an.rd + (an.rd === 1 ? ' runde' : ' runder') + ' × ' + an.rh + ' t = ' + fmtNum(an.turn) + ' t/år',
+        barPct:Math.round((selH / maxH) * 100),
+        pctText:Math.round((selH / an.total) * 100) + ' % av årsvolumet',
+      };
+
+      const peiPositive = c.pei.startsWith('+');
+
+      return {
+        lv, rec, annualTotalFmt:fmtNum(an.total),
+        ...c,
+        isOpen, notOpen:!isOpen, isApex, notApex:!isApex,
+        peiUp:peiPositive, peiDown:!peiPositive,
+        showSection: c.id === 'A' || c.id === 'E',
+        sectionLabel: c.id === 'A' ? 'A–D · Tour og elite-amatør' : 'E–K · Utvikling og rekrutt',
+        sgList:[
+          { name:'Utslag', cat:'OTT', value:c.sg.ott },
+          { name:'Innspill', cat:'APP', value:c.sg.app },
+          { name:'Nærspill', cat:'ARG', value:c.sg.arg },
+          { name:'Putting', cat:'PUTT', value:c.sg.putt },
+        ],
+      };
+    });
+
+    const mFlags = {
+      Apulse: !mtnSel, Aring: mtnSel === 'A', Aplain: !!mtnSel && mtnSel !== 'A',
+    };
+    ['B','C','D','E','F','G','H','I','J','K'].forEach((k) => {
+      mFlags[k + 'on'] = mtnSel === k;
+      mFlags[k + 'off'] = mtnSel !== k;
+    });
+
+    const pv = mtnSel ? DATA.find((c) => c.id === mtnSel) : null;
+    const preview = pv ? {
+      id:pv.id, niva:pv.niva, score:pv.score, hcp:pv.hcp,
+      players:pv.players, hoursTotal:pv.hoursTotal, tours:pv.tours,
+      cr:pv.course.cr, slope:pv.course.slope,
+    } : null;
+
+    return {
+      cats, sgMax:2.2, m:mFlags, hundre:100,
+      selTurn:selLevel === 'turn', offTurn:selLevel !== 'turn',
+      selSpill:selLevel === 'spill', offSpill:selLevel !== 'spill',
+      selSlag:selLevel === 'slag', offSlag:selLevel !== 'slag',
+      selTek:selLevel === 'tek', offTek:selLevel !== 'tek',
+      selFys:selLevel === 'fys', offFys:selLevel !== 'fys',
+      onRowClick:this.onRowClick, onMarkerClick:this.onMarkerClick,
+      onLevelClick:this.onLevelClick, closePreview:this.closePreview,
+      openFullProfile:this.openFullProfile,
+      preview, hasPreview:!!preview,
+      themeAttr:this.props.theme === 'dark' ? 'dark' : 'light',
+      showMountain:this.props.showMountain !== false,
+      visTest:this.props.visTestniva !== false,
+    };
+  }
+}
+
+</script>
+</body>
+</html>

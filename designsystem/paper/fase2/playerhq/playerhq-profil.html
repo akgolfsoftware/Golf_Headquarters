@@ -1,3 +1,6 @@
+<!-- FIDELITET: MAL — avvik per rute i fase2/manifest-w3-komplett.md. Mørk modus og tilstander er IKKE definert her; de ligger i fase2/playerhq/w3-base.css.
+     20.08.2026: valgt som ENESTE profil-fasit (fase1/spillerprofil.html er utgått). Utvidet med
+     «hvem ser deg» (navngitte trenere + utmelding), testhistorikk og grupper. -->
 <!doctype html>
 <html lang="nb" data-theme="light">
 <head>
@@ -92,6 +95,31 @@
     </div>
 
     <button class="btn now full" data-od-id="profil-lagre">Lagre profilen</button>
+
+    <!-- Hvem ser deg (20.08.2026): navngitte trenere med innsyn + utmelding.
+         Innsyn er spillerens å gi og ta — å melde seg ut sperres aldri. -->
+    <div class="kort">
+      <span class="eyebrow">Hvem ser deg</span>
+      <div class="les" style="align-items:center"><div><span class="ln">Anders Kristiansen</span><span class="lm">Hovedcoach · ser plan, logg, tester og analyse</span></div><button class="btn sm" type="button" data-od-id="profil-innsyn-fjern-anders">Meld deg ut</button></div>
+      <div class="les" style="align-items:center"><div><span class="ln">Maria Sand</span><span class="lm">Hjelpetrener Elite 1 · ser plan og logg</span></div><button class="btn sm" type="button" data-od-id="profil-innsyn-fjern-maria">Meld deg ut</button></div>
+      <div class="les" style="align-items:center"><div><span class="ln">Øyvind Rohjan sr.</span><span class="lm">Forelder · ser kalender og turneringer</span></div><button class="btn sm" type="button" data-od-id="profil-innsyn-fjern-forelder">Meld deg ut</button></div>
+      <p class="hjelp" style="margin-top:var(--s3)">Melder du deg ut, mister treneren innsynet med én gang og får beskjed. Du kan gi det tilbake når som helst under Personvern og data.</p>
+    </div>
+
+    <div class="kort">
+      <span class="eyebrow">Testhistorikk</span>
+      <div class="les"><div><span class="ln">TrackMan-test · driver</span><span class="lm">28. mai 2026</span></div><span class="lv num">221,4 m · 12,1 m H</span></div>
+      <div class="les"><div><span class="ln">Putt 3–5 fot · 20 baller</span><span class="lm">14. april 2026</span></div><span class="lv num">16 av 20</span></div>
+      <div class="les"><div><span class="ln">Benkpress · 3RM</span><span class="lm">Testuke · 12. januar 2026</span></div><span class="lv num">62,5 kg</span></div>
+      <a class="rad" href="playerhq-tester-hub.html" style="margin-top:var(--s2)" data-od-id="profil-til-tester"><div class="tx"><span class="tn">Alle tester</span><span class="tm">21 protokoller · neste: TrackMan 28. august</span></div><svg class="pil" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></a>
+    </div>
+
+    <div class="kort">
+      <span class="eyebrow">Grupper</span>
+      <div class="les" style="align-items:center"><div><span class="ln">Elite 1 — GFGK</span><span class="lm">Hovedcoach Anders K. · medlem siden januar 2025</span></div><button class="btn sm" type="button" data-od-id="profil-gruppe-ut-elite">Meld deg ut</button></div>
+      <div class="les" style="align-items:center"><div><span class="ln">WANG Toppidrett</span><span class="lm">Program · følger skoleåret</span></div><span class="lv" style="font-family:var(--mono);font-size:10.5px;color:var(--muted)">via skolen</span></div>
+      <p class="hjelp" style="margin-top:var(--s3)">Melder du deg ut av en gruppe, beholder du øktene dine — fellesøktene blir dine egne.</p>
+    </div>
 
     <div class="kort" style="margin-top:var(--s3)">
       <span class="eyebrow">Videre</span>

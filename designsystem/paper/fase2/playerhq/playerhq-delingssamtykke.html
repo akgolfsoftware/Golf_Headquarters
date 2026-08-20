@@ -1,0 +1,112 @@
+<!-- FIDELITET: MAL — avvik per rute i fase2/manifest-utkast-playerhq-delingssamtykke.md (UTKAST, krever godkjenning). Mørk modus og tilstander er IKKE definert her; de ligger i fase2/playerhq/w3-base.css. -->
+<!doctype html>
+<html lang="nb" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Deling · Personvern · AK Golf HQ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Lora:ital,wght@0,400;0,500;1,400&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="w3-base.css">
+<style>
+/* ═══ Delingssamtykke-kort (fase3 — ny 2026-08-17) ═══
+   ÉN komponent, TO steder: /portal/meg/innstillinger/personvern (spilleren
+   samtykker selv, 16+) og /forelder/samtykke (foresatt samtykker for
+   spiller under 16 — samme visuelle kort, annen avsender). Denne fila
+   viser begge kontekstene som demo-tilstander i samme skall siden det er
+   nøyaktig samme komponent, ikke to ulike skjermer.
+   Samtykke er APPEND-ONLY (DelingsSamtykke) — «trekk» oppretter en ny rad
+   med gitt=false, sletter ikke historikken. Æressak: mangler foresatt-
+   samtykke for en mindreårig, vises IKKE en gitt/aktivert bryter noe sted
+   — kun informasjon om at foresatt må gjøre det, med lenke. */
+.samtykkekort{ background:var(--surface); border:1px solid var(--border); border-radius:var(--r);
+  padding:var(--s4); margin-bottom:var(--s3); }
+.samtykkehode{ display:flex; align-items:center; gap:var(--s3); margin-bottom:var(--s3); }
+.samtykkehode .sn{ flex:1; min-width:0; font-size:14px; font-weight:600; }
+.scopelinje{ display:flex; align-items:center; gap:var(--s3); padding:var(--s2) 0; }
+.scopelinje .sx{ flex:1; min-width:0; }
+.scopelinje .st{ display:block; font-size:13px; font-weight:500; }
+.scopelinje .sm{ display:block; font-family:var(--body); font-size:12px; color:var(--muted); margin-top:1px; }
+.venter{ display:flex; gap:var(--s3); align-items:flex-start; background:var(--soft);
+  border:1px dashed var(--border); border-radius:var(--r); padding:var(--s3) var(--s4); margin-top:var(--s3); }
+.venter svg{ flex:none; width:16px; height:16px; margin-top:1px; stroke:var(--muted); stroke-width:1.8; fill:none; }
+.venter p{ margin:0; font-family:var(--body); font-size:12.5px; color:var(--muted); }
+</style>
+</head>
+<body>
+<p class="framehint">Delingssamtykke-kort · 430 px. Under 641 px fyller den skjermen.</p>
+<div class="phone" data-demo-only="true">
+  <header class="topp">
+    <a class="ikon" href="#" aria-label="Tilbake" data-od-id="del-tilbake"><svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg></a>
+    <div style="min-width:0"><h1>Deling</h1><span class="sub" data-tekst-sub>Personvern · hvem ser dataene dine</span></div>
+    <span style="flex:1"></span>
+    <div data-demo-only="true" style="display:flex;gap:4px">
+      <button class="ikon" data-tilstand="spiller-16" aria-pressed="true" aria-label="Demo: spiller 16+ (selv)" data-od-id="del-demo-spiller"><span class="num" style="font-size:10px">S</span></button>
+      <button class="ikon" data-tilstand="mindrearig" aria-pressed="false" aria-label="Demo: spiller under 16 (foresatt)" data-od-id="del-demo-mindrearig"><span class="num" style="font-size:10px">M</span></button>
+      <button class="ikon" data-tilstand="forelder" aria-pressed="false" aria-label="Demo: foreldreportal" data-od-id="del-demo-forelder"><span class="num" style="font-size:10px">F</span></button>
+    </div>
+    <button class="ikon" id="themeBtn" aria-label="Bytt til mørk modus" data-od-id="del-theme"><svg viewBox="0 0 24 24"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></button>
+  </header>
+
+  <main class="kropp">
+
+    <section data-vis="spiller-16">
+      <div class="kort"><p>Del testresultater og statistikk med grupper du er medlem av. Ingen treningsplaner eller meldinger deles noensinne — kun det du krysser av under, og du kan trekke tilbake når som helst.</p></div>
+
+      <div class="samtykkekort">
+        <div class="samtykkehode"><span class="av num" style="width:34px;height:34px;border-radius:999px;background:var(--soft);display:grid;place-items:center;font-size:11px">WT</span><span class="sn">WANG Toppidrett Fredrikstad</span></div>
+        <div class="scopelinje"><div class="sx"><span class="st">Testresultater</span><span class="sm">TrackMan-gates og fysiske tester</span></div><button class="sw" type="button" role="switch" aria-checked="true" aria-label="Del testresultater med WANG på" data-od-id="del-sw-wang-tester"></button></div>
+        <div class="scopelinje"><div class="sx"><span class="st">Stats</span><span class="sm">Snittscore og Strokes Gained</span></div><button class="sw" type="button" role="switch" aria-checked="true" aria-label="Del stats med WANG på" data-od-id="del-sw-wang-stats"></button></div>
+      </div>
+
+      <div class="samtykkekort">
+        <div class="samtykkehode"><span class="av num" style="width:34px;height:34px;border-radius:999px;background:var(--soft);display:grid;place-items:center;font-size:11px">TN</span><span class="sn">Team Norway Golf</span></div>
+        <div class="scopelinje"><div class="sx"><span class="st">Testresultater</span><span class="sm">TrackMan-gates og fysiske tester</span></div><button class="sw" type="button" role="switch" aria-checked="false" aria-label="Del testresultater med Team Norway av" data-od-id="del-sw-tn-tester"></button></div>
+        <div class="scopelinje"><div class="sx"><span class="st">Stats</span><span class="sm">Snittscore og Strokes Gained</span></div><button class="sw" type="button" role="switch" aria-checked="false" aria-label="Del stats med Team Norway av" data-od-id="del-sw-tn-stats"></button></div>
+      </div>
+    </section>
+
+    <section data-vis="mindrearig" hidden>
+      <div class="kort tint">
+        <span class="eyebrow">Under 16 år</span>
+        <p style="margin-top:var(--s2)">Fordi du er under 16, er det foresatte dine som samtykker til deling — ikke deg. De gjør det fra sin egen foreldreportal. Du kan alltid se hva som er delt her.</p>
+      </div>
+
+      <div class="samtykkekort">
+        <div class="samtykkehode"><span class="av num" style="width:34px;height:34px;border-radius:999px;background:var(--soft);display:grid;place-items:center;font-size:11px">WT</span><span class="sn">WANG Toppidrett Fredrikstad</span></div>
+        <div class="scopelinje"><div class="sx"><span class="st">Testresultater</span><span class="sm">Godkjent av foresatt 5. august</span></div><span class="tag up">Deles</span></div>
+        <div class="scopelinje"><div class="sx"><span class="st">Stats</span><span class="sm">Ikke besvart av foresatt ennå</span></div><span class="tag">Venter</span></div>
+      </div>
+    </section>
+
+    <section data-vis="forelder" hidden>
+      <div class="kort"><p><strong>Sofie Kvam</strong> (2011) er medlem av WANG Toppidrett Fredrikstad. Du samtykker på hennes vegne til at gruppen kan se testresultater og statistikk.</p></div>
+
+      <div class="samtykkekort">
+        <div class="samtykkehode"><span class="av num" style="width:34px;height:34px;border-radius:999px;background:var(--soft);display:grid;place-items:center;font-size:11px">WT</span><span class="sn">WANG Toppidrett Fredrikstad</span></div>
+        <div class="scopelinje"><div class="sx"><span class="st">Testresultater</span><span class="sm">Godkjent 5. august 2026</span></div><button class="sw" type="button" role="switch" aria-checked="true" aria-label="Del testresultater på" data-od-id="del-sw-forelder-tester"></button></div>
+        <div class="scopelinje"><div class="sx"><span class="st">Stats</span><span class="sm">Ikke tatt stilling til ennå</span></div><button class="sw" type="button" role="switch" aria-checked="false" aria-label="Del stats av" data-od-id="del-sw-forelder-stats"></button></div>
+      </div>
+
+      <div class="venter"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v4l3 2"/></svg><p>Samtykket lagres med tidspunkt og hvem som ga det. Du kan trekke det tilbake her når som helst — det fjerner Sofie fra Innsyn umiddelbart.</p></div>
+    </section>
+
+  </main>
+</div>
+<div class="sr" id="live" aria-live="polite"></div>
+<script src="w3-demo.js"></script>
+<script>
+(function(){
+  var tekster = {
+    'spiller-16': 'Personvern · hvem ser dataene dine',
+    'mindrearig': 'Personvern · foresatte samtykker for deg',
+    'forelder': 'Foreldreportal · samtykke for Sofie'
+  };
+  document.querySelectorAll('[data-tilstand]').forEach(function(b){
+    b.addEventListener('click', function(){
+      document.querySelector('[data-tekst-sub]').textContent = tekster[this.dataset.tilstand] || '';
+    });
+  });
+})();
+</script>
+</body>
+</html>

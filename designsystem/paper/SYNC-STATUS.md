@@ -1,66 +1,54 @@
 # Sync status
 
+## 20.08.2026 — resynk mot «AK Golf HQ — Claude Paper (1).zip» (3,45 MB, levert av Anders)
+
+Speilet er byte-erstattet med zip-innholdet. **821 filer · 251 HTML** (før: 840 · 254).
+Endringen: 51 nye, 101 endret, 71 fjernet — de fjernede er nesten utelukkende
+opprydding designprosjektet gjorde selv 20.08 (`export/`,
+`design_handoff_rutefasit_agenticos/`, 26 utgåtte `kart/`-ordrer fra juli).
+Full linje-for-linje-oversikt: `CHANGELOG.md` på speilets rot (ny fil, bestilt).
+
+**Zip-en leverer fase 2 av treningsplanleggings-planen** — de åtte skjermene fra
+`docs/gap-designfasit-workbench-2026-08-20.md`, som «utvid seks, tegn to»:
+
+| Skjerm | Resultat |
+|---|---|
+| 1 Workbench-kalender | `fase1/workbench-desktop.html` omskrevet: årstidslinje i d1280 OG m390, skall-økter i begge. `workbench-mobil.html` slettet — m390 bor nå i desktop-fila |
+| 2 Periodemal | **NY** `fase1/workbench-periodemal.html`. `agencyos-periodemal.html` merket utgått |
+| 3 Økt-editoren | `playerhq-okt-detalj.html` + rediger-tilstand, teknikk-dimensjon, motorikk kun på fullsving |
+| 4 Teknisk plan | `playerhq-teknisk-plan.html` + målmatrise, rep-telling, statusrapport med tre kontekster |
+| 5 Live-økta | `playerhq-live-okt.html` + hurtigtapp, FYS-serier, sone-segmenter, spontan drill · `-live-summary.html` + tre stjernerader, pausetid |
+| 6 Gruppeplanlegging | `agencyos-gruppe-detalj.html` + «blir nå din egen», hovedcoach, laster/feil |
+| 7 Spillerprofilen | **Avklart:** `fase2/playerhq/playerhq-profil.html` er eneste fasit; `fase1/spillerprofil.html` merket utgått |
+| 8 Standard/Tour | `playerhq-innstillinger.html` + Visning-gruppe · **NY** `playerhq-onboarding-tillegg.html` |
+
+**Åtte nye komponenter må bygges** (finnes ikke i `_ds_bundle.js`): TallStepper,
+MaalMatrise, HurtigTapper, SettLogger, SoneSegmentLogger, StjerneRad, DagVelger,
+MaaleFelt. Radene er lagt inn i `docs/port/rutefasit.md` §W8.
+
+### MCP-sammenligningen (CLAUDE.md-regelen mot utdatert zip)
+
+Kjørt mot `605a48cc` samme dag. **Zip = prosjekt.** Null filer i prosjektet mangler i
+speilet, og de ni filene som først så ut som avvik var kun et tidsvindu: den første
+MCP-lista i økten ble hentet før Anders' siste lagringer. Verifisert på nytt mot
+`fase2/playerhq` — alle størrelser stemmer eksakt.
+
+Én notis: `playerhq-onboarding-tillegg.html` rapporteres 10 769 B av MCP-en mot 10 709 B
+på disk. Innholdet er verifisert identisk (152 linjer, alle seksjoner og `data-od-id`-er
+til stede) — differansen er tegnkoding i MCP-ens størrelsesrapport, ikke drift.
+
+De tre uhentede fra 17.08 er nå inne: `_ds_bundle.js`, `_adherence.oxlintrc.json` og
+`Rutekart v2 - portering og komponentfasit.html`.
+
+---
+
 ## 17.08.2026 — MCP-sammenligning mot designprosjektet (IKKE en zip)
 
 Kjørt `claude-design`-MCP `list_files depth:-1` mot `605a48cc-81e8-44bd-94d2-07d50a97370a` og
 diffet sti + `size` mot speilet. **Zip-en fra 16.08 21:11 var utdatert mot prosjektet.**
-
-| Fil | Speil (zip) | Prosjekt | Status |
-|---|---|---|---|
-| `kart/rutefasit-for-claude-code.md` | 9 382 B (**v1**, 12.08) | 12 543 B (**v2**, 16.08) | ✅ **synket til v2** |
-| `github.md` | 8 186 B | 8 659 B | ✅ **synket** |
-| `Rutekart v2 - portering og komponentfasit.html` | mangler | 20 060 B | ⬜ **ikke hentet** |
-| `_ds_bundle.js` | 645 078 B | 653 935 B | ⬜ **ikke hentet** (over MCP-ens 256 KiB lesegrense) |
-| `_adherence.oxlintrc.json` | 79 333 B | 79 360 B | ⬜ **ikke hentet** |
-
-**Hvorfor v1→v2 betyr noe:** v2 la til en **Komponenter-kolonne** per rute, porteringsstrategi
-(token-økonomi), modellvalg per oppgaveklasse og skall-pakker. En hel styringsdimensjon manglet
-i zip-en. Repo-kopien ligger i `docs/port/rutefasit.md`.
+`kart/rutefasit-for-claude-code.md` lå som v1 (9 382 B) i zip-en mens prosjektet hadde v2
+(12 543 B) med en helt ny Komponenter-kolonne — en hel styringsdimensjon manglet.
 
 **Lærdom:** zip mot speil målte «0 avvik» hele tiden — driften lå mellom **zip og prosjekt**.
-Kjør én MCP-diff før hver portbølge (se `CLAUDE.md` §Skjermarbeid).
-
-**De tre uhentede** er lavrisiko for portarbeidet (`_ds_bundle.js` + `_adherence` er genererte
-artefakter som kun påvirker lokal rendring av fasit-HTML; Rutekart-HTML-en er menneskelesbar
-utgave av innhold vi nå har i `.md`). De lukkes ved neste zip-leveranse fra Anders.
-
-
-- **Zip:** «AK Golf HQ — Claude Paper (1).zip» — levert 16.08.2026 21:11 (839 filer).
-  Diffet mot 15:41-speilet: **0 endret, 0 slettet, 20 nye** — speilet er nå byte-identisk
-  med zip-en (verifisert med `find`-sammenligning + `diff -r` på `jarvis/`).
-  De 20 nye: **`jarvis/` (15 filer)** — 12 `/meg`-skjermer + `jarvis-base.css`/`.js` +
-  `claude-code-nattsesjon-prompt.md` — og 5 skjermbilder i
-  `design_handoff_rutefasit_agenticos/screenshots/`.
-  **Merk:** de 5 skjermbildene ligger på disk, men er `.gitignore`-t (`screenshots/`, linje 123),
-  så de er IKKE versjonert. I git er speilet derfor 15 filer større, ikke 20 — det er bevisst
-  (repoet versjonerer ikke skjermbilder), men betyr at en fersk `git clone` mangler dem.
-  **`jarvis/`-skjermene er IKKE dekket av `docs/port/rutefasit.md`** (den kjenner bare
-  `/admin/brief (+ meg/dispatch, meg/morgenbrief)`). De styres av `docs/port/PORTPLAN.md` §S0.
-- **Zip (forrige):** AK Golf HQ — Claude Paper.zip — levert 16.08.2026 15:41 (824 filer)
-- **Dato i repo:** 2026-08-16 — **full resynk**, sha256-diffet mot forrige speil:
-  761 identiske · 0 slettet · 6 metafiler endret (`readme.md`, `github.md`,
-  `fase1/FASE-1.md` — økt-ID-eksempler rettet til AK-formel v2, `fase2/manifest-w2-komplett.md`
-  — talent-fasit er nå `playerhq-talent.html`, `_ds_bundle.js`, `_adherence.oxlintrc.json`)
-  · 57 nye filer
-- **Reelt nye fasiter (3):** `fase2/playerhq/playerhq-coach-tilbakemelding.html` ·
-  `playerhq-profil.html` · `playerhq-utstyr.html` — med manifest
-  `fase2/manifest-w3-komplett.md` (inkl. rutekonsolideringer, se checklist §W3)
-- **Handoff-pakke:** `design_handoff_rutefasit_agenticos/` — `agencyos-agenticos-hub.html`
-  og `agencyos-agent-detalj.html` der er **byte-identiske** med filene som alt ligger i
-  `fase2/agencyos/` og er signert i checklisten. Ingen nye rader. `rutefasit.md`-registeret
-  ligger alt i `docs/port/rutefasit.md`.
-- **Øvrig nytt:** 6 rot-HTML-analyser/planer (spec-dokumenter, ikke pixel-fasiter — bl.a.
-  «Min plan»/IUP og Workbench masterplan), 5 `kart/`-notater, `export/design-zip/`
-  (kopi av D1–D6-delleveransen), gfgk-logo-assets
-- **Checklist:** `docs/port/PAPER-ZIP-CHECKLIST.md`
-- **Plan:** `docs/port/PIXEL-PERFECT-PLAN-COMPLETE.md` (v2.0)
-- **Screen map:** `github.md` (i denne mappa)
-
-## Historikk
-
-- Zip (delleveranse), 14.08.2026 23:07 — 27 filer, D1–D6: 6 endret (workbench-desktop/-mobil,
-  agencyos-godkjenninger, forelder-barn, playerhq-hjem-varsler, playerhq-test-detalj),
-  8 nye (workbench-stall(-mobil), agencyos-okonomi, playerhq-betaling, playerhq-gapping,
-  playerhq-ukesdigest m.fl.). Steg 0: `docs/taksonomi-verifikasjon.md` + `docs/fasit-avvik.md`.
-- Zip (3), 09.08.2026 — verifisert byte-identisk med zip (2)-speilet (diff = 0 filer).
-  Gap-analyse: `docs/port/PAPER-ZIP2-SYNC-2026-08-09.md`.
+Kjør én MCP-diff før hver portbølge (se `CLAUDE.md` §Skjermarbeid). Repo-kopien av v2 bor i
+`docs/port/rutefasit.md`.

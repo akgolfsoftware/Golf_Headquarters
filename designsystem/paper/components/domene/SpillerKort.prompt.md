@@ -6,7 +6,7 @@ Spilleren i stallen. Ett treffmål. Kategori er fargeløs tag.
 <SpillerKort name="Øyvind Rohjan" category="Kategori C"
   meta="AK Golf Academy · sist aktiv i går" kpiValue="72,4" kpiLabel="snitt"
   onClick={aapneProfil} dataOdId="stall-oyvind" />
-<SpillerKort name="Emma Berg" category="Junior Utvikling" badge="Venter samtykke" badgeTone="warn" onClick={aapneProfil} />
+<SpillerKort name="Øyvind Rohjan" category="Junior Utvikling" badge="Venter samtykke" badgeTone="warn" onClick={aapneProfil} />
 ```
 
 - Ett treffmål: hele kortet åpner profil-artefaktet. Aldri små ikonknapper

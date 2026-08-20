@@ -7,7 +7,7 @@ Hvem flaten handler om. Alle · grupper · enkeltspillere.
   dataOdId="kalender-kontekst" items={[
     { key: "wang", label: "WANG VG2", group: true, count: 6 },
     { key: "oyvind", label: "Øyvind Rohjan" },
-    { key: "emma", label: "Emma Berg" },
+    { key: "emma", label: "Øyvind Rohjan" },
   ]} />
 ```
 

@@ -1,3 +1,4 @@
+<!-- FIDELITET: PIXEL-FASIT -->
 <!doctype html>
 <html lang="nb" data-theme="light">
 <head>
@@ -184,6 +185,17 @@ button{ font:inherit; color:inherit; }
   font-family:var(--body); font-size:13px; color:var(--muted); }
 .why li{ margin-bottom:var(--s2); }
 
+/* ── rediger-tilstand (20.08.2026) ── */
+.felt2{ margin-bottom:var(--s3); }
+.felt2 label{ display:block; font-family:var(--mono); font-size:10px; letter-spacing:.09em; text-transform:uppercase; color:var(--muted); margin-bottom:var(--s1); }
+.inp{ width:100%; min-height:var(--tap); padding:0 var(--s3); font:inherit; font-size:14px; color:var(--fg); background:var(--surface); border:1px solid var(--border); border-radius:var(--r-sm); }
+textarea.inp{ min-height:72px; padding:var(--s2) var(--s3); font-family:var(--body); resize:vertical; }
+.seg{ display:flex; gap:var(--s1); flex-wrap:wrap; }
+.seg button{ min-height:var(--tap); padding:0 var(--s3); font-size:12.5px; background:var(--surface); border:1px solid var(--border); border-radius:var(--r-sm); cursor:pointer; }
+.seg button[aria-pressed="true"]{ background:var(--cta); color:var(--on-cta); border-color:var(--cta); }
+.step2{ display:inline-flex; align-items:center; gap:var(--s2); }
+.step2 button{ width:var(--tap); height:var(--tap); display:grid; place-items:center; background:var(--surface); border:1px solid var(--border); border-radius:var(--r-sm); font-family:var(--mono); font-size:16px; cursor:pointer; }
+.step2 .val{ font-family:var(--mono); font-size:15px; font-weight:600; min-width:2.5ch; text-align:center; }
 .toast{ position:fixed; left:50%; bottom:96px; transform:translateX(-50%);
   z-index:var(--z-toast); background:var(--fg); color:var(--bg);
   padding:var(--s3) var(--s4); border-radius:var(--r); font-size:13px; }
@@ -209,6 +221,7 @@ button,.btn,summary,a.btn{ min-height:var(--tap); }
     <div data-demo-only="true" style="display:flex;gap:4px">
       <button class="ikon" data-tilstand="fylt" aria-pressed="true" aria-label="Demo: planlagt" data-od-id="okt-demo-fylt"><span class="num" style="font-size:10px">F</span></button>
       <button class="ikon" data-tilstand="gjort" aria-pressed="false" aria-label="Demo: gjennomført" data-od-id="okt-demo-gjort"><span class="num" style="font-size:10px">G</span></button>
+      <button class="ikon" data-tilstand="rediger" aria-pressed="false" aria-label="Demo: rediger" data-od-id="okt-demo-rediger"><span class="num" style="font-size:10px">R</span></button>
       <button class="ikon" data-tilstand="tom" aria-pressed="false" aria-label="Demo: tom" data-od-id="okt-demo-tom"><span class="num" style="font-size:10px">T</span></button>
       <button class="ikon" data-tilstand="laster" aria-pressed="false" aria-label="Demo: laster" data-od-id="okt-demo-laster"><span class="num" style="font-size:10px">L</span></button>
       <button class="ikon" data-tilstand="feil" aria-pressed="false" aria-label="Demo: feil" data-od-id="okt-demo-feil"><span class="num" style="font-size:10px">E</span></button>
@@ -233,18 +246,24 @@ button,.btn,summary,a.btn{ min-height:var(--tap); }
    PlayerEnrollment (inviter-kompis-kandidater fra samme gruppe).
    AK-formel v2: Pyramide_Område_Motorikk_Belastning_Press.
    Demo-kanon: Øyvind Rohjan (spiller), Anders Kristiansen (coach).
-   Økta er o2 fra workbench-mobil.html — samme data, samme formler. */
+   Økta er o2 fra workbench-desktop.html — samme data, samme formler. */
 
+/* Teknikk-dimensjon (VOKABULAR §3.4, 20.08.2026): ÉN per drill, valgt fra
+   områdegruppens liste. Motorikk finnes KUN på fullsving-områder — på
+   nærspill/bunker/putt/fys/bane finnes feltet ikke (ikke grået, ikke tomt). */
+var DIM_VALG = { fullsving:['Sikte','Startretning','Kurve','Treffpunkt'],
+  putt:['Greenlesing','Sikte','Ballstart','Lengdekontroll'],
+  chip:['Landingspunkt','Utrulling','Treffpunkt','Køllevalg'] };
 var OKT = {
   id:'o2', dagNavn:'Tirsdag 4.8', start:'15:00', slutt:'16:30',
   navn:'Innspill · lengdekontroll', akse:'TEK', sted:'Gamle Fredrikstad GK',
   maal:'Ni av tolv innenfor fire meter fra 50–100 m.', tidMin:90,
   drills:[
-    { navn:'Halv sving · kalibrering', reps:15, tidMin:30,
+    { navn:'Halv sving · kalibrering', reps:15, tidMin:30, gruppe:'fullsving', dim:'Treffpunkt',
       f:'TEK_INNSPILL_50_UTEN_BALL_INNENDORS_ALENE' },
-    { navn:'Avstandsstige 50–100 m', reps:30, tidMin:35,
+    { navn:'Avstandsstige 50–100 m', reps:30, tidMin:35, gruppe:'fullsving', dim:'Kurve',
       f:'TEK_INNSPILL_50_LAV_HAST_TRENINGSOMRADE_ALENE' },
-    { navn:'Én ball · én sjanse', reps:12, tidMin:25,
+    { navn:'Én ball · én sjanse', reps:12, tidMin:25, gruppe:'fullsving', dim:'Treffpunkt',
       f:'SLAG_INNSPILL_100_AUTO_BANE_KONKURRANSE' }
   ]
 };
@@ -310,7 +329,7 @@ function drillListe(erGjort){
     if (erGjort) dd.appendChild(hake(RESULTAT.drillsGjort[i]));
     var tx = el('div', 'dtx');
     tx.appendChild(el('span', 'dn2', d.navn));
-    tx.appendChild(el('span', 'dm', d.reps + ' reps · ' + tid(d.tidMin)));
+    tx.appendChild(el('span', 'dm', d.reps + ' reps · ' + tid(d.tidMin) + ' · ' + d.dim));
     tx.appendChild(el('span', 'df', d.f));
     dd.appendChild(tx);
     dw.appendChild(dd);
@@ -352,6 +371,98 @@ function render(){
     var fb = el('button', 'btn now full', 'Prøv igjen'); fb.dataset.odId = 'okt-retry';
     fb.addEventListener('click', function(){ tilstand = 'fylt'; settDemo(); });
     f.appendChild(fb); w.appendChild(f); return;
+  }
+
+  if (tilstand === 'rediger'){
+    /* ── Rediger (20.08.2026) — spilleren eier økta, alt kan endres.
+       Ingen sperrer, ingen validering mot regler. Lagre varsler Anders. ── */
+    var rk = el('div', 'kort');
+    rk.appendChild(el('div', 'eyebrow', 'rediger økt'));
+    [['Navn', OKT.navn, 'text'], ['Sted', OKT.sted, 'text']].forEach(function(fp){
+      var fw = el('div', 'felt2'); fw.style.marginTop = 'var(--s3)';
+      var lb = el('label', null, fp[0]); lb.htmlFor = 'f-' + fp[0]; fw.appendChild(lb);
+      var inp = el('input', 'inp'); inp.type = fp[2]; inp.value = fp[1]; inp.id = 'f-' + fp[0];
+      fw.appendChild(inp); rk.appendChild(fw);
+    });
+    var tidrad = el('div'); tidrad.style.cssText = 'display:flex;gap:var(--s2)';
+    [['Start', OKT.start], ['Slutt', OKT.slutt]].forEach(function(tp){
+      var fw = el('div', 'felt2'); fw.style.flex = '1';
+      var lb = el('label', null, tp[0]); lb.htmlFor = 'f-' + tp[0]; fw.appendChild(lb);
+      var inp = el('input', 'inp num'); inp.type = 'time'; inp.value = tp[1]; inp.id = 'f-' + tp[0];
+      fw.appendChild(inp); tidrad.appendChild(fw);
+    });
+    rk.appendChild(tidrad);
+    var mw = el('div', 'felt2');
+    var mlb = el('label', null, 'Målsetning'); mlb.htmlFor = 'f-maal'; mw.appendChild(mlb);
+    var mta = el('textarea', 'inp'); mta.value = OKT.maal; mta.id = 'f-maal';
+    mw.appendChild(mta); rk.appendChild(mw);
+    w.appendChild(rk);
+
+    OKT.drills.forEach(function(d, i){
+      var dk = el('div', 'kort');
+      dk.appendChild(el('div', 'eyebrow', 'drill ' + (i + 1)));
+      var nw = el('div', 'felt2'); nw.style.marginTop = 'var(--s2)';
+      var nlb = el('label', null, 'Navn'); nlb.htmlFor = 'd-navn-' + i; nw.appendChild(nlb);
+      var ninp = el('input', 'inp'); ninp.type = 'text'; ninp.value = d.navn; ninp.id = 'd-navn-' + i;
+      nw.appendChild(ninp); dk.appendChild(nw);
+      var reprad = el('div', 'felt2');
+      reprad.appendChild(el('label', null, 'Reps'));
+      var st = el('div', 'step2');
+      var mn = el('button', null, '−'); mn.type = 'button'; mn.setAttribute('aria-label', 'Færre reps'); mn.dataset.odId = 'okt-rediger-reps-ned-' + i;
+      var vv = el('span', 'val num', String(d.reps));
+      var pl2 = el('button', null, '+'); pl2.type = 'button'; pl2.setAttribute('aria-label', 'Flere reps'); pl2.dataset.odId = 'okt-rediger-reps-opp-' + i;
+      mn.addEventListener('click', function(){ if (d.reps > 1){ d.reps--; vv.textContent = String(d.reps); } });
+      pl2.addEventListener('click', function(){ d.reps++; vv.textContent = String(d.reps); });
+      st.appendChild(mn); st.appendChild(vv); st.appendChild(pl2);
+      reprad.appendChild(st); dk.appendChild(reprad);
+      var dw2 = el('div', 'felt2');
+      dw2.appendChild(el('label', null, 'Teknikk-dimensjon · velg én'));
+      var sg = el('div', 'seg'); sg.setAttribute('role', 'group'); sg.setAttribute('aria-label', 'Teknikk-dimensjon');
+      DIM_VALG[d.gruppe].forEach(function(dim){
+        var b = el('button', null, dim); b.type = 'button';
+        b.setAttribute('aria-pressed', String(d.dim === dim));
+        b.dataset.odId = 'okt-rediger-dim-' + i + '-' + dim.toLowerCase();
+        b.addEventListener('click', function(){ d.dim = dim;
+          sg.querySelectorAll('button').forEach(function(x){ x.setAttribute('aria-pressed', String(x === b)); }); });
+        sg.appendChild(b);
+      });
+      dw2.appendChild(sg); dk.appendChild(dw2);
+      /* Motorikk: KUN fullsving (VOKABULAR §3.1). På andre områder rendres
+         blokken under ikke i det hele tatt. */
+      if (d.gruppe === 'fullsving'){
+        var mo = el('div', 'felt2');
+        mo.appendChild(el('label', null, 'Motorikk'));
+        var msg = el('div', 'seg'); msg.setAttribute('role', 'group'); msg.setAttribute('aria-label', 'Motorikk');
+        var valgt = d.f.indexOf('UTEN_BALL') > -1 ? 'Uten ball' : d.f.indexOf('LAV_HAST') > -1 ? 'Lav hastighet' : 'Automatikk';
+        ['Uten ball', 'Lav hastighet', 'Automatikk'].forEach(function(m2){
+          var b = el('button', null, m2); b.type = 'button';
+          b.setAttribute('aria-pressed', String(m2 === valgt));
+          b.dataset.odId = 'okt-rediger-mot-' + i + '-' + m2.replace(/ /g, '-').toLowerCase();
+          b.addEventListener('click', function(){
+            msg.querySelectorAll('button').forEach(function(x){ x.setAttribute('aria-pressed', String(x === b)); }); });
+          msg.appendChild(b);
+        });
+        mo.appendChild(msg); dk.appendChild(mo);
+      }
+      var fj = el('button', 'btn sm', 'Fjern drill'); fj.type = 'button'; fj.dataset.odId = 'okt-rediger-fjern-' + i;
+      fj.addEventListener('click', function(){ toast('Drillen fjernes når du lagrer'); });
+      dk.appendChild(fj);
+      w.appendChild(dk);
+    });
+    var leggtil = el('button', 'btn full', 'Legg til drill'); leggtil.type = 'button'; leggtil.dataset.odId = 'okt-rediger-ny-drill';
+    leggtil.addEventListener('click', function(){ toast('Drillbiblioteket åpnes i et ark'); });
+    w.appendChild(leggtil);
+    var lr = el('div'); lr.style.cssText = 'display:flex;gap:var(--s2);margin-top:var(--s4)';
+    var lagre = el('button', 'btn now', 'Lagre endringer'); lagre.type = 'button'; lagre.dataset.odId = 'okt-rediger-lagre'; lagre.style.flex = '1';
+    lagre.addEventListener('click', function(){ tilstand = 'fylt'; settDemo(); toast('Lagret — Anders får beskjed'); });
+    var avbryt = el('button', 'btn', 'Avbryt'); avbryt.type = 'button'; avbryt.dataset.odId = 'okt-rediger-avbryt';
+    avbryt.addEventListener('click', function(){ tilstand = 'fylt'; settDemo(); });
+    lr.appendChild(lagre); lr.appendChild(avbryt);
+    w.appendChild(lr);
+    var e2 = el('div', 'eier'); e2.style.marginTop = 'var(--s4)';
+    e2.appendChild(el('span', null, 'Alt her er ditt å endre. Ingen regler sperrer — Anders får beskjed om endringene, ikke en forespørsel.'));
+    w.appendChild(e2);
+    return;
   }
 
   if (tilstand === 'gjort'){
@@ -423,7 +534,10 @@ function render(){
   start.href = '../../fase1/playerhq-live-brief.html'; start.dataset.odId = 'okt-start';
   var flytt = el('a', 'btn', 'Flytt økta');
   flytt.href = '../../fase1/playerhq-plan.html'; flytt.dataset.odId = 'okt-flytt';
-  rad2.appendChild(start); rad2.appendChild(flytt);
+  var rediger = el('button', 'btn', 'Rediger');
+  rediger.type = 'button'; rediger.dataset.odId = 'okt-rediger';
+  rediger.addEventListener('click', function(){ tilstand = 'rediger'; settDemo(); });
+  rad2.appendChild(start); rad2.appendChild(flytt); rad2.appendChild(rediger);
   nb.appendChild(rad2);
   w.appendChild(nb);
 
