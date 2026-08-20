@@ -2,6 +2,12 @@
 
 Samlet fra fem felt-gjennomganger: relevans-matrise, AI-forberedelse, onboarding/fasiliteter, gruppesynk, tilgangsskille og helhets-hull. Alt merket (?) er førsteutkast som venter på Anders' korrigering. Dato: 20.08.2026.
 
+**Historisk dokument — §1 er delvis erstattet 20.08 (runde 2, fase 0).** Relevans-matrisen
+under er førsteutkastet; gjeldende fasit er
+`docs/relevans-matrise-treningsplanlegging-2026-08-20-v2.md`, som blant annet retter putt
+til seks bånd, FYS til tre områder, én dimensjon per drill (ikke flere), og at BANE ikke er
+bundet til pyramide SPILL. Beholdt uendret her som logg over hvordan konklusjonen ble nådd.
+
 ---
 
 ## 1. Relevans-matrisen — førsteutkast

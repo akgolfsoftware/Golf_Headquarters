@@ -1,11 +1,26 @@
 # Relevans-matrisen v2 — treningsplanlegging
 
-**Status: FORSLAG, venter Anders' korrigering (fase 0.1).** Reviderer førsteutkastet i
+**Status: DELVIS BEKREFTET (rettet 2. gang 20.08.2026).** Reviderer førsteutkastet i
 `docs/gap-evaluering-treningsplanlegging-2026-08-20.md` §1 etter Anders' eksplisitte
 beslutning 20.08: *«Motorikk-trinnene UTEN_BALL / LAV_HAST / AUTO gjelder KUN fullsving.
 Ingenting på nærspill eller putt har dem.»* Det forrige utkastet antok motorikk også på
 CHIP/PITCH/LOB — det er rettet her. Alt merket **(?)** er fortsatt uavklart. Alt annet er
 Claudes forslag til fasit — stryk/korriger fritt.
+
+**Rettelser samme dag, runde 2 (Anders):**
+- Putting er **seks** bånd, ikke fem: 0–3 · 3–5 · 5–10 · 10–25 · 25–40 · 40+ fot
+  (10–40-båndet delt i to). Rettet i `docs/FASIT-AK-GOLF-HQ.md` og under.
+- FYS er **tre** områder, ikke to: **Styrke · Kondisjon · Bevegelighet** (kondisjon lagt
+  til, mobilitet omdøpt bevegelighet — matcher spec-ens profilbeskrivelse «mer
+  bevegelighet, mer kondisjon, mer styrke»).
+- **Én drill kan IKKE bære flere egne dimensjoner samtidig** — kun én. (Rettet ned fra
+  forslaget «flere, med dominant-markering».)
+- **Dimensjonene blir en egen, sjetteanalyseakse** — bekreftet.
+- **BANE er ikke låst til pyramide SPILL.** En BANE-drill kan stå under TEK (teknisk
+  fokus på banen), SLAG (spesifikt golfslag på banen), SPILL (strategi/scoring) eller TURN
+  (turneringsspill) — pyramide og område er uavhengige akser overalt, også for BANE.
+  Grupperingen «Fullsving/Nærspill/Putting/FYS/Spill» under er kun for lesbarhet, ikke en
+  pyramide-binding.
 
 **Kilder:** `docs/spec-treningsplanlegging-2026-08-19.md` §«Parameter-relevans per område»,
 `docs/gap-evaluering-treningsplanlegging-2026-08-20.md` §1 og §7 (spørsmål 1–3),
@@ -71,8 +86,12 @@ krever fart gjennom sanden.
 | PUTT_0_3 | Ballstart · sikte (dominante) · greenlesing (lav) · lengdekontroll (nær irrelevant) | Normal — INNENDØRS = puttematte/simulator |
 | PUTT_3_5 | Ballstart · sikte · greenlesing (jevnt) | Normal |
 | PUTT_5_10 | Alle fire likeverdige: greenlesing · sikte · ballstart · lengdekontroll | Normal |
-| PUTT_10_40 | Lengdekontroll · greenlesing (dominante) · ballstart | Normal |
+| PUTT_10_25 | Greenlesing · lengdekontroll (begge dominante) · ballstart | Normal |
+| PUTT_25_40 | Lengdekontroll (dominant) · greenlesing | Normal |
 | PUTT_40_PLUSS | Lengdekontroll (dominant) · greenlesing | Normal |
+
+**Rettet 20.08 (runde 2):** 10–40-båndet er delt i PUTT_10_25 og PUTT_25_40 — seks bånd
+totalt, ikke fem. Se `docs/FASIT-AK-GOLF-HQ.md`.
 
 Faglig begrunnelse uendret: putting har ingen hastighetstrapp — slaget er allerede
 lavhastighet, og læringen ligger i de fire dimensjonene (greenlesing = persepsjon, sikte =
@@ -80,24 +99,33 @@ oppstilling, ballstart = treffkvalitet, lengdekontroll = tempo).
 
 ## FYS — motorikk NEI, egne dimensjoner NEI
 
+**Rettet 20.08 (runde 2): tre områder, ikke to.** KONDISJON lagt til; MOBILITET omdøpt
+BEVEGELIGHET (norsk framfor anglisisme, samme begrep).
+
 | Område | Egne teknikk-dimensjoner | Belastning/press |
 |---|---|---|
 | STYRKE | Ingen — erstattes av FYS-parametrene fra spec-en: serier · reps · pause · RIR · vekt | Skjules i UI — lagres som `INNENDØRS`/`ALENE` default |
-| MOBILITET | Ingen | Skjules i UI — lagres som `INNENDØRS`/`ALENE` default |
+| KONDISJON | Ingen | Skjules i UI — lagres som `INNENDØRS`/`ALENE` default |
+| BEVEGELIGHET | Ingen | Skjules i UI — lagres som `INNENDØRS`/`ALENE` default |
 
-Profilbredde (bevegelighet/kondisjon/styrke) ligger på FYS-programmet, ikke på den enkelte
-drillen — se `docs/fys-ovelsesbank-2026-08-20.md`.
+Profilbredde (bevegelighet/kondisjon/styrke) er nå direkte de tre FYS-områdene selv, ikke
+et frittstående profilfelt på FYS-programmet — se `docs/fys-ovelsesbank-2026-08-20.md`
+for øvelsesbanken (**åpent punkt:** loggeenhet for KONDISJON, se under).
 
-## Spill — motorikk NEI (auto AUTO), egen dimensjon JA
+## BANE — motorikk NEI, egen dimensjon JA (ikke låst til pyramide SPILL)
+
+**Rettet 20.08 (runde 2):** BANE er et **område**, ikke en pyramide-binding. En BANE-drill
+kan stå under TEK (teknisk fokus mens man spiller banen), SLAG (trene et spesifikt
+golfslag på banen), SPILL (strategi/scoring) eller TURN (turneringsspill) — bekreftet av
+Anders. Overskriften «Spill» i utkast 1 antydet feilaktig at BANE hørte til pyramide SPILL
+alene; den er kun en lesbarhets-gruppering her, ikke en regel.
 
 | Område | Egne teknikk-dimensjoner (forslag) | Belastning/press |
 |---|---|---|
 | BANE | Spilleformat (treningsrunde/scoringsrunde/simulering) · strategioppgave (DECADE, buffer, Tiger Five, 8-sekundersregelen) · antall hull | Belastning auto-foreslås `BANE` (`KONKURRANSE` i turneringsblokk); press er hovedaksen og fullt relevant |
 
-**(?) uavklart:** om BANE i praksis alltid skal ha motorikk satt til `AUTO` bak kulissene
-(for analysekonsistens på tvers av områder) eller om feltet skal være helt fraværende som
-for nærspill/putt. Forslag: fraværende — samme mønster som resten av ikke-fullsving-
-områdene, enklere regel («motorikk finnes kun på fem områder»).
+Motorikk fraværende for BANE (samme mønster som nærspill/putt/FYS) — motorikk finnes kun
+på de fem fullsving-områdene, ingen unntak.
 
 ---
 
@@ -106,12 +134,16 @@ områdene, enklere regel («motorikk finnes kun på fem områder»).
 | Gruppe | Enhet |
 |---|---|
 | Fullsving + nærspill (TEE_TOTAL … LOB, BUNKER) | Slag |
-| Putting (alle fem bånd) | Putter |
+| Putting (alle seks bånd) | Putter |
 | BANE | Hull |
-| STYRKE / MOBILITET | Serier × reps |
+| STYRKE | Serier × reps |
+| KONDISJON | **(?) uavklart** — «serier × reps» passer ikke løping/sykling/roing. Forslag:
+  minutter (varighet) som hovedenhet, distanse (km) som valgfritt tilleggsfelt |
+| BEVEGELIGHET | Minutter (varighet) — mobilitetsøkter måles i tid, ikke reps, i praksis |
 
-Live-øktas +5/+10/+25-knapper gjelder golfområdene (slag/putter); FYS logger per serie
-(allerede besluttet i spec-en); BANE logger per hull.
+Live-øktas +5/+10/+25-knapper gjelder golfområdene (slag/putter); STYRKE logger per serie
+(allerede besluttet i spec-en); BANE logger per hull; KONDISJON/BEVEGELIGHET trenger egen
+loggemekanikk i live-økta (timer-basert, ikke reps-basert) — se åpne punkter.
 
 ---
 
@@ -122,8 +154,9 @@ Live-øktas +5/+10/+25-knapper gjelder golfområdene (slag/putter); FYS logger p
   segmentet (f.eks. `TEK_CHIP_TRENINGSOMRADE_ALENE`, ikke `TEK_CHIP_null_...`).
 - Egne teknikk-dimensjoner lagres som typet enum per område i én tabell
   (`OmradeDimensjon`: `omrade` + `kode`), slik at analysen kan krysse «lengdekontroll-
-  putting under OBSERVERT-press» like presist som formelaksene. En drill kan bære **flere**
-  dimensjoner samtidig (forslag — se åpne punkter).
+  putting under OBSERVERT-press» like presist som formelaksene. **En drill kan bære KUN ÉN
+  dimensjon** — bekreftet av Anders 20.08 (rettet ned fra forslaget om flere). Dimensjonene
+  utgjør analysens **sjette akse** — også bekreftet.
 - BUNKER får i tillegg et eget `sandtrinn`-felt (`UTEN_BALL_I_SAND` | `MED_BALL`), separat
   fra den generelle motorikk-enumen — det er bunkers eneste bruk av en trappe-lignende verdi.
 - Øktmaler («full AK-formel» klar til bruk) må ikke lenger anta at alle fem formelakser
@@ -132,11 +165,20 @@ Live-øktas +5/+10/+25-knapper gjelder golfområdene (slag/putter); FYS logger p
 
 ## Fortsatt åpne punkter i matrisen
 
-1. Kan en drill bære **flere** egne dimensjoner samtidig, eller kun én dominerende? Forslag:
-   flere, med valgfri markering av «dominant» — matcher hvordan Anders selv beskriver
-   vektingen over (f.eks. «lengdekontroll dominant» på PUTT_40_PLUSS).
-2. Skal dimensjonene inn som **egen, sjette analyseakse** i analysedelen, eller forbli en
-   ren filtreringsverdi på drillen? Spec-ens analysedel nevner i dag kun de fem
-   formelaksene. Forslag: egen akse — den er billig å legge til nå og umulig å rekonstruere
-   i etterkant hvis den ikke fanges fra v1.
-3. BANE-spørsmålet over (motorikk fraværende vs. auto-`AUTO`).
+Punkt 1–3 fra forrige runde er nå **bekreftet** (kun én dimensjon per drill, egen sjette
+akse, BANE er pyramide-uavhengig med motorikk fraværende) — se rettelsene øverst i
+dokumentet. Gjenstående etter runde 2:
+
+1. **Loggeenhet for KONDISJON** i live-økta og datamodellen — minutter (+ valgfri distanse)
+   er forslaget, ikke bekreftet. Påvirker om FYS-logg-modellen (`FysOvelseRad`: reps/vekt)
+   må utvides med et tid/distanse-alternativ, eller om KONDISJON trenger sin egen
+   logg-variant.
+2. **«Bevegelighet» vs. «Mobilitet»** i UI-tekst og enum-navn — forslått omdøpt til
+   BEVEGELIGHET her; `DrillFasilitet`/skjema bruker fortsatt engelsk-inspirerte navn andre
+   steder (se gotchas §i18n-beredskap: ASCII-enum, norsk visningslag) — ingen konflikt i
+   praksis, men bør nevnes eksplisitt i fase 1-migreringen.
+3. Om vektingen på putting-dimensjonene (f.eks. «lengdekontroll dominant») skal lagres som
+   et strukturert felt, eller forbli veiledende tekst i denne matrisen alene — nå som en
+   drill kun kan bære én dimensjon, faller spørsmålet delvis bort (vektingen ER valget av
+   hvilken ene dimensjon som velges), men selve *rekkefølgen* i tabellen (hvilken er mest
+   naturlig default per bånd) er fortsatt kun et forslag.

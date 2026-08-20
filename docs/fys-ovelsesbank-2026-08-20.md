@@ -7,6 +7,26 @@ mer kondisjon, mer styrke — individuell fordeling per spiller). Faglig forankr
 plyometrikk — jf. CLAUDE.md §4. Stryk/legg til fritt; dette er innlastingslisten, ikke en
 ferdig fasit.
 
+**Rettet 20.08 (runde 2, Anders):** FYS-området i `docs/FASIT-AK-GOLF-HQ.md` er nå
+**Styrke · Kondisjon · Bevegelighet** (tre offisielle områdekoder — kondisjon lagt til,
+mobilitet omdøpt bevegelighet). De syv arbeidskategoriene under er beholdt for lesbarhet i
+øvelsesbanken (de gir bedre struktur for coach enn tre grove bøtter), men hver kategori
+merkes nå med hvilken av de tre offisielle områdekodene den lagres under:
+
+| Arbeidskategori | Offisiell områdekode |
+|---|---|
+| Styrke — underkropp / overkropp / kjerne-rotasjon | `STYRKE` |
+| Power/plyometri | `STYRKE` (kraftutvikling er en styrke-underkategori, ikke egen kode) |
+| Mobilitet (nå: Bevegelighet) | `BEVEGELIGHET` |
+| Kondisjon | `KONDISJON` |
+| Stabilitet/balanse | `STYRKE` (nevromuskulær kontroll trenes som styrke i praksis) |
+
+`ExerciseDefinition.tags` bærer arbeidskategorien som fritekst-tag for filtrering i UI;
+`pyramidArea = FYS` + et nytt `omrade`-felt (STYRKE/KONDISJON/BEVEGELIGHET) er den
+formelle koblingen mot analysen. **Åpent punkt:** om Power/plyometri og
+Stabilitet/balanse virkelig hører under STYRKE, eller om de bør bli egne underkategorier
+— ikke besluttet, kun forslag over.
+
 **Datamodell:** hver rad blir én `ExerciseDefinition` med `pyramidArea = FYS`,
 `muscleGroups` (allerede i skjema) og `description`. Serier/reps/pause/RIR/vekt settes per
 `FysOvelseRad` når øvelsen legges i en spillers program — ikke på øvelsesdefinisjonen
@@ -127,7 +147,7 @@ innlasting.
 | Broad jump til stick | Quadriceps, glutes | Eksplosivitet + landingskontroll |
 | Single-arm medisinballkast | Skulder, core, rotasjon | Ettarms overføring, nær golfsvingens asymmetri |
 
-## Mobilitet (24)
+## Mobilitet / Bevegelighet (24)
 
 | Øvelse | Fokus | Notat |
 |---|---|---|
@@ -157,6 +177,10 @@ innlasting.
 | Ryggliggende knerulling (lumbar rotation) | Korsrygg | Lav-intensiv mobilisering |
 
 ## Kondisjon (14)
+
+**Loggeenhet uavklart (jf. relevans-matrise v2 §åpne punkter):** disse øvelsene passer
+ikke serier × reps. Forslag: minutter som hovedenhet, distanse (km) som valgfritt
+tilleggsfelt — venter Anders' bekreftelse før `FysOvelseRad` utvides.
 
 | Øvelse | Type | Notat |
 |---|---|---|

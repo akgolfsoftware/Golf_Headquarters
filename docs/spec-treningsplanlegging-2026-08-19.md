@@ -41,7 +41,7 @@ Alt her er besluttet av Anders med mindre annet er merket. Redigér fritt.
 | Parameter | Merknad |
 |---|---|
 | Pyramide | FYS/TEK/SLAG/SPILL/TURN |
-| Område | TEE_TOTAL … BANE (17-listen i fasiten) |
+| Område | TEE_TOTAL … BANE (områdelisten i fasiten — 19 områder etter 20.08-rettelsen, se under) |
 | Motorikk | UTEN_BALL / LAV_HAST / AUTO — gjelder KUN fullsving (Anders 20.08); nærspill og putt har ikke motorikk-trinn |
 | Belastning | INNENDØRS / TRENINGSOMRÅDE / BANE / KONKURRANSE |
 | Press | ALENE / OBSERVERT / KONKURRANSE / TURNERING |
@@ -427,16 +427,34 @@ FysOvelseRad manuelt, med øvelser fra øvelsesbanken (fase 0.3). Automatisk
 programforslag fra fysiske testresultater er eksplisitt v2 (spec-ens §FYS-økter,
 punkt «v2 — VIKTIG»). Ingen endring i denne bekreftelsen — kun eksplisitt «ja».
 
+## Rettelser 20.08, runde 2 (Anders — bekreftet, ikke lenger forslag)
+
+- **Putting er seks bånd, ikke fem:** 0–3 · 3–5 · 5–10 · 10–25 · 25–40 · 40+ fot
+  (10–40-båndet delt i to). Rettet i `docs/FASIT-AK-GOLF-HQ.md`.
+- **FYS er tre områder, ikke to:** Styrke · Kondisjon · Bevegelighet (kondisjon lagt til,
+  mobilitet omdøpt bevegelighet — matcher profilbeskrivelsen over ordrett).
+- **Områdelisten er nå 19 områder, ikke 17** — «17-listen» er et historisk navn, ikke et
+  krav om å holde tallet.
+- **En drill kan bære KUN ÉN egen teknikk-dimensjon**, ikke flere samtidig.
+- **Dimensjonene er en egen, sjette analyseakse** — bekreftet.
+- **BANE er ikke bundet til pyramide SPILL.** En BANE-drill kan stå under TEK, SLAG
+  (golfslag), SPILL eller TURN (turnering) — pyramide og område er alltid uavhengige akser.
+
+Fullt utdypet i `docs/relevans-matrise-treningsplanlegging-2026-08-20-v2.md`.
+
 ## Ikke avklart ennå (intervjuet fortsetter)
 
 - Egne dimensjoner for bunker og fullsving — utkast i
   `docs/relevans-matrise-treningsplanlegging-2026-08-20-v2.md` (fase 0.1), venter Anders'
   korrigering
+- **Loggeenhet for KONDISJON** (nytt FYS-område) — minutter + valgfri distanse er
+  forslaget, ikke bekreftet
 - Varslinger og signal-lag — utsatt (Anders 20.08: ses på senere)
 - FYS-øvelsesbanken: innlastingsplanen i `docs/fys-ovelsesbank-2026-08-20.md` (fase 0.3)
-  venter Anders' godkjenning
-- Relevans-matrisens (?)-celler i v2-matrisen (fase 0.1) korrigeres av Anders
-- De tre punktene i «Fase 0 — forslag til lukking» over venter Anders' svar
+  venter Anders' godkjenning, inkl. om Power/plyometri og Stabilitet/balanse hører under
+  STYRKE eller bør bli egne underkategorier
+- Relevans-matrisens gjenstående (?)-celler i v2-matrisen (fase 0.1) korrigeres av Anders
+- De tre punktene i «Fase 0 — forslag til lukking» over venter fortsatt Anders' svar
 
 ---
 
@@ -459,7 +477,7 @@ treningsblokk uten å falle tilbake på Notion/regneark.
 
 1. V2-øktmodellen (`TrainingSessionV2` → `TrainingDrillV2` → `DrillLogV2`) gjøres
    kanonisk. Dobbeltskriving til de tre andre øktfamiliene fjernes. v2-vokabular og typet
-   17-område i skjema. Nytt belastnings-felt.
+   19-område i skjema (områdelisten, se rettelsene 20.08 runde 2). Nytt belastnings-felt.
 2. Tre plannivåer i lagringen: årsplan, periode, økt. Uke og dag er **beregnede
    visninger** av øktdatoen (uke-helpers, Oslo-korrekt) — ikke egne rader.
 3. Kalender: uke (mobil-standard) + måned (desktop) + eksisterende årsplan-tidslinje med

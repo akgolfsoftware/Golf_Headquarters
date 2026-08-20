@@ -46,7 +46,10 @@ Nedenfra og opp. Visningsrekkefølge, ikke viktighets-hierarki.
 
 ## Treningsområder
 
-Putteavstander i fot, resten i meter.
+Putteavstander i fot, resten i meter. **Rettet 20.08.2026 (Anders, fase 0-korrigering):**
+putt er nå **seks** bånd (var fem — 10–40 delt i to), og FYS er nå **tre** områder (var to
+— kondisjon lagt til, mobilitet omdøpt bevegelighet). Listen er dermed **19 områder**, ikke
+17 — «17-listen» er et historisk navn og oppdateres ikke lenger etter antallet.
 
 | Kode | Navn |
 |---|---|
@@ -62,14 +65,16 @@ Putteavstander i fot, resten i meter.
 | PUTT_0_3 | Putt 0–3 fot |
 | PUTT_3_5 | Putt 3–5 fot |
 | PUTT_5_10 | Putt 5–10 fot |
-| PUTT_10_40 | Putt 10–40 fot |
+| PUTT_10_25 | Putt 10–25 fot |
+| PUTT_25_40 | Putt 25–40 fot |
 | PUTT_40_PLUSS | Putt 40+ fot |
 | STYRKE | Styrke (fysisk) |
-| MOBILITET | Mobilitet (fysisk) |
+| KONDISJON | Kondisjon (fysisk) |
+| BEVEGELIGHET | Bevegelighet (fysisk) |
 | BANE | Banespill |
 
-Merk: koden har fortsatt en eldre 17-liste (egen INNSPILL_0_50, putt i sju bånd).
-Denne tabellen vinner — koden oppdateres til den.
+Merk: koden har fortsatt en eldre liste (egen INNSPILL_0_50, putt i sju bånd, kun
+STYRKE/MOBILITET på FYS). Denne tabellen vinner — koden oppdateres til den i fase 1.
 
 ## AK-formelen
 
