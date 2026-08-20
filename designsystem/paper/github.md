@@ -3,13 +3,19 @@ branch: main
 path: docs/port
 
 ## Last sync
-date: 2026-08-16
+date: 2026-08-20T08:29:00Z
 
 ### Updated in this project
-- Rutekart v2: `Rutekart v2 - portering og komponentfasit.html` — porteringsstrategi (én sesjon per mal, varianter uten fasit-HTML), modellvalg per oppgaveklasse (Opus/Sonnet/Haiku), skall-pakker, og komponentfasit per rute uten egen fasit (designsystemets komponentnavn).
-- `kart/rutefasit-for-claude-code.md` omskrevet til v2 med samme innhold — legges i repoet som `docs/port/rutefasit.md`; kontrakten + Claude-følelsen anbefales inn i repoets `CLAUDE.md`.
+- Lest ny styringsstruktur etter repo-oppryddingen 17.08 (~78 utgåtte dokumenter slettet): `GYLDIGHET.md` (rangordning), ny `PORTPLAN.md` (24 mal-fasiter → 164 ruter; Fase A med 10 A1-spørsmål til Anders; 25 av 54 rader stryker én-linje-testen; startklare sesjoner S3/S9/S17/S22/S23).
+- Status 17.08: 40 `[x]` · 41 `[~]` · 4 `[ ]`; signering er flaskehalsen (SCREENTEST_PASSWORD-rotasjon). Rutefasit v2 (med Komponenter-kolonne) ligger nå i repoet som `docs/port/rutefasit.md`.
+- Jarvis-sporet: 12 fasiter i speilet, 3 portet (PR #532 draft). Ingen kodeendringer som treffer skjermkartet — ingen skjermer rebygget.
+- Opprydding etter repoets 17.08-regel (erstattede dokumenter slettes): fjernet `export/` (design-zip + gamle workbench-standaloner), `design_handoff_rutefasit_agenticos/`, `Rutekart - alle ruter uten egen fasit.html` (v1 → v2 står), `kart/rutefasit-for-claude-code.md` (autoritativ i repo: `docs/port/rutefasit.md`), `fase1/workbench-mobil.html` (m390 bor i ny `workbench-desktop.html`; alle 15 innlenker rettet) og 28 utgåtte kart/-ordre/statusfiler (29.07–05.08). Ny fasit skjerm 1: Workbench-kalenderen (erstattet `fase1/workbench-desktop.html`); `VOKABULAR.md` oppdatert (19 områder, 6 puttebånd, merking per drill).
 
 ## Sync history
+
+### 2026-08-16
+- Rutekart v2: `Rutekart v2 - portering og komponentfasit.html` — porteringsstrategi (én sesjon per mal, varianter uten fasit-HTML), modellvalg per oppgaveklasse (Opus/Sonnet/Haiku), skall-pakker, og komponentfasit per rute uten egen fasit (designsystemets komponentnavn).
+- `kart/rutefasit-for-claude-code.md` omskrevet til v2 med samme innhold — legges i repoet som `docs/port/rutefasit.md`; kontrakten + Claude-følelsen anbefales inn i repoets `CLAUDE.md`.
 
 ### 2026-08-12
 

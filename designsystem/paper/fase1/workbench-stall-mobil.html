@@ -541,7 +541,7 @@ button,.chip,summary,input,textarea,[role="button"]{ min-height:var(--tap); }
   letter-spacing:.06em; text-transform:uppercase; }
 
 /* ── Stallraden: én spiller, én dag, som tidsstripe ──────────────
-   Stripa er 05:00–23:00. Den er ikke en kalender du redigerer i — den er
+   Stripa er 06:00–22:00. Den er ikke en kalender du redigerer i — den er
    en tetthetsvisning som svarer «når er hun ledig?» på et blikk.
    Redigering skjer i arket, der treffmålene er 48 px. */
 .stall{ padding:var(--s2) 0 var(--s5); }
@@ -747,7 +747,7 @@ button,.chip,summary,input,textarea,[role="button"]{ min-height:var(--tap); }
 
 var STALL = [
   { id:'oyvind', n:'Øyvind Rohjan', ini:'ØR', alder:17, skole:'WANG', gr:['perf'] },
-  { id:'emma',   n:'Øyvind Rohjan',   ini:'ØR', alder:15, skole:'WANG', gr:['perf','jc'] },
+  { id:'emma',   n:'Emma Sæther',   ini:'ES', alder:15, skole:'WANG', gr:['perf','jc'] },
   { id:'markus', n:'Markus Lien',   ini:'ML', alder:16, skole:'WANG', gr:['jc'] },
   { id:'sara',   n:'Sara Bø',       ini:'SB', alder:14, skole:'GFGK', gr:['jc'] },
   { id:'jonas',  n:'Jonas Five',    ini:'JF', alder:15, skole:'WANG', gr:['jc'] },
@@ -818,9 +818,9 @@ var LOGG = [
   { t:'i går', x:'Coachtime med Nora Dahl bekreftet torsdag 13:00', hvem:'booking', varsel:null }
 ];
 
-/* Stripa dekker 05:00–23:00. Timene før og etter finnes i planen, men ikke
+/* Stripa dekker 06:00–22:00. Timene før og etter finnes i planen, men ikke
    i stripa — de vises i arket, der plassen er. */
-var S_FRA = 5 * 60, S_TIL = 23 * 60;
+var S_FRA = 6 * 60, S_TIL = 22 * 60;
 var NAA = { dag:3, min:17 * 60 + 24 };
 
 function minutter(hhmm){ var p = String(hhmm).split(':'); return (+p[0]) * 60 + (+p[1]); }

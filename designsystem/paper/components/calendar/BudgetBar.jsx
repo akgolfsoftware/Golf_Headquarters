@@ -52,12 +52,15 @@ const med = (n, e) => tall(n) + "\u00A0" + e;
    «overstyr med begrunnelse» — aldri som sperre. Sperren er teknisk billig
    og faglig feil: coachen vet ting modellen ikke vet.
 
-   Komponenten regner ikke. Den viser tall konsumenten har regnet, fordi
-   invariantene bor i CANON og ikke i et UI-bibliotek. */
+   Komponenten regner ikke. Den viser tall konsumenten har regnet.
+
+   18.08.2026: treningsreglene er låst opp. Uten min/max finnes det ingen
+   ramme å fylle — da tegnes verken spor eller skala, bare tall og fordeling. */
 export function BudgetBar({
   hours = 0, min, max, unit = "t", distribution = [], keyFigures = [],
   violations = [], onOverride, dataOdId = "budsjett"
 }) {
+  const harVindu = min !== undefined || max !== undefined;
   const tak = Math.max(max || 0, hours) * 1.15 || 1;
   const pct = (v) => Math.max(0, Math.min(100, (v / tak) * 100));
   const over = max !== undefined && hours > max;
@@ -69,6 +72,7 @@ export function BudgetBar({
         <span className="akhq-bb-lab">Ukevolum</span>
         <span className="akhq-bb-sum">{med(hours, unit)}{min !== undefined && max !== undefined ? " av " + tall(min) + "–" + med(max, unit) : ""}</span>
       </div>
+      {harVindu && (<>
       <div className="akhq-bb-spor" role="img"
         aria-label={"Ukevolum " + tall(hours) + " " + unit + (min !== undefined ? ", periodens vindu " + tall(min) + " til " + tall(max) + " " + unit : "") + (over ? ", over taket" : under ? ", under minimum" : ", innenfor")}>
         <div className={"akhq-bb-fyll" + (over ? " akhq-bb-fyll--over" : under ? " akhq-bb-fyll--under" : "")} style={{ width: pct(hours) + "%" }}></div>
@@ -77,6 +81,7 @@ export function BudgetBar({
         )}
       </div>
       <div className="akhq-bb-skala"><span>0</span><span>{min !== undefined ? "min " + med(min, unit) : ""}</span><span>{max !== undefined ? "maks " + med(max, unit) : ""}</span></div>
+      </>)}
       {distribution.length > 0 && (<>
         <div className="akhq-bb-fordeling" role="img" aria-label={"Fordeling: " + distribution.map((d) => d.area + " " + tall(d.hours) + " " + unit).join(", ")}>
           {distribution.map((d) => <div key={d.area} className="akhq-bb-del" style={{ width: (d.hours / sum) * 100 + "%", background: FARGE[d.area] || "var(--mid)" }}></div>)}

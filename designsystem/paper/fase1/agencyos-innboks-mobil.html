@@ -825,7 +825,7 @@ function renderArk(){
     var apn = el('button','btn', erAgent ? 'Åpne i AgenticOS' : 'Åpne i Workbench');
     apn.type = 'button'; apn.dataset.odId = erAgent ? 'inm-agenticos' : 'inm-workbench';
     apn.addEventListener('click', function(){
-      location.href = erAgent ? 'agencyos-agenticos.html?fane=agent' : 'workbench-mobil.html'; });
+      location.href = erAgent ? 'agencyos-agenticos.html?fane=agent' : 'workbench-desktop.html'; });
     arkFoot.appendChild(apn); arkFoot.appendChild(ok2);
     return;
   }

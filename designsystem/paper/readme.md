@@ -1,193 +1,35 @@
 # AK Golf HQ — Claude Paper
 
-Masterdesignsystemet for AK Golf HQ. Varmt papir (#FAF9F5) i lys modus, varmt blekk (#141413) i mørk — aldri ren sort/hvit, aldri kald grå, aldri rød. To produktflater: **AgencyOS** (desktop-først coach/byrå-verktøy, mørk rail 64 px, body 13,5 px) og **PlayerHQ** (mobil-først spillerapp, 430 px-kolonne, body 14 px).
+Masterdesignsystemet for AK Golf HQ. Varmt papir (#FAF9F5) i lys modus, varmt blekk (#141413) i mørk — aldri ren sort/hvit, aldri kald grå, aldri rød. To produktflater: **AgencyOS** (desktop-først coach/byrå-verktøy, papirflatet sidemeny 232 px, body 13,5 px) og **PlayerHQ** (mobil-først spillerapp, 430 px-kolonne, body 14 px).
 
-## Kilder
-- `uploads/akhq-tokens.css` (v2, 28.07.2026) — token-baseline, kopiert verbatim til `tokens/akhq-tokens.css`. Aldri legg til/fjern/omdøp tokens.
-- `uploads/ak-golf-logo-bruk.md` + 6 logo-SVG-er — logoregler (kopi i `guidelines/`, SVG-er i `assets/`).
-- `uploads/kontrakt.md` — tilstander, data, språk, moduser.
-- `uploads/inspirasjon-analyse.md` — de ni komposisjonsmønstrene som speiles.
-- Referanse-HTML nevnt som kilde 5 var ikke vedlagt — flagget til eier.
+## Hvor står hva
 
-## Regler i fem linjer
-1. Papir/blekk, aldri ren sort/hvit, kald grå eller rød.
-2. CTA er `--cta`/`--on-cta` (blekk/papir). Oransje #D97757 har monopol på «Én ting nå» + focus; logoprikken er eneste unntak.
-3. Datasemantikk: `--up` grønn opp, `--dn` leire ned/varsel, `--info` blå analyse. `*-raw` kun fyll/grafikk.
-4. Poppins (display/UI) · Lora (prosa) · IBM Plex Mono (alle tall, tabulære sifre, komma-desimal: +2,92).
-5. Flatt og rolig: én myk skygge (ingen i mørk), radius 8/6/999.
-
-## CONTENT FUNDAMENTALS
-- **Språk:** norsk bokmål med æøå i all UI-tekst. Klassenavn/filnavn/tokens engelsk kebab-case.
-- **Tone:** rolig, presis, coach-aktig. Prosa (Lora) snakker til spilleren i du-form: «Driveren har vært stabil i tre uker.» UI-etiketter er korte substantiv/imperativ: «Lagre økt», «Ukens økter».
-- **Ingen emojier.** Ingen utropstegn-hype. Feiring uttrykkes typografisk og med `--up`, aldri konfetti/glow.
-- **Tall:** alltid `--mono`, enhet og tidsvindu synlig («72,4 snittscore · siste 5 runder»), deltaer med retning og grunnlag («+2 vs i går»). Golf: kun brutto score, SG med fortegn og komma-desimal (+2,92), dispersion med enhet og retning (12,8 m H).
-- **Tomme tilstander:** ekte norsk tekst, aldri «Ingen data».
-
-## VISUAL FOUNDATIONS
-- **Farger:** se `tokens/akhq-tokens.css`. `--mid` aldri tekst i lys modus (2,3:1). Rå aksent #D97757 aldri tekst på papir — bruk `--accent-fg`.
-- **Type-skala (beslutning, ikke tokens):** 32/600 sidetittel · 22/600 seksjon (`SectionHeader`) · 16/500 korttittel · 14,5/600 paneltittel (`Panel`, hentet fra referanse-HTML) · body 13,5 (AgencyOS) / 14 (PlayerHQ) · etikett 10/500 versaler +8 % sporing · KPI-tall 40–56 mono.
-- **Bakgrunner:** flate token-flater, ingen bilder, gradienter eller teksturer. Ingen glassmorfisme/blur.
-- **Skygge:** kun `--shadow` (to lag, 3 %+5 %) på løftede kort i lys modus; `none` i mørk — der skiller `--surface`+`--border`.
-- **Kort:** `--surface`, 1px `--border`, radius `--r`, padding `--s4`/`--s5`.
-- **Animasjon:** `var(--dur) var(--ease)` (160ms utpust-kurve). Fades/høydeoverganger, aldri bounce. `prefers-reduced-motion` i tokens dekker alle filer.
-- **Hover:** flate mørkner ett hakk (`--soft`) eller border → `--fg`-tone; aldri opacity på tekst. **Active:** ett hakk mørkere til, ingen skalering. **Focus-visible:** 2px `--focus`-outline offset 2px. **Disabled:** 40 % opacity + cursor not-allowed.
-- **Moduser:** likeverdige; toggle + localStorage `akhq-theme-agencyos` / `akhq-theme-playerhq`. Mørk følger dark-blokken, aldri invertert lys.
-- **Bruddpunkter:** desktop basis · ≤1100 px iPad · ≤640 px mobil · `pointer: coarse` → 44 px mål.
-- **Bruddpunkt vs container query (bindende, 28.07.2026):** viewport-media styrer **skallet** — rail-bredde, kolonneantall, TabBar, sidepolstring. Container query styrer **komponentene**. Alt som kan havne i et inspektørpanel, en master-detalj-kolonne eller PlayerHQs 430px-spalte legger om på *tilgjengelig bredde*, ikke vindusbredde. Kan et element ikke query seg selv, får det en `container-type: inline-size`-wrapper (se PageHeader). Aldri hybrid der én del av samme komponent styres av viewport og en annen av container. **Dette gjelder også typografi og alle viewport-relative enheter:** `vw`, `vh`, `vmin`, `vmax` og `svh`/`lvh`/`dvh` er samme hybrid inne i en container-drevet komponent — bruk `cqi`, `cqb`, `cqmin`, `cqmax`. Faktoren må ofte økes ved omregning: containeren er alltid smalere enn vinduet (rail + polstring spiser 250–300px i AgencyOS), så `3vw` ≈ `4cqi` i hovedspalten — regn om, ikke bytt enhet ett-til-ett. **Ikke omfattet:** font-relative enheter (`ch`, `em`, `rem`, `ex`). `max-width: 52ch` på en ingress er bundet til skriftstørrelse, ikke til bredde, og er riktig som den er — ikke «rett» den til en container-enhet.
-- **Verifisering krever bekreftet render etter reload — VERIFIKATØRENS regel (bindende, 28.07.2026, rolleavklart s.d.):** ingen måling, ingen tabellverdi og ingen «verifisert»-påstand uten at siden er lest på nytt etter en fersk hent av `_ds_bundle.js`. Førstegangsvisning har servert utdatert bundle i hver runde under steg 7 — en måling mot gammel bundle er ikke svakere bevis, den er verdiløs.
-
-  **Aktør: verifikatøren, alene.** Forfatteren kan ikke reloade preview (`show_html` er sperret for selvinspeksjon, `eval_js_user_view` treffer ikke en nyskrevet fil), og skal derfor **ikke** fremse
-
-  **Sett høyden åpenbart romslig og få den strammet inn med et målt tall.** Forfatteren kan ikke måle en nyskrevet side, så et tall som *sikter* på riktig høyde er en gjetning uansett hvor nær den treffer — fire runder 28.07.2026 gikk på nettopp det. Et for høyt kort har blank flate nederst; et for lavt klipper innhold, og det som klippes er typisk det sist tilføyde, altså poenget med rundens endring. Overslag først, presisjon fra verifikatørens måling.
-
-**Endres innholdet i samme operasjon som høyden rettes, er den forrige målingen per definisjon utdatert.** Feilen ble gjort tre ganger 28.07.2026: høyden ble satt fra en måling tatt før avsnittene som utløste rettelsen ble lagt til, så kortet ble for lavt i motsatt retning og nettopp den nye teksten falt utenfor. Rett **enten** høyden **eller** innholdet i én operasjon — aldri begge — eller be om ny måling etter den siste innholdsendringen.tte målepåstander i det hele tatt — verken om høyde, containerbredde, kontrast eller rendret utfall. Forfatterens del av regelen er: oppgi beregnede verdier som beregnede, og be verifikatøren måle. Se ROLLEFORDELING nedenfor.
-- **Spesimenkort for komponenter som legger om (bindende, 28.07.2026):** kortet skal vise minst **to containerbredder**, stakket under hverandre, hver i egen wrapper med eksplisitt bredde og mono-etikett som oppgir bredden — én bred (~860 px, AgencyOS hovedspalte) og én smal (430 px, PlayerHQs kolonnebredde). Aldri sidestilte halvdeler: 430 px er en ekte bredde, men en komponent som legger om kan ikke verifiseres i én bredde alene. **Port A-krav 1 lyder dermed:** begge moduser × alle tilstander × minst to containerbredder, for enhver komponent som legger om. Gjelder nå PageHeader; vil gjelde ListRow, KpiStripe, DataTable og hele kalenderfamilien. **Restanse:** KpiCard, KpiStripe, ListRow og StatusBadge har interne viewport-media som skal over til container query — gjøres sammen med template-omskrivingen sist i steg 7, ikke som egen runde. De er blader: hybriden rammer bare dem selv til de rettes. **Panel var ikke på den listen og ble rettet umiddelbart (28.07.2026)** — den er avhengigheten under alt annet, så en viewport-hybrid der arves av hver komponent som bruker den.
-
-  **Nevneren er komponenter, ikke kort.** Port A-krav 1 gjelder komponentene i dekningsmatrisen. Kort under gruppen **Prosess** dokumenterer regler, målinger og planer — de viser ingen komponenter, og er derfor **ikke omfattet** av kravet om begge moduser. Unntaket skrives her fordi regelen var formulert for «hver komponent» uten å si hva et prosesskort skulle gjøre, og fravær av mørk modus på et slikt kort da leses som restanse i stedet for som bevisst grense.
-- **Skillelinjer i lister og par-sett (bindende, 28.07.2026):** **siste rad har aldri strek.** Sett lukkes ikke — verken lister (`ListGroup`), spesifikasjonspar (`KeyValueGrid`) eller kommende spec-komponenter (`StatLine`, `ActivityLog`, `LedgerTable`-rader). Én konvensjon, ikke to. Er en naiv `:not(:last-child)` utilstrekkelig fordi layouten har flere kolonner, løses det **strukturelt** (treff hele siste rad: `:last-child` + `:nth-last-child(2):nth-child(odd)` for to kolonner, med en variabel som slår andre ledd av i én-kolonnetilstand) — ikke ved å gi komponenten motsatt konvensjon. En implementasjonsgrunn skal ikke avgjøre en visuell konvensjon; to beslektede lister med motsatt strekregel i samme panel leser som slurv, ikke som distinksjon.
-- **`var(--x, verdi)`-fallbacks er lagarkitekturen — de skal ALDRI «ryddes bort» (bindende, 28.07.2026).** `padding: 0 var(--pad-x, 14px)` ser ut som defensiv koding, men er hvordan lagmønsteret leverer basisverdien: **base-laget setter verdien via fallbacken, modifikatorer overstyrer ved å deklarere variabelen.** Fjerner en senere opprydding «unødvendige» fallbacks, slettes alle basisverdier på én gang — og **ingen av de tre stille-død-sveipene fanger det**: referansen er fortsatt deklarert i modifikator-laget, den har bare ingen verdi i base-tilfellet. Mønsteret gjelder `--pad-x`, `--h`, `--flow`, `--cols`, `--pad`, `--just`, `--fam`, `--fs`, `--bgc` og resten av variabelplumbingen. Ser du en fallback som virker overflødig: den er der med hensikt.
-- **En støyende sjekk beskytter ingenting (bindende, 28.07.2026).** `finnUdeklarerte()` flagget først 45 gyldige tokens fordi deklarasjonsmengden ble lest fra `styles.css` alene — som er 111 tegn og bare inneholder to `@import`. **45 falske positiver er verre enn ingen sjekk:** larmen får ekte funn til å bli oversett, mens sjekken ser ut som den beskytter. Samme feilklasse som Port A-krav 1 før dekningsmatrisen — **feil nevner**. Enhver sveip-sjekk skal derfor selvtestes mot en kjent ren mengde før den tas i bruk, ikke bare mot en kjent feilende.
-- **Mål den resolverte tilstanden, ikke kilden (bindende, 28.07.2026).** Tre feil i samme sveip hadde samme årsak: de målte en **mellomrepresentasjon** — kildetekst (`styles.css` alene ga 0 tokens), regelobjekter (`CSSImportRule.cssText` er bare importlinjen), arklister (`document.styleSheets` manglet arket ennå, `cssRules` kastet mens det lastet) — i stedet for det som avgjør oppførselen. `getComputedStyle(document.documentElement)` er riktig svar av presis den grunnen: den leser hva nettleseren faktisk kom frem til, uavhengig av arkstatus, og kan ikke kaste. Gjelder alle sjekker: spør nettleseren om utfallet, ikke kilden om intensjonen.
-- **Et måleinstrument må kunne skille sin egen svikt fra det den måler (bindende, 28.07.2026).** Tre varianter av samme feil i én økt: måleriggen som meldte grønt uten å ha målt noe, gulv-assertionen som ikke *kunne* bli grønn fordi den flagget base-standarden, og det røde kortet som pekte på Chip mens feilen låg i en ustale bundle. En sjekk som ikke kan bli rød beviser ingenting; en som ikke kan bli grønn er like verdiløs; en som ikke kan si «jeg virker ikke» sender feilsøkingen til feil komponent. Krav til enhver sjekk som porter et steg: (1) en kjent feilende variant, (2) et oppnåelig grønt utfall, (3) en selvtest som skiller instrumentsvikt fra funn — og `ok` skal være **false** når instrumentet ikke målte noe.
-- **Innstramming av korthøyde skjer bare i en tur der ingenting annet endres (bindende, 28.07.2026).** Seks forekomster viste at «rett enten høyden eller innholdet» ikke holder som husket regel — den krever årvåkenhet midt i en annen oppgave, og feiler derfor systematisk. Mekanisk i stedet: legges det til innhold, står `viewport` **urørt** til neste tur. Kontrollspørsmålet er da svarbart før turslutt uten å huske noe: «endret jeg mer enn høyden?» Er svaret ja, er høydetallet fra forrige måling per definisjon utdatert.
-- **Berøringsgulvet kan bare nulles der elementet er ikke-interaktivt (bindende, 28.07.2026).** `--floor: 0` er legitimt på `Chip --static` fordi den er `cursor: default` — en etikett, ikke et treffmål. WCAG 2.5.5/2.5.8 gjelder treffmål, ikke alle bokser. Men nullingen er koblet til betingelsen som **assertion**, ikke merknad: ethvert element med `--floor: 0` må mangle href, aktiverende rolle, `tabindex ≥ 0`, `cursor: pointer` og interaktiv tag (`guidelines/gruppe1-tilstander.card.html`, `window.__floorAssert`). Uten assertionen er `--floor: 0` en fri variabel neste person griper for å få tettere rader, og underskridelse av touch-minimumet blir arkitektonisk mulig — samme resonnement som gulvet selv.
-- **Utløsere må videresende ref (bindende, 28.07.2026).** Enhver komponent som kan være utløser for et overlay — `Button`, `Chip`, senere `ListRow`-haler — skal være `React.forwardRef` og sende ref til sitt DOM-element. Uten det får `useOverlayLayer` ingen node å returnere fokus til, og fokus faller til `<body>` ved lukking: kontraktens punkt 5 og 10 svikter stille, med bare en React-advarsel i konsollen. `Button` ble konvertert av nettopp den grunnen.
-- **data-od-id** på alt interaktivt, rolleprefiks `nav-`/`kpi-`/`cta-`/`panel-`. Prefikset har fått en andre jobb: fokus-fallbacken i `useOverlayLayer` klatrer til nærmeste `panel-`/`list-`-beholder, så mangler den `data-od-id`, klatrer fallbacken høyere enn ønsket.
-
-## ROLLEFORDELING FOR REGLER
-Bindende 28.07.2026. **Hver regel skal si hvem som kan utføre den.** En regel tildelt en aktør som ikke kan utføre den, feiler hver gang og ser ut som slurv — vi hadde to slike (reload-kravet og høydemålingen), og begge produserte gjentatte «feil» som i realiteten var umulige krav.
-
-To aktører:
-
-- **Forfatter** — skriver komponenter, kort og dokumentasjon. Kan lese filer, regne, resonnere om kode, kjøre `check_design_system`. **Kan ikke:** se rendret output, måle piksler, reloade preview, vurdere optisk tetthet, sammenligne mot referanse visuelt.
-- **Verifikatør** — kjører etter hver leveranse med tilgang til rendret side, DOM, `getComputedStyle`, `scrollHeight` og skjermbilde. **Kan ikke:** endre kildekode.
-
-Klassifisering av dagens regler:
-
-| Regel | Aktør | Merknad |
+| Dokument | Innhold | Leses av |
 |---|---|---|
-| Token-, farge-, type- og språkregler | forfatter | kildekode-lesbart |
-| Lagmønster, container queries, enhetsvalg, gulv med `max()` | forfatter | kodebeslutninger |
-| Fokuskontrakt (markup + handlere) | forfatter | at kontrakten *virker* med tastatur: verifikatør |
-| Terskelberegning i `.prompt.md`-tabell | forfatter | oppgis som **beregnet** |
-| Terskelen *fyrer* som spec sier | verifikatør | `terskelrigg.html` + `?selvtest` |
-| `@dsCard`-høyde | forfatter regner + 40 %, verifikatør måler | se `komponentskjelett.md` |
-| Reload før måling | verifikatør | forfatter kan ikke reloade |
-| Kontrast, modus-paritet, klipping | verifikatør | krever render |
-| **Port A-krav 2 — craft mot referanse** | **verifikatør, alene** | se nedenfor |
+| **`PORT-README.md`** | Porteringskontrakten. Hva som er fasit, hva som er stillas, bruddpunkt, tema, ikon- og token-oversettelse. | Claude Code, **først** |
+| **`DESIGN-FASIT.md`** | Produktfasiten: tokens, typografi, farge, moduser, språk, datasemantikk, fokuskontrakt, ikoner, komponentindeks. | Claude Code + design |
+| **`PROSESS.md`** | Arbeidsregler inne i Claude Design: roller, målekrav, kaskadelag, kortkrav. **Gjelder ikke kodeporten.** | Design |
+| `kart/` | Ordrer, revisjoner, restanser, rapporter. Historikk — ikke fasit. | Ved behov |
 
-**Port A-krav 2 er verifikatørens alene.** Squint-test, optisk tetthet, rytme og sammenligning mot referanse-HTML krever at noen ser rendret output side om side. Forfatteren kan ikke det, og skal **aldri** melde kravet oppfylt — heller ikke som «ser riktig ut» eller «følger referansen». Forfatteren leverer med begrunnede verdier; kravet krysses av av verifikatøren mot rendret utfall, eller av eier. Meldes Port A grønn på forfatterens ord, er den grønn på en påstand ingen kunne belegge.
+Denne fila er kun inngangen. Endrer du en regel, endrer du den i ett av de tre dokumentene over — ikke her.
 
-**Ved ny regel:** skriv aktøren i samme setning. Kan ingen av de to utføre den, er den ikke en regel — den er et ønske, og hører i `kart/` som åpent punkt.
+## Hva som er fasit
 
-## KASKADELAG OG MODIFIKATORER
-Bindende 28.07.2026. Lagrekkefølgen er deklarert én gang, i `styles.css`:
+- **Fasit er `fase1/` + `fase2/`.** Ingenting annet.
+- `export/design-zip/` og `design_handoff_rutefasit_agenticos/` er **slettet 20.08.2026** (Anders’ regel 17.08: erstattede dokumenter slettes — repo-speilet og git bevarer). `uploads/` er **kopi/utgått** og skal aldri brukes som sammenligningsgrunnlag. Hver av dem har en stempellinje øverst som sier det samme.
+- **Telling (målt 18.08.2026):** `fase1/` har **34** skjermfiler (workbench-mobil slettet 20.08 — m390 bor nå i `workbench-desktop.html`) og `fase2/` har **61** — til sammen **95 skjermfiler**. Tallet **208** som har vært i omløp er totalen for alle HTML-filer i prosjektet inkludert `components/`, `guidelines/` og `templates/`, og er ikke et skjermtall.
+- Av de 61 fase2-filene er **38 MAL-filer** (lenker `w3/w4/w5-base.css`) og **23 selvstendige**. Hver fil er stemplet med `FIDELITET:` på første linje.
 
-```css
-@layer akhq-base, akhq-container, akhq-modifier;
-```
+## Indeks
+- `styles.css` — global inngang (importerer fonts + tokens).
+- `tokens/` — `akhq-tokens.css` (verbatim baseline), `fonts.css` (Google Fonts: Poppins, Lora, IBM Plex Mono).
+- `assets/` — logo-SVG-er.
+- `guidelines/` — spesimenkort (Farger/Typografi/Rom og form/Brand) + `card-support.css` (dok-hjelper som scoper dark-tokens for side-ved-side-kort — ikke for konsumenter) + logoregler.
+- `components/` — se Komponenter over; hver mappe har .jsx + .d.ts + .prompt.md + spesimenkort.
+- `templates/` — eksempelskjermer (steg 5): `agencyos-dashboard/AgencyosDashboard.dc.html` (coach-dashboard, rail + topbar + Én ting nå + KPI-stripe + fire paneler) og `playerhq-idag/PlayerhqIdag.dc.html` (spillerens dagsskjerm, 430 px-kolonne + tab-bar). Hver mappe har `ds-base.js` som laster `styles.css` + `_ds_bundle.js`; konsumenter endrer kun `base`-linjen.
+- Kommer: `SKILL.md`.
 
-Hver komponents CSS gjentar setningen defensivt (samme navn, ingen effekt hvis rekkefølgen alt er satt) og legger reglene i riktig lag:
-
-- **akhq-base** — normaltilstanden. Egenskaper som varierer, deklareres som custom properties og *brukes én gang*: `.akhq-panel{--pad-x:18px;padding:var(--pad-t) var(--pad-x) var(--pad-b)}`.
-- **akhq-container** — `@container`-regler, og annen automatisk tilpasning til omgivelsene (`pointer: coarse`, `prefers-reduced-motion`). De endrer **bare variabler**, aldri egenskapen selv.
-- **akhq-modifier** — `--sm`, `--flush`, `--bleed`, tone- og tetthetsvarianter. Vinner over container-laget uansett kilderekkefølge, uten spesifisitetstriks.
-
-**Prinsippet bak lagrekkefølgen (bindende, generelt):** *et eksplisitt forfattervalg slår en automatisk tilpasning.* Har noen skrevet `density="sm"` eller `flush`, er det en beslutning — containerbredden skal ikke overstyre den. Automatikk fyller ut det ingen har bestemt; den overprøver ikke det noen har bestemt. Gjelder alt fremover: ListRow (`density`), KpiStripe (kolonner), og hele kalenderfamilien, der samme spørsmål kommer for hver visning og hver granularitet.
-
-**Unntaket: tilgjengelighetsgulv slår begge.** Touch-minimum (44px), kontrastminimum og synlig fokusring er ikke tilpasninger og ikke valg — de er gulv, og de skal ikke kunne underskrides av en modifikator. Ligger 44px-målet som en vanlig verdi i container-laget, kan modifikatorlaget vinne over det, og underskridelse blir arkitektonisk mulig. Skriv gulvet inn i egenskapen med `max()`, ikke som en konkurrerende verdi:
-
-```css
-/* base */    .akhq-lrow{--row-min:56px;--floor:0px;min-height:max(var(--row-min),var(--floor))}
-/* container */ @media(pointer:coarse){.akhq-lrow{--row-min:60px;--floor:44px}}
-```
-
-Da holder gulvet uansett modifikator, og større eksplisitte verdier virker fortsatt. Samme grep for kontrast og fokusring: gulvet skal være uunngåelig, ikke bare dokumentert.
-
-**Skjelett:** nye komponenter kopieres fra `guidelines/komponentskjelett.md` — lagdeklarasjon, container-wrapper, variabelmønsteret, tilstandsstubber, `.d.ts`- og `.prompt.md`-mal og kortkravene ligger ferdig der. Reglene skal være standardtilstanden, ikke noe som sjekkes i etterkant.
-
-Bakgrunn: container-regel mot modifikator på samme egenskap er en reell feilklasse, ikke en teoretisk. Panel hadde den — container-regelen slo av `flush` under 480px og ga 32px dobbelt innrykk, men **bare i PlayerHQs smale spalte**, så uten to-bredders-kravet i Port A ville den gått rett i hvert PlayerHQ-panel. Samme kollisjon ligger latent i ListRow (`density`), KpiStripe (kolonner) og PageHeader (`gap`).
-
-`:not(.modifikator)` er **ikke** løsningen: den fikser instansen, ikke klassen, og vokser til uleselige kjeder ved tredje modifikator. Kalenderfamilien får flest modifikatorer av alle — den skal arve lagene, ikke kjedene.
-
-**Bivirkning å kjenne: lagrede regler taper mot ALLE ulagrede regler, uansett spesifisitet.** Denne feilklassen rammet tidligere de eldre komponentene (datafamilien, overlays, actions, forms), som var ulagret. `EmptyState` traff dette: `.akhq-empty` fantes i `viz.jsx`, og komponentens polstring kom aldri til anvendelse. Derfor er navnekollisjonssjekken i `guidelines/komponentskjelett.md` et oppslag i `guidelines/klasseinventar.md` — **generert fra `_ds_bundle.js`**, ikke skrevet for hånd. Det gjelder hvert enkelt klassenavn, elementklasser inkludert: `.akhq-tabs` var ledig mens `.akhq-tab` var okkupert av `TabBar`, og Tabs mistet understreken sin stille. Inventaret regenereres i verifiseringssteget, så det aldri er eldre enn siste kompilering. **Status 29.07.2026 (før dagens rettinger): 350 klassenavn, 0 ulagrede** — lagmigreringen er fullført. Dagens rettinger fjerner 6 klassenavn (`Input` slettet: `.akhq-field`, `.akhq-label`, `.akhq-input`, `.akhq-input--error`, `.akhq-hint`, `.akhq-err`) og legger til 1 (`.akhq-crumb-a` på Breadcrumbs) — **beregnet** netto 345/0, ikke målt på nytt i denne turen (bundelen kompileres ved turslutt). Kjør skriptet i `guidelines/klasseinventar.md` på nytt neste tur for å bekrefte.
-
-**Feiing utført 28.07.2026:** alle tio komponenter bygget i steg 7 (Panel, Avatar, StatusBadge, SectionLabel, ListRow, ListGroup, PageHeader, Callout, Banner, EmptyState) er grepet mot de 46 ulagrede klassenavnene i de eldre filene. Resultat: **ingen kollisjoner** utover `.akhq-empty`, som er rettet til `.akhq-estate`.
-
-**Rekkefølge for halen av Fase A (korrigert 28.07.2026):** ConfirmDialog → **lagmigrering** → template-omskriving → **Port A-krav 2** → Familie 2.
-
-**Port A-krav 2 (craft-måling mot referanse-HTML) er et eget steg etter template-omskrivingen.** Den kan ikke akkumuleres fra komponentrapportene — ingen av dem inneholder craft-godkjenning — og den er **verifikatørens alene**, siden squint-test og tetthetsvurdering krever at noen ser rendret output. Den er aldri utført av noen som kunne se den: re-målingen etter feil-fil-korreksjonen ble gjort av forfatteren, så kravet er **uoppfylt**, ikke oppfylt-og-korrigert. Plasseringen er ikke vilkårlig: etter omskrivingen er biblioteket komplett og lagdelt, og templatene er bygget av ekte komponenter — det er første tidspunkt en sammenligning mot referanse-HTML måler systemet og ikke et halvferdig utvalg. Porten kan ikke meldes grønn før dette steget er kjørt av verifikatør.
-
-**Migrering av de ulagrede filene — egen leveranse, ikke et sveip.** 174 av 302 klassenavn er ulagrede: lagarkitekturen styrer ti komponenter av rundt førtifem, så kaskademodellen over er i mindretall i sitt eget bibliotek. Planen, omfanget og verifiseringskravene ligger i **`kart/lagmigrering.md`**. Kjøres **etter Familie 1, før Familie 2** — hver skjemakomponent bygget før migreringen arver en kaskade der halve biblioteket kan overkjøre den. `KpiCard`, `KpiStripe` og `StatusBadge` sine viewport-hybrider følger med i samme leveranse.
-
-**Hvilke filtyper kompilatoren konsumerer** står i `guidelines/kompilerte-filtyper.md` — kartlagt, ikke gjettet, etter at en løs `.js` i `guidelines/` knakk hele bundelen. Kort: `.jsx`/`.d.ts`/`.css`-importkjeden/`@dsCard`-`.html` leses; `.md` og `.html` uten `@dsCard` gjør det ikke, og er derfor stedet for skript og rigger., sammen med `StatusCircleRow`, `Chip`, `Button`, `SegmentControl`, `Toggle`, `Modal`, `Toast`, `GoalProgress`, `PercentileGauge`. Først da er feilklassen borte. Uten dato ville den ligget åpen gjennom hele Familie 2 og 3.
-
-## FOKUSKONTRAKT FOR OVERLAY-KOMPONENTER
-Bindende 28.07.2026, skrevet FØR DropdownMenu bygges. Gjelder alt som åpner et midlertidig lag over innholdet: DropdownMenu, Modal, BottomSheet, ConfirmDialog, CommandPalette, ContextMenu, FlyoutPanel. Kontrakten er én oppførsel — den gjenoppfinnes ikke per komponent, og en ny overlay-komponent er ikke ferdig før alle syv punktene er oppfylt.
-
-1. **Utløseren eier tilstanden i markup:** `aria-expanded` (true/false) på utløserknappen, og `aria-haspopup` der laget er en meny (`"menu"`) eller dialog (`"dialog"`). Er utløseren ikke en `<button>`, er det feil utløser.
-2. **Fokus flyttes inn ved åpning** — til første fokuserbare element, eller til laget selv (`tabindex="-1"`) når det ikke har noe å fokusere. Aldri la fokus stå igjen bak laget.
-3. **Fokusfelle mens laget er åpent:** Tab og Shift+Tab sykler innenfor laget. Ingen tab-stopp bak det.
-4. **Escape lukker**, alltid, uten unntak og uten bekreftelse — også i ConfirmDialog (å lukke er å avbryte, ikke å bekrefte).
-5. **Fokus returnerer til utløseren** ved lukking, uansett hvordan laget ble lukket (Escape, klikk utenfor, valg, handling). Utløseren huskes ved åpning, ikke gjettes ved lukking.
-6. **Klikk utenfor lukker** for menyer, popovere og ark. Modal og ConfirmDialog lukker på scrim-klikk kun når handlingen er ikke-destruktiv; destruktive valg krever eksplisitt avbryt.
-7. **Rollen matcher jobben:** meny = `role="menu"` + `role="menuitem"`, dialog = `role="dialog"` + `aria-modal="true"` + tilgjengelig navn. Piltaster navigerer i menyer og lister; Tab gjør det i dialoger.
-8. **Ekte modalitet for dialoger:** `inert` + `aria-hidden` på alt utenfor laget, og scroll-lås. Fokusfelle alene er ikke modalitet — skjermleserens virtuelle markør kommer forbi den. Gjelder ConfirmDialog, Modal, BottomSheet; ikke menyer.
-9. **Nøstede lag lukkes ett om gangen.** Escape og klikk-utenfor virker bare på øverste lag i den felles stacken.
-10. **Fokus har en fallback.** Er utløseren fjernet fra DOM ved lukking (handlingen slettet den), går fokus til nærmeste stabile forelder — aldri til `<body>`.
-
-Underliggende innhold skal ikke være tabbbart bak en modal — bruk `inert` på bakgrunnen der det er mulig, ellers fokusfellen alene. Halvferdige fokusfeller er blant de dyreste feilene å rette i etterkant; derfor står kontrakten her og ikke i syv `.prompt.md`-filer.
-
-**Kontrakten er implementert som delt kode, ikke bare som prosa:** `components/overlays/overlay-focus.jsx` eksporterer `useOverlayLayer` (punkt 1–6) og `useRovingKeys` (punkt 7, piltastnavigasjon i menyer og lister). `DropdownMenu` er første konsument. **Skriv aldri en egen fokusfelle i en komponent** — mangler hooken noe en ny overlay trenger, utvides hooken, den kopieres ikke. Syv komponenter som deler én implementasjon kan rettes ett sted; syv egne kan ikke.
-
-Tre ting hooken løser arkitektonisk, avklart 28.07.2026 før ConfirmDialog:
-
-- **`modal: true` gir ekte modalitet, ikke bare tastaturfelle.** Hooken setter `inert` + `aria-hidden` på alle søsken oppover til `<body>`, så skjermleserens virtuelle markør ikke kan bla i innholdet bak. En fokusfelle stopper bare Tab. `modal` er **false** for DropdownMenu og ContextMenu (en meny er ikke modal) og **true** for ConfirmDialog, Modal og BottomSheet, der det er et WCAG-krav. `lockScroll` følger `modal` som standard og kan overstyres.
-
-  **Begge er referansetelt, ikke per lag** (rettet 28.07.2026 etter måling): øverste modale lag eier `inert` alene, og scroll-låsen slippes først når siste lås er borte. Den naive per-lag-varianten satte inert på de andre lagenes forfedre og skrudde det av igjen i sin egen cleanup — nettoresultat: **ingen inert i det hele tatt**, og fokus falt til `<body>` fordi laget selv lå i et inert tre. Modalitetseffekten kjører dessuten **før** fokuseffekten, ellers rekker laget å stå inert når `.focus()` kalles.
-
-  **En modal komponent kan ikke rendres «alltid åpen» i et spesimenkort.** Åtte samtidige lag låste `body.overflow` permanent. Modale komponenter trenger en eksplisitt kortmodus (`preview`) som hopper over hele laglogikken — strengere enn `defaultOpen`, som bare åpner.
-- **Escape lukker øverste lag, ikke alle.** Hooken har en modulnivå-stack: laget legges øverst ved åpning, og Escape og klikk-utenfor virker bare når `isTopLayer()`. Uten stacken lukker én Escape både `ContextMenu` og `InspectorPanel` den ligger over — og både `ContextMenu` og `CommandPalette` nøstes i kalenderfamilien. Feilen er billig nå og arkitektonisk senere.
-- **Fallback når utløseren er borte ved lukking.** En meny kan slette raden den ble åpnet fra; da finnes fokusmålet ikke lenger, og fokus faller til `<body>` — brukeren mister plassen i lista. Hooken husker ved åpning også nærmeste stabile forelder (`[data-od-id^="panel"]`, `[data-od-id^="list"]`, `section`, `main`, `form`) og fokuserer den med `tabindex="-1"` hvis utløseren er ute av DOM.
-
-## IKONOGRAFI
-- Ingen ikonfont eller ikonsett er definert i kildene. Inntil eier leverer ett: tekstetiketter, enkle unicode-tegn (→ ↑ ↓ ·) og geometriske statusformer (statussirkler, prikkmatriser) bygget med token-farger. Ingen emojier, ingen håndtegnede SVG-ikoner.
-- **Ikonsettet i `Icon`:** 9 navigasjonsglyffer (hjem, stall, cockpit, ko, plan, ai, idag, analyse, profil) + 4 toneglyffer lagt til 28.07.2026 for Callout/Banner: `varsel` (warn), `info` (info), `laas` (personvern), `notis` (nøytral). Toneglyffene er **låst per tone** — en skjerm velger aldri ikon selv. Trengs en ny tone, utvides `TONES`-tabellen i `components/feedback/Callout.jsx` og `Icon` samtidig.
-- **Logo:** 6 varianter i `assets/` (`on-paper`, `on-ink`, `on-accent`, `mono-ink`, `mono-paper`, `tokenized`). `tokenized` arver tema via `--logo-mark`/`--logo-dot` og er standardvalget inline i HTML. Regler i `guidelines/ak-golf-logo-bruk.md`: clear space = prikkens diameter, min 24 px skjerm, aldri grønn/blå logo, paper-wordmark på aksentflate forbudt.
-
-## Komponenter
-
-**Kompilatet er i synk (03.08.2026):** hele biblioteket til og med bølge P9 er kompilert inn i `_ds_bundle.js` (145 eksporterte komponenter, 1148 klassenavn, 0 ulagrede — se `guidelines/klasseinventar.md`). Regelen består: etter enhver ny komponent, kompiler (`check_design_system`) før den brukes på en skjerm — et ukompilert navn finnes ikke i `window.AKGolfHQClaudePaper_605a48`, og kortet rendrer tomt.
-- `components/feedback/` — EmptyState (tomtilstand på panel-/sidenivå: tittel + forklaring + valgfri CTA. Dekker kun «ingen data ennå» — «ikke bygget ennå» har bevisst ingen komponent, den hører i `kart/`), Callout (inline notis, fire toner: nøytral/warn/info/personvern — ikon + etikettfarge + border-tint på `--soft`, brødtekst alltid `--fg`, aldri venstrekant, aldri ARIA-rolle), Banner (bredt bånd med én handling; `announce` none/status/alert der alert KUN er blokkerende validering utløst av brukerhandling; lukking er sesjonsbasert, aldri localStorage).
-- `components/primitives/` — Avatar (initialer i sirkel, 28/36/48, soft/ink/outline + `Avatar.initials()`), StatusBadge (kind status med semantisk farge / kind tag permanent fargeløs — AK-vokabularet fargekodes aldri), SectionLabel (mono 10/600 versaletikett, .1em — én kilde for kicker og gruppeetikett).
-- `components/layout/` — Panel (kortflaten ~60 skjermer står på: tittel, mono-etikett, høyre handling, fotnote, `flush`/`bleed`. Skriv aldri panel-literalen på nytt), ListRow + ListGroup (plattformens standardrad: leading avatar/status/ikon/ingen, hale chevron/verdi/badge/toggle/handling — raden ELLER halen er interaktiv, aldri begge; gruppen eier skillelinjene), PageHeader (kicker + h1 + ingress 52ch + metadata/handlinger bunnjustert — flere instanser lovlig, men skjulte visninger MÅ ut av tilgjengelighetstreet), SectionHeader (seksjonstittel med tellerbadge over en gruppe paneler — ekte overskrift, ikke SectionLabel), KeyValueGrid (label/verdi-par for spesifikasjoner og metadata — **ikke** finanstabeller: hierarki, fargekodet avvik og kontobevegelser er LedgerTable/BudgetVarianceRow/DataTable i Familie 4), **CardGrid**, **Accordion**, **StickyActionBar**, **Divider** (skillelinje med valgfri mono-etikett — en påstand om at to ting hører til ulike grupper; ikke mellom `ListRow`-er, gruppen eier de skillene). **FilterPills** (flervalgs innsnevring av et sett som allerede vises, med antall per valg og en nullstiller som først dukker opp når noe er valgt — faner bytter HVA du ser, filtre HVOR MYE av det samme; valgt pille er blekkfylt, aldri oransje), **Pagination** (sidevis navigasjon med fast vindu og markerte utelatelser — brukes IKKE på stall, øktliste eller kø, der er uendelig liste riktig; `page` skal tilbake til 1 når filteret endres), **Stepper** (hvor i en flerstegsflyt du er — gjennomført/gjeldende/kommende, ingen farge; stigen navigerer ikke og har ingen tab-stopp, fordi den ikke kan holde løftet om at du beholder det du har fylt ut), **KanbanKolonne** (ett trinn i en flyt: brettet er skjermens grid, kortene er egne komponenter, og WIP-taket er en anbefaling som aldri sperrer). **FeaturedCard**.
-- `components/overlays/` — DropdownMenu (gruppert popover: seksjonsetiketter, separatorer, hurtigtastnotat, destruktivt valg; konsumerer den delte fokuskontrakten), Modal (AgencyOS), Toast (blekk-fylt, bunn-sentrert), BottomSheet (PlayerHQ), **ConfirmDialog** (destruktiv bekreftelse, `modal: true`), **Popover** (ikke-modalt lag med innhold og inntil to handlinger; auto-forankring målt, ikke gjettet), **Tooltip** (ren tekst ved hover/fokus, mono på blekk; skjult ved grov peker — ingen informasjon får finnes kun her), **Drawer** (modalt sidelag for midlertidig arbeid; artefaktpanelet er `Panel`/`BottomSheet`, ikke dette), `overlay-focus.jsx` (`useOverlayLayer` + `useRovingKeys` — fokuskontrakten som delt kode for alle overlay-komponentene). **HjelpPopover**.
-- `components/actions/` — Button (primær/ghost — blekk/papir, aldri farge), Chip, OneThingNow (oransje-monopolet: 3px venstrekant + pulsende mono-etikett; knappene inni er blekk/ghost), **FAB** (festet handlingsknapp på mobil, gulv 56 px med hensikt — én per skjerm eller ingen, og aldri sammen med en OneThingNow-primærhandling).
-- `components/calendar/` — TimeGrid (ukens tidsgrid, 04:00–23:00 med 1px = 1 minutt og 20-min raster; hendelsestyper default/free/bg, sticky dagshode og timemarg. Ren anatomi — drag/resize/tastaturflytting hører til Workbench). **SessionCard** (øktkortet: tid, pyramideområde, AK-formel, hengelås/rrule/deltakertelling som informasjon — ett treffmål for hele kortet, aldri fem små; formelen ryker først under 150 px container, tittelen står). **BudgetBar** (budsjettlinjen over ukelerretet: ukevolum mot periodens vindu, fordeling per pyramideområde, TEK-% og aldersregel; invariantbrudd som anbefaling med «overstyr med begrunnelse» — aldri som sperre. Komponenten regner ikke; CANON eier invariantene). **Bølge P4 + P9 (03.08.2026):** UkeKalender (rammen rundt ukelerretet: navigasjon, datospenn, toolbar-slot), MaanedKalender (månedsrutenett), AgendaRow (kronologisk dagsrad: fem pyramideområder, nå/ferdig/avlyst — raden er ett treffmål), DayStrip (dagvelger-stripe), Tidslinje, Periodeplan (periodeblokker med pyramidefargene fra SessionCard), VisningsVelger (uke/måned/agenda-veksler), YearTimeline (årsoversikt).
-- `components/datavis/` — **Bølge P5 (03.08.2026):** BarChart, CompareChart, Heatmap, LoadChart, AkseFordelingsBar, LengdeAvvik, PPositionRail (MORAD-kjernen P1.0–P10.0; fokusvinduet i analyse-blå tint, aldri oransje), PyramideFasett (pyramidefargene delt med SessionCard), KategoriFjell. Terskler og datakontrakt i hver komponents `.prompt.md`.
-- `components/golfdata/` — **Bølge P6 (03.08.2026):** SgTotalKort, TigerFiveKort, DiagnoseKort, KategoriKravKort, LaunchWindowKort, NesteFokusKort, PuttModellKort, Scorekort, SlagLekkasjeKart, SpillerTilstandKort, StrikeSmashKort. **Chromeless:** innholdslag uten egen ramme — Panel eier flaten (K2-beslutningen står åpen hos eier).
-- `components/trackman/` — **Bølge P7 (03.08.2026):** TrackmanSammendrag, KolleStatKort, TrajectoryPlot. DispersionMap (golfviz) er samtidig utvidet med baseline-ellipse og målsone/hit-rate — bakoverkompatibel; spesimen for utvidelsen er restanse (se `kart/verifikatorrapport-2026-08-03.md`).
-- `components/domene/` — **Bølge P8 (03.08.2026):** SpillerKort, OektKort, AKFormelChip (AK-formel v2-format slik fase1-skjermene skriver det), LFaseBadge (bygget på ordre — konflikten med Bølge 1-fjerningen av L-faser er flagget, bruk avventer eier), NivaStige, BenchmarkBadge, FleksMerke, LiveStatus (med inverse-modifikator), LiveBar, DiffKort (underlaget for godkjenning i PlanAction-løpet), TurneringNedtelling, VelvaereKort (bærer personvernlinjen «Kun du og coach ser dette» i komponenten). AK-vokabularet er fargeløst (StatusBadge-regelen).
-- `components/video/` — **Bølge P9 (03.08.2026):** VideoScrubber, PositionMarker (klikkbare P-posisjonsmarkører på et relativt felt; 44 px `::after`-treffsone ved grov peker).
-- `components/forms/` — Toggle, SegmentControl, TextInput, Textarea, SearchField, Checkbox, FormField, FieldMessage. **`Input` er fjernet (29.07.2026)** — pensjonert i beslutning 29.07.2026, nå også avviklet i filtre; `.jsx`/`.d.ts`/`.prompt.md` slettet. Bygg felt mot `FormField` + `TextInput`. **Bølge P2 (31.07.2026):** **Select** (native `<select>` — systemets liste er raskere og mer tilgjengelig enn en tegnet meny), **Combobox** (fritekstfilter; det ene laget der fokus blir i feltet, jf. ARIA-mønsteret), **Radio** + **RadioGroup** (2–4 valg synlige samtidig; labelen er treffmottakeren), **Slider** (omtrentlige verdier, alltid med tallavlesning), **DatePicker** (mandag først, ukenummer synlig, roving tabindex i rutenettet — underlaget for hele kalenderfamilien), **CodeInput** (engangskode med liming som fordeler seg selv; blokkerte Auth-malen). **AkFormelVelger** + **AkFormelLinje** (AK-formel v3-kaskade: pyramide bytter områdeliste, område bytter delferdigheter, P-steg kun på TEK/SLAG).
-- `components/data/` — KpiCard, KpiStripe, StatusCircleRow, NowNext, AiRecap + `viz.jsx` (tall-formatter nb-NO: komma-desimal, mellomrom-tusen, signert delta ▲▼; Region-hjelperen for fylt/tom/laster/feil). **DataTable** (radsett med flere sammenlignbare kolonner, lest nedover: kontrollert `sort`/`onSort`, tallkolonner høyrestilt i mono med tabulære sifre, tom-, laste- og feiltilstand, klebrig hode og tetthetsmodifikatorer — og rullingen bor i komponentens egen container, aldri på siden). **AiTipCard** (AI-observasjon, aldri handling — handlingsløpet er QueueCard + ProvenanceDisclosure + DiffKort), **DataPreview**.
-- `components/progress/` — ScoreGauge, DotMatrix, ProgramLadder, GoalProgress, PercentileGauge, PersonalBest, **ProgressBar**.
-- `components/golfviz/` — SgBar + SgBreakdown, Sparkline, TrendBand, HoleStrip, DispersionMap, SkillRadarLive, GappingChart, PuttLab, PyramidProgress.
-- `components/navigation/` — Rail (AgencyOS 64px, alltid mørk), TabBar (PlayerHQ), Topbar (søk + tema-toggle), Breadcrumbs, Icon, **SkipLink**, **ThemeToggle**, **Tabs** + TabPanel, **QuickLinkBar**. **SpillerGruppeVeksler**.
-- `components/primitives/` — Avatar, StatusBadge, SectionLabel.
-- `components/queue/` — **QueueCard** (køens rad: avsender, alder, hatt coaching/drift, tittel, grunnlag, én primærhandling; `first` gir blekkramme — aldri oransje; `snoozedUntil` demper raden og viser «utsatt til» + «Hent tilbake», raden forsvinner aldri stille), **ProvenanceDisclosure** («Hvorfor?»-utfelling: agent · data · regel + kjøringslinje. Påkrevd for alt en agent har sendt — et forslag uten proveniens er ikke ferdig designet).
-- `components/shell/` — **Composer** (festet spørrefelt under flaten: autovekst 36→120 px, ⏎ send / ⇧⏎ ny linje, kontekstchips; desktop alle flater, mobil kun Hjem), **StatusBar** (mono 26 px: versjon/periode, agentfeil, MRR, innsikter, CANON — tre midterste klikkbare med usynlig 44 px `::after`-sone; skjult under 880 px vindu), **CommandPalette** (S6 «Alt»: ~100 funksjoner med nivåmerke 1/2/3 per rad, piltaster + ⏎, konsumerer den delte fokuskontrakten). **MeldingsTraad**.
-- `components/feedback/` — Callout, Banner, EmptyState, **Skeleton** (laster-figur med kjent geometri i fire varianter — for det `Region` ikke dekker; aldri som tom tilstand).
-
-**Intentional additions:** `Icon` — kildene definerer ingen ikonpakke; navigasjonen trenger et fast sett, så Lucide-geometri (stroke 1,5, currentColor) er lagt inn som eneste ikonkilde. `Region` (i `data/viz.jsx`) — delt tilstandshåndterer som gir alle datakomponenter fylt/tom/laster/feil.
-
-Golf-viz-regler: over benchmark = --up-raw, under = --dn 35 % — aldri rød. Dispersion alltid med enhet og retning (m H/V). Radar: nå --fg, mål --info-raw, forrige --mid. HoleStrip: SG kun som tekstfarge. Skeleton = flat --soft-blokk med rolig opacity-puls (ingen shimmer-gradient). Ikoner er Lucide 1,5px (check/lock inline); data-viz tegnes som egen SVG.
-
-Beslutninger i komponentlaget: hover/active på fylte flater = `color-mix(in srgb, var(--cta) 88%, var(--bg))` / 76 % — SYSTEMSTANDARD for alle fylte flater (CTA, rail-item aktiv, valgt kort). Knapperadius er `--r-sm` (målt mot referanse-dashboardet); `--r-pill` gjelder chips/tags/dag-velgere. **Scrim = `--scrim` (blekk 40 %, ekte token siden 29.07.2026)** — brukt uendret i Modal, BottomSheet og ConfirmDialog; ConfirmDialogs tidligere 42 % var en avvikende verdi uten begrunnelse og er fjernet, ikke dokumentert inn. Fylt aksentflate finnes KUN i marketing/innlogging (`--on-accent`, baseline v2.1). `data-state="hover|focus|active|disabled"` finnes kun for spesimenkort.
-
-Referanse: `uploads/agencyos-dashboard-claude-paper.html` er fasit for følelse, tetthet og craft — IKKE for tokens/fonter (den bruker utgåtte Inter/Newsreader og egne hex; oversettes alltid til baseline-tokens).
-
-### Komponentindeks (alle eksporterte navn)
+## Komponentindeks (alle eksporterte navn)
 Generert fra `_ds_bundle.js`. Alle nås som `window.AKGolfHQClaudePaper_605a48.<Navn>`.
 
 - **actions** — Button · Chip · FAB · OneThingNow
@@ -196,7 +38,7 @@ Generert fra `_ds_bundle.js`. Alle nås som `window.AKGolfHQClaudePaper_605a48.<
 - **datavis** — AkseFordelingsBar · BarChart · CompareChart · Heatmap · KategoriFjell · LengdeAvvik · LoadChart · PPositionRail · PyramideFasett
 - **domene** — AKFormelChip · BenchmarkBadge · DiffKort · FleksMerke · LFaseBadge · LFASER · LiveBar · LiveStatus · NivaStige · OektKort · SpillerKort · TurneringNedtelling · VelvaereKort
 - **feedback** — Banner · Callout · EmptyState · Skeleton · TONES
-- **forms** — Checkbox · CodeInput · Combobox · DatePicker · FieldMessage · FormField · Radio · RadioGroup · SearchField · SegmentControl · Select · Slider · TextInput · Textarea · Toggle
+- **forms** — AkFormelVelger · AkFormelLinje · Checkbox · CodeInput · Combobox · DatePicker · FieldMessage · FormField · Radio · RadioGroup · SearchField · SegmentControl · Select · Slider · TextInput · Textarea · Toggle
 - **golfdata** — DiagnoseKort · KategoriKravKort · LaunchWindowKort · NesteFokusKort · PuttModellKort · Scorekort · SgTotalKort · SlagLekkasjeKart · SpillerTilstandKort · StrikeSmashKort · TigerFiveKort
 - **golfviz** — DispersionMap · GappingChart · HoleStrip · PuttLab · PyramidProgress · SgBar · SgBreakdown · SkillRadarLive · Sparkline · TrendBand
 - **layout** — Accordion · CardGrid · Divider · FeaturedCard · FilterPills · KanbanKolonne · KeyValueGrid · ListGroup · ListRow · PageHeader · Pagination · Panel · SectionHeader · Stepper · StickyActionBar
@@ -209,15 +51,4 @@ Generert fra `_ds_bundle.js`. Alle nås som `window.AKGolfHQClaudePaper_605a48.<
 - **trackman** — KolleStatKort · TrackmanSammendrag · TrajectoryPlot
 - **video** — PositionMarker · VideoScrubber
 
-## Indeks
-- `styles.css` — global inngang (importerer fonts + tokens).
-- `tokens/` — `akhq-tokens.css` (verbatim baseline), `fonts.css` (Google Fonts: Poppins, Lora, IBM Plex Mono).
-- `assets/` — logo-SVG-er.
-- `guidelines/` — spesimenkort (Farger/Typografi/Rom og form/Brand) + `card-support.css` (dok-hjelper som scoper dark-tokens for side-ved-side-kort — ikke for konsumenter) + logoregler.
-- `components/` — se Komponenter over; hver mappe har .jsx + .d.ts + .prompt.md + spesimenkort.
-- `templates/` — eksempelskjermer (steg 5): `agencyos-dashboard/AgencyosDashboard.dc.html` (coach-dashboard, rail + topbar + Én ting nå + KPI-stripe + fire paneler) og `playerhq-idag/PlayerhqIdag.dc.html` (spillerens dagsskjerm, 430 px-kolonne + tab-bar). Hver mappe har `ds-base.js` som laster `styles.css` + `_ds_bundle.js`; konsumenter endrer kun `base`-linjen.
-- Kommer: `SKILL.md`.
-
-**Skjermregel (28.07.2026):** en komponent kommer på en eksempelskjerm fordi jobben på skjermen krever den — aldri for å vise fram biblioteket. PersonalBest, scoretrend og SG-nedbrytning er derfor ute av «I dag» (PB er et øyeblikk, ikke en status: den hører hjemme ved øktavslutning, ukeslutt eller i Min golf; trend og SG hører til Analyse-fanen). Statuschips uten handling er ute av AgencyOS-dashboardet. Nye skjermer bygges etter samme test: hva er jobben, hva kreves for å gjøre den, resten ut.
-
-Steg 5-beslutninger: eksempelskjermene er Design Components (`.dc.html`), ikke `ui_kits/`-mapper — det er formatet konsumerende prosjekter kan kopiere og redigere direkte. Tema settes på `document.documentElement` og lagres per flate (`akhq-theme-agencyos` / `akhq-theme-playerhq`); Topbar er kontrollert (theme som prop). Alle stiler er inline på token-nivå; den eneste `<style>`-blokken i hver mal er body-reset, lenkefarger og de tre bruddpunktene (`[data-rsp]`, `pointer: coarse`), som ikke kan uttrykkes inline. Tweaks per mal: `dataState` (fylt/laster/tom/feil for alle dataregioner), én layout-bryter, `initialTheme`.
+Full komponentbeskrivelse med regler per familie står i `DESIGN-FASIT.md`.

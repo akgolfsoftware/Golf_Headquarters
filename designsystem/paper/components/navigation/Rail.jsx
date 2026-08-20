@@ -2,23 +2,35 @@ import React from "react";
 const css = `
 @layer akhq-base, akhq-container, akhq-modifier;
 @layer akhq-base{
-.akhq-rail{--w:64px;width:var(--w);flex:none;background:var(--rail);border-right:1px solid color-mix(in srgb,var(--rail-on) 6%,transparent);display:flex;flex-direction:column;align-items:center;padding:var(--s4) 0 14px;gap:2px;position:sticky;top:0;height:100vh;height:100dvh;z-index:var(--z-rail);font-family:var(--ui);--logo-mark:var(--rail-on);--logo-dot:var(--accent)}
-.akhq-rail-brand{width:36px;height:36px;display:grid;place-items:center;margin-bottom:14px;flex:none}
-.akhq-rail-brand svg{width:26px;height:26px}
-.akhq-rail-item{--h:44px;--floor:0px;min-height:max(var(--h),var(--floor));width:48px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;padding:var(--s2) 0 6px;border-radius:var(--r);color:var(--rail-fg);background:transparent;border:0;text-decoration:none;cursor:pointer;transition:color var(--dur) var(--ease),background var(--dur) var(--ease);font-family:inherit}
-.akhq-rail-item span{font-family:var(--mono);font-size:9px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;line-height:1.1}
-.akhq-rail-item svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
-.akhq-rail-item:hover{color:var(--rail-on);background:color-mix(in srgb,var(--rail-on) 5%,transparent)}
-.akhq-rail-item:active{background:color-mix(in srgb,var(--rail-on) 8%,transparent)}
-.akhq-rail-item[aria-current=page]{color:var(--rail-on);background:color-mix(in srgb,var(--rail-on) 9%,transparent)}
+.akhq-rail{--w:232px;width:var(--w);flex:none;background:var(--soft);border-right:1px solid var(--border);display:flex;flex-direction:column;padding:var(--s5) var(--s3) 14px;gap:1px;position:sticky;top:0;height:100dvh;z-index:var(--z-rail);font-family:var(--ui);--logo-mark:var(--fg);--logo-dot:var(--accent)}
+.akhq-rail-brand{display:flex;align-items:center;gap:10px;padding:0 10px;margin-bottom:var(--s5);min-width:0}
+.akhq-rail-brand svg{width:24px;height:24px;flex:none}
+.akhq-rail-brand b{font-size:14px;font-weight:600;letter-spacing:-.01em;color:var(--fg);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.akhq-rail-sec{font-family:var(--mono);font-size:9.5px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--text-tertiary);padding:var(--s4) 10px 6px}
+.akhq-rail-item{--h:38px;--floor:0px;min-height:max(var(--h),var(--floor));width:100%;display:flex;align-items:center;gap:10px;padding:0 10px;border-radius:var(--r-sm);color:var(--muted);background:transparent;border:0;text-decoration:none;cursor:pointer;text-align:left;font-family:inherit;font-size:13.5px;font-weight:500;transition:color var(--dur) var(--ease),background var(--dur) var(--ease)}
+.akhq-rail-item svg{width:17px;height:17px;flex:none;stroke:currentColor;fill:none;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
+.akhq-rail-label{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.akhq-rail-item:hover{color:var(--fg);background:var(--soft-hover)}
+.akhq-rail-item:active{background:var(--border)}
+.akhq-rail-item[aria-current=page]{color:var(--fg);background:var(--surface);font-weight:600;box-shadow:0 1px 0 rgba(20,20,19,.04)}
 .akhq-rail-item:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
-.akhq-rail-spacer{flex:1;min-height:var(--s2)}
-.akhq-rail-avatar{width:32px;height:32px;border-radius:50%;border:1px solid color-mix(in srgb,var(--rail-on) 14%,transparent);background:color-mix(in srgb,var(--rail-on) 8%,transparent);color:var(--rail-on);display:grid;place-items:center;font-family:var(--mono);font-size:10px;font-weight:600;flex:none}
+.akhq-rail-spacer{flex:1;min-height:var(--s4)}
+.akhq-rail-me{display:flex;align-items:center;gap:10px;padding:10px;border-top:1px solid var(--border);min-width:0}
+.akhq-rail-avatar{width:28px;height:28px;border-radius:50%;background:var(--fg);color:var(--bg);display:grid;place-items:center;font-family:var(--mono);font-size:10px;font-weight:600;flex:none}
+.akhq-rail-me-t{display:flex;flex-direction:column;gap:1px;min-width:0}
+.akhq-rail-me-t b{font-size:12.5px;font-weight:600;color:var(--fg);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.akhq-rail-me-t span{font-family:var(--mono);font-size:9px;letter-spacing:.08em;text-transform:uppercase;color:var(--text-tertiary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 }
 @layer akhq-container{
-/* Skallkomponent: vindusbredde er RIKTIG her — railens bredde er en
+/* Skallkomponent: vindusbredde er RIKTIG her — sidemenyens bredde er en
    skallbeslutning, ikke en containertilpasning (beslutning 36). */
-@media(max-width:640px){.akhq-rail{--w:56px}.akhq-rail-item{width:44px}}
+@media(max-width:1080px){
+.akhq-rail{--w:64px;padding:var(--s4) var(--s2) 14px;align-items:center}
+.akhq-rail-brand{justify-content:center;padding:0}
+.akhq-rail-item{justify-content:center;padding:0;width:48px}
+.akhq-rail-brand b,.akhq-rail-label,.akhq-rail-sec,.akhq-rail-me-t{display:none}
+.akhq-rail-me{justify-content:center;padding:12px 0 0}
+}
 @media(pointer:coarse){.akhq-rail-item{--floor:48px}}
 /* Stand-in: coarse pointer kan ikke simuleres. Samme lag og vekt som
    spørringen over, slik at en modifikator som nuller gulvet vinner her
@@ -35,17 +47,28 @@ const Logo = () => (
     </g>
   </svg>
 );
-export function Rail({ items = [], current, onNavigate, initials = "AK", dataOdId = "rail", ...rest }) {
+export function Rail({ items = [], current, onNavigate, initials = "AK", title = "AgencyOS", name = "Anders Kristiansen", role = "AK Golf Group", dataOdId = "rail", ...rest }) {
+  let seen = null;
   return (
-    <nav className="akhq-rail rail" aria-label="AgencyOS meny" data-od-id={dataOdId} {...rest}>
-      <div className="akhq-rail-brand" aria-label="AK Golf"><Logo /></div>
-      {items.map((it) => (
-        <button type="button" key={it.id} className="akhq-rail-item" aria-current={it.id === current ? "page" : undefined} aria-label={it.label} data-od-id={"nav-" + it.id} onClick={() => onNavigate && onNavigate(it.id)}>
-          {it.icon}<span>{it.label}</span>
-        </button>
-      ))}
+    <nav className="akhq-rail" aria-label="AgencyOS meny" data-od-id={dataOdId} {...rest}>
+      <div className="akhq-rail-brand"><Logo /><b>{title}</b></div>
+      {items.map((it) => {
+        const head = it.section && it.section !== seen ? it.section : null;
+        if (it.section) seen = it.section;
+        return (
+          <React.Fragment key={it.id}>
+            {head ? <div className="akhq-rail-sec">{head}</div> : null}
+            <button type="button" className="akhq-rail-item" aria-current={it.id === current ? "page" : undefined} aria-label={it.label} data-od-id={"nav-" + it.id} onClick={() => onNavigate && onNavigate(it.id)}>
+              {it.icon}<span className="akhq-rail-label">{it.label}</span>
+            </button>
+          </React.Fragment>
+        );
+      })}
       <div className="akhq-rail-spacer" aria-hidden="true"></div>
-      <div className="akhq-rail-avatar" aria-label={"Profil: " + initials}>{initials}</div>
+      <div className="akhq-rail-me">
+        <div className="akhq-rail-avatar" aria-hidden="true">{initials}</div>
+        <div className="akhq-rail-me-t"><b>{name}</b><span>{role}</span></div>
+      </div>
     </nav>
   );
 }

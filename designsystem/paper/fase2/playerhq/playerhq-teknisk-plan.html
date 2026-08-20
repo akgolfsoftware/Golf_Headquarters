@@ -1,3 +1,4 @@
+<!-- FIDELITET: PIXEL-FASIT -->
 <!doctype html>
 <html lang="nb" data-theme="light">
 <head>
@@ -130,6 +131,15 @@ button{ font:inherit; color:inherit; }
 .fokus .fm{ display:block; font-family:var(--mono); font-size:10px; color:var(--muted);
   margin-top:var(--s1); }
 
+/* Målmatrise motorikk × miljø (20.08.2026) — ordet «belastning» vises aldri */
+.matr{ display:grid; grid-template-columns:minmax(86px,1.2fr) repeat(4,1fr); gap:1px; background:var(--border-soft); border:1px solid var(--border); border-radius:var(--r-sm); overflow:hidden; margin-top:var(--s3); }
+.matr > span{ background:var(--surface); padding:var(--s2); font-size:12px; min-width:0; }
+.matr .mh{ font-family:var(--mono); font-size:9px; letter-spacing:.06em; text-transform:uppercase; color:var(--muted); display:flex; align-items:flex-end; }
+.matr .mr{ font-size:12px; font-weight:500; display:flex; align-items:center; }
+.matr .mc{ font-family:var(--mono); font-size:11px; font-variant-numeric:tabular-nums; text-align:right; }
+.matr .mc small{ display:block; font-size:9px; color:var(--muted); }
+.matr .mc.tomt{ color:var(--mid); }
+.matr .mc.naadd{ color:var(--up); }
 .why{ margin:var(--s3) 0 0; border:1px solid var(--border); border-radius:var(--r); }
 .why summary{ display:flex; align-items:center; min-height:var(--tap); padding:0 var(--s4);
   cursor:pointer; list-style:none; font-size:12.5px; font-weight:500; color:var(--muted); }
@@ -194,13 +204,33 @@ var PLAN = { navn:'Høst 2026', periode:'uke 33–44', okterIgjen:14 };
 var FOKUS = [
   { p:'P2.0', navn:'Skaftvinkel halvveis tilbake',
     b:'Skaftet parallelt med tålinja når armen er horisontal. Filmes fra face-on hver økt.',
-    gjort:6, av:10 },
+    gjort:6, av:10, reps:1240, repsMaal:2000 },
   { p:'P4.0 → P5.0', navn:'Overgang · sekvens',
     b:'Hofta leder før armene. Måles på TrackMan-sekvensen, ikke på følelsen.',
-    gjort:3, av:12 },
+    gjort:3, av:12, reps:380, repsMaal:1500 },
   { p:'P7.0', navn:'Treffposisjon · shaft lean',
     b:'Hendene foran ballen ved treff på innspill. Henger sammen med lengdekontrollen.',
-    gjort:8, av:8 }
+    gjort:8, av:8, reps:960, repsMaal:900 }
+];
+
+/* Målmatrise for hovedfokuset (P2.0): motorikk × miljø.
+   Aksene fra VOKABULAR §3.1/§3.2 — kolonnene heter MILJØ i UI
+   (ordet «belastning» vises aldri for spilleren). null = ikke planlagt. */
+var MATRISE = {
+  fokus:'P2.0 · skaftvinkel', kolonner:['Innendørs','Trenings‑område','Bane','Konkurranse'],
+  rader:[
+    { navn:'Uten ball',      celler:[{g:420,m:400},{g:180,m:200},null,null] },
+    { navn:'Lav hastighet',  celler:[{g:260,m:400},{g:310,m:500},{g:40,m:100},null] },
+    { navn:'Automatikk',     celler:[null,{g:30,m:200},{g:0,m:150},{g:0,m:50}] }
+  ]
+};
+
+/* Statusrapport: spredning i tre kontekster. Kilde: loggede slag merket
+   med fokusområdet, gruppert på miljø. Beskrivelse, aldri dømming. */
+var SPREDNING = [
+  { ktx:'Trening',      verdi:'4,1 m', retning:'0,6 m H', slag:214 },
+  { ktx:'Bane-trening', verdi:'6,8 m', retning:'1,4 m H', slag:86 },
+  { ktx:'Konkurranse',  verdi:'9,2 m', retning:'2,1 m H', slag:31 }
 ];
 
 var tilstand = 'fylt';
@@ -275,11 +305,52 @@ function render(){
     var st = el('span', 'stolpe'); var i2 = el('i');
     i2.style.width = Math.round(f2.gjort / f2.av * 100) + '%';
     st.appendChild(i2); d.appendChild(st);
-    d.appendChild(el('span', 'fm num', f2.gjort + ' av ' + f2.av + ' økter' +
+    d.appendChild(el('span', 'fm num', f2.gjort + ' av ' + f2.av + ' økter · ' +
+      f2.reps.toLocaleString('nb-NO') + ' av ' + f2.repsMaal.toLocaleString('nb-NO') + ' reps' +
       (f2.gjort >= f2.av ? ' · fullført' : '')));
     fw.appendChild(d);
   });
   w.appendChild(fw);
+
+  /* ── Målmatrise — motorikk × miljø for hovedfokuset ── */
+  var mk = el('div', 'kort'); mk.style.marginTop = 'var(--s4)';
+  mk.appendChild(el('div', 'eyebrow', 'målmatrise · ' + MATRISE.fokus));
+  var mg = el('div', 'matr'); mg.setAttribute('role', 'table'); mg.setAttribute('aria-label', 'Målmatrise motorikk mot miljø');
+  mg.appendChild(el('span', 'mh', ''));
+  MATRISE.kolonner.forEach(function(kn){ mg.appendChild(el('span', 'mh', kn.replace('\u2011', ''))); });
+  MATRISE.rader.forEach(function(r2){
+    mg.appendChild(el('span', 'mr', r2.navn));
+    r2.celler.forEach(function(c2){
+      if (!c2){ mg.appendChild(el('span', 'mc tomt', '—')); return; }
+      var cell = el('span', 'mc' + (c2.g >= c2.m ? ' naadd' : ''), c2.g.toLocaleString('nb-NO'));
+      var sm = document.createElement('small'); sm.textContent = 'av ' + c2.m.toLocaleString('nb-NO');
+      cell.appendChild(sm); mg.appendChild(cell);
+    });
+  });
+  mk.appendChild(mg);
+  var mfm = el('span', 'fm num'); mfm.style.display = 'block'; mfm.style.marginTop = 'var(--s2)';
+  mfm.textContent = 'Reps telles fra loggen per drill-merking. — betyr ikke planlagt — aldri sperret.';
+  mk.appendChild(mfm);
+  w.appendChild(mk);
+
+  /* ── Statusrapport — spredning i tre kontekster ── */
+  var sk = el('div', 'kort');
+  sk.appendChild(el('div', 'eyebrow', 'statusrapport · spredning innspill 50–100 m'));
+  SPREDNING.forEach(function(s2){
+    var r3 = el('div', 'rad');
+    r3.appendChild(el('span', null, s2.ktx));
+    r3.appendChild(el('span', 'v num', s2.verdi + ' · ' + s2.retning + ' · ' + s2.slag + ' slag'));
+    sk.appendChild(r3);
+  });
+  var sd = el('details', 'why'); sd.dataset.odId = 'tek-why-spredning';
+  sd.appendChild(el('summary', null, 'Hvorfor disse tallene'));
+  var sul = document.createElement('ul');
+  ['Kilde: loggede slag merket P2.0, gruppert på miljø — trening, bane-trening og konkurranse.',
+   'Beregning: spredning er standardavvik fra mållinja, retning er snittavvik (H = høyre).',
+   'Forbehold: konkurransetallet bygger på 31 slag — få slag gir grovere tall. Dette beskriver, det dømmer ikke.']
+   .forEach(function(x){ sul.appendChild(el('li', null, x)); });
+  sd.appendChild(sul); sk.appendChild(sd);
+  w.appendChild(sk);
 
   var wd = el('details', 'why'); wd.dataset.odId = 'tek-why';
   wd.style.marginTop = 'var(--s4)';

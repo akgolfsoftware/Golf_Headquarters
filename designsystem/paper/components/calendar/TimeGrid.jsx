@@ -45,6 +45,8 @@ ensureCss("akhq-css-tg", `
 }
 @layer akhq-modifier{
 .akhq-tg--tall{--tg-h:720px}
+.akhq-tg-ev--kort{grid-auto-flow:column;grid-template-columns:auto minmax(0,1fr);align-content:center;align-items:baseline;gap:6px;padding-top:0;padding-bottom:0}
+.akhq-tg-ev--kort .akhq-tg-ev-title{white-space:nowrap;text-overflow:ellipsis}
 .akhq-tg--compact .akhq-tg-ev-title{font-size:11px}
 }`);
 
@@ -115,7 +117,7 @@ export function TimeGrid({
                     const w = 100 / e.lanes;
                     return (
                       <button key={e.id ?? k} type="button" onClick={onEventClick ? () => onEventClick(e) : undefined}
-                        className={"akhq-tg-ev" + (e.kind === "free" ? " akhq-tg-ev--free" : "")}
+                        className={"akhq-tg-ev" + (e.kind === "free" ? " akhq-tg-ev--free" : "") + (e.e - e.s < 45 ? " akhq-tg-ev--kort" : "")}
                         data-od-id={"cta-okt-" + (e.id ?? i + "-" + k)}
                         style={{ top: (e.s - min0) + "px", height: (e.e - e.s) + "px", left: "calc(" + (w * e.lane) + "% + 3px)", right: "calc(" + (100 - w * (e.lane + 1)) + "% + 3px)" }}>
                         <span className="akhq-tg-ev-time">{hhmm(e.s)}–{hhmm(e.e)}</span>

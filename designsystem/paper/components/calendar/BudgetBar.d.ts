@@ -1,9 +1,13 @@
 /**
- * Budsjettlinjen over ukelerretet i Workbench. Ukevolum mot periodens
- * min/maks, fordeling per pyramideområde, nøkkeltall (TEK-%, aldersregel),
- * og invariantbrudd som ANBEFALING med «overstyr med begrunnelse».
+ * Målingslinjen over ukelerretet i Workbench: ukevolum, fordeling per
+ * pyramideområde og nøkkeltall. Ren informasjon — den beskriver hva uka
+ * inneholder, den vokter den ikke.
  *
- * Komponenten regner ikke. Invariantene bor i CANON; her vises resultatet.
+ * AVGJORT 18.08.2026 (Anders): alle treningsregler er låst opp. `min`,
+ * `max`, `violations` og `onOverride` er UTGÅTT og skal ikke brukes på nye
+ * flater; de står igjen for eldre konsumenter. Se VOKABULAR.md.
+ *
+ * Komponenten regner ikke — den viser tallene den får.
  */
 export interface BudgetDistribution {
   area: "FYS" | "TEK" | "SLAG" | "SPILL" | "TURN";
@@ -13,7 +17,7 @@ export interface BudgetKeyFigure {
   /** Tallet som det skal leses: "38 %", "6,5 t", "15 år". */
   value: React.ReactNode;
   label: string;
-  /** Datasemantikk. Kun når tallet i seg selv er over/under et krav. */
+  /** Datasemantikk. Kun når tallet i seg selv peker en retning. */
   tone?: "up" | "dn";
 }
 export interface BudgetViolation {
@@ -27,16 +31,16 @@ export interface BudgetViolation {
 }
 export interface BudgetBarProps {
   hours: number;
-  /** Periodens vindu. Tegnes som markører i sporet, ikke som farge. */
+  /** @deprecated Utgått 18.08.2026 — ingen tak eller grenser. */
   min?: number;
+  /** @deprecated Utgått 18.08.2026 — ingen tak eller grenser. */
   max?: number;
   unit?: string;
   distribution?: BudgetDistribution[];
   keyFigures?: BudgetKeyFigure[];
-  /** Brudd vises som anbefaling. Tom liste = ingenting vises. */
+  /** @deprecated Utgått 18.08.2026 — planlegging valideres ikke. */
   violations?: BudgetViolation[];
-  /** Uten denne finnes ingen overstyringsknapp — og da må bruddet være
-   *  informativt alene. Sperre er aldri et alternativ. */
+  /** @deprecated Utgått 18.08.2026 — det finnes ingenting å overstyre. */
   onOverride?: (violation: BudgetViolation) => void;
   dataOdId?: string;
 }

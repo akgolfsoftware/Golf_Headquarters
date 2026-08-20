@@ -285,6 +285,18 @@ button{ font:inherit; color:inherit; }
   font-size:15px; background:var(--surface); color:var(--fg);
   border:1px solid var(--border); border-radius:var(--r); resize:vertical; }
 
+/* Stjernerader — fokus/gjennomføring/mestring (20.08.2026) */
+.stjrad{ display:flex; align-items:center; gap:var(--s3); padding:var(--s2) 0;
+  border-bottom:1px solid var(--border-soft); }
+.stjrad:last-child{ border-bottom:0; }
+.stjrad .sl{ font-size:13px; font-weight:500; }
+.stj{ display:flex; gap:2px; margin-left:auto; }
+.stj button{ width:var(--tap); height:var(--tap); display:grid; place-items:center;
+  background:transparent; border:0; cursor:pointer; padding:0; }
+.stj button svg{ width:22px; height:22px; fill:none; stroke:var(--mid); stroke-width:1.5;
+  stroke-linecap:round; stroke-linejoin:round; }
+.stj button.fylt svg{ fill:var(--fg); stroke:var(--fg); }
+
 /* Kvittering etter lagring */
 .kvitt{ padding:var(--s5) var(--s4); background:var(--surface);
   border:1px solid var(--up); border-radius:var(--r); margin-bottom:var(--s4); }
@@ -375,11 +387,11 @@ button,.btn,summary,a.btn{ min-height:var(--tap); }
    COMPLETED ved lagring) · IUP (målet).
    Lagring skriver tilbake til loggen og varsler Anders — aldri en
    godkjenningsrunde. Avvik er informasjon, ikke feil.
-   Økta er o2 fra workbench-mobil.html. Demo-kanon: Øyvind Rohjan. */
+   Økta er o2 fra workbench-desktop.html. Demo-kanon: Øyvind Rohjan. */
 
 var OPPSUM = {
   navn:'Innspill · lengdekontroll',
-  varighet:'1 t 24 min', planlagt:'1 t 30 min',
+  varighet:'1 t 24 min', planlagt:'1 t 30 min', pause:'3 min 40 s',
   drills:[
     { navn:'Halv sving · kalibrering', gjort:'15 av 15 reps', avvik:null },
     { navn:'Avstandsstige 50–100 m', gjort:'30 av 30 reps · 19 innenfor', avvik:null },
@@ -394,6 +406,7 @@ var UTKAST = 'Lengdekontrollen sitter bedre — 8 av 12 innenfor fire meter. ' +
 
 /* Neste økt — vises i kvitteringen (fra TrainingPlanSession). */
 var NESTE = { dagNavn:'Torsdag 6.8', start:'16:00', navn:'Nærspill · landingspunkt' };
+var STJERNER = { fokus:4, gjennomforing:5, mestring:3 };
 
 var tilstand = 'fylt', lagret = false;
 
@@ -448,6 +461,7 @@ function render(){
   var k = el('div', 'kort');
   k.appendChild(el('div', 'eyebrow', OPPSUM.navn + ' · gjennomført'));
   [['Varighet', OPPSUM.varighet + ' (plan ' + OPPSUM.planlagt + ')'],
+   ['Pausetid totalt', OPPSUM.pause],
    ['Drills', '3 av 3'],
    ['Reps totalt', '57 av 57'],
    ['Innenfor 4 m', OPPSUM.treff + ' av ' + OPPSUM.treffAv + ' (mål ' + OPPSUM.maal + ')']]
@@ -499,6 +513,31 @@ function render(){
       w.appendChild(nd);
     });
   }
+
+  /* Stjernerader (20.08.2026): fokus · gjennomføring · mestring — spillerens
+     egen vurdering, 1–5. Beskrivelse til loggen, aldri en karakter fra systemet. */
+  var sk2 = el('div', 'kort');
+  sk2.appendChild(el('div', 'eyebrow', 'din vurdering · 1–5'));
+  [['fokus', 'Fokus'], ['gjennomforing', 'Gjennomføring'], ['mestring', 'Mestring']].forEach(function(sp){
+    var r3 = el('div', 'stjrad');
+    r3.appendChild(el('span', 'sl', sp[1]));
+    var gr = el('div', 'stj'); gr.setAttribute('role', 'radiogroup'); gr.setAttribute('aria-label', sp[1]);
+    for (var n = 1; n <= 5; n++) (function(n){
+      var b = el('button', null); b.type = 'button';
+      b.setAttribute('role', 'radio');
+      b.setAttribute('aria-checked', String(STJERNER[sp[0]] === n));
+      b.setAttribute('aria-label', sp[1] + ' ' + n + ' av 5');
+      b.dataset.odId = 'etter-stj-' + sp[0] + '-' + n;
+      b.className = n <= STJERNER[sp[0]] ? 'fylt' : '';
+      b.innerHTML = '<svg viewBox="0 0 24 24"><path d="M12 3l2.7 5.8 6.3.8-4.6 4.3 1.2 6.1L12 17l-5.6 3 1.2-6.1L3 9.6l6.3-.8z"/></svg>';
+      b.addEventListener('click', function(){ STJERNER[sp[0]] = n; render();
+        si(sp[1] + ': ' + n + ' av 5.'); });
+      gr.appendChild(b);
+    })(n);
+    r3.appendChild(gr);
+    sk2.appendChild(r3);
+  });
+  w.appendChild(sk2);
 
   /* Skriv-tilbake: spillerens egne ord — utkastet kan endres fritt */
   var lw = el('div'); lw.style.marginTop = 'var(--s4)';

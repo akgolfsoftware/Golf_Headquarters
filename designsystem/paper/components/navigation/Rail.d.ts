@@ -1,4 +1,6 @@
 export interface RailItem {
+  /** Valgfri seksjonsetikett; vises som mono-versaler over første rad i gruppen */
+  section?: string;
   /** Blir data-od-id "nav-<id>" */
   id: string;
   label: string;
@@ -12,5 +14,11 @@ export interface RailProps {
   onNavigate?: (id: string) => void;
   /** Initialer i bunn-avataren */
   initials?: string;
+  /** Produktnavn ved siden av logoen */
+  title?: string;
+  /** Navn i bunnraden */
+  name?: string;
+  /** Underlinje i bunnraden */
+  role?: string;
   dataOdId?: string;
 }
