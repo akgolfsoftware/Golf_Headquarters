@@ -35,7 +35,11 @@ via `claude-design`-MCP-verktøyet) er designfasit; full port til `src/` kjører
 `docs/port/PORTPLAN.md`. Ved konflikt vinner `docs/platform/BUSINESS-RULES.md`.
 
 ## Harde invarianter (brytes aldri)
-1. **Anbefalinger sperrer aldri:** ingenting i appen blokkerer trening. Aldri «kan ikke brytes»-kode/tekst.
+1. **Ingen treningsregler (skjerpet 2026-08-18):** ALL regel-håndheving i planlegging er slettet
+   — ingen invarianter, ingen periode-constraints, ingen plan-validering mot metodikk, ingen
+   «CANON». Spilleren står helt fritt. Vokabular (pyramide, perioder, formel) er frie
+   merkelapper. Gjeninnfør aldri en treningsregel uten ny beslutning fra Anders — se
+   `.claude/rules/beslutninger.md` §2026-08-18 og `docs/vokabular-planlegging-2026-08-18.md`.
 2. **Claude Paper vinner alltid (LÅST 2026-08-03/05).** Claude Design-prosjektet «AK Golf HQ — Claude
    Paper» (`605a48cc`, skjermer i `fase1/`) er eneste designfasit — for design OG produksjonskode.
    Full porten kjører nå, skjerm for skjerm, per `docs/port/PORTPLAN.md`.
@@ -244,7 +248,13 @@ Håndheves deterministisk, uavhengig av hva modellen tror:
   - *Nivå 2 — ask:* `prisma/schema.prisma`, `src/lib/env.ts` og andre schema-/auth-/deploy-kritiske filer.
   - *Main-porten — ask:* `git push … main` krever Anders' eksplisitte «ja» i samtalen.
   - *Deny:* `prisma migrate dev` og `prisma db push` (begge ødelagte her — bruk kirurgisk `db execute`,
-    se gotchas §Schema-endringer), manuell prod-deploy, force-push, remote-grensletting, `.env.local`-kommandoer.
+    se gotchas §Schema-endringer) og manuell prod-deploy.
+  - *Ask (ikke deny):* force-push, `git merge`, `reset --hard`, `rebase main`, `git push --delete`,
+    `git branch -D`, `.env.local`-kommandoer. **Rettet 2026-08-20:** denne linja sa tidligere at
+    force-push og remote-grensletting var *deny*. Det stemte ikke med koden — `beskytt.mjs` har alltid
+    hatt dem i `askMønstre`. Feilen kostet en økt: agenten leste «deny», konkluderte at gren-rydding på
+    GitHub var umulig, og ba Anders gjøre det manuelt — mens kommandoen faktisk gikk gjennom på første
+    forsøk. Les hooken, ikke denne oppsummeringen, når du er i tvil om hva som er sperret.
 - **`kvalitet.mjs`** (PostToolUse på Edit/Write): kjører eslint på endret `.ts`/`.tsx` og rapporterer feil
   tilbake umiddelbart. (Hex-gaten ble fjernet herfra 2026-07-25 — men lever fortsatt i CI, se over.)
 - **`logg.mjs`** (logging) og **`varsle-telegram.mjs`** (Stop-varsel til Anders).

@@ -133,7 +133,7 @@ export function byggAiDispatch(input: AiDispatchInput): AiDispatchData {
       tilLabel: TIL_LABEL["agent-team"],
       oppgave: `Sjekk ${pl(agentRunsFailed, "feilet team-kjøring", "feilede team-kjøringer")} (siste 24 t)`,
       ferdigNar: "Du forstår feilen eller starter på nytt",
-      href: "/admin/agent-team",
+      href: "/admin/agenticos",
       prioritet: "hoy",
     });
   }
@@ -145,7 +145,7 @@ export function byggAiDispatch(input: AiDispatchInput): AiDispatchData {
       tilLabel: TIL_LABEL["agent-team"],
       oppgave: `Følg ${pl(agentRunsRunning, "agent-team-kjøring", "agent-team-kjøringer")}`,
       ferdigNar: "Kjøring ferdig — les resultatet",
-      href: "/admin/agent-team",
+      href: "/admin/agenticos",
       prioritet: "normal",
     });
   }
@@ -169,7 +169,7 @@ export function byggAiDispatch(input: AiDispatchInput): AiDispatchData {
       tilLabel: TIL_LABEL["agent-team"],
       oppgave: "Kjør research → utkast → review på én stor oppgave",
       ferdigNar: "Team-run ferdig og du har lest leveransen",
-      href: "/admin/agent-team",
+      href: "/admin/agenticos",
       prioritet: "normal",
     });
   }
@@ -181,7 +181,7 @@ export function byggAiDispatch(input: AiDispatchInput): AiDispatchData {
       tilLabel: TIL_LABEL.agenter,
       oppgave: "Sjekk bakgrunns-agenter og manuell kjøring",
       ferdigNar: "Du vet at natt/morgen-jobbene er friske",
-      href: "/admin/agents",
+      href: "/admin/agenticos",
       prioritet: "normal",
     });
   }
@@ -210,7 +210,7 @@ export function byggAiDispatch(input: AiDispatchInput): AiDispatchData {
           : innboksNye > 0
             ? { tekst: `Les nye e-poster (${innboksNye})`, href: "/admin/innboks-epost" }
             : agentRunsFailed > 0
-              ? { tekst: `Sjekk feilet agent-team (${agentRunsFailed})`, href: "/admin/agent-team" }
+              ? { tekst: `Sjekk feilet agent-team (${agentRunsFailed})`, href: "/admin/agenticos" }
               : fokusSpillere > 0
                 ? {
                     tekst: `Hjelp ${pl(fokusSpillere, "spiller som trenger deg", "spillere som trenger deg")}`,

@@ -26,6 +26,9 @@ import type { Prisma } from "@/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
 import { resendKlient, FRA_EPOST } from "@/lib/email";
 import { isMinor } from "@/lib/auth/minor";
+import { runAgent } from "./agent-runner";
+
+const AGENT_NAME = "betalings-purring";
 
 const B4_AKTIV_FRA = new Date("2026-07-13T00:00:00+02:00");
 const PURRING_1_DAGER = 3;
@@ -85,19 +88,37 @@ async function hentEllerOpprettMal() {
   });
 }
 
-export async function runBetalingsPurring(opts?: {
-  /** Test-modus: hopp over Resend-utsendelse (alt annet kjører som normalt). */
-  dryRunEpost?: boolean;
-  /** KUN for tester: overstyr aktiveringsdatoen (import-vernet). */
-  aktivFraOverride?: Date;
-}): Promise<{
+type BetalingsPurringResultat = {
   kandidater: number;
   purring1: number;
   purring2: number;
   eskalert: number;
   hoppet: number;
   feilet: number;
-}> {
+};
+
+type BetalingsPurringOpts = {
+  /** Test-modus: hopp over Resend-utsendelse (alt annet kjører som normalt). */
+  dryRunEpost?: boolean;
+  /** KUN for tester: overstyr aktiveringsdatoen (import-vernet). */
+  aktivFraOverride?: Date;
+};
+
+/** Logger kjøringen til AgentRun (maskinrommet) — logikken er uendret. */
+export async function runBetalingsPurring(
+  opts?: BetalingsPurringOpts,
+): Promise<BetalingsPurringResultat> {
+  let resultat!: BetalingsPurringResultat;
+  await runAgent(AGENT_NAME, null, async () => {
+    resultat = await betalingsPurringKjerne(opts);
+    return { output: resultat };
+  });
+  return resultat;
+}
+
+async function betalingsPurringKjerne(
+  opts?: BetalingsPurringOpts,
+): Promise<BetalingsPurringResultat> {
   const now = new Date();
 
   const kandidater = await prisma.payment.findMany({

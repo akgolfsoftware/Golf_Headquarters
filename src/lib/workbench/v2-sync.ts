@@ -1,10 +1,9 @@
 import "server-only";
 
-import { Prisma, type PyramidArea, type MMiljo } from "@/generated/prisma/client";
+import type { PyramidArea, MMiljo } from "@/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
 import { resolveValgtCoachIdEllerAdmin } from "@/lib/domain/valgt-coach";
 import { GENERERT_FRA, syncDrillsToV2 } from "./v2-drill-mirror";
-import { validerOkt } from "@/lib/canon/valider-plan";
 
 // Re-eksport: reverse-synkene (okt-status-actions, live-actions) matcher
 // samme streng via denne.
@@ -96,19 +95,6 @@ export async function upsertV2ForPlanSession(input: {
   // Drill-speiling: kun for PLANNED-økter — en påbegynt/logget økt røres aldri.
   if (!existing || existing.status === "PLANNED") {
     await syncDrillsToV2(v2Id, input.planSessionId, input.pyramidArea);
-
-    // CANON-invariantene (okt-scope) — anbefaling, aldri sperre. Resultatet
-    // lagres på V2-speilet (regelBrudd/trengerOppmerksomhet) slik at UI kan
-    // vise det uten et eget levende kall per visning.
-    const validering = await validerOkt(input.planSessionId);
-    const brudd = validering.brudd.map((b) => b.melding);
-    await prisma.trainingSessionV2.update({
-      where: { id: v2Id },
-      data: {
-        regelBrudd: brudd.length > 0 ? brudd : Prisma.DbNull,
-        trengerOppmerksomhet: validering.hardeBrudd > 0,
-      },
-    });
   }
 }
 

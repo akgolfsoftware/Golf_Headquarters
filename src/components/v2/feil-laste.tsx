@@ -201,7 +201,7 @@ function HeroPanelSkel({ trend = false }: { trend?: boolean }) {
   );
 }
 
-/** /admin/agencyos — CockpitV2: hode m/avatar · 4 KPI · kø · innboks · (timer | stall-uka). */
+/** /admin/agencyos — konsollen (tidl. CockpitV2): hode m/avatar · 4 KPI · kø · innboks · (timer | stall-uka). */
 function CockpitSkel() {
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>

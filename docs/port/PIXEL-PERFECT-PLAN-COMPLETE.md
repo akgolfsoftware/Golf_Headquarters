@@ -134,7 +134,7 @@ Avstanden som gjenstår er IKKE token-drift eller speil-drift (begge avkreftet m
 |---|---|---|---|
 | 1 | **Rail-konflikten:** fase2-fasitene tegner en annen admin-rail (7 punkter, mixed case) enn fase1 + koden (8–9, versaler). Forgifter hver eneste admin-sammenligning | **LUKKET 16.08** — A1 besvart (fase2-railen), implementert i #500 | — |
 | 2 | **Master–detalj/artefaktkolonnen:** fasitens inspektørpanel (380 px) mangler på godkjenninger/planbibliotek/bookinger; appen bruker liste→detaljrute | **BESVART 16.08 (A2)** — delt primitiv `inspektorpanel.tsx` bygget i #524, tre flater; resterende flater kobles i PP-C/E | Ombygging per flate |
-| 3 | **Clay-normen:** «Én ting nå»-komponenten brukes som vanlig liste-CTA (307 forekomster, flere per flate i 10+ filer); variant-dokumentene har kodifisert avviket | **BESVART 16.08 (A3)** — sweep kjørt i #502; 44 filer bruker fortsatt `enTing`, variant-dokumentene ikke rettet | PP-B2-rest + dok-retting |
+| 3 | **Clay-normen:** «Én ting nå»-komponenten brukes som vanlig liste-CTA (307 forekomster, flere per flate i 10+ filer); variant-dokumentene har kodifisert avviket | **BESVART 16.08 (A3)** — sweep kjørt i #502; **restansen fjernet 17.08: 32 `enTing`-forekomster i 27 filer** (liste-/skjerm-CTA-er → ink). Variant-dokumentene rettet 17.08. «Én ting nå»-kortene står urørt | Lukket for `enTing`-bruken; øvrige B2-punkter (error.tsx → `V2Feil`, clay-prikk i `VarslerV2`, integrasjoner 4→1) gjenstår |
 | 4 | **Typografi:** 61 % av inline `fontSize` utenfor skalaen (13px/12.5px vanligst) | Vakt på plass (#462, warning) · kjernebiblioteket ryddet · restansen nedarbeides skjerm for skjerm | PP-B5 + PP-F1 (STRENG-vipp) |
 | 5 | **Chrome-rest:** `(legacy)`-SubNav i to layouts, `/meg` utenfor skall-monopolet, døde chrome-komponenter | Delvis (#466 tok 25 døde ruter) — rest ikke verifisert | PP-B4 (verifiser mot avviksrapport §1.5 først) |
 
@@ -154,7 +154,8 @@ Avstanden som gjenstår er IKKE token-drift eller speil-drift (begge avkreftet m
 
 > Svarene er nedfelt i `.claude/rules/beslutninger.md` §august 2026: **A1** fase2-railen
 > (implementert #500) · **A2** fasitens inspektørpanel (primitiv bygget #524, tre flater) ·
-> **A3** clay-normen bekreftet (sweep kjørt #502, restanse gjenstår) · **A4** innlogging LYS.
+> **A3** clay-normen bekreftet (sweep #502; `enTing`-restansen fjernet 17.08 — 32 forekomster
+> i 27 filer) · **A4** innlogging LYS.
 > B/C/D-spørsmålene under er delvis fortsatt åpne — **gjeldende åpne-spørsmål-liste er
 > `PORTPLAN.md` §A1 (10 spørsmål)**; ikke gjenåpne A1–A4.
 
@@ -210,7 +211,7 @@ Rekkefølgen er avhengighetsstyrt; B3–B6 kan starte FØR beslutningsgaten.
 | ID | Fiks | Avhenger av | Størrelse |
 |---|---|---|---|
 | B1 | **Rail-implementasjon:** én endring i `V2Shell` (eller fasit-retting) etter A1 — retter «feil skall» på samtlige admin-flater samtidig | A1 | S kode / M hvis fasit rettes |
-| B2 | **Clay-sweep:** `enTing`-bannerne på plans/bookinger/godkjenninger/innstillinger → ink-header-knapper · de 5 `error.tsx` → `V2Feil` · clay-prikken i `VarslerV2` → nøytral · `InnstillingerIntegrasjonerV2` 4 → 1. Deretter rettes variant-dokumentene («Ny plan (enTing)» o.l.) | A3 | M, mekanisk |
+| B2 | **Clay-sweep:** `enTing`-sweepen er **GJORT 17.08** — 32 forekomster i 27 filer fjernet (liste-/skjerm-CTA-er er nå ink; «Én ting nå»-kortene urørt), og variant-dokumentene er rettet i samme omgang. **Gjenstår av B2:** de 5 `error.tsx` → `V2Feil` · clay-prikken i `VarslerV2` → nøytral · `InnstillingerIntegrasjonerV2` 4 → 1 | A3 | S (rest), mekanisk |
 | B3 | **`Composer` som delt komponent:** DELVIS 17.08 — ekstrahert i #523 (`src/components/v2/composer.tsx`, 4 flater importerer), men IKKE montert i `V2Shell` (`composer`-propen har 0 kallsteder). Monteringen gjenstår — alle desktop-flater skal arve (rutefasit-krav) | — | S (rest) |
 | B4 | **Chrome-rest:** verifiser mot avviksrapport §1.5 hva #466 IKKE tok — `SubNav` i `(legacy)/mal`- og `coach`-layoutene, `/meg` uten `V2Shell`, gjenlevende døde chrome-komponenter | — | S–M |
 | B5 | **Småfiks fra `fasit-avvik.md` (10 min, null risiko):** `planlegge-v2/styles.css:42` (siste Inter-linje) → `var(--p-body)` · de 7 inline radius-verdiene → stigen · `slack-alert.ts:104` (Familjen Grotesk i e-post) | — | S |
@@ -300,7 +301,8 @@ ingenting mer. Kvitteres i variant-filene med m390 + d1280.
 - Stale PR-referanser i checklist-rader (avviksrapport §3-lista: #413/#414/#419 er merget).
 - `CLAUDE.md` §Stack: de to utdaterte font-påstandene (fastslått i `fasit-avvik.md` §1 — byttet ER
   gjennomført; kun `planlegge-v2/styles.css:42` gjensto, som B5 tar).
-- Variant-dokumentene rettes etter A3 (clay-normen) så de slutter å kodifisere `enTing` som liste-CTA.
+- ~~Variant-dokumentene rettes etter A3 (clay-normen) så de slutter å kodifisere `enTing` som liste-CTA.~~
+  **GJORT 17.08** — W3/W4/W5-radene angir nå ink for liste-/skjerm-CTA-er; clay kun i «Én ting nå»-kortet + fokus.
 
 ---
 

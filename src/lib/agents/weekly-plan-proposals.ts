@@ -18,6 +18,9 @@ import { coachedPlayerWhere } from "@/lib/auth/coached";
 import { generateWeekSuggestions } from "@/lib/ai-plan/week-suggest";
 import { parseSessionBudget, budsjettSum } from "@/lib/workbench/perioder";
 import { byggProvenance } from "./provenance";
+import { runAgent } from "./agent-runner";
+
+const AGENT_NAME = "weekly-plan-proposals";
 
 function nesteMandag(): Date {
   const d = new Date();
@@ -26,12 +29,24 @@ function nesteMandag(): Date {
   return d;
 }
 
-export async function runWeeklyPlanProposals(): Promise<{
+type WeeklyPlanProposalsResultat = {
   spillere: number;
   forslag: number;
   hoppet: number;
   feilet: number;
-}> {
+};
+
+/** Logger kjøringen til AgentRun (maskinrommet) — logikken er uendret. */
+export async function runWeeklyPlanProposals(): Promise<WeeklyPlanProposalsResultat> {
+  let resultat!: WeeklyPlanProposalsResultat;
+  await runAgent(AGENT_NAME, null, async () => {
+    resultat = await weeklyPlanProposalsKjerne();
+    return { output: resultat };
+  });
+  return resultat;
+}
+
+async function weeklyPlanProposalsKjerne(): Promise<WeeklyPlanProposalsResultat> {
   const weekStart = nesteMandag();
   const seksDagerSiden = new Date(Date.now() - 6 * 86_400_000);
 

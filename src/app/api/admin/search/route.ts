@@ -65,7 +65,7 @@ const ROUTES: Omit<SearchRoute, "id">[] = [
   { label: "Tester", description: "Tester og benchmarks", href: "/admin/tester" },
   { label: "Analyse / Innsikt", description: "Stall-analyse, compliance, rapporter", href: "/admin/analysere" },
   { label: "Innboks / Forespørsler", description: "Meldinger, godkjenninger, oppgaver", href: "/admin/innboks" },
-  { label: "Agenter", description: "AI-agenter og team", href: "/admin/agenter" },
+  { label: "Agenter", description: "AI-agenter og team", href: "/admin/agenticos" },
   { label: "Workspace", description: "Oppgaver, prosjekter, Notion", href: "/admin/workspace" },
   { label: "Anlegg & Tjenester", description: "Fasiliteter, priser, kapasitet", href: "/admin/anlegg" },
   { label: "Tilgjengelighet", description: "Availability grid", href: "/admin/availability" },

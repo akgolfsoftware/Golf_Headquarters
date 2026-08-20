@@ -714,18 +714,6 @@ export function WBBelastning({ data }: { data: WorkbenchData }) {
       tone: T.warn,
     });
   }
-  const canon = data.canonBudsjett;
-  if (canon) {
-    if (canon.overstyrt) {
-      advarsler.push({ tekst: `CANON ${canon.pass}/${canon.total} · overstyrt`, tone: T.mut });
-    } else if (canon.meldinger.length > 0) {
-      advarsler.push({
-        tekst: `CANON ${canon.pass}/${canon.total} · ${canon.meldinger.join(" · ")}`,
-        tone: T.warn,
-      });
-    }
-  }
-
   return (
     <Kort pad="12px 14px">
       <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 10 }}>
@@ -2088,10 +2076,7 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions, w
   const adherDisp = useCountUp(adher ?? 0);
   // Ekte avvik-tall for uka (lib/workbench/compliance.ts sin oktCompliance,
   // beregnet server-side per økt): «avvik» = aktivt avbrutt/hoppet over/kansellert,
-  // «ikke-gjennomfort» = forfalt uten registrert gjennomføring. CANON-fasechipen
-  // (data.canonChip) svarer på et annet spørsmål (pyramide-balanse i perioden) og
-  // er nesten alltid null uten en aktiv sesongplan-periode — bruk den ALDRI som
-  // stedfortreder for compliance-avvik.
+  // «ikke-gjennomfort» = forfalt uten registrert gjennomføring.
   const avvikOkter = alleEvents.filter((e) => e.compliance === "avvik" || e.compliance === "ikke-gjennomfort").length;
   const harAvvik = avvikOkter > 0;
   const avvikTekst = harAvvik ? `${avvikOkter} avvik denne uka` : "Ingen avvik";
@@ -2123,18 +2108,13 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions, w
       ? `Publiser uke ${weekNumber} til ${playerName.split(" ")[0]}`
       : `Publiser uke ${weekNumber}`;
 
-  // PP-3 fasit: brudd-chips i bunnsonen — fra eksisterende compliance/CANON-logikk.
+  // PP-3 fasit: avvik-chips i bunnsonen — fra compliance-logikken.
   const bruddChips = useMemo(() => {
     const chips: { tekst: string; tone: "warn" | "ok" | "mut" }[] = [];
-    const cb = data?.canonBudsjett;
-    if (cb) {
-      if (cb.overstyrt) chips.push({ tekst: `CANON ${cb.pass}/${cb.total} · overstyrt`, tone: "mut" });
-      else cb.meldinger.forEach((m) => chips.push({ tekst: m, tone: "warn" }));
-    }
     if (harAvvik) chips.push({ tekst: avvikTekst, tone: "warn" });
     else chips.push({ tekst: "Ingen avvik denne uka", tone: "ok" });
     return chips;
-  }, [data, harAvvik, avvikTekst]);
+  }, [harAvvik, avvikTekst]);
 
   const goToWeek = (delta: number) => {
     const target = Math.max(WEEK_OFFSET_MIN, Math.min(WEEK_OFFSET_MAX, weekOffset + delta));

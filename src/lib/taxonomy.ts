@@ -1,5 +1,5 @@
 import { z } from "zod";
-import type { PyramidArea, LPhase } from "@/generated/prisma/client";
+import type { PyramidArea } from "@/generated/prisma/client";
 
 // ---------------------------------------------------------------------------
 // Drill-modus: FYS vs GOLF
@@ -245,80 +245,6 @@ export const DRILL_MAL_KATEGORIER = [
 ] as const;
 
 // ---------------------------------------------------------------------------
-// Periode-typer med constraints
-// ---------------------------------------------------------------------------
-
-export type PeriodeConstraints = {
-  csMax: number;
-  maxVolumMin: number | null;
-  maxOkterUke: number | null;
-  minHviledager: number;
-  lFaserTillatt: LFaseKode[];
-  turneringsLaas: boolean;
-};
-
-export const PERIODE_TYPER: Record<LPhase, PeriodeConstraints> = {
-  GRUNN: {
-    csMax: 70,
-    maxVolumMin: null,
-    maxOkterUke: null,
-    minHviledager: 2,
-    lFaserTillatt: ["L_KROPP", "L_ARM", "L_KOLLE"],
-    turneringsLaas: false,
-  },
-  SPESIAL: {
-    csMax: 90,
-    maxVolumMin: 600,
-    maxOkterUke: 6,
-    minHviledager: 1,
-    lFaserTillatt: ["L_BALL", "L_AUTO"],
-    turneringsLaas: false,
-  },
-  TURNERING: {
-    csMax: 100,
-    maxVolumMin: 300,
-    maxOkterUke: 5,
-    minHviledager: 2,
-    lFaserTillatt: ["L_AUTO"],
-    turneringsLaas: true,
-  },
-  // 8c.1 — nye periodetyper. Foreløpige constraints (Anders justerer):
-  // anbefalinger, aldri sperrer.
-  TESTUKE: {
-    csMax: 100,
-    maxVolumMin: 480,
-    maxOkterUke: 5,
-    minHviledager: 1,
-    lFaserTillatt: ["L_BALL", "L_AUTO"],
-    turneringsLaas: false,
-  },
-  FERIE: {
-    csMax: 100,
-    maxVolumMin: 0,
-    maxOkterUke: 0,
-    minHviledager: 7,
-    lFaserTillatt: [],
-    turneringsLaas: false,
-  },
-  TRENINGSSAMLING: {
-    csMax: 90,
-    maxVolumMin: null,
-    maxOkterUke: null,
-    minHviledager: 0,
-    lFaserTillatt: ["L_KROPP", "L_ARM", "L_KOLLE", "L_BALL", "L_AUTO"],
-    turneringsLaas: false,
-  },
-  HELDAGSSAMLING: {
-    csMax: 90,
-    maxVolumMin: null,
-    maxOkterUke: null,
-    minHviledager: 0,
-    lFaserTillatt: ["L_KROPP", "L_ARM", "L_KOLLE", "L_BALL", "L_AUTO"],
-    turneringsLaas: false,
-  },
-};
-
-// ---------------------------------------------------------------------------
 // Spillerkategorier
 // ---------------------------------------------------------------------------
 
@@ -401,31 +327,3 @@ export const DrillParametersSchema = z.discriminatedUnion("modus", [
 
 export type DrillParameters = z.infer<typeof DrillParametersSchema>;
 
-// ---------------------------------------------------------------------------
-// Validering av periode-constraints
-// ---------------------------------------------------------------------------
-
-export type PeriodeValidering = {
-  ok: boolean;
-  advarsler: string[];
-};
-
-export function validerPeriodBlock(
-  lPhase: LPhase,
-  opts: { weeklyVolMax?: number | null; okterUke?: number | null; csTarget?: number | null },
-): PeriodeValidering {
-  const c = PERIODE_TYPER[lPhase];
-  const advarsler: string[] = [];
-
-  if (opts.csTarget != null && opts.csTarget > c.csMax) {
-    advarsler.push(`CS ${opts.csTarget}% overskrider maks ${c.csMax}% for ${lPhase}`);
-  }
-  if (c.maxVolumMin != null && opts.weeklyVolMax != null && opts.weeklyVolMax > c.maxVolumMin) {
-    advarsler.push(`Volum ${opts.weeklyVolMax} min/uke overskrider maks ${c.maxVolumMin} min for ${lPhase}`);
-  }
-  if (c.maxOkterUke != null && opts.okterUke != null && opts.okterUke > c.maxOkterUke) {
-    advarsler.push(`${opts.okterUke} okter/uke overskrider maks ${c.maxOkterUke} for ${lPhase}`);
-  }
-
-  return { ok: advarsler.length === 0, advarsler };
-}

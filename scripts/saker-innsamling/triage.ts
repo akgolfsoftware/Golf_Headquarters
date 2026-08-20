@@ -23,11 +23,13 @@
  * handling (createPending, tool_name "sak_godkjenn") slik at et rått
  * "BEKREFT" i Telegram oppretter Gmail-utkastet — samme godkjennSak() som
  * Godkjenn-knappen i AgencyOS (src/lib/saker/godkjenn.ts, wired opp i
- * src/lib/meg/confirm.ts). NB: me_pending_action har kun ÉN "siste ventende
- * handling"-plass per person (getLatestPending) — triager kjøringen flere
- * saker i samme runde, er det kun den SISTE som er BEKREFT-bar direkte; de
- * øvrige godkjennes fra AgencyOS → Innboks i stedet. Godtatt begrensning,
- * ikke en bug.
+ * src/lib/meg/confirm.ts). NB: me_pending_action leses med «siste ventende
+ * handling vinner» (getLatestPending) — derfor registreres ALDRI mer enn én
+ * "sak_godkjenn"-pending om gangen: finnes en åpen fra før
+ * (harVentendePending), hoppes registreringen over og Telegram-meldingen
+ * sier i stedet at flere saker venter i AgencyOS → Innboks. Resultat:
+ * BEKREFT treffer alltid en deterministisk sak (den først registrerte),
+ * aldri blindt bakover i en stabel.
  *
  * Oppretter ALDRI noe i Gmail selv, og sender ALDRI noe automatisk — kun
  * skriver foreslattSvar til DB. Selve utkastet i Gmail opprettes først når
@@ -43,7 +45,7 @@ import type { Prisma, Sak } from "@/generated/prisma/client";
 import { runAgent } from "@/lib/agents/agent-runner";
 import { sendTelegramMessage } from "@/lib/meg/telegram";
 import { ollamaChatJson } from "@/lib/meg/ollama";
-import { createPending } from "@/lib/meg/pending";
+import { createPending, harVentendePending } from "@/lib/meg/pending";
 import { adminSubject } from "@/lib/meg/access";
 import { anthropic, MEG_MODEL_SMART, isAiEnabled, tekstFra } from "@/lib/ai/client";
 import { anonymiserNavn, reSubstituer } from "@/lib/saker/anonymiser";
@@ -143,6 +145,11 @@ async function varsleOgRegistrerBekreft(sak: Sak, svar: string): Promise<void> {
     return;
   }
 
+  // Kun ÉN "sak_godkjenn"-pending om gangen (se filhodet): finnes en åpen
+  // fra før, registreres ingen ny — BEKREFT skal alltid treffe den først
+  // registrerte saken deterministisk, aldri vandre bakover i en stabel.
+  const harAlleredePending = await harVentendePending(subject, "sak_godkjenn");
+
   const kortEmne = sak.emne?.trim() || "(uten emne)";
   const kortSvar = svar.length > 600 ? `${svar.slice(0, 600)}…` : svar;
   const melding = [
@@ -152,7 +159,9 @@ async function varsleOgRegistrerBekreft(sak: Sak, svar: string): Promise<void> {
     "Foreslått svar:",
     kortSvar,
     "",
-    "Svar BEKREFT for å opprette Gmail-utkastet (sendes aldri automatisk), eller se saken i AgencyOS → Innboks.",
+    harAlleredePending
+      ? "Flere saker venter — godkjenn i AgencyOS → Innboks."
+      : "Svar BEKREFT for å opprette Gmail-utkastet (sendes aldri automatisk), eller se saken i AgencyOS → Innboks.",
   ].join("\n");
 
   try {
@@ -160,6 +169,8 @@ async function varsleOgRegistrerBekreft(sak: Sak, svar: string): Promise<void> {
   } catch (err) {
     console.error("[saker-triage] Telegram-varsel feilet:", err instanceof Error ? err.message : err);
   }
+
+  if (harAlleredePending) return;
 
   await createPending(
     "sak_godkjenn",

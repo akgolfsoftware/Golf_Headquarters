@@ -2,22 +2,21 @@
 
 /**
  * Server actions for /meg — gullregelen fra nattsesjon-prompt Fase 2 punkt 3:
- * «ingen mutasjon uten eksplisitt godkjenn-handling». Disse to er eneste vei
- * til å endre en Saks status.
+ * «ingen mutasjon uten eksplisitt godkjenn-handling».
  *
- * Dispatch til kanalen (faktisk sende svaret via Gmail/SMS/iMessage) er
- * BEVISST IKKE koblet på her — Google-tilkoblingen mangler fortsatt
- * Gmail-send-scope (se ak-brain/prosjekter/akgolf-hq.md, 16.08: blokkert på
- * /api/google-calendar/connect?meg=1). godkjennSak markerer coachens
- * beslutning i databasen; selve utsendelsen er et eget steg som krever at
- * scope-fiksen er på plass og bør bygges med egen gjennomgang av Anders,
- * ikke stilltiende her. UI-en viser derfor «Godkjent», ikke «Sendt via
- * Gmail» — se natt-rapport.md.
+ * godkjennSak/avvisSak er tynne wrappere rundt den DELTE implementasjonen i
+ * src/lib/saker/godkjenn.ts — samme statusvakter (kun VENTER kan avgjøres,
+ * idempotent) og samme sideeffekt som Godkjenn-knappen i AgencyOS → Innboks
+ * og Telegram BEKREFT (src/lib/meg/confirm.ts): for EPOST-saker opprettes et
+ * Gmail-UTKAST fra foreslattSvar FØR status settes. Det sendes ALDRI noe
+ * automatisk — Anders leser, redigerer om nødvendig og sender selv fra
+ * Gmail. UI-en kan derfor si «Gmail-utkast opprettet», men aldri «Sendt».
  */
 import { revalidatePath } from "next/cache";
 import { notFound } from "next/navigation";
 import { getCurrentUser } from "@/lib/auth/getCurrentUser";
 import { prisma } from "@/lib/prisma";
+import { godkjennSak as godkjennSakDelt, avvisSak as avvisSakDelt } from "@/lib/saker/godkjenn";
 import { SakKanal, SakStatus } from "@/generated/prisma/enums";
 import { FANGST_TYPER, FANGST_TYPE_LABEL, STANDARD_INNSTILLINGER, type FangstType, type InnstillingEndring } from "@/lib/jarvis/types";
 import type { Prisma } from "@/generated/prisma/client";
@@ -39,21 +38,43 @@ const FANGST_FRIST_MS = 24 * 60 * 60 * 1000;
 
 export async function godkjennSak(id: string): Promise<{ ok: true } | { ok: false; feil: string }> {
   await kreverAdmin();
-  try {
-    await prisma.sak.update({ where: { id }, data: { status: SakStatus.GODKJENT } });
-  } catch {
-    return { ok: false, feil: "Fant ikke saken — den kan allerede være behandlet." };
-  }
+  const resultat = await godkjennSakDelt(id);
+  if (!resultat.ok) return { ok: false, feil: resultat.feil ?? "Kunne ikke godkjenne saken." };
   revalidatePath("/meg");
   return { ok: true };
 }
 
 export async function avvisSak(id: string): Promise<{ ok: true } | { ok: false; feil: string }> {
   await kreverAdmin();
+  const resultat = await avvisSakDelt(id);
+  if (!resultat.ok) return { ok: false, feil: resultat.feil ?? "Kunne ikke avvise saken." };
+  revalidatePath("/meg");
+  return { ok: true };
+}
+
+/**
+ * Persisterer et redigert svarutkast FØR godkjenning — lib-godkjennSak leser
+ * foreslattSvar fra databasen, så en ren klient-redigering ville ellers gått
+ * tapt. Kun saker som fortsatt VENTER kan endres (statusvakten ligger i
+ * where-betingelsen, atomisk via updateMany).
+ */
+export async function oppdaterForeslattSvar(
+  id: string,
+  tekst: string,
+): Promise<{ ok: true } | { ok: false; feil: string }> {
+  await kreverAdmin();
+  const renTekst = tekst.trim();
+  if (!renTekst) return { ok: false, feil: "Svaret kan ikke være tomt." };
   try {
-    await prisma.sak.update({ where: { id }, data: { status: SakStatus.AVVIST } });
+    const oppdatert = await prisma.sak.updateMany({
+      where: { id, status: SakStatus.VENTER },
+      data: { foreslattSvar: renTekst },
+    });
+    if (oppdatert.count === 0) {
+      return { ok: false, feil: "Saken er allerede avgjort — svaret kan ikke endres." };
+    }
   } catch {
-    return { ok: false, feil: "Fant ikke saken — den kan allerede være behandlet." };
+    return { ok: false, feil: "Kunne ikke lagre svaret. Prøv igjen." };
   }
   revalidatePath("/meg");
   return { ok: true };

@@ -6,5 +6,5 @@ import { redirect } from "next/navigation";
  * kjøring (samme /api/kommando/team-backend) — ingen funksjonstap.
  */
 export default function KommandoTeamRedirect(): never {
-  redirect("/admin/agent-team");
+  redirect("/admin/agenticos");
 }

@@ -166,7 +166,7 @@ export function AdminSpillerProfilSideV2({ data }: { data: AdminSpillerProfilSid
             </span>
           </div>
           <Link href={`/admin/spillere/${data.spillerId}/rediger`} style={{ textDecoration: "none" }}>
-            <CTAPill icon="pencil" enTing>Rediger</CTAPill>
+            <CTAPill icon="pencil">Rediger</CTAPill>
           </Link>
         </div>
       </div>

@@ -5,13 +5,11 @@
  * Påmeldte turneringer. Tom = grønn vei til plan. T.* only.
  */
 
-import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
   T,
   Caps,
-  Tittel,
   Kort,
   Rad,
   StatusPill,
@@ -38,23 +36,9 @@ export type TurneringerData = {
 /* Tallord 0–12 (som den ekte siden): «To påmeldt.» leser bedre enn «2 påmeldt.» */
 const TALLORD = ["Ingen", "Én", "To", "Tre", "Fire", "Fem", "Seks", "Sju", "Åtte", "Ni", "Ti", "Elleve", "Tolv"];
 
-/** true på klient etter mount når viewport < 768px (styrer kun full-bredde CTA). */
-function useMobile(): boolean {
-  const [m, setM] = useState(false);
-  useEffect(() => {
-    const mq = window.matchMedia("(max-width: 767px)");
-    const oppdater = () => setM(mq.matches);
-    oppdater();
-    mq.addEventListener("change", oppdater);
-    return () => mq.removeEventListener("change", oppdater);
-  }, []);
-  return m;
-}
-
 /* ── Skjermen ──────────────────────────────────────────────────────── */
 
 export function TurneringerV2({ data }: { data: TurneringerData }) {
-  const mobile = useMobile();
   const router = useRouter();
   const { rader, aar } = data;
 
@@ -76,9 +60,9 @@ export function TurneringerV2({ data }: { data: TurneringerData }) {
         </StatusPill>
       </div>
 
-      {/* Primær: ink workbench-inngang (planlegging) — enTing hvis booking-intent */}
+      {/* Primær: ink workbench-inngang (planlegging). Clay er reservert «Én ting nå» (A3). */}
       <Link href="/portal/planlegge/workbench?zoom=uke" style={{ textDecoration: "none", display: "block" }}>
-        <CTAPill icon="calendar-plus" full enTing>
+        <CTAPill icon="calendar-plus" full>
           Planlegg i Workbench
         </CTAPill>
       </Link>

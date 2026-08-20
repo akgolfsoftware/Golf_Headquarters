@@ -13,15 +13,29 @@
  */
 
 import { prisma } from "@/lib/prisma";
+import { runAgent } from "./agent-runner";
 
+const AGENT_NAME = "lead-oppfolging";
 const KILDE = "provetime-booking";
 
-export async function runLeadOppfolging(): Promise<{
+type LeadOppfolgingResultat = {
   kandidater: number;
   nyeLeads: number;
   hoppet: number;
   feilet: number;
-}> {
+};
+
+/** Logger kjøringen til AgentRun (maskinrommet) — logikken er uendret. */
+export async function runLeadOppfolging(): Promise<LeadOppfolgingResultat> {
+  let resultat!: LeadOppfolgingResultat;
+  await runAgent(AGENT_NAME, null, async () => {
+    resultat = await leadOppfolgingKjerne();
+    return { output: resultat };
+  });
+  return resultat;
+}
+
+async function leadOppfolgingKjerne(): Promise<LeadOppfolgingResultat> {
   const now = new Date();
   const fjortenDagerSiden = new Date(now.getTime() - 14 * 86_400_000);
 

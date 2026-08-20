@@ -126,7 +126,7 @@ export function AdminBenchmarksV2({
           width: "100%",
         }}
       >
-        <CTAPill icon="refresh-cw" full enTing>
+        <CTAPill icon="refresh-cw" full>
           {syncPending ? "Synker …" : "Kjør synk nå"}
         </CTAPill>
       </button>

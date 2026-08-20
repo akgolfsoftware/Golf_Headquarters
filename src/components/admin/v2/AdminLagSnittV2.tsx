@@ -6,7 +6,7 @@
  */
 
 import Link from "next/link";
-import { Caps, Tittel, Kort, StatusPill, TomTilstand, CTAPill, T, AKSE_NAVN } from "@/components/v2";
+import { Kort, StatusPill, TomTilstand, CTAPill, T, AKSE_NAVN } from "@/components/v2";
 import type { AkseKey } from "@/lib/v2/tokens";
 
 export interface LagSnittRad {
@@ -70,7 +70,7 @@ export function AdminLagSnittV2({ data }: { data: AdminLagSnittV2Data }) {
             />
           </Kort>
           <Link href="/admin/grupper" style={{ textDecoration: "none", display: "block" }}>
-            <CTAPill icon="plus" full enTing>Opprett gruppe</CTAPill>
+            <CTAPill icon="plus" full>Opprett gruppe</CTAPill>
           </Link>
         </>
       ) : (

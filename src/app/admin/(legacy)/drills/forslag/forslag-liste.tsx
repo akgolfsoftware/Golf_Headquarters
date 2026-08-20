@@ -59,7 +59,7 @@ export function ForslagListe({ forslag }: { forslag: ForslagRad[] }) {
     return (
       <p className="rounded-lg border border-border bg-card p-6 text-sm text-muted-foreground">
         Ingen forslag venter. Kjør drill-forslag-agenten fra{" "}
-        <Link href="/admin/agents" className="text-foreground underline">
+        <Link href="/admin/agenticos" className="text-foreground underline">
           AI-agenter
         </Link>{" "}
         for å generere nye.

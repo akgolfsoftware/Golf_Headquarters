@@ -378,7 +378,7 @@ export async function hentAgencyKalenderData(
         sted: null,
         gruppe: null,
         serie: null,
-        href: "/admin/agent-team",
+        href: "/admin/agenticos",
         naa: false,
         erOppgave: true,
       });

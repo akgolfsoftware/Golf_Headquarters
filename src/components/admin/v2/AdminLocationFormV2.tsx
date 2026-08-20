@@ -317,7 +317,7 @@ export function LocationFormV2({ initial, triggerLabel }: LocationFormV2Props) {
           style={{ all: "unset", cursor: "pointer", display: "block", width: "100%" }}
           aria-label={triggerLabel}
         >
-          <CTAPill icon="plus" full enTing>
+          <CTAPill icon="plus" full>
             {triggerLabel}
           </CTAPill>
         </button>

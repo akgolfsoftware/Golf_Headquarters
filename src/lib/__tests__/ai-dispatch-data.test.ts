@@ -72,6 +72,6 @@ test("feilet team blir NÅ når ingen annen kø", () => {
     agentRunsRunning: 0,
     agentRunsFailed: 2,
   });
-  assert.equal(d.enTingNa?.href, "/admin/agent-team");
+  assert.equal(d.enTingNa?.href, "/admin/agenticos");
   assert.match(d.enTingNa!.tekst, /feilet/);
 });

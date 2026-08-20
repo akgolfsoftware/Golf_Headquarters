@@ -20,7 +20,6 @@ import type { Maanedsrapport } from "@/lib/agents/maanedsrapport";
 import Link from "next/link";
 import {
   Caps,
-  Tittel,
   Kort,
   Icon,
   StatusPill,
@@ -240,7 +239,7 @@ export function AdminReportsV2({ data }: { data: ReportsV2Data }) {
       </div>
 
       <a href="/api/admin/reports/spillere.csv" style={{ textDecoration: "none", display: "block" }}>
-        <CTAPill icon="download" full enTing>
+        <CTAPill icon="download" full>
           Generer spiller-rapport
         </CTAPill>
       </a>

@@ -16,7 +16,9 @@
 import { prisma } from "@/lib/prisma";
 import { sendPush } from "@/lib/push/send";
 import { isAwaitingGuardianConsent } from "@/lib/auth/minor";
+import { runAgent } from "./agent-runner";
 
+const AGENT_NAME = "ukesoppsummering";
 const VARSEL_TYPE = "ukesoppsummering";
 
 function mandag(d: Date): Date {
@@ -26,12 +28,24 @@ function mandag(d: Date): Date {
   return m;
 }
 
-export async function runUkesoppsummering(): Promise<{
+type UkesoppsummeringResultat = {
   spillere: number;
   sendt: number;
   hoppet: number;
   feilet: number;
-}> {
+};
+
+/** Logger kjøringen til AgentRun (maskinrommet) — logikken er uendret. */
+export async function runUkesoppsummering(): Promise<UkesoppsummeringResultat> {
+  let resultat!: UkesoppsummeringResultat;
+  await runAgent(AGENT_NAME, null, async () => {
+    resultat = await ukesoppsummeringKjerne();
+    return { output: resultat };
+  });
+  return resultat;
+}
+
+async function ukesoppsummeringKjerne(): Promise<UkesoppsummeringResultat> {
   const now = new Date();
   const ukeStart = mandag(now);
   const nesteUkeStart = new Date(ukeStart);

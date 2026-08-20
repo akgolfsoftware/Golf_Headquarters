@@ -11,7 +11,6 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import {
   Caps,
-  Tittel,
   Kort,
   Rad,
   AvatarInit,
@@ -311,7 +310,7 @@ export function AdminRunderV2({ data }: { data: AdminRunderV2Data }) {
   // B: én primær CTA — stall for å følge opp spillere uten runder
   const primaerCta = (
     <Link href="/admin/stall" style={{ textDecoration: "none", display: "block" }}>
-      <CTAPill icon="users" full enTing>
+      <CTAPill icon="users" full>
         Åpne stall
       </CTAPill>
     </Link>

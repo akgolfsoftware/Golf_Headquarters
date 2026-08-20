@@ -527,7 +527,7 @@ export function AgencyCockpit({ data }: { data: CockpitData }) {
             <Button as={Link} href="/admin/planlegge" variant="secondary" size="sm" iconLeft={<ClipboardList size={16} />}>Planlegge</Button>
             <Button as={Link} href="/admin/spillere" variant="secondary" size="sm" iconLeft={<Users size={16} />}>Spillere</Button>
             <Button as={Link} href="/admin/gjennomfore" variant="secondary" size="sm" iconLeft={<Play size={16} />}>Gjennomføre</Button>
-            <Button as={Link} href="/admin/agenter" variant="secondary" size="sm" iconLeft={<Bot size={16} />}>Agenter</Button>
+            <Button as={Link} href="/admin/agenticos" variant="secondary" size="sm" iconLeft={<Bot size={16} />}>Agenter</Button>
           </div>
         </div>
 

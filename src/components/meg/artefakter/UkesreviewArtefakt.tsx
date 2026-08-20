@@ -102,7 +102,8 @@ export function UkesreviewArtefakt({ data }: { data: UkesreviewData }) {
       <div style={{ display: "flex", gap: 8, alignItems: "flex-start", border: `1px dashed ${T.border}`, borderRadius: T.rTag, padding: "8px 10px" }}>
         <Icon name="shield-check" size={14} strokeWidth={1.8} style={{ color: T.mut, flex: "none", marginTop: 1 }} />
         <span style={{ fontFamily: T.ui, fontSize: 11.5, color: T.mut }}>
-          Ingen kalendervakt-agent finnes i kode ennå, så dette telles alltid som 0 — ikke en bekreftet ren uke.
+          Vaktens funn lagres ikke, så en ukes-telling kan ikke gjøres ærlig — dette står som 0 inntil funnene
+          persisteres. Aktive avvik akkurat nå ser du i Kalendervakt-artefaktet.
         </span>
       </div>
     </div>
