@@ -15,5 +15,6 @@ export default serwist({
     "public/images/**",
     "public/splash/**",
     "public/team-gfgk/**",
+    "public/brand/**",
   ],
 });

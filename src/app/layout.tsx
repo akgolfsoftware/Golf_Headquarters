@@ -129,12 +129,55 @@ function erAppPath(path: string): boolean {
   );
 }
 
+/**
+ * Landingssidene — LYSE, alltid. Anders' beslutning 20.08.2026 sammen med
+ * designvalget (fasit: `ak-golf-website`): «Design skal være lyst og matche
+ * HQ-designet».
+ *
+ * Før dette var alt utenfor app-pathene mørkt som default, og de 23 PkShell-
+ * sidene reddet seg selv ved å låse lys palett i sin egen CSS. Alt annet på
+ * marketing — booking, blogg-restene — arvet produkt-mørk. Det var grunnen
+ * til at nettstedet ikke så ut som ett sted.
+ *
+ * `/stats/*` står bevisst IKKE her: det er et eget produkt med egen mørk
+ * ramme og egen designbølge (W7).
+ */
+const LANDINGSSIDER = [
+  "/anlegg",
+  "/blogg",
+  "/booking",
+  "/cases",
+  "/coacher",
+  "/coaching",
+  "/cookies",
+  "/faq",
+  "/jobb",
+  "/junior",
+  "/kontakt",
+  "/mulligan",
+  "/om-oss",
+  "/personvern",
+  "/playerhq",
+  "/priser",
+  "/suksess",
+  "/treningsfilosofi",
+  "/turneringer",
+  "/vilkar",
+];
+
+function erLandingsside(path: string): boolean {
+  if (path === "/" || path === "") return true;
+  return LANDINGSSIDER.some((p) => path === p || path.startsWith(`${p}/`));
+}
+
 /** Samme regel som gammelt FOUC-script + V2Shell — men på server (ingen <script>). */
 function onsketMorkTema(path: string, temaCookie: string | undefined): boolean {
   const mork = temaCookie === "dark";
   const lysCk = temaCookie === "light";
   // App + auth: lys default, mørk kun med dark-cookie.
-  // Marketing: mørk default, lys kun med light-cookie.
+  // Landingssidene: alltid lyse — ingen toggle, heller ikke med dark-cookie.
+  // Resten (stats, team-flatene, interne): mørk default, lys med light-cookie.
+  if (erLandingsside(path)) return false;
   return erAppPath(path) ? mork : !lysCk;
 }
 

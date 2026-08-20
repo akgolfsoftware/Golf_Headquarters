@@ -275,7 +275,73 @@ html[data-v2-tema="dark"] {
  * @theme inline gjør at CSS-variablene over blir til Tailwind-utilities:
  * bg-primary, text-foreground, border-border, ring-ring, etc.
  */
+/* ---------- Marketing (landingssidene) — fast lys Paper-palett ----------
+ * Kilde: designfasiten i ak-golf-website (`app/globals.css`), som selv er et
+ * marketing-utsnitt av paper-tokens.css. Verdiene er verbatim fra :root-blokken
+ * der — ALDRI egne hex her, og ALDRI en mørk-gren: landingssidene er lyse,
+ * punktum. Samme mønster som wang-tokens.css (scope-tokens, ikke tema-klassen),
+ * jf. gotchas §Tema.
+ *
+ * Egne `--mk-*`-navn fordi HQ allerede eier --color-border/--color-muted/
+ * --color-ink med produkt-verdier som flipper i mørkt tema. Utilities:
+ * bg-mk-bg, text-mk-fg, border-mk-border, bg-mk-cta, ...
+ */
+:root {
+  --mk-bg: #faf9f5;
+  --mk-surface: #ffffff;
+  --mk-soft: #f0eee6;
+  --mk-soft-hover: #e8e6dc;
+  --mk-border: #e8e6dc;
+  --mk-hairline: #d1cfc5;
+  --mk-inverse: #000000;
+
+  --mk-fg: #141413;
+  --mk-ink-soft: #3d3d3a;
+  --mk-muted: #5e5d59;
+  --mk-mid: #b0aea5;
+
+  --mk-ink: #141413;
+  --mk-ink-2: #1d1c1a;
+
+  --mk-cta: #141413;
+  --mk-on-cta: #faf9f5;
+  --mk-cta-hover: #3d3d3a;
+
+  --mk-accent: #d97757;
+  --mk-accent-fg: #b85c3d;
+  --mk-accent-soft: rgba(217, 119, 87, 0.12);
+
+  --mk-olive: #788c5d;
+  --mk-sky: #6a9bcc;
+}
+
 @theme inline {
+  /* Marketing-paletten (se :root-blokken over) — fast lys, egne navn for å
+   * ikke kollidere med produkt-tokenene. */
+  --color-mk-bg: var(--mk-bg);
+  --color-mk-surface: var(--mk-surface);
+  --color-mk-soft: var(--mk-soft);
+  --color-mk-soft-hover: var(--mk-soft-hover);
+  --color-mk-border: var(--mk-border);
+  --color-mk-hairline: var(--mk-hairline);
+  --color-mk-inverse: var(--mk-inverse);
+  --color-mk-fg: var(--mk-fg);
+  --color-mk-ink-soft: var(--mk-ink-soft);
+  --color-mk-muted: var(--mk-muted);
+  --color-mk-mid: var(--mk-mid);
+  --color-mk-ink: var(--mk-ink);
+  --color-mk-ink-2: var(--mk-ink-2);
+  --color-mk-cta: var(--mk-cta);
+  --color-mk-on-cta: var(--mk-on-cta);
+  --color-mk-cta-hover: var(--mk-cta-hover);
+  --color-mk-accent: var(--mk-accent);
+  --color-mk-accent-fg: var(--mk-accent-fg);
+  --color-mk-accent-soft: var(--mk-accent-soft);
+  --color-mk-olive: var(--mk-olive);
+  --color-mk-sky: var(--mk-sky);
+
+  --font-mk-serif: var(--font-lora), Georgia, serif;
+
   /* Fase 1 token-konvergens: aliasene peker nå på DS-tokenene (var(--bg) osv.)
    * der navnene er løftet globalt. border/input/destructive/success/warning
    * peker fortsatt på trippel-variablene (kolliderende navn, verdier konvergert). */

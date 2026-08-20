@@ -298,3 +298,10 @@ p.pk-ing {
   h2.pk-sekt { font-size: 28px; }
   p.pk-ing { font-size: 18px; }
 }
+
+/* Skallet (header/footer) flyttet til src/app/(marketing)/layout.tsx 20.08.2026.
+   .pk-page er da et innholdslag inne i skallet — full viewport-høyde her ville
+   dyttet footeren under folden på hver eneste side. */
+.pk-page.pk-innhold {
+  min-height: 0;
+}
