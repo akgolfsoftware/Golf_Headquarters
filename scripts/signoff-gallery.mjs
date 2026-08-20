@@ -175,11 +175,45 @@ async function appShot(ctx, rute, fil, { vindu = false, klikk = null } = {}) {
   return tekst;
 }
 
-async function fasitShot(ctx, fasitFil, fil) {
+/**
+ * Fasit-HTML-ene er demo-stillas, ikke ferdige skjermer. Uten forberedelsen under
+ * ble sammenligningen ubrukelig (målt 18.08.2026 — hele galleriet så «langt unna»
+ * ut fordi bildene viste ulike ting, ikke fordi appen var feil):
+ *
+ *  - `data-theme` styrer fasitens tema. Tema-cookien vi setter gjelder appen på
+ *    localhost, aldri en `file://`-side — så fasiten sto ALLTID i lys, også i
+ *    mørk-runden.
+ *  - `.state-switch` er demo-tilstandsvelgeren. Uten skjuling havnet «DEMO-TILSTAND:
+ *    Suksess/Tom/Laster/Feil» midt i fasitbildet, som ingen skjerm i appen kan matche.
+ *    NB: skjul IKKE `[data-demo-only]` her. Mobilfasitene wrapper hele skjermen i
+ *    `.phone[data-demo-only]`, så den regelen tømmer bildet helt (prøvd 18.08.2026 —
+ *    fasitkolonnen ble blank). Samme forbehold står i `_paper-fasit-helpers.ts`.
+ *  - `[data-tilstand]`-knappene velger hvilken tilstand fasiten viser. Står den i
+ *    fylt mens appen er tom, ser alt galt ut uansett hvor riktig porten er.
+ *
+ * Selektorene er de samme som `tests/e2e/_paper-fasit-helpers.ts` bruker.
+ */
+const DEMO_ONLY = [".state-switch"];
+
+async function fasitShot(ctx, fasitFil, fil, { tema = "light", tilstand = null } = {}) {
   const abs = path.resolve(FASIT_DIR, fasitFil);
   if (!existsSync(abs)) return false;
   const page = await ctx.newPage();
   await page.goto(`file://${abs}`, { waitUntil: "networkidle", timeout: 30000 }).catch(() => {});
+
+  await page.evaluate((t) => {
+    document.documentElement.setAttribute("data-theme", t);
+  }, tema);
+
+  if (tilstand) {
+    const knapp = page.locator(`[data-tilstand="${tilstand}"]`).first();
+    if (await knapp.count()) await knapp.click().catch(() => {});
+  }
+
+  await page.addStyleTag({
+    content: DEMO_ONLY.map((s) => `${s} { display: none !important; }`).join("\n"),
+  }).catch(() => {});
+
   await page.waitForTimeout(600);
   await page.screenshot({ path: fil, fullPage: true });
   await page.close();
@@ -235,20 +269,31 @@ for (const s of kø) {
       const ctx = await hentKontekst(device, "light", s.bruker);
       if (!ctx) { logg.push(`FEIL  ${s.id} ${device} — innlogging feilet`); continue; }
       const tekst = await appShot(ctx, s.rute, appFil, { klikk: s.klikk });
-      await appShot(ctx, s.rute, `${OUT}/vindu-${s.id}-${device}-light.png`, { vindu: true, klikk: s.klikk });
-      const harFasit = await fasitShot(ctx, fasitNavn, fasitFil);
-      await sideOmSide(appFil, harFasit ? fasitFil : null, `${OUT}/${s.id}-${device}.png`, VP[device].width);
+      // Vindu-utsnittet er det som faktisk kan sammenlignes: fasitens `.phone` er
+      // én skjermflate, så en fullside-app (målt opptil 2385 px mot fasitens 730)
+      // stiller to helt ulike mengder innhold ved siden av hverandre.
+      const vinduFil = `${OUT}/vindu-${s.id}-${device}-light.png`;
+      await appShot(ctx, s.rute, vinduFil, { vindu: true, klikk: s.klikk });
+      const harFasit = await fasitShot(ctx, fasitNavn, fasitFil, { tema: "light" });
+      await sideOmSide(vinduFil, harFasit ? fasitFil : null, `${OUT}/${s.id}-${device}.png`, VP[device].width);
+      await sideOmSide(appFil, harFasit ? fasitFil : null, `${OUT}/full-${s.id}-${device}.png`, VP[device].width);
       logg.push(`OK    ${s.id} ${device.padEnd(6)} ${s.rute} — "${tekst.slice(0, 70)}"${harFasit ? "" : "  (FASIT MANGLER)"}`);
     } catch (e) {
       logg.push(`FEIL  ${s.id} ${device} — ${String(e.message).split("\n")[0]}`);
     }
   }
-  // Mørk modus: kun mobil (kontrastsjekk, jf. primary=accent-fellen)
+  // Mørk modus: kun mobil (kontrastsjekk, jf. primary=accent-fellen).
+  // Fram til 18.08.2026 tok denne grenen KUN appen — mørk-bildet hadde ingen fasit
+  // ved siden av i det hele tatt, men ble presentert som en sammenligning.
   try {
     const ctx = await hentKontekst("m390", "dark", s.bruker);
     if (ctx) {
-      await appShot(ctx, s.rute, `${OUT}/${s.id}-m390-dark.png`, { klikk: s.klikk });
-      await appShot(ctx, s.rute, `${OUT}/vindu-${s.id}-m390-dark.png`, { vindu: true, klikk: s.klikk });
+      const vinduFil = `${OUT}/vindu-${s.id}-m390-dark.png`;
+      await appShot(ctx, s.rute, `${OUT}/full-${s.id}-m390-dark-app.png`, { klikk: s.klikk });
+      await appShot(ctx, s.rute, vinduFil, { vindu: true, klikk: s.klikk });
+      const fasitFil = `${OUT}/_raw-${s.id}-m390-fasit-dark.png`;
+      const harFasit = await fasitShot(ctx, s.fasitM, fasitFil, { tema: "dark" });
+      await sideOmSide(vinduFil, harFasit ? fasitFil : null, `${OUT}/${s.id}-m390-dark.png`, VP.m390.width);
     }
   } catch (e) {
     logg.push(`FEIL  ${s.id} m390 mørk — ${String(e.message).split("\n")[0]}`);

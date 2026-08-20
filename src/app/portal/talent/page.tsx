@@ -5,7 +5,9 @@
  * Nivåstigen er pre-beta demo-innhold (ærlig merket i skjermen).
  */
 
+import { notFound } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
+import { FEATURES } from "@/lib/features";
 import { prisma } from "@/lib/prisma";
 import { computeStreak, aktivStreak } from "@/lib/streak";
 import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
@@ -47,6 +49,10 @@ const STIGE_BESKRIVELSER: Record<string, string> = {
 };
 
 export default async function TalentPage() {
+  // Samme gate som de fire underskjermene (mitt-niva, sammenligning, min-plan,
+  // roadmap). Uten den rendret huben fem lenker som alle 404-et når flagget er av.
+  if (!FEATURES.TALENT) notFound();
+
   const user = await requirePortalUser({ kreverTilgang: "TALENT" });
 
   const [tracking, goals, roundsRaw, sessionLogs] = await Promise.all([

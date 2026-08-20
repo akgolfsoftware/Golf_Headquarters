@@ -657,7 +657,17 @@ export async function applyExecutorDelta(
         aiPrompt: `period:${periodNote}`,
       };
       if (isPeriodType(periodNote)) {
-        update.targetAllocation = allocationForPeriod(periodNote);
+        // `targetAllocation != null` betyr at et menneske har satt fordelingen
+        // (spiller eller coach via PYRAMID_ADJUST). Den skal et periodebytte
+        // aldri overskrive i stillhet — jf. invariants.ts §Pyramidefordeling.
+        // null = ikke satt, og da er periodemalen riktig utgangspunkt.
+        const plan = await tx.trainingPlan.findUnique({
+          where: { id: ctx.planId },
+          select: { targetAllocation: true },
+        });
+        if (plan?.targetAllocation == null) {
+          update.targetAllocation = allocationForPeriod(periodNote);
+        }
       }
       await tx.trainingPlan.update({
         where: { id: ctx.planId },
