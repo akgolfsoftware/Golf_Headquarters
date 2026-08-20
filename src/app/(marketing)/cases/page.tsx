@@ -1,17 +1,18 @@
 /**
- * MARKEDSSIDE Cases & turneringer (/cases, retning C). OFFENTLIG: ingen
- * auth-guard, egen marketing-chrome (MRamme), IKKE V2Shell. Turneringer
- * hentes fra DB her (server) og sendes som prop til klient-komponenten
- * (samme kilde som /turneringer).
+ * MARKEDSSIDE Cases & turneringer (/cases). OFFENTLIG: ingen auth-guard.
+ * Turneringer hentes fra DB her (server) og sendes som prop til
+ * klient-komponenten (samme kilde som /turneringer).
+ * Ryddet 20.08.2026 — se MarkedCasesV2 for begrunnelse (fjernet oppdiktede
+ * spillerhistorier).
  */
 import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
 import { MarkedCasesV2, type CasesTournament } from "@/components/marketing/v2/MarkedCasesV2";
 
 export const metadata: Metadata = {
-  title: "Suksesshistorier · AK Golf Academy",
+  title: "Cases & turneringer · AK Golf Academy",
   description:
-    "Les hvordan spillere i AK Golf Academy har senket handicapet sitt med data-drevet coaching.",
+    "Følg turneringsresultater for spillere i AK Golf-programmet, live og oppdatert.",
 };
 
 const MND = ["JAN", "FEB", "MAR", "APR", "MAI", "JUN", "JUL", "AUG", "SEP", "OKT", "NOV", "DES"];

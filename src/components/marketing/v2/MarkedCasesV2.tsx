@@ -4,15 +4,8 @@
  * Ekte copy speilet fra (mlegacy)/cases/page.tsx. Turneringer hentes fra DB
  * i page.tsx (server) og sendes inn som prop.
  */
-import { Icon } from "@/components/v2";
 import { PkShell } from "./paper/PkShell";
-import { PkSek, PkEyebrow, PkHero, PkIng, PkSekt, PkCta, PkKat, PkTom, PkTag } from "./paper/PkPrimitives";
-
-type Case = { slug: string; navn: string; alder: number; hcpFra: number; hcpTil: number; tid: string; sitat: string; badge: string };
-const CASES: Case[] = [
-  { slug: "marcus", navn: "Marcus R.", alder: 17, hcpFra: 12.4, hcpTil: 6.1, tid: "8 måneder", sitat: "SG Hub-analysene forandret måten jeg trener på.", badge: "Personlig rekord" },
-  { slug: "sofie", navn: "Sofie L.", alder: 22, hcpFra: 8.2, hcpTil: 3.7, tid: "6 måneder", sitat: "Endelig data-drevet coaching som faktisk funker.", badge: "Data-drevet" },
-];
+import { PkSek, PkEyebrow, PkHero, PkIng, PkSekt, PkCta, PkTom } from "./paper/PkPrimitives";
 
 export type CasesTournament = { day: string; mon: string; name: string; venue: string; format: string; pagar: boolean };
 
@@ -20,9 +13,9 @@ export function MarkedCasesV2({ tournaments }: { tournaments: CasesTournament[] 
   return (
     <PkShell aktiv="/cases" dataSlug="marketing-cases">
       <PkSek>
-        <PkEyebrow>Resultater vi er stolte av</PkEyebrow>
+        <PkEyebrow>Turneringsspor</PkEyebrow>
         <PkHero>Cases &amp; turneringer</PkHero>
-        <PkIng>Dokumenterte resultater fra spillere i AK Golf-programmet, fra HCP 12 til nasjonal elite.</PkIng>
+        <PkIng>Turneringer og resultater fra spillere i AK Golf-programmet — fulgt live, ikke fortalt i etterkant.</PkIng>
         <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
           <PkCta href="/booking" clay>
             Book gratis kartleggings-økt
@@ -31,18 +24,6 @@ export function MarkedCasesV2({ tournaments }: { tournaments: CasesTournament[] 
             Se turneringskalenderen
           </PkCta>
         </div>
-      </PkSek>
-
-      <PkSek notop>
-        <PkEyebrow>Spillere · Dokumentert fremgang</PkEyebrow>
-        <div style={{ marginTop: 12 }}>
-          <PkSekt>Historier som kan måles</PkSekt>
-        </div>
-        <PkKat>
-          {CASES.map((c) => (
-            <CaseCard key={c.slug} c={c} />
-          ))}
-        </PkKat>
       </PkSek>
 
       <PkSek notop>
@@ -128,84 +109,5 @@ export function MarkedCasesV2({ tournaments }: { tournaments: CasesTournament[] 
         </div>
       </PkSek>
     </PkShell>
-  );
-}
-
-function CaseCard({ c }: { c: Case }) {
-  const forbedring = (c.hcpFra - c.hcpTil).toFixed(1);
-  return (
-    <div className="pk-kort">
-      <div
-        style={{
-          position: "relative",
-          height: 88,
-          background: "var(--p-soft)",
-          borderBottom: "1px solid var(--p-hairline)",
-        }}
-      >
-        <span
-          style={{
-            position: "absolute",
-            left: 16,
-            top: 14,
-            borderRadius: 9999,
-            background: "var(--p-accent)",
-            color: "var(--p-on-accent)",
-            padding: "5px 12px",
-            fontFamily: "var(--p-mono)",
-            fontSize: 9.5,
-            fontWeight: 700,
-            textTransform: "uppercase",
-            letterSpacing: "0.06em",
-          }}
-        >
-          {c.badge}
-        </span>
-        <span
-          style={{
-            position: "absolute",
-            right: 16,
-            top: 14,
-            width: 32,
-            height: 32,
-            borderRadius: 9999,
-            background: "var(--p-accent)",
-            color: "var(--p-on-accent)",
-            display: "inline-flex",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
-          <Icon name="trending-down" size={15} />
-        </span>
-      </div>
-      <div className="pk-kort-body">
-        <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: 8 }}>
-          <span className="pk-meta">{c.navn}</span>
-          <span className="pk-meta">· {c.alder} år</span>
-          <PkTag>{c.tid}</PkTag>
-        </div>
-        <blockquote
-          style={{
-            margin: "14px 0 0",
-            borderLeft: "2px solid var(--p-accent)",
-            paddingLeft: 14,
-            fontFamily: "var(--p-disp)",
-            fontStyle: "italic",
-            fontSize: 15,
-            lineHeight: 1.5,
-            color: "var(--p-muted)",
-          }}
-        >
-          «{c.sitat}»
-        </blockquote>
-        <div style={{ marginTop: 16, display: "flex", alignItems: "baseline", gap: 8 }}>
-          <span style={{ fontFamily: "var(--p-mono)", fontSize: 22, fontWeight: 700, color: "var(--p-accent-fg)" }}>-{forbedring}</span>
-          <span style={{ fontFamily: "var(--p-ui)", fontSize: 12, color: "var(--p-muted)" }}>
-            HCP-forbedring · {c.hcpFra} → {c.hcpTil}
-          </span>
-        </div>
-      </div>
-    </div>
   );
 }
