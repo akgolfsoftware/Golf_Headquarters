@@ -397,13 +397,43 @@ og fullsving er ikke besluttet ennå.
 Videreutvikles som samlingspunktet — gjelder både for spilleren selv og for coach: komplett
 oversikt ett sted (teknisk plan med statusrapport, testhistorikk, mål, medier, grupper).
 
+## Fase 0 — forslag til lukking (20.08, venter Anders' svar)
+
+Punktene under er de tre gjenstående åpne punktene fra fase 0.2 i
+`docs/plan-treningsplanlegging-til-kode-2026-08-20.md`. Hvert har et Claude-forslag —
+bekreft eller korriger, samme mønster som resten av intervjuet.
+
+**1. Hva erstatter motorikk-feltet for nærspill/putt i datamodellen?**
+*Forslag (utdypet i `docs/relevans-matrise-treningsplanlegging-2026-08-20-v2.md`):*
+Ingenting strukturelt erstatter det — feltet er `null`/skjult for alle områder utenom de
+fem fullsving-områdene, og områdets egne teknikk-dimensjoner (typet enum,
+`OmradeDimensjon`) bærer analysen i stedet. Unntak: BUNKER får et eget to-verdis
+`sandtrinn`-felt (`UTEN_BALL_I_SAND` → `MED_BALL`), separat fra den generelle
+motorikk-enumen. Formel-strengen hopper over motorikk-segmentet for områder uten det
+(`TEK_CHIP_TRENINGSOMRADE_ALENE`, ikke `TEK_CHIP_null_...`).
+
+**2. Innsyn bakover når spilleren forlater en gruppe** (gap-evalueringens spørsmål 7)**?**
+*Forslag (uendret fra gap-evalueringens default):* Ja — grensen er gruppemedlemskap,
+konsekvent begge veier. Coachen mister innsyn i spillerens personlige logg fra
+medlemsperioden når spilleren forlater gruppen, også bakover i tid. Gruppens egne
+artefakter (gruppeplaner, oppmøtelister) forblir i gruppen — det er kun spillerens
+personlige logg (reps, tid, vurderinger, medier) som forsvinner fra coachens innsyn.
+Enklest å forklare og tryggest GDPR-messig; matcher løsrivelses- og gruppesynk-reglene i
+del 4 av gap-evalueringen.
+
+**3. FYS-programmet i v1: manuelt, ingen auto-forslag?**
+*Forslag:* Ja, bekreftet. Coach/spiller setter opp FysiskPlan → FysUke → FysOkt →
+FysOvelseRad manuelt, med øvelser fra øvelsesbanken (fase 0.3). Automatisk
+programforslag fra fysiske testresultater er eksplisitt v2 (spec-ens §FYS-økter,
+punkt «v2 — VIKTIG»). Ingen endring i denne bekreftelsen — kun eksplisitt «ja».
+
 ## Ikke avklart ennå (intervjuet fortsetter)
 
-- Hva som erstatter motorikk-feltet for nærspill/putt i datamodellen (Anders: «kommer
-  tilbake til»)
-- Egne dimensjoner for bunker og fullsving (utkast i gap-evalueringen §1) — ikke besluttet
-- Innsyn bakover når spilleren forlater en gruppe (gap-evalueringens spørsmål 7) — ubesvart
+- Egne dimensjoner for bunker og fullsving — utkast i
+  `docs/relevans-matrise-treningsplanlegging-2026-08-20-v2.md` (fase 0.1), venter Anders'
+  korrigering
 - Varslinger og signal-lag — utsatt (Anders 20.08: ses på senere)
-- FYS-programmet i v1: lages manuelt av coach/spiller (auto-forslaget er v2) — bekreftes
-- FYS-øvelsesbanken: innlastingsplanen venter Anders' godkjenning
-- Relevans-matrisens øvrige (?)-celler korrigeres av Anders etter revisjon
+- FYS-øvelsesbanken: innlastingsplanen i `docs/fys-ovelsesbank-2026-08-20.md` (fase 0.3)
+  venter Anders' godkjenning
+- Relevans-matrisens (?)-celler i v2-matrisen (fase 0.1) korrigeres av Anders
+- De tre punktene i «Fase 0 — forslag til lukking» over venter Anders' svar
