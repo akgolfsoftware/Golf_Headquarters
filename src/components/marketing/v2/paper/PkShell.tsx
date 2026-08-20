@@ -1,4 +1,3 @@
-import Link from "next/link";
 import "@/styles/paper-katalog.css";
 import "@/styles/paper-side.css";
 
@@ -68,43 +67,20 @@ export function PkShell({
   const NAV = variant === "side" ? NAV_SIDE : NAV_KATALOG;
   const FOOTER = variant === "side" ? FOOTER_SIDE : FOOTER_KATALOG;
 
+  // Skallet (header + footer) eies siden 20.08.2026 av
+  // src/app/(marketing)/layout.tsx — MarkedNav + MarkedFot, ett skall for hele
+  // marketing. PkShell er nå et rent innholdslag som bare bærer sidenes egen
+  // CSS-scope (.pk-page → paper-katalog.css / paper-side.css).
+  // `aktiv`, `variant` og NAV-/FOOTER-listene er beholdt til sidene er portert
+  // til det nye designet, så kallene ikke må endres i samme slurk. De skal
+  // slettes sammen med denne komponenten når porten er ferdig.
+  void NAV;
+  void FOOTER;
+  void aktiv;
+
   return (
-    <div className="pk-page" data-paper-slug={dataSlug}>
-      <header className="pk-nav">
-        <Link href="/" aria-label="AK Golf, hjem" className="pk-nav-logo">
-          AK Golf<span>.</span>
-        </Link>
-        <nav className="pk-nav-links" aria-label="Hovedmeny">
-          {NAV.map((n) => (
-            <Link key={n.href} href={n.href} aria-current={aktiv === n.href ? "page" : undefined}>
-              {n.label}
-            </Link>
-          ))}
-        </nav>
-        <div className="pk-nav-right">
-          <Link href="/auth/login" className="pk-btn pk-btn-sm">
-            Logg inn
-          </Link>
-          <Link href="/booking" className="pk-btn pk-btn-sm pk-btn-ink">
-            Bestill time
-          </Link>
-        </div>
-      </header>
-
-      <main id="innhold">{children}</main>
-
-      <footer className="pk-footer">
-        <div className="pk-wrap">
-          <div className="pk-lenker">
-            {FOOTER.map((f) => (
-              <Link key={f.label} href={f.href}>
-                {f.label}
-              </Link>
-            ))}
-          </div>
-          <p style={{ margin: 0 }}>AK Golf Group AS · Fredrikstad · org. 923 456 789</p>
-        </div>
-      </footer>
+    <div className="pk-page pk-innhold" data-paper-slug={dataSlug}>
+      <div id="innhold">{children}</div>
     </div>
   );
 }
