@@ -1,6 +1,6 @@
 # FYS-øvelsesbank — innlastingsplan
 
-**Status: FORSLAG, venter Anders' godkjenning (fase 0.3).** 132 standardøvelser for fysisk
+**Status: GODKJENT (Anders, 20.08.2026).** 132 standardøvelser for fysisk
 trening til toppidrettsutøvere i golf, gruppert etter spec-ens FYS-profil (mer bevegelighet,
 mer kondisjon, mer styrke — individuell fordeling per spiller). Faglig forankret i TPI Big 12
 (golfspesifikk screening), RFD (rate of force development) > 1RM som prinsipp, og

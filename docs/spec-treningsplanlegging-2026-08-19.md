@@ -1,7 +1,10 @@
 # Treningsplanlegging — systemspec
 
-**Status: UNDER INTERVJU.** Bygget punkt for punkt fra Anders' svar 19.–20.08.2026.
-Alt her er besluttet av Anders med mindre annet er merket. Redigér fritt.
+**Status: FASE 0 NESTEN LUKKET (20.08.2026).** Bygget punkt for punkt fra Anders' svar
+19.–20.08.2026. Relevans-matrisen, de tre åpne punktene og FYS-øvelsesbanken er godkjent
+(runde 1–3, 20.08). **Gjenstår kun:** de ti spørsmålene i «Fortsatt uavklart før KOMPLETT»
+under — hver har et forslått default, ingen er eksplisitt bekreftet ennå. Alt her er
+besluttet av Anders med mindre annet er merket.
 
 ---
 
