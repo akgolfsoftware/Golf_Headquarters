@@ -12,8 +12,28 @@ import { prisma } from "@/lib/prisma";
 import { audit } from "@/lib/audit";
 import { sendBookingReminder } from "@/lib/email/booking-emails";
 import { logError } from "@/lib/error-tracking";
+import { runAgent } from "./agent-runner";
 
-export async function runBookingReminders() {
+const AGENT_NAME = "booking-reminders";
+
+type BookingRemindersResultat = {
+  candidates: number;
+  sent: number;
+  skipped: number;
+  failed: number;
+};
+
+/** Logger kjøringen til AgentRun (maskinrommet) — logikken er uendret. */
+export async function runBookingReminders(): Promise<BookingRemindersResultat> {
+  let resultat!: BookingRemindersResultat;
+  await runAgent(AGENT_NAME, null, async () => {
+    resultat = await bookingRemindersKjerne();
+    return { output: resultat };
+  });
+  return resultat;
+}
+
+async function bookingRemindersKjerne(): Promise<BookingRemindersResultat> {
   const now = new Date();
   const minStart = new Date(now.getTime() + 23 * 60 * 60_000);
   const maxStart = new Date(now.getTime() + 25 * 60 * 60_000);

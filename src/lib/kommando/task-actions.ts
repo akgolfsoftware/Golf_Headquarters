@@ -42,7 +42,7 @@ export async function createKommandoTask(input: {
       dueAt: dueAt && !Number.isNaN(dueAt.getTime()) ? dueAt : null,
     },
   });
-  revalidatePath("/admin/agent-team");
+  revalidatePath("/admin/agenticos");
   revalidatePath("/admin/kalender");
 }
 
@@ -57,7 +57,7 @@ export async function toggleKommandoTask(id: string) {
     where: { id: task.id },
     data: { status: task.status === "open" ? "done" : "open" },
   });
-  revalidatePath("/admin/agent-team");
+  revalidatePath("/admin/agenticos");
   revalidatePath("/admin/kalender");
 }
 
@@ -66,6 +66,6 @@ export async function deleteKommandoTask(id: string) {
   if (!user) throw new Error("Ikke autorisert");
 
   await prisma.kommandoTask.deleteMany({ where: { id, userId: user.id } });
-  revalidatePath("/admin/agent-team");
+  revalidatePath("/admin/agenticos");
   revalidatePath("/admin/kalender");
 }

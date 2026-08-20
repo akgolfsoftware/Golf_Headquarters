@@ -274,7 +274,7 @@ function SpillerSammendrag({ s }: { s: StallV2Player }) {
       {/* B: én primær (Workbench) · profil er sekundær */}
       <div style={{ display: "flex", gap: 8, marginTop: 16, flexWrap: "wrap" }}>
         <Link href={`/admin/spillere/${s.id}/workbench`} style={{ display: "inline-flex", textDecoration: "none" }}>
-          <CTAPill enTing icon="arrow-right">
+          <CTAPill icon="arrow-right">
             {s.trenger ? "Følg opp i Workbench" : "Åpne Workbench"}
           </CTAPill>
         </Link>

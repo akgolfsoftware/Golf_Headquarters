@@ -18,7 +18,7 @@ export async function createKommandoProject(input: { name: string }) {
   await prisma.kommandoProject.create({
     data: { userId: user.id, name },
   });
-  revalidatePath("/admin/agent-team");
+  revalidatePath("/admin/agenticos");
 }
 
 export async function archiveKommandoProject(id: string) {
@@ -32,7 +32,7 @@ export async function archiveKommandoProject(id: string) {
     where: { id: project.id },
     data: { status: project.status === "archived" ? "active" : "archived" },
   });
-  revalidatePath("/admin/agent-team");
+  revalidatePath("/admin/agenticos");
 }
 
 export async function deleteKommandoProject(id: string) {
@@ -45,5 +45,5 @@ export async function deleteKommandoProject(id: string) {
     data: { projectId: null },
   });
   await prisma.kommandoProject.deleteMany({ where: { id, userId: user.id } });
-  revalidatePath("/admin/agent-team");
+  revalidatePath("/admin/agenticos");
 }

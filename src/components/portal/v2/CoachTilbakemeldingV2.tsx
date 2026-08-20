@@ -449,7 +449,6 @@ export function CoachTilbakemeldingV2({ data }: { data: CoachTilbakemeldingData 
                     <div style={{ flex: 1, minWidth: 0 }}>
                       <Knapp
                         full
-                        enTing
                         disabled={pending || svar.trim().length === 0}
                         onClick={sendSvar}
                       >

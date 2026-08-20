@@ -7,7 +7,6 @@ import Link from "next/link";
 import {
   Kort,
   Caps,
-  Tittel,
   TomTilstand,
   InnsiktChip,
   Icon,
@@ -105,7 +104,7 @@ export function CoachSgHubV2({ data }: { data: CoachSgHubV2Data }) {
               sub="Logg runder for å se sammenligningen mot coach."
             />
             <Link href="/portal/runde/live" style={{ textDecoration: "none", display: "block" }}>
-              <CTAPill icon="flag" full enTing>
+              <CTAPill icon="flag" full>
                 Start live-føring
               </CTAPill>
             </Link>

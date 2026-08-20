@@ -6,5 +6,5 @@ import { redirect } from "next/navigation";
  * av ProjectList — ingen funksjonstap.
  */
 export default function KommandoOppgaverRedirect(): never {
-  redirect("/admin/agent-team");
+  redirect("/admin/agenticos");
 }

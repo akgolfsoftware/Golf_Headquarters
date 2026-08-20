@@ -397,7 +397,6 @@ export function ScorekortKlient({
             registrert er tapt. Prøv å lagre på nytt når du er klar.
           </p>
           <Knapp
-            enTing
             full
             icon="check"
             onClick={lagre}
@@ -626,7 +625,6 @@ export function ScorekortKlient({
         }}
       >
         <Knapp
-          enTing
           full
           icon="check"
           onClick={lagre}

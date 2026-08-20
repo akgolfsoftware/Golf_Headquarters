@@ -9,7 +9,6 @@ import Link from "next/link";
 import {
   T,
   Caps,
-  Tittel,
   Kort,
   AkseChip,
   CTAPill,
@@ -91,7 +90,7 @@ function ForslagKort({ drill }: { drill: DrillSuggestion }) {
 
       <div style={{ marginTop: 12 }}>
         <Link href={`/portal/drills/${drill.id}`} style={{ textDecoration: "none" }}>
-          <CTAPill icon="arrow-right" full enTing>Åpne drill</CTAPill>
+          <CTAPill icon="arrow-right" full>Åpne drill</CTAPill>
         </Link>
       </div>
     </Kort>
@@ -99,7 +98,7 @@ function ForslagKort({ drill }: { drill: DrillSuggestion }) {
 }
 
 export function ForeslaDrillV2({ data }: { data: ForeslaDrillV2Data }) {
-  const { playerFirstName, analysedTestCount, suggestions } = data;
+  const { analysedTestCount, suggestions } = data;
   return (
     <div data-paper-wave-g="foresladrill" data-paper-pattern style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
       <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
@@ -134,7 +133,7 @@ export function ForeslaDrillV2({ data }: { data: ForeslaDrillV2Data }) {
           />
           <div style={{ marginTop: 12 }}>
             <Link href="/portal/tren/tester" style={{ textDecoration: "none", display: "block" }}>
-              <CTAPill icon="arrow-right" full enTing>
+              <CTAPill icon="arrow-right" full>
                 Gå til tester
               </CTAPill>
             </Link>

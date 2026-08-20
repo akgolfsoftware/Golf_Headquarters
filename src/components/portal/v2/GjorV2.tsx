@@ -16,7 +16,6 @@ import { FortsettRundeCta } from "@/components/portal/runde-logg/fortsett-runde-
 import {
   T,
   Caps,
-  Tittel,
   StatusPill,
   Kort,
   Rad,
@@ -90,7 +89,7 @@ function SekundarHandlinger() {
 export function GjorV2({ data }: { data: GjennomforeData }) {
   const mobile = useMobile();
   const router = useRouter();
-  const { datoTekst, antall, totalMin, nesteOkt, resteAvDagen, fullfortIdag } = data;
+  const { antall, totalMin, nesteOkt, resteAvDagen, fullfortIdag } = data;
   const [oppdaterer, startOppdatering] = useTransition();
   const [oppdatererId, setOppdatererId] = useState<string | null>(null);
   const marker = (o: { id: string; kilde: "v2" | "plan" }, status: "COMPLETED" | "SKIPPED") => {
@@ -104,25 +103,13 @@ export function GjorV2({ data }: { data: GjennomforeData }) {
   const live = nesteOkt?.status === "now";
   const fullfortPct = antall > 0 ? Math.round((fullfortIdag.length / antall) * 100) : 0;
 
-  let headerCaps: string;
-  let titelChildren: string;
-  let titelEm: string;
   let headerStatus: ReactNode = null;
   if (nesteOkt && live) {
-    headerCaps = `Pågående · startet ${nesteOkt.tid}`;
-    titelChildren = `${nesteOkt.pyramidArea} ·`;
-    titelEm = nesteOkt.tittel;
     headerStatus = <StatusPill tone="lime">Live</StatusPill>;
   } else if (nesteOkt) {
-    headerCaps = `Neste · ${nesteOkt.relTidTekst}`;
-    titelChildren = `${nesteOkt.pyramidArea} ·`;
-    titelEm = nesteOkt.tittel;
     headerStatus = <StatusPill tone="info">kl {nesteOkt.tid}</StatusPill>;
-  } else {
-    headerCaps = datoTekst;
-    titelChildren = "Dagens";
-    titelEm = "program";
-    if (antall > 0) headerStatus = <StatusPill tone="up">Alt fullført</StatusPill>;
+  } else if (antall > 0) {
+    headerStatus = <StatusPill tone="up">Alt fullført</StatusPill>;
   }
 
   return (
@@ -183,7 +170,7 @@ export function GjorV2({ data }: { data: GjennomforeData }) {
           </Kort>
 
           <Link href="/portal/planlegge/workbench?zoom=uke" style={{ textDecoration: "none", display: "block" }}>
-            <CTAPill icon="calendar" full enTing>
+            <CTAPill icon="calendar" full>
               Åpne Workbench
             </CTAPill>
           </Link>
@@ -256,7 +243,7 @@ export function GjorV2({ data }: { data: GjennomforeData }) {
           {/* Én primær CTA */}
           {nesteOkt && (
             <Link href={nesteOkt.href} style={{ textDecoration: "none", display: "block" }}>
-              <CTAPill icon="play" full enTing>
+              <CTAPill icon="play" full>
                 {live ? "Fortsett økt" : "Start økt"}
               </CTAPill>
             </Link>

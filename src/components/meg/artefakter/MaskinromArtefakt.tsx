@@ -9,7 +9,8 @@
  * src/lib/jarvis/repository.ts): fasiten viser fem innsamlere (Gmail,
  * iMessage, Telegram, Kalender, Anrop) og en alltid-grønn Ollama/LaunchAgent-
  * rad. I kode finnes kun to ekte innsamlere (Gmail, iMessage) med et faktisk
- * AgentRun-spor — resten er ikke bygget, og Ollama/LaunchAgent-helse kan
+ * AgentRun-spor — kalendervakten kjører uten eget kjørespor (se UTEN_HELSESPOR
+ * under), anrop-loggen er ikke bygget, og Ollama/LaunchAgent-helse kan
  * aldri leses fra Vercel (Tailscale-only, se .claude/rules/gotchas.md). Disse
  * vises derfor som egne, tydelig merkede seksjoner i stedet for oppdiktede
  * statussirkler.
@@ -75,8 +76,10 @@ function StatusRad({ innsamler, na }: { innsamler: InnsamlerStatus; na: Date }) 
   );
 }
 
-const IKKE_BYGGET: { navn: string; forklaring: string }[] = [
-  { navn: "Kalendervakt", forklaring: "Ingen avviks-agent bygget ennå — se jarvis/meg-kalendervakt.html for planlagt design." },
+// Rader uten AgentRun-spor — enten fordi de kjører uten kjøreplan (vakten,
+// Telegram-webhooken) eller fordi de ikke er bygget ennå (anrop-loggen).
+const UTEN_HELSESPOR: { navn: string; forklaring: string }[] = [
+  { navn: "Kalendervakt", forklaring: "Kjører ved hver lasting av /meg — sjekker neste 7 dager for konflikter og manglende reisetid (src/lib/jarvis/kalendervakt.ts). Ingen egen kjøreplan å måle helse mot." },
   { navn: "Anrop-logg", forklaring: "Ingen samtaleloggintegrasjon finnes i kode ennå." },
   { navn: "Telegram", forklaring: "Botten svarer via webhook (alltid på) — ingen kjøreplan å måle helse mot." },
 ];
@@ -107,12 +110,12 @@ export function MaskinromArtefakt({ data, na }: { data: SystemHelse; na: Date })
         </div>
       </InspektorBlokk>
 
-      <InspektorBlokk label="Ikke bygget ennå">
+      <InspektorBlokk label="Uten helsespor">
         <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-          {IKKE_BYGGET.map((r) => (
+          {UTEN_HELSESPOR.map((r) => (
             <div
               key={r.navn}
-              data-od-id={`panel-ikke-bygget-${r.navn.toLowerCase().replace(/[^a-z]+/g, "-")}`}
+              data-od-id={`panel-uten-helsespor-${r.navn.toLowerCase().replace(/[^a-z]+/g, "-")}`}
               style={{
                 display: "flex",
                 flexDirection: "column",

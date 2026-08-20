@@ -7,16 +7,21 @@
  * angrefrist klient-side FØR selve kallet fyres.
  *
  * «Sendt via {kanal}» fra fasiten er BEVISST ikke UI-teksten her — se
- * kommentaren øverst i src/app/meg/actions.ts: faktisk utsendelse er ikke
- * koblet på (Gmail-send-scope mangler), så etter godkjenning viser panelet
- * «Godkjent», ikke en sendt-bekreftelse appen ikke kan stå inne for.
+ * kommentaren øverst i src/app/meg/actions.ts: godkjenning oppretter et
+ * Gmail-UTKAST for EPOST-saker (aldri .send()), så panelet sier «Gmail-utkast
+ * opprettet», ikke en sendt-bekreftelse appen ikke kan stå inne for.
+ *
+ * Redigert svar persisteres via onOppdaterSvar FØR godkjenning — serverens
+ * godkjennSak leser foreslattSvar fra databasen, så en ren klient-redigering
+ * ville ellers gått tapt (lagres både ved «Ferdig» og automatisk i
+ * godkjenn-flyten hvis teksten er endret).
  */
 import { useEffect, useRef, useState } from "react";
 import { T } from "@/lib/v2/tokens";
 import { Icon } from "@/components/v2/icon";
 import { InspektorBlokk, InspektorLinje, InspektorTom } from "@/components/v2/inspektorpanel";
 import type { Sak } from "@/generated/prisma/client";
-import { SakStatus } from "@/generated/prisma/enums";
+import { SakKanal, SakStatus } from "@/generated/prisma/enums";
 
 type Handling = "godkjenn" | "avvis";
 type MutasjonSvar = { ok: true } | { ok: false; feil: string };
@@ -42,10 +47,12 @@ export function SakArtefakt({
   sak,
   onGodkjenn,
   onAvvis,
+  onOppdaterSvar,
 }: {
   sak: Sak | null;
   onGodkjenn: (id: string) => Promise<MutasjonSvar>;
   onAvvis: (id: string) => Promise<MutasjonSvar>;
+  onOppdaterSvar: (id: string, tekst: string) => Promise<MutasjonSvar>;
 }) {
   const [svarUtkast, setSvarUtkast] = useState(sak?.foreslattSvar ?? "");
   const [redigerer, setRedigerer] = useState(false);
@@ -54,6 +61,11 @@ export function SakArtefakt({
   const [feilmelding, setFeilmelding] = useState<string | null>(null);
   const timeoutRef = useRef<number | null>(null);
   const intervalRef = useRef<number | null>(null);
+  // Alltid ferskeste utkast — angrefristens setTimeout-closure ville ellers
+  // lest teksten slik den var da Godkjenn ble trykket, ikke slik den er når
+  // fristen løper ut. Oppdateres i textarea-ens onChange (samme hendelse som
+  // setSvarUtkast), aldri under render (react-hooks/refs).
+  const svarUtkastRef = useRef(svarUtkast);
 
   // Rydder tidsurene ved avmontering (sak byttet via key, eller panelet lukket
   // midt i angrefristen) — ren opprydding, ingen setState i selve effekten.
@@ -68,10 +80,32 @@ export function SakArtefakt({
     return <InspektorTom tittel="Ingen sak valgt" tekst="Velg en sak fra køen for å se den her." />;
   }
 
-  // Fanget som egen const: narrowingen fra guarden over overlever ikke inn i
-  // en closure som slipper unna til setTimeout (TS antar sak-parameteren kan
+  // Fanget som egne const-er: narrowingen fra guarden over overlever ikke inn
+  // i en closure som slipper unna til setTimeout (TS antar sak-parameteren kan
   // ha endret seg innen callbacken kjører).
   const sakId = sak.id;
+  const foreslattSvarOriginal = sak.foreslattSvar;
+
+  /**
+   * Persisterer redigert svarutkast hvis det avviker fra databasens
+   * foreslattSvar. Returnerer false (med feilmelding satt) hvis lagringen
+   * feilet eller teksten er tom — kalleren skal da IKKE gå videre.
+   */
+  async function lagreEndretSvar(): Promise<boolean> {
+    if (foreslattSvarOriginal == null) return true;
+    const tekst = svarUtkastRef.current.trim();
+    if (tekst === foreslattSvarOriginal.trim()) return true;
+    if (!tekst) {
+      setFeilmelding("Svaret kan ikke være tomt.");
+      return false;
+    }
+    const svar = await onOppdaterSvar(sakId, tekst);
+    if (!svar.ok) {
+      setFeilmelding(svar.feil);
+      return false;
+    }
+    return true;
+  }
 
   function start(type: Handling) {
     setFeilmelding(null);
@@ -81,6 +115,12 @@ export function SakArtefakt({
     }, 1000);
     timeoutRef.current = window.setTimeout(async () => {
       if (intervalRef.current) window.clearInterval(intervalRef.current);
+      // Redigert tekst må stå i databasen FØR godkjenning — serveren leser
+      // foreslattSvar derfra når Gmail-utkastet opprettes.
+      if (type === "godkjenn" && !(await lagreEndretSvar())) {
+        setVentende(null);
+        return;
+      }
       const svar = type === "godkjenn" ? await onGodkjenn(sakId) : await onAvvis(sakId);
       setVentende(null);
       if (!svar.ok) setFeilmelding(svar.feil);
@@ -115,7 +155,10 @@ export function SakArtefakt({
           {redigerer ? (
             <textarea
               value={svarUtkast}
-              onChange={(e) => setSvarUtkast(e.target.value)}
+              onChange={(e) => {
+                svarUtkastRef.current = e.target.value;
+                setSvarUtkast(e.target.value);
+              }}
               data-od-id="sak-svar-rediger"
               rows={4}
               style={{
@@ -213,7 +256,9 @@ export function SakArtefakt({
           }}
         >
           <Icon name={sak.status === SakStatus.AVVIST ? "x-circle" : "check-circle"} size={15} strokeWidth={1.8} />
-          {STATUS_LABEL[sak.status]}
+          {sak.status === SakStatus.GODKJENT && sak.kanal === SakKanal.EPOST
+            ? "Godkjent — Gmail-utkast opprettet (sendes aldri automatisk)"
+            : STATUS_LABEL[sak.status]}
         </div>
       ) : (
         <div style={{ display: "flex", gap: 8 }}>
@@ -240,7 +285,16 @@ export function SakArtefakt({
           {sak.foreslattSvar != null && (
             <button
               type="button"
-              onClick={() => setRedigerer((v) => !v)}
+              onClick={async () => {
+                if (!redigerer) {
+                  setRedigerer(true);
+                  return;
+                }
+                // «Ferdig» lagrer endringen — feiler lagringen, blir brukeren
+                // stående i redigeringsmodus med feilmeldingen synlig.
+                setFeilmelding(null);
+                if (await lagreEndretSvar()) setRedigerer(false);
+              }}
               data-od-id="sak-rediger"
               className="v2-press v2-focus"
               style={{

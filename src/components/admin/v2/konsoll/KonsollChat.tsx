@@ -486,7 +486,7 @@ export function KonsollChat({
                       odId="tbl-aiko"
                     />
                     <Handlinger
-                      lenker={[{ label: "Åpne AgenticOS", href: "/admin/agents", odId: "act-agenticos" }]}
+                      lenker={[{ label: "Åpne AgenticOS", href: "/admin/agenticos", odId: "act-agenticos" }]}
                     />
                   </SystemInnlegg>
                 )}

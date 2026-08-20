@@ -5,14 +5,16 @@
  * Fasit: jarvis/meg-kalendervakt.html (avvikskort med diff-blokk «for → etter»,
  * --info som identitetsfarge, Godkjenn fiks/Avvis, «Godkjenn alle»-footer).
  *
- * Bevisst avvik fra fasiten (ærlig-tomme-tilstander-prinsippet, samme som
- * Maskinrommet i PR #547): ingen kalendervakt-agent finnes i kode ennå — se
- * src/lib/jarvis/repository.ts sin hentAvvik(), som alltid returnerer en tom
- * liste fordi det ikke finnes noen kilde å lese avvik fra. Fasitens «ren
- * kalender»-tilstand («Vakten kjører hver time og sier fra hvis noe glipper»)
- * påstår en driftsgaranti appen ikke kan stå inne for ennå — det ville vært en
- * løgn i UI-en. Godkjenn-fiks/Avvis-handlingene fra fasiten er derfor heller
- * ikke bygget: det finnes ingen persistens for Avvik å skrive til.
+ * Detektoren er ekte: src/lib/jarvis/kalendervakt.ts finner KONFLIKT
+ * (dobbeltbooking) og REISETID (rygg-mot-rygg på to ulike steder) i neste
+ * 7 dagers kalenderhendelser hver gang /meg lastes — se repository.ts sin
+ * hentAvvik(). Bevisste avvik fra fasiten (ærlig-tomme-tilstander-prinsippet,
+ * samme som Maskinrommet i PR #547): VARSEL-typen detekteres ikke
+ * (KalenderHendelse bærer ikke reminder-data), REISETID oppgir aldri et
+ * minuttall for reisen (ingen rutetjeneste finnes), og Godkjenn-fiks/Avvis-
+ * handlingene fra fasiten er ikke bygget — det finnes ingen persistens for
+ * Avvik å skrive et vedtak til, så knappene ville vært uten virkning.
+ * Avvik uten ærlig forslag har etter === "" og viser da ingen diff-blokk.
  */
 import { T } from "@/lib/v2/tokens";
 import { Icon } from "@/components/v2/icon";
@@ -58,35 +60,37 @@ function AvvikKort({ avvik }: { avvik: Avvik }) {
       <p style={{ margin: "0 0 10px", fontFamily: T.ui, fontSize: 13, color: T.mut, maxWidth: "52ch" }}>
         {avvik.forklaring}
       </p>
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "1fr auto 1fr",
-          gap: 6,
-          alignItems: "center",
-          background: T.panel2,
-          border: `1px solid ${T.border}`,
-          borderRadius: T.rInput,
-          padding: 10,
-          fontFamily: T.mono,
-          fontSize: 11.5,
-        }}
-      >
-        <span
+      {avvik.etter !== "" && (
+        <div
           style={{
-            gridColumn: "1 / -1",
-            fontSize: 9,
-            letterSpacing: "0.08em",
-            textTransform: "uppercase",
-            color: T.mut,
+            display: "grid",
+            gridTemplateColumns: "1fr auto 1fr",
+            gap: 6,
+            alignItems: "center",
+            background: T.panel2,
+            border: `1px solid ${T.border}`,
+            borderRadius: T.rInput,
+            padding: 10,
+            fontFamily: T.mono,
+            fontSize: 11.5,
           }}
         >
-          Foreslått fiks
-        </span>
-        <span style={{ color: T.mut, textDecoration: "line-through" }}>{avvik.for}</span>
-        <span style={{ color: T.mut }}>→</span>
-        <span style={{ color: T.fg, fontWeight: 600 }}>{avvik.etter}</span>
-      </div>
+          <span
+            style={{
+              gridColumn: "1 / -1",
+              fontSize: 9,
+              letterSpacing: "0.08em",
+              textTransform: "uppercase",
+              color: T.mut,
+            }}
+          >
+            Foreslått fiks
+          </span>
+          <span style={{ color: T.mut, textDecoration: "line-through" }}>{avvik.for}</span>
+          <span style={{ color: T.mut }}>→</span>
+          <span style={{ color: T.fg, fontWeight: 600 }}>{avvik.etter}</span>
+        </div>
+      )}
     </div>
   );
 }
@@ -118,8 +122,8 @@ export function KalendervaktArtefakt({ avvik }: { avvik: Avvik[] }) {
             Ren de neste 7 dagene
           </h3>
           <p style={{ margin: 0, fontFamily: T.ui, fontSize: 12.5, color: T.mut, maxWidth: "38ch" }}>
-            Ingen avvik registrert. Kalendervakt-agenten er ikke bygget ennå, så dette er alltid resultatet
-            foreløpig — ikke en aktivt overvåket kalender.
+            Ingen konflikter og ingen rygg-mot-rygg-avtaler uten reisetid. Vakten sjekker de neste 7 dagene
+            hver gang du åpner /meg.
           </p>
         </div>
       ) : (

@@ -10,7 +10,6 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import {
   Caps,
-  Tittel,
   Kort,
   Rad,
   KpiFlis,
@@ -170,14 +169,14 @@ export function AdminAgenterV2({ data }: { data: AdminAgenterV2Data }) {
   );
 
   // B: én primær CTA — godkjenninger når kø, ellers agent-team
-  const primaerHref = data.pendingCount > 0 ? data.godkjenningerHref : "/admin/agent-team";
+  const primaerHref = data.pendingCount > 0 ? data.godkjenningerHref : "/admin/agenticos";
   const primaerTekst =
     data.pendingCount > 0
       ? `Behandle ${pl(data.pendingCount, "forslag", "forslag")}`
-      : "Se agent-team";
+      : "Se AgenticOS";
   const primaerCta = (
     <Link href={primaerHref} style={{ textDecoration: "none", display: "block" }}>
-      <CTAPill icon="arrow-right" full enTing>
+      <CTAPill icon="arrow-right" full>
         {primaerTekst}
       </CTAPill>
     </Link>

@@ -1,10 +1,9 @@
 import { redirect } from "next/navigation";
 
 /**
- * /kommando/agenter → /admin/agenter (B8, 2026-07-16).
- * Samme AgentChat-komponent, samme /api/kommando/chat-backend — ingen
- * funksjonstap.
+ * /kommando/agenter → /admin/agenticos (H5, 2026-08-17 — direkte til
+ * samleflaten, ingen redirect-kjede).
  */
 export default function KommandoAgenterRedirect(): never {
-  redirect("/admin/agenter");
+  redirect("/admin/agenticos");
 }

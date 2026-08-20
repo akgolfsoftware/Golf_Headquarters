@@ -9,7 +9,6 @@ import Link from "next/link";
 import { T, fmtSg } from "@/lib/v2/tokens";
 import {
   Caps,
-  Tittel,
   Kort,
   Rad,
   Trend,
@@ -134,11 +133,6 @@ function OmradeTrend({ o }: { o: FremgangV2Omrade }) {
 export function AdminSpillerFremgangV2({ data }: { data: FremgangV2Data }) {
   const { navn, spillerId, uker, harRunder, omrader, volumUker, volumOmrader, volumTotal, korrelasjon } = data;
 
-  // Navn med kursiv lime-aksent på etternavn (v2-tittelidiom).
-  const deler = navn.trim().split(" ");
-  const em = deler.length > 1 ? deler.pop() : undefined;
-  const fornavn = deler.join(" ");
-
   // Datadrevet innsikt: svakeste område nå (aldri fabrikert, aldri sperre).
   const svakest = omrader.length ? omrader.reduce((a, b) => (b.siste < a.siste ? b : a)) : null;
 
@@ -165,7 +159,7 @@ export function AdminSpillerFremgangV2({ data }: { data: FremgangV2Data }) {
 
   const primaerCta = (
     <Link href={`/admin/spillere/${spillerId}/plan`} style={{ textDecoration: "none", display: "block" }}>
-      <CTAPill icon="layout-dashboard" full enTing>
+      <CTAPill icon="layout-dashboard" full>
         Åpne plan i Workbench
       </CTAPill>
     </Link>
