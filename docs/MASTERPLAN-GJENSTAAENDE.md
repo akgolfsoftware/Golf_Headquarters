@@ -1,26 +1,39 @@
-# MASTERPLAN — alt som gjenstår (17.08.2026)
+# MASTERPLAN — alt som gjenstår (17.08.2026, STEG 0 resynket 21.08.2026)
 
 **Rolle:** den ENE samlede gjenstående-planen på tvers av alle spor. Skrevet under
 plan-oppryddingen 17.08 (78 utgåtte dokumenter slettet, status målt mot `main` @ `1f3e127`
 og fem parallelle kodekartlegginger — ikke antatt). Erstatter `COMPLETE-REMAINING-PLAN.md`,
 `REMAINING.md` og `gjenstaaende-plan-2026-07-31.md` (alle slettet — git-historikk).
+**STEG 0 er resynket 21.08.2026 mot `main` @ `0b01f09`** (se `docs/STATUS-NÅ.md` for full
+begrunnelse) — resten av dokumentet (STEG 1–9) er ikke linje-for-linje reverifisert i denne
+runden, kun STEG 3.2/3.6/3.8 er rettet der datoen viste seg feil.
 
 **Underplaner denne peker på (ikke dupliserer):**
 `docs/port/PORTPLAN.md` (port-rekkefølgen) · `docs/port/masterplan-lansering-2026-08-12.md`
 (lanserings-fasene) · `docs/plan-agenticos-jarvis-2026-08-17.md` (AI-laget) ·
 `docs/plan-baneguide-sg-app-2026-08-16.md` i PR #514 (SG-appen) ·
-`docs/platform/stripe-cutover-sjekkliste.md` (betaling).
+`docs/platform/stripe-cutover-sjekkliste.md` (betaling) ·
+**`docs/plan-treningsplanlegging-til-kode-2026-08-20.md`** (nytt, aktivt spor siden 19.08 —
+treningsreglene er fjernet fra koden 18.08 og en helt ny spec→kode-plan kjører nå: spec komplett,
+fase 1 grunnmur i produksjon, fase 2 design pågår. Se `docs/STATUS-NÅ.md` for status).
 
 ---
 
-## STEG 0 — Akutt (denne uka, før alt annet)
+## STEG 0 — Akutt (resynket 21.08.2026 — forrige versjon av denne tabellen var utdatert,
+alle fem punktene under var allerede merget/gjort da forrige STEG 0 ble skrevet)
 
 | # | Oppgave | Eier | Status/kilde |
 |---|---|---|---|
-| 0.1 | **Merge PR #490 — WANG PII-fiks.** `/team-wang` (inkl. coach + IUP-vurderinger av mindreårige) er åpen uten innlogging siden 15.08. #490 gjør fellessiden navnefri og sperrer coach igjen. #406 lukkes som overflødig | **Anders (ja) + agent** | PR #490 klar |
-| 0.2 | ~~Rotér `SCREENTEST_PASSWORD`~~ **GJORT av Anders 17.08.2026.** Verifisert samme dag: `signoff-gallery.mjs` logger inn og fotograferer igjen (96 av 98 bilder OK). **Rest:** `screentest-parent@akgolf.test` sto ikke i rotasjonsskriptet, så foreldreportalen (`B2-forelder`) feiler fortsatt på innlogging. Skriptet er rettet — kjør det én gang til for å få forelder-brukeren med | **Anders** | `scripts/roter-screentest-passord.ts` |
-| 0.3 | **Behandle PR-køen:** #549 (S3-port, trenger skjermbilde-gate) · #547 (Jarvis maskinrom) · #542 (innganger til 13 skjulte flater) · #534 + #514 (SG-grunnmur + plan) | Anders + agent | Åpne PR-er |
-| 0.4 | **Talent-gate-verifisering i prod:** gaten var inert til 17.08 (#537/#541) — kjør kontrakttestene mot prod og bekreft at TALENT-profil faktisk stoppes utenfor allowlisten | Agent | `tests/` fra #539 |
+| 0.1 | **Kryss av i sign-off-galleriet.** #557 (20.08) leverte 48 fotograferte skjermer i én signeringsside — ren menneskelig gate, ingen kodejobb gjenstår. Låser opp W4-variantkvittering (38 ruter) | **Anders** | `scripts/signoff-side.mjs`-output, PR #557 |
+| 0.2 | **Merge PR #569 — de 8 manglende Paper-komponentene** til treningsplanlegging (TallStepper, MaalMatrise, HurtigTapper, SettLogger, SoneSegmentLogger, StjerneRad, DagVelger, MaaleFelt). Ren tilføyelse i `designsystem/paper/`, ingen `src/`-endring, `bygg-bundle.mjs` verifisert 160/160. Anders bør lese komponentkontraktene (`.prompt.md`) før Fase 3-porten bruker dem | **Anders (gjennomgang) + agent** | PR #569, draft |
+| 0.3 | **PR #552 — WANG fast treningstid:** kode grønn, men `scripts/seed-wang-monster-treningstid-2026-08-17.ts --apply` er ikke kjørt mot prod. Uten det har WANG-spillerne ingen faste økter i Workbench | **Anders (DB-tilgang)** | PR #552, draft |
+| 0.4 | ~~Rotér `SCREENTEST_PASSWORD`~~ **`screentest-parent@akgolf.test` er nå i rotasjonsskriptet** (verifisert i repo 21.08). Uvisst om Anders har kjørt det på nytt siden forrige delvise kjøring 17.08 — foreldreportal-galleriet (`B2-forelder`) kan fortsatt stå ute til det er gjort | **Anders** | `scripts/roter-screentest-passord.ts` |
+| 0.5 | **Talent-gate-verifisering i prod:** fortsatt ingen dokumentert kjøring funnet (var også uverifisert 17.08 til tross for at forrige STEG 0.4 listet den som gjenstående — ikke en regresjon, bare aldri gjort) | Agent | `tests/` fra #539 |
+| 0.6 | ~~Avklar marketing-redesignet mot PORTPLAN §B4/W5~~ **UNDERSØKT 21.08.2026 — IKKE et Invariant 2-brudd, men fortsatt én beslutning igjen.** Verifisert i kode: `ak-golf-website` bruker Paper sine faktiske tokens (`--mk-*` i `globals.css` er verbatim Paper `--bg`/`--fg`/`--accent`), ikke et konkurrerende designsystem — men avviker bevisst fra selve mal-fasit-HTML-en (`marketing-side.html`: mobil-hamburger, eyebrow-farge). Kun **3 av S18s 14 ruter** faktisk ombygd (`/`, `/mulligan` — ny rute, ikke i rutefasit ennå — og `/playerhq`); S19/S20/S21 (24 ruter) er upåvirket. **Gjenstår:** Anders avgjør om `ak-golf-website`s skall formelt overstyrer `marketing-side.html` for disse tre, eller om de rettes pixel-tilbake. Full utgreiing: `docs/port/PORTPLAN.md` §B4-tillegg 21.08.2026 | Anders (én linje) | PORTPLAN §B4-tillegg |
+
+**Historisk STEG 0 (17.08-versjonen, alle punkter bekreftet ferdige 21.08):** #490 (WANG PII)
+merget 17.08, #406 lukket som overflødig · #549/#547/#542/#534/#514 alle merget 17.08 ·
+SCREENTEST_PASSWORD delvis rotert 17.08 (rest i 0.4 over).
 
 ## STEG 1 — Lansering P0 (uendret spor, fasene i masterplan-lansering-12.08)
 
@@ -43,7 +56,7 @@ Status 17.08: **40/88 rader signert · 44 bygget-uventer-signering · 4 ubygget 
 |---|---|---|
 | 2.1 | **Sign-off-fabrikken: UBLOKKERT 17.08.2026** og kjørt første runde — 48 skjermer fotografert (app+fasit, m390 lys+mørk, d1280) og samlet i ÉN mobilvennlig signeringsside (`scripts/signoff-side.mjs` → artifact med avkryssing + kopierbar liste). **Gjenstår: Anders krysser av.** Verktøykjeden er nå `signoff-gallery.mjs` (bilder) → `signoff-side.mjs` (side) — kjør begge per bølge. **RETTET 18.08.2026 — rail-retningen sto feil her.** Første formulering påsto at appen hadde «gamle navn (Cockpit/Stall)» og fasiten «nye (Konsoll/Spillere)». Det er motsatt: A1-beslutningen (16.08) gjorde **fase2-railen gjeldende** — Cockpit · Innboks · Kalender · Stall · Plan · Innsikt · Oppsett — og den er implementert i `shell.tsx:100-108` (PR #500). Det er **fase1-fasitene** som er utgått. **Appen er riktig; fasiten er gammel.** **Åtte målte årsaker til at første galleri-runde så ubrukelig ut (18.08) — fire var feil i verktøyet, ikke i skjermene:** (1) appen ble tatt som fullside (opptil 2385 px) mot fasitens ene skjermflate (730 px); (2) fasiten fikk aldri satt `data-theme`, så den sto i lys også i mørk-runden; (3) mørk-bildet hadde **ingen fasit i det hele tatt** — kun appen, presentert som sammenligning; (4) demo-tilstandsvelgeren («Suksess/Tom/Laster/Feil») sto midt i fasitbildet. **Alle fire rettet i `signoff-gallery.mjs`.** Gjenstår: (5) 11 AgencyOS-rader måles mot fase1-fasiter hvis rail er vedtatt bort, og **det finnes ingen fase2-motstykker** for konsoll/innboks/spillere/kalender/ak-stigen/live-session — designbestilling, ikke kodejobb; (6) `B4-live` peker på feil flate (checklisten sier selv at `/admin/agencyos/live` er Mission Control, ikke live-session); (7) testbrukeren mangler data denne uka, så appen viser tom tilstand mot fasitens fylte — `scripts/seed-screentest-komplett.ts` løser det, men skriver mot prod; (8) fase2-admin-fasitene har ingen mobilvisning, så m390 måles mot en klemt desktopfasit. `SCREENS` dekker dessuten 49 av 88 aktive rader og **0 av 72 variantrader** — køen bør utledes fra `PAPER-ZIP-CHECKLIST.md` + `PP-W*-VARIANTS.md` | Ingen |
 | 2.2 | **W4-variantene (38 ruter) kvitteres** — alle 8 maler er signert; ingen ekstern blokkering. NB: rett PP-W4-dokumentets «Ny booking (clay)»-linjer først (A3-brudd) | Ingen |
-| 2.3 | **PP-B-resten:** montér `Composer` i `V2Shell` (0 kallsteder i dag — alle desktop-flater skal arve) · fullfør clay-sweepen (44 filer med `enTing`) · B4 chrome-rest-verifisering | Ingen |
+| 2.3 | **PP-B-resten:** montér `Composer` i `V2Shell` (0 kallsteder i dag — alle desktop-flater skal arve) · ~~fullfør clay-sweepen~~ **GJORT 20.08.2026 (#558)** — 32 CTA-er i 27 filer rettet fra clay til ink, kun «Én ting nå»-kortet er clay nå · B4 chrome-rest-verifisering | Ingen |
 | 2.4 | **Fem frie sesjoner:** S3 (#549 åpen) · S9 booking-ny · S17 turneringer · S22 AgenticOS-hub · S23 agent-detalj — 25 ruter uten nye avklaringer | Ingen |
 | 2.5 | **PORTPLAN §A1: 10 beslutninger fra Anders** (talent-hub vs redirect, godkjenninger, booking-steg, årsplan-fane, coach-tråd, Stripe Elements, help, utstyr-URL, digest-URL, PP-A-formalitet) — låser opp B2/B3-sesjonene | **Anders** |
 | 2.6 | **W5-designbestilling:** 38 marketing/auth/forelder-ruter stryker én-linje-testen fordi DESIGN mangler (bl.a. auth-skallet som blokkerer alle 13 auth-ruter) — bestill fra Claude Design | Anders + designer |
@@ -57,13 +70,13 @@ Status 17.08: **40/88 rader signert · 44 bygget-uventer-signering · 4 ubygget 
 | # | Oppgave | Kilde |
 |---|---|---|
 | 3.1 | **TalentHQ leser `testNivaaer`:** syncen (T4) skriver feltet, ingen skjerm leser det. Minste inngrep er målt: feltet ligger allerede i minne på `mitt-niva/page.tsx:59` (findUnique uten select) — legg `testNivaaerSchema.safeParse()` på det og send som prop. **BLOKKERT av PORTPLAN §A1.2** (skal talent-huben bygges eller bli redirect?) — ikke bygg ut flaten før svaret. NB: `milepaeler` fra samme synk VISES allerede (min-plan + roadmap) | Kartlegging 17.08 |
-| 3.2 | ~~Talent-gate-asymmetrien~~ **FIKSET 17.08.2026** — `if (!FEATURES.TALENT) notFound()` lagt på huben, samme gate som de fire underskjermene | Kartlegging 17.08 |
+| 3.2 | ~~Talent-gate-asymmetrien~~ **FIKSET 20.08.2026 (#557) — rettet dato.** Forrige versjon av denne linjen sa 17.08, men var fortsatt reelt brutt til #557: `/portal/talent` renderte fem lenker som 404-et når `FEATURES.TALENT` var false, inkl. primærknappen. Nå `if (!FEATURES.TALENT) notFound()` lagt på huben, samme gate som de fire underskjermene | PR #557 |
 | 3.3 | **Testbatteri-ark i Workbench:** `/portal/tren/tester` lovte det i copy (#542 rettet teksten ærlig); selve arket i `WorkbenchV2Sheets` gjenstår (beslutning 04.08, design i `workbench-mobil.html`) | beslutninger.md |
 | 3.4 | **SG-appen AP0–AP6:** merge #514 (planen) + #534 (AP0-grunnmuren — én SG-sannhet, ellipse-speilbuggen fikset). Deretter Føring 2.0 → baneguide-MVP → referansestige → analyse → coach-flater | PR #514/#534 |
 | 3.5 | **Banedata:** runde-flatene faller tilbake på manuell par/lengde fordi `CourseDefinition` mangler hulldata — fortsett OSM-importen + rette-editor (fase 2 i baneguide-planen) | Kartlegging 17.08 |
-| 3.6 | **Pyramidefordeling:** overskrivingsfeilen er **FIKSET 17.08.2026** — `plan-action-executor.ts` setter nå kun `targetAllocation` når feltet er `null` (den dokumenterte «ikke satt»-tilstanden), så et periodebytte aldri overskriver et menneskes valg. Gjenstår fra `docs/plan-egen-pyramidefordeling-2026-08-02.md`: selve UI-et der spilleren setter sin egen. NB funnet underveis: `applyPyramidSuggestion()` (`target-allocation.ts:48`) er død produksjonskode — kun kalt fra tester | Verifisert 17.08 |
+| 3.6 | **Pyramidefordeling:** overskrivingsfeilen er **FIKSET 20.08.2026 (#557) — rettet dato**, ikke 17.08 som forrige versjon påsto: `plan-action-executor.ts` satte `targetAllocation` ubetinget ved `PERIOD_SWITCH` frem til #557. Setter nå kun `targetAllocation` når feltet er `null` (den dokumenterte «ikke satt»-tilstanden), så et periodebytte aldri overskriver et menneskes valg. Gjenstår fra `docs/plan-egen-pyramidefordeling-2026-08-02.md`: selve UI-et der spilleren setter sin egen. NB funnet underveis: `applyPyramidSuggestion()` (`target-allocation.ts:48`) er død produksjonskode — kun kalt fra tester | PR #557 |
 | 3.7 | **Live-økt-rest:** offline-kø for drill-reps + DB-persist (i dag sessionStorage) | STATUS-NÅ (eldre) |
-| 3.8 | ~~Enhetstest for `protocol.ts`~~ **FIKSET 17.08.2026** — `src/lib/portal-tester/protocol.test.ts`, 18 assertions over normaliseringsreglene som før kun sto i filhodet | Kartlegging 17.08 |
+| 3.8 | ~~Enhetstest for `protocol.ts`~~ **FIKSET 20.08.2026 (#557) — rettet dato**, ikke 17.08 — `src/lib/portal-tester/protocol.test.ts`, 18 assertions over normaliseringsreglene som før kun sto i filhodet | PR #557 |
 
 ## STEG 4 — DataGolf + turneringsresultater (punkt 4)
 
@@ -129,10 +142,21 @@ abonnement 299/mnd eller 2 690/år, FULL automatisk ved kjøp/gruppe.
 
 ## STEG 8 — AgenticOS + Jarvis (punkt 8)
 
-Egen plan: **`docs/plan-agenticos-jarvis-2026-08-17.md`** (fase J1–J3 + beslutningene J-A–J-D).
-Kort: 8 Jarvis-skjermer igjen (design klart) · godkjenninger + konsollpanel inn i AgenticOS ·
-samle `godkjennSak` · Telegram-kø · registry-løft (13→57 agenter synlige) · Jarvis-masterplanen
-inn i repoet · `/meg` inn i IA-en.
+**Status 21.08: i hovedsak GJORT.** #547 (17.08) bygget alle 12 Jarvis-skjermer. #558 (20.08,
+«Jarvis + AgenticOS komplett») lukket seks gjenstående funksjonelle hull: samlet `godkjennSak`
+(var to implementasjoner, kunne miste Gmail-utkast), Telegram-BEKREFT vandret ikke lenger
+bakover i pending-stabelen, ekte kalendervakt-detektor (konflikt/reisetid fra Google-kalender,
+12 nye tester), agent-registry løftet 13→46 (alle nå loggført via `runAgent()`), redirect-kjeden
+samlet på `/admin/agenticos` (død `CockpitV2`/`AiDispatchPanelV2`-kode slettet), Jarvis-masterplanen
+hentet inn som `docs/jarvis-masterplan.md`.
+
+**Gjenstår kun tre Anders-beslutninger** (uendret fra `plan-agenticos-jarvis-2026-08-17.md`):
+- **H1 — hvor lenkes `/meg` fra?** (rail, ⌘K, egen inngang)
+- **H4 — Gmail-send-scope:** utvide Google-tilkoblingen så «Sendt via Gmail» blir sant, eller rette fasit-teksten til «Utkast opprettet»?
+- **H8/J-D — KommandoTask vs. Notion-cache** (siste konsolideringssteg)
+
+Egen plan: **`docs/plan-agenticos-jarvis-2026-08-17.md`** (fase J1–J3 + beslutningene J-A–J-D)
+— oppdater den planen direkte når H1/H4/H8 besvares, ikke bare denne linjen.
 
 ## STEG 9 — Øvrige funksjoner (punkt 9)
 
@@ -150,14 +174,22 @@ inn i repoet · `/meg` inn i IA-en.
 
 ## Samlet beslutningskø til Anders (alt på ett sted)
 
-1. **#490-merge (PII — haster)** + team-wang-tilgangen varig åpen eller sperret igjen.
-2. Rotér `SCREENTEST_PASSWORD` (låser opp all signering).
-3. PORTPLAN §A1 — de 10 portbeslutningene (én økt).
-4. PR-F: DataGolf/stats-plassering i PlayerHQ.
-5. WANG B4 + B5.
-6. Freemium-presiseringen (7.1 — én linje).
-7. Jarvis J-A–J-D (`plan-agenticos-jarvis-2026-08-17.md`).
-8. FYS-referanseverdier (når klar — ingen hast, plassholder er ærlig).
-9. D4-backfill: områdekoder for resten av testdefinisjonene.
-10. KommandoTask vs. Notion-cache.
-11. #514-planen (SG-app) — ja/nei/endringer, så #534 kan merges.
+**Resynket 21.08.2026 — punktene under er de som faktisk gjenstår; se STEG 0 for kilder.**
+
+1. **Kryss av i sign-off-galleriet** (48 skjermer, #557) — låser opp W4-variantkvittering.
+2. **Merge PR #569** (W8-komponentene) etter å ha lest kontraktene.
+3. **Kjør SCREENTEST_PASSWORD-rotasjonen på nytt** med `screentest-parent@akgolf.test`.
+4. **Kjør `scripts/seed-wang-monster-treningstid-2026-08-17.ts --apply`** mot prod, eller si at PR #552 skal vente.
+5. **Avklar marketing-redesignet (#565–#568) mot PORTPLAN §B4/W5.**
+6. **Treningsplanlegging Fase 2:** kjør designet for de 2 gjenstående Workbench-skjermene
+   (periodemal-flyten, Standard/Tour+onboarding) i Claude Design, lever zip.
+7. PORTPLAN §A1 — de 10 portbeslutningene (én økt).
+8. PR-F: DataGolf/stats-plassering i PlayerHQ.
+9. WANG B4 + B5 (`/team-wang/coach` overlever eller redirect? skole-/foreldredata modelleres eller demo?).
+10. Freemium-presiseringen (7.1 — én linje).
+11. Jarvis: H1 (hvor `/meg` lenkes fra), H4 (Gmail-send-scope), H8/J-D (KommandoTask vs. Notion-cache).
+12. FYS-referanseverdier (når klar — ingen hast, plassholder er ærlig).
+13. D4-backfill: områdekoder for resten av testdefinisjonene.
+
+**Lukket siden forrige versjon (17.08):** #490-merge (PII) — merget 17.08 · #514-planen (SG-app)
+— godkjent, #534 merget 17.08.
