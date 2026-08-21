@@ -53,8 +53,8 @@
 - [~] `fase2/playerhq/playerhq-feiring.html` — natt 11.08 (#394) READY_SIGN
 - [~] `fase2/playerhq/playerhq-fys-plan.html` — natt 11.08 (#394) READY_SIGN
 - [~] `fase2/playerhq/playerhq-live-tapper.html` — bygget (#398), fiks merget i #413 (11.08)
-- [~] `fase2/playerhq/playerhq-okt-detalj.html` — bygget (#399), fiks merget i #413 (11.08)
-- [~] `fase2/playerhq/playerhq-teknisk-plan.html` — tilstands-pass 11.08 (#412)
+- [ ] `fase2/playerhq/playerhq-okt-detalj.html` — **NEDGRADERT 21.08.2026** (var `[~]` fra 11.08, bygget/fikset FØR 20.08-omskrivingen). Kodeverifisert 21.08: `src/app/portal/gjennomfore/[id]/page.tsx` har kun `planlagt`/`gjennomført`-tilstander — ingen `rediger`-tilstand, ingen teknikk-dimensjon-felt, ingen fullsving-betinget motorikk-visning. Alt tre er fraværende i koden, klar gap mot fasiten (§rediger-tilstand, `DIM_VALG`, «Motorikk: KUN fullsving»)
+- [~] `fase2/playerhq/playerhq-teknisk-plan.html` — **RE-VERIFISERT 21.08.2026** (var «tilstands-pass 11.08», FØR 20.08-omskrivingen). Kodeverifisert: rep-telling ER bygget og virker (`repsCurrent`/`repsTarget`, «Reps logget»-KPI i `src/app/portal/tren/teknisk-plan/[planId]/page.tsx`). Målmatrise-DOMENELOGIKKEN finnes (`src/lib/domain/teknisk-maalmatrise.ts`, datert 20.08 i egen filheader) men er **ikke koblet til noen UI** — null konsumenter utenfor egen test. Statusrapport med tre kontekster er ikke bygget i det hele tatt. Delvis gap: koble matrisen til siden + bygg statusrapporten
 - [~] `fase2/playerhq/playerhq-test-detalj.html` — tilstands-pass 11.08 (#412)
 - [~] `fase2/playerhq/playerhq-tester-hub.html` — tilstands-pass 11.08 (#412)
 - [~] `fase2/playerhq/playerhq-turnering-detalj.html` — bygget (#398), fiks merget i #413 (11.08)
