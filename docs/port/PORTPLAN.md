@@ -3,6 +3,14 @@
 **Skrevet:** 2026-08-17 · **Verifisert mot:** `main` @ `ffb18060` (449 ruter) ·
 **Fasit:** `designsystem/paper/` (254 HTML, zip 16.08.2026 21:11 — 0 avvik)
 
+> **⚠ Ikke resynket 21.08.2026:** speilet er siden oppdatert mot en NY zip (20.08.2026,
+> PR #564) — treningsplanleggingens Workbench-skjermer kom inn her, se
+> `docs/plan-treningsplanlegging-til-kode-2026-08-20.md`. Rutefasit-tabellene (54 rader/24
+> mal-fasiter) under er ikke reverifisert mot den nye zip-en i denne runden — kjør ny
+> MCP-sammenligning (regelen i `CLAUDE.md` §Skjermarbeid) før neste portbølge. Ferdigstatus
+> for S1–S3/S9/S17/S22/S23 og PP-B1/B2/B5 er derimot bekreftet aktuell 21.08 (se
+> `docs/STATUS-NÅ.md`).
+
 Kontrakten og Claude-følelsen står i `CLAUDE.md` §Skjermarbeid og gjentas ikke her.
 Tabellene rute → mal → avvik står i `docs/port/rutefasit.md` og gjentas ikke her.
 **Denne fila eier kun ÉN ting: hvilken rekkefølge sesjonene kjøres i, og hva som blokkerer hva.**
