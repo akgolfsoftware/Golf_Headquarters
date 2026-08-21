@@ -77,7 +77,8 @@
 
 ## Fase 2 · W3 Meg/Booking/Talent/Coach (ny i zip 2)
 
-- [~] `fase2/playerhq/playerhq-innstillinger.html`
+- [ ] `fase2/playerhq/playerhq-innstillinger.html` — **NEDGRADERT 21.08.2026** (var `[~]` uten notat). Kodeverifisert: `InnstillingerData` (`src/app/portal/meg/innstillinger/page.tsx`) har `epost`/`notif`/`venneOktSynlig`/`samtykke`/`abonnement` — ingen «Visning»-felt (Standard/Tour-veksler, fasit §73-79). Klar gap
+- [ ] `fase2/playerhq/playerhq-onboarding-tillegg.html` — **NY 21.08.2026, ingen rad fantes.** NY søsterfasit til `playerhq-innstillinger.html` (levert i zip 20.08). Kodeverifisert: ingen onboarding-rute finnes i `src/app/portal` i det hele tatt — klar gap, ikke bygget
 - [~] `fase2/playerhq/playerhq-abonnement.html` → MegAbonnementV2
 - [~] `fase2/playerhq/playerhq-helse.html` → MegHelseV2
 - [~] `fase2/playerhq/playerhq-booking-ny.html` → BookingNyV2
@@ -101,7 +102,7 @@
 ## Fase 2 · W4 AgencyOS (ny i zip 2)
 
 - [x] `fase2/agencyos/agencyos-godkjenninger.html` → AdminGodkjenningerV2 — W4-437a/b/c signert av Anders 14.08.2026 (galleri mot prod: godkjenninger, handlingssenter, oppfølgingskø)
-- [x] `fase2/agencyos/agencyos-gruppe-detalj.html` → GruppeDetaljV2 — W4-440a signert av Anders 14.08.2026 (galleri mot prod)
+- [~] `fase2/agencyos/agencyos-gruppe-detalj.html` → GruppeDetaljV2 — **RE-ÅPNET 21.08.2026** (W4-440a-signaturen 14.08 målte mot eldre fasit). Kodeverifisert: domeneregelen for «denne økta blir nå din egen» finnes (`src/lib/domain/gruppesynk.ts`, egen docblock siterer nøyaktig denne setningen, «bekreftet av Anders 20.08») men har **null kallsteder** — ikke koblet til UI eller server action. Hovedcoach vises uformelt som `coachNavn`/`coachEpost`, ikke fasitens eksplisitte felt. Laster/feil finnes kun på rutenivå (`/admin/grupper/loading.tsx`+`error.tsx`), ikke som in-panel-tilstander slik fasiten tegner. Delvis gap: koble domenelogikken til en handling
 - [x] `fase2/agencyos/agencyos-bookinger.html` → AdminBookingerV2 — W4-438a/b signert av Anders 14.08.2026 (galleri mot prod: bookinger, ny booking)
 - [x] `fase2/agencyos/agencyos-planbibliotek.html` — NT-416a signert av Anders 13.08.2026; tilleggsruter W4-442a/b (økter, ny planmal) signert 14.08.2026
 - [x] `fase2/agencyos/agencyos-turneringer.html` — NT-416b signert av Anders 13.08.2026; tilleggsruter W4-442c/d (ny turnering, dubletter) signert 14.08.2026
