@@ -156,13 +156,45 @@ avvikslinjer som forutsetter felter som **ikke finnes** i `UserPreferences` elle
 
 | # | Sesjon | Mal-fasit | Ruter | Problem |
 |---|---|---|---|---|
-| S18 | Marketing-side | `marketing-side.html` | 14 | Ingen mapping fra 14 ruter til 3 skallvarianter — «velg riktig per rute» er en instruks om å improvisere. Variantnavnet i malen er «forside», ikke «hero+bevis». |
-| S19 | Marketing-katalog | `marketing-katalog.html` | 9 | Holder for coacher/anlegg/blogg/cases; **bryter på turneringer** (KPI/leaderboard finnes ikke i malen og står ikke i avvikslinjen). |
-| S20 | Forelder | `forelder-barn.html` | 10 | Fire tegnede tilstander mot ti ruter. `ukerapport`, `fakturaer`, `bookinger`, `varsler`, `innstillinger`, `coach` har **ingen tegnet visning**. |
-| S21 | Samtykke | `auth-samtykke.html` | 5 | Fire tilstander mot fem ruter, uten mapping. «utlopt» er en tilstand, ikke en rute. |
+| S18 | Marketing-side | `marketing-side.html` | 14 (11 fortsatt blokkert) | Ingen mapping fra 14 ruter til 3 skallvarianter — «velg riktig per rute» er en instruks om å improvisere. Variantnavnet i malen er «forside», ikke «hero+bevis». **3 av 14 (`/`, `/mulligan`, `/playerhq`) har nå en bygget variant fra #565/#566 (20.08) — se § under.** |
+| S19 | Marketing-katalog | `marketing-katalog.html` | 9 | Holder for coacher/anlegg/blogg/cases; **bryter på turneringer** (KPI/leaderboard finnes ikke i malen og står ikke i avvikslinjen). Uendret av #565/#566 — kun delt nav/footer, ingen av de 9 rutene fikk innholdsombygging. |
+| S20 | Forelder | `forelder-barn.html` | 10 | Fire tegnede tilstander mot ti ruter. `ukerapport`, `fakturaer`, `bookinger`, `varsler`, `innstillinger`, `coach` har **ingen tegnet visning**. Uendret av #565/#566. |
+| S21 | Samtykke | `auth-samtykke.html` | 5 | Fire tilstander mot fem ruter, uten mapping. «utlopt» er en tilstand, ikke en rute. Uendret av #565/#566. |
 
-**W5 kan ikke starte før eieren har levert mapping rute → tilstand for S18, S20 og S21.**
+**W5 kan ikke starte før eieren har levert mapping rute → tilstand for S18 (11 gjenstående), S20 og S21.**
 Dette er ikke pixel-arbeid; det er manglende design.
+
+#### §B4-tillegg 21.08.2026 — marketing-redesignet (#565–#568) reconciled mot W5
+
+**Konklusjon (verifisert i kode, ikke Invariant 2-brudd):** de nye marketing-flatene bruker
+Paper sine faktiske tokens — `--mk-*`-blokken i `globals.css:279-287` er verbatim hentet fra
+`--bg`/`--fg`/`--accent` i Paper-tokens (`#faf9f5`/`#141413`/`#d97757`), og `paper-katalog.css`
+siterer selv `designsystem/paper/fase2/marketing/marketing-katalog.html` som kilde med
+kommentaren «bruk ALDRI egne hex-verdier her». Kilden er `ak-golf-website` (et marketing-utsnitt
+av Paper-tokens, ifølge kommentaren i `globals.css`), ikke et konkurrerende designsystem.
+
+**Men det er heller ikke pixel-match mot mal-fasiten** — #565/#566s egne commit-meldinger
+dokumenterer bevisste avvik fra `marketing-side.html`/`w5-base.css` (mobil hamburger-meny
+malen ikke har, eyebrow-farge `clay` der malen sier `muted`) — «avvik som skal rettes tilbake
+i designprosjektet» ifølge PR-en selv, altså en kjent, ikke lukket, gap.
+
+**Faktisk rutedekning fra #565/#566:**
+- **Helt ombygd til nytt skall:** `/` (forside), `/mulligan` (ny rute — finnes IKKE i
+  `rutefasit.md`/PORTPLAN i dag, må legges til som egen rad), `/playerhq` (bygd fra fasitens
+  `/hq`), `/booking` (kun den pausede tilstanden).
+- **Fikk kun delt nav/footer, innhold urørt** (var allerede Paper-scoped via `PkShell` →
+  `paper-katalog.css`/`paper-side.css` FØR #565): `/coacher(+[slug])`, `/anlegg(+[slug])`,
+  `/blogg(+[slug])`, `/turneringer(+[slug])`, `/cases`, `/suksess`, `/vilkar`, `/personvern`,
+  `/cookies`, `/coaching`, `/priser`, `/om-oss`, `/faq`, `/kontakt`, `/jobb`, `/junior`,
+  `/treningsfilosofi`.
+- **Fortsatt urørt, egen mørk v2 (IKKE Paper, IKKE ak-golf-website):** `/stats/*` (~45 ruter,
+  egen W7-bølge) og booking-underrutene (`[slug]`, bekreft, kvittering) — fortsatt `MRamme`
+  fra `marked-ramme.tsx`.
+
+**Beslutning som gjenstår (uendret fra STEG 0.6 i MASTERPLAN):** skal `ak-golf-website`s skall
+formelt overstyre `marketing-side.html` som ny mal-fasit for de 3 rutene (og resten av S18s
+11 gjenstående), eller skal de tre rettes pixel-tilbake til malen? Én linje fra Anders løser det.
+S19/S20/S21 er upåvirket og trenger fortsatt design uansett svar.
 
 ### B5 · Drift/AgenticOS — 3 sesjoner
 

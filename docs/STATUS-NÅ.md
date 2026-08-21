@@ -2,9 +2,10 @@
 
 > **Hva dette er:** ett snapshot av hvor plattformen står akkurat nå. Oppdater datoen + relevante linjer når noe vesentlig endrer seg.
 
-**Sist oppdatert:** 2026-08-21 (resync mot `main` @ `0b01f09` — status målt mot git-historikk +
-PR-metadata, ikke antatt. Forrige snapshot 17.08 var 4 dager gammelt og beskrev flere PR-er som
-«åpne»/«venter» som i realiteten var merget samme dag).
+**Sist oppdatert:** 2026-08-21, andre runde samme dag (PR #569 merget på Anders' instruks, og
+marketing-redesignet reconciled mot PORTPLAN §B4 — se begge under). Første runde var resync mot
+`main` @ `0b01f09`; `main` er nå på `c281c5d` etter #569. Forrige snapshot 17.08 var 4 dager
+gammelt og beskrev flere PR-er som «åpne»/«venter» som i realiteten var merget samme dag.
 Samlet gjenstående-plan: **`docs/MASTERPLAN-GJENSTAAENDE.md`**.
 
 ## Hovedbildet 21.08 (målt, ikke antatt)
@@ -27,10 +28,11 @@ Samlet gjenstående-plan: **`docs/MASTERPLAN-GJENSTAAENDE.md`**.
      Standard/Tour+onboarding (skjerm 8) må tegnes fra bunnen
      (`docs/gap-designfasit-workbench-2026-08-20.md`). **W8: de 8 komponentene fasiten manglet
      i Paper-bundelen er bygget** (`TallStepper`, `MaalMatrise`, `HurtigTapper`, `SettLogger`,
-     `SoneSegmentLogger`, `StjerneRad`, `DagVelger`, `MaaleFelt`) — men ligger i **draft PR #569,
-     ikke merget ennå**, og venter Anders' gjennomgang av komponentkontraktene før Fase 3-porten
-     kan bruke dem. Fase 3 (porting til skjermkode, Opus 5) er **ikke startet** — blokkert til
-     Fase 2s to nye skjermer er tegnet. Full plan: `docs/plan-treningsplanlegging-til-kode-2026-08-20.md`.
+     `SoneSegmentLogger`, `StjerneRad`, `DagVelger`, `MaaleFelt`) — **merget 21.08 (#569, c281c5d),
+     etter Anders' eksplisitte «merge»-instruks** (CI-en klarte ikke å verifisere PR-en pga.
+     infrastrukturfeilen, se STATUS-linje under — merget likevel på direkte instruks). Fase 3
+     (porting til skjermkode, Opus 5) er **ikke startet** — blokkert til Fase 2s to nye skjermer
+     er tegnet. Full plan: `docs/plan-treningsplanlegging-til-kode-2026-08-20.md`.
   3. **Jarvis + AgenticOS «komplett» (#558, 20.08):** seks funksjonelle hull lukket — én
      `godkjennSak`-vei (var to, kunne miste Gmail-utkast), ekte kalendervakt-detektor
      (konflikt/reisetid fra Google-kalender), redirect-kjeden samlet på `/admin/agenticos`,
@@ -58,11 +60,15 @@ Samlet gjenstående-plan: **`docs/MASTERPLAN-GJENSTAAENDE.md`**.
 
 ## ⚠ Åpne risikopunkter
 
-1. **To draft-PR-er venter på Anders, ingen andre PR-er i kø:**
-   - **#569 — W8-komponentene** (8 nye Paper-primitiver for treningsplanlegging). Ren tilføyelse
-     under `designsystem/paper/`, ingen `src/`-endring, verifisert med `bygg-bundle.mjs`
-     (160/160 navn). Blokkerer ikke noe akutt, men bør merges før Fase 3-porten trenger den.
-   - **#552 — WANG fast treningstid** (mønster man/ons/fre 08–10 via `RecurringPattern`).
+1. **CI-infrastrukturfeil observert 21.08 (GitHub Actions):** `verify`-jobben på minst to
+   uavhengige PR-er (#569, #570) døde ~2 sekunder etter start uten at noen runner ble tildelt
+   og uten loggoutput — reproduserte identisk etter re-kjøring på begge. Ikke forårsaket av
+   noen av diffene (én var docs-only, én var ren tilføyelse under `designsystem/paper/`).
+   #569 ble merget likevel på Anders' eksplisitte instruks siden branch-beskyttelsen ikke
+   blokkerte det — men PR-en fikk aldri en reell `tsc`/`eslint`/build-verifisering fra CI.
+   Ukjent om dette er en forbigående GitHub-hendelse eller vedvarende; ingen tilgang herfra til
+   å diagnostisere runner-infrastrukturen direkte.
+   - **#552 — WANG fast treningstid** (mønster man/ons/fre 08–10 via `RecurringPattern`), draft.
      Koden er grønn og testet, men **seed-scriptet er ikke kjørt mot prod** (krever ekte
      DB-tilgang denne typen økt ikke har) — spillerne får ingen økter i Workbench før noen
      kjører `scripts/seed-wang-monster-treningstid-2026-08-17.ts --apply`.
@@ -73,10 +79,13 @@ Samlet gjenstående-plan: **`docs/MASTERPLAN-GJENSTAAENDE.md`**.
 3. **Talent-gate prod-verifisering** (forrige MASTERPLAN 0.4): ingen dokumentert kjøring av
    kontrakttestene mot prod funnet i denne gjennomgangen — fortsatt reelt åpent, ikke bare glemt
    i dokumentasjonen.
-4. **Marketing-redesignet (#565–#568) er ikke reconciled mot PORTPLAN §B4 (W5).** Enten dekker
-   det samme grunnen som W5-designbestillingen (i så fall bør PORTPLAN oppdateres til å vise
-   færre stryk), eller det er et parallelt spor som selv trenger en skjermbilde-gate-runde —
-   ingen har avgjort hvilket.
+4. ~~Marketing-redesignet er ikke reconciled mot PORTPLAN §B4~~ **UNDERSØKT 21.08.2026.**
+   Verifisert i kode: `ak-golf-website` bruker Paper sine faktiske tokens (ikke et
+   konkurrerende designsystem — ikke et Invariant 2-brudd), men avviker bevisst fra selve
+   mal-fasit-HTML-en. Kun 3 av S18s 14 ruter faktisk berørt (`/`, ny rute `/mulligan`,
+   `/playerhq`); S19/S20/S21 (24 ruter) upåvirket. Gjenstående: Anders avgjør om
+   `ak-golf-website`s skall formelt overstyrer mal-fasiten for de tre, eller rettes tilbake.
+   Se `docs/port/PORTPLAN.md` §B4-tillegg 21.08.2026.
 
 ## Paper-porten (styrende: PORTPLAN.md + PAPER-ZIP-CHECKLIST.md)
 
@@ -92,15 +101,15 @@ Samlet gjenstående-plan: **`docs/MASTERPLAN-GJENSTAAENDE.md`**.
   gjennom PORTPLAN-regimet** («én sesjon per mal-fasit») — Fase 3 skal følge PORTPLAN §Kontrakten
   fullt ut når den starter.
 
-## Åpne PR-er (21.08)
+## Åpne PR-er (21.08, oppdatert etter #569-merge)
 
 | PR | Hva | Venter på |
 |---|---|---|
-| #569 | W8: 8 manglende Paper-komponenter til treningsplanlegging, draft | Anders' gjennomgang av kontraktene |
 | #552 | WANG fast treningstid (RecurringPattern), draft | Anders: kjøre seed-script mot prod |
+| #570 | Denne dokument-resynken (STATUS-NÅ/MASTERPLAN/PORTPLAN), draft | CI-infrastrukturen (se risikopunkt 1) — innhold er ferdig |
 
-Alle PR-er som sto i kø 17.08 (#549, #547, #542, #534, #514, #490, #406) er nå merget eller
-lukket som overflødig.
+#569 (W8-komponenter) er merget 21.08. Alle PR-er som sto i kø 17.08 (#549, #547, #542, #534,
+#514, #490, #406) er nå merget eller lukket som overflødig.
 
 ## Blokkert — P0 før ekte/betalende brukere (uendret spor)
 
@@ -117,27 +126,28 @@ og banner, men 0 abonnementer · betaling starter **1. september 2026** (`BETALI
 **Kjent, bevisst åpent:** CSP-blokkert Turbopack-chunk i prod (konsollstøy, rendrer riktig —
 ikke fikset uten bevist effekt, jf. 03.08-målingen).
 
-## Neste oppgaver (prioritert)
+## Neste oppgaver (prioritert, oppdatert etter #569-merge + marketing-reconciliation 21.08)
 
 1. **Anders: kryss av i sign-off-galleriet** (#557-leveransen) — 48 skjermer venter, null
    kodejobb, ren menneskelig gate. Låser opp W4-variantkvittering (38 ruter, 0 ekstern blokkering).
-2. **Anders: se over PR #569s komponentkontrakter** (`.prompt.md`-filene) og merge — låser opp
-   Fase 3 av treningsplanleggingssporet uten å vente på noe annet.
-3. **Design: tegn de 2 gjenstående Workbench-skjermene** (periodemal-flyten, Standard/Tour +
+2. **Design: tegn de 2 gjenstående Workbench-skjermene** (periodemal-flyten, Standard/Tour +
    onboarding) i Claude Design-prosjektet, zip → resynk speilet — siste gate før Fase 3-porten
-   kan starte (`docs/plan-treningsplanlegging-til-kode-2026-08-20.md` §Fase 2).
-4. **Avklar marketing-redesignet (#565–#568) mot PORTPLAN §B4/W5** — dekker det de 38 rutene
-   W5-designbestillingen venter på, eller er det et eget spor? Påvirker hvor mye av «designporten
-   til 100 %» som faktisk gjenstår.
-5. **Anders: kjør SCREENTEST_PASSWORD-rotasjonen på nytt** med `screentest-parent@akgolf.test`
+   kan starte (`docs/plan-treningsplanlegging-til-kode-2026-08-20.md` §Fase 2). W8-komponentene
+   som blokkerte dette er merget (#569) — ingen ekstern blokkering igjen på selve porten.
+3. **Anders: én linje om marketing-skallet** — skal `ak-golf-website`s (Paper-token-baserte,
+   men bevisst avvikende) skall for `/`, `/mulligan`, `/playerhq` formelt overstyre
+   `marketing-side.html` som ny mal-fasit, eller rettes de tre pixel-tilbake? Se
+   `docs/port/PORTPLAN.md` §B4-tillegg 21.08.2026 for full utgreiing — S19/S20/S21 (24 ruter)
+   trenger uansett design, upåvirket av svaret.
+4. **Anders: kjør SCREENTEST_PASSWORD-rotasjonen på nytt** med `screentest-parent@akgolf.test`
    inkludert (skriptet er klart) — låser opp foreldreportal-galleriet.
-6. **Anders: kjør `scripts/seed-wang-monster-treningstid-2026-08-17.ts --apply`** mot prod
+5. **Anders: kjør `scripts/seed-wang-monster-treningstid-2026-08-17.ts --apply`** mot prod
    (eller avklar at PR #552 skal vente) — WANG-spillerne har ingen faste økter i Workbench uten
    dette.
-7. **Kjør talent-gate-kontrakttestene mot prod** — ingen dokumentert bekreftelse funnet, reelt
+6. **Kjør talent-gate-kontrakttestene mot prod** — ingen dokumentert bekreftelse funnet, reelt
    åpent siden 17.08.
-8. **PORTPLAN §A1 — de 10 portbeslutningene** står fortsatt ubesvart og blokkerer B2/B3-sesjonene.
-9. **Lansering P0 hos Anders** (DKIM, DNS, Stripe live, Google Calendar, ekte spiller-e-poster) —
+7. **PORTPLAN §A1 — de 10 portbeslutningene** står fortsatt ubesvart og blokkerer B2/B3-sesjonene.
+8. **Lansering P0 hos Anders** (DKIM, DNS, Stripe live, Google Calendar, ekte spiller-e-poster) —
    uendret, se «Blokkert» over.
 
 ## Levende kilder (én av hver rolle — start her)
