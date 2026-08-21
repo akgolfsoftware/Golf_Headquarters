@@ -22,9 +22,17 @@ Full linje-for-linje-oversikt: `CHANGELOG.md` på speilets rot (ny fil, bestilt)
 | 7 Spillerprofilen | **Avklart:** `fase2/playerhq/playerhq-profil.html` er eneste fasit; `fase1/spillerprofil.html` merket utgått |
 | 8 Standard/Tour | `playerhq-innstillinger.html` + Visning-gruppe · **NY** `playerhq-onboarding-tillegg.html` |
 
-**Åtte nye komponenter må bygges** (finnes ikke i `_ds_bundle.js`): TallStepper,
-MaalMatrise, HurtigTapper, SettLogger, SoneSegmentLogger, StjerneRad, DagVelger,
-MaaleFelt. Radene er lagt inn i `docs/port/rutefasit.md` §W8.
+**Åtte nye komponenter — BYGGET 20.08.2026** (var savnet i `_ds_bundle.js`, den
+Claude Design-kompilerte bundelen): TallStepper, MaalMatrise, HurtigTapper,
+SettLogger, SoneSegmentLogger, StjerneRad, DagVelger, MaaleFelt. Kildefiler
+(`.jsx` + `.d.ts` + `.prompt.md`, samme trepartsmønster som resten av
+`components/`) ligger i `components/actions|data|forms/`, registrert i
+`_ds_manifest.json`. Verifisert med `node scripts/bygg-bundle.mjs` — bygger
+160 navn fra 155 moduler uten feil (var 152/147). `_ds_bundle.js` selv er
+Claude Designs eget kompilat og oppdateres ved neste server-synk, ikke
+håndredigert her — porteringssesjonene i fase 3 kan uansett lese komponentene
+direkte fra kildefilene. Radene i `docs/port/rutefasit.md` §W8 er derfor
+ublokkert.
 
 ### MCP-sammenligningen (CLAUDE.md-regelen mot utdatert zip)
 
