@@ -35,8 +35,8 @@
 - [x] `playerhq-chat-desktop.html` — PP-1.1 signert av Anders 13.08.2026 (galleri mot prod)
 - [x] `playerhq-chat-mobil.html` — PP-1.1 signert av Anders 13.08.2026 (galleri mot prod)
 - [x] `playerhq-live-brief.html` — B2-liveb signert av Anders 14.08.2026 (galleri mot prod)
-- [x] `playerhq-live-okt.html` — B2-livea signert av Anders 14.08.2026 (galleri mot prod)
-- [x] `playerhq-live-summary.html` — B2-lives signert av Anders 14.08.2026 (galleri mot prod)
+- [ ] `playerhq-live-okt.html` — **RE-ÅPNET 21.08.2026** (B2-livea-signaturen 14.08 målte mot eldre fasit). Kodeverifisert: ingen av de fire 20.08-tilleggene finnes — hurtigtapp (+5/+10/+25, `DrillLogger.tsx` teller kun +1), FYS-serier per ny `SettLogger`-kontrakt (`FysDrillLogger.tsx` bruker fortsatt gammel `SettRepsLogger`-rutenett), sone-segmenter (`SoneSegmentLogger` — ingen segmenttype×sone-logg, kun én overskrevet `PulsSoneVelger`-verdi), eller spontan drill-knapp (tom-tilstand redirecter til Workbench i stedet)
+- [ ] `playerhq-live-summary.html` — **RE-ÅPNET 21.08.2026** (B2-lives-signaturen 14.08 målte mot eldre fasit). Kodeverifisert: `SpillerVurderingForm.tsx` har fortsatt én tallbasert 1–5 kvalitetsvurdering + RPE, ikke fasitens tre stjerne-radiogroups (fokus/gjennomføring/mestring). Pausetid finnes ikke i `SessionSummary.tsx`/`types.ts`
 - [x] `playerhq-meg.html` — PP-1.4 signert av Anders 13.08.2026 (galleri mot prod)
 - [x] `playerhq-plan.html` — PP-1.2 signert av Anders 13.08.2026 (galleri mot prod)
 - [~] `playerhq-runde-live.html`
