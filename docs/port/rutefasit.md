@@ -148,14 +148,19 @@ særlig «~26 `(legacy)`-ruter med v2-erstatning», der kun ÉN har faktisk erst
 | Workbench · periodemal **(avklart)** | `fase1/workbench-periodemal.html` | Eneste fasit for flyten (antall økter per pyramide → skall-økter → kø av ufylte); `fase2/agencyos/agencyos-periodemal.html` er utgått. | — |
 | Workbench · kalender **(uendret 20.08-fasit)** | `fase1/workbench-desktop.html` | Årstidslinje + skall-økter finnes allerede i både d1280 og m390; ingen ny utvidelse i denne runden. | — |
 
-## Nye komponenter samlet (Sonnet må bygge disse — de finnes IKKE i `_ds_bundle.js`)
-- **TallStepper** — numerisk stepper (− / verdi / +, 44 px mål). Brukes i okt-detalj rediger, live-øktas FYS-logging og onboarding-tillegget.
-- **MaalMatrise** — rutenett motorikk × miljø, reps gjort/mål per celle, «—» = ikke planlagt, nådd = --up. Ordet «belastning» vises aldri.
-- **HurtigTapper** — +5/+10/+25-rad under hovedtapperne i live-økt.
-- **SettLogger** — FYS-serielogging: reps + vekt (2,5 kg-steg), «Logg sett», sett-liste.
-- **SoneSegmentLogger** — kondisjonssegmenter: Oppvarming/Drag/Hvile, sone 1–5, tid per segment.
-- **StjerneRad** — 1–5-vurdering med SVG-stjerner (fylt = --fg, aldri oransje).
-- **DagVelger** — 7-dagers flervalgsrad for foretrukne treningsdager.
-- **MaaleFelt** — tallfelt med enhetsetikett (m/fot) og forklaringslinje.
+## Nye komponenter samlet (BYGGET 20.08.2026 — lå tidligere i `_ds_bundle.js`)
+- **TallStepper** (`components/forms/`) — numerisk stepper (− / verdi / +, 44 px mål). Brukes i okt-detalj rediger, live-øktas FYS-logging og onboarding-tillegget.
+- **MaalMatrise** (`components/data/`) — rutenett motorikk × miljø, reps gjort/mål per celle, «—» = ikke planlagt, nådd = --up. Ordet «belastning» vises aldri.
+- **HurtigTapper** (`components/actions/`) — +5/+10/+25-rad under hovedtapperne i live-økt.
+- **SettLogger** (`components/forms/`) — FYS-serielogging: reps + vekt (2,5 kg-steg), «Logg sett», sett-liste.
+- **SoneSegmentLogger** (`components/forms/`) — kondisjonssegmenter: Oppvarming/Drag/Hvile, sone 1–5, tid per segment.
+- **StjerneRad** (`components/forms/`) — 1–5-vurdering med SVG-stjerner (fylt = --fg, aldri oransje).
+- **DagVelger** (`components/forms/`) — 7-dagers flervalgsrad for foretrukne treningsdager.
+- **MaaleFelt** (`components/forms/`) — tallfelt med enhetsetikett (m/fot) og forklaringslinje.
+
+Kildefiler + `.d.ts` + `.prompt.md` ligger under `designsystem/paper/components/`,
+registrert i `_ds_manifest.json`, verifisert med `node scripts/bygg-bundle.mjs`
+(160/160 navn kompilerer). Se `SYNC-STATUS.md` for detaljer. Porteringssesjonene
+i fase 3 leser komponentkontrakten fra `.d.ts`/`.prompt.md` — ikke fra fasit-HTML.
 
 Detaljene per skjerm står i `fase2/manifest-utkast-*.md` (ett manifest per ny/utvidet skjerm, 20.08.2026).
