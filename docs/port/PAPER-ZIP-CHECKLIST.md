@@ -43,8 +43,7 @@
 - [x] `playerhq-runde-logg.html` — NT-417 signert av Anders 13.08.2026 (galleri mot prod)
 - [~] `playerhq-test-gjennomfor.html`
 - [~] `spillerprofil.html` — full ombygging merget i #414 (12.08)
-- [x] `workbench-desktop.html` — B2-wb signert av Anders 14.08.2026 (galleri mot prod, spiller-workbench d1280)
-- [x] `workbench-mobil.html` — B2-wb signert av Anders 14.08.2026 (galleri mot prod, spiller-workbench m390)
+- [~] `workbench-desktop.html` — **RE-ÅPNET 21.08.2026:** B2-wb-signaturen (14.08) målte mot en eldre fasit. Zip 20.08 skrev om filen med en persistent årstidslinje-stripe (4 spor: Periode/Blokker/Turneringer/Tester) over uke/måned-rutenettet i BÅDE d1280 og m390, og slettet `workbench-mobil.html` (mobil slått sammen inn i denne fila) — raden under er derfor fjernet, ikke separat signert lenger. Kodeverifisering 21.08 (`WorkbenchV2.tsx`): `WorkbenchAarsplan` dekker periode+turnering på en årsakse, men kun bak en egen «År»-fane — ikke som persistent stripe slik fasiten tegner. `WorkbenchData` (`src/lib/workbench/load-workbench.ts`) har ingen Blokker-spor (Utvikling/Forberedelser/Konkurranse) og ingen egne Tester-markører. Reell gap, ikke bare re-signering — se `WBPeriodeStrip` (kun i mobil «uke») som nærmeste eksisterende komponent å bygge videre på.
 - [x] `workbench-turnering.html` — B3-turnering signert av Anders 14.08.2026 (bygget i #463, galleri mot preview). Kollisjonssjekk turnering×periodisering + sesongtidslinje + bekreft-handling. Mobil har bevisst ingen Turnering-fane (PP-3-beslutning, uendret)
 
 ## Fase 2 · PlayerHQ W1 (drill/plan/test/turnering)
