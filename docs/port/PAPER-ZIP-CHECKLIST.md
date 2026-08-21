@@ -42,7 +42,7 @@
 - [~] `playerhq-runde-live.html`
 - [x] `playerhq-runde-logg.html` — NT-417 signert av Anders 13.08.2026 (galleri mot prod)
 - [~] `playerhq-test-gjennomfor.html`
-- [~] `spillerprofil.html` — full ombygging merget i #414 (12.08)
+- [-] `spillerprofil.html` — GJELDER IKKE siden 20.08.2026: avklart i zip-en at `fase2/playerhq/playerhq-profil.html` er eneste fasit for spillerprofilen (se `SYNC-STATUS.md` 20.08, punkt 7). Ombyggingen i #414 (12.08) målte mot denne fila før avklaringen kom — re-mål mot `playerhq-profil.html`-raden i stedet, ikke denne.
 - [~] `workbench-desktop.html` — **RE-ÅPNET 21.08.2026:** B2-wb-signaturen (14.08) målte mot en eldre fasit. Zip 20.08 skrev om filen med en persistent årstidslinje-stripe (4 spor: Periode/Blokker/Turneringer/Tester) over uke/måned-rutenettet i BÅDE d1280 og m390, og slettet `workbench-mobil.html` (mobil slått sammen inn i denne fila) — raden under er derfor fjernet, ikke separat signert lenger. Kodeverifisering 21.08 (`WorkbenchV2.tsx`): `WorkbenchAarsplan` dekker periode+turnering på en årsakse, men kun bak en egen «År»-fane — ikke som persistent stripe slik fasiten tegner. `WorkbenchData` (`src/lib/workbench/load-workbench.ts`) har ingen Blokker-spor (Utvikling/Forberedelser/Konkurranse) og ingen egne Tester-markører. Reell gap, ikke bare re-signering — se `WBPeriodeStrip` (kun i mobil «uke») som nærmeste eksisterende komponent å bygge videre på.
 - [x] `workbench-turnering.html` — B3-turnering signert av Anders 14.08.2026 (bygget i #463, galleri mot preview). Kollisjonssjekk turnering×periodisering + sesongtidslinje + bekreft-handling. Mobil har bevisst ingen Turnering-fane (PP-3-beslutning, uendret)
 
@@ -108,6 +108,7 @@
 - [x] `fase2/agencyos/agencyos-oppsett.html` → AdminSettingsV2 — W4-441a/b/c signert av Anders 14.08.2026 (galleri mot prod: innstillinger, GDPR-kø, audit-logg)
 - [x] `fase2/agencyos/agencyos-agenticos-hub.html` — bygget natt 13.08 (#433); NT-433 signert av Anders 14.08.2026 (galleri mot prod)
 - [x] `fase2/agencyos/agencyos-agent-detalj.html` — bygget natt 13.08 (#435); NT-435 signert av Anders 14.08.2026 (galleri mot prod)
+- [ ] `fase1/workbench-periodemal.html` — **NY 21.08.2026:** helt ny fasit levert i zip 20.08 (periodemal-editoren, se `SYNC-STATUS.md` 20.08 punkt 2). Ikke portet, ingen kodeverifisering gjort ennå. `fase2/agencyos/agencyos-periodemal.html` er samtidig merket utgått av designeren — bruk ikke den som fasit lenger.
 
 ## Fase 2 · W5 Marketing/Auth/Forelder/System (ny i zip 2)
 
