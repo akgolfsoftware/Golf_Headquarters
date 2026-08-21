@@ -1,5 +1,34 @@
 # Sync status
 
+## 21.08.2026 — MCP-kontrollsjekk (CLAUDE.md-regelen): prosjektet har endret seg SIDEN zip 20.08
+
+Kjørt `list_files` mot `605a48cc-81e8-44bd-94d2-07d50a97370a` (via `DesignSync`-verktøyet, samme
+prosjekt som `claude-design`-MCP-en pekte på tidligere). Prosjektets `updatedAt` er
+**2026-08-21T03:58:55Z — etter** zip-resynken 20.08 under. Sti-diff (`list_files`, ingen
+`size`-felt tilgjengelig i dette verktøyet — kun stier sammenlignet, ikke bytestørrelse):
+
+- **0 filer** finnes i prosjektet som mangler i speilet (48 "avvik" var rene katalog-oppføringer
+  fra prosjektlisten — ingen reell drift den veien).
+- **24 filer finnes i speilet men IKKE i selve designprosjektet:** de åtte W8-komponentene
+  bygget lokalt 20.08 (`TallStepper`, `MaalMatrise`, `HurtigTapper`, `SettLogger`,
+  `SoneSegmentLogger`, `StjerneRad`, `DagVelger`, `MaaleFelt` × `.jsx`/`.d.ts`/`.prompt.md`).
+  Disse ble forfattet direkte i repo-speilet (se 20.08-notisen under: «Kildefiler … ikke
+  håndredigert her») for å dekke et hull i `_ds_bundle.js` — de er **aldri opprettet i selve
+  `605a48cc`**. Motsatt retning av 17.08-driften (da hadde prosjektet noe zip/speil manglet);
+  nå har speilet noe fasit-prosjektet mangler. Følger av invariant 2 (Paper vinner alltid,
+  også for produksjonskode): disse åtte er reelt sett **kode skrevet for å matche et mønster,
+  ikke komponenter hentet fra en designgjennomgang** — ikke verifisert mot fasiten i streng
+  forstand. Ufarlig for byggingen (bundlen kompilerer, se 20.08-notisen), men bør ryddes opp
+  ved neste reelle zip-leveranse fra Anders (enten ved at de dukker opp ekte i prosjektet, eller
+  ved en eksplisitt notis om at de forblir repo-only).
+- Ingen innholds-/bytenivå-sammenligning er gjort på filer med likt navn — dette verktøyets
+  `list_files` returnerer kun stier, ikke `size` slik forrige MCP-integrasjon gjorde. En sti-diff
+  fanger strukturell drift (nye/slettede filer), ikke innholdsendring i eksisterende filer.
+
+**Konklusjon: zip 20.08 er strukturelt komplett mot prosjektet (ingen tapte skjermer), men
+speilet ligger foran prosjektet på de åtte W8-komponentene.** Ingen ny portbølge er planlagt i
+denne økten — kontrollsjekken var forhåndsbetingelsen for det, se `CLAUDE.md` §Skjermarbeid.
+
 ## 20.08.2026 — resynk mot «AK Golf HQ — Claude Paper (1).zip» (3,45 MB, levert av Anders)
 
 Speilet er byte-erstattet med zip-innholdet. **821 filer · 251 HTML** (før: 840 · 254).

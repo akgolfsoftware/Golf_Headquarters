@@ -35,16 +35,15 @@
 - [x] `playerhq-chat-desktop.html` — PP-1.1 signert av Anders 13.08.2026 (galleri mot prod)
 - [x] `playerhq-chat-mobil.html` — PP-1.1 signert av Anders 13.08.2026 (galleri mot prod)
 - [x] `playerhq-live-brief.html` — B2-liveb signert av Anders 14.08.2026 (galleri mot prod)
-- [x] `playerhq-live-okt.html` — B2-livea signert av Anders 14.08.2026 (galleri mot prod)
-- [x] `playerhq-live-summary.html` — B2-lives signert av Anders 14.08.2026 (galleri mot prod)
+- [ ] `playerhq-live-okt.html` — **RE-ÅPNET 21.08.2026** (B2-livea-signaturen 14.08 målte mot eldre fasit). Kodeverifisert: ingen av de fire 20.08-tilleggene finnes — hurtigtapp (+5/+10/+25, `DrillLogger.tsx` teller kun +1), FYS-serier per ny `SettLogger`-kontrakt (`FysDrillLogger.tsx` bruker fortsatt gammel `SettRepsLogger`-rutenett), sone-segmenter (`SoneSegmentLogger` — ingen segmenttype×sone-logg, kun én overskrevet `PulsSoneVelger`-verdi), eller spontan drill-knapp (tom-tilstand redirecter til Workbench i stedet)
+- [ ] `playerhq-live-summary.html` — **RE-ÅPNET 21.08.2026** (B2-lives-signaturen 14.08 målte mot eldre fasit). Kodeverifisert: `SpillerVurderingForm.tsx` har fortsatt én tallbasert 1–5 kvalitetsvurdering + RPE, ikke fasitens tre stjerne-radiogroups (fokus/gjennomføring/mestring). Pausetid finnes ikke i `SessionSummary.tsx`/`types.ts`
 - [x] `playerhq-meg.html` — PP-1.4 signert av Anders 13.08.2026 (galleri mot prod)
 - [x] `playerhq-plan.html` — PP-1.2 signert av Anders 13.08.2026 (galleri mot prod)
 - [~] `playerhq-runde-live.html`
 - [x] `playerhq-runde-logg.html` — NT-417 signert av Anders 13.08.2026 (galleri mot prod)
 - [~] `playerhq-test-gjennomfor.html`
-- [~] `spillerprofil.html` — full ombygging merget i #414 (12.08)
-- [x] `workbench-desktop.html` — B2-wb signert av Anders 14.08.2026 (galleri mot prod, spiller-workbench d1280)
-- [x] `workbench-mobil.html` — B2-wb signert av Anders 14.08.2026 (galleri mot prod, spiller-workbench m390)
+- [-] `spillerprofil.html` — GJELDER IKKE siden 20.08.2026: avklart i zip-en at `fase2/playerhq/playerhq-profil.html` er eneste fasit for spillerprofilen (se `SYNC-STATUS.md` 20.08, punkt 7). Ombyggingen i #414 (12.08) målte mot denne fila før avklaringen kom — re-mål mot `playerhq-profil.html`-raden i stedet, ikke denne.
+- [~] `workbench-desktop.html` — **RE-ÅPNET 21.08.2026:** B2-wb-signaturen (14.08) målte mot en eldre fasit. Zip 20.08 skrev om filen med en persistent årstidslinje-stripe (4 spor: Periode/Blokker/Turneringer/Tester) over uke/måned-rutenettet i BÅDE d1280 og m390, og slettet `workbench-mobil.html` (mobil slått sammen inn i denne fila) — raden under er derfor fjernet, ikke separat signert lenger. Kodeverifisering 21.08 (`WorkbenchV2.tsx`): `WorkbenchAarsplan` dekker periode+turnering på en årsakse, men kun bak en egen «År»-fane — ikke som persistent stripe slik fasiten tegner. `WorkbenchData` (`src/lib/workbench/load-workbench.ts`) har ingen Blokker-spor (Utvikling/Forberedelser/Konkurranse) og ingen egne Tester-markører. Reell gap, ikke bare re-signering — se `WBPeriodeStrip` (kun i mobil «uke») som nærmeste eksisterende komponent å bygge videre på.
 - [x] `workbench-turnering.html` — B3-turnering signert av Anders 14.08.2026 (bygget i #463, galleri mot preview). Kollisjonssjekk turnering×periodisering + sesongtidslinje + bekreft-handling. Mobil har bevisst ingen Turnering-fane (PP-3-beslutning, uendret)
 
 ## Fase 2 · PlayerHQ W1 (drill/plan/test/turnering)
@@ -54,8 +53,8 @@
 - [~] `fase2/playerhq/playerhq-feiring.html` — natt 11.08 (#394) READY_SIGN
 - [~] `fase2/playerhq/playerhq-fys-plan.html` — natt 11.08 (#394) READY_SIGN
 - [~] `fase2/playerhq/playerhq-live-tapper.html` — bygget (#398), fiks merget i #413 (11.08)
-- [~] `fase2/playerhq/playerhq-okt-detalj.html` — bygget (#399), fiks merget i #413 (11.08)
-- [~] `fase2/playerhq/playerhq-teknisk-plan.html` — tilstands-pass 11.08 (#412)
+- [ ] `fase2/playerhq/playerhq-okt-detalj.html` — **NEDGRADERT 21.08.2026** (var `[~]` fra 11.08, bygget/fikset FØR 20.08-omskrivingen). Kodeverifisert 21.08: `src/app/portal/gjennomfore/[id]/page.tsx` har kun `planlagt`/`gjennomført`-tilstander — ingen `rediger`-tilstand, ingen teknikk-dimensjon-felt, ingen fullsving-betinget motorikk-visning. Alt tre er fraværende i koden, klar gap mot fasiten (§rediger-tilstand, `DIM_VALG`, «Motorikk: KUN fullsving»)
+- [~] `fase2/playerhq/playerhq-teknisk-plan.html` — **RE-VERIFISERT 21.08.2026** (var «tilstands-pass 11.08», FØR 20.08-omskrivingen). Kodeverifisert: rep-telling ER bygget og virker (`repsCurrent`/`repsTarget`, «Reps logget»-KPI i `src/app/portal/tren/teknisk-plan/[planId]/page.tsx`). Målmatrise-DOMENELOGIKKEN finnes (`src/lib/domain/teknisk-maalmatrise.ts`, datert 20.08 i egen filheader) men er **ikke koblet til noen UI** — null konsumenter utenfor egen test. Statusrapport med tre kontekster er ikke bygget i det hele tatt. Delvis gap: koble matrisen til siden + bygg statusrapporten
 - [~] `fase2/playerhq/playerhq-test-detalj.html` — tilstands-pass 11.08 (#412)
 - [~] `fase2/playerhq/playerhq-tester-hub.html` — tilstands-pass 11.08 (#412)
 - [~] `fase2/playerhq/playerhq-turnering-detalj.html` — bygget (#398), fiks merget i #413 (11.08)
@@ -78,7 +77,8 @@
 
 ## Fase 2 · W3 Meg/Booking/Talent/Coach (ny i zip 2)
 
-- [~] `fase2/playerhq/playerhq-innstillinger.html`
+- [ ] `fase2/playerhq/playerhq-innstillinger.html` — **NEDGRADERT 21.08.2026** (var `[~]` uten notat). Kodeverifisert: `InnstillingerData` (`src/app/portal/meg/innstillinger/page.tsx`) har `epost`/`notif`/`venneOktSynlig`/`samtykke`/`abonnement` — ingen «Visning»-felt (Standard/Tour-veksler, fasit §73-79). Klar gap
+- [ ] `fase2/playerhq/playerhq-onboarding-tillegg.html` — **NY 21.08.2026, ingen rad fantes.** NY søsterfasit til `playerhq-innstillinger.html` (levert i zip 20.08). Kodeverifisert: ingen onboarding-rute finnes i `src/app/portal` i det hele tatt — klar gap, ikke bygget
 - [~] `fase2/playerhq/playerhq-abonnement.html` → MegAbonnementV2
 - [~] `fase2/playerhq/playerhq-helse.html` → MegHelseV2
 - [~] `fase2/playerhq/playerhq-booking-ny.html` → BookingNyV2
@@ -102,13 +102,14 @@
 ## Fase 2 · W4 AgencyOS (ny i zip 2)
 
 - [x] `fase2/agencyos/agencyos-godkjenninger.html` → AdminGodkjenningerV2 — W4-437a/b/c signert av Anders 14.08.2026 (galleri mot prod: godkjenninger, handlingssenter, oppfølgingskø)
-- [x] `fase2/agencyos/agencyos-gruppe-detalj.html` → GruppeDetaljV2 — W4-440a signert av Anders 14.08.2026 (galleri mot prod)
+- [~] `fase2/agencyos/agencyos-gruppe-detalj.html` → GruppeDetaljV2 — **RE-ÅPNET 21.08.2026** (W4-440a-signaturen 14.08 målte mot eldre fasit). Kodeverifisert: domeneregelen for «denne økta blir nå din egen» finnes (`src/lib/domain/gruppesynk.ts`, egen docblock siterer nøyaktig denne setningen, «bekreftet av Anders 20.08») men har **null kallsteder** — ikke koblet til UI eller server action. Hovedcoach vises uformelt som `coachNavn`/`coachEpost`, ikke fasitens eksplisitte felt. Laster/feil finnes kun på rutenivå (`/admin/grupper/loading.tsx`+`error.tsx`), ikke som in-panel-tilstander slik fasiten tegner. Delvis gap: koble domenelogikken til en handling
 - [x] `fase2/agencyos/agencyos-bookinger.html` → AdminBookingerV2 — W4-438a/b signert av Anders 14.08.2026 (galleri mot prod: bookinger, ny booking)
 - [x] `fase2/agencyos/agencyos-planbibliotek.html` — NT-416a signert av Anders 13.08.2026; tilleggsruter W4-442a/b (økter, ny planmal) signert 14.08.2026
 - [x] `fase2/agencyos/agencyos-turneringer.html` — NT-416b signert av Anders 13.08.2026; tilleggsruter W4-442c/d (ny turnering, dubletter) signert 14.08.2026
 - [x] `fase2/agencyos/agencyos-oppsett.html` → AdminSettingsV2 — W4-441a/b/c signert av Anders 14.08.2026 (galleri mot prod: innstillinger, GDPR-kø, audit-logg)
 - [x] `fase2/agencyos/agencyos-agenticos-hub.html` — bygget natt 13.08 (#433); NT-433 signert av Anders 14.08.2026 (galleri mot prod)
 - [x] `fase2/agencyos/agencyos-agent-detalj.html` — bygget natt 13.08 (#435); NT-435 signert av Anders 14.08.2026 (galleri mot prod)
+- [ ] `fase1/workbench-periodemal.html` — **NY 21.08.2026:** helt ny fasit levert i zip 20.08 (periodemal-editoren, se `SYNC-STATUS.md` 20.08 punkt 2). Ikke portet, ingen kodeverifisering gjort ennå. `fase2/agencyos/agencyos-periodemal.html` er samtidig merket utgått av designeren — bruk ikke den som fasit lenger.
 
 ## Fase 2 · W5 Marketing/Auth/Forelder/System (ny i zip 2)
 
