@@ -64,8 +64,19 @@ export type DGScheduleResponse = {
   schedule: DGScheduleEvent[];
 };
 
-export async function getSchedule(tour: DGTour): Promise<DGScheduleEvent[]> {
-  const data = await fetchJson<DGScheduleResponse>(`/get-schedule?tour=${tour}`);
+export async function getSchedule(
+  tour: DGTour,
+  season?: number,
+): Promise<DGScheduleEvent[]> {
+  // Uten `season` returnerer DataGolf en default/gammel sesong der so godt
+  // som alt er "completed" — fremtidige turneringer forsvinner stille.
+  // Verifisert 24.08.2026: samme spørring uten season ga 47 PGA-events (alle
+  // completed), med season=2026 ga samme antall men inkluderte "upcoming"
+  // events frem til desember. Default til inneværende år.
+  const s = season ?? new Date().getFullYear();
+  const data = await fetchJson<DGScheduleResponse>(
+    `/get-schedule?tour=${tour}&season=${s}`,
+  );
   return data.schedule ?? [];
 }
 
