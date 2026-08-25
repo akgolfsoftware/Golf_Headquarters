@@ -100,8 +100,9 @@ Alt arbeid må tjene dette.
 
 ## Neste konkrete steg (anbefalt rekkefølge — pågår)
 
-**Steg 1 (nå):** Kjør `docs/natt/workbench/CLAUDE-CODE-PROMPT.md` + følg `STEP-1-EXECUTION.md`  
-→ Domain inn i repo, server actions, Agency uke, create/move/publish.
+**Steg 1 (FERDIG 25.08):** ~~Kjør `docs/natt/workbench/arkiv/CLAUDE-CODE-PROMPT.md` + følg `STEP-1-EXECUTION.md`~~
+→ Levert: domain i repo, server actions, Agency uke, create/move/publish (Loop 1+2).
+Gjeldende plan videre: `docs/natt/LAUNCH-PLAN-FULL-2026-08-25.md`.
 
 **Steg 2:** Player «I dag» binder mot `loadPlayerDay` (kun PUBLISHED).
 

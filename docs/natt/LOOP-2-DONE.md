@@ -67,6 +67,13 @@ lysere variant i mørk.
 
 ## Sikkerhetsfunn — RLS er AV på de nye tabellene
 
+> **OPPDATERT 25.08.2026:** RLS-kode er nå skrevet på gren
+> `claude/workbench-rls-policies-8b054b` (migrasjon + apply-script +
+> `docs/natt/RLS-WORKBENCH-DONE.md` på den grenen) — men **ikke kjørt mot prod**.
+> Aktivering + smoke er session S1 i `docs/natt/LAUNCH-PLAN-FULL-2026-08-25.md`
+> (anbefaling der: deny-by-default uten policies, repo-presedens). Ikke skriv ny
+> RLS-kode fra bunnen. Resten av seksjonen under er situasjonen slik den var 25.08 morgen.
+
 `workbench_sessions` og `workbench_drills` ble opprettet uten Row Level
 Security. Appen selv går via Prisma med tjenestetilkobling og er upåvirket, men
 en klient med anon-nøkkelen kan i prinsippet lese og skrive alle rader — det

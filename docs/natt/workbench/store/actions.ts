@@ -1,6 +1,12 @@
 /**
  * Workbench data layer contract — server actions / API shape.
  *
+ * OBS (25.08.2026): HISTORISK SKISSE. Faktisk implementasjon er
+ * src/lib/workbench/wb-actions.ts — den bruker WbResultat<T>-wrapper
+ * ({ok:true,data}|{ok:false,error}), zod ved grensen og revalidatePath,
+ * og har flere actions enn skissen. Port nye actions fra wb-actions.ts
+ * sitt mønster, ALDRI fra signaturene her.
+ *
  * Implement with:
  * - Prisma models (Session, Drill, SourceItem …) or existing tables
  * - Next.js server actions or tRPC / route handlers
@@ -19,7 +25,7 @@ import type {
   AddDrillCommand,
   WeekViewModel,
   WorkbenchMode,
-} from "../domain/types";
+} from "../arkiv/domain/types";
 
 // ─── Read ───────────────────────────────────────────────────────
 

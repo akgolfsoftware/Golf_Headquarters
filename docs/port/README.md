@@ -1,5 +1,10 @@
 # docs/port/ — designport-dokumenter
 
+> **SUPERSEDERT 25.08.2026:** Train-lock er designfasit for alle PlayerHQ/AgencyOS-skjermer
+> (Anders, i økt) — `designsystem/paper/` er IKKE lenger arbeidsfasit, og GYLDIGHET.md-
+> rangordningen er historikk. Denne mappen er arkiv for den avsluttede Paper-porten.
+> Gjeldende plan: `docs/natt/LAUNCH-PLAN-FULL-2026-08-25.md`.
+
 Rangordningen over hvilke dokumenter som styrer skjermbygging: **`GYLDIGHET.md`**.
 Historikk (fase 0–4, Wave-filer, nattrapporter, gallerier, gamle ordrer) er **slettet
 17.08.2026** etter Anders' beslutning — alt lever i git-historikken.

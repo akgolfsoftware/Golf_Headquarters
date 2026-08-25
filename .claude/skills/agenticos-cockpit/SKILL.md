@@ -25,6 +25,10 @@ På hjemskjermen (`/admin/agencyos`) se **hva som haster** og **hvilken AI-flate
 
 ## UI-kontrakt (komplett polish 2026-07-23)
 
+> **OBS 25.08.2026:** Train-lock er designfasit for alle AgencyOS-skjermer, cockpit-panelet
+> inkludert — Paper-/`--p-*`-referansene under beskriver dagens token-bro (historikk), ikke
+> fasit for nytt arbeid. Se CLAUDE.md invariant 2.
+
 1. **Én ting NÅ** — hero, clay-markering (`--p-handling` #D97757 — Paper-monopolet), display-type, CTA «Gjør dette»  
 2. **Mini-status** — tallfliser for plan/caddie/forespørsel/e-post/team (kun >0)  
 3. **Haster** vs **Valgfritt** — seksjoner; haster med warn-strek + tint  

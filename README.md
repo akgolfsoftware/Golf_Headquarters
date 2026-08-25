@@ -49,7 +49,8 @@ npm run build
 - **`docs/AAPNE-SPORSMAAL.md`** — uavklarte beslutninger (ÅPEN / LØST / PARKERT)
 - **`CLAUDE.md`** — arbeidsregler, designsystem, gotchas
 - **`SECURITY.md`** — sikkerhetsprinsipper og RLS
-- **`docs/MASTERPLAN-GJENSTAAENDE.md`** — samlet gjenstående-plan (lansering: `docs/port/masterplan-lansering-2026-08-12.md` + `docs/platform/stripe-cutover-sjekkliste.md`)
+- **`docs/natt/LAUNCH-PLAN-FULL-2026-08-25.md`** — lanseringsplanen (design: Train-lock, 25.08)
+- **`docs/MASTERPLAN-GJENSTAAENDE.md`** — gjenstående-plan for spor utenfor lanseringen (+ `docs/platform/stripe-cutover-sjekkliste.md`; gammel lanseringsplan arkivert i `docs/port/arkiv/`)
 - Historikk og superseterte planer: slettet 05.08 og 17.08.2026 — ligger i git-historikken
 
 ## Test

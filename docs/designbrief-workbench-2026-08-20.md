@@ -1,6 +1,10 @@
 # Designbrief — treningsplanlegging i Workbench (fase 2.1)
 
-Klar til å limes inn i Claude Design-prosjektet **«AK Golf HQ — Claude Paper»**
+> **PÅ VENT 25.08.2026 (D6 + Train-lock):** Ikke lim inn i Claude Paper-prosjektet — Train-lock
+> er nå designfasit for alle PlayerHQ/AgencyOS-skjermer, og hele treningsplanlegging-sporet
+> venter på Anders' D6-avklaring mot natt-sporet (`docs/natt/LAUNCH-PLAN-FULL-2026-08-25.md`).
+
+Opprinnelig klar til å limes inn i Claude Design-prosjektet **«AK Golf HQ — Claude Paper»**
 (`605a48cc`). Utfører punkt 2.1 i
 `docs/plan-treningsplanlegging-til-kode-2026-08-20.md`.
 

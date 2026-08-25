@@ -1,5 +1,9 @@
 # Gap-måling: designfasit vs. designbriefen (fase 2.2)
 
+> **PÅ VENT 25.08.2026 (D6 + Train-lock):** Gap-målingen under er mot Paper-fasiten, som nå er
+> historikk — Train-lock er designfasit for alle PlayerHQ/AgencyOS-skjermer. Målingen må gjøres
+> på nytt mot Train-lock-fasiten når den er levert (LAUNCH-PLAN D3) og D6 er avklart.
+
 Målt 20.08.2026 mot `designsystem/paper/` (speilet, zip 16.08) og
 Claude Design-prosjektet `605a48cc` via MCP.
 

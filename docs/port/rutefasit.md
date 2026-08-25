@@ -1,5 +1,10 @@
 # Rutefasit v2 — portering, modellvalg og komponentfasit, for Claude Code
 
+> **DESIGN-KOLONNENE SUPERSEDERT 25.08.2026:** Train-lock er designfasit for alle PlayerHQ-
+> og AgencyOS-skjermer — mal-/fasit-koblingene mot Paper i tabellene under gjelder IKKE
+> lenger som design-fasit. Rute-inventaret (hvilke ruter som finnes, modellvalg,
+> komponentgjenbruk) har fortsatt referanseverdi. Se `docs/natt/LAUNCH-PLAN-FULL-2026-08-25.md`.
+
 **Skrevet:** 2026-08-16 · erstatter v1 (2026-08-12) · **Kilde:** konsolideringsgatene W3/W4/W5/drift, talt mot kode på `main`
 **Hentet fra Claude Design via MCP 17.08.2026** (`605a48cc-81e8-44bd-94d2-07d50a97370a`,
 `kart/rutefasit-for-claude-code.md`). Zip-leveransen 16.08 inneholdt fortsatt v1 — v2 fantes

@@ -1,13 +1,19 @@
 # MASTERPLAN — alt som gjenstår (17.08.2026)
 
+> **VIKTIG (25.08.2026):** Lanseringssporet (Workbench/økt/PlayerHQ/AgencyOS) styres nå av
+> **`docs/natt/LAUNCH-PLAN-FULL-2026-08-25.md`** — den vinner over dette dokumentet der de
+> overlapper. Design: Train-lock er fasit for ALLE produktskjermer (Anders 25.08) — alle
+> Paper-port-rader under er supersedert. Dette dokumentet beholdes for spor som
+> lanseringsplanen ikke dekker.
+
 **Rolle:** den ENE samlede gjenstående-planen på tvers av alle spor. Skrevet under
 plan-oppryddingen 17.08 (78 utgåtte dokumenter slettet, status målt mot `main` @ `1f3e127`
 og fem parallelle kodekartlegginger — ikke antatt). Erstatter `COMPLETE-REMAINING-PLAN.md`,
 `REMAINING.md` og `gjenstaaende-plan-2026-07-31.md` (alle slettet — git-historikk).
 
 **Underplaner denne peker på (ikke dupliserer):**
-`docs/port/PORTPLAN.md` (port-rekkefølgen) · `docs/port/masterplan-lansering-2026-08-12.md`
-(lanserings-fasene) · `docs/plan-agenticos-jarvis-2026-08-17.md` (AI-laget) ·
+`docs/port/PORTPLAN.md` (supersedert 25.08 — arkivreferanse) · `docs/port/arkiv/masterplan-lansering-2026-08-12.md`
+(arkivert; lansering styres av `docs/natt/LAUNCH-PLAN-FULL-2026-08-25.md`) · `docs/plan-agenticos-jarvis-2026-08-17.md` (AI-laget) ·
 `docs/plan-baneguide-sg-app-2026-08-16.md` i PR #514 (SG-appen) ·
 `docs/platform/stripe-cutover-sjekkliste.md` (betaling).
 

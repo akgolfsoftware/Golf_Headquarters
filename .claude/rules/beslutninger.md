@@ -16,6 +16,19 @@ Gjelder til Anders endrer dem.
 
 ## Beslutningene (august 2026)
 
+- **KOMPLETT TRAIN-LOCK — ALLE SKJERMER I PLAYERHQ OG AGENCYOS (Anders 2026-08-25, i økt):**
+  Train-lock er eneste designfasit for hele produktet — både PlayerHQ og AgencyOS, alle
+  skjermer. Claude Paper (`605a48cc` / `designsystem/paper/`) er HISTORIKK/arkiv, aldri
+  bygg-fasit. Dette superseder «Design-fasit er Claude Paper 1:1» (04.08), «Design-kilde —
+  PAPER VINNER ALLTID» (05.08) og look/palett-delene av PP-A (16.08) — PP-A sine
+  IA-/strukturbeslutninger (A1 rail-struktur, A2 master–detalj-mønsteret, desktop=fasitens
+  visning, landscape-overlay) står inntil Train-lock-fasiten sier noe annet. Skjermbilde-gaten
+  (04.08) og «Enkelhet/færrest trykk» gjelder uendret. Åpne forutsetninger: Train-lock-tokens
+  er ikke definert i kode, og fasit-zipen («Player HQ Train lock.zip» + ev. Agency-varianter)
+  er ikke committet — se `docs/natt/LAUNCH-PLAN-FULL-2026-08-25.md` D2/D3. Marketing/
+  landingssider beholder egen fasit (ak-golf-website). Forelder-portalens omfang: uavklart,
+  spør Anders. Konfliktregel: sier et dokument/skill noe annet enn Train-lock for
+  produktflatene, vinner Train-lock — og dokumentet rettes.
 - **ALLE TRENINGSPLANREGLER LÅST OPP (Anders 2026-08-18, i økt — «Ingenting skal være låst
   eller canon. Spiller står helt fritt»):** All regel-håndheving i planlegging er SLETTET fra
   koden (gren `feat/laas-opp-alle-regler`): de 9 invariantene (`src/lib/canon/` — hele mappen),
@@ -74,7 +87,8 @@ Gjelder til Anders endrer dem.
   skiller. Full v2-formel: `PYRAMIDE_OMRADE_MOTORIKK_BELASTNING_PRESS`, f.eks.
   `TEK_CHIP_LAV_HAST_TRENINGSOMRADE_ALENE` (kilde: `fase1/workbench-mobil.html`).
   Databasen beholder de finkornede enum-verdiene — `ak-formel-visning.ts` er fortsatt broen.
-- **Design-fasit er Claude Paper 1:1 (Anders 2026-08-04):** skjermene skal bli **slik de er
+- **[SUPERSEDERT 2026-08-25 — se Train-lock-beslutningen øverst. Beholdt som historikk.]
+  Design-fasit er Claude Paper 1:1 (Anders 2026-08-04):** skjermene skal bli **slik de er
   designet i Claude Design-prosjektet «AK Golf HQ — Claude Paper»** (`605a48cc`) — layout,
   informasjonsarkitektur og interaksjonsmønster, ikke bare farger/tokens.
   **Speilregelen endret 2026-08-12 (Anders):** `designsystem/paper/` er **arbeidsfasiten** —
@@ -174,7 +188,8 @@ Gjelder til Anders endrer dem.
   vis aldri i UI). Én `Subscription`-rad per `(userId, kind)` — COACHING og PLAYERHQ kan sameksistere.
 - **FYS-resultatformel avventer:** Bygg testskjermer med plassholder-tall. Ikke hardkod
   referanseverdier før Anders gir grønt lys.
-- **Design-kilde (oppdatert 2026-08-05 — PAPER VINNER ALLTID):** **Claude Paper** (Claude Design
+- **[SUPERSEDERT 2026-08-25 — Train-lock vinner nå, se øverst. Beholdt som historikk.]
+  Design-kilde (oppdatert 2026-08-05 — PAPER VINNER ALLTID):** **Claude Paper** (Claude Design
   `605a48cc`, skjermer i `fase1/`; Open Design `be6bdcb8-…`) er eneste designfasit — for både
   designarbeid OG produksjonskode. Presis/v2-kanonen er avviklet. Setningen «produksjonskode
   følger fortsatt v2-tokens + C, smalt til post-pilot» sto her frem til 05.08 og er **feil** —

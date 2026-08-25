@@ -10,7 +10,7 @@
 
 1. Åpne **ny** Claude Code-session mot det ekte AK Golf HQ-repoet.
 2. Ikke lim inn hele `src/` — pek kun på relevante mapper + denne mappen.
-3. Lim inn prompten fra `CLAUDE-CODE-PROMPT.md` (oppdatert versjon under).
+3. ~~Lim inn prompten fra `arkiv/CLAUDE-CODE-PROMPT.md`~~ — FERDIG BRUKT 25.08, ikke kjør på nytt.
 
 ---
 
