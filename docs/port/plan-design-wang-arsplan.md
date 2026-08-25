@@ -91,7 +91,8 @@ redesignes etter Claude Paper-fasiten, som all annen AgencyOS-kode, og hører de
 fordi de eier dataene WANG-flaten viser, og fordi feltdekningen deres bestemmer hva
 WANG-flaten kan vise uten demo-data.
 
-Å WANG-brande AgencyOS ville dessuten bryte invariant 2 i `CLAUDE.md` (Paper vinner alltid).
+Å WANG-brande AgencyOS ville dessuten bryte invariant 2 i `CLAUDE.md` (Train-lock er
+designfasit for alle AgencyOS-skjermer per 25.08.2026; tidligere «Paper vinner alltid»).
 
 ### 2.1 Åpen redundans: to trener-årsplaner
 

@@ -42,8 +42,10 @@ if (/\.tsx$/.test(sti)) {
             .map((a) => `linje ${a.linje}: fontSize ${a.verdi}px`)
             .join(" · ");
           typografiVarsel =
-            `Typografi-advarsel (blokkerer ikke) for ${sti} — ${avvik.length} fontSize utenfor Paper-skalaen: ` +
-            `${liste}. Skala og nærmeste erstatning: docs/port/typografi-skala-paper.md`;
+            `Typografi-advarsel (blokkerer ikke) for ${sti} — ${avvik.length} fontSize utenfor den målte skalaen: ` +
+            `${liste}. OBS: skalaen er fra Paper-porten (docs/port/typografi-skala-paper.md) og er HISTORIKK — ` +
+            `Train-lock er designfasit for alle produktskjermer (25.08.2026, CLAUDE.md invariant 2). ` +
+            `Ignorer varselet på Train-lock-flater inntil Train-lock-skalaen er definert.`;
         }
       }
     }

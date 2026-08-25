@@ -4,7 +4,18 @@
 >
 > Status: **ÅPEN** (trenger beslutning) · **PARKERT** (bevisst, ikke rør uoppfordret) · **LØST** (avklart — ikke flagg på nytt).
 >
-> **Sist oppdatert:** 2026-08-17 (plan-opprydding — se tillegget nederst; hovedlisten under er fra 17.07).
+> **Sist oppdatert:** 2026-08-25 (Train-lock-beslutningen + natt-sporet inn; forrige 2026-08-17 — se tillegget nederst; hovedlisten under er fra 17.07).
+
+## Tillegg 25.08.2026 (natt-sporet + Train-lock)
+
+| # | Spørsmål | Status | Notat |
+|---|---|---|---|
+| T1 | Designfasit for produktflatene | **LØST 25.08 (Anders):** Train-lock er fasit for ALLE skjermer i PlayerHQ OG AgencyOS. Paper er historikk | Se `.claude/rules/beslutninger.md` (øverste beslutning) + CLAUDE.md invariant 2. Ikke re-flagg Paper-vs-Train-lock |
+| T2 | Train-lock-tokens i kode | **ÅPEN** (D2) | Tokens/scene-sett er ikke definert i src/ — må defineres før design-pass (LAUNCH-PLAN B8) |
+| T3 | Fasit-zip («Player HQ Train lock.zip» + ev. Agency-varianter) | **ÅPEN** (D3) | Ikke committet i repoet — Anders leverer, forslag `designsystem/train-lock/` |
+| T4 | Forelder-portalens designomfang under Train-lock | **ÅPEN** | Forelder er verken PlayerHQ eller AgencyOS — spør Anders før port |
+| T5 | DataGolf `/stats/*`-plassering | **ÅPEN** (D5, tidl. PORTPLAN §A1.1) | Anders-beslutning før C10 |
+| T6 | `docs/plan-treningsplanlegging-til-kode-2026-08-20.md` vs natt-sporet | **ÅPEN** (D6) | Ikke kjør de to sporene parallelt mot samme domenemodell uten Anders' avklaring |
 > Forrige oppdatering 2026-07-17 (kveld): alle Del 4-beslutninger tatt av Anders: A4 (invariant-liste skrives ned), A5 (forretningstall bekreftet), D5 (slette-veier konsolideres + slug anonymiseres), D8 (banekart = ekte geometri, blokkert på datakilde). D2/D6 bygget + migrasjoner kjørt mot prod. Råmateriale: tidligere `PLATFORM.md` §14 (arkivert) + kodeverifisering 2026-06-14 / agent-pipeline 2026-07-10.
 
 ---

@@ -2,10 +2,21 @@
 
 > **Hva dette er:** ett snapshot av hvor plattformen står akkurat nå. Oppdater datoen + relevante linjer når noe vesentlig endrer seg.
 
-**Sist oppdatert:** 2026-08-17 (plan-opprydding: 78 utgåtte dokumenter slettet, status målt mot kode).
-Samlet gjenstående-plan: **`docs/MASTERPLAN-GJENSTAAENDE.md`**.
+**Sist oppdatert:** 2026-08-25 (natt-sporet + Train-lock-beslutningen inn).
+Samlet lanseringsplan: **`docs/natt/LAUNCH-PLAN-FULL-2026-08-25.md`** (vinner over MASTERPLAN der de overlapper).
 
-## Hovedbildet 17.08 (målt, ikke antatt)
+## Hovedbildet 25.08 (målt mot git/kode)
+
+- **Design-kanon:** Train-lock er fasit for ALLE skjermer i PlayerHQ og AgencyOS (Anders 25.08).
+  Paper er historikk. Fasit-zip og Train-lock-tokens er ennå ikke levert/definert (blokker D2/D3).
+- **Workbench bølge 1:** Loop 1 (domain+actions), Loop 2 (Agency uke), Loop 3S (spiller
+  start/fullfør/hopp over) levert på `claude/agency-workbench-uke-ui-c4d2a4`-linjen; Loop 2S
+  (drill-editor) på PR #577; RLS-kode på `claude/workbench-rls-policies-8b054b` (IKKE kjørt mot
+  prod). Ingenting merget til main; ingen menneskelig klikk-test ennå. Loop 2T/3/3T/4 ikke startet.
+- **Docs-opprydding 25.08 utført:** Paper-styringsdokumentene er supersedert-merket, natt-spec
+  arkivert, konkurrerende masterplaner peker nå på lanseringsplanen.
+
+## Hovedbildet 17.08 (målt, ikke antatt — historikk)
 
 - **Bygg:** `main` er grønn. ~1 390 enhetstester grønne (målt i port-sesjonene 17.08; 977 var tallet 13.08 — testdekningsløftet #488/#489 la til ~400).
 - **120 commits / 76 PR-er merget 13.–17.08.** De store sporene:
@@ -85,7 +96,7 @@ ikke fikset uten bevist effekt, jf. 03.08-målingen).
 | **Uavklart / parkert / løst** | `docs/AAPNE-SPORSMAAL.md` + PORTPLAN §A1 |
 | **Låste forretningsregler** (fasit) | `docs/platform/BUSINESS-RULES.md` |
 | **Full plattformkontekst** (5 min) | `docs/platform/AGENT-BRIEF.md` |
-| **Lansering** | `docs/port/masterplan-lansering-2026-08-12.md` + `docs/platform/stripe-cutover-sjekkliste.md` |
+| **Lansering** | `docs/natt/LAUNCH-PLAN-FULL-2026-08-25.md` + `docs/platform/stripe-cutover-sjekkliste.md` (gammel plan arkivert: `docs/port/arkiv/masterplan-lansering-2026-08-12.md`) |
 | **AgenticOS + Jarvis** | `docs/plan-agenticos-jarvis-2026-08-17.md` |
 
 Historiske bygg-spor, nattrapporter, gallerier og erstattede planer er slettet 05.08 og

@@ -1,5 +1,8 @@
 # W4 AgencyOS maler — variant tracking (overnight, PP-7)
 
+> **SUPERSEDERT 25.08.2026:** Paper-porten er stanset — Train-lock er fasit for alle
+> PlayerHQ/AgencyOS-skjermer. Åpne [ ]-rader under er historikk, ikke gjenstående jobb.
+
 Status: **mal-pixel finpuss + variant-pass 2026-08-12** (natt-økt, `feat/natt-w4-planbibliotek-turneringer`).
 Alle rader: m390/d1280 sign-off = Anders.
 

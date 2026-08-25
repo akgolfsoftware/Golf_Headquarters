@@ -5,11 +5,12 @@
 > (betydning + staving), **lag 3** = `docs/ordbok.json` (maskinlesbar, generert av
 > `scripts/ordbok-json.ts`). Ved konflikt om betydning/staving vinner ordboken.
 >
-> **⚠ FARGER OG FONTER HER ER UTGÅTT (05.08.2026).** §1 (palett) og §3 (typografi) beskriver den
-> avviklede Presis-paletten — forest `#005840`, lime `#D1F843`, Inter / Familjen Grotesk /
-> JetBrains Mono. **Claude Paper vinner alltid** (Claude Design `605a48cc`, skjermer i `fase1/`);
-> tokens: `src/styles/paper-tokens.css` (`--p-*`), mønstre: `docs/port/monsterdokument-paper.md`.
-> Ikke bruk verdiene under til nye skjermer.
+> **⚠ FARGER OG FONTER HER ER UTGÅTT (05.08.2026 — og 05.08-korreksjonen er selv supersedert
+> 25.08.2026).** §1 (palett) og §3 (typografi) beskriver den avviklede Presis-paletten — forest
+> `#005840`, lime `#D1F843`, Inter / Familjen Grotesk / JetBrains Mono. Paper-henvisningen som
+> sto her («Claude Paper vinner alltid») er OGSÅ historikk: **Train-lock er designfasit for alle
+> PlayerHQ/AgencyOS-skjermer (Anders 25.08.2026)** — se CLAUDE.md invariant 2 +
+> `docs/natt/LAUNCH-PLAN-FULL-2026-08-25.md`. Ikke bruk verdiene under til nye skjermer.
 > (`.claude/rules/designsystem.md`, som denne fila tidligere pekte på, finnes ikke.)
 >
 > Resten — særlig **§2 tall, enheter og formatering** — er fortsatt gjeldende og

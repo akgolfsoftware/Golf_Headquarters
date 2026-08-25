@@ -260,10 +260,14 @@ datakrav (30 putter/3 økter) mates av både runder (AP1) og puttetester, og UpG
 
 ---
 
-## 6. Designleveranser (Claude Paper)
+## 6. Designleveranser
 
-Fasit-bestillinger til Claude Design-prosjektet «AK Golf HQ — Claude Paper» (`605a48cc`) —
-til de foreligger gjelder `docs/port/monsterdokument-paper.md`:
+> **ENDRET 25.08.2026:** Nye designbestillinger for PlayerHQ/AgencyOS-flater går mot
+> Train-lock-fasiten, IKKE Claude Paper-prosjektet, og monsterdokumentet er arkivert.
+> Bestillingslisten under beholdes som behovsliste (HVA som må tegnes), men leveransekanalen
+> avklares med Anders sammen med D3 (fasit-zip) i `docs/natt/LAUNCH-PLAN-FULL-2026-08-25.md`.
+
+Fasit-bestillinger (opprinnelig tiltenkt Claude Paper `605a48cc`):
 
 1. **Slag-for-slag-føring med kart** (AP1) — den viktigste: kart-skjema per slag, ballmarkør,
    target, kølle-hurtigvelger, putt-flyt. Mål for runder-listens «Før slag for slag»-knapp.

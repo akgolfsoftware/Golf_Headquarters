@@ -1,5 +1,10 @@
 # PIXEL-PERFECT PLAN — hele produktet (Paper-fasit)
 
+> **SUPERSEDERT 25.08.2026:** Train-lock er designfasit for alle PlayerHQ- og AgencyOS-skjermer
+> (Anders, i økt). Pixel-perfekt-mot-Paper-metoden i dette dokumentet skal ikke lenger følges
+> for produktflatene. Metode-verktøyene (D1–D12, skjermbilde-gate) kan gjenbrukes mot
+> Train-lock-fasiten når den er levert. Se `docs/natt/LAUNCH-PLAN-FULL-2026-08-25.md`.
+
 **Versjon:** 2.0 · **Dato:** 16.08.2026 — avløser v1.1 (09.08), se §Hva v2.0 endrer.
 **Fasit-kilde:** `designsystem/paper/` = *Claude Paper (3).zip* (CRC-verifisert 752/752 filer, 13.08)
 + **delleveranse D1–D6** 14.08 (27 filer — 6 endret, 8 nye; se `designsystem/paper/SYNC-STATUS.md`).

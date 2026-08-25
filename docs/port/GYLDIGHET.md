@@ -1,4 +1,10 @@
-# GYLDIGHET — hvilke dokumenter som styrer skjermbygging (oppdatert 17.08.2026)
+# GYLDIGHET — hvilke dokumenter som styrer skjermbygging
+
+> **SUPERSEDERT 25.08.2026 (Anders, i økt): Train-lock er designfasit for ALLE skjermer i
+> PlayerHQ og AgencyOS.** Rangordningen under (Paper som #1) er HISTORIKK og skal ikke
+> følges for produktflatene. Gjeldende styring: `CLAUDE.md` invariant 2 +
+> `docs/natt/LAUNCH-PLAN-FULL-2026-08-25.md` + `.claude/rules/beslutninger.md` (øverste
+> beslutning). Filen beholdes som arkivreferanse for den avsluttede Paper-porten.
 
 **Legges som `docs/port/GYLDIGHET.md`.** Én rangordning, så ingen gammel plan kan
 overstyre designet. Ved konflikt vinner høyere nummer ALDRI over lavere.
@@ -13,7 +19,7 @@ overstyre designet. Ved konflikt vinner høyere nummer ALDRI over lavere.
 | 4 | `docs/port/PIXEL-PERFECT-PLAN-COMPLETE.md` | Metoden: D1–D12, PP-faser, fabrikk-løypa |
 | 5 | `docs/port/rutefasit.md` | **Alle ruter UTEN egen fasit-fil** — rute → mal → avvikslinje → komponenter (v2, 16.08). ⚠ «Utgår»-linjene er IKKE en slettliste — les PORTPLAN §A0 først |
 | 6 | `docs/port/PP-W3/W4/W5-VARIANTS.md` | Kvittering per variantrute (m390 + d1280) |
-| 7 | `docs/port/portstatus-paper.md` + `fasit-liste-paper.md` | Levende status/oppslagslister |
+| 7 | `docs/port/arkiv/portstatus-paper.md` (arkivert 25.08) + `fasit-liste-paper.md` | Historiske status/oppslagslister |
 
 Kontrakten (slik en rute bygges fra en mal-fasit) og skjermbilde-gaten bor i
 `CLAUDE.md` §Skjermarbeid — de gjentas ikke her.

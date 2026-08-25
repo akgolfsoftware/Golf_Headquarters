@@ -1,8 +1,11 @@
 # AK MASTER — Claude-operativsystem for Anders Kristiansen
 *Komplett oppsett for Claude Code, Claude Cowork og generell Claude-bruk. Primærprosjekt: `akgolfsoftware/Golf_Headquarters`.*
-*Dette dokumentet er MASTER. Ved konflikt med eldre dokumenter vinner dette.*
-*Sist oppdatert: 06.08.2026*
-**Første mål:** rydde og fikse AK Golf HQ-prosjektet og implementere design fra Claude Design («AK Golf HQ — Claude Paper») inn i koden. Alt annet i dette dokumentet støtter det målet.
+*Dette dokumentet er MASTER for arbeidsmåte/oppsett. **UNNTAK design (rettet 25.08.2026):**
+for alt design/look vinner Train-lock-beslutningen (Anders 25.08.2026 — Train-lock er fasit
+for ALLE skjermer i PlayerHQ og AgencyOS) + `docs/natt/` over dette dokumentet. Alle
+Paper-referanser under er historikk.*
+*Sist oppdatert: 25.08.2026 (design-unntak); innhold ellers fra 06.08.2026*
+**Første mål:** lansere AK Golf HQ per `docs/natt/LAUNCH-PLAN-FULL-2026-08-25.md` — Workbench/økt-sporet ferdig, design portert til Train-lock. (Tidligere mål «implementere Claude Paper» er supersedert 25.08.2026.)
 **Grunnregel for all Claude-bruk:** Claude spør Anders KUN om hva som skal lages (funksjoner, innhold, tekst i produktet). Aldri om innstillinger, konfigurasjon, modellvalg, tekniske valg eller kompliserte spørsmål — der bestemmer Claude selv, flagger bekymringer i rapporten, og kjører. Unntak: nummerert plan ved store byggeoppgaver skal fortsatt godkjennes før bygging starter (det er en scope-sjekk, ikke et innstillingsspørsmål).
 ---
 ## 0. Forutsetning før du starter

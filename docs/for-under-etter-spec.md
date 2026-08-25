@@ -7,7 +7,9 @@ Status: utkast til godkjenning · 2026-07-31 · gren `feature/for-under-etter-sp
 > null verdi», ingen videre Paper-migrering før piloten — er **forkastet**. Anders overstyrte
 > den 03.08: **Claude Paper vinner alltid** (Claude Design `605a48cc`), full port kjører nå,
 > og Poppins/Lora/IBM Plex Mono er fasit-fontene. Flyt- og innholdsdelen av spesifikasjonen
-> (§3 og utover) står uendret. Gjeldende designregel: `.claude/rules/beslutninger.md` §Tema/design.
+> (§3 og utover) står uendret. **NB: også dette banneret (03.08) er overkjørt — 25.08.2026 ble
+> Train-lock designfasit for alle PlayerHQ/AgencyOS-skjermer; «Claude Paper vinner alltid» er
+> historikk.** Gjeldende designregel: `.claude/rules/beslutninger.md` (øverste beslutning).
 
 Alt i dette dokumentet er verifisert mot kodebasen 2026-07-31. Der briefen og koden
 sier forskjellige ting, står koden. Avvikene er listet i §1.

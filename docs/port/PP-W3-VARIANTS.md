@@ -1,5 +1,8 @@
 # W3 Meg/Booking/Talent/Coach — variant tracking (overnight)
 
+> **SUPERSEDERT 25.08.2026:** Paper-porten er stanset — Train-lock er fasit for alle
+> PlayerHQ/AgencyOS-skjermer. Åpne [ ]-rader under er historikk, ikke gjenstående jobb.
+
 Status: **PP-6 natt 11.–12.08** — coach-hub bygget om + booking-avbestilling koblet på.
 Alle rader: m390/d1280 sign-off = Anders (utestående — skjermbilde-gaten er ikke tettet av
 denne økten, kun kode + kort variant-sjekk tittel/tom/primær-handling).

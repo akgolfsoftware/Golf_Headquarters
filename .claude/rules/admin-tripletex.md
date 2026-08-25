@@ -3,13 +3,13 @@
 Domene: Anders som daglig leder i AK Golf Group AS — regnskap, lønn, budsjett
 og økonomisk optimering. Regnskapssystem: **Tripletex**.
 
-## Status for integrasjon (2026-07-19)
-Ingen Tripletex-integrasjon finnes i repoet ennå. Planen er REST-API-integrasjon
-(`src/lib/tripletex/` + agent i `src/lib/agents/`) med les-tilgang for rapporter
-og varsler. INNTIL DEN FINNES: alle tall verifiseres av Anders manuelt i
-Tripletex — agenten forbereder sjekklister og analyser av eksporterte rapporter,
-og logger aldri inn i Tripletex selv (verken direkte eller via tredjepartsagenter)
-— innlogging i regnskapssystemet er forbeholdt Anders.
+## Status for integrasjon (oppdatert 2026-08-25)
+Tripletex-integrasjonen FINNES nå i repoet: `src/lib/tripletex/` (client.ts, env.ts, med
+tester) + to agenter i `src/lib/agents/` (tripletex-lonn-agent, tripletex-maanedsavslutning-agent,
+begge med tester). Admin-flate: `/admin/agencyos/okonomi` (gamle `/admin/finance` redirecter dit).
+Prinsippene under gjelder uendret: les-tilgang for rapporter og varsler; alle tall verifiseres
+av Anders; agenten logger aldri inn i Tripletex selv (verken direkte eller via
+tredjepartsagenter) — innlogging i regnskapssystemet er forbeholdt Anders.
 
 ## Faste rytmer
 - **Lønn den 5. hver måned:** den 3. genereres sjekkliste til Anders (Telegram +
