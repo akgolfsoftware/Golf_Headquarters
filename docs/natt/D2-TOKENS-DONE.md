@@ -2,16 +2,25 @@
 
 > **OPPDATERT 25.08.2026 (Anders i økt) — fire av de ti spørsmålene er lukket.**
 >
+> ⚠ Punkt 1 og 2 under ble OVERSTYRT senere samme dag, i en egen økt. Teksten står
+> med gjennomstreking + hva som gjelder nå, slik at ingen agent følger den utgåtte
+> varianten. Punkt 3 (skinne 64 vs 232) er IKKE vurdert her — PR #590 er merget med
+> rail 232, så de to påstandene spriker. Må avklares før bølge T deler opp porten.
+>
 > D2 ble bygget uten `docs/natt/D2-UNDERLAG-2026-08-25.md` §5, der Anders allerede hadde
 > avgjort tolv punkter. Følgende gjelder nå:
 >
-> 1. **Mørk som default (spm. 1): JA — men snus sammen med første portede skjerm**, ikke
->    før. Temaet gjelder hele dokumentet, så et tidlig bytte ville gjort 200+ uportede
->    skjermer mørke før de er tegnet for det. `layout.tsx` §`onsketMorkTema` endres i
->    samme leveranse som de første ekte Train-lock-skjermene.
-> 2. **Font (spm. 2): SF Pro i produktet (PlayerHQ + AgencyOS), Poppins beholdes på
->    markedssidene.** Landingssidene har egen godkjent fasit (`ak-golf-website`).
->    Systemstacken lastes ikke ned — raskere, og hjemme på iOS.
+> 1. ~~**Mørk som default (spm. 1): JA — men snus sammen med første portede skjerm.**~~
+>    **OVERSTYRT SENERE SAMME DAG (Anders i økt): snudd NÅ, ikke ventet på første
+>    portede skjerm.** Levert i PR #587 — `src/lib/v2/tema-default.ts` (delt regel) +
+>    `layout.tsx` (SSR) + `V2Shell` (rute-veksling). Innvendingen over står likevel som
+>    en advarsel: de uportede Paper-skjermene i `/portal` og `/admin` vises nå i sin
+>    mørke Paper-variant, og er ikke kjørt gjennom skjermbilde-gaten i mørk.
+> 2. ~~**Font (spm. 2): SF Pro i produktet, Poppins på markedssidene.**~~
+>    **OVERSTYRT SENERE SAMME DAG (Anders i økt): «behold Poppins».** Poppins / Lora /
+>    IBM Plex Mono er appens eneste fonter — også i produktet. Fra Train-lock arves
+>    skala, vekter og tracking, ikke familien. `--tl-font-sans` peker på
+>    `var(--font-poppins)`, `--tl-font-mono` på `var(--font-ibm-plex-mono)`.
 > 3. **Agency-skinne 64 vs 232 (spm. 9): LUKKET — fast 64 px.** Ingen kollapset variant
 >    bygges. HANDOFF-en er utdatert på dette punktet.
 > 4. **Warn-token (manglet helt):** `#FFD60A` er nå navngitt som `--tl-warn` +
@@ -129,11 +138,15 @@ node scripts/check-token-gap.mjs → grønn
    defaulten som er snudd, ikke mekanismen. Låst av
    `src/lib/__tests__/tema-default.test.ts`.
 
-2. **Font.** Fasiten skriver «SF Pro Display/Text» og bruker system-stacken
-   (`-apple-system, …`). Repoets stack er Poppins/Lora/IBM Plex Mono (CLAUDE.md
-   §Stack). `--tl-font-sans` bærer fasitens stack, men ingenting leser den ennå.
-   **Skal Train-lock-skjermene bytte til systemfonten, eller beholder vi Poppins?**
-   Dette er den eneste harde konflikten mellom fasiten og repoets låste stack.
+2. ~~**Font.**~~ **BESVART 25.08.2026 (Anders, i økt): POPPINS BEHOLDES.** Fasitens
+   «SF Pro Display/Text» tas ikke i bruk — Poppins / Lora / IBM Plex Mono er appens
+   eneste fonter, også i produktet (CLAUDE.md §Stack står uendret). Fra Train-lock
+   arves **skala, vekter og tracking** (34/700 · 26/700 · 16/700 · 15/600 · 13/400 ·
+   11/600 caps 0.08em), ikke familien. `--tl-font-sans` peker nå på
+   `var(--font-poppins)` og `--tl-font-mono` på `var(--font-ibm-plex-mono)`, med
+   samme fallback-kjeder som `--font-sans`/`--font-mono` i `globals.css`. Ikke
+   gjeninnfør en fjerde font. Dette var den eneste harde konflikten mellom fasiten
+   og den låste stacken — den er lukket.
 
 3. **Fokus-tilstand finnes ikke i fasiten.** Null `:focus`, `outline` eller
    fokusring i noen av de 177 designfilene — designet er tegnet touch-først. Vi trenger en

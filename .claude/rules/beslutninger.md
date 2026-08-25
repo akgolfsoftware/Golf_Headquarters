@@ -26,6 +26,15 @@ Gjelder til Anders endrer dem.
   16.08), `/forelder` er LYS inntil forelder-portalens designomfang er avklart (T4),
   landingssidene alltid lyse, resten mørk som før. Bryteren (`ak-v2-tema`) vinner over
   defaulten begge veier. Låst av `src/lib/__tests__/tema-default.test.ts`.
+- **FONT: POPPINS BEHOLDES — OGSÅ I PRODUKTET (Anders 2026-08-25, i økt):** Train-lock-
+  fasiten skriver «SF Pro Display/Text» og bruker system-stacken, men repoets stack
+  består: **Poppins / Lora / IBM Plex Mono** er appens eneste fonter. Fra Train-lock
+  arves skala, vekter og tracking (34/700 · 26/700 · 16/700 · 15/600 · 13/400 · 11/600
+  caps 0.08em) — ikke familien. `--tl-font-sans` → `var(--font-poppins)`,
+  `--tl-font-mono` → `var(--font-ibm-plex-mono)`. Dette var den eneste harde konflikten
+  mellom fasiten og den låste stacken (åpent spørsmål 2 i `docs/natt/D2-TOKENS-DONE.md`),
+  og den er nå lukket. **Gjeninnfør aldri en fjerde font**, og bytt ikke Train-lock-
+  skjermene til systemfonten uten ny beslutning fra Anders.
 - **KOMPLETT TRAIN-LOCK — ALLE SKJERMER I PLAYERHQ OG AGENCYOS (Anders 2026-08-25, i økt):**
   Train-lock er eneste designfasit for hele produktet — både PlayerHQ og AgencyOS, alle
   skjermer. Claude Paper (`605a48cc` / `designsystem/paper/`) er HISTORIKK/arkiv, aldri
