@@ -4,6 +4,14 @@
 
    Designport steg 4 (docs/port/plan-designport-alle-skjermer.md).
 
+   ⚠ UTGÅENDE (2026-08-25). Train-lock er eneste designfasit for alle
+   PlayerHQ- og AgencyOS-skjermer (CLAUDE.md invariant 2) — Paper er
+   historikk/arkiv, aldri bygg-fasit. Verdiene under er BEVISST urørt: de
+   maler fortsatt alle skjermer som ikke er portet, og en verdiendring her
+   ville flyttet piksler uten en skjerm-PR bak seg. Ny kode bruker --tl-*
+   (src/styles/train-lock-tokens.css) / TL (src/lib/v2/train-lock.ts).
+   Denne fila slettes når siste skjerm er portet til Train-lock.
+
    TO BEVISSTE AVVIK FRA KILDEN — begge nødvendige, ingen verdiendring:
 
    1. ALLE navn har prefikset `--p-`. Paper bruker generiske navn

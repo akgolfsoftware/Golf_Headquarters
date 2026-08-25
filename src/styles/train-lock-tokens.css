@@ -1,0 +1,228 @@
+/* ─────────────────────────────────────────────────────────────────────────
+   AK Golf HQ · TRAIN-LOCK-TOKENS — PRODUKSJONSSPEIL (D2, 25.08.2026)
+
+   FASIT (verdiene er hentet herfra, aldri fra hukommelse):
+   · designsystem/train-lock/HANDOFF.md          — kontrakten (PIXEL/MAL)
+   · designsystem/train-lock/TRAIN LOCK.dc.html  — §01 farge · §02 type ·
+     §03 geometri/press/motion · §04 komponenter · §05 lys variant
+   · designsystem/train-lock/TRAIN VIZ.dc.html    — viz-lås V1–V9 (mørk)
+   · designsystem/train-lock/AG-00 LOCK.dc.html  — AgencyOS: samme tokens
+   · designsystem/train-lock/AX-01 Skall rail og tabbar.dc.html — skall/rail
+
+   Train-lock er designfasit for ALLE skjermer i PlayerHQ OG AgencyOS
+   (CLAUDE.md invariant 2, Anders 25.08.2026). AG-00 dokumenterer at
+   AgencyOS arver PlayerHQ-tokenene 1:1 — derfor ETT sett, ikke to.
+
+   TRE BEVISSTE AVVIK FRA FASITEN — ingen verdiendring:
+
+   1. ALLE navn har prefikset `--tl-`. Uten prefiks ville fila kollidert med
+      --p-* (Paper), --v2-* og golfdata-settet. Prefikset er det som gjør at
+      Train-lock kan ligge ved siden av Paper mens skjermene portes én for én.
+
+   2. Fasiten sier «mørk er default». Appen har ÉN tema-mekanisme:
+      `html[data-v2-tema="dark"]`, ellers lys (.claude/rules/gotchas.md).
+      Å snu default-en per rute er en SKJERM-beslutning, ikke en token-
+      beslutning — se docs/natt/D2-TOKENS-DONE.md §Åpne spørsmål. Derfor:
+      lys på :root, mørk under data-v2-tema="dark", nøyaktig som
+      paper-tokens.css. Ingen ny tema-mekanisme innføres.
+
+   3. Denne fila importeres, men INGEN komponent leser den ennå. Den endrer
+      null piksler før en skjerm tar --tl-* i bruk (D3 og senere).
+
+   REGEL FOR DENNE FILA (samme som paper-tokens.css): kun variabel-
+   deklarasjoner. Ingen selektorregler som setter color/background/border,
+   ingen @layer — blandes tokens og komponentregler i en ulaget fil, slår
+   den ut alle Tailwind-border-utilities.
+
+   TS-speil: src/lib/v2/train-lock.ts (TL). Les derfra i TS/TSX.
+   ───────────────────────────────────────────────────────────────────────── */
+
+/* ─── LYS variant (TRAIN LOCK.dc.html §05 — «inverterte flater, samme
+       geometri»). Geometri, type og motion er felles og står kun her. ─── */
+:root {
+  /* ── Farge · flater ── */
+  --tl-scene: #FFFFFF;              /* app-bakgrunn */
+  --tl-elev: #F2F2F2;               /* kort, ark */
+  --tl-dock: #E9E9EB;               /* dock, tab bar, composer-felt, rail, felt */
+  --tl-hair: #00000014;             /* delelinjer, kanter */
+  --tl-dim: #DDDDDE;                /* tom prikk, spor, skjelett */
+
+  /* ── Farge · tekst ── */
+  --tl-text: #111111;               /* primærtekst, fylt prikk */
+  --tl-mute: #6E6E73;               /* sekundærtekst, inaktive faner, caps-etikett */
+
+  /* ── Farge · handling (én primær per skjerm) ── */
+  --tl-fill: #000000;               /* primær CTA, aktiv fane, mic — sort pille på lys */
+  --tl-on-fill: #FFFFFF;
+  /* Lenke-/teksthover: fasitens `a:hover { color: #000000 }` i lys-passet */
+  --tl-text-hover: #000000;
+
+  /* ── Farge · identitet ── */
+  --tl-avatar: #B08968;             /* ØR-sirkelen — uendret i begge varianter */
+  --tl-on-avatar: #201409;
+  /* Warm: logo-prikk + fullført-hake/ring. ALDRI grønn for fullført.
+     (HANDOFF §MAT + §A-01d, AX-01. Lys-variant er ikke tegnet i fasiten —
+     antatt uendret, samme som Paper --p-logo-dot. Se D2-TOKENS-DONE.) */
+  --tl-warm: #B85C3D;
+
+  /* ── Farge · signal (SMAL BRUK — se kommentar) ── */
+  --tl-danger: #FF3B30;             /* BARE feiltilstander */
+  --tl-ok: #34C759;                 /* BARE «godkjent av coach» / Godta / PUBLISERT */
+
+  /* ── Farge · utkast ──
+     DRAFT = hairline-kant, ikke fyll (A-01d). Lys: #0000003D. */
+  --tl-draft-border: #0000003D;
+
+  /* ── Farge · ark ── */
+  --tl-grabber: #C7C7CC;            /* 36×4 pille i ark-toppen (lys-passet) */
+
+  /* ─────────────────────────────────────────────────────────────────────
+     GEOMETRI (TRAIN LOCK §03 + HANDOFF §Geometri) — felles for lys og mørk
+     ───────────────────────────────────────────────────────────────────── */
+  --tl-r-card: 20px;                /* kort, ark, artefakt-panel */
+  --tl-r-pill: 999px;               /* pille, dock, CTA */
+  --tl-r-row: 12px;                 /* skinne-rad, rail-kvadrat, tette rutenettsrader */
+  --tl-r-field: 16px;               /* felt */
+  --tl-r-sheet: 20px 20px 0 0;      /* økt-ark: rundet topp, flat bunn */
+
+  /* Loft (avstandsskala) — fasiten har fire trinn, ingen 4px-base */
+  --tl-loft-1: 8px;
+  --tl-loft-2: 12px;
+  --tl-loft-3: 16px;
+  --tl-loft-4: 20px;
+
+  /* Treffmål */
+  --tl-tap: 44px;                   /* min hit */
+  --tl-tap-cta: 48px;               /* CTA-høyde, aktiv dock-pille, composer-felt */
+  --tl-tap-capture: 60px;           /* mic på live-skjerm */
+
+  /* Dock / rail / paneler (HANDOFF §Komponenter + §Meny per enhet) */
+  --tl-dock-h: 64px;                /* flytende pille */
+  --tl-dock-w: 358px;               /* compact */
+  --tl-dock-pad: 8px 10px;
+  --tl-dock-lift: 12px;             /* over home indicator */
+  --tl-rail-mac: 64px;              /* AgencyOS Mac-rail (7 ikon 44) */
+  --tl-rail-player-mac: 72px;       /* PlayerHQ Mac-rail (4 ikon 44) */
+  --tl-skinne-ipad: 250px;          /* PlayerHQ iPad regular */
+  --tl-artefakt: 380px;             /* artefakt-panel høyre */
+  --tl-kilder: 220px;               /* Workbench kilder-kolonne (iPad 240) */
+
+  /* ─────────────────────────────────────────────────────────────────────
+     TYPE (TRAIN LOCK §02) — SF Pro Display/Text, tabular-nums på alle tall.
+     KONFLIKT med repoets Poppins/Lora — se D2-TOKENS-DONE §Åpne spørsmål.
+     ───────────────────────────────────────────────────────────────────── */
+  --tl-font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Display",
+    "SF Pro Text", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --tl-font-mono: "SF Mono", ui-monospace, Menlo, monospace;
+
+  --tl-text-title: 34px;            /* 700 · letter-spacing -0.02em */
+  --tl-text-card: 26px;             /* 700 · letter-spacing -0.01em */
+  --tl-text-cta: 16px;              /* 700 */
+  --tl-text-body: 15px;             /* 600 */
+  --tl-text-meta: 13px;             /* 400 · mute */
+  --tl-text-caps: 11px;             /* 600 · tracking 0.08em · mute · versaler */
+  --tl-text-caps-sm: 9px;           /* 600 · tracking 0.06em · inaktiv dock-etikett */
+  --tl-text-num-min: 56px;          /* store tall 56–104 / 700, aldri mono */
+  --tl-text-num-max: 104px;
+
+  --tl-track-title: -0.02em;
+  --tl-track-card: -0.01em;
+  --tl-track-caps: 0.08em;
+  --tl-track-caps-sm: 0.06em;
+
+  /* Dynamic Type XL (HANDOFF §Type, PH-01): tekst bryter, klippes aldri */
+  --tl-text-title-xl: 40px;
+  --tl-text-card-xl: 31px;
+  --tl-text-cta-xl: 19px;
+  --tl-text-body-xl: 18px;
+  --tl-text-meta-xl: 16px;
+  --tl-text-caps-xl: 13px;
+
+  /* ─────────────────────────────────────────────────────────────────────
+     MOTION (TRAIN LOCK §03) — kun transform + opacity, aldri left/top
+     ───────────────────────────────────────────────────────────────────── */
+  --tl-ease: cubic-bezier(0.32, 0.72, 0, 1);
+  --tl-dur-press: 180ms;            /* scale 0.97 */
+  --tl-dur-reduced: 180ms;          /* prefers-reduced-motion: kryss-fade */
+  --tl-dur-dock: 380ms;             /* aktiv fane: scale 0.9 → 1.05 → 1 */
+  --tl-dur-sheet: 440ms;            /* ark inn fra bunn */
+  --tl-dur-card: 520ms;             /* kort inn: translateY(18) + opacity */
+  --tl-stagger-card: 70ms;
+  --tl-press-scale: 0.97;
+  --tl-card-in-y: 18px;
+  --tl-scrim: rgba(0, 0, 0, 0.55);  /* under ark — samme i begge varianter */
+
+  /* ─────────────────────────────────────────────────────────────────────
+     TILSTANDER — fasiten uttrykker tilstand som OPASITET, aldri som farge
+     (HANDOFF §Viz-regel, §Beslutninger, §7 komponenter)
+     ───────────────────────────────────────────────────────────────────── */
+  --tl-op-negativ: 0.4;             /* negativ SG: søyle/prikk, fortegn i tallet */
+  --tl-op-outlier: 0.45;            /* outlier-prikk · negativt tall i stall-rad */
+  --tl-op-muted: 0.5;               /* muted agenda-rad · opptatt tidscelle */
+  --tl-op-sekundaer: 0.55;          /* kø-kort etter det første · ledige plasser */
+
+  /* ─────────────────────────────────────────────────────────────────────
+     VIZ (HANDOFF §LANSERINGSKJERNE 24.08 + §TRACKMAN + §HULLKART)
+     De fire signalfargene brukes KUN i dispersion-bøtter, mållinje og
+     publisert-merke — aldri som generell fargekoding.
+     ───────────────────────────────────────────────────────────────────── */
+  --tl-viz-target: #0A84FF;         /* mållinje · target-kant på coach-forslag */
+  --tl-viz-good: #30D158;           /* 68 %-bøtte · PUBLISERT-merke */
+  --tl-viz-acceptable: #FFD60A;     /* 27 %-bøtte */
+  --tl-viz-disaster: #FF453A;       /* 5 %-bøtte · feil-caps */
+  --tl-viz-dot: #B08968;            /* slag-prikk — aldri kølle-farge, aldri heat */
+
+  /* Ellipse (1σ): 1 px hair-kant + svakt fyll rundt P10–P90.
+     ⚠ IKKE I FASITEN FOR LYS. Fasiten (TM-08f, TRAIN VIZ) tegner ellipsen
+     kun i mørk (#FFFFFF29 / #FFFFFF08). Verdiene under er speilet over på
+     sort med samme alfa — plassholder til lys-passet er tegnet.
+     Se docs/natt/D2-TOKENS-DONE.md §Åpne spørsmål. */
+  --tl-viz-ellipse-line: #00000029;
+  --tl-viz-ellipse-fill: #00000008;
+
+  /* Hullkart-flater (TM · 24.08) — stilisert, aldri satellitt/3D/grønt.
+     ⚠ Fasiten tegner hullkartet KUN i mørk. Verdiene står uendret i begge
+     varianter (kartet er en mørk artefakt-flate) til lys-passet finnes —
+     se docs/natt/D2-TOKENS-DONE.md §Åpne spørsmål. */
+  --tl-course-base: #111111;
+  --tl-course-rough: #141414;
+  --tl-course-fairway: #1A1A1A;
+  --tl-course-green: #202020;
+  --tl-course-fringe: #171717;
+  --tl-course-bunker: #2A2A2A;
+  --tl-course-tee: #2C2C2E;
+
+  color-scheme: light;
+}
+
+/* ─── MØRK variant — fasitens default (TRAIN LOCK §01, AG-00 LOCK).
+       Kun farge snus. Geometri, type og motion er felles og står i :root. ─── */
+html[data-v2-tema="dark"] {
+  --tl-scene: #000000;              /* true black */
+  --tl-elev: #161616;
+  --tl-dock: #1C1C1E;
+  --tl-hair: #FFFFFF14;
+  --tl-dim: #2C2C2E;
+
+  --tl-text: #F5F5F5;
+  --tl-mute: #8E8E93;
+
+  --tl-fill: #FFFFFF;
+  --tl-on-fill: #000000;
+  --tl-text-hover: #FFFFFF;         /* fasitens `a:hover { color: #FFFFFF }` */
+
+  --tl-avatar: #B08968;
+  --tl-on-avatar: #201409;
+  --tl-warm: #B85C3D;
+
+  --tl-danger: #FF453A;
+  --tl-ok: #30D158;
+
+  --tl-draft-border: #FFFFFF3D;
+  --tl-grabber: #3A3A3C;
+
+  --tl-viz-ellipse-line: #FFFFFF29;
+  --tl-viz-ellipse-fill: #FFFFFF08;
+
+  color-scheme: dark;
+}
