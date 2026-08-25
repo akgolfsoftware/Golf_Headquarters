@@ -5959,3 +5959,68 @@ model JarvisInnstilling {
 
   @@map("jarvis_innstillinger")
 }
+
+// ─── Workbench-kjerne (natt-plan 25.08.2026, Loop 1) ────────────────────────
+// Isolerte tabeller for den nye Workbench-kjernen. Ingen @relation mot User
+// eller Group — plain FK-strenger, jf. gotchas §Schema-endringer: holder
+// endringen additiv og kirurgisk. DDL kjøres med
+// scripts/add-workbench-sessions-2026-08-25.ts, ALDRI prisma migrate.
+model WorkbenchSession {
+  id                   String    @id @default(cuid())
+  playerId             String
+  coachId              String
+  groupId              String?
+  sourceGroupSessionId String?
+  // Lokal dato (uke utledes) + minutter fra midnatt. Naiv veggklokke, jf.
+  // gotcha om dato-strenger: alltid UTC-midnatt ved parsing.
+  date                 DateTime  @db.Date
+  startMinute          Int
+  durationMinutes      Int
+  title                String
+  pyramid              String
+  // DRAFT | SCHEDULED | PUBLISHED | IN_PROGRESS | COMPLETED | CANCELLED | SKIPPED
+  // Lagres som tekst for å slippe å utvide et delt enum i prod.
+  status               String    @default("DRAFT")
+  blockType            String    @default("OEKT")
+  environment          String?
+  practiceType         String?
+  location             String?
+  notes                String?
+  origin               String    @default("COACH")
+  needsPlayerApproval  Boolean   @default(false)
+  approvalStatus       String?
+  localOverride        Boolean   @default(false)
+  publishedAt          DateTime?
+  publishedBy          String?
+  isAgentProposal      Boolean   @default(false)
+  planActionId         String?
+  createdBy            String
+  createdAt            DateTime  @default(now())
+  updatedAt            DateTime  @updatedAt
+
+  drills WorkbenchDrill[]
+
+  @@index([playerId, date])
+  @@index([coachId, date])
+  @@index([groupId])
+  @@index([status])
+  @@map("workbench_sessions")
+}
+
+model WorkbenchDrill {
+  id              String  @id @default(cuid())
+  sessionId       String
+  title           String
+  description     String?
+  durationMinutes Int
+  // AKFormel som JSON — zod-valideres ved lesing (aldri as unknown as T).
+  akFormel        Json
+  techniqueFocus  String?
+  sourceId        String?
+  sortOrder       Int
+
+  session WorkbenchSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+
+  @@index([sessionId, sortOrder])
+  @@map("workbench_drills")
+}
