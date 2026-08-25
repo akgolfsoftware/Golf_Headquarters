@@ -107,6 +107,13 @@ export const UI = {
   playerNoSessions: "Ingen planlagte økter i dag",
   playerNextSession: "Neste økt",
   startSession: "Start økt",
+  completeSession: "Fullfør økt",
+  skipSession: "Hopp over",
+  sessionNotFoundTitle: "Fant ikke økten",
+  sessionNotFoundBody: "Den finnes ikke, eller er ikke delt med deg ennå.",
+  sessionCompletedTitle: "Økt fullført",
+  sessionSkippedTitle: "Hoppet over",
+  backToToday: "Tilbake til I dag",
 } as const;
 
 export function formatMinutes(m: number): string {

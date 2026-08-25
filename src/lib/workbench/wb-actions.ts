@@ -258,6 +258,30 @@ export async function loadPlayerDay(params: {
   return { ok: true, data: { date: dato.data, sessions, nextSessionId: neste } };
 }
 
+/**
+ * Spillerens eget økt-ark. I motsetning til `loadSession` (coach-siden)
+ * filtrerer denne PÅ STATUS i tillegg til eierskap — DRAFT er aldri synlig
+ * for spilleren, selv om spilleren selv eier raden (invariant 3, CLAUDE.md).
+ * Kun spilleren selv (ikke coach) bruker denne — coach har inspektøren.
+ */
+export async function loadPlayerSession(
+  sessionId: string,
+): Promise<WbResultat<WorkbenchSession | null>> {
+  const user = await requirePortalUser({ allow: ["PLAYER"] });
+
+  const row = await prisma.workbenchSession.findUnique({
+    where: { id: sessionId },
+    include: { drills: true },
+  });
+  if (!row || row.playerId !== user.id) return { ok: true, data: null };
+
+  const session = mapSession(row);
+  const synligStatuser: readonly string[] = SPILLER_SYNLIGE_STATUSER;
+  if (!synligStatuser.includes(session.status)) return { ok: true, data: null };
+
+  return { ok: true, data: session };
+}
+
 // ─── Skriving ───────────────────────────────────────────────────────────────
 
 async function lagreOgHent(
