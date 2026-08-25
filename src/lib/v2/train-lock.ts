@@ -52,6 +52,10 @@ export const TL = {
   onAvatar: "var(--tl-on-avatar)",
   /** Logo-prikk + fullført-hake/ring. Fullført er ALDRI grønn. */
   warm: "var(--tl-warm)",
+  /** Varsel som IKKE sperrer (publiser med advarsel, «mangler drill»). Aldri generell fargekoding. */
+  warn: "var(--tl-warn)",
+  /** Kant på warn-pille: `inset 0 0 0 1px TL.warnHair`. */
+  warnHair: "var(--tl-warn-hair)",
 
   // ── Signal (smal bruk — se filhodet) ──
   danger: "var(--tl-danger)",

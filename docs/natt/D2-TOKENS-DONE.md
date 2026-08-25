@@ -1,5 +1,27 @@
 # D2 — Train-lock-tokens utledet til kode
 
+> **OPPDATERT 25.08.2026 (Anders i økt) — fire av de ti spørsmålene er lukket.**
+>
+> D2 ble bygget uten `docs/natt/D2-UNDERLAG-2026-08-25.md` §5, der Anders allerede hadde
+> avgjort tolv punkter. Følgende gjelder nå:
+>
+> 1. **Mørk som default (spm. 1): JA — men snus sammen med første portede skjerm**, ikke
+>    før. Temaet gjelder hele dokumentet, så et tidlig bytte ville gjort 200+ uportede
+>    skjermer mørke før de er tegnet for det. `layout.tsx` §`onsketMorkTema` endres i
+>    samme leveranse som de første ekte Train-lock-skjermene.
+> 2. **Font (spm. 2): SF Pro i produktet (PlayerHQ + AgencyOS), Poppins beholdes på
+>    markedssidene.** Landingssidene har egen godkjent fasit (`ak-golf-website`).
+>    Systemstacken lastes ikke ned — raskere, og hjemme på iOS.
+> 3. **Agency-skinne 64 vs 232 (spm. 9): LUKKET — fast 64 px.** Ingen kollapset variant
+>    bygges. HANDOFF-en er utdatert på dette punktet.
+> 4. **Warn-token (manglet helt):** `#FFD60A` er nå navngitt som `--tl-warn` +
+>    `--tl-warn-hair`, per Anders' beslutning om at både varm og gul skulle inn i
+>    tabellen. Den lå kun som `--tl-viz-acceptable`, som er en annen rolle.
+>
+> Spørsmål 3, 4, 5, 6, 7, 8 og 10 (fokus, hover, disabled, lys-variant for warm,
+> elevasjon, z-index, store tall) står fortsatt åpne — de er **ikke blokkerende** for
+> skjermport og tas når de blir aktuelle.
+
 **Dato:** 25.08.2026 · **Gren:** `claude/train-lock-tokens-bpezan` · **Omfang:** ÉN rad. Ingen skjermport.
 
 Lukker den åpne forutsetningen i CLAUDE.md invariant 2 og `beslutninger.md`

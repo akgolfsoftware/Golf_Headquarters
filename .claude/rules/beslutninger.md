@@ -45,7 +45,11 @@ Gjelder til Anders endrer dem.
   `PYRAMIDE_OMRADE_MOTORIKK_BELASTNING_PRESS` med motorikk UTEN_BALL/LAV_HAST/AUTO og press
   ALENE/OBSERVERT/KONKURRANSE/TURNERING.
 - **Beslutningsgaten PP-A besvart (Anders 2026-08-16, i økt — låser pixel-portens systemfikser):**
-  - **A1 · Admin-rail = FASE2-railen.** Fase2-fasitenes rail (7 punkter, Cockpit/Stall/Plan…,
+  - **A1 · Admin-rail = FASE2-railen.** ⚠ **DELVIS OVERSTYRT 25.08.2026:** punkt 5 heter
+    **«Workbench»**, ikke «Plan» (Anders i økt, jf. `docs/natt/D2-UNDERLAG-2026-08-25.md` §5).
+    Rekkefølgen ellers står: Cockpit · Innboks · Kalender · Stall · **Workbench** · Innsikt · Oppsett.
+    Railen er dessuten **fast 64 px** — ingen kollapset variant bygges. Resten av A1 gjelder.
+    Opprinnelig tekst: Fase2-fasitenes rail (7 punkter, Cockpit/Stall/Plan…,
     fasitens casing) vinner over fase1-railen/dagens kode. Implementeres én gang i `V2Shell`
     (PP-B1) — alle admin-flater arver. Fase1-fasitenes rail-avvik er dermed avgjort, ikke en
     konflikt: admin-skjermer måles heretter mot fase2-skallet.
