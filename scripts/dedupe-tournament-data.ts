@@ -123,21 +123,44 @@ async function dedupePlayers() {
 
 async function dedupeTournaments() {
   const ts = await prisma.tournament.findMany({
-    where: { mergedIntoId: null },
+    where: { mergedIntoId: null, sourceId: { not: null } },
     select: {
       id: true,
       name: true,
       sourceOrigin: true,
+      sourceId: true,
+      tour: true,
       startDate: true,
       _count: { select: { publicEntries: true, results: true, entries: true } },
     },
   });
 
-  const norm = (s: string) => s.toLowerCase().replace(/[^a-z0-9]/g, "").slice(0, 40);
+  // Gruppering krever samme sourceId (+ tour + år), ikke navn+år. Navn+år var
+  // for grovt: bekreftet 25.08.2026 at det slo sammen WAGR sine kjønnsdelte
+  // startfelt (42 par, disjunkte spillerlister) OG urelaterte DataGolf-/
+  // klubbturneringer som bare tilfeldigvis deler navn og kalenderår
+  // ("PGA Championship" mai vs. november samme år, "Riyadh"/"Korea"/
+  // "Singapore" fra ulike tourer, Haugesund GK to helt separate klubbdager)
+  // — null av 27 grupper var reelle dubletter.
+  // NGF lagrer kildens egen id med et opprinnelsesprefiks (f.eks.
+  // "srixon-5329343" der SRIXON-raden selv har sourceId "5329343") — strip
+  // prefikset før sammenligning så disse fortsatt matches.
+  // Årstall må fortsatt være med: DataGolf gjenbruker samme sourceId for
+  // samme turnerings-"slot" hvert år (id "11" = Colombia Classic i 44 ulike
+  // år) — uten årsskille grupperes hele historikken til én kjempegruppe.
+  // `tour` må også med: DataGolf sin sourceId er kun unik INNENFOR én tour —
+  // id "11" er samtidig THE PLAYERS Championship (pga), Visit Knoxville Open
+  // (kft) og Fortox Colombia Classic (champ) i 2022. Uten tour i nøkkelen
+  // slås fire helt urelaterte turneringer fra fire ulike tourer sammen.
+  // "TBD" er DataGolf sin plassholder-id for ikke-tildelte europeiske
+  // turneringer og er ingen ekte id — ekskluderes helt.
+  const normalizeSourceId = (raw: string) => raw.replace(/^[a-z]+-/, "");
   const groups = new Map<string, typeof ts>();
   for (const t of ts) {
-    if (!t.startDate) continue;
-    const k = `${norm(t.name)}-${t.startDate.getUTCFullYear()}`;
+    if (!t.sourceId || !t.startDate) continue;
+    const normalized = normalizeSourceId(t.sourceId);
+    if (normalized.toLowerCase() === "tbd") continue;
+    const k = `${t.tour ?? ""}-${normalized}-${t.startDate.getUTCFullYear()}`;
     if (!groups.has(k)) groups.set(k, []);
     groups.get(k)!.push(t);
   }
@@ -149,9 +172,25 @@ async function dedupeTournaments() {
   for (const group of groups.values()) {
     if (group.length < 2) continue;
 
-    // Mål = mest data (publicEntries + results + entries), tie → NGF-origin.
+    // Mål = mest EKTE data. Runder (faktisk spilte resultater) veier tyngst —
+    // en turnering med 80 spilte runder skal alltid vinne over en med 120 tomme
+    // påmeldinger uten resultat. Kun ved lik rundetelling avgjør resten av
+    // dataomfanget, og først til slutt (reell tie) NGF-origin.
+    // (Bug oppdaget 25.08.2026: score talte kun rå publicEntries-antall, ikke
+    // runder — en fersk scraper-kilde med ekte resultater tapte mot en tom
+    // NGF-registreringsliste med flere rader. Se docs/feillogg.md.)
+    const roundCounts = await Promise.all(
+      group.map((t) =>
+        prisma.publicPlayerRound.count({ where: { entry: { tournamentId: t.id } } }),
+      ),
+    );
+    const roundCountById = new Map(group.map((t, i) => [t.id, roundCounts[i]]));
+
     const score = (t: (typeof ts)[number]) =>
-      t._count.publicEntries * 10 + t._count.results + t._count.entries;
+      (roundCountById.get(t.id) ?? 0) * 100 +
+      t._count.results * 5 +
+      t._count.publicEntries +
+      t._count.entries;
     group.sort((a, b) => {
       const d = score(b) - score(a);
       if (d !== 0) return d;
