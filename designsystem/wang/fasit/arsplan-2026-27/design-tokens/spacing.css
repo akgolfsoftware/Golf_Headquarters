@@ -1,0 +1,58 @@
+/* ============================================================
+   WANG Treningsplattform — Spacing, radius, shadow, motion
+   8pt grid. Cards 24–28px, inputs 16px, buttons/chips 999px.
+   ============================================================ */
+:root {
+  /* Spacing — 8pt grid (+ 4px half-step) */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-7: 32px;
+  --space-8: 40px;
+  --space-9: 48px;
+  --space-10: 64px;
+
+  /* Layout */
+  --gap-cards: 16px;        /* mobile card stack gap */
+  --margin-mobile: 20px;    /* mobile side margin */
+  --sidebar-w: 260px;       /* desktop navy sidebar */
+  --touch-min: 48px;        /* minimum touch target */
+
+  /* Breakpoints — documentation tokens (CSS custom properties can't be read
+     inside @media conditions; hardcode the same px values in your @media
+     rules). Mobile-first: build the 390px layout first, then widen.
+     < 768        Mobil     — single column, FloatingNav, BottomSheet for drill-ins.
+     768–1023     Nettbrett — mobile shell widens (max ~600px centered), 2-col
+                              card grids where natural, FloatingNav stays.
+     ≥ 1024       Desktop   — navy Sidebar (260px) replaces FloatingNav; content
+                              area becomes a 2–3-col grid; Modal replaces BottomSheet.
+     ≥ 1440       Bredt     — content max-width caps (~1280px), extra margin auto. */
+  --bp-tablet: 768px;
+  --bp-desktop: 1024px;
+  --bp-wide: 1440px;
+
+  /* Radius */
+  --radius-card: 26px;      /* 24–28 cards */
+  --radius-card-sm: 20px;
+  --radius-input: 16px;     /* inputs */
+  --radius-chip: 999px;     /* buttons / chips / pills */
+  --radius-icon-chip: 14px; /* squircle icon chips */
+
+  /* Shadows — soft, diffuse, navy-tinted. Never hard. */
+  --shadow-card: 0 8px 24px rgba(23,68,111,0.08);
+  --shadow-card-sm: 0 4px 14px rgba(23,68,111,0.06);
+  --shadow-hero: 0 18px 40px rgba(15,23,42,0.22);
+  --shadow-float: 0 12px 32px rgba(15,42,68,0.18);  /* floating nav */
+  --shadow-press: 0 2px 8px rgba(23,68,111,0.10);
+
+  /* Motion */
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);     /* @kind other */
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1); /* @kind other */
+  --dur-fast: 140ms; /* @kind other */
+  --dur: 220ms;      /* @kind other */
+  --dur-slow: 420ms; /* @kind other */
+  --press-scale: 0.97; /* @kind other */
+}

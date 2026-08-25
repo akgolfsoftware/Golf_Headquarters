@@ -1,0 +1,93 @@
+/* ============================================================
+   WANG Treningsplattform — motion layer
+   Shared entrance / hover / preview motion for the calendar &
+   timeline family (CalendarView, WeekPlanner, YearView,
+   TimelineFeed, DatePicker). Every transform / looping motion is
+   gated behind prefers-reduced-motion: no-preference — reduced
+   users get instant state changes, never movement or pulses.
+   Easing + durations reuse the tokens in spacing.css.
+   ============================================================ */
+
+/* Keyframes ---------------------------------------------------- */
+@keyframes wang-rise      { from { opacity: 0; transform: translateY(6px); }  to { opacity: 1; transform: none; } }
+@keyframes wang-in-right  { from { opacity: 0; transform: translateX(16px); } to { opacity: 1; transform: none; } }
+@keyframes wang-in-left   { from { opacity: 0; transform: translateX(-16px); } to { opacity: 1; transform: none; } }
+@keyframes wang-fade-in   { from { opacity: 0; } to { opacity: 1; } }
+@keyframes wang-pop-in    { from { opacity: 0; transform: translateY(6px) scale(0.96); } to { opacity: 1; transform: none; } }
+@keyframes wang-draw-y    { from { transform: scaleY(0); } to { transform: scaleY(1); } }
+@keyframes wang-pulse-ring{ 0% { box-shadow: 0 0 0 0 rgba(73,202,159,0.5); } 70% { box-shadow: 0 0 0 7px rgba(73,202,159,0); } 100% { box-shadow: 0 0 0 0 rgba(73,202,159,0); } }
+@keyframes wang-lift-in   { from { opacity: 0; transform: translateY(8px) scale(0.98); } to { opacity: 1; transform: none; } }
+
+/* Interactive cell — hover lift + press. Used on calendar day / month
+   cells and week-planner columns. Background transition stays even for
+   reduced-motion (it is a state change, not movement). */
+.wang-cell { transition: background var(--dur-fast) var(--ease-out); }
+@media (prefers-reduced-motion: no-preference) {
+  .wang-cell {
+    transition: transform var(--dur-fast) var(--ease-out),
+                background var(--dur-fast) var(--ease-out),
+                box-shadow var(--dur-fast) var(--ease-out);
+    will-change: transform;
+  }
+  .wang-cell:hover { transform: translateY(-2px); box-shadow: var(--shadow-card-sm); }
+  .wang-cell:active { transform: scale(var(--press-scale)); }
+}
+
+/* Today marker — soft mint pulse ring (gently loops) */
+@media (prefers-reduced-motion: no-preference) {
+  .wang-pulse-today { animation: wang-pulse-ring 2.6s var(--ease-out) infinite; }
+}
+
+/* Preview popover / lifted card entrance */
+@media (prefers-reduced-motion: no-preference) {
+  .wang-preview-pop { animation: wang-pop-in var(--dur) var(--ease-out) both; }
+}
+
+/* Timeline connecting line — draws downward from its node */
+.wang-draw-line { transform-origin: top center; }
+@media (prefers-reduced-motion: no-preference) {
+  .wang-draw-line { animation: wang-draw-y var(--dur) var(--ease-out) both; }
+}
+
+/* Dragged session card while a WeekPlanner drag is in progress */
+@media (prefers-reduced-motion: no-preference) {
+  .wang-dragging { transform: rotate(1.5deg) scale(1.03); box-shadow: var(--shadow-float); opacity: 0.92; }
+  .wang-drag-src  { transition: opacity var(--dur-fast) var(--ease-out), transform var(--dur-fast) var(--ease-out); }
+}
+
+/* Charts — draw-in, bar growth, heat cells. Lines need pathLength="1". */
+@keyframes wang-dash   { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
+@keyframes wang-grow-y { from { transform: scaleY(0); } to { transform: scaleY(1); } }
+@media (prefers-reduced-motion: no-preference) {
+  .wang-chart-line { stroke-dasharray: 1; stroke-dashoffset: 1; animation: wang-dash 900ms var(--ease-out) both; }
+  .wang-chart-area { animation: wang-fade-in 600ms var(--ease-out) 300ms both; }
+  .wang-chart-dot  { animation: wang-fade-in 300ms var(--ease-out) 700ms both; }
+  .wang-bar-grow   { transform-box: fill-box; transform-origin: bottom; animation: wang-grow-y 520ms var(--ease-out) both; }
+  .wang-heat-cell  { animation: wang-fade-in 400ms var(--ease-out) both; transition: transform var(--dur-fast) var(--ease-out); }
+  .wang-heat-cell:hover { transform: scale(1.18); }
+}
+
+/* Micro-interactions: check pop, flame pulse, card hover lift */
+@keyframes wang-check-pop { 0% { transform: scale(0.6); } 60% { transform: scale(1.15); } 100% { transform: scale(1); } }
+@keyframes wang-flame { 0%, 100% { transform: scale(1) rotate(0deg); } 50% { transform: scale(1.15) rotate(-4deg); } }
+@media (prefers-reduced-motion: no-preference) {
+  .wang-check-pop { animation: wang-check-pop 340ms var(--ease-spring); }
+  .wang-flame { animation: wang-flame 1.8s var(--ease-out) infinite; transform-origin: 50% 80%; display: inline-flex; }
+  .wang-card-hover { transition: transform var(--dur-fast) var(--ease-out), box-shadow var(--dur-fast) var(--ease-out); }
+  .wang-card-hover:hover { transform: translateY(-3px); box-shadow: var(--shadow-float); }
+}
+
+/* Page-entrance choreography: put .wang-stagger on a screen's main column /
+   grid and its direct children rise in one after another (hero first). */
+@media (prefers-reduced-motion: no-preference) {
+  .wang-stagger > * { animation: wang-rise 420ms var(--ease-out) both; }
+  .wang-stagger > *:nth-child(1) { animation-delay: 0ms; }
+  .wang-stagger > *:nth-child(2) { animation-delay: 60ms; }
+  .wang-stagger > *:nth-child(3) { animation-delay: 120ms; }
+  .wang-stagger > *:nth-child(4) { animation-delay: 180ms; }
+  .wang-stagger > *:nth-child(5) { animation-delay: 240ms; }
+  .wang-stagger > *:nth-child(6) { animation-delay: 300ms; }
+  .wang-stagger > *:nth-child(7) { animation-delay: 350ms; }
+  .wang-stagger > *:nth-child(8) { animation-delay: 400ms; }
+  .wang-stagger > *:nth-child(n+9) { animation-delay: 440ms; }
+}

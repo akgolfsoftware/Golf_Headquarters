@@ -1,0 +1,127 @@
+/* ============================================================
+   WANG Treningsplattform — base layer
+   Resets + brand defaults + reusable text/utility classes.
+   ============================================================ */
+*, *::before, *::after { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
+  color: var(--text-primary);
+  background: var(--bg-app);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* Numbers — tabular lining figures everywhere data lives */
+.wang-num, .wang-stat {
+  font-feature-settings: var(--num-feature);
+  font-variant-numeric: tabular-nums lining-nums;
+}
+
+/* Type helpers ------------------------------------------------ */
+.t-hero {
+  font-family: var(--font-brand);
+  font-weight: var(--fw-black);
+  font-size: var(--fs-hero);
+  line-height: var(--lh-tight);
+  letter-spacing: var(--ls-tight);
+  font-variant-numeric: tabular-nums lining-nums;
+}
+.t-display {
+  font-family: var(--font-brand);
+  font-weight: var(--fw-black);
+  font-size: var(--fs-display);
+  line-height: var(--lh-tight);
+  letter-spacing: var(--ls-tight);
+}
+.t-h1 { font-family: var(--font-brand); font-weight: var(--fw-bold); font-size: var(--fs-h1); line-height: var(--lh-heading); letter-spacing: var(--ls-tight); }
+.t-h2 { font-family: var(--font-brand); font-weight: var(--fw-bold); font-size: var(--fs-h2); line-height: var(--lh-heading); }
+.t-h3 { font-family: var(--font-brand); font-weight: var(--fw-semibold); font-size: var(--fs-h3); line-height: var(--lh-heading); }
+.t-h4 { font-family: var(--font-brand); font-weight: var(--fw-semibold); font-size: var(--fs-h4); line-height: var(--lh-heading); }
+.t-body { font-family: var(--font-body); font-weight: var(--fw-regular); font-size: var(--fs-body); }
+.t-small { font-family: var(--font-body); font-weight: var(--fw-regular); font-size: var(--fs-small); color: var(--text-secondary); }
+.t-label {
+  font-family: var(--font-brand);
+  font-weight: var(--fw-medium);
+  font-size: var(--fs-label);
+  letter-spacing: var(--ls-label);
+  text-transform: uppercase;
+  color: var(--text-secondary);
+}
+
+/* Surfaces --------------------------------------------------- */
+.wang-card {
+  background: var(--surface-card);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-card);
+  padding: var(--space-6);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .wang-pressable { transition: transform var(--dur-fast) var(--ease-out); }
+  .wang-pressable:active { transform: scale(var(--press-scale)); }
+}
+
+::selection { background: var(--wang-mint); color: var(--navy-deep); }
+
+/* Links --------------------------------------------------------
+   Use the AA-safe teal-text variant, never the brand teal directly for text. */
+a { color: var(--wang-teal-text); text-decoration: none; }
+a:hover { color: var(--wang-navy); text-decoration: underline; }
+
+/* Focus ---------------------------------------------------------
+   Visible only for keyboard users; never removes the outline outright. */
+:focus { outline: none; }
+:focus-visible {
+  outline: 2.5px solid var(--focus-ring);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Dark mode -------------------------------------------------------
+   Scope with data-theme="dark" on <html> or a container. Components never
+   hardcode surface/text hex values — they read --bg-app / --surface-card /
+   --text-primary / --text-secondary / --border-subtle / --shadow-* / --tint-*,
+   so re-pointing those tokens here is enough to flip the whole tree. This
+   block is last in the cascade (base.css loads after colors.css and
+   spacing.css) so it wins over both files' :root declarations. */
+[data-theme="dark"] {
+  --bg-app: var(--bg-app-dark);
+  --surface-card: var(--surface-card-dark);
+  --text-primary: var(--text-primary-dark);
+  --text-secondary: var(--text-secondary-dark);
+  --border-subtle: var(--border-subtle-dark);
+  --wang-teal-text: #5FCFC2; /* AA on dark surfaces; --wang-teal-text light variant is for white bg only */
+
+  --neutral-50: #101C30;
+  --neutral-100: #172845;
+  --neutral-200: #223350;
+  --neutral-300: #324867;
+  --neutral-400: #5A6E8C;
+
+  /* Shadows — dark surfaces need real black, not navy-tinted, or they vanish */
+  --shadow-card: 0 8px 24px rgba(0,0,0,0.35);
+  --shadow-card-sm: 0 4px 14px rgba(0,0,0,0.28);
+  --shadow-hero: 0 18px 40px rgba(0,0,0,0.5);
+  --shadow-float: 0 12px 32px rgba(0,0,0,0.45);
+  --shadow-press: 0 2px 8px rgba(0,0,0,0.3);
+
+  /* Tints — translucent overlays so icon-chips read on a dark card instead
+     of the light washes designed for white surfaces */
+  --tint-navy:   rgba(96,150,201,0.18);
+  --tint-teal:   rgba(73,202,159,0.16);
+  --tint-mint:   rgba(73,202,159,0.20);
+  --tint-orange: rgba(244,123,32,0.20);
+  --tint-yellow: rgba(252,215,0,0.16);
+  --tint-pink:   rgba(209,42,92,0.22);
+  --tint-blue:   rgba(58,170,224,0.20);
+  --tint-purple: rgba(180,90,170,0.22);
+  --tint-gray:   rgba(255,255,255,0.08);
+
+  color-scheme: dark;
+}
+[data-theme="dark"] body { background: var(--bg-app); color: var(--text-primary); }
+[data-theme="dark"] ::selection { background: var(--wang-mint); color: var(--navy-deep); }

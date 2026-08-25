@@ -1,0 +1,1581 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<!-- @template name="WANG Toppidrett Fredrikstad — Årsplan 2026/27 (fellesside)" description="Delbar lesevisning for elever og foresatte: årsplan, periodisering, månedsplan, ukeplan, øktplaner med kompetansemål per trinn, og uke/måned/år-kalender" -->
+<helmet>
+<title>Årsplan 2026/27 — WANG Toppidrett Fredrikstad · Golf</title>
+<script src="./ds-base.js"></script>
+<script src="./ukesrapporter.js"></script>
+<style>
+html{scroll-behavior:smooth}
+section[id]{scroll-margin-top:76px}
+body{margin:0;background:#f4f6f8;overflow-x:hidden}
+
+a{color:#226f67}a:hover{color:#17446f}
+#kalender [role=grid]{grid-template-columns:repeat(7,minmax(0,1fr)) !important}
+#kalender [role=grid] *{min-width:0}
+#kalender .wang-cell > div > span,#kalender .wang-cell > span:not(.wang-num){white-space:normal !important;overflow-wrap:anywhere;height:auto !important;min-height:22px;border-radius:10px !important;padding:3px 8px !important;line-height:1.3;text-align:left;align-items:flex-start !important;max-width:100%}
+#kalender .wang-cell > div > span > span,#kalender .wang-cell > span:not(.wang-num) > span{margin-top:4px}
+#kalender .wang-cell{height:auto !important}
+@keyframes wangFadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion: reduce){*{animation-duration:0.01ms !important;transition-duration:0.01ms !important}}
+</style>
+</helmet>
+<div style="min-height:100vh;background:var(--bg-app);color:var(--text-primary);font-family:var(--font-body)" data-screen-label="WANG Årsplan 2026/27">
+
+  <header data-screen-label="Header" style="position:sticky;top:0;z-index:40;background:rgba(255,255,255,0.92);backdrop-filter:blur(12px);box-shadow:0 1px 0 var(--border-subtle)">
+    <div style="max-width:1160px;margin:0 auto;padding:10px clamp(16px,4vw,28px);display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+      <img src="assets/wang-logo-horizontal.svg" alt="WANG Treningsplattform" style="height:36px;width:auto">
+      <div style="flex:1"></div>
+      <nav style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;max-width:100%">
+        <button onClick="{{ gaTrening }}" class="wang-pressable" style="font-family:var(--font-brand);font-weight:700;font-size:13.5px;border:none;cursor:pointer;padding:8px clamp(12px,2vw,20px);border-radius:999px;white-space:nowrap;background:{{ gaTreningBg }};color:{{ gaTreningFg }};min-height:40px">Trening</button>
+        <button onClick="{{ gaSkole }}" class="wang-pressable" style="font-family:var(--font-brand);font-weight:700;font-size:13.5px;border:none;cursor:pointer;padding:8px clamp(12px,2vw,20px);border-radius:999px;white-space:nowrap;background:{{ gaSkoleBg }};color:{{ gaSkoleFg }};min-height:40px">Skole</button>
+        <button onClick="{{ gaKalender }}" class="wang-pressable" style="font-family:var(--font-brand);font-weight:700;font-size:13.5px;border:none;cursor:pointer;padding:8px clamp(12px,2vw,20px);border-radius:999px;white-space:nowrap;background:{{ gaKalenderBg }};color:{{ gaKalenderFg }};min-height:40px">Kalender</button>
+        <button onClick="{{ gaForeldre }}" class="wang-pressable" style="font-family:var(--font-brand);font-weight:700;font-size:13.5px;border:none;cursor:pointer;padding:8px clamp(12px,2vw,20px);border-radius:999px;white-space:nowrap;background:{{ gaForeldreBg }};color:{{ gaForeldreFg }};min-height:40px">Foreldre</button>
+      </nav>
+    </div>
+  </header>
+
+  <sc-if value="{{ visTrening }}" hint-placeholder-val="{{ true }}">
+  <section data-screen-label="Hero" style="position:relative;overflow:hidden;background:linear-gradient(160deg,color-mix(in srgb,var(--wang-navy) 82%,white) 0%,var(--wang-navy) 55%,color-mix(in srgb,var(--wang-navy) 82%,black) 100%);color:#fff">
+    <div style="position:absolute;right:-120px;top:-170px;width:420px;height:420px;border-radius:999px;border:1.5px solid var(--wang-mint);opacity:0.2;pointer-events:none"></div>
+    <div style="position:absolute;right:-40px;top:-90px;width:250px;height:250px;border-radius:999px;border:1.5px solid var(--wang-mint);opacity:0.2;pointer-events:none"></div>
+    <div style="max-width:1160px;margin:0 auto;padding:clamp(36px,7vw,64px) clamp(16px,4vw,28px) 0;position:relative">
+      <span class="t-label" style="color:var(--wang-mint)">WANG Toppidrett Fredrikstad · Toppidrett golf</span>
+      <h1 style="margin:12px 0 0;font-family:var(--font-brand);font-weight:800;font-size:clamp(30px,6.5vw,52px);line-height:1.05">Årsplan 2026/27</h1>
+      <p style="margin:14px 0 0;font-size:clamp(15px,2.2vw,17px);line-height:1.6;color:rgba(255,255,255,0.78);max-width:620px">Fra årshjul til den enkelte økten — 44 uker fra skolestart til sesongavslutning. Årsplanen er lik for alle trinn — kompetansemålene per trinn ligger under Skole.</p>
+      <div style="height:clamp(24px,4vw,34px)"></div>
+    </div>
+    <div style="background:rgba(255,255,255,0.06);box-shadow:0 -1px 0 rgba(255,255,255,0.1);position:relative">
+      <div style="max-width:1160px;margin:0 auto;padding:16px clamp(16px,4vw,28px);display:flex;gap:10px 26px;flex-wrap:wrap;align-items:baseline">
+        <span style="font-family:var(--font-brand);font-weight:700;font-size:17px;color:#fff">Gruppen</span>
+        <span class="wang-num" style="font-size:13.5px;color:rgba(255,255,255,0.75)">14 elever · VG1–VG3 samlet · 16–19 år</span>
+        <span class="wang-num" style="font-size:13.5px;color:rgba(255,255,255,0.75)">Man · ons · fre 08:00–10:00 · Gamle Fredrikstad GK</span>
+        <span class="t-label" style="color:var(--wang-mint);margin-left:auto;white-space:nowrap">Sammen lykkes vi</span>
+      </div>
+    </div>
+  </section>
+  </sc-if>
+
+  <sc-if value="{{ visTrening }}" hint-placeholder-val="{{ true }}">
+  <nav style="max-width:1160px;margin:0 auto;padding:clamp(20px,4vw,30px) clamp(16px,4vw,28px) 0;box-sizing:border-box;display:flex;gap:8px;flex-wrap:wrap">
+    <a href="#arsplan" style="text-decoration:none;font-family:var(--font-brand);font-weight:700;font-size:12.5px;padding:8px 15px;border-radius:999px;background:var(--neutral-50);color:var(--text-primary)">Årshjul</a>
+    <a href="#periodisering" style="text-decoration:none;font-family:var(--font-brand);font-weight:700;font-size:12.5px;padding:8px 15px;border-radius:999px;background:var(--neutral-50);color:var(--text-primary)">Periodisering</a>
+    <a href="#manedsplan" style="text-decoration:none;font-family:var(--font-brand);font-weight:700;font-size:12.5px;padding:8px 15px;border-radius:999px;background:var(--neutral-50);color:var(--text-primary)">Månedsplan</a>
+    <a href="#ukeplan" style="text-decoration:none;font-family:var(--font-brand);font-weight:700;font-size:12.5px;padding:8px 15px;border-radius:999px;background:var(--neutral-50);color:var(--text-primary)">Ukeplan</a>
+    <a href="#oktplaner" style="text-decoration:none;font-family:var(--font-brand);font-weight:700;font-size:12.5px;padding:8px 15px;border-radius:999px;background:var(--neutral-50);color:var(--text-primary)">Øktplaner</a>
+  </nav>
+  <section id="arsplan" data-screen-label="01 Årsplan" style="max-width:1160px;margin:0 auto;padding:clamp(36px,6vw,56px) clamp(16px,4vw,28px) 0;box-sizing:border-box;animation:wangFadeUp 260ms cubic-bezier(0.22,1,0.36,1)">
+    <div style="display:flex;align-items:center;gap:12px">
+      <span class="wang-num" style="width:34px;height:34px;border-radius:12px;display:grid;place-items:center;background:var(--tint-navy);color:var(--wang-navy);font-family:var(--font-brand);font-weight:800;font-size:14px">01</span>
+      <span class="t-label" style="color:var(--wang-teal-text)">Årsplan</span>
+    </div>
+    <h2 style="font-family:var(--font-brand);font-weight:700;font-size:clamp(24px,4.2vw,34px);line-height:1.1;margin:12px 0 0">Treningsåret uke 34 til uke 24</h2>
+    <p style="font-size:clamp(14.5px,2vw,16.5px);line-height:1.6;color:var(--text-secondary);max-width:640px;margin:12px 0 0">Skoleåret starter midt i turneringssesongen og sykler gjennom test-, bygg- og overføringsfaser fram til ny sesong. Pek på en måned for detaljer.</p>
+
+    <div class="wang-card" style="padding:clamp(18px,3vw,26px);margin-top:28px">
+      <div style="display:grid;grid-template-columns:repeat(11,1fr);gap:clamp(2px,0.8vw,5px)">
+        <sc-for list="{{ arMnd }}" as="m" hint-placeholder-count="11">
+          <button onMouseEnter="{{ m.pek }}" onClick="{{ m.pek }}" onMouseLeave="{{ nullstillPek }}" style="font-family:var(--font-body);background:none;border:none;cursor:pointer;padding:0;display:flex;flex-direction:column;gap:8px">
+            <span style="width:100%;height:{{ m.h }}px;border-radius:999px;background:{{ m.farge }};opacity:{{ m.op }};transition:all 160ms cubic-bezier(0.22,1,0.36,1)"></span>
+            <span class="wang-num" style="font-family:var(--font-brand);font-size:11.5px;font-weight:{{ m.vekt }};color:{{ m.labelFarge }};text-align:center;width:100%">{{ m.kort }}</span>
+          </button>
+        </sc-for>
+      </div>
+      <div key="{{ pekKey }}" style="margin-top:18px;background:var(--neutral-50);border-radius:16px;padding:14px 18px;animation:wangFadeUp 220ms cubic-bezier(0.22,1,0.36,1)">
+        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+          <span style="font-family:var(--font-brand);font-weight:700;font-size:15.5px">{{ pekNavn }}</span>
+          <span style="display:inline-flex;align-items:center;gap:6px;height:24px;padding:0 10px;border-radius:999px;background:{{ pekTint }};color:{{ pekTekstFarge }};font-family:var(--font-brand);font-weight:700;font-size:11px">{{ pekFase }}</span>
+        </div>
+        <p style="font-size:14px;line-height:1.55;color:var(--text-secondary);margin:7px 0 0">{{ pekTema }}</p>
+        <div class="wang-num" style="font-size:12.5px;font-weight:700;color:var(--text-secondary);margin-top:7px;display:flex;align-items:center;gap:7px"><span style="width:6px;height:6px;border-radius:999px;background:{{ pekFarge }};flex-shrink:0"></span>{{ pekAktivitet }}</div>
+      </div>
+      <div style="display:flex;gap:8px 18px;flex-wrap:wrap;margin-top:20px">
+        <sc-for list="{{ faseLegend }}" as="f" hint-placeholder-count="4">
+          <span style="display:inline-flex;align-items:center;gap:7px;font-size:12.5px;color:var(--text-secondary)"><span style="width:10px;height:10px;border-radius:4px;background:{{ f.farge }}"></span>{{ f.navn }}</span>
+        </sc-for>
+      </div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:16px;margin-top:20px">
+      <sc-for list="{{ perioder }}" as="p" hint-placeholder-count="5">
+        <div class="wang-card" style="border-radius:20px;overflow:hidden;box-shadow:{{ p.skygge }};display:flex;flex-direction:column">
+          <span style="display:block;height:6px;background:{{ p.farge }}"></span>
+          <div style="padding:20px 22px 8px">
+            <div style="display:flex;align-items:baseline;justify-content:space-between;gap:8px">
+              <span style="font-family:var(--font-brand);font-weight:700;font-size:17px;color:var(--text-primary)">{{ p.navn }}</span>
+              <span class="wang-num" style="font-family:var(--font-brand);font-size:11.5px;font-weight:700;color:var(--wang-teal-text);white-space:nowrap">{{ p.uker }}</span>
+            </div>
+            <div class="wang-num" style="font-size:12.5px;color:var(--text-secondary);margin-top:5px">{{ p.datoer }}</div>
+            <p style="font-size:13.5px;line-height:1.55;color:var(--text-secondary);margin:10px 0 0">{{ p.fokus }}</p>
+            <div class="wang-num" style="display:inline-flex;align-items:center;gap:7px;margin-top:12px;font-size:12px;font-weight:700;color:var(--text-primary);background:var(--neutral-50);border-radius:999px;padding:5px 12px"><span style="width:6px;height:6px;border-radius:999px;background:{{ p.farge }}"></span>{{ p.okter }}</div>
+          </div>
+          <div style="padding:10px 22px 18px">
+            <button onClick="{{ p.apneOkt }}" class="wang-pressable" style="display:flex;align-items:center;justify-content:space-between;gap:10px;width:100%;border:1.5px solid {{ p.farge }};background:{{ p.tint }};cursor:pointer;border-radius:14px;padding:11px 14px;min-height:46px;margin-bottom:14px;font-family:var(--font-brand);font-weight:700;font-size:12.5px;color:{{ p.tekstFarge }}"><span>Se øktplanen for {{ p.fase }}</span><span>→</span></button>
+            <div class="t-label" style="color:var(--text-secondary);margin-bottom:8px">Nøkkel i perioden</div>
+            <sc-for list="{{ p.nokkel }}" as="n" hint-placeholder-count="3">
+              <div style="display:grid;grid-template-columns:14px 1fr;gap:7px;padding:4px 0;align-items:start">
+                <span style="width:6px;height:6px;border-radius:999px;background:{{ p.farge }};margin-top:7px"></span>
+                <span style="font-size:13px;line-height:1.5;color:var(--text-secondary)">{{ n }}</span>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+      </sc-for>
+    </div>
+  </section>
+  </sc-if>
+
+  <sc-if value="{{ visTrening }}" hint-placeholder-val="{{ false }}">
+  <section id="periodisering" data-screen-label="02 Periodisering" style="max-width:1160px;margin:0 auto;padding:clamp(36px,6vw,56px) clamp(16px,4vw,28px) 0;box-sizing:border-box;animation:wangFadeUp 260ms cubic-bezier(0.22,1,0.36,1)">
+    <div style="display:flex;align-items:center;gap:12px">
+      <span class="wang-num" style="width:34px;height:34px;border-radius:12px;display:grid;place-items:center;background:var(--tint-navy);color:var(--wang-navy);font-family:var(--font-brand);font-weight:800;font-size:14px">02</span>
+      <span class="t-label" style="color:var(--wang-teal-text)">Periodisering</span>
+    </div>
+    <h2 style="font-family:var(--font-brand);font-weight:700;font-size:clamp(24px,4.2vw,34px);line-height:1.1;margin:12px 0 0">Pyramiden — slik fordeles treningstiden</h2>
+    <p style="font-size:clamp(14.5px,2vw,16.5px);line-height:1.6;color:var(--text-secondary);max-width:640px;margin:12px 0 0">WANG-rammen er 6 timer per uke (3 økter à 2 timer). Fordelingen mellom fysisk trening, teknikk, slag, spill og turnering skifter med perioden.</p>
+    <div class="wang-card" style="border-radius:26px;padding:clamp(22px,4vw,38px);margin-top:28px">
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:24px">
+        <sc-for list="{{ pyramidePills }}" as="pp" hint-placeholder-count="3">
+          <button onClick="{{ pp.velg }}" class="wang-pressable" style="font-family:var(--font-brand);font-weight:700;font-size:13px;border:1.5px solid {{ pp.border }};cursor:pointer;padding:9px 18px;border-radius:999px;background:{{ pp.bg }};color:{{ pp.fg }};min-height:40px">{{ pp.label }}</button>
+        </sc-for>
+      </div>
+      <div key="{{ pyramideKey }}" style="display:flex;flex-direction:column;gap:18px;animation:wangFadeUp 320ms cubic-bezier(0.22,1,0.36,1)">
+        <sc-for list="{{ pyramide }}" as="ax" hint-placeholder-count="5">
+          <div style="display:grid;grid-template-columns:minmax(84px,120px) 1fr;gap:14px;align-items:start">
+            <div>
+              <div class="wang-num" style="font-family:var(--font-brand);font-weight:800;font-size:14px;color:{{ ax.farge }}">{{ ax.kode }}</div>
+              <div style="font-size:12px;color:var(--text-secondary)">{{ ax.navn }}</div>
+            </div>
+            <div>
+              <div style="display:flex;align-items:center;gap:10px">
+                <span style="flex:1;height:18px;background:var(--neutral-50);border-radius:999px;overflow:hidden;display:block"><span style="display:block;height:100%;width:{{ ax.pct }}%;background:{{ ax.farge }};border-radius:999px;transition:width 480ms cubic-bezier(0.22,1,0.36,1)"></span></span>
+                <span class="wang-num" style="font-family:var(--font-brand);font-weight:800;font-size:14px;min-width:44px;text-align:right">{{ ax.pctTekst }}</span>
+              </div>
+              <p style="font-size:13px;line-height:1.5;color:var(--text-secondary);margin:7px 0 0"><span class="wang-num">{{ ax.timer }}</span> per uke — {{ ax.kildeTekst }}</p>
+            </div>
+          </div>
+        </sc-for>
+      </div>
+      <p class="wang-num" style="font-size:12.5px;color:var(--text-secondary);margin:24px 0 0;line-height:1.5">{{ pyrTotal }} — summert fra de tre WANG-øktene i perioden pluss planlagt egentrening. Endrer du en øvelse i øktplanen, flytter fordelingen seg her.</p>
+    </div>
+  </section>
+  </sc-if>
+
+  <sc-if value="{{ visTrening }}" hint-placeholder-val="{{ false }}">
+  <section id="manedsplan" data-screen-label="03 Månedsplan" style="max-width:1160px;margin:0 auto;padding:clamp(36px,6vw,56px) clamp(16px,4vw,28px) 0;box-sizing:border-box;animation:wangFadeUp 260ms cubic-bezier(0.22,1,0.36,1)">
+    <div style="display:flex;align-items:center;gap:12px">
+      <span class="wang-num" style="width:34px;height:34px;border-radius:12px;display:grid;place-items:center;background:var(--tint-navy);color:var(--wang-navy);font-family:var(--font-brand);font-weight:800;font-size:14px">03</span>
+      <span class="t-label" style="color:var(--wang-teal-text)">Månedsplan</span>
+    </div>
+    <h2 style="font-family:var(--font-brand);font-weight:700;font-size:clamp(24px,4.2vw,34px);line-height:1.1;margin:12px 0 0">Tidslinje måned for måned</h2>
+    <p style="font-size:clamp(14.5px,2vw,16.5px);line-height:1.6;color:var(--text-secondary);max-width:640px;margin:12px 0 0">Treninger, konkurranser, tester og skolearbeid samlet i én linje. Detaljert ukeinnhold publiseres i PlayerHQ ved månedsstart.</p>
+    <div style="display:flex;gap:8px 16px;flex-wrap:wrap;margin-top:18px">
+      <sc-for list="{{ mndLegend }}" as="ml" hint-placeholder-count="4">
+        <span style="display:inline-flex;align-items:center;gap:7px;font-size:12.5px;color:var(--text-secondary)"><span style="width:10px;height:10px;border-radius:4px;background:{{ ml.farge }}"></span>{{ ml.navn }}</span>
+      </sc-for>
+    </div>
+    <div class="wang-card" style="border-radius:24px;padding:clamp(14px,3vw,26px);margin-top:20px">
+      <sc-for list="{{ mndTidslinje }}" as="m" hint-placeholder-count="11">
+        <div style="display:grid;grid-template-columns:clamp(56px,9vw,86px) 16px 1fr;gap:clamp(8px,2vw,16px)">
+          <div style="text-align:right;padding:16px 0">
+            <div style="font-family:var(--font-brand);font-weight:800;font-size:clamp(12px,1.6vw,14px);color:var(--text-primary)">{{ m.kort }}</div>
+            <div class="wang-num" style="font-size:11px;color:var(--text-secondary);margin-top:2px">{{ m.ar }}</div>
+            <div style="display:inline-flex;align-items:center;height:19px;padding:0 8px;border-radius:999px;background:{{ m.tint }};color:{{ m.tekstFarge }};font-family:var(--font-brand);font-weight:700;font-size:9.5px;margin-top:6px;white-space:nowrap">{{ m.fase }}</div>
+          </div>
+          <div style="display:flex;flex-direction:column;align-items:center">
+            <span style="width:13px;height:13px;border-radius:999px;background:{{ m.farge }};border:3px solid #fff;box-shadow:0 0 0 1.5px {{ m.farge }};margin-top:18px;flex-shrink:0"></span>
+            <span style="width:3px;flex:1;background:{{ m.farge }};opacity:0.25;border-radius:999px;display:{{ m.linje }}"></span>
+          </div>
+          <div style="padding:12px 0 24px;min-width:0">
+            <p style="font-size:13.5px;line-height:1.55;color:var(--text-secondary);margin:0 0 10px;max-width:560px">{{ m.tema }}</p>
+            <div style="display:flex;flex-direction:column;gap:6px">
+              <sc-for list="{{ m.rader }}" as="r" hint-placeholder-count="3">
+                <div style="display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;padding:8px 12px;border-radius:14px;background:var(--neutral-50)">
+                  <span style="display:inline-flex;align-items:center;height:21px;padding:0 9px;border-radius:999px;background:{{ r.tint }};color:{{ r.farge }};font-family:var(--font-brand);font-weight:800;font-size:9.5px;letter-spacing:0.04em;text-transform:uppercase;white-space:nowrap">{{ r.type }}</span>
+                  <span class="wang-num" style="font-size:11.5px;font-weight:700;color:var(--text-secondary);white-space:nowrap">{{ r.nar }}</span>
+                  <span style="font-size:13px;line-height:1.5;color:var(--text-primary);flex:1 1 200px;min-width:0">{{ r.tekst }}</span>
+                </div>
+              </sc-for>
+            </div>
+            <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:10px;align-items:center">
+              <span class="t-label" style="font-size:9.5px;color:var(--text-secondary);margin-right:2px">Øktinnhold</span>
+              <sc-for list="{{ m.formler }}" as="fo" hint-placeholder-count="4">
+                <span class="wang-num" style="display:inline-flex;align-items:center;gap:6px;height:22px;padding:0 9px;border-radius:7px;background:var(--neutral-50);font-size:11px;color:var(--text-primary);white-space:nowrap"><span style="width:7px;height:7px;border-radius:3px;background:{{ fo.farge }}"></span>{{ fo.omrade }} · {{ fo.reps }}</span>
+              </sc-for>
+            </div>
+          </div>
+        </div>
+      </sc-for>
+    </div>
+  </section>
+  </sc-if>
+
+  <sc-if value="{{ visTrening }}" hint-placeholder-val="{{ false }}">
+  <section id="ukeplan" data-screen-label="04 Ukeplan" style="max-width:1160px;margin:0 auto;padding:clamp(36px,6vw,56px) clamp(16px,4vw,28px) 0;box-sizing:border-box;animation:wangFadeUp 260ms cubic-bezier(0.22,1,0.36,1)">
+    <div style="display:flex;align-items:center;gap:12px">
+      <span class="wang-num" style="width:34px;height:34px;border-radius:12px;display:grid;place-items:center;background:var(--tint-navy);color:var(--wang-navy);font-family:var(--font-brand);font-weight:800;font-size:14px">04</span>
+      <span class="t-label" style="color:var(--wang-teal-text)">Ukeplan</span>
+    </div>
+    <h2 style="font-family:var(--font-brand);font-weight:700;font-size:clamp(24px,4.2vw,34px);line-height:1.1;margin:12px 0 0">Den faste treningsuken</h2>
+    <p style="font-size:clamp(14.5px,2vw,16.5px);line-height:1.6;color:var(--text-secondary);max-width:640px;margin:12px 0 0">Tre faste golføkter i skoletiden, hele året. Uketypen i årshjulet styrer innholdet — utviklingsuke, pre-turnering, turneringsuke eller testuke.</p>
+    <div class="wang-card" style="border-radius:20px;overflow:hidden;margin-top:28px">
+      <div style="padding:14px clamp(16px,3vw,22px);background:var(--tint-mint);display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
+        <span style="font-family:var(--font-brand);font-weight:700;font-size:14.5px">VG1–VG3 samlet · 3 økter/uke · 6 timer</span>
+        <span class="wang-num" style="font-family:var(--font-brand);font-size:12px;color:var(--wang-teal-text);font-weight:700">Skoleåret 2026/27</span>
+      </div>
+      <div>
+        <sc-for list="{{ ukeRader }}" as="r" hint-placeholder-count="3">
+          <div style="display:flex;flex-wrap:wrap;align-items:center;gap:8px 14px;padding:14px clamp(16px,3vw,22px);box-shadow:0 1px 0 var(--border-subtle)" style-hover="background:var(--neutral-50)">
+            <span style="font-family:var(--font-brand);font-weight:700;font-size:14.5px;min-width:82px">{{ r.dag }}</span>
+            <span class="wang-num" style="font-size:13.5px;white-space:nowrap">{{ r.tid }}</span>
+            <x-import component-from-global-scope="WANGTreningsplattformDesignSystem_be77fc.EventChip" type="okt" label="Økt" size="sm" hint-size="60,22"></x-import>
+            <span style="font-size:13.5px;line-height:1.5;color:var(--text-secondary);flex:1 1 100%;min-width:0">{{ r.innhold }}</span>
+          </div>
+        </sc-for>
+      </div>
+      <div style="padding:13px 22px;background:var(--neutral-50);font-size:13px;line-height:1.55;color:var(--text-secondary)">Utenom WANG-rammen: individuell FYS- og egentrening etter periodens pyramide — avtales i IUP-samtalen og følges opp i PlayerHQ.</div>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px;margin-top:16px">
+      <div class="wang-card" style="border-radius:20px;padding:20px 22px;display:flex;gap:14px;align-items:flex-start">
+        <x-import component-from-global-scope="WANGTreningsplattformDesignSystem_be77fc.IconChip" icon="sun" color="teal" size="{{ 44 }}" hint-size="44,44"></x-import>
+        <div style="min-width:0">
+          <div style="font-family:var(--font-brand);font-weight:700;font-size:14.5px">Ute · april–oktober</div>
+          <p style="margin:4px 0 0;font-size:13px;line-height:1.55;color:var(--text-secondary)">Gamle Fredrikstad GK fra ca. 5. april. Banen brukes til overføring, spill og turnering.</p>
+        </div>
+      </div>
+      <div class="wang-card" style="border-radius:20px;padding:20px 22px;display:flex;gap:14px;align-items:flex-start">
+        <x-import component-from-global-scope="WANGTreningsplattformDesignSystem_be77fc.IconChip" icon="home" color="navy" size="{{ 44 }}" hint-size="44,44"></x-import>
+        <div style="min-width:0">
+          <div style="font-family:var(--font-brand);font-weight:700;font-size:14.5px">Inne · november–mars</div>
+          <p style="margin:4px 0 0;font-size:13px;line-height:1.55;color:var(--text-secondary)">Treningslokalet: 10 nettplasser, putting 0–3 m for speed-kontroll, ballstart på tutor og TrackMan til testing.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+  </sc-if>
+
+  <sc-if value="{{ visTrening }}" hint-placeholder-val="{{ false }}">
+  <section id="oktplaner" data-screen-label="05 Øktplaner" style="max-width:1160px;margin:0 auto;padding:clamp(36px,6vw,56px) clamp(16px,4vw,28px) 0;box-sizing:border-box;animation:wangFadeUp 260ms cubic-bezier(0.22,1,0.36,1)">
+    <div style="display:flex;align-items:center;gap:12px">
+      <span class="wang-num" style="width:34px;height:34px;border-radius:12px;display:grid;place-items:center;background:var(--tint-navy);color:var(--wang-navy);font-family:var(--font-brand);font-weight:800;font-size:14px">05</span>
+      <span class="t-label" style="color:var(--wang-teal-text)">Øktplaner</span>
+    </div>
+    <h2 style="font-family:var(--font-brand);font-weight:700;font-size:clamp(24px,4.2vw,34px);line-height:1.1;margin:12px 0 0">Slik er øktene bygget opp</h2>
+    <p style="font-size:clamp(14.5px,2vw,16.5px);line-height:1.6;color:var(--text-secondary);max-width:660px;margin:12px 0 0">Hver enkelt øvelse har sin egen adresse — pyramideakse, treningsområde, motorikk, belastning og press — pluss reps og teknikk-dimensjon. Alle økter følger samme mal: målsetning, kompetansemål, oppvarming, tre øvelser, KPI og dagbok. Samme drill for alle — <strong style="font-family:var(--font-brand);font-weight:700">ulikt kompetansemål per trinn</strong>, ikke ulik vanskelighetsgrad. Innholdet vris etter perioden.</p>
+    <div key="{{ trinnKey }}" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:18px;margin-top:28px;animation:wangFadeUp 320ms cubic-bezier(0.22,1,0.36,1)">
+      <sc-for list="{{ okter }}" as="o" hint-placeholder-count="3">
+        <div class="wang-card" style="border-radius:20px;overflow:hidden;display:flex;flex-direction:column">
+          <div style="padding:16px 22px;background:var(--neutral-50);box-shadow:inset 0 3px 0 {{ o.stripe }};display:flex;justify-content:space-between;align-items:center;gap:10px">
+            <div style="min-width:0">
+              <div style="font-family:var(--font-brand);font-weight:700;font-size:16px">{{ o.tittel }}</div>
+              <div class="wang-num" style="font-size:12px;color:var(--text-secondary);margin-top:2px">{{ o.meta }}</div>
+            </div>
+            <span style="display:inline-flex;align-items:center;height:24px;padding:0 10px;border-radius:999px;background:{{ o.tint }};color:{{ o.tekstFarge }};font-family:var(--font-brand);font-weight:700;font-size:10.5px;white-space:nowrap;flex-shrink:0">{{ o.periode }}</span>
+          </div>
+          <div style="padding:6px 22px 16px;flex:1">
+            <sc-for list="{{ o.blokker }}" as="b" hint-placeholder-count="5">
+              <div style="display:grid;grid-template-columns:88px 1fr;gap:12px;padding:11px 0;box-shadow:0 1px 0 var(--border-subtle);align-items:start">
+                <span class="wang-num" style="font-family:var(--font-brand);font-size:12px;font-weight:700;color:var(--wang-teal-text);padding-top:2px">{{ b.tid }}</span>
+                <div style="min-width:0">
+                  <div style="display:flex;align-items:baseline;gap:8px">
+                    <span style="font-family:var(--font-brand);font-weight:700;font-size:13.5px">{{ b.del }}</span>
+                    <span class="wang-num" style="margin-left:auto;font-size:11px;color:var(--text-secondary);flex-shrink:0">{{ b.varighet }}</span>
+                  </div>
+                  <p style="font-size:13px;line-height:1.5;color:var(--text-secondary);margin:3px 0 0">{{ b.innhold }}</p>
+                  <sc-if value="{{ b.harKode }}" hint-placeholder-val="{{ true }}">
+                    <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;align-items:center">
+                      <span style="display:inline-flex;align-items:center;height:22px;padding:0 9px;border-radius:7px;background:{{ b.akseFarge }};color:#0d3050;font-family:var(--font-brand);font-weight:800;font-size:10.5px;letter-spacing:0.03em">{{ b.omradeLabel }}</span>
+                      <span class="wang-num" style="display:inline-flex;align-items:center;height:22px;padding:0 9px;border-radius:7px;background:var(--neutral-50);color:var(--text-primary);font-size:11px;font-weight:700">{{ b.reps }}</span>
+                    </div>
+                    <div style="font-size:11.5px;line-height:1.45;color:var(--text-secondary);margin:6px 0 0">{{ b.detaljer }}</div>
+                    <code class="wang-num" style="display:block;margin-top:4px;font-size:10.5px;letter-spacing:0.02em;color:var(--wang-teal-text);word-break:break-all">{{ b.kode }}</code>
+                  </sc-if>
+                </div>
+              </div>
+            </sc-for>
+            <div style="margin-top:14px;display:flex;flex-direction:column;gap:8px">
+              <div class="t-label" style="color:var(--text-secondary)">{{ o.maalTittel }}</div>
+              <sc-for list="{{ o.maal }}" as="g" hint-placeholder-count="3">
+                <div style="display:flex;gap:10px;align-items:flex-start;padding:9px 11px;border-radius:14px;background:var(--neutral-50)">
+                  <span style="flex-shrink:0;display:inline-flex;align-items:center;height:22px;padding:0 9px;border-radius:999px;background:{{ g.tint }};color:{{ g.farge }};font-family:var(--font-brand);font-weight:800;font-size:10.5px">{{ g.trinn }}</span>
+                  <span style="min-width:0">
+                    <span style="display:block;font-size:12.5px;line-height:1.5">{{ g.tekst }}</span>
+                    <span class="wang-num" style="display:block;margin-top:2px;font-size:11.5px;color:var(--text-secondary)">{{ g.km }}</span>
+                  </span>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+          <div style="padding:12px 22px 16px;background:var(--tint-mint);display:flex;align-items:baseline;gap:8px">
+            <span class="t-label" style="font-size:10.5px;color:var(--wang-teal-text);flex-shrink:0">Fokus</span>
+            <span style="font-size:12.5px;line-height:1.5;color:var(--text-primary)">{{ o.fokus }}</span>
+          </div>
+        </div>
+      </sc-for>
+    </div>
+    <p style="margin:16px 4px 0;font-size:13px;line-height:1.6;color:var(--text-secondary)">Faste regler: ny teknikk starter i kropp/arm — aldri rett på ball. Minimum CS50 (50 % intensitet) for balltrening. KPI og dagbokspørsmål i hver økt. I testuker overtar testbatteriet hele økten.</p>
+  </section>
+  </sc-if>
+
+  <sc-if value="{{ visSkole }}" hint-placeholder-val="{{ false }}">
+  <nav style="max-width:1160px;margin:0 auto;padding:clamp(20px,4vw,30px) clamp(16px,4vw,28px) 0;box-sizing:border-box;display:flex;gap:8px;flex-wrap:wrap">
+    <a href="#skoleplan" style="text-decoration:none;font-family:var(--font-brand);font-weight:700;font-size:12.5px;padding:8px 15px;border-radius:999px;background:var(--neutral-50);color:var(--text-primary)">Timeplan</a>
+    <a href="#kompetansemaal" style="text-decoration:none;font-family:var(--font-brand);font-weight:700;font-size:12.5px;padding:8px 15px;border-radius:999px;background:var(--neutral-50);color:var(--text-primary)">Kompetansemål</a>
+    <a href="#prover" style="text-decoration:none;font-family:var(--font-brand);font-weight:700;font-size:12.5px;padding:8px 15px;border-radius:999px;background:var(--neutral-50);color:var(--text-primary)">Prøveplaner</a>
+  </nav>
+  <section id="skoleplan" data-screen-label="01 Timeplan" style="max-width:1160px;margin:0 auto;padding:clamp(36px,6vw,56px) clamp(16px,4vw,28px) 0;box-sizing:border-box;animation:wangFadeUp 260ms cubic-bezier(0.22,1,0.36,1)">
+    <div style="display:flex;align-items:center;gap:12px">
+      <span class="wang-num" style="width:34px;height:34px;border-radius:12px;display:grid;place-items:center;background:var(--tint-navy);color:var(--wang-navy);font-family:var(--font-brand);font-weight:800;font-size:14px">01</span>
+      <span class="t-label" style="color:var(--wang-teal-text)">Timeplan</span>
+    </div>
+    <h2 style="font-family:var(--font-brand);font-weight:700;font-size:clamp(24px,4.2vw,34px);line-height:1.1;margin:12px 0 0">Timeplan og skolerute</h2>
+    <p style="font-size:clamp(14.5px,2vw,16.5px);line-height:1.6;color:var(--text-secondary);max-width:660px;margin:12px 0 0">Skoledagen går 08.00–15.45 med trening som første blokk mandag, onsdag og fredag. Timeplanen er skolens egen, gjeldende fra 11. august 2026 — velg klasse for å se din.</p>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:22px">
+      <sc-for list="{{ klassePills }}" as="kp" hint-placeholder-count="2">
+        <button onClick="{{ kp.velg }}" class="wang-pressable" style="font-family:var(--font-brand);font-weight:700;font-size:13px;border:1.5px solid {{ kp.border }};cursor:pointer;padding:9px 20px;border-radius:999px;background:{{ kp.bg }};color:{{ kp.fg }};min-height:40px">{{ kp.label }}</button>
+      </sc-for>
+      <span class="wang-num" style="align-self:center;margin-left:6px;font-size:12.5px;color:var(--text-secondary)">Kontaktlærer: {{ kontaktlaerer }}</span>
+    </div>
+    <sc-if value="{{ erSmal }}" hint-placeholder-val="{{ false }}">
+      <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:18px">
+        <sc-for list="{{ dagPills }}" as="dp" hint-placeholder-count="5">
+          <button onClick="{{ dp.velg }}" class="wang-pressable" style="font-family:var(--font-brand);font-weight:700;font-size:13px;border:1.5px solid {{ dp.border }};cursor:pointer;padding:9px 15px;border-radius:999px;background:{{ dp.bg }};color:{{ dp.fg }};min-height:42px">{{ dp.label }}</button>
+        </sc-for>
+      </div>
+    </sc-if>
+    <div key="{{ skoleKey }}" class="wang-card" style="border-radius:20px;padding:0;margin-top:14px;overflow:hidden;animation:wangFadeUp 320ms cubic-bezier(0.22,1,0.36,1)">
+      <div style="display:grid;grid-template-columns:{{ gridKol }};box-shadow:0 1px 0 var(--border-subtle);background:var(--surface-card)">
+        <span></span>
+        <sc-for list="{{ dagKolVist }}" as="dk" hint-placeholder-count="5">
+          <span style="padding:9px 2px;text-align:center;box-shadow:inset 1px 0 0 var(--border-subtle)">
+            <span style="display:block;font-family:var(--font-brand);font-weight:700;font-size:clamp(9.5px,1.5vw,12.5px);letter-spacing:0.05em;text-transform:uppercase;color:var(--text-primary)">{{ dk.kort }}</span>
+          </span>
+        </sc-for>
+      </div>
+      <div style="display:grid;grid-template-columns:{{ gridKol }};position:relative">
+        <div style="position:relative;height:{{ rutenettHoyde }}px">
+          <sc-for list="{{ timeLinjer }}" as="tl" hint-placeholder-count="8">
+            <span class="wang-num" style="position:absolute;top:{{ tl.top }}px;right:5px;font-size:clamp(8px,1.2vw,10.5px);font-weight:600;color:var(--text-secondary);transform:translateY(-50%);white-space:nowrap">{{ tl.label }}</span>
+          </sc-for>
+        </div>
+        <sc-for list="{{ dagKolVist }}" as="dk" hint-placeholder-count="5">
+          <div style="position:relative;height:{{ rutenettHoyde }}px;box-shadow:inset 1px 0 0 var(--border-subtle)">
+            <sc-for list="{{ timeLinjer }}" as="tl" hint-placeholder-count="8">
+              <span style="position:absolute;left:0;right:0;top:{{ tl.top }}px;height:1px;background:var(--border-subtle);opacity:0.7"></span>
+            </sc-for>
+            <sc-for list="{{ dk.blokker }}" as="b" hint-placeholder-count="5">
+              <span style="position:absolute;left:2px;right:2px;top:{{ b.top }}px;height:{{ b.h }}px;border-radius:7px;background:{{ b.bg }};box-shadow:inset 2.5px 0 0 {{ b.stripe }};padding:4px 5px;overflow:hidden;display:flex;flex-direction:column;gap:1px">
+                <span style="font-family:var(--font-brand);font-weight:700;font-size:clamp(8.5px,1.35vw,11.5px);line-height:1.2;color:{{ b.farge }};overflow-wrap:anywhere">{{ b.tittel }}</span>
+                <span style="font-size:clamp(7.5px,1.1vw,10px);line-height:1.25;color:var(--text-secondary);overflow-wrap:anywhere;display:{{ b.visRom }}">{{ b.rom }}</span>
+              </span>
+            </sc-for>
+          </div>
+        </sc-for>
+      </div>
+      <div style="display:flex;gap:7px 14px;flex-wrap:wrap;padding:12px 14px;background:var(--neutral-50)">
+        <span style="display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--text-secondary)"><span style="width:9px;height:9px;border-radius:3px;background:var(--wang-teal)"></span>Trening</span>
+        <span style="display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--text-secondary)"><span style="width:9px;height:9px;border-radius:3px;background:var(--cat-blue)"></span>Fag med parallelle valg</span>
+        <span style="display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--text-secondary)"><span style="width:9px;height:9px;border-radius:3px;background:var(--cat-orange)"></span>Spisefri og leksehjelp</span>
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:16px;margin-top:16px">
+      <div class="wang-card" style="border-radius:20px;padding:22px">
+        <div class="t-label" style="color:var(--wang-teal-text)">Fag, lærer og rom · {{ klasseNavn }}</div>
+        <div style="display:flex;flex-direction:column;margin-top:10px">
+          <sc-for list="{{ skoleFag }}" as="sf" hint-placeholder-count="10">
+            <div style="display:grid;grid-template-columns:1fr auto;gap:4px 12px;padding:9px 0;box-shadow:0 1px 0 var(--border-subtle)">
+              <span style="font-family:var(--font-brand);font-weight:700;font-size:13px">{{ sf.fag }}</span>
+              <span class="wang-num" style="font-size:11.5px;color:var(--text-secondary);text-align:right">{{ sf.rom }} · {{ sf.blokk }}</span>
+              <span style="font-size:12.5px;color:var(--text-secondary);grid-column:1/-1">{{ sf.laerer }}</span>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:16px">
+        <div class="wang-card" style="border-radius:20px;padding:22px">
+          <div class="t-label" style="color:var(--wang-teal-text)">Skolerute 2026/27</div>
+          <div style="display:flex;flex-direction:column;margin-top:10px">
+            <sc-for list="{{ skolerute }}" as="sr" hint-placeholder-count="10">
+              <div style="display:grid;grid-template-columns:78px 1fr auto;gap:10px;padding:8px 0;box-shadow:0 1px 0 var(--border-subtle);align-items:baseline">
+                <span class="wang-num" style="font-family:var(--font-brand);font-weight:800;font-size:11.5px;color:var(--wang-navy)">{{ sr.mnd }}</span>
+                <span style="font-size:12.5px;line-height:1.5">{{ sr.tekst }}</span>
+                <span class="wang-num" style="font-size:11px;color:var(--text-secondary);white-space:nowrap">{{ sr.uke }}</span>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+        <div class="wang-card" style="border-radius:20px;padding:22px">
+          <div class="t-label" style="color:var(--wang-teal-text)">Foreldremøter · {{ klasseNavn }}</div>
+          <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:12px">
+            <sc-for list="{{ foreldremoter }}" as="fm" hint-placeholder-count="3">
+              <span class="wang-num" style="display:inline-flex;align-items:center;height:28px;padding:0 12px;border-radius:999px;background:var(--tint-navy);color:var(--wang-navy);font-size:12px;font-weight:700">{{ fm.tekst }}</span>
+            </sc-for>
+          </div>
+        </div>
+      </div>
+    </div>
+    <p style="margin:16px 4px 0;font-size:13px;line-height:1.6;color:var(--text-secondary)">192 skoledager totalt: 84 i høsthalvåret, 107 i vårhalvåret og oppstartsdagen med overnatting for VG1 14. august. Leksehjelp mandag, onsdag og torsdag 15.00–15.45.</p>
+  </section>
+  </sc-if>
+
+  <sc-if value="{{ visSkole }}" hint-placeholder-val="{{ false }}">
+  <section id="kompetansemaal" data-screen-label="02 Kompetansemål" style="max-width:1160px;margin:0 auto;padding:clamp(36px,6vw,56px) clamp(16px,4vw,28px) 0;box-sizing:border-box;animation:wangFadeUp 260ms cubic-bezier(0.22,1,0.36,1)">
+    <div style="display:flex;align-items:center;gap:12px">
+      <span class="wang-num" style="width:34px;height:34px;border-radius:12px;display:grid;place-items:center;background:var(--tint-navy);color:var(--wang-navy);font-family:var(--font-brand);font-weight:800;font-size:14px">02</span>
+      <span class="t-label" style="color:var(--wang-teal-text)">Kompetansemål</span>
+    </div>
+    <h2 style="font-family:var(--font-brand);font-weight:700;font-size:clamp(24px,4.2vw,34px);line-height:1.1;margin:12px 0 0">Toppidrett (IDR05-02) og kroppsøving (KRO01-05)</h2>
+    <p style="font-size:clamp(14.5px,2vw,16.5px);line-height:1.6;color:var(--text-secondary);max-width:660px;margin:12px 0 0">Offisiell læreplan fra Udir — begge fagene WANG-elevene har. Hver økt lenkes til Toppidrett-målene for ditt trinn; Kroppsøving-målene vises som referanse.</p>
+    <div key="{{ trinnKey }}" style="display:flex;flex-direction:column;gap:34px;margin-top:28px;animation:wangFadeUp 320ms cubic-bezier(0.22,1,0.36,1)">
+      <sc-for list="{{ kmGrupper }}" as="gr" hint-placeholder-count="3">
+      <div style="display:flex;flex-direction:column;gap:14px">
+      <div style="display:flex;align-items:center;gap:10px">
+        <span style="display:inline-flex;align-items:center;height:28px;padding:0 13px;border-radius:999px;background:{{ gr.tint }};color:{{ gr.farge }};font-family:var(--font-brand);font-weight:800;font-size:12.5px">{{ gr.trinn }}</span>
+        <span style="font-family:var(--font-brand);font-weight:700;font-size:15.5px">{{ gr.overskrift }}</span>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:18px">
+      <sc-for list="{{ gr.kort }}" as="k" hint-placeholder-count="2">
+        <div class="wang-card" style="border-radius:20px;padding:22px;display:flex;flex-direction:column;gap:12px">
+          <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+            <span style="display:inline-flex;align-items:center;height:26px;padding:0 12px;border-radius:999px;background:{{ k.tint }};color:{{ k.farge }};font-family:var(--font-brand);font-weight:800;font-size:12px">{{ k.trinn }}</span>
+            <span style="font-family:var(--font-brand);font-weight:700;font-size:15.5px">{{ k.fag }}</span>
+            <span class="wang-num" style="font-size:11.5px;color:var(--text-secondary);margin-left:auto">{{ k.kode }}</span>
+          </div>
+          <p style="margin:0;font-size:13px;line-height:1.55;color:var(--text-secondary)">{{ k.ingress }}</p>
+          <div style="display:flex;flex-direction:column">
+            <sc-for list="{{ k.maal }}" as="m" hint-placeholder-count="8">
+              <div style="display:grid;grid-template-columns:26px 1fr;gap:10px;padding:8px 0;box-shadow:0 1px 0 var(--border-subtle);align-items:start">
+                <span class="wang-num" style="width:24px;height:24px;border-radius:8px;display:grid;place-items:center;background:{{ k.tint }};color:{{ k.farge }};font-family:var(--font-brand);font-weight:800;font-size:11px">{{ m.nr }}</span>
+                <span style="font-size:13px;line-height:1.55;color:var(--text-primary)">{{ m.tekst }}</span>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+      </sc-for>
+      </div>
+      </div>
+      </sc-for>
+    </div>
+  </section>
+  </sc-if>
+
+  <sc-if value="{{ visSkole }}" hint-placeholder-val="{{ false }}">
+  <section id="prover" data-screen-label="03 Prøveplaner" style="max-width:1160px;margin:0 auto;padding:clamp(36px,6vw,56px) clamp(16px,4vw,28px) 0;box-sizing:border-box;animation:wangFadeUp 260ms cubic-bezier(0.22,1,0.36,1)">
+    <div style="display:flex;align-items:center;gap:12px">
+      <span class="wang-num" style="width:34px;height:34px;border-radius:12px;display:grid;place-items:center;background:var(--tint-navy);color:var(--wang-navy);font-family:var(--font-brand);font-weight:800;font-size:14px">03</span>
+      <span class="t-label" style="color:var(--wang-teal-text)">Prøveplaner</span>
+    </div>
+    <h2 style="font-family:var(--font-brand);font-weight:700;font-size:clamp(24px,4.2vw,34px);line-height:1.1;margin:12px 0 0">Prøver og eksamen</h2>
+    <p style="font-size:clamp(14.5px,2vw,16.5px);line-height:1.6;color:var(--text-secondary);max-width:660px;margin:12px 0 0">Skolens prøveperioder og eksamener for {{ klasseNavn }}. Idrettens testuker ligger i årsplanen. Enkeltprøver i fag kommer fra faglærer og publiseres i kalenderen.</p>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:18px">
+      <sc-for list="{{ klassePills }}" as="kp" hint-placeholder-count="3">
+        <button onClick="{{ kp.velg }}" class="wang-pressable" style="font-family:var(--font-brand);font-weight:700;font-size:13px;border:1.5px solid {{ kp.border }};cursor:pointer;padding:9px 16px;border-radius:999px;background:{{ kp.bg }};color:{{ kp.fg }};min-height:40px">{{ kp.label }}</button>
+      </sc-for>
+    </div>
+    <div class="wang-card" style="border-radius:22px;padding:clamp(16px,3vw,26px);margin-top:18px">
+      <sc-for list="{{ prover }}" as="pv" hint-placeholder-count="7">
+        <div style="display:grid;grid-template-columns:88px 1fr;gap:12px;padding:13px 0;box-shadow:0 1px 0 var(--border-subtle);align-items:start">
+          <span class="wang-num" style="font-family:var(--font-brand);font-weight:800;font-size:12px;color:var(--wang-navy);padding-top:3px">{{ pv.uke }}</span>
+          <div style="min-width:0">
+            <span style="font-family:var(--font-brand);font-weight:700;font-size:14px">{{ pv.tittel }}</span>
+            <p style="font-size:13px;line-height:1.5;color:var(--text-secondary);margin:4px 0 0">{{ pv.detalj }}</p>
+          </div>
+        </div>
+      </sc-for>
+    </div>
+  </section>
+  </sc-if>
+
+  <sc-if value="{{ visKalender }}" hint-placeholder-val="{{ false }}">
+  <section id="kalender" data-screen-label="Kalender" style="max-width:1160px;margin:0 auto;padding:clamp(36px,6vw,56px) clamp(16px,4vw,28px) 0;box-sizing:border-box;animation:wangFadeUp 260ms cubic-bezier(0.22,1,0.36,1)">
+    <div style="display:flex;align-items:center;gap:12px">
+      <span class="wang-num" style="width:34px;height:34px;border-radius:12px;display:grid;place-items:center;background:var(--tint-navy);color:var(--wang-navy);font-family:var(--font-brand);font-weight:800;font-size:14px">01</span>
+      <span class="t-label" style="color:var(--wang-teal-text)">Kalender</span>
+    </div>
+    <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-top:12px">
+      <div>
+        <h2 style="font-family:var(--font-brand);font-weight:700;font-size:clamp(24px,4.2vw,34px);line-height:1.1;margin:0">Tidslinje, uke, måned og år</h2>
+        <p style="font-size:clamp(14.5px,2vw,16.5px);line-height:1.6;color:var(--text-secondary);max-width:620px;margin:12px 0 0">Alle faste økter, tester, samlinger og ferier fra årshjulet. Terminlisten for høsten 2026 er lagt inn — Østlandstour 9–11 og Olyo Juniortour region Øst.</p>
+      </div>
+      <x-import component-from-global-scope="WANGTreningsplattformDesignSystem_be77fc.Tabs" options="{{ kalTabs }}" value="{{ kalValg }}" onChange="{{ settKalValg }}" hint-size="320,44"></x-import>
+    </div>
+    <div style="display:flex;gap:8px 16px;flex-wrap:wrap;margin-top:18px">
+      <x-import component-from-global-scope="WANGTreningsplattformDesignSystem_be77fc.EventChip" type="okt" label="Økt og samling" size="sm" hint-size="110,22"></x-import>
+      <x-import component-from-global-scope="WANGTreningsplattformDesignSystem_be77fc.EventChip" type="prove" label="Test" size="sm" hint-size="70,22"></x-import>
+      <x-import component-from-global-scope="WANGTreningsplattformDesignSystem_be77fc.EventChip" type="skole" label="Skole og ferie" size="sm" hint-size="110,22"></x-import>
+      <x-import component-from-global-scope="WANGTreningsplattformDesignSystem_be77fc.EventChip" type="hendelse" label="Merkedag" size="sm" hint-size="90,22"></x-import>
+    </div>
+    <sc-if value="{{ erTidslinje }}" hint-placeholder-val="{{ false }}">
+      <div class="wang-card" style="padding:clamp(16px,3vw,26px);margin-top:18px">
+        <div style="display:flex;flex-direction:column">
+          <sc-for list="{{ tidslinje }}" as="tb" hint-placeholder-count="6">
+            <div style="display:grid;grid-template-columns:clamp(64px,10vw,96px) 18px 1fr;gap:clamp(8px,2vw,16px)">
+              <div style="text-align:right;padding:14px 0">
+                <div class="wang-num" style="font-family:var(--font-brand);font-weight:800;font-size:13px;color:{{ tb.tekstFarge }}">{{ tb.uker }}</div>
+                <div class="wang-num" style="font-size:11px;color:var(--text-secondary);margin-top:2px">{{ tb.datoer }}</div>
+              </div>
+              <div style="display:flex;flex-direction:column;align-items:center">
+                <span style="width:14px;height:14px;border-radius:999px;background:{{ tb.farge }};border:3px solid #fff;box-shadow:0 0 0 1.5px {{ tb.farge }};margin-top:16px;flex-shrink:0"></span>
+                <span style="width:3px;flex:1;background:{{ tb.farge }};opacity:0.3;border-radius:999px;display:{{ tb.linje }}"></span>
+              </div>
+              <div style="padding:10px 0 22px">
+                <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+                  <span style="font-family:var(--font-brand);font-weight:700;font-size:16px">{{ tb.navn }}</span>
+                  <span style="display:inline-flex;align-items:center;height:22px;padding:0 10px;border-radius:999px;background:{{ tb.tint }};color:{{ tb.tekstFarge }};font-family:var(--font-brand);font-weight:700;font-size:10.5px;white-space:nowrap">{{ tb.fase }}</span>
+                </div>
+                <p style="font-size:13.5px;line-height:1.55;color:var(--text-secondary);margin:6px 0 0;max-width:560px">{{ tb.fokus }}</p>
+                <div style="display:flex;flex-direction:column;gap:5px;margin-top:10px">
+                  <sc-for list="{{ tb.punkter }}" as="tp" hint-placeholder-count="2">
+                    <div class="wang-num" style="display:flex;align-items:baseline;gap:8px;font-size:12.5px;font-weight:700;color:var(--text-primary)"><span style="flex-shrink:0;font-family:var(--font-brand);font-size:10.5px;font-weight:800;color:{{ tb.tekstFarge }};background:{{ tb.tint }};border-radius:6px;padding:1px 6px;white-space:nowrap">{{ tp.uke }}</span><span style="min-width:0">{{ tp.tekst }}</span></div>
+                  </sc-for>
+                </div>
+                <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:10px">
+                  <sc-for list="{{ tb.formler }}" as="tf" hint-placeholder-count="4">
+                    <span class="wang-num" style="display:inline-flex;align-items:center;gap:6px;height:22px;padding:0 9px;border-radius:7px;background:var(--neutral-50);font-size:11px;color:var(--text-primary);white-space:nowrap"><span style="width:7px;height:7px;border-radius:3px;background:{{ tf.farge }}"></span>{{ tf.omrade }} · {{ tf.reps }}</span>
+                  </sc-for>
+                </div>
+              </div>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+    </sc-if>
+    <sc-if value="{{ erAar }}" hint-placeholder-val="{{ false }}">
+      <div class="wang-card" style="padding:clamp(16px,3vw,24px);margin-top:18px">
+        <div style="display:flex;gap:8px;margin-bottom:16px">
+          <sc-for list="{{ aarPills }}" as="ap" hint-placeholder-count="2">
+            <button onClick="{{ ap.velg }}" class="wang-pressable" style="font-family:var(--font-brand);font-weight:700;font-size:13px;border:none;cursor:pointer;padding:9px 18px;border-radius:999px;background:{{ ap.bg }};color:{{ ap.fg }};min-height:40px">{{ ap.label }}</button>
+          </sc-for>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:clamp(10px,1.6vw,14px)">
+          <sc-for list="{{ aarManeder }}" as="am" hint-placeholder-count="12">
+            <button onClick="{{ am.apne }}" class="wang-pressable" style="text-align:left;border:none;cursor:pointer;font-family:var(--font-body);background:var(--neutral-50);border-radius:18px;padding:14px 15px;display:flex;flex-direction:column;gap:10px;box-shadow:inset 0 3px 0 {{ am.stripe }}">
+              <div style="display:flex;align-items:baseline;justify-content:space-between;gap:8px">
+                <span style="font-family:var(--font-brand);font-weight:700;font-size:14.5px;color:var(--text-primary)">{{ am.navn }}</span>
+                <span class="wang-num" style="font-family:var(--font-brand);font-weight:800;font-size:15px;color:{{ am.tallFarge }}">{{ am.antall }}</span>
+              </div>
+              <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:3px">
+                <sc-for list="{{ am.dager }}" as="d" hint-placeholder-count="35">
+                  <span style="aspect-ratio:1;border-radius:4px;background:{{ d.bg }};box-shadow:{{ d.ring }}"></span>
+                </sc-for>
+              </div>
+              <div style="display:flex;flex-wrap:wrap;gap:4px">
+                <sc-for list="{{ am.summer }}" as="s" hint-placeholder-count="3">
+                  <span class="wang-num" style="display:inline-flex;align-items:center;gap:5px;height:20px;padding:0 8px;border-radius:999px;background:{{ s.tint }};color:{{ s.farge }};font-family:var(--font-brand);font-weight:800;font-size:10px;white-space:nowrap"><span style="width:6px;height:6px;border-radius:999px;background:{{ s.farge }}"></span>{{ s.antall }}</span>
+                </sc-for>
+              </div>
+            </button>
+          </sc-for>
+        </div>
+        <div style="display:flex;gap:8px 16px;flex-wrap:wrap;margin-top:16px">
+          <sc-for list="{{ aarLegend }}" as="al" hint-placeholder-count="4">
+            <span style="display:inline-flex;align-items:center;gap:7px;font-size:12.5px;color:var(--text-secondary)"><span style="width:10px;height:10px;border-radius:4px;background:{{ al.farge }}"></span>{{ al.navn }}</span>
+          </sc-for>
+        </div>
+      </div>
+    </sc-if>
+    <sc-if value="{{ erKal }}" hint-placeholder-val="{{ true }}">
+      <div class="wang-card" style="padding:clamp(16px,3vw,24px);margin-top:18px;min-width:0">
+        <x-import component-from-global-scope="WANGTreningsplattformDesignSystem_be77fc.CalendarView" events="{{ events }}" active-date="{{ kalDato }}" onActiveDateChange="{{ settKalDato }}" onDayClick="{{ settValgtDag }}" view="{{ kalVisning }}" onViewChange="{{ settKalVisning }}" style="width:100%;display:block" hint-size="100%,560px"></x-import>
+      </div>
+      <div class="wang-card" style="padding:clamp(16px,3vw,24px);margin-top:14px">
+        <div style="display:flex;align-items:baseline;gap:10px;flex-wrap:wrap">
+          <span class="t-label" style="color:var(--wang-teal-text)">Valgt dag</span>
+          <span style="font-family:var(--font-brand);font-weight:700;font-size:15.5px">{{ valgtDagTekst }}</span>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:8px;margin-top:12px">
+          <sc-for list="{{ dagsHendelser }}" as="dh" hint-placeholder-count="2">
+            <button onClick="{{ dh.apne }}" class="wang-pressable" style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;text-align:left;width:100%;border:none;cursor:pointer;background:var(--neutral-50);border-radius:14px;padding:12px 14px;min-height:48px;font-family:var(--font-body)">
+              <span style="display:inline-flex;align-items:center;height:21px;padding:0 9px;border-radius:999px;background:{{ dh.tint }};color:{{ dh.farge }};font-family:var(--font-brand);font-weight:800;font-size:9.5px;letter-spacing:0.04em;text-transform:uppercase;white-space:nowrap">{{ dh.type }}</span>
+              <span class="wang-num" style="font-size:11.5px;font-weight:700;color:var(--text-secondary);white-space:nowrap">{{ dh.tid }}</span>
+              <span style="font-size:13.5px;line-height:1.45;color:var(--text-primary);flex:1 1 160px;min-width:0">{{ dh.label }}</span>
+              <span style="font-family:var(--font-brand);font-weight:700;font-size:12px;color:var(--wang-teal-text);white-space:nowrap">{{ dh.cta }} →</span>
+            </button>
+          </sc-for>
+        </div>
+        <p style="margin:12px 2px 0;font-size:12.5px;color:var(--text-secondary)">Trykk en dag i kalenderen for å se hva som skjer — og gå rett til planen bak hendelsen.</p>
+      </div>
+    </sc-if>
+  </section>
+  </sc-if>
+
+  <sc-if value="{{ visForeldre }}" hint-placeholder-val="{{ false }}">
+  <nav style="max-width:1160px;margin:0 auto;padding:clamp(20px,4vw,30px) clamp(16px,4vw,28px) 0;box-sizing:border-box;display:flex;gap:8px;flex-wrap:wrap">
+    <a href="#ukessammendrag" style="text-decoration:none;font-family:var(--font-brand);font-weight:700;font-size:12.5px;padding:8px 15px;border-radius:999px;background:var(--neutral-50);color:var(--text-primary)">Ukessammendrag</a>
+    <a href="#foreldremoter" style="text-decoration:none;font-family:var(--font-brand);font-weight:700;font-size:12.5px;padding:8px 15px;border-radius:999px;background:var(--neutral-50);color:var(--text-primary)">Foreldremøter</a>
+    <a href="#praktisk" style="text-decoration:none;font-family:var(--font-brand);font-weight:700;font-size:12.5px;padding:8px 15px;border-radius:999px;background:var(--neutral-50);color:var(--text-primary)">Praktisk</a>
+  </nav>
+
+  <section id="ukessammendrag" data-screen-label="01 Ukessammendrag" style="max-width:1160px;margin:0 auto;padding:clamp(36px,6vw,56px) clamp(16px,4vw,28px) 0;box-sizing:border-box;animation:wangFadeUp 260ms cubic-bezier(0.22,1,0.36,1)">
+    <div style="display:flex;align-items:center;gap:12px">
+      <span class="wang-num" style="width:34px;height:34px;border-radius:12px;display:grid;place-items:center;background:var(--tint-navy);color:var(--wang-navy);font-family:var(--font-brand);font-weight:800;font-size:14px">01</span>
+      <span class="t-label" style="color:var(--wang-teal-text)">Ukessammendrag</span>
+    </div>
+    <h2 style="font-family:var(--font-brand);font-weight:700;font-size:clamp(24px,4.2vw,34px);line-height:1.1;margin:12px 0 0">Uken oppsummert — hver fredag</h2>
+    <p style="font-size:clamp(14.5px,2vw,16.5px);line-height:1.6;color:var(--text-secondary);max-width:660px;margin:12px 0 0">Treneren legger ut sammendraget fredag ettermiddag: hva uken skulle gi, hva som ble gjennomført, høydepunktet og hva som venter neste uke. Ingen påmelding — siden oppdaterer seg selv.</p>
+
+    <sc-if value="{{ ingenRapport }}" hint-placeholder-val="{{ true }}">
+      <div class="wang-card" style="padding:clamp(20px,3.4vw,30px);margin-top:24px;background:var(--tint-teal);box-shadow:none;display:flex;flex-direction:column;gap:8px">
+        <span style="font-family:var(--font-brand);font-weight:700;font-size:16px">Første sammendrag kommer fredag {{ nesteFredag }}</span>
+        <span style="font-size:13.5px;line-height:1.6;color:var(--text-secondary);max-width:600px">Sammendraget dekker treningsuken mandag til fredag og publiseres samme dag som fredagsøkten er ferdig, senest kl. 16.</span>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ harRapport }}" hint-placeholder-val="{{ false }}">
+      <div style="border-radius:26px;background:linear-gradient(160deg,color-mix(in srgb,var(--wang-navy) 82%,white) 0%,var(--wang-navy) 60%,color-mix(in srgb,var(--wang-navy) 84%,black) 100%);color:#fff;padding:clamp(22px,3.4vw,32px);margin-top:24px;display:flex;flex-direction:column;gap:16px">
+        <div style="display:flex;align-items:baseline;gap:12px;flex-wrap:wrap">
+          <span class="t-label" style="color:var(--wang-mint)">Uke {{ siste.uke }} · {{ siste.datoer }}</span>
+          <span class="wang-num" style="font-size:12px;color:rgba(255,255,255,0.62);margin-left:auto">{{ siste.periode }}</span>
+        </div>
+        <p style="margin:0;font-family:var(--font-brand);font-weight:700;font-size:clamp(18px,2.8vw,24px);line-height:1.35">{{ siste.maalsetning }}</p>
+        <div style="display:flex;flex-wrap:wrap;gap:8px">
+          <sc-for list="{{ siste.fokus }}" as="f" hint-placeholder-count="3">
+            <span style="display:inline-flex;align-items:center;min-height:30px;padding:4px 13px;border-radius:999px;background:rgba(255,255,255,0.12);font-size:12.5px;font-weight:700">{{ f }}</span>
+          </sc-for>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:18px">
+          <div style="display:flex;flex-direction:column;gap:7px;min-width:0">
+            <span class="t-label" style="font-size:9.5px;color:rgba(255,255,255,0.6)">Gjennomført</span>
+            <sc-for list="{{ siste.gjennomfort }}" as="g" hint-placeholder-count="3">
+              <span style="font-size:13.5px;line-height:1.5;color:rgba(255,255,255,0.88)">{{ g }}</span>
+            </sc-for>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:14px;min-width:0">
+            <div style="display:flex;flex-direction:column;gap:5px">
+              <span class="t-label" style="font-size:9.5px;color:rgba(255,255,255,0.6)">Høydepunkt</span>
+              <span style="font-size:13.5px;line-height:1.5">{{ siste.hoydepunkt }}</span>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:5px">
+              <span class="t-label" style="font-size:9.5px;color:rgba(255,255,255,0.6)">Neste uke</span>
+              <span style="font-size:13.5px;line-height:1.5">{{ siste.neste }}</span>
+            </div>
+          </div>
+        </div>
+        <span class="wang-num" style="font-size:12px;color:var(--wang-mint)">{{ siste.trener }}</span>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ harTidligere }}" hint-placeholder-val="{{ false }}">
+      <div class="wang-card" style="border-radius:20px;padding:clamp(18px,3vw,24px);margin-top:16px;display:flex;flex-direction:column;gap:8px">
+        <span class="t-label" style="color:var(--text-secondary)">Tidligere uker</span>
+        <sc-for list="{{ tidligere }}" as="r" hint-placeholder-count="3">
+          <div style="padding:11px 0;box-shadow:0 1px 0 var(--border-subtle)">
+            <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+              <span class="wang-num" style="font-family:var(--font-brand);font-weight:800;font-size:12.5px;color:var(--wang-navy);min-width:58px">Uke {{ r.uke }}</span>
+              <span style="font-size:13.5px;line-height:1.45;flex:1 1 180px;min-width:0">{{ r.maalsetning }}</span>
+              <button onClick="{{ r.veksle }}" class="wang-pressable" style="border:1.5px solid var(--border-subtle);background:transparent;cursor:pointer;min-height:40px;padding:0 16px;border-radius:999px;font-family:var(--font-brand);font-weight:700;font-size:12.5px;color:var(--wang-teal-text)">{{ r.vekslerTekst }}</button>
+            </div>
+            <sc-if value="{{ r.apen }}" hint-placeholder-val="{{ false }}">
+              <div style="display:flex;flex-direction:column;gap:6px;margin-top:10px;padding-left:58px">
+                <sc-for list="{{ r.gjennomfort }}" as="g" hint-placeholder-count="3">
+                  <span style="font-size:13px;line-height:1.5;color:var(--text-secondary)">{{ g }}</span>
+                </sc-for>
+                <span style="font-size:13px;line-height:1.5">{{ r.neste }}</span>
+              </div>
+            </sc-if>
+          </div>
+        </sc-for>
+      </div>
+    </sc-if>
+  </section>
+
+  <section id="foreldremoter" data-screen-label="02 Foreldremøter" style="max-width:1160px;margin:0 auto;padding:clamp(36px,6vw,56px) clamp(16px,4vw,28px) 0;box-sizing:border-box">
+    <div style="display:flex;align-items:center;gap:12px">
+      <span class="wang-num" style="width:34px;height:34px;border-radius:12px;display:grid;place-items:center;background:var(--tint-navy);color:var(--wang-navy);font-family:var(--font-brand);font-weight:800;font-size:14px">02</span>
+      <span class="t-label" style="color:var(--wang-teal-text)">Foreldremøter</span>
+    </div>
+    <h2 style="font-family:var(--font-brand);font-weight:700;font-size:clamp(24px,4.2vw,34px);line-height:1.1;margin:12px 0 0">Møtene gjennom skoleåret</h2>
+    <p style="font-size:clamp(14.5px,2vw,16.5px);line-height:1.6;color:var(--text-secondary);max-width:660px;margin:12px 0 0">Alle møter starter kl. 17:00 på WANG Toppidrett Fredrikstad. VG1 har flest møter — første året krever tettest kontakt mellom skole, trener og hjem.</p>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px;margin-top:24px">
+      <sc-for list="{{ foreldreTrinn }}" as="ft" hint-placeholder-count="3">
+        <div class="wang-card" style="border-radius:20px;padding:22px;height:100%;box-sizing:border-box;display:flex;flex-direction:column;gap:12px;border-top:3px solid {{ ft.farge }}">
+          <div style="display:flex;align-items:baseline;gap:10px">
+            <span style="font-family:var(--font-brand);font-weight:800;font-size:17px;color:{{ ft.farge }}">{{ ft.trinn }}</span>
+            <span class="wang-num" style="font-size:12px;color:var(--text-secondary);margin-left:auto">{{ ft.antall }}</span>
+          </div>
+          <sc-for list="{{ ft.moter }}" as="m" hint-placeholder-count="3">
+            <div style="display:flex;align-items:baseline;gap:10px;padding:9px 0;box-shadow:0 1px 0 var(--border-subtle)">
+              <span class="wang-num" style="font-size:13px;line-height:1.45">{{ m.tekst }}</span>
+            </div>
+          </sc-for>
+          <span style="font-size:12.5px;line-height:1.55;color:var(--text-secondary);margin-top:auto;padding-top:4px">{{ ft.tema }}</span>
+        </div>
+      </sc-for>
+    </div>
+  </section>
+
+  <section id="praktisk" data-screen-label="03 Praktisk" style="max-width:1160px;margin:0 auto;padding:clamp(36px,6vw,56px) clamp(16px,4vw,28px) 0;box-sizing:border-box">
+    <div style="display:flex;align-items:center;gap:12px">
+      <span class="wang-num" style="width:34px;height:34px;border-radius:12px;display:grid;place-items:center;background:var(--tint-navy);color:var(--wang-navy);font-family:var(--font-brand);font-weight:800;font-size:14px">03</span>
+      <span class="t-label" style="color:var(--wang-teal-text)">Praktisk</span>
+    </div>
+    <h2 style="font-family:var(--font-brand);font-weight:700;font-size:clamp(24px,4.2vw,34px);line-height:1.1;margin:12px 0 0">Det foresatte trenger å vite</h2>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px;margin-top:24px">
+      <sc-for list="{{ foreldreInfo }}" as="fi" hint-placeholder-count="4">
+        <div class="wang-card" style="border-radius:20px;padding:22px;display:flex;flex-direction:column;gap:8px">
+          <span class="t-label" style="color:var(--wang-teal-text)">{{ fi.tittel }}</span>
+          <span style="font-size:13.5px;line-height:1.6;color:var(--text-primary)">{{ fi.tekst }}</span>
+        </div>
+      </sc-for>
+    </div>
+    <div class="wang-card" style="border-radius:20px;padding:22px;margin-top:16px">
+      <div class="t-label" style="color:var(--wang-teal-text)">Fri, ferie og planleggingsdager</div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:10px;margin-top:14px">
+        <sc-for list="{{ skolerute }}" as="sr" hint-placeholder-count="10">
+          <div style="display:flex;flex-direction:column;gap:3px;padding:12px 14px;border-radius:14px;background:var(--neutral-50)">
+            <span class="wang-num" style="font-family:var(--font-brand);font-weight:800;font-size:10.5px;color:var(--wang-navy)">{{ sr.mnd }} · {{ sr.uke }}</span>
+            <span style="font-size:12.5px;line-height:1.45">{{ sr.tekst }}</span>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+  </section>
+  </sc-if>
+
+  <section data-screen-label="Kontakt" style="max-width:1160px;margin:0 auto;padding:clamp(40px,6vw,64px) clamp(16px,4vw,28px) clamp(56px,8vw,88px);box-sizing:border-box">
+    <div class="wang-card" style="padding:22px 24px;display:flex;gap:14px 18px;align-items:baseline;flex-wrap:wrap">
+      <span style="font-family:var(--font-brand);font-weight:700;font-size:15px">Spørsmål om planen?</span>
+      <span style="font-size:14px;line-height:1.6;color:var(--text-secondary)">Ta kontakt med Anders — sportssjef og trener, golf. Periodebrev sendes elever og foresatte ved hvert periodeskifte.</span>
+    </div>
+  </section>
+
+  <footer data-screen-label="Footer" style="background:var(--wang-navy);color:rgba(255,255,255,0.75)">
+    <div style="max-width:1160px;margin:0 auto;padding:26px clamp(16px,4vw,28px);display:flex;align-items:center;gap:14px;flex-wrap:wrap">
+      <img src="assets/wang-crest.svg" alt="WANG" style="height:38px;width:auto">
+      <span style="font-family:var(--font-brand);font-weight:600;font-size:13.5px">WANG Toppidrett Fredrikstad · Toppidrett golf · Årsplan 2026/27</span>
+      <span class="t-label" style="margin-left:auto;color:var(--wang-mint);font-size:10.5px">Sammen lykkes vi</span>
+    </div>
+  </footer>
+</div>
+<template id="__bundler_thumbnail"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><rect width="200" height="200" fill="#17446F"/><circle cx="100" cy="100" r="52" fill="none" stroke="#49CA9F" stroke-width="4"/><text x="100" y="118" text-anchor="middle" font-family="Georgia,serif" font-size="52" font-weight="700" fill="#fff">W</text></svg></template>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;trinn&quot;: {&quot;editor&quot;: &quot;enum&quot;, &quot;default&quot;: &quot;Alle trinn&quot;, &quot;options&quot;: [&quot;Alle trinn&quot;, &quot;VG1&quot;, &quot;VG2&quot;, &quot;VG3&quot;], &quot;tsType&quot;: &quot;string&quot;, &quot;section&quot;: &quot;Innhold&quot;, &quot;description&quot;: &quot;Trinnet siden åpner på — styrer mål og kompetansemål&quot;}, &quot;kalender&quot;: {&quot;editor&quot;: &quot;enum&quot;, &quot;default&quot;: &quot;Tidslinje&quot;, &quot;options&quot;: [&quot;Tidslinje&quot;, &quot;Uke&quot;, &quot;Måned&quot;, &quot;År&quot;], &quot;tsType&quot;: &quot;string&quot;, &quot;section&quot;: &quot;Innhold&quot;, &quot;description&quot;: &quot;Standardvisning i kalenderen&quot;}}">
+const FASER = {
+  TURN:  { navn: 'Turnering',  farge: 'var(--cat-orange)', tint: 'var(--tint-orange)', tekst: 'var(--cat-orange)' },
+  GRUNN: { navn: 'Grunnperiode', farge: 'var(--wang-teal)', tint: 'var(--tint-teal)', tekst: 'var(--wang-teal-text)' },
+  SPES:  { navn: 'Spesialisering', farge: 'var(--cat-blue)', tint: 'var(--tint-blue)', tekst: 'var(--cat-blue)' },
+  TEST:  { navn: 'Testuke', farge: 'var(--cat-purple)', tint: 'var(--tint-purple)', tekst: 'var(--cat-purple)' },
+  FERIE: { navn: 'Ferie', farge: 'var(--neutral-400)', tint: 'var(--tint-gray)', tekst: 'var(--text-secondary)' },
+};
+
+// Årshjul 2026/27 — fasit fra docs/treningsplanlegger/wang-toppidrett/arshjul-2026-2027.md
+const UKER = [
+  [34,'2026-08-17','TURN','Pre-turnering','Sesongform — siste sommerturneringer'],
+  [35,'2026-08-24','TURN','Testuke','NGF/Team Norway-tester'],
+  [36,'2026-08-31','TURN','Testuke','NGF/Team Norway-tester'],
+  [37,'2026-09-07','TURN','Turneringsuke',''],[38,'2026-09-14','TURN','Turneringsuke',''],[39,'2026-09-21','TURN','Turneringsuke',''],
+  [40,'2026-09-28','TURN','Ferieuke','Høstferie'],
+  [41,'2026-10-05','TURN','Turneringsuke',''],
+  [42,'2026-10-12','TURN','Avslutningsuke','Banen stenger — TURN avsluttes'],
+  [43,'2026-10-19','TEST','Testuke','Testuke — IUP-baseline'],
+  [44,'2026-10-26','GRUNN','Utviklingsuke','GRUNN start — ny teknikk'],
+  [45,'2026-11-02','GRUNN','Utviklingsuke',''],[46,'2026-11-09','GRUNN','Utviklingsuke',''],[47,'2026-11-16','GRUNN','Utviklingsuke',''],
+  [48,'2026-11-23','GRUNN','Utviklingsuke',''],[49,'2026-11-30','GRUNN','Utviklingsuke',''],[50,'2026-12-07','GRUNN','Utviklingsuke',''],
+  [51,'2026-12-14','GRUNN','Utviklingsuke',''],
+  [52,'2026-12-21','GRUNN','Ferieuke','Juleferie'],[53,'2026-12-28','GRUNN','Ferieuke','Juleferie'],
+  [1,'2027-01-04','GRUNN','Samlingsuke','WANG fellessamling med Oslo'],
+  [2,'2027-01-11','GRUNN','Utviklingsuke',''],[3,'2027-01-18','GRUNN','Utviklingsuke',''],[4,'2027-01-25','GRUNN','Utviklingsuke',''],
+  [5,'2027-02-01','GRUNN','Utviklingsuke',''],[6,'2027-02-08','GRUNN','Utviklingsuke','Intern teknisk sjekk'],
+  [7,'2027-02-15','GRUNN','Samlingsuke','WANG fellessamling med Oslo'],
+  [8,'2027-02-22','GRUNN','Ferieuke','Vinterferie'],
+  [9,'2027-03-01','GRUNN','Utviklingsuke',''],
+  [10,'2027-03-08','GRUNN','Avslutningsuke','Test og IUP-sjekk'],
+  [11,'2027-03-15','SPES','Overgangsuke','SPES start — teknikk til slag'],
+  [12,'2027-03-22','SPES','Ferieuke','Påskeferie'],
+  [13,'2027-03-29','SPES','Utviklingsuke',''],[14,'2027-04-05','SPES','Utviklingsuke','Ute på GFGK'],[15,'2027-04-12','SPES','Utviklingsuke',''],
+  [16,'2027-04-19','SPES','Avslutningsuke','Kalibrering fullført'],
+  [17,'2027-04-26','TURN','Pre-turnering','TURN start'],
+  [18,'2027-05-03','TURN','Turneringsuke','Kr. himmelfart 6. mai — fri to/fre'],
+  [19,'2027-05-10','TURN','Turneringsuke',''],
+  [20,'2027-05-17','TURN','Turneringsuke','17. mai — fri mandag'],
+  [21,'2027-05-24','TURN','Turneringsuke',''],[22,'2027-05-31','TURN','Turneringsuke',''],[23,'2027-06-07','TURN','Turneringsuke',''],
+  [24,'2027-06-14','TURN','Avslutningsuke','Sesongavslutning og IUP'],
+];
+
+const PERIODER = [
+  { id: 'TURN', navn: 'Turnering (høst)', uker: 'Uke 34–42', datoer: '17. aug – 18. okt 2026', fokus: 'Sluttspill av sommersesongen — høste form. Vedlikeholds-FYS.',
+    nokkel: ['Siste sommerturneringer til banen stenger ut oktober', 'NGF/Team Norway-tester uke 35–36', 'Pre-turnering: kjente slag, ingen ny teknikk siste 48 timer'] },
+  { id: 'TEST', navn: 'Testuke', uker: 'Uke 43', datoer: '19.–25. okt 2026', fokus: 'Test- og evalueringsuke — IUP-baseline før vinterens tekniske arbeid.',
+    nokkel: ['Fullt testbatteri: TrackMan, kortspill og fysikk', 'IUP-samtale: mål for GRUNN avtales per elev', 'Øktmalen pauses — testene overtar øktene'] },
+  { id: 'GRUNN', navn: 'Grunnperiode', uker: 'Uke 44–10', datoer: '26. okt 2026 – 14. mar 2027', fokus: 'Bygg ny teknikk (BUILD→STAB→TEST) og styrk kroppen. Hele perioden innendørs.',
+    nokkel: ['50 % FYS — grunnlag for økt treningsbelastning', 'WANG-fellessamlinger med Oslo uke 1 og uke 7', 'Intern teknisk sjekk uke 6, test og IUP-sjekk uke 10'] },
+  { id: 'SPES', navn: 'Spesialisering', uker: 'Uke 11–16', datoer: '15. mar – 25. apr 2027', fokus: 'Overføre teknikk til slag på bane og kalibrere avstander.',
+    nokkel: ['Teknikk → slag: kjente avstander og lies', 'Ute på GFGK fra ca. 5. april', 'Kalibrering fullført før turneringsstart uke 17'] },
+  { id: 'TURN2', navn: 'Turnering (vår)', uker: 'Uke 17–24', datoer: '26. apr – 20. jun 2027', fokus: 'Prestere og vedlikeholde i turnering — Norgescup, Østlandstour, Srixon Tour og NM.',
+    nokkel: ['35 % av tiden i turneringsspill', 'Turneringsuker: restitusjon, mental gjennomgang, lett aktivering', 'Sesong- og skoleårsavslutning med IUP-evaluering uke 24'] },
+];
+
+function byggEkstra(o) {
+  const t = (m) => (Math.round((m / 60) * 10) / 10).toString().replace('.', ',') + ' t';
+  return {
+    GRUNN: [{ akse: 'FYS', min: o.grunn, tekst: 'Egentrening styrke ' + t(o.grunn) + ' per uke' }],
+    SPES: [{ akse: 'FYS', min: o.spes, tekst: 'Egentrening styrke ' + t(o.spes) + ' per uke' }],
+    TURN: [{ akse: 'FYS', min: o.turn, tekst: 'Vedlikehold styrke ' + t(o.turn) + ' per uke' },
+      { akse: 'TURN', min: o.turnering, tekst: 'Turneringsspill ' + t(o.turnering) + ' i snitt per uke' }],
+  };
+}
+const AKSE_ORD = ['TEK', 'SLAG', 'SPILL', 'TURN', 'FYS'];
+/* Øktkode: pyramide_område_motorikk_belastning_press. Merkelapp, aldri et krav. */
+const OMRAADE_LABEL = { TEE_TOTAL: 'Utslag', INNSPILL_200: 'Innspill ~200 m', INNSPILL_150: 'Innspill ~150 m',
+  INNSPILL_100: 'Innspill ~100 m', INNSPILL_50: 'Innspill ~50 m', CHIP: 'Chip', PITCH: 'Pitch', LOB: 'Lob',
+  BUNKER: 'Bunker', PUTT_0_3: 'Putt 0–3 fot', PUTT_3_5: 'Putt 3–5 fot', PUTT_5_10: 'Putt 5–10 fot',
+  PUTT_10_25: 'Putt 10–25 fot', PUTT_25_40: 'Putt 25–40 fot', PUTT_40_PLUSS: 'Putt 40+ fot',
+  STYRKE: 'Styrke', KONDISJON: 'Kondisjon', BEVEGELIGHET: 'Bevegelighet', BANE: 'Banespill' };
+const MOTORIKK_LABEL = { UTEN_BALL: 'Uten ball', LAV_HAST: 'Lav hastighet', AUTO: 'Automatikk' };
+const BELASTNING_LABEL = { INNENDORS: 'Innendørs', TRENINGSOMRAADE: 'Treningsområde', BANE: 'Bane', KONKURRANSE: 'Konkurranse' };
+const PRESS_LABEL = { ALENE: 'Alene', OBSERVERT: 'Observert', KONKURRANSE: 'Konkurranse', TURNERING: 'Turnering' };
+const DIMENSJON_LABEL = { SIKTE: 'Sikte og oppstilling', STARTRETNING: 'Startretning', KURVE: 'Kurve', HOYDE: 'Høyde',
+  TREFFPUNKT: 'Treffpunkt', LENGDEKONTROLL: 'Lengdekontroll', SPINN: 'Spinn', LANDINGSPUNKT: 'Landingspunkt',
+  UTRULLING: 'Utrulling', KOLLEVALG: 'Køllevalg', BOUNCE_BRUK: 'Bruk av bounce', SANDINNGANG: 'Sandinngang',
+  LIE_VARIASJON: 'Lie-variasjon', GREENLESING: 'Greenlesing', BALLSTART: 'Ballstart',
+  SPILLEFORMAT: 'Spilleformat', STRATEGIOPPGAVE: 'Strategioppgave' };
+function kodeStreng(b) {
+  return [b.akse, b.omraade, b.motorikk, b.belastning, b.press].filter(Boolean).join('_');
+}
+/* Øktas øvelser som chips — brukes i månedsplan, ukeplan og tidslinje. */
+function oktFormler(periode) {
+  const okt = OKTER.find((o) => o.periode === periode);
+  if (!okt) return [];
+  return okt.blokker.filter((b) => b.omraade).map((b, i) => ({
+    id: periode + '-' + i,
+    omrade: OMRAADE_LABEL[b.omraade] || b.omraade,
+    reps: b.reps || '',
+    kode: kodeStreng(b),
+    farge: (AKSER[AKSE_ORD.indexOf(b.akse)] || {}).farge,
+  }));
+}
+function beregnPyramide(periode, ekstraOpt) {
+  const EKSTRA = byggEkstra(ekstraOpt);
+  const okt = OKTER.find((o) => o.periode === periode);
+  const min = {}; const kilder = {};
+  for (const k of AKSE_ORD) { min[k] = 0; kilder[k] = []; }
+  for (const b of (okt ? okt.blokker : [])) {
+    if (!b.akse) continue;
+    min[b.akse] += b.min * 3;
+    kilder[b.akse].push('3 × ' + b.min + ' min ' + b.del.replace(/^Øvelse \d+ — /, '').toLowerCase());
+  }
+  for (const e of (EKSTRA[periode] || [])) { min[e.akse] += e.min; kilder[e.akse].push(e.tekst); }
+  const sum = AKSE_ORD.reduce((a, k) => a + min[k], 0) || 1;
+  const raa = AKSE_ORD.map((k) => (min[k] / sum) * 100);
+  const pct = raa.map((v) => Math.floor(v));
+  let rest = 100 - pct.reduce((a, v) => a + v, 0);
+  AKSE_ORD.map((k, i) => [i, raa[i] - pct[i]]).sort((a, b) => b[1] - a[1]).forEach(([i]) => { if (rest > 0) { pct[i] += 1; rest -= 1; } });
+  return { pct, min, kilder, sum };
+}
+const AKSER = [
+  { kode: 'TEK', navn: 'Teknikk', farge: 'color-mix(in srgb, var(--cat-blue) 45%, white)', tekst: 'Teknisk arbeid etter individuell plan — video og TrackMan' },
+  { kode: 'SLAG', navn: 'Slag', farge: 'var(--wang-mint)', tekst: 'Kjente avstander og lies — kalibrere køllene' },
+  { kode: 'SPILL', navn: 'Spill', farge: 'color-mix(in srgb, #C9A800 55%, white)', tekst: 'Spill på bane — valg, strategi og scoring' },
+  { kode: 'TURN', navn: 'Turnering', farge: 'var(--cat-orange)', tekst: 'Turneringsspill og konkurranseforberedelse' },
+  { kode: 'FYS', navn: 'Fysisk', farge: 'color-mix(in srgb, var(--wang-navy) 22%, white)', tekst: 'Styrke og skadeforebygging — grunnlag for belastning' },
+];
+
+const MND = [
+  ['August 2026','TURN','Sesongform: siste sommerturneringer mens formen er på topp. NGF-testperioden starter.',['Skolestart uke 34','NGF/Team Norway-tester fra uke 35']],
+  ['September','TURN','Turneringsuker med vedlikeholdstrening — restitusjon og mental gjennomgang mellom starter.',['Tester avsluttes uke 36','Turneringshelger (terminliste)']],
+  ['Oktober','TURN','Sommersesongen avsluttes og banen stenger. Testuke 43 setter IUP-baseline før vinteren.',['Høstferie uke 40','Testuke og IUP-samtaler uke 43']],
+  ['November','GRUNN','GRUNN start: bygge ny teknikk innendørs — kropp og arm før ball. Tung FYS-blokk.',['Treningslokalet: nett, putting, TrackMan']],
+  ['Desember','GRUNN','Full teknisk trening fram til jul. Egentreningsplan for ferien.',['Juleferie uke 52–53']],
+  ['Januar 2027','GRUNN','Fellessamling med WANG Oslo — deretter full teknisk trening.',['WANG-samling 4.–10. jan']],
+  ['Februar','GRUNN','Teknisk sjekk uke 6 og ny fellessamling uke 7 før vinterferien.',['Intern teknisk sjekk uke 6','Samling 15.–21. feb · vinterferie uke 8']],
+  ['Mars','SPES','GRUNN avsluttes med test og IUP-sjekk uke 10. SPES fra uke 11: teknikk skal bli slag.',['Test og IUP uke 10','Påskeferie uke 12']],
+  ['April','SPES','Ut på GFGK fra ca. 5. april — overføring til bane og kalibrering av avstander.',['Utesesongen åpner','Kalibrering fullført uke 16']],
+  ['Mai','TURN','Turneringssesong: Norgescup, Østlandstour og Srixon Tour. Kjente slag, ingen ny teknikk.',['Fri Kr. himmelfart 6. mai og 17. mai']],
+  ['Juni','TURN','Turneringstopp og evaluering — sesong- og skoleårsavslutning uke 24.',['NM-perioden','IUP-evaluering og avslutning uke 24']],
+];
+const MND_FASE = ['TURN','TURN','TURN','GRUNN','GRUNN','GRUNN','GRUNN','SPES','SPES','TURN','TURN'];
+const MND_KORT = ['Aug','Sep','Okt','Nov','Des','Jan','Feb','Mar','Apr','Mai','Jun'];
+
+const TRINN = {
+  'VG1': { farge: 'var(--wang-teal-text)', tint: 'var(--tint-teal)', fag: 'Toppidrett 1', kode: 'IDR05-02 · kv283',
+    ingress: 'Bli kjent med treningsformene, gjennomføre basistrening og lære å trene systematisk.' },
+  'VG2': { farge: 'var(--cat-blue)', tint: 'var(--tint-blue)', fag: 'Toppidrett 2', kode: 'IDR05-02 · kv284',
+    ingress: 'Gjennomføre systematisk trening, analysere resultatene og beskrive eget utviklingsløp.' },
+  'VG3': { farge: 'var(--wang-navy)', tint: 'var(--tint-navy)', fag: 'Toppidrett 3', kode: 'IDR05-02 · kv285',
+    ingress: 'Utarbeide egne langsiktige planer og prestere i konkurransesituasjoner.' },
+};
+
+const TRINN_KRO = {
+  'VG1': { farge: 'color-mix(in srgb, var(--cat-orange) 70%, black)', tint: 'var(--tint-orange)', fag: 'Kroppsøving', kode: 'KRO01-05 · kv186',
+    ingress: 'Trene på nye bevegelsesaktiviteter, sette egne mål og forebygge skader.' },
+  'VG2': { farge: 'color-mix(in srgb, var(--cat-orange) 70%, black)', tint: 'var(--tint-orange)', fag: 'Kroppsøving', kode: 'KRO01-05 · kv187',
+    ingress: 'Trene på egen hånd og forstå hvordan aktivitet fremmer helse og prestasjon.' },
+  'VG3': { farge: 'color-mix(in srgb, var(--cat-orange) 70%, black)', tint: 'var(--tint-orange)', fag: 'Kroppsøving', kode: 'KRO01-05 · kv188',
+    ingress: 'Planlegge, gjennomføre og vurdere egentrening ut fra egne forutsetninger.' },
+};
+
+const KM = {
+  'VG1': [
+    'vise og utvikle ferdigheter i idretten og gjennomføre systematisk og målrettet trening',
+    'dokumentere og evaluere en valgt treningsperiode',
+    'kjenne til ulike treningsformer, metoder, tester og øvelser som er relevante for ferdighetsutvikling i idretten, og bruke disse til å utvikle egne ferdigheter',
+    'gjennomføre basistrening og skadeforebyggende tiltak som gir grunnlag for økt treningsbelastning',
+    'forstå forholdet mellom totalbelastning og restitusjon',
+    'beskrive mentale forberedelser til trening og konkurranse',
+    'bruke lyst- og lekbetonte oppvarmingsøvelser, aktiviteter, treningsformer og konkurranser for å stimulere til økt motivasjon',
+    'vise god samhandling og respektfull treningsatferd',
+  ],
+  'VG2': [
+    'vise og videreutvikle ferdigheter som er sentrale for å prestere i konkurranser i idretten',
+    'gjennomføre systematisk og målrettet trening, og dokumentere og analysere resultatet av denne treningen',
+    'gjøre rede for og gjennomføre relevante tester',
+    'utvikle basisegenskaper og integrere skadeforebyggende tiltak i de daglige treningsrutinene',
+    'gjøre rede for hvordan økt treningsmengde og totalbelastning stiller krav til organisering, planlegging, restitusjon og ernæring',
+    'beskrive et utviklingsløp fra eget utgangspunkt og til ønsket nivå på kort og lang sikt',
+    'reflektere over egne mentale behov og rutiner før, under og etter trening og i forbindelse med konkurranse',
+    'gjøre rede for og bruke lyst- og lekbetonte aktiviteter, øvelser, treningsformer og konkurranser som kan stimulere til økt motivasjon',
+    'utforske hvordan aktiviteter, øvelser, trening og konkurranse påvirker motivasjon og ferdighetsutvikling',
+    'opptre på en måte som bidrar til et godt lærings- og utviklingsmiljø',
+  ],
+  'VG3': [
+    'vise og utvikle ferdigheter som kan forbedre prestasjonen i konkurransesituasjoner',
+    'dokumentere, analysere og reflektere over gjennomført trening i lys av egne mål og resultater',
+    'utarbeide planer og gjennomføre langsiktig, systematisk og målrettet trening i idretten med utgangspunkt i idrettens krav og egen kapasitet',
+    'videreutvikle basisegenskaper som er sentrale for ferdighetsutvikling',
+    'anvende skadeforebyggende øvelser og vurdere hvordan disse kan integreres i trening og forberedelse til konkurranse',
+    'gjennomføre mentale forberedelser og mental trening, og reflektere over hvordan dette kan påvirke ferdighetsutvikling',
+    'utforske og reflektere over hvordan aktiviteter, øvelser, trening og konkurranse påvirker motivasjon og ferdighetsutvikling',
+    'opptre på en måte som fremmer treningsarbeidet og samhandlingen, og som bidrar til et trygt, positivt og godt utviklingsmiljø',
+  ],
+};
+
+const KM_KRO = {
+  'VG1': [
+    'trene på og skape nye varianter av lek, bevegelsesaktivitet og dans sammen med andre',
+    'planlegge og gjennomføre metoder for øvelse og trening for å oppnå individuelle mål, også når man ikke fullt ut kan delta i aktiviteten',
+    'bruke egne ferdigheter og kunnskaper til å samarbeide og bidra til å gjøre andre gode i aktivitet og samspill',
+    'forebygge skader ved bevegelsesaktiviteter og utføre grunnleggende førstehjelp',
+    'bruke kart og digitale verktøy på en måte som sikrer trygg ferdsel for seg selv og for andre',
+    'bruke lokale tradisjoner for ferdsel i naturen under vekslende årstider',
+  ],
+  'VG2': [
+    'gjennomføre leker, idrettsaktiviteter og andre bevegelsesaktiviteter og forstå hvordan ulike aktiviteter påvirker og utvikler koordinasjon, styrke, utholdenhet og bevegelighet',
+    'utføre trening på egen hånd og reflektere over hvordan fysisk aktivitet kan fremme god psykisk og fysisk helse og bidra til en helsefremmende livsstil etter avsluttet skolegang og i framtidig arbeidsliv',
+    'praktisere regler for å delta i ulike bevegelsesaktiviteter og medvirke til læring for andre',
+    'planlegge og gjennomføre uteaktiviteter til ulike årstider, der formålet er å ha gode naturopplevelser',
+    'praktisere bærekraftig ferdsel i naturen og gjennomføre friluftslivsaktiviteter i nærområdet',
+  ],
+  'VG3': [
+    'øve på og utvikle kunnskaper og ferdigheter i ulike bevegelsesaktiviteter ut fra egne forutsetninger',
+    'planlegge, gjennomføre og vurdere egentrening og forklare hvordan dette kan medvirke til en fysisk aktiv og helsefremmende livsstil etter avsluttet skolegang',
+    'beskrive og drøfte sammenhenger mellom bevegelse, kropp, trening og helse i samfunnet',
+    'samarbeide om å løse praktiske oppgaver i et læringsfellesskap og ut fra øvelse og aktivitet reflektere over hvordan egen medvirkning kan påvirke andre',
+    'planlegge og gjennomføre uteaktiviteter og friluftslivsaktiviteter i nærområdet',
+  ],
+};
+
+const OKTER = [
+  { tittel: 'Økt i grunnperioden', periode: 'GRUNN', meta: 'Man · ons · fre · 08:00–10:00 · inne', fokus: 'Ny teknikk starter i kropp/arm — aldri rett på ball.',
+    blokker: [
+      { tid: '08:00–08:15', del: 'Oppvarming', innhold: 'Aktivering og ballfølelse', akse: 'FYS', min: 15,
+        omraade: 'BEVEGELIGHET', belastning: 'INNENDORS', press: 'ALENE', reps: '15 min bevegelighet' },
+      { tid: '08:15–09:00', del: 'Øvelse 1 — teknikk', innhold: 'Teknisk drill uten ball: kropp, arm, kølle', akse: 'TEK', min: 45,
+        omraade: 'INNSPILL_100', motorikk: 'UTEN_BALL', belastning: 'INNENDORS', press: 'ALENE', dimensjon: 'TREFFPUNKT', reps: '4 × 12 repetisjoner' },
+      { tid: '09:00–09:30', del: 'Øvelse 2 — ball', innhold: 'Ball på CS50–60 — kontrollert intensitet', akse: 'TEK', min: 30,
+        omraade: 'INNSPILL_100', motorikk: 'LAV_HAST', belastning: 'INNENDORS', press: 'ALENE', dimensjon: 'STARTRETNING', reps: '40 slag' },
+      { tid: '09:30–09:50', del: 'Øvelse 3 — anvendelse', innhold: 'Anvendelse på range, CS70', akse: 'SLAG', min: 20,
+        omraade: 'INNSPILL_150', motorikk: 'AUTO', belastning: 'TRENINGSOMRAADE', press: 'ALENE', dimensjon: 'LENGDEKONTROLL', reps: '25 slag' },
+      { tid: '09:50–10:00', del: 'Evaluering', innhold: 'KPI måles + dagbokspørsmål' },
+    ],
+    maal: [
+      ['Kjenne treningsformene i drillene og gjennomføre basistrening med kontroll', 'Toppidrett 1 · mål 3 og 4'],
+      ['Gjennomføre den tekniske treningen systematisk og dokumentere resultatet', 'Toppidrett 2 · mål 2'],
+      ['Utarbeide plan for egen teknikkendring ut fra idrettens krav og egen kapasitet', 'Toppidrett 3 · mål 3'],
+    ] },
+  { tittel: 'Økt i spesialiseringen', periode: 'SPES', meta: 'Man · ons · fre · 08:00–10:00 · inne/ute', fokus: 'Kalibrere avstander — teknikken skal bli slag på bane.',
+    blokker: [
+      { tid: '08:00–08:15', del: 'Oppvarming', innhold: 'Aktivering og ballfølelse', akse: 'FYS', min: 15,
+        omraade: 'BEVEGELIGHET', belastning: 'TRENINGSOMRAADE', press: 'ALENE', reps: '15 min bevegelighet' },
+      { tid: '08:15–09:00', del: 'Øvelse 1 — teknikk', innhold: 'Teknisk vedlikehold på CS70', akse: 'TEK', min: 45,
+        omraade: 'INNSPILL_100', motorikk: 'LAV_HAST', belastning: 'TRENINGSOMRAADE', press: 'ALENE', dimensjon: 'TREFFPUNKT', reps: '36 slag' },
+      { tid: '09:00–09:30', del: 'Øvelse 2 — slag', innhold: 'Kjente avstander og lies — kalibrering', akse: 'SLAG', min: 30,
+        omraade: 'INNSPILL_150', motorikk: 'AUTO', belastning: 'TRENINGSOMRAADE', press: 'OBSERVERT', dimensjon: 'LENGDEKONTROLL', reps: '30 slag · 4 avstander' },
+      { tid: '09:30–09:50', del: 'Øvelse 3 — spill', innhold: 'Spill: korthull eller 9 hull', akse: 'SPILL', min: 20,
+        omraade: 'BANE', belastning: 'BANE', press: 'OBSERVERT', dimensjon: 'STRATEGIOPPGAVE', reps: '6 hull' },
+      { tid: '09:50–10:00', del: 'Evaluering', innhold: 'KPI måles + dagbokspørsmål' },
+    ],
+    maal: [
+      ['Vise og utvikle ferdigheter — ta teknikken med ut i slag og spill', 'Toppidrett 1 · mål 1'],
+      ['Gjennomføre tester og analysere om treningen virker', 'Toppidrett 2 · mål 2 og 3'],
+      ['Reflektere over gjennomført trening i lys av egne mål og resultater', 'Toppidrett 3 · mål 2'],
+    ] },
+  { tittel: 'Økt i turneringsperioden', periode: 'TURN', meta: 'Man · ons · fre · 08:00–10:00 · ute', fokus: 'Prestere — kjente slag, ingen ny teknikk siste 48 timer.',
+    blokker: [
+      { tid: '08:00–08:15', del: 'Oppvarming', innhold: 'Aktivering — turneringsrutine', akse: 'FYS', min: 15,
+        omraade: 'BEVEGELIGHET', belastning: 'TRENINGSOMRAADE', press: 'ALENE', reps: '15 min turneringsrutine' },
+      { tid: '08:15–09:00', del: 'Øvelse 1 — aktivering', innhold: 'Kjente slag og treningsområder', akse: 'SLAG', min: 45,
+        omraade: 'TEE_TOTAL', motorikk: 'AUTO', belastning: 'TRENINGSOMRAADE', press: 'ALENE', dimensjon: 'SIKTE', reps: '30 slag · kjente køller' },
+      { tid: '09:00–09:30', del: 'Øvelse 2 — scoring', innhold: 'Scoring under press, med konsekvens', akse: 'SPILL', min: 30,
+        omraade: 'PUTT_5_10', belastning: 'BANE', press: 'KONKURRANSE', dimensjon: 'GREENLESING', reps: '24 putter · med konsekvens' },
+      { tid: '09:30–09:50', del: 'Øvelse 3 — mental rutine', innhold: 'Rutiner før, under og etter runden', akse: 'TURN', min: 20,
+        omraade: 'BANE', belastning: 'KONKURRANSE', press: 'TURNERING', dimensjon: 'SPILLEFORMAT', reps: '3 hull · full rutine' },
+      { tid: '09:50–10:00', del: 'Evaluering', innhold: 'KPI måles + dagbokspørsmål' },
+    ],
+    maal: [
+      ['Beskrive mentale forberedelser til trening og konkurranse', 'Toppidrett 1 · mål 6'],
+      ['Reflektere over egne mentale behov og rutiner rundt konkurranse', 'Toppidrett 2 · mål 7'],
+      ['Vise ferdigheter som forbedrer prestasjonen i konkurransesituasjoner', 'Toppidrett 3 · mål 1'],
+    ] },
+];
+
+/* Timeplan 2026/27 — ordrett fra «Timeplanoppsett 2026-2027.pdf» (11.08.26).
+   Parallelle valgfag skilles med « / » i samme celle, slik de står i planen. */
+const TIMER = [
+  ['1.–2. time', '08.00–09.30'],
+  ['3. time', '09.35–10.20'],
+  ['Spisefri', '10.20–10.50'],
+  ['4.–5. time', '10.50–12.20'],
+  ['6.–7. time', '12.30–14.00'],
+  ['8. time', '14.05–14.50'],
+  ['9. time', '15.00–15.45'],
+];
+const DAGER = ['Mandag', 'Tirsdag', 'Onsdag', 'Torsdag', 'Fredag'];
+const LX = 'Leksehjelp';
+const KLASSER = [
+  { id: 'VG1A', trinn: 'VG1', kontakt: 'Anna Popova',
+    plan: [
+      ['Trening', 'Trening / Idrettsteori', 'Trening', 'Matematikk 1P (rom 4/5) / Matematikk 1T (rom 2)', 'Trening'],
+      ['Trening', 'Engelsk (rom 2)', 'Trening', 'Naturfag (rom 2)', 'Trening'],
+      ['Spisefri', 'Spisefri', 'Spisefri', 'Spisefri', 'Spisefri'],
+      ['Tysk 2 (rom 9) / Spansk 2 (rom 2/3) / Spansk 1 (rom 4)', 'Matematikk 1P (rom 4/5) / Matematikk 1T (rom 2)', 'Geografi (rom 2)', 'Naturfag (rom 2)', 'Norsk (rom 2)'],
+      ['Samfunnskunnskap (rom 2)', 'Tysk 2 (rom 9) / Spansk 2 (rom 6/7) / Spansk 1 (rom 4)', 'Engelsk (rom 2)', 'Norsk (rom 2)', 'Engelsk (rom 2)'],
+      ['Naturfag (rom 2)', 'Naturfag (rom 2)', 'Samfunnskunnskap (rom 2)', 'Matematikk 1P (rom 4/5) / Matematikk 1T (rom 2)', ''],
+      [LX, '', LX, LX, ''],
+    ],
+    fag: [['Norsk', 'Kristin Kristoffersen', 'rom 2', ''], ['Matematikk 1P', 'Thore Stokker / Geir Myklebust', 'rom 5 / rom 4', ''],
+      ['Matematikk 1T', 'Martin Strømner', 'rom 2', ''], ['Naturfag', 'Rene Hansen', 'rom 2', ''],
+      ['Geografi', 'Martin Strømner', 'rom 2', ''], ['Samfunnskunnskap', 'Lena H. Brennand', 'rom 2', ''],
+      ['Engelsk', 'Anna Popova', 'rom 2', ''], ['Tysk 2', 'Heidi Johansen', 'rom 9', ''],
+      ['Spansk 1', 'Athanassios Lazarides', 'rom 4', ''], ['Spansk 2', 'Anna Popova / Marita Hjelmungen', 'rom 2/3/6/7', '']] },
+  { id: 'VG1B', trinn: 'VG1', kontakt: 'Heidi Johansen',
+    plan: [
+      ['Trening', 'Trening / Idrettsteori', 'Trening', 'Matematikk 1P (rom 4/5) / Matematikk 1T (rom 2)', 'Trening'],
+      ['Trening', 'Engelsk (rom 4)', 'Trening', 'Norsk (rom 4)', 'Trening'],
+      ['Spisefri', 'Spisefri', 'Spisefri', 'Spisefri', 'Spisefri'],
+      ['Tysk 2 (rom 9) / Spansk 2 (rom 2/3) / Spansk 1 (rom 4)', 'Matematikk 1P (rom 4/5) / Matematikk 1T (rom 2)', 'Samfunnskunnskap (rom 4)', 'Engelsk (rom 4)', 'Geografi (rom 4)'],
+      ['Naturfag (rom 4)', 'Tysk 2 (rom 9) / Spansk 2 (rom 6/7) / Spansk 1 (rom 4)', 'Engelsk (rom 4)', 'Naturfag (rom 4)', 'Norsk (rom 4)'],
+      ['Norsk (rom 4)', 'Samfunnskunnskap (rom 4)', 'Naturfag (rom 4)', 'Matematikk 1P (rom 4/5) / Matematikk 1T (rom 2)', ''],
+      [LX, '', LX, LX, ''],
+    ],
+    fag: [['Norsk', 'Siri Tallerud', 'rom 4', ''], ['Matematikk 1P', 'Thore Stokker / Geir Myklebust', 'rom 5 / rom 4', ''],
+      ['Matematikk 1T', 'Martin Strømner', 'rom 2', ''], ['Naturfag', 'Rene Hansen', 'rom 4', ''],
+      ['Geografi', 'Martin Strømner', 'rom 4', ''], ['Samfunnskunnskap', 'Lena H. Brennand', 'rom 4', ''],
+      ['Engelsk', 'Heidi Johansen', 'rom 4', ''], ['Tysk 2', 'Heidi Johansen', 'rom 9', ''],
+      ['Spansk 1', 'Athanassios Lazarides', 'rom 4', ''], ['Spansk 2', 'Anna Popova / Marita Hjelmungen', 'rom 2/3/6/7', '']] },
+  { id: 'VG2A', trinn: 'VG2', kontakt: 'Kristin Kristoffersen',
+    plan: [
+      ['Trening', 'Trening / Idrettsteori', 'Trening', 'Norsk (rom 8)', 'Trening'],
+      ['Trening', 'Matte R1 (rom 1) / Medie- og inf 1 (rom 8)', 'Trening', 'Matte 2P (rom 3/8)', 'Trening'],
+      ['Spisefri', 'Spisefri', 'Spisefri', 'Spisefri', 'Spisefri'],
+      ['Matte R1 (rom 1) / Medie- og inf 1 (rom 8)', 'Tysk 2 (rom 9) / Spansk 2 (rom 3) / Spansk 1 (rom 8)', 'Norsk (rom 8)', 'Matte R1 (rom 1) / Medie- og inf 1 (rom 8)', 'Historie (rom 8)'],
+      ['Tysk 2 (rom 9) / Spansk 2 (rom 3) / Spansk 1 (rom 8)', 'Sos. og sos.antr (rom 3) / IT1 (rom 5)', 'Fysikk 1 (rom 5) / Psykologi 1 (rom 8)', 'Sos. og sos.antr (rom 3) / IT1 (rom 5)', 'Matte 2P (rom 3/8)'],
+      ['Fysikk 1 (rom 5) / Psykologi 1 (rom 8)', 'Fysikk 1 (rom 5) / Psykologi 1 (rom 8)', 'Fysikk 1 (rom 5) / Psykologi 1 (rom 8)', 'Sos. og sos.antr (rom 3) / IT1 (rom 5)', 'Idrettsteori'],
+      [LX, '', LX, LX, ''],
+    ],
+    fag: [['Norsk', 'Kristin Kristoffersen', 'rom 8', ''], ['Matte 2P', 'Geir Myklebust / Martin Strømner', 'rom 3 / rom 8', ''],
+      ['Historie', 'Rene Hansen', 'rom 8', ''], ['Spansk 1', 'Athanassios Lazarides', 'rom 8', ''],
+      ['Spansk 2', 'Anna Popova', 'rom 3', ''], ['Tysk 2', 'Heidi Johansen', 'rom 9', ''],
+      ['Matematikk R1', 'Martin Strømner', 'rom 1', 'Blokk 1'], ['Medie- og informasjonskunnskap 1', 'Siri Tallerud', 'rom 8', 'Blokk 1'],
+      ['Fysikk 1', 'Thore Stokker', 'rom 5', 'Blokk 2'], ['Psykologi 1', 'Athanassios Lazarides', 'rom 8', 'Blokk 2'],
+      ['Sosiologi og sosialantropologi', 'Lena H. Brennand', 'rom 3', 'Blokk 3'], ['IT 1', 'Thore Stokker', 'rom 5', 'Blokk 3']] },
+  { id: 'VG2B', trinn: 'VG2', kontakt: 'Rene Hansen',
+    plan: [
+      ['Trening', 'Trening / Idrettsteori', 'Trening', 'Historie (rom 3)', 'Trening'],
+      ['Trening', 'Matte R1 (rom 1) / Medie- og inf 1 (rom 8)', 'Trening', 'Matte 2P (rom 3/8)', 'Trening'],
+      ['Spisefri', 'Spisefri', 'Spisefri', 'Spisefri', 'Spisefri'],
+      ['Matte R1 (rom 1) / Medie- og inf 1 (rom 8)', 'Tysk 2 (rom 9) / Spansk 2 (rom 3) / Spansk 1 (rom 8)', 'Norsk (rom 3)', 'Matte R1 (rom 1) / Medie- og inf 1 (rom 8)', 'Norsk (rom 3)'],
+      ['Tysk 2 (rom 9) / Spansk 2 (rom 3) / Spansk 1 (rom 8)', 'Sos. og sos.antr (rom 3) / IT1 (rom 5)', 'Fysikk 1 (rom 5) / Psykologi 1 (rom 3)', 'Sos. og sos.antr (rom 3) / IT1 (rom 5)', 'Matte 2P (rom 3/8)'],
+      ['Fysikk 1 (rom 5) / Psykologi 1 (rom 3)', 'Fysikk 1 (rom 5) / Psykologi 1 (rom 3)', 'Fysikk 1 (rom 5) / Psykologi 1 (rom 3)', 'Sos. og sos.antr (rom 3) / IT1 (rom 5)', 'Idrettsteori'],
+      [LX, '', LX, LX, ''],
+    ],
+    fag: [['Norsk', 'Siri Tallerud', 'rom 3', ''], ['Matte 2P', 'Geir Myklebust / Martin Strømner', 'rom 3 / rom 8', ''],
+      ['Historie', 'Rene Hansen', 'rom 3', ''], ['Spansk 1', 'Athanassios Lazarides', 'rom 8', ''],
+      ['Spansk 2', 'Anna Popova', 'rom 3', ''], ['Tysk 2', 'Heidi Johansen', 'rom 9', ''],
+      ['Matematikk R1', 'Martin Strømner', 'rom 1', 'Blokk 1'], ['Medie- og informasjonskunnskap 1', 'Siri Tallerud', 'rom 8', 'Blokk 1'],
+      ['Fysikk 1', 'Thore Stokker', 'rom 5', 'Blokk 2'], ['Psykologi 1', 'Kim-Erik Larsen', 'rom 3', 'Blokk 2'],
+      ['Sosiologi og sosialantropologi 1', 'Lena H. Brennand', 'rom 3', 'Blokk 3'], ['IT 1', 'Thore Stokker', 'rom 5', 'Blokk 3']] },
+  { id: 'VG3A', trinn: 'VG3', kontakt: 'Siri Tallerud',
+    plan: [
+      ['Trening', 'Trening / Idrettsteori', 'Trening', 'Historie (rom 6)', 'Trening'],
+      ['Trening', 'Fysikk 2 (rom 5) / Psykologi 2 (rom 6)', 'Trening', 'Sos.kunnskap (rom 6) / IT2 (rom 5) / Spansk 1+2 (rom 9)', 'Trening'],
+      ['Spisefri', 'Spisefri', 'Spisefri', 'Spisefri', 'Spisefri'],
+      ['Fysikk 2 (rom 5) / Psykologi 2 (rom 6)', 'Religion (rom 6)', 'Sos.kunnskap (rom 6) / IT2 (rom 5) / Spansk 1+2 (rom 9)', 'Fysikk 2 (rom 5) / Psykologi 2 (rom 6)', 'Sos.kunnskap (rom 6) / IT2 (rom 5) / Spansk 1+2 (rom 9)'],
+      ['Matte R2 (rom 1) / Medie- og inf 2 (rom 6)', 'Norsk (rom 2)', 'Matte R2 (rom 1) / Medie- og inf 2 (rom 6)', 'Norsk (rom 6)', 'Historie (rom 6)'],
+      ['Religion (rom 6)', 'Norsk (rom 6)', 'Matte R2 (rom 1) / Medie- og inf 2 (rom 6)', 'Idrettsteori', 'Norsk (rom 6)'],
+      [LX, '', LX, LX, ''],
+    ],
+    fag: [['Norsk', 'Siri Tallerud', 'rom 6/2', ''], ['Religion', 'Suzie Skarpholt', 'rom 6', ''],
+      ['Historie', 'Sigvald Andreassen', 'rom 6', ''], ['Matematikk R2', 'Martin Strømner', 'rom 1', 'Blokk 1'],
+      ['Medie- og informasjonskunnskap 2', 'Geir Myklebust', 'rom 6', 'Blokk 1'], ['Psykologi 2', 'Torben Wendler', 'rom 6', 'Blokk 2'],
+      ['Fysikk 2', 'Thore Stokker', 'rom 5', 'Blokk 2'], ['Sosialkunnskap', 'Heidi Johansen', 'rom 6', 'Blokk 3'],
+      ['IT 2', 'Thore Stokker', 'rom 5', 'Blokk 3'], ['Spansk 1+2', 'Anna Popova', 'rom 9', 'Blokk 3']] },
+  { id: 'VG3B', trinn: 'VG3', kontakt: 'Suzie Skarpholt',
+    plan: [
+      ['Trening', 'Trening / Idrettsteori', 'Trening', 'Religion (rom 7)', 'Trening'],
+      ['Trening', 'Fysikk 2 (rom 5) / Psykologi 2 (rom 7)', 'Trening', 'Sos.kunnskap (rom 6) / IT2 (rom 5) / Spansk 1+2 (rom 9)', 'Trening'],
+      ['Spisefri', 'Spisefri', 'Spisefri', 'Spisefri', 'Spisefri'],
+      ['Fysikk 2 (rom 5) / Psykologi 2 (rom 7)', 'Historie (rom 7)', 'Sos.kunnskap (rom 6) / IT2 (rom 5) / Spansk 1+2 (rom 9)', 'Fysikk 2 (rom 5) / Psykologi 2 (rom 7)', 'Sos.kunnskap (rom 6) / IT2 (rom 5) / Spansk 1+2 (rom 9)'],
+      ['Matte R2 (rom 1) / Medie- og inf 2 (rom 6)', 'Norsk (rom 8)', 'Matte R2 (rom 1) / Medie- og inf 2 (rom 6)', 'Norsk (rom 7)', 'Norsk (rom 7)'],
+      ['Historie (rom 7)', 'Religion (rom 7)', 'Matte R2 (rom 1) / Medie- og inf 2 (rom 6)', 'Idrettsteori', 'Historie (rom 7)'],
+      [LX, '', LX, LX, ''],
+    ],
+    fag: [['Norsk', 'Suzie Skarpholt', 'rom 7/8', ''], ['Religion', 'Suzie Skarpholt', 'rom 7', ''],
+      ['Historie', 'Sigvald Andreassen', 'rom 7', ''], ['Matematikk R2', 'Martin Strømner', 'rom 1', 'Blokk 1'],
+      ['Medie- og informasjonskunnskap 2', 'Geir Myklebust', 'rom 6', 'Blokk 1'], ['Psykologi 2', 'Kim-Erik Larsen', 'rom 7', 'Blokk 2'],
+      ['Fysikk 2', 'Thore Stokker', 'rom 5', 'Blokk 2'], ['Sosialkunnskap', 'Heidi Johansen', 'rom 6', 'Blokk 3'],
+      ['IT 2', 'Thore Stokker', 'rom 5', 'Blokk 3'], ['Spansk 1+2', 'Anna Popova', 'rom 9', 'Blokk 3']] },
+];
+
+/* Skolerute 2026/27 — «Skolerute WTF 2026-2027.pdf» */
+const SKOLERUTE = [
+  ['August', 'Planleggingsdager', 'Uke 33'],
+  ['August', 'Første skoledag: fredag 14. august (VG1) · mandag 17. august (VG2/VG3)', 'Uke 33–34'],
+  ['Sept./okt.', 'Høstferie', 'Uke 40'],
+  ['November', 'Planleggingsdag torsdag 19. november', 'Uke 47'],
+  ['Desember', 'Siste skoledag før jul: fredag 18. desember', 'Uke 51'],
+  ['Januar', 'Første skoledag: mandag 4. januar', 'Uke 2'],
+  ['Februar', 'Vinterferie', 'Uke 8'],
+  ['Mars', 'Påskeferie', 'Uke 12–13'],
+  ['Mai', 'Kristi himmelfart 6. mai · 17. mai · 2. pinsedag', 'Uke 18 og 20'],
+  ['Juni', 'Siste skoledag: fredag 18. juni', 'Uke 25'],
+];
+/* Prøver, tester og eksamen — sammenstilt fra årshjulet og skoleruta. */
+const PROVER = {
+  'VG1': [
+    ['Uke 38', 'Kartleggingsprøver', 'Norsk, matematikk og engelsk — nivåkartlegging ved skolestart'],
+    ['Uke 46–47', 'Prøveperiode høst', 'Kapittelprøver i fellesfag etter faglærers plan'],
+    ['Uke 50', 'Terminprøver', 'Halvårsvurdering i fellesfagene'],
+    ['Uke 9–10', 'Prøveperiode vår', 'Heldagsprøver i norsk og matematikk'],
+    ['Uke 21–22', 'Avsluttende prøver', 'Standpunktgrunnlag; ingen fellesøkter'],
+  ],
+  'VG2': [
+    ['Uke 46–47', 'Prøveperiode høst', 'Kapittelprøver i fellesfag og programfag'],
+    ['Uke 50', 'Terminprøver', 'Halvårsvurdering i fellesfag og programfag'],
+    ['Uke 9–10', 'Prøveperiode vår', 'Heldagsprøver i fellesfag'],
+    ['Uke 19', 'Tverrfaglig eksamen', 'Praktisk-muntlig i programfag'],
+    ['Uke 21–22', 'Eksamensperiode', 'Skriftlig og muntlig eksamen; ingen fellesøkter'],
+  ],
+  'VG3': [
+    ['Uke 46–47', 'Prøveperiode høst', 'Heldagsprøver i eksamensfagene'],
+    ['Uke 50', 'Terminprøver', 'Halvårsvurdering — grunnlag for standpunkt'],
+    ['Uke 9–10', 'Prøveperiode vår', 'Eksamensforberedende heldagsprøver'],
+    ['Uke 20', 'Skriftlig eksamen', 'Sentralt gitt eksamen i fellesfag'],
+    ['Uke 21–22', 'Muntlig eksamen', 'Trekkfag kunngjøres 48 timer før; ingen fellesøkter'],
+  ],
+};
+const FORELDREMOTER = {
+  'VG1': ['Onsdag 26. august kl. 17:00', 'Torsdag 8. oktober kl. 17:00', 'Torsdag 21. januar kl. 17:00', 'Tirsdag 16. mars kl. 17:00'],
+  'VG2': ['Torsdag 15. oktober kl. 17:00', 'Tirsdag 9. mars kl. 17:00'],
+  'VG3': ['Torsdag 14. januar kl. 17:00'],
+};
+
+function byggEvents() {
+  const ev = {};
+  const add = (iso, e) => { (ev[iso] = ev[iso] || []).push(e); };
+  const dIso = (man, off) => { const d = new Date(man + 'T12:00:00'); d.setDate(d.getDate() + off); return d.toISOString().slice(0, 10); };
+  for (const [uke, man, fase, type, notat] of UKER) {
+    if (type === 'Ferieuke') { add(man, { type: 'skole', label: notat || 'Ferie' }); continue; }
+    if (type === 'Samlingsuke') { add(man, { type: 'okt', label: 'Fellessamling med Oslo · 7 dager' }); continue; }
+    let dager = [0, 2, 4];
+    if (uke === 18) dager = [0, 2];
+    if (uke === 20) dager = [2, 4];
+    const sted = (uke >= 44 || uke <= 13) ? 'Treningslokalet' : 'GFGK';
+    /* Hver økt merkes med pyramideaksen den tilhører — aldri bare «golføkt». */
+    const AKSER_PER_FASE = { GRUNN: ['TEK', 'FYS', 'TEK'], SPES: ['SLAG', 'SPILL', 'TEK'],
+      TURN: ['SPILL', 'TURN', 'SLAG'], TEST: ['TEK', 'SLAG', 'SPILL'] };
+    const akser = AKSER_PER_FASE[fase] || AKSER_PER_FASE.GRUNN;
+    dager.forEach((off, i) => add(dIso(man, off), { type: 'okt', label: akser[i % 3] + '-økt · ' + sted, time: '08:00' }));
+    if (uke === 35 || uke === 36) add(dIso(man, 1), { type: 'prove', label: 'NGF/Team Norway-tester' });
+    if (uke === 43) add(man, { type: 'prove', label: 'Testuke — IUP-baseline' });
+    if (uke === 6) add(dIso(man, 4), { type: 'prove', label: 'Intern teknisk sjekk' });
+    if (uke === 10) add(dIso(man, 4), { type: 'prove', label: 'Test og IUP-sjekk' });
+    if (uke === 18) add(dIso(man, 3), { type: 'hendelse', label: 'Fri · Kr. himmelfart' });
+    if (uke === 20) add(man, { type: 'hendelse', label: '17. mai — fri' });
+    if (uke === 24) add(dIso(man, 4), { type: 'hendelse', label: 'Sesong- og skoleårsavslutning' });
+  }
+  /* Skolens egne datoer — skolerute og foreldremøter (brukerens PDF-er 2026/27). */
+  const SKOLE_EVENTS = [
+    ['2026-08-12', 'skole', 'Planleggingsdager'],
+    ['2026-08-14', 'skole', 'Skolestart VG1 · overnatting'],
+    ['2026-08-17', 'skole', 'Skolestart VG2 og VG3'],
+    ['2026-08-26', 'hendelse', 'Foreldremøte VG1 kl. 17:00'],
+    ['2026-09-28', 'skole', 'Høstferie'],
+    ['2026-10-08', 'hendelse', 'Foreldremøte VG1 kl. 17:00'],
+    ['2026-10-15', 'hendelse', 'Foreldremøte VG2 kl. 17:00'],
+    ['2026-11-19', 'skole', 'Planleggingsdag · fri'],
+    ['2026-12-18', 'skole', 'Siste skoledag før jul'],
+    ['2027-01-04', 'skole', 'Skolestart etter jul'],
+    ['2027-01-14', 'hendelse', 'Foreldremøte VG3 kl. 17:00'],
+    ['2027-01-21', 'hendelse', 'Foreldremøte VG1 kl. 17:00'],
+    ['2027-02-22', 'skole', 'Vinterferie'],
+    ['2027-03-01', 'prove', 'Prøveperiode uke 9–10'],
+    ['2027-03-09', 'hendelse', 'Foreldremøte VG2 kl. 17:00'],
+    ['2027-03-16', 'hendelse', 'Foreldremøte VG1 kl. 17:00'],
+    ['2027-03-22', 'skole', 'Påskeferie'],
+    ['2027-05-24', 'prove', 'Eksamen uke 21–22'],
+    ['2027-06-18', 'skole', 'Siste skoledag'],
+  ];
+  for (const [iso, type, label] of SKOLE_EVENTS) add(iso, { type, label });
+  add('2026-09-05', { type: 'prove', label: 'Olyo KP3 · Mjøsen GK · frist 2. sep' });
+  add('2026-09-19', { type: 'prove', label: 'Olyo KP3 · Skjeberg GK · frist 16. sep' });
+  add('2026-09-20', { type: 'prove', label: 'Olyo · Gamle Fredrikstad GK' });
+  add('2026-09-20', { type: 'prove', label: 'Olyo finale KP3 · Gamle Fredrikstad GK · frist 17. sep' });
+  add('2026-08-29', { type: 'prove', label: 'Østlandstour 9 · Mørk Open' });
+  add('2026-08-30', { type: 'prove', label: 'Østlandstour 9 · Mørk Open' });
+  add('2026-09-12', { type: 'prove', label: 'Østlandstour 10 · Asker Open' });
+  add('2026-09-13', { type: 'prove', label: 'Østlandstour 10 · Asker Open' });
+  add('2026-09-19', { type: 'prove', label: 'Østlandstour 11 · finale, Kjekstad GK' });
+  add('2026-09-20', { type: 'prove', label: 'Østlandstour 11 · finale, Kjekstad GK' });
+  return ev;
+}
+const EVENTS = byggEvents();
+
+class Component extends DCLogic {
+  state = { trinn: null, pekM: null, apenP: 'TURN', pyr: 'GRUNN', klasse: null, kalValg: null, kalAar: 2026, kalDato: new Date(2026, 7, 18), kalVisning: 'Uke', fane: 'trening', apenRapport: null };
+
+  nesteFredag() {
+    const d = new Date();
+    d.setDate(d.getDate() + ((5 - d.getDay() + 7) % 7 || 7));
+    return d.getDate() + '. ' + ['januar','februar','mars','april','mai','juni','juli','august','september','oktober','november','desember'][d.getMonth()];
+  }
+
+  gaaTilAnker(f, anker) {
+    this.setState({ fane: f });
+    if (typeof window === 'undefined') return;
+    setTimeout(() => {
+      const el = document.getElementById(anker);
+      if (el) window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - 70, behavior: 'smooth' });
+      else window.scrollTo({ top: 0 });
+    }, 60);
+  }
+
+  componentDidMount() {
+    this._sync = () => this.setState({ vw: window.innerWidth });
+    this._sync();
+    window.addEventListener('resize', this._sync);
+  }
+  componentWillUnmount() { window.removeEventListener('resize', this._sync); }
+  renderVals() {
+    const gaaTilOkt = () => this.gaaTilAnker('trening', 'oktplaner');
+    const trinn = this.state.trinn ?? this.props.trinn ?? 'Alle trinn';
+    const trinnListe = ['Alle trinn', 'VG1', 'VG2', 'VG3'];
+    const trinnTabs = trinnListe.map((t) => ({
+      label: t === 'Alle trinn' ? t : t + ' · ' + TRINN[t].fag,
+      bg: t === trinn ? 'var(--wang-mint)' : 'transparent',
+      fg: t === trinn ? '#0d3050' : 'rgba(255,255,255,0.88)',
+      border: t === trinn ? 'var(--wang-mint)' : 'rgba(255,255,255,0.35)',
+      velg: () => this.setState({ trinn: t }),
+    }));
+    const pek = this.state.pekM;
+    const pm = pek === null ? 0 : pek;
+    const arMnd = MND_FASE.map((f, i) => ({
+      kort: MND_KORT[i], farge: FASER[f].farge,
+      h: (pek === i || (pek === null && i === 0)) ? 40 : 30,
+      op: pek === null || pek === i ? 1 : 0.42,
+      vekt: pek === i || (pek === null && i === 0) ? 800 : 600,
+      labelFarge: pek === i || (pek === null && i === 0) ? 'var(--wang-navy)' : 'var(--text-secondary)',
+      pek: () => this.setState({ pekM: i }),
+    }));
+    const pF = FASER[MND_FASE[pm]];
+    const OKTER_TXT = { TURN: 'Man · ons · fre 08:00–10:00 · ute (GFGK)', TEST: 'Man · ons · fre 08:00–10:00 · testbatteri', GRUNN: 'Man · ons · fre 08:00–10:00 · inne', SPES: 'Man · ons · fre 08:00–10:00 · inne/ute', TURN2: 'Man · ons · fre 08:00–10:00 · ute (GFGK)' };
+    const perioder = PERIODER.map((p) => {
+      const f = FASER[p.id === 'TURN2' ? 'TURN' : p.id];
+      const per = p.id === 'TURN2' ? 'TURN' : p.id;
+      return { ...p, farge: f.farge, tint: f.tint, tekstFarge: f.tekst, okter: OKTER_TXT[p.id], fase: f.navn,
+        apneOkt: () => { this.setState({ pyr: per === 'TEST' ? 'GRUNN' : per }); gaaTilOkt(); },
+        skygge: 'var(--shadow-card, 0 8px 24px rgba(23,68,111,0.08))' };
+    });
+    const pyr = this.state.pyr;
+    const pyramidePills = ['GRUNN', 'SPES', 'TURN'].map((k) => ({
+      label: k + ' · ' + FASER[k === 'TURN' ? 'TURN' : k].navn,
+      bg: k === pyr ? 'var(--wang-navy)' : 'transparent',
+      fg: k === pyr ? '#fff' : 'var(--text-secondary)',
+      border: k === pyr ? 'var(--wang-navy)' : 'var(--border-subtle)',
+      velg: () => this.setState({ pyr: k }),
+    }));
+    const beregnet = beregnPyramide(pyr, {
+      grunn: this.props.egenGrunn ?? 180, spes: this.props.egenSpes ?? 80,
+      turn: this.props.egenTurn ?? 40, turnering: this.props.turneringSnitt ?? 120,
+    });
+    const nTimer = (m) => (Math.round((m / 60) * 10) / 10).toString().replace('.', ',') + ' t';
+    const pyramide = AKSER.map((ax, i) => {
+      const pct = beregnet.pct[i];
+      const m = beregnet.min[AKSE_ORD[i]];
+      const kilder = beregnet.kilder[AKSE_ORD[i]];
+      return { ...ax, pct, pctTekst: pct + ' %', timer: nTimer(m),
+        kildeTekst: kilder.length ? kilder.join(' · ') : 'Ikke planlagt i denne perioden' };
+    });
+    const pyrTotal = nTimer(beregnet.sum) + ' planlagt trening per uke';
+    const TYPER = {
+      trening: { navn: 'Trening og samling', farge: 'var(--wang-teal-text)', tint: 'var(--tint-teal)' },
+      konkurranse: { navn: 'Konkurranse', farge: 'var(--cat-orange)', tint: 'var(--tint-orange)' },
+      prove: { navn: 'Test og prøve', farge: 'var(--cat-purple)', tint: 'var(--tint-purple)' },
+      skole: { navn: 'Skole og ferie', farge: 'var(--cat-blue)', tint: 'var(--tint-blue)' },
+    };
+    const MND_RADER = [
+      [['trening','Uke 34','Skolestart — 3 golføkter i uken på GFGK'],['prove','Uke 35','NGF/Team Norway-tester starter'],['skole','Uke 34','Oppstartssamtaler og IUP-gjennomgang']],
+      [['konkurranse','Uke 37–39','Turneringshelger etter terminlisten'],['prove','Uke 36','NGF/Team Norway-tester avsluttes'],['skole','Uke 38','Første prøveperiode i fellesfag']],
+      [['konkurranse','Uke 41–42','Siste turneringer før banen stenger'],['prove','Uke 43','Testuke — fullt testbatteri'],['skole','Uke 40','Høstferie'],['trening','Uke 44','GRUNN starter innendørs']],
+      [['trening','Hele mnd.','Teknisk trening inne — man/ons/fre 08–10'],['skole','Uke 46–47','Prøveperiode og innleveringer'],['trening','Hele mnd.','FYS-blokk: 50 % av treningstiden']],
+      [['trening','Uke 49–51','Full teknisk trening fram til jul'],['skole','Uke 50','Terminprøver og halvårsvurdering'],['skole','Uke 52–53','Juleferie — egentreningsplan']],
+      [['trening','4.–10. jan','WANG fellessamling med Oslo'],['trening','Uke 2–4','Teknisk trening inne'],['skole','Uke 2','Skolestart etter nyttår']],
+      [['prove','Uke 6','Intern teknisk sjekk'],['trening','15.–21. feb','WANG fellessamling med Oslo'],['skole','Uke 8','Vinterferie']],
+      [['prove','Uke 10','Test og IUP-sjekk — GRUNN avsluttes'],['trening','Uke 11','SPES starter: teknikk blir slag'],['skole','Uke 12','Påskeferie'],['skole','Uke 9–10','Prøveperiode i fellesfag']],
+      [['trening','Fra 5. april','Ut på GFGK — overføring til bane'],['trening','Uke 16','Kalibrering fullført'],['konkurranse','Uke 17','Turneringssesongen åpner']],
+      [['konkurranse','Hele mnd.','Norgescup, Østlandstour og Srixon Tour'],['skole','6. og 17. mai','Fridager — ingen økter'],['skole','Uke 21–22','Eksamensperiode VG1–VG3']],
+      [['konkurranse','Uke 22–23','NM-perioden'],['prove','Uke 24','Sluttest og IUP-evaluering'],['skole','Uke 24','Sesong- og skoleårsavslutning']],
+    ];
+    const mndTidslinje = MND.map(([navn, fase, tema], i) => {
+      const f = FASER[MND_FASE[i]];
+      const [kort, ar] = navn.split(' ');
+      return { kort, ar: ar || (i < 5 ? '2026' : '2027'), tema, fase: f.navn, farge: f.farge, tint: f.tint, tekstFarge: f.tekst,
+        linje: i === MND.length - 1 ? 'none' : 'block',
+        rader: MND_RADER[i].map(([t, nar, tekst]) => ({ type: TYPER[t].navn.split(' ')[0], nar, tekst, farge: TYPER[t].farge, tint: TYPER[t].tint })),
+        formler: oktFormler(MND_FASE[i]) };
+    });
+    const mndLegend = Object.values(TYPER).map((t) => ({ navn: t.navn, farge: t.farge }));
+    const maneder = MND.map(([navn, fase, tema, hendelser]) => ({
+      navn, tema, hendelser, fase: FASER[fase].navn,
+      farge: FASER[fase].farge, tint: FASER[fase].tint, tekstFarge: FASER[fase].tekst,
+    }));
+    const ukeRader = ['Mandag', 'Onsdag', 'Fredag'].map((dag) => ({
+      dag, tid: '08:00–10:00',
+      innhold: 'Felles øktmal: oppvarming, tre øvelser etter periodens pyramide, KPI og dagbok',
+    }));
+    const trinnValgte = trinn === 'Alle trinn' ? ['VG1', 'VG2', 'VG3'] : [trinn];
+    const okter = OKTER.map((o) => {
+      const f = FASER[o.periode];
+      return { ...o, tint: f.tint, tekstFarge: f.tekst, stripe: f.farge,
+        maalTittel: trinn === 'Alle trinn' ? 'Mål per trinn' : 'Mål for ' + trinn,
+        blokker: o.blokker.map((b) => ({ tid: b.tid, del: b.del, innhold: b.innhold,
+          harKode: !!b.omraade, kode: kodeStreng(b), reps: b.reps || '',
+          omradeLabel: OMRAADE_LABEL[b.omraade] || '',
+          varighet: b.min ? b.min + ' min' : '',
+          akseFarge: b.akse ? (AKSER[AKSE_ORD.indexOf(b.akse)] || {}).farge : 'var(--neutral-50)',
+          detaljer: [b.motorikk ? MOTORIKK_LABEL[b.motorikk] : null, b.belastning ? BELASTNING_LABEL[b.belastning] : null,
+            b.press ? PRESS_LABEL[b.press] : null, b.dimensjon ? DIMENSJON_LABEL[b.dimensjon] : null].filter(Boolean).join(' · ') })),
+        maal: o.maal.map(([tekst, km], j) => ({ tekst, km, trinn: ['VG1', 'VG2', 'VG3'][j], ...TRINN[['VG1', 'VG2', 'VG3'][j]] }))
+          .filter((g) => trinnValgte.includes(g.trinn))
+          .map((g) => ({ ...g, trinn: g.trinn })) };
+    });
+    const kmGrupper = trinnValgte.map((t) => ({
+      trinn: t, farge: TRINN[t].farge, tint: TRINN[t].tint,
+      overskrift: t + ' · ' + TRINN[t].fag + ' og kroppsøving',
+      kort: [
+        { ...TRINN[t], trinn: t, maal: KM[t].map((tekst, i) => ({ nr: i + 1, tekst })) },
+        { ...TRINN_KRO[t], trinn: t, maal: KM_KRO[t].map((tekst, i) => ({ nr: i + 1, tekst })) },
+      ],
+    }));
+    const kmKort = trinnValgte.flatMap((t) => ([
+      { ...TRINN[t], trinn: t,
+        maal: KM[t].map((tekst, i) => ({ nr: i + 1, tekst })) },
+      { ...TRINN_KRO[t], trinn: t,
+        maal: KM_KRO[t].map((tekst, i) => ({ nr: i + 1, tekst })) },
+    ]));
+    const kalValg = this.state.kalValg ?? this.props.kalender ?? 'Tidslinje';
+    const kalTabs = ['Tidslinje', 'Uke', 'Måned', 'År'];
+    const EV_FARGE = {
+      okt: { navn: 'Trening og samling', farge: 'var(--wang-teal-text)', tint: 'var(--tint-teal)' },
+      prove: { navn: 'Test og konkurranse', farge: 'var(--cat-purple)', tint: 'var(--tint-purple)' },
+      skole: { navn: 'Skole og ferie', farge: 'var(--cat-blue)', tint: 'var(--tint-blue)' },
+      hendelse: { navn: 'Merkedag', farge: 'var(--cat-orange)', tint: 'var(--tint-orange)' },
+    };
+    const AAR_MND_NAVN = ['Januar', 'Februar', 'Mars', 'April', 'Mai', 'Juni', 'Juli', 'August', 'September', 'Oktober', 'November', 'Desember'];
+    const aarLegend = Object.values(EV_FARGE).map((v) => ({ navn: v.navn, farge: v.farge }));
+    const aarManeder = AAR_MND_NAVN.map((navn, mi) => {
+      const dagerIMnd = new Date(this.state.kalAar, mi + 1, 0).getDate();
+      const forskyv = (new Date(this.state.kalAar, mi, 1).getDay() + 6) % 7;
+      const dager = [];
+      for (let i = 0; i < forskyv; i++) dager.push({ bg: 'transparent', ring: 'none' });
+      const tell = {};
+      let antall = 0;
+      for (let d = 1; d <= dagerIMnd; d++) {
+        const iso = this.state.kalAar + '-' + String(mi + 1).padStart(2, '0') + '-' + String(d).padStart(2, '0');
+        const evs = EVENTS[iso] || [];
+        antall += evs.length;
+        for (const e of evs) tell[e.type] = (tell[e.type] || 0) + 1;
+        const pri = evs.find((e) => e.type === 'prove') || evs.find((e) => e.type === 'hendelse') || evs.find((e) => e.type === 'okt') || evs[0];
+        dager.push({
+          bg: pri ? (EV_FARGE[pri.type] || EV_FARGE.okt).farge : 'var(--border-subtle)',
+          ring: evs.length > 1 ? '0 0 0 1.5px var(--surface-card)' : 'none',
+        });
+      }
+      const rekkefolge = ['okt', 'prove', 'skole', 'hendelse'];
+      const summer = rekkefolge.filter((t) => tell[t]).map((t) => ({ antall: tell[t], farge: EV_FARGE[t].farge, tint: EV_FARGE[t].tint }));
+      const faseIdx = AAR_MND_NAVN.indexOf(navn);
+      const stripe = antall ? (summer[0] ? summer[0].farge : 'var(--wang-teal)') : 'var(--border-subtle)';
+      return { navn, antall, dager, summer, stripe, tallFarge: antall ? stripe : 'var(--text-secondary)',
+        apne: () => this.setState({ kalValg: 'Måned', kalVisning: 'Måned', kalDato: new Date(this.state.kalAar, faseIdx, 1) }) };
+    });
+    const OKTER_TXT2 = { TURN: 'Man · ons · fre 08:00–10:00 · ute (GFGK)', TEST: 'Man · ons · fre 08:00–10:00 · testbatteri', GRUNN: 'Man · ons · fre 08:00–10:00 · inne', SPES: 'Man · ons · fre 08:00–10:00 · inne/ute', TURN2: 'Man · ons · fre 08:00–10:00 · ute (GFGK)' };
+    const tidslinje = PERIODER.map((p, i) => {
+      const f = FASER[p.id === 'TURN2' ? 'TURN' : p.id];
+      const punkter = [];
+      for (const [uke, man, fase, type, notat] of UKER) {
+        if (!notat) continue;
+        const iP = p.id === 'TURN' ? (uke >= 34 && uke <= 42) : p.id === 'TEST' ? uke === 43 : p.id === 'GRUNN' ? (uke >= 44 || uke <= 10) : p.id === 'SPES' ? (uke >= 11 && uke <= 16) : (uke >= 17 && uke <= 24 && man.startsWith('2027'));
+        if (iP) punkter.push({ uke: 'Uke ' + uke, tekst: notat });
+      }
+      punkter.unshift({ uke: 'Økter', tekst: OKTER_TXT2[p.id] });
+      return { navn: p.navn, uker: p.uker.replace('Uke ', 'U'), datoer: p.datoer, fokus: p.fokus,
+        formler: oktFormler(p.id === 'TURN2' ? 'TURN' : p.id),
+        fase: f.navn, farge: f.farge, tint: f.tint, tekstFarge: f.tekst,
+        linje: i === PERIODER.length - 1 ? 'none' : 'block', punkter };
+    });
+    const klasseListe = KLASSER.filter((k) => trinn === 'Alle trinn' || k.trinn === trinn);
+    const valgtKlasse = klasseListe.find((k) => k.id === this.state.klasse) || klasseListe[0];
+    const klassePills = klasseListe.map((k) => ({
+      label: k.id, bg: k.id === valgtKlasse.id ? 'var(--wang-navy)' : 'transparent',
+      fg: k.id === valgtKlasse.id ? '#fff' : 'var(--text-secondary)',
+      border: k.id === valgtKlasse.id ? 'var(--wang-navy)' : 'var(--border-subtle)',
+      velg: () => this.setState({ klasse: k.id }),
+    }));
+    const minutter = (s) => { const [t, m] = s.split('.').map(Number); return t * 60 + m; };
+    const START_MIN = minutter('08.00');
+    const SLUTT_MIN = minutter('15.45');
+    const PX_PER_MIN = 0.82;
+    const rutenettHoyde = Math.round((SLUTT_MIN - START_MIN) * PX_PER_MIN);
+    const timeLinjer = [];
+    for (let t = 8; t <= 15; t++) timeLinjer.push({ top: Math.round((t * 60 - START_MIN) * PX_PER_MIN), label: String(t).padStart(2, '0') + '.00' });
+    const dagKol = DAGER.map((dag, d) => {
+      const blokker = [];
+      TIMER.forEach(([, tid], r) => {
+        const celle = valgtKlasse.plan[r][d] || '';
+        if (!celle) return;
+        const [fra, til] = tid.split('–');
+        const trening = celle.indexOf('Trening') === 0;
+        const pause = celle === 'Spisefri' || celle === LX;
+        const valgfag = celle.split(' / ').length > 1;
+        const deler = celle.split(' / ').map((s) => s.trim());
+        const tittel = deler.map((s) => s.replace(/\s*\(.*?\)/, '')).join(' / ');
+        const rom = deler.map((s) => { const m = s.match(/\((.*?)\)/); return m ? m[1] : ''; }).filter(Boolean).join(' · ');
+        blokker.push({
+          top: Math.round((minutter(fra) - START_MIN) * PX_PER_MIN),
+          h: Math.max(40, Math.round((minutter(til) - minutter(fra)) * PX_PER_MIN) - 3),
+          bg: trening ? 'var(--tint-teal)' : pause ? 'var(--tint-orange)' : valgfag ? 'var(--tint-blue)' : 'var(--neutral-50)',
+          stripe: trening ? 'var(--wang-teal)' : pause ? 'var(--cat-orange)' : valgfag ? 'var(--cat-blue)' : 'var(--neutral-400)',
+          farge: trening ? 'var(--wang-teal-text)' : 'var(--text-primary)',
+          tittel, rom, visRom: rom ? 'block' : 'none',
+        });
+      });
+      return { kort: dag.slice(0, 3), lang: dag, nr: String(d + 1), blokker };
+    });
+    const erSmal = (this.state.vw || 1200) < 700;
+    const valgtDag = this.state.dag ?? 0;
+    const dagKolVist = erSmal ? [dagKol[valgtDag]] : dagKol;
+    const gridKol = erSmal ? '44px 1fr' : 'clamp(34px,5.5vw,52px) repeat(5,1fr)';
+    const dagPills = dagKol.map((dk, i) => ({
+      label: erSmal ? dk.lang : dk.kort,
+      bg: i === valgtDag ? 'var(--wang-navy)' : 'transparent',
+      fg: i === valgtDag ? '#fff' : 'var(--text-primary)',
+      border: i === valgtDag ? 'var(--wang-navy)' : 'var(--border-subtle)',
+      velg: () => this.setState({ dag: i }),
+    }));
+    const skoleFag = valgtKlasse.fag.map(([fag, laerer, rom, blokk]) => ({ fag, laerer, rom, blokk: blokk || '—' }));
+    const foreldremoter = (FORELDREMOTER[valgtKlasse.trinn] || []).map((t) => ({ tekst: t }));
+    const skolerute = SKOLERUTE.map(([mnd, tekst, uke]) => ({ mnd, tekst, uke }));
+    const prover = (PROVER[valgtKlasse.trinn] || []).map(([uke, tittel, detalj]) => ({
+      uke, tittel, type: 'Skole', detalj,
+      farge: 'var(--cat-blue)',
+      tint: 'var(--tint-blue)',
+    }));
+    /* Klikkbare hendelser: hver dag i kalenderen fører videre til der planen bor. */
+    const gaaTil = (f, anker) => this.gaaTilAnker(f, anker);
+    const MND_NAVN = ['januar', 'februar', 'mars', 'april', 'mai', 'juni', 'juli', 'august', 'september', 'oktober', 'november', 'desember'];
+    const valgtIso = this.state.valgtDag || (this.state.kalDato instanceof Date
+      ? new Date(this.state.kalDato.getTime() - this.state.kalDato.getTimezoneOffset() * 60000).toISOString().slice(0, 10) : null);
+    const dagsHendelser = ((valgtIso && EVENTS[valgtIso]) || []).map((e, i) => {
+      const mal = e.type === 'okt' ? ['trening', 'oktplaner', 'Åpne øktplanen']
+        : e.type === 'prove' ? ['skole', 'prover', 'Åpne prøveplanen']
+        : e.type === 'konkurranse' ? ['trening', 'manedsplan', 'Se månedsplanen']
+        : (e.label || '').indexOf('Foreldremøte') === 0 ? ['skole', 'skoleplan', 'Åpne skoleplanen']
+        : e.type === 'skole' ? ['skole', 'skoleplan', 'Åpne skoleplanen']
+        : ['trening', 'arsplan', 'Se årshjulet'];
+      const t = TYPER[e.type] || TYPER.trening;
+      return { id: valgtIso + '-' + i, label: e.label, tid: e.time || 'Hele dagen',
+        type: t.navn, farge: t.farge, tint: t.tint, cta: mal[2],
+        apne: () => gaaTil(mal[0], mal[1]) };
+    });
+    const valgtDagTekst = valgtIso
+      ? (() => { const d = new Date(valgtIso + 'T12:00:00');
+          return d.getDate() + '. ' + MND_NAVN[d.getMonth()] + ' ' + d.getFullYear(); })()
+      : 'Velg en dag';
+    const settValgtDag = (d) => {
+      if (!(d instanceof Date)) return;
+      const iso = new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString().slice(0, 10);
+      this.setState({ valgtDag: iso, kalDato: d });
+    };
+    /* Ukessammendrag — treneren legger dem inn i ukesrapporter.js, nyeste først. */
+    const rapporter = (typeof window !== 'undefined' && window.WANGRAPPORTER) || [];
+    const apenR = this.state.apenRapport;
+    const rapportVals = {
+      harRapport: rapporter.length > 0,
+      ingenRapport: rapporter.length === 0,
+      siste: rapporter[0] || null,
+      harTidligere: rapporter.length > 1,
+      nesteFredag: this.nesteFredag(),
+      tidligere: rapporter.slice(1).map((r) => ({ ...r, apen: apenR === r.uke,
+        vekslerTekst: apenR === r.uke ? 'Skjul' : 'Les',
+        veksle: () => this.setState({ apenRapport: apenR === r.uke ? null : r.uke }) })),
+    };
+    const FORELDRE_TEMA = {
+      VG1: 'Oppstart, forventninger, treningsplanlegging og halvårsvurdering.',
+      VG2: 'Fagvalg, belastningsstyring og utviklingssamtaler.',
+      VG3: 'Eksamen, standpunkt og veien videre etter WANG.',
+    };
+    const foreldreTrinn = ['VG1', 'VG2', 'VG3'].map((t) => ({
+      trinn: t, farge: TRINN[t].farge, tema: FORELDRE_TEMA[t],
+      antall: (FORELDREMOTER[t] || []).length === 1 ? '1 møte' : (FORELDREMOTER[t] || []).length + ' møter',
+      moter: (FORELDREMOTER[t] || []).map((tekst) => ({ tekst })),
+    }));
+    const foreldreInfo = [
+      { tittel: 'Treningstider', tekst: 'Mandag, onsdag og fredag 08:00–10:00 som første blokk i skoledagen. Elevene møter ferdig skiftet — økten starter presis.' },
+      { tittel: 'Sted', tekst: 'Gamle Fredrikstad GK i utesesongen (april–oktober), treningslokalet på skolen fra uke 44 til uke 13.' },
+      { tittel: 'Kontakt', tekst: 'Anders Kristiansen, sportssjef og trener golf. Periodebrev sendes elever og foresatte ved hvert periodeskifte.' },
+      { tittel: 'Turneringer', tekst: 'Reiser og turneringshelger ligger i kalenderen. Påmelding gjør eleven selv, med frist merket på hver turnering.' },
+      { tittel: 'Fravær og sykdom', tekst: 'Meld fra til trener før 08:00. Skadet elev møter likevel og får tilpasset opplegg — det er en del av faget.' },
+      { tittel: 'Utstyr', tekst: 'Egne klubber, innesko til treningslokalet og regntøy i utesesongen. Skolen holder baller, matter og testutstyr.' },
+    ];
+    const FANER = ['trening', 'skole', 'kalender', 'foreldre'];
+    const fane = this.state.fane;
+    const faneVals = {};
+    for (const f of FANER) {
+      const cap = f.charAt(0).toUpperCase() + f.slice(1);
+      faneVals['vis' + cap] = fane === f;
+      faneVals['ga' + cap] = () => { this.setState({ fane: f }); if (typeof window !== 'undefined') window.scrollTo({ top: 0 }); };
+      faneVals['ga' + cap + 'Bg'] = fane === f ? 'var(--wang-navy)' : 'transparent';
+      faneVals['ga' + cap + 'Fg'] = fane === f ? '#fff' : 'var(--text-primary)';
+    }
+    return {
+      ...faneVals, ...rapportVals, foreldreTrinn, foreldreInfo,
+      trinnTabs, trinnKey: trinn,
+      arMnd, nullstillPek: () => this.setState({ pekM: null }),
+      pekKey: 'm' + pm, pekNavn: MND[pm][0], pekFase: pF.navn, pekTema: MND[pm][2],
+      pekAktivitet: MND[pm][3].join(' · '), pekFarge: pF.farge, pekTint: pF.tint, pekTekstFarge: pF.tekst,
+      faseLegend: ['TURN', 'GRUNN', 'SPES', 'TEST'].map((k) => ({ navn: FASER[k].navn, farge: FASER[k].farge })),
+      perioder, pyramidePills, pyramide, pyramideKey: pyr, pyrTotal,
+      maneder, mndTidslinje, mndLegend, ukeRader, okter, kmKort, kmGrupper,
+      klassePills, dagKol, dagKolVist, dagPills, gridKol, erSmal, timeLinjer, rutenettHoyde, skoleFag, foreldremoter, skolerute, prover,
+      settValgtDag, dagsHendelser, valgtDagTekst,
+      klasseNavn: valgtKlasse.id, kontaktlaerer: valgtKlasse.kontakt, skoleKey: valgtKlasse.id,
+      kalTabs, kalValg, settKalValg: (v) => this.setState({ kalValg: v, kalVisning: v === 'År' ? this.state.kalVisning : v }),
+      erAar: kalValg === 'År', erKal: kalValg === 'Uke' || kalValg === 'Måned', erTidslinje: kalValg === 'Tidslinje', tidslinje,
+      aarPills: [2026, 2027].map((a) => ({ label: String(a), bg: a === this.state.kalAar ? 'var(--wang-navy)' : 'var(--neutral-50)', fg: a === this.state.kalAar ? '#fff' : 'var(--text-secondary)', velg: () => this.setState({ kalAar: a }) })),
+      kalAar: this.state.kalAar, events: EVENTS, aarManeder, aarLegend,
+      hoppTilManed: (d) => this.setState({ kalValg: 'Måned', kalVisning: 'Måned', kalDato: d }),
+      kalDato: this.state.kalDato, settKalDato: (d) => this.setState({ kalDato: d }),
+      kalVisning: this.state.kalVisning === 'År' ? 'Uke' : this.state.kalVisning,
+      settKalVisning: (v) => this.setState({ kalVisning: v, kalValg: v }),
+    };
+  }
+}
+</script>
+</body>
+</html>
