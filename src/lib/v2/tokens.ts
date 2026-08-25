@@ -1,5 +1,10 @@
 /**
  * AK Golf HQ v2 — token-speil (Open Design showroom-fasit, Fase F).
+ *
+ * ⚠ UTGÅENDE (2026-08-25): T speiler Paper-/v2-settet. Train-lock er eneste
+ * designfasit for alle PlayerHQ- og AgencyOS-skjermer (CLAUDE.md invariant 2).
+ * T står urørt fordi skjermene fortsatt leser det — ny kode bruker TL
+ * (src/lib/v2/train-lock.ts). Ikke endre verdier her uten en skjerm-PR.
  * Verdiene bor som --v2-* i src/app/globals.css: LYS default på :root,
  * mørk via html[data-v2-tema="dark"]. Komponenter bruker T for inline styles.
  * Endres kun ved designbeslutning.

@@ -669,6 +669,15 @@ html[data-v2-tema="dark"] ::selection {
  * Se src/styles/paper-tokens.css for avviklingsbetingelsen for det gamle settet.
  */
 @import "../styles/paper-tokens.css";
+
+/* ---------- Train-lock-tokens (D2, 2026-08-25) ----------
+ * Designfasit for ALLE skjermer i PlayerHQ OG AgencyOS (CLAUDE.md
+ * invariant 2, Anders 25.08.2026). Kilde: designsystem/train-lock/.
+ * ALLE navn er prefikset --tl-, så importen endrer null piksler før en
+ * skjerm tar dem i bruk. Paper-settet (--p-*) er dermed UTGÅENDE og blir
+ * liggende til siste skjerm er portet — se src/styles/train-lock-tokens.css.
+ */
+@import "../styles/train-lock-tokens.css";
 @import "../components/athletic/golfdata/golfdata.css";
 
 /* ---------- AK Golf type helpers ----------
