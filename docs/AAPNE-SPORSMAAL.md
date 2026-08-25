@@ -11,8 +11,8 @@
 | # | Spørsmål | Status | Notat |
 |---|---|---|---|
 | T1 | Designfasit for produktflatene | **LØST 25.08 (Anders):** Train-lock er fasit for ALLE skjermer i PlayerHQ OG AgencyOS. Paper er historikk | Se `.claude/rules/beslutninger.md` (øverste beslutning) + CLAUDE.md invariant 2. Ikke re-flagg Paper-vs-Train-lock |
-| T2 | Train-lock-tokens i kode | **ÅPEN** (D2) | Tokens/scene-sett er ikke definert i src/ — må defineres før design-pass (LAUNCH-PLAN B8) |
-| T3 | Fasit-zip («Player HQ Train lock.zip» + ev. Agency-varianter) | **ÅPEN** (D3) | Ikke committet i repoet — Anders leverer, forslag `designsystem/train-lock/` |
+| T2 | Train-lock-tokens i kode | **ÅPEN** (D2) | Tokens/scene-sett er ikke definert i src/ — utledes nå fra `designsystem/train-lock/TRAIN LOCK.dc.html` + HANDOFF.md; må defineres før design-pass (LAUNCH-PLAN B8/bølge T) |
+| T3 | Fasit-zip | **LØST 25.08 (Anders leverte, i økt):** committet som `designsystem/train-lock/` (180 skjermer + HANDOFF.md; dekker også Agency). `uploads/`-kildemateriale bevisst utenfor offentlig repo — se SYNC-STATUS.md der |
 | T4 | Forelder-portalens designomfang under Train-lock | **ÅPEN** | Forelder er verken PlayerHQ eller AgencyOS — spør Anders før port |
 | T5 | DataGolf `/stats/*`-plassering | **ÅPEN** (D5, tidl. PORTPLAN §A1.1) | Anders-beslutning før C10 |
 | T6 | `docs/plan-treningsplanlegging-til-kode-2026-08-20.md` vs natt-sporet | **ÅPEN** (D6) | Ikke kjør de to sporene parallelt mot samme domenemodell uten Anders' avklaring |

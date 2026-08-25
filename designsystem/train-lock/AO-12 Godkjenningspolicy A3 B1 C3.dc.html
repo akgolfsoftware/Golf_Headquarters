@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+  html, body { margin: 0; padding: 0; background: #000000; }
+  body { font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", Helvetica, Arial, sans-serif; -webkit-font-smoothing: antialiased; color: #F5F5F5; }
+  a { color: #F5F5F5; text-decoration: none; }
+  a:hover { color: #FFFFFF; }
+  ::-webkit-scrollbar { display: none; }
+</style>
+</helmet>
+<div style="min-height: 100vh; background: #000000; padding: 56px 48px 96px; display: flex; flex-direction: column; gap: 40px; align-items: flex-start;">
+
+<div>
+<div style="font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #8E8E93;">AK Golf HQ · AgenticOS</div>
+<h1 style="margin: 8px 0 0; font-size: 34px; font-weight: 700; letter-spacing: -0.02em;">AO-12 — Godkjenningspolicy A3 · B1 · C3</h1>
+<div style="margin-top: 8px; font-size: 13px; color: #8E8E93; max-width: 780px; line-height: 1.55;">A3: start-godkjenning kreves når runtime er sky, area er ØKONOMI / PERSONLIG / DRIFT, eller writeTargets ≠ none. B1: Godkjenn er hvit primær — ok-grønn finnes ikke i AgenticOS. C3: research uten skriv går aldri i godkjenn-køen, den lander som badge i Cockpit.</div>
+</div>
+
+<div style="display: flex; gap: 20px; align-items: stretch; flex-wrap: wrap; max-width: 1440px;">
+  <div style="flex: 1; min-width: 300px; background: #161616; border-radius: 18px; padding: 18px 20px;">
+    <div style="font-size: 10px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #8E8E93;">A3 · Når krever vi start</div>
+    <div style="margin-top: 10px; font-size: 13px; line-height: 1.7;">Sky-runtime · ØKONOMI, PERSONLIG eller DRIFT · writeTargets ≠ none</div>
+    <div style="margin-top: 8px; font-size: 12px; color: #8E8E93; line-height: 1.6;">Lokal Ollama + kun les eller rapport: auto-start, ingen dialog.</div>
+  </div>
+  <div style="flex: 1; min-width: 300px; background: #161616; border-radius: 18px; padding: 18px 20px;">
+    <div style="font-size: 10px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #8E8E93;">B1 · Knappefarge</div>
+    <div style="margin-top: 10px; font-size: 13px; line-height: 1.7;">Godkjenn start og Godkjenn er hvit primær. Avvis er hairline. Pause og Avbryt er dim.</div>
+    <div style="margin-top: 8px; font-size: 12px; color: #8E8E93; line-height: 1.6;">Etter godkjent: warm hake og caps GODKJENT — aldri grønn knapp.</div>
+  </div>
+  <div style="flex: 1; min-width: 300px; background: #161616; border-radius: 18px; padding: 18px 20px;">
+    <div style="font-size: 10px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #8E8E93;">C3 · Research uten skriv</div>
+    <div style="margin-top: 10px; font-size: 13px; line-height: 1.7;">Run ferdig → Task Ferdig automatisk. Aldri i AO-08.</div>
+    <div style="margin-top: 8px; font-size: 12px; color: #8E8E93; line-height: 1.6;">Cockpit viser badge «N nye research-resultater». Ikke blokkerende.</div>
+  </div>
+</div>
+
+<div style="display: flex; gap: 36px; align-items: flex-start; flex-wrap: wrap;">
+
+<div>
+<div style="font-size: 10px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #8E8E93; margin-bottom: 10px;">1 · Venter start · 1440 · AO-04 med start-dialog</div>
+<div data-screen-label="AO-12a Venter start 1440" style="width: 700px; background: #000000; box-shadow: inset 0 0 0 1px #FFFFFF14; border-radius: 18px; padding: 20px; display: flex; flex-direction: column; gap: 14px; position: relative;">
+  <div style="display: flex; align-items: baseline; gap: 10px;">
+    <span style="font-size: 20px; font-weight: 700; letter-spacing: -0.02em;">Rydd fakturagrunnlag august</span>
+    <span style="font-size: 12px; color: #8E8E93;">ØKONOMI · OpenCode · sky</span>
+  </div>
+  <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+    <span style="height: 28px; border-radius: 999px; box-shadow: inset 0 0 0 1px #FFFFFF14; display: flex; align-items: center; padding: 0 12px; font-size: 9px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #8E8E93;">Sky</span>
+    <span style="height: 28px; border-radius: 999px; box-shadow: inset 0 0 0 1px #FFFFFF14; display: flex; align-items: center; padding: 0 12px; font-size: 9px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #8E8E93;">Area ØKONOMI</span>
+    <span style="height: 28px; border-radius: 999px; box-shadow: inset 0 0 0 1px #FFFFFF14; display: flex; align-items: center; padding: 0 12px; font-size: 9px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #FFD60A;">Skriver til regnskapsnotat</span>
+  </div>
+  <div style="background: #161616; border-radius: 14px; padding: 14px 16px; font-size: 13px; color: #8E8E93; line-height: 1.6;">Tre av tre A3-vilkår er truffet. Runet står stille til du godkjenner starten.</div>
+  <div style="height: 200px;"></div>
+  <div style="position: absolute; inset: 0; background: rgba(0,0,0,0.55); border-radius: 18px; display: flex; align-items: center; justify-content: center;">
+    <div style="width: 440px; background: #1C1C1E; border-radius: 20px; padding: 24px;">
+      <div style="font-size: 10px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #8E8E93;">Venter start · ØKONOMI · sky</div>
+      <div style="margin-top: 8px; font-size: 22px; font-weight: 700; letter-spacing: -0.02em;">Starte denne oppgaven?</div>
+      <div style="margin-top: 10px; font-size: 14px; color: #8E8E93; line-height: 1.5;">Agenten sender 84 fakturarader til OpenCode i skyen og skriver et ryddet grunnlag tilbake. Ingenting går til Workbench.</div>
+      <div style="margin-top: 16px; background: #161616; border-radius: 14px; padding: 12px 14px; font-size: 12px; color: #8E8E93; line-height: 1.7;">Runtime OpenCode · sky<br>Area ØKONOMI<br>writeTargets note</div>
+      <div style="margin-top: 18px; display: flex; gap: 10px; align-items: center;">
+        <div style="height: 44px; border-radius: 999px; background: #FFFFFF; color: #000000; display: flex; align-items: center; padding: 0 22px; font-size: 15px; font-weight: 700;">Godkjenn start</div>
+        <div style="height: 44px; border-radius: 999px; box-shadow: inset 0 0 0 1px #FFFFFF14; display: flex; align-items: center; padding: 0 18px; font-size: 15px; font-weight: 600; color: #8E8E93;">Avvis</div>
+        <div style="flex: 1;"></div>
+        <span style="font-size: 13px; font-weight: 600; color: #8E8E93;">Bytt runtime</span>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<div>
+<div style="font-size: 10px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #8E8E93; margin-bottom: 10px;">2 · Pågår · 3 · Venter resultat — 620</div>
+<div style="display: flex; flex-direction: column; gap: 16px;">
+  <div data-screen-label="AO-12b Pagar 1440" style="width: 620px; background: #000000; box-shadow: inset 0 0 0 1px #FFFFFF14; border-radius: 18px; padding: 20px; display: flex; flex-direction: column; gap: 12px;">
+    <div style="display: flex; align-items: center; gap: 9px;">
+      <div style="width: 7px; height: 7px; border-radius: 50%; background: #0A84FF;"></div>
+      <span style="font-size: 10px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #8E8E93;">Pågår · startet 09.31 · godkjent av Anders 09.30</span>
+    </div>
+    <div style="font-size: 18px; font-weight: 700;">Rydd fakturagrunnlag august</div>
+    <div style="height: 4px; border-radius: 2px; background: #1C1C1E; overflow: hidden;"><div style="width: 44%; height: 100%; background: #0A84FF;"></div></div>
+    <div style="font-size: 12px; color: #8E8E93; font-variant-numeric: tabular-nums;">Steg 5 av 11 · 4 min</div>
+    <div style="display: flex; gap: 10px;">
+      <div style="height: 36px; border-radius: 999px; background: #2C2C2E; display: flex; align-items: center; padding: 0 16px; font-size: 13px; font-weight: 600; color: #F5F5F5;">Pause</div>
+      <div style="height: 36px; border-radius: 999px; background: #2C2C2E; display: flex; align-items: center; padding: 0 16px; font-size: 13px; font-weight: 600; color: #F5F5F5;">Avbryt</div>
+    </div>
+  </div>
+  <div data-screen-label="AO-12c Venter resultat 1440" style="width: 620px; background: #000000; box-shadow: inset 0 0 0 1px #FFFFFF14; border-radius: 18px; padding: 20px; display: flex; flex-direction: column; gap: 14px;">
+    <div style="display: flex; align-items: center; gap: 10px;">
+      <span style="font-size: 9px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #FFD60A;">Venter resultat · skriver til plan</span>
+      <div style="flex: 1;"></div>
+      <span style="font-size: 11px; color: #8E8E93;">Claude · ferdig 09.20</span>
+    </div>
+    <div>
+      <div style="font-size: 18px; font-weight: 700;">Foreslå uke 36 · Filip Hagen</div>
+      <div style="margin-top: 4px; font-size: 13px; color: #8E8E93; line-height: 1.55;">3 utkast-økter til Workbench. Ingenting publiseres — du publiserer selv fra Workbench etterpå.</div>
+    </div>
+    <div style="background: #1C1C1E; border-radius: 12px; padding: 10px 12px; font-size: 12px; color: #8E8E93; line-height: 1.7; font-variant-numeric: tabular-nums;">Man 16.00 Teknikk driver · Tir 16.00 Nærspill · Tor 16.00 FYS styrke</div>
+    <div style="display: flex; gap: 10px;">
+      <div style="height: 40px; border-radius: 999px; background: #FFFFFF; color: #000000; display: flex; align-items: center; padding: 0 20px; font-size: 14px; font-weight: 600;">Godkjenn</div>
+      <div style="height: 40px; border-radius: 999px; box-shadow: inset 0 0 0 1px #FFFFFF14; display: flex; align-items: center; padding: 0 16px; font-size: 14px; font-weight: 600; color: #8E8E93;">Avvis</div>
+      <div style="height: 40px; border-radius: 999px; box-shadow: inset 0 0 0 1px #FFFFFF14; display: flex; align-items: center; padding: 0 16px; font-size: 14px; font-weight: 600; color: #8E8E93;">Se diff</div>
+    </div>
+    <div style="font-size: 11px; color: #8E8E93; line-height: 1.6;">Én og én. Ingen batch-godkjenning i v1.</div>
+  </div>
+</div>
+</div>
+
+<div>
+<div style="font-size: 10px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #8E8E93; margin-bottom: 10px;">4 · Research ferdig · C3 — aldri i AO-08</div>
+<div data-screen-label="AO-12d Research ferdig 1440" style="width: 560px; background: #000000; box-shadow: inset 0 0 0 1px #FFFFFF14; border-radius: 18px; padding: 20px; display: flex; flex-direction: column; gap: 14px;">
+  <div style="display: flex; align-items: center; gap: 10px;">
+    <span style="font-size: 9px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #8E8E93;">Ferdig · leser bare · writeTargets none</span>
+    <div style="flex: 1;"></div>
+    <span style="font-size: 11px; color: #8E8E93;">Ollama lokal · 09.02</span>
+  </div>
+  <div>
+    <div style="font-size: 18px; font-weight: 700;">Sammenlign wedge-protokoller i TN 2026</div>
+    <div style="margin-top: 4px; font-size: 13px; color: #8E8E93; line-height: 1.55;">Rapport på 3 sider. Ingen sideeffekt, så oppgaven ble satt til Ferdig uten godkjenning.</div>
+  </div>
+  <div style="display: flex; align-items: center; gap: 9px;">
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#B85C3D" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13 L10 18 L19 7"></path></svg>
+    <span style="font-size: 12px; color: #8E8E93;">Ferdig automatisk · lander som badge i Cockpit</span>
+  </div>
+  <div style="display: flex; gap: 10px;">
+    <div style="height: 40px; border-radius: 999px; background: #FFFFFF; color: #000000; display: flex; align-items: center; padding: 0 20px; font-size: 14px; font-weight: 600;">Les rapport</div>
+    <div style="height: 40px; border-radius: 999px; box-shadow: inset 0 0 0 1px #FFFFFF14; display: flex; align-items: center; padding: 0 16px; font-size: 14px; font-weight: 600; color: #8E8E93;">Kjør på nytt</div>
+  </div>
+  <div style="font-size: 11px; color: #8E8E93; line-height: 1.6;">Vil du gjøre noe med rapporten, oppretter du en ny oppgave med sideeffekt — den går gjennom godkjenn-køen.</div>
+</div>
+</div>
+
+<div>
+<div style="font-size: 10px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #8E8E93; margin-bottom: 10px;">5 · Avvist · Feilet · Pause — 560</div>
+<div data-screen-label="AO-12e Avvist feilet pause 1440" style="width: 560px; background: #000000; box-shadow: inset 0 0 0 1px #FFFFFF14; border-radius: 18px; padding: 20px; display: flex; flex-direction: column; gap: 12px;">
+  <div style="background: #161616; border-radius: 14px; padding: 14px 16px; display: flex; align-items: center; gap: 12px;">
+    <div style="flex: 1;"><div style="font-size: 14px; font-weight: 600;">Foreslå uke 35 · Mia Berg</div><div style="font-size: 11px; color: #8E8E93;">Avvist av Anders 08.40 · ingenting ble skrevet</div></div>
+    <span style="font-size: 9px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #8E8E93;">Avvist</span>
+    <span style="font-size: 12px; font-weight: 600; color: #0A84FF;">Kjør på nytt</span>
+  </div>
+  <div style="background: #161616; border-radius: 14px; padding: 14px 16px; display: flex; align-items: center; gap: 12px;">
+    <div style="flex: 1;"><div style="font-size: 14px; font-weight: 600;">Hent turneringsresultater Hankø</div><div style="font-size: 11px; color: #8E8E93;">Grok svarte ikke på to forsøk. Oppgaven står som Klar.</div></div>
+    <span style="font-size: 9px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #FF453A;">Feilet</span>
+    <span style="font-size: 12px; font-weight: 600; color: #0A84FF;">Se logg</span>
+  </div>
+  <div style="background: #161616; border-radius: 14px; padding: 14px 16px; display: flex; align-items: center; gap: 12px; opacity: 0.55;">
+    <div style="flex: 1;"><div style="font-size: 14px; font-weight: 600;">Indekser drill-bibliotek</div><div style="font-size: 11px; color: #8E8E93; font-variant-numeric: tabular-nums;">Pauset på steg 8 av 13 · fortsetter der den stoppet</div></div>
+    <span style="font-size: 9px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #8E8E93;">Pause</span>
+    <span style="font-size: 12px; font-weight: 600; color: #0A84FF;">Fortsett</span>
+  </div>
+  <div style="font-size: 11px; color: #8E8E93; line-height: 1.6;">Feilet bruker danger kun i caps. Avvist og pause er mute — ingen farge på status.</div>
+</div>
+</div>
+
+<div>
+<div style="font-size: 10px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #8E8E93; margin-bottom: 10px;">6 · Tom AO-08 — 560</div>
+<div data-screen-label="AO-12f Tom godkjenn-ko 1440" style="width: 560px; background: #000000; box-shadow: inset 0 0 0 1px #FFFFFF14; border-radius: 18px; padding: 44px 26px; display: flex; flex-direction: column; align-items: center; gap: 12px; text-align: center;">
+  <div style="font-size: 20px; font-weight: 700; letter-spacing: -0.02em;">Ingen som venter</div>
+  <div style="font-size: 13px; color: #8E8E93; line-height: 1.6; max-width: 380px;">Ingen som venter. Research lander i Cockpit.</div>
+  <div style="margin-top: 8px; height: 40px; border-radius: 999px; background: #2C2C2E; display: flex; align-items: center; padding: 0 18px; font-size: 14px; font-weight: 600; color: #F5F5F5;">Åpne kø</div>
+</div>
+</div>
+
+<div>
+<div style="font-size: 10px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #8E8E93; margin-bottom: 10px;">393 · Godkjenn-kø · start og resultat</div>
+<div data-screen-label="AO-12g Godkjenn 393" style="width: 393px; background: #000000; box-shadow: inset 0 0 0 1px #FFFFFF14; border-radius: 28px; padding: 22px 20px 18px; display: flex; flex-direction: column; gap: 12px;">
+  <div style="display: flex; align-items: center; gap: 9px;"><div style="width: 8px; height: 8px; border-radius: 50%; background: #B85C3D;"></div><span style="font-size: 15px; font-weight: 700;">Godkjenn</span><div style="flex: 1;"></div><span style="font-size: 12px; color: #8E8E93; font-variant-numeric: tabular-nums;">09.42</span></div>
+  <div style="font-size: 12px; color: #8E8E93; line-height: 1.5;">Kun oppgaver med sideeffekt. Research lander i Cockpit.</div>
+  <div style="background: #161616; border-radius: 18px; padding: 16px 18px; display: flex; flex-direction: column; gap: 10px;">
+    <span style="font-size: 9px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #FFD60A;">Venter resultat · skriver til plan</span>
+    <div style="font-size: 18px; font-weight: 700; line-height: 1.3;">Foreslå uke 36 · Filip Hagen</div>
+    <div style="font-size: 12px; color: #8E8E93; line-height: 1.5;">3 utkast-økter til Workbench. Du publiserer selv.</div>
+    <div style="height: 44px; border-radius: 999px; background: #FFFFFF; color: #000000; display: flex; align-items: center; justify-content: center; font-size: 15px; font-weight: 700;">Godkjenn</div>
+    <div style="height: 44px; border-radius: 999px; box-shadow: inset 0 0 0 1px #FFFFFF14; display: flex; align-items: center; justify-content: center; font-size: 15px; font-weight: 600; color: #8E8E93;">Avvis</div>
+  </div>
+  <div style="background: #161616; border-radius: 14px; padding: 12px 14px; display: flex; align-items: center; gap: 10px;">
+    <div style="flex: 1;"><div style="font-size: 14px; font-weight: 600;">Rydd fakturagrunnlag august</div><div style="font-size: 11px; color: #8E8E93;">ØKONOMI · sky · venter start</div></div>
+    <span style="font-size: 12px; font-weight: 600; color: #0A84FF;">Se</span>
+  </div>
+  <div style="border-radius: 14px; padding: 12px 14px; box-shadow: inset 0 0 0 1px #FFFFFF14; display: flex; align-items: center; gap: 10px;">
+    <span style="font-size: 18px; font-weight: 700; font-variant-numeric: tabular-nums; color: #8E8E93;">2</span>
+    <span style="flex: 1; font-size: 12px; color: #8E8E93;">research-resultater i Cockpit</span>
+    <span style="font-size: 12px; font-weight: 600; color: #0A84FF;">Les</span>
+  </div>
+  <div style="font-size: 11px; color: #8E8E93; line-height: 1.6;">Godkjent skriv får proveniens: agent · modell · godkjent av Anders · tid.</div>
+</div>
+</div>
+
+</div>
+
+<div style="font-size: 11px; color: #8E8E93; line-height: 1.7; max-width: 900px;">Verifikasjon: scene #000000 · én hvit primær per ramme (Godkjenn start / Godkjenn / Les rapport / Åpne kø er dim i tom-tilstand) · ok-grønn brukes ikke i AgenticOS · danger kun i caps på Feilet · research aldri i AO-08 · agenten skriver aldri PUBLISHED eller gruppe-master direkte.</div>
+
+</div>
+</x-dc>
+</body>
+</html>

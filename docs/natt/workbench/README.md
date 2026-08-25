@@ -38,6 +38,6 @@
 ## Avhengigheter
 
 - VOKABULAR.md
-- Train-lock design (Player HQ Train lock.zip — **ikke committet i repoet ennå**, se LAUNCH-PLAN D3)
-- HANDOFF.md — ligger i det eksterne Claude Design-prosjektet, IKKE i dette repoet
-  (look/IA; access vinner ACCESS-AND-GROUPS.md)
+- Train-lock design: **`designsystem/train-lock/`** (committet 25.08.2026 — D3 løst)
+- HANDOFF.md: **`designsystem/train-lock/HANDOFF.md`** (look/IA-kontrakten;
+  access vinner ACCESS-AND-GROUPS.md)

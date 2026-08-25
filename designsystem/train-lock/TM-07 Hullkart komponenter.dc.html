@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+  html, body { margin: 0; padding: 0; background: #000000; }
+  body { font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", Helvetica, Arial, sans-serif; -webkit-font-smoothing: antialiased; color: #F5F5F5; }
+  a { color: #F5F5F5; text-decoration: none; }
+  a:hover { color: #FFFFFF; }
+  ::-webkit-scrollbar { display: none; }
+</style>
+</helmet>
+<div style="min-height: 100vh; background: #000000; padding: 56px 48px 96px; display: flex; flex-direction: column; gap: 56px;">
+
+<div data-screen-label="TM-07 Header">
+  <div style="font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #8E8E93;">Player HQ · TrackMan</div>
+  <h1 style="margin: 8px 0 0; font-size: 34px; font-weight: 700; letter-spacing: -0.02em;">Hullkart · spredning</h1>
+  <div style="margin-top: 8px; font-size: 15px; color: #8E8E93; max-width: 760px; line-height: 1.5;">Spredning ekkes alltid på hull — fairway, green, bunkere. Aldri blankt koordinatsystem. Target line er hvit hair, pin er hvit, siste slag er hvit ring, øvrige er bronze. Ellipsen er 1 px hair rundt P10–P90. Median, ikke max. Én caddie-setning.</div>
+</div>
+
+<div data-screen-label="TM-07 A HoleMapBase" style="display: flex; flex-direction: column; gap: 16px;">
+  <div style="display: flex; align-items: baseline; gap: 12px;"><span style="font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #8E8E93;">A</span><span style="font-size: 26px; font-weight: 700;">HoleMapBase</span><span style="font-size: 13px; color: #8E8E93;">topp-syn · rough #141414 · fairway #1A1A1A · green #212121 · bunker #2A2A2A · tee mot venstre, mål mot høyre</span></div>
+  <div style="display: flex; gap: 32px; align-items: flex-start; flex-wrap: wrap;">
+    <div style="width: 361px; display: flex; flex-direction: column; gap: 10px;">
+      <div style="font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #8E8E93;">iPhone 393 · høyde 260</div>
+      <svg viewBox="0 0 240 170" style="display: block; width: 100%; height: 260px; background: #111111; border-radius: 20px;">
+        <path d="M0 150 C30 120 20 60 56 34 C110 6 190 14 226 40 C240 60 240 130 214 156 C160 176 40 178 0 150 Z" fill="#141414"></path>
+        <path d="M22 96 C60 70 96 66 132 72 C160 76 176 86 190 92 C176 104 158 112 130 112 C96 114 56 112 22 100 Z" fill="#1A1A1A"></path>
+        <ellipse cx="200" cy="80" rx="26" ry="20" fill="#212121"></ellipse>
+        <ellipse cx="120" cy="52" rx="12" ry="7" fill="#2A2A2A"></ellipse>
+        <ellipse cx="150" cy="120" rx="10" ry="6" fill="#2A2A2A"></ellipse>
+        <ellipse cx="176" cy="106" rx="8" ry="5" fill="#2A2A2A"></ellipse>
+        <rect x="12" y="80" width="10" height="10" rx="2" fill="#2C2C2E"></rect>
+      </svg>
+    </div>
+    <div style="flex: 1; min-width: 620px; display: flex; flex-direction: column; gap: 10px;">
+      <div style="font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #8E8E93;">Desktop · min 420 høy</div>
+      <svg viewBox="0 0 240 170" style="display: block; width: 100%; aspect-ratio: 240 / 170; background: #111111; border-radius: 20px;">
+        <path d="M0 150 C30 120 20 60 56 34 C110 6 190 14 226 40 C240 60 240 130 214 156 C160 176 40 178 0 150 Z" fill="#141414"></path>
+        <path d="M22 96 C60 70 96 66 132 72 C160 76 176 86 190 92 C176 104 158 112 130 112 C96 114 56 112 22 100 Z" fill="#1A1A1A"></path>
+        <ellipse cx="200" cy="80" rx="26" ry="20" fill="#212121"></ellipse>
+        <ellipse cx="120" cy="52" rx="12" ry="7" fill="#2A2A2A"></ellipse>
+        <ellipse cx="150" cy="120" rx="10" ry="6" fill="#2A2A2A"></ellipse>
+        <ellipse cx="176" cy="106" rx="8" ry="5" fill="#2A2A2A"></ellipse>
+        <rect x="12" y="80" width="10" height="10" rx="2" fill="#2C2C2E"></rect>
+      </svg>
+      <div style="font-size: 13px; color: #8E8E93; line-height: 1.5;">Stilisert er nok — ingen satellitt-foto, ingen 3D-sim. Fire flater i grå: rough, fairway, green, sand. Ingen grønt, ingen kølle-farge, ingen banelogo.</div>
+    </div>
+  </div>
+</div>
+
+<div data-screen-label="TM-07 BCD Lag" style="display: flex; flex-direction: column; gap: 16px;">
+  <div style="display: flex; align-items: baseline; gap: 12px;"><span style="font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #8E8E93;">B · C · D</span><span style="font-size: 26px; font-weight: 700;">TargetLine · DispersionDots · DispersionEllipse</span></div>
+  <div style="display: flex; gap: 20px; align-items: flex-start; flex-wrap: wrap;">
+    <div style="width: 300px; display: flex; flex-direction: column; gap: 10px;">
+      <div style="font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #8E8E93;">B TargetLine · hair 20 % stiplet</div>
+      <svg viewBox="0 0 240 170" style="display: block; width: 100%; height: 200px; background: #111111; border-radius: 20px;">
+        <path d="M22 96 C60 70 96 66 132 72 C160 76 176 86 190 92 C176 104 158 112 130 112 C96 114 56 112 22 100 Z" fill="#1A1A1A"></path>
+        <ellipse cx="200" cy="80" rx="26" ry="20" fill="#212121"></ellipse>
+        <rect x="12" y="80" width="10" height="10" rx="2" fill="#2C2C2E"></rect>
+        <line x1="18" y1="85" x2="200" y2="80" stroke="#FFFFFF" stroke-opacity="0.2" stroke-width="1" stroke-dasharray="4 5"></line>
+        <line x1="200" y1="80" x2="200" y2="64" stroke="#F5F5F5" stroke-width="1"></line>
+        <path d="M200 64 L211 68 L200 72 Z" fill="#F5F5F5"></path>
+        <circle cx="200" cy="80" r="1.8" fill="#F5F5F5"></circle>
+      </svg>
+    </div>
+    <div style="width: 300px; display: flex; flex-direction: column; gap: 10px;">
+      <div style="font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #8E8E93;">C Dots · siste = hvit ring</div>
+      <svg viewBox="0 0 240 170" style="display: block; width: 100%; height: 200px; background: #111111; border-radius: 20px;">
+        <line x1="18" y1="85" x2="230" y2="80" stroke="#FFFFFF" stroke-opacity="0.2" stroke-width="1" stroke-dasharray="4 5"></line>
+        <circle cx="146" cy="94" r="4" fill="#B08968"></circle>
+        <circle cx="156" cy="99" r="4" fill="#B08968"></circle>
+        <circle cx="140" cy="90" r="4" fill="#B08968"></circle>
+        <circle cx="162" cy="97" r="4" fill="#B08968"></circle>
+        <circle cx="152" cy="103" r="4" fill="#B08968"></circle>
+        <circle cx="168" cy="93" r="4" fill="#B08968"></circle>
+        <circle cx="168" cy="93" r="7.5" fill="none" stroke="#F5F5F5" stroke-width="1.5"></circle>
+      </svg>
+    </div>
+    <div style="width: 300px; display: flex; flex-direction: column; gap: 10px;">
+      <div style="font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #8E8E93;">D Ellipse · P10–P90, fill 3 %</div>
+      <svg viewBox="0 0 240 170" style="display: block; width: 100%; height: 200px; background: #111111; border-radius: 20px;">
+        <line x1="18" y1="85" x2="230" y2="80" stroke="#FFFFFF" stroke-opacity="0.2" stroke-width="1" stroke-dasharray="4 5"></line>
+        <ellipse cx="154" cy="96" rx="19" ry="11" fill="#FFFFFF" fill-opacity="0.03" stroke="#FFFFFF" stroke-opacity="0.16" stroke-width="1"></ellipse>
+        <circle cx="146" cy="94" r="4" fill="#B08968"></circle>
+        <circle cx="156" cy="99" r="4" fill="#B08968"></circle>
+        <circle cx="140" cy="90" r="4" fill="#B08968"></circle>
+        <circle cx="162" cy="97" r="4" fill="#B08968"></circle>
+        <circle cx="152" cy="103" r="4" fill="#B08968"></circle>
+        <circle cx="168" cy="93" r="4" fill="#B08968"></circle>
+        <circle cx="168" cy="93" r="7.5" fill="none" stroke="#F5F5F5" stroke-width="1.5"></circle>
+      </svg>
+    </div>
+    <div style="flex: 1; min-width: 300px; font-size: 13px; color: #8E8E93; line-height: 1.5;">Prikk 3–5 px avhengig av ramme (iPhone 4–5, desktop 3, mini 2,5, agency-preview 2). Under fem slag: ingen ellipse. Aldri fylt regnbue, aldri heat, aldri farge per kølle.</div>
+  </div>
+</div>
+
+<div data-screen-label="TM-07 E TeeDispersionCard" style="display: flex; flex-direction: column; gap: 16px;">
+  <div style="display: flex; align-items: baseline; gap: 12px;"><span style="font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #8E8E93;">E</span><span style="font-size: 26px; font-weight: 700;">TeeDispersionCard</span><span style="font-size: 13px; color: #8E8E93;">Driver og 3W · kart + line + prikker + ellipse · meta: median carry, side, spredning</span></div>
+  <div style="display: flex; gap: 32px; align-items: flex-start; flex-wrap: wrap;">
+    <div style="width: 361px; background: #161616; border-radius: 20px; padding: 16px 18px;">
+      <div style="display: flex; align-items: baseline; justify-content: space-between;"><div style="font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #8E8E93;">Tee · D · hull 4</div><div style="font-size: 13px; color: #8E8E93; font-variant-numeric: tabular-nums;">18.08.2026</div></div>
+      <div style="margin-top: 12px; position: relative;">
+        <svg viewBox="0 0 240 170" style="display: block; width: 100%; height: 240px; background: #111111; border-radius: 16px;">
+          <path d="M0 150 C30 120 20 60 56 34 C110 6 190 14 226 40 C240 60 240 130 214 156 C160 176 40 178 0 150 Z" fill="#141414"></path>
+          <path d="M22 96 C60 70 96 66 132 72 C160 76 176 86 190 92 C176 104 158 112 130 112 C96 114 56 112 22 100 Z" fill="#1A1A1A"></path>
+          <ellipse cx="200" cy="80" rx="26" ry="20" fill="#212121"></ellipse>
+          <ellipse cx="120" cy="52" rx="12" ry="7" fill="#2A2A2A"></ellipse>
+          <ellipse cx="150" cy="120" rx="10" ry="6" fill="#2A2A2A"></ellipse>
+          <ellipse cx="176" cy="106" rx="8" ry="5" fill="#2A2A2A"></ellipse>
+          <rect x="12" y="80" width="10" height="10" rx="2" fill="#2C2C2E"></rect>
+          <line x1="18" y1="85" x2="200" y2="80" stroke="#FFFFFF" stroke-opacity="0.2" stroke-width="1" stroke-dasharray="4 5"></line>
+          <line x1="200" y1="80" x2="200" y2="64" stroke="#F5F5F5" stroke-width="1"></line>
+          <path d="M200 64 L211 68 L200 72 Z" fill="#F5F5F5"></path>
+          <ellipse cx="154" cy="96" rx="19" ry="11" fill="#FFFFFF" fill-opacity="0.03" stroke="#FFFFFF" stroke-opacity="0.16" stroke-width="1"></ellipse>
+          <circle cx="146" cy="94" r="4" fill="#B08968"></circle>
+          <circle cx="156" cy="99" r="4" fill="#B08968"></circle>
+          <circle cx="140" cy="90" r="4" fill="#B08968"></circle>
+          <circle cx="162" cy="97" r="4" fill="#B08968"></circle>
+          <circle cx="152" cy="103" r="4" fill="#B08968"></circle>
+          <circle cx="168" cy="93" r="4" fill="#B08968"></circle>
+          <circle cx="168" cy="93" r="7.5" fill="none" stroke="#F5F5F5" stroke-width="1.5"></circle>
+        </svg>
+        <div style="position: absolute; right: 12px; top: 10px; font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #8E8E93;">Topp-syn · meter</div>
+      </div>
+      <div style="margin-top: 12px; display: flex; gap: 18px; font-size: 13px; color: #8E8E93; font-variant-numeric: tabular-nums;"><span>Median 268 m</span><span>+4,2 m</span><span>9 m</span></div>
+      <div style="margin-top: 10px; font-size: 15px; font-weight: 600; line-height: 1.4; text-wrap: pretty;">Klyngen ligger 4,2 m høyre. Sikt 4 m venstre, samme sving.</div>
+    </div>
+    <div style="flex: 1; min-width: 620px; background: #161616; border-radius: 20px; padding: 20px 24px;">
+      <div style="display: flex; align-items: baseline; justify-content: space-between;"><div style="font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #8E8E93;">Tee · D · hull 4 · 4 slag</div><div style="font-size: 13px; color: #8E8E93; font-variant-numeric: tabular-nums;">18.08.2026 · Tee-tempo</div></div>
+      <div style="margin-top: 12px; position: relative;">
+        <svg viewBox="0 0 240 170" style="display: block; width: 100%; aspect-ratio: 240 / 170; background: #111111; border-radius: 16px;">
+          <path d="M0 150 C30 120 20 60 56 34 C110 6 190 14 226 40 C240 60 240 130 214 156 C160 176 40 178 0 150 Z" fill="#141414"></path>
+          <path d="M22 96 C60 70 96 66 132 72 C160 76 176 86 190 92 C176 104 158 112 130 112 C96 114 56 112 22 100 Z" fill="#1A1A1A"></path>
+          <ellipse cx="200" cy="80" rx="26" ry="20" fill="#212121"></ellipse>
+          <ellipse cx="120" cy="52" rx="12" ry="7" fill="#2A2A2A"></ellipse>
+          <ellipse cx="150" cy="120" rx="10" ry="6" fill="#2A2A2A"></ellipse>
+          <ellipse cx="176" cy="106" rx="8" ry="5" fill="#2A2A2A"></ellipse>
+          <rect x="12" y="80" width="10" height="10" rx="2" fill="#2C2C2E"></rect>
+          <line x1="18" y1="85" x2="200" y2="80" stroke="#FFFFFF" stroke-opacity="0.2" stroke-width="1" stroke-dasharray="4 5"></line>
+          <line x1="200" y1="80" x2="200" y2="64" stroke="#F5F5F5" stroke-width="1"></line>
+          <path d="M200 64 L211 68 L200 72 Z" fill="#F5F5F5"></path>
+          <ellipse cx="154" cy="96" rx="19" ry="11" fill="#FFFFFF" fill-opacity="0.03" stroke="#FFFFFF" stroke-opacity="0.16" stroke-width="1"></ellipse>
+          <circle cx="146" cy="94" r="3" fill="#B08968"></circle>
+          <circle cx="156" cy="99" r="3" fill="#B08968"></circle>
+          <circle cx="140" cy="90" r="3" fill="#B08968"></circle>
+          <circle cx="162" cy="97" r="3" fill="#B08968"></circle>
+          <circle cx="152" cy="103" r="3" fill="#B08968"></circle>
+          <circle cx="168" cy="93" r="3" fill="#B08968"></circle>
+          <circle cx="168" cy="93" r="6" fill="none" stroke="#F5F5F5" stroke-width="1"></circle>
+          <text x="24" y="112" font-size="7" fill="#8E8E93">tee</text>
+          <text x="188" y="112" font-size="7" fill="#8E8E93">green</text>
+        </svg>
+        <div style="position: absolute; right: 14px; top: 12px; font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #8E8E93;">Topp-syn · meter</div>
+      </div>
+      <div style="margin-top: 14px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; max-width: 560px;">
+        <div style="background: #000000; border-radius: 16px; padding: 14px 16px;"><div style="font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #8E8E93;">Median carry</div><div style="margin-top: 6px; font-size: 28px; font-weight: 700; font-variant-numeric: tabular-nums;">268 <span style="font-size: 14px; font-weight: 600; color: #8E8E93;">m</span></div></div>
+        <div style="background: #000000; border-radius: 16px; padding: 14px 16px;"><div style="font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #8E8E93;">Side</div><div style="margin-top: 6px; font-size: 28px; font-weight: 700; font-variant-numeric: tabular-nums;">+4,2 <span style="font-size: 14px; font-weight: 600; color: #8E8E93;">m</span></div></div>
+        <div style="background: #000000; border-radius: 16px; padding: 14px 16px;"><div style="font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #8E8E93;">Spredning</div><div style="margin-top: 6px; font-size: 28px; font-weight: 700; font-variant-numeric: tabular-nums;">9 <span style="font-size: 14px; font-weight: 600; color: #8E8E93;">m</span></div></div>
+      </div>
+      <div style="margin-top: 12px; font-size: 17px; font-weight: 600; line-height: 1.4;">Klyngen ligger 4,2 m høyre. Sikt 4 m venstre, samme sving.</div>
+    </div>
+  </div>
+</div>
+
+<div data-screen-label="TM-07 F ApproachDispersionCard" style="display: flex; flex-direction: column; gap: 16px;">
+  <div style="display: flex; align-items: baseline; gap: 12px;"><span style="font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #8E8E93;">F</span><span style="font-size: 26px; font-weight: 700;">ApproachDispersionCard</span><span style="font-size: 13px; color: #8E8E93;">jern og wedge · green + hvit pin + faint proximity-ringer · meta: median proximity, % green, side bias</span></div>
+  <div style="display: flex; gap: 32px; align-items: flex-start; flex-wrap: wrap;">
+    <div style="width: 361px; background: #161616; border-radius: 20px; padding: 16px 18px;">
+      <div style="display: flex; align-items: baseline; justify-content: space-between;"><div style="font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #8E8E93;">Innspill · 7i · 145–160 m</div><div style="font-size: 13px; color: #8E8E93; font-variant-numeric: tabular-nums;">22.08.2026</div></div>
+      <div style="margin-top: 12px; position: relative;">
+        <svg viewBox="0 0 240 170" style="display: block; width: 100%; height: 240px; background: #111111; border-radius: 16px;">
+          <ellipse cx="140" cy="85" rx="86" ry="62" fill="#171717"></ellipse>
+          <ellipse cx="142" cy="84" rx="72" ry="50" fill="#202020"></ellipse>
+          <path d="M0 78 C20 72 38 72 56 76 L56 104 C36 106 18 108 0 106 Z" fill="#1A1A1A"></path>
+          <ellipse cx="46" cy="122" rx="20" ry="11" fill="#2A2A2A"></ellipse>
+          <ellipse cx="62" cy="42" rx="16" ry="9" fill="#2A2A2A"></ellipse>
+          <ellipse cx="226" cy="110" rx="14" ry="9" fill="#2A2A2A"></ellipse>
+          <ellipse cx="134" cy="74" rx="22" ry="15" fill="none" stroke="#FFFFFF" stroke-opacity="0.08" stroke-width="1"></ellipse>
+          <ellipse cx="134" cy="74" rx="42" ry="29" fill="none" stroke="#FFFFFF" stroke-opacity="0.08" stroke-width="1"></ellipse>
+          <line x1="6" y1="92" x2="134" y2="74" stroke="#FFFFFF" stroke-opacity="0.2" stroke-width="1" stroke-dasharray="4 5"></line>
+          <line x1="134" y1="74" x2="134" y2="54" stroke="#F5F5F5" stroke-width="1"></line>
+          <path d="M134 54 L146 58 L134 62 Z" fill="#F5F5F5"></path>
+          <circle cx="134" cy="74" r="1.8" fill="#F5F5F5"></circle>
+          <ellipse cx="114" cy="104" rx="26" ry="24" fill="#FFFFFF" fill-opacity="0.03" stroke="#FFFFFF" stroke-opacity="0.16" stroke-width="1"></ellipse>
+          <circle cx="88" cy="98" r="3.5" fill="#B08968"></circle>
+            <circle cx="97" cy="86" r="3.5" fill="#B08968"></circle>
+            <circle cx="96" cy="110" r="3.5" fill="#B08968"></circle>
+            <circle cx="106" cy="96" r="3.5" fill="#B08968"></circle>
+            <circle cx="105" cy="120" r="3.5" fill="#B08968"></circle>
+            <circle cx="114" cy="84" r="3.5" fill="#B08968"></circle>
+            <circle cx="116" cy="106" r="3.5" fill="#B08968"></circle>
+            <circle cx="115" cy="126" r="3.5" fill="#B08968"></circle>
+            <circle cx="124" cy="94" r="3.5" fill="#B08968"></circle>
+            <circle cx="126" cy="116" r="3.5" fill="#B08968"></circle>
+            <circle cx="133" cy="102" r="3.5" fill="#B08968"></circle>
+            <circle cx="131" cy="124" r="3.5" fill="#B08968"></circle>
+            <circle cx="140" cy="110" r="3.5" fill="#B08968"></circle>
+            <circle cx="126" cy="78" r="3.5" fill="#B08968"></circle>
+            <circle cx="124" cy="94" r="6.8" fill="none" stroke="#F5F5F5" stroke-width="1.5"></circle>
+        </svg>
+        <div style="position: absolute; right: 12px; top: 10px; font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #8E8E93;">Green · meter</div>
+      </div>
+      <div style="margin-top: 12px; display: flex; gap: 18px; font-size: 13px; color: #8E8E93; font-variant-numeric: tabular-nums;"><span>Proximity 9,4 m</span><span>64 % green</span><span>+3,1 m</span></div>
+      <div style="margin-top: 10px; font-size: 15px; font-weight: 600; line-height: 1.4; text-wrap: pretty;">Short-right er mønsteret. Sikte midt-venstre green.</div>
+    </div>
+    <div style="flex: 1; min-width: 620px; background: #161616; border-radius: 20px; padding: 20px 24px;">
+      <div style="display: flex; align-items: baseline; justify-content: space-between;"><div style="font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #8E8E93;">Innspill · 7i · 145–160 m · 14 slag</div><div style="font-size: 13px; color: #8E8E93; font-variant-numeric: tabular-nums;">22.08.2026</div></div>
+      <div style="margin-top: 12px; position: relative;">
+        <svg viewBox="0 0 240 170" style="display: block; width: 100%; aspect-ratio: 240 / 170; background: #111111; border-radius: 16px;">
+          <ellipse cx="140" cy="85" rx="86" ry="62" fill="#171717"></ellipse>
+          <ellipse cx="142" cy="84" rx="72" ry="50" fill="#202020"></ellipse>
+          <path d="M0 78 C20 72 38 72 56 76 L56 104 C36 106 18 108 0 106 Z" fill="#1A1A1A"></path>
+          <ellipse cx="46" cy="122" rx="20" ry="11" fill="#2A2A2A"></ellipse>
+          <ellipse cx="62" cy="42" rx="16" ry="9" fill="#2A2A2A"></ellipse>
+          <ellipse cx="226" cy="110" rx="14" ry="9" fill="#2A2A2A"></ellipse>
+          <ellipse cx="134" cy="74" rx="22" ry="15" fill="none" stroke="#FFFFFF" stroke-opacity="0.08" stroke-width="1"></ellipse>
+          <ellipse cx="134" cy="74" rx="42" ry="29" fill="none" stroke="#FFFFFF" stroke-opacity="0.08" stroke-width="1"></ellipse>
+          <line x1="6" y1="92" x2="134" y2="74" stroke="#FFFFFF" stroke-opacity="0.2" stroke-width="1" stroke-dasharray="4 5"></line>
+          <line x1="134" y1="74" x2="134" y2="54" stroke="#F5F5F5" stroke-width="1"></line>
+          <path d="M134 54 L146 58 L134 62 Z" fill="#F5F5F5"></path>
+          <circle cx="134" cy="74" r="1.6" fill="#F5F5F5"></circle>
+          <ellipse cx="114" cy="104" rx="26" ry="24" fill="#FFFFFF" fill-opacity="0.03" stroke="#FFFFFF" stroke-opacity="0.16" stroke-width="1"></ellipse>
+          <circle cx="88" cy="98" r="3" fill="#B08968"></circle>
+            <circle cx="97" cy="86" r="3" fill="#B08968"></circle>
+            <circle cx="96" cy="110" r="3" fill="#B08968"></circle>
+            <circle cx="106" cy="96" r="3" fill="#B08968"></circle>
+            <circle cx="105" cy="120" r="3" fill="#B08968"></circle>
+            <circle cx="114" cy="84" r="3" fill="#B08968"></circle>
+            <circle cx="116" cy="106" r="3" fill="#B08968"></circle>
+            <circle cx="115" cy="126" r="3" fill="#B08968"></circle>
+            <circle cx="124" cy="94" r="3" fill="#B08968"></circle>
+            <circle cx="126" cy="116" r="3" fill="#B08968"></circle>
+            <circle cx="133" cy="102" r="3" fill="#B08968"></circle>
+            <circle cx="131" cy="124" r="3" fill="#B08968"></circle>
+            <circle cx="140" cy="110" r="3" fill="#B08968"></circle>
+            <circle cx="126" cy="78" r="3" fill="#B08968"></circle>
+            <circle cx="124" cy="94" r="5.9" fill="none" stroke="#F5F5F5" stroke-width="1"></circle>
+          <text x="150" y="70" font-size="7" fill="#8E8E93">pin</text>
+        </svg>
+        <div style="position: absolute; right: 14px; top: 12px; font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #8E8E93;">Green · meter</div>
+      </div>
+      <div style="margin-top: 14px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; max-width: 560px;">
+        <div style="background: #000000; border-radius: 16px; padding: 14px 16px;"><div style="font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #8E8E93;">Median proximity</div><div style="margin-top: 6px; font-size: 28px; font-weight: 700; font-variant-numeric: tabular-nums;">9,4 <span style="font-size: 14px; font-weight: 600; color: #8E8E93;">m</span></div></div>
+        <div style="background: #000000; border-radius: 16px; padding: 14px 16px;"><div style="font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #8E8E93;">Green</div><div style="margin-top: 6px; font-size: 28px; font-weight: 700; font-variant-numeric: tabular-nums;">64 <span style="font-size: 14px; font-weight: 600; color: #8E8E93;">%</span></div></div>
+        <div style="background: #000000; border-radius: 16px; padding: 14px 16px;"><div style="font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #8E8E93;">Side bias</div><div style="margin-top: 6px; font-size: 28px; font-weight: 700; font-variant-numeric: tabular-nums;">+3,1 <span style="font-size: 14px; font-weight: 600; color: #8E8E93;">m</span></div></div>
+      </div>
+      <div style="margin-top: 12px; font-size: 17px; font-weight: 600; line-height: 1.4;">Short-right er mønsteret. Sikte midt-venstre green.</div>
+    </div>
+  </div>
+</div>
+
+<div data-screen-label="TM-07 G DispersionPair" style="display: flex; flex-direction: column; gap: 16px;">
+  <div style="display: flex; align-items: baseline; gap: 12px;"><span style="font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #8E8E93;">G</span><span style="font-size: 26px; font-weight: 700;">DispersionPair</span><span style="font-size: 13px; color: #8E8E93;">desktop · tee venstre, approach høyre, full bredde</span></div>
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+    <div style="background: #161616; border-radius: 20px; padding: 18px 20px;">
+      <div style="font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #8E8E93;">Tee · D · 4 slag</div>
+      <svg viewBox="0 0 240 170" style="display: block; margin-top: 12px; width: 100%; aspect-ratio: 240 / 170; background: #111111; border-radius: 16px;">
+        <path d="M0 150 C30 120 20 60 56 34 C110 6 190 14 226 40 C240 60 240 130 214 156 C160 176 40 178 0 150 Z" fill="#141414"></path>
+        <path d="M22 96 C60 70 96 66 132 72 C160 76 176 86 190 92 C176 104 158 112 130 112 C96 114 56 112 22 100 Z" fill="#1A1A1A"></path>
+        <ellipse cx="200" cy="80" rx="26" ry="20" fill="#212121"></ellipse>
+        <ellipse cx="120" cy="52" rx="12" ry="7" fill="#2A2A2A"></ellipse>
+        <ellipse cx="150" cy="120" rx="10" ry="6" fill="#2A2A2A"></ellipse>
+        <rect x="12" y="80" width="10" height="10" rx="2" fill="#2C2C2E"></rect>
+        <line x1="18" y1="85" x2="200" y2="80" stroke="#FFFFFF" stroke-opacity="0.2" stroke-width="1" stroke-dasharray="4 5"></line>
+        <line x1="200" y1="80" x2="200" y2="64" stroke="#F5F5F5" stroke-width="1"></line>
+        <path d="M200 64 L211 68 L200 72 Z" fill="#F5F5F5"></path>
+        <ellipse cx="154" cy="96" rx="19" ry="11" fill="#FFFFFF" fill-opacity="0.03" stroke="#FFFFFF" stroke-opacity="0.16" stroke-width="1"></ellipse>
+        <circle cx="146" cy="94" r="3.5" fill="#B08968"></circle>
+        <circle cx="156" cy="99" r="3.5" fill="#B08968"></circle>
+        <circle cx="140" cy="90" r="3.5" fill="#B08968"></circle>
+        <circle cx="162" cy="97" r="3.5" fill="#B08968"></circle>
+        <circle cx="152" cy="103" r="3.5" fill="#B08968"></circle>
+        <circle cx="168" cy="93" r="3.5" fill="#B08968"></circle>
+        <circle cx="168" cy="93" r="6.5" fill="none" stroke="#F5F5F5" stroke-width="1.2"></circle>
+      </svg>
+      <div style="margin-top: 12px; display: flex; gap: 20px; font-size: 13px; color: #8E8E93; font-variant-numeric: tabular-nums;"><span>Median 268 m</span><span>+4,2 m</span><span>9 m</span></div>
+      <div style="margin-top: 8px; font-size: 15px; font-weight: 600;">Klyngen ligger 4,2 m høyre. Sikt 4 m venstre.</div>
+    </div>
+    <div style="background: #161616; border-radius: 20px; padding: 18px 20px;">
+      <div style="font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #8E8E93;">Innspill · 7i · 14 slag</div>
+      <svg viewBox="0 0 240 170" style="display: block; margin-top: 12px; width: 100%; aspect-ratio: 240 / 170; background: #111111; border-radius: 16px;">
+        <ellipse cx="140" cy="85" rx="86" ry="62" fill="#171717"></ellipse>
+        <ellipse cx="142" cy="84" rx="72" ry="50" fill="#202020"></ellipse>
+        <path d="M0 78 C20 72 38 72 56 76 L56 104 C36 106 18 108 0 106 Z" fill="#1A1A1A"></path>
+        <ellipse cx="46" cy="122" rx="20" ry="11" fill="#2A2A2A"></ellipse>
+        <ellipse cx="62" cy="42" rx="16" ry="9" fill="#2A2A2A"></ellipse>
+        <ellipse cx="134" cy="74" rx="22" ry="15" fill="none" stroke="#FFFFFF" stroke-opacity="0.08" stroke-width="1"></ellipse>
+        <ellipse cx="134" cy="74" rx="42" ry="29" fill="none" stroke="#FFFFFF" stroke-opacity="0.08" stroke-width="1"></ellipse>
+        <line x1="6" y1="92" x2="134" y2="74" stroke="#FFFFFF" stroke-opacity="0.2" stroke-width="1" stroke-dasharray="4 5"></line>
+        <line x1="134" y1="74" x2="134" y2="54" stroke="#F5F5F5" stroke-width="1"></line>
+        <path d="M134 54 L146 58 L134 62 Z" fill="#F5F5F5"></path>
+        <ellipse cx="114" cy="104" rx="26" ry="24" fill="#FFFFFF" fill-opacity="0.03" stroke="#FFFFFF" stroke-opacity="0.16" stroke-width="1"></ellipse>
+        <circle cx="88" cy="98" r="3.2" fill="#B08968"></circle>
+            <circle cx="97" cy="86" r="3.2" fill="#B08968"></circle>
+            <circle cx="96" cy="110" r="3.2" fill="#B08968"></circle>
+            <circle cx="106" cy="96" r="3.2" fill="#B08968"></circle>
+            <circle cx="105" cy="120" r="3.2" fill="#B08968"></circle>
+            <circle cx="114" cy="84" r="3.2" fill="#B08968"></circle>
+            <circle cx="116" cy="106" r="3.2" fill="#B08968"></circle>
+            <circle cx="115" cy="126" r="3.2" fill="#B08968"></circle>
+            <circle cx="124" cy="94" r="3.2" fill="#B08968"></circle>
+            <circle cx="126" cy="116" r="3.2" fill="#B08968"></circle>
+            <circle cx="133" cy="102" r="3.2" fill="#B08968"></circle>
+            <circle cx="131" cy="124" r="3.2" fill="#B08968"></circle>
+            <circle cx="140" cy="110" r="3.2" fill="#B08968"></circle>
+            <circle cx="126" cy="78" r="3.2" fill="#B08968"></circle>
+            <circle cx="124" cy="94" r="6.2" fill="none" stroke="#F5F5F5" stroke-width="1.2"></circle>
+      </svg>
+      <div style="margin-top: 12px; display: flex; gap: 20px; font-size: 13px; color: #8E8E93; font-variant-numeric: tabular-nums;"><span>Proximity 9,4 m</span><span>64 % green</span><span>+3,1 m</span></div>
+      <div style="margin-top: 8px; font-size: 15px; font-weight: 600;">Short-right er mønsteret. Sikte midt-venstre green.</div>
+    </div>
+  </div>
+</div>
+
+</div>
+</x-dc>
+</body>
+</html>

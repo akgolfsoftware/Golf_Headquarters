@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="design_doc_mode" content="canvas">
+<style>
+  html, body { margin: 0; padding: 0; background: #000000; }
+  body { font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", Helvetica, Arial, sans-serif; -webkit-font-smoothing: antialiased; color: #F5F5F5; }
+  a { color: #F5F5F5; text-decoration: none; }
+  a:hover { color: #FFFFFF; }
+  ::-webkit-scrollbar { display: none; }
+</style>
+</helmet>
+<div style="min-height: 100vh; background: #000000; padding: 56px 48px 96px; display: flex; flex-direction: column; gap: 40px; align-items: flex-start;">
+
+<div>
+<div style="font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #8E8E93;">AK Golf HQ · AgenticOS</div>
+<h1 style="margin: 8px 0 0; font-size: 34px; font-weight: 700; letter-spacing: -0.02em;">AO-02 · AO-10 — Runtimes · Lokal Ollama</h1>
+<div style="margin-top: 8px; font-size: 13px; color: #8E8E93; max-width: 760px; line-height: 1.55;">Sju runtimes med status på/av. Ollama er lokal: modeller, health og garantien «data forlater ikke maskinen». Hvit prikk = på, dim = av, gul = ustabil — ok-grønn brukes ikke i AgenticOS. SKY-runtimes krever «Godkjenn start»; lokal Ollama auto-starter når oppgaven bare leser.</div>
+</div>
+
+<div style="display: flex; gap: 36px; align-items: flex-start; flex-wrap: wrap;">
+
+<div>
+<div style="font-size: 10px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #8E8E93; margin-bottom: 10px;">AO-02 · 1440 · Runtimes</div>
+<div data-screen-label="AO-02 Runtimes 1440" style="width: 700px; background: #000000; box-shadow: inset 0 0 0 1px #FFFFFF14; border-radius: 18px; padding: 20px; display: flex; flex-direction: column; gap: 14px;">
+  <div style="display: flex; align-items: baseline; gap: 10px;">
+    <span style="font-size: 20px; font-weight: 700; letter-spacing: -0.02em;">Runtimes</span>
+    <span style="font-size: 12px; color: #8E8E93;">5 på · 1 av · 1 ustabil</span>
+  </div>
+  <div>
+    <div style="display: flex; align-items: center; gap: 14px; padding: 12px 0; border-top: 1px solid #FFFFFF14;"><div style="width: 7px; height: 7px; border-radius: 50%; background: #F5F5F5;"></div><span style="flex: 1; font-size: 15px; font-weight: 600;">Claude</span><span style="font-size: 9px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #8E8E93; width: 46px; flex-shrink: 0;">SKY</span><span style="font-size: 10px; color: #8E8E93; width: 132px; flex-shrink: 0;">Krever start-godkjenning</span><span style="font-size: 11px; color: #8E8E93;">resonnering, tekst</span><span style="font-size: 11px; color: #8E8E93; font-variant-numeric: tabular-nums;">3 runs i dag</span><div style="width: 40px; height: 24px; border-radius: 999px; background: #FFFFFF; display: flex; align-items: center; justify-content: flex-end; padding: 2px;"><div style="width: 20px; height: 20px; border-radius: 50%; background: #000000;"></div></div></div>
+    <div style="display: flex; align-items: center; gap: 14px; padding: 12px 0; border-top: 1px solid #FFFFFF14;"><div style="width: 7px; height: 7px; border-radius: 50%; background: #F5F5F5;"></div><span style="flex: 1; font-size: 15px; font-weight: 600;">Cowork</span><span style="font-size: 9px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #8E8E93; width: 46px; flex-shrink: 0;">SKY</span><span style="font-size: 10px; color: #8E8E93; width: 132px; flex-shrink: 0;">Krever start-godkjenning</span><span style="font-size: 11px; color: #8E8E93;">dokumenter, design</span><span style="font-size: 11px; color: #8E8E93; font-variant-numeric: tabular-nums;">1 run i dag</span><div style="width: 40px; height: 24px; border-radius: 999px; background: #FFFFFF; display: flex; align-items: center; justify-content: flex-end; padding: 2px;"><div style="width: 20px; height: 20px; border-radius: 50%; background: #000000;"></div></div></div>
+    <div style="display: flex; align-items: center; gap: 14px; padding: 12px 0; border-top: 1px solid #FFFFFF14;"><div style="width: 7px; height: 7px; border-radius: 50%; background: #F5F5F5;"></div><span style="flex: 1; font-size: 15px; font-weight: 600;">Claude Code</span><span style="font-size: 9px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #F5F5F5; width: 46px; flex-shrink: 0;">LOKAL</span><span style="font-size: 10px; color: #8E8E93; width: 132px; flex-shrink: 0;">Krever start ved skriv</span><span style="font-size: 11px; color: #8E8E93;">CLI på Macen · kode, filer</span><span style="font-size: 11px; color: #0A84FF;">Kjører nå</span><div style="width: 40px; height: 24px; border-radius: 999px; background: #FFFFFF; display: flex; align-items: center; justify-content: flex-end; padding: 2px;"><div style="width: 20px; height: 20px; border-radius: 50%; background: #000000;"></div></div></div>
+    <div style="display: flex; align-items: center; gap: 14px; padding: 12px 0; border-top: 1px solid #FFFFFF14;"><div style="width: 7px; height: 7px; border-radius: 50%; background: #FFD60A;"></div><span style="flex: 1; font-size: 15px; font-weight: 600;">Grok</span><span style="font-size: 9px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #8E8E93; width: 46px; flex-shrink: 0;">SKY</span><span style="font-size: 10px; color: #8E8E93; width: 132px; flex-shrink: 0;">Krever start-godkjenning</span><span style="font-size: 11px; color: #8E8E93;">sanntid, søk</span><span style="font-size: 11px; color: #FFD60A;">Ustabil · 2 feil siste time</span><div style="width: 40px; height: 24px; border-radius: 999px; background: #FFFFFF; display: flex; align-items: center; justify-content: flex-end; padding: 2px;"><div style="width: 20px; height: 20px; border-radius: 50%; background: #000000;"></div></div></div>
+    <div style="display: flex; align-items: center; gap: 14px; padding: 12px 0; border-top: 1px solid #FFFFFF14;"><div style="width: 7px; height: 7px; border-radius: 50%; background: #F5F5F5;"></div><span style="flex: 1; font-size: 15px; font-weight: 600;">Gemini</span><span style="font-size: 9px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #8E8E93; width: 46px; flex-shrink: 0;">SKY</span><span style="font-size: 10px; color: #8E8E93; width: 132px; flex-shrink: 0;">Krever start-godkjenning</span><span style="font-size: 11px; color: #8E8E93;">lange dokumenter</span><span style="font-size: 11px; color: #8E8E93;">Klar</span><div style="width: 40px; height: 24px; border-radius: 999px; background: #FFFFFF; display: flex; align-items: center; justify-content: flex-end; padding: 2px;"><div style="width: 20px; height: 20px; border-radius: 50%; background: #000000;"></div></div></div>
+    <div style="display: flex; align-items: center; gap: 14px; padding: 12px 0; border-top: 1px solid #FFFFFF14; opacity: 0.45;"><div style="width: 7px; height: 7px; border-radius: 50%; background: #8E8E93;"></div><span style="flex: 1; font-size: 15px; font-weight: 600;">OpenCode</span><span style="font-size: 9px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #F5F5F5; width: 46px; flex-shrink: 0;">LOKAL</span><span style="font-size: 10px; color: #8E8E93; width: 132px; flex-shrink: 0;">Krever start ved skriv</span><span style="font-size: 11px; color: #8E8E93;">CLI på Macen · kode</span><span style="font-size: 11px; color: #8E8E93;">Av</span><div style="width: 40px; height: 24px; border-radius: 999px; box-shadow: inset 0 0 0 1px #FFFFFF14; display: flex; align-items: center; padding: 2px;"><div style="width: 20px; height: 20px; border-radius: 50%; background: #8E8E93;"></div></div></div>
+    <div style="display: flex; align-items: center; gap: 14px; padding: 12px 0; border-top: 1px solid #FFFFFF14; border-bottom: 1px solid #FFFFFF14;"><div style="width: 7px; height: 7px; border-radius: 50%; background: #F5F5F5;"></div><span style="flex: 1; font-size: 15px; font-weight: 600;">Ollama</span><span style="font-size: 9px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #F5F5F5; width: 46px; flex-shrink: 0;">LOKAL</span><span style="font-size: 10px; color: #8E8E93; width: 132px; flex-shrink: 0;">Auto-start ved kun les</span><span style="font-size: 11px; color: #8E8E93;">data forlater ikke maskinen</span><span style="font-size: 12px; font-weight: 600; color: #0A84FF;">Detaljer</span><div style="width: 40px; height: 24px; border-radius: 999px; background: #FFFFFF; display: flex; align-items: center; justify-content: flex-end; padding: 2px;"><div style="width: 20px; height: 20px; border-radius: 50%; background: #000000;"></div></div></div>
+  </div>
+  <div style="font-size: 11px; color: #8E8E93; line-height: 1.6;">Skru av en runtime, og tasks tildelt den blir stående som Klar til du velger en annen. Ingenting kjøres om.</div>
+</div>
+</div>
+
+<div>
+<div style="font-size: 10px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #8E8E93; margin-bottom: 10px;">AO-10 · 1440 · Lokal Ollama</div>
+<div data-screen-label="AO-10 Ollama 1440" style="width: 560px; background: #000000; box-shadow: inset 0 0 0 1px #FFFFFF14; border-radius: 18px; padding: 20px; display: flex; flex-direction: column; gap: 14px;">
+  <div style="display: flex; align-items: center; gap: 10px;">
+    <div style="width: 7px; height: 7px; border-radius: 50%; background: #F5F5F5;"></div>
+    <span style="font-size: 20px; font-weight: 700; letter-spacing: -0.02em;">Ollama · lokal</span>
+    <div style="flex: 1;"></div>
+    <span style="font-size: 11px; color: #8E8E93; font-variant-numeric: tabular-nums;">Oppe 14 t · svarer på 0,8 s</span>
+  </div>
+  <div style="background: #161616; border-radius: 14px; padding: 12px 14px; display: flex; align-items: center; gap: 10px;">
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#F5F5F5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="9" rx="2"></rect><path d="M8 11 V7 a4 4 0 0 1 8 0 V11"></path></svg>
+    <span style="font-size: 13px; line-height: 1.5;">Data forlater ikke maskinen. Alt kjører på denne Macen — ingen sky, ingen logging ute.</span>
+  </div>
+  <div>
+    <div style="font-size: 10px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #8E8E93; margin-bottom: 6px;">Modeller</div>
+    <div style="display: flex; align-items: center; gap: 12px; padding: 10px 0; border-top: 1px solid #FFFFFF14;"><span style="flex: 1; font-size: 14px; font-weight: 600;">llama3.3 70B</span><span style="font-size: 11px; color: #8E8E93; font-variant-numeric: tabular-nums;">40 GB · standard</span><div style="width: 7px; height: 7px; border-radius: 50%; background: #F5F5F5;"></div></div>
+    <div style="display: flex; align-items: center; gap: 12px; padding: 10px 0; border-top: 1px solid #FFFFFF14;"><span style="flex: 1; font-size: 14px; font-weight: 600;">whisper large</span><span style="font-size: 11px; color: #8E8E93; font-variant-numeric: tabular-nums;">3 GB · transkribering</span><div style="width: 7px; height: 7px; border-radius: 50%; background: #0A84FF;"></div></div>
+    <div style="display: flex; align-items: center; gap: 12px; padding: 10px 0; border-top: 1px solid #FFFFFF14; border-bottom: 1px solid #FFFFFF14; opacity: 0.45;"><span style="flex: 1; font-size: 14px; font-weight: 600;">qwen2.5-coder</span><span style="font-size: 11px; color: #8E8E93; font-variant-numeric: tabular-nums;">19 GB · ikke lastet</span><div style="width: 7px; height: 7px; border-radius: 50%; background: #8E8E93;"></div></div>
+  </div>
+  <div style="display: flex; gap: 12px;">
+    <div style="flex: 1; background: #161616; border-radius: 14px; padding: 12px 14px;"><div style="font-size: 10px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #8E8E93;">Minne</div><div style="margin-top: 4px; font-size: 18px; font-weight: 700; font-variant-numeric: tabular-nums;">43 av 128 GB</div></div>
+    <div style="flex: 1; background: #161616; border-radius: 14px; padding: 12px 14px;"><div style="font-size: 10px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #8E8E93;">Runs i dag</div><div style="margin-top: 4px; font-size: 18px; font-weight: 700; font-variant-numeric: tabular-nums;">4</div></div>
+    <div style="flex: 1; background: #161616; border-radius: 14px; padding: 12px 14px;"><div style="font-size: 10px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #8E8E93;">Health</div><div style="margin-top: 4px; font-size: 18px; font-weight: 700;">OK</div></div>
+  </div>
+  <div style="display: flex; gap: 10px;">
+    <div style="height: 40px; border-radius: 999px; background: #FFFFFF; color: #000000; display: flex; align-items: center; padding: 0 20px; font-size: 14px; font-weight: 600;">Kjør helsesjekk</div>
+    <div style="height: 40px; border-radius: 999px; box-shadow: inset 0 0 0 1px #FFFFFF14; display: flex; align-items: center; padding: 0 16px; font-size: 14px; font-weight: 600; color: #8E8E93;">Last modell</div>
+    <div style="height: 40px; border-radius: 999px; box-shadow: inset 0 0 0 1px #FFFFFF14; display: flex; align-items: center; padding: 0 16px; font-size: 14px; font-weight: 600; color: #8E8E93;">Stopp</div>
+  </div>
+</div>
+</div>
+
+</div>
+
+</div>
+</x-dc>
+</body>
+</html>

@@ -54,12 +54,13 @@ Bølge 2 (måned/år, stall, kalender uten Google, tester-live, runde-live, Jarv
 
 1. **Ingen treningsregler** (2026-08-18). Vokabular (pyramide, formel, perioder) er merkelapper. Gjeninnfør aldri metodikk-sperrer uten Anders' beslutning.
 2. **Design — Train-lock er fasit for ALLE skjermer i PlayerHQ OG AgencyOS (Anders 25.08.2026).**
-   - **Player HQ:** Train-lock (scene `#000000`). Fasit: design-zip / WB-/PH-/TM-skjermer.
-   - **AgencyOS:** Train-lock — alle skjermer, ikke bare nye Workbench-flater. Eksisterende
-     Paper-porterte admin-flater er dermed *avvik som skal portes*, ikke fasit. Paper
-     (`designsystem/paper/`) er historikk/arkiv, aldri bygg-fasit.
-   - Kjente åpne forutsetninger: Train-lock-tokens er ikke definert i kode ennå, og
-     fasit-zip er ikke committet — se `docs/natt/LAUNCH-PLAN-FULL-2026-08-25.md` (D2/D3).
+   - **Fasiten ligger i repoet: `designsystem/train-lock/`** (180 skjermer, levert 25.08 —
+     les `HANDOFF.md` der først: PIXEL = look, MAL = IA, MAL vinner). Scene `#000000`
+     (lys-varianter `#FFFFFF`).
+   - **AgencyOS:** Train-lock — alle skjermer. Eksisterende Paper-porterte admin-flater er
+     dermed *avvik som skal portes*, ikke fasit. Paper (`designsystem/paper/`) er
+     historikk/arkiv, aldri bygg-fasit.
+   - Åpen forutsetning: Train-lock-tokens er ikke definert i `src/` ennå (LAUNCH-PLAN D2).
      Marketing/landingssider har egen fasit (ak-golf-website) og omfattes ikke.
    - Ingen nye tokens / parallelle designsystemer uten Anders' ja.
    - Fullført = warm `#B85C3D` + hake. `#30D158` **kun** Godta / PUBLISERT-merke.
