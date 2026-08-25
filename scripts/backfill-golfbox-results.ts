@@ -57,7 +57,8 @@ async function main(): Promise<void> {
       ...(ALLE ? {} : { publicEntries: { none: {} } }),
     },
     select: { id: true, name: true, tour: true, sourceId: true, status: true, sourceOrigin: true, endDate: true },
-    orderBy: { endDate: "asc" },
+    // Nyeste først: årets turneringer (der manglene faktisk merkes) fikses tidlig i kjøringen.
+    orderBy: { endDate: "desc" },
   });
 
   const perOrigin = new Map<string, number>();
