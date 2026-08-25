@@ -6,6 +6,7 @@ import { NextResponse, type NextRequest } from "next/server";
 import { createServerClient } from "@supabase/ssr";
 import { updateSession } from "@/lib/supabase/proxy";
 import { workbenchRedirectForTrenPath } from "@/lib/portal/tren-workbench-redirect";
+import { erUnntattVedlikehold, vedlikeholdAktivt } from "@/lib/vedlikehold";
 
 // Stats-sider som fortsatt har hardkodede design-/prototypedata (fabrikkerte
 // spillere). Skjules i PRODUKSJON (redirect → /stats) til de er wired til ekte
@@ -106,6 +107,30 @@ function buildCsp(nonce: string): string {
 
 export async function proxy(request: NextRequest) {
   const path = request.nextUrl.pathname;
+
+  // VEDLIKEHOLD (Anders 25.08.2026): hele akgolf.no er stengt, coaching bookes
+  // på telefon. Alt som ikke er unntatt rewrites til /vedlikehold — URL-en
+  // beholdes, så kunden kan laste på nytt når vi er oppe igjen. Gaten står
+  // FØRST: en stengt rute skal ikke koste et Supabase-kall eller en
+  // redirect-runde på veien til skiltet. Slås av med VEDLIKEHOLD=0 i Vercel.
+  if (vedlikeholdAktivt() && !erUnntattVedlikehold(path)) {
+    const url = request.nextUrl.clone();
+    url.pathname = "/vedlikehold";
+    url.search = "";
+    // x-pathname må settes her: RootLayout leser den for tema, og uten den
+    // ser layouten en tom path. /vedlikehold står i LANDINGSSIDER, så siden
+    // er lys — samme regel som resten av landingsflatene.
+    const reqHeaders = new Headers(request.headers);
+    reqHeaders.set("x-pathname", "/vedlikehold");
+    const svar = NextResponse.rewrite(url, {
+      request: { headers: reqHeaders },
+      status: 503,
+    });
+    svar.headers.set("Retry-After", "3600");
+    svar.headers.set("X-Robots-Tag", "noindex");
+    svar.headers.set("Cache-Control", "no-store");
+    return svar;
+  }
 
   const trenTarget = workbenchRedirectForTrenPath(path);
   if (trenTarget) {
