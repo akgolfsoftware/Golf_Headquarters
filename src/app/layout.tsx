@@ -10,6 +10,7 @@ import { SwRegister } from "@/components/sw-register";
 import { CookieBanner } from "@/components/shared/cookie-banner";
 import { VriTelefonen } from "@/components/shared/vri-telefonen";
 import { AnalyticsLoader } from "@/components/shared/analytics-loader";
+import { onsketTema } from "@/lib/v2/tema-default";
 import "./globals.css";
 
 // ---------- Claude Paper-fontene (designport steg 4 + 10) ----------
@@ -118,16 +119,6 @@ export const viewport = {
 };
 
 // Async RSC — nødvendig for å lese headers() (CSP-nonce).
-function erAppPath(path: string): boolean {
-  return (
-    path.startsWith("/portal") ||
-    path.startsWith("/admin") ||
-    path.startsWith("/forelder") ||
-    // Auth følger landingssidene/fasiten (fase1/innlogging.html): lys default.
-    // Anders' beslutning 2026-08-13.
-    path.startsWith("/auth")
-  );
-}
 
 /**
  * Landingssidene — LYSE, alltid. Anders' beslutning 20.08.2026 sammen med
@@ -173,20 +164,13 @@ function erLandingsside(path: string): boolean {
   return LANDINGSSIDER.some((p) => path === p || path.startsWith(`${p}/`));
 }
 
-/** Samme regel som gammelt FOUC-script + V2Shell — men på server (ingen <script>). */
+/**
+ * Samme regel som V2Shell — begge kaller `onsketTema` i src/lib/v2/tema-default.ts,
+ * så SSR og rute-veksling kan ikke drifte fra hverandre. Kjøres på server, uten
+ * <script>: attributtet er riktig fra første paint.
+ */
 function onsketMorkTema(path: string, temaCookie: string | undefined): boolean {
-  const mork = temaCookie === "dark";
-  const lysCk = temaCookie === "light";
-  // Landingssidene: alltid lyse — ingen toggle, heller ikke med dark-cookie.
-  if (erLandingsside(path)) return false;
-  // /portal og /admin: MØRK default (D3, 25.08.2026 — Train-lock er fasiten
-  // og fasitens scene er #000000). Snudd i samme leveranse som den første
-  // ekte Train-lock-skjermen (Workbench-uke), per D2-UNDERLAG §5.4.
-  if (path.startsWith("/portal") || path.startsWith("/admin")) return !lysCk;
-  // /forelder + /auth: uendret — lys default, mørk kun med dark-cookie
-  // (ikke Train-lock-portet ennå).
-  // Resten (stats, team-flatene, interne): mørk default, lys med light-cookie.
-  return erAppPath(path) ? mork : !lysCk;
+  return onsketTema(path, temaCookie, erLandingsside(path)) === "dark";
 }
 
 export default async function RootLayout({

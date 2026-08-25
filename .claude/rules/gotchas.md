@@ -335,6 +335,10 @@ plukker ikke opp ny generert klient. Regel: RESTART dev-serveren etter hver
   `wang-tokens.css`), ikke med tema-klassen.
 - Kjente unntak som SKAL stå: `wizard-chrome.tsx` fjerner `data-v2-tema` bevisst (onboarding er
   låst lys). `.wang-tp` og `.gfgk-jr` har ingen mørk-gren — de 9 rutene er enpalett med vilje.
-- Default per path (`src/app/layout.tsx` inline-script): `/portal|/admin|/forelder` = lys,
-  alt annet = mørk. Ikke rør scriptet uten å teste hard reload på marketing — det er eneste
+- Default per path bor i **`src/lib/v2/tema-default.ts`** (`onsketTema`) — ÉN kilde, kalt
+  av både rot-layout (SSR) og `V2Shell` (rute-veksling). Duplikatet mellom de to var en
+  driftsfelle. **Snudd 25.08.2026 (Anders):** `/portal|/admin` = **mørk**,
+  `/auth|/forelder` = lys, landingssidene alltid lyse, alt annet mørk. Cookien
+  `ak-v2-tema` vinner over defaulten begge veier. Låst av
+  `src/lib/__tests__/tema-default.test.ts`. Ikke rør scriptet uten å teste hard reload på marketing — det er eneste
   beskyttelse mot lys-blink før paint.
