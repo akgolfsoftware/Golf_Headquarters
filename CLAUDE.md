@@ -85,6 +85,23 @@ Serie, full GROUP-propagasjon til N medlemmer, Google-synk: **ikke** bølge 1.
 
 ---
 
+## Feilhåndtering
+
+**Prinsipper**
+
+1. **Feil er tilstander, ikke alerts alene.** Hver flate har Suksess / Tom / Laster / Feil. Feil-state: kort norsk tekst + «Prøv igjen» (ikke stack trace, ikke engelsk).
+2. **Domain kaster / returnerer — UI oversetter.** Pure ops (`src/domain/…`) kaster typed feil eller returnerer `Result`. Komponenter mapper til copy fra `labels.ts` / fast norsk streng.
+3. **Server actions:** valider input med **zod** ved grensen. Catch ukjente feil; logg *ID + kode*, aldri personnavn/PII. Returner `{ ok: false, error: string }` (eller eksisterende action-result-type i repoet) — ikke la Next.js generiske error-page være eneste svar på forventede feil.
+4. **Toast (sonner):** kort bekreftelse på write (publisert, lagret). Ved feil: én setning + evt. retry. Ikke toast-spam på hver keystroke.
+5. **Auth / tilgang:** mangler entitlement → usynlig eller tom med nøktern copy («Ingen tilgang»), ikke 500. IDOR: sjekk eierskap i action før write.
+6. **Offline / nett:** Player «I dag» og live-flater tåler feilet fetch med Feil-kort, ikke blank skjerm.
+7. **Workbench-spesifikt:** publish med VEGG (f.eks. hard overlap hvis dere innfører det) → sperr + forklaring i inspector. VARSEL → tillat publish, vis advarsel. `loadPlayerDay`-feil → PH-01e feil-tilstand, ikke coach-DRAFT lekket som fallback.
+8. **Aldri** `catch (e) {}` tom. Aldri vis rå `e.message` fra Prisma/Supabase til sluttbruker.
+
+**Agent-økt:** feil som kostet ekstra tid → én linje i `docs/feillogg.md`. Stopp-regel i natt-loop: skriv `LOOP-N-DONE.md` med hva som feilet, ikke «fix» i det stille.
+
+---
+
 ## Stack (kort)
 
 Next.js 16.2 + React 19 + TS strict · Prisma 7 + Supabase · Tailwind v4 · Poppins / Lora / IBM Plex Mono · Lucide · zod 4 · node:test (`tsx --test`) · Playwright · Serwist PWA · Stripe / Resend / AI SDK.
