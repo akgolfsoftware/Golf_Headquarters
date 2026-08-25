@@ -20,36 +20,12 @@ import { Select } from "@/components/ui/select";
 import { Knapp } from "@/components/v2/core";
 import { Icon } from "@/components/v2/icon";
 import { T } from "@/lib/v2/tokens";
-import {
-  AREA_LABEL,
-  formatMinutes,
-  formatTime,
-  PYRAMID_LABEL,
-  UI,
-} from "@/lib/domain/workbench/labels";
-import type {
-  Drill,
-  PyramidArea,
-  TrainingArea,
-  WorkbenchSession,
-} from "@/lib/domain/workbench/types";
+import { formatMinutes, formatTime, PYRAMID_LABEL, UI } from "@/lib/domain/workbench/labels";
+import type { WorkbenchSession } from "@/lib/domain/workbench/types";
 import { harHake, pyramideFarge, STATUS_CAPS, WARM } from "./wb-visuelt";
+import { DrillListEditor, type LeggTilDrillVerdier } from "./DrillListEditor";
 
 const VARIGHETER = [30, 45, 60, 90, 120, 180];
-
-const OMRADE_GRUPPER: { label: string; areas: TrainingArea[] }[] = [
-  { label: "Full sving", areas: ["TEE", "INNSPILL_200", "INNSPILL_150", "INNSPILL_100", "INNSPILL_50"] },
-  { label: "Nærspill", areas: ["CHIP", "PITCH", "LOB", "BUNKER"] },
-  { label: "Putt", areas: ["PUTT_0_3", "PUTT_3_5", "PUTT_5_10", "PUTT_10_25", "PUTT_25_40", "PUTT_40_PLUSS"] },
-  { label: "Fysisk", areas: ["STYRKE", "KONDISJON", "BEVEGELIGHET"] },
-  { label: "Bane", areas: ["BANE"] },
-];
-
-const PYRAMIDER: PyramidArea[] = ["FYS", "TEK", "SLAG", "SPILL", "TURN"];
-
-function drillErKomplett(d: Drill): boolean {
-  return d.title.trim() !== "" && d.durationMinutes > 0 && Boolean(d.akFormel?.label);
-}
 
 export type FlyttVerdier = {
   newDate: string;
@@ -57,12 +33,7 @@ export type FlyttVerdier = {
   newDurationMinutes: number;
 };
 
-export type LeggTilDrillVerdier = {
-  title: string;
-  durationMinutes: number;
-  pyramid: PyramidArea;
-  area: TrainingArea;
-};
+export type { LeggTilDrillVerdier };
 
 type Props = {
   session: WorkbenchSession | null;
@@ -93,12 +64,6 @@ export function SessionInspector({
   const [dag, setDag] = useState(session?.date ?? "");
   const [start, setStart] = useState(session ? formatTime(session.startMinute) : "");
   const [varighet, setVarighet] = useState(session?.durationMinutes ?? 60);
-
-  const [visDrillSkjema, setVisDrillSkjema] = useState(false);
-  const [drillTittel, setDrillTittel] = useState("");
-  const [drillPyramid, setDrillPyramid] = useState<PyramidArea>(session?.pyramid ?? "TEK");
-  const [drillOmrade, setDrillOmrade] = useState<TrainingArea>("TEE");
-  const [drillVarighet, setDrillVarighet] = useState(15);
 
   if (!session) {
     return (
@@ -249,219 +214,16 @@ export function SessionInspector({
       </InspektorBlokk>
 
       <InspektorBlokk label={UI.drills}>
-        <div style={{ display: "grid", gap: 10 }}>
-          {session.drills.length === 0 ? (
-            <p style={{ fontFamily: T.ui, fontSize: 12.5, color: T.mut, margin: 0 }}>
-              {UI.emptyDrills}
-            </p>
-          ) : (
-            <ul style={{ listStyle: "none", margin: 0, padding: 0, display: "grid", gap: 6 }}>
-              {session.drills.map((d, i) => {
-                const komplett = drillErKomplett(d);
-                return (
-                  <li
-                    key={d.id}
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "space-between",
-                      gap: 8,
-                      padding: "7px 9px",
-                      borderRadius: T.rTag,
-                      border: `1px solid ${T.border}`,
-                      background: T.panel2,
-                      minWidth: 0,
-                    }}
-                  >
-                    <div style={{ display: "grid", gap: 2, minWidth: 0, flex: 1 }}>
-                      <span
-                        style={{
-                          fontFamily: T.ui,
-                          fontSize: 12.5,
-                          color: T.fg,
-                          overflow: "hidden",
-                          textOverflow: "ellipsis",
-                          whiteSpace: "nowrap",
-                        }}
-                      >
-                        {d.title || UI.drillTitlePlaceholder}
-                      </span>
-                      {komplett ? (
-                        <span style={{ fontFamily: T.mono, fontSize: 10.5, color: T.mut }}>
-                          {PYRAMID_LABEL[d.akFormel.pyramid]} · {AREA_LABEL[d.akFormel.area]} ·{" "}
-                          {d.durationMinutes} min
-                        </span>
-                      ) : (
-                        <span
-                          style={{
-                            display: "inline-flex",
-                            alignItems: "center",
-                            gap: 4,
-                            fontFamily: T.mono,
-                            fontSize: 10.5,
-                            color: T.down,
-                          }}
-                        >
-                          <Icon name="triangle-alert" size={11} />
-                          {UI.incompleteDrill}
-                        </span>
-                      )}
-                    </div>
-                    <div style={{ display: "flex", gap: 2, flex: "none" }}>
-                      <IkonKnapp
-                        icon="arrow-up"
-                        title={UI.moveDrillUp}
-                        disabled={travel || i === 0}
-                        onClick={() => onFlyttDrill(d.id, -1)}
-                      />
-                      <IkonKnapp
-                        icon="arrow-down"
-                        title={UI.moveDrillDown}
-                        disabled={travel || i === session.drills.length - 1}
-                        onClick={() => onFlyttDrill(d.id, 1)}
-                      />
-                      <IkonKnapp
-                        icon="x"
-                        title={UI.removeDrillLabel}
-                        disabled={travel}
-                        onClick={() => onFjernDrill(d.id)}
-                      />
-                    </div>
-                  </li>
-                );
-              })}
-            </ul>
-          )}
-
-          {visDrillSkjema ? (
-            <div
-              style={{
-                display: "grid",
-                gap: 8,
-                padding: "9px 11px",
-                borderRadius: T.rTag,
-                border: `1px dashed ${T.border}`,
-              }}
-            >
-              <Felt label={UI.drillTitle}>
-                <Input
-                  value={drillTittel}
-                  onChange={(e) => setDrillTittel(e.target.value)}
-                  placeholder={UI.drillTitlePlaceholder}
-                  autoFocus
-                />
-              </Felt>
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
-                <Felt label={UI.drillPyramid}>
-                  <Select
-                    value={drillPyramid}
-                    onChange={(e) => setDrillPyramid(e.target.value as PyramidArea)}
-                  >
-                    {PYRAMIDER.map((p) => (
-                      <option key={p} value={p}>
-                        {PYRAMID_LABEL[p]}
-                      </option>
-                    ))}
-                  </Select>
-                </Felt>
-                <Felt label={UI.drillArea}>
-                  <Select
-                    value={drillOmrade}
-                    onChange={(e) => setDrillOmrade(e.target.value as TrainingArea)}
-                  >
-                    {OMRADE_GRUPPER.map((gruppe) => (
-                      <optgroup key={gruppe.label} label={gruppe.label}>
-                        {gruppe.areas.map((a) => (
-                          <option key={a} value={a}>
-                            {AREA_LABEL[a]}
-                          </option>
-                        ))}
-                      </optgroup>
-                    ))}
-                  </Select>
-                </Felt>
-              </div>
-              <Felt label={UI.drillDuration}>
-                <Input
-                  type="number"
-                  min={1}
-                  max={600}
-                  value={drillVarighet}
-                  onChange={(e) => setDrillVarighet(Number(e.target.value))}
-                />
-              </Felt>
-              <div style={{ display: "flex", gap: 8, justifyContent: "flex-end" }}>
-                <Knapp
-                  ghost
-                  onClick={() => {
-                    setVisDrillSkjema(false);
-                    setDrillTittel("");
-                  }}
-                >
-                  {UI.cancel}
-                </Knapp>
-                <Knapp
-                  disabled={travel || drillTittel.trim() === "" || !(drillVarighet > 0)}
-                  onClick={() => {
-                    onLeggTilDrill({
-                      title: drillTittel.trim(),
-                      durationMinutes: drillVarighet,
-                      pyramid: drillPyramid,
-                      area: drillOmrade,
-                    });
-                    setVisDrillSkjema(false);
-                    setDrillTittel("");
-                  }}
-                >
-                  {UI.save}
-                </Knapp>
-              </div>
-            </div>
-          ) : (
-            <Knapp ghost icon="plus" disabled={travel} onClick={() => setVisDrillSkjema(true)}>
-              {UI.addDrill}
-            </Knapp>
-          )}
-        </div>
+        <DrillListEditor
+          drills={session.drills}
+          disabled={travel}
+          defaultPyramid={session.pyramid}
+          onLeggTil={onLeggTilDrill}
+          onFlytt={onFlyttDrill}
+          onFjern={onFjernDrill}
+        />
       </InspektorBlokk>
     </Inspektorpanel>
-  );
-}
-
-function IkonKnapp({
-  icon,
-  title,
-  disabled,
-  onClick,
-}: {
-  icon: string;
-  title: string;
-  disabled?: boolean;
-  onClick: () => void;
-}) {
-  return (
-    <button
-      type="button"
-      title={title}
-      aria-label={title}
-      disabled={disabled}
-      onClick={onClick}
-      style={{
-        display: "inline-flex",
-        alignItems: "center",
-        justifyContent: "center",
-        width: 22,
-        height: 22,
-        borderRadius: T.rTag,
-        border: `1px solid ${T.border}`,
-        background: "transparent",
-        color: T.mut,
-        cursor: disabled ? "not-allowed" : "pointer",
-        opacity: disabled ? 0.4 : 1,
-      }}
-    >
-      <Icon name={icon} size={11} />
-    </button>
   );
 }
 
