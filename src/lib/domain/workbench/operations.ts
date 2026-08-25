@@ -6,25 +6,20 @@
 
 import type {
   WorkbenchSession,
-  WorkbenchSessionDraft,
   CreateSessionCommand,
   MoveSessionCommand,
   PublishSessionCommand,
   AddDrillCommand,
   ReorderDrillsCommand,
   Drill,
-  Week,
   WeekBudget,
   PyramidArea,
   DayColumn,
   WeekViewModel,
   WorkbenchMode,
-  SourceFilter,
 } from "./types";
 
 // ─── Helpers ────────────────────────────────────────────────────────────────
-
-const PYRAMID_ORDER: PyramidArea[] = ["FYS", "TEK", "SLAG", "SPILL", "TURN"];
 
 export function snapToGrid(minute: number, grid = 30): number {
   return Math.round(minute / grid) * grid;
