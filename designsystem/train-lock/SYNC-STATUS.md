@@ -1,23 +1,38 @@
-# SYNC-STATUS — train-lock
+# Train-lock — synkstatus
 
-| | |
-|---|---|
-| Kilde-zip | `Player HQ Train lock (5).zip` (levert av Anders 25.08.2026, ~11:14) |
-| SHA-256 (zip, første 32 tegn) | `9b5098cd58a4f0b493c1cb4fd9fbaf35` |
-| Utpakket | 25.08.2026 med `ditto` (UTF-8-filnavn bevart — Ø/ø korrekt) |
-| Filer i zip | 188 |
-| Filer i denne mappen | 181 (180 skjerm-/støttefiler + `.thumbnail`) |
+**Sist synket: 25.08.2026 (kveld) fra «Player HQ Train lock (6).zip».**
 
-## Bevisst holdt UTENFOR repoet
+## Innhold
 
-Repoet er **offentlig**. Zipens `uploads/`-mappe (7 filer) er derfor IKKE committet:
-Team Norway-protokoll-xlsx (inneholder levende Office Forms-lenker til TN junior-evaluering
-+ NGF-protokolldetaljer), fire Pinterest-inspirasjonsbilder, RESTERENDE-SKJERMER-PROMPT.md
-og en referanse-HTML. Alt ligger lokalt i
-`claude-cowork/akgolf-hq/innkommende/train-lock-uploads-2026-08-25/` (via `~/Documents/Claude/`).
+186 `.dc.html`-skjermfiler + `HANDOFF.md`. `README.md` og denne fila er repoets egne
+og finnes ikke i zip-en.
 
-## Resynk-prosedyre (ny zip fra Anders)
+## Siste synk — hva som endret seg
 
-1. `ditto -x -k <ny zip> designsystem/train-lock/` (ALDRI vanlig `unzip` — ødelegger æøå i filnavn).
-2. Flytt `uploads/` ut til cowork-innkommende (ny datert mappe) FØR commit — offentlig repo.
-3. Oppdater denne fila (zip-navn, sha, filantall) og README-familietabellen ved nye ID-er.
+Kun **én fil**: `AX-01 Skall rail og tabbar.dc.html` (2 809 → 11 431 byte). Den forrige
+var avkuttet midt i en `div` og inneholdt verken rail eller tabbar. De øvrige 186 filene
+er **byte-identiske** med forrige leveranse (verifisert med `cmp` fil for fil).
+
+## Holdt utenfor repoet med vilje
+
+Zip-ens `uploads/`-mappe (Team Norway-protokoll i xlsx med levende
+evalueringsskjema-lenker, fire inspirasjonsbilder, en promptfil og en bildemappe).
+Repoet er offentlig, og materialet er NGF/TN-internt. Ligger i stedet i cowork:
+`akgolf-hq/innkommende/train-lock-uploads-2026-08-25/`. Uendret siden forrige leveranse
+bortsett fra én ny bildemappe.
+
+## Presedens ved konflikt
+
+1. **`AX-01`** — skallet (destinasjoner, rail, tabbar). Kanon fra 25.08, se
+   `docs/natt/D2-UNDERLAG-2026-08-25.md` §5.6.
+2. **`TRAIN LOCK.dc.html` + `HANDOFF.md`** — tokens, geometri, type, motion.
+3. **`AG-00` / `WB-00` / `TM-00`** — komponentspec.
+4. **Skjermfilene** — enkeltskjermer.
+
+Rail-en i A-/AG-skjermene (7 ikoner i 64 px) og `AG-00` K1/K2 er **utdatert** etter
+AX-01-leveransen. Ikke bruk dem som skall-kilde.
+
+## Kjente selvmotsigelser
+
+17 stykker, kartlagt og dokumentert i `docs/natt/D2-UNDERLAG-2026-08-25.md`.
+De 14 som krevde en menneskelig beslutning er avgjort av Anders 25.08 — se §5.

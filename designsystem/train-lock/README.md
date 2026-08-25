@@ -12,7 +12,7 @@ CLAUDE.md invariant 2, `.claude/rules/beslutninger.md` øverste beslutning). Pap
 | `TRAIN LOCK.dc.html` | Selve lock-arket (scene, farger — tokens må fortsatt defineres i kode, LAUNCH-PLAN D2) |
 | `TRAIN VIZ.dc.html` | Visualiserings-locken |
 | `AG-00 LOCK.dc.html` / `AO-00 LOCK …` / `WB-00 Komponenter` / `TM-00 Komponenter` / `MAT-00` / `TE-00 Test-specimen` / `GAP-00 Kart` | Familie-locks/komponentark |
-| `AX-01 Skall rail og tabbar.dc.html` | **UGYLDIG — IKKE BRUK.** Filen er avkuttet (2 809 byte, stopper midt i en `div`) og inneholder verken rail eller tabbar. Den lister dessuten fem Agency-faner (Stall · Workbench · Kø · Jarvis · Meg) som ikke finnes i noen av de 180 andre skjermene. Ny leveranse bestilt fra Claude Design 25.08.2026. Reelt skall-grunnlag inntil videre: `AG-00 LOCK.dc.html` + `HANDOFF.md` §Meny per enhet. |
+| `AX-01 Skall rail og tabbar.dc.html` | **SKALL-FASIT (kanon fra 25.08.2026).** Ny, komplett leveranse (11 431 byte) erstattet den avkuttede versjonen. **Fem destinasjoner, identisk på mobil og Mac:** Stall · Workbench · Kø · Jarvis · Meg. Konsoll, Økonomi og Kalender er rader under Meg — aldri en sjette fane. Mac-rail 232 px med tekst. Ved konflikt vinner denne over `AG-00` og over rail-en i A-/AG-skjermene (som viser 7 ikoner i 64 px og er utdatert). |
 | `B1 Tilstander laster feil.dc.html` | Tilstands-fasiten (laster/feil) |
 
 ## Familier (180 skjermfiler)
