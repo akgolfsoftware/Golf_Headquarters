@@ -12,6 +12,7 @@
  * Personvern: logg IDer, aldri navn.
  */
 
+import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import type { Prisma } from "@/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
@@ -70,6 +71,15 @@ function akFormelTilJson(f: AKFormel): Prisma.InputJsonObject {
 
 const INGEN_TILGANG = "Du har ikke tilgang til denne spilleren.";
 const FINNES_IKKE = "Fant ikke økten.";
+
+/**
+ * Ruter som leser Workbench-tabellene. Kalles etter hver skriving slik at
+ * coach-uka og spillerens dag ikke serverer en foreldet cache.
+ */
+function revalider(playerId: string): void {
+  revalidatePath(`/admin/workbench/${playerId}`);
+  revalidatePath("/portal");
+}
 
 // ─── Tilgang ────────────────────────────────────────────────────────────────
 
@@ -258,6 +268,7 @@ async function lagreOgHent(
     include: { drills: true },
   });
   if (!row) return { ok: false, error: FINNES_IKKE };
+  revalider(row.playerId);
   return { ok: true, data: mapSession(row) };
 }
 
@@ -322,6 +333,7 @@ export async function createSession(
     include: { drills: true },
   });
 
+  revalider(rad.playerId);
   return { ok: true, data: mapSession(rad) };
 }
 
@@ -391,6 +403,7 @@ export async function publishSessions(
       include: { drills: true },
     });
     publiserte.push(mapSession(rad));
+    revalider(rad.playerId);
   }
 
   return { ok: true, data: publiserte };
@@ -517,6 +530,7 @@ export async function deleteSession(
   if ("feil" in treff) return { ok: false, error: treff.feil };
 
   await prisma.workbenchSession.delete({ where: { id: sessionId } });
+  revalider(treff.row.playerId);
   return { ok: true, data: null };
 }
 
