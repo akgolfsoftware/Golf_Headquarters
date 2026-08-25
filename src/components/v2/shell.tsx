@@ -17,6 +17,7 @@ import { usePathname } from "next/navigation";
 import { useEffect, useMemo, useState, useSyncExternalStore, type ReactNode } from "react";
 import { createPortal } from "react-dom";
 import { T } from "@/lib/v2/tokens";
+import { TL } from "@/lib/v2/train-lock";
 import { Icon } from "./icon";
 import { LogoAK, AvatarFoto } from "./core";
 import { useV2Tema, lesTema, type V2Tema } from "./tema";
@@ -98,12 +99,20 @@ export const PLAYERHQ_NAV: V2NavItem[] = [
  * bruker id-ene "innsikt"/"innstillinger" som analyse- og settings-sidene
  * allerede sender — fanene lyser uten endring i noe kallsted.
  */
+/**
+ * D2-UNDERLAG §5.3 (25.08.2026, Anders): punkt 5 heter «Workbench», ikke
+ * «Plan» — overstyrer A1 (16.08). Href peker på spillervalg-huben som
+ * leder inn i den ekte økt-modellen (`/admin/workbench/[playerId]`), samme
+ * mål som mobil-bunnfanens WORKBENCH_ITEM. `id` er fortsatt "planlegge" —
+ * hele plan-familien (plans, teknisk-plan, økter, turneringer) sender
+ * allerede `aktiv="planlegge"`, og endrer man id-en må ~15 kallsteder følge med.
+ */
 export const AGENCYOS_NAV: V2NavItem[] = [
   { id: "cockpit", label: "Cockpit", icon: "home", href: "/admin/agencyos" },
   { id: "innboks", label: "Innboks", icon: "inbox", href: "/admin/innboks" },
   { id: "kalender", label: "Kalender", icon: "calendar", href: "/admin/kalender" },
   { id: "spillere", label: "Stall", icon: "users", href: "/admin/spillere" },
-  { id: "planlegge", label: "Plan", icon: "file-text", href: "/admin/plans" },
+  { id: "planlegge", label: "Workbench", icon: "file-text", href: "/admin/planlegge" },
   { id: "innsikt", label: "Innsikt", icon: "bar-chart", href: "/admin/analyse" },
   { id: "innstillinger", label: "Oppsett", icon: "settings", href: "/admin/settings" },
 ];
@@ -538,9 +547,200 @@ function MerPanel({ grupper, rom, onClose, mobil, full, erAgency }: { grupper?: 
   );
 }
 
+/**
+ * AgencyOS Mac-rail — Train-lock (D2-UNDERLAG §4 "Agency-rail, Mac" + K5,
+ * D2-beslutning 2: fast 64px, ingen kollapset variant). 44×44 r12-punkter,
+ * ingen tekst i railen, trafikklys øverst, AK-sirkel warm nederst. Egen
+ * gren fra `IkonRailNav` (delt med PlayerHQ, som IKKE er Train-lock-portet
+ * ennå) — porten av Workbench-uke (D3) gjør denne synlig på ALLE
+ * AgencyOS-sider fordi railen er delt kode (forventet, CLAUDE.md invariant 2).
+ */
+function TrainLockAgencyRail({ aktiv, nav, mer, rom, navn, avatarUrl }: Required<Pick<V2ShellProps, "nav" | "navn">> & { aktiv?: string; mer?: V2NavGruppe[]; rom?: V2Rom[]; avatarUrl?: string | null }) {
+  const [merOpen, setMerOpen] = useState(false);
+  const harMer = (mer && mer.length > 0) || (rom && rom.length > 0);
+  return (
+    <nav
+      className="hidden md:flex"
+      style={{
+        width: TL.skall.railMac,
+        flex: "none",
+        borderRight: `1px solid ${TL.hair}`,
+        flexDirection: "column",
+        alignItems: "center",
+        padding: "14px 0 16px",
+        gap: 6,
+        position: "sticky",
+        top: 0,
+        height: "100vh",
+        overflowY: "auto",
+        background: TL.scene,
+        color: TL.text,
+      }}
+      aria-label="Hovedmeny"
+    >
+      {/* Trafikklys — fasit-dekor, ingen funksjon (mockup-rammen har ekte
+          vindusknapper; her er punktene rent visuelle jf. K5). */}
+      <div aria-hidden style={{ display: "flex", gap: 6, paddingBottom: 16 }}>
+        <span style={{ width: 11, height: 11, borderRadius: "50%", background: TL.dim }} />
+        <span style={{ width: 11, height: 11, borderRadius: "50%", background: TL.dim }} />
+        <span style={{ width: 11, height: 11, borderRadius: "50%", background: TL.dim }} />
+      </div>
+      {nav.map((n) => (
+        <TrainLockRailPunkt key={n.id} item={n} on={aktiv === n.id} />
+      ))}
+      {harMer && (
+        <button
+          onClick={() => setMerOpen(true)}
+          title="Mer"
+          aria-haspopup="menu"
+          aria-expanded={merOpen}
+          className="v2-press v2-focus"
+          style={{
+            width: 44,
+            height: 44,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            borderRadius: TL.radius.row,
+            background: aktiv === "mer" ? TL.fill : "transparent",
+            border: 0,
+            cursor: "pointer",
+            flex: "none",
+          }}
+        >
+          <Icon name="more-horizontal" size={20} style={{ color: aktiv === "mer" ? TL.onFill : TL.mute }} strokeWidth={2} />
+        </button>
+      )}
+      <div style={{ flex: 1, minHeight: 8 }} />
+      <TrainLockTemaKnapp />
+      {avatarUrl ? (
+        // eslint-disable-next-line @next/next/no-img-element -- 32px rail-avatar, ikke innholdsbilde
+        <img
+          src={avatarUrl}
+          alt={navn}
+          title={navn}
+          style={{ width: 32, height: 32, borderRadius: "50%", objectFit: "cover", flexShrink: 0 }}
+        />
+      ) : (
+        <span
+          title={navn}
+          style={{
+            width: 32,
+            height: 32,
+            borderRadius: "50%",
+            background: TL.avatar,
+            color: TL.onAvatar,
+            fontFamily: TL.font.sans,
+            fontSize: 11,
+            fontWeight: 600,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            flexShrink: 0,
+          }}
+        >
+          {avatarInitialer(navn)}
+        </span>
+      )}
+      {merOpen && <MerPanel grupper={mer} rom={rom} onClose={() => setMerOpen(false)} erAgency />}
+    </nav>
+  );
+}
+
+function avatarInitialer(navn: string): string {
+  const deler = navn.trim().split(/\s+/).filter(Boolean);
+  if (deler.length === 0) return "?";
+  if (deler.length === 1) return deler[0]!.slice(0, 2).toUpperCase();
+  return `${deler[0]![0]}${deler[deler.length - 1]![0]}`.toUpperCase();
+}
+
+/** Ett rail-punkt — Train-lock K5: 44×44 r12, aktiv = hvit fyll + on-fill-ikon. */
+function TrainLockRailPunkt({ item, on }: { item: V2NavItem; on: boolean }) {
+  const badge = typeof item.badge === "number" && item.badge > 0 ? item.badge : null;
+  return (
+    <Link
+      href={item.href}
+      title={badge ? `${item.label} (${badge})` : item.label}
+      aria-current={on ? "page" : undefined}
+      className="v2-press v2-focus"
+      style={{
+        width: 44,
+        height: 44,
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        borderRadius: TL.radius.row,
+        background: on ? TL.fill : "transparent",
+        textDecoration: "none",
+        position: "relative",
+        flex: "none",
+      }}
+    >
+      <Icon name={item.icon} size={20} style={{ color: on ? TL.onFill : TL.mute }} strokeWidth={2} />
+      {badge != null && (
+        <span
+          aria-hidden
+          style={{
+            position: "absolute",
+            top: -3,
+            right: -3,
+            minWidth: 14,
+            height: 14,
+            padding: "0 3px",
+            borderRadius: 999,
+            background: TL.warm,
+            color: TL.onFill,
+            fontFamily: TL.font.mono,
+            fontSize: 8,
+            fontWeight: 700,
+            lineHeight: "14px",
+            textAlign: "center",
+          }}
+        >
+          {badge > 99 ? "99+" : badge}
+        </span>
+      )}
+    </Link>
+  );
+}
+
+/** Lys/mørk-bryter i Train-lock-railen — ingen etikett, kun ikon (fasiten viser ikke
+ *  en bryter i det hele tatt; Anders' toggle beholdes funksjonelt, minimalt visuelt). */
+function TrainLockTemaKnapp() {
+  const { tema, bytt } = useV2Tema();
+  const tilLys = tema === "dark";
+  return (
+    <button
+      onClick={bytt}
+      title={tilLys ? "Bytt til lys modus" : "Bytt til mørk modus"}
+      className="v2-press v2-focus"
+      style={{
+        width: 44,
+        height: 44,
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        borderRadius: TL.radius.row,
+        background: "transparent",
+        border: 0,
+        cursor: "pointer",
+        flex: "none",
+        marginBottom: 4,
+      }}
+    >
+      <Icon name={tilLys ? "sun" : "moon"} size={18} style={{ color: TL.mute }} strokeWidth={1.5} />
+    </button>
+  );
+}
+
 /** Smal ikon-rail (desktop) — ett Link-punkt per seksjon, lime-indikator på aktiv. */
 function IkonRailNav({ aktiv, nav, mer, rom, navn, avatarUrl, erAgency }: Required<Pick<V2ShellProps, "nav" | "navn">> & { aktiv?: string; mer?: V2NavGruppe[]; rom?: V2Rom[]; avatarUrl?: string | null; erAgency?: boolean }) {
   const [merOpen, setMerOpen] = useState(false);
+  // Train-lock er fasit for AgencyOS (D3, 25.08.2026) — egen gren, PlayerHQ-
+  // railen (72px/4-ikon) er ikke portet ennå og beholder Paper-stilen.
+  if (erAgency) {
+    return <TrainLockAgencyRail aktiv={aktiv} nav={nav} mer={mer} rom={rom} navn={navn} avatarUrl={avatarUrl} />;
+  }
   return (
     <nav
       className="hidden md:flex"

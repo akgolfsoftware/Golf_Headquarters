@@ -22,6 +22,7 @@ import { loadSources, loadWeek } from "@/lib/workbench/wb-actions";
 import { UI } from "@/lib/domain/workbench/labels";
 import { WorkbenchUke } from "@/components/workbench/WorkbenchUke";
 import { WorkbenchFeil } from "@/components/workbench/WorkbenchFeil";
+import { TL_SCOPE } from "@/components/workbench/wb-tl-scope";
 
 export const dynamic = "force-dynamic";
 
@@ -56,17 +57,21 @@ export default async function WorkbenchUkePage({ params, searchParams }: Props) 
   ]);
 
   return (
-    <V2Shell aktiv="spillere" nav={AGENCYOS_NAV} navn={user.name ?? undefined}>
-      {ukeRes.ok ? (
-        <WorkbenchUke
-          playerId={playerId}
-          spillerNavn={spiller.name ?? UI.unnamedPlayer}
-          uke={ukeRes.data}
-          kilder={kilderRes.ok ? kilderRes.data : []}
-        />
-      ) : (
-        <WorkbenchFeil melding={ukeRes.error} />
-      )}
-    </V2Shell>
+    // Train-lock (D3): skygger --v2-*/--p-*/shadcn-basen for HELE skjermen
+    // (rail inkludert, ikke bare innholdskolonnen) — se wb-tl-scope.ts.
+    <div style={TL_SCOPE}>
+      <V2Shell aktiv="planlegge" nav={AGENCYOS_NAV} navn={user.name ?? undefined}>
+        {ukeRes.ok ? (
+          <WorkbenchUke
+            playerId={playerId}
+            spillerNavn={spiller.name ?? UI.unnamedPlayer}
+            uke={ukeRes.data}
+            kilder={kilderRes.ok ? kilderRes.data : []}
+          />
+        ) : (
+          <WorkbenchFeil melding={ukeRes.error} />
+        )}
+      </V2Shell>
+    </div>
   );
 }

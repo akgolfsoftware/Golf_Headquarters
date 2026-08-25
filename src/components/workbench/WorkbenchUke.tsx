@@ -15,6 +15,7 @@ import { Knapp } from "@/components/v2/core";
 import { Icon } from "@/components/v2/icon";
 import { BunnArk } from "@/components/v2/bunn-ark";
 import { T } from "@/lib/v2/tokens";
+import { TL } from "@/lib/v2/train-lock";
 import { addDays, mondayOf, validateWeek } from "@/lib/domain/workbench/operations";
 import { AREA_LABEL, formatHours, PYRAMID_LABEL, UI } from "@/lib/domain/workbench/labels";
 import type {
@@ -41,6 +42,7 @@ import {
   type LeggTilDrillVerdier,
 } from "./SessionInspector";
 import { SourcesPanel } from "./SourcesPanel";
+import { TL_SCOPE } from "./wb-tl-scope";
 import { osloIdag, WeekGrid } from "./WeekGrid";
 
 type Props = {
@@ -200,7 +202,17 @@ export function WorkbenchUke({ playerId, spillerNavn, uke, kilder }: Props) {
   );
 
   return (
-    <div style={{ display: "grid", gap: 16, minWidth: 0 }}>
+    <div
+      style={{
+        ...TL_SCOPE,
+        display: "grid",
+        gap: 16,
+        minWidth: 0,
+        background: "var(--tl-scene)",
+        color: "var(--tl-text)",
+        fontFamily: "var(--tl-font-sans)",
+      }}
+    >
       <Topplinje
         spillerNavn={spillerNavn}
         week={week}
@@ -234,9 +246,17 @@ export function WorkbenchUke({ playerId, spillerNavn, uke, kilder }: Props) {
         </div>
       )}
 
+      {/* Kolonnebredder låst av D2-beslutning 3: kilder TL.skall.kilder (220),
+          inspektør TL.skall.artefakt (380). */}
       <div
-        className="grid grid-cols-1 lg:grid-cols-[220px_minmax(0,1fr)_360px]"
-        style={{ gap: 16, minWidth: 0, alignItems: "start" }}
+        className="grid grid-cols-1 lg:grid-cols-[var(--wb-kilder)_minmax(0,1fr)_var(--wb-artefakt)]"
+        style={{
+          gap: 16,
+          minWidth: 0,
+          alignItems: "start",
+          ["--wb-kilder" as string]: TL.skall.kilder,
+          ["--wb-artefakt" as string]: TL.skall.artefakt,
+        }}
       >
         <div className="hidden lg:block" style={{ minWidth: 0 }}>
           <SourcesPanel kilder={kilder} />
@@ -369,7 +389,10 @@ function Topplinje({
         <Knapp ghost icon="chevron-right" onClick={onNeste}>
           {UI.weekNavNext}
         </Knapp>
-        <Knapp icon="plus" onClick={onNyOkt}>
+        {/* Fasitens topplinje (A-01) har KUN én hvit primær: Publiser.
+            «+ Ny økt» er en hairline sekundærknapp — derfor `ghost`, ikke
+            solid, selv om Knapp-primitiven nå arver Train-lock-fyll. */}
+        <Knapp ghost icon="plus" onClick={onNyOkt}>
           {UI.createSession}
         </Knapp>
         <Knapp enTing disabled={antallUtkast === 0 || travel} onClick={onPubliser}>
