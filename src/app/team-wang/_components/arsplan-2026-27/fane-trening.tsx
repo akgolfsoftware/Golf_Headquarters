@@ -9,20 +9,41 @@ import { useState } from "react";
 import {
   AKSER,
   AKSE_ORD,
+  ARSPLAN_EVENTS,
   FASER,
   MND,
   OKTER,
   OMRAADE_LABEL,
   PERIODER,
   TRINN,
+  UKER,
   beregnPyramide,
   faseForPeriode,
   oktFormler,
   type Trinn as TrinnType,
 } from "../../_data/arsplan-fasit-2026-27";
-import { Chip, PillGruppe, Seksjon, SeksjonHode, Wrap, WangKort } from "./primitiver";
+import { d, iso } from "../../_data/wang-plan";
+import {
+  Chip,
+  PillGruppe,
+  Seksjon,
+  SeksjonHode,
+  Wrap,
+  WangKort,
+  klampTilIntervall,
+  leggTilDager,
+  mandagAv,
+  useOsloIdagIso,
+} from "./primitiver";
 
 const MND_KORT = ["Aug", "Sep", "Okt", "Nov", "Des", "Jan", "Feb", "Mar", "Apr", "Mai", "Jun"];
+
+const SESONG_START = UKER[0][1];
+const SESONG_SLUTT = (() => {
+  const siste = d(UKER[UKER.length - 1][1]);
+  siste.setUTCDate(siste.getUTCDate() + 6);
+  return iso(siste);
+})();
 
 function Hero() {
   return (
@@ -64,7 +85,7 @@ function Hero() {
         }}
       />
       <Wrap>
-        <div style={{ padding: "clamp(40px,7vw,72px) 0 0", position: "relative" }}>
+        <div style={{ padding: "clamp(40px,7vw,72px) 0 clamp(32px,5vw,48px)", position: "relative" }}>
           <div
             style={{
               fontFamily: "var(--font-brand)",
@@ -94,33 +115,55 @@ function Hero() {
             treningsuken og øktplaner med kompetansemål per trinn.
           </p>
         </div>
-        <div
-          style={{
-            marginTop: "clamp(28px,5vw,44px)",
-            padding: "18px 0",
-            background: "var(--overlay-on-dark-06)",
-            display: "flex",
-            flexWrap: "wrap",
-            alignItems: "center",
-            justifyContent: "space-between",
-            gap: 12,
-          }}
-        >
-          <div>
-            <div style={{ fontFamily: "var(--font-brand)", fontWeight: 700, fontSize: 17 }}>Gruppen</div>
-            <div style={{ fontSize: 13.5, color: "var(--text-on-dark-78)", marginTop: 4 }}>
-              14 elever · VG1–VG3 samlet · 16–19 år
-            </div>
-            <div style={{ fontSize: 13.5, color: "var(--text-on-dark-78)" }}>
-              Man · ons · fre 08:00–10:00 · Gamle Fredrikstad GK
-            </div>
-          </div>
-          <div style={{ fontFamily: "var(--font-brand)", fontWeight: 700, fontSize: 14, color: "var(--wang-mint)" }}>
-            Sammen lykkes vi
-          </div>
-        </div>
       </Wrap>
     </div>
+  );
+}
+
+const UKEDAG_NAVN = ["Mandag", "Tirsdag", "Onsdag", "Torsdag", "Fredag", "Lørdag", "Søndag"];
+
+function DenneUken() {
+  const naaIso = useOsloIdagIso(SESONG_START);
+  const klampet = klampTilIntervall(naaIso, SESONG_START, SESONG_SLUTT);
+  const mandag = mandagAv(klampet);
+  const dager = Array.from({ length: 7 }, (_, i) => leggTilDager(mandag, i));
+  const okter = dager
+    .map((isoDato, i) => ({
+      isoDato,
+      dagNavn: UKEDAG_NAVN[i],
+      hendelser: (ARSPLAN_EVENTS[isoDato] ?? []).filter((h) => h.type === "okt"),
+    }))
+    .filter((d) => d.hendelser.length > 0);
+
+  return (
+    <Seksjon id="denne-uken">
+      <WangKort style={{ borderTop: "4px solid var(--wang-mint)" }}>
+        <div style={{ fontFamily: "var(--font-brand)", fontWeight: 700, fontSize: 15, marginBottom: 12 }}>
+          Denne uken
+        </div>
+        {okter.length === 0 ? (
+          <div style={{ fontSize: 13.5, color: "var(--text-secondary)" }}>
+            Ingen planlagte økter denne uken — se årshjulet under.
+          </div>
+        ) : (
+          <div style={{ display: "grid", gap: 12 }}>
+            {okter.map((d) => (
+              <div key={d.isoDato} style={{ display: "flex", flexWrap: "wrap", gap: "4px 12px", alignItems: "baseline" }}>
+                <div style={{ fontFamily: "var(--font-brand)", fontWeight: 700, fontSize: 13.5, minWidth: 90 }}>
+                  {d.dagNavn}
+                </div>
+                {d.hendelser.map((h, i) => (
+                  <span key={i} style={{ fontSize: 13, color: "var(--text-secondary)" }}>
+                    {h.time ? h.time + " · " : ""}
+                    {h.label}
+                  </span>
+                ))}
+              </div>
+            ))}
+          </div>
+        )}
+      </WangKort>
+    </Seksjon>
   );
 }
 
@@ -262,7 +305,7 @@ function Periodisering() {
         }))}
       />
       <WangKort style={{ marginTop: 16 }} key={pyr}>
-        <div style={{ display: "grid", gap: 14 }}>
+        <div style={{ display: "grid", gap: 12 }}>
           {AKSER.map((ax, i) => {
             const pct = beregnet.pct[i];
             const min = beregnet.min[AKSE_ORD[i]];
@@ -440,7 +483,8 @@ export function FaneTrening({
   return (
     <div>
       <Hero />
-      <div style={{ marginTop: 8 }}>
+      <DenneUken />
+      <div style={{ marginTop: 32 }}>
         <Wrap>
           <PillGruppe
             valg={(["Alle trinn", "VG1", "VG2", "VG3"] as const).map((t) => ({

@@ -155,7 +155,7 @@ function Prover({ trinn }: { trinn: TrinnType | "Alle trinn" }) {
       <SeksjonHode nr={3} label="Prøveplan" tittel="Prøver og eksamen" />
       <PillGruppe valg={TRINN_ORD.map((t) => ({ label: t, aktiv: t === valgt, onVelg: () => setValgt(t) }))} />
       <WangKort style={{ marginTop: 16 }}>
-        <div style={{ display: "grid", gap: 10 }}>
+        <div style={{ display: "grid", gap: 12 }}>
           {PROVER[valgt].map(([uke, tittel, detalj]) => (
             <div key={uke + tittel} style={{ display: "grid", gridTemplateColumns: "90px 1fr", gap: 12, paddingBottom: 10, borderBottom: "1px solid var(--border-subtle)" }}>
               <div style={{ fontSize: 12, color: "var(--text-secondary)" }}>{uke}</div>

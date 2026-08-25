@@ -7,27 +7,17 @@
 // Anders' beslutning 25.08.2026: siden bygges 1:1 etter fasiten — ingen
 // RSVP-knapp, ingen chat (fantes i den forrige, nå erstattede designen).
 
-import { useState, useSyncExternalStore } from "react";
+import { useState } from "react";
 
 import { FORELDREMOTER, SKOLERUTE, TRINN, TRINN_ORD, UKESRAPPORTER, moteTekst, nesteFredagTekst } from "../../_data/arsplan-fasit-2026-27";
 import { SPAN_START_ISO } from "../../_data/wang-plan";
-import { Seksjon, SeksjonHode, WangKort } from "./primitiver";
-
-function osloIdagIso(): string {
-  return new Intl.DateTimeFormat("en-CA", { timeZone: "Europe/Oslo" }).format(new Date());
-}
-const tomAbonnement = () => () => {};
-let naaCache: string | null = null;
-function klientNaa(): string {
-  naaCache ??= osloIdagIso();
-  return naaCache;
-}
+import { Seksjon, SeksjonHode, WangKort, useOsloIdagIso } from "./primitiver";
 
 function Ukessammendrag() {
   const [apen, setApen] = useState<number | null>(null);
   // Hydreringstrygt: server viser sesongstart, klient bytter til ekte Oslo-dato
   // rett etter mount (jf. samme mønster i wang-fellesside.tsx).
-  const naaIso = useSyncExternalStore(tomAbonnement, klientNaa, () => SPAN_START_ISO);
+  const naaIso = useOsloIdagIso(SPAN_START_ISO);
 
   const siste = UKESRAPPORTER[0];
   const tidligere = UKESRAPPORTER.slice(1);

@@ -18,8 +18,8 @@
 import { useMemo, useState, type CSSProperties } from "react";
 
 import { ARSPLAN_EVENTS, PERIODER, FASER, faseForPeriode, type HendelseType } from "../../_data/arsplan-fasit-2026-27";
-import { d, iso, WD_SHORT } from "../../_data/wang-plan";
-import { Chip, PillGruppe, Seksjon, SeksjonHode, WangKort } from "./primitiver";
+import { d, WD_SHORT } from "../../_data/wang-plan";
+import { Chip, PillGruppe, Seksjon, SeksjonHode, WangKort, leggTilDager, mandagAv } from "./primitiver";
 
 const TYPE_INFO: Record<HendelseType, { navn: string; farge: string; tint: string }> = {
   okt: { navn: "Trening og samling", farge: "var(--wang-teal-text)", tint: "var(--tint-teal)" },
@@ -29,20 +29,6 @@ const TYPE_INFO: Record<HendelseType, { navn: string; farge: string; tint: strin
 };
 
 const MND_NAVN = ["Januar", "Februar", "Mars", "April", "Mai", "Juni", "Juli", "August", "September", "Oktober", "November", "Desember"];
-
-function mandagAvUke(dato: Date): Date {
-  const kopi = new Date(dato.getTime());
-  const dag = kopi.getUTCDay();
-  const off = dag === 0 ? -6 : 1 - dag;
-  kopi.setUTCDate(kopi.getUTCDate() + off);
-  return kopi;
-}
-
-function leggTilDager(isoDato: string, n: number): string {
-  const dt = d(isoDato);
-  dt.setUTCDate(dt.getUTCDate() + n);
-  return iso(dt);
-}
 
 function EventChip({ label, type, time }: { label: string; type: HendelseType; time?: string }) {
   const info = TYPE_INFO[type];
@@ -90,7 +76,7 @@ function ValgtDagKort({ valgtDag, onGaaTilTrening }: { valgtDag: string; onGaaTi
                   textAlign: "left",
                 }}
               >
-                <div style={{ display: "flex", alignItems: "center", gap: 10, minWidth: 0 }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 12, minWidth: 0 }}>
                   <Chip farge={info.farge} tint={info.tint}>
                     {info.navn}
                   </Chip>
@@ -282,7 +268,7 @@ function TidslinjeVisning({ onApnePeriode }: { onApnePeriode: (uker: string) => 
             style={{
               display: "flex",
               alignItems: "center",
-              gap: 14,
+              gap: 12,
               textAlign: "left",
               border: "1px solid var(--border-subtle)",
               borderRadius: 14,
@@ -314,7 +300,7 @@ export function FaneKalenderArsplan({ onGaaTilTrening }: { onGaaTilTrening: () =
   const [aar, setAar] = useState(2026);
   const [maaned, setMaaned] = useState(7); // august (0-indeksert)
 
-  const mandag = useMemo(() => iso(mandagAvUke(d(valgtDag))), [valgtDag]);
+  const mandag = useMemo(() => mandagAv(valgtDag), [valgtDag]);
 
   return (
     <Seksjon id="kalender">

@@ -11,7 +11,7 @@ import { WangArsplanShell, type ArsplanFane } from "./_components/arsplan-2026-2
 // repoet men ikke lenger koblet til denne ruten) med fire nye faner:
 // Trening/Skole/Kalender/Foreldre.
 // Fortsatt noindex (layout) — delbar via lenke, ikke via Google.
-export const dynamic = "force-static";
+export const dynamic = "force-dynamic";
 
 const FANER: ArsplanFane[] = ["trening", "skole", "kalender", "foreldre"];
 

@@ -4,7 +4,9 @@
 // 25.08.2026). Egen, isolert primitiv-fil for den nye fasiten — rører ikke
 // `../primitiver.tsx` som den kjørende `/team-wang`-siden bruker i dag.
 
-import type { CSSProperties, ReactNode } from "react";
+import { useSyncExternalStore, type CSSProperties, type ReactNode } from "react";
+
+import { d, iso } from "../../_data/wang-plan";
 
 export const MAKS_BREDDE = 1160;
 
@@ -246,4 +248,46 @@ export const fadeUpClass = "wang-arsplan-fade";
 
 export function EntallFlertall(n: number, entall: string, flertall: string): string {
   return n === 1 ? "1 " + entall : n + " " + flertall;
+}
+
+// ---- Dato-hjelpere, delt av Trening-/Foreldre-/Kalender-fanen -----------
+
+function osloIdagIso(): string {
+  return new Intl.DateTimeFormat("en-CA", { timeZone: "Europe/Oslo" }).format(new Date());
+}
+const tomAbonnement = () => () => {};
+let naaCache: string | null = null;
+function klientNaa(): string {
+  naaCache ??= osloIdagIso();
+  return naaCache;
+}
+
+/**
+ * Oslo-korrekt "i dag", hydreringstrygt (server viser `fallbackIso` inntil
+ * klienten har montert — se wang-fellesside.tsx for opphavsmønsteret).
+ */
+export function useOsloIdagIso(fallbackIso: string): string {
+  return useSyncExternalStore(tomAbonnement, klientNaa, () => fallbackIso);
+}
+
+/** Mandagen i uka til `isoDato` (ISO, UTC-trygt). */
+export function mandagAv(isoDato: string): string {
+  const dt = d(isoDato);
+  const dag = dt.getUTCDay();
+  const off = dag === 0 ? -6 : 1 - dag;
+  dt.setUTCDate(dt.getUTCDate() + off);
+  return iso(dt);
+}
+
+/** `isoDato` + `n` dager (kan være negativ), ISO, UTC-trygt. */
+export function leggTilDager(isoDato: string, n: number): string {
+  const dt = d(isoDato);
+  dt.setUTCDate(dt.getUTCDate() + n);
+  return iso(dt);
+}
+
+export function klampTilIntervall(isoDato: string, startIso: string, sluttIso: string): string {
+  if (isoDato < startIso) return startIso;
+  if (isoDato > sluttIso) return sluttIso;
+  return isoDato;
 }
