@@ -113,3 +113,17 @@ export const PracticeTypeSchema = z.enum([
 
 /** YYYY-MM-DD */
 export const IsoDateSchema = z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Ugyldig dato");
+
+/** Input til `moveSession` — grensevalidering av tid/varighet (B3, agency-herding). */
+export const MoveSessionInputSchema = z.object({
+  sessionId: z.string().min(1, "Mangler økt-id"),
+  newDate: IsoDateSchema,
+  newStartMinute: z.number().int().min(0).max(1439, "Ugyldig starttidspunkt"),
+  newDurationMinutes: z.number().int().min(15).max(720, "Ugyldig varighet").optional(),
+});
+
+/** Input til `reorderDrills` — id-listen må faktisk være strenger, ikke bare "et array" (B3). */
+export const ReorderDrillsInputSchema = z.object({
+  sessionId: z.string().min(1, "Mangler økt-id"),
+  orderedDrillIds: z.array(z.string().min(1)),
+});

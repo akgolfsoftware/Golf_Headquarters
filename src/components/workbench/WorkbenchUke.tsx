@@ -13,29 +13,35 @@ import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { Knapp } from "@/components/v2/core";
 import { Icon } from "@/components/v2/icon";
+import { BunnArk } from "@/components/v2/bunn-ark";
 import { T } from "@/lib/v2/tokens";
-import { addDays, mondayOf } from "@/lib/domain/workbench/operations";
-import { formatHours, UI } from "@/lib/domain/workbench/labels";
+import { addDays, mondayOf, validateWeek } from "@/lib/domain/workbench/operations";
+import { AREA_LABEL, formatHours, PYRAMID_LABEL, UI } from "@/lib/domain/workbench/labels";
 import type {
   SourceItem,
   WeekViewModel,
   WorkbenchSession,
 } from "@/lib/domain/workbench/types";
 import {
+  addDrill,
   createSession,
   deleteSession,
   loadWeek,
   moveSession,
   publishSessions,
+  removeDrill,
+  reorderDrills,
   unpublishSession,
 } from "@/lib/workbench/wb-actions";
 import { CreateSessionModal, type NyOktVerdier } from "./CreateSessionModal";
 import { PublishConfirmDialog } from "./PublishConfirmDialog";
-import { SessionInspector, type FlyttVerdier } from "./SessionInspector";
+import {
+  SessionInspector,
+  type FlyttVerdier,
+  type LeggTilDrillVerdier,
+} from "./SessionInspector";
 import { SourcesPanel } from "./SourcesPanel";
 import { osloIdag, WeekGrid } from "./WeekGrid";
-
-const UKJENT_FEIL = "Noe gikk galt. Prøv igjen.";
 
 type Props = {
   playerId: string;
@@ -56,6 +62,8 @@ export function WorkbenchUke({ playerId, spillerNavn, uke, kilder }: Props) {
   const idag = osloIdag();
   const alleOkter = useMemo(() => week.days.flatMap((d) => d.sessions), [week]);
   const utkast = useMemo(() => alleOkter.filter((s) => s.status === "DRAFT"), [alleOkter]);
+  /** Overlapp-VARSEL for hele uka (aldri en sperre — invariant 1). Vises i publiser-dialogen. */
+  const valideringsnotater = useMemo(() => validateWeek(alleOkter), [alleOkter]);
   const valgt = useMemo(
     () => alleOkter.find((s) => s.id === valgtId) ?? null,
     [alleOkter, valgtId],
@@ -93,8 +101,8 @@ export function WorkbenchUke({ playerId, spillerNavn, uke, kilder }: Props) {
         await lastPaaNytt();
         vedSuksess(res.data);
       } catch {
-        setFeil(UKJENT_FEIL);
-        toast.error(UKJENT_FEIL);
+        setFeil(UI.unknownError);
+        toast.error(UI.unknownError);
       }
     });
   }
@@ -103,6 +111,93 @@ export function WorkbenchUke({ playerId, spillerNavn, uke, kilder }: Props) {
     const ny = mondayOf(addDays(week.weekStart, retning * 7));
     router.push(`/admin/workbench/${playerId}?uke=${ny}`);
   }
+
+  /** Delt mellom desktop-panelet (fast kolonne) og mobil-bunn-arket — samme handlinger. */
+  const inspectorNode = (
+    <SessionInspector
+      key={
+        valgt ? `${valgt.id}:${valgt.date}:${valgt.startMinute}:${valgt.durationMinutes}` : "tom"
+      }
+      session={valgt}
+      travel={travel}
+      onFlytt={(v: FlyttVerdier) => {
+        if (!valgt) return;
+        kjor(
+          () =>
+            moveSession({
+              sessionId: valgt.id,
+              newDate: v.newDate,
+              newStartMinute: v.newStartMinute,
+              newDurationMinutes: v.newDurationMinutes,
+            }),
+          () => toast.success(UI.toastSessionMoved),
+        );
+      }}
+      onPubliser={() => {
+        if (!valgt) return;
+        kjor(
+          () => publishSessions([valgt.id]),
+          () => toast.success(UI.publishSuccess),
+        );
+      }}
+      onTrekkTilbake={() => {
+        if (!valgt) return;
+        kjor(
+          () => unpublishSession(valgt.id),
+          () => toast.success(UI.toastUnpublished),
+        );
+      }}
+      onSlett={() => {
+        if (!valgt) return;
+        const id = valgt.id;
+        kjor(
+          () => deleteSession(id),
+          () => {
+            setValgtId(null);
+            toast.success(UI.toastSessionDeleted);
+          },
+        );
+      }}
+      onLeggTilDrill={(v: LeggTilDrillVerdier) => {
+        if (!valgt) return;
+        kjor(
+          () =>
+            addDrill({
+              sessionId: valgt.id,
+              drill: {
+                title: v.title,
+                durationMinutes: v.durationMinutes,
+                akFormel: {
+                  pyramid: v.pyramid,
+                  area: v.area,
+                  label: `${PYRAMID_LABEL[v.pyramid]} · ${AREA_LABEL[v.area]}`,
+                },
+              },
+            }),
+          () => toast.success(UI.toastDrillAdded),
+        );
+      }}
+      onFlyttDrill={(drillId, retning) => {
+        if (!valgt) return;
+        const idx = valgt.drills.findIndex((d) => d.id === drillId);
+        const nyIdx = idx + retning;
+        if (idx < 0 || nyIdx < 0 || nyIdx >= valgt.drills.length) return;
+        const rekkefolge = valgt.drills.map((d) => d.id);
+        [rekkefolge[idx], rekkefolge[nyIdx]] = [rekkefolge[nyIdx], rekkefolge[idx]];
+        kjor(
+          () => reorderDrills({ sessionId: valgt.id, orderedDrillIds: rekkefolge }),
+          () => {},
+        );
+      }}
+      onFjernDrill={(drillId) => {
+        if (!valgt) return;
+        kjor(
+          () => removeDrill({ sessionId: valgt.id, drillId }),
+          () => toast.success(UI.toastDrillRemoved),
+        );
+      }}
+    />
+  );
 
   return (
     <div style={{ display: "grid", gap: 16, minWidth: 0 }}>
@@ -134,7 +229,7 @@ export function WorkbenchUke({ playerId, spillerNavn, uke, kilder }: Props) {
           <Icon name="triangle-alert" size={15} style={{ color: T.down }} />
           <span style={{ fontFamily: T.ui, fontSize: 13, color: T.fg, flex: 1 }}>{feil}</span>
           <Knapp ghost onClick={() => void lastPaaNytt()}>
-            Prøv igjen
+            {UI.retry}
           </Knapp>
         </div>
       )}
@@ -157,54 +252,20 @@ export function WorkbenchUke({ playerId, spillerNavn, uke, kilder }: Props) {
         </div>
 
         <div className="hidden lg:block" style={{ minWidth: 0 }}>
-          <SessionInspector
-            key={
-              valgt
-                ? `${valgt.id}:${valgt.date}:${valgt.startMinute}:${valgt.durationMinutes}`
-                : "tom"
-            }
-            session={valgt}
-            travel={travel}
-            onFlytt={(v: FlyttVerdier) => {
-              if (!valgt) return;
-              kjor(
-                () =>
-                  moveSession({
-                    sessionId: valgt.id,
-                    newDate: v.newDate,
-                    newStartMinute: v.newStartMinute,
-                    newDurationMinutes: v.newDurationMinutes,
-                  }),
-                () => toast.success("Økten er flyttet"),
-              );
-            }}
-            onPubliser={() => {
-              if (!valgt) return;
-              kjor(
-                () => publishSessions([valgt.id]),
-                () => toast.success(UI.publishSuccess),
-              );
-            }}
-            onTrekkTilbake={() => {
-              if (!valgt) return;
-              kjor(
-                () => unpublishSession(valgt.id),
-                () => toast.success("Trukket tilbake — spilleren ser den ikke lenger"),
-              );
-            }}
-            onSlett={() => {
-              if (!valgt) return;
-              const id = valgt.id;
-              kjor(
-                () => deleteSession(id),
-                () => {
-                  setValgtId(null);
-                  toast.success("Økten er slettet");
-                },
-              );
-            }}
-          />
+          {inspectorNode}
         </div>
+      </div>
+
+      {/* Mobil (< lg): inspektøren er ellers helt utilgjengelig, se gotchas §Cookie-banner
+          for bunn-forankret-mønsteret BunnArk selv arver (kjent, ikke løst her). */}
+      <div className="lg:hidden">
+        <BunnArk
+          open={valgtId !== null}
+          onClose={() => setValgtId(null)}
+          tittel={valgt?.title ?? UI.inspectorTitle}
+        >
+          {inspectorNode}
+        </BunnArk>
       </div>
 
       <CreateSessionModal
@@ -220,7 +281,7 @@ export function WorkbenchUke({ playerId, spillerNavn, uke, kilder }: Props) {
             (okt: WorkbenchSession) => {
               setNyOkt(null);
               setValgtId(okt.id);
-              toast.success("Utkast opprettet — kun synlig for deg");
+              toast.success(UI.toastDraftCreated);
             },
           );
         }}
@@ -230,6 +291,7 @@ export function WorkbenchUke({ playerId, spillerNavn, uke, kilder }: Props) {
         open={publiserApen}
         okter={utkast}
         idag={idag}
+        notater={valideringsnotater}
         publiserer={travel}
         onLukk={() => setPubliserApen(false)}
         onBekreft={() => {
@@ -239,8 +301,8 @@ export function WorkbenchUke({ playerId, spillerNavn, uke, kilder }: Props) {
               setPubliserApen(false);
               toast.success(
                 publiserte.length === 1
-                  ? "1 økt publisert"
-                  : `${publiserte.length} økter publisert`,
+                  ? UI.toastPublishedOne
+                  : UI.toastPublishedMany(publiserte.length),
               );
             },
           );

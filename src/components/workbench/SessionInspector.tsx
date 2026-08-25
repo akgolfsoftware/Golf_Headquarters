@@ -20,14 +20,10 @@ import { Select } from "@/components/ui/select";
 import { Knapp } from "@/components/v2/core";
 import { Icon } from "@/components/v2/icon";
 import { T } from "@/lib/v2/tokens";
-import {
-  formatMinutes,
-  formatTime,
-  PYRAMID_LABEL,
-  UI,
-} from "@/lib/domain/workbench/labels";
+import { formatMinutes, formatTime, PYRAMID_LABEL, UI } from "@/lib/domain/workbench/labels";
 import type { WorkbenchSession } from "@/lib/domain/workbench/types";
 import { harHake, pyramideFarge, STATUS_CAPS, WARM } from "./wb-visuelt";
+import { DrillListEditor, type LeggTilDrillVerdier } from "./DrillListEditor";
 
 const VARIGHETER = [30, 45, 60, 90, 120, 180];
 
@@ -37,6 +33,8 @@ export type FlyttVerdier = {
   newDurationMinutes: number;
 };
 
+export type { LeggTilDrillVerdier };
+
 type Props = {
   session: WorkbenchSession | null;
   travel: boolean;
@@ -44,6 +42,9 @@ type Props = {
   onPubliser: () => void;
   onTrekkTilbake: () => void;
   onSlett: () => void;
+  onLeggTilDrill: (verdier: LeggTilDrillVerdier) => void;
+  onFlyttDrill: (drillId: string, retning: -1 | 1) => void;
+  onFjernDrill: (drillId: string) => void;
 };
 
 export function SessionInspector({
@@ -53,6 +54,9 @@ export function SessionInspector({
   onPubliser,
   onTrekkTilbake,
   onSlett,
+  onLeggTilDrill,
+  onFlyttDrill,
+  onFjernDrill,
 }: Props) {
   // Feltene speiler den lagrede økten ved montering. WorkbenchUke gir
   // komponenten en `key` som inkluderer tid og varighet, så en lagret flytting
@@ -62,12 +66,7 @@ export function SessionInspector({
   const [varighet, setVarighet] = useState(session?.durationMinutes ?? 60);
 
   if (!session) {
-    return (
-      <InspektorTom
-        tittel={UI.inspectorTitle}
-        tekst="Velg en økt i uka for å se og endre den."
-      />
-    );
+    return <InspektorTom tittel={UI.inspectorTitle} tekst={UI.inspectorEmptyBody} />;
   }
 
   const utkast = session.status === "DRAFT";
@@ -134,9 +133,9 @@ export function SessionInspector({
         </div>
       )}
 
-      <InspektorBlokk label="Tid">
+      <InspektorBlokk label={UI.timeLabel}>
         <div style={{ display: "grid", gap: 10 }}>
-          <Felt label="Dato">
+          <Felt label={UI.dateLabel}>
             <Input type="date" value={dag} onChange={(e) => setDag(e.target.value)} />
           </Felt>
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
@@ -169,12 +168,12 @@ export function SessionInspector({
               })
             }
           >
-            {travel ? "Lagrer …" : UI.moveSession}
+            {travel ? UI.saving : UI.moveSession}
           </Knapp>
         </div>
       </InspektorBlokk>
 
-      <InspektorBlokk label="Om økten">
+      <InspektorBlokk label={UI.sessionAboutLabel}>
         <InspektorLinje
           label={UI.pyramid}
           verdi={
@@ -192,7 +191,7 @@ export function SessionInspector({
           }
         />
         <InspektorLinje
-          label="Varer"
+          label={UI.durationValueLabel}
           verdi={formatMinutes(session.durationMinutes)}
         />
         {session.publishedAt && (
@@ -210,37 +209,14 @@ export function SessionInspector({
       </InspektorBlokk>
 
       <InspektorBlokk label={UI.drills}>
-        {session.drills.length === 0 ? (
-          <p style={{ fontFamily: T.ui, fontSize: 12.5, color: T.mut, margin: 0 }}>
-            {UI.emptyDrills}
-          </p>
-        ) : (
-          <ul style={{ listStyle: "none", margin: 0, padding: 0, display: "grid", gap: 6 }}>
-            {session.drills.map((d) => (
-              <li
-                key={d.id}
-                style={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  gap: 10,
-                  fontFamily: T.ui,
-                  fontSize: 12.5,
-                  color: T.fg,
-                  minWidth: 0,
-                }}
-              >
-                <span
-                  style={{ minWidth: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}
-                >
-                  {d.title}
-                </span>
-                <span style={{ flex: "none", fontFamily: T.mono, fontSize: 11, color: T.mut }}>
-                  {d.durationMinutes} min
-                </span>
-              </li>
-            ))}
-          </ul>
-        )}
+        <DrillListEditor
+          drills={session.drills}
+          disabled={travel}
+          defaultPyramid={session.pyramid}
+          onLeggTil={onLeggTilDrill}
+          onFlytt={onFlyttDrill}
+          onFjern={onFjernDrill}
+        />
       </InspektorBlokk>
     </Inspektorpanel>
   );

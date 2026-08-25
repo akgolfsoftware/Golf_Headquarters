@@ -11,7 +11,7 @@
  * Nye økter er alltid UTKAST — spilleren ser dem først etter publisering.
  */
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import {
   Dialog,
   DialogBody,
@@ -25,11 +25,18 @@ import { Input } from "@/components/ui/input";
 import { Select } from "@/components/ui/select";
 import { Knapp } from "@/components/v2/core";
 import { T } from "@/lib/v2/tokens";
-import { formatTime, PYRAMID_LABEL, UI } from "@/lib/domain/workbench/labels";
-import type { PyramidArea } from "@/lib/domain/workbench/types";
+import { AREA_LABEL, formatTime, PYRAMID_LABEL, UI } from "@/lib/domain/workbench/labels";
+import type { AKFormel, PyramidArea } from "@/lib/domain/workbench/types";
+import { DrillListEditor, type DrillListItem } from "./DrillListEditor";
 
 const PYRAMIDER: PyramidArea[] = ["FYS", "TEK", "SLAG", "SPILL", "TURN"];
 const VARIGHETER = [30, 45, 60, 90, 120, 180];
+
+export type NyOktDrillVerdier = {
+  title: string;
+  durationMinutes: number;
+  akFormel: AKFormel;
+};
 
 export type NyOktVerdier = {
   title: string;
@@ -37,6 +44,7 @@ export type NyOktVerdier = {
   startMinute: number;
   durationMinutes: number;
   pyramid: PyramidArea;
+  drills?: NyOktDrillVerdier[];
 };
 
 type Props = {
@@ -63,17 +71,19 @@ export function CreateSessionModal({
   const [varighet, setVarighet] = useState(60);
   const [pyramid, setPyramid] = useState<PyramidArea>("TEK");
   const [feil, setFeil] = useState<string | null>(null);
+  const [drillUtkast, setDrillUtkast] = useState<DrillListItem[]>([]);
+  const nesteDrillId = useRef(0);
 
   function send() {
     const rensetTittel = tittel.trim();
     if (!rensetTittel) {
-      setFeil("Økten må ha en tittel.");
+      setFeil(UI.titleRequired);
       return;
     }
     const [t, m] = start.split(":");
     const startMin = Number(t) * 60 + Number(m);
     if (!Number.isFinite(startMin)) {
-      setFeil("Ugyldig starttidspunkt.");
+      setFeil(UI.invalidStartTime);
       return;
     }
     setFeil(null);
@@ -83,6 +93,11 @@ export function CreateSessionModal({
       startMinute: startMin,
       durationMinutes: varighet,
       pyramid,
+      drills: drillUtkast.map((d) => ({
+        title: d.title,
+        durationMinutes: d.durationMinutes,
+        akFormel: d.akFormel,
+      })),
     });
   }
 
@@ -91,24 +106,22 @@ export function CreateSessionModal({
       <DialogContent size="md">
         <DialogHeader>
           <DialogTitle>{UI.createSession}</DialogTitle>
-          <DialogDescription>
-            Økten lagres som utkast. Den er kun synlig for deg til du publiserer.
-          </DialogDescription>
+          <DialogDescription>{UI.createSessionBody}</DialogDescription>
         </DialogHeader>
 
         <DialogBody>
           <div style={{ display: "grid", gap: 14 }}>
-            <Felt label="Tittel">
+            <Felt label={UI.titleField}>
               <Input
                 value={tittel}
                 onChange={(e) => setTittel(e.target.value)}
-                placeholder="F.eks. Wedge 60–100 m"
+                placeholder={UI.titlePlaceholder}
                 autoFocus
               />
             </Felt>
 
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
-              <Felt label="Dato">
+              <Felt label={UI.dateField}>
                 <Input type="date" value={dag} onChange={(e) => setDag(e.target.value)} />
               </Felt>
               <Felt label={UI.start}>
@@ -145,6 +158,42 @@ export function CreateSessionModal({
               </Felt>
             </div>
 
+            <Felt label={UI.drills}>
+              <DrillListEditor
+                drills={drillUtkast}
+                defaultPyramid={pyramid}
+                onLeggTil={(v) => {
+                  const id = `ny-${nesteDrillId.current++}`;
+                  setDrillUtkast((prev) => [
+                    ...prev,
+                    {
+                      id,
+                      title: v.title,
+                      durationMinutes: v.durationMinutes,
+                      akFormel: {
+                        pyramid: v.pyramid,
+                        area: v.area,
+                        label: `${PYRAMID_LABEL[v.pyramid]} · ${AREA_LABEL[v.area]}`,
+                      },
+                    },
+                  ]);
+                }}
+                onFlytt={(id, retning) => {
+                  setDrillUtkast((prev) => {
+                    const idx = prev.findIndex((d) => d.id === id);
+                    const nyIdx = idx + retning;
+                    if (idx < 0 || nyIdx < 0 || nyIdx >= prev.length) return prev;
+                    const kopi = [...prev];
+                    [kopi[idx], kopi[nyIdx]] = [kopi[nyIdx], kopi[idx]];
+                    return kopi;
+                  });
+                }}
+                onFjern={(id) => {
+                  setDrillUtkast((prev) => prev.filter((d) => d.id !== id));
+                }}
+              />
+            </Felt>
+
             {feil && (
               <p style={{ fontFamily: T.ui, fontSize: 12.5, color: T.down, margin: 0 }}>{feil}</p>
             )}
@@ -156,7 +205,7 @@ export function CreateSessionModal({
             {UI.cancel}
           </Knapp>
           <Knapp onClick={send} disabled={lagrer}>
-            {lagrer ? "Oppretter …" : "Opprett"}
+            {lagrer ? UI.creating : UI.create}
           </Knapp>
         </DialogFooter>
       </DialogContent>
