@@ -927,7 +927,6 @@ function TrainLockAgencyDock() {
           height: 88,
           background: TL.dock,
           borderTop: `1px solid ${TL.hair}`,
-          display: "flex",
           alignItems: "flex-start",
           paddingTop: 10,
           paddingBottom: "env(safe-area-inset-bottom)",
