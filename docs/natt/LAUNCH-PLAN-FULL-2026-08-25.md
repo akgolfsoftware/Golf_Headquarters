@@ -69,7 +69,7 @@ Loop 2S- og RLS-committene på arbeidsgrenen — git-sjekk under er gjort direkt
 | `claude/workbench-launch-plan-7503ff` (denne worktree) | Loop 1 + Loop 2 + tom-uke-fix + Loop 3S | = HEAD |
 | `claude/agency-workbench-uke-ui-c4d2a4` | Samme innhold | Identisk med HEAD (0/0) |
 | PR **#577** `claude/sessioninspector-drill-ui-125d70` | **Loop 2S** (drill-editor i SessionInspector + DrillListEditor + LOOP-2S-DONE.md) | Forgrenet FØR 3S. 2 commits HEAD mangler. Fil-overlapp mot 3S: kun `src/lib/domain/workbench/labels.ts` |
-| `claude/workbench-rls-policies-8b054b` | **RLS-migrasjon** for workbench_* (240 linjer SQL: ENABLE + policies + coach-SQL-funksjon) + apply-script + RLS-WORKBENCH-DONE.md | **Innholdet er på main** (kom inn med #583) og **KJØRT MOT PROD** — verifisert 25.08 (RLS på, 6 policies, anon/authenticated ser 0 mot eiers 2). Grenen er stale og kan slettes |
+| `claude/workbench-rls-policies-8b054b` | **RLS-migrasjon** for workbench_* (240 linjer SQL: ENABLE + policies + coach-SQL-funksjon) + apply-script + RLS-WORKBENCH-DONE.md | = HEAD + 1 commit (49fa667b). **IKKE kjørt mot prod** |
 | PR **#575** `docs/natt-plan-2026-08-25` | natt-docs + Loop 1 | Tre-innhold IDENTISK med det HEAD alt har (verifisert `git diff --quiet`) → lukkes som superseded når arbeidsgrenen merges |
 | `origin/main` | +2 commits HEAD mangler: WANG årsplan (#578), turnerings-dedupe-fix (#576) | Må inn i release-grenen |
 | `claude/natt-a1-a4-2026-08-24`, `claude/workbench-actions-check-8399ef` | Delmengder av HEAD (peker på Loop 1-committen) | Stale — slettes etter merge |
@@ -222,7 +222,7 @@ Funksjon: mot kode. Design: mot invariant-tekst + beskrivelser (fasit-zip mangle
 | Krav | Status | Gap |
 |---|---|---|
 | Auth/IDOR | DONE for workbench (verifisert alle actions) | — |
-| RLS workbench_* | **OPPFYLT** — aktiv i prod, deny bevist for anon + authenticated, DRAFT-invarianten håndhevet i SELECT-policyen (verifisert 25.08) | — |
+| RLS workbench_* | KODE KLAR på egen gren, IKKE kjørt mot prod | S1 |
 | Feiltilstander (4 tilstander + sonner, norsk) | DELVIS | admin-ruten mangler loading/error.tsx; PH-01e mangler hvile/pågår; copy delvis hardkodet utenfor labels | B3/B4 |
 | Tokens Player=Train-lock | **DELVIS** | Tokensettet er i kode (D2 løst 25.08, `--tl-*`); Player-wb-flater bruker fortsatt Paper-tokens til B8 har portert dem | B8 |
 | Vokabular (etiketter, ikke lås) | DONE | vokabular-planlegging er fasit; ingen treningsregler gjeninnført | — |
@@ -274,15 +274,28 @@ Regler (gjelder alle rader): build = Sonnet 5, ny session, smal prompt, 1 primæ
 | # | Navn | Modell | Modus | Worktree/gren | Eksakt scope | Done-kriterium | Avhenger av | Parallell OK? | Sub-agenter |
 |---|---|---|---|---|---|---|---|---|---|
 | R1 | docs-opprydding | Sonnet 5 | Build (kun docs) | ny gren `chore/docs-rydding-natt` | Utfør radene i Del 1 som Anders har godkjent — banner/arkiv/slett/oppdater. INGEN kodefiler | Alle godkjente rader utført; grep viser ingen ukvalifisert «Paper vinner» for Player/WB; DONE-fil | Anders: «utfør opprydding» | Ja (med S1) | Explore |
-| S1 | RLS aktiv i prod | — | **UTFØRT 25.08** | — | Ingenting gjenstår: RLS er på begge workbench-tabeller i prod med 6 policies, migrasjonsrecord + DONE-fil ligger på main (#583). Verifisert direkte mot `dcnxoztjtdqoidaekxry`: eier ser 2 rader, `anon` og `authenticated` ser 0, DRAFT ekskludert i SELECT-policyen. **Avvik:** anbefalingen var deny-by-default (uten policies) — prod har den fulle policy-varianten; om policyene skal byttes til rent deny-by-default er en åpen beslutning (se `docs/natt/RLS-WORKBENCH-DONE.md` §Verifisert i prod) | Oppfylt | — | — | — |
-| B2 | Release-gren settes sammen — **NESTE, ublokkert (S1 utført)** | Sonnet 5 | Build (git-kirurgi, ingen ny feature) | ny gren `release/workbench-b1` fra HEAD | Merge inn PR #577 (2S) + S1-grenen + origin/main. Løs labels.ts-konflikt. Lukk #575 som superseded (kommentar). `npm run verify && npm test` | Verify+test grønn; alle 4 kilder inne; DONE-fil med konfliktlogg | S1 | Nei (alle senere avhenger) | validator |
+| S1 | RLS aktiv i prod | Sonnet 5 | Build | eksisterende `claude/workbench-rls-policies-8b054b` | Review eksisterende migrasjon. ANBEFALING: kjør deny-by-default (ENABLE uten policies — repo-presedens ×4; policy-SQL-en dupliserer wb-actions-logikk som vil drifte; behold policy-fila som dokumentert opsjon). Verifiser før/etter med PostgREST-curl (anon-nøkkel) + kjør smoke-workbench-scriptet ETTER aktivering. Rollback dokumentert (DISABLE) | relrowsecurity=true begge tabeller i prod; smoke grønn etter; PostgREST-deny bevist; LOOP-2-DONE + RLS-DONE oppdatert | Anders: «ja» til prod-kjøring | Ja (med R1) | validator |
+| B2 | Release-gren settes sammen | Sonnet 5 | Build (git-kirurgi, ingen ny feature) | ny gren `release/workbench-b1` fra HEAD | Merge inn PR #577 (2S) + S1-grenen + origin/main. Løs labels.ts-konflikt. Lukk #575 som superseded (kommentar). `npm run verify && npm test` | Verify+test grønn; alle 4 kilder inne; DONE-fil med konfliktlogg | S1 | Nei (alle senere avhenger) | validator |
 | B3 | Agency-herding | Sonnet 5 | Build | worktree, gren fra release | loading.tsx+error.tsx på /admin/workbench/[playerId]; mobil-inspector (ark/sheet under lg); flytt hardkodet copy → labels.ts; koble validateWeek()-VARSEL til publish-flyt (advarsel, aldri sperre); zod på move/reorder-input | Verify grønn; mobil-coach kan redigere enkeltøkt; VARSEL vises ved overlapp; DONE-fil | B2 | Ja, med B4/B7 | Explore |
 | B4 | Loop 3 — ekte «I dag» | Sonnet 5 | Build | worktree, gren fra release | PortalChatHjem/portal-hjem leser loadPlayerDay; PH-01e fire tilstander (publisert/hvile/pågår/feil); PH-05 pågår-artefakt; lenk økt-ark fra I dag; midlertidig /tren/wb-liste beholdes som fallback til klikk-test | DRAFT usynlig i ekte I dag; fire tilstander klikkbare; verify grønn; DONE-fil | B2 | Ja, med B3/B7 | Explore |
 | B5 | Loop 2T — kilder, drag, serie | Sonnet 5 | Build | gren fra release | loadSources ekte innhold (øvelsesbank/maler/forrige uke); drag fra kilder→uke; serie (gjenta + endre-policy) inkl. additiv DDL via kirurgisk db execute-script (ALDRI migrate/push/deploy — gotchas) | Verify grønn; serie-økter opprettes/endres per policy; DONE-fil | B3 (samme filer) | Nei mot B3; Ja mot B4/B7 | Explore, validator |
 | B6 | Loop 3T — godta/avvis + ikke delta | Sonnet 5 | Build | gren fra release | resolvePlayerApproval ekte; UI spiller (godta/avvis) + agency-visning (A-09/WB-10); hiddenByPlayer additiv DDL + filter; aldri #30D158 utenom Godta | Flyt klikkbar begge sider; DRAFT-invariant intakt; verify grønn; DONE-fil | B4 | Ja mot B5/B7 | Explore |
 | B7 | Loop 4 — DispersionMap/TM | Sonnet 5 | Build | worktree, gren fra release | TM-08: 1σ-ellipse + én caddie-setning + prikk→slag-ark (TM-11); tom-tilstand TM-10; vurder gjenbruk av `src/lib/gameplan/dispersion.ts` (verifiser matematikken først); PH-01c-kort gated på data | Smoke-målet i CLAUDE.md klikkbart; verify grønn; DONE-fil | B2 (+D3 for pixel) | Ja, med B3/B4 | Explore, validator |
 | B8 | Train-lock design-pass Player | Sonnet 5 | Build (port, ikke redesign) | gren fra release | Bruk `--tl-*`/`TL` (D2 ferdig; mørk default avklart 25.08); port PH-01e/PH-04/05/06 + /tren/wb-flater til scene #000000; skjermbilde-gate 390px+1280px lys/mørk | Anders har SETT skjermbilder; ingen nye token-familier utenom vedtatt sett; DONE-fil | D3, B4 (D2 løst) | Nei (rører B4-filer) | — |
-| P-T | Plan bølge T: Train-lock-port av hele AgencyOS | Fable 5 | Plan mode | — | Inventarier alle AgencyOS-skjermer mot Train-lock-fasiten, del i sesjoner (én per hub/mal), oppdater denne planen med T-rader | T-bølge-tabell skrevet inn her | Ingen (D1+D2+D3 løst 25.08) | — | Explore |
+| P-T | Plan bølge T: Train-lock-port av hele AgencyOS | Fable 5 | Plan mode | — | Inventarier alle AgencyOS-skjermer mot Train-lock-fasiten, del i sesjoner (én per hub/mal), oppdater denne planen med T-rader | **UTFØRT 25.08** — T1–T13 under + §5T (komplett ruteinventar: 149 ruter = 34 redirect + 115 skjermer) | Ingen (D1+D2+D3 løst 25.08) | — | Explore |
+| T1 | Skall: Agency-rail + dock (5 tabber, «Under Meg») | Sonnet 5 | Build (port, ikke redesign) | worktree fra main | **ULÅST 25.08 kveld (T-S1 endelig avgjort: `AX-01` vinner, ikke AG-00 — se §5T.4).** Én endring i `src/components/v2/shell.tsx`/`V2Shell`: **fem destinasjoner, identisk rekkefølge på Mac og iPhone, aldri en sjette:** Stall · Workbench · Kø · Jarvis · Meg. Mac-rail **232 px** (ikke 64 px), `background #1C1C1E`, `border-right 1px solid #FFFFFF14`, rad 40px/radius 10px, aktiv = tekst `#F5F5F5` på flate `#2C2C2E`, inaktiv `#8E8E93` uten flate; under en divider: uppercase-label «Under Meg» + rader Konsoll · Økonomi · Kalender (34px, mute, ingen ikon); nederst «Åpne AgenticOS». iPhone-dock `#1C1C1E`, hairline topp, 88px, 5 like kolonner (ikon 20px + caps-tekst 10px), aktiv i `#F5F5F5`, Kø-badge `#FF453A`. **Ingen «Mer-ark» lenger** — Meg viser samme Konsoll/Økonomi/Kalender-rader. Fasit: `AX-01 Skall rail og tabbar.dc.html` (11 431 byte, komplett) + `docs/natt/D2-UNDERLAG-2026-08-25.md` §5.6. `AG-00 LOCK.dc.html`/`AG-05 Mer-ark.dc.html` (7 destinasjoner, 64px, Mer-ark) er UTDATERT — ikke bruk. Tokens: `--tl-*`/`TL`. Cockpit/Innboks/Innsikt/Oppsett er IKKE lenger egne tabber — href-mapping for de 5 + plassering av tidligere tab-innhold avgjøres av byggeren, begrunnes i DONE-fila | AX-01-strukturen portet i V2Shell, alle /admin-flater arver; gate: Anders har SETT 390px+1280px i lys OG mørk; verify grønn; DONE-fil | main | Ja (rører kun skallfiler, ikke innholdsskjermer) | Explore |
+| T2 | Cockpit | Sonnet 5 | Build (port) | worktree fra main | Port `/admin/agencyos` til `AG-01 Cockpit.dc.html` (+`AG-01 Cockpit lys`), `AG-02 Cockpit Mac` (desktop full bredde), `AG-14 Cockpit tom`, `AG-15 Cockpit feil` (danger KUN her). Én hvit primær = «Åpne tavle». `/admin/brief` og `/admin/queue` portes IKKE — de står på beslutningslisten §5T (innfletting vs. egen fasit) | Cockpit i TL med tom/feil-tilstander; gate: sett 390+1280, lys+mørk; verify grønn; DONE-fil | main (bølge 1 inne, §0); T1 anbefalt først, ikke krav | Ja med T3/T4/T13 (disjunkte filer, maks 2–3 samtidig) | Explore |
+| T3 | Innboks + godkjenninger | Sonnet 5 | Build (port) | worktree fra main | `/admin/innboks` → `AG-03 Innboks.dc.html` (Merge hvit primær, meldinger-tom-tilstand); `/admin/varsler` flettes inn som filter i samme flate (duplikat i dag); `/admin/godkjenninger` + `/admin/(legacy)/godkjenninger/[id]` → `AG-10 Godkjenning Merge.dc.html` + `AG-10b … 3 skall` (detalj blir inspektørpanel 380, ikke egen rute). `/admin/innboks-epost` og `(legacy)/foresporsler`: beslutningslisten §5T | Innboks + godkjenninger i TL, master–detalj per A2-beslutningen; gate: sett 390+1280, lys+mørk; verify grønn; DONE-fil | main | Ja med T2/T4/T13 | Explore |
+| T4 | Stall + Spiller 360 + fys | Sonnet 5 | Build (port) | worktree fra main | `/admin/spillere` → `AG-04 Stall.dc.html` + `AG-16 iPad Stall split` + `B5 Lys Agency`; `/admin/spillere/[id]` (+ `(legacy)/spillere/[id]/profil` konsolideres til ÉN profil) → `AG-08 Spiller-ark` + `S3-01 Agency Spiller 360 Mac` (+`S3-01L` lys, `S3-02` iPad); `…/fremgang` flettes inn i 360; `…/analyse` → `S3-01` + `Analyse Gapping` + `DG-01 DataGolf spiller`; fys-raden → `FY-01 Fys stall.dc.html` (ACWR mute, aldri rød). Uten fasit (portes etter stall-mønsteret, se §5T): `ny`, `rediger`, `turnering-kobling`, `tester`. Pensjoneringskandidater (§5T): `plan`, `plan/[planId]`, `tildel-test`. PII: legacy-profil har art. 9-skadedata — flyttes, aldri dupliseres | Stall + 360 i TL, én profilvisning igjen; gate: sett 390+1280, lys+mørk; verify grønn; DONE-fil | main | Ja med T2/T3/T13 | Explore |
+| T5 | Workbench-designpass Agency (speiler B8) | Sonnet 5 | Build (port) | worktree fra main | Port `/admin/workbench/[playerId]` (uke/økt/drill/publish — bygget i Paper-tokens i B-sporet) til TL: `A-01 Mac Uke Pro.dc.html` (+`A-01b/c`), `A-01d Publish confirm`, `A-12 iPad Uke`, `A-13 iPhone Agenda`, `A-14 iPhone Okt-ark Filip`, `A-16`/`A-17` (lys), `A-18 Mac Tom uke`, `WB-01`–`WB-03`. Gamle `/admin/spillere/[id]/workbench` (gammel datamodell, måned/år) pensjoneres når C1 har levert måned/år på ny modell — beslutning i §5T | WB-flatene på `--tl-*`/`TL`, scene #000000, én hvit primær = Publiser; gate: sett 390+1280, lys+mørk; verify grønn; DONE-fil | B5+B6 (funksjonen ferdig først) | Nei mot B5/B6 (samme filer); Ja mot T2–T4 | Explore |
+| T6 | Plan-flatene → Plan-hub + Workbench-kilder | Sonnet 5 | Build (port + konsolidering) | worktree fra main | `/admin/planlegge` + `/admin/plans` → `AG-06 Plan-hub.dc.html` (hub: se og velg, én hvit primær «Åpne uke i Workbench»); `plan-templates`-familien (4 ruter) → `A-07 Mac Standard.dc.html`; drill-bibliotek (`(legacy)/drills` + `[id]`) → `A-04 Kilder Ovelsesbank.dc.html` (+`A-04b`) og `A-03 Ny okt modal` + `A-03b/c Ny drill`; `gjennomfore/okter/[id]` → `A-14 iPhone Okt-ark`. Pensjoneringskandidater (Anders, §5T): `plans/[planId]`, `okter`, `gjennomfore`, `drills/forslag`, `teknisk-plan`, `drills/ny`, `drills/[id]/rediger` (overlapp Loop 2S-editor). Tester-tildeling → Workbench TEST-blokker (§5T) | Plan-hub i TL; ingen dobbel planleggingsvei uten beslutning; gate: sett 390+1280, lys+mørk; verify grønn; DONE-fil | T5 + Anders' pensjoneringsliste §5T | Nei mot T5 | Explore |
+| T7 | Kalender + booking-lag | Sonnet 5 | Build (port + konsolidering) | worktree fra main | `/admin/kalender` + `(legacy)/kalender/maned` samles til ÉN kalender: `KA-01 Agency Kalender uke Mac.dc.html` (+`KA-01L` lys), `KA-02 … maned`, `KA-03 … agenda iPhone`, `AG-11 Kalender dag`, `KA-05 … Kollisjon rom`. Booking (`bookinger` + `[id]` + `ny`, `(legacy)/availability`) inn som lag/ark i kalenderen per HANDOFF-MAL (Kalender eier rom/booking). `agencyos/uka` pensjoneres → KA-01 (beslutning §5T). Google-synk røres IKKE (C3-regelen) | Én kalender i TL med lag; gate: sett 390+1280, lys+mørk; verify grønn; DONE-fil | C3 (lag-visningen bygges der først) | Nei mot C3 | Explore |
+| T8 | Grupper | Sonnet 5 | Build (port) | worktree fra main | `/admin/grupper/[id]/workbench` → `WB-08 Gruppeendring og venter.dc.html` + `WB-09 Gruppe og stall.dc.html`; `grupper/[id]/arsplan` → `A-06 Mac Arsplan.dc.html` + `WB-06 Arsplan 3 skall`; `A-10 Mac Stall dag` for gruppedag. Uten fasit (§5T): `grupper`, `grupper/[id]` (medlemsadmin), `timeplan`, `arsplan/skoledata`, `agencyos/ak-stigen` — portes etter mønster, IA bekreftes av Anders. NB: gruppe-workbench bruker `lPhase` (utgått vokabular) — rett etiketter i porten | Gruppe-flatene i TL; gate: sett 390+1280, lys+mørk; verify grønn; DONE-fil | C2 (stall→WB på ny modell) | Ja mot T9/T10 | Explore |
+| T9 | Live + TrackMan Agency | Sonnet 5 | Build (port) | worktree fra main | `/admin/agencyos/live` + `[sessionId]` → `AG-09 Live-tavle.dc.html` + `AG-09b … full` (artefakt, aldri fane; 3 kort side om side Mac, stack telefon); `/admin/trackman` + `[sessionId]` → `TM-06 Agency TrackMan.dc.html` + `TM-10 Tom og agency-preview` (kilde-tag, «simulator som bookbar ressurs: nei»). Pensjoneringskandidater (§5T): `(legacy)/live/[sessionId]/` `active` · `brief` · `summary` (bruker utgåtte M0–M5-labels). `recording` (PII-tung): beslutningslisten | Live-tavle + Agency-TM i TL; gate: sett 390+1280, lys+mørk; verify grønn; DONE-fil | B7 (TM-motor); live-delen kun main | Ja mot T8/T10 | Explore |
+| T10 | Turneringer | Sonnet 5 | Build (port) | worktree fra main | `/admin/tournaments` → `TU-01 Turneringer.dc.html`; `/admin/tournaments/[id]` → `TU-02 Onsoy Open.dc.html`. NB TL-IA: turneringer bor under Analyse (HANDOFF §GAP-1). Verktøyene `dubletter`, `ny`, `turnering-kart`: uten fasit (§5T — `ny` berører beslutningen 04.08 om turneringsplanlegging i Workbench) | Turneringsflatene i TL; gate: sett 390+1280, lys+mørk; verify grønn; DONE-fil | main | Ja mot T8/T9 | Explore |
+| T11 | Innsikt-hub | Sonnet 5 | Build (port) | worktree fra main | `/admin/analyse` → `AG-07 Innsikt-hub.dc.html` + `AG-12 Innsikt stall.dc.html` (push-rader til Spiller 360/DataGolf/TrackMan/Fys/Tester/Økonomi — motorene blandes ALDRI i samme tall); `(legacy)/lag-snitt` flettes inn i AG-12. Uten fasit (§5T): `analysere/compliance`, `reports`, `runder`, `talent/*` (4 ruter), `(legacy)/stats/moderering` | Innsikt-hub i TL med motor-skille; gate: sett 390+1280, lys+mørk; verify grønn; DONE-fil | main; DG/EC-pushrader forutsetter C10 | Ja mot T2–T4 | Explore |
+| T12 | AgenticOS + Jarvis + Caddie | Sonnet 5 | Build (port) | worktree fra main | `/admin/agenticos` + `/admin/agents/[agentId]` → `AO-00 LOCK Run Skills Tilstander.dc.html`, `AO-01 Cockpit ko godkjenning`, `AO-02 Runtimes og Ollama`, `AO-12`-policyen (A3/B1/C3 — warm hake, ALDRI #30D158 i AgenticOS); `/admin/handlingssenter` → `AO-05 Projects og Tasks.dc.html`; Jarvis-merge-flatene fra C6 → `JV-01`–`JV-03`. Caddie-trioen (`agencyos/caddie` + `aktivitet` + `dashbord`): uten fasit, beslutning §5T (Jarvis-destinasjonen i rail-forslaget vs. JV=merge-kø). `(legacy)/workspace/tildelt-meg` pensjoneringskandidat | AgenticOS-flatene i TL per AO-policy; gate: sett 390+1280, lys+mørk; verify grønn; DONE-fil | C6 + C7 (motor + queue først) | Nei mot C6/C7 | Explore |
+| T13 | Oppsett + Meg | Sonnet 5 | Build (port) | worktree fra main | `/admin/settings` → `AG-13 Oppsett.dc.html` + `AG-18 Oppsett-hub.dc.html` (fem rader: Akademi, Varsler, Tilgang og roller, Klubb og steder, Konto — ingen hvit primær, «kjedelig er riktig»); `/admin/team` inn som rad (duplikat med settings?tab=team løses); `/admin/profile` → Meg-mønsteret i `AG-05 Mer-ark.dc.html`. Detaljsider uten egen fasit portes ETTER hub-mønsteret (ikke pixel — listet i §5T): settings/api·calendar·periode-navn·security·tilgang, klubb/innstillinger, `(legacy)/anlegg` (overlapp klubb — konsolider), team/ekstern·inviter, integrasjoner, email-templates ×2, gdpr, audit-log, feillogg, hjelp, `(legacy)/services` | Oppsett-hub + detaljer i TL; gate: sett 390+1280 (hub + minst 3 representative detaljsider), lys+mørk; verify grønn; DONE-fil | main | Ja med T2/T3/T4 | Explore |
 | G1 | Menneskelig smoke bølge 1 | — (Anders + evt. hjelpe-session) | Manuell | preview av release-gren | CLAUDE.md-målsmoken ende-til-ende + LOOP-4-DONE skrives | Alle steg grønne, dokumentert i LOOP-4-DONE | B3–B8 | — | — |
 | M1 | Merge release → main | Sonnet 5 | Build (git) | release-gren | PR mot main, oppsummering + preview-lenke; squash etter Anders' ja; slett stale grener; lukk #575 | main inneholder bølge 1; grener ryddet | G1 + Anders' ja | Nei | — |
 | C1 | Måned/år | Sonnet 5 | Build | worktree fra main | Loop 5 per BOLGE2-doc (klikk dag→uke, ingen redigering i årscelle) | DONE-fil + verify | M1 | Ja | Explore |
@@ -299,6 +312,121 @@ Regler (gjelder alle rader): build = Sonnet 5, ny session, smal prompt, 1 primæ
 
 Første build etter opprydding er **S1 (RLS)** — som påkrevd; ingenting blokkerer farligere.
 (R1 og S1 kan starte samtidig i dag.)
+
+### 5T. T-bølgen — komplett ruteinventar og beslutningsunderlag (P-T, utført 25.08)
+
+Skrevet av P-T (Fable 5, read-only, denne worktree). Grunnlag: alle 149 `page.tsx` under
+`src/app/admin/` kartlagt mot de 177 `.dc.html`-filene i `designsystem/train-lock/`
+(9 parallelle leseagenter + egen verifisering; A-/WB-numre rettet mot faktisk filliste).
+Målt: **0 admin-filer leser `--tl-*`/`TL` i dag; 66 filer leser Paper-tokens (`T.*`).**
+Railen i `V2Shell` er fortsatt fase2-varianten med «Plan» — heller ikke
+«Workbench»-omdøpingen (D2-UNDERLAG §5.3) er implementert.
+
+**Regnskapet: 149 ruter = 34 UTGÅR/REDIRECT (i kode) + 115 skjermruter.**
+Av de 115: **39 HAR FASIT** (fil navngitt i T-radene over), **14 pensjoneringskandidater**
+(IA-en gir jobben til en annen flate — Anders beslutter), **62 uten fasit** (24 i klasse A +
+38 i klasse B under). Hver skjermrute er tildelt én T-rad (eller C10) over — ingen rute er utelatt.
+
+#### 5T.1 UTGÅR/REDIRECT — allerede redirect i kode (34, ingen port nødvendig)
+
+`/admin` → agencyos · `oppfolging` → queue · `finance` → agencyos/okonomi · `approvals`(+`[id]`)
+→ godkjenninger · `talent` + `talent/kohort|ressurser|region|wagr-benchmark` → talent/radar ·
+`organisasjon` → settings · `messages` → innboks · `calendar`(+`maned`) → kalender · `uka` →
+agencyos/uka · `agents` + `agent-team` → agenticos · `workspace/oppgaver` → handlingssenter ·
+`agencyos/spillere` → spillere · `plans/templates`(+`ny`, `[id]/rediger`, `[id]/effectiveness`)
+→ plan-templates · `(legacy)`: `analysere` → analyse, `stall` → spillere, `agenter` → agenticos,
+`kapasitet` → bookinger, `coach-workbench` → planlegge, `okonomi` → agencyos/okonomi,
+`plans/new` → planlegge, `kalender/uke` → dynamisk, `tester/tildel` → tester,
+`plan-templates/[id]/effectiveness` → plan-templates, `caddie` → agencyos/caddie/dashbord
+(`permanentRedirect`). Redirect-målene må oppdateres i takt med T6/T7-pensjoneringene.
+
+#### 5T.2 Pensjoneringskandidater (14) — IA-en gir jobben til en annen flate, Anders beslutter
+
+| Rute | Går inn i | Begrunnelse (IA/HANDOFF-MAL) | T-rad |
+|---|---|---|---|
+| `agencyos/uka` | KA-01-kalenderen | Booking-uke eies av Kalender; duplikat. NB rå `getDay()`-datomatte (gotcha) | T7 |
+| `(legacy)/foresporsler` | Innboks (AG-03) / Kalender | Booking-saker dekkes der | T3 |
+| `spillere/[id]/plan` + `plan/[planId]` | Workbench | Planlegging eies av Workbench; TechnicalPlan har ingen TL-fasit | T4→T6 |
+| `(legacy)/spillere/[id]/tildel-test` | Workbench TEST-blokker | Test-planlegging eies av Workbench; duplikat av tester/tildel | T4→T6 |
+| `plans/[planId]` | Workbench | 494 linjer på gammel plan-modell | T6 |
+| `okter` | A-01 uke / A-10 stall dag | Ukeoversikt tvers av spillere dekkes av Workbench | T6 |
+| `gjennomfore` | AG-11 / KA-03 | Gjennomføring eies av Kalender | T6/T7 |
+| `(legacy)/drills/forslag` | AO-01-køen | AI-forslag samles i AgenticOS-køen (beslutning 04.08) | T6→T12 |
+| `bookinger` (listeflaten) | KA-lag i kalenderen | Kalender eier booking-laget | T7 |
+| `(legacy)/live/[sessionId]/active` | AG-09-flaten | Duplikat av agencyos/live; utgåtte M0–M5-labels | T9 |
+| `(legacy)/live/[sessionId]/brief` | A-14 økt-ark | Økt-forberedelse eies av Workbench | T9 |
+| `(legacy)/workspace/tildelt-meg` | Kø/cockpit «Én ting nå» | Godkjennings-kø samles | T12 |
+| `spillere/[id]/workbench` | Ny Workbench (etter C1) | Gammel datamodell; måned/år kommer på ny modell i C1 | T5 |
+
+#### 5T.3 T-bølge — ruter uten fasit
+
+**Klasse A — detaljnivå under en hub som HAR fasit (24). Portes etter hub-mønsteret
+(AG-13/AG-18 «kjedelig er riktig», KA-underark, stall-mønsteret) — trenger Anders' OK på
+prinsippet, ikke egen fasitfil per skjerm:**
+settings/api · settings/calendar · settings/periode-navn · settings/security ·
+settings/tilgang · klubb/innstillinger · `(legacy)`/anlegg (overlapp klubb — konsolider) ·
+team/ekstern · team/inviter · integrasjoner · email-templates (+`[id]/rediger`) · gdpr ·
+audit-log · feillogg · hjelp · `(legacy)`/services (alle T13) — kalender/hendelse/`[id]` ·
+kalender/hendelse/ny · bookinger/`[id]` · bookinger/ny · `(legacy)`/availability (T7, som
+ark i KA-kalenderen) — spillere/ny · `(legacy)`/spillere/`[id]`/rediger (T4, stall-mønsteret).
+
+**Klasse B — ekte hull (38): ingen fasitfil dekker jobben. Trenger Anders-beslutning
+(tegn fasit · flett inn i navngitt flate · pensjoner):**
+
+| Klynge | Ruter | Anbefaling |
+|---|---|---|
+| Cockpit-nære | `brief`, `queue` | Flett brief inn i AG-01-cockpiten; avklar hvem som eier «Kø»-jobben (se T-S2) |
+| E-post | `innboks-epost` | Egen fasit trengs (AG-03 er saksinnboks, ikke e-postklient). Kunde-PII |
+| Spiller-verktøy | `spillere/[id]/tester`, `spillere/[id]/turnering-kobling` | Tester-resultat → flett i S3-360; turnering-kobling er datavask-verktøy — behold uportert eller minimal TL |
+| Plan | `teknisk-plan`, `drills/ny`, `drills/[id]/rediger` | Avklar mot AG-06/Loop 2S-drill-editoren |
+| Tester (tvers av spillere) | `tester`, `tester/foreslatte`, `(legacy)/tester/benchmarks`, `(legacy)/tester/tildel/[spillerId]` | Tildeling → Workbench TEST-blokker (T6); resultat/benchmarks → Innsikt (T11). Bekreft |
+| Grupper | `grupper`, `grupper/[id]`, `grupper/[id]/timeplan`, `grupper/[id]/arsplan/skoledata`, `agencyos/ak-stigen` | Medlems-/skoleadmin er ikke tegnet; portes etter mønster i T8 med Anders' OK. ak-stigen: PII-nær (juniorer) |
+| Live/opptak | `(legacy)/live/[sessionId]/summary`, `recording` | Summary følger legacy-live-utfasingen; recording er PII-tung (lydopptak) — beslutning før port |
+| Turneringsverktøy | `tournaments/dubletter`, `tournaments/ny`, `turnering-kart` | Verktøy — minimal TL. `ny`: husk beslutningen 04.08 (turneringsplanlegging → Workbench) |
+| Innsikt-hull | `analysere/compliance`, `reports`, `runder`, `(legacy)/stats/moderering` | Kandidater som push-rader under AG-07; reports overlapper EC-01 (C10) |
+| Talent | `talent/radar`, `talent/discovery`, `talent/sammenligning`, `talent/wagr-import` | Ingen TL-fasit for talent-admin. discovery sender navn/HCP til klient (PII-lett). Avklar omfang |
+| Caddie | `agencyos/caddie`, `…/aktivitet`, `…/dashbord` | JV-fasiten er merge-kø, ikke chat. Avklar mot Jarvis-destinasjonen (T-S2) |
+| Interne verktøy | `marketing`, `videoer`, `workspace`, `workspace/notion`, `workspace/prosjekter` | Utenfor coach-kjernen. Beslutning: TL etter mønster, eller lever uportert bak Meg |
+
+Dekket av C-rader (ingen egen T-rad): `agencyos/okonomi` → **C10** (EC-01).
+
+#### 5T.4 T-bølge — åpne spørsmål (stoppet på, ikke valgt stille)
+
+- **T-S1 · RAIL-KONFLIKTEN — ENDELIG AVGJORT 25.08 kveld (Anders, i økt): `AX-01` vinner,
+  ikke AG-00.** Dette OVERSTYRER notatet som sto her tidligere samme kveld (som hadde
+  forkastet AX-01 som «ugyldig, avkuttet fil, 2 809 byte»). Det notatet var selv basert på
+  utdatert informasjon: `Player HQ Train lock (6).zip` (levert 25.08, FØR T-S1 første gang
+  ble skrevet) erstattet den avkuttede `AX-01` med en komplett fil (11 431 byte) — se
+  `docs/natt/D2-UNDERLAG-2026-08-25.md` §5.6, som er fasit for denne beslutningen.
+  **Gjeldende skall: fem destinasjoner — Stall · Workbench · Kø · Jarvis · Meg — identisk
+  rekkefølge på mobil og Mac, aldri en sjette. Konsoll, Økonomi og Kalender er rader under
+  Meg, ikke faner. Mac-rail 232 px med tekst** (ikke 64 px kun-ikon). Både `AG-00 LOCK`
+  (5 på mobil + eget Mer-ark) og de 20+ A-/AG-skjermene (7 destinasjoner, 64 px) er nå
+  UTDATERT — ikke bruk noen av dem som skall-kilde. `beslutninger.md` §A1 trenger samme
+  rettelse (sto med AG-00 som vinner fra den mellomliggende 18:36-beslutningen — rettes i
+  samme økt som denne). **T1 er ulåst** med korrekt spec (raden over oppdatert 25.08 kveld).
+- **T-S2 · Caddie-trioens plassering — FORTSATT ÅPEN, men ikke blokkerende for T1.**
+  Notatet «bortfalt» over var feil (skrevet ut fra premisset at AX-01 tapte — AX-01 vant).
+  Siden Jarvis nå er en av de fem faste tabbene, må Caddie-trioens forhold til
+  Jarvis-destinasjonen fortsatt avklares — se klasse B-tabellen (T12). Dette er en T12-sak,
+  ikke noe T1 (ren skall-porting) trenger svar på.
+- **T-S3 · RYDDET 25.08:** de ukommitterte, delvis stale regelfil-endringene i P-T-worktreet
+  (reverserte mørk default + D2/D3-status, bar den forkastede AX-01-blokken) er forkastet
+  med `git checkout` — backup av diffen ligger i scratchpad. `beslutninger.md`/`gotchas.md`
+  er nå identiske med main pluss den nye A1-bekreftelsen.
+- **T-S4 · §0 vs. P-T-oppdraget:** oppdragsteksten kalte S1/B2 blokkert; planens §0 (med
+  smoke-bevis) sier utført og i main. §0 er lagt til grunn — T-radene avhenger av main,
+  ikke av release-grenen. Hvis §0 er feil, må T-avhengighetene revurderes.
+- **T-S5 · Lys-varianter:** `B5 Lys Agency` dekker bare AG-02/03/04/16, og kun A-16/A-17/
+  P-09/KA-01L finnes ellers. Skjermbilde-gaten krever lys+mørk per skjerm — for skjermer
+  uten tegnet lys-variant avledes lys mekanisk av tokensettet (`--tl-*` lys-verdiene).
+  Bekreft at det er akseptabelt, ellers må lys-skjermer bestilles.
+- **T-S6 · Fasit-tellingen:** kontekstpåstanden «AG-* (21), A-* (26), WB-* (11), AO-* (5)»
+  stemmer med målt filliste (177 `.dc.html` totalt — verifisert). README sier «180
+  skjermfiler» — differansen er støttefiler (HANDOFF/README/SYNC-STATUS/js), ikke manglende
+  skjermer. Ingen fasitfil planen forutsetter mangler, med unntak av AX-01 (ugyldig, T-S1).
+- **Uendret/ikke min beslutning:** Forelder-omfang (T4 i AAPNE-SPORSMAAL), D5 (DataGolf-
+  plassering), D6 — som før.
 
 ---
 
