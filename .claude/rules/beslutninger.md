@@ -61,6 +61,13 @@ Gjelder til Anders endrer dem.
     **«Workbench»**, ikke «Plan» (Anders i økt, jf. `docs/natt/D2-UNDERLAG-2026-08-25.md` §5).
     Rekkefølgen ellers står: Cockpit · Innboks · Kalender · Stall · **Workbench** · Innsikt · Oppsett.
     Railen er dessuten **fast 64 px** — ingen kollapset variant bygges. Resten av A1 gjelder.
+    **Bekreftet på nytt 25.08 (Anders, T-S1 i LAUNCH-PLAN §5T): AG-00-railen over gjelder.**
+    En foreslått AX-01-variant (5 destinasjoner Stall·Workbench·Kø·Jarvis·Meg, Mac-rail
+    232 px med tekst) er **FORKASTET** — `AX-01 Skall rail og tabbar.dc.html` er ugyldig
+    (avkuttet fil, se `designsystem/train-lock/README.md`). Skulle teksten «HELT OVERSTYRT
+    … AX-01 … §5.6» dukke opp i en ukommittert diff eller gammel økt: den er død — det
+    fantes aldri noen §5.6 i D2-UNDERLAG. Look for railen: Train-lock-tokens (`--tl-*`),
+    per invariant 2. T1-porten (V2Shell) er ulåst i `docs/natt/LAUNCH-PLAN-FULL-2026-08-25.md`.
     Opprinnelig tekst: Fase2-fasitenes rail (7 punkter, Cockpit/Stall/Plan…,
     fasitens casing) vinner over fase1-railen/dagens kode. Implementeres én gang i `V2Shell`
     (PP-B1) — alle admin-flater arver. Fase1-fasitenes rail-avvik er dermed avgjort, ikke en

@@ -283,7 +283,7 @@ Regler (gjelder alle rader): build = Sonnet 5, ny session, smal prompt, 1 primæ
 | B7 | Loop 4 — DispersionMap/TM | Sonnet 5 | Build | worktree, gren fra release | TM-08: 1σ-ellipse + én caddie-setning + prikk→slag-ark (TM-11); tom-tilstand TM-10; vurder gjenbruk av `src/lib/gameplan/dispersion.ts` (verifiser matematikken først); PH-01c-kort gated på data | Smoke-målet i CLAUDE.md klikkbart; verify grønn; DONE-fil | B2 (+D3 for pixel) | Ja, med B3/B4 | Explore, validator |
 | B8 | Train-lock design-pass Player | Sonnet 5 | Build (port, ikke redesign) | gren fra release | Bruk `--tl-*`/`TL` (D2 ferdig; mørk default avklart 25.08); port PH-01e/PH-04/05/06 + /tren/wb-flater til scene #000000; skjermbilde-gate 390px+1280px lys/mørk | Anders har SETT skjermbilder; ingen nye token-familier utenom vedtatt sett; DONE-fil | D3, B4 (D2 løst) | Nei (rører B4-filer) | — |
 | P-T | Plan bølge T: Train-lock-port av hele AgencyOS | Fable 5 | Plan mode | — | Inventarier alle AgencyOS-skjermer mot Train-lock-fasiten, del i sesjoner (én per hub/mal), oppdater denne planen med T-rader | **UTFØRT 25.08** — T1–T13 under + §5T (komplett ruteinventar: 149 ruter = 34 redirect + 115 skjermer) | Ingen (D1+D2+D3 løst 25.08) | — | Explore |
-| T1 | Skall: Agency-rail + dock + Meg/Mer-ark | Sonnet 5 | Build (port, ikke redesign) | worktree fra main | Én endring i `src/components/v2/shell.tsx`/`V2Shell`: rail (Mac), dock (iPhone) og Mer/Meg-ark portes til Train-lock. Fasit: `AG-00 LOCK.dc.html` + `AG-05 Mer-ark.dc.html` + HANDOFF §Meny per enhet. **START IKKE før åpent spm. T-S1 (§5T) er avgjort** — rail-strukturen har tre sprikende kilder og `AX-01` i repoet er UGYLDIG (avkuttet, jf. train-lock/README) | Vedtatt rail portet i V2Shell, alle /admin-flater arver; gate: Anders har SETT 390px+1280px i lys OG mørk; verify grønn; DONE-fil | Anders: rail-avklaring T-S1 | Ja (rører kun skallfiler, ikke innholdsskjermer) | Explore |
+| T1 | Skall: Agency-rail + dock + Meg/Mer-ark | Sonnet 5 | Build (port, ikke redesign) | worktree fra main | **ULÅST 25.08 (T-S1 avgjort: AG-00-railen gjelder).** Én endring i `src/components/v2/shell.tsx`/`V2Shell`: Mac-rail 64 px med 7 destinasjoner (Cockpit · Innboks · Kalender · Stall · **Workbench** · Innsikt · Oppsett — merk: dagens kode sier «Plan», skal hete Workbench), aktiv = hvit kvadrat r12, AK-sirkel nederst; iPhone-dock 5 (Cockpit · Innboks · Stall · Kalender · Workbench) + Mer-knapp på Cockpit → ark (Plan, Innsikt, Oppsett, Klubb). Fasit: `AG-00 LOCK.dc.html` + `AG-05 Mer-ark.dc.html` + HANDOFF §Meny per enhet. `AX-01` brukes IKKE (ugyldig, jf. train-lock/README). Tokens: `--tl-*`/`TL` | AG-00-railen portet i V2Shell, alle /admin-flater arver; gate: Anders har SETT 390px+1280px i lys OG mørk; verify grønn; DONE-fil | main | Ja (rører kun skallfiler, ikke innholdsskjermer) | Explore |
 | T2 | Cockpit | Sonnet 5 | Build (port) | worktree fra main | Port `/admin/agencyos` til `AG-01 Cockpit.dc.html` (+`AG-01 Cockpit lys`), `AG-02 Cockpit Mac` (desktop full bredde), `AG-14 Cockpit tom`, `AG-15 Cockpit feil` (danger KUN her). Én hvit primær = «Åpne tavle». `/admin/brief` og `/admin/queue` portes IKKE — de står på beslutningslisten §5T (innfletting vs. egen fasit) | Cockpit i TL med tom/feil-tilstander; gate: sett 390+1280, lys+mørk; verify grønn; DONE-fil | main (bølge 1 inne, §0); T1 anbefalt først, ikke krav | Ja med T3/T4/T13 (disjunkte filer, maks 2–3 samtidig) | Explore |
 | T3 | Innboks + godkjenninger | Sonnet 5 | Build (port) | worktree fra main | `/admin/innboks` → `AG-03 Innboks.dc.html` (Merge hvit primær, meldinger-tom-tilstand); `/admin/varsler` flettes inn som filter i samme flate (duplikat i dag); `/admin/godkjenninger` + `/admin/(legacy)/godkjenninger/[id]` → `AG-10 Godkjenning Merge.dc.html` + `AG-10b … 3 skall` (detalj blir inspektørpanel 380, ikke egen rute). `/admin/innboks-epost` og `(legacy)/foresporsler`: beslutningslisten §5T | Innboks + godkjenninger i TL, master–detalj per A2-beslutningen; gate: sett 390+1280, lys+mørk; verify grønn; DONE-fil | main | Ja med T2/T4/T13 | Explore |
 | T4 | Stall + Spiller 360 + fys | Sonnet 5 | Build (port) | worktree fra main | `/admin/spillere` → `AG-04 Stall.dc.html` + `AG-16 iPad Stall split` + `B5 Lys Agency`; `/admin/spillere/[id]` (+ `(legacy)/spillere/[id]/profil` konsolideres til ÉN profil) → `AG-08 Spiller-ark` + `S3-01 Agency Spiller 360 Mac` (+`S3-01L` lys, `S3-02` iPad); `…/fremgang` flettes inn i 360; `…/analyse` → `S3-01` + `Analyse Gapping` + `DG-01 DataGolf spiller`; fys-raden → `FY-01 Fys stall.dc.html` (ACWR mute, aldri rød). Uten fasit (portes etter stall-mønsteret, se §5T): `ny`, `rediger`, `turnering-kobling`, `tester`. Pensjoneringskandidater (§5T): `plan`, `plan/[planId]`, `tildel-test`. PII: legacy-profil har art. 9-skadedata — flyttes, aldri dupliseres | Stall + 360 i TL, én profilvisning igjen; gate: sett 390+1280, lys+mørk; verify grønn; DONE-fil | main | Ja med T2/T3/T13 | Explore |
@@ -392,24 +392,19 @@ Dekket av C-rader (ingen egen T-rad): `agencyos/okonomi` → **C10** (EC-01).
 
 #### 5T.4 T-bølge — åpne spørsmål (stoppet på, ikke valgt stille)
 
-- **T-S1 · RAIL-KONFLIKTEN (blokkerer T1):** Tre kilder spriker. (a) Committet kanon
-  (`designsystem/train-lock/README` + D2-UNDERLAG §5 spm. 1–2 + D2-TOKENS-DONE + HANDOFF
-  §Meny per enhet): 7 destinasjoner (Cockpit · Innboks · Kalender · Stall · **Workbench** ·
-  Innsikt · Oppsett), fast 64 px, `AX-01` er UGYLDIG (avkuttet fil, 2 809 byte — verifisert)
-  og ny leveranse er bestilt fra Claude Design. (b) **Ukommitterte** endringer i
-  `.claude/rules/beslutninger.md` i P-T-worktreet: «A1 HELT OVERSTYRT 25.08 (kveld)» —
-  AX-01-railen, 5 destinasjoner (Stall · Workbench · Kø · Jarvis · Meg), Mac-rail 232 px med
-  tekst — men refererer «D2-UNDERLAG §5.6» som **ikke finnes** (dokumentet slutter på §5.5).
-  (c) Koden: fase2-railen med «Plan». **Foreslått vinner:** (b) ser ut som Anders' siste ord,
-  men fasitfila den peker på er ødelagt — T1 kan uansett ikke bygges før ny AX-01 er
-  committet ELLER Anders bekrefter (a). Avgjør og rett beslutninger.md i samme slengen.
-- **T-S2 · Hva eier «Kø» og «Jarvis» i ny rail (hvis (b) vinner):** `/admin/queue` er
-  spiller-oppfølgingskø; AO-01/JV-01 er AI-køer; Caddie er chat. Tre kandidater til to
-  destinasjoner — Anders må fordele.
-- **T-S3 · Ukommitterte regel-endringer i P-T-worktreet er delvis STALE:** samme diff som
-  bærer (b) fjerner også mørk-default-beslutningen og D2/D3-levert-status fra
-  `beslutninger.md`/`gotchas.md` — som ER merget i main (PR #586/#587). Diffen må IKKE
-  committes som den er; kun A1-blokken er ny informasjon.
+- **T-S1 · RAIL-KONFLIKTEN — AVGJORT 25.08 (Anders, i økt): AG-00-railen gjelder.**
+  Alternativ (a) vant: 7 destinasjoner (Cockpit · Innboks · Kalender · Stall · **Workbench** ·
+  Innsikt · Oppsett), fast 64 px, fasit `AG-00 LOCK.dc.html` + HANDOFF §Meny per enhet.
+  AX-01-varianten (5 destinasjoner, 232 px) er FORKASTET — `AX-01` er ugyldig (avkuttet fil,
+  2 809 byte — verifisert; jf. train-lock/README). `beslutninger.md` §A1 er rettet med
+  bekreftelsen. **T1 er ulåst** (raden over oppdatert). Historikk: den forkastede varianten
+  sto kun i en ukommittert worktree-diff som refererte en «§5.6» som aldri har eksistert.
+- **T-S2 · BORTFALT** (gjaldt bare hvis AX-01-varianten vant). Caddie-trioens plassering
+  består som egen beslutning i klasse B-tabellen (T12).
+- **T-S3 · RYDDET 25.08:** de ukommitterte, delvis stale regelfil-endringene i P-T-worktreet
+  (reverserte mørk default + D2/D3-status, bar den forkastede AX-01-blokken) er forkastet
+  med `git checkout` — backup av diffen ligger i scratchpad. `beslutninger.md`/`gotchas.md`
+  er nå identiske med main pluss den nye A1-bekreftelsen.
 - **T-S4 · §0 vs. P-T-oppdraget:** oppdragsteksten kalte S1/B2 blokkert; planens §0 (med
   smoke-bevis) sier utført og i main. §0 er lagt til grunn — T-radene avhenger av main,
   ikke av release-grenen. Hvis §0 er feil, må T-avhengighetene revurderes.
