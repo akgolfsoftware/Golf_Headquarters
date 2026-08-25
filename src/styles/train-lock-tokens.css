@@ -64,6 +64,13 @@
      (HANDOFF §MAT + §A-01d, AX-01. Lys-variant er ikke tegnet i fasiten —
      antatt uendret, samme som Paper --p-logo-dot. Se D2-TOKENS-DONE.) */
   --tl-warm: #B85C3D;
+  /* Warn: varsel som IKKE sperrer (publiser med advarsel, «mangler drill»).
+     Navngitt etter Anders' beslutning 25.08 (D2-UNDERLAG §5.1) — fasiten brukte
+     den i 9 filer uten å sette den i token-tabellen. ALDRI generell fargekoding.
+     Samme hex i begge varianter, som --tl-avatar og --tl-warm. */
+  --tl-warn: #FFD60A;
+  /* Warn-kant på pille: `inset 0 0 0 1px var(--tl-warn-hair)` (WB-00). */
+  --tl-warn-hair: #FFD60A5C;
 
   /* ── Farge · signal (SMAL BRUK — se kommentar) ── */
   --tl-danger: #FF3B30;             /* BARE feiltilstander */
@@ -214,6 +221,8 @@ html[data-v2-tema="dark"] {
   --tl-avatar: #B08968;
   --tl-on-avatar: #201409;
   --tl-warm: #B85C3D;
+  --tl-warn: #FFD60A;
+  --tl-warn-hair: #FFD60A5C;
 
   --tl-danger: #FF453A;
   --tl-ok: #30D158;
