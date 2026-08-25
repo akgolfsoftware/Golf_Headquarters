@@ -7,6 +7,9 @@ import {
   erNettoKlasse,
   extractRoundScore,
   golfboxKlasseNavn,
+  sumHoleScores,
+  parseCompetitionClasses,
+  velgBruttoKlasser,
 } from "./golfbox";
 
 test("erNettoKlasse: ender på N / Net / Netto", () => {
@@ -43,6 +46,73 @@ test("extractRoundScore: ActualText (brutto), ikke NetText", () => {
   assert.equal(extractRoundScore({ ResultSum: { NetText: "68", NetValue: 680000 } }), null);
   assert.equal(extractRoundScore(null), null);
   assert.equal(extractRoundScore({}), null);
+});
+
+// Bygg et HoleScores-dict slik GolfBox leverer det (H1..H18 + H-OUT/H-IN).
+function lagHoleScores(scores: (number | null)[]): Record<string, unknown> {
+  const out: Record<string, unknown> = {};
+  scores.forEach((s, i) => {
+    out[`H${i + 1}`] = { Score: s == null ? { Text: null, Value: null } : { Text: String(s), Value: s } };
+  });
+  out["H-OUT"] = { Score: { Text: null, Value: null } };
+  out["H-IN"] = { Score: { Text: null, Value: null } };
+  return out;
+}
+
+test("sumHoleScores: summerer H1–H18, hopper over H-OUT/H-IN", () => {
+  const scores = [4, 3, 5, 3, 5, 4, 2, 5, 4, 6, 3, 4, 4, 4, 4, 4, 5, 3]; // = 72
+  assert.equal(sumHoleScores({ HoleScores: lagHoleScores(scores), IsCompleted: true }), 72);
+});
+
+test("sumHoleScores: ufullstendig runde (hull uten score) → null", () => {
+  const scores = [4, 3, 5, null, 5, 4, 2, 5, 4, 6, 3, 4, 4, 4, 4, 4, 5, 3];
+  assert.equal(sumHoleScores({ HoleScores: lagHoleScores(scores) }), null);
+});
+
+test("sumHoleScores: IsCompleted=false eller manglende data → null", () => {
+  const scores = Array(18).fill(4);
+  assert.equal(sumHoleScores({ HoleScores: lagHoleScores(scores), IsCompleted: false }), null);
+  assert.equal(sumHoleScores({}), null);
+  assert.equal(sumHoleScores(null), null);
+  assert.equal(sumHoleScores({ HoleScores: {} }), null); // < 9 hull
+});
+
+test("extractRoundScore: fallback til hullsum når ResultSum mangler (Olyo/Østlandstour)", () => {
+  const scores = Array(18).fill(4); // = 72
+  assert.equal(extractRoundScore({ HoleScores: lagHoleScores(scores), IsCompleted: true }), 72);
+  // Kun netto i ResultSum + komplette hullscorer → hullsummen er brutto
+  assert.equal(
+    extractRoundScore({
+      ResultSum: { NetText: "68", NetValue: 680000 },
+      HoleScores: lagHoleScores(scores),
+    }),
+    72,
+  );
+});
+
+test("parseCompetitionClasses + velgBruttoKlasser: alle brutto, aldri netto", () => {
+  const raw = {
+    CompetitionData: {
+      Classes: [
+        { Id: 1, Name: "G19 Brutto", ShortName: "G19" },
+        { Id: 2, Name: "G19 Netto", ShortName: "G19N" },
+        { Id: 3, Name: "J19 Brutto", ShortName: "J19", ClassType: "PlayerClass" },
+        { Id: 4, Name: "Jenter 13-15 Netto", ShortName: "J15N" },
+        { Id: 5, Name: "G12-klassen", ShortName: "G12" },
+        { Id: 6, Name: "Lag", ShortName: "LAG", ClassType: "TeamClass" },
+      ],
+    },
+  };
+  const alle = parseCompetitionClasses(raw);
+  assert.equal(alle.length, 6);
+  const brutto = velgBruttoKlasser(alle).map((c) => c.id);
+  assert.deepEqual(brutto, [1, 3, 5]);
+});
+
+test("parseCompetitionClasses: manglende/ugyldig CompetitionData → tom liste", () => {
+  assert.deepEqual(parseCompetitionClasses({}), []);
+  assert.deepEqual(parseCompetitionClasses(null), []);
+  assert.deepEqual(parseCompetitionClasses({ CompetitionData: { Classes: "x" } }), []);
 });
 
 test("golfboxKlasseNavn: Name-felt eller dict-nøkkel", () => {

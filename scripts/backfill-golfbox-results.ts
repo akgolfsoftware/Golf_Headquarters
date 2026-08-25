@@ -11,6 +11,12 @@
  *   npx tsx scripts/backfill-golfbox-results.ts              # dry-run (default) — rapport, ingen skriving
  *   npx tsx scripts/backfill-golfbox-results.ts --apply       # faktisk henting + skriving
  *   npx tsx scripts/backfill-golfbox-results.ts --apply --limit=10   # begrens antall turneringer denne kjøringen
+ *   npx tsx scripts/backfill-golfbox-results.ts --apply --alle       # ALLE COMPLETED, også de med entries
+ *
+ * --alle: re-hent også turneringer som allerede HAR entries. Nødvendig etter
+ * klasse-fiksen 25.08.2026 (getLeaderboard henter nå alle brutto-klasser, ikke
+ * bare GolfBox' default-klasse) — turneringer synket før fiksen mangler jente-
+ * og øvrige ikke-default-klasser selv om de har entries fra default-klassen.
  */
 
 import { PrismaPg } from "@prisma/adapter-pg";
@@ -28,12 +34,17 @@ const prisma = new PrismaClient({ adapter });
 
 const args = process.argv.slice(2);
 const APPLY = args.includes("--apply");
+const ALLE = args.includes("--alle");
 const LIMIT = args.find((a) => a.startsWith("--limit="))
   ? parseInt(args.find((a) => a.startsWith("--limit="))!.split("=")[1], 10)
   : undefined;
 
 async function main(): Promise<void> {
-  console.log("=== GolfBox backfill: COMPLETED-turneringer uten resultater ===");
+  console.log(
+    ALLE
+      ? "=== GolfBox backfill: ALLE COMPLETED-turneringer (også med entries) ==="
+      : "=== GolfBox backfill: COMPLETED-turneringer uten resultater ===",
+  );
   console.log(APPLY ? "MODUS: --apply (skriver til DB)" : "MODUS: dry-run (ingen skriving)");
   if (LIMIT) console.log(`Maks turneringer denne kjøringen: ${LIMIT}`);
   console.log("");
@@ -43,7 +54,7 @@ async function main(): Promise<void> {
       sourceOrigin: { in: [...GOLFBOX_ORIGINS] },
       sourceId: { not: null },
       status: "COMPLETED",
-      publicEntries: { none: {} },
+      ...(ALLE ? {} : { publicEntries: { none: {} } }),
     },
     select: { id: true, name: true, tour: true, sourceId: true, status: true, sourceOrigin: true, endDate: true },
     orderBy: { endDate: "asc" },
