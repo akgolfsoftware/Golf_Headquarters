@@ -62,7 +62,7 @@ export function WeekGrid({ week, selectedSessionId, onSelectSession, onCreateAt 
             {UI.emptyWeekTitle}
           </span>
           <span style={{ fontFamily: T.ui, fontSize: 12.5, color: T.fg2 }}>
-            Klikk i uka for å legge inn en økt.
+            {UI.emptyWeekHint}
           </span>
         </div>
       )}

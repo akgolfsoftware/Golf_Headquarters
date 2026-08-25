@@ -39,7 +39,9 @@ import {
   BlockTypeSchema,
   EnvironmentSchema,
   IsoDateSchema,
+  MoveSessionInputSchema,
   PyramidAreaSchema,
+  ReorderDrillsInputSchema,
 } from "@/lib/domain/workbench/schemas";
 import {
   SPILLER_SYNLIGE_STATUSER,
@@ -372,21 +374,23 @@ export async function moveSession(input: {
   newStartMinute: number;
   newDurationMinutes?: number;
 }): Promise<WbResultat<WorkbenchSession>> {
-  const dato = IsoDateSchema.safeParse(input.newDate);
-  if (!dato.success) return { ok: false, error: "Ugyldig dato." };
+  const parsed = MoveSessionInputSchema.safeParse(input);
+  if (!parsed.success) {
+    return { ok: false, error: parsed.error.issues[0]?.message ?? "Ugyldig flytting." };
+  }
 
-  const treff = await hentMedTilgang(input.sessionId);
+  const treff = await hentMedTilgang(parsed.data.sessionId);
   if ("feil" in treff) return { ok: false, error: treff.feil };
 
   const flyttet = moveSessionPure(mapSession(treff.row), {
-    sessionId: input.sessionId,
-    newDate: dato.data,
-    newStartMinute: input.newStartMinute,
-    newDurationMinutes: input.newDurationMinutes,
+    sessionId: parsed.data.sessionId,
+    newDate: parsed.data.newDate,
+    newStartMinute: parsed.data.newStartMinute,
+    newDurationMinutes: parsed.data.newDurationMinutes,
   });
 
   await prisma.workbenchSession.update({
-    where: { id: input.sessionId },
+    where: { id: parsed.data.sessionId },
     data: {
       date: tilDatoKolonne(flyttet.date),
       startMinute: flyttet.startMinute,
@@ -394,7 +398,7 @@ export async function moveSession(input: {
     },
   });
 
-  return lagreOgHent(input.sessionId);
+  return lagreOgHent(parsed.data.sessionId);
 }
 
 /** Publiser et utvalg økter — dette er øyeblikket spilleren ser dem. */
@@ -502,12 +506,17 @@ export async function reorderDrills(input: {
   sessionId: string;
   orderedDrillIds: string[];
 }): Promise<WbResultat<WorkbenchSession>> {
-  const treff = await hentMedTilgang(input.sessionId);
+  const parsed = ReorderDrillsInputSchema.safeParse(input);
+  if (!parsed.success) {
+    return { ok: false, error: parsed.error.issues[0]?.message ?? "Ugyldig rekkefølge." };
+  }
+
+  const treff = await hentMedTilgang(parsed.data.sessionId);
   if ("feil" in treff) return { ok: false, error: treff.feil };
 
   const neste = reorderDrillsPure(mapSession(treff.row), {
-    sessionId: input.sessionId,
-    orderedDrillIds: input.orderedDrillIds,
+    sessionId: parsed.data.sessionId,
+    orderedDrillIds: parsed.data.orderedDrillIds,
   });
 
   await prisma.$transaction(
@@ -519,7 +528,7 @@ export async function reorderDrills(input: {
     ),
   );
 
-  return lagreOgHent(input.sessionId);
+  return lagreOgHent(parsed.data.sessionId);
 }
 
 /** Fjern én øvelse og reindekser resten. */

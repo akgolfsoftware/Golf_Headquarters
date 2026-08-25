@@ -96,7 +96,10 @@ export const UI = {
   // Empty
   emptyWeekTitle: "Ingen økter denne uken",
   emptyWeekBody: "Opprett en økt eller dra inn fra kilder til venstre.",
+  emptyWeekHint: "Klikk i uka for å legge inn en økt.",
   emptySources: "Ingen kilder å vise",
+  emptySourcesTitle: "Ingen kilder lastet",
+  emptySourcesBody: "Øvelsesbank og maler kobles på senere.",
   emptyDrills: "Ingen drills ennå — legg til fra kilder eller lag ny.",
 
   // Inspector
@@ -125,7 +128,13 @@ export const UI = {
   publishConfirmBody:
     "Økten blir synlig i spillerens «I dag» og plan. Du kan trekke den tilbake senere.",
   publishSuccess: "Publisert",
+  publishing: "Publiserer …",
   alreadyPublished: "Allerede publisert",
+  publishTodayWarnOne:
+    "Én av øktene er i dag og dukker opp i spillerens «I dag» med en gang.",
+  publishTodayWarnMany: (antall: number) =>
+    `${antall} av øktene er i dag og dukker opp i spillerens «I dag» med en gang.`,
+  publishOverlapWarnTitle: "Overlapp i valgte økter",
 
   // Budget
   budgetLabel: (plannedH: string, targetH: string) =>
@@ -153,6 +162,42 @@ export const UI = {
   sessionCompletedTitle: "Økt fullført",
   sessionSkippedTitle: "Hoppet over",
   backToToday: "Tilbake til I dag",
+
+  // Ny økt-skjema
+  createSessionBody: "Økten lagres som utkast. Den er kun synlig for deg til du publiserer.",
+  titleField: "Tittel",
+  titlePlaceholder: "F.eks. Wedge 60–100 m",
+  dateField: "Dato",
+  titleRequired: "Økten må ha en tittel.",
+  invalidStartTime: "Ugyldig starttidspunkt.",
+  creating: "Oppretter …",
+  create: "Opprett",
+
+  // Feiltilstand
+  weekFetchErrorTitle: "Kunne ikke hente uka",
+  retry: "Prøv igjen",
+  unknownError: "Noe gikk galt. Prøv igjen.",
+
+  // Toasts (WorkbenchUke)
+  toastSessionMoved: "Økten er flyttet",
+  toastSessionDeleted: "Økten er slettet",
+  toastDrillAdded: "Øvelse lagt til",
+  toastDrillRemoved: "Øvelsen er fjernet",
+  toastUnpublished: "Trukket tilbake — spilleren ser den ikke lenger",
+  toastDraftCreated: "Utkast opprettet — kun synlig for deg",
+  toastPublishedOne: "1 økt publisert",
+  toastPublishedMany: (antall: number) => `${antall} økter publisert`,
+
+  // Inspektør — tomt/lagre-tilstand
+  inspectorEmptyBody: "Velg en økt i uka for å se og endre den.",
+  saving: "Lagrer …",
+  dateLabel: "Dato",
+  timeLabel: "Tid",
+  sessionAboutLabel: "Om økten",
+  durationValueLabel: "Varer",
+
+  // Fallback
+  unnamedPlayer: "Spiller",
 } as const;
 
 export function formatMinutes(m: number): string {

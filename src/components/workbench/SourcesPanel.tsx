@@ -48,10 +48,10 @@ export function SourcesPanel({ kilder }: Props) {
           <Icon name="layers" size={14} style={{ color: T.mut, marginTop: 2 }} />
           <div>
             <div style={{ fontFamily: T.ui, fontSize: 12.5, color: T.fg2 }}>
-              Ingen kilder lastet
+              {UI.emptySourcesTitle}
             </div>
             <div style={{ fontFamily: T.ui, fontSize: 11.5, color: T.mut, marginTop: 3 }}>
-              Øvelsesbank og maler kobles på senere.
+              {UI.emptySourcesBody}
             </div>
           </div>
         </div>
