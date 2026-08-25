@@ -193,9 +193,9 @@ Funksjon: mot kode. Design: mot invariant-tekst + beskrivelser (fasit-zip mangle
 | A-18 tom uke | Agency | DONE | MATCH mot beskrivelse | — |
 | PH-01e «I dag» fire tilstander | Player | PARTIAL | FEIL² | Ekte «I dag» (PortalChatHjem) kaller ALDRI loadPlayerDay — /portal/tren/wb er midlertidig parallell-liste med 3 av 4 tilstander (mangler hvile + pågår-hero). Loop 3 → B4. ²Scene = Paper-tokens, ikke #000000 |
 | PH-01c TrackMan-kort under Nå | Player | NOT STARTED | MANGLER FASIT | B7 (etter Loop 4-motor) |
-| PH-04 / P-02 økt-ark | Player | DONE (isolert) | FEIL² | Nås kun via midlertidig rute; scene ikke Train-lock → B4 + D2 |
+| PH-04 / P-02 økt-ark | Player | DONE (isolert) | FEIL² | Nås kun via midlertidig rute; scene ikke Train-lock → B4 + B8 |
 | PH-05 start-artefakt | Player | PARTIAL | FEIL² | IN_PROGRESS er CTA-bytte, ikke egen artefakt-tilstand → B4 |
-| PH-06 ferdig-artefakt | Player | DONE | DELVIS | Warm hake #B85C3D korrekt, ingen #30D158-brudd; scene-avvik → D2 |
+| PH-06 ferdig-artefakt | Player | DONE | DELVIS | Warm hake #B85C3D korrekt, ingen #30D158-brudd; scene-avvik → B8 |
 | P-06 / P-07 | Player | UKJENT | MANGLER FASIT | Kun nevnt i «økt er atomet»-listen; avklares når zip foreligger |
 | TM-07/08/08f/10/11 (DispersionMap, KPI, findings, slag-ark) | Player | NOT STARTED | MANGLER FASIT | Loop 4 → B7. Eldre motor `src/lib/gameplan/dispersion.ts` finnes — gjenbruk IKKE verifisert |
 | A-17 lys-variant | begge | NOT STARTED | MANGLER FASIT | Bølge 2 lys-pass → C8 |
@@ -224,7 +224,7 @@ Funksjon: mot kode. Design: mot invariant-tekst + beskrivelser (fasit-zip mangle
 | Auth/IDOR | DONE for workbench (verifisert alle actions) | — |
 | RLS workbench_* | KODE KLAR på egen gren, IKKE kjørt mot prod | S1 |
 | Feiltilstander (4 tilstander + sonner, norsk) | DELVIS | admin-ruten mangler loading/error.tsx; PH-01e mangler hvile/pågår; copy delvis hardkodet utenfor labels | B3/B4 |
-| Tokens Player=Train-lock | **IKKE OPPFYLT** | Train-lock-tokens finnes ikke i kode; Player-wb-flater bruker Paper-tokens | D2 + B8 |
+| Tokens Player=Train-lock | **DELVIS** | Tokensettet er i kode (D2 løst 25.08, `--tl-*`); Player-wb-flater bruker fortsatt Paper-tokens til B8 har portert dem | B8 |
 | Vokabular (etiketter, ikke lås) | DONE | vokabular-planlegging er fasit; ingen treningsregler gjeninnført | — |
 | Secrets | DONE | .env-mønsteret fulgt; beskytt-hook aktiv | — |
 | Main-merge kun etter menneske-ja | DONE (regel) | Ingenting av natt-arbeidet er merget ennå | — |
@@ -261,7 +261,7 @@ Avhengighetsgraf (tekst):
 - B7 (Loop 4 TM/DispersionMap) avhenger av B2; ellers uavhengig av B3–B6 → parallell OK.
 - B8 (Train-lock design-pass på Player-flatene) BLOKKERT av D3 (fasit-zip) + D1; kjøres etter B4.
 - C1–C10 gates av natt-planens egen regel: bølge 1-smoke dokumentert grønn (LOOP-4-DONE + menneskelig klikk). Innbyrdes: C4 og C9 avhenger av B4 (I dag/artefakt-lag); C2 av B2; C8 av C4+C5 (flatene må finnes); C10 delvis blokkert av Anders-beslutning (PORTPLAN §A1.1). C1, C3, C5, C6, C7 er innbyrdes parallelle (disjunkte filområder) — maks 2–3 samtidig per forbruksreglene.
-- Beslutninger (Anders, blokkerer merket arbeid): **D1 LØST 25.08** — Train-lock for ALLE skjermer i PlayerHQ og AgencyOS (koden som bruker Paper er nå avvik som skal portes, bølge T); **D2** Train-lock-tokens: definer scene-/tokensett i kode (én kilde) før B8/bølge T; **D3 LØST 25.08** — zip committet som `designsystem/train-lock/` (dekker også Agency); **D4 LØST 25.08** — presedenssetningen rettet i CLAUDE.md/ak-master (design: Train-lock + docs/natt vinner alltid); **D5** PORTPLAN §A1.1 (DataGolf-plassering); **D6** skjebnen til plan-treningsplanlegging-til-kode (supersedert eller egen fase).
+- Beslutninger (Anders, blokkerer merket arbeid): **D1 LØST 25.08** — Train-lock for ALLE skjermer i PlayerHQ og AgencyOS (koden som bruker Paper er nå avvik som skal portes, bølge T); **D2 LØST 25.08 (PR #586)** — tokensettet er i kode (`src/styles/train-lock-tokens.css` + `src/lib/v2/train-lock.ts`); se `docs/natt/D2-TOKENS-DONE.md` for kilder og ti åpne spørsmål, der **nr. 1 (mørk som default på /portal og /admin) fortsatt trenger Anders' svar** før B8; **D3 LØST 25.08** — zip committet som `designsystem/train-lock/` (dekker også Agency); **D4 LØST 25.08** — presedenssetningen rettet i CLAUDE.md/ak-master (design: Train-lock + docs/natt vinner alltid); **D5** PORTPLAN §A1.1 (DataGolf-plassering); **D6** skjebnen til plan-treningsplanlegging-til-kode (supersedert eller egen fase).
 
 Parallellisering med worktree er trygg kun ved disjunkte filområder — merk gotcha «Annen økts worktree kan forsvinne» og «Delt utsjekk: parallell økt kaprer gren»: én gren per session, aldri delt utsjekk.
 
@@ -281,8 +281,8 @@ Regler (gjelder alle rader): build = Sonnet 5, ny session, smal prompt, 1 primæ
 | B5 | Loop 2T — kilder, drag, serie | Sonnet 5 | Build | gren fra release | loadSources ekte innhold (øvelsesbank/maler/forrige uke); drag fra kilder→uke; serie (gjenta + endre-policy) inkl. additiv DDL via kirurgisk db execute-script (ALDRI migrate/push/deploy — gotchas) | Verify grønn; serie-økter opprettes/endres per policy; DONE-fil | B3 (samme filer) | Nei mot B3; Ja mot B4/B7 | Explore, validator |
 | B6 | Loop 3T — godta/avvis + ikke delta | Sonnet 5 | Build | gren fra release | resolvePlayerApproval ekte; UI spiller (godta/avvis) + agency-visning (A-09/WB-10); hiddenByPlayer additiv DDL + filter; aldri #30D158 utenom Godta | Flyt klikkbar begge sider; DRAFT-invariant intakt; verify grønn; DONE-fil | B4 | Ja mot B5/B7 | Explore |
 | B7 | Loop 4 — DispersionMap/TM | Sonnet 5 | Build | worktree, gren fra release | TM-08: 1σ-ellipse + én caddie-setning + prikk→slag-ark (TM-11); tom-tilstand TM-10; vurder gjenbruk av `src/lib/gameplan/dispersion.ts` (verifiser matematikken først); PH-01c-kort gated på data | Smoke-målet i CLAUDE.md klikkbart; verify grønn; DONE-fil | B2 (+D3 for pixel) | Ja, med B3/B4 | Explore, validator |
-| B8 | Train-lock design-pass Player | Sonnet 5 | Build (port, ikke redesign) | gren fra release | Definer Train-lock-tokens (D2) som scope-tokens; port PH-01e/PH-04/05/06 + /tren/wb-flater til scene #000000; skjermbilde-gate 390px+1280px lys/mørk | Anders har SETT skjermbilder; ingen nye token-familier utenom vedtatt sett; DONE-fil | D2+D3, B4 | Nei (rører B4-filer) | — |
-| P-T | Plan bølge T: Train-lock-port av hele AgencyOS | Fable 5 | Plan mode | — | Når D2+D3 er levert: inventarier alle AgencyOS-skjermer mot Train-lock-fasiten, del i sesjoner (én per hub/mal), oppdater denne planen med T-rader | T-bølge-tabell skrevet inn her | D2+D3 (D1 løst 25.08) | — | Explore |
+| B8 | Train-lock design-pass Player | Sonnet 5 | Build (port, ikke redesign) | gren fra release | Bruk `--tl-*`/`TL` (D2 ferdig); avklar først åpent spørsmål 1 i D2-TOKENS-DONE (mørk default) med Anders; port PH-01e/PH-04/05/06 + /tren/wb-flater til scene #000000; skjermbilde-gate 390px+1280px lys/mørk | Anders har SETT skjermbilder; ingen nye token-familier utenom vedtatt sett; DONE-fil | D3, B4 (D2 løst) | Nei (rører B4-filer) | — |
+| P-T | Plan bølge T: Train-lock-port av hele AgencyOS | Fable 5 | Plan mode | — | Inventarier alle AgencyOS-skjermer mot Train-lock-fasiten, del i sesjoner (én per hub/mal), oppdater denne planen med T-rader | T-bølge-tabell skrevet inn her | Ingen (D1+D2+D3 løst 25.08) | — | Explore |
 | G1 | Menneskelig smoke bølge 1 | — (Anders + evt. hjelpe-session) | Manuell | preview av release-gren | CLAUDE.md-målsmoken ende-til-ende + LOOP-4-DONE skrives | Alle steg grønne, dokumentert i LOOP-4-DONE | B3–B8 | — | — |
 | M1 | Merge release → main | Sonnet 5 | Build (git) | release-gren | PR mot main, oppsummering + preview-lenke; squash etter Anders' ja; slett stale grener; lukk #575 | main inneholder bølge 1; grener ryddet | G1 + Anders' ja | Nei | — |
 | C1 | Måned/år | Sonnet 5 | Build | worktree fra main | Loop 5 per BOLGE2-doc (klikk dag→uke, ingen redigering i årscelle) | DONE-fil + verify | M1 | Ja | Explore |

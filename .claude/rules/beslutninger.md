@@ -23,9 +23,11 @@ Gjelder til Anders endrer dem.
   PAPER VINNER ALLTID» (05.08) og look/palett-delene av PP-A (16.08) — PP-A sine
   IA-/strukturbeslutninger (A1 rail-struktur, A2 master–detalj-mønsteret, desktop=fasitens
   visning, landscape-overlay) står inntil Train-lock-fasiten sier noe annet. Skjermbilde-gaten
-  (04.08) og «Enkelhet/færrest trykk» gjelder uendret. Åpne forutsetninger: Train-lock-tokens
-  er ikke definert i kode, og fasit-zipen («Player HQ Train lock.zip» + ev. Agency-varianter)
-  er ikke committet — se `docs/natt/LAUNCH-PLAN-FULL-2026-08-25.md` D2/D3. Marketing/
+  (04.08) og «Enkelhet/færrest trykk» gjelder uendret. **Begge forutsetningene er levert 25.08:**
+  fasiten ligger i `designsystem/train-lock/` (D3, 180 skjermer), og tokensettet i kode
+  (D2, PR #586) — `src/styles/train-lock-tokens.css` + `src/lib/v2/train-lock.ts`, med kilder
+  og ti åpne spørsmål i `docs/natt/D2-TOKENS-DONE.md`. Selve skjermporten gjenstår (B8 +
+  bølge T), og mørk-som-default er fortsatt uavklart (åpent spørsmål 1 der). Marketing/
   landingssider beholder egen fasit (ak-golf-website). Forelder-portalens omfang: uavklart,
   spør Anders. Konfliktregel: sier et dokument/skill noe annet enn Train-lock for
   produktflatene, vinner Train-lock — og dokumentet rettes.

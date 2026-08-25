@@ -60,8 +60,14 @@ Bølge 2 (måned/år, stall, kalender uten Google, tester-live, runde-live, Jarv
    - **AgencyOS:** Train-lock — alle skjermer. Eksisterende Paper-porterte admin-flater er
      dermed *avvik som skal portes*, ikke fasit. Paper (`designsystem/paper/`) er
      historikk/arkiv, aldri bygg-fasit.
-   - Åpen forutsetning: Train-lock-tokens er ikke definert i `src/` ennå (LAUNCH-PLAN D2).
-     Marketing/landingssider har egen fasit (ak-golf-website) og omfattes ikke.
+   - **Tokens finnes i kode (D2 løst 25.08, PR #586):** `src/styles/train-lock-tokens.css`
+     (`--tl-*`) med TS-speil `src/lib/v2/train-lock.ts` (`TL`, `TL_BREKK`). Bruk dem —
+     bland aldri `T.*` (Paper, utgående) og `TL.*` i samme skjerm. Tokenene ligger lys på
+     `:root` og mørk på `html[data-v2-tema="dark"]` (samme mekanisme som Paper, ingen ny).
+     **NB:** appen gir dermed fortsatt *lys* default på `/portal` og `/admin`, mens fasiten
+     sier mørk — å snu det er en rute-endring, se åpent spørsmål 1 i
+     `docs/natt/D2-TOKENS-DONE.md`. Selve skjermporten gjenstår (B8 = Player, bølge T =
+     AgencyOS). Marketing/landingssider har egen fasit (ak-golf-website) og omfattes ikke.
    - Ingen nye tokens / parallelle designsystemer uten Anders' ja.
    - Fullført = warm `#B85C3D` + hake. `#30D158` **kun** Godta / PUBLISERT-merke.
 3. **DRAFT er usynlig for spiller.** `loadPlayerDay` returnerer kun PUBLISHED | IN_PROGRESS | COMPLETED.
