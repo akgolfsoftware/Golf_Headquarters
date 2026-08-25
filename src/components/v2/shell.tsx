@@ -869,78 +869,136 @@ function BunnNavLenker({ aktiv, nav, mer }: { aktiv?: string; nav: V2NavItem[]; 
   );
 }
 
-/* M1 (17. juli, godkjent): AgencyOS mobil-bunn-nav. Fire kuraterte hovedseksjoner
-   + «Mer» — samme tommelvennlige mønster som PlayerHQ-BunnNav (BunnNavLenker),
-   men «Mer» åpner en FULL-HØYDE skuff (kandidat A) med resten av seksjonene +
-   AGENCYOS_ROM (fem rom), så hele coach-flaten er nåbar. Mørkt tema beholdes
-   (V2Shell holder AgencyOS mørk/lys via cookie som før). PlayerHQ-mobilen bruker
-   fortsatt BunnNavLenker uendret. */
-/* Fem flater i bunn-nav, og fasiten (agencyos-konsoll-mobil.html §BUNNFANER)
-   sier hvilke fem: Konsoll · Innboks · Spillere · Kalender · WORKBENCH.
-   Signeringen 12.08: «Workbench synlig i navigasjonen i stedet for Mer».
-   Workbench lå i «Mer»-skuffen — planlegging, coachens mest brukte flate, var
-   to trykk unna på telefon.
-   «Mer» er beholdt som en SMAL, ikon-bare overflyt til høyre for de fem: fasiten
-   har ingen slik knapp fordi den ikke har AgenticOS/Økonomi/Innstillinger/rom å
-   ta vare på — appen har det, og uten knappen ville de flatene vært uten vei inn
-   på mobil. Fjernes den, må rommene få en annen inngang først. */
+/* T1 (25.08, Train-lock skall-port): AgencyOS mobil-dock — AG-00 K1 "Agency-dock
+   iPhone — 5 faner, aldri sjette". Fem faste kolonner (Cockpit · Innboks · Stall ·
+   Kalender · Workbench), likt bredde, aktiv = hvit pille m/ ikon+caps, inaktiv =
+   outline-ikon 17 + caps 9 mute. Erstatter den gamle 5+1-Paper-doken
+   (AgencyBunnNav) som hadde en sjette ikon-bare «Mer»-kolonne — fasiten tillater
+   ALDRI en sjette dock-kolonne, «Mer» er en EGEN knapp i toppen (AG-05).
+
+   Rekkefølgen er kanonisk fra HANDOFF §Meny per enhet / AG-00 K1 og uendret fra
+   den gamle AGENCY_MOBIL_PRIMÆR: Cockpit · Innboks · Stall · Kalender · Workbench.
+   Workbench er fortsatt WORKBENCH_ITEM (egen fasit, ikke i AGENCYOS_NAV etter A1). */
 const AGENCY_MOBIL_PRIMÆR = ["cockpit", "innboks", "spillere", "kalender", "workbench"];
 
-function AgencyBunnNav({ aktiv, nav, mer, rom }: { aktiv?: string; nav: V2NavItem[]; mer?: V2NavGruppe[]; rom?: V2Rom[] }) {
-  const [skuffOpen, setSkuffOpen] = useState(false);
+/**
+ * Mer-knapp i toppen (AG-05: «'…'-knapp» ved siden av sidetittelen på Cockpit).
+ * Shell.tsx eier ikke sideinnhold/-header, så knappen kan ikke bo inni Cockpit-
+ * sidens H1-rad uten å porte en innholdsskjerm (anti-scope). Den flyttes derfor
+ * til en global, flytende TL-knapp øverst til høyre — synlig og lik på ALLE
+ * AgencyOS-mobilskjermer (ikke bare Cockpit), som er en bevisst, dokumentert
+ * avvik fra fasitens side-lokale plassering. Se docs/natt/LOOP-T1-DONE.md.
+ */
+function AgencyMerKnappTL({ apen, onClick }: { apen: boolean; onClick: () => void }) {
+  return (
+    <button
+      onClick={onClick}
+      aria-haspopup="menu"
+      aria-expanded={apen}
+      aria-label="Mer — Plan, Innsikt, Oppsett og rommene"
+      className="flex md:hidden v2-press"
+      style={{
+        position: "fixed",
+        top: "calc(12px + env(safe-area-inset-top))",
+        right: 16,
+        zIndex: 41,
+        width: 44,
+        height: 44,
+        borderRadius: "50%",
+        background: TL.elev,
+        border: 0,
+        cursor: "pointer",
+        alignItems: "center",
+        justifyContent: "center",
+        color: TL.text,
+      }}
+    >
+      <Icon name="more-horizontal" size={18} style={{ color: TL.text }} strokeWidth={2} />
+    </button>
+  );
+}
+
+/** Agency-dock — AG-00 K1: 358 bred pille 64 h, 5 like kolonner. */
+function TrainLockAgencyDock({ aktiv, nav, rom }: { aktiv?: string; nav: V2NavItem[]; rom?: V2Rom[] }) {
+  const [merOpen, setMerOpen] = useState(false);
   // Primærseksjoner i kanonisk rekkefølge; hopp over det som ikke finnes i nav-en.
-  // Workbench er fast femte fane per mobil-fasiten (signert 12.08) selv om den
-  // ikke lenger står i desktop-railen (A1 2026-08-16) — hentes fra WORKBENCH_ITEM.
+  // Workbench er fast femte fane per mobil-fasiten selv om den ikke lenger står
+  // i desktop-railen (A1 2026-08-16) — hentes fra WORKBENCH_ITEM.
   const primær = AGENCY_MOBIL_PRIMÆR
     .map((id) => nav.find((n) => n.id === id) ?? (id === "workbench" ? WORKBENCH_ITEM : undefined))
     .filter((n): n is V2NavItem => n != null);
-  const primærIds = new Set(primær.map((n) => n.id));
-  // Alt annet i hovednav-en legges øverst i skuffen — ingen seksjon faller bort.
-  const resten = nav.filter((n) => !primærIds.has(n.id));
-  const skuffGrupper: V2NavGruppe[] = [
-    ...(resten.length > 0 ? [{ label: "Seksjoner", items: resten }] : []),
-    ...(mer ?? []),
-  ];
 
   return (
     <>
+      <AgencyMerKnappTL apen={merOpen} onClick={() => setMerOpen(true)} />
       <nav
         className="flex md:hidden"
         data-paper-faner="agency"
-        style={{ position: "fixed", bottom: 0, left: 0, right: 0, zIndex: 40, justifyContent: "space-around", padding: "6px 4px calc(10px + env(safe-area-inset-bottom) + var(--ak-cookie-h, 0px))", borderTop: `1px solid ${T.farge.kremA8}`, background: T.rail }}
+        style={{
+          position: "fixed",
+          bottom: 0,
+          left: 0,
+          right: 0,
+          zIndex: 40,
+          display: "flex",
+          justifyContent: "center",
+          padding: `0 16px calc(${TL.skall.dockLift} + env(safe-area-inset-bottom) + var(--ak-cookie-h, 0px))`,
+        }}
         aria-label="Hovedmeny"
       >
-        {primær.map((n) => {
-          const on = aktiv === n.id;
-          const badge = typeof n.badge === "number" && n.badge > 0 ? n.badge : null;
-          return (
-            <Link
-              key={n.id}
-              href={n.href}
-              aria-current={on ? "page" : undefined}
-              aria-label={badge ? `${n.label}, ${badge} i kø` : n.label}
-              className="v2-press"
-              style={{ flex: 1, minHeight: 56, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 3, padding: "4px 0", color: on ? T.railOn : T.railFg, textDecoration: "none", position: "relative" }}
-            >
-              {on && (
-                <span aria-hidden style={{ position: "absolute", top: 0, left: "24%", right: "24%", height: 2, borderRadius: 999, background: T.railOn }} />
-              )}
-              <span style={{ position: "relative", display: "inline-flex" }}>
-                <Icon name={n.icon} size={20} strokeWidth={on ? 2 : 1.5} />
+        <div
+          style={{
+            width: TL.skall.dockW,
+            maxWidth: "100%",
+            height: TL.skall.dockH,
+            background: TL.dock,
+            borderRadius: TL.radius.pill,
+            display: "flex",
+            alignItems: "center",
+            padding: TL.skall.dockPad,
+            gap: 2,
+          }}
+        >
+          {primær.map((n) => {
+            const on = aktiv === n.id;
+            const badge = typeof n.badge === "number" && n.badge > 0 ? n.badge : null;
+            return (
+              <Link
+                key={n.id}
+                href={n.href}
+                aria-current={on ? "page" : undefined}
+                aria-label={badge ? `${n.label}, ${badge} i kø` : n.label}
+                className="v2-press"
+                style={{
+                  flex: 1,
+                  minWidth: 0,
+                  height: 48,
+                  borderRadius: TL.radius.pill,
+                  background: on ? TL.fill : "transparent",
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: 2,
+                  textDecoration: "none",
+                  position: "relative",
+                }}
+              >
+                <Icon name={n.icon} size={on ? 16 : 17} style={{ color: on ? TL.onFill : TL.mute }} strokeWidth={2} />
                 {badge != null && (
                   <span
                     aria-hidden
                     style={{
                       position: "absolute",
-                      top: -4,
-                      right: -10,
+                      top: 2,
+                      right: "18%",
                       minWidth: 14,
                       height: 14,
                       padding: "0 3px",
                       borderRadius: 999,
-                      background: T.handling,
-                      color: T.onHandling,
-                      fontFamily: T.mono,
+                      background: TL.warm,
+                      color: TL.onFill,
+                      fontFamily: TL.font.mono,
                       fontSize: 8,
                       fontWeight: 700,
                       lineHeight: "14px",
@@ -950,24 +1008,118 @@ function AgencyBunnNav({ aktiv, nav, mer, rom }: { aktiv?: string; nav: V2NavIte
                     {badge > 99 ? "99+" : badge}
                   </span>
                 )}
-              </span>
-              <span style={{ fontFamily: T.ui, fontSize: 10, fontWeight: 500 }}>{n.label}</span>
-            </Link>
-          );
-        })}
-        <button
-          onClick={() => setSkuffOpen(true)}
-          aria-haspopup="menu"
-          aria-expanded={skuffOpen}
-          className="v2-press"
-          aria-label="Mer — AgenticOS, Økonomi, Innstillinger og rommene"
-          style={{ flex: "none", width: 44, minHeight: 56, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 3, padding: "4px 0", color: skuffOpen ? T.railOn : T.railFg, background: "transparent", border: 0, cursor: "pointer" }}
-        >
-          <Icon name="more-horizontal" size={20} strokeWidth={1.5} />
-        </button>
+                <span
+                  style={{
+                    fontFamily: TL.font.sans,
+                    fontSize: on ? 10 : 9,
+                    fontWeight: 600,
+                    letterSpacing: on ? "0.03em" : "0.04em",
+                    textTransform: "uppercase",
+                    color: on ? TL.onFill : TL.mute,
+                    whiteSpace: "nowrap",
+                  }}
+                >
+                  {n.label}
+                </span>
+              </Link>
+            );
+          })}
+        </div>
       </nav>
-      {skuffOpen && <MerPanel grupper={skuffGrupper} rom={rom} onClose={() => setSkuffOpen(false)} mobil full erAgency />}
+      {merOpen && <AgencyMerArkTL rom={rom} onClose={() => setMerOpen(false)} />}
     </>
+  );
+}
+
+/**
+ * «Mer»-ark — AG-05, Train-lock geometri: grabber 36×4, tittel 26/700, rader
+ * 15/600 + meta 13 mute + chevron med hairline over hver rad, Avbryt 44 h.
+ * IA/innhold er UENDRET (bruker eksisterende AGENCYOS_ROM via `rom`-propen —
+ * ingen innholdsskjerm er redesignet her, kun chrome-stilen er portet).
+ */
+function AgencyMerArkTL({ rom, onClose }: { rom?: V2Rom[]; onClose: () => void }) {
+  const pathname = usePathname();
+  useEffect(() => {
+    const esc = (e: KeyboardEvent) => { if (e.key === "Escape") onClose(); };
+    window.addEventListener("keydown", esc);
+    return () => window.removeEventListener("keydown", esc);
+  }, [onClose]);
+  const [apnetPa] = useState(pathname);
+  useEffect(() => {
+    if (pathname !== apnetPa) onClose();
+  }, [pathname, apnetPa, onClose]);
+
+  return createPortal(
+    <>
+      <div onClick={onClose} style={{ position: "fixed", inset: 0, zIndex: 90, background: TL.scrim }} aria-hidden />
+      <div
+        role="menu"
+        aria-label="Mer"
+        style={{
+          position: "fixed",
+          left: 0,
+          right: 0,
+          bottom: 0,
+          zIndex: 91,
+          maxHeight: "72vh",
+          overflowY: "auto",
+          background: TL.elev,
+          borderRadius: `${TL.radius.sheet} ${TL.radius.sheet} 0 0`,
+          padding: "12px 24px calc(20px + env(safe-area-inset-bottom))",
+        }}
+      >
+        <div aria-hidden style={{ width: 36, height: 4, borderRadius: 2, background: TL.grabber, margin: "0 auto 18px" }} />
+        <div style={{ fontFamily: TL.font.sans, fontSize: 26, fontWeight: 700, letterSpacing: "-0.01em", color: TL.text }}>Mer</div>
+        <div style={{ marginTop: 8 }}>
+          {(rom ?? []).map((r) => (
+            <Link
+              key={r.id}
+              href={r.href}
+              onClick={onClose}
+              role="menuitem"
+              className="v2-press v2-focus"
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                gap: 14,
+                padding: "15px 0",
+                borderTop: `1px solid ${TL.hair}`,
+                textDecoration: "none",
+                color: TL.text,
+              }}
+            >
+              <span>
+                <span style={{ display: "block", fontSize: 15, fontWeight: 600 }}>{r.label}</span>
+                <span style={{ display: "block", marginTop: 2, fontSize: 13, fontWeight: 400, color: TL.mute }}>{r.beskrivelse}</span>
+              </span>
+              <Icon name="chevron-right" size={14} style={{ color: TL.mute, flex: "none" }} strokeWidth={2.2} />
+            </Link>
+          ))}
+        </div>
+        <button
+          onClick={onClose}
+          className="v2-press"
+          style={{
+            marginTop: 4,
+            width: "100%",
+            height: 44,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            fontSize: 15,
+            fontWeight: 600,
+            color: TL.mute,
+            background: "transparent",
+            border: 0,
+            cursor: "pointer",
+          }}
+        >
+          Avbryt
+        </button>
+      </div>
+    </>,
+    document.body,
   );
 }
 
@@ -1214,10 +1366,11 @@ export function V2Shell({ aktiv, nav = PLAYERHQ_NAV, mer, rom, navn = "Øyvind R
           {composer}
         </div>
       )}
-      {/* Mobil-bunnnav: AgencyOS får dedikert nav + full-høyde «Mer»-skuff (M1);
-          PlayerHQ/forelder beholder BunnNavLenker uendret. */}
+      {/* Mobil-bunnnav: AgencyOS får Train-lock-doken (5 kolonner, AG-00 K1) +
+          global Mer-knapp i toppen (AG-05); PlayerHQ/forelder beholder
+          BunnNavLenker uendret (ikke Train-lock-portet ennå). */}
       {erAgency
-        ? <AgencyBunnNav aktiv={autoAktiv} nav={navSynlig} mer={merGrupper} rom={romSynlig} />
+        ? <TrainLockAgencyDock aktiv={autoAktiv} nav={navSynlig} rom={romSynlig} />
         : <BunnNavLenker aktiv={autoAktiv} nav={navSynlig} mer={merGrupper} />}
       {/* Globalt søk (Cmd+K + «global-search:open»-event fra Mer-panelets
           søkeknapp) — kun montert i AgencyOS. Selv-styrt, rendrer null lukket. */}
