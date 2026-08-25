@@ -16,6 +16,16 @@ Gjelder til Anders endrer dem.
 
 ## Beslutningene (august 2026)
 
+- **MØRK DEFAULT PÅ /portal OG /admin (Anders 2026-08-25, i økt):** produktflatene er
+  mørke uten cookie. Train-lock er mørk-først (scene `#000000`, lys er varianten), og
+  lys-defaulten fra 25.07 — begrunnet med «mørk skjerm er vanskelig å lese utendørs i
+  sollys» — er nå brukerens valg via bryteren, ikke appens default. Dette besvarer åpent
+  spørsmål 1 i `docs/natt/D2-TOKENS-DONE.md`. Regelen bor i **`src/lib/v2/tema-default.ts`**
+  (`onsketTema`), kalt av både rot-layout (SSR) og `V2Shell` (rute-veksling) — den var
+  duplisert i to filer, som er en driftsfelle. **Uendret:** `/auth` er LYS (låst PP-A/A4
+  16.08), `/forelder` er LYS inntil forelder-portalens designomfang er avklart (T4),
+  landingssidene alltid lyse, resten mørk som før. Bryteren (`ak-v2-tema`) vinner over
+  defaulten begge veier. Låst av `src/lib/__tests__/tema-default.test.ts`.
 - **KOMPLETT TRAIN-LOCK — ALLE SKJERMER I PLAYERHQ OG AGENCYOS (Anders 2026-08-25, i økt):**
   Train-lock er eneste designfasit for hele produktet — både PlayerHQ og AgencyOS, alle
   skjermer. Claude Paper (`605a48cc` / `designsystem/paper/`) er HISTORIKK/arkiv, aldri

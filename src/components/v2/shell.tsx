@@ -20,6 +20,7 @@ import { T } from "@/lib/v2/tokens";
 import { Icon } from "./icon";
 import { LogoAK, AvatarFoto } from "./core";
 import { useV2Tema, lesTema, type V2Tema } from "./tema";
+import { onsketTema } from "@/lib/v2/tema-default";
 import { SpillerVeksler, type VekslerData } from "./spiller-veksler";
 import { useErAdmin } from "./rolle";
 import { GlobalSearchModal } from "@/components/admin/global-search-modal";
@@ -874,27 +875,31 @@ export function V2Shell({ aktiv, nav = PLAYERHQ_NAV, mer, rom, navn = "Øyvind R
   }, [aktiv, nav, merGrupper, romSynlig, pathname]);
 
   // DS2: shadcn-scope (.dark/.light) + colorScheme følger v2-temaet, så
-  // skjema-primitiver og scrollbars matcher. SSR er lys (standard 25. jul);
-  // mørk-cookie-brukere rettes ved hydration (suppressHydrationWarning) —
-  // v2-fargene er riktige fra første paint uansett (var(--v2-*) + inline-script
-  // i rot-layout).
+  // skjema-primitiver og scrollbars matcher. `useV2Tema` sitt SSR-snapshot er
+  // lys, så denne KLASSEN rettes ved hydration på mørke flater
+  // (suppressHydrationWarning). Selve fargene er riktige fra første paint
+  // uansett: rot-layout stempler `data-v2-tema` på server, og globals.css
+  // definerer både v2-variablene og shadcn-triplettene under
+  // `html[data-v2-tema="dark"]` — klassen her er belte-og-seler.
   const { tema } = useV2Tema();
 
-  // Tema-oppførsel (25. jul): ALLE v2-flater (PlayerHQ, AgencyOS, Forelder)
-  // er lys som standard med bryter til mørk. Mørk skjerm er vanskelig å
-  // lese utendørs i sollys. `data-v2-tema` er ETT delt attributt på <html>
-  // (samme cookie), og Next-navigasjon mellom flatene er client-side (samme
-  // dokument), så attributtet synkes ved rute-veksling: mørk KUN hvis
-  // cookien sier dark — ellers alltid lys.
+  // Tema-oppførsel: `data-v2-tema` er ETT delt attributt på <html> (samme
+  // cookie), og Next-navigasjon mellom flatene er client-side (samme
+  // dokument) — så attributtet må synkes ved rute-veksling. Regelen er den
+  // SAMME som rot-layout kjører på server: `onsketTema` i
+  // src/lib/v2/tema-default.ts er eneste kilde, så SSR og navigasjon ikke kan
+  // drifte fra hverandre. Mørk er default på /portal og /admin (Anders
+  // 25.08.2026); bryteren (cookien) vinner alltid over defaulten.
   useEffect(() => {
-    const cookieMork = document.cookie.split("; ").some((c) => c === "ak-v2-tema=dark");
-    const onsket: V2Tema = cookieMork ? "dark" : "light";
+    const rå = document.cookie.split("; ").find((c) => c.startsWith("ak-v2-tema="));
+    const cookie = rå?.slice("ak-v2-tema=".length);
+    const onsket: V2Tema = onsketTema(pathname ?? "", cookie, false);
     if (lesTema() !== onsket) {
       if (onsket === "dark") document.documentElement.setAttribute("data-v2-tema", "dark");
       else document.documentElement.removeAttribute("data-v2-tema");
       window.dispatchEvent(new Event("ak-v2-tema"));
     }
-  }, [erAgency]);
+  }, [pathname]);
 
   // Coach-cookie for profil-veksleren: besøk i AgencyOS markerer nettleseren
   // som coach (kun UI-visning av toggle-lenken i PlayerHQ; guards uendret).

@@ -97,12 +97,15 @@ node scripts/check-token-gap.mjs → grønn
 
 ## Det som IKKE lot seg utlede — spørsmål til Anders
 
-1. **Mørk som default.** Fasiten sier «mørk er default» for både PlayerHQ og AgencyOS.
-   Appen gir i dag **lys** default på `/portal` og `/admin` (`onsketMorkTema` i
-   `src/app/layout.tsx`); mørk krever `ak-v2-tema=dark`-cookie. Å snu den er en
-   rute-endring, ikke en token-endring, og lå utenfor D2. Tokenene ligger derfor
-   lys på `:root` / mørk på `[data-v2-tema="dark"]` — samme mekanisme som Paper,
-   ingen ny tema-mekanisme. **Skal /portal og /admin snus til mørk default?**
+1. ~~**Mørk som default.**~~ **BESVART 25.08.2026 (Anders, i økt): JA — `/portal` og
+   `/admin` er snudd til mørk default.** Regelen bor nå i `src/lib/v2/tema-default.ts`
+   (`onsketTema`), som både rot-layout (SSR) og `V2Shell` (rute-veksling) kaller — den
+   var duplisert i to filer før. Bryteren vinner fortsatt: `ak-v2-tema`-cookien
+   overstyrer defaulten begge veier. Uendret: `/auth` er lys (låst PP-A/A4),
+   `/forelder` er lys (omfang uavklart, T4), landingssidene alltid lyse.
+   Tokenene ligger som før lys på `:root` / mørk på `[data-v2-tema="dark"]` — det er
+   defaulten som er snudd, ikke mekanismen. Låst av
+   `src/lib/__tests__/tema-default.test.ts`.
 
 2. **Font.** Fasiten skriver «SF Pro Display/Text» og bruker system-stacken
    (`-apple-system, …`). Repoets stack er Poppins/Lora/IBM Plex Mono (CLAUDE.md

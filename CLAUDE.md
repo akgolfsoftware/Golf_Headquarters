@@ -64,9 +64,10 @@ Bølge 2 (måned/år, stall, kalender uten Google, tester-live, runde-live, Jarv
      (`--tl-*`) med TS-speil `src/lib/v2/train-lock.ts` (`TL`, `TL_BREKK`). Bruk dem —
      bland aldri `T.*` (Paper, utgående) og `TL.*` i samme skjerm. Tokenene ligger lys på
      `:root` og mørk på `html[data-v2-tema="dark"]` (samme mekanisme som Paper, ingen ny).
-     **NB:** appen gir dermed fortsatt *lys* default på `/portal` og `/admin`, mens fasiten
-     sier mørk — å snu det er en rute-endring, se åpent spørsmål 1 i
-     `docs/natt/D2-TOKENS-DONE.md`. Selve skjermporten gjenstår (B8 = Player, bølge T =
+     **Mørk er default på `/portal` og `/admin`** (Anders 25.08.2026) — regelen bor i
+     `src/lib/v2/tema-default.ts`, kalt av både rot-layout og `V2Shell`; bryteren
+     (`ak-v2-tema`) vinner over defaulten. `/auth` er fortsatt lys (låst PP-A/A4) og
+     `/forelder` lys inntil omfanget er avklart. Selve skjermporten gjenstår (B8 = Player, bølge T =
      AgencyOS). Marketing/landingssider har egen fasit (ak-golf-website) og omfattes ikke.
    - Ingen nye tokens / parallelle designsystemer uten Anders' ja.
    - Fullført = warm `#B85C3D` + hake. `#30D158` **kun** Godta / PUBLISERT-merke.
