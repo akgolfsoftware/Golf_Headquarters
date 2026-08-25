@@ -1,0 +1,95 @@
+/* ============================================================
+   WANG Treningsplattform — Color tokens
+   WANG Designmanual 2021 exact values.
+   Distribution 60/30/10: 60% light surface, 30% navy, 10% teal/mint + category.
+   ============================================================ */
+:root {
+  /* --- Brand primaries (Designmanual 2021; print: PMS 540 / 569 / 339) --- */
+  --wang-navy: #17446F;      /* PMS 540 · hero cards, primary buttons, headings, sidebar */
+  --wang-teal: #2E857D;      /* PMS 569 · success, completed, positive change, active nav */
+  --wang-mint: #49CA9F;      /* PMS 339 · gradient partner to teal, accents on dark */
+
+  /* --- Category / secondary (only on icon-chips, chips, charts, edges) --- */
+  --cat-orange: #F47B20;     /* PMS 165 · warnings, streaks, competitions */
+  --cat-yellow: #FCD700;     /* PMS 123 · highlights, achievements / badges */
+  --cat-pink:   #D12A5C;     /* PMS 7425 · critical alerts, errors, injury */
+  --cat-blue:   #007DB1;     /* PMS 7690 · information, school-related */
+  --cat-purple: #7F1975;     /* PMS 259 · mental training, reflection */
+  --cat-gray:   #D2D2D2;     /* Cool Grey 3 · disabled */
+
+  /* --- Neutrals --- */
+  --bg-app:      #F4F6F8;    /* app background */
+  --surface-card:#FFFFFF;    /* card surface */
+  --text-secondary:#475569;  /* secondary text */
+  --text-primary:#1E293B;    /* primary text */
+  --navy-deep:   #0F172A;    /* darkest navy */
+
+  /* --- Derived neutral steps (cool, navy-tinted) --- */
+  --neutral-50:  #F4F6F8;
+  --neutral-100: #E9EDF1;
+  --neutral-200: #DCE3EA;
+  --neutral-300: #C5D0DA;
+  --neutral-400: #94A3B8;
+  --neutral-500: #64748B;
+  --neutral-600: #475569;
+  --neutral-700: #334155;
+  --neutral-800: #1E293B;
+  --neutral-900: #0F172A;
+  --white: #FFFFFF;
+
+  /* --- Tints (10–12% category backgrounds for icon-chips & status pills) ---
+     Derived from their solid counterpart via color-mix so the DEFAULT theme
+     only has 3 authored brand hex values to keep in sync with print (PMS).
+     CAVEAT for white-label re-theming: CSS resolves a custom property's
+     var() references once, at the element where that property is inherited
+     from — overriding --wang-navy on a tenant container does NOT retroactively
+     re-resolve --grad-hero-line/--tint-* for that subtree, because those are
+     inherited from :root with --wang-navy already substituted in. A tenant
+     scope must redeclare the small set of derived tokens alongside the 3
+     primitives (see guidelines/brand-whitelabel.card.html for the exact list
+     and a working example) — same technique [data-theme="dark"] below uses. */
+  --tint-navy:   color-mix(in srgb, var(--wang-navy) 12%, white);
+  --tint-teal:   color-mix(in srgb, var(--wang-teal) 13%, white);
+  --tint-mint:   color-mix(in srgb, var(--wang-mint) 13%, white);
+  --tint-orange: color-mix(in srgb, var(--cat-orange) 9%, white);
+  --tint-yellow: color-mix(in srgb, var(--cat-yellow) 9%, white);
+  --tint-pink:   color-mix(in srgb, var(--cat-pink) 10%, white);
+  --tint-blue:   color-mix(in srgb, var(--cat-blue) 10%, white);
+  --tint-purple: color-mix(in srgb, var(--cat-purple) 10%, white);
+  --tint-gray:   #F1F4F7; /* neutral — not tenant-branded */
+
+  /* --- Gradients --- */
+  --grad-score: linear-gradient(135deg, var(--wang-teal) 0%, var(--wang-mint) 100%); /* @kind color */ /* rings / progress */
+  --grad-hero-line: linear-gradient(160deg,
+    color-mix(in srgb, var(--wang-navy) 82%, white) 0%,
+    var(--wang-navy) 55%,
+    color-mix(in srgb, var(--wang-navy) 82%, black) 100%); /* @kind color */
+
+  /* --- Semantic aliases --- */
+  --color-primary: var(--wang-navy);
+  --color-success: var(--wang-teal);
+  --color-accent:  var(--wang-mint);
+  --color-warning: var(--cat-orange);
+  --color-danger:  var(--cat-pink);
+  --color-info:    var(--cat-blue);
+  --color-disabled:var(--cat-gray);
+
+  --text-on-dark:  #FFFFFF;
+  --text-on-dark-dim: rgba(255,255,255,0.72);
+  --border-subtle: #E9EDF1;
+  --focus-ring:    #49CA9F;
+
+  /* --- AA-safe text variant ---
+     --wang-teal (#2E857D) is 4.4:1 on white — fails AA for small/regular text.
+     Use --wang-teal-text (5.4:1) for links and small colored text on light surfaces;
+     keep --wang-teal for large surfaces, icons, and chips (3:1 is enough there). */
+  --wang-teal-text: #226F67;
+
+  /* --- Dark-surface tokens (foundation for an eventual dark mode; not yet wired
+     into every component — components currently hardcode #fff card surfaces) --- */
+  --bg-app-dark:      #0B1526;
+  --surface-card-dark:#152238;
+  --text-primary-dark:#EEF2F6;
+  --text-secondary-dark:#93A2B8;
+  --border-subtle-dark:#223350;
+}
