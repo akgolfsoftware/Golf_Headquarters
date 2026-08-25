@@ -44,6 +44,29 @@ export function WeekGrid({ week, selectedSessionId, onSelectSession, onCreateAt 
 
   return (
     <div style={{ position: "relative", minWidth: 0 }}>
+      {antallOkter === 0 && (
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: 8,
+            marginBottom: 10,
+            border: `1px dashed ${T.border}`,
+            borderRadius: T.rCard,
+            padding: "12px 16px",
+            background: T.panel,
+          }}
+        >
+          <span style={{ fontFamily: T.disp, fontSize: 13.5, fontWeight: 600, color: T.fg }}>
+            {UI.emptyWeekTitle}
+          </span>
+          <span style={{ fontFamily: T.ui, fontSize: 12.5, color: T.fg2 }}>
+            Klikk i uka for å legge inn en økt.
+          </span>
+        </div>
+      )}
+
       <TimeGrid
         days={days}
         onEmptyClick={(slot) => {
@@ -89,25 +112,6 @@ export function WeekGrid({ week, selectedSessionId, onSelectSession, onCreateAt 
         }}
       />
 
-      {antallOkter === 0 && (
-        <div
-          style={{
-            marginTop: 14,
-            border: `1px dashed ${T.border}`,
-            borderRadius: T.rCard,
-            padding: "22px 18px",
-            textAlign: "center",
-            background: T.panel,
-          }}
-        >
-          <div style={{ fontFamily: T.disp, fontSize: 14, fontWeight: 600, color: T.fg }}>
-            {UI.emptyWeekTitle}
-          </div>
-          <div style={{ fontFamily: T.ui, fontSize: 12.5, color: T.fg2, marginTop: 5 }}>
-            Klikk i uka for å legge inn en økt.
-          </div>
-        </div>
-      )}
     </div>
   );
 }
