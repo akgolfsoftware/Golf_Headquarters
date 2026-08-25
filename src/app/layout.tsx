@@ -162,6 +162,9 @@ const LANDINGSSIDER = [
   "/suksess",
   "/treningsfilosofi",
   "/turneringer",
+  // Vedlikeholdsskiltet er landingsflaten mens VEDLIKEHOLD står på — lys, som
+  // de andre landingssidene. Proxy-en setter x-pathname til /vedlikehold.
+  "/vedlikehold",
   "/vilkar",
 ];
 

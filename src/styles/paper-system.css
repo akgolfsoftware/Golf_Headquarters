@@ -17,7 +17,13 @@
   width: 100%;
   max-width: 430px;
   margin: 0 auto;
-  padding: var(--p-s5) var(--p-s4) calc(var(--p-s8) + env(safe-area-inset-bottom));
+  /* --ak-cookie-h: cookie-banneret er `position: fixed; bottom: 0` og ~284px høyt
+     på 390px. Uten denne forskyvningen ligger systemsidenes CTA-er (Ring …,
+     Prøv igjen, Til hjem) bak banneret og kan ikke trykkes — samme feil som
+     gotchas.md §«Cookie-banneret lå oppå sticky bunn-chrome på mobil».
+     Variabelen nullstilles av banneret selv når samtykke er gitt. */
+  padding: var(--p-s5) var(--p-s4)
+    calc(var(--p-s8) + env(safe-area-inset-bottom) + var(--ak-cookie-h, 0px));
   flex: 1;
   display: flex;
   flex-direction: column;
