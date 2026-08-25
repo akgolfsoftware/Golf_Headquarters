@@ -19,7 +19,7 @@
 // (UTC), aldri `new Date()`/`Date.now()` på modulnivå.
 // =========================================================================
 
-import { d, iso } from "./wang-plan";
+import { d, iso, MONTHS_NO } from "./wang-plan";
 
 // ---- Faser (fargekoding, delt av årshjul/månedsplan/kalender) -----------
 
@@ -1223,3 +1223,30 @@ export function byggEvents(): Record<string, KalenderHendelse[]> {
 }
 
 export const ARSPLAN_EVENTS: Record<string, KalenderHendelse[]> = byggEvents();
+
+// ---- Foreldre: ukessammendrag (fredagens rapport) -------------------------
+
+export interface Ukessammendrag {
+  uke: number;
+  datoer: string;
+  periode: string;
+  maalsetning: string;
+  fokus: string[];
+  gjennomfort: string[];
+  hoydepunkt: string;
+  neste: string;
+  trener: string;
+}
+
+/** Tom i dag — fasitens tomtilstand. Fylles av treneren hver fredag. */
+export const UKESRAPPORTER: Ukessammendrag[] = [];
+
+/** «Første sammendrag kommer fredag <dato>» — beregnet fra en gitt Oslo-korrekt nå-dato. */
+export function nesteFredagTekst(naaIso: string): string {
+  const naa = d(naaIso);
+  const ukedag = naa.getUTCDay();
+  let off = (5 - ukedag + 7) % 7;
+  if (off === 0) off = 7;
+  naa.setUTCDate(naa.getUTCDate() + off);
+  return naa.getUTCDate() + ". " + MONTHS_NO[naa.getUTCMonth()];
+}
