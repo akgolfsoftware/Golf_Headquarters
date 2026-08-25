@@ -167,4 +167,4 @@ PLAYER/AGENCY på individ skriver **én** rad (med approval-regler når coach �
 3. Server actions filtrerer alltid på entitlement.
 4. UI: Stall og player-søk respekterer gate; Workbench GROUP-modus viser propagation-status.
 
-Dette dokumentet er kilde til sannhet for tilgang og gruppe-propagasjon. Ved konflikt med eldre tekst i HANDOFF (eksternt Claude Design-dokument, ikke i repoet) eller integration/player-hq.md vinner **dette** dokumentet på access/group-spørsmål.
+Dette dokumentet er kilde til sannhet for tilgang og gruppe-propagasjon. Ved konflikt med eldre tekst i HANDOFF (`designsystem/train-lock/HANDOFF.md`) eller integration/player-hq.md vinner **dette** dokumentet på access/group-spørsmål.

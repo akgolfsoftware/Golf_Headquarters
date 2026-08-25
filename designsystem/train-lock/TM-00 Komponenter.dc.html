@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+  html, body { margin: 0; padding: 0; background: #000000; }
+  body { font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", Helvetica, Arial, sans-serif; -webkit-font-smoothing: antialiased; color: #F5F5F5; }
+  a { color: #F5F5F5; text-decoration: none; }
+  a:hover { color: #FFFFFF; }
+  ::-webkit-scrollbar { display: none; }
+</style>
+</helmet>
+<div style="min-height: 100vh; background: #000000; padding: 56px 48px 96px; display: flex; flex-direction: column; gap: 56px;">
+
+<div data-screen-label="TM-00 Header">
+  <div style="font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #8E8E93;">Player HQ · TrackMan</div>
+  <h1 style="margin: 8px 0 0; font-size: 34px; font-weight: 700; letter-spacing: -0.02em;">Komponenter</h1>
+  <div style="margin-top: 8px; font-size: 15px; color: #8E8E93; max-width: 720px; line-height: 1.5;">Sju komponenter. Fire helter, resten i tabell. Median, ikke max. Topp-syn, ikke stolper. Én lekkasje om gangen. Analyse skjer automatisk når filen lander.</div>
+</div>
+
+<div data-screen-label="TM-00 1 TmKpiStrip" style="display: flex; flex-direction: column; gap: 16px;">
+  <div style="display: flex; align-items: baseline; gap: 12px;"><span style="font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #8E8E93;">1</span><span style="font-size: 26px; font-weight: 700;">TmKpiStrip</span><span style="font-size: 13px; color: #8E8E93;">2×2 på iPhone · 4 i rad på iPad og desktop · ingen sparkline i flisen</span></div>
+  <div style="display: flex; gap: 32px; align-items: flex-start; flex-wrap: wrap;">
+    <div style="width: 361px; display: flex; flex-direction: column; gap: 10px;">
+      <div style="font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #8E8E93;">iPhone 393</div>
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+        <div style="background: #161616; border-radius: 20px; padding: 16px;"><div style="font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #8E8E93;">Median carry</div><div style="margin-top: 8px; font-size: 30px; font-weight: 700; font-variant-numeric: tabular-nums;">152 <span style="font-size: 15px; font-weight: 600; color: #8E8E93;">m</span></div></div>
+        <div style="background: #161616; border-radius: 20px; padding: 16px;"><div style="font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #8E8E93;">Smash</div><div style="margin-top: 8px; font-size: 30px; font-weight: 700; font-variant-numeric: tabular-nums;">1,38</div></div>
+        <div style="background: #161616; border-radius: 20px; padding: 16px;"><div style="font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #8E8E93;">Side</div><div style="margin-top: 8px; font-size: 30px; font-weight: 700; font-variant-numeric: tabular-nums;">+3,7 <span style="font-size: 15px; font-weight: 600; color: #8E8E93;">m</span></div></div>
+        <div style="background: #161616; border-radius: 20px; padding: 16px;"><div style="font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #8E8E93;">Spredning</div><div style="margin-top: 8px; font-size: 30px; font-weight: 700; font-variant-numeric: tabular-nums;">6 <span style="font-size: 15px; font-weight: 600; color: #8E8E93;">m</span></div><div style="margin-top: 4px; font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #8E8E93;">P90−P10</div></div>
+      </div>
+    </div>
+    <div style="flex: 1; min-width: 640px; display: flex; flex-direction: column; gap: 10px;">
+      <div style="font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #8E8E93;">Desktop 1440</div>
+      <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px;">
+        <div style="background: #161616; border-radius: 20px; padding: 14px 16px;"><div style="font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #8E8E93;">Median carry</div><div style="margin-top: 6px; font-size: 28px; font-weight: 700; font-variant-numeric: tabular-nums;">152 <span style="font-size: 14px; font-weight: 600; color: #8E8E93;">m</span></div></div>
+        <div style="background: #161616; border-radius: 20px; padding: 14px 16px;"><div style="font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #8E8E93;">Smash</div><div style="margin-top: 6px; font-size: 28px; font-weight: 700; font-variant-numeric: tabular-nums;">1,38</div></div>
+        <div style="background: #161616; border-radius: 20px; padding: 14px 16px;"><div style="font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #8E8E93;">Side</div><div style="margin-top: 6px; font-size: 28px; font-weight: 700; font-variant-numeric: tabular-nums;">+3,7 <span style="font-size: 14px; font-weight: 600; color: #8E8E93;">m</span></div></div>
+        <div style="background: #161616; border-radius: 20px; padding: 14px 16px;"><div style="font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #8E8E93;">Spredning</div><div style="margin-top: 6px; font-size: 28px; font-weight: 700; font-variant-numeric: tabular-nums;">6 <span style="font-size: 14px; font-weight: 600; color: #8E8E93;">m</span></div></div>
+      </div>
+      <div style="margin-top: 4px; font-size: 13px; color: #8E8E93; line-height: 1.5;">Etikett caps 11 mute · tall 28–30/700 tabular · enhet 14–15/600 mute. Spredning kan stå som «—» med caps FRA 4 SLAG. Aldri fem fliser, aldri max carry.</div>
+    </div>
+  </div>
+</div>
+
+<div data-screen-label="TM-00 2 TmDispersionPlot" style="display: flex; flex-direction: column; gap: 16px;">
+  <div style="display: flex; align-items: baseline; gap: 12px;"><span style="font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #8E8E93;">2</span><span style="font-size: 26px; font-weight: 700;">TmDispersionPlot</span><span style="font-size: 13px; color: #8E8E93;">topp-syn · bane #111 · mål hvit 20 % · prikk 8 px #B08968 · siste slag hvit ring · ellipse 1 px hair</span></div>
+  <div style="display: flex; gap: 32px; align-items: flex-start; flex-wrap: wrap;">
+    <div style="width: 361px; display: flex; flex-direction: column; gap: 10px;">
+      <div style="font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #8E8E93;">iPhone 393 · høyde 240</div>
+      <div style="position: relative;">
+        <svg viewBox="0 0 240 240" style="display: block; width: 100%; height: 240px; background: #111111; border-radius: 20px;" preserveAspectRatio="none">
+          <line x1="120" y1="0" x2="120" y2="240" stroke="#FFFFFF" stroke-opacity="0.2" stroke-width="1"></line>
+          <ellipse cx="150" cy="107" rx="33" ry="28" fill="none" stroke="#FFFFFF" stroke-opacity="0.18" stroke-width="1"></ellipse>
+          <circle cx="136.8" cy="112.8" r="4" fill="#B08968"></circle>
+          <circle cx="156.8" cy="97.2" r="4" fill="#B08968"></circle>
+          <circle cx="131.2" cy="129.6" r="4" fill="#B08968"></circle>
+          <circle cx="161.6" cy="95.4" r="4" fill="#B08968"></circle>
+          <circle cx="144" cy="116.4" r="4" fill="#B08968"></circle>
+          <circle cx="168.8" cy="90" r="4" fill="#B08968"></circle>
+          <circle cx="168.8" cy="90" r="7.5" fill="none" stroke="#F5F5F5" stroke-width="1.5"></circle>
+          <text x="8" y="16" font-size="9" fill="#8E8E93">170 m</text>
+          <text x="8" y="124" font-size="9" fill="#8E8E93">150 m</text>
+          <text x="8" y="234" font-size="9" fill="#8E8E93">130 m</text>
+          <text x="14" y="204" font-size="9" fill="#8E8E93" text-anchor="middle">−15</text>
+          <text x="226" y="204" font-size="9" fill="#8E8E93" text-anchor="middle">+15</text>
+        </svg>
+        <div style="position: absolute; right: 14px; top: 12px; font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #8E8E93;">Topp-syn · meter</div>
+      </div>
+    </div>
+    <div style="flex: 1; min-width: 640px; display: flex; flex-direction: column; gap: 10px;">
+      <div style="font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #8E8E93;">Desktop · min 420 høy</div>
+      <div style="position: relative;">
+        <svg viewBox="0 0 240 240" style="display: block; width: 100%; height: 420px; background: #111111; border-radius: 20px;" preserveAspectRatio="none">
+          <line x1="120" y1="0" x2="120" y2="240" stroke="#FFFFFF" stroke-opacity="0.2" stroke-width="1"></line>
+          <ellipse cx="150" cy="107" rx="33" ry="28" fill="none" stroke="#FFFFFF" stroke-opacity="0.18" stroke-width="1"></ellipse>
+          <circle cx="136.8" cy="112.8" r="3" fill="#B08968"></circle>
+          <circle cx="156.8" cy="97.2" r="3" fill="#B08968"></circle>
+          <circle cx="131.2" cy="129.6" r="3" fill="#B08968"></circle>
+          <circle cx="161.6" cy="95.4" r="3" fill="#B08968"></circle>
+          <circle cx="144" cy="116.4" r="3" fill="#B08968"></circle>
+          <circle cx="168.8" cy="90" r="3" fill="#B08968"></circle>
+          <circle cx="168.8" cy="90" r="5.5" fill="none" stroke="#F5F5F5" stroke-width="1"></circle>
+          <text x="7" y="14" font-size="7" fill="#8E8E93">170 m</text>
+          <text x="7" y="122" font-size="7" fill="#8E8E93">150 m</text>
+          <text x="7" y="233" font-size="7" fill="#8E8E93">130 m</text>
+          <text x="12" y="210" font-size="7" fill="#8E8E93" text-anchor="middle">−15</text>
+          <text x="228" y="210" font-size="7" fill="#8E8E93" text-anchor="middle">+15</text>
+        </svg>
+        <div style="position: absolute; right: 14px; top: 12px; font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #8E8E93;">Topp-syn · meter</div>
+      </div>
+      <div style="font-size: 13px; color: #8E8E93; line-height: 1.5;">Skala 7i: −15 … +15 m side · 130–170 m carry. Under fire slag: prikker uten ellipse. Aldri heat-map, aldri 3D, aldri green-foto, aldri kølle-farge.</div>
+    </div>
+  </div>
+</div>
+
+<div data-screen-label="TM-00 3 TmCaddieLeak" style="display: flex; flex-direction: column; gap: 16px;">
+  <div style="display: flex; align-items: baseline; gap: 12px;"><span style="font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #8E8E93;">3</span><span style="font-size: 26px; font-weight: 700;">TmCaddieLeak</span><span style="font-size: 13px; color: #8E8E93;">én setning · caps over · tall under · aldri tre kort</span></div>
+  <div style="display: flex; gap: 32px; align-items: flex-start; flex-wrap: wrap;">
+    <div style="width: 361px; background: #161616; border-radius: 20px; padding: 18px 20px;">
+      <div style="font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #8E8E93;">Automatisk · 7i</div>
+      <div style="margin-top: 8px; font-size: 17px; font-weight: 600; line-height: 1.4; text-wrap: pretty;">Klyngen ligger 3,7 m høyre. Sikt 4 m venstre, samme sving.</div>
+      <div style="margin-top: 8px; font-size: 13px; color: #8E8E93; font-variant-numeric: tabular-nums;">Klynge høyre · +3,7 m · 6 slag</div>
+    </div>
+    <div style="flex: 1; min-width: 640px; display: flex; flex-direction: column; gap: 10px;">
+      <div style="background: #161616; border-radius: 20px; padding: 20px 24px;">
+        <div style="display: flex; align-items: baseline; justify-content: space-between;"><div style="font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #8E8E93;">Automatisk · 7i</div><div style="font-size: 13px; color: #8E8E93; font-variant-numeric: tabular-nums;">21.08.2026 · 6 slag</div></div>
+        <div style="margin-top: 8px; font-size: 20px; font-weight: 600; line-height: 1.4; text-wrap: pretty;">Klyngen ligger 3,7 m høyre. Sikt 4 m venstre, samme sving.</div>
+        <div style="margin-top: 8px; font-size: 13px; color: #8E8E93; font-variant-numeric: tabular-nums;">Klynge høyre · +3,7 m · 6 slag</div>
+      </div>
+      <div style="font-size: 13px; color: #8E8E93; line-height: 1.5;">Sikt, ikke sving. Ingen «tre lag», ingen essay, ingen svingidé. Ved 1–2 slag: «To slag høyre. Median står — vent med å flytte siktet.»</div>
+    </div>
+  </div>
+</div>
+
+<div data-screen-label="TM-00 4 TmFindingList" style="display: flex; flex-direction: column; gap: 16px;">
+  <div style="display: flex; align-items: baseline; gap: 12px;"><span style="font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #8E8E93;">4</span><span style="font-size: 26px; font-weight: 700;">TmFindingList</span><span style="font-size: 13px; color: #8E8E93;">lekkasjen står først · Lekkasje | Holder | Tall som caps · aldri rød</span></div>
+  <div style="display: flex; gap: 32px; align-items: flex-start; flex-wrap: wrap;">
+    <div style="width: 361px; background: #161616; border-radius: 20px; padding: 4px 20px;">
+      <div style="display: flex; align-items: center; padding: 14px 0; border-bottom: 1px solid #FFFFFF14;"><div style="flex: 1;"><div style="font-size: 15px; font-weight: 600;">Klynge</div><div style="margin-top: 2px; font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #8E8E93;">Lekkasje</div></div><span style="font-size: 15px; font-weight: 600; font-variant-numeric: tabular-nums;">+3,7 m høyre</span></div>
+      <div style="display: flex; align-items: center; padding: 14px 0; border-bottom: 1px solid #FFFFFF14;"><div style="flex: 1;"><div style="font-size: 15px; font-weight: 600;">Spredning</div><div style="margin-top: 2px; font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #8E8E93;">Holder</div></div><span style="font-size: 15px; font-weight: 600; font-variant-numeric: tabular-nums;">6 m P90−P10</span></div>
+      <div style="display: flex; align-items: center; padding: 14px 0; border-bottom: 1px solid #FFFFFF14;"><div style="flex: 1;"><div style="font-size: 15px; font-weight: 600;">Smash</div><div style="margin-top: 2px; font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #8E8E93;">Holder</div></div><span style="font-size: 15px; font-weight: 600; font-variant-numeric: tabular-nums;">1,38</span></div>
+      <div style="display: flex; align-items: center; padding: 14px 0; border-bottom: 1px solid #FFFFFF14;"><div style="flex: 1;"><div style="font-size: 15px; font-weight: 600;">Face mot path</div><div style="margin-top: 2px; font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #8E8E93;">Tall</div></div><span style="font-size: 15px; font-weight: 600; font-variant-numeric: tabular-nums;">+1,4°</span></div>
+      <div style="display: flex; align-items: center; padding: 14px 0;"><div style="flex: 1;"><div style="font-size: 15px; font-weight: 600;">Mot forrige</div><div style="margin-top: 2px; font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #8E8E93;">Tall</div></div><span style="font-size: 15px; font-weight: 600; color: #8E8E93; font-variant-numeric: tabular-nums;">+0 m · som sist</span></div>
+    </div>
+    <div style="flex: 1; min-width: 640px; display: flex; flex-direction: column; gap: 10px;">
+      <div style="background: #161616; border-radius: 20px; padding: 4px 24px;">
+        <div style="display: flex; align-items: center; padding: 13px 0; border-bottom: 1px solid #FFFFFF14;"><div style="flex: 1;"><div style="font-size: 15px; font-weight: 600;">Klynge</div><div style="margin-top: 2px; font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #8E8E93;">Lekkasje</div></div><span style="font-size: 14px; font-weight: 600; font-variant-numeric: tabular-nums;">+3,7 m høyre</span></div>
+        <div style="display: flex; align-items: center; padding: 13px 0; border-bottom: 1px solid #FFFFFF14;"><div style="flex: 1;"><div style="font-size: 15px; font-weight: 600;">Spredning</div><div style="margin-top: 2px; font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #8E8E93;">Holder</div></div><span style="font-size: 14px; font-weight: 600; font-variant-numeric: tabular-nums;">6 m P90−P10</span></div>
+        <div style="display: flex; align-items: center; padding: 13px 0; border-bottom: 1px solid #FFFFFF14;"><div style="flex: 1;"><div style="font-size: 15px; font-weight: 600;">Smash</div><div style="margin-top: 2px; font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #8E8E93;">Holder</div></div><span style="font-size: 14px; font-weight: 600; font-variant-numeric: tabular-nums;">1,38</span></div>
+        <div style="display: flex; align-items: center; padding: 13px 0; border-bottom: 1px solid #FFFFFF14;"><div style="flex: 1;"><div style="font-size: 15px; font-weight: 600;">Face mot path</div><div style="margin-top: 2px; font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #8E8E93;">Tall</div></div><span style="font-size: 14px; font-weight: 600; font-variant-numeric: tabular-nums;">+1,4°</span></div>
+        <div style="display: flex; align-items: center; padding: 13px 0;"><div style="flex: 1;"><div style="font-size: 15px; font-weight: 600;">Mot forrige</div><div style="margin-top: 2px; font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #8E8E93;">Tall</div></div><span style="font-size: 14px; font-weight: 600; color: #8E8E93; font-variant-numeric: tabular-nums;">+0 m · som sist</span></div>
+      </div>
+      <div style="font-size: 13px; color: #8E8E93; line-height: 1.5;">Rekkefølgen er dommen: første rad er lekkasjen. Ved for få slag byttes metrikken mot «For få slag til spredning. Median står.»</div>
+    </div>
+  </div>
+</div>
+
+<div data-screen-label="TM-00 5 TmShotTable" style="display: flex; flex-direction: column; gap: 16px;">
+  <div style="display: flex; align-items: baseline; gap: 12px;"><span style="font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #8E8E93;">5</span><span style="font-size: 26px; font-weight: 700;">TmShotTable</span><span style="font-size: 13px; color: #8E8E93;">fem kolonner · tabular-tall · siste rad uten strek · aldri 40 TPS-kolonner</span></div>
+  <div style="display: flex; gap: 32px; align-items: flex-start; flex-wrap: wrap;">
+    <div style="width: 361px; background: #161616; border-radius: 20px; padding: 8px 20px 4px;">
+      <div style="display: flex; padding: 8px 0; font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #8E8E93; border-bottom: 1px solid #FFFFFF14;"><span style="width: 28px;">#</span><span style="flex: 1; text-align: right;">Carry</span><span style="flex: 1; text-align: right;">Side</span><span style="flex: 1; text-align: right;">Smash</span><span style="flex: 1; text-align: right;">Launch</span></div>
+      <div style="display: flex; padding: 11px 0; font-size: 15px; font-variant-numeric: tabular-nums; border-bottom: 1px solid #FFFFFF14;"><span style="width: 28px; color: #8E8E93; font-size: 13px;">1</span><span style="flex: 1; text-align: right; font-weight: 600;">151,2</span><span style="flex: 1; text-align: right;">+2,1</span><span style="flex: 1; text-align: right;">1,38</span><span style="flex: 1; text-align: right;">16,1</span></div>
+      <div style="display: flex; padding: 11px 0; font-size: 15px; font-variant-numeric: tabular-nums; border-bottom: 1px solid #FFFFFF14;"><span style="width: 28px; color: #8E8E93; font-size: 13px;">2</span><span style="flex: 1; text-align: right; font-weight: 600;">153,8</span><span style="flex: 1; text-align: right;">+4,6</span><span style="flex: 1; text-align: right;">1,38</span><span style="flex: 1; text-align: right;">16,4</span></div>
+      <div style="display: flex; padding: 11px 0 13px; font-size: 15px; font-variant-numeric: tabular-nums;"><span style="width: 28px; color: #8E8E93; font-size: 13px;">3</span><span style="flex: 1; text-align: right; font-weight: 600;">148,4</span><span style="flex: 1; text-align: right;">+1,4</span><span style="flex: 1; text-align: right;">1,37</span><span style="flex: 1; text-align: right;">15,8</span></div>
+    </div>
+    <div style="flex: 1; min-width: 640px; display: flex; flex-direction: column; gap: 10px;">
+      <div style="background: #161616; border-radius: 20px; padding: 8px 24px 4px;">
+        <div style="display: flex; padding: 10px 0; font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #8E8E93; border-bottom: 1px solid #FFFFFF14;"><span style="width: 40px;">#</span><span style="flex: 1; text-align: right;">Carry</span><span style="flex: 1; text-align: right;">Side</span><span style="flex: 1; text-align: right;">Smash</span><span style="flex: 1; text-align: right;">Launch</span></div>
+        <div style="display: flex; padding: 11px 0; font-size: 14px; font-variant-numeric: tabular-nums; border-bottom: 1px solid #FFFFFF14;"><span style="width: 40px; color: #8E8E93; font-size: 13px;">4</span><span style="flex: 1; text-align: right; font-weight: 600;">154,1</span><span style="flex: 1; text-align: right;">+5,2</span><span style="flex: 1; text-align: right;">1,38</span><span style="flex: 1; text-align: right;">16,6</span></div>
+        <div style="display: flex; padding: 11px 0; font-size: 14px; font-variant-numeric: tabular-nums; border-bottom: 1px solid #FFFFFF14;"><span style="width: 40px; color: #8E8E93; font-size: 13px;">5</span><span style="flex: 1; text-align: right; font-weight: 600;">150,6</span><span style="flex: 1; text-align: right;">+3,0</span><span style="flex: 1; text-align: right;">1,37</span><span style="flex: 1; text-align: right;">16,0</span></div>
+        <div style="display: flex; padding: 11px 0 13px; font-size: 14px; font-variant-numeric: tabular-nums;"><span style="width: 40px; color: #8E8E93; font-size: 13px;">6</span><span style="flex: 1; text-align: right; font-weight: 600;">155,0</span><span style="flex: 1; text-align: right;">+6,1</span><span style="flex: 1; text-align: right;">1,38</span><span style="flex: 1; text-align: right;">16,3</span></div>
+      </div>
+      <div style="font-size: 13px; color: #8E8E93; line-height: 1.5;">Enheter i kolonnehodet, ikke i cellene. Carry i meter med komma. Side med fortegn. Ingen sortering som skjuler rekkefølgen slagene falt i.</div>
+    </div>
+  </div>
+</div>
+
+<div data-screen-label="TM-00 6 TmIngestDrop" style="display: flex; flex-direction: column; gap: 16px;">
+  <div style="display: flex; align-items: baseline; gap: 12px;"><span style="font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #8E8E93;">6</span><span style="font-size: 26px; font-weight: 700;">TmIngestDrop</span><span style="font-size: 13px; color: #8E8E93;">tom · busy · feil · aldri «kjør analyse»-knapp</span></div>
+  <div style="display: flex; gap: 24px; align-items: flex-start; flex-wrap: wrap;">
+    <div style="width: 361px; border: 1.5px dashed #FFFFFF24; border-radius: 20px; padding: 20px; display: flex; flex-direction: column; gap: 12px;">
+      <div style="font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #8E8E93;">Tom</div>
+      <div style="font-size: 15px; font-weight: 600;">CSV, PDF eller foto. Analyseres med en gang.</div>
+      <div style="height: 48px; border-radius: 999px; background: #FFFFFF; color: #000000; font-size: 16px; font-weight: 700; display: flex; align-items: center; justify-content: center;">Last opp CSV / PDF / foto</div>
+      <div style="height: 44px; display: flex; align-items: center; justify-content: center; font-size: 15px; font-weight: 600; color: #8E8E93;">Ta bilde av kortet</div>
+    </div>
+    <div style="width: 361px; background: #161616; border-radius: 20px; padding: 20px;">
+      <div style="font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #8E8E93;">Busy</div>
+      <div style="margin-top: 8px; font-size: 17px; font-weight: 600;">Leser og analyserer…</div>
+      <div style="margin-top: 6px; font-size: 13px; color: #8E8E93; font-variant-numeric: tabular-nums;">TPS_export_2108.csv · 24 KB</div>
+      <div style="margin-top: 16px; height: 3px; border-radius: 2px; background: #2C2C2E; overflow: hidden;"><div style="width: 62%; height: 3px; background: #F5F5F5;"></div></div>
+    </div>
+    <div style="width: 361px; background: #161616; border-radius: 20px; padding: 20px;">
+      <div style="font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #FF453A;">Feil</div>
+      <div style="margin-top: 8px; font-size: 17px; font-weight: 600; line-height: 1.4; text-wrap: pretty;">Fant ingen tall. Rett på kortet. HEIC → JPG.</div>
+      <div style="margin-top: 12px; height: 48px; border-radius: 999px; background: #FFFFFF; color: #000000; font-size: 16px; font-weight: 700; display: flex; align-items: center; justify-content: center;">Ta bilde på nytt</div>
+    </div>
+    <div style="flex: 1; min-width: 420px; display: flex; flex-direction: column; gap: 10px;">
+      <div style="font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #8E8E93;">Desktop · sidefelt 280</div>
+      <div style="border: 1.5px dashed #FFFFFF24; border-radius: 16px; padding: 14px 16px; width: 248px;">
+        <div style="font-size: 13px; font-weight: 600;">CSV, PDF eller foto.</div>
+        <div style="margin-top: 2px; font-size: 13px; color: #8E8E93;">Analyseres med en gang.</div>
+        <div style="margin-top: 10px; height: 40px; border-radius: 999px; background: #FFFFFF; color: #000000; font-size: 14px; font-weight: 700; display: flex; align-items: center; justify-content: center;">Last opp</div>
+      </div>
+      <div style="font-size: 13px; color: #8E8E93; line-height: 1.5;">Tom = stiplede hair, ikke illustrasjon. Busy = hairline-fremdrift, ingen spinner-lek. Feil = danger kun i caps. Suksess har ingen mellomskjerm: økta åpnes ferdig analysert.</div>
+    </div>
+  </div>
+</div>
+
+<div data-screen-label="TM-00 7 TmDeltaChip" style="display: flex; flex-direction: column; gap: 16px;">
+  <div style="display: flex; align-items: baseline; gap: 12px;"><span style="font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #8E8E93;">7</span><span style="font-size: 26px; font-weight: 700;">TmDeltaChip</span><span style="font-size: 13px; color: #8E8E93;">mot forrige økt med samme kølle · tall + holdning · aldri ny svingidé</span></div>
+  <div style="display: flex; gap: 16px; align-items: flex-start; flex-wrap: wrap;">
+    <div style="width: 361px; background: #161616; border-radius: 20px; padding: 6px 18px; display: flex; align-items: center; justify-content: space-between;"><span style="font-size: 13px; color: #8E8E93; padding: 12px 0;">Mot forrige 7i</span><span style="font-size: 13px; font-weight: 600; font-variant-numeric: tabular-nums;">+0 m · som sist</span></div>
+    <div style="width: 361px; background: #161616; border-radius: 20px; padding: 6px 18px; display: flex; align-items: center; justify-content: space-between;"><span style="font-size: 13px; color: #8E8E93; padding: 12px 0;">Mot forrige 7i</span><span style="font-size: 13px; font-weight: 600; font-variant-numeric: tabular-nums;">−8 m · ikke ny svingidé</span></div>
+    <div style="flex: 1; min-width: 360px; font-size: 13px; color: #8E8E93; line-height: 1.5;">Chipen bor i findings-raden på iPhone og i høyre pane på desktop. Negative tall står i samme hvite type — aldri rød, aldri pil.</div>
+  </div>
+</div>
+
+</div>
+</x-dc>
+</body>
+</html>

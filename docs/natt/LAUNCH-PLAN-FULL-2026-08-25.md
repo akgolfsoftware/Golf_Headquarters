@@ -20,9 +20,15 @@ Tid styres med rekkefølge og bølger — ingenting er strøket.
 >    skal også portes til Train-lock** — det er en egen bølge T som IKKE kan sesjonsdeles før
 >    D2 (tokens) og D3 (fasit-zip, inkl. ev. Agency-varianter) er levert. Ny plan-session P-T
 >    (Fable 5, Plan mode) lager T-bølgens session-tabell når fasiten er committet.
-> 3. Gjenstående Anders-beslutninger: **D2, D3, D5, D6** + forelder-portalens designomfang (T4
->    i AAPNE-SPORSMAAL). D2/D3 blokkerer nå MER enn før (hele AgencyOS-porten) — de er
->    lanseringens kritiske sti for design.
+> 3. Gjenstående Anders-beslutninger: **D2, D5, D6** + forelder-portalens designomfang (T4
+>    i AAPNE-SPORSMAAL).
+> 4. **D3 LØST 25.08 (senere samme dag):** «Player HQ Train lock (5).zip» er committet som
+>    **`designsystem/train-lock/`** — 180 skjermfiler som dekker HELE scopet (A/AG/AO/PH/P/WB/
+>    TM/TE/KA/RU/JV/S3/LO/ME/BO/TU/GP/FY/FO/EC/DG + lys-varianter + HANDOFF.md-kontrakten).
+>    Dermed er 2a-premisset under opphevet, design-kolonnen kan måles mot ekte fasit, og
+>    **P-T (plan for bølge T) kan kjøres nå** — eneste gjenstående designforutsetning er D2
+>    (tokens i kode, utledes fra `TRAIN LOCK.dc.html` + HANDOFF). Zipens `uploads/` er bevisst
+>    holdt utenfor det offentlige repoet (NGF/TN-materiale) — se `designsystem/train-lock/SYNC-STATUS.md`.
 
 ---
 
@@ -105,6 +111,10 @@ sin gate (virker som tiltenkt).
 ## 2. Del 2 — Komplett inventory
 
 ### 2a. KRITISK premiss for hele design-kolonnen (VERIFISERT)
+
+> **OPPHEVET 25.08 (kveld):** fasiten er nå committet i `designsystem/train-lock/` (180
+> skjermer + HANDOFF.md) — se oppdateringsblokken øverst. Avsnittet under beholdes som
+> tidsbilde fra da planen ble skrevet.
 
 **Ingen av skjerm-ID-ene (A-xx, WB-xx, PH-xx, P-xx, TM-xx, MAT-xx) har fasit-filer i repoet.**
 De finnes kun som ID-er i natt-planenes tabeller. Kilden — «Player HQ Train lock.zip» —
@@ -224,7 +234,7 @@ Avhengighetsgraf (tekst):
 - B7 (Loop 4 TM/DispersionMap) avhenger av B2; ellers uavhengig av B3–B6 → parallell OK.
 - B8 (Train-lock design-pass på Player-flatene) BLOKKERT av D3 (fasit-zip) + D1; kjøres etter B4.
 - C1–C10 gates av natt-planens egen regel: bølge 1-smoke dokumentert grønn (LOOP-4-DONE + menneskelig klikk). Innbyrdes: C4 og C9 avhenger av B4 (I dag/artefakt-lag); C2 av B2; C8 av C4+C5 (flatene må finnes); C10 delvis blokkert av Anders-beslutning (PORTPLAN §A1.1). C1, C3, C5, C6, C7 er innbyrdes parallelle (disjunkte filområder) — maks 2–3 samtidig per forbruksreglene.
-- Beslutninger (Anders, blokkerer merket arbeid): **D1 LØST 25.08** — Train-lock for ALLE skjermer i PlayerHQ og AgencyOS (koden som bruker Paper er nå avvik som skal portes, bølge T); **D2** Train-lock-tokens: definer scene-/tokensett i kode (én kilde) før B8/bølge T; **D3** committe «Player HQ Train lock.zip» (+ ev. Agency-varianter) eller vedta frihåndsport; **D4 LØST 25.08** — presedenssetningen rettet i CLAUDE.md/ak-master (design: Train-lock + docs/natt vinner alltid); **D5** PORTPLAN §A1.1 (DataGolf-plassering); **D6** skjebnen til plan-treningsplanlegging-til-kode (supersedert eller egen fase).
+- Beslutninger (Anders, blokkerer merket arbeid): **D1 LØST 25.08** — Train-lock for ALLE skjermer i PlayerHQ og AgencyOS (koden som bruker Paper er nå avvik som skal portes, bølge T); **D2** Train-lock-tokens: definer scene-/tokensett i kode (én kilde) før B8/bølge T; **D3 LØST 25.08** — zip committet som `designsystem/train-lock/` (dekker også Agency); **D4 LØST 25.08** — presedenssetningen rettet i CLAUDE.md/ak-master (design: Train-lock + docs/natt vinner alltid); **D5** PORTPLAN §A1.1 (DataGolf-plassering); **D6** skjebnen til plan-treningsplanlegging-til-kode (supersedert eller egen fase).
 
 Parallellisering med worktree er trygg kun ved disjunkte filområder — merk gotcha «Annen økts worktree kan forsvinne» og «Delt utsjekk: parallell økt kaprer gren»: én gren per session, aldri delt utsjekk.
 
