@@ -200,6 +200,25 @@ export async function loadSources(params: {
   return { ok: true, data: [] };
 }
 
+/** Én økt slik den vises spilleren i «I dag» — se `loadPlayerDay`. */
+export type PlayerDaySession = {
+  id: string;
+  title: string;
+  startMinute: number;
+  durationMinutes: number;
+  pyramid: string;
+  status: string;
+  drillsCount: number;
+  location?: string;
+};
+
+/** Resultattype for `loadPlayerDay` — brukt av klientkomponenter (type-only import). */
+export type PlayerDayResult = WbResultat<{
+  date: string;
+  sessions: PlayerDaySession[];
+  nextSessionId: string | null;
+}>;
+
 /**
  * Player HQ «I dag». Returnerer ALDRI DRAFT — kun publiserte, pågående og
  * fullførte økter. Dette er den harde regelen i hele Loop 1.
@@ -207,22 +226,7 @@ export async function loadSources(params: {
 export async function loadPlayerDay(params: {
   playerId: string;
   date: string;
-}): Promise<
-  WbResultat<{
-    date: string;
-    sessions: Array<{
-      id: string;
-      title: string;
-      startMinute: number;
-      durationMinutes: number;
-      pyramid: string;
-      status: string;
-      drillsCount: number;
-      location?: string;
-    }>;
-    nextSessionId: string | null;
-  }>
-> {
+}): Promise<PlayerDayResult> {
   const dato = IsoDateSchema.safeParse(params.date);
   if (!dato.success) return { ok: false, error: "Ugyldig dato." };
 

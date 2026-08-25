@@ -39,10 +39,15 @@ import { useToppbarHoyde } from "@/components/v2/toppbar-hoyde";
 import { SamtaleBoble, SamtaleSkriver, SamtaleFeil, ForslagRad } from "@/components/v2/samtale";
 import { Composer } from "@/components/v2/composer";
 import { Icon } from "@/components/v2/icon";
+import { Kort, Rad } from "@/components/v2/core";
 import { kategoriFraSnittscore } from "@/lib/domain/ak-kategori";
 import { formatSg } from "@/lib/sg";
 import type { DashboardData } from "@/app/portal/actions";
 import type { GjennomforeData } from "@/lib/portal-gjennomfore/gjennomfore-data";
+import type { PlayerDayResult } from "@/lib/workbench/wb-actions";
+import type { SessionStatus } from "@/lib/domain/workbench/types";
+import { UI as WB_UI, PYRAMID_LABEL, formatMinutes, formatTime } from "@/lib/domain/workbench/labels";
+import { harHake, STATUS_CAPS, WARM } from "@/components/workbench/wb-visuelt";
 import { usePortalChat } from "./use-portal-chat";
 import { PortalStegListe } from "./PortalStegListe";
 import { PortalHvorforDette } from "./PortalHvorforDette";
@@ -376,15 +381,164 @@ function TomTilstand({
   );
 }
 
+/**
+ * Workbench «I dag» (Loop 3 / B4) — fire tilstander (PH-01e): feil (henting
+ * feilet), hvile (ingen Workbench-økter i det hele tatt, ikke en feil), pågår
+ * (én økt har status IN_PROGRESS — PH-05, egen fremhevet artefakt-tilstand),
+ * publisert (én eller flere PUBLISHED/COMPLETED-økter). `loadPlayerDay`
+ * filtrerer DRAFT bort server-side (invariant 3) — ingen ny håndheving her.
+ * Lenker til det eksisterende økt-arket fra Loop 3S (`/portal/tren/wb/[id]`).
+ */
+function WorkbenchIDagArtefakt({ workbenchDay }: { workbenchDay: PlayerDayResult }) {
+  const eyebrow = (
+    <div style={{ fontFamily: T.mono, fontSize: 10, letterSpacing: "0.08em", textTransform: "uppercase", color: T.mut }}>
+      workbench
+    </div>
+  );
+
+  if (!workbenchDay.ok) {
+    return (
+      <div data-od-id="wb-idag-feil" style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+        {eyebrow}
+        <SamtaleFeil>{workbenchDay.error}</SamtaleFeil>
+      </div>
+    );
+  }
+
+  const { sessions } = workbenchDay.data;
+  const pagaende = sessions.find((s) => s.status === "IN_PROGRESS") ?? null;
+
+  if (sessions.length === 0) {
+    return (
+      <div
+        data-od-id="wb-idag-hvile"
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          gap: 4,
+          border: `1px dashed ${T.border}`,
+          borderRadius: T.rCard,
+          background: T.panel2,
+          padding: 16,
+        }}
+      >
+        {eyebrow}
+        <p style={{ margin: "4px 0 0", fontFamily: T.ui, fontSize: 13, color: T.fg2, lineHeight: 1.5 }}>
+          {WB_UI.playerNoSessions}
+        </p>
+      </div>
+    );
+  }
+
+  if (pagaende) {
+    return (
+      <div data-od-id="wb-idag-pagar" style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+        {eyebrow}
+        <div
+          style={{
+            border: `1px solid ${T.border}`,
+            borderRadius: T.rCard,
+            background: T.panel2,
+            padding: 16,
+            display: "flex",
+            flexDirection: "column",
+            gap: 8,
+          }}
+        >
+          <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+            <Icon name="play" size={16} style={{ color: WARM }} />
+            <span style={{ fontFamily: T.mono, fontSize: 10, fontWeight: 700, letterSpacing: "0.06em", color: WARM }}>
+              {STATUS_CAPS.IN_PROGRESS}
+            </span>
+          </div>
+          <h3 style={{ margin: 0, fontFamily: T.disp, fontSize: 16, fontWeight: 600, color: T.fg }}>{pagaende.title}</h3>
+          <p style={{ margin: 0, fontFamily: T.ui, fontSize: 13, color: T.fg2, lineHeight: 1.5 }}>
+            Startet {formatTime(pagaende.startMinute)} · {formatMinutes(pagaende.durationMinutes)} ·{" "}
+            {pagaende.drillsCount} øvelser
+          </p>
+          <Link
+            href={`/portal/tren/wb/${pagaende.id}`}
+            className="v2-press v2-focus"
+            data-od-id="wb-idag-pagar-lenke"
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              justifyContent: "center",
+              alignSelf: "flex-start",
+              minHeight: 44,
+              padding: "0 16px",
+              borderRadius: T.rTag,
+              background: T.cta,
+              color: T.onCta,
+              fontFamily: T.ui,
+              fontSize: 13,
+              fontWeight: 600,
+              textDecoration: "none",
+              marginTop: 4,
+            }}
+          >
+            Åpne økt-arket
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div data-od-id="wb-idag-publisert" style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+      {eyebrow}
+      <Kort eyebrow={WB_UI.today}>
+        {sessions.map((s, i) => {
+          const status = s.status as SessionStatus;
+          return (
+            <Link key={s.id} href={`/portal/tren/wb/${s.id}`} style={{ textDecoration: "none", color: "inherit", display: "block" }}>
+              <Rad
+                leading={
+                  <span style={{ width: 44, flex: "none", fontFamily: T.mono, fontSize: 11, fontWeight: 700, color: T.mut }}>
+                    {formatTime(s.startMinute)}
+                  </span>
+                }
+                title={s.title}
+                sub={`${PYRAMID_LABEL[s.pyramid as keyof typeof PYRAMID_LABEL] ?? s.pyramid} · ${formatMinutes(s.durationMinutes)}`}
+                trailing={
+                  <span
+                    style={{
+                      display: "inline-flex",
+                      alignItems: "center",
+                      gap: 4,
+                      fontFamily: T.mono,
+                      fontSize: 9,
+                      fontWeight: 700,
+                      letterSpacing: "0.06em",
+                      color: harHake(status) ? WARM : T.mut,
+                    }}
+                  >
+                    {harHake(status) && <Icon name="check" size={10} style={{ color: WARM }} />}
+                    {STATUS_CAPS[status]}
+                  </span>
+                }
+                last={i === sessions.length - 1}
+              />
+            </Link>
+          );
+        })}
+      </Kort>
+    </div>
+  );
+}
+
 export function PortalChatHjem({
   data,
   gjennomfore,
   naaTekst,
+  workbenchDay,
 }: {
   data: DashboardData;
   gjennomfore: GjennomforeData;
   /** Beregnet server-side i page.tsx (Oslo-korrekt) — se filkommentar. */
   naaTekst: { ukedag: string; dato: string; klokke: string };
+  /** Ekte Workbench-dag (Loop 3/B4) — se `WorkbenchIDagArtefakt`. */
+  workbenchDay: PlayerDayResult;
 }) {
   const { messages, status, error, sendMessage } = usePortalChat();
   const [artefaktApen, setArtefaktApen] = useState(false);
@@ -546,6 +700,8 @@ export function PortalChatHjem({
               alignItems: messages.length === 0 && heltTom ? "stretch" : undefined,
             }}
           >
+            <WorkbenchIDagArtefakt workbenchDay={workbenchDay} />
+
             {messages.length === 0 && heltTom && (
               <TomTilstand
                 ukeHarOkter={ukeHarOkter}
