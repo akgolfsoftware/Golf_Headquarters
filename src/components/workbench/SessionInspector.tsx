@@ -22,7 +22,7 @@ import { Icon } from "@/components/v2/icon";
 import { T } from "@/lib/v2/tokens";
 import { formatMinutes, formatTime, PYRAMID_LABEL, UI } from "@/lib/domain/workbench/labels";
 import type { WorkbenchSession } from "@/lib/domain/workbench/types";
-import { harHake, pyramideFarge, STATUS_CAPS, WARM } from "./wb-visuelt";
+import { harHake, STATUS_CAPS, WARM } from "./wb-visuelt";
 import { DrillListEditor, type LeggTilDrillVerdier } from "./DrillListEditor";
 
 const VARIGHETER = [30, 45, 60, 90, 120, 180];
@@ -174,22 +174,9 @@ export function SessionInspector({
       </InspektorBlokk>
 
       <InspektorBlokk label={UI.sessionAboutLabel}>
-        <InspektorLinje
-          label={UI.pyramid}
-          verdi={
-            <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
-              <span
-                style={{
-                  width: 8,
-                  height: 8,
-                  borderRadius: 9999,
-                  background: pyramideFarge(session.pyramid),
-                }}
-              />
-              {PYRAMID_LABEL[session.pyramid]}
-            </span>
-          }
-        />
+        {/* Train-lock fargekoder aldri data (HANDOFF §MAT) — pyramide-området
+            vises kun som caps-tekst, ingen fargeprikk. */}
+        <InspektorLinje label={UI.pyramid} verdi={PYRAMID_LABEL[session.pyramid]} />
         <InspektorLinje
           label={UI.durationValueLabel}
           verdi={formatMinutes(session.durationMinutes)}

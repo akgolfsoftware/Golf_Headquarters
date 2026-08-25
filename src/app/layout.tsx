@@ -177,10 +177,15 @@ function erLandingsside(path: string): boolean {
 function onsketMorkTema(path: string, temaCookie: string | undefined): boolean {
   const mork = temaCookie === "dark";
   const lysCk = temaCookie === "light";
-  // App + auth: lys default, mørk kun med dark-cookie.
   // Landingssidene: alltid lyse — ingen toggle, heller ikke med dark-cookie.
-  // Resten (stats, team-flatene, interne): mørk default, lys med light-cookie.
   if (erLandingsside(path)) return false;
+  // /portal og /admin: MØRK default (D3, 25.08.2026 — Train-lock er fasiten
+  // og fasitens scene er #000000). Snudd i samme leveranse som den første
+  // ekte Train-lock-skjermen (Workbench-uke), per D2-UNDERLAG §5.4.
+  if (path.startsWith("/portal") || path.startsWith("/admin")) return !lysCk;
+  // /forelder + /auth: uendret — lys default, mørk kun med dark-cookie
+  // (ikke Train-lock-portet ennå).
+  // Resten (stats, team-flatene, interne): mørk default, lys med light-cookie.
   return erAppPath(path) ? mork : !lysCk;
 }
 

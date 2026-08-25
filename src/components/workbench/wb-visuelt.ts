@@ -1,15 +1,21 @@
 /**
- * Delte visuelle konstanter for Workbench-uka (Loop 2).
+ * Delte visuelle konstanter for Workbench-uka (D3, Train-lock).
  *
- * Ingen nye tokens (CLAUDE.md invariant 2): alt peker på eksisterende
- * Paper-/v2-variabler. `WARM` er `--p-accent-fg` — den AA-trygge clay-tonen
- * (#B85C3D i lys, lysere i mørk) som bærer publisert/fullført-haken.
+ * `WARM` peker nå på `--tl-warm` (#B85C3D) — Train-lock-fasitens ENESTE
+ * varme farge: logo-prikk + fullført-hake/ring, aldri grønn (CLAUDE.md
+ * invariant 2, D2-UNDERLAG §5.1).
  */
 
-import { T } from "@/lib/v2/tokens";
-import type { PyramidArea, SessionStatus } from "@/lib/domain/workbench/types";
+import type { SessionStatus } from "@/lib/domain/workbench/types";
 
-export const WARM = "var(--p-accent-fg)";
+export const WARM = "var(--tl-warm)";
+
+/**
+ * Train-lock fargekoder ALDRI data (HANDOFF §MAT, §Beslutninger: «Negative
+ * tall: opacity 0.45, aldri rød. Flagg som caps-tekst, aldri fargeprikk.»).
+ * Pyramide-området vises derfor kun som caps-tekst (PYRAMID_LABEL) — denne
+ * funksjonen er bevisst fjernet fra bruk i WeekGrid/SessionInspector.
+ */
 
 /** Statuser der spilleren ser økten. DRAFT er bevisst utenfor. */
 export const SYNLIG_FOR_SPILLER: readonly SessionStatus[] = [
@@ -17,10 +23,6 @@ export const SYNLIG_FOR_SPILLER: readonly SessionStatus[] = [
   "IN_PROGRESS",
   "COMPLETED",
 ];
-
-export function pyramideFarge(p: PyramidArea): string {
-  return T.ax[p];
-}
 
 /** Versal-merkelapp i økt-kortet og inspektøren. */
 export const STATUS_CAPS: Record<SessionStatus, string> = {

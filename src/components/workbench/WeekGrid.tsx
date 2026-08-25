@@ -12,9 +12,10 @@ import { type CSSProperties } from "react";
 import { TimeGrid, timeGridBlockStyle, type TimeGridDay } from "@/components/v2/time-grid";
 import { Icon } from "@/components/v2/icon";
 import { T } from "@/lib/v2/tokens";
+import { TL } from "@/lib/v2/train-lock";
 import { formatTime, PYRAMID_LABEL, UI } from "@/lib/domain/workbench/labels";
 import type { WeekViewModel, WorkbenchSession } from "@/lib/domain/workbench/types";
-import { harHake, pyramideFarge, STATUS_CAPS, WARM } from "./wb-visuelt";
+import { harHake, STATUS_CAPS, WARM } from "./wb-visuelt";
 
 const DAGKORT = ["MAN", "TIR", "ONS", "TOR", "FRE", "LØR", "SØN"];
 
@@ -125,11 +126,14 @@ function OktKort({
   valgt: boolean;
   onClick: () => void;
 }) {
-  const farge = pyramideFarge(session.pyramid);
   const utkast = session.status === "DRAFT";
   const hake = harHake(session.status);
   const slutt = session.startMinute + session.durationMinutes;
 
+  // Fasit-blokken (A-01/AG-00 K1): flat dock-flate, radius 12 ("skinne-rad"),
+  // ingen fargekoding per pyramide-område. UTKAST = hvit hairline i stedet
+  // for fyll (A-01d). Valgt = inset hvit ring, ALDRI warm/grønn (den fargen
+  // er reservert fullført-hake).
   const stil: CSSProperties = {
     ...timeGridBlockStyle(session.startMinute, session.durationMinutes),
     textAlign: "left",
@@ -137,13 +141,10 @@ function OktKort({
     cursor: "pointer",
     overflow: "hidden",
     padding: "4px 7px",
-    borderRadius: 8,
-    background: utkast
-      ? `color-mix(in srgb, ${farge} 7%, ${T.panel})`
-      : `color-mix(in srgb, ${farge} 15%, ${T.panel})`,
-    border: utkast ? `1px dashed ${farge}` : `1px solid color-mix(in srgb, ${farge} 45%, transparent)`,
-    borderLeft: `3px solid ${farge}`,
-    boxShadow: valgt ? `0 0 0 2px ${WARM}` : "none",
+    borderRadius: TL.radius.row,
+    background: utkast ? "transparent" : TL.dock,
+    border: utkast ? `1px solid ${TL.draftBorder}` : `1px solid ${TL.hair}`,
+    boxShadow: valgt ? `inset 0 0 0 2px ${TL.text}` : "none",
     zIndex: valgt ? 3 : 1,
   };
 
