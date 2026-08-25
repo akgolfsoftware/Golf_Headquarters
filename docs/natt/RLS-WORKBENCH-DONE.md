@@ -4,8 +4,9 @@ Oppfølging til Loop 1: `WorkbenchSession`/`WorkbenchDrill` ble opprettet uten R
 (schema-kommentaren sier det eksplisitt). Denne jobben tetter det — uten å endre
 noe i `src/lib/workbench/wb-actions.ts` eller domenet.
 
-Gren: `claude/agency-workbench-uke-ui-c4d2a4`. **Ikke kjørt mot prod ennå** — se
-§Kjør nedenfor. Ikke merget til main.
+Gren: `claude/agency-workbench-uke-ui-c4d2a4`. **KJØRT MOT PROD OG MERGET TIL MAIN.**
+Verifisert 25.08.2026 mot prosjekt `dcnxoztjtdqoidaekxry` (eu-west-2) — se
+§Verifisert i prod nedenfor. §Kjør står igjen som referanse for rollback/gjenkjøring.
 
 ## Hvorfor dette er forsvar-i-dybden, ikke primærporten
 
@@ -71,9 +72,37 @@ Kobler til `DIRECT_URL` fra `.env.local`, kjører hele migrasjonsfila som ett
 multi-statement-script (ikke Prisma sin `$executeRawUnsafe`, som ikke tillater
 flere statements og ville delt opp den dollar-quotede funksjonskroppen feil).
 
-**Ikke kjørt av denne agent-økten mot prod-DB** — schema/sikkerhetsendringer mot
-delt prod krever Anders' eksplisitte «ja» (CLAUDE.md §Arbeidsregler). Kjør selv,
-eller be Claude kjøre den i en økt der du har bekreftet det.
+Schema-/sikkerhetsendringer mot delt prod krever Anders' eksplisitte «ja»
+(CLAUDE.md §Arbeidsregler). Det ble gitt, og migrasjonen ER kjørt — se
+§Verifisert i prod.
+
+## Verifisert i prod (25.08.2026)
+
+Målt direkte mot `dcnxoztjtdqoidaekxry` (eu-west-2, `ACTIVE_HEALTHY`) via Supabase
+MCP. Ingen skriving — kun `SELECT` og rolle-bytte i én transaksjon.
+
+| Sjekk | Resultat |
+|---|---|
+| `relrowsecurity` begge tabeller | **true** |
+| Policies | 4 på `workbench_sessions`, 2 på `workbench_drills` — navnene matcher migrasjonsfila |
+| `workbench_coach_has_player_access` | finnes |
+| Eier (`postgres`) ser | 2 sessions · 2 drills · 2 spillere |
+| `anon` ser | **0 · 0** |
+| `authenticated` uten JWT ser | **0 · 0** |
+| DRAFT-invarianten (nr. 3) | håndhevet i SELECT-policyen: spiller-grenen er låst til `PUBLISHED / IN_PROGRESS / COMPLETED / SKIPPED` |
+
+Deny-beviset er ekte: tabellene er ikke tomme (eier ser 2), så `anon`/`authenticated`
+sine nuller kommer fra RLS, ikke fra manglende data. Merk at `anon` og
+`authenticated` har fulle `GRANT`-rettigheter på begge tabeller — policyene er
+dermed eneste lås, og de holder.
+
+**Avvik fra planens anbefaling:** LAUNCH-PLAN §S1 anbefalte *deny-by-default*
+(ENABLE uten policies, jf. repo-presedens ×4) fordi policy-SQL-en duplisererer
+`wb-actions.ts` sin tilgangslogikk og derfor kan drifte. Det som faktisk står i
+prod er den FULLE policy-varianten. Sikkerhetsutfallet er det samme eller bedre
+for anon/authenticated; drift-risikoen fra anbefalingen består. Om policyene skal
+erstattes med rent deny-by-default er en åpen beslutning for Anders — ikke gjort
+her, siden fungerende policies ikke fjernes uten eksplisitt ja.
 
 ## Rull tilbake
 
