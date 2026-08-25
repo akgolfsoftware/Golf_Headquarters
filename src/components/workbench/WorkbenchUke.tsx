@@ -15,23 +15,30 @@ import { Knapp } from "@/components/v2/core";
 import { Icon } from "@/components/v2/icon";
 import { T } from "@/lib/v2/tokens";
 import { addDays, mondayOf } from "@/lib/domain/workbench/operations";
-import { formatHours, UI } from "@/lib/domain/workbench/labels";
+import { AREA_LABEL, formatHours, PYRAMID_LABEL, UI } from "@/lib/domain/workbench/labels";
 import type {
   SourceItem,
   WeekViewModel,
   WorkbenchSession,
 } from "@/lib/domain/workbench/types";
 import {
+  addDrill,
   createSession,
   deleteSession,
   loadWeek,
   moveSession,
   publishSessions,
+  removeDrill,
+  reorderDrills,
   unpublishSession,
 } from "@/lib/workbench/wb-actions";
 import { CreateSessionModal, type NyOktVerdier } from "./CreateSessionModal";
 import { PublishConfirmDialog } from "./PublishConfirmDialog";
-import { SessionInspector, type FlyttVerdier } from "./SessionInspector";
+import {
+  SessionInspector,
+  type FlyttVerdier,
+  type LeggTilDrillVerdier,
+} from "./SessionInspector";
 import { SourcesPanel } from "./SourcesPanel";
 import { osloIdag, WeekGrid } from "./WeekGrid";
 
@@ -201,6 +208,44 @@ export function WorkbenchUke({ playerId, spillerNavn, uke, kilder }: Props) {
                   setValgtId(null);
                   toast.success("Økten er slettet");
                 },
+              );
+            }}
+            onLeggTilDrill={(v: LeggTilDrillVerdier) => {
+              if (!valgt) return;
+              kjor(
+                () =>
+                  addDrill({
+                    sessionId: valgt.id,
+                    drill: {
+                      title: v.title,
+                      durationMinutes: v.durationMinutes,
+                      akFormel: {
+                        pyramid: v.pyramid,
+                        area: v.area,
+                        label: `${PYRAMID_LABEL[v.pyramid]} · ${AREA_LABEL[v.area]}`,
+                      },
+                    },
+                  }),
+                () => toast.success("Øvelse lagt til"),
+              );
+            }}
+            onFlyttDrill={(drillId, retning) => {
+              if (!valgt) return;
+              const idx = valgt.drills.findIndex((d) => d.id === drillId);
+              const nyIdx = idx + retning;
+              if (idx < 0 || nyIdx < 0 || nyIdx >= valgt.drills.length) return;
+              const rekkefolge = valgt.drills.map((d) => d.id);
+              [rekkefolge[idx], rekkefolge[nyIdx]] = [rekkefolge[nyIdx], rekkefolge[idx]];
+              kjor(
+                () => reorderDrills({ sessionId: valgt.id, orderedDrillIds: rekkefolge }),
+                () => {},
+              );
+            }}
+            onFjernDrill={(drillId) => {
+              if (!valgt) return;
+              kjor(
+                () => removeDrill({ sessionId: valgt.id, drillId }),
+                () => toast.success("Øvelsen er fjernet"),
               );
             }}
           />

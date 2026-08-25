@@ -3,7 +3,13 @@
  * Never hard-code Norwegian in components; import from here.
  */
 
-import type { PyramidArea, SessionStatus, BlockType, SourceFilter } from "./types";
+import type {
+  PyramidArea,
+  SessionStatus,
+  BlockType,
+  SourceFilter,
+  TrainingArea,
+} from "./types";
 
 export const PYRAMID_LABEL: Record<PyramidArea, string> = {
   FYS: "Fysisk",
@@ -11,6 +17,28 @@ export const PYRAMID_LABEL: Record<PyramidArea, string> = {
   SLAG: "Slag",
   SPILL: "Spill",
   TURN: "Turnering",
+};
+
+export const AREA_LABEL: Record<TrainingArea, string> = {
+  TEE: "Tee",
+  INNSPILL_200: "Innspill 200 m",
+  INNSPILL_150: "Innspill 150 m",
+  INNSPILL_100: "Innspill 100 m",
+  INNSPILL_50: "Innspill 50 m",
+  CHIP: "Chip",
+  PITCH: "Pitch",
+  LOB: "Lob",
+  BUNKER: "Bunker",
+  PUTT_0_3: "Putt 0–3 m",
+  PUTT_3_5: "Putt 3–5 m",
+  PUTT_5_10: "Putt 5–10 m",
+  PUTT_10_25: "Putt 10–25 m",
+  PUTT_25_40: "Putt 25–40 m",
+  PUTT_40_PLUSS: "Putt 40 m+",
+  STYRKE: "Styrke",
+  KONDISJON: "Kondisjon",
+  BEVEGELIGHET: "Bevegelighet",
+  BANE: "Bane",
 };
 
 export const STATUS_LABEL: Record<SessionStatus, string> = {
@@ -80,6 +108,17 @@ export const UI = {
   drills: "Drills",
   publishedAt: "Publisert",
   draftBadge: "Utkast — kun synlig for deg",
+
+  // Drill-skjema
+  drillTitle: "Navn",
+  drillTitlePlaceholder: "F.eks. Wedge 60 m",
+  drillPyramid: "Pyramide",
+  drillArea: "Område",
+  drillDuration: "Tid",
+  moveDrillUp: "Flytt opp",
+  moveDrillDown: "Flytt ned",
+  removeDrillLabel: "Fjern øvelse",
+  incompleteDrill: "Mangler info",
 
   // Publish flow
   publishConfirmTitle: "Publiser til spilleren?",
