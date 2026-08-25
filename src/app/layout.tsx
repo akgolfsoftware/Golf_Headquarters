@@ -10,6 +10,7 @@ import { SwRegister } from "@/components/sw-register";
 import { CookieBanner } from "@/components/shared/cookie-banner";
 import { VriTelefonen } from "@/components/shared/vri-telefonen";
 import { AnalyticsLoader } from "@/components/shared/analytics-loader";
+import { erTrainLockFlate } from "@/lib/v2/tema-default";
 import "./globals.css";
 
 // ---------- Claude Paper-fontene (designport steg 4 + 10) ----------
@@ -118,13 +119,18 @@ export const viewport = {
 };
 
 // Async RSC — nødvendig for å lese headers() (CSP-nonce).
-function erAppPath(path: string): boolean {
+/**
+ * Flater som er LYSE som standard og kun blir mørke med dark-cookie.
+ *
+ * `/portal` og `/admin` sto her frem til 25.08.2026. De er nå MØRKE som
+ * standard (Train-lock, se src/lib/v2/tema-default.ts) og håndteres av
+ * `erTrainLockFlate` i `onsketMorkTema`.
+ */
+function erLysAppPath(path: string): boolean {
   return (
-    path.startsWith("/portal") ||
-    path.startsWith("/admin") ||
     path.startsWith("/forelder") ||
     // Auth følger landingssidene/fasiten (fase1/innlogging.html): lys default.
-    // Anders' beslutning 2026-08-13.
+    // Anders' beslutning 2026-08-13, bekreftet av PP-A A4 (16.08).
     path.startsWith("/auth")
   );
 }
@@ -173,15 +179,17 @@ function erLandingsside(path: string): boolean {
   return LANDINGSSIDER.some((p) => path === p || path.startsWith(`${p}/`));
 }
 
-/** Samme regel som gammelt FOUC-script + V2Shell — men på server (ingen <script>). */
+/** Samme regel som V2Shell synker mot ved rutebytte — men på server (ingen <script>). */
 function onsketMorkTema(path: string, temaCookie: string | undefined): boolean {
   const mork = temaCookie === "dark";
   const lysCk = temaCookie === "light";
-  // App + auth: lys default, mørk kun med dark-cookie.
   // Landingssidene: alltid lyse — ingen toggle, heller ikke med dark-cookie.
+  // PlayerHQ + AgencyOS: MØRK default (Train-lock), lys med light-cookie.
+  // Forelder + auth: lys default, mørk kun med dark-cookie.
   // Resten (stats, team-flatene, interne): mørk default, lys med light-cookie.
   if (erLandingsside(path)) return false;
-  return erAppPath(path) ? mork : !lysCk;
+  if (erTrainLockFlate(path)) return !lysCk;
+  return erLysAppPath(path) ? mork : !lysCk;
 }
 
 export default async function RootLayout({

@@ -20,6 +20,7 @@ import { T } from "@/lib/v2/tokens";
 import { Icon } from "./icon";
 import { LogoAK, AvatarFoto } from "./core";
 import { useV2Tema, lesTema, type V2Tema } from "./tema";
+import { standardTema } from "@/lib/v2/tema-default";
 import { SpillerVeksler, type VekslerData } from "./spiller-veksler";
 import { useErAdmin } from "./rolle";
 import { GlobalSearchModal } from "@/components/admin/global-search-modal";
@@ -878,23 +879,30 @@ export function V2Shell({ aktiv, nav = PLAYERHQ_NAV, mer, rom, navn = "Øyvind R
   // mørk-cookie-brukere rettes ved hydration (suppressHydrationWarning) —
   // v2-fargene er riktige fra første paint uansett (var(--v2-*) + inline-script
   // i rot-layout).
-  const { tema } = useV2Tema();
+  const { tema } = useV2Tema(standardTema(pathname));
 
-  // Tema-oppførsel (25. jul): ALLE v2-flater (PlayerHQ, AgencyOS, Forelder)
-  // er lys som standard med bryter til mørk. Mørk skjerm er vanskelig å
-  // lese utendørs i sollys. `data-v2-tema` er ETT delt attributt på <html>
-  // (samme cookie), og Next-navigasjon mellom flatene er client-side (samme
-  // dokument), så attributtet synkes ved rute-veksling: mørk KUN hvis
-  // cookien sier dark — ellers alltid lys.
+  // Tema-oppførsel (25.08.2026): PlayerHQ og AgencyOS er MØRKE som standard
+  // (Train-lock), Forelder og auth er fortsatt lyse. `data-v2-tema` er ETT
+  // delt attributt på <html> (samme cookie), og Next-navigasjon mellom
+  // flatene er client-side i SAMME dokument — så attributtet må synkes ved
+  // hvert rutebytte, ellers tar du med deg forrige flates tema.
+  //
+  // Cookien vinner alltid over standarden, begge veier: `dark` gjør en lys
+  // flate mørk, `light` gjør en mørk flate lys. Uten cookie bestemmer ruta.
+  // (Sto til 25.08: «mørk KUN hvis cookien sier dark, ellers alltid lys» —
+  // den regelen ville snudd /portal og /admin tilbake til lys ved første
+  // navigering, uansett hva serveren stemplet.)
   useEffect(() => {
-    const cookieMork = document.cookie.split("; ").some((c) => c === "ak-v2-tema=dark");
-    const onsket: V2Tema = cookieMork ? "dark" : "light";
+    const cookie = document.cookie.split("; ").find((c) => c.startsWith("ak-v2-tema="));
+    const verdi = cookie?.slice("ak-v2-tema=".length);
+    const onsket: V2Tema =
+      verdi === "dark" ? "dark" : verdi === "light" ? "light" : standardTema(pathname);
     if (lesTema() !== onsket) {
       if (onsket === "dark") document.documentElement.setAttribute("data-v2-tema", "dark");
       else document.documentElement.removeAttribute("data-v2-tema");
       window.dispatchEvent(new Event("ak-v2-tema"));
     }
-  }, [erAgency]);
+  }, [erAgency, pathname]);
 
   // Coach-cookie for profil-veksleren: besøk i AgencyOS markerer nettleseren
   // som coach (kun UI-visning av toggle-lenken i PlayerHQ; guards uendret).

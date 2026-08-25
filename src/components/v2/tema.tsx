@@ -9,31 +9,45 @@
  * signeringen 12.08 fant den manglende på fire skjermer samtidig. Den bor
  * derfor her, delt mellom railen og `PaperTopp`.
  *
- * Sannheten bor på `<html data-v2-tema>` (satt før paint av inline-scriptet i
- * rot-layout) + cookie `ak-v2-tema`; hooken speiler den og synker alle
- * instanser via et vindus-event. SSR-snapshot er lys — app-flatene er
- * lys-først, og mørk kommer kun fra cookien, som serveren ikke kjenner her.
- * React retter ved hydration.
+ * Sannheten bor på `<html data-v2-tema>` (satt av rot-layout før paint) +
+ * cookie `ak-v2-tema`; hooken speiler den og synker alle instanser via et
+ * vindus-event.
+ *
+ * SSR-snapshotet tar imot flatens standard (`standardTema`) fordi standarden
+ * ikke lenger er lys overalt: PlayerHQ og AgencyOS er mørke fra 25.08.2026.
+ * Uten den ville `className={tema}`-scopet rendret lyst på en mørk flate og
+ * først blitt rettet ved hydration — et synlig blink i shadcn-primitivene.
  */
 
 import { useSyncExternalStore } from "react";
 import { Icon } from "./icon";
 import { T } from "@/lib/v2/tokens";
+import type { V2Tema } from "@/lib/v2/tema-default";
 
-export type V2Tema = "dark" | "light";
+export type { V2Tema };
 
 export function lesTema(): V2Tema {
   if (typeof document === "undefined") return "light";
   return document.documentElement.getAttribute("data-v2-tema") === "dark" ? "dark" : "light";
 }
 
+// Stabile referanser — useSyncExternalStore krever at getServerSnapshot ikke
+// bytter identitet mellom renders.
+const hentLys = (): V2Tema => "light";
+const hentMork = (): V2Tema => "dark";
+
 function abonnerTema(cb: () => void) {
   window.addEventListener("ak-v2-tema", cb);
   return () => window.removeEventListener("ak-v2-tema", cb);
 }
 
-export function useV2Tema() {
-  const tema = useSyncExternalStore<V2Tema>(abonnerTema, lesTema, () => "light");
+/**
+ * @param standard temaet flaten har uten cookie (`standardTema(pathname)`).
+ *   Brukes KUN som SSR-snapshot; på klienten leses `<html data-v2-tema>`.
+ */
+export function useV2Tema(standard: V2Tema = "light") {
+  const serverSnapshot = standard === "dark" ? hentMork : hentLys;
+  const tema = useSyncExternalStore<V2Tema>(abonnerTema, lesTema, serverSnapshot);
   const bytt = () => {
     const neste: V2Tema = lesTema() === "light" ? "dark" : "light";
     if (neste === "dark") document.documentElement.setAttribute("data-v2-tema", "dark");

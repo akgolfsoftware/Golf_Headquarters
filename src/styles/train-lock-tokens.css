@@ -13,18 +13,19 @@
    (CLAUDE.md invariant 2, Anders 25.08.2026). AG-00 dokumenterer at
    AgencyOS arver PlayerHQ-tokenene 1:1 — derfor ETT sett, ikke to.
 
-   TRE BEVISSTE AVVIK FRA FASITEN — ingen verdiendring:
+   TRE BEVISSTE AVVIK FRA FASITEN (+ font, avgjort av Anders — se §Type):
 
    1. ALLE navn har prefikset `--tl-`. Uten prefiks ville fila kollidert med
       --p-* (Paper), --v2-* og golfdata-settet. Prefikset er det som gjør at
       Train-lock kan ligge ved siden av Paper mens skjermene portes én for én.
 
-   2. Fasiten sier «mørk er default». Appen har ÉN tema-mekanisme:
-      `html[data-v2-tema="dark"]`, ellers lys (.claude/rules/gotchas.md).
-      Å snu default-en per rute er en SKJERM-beslutning, ikke en token-
-      beslutning — se docs/natt/D2-TOKENS-DONE.md §Åpne spørsmål. Derfor:
-      lys på :root, mørk under data-v2-tema="dark", nøyaktig som
-      paper-tokens.css. Ingen ny tema-mekanisme innføres.
+   2. Fasiten sier «mørk er default», og fra 25.08.2026 ER PlayerHQ og
+      AgencyOS mørke som standard (Anders' beslutning, implementert i
+      src/lib/v2/tema-default.ts). Mekanismen er uendret og fortsatt den
+      eneste: `html[data-v2-tema="dark"]`, ellers lys. Fila følger derfor
+      samme form som paper-tokens.css — lys på :root, mørk under attributtet
+      — mens rot-layout stempler attributtet per rute. Ingen ny
+      tema-mekanisme innføres.
 
    3. Denne fila importeres, men INGEN komponent leser den ennå. Den endrer
       null piksler før en skjerm tar --tl-* i bruk (D3 og senere).
@@ -115,12 +116,15 @@
   --tl-kilder: 220px;               /* Workbench kilder-kolonne (iPad 240) */
 
   /* ─────────────────────────────────────────────────────────────────────
-     TYPE (TRAIN LOCK §02) — SF Pro Display/Text, tabular-nums på alle tall.
-     KONFLIKT med repoets Poppins/Lora — se D2-TOKENS-DONE §Åpne spørsmål.
+     TYPE (TRAIN LOCK §02) — tabular-nums på alle tall.
+
+     AVGJORT (Anders 25.08.2026): fasiten skriver «SF Pro Display/Text», men
+     repoet BEHOLDER Poppins. Skala, vekter og tracking under er fasitens —
+     kun familien er repoets. Poppins/Lora/IBM Plex Mono er de eneste fontene
+     i appen (se rot-layout); ikke gjeninnfør en fjerde.
      ───────────────────────────────────────────────────────────────────── */
-  --tl-font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Display",
-    "SF Pro Text", "Helvetica Neue", Helvetica, Arial, sans-serif;
-  --tl-font-mono: "SF Mono", ui-monospace, Menlo, monospace;
+  --tl-font-sans: var(--font-poppins), Arial, system-ui, sans-serif;
+  --tl-font-mono: var(--font-ibm-plex-mono), ui-monospace, monospace;
 
   --tl-text-title: 34px;            /* 700 · letter-spacing -0.02em */
   --tl-text-card: 26px;             /* 700 · letter-spacing -0.01em */

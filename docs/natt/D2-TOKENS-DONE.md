@@ -5,13 +5,16 @@
 > D2 ble bygget uten `docs/natt/D2-UNDERLAG-2026-08-25.md` §5, der Anders allerede hadde
 > avgjort tolv punkter. Følgende gjelder nå:
 >
-> 1. **Mørk som default (spm. 1): JA — men snus sammen med første portede skjerm**, ikke
->    før. Temaet gjelder hele dokumentet, så et tidlig bytte ville gjort 200+ uportede
->    skjermer mørke før de er tegnet for det. `layout.tsx` §`onsketMorkTema` endres i
->    samme leveranse som de første ekte Train-lock-skjermene.
-> 2. **Font (spm. 2): SF Pro i produktet (PlayerHQ + AgencyOS), Poppins beholdes på
->    markedssidene.** Landingssidene har egen godkjent fasit (`ak-golf-website`).
->    Systemstacken lastes ikke ned — raskere, og hjemme på iOS.
+> 1. ~~**Mørk som default (spm. 1): JA — men snus sammen med første portede skjerm.**~~
+>    **OVERSTYRT SENERE SAMME DAG (Anders i økt): «Mørk default på portal og admin» —
+>    snudd NÅ, ikke ventet på første portede skjerm.** Implementert i
+>    `src/lib/v2/tema-default.ts` + `layout.tsx` + `V2Shell`. Innvendingen over står
+>    likevel som en advarsel: de uportede Paper-skjermene i `/portal` og `/admin` vises
+>    nå i sin mørke Paper-variant, og er ikke kjørt gjennom skjermbilde-gaten i mørk.
+> 2. ~~**Font (spm. 2): SF Pro i produktet, Poppins på markedssidene.**~~
+>    **OVERSTYRT SENERE SAMME DAG (Anders i økt): «behold Poppins».** Poppins/Lora/IBM
+>    Plex Mono er appens eneste fonter — også i produktet. Fra Train-lock arves skala,
+>    vekter og tracking, ikke familien. `--tl-font-sans` peker på `var(--font-poppins)`.
 > 3. **Agency-skinne 64 vs 232 (spm. 9): LUKKET — fast 64 px.** Ingen kollapset variant
 >    bygges. HANDOFF-en er utdatert på dette punktet.
 > 4. **Warn-token (manglet helt):** `#FFD60A` er nå navngitt som `--tl-warn` +
@@ -119,18 +122,15 @@ node scripts/check-token-gap.mjs → grønn
 
 ## Det som IKKE lot seg utlede — spørsmål til Anders
 
-1. **Mørk som default.** Fasiten sier «mørk er default» for både PlayerHQ og AgencyOS.
-   Appen gir i dag **lys** default på `/portal` og `/admin` (`onsketMorkTema` i
-   `src/app/layout.tsx`); mørk krever `ak-v2-tema=dark`-cookie. Å snu den er en
-   rute-endring, ikke en token-endring, og lå utenfor D2. Tokenene ligger derfor
-   lys på `:root` / mørk på `[data-v2-tema="dark"]` — samme mekanisme som Paper,
-   ingen ny tema-mekanisme. **Skal /portal og /admin snus til mørk default?**
+1. ~~**Mørk som default.**~~ **AVGJORT (Anders 25.08.2026): mørk default på
+   `/portal` og `/admin`.** Implementert i `src/lib/v2/tema-default.ts` (delt
+   regel), `src/app/layout.tsx` (SSR-stempelet) og `src/components/v2/shell.tsx`
+   (synk ved client-side rutebytte). Cookien vinner fortsatt begge veier —
+   `ak-v2-tema=light` gir lys flate. `/auth` og `/forelder` er uendret lyse.
 
-2. **Font.** Fasiten skriver «SF Pro Display/Text» og bruker system-stacken
-   (`-apple-system, …`). Repoets stack er Poppins/Lora/IBM Plex Mono (CLAUDE.md
-   §Stack). `--tl-font-sans` bærer fasitens stack, men ingenting leser den ennå.
-   **Skal Train-lock-skjermene bytte til systemfonten, eller beholder vi Poppins?**
-   Dette er den eneste harde konflikten mellom fasiten og repoets låste stack.
+2. ~~**Font.**~~ **AVGJORT (Anders 25.08.2026): behold Poppins.** `--tl-font-sans`
+   peker på `var(--font-poppins)`, `--tl-font-mono` på `var(--font-ibm-plex-mono)`.
+   Fasitens skala, vekter og tracking gjelder uendret — kun familien er repoets.
 
 3. **Fokus-tilstand finnes ikke i fasiten.** Null `:focus`, `outline` eller
    fokusring i noen av de 177 designfilene — designet er tegnet touch-først. Vi trenger en
@@ -169,6 +169,26 @@ node scripts/check-token-gap.mjs → grønn
     (`--tl-text-num-min/max`); hvilket trinn hver skjerm bruker avgjøres i skjerm-PR-en.
 
 ---
+
+---
+
+## Oppfølging 25.08.2026 — beslutning 1 og 2 implementert
+
+Anders avgjorde de to blokkerende spørsmålene samme dag. Endringene ligger i
+egen commit på samme gren:
+
+| Fil | Endring |
+|---|---|
+| `src/lib/v2/tema-default.ts` | **NY.** `erTrainLockFlate()` + `standardTema()` — én delt regel for server og klient. |
+| `src/app/layout.tsx` | `erAppPath` → `erLysAppPath` (nå kun `/forelder` + `/auth`). `/portal` og `/admin` får mørk default via `erTrainLockFlate`. |
+| `src/components/v2/shell.tsx` | Synk-effekten leser standarden per rute i stedet for «alltid lys uten dark-cookie», og kjører nå også ved `pathname`-bytte. Uten dette ville flaten snudd tilbake til lys ved første navigering. |
+| `src/components/v2/tema.tsx` | `useV2Tema(standard)` — SSR-snapshotet følger flatens standard, så `.dark`-scopet ikke blinker lyst før hydration. |
+| `src/styles/train-lock-tokens.css` | Font-tokenene peker på Poppins / IBM Plex Mono. |
+
+**Konsekvens å være klar over:** alle uportede Paper-skjermer i `/portal` og
+`/admin` vises nå i sin MØRKE Paper-variant, ikke i Train-lock — tokenene er
+fortsatt uleste. Paper har mørk-blokk for alle sine tokens, så flatene rendrer,
+men de er ikke kjørt gjennom skjermbilde-gaten i mørk. Se dem over før D3.
 
 ## Anti-scope holdt
 

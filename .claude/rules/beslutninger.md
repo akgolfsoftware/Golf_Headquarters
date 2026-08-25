@@ -16,6 +16,26 @@ Gjelder til Anders endrer dem.
 
 ## Beslutningene (august 2026)
 
+- **TEMA-DEFAULT: PlayerHQ og AgencyOS er MØRKE (Anders 2026-08-25, i økt) + FONT:
+  POPPINS BEHOLDES.** Train-lock sier «mørk er default», og fra nå gjelder det i
+  koden: `/portal` og `/admin` rendres mørkt uten cookie. Regelen bor ÉTT sted,
+  `src/lib/v2/tema-default.ts` (`standardTema`), og leses av både rot-layout (SSR)
+  og `V2Shell` (synk ved client-side rutebytte) — endrer du den ene uten den
+  andre, snur flaten tilbake ved første navigering. Bryteren står: cookien
+  `ak-v2-tema` vinner begge veier, så `light` gir lys PlayerHQ. **Uendret lyse:**
+  `/auth` (beslutning 13.08 + PP-A A4), `/forelder` (omfang uavklart) og
+  landingssidene (alltid lyse). Dette supererer «alle v2-flater er lyse som
+  standard» (25.07) for nøyaktig `/portal` + `/admin`. Den supererer også de to
+  svarene som ble ført inn tidligere samme dag via `docs/natt/D2-UNDERLAG-2026-08-25.md`
+  §5 / PR #588 («snus sammen med første portede skjerm» og «SF Pro i produktet») —
+  Anders overstyrte begge i økt etterpå.
+  **Font:** fasitens «SF Pro Display/Text» tas IKKE i bruk — Poppins/Lora/IBM Plex
+  Mono består som appens eneste fonter. Fra Train-lock arves skala, vekter og
+  tracking (34/700 · 26/700 · 16/700 · 15/600 · 13/400 · 11/600 caps 0.08em),
+  ikke familien. Ikke gjeninnfør en fjerde font.
+  Åpne spørsmål som gjenstår på Train-lock-tokenene (fokus, hover, disabled,
+  lys-variant for warm/ellipse/hullkart, skygge, z-index): `docs/natt/D2-TOKENS-DONE.md`.
+
 - **KOMPLETT TRAIN-LOCK — ALLE SKJERMER I PLAYERHQ OG AGENCYOS (Anders 2026-08-25, i økt):**
   Train-lock er eneste designfasit for hele produktet — både PlayerHQ og AgencyOS, alle
   skjermer. Claude Paper (`605a48cc` / `designsystem/paper/`) er HISTORIKK/arkiv, aldri
