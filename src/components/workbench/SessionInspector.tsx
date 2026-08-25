@@ -66,12 +66,7 @@ export function SessionInspector({
   const [varighet, setVarighet] = useState(session?.durationMinutes ?? 60);
 
   if (!session) {
-    return (
-      <InspektorTom
-        tittel={UI.inspectorTitle}
-        tekst="Velg en økt i uka for å se og endre den."
-      />
-    );
+    return <InspektorTom tittel={UI.inspectorTitle} tekst={UI.inspectorEmptyBody} />;
   }
 
   const utkast = session.status === "DRAFT";
@@ -138,9 +133,9 @@ export function SessionInspector({
         </div>
       )}
 
-      <InspektorBlokk label="Tid">
+      <InspektorBlokk label={UI.timeLabel}>
         <div style={{ display: "grid", gap: 10 }}>
-          <Felt label="Dato">
+          <Felt label={UI.dateLabel}>
             <Input type="date" value={dag} onChange={(e) => setDag(e.target.value)} />
           </Felt>
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
@@ -173,12 +168,12 @@ export function SessionInspector({
               })
             }
           >
-            {travel ? "Lagrer …" : UI.moveSession}
+            {travel ? UI.saving : UI.moveSession}
           </Knapp>
         </div>
       </InspektorBlokk>
 
-      <InspektorBlokk label="Om økten">
+      <InspektorBlokk label={UI.sessionAboutLabel}>
         <InspektorLinje
           label={UI.pyramid}
           verdi={
@@ -196,7 +191,7 @@ export function SessionInspector({
           }
         />
         <InspektorLinje
-          label="Varer"
+          label={UI.durationValueLabel}
           verdi={formatMinutes(session.durationMinutes)}
         />
         {session.publishedAt && (

@@ -77,13 +77,13 @@ export function CreateSessionModal({
   function send() {
     const rensetTittel = tittel.trim();
     if (!rensetTittel) {
-      setFeil("Økten må ha en tittel.");
+      setFeil(UI.titleRequired);
       return;
     }
     const [t, m] = start.split(":");
     const startMin = Number(t) * 60 + Number(m);
     if (!Number.isFinite(startMin)) {
-      setFeil("Ugyldig starttidspunkt.");
+      setFeil(UI.invalidStartTime);
       return;
     }
     setFeil(null);
@@ -106,24 +106,22 @@ export function CreateSessionModal({
       <DialogContent size="md">
         <DialogHeader>
           <DialogTitle>{UI.createSession}</DialogTitle>
-          <DialogDescription>
-            Økten lagres som utkast. Den er kun synlig for deg til du publiserer.
-          </DialogDescription>
+          <DialogDescription>{UI.createSessionBody}</DialogDescription>
         </DialogHeader>
 
         <DialogBody>
           <div style={{ display: "grid", gap: 14 }}>
-            <Felt label="Tittel">
+            <Felt label={UI.titleField}>
               <Input
                 value={tittel}
                 onChange={(e) => setTittel(e.target.value)}
-                placeholder="F.eks. Wedge 60–100 m"
+                placeholder={UI.titlePlaceholder}
                 autoFocus
               />
             </Felt>
 
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
-              <Felt label="Dato">
+              <Felt label={UI.dateField}>
                 <Input type="date" value={dag} onChange={(e) => setDag(e.target.value)} />
               </Felt>
               <Felt label={UI.start}>
@@ -207,7 +205,7 @@ export function CreateSessionModal({
             {UI.cancel}
           </Knapp>
           <Knapp onClick={send} disabled={lagrer}>
-            {lagrer ? "Oppretter …" : "Opprett"}
+            {lagrer ? UI.creating : UI.create}
           </Knapp>
         </DialogFooter>
       </DialogContent>

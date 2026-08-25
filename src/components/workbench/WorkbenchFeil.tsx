@@ -9,6 +9,7 @@ import { useRouter } from "next/navigation";
 import { Knapp } from "@/components/v2/core";
 import { Icon } from "@/components/v2/icon";
 import { T } from "@/lib/v2/tokens";
+import { UI } from "@/lib/domain/workbench/labels";
 
 export function WorkbenchFeil({ melding }: { melding: string }) {
   const router = useRouter();
@@ -28,10 +29,10 @@ export function WorkbenchFeil({ melding }: { melding: string }) {
     >
       <Icon name="triangle-alert" size={22} style={{ color: T.down }} />
       <div style={{ fontFamily: T.disp, fontSize: 15, fontWeight: 600, color: T.fg }}>
-        Kunne ikke hente uka
+        {UI.weekFetchErrorTitle}
       </div>
       <div style={{ fontFamily: T.ui, fontSize: 13, color: T.fg2, maxWidth: 380 }}>{melding}</div>
-      <Knapp onClick={() => router.refresh()}>Prøv igjen</Knapp>
+      <Knapp onClick={() => router.refresh()}>{UI.retry}</Knapp>
     </div>
   );
 }

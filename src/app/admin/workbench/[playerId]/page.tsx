@@ -19,6 +19,7 @@ import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
 import { mondayOf } from "@/lib/domain/workbench/operations";
 import type { WorkbenchMode } from "@/lib/domain/workbench/types";
 import { loadSources, loadWeek } from "@/lib/workbench/wb-actions";
+import { UI } from "@/lib/domain/workbench/labels";
 import { WorkbenchUke } from "@/components/workbench/WorkbenchUke";
 import { WorkbenchFeil } from "@/components/workbench/WorkbenchFeil";
 
@@ -59,7 +60,7 @@ export default async function WorkbenchUkePage({ params, searchParams }: Props) 
       {ukeRes.ok ? (
         <WorkbenchUke
           playerId={playerId}
-          spillerNavn={spiller.name ?? "Spiller"}
+          spillerNavn={spiller.name ?? UI.unnamedPlayer}
           uke={ukeRes.data}
           kilder={kilderRes.ok ? kilderRes.data : []}
         />
