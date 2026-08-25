@@ -1,280 +1,164 @@
 # CLAUDE.md — AK Golf HQ
 
-B2B SaaS (AgencyOS) + forbruker-app (PlayerHQ) med Supabase Postgres. Alt av forretningslogikk er norsk bokmål.
+B2B SaaS (AgencyOS) + forbruker-app (PlayerHQ). Forretningslogikk og UI-tekst: **norsk bokmål**.
 
-> Stistrukturen under er verifisert mot filsystemet 2026-07-26. Ved tvil: sjekk filen faktisk finnes
-> før du stoler på en lenke — dokumentkartet har flyttet på seg flere ganger.
+Ved konflikt: `docs/ak-master.md` > denne filen. Ved konflikt om *Player* I dag / økt / TrackMan / Workbench-uke: **`docs/natt/`** > eldre Paper-porttekst.
 
-## Master
-Fullstendig regelverk og begrunnelse: docs/ak-master.md. Ved konflikt mellom
-CLAUDE.md og ak-master.md vinner ak-master.md.
+---
 
-## Start her — les disse filene først
-- **`docs/platform/NORDSTJERNE.md`** — produktets nordstjerne. Alltid gjeldende målbilde.
-- **`docs/platform/AGENT-BRIEF.md`** — agent-onboarding: stack, eksakte versjoner, prosjektkart. Les FØR arbeid.
-- **`docs/STATUS-NÅ.md`** — hva er levert/ikke levert akkurat nå. (Ligger i `docs/`, ikke `docs/platform/`.)
-- **`docs/port/fasit-liste-paper.md`** — designdekning: hvilke skjermer har Paper-fasit, hvilke mangler.
-- **`docs/port/PORTPLAN.md`** — porteringsplan: én sesjon per mal-fasit, rekkefølge og blokkeringer.
-- **`docs/MASTERPLAN-GJENSTAAENDE.md`** — samlet gjenstående-plan på tvers av alle spor (17.08.2026).
-- **`docs/platform/BUSINESS-RULES.md`** — forretningsregler som ikke kan utledes fra kode (abonnement, booking, GDPR, dual-track, demo-data, tema m.fl.).
-- **`docs/platform/DATA-MODEL.md`** — datamodell (tabeller, felter, relasjoner, server actions, API).
-- **`docs/testing.md`** — testinfrastruktur og plan.
-- **`docs/runbook.md`** — driftsrunbook (inkl. §2.5 «kompromittert secret» og rotasjonsliste).
+## Start her (les i denne rekkefølgen)
 
-## Detaljerte regler (`.claude/rules/`)
-Sju filer, alle aktive: `arkitektur.md` (produkter, ruter, mappestruktur) · `gotchas.md` (kjente feller —
-**les FØR koding**) · `beslutninger.md` (låste beslutninger juni–juli 2026) · `mulligan-drift.md` ·
-`wang-toppidrett.md` · `gfgk-junior.md` · `admin-tripletex.md` (de fire siste er Anders' virksomhets-domener,
-ikke kode).
+1. **`docs/natt/README.md`** — nattkjøring A1–A4 + bølge 2. **Gjeldende lanseringsspor.**
+2. **`docs/natt/LOOP-1-PROMPT.md`** — lim inn i *ny* Claude-session for domain + actions.
+3. **`docs/natt/workbench/`** — domain, operations, tester, ACCESS, Player HQ-integrasjon.
+4. **`docs/STATUS-NÅ.md`** — levert / ikke levert.
+5. **`docs/platform/AGENT-BRIEF.md`** — stack, versjoner, mappestruktur.
+6. **`docs/platform/BUSINESS-RULES.md`** — abonnement, GDPR, booking (ikke utledbart fra kode).
+7. **`.claude/rules/gotchas.md`** — les FØR koding.
 
-`beslutninger.md` dekker: invarianter-aldri-sperrer, AgencyOS-navnet, navne-kanon, Workbench-planlegging,
-analyse-samling, abonnement (FULL/TALENT/INGEN — 299 kr/mnd eller 2 690 kr/år, fasit i
-BUSINESS-RULES §Abonnement og tilgang), FYS-avventing. **Design (LÅST 2026-07-31, OVERSTYRT 2026-08-03
-— se invariant 2 under):** Claude Design-prosjektet **«AK Golf HQ — Claude Paper»** (`605a48cc`, hentet
-via `claude-design`-MCP-verktøyet) er designfasit; full port til `src/` kjører nå aktivt, se
-`docs/port/PORTPLAN.md`. Ved konflikt vinner `docs/platform/BUSINESS-RULES.md`.
+Ikke les hele repoet. Åpne filer etter behov. Lange kommandoer → redirect til fil, tail/grep.
 
-## Harde invarianter (brytes aldri)
-1. **Ingen treningsregler (skjerpet 2026-08-18):** ALL regel-håndheving i planlegging er slettet
-   — ingen invarianter, ingen periode-constraints, ingen plan-validering mot metodikk, ingen
-   «CANON». Spilleren står helt fritt. Vokabular (pyramide, perioder, formel) er frie
-   merkelapper. Gjeninnfør aldri en treningsregel uten ny beslutning fra Anders — se
-   `.claude/rules/beslutninger.md` §2026-08-18 og `docs/vokabular-planlegging-2026-08-18.md`.
-2. **Claude Paper vinner alltid (LÅST 2026-08-03/05).** Claude Design-prosjektet «AK Golf HQ — Claude
-   Paper» (`605a48cc`, skjermer i `fase1/`) er eneste designfasit — for design OG produksjonskode.
-   Full porten kjører nå, skjerm for skjerm, per `docs/port/PORTPLAN.md`.
-   Tidsplanen fra 31.07 («C, smalt» til etter piloten) er **overstyrt** og skal ikke følges.
-   Mangler skjermen fasit: `docs/port/monsterdokument-paper.md` er eneste designkilde.
-   **Sier et dokument, en skill eller en kodekommentar noe annet enn Paper-fasiten, vinner
-   Paper-fasiten — og dokumentet skal rettes, ikke følges.** Hex-gaten for Presis forblir borte.
-3. **Norsk bokmål i all UI-tekst.**
-4. **Lucide-ikoner** — aldri emoji i UI. Primitiver fra `components/ui/` + `v2/`-mønstre.
-5. **Domenelogikk kun i `src/lib/domain/`** — aldri i komponenter.
-6. **`as unknown as T` er forbudt** for forretningskritiske data — bruk zod-schemas (`src/lib/validation/schemas.ts`).
-7. **`main` er porten.** Arbeid skjer i branch + PR. **Aldri push til main uten eksplisitt «ja» fra Anders** —
-   unntak: dokument-/regelendringer Anders eksplisitt har bedt om i samtalen kan gå rett til main.
-   (Håndheves av PreToolUse-hook — se Hooks under.)
-8. **Enkelhet (2026-07-21):** behold alle funksjoner, men minst mulig trykk og super enkelt UI. Vanskelig å
-   forstå = feil design. (Produktprinsipp — uavhengig av hvilket designsystem som gjelder.)
+---
 
-## Skjermarbeid (gjeldende prosess)
+## Nåværende spor: A1–A4 (bølge 1)
 
-**Designfasit:** Claude Paper — Claude Design-prosjektet `605a48cc` er **originalen**.
-**Arbeidsfasiten er det lokale speilet `designsystem/paper/`** (254 HTML: `fase1/` + `fase2/` +
-`jarvis/`) — det er den du leser, differ og sammenligner mot. Speilet gjelder så lenge
-`designsystem/paper/SYNC-STATUS.md` viser at det er målt mot siste zip fra Anders (nå: zip
-levert 16.08.2026 21:11, 839 filer — 0 avvik).
-**Opprett aldri en parallell kopi av fasiten** (`docs/port/paper/` e.l.) — to kopier av samme HTML
-er to sannheter om samme skjerm, og alle `docs/port/`-dokumentene peker allerede hit med
-`designsystem/paper/…`-stier. Speilet skal være byte-identisk med zip-en; ligger det interne
-duplikater INNE i speilet (f.eks. `design_handoff_rutefasit_agenticos/docs-port/rutefasit.md`),
-er de en del av leveransen og skal stå — men de **styrer ingenting**. Ved motstrid gjelder
-`docs/port/`-versjonen, aldri speilets kopi.
+**Mål-smoke (må være grønn før bølge 2):**
 
-**Resynk skjer når Anders leverer ny zip, ikke før hver skjerm.** Den gamle regelen krevde henting
-via `claude-design`-MCP før hver sammenligning. Den koblingen er ikke tilgjengelig i alle økter, så
-regelen sendte arbeidet inn i en blindvei og sådde tvil om det ene som faktisk virker. Endret
-12.08.2026 etter Anders' beslutning. Du kan jobbe mot speilet uten MCP.
+```
+Coach: opprett økt → UTKAST → flytt → Publiser
+Spiller: ser økten i «I dag», ser ikke DRAFT
+Spiller: Start → IN_PROGRESS → Ferdig (warm hake)
+TrackMan-detalj: 1σ-ellipse + én caddie-setning + prikk → slag-ark
+```
 
-**MEN: en zip kan være utdatert mot designprosjektet — målt 17.08.2026.** Zip-en fra 16.08 21:11
-inneholdt `kart/rutefasit-for-claude-code.md` **v1** (9 382 B, datert 12.08), mens prosjektet
-allerede hadde **v2** (12 543 B, datert 16.08) med en helt ny **Komponenter-kolonne**,
-porteringsstrategi, modellvalg-tabell og skall-pakker. En hel styringsdimensjon manglet i zip-en,
-og en verifisering som kun målte zip mot speil ville aldri sett det — begge var «0 avvik».
-**Regel:** før en ny portbølge planlegges, kjør ÉN MCP-sammenligning
-(`list_files` med `depth: -1` → diff stier + `size` mot speilet). Den koster ett kall og fanger
-akkurat denne klassen drift. Er MCP-en utilgjengelig: si det i rapporten, ikke anta at zip = fasit.
+| Loop | Jobb | Anti-scope |
+|------|------|------------|
+| 1 | Domain + server actions (ingen UI) | UI, drag-lib, kilder-innhold |
+| 2 | Agency uke + create/move/publish | måned/år, stall, Google |
+| 2S | Inspector + drill komplett/MANGLER | serie, Player-ark |
+| 2T | Kilder, drag, serie | Google, Player live |
+| 3 | I dag ← `loadPlayerDay` | composer/dock |
+| 3S | Økt-ark + start/complete | live *runde* RU |
+| 3T | Godta/Avvis + ikke delta | full GROUP-materialisering |
+| 4 | DispersionMap | ingest, DataGolf, stall-preview |
 
-**Dekningsregnskap:** `docs/port/fasit-liste-paper.md` — hvilke skjermer har fasit, hvilke må designes uten.
+**Én Claude-session per loop.** Ny chat. Commit + `docs/natt/LOOP-N-DONE.md`. Ikke start neste loop uten grønn forrige.
 
-**Plan og rekkefølge:** `docs/port/PORTPLAN.md` — én sesjon per mal-fasit, avhengighetsrekkefølge,
-og hva som blokkerer hva. Kvalitetsporten er skjermbilde-gaten rett under + `PAPER-ZIP-CHECKLIST.md`.
-(Den gamle `plan-designport-alle-skjermer.md` er UTGÅTT 12.08.2026 og **slettet 17.08.2026**
-sammen med øvrige utgåtte plandokumenter — alt lever i git-historikken. Ikke gjeninnfør
-henvisninger til den; `PORTPLAN.md` + skjermbilde-gaten under er kvalitetsporten.)
+Gren for kode: `claude/natt-a1-a4-2026-08-24` (fra `main`). Plan-docs: `docs/natt-plan-2026-08-25` / PR #575.
 
-**Skjermbilde-gaten:** ingen skjerm-PR merges uten at Anders har SETT skjermen. Skjermbilde i samtalen
-(synlig fra iPhone), mobil 390px alltid først, deretter desktop, lys OG mørk, fasit-utsnittet ved siden av,
-alle fire tilstander (Suksess/Tom/Laster/Feil), maks én oransje handling, og klikk-verifisert — ikke bare
-fotografert.
+Bølge 2 (måned/år, stall, kalender uten Google, tester-live, runde-live, Jarvis, AgenticOS, lys, Forelder, DataGolf/økonomi): `docs/natt/OVERNIGHT-CODING-LOOP-BOLGE2.md` — **kun etter** bølge 1-smoke.
 
-(Den gamle `docs/MASTER-SKJERMPLAN.md` med 6 haker per skjerm er slettet 05.08.2026 — hakene var satt mot et
-avviklet designprosjekt. Ligger i git-historikken.)
+---
 
-### Kontrakten — slik bygges en rute fra en mal-fasit
-Flyttet hit fra `docs/port/rutefasit.md` 16.08.2026, oppdatert til **rutefasit v2** 17.08.2026.
-**Gjelder alltid, skal aldri gjentas i en prompt** (det er hele poenget: 0 tokens per sesjon).
+## Harde invarianter
 
-1. Finn ruten i `docs/port/rutefasit.md`. Åpne mal-fasiten m390 + d1280 — **kun i mal-sesjonen**.
-2. Bygg malen 1:1; **avvikslinjen er ALT** som skiller ruten fra malen. Står det ikke der, finnes det ikke.
-3. Tilstander (tom/laster/feil) arves fra malens riggbar. Aldri fake data.
-4. **Én-linje-testen:** kan ikke avviket sies i én setning → egen skjerm → stopp og meld.
-5. Ferdig = variant-rad i `PP-W*-VARIANTS` med m390 + d1280-skjermbilde (i tillegg til
-   skjermbilde-gaten over).
+1. **Ingen treningsregler** (2026-08-18). Vokabular (pyramide, formel, perioder) er merkelapper. Gjeninnfør aldri metodikk-sperrer uten Anders' beslutning.
+2. **Design**
+   - **Player HQ:** Train-lock (scene `#000000`). Fasit: design-zip / WB-/PH-/TM-skjermer.
+   - **Agency desktop:** Paper-tokens OK der allerede portet; *nye* Workbench-flater følger Train-lock/WB.
+   - Ingen nye tokens / parallelle designsystemer uten Anders' ja.
+   - Fullført = warm `#B85C3D` + hake. `#30D158` **kun** Godta / PUBLISERT-merke.
+3. **DRAFT er usynlig for spiller.** `loadPlayerDay` returnerer kun PUBLISHED | IN_PROGRESS | COMPLETED.
+4. **Norsk bokmål** i all UI-tekst. **Lucide** — aldri emoji i UI.
+5. **Domenelogikk** i `src/domain/workbench/` (økt) og `src/lib/domain/` (øvrig) — ikke i komponenter.
+6. **`as unknown as T` forbudt** for forretningsdata — bruk zod (`src/lib/validation/`).
+7. **`main` er porten.** Branch + PR. **Aldri push til main uten eksplisitt «ja» fra Anders.** Unntak: dokument/regelendringer Anders ba om i samtalen.
+8. **Enkelhet:** alle funksjoner, minst mulig trykk. Vanskelig å forstå = feil design.
 
-**Token-økonomi (v2, bindende):** én sesjon per mal-fasit, aldri per rute. **Variantruter åpner
-aldri fasit-HTML** — de kodes fra avvikslinjen + komponentkolonnen + mal-komponentens fil i repoet.
-Trenger de mer, har de strøket én-linje-testen: stopp og meld. Les komponenter, ikke skjermer —
-slå opp props i komponentfila. Full strategi + modellvalg per oppgaveklasse: `rutefasit.md` §1–2.
+---
 
-### Claude-følelsen (bindende for alle varianter)
-Flyttet hit fra `docs/port/rutefasit.md` 16.08.2026. Målet er at plattformen kjennes som Claude
-desktop/mobil: samtale først, artefakter ved siden, kommando under fingrene.
+## Workbench / økt (kontrakt)
 
-- **Chat-først:** `/portal` ER samtalen (fasit `playerhq-chat-*`); konsollen er samtale + artefaktkolonne
-  (PP-2.1-briefen). En variantrute bygger aldri en oppslagstavle der malen har en samtale.
-- **Composer:** festet spørrefelt nederst på alle desktop-flater, mobil kun Hjem (komponent `Composer`).
-  Varianter fjerner den aldri.
-- **⌘K overalt:** CommandPalette (S6 «Alt») er inngangen til alt uten meny-plass — varianter lenker dit
-  i stedet for å legge til nav.
-- **Artefaktkolonnen:** detaljpanelet til høyre (380 px) forklarer og avgjør valgt sak — galleriets
-  hovedfunn var at den manglet. Master–detalj-varianter fyller panelet, aldri en ny side.
-- **Mobil = app:** 430 px-kolonne, TabBar, BottomSheet i stedet for modal, 44 px trykkflater. Ingen
-  desktop-tabell presset inn i 390 px — bruk malens mobiltilstand.
-- **Skall-monopol (F1):** ingen rute bygger egen header/nav/chrome. Avvik = bug.
-- **Paper:** papir/blekk, maks én clay-CTA per skjerm, Poppins/Lora/Plex Mono, alle tall mono med
-  komma-desimal, norsk bokmål, aldri emoji.
+Kilde: `docs/natt/workbench/`.
 
-**Porteringsrekkefølge og sesjonsinndeling:** `docs/port/PORTPLAN.md` — én sesjon per mal-fasit,
-aldri per rute.
+- Typer + pure ops: `types.ts`, `operations.ts`, `operations.test.ts`
+- Labels: `ui/labels.ts` (hardkod aldri norske strenger i domain)
+- Actions-kontrakt: `store/actions.ts`
+- Tilgang: `ACCESS-AND-GROUPS.md` (gruppe-lisens **eller** kjøpt entitlement — ellers usynlig i Agency)
+- Player: `integration/player-hq.md`
 
-## Stack
-- **Next.js 16.2.6** (App Router, Turbopack, TS strict) + **React 19.2.4** + Vercel. Node 24 i CI.
-- **Prisma 7.8** + `@prisma/adapter-pg` + **Supabase** Postgres (RLS) — Supabase Auth (Google + e-post/passord).
-- **Tailwind CSS v4** (CSS-first `@theme`, ingen config-fil) — uttrykk via `src/app/globals.css`.
-- **Fonter (re-verifisert mot kode 2026-08-16 — fontporten er GJENNOMFØRT):**
-  Paper-fasiten er **Poppins** (UI/titler) + **Lora** (prosa/AI-svar) + **IBM Plex Mono** (tall). Alle tre
-  lastes i `src/app/layout.tsx` og eksponeres som `--font-poppins`/`--font-lora`/`--font-ibm-plex-mono`,
-  videre som `--p-font-sans`/`--p-font-serif`/`--p-font-mono` i `src/styles/paper-tokens.css`.
-  De globale tokenene (`--font-sans`/`--font-display`/`--font-mono` i `globals.css`) OG de scoped
-  stylesheetene (`golfdata-tokens.css`, `onboarding.css`, wizardene) leser alle Paper-fontene;
-  `--font-ui` er broet til `var(--p-ui)` (Poppins). Tidligere avvikslister her (hubs.css,
-  admin-hero/player-hero m.fl.) gjaldt filer som ikke lenger finnes — ikke gjenopprett dem.
-  Kjente småresten (ufarlige): `teknisk-plan.css:16` har Inter kun som *fallback* bak
-  `var(--font-sans)`; `klubb-wizard.tsx:676` har én `fontFamily="Inter"` i en SVG-illustrasjon;
-  `src/components/planlegge-v2/` er død kode uten konsumenter (slettes i PP-B5).
-  **Inter Tight er fjernet** — ikke gjeninnfør. Bygg nytt mot Paper-fasiten (dvs. de globale tokenene,
-  aldri `--font-familjen-grotesk`/`--font-jetbrains-mono`/`--font-inter` direkte i ny kode).
-- **Lucide React** — eneste ikon-bibliotek. **npm** — pakkebehandler.
-- **Serwist 9** (`@serwist/next` + `@serwist/cli`) — PWA/offline. SW bygges av et eget `serwist build`-steg
-  ETTER `next build` (se `serwist.config.mjs` + gotchas: Turbopack kjører aldri webpack-pluginen).
-- **zod 4** (validering), **Recharts** (grafer), **@dnd-kit** (drag-drop i Workbench), **date-fns**, **rrule**,
-  **sonner** (toasts), **MDX** (`@next/mdx`, blogg), **@react-pdf/renderer** (PDF-eksport).
-- **Integrasjoner:** Stripe (checkout/portal/webhook), Resend (e-post), Anthropic (`@ai-sdk/anthropic` + AI SDK 6),
-  OpenAI, DataGolf (PGA-data), web-push, Mapbox (banekart), Google Calendar/Gmail/Drive (`googleapis`) + Notion,
-  Upstash Redis (rate limiting), Vercel Blob (filer), Vercel Analytics/Speed Insights.
-- **Testramme:** `node:test` via `tsx --test` + Playwright. **vitest er IKKE installert.**
+**Statusmaskin:** `DRAFT → PUBLISHED → IN_PROGRESS → COMPLETED` (unpublish/skip/cancel egne grener).
 
-## Mappestruktur
+**Må implementeres i Loop 1:** create, move, publish/unpublish, add/reorder/remove drill, delete, start, complete, skip, loadWeek, loadSession, loadSources (tom OK), loadPlayerDay.
 
-Strukturkartet bor i `docs/platform/AGENT-BRIEF.md` §Mappestruktur (flyttet dit 2026-08-16
-— den fila eier agent-konteksten). Kort: fire produkter (marketing, booking, PlayerHQ under
-`portal/`, AgencyOS under `admin/`) + flere top-level-flater — sjekk filsystemet før du
-oppretter nye ruter.
+Serie, full GROUP-propagasjon til N medlemmer, Google-synk: **ikke** bølge 1.
+
+---
+
+## Feilhåndtering
+
+**Prinsipper**
+
+1. **Feil er tilstander, ikke alerts alene.** Hver flate har Suksess / Tom / Laster / Feil. Feil-state: kort norsk tekst + «Prøv igjen» (ikke stack trace, ikke engelsk).
+2. **Domain kaster / returnerer — UI oversetter.** Pure ops (`src/domain/…`) kaster typed feil eller returnerer `Result`. Komponenter mapper til copy fra `labels.ts` / fast norsk streng.
+3. **Server actions:** valider input med **zod** ved grensen. Catch ukjente feil; logg *ID + kode*, aldri personnavn/PII. Returner `{ ok: false, error: string }` (eller eksisterende action-result-type i repoet) — ikke la Next.js generiske error-page være eneste svar på forventede feil.
+4. **Toast (sonner):** kort bekreftelse på write (publisert, lagret). Ved feil: én setning + evt. retry. Ikke toast-spam på hver keystroke.
+5. **Auth / tilgang:** mangler entitlement → usynlig eller tom med nøktern copy («Ingen tilgang»), ikke 500. IDOR: sjekk eierskap i action før write.
+6. **Offline / nett:** Player «I dag» og live-flater tåler feilet fetch med Feil-kort, ikke blank skjerm.
+7. **Workbench-spesifikt:** publish med VEGG (f.eks. hard overlap hvis dere innfører det) → sperr + forklaring i inspector. VARSEL → tillat publish, vis advarsel. `loadPlayerDay`-feil → PH-01e feil-tilstand, ikke coach-DRAFT lekket som fallback.
+8. **Aldri** `catch (e) {}` tom. Aldri vis rå `e.message` fra Prisma/Supabase til sluttbruker.
+
+**Agent-økt:** feil som kostet ekstra tid → én linje i `docs/feillogg.md`. Stopp-regel i natt-loop: skriv `LOOP-N-DONE.md` med hva som feilet, ikke «fix» i det stille.
+
+---
+
+## Stack (kort)
+
+Next.js 16.2 + React 19 + TS strict · Prisma 7 + Supabase · Tailwind v4 · Poppins / Lora / IBM Plex Mono · Lucide · zod 4 · node:test (`tsx --test`) · Playwright · Serwist PWA · Stripe / Resend / AI SDK.
+
+**Ikke** vitest. **Ikke** Inter Tight. Region Vercel: `lhr1` (match Supabase eu-west-2).
+
+Detaljer: `docs/platform/AGENT-BRIEF.md`.
+
+---
 
 ## Arbeidsregler
-1. **Ikke be om tillatelse for små endringer** — typoverifisering, lint, feilretting.
-2. **Be Anders før:** dependencies, DB-migrasjoner, rute-endringer som fjerner URLer, nye features, større
-   refaktoreringer.
-3. **Kjør `npm run verify` før commit** — repoet må bygge rent uten warnings.
-4. **Git:** branch (`feature/...`, `fix/...`) → commit → push (uten å spørre) → åpne PR og spør Anders om main.
-   (Unntak: dokument-/regelendringer Anders eksplisitt har bedt om kan gå rett til main.)
-   **Grenen slettes når PR-en merges** (`gh pr merge --delete-branch`) — ellers gror lista igjen.
-   **Parkert arbeid arkiveres, slettes aldri:** `git tag -a arkiv/<gren> <gren> -m "..."` + `git push
-   origin --tags`, så slett grenen. Taggen bevarer alt; hent tilbake med
-   `git switch -c <gren> arkiv/<gren>`. Ryddet 06.08.2026: 17 grener → 6, ti arkivert som tagger.
-   **`git branch --merged` lyver** her (squash-merge) — sjekk `gh pr list --head <gren> --state all`.
-5. **Token-filer:** ingen låst token-kanon per nå (designlåser tømt 2026-07-25) — men ikke opprett nye
-   parallelle token-systemer; vent på Open Design.
-6. **Følg gotchas-listen** (`.claude/rules/gotchas.md`) — Prisma 7 driver adapter, `pg.Pool`, zod ved
-   API-grenser, Oslo-tid via `uke-helpers.ts`, `proxy.ts` ikke `middleware.ts`.
-7. **Feillogg (ny praksis 2026-08-06):** kostet noe i økten ekstra tid (feilslått antagelse, gjentatt feil,
-   fasit-avvik) — legg én linje i `docs/feillogg.md` (format øverst i filen), lagt inn av `/pr` ved behov.
-   Ingen feil i økten: ikke rør filen. Formålet er å finne mønstre over tid, ikke logge hver økt.
-8. **Token-økonomi (2026-08-06):** se `.claude/rules/gotchas.md` §Token-økonomi — korte versjon: aldri
-   la lange kommandoer (build/test/`npm ci`) strømme rått inn i samtalen (redirect til fil, tail/grep),
-   grep i store dokumenter fremfor å lese dem hele, stol på PR-webhooks fremfor å polle GitHub Actions.
-   Senker ALDRI kvalitetsgaten (`npm run verify` er fortsatt obligatorisk) — kun hvordan output håndteres.
 
-## Verifikasjons-pipeline
+1. Små fikser (typo, lint, åpenbar bug): bare gjør.
+2. Spør Anders før: nye deps, DB-migrasjon, slettede URLer, ny feature, stor refaktor.
+3. **`npm run verify` før commit** (hele pipeline — ikke improvisér stegene).
+4. Git: `feature/…` eller natt-gren → commit → push → PR → spør om merge. Squash-merge: `git branch --merged` lyver; bruk `gh pr list`.
+5. Følg `.claude/rules/gotchas.md` (Prisma 7 adapter, `proxy.ts`, Oslo-tid, secrets).
+6. Lange kommandoer: redirect til fil. Grep store docs — ikke les hele.
+7. Feil som kostet tid: én linje i `docs/feillogg.md` (ellers ikke rør).
+
+---
+
+## Verifikasjon
+
 ```bash
-npm run verify && npm test    # FULL sjekk før commit — dekker hele CI-jobben «verify»
+npm run verify && npm test
 ```
-`verify` = `prisma validate && prisma generate && tsc --noEmit && eslint --quiet src &&
-node scripts/check-action-auth.mjs && node scripts/check-token-gap.mjs &&
-node scripts/check-critical-imports.mjs && npm run build`. Kjør `npm run verify` som
-scriptet (les fra `package.json` ved tvil) — å sette sammen stegene fra denne
-prosebeskrivelsen i hukommelsen har to ganger (2026-08-15, 2026-08-16) gitt en falsk
-grønn lokalt fordi token-gap/critical-imports-stegene ble glemt (se `docs/feillogg.md`).
-`npm run build` = `prisma generate && next build && serwist build serwist.config.mjs` (rekkefølgen er kritisk —
-precache-manifestet globber `.next/`-output).
 
-CI-jobben «verify» kjører nøyaktig de samme stegene som `npm run verify`, pluss `npm test` (enhetstester).
-Kjører du begge lokalt har du dekket hele jobben. Hold dem synkronisert: legger du et steg i `ci.yml`, legg det
-i `verify` også (og motsatt). Den gamle hex-gaten var ute av synk på denne måten og er fjernet 2026-07-26.
+Domain (etter Loop 1):
 
-`npm run dev` skal starte uten warnings.
+```bash
+npx tsx --test src/domain/workbench/operations.test.ts
+npx tsc --noEmit
+```
 
-Andre nyttige script: `npm run kart` (skjermkart) · `npm run qa:drills` · `npm run retag:drills[:apply]` ·
-`npm run db:seed` · `npm run test:all`.
+CI = verify + test. Deploy: Vercel git på `main` / PR-preview. **Aldri** `vercel deploy --prod` manuelt.
 
-## Tester
-- **Enhetstester:** `npm test` — `tsx --conditions=react-server --experimental-test-module-mocks --test
-  'src/lib/**/*.test.ts'` (110 filer): domenelogikk (sg, hcp, ak-kategori, fys-score, plan-builder m.fl.).
-- **e2e:** `npm run test:e2e` (Playwright). Én mappe siden 2026-08-03: `tests/e2e/*.spec.ts` (32 specs —
-  smoke: a11y, PWA, ruter, meta/OG + auth-guard, IDOR, booking, workbench fra gamle `e2e/`).
-  Prosjekter: chromium + webkit. Lokalt auto-startes dev-serveren; i CI antas appen å kjøre allerede
-  (`PLAYWRIGHT_BASE_URL`).
+---
 
-## CI/CD
-- **`ci.yml`** — PR-gaten. Kjører på **enhver** PR (ingen base-filter, så stablede PR-er dekkes også)
-  + push til main + manuelt: `npm ci` → `prisma generate` → `tsc --noEmit` → `eslint` →
-  `check:action-auth` → `npm test` → `npm run build`. Alle steg blokkerende. Dummy env-verdier, ingen
-  secrets nødvendig.
-- **`playwright.yml`** — prod-røyktest, **ikke** en PR-gate. Kjører etter push til main (og manuelt mot
-  valgfri `base_url`) mot `https://akgolf-hq.vercel.app`, chromium + webkit.
-- **`scrape-golfbox.yml` / `scrape-gjgt.yml`** — planlagte turneringsscrapere.
-- **`deploy.yml`** — finnes fortsatt, men er **kun `workflow_dispatch`** (manuell, siden 2026-07-05). Deploy
-  skal være en bevisst handling, ikke en bivirkning.
-- **Vercel:** git-integrasjon på `main` (produksjon) og PR (preview). Push til `main` deployer automatisk —
-  ALDRI `vercel deploy --prod` manuelt (har overskrevet prod med feil branch; blokkeres også av hook).
-- **Region:** `vercel.json` har `"regions": ["lhr1"]` for å matche Supabase eu-west-2. Ikke endre uten å
-  flytte databasen — se gotchas.
+## Design / skjerm (kort)
 
-## Hooks (`.claude/settings.json` → `.claude/hooks/`)
-Håndheves deterministisk, uavhengig av hva modellen tror:
-- **`beskytt.mjs`** (PreToolUse på fil-verktøy + Bash):
-  - *Nivå 1 — deny:* `.env*`-filer (unntatt `.env.example`) og PII. Røres aldri av agenter.
-  - *Nivå 2 — ask:* `prisma/schema.prisma`, `src/lib/env.ts` og andre schema-/auth-/deploy-kritiske filer.
-  - *Main-porten — ask:* `git push … main` krever Anders' eksplisitte «ja» i samtalen.
-  - *Deny:* `prisma migrate dev` og `prisma db push` (begge ødelagte her — bruk kirurgisk `db execute`,
-    se gotchas §Schema-endringer) og manuell prod-deploy.
-  - *Ask (ikke deny):* force-push, `git merge`, `reset --hard`, `rebase main`, `git push --delete`,
-    `git branch -D`, `.env.local`-kommandoer. **Rettet 2026-08-20:** denne linja sa tidligere at
-    force-push og remote-grensletting var *deny*. Det stemte ikke med koden — `beskytt.mjs` har alltid
-    hatt dem i `askMønstre`. Feilen kostet en økt: agenten leste «deny», konkluderte at gren-rydding på
-    GitHub var umulig, og ba Anders gjøre det manuelt — mens kommandoen faktisk gikk gjennom på første
-    forsøk. Les hooken, ikke denne oppsummeringen, når du er i tvil om hva som er sperret.
-- **`kvalitet.mjs`** (PostToolUse på Edit/Write): kjører eslint på endret `.ts`/`.tsx` og rapporterer feil
-  tilbake umiddelbart. (Hex-gaten ble fjernet herfra 2026-07-25 — men lever fortsatt i CI, se over.)
-- **`logg.mjs`** (logging) og **`varsle-telegram.mjs`** (Stop-varsel til Anders).
-- **lint-staged + husky** kjører `eslint --max-warnings 0` + `tsc --noEmit` ved commit.
+- **A1–A4 / økt / I dag / TM:** Train-lock + `docs/natt/` + design-zip-skjermene listet i overnight-planen.
+- **Øvrig Agency-port:** Paper-speil `designsystem/paper/` + `docs/port/PORTPLAN.md` når det sporet kjøres — ikke bland inn i natt-smoke.
+- Skjerm-PR: Anders må ha *sett* skjermen (mobil først). Ikke merge på «ser bra ut i koden».
+- Port HTML 1:1: **nei**. Port oppførsel, hierarki, copy. Gjenbruk Button / Modal / TimeGrid / SessionCard / artefakt-panel.
 
-## Skills (`.claude/skills/`)
-`agencyos-arkitektur` (les FØR admin-kode) · `agenticos` + `agenticos-cockpit` (agent-systemet) ·
-`verify-og-commit` (kvalitetsgate + commit/push) · `prompt-engineer` + `ak-prompt-master` ·
-`mobbin-inspo` (designinspo) · `webapp-testing` (Playwright).
-Generiske design-skills og de gamle kanonlåste design-skillene er bevisst fjernet (2026-07-19/25).
+---
 
-## Agenter
-- **Kommando** (`/kommando`, `src/lib/kommando/`) — chat med alle agenter (`KommandoTask`
-  DB-persistert).
-- **Cron-agenter** — 54 filer i `src/lib/agents/` (booking-alerts, churn-radar, daily-brief, availability-monitor,
-  drill-forslag m.fl.), trigges via `/api/cron/[agent]` + dedikerte cron-ruter.
-- **`docs/platform/AGENT-BRIEF.md`** — agent-onboarding; skal leses av enhver ny agent før arbeid.
-- **Ingen agent endrer kode direkte** — agenter produserer forslag til PR; menneske merger.
+## Agenter og secrets
 
-## Secrets
-Alle i `.env.local` (gitignored) + Vercel env. Mal: `.env.example`. **ALDRI commit secrets** — ikke engang
-midlertidig; `beskytt.mjs` blokkerer tilgang til `.env*` helt.
-Rotasjon og håndtering av kompromittert secret: `docs/runbook.md` §2.5.
+- Agenter foreslår; **menneske merger**. Ingen agent skriver rett til prod-data for ekte juniorer — fixture / egen testspiller.
+- Secrets kun `.env.local` + Vercel. **Aldri** commit. Hook `beskytt.mjs` blokkerer `.env*`.
+
+---
+
+## Ikke i scope (før smoke er grønn)
+
+Google two-way · måned/år/stall som *første* jobb · hele TN-batteriet · FY/GP/BO/S3/Club · GROUP-materialisering til alle medlemmer · nye design-tokens · greenfield «AKGolf2.0».
+
+Rydd eksisterende Golf_Headquarters (v1) — ikke start nytt repo.
