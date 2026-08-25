@@ -11,9 +11,11 @@
  *
  * Sannheten bor på `<html data-v2-tema>` (satt før paint av inline-scriptet i
  * rot-layout) + cookie `ak-v2-tema`; hooken speiler den og synker alle
- * instanser via et vindus-event. SSR-snapshot er lys — app-flatene er
- * lys-først, og mørk kommer kun fra cookien, som serveren ikke kjenner her.
- * React retter ved hydration.
+ * instanser via et vindus-event. SSR-snapshot er lys og rettes ved hydration
+ * — attributtet på <html> er allerede riktig fra første paint (rot-layout
+ * stempler det på server), så dette gjelder bare shadcn-scope-klassen, ikke
+ * fargene. Default per rute bor i src/lib/v2/tema-default.ts: mørk på
+ * /portal og /admin (Anders 25.08.2026), lys på /auth og /forelder.
  */
 
 import { useSyncExternalStore } from "react";
