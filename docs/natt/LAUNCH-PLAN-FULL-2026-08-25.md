@@ -32,7 +32,34 @@ Tid styres med rekkefølge og bølger — ingenting er strøket.
 
 ---
 
-## 0. Git-tilstand (VERIFISERT direkte, overstyrer agent-avvik)
+## 0. Git-tilstand
+
+> **BØLGE 1 ER FERDIG OG MENNESKE-TESTET — 25.08.2026.**
+>
+> | Steg | Status |
+> |---|---|
+> | S1 — RLS mot prod | KJØRT (apply-script mot `DIRECT_URL`, ikke `prisma migrate`) |
+> | B2 — release-gren | UTFØRT. `release/workbench-b1` satt sammen, verifisert, og lagt inn i `main` |
+> | Loop 1 + 2 + 2S + 3S | ALT i `main`. Kom inn i to omganger: PR **#580** (Loop 1/2/3S, utilsiktet — se merknad) og PR **#583** (Loop 2S drill-editor + RLS-apply-script) |
+> | Prod-deploy | `main` @ `c353e554` live på `akgolf-hq.vercel.app` (verifisert i byggelogg) |
+> | Smoke (Anders, manuelt i prod) | **GRØNN.** Coach: opprett → UTKAST → flytt → Publiser. Spiller: ser kun publisert, ikke DRAFT → Start → Fullfør. Drill: coach legger til øvelse → spiller ser den |
+>
+> **Anti-scope-sperren mot bølge 2 er dermed løftet** — C1–C10 kan sesjonsdeles.
+>
+> **Merknad (avvik verdt å huske):** PR #580 het `docs:` men inneholdt 4 091 linjer
+> Workbench-kode, fordi `chore/docs-rydding-natt` var forgrenet oppå Workbench-arbeidet
+> i stedet for ren `main`. Koden gikk i hovedversjonen uten at Anders ble spurt.
+> Ufarlig i praksis (nye ruter, bak innlogging, ingen menylenker, verify grønn), men
+> **lærdom: forgren docs-opprydding fra `origin/main`, aldri fra en feature-gren** —
+> og les alltid fil-lista i en PR, ikke bare tittelen.
+>
+> **Vedlikeholdsmodus:** slått AV 25.08 i alle tre miljøer (`VEDLIKEHOLD=0` i Vercel), slik at
+> skjermer kan sjekkes uten manuelle steg. `akgolf.no` peker uansett ikke hit — domenet
+> håndteres av prosjektet `akgolf-redirect`. Arbeidsadresse: `https://akgolf-hq.vercel.app`.
+>
+> **Neste:** D2 (tokens i kode fra Train-lock-fasiten) → P-T (plan for bølge T) → B4 (ekte «I dag») → B3 (mobil-inspector).
+
+### 0.1 Historisk git-tilstand (VERIFISERT 25.08 før merge — beholdt som spor)
 
 Dette er fasit for hvor koden faktisk ligger. Én kartleggingsagent plasserte feilaktig
 Loop 2S- og RLS-committene på arbeidsgrenen — git-sjekk under er gjort direkte og gjelder.
