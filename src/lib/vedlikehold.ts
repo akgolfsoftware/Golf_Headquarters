@@ -40,6 +40,12 @@ export function erUnntattVedlikehold(path: string): boolean {
     // PWA-skallet — uten disse får installerte klienter en ødelagt app-ikon-flate.
     path === "/sw.js" ||
     path === "/manifest.webmanifest" ||
-    path === "/offline"
+    path === "/offline" ||
+    // WANG Årsplan (Anders' valg 25.08.2026): delbar fellesside for elever
+    // og foreldre, uavhengig av coaching-vedlikeholdet over. Kun selve
+    // fellessiden — /team-wang/coach og /team-wang/logg-inn er fortsatt
+    // stengt, samme begrunnelse som /admin er stengt for Anders selv.
+    path === "/team-wang" ||
+    path === "/team-wang/manifest.webmanifest"
   );
 }

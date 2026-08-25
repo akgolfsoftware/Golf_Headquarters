@@ -1,5 +1,10 @@
 # PORTPLAN — Paper-fasit til kode, sesjon for sesjon
 
+> **SUPERSEDERT 25.08.2026:** Train-lock er designfasit for alle skjermer i PlayerHQ og
+> AgencyOS (Anders, i økt). Paper-porten dette dokumentet planlegger er stanset — ikke start
+> nye sesjoner herfra. Gjeldende plan: `docs/natt/LAUNCH-PLAN-FULL-2026-08-25.md`.
+> Beholdes som arkiv (rutekartleggingen og §A-beslutningspunktene har fortsatt referanseverdi).
+
 **Skrevet:** 2026-08-17 · **Verifisert mot:** `main` @ `ffb18060` (449 ruter) ·
 **Fasit:** `designsystem/paper/` (254 HTML, zip 16.08.2026 21:11 — 0 avvik)
 

@@ -1,5 +1,9 @@
 # W5 Marketing/Auth/Forelder/System — variant tracking (overnight)
 
+> **DELVIS SUPERSEDERT 25.08.2026:** Train-lock er fasit for PlayerHQ/AgencyOS — de radene
+> er historikk. Marketing-/auth-/system-rader kan fortsatt være aktuelle (marketing har egen
+> fasit: ak-golf-website); forelder-omfanget er uavklart (AAPNE-SPORSMAAL T4).
+
 Status: **slug-port 2026-08-11/12 (PP-8)** — marketing-katalog + system-tilstander bygget.
 Alle rader: m390/d1280 sign-off = Anders.
 

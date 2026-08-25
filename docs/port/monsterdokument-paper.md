@@ -1,5 +1,9 @@
 # Paper-mønstre for skjermer uten egen fasit
 
+> **SUPERSEDERT 25.08.2026 (Anders, i økt):** Train-lock er designfasit for ALLE skjermer
+> i PlayerHQ og AgencyOS — Paper er historikk. Innholdet under er arkiv fra Paper-porten,
+> ikke aktiv arbeidsliste. Fasit: `CLAUDE.md` invariant 2 + `docs/natt/LAUNCH-PLAN-FULL-2026-08-25.md`.
+
 **Skrevet:** 2026-08-04, utvidet og godkjent 2026-08-05 (Fase 1, designport steg 7–8) · **Status:** GODKJENT — eneste designkilde for de 318 skjermene uten fasit. §1–7 fra 04.08, §8–12 (skjema/tabell/filter+paginering/dashbord/detaljside) tilføyd 05.08. De fem punktene som sto i Uavklart er alle lukket (se bunnen) — bygg videre uten å spørre per skjerm, med mindre en ny skjerm avdekker et mønster dokumentet ikke dekker (da: STOPP og spør Anders, samme regel som før).
 Eneste designkilde når fasit-HTML mangler. Alle verdier er sitert fra `designsystem/paper/fase1/` + `guidelines/`. Ved konflikt med en faktisk fasit-fil vinner fasit-filen. Dekker ikke mønsteret? → STOPP og spør Anders.
 

@@ -78,7 +78,7 @@ TrackMan-detalj: 1σ-ellipse + én caddie-setning + prikk → slag-ark
 
 | Loop | Jobb | Fasit |
 |------|------|--------|
-| 1 | Domain + actions (hele økt-kontrakten) | `workbench/domain/*`, `store/actions.ts` |
+| 1 | Domain + actions (hele økt-kontrakten) | FERDIG — koden i `src/lib/domain/workbench/` + `src/lib/workbench/wb-actions.ts` er fasit (spec arkivert i `workbench/arkiv/`) |
 | 2 | Agency uke + create/move/publish UI | WB-01/02/03, A-01d, A-18, A-03 |
 | 2S | Inspector + drill komplett/MANGLER | A-02, A-03b/c, MAT-01 |
 | 2T | Kilder, drag, serie | A-04, A-07, A-11, A-02c, WB-07 |
@@ -175,7 +175,10 @@ Claude Code på Mini skal **ikke** merge. Du merger etter at du har sett skjerme
 ### Migrasjoner
 
 - Prisma-migrasjon i Loop 1 kun hvis Session/Drill mangler felt (`status`, `publishedAt`, `hiddenByPlayer`, drills).
-- Kjør `prisma migrate deploy` som del av Vercel build hvis det allerede er satt opp; ellers én gang mot prod **etter** at du har tatt backup (Supabase dashboard → backups).
+- **ALDRI `prisma migrate deploy` / `migrate dev` / `db push` i dette repoet** — alle tre er
+  blokkert/farlige (se `.claude/rules/gotchas.md` §Schema-endringer). Additive endringer gjøres
+  med kirurgisk `db execute`-script mot `DIRECT_URL` (mønster: `scripts/add-workbench-sessions-2026-08-25.ts`),
+  én gang mot prod **etter** backup (Supabase dashboard → backups).
 - Ingen «reset» av prod-DB.
 
 ### DNS / e-post / betaling (Anders, ikke Claude)

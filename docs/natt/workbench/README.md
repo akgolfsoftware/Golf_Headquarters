@@ -15,7 +15,7 @@
 | `ui/components.md` | Kontrakt for UI-komponenter |
 | `store/actions.ts` | Server-action / API-kontrakt + Prisma-skisse |
 | `integration/player-hq.md` | Player HQ ↔ Workbench (approval, materialisering, tilgang) |
-| `CLAUDE-CODE-PROMPT.md` | Prompt for implementering i repoet |
+| `arkiv/CLAUDE-CODE-PROMPT.md` | Historisk implementeringsprompt — FERDIG BRUKT, arkivert |
 | `STEP-1-EXECUTION.md` | Steg 1 sjekkliste |
 
 ## Kjerneregler
@@ -38,5 +38,6 @@
 ## Avhengigheter
 
 - VOKABULAR.md
-- Train-lock design (Player HQ Train lock.zip)
-- HANDOFF.md (look/IA; access vinner ACCESS-AND-GROUPS.md)
+- Train-lock design (Player HQ Train lock.zip — **ikke committet i repoet ennå**, se LAUNCH-PLAN D3)
+- HANDOFF.md — ligger i det eksterne Claude Design-prosjektet, IKKE i dette repoet
+  (look/IA; access vinner ACCESS-AND-GROUPS.md)

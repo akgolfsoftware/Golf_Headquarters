@@ -11,7 +11,10 @@ description: >
 
 ## Hva
 Mobbin = 600k+ **ekte** skjermer. Bruk for struktur og flyt — **ikke** kopier farger.
-AK-fasit: **Claude Paper** (Claude Design `605a48cc`, skjermer i `fase1/`) — se `.claude/rules/beslutninger.md` §Tema/design. Paper vinner alltid over Mobbin-referansen. Aksent `#D97757` kun på «Én ting nå», maks én per skjerm; lime/forest er avviklet.
+AK-fasit (endret 25.08.2026): **Train-lock** for ALLE skjermer i PlayerHQ og AgencyOS — se
+CLAUDE.md invariant 2 + `.claude/rules/beslutninger.md` (øverste beslutning). Train-lock
+vinner alltid over Mobbin-referansen. Claude Paper (`605a48cc`) er historikk, ikke fasit.
+lime/forest er avviklet.
 
 ## Auth (hvis MCP feiler)
 Claude: `/mcp` → mobbin → Authenticate → logg inn.  

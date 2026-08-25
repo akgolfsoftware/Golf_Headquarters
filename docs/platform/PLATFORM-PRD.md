@@ -16,7 +16,7 @@ AK Golf HQ er en helintegrert plattform som gir golfcoacher og spillere felles v
 | React | 19 |
 | Prisma | 7 + Supabase (Postgres) |
 | Tailwind CSS | v4, CSS-first via `@theme` i `globals.css` — INGEN `tailwind.config.ts` |
-| Fonts | Paper-fasit: Poppins + Lora + IBM Plex Mono. Koden bruker fortsatt Inter + Familjen Grotesk + JetBrains Mono til fontbyttet i porten er gjort. Inter Tight er fjernet |
+| Fonts | Poppins + Lora + IBM Plex Mono (fra Paper-porten; Train-lock-fasitens typografi er ikke levert ennå — LAUNCH-PLAN D2/D3). Inter Tight er fjernet |
 | Ikoner | Lucide React — eneste tillatte bibliotek |
 | Pakkebehandler | npm |
 
@@ -42,12 +42,14 @@ AK Golf HQ er en helintegrert plattform som gir golfcoacher og spillere felles v
 
 ## Skjerm-gate (LÅST REGEL)
 
-Designfasit er Claude Paper (Claude Design-prosjekt `605a48cc`, skjermer i `fase1/`).
+> **ENDRET 25.08.2026:** Designfasit er **Train-lock** for alle skjermer i PlayerHQ og AgencyOS
+> (Anders, i økt). Claude Paper og port-dokumentene under er historikk. Fasit-zip er ikke
+> committet ennå — se `docs/natt/LAUNCH-PLAN-FULL-2026-08-25.md` D2/D3.
 
 **FØR** du bygger, endrer eller kobler en skjerm:
-1. Sjekk `docs/port/fasit-liste-paper.md` — har skjermen fasit, eller må den designes uten?
-2. Sjekk `docs/port/PORTPLAN.md` + `docs/port/PAPER-ZIP-CHECKLIST.md` — hvilken sesjon hører skjermen til, og hva er status?
-3. Jobb mot ferdig-definisjonen i samme plan (§Ferdig-definisjon per skjerm).
+1. Sjekk om skjermen har Train-lock-fasit (når zip-en er committet) — mangler den: STOPP og spør Anders.
+2. Sjekk `docs/natt/LAUNCH-PLAN-FULL-2026-08-25.md` — hvilken session hører skjermen til, og hva er status?
+3. Jobb mot ferdig-definisjonen der (DONE-fil + verify + skjermbilde-gate).
 
 En skjerm er **ikke ferdig** før ferdig-definisjonen er oppfylt og Anders har SETT skjermbildet:
 mobil 390px + desktop, lys og mørk, fasit ved siden av, alle fire tilstander, maks én oransje handling,

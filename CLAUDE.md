@@ -2,15 +2,15 @@
 
 B2B SaaS (AgencyOS) + forbruker-app (PlayerHQ). Forretningslogikk og UI-tekst: **norsk bokmål**.
 
-Ved konflikt: `docs/ak-master.md` > denne filen. Ved konflikt om *Player* I dag / økt / TrackMan / Workbench-uke: **`docs/natt/`** > eldre Paper-porttekst.
+Ved konflikt: `docs/ak-master.md` > denne filen — **unntatt design**: for alt design/look vinner Train-lock-beslutningen (25.08.2026, se invariant 2) + `docs/natt/` over ALLE eldre dokumenter, inkludert ak-master og all Paper-porttekst.
 
 ---
 
 ## Start her (les i denne rekkefølgen)
 
 1. **`docs/natt/README.md`** — nattkjøring A1–A4 + bølge 2. **Gjeldende lanseringsspor.**
-2. **`docs/natt/LOOP-1-PROMPT.md`** — lim inn i *ny* Claude-session for domain + actions.
-3. **`docs/natt/workbench/`** — domain, operations, tester, ACCESS, Player HQ-integrasjon.
+2. **`docs/natt/LAUNCH-PLAN-FULL-2026-08-25.md`** — komplett lanseringsplan, session-tabell, status. (LOOP-1-PROMPT er FERDIG BRUKT.)
+3. **`src/lib/domain/workbench/` + `src/lib/workbench/wb-actions.ts`** — koden er fasit for domain/actions. `docs/natt/workbench/` er kontrakt/arkiv (ACCESS-AND-GROUPS.md gjelder fortsatt for tilgang).
 4. **`docs/STATUS-NÅ.md`** — levert / ikke levert.
 5. **`docs/platform/AGENT-BRIEF.md`** — stack, versjoner, mappestruktur.
 6. **`docs/platform/BUSINESS-RULES.md`** — abonnement, GDPR, booking (ikke utledbart fra kode).
@@ -44,7 +44,7 @@ TrackMan-detalj: 1σ-ellipse + én caddie-setning + prikk → slag-ark
 
 **Én Claude-session per loop.** Ny chat. Commit + `docs/natt/LOOP-N-DONE.md`. Ikke start neste loop uten grønn forrige.
 
-Gren for kode: `claude/natt-a1-a4-2026-08-24` (fra `main`). Plan-docs: `docs/natt-plan-2026-08-25` / PR #575.
+Gren for kode: `claude/agency-workbench-uke-ui-c4d2a4`-linjen (Loop 1+2+3S); Loop 2S ligger på PR #577, RLS på `claude/workbench-rls-policies-8b054b` — samles i release-gren per `docs/natt/LAUNCH-PLAN-FULL-2026-08-25.md` (session B2). PR #575 er superseded.
 
 Bølge 2 (måned/år, stall, kalender uten Google, tester-live, runde-live, Jarvis, AgenticOS, lys, Forelder, DataGolf/økonomi): `docs/natt/OVERNIGHT-CODING-LOOP-BOLGE2.md` — **kun etter** bølge 1-smoke.
 
@@ -53,9 +53,14 @@ Bølge 2 (måned/år, stall, kalender uten Google, tester-live, runde-live, Jarv
 ## Harde invarianter
 
 1. **Ingen treningsregler** (2026-08-18). Vokabular (pyramide, formel, perioder) er merkelapper. Gjeninnfør aldri metodikk-sperrer uten Anders' beslutning.
-2. **Design**
+2. **Design — Train-lock er fasit for ALLE skjermer i PlayerHQ OG AgencyOS (Anders 25.08.2026).**
    - **Player HQ:** Train-lock (scene `#000000`). Fasit: design-zip / WB-/PH-/TM-skjermer.
-   - **Agency desktop:** Paper-tokens OK der allerede portet; *nye* Workbench-flater følger Train-lock/WB.
+   - **AgencyOS:** Train-lock — alle skjermer, ikke bare nye Workbench-flater. Eksisterende
+     Paper-porterte admin-flater er dermed *avvik som skal portes*, ikke fasit. Paper
+     (`designsystem/paper/`) er historikk/arkiv, aldri bygg-fasit.
+   - Kjente åpne forutsetninger: Train-lock-tokens er ikke definert i kode ennå, og
+     fasit-zip er ikke committet — se `docs/natt/LAUNCH-PLAN-FULL-2026-08-25.md` (D2/D3).
+     Marketing/landingssider har egen fasit (ak-golf-website) og omfattes ikke.
    - Ingen nye tokens / parallelle designsystemer uten Anders' ja.
    - Fullført = warm `#B85C3D` + hake. `#30D158` **kun** Godta / PUBLISERT-merke.
 3. **DRAFT er usynlig for spiller.** `loadPlayerDay` returnerer kun PUBLISHED | IN_PROGRESS | COMPLETED.

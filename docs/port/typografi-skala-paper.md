@@ -1,5 +1,9 @@
 # Typografi-skalaen — utledet fra Paper-fasiten (2026-08-14)
 
+> **SUPERSEDERT 25.08.2026:** CLAUDE.md invariant 2 (som denne fila siterer som hjemmel) er
+> endret — Train-lock er designfasit for alle PlayerHQ/AgencyOS-skjermer. Skalaen under er
+> historikk fra Paper-porten; Train-lock-skalaen er ikke definert ennå (LAUNCH-PLAN D2).
+
 Kanonisk liste over tillatte fontstørrelser i AK Golf HQ. Utledet ved måling av
 `designsystem/paper/` (fase1 + fase2, 752 filer, CRC-identisk med zip (3) per SYNC-STATUS.md) —
 ikke fra eldre token-dokumenter. Per CLAUDE.md invariant 2 vinner Paper-fasiten ved konflikt.

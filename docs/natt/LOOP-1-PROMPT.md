@@ -1,6 +1,10 @@
 # LOOP 1 — Domain + actions
 
-Kilde: `docs/natt/OVERNIGHT-CODING-LOOP.md` (full plan). Workbench-spec: `docs/natt/workbench/`.
+> **FERDIG BRUKT 25.08.2026 — IKKE LIM INN PÅ NYTT.** Loop 1 er levert (se `LOOP-1-DONE.md`);
+> Loop 2, 2S og 3S er også kjørt. Å kjøre denne prompten igjen vil overskrive nyere kode.
+> Gjeldende plan: `docs/natt/LAUNCH-PLAN-FULL-2026-08-25.md`.
+
+Kilde: `docs/natt/OVERNIGHT-CODING-LOOP.md` (full plan). Workbench-spec: `docs/natt/workbench/` (nå delvis arkivert — koden i `src/` er fasit).
 
 ## Loop 1 — Domain + persistens + actions (90–120 min)
 

@@ -1,5 +1,9 @@
 # Fasit-listen: Paper-skjerm ↔ ekte rute
 
+> **SUPERSEDERT 25.08.2026:** Train-lock er designfasit for alle PlayerHQ- og AgencyOS-skjermer.
+> Paper-koblingene under er historikk/arkiv — bruk dem kun som rute-inventar, aldri som
+> design-fasit. Se `docs/natt/LAUNCH-PLAN-FULL-2026-08-25.md`.
+
 **Skrevet:** 02.08.2026 · **Oppdatert:** 2026-08-17 (jarvis/-sporet inn, tall mot checklisten;
 tegningen er FERDIG — W1–W6 er alle tegnet, + 12 Jarvis-fasiter i zip 16.08).
 **Denne fila** = fasit ↔ rute. **`PAPER-ZIP-CHECKLIST.md`** = hva som er portet og godkjent.

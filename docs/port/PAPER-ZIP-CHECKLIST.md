@@ -1,5 +1,9 @@
 # Paper zip checklist — kryss når DONE (pixel m390 + d1280)
 
+> **SUPERSEDERT 25.08.2026 (Anders, i økt):** Train-lock er designfasit for ALLE skjermer
+> i PlayerHQ og AgencyOS — Paper er historikk. Innholdet under er arkiv fra Paper-porten,
+> ikke aktiv arbeidsliste. Fasit: `CLAUDE.md` invariant 2 + `docs/natt/LAUNCH-PLAN-FULL-2026-08-25.md`.
+
 > Oppdatert: **2026-08-16** etter full resynk av **AK Golf HQ — Claude Paper.zip (16.08)**
 > → `designsystem/paper/` (se `SYNC-STATUS.md`)  
 > **Styrende plan:** `docs/port/PIXEL-PERFECT-PLAN-COMPLETE.md` v2.0 — regnskapet er
