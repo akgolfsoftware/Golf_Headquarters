@@ -55,6 +55,7 @@ import { ArtefaktPanel, useErMobil } from "./ArtefaktPanel";
 import { PushOptInBanner } from "@/components/portal/push-opt-in-banner";
 import { FangstSheet } from "./FangstSheet";
 import type { PortalChatMessage } from "./types";
+import type { TrackManTeaser } from "@/lib/trackman/teaser";
 
 const FORSLAG = ["Hva skal jeg trene i dag?", "Hva var resultatet sist?", "Hva står på ukeplanen?"];
 
@@ -382,6 +383,46 @@ function TomTilstand({
 }
 
 /**
+ * PH-01c «TrackMan-kort på I dag» (B7). Dempet kort — hairline-kant, ingen
+ * elev-fyllflate, dempet tekst — rett under Workbench-artefaktet.
+ * Skjules HELT når spilleren ikke har noen TrackMan-økt (PH-01d): page.tsx
+ * sender `null` som prop da, og komponenten kalles ikke i det hele tatt (se
+ * kallstedet). Hele kortet er trykkbart → TM-11.
+ *
+ * Bruker bevisst T.* (samme som resten av denne siden), IKKE TL.* — denne
+ * skjermen (PortalChatHjem) er ikke Train-lock-portet ennå (CLAUDE.md:
+ * «Selve skjermporten gjenstår, B8 = Player»). Å blande TL inn i et ellers
+ * T-basert skjermbilde ville brutt regelen «bland aldri T.* og TL.* i samme
+ * skjerm» enda mer direkte enn å holde dette kortet i T — se
+ * docs/natt/LOOP-B7-DONE.md for avviket, som er meldt til Anders.
+ */
+function TrackManTeaserKort({ trackman }: { trackman: TrackManTeaser }) {
+  return (
+    <Link
+      href={`/portal/analysere/trackman/${trackman.sessionId}`}
+      data-od-id="ph-01c-trackman-kort"
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        gap: 4,
+        border: `1px solid ${T.border}`,
+        borderRadius: T.rCard,
+        background: "transparent",
+        padding: "12px 14px",
+        textDecoration: "none",
+        color: "inherit",
+      }}
+    >
+      <span style={{ fontFamily: T.mono, fontSize: 10, letterSpacing: "0.06em", textTransform: "uppercase", color: T.mut }}>
+        Siste TrackMan · {trackman.club} · {trackman.dateText}
+      </span>
+      <p style={{ margin: 0, fontFamily: T.ui, fontSize: 12.5, color: T.fg2, lineHeight: 1.4 }}>{trackman.sentence}</p>
+      <span style={{ fontFamily: T.ui, fontSize: 12, color: T.fg2 }}>Se spredning ›</span>
+    </Link>
+  );
+}
+
+/**
  * Workbench «I dag» (Loop 3 / B4) — fire tilstander (PH-01e): feil (henting
  * feilet), hvile (ingen Workbench-økter i det hele tatt, ikke en feil), pågår
  * (én økt har status IN_PROGRESS — PH-05, egen fremhevet artefakt-tilstand),
@@ -532,6 +573,7 @@ export function PortalChatHjem({
   gjennomfore,
   naaTekst,
   workbenchDay,
+  trackman,
 }: {
   data: DashboardData;
   gjennomfore: GjennomforeData;
@@ -539,6 +581,8 @@ export function PortalChatHjem({
   naaTekst: { ukedag: string; dato: string; klokke: string };
   /** Ekte Workbench-dag (Loop 3/B4) — se `WorkbenchIDagArtefakt`. */
   workbenchDay: PlayerDayResult;
+  /** PH-01c: siste TrackMan-økt, eller null når spilleren ikke har noen (kortet skjules da helt). */
+  trackman: TrackManTeaser | null;
 }) {
   const { messages, status, error, sendMessage } = usePortalChat();
   const [artefaktApen, setArtefaktApen] = useState(false);
@@ -701,6 +745,7 @@ export function PortalChatHjem({
             }}
           >
             <WorkbenchIDagArtefakt workbenchDay={workbenchDay} />
+            {trackman && <TrackManTeaserKort trackman={trackman} />}
 
             {messages.length === 0 && heltTom && (
               <TomTilstand
