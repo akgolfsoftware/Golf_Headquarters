@@ -8,6 +8,9 @@ CLAUDE.md invariant 2, `.claude/rules/beslutninger.md` øverste beslutning). Pap
 
 | Fil | Rolle |
 |---|---|
+| `DESIGN-SYSTEM.md` | **Look-fasiten** (26.08): tokens mørk/lys, geometri, type, motion, komponent- og knappe-matrise, forbud, copy/personvern, filkonvensjon, leveringssjekkliste. Ved konflikt: HANDOFF vinner på struktur, DESIGN-SYSTEM på visuelle verdier |
+| `SCREEN-INDEX.md` | Navigasjonen: alle ~196 filer med rammeantall, breakpoints og `data-screen-label` — finn skjermen her før du åpner noe |
+| `PORTING.md` | Kontrakten for port til kode: tokenlag først, primitives før skjermer, visuell diff-rigg (Playwright + pixelmatch), stopp-regler |
 | `HANDOFF.md` | **Kontrakten**: PIXEL = look-fasit, MAL = IA-fasit (vinner ved konflikt), scene #000000 / lys #FFFFFF, CTA-regel, kollisjonsnivåer (VEGG/VARSEL/KALENDER), serie-regler, Workbench-vs-Kalender-eierskap |
 | `TRAIN LOCK.dc.html` | Selve lock-arket (scene, farger — tokens må fortsatt defineres i kode, LAUNCH-PLAN D2) |
 | `TRAIN VIZ.dc.html` | Visualiserings-locken |
@@ -15,7 +18,7 @@ CLAUDE.md invariant 2, `.claude/rules/beslutninger.md` øverste beslutning). Pap
 | `AX-01 Skall rail og tabbar.dc.html` | **SKALL-FASIT (kanon fra 25.08.2026).** Ny, komplett leveranse (11 431 byte) erstattet den avkuttede versjonen. **Fem destinasjoner, identisk på mobil og Mac:** Stall · Workbench · Kø · Jarvis · Meg. Konsoll, Økonomi og Kalender er rader under Meg — aldri en sjette fane. Mac-rail 232 px med tekst. Ved konflikt vinner denne over `AG-00` og over rail-en i A-/AG-skjermene (som viser 7 ikoner i 64 px og er utdatert). |
 | `B1 Tilstander laster feil.dc.html` | Tilstands-fasiten (laster/feil) |
 
-## Familier (180 skjermfiler)
+## Familier (196 skjermfiler)
 
 | Prefiks | Antall | Dekker |
 |---|---|---|
@@ -36,10 +39,11 @@ CLAUDE.md invariant 2, `.claude/rules/beslutninger.md` øverste beslutning). Pap
 | JV-01…JV-03 | 3 | Jarvis-merge (kø, eval rød, proveniens) |
 | BO-01…BO-03 | 3 | Booking |
 | TU-01/02 · GP-01/02 · GAP-00/1 · MAT-00/01 | 8 | Turneringer, Gameplan, GAP, materialer |
-| FY-01 · FO-01 · EC-01 · DG-01 · Analyse Gapping | 5 | Fys stall, Forelder, Økonomi, DataGolf, gapping-analyse |
+| FO-01…FO-10 (+L-varianter) | 20 | Foreldreportal komplett (les, barn, bookinger, coach, fakturaer, innstillinger, økonomi, samtykke, ukerapport, varsler) — mørk + lys, levert 26.08 |
+| FY-01 · EC-01 · DG-01 · Analyse Gapping | 4 | Fys stall, Økonomi, DataGolf, gapping-analyse |
 
 ## Regler
 
 - Port til fasit — aldri kreativ redesign. MAL (IA) vinner over PIXEL ved konflikt (HANDOFF.md).
-- Skjermbilde-gaten gjelder: Anders skal SE hver portet skjerm (390px + 1280px, mørk + lys der lys-variant finnes).
+- Skjermbilde-gaten gjelder: Anders skal SE hver portet skjerm (390px + 1280px, ALLTID mørk + lys — beslutning 26.08: alle skjermer i PlayerHQ, AgencyOS og forelder har begge moduser; mekanisk avledet lys fra tokensettet er godkjent der tegnet lys-fasit mangler).
 - `uploads/`-kildematerialet fra zipen er BEVISST holdt utenfor repoet (offentlig repo; NGF/Team Norway-materiale) — se SYNC-STATUS.md.
