@@ -1,22 +1,19 @@
 /**
- * v2 — AgencyOS Min coach-profil (retning C). Egen top-level route (utenfor
- * AdminShell) — V2Shell leverer all chrome (IkonRail/BunnNav) i mørk
- * v2-scope. Nav-punktet lever i Cmd+K-søket («Min coach-profil») etter at Mer ble
- * kuttet til fem rom 2026-07-26,
- * ikke i hovedrailen — `aktiv` utledes derfor av URL-en (samme mønster som
- * /admin/team/inviter og /admin/settings).
+ * AgencyOS Konto (Min coach-profil) — Train-lock (T13, 26.08.2026).
  *
- * Coachens EGEN profil — selvbetjening, ikke admin-styrt spillerprofil.
- * Port av /admin/(legacy)/profile/page.tsx: samme requirePortalUser-guard
- * og samme felt-kilde (User-modellen + preferences-JSON for sertifiseringer/
- * språk/klubber). Mutasjonene (oppdaterCoachProfil, uploadAvatar) gjenbrukes
- * 1:1 fra legacy-actionsene — ingen nye actions.
+ * Porter fra AdminProfilV2 (Paper T.*) til AdminProfilTrainLock (TL.*) —
+ * fasit: designsystem/train-lock/AG-05 Mer-ark.dc.html («Konto»-mønsteret),
+ * se AdminProfilTrainLock for begrunnelse. Samme requirePortalUser-guard,
+ * samme felt-kilde (User-modellen + preferences-JSON) og samme mutasjoner
+ * (oppdaterCoachProfil, uploadAvatar) — designport, ikke funksjonsendring.
+ * Nav-punktet lever i Cmd+K-søket («Min coach-profil»), ikke i hovedrailen —
+ * `aktiv` utledes derfor av URL-en (samme mønster som /admin/team/inviter
+ * og /admin/settings).
  */
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
-import { TilbakeLenke } from "@/components/v2";
-import { AdminProfilV2, type AdminProfilV2Data } from "@/components/admin/v2/AdminProfilV2";
+import { AdminProfilTrainLock, type AdminProfilV2Data } from "@/components/admin/v2/oppsett/AdminProfilTrainLock";
 
 export const dynamic = "force-dynamic";
 
@@ -57,8 +54,7 @@ export default async function AdminProfilePage() {
 
   return (
     <V2Shell bredde="kolonne" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"} avatarUrl={user.avatarUrl}>
-      <TilbakeLenke href="/admin/agencyos">Cockpit</TilbakeLenke>
-      <AdminProfilV2 data={data} />
+      <AdminProfilTrainLock data={data} />
     </V2Shell>
   );
 }
