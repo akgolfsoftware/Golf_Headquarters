@@ -60,6 +60,8 @@ export const TL = {
   // ── Signal (smal bruk — se filhodet) ──
   danger: "var(--tl-danger)",
   ok: "var(--tl-ok)",
+  /** Tekst på en danger-flate (Kø-badge). */
+  onDanger: "var(--tl-on-danger)",
 
   // ── Utkast / ark ──
   draftBorder: "var(--tl-draft-border)",

@@ -75,6 +75,9 @@
   /* ── Farge · signal (SMAL BRUK — se kommentar) ── */
   --tl-danger: #FF3B30;             /* BARE feiltilstander */
   --tl-ok: #34C759;                 /* BARE «godkjent av coach» / Godta / PUBLISERT */
+  /* T1 (25.08 kveld, AX-01): Kø-badge-tekst — hvit på danger-flate, uendret
+     i begge tema (fasiten bruker samme hex begge steder, som --tl-avatar). */
+  --tl-on-danger: #FFFFFF;
 
   /* ── Farge · utkast ──
      DRAFT = hairline-kant, ikke fyll (A-01d). Lys: #0000003D. */
@@ -108,7 +111,7 @@
   --tl-dock-w: 358px;               /* compact */
   --tl-dock-pad: 8px 10px;
   --tl-dock-lift: 12px;             /* over home indicator */
-  --tl-rail-mac: 64px;              /* AgencyOS Mac-rail (7 ikon 44) */
+  --tl-rail-mac: 232px;             /* AgencyOS Mac-rail (AX-01b, 25.08 kveld — erstatter 64px 7-ikon-fasiten) */
   --tl-rail-player-mac: 72px;       /* PlayerHQ Mac-rail (4 ikon 44) */
   --tl-skinne-ipad: 250px;          /* PlayerHQ iPad regular */
   --tl-artefakt: 380px;             /* artefakt-panel høyre */
@@ -228,6 +231,7 @@ html[data-v2-tema="dark"] {
 
   --tl-danger: #FF453A;
   --tl-ok: #30D158;
+  --tl-on-danger: #FFFFFF;
 
   --tl-draft-border: #FFFFFF3D;
   --tl-grabber: #3A3A3C;
