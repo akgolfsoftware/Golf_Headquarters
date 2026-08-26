@@ -217,13 +217,15 @@ Konsekvenser som nå er låst:
 **Anbefaling: A.** I Train-lock betyr rødt feil. To røde med ulik betydning på samme skjerm er
 den tvetydigheten invariant 8 forbyr.
 
-### N-D3 · PEI-formelen *(blokkerer N3 — må avklares før høsting)*
+### N-D3 · PEI-formelen — **AVGJORT 26.08 (Anders): `resultat ÷ lengde`, lavere er bedre**
 
-Hvilken gjelder: `(Rand − fraHull) / Rand × 100` (høyere bedre), eller `resultat / lengde`
-(lavere bedre)?
+> «Tallet som viser f.eks 4,3 %»
 
-**Anbefaling: den andre** — den matcher akgolf-hq, designprosjektets tallformat og
-Team Norway-Excel-arket. Men dette er Anders' fagdomene, ikke mitt å avgjøre.
+Bekrefter anbefalingen: samme formel som akgolf-hq allerede bruker
+(`src/lib/portal-tester/test-scoring.ts`), samme tallformat som designprosjektet
+(«4,26 % · 0,04»), samme retning som Team Norway-Excel-arket. Den andre formelen
+(`(Rand − fraHull) / Rand × 100`, høyere bedre) er nå eksplisitt FORKASTET — den skal
+ikke høstes eller brukes noe sted. N3 er bygget og verifisert mot dette svaret (se §3).
 
 ### N-D4 · Hvor skal Python-pipelines bo?
 
@@ -262,21 +264,50 @@ ny chat, egen worktree ved parallell, maks 2–3 samtidige, `npm run verify` gr�
 `docs/natt/N<x>-DONE.md` per rad, **aldri main-merge uten Anders' ja**, skjermbilde-gate
 (390 px + 1280 px, lys + mørk) på hver skjerm-rad.
 
+### Status 26.08.2026 (kveld)
+
+| # | Status | Gren (pushet, IKKE merget) | Verifisert |
+|---|---|---|---|
+| N1 | ✅ Ferdig — kjørt mot prod | (eget repo, se `N1-DONE.md`) | 379 tester + én ekte kjøring: dg_rounds +1260 i prod |
+| N2 | ✅ Ferdig | `claude/n2-dashboard-data-bridge` | tsc + 22 tester + full verify grønn |
+| N3 | ✅ Ferdig | `claude/n3-pei-scorekort-motor` | tsc + 20 tester (paritet mot talenthq bevist) + full verify grønn |
+| N5 | ✅ Ferdig | `claude/n5-team-norway-org` | tsc + 1657 tester + full verify (inkl. build) grønn |
+| N4, N6–N14 | Ikke startet | — | — |
+
+Alle tre grener er bygget fra `origin/main` slik den så ut formiddag/tidlig ettermiddag
+26.08 (før T2/Cockpit-porten og PR #603 landet på noen av dem) — de trenger en rebase mot
+fersk `main` før PR/merge, ikke en direkte merge. **Ingen av grenene er slått sammen med
+main eller med hverandre ennå.**
+
+**Hendelse under N3:** agenten mistet midlertidig en fremmed `git stash` fra en annen økt
+(25.08, `golfbox.ts`/`golfbox-sync.ts` + ny `backfill-golfbox-sesonger.ts`) under
+feilsøking av det kjente `npm ci`-i-worktree-gotchaet. Gjenfunnet og lagt tilbake som
+`stash@{0}` i hovedrepoet samme dag — se `docs/feillogg.md` (26.08-oppføringen) for
+rotårsak og gjenopprettingsmåte. Ingen data gikk tapt, men verdt å nevne til hvem det
+måtte gjelde.
+
 ### Fase 0 — Haster, uavhengig av bølge T
 
 | # | Jobb | Scope | Done | Avhenger av |
 |---|---|---|---|---|
-| **N1** | Sikre DataGolf-tilførselen | Flytt `pipelines/` + GitHub Actions-workflows + juridisk dok til nytt hjem per N-D4. Kopier secrets. **Verifiser at `datagolf-public-sync` skriver til `public.*` fra det nye hjemmet før talenthq røres.** Slett døde pipelines | Én full `public_db.py`-kjøring grønn fra nytt repo; `datagolf_sync_state` oppdatert; daglig cron kjører | N-D4 |
+| **N1** ✅ | Sikre DataGolf-tilførselen | Flytt `pipelines/` + GitHub Actions-workflows + juridisk dok til nytt hjem per N-D4. Kopier secrets. **Verifiser at `datagolf-public-sync` skriver til `public.*` fra det nye hjemmet før talenthq røres.** Slett døde pipelines | Én full `public_db.py`-kjøring grønn fra nytt repo; `datagolf_sync_state` oppdatert; daglig cron kjører | N-D4 |
 
 ### Fase 1 — Fundament (parallelt med bølge T)
 
 | # | Jobb | Scope | Done | Avhenger av |
 |---|---|---|---|---|
-| **N2** | Data-broen til `dashboard` | Read-only modul `src/lib/dashboard-data/` med `$queryRaw` + zod. IKKE `multiSchema`. Dekker `dg_rounds`, `dg_round_sg`, `tournament_results`, `dg_players` + de 8 materialiserte viewene | Modul + tester grønne; én skjerm leser ekte tall | — |
-| **N3** | PEI + scorekort-motoren høstes | Etter N-D3. Høst `protocol-definitions.js` (11 protokoller), `scorecard-compute.js`, `sg-reference.js`, `test-reference-data.ts` → `src/lib/domain/pei/`. **Ta med `parity.test.ts`-mønsteret.** Regel kodet: PEI aldri i samme rad som Broadie-SG/DataGolf | Tester grønne; samme tall som talenthq på kjente input | N-D3 |
+| **N2** ✅ | Data-broen til `dashboard` | Read-only modul `src/lib/dashboard-data/` med `$queryRaw` + zod. IKKE `multiSchema`. Dekker `dg_rounds`, `dg_round_sg`, `tournament_results`, `dg_players` + de 8 materialiserte viewene | Modul + tester grønne; én skjerm leser ekte tall | — |
+| **N3** ✅ | PEI + scorekort-motoren høstes | Etter N-D3. Høst `protocol-definitions.js` (11 protokoller), `scorecard-compute.js`, `sg-reference.js`, `test-reference-data.ts` → `src/lib/domain/pei/`. **Ta med `parity.test.ts`-mønsteret.** Regel kodet: PEI aldri i samme rad som Broadie-SG/DataGolf | Tester grønne; samme tall som talenthq på kjente input | N-D3 |
 | **N4** | `test_shots` + attestering | Normaliser slag-lagring: egen tabell (additiv DDL via kirurgisk `db execute` — ALDRI `migrate`/`push`/`deploy`, jf. gotchas) med `pei`, `sg`, `x`, `y`. Legg til vitne-felter på `TestResult`. Migrer eksisterende `details Json?` | Slag spørrbare per test; spredningskart mulig; verify grønn | N3 |
-| **N5** | Team Norway som organisasjon | Legg TN i `KANONISKE_GRUPPER`; koble `EksternLeserGruppe` + `DelingsSamtykke`; dekningsgrad («4 av 11 med profil») som ren funksjon; høst `selection_*`-modellen | TN-gruppe finnes; ekstern leser ser kun samtykkede spillere; uten samtykke = usynlig | — |
+| **N5** ✅ | Team Norway som organisasjon | Legg TN i `KANONISKE_GRUPPER`; koble `EksternLeserGruppe` + `DelingsSamtykke`; dekningsgrad («4 av 11 med profil») som ren funksjon; høst `selection_*`-modellen | TN-gruppe finnes; ekstern leser ser kun samtykkede spillere; uten samtykke = usynlig | — |
 | **N6** | Nordic League-pipelinen | Det eneste turneringssporet akgolf-hq mangler helt. Kjøres fra det nye pipeline-repoet | Nordic League-turneringer i `dashboard.tournaments`; cron grønn | N1 |
+
+**Presisering til N5:** `selection_*`-modellen (uttak) ble bevisst IKKE høstet i denne
+sesjonen — det er additiv DDL (nye tabeller), og hører hjemme i N11 sammen med resten av
+uttaksfunksjonaliteten, ikke i en sesjon som skulle unngå skjemaendringer. N5 leverte
+istedenfor: TN som kanonisk gruppe (`managedByAkGolf: false`, ny eksplisitt type-kolonne),
+verifisert tilgang begge veier (med/uten samtykke) på ekstern-leser-stakken, og
+`beregnDekningsgrad` som ren funksjon.
 
 ### Fase 2 — Design (etter bølge T)
 
@@ -301,8 +332,11 @@ ny chat, egen worktree ved parallell, maks 2–3 samtidige, `npm run verify` gr�
 |---|---|---|---|---|
 | **N14** | Arkiver talenthq | Verifiser at alt i N-D5-lista er portet **og at N1 har kjørt grønt i minst en uke**. Arkiver `akgolfsoftware/talenthq` på GitHub. Fjern Vercel-prosjektet. Skriv høstingslogg | Repoet arkivert; ingen kode der som ikke finnes i akgolf-hq eller pipeline-repoet | N1, N9–N13 |
 
-**Rekkefølge:** **N1 først og alene** (haster). Deretter N2 · N3 · N5 parallelt (disjunkte
-filer, ingen skjermer). N4 etter N3, N6 etter N1. Fase 2 venter på bølge T. N14 sist.
+**Rekkefølge:** **N1 først og alene** (haster) — ✅ gjort. Deretter N2 · N3 · N5 parallelt
+(disjunkte filer, ingen skjermer) — ✅ alle tre gjort, se statustabellen over. Gjenstår:
+rebase de tre grenene mot fersk main og få dem slått sammen (uten Anders' ja skjer ikke
+dette av seg selv), deretter N4 (etter N3), N6 (etter N1). Fase 2 venter på bølge T.
+N14 sist.
 
 ---
 
@@ -348,3 +382,11 @@ filer, ingen skjermer). N4 etter N3, N6 etter N1. Fase 2 venter på bølge T. N1
   ikke en motsigelse.
 - **Rettelse til min første designgjennomgang:** jeg kalte railen «feil» uten forbehold.
   Det var for hardt — se §1, avvik 3.
+- **Oppdatering 26.08 kveld, etter N2/N3/N5:** de tre grenene er verifisert hver for seg
+  (tsc + tester + full `npm run verify`), men er ALDRI kjørt sammen — ingen har testet at
+  N2+N3+N5 kombinert (f.eks. etter en felles rebase) fortsatt bygger og verifiserer grønt.
+  Sjekk dette før PR, ikke anta at tre grønne grener gir en grønn firer.
+- N3-agenten rapporterte selv at et par av de 11 protokollene i `protocol-definitions.js`
+  ble bevisst utelatt (kun 23 av 29 totalt, inkl. de 6 rene fysisk-testene som allerede
+  dekkes av `test-scoring.ts`) — se `docs/natt/N3-DONE.md` for eksakt hvilke og hvorfor,
+  ikke anta at høstingen er komplett før noen har lest den lista mot N-D5-skjermlista.
