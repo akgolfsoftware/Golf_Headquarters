@@ -8,6 +8,9 @@ import { describe, it } from "node:test";
 import assert from "node:assert/strict";
 import {
   createSession,
+  createSessionSeries,
+  applySeriesPatch,
+  sessionsMatchingPolicy,
   moveSession,
   publishSession,
   unpublishSession,
@@ -264,6 +267,68 @@ describe("publishMany", () => {
     const result = publishMany([a, b], [a.id], "c1");
     assert.equal(result.find((s) => s.id === a.id)!.status, "PUBLISHED");
     assert.equal(result.find((s) => s.id === b.id)!.status, "DRAFT");
+  });
+});
+
+describe("createSessionSeries", () => {
+  it("weeks=1 behaves exactly like createSession — no seriesId", () => {
+    const [s] = createSessionSeries(baseCmd, 1);
+    assert.equal(s.seriesId, undefined);
+    assert.equal(s.seriesIndex, undefined);
+  });
+
+  it("creates N weekly occurrences sharing a seriesId, one week apart", () => {
+    const forekomster = createSessionSeries(baseCmd, 3);
+    assert.equal(forekomster.length, 3);
+    const seriesId = forekomster[0].seriesId;
+    assert.ok(seriesId);
+    forekomster.forEach((s, i) => {
+      assert.equal(s.seriesId, seriesId);
+      assert.equal(s.seriesIndex, i);
+      assert.equal(s.status, "DRAFT");
+    });
+    assert.equal(forekomster[0].date, "2026-08-24");
+    assert.equal(forekomster[1].date, "2026-08-31");
+    assert.equal(forekomster[2].date, "2026-09-07");
+    // Tid holdes likt per forekomst — kun dato flyttes.
+    forekomster.forEach((s) => assert.equal(s.startMinute, 540));
+  });
+});
+
+describe("sessionsMatchingPolicy", () => {
+  const forekomster = createSessionSeries(baseCmd, 4);
+
+  it("DENNE treffer kun gjeldende forekomst", () => {
+    const treff = sessionsMatchingPolicy(forekomster, forekomster[2].id, "DENNE");
+    assert.deepEqual(treff.map((s) => s.id), [forekomster[2].id]);
+  });
+
+  it("DENNE_OG_FREMOVER treffer gjeldende og alle senere", () => {
+    const treff = sessionsMatchingPolicy(forekomster, forekomster[1].id, "DENNE_OG_FREMOVER");
+    assert.deepEqual(
+      treff.map((s) => s.id),
+      [forekomster[1].id, forekomster[2].id, forekomster[3].id],
+    );
+  });
+
+  it("HELE_SERIEN treffer alle forekomster uansett hvilken som er gjeldende", () => {
+    const treff = sessionsMatchingPolicy(forekomster, forekomster[3].id, "HELE_SERIEN");
+    assert.equal(treff.length, 4);
+  });
+
+  it("returnerer tom liste for ukjent sessionId", () => {
+    assert.deepEqual(sessionsMatchingPolicy(forekomster, "finnes-ikke", "DENNE"), []);
+  });
+});
+
+describe("applySeriesPatch", () => {
+  it("slår sammen kun de oppgitte feltene, aldri dato/tid", () => {
+    const s = createSession(baseCmd);
+    const patched = applySeriesPatch(s, { title: "Nytt navn", pyramid: "SLAG" });
+    assert.equal(patched.title, "Nytt navn");
+    assert.equal(patched.pyramid, "SLAG");
+    assert.equal(patched.date, s.date);
+    assert.equal(patched.startMinute, s.startMinute);
   });
 });
 

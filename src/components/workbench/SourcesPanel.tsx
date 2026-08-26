@@ -1,21 +1,30 @@
 "use client";
 
 /**
- * SourcesPanel — venstrekolonnen (natt-plan Loop 2, SKALL).
+ * SourcesPanel — venstrekolonnen (natt-plan Loop 2T/B5).
  *
- * Innholdet (øvelsesbank, maler, tidligere uker) er bevisst utenfor Loop 2 —
- * `loadSources` returnerer tom liste til Loop 2T kobler på kildene. Panelet
- * finnes nå for å låse plassen i layouten og vise ærlig tom tilstand.
+ * Ekte innhold fra `loadSources` (øvelsesbank, maler, forrige uke), gruppert
+ * per kilde-type. Hvert element er `draggable` — dra inn i uka via native
+ * HTML5 drag-and-drop (se wb-drag.ts). Klikk gjør ingenting ennå; kortene er
+ * kun en dra-kilde i v1.
  */
 
+import type { DragEvent } from "react";
 import { Icon } from "@/components/v2/icon";
 import { T } from "@/lib/v2/tokens";
 import { UI } from "@/lib/domain/workbench/labels";
 import type { SourceItem } from "@/lib/domain/workbench/types";
+import { settKildeDataTransfer } from "./wb-drag";
 
 type Props = {
   kilder: SourceItem[];
 };
+
+const GRUPPER: { kind: SourceItem["kind"]; tittel: string; ikon: string }[] = [
+  { kind: "DRILL", tittel: UI.sourcesDrills, ikon: "dumbbell" },
+  { kind: "TEMPLATE", tittel: UI.sourcesTemplates, ikon: "star" },
+  { kind: "PREVIOUS_WEEK", tittel: UI.sourcesPrevious, ikon: "history" },
+];
 
 export function SourcesPanel({ kilder }: Props) {
   return (
@@ -27,6 +36,8 @@ export function SourcesPanel({ kilder }: Props) {
         borderRadius: T.rCard,
         padding: 14,
         minWidth: 0,
+        display: "grid",
+        gap: 14,
       }}
     >
       <div
@@ -37,7 +48,6 @@ export function SourcesPanel({ kilder }: Props) {
           letterSpacing: "0.08em",
           textTransform: "uppercase",
           color: T.mut,
-          marginBottom: 10,
         }}
       >
         {UI.sourcesTitle}
@@ -56,24 +66,80 @@ export function SourcesPanel({ kilder }: Props) {
           </div>
         </div>
       ) : (
-        <ul style={{ listStyle: "none", margin: 0, padding: 0, display: "grid", gap: 6 }}>
-          {kilder.map((k) => (
-            <li
-              key={k.id}
-              style={{
-                fontFamily: T.ui,
-                fontSize: 12.5,
-                color: T.fg,
-                padding: "7px 9px",
-                borderRadius: T.rTag,
-                background: T.panel2,
-              }}
-            >
-              {k.title}
-            </li>
-          ))}
-        </ul>
+        GRUPPER.map((gruppe) => {
+          const elementer = kilder.filter((k) => k.kind === gruppe.kind);
+          if (elementer.length === 0) return null;
+          return (
+            <div key={gruppe.kind} style={{ display: "grid", gap: 6, minWidth: 0 }}>
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 5,
+                  fontFamily: T.mono,
+                  fontSize: 9.5,
+                  fontWeight: 600,
+                  letterSpacing: "0.06em",
+                  textTransform: "uppercase",
+                  color: T.mut,
+                }}
+              >
+                <Icon name={gruppe.ikon} size={11} style={{ color: T.mut }} />
+                {gruppe.tittel}
+              </div>
+              <ul style={{ listStyle: "none", margin: 0, padding: 0, display: "grid", gap: 6 }}>
+                {elementer.map((k) => (
+                  <KildeKort key={k.id} kilde={k} />
+                ))}
+              </ul>
+            </div>
+          );
+        })
       )}
     </aside>
+  );
+}
+
+function KildeKort({ kilde }: { kilde: SourceItem }) {
+  return (
+    <li
+      draggable
+      title={UI.dragHint}
+      onDragStart={(e: DragEvent<HTMLLIElement>) => settKildeDataTransfer(e, kilde.id)}
+      style={{
+        fontFamily: T.ui,
+        fontSize: 12.5,
+        color: T.fg,
+        padding: "7px 9px",
+        borderRadius: T.rTag,
+        background: T.panel2,
+        cursor: "grab",
+        minWidth: 0,
+      }}
+    >
+      <div
+        style={{
+          overflow: "hidden",
+          textOverflow: "ellipsis",
+          whiteSpace: "nowrap",
+        }}
+      >
+        {kilde.title}
+      </div>
+      {kilde.subtitle && (
+        <div
+          style={{
+            fontSize: 10.5,
+            color: T.mut,
+            marginTop: 2,
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+            whiteSpace: "nowrap",
+          }}
+        >
+          {kilde.subtitle}
+        </div>
+      )}
+    </li>
   );
 }

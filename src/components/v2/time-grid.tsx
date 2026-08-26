@@ -9,7 +9,14 @@
  * Fasit: src/lib/calendar/notion-grid.ts (05:00–23:00, 30 min, 44 px/time).
  */
 
-import { type CSSProperties, type ReactNode, useEffect, useMemo, useState } from "react";
+import {
+  type CSSProperties,
+  type DragEvent,
+  type ReactNode,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import {
   GRID_BODY_PX,
   GRID_END_HOUR,
@@ -45,6 +52,11 @@ type Props = {
    * Consumer kan også håndtere tom-klikk selv i renderDay.
    */
   onEmptyClick?: (slot: TimeGridSlot) => void;
+  /**
+   * Native HTML5 drag-and-drop sluppet på tom flate i en dag-kolonne
+   * (kilder → uke, B5). Slot beregnes med samme snap som `onEmptyClick`.
+   */
+  onDropSlot?: (slot: TimeGridSlot, e: DragEvent<HTMLDivElement>) => void;
   showNowLine?: boolean;
   timeColWidth?: number;
   bordered?: boolean;
@@ -88,6 +100,7 @@ export function TimeGrid({
   days,
   renderDay,
   onEmptyClick,
+  onDropSlot,
   showNowLine = true,
   // Paper `.tg` bruker en 62px tidskolonne — «05:30» i mono trenger mer plass
   // enn den gamle to-sifrede time-etiketten.
@@ -273,6 +286,17 @@ export function TimeGrid({
                       const y = e.clientY - e.currentTarget.getBoundingClientRect().top;
                       const slot = snapYToSlot(y);
                       onEmptyClick({ ...slot, dayIndex: i });
+                    }
+                  : undefined
+              }
+              onDragOver={onDropSlot ? (e) => e.preventDefault() : undefined}
+              onDrop={
+                onDropSlot
+                  ? (e) => {
+                      e.preventDefault();
+                      const y = e.clientY - e.currentTarget.getBoundingClientRect().top;
+                      const slot = snapYToSlot(y);
+                      onDropSlot({ ...slot, dayIndex: i }, e);
                     }
                   : undefined
               }

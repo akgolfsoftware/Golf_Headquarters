@@ -23,15 +23,21 @@ import type {
   WeekViewModel,
   WorkbenchSession,
 } from "@/lib/domain/workbench/types";
+import type { RecurrencePolicy } from "@/lib/domain/workbench/types";
 import {
   addDrill,
+  addDrillFromSource,
   createSession,
+  createSessionFromSource,
+  createSessionSeries,
   deleteSession,
+  deleteSessionSeries,
   loadWeek,
   moveSession,
   publishSessions,
   removeDrill,
   reorderDrills,
+  setSessionTemplate,
   unpublishSession,
 } from "@/lib/workbench/wb-actions";
 import { CreateSessionModal, type NyOktVerdier } from "./CreateSessionModal";
@@ -149,15 +155,32 @@ export function WorkbenchUke({ playerId, spillerNavn, uke, kilder }: Props) {
           () => toast.success(UI.toastUnpublished),
         );
       }}
-      onSlett={() => {
+      onSlett={(policy: RecurrencePolicy) => {
         if (!valgt) return;
         const id = valgt.id;
+        if (!valgt.seriesId) {
+          kjor(
+            () => deleteSession(id),
+            () => {
+              setValgtId(null);
+              toast.success(UI.toastSessionDeleted);
+            },
+          );
+          return;
+        }
         kjor(
-          () => deleteSession(id),
-          () => {
+          () => deleteSessionSeries({ sessionId: id, policy }),
+          ({ slettet }) => {
             setValgtId(null);
-            toast.success(UI.toastSessionDeleted);
+            toast.success(UI.toastSeriesDeleted(slettet));
           },
+        );
+      }}
+      onLagreSomMal={(isTemplate: boolean) => {
+        if (!valgt) return;
+        kjor(
+          () => setSessionTemplate(valgt.id, isTemplate),
+          () => toast.success(isTemplate ? UI.toastTemplateSaved : UI.toastTemplateRemoved),
         );
       }}
       onLeggTilDrill={(v: LeggTilDrillVerdier) => {
@@ -268,6 +291,21 @@ export function WorkbenchUke({ playerId, spillerNavn, uke, kilder }: Props) {
             selectedSessionId={valgtId}
             onSelectSession={setValgtId}
             onCreateAt={(dato, startMinutt) => setNyOkt({ dato, startMinutt })}
+            onDropSource={(dato, startMinutt, sourceId) => {
+              kjor(
+                () => createSessionFromSource({ playerId, sourceId, date: dato, startMinute: startMinutt }),
+                (okt) => {
+                  setValgtId(okt.id);
+                  toast.success(UI.toastSourceDropped);
+                },
+              );
+            }}
+            onDropDrillOnSession={(sessionId, sourceId) => {
+              kjor(
+                () => addDrillFromSource({ sessionId, sourceId }),
+                () => toast.success(UI.toastDrillDroppedOnSession),
+              );
+            }}
           />
         </div>
 
@@ -296,8 +334,20 @@ export function WorkbenchUke({ playerId, spillerNavn, uke, kilder }: Props) {
         lagrer={travel}
         onLukk={() => setNyOkt(null)}
         onOpprett={(v: NyOktVerdier) => {
+          const { repeatWeeks, ...felter } = v;
+          if (repeatWeeks > 1) {
+            kjor(
+              () => createSessionSeries({ playerId, ...felter, repeatWeeks }),
+              (okter: WorkbenchSession[]) => {
+                setNyOkt(null);
+                setValgtId(okter[0]?.id ?? null);
+                toast.success(UI.toastSeriesCreated(okter.length));
+              },
+            );
+            return;
+          }
           kjor(
-            () => createSession({ playerId, ...v }),
+            () => createSession({ playerId, ...felter }),
             (okt: WorkbenchSession) => {
               setNyOkt(null);
               setValgtId(okt.id);

@@ -31,6 +31,7 @@ import { DrillListEditor, type DrillListItem } from "./DrillListEditor";
 
 const PYRAMIDER: PyramidArea[] = ["FYS", "TEK", "SLAG", "SPILL", "TURN"];
 const VARIGHETER = [30, 45, 60, 90, 120, 180];
+const GJENTA_UKER = [1, 2, 4, 6, 8, 12];
 
 export type NyOktDrillVerdier = {
   title: string;
@@ -45,6 +46,8 @@ export type NyOktVerdier = {
   durationMinutes: number;
   pyramid: PyramidArea;
   drills?: NyOktDrillVerdier[];
+  /** > 1 → opprett som ukentlig serie (B5). 1 = ingen gjentagelse. */
+  repeatWeeks: number;
 };
 
 type Props = {
@@ -70,6 +73,7 @@ export function CreateSessionModal({
   const [start, setStart] = useState(formatTime(startMinutt));
   const [varighet, setVarighet] = useState(60);
   const [pyramid, setPyramid] = useState<PyramidArea>("TEK");
+  const [gjentaUker, setGjentaUker] = useState(1);
   const [feil, setFeil] = useState<string | null>(null);
   const [drillUtkast, setDrillUtkast] = useState<DrillListItem[]>([]);
   const nesteDrillId = useRef(0);
@@ -98,6 +102,7 @@ export function CreateSessionModal({
         durationMinutes: d.durationMinutes,
         akFormel: d.akFormel,
       })),
+      repeatWeeks: gjentaUker,
     });
   }
 
@@ -157,6 +162,16 @@ export function CreateSessionModal({
                 </Select>
               </Felt>
             </div>
+
+            <Felt label={UI.repeatLabel}>
+              <Select value={gjentaUker} onChange={(e) => setGjentaUker(Number(e.target.value))}>
+                {GJENTA_UKER.map((n) => (
+                  <option key={n} value={n}>
+                    {n === 1 ? UI.repeatOnce : UI.repeatWeeks(n)}
+                  </option>
+                ))}
+              </Select>
+            </Felt>
 
             <Felt label={UI.drills}>
               <DrillListEditor
