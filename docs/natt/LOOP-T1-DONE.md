@@ -151,3 +151,32 @@ aldri i prod/preview) — ikke noe bygget i dette oppdraget.
    element (rail, ikke dock) fordi begge har samme aria-label og rail
    kommer først i DOM-rekkefølgen — måtte bruke `data-paper-faner="agency"`
    for å target riktig element i debug-scriptene.
+
+## Høsting fra #599 (duplikat-PR, lukket 26.08 av Anders til fordel for denne)
+
+En parallell skyøkt bygde samme skall på nytt fra main uten å se dette
+worktreet (`claude/t1-agency-skall-tl-stcvsv`, PR #599). Anders lukket den
+som duplikat og ba om at nyttige funn derfra ble høstet hit før
+skjermbilde-gaten:
+
+1. **`aktiv=`-propen på 4 sider trengte IKKE oppdatering.** #599 endret
+   `aktiv="mer"/"agenticos"/"workbench"/"innboks"` til nye verdier på
+   `okonomi/page.tsx`, `agenticos/page.tsx`, `planlegge/page.tsx` og
+   `queue/page.tsx`. Sjekket mot denne branchens `shell.tsx`: `IkonRailNav`
+   returnerer `<TrainLockAgencyRail />` tidlig når `erAgency` — den leser
+   aktiv fane av `pathname` via `skallAktivFraPath()`/`AGENCYOS_UNDER_MEG`,
+   **aldri av `aktiv`-propen** (kommentert eksplisitt ved
+   `AGENCYOS_SKALL_TABS`, linje ~555). Samme for mobil-doken
+   (`TrainLockAgencyDock`). Propen er dermed dødvekt for disse fire sidene i
+   denne implementasjonen — ingen endring gjort, ville vært en unødvendig diff.
+2. **Én reell stale kommentar rettet:** `global-search-modal.tsx` refererte
+   fortsatt til «AGENCYOS_ROM» (det gamle fem-roms Mer-panelet), som ikke
+   finnes lenger etter AX-01. Oppdatert til å nevne `AGENCYOS_SKALL_TABS`/
+   `AGENCYOS_UNDER_MEG` — ren kommentarfiks, ingen logikkendring.
+3. **Regresjonen #599 flagget er bekreftet ekte, fortsatt ufikset:**
+   `GlobalSearchModal` (Cmd+K) mountes for `erAgency` men har ingen synlig
+   trigger-knapp — kun `keydown`-lytter. Mobil/iPad AgencyOS har dermed
+   ingen touch-inngang til globalsøket lenger, siden det gamle
+   «Mer»-panelets søkeknapp er borte. Ikke fikset her: en synlig
+   søke-inngang på mobil er en ny UI-komponent fasiten (`AX-01`) ikke
+   tegner — egen avklaring med Anders, ikke en del av T1s skall-omfang.
