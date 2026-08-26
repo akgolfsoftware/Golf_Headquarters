@@ -12,8 +12,11 @@
 > 2. **Font (spm. 2): SF Pro i produktet (PlayerHQ + AgencyOS), Poppins beholdes på
 >    markedssidene.** Landingssidene har egen godkjent fasit (`ak-golf-website`).
 >    Systemstacken lastes ikke ned — raskere, og hjemme på iOS.
-> 3. **Agency-skinne 64 vs 232 (spm. 9): LUKKET — fast 64 px.** Ingen kollapset variant
->    bygges. HANDOFF-en er utdatert på dette punktet.
+> 3. **Agency-skinne 64 vs 232 (spm. 9): ~~fast 64 px~~ ENDRET 25.08 kveld — 232 px med
+>    tekst, fast.** Ny AX-01-leveranse samme kveld avgjorde skallet: fem destinasjoner
+>    (Stall · Workbench · Kø · Jarvis · Meg), Mac-rail 232 px, ingen kollapset variant.
+>    Fasit: `docs/natt/D2-UNDERLAG-2026-08-25.md` §5.6 + `.claude/rules/beslutninger.md` §A1.
+>    Kode-tokenen `--tl-rail-mac` står fortsatt på 64 og oppdateres i T1-porten.
 > 4. **Warn-token (manglet helt):** `#FFD60A` er nå navngitt som `--tl-warn` +
 >    `--tl-warn-hair`, per Anders' beslutning om at både varm og gul skulle inn i
 >    tabellen. Den lå kun som `--tl-viz-acceptable`, som er en annen rolle.
@@ -165,8 +168,10 @@ node scripts/check-token-gap.mjs → grønn
    `--ak-topbar-h` og `--ak-cookie-h` (gotchas.md) er app-mekanikk uten motpart i
    fasiten — de må overleve porten.
 
-9. **Agency-skinne 64 vs 232 er UAVKLART i HANDOFF selv** (linje 355, radius-passet
-   24.08). `--tl-rail-mac` står på 64 fordi §Meny per enhet sier «rail 64».
+9. ~~**Agency-skinne 64 vs 232 er UAVKLART i HANDOFF selv** (linje 355, radius-passet
+   24.08). `--tl-rail-mac` står på 64 fordi §Meny per enhet sier «rail 64».~~
+   **BESVART 25.08 kveld (Anders, ny AX-01): 232 px med tekst, fast** — se banner-punkt 3
+   over. `--tl-rail-mac` (64) rettes til 232 i T1-porten, ikke her.
 
 10. **Store tall er et intervall (56–104), ikke en skala.** Begge endene er tokens
     (`--tl-text-num-min/max`); hvilket trinn hver skjerm bruker avgjøres i skjerm-PR-en.
