@@ -2,19 +2,28 @@
 
 > **Hva dette er:** ett snapshot av hvor plattformen står akkurat nå. Oppdater datoen + relevante linjer når noe vesentlig endrer seg.
 
-**Sist oppdatert:** 2026-08-25 (natt-sporet + Train-lock-beslutningen inn).
+**Sist oppdatert:** 2026-08-26 (skjermstatus-målingen inn; 25.08-avsnittet var stale).
 Samlet lanseringsplan: **`docs/natt/LAUNCH-PLAN-FULL-2026-08-25.md`** (vinner over MASTERPLAN der de overlapper).
 
-## Hovedbildet 25.08 (målt mot git/kode)
+## Hovedbildet 26.08 (målt mot git/kode/prod)
 
-- **Design-kanon:** Train-lock er fasit for ALLE skjermer i PlayerHQ og AgencyOS (Anders 25.08).
-  Paper er historikk. Fasit-zip og Train-lock-tokens er ennå ikke levert/definert (blokker D2/D3).
-- **Workbench bølge 1:** Loop 1 (domain+actions), Loop 2 (Agency uke), Loop 3S (spiller
-  start/fullfør/hopp over) levert på `claude/agency-workbench-uke-ui-c4d2a4`-linjen; Loop 2S
-  (drill-editor) på PR #577; RLS-kode på `claude/workbench-rls-policies-8b054b` (IKKE kjørt mot
-  prod). Ingenting merget til main; ingen menneskelig klikk-test ennå. Loop 2T/3/3T/4 ikke startet.
-- **Docs-opprydding 25.08 utført:** Paper-styringsdokumentene er supersedert-merket, natt-spec
-  arkivert, konkurrerende masterplaner peker nå på lanseringsplanen.
+- **Bølge 1 er i main og live i prod:** Loop 1/2/2S/3S, B2-release (#583), B3 (#584), B4 (#582),
+  B5 (#601), B7 (#600). RLS kjørt og verifisert aktiv i prod (#593). Smoke manuelt 7/8 —
+  TM-steget kan testes nå som B7 er inne.
+- **Train-lock-porten i gang:** T1-skallet (#596) og T2-cockpit (#602) merget og verifisert i
+  prod. Fasit synket fra zip (6) — 196 filer i `designsystem/train-lock/` (#603). Tokens i kode
+  (#586 + font #597).
+- **Faktisk skjermstatus (målt 26.08, `docs/natt/SKJERM-STATUS-2026-08-26.md`):** av 240
+  skjerm-ruter er **2 reelt Train-lock** (Cockpit, TrackMan-detalj), **4 blandet** (bl.a.
+  coach-Workbench-uka fra D3), **234 fortsatt Paper-innhold** i det nye TL-skallet. Det er
+  forventet — T3–T13 og B8 er ikke kjørt — men tallet er nå målt, ikke antatt.
+  Remåling: `node scripts/maal-trainlock-status.mjs`.
+- **Åpent nå:** PR #604 (B6 godta/avvis). Deretter B8 + T3/T4/T13 per LAUNCH-PLAN §0.2.
+
+## Hovedbildet 25.08 (historikk)
+
+- Train-lock besluttet som fasit for alle skjermer; Paper supersedert-merket; natt-spec
+  arkivert; bølge 1 lå da umerget på grener — alt dette er nå levert, se 26.08-avsnittet.
 
 ## Hovedbildet 17.08 (målt, ikke antatt — historikk)
 
