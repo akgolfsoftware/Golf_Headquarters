@@ -67,7 +67,7 @@ worktree ved parallell, skjermbilde-gate per skjerm, aldri main-merge uten Ander
 
 | Etappe | Økter | Hvorfor denne rekkefølgen |
 |---|---|---|
-| 1 (nå, parallell) | **T1-fullføring** (worktree `t1-agency-skall-tl` — AX-01-skallet er alt bygget der: fem tabber; gjenstår ulagret arbeid, `--tl-rail-mac` 64→232, skjermbilder, PR) · **B7** (TM/DispersionMap — lukker siste smoke-steg) · **B5** (kilder/drag/serie) | Skallet arves av alle T-skjermer; B7/B5 er disjunkte filområder |
+| 1 (nå, parallell) | **T1 PÅGÅR 26.08** (egen økt i worktree `t1-agency-skall-tl`, draft-PR #596 — gjenstår `--tl-rail-mac` 64→232, skjermbilder, gate) · **B7** (TM/DispersionMap — lukker siste smoke-steg) KLAR · **B5** (kilder/drag/serie) KLAR | Skallet arves av alle T-skjermer; B7/B5 er disjunkte filområder — tre økter samtidig er taket (forbruksregel) |
 | 2 | **B6** (godta/avvis + hiddenByPlayer-DDL, etter B5 — deler wb-actions) → **B8** (Train-lock-pass Player, etter B6 — deler portal-flatene). Parallelt: **T2** (Cockpit) når T1 er inne | Funksjon ferdig før designpass på samme filer |
 | 3 | **T3 · T4 · T13** (2–3 parallelle worktrees), deretter **T10 · T11**. **T5** når B5+B6 er inne, **T6** etter T5 | Portene med fasit og frie avhengigheter først |
 | 4 | Bølge 2: **C2 + C3** først (låser opp T8/T7), så **C4 + C5** (låser opp C8 lys-pass), **C6 + C7** (låser opp T12), **C1 · C9** fritt, **C10** etter D5 | Rekkefølge etter hva som låser opp mest |
