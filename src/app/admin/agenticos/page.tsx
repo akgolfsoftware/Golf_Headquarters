@@ -180,7 +180,7 @@ export default async function AdminAgenticosPage() {
   };
 
   return (
-    <V2Shell bredde="full" aktiv="agenticos" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"} avatarUrl={user.avatarUrl}>
+    <V2Shell bredde="full" aktiv="jarvis" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"} avatarUrl={user.avatarUrl}>
       <AdminAgenticosHubV2 data={data} />
     </V2Shell>
   );

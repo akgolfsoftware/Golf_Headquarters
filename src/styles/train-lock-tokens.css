@@ -108,7 +108,7 @@
   --tl-dock-w: 358px;               /* compact */
   --tl-dock-pad: 8px 10px;
   --tl-dock-lift: 12px;             /* over home indicator */
-  --tl-rail-mac: 64px;              /* AgencyOS Mac-rail (7 ikon 44) */
+  --tl-rail-mac: 232px;             /* AgencyOS Mac-rail (AX-01: 5 tekst-rader, ikke 64px/7-ikon) */
   --tl-rail-player-mac: 72px;       /* PlayerHQ Mac-rail (4 ikon 44) */
   --tl-skinne-ipad: 250px;          /* PlayerHQ iPad regular */
   --tl-artefakt: 380px;             /* artefakt-panel høyre */

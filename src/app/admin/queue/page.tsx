@@ -126,7 +126,7 @@ export default async function OppfolgingsKoPage() {
   const totalAktive = risk.length + watch.length + check.length;
 
   return (
-    <V2Shell bredde="kolonne" aktiv="innboks" nav={AGENCYOS_NAV} navn={coach.name} avatarUrl={coach.avatarUrl}>
+    <V2Shell bredde="kolonne" aktiv="ko" nav={AGENCYOS_NAV} navn={coach.name} avatarUrl={coach.avatarUrl}>
       <KoHubNav />
       <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
         {/* Hode */}

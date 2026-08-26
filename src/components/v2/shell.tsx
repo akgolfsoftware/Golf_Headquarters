@@ -80,117 +80,56 @@ export const PLAYERHQ_NAV: V2NavItem[] = [
 ];
 
 /**
- * AgencyOS primær-nav — SJU punkter = fase 2-fasitens rail 1:1
- * (A1-beslutningen, Anders 2026-08-16, beslutninger.md §PP-A):
- * Cockpit · Innboks · Kalender · Stall · Plan · Innsikt · Oppsett —
- * samme punkter, navn og rekkefølge som `fase2/agencyos/*.html`.
- * Logoen er appens egen AK-logo, ikke fasitens wordmark.
+ * AgencyOS primær-nav — FEM destinasjoner (AX-01, T-S1 endelig avgjort
+ * 25.08.2026 kveld, se `docs/natt/D2-UNDERLAG-2026-08-25.md` §5.6): Stall ·
+ * Workbench · Kø · Jarvis · Meg — identisk rekkefølge på mobil og Mac,
+ * aldri en sjette. Dette OVERSTYRER både A1 (16.08, fase2-railen med 7 punkter)
+ * og 13.08-mønsteret (Workbench/AgenticOS kun i «Mer»). Alt som ikke er en av
+ * de fem, bor som rad under Meg (`AGENCYOS_UNDER_MEG`) — «Ingen Mer-ark lenger».
  *
- * Dette reverserer 13.08-avviket (Workbench/AgenticOS i railen). De to er
- * fortsatt fullt tilgjengelige:
- * - Workbench: mobil-bunnfanene (egen signert fasit, se WORKBENCH_ITEM) +
- *   «Plan»-rommet i AGENCYOS_ROM + Cmd+K.
- * - AgenticOS: eget rom i AGENCYOS_ROM («Mer») + Cmd+K.
- * Sider som sender aktiv="workbench"/"agenticos" får ingen markert rail-fane —
- * samme bevisste mønster som PlayerHQ-«gjor».
+ * `id`-ene for Stall/Workbench beholdes ("spillere"/"planlegge") fordi
+ * dusinvis av eksisterende sider allerede sender `aktiv="spillere"` /
+ * `aktiv="planlegge"` — å endre dem ville krevd retting av alle de sidene,
+ * som er innholdsskjermer og dermed utenfor denne portens omfang (kun skall).
  *
- * «Plan» bruker id "planlegge" fordi hele plan-familien (plans, teknisk-plan,
- * okter, tournaments) allerede sender aktiv="planlegge". «Innsikt» og «Oppsett»
- * bruker id-ene "innsikt"/"innstillinger" som analyse- og settings-sidene
- * allerede sender — fanene lyser uten endring i noe kallsted.
- */
-/**
- * D2-UNDERLAG §5.3 (25.08.2026, Anders): punkt 5 heter «Workbench», ikke
- * «Plan» — overstyrer A1 (16.08). Href peker på spillervalg-huben som
- * leder inn i den ekte økt-modellen (`/admin/workbench/[playerId]`), samme
- * mål som mobil-bunnfanens WORKBENCH_ITEM. `id` er fortsatt "planlegge" —
- * hele plan-familien (plans, teknisk-plan, økter, turneringer) sender
- * allerede `aktiv="planlegge"`, og endrer man id-en må ~15 kallsteder følge med.
+ * Href-mapping for Kø/Jarvis/Meg er en BYGGER-BESLUTNING (T1, ikke låst av
+ * fasiten) — se `docs/natt/T1-DONE.md`: Kø → `/admin/queue` (mest dekkende
+ * eksisterende kø-rute; T-S2/T12 avgjør endelig eierskap), Jarvis →
+ * `/admin/agenticos` (samme adresse som «AI-laget samles på ÉN adresse»,
+ * beslutninger.md), Meg → `/admin/profile` (får sitt egentlige innhold i T13).
  */
 export const AGENCYOS_NAV: V2NavItem[] = [
-  { id: "cockpit", label: "Cockpit", icon: "home", href: "/admin/agencyos" },
-  { id: "innboks", label: "Innboks", icon: "inbox", href: "/admin/innboks" },
-  { id: "kalender", label: "Kalender", icon: "calendar", href: "/admin/kalender" },
   { id: "spillere", label: "Stall", icon: "users", href: "/admin/spillere" },
-  { id: "planlegge", label: "Workbench", icon: "file-text", href: "/admin/planlegge" },
-  { id: "innsikt", label: "Innsikt", icon: "bar-chart", href: "/admin/analyse" },
-  { id: "innstillinger", label: "Oppsett", icon: "settings", href: "/admin/settings" },
+  { id: "planlegge", label: "Workbench", icon: "target", href: "/admin/planlegge" },
+  { id: "ko", label: "Kø", icon: "inbox", href: "/admin/queue" },
+  { id: "jarvis", label: "Jarvis", icon: "bot", href: "/admin/agenticos" },
+  { id: "meg", label: "Meg", icon: "user", href: "/admin/profile" },
 ];
-
-/**
- * Workbench i mobil-bunnfanene: fasiten `agencyos-konsoll-mobil.html`
- * §BUNNFANER (signert 12.08) har Workbench som femte fane — den er en EGEN
- * fasit og påvirkes ikke av A1-desktoprailen. Etter A1 finnes ikke Workbench
- * i AGENCYOS_NAV lenger, så mobilnav-en henter den herfra.
- */
-const WORKBENCH_ITEM: V2NavItem = { id: "workbench", label: "Workbench", icon: "target", href: "/admin/planlegge" };
 
 /** Påfør kø-badge uten å mutere AGENCYOS_NAV-konstanten. erAgency sjekker id/href. */
 export function withAgencyOsNavBadges(koTotalt: number): V2NavItem[] {
   const n = koTotalt > 0 ? koTotalt : undefined;
   return AGENCYOS_NAV.map((item) =>
-    item.id === "innboks" && n ? { ...item, badge: n } : { ...item },
+    item.id === "ko" && n ? { ...item, badge: n } : { ...item },
   );
 }
 
 /**
- * AgencyOS «Mer» — FEM ROM (IA 2026-07-26, fasit `mer-sheet.html`).
- *
- * Erstatter den gamle katalogen på ~30 lenker i fem grupper, inkludert
- * «Avansert»-blokken. Regler fra fasiten:
- *   1. Fem rom, én rad hver — rommet eier sitt område.
- *   2. Railen vinner ved dublett: Kø, Kalender og Innsikt står IKKE her.
- *   3. Resten (audit-log, marketing, tjenester, workspace, dyp-katalog) lever
- *      i Cmd+K-søket. De ble lagt inn i `global-search-modal.tsx` samtidig som
- *      denne listen ble kuttet — ellers hadde 13 sider mistet all vei inn.
- *
- * Plan/Stall+/Drift har ennå ingen egen hub-side (kommer senere). Til da peker
- * hvert rom på den mest dekkende EKSISTERENDE ruten, slik at ingen rad er død.
+ * «Under Meg» — AX-01 §Mac-rail: alt som var egen tab før (Cockpit/Innboks/
+ * Innsikt/Oppsett) og de tre fasiten navngir eksplisitt (Konsoll/Økonomi/
+ * Kalender) lever nå som rader under Meg, ALDRI som egen tab (§0.2/AX-01:
+ * «fem destinasjoner, aldri en sjette»). Vises fast i Mac-railen (ikke bak et
+ * klikk); på mobil nås de via Meg-fanens innhold (T13 — ikke bygget her).
+ * Plassering er en BYGGER-BESLUTNING for T1 — se `docs/natt/T1-DONE.md`.
+ * Grupper/Stall+ er bevisst IKKE med her (nås fra Stall-tabben selv, T4/T8).
  */
-export const AGENCYOS_ROM: V2Rom[] = [
-  {
-    id: "agenticos",
-    label: "AgenticOS",
-    beskrivelse: "Caddie, coach-agenter, agent-team, daglig brief",
-    meta: "Coach",
-    icon: "bot",
-    href: "/admin/agenticos",
-  },
-  {
-    id: "plan",
-    label: "Plan",
-    beskrivelse: "Workbench, maler, drills, turneringer, teknisk",
-    meta: "Trening",
-    icon: "target",
-    href: "/admin/planlegge",
-  },
-  {
-    id: "stall-pluss",
-    label: "Stall+",
-    beskrivelse: "Grupper, ny spiller, talent",
-    meta: "Struktur",
-    icon: "user-plus",
-    href: "/admin/grupper",
-  },
-  {
-    id: "okonomi",
-    label: "Økonomi",
-    beskrivelse: "Belegg, inntekt, abonnement, faktura, rapporter",
-    meta: "Penger",
-    icon: "credit-card",
-    href: "/admin/agencyos/okonomi",
-    adminOnly: true,
-    pin: true,
-  },
-  {
-    id: "drift",
-    label: "Drift",
-    beskrivelse: "Innstillinger, team, integrasjoner, sikkerhet",
-    meta: "System",
-    icon: "settings",
-    href: "/admin/settings",
-    adminOnly: true,
-  },
+export const AGENCYOS_UNDER_MEG: V2NavItem[] = [
+  { id: "cockpit", label: "Konsoll", icon: "home", href: "/admin/agencyos" },
+  { id: "innboks", label: "Innboks", icon: "inbox", href: "/admin/innboks" },
+  { id: "kalender", label: "Kalender", icon: "calendar", href: "/admin/kalender" },
+  { id: "innsikt", label: "Innsikt", icon: "bar-chart", href: "/admin/analyse" },
+  { id: "okonomi", label: "Økonomi", icon: "credit-card", href: "/admin/agencyos/okonomi", adminOnly: true },
+  { id: "innstillinger", label: "Oppsett", icon: "settings", href: "/admin/settings", adminOnly: true },
 ];
 
 /** Foreldre-navigasjon (lese-først oversikt). Fire enkle seksjoner. */
@@ -208,7 +147,9 @@ export interface V2ShellProps {
   nav?: V2NavItem[];
   /** «Mer»-grupper. Brukes av PlayerHQ-bunn-nav for seksjoner som ikke får plass. */
   mer?: V2NavGruppe[];
-  /** «Mer»-rom (AgencyOS). Auto: AGENCYOS_ROM når nav er AGENCYOS_NAV. */
+  /** «Mer»-rom — generisk mekanisme, ingen kallsted bruker den i dag. AgencyOS
+   *  har egen fast «Under Meg»-seksjon (AGENCYOS_UNDER_MEG) i stedet, ikke en
+   *  «Mer»-flyout (AX-01, §0.2: «ingen Mer-ark lenger»). */
   rom?: V2Rom[];
   /** Innlogget brukers navn (for avatar-initialer/tittel). */
   navn?: string;
@@ -548,16 +489,19 @@ function MerPanel({ grupper, rom, onClose, mobil, full, erAgency }: { grupper?: 
 }
 
 /**
- * AgencyOS Mac-rail — Train-lock (D2-UNDERLAG §4 "Agency-rail, Mac" + K5,
- * D2-beslutning 2: fast 64px, ingen kollapset variant). 44×44 r12-punkter,
- * ingen tekst i railen, trafikklys øverst, AK-sirkel warm nederst. Egen
- * gren fra `IkonRailNav` (delt med PlayerHQ, som IKKE er Train-lock-portet
- * ennå) — porten av Workbench-uke (D3) gjør denne synlig på ALLE
- * AgencyOS-sider fordi railen er delt kode (forventet, CLAUDE.md invariant 2).
+ * AgencyOS Mac-rail — AX-01 (T-S1 endelig avgjort 25.08.2026 kveld,
+ * `docs/natt/D2-UNDERLAG-2026-08-25.md` §5.6): 232px, tekst-rader — IKKE
+ * 44×44 ikon-firkanter. Den forrige K5-tolkningen fulgte AG-00/A-/AG-
+ * skjermenes 64px/7-ikon-rail, som §5.6 uttrykkelig forkaster.
+ * Aktiv rad = flate `TL.dim` + tekst `TL.text` — IKKE `TL.fill` (den er
+ * reservert Én-hvit-CTA per skjerm; train-lock.ts filhode: «aktiv fane er
+ * TILSTAND, ikke CTA»). «Under Meg» ligger fast synlig under en divider —
+ * ingen «Mer»-flyout lenger for AgencyOS (PlayerHQ beholder MerPanel
+ * uendret, se IkonRailNav).
  */
-function TrainLockAgencyRail({ aktiv, nav, mer, rom, navn, avatarUrl }: Required<Pick<V2ShellProps, "nav" | "navn">> & { aktiv?: string; mer?: V2NavGruppe[]; rom?: V2Rom[]; avatarUrl?: string | null }) {
-  const [merOpen, setMerOpen] = useState(false);
-  const harMer = (mer && mer.length > 0) || (rom && rom.length > 0);
+function TrainLockAgencyRail({ aktiv, nav, navn, avatarUrl }: Required<Pick<V2ShellProps, "nav" | "navn">> & { aktiv?: string; avatarUrl?: string | null }) {
+  const erAdmin = useErAdmin();
+  const underMeg = erAdmin ? AGENCYOS_UNDER_MEG : AGENCYOS_UNDER_MEG.filter((i) => !i.adminOnly);
   return (
     <nav
       className="hidden md:flex"
@@ -566,83 +510,71 @@ function TrainLockAgencyRail({ aktiv, nav, mer, rom, navn, avatarUrl }: Required
         flex: "none",
         borderRight: `1px solid ${TL.hair}`,
         flexDirection: "column",
-        alignItems: "center",
-        padding: "14px 0 16px",
-        gap: 6,
+        padding: "18px 12px",
+        gap: 4,
         position: "sticky",
         top: 0,
         height: "100vh",
         overflowY: "auto",
-        background: TL.scene,
+        background: TL.dock,
         color: TL.text,
       }}
       aria-label="Hovedmeny"
     >
-      {/* Trafikklys — fasit-dekor, ingen funksjon (mockup-rammen har ekte
-          vindusknapper; her er punktene rent visuelle jf. K5). */}
-      <div aria-hidden style={{ display: "flex", gap: 6, paddingBottom: 16 }}>
-        <span style={{ width: 11, height: 11, borderRadius: "50%", background: TL.dim }} />
-        <span style={{ width: 11, height: 11, borderRadius: "50%", background: TL.dim }} />
-        <span style={{ width: 11, height: 11, borderRadius: "50%", background: TL.dim }} />
+      <div style={{ display: "flex", alignItems: "center", gap: 9, padding: "0 10px 14px" }}>
+        <span aria-hidden style={{ width: 8, height: 8, borderRadius: "50%", background: TL.warm, flex: "none" }} />
+        <span style={{ fontSize: 13, fontWeight: 700 }}>AK Golf Academy</span>
       </div>
       {nav.map((n) => (
-        <TrainLockRailPunkt key={n.id} item={n} on={aktiv === n.id} />
+        <TrainLockRailRad key={n.id} item={n} on={aktiv === n.id} />
       ))}
-      {harMer && (
-        <button
-          onClick={() => setMerOpen(true)}
-          title="Mer"
-          aria-haspopup="menu"
-          aria-expanded={merOpen}
-          className="v2-press v2-focus"
-          style={{
-            width: 44,
-            height: 44,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            borderRadius: TL.radius.row,
-            background: aktiv === "mer" ? TL.fill : "transparent",
-            border: 0,
-            cursor: "pointer",
-            flex: "none",
-          }}
-        >
-          <Icon name="more-horizontal" size={20} style={{ color: aktiv === "mer" ? TL.onFill : TL.mute }} strokeWidth={2} />
-        </button>
-      )}
+      <div style={{ margin: "14px 10px 8px", height: 1, background: TL.hair }} />
+      <div style={{ padding: "0 10px 6px", fontSize: 10, fontWeight: 600, letterSpacing: "0.08em", textTransform: "uppercase", color: TL.mute }}>
+        Under Meg
+      </div>
+      {underMeg.map((n) => (
+        <TrainLockRailRad key={n.id} item={n} on={aktiv === n.id} kompakt />
+      ))}
       <div style={{ flex: 1, minHeight: 8 }} />
-      <TrainLockTemaKnapp />
-      {avatarUrl ? (
-        // eslint-disable-next-line @next/next/no-img-element -- 32px rail-avatar, ikke innholdsbilde
-        <img
-          src={avatarUrl}
-          alt={navn}
-          title={navn}
-          style={{ width: 32, height: 32, borderRadius: "50%", objectFit: "cover", flexShrink: 0 }}
-        />
-      ) : (
-        <span
-          title={navn}
-          style={{
-            width: 32,
-            height: 32,
-            borderRadius: "50%",
-            background: TL.avatar,
-            color: TL.onAvatar,
-            fontFamily: TL.font.sans,
-            fontSize: 11,
-            fontWeight: 600,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            flexShrink: 0,
-          }}
-        >
-          {avatarInitialer(navn)}
-        </span>
-      )}
-      {merOpen && <MerPanel grupper={mer} rom={rom} onClose={() => setMerOpen(false)} erAgency />}
+      <Link
+        href="/admin/agenticos"
+        className="v2-press v2-focus"
+        style={{ height: 36, borderRadius: 10, display: "flex", alignItems: "center", padding: "0 12px", fontSize: 13, color: TL.mute, textDecoration: "none", flex: "none" }}
+      >
+        Åpne AgenticOS
+      </Link>
+      <div style={{ display: "flex", alignItems: "center", gap: 8, padding: "10px 2px 0" }}>
+        <TrainLockTemaKnapp />
+        {avatarUrl ? (
+          // eslint-disable-next-line @next/next/no-img-element -- 32px rail-avatar, ikke innholdsbilde
+          <img
+            src={avatarUrl}
+            alt={navn}
+            title={navn}
+            style={{ width: 32, height: 32, borderRadius: "50%", objectFit: "cover", flexShrink: 0 }}
+          />
+        ) : (
+          <span
+            title={navn}
+            style={{
+              width: 32,
+              height: 32,
+              borderRadius: "50%",
+              background: TL.avatar,
+              color: TL.onAvatar,
+              fontFamily: TL.font.sans,
+              fontSize: 11,
+              fontWeight: 600,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              flexShrink: 0,
+            }}
+          >
+            {avatarInitialer(navn)}
+          </span>
+        )}
+      </div>
     </nav>
   );
 }
@@ -654,9 +586,13 @@ function avatarInitialer(navn: string): string {
   return `${deler[0]![0]}${deler[deler.length - 1]![0]}`.toUpperCase();
 }
 
-/** Ett rail-punkt — Train-lock K5: 44×44 r12, aktiv = hvit fyll + on-fill-ikon. */
-function TrainLockRailPunkt({ item, on }: { item: V2NavItem; on: boolean }) {
+/**
+ * Rail-rad — AX-01: primær 40px/radius 10/ikon 16/tekst 14·600; `kompakt`
+ * («Under Meg») 34px, ingen ikon, tekst 13·400. Aktiv flate `TL.dim` begge.
+ */
+function TrainLockRailRad({ item, on, kompakt }: { item: V2NavItem; on: boolean; kompakt?: boolean }) {
   const badge = typeof item.badge === "number" && item.badge > 0 ? item.badge : null;
+  const farge = on ? TL.text : TL.mute;
   return (
     <Link
       href={item.href}
@@ -664,37 +600,41 @@ function TrainLockRailPunkt({ item, on }: { item: V2NavItem; on: boolean }) {
       aria-current={on ? "page" : undefined}
       className="v2-press v2-focus"
       style={{
-        width: 44,
-        height: 44,
+        height: kompakt ? 34 : 40,
+        borderRadius: 10,
         display: "flex",
         alignItems: "center",
-        justifyContent: "center",
-        borderRadius: TL.radius.row,
-        background: on ? TL.fill : "transparent",
+        gap: 10,
+        padding: "0 12px",
+        background: on ? TL.dim : "transparent",
         textDecoration: "none",
-        position: "relative",
         flex: "none",
       }}
     >
-      <Icon name={item.icon} size={20} style={{ color: on ? TL.onFill : TL.mute }} strokeWidth={2} />
+      {!kompakt && <Icon name={item.icon} size={16} style={{ color: farge, flex: "none" }} strokeWidth={on ? 2 : 1.5} />}
+      <span style={{ flex: 1, minWidth: 0, fontSize: kompakt ? 13 : 14, fontWeight: kompakt ? 400 : 600, color: farge, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+        {item.label}
+      </span>
       {badge != null && (
         <span
           aria-hidden
           style={{
-            position: "absolute",
-            top: -3,
-            right: -3,
-            minWidth: 14,
-            height: 14,
-            padding: "0 3px",
+            minWidth: 18,
+            height: 18,
+            padding: "0 5px",
             borderRadius: 999,
-            background: TL.warm,
-            color: TL.onFill,
+            background: TL.danger,
+            // Alltid hvit tekst på danger-fyllet, uansett tema (TL.onFill
+            // følger --tl-fill/hvit-primær og er SORT i mørk — feil par her).
+            // "white" er CSS-nøkkelordet, ikke en hex-literal — passerer
+            // check-token-gap uten å innføre et nytt --tl-*-token for én verdi.
+            color: "white",
             fontFamily: TL.font.mono,
-            fontSize: 8,
+            fontSize: 10,
             fontWeight: 700,
-            lineHeight: "14px",
+            lineHeight: "18px",
             textAlign: "center",
+            flex: "none",
           }}
         >
           {badge > 99 ? "99+" : badge}
@@ -739,7 +679,7 @@ function IkonRailNav({ aktiv, nav, mer, rom, navn, avatarUrl, erAgency }: Requir
   // Train-lock er fasit for AgencyOS (D3, 25.08.2026) — egen gren, PlayerHQ-
   // railen (72px/4-ikon) er ikke portet ennå og beholder Paper-stilen.
   if (erAgency) {
-    return <TrainLockAgencyRail aktiv={aktiv} nav={nav} mer={mer} rom={rom} navn={navn} avatarUrl={avatarUrl} />;
+    return <TrainLockAgencyRail aktiv={aktiv} nav={nav} navn={navn} avatarUrl={avatarUrl} />;
   }
   return (
     <nav
@@ -869,105 +809,78 @@ function BunnNavLenker({ aktiv, nav, mer }: { aktiv?: string; nav: V2NavItem[]; 
   );
 }
 
-/* M1 (17. juli, godkjent): AgencyOS mobil-bunn-nav. Fire kuraterte hovedseksjoner
-   + «Mer» — samme tommelvennlige mønster som PlayerHQ-BunnNav (BunnNavLenker),
-   men «Mer» åpner en FULL-HØYDE skuff (kandidat A) med resten av seksjonene +
-   AGENCYOS_ROM (fem rom), så hele coach-flaten er nåbar. Mørkt tema beholdes
-   (V2Shell holder AgencyOS mørk/lys via cookie som før). PlayerHQ-mobilen bruker
-   fortsatt BunnNavLenker uendret. */
-/* Fem flater i bunn-nav, og fasiten (agencyos-konsoll-mobil.html §BUNNFANER)
-   sier hvilke fem: Konsoll · Innboks · Spillere · Kalender · WORKBENCH.
-   Signeringen 12.08: «Workbench synlig i navigasjonen i stedet for Mer».
-   Workbench lå i «Mer»-skuffen — planlegging, coachens mest brukte flate, var
-   to trykk unna på telefon.
-   «Mer» er beholdt som en SMAL, ikon-bare overflyt til høyre for de fem: fasiten
-   har ingen slik knapp fordi den ikke har AgenticOS/Økonomi/Innstillinger/rom å
-   ta vare på — appen har det, og uten knappen ville de flatene vært uten vei inn
-   på mobil. Fjernes den, må rommene få en annen inngang først. */
-const AGENCY_MOBIL_PRIMÆR = ["cockpit", "innboks", "spillere", "kalender", "workbench"];
-
-function AgencyBunnNav({ aktiv, nav, mer, rom }: { aktiv?: string; nav: V2NavItem[]; mer?: V2NavGruppe[]; rom?: V2Rom[] }) {
-  const [skuffOpen, setSkuffOpen] = useState(false);
-  // Primærseksjoner i kanonisk rekkefølge; hopp over det som ikke finnes i nav-en.
-  // Workbench er fast femte fane per mobil-fasiten (signert 12.08) selv om den
-  // ikke lenger står i desktop-railen (A1 2026-08-16) — hentes fra WORKBENCH_ITEM.
-  const primær = AGENCY_MOBIL_PRIMÆR
-    .map((id) => nav.find((n) => n.id === id) ?? (id === "workbench" ? WORKBENCH_ITEM : undefined))
-    .filter((n): n is V2NavItem => n != null);
-  const primærIds = new Set(primær.map((n) => n.id));
-  // Alt annet i hovednav-en legges øverst i skuffen — ingen seksjon faller bort.
-  const resten = nav.filter((n) => !primærIds.has(n.id));
-  const skuffGrupper: V2NavGruppe[] = [
-    ...(resten.length > 0 ? [{ label: "Seksjoner", items: resten }] : []),
-    ...(mer ?? []),
-  ];
-
+/**
+ * AgencyOS mobil-dock — AX-01a: fem like kolonner, IDENTISK rekkefølge og
+ * innhold som Mac-railen («muskelminnet følger med», §0.2/AX-01: «aldri en
+ * sjette» — ingen «Mer»-knapp lenger, se AGENCYOS_UNDER_MEG for det som før
+ * lå i «Mer»-skuffen). `TL.dock` bakgrunn, hairline topp, 88px, aktiv
+ * `TL.text`, resten `TL.mute`, Kø-badge `TL.danger`. PlayerHQ-mobilen bruker
+ * fortsatt BunnNavLenker uendret.
+ */
+function AgencyBunnNav({ aktiv, nav }: { aktiv?: string; nav: V2NavItem[] }) {
   return (
-    <>
-      <nav
-        className="flex md:hidden"
-        data-paper-faner="agency"
-        style={{ position: "fixed", bottom: 0, left: 0, right: 0, zIndex: 40, justifyContent: "space-around", padding: "6px 4px calc(10px + env(safe-area-inset-bottom) + var(--ak-cookie-h, 0px))", borderTop: `1px solid ${T.farge.kremA8}`, background: T.rail }}
-        aria-label="Hovedmeny"
-      >
-        {primær.map((n) => {
-          const on = aktiv === n.id;
-          const badge = typeof n.badge === "number" && n.badge > 0 ? n.badge : null;
-          return (
-            <Link
-              key={n.id}
-              href={n.href}
-              aria-current={on ? "page" : undefined}
-              aria-label={badge ? `${n.label}, ${badge} i kø` : n.label}
-              className="v2-press"
-              style={{ flex: 1, minHeight: 56, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 3, padding: "4px 0", color: on ? T.railOn : T.railFg, textDecoration: "none", position: "relative" }}
-            >
-              {on && (
-                <span aria-hidden style={{ position: "absolute", top: 0, left: "24%", right: "24%", height: 2, borderRadius: 999, background: T.railOn }} />
+    <nav
+      className="flex md:hidden"
+      data-paper-faner="agency"
+      style={{
+        position: "fixed",
+        bottom: 0,
+        left: 0,
+        right: 0,
+        zIndex: 40,
+        borderTop: `1px solid ${TL.hair}`,
+        background: TL.dock,
+        height: "calc(88px + env(safe-area-inset-bottom) + var(--ak-cookie-h, 0px))",
+        paddingTop: 10,
+        paddingBottom: "calc(env(safe-area-inset-bottom) + var(--ak-cookie-h, 0px))",
+        display: "flex",
+      }}
+      aria-label="Hovedmeny"
+    >
+      {nav.map((n) => {
+        const on = aktiv === n.id;
+        const badge = typeof n.badge === "number" && n.badge > 0 ? n.badge : null;
+        const farge = on ? TL.text : TL.mute;
+        return (
+          <Link
+            key={n.id}
+            href={n.href}
+            aria-current={on ? "page" : undefined}
+            aria-label={badge ? `${n.label}, ${badge} i kø` : n.label}
+            className="v2-press"
+            style={{ flex: 1, height: 52, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 5, color: farge, textDecoration: "none" }}
+          >
+            <span style={{ position: "relative", display: "inline-flex" }}>
+              <Icon name={n.icon} size={20} style={{ color: farge }} strokeWidth={on ? 2 : 1.5} />
+              {badge != null && (
+                <span
+                  aria-hidden
+                  style={{
+                    position: "absolute",
+                    top: -4,
+                    right: -8,
+                    minWidth: 16,
+                    height: 16,
+                    padding: "0 4px",
+                    borderRadius: 999,
+                    background: TL.danger,
+                    color: "white",
+                    fontFamily: TL.font.mono,
+                    fontSize: 10,
+                    fontWeight: 700,
+                    lineHeight: "16px",
+                    textAlign: "center",
+                  }}
+                >
+                  {badge > 99 ? "99+" : badge}
+                </span>
               )}
-              <span style={{ position: "relative", display: "inline-flex" }}>
-                <Icon name={n.icon} size={20} strokeWidth={on ? 2 : 1.5} />
-                {badge != null && (
-                  <span
-                    aria-hidden
-                    style={{
-                      position: "absolute",
-                      top: -4,
-                      right: -10,
-                      minWidth: 14,
-                      height: 14,
-                      padding: "0 3px",
-                      borderRadius: 999,
-                      background: T.handling,
-                      color: T.onHandling,
-                      fontFamily: T.mono,
-                      fontSize: 8,
-                      fontWeight: 700,
-                      lineHeight: "14px",
-                      textAlign: "center",
-                    }}
-                  >
-                    {badge > 99 ? "99+" : badge}
-                  </span>
-                )}
-              </span>
-              <span style={{ fontFamily: T.ui, fontSize: 10, fontWeight: 500 }}>{n.label}</span>
-            </Link>
-          );
-        })}
-        <button
-          onClick={() => setSkuffOpen(true)}
-          aria-haspopup="menu"
-          aria-expanded={skuffOpen}
-          className="v2-press"
-          aria-label="Mer — AgenticOS, Økonomi, Innstillinger og rommene"
-          style={{ flex: "none", width: 44, minHeight: 56, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 3, padding: "4px 0", color: skuffOpen ? T.railOn : T.railFg, background: "transparent", border: 0, cursor: "pointer" }}
-        >
-          <Icon name="more-horizontal" size={20} strokeWidth={1.5} />
-        </button>
-      </nav>
-      {skuffOpen && <MerPanel grupper={skuffGrupper} rom={rom} onClose={() => setSkuffOpen(false)} mobil full erAgency />}
-    </>
+            </span>
+            <span style={{ fontFamily: TL.font.sans, fontSize: 10, fontWeight: 600, color: farge }}>{n.label}</span>
+          </Link>
+        );
+      })}
+    </nav>
   );
 }
 
@@ -999,10 +912,11 @@ export function V2Shell({ aktiv, nav = PLAYERHQ_NAV, mer, rom, navn = "Øyvind R
       .map((g) => ({ ...g, items: g.items.filter((i) => !i.adminOnly) }))
       .filter((g) => g.items.length > 0);
   }, [mer, erAdmin]);
-  const romRaa = rom ?? (erAgency ? AGENCYOS_ROM : undefined);
+  // AgencyOS har ingen default lenger (AGENCYOS_ROM er fjernet med AX-01 —
+  // «Under Meg» dekker det samme, se AGENCYOS_UNDER_MEG i TrainLockAgencyRail).
   const romSynlig = useMemo(
-    () => (!romRaa || erAdmin ? romRaa : romRaa.filter((r) => !r.adminOnly)),
-    [romRaa, erAdmin],
+    () => (!rom || erAdmin ? rom : rom.filter((r) => !r.adminOnly)),
+    [rom, erAdmin],
   );
 
   // Uten eksplisitt aktiv-prop (legacy-sidene): utled fra URL-en — lengste
@@ -1023,26 +937,27 @@ export function V2Shell({ aktiv, nav = PLAYERHQ_NAV, mer, rom, navn = "Øyvind R
     };
     let best: { id: string; href: string } | undefined;
     // Hub-ruter utenfor Mer → primær-seksjon (Kø / Kalender / Innsikt).
+    // AX-01: Cockpit/Innboks/Innsikt/Oppsett er ikke tabber lenger — id-ene
+    // under treffer nå «Under Meg»-radene (AGENCYOS_UNDER_MEG), ikke primær-navet.
+    // Kø har fått egen tab med href `/admin/queue` og trenger ingen egen
+    // oppføring her — den generiske nav-løkken under matcher den eksakt.
     const pathTilSeksjon: Array<{ prefix: string; id: string }> = [
       { prefix: "/admin/godkjenninger", id: "innboks" },
       { prefix: "/admin/innboks", id: "innboks" },
-      { prefix: "/admin/innboks", id: "innboks" },
       { prefix: "/admin/varsler", id: "innboks" },
-      { prefix: "/admin/queue", id: "innboks" },
       { prefix: "/admin/handlingssenter", id: "innboks" },
       { prefix: "/admin/kalender", id: "kalender" },
       { prefix: "/admin/bookinger", id: "kalender" },
       { prefix: "/admin/agencyos/uka", id: "kalender" },
       { prefix: "/admin/availability", id: "kalender" },
-      /* «innsikt» er igjen et rail-punkt (A1 2026-08-16: fase2-railen 1:1) —
-         analyse-familien lyser Innsikt-fanen. */
       { prefix: "/admin/analyse", id: "innsikt" },
       { prefix: "/admin/tester", id: "innsikt" },
       { prefix: "/admin/trackman", id: "innsikt" },
       { prefix: "/admin/runder", id: "innsikt" },
       { prefix: "/admin/reports", id: "innsikt" },
       { prefix: "/admin/analysere", id: "innsikt" },
-      { prefix: "/admin/planlegge", id: "workbench" },
+      { prefix: "/admin/agencyos/okonomi", id: "okonomi" },
+      { prefix: "/admin/planlegge", id: "planlegge" },
       { prefix: "/admin/spillere", id: "spillere" },
       { prefix: "/admin/agencyos", id: "cockpit" },
     ];
@@ -1214,13 +1129,17 @@ export function V2Shell({ aktiv, nav = PLAYERHQ_NAV, mer, rom, navn = "Øyvind R
           {composer}
         </div>
       )}
-      {/* Mobil-bunnnav: AgencyOS får dedikert nav + full-høyde «Mer»-skuff (M1);
-          PlayerHQ/forelder beholder BunnNavLenker uendret. */}
+      {/* Mobil-bunnnav: AgencyOS får AX-01-dockens fem faste kolonner (ingen
+          «Mer»-skuff lenger); PlayerHQ/forelder beholder BunnNavLenker uendret. */}
       {erAgency
-        ? <AgencyBunnNav aktiv={autoAktiv} nav={navSynlig} mer={merGrupper} rom={romSynlig} />
+        ? <AgencyBunnNav aktiv={autoAktiv} nav={navSynlig} />
         : <BunnNavLenker aktiv={autoAktiv} nav={navSynlig} mer={merGrupper} />}
-      {/* Globalt søk (Cmd+K + «global-search:open»-event fra Mer-panelets
-          søkeknapp) — kun montert i AgencyOS. Selv-styrt, rendrer null lukket. */}
+      {/* Globalt søk — kun montert i AgencyOS, selv-styrt, rendrer null lukket.
+          Åpnes med Cmd+K eller «global-search:open»-eventet. AX-01 fjernet
+          «Mer»-panelet som tidligere dispatchet det eventet fra en synlig
+          søkeknapp — det var touch-inngangen for mobil/iPad (Cmd+K har ingen
+          ekvivalent der). Ingen erstatning bygget her (fasiten viser ingen
+          søkeknapp i verken rail eller dock) — se docs/natt/T1-DONE.md. */}
       {erAgency && <GlobalSearchModal />}
     </div>
   );

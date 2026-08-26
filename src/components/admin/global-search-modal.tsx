@@ -214,8 +214,9 @@ const ACTIONS: Action[] = [
     icon: Calendar,
     kind: { type: "navigate", href: "/admin/kalender" },
   },
-  // --- Sider · dyp-katalog (IA 2026-07-26) --------------------------------
-  // «Mer» er kuttet til fem rom (se AGENCYOS_ROM i v2/shell.tsx). Rutene under
+  // --- Sider · dyp-katalog (IA 2026-07-26, oppdatert AX-01 25.08.2026) ----
+  // AgencyOS-railen har fem faste destinasjoner + «Under Meg» (v2/shell.tsx,
+  // AGENCYOS_NAV/AGENCYOS_UNDER_MEG) — ingen «Mer»-flyout lenger. Rutene under
   // hadde ellers mistet all vei inn, og fasiten sier eksplisitt at resten skal
   // leve i søket. Rene navigate-handlinger — ingen ny logikk.
   { id: "s-caddie", label: "Caddie", description: "AI-assistenten i AgencyOS", keywords: ["caddie", "ai", "chat", "assistent"], icon: MessageSquare, kind: { type: "navigate", href: "/admin/agencyos/caddie" } },
