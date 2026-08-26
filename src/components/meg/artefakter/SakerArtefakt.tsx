@@ -21,6 +21,7 @@ const KANAL_IKON: Record<SakKanal, string> = {
   [SakKanal.ANROP]: "phone",
   [SakKanal.KALENDER]: "calendar",
   [SakKanal.TASK]: "check-circle",
+  [SakKanal.LYD]: "mic",
 };
 
 const KANAL_LABEL: Record<SakKanal, string> = {
@@ -31,6 +32,7 @@ const KANAL_LABEL: Record<SakKanal, string> = {
   [SakKanal.ANROP]: "Anrop",
   [SakKanal.KALENDER]: "Kalender",
   [SakKanal.TASK]: "Oppgave",
+  [SakKanal.LYD]: "Lydopptak",
 };
 
 const STATUS_GRUPPE: { status: SakStatus; label: string }[] = [

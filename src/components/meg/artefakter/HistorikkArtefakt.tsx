@@ -27,6 +27,7 @@ const KANAL_IKON: Record<SakKanal, string> = {
   [SakKanal.ANROP]: "phone",
   [SakKanal.KALENDER]: "calendar",
   [SakKanal.TASK]: "check-circle",
+  [SakKanal.LYD]: "mic",
 };
 
 const KANAL_LABEL: Record<SakKanal, string> = {
@@ -37,6 +38,7 @@ const KANAL_LABEL: Record<SakKanal, string> = {
   [SakKanal.ANROP]: "anrop",
   [SakKanal.KALENDER]: "Google Kalender",
   [SakKanal.TASK]: "oppgave",
+  [SakKanal.LYD]: "lydopptak",
 };
 
 function dagLabel(dato: Date, na: Date): string {
