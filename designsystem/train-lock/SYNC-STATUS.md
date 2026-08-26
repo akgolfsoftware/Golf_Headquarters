@@ -1,17 +1,35 @@
 # Train-lock — synkstatus
 
-**Sist synket: 25.08.2026 (kveld) fra «Player HQ Train lock (6).zip».**
+**Sist synket: 26.08.2026 fra «Player HQ Train lock (6).zip» (ny leveranse 26.08, 211 filer)
+— import styrt av zip-ens `CLAUDE-CODE-IMPORT-PROMPT.md` (arkivert i cowork
+`innkommende/train-lock-uploads-2026-08-25/`).**
 
 ## Innhold
 
-186 `.dc.html`-skjermfiler + `HANDOFF.md`. `README.md` og denne fila er repoets egne
-og finnes ikke i zip-en.
+196 `.dc.html`-skjermfiler + `DESIGN-SYSTEM.md`, `SCREEN-INDEX.md`, `PORTING.md`,
+`HANDOFF.md`, `support.js`, `three-d-stage.js`. `README.md` og denne fila er repoets egne
+og finnes ikke i zip-en. Zip-ens `CLAUDE.md` er flettet inn i rot-`CLAUDE.md`
+(§Train-lock designfasit) per import-instruksen — ikke lagt her som andre CLAUDE.md.
 
-## Siste synk — hva som endret seg
+## Siste synk (26.08) — hva som endret seg
+
+- **19 nye skjermfiler:** hele foreldreportalen — FO-02–FO-10 i mørk + lys, pluss
+  `FO-01L Forelder les lys` (svar på bestillingen 26.08: alle flater i lys og mørk).
+- **3 nye doc-filer:** `DESIGN-SYSTEM.md` (look-fasit), `SCREEN-INDEX.md` (alle filer med
+  rammeantall/breakpoints/`data-screen-label`), `PORTING.md` (kode-port-kontrakt).
+- **`HANDOFF.md` oppdatert** (48 263 → 49 749 byte): to nye linjer under gap-pass —
+  systematiseringen 26.08 + foreldreportal-leveransen.
+- **`.thumbnail` oppdatert.** Alle øvrige 177 skjermfiler + begge js-filene er
+  **byte-identiske** med forrige leveranse (verifisert med sha256 fil for fil).
+- **Bevisst avvik fra import-prompten:** prompten sier `design/train-lock/` — repoet
+  beholder `designsystem/train-lock/` (etablert kanon; CLAUDE.md invariant 2, T-bølgens
+  sesjonsrader og D2-tokens-dokumentasjonen peker alle hit). Én kanonisk mappe, ingen
+  duplikater — intensjonen i prompten er oppfylt.
+
+## Forrige synk (25.08 kveld)
 
 Kun **én fil**: `AX-01 Skall rail og tabbar.dc.html` (2 809 → 11 431 byte). Den forrige
-var avkuttet midt i en `div` og inneholdt verken rail eller tabbar. De øvrige 186 filene
-er **byte-identiske** med forrige leveranse (verifisert med `cmp` fil for fil).
+var avkuttet midt i en `div` og inneholdt verken rail eller tabbar.
 
 ## Holdt utenfor repoet med vilje
 

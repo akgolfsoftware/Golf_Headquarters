@@ -16,8 +16,11 @@
  *
  * Uendret av den beslutningen:
  * - `/auth` er LYS (Paper `#FAF9F5`) — låst beslutning PP-A/A4 16.08.2026.
- * - `/forelder` er LYS — forelder-portalens designomfang er fortsatt uavklart
- *   (T4 i AAPNE-SPORSMAAL); den flyttes når Anders har tatt det.
+ * - `/forelder` er LYS som default uten cookie. Forelder-omfangsspørsmålet (T4 i
+ *   AAPNE-SPORSMAAL) er LØST 26.08.2026: hele forelder-appen skal ha BÅDE lys og
+ *   mørk modus (som resten av produktet) — men det endrer ikke *defaulten* her,
+ *   kun at bryteren (mørk-valget) faktisk må fungere visuelt der også, ikke bare
+ *   på /portal og /admin. Skjermporten er ikke gjort ennå.
  * - Landingssidene er alltid lyse (egen fasit, ak-golf-website).
  * - Resten (stats, team-flatene, interne) er mørke som før.
  * - Bryteren vinner alltid: cookien `ak-v2-tema` overstyrer defaulten begge

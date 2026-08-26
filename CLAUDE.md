@@ -54,9 +54,11 @@ Bølge 2 (måned/år, stall, kalender uten Google, tester-live, runde-live, Jarv
 
 1. **Ingen treningsregler** (2026-08-18). Vokabular (pyramide, formel, perioder) er merkelapper. Gjeninnfør aldri metodikk-sperrer uten Anders' beslutning.
 2. **Design — Train-lock er fasit for ALLE skjermer i PlayerHQ OG AgencyOS (Anders 25.08.2026).**
-   - **Fasiten ligger i repoet: `designsystem/train-lock/`** (180 skjermer, levert 25.08 —
-     les `HANDOFF.md` der først: PIXEL = look, MAL = IA, MAL vinner). Scene `#000000`
-     (lys-varianter `#FFFFFF`).
+   - **Fasiten ligger i repoet: `designsystem/train-lock/`** (196 skjermfiler, sist synket
+     26.08 fra zip (6) — les `DESIGN-SYSTEM.md` der først (look-fasit), finn skjermen i
+     `SCREEN-INDEX.md`, og bruk `HANDOFF.md` som IA-/beslutningshistorikk. Ved konflikt:
+     HANDOFF vinner på struktur, DESIGN-SYSTEM på visuelle verdier. Porting til kode styres
+     av `PORTING.md` samme sted). Scene `#000000` (lys-varianter `#FFFFFF`).
    - **AgencyOS:** Train-lock — alle skjermer. Eksisterende Paper-porterte admin-flater er
      dermed *avvik som skal portes*, ikke fasit. Paper (`designsystem/paper/`) er
      historikk/arkiv, aldri bygg-fasit.
@@ -66,9 +68,13 @@ Bølge 2 (måned/år, stall, kalender uten Google, tester-live, runde-live, Jarv
      `:root` og mørk på `html[data-v2-tema="dark"]` (samme mekanisme som Paper, ingen ny).
      **Mørk er default på `/portal` og `/admin`** (Anders 25.08.2026) — regelen bor i
      `src/lib/v2/tema-default.ts`, kalt av både rot-layout og `V2Shell`; bryteren
-     (`ak-v2-tema`) vinner over defaulten. `/auth` er fortsatt lys (låst PP-A/A4) og
-     `/forelder` lys inntil omfanget er avklart. Selve skjermporten gjenstår (B8 = Player, bølge T =
-     AgencyOS). Marketing/landingssider har egen fasit (ak-golf-website) og omfattes ikke.
+     (`ak-v2-tema`) vinner over defaulten. `/auth` er fortsatt lys (låst PP-A/A4).
+     **`/forelder` skal ha BÅDE lys og mørk modus, som resten av produktet (Anders
+     26.08.2026)** — forelder-omfangsspørsmålet (T4) er dermed løst: hele forelder-appen
+     porter til Train-lock med toggle, ikke bare ett kort. Default (lys/mørk uten cookie)
+     er ikke endret av denne beslutningen — kun at begge moduser MÅ virke. Selve
+     skjermporten gjenstår (B8 = Player, bølge T = AgencyOS, forelder-porten ubestemt
+     session ennå). Marketing/landingssider har egen fasit (ak-golf-website) og omfattes ikke.
    - Ingen nye tokens / parallelle designsystemer uten Anders' ja.
    - Fullført = warm `#B85C3D` + hake. `#30D158` **kun** Godta / PUBLISERT-merke.
 3. **DRAFT er usynlig for spiller.** `loadPlayerDay` returnerer kun PUBLISHED | IN_PROGRESS | COMPLETED.
@@ -175,3 +181,26 @@ CI = verify + test. Deploy: Vercel git på `main` / PR-preview. **Aldri** `verce
 Google two-way · måned/år/stall som *første* jobb · hele TN-batteriet · FY/GP/BO/S3/Club · GROUP-materialisering til alle medlemmer · nye design-tokens · greenfield «AKGolf2.0».
 
 Rydd eksisterende Golf_Headquarters (v1) — ikke start nytt repo.
+
+---
+
+## Train-lock designfasit
+
+Fasiten bor i **`designsystem/train-lock/`** (196 skjermfiler, sist synket 26.08.2026 fra
+«Player HQ Train lock (6).zip» — sync-detaljer i `SYNC-STATUS.md` der).
+
+**Leserekkefølge for enhver design-/port-økt:**
+1. `designsystem/train-lock/DESIGN-SYSTEM.md` — look-fasiten: tokens (mørk/lys), geometri,
+   type, motion, komponent- og knappe-matrise, forbud, copy- og personvernregler.
+2. `designsystem/train-lock/SCREEN-INDEX.md` — alle filene med rammeantall, breakpoints og
+   `data-screen-label`. Finn skjermen her, åpne nærmeste eksisterende fil som mal.
+3. `designsystem/train-lock/HANDOFF.md` — IA- og beslutningshistorikk. Ved konflikt:
+   HANDOFF vinner på struktur, DESIGN-SYSTEM på visuelle verdier.
+4. Skal skjermer porteres til kode: `designsystem/train-lock/PORTING.md` (tokenlag først,
+   primitives før skjermer, visuell diff-rigg, stopp-regler).
+
+**Faste regler arvet fra fasit-prosjektet:** norsk bokmål («økt», ikke «session») · alle
+stiler inline i fasit-filene · ASCII i nye fasit-filnavn (`Okt`, ikke `Økt`) · én hvit
+primær CTA per ramme · `tabular-nums` på alle tall · endres en fasit-fil skal raden i
+`SCREEN-INDEX.md` og en linje i `HANDOFF.md` oppdateres · store revisjoner får ny fil med
+suffiks (`… v2.dc.html`), aldri overskriving av originalen.

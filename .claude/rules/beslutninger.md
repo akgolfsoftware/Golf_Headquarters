@@ -16,6 +16,15 @@ Gjelder til Anders endrer dem.
 
 ## Beslutningene (august 2026)
 
+- **ALLE SKJERMER I PLAYERHQ, AGENCYOS OG FORELDER SKAL HA LYS OG MØRK MODUS
+  (Anders 2026-08-26, i økt):** løser forelder-omfangsspørsmålet (T4 i AAPNE-SPORSMAAL) —
+  forelder-appen er IKKE unntatt Train-lock, hele appen porter med fungerende
+  lys/mørk-toggle, ikke bare ett kort. Konsekvens for T-bølgens lys-spørsmål (T-S5):
+  siden bare 9 av 39 AgencyOS-skjermer med fasit har tegnet lys, er **mekanisk avledet
+  lys fra `--tl-*`-tokensettet godkjent** som metode der ingen tegnet lys-fasit finnes —
+  å vente på 30+ nye tegninger er ikke forenlig med kravet om lys+mørk overalt. Se
+  `docs/natt/D-LYS-OG-5T-BESLUTNING.md` for grunnlaget. Denne beslutningen sier at BEGGE
+  moduser må virke — den endrer ikke hvilken modus som er *default* uten cookie noe sted.
 - **MØRK DEFAULT PÅ /portal OG /admin (Anders 2026-08-25, i økt):** produktflatene er
   mørke uten cookie. Train-lock er mørk-først (scene `#000000`, lys er varianten), og
   lys-defaulten fra 25.07 — begrunnet med «mørk skjerm er vanskelig å lese utendørs i
@@ -23,9 +32,10 @@ Gjelder til Anders endrer dem.
   spørsmål 1 i `docs/natt/D2-TOKENS-DONE.md`. Regelen bor i **`src/lib/v2/tema-default.ts`**
   (`onsketTema`), kalt av både rot-layout (SSR) og `V2Shell` (rute-veksling) — den var
   duplisert i to filer, som er en driftsfelle. **Uendret:** `/auth` er LYS (låst PP-A/A4
-  16.08), `/forelder` er LYS inntil forelder-portalens designomfang er avklart (T4),
-  landingssidene alltid lyse, resten mørk som før. Bryteren (`ak-v2-tema`) vinner over
-  defaulten begge veier. Låst av `src/lib/__tests__/tema-default.test.ts`.
+  16.08), landingssidene alltid lyse, resten mørk som før. `/forelder` er fortsatt LYS
+  som default uten cookie (uendret av 26.08-beslutningen over — kun kravet om at mørk
+  MÅ virke der også, er nytt). Bryteren (`ak-v2-tema`) vinner over defaulten begge veier.
+  Låst av `src/lib/__tests__/tema-default.test.ts`.
 - **FONT: POPPINS BEHOLDES — OGSÅ I PRODUKTET (Anders 2026-08-25, i økt):** fasitens
   «SF Pro Display/Text» tas IKKE i bruk. Poppins/Lora/IBM Plex Mono består som appens
   eneste fonter; fra Train-lock arves skala, vekter og tracking, ikke familien.
