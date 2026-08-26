@@ -115,12 +115,14 @@
   --tl-kilder: 220px;               /* Workbench kilder-kolonne (iPad 240) */
 
   /* ─────────────────────────────────────────────────────────────────────
-     TYPE (TRAIN LOCK §02) — SF Pro Display/Text, tabular-nums på alle tall.
-     KONFLIKT med repoets Poppins/Lora — se D2-TOKENS-DONE §Åpne spørsmål.
+     TYPE (TRAIN LOCK §02) — tabular-nums på alle tall.
+     Familien er repoets (Anders 25.08.2026: «behold Poppins») — fasitens
+     SF Pro tas IKKE i bruk. Skala, vekter og tracking arves fra Train-lock.
+     Poppins/Lora/IBM Plex Mono er appens eneste fonter (se rot-layout);
+     ikke gjeninnfør en fjerde.
      ───────────────────────────────────────────────────────────────────── */
-  --tl-font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Display",
-    "SF Pro Text", "Helvetica Neue", Helvetica, Arial, sans-serif;
-  --tl-font-mono: "SF Mono", ui-monospace, Menlo, monospace;
+  --tl-font-sans: var(--font-poppins), Arial, system-ui, sans-serif;
+  --tl-font-mono: var(--font-ibm-plex-mono), ui-monospace, monospace;
 
   --tl-text-title: 34px;            /* 700 · letter-spacing -0.02em */
   --tl-text-card: 26px;             /* 700 · letter-spacing -0.01em */

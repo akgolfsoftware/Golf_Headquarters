@@ -9,9 +9,11 @@
 >    før. Temaet gjelder hele dokumentet, så et tidlig bytte ville gjort 200+ uportede
 >    skjermer mørke før de er tegnet for det. `layout.tsx` §`onsketMorkTema` endres i
 >    samme leveranse som de første ekte Train-lock-skjermene.
-> 2. **Font (spm. 2): SF Pro i produktet (PlayerHQ + AgencyOS), Poppins beholdes på
->    markedssidene.** Landingssidene har egen godkjent fasit (`ak-golf-website`).
->    Systemstacken lastes ikke ned — raskere, og hjemme på iOS.
+> 2. **Font (spm. 2): ~~SF Pro i produktet~~ OVERSTYRT SENERE SAMME DAG (Anders i økt):
+>    «behold Poppins».** Poppins/Lora/IBM Plex Mono er appens eneste fonter — også i
+>    produktet. Fra Train-lock arves skala, vekter og tracking, ikke familien.
+>    `--tl-font-sans` peker på `var(--font-poppins)`, `--tl-font-mono` på
+>    `var(--font-ibm-plex-mono)`. Landingssidene har uansett egen fasit (`ak-golf-website`).
 > 3. **Agency-skinne 64 vs 232 (spm. 9): ~~fast 64 px~~ ENDRET 25.08 kveld — 232 px med
 >    tekst, fast.** Ny AX-01-leveranse samme kveld avgjorde skallet: fem destinasjoner
 >    (Stall · Workbench · Kø · Jarvis · Meg), Mac-rail 232 px, ingen kollapset variant.
@@ -132,11 +134,10 @@ node scripts/check-token-gap.mjs → grønn
    defaulten som er snudd, ikke mekanismen. Låst av
    `src/lib/__tests__/tema-default.test.ts`.
 
-2. **Font.** Fasiten skriver «SF Pro Display/Text» og bruker system-stacken
-   (`-apple-system, …`). Repoets stack er Poppins/Lora/IBM Plex Mono (CLAUDE.md
-   §Stack). `--tl-font-sans` bærer fasitens stack, men ingenting leser den ennå.
-   **Skal Train-lock-skjermene bytte til systemfonten, eller beholder vi Poppins?**
-   Dette er den eneste harde konflikten mellom fasiten og repoets låste stack.
+2. ~~**Font.**~~ **AVGJORT (Anders 25.08.2026): behold Poppins.** `--tl-font-sans`
+   peker på `var(--font-poppins)`, `--tl-font-mono` på `var(--font-ibm-plex-mono)`.
+   Fasitens skala, vekter og tracking gjelder uendret — kun familien er repoets.
+   Ikke gjeninnfør SF Pro eller en fjerde font.
 
 3. **Fokus-tilstand finnes ikke i fasiten.** Null `:focus`, `outline` eller
    fokusring i noen av de 177 designfilene — designet er tegnet touch-først. Vi trenger en
