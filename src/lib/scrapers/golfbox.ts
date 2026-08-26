@@ -282,9 +282,54 @@ export function erNettoKlasse(klasseNavn: string | null | undefined): boolean {
   return false;
 }
 
+/** Score for ett hull: foretrekk Score.Text, ellers Score.Value (×10000-skalert hvis stor). */
+function holeScoreValue(hole: unknown): number | null {
+  if (!hole || typeof hole !== "object") return null;
+  const score = (hole as Record<string, unknown>).Score;
+  if (!score || typeof score !== "object") return null;
+  const s = score as Record<string, unknown>;
+  if (typeof s.Text === "string" && s.Text !== "") {
+    const n = parseInt(s.Text, 10);
+    if (!isNaN(n) && n > 0) return n;
+  }
+  if (typeof s.Value === "number" && s.Value > 0) {
+    // Observert rå (4 = 4 slag), men vær robust mot ×10000-skalering.
+    return s.Value >= 1000 ? Math.round(s.Value / 10000) : s.Value;
+  }
+  return null;
+}
+
+/**
+ * Bruttosum fra hullscorene (Rounds.R{n}.HoleScores.H{1..18}.Score) — for
+ * turneringer (målt: Olyo/Østlandstour) der ResultSum mangler i feeden.
+ * Summerer KUN H{n}-nøkler (hopper over H-OUT/H-IN-delsummer), og kun når
+ * alle listede hull har score (ellers finnes ingen komplett bruttosum).
+ */
+export function sumHoleScores(round: unknown): number | null {
+  if (!round || typeof round !== "object") return null;
+  const r = round as Record<string, unknown>;
+  if (r.IsCompleted === false) return null;
+  const holeScores = r.HoleScores;
+  if (!holeScores || typeof holeScores !== "object") return null;
+  const holes = Array.isArray(holeScores)
+    ? holeScores
+    : Object.entries(holeScores as Record<string, unknown>)
+        .filter(([key]) => /^H\d+$/.test(key))
+        .map(([, hole]) => hole);
+  if (holes.length < 9) return null;
+  let sum = 0;
+  for (const hole of holes) {
+    const n = holeScoreValue(hole);
+    if (n == null) return null; // hull uten score → ufullstendig runde, ingen sum
+    sum += n;
+  }
+  return sum;
+}
+
 /**
  * Brutto-score for runden: ResultSum.ActualText / ActualValue.
  * Bruker ALDRI NetText/NetValue — det er handicap-justert netto.
+ * Fallback: summer hullscorene (se sumHoleScores) når ResultSum mangler.
  */
 export function extractRoundScore(round: unknown): number | null {
   if (!round || typeof round !== "object") return null;
@@ -298,7 +343,7 @@ export function extractRoundScore(round: unknown): number | null {
     }
     if (typeof sum.ActualValue === "number") return Math.round(sum.ActualValue / 10000);
   }
-  return null;
+  return sumHoleScores(round);
 }
 
 /** Klassenavn fra GolfBox-class-objekt eller dict-nøkkel. */
@@ -329,20 +374,73 @@ type RawLeaderboard = {
   Entries?: Record<string, unknown>;
 };
 
-export async function getLeaderboard(
-  competitionId: number,
-): Promise<GolfBoxLeaderboard | null> {
-  const raw = await fetchHandler<{ Classes?: Record<string, unknown> }>(
-    `/Handlers/LeaderboardHandler/GetLeaderboard/CompetitionId/${competitionId}/language/${LANG_EN}`,
+type RawLeaderboardResponse = {
+  CompetitionData?: { Classes?: unknown };
+  Classes?: Record<string, unknown>;
+};
+
+// Klasselisten i CompetitionData (default-responsen) — én rad per klasse i turneringen.
+const CompetitionClassSchema = z.object({
+  Id: z.number(),
+  Name: z.string().nullable().optional(),
+  ShortName: z.string().nullable().optional(),
+  ClassType: z.string().nullable().optional(),
+});
+
+export type GolfBoxCompetitionClass = {
+  id: number;
+  name: string;
+  shortName: string;
+  classType: string | null;
+};
+
+/** Alle klasser i turneringen, fra CompetitionData.Classes i leaderboard-responsen. */
+export function parseCompetitionClasses(raw: unknown): GolfBoxCompetitionClass[] {
+  const list = (raw as RawLeaderboardResponse | null)?.CompetitionData?.Classes;
+  if (!Array.isArray(list)) return [];
+  const out: GolfBoxCompetitionClass[] = [];
+  for (const item of list) {
+    const parsed = CompetitionClassSchema.safeParse(item);
+    if (!parsed.success) continue;
+    out.push({
+      id: parsed.data.Id,
+      name: (parsed.data.Name ?? "").trim(),
+      shortName: (parsed.data.ShortName ?? "").trim(),
+      classType: parsed.data.ClassType ?? null,
+    });
+  }
+  return out;
+}
+
+/**
+ * Brutto-klasser vi skal hente: individuelle spillerklasser som ikke er netto.
+ * AK-regel: alltid brutto — netto-klasser («… Netto», «… N») hoppes over.
+ */
+export function velgBruttoKlasser(
+  classes: GolfBoxCompetitionClass[],
+): GolfBoxCompetitionClass[] {
+  return classes.filter(
+    (c) =>
+      (c.classType == null || c.classType === "PlayerClass") &&
+      !erNettoKlasse(c.name) &&
+      !erNettoKlasse(c.shortName),
   );
-  const classes = raw?.Classes;
-  if (!classes) return null;
+}
 
-  let roundNames: string[] = [];
-  let activeRound: number | null = null;
-  let isScoringOpen = false;
-  const entries: GolfBoxLeaderboardEntry[] = [];
+type LeaderboardAccumulator = {
+  roundNames: string[];
+  activeRound: number | null;
+  isScoringOpen: boolean;
+  entries: GolfBoxLeaderboardEntry[];
+  seen: Set<string>;
+};
 
+/** Les entries fra en Classes-dict (default- eller per-klasse-respons) inn i akkumulatoren. */
+function collectClasses(
+  classes: Record<string, unknown> | undefined,
+  acc: LeaderboardAccumulator,
+): void {
+  if (!classes) return;
   for (const [classKey, cls] of Object.entries(classes)) {
     const klasseNavn = golfboxKlasseNavn(cls, classKey);
     // AK-regel: ekskluder nett-klasser (navn som ender på N / Net / Netto).
@@ -350,10 +448,10 @@ export async function getLeaderboard(
 
     const lb = (cls as { Leaderboard?: RawLeaderboard } | null)?.Leaderboard;
     if (!lb) continue;
-    if (Array.isArray(lb.RoundNames) && lb.RoundNames.length > roundNames.length)
-      roundNames = lb.RoundNames;
-    if (typeof lb.ActiveRoundNumber === "number") activeRound = lb.ActiveRoundNumber;
-    if (lb.IsScoringOpen) isScoringOpen = true;
+    if (Array.isArray(lb.RoundNames) && lb.RoundNames.length > acc.roundNames.length)
+      acc.roundNames = lb.RoundNames;
+    if (typeof lb.ActiveRoundNumber === "number") acc.activeRound = lb.ActiveRoundNumber;
+    if (lb.IsScoringOpen) acc.isScoringOpen = true;
 
     const rawEntries =
       lb.Entries && typeof lb.Entries === "object"
@@ -363,8 +461,14 @@ export async function getLeaderboard(
       const parsed = LeaderboardEntrySchema.safeParse(rawEntry);
       if (!parsed.success) continue;
       const e = parsed.data;
+      const firstName = (e.FirstName ?? "").trim();
+      const lastName = (e.LastName ?? "").trim();
+      // Samme spiller kan stå i flere klasser — første forekomst vinner.
+      const dedupeKey = `${firstName}|${lastName}|${e.BirthYear ?? ""}`.toLowerCase();
+      if (firstName + lastName !== "" && acc.seen.has(dedupeKey)) continue;
+      acc.seen.add(dedupeKey);
       const stp = e.ScoringToPar ?? {};
-      entries.push({
+      acc.entries.push({
         position: e.Position?.Actual ?? null,
         positionText: e.Position?.Calculated ?? null,
         toParText: stp.ToParText ?? null,
@@ -372,8 +476,8 @@ export async function getLeaderboard(
         todayText: stp.TodayText ?? null,
         thru: typeof stp.HoleValue === "number" ? stp.HoleValue : null,
         thruText: stp.HoleText ?? null,
-        firstName: (e.FirstName ?? "").trim(),
-        lastName: (e.LastName ?? "").trim(),
+        firstName,
+        lastName,
         nationality: e.Nationality ?? null,
         birthYear: e.BirthYear ?? null,
         clubName: e.ClubName ?? null,
@@ -381,12 +485,60 @@ export async function getLeaderboard(
       });
     }
   }
+}
+
+/**
+ * Full leaderboard for turneringen — ALLE brutto-klasser, ikke bare defaulten.
+ *
+ * GolfBox' default-respons inneholder typisk kun ÉN klasse (noen ganger ingen,
+ * kun CompetitionData). Klasselisten ligger i CompetitionData.Classes, og hver
+ * klasse hentes med path-varianten …/CompetitionId/{id}/ClassId/{classId}/….
+ * Uten dette manglet alle jente-/øvrige klasser for Olyo/Srixon/Østlandstour
+ * (målt 25.08.2026). Hvert klasse-kall går gjennom samme throttle (400 ms).
+ */
+export async function getLeaderboard(
+  competitionId: number,
+): Promise<GolfBoxLeaderboard | null> {
+  const raw = await fetchHandler<RawLeaderboardResponse>(
+    `/Handlers/LeaderboardHandler/GetLeaderboard/CompetitionId/${competitionId}/language/${LANG_EN}`,
+  );
+
+  const alleKlasser = parseCompetitionClasses(raw);
+  const bruttoKlasser = velgBruttoKlasser(alleKlasser);
+  const defaultClasses = raw?.Classes;
+  if (!defaultClasses && bruttoKlasser.length === 0) return null;
+
+  const acc: LeaderboardAccumulator = {
+    roundNames: [],
+    activeRound: null,
+    isScoringOpen: false,
+    entries: [],
+    seen: new Set(),
+  };
+
+  // Klassene default-responsen allerede dekker (nøkkel «C{classId}»).
+  collectClasses(defaultClasses, acc);
+  const dekket = new Set(
+    Object.keys(defaultClasses ?? {}).map((k) => k.replace(/^C/, "")),
+  );
+
+  for (const cls of bruttoKlasser) {
+    if (dekket.has(String(cls.id))) continue;
+    try {
+      const clsRaw = await fetchHandler<RawLeaderboardResponse>(
+        `/Handlers/LeaderboardHandler/GetLeaderboard/CompetitionId/${competitionId}/ClassId/${cls.id}/language/${LANG_EN}`,
+      );
+      collectClasses(clsRaw?.Classes, acc);
+    } catch {
+      // Én klasse uten data (vanlig for de yngste) skal ikke velte turneringen.
+    }
+  }
 
   return {
     competitionId,
-    roundNames,
-    activeRound,
-    isScoringOpen,
-    entries,
+    roundNames: acc.roundNames,
+    activeRound: acc.activeRound,
+    isScoringOpen: acc.isScoringOpen,
+    entries: acc.entries,
   };
 }
