@@ -218,6 +218,27 @@ export const UI = {
 
   // Fallback
   unnamedPlayer: "Spiller",
+
+  // Godkjenning (Loop 3T/B6) — se resolvePlayerApproval
+  approvalFromCoach: "Forslag fra coach",
+  approvalFromGroup: "Forslag fra gruppe",
+  approvalAccept: "Godta",
+  approvalReject: "Avvis",
+  approvalAccepting: "Godtar …",
+  approvalRejecting: "Avviser …",
+  approvalAccepted: "Godtatt",
+  approvalRejected: "Avvist — skjult i planen din",
+  approvalRejectHint: "Skjuler økten hos deg. Den slettes ikke, og coachen/gruppen ser ingen endring.",
+
+  // Godkjenning — agency-visning (SessionInspector, A-09-mønster)
+  approvalStatusLabel: "Godkjenning",
+  approvalStatusPending: "Venter på spilleren",
+  approvalStatusAccepted: "Godtatt av spilleren",
+  approvalStatusRejectedValue: "Avvist av spilleren",
+  hiddenByPlayerLabel: "Synlighet",
+  hiddenByPlayerValue: "Skjult hos spilleren — økten er uendret her",
+  hiddenByPlayerBadge: "SKJULT",
+  approvalPendingBadge: "VENTER",
 } as const;
 
 export function formatMinutes(m: number): string {

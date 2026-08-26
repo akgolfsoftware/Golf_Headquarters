@@ -21,6 +21,7 @@ import {
   buildWeekViewModel,
   validateWeek,
   publishMany,
+  resolvePlayerApproval,
   snapToGrid,
   mondayOf,
 } from "./operations";
@@ -329,6 +330,50 @@ describe("applySeriesPatch", () => {
     assert.equal(patched.pyramid, "SLAG");
     assert.equal(patched.date, s.date);
     assert.equal(patched.startMinute, s.startMinute);
+  });
+});
+
+describe("resolvePlayerApproval", () => {
+  function forslagFraCoach() {
+    const s = createSession({ ...baseCmd, createdBy: "COACH" });
+    return {
+      ...s,
+      status: "PUBLISHED" as const,
+      origin: "COACH" as const,
+      needsPlayerApproval: true,
+      approvalStatus: "PENDING" as const,
+    };
+  }
+
+  it("ACCEPTED rydder flaggene, beholder alt annet urørt", () => {
+    const forslag = forslagFraCoach();
+    const godtatt = resolvePlayerApproval(forslag, "ACCEPTED");
+    assert.equal(godtatt.approvalStatus, "ACCEPTED");
+    assert.equal(godtatt.needsPlayerApproval, false);
+    assert.equal(godtatt.hiddenByPlayer, undefined);
+    assert.equal(godtatt.title, forslag.title);
+    assert.equal(godtatt.date, forslag.date);
+    assert.equal(godtatt.startMinute, forslag.startMinute);
+    assert.equal(godtatt.status, "PUBLISHED");
+  });
+
+  it("REJECTED skjuler økten (hiddenByPlayer), aldri sletter", () => {
+    const forslag = forslagFraCoach();
+    const avvist = resolvePlayerApproval(forslag, "REJECTED");
+    assert.equal(avvist.approvalStatus, "REJECTED");
+    assert.equal(avvist.needsPlayerApproval, false);
+    assert.equal(avvist.hiddenByPlayer, true);
+    // Innhold/eierskap/tid er urørt — kun flaggene endres.
+    assert.equal(avvist.title, forslag.title);
+    assert.equal(avvist.playerId, forslag.playerId);
+    assert.equal(avvist.date, forslag.date);
+    assert.equal(avvist.status, "PUBLISHED");
+  });
+
+  it("REJECTED på en allerede skjult økt endrer ikke tilstanden videre", () => {
+    const forslag = { ...forslagFraCoach(), hiddenByPlayer: true };
+    const avvist = resolvePlayerApproval(forslag, "REJECTED");
+    assert.equal(avvist.hiddenByPlayer, true);
   });
 });
 

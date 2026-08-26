@@ -88,6 +88,7 @@ export function mapSession(row: WbRow): WorkbenchSession {
     seriesId: row.seriesId ?? undefined,
     seriesIndex: row.seriesIndex ?? undefined,
     isTemplate: row.isTemplate,
+    hiddenByPlayer: row.hiddenByPlayer,
     publishedAt: row.publishedAt?.toISOString(),
     publishedBy: row.publishedBy ?? undefined,
     isAgentProposal: row.isAgentProposal,

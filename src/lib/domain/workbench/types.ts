@@ -172,6 +172,12 @@ export interface WorkbenchSession {
   approvalStatus?: ApprovalStatus;
   /** Player edited a materialised group session locally — coach/group update waits for resolve */
   localOverride?: boolean;
+  /**
+   * Spilleren har avvist et forslag / valgt «Ikke delta» (Loop 3T, WB-10).
+   * Skjuler økten i Agenda/«I dag» og listevisninger — SLETTER aldri. Agency
+   * ser den fortsatt, markert SKJULT (økten i gruppen er uendret).
+   */
+  hiddenByPlayer?: boolean;
 
   /** Set when created via "gjenta" — shared by every occurrence in the series */
   seriesId?: string;

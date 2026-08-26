@@ -6007,6 +6007,12 @@ model WorkbenchSession {
   // dukker da opp i kildepanelet under "Maler" for gjenbruk.
   isTemplate           Boolean   @default(false)
 
+  // Godkjenning (Loop 3T/B6, 26.08.2026): spilleren har avvist et forslag
+  // fra coach/gruppe, eller valgt "Ikke delta" på en gruppeøkt (WB-10).
+  // Skjuler økten i Agenda/"I dag" og listevisninger for spilleren — SLETTER
+  // aldri. Agency ser den fortsatt, markert SKJULT.
+  hiddenByPlayer       Boolean   @default(false)
+
   drills WorkbenchDrill[]
 
   @@index([playerId, date])
@@ -6015,6 +6021,7 @@ model WorkbenchSession {
   @@index([status])
   @@index([seriesId])
   @@index([playerId, isTemplate])
+  @@index([playerId, hiddenByPlayer])
   @@map("workbench_sessions")
 }
 

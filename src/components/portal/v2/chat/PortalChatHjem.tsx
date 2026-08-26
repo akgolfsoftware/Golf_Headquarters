@@ -31,9 +31,12 @@
  * modus-veksling som ikke er bygget.
  */
 
-import { useEffect, useRef, useState, type CSSProperties } from "react";
+import { useEffect, useRef, useState, useTransition, type CSSProperties } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 import { T } from "@/lib/v2/tokens";
+import { TL } from "@/lib/v2/train-lock";
 import { TemaHeaderKnapp } from "@/components/v2/tema";
 import { useToppbarHoyde } from "@/components/v2/toppbar-hoyde";
 import { SamtaleBoble, SamtaleSkriver, SamtaleFeil, ForslagRad } from "@/components/v2/samtale";
@@ -44,7 +47,8 @@ import { kategoriFraSnittscore } from "@/lib/domain/ak-kategori";
 import { formatSg } from "@/lib/sg";
 import type { DashboardData } from "@/app/portal/actions";
 import type { GjennomforeData } from "@/lib/portal-gjennomfore/gjennomfore-data";
-import type { PlayerDayResult } from "@/lib/workbench/wb-actions";
+import type { PlayerDayResult, PlayerDaySession } from "@/lib/workbench/wb-actions";
+import { resolvePlayerApproval } from "@/lib/workbench/wb-actions";
 import type { SessionStatus } from "@/lib/domain/workbench/types";
 import { UI as WB_UI, PYRAMID_LABEL, formatMinutes, formatTime } from "@/lib/domain/workbench/labels";
 import { harHake, STATUS_CAPS, WARM } from "@/components/workbench/wb-visuelt";
@@ -430,7 +434,121 @@ function TrackManTeaserKort({ trackman }: { trackman: TrackManTeaser }) {
  * filtrerer DRAFT bort server-side (invariant 3) — ingen ny håndheving her.
  * Lenker til det eksisterende økt-arket fra Loop 3S (`/portal/tren/wb/[id]`).
  */
+/**
+ * Godkjenningskort (Loop 3T/B6, WB-10-mønster) — én økt med
+ * `needsPlayerApproval`. «Godta» er eneste sted #30D158 (TL.ok) forekommer i
+ * denne flyten (CLAUDE.md invariant 2); «Avvis» er en nøytral ghost-knapp,
+ * ALDRI rød. Avvis skjuler økten (hiddenByPlayer) — sletter aldri.
+ */
+function GodkjenningKort({ okt, onFerdig }: { okt: PlayerDaySession; onFerdig: (id: string) => void }) {
+  const router = useRouter();
+  const [travel, start] = useTransition();
+  const [handling, setHandling] = useState<"ACCEPTED" | "REJECTED" | null>(null);
+
+  const kilde = okt.origin === "GROUP" ? WB_UI.approvalFromGroup : WB_UI.approvalFromCoach;
+
+  function svar(decision: "ACCEPTED" | "REJECTED") {
+    setHandling(decision);
+    start(async () => {
+      try {
+        const res = await resolvePlayerApproval({ sessionId: okt.id, decision });
+        if (!res.ok) {
+          toast.error(res.error);
+          setHandling(null);
+          return;
+        }
+        toast.success(decision === "ACCEPTED" ? WB_UI.approvalAccepted : WB_UI.approvalRejected);
+        onFerdig(okt.id);
+        router.refresh();
+      } catch {
+        toast.error(WB_UI.unknownError);
+        setHandling(null);
+      }
+    });
+  }
+
+  return (
+    <div
+      data-od-id="wb-idag-godkjenning"
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        gap: 10,
+        border: `1px solid ${T.border}`,
+        borderRadius: T.rCard,
+        background: T.panel2,
+        padding: 16,
+      }}
+    >
+      <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+        <span style={{ width: 8, height: 8, borderRadius: "50%", background: WARM, flex: "none" }} aria-hidden="true" />
+        <span style={{ fontFamily: T.mono, fontSize: 10, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: T.mut }}>
+          {kilde}
+        </span>
+      </div>
+      <div>
+        <h3 style={{ margin: 0, fontFamily: T.disp, fontSize: 16, fontWeight: 600, color: T.fg }}>{okt.title}</h3>
+        <p style={{ margin: "4px 0 0", fontFamily: T.mono, fontSize: 12, color: T.mut }}>
+          {formatTime(okt.startMinute)} · {formatMinutes(okt.durationMinutes)} ·{" "}
+          {PYRAMID_LABEL[okt.pyramid as keyof typeof PYRAMID_LABEL] ?? okt.pyramid}
+        </p>
+      </div>
+      <p style={{ margin: 0, fontFamily: T.ui, fontSize: 12, color: T.mut, lineHeight: 1.5 }}>{WB_UI.approvalRejectHint}</p>
+      <div style={{ display: "flex", gap: 8, marginTop: 4 }}>
+        <button
+          type="button"
+          className="v2-press v2-focus"
+          disabled={travel}
+          onClick={() => svar("ACCEPTED")}
+          data-od-id="wb-idag-godkjenning-godta"
+          style={{
+            flex: 1,
+            minHeight: 44,
+            borderRadius: T.rTag,
+            border: "none",
+            background: TL.ok,
+            color: T.bg,
+            fontFamily: T.ui,
+            fontSize: 13,
+            fontWeight: 700,
+            cursor: travel ? "default" : "pointer",
+            opacity: travel && handling !== "ACCEPTED" ? 0.5 : 1,
+          }}
+        >
+          {handling === "ACCEPTED" ? WB_UI.approvalAccepting : WB_UI.approvalAccept}
+        </button>
+        <button
+          type="button"
+          className="v2-press v2-focus"
+          disabled={travel}
+          onClick={() => svar("REJECTED")}
+          data-od-id="wb-idag-godkjenning-avvis"
+          style={{
+            flex: 1,
+            minHeight: 44,
+            borderRadius: T.rTag,
+            border: `1px solid ${T.border}`,
+            background: "transparent",
+            color: T.fg,
+            fontFamily: T.ui,
+            fontSize: 13,
+            fontWeight: 600,
+            cursor: travel ? "default" : "pointer",
+            opacity: travel && handling !== "REJECTED" ? 0.5 : 1,
+          }}
+        >
+          {handling === "REJECTED" ? WB_UI.approvalRejecting : WB_UI.approvalReject}
+        </button>
+      </div>
+    </div>
+  );
+}
+
 function WorkbenchIDagArtefakt({ workbenchDay }: { workbenchDay: PlayerDayResult }) {
+  // Optimistisk skjuling av godkjenninger spilleren nettopp svarte på — det
+  // faktiske resultatet kommer tilbake via router.refresh() i GodkjenningKort.
+  const [besvart, setBesvart] = useState<Set<string>>(() => new Set());
+
   const eyebrow = (
     <div style={{ fontFamily: T.mono, fontSize: 10, letterSpacing: "0.08em", textTransform: "uppercase", color: T.mut }}>
       workbench
@@ -447,26 +565,38 @@ function WorkbenchIDagArtefakt({ workbenchDay }: { workbenchDay: PlayerDayResult
   }
 
   const { sessions } = workbenchDay.data;
-  const pagaende = sessions.find((s) => s.status === "IN_PROGRESS") ?? null;
+  const venterGodkjenning = sessions.filter((s) => s.needsPlayerApproval && !besvart.has(s.id));
+  const okter = sessions.filter((s) => !s.needsPlayerApproval);
+  const pagaende = okter.find((s) => s.status === "IN_PROGRESS") ?? null;
 
-  if (sessions.length === 0) {
+  const godkjenningskort = venterGodkjenning.length > 0 && (
+    <div data-od-id="wb-idag-godkjenninger" style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+      {venterGodkjenning.map((okt) => (
+        <GodkjenningKort key={okt.id} okt={okt} onFerdig={(id) => setBesvart((prev) => new Set(prev).add(id))} />
+      ))}
+    </div>
+  );
+
+  if (okter.length === 0) {
     return (
-      <div
-        data-od-id="wb-idag-hvile"
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          gap: 4,
-          border: `1px dashed ${T.border}`,
-          borderRadius: T.rCard,
-          background: T.panel2,
-          padding: 16,
-        }}
-      >
+      <div data-od-id="wb-idag-hvile" style={{ display: "flex", flexDirection: "column", gap: 8 }}>
         {eyebrow}
-        <p style={{ margin: "4px 0 0", fontFamily: T.ui, fontSize: 13, color: T.fg2, lineHeight: 1.5 }}>
-          {WB_UI.playerNoSessions}
-        </p>
+        {godkjenningskort}
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            gap: 4,
+            border: `1px dashed ${T.border}`,
+            borderRadius: T.rCard,
+            background: T.panel2,
+            padding: 16,
+          }}
+        >
+          <p style={{ margin: 0, fontFamily: T.ui, fontSize: 13, color: T.fg2, lineHeight: 1.5 }}>
+            {WB_UI.playerNoSessions}
+          </p>
+        </div>
       </div>
     );
   }
@@ -475,6 +605,7 @@ function WorkbenchIDagArtefakt({ workbenchDay }: { workbenchDay: PlayerDayResult
     return (
       <div data-od-id="wb-idag-pagar" style={{ display: "flex", flexDirection: "column", gap: 8 }}>
         {eyebrow}
+        {godkjenningskort}
         <div
           style={{
             border: `1px solid ${T.border}`,
@@ -528,8 +659,9 @@ function WorkbenchIDagArtefakt({ workbenchDay }: { workbenchDay: PlayerDayResult
   return (
     <div data-od-id="wb-idag-publisert" style={{ display: "flex", flexDirection: "column", gap: 8 }}>
       {eyebrow}
+      {godkjenningskort}
       <Kort eyebrow={WB_UI.today}>
-        {sessions.map((s, i) => {
+        {okter.map((s, i) => {
           const status = s.status as SessionStatus;
           return (
             <Link key={s.id} href={`/portal/tren/wb/${s.id}`} style={{ textDecoration: "none", color: "inherit", display: "block" }}>
@@ -558,7 +690,7 @@ function WorkbenchIDagArtefakt({ workbenchDay }: { workbenchDay: PlayerDayResult
                     {STATUS_CAPS[status]}
                   </span>
                 }
-                last={i === sessions.length - 1}
+                last={i === okter.length - 1}
               />
             </Link>
           );

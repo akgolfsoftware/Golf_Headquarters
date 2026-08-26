@@ -203,6 +203,20 @@ export function SessionInspector({
             }).format(new Date(session.publishedAt))}
           />
         )}
+        {/* Godkjenning + skjult-status (Loop 3T/B6, A-09/WB-10-mønster) —
+            kun lesevisning her. Spilleren svarer selv i «I dag». */}
+        {session.needsPlayerApproval && (
+          <InspektorLinje label={UI.approvalStatusLabel} verdi={UI.approvalStatusPending} />
+        )}
+        {!session.needsPlayerApproval && session.approvalStatus === "ACCEPTED" && (
+          <InspektorLinje label={UI.approvalStatusLabel} verdi={UI.approvalStatusAccepted} />
+        )}
+        {!session.needsPlayerApproval && session.approvalStatus === "REJECTED" && (
+          <InspektorLinje label={UI.approvalStatusLabel} verdi={UI.approvalStatusRejectedValue} />
+        )}
+        {session.hiddenByPlayer && (
+          <InspektorLinje label={UI.hiddenByPlayerLabel} verdi={UI.hiddenByPlayerValue} />
+        )}
         <div style={{ marginTop: 10 }}>
           <Knapp
             ghost

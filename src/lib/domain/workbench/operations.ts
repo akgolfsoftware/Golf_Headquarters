@@ -19,6 +19,7 @@ import type {
   WorkbenchMode,
   RecurrencePolicy,
   SeriesContentPatch,
+  ApprovalStatus,
 } from "./types";
 
 // ─── Helpers ────────────────────────────────────────────────────────────────
@@ -366,4 +367,28 @@ export function publishMany(
       ? publishSession(s, { sessionId: s.id, publishedBy }, now)
       : s
   );
+}
+
+// ─── Godkjenning (Loop 3T / B6) ─────────────────────────────────────────────
+
+/**
+ * Spillerens svar på en økt med `needsPlayerApproval` (forslag fra coach
+ * eller gruppe — ACCESS-AND-GROUPS.md §4/§5). ACCEPTED beholder økten som
+ * den er, kun flaggene ryddes. REJECTED skjuler økten for spilleren
+ * (`hiddenByPlayer`, samme mekanisme som «Ikke delta», WB-10) — den slettes
+ * ALDRI, og innholdet/tid/eierskap er urørt.
+ */
+export function resolvePlayerApproval(
+  session: WorkbenchSession,
+  decision: "ACCEPTED" | "REJECTED",
+  now = new Date().toISOString()
+): WorkbenchSession {
+  const approvalStatus: ApprovalStatus = decision;
+  return {
+    ...session,
+    approvalStatus,
+    needsPlayerApproval: false,
+    hiddenByPlayer: decision === "REJECTED" ? true : session.hiddenByPlayer,
+    updatedAt: now,
+  };
 }
