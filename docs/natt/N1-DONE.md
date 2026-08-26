@@ -1,9 +1,31 @@
-# N1 — Sikre DataGolf-tilførselen · DELVIS FERDIG
+# N1 — Sikre DataGolf-tilførselen · VERIFISERT GRØNN
 
 Utført 26.08.2026. Se `BOLGE-N-TALENTHQ-INN-2026-08-26.md` for planen.
 
-**Status: koden er flyttet og verifisert. Ett steg gjenstår som bare Anders kan gjøre —
-sette GitHub-secrets. Talenthq skal IKKE arkiveres eller deaktiveres før det er gjort.**
+**Status: koden er flyttet, secrets satt, og det nye repoet skriver beviselig til
+produksjonsdatabasen.** Gjenstår: deaktiver cron i talenthq (så bare ett repo skriver),
+og la det gå en uke før arkivering (N14).
+
+## Verifisering mot prod — 26.08.2026 kl. 10:49 UTC
+
+Kjøring [32960171249](https://github.com/akgolfsoftware/ak-golf-pipelines/actions/runs/32960171249),
+`datagolf-sync.yml` (inkrementell, ingen inputs). Alle steg før backfill grønne, inkludert
+pytest i CI. Radtall målt direkte mot `dcnxoztjtdqoidaekxry`:
+
+| Tabell | Før | Under kjøring | Endring |
+|---|---:|---:|---:|
+| `dashboard.dg_rounds` | 630 764 | 632 024 | **+1 260** |
+| `dashboard.dg_round_sg` | 630 764 | 632 024 | **+1 260** |
+| `dashboard.dg_events` | 1 664 | 1 668 | +4 |
+| `dashboard.dg_players` | 3 548 | 3 569 | +21 |
+| `dashboard.dg_sync_state` | 1 511 | 1 515 | +4 |
+
+Dette beviser hele kjeden fra det nye hjemmet: GitHub-secrets løses, DataGolf-API-et
+svarer innenfor rate-limit, og Shared Pooler nås fra runneren (IPv6-fella unngått).
+
+Merk: tallene i planens §0.2 (630 767) var estimater fra `pg_stat_user_tables`, ikke
+opptelling. Eksakt `count(*)` ga 630 764 før kjøringen. Bruk `count(*)` når differanser
+skal måles.
 
 ---
 
@@ -61,42 +83,27 @@ er rent Python.
 
 ---
 
-## Gjenstår — krever Anders
+## Utført av Anders
 
-### 1. Sett fem secrets i det nye repoet
+### 1. Fem secrets satt — 26.08.2026 kl. 10:48 UTC ✓
 
-GitHub lar ingen lese ut eksisterende secret-verdier, heller ikke eieren. De må hentes
-fra kildene (`.env.local`, Supabase-dashbordet, DataGolf-kontoen) og settes på nytt.
+`DATAGOLF_API_KEY`, `DATABASE_URL`, `DIRECT_URL`, `SUPABASE_URL`,
+`SUPABASE_SERVICE_ROLE_KEY`. Hentet fra `~/Developer/ak-golf-talenthq/.env` og sendt rett
+til GitHub med `gh secret set` — verdiene passerte aldri en AI-kontekst eller et
+nettleserskjema.
 
-De fem navnene er identiske med dem talenthq har i dag:
+Begge database-URL-ene pekte allerede på Shared Pooler
+(`aws-1-eu-west-2.pooler.supabase.com`, port 6543/5432), så IPv6-fella var unngått.
 
-```
-DATAGOLF_API_KEY
-DATABASE_URL
-DIRECT_URL
-SUPABASE_URL
-SUPABASE_SERVICE_ROLE_KEY
-```
+`SUPABASE_STORAGE_BUCKET` er ikke satt — default `dashboard` gjelder.
 
-Settes her: https://github.com/akgolfsoftware/ak-golf-pipelines/settings/secrets/actions
+### 2. Ekte kjøring verifisert ✓ — se tabellen øverst
 
-I tillegg én variabel (ikke secret), valgfri — default er `dashboard`:
-`SUPABASE_STORAGE_BUCKET`
+---
 
-**Merk om `DATABASE_URL`/`DIRECT_URL`:** bruk Shared Pooler
-(`aws-1-eu-west-2.pooler.supabase.com`, bruker `postgres.<project-ref>`), aldri
-`db.<ref>.supabase.co` — den er IPv6-only og nås ikke fra GitHub-runnere.
-`DATABASE_URL` = port 6543, `DIRECT_URL` = port 5432.
+## Gjenstår
 
-### 2. Verifiser én ekte kjøring
-
-Når secretsene står, kjør `datagolf-sync` manuelt med liten scope og sjekk radtall før/etter:
-
-```bash
-gh workflow run datagolf-sync.yml --repo akgolfsoftware/ak-golf-pipelines
-```
-
-### 3. Først DA: deaktiver cron i talenthq
+### 3. Deaktiver cron i talenthq
 
 Rekkefølgen er viktig — to repoer skal ikke skrive til samme database samtidig, men
 talenthq må heller ikke stoppes før det nye hjemmet beviselig virker.
