@@ -27,12 +27,11 @@ import {
 import { provenanceLesbarTekst } from "@/lib/agents/provenance";
 import { caddieDraftTittel } from "@/lib/caddie/draft-labels";
 import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
-import { KoHubNav } from "@/components/admin/v2/agency-hub-subnav";
 import {
-  AdminGodkjenningerV2,
+  AdminGodkjenningerTrainLock,
   type AdminGodkjenningerV2Data,
   type AdminGodkjenningV2Row,
-} from "@/components/admin/v2/AdminGodkjenningerV2";
+} from "@/components/admin/v2/godkjenninger/AdminGodkjenningerTrainLock";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Godkjenninger · AgencyOS (v2)" };
@@ -318,8 +317,7 @@ export default async function V2AdminGodkjenningerPage() {
 
   return (
     <V2Shell bredde="full" aktiv="innboks" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>
-      <KoHubNav />
-      <AdminGodkjenningerV2 data={data} />
+      <AdminGodkjenningerTrainLock data={data} />
     </V2Shell>
   );
 }
