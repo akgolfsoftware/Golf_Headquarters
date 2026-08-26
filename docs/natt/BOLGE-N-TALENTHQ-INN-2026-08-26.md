@@ -264,20 +264,22 @@ ny chat, egen worktree ved parallell, maks 2–3 samtidige, `npm run verify` gr�
 `docs/natt/N<x>-DONE.md` per rad, **aldri main-merge uten Anders' ja**, skjermbilde-gate
 (390 px + 1280 px, lys + mørk) på hver skjerm-rad.
 
-### Status 26.08.2026 (kveld)
+### Status 26.08.2026 (kveld) — N1, N2, N3, N5 er I MAIN
 
-| # | Status | Gren (pushet, IKKE merget) | Verifisert |
+| # | Status | Landet | Verifisert |
 |---|---|---|---|
-| N1 | ✅ Ferdig — kjørt mot prod | (eget repo, se `N1-DONE.md`) | 379 tester + én ekte kjøring: dg_rounds +1260 i prod |
-| N2 | ✅ Ferdig | `claude/n2-dashboard-data-bridge` | tsc + 22 tester + full verify grønn |
-| N3 | ✅ Ferdig | `claude/n3-pei-scorekort-motor` | tsc + 20 tester (paritet mot talenthq bevist) + full verify grønn |
-| N5 | ✅ Ferdig | `claude/n5-team-norway-org` | tsc + 1657 tester + full verify (inkl. build) grønn |
+| N1 | ✅ Ferdig — kjører mot prod | Eget repo `ak-golf-pipelines`, se `N1-DONE.md` | 379 tester + én ekte kjøring: dg_rounds +1260 i prod |
+| N2 | ✅ **Merget til main** | PR #605, commit `2c2aa45c` | tsc + 22 tester + full verify grønn |
+| N3 | ✅ **Merget til main** | PR #605, commit `2c2aa45c` | tsc + 20 tester (paritet mot talenthq bevist) + full verify grønn |
+| N5 | ✅ **Merget til main** | PR #605, commit `2c2aa45c` | tsc + 1657 tester + full verify (inkl. build) grønn |
 | N4, N6–N14 | Ikke startet | — | — |
 
-Alle tre grener er bygget fra `origin/main` slik den så ut formiddag/tidlig ettermiddag
-26.08 (før T2/Cockpit-porten og PR #603 landet på noen av dem) — de trenger en rebase mot
-fersk `main` før PR/merge, ikke en direkte merge. **Ingen av grenene er slått sammen med
-main eller med hverandre ennå.**
+N2, N3 og N5 ble bygget som tre separate grener (hver med egen `npm run verify`), deretter
+satt sammen i én integrasjonsgren og verifisert SAMMEN før merge — ingen konflikter mellom
+dem. Kombinert verifisering: `npm test` 1699/1699 grønn, full `npm run verify` (533 ruter)
+grønn, CI på PR #605 grønn (6m2s), Anders' «ja» gitt, squash-merget til main
+26.08.2026 kl. 13:32 UTC. De tre feature-grenene og integrasjonsgrenen er slettet
+(arbeidet lever videre i main).
 
 **Hendelse under N3:** agenten mistet midlertidig en fremmed `git stash` fra en annen økt
 (25.08, `golfbox.ts`/`golfbox-sync.ts` + ny `backfill-golfbox-sesonger.ts`) under
@@ -333,10 +335,9 @@ verifisert tilgang begge veier (med/uten samtykke) på ekstern-leser-stakken, og
 | **N14** | Arkiver talenthq | Verifiser at alt i N-D5-lista er portet **og at N1 har kjørt grønt i minst en uke**. Arkiver `akgolfsoftware/talenthq` på GitHub. Fjern Vercel-prosjektet. Skriv høstingslogg | Repoet arkivert; ingen kode der som ikke finnes i akgolf-hq eller pipeline-repoet | N1, N9–N13 |
 
 **Rekkefølge:** **N1 først og alene** (haster) — ✅ gjort. Deretter N2 · N3 · N5 parallelt
-(disjunkte filer, ingen skjermer) — ✅ alle tre gjort, se statustabellen over. Gjenstår:
-rebase de tre grenene mot fersk main og få dem slått sammen (uten Anders' ja skjer ikke
-dette av seg selv), deretter N4 (etter N3), N6 (etter N1). Fase 2 venter på bølge T.
-N14 sist.
+(disjunkte filer, ingen skjermer) — ✅ alle tre gjort og **✅ merget til main** (PR #605,
+26.08 kl. 13:32 UTC). Gjenstår: N4 (etter N3, nå klar til å starte), N6 (etter N1, klar).
+Fase 2 venter på bølge T. N14 sist.
 
 ---
 
@@ -382,10 +383,11 @@ N14 sist.
   ikke en motsigelse.
 - **Rettelse til min første designgjennomgang:** jeg kalte railen «feil» uten forbehold.
   Det var for hardt — se §1, avvik 3.
-- **Oppdatering 26.08 kveld, etter N2/N3/N5:** de tre grenene er verifisert hver for seg
-  (tsc + tester + full `npm run verify`), men er ALDRI kjørt sammen — ingen har testet at
-  N2+N3+N5 kombinert (f.eks. etter en felles rebase) fortsatt bygger og verifiserer grønt.
-  Sjekk dette før PR, ikke anta at tre grønne grener gir en grønn firer.
+- **Oppdatering 26.08 kveld, del 2:** N2/N3/N5 ble deretter satt sammen i én
+  integrasjonsgren, verifisert samlet (1699/1699 tester, full verify, CI grønn), og
+  squash-merget til main som PR #605. Punktet over («aldri kjørt sammen») er dermed
+  lukket — men verdt å huske SOM MØNSTER for N4/N6 og senere: verifiser alltid
+  kombinasjonen, ikke bare hver del.
 - N3-agenten rapporterte selv at et par av de 11 protokollene i `protocol-definitions.js`
   ble bevisst utelatt (kun 23 av 29 totalt, inkl. de 6 rene fysisk-testene som allerede
   dekkes av `test-scoring.ts`) — se `docs/natt/N3-DONE.md` for eksakt hvilke og hvorfor,
