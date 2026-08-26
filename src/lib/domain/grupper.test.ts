@@ -14,10 +14,10 @@ import {
   harAktivtAkGruppeMedlemskapWhere,
 } from "@/lib/domain/grupper";
 
-test("taksonomien har de åtte kanoniske gruppene med unike slugs", () => {
-  assert.equal(KANONISKE_GRUPPER.length, 8);
+test("taksonomien har de ni kanoniske gruppene med unike slugs", () => {
+  assert.equal(KANONISKE_GRUPPER.length, 9);
   const slugs = KANONISKE_GRUPPER.map((g) => g.slug);
-  assert.equal(new Set(slugs).size, 8, "slugs er unike");
+  assert.equal(new Set(slugs).size, 9, "slugs er unike");
   for (const forventet of [
     "gfgk-mini",
     "gfgk-basis",
@@ -27,17 +27,36 @@ test("taksonomien har de åtte kanoniske gruppene med unike slugs", () => {
     "wang-ung",
     "ak-golf-academy",
     "ak-golf-junior-academy",
+    "team-norway",
   ]) {
     assert.ok(slugs.includes(forventet as (typeof slugs)[number]), `${forventet} finnes`);
   }
 });
 
-test("alle kanoniske grupper er program- eller kontraktsgrupper med navn", () => {
+test("alle kanoniske grupper har navn og gyldig kind", () => {
   for (const g of KANONISKE_GRUPPER) {
     assert.ok(g.navn.length > 0, `${g.slug} har navn`);
-    assert.ok(["kontrakt", "program"].includes(g.kind), `${g.slug} har gyldig kind`);
-    assert.ok(g.program.length > 0, `${g.slug} har program`);
+    assert.ok(["kontrakt", "program", "ekstern"].includes(g.kind), `${g.slug} har gyldig kind`);
   }
+});
+
+test("kun eksterne organisasjoner (Team Norway) mangler program og er ikke managedByAkGolf", () => {
+  for (const g of KANONISKE_GRUPPER) {
+    if (g.kind === "ekstern") {
+      assert.equal(g.program, null, `${g.slug} (ekstern) har intet AK-coachingprogram`);
+      assert.equal(g.managedByAkGolf, false, `${g.slug} (ekstern) gir aldri gratis tilgang via medlemskap`);
+    } else {
+      assert.ok(g.program !== null && g.program.length > 0, `${g.slug} har program`);
+      assert.equal(g.managedByAkGolf, true, `${g.slug} er AK Golf-administrert`);
+    }
+  }
+});
+
+test("Team Norway er kanonisk gruppe med slug team-norway, kind ekstern, ikke AK-administrert", () => {
+  const tn = kanoniskGruppe("team-norway");
+  assert.equal(tn.kind, "ekstern");
+  assert.equal(tn.program, null);
+  assert.equal(tn.managedByAkGolf, false);
 });
 
 test("GFGK-stigen har riktige nivåer (A5→A2) og WANG-gruppene er kontrakt", () => {
