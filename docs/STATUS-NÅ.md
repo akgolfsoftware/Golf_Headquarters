@@ -2,23 +2,27 @@
 
 > **Hva dette er:** ett snapshot av hvor plattformen står akkurat nå. Oppdater datoen + relevante linjer når noe vesentlig endrer seg.
 
-**Sist oppdatert:** 2026-08-26 (skjermstatus-målingen inn; 25.08-avsnittet var stale).
+**Sist oppdatert:** 2026-08-26 kveld (B6 + T4 merget, T3 i åpen PR #609).
 Samlet lanseringsplan: **`docs/natt/LAUNCH-PLAN-FULL-2026-08-25.md`** (vinner over MASTERPLAN der de overlapper).
 
 ## Hovedbildet 26.08 (målt mot git/kode/prod)
 
 - **Bølge 1 er i main og live i prod:** Loop 1/2/2S/3S, B2-release (#583), B3 (#584), B4 (#582),
-  B5 (#601), B7 (#600). RLS kjørt og verifisert aktiv i prod (#593). Smoke manuelt 7/8 —
-  TM-steget kan testes nå som B7 er inne.
-- **Train-lock-porten i gang:** T1-skallet (#596) og T2-cockpit (#602) merget og verifisert i
-  prod. Fasit synket fra zip (6) — 196 filer i `designsystem/train-lock/` (#603). Tokens i kode
-  (#586 + font #597).
+  B5 (#601), **B6 (#604)**, B7 (#600). RLS kjørt og verifisert aktiv i prod (#593). Smoke
+  manuelt 7/8 — TM-steget kan testes nå som B7 er inne. **B8 er dermed eneste gjenstående
+  B-rad.** Bølge N (data-bro, PEI-motor, Team Norway) også inne (#605).
+- **Train-lock-porten i gang:** T1-skallet (#596), T2-cockpit (#602) og **T4 Stall + Spiller
+  360 (#608)** merget. **T3 Innboks + godkjenninger ligger i åpen PR #609** (verify grønn,
+  venter skjermbilde-gate + Anders' ja). Fasit synket fra zip (6) — 196 filer i
+  `designsystem/train-lock/` (#603). Tokens i kode (#586 + font #597).
 - **Faktisk skjermstatus (målt 26.08, `docs/natt/SKJERM-STATUS-2026-08-26.md`):** av 240
   skjerm-ruter er **2 reelt Train-lock** (Cockpit, TrackMan-detalj), **4 blandet** (bl.a.
   coach-Workbench-uka fra D3), **234 fortsatt Paper-innhold** i det nye TL-skallet. Det er
   forventet — T3–T13 og B8 er ikke kjørt — men tallet er nå målt, ikke antatt.
   Remåling: `node scripts/maal-trainlock-status.mjs`.
-- **Åpent nå:** PR #604 (B6 godta/avvis). Deretter B8 + T3/T4/T13 per LAUNCH-PLAN §0.2.
+- **Åpent nå:** PR #609 (T3). Neste per LAUNCH-PLAN §0.2 etappe 2–3: **B8**
+  (Train-lock-pass Player — ublokkert nå som B6 er inne) + **T13** (Oppsett + Meg) +
+  **T5** (Workbench-designpass Agency — ublokkert, B5+B6 inne). Deretter T10/T11, T6 etter T5.
 
 ## Hovedbildet 25.08 (historikk)
 
