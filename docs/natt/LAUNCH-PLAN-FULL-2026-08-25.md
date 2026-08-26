@@ -57,7 +57,26 @@ Tid styres med rekkefølge og bølger — ingenting er strøket.
 > skjermer kan sjekkes uten manuelle steg. `akgolf.no` peker uansett ikke hit — domenet
 > håndteres av prosjektet `akgolf-redirect`. Arbeidsadresse: `https://akgolf-hq.vercel.app`.
 >
-> **Neste:** D2 (tokens i kode fra Train-lock-fasiten) → P-T (plan for bølge T) → B4 (ekte «I dag») → B3 (mobil-inspector).
+> ~~**Neste:** D2 → P-T → B4 → B3.~~ Alle fire UTFØRT 25.08 (D2 #586, P-T i §5T, B4 #582, B3 #584).
+> Font-beslutningen (Poppins i `--tl-*`) inn 26.08 (#597). Gjeldende rekkefølge: **§0.2 under.**
+
+### 0.2 Kjøreplan fra 26.08 (skrevet av statussjekk-økt, verifisert mot kode/PR-er)
+
+Regler uendret (Del 5): build = Sonnet 5, ny økt per rad, maks 2–3 parallelle økter,
+worktree ved parallell, skjermbilde-gate per skjerm, aldri main-merge uten Anders' ja.
+
+| Etappe | Økter | Hvorfor denne rekkefølgen |
+|---|---|---|
+| 1 (nå, parallell) | **T1-fullføring** (worktree `t1-agency-skall-tl` — AX-01-skallet er alt bygget der: fem tabber; gjenstår ulagret arbeid, `--tl-rail-mac` 64→232, skjermbilder, PR) · **B7** (TM/DispersionMap — lukker siste smoke-steg) · **B5** (kilder/drag/serie) | Skallet arves av alle T-skjermer; B7/B5 er disjunkte filområder |
+| 2 | **B6** (godta/avvis + hiddenByPlayer-DDL, etter B5 — deler wb-actions) → **B8** (Train-lock-pass Player, etter B6 — deler portal-flatene). Parallelt: **T2** (Cockpit) når T1 er inne | Funksjon ferdig før designpass på samme filer |
+| 3 | **T3 · T4 · T13** (2–3 parallelle worktrees), deretter **T10 · T11**. **T5** når B5+B6 er inne, **T6** etter T5 | Portene med fasit og frie avhengigheter først |
+| 4 | Bølge 2: **C2 + C3** først (låser opp T8/T7), så **C4 + C5** (låser opp C8 lys-pass), **C6 + C7** (låser opp T12), **C1 · C9** fritt, **C10** etter D5 | Rekkefølge etter hva som låser opp mest |
+| 5 | Full smoke inkl. TM-steget → **P2** (Fable 5, plan: merge-rekkefølge + lanseringssjekk Del 3) | Del 3-kriteriene lukkes samlet |
+
+**Anders' beslutningskø** (blokkerer merkede rader — resten ruller uten svar):
+1. **T-S5 lys-varianter** (viktigst — gjelder skjermbilde-gaten i nesten alle T-rader): godta mekanisk avledet lys fra tokensettet for skjermer uten tegnet lys-fasit?
+2. **§5T-listene:** 14 pensjoneringskandidater + 38 klasse B-hull + prinsipp-OK for 24 klasse A (→ T4/T6/T9-scope).
+3. **D5** DataGolf/stats-plassering (→ C10) · **D6** skjebnen til plan-treningsplanlegging-til-kode (kun docs) · **forelder-omfang** (→ C9/T4-del) · **T-S2** Kø/Jarvis-eierskap (→ T12) · **RLS-variant** (full policy vs deny-by-default — hygiene, ikke blokkerende).
 
 ### 0.1 Historisk git-tilstand (VERIFISERT 25.08 før merge — beholdt som spor)
 

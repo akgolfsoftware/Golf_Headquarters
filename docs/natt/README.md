@@ -30,10 +30,12 @@ skjermer i PlayerHQ OG AgencyOS** — se CLAUDE.md invariant 2 og `.claude/rules
 | `STEP-1-EXECUTION.md` | Sjekkliste steg 1 (historikk) |
 | `arkiv/` | Frossen Loop 1-spec (domain, labels, state-machine) — ALDRI kilde for src/ |
 
-## Git-tilstand (25.08.2026)
+## Git-tilstand (oppdatert 26.08.2026)
 
-Loop 1+2+3S ligger på `claude/agency-workbench-uke-ui-c4d2a4`-linjen, Loop 2S på PR #577,
-RLS-kode (ukjørt) på `claude/workbench-rls-policies-8b054b`. Samles i release-gren per
-LAUNCH-PLAN session B2. PR #575 er superseded. Ingenting er merget til main.
+**Alt av bølge 1 er i `main` og live i prod** (akgolf-hq.vercel.app): Loop 1/2/2S/3S,
+B2-release (#583), B3 (#584), B4 (#582). RLS er KJØRT og verifisert aktiv i prod (#593).
+Smoke manuelt grønn 7/8 (TM-steget venter på B7). Design: Train-lock-tokens i kode
+(#586, font #597), skallet avgjort = AX-01 (#590). Gjeldende rekkefølge:
+`LAUNCH-PLAN-FULL-2026-08-25.md` §0.2. T1 (skallet) pågår på `claude/t1-agency-skall-tl`.
 
 Repo: `akgolfsoftware/Golf_Headquarters` — ikke AKGolf2.0.
