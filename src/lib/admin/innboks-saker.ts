@@ -136,6 +136,7 @@ const SAK_KANAL_LABEL: Record<string, string> = {
   ANROP: "anrop",
   KALENDER: "kalender",
   TASK: "oppgave",
+  LYD: "lydopptak",
 };
 
 /**

@@ -5905,6 +5905,7 @@ enum SakKanal {
   ANROP
   KALENDER
   TASK
+  LYD
 }
 
 enum SakStatus {

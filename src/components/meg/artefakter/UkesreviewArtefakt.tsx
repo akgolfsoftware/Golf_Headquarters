@@ -23,6 +23,7 @@ const KANAL_LABEL: Record<SakKanal, string> = {
   [SakKanal.ANROP]: "Anrop",
   [SakKanal.KALENDER]: "Kalender",
   [SakKanal.TASK]: "Oppgave",
+  [SakKanal.LYD]: "Lydopptak",
 };
 
 function KpiKort({ tall, label, delta }: { tall: string; label: string; delta: string | null }) {
