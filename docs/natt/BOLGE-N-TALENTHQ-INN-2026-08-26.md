@@ -191,16 +191,23 @@ merkevarerød `#D50431` er visuelt svært lik, og designet bruker den som status
 
 ## 2. Beslutninger som blokkerer (Anders)
 
-### N-D1 · Hvilken flate er WANG og Team Norway? *(låser N7, N9, N11)*
+### N-D1 · Hvilken flate er WANG og Team Norway? — **AVGJORT 26.08 (Anders): A**
 
-**A. Egen organisasjonsflate** (utvidelse av dagens `/innsyn`) med egen enkel rail, egen
-palett per organisasjon, gratis tilgang.
-**B. AgencyOS** (`/admin`) med AX-01-railen og innhold filtrert per organisasjon.
+> «Det skal være egne skjermer. Ikke under AK Golf agency.»
 
-**Anbefaling: A.** (1) Samtykke-stakken peker allerede dit — `/innsyn` er bygget for nettopp
-eksterne lesere; (2) WANG-/TN-trenere skal ikke ha Workbench, Kø eller Jarvis; (3) tilgangen
-er gratis (beslutning 6) og skal ikke kreve AgencyOS-lisens; (4) da er designets rail faktisk
-riktig, og avvik 3 forsvinner.
+**Egen organisasjonsflate** — ikke AgencyOS, ikke `/admin`. Egen enkel rail, egen palett per
+organisasjon, gratis tilgang, bygget på samtykke-stakken (`ekstern-leser-scope.ts`).
+
+Konsekvenser som nå er låst:
+- WANG- og TN-trenere får **aldri** AX-01-railen (Stall · Workbench · Kø · Jarvis · Meg).
+  De har ikke Workbench, Kø eller Jarvis.
+- **Avvik 3 i designgjennomgangen bortfaller** — designets rail (Oversikt · Testbatteri ·
+  Stall/Tropp · Skoler · Innsikt · Oppsett) er dermed et gyldig forslag for denne flaten og
+  skal legges til grunn i N7.
+- Avvik 1, 2 og 4 står uendret: eget repo utgår, Train-lock mørk default gjelder også her,
+  og spillerfanene er I dag · Plan · Analyse · Meg.
+- Flaten bygges som utvidelse av `/innsyn`, eller som ny rute — byggeren avgjør i N9 og
+  begrunner i DONE-fila. Tilgangskontrollen er uansett `ekstern-leser-scope.ts`.
 
 ### N-D2 · Team Norway-rød mot danger-rød
 
