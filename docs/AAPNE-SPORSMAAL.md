@@ -11,11 +11,13 @@
 | # | Spørsmål | Status | Notat |
 |---|---|---|---|
 | T1 | Designfasit for produktflatene | **LØST 25.08 (Anders):** Train-lock er fasit for ALLE skjermer i PlayerHQ OG AgencyOS. Paper er historikk | Se `.claude/rules/beslutninger.md` (øverste beslutning) + CLAUDE.md invariant 2. Ikke re-flagg Paper-vs-Train-lock |
-| T2 | Train-lock-tokens i kode | **ÅPEN** (D2) | Tokens/scene-sett er ikke definert i src/ — utledes nå fra `designsystem/train-lock/TRAIN LOCK.dc.html` + HANDOFF.md; må defineres før design-pass (LAUNCH-PLAN B8/bølge T) |
+| T2 | Train-lock-tokens i kode | **LØST 25.08 (PR #586):** tokensettet er i kode | `src/styles/train-lock-tokens.css` + `src/lib/v2/train-lock.ts` — se `docs/natt/D2-TOKENS-DONE.md` for kilder |
 | T3 | Fasit-zip | **LØST 25.08 (Anders leverte, i økt):** committet som `designsystem/train-lock/` (180 skjermer + HANDOFF.md; dekker også Agency). `uploads/`-kildemateriale bevisst utenfor offentlig repo — se SYNC-STATUS.md der |
-| T4 | Forelder-portalens designomfang under Train-lock | **ÅPEN** | Forelder er verken PlayerHQ eller AgencyOS — spør Anders før port |
-| T5 | DataGolf `/stats/*`-plassering | **ÅPEN** (D5, tidl. PORTPLAN §A1.1) | Anders-beslutning før C10 |
-| T6 | `docs/plan-treningsplanlegging-til-kode-2026-08-20.md` vs natt-sporet | **ÅPEN** (D6) | Ikke kjør de to sporene parallelt mot samme domenemodell uten Anders' avklaring |
+| T4 | Forelder-portalens designomfang under Train-lock | **LØST 26.08 (Anders, presisert samme dag):** hele forelder-appen (alle 9 seksjoner) porter til Train-lock med BÅDE lys og mørk modus, som PlayerHQ og AgencyOS — ikke bare C9-kortet. (Rettelse: en tidligere versjon av denne raden sa «kun C9-kortet» — det var mitt forslag, ikke Anders' beslutning; Anders har nå avgjort bredere) | → egen porte-session, ikke planlagt ennå |
+| T8 | T-S5 lys-varianter i AgencyOS | **LØST 26.08 (Anders):** mekanisk avledet lys fra `--tl-*`-tokensettet er godkjent der ingen tegnet lys-fasit finnes (kun 9 av 39 T-skjermer har tegnet lys) | Se `docs/natt/D-LYS-OG-5T-BESLUTNING.md` |
+| T5 | DataGolf `/stats/*`-plassering | **LØST 26.08 (Anders):** DG-01-spillerkortet (T4/T11) bygges som planlagt. Full `/stats/*`-migrasjon utsatt til etter lansering — ikke lenger en forutsetning for C10 | tidl. D5, PORTPLAN §A1.1 |
+| T6 | `docs/plan-treningsplanlegging-til-kode-2026-08-20.md` vs natt-sporet | **LØST 26.08 (Anders):** dokumentet er supersedert av natt-sporet — merket i dokumentet. Fase 0-innholdet (øvelsesbank-listen) beholdes som råmateriale til T6-porten | tidl. D6 |
+| T7 | T-S2 Kø/Jarvis-eierskap (Caddie-trioen) | **LØST 26.08 (Anders):** `agencyos/caddie` + `aktivitet` + `dashbord` foldes inn i Jarvis-tabben (JV-01–03) — ingen sjette rail-destinasjon | → T12 |
 > Forrige oppdatering 2026-07-17 (kveld): alle Del 4-beslutninger tatt av Anders: A4 (invariant-liste skrives ned), A5 (forretningstall bekreftet), D5 (slette-veier konsolideres + slug anonymiseres), D8 (banekart = ekte geometri, blokkert på datakilde). D2/D6 bygget + migrasjoner kjørt mot prod. Råmateriale: tidligere `PLATFORM.md` §14 (arkivert) + kodeverifisering 2026-06-14 / agent-pipeline 2026-07-10.
 
 ---

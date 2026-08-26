@@ -1,11 +1,14 @@
 # Plan — treningsplanlegging: fra spec til ferdige skjermer
 
-> **PÅ VENT 25.08.2026 (avklaring D6 i `docs/natt/LAUNCH-PLAN-FULL-2026-08-25.md`):**
-> natt-sporet (docs/natt/, Workbench-domenet i `src/lib/domain/workbench/`) bygger nå i samme
-> domenefamilie. IKKE start økter fra denne planen før Anders har avklart forholdet mellom de
-> to sporene — risiko for doble/motstridende domenemodell-endringer. Design-referansene her
-> er dessuten supersedert: Train-lock er fasit for alle produktskjermer (25.08), og
+> **SUPERSEDERT 26.08.2026 (D6 løst, Anders):** natt-sporet (docs/natt/, Workbench-domenet i
+> `src/lib/domain/workbench/`) har forbikjørt denne planen i faktisk bygget kode. **Ikke start
+> nye økter fra denne planen** — den er ikke lenger en aktiv byggevei. Design-referansene er
+> dessuten supersedert: Train-lock er fasit for alle produktskjermer (25.08), og
 > PORTPLAN/MASTERPLAN som denne planen peker på er arkivert/supersedert.
+>
+> **Beholdt som råmateriale:** Fase 0-innholdet (relevans-matrise, FYS-øvelsesbank-listen på
+> 120–150 øvelser) er nyttig grunnlag når T6 (Plan-hub/kilder-porten) skal fylle klasse
+> B-hullene i drill-biblioteket — se `docs/natt/LAUNCH-PLAN-FULL-2026-08-25.md` §5T, T6-raden.
 
 **Skrevet:** 20.08.2026, bestilt av Anders samme dag. **Utførende modell for kodefasene:
 Opus 5** (Anders' beslutning 20.08). Denne planen styrer treningsplanleggings-sporet;

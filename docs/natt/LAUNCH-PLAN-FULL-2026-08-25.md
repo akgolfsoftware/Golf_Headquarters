@@ -74,9 +74,15 @@ worktree ved parallell, skjermbilde-gate per skjerm, aldri main-merge uten Ander
 | 5 | Full smoke inkl. TM-steget → **P2** (Fable 5, plan: merge-rekkefølge + lanseringssjekk Del 3) | Del 3-kriteriene lukkes samlet |
 
 **Anders' beslutningskø** (blokkerer merkede rader — resten ruller uten svar):
-1. **T-S5 lys-varianter** (viktigst — gjelder skjermbilde-gaten i nesten alle T-rader): godta mekanisk avledet lys fra tokensettet for skjermer uten tegnet lys-fasit?
-2. **§5T-listene:** 14 pensjoneringskandidater + 38 klasse B-hull + prinsipp-OK for 24 klasse A (→ T4/T6/T9-scope).
-3. **D5** DataGolf/stats-plassering (→ C10) · **D6** skjebnen til plan-treningsplanlegging-til-kode (kun docs) · **forelder-omfang** (→ C9/T4-del) · **T-S2** Kø/Jarvis-eierskap (→ T12) · **RLS-variant** (full policy vs deny-by-default — hygiene, ikke blokkerende).
+1. **§5T-samletabellen:** 14 pensjoneringskandidater + 38 klasse B-hull + prinsipp-OK for 24 klasse A (→ T4/T6/T9-scope) — kryss av i `docs/natt/D-LYS-OG-5T-BESLUTNING.md`. Eneste gjenstående blokkerende punkt.
+
+> **LØST 26.08 (Anders, statussjekk-økt):** alle seks øvrige punktene under er avgjort — se `docs/AAPNE-SPORSMAAL.md` T4–T8 for detaljene.
+> - **T-S5 lys-varianter:** mekanisk avledet lys fra `--tl-*`-tokensettet er godkjent der ingen tegnet lys-fasit finnes (kun 9 av 39 T-skjermer har tegnet lys) — skjermbilde-gaten er ikke lenger blokkert av manglende tegninger.
+> - **Forelder-omfang (utvidet, presisert samme dag):** hele forelder-appen (9 seksjoner) skal ha BÅDE lys og mørk modus, Train-lock-portet som resten av produktet — ikke bare ett kort, som en tidligere versjon av dette dokumentet feilaktig antok. Egen porte-session, ikke planlagt ennå.
+> - **D5 DataGolf/stats-plassering:** DG-01-spillerkortet (T4/T11) bygges som planlagt. Full `/stats/*`-migrasjon **utsatt til etter lansering** — kosmetisk fullstendighet, ikke en smoke-blokker. C10 er dermed ikke lenger avhengig av D5.
+> - **D6 plan-treningsplanlegging-til-kode:** dokumentet er **supersedert** av natt-sporet — merket i dokumentet, ikke aktiv byggevei. Fase 0-innholdet (øvelsesbank-listen) beholdes som råmateriale til T6.
+> - **T-S2 Kø/Jarvis-eierskap:** Caddie-trioen (`agencyos/caddie` + `aktivitet` + `dashbord`) foldes inn i Jarvis-tabben (JV-01–03) — ingen sjette rail-destinasjon.
+> - **RLS-variant:** var allerede avgjort og verifisert i prod 25.08 (commit `b3c5af21`, full policy-variant aktiv) — linjen her var stale dokumentasjon, ikke en reell åpen beslutning.
 
 ### 0.1 Historisk git-tilstand (VERIFISERT 25.08 før merge — beholdt som spor)
 
