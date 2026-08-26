@@ -159,3 +159,13 @@ export const DeleteSeriesSessionInputSchema = z.object({
   sessionId: z.string().min(1, "Mangler økt-id"),
   policy: RecurrencePolicySchema,
 });
+
+// ─── Godkjenning (Loop 3T / B6) ─────────────────────────────────────────────
+
+/** Spillerens svar på et forslag fra coach/gruppe — se `resolvePlayerApproval`. */
+export const PlayerApprovalDecisionSchema = z.enum(["ACCEPTED", "REJECTED"]);
+
+export const ResolvePlayerApprovalInputSchema = z.object({
+  sessionId: z.string().min(1, "Mangler økt-id"),
+  decision: PlayerApprovalDecisionSchema,
+});

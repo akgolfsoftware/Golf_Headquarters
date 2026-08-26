@@ -27,6 +27,7 @@ import {
   moveSession as moveSessionPure,
   publishSession as publishSessionPure,
   reorderDrills as reorderDrillsPure,
+  resolvePlayerApproval as resolvePlayerApprovalPure,
   sessionsMatchingPolicy,
   unpublishSession as unpublishSessionPure,
 } from "@/lib/domain/workbench/operations";
@@ -48,6 +49,7 @@ import {
   PyramidAreaSchema,
   ReorderDrillsInputSchema,
   RepeatWeeksSchema,
+  ResolvePlayerApprovalInputSchema,
   UpdateSeriesSessionInputSchema,
 } from "@/lib/domain/workbench/schemas";
 import {
@@ -225,8 +227,17 @@ export async function loadWeek(params: {
   const til = new Date(fra);
   til.setUTCDate(til.getUTCDate() + 6);
 
+  // Spilleren selv ser aldri skjulte («ikke delta»/avvist, WB-10) økter i
+  // listevisninger — agency (coach/admin) ser dem fortsatt, uendret,
+  // markert via `hiddenByPlayer` i UI (WB-10c).
+  const erSpillerenSelv = viewer.id === params.playerId;
+
   const rows = await prisma.workbenchSession.findMany({
-    where: { playerId: params.playerId, date: { gte: fra, lte: til } },
+    where: {
+      playerId: params.playerId,
+      date: { gte: fra, lte: til },
+      ...(erSpillerenSelv ? { hiddenByPlayer: false } : {}),
+    },
     include: { drills: true },
     orderBy: [{ date: "asc" }, { startMinute: "asc" }],
   });
@@ -323,6 +334,11 @@ export type PlayerDaySession = {
   status: string;
   drillsCount: number;
   location?: string;
+  /** Hvor økten kommer fra — styrer «Forslag fra coach»/«Forslag fra gruppe»-copy. */
+  origin: string;
+  /** Venter på Godta/Avvis (Loop 3T/B6) — se `resolvePlayerApproval`. */
+  needsPlayerApproval: boolean;
+  approvalStatus?: string;
 };
 
 /** Resultattype for `loadPlayerDay` — brukt av klientkomponenter (type-only import). */
@@ -351,6 +367,8 @@ export async function loadPlayerDay(params: {
       playerId: params.playerId,
       date: tilDatoKolonne(dato.data),
       status: { in: [...SPILLER_SYNLIGE_STATUSER] },
+      // Avvist/«ikke delta» — skjult hos spilleren, aldri slettet (WB-10).
+      hiddenByPlayer: false,
     },
     include: { drills: true },
     orderBy: { startMinute: "asc" },
@@ -365,10 +383,14 @@ export async function loadPlayerDay(params: {
     status: s.status,
     drillsCount: s.drills.length,
     location: s.location,
+    origin: s.origin,
+    needsPlayerApproval: s.needsPlayerApproval ?? false,
+    approvalStatus: s.approvalStatus,
   }));
 
+  // Venter-på-godkjenning-økter kan ikke startes ennå — regnes ikke som «neste».
   const neste =
-    sessions.find((s) => s.status !== "COMPLETED")?.id ??
+    sessions.find((s) => s.status !== "COMPLETED" && !s.needsPlayerApproval)?.id ??
     sessions[0]?.id ??
     null;
 
@@ -955,13 +977,47 @@ export async function skipSession(
   return settStatus(sessionId, "SKIPPED", false);
 }
 
-// ─── Godkjenning (Loop 3T) ──────────────────────────────────────────────────
+// ─── Godkjenning (Loop 3T / B6) ─────────────────────────────────────────────
 
 /**
- * Spillerens ja/nei på en coach- eller gruppeøkt.
- * Ikke implementert i Loop 1 — hele godkjenningsflyten hører til Loop 3T
- * (se docs/natt/workbench/integration/player-hq.md).
+ * Spillerens ja/nei på en økt som venter på godkjenning (forslag fra coach
+ * eller gruppe, se `integration/player-hq.md` §5). Kun spilleren som EIER
+ * raden kan svare — en coach med tilgang til spilleren skal ikke kunne
+ * godkjenne på spillerens vegne (IDOR-vern utover den generelle
+ * eierskapssjekken i `hentMedTilgang`).
+ *
+ * ACCEPTED rydder kun flaggene. REJECTED skjuler økten
+ * (`hiddenByPlayer: true`, samme mekanisme som «Ikke delta» — WB-10) — den
+ * slettes ALDRI, og gruppen/coachen ser ingen endring i sin egen plan.
  */
-export async function resolvePlayerApproval(): Promise<WbResultat<never>> {
-  return { ok: false, error: "Godkjenning er ikke koblet på ennå (Loop 3T)." };
+export async function resolvePlayerApproval(
+  input: unknown,
+): Promise<WbResultat<WorkbenchSession>> {
+  const parsed = ResolvePlayerApprovalInputSchema.safeParse(input);
+  if (!parsed.success) {
+    return { ok: false, error: parsed.error.issues[0]?.message ?? "Ugyldige felter." };
+  }
+
+  const treff = await hentMedTilgang(parsed.data.sessionId);
+  if ("feil" in treff) return { ok: false, error: treff.feil };
+
+  if (treff.viewer.id !== treff.row.playerId) {
+    return { ok: false, error: INGEN_TILGANG };
+  }
+  if (!treff.row.needsPlayerApproval) {
+    return { ok: false, error: "Denne økten venter ikke på godkjenning." };
+  }
+
+  const oppdatert = resolvePlayerApprovalPure(mapSession(treff.row), parsed.data.decision);
+
+  await prisma.workbenchSession.update({
+    where: { id: parsed.data.sessionId },
+    data: {
+      approvalStatus: oppdatert.approvalStatus,
+      needsPlayerApproval: oppdatert.needsPlayerApproval ?? false,
+      hiddenByPlayer: oppdatert.hiddenByPlayer ?? false,
+    },
+  });
+
+  return lagreOgHent(parsed.data.sessionId);
 }

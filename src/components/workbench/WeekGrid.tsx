@@ -159,6 +159,15 @@ function OktKort({
   const utkast = session.status === "DRAFT";
   const hake = harHake(session.status);
   const slutt = session.startMinute + session.durationMinutes;
+  // Skjult av spilleren («ikke delta»/avvist, WB-10) — gruppen/coachens plan
+  // er uendret, men markeres dimmet her (WB-10c-mønsteret).
+  const skjultHosSpiller = !!session.hiddenByPlayer;
+  const venterGodkjenning = !!session.needsPlayerApproval;
+  const statusTekst = skjultHosSpiller
+    ? UI.hiddenByPlayerBadge
+    : venterGodkjenning
+      ? UI.approvalPendingBadge
+      : STATUS_CAPS[session.status];
 
   // Fasit-blokken (A-01/AG-00 K1): flat dock-flate, radius 12 ("skinne-rad"),
   // ingen fargekoding per pyramide-område. UTKAST = hvit hairline i stedet
@@ -176,6 +185,7 @@ function OktKort({
     border: utkast ? `1px solid ${TL.draftBorder}` : `1px solid ${TL.hair}`,
     boxShadow: valgt ? `inset 0 0 0 2px ${TL.text}` : "none",
     zIndex: valgt ? 3 : 1,
+    opacity: skjultHosSpiller ? 0.45 : 1,
   };
 
   return (
@@ -184,7 +194,7 @@ function OktKort({
       className="v2-focus"
       onClick={onClick}
       aria-pressed={valgt}
-      title={`${session.title} · ${formatTime(session.startMinute)}–${formatTime(slutt)} · ${PYRAMID_LABEL[session.pyramid]} · ${STATUS_CAPS[session.status]}`}
+      title={`${session.title} · ${formatTime(session.startMinute)}–${formatTime(slutt)} · ${PYRAMID_LABEL[session.pyramid]} · ${statusTekst}`}
       style={stil}
       onDragOver={onDropDrill ? (e: DragEvent<HTMLButtonElement>) => e.preventDefault() : undefined}
       onDrop={
@@ -210,8 +220,8 @@ function OktKort({
           color: utkast ? T.mut : WARM,
         }}
       >
-        {hake && <Icon name="check" size={9} style={{ color: WARM }} />}
-        {STATUS_CAPS[session.status]}
+        {hake && !skjultHosSpiller && !venterGodkjenning && <Icon name="check" size={9} style={{ color: WARM }} />}
+        {statusTekst}
       </span>
       <span
         style={{
