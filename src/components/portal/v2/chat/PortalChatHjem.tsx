@@ -435,10 +435,21 @@ function TrackManTeaserKort({ trackman }: { trackman: TrackManTeaser }) {
  * Lenker til det eksisterende økt-arket fra Loop 3S (`/portal/tren/wb/[id]`).
  */
 /**
- * Godkjenningskort (Loop 3T/B6, WB-10-mønster) — én økt med
+ * Godkjenningskort (Loop 3T/B6, WB-10/WB-04-mønster) — én økt med
  * `needsPlayerApproval`. «Godta» er eneste sted #30D158 (TL.ok) forekommer i
  * denne flyten (CLAUDE.md invariant 2); «Avvis» er en nøytral ghost-knapp,
  * ALDRI rød. Avvis skjuler økten (hiddenByPlayer) — sletter aldri.
+ *
+ * Bruker BARE `TL.*` (Train-lock), aldri `T.*` (Paper) — motsatt av resten
+ * av denne siden (se `TrackManTeaserKort` over, som bevisst gjør det
+ * motsatte, av samme grunn). PortalChatHjem er ikke Train-lock-portet ennå
+ * (B8 gjenstår), men et NYTT kort introdusert i B6 har ingen eksisterende
+ * T.*-visning å videreføre — å bygge det i Paper ville vært å legge til enda
+ * en T.*-flate rett før porten, ikke å respektere en fasit som allerede
+ * står der. Regelen «bland aldri T.* og TL.* i samme skjerm» gjelder
+ * FUNKSJONEN/komponenten, ikke filen: denne komponenten er internt 100 % ren
+ * TL, resten av filen er internt 100 % ren T — de deler aldri ett DOM-tre av
+ * stiler. Se docs/natt/LOOP-B6-DONE.md for avviket.
  */
 function GodkjenningKort({ okt, onFerdig }: { okt: PlayerDaySession; onFerdig: (id: string) => void }) {
   const router = useRouter();
@@ -474,26 +485,26 @@ function GodkjenningKort({ okt, onFerdig }: { okt: PlayerDaySession; onFerdig: (
         display: "flex",
         flexDirection: "column",
         gap: 10,
-        border: `1px solid ${T.border}`,
-        borderRadius: T.rCard,
-        background: T.panel2,
+        border: `1px solid ${TL.hair}`,
+        borderRadius: TL.radius.card,
+        background: TL.elev,
         padding: 16,
       }}
     >
       <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-        <span style={{ width: 8, height: 8, borderRadius: "50%", background: WARM, flex: "none" }} aria-hidden="true" />
-        <span style={{ fontFamily: T.mono, fontSize: 10, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: T.mut }}>
+        <span style={{ width: 8, height: 8, borderRadius: "50%", background: TL.warm, flex: "none" }} aria-hidden="true" />
+        <span style={{ fontFamily: TL.font.mono, fontSize: 10, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: TL.mute }}>
           {kilde}
         </span>
       </div>
       <div>
-        <h3 style={{ margin: 0, fontFamily: T.disp, fontSize: 16, fontWeight: 600, color: T.fg }}>{okt.title}</h3>
-        <p style={{ margin: "4px 0 0", fontFamily: T.mono, fontSize: 12, color: T.mut }}>
+        <h3 style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 16, fontWeight: 600, color: TL.text }}>{okt.title}</h3>
+        <p style={{ margin: "4px 0 0", fontFamily: TL.font.mono, fontSize: 12, color: TL.mute }}>
           {formatTime(okt.startMinute)} · {formatMinutes(okt.durationMinutes)} ·{" "}
           {PYRAMID_LABEL[okt.pyramid as keyof typeof PYRAMID_LABEL] ?? okt.pyramid}
         </p>
       </div>
-      <p style={{ margin: 0, fontFamily: T.ui, fontSize: 12, color: T.mut, lineHeight: 1.5 }}>{WB_UI.approvalRejectHint}</p>
+      <p style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 12, color: TL.mute, lineHeight: 1.5 }}>{WB_UI.approvalRejectHint}</p>
       <div style={{ display: "flex", gap: 8, marginTop: 4 }}>
         <button
           type="button"
@@ -504,11 +515,15 @@ function GodkjenningKort({ okt, onFerdig }: { okt: PlayerDaySession; onFerdig: (
           style={{
             flex: 1,
             minHeight: 44,
-            borderRadius: T.rTag,
+            borderRadius: TL.radius.pill,
             border: "none",
             background: TL.ok,
-            color: T.bg,
-            fontFamily: T.ui,
+            // Fasit (WB-04 «Godta = ok-grønn fyll med scene-tekst»): ingen
+            // egen --tl-on-ok finnes. TL.scene følger temaet (hvit i lys,
+            // sort i mørk) og gir samme par som fasitens faste sort-på-grønn
+            // i sin egen (mørke) mockup — uten et nytt hardkodet hex-tall.
+            color: TL.scene,
+            fontFamily: TL.font.sans,
             fontSize: 13,
             fontWeight: 700,
             cursor: travel ? "default" : "pointer",
@@ -526,11 +541,11 @@ function GodkjenningKort({ okt, onFerdig }: { okt: PlayerDaySession; onFerdig: (
           style={{
             flex: 1,
             minHeight: 44,
-            borderRadius: T.rTag,
-            border: `1px solid ${T.border}`,
+            borderRadius: TL.radius.pill,
+            border: `1px solid ${TL.hair}`,
             background: "transparent",
-            color: T.fg,
-            fontFamily: T.ui,
+            color: TL.text,
+            fontFamily: TL.font.sans,
             fontSize: 13,
             fontWeight: 600,
             cursor: travel ? "default" : "pointer",

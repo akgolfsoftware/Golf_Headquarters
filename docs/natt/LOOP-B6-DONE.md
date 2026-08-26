@@ -132,6 +132,53 @@ WB-10 (aldri HTML 1:1, jf. `CLAUDE.md` §Design/skjerm), tilpasset til at
 denne leveransen bruker COACH-origin («Forslag fra coach»), ikke bare
 GROUP-origin som WB-10s eksempel.
 
+## Retting etter review: Paper/Train-lock-blanding i GodkjenningKort (samme dag)
+
+Første versjon av `GodkjenningKort` (over) brukte `T.*` (Paper-tokens: `T.border`,
+`T.rCard`, `T.panel2`, `T.mono`, `T.disp`, `T.ui`, `T.fg`, `T.mut`, `T.bg`) for
+layout/tekst, og lente kun på `TL.ok` for selve Godta-fyllet — et direkte brudd
+på `CLAUDE.md` invariant 2 («bland aldri `T.*` og `TL.*` i samme skjerm»).
+Rettet til å bruke **utelukkende `TL.*`** i hele komponenten:
+
+- Flate: `TL.hair`/`TL.radius.card`/`TL.elev` (var `T.border`/`T.rCard`/`T.panel2`)
+- Identitetsprikk: `TL.warm` (var den friststående `WARM`-konstanten fra
+  `wb-visuelt.ts`, som selv bare er et rått `var(--tl-warm)`-strengalias — nå
+  hentet fra `TL` direkte for konsistens)
+- Tekst/type: `TL.text`/`TL.mute`/`TL.font.sans`/`TL.font.mono` (var
+  `T.fg`/`T.mut`/`T.disp`/`T.ui`/`T.mono`)
+- Godta-knapp: `background: TL.ok`, `color: TL.scene` — ingen `--tl-on-ok`
+  finnes i tokensettet, og fasiten (`WB-04 Player godkjenning 3 skall.dc.html`,
+  «Godta = ok-grønn fyll med scene-tekst») viser fast sort tekst i sin egen
+  faste mørke mockup-scene. `TL.scene` er det temasensitive tokenet som gir
+  samme par i begge modi uten et nytt hardkodet hex-tall (hvit i lys, sort i
+  mørk — `--tl-scene`).
+- Avvis-knapp: `border: TL.hair`, `color: TL.text` (var `T.border`/`T.fg`)
+
+**Bevisst grensedragning (bekreftet, ikke stille):** invarianten leses per
+KOMPONENT/funksjon, ikke per fil. `GodkjenningKort` er internt 100 % ren
+`TL.*`; resten av `PortalChatHjem.tsx` (inkl. `TrackManTeaserKort`, B7) er
+internt 100 % ren `T.*` — de deler aldri samme DOM-tre av stiler. Hele
+skjermen er ikke Train-lock-portet ennå (B8 gjenstår per
+`.claude/rules/beslutninger.md`), men et NYTT kort introdusert i B6 har ingen
+eksisterende `T.*`-visning å videreføre, så å bygge det rent i `TL.*` er å gå
+riktig retning (fasiten) fremfor å legge til enda en `T.*`-flate rett før
+porten.
+
+**`SessionInspector.tsx`/`WeekGrid.tsx` er UTTRYKKELIG UTENFOR denne
+rettingen.** De blandet `T.*`/`TL.*` allerede FØR B6 rørte dem (fra tidligere
+Train-lock-arbeid på Workbench-uke — `TL.radius`/`TL.dock`/`TL.hair`/`TL.text`
+sammen med `T.mono`/`T.mut` osv.). B6 la kun til nye linjer som bruker det
+samme, allerede etablerte `T.*`-mønsteret disse to filene allerede sto i —
+ingen ny blanding introdusert der. Rydding av den pre-eksisterende blandingen
+i disse to filene er en egen, separat oppgave — ikke gjort her, ikke antatt
+løst.
+
+**Verifisert etter retting:** `grep` bekrefter 0 `T.*`-referanser inne i
+`GodkjenningKort`; `npx tsc --noEmit` grønt; `npx eslint --quiet` på de tre
+berørte filene grønt; `node scripts/check-token-gap.mjs` grønt (ingen hex i
+`style={{}}` — `TL.scene` er et `var()`-token, ikke et literal); domenetestene
+(28/28) upåvirket (ingen domenelogikk endret, kun styling).
+
 ## Verifikasjon
 
 | Gate | Resultat |
