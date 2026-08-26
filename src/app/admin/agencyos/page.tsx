@@ -1,10 +1,17 @@
 /**
- * v2-preview: AgencyOS Cockpit (retning C). Egen top-level route-group
+ * AgencyOS Cockpit — Train-lock (T2, 26.08.2026). Egen top-level route-group
  * (v2preview) som IKKE arver PortalShell/AdminShell — kun root-layout — så
- * V2Shell leverer all chrome (IkonRail/BunnNav) i mørk v2-scope.
+ * V2Shell leverer all chrome (rail/dock) i mørk v2-scope.
+ *
+ * Fasit: AG-01 Cockpit(+lys), AG-02 Cockpit Mac, AG-14 tom, AG-15 feil.
+ * Erstatter KonsollChat (Caddie-tråd) — AG-01 har verken composer eller
+ * chat-feed, kun Nå · live / Kø / neste økt. Se TrainLockCockpit.tsx-hodet
+ * for hva som falt bort i porten.
  *
  * Auth + data er identisk med den ekte /admin/agencyos-siden: samme
  * requirePortalUser-guard (ADMIN/COACH) og samme loadDailyBrief-loader.
+ * innboks/fokus henger med KUN som telleverk til AI-dispatch-køen —
+ * innholdet deres vises ikke her (Innboks/Stall er T3/T4-scope).
  *
  * Server component.
  */
@@ -14,50 +21,20 @@ import { loadDailyBrief } from "@/lib/agencyos/daily-brief-data";
 import { loadInnboksSammendrag } from "@/lib/innboks/data";
 import { loadFokusSpillere } from "@/lib/agencyos/fokus-spillere";
 import { loadAiDispatch } from "@/lib/agencyos/ai-dispatch-data";
-import { getStallOkterData } from "@/lib/widgets/stall-okter-data";
-import { prisma } from "@/lib/prisma";
-import type { PlayerProgram } from "@/generated/prisma/client";
-import { V2Shell, AGENCYOS_NAV, type VekslerData } from "@/components/v2/shell";
-import { KonsollChat } from "@/components/admin/v2/konsoll/KonsollChat";
+import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
+import { AgencyCockpitTrainLock } from "@/components/admin/cockpit/TrainLockCockpit";
 
 export const dynamic = "force-dynamic";
 
 export default async function V2CockpitPage() {
   const user = await requirePortalUser({ allow: ["ADMIN", "COACH"] });
-  const isAdmin = user.role === "ADMIN";
-  const [data, innboks, fokus, stallOkter, spillereRaw, grupperRaw] = await Promise.all([
+
+  const [data, innboks, fokus] = await Promise.all([
     loadDailyBrief({ id: user.id, name: user.name, avatarUrl: user.avatarUrl, role: user.role }),
     loadInnboksSammendrag(),
     loadFokusSpillere({ id: user.id, role: user.role }),
-    // Widget-pakken: dagens treningsøkter i stallen (begge økt-spor) —
-    // utfyller «Dagens timer», som kun viser bookinger.
-    getStallOkterData({ id: user.id, role: user.role }),
-    // D2-veksler: lettvekts spillerliste i coachens scope (samme where-mønster
-    // som loadStallen — ADMIN ser alle, COACH ser egne). Kun id/navn/avatar.
-    prisma.user.findMany({
-      where: {
-        role: "PLAYER",
-        deletedAt: null,
-        enrollmentsAsPlayer: {
-          some: {
-            endedAt: null,
-            NOT: { program: "PLATFORM_ONLY" as PlayerProgram },
-            ...(isAdmin ? {} : { coachId: user.id }),
-          },
-        },
-      },
-      select: { id: true, name: true, avatarUrl: true },
-      orderBy: { name: "asc" },
-      take: 400,
-    }),
-    prisma.group.findMany({
-      where: user.role === "COACH" ? { coachId: user.id } : {},
-      select: { id: true, name: true, _count: { select: { members: { where: { endedAt: null } } } } },
-      orderBy: { name: "asc" },
-    }),
   ]);
 
-  // AI-dispatch etter at innboks/fokus er kjent — speiler AgenticOS multi-AI-mal.
   const aiDispatch = await loadAiDispatch({
     id: user.id,
     role: user.role,
@@ -65,33 +42,25 @@ export default async function V2CockpitPage() {
     fokusSpillere: fokus.forslag.length + fokus.pinnet.length,
   });
 
-  // Klokka formateres server-side i Oslo-tid: Vercel kjører UTC, så en
+  // Klokke + dag formateres server-side i Oslo-tid: Vercel kjører UTC, så en
   // klient-beregnet klokke ville gitt hydreringsavvik (gotchas §Tidssone).
+  const naa = new Date();
+  const dagRaa = new Intl.DateTimeFormat("nb-NO", {
+    timeZone: "Europe/Oslo",
+    weekday: "long",
+    day: "numeric",
+    month: "long",
+  }).format(naa);
+  const dayLabel = dagRaa.charAt(0).toUpperCase() + dagRaa.slice(1);
   const klokke = new Intl.DateTimeFormat("nb-NO", {
     hour: "2-digit",
     minute: "2-digit",
     timeZone: "Europe/Oslo",
-  }).format(new Date());
-
-  const vekslerData: VekslerData = {
-    spillere: spillereRaw.map((s) => ({ id: s.id, navn: s.name ?? "Spiller", avatarUrl: s.avatarUrl })),
-    grupper: grupperRaw.map((g) => ({ id: g.id, navn: g.name, href: `/admin/grupper/${g.id}`, antall: g._count.members })),
-    aktivNavn: "Hele stallen",
-    aktivType: null,
-    spillerHrefBase: "/admin/spillere",
-  };
+  }).format(naa);
 
   return (
-    <V2Shell bredde="full" hoyde="skjerm" aktiv="cockpit" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"} vekslerData={vekslerData}>
-      <KonsollChat
-        data={data}
-        innboks={innboks}
-        fokus={fokus}
-        aiDispatch={aiDispatch}
-        stallOkter={stallOkter}
-        kanChatte={isAdmin}
-        klokke={klokke}
-      />
+    <V2Shell bredde="full" hoyde="skjerm" aktiv="cockpit" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>
+      <AgencyCockpitTrainLock data={data} aiDispatch={aiDispatch} dayLabel={dayLabel} klokke={klokke} />
     </V2Shell>
   );
 }

@@ -1,6 +1,6 @@
-/* Skjerm-speilet skeleton (P4): samme layout som konsollen (KonsollChat,
-   tidl. CockpitV2 — slettet) — hode m/avatar · 4 KPI-fliser · kø · innboks ·
-   (dagens timer | stall-uka). */
+/* Generisk skjelett (P4) — ikke oppdatert til Train-lock-cockpiten (T2,
+   26.08.2026). Ingen dc.html-fasit for en laster-tilstand er levert for
+   AG-01/AG-02, så variant="cockpit" (Paper-speilet) beholdes uendret. */
 
 import { V2Laster } from "@/components/v2/feil-laste";
 
