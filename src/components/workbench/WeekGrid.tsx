@@ -1,20 +1,23 @@
 "use client";
 
 /**
- * WeekGrid — Agency Workbench-uke (natt-plan Loop 2).
+ * WeekGrid — Agency Workbench-uke (natt-plan Loop 2, drag fra kilder B5).
  *
  * Leser `WeekViewModel` fra `loadWeek` og tegner sju dagkolonner på den delte
- * TimeGrid-motoren (05:00–23:00, 30 min, Notion-fasit). Flytting skjer i
- * inspektøren i v1 — ingen ny drag-lib (anti-scope).
+ * TimeGrid-motoren (05:00–23:00, 30 min, Notion-fasit). Flytting av
+ * eksisterende økter skjer fortsatt i inspektøren (anti-scope, ingen ny
+ * drag-lib for det) — men å dra en kilde INN i uka bruker native HTML5
+ * drag-and-drop (`draggable` i SourcesPanel + `onDropSlot` her).
  */
 
-import { type CSSProperties } from "react";
+import { type CSSProperties, type DragEvent } from "react";
 import { TimeGrid, timeGridBlockStyle, type TimeGridDay } from "@/components/v2/time-grid";
 import { Icon } from "@/components/v2/icon";
 import { T } from "@/lib/v2/tokens";
 import { TL } from "@/lib/v2/train-lock";
 import { formatTime, PYRAMID_LABEL, UI } from "@/lib/domain/workbench/labels";
 import type { WeekViewModel, WorkbenchSession } from "@/lib/domain/workbench/types";
+import { lesKildeDataTransfer } from "./wb-drag";
 import { harHake, STATUS_CAPS, WARM } from "./wb-visuelt";
 
 const DAGKORT = ["MAN", "TIR", "ONS", "TOR", "FRE", "LØR", "SØN"];
@@ -29,9 +32,20 @@ type Props = {
   selectedSessionId: string | null;
   onSelectSession: (id: string | null) => void;
   onCreateAt: (date: string, startMinute: number) => void;
+  /** Kilde sluppet på åpen flate i uka — oppretter ny økt (B5). */
+  onDropSource?: (date: string, startMinute: number, sourceId: string) => void;
+  /** Kilde (kun øvelser) sluppet direkte på en eksisterende økt (B5). */
+  onDropDrillOnSession?: (sessionId: string, sourceId: string) => void;
 };
 
-export function WeekGrid({ week, selectedSessionId, onSelectSession, onCreateAt }: Props) {
+export function WeekGrid({
+  week,
+  selectedSessionId,
+  onSelectSession,
+  onCreateAt,
+  onDropSource,
+  onDropDrillOnSession,
+}: Props) {
   const idag = osloIdag();
 
   const days: TimeGridDay[] = week.days.map((d, i) => ({
@@ -74,6 +88,15 @@ export function WeekGrid({ week, selectedSessionId, onSelectSession, onCreateAt 
           const dag = week.days[slot.dayIndex];
           if (dag) onCreateAt(dag.date, slot.startMin);
         }}
+        onDropSlot={
+          onDropSource
+            ? (slot, e) => {
+                const dag = week.days[slot.dayIndex];
+                const sourceId = lesKildeDataTransfer(e);
+                if (dag && sourceId) onDropSource(dag.date, slot.startMin, sourceId);
+              }
+            : undefined
+        }
         renderDay={(i) => {
           const dag = week.days[i];
           if (!dag) return null;
@@ -106,6 +129,11 @@ export function WeekGrid({ week, selectedSessionId, onSelectSession, onCreateAt 
                   session={s}
                   valgt={s.id === selectedSessionId}
                   onClick={() => onSelectSession(s.id)}
+                  onDropDrill={
+                    onDropDrillOnSession
+                      ? (sourceId) => onDropDrillOnSession(s.id, sourceId)
+                      : undefined
+                  }
                 />
               ))}
             </>
@@ -121,10 +149,12 @@ function OktKort({
   session,
   valgt,
   onClick,
+  onDropDrill,
 }: {
   session: WorkbenchSession;
   valgt: boolean;
   onClick: () => void;
+  onDropDrill?: (sourceId: string) => void;
 }) {
   const utkast = session.status === "DRAFT";
   const hake = harHake(session.status);
@@ -156,6 +186,17 @@ function OktKort({
       aria-pressed={valgt}
       title={`${session.title} · ${formatTime(session.startMinute)}–${formatTime(slutt)} · ${PYRAMID_LABEL[session.pyramid]} · ${STATUS_CAPS[session.status]}`}
       style={stil}
+      onDragOver={onDropDrill ? (e: DragEvent<HTMLButtonElement>) => e.preventDefault() : undefined}
+      onDrop={
+        onDropDrill
+          ? (e: DragEvent<HTMLButtonElement>) => {
+              e.preventDefault();
+              e.stopPropagation();
+              const sourceId = lesKildeDataTransfer(e);
+              if (sourceId) onDropDrill(sourceId);
+            }
+          : undefined
+      }
     >
       <span
         style={{

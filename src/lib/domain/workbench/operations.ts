@@ -17,6 +17,8 @@ import type {
   DayColumn,
   WeekViewModel,
   WorkbenchMode,
+  RecurrencePolicy,
+  SeriesContentPatch,
 } from "./types";
 
 // ─── Helpers ────────────────────────────────────────────────────────────────
@@ -84,6 +86,54 @@ export function createSession(
     updatedAt: now,
     createdBy: cmd.createdBy,
   };
+}
+
+// ─── Serie ("gjenta") ───────────────────────────────────────────────────────
+
+/**
+ * Oppretter N ukentlige forekomster av samme økt, én uke fra hverandre,
+ * som deler `seriesId`. `weeks = 1` gir nøyaktig samme resultat som
+ * `createSession` — ingen serie, ingen `seriesId`.
+ */
+export function createSessionSeries(
+  cmd: CreateSessionCommand,
+  weeks: number,
+  now = new Date().toISOString(),
+): WorkbenchSession[] {
+  if (weeks <= 1) return [createSession(cmd, now)];
+
+  const seriesId = generateId("serie");
+  return Array.from({ length: weeks }, (_, i) => {
+    const forekomst = createSession({ ...cmd, date: addDays(cmd.date, i * 7) }, now);
+    return { ...forekomst, seriesId, seriesIndex: i };
+  });
+}
+
+/**
+ * Hvilke forekomster i serien en endre-policy treffer. Rent utvalg — ingen
+ * mutasjon. Datofelt er ALDRI en del av patchen som brukes videre; hver
+ * forekomst beholder egen dag/tid uansett policy.
+ */
+export function sessionsMatchingPolicy(
+  seriesSessions: WorkbenchSession[],
+  currentSessionId: string,
+  policy: RecurrencePolicy,
+): WorkbenchSession[] {
+  const gjeldende = seriesSessions.find((s) => s.id === currentSessionId);
+  if (!gjeldende) return [];
+  if (policy === "DENNE") return [gjeldende];
+  if (policy === "HELE_SERIEN") return seriesSessions;
+  const gjeldendeIndex = gjeldende.seriesIndex ?? 0;
+  return seriesSessions.filter((s) => (s.seriesIndex ?? 0) >= gjeldendeIndex);
+}
+
+/** Slår sammen en innholds-patch inn i én økt. Aldri dato/tid. */
+export function applySeriesPatch(
+  session: WorkbenchSession,
+  patch: SeriesContentPatch,
+  now = new Date().toISOString(),
+): WorkbenchSession {
+  return { ...session, ...patch, updatedAt: now };
 }
 
 // ─── Move / Resize ──────────────────────────────────────────────────────────

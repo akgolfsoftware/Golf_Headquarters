@@ -150,6 +150,26 @@ export const UI = {
   sourcesPrograms: "Programmer",
   sourcesPrevious: "Tidligere uker",
   dragHint: "Dra inn i uken",
+  toastSourceDropped: "Lagt inn fra kilder",
+  toastDrillDroppedOnSession: "Øvelsen er lagt til økten",
+
+  // Serie ("gjenta")
+  repeatLabel: "Gjenta",
+  repeatOnce: "Kun denne uken",
+  repeatWeeks: (n: number) => `Ukentlig i ${n} uker`,
+  seriesPolicyLabel: "Endre",
+  seriesPolicyThis: "Kun denne",
+  seriesPolicyThisAndFollowing: "Denne og fremover",
+  seriesPolicyAll: "Hele serien",
+  seriesEditHint: (handling: string) => `Del av en serie. Gjelder for «${handling}» over.`,
+  toastSeriesCreated: (antall: number) => `${antall} økter opprettet i serien`,
+  toastSeriesDeleted: (antall: number) => `${antall} økter slettet`,
+
+  // Mal
+  saveAsTemplate: "Lagre som mal",
+  removeAsTemplate: "Fjern som mal",
+  toastTemplateSaved: "Lagret som mal — dukker opp i kildepanelet",
+  toastTemplateRemoved: "Fjernet som mal",
 
   // Player consumption
   playerNoSessions: "Ingen planlagte økter i dag",

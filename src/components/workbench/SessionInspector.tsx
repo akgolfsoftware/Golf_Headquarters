@@ -21,11 +21,17 @@ import { Knapp } from "@/components/v2/core";
 import { Icon } from "@/components/v2/icon";
 import { T } from "@/lib/v2/tokens";
 import { formatMinutes, formatTime, PYRAMID_LABEL, UI } from "@/lib/domain/workbench/labels";
-import type { WorkbenchSession } from "@/lib/domain/workbench/types";
+import type { RecurrencePolicy, WorkbenchSession } from "@/lib/domain/workbench/types";
 import { harHake, STATUS_CAPS, WARM } from "./wb-visuelt";
 import { DrillListEditor, type LeggTilDrillVerdier } from "./DrillListEditor";
 
 const VARIGHETER = [30, 45, 60, 90, 120, 180];
+const SERIE_POLICIER: RecurrencePolicy[] = ["DENNE", "DENNE_OG_FREMOVER", "HELE_SERIEN"];
+const SERIE_POLICY_LABEL: Record<RecurrencePolicy, string> = {
+  DENNE: UI.seriesPolicyThis,
+  DENNE_OG_FREMOVER: UI.seriesPolicyThisAndFollowing,
+  HELE_SERIEN: UI.seriesPolicyAll,
+};
 
 export type FlyttVerdier = {
   newDate: string;
@@ -41,7 +47,9 @@ type Props = {
   onFlytt: (verdier: FlyttVerdier) => void;
   onPubliser: () => void;
   onTrekkTilbake: () => void;
-  onSlett: () => void;
+  /** Sletter — når økten er del av en serie, sendes valgt endre-policy med. */
+  onSlett: (policy: RecurrencePolicy) => void;
+  onLagreSomMal: (isTemplate: boolean) => void;
   onLeggTilDrill: (verdier: LeggTilDrillVerdier) => void;
   onFlyttDrill: (drillId: string, retning: -1 | 1) => void;
   onFjernDrill: (drillId: string) => void;
@@ -54,6 +62,7 @@ export function SessionInspector({
   onPubliser,
   onTrekkTilbake,
   onSlett,
+  onLagreSomMal,
   onLeggTilDrill,
   onFlyttDrill,
   onFjernDrill,
@@ -64,6 +73,7 @@ export function SessionInspector({
   const [dag, setDag] = useState(session?.date ?? "");
   const [start, setStart] = useState(session ? formatTime(session.startMinute) : "");
   const [varighet, setVarighet] = useState(session?.durationMinutes ?? 60);
+  const [slettPolicy, setSlettPolicy] = useState<RecurrencePolicy>("DENNE");
 
   if (!session) {
     return <InspektorTom tittel={UI.inspectorTitle} tekst={UI.inspectorEmptyBody} />;
@@ -100,7 +110,7 @@ export function SessionInspector({
       fot={
         utkast ? (
           <>
-            <Knapp ghost onClick={onSlett} disabled={travel}>
+            <Knapp ghost onClick={() => onSlett(slettPolicy)} disabled={travel}>
               {UI.delete}
             </Knapp>
             <Knapp enTing onClick={onPubliser} disabled={travel}>
@@ -193,7 +203,35 @@ export function SessionInspector({
             }).format(new Date(session.publishedAt))}
           />
         )}
+        <div style={{ marginTop: 10 }}>
+          <Knapp
+            ghost
+            icon="star"
+            onClick={() => onLagreSomMal(!session.isTemplate)}
+            disabled={travel}
+          >
+            {session.isTemplate ? UI.removeAsTemplate : UI.saveAsTemplate}
+          </Knapp>
+        </div>
       </InspektorBlokk>
+
+      {session.seriesId && utkast && (
+        <InspektorBlokk label={UI.seriesPolicyLabel}>
+          <Select
+            value={slettPolicy}
+            onChange={(e) => setSlettPolicy(e.target.value as RecurrencePolicy)}
+          >
+            {SERIE_POLICIER.map((p) => (
+              <option key={p} value={p}>
+                {SERIE_POLICY_LABEL[p]}
+              </option>
+            ))}
+          </Select>
+          <p style={{ fontFamily: T.ui, fontSize: 11.5, color: T.mut, margin: "6px 0 0" }}>
+            {UI.seriesEditHint(UI.delete)}
+          </p>
+        </InspektorBlokk>
+      )}
 
       <InspektorBlokk label={UI.drills}>
         <DrillListEditor

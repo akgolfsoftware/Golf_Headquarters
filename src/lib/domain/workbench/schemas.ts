@@ -127,3 +127,35 @@ export const ReorderDrillsInputSchema = z.object({
   sessionId: z.string().min(1, "Mangler økt-id"),
   orderedDrillIds: z.array(z.string().min(1)),
 });
+
+// ─── Serie (B5) ─────────────────────────────────────────────────────────────
+
+export const RecurrencePolicySchema = z.enum([
+  "DENNE",
+  "DENNE_OG_FREMOVER",
+  "HELE_SERIEN",
+]);
+
+/** "Gjenta ukentlig" ved oppretting — 1 = ingen gjentagelse, maks ~et halvt år. */
+export const RepeatWeeksSchema = z.number().int().min(1).max(26);
+
+export const SeriesContentPatchSchema = z
+  .object({
+    title: z.string().min(1, "Økten må ha en tittel").optional(),
+    pyramid: PyramidAreaSchema.optional(),
+    blockType: BlockTypeSchema.optional(),
+    environment: EnvironmentSchema.optional(),
+    notes: z.string().optional(),
+  })
+  .refine((p) => Object.keys(p).length > 0, "Ingen endringer å lagre.");
+
+export const UpdateSeriesSessionInputSchema = z.object({
+  sessionId: z.string().min(1, "Mangler økt-id"),
+  patch: SeriesContentPatchSchema,
+  policy: RecurrencePolicySchema,
+});
+
+export const DeleteSeriesSessionInputSchema = z.object({
+  sessionId: z.string().min(1, "Mangler økt-id"),
+  policy: RecurrencePolicySchema,
+});

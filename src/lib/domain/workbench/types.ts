@@ -130,6 +130,13 @@ export type SessionOrigin = "PLAYER" | "COACH" | "GROUP";
 
 export type ApprovalStatus = "PENDING" | "ACCEPTED" | "REJECTED";
 
+/**
+ * Serie (Loop 2T/B5): hvem en innholdsendring skal gjelde for når en økt er
+ * del av en serie opprettet med "gjenta". Datofelt propagerer ALDRI — hver
+ * forekomst beholder sin egen dag/tid, policy gjelder kun innhold/sletting.
+ */
+export type RecurrencePolicy = "DENNE" | "DENNE_OG_FREMOVER" | "HELE_SERIEN";
+
 export interface WorkbenchSession {
   id: string;
   /** Owner of the private calendar row. For pure group master rows use a sentinel or group-scoped store. */
@@ -165,6 +172,13 @@ export interface WorkbenchSession {
   approvalStatus?: ApprovalStatus;
   /** Player edited a materialised group session locally — coach/group update waits for resolve */
   localOverride?: boolean;
+
+  /** Set when created via "gjenta" — shared by every occurrence in the series */
+  seriesId?: string;
+  /** 0-based position within the series */
+  seriesIndex?: number;
+  /** Saved for reuse in the sources panel ("Maler") */
+  isTemplate?: boolean;
 
   /** Coach-only until published */
   publishedAt?: string; // ISO
@@ -362,6 +376,22 @@ export interface ResolvePlayerApprovalCommand {
   decision: "ACCEPTED" | "REJECTED";
   /** When REJECTED on a group update with localOverride — keep player version */
   keepLocal?: boolean;
+}
+
+/** Innholdsfelter en serie-endring kan røre. Dato/tid propagerer aldri. */
+export type SeriesContentPatch = Partial<
+  Pick<WorkbenchSession, "title" | "pyramid" | "blockType" | "environment" | "notes">
+>;
+
+export interface UpdateSeriesSessionCommand {
+  sessionId: string;
+  patch: SeriesContentPatch;
+  policy: RecurrencePolicy;
+}
+
+export interface DeleteSeriesSessionCommand {
+  sessionId: string;
+  policy: RecurrencePolicy;
 }
 
 export interface MoveSessionCommand {

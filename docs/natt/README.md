@@ -38,4 +38,14 @@ Smoke manuelt grønn 7/8 (TM-steget venter på B7). Design: Train-lock-tokens i 
 (#586, font #597), skallet avgjort = AX-01 (#590). Gjeldende rekkefølge:
 `LAUNCH-PLAN-FULL-2026-08-25.md` §0.2. T1 (skallet) pågår på `claude/t1-agency-skall-tl`.
 
+**B5 (kilder/drag/serie) er FERDIG BYGGET 26.08, IKKE ennå merget:** PR
+[#601](https://github.com/akgolfsoftware/Golf_Headquarters/pull/601), gren
+`claude/wb-b5-kilder-serie-c90b5c`. `npm run verify` + `npm test` (1619/1619) grønn.
+Additiv DDL (`seriesId`/`seriesIndex`/`isTemplate` på `workbench_sessions`) er ALLEREDE
+kjørt mot prod — ikke bare skrevet — så en gren som starter fra `main` uten #601 vil
+mangle disse kolonnene i `schema.prisma`/generert klient selv om databasen har dem. Detalj:
+`docs/natt/LOOP-B5-DONE.md`. **B6/T5/T6 (som avhenger av B5) bør branche fra en gren som
+inkluderer #601**, ikke fra `main`/`release` alene, for å unngå å bygge kilder/drag/serie
+på nytt.
+
 Repo: `akgolfsoftware/Golf_Headquarters` — ikke AKGolf2.0.

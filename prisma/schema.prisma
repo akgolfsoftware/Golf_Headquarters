@@ -5998,12 +5998,23 @@ model WorkbenchSession {
   createdAt            DateTime  @default(now())
   updatedAt            DateTime  @updatedAt
 
+  // Serie (Loop 2T/B5, 26.08.2026): økter opprettet med "gjenta" deler samme
+  // seriesId. seriesIndex er 0-basert rekkefølge innad i serien — brukes til
+  // endre-policy (DENNE / DENNE_OG_FREMOVER / HELE_SERIEN). Additiv, nullable.
+  seriesId             String?
+  seriesIndex          Int?
+  // Mal (kilder-panelet, Loop 2T/B5): coach kan lagre en økt som mal —
+  // dukker da opp i kildepanelet under "Maler" for gjenbruk.
+  isTemplate           Boolean   @default(false)
+
   drills WorkbenchDrill[]
 
   @@index([playerId, date])
   @@index([coachId, date])
   @@index([groupId])
   @@index([status])
+  @@index([seriesId])
+  @@index([playerId, isTemplate])
   @@map("workbench_sessions")
 }
 

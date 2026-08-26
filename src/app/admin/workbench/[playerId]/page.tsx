@@ -53,7 +53,7 @@ export default async function WorkbenchUkePage({ params, searchParams }: Props) 
 
   const [ukeRes, kilderRes] = await Promise.all([
     loadWeek({ weekStart, mode, playerId }),
-    loadSources({ playerId }),
+    loadSources({ playerId, weekStart }),
   ]);
 
   return (
