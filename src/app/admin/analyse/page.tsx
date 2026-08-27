@@ -1,12 +1,13 @@
 /**
- * v2-preview: AgencyOS Stall-analyse (retning C). Egen top-level route-group
- * (v2preview) som IKKE arver PortalShell/AdminShell — kun root-layout — så
- * V2Shell leverer all chrome (IkonRail/BunnNav) i mørk v2-scope.
+ * AgencyOS Innsikt-hub — /admin/analyse (T11, 27.08.2026).
  *
- * Auth + data er identisk med den ekte /admin/analyse-siden: samme
- * requirePortalUser-guard (ADMIN/COACH) og samme Prisma-loader (stall-SG-
- * analyse på tvers). All beregning skjer server-side; klientkomponenten
- * (AdminAnalyseV2) rendrer bare den ferdige, ærlige datakontrakten.
+ * Fasit: `AG-07 Innsikt-hub.dc.html`. Erstatter den gamle v2-preview-siden
+ * (AdminAnalyseV2, Paper T.*-tokens) med Train-lock-porten (InnsiktHubV2).
+ * Auth uendret: samme `requirePortalUser`-guard (ADMIN/COACH), samme
+ * coach-scoping via `coachScopedPlayerWhere`.
+ *
+ * Motor-skille: alle SG-tall her er Broadie-SG fra `Round` — aldri blandet
+ * med DataGolf/TrackMan/PEI (se InnsiktHubV2 filhode).
  *
  * Server component.
  */
@@ -14,28 +15,16 @@
 import { coachScopedPlayerWhere } from "@/lib/auth/coached";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
+import { startOfWeek, endOfWeek } from "@/lib/uke-helpers";
 import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
-import { InnsiktHubNav } from "@/components/admin/v2/agency-hub-subnav";
-
-import {
-  AdminAnalyseV2,
-  type AnalyseV2Data,
-  type AnalyseV2Kpi,
-} from "@/components/admin/v2/AdminAnalyseV2";
-import type { AkseKey } from "@/lib/v2/tokens";
+import { InnsiktHubV2, type InnsiktHubV2Data, type InnsiktHubV2Kategori } from "@/components/admin/v2/InnsiktHubV2";
 
 export const dynamic = "force-dynamic";
 
 const DAG_MS = 86_400_000;
-
-/** Pyramide-aksene i fasit-rekkefølge (topp → bunn). */
-const AKSER: { key: AkseKey; label: string }[] = [
-  { key: "TURN", label: "Turnering" },
-  { key: "SPILL", label: "Spill" },
-  { key: "SLAG", label: "Golfslag" },
-  { key: "TEK", label: "Teknisk" },
-  { key: "FYS", label: "Fysisk" },
-];
+const PERIODE_UKER = 8;
+/** Skala for søylehøyde — typisk SG-kategori-spenn i stallen (§ dokumentert i InnsiktHubV2). */
+const KATEGORI_SKALA = 0.8;
 
 /** «+0,21» / «−0,38» med typografisk minus (fasit-format). */
 function fmtSigned(n: number, decimals = 2): string {
@@ -43,214 +32,96 @@ function fmtSigned(n: number, decimals = 2): string {
   return `${n < 0 ? "−" : "+"}${s}`;
 }
 
-async function loadStallAnalyse(viewer: { id: string; role: string }): Promise<AnalyseV2Data> {
+function kategoriRad(key: string, label: string, verdi: number | null): InnsiktHubV2Kategori | null {
+  if (verdi == null) return null;
+  return {
+    key,
+    label,
+    verdi: fmtSigned(verdi),
+    pct: Math.round(Math.min(Math.abs(verdi), KATEGORI_SKALA) * (100 / KATEGORI_SKALA)),
+    negativ: verdi < 0,
+  };
+}
+
+async function loadInnsiktHub(viewer: { id: string; role: string }): Promise<InnsiktHubV2Data> {
   const naa = new Date();
-  const d7 = new Date(naa.getTime() - 7 * DAG_MS);
-  const d14 = new Date(naa.getTime() - 14 * DAG_MS);
-  const d30 = new Date(naa.getTime() - 30 * DAG_MS);
-  const d60 = new Date(naa.getTime() - 60 * DAG_MS);
-  const d90 = new Date(naa.getTime() - 90 * DAG_MS);
+  const d8u = new Date(naa.getTime() - PERIODE_UKER * 7 * DAG_MS);
+  const ukeStart = startOfWeek(naa);
+  const ukeSlutt = endOfWeek(naa);
 
-  const spillerOkter = { plan: { user: { role: "PLAYER" as const } } };
+  const spillere = await prisma.user.findMany({
+    where: { AND: [coachScopedPlayerWhere(viewer), { deletedAt: null }] },
+    select: { id: true },
+  });
+  const spillerIds = spillere.map((s) => s.id);
 
-  const [
-    nSpillere,
-    timerNaa,
-    timerFor,
-    sgNaa,
-    sgFor,
-    oktFullfortNaa,
-    oktPlanlagtNaa,
-    oktFullfortFor,
-    oktPlanlagtFor,
-    inaktiveNaa,
-    inaktiveFor,
-    pyramideRaw,
-    grupper,
-  ] = await Promise.all([
-    prisma.user.count({ where: { AND: [coachScopedPlayerWhere(viewer), { deletedAt: null }] } }),
-    prisma.trainingPlanSession.aggregate({
-      _sum: { durationMin: true },
-      where: { status: "COMPLETED", scheduledAt: { gte: d30, lte: naa }, ...spillerOkter },
-    }),
-    prisma.trainingPlanSession.aggregate({
-      _sum: { durationMin: true },
-      where: { status: "COMPLETED", scheduledAt: { gte: d60, lt: d30 }, ...spillerOkter },
-    }),
+  const [sgAgg, okterDenneUken, oktetIDenneUken, trackmanOkter] = await Promise.all([
     prisma.round.aggregate({
-      _avg: { sgTotal: true },
+      _avg: { sgTotal: true, sgOtt: true, sgApp: true, sgArg: true, sgPutt: true },
       _count: { sgTotal: true },
-      where: { playedAt: { gte: d30, lte: naa }, sgTotal: { not: null } },
-    }),
-    prisma.round.aggregate({
-      _avg: { sgTotal: true },
-      _count: { sgTotal: true },
-      where: { playedAt: { gte: d60, lt: d30 }, sgTotal: { not: null } },
+      where: { userId: { in: spillerIds }, playedAt: { gte: d8u, lte: naa }, sgTotal: { not: null } },
     }),
     prisma.trainingPlanSession.count({
-      where: { status: "COMPLETED", scheduledAt: { gte: d30, lte: naa }, ...spillerOkter },
-    }),
-    prisma.trainingPlanSession.count({
-      where: { status: { not: "CANCELLED" }, scheduledAt: { gte: d30, lte: naa }, ...spillerOkter },
-    }),
-    prisma.trainingPlanSession.count({
-      where: { status: "COMPLETED", scheduledAt: { gte: d60, lt: d30 }, ...spillerOkter },
-    }),
-    prisma.trainingPlanSession.count({
-      where: { status: { not: "CANCELLED" }, scheduledAt: { gte: d60, lt: d30 }, ...spillerOkter },
-    }),
-    prisma.user.count({
       where: {
-        AND: [
-          coachScopedPlayerWhere(viewer),
-          { deletedAt: null, OR: [{ lastLoginAt: null }, { lastLoginAt: { lt: d7 } }] },
-        ],
+        status: "COMPLETED",
+        scheduledAt: { gte: ukeStart, lte: ukeSlutt },
+        plan: { userId: { in: spillerIds } },
       },
     }),
-    prisma.user.count({
+    prisma.trainingPlanSession.findMany({
       where: {
-        AND: [
-          coachScopedPlayerWhere(viewer),
-          { deletedAt: null, OR: [{ lastLoginAt: null }, { lastLoginAt: { lt: d14 } }] },
-        ],
+        status: { not: "CANCELLED" },
+        scheduledAt: { gte: ukeStart, lte: ukeSlutt },
+        plan: { userId: { in: spillerIds } },
       },
+      select: { plan: { select: { userId: true } } },
     }),
-    prisma.trainingPlanSession.groupBy({
-      by: ["pyramidArea"],
-      _count: { _all: true },
-      where: { status: "COMPLETED", ...spillerOkter },
-    }),
-    prisma.group.findMany({
-      where: viewer.role === "COACH" ? { coachId: viewer.id } : {},
-      select: { id: true, name: true, members: { where: { endedAt: null }, select: { userId: true } } },
-      orderBy: { name: "asc" },
+    prisma.trackManSession.count({
+      where: { userId: { in: spillerIds }, recordedAt: { gte: d8u, lte: naa } },
     }),
   ]);
 
-  // ── KPI 1: Treningstimer 30 d ─────────────────────────────────
-  const timerCur = Math.round((timerNaa._sum.durationMin ?? 0) / 60);
-  const timerPrev = Math.round((timerFor._sum.durationMin ?? 0) / 60);
-  const timerDiff = timerCur - timerPrev;
-  const harTimer = timerCur > 0 || timerPrev > 0;
+  const dekketIds = new Set(oktetIDenneUken.map((o) => o.plan.userId));
+  const udekket = spillerIds.filter((id) => !dekketIds.has(id)).length;
 
-  // ── KPI 2: Snitt SG-utvikling (30 d vs forrige 30 d) ──────────
-  const harSgUtvikling = sgNaa._count.sgTotal > 0 && sgFor._count.sgTotal > 0;
-  const sgUtvikling = harSgUtvikling ? (sgNaa._avg.sgTotal ?? 0) - (sgFor._avg.sgTotal ?? 0) : null;
+  const kategorier = [
+    kategoriRad("tee", "Tee", sgAgg._avg.sgOtt),
+    kategoriRad("innspill", "Innspill", sgAgg._avg.sgApp),
+    kategoriRad("rundt", "Rundt", sgAgg._avg.sgArg),
+    kategoriRad("putt", "Putt", sgAgg._avg.sgPutt),
+  ].filter((k): k is InnsiktHubV2Kategori => k != null);
 
-  // ── KPI 3: Økt-oppmøte ────────────────────────────────────────
-  const oppmoteCur = oktPlanlagtNaa > 0 ? Math.round((oktFullfortNaa / oktPlanlagtNaa) * 100) : null;
-  const oppmotePrev = oktPlanlagtFor > 0 ? Math.round((oktFullfortFor / oktPlanlagtFor) * 100) : null;
-  const oppmoteDiff = oppmoteCur != null && oppmotePrev != null ? oppmoteCur - oppmotePrev : null;
-
-  // ── KPI 4: Inaktive 7+ dg ─────────────────────────────────────
-  const inaktivDiff = inaktiveNaa - inaktiveFor;
-
-  const kpis: AnalyseV2Kpi[] = [
-    {
-      label: "Treningstimer · 30 d",
-      hjelp: "treningsVolum" as const,
-      value: String(timerCur),
-      unit: "t",
-      delta: harTimer ? `${fmtSigned(timerDiff, 0)} t` : undefined,
-      dir: harTimer ? (timerDiff < 0 ? "down" : "up") : undefined,
-    },
-    {
-      label: "Snitt SG-utvikling",
-      hjelp: "sgTotal" as const,
-      value: sgUtvikling != null ? fmtSigned(sgUtvikling) : "—",
-      sub: sgUtvikling != null ? "vs forrige mnd." : undefined,
-      accent: sgUtvikling != null && sgUtvikling >= 0,
-    },
-    {
-      label: "Økt-oppmøte",
-      hjelp: "planEtterlevelse" as const,
-      value: oppmoteCur != null ? String(oppmoteCur) : "—",
-      unit: oppmoteCur != null ? "%" : undefined,
-      delta: oppmoteDiff != null ? `${fmtSigned(oppmoteDiff, 0)} %` : undefined,
-      dir: oppmoteDiff != null ? (oppmoteDiff < 0 ? "down" : "up") : undefined,
-    },
-    {
-      label: "Inaktive 7+ dg",
-      value: String(inaktiveNaa),
-      sub: `${fmtSigned(inaktivDiff, 0)} vs forrige`,
-    },
-  ];
-
-  // ── Pyramide-fordeling (andel av fullførte økter per akse) ────
-  const pyrCounts: Record<AkseKey, number> = { TURN: 0, SPILL: 0, SLAG: 0, TEK: 0, FYS: 0 };
-  for (const row of pyramideRaw) pyrCounts[row.pyramidArea as AkseKey] = row._count._all;
-  const pyrTotal = AKSER.reduce((s, a) => s + pyrCounts[a.key], 0);
-  const dist = AKSER.map((a) => ({
-    akse: a.key,
-    label: a.label,
-    pct: pyrTotal > 0 ? Math.round((pyrCounts[a.key] / pyrTotal) * 100) : 0,
-    okter: pyrCounts[a.key],
-  }));
-
-  // Innsikt: sterkeste to + svakeste akse (kun når data finnes).
-  const sortert = [...dist].sort((a, b) => b.pct - a.pct);
-  const svakest = sortert[sortert.length - 1];
-  const innsikt =
-    pyrTotal > 0
-      ? `${sortert[0].label} og ${sortert[1].label.toLowerCase()} er solid. ${svakest.label} (${svakest.pct} %) er flaskehalsen${
-          svakest.label === "Turnering"
-            ? " — vurder flere konkurranse-simuleringer."
-            : " — prioriter dette i gruppeprogrammene."
-        }`
-      : "Ingen fullførte økter logget ennå — fordelingen vises når stallen begynner å logge trening.";
-
-  // ── Per gruppe ────────────────────────────────────────────────
-  const gruppeRader = await Promise.all(
-    grupper.map(async (g) => {
-      const memberIds = g.members.map((m) => m.userId);
-      if (memberIds.length === 0) {
-        return { id: g.id, navn: g.name, n: 0, timer: null as number | null, sg: null as number | null };
-      }
-      const [okter, sg] = await Promise.all([
-        prisma.trainingPlanSession.aggregate({
-          _sum: { durationMin: true },
-          where: {
-            status: "COMPLETED",
-            scheduledAt: { gte: d30, lte: naa },
-            plan: { userId: { in: memberIds } },
-          },
-        }),
-        prisma.round.aggregate({
-          _avg: { sgTotal: true },
-          _count: { sgTotal: true },
-          where: { userId: { in: memberIds }, playedAt: { gte: d90 }, sgTotal: { not: null } },
-        }),
-      ]);
-      const sumMin = okter._sum.durationMin ?? 0;
-      // Timer per spiller per uke, siste 30 dager.
-      const timer = sumMin > 0 ? sumMin / 60 / (30 / 7) / memberIds.length : null;
-      return {
-        id: g.id,
-        navn: g.name,
-        n: memberIds.length,
-        timer,
-        sg: sg._count.sgTotal > 0 ? sg._avg.sgTotal : null,
-      };
-    }),
-  );
+  let lekkasjeTekst: string | null = null;
+  if (kategorier.length === 4) {
+    const svakest = [...kategorier].sort((a, b) => {
+      const av = Number(a.verdi.replace("−", "-").replace(",", "."));
+      const bv = Number(b.verdi.replace("−", "-").replace(",", "."));
+      return av - bv;
+    })[0];
+    if (svakest.negativ) {
+      lekkasjeTekst = `Lekkasje i stallen: ${svakest.label} er stallens svakeste kategori.`;
+    }
+  }
 
   return {
-    nSpillere,
-    kpis,
-    harPyr: pyrTotal > 0,
-    dist,
-    innsikt,
-    grupper: gruppeRader,
+    nSpillere: spillerIds.length,
+    periodeLabel: `siste ${PERIODE_UKER} uker`,
+    sgSnitt: sgAgg._count.sgTotal > 0 && sgAgg._avg.sgTotal != null ? fmtSigned(sgAgg._avg.sgTotal) : "—",
+    okterDenneUken,
+    udekket,
+    trackmanOkter,
+    kategorier,
+    harKategoriData: kategorier.length === 4,
+    lekkasjeTekst,
   };
 }
 
 export default async function V2AdminAnalysePage() {
   const user = await requirePortalUser({ allow: ["ADMIN", "COACH"] });
-  const data = await loadStallAnalyse(user);
+  const data = await loadInnsiktHub(user);
   return (
     <V2Shell bredde="kolonne" aktiv="innsikt" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>
-      <InnsiktHubNav />
-      <AdminAnalyseV2 data={data} />
+      <InnsiktHubV2 data={data} />
     </V2Shell>
   );
 }
