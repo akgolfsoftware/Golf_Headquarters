@@ -345,10 +345,10 @@ Ikke alle parametere gjelder alle områder.
   **greenlesing · sikte · ballstart · lengdekontroll**
 - Hva som erstatter motorikk-feltet for nærspill/putt i datamodellen: kommer tilbake til
 
-Førsteutkastet til full relevans-matrise ligger i
-`docs/gap-evaluering-treningsplanlegging-2026-08-20.md` §1 — må revideres etter
-beslutningen over (utkastet antok motorikk på chip/pitch/lob). Egne dimensjoner for bunker
-og fullsving er ikke besluttet ennå.
+Førsteutkastet til full relevans-matrise (`docs/gap-evaluering-treningsplanlegging-2026-08-20.md`,
+slettet i opprydding 27.08 — git-historikk) antok motorikk på chip/pitch/lob og må leses i lys
+av beslutningen over. Gjeldende matrise: `docs/relevans-matrise-treningsplanlegging-2026-08-20-v2.md`.
+Egne dimensjoner for bunker og fullsving er ikke besluttet ennå.
 
 ## Onboarding — obligatoriske felter (Anders 20.08)
 
@@ -472,7 +472,7 @@ utvidelse, ingen enhet er koblet nå.
 
 Kontrakten Fase 1–3 i `docs/plan-treningsplanlegging-til-kode-2026-08-20.md` bygger mot.
 Hentet rett fra fasering og risikovurdering i
-`docs/analyse-treningsplanlegger-2026-08-20.md` §3/§5.
+`docs/analyse-treningsplanlegger-2026-08-20.md` §3/§5 (slettet i opprydding 27.08 — git-historikk).
 
 ### Hva v1 ER
 
@@ -541,8 +541,8 @@ treningsblokk uten å falle tilbake på Notion/regneark.
 
 ### De ti siste punktene — bekreftet 20.08 (runde 4, «Ja godkjent»)
 
-Defaultene fra `docs/analyse-treningsplanlegger-2026-08-20.md` §7 er alle godkjent uten
-korrigering — bindende fra nå av, ikke lenger forslag:
+Defaultene fra `docs/analyse-treningsplanlegger-2026-08-20.md` §7 (slettet i opprydding
+27.08 — git-historikk) er alle godkjent uten korrigering — bindende fra nå av, ikke lenger forslag:
 
 1. Ukemerkene UTVIKLING/FORBEREDELSER/KONKURRANSE legges inn i `FASIT-AK-GOLF-HQ.md`.
 2. Historisk mapping: M0/M1 → INNENDØRS, M2/M3 → TRENINGSOMRÅDE, M4 → BANE,

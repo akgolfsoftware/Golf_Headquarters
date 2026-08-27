@@ -15,7 +15,7 @@ Samlet lanseringsplan: **`docs/natt/LAUNCH-PLAN-FULL-2026-08-25.md`** (vinner ov
   inkl. «Spillere ser sin plan»-bryter lagt til etter skjermbilde-gjennomgang 27.08 —
   UI-only placeholder, ikke koblet til ekte data ennå)** alle merget. **T5** vurdert
   27.08: coach-Workbench var allerede fullt Train-lock-portet via D3/B5/B6 (se
-  `docs/natt/T5-DONE.md`) — ingen kodeendring nødvendig. Fasit synket fra zip (6) —
+  `docs/natt/LEVERANSELOGG.md`) — ingen kodeendring nødvendig. Fasit synket fra zip (6) —
   196 filer i `designsystem/train-lock/` (#603). Tokens i kode (#586 + font #597).
 - **Faktisk skjermstatus (målt 26.08, `docs/natt/SKJERM-STATUS-2026-08-26.md`):** av 240
   skjerm-ruter er **2 reelt Train-lock** (Cockpit, TrackMan-detalj), **4 blandet** (bl.a.
@@ -107,17 +107,16 @@ ikke fikset uten bevist effekt, jf. 03.08-målingen).
 |---|---|
 | **Snapshot (denne)** | `docs/STATUS-NÅ.md` |
 | **Samlet gjenstående-plan** | `docs/MASTERPLAN-GJENSTAAENDE.md` |
-| **Porteringsplan (rekkefølge/blokkeringer)** | `docs/port/PORTPLAN.md` |
-| **Status per fasit-fil** | `docs/port/PAPER-ZIP-CHECKLIST.md` |
-| **Designdekning** | `docs/port/fasit-liste-paper.md` |
-| **Uavklart / parkert / løst** | `docs/AAPNE-SPORSMAAL.md` + PORTPLAN §A1 |
+| **Designfasit (alle skjermer)** | `designsystem/train-lock/DESIGN-SYSTEM.md` + `SCREEN-INDEX.md` |
+| **Uavklart / parkert / løst** | `docs/AAPNE-SPORSMAAL.md` |
 | **Låste forretningsregler** (fasit) | `docs/platform/BUSINESS-RULES.md` |
 | **Full plattformkontekst** (5 min) | `docs/platform/AGENT-BRIEF.md` |
-| **Lansering** | `docs/natt/LAUNCH-PLAN-FULL-2026-08-25.md` + `docs/platform/stripe-cutover-sjekkliste.md` (gammel plan arkivert: `docs/port/arkiv/masterplan-lansering-2026-08-12.md`) |
+| **Lansering** | `docs/natt/LAUNCH-PLAN-FULL-2026-08-25.md` + `docs/platform/stripe-cutover-sjekkliste.md` |
 | **AgenticOS + Jarvis** | `docs/plan-agenticos-jarvis-2026-08-17.md` |
+| **Arkiv: den avsluttede Paper-porten** | `docs/arkiv/paper-port/` (rutekartlegging med referanseverdi) |
 
-Historiske bygg-spor, nattrapporter, gallerier og erstattede planer er slettet 05.08 og
-17.08.2026 — de lever i git-historikken, ikke bygg mot dem.
+Historiske bygg-spor, nattrapporter, gallerier og erstattede planer er slettet 05.08, 17.08
+og 27.08.2026 (opprydding) — de lever i git-historikken, ikke bygg mot dem.
 
 ## Ferdig / solid (verifisert, komprimert)
 

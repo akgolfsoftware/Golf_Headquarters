@@ -1,5 +1,8 @@
 # Overnight coding loop — lanseringskjerne A1–A4
 
+> **FERDIG BRUKT — historikk.** Loop 1–3S er levert (se `docs/natt/LAUNCH-PLAN-FULL-2026-08-25.md`
+> §0.2 for status). Ikke kjør denne prompten på nytt.
+
 **Dato:** 24.08.2026 23:33 CEST  
 **Repo:** `akgolfsoftware/Golf_Headquarters` (ikke AKGolf2.0)  
 **Look:** Train-lock. Scene `#000000`.  

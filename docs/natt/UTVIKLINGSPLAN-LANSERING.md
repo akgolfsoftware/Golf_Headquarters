@@ -1,5 +1,8 @@
 # AK Golf HQ — Utviklingsplan mot lansering
 
+> **SUPERSEDERT 25.08.2026:** `docs/natt/LAUNCH-PLAN-FULL-2026-08-25.md` er gjeldende
+> lanseringsplan. Innholdet under er historikk fra planleggingen 24.08, ikke gjeldende status.
+
 **Status:** Plan låst 24.08.2026  
 **Mål:** Lanseringsklar, komplett kjerne — ikke alt, men det som betyr mest.  
 **Visuell retning:** Train-lock (mørk, ren, mobil-først) som hovedlook for Player HQ + AgencyOS.

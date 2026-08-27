@@ -135,8 +135,8 @@ Gjelder til Anders endrer dem.
   Bakgrunn for selve 1:1-kravet: steg 7 PR1–PR4 ble merget med riktige
   tokens men feil skall («Én ting nå» manglet på alle fire, Hjem manglet artefaktkolonne/tom
   tilstand, Planlegge hadde 5 konkurrerende CTA-er). Full avviksliste og ombyggingsplan sto i
-  `docs/port/plan-designport-alle-skjermer.md` §Avvik (slettet 17.08.2026 — git-historikk);
-  gjeldende plan er `docs/port/PORTPLAN.md`.
+  «plan-designport-alle-skjermer.md» §Avvik (slettet 17.08.2026 — git-historikk);
+  gjeldende plan er `docs/arkiv/paper-port/PORTPLAN.md`.
 - **Skjermbilde-gate (Anders 2026-08-04, FAST REGEL — presisert samme dag):** ingen skjerm-PR
   i designporten merges uten at Anders har SETT skjermen. Konkret leveranse per ferdig skjerm:
   (1) faktisk skjermbilde av den kjørende appen (Vercel-preview, innlogget testbruker med ekte
@@ -172,9 +172,10 @@ Gjelder til Anders endrer dem.
   sted som trening) — ikke som ombygging av `/admin/tournaments`.
 - **Fase 2 av designporten kjøres i ny økt med Sonnet 5 (Anders 2026-08-04):** token-effektivt,
   uten irrelevante skills/plugins/gammel kontekst. (Fase 1-planen lå i
-  `plan-designport-alle-skjermer.md`, slettet 17.08.2026 — gjeldende rekkefølge og modellvalg:
-  `docs/port/PORTPLAN.md` + `docs/port/rutefasit.md` §1–2.) Mønsterdokument for skjermer
-  uten fasit: `docs/port/monsterdokument-paper.md`.
+  «plan-designport-alle-skjermer.md», slettet 17.08.2026 — gjeldende rekkefølge og modellvalg:
+  `docs/arkiv/paper-port/PORTPLAN.md` + `docs/arkiv/paper-port/rutefasit.md` §1–2.) Mønsterdokument
+  for skjermer uten fasit het `monsterdokument-paper.md` — slettet i opprydding 27.08.2026
+  (git-historikk); Train-lock-fasiten (`designsystem/train-lock/`) erstatter den nå.
 - **DataGolf-skjermene skal inn i PlayerHQ (Anders 2026-08-04):** i dag ligger de under
   marketing (`/stats/*` — spillere, turneringer, sg-sammenlign, verktøy m.fl.); `/portal/stats`
   er kun en redirect ut av portalen, og `/portal/datagolf` er én enkelt side. Skjermene skal
@@ -194,11 +195,11 @@ Gjelder til Anders endrer dem.
   Presis/FASIT-låser er fortsatt avviklet. Tidsplanen fra 31.07 sa full Paper-port til `src/`
   skulle vente til FØR/UNDER/ETTER-piloten var evaluert — **Anders overstyrte dette eksplisitt
   2026-08-03** etter at steg 1–6 + steg 7 PR1 allerede var merget på løpende «ja» per PR.
-  Full skjermport kjører nå aktivt per `docs/port/PORTPLAN.md` (én sesjon per mal-fasit,
+  Full skjermport kjører nå aktivt per `docs/arkiv/paper-port/PORTPLAN.md` (én sesjon per mal-fasit,
   aldri merge til main uten Anders' «ja»). `designsystem/paper/` er et
   lokalt speil hentet ned i repoet 02.08.2026 (PR #254, ikke lenger kun på `chore/paper-speil-lokal`)
   — og er siden 12.08.2026 **arbeidsfasiten**, se speilregelen over. (Historikk:
-  `docs/gjenstaaende-plan-2026-07-31.md` er slettet 17.08.2026 — git-historikk;
+  «gjenstaaende-plan-2026-07-31.md» er slettet 17.08.2026 — git-historikk;
   `docs/for-under-etter-spec.md` §2 står.)
 - **Navne-kanon (demo):** spiller = **Øyvind Rohjan**, coach = **Anders Kristiansen** — alltid fulle
   navn, gamle demo-navn skal bort. Unntak: ekte coach **«Markus Røinås Pedersen»** på markedssidene,
@@ -227,8 +228,9 @@ Gjelder til Anders endrer dem.
   `605a48cc`, skjermer i `fase1/`; Open Design `be6bdcb8-…`) er eneste designfasit — for både
   designarbeid OG produksjonskode. Presis/v2-kanonen er avviklet. Setningen «produksjonskode
   følger fortsatt v2-tokens + C, smalt til post-pilot» sto her frem til 05.08 og er **feil** —
-  Anders overstyrte den 03.08, se §Tema/design over. Mangler en skjerm fasit:
-  `docs/port/monsterdokument-paper.md` er eneste designkilde.
+  Anders overstyrte den 03.08, se §Tema/design over. [HISTORIKK — dette avsnittet er selv
+  supersedert av Train-lock-beslutningen 25.08.2026 øverst i fila; `monsterdokument-paper.md`
+  er slettet i opprydding 27.08.2026, git-historikk.]
   **Konfliktregel:** sier et dokument, en skill eller en kommentar noe annet enn Paper-fasiten,
   vinner Paper-fasiten — og dokumentet skal rettes, ikke følges.
   `docs/design-system/` og `docs/redesign-v2/` er SLETTET 2026-07-31 (git-historikk);

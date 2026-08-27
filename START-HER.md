@@ -2,16 +2,14 @@
 
 Én plattform, fire produkter (Marketing · Booking · **PlayerHQ** `/portal` · **AgencyOS** `/admin`).
 
-**Én inngang:** [`docs/platform/AGENT-BRIEF.md`](docs/platform/AGENT-BRIEF.md) — full kontekst
-(stack, prosjektkart, sannhets-hierarki) på 5 min. **Les den før du rører kode.** Deretter:
-`docs/STATUS-NÅ.md` (hvor vi er) og — før skjermarbeid — `docs/port/fasit-liste-paper.md`
-(designdekning) + `docs/port/plan-designport-alle-skjermer.md` (plan og ferdig-definisjon).
+**Les i denne rekkefølgen:**
+1. [`docs/platform/AGENT-BRIEF.md`](docs/platform/AGENT-BRIEF.md) — stack, prosjektkart, sannhets-hierarki (5 min). Les før du rører kode.
+2. [`docs/STATUS-NÅ.md`](docs/STATUS-NÅ.md) — hvor prosjektet står nå.
+3. [`docs/natt/LAUNCH-PLAN-FULL-2026-08-25.md`](docs/natt/LAUNCH-PLAN-FULL-2026-08-25.md) — gjeldende lanseringsspor.
 
-Design: Claude Paper (Claude Design-prosjekt `605a48cc`, skjermer i `fase1/`) er designfasit.
-Full port til `src/` kjører nå — se `docs/port/plan-designport-alle-skjermer.md` og
-`.claude/rules/beslutninger.md` §Tema/design.
-
-`docs/arkiv/` er slettet 05.08.2026 (lå kun historikk der — den lever i git). Ved tvil vinner `AGENT-BRIEF.md`.
+**Design:** Train-lock (`designsystem/train-lock/`) er designfasit for ALLE skjermer i
+PlayerHQ og AgencyOS — se `CLAUDE.md` invariant 2 og `.claude/rules/beslutninger.md`.
+Claude Paper (`designsystem/paper/`) er historikk/arkiv, aldri bygg-fasit.
 
 ## Kjør lokalt
 

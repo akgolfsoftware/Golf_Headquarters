@@ -2,7 +2,7 @@
 
 **Rolle:** samleplanen for hele AI-laget — AgencyOS' AgenticOS-flate, agent-flåten, Kommando,
 Telegram og Jarvis (`/meg`). Erstatter spredningen der status lå i fire dokumenter med ulik
-ferskhet. Detaljhistorikk: `docs/port/drift-agenticos-konsolidering.md` (flate-tegningen) og
+ferskhet. Detaljhistorikk: `docs/drift-agenticos-konsolidering.md` (flate-tegningen) og
 `natt-rapport.md` i repo-rot (Jarvis-portens arbeidslogg, eies av PR #532/#547-kjeden).
 Alt under «Nåtilstand» er målt mot `main` @ `1f3e127` (17.08), ikke antatt.
 

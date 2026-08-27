@@ -268,12 +268,10 @@ AK Golf Academy bruker en 5-trinns trenings-pyramide:
 
 ## Tema per produkt
 
-> **Design (ENDRET 25.08.2026 — Train-lock vinner alltid, Anders i økt):** Train-lock er eneste
-> designfasit for ALLE skjermer i PlayerHQ og AgencyOS. Paper-låsen fra 03.08 er supersedert;
-> Claude Paper (`605a48cc`) og `docs/port/monsterdokument-paper.md` er historikk. Fasit-zip og
-> Train-lock-tokens er ennå ikke levert (se `docs/natt/LAUNCH-PLAN-FULL-2026-08-25.md` D2/D3) —
-> mangler en skjerm fasit: spør Anders. Ved konflikt mellom et dokument og Train-lock vinner
-> Train-lock.
+> **Design (ENDRET 25.08.2026 — Train-lock vinner alltid, Anders i økt):** Train-lock
+> (`designsystem/train-lock/`) er eneste designfasit for ALLE skjermer i PlayerHQ og AgencyOS.
+> Paper-låsen fra 03.08 er supersedert; Claude Paper (`605a48cc`) er historikk. Mangler en
+> skjerm fasit: spør Anders. Ved konflikt mellom et dokument og Train-lock vinner Train-lock.
 >
 > **Token i kode:** `--v2-handling` / alias `--handling` i `src/app/globals.css`,
 > speilet som `T.handling` i `src/lib/v2/tokens.ts`. Bruk: `var(--handling)` eller

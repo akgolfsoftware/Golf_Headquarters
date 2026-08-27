@@ -330,7 +330,7 @@ speilet → skjerm-PR-ene.
 underveis.
 
 Deretter: AP2 (kjøreplanens økter, felt-test som go/no-go) → AP3 → AP4 → AP5. Hver skjerm-PR
-måles mot ferdig-definisjonen i `docs/port/plan-designport-alle-skjermer.md` og skjermbilde-gaten;
+måles mot skjermbilde-gaten (`CLAUDE.md` §Skjerm-PR);
 SG-endringer måles mot divergensvakt-testen (pipeline == direkteberegning).
 
 Grov innsats (kodeøkter à ~2 t, samme skala som kjøreplanen): AP0 ≈ 4 · AP1 ≈ 6–8 · AP2 = 7

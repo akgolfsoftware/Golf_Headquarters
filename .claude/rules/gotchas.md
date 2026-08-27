@@ -324,7 +324,8 @@ plukker ikke opp ny generert klient. Regel: RESTART dev-serveren etter hver
 - Før: fire parallelle mekanismer (`data-v2-tema`, hardkodet `className="dark"` i 25 filer,
   `[data-theme="dark"]` som aldri ble satt, og en Cmd+K-toggle som skrev til
   `localStorage["akgolf-theme"]` — en nøkkel ingen leste). Konsekvensen var målt i
-  `docs/port/fase2-morketema-avklaring.md` §3.1: i `/portal` og `/admin/(legacy)` ble chromet
+  «fase2-morketema-avklaring.md» (slettet i opprydding 27.08.2026 — git-historikk)
+  §3.1: i `/portal` og `/admin/(legacy)` ble chromet
   mørkt mens innholdsflaten forble lys, fordi `html[data-v2-tema="dark"]` og `.golfdata-scope`
   rører helt disjunkte variabelfamilier (snitt = 0 navn).
 - Nå: `html[data-v2-tema="dark"]` er lagt inn i alle tre mørk-blokkene (`globals.css` hsl-triplett

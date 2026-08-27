@@ -16,6 +16,5 @@ Ingen dobbeltføring, ingen «to sannheter».
 - [`gfgk-junior/`](gfgk-junior/) — GFGK-spesifikke notater (grupper, gfgkjunior.no-kobling)
 
 ## Relaterte kilder i akgolf-hq
-- `docs/audit-treningsplanlegger-2026-07-05.md` — fersk gjennomgang av Workbench/driller/tester
-- `docs/port/fasit-liste-paper.md` + `docs/port/PORTPLAN.md` — designdekning og porteringsplan (ferdig-definisjon: skjermbilde-gaten i `CLAUDE.md` §Skjermarbeid)
+- `designsystem/train-lock/SCREEN-INDEX.md` — designfasit for alle skjermer (ferdig-definisjon: skjermbilde-gaten i `CLAUDE.md` §Skjermarbeid)
 - `.claude/rules/arkitektur.md` — produkter og mappestruktur

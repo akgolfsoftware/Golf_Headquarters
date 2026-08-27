@@ -77,9 +77,9 @@ warning #B8852A · info #2563EB · border #E5E3DD`. Bruk alltid klassene (`bg-pr
 
 ## 3. Typografi per begrepsbruk — UTGÅTT, historikk
 
-> **Gjeldende (Claude Paper):** Poppins = UI og titler · **Lora = prosa og AI-svar** ·
-> IBM Plex Mono = alle tall, koder og eyebrows (tabulære tall alltid).
-> Se `docs/port/monsterdokument-paper.md` §3.
+> **Gjeldende (Train-lock, se `.claude/rules/beslutninger.md` §Font):** Poppins/Lora/IBM Plex
+> Mono BEHOLDES — Train-lock-fasitens «SF Pro Display/Text» tas ikke i bruk. Fra Train-lock
+> arves skala, vekter og tracking, ikke fontfamilien.
 
 Presis-oppsettet under er avviklet: Inter (`font-sans`) = UI/brødtekst · Familjen Grotesk
 (`font-display`) = display/hero (editorial italic på nøkkelord) · JetBrains Mono (`font-mono`) =
