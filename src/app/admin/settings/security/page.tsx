@@ -12,11 +12,11 @@
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
-import { TilbakeLenke } from "@/components/v2";
+import { TlTilbake } from "@/components/admin/v2/oppsett/tl-kit";
 import {
-  AdminSecurityV2,
+  AdminSecurityTrainLock,
   type AdminSecurityV2Data,
-} from "@/components/admin/v2/AdminSecurityV2";
+} from "@/components/admin/v2/oppsett/AdminSecurityTrainLock";
 
 export default async function V2AdminSecurityPage() {
   const user = await requirePortalUser({ allow: ["COACH", "ADMIN"] });
@@ -34,8 +34,8 @@ export default async function V2AdminSecurityPage() {
 
   return (
     <V2Shell bredde="kolonne" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>
-      <TilbakeLenke href="/admin/settings">Innstillinger</TilbakeLenke>
-      <AdminSecurityV2 data={data} />
+      <TlTilbake href="/admin/settings">Innstillinger</TlTilbake>
+      <AdminSecurityTrainLock data={data} />
     </V2Shell>
   );
 }

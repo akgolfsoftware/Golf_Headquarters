@@ -16,12 +16,12 @@ import { z } from "zod";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
-import { TilbakeLenke } from "@/components/v2";
+import { TlTilbake } from "@/components/admin/v2/oppsett/tl-kit";
 import {
-  AdminApiKeysV2,
+  AdminApiKeysTrainLock,
   type AdminApiKeysV2Data,
   type AdminApiKeysV2Nokkel,
-} from "@/components/admin/v2/AdminApiKeysV2";
+} from "@/components/admin/v2/oppsett/AdminApiKeysTrainLock";
 
 export const dynamic = "force-dynamic";
 
@@ -77,8 +77,8 @@ export default async function V2AdminApiKeysPage() {
 
   return (
     <V2Shell bredde="kolonne" nav={AGENCYOS_NAV}>
-      <TilbakeLenke href="/admin/settings">Innstillinger</TilbakeLenke>
-      <AdminApiKeysV2 data={data} />
+      <TlTilbake href="/admin/settings">Innstillinger</TlTilbake>
+      <AdminApiKeysTrainLock data={data} />
     </V2Shell>
   );
 }

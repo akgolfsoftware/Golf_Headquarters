@@ -22,15 +22,16 @@ import { beregnEffektive } from "@/lib/auth/effective-capabilities-core";
 import type { UserRole } from "@/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
 import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
-import { TilbakeLenke, CTAPill } from "@/components/v2";
+import { TL } from "@/lib/v2/train-lock";
+import { TlTilbake } from "@/components/admin/v2/oppsett/tl-kit";
 import {
-  AdminTilgangV2,
+  AdminTilgangTrainLock,
   type AdminTilgangV2Row,
-} from "@/components/admin/v2/AdminTilgangV2";
+} from "@/components/admin/v2/oppsett/AdminTilgangTrainLock";
 import {
-  AdminTilgangPerTrenerV2,
+  AdminTilgangPerTrenerTrainLock,
   type PerTrenerCoach,
-} from "@/components/admin/v2/AdminTilgangPerTrenerV2";
+} from "@/components/admin/v2/oppsett/AdminTilgangPerTrenerTrainLock";
 
 export const dynamic = "force-dynamic";
 
@@ -47,16 +48,26 @@ export default async function V2TilgangPage({
 
   const capabilities = Object.values(Capability);
 
+  const faneStil = (aktiv: boolean): React.CSSProperties => ({
+    display: "inline-flex",
+    alignItems: "center",
+    height: 36,
+    padding: "0 16px",
+    borderRadius: TL.radius.pill,
+    fontSize: 13,
+    fontWeight: 600,
+    textDecoration: "none",
+    background: aktiv ? TL.dim : "transparent",
+    color: aktiv ? TL.text : TL.mute,
+  });
+
   const faneVelger = (
-    <div style={{ display: "flex", gap: 8 }}>
-      <Link href="/admin/settings/tilgang" style={{ textDecoration: "none" }}>
-        <CTAPill ghost={perTrener}>Roller</CTAPill>
+    <div style={{ display: "flex", gap: 6 }}>
+      <Link href="/admin/settings/tilgang" style={faneStil(!perTrener)}>
+        Roller
       </Link>
-      <Link
-        href="/admin/settings/tilgang?fane=per-trener"
-        style={{ textDecoration: "none" }}
-      >
-        <CTAPill ghost={!perTrener}>Per trener</CTAPill>
+      <Link href="/admin/settings/tilgang?fane=per-trener" style={faneStil(perTrener)}>
+        Per trener
       </Link>
     </div>
   );
@@ -72,9 +83,9 @@ export default async function V2TilgangPage({
 
     return (
       <V2Shell bredde="kolonne" nav={AGENCYOS_NAV}>
-        <TilbakeLenke href="/admin/settings">Innstillinger</TilbakeLenke>
+        <TlTilbake href="/admin/settings">Innstillinger</TlTilbake>
         {faneVelger}
-        <AdminTilgangV2 roller={ROLLER} rader={rader} />
+        <AdminTilgangTrainLock roller={ROLLER} rader={rader} />
       </V2Shell>
     );
   }
@@ -115,9 +126,9 @@ export default async function V2TilgangPage({
 
   return (
     <V2Shell bredde="kolonne" nav={AGENCYOS_NAV}>
-      <TilbakeLenke href="/admin/settings">Innstillinger</TilbakeLenke>
+      <TlTilbake href="/admin/settings">Innstillinger</TlTilbake>
       {faneVelger}
-      <AdminTilgangPerTrenerV2 trenere={trenere} />
+      <AdminTilgangPerTrenerTrainLock trenere={trenere} />
     </V2Shell>
   );
 }
