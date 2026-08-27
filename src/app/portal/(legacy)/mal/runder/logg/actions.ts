@@ -43,6 +43,12 @@ const rundeSchema = z.object({
   notes: z.string().max(2000).optional(),
   /** Turnering eller trening — null/utelatt = ukjent (ærlig for gamle runder). */
   roundType: z.enum(["turnering", "trening"]).optional(),
+  /**
+   * Etterregistrering uten full slag-for-slag-føring (RU-04): kjeden er
+   * syntetisert fra kun hullscore, ikke ekte lie/avstand. SG er da et
+   * grovt estimat — merkes "estimert" i stedet for "beregnet" (RU-02/RU-04).
+   */
+  estimert: z.boolean().optional().default(false),
 });
 
 export type LagreLoggetRundeInput = z.input<typeof rundeSchema>;
@@ -95,7 +101,7 @@ export async function lagreLoggetRunde(
         sgPutt15_25: granulaer.sgPutt15_25,
         sgPutt25_40: granulaer.sgPutt25_40,
         sgPutt40plus: granulaer.sgPutt40plus,
-        sgSource: "beregnet",
+        sgSource: runde.estimert ? "estimert" : "beregnet",
         roundType: runde.roundType ?? null,
         notes: runde.notes ?? null,
       },

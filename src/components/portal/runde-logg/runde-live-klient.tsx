@@ -14,8 +14,9 @@
  * hurtigmodusen, slag-detaljen bor bak hullet.
  *
  * Kladd i localStorage etter hver mutasjon (golfbane = dårlig dekning) —
- * gjenopprettes ved reload. Lagring gjenbruker Oppsummering →
- * lagreLoggetRunde UENDRET. KUN brutto score — netto finnes ikke.
+ * gjenopprettes ved reload. steg === "oppsummering" rendres av RundeRecap
+ * (RU-02, Train-lock — Loop 9/C5), som gjenbruker lagreLoggetRunde UENDRET.
+ * KUN brutto score — netto finnes ikke.
  */
 
 import { useEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
@@ -33,7 +34,7 @@ import { OppsettSteg, type OppsettVerdi } from "./oppsett-steg";
 import { HullForing } from "./hull-foring";
 import { HullOversikt } from "./hull-oversikt";
 import { SgPanel } from "./sg-panel";
-import { Oppsummering } from "./oppsummering";
+import { RundeRecap } from "./runde-recap";
 import { TommelSone, PrimaerKnapp } from "./tommel-sone";
 
 /** Kladden endres aldri utenfra mens siden er åpen — tom subscribe. */
@@ -253,6 +254,25 @@ export function RundeLiveKlient({ baner }: RundeLiveKlientProps) {
     }
     setSteg("oppsummering");
   };
+
+  // RU-02: recap er en HEL, frittstående Train-lock-skjerm — rendres FØR det
+  // T-styrte skallet under, aldri inni det (gotchas.md: bland aldri T og TL
+  // i samme skjerm).
+  if (steg === "oppsummering" && oppsett) {
+    return (
+      <RundeRecap
+        courseId={oppsett.courseId}
+        courseNavn={oppsett.courseNavn}
+        playedAt={oppsett.playedAt}
+        roundType={oppsett.roundType}
+        hullData={hullData}
+        onTilbake={() => {
+          setSteg("foring");
+          setVisning("stepper");
+        }}
+      />
+    );
+  }
 
   return (
     <div
@@ -785,21 +805,6 @@ export function RundeLiveKlient({ baner }: RundeLiveKlientProps) {
         )}
         {steg === "foring" && visning === "sg" && (
           <SgPanel hullData={hullData} onLukk={() => setVisning("detalj")} />
-        )}
-
-        {/* ── Oppsummering + lagring (gjenbruker lagreLoggetRunde) ── */}
-        {steg === "oppsummering" && oppsett && (
-          <Oppsummering
-            courseId={oppsett.courseId}
-            courseNavn={oppsett.courseNavn}
-            playedAt={oppsett.playedAt}
-            roundType={oppsett.roundType}
-            hullData={hullData}
-            onTilbake={() => {
-              setSteg("foring");
-              setVisning("stepper");
-            }}
-          />
         )}
       </div>
 
