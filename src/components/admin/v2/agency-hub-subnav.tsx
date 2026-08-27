@@ -30,12 +30,10 @@ export const KO_HUB_TABS: AgencyHubTab[] = [
   { href: "/admin/handlingssenter", label: "Oppgaver" },
 ];
 
-/** Primær «Kalender» — all tid og booking. */
+/** Primær «Kalender» — uke/måned + tilgjengelighet (T7: lista og tavla er pensjonert). */
 export const KALENDER_HUB_TABS: AgencyHubTab[] = [
   { href: "/admin/kalender", label: "Uke", exact: true },
-  { href: "/admin/kalender/lag", label: "Lag" },
-  { href: "/admin/bookinger", label: "Bookinger" },
-  { href: "/admin/agencyos/uka", label: "Tavle" },
+  { href: "/admin/kalender?visning=maned", label: "Måned" },
   { href: "/admin/availability", label: "Tilgjengelighet" },
 ];
 

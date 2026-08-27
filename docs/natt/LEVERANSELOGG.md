@@ -33,6 +33,7 @@ GJELDENDE merge-status, se `docs/STATUS-NÅ.md`.
 | N3 | Scorekort- og PEI-beregningsmotor høstet fra talenthq | `claude/n3-pei-scorekort-motor` | Ferdig, ikke merget da |
 | N5 | Team Norway som egen organisasjon | `claude/n5-team-norway-org` | Ferdig |
 | RLS-Workbench | RLS på `workbench_sessions`/`workbench_drills` | — (#593) | Kjørt og verifisert aktiv i prod |
+| T7 | Kalender + booking-lag samlet til én TL-flate (`/admin/kalender`); lista og uka-tavla redirect | `claude/natt-lansering-2026-08-28` | Ferdig, ikke merget; skjermbilde-gate gjenstår |
 
 Se `docs/natt/README.md` for hvilke natt-dokumenter som fortsatt er levende (LAUNCH-PLAN,
 ACCESS-AND-GROUPS, SKJERM-STATUS, D-beslutningene) vs. denne loggen (historikk).

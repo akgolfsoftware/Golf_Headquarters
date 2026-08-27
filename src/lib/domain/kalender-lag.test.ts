@@ -1,6 +1,7 @@
 import { describe, it } from "node:test";
 import assert from "node:assert/strict";
 import {
+  erKalenderLag,
   grupperPerDato,
   klokkeslett,
   sorterDag,
@@ -26,6 +27,15 @@ function hendelse(
     heldag: startMin === null,
   };
 }
+
+describe("kalender-lag · erKalenderLag", () => {
+  it("godtar de fem lagene og avviser andre", () => {
+    assert.equal(erKalenderLag("BOOKING"), true);
+    assert.equal(erKalenderLag("OEKTER"), true);
+    assert.equal(erKalenderLag("booking"), false);
+    assert.equal(erKalenderLag("GOOGLE"), false);
+  });
+});
 
 describe("kalender-lag · synlige", () => {
   it("beholder kun hendelser fra synlige lag", () => {

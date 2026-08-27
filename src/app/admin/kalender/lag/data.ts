@@ -1,47 +1,60 @@
 /**
- * Data-loader for AgencyOS Kalender-lag (Loop 7/C3, natt-plan bølge 2).
+ * Data-loader for AgencyOS-kalenderen (C3 lag + T7 uke/måned/dag).
  *
- * NY, egen flate — IKKE samme kilde som `/admin/kalender` (booking-uka,
- * `hentAgencyKalenderData`). Denne slår sammen fem lag på tvers av domenet:
- * Økter (WorkbenchSession) · Skole (SchoolScheduleEntry) · Turneringer
- * (TournamentEntry) · Tester (TestAssignment) · Booking. Google er IKKE et
- * lag her (anti-scope: ingen Google-API, `google-calendar-*`-filene røres
- * ikke i det hele tatt) — se OVERNIGHT-CODING-LOOP-BOLGE2.md Loop 7.
+ * Slår sammen fem lag: Økter · Skole · Turneringer · Tester · Booking.
+ * Google er IKKE et lag (anti-scope: `google-calendar-*` røres ikke).
  *
- * Kilder: EKTE data, ingen fabrikkering. Alle datofelt regnes Oslo-korrekt
- * via `uke-helpers.ts` (aldri rå getDay(), jf. gotchas.md). Booking/
- * TestAssignment/Tournament følger kodebasens «naiv veggklokke»-konvensjon
- * (samme tidssone-antakelse som uke-helpers — se `google-calendar-tid.ts`
- * sin `tilNaivVeggklokke`-dokumentasjon), så uke-helpers' Date-objekter er
- * direkte sammenlignbare med disse kolonnene uten videre konvertering.
- * WorkbenchSession.date (@db.Date) bruker derimot UTC-midnatt-konvensjonen
- * i `wb-map.ts` (`tilDatoKolonne`/`fraDatoKolonne`) — egen, dokumentert
- * konvensjon for den kolonnetypen.
- *
- * Server-only. Kalles fra page.tsx (RSC).
+ * Server-only. Kalles fra `/admin/kalender` (RSC). Tid via uke-helpers
+ * (Oslo, aldri rå getDay()).
  */
 
 import { prisma } from "@/lib/prisma";
-import { dagerIUken, endOfWeek, formatPeriode, startOfWeek, ukenummer } from "@/lib/uke-helpers";
+import { dagerIUken, endOfDay, endOfWeek, formatPeriode, startOfDay, startOfWeek, ukenummer } from "@/lib/uke-helpers";
 import { fraDatoKolonne, tilDatoKolonne } from "@/lib/workbench/wb-map";
-import { ALLE_LAG, type KalenderHendelse, type KalenderLag } from "@/lib/domain/kalender-lag";
+import {
+  ALLE_LAG,
+  type KalenderHendelse,
+  type KalenderLag,
+} from "@/lib/domain/kalender-lag";
 import {
   romKollisjoner,
   romKollidererIder,
   type RomBooking,
   type RomKollisjonPar,
 } from "@/lib/domain/kalender-rom-kollisjon";
+import {
+  manedEtikett,
+  manedNokkel,
+  manedsrutenett,
+  parseManedParam,
+  skiftManed,
+  type ManedsCelle,
+} from "@/lib/domain/kalender-maned";
+
+export type KalenderVisning = "dag" | "uke" | "maned";
 
 export interface KalenderLagUkeData {
-  ukeNr: number;
+  visning: KalenderVisning;
+  ukeNr: number | null;
   periode: string;
-  /** 7 lokale datoer (YYYY-MM-DD), mandag→søndag. */
+  /** Datoer i visningsvinduet (7 for uke/dag, alle rutenett-dager for måned). */
   dager: string[];
+  rutenett: ManedsCelle[];
   idagIso: string;
   hendelser: KalenderHendelse[];
   kollisjoner: RomKollisjonPar[];
-  kollidererIder: Set<string>;
-  nav: { forrige: string; neste: string; idag: string };
+  /** Serialiserbart over RSC → klient (ikke Set). */
+  kollidererIder: string[];
+  nav: {
+    forrige: string;
+    neste: string;
+    idag: string;
+    dagHref: string;
+    ukeHref: string;
+    manedHref: string;
+    nyBookingHref: string;
+    tilgjengelighetHref: string;
+  };
 }
 
 const UKEDAG_KORT = ["Man", "Tir", "Ons", "Tor", "Fre", "Lør", "Søn"];
@@ -51,11 +64,17 @@ function isoAvLokalDato(d: Date): string {
   return `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())}`;
 }
 
+function skiftIsoDag(iso: string, delta: number): string {
+  const d = new Date(`${iso}T12:00:00`);
+  d.setDate(d.getDate() + delta);
+  return isoAvLokalDato(d);
+}
+
 function minSidenMidnatt(d: Date): number {
   return d.getHours() * 60 + d.getMinutes();
 }
 
-/** Sluttid i minutter, klemt til den dagen hendelsen starter (fleredagers-spenn låner aldri fra neste dag). */
+/** Sluttid i minutter, klemt til den dagen hendelsen starter. */
 function klemtSluttMin(start: Date, slutt: Date): number {
   const sammeDag =
     start.getFullYear() === slutt.getFullYear() &&
@@ -64,23 +83,41 @@ function klemtSluttMin(start: Date, slutt: Date): number {
   return sammeDag ? minSidenMidnatt(slutt) : 24 * 60;
 }
 
-export async function hentKalenderLagUke(ukeParam?: string): Promise<KalenderLagUkeData> {
-  const basis = ukeParam && !Number.isNaN(new Date(ukeParam).getTime()) ? new Date(ukeParam) : new Date();
-  const ukeStart = startOfWeek(basis);
-  const ukeSlutt = endOfWeek(basis);
-  const dagerDates = dagerIUken(ukeStart);
-  const dager = dagerDates.map(isoAvLokalDato);
-  const idagIso = isoAvLokalDato(new Date());
+function dagIndeks(dager: string[], dato: string): number {
+  const i = dager.indexOf(dato);
+  return i === -1 ? 0 : i;
+}
 
-  const forrigeUke = new Date(ukeStart);
-  forrigeUke.setDate(forrigeUke.getDate() - 7);
-  const nesteUke = new Date(ukeStart);
-  nesteUke.setDate(nesteUke.getDate() + 7);
+function kalenderHref(opts: {
+  visning?: KalenderVisning;
+  uke?: string;
+  maaned?: string;
+  dato?: string;
+  lag?: KalenderLag;
+}): string {
+  const q = new URLSearchParams();
+  if (opts.visning && opts.visning !== "uke") q.set("visning", opts.visning);
+  if (opts.visning === "maned" && opts.maaned) q.set("maaned", opts.maaned);
+  if (opts.visning === "dag" && opts.dato) q.set("dato", opts.dato);
+  if (opts.visning !== "maned" && opts.visning !== "dag" && opts.uke) q.set("uke", opts.uke);
+  if (opts.lag) q.set("lag", opts.lag);
+  const s = q.toString();
+  return s ? `/admin/kalender?${s}` : "/admin/kalender";
+}
 
+async function hentHendelserIVindu(
+  vinduStart: Date,
+  vinduSlutt: Date,
+  dager: string[],
+): Promise<{
+  hendelser: KalenderHendelse[];
+  kollisjoner: RomKollisjonPar[];
+  kollidererIder: string[];
+}> {
   const [oktRader, skoleRader, turneringRader, testRader, bookingRader] = await Promise.all([
     prisma.workbenchSession.findMany({
       where: {
-        date: { gte: tilDatoKolonne(dager[0]), lte: tilDatoKolonne(dager[6]) },
+        date: { gte: tilDatoKolonne(dager[0] ?? isoAvLokalDato(vinduStart)), lte: tilDatoKolonne(dager[dager.length - 1] ?? isoAvLokalDato(vinduStart)) },
         status: { notIn: ["CANCELLED", "SKIPPED"] },
       },
       select: {
@@ -93,32 +130,32 @@ export async function hentKalenderLagUke(ukeParam?: string): Promise<KalenderLag
         playerId: true,
       },
       orderBy: [{ date: "asc" }, { startMinute: "asc" }],
-      take: 500,
+      take: 2000,
     }),
     prisma.schoolScheduleEntry.findMany({
-      where: { date: { gte: ukeStart, lt: ukeSlutt } },
+      where: { date: { gte: vinduStart, lt: vinduSlutt } },
       orderBy: { date: "asc" },
-      take: 200,
+      take: 500,
     }),
     prisma.tournamentEntry.findMany({
       where: {
         entryStatus: { notIn: ["WITHDRAWN"] },
         OR: [
-          { manualDate: { gte: ukeStart, lt: ukeSlutt } },
-          { tournament: { startDate: { gte: ukeStart, lt: ukeSlutt } } },
+          { manualDate: { gte: vinduStart, lt: vinduSlutt } },
+          { tournament: { startDate: { gte: vinduStart, lt: vinduSlutt } } },
         ],
       },
       include: { tournament: { select: { name: true, startDate: true } }, user: { select: { name: true } } },
-      take: 200,
+      take: 500,
     }),
     prisma.testAssignment.findMany({
-      where: { status: "OPEN", dueDate: { gte: ukeStart, lt: ukeSlutt } },
+      where: { status: "OPEN", dueDate: { gte: vinduStart, lt: vinduSlutt } },
       include: { test: { select: { name: true } }, player: { select: { name: true } } },
-      take: 200,
+      take: 500,
     }),
     prisma.booking.findMany({
       where: {
-        startAt: { gte: ukeStart, lt: ukeSlutt },
+        startAt: { gte: vinduStart, lt: vinduSlutt },
         status: { in: ["CONFIRMED", "PENDING", "COMPLETED"] },
       },
       include: {
@@ -127,13 +164,10 @@ export async function hentKalenderLagUke(ukeParam?: string): Promise<KalenderLag
         facility: { select: { id: true, name: true, capacity: true } },
       },
       orderBy: { startAt: "asc" },
-      take: 500,
+      take: 2000,
     }),
   ]);
 
-  // WorkbenchSession har bare `playerId` (ingen relasjon) — navn hentes i ett
-  // samlet oppslag, samme mønster som TrainingSessionV2 i
-  // `admin/kalender/data.ts` (`studentId` uten relasjon).
   const spillerIder = [...new Set(oktRader.map((r) => r.playerId))];
   const spillerNavn = new Map<string, string | null>();
   if (spillerIder.length > 0) {
@@ -157,7 +191,7 @@ export async function hentKalenderLagUke(ukeParam?: string): Promise<KalenderLag
       startMin: r.startMinute,
       sluttMin: Math.min(1440, r.startMinute + r.durationMinutes),
       heldag: false,
-      href: `/admin/spillere/${r.playerId}`,
+      href: `/admin/workbench/${r.playerId}`,
     });
   }
 
@@ -205,25 +239,22 @@ export async function hentKalenderLagUke(ukeParam?: string): Promise<KalenderLag
     });
   }
 
-  // Booking + KA-05 romkollisjon: kun bookinger koblet til en fasilitet kan
-  // kollidere på rom — bookinger uten facilityId («et sted på lokasjonen»)
-  // holdes utenfor kollisjonsregningen, samme prinsipp som
-  // `kalender-belegg.ts` sin «ukjent eier holdes utenfor».
   const romBookinger: RomBooking[] = [];
   const kapasitetPerFasilitet: Record<string, number> = {};
   for (const r of bookingRader) {
     const startMin = minSidenMidnatt(r.startAt);
     const sluttMin = klemtSluttMin(r.startAt, r.endAt);
+    const dato = isoAvLokalDato(r.startAt);
     hendelser.push({
       id: `booking-${r.id}`,
       lag: "BOOKING",
-      dato: isoAvLokalDato(r.startAt),
+      dato,
       tittel: r.user?.name ?? r.guestName ?? "Gjest",
       undertekst: `${r.serviceType.name}${r.facility ? ` · ${r.facility.name}` : ""}`,
       startMin,
       sluttMin,
       heldag: false,
-      href: `/admin/bookinger`,
+      href: `/admin/bookinger/${r.id}`,
     });
     if (r.facility) {
       kapasitetPerFasilitet[r.facility.id] = r.facility.capacity;
@@ -231,48 +262,130 @@ export async function hentKalenderLagUke(ukeParam?: string): Promise<KalenderLag
         id: `booking-${r.id}`,
         facilityId: r.facility.id,
         facilityName: r.facility.name,
-        // Romkollisjon er pr. dag — bookinger på ulike dager kan aldri kollidere,
-        // så vi grener på dato ved å blande datoen inn i den effektive tidsaksen
-        // (dag-indeks × 1440 + minutt) i stedet for å kjøre ett sweep pr. dag.
-        startMin: dagIndeks(dager, isoAvLokalDato(r.startAt)) * 1440 + startMin,
-        sluttMin: dagIndeks(dager, isoAvLokalDato(r.startAt)) * 1440 + sluttMin,
+        startMin: dagIndeks(dager, dato) * 1440 + startMin,
+        sluttMin: dagIndeks(dager, dato) * 1440 + sluttMin,
         tittel: r.user?.name ?? r.guestName ?? "Gjest",
       });
     }
   }
 
   const kollisjoner = romKollisjoner(romBookinger, kapasitetPerFasilitet);
-  const kollidererIder = romKollidererIder(kollisjoner);
+  const kollidererSet = romKollidererIder(kollisjoner);
   for (const h of hendelser) {
-    if (kollidererIder.has(h.id)) {
+    if (kollidererSet.has(h.id)) {
       h.kollidererMed = kollisjoner
         .filter((k) => k.a === h.id || k.b === h.id)
         .map((k) => (k.a === h.id ? k.b : k.a));
     }
   }
 
-  const sluttVisning = new Date(ukeStart);
-  sluttVisning.setDate(sluttVisning.getDate() + 6);
+  return {
+    hendelser,
+    kollisjoner,
+    kollidererIder: [...kollidererSet],
+  };
+}
+
+export async function hentKalenderLagUke(
+  ukeParam?: string,
+  opts?: { lag?: KalenderLag; visning?: "uke" | "dag"; dato?: string },
+): Promise<KalenderLagUkeData> {
+  const visning: KalenderVisning = opts?.visning === "dag" ? "dag" : "uke";
+  const basisIso = opts?.dato ?? ukeParam;
+  const basis = basisIso && !Number.isNaN(new Date(basisIso).getTime()) ? new Date(basisIso) : new Date();
+  const ukeStart = startOfWeek(basis);
+  const ukeSlutt = endOfWeek(basis);
+  const dagerDates = dagerIUken(ukeStart);
+  const dager = dagerDates.map(isoAvLokalDato);
+  const idagIso = isoAvLokalDato(new Date());
+
+  const forrigeUke = new Date(ukeStart);
+  forrigeUke.setDate(forrigeUke.getDate() - 7);
+  const nesteUke = new Date(ukeStart);
+  nesteUke.setDate(nesteUke.getDate() + 7);
+
+  const lastet = await hentHendelserIVindu(ukeStart, ukeSlutt, dager);
+
+  const ukeIso = isoAvLokalDato(ukeStart);
+  const dagIso =
+    (opts?.dato && dager.includes(opts.dato) ? opts.dato : undefined) ??
+    (idagIso && dager.includes(idagIso) ? idagIso : undefined) ??
+    dager[0] ??
+    ukeIso;
+  const maaned = ukeIso.slice(0, 7);
+  const lag = opts?.lag;
 
   return {
+    visning,
     ukeNr: ukenummer(ukeStart),
     periode: `Uke ${ukenummer(ukeStart)} · ${formatPeriode(ukeStart, ukeSlutt)}`,
     dager,
+    rutenett: dager.map((dato) => ({ dato, iManed: true })),
     idagIso,
-    hendelser,
-    kollisjoner,
-    kollidererIder,
+    ...lastet,
     nav: {
-      forrige: `/admin/kalender/lag?uke=${isoAvLokalDato(forrigeUke)}`,
-      neste: `/admin/kalender/lag?uke=${isoAvLokalDato(nesteUke)}`,
-      idag: `/admin/kalender/lag`,
+      forrige:
+        visning === "dag"
+          ? kalenderHref({ visning: "dag", dato: skiftIsoDag(dagIso, -1), lag })
+          : kalenderHref({ visning: "uke", uke: isoAvLokalDato(forrigeUke), lag }),
+      neste:
+        visning === "dag"
+          ? kalenderHref({ visning: "dag", dato: skiftIsoDag(dagIso, 1), lag })
+          : kalenderHref({ visning: "uke", uke: isoAvLokalDato(nesteUke), lag }),
+      idag: kalenderHref({ visning, lag }),
+      dagHref: kalenderHref({ visning: "dag", dato: dagIso, lag }),
+      ukeHref: kalenderHref({ visning: "uke", uke: ukeIso, lag }),
+      manedHref: kalenderHref({ visning: "maned", maaned, lag }),
+      nyBookingHref: "/admin/bookinger/ny",
+      tilgjengelighetHref: "/admin/availability",
     },
   };
 }
 
-function dagIndeks(dager: string[], dato: string): number {
-  const i = dager.indexOf(dato);
-  return i === -1 ? 0 : i;
+export async function hentKalenderLagManed(
+  maanedParam?: string,
+  opts?: { lag?: KalenderLag },
+): Promise<KalenderLagUkeData> {
+  const idag = new Date();
+  const parsed = parseManedParam(maanedParam) ?? {
+    aar: idag.getFullYear(),
+    maaned: idag.getMonth() + 1,
+  };
+  const rutenett = manedsrutenett(parsed.aar, parsed.maaned);
+  const dager = rutenett.map((c) => c.dato);
+  const foerste = rutenett[0]?.dato;
+  const siste = rutenett[rutenett.length - 1]?.dato;
+  const vinduStart = foerste ? startOfDay(new Date(`${foerste}T12:00:00`)) : startOfWeek(idag);
+  const vinduSlutt = siste ? endOfDay(new Date(`${siste}T12:00:00`)) : endOfWeek(idag);
+  const idagIso = isoAvLokalDato(idag);
+
+  const lastet = await hentHendelserIVindu(vinduStart, vinduSlutt, dager);
+
+  const forrige = skiftManed(parsed.aar, parsed.maaned, -1);
+  const neste = skiftManed(parsed.aar, parsed.maaned, 1);
+  const denneNokkel = manedNokkel(parsed.aar, parsed.maaned);
+  const ukeIso = dager.includes(idagIso) ? idagIso : (foerste ?? idagIso);
+  const lag = opts?.lag;
+
+  return {
+    visning: "maned",
+    ukeNr: null,
+    periode: manedEtikett(parsed.aar, parsed.maaned),
+    dager,
+    rutenett,
+    idagIso,
+    ...lastet,
+    nav: {
+      forrige: kalenderHref({ visning: "maned", maaned: manedNokkel(forrige.aar, forrige.maaned), lag }),
+      neste: kalenderHref({ visning: "maned", maaned: manedNokkel(neste.aar, neste.maaned), lag }),
+      idag: kalenderHref({ visning: "maned", lag }),
+      dagHref: kalenderHref({ visning: "dag", dato: idagIso, lag }),
+      ukeHref: kalenderHref({ visning: "uke", uke: ukeIso, lag }),
+      manedHref: kalenderHref({ visning: "maned", maaned: denneNokkel, lag }),
+      nyBookingHref: "/admin/bookinger/ny",
+      tilgjengelighetHref: "/admin/availability",
+    },
+  };
 }
 
 export const KALENDER_LAG_UKEDAG_KORT = UKEDAG_KORT;

@@ -17,6 +17,10 @@ export type KalenderLag = "OEKTER" | "SKOLE" | "TURNERING" | "TESTER" | "BOOKING
 
 export const ALLE_LAG: readonly KalenderLag[] = ["OEKTER", "SKOLE", "TURNERING", "TESTER", "BOOKING"];
 
+export function erKalenderLag(v: string): v is KalenderLag {
+  return (ALLE_LAG as readonly string[]).includes(v);
+}
+
 /** Caps-etikett vist på hendelses-chippen, f.eks. «ØKT · ØYVIND». */
 export const LAG_LABEL: Record<KalenderLag, string> = {
   OEKTER: "ØKT",
