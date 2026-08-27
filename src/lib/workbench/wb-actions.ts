@@ -18,6 +18,7 @@ import type { Prisma } from "@/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { harCoachTilgangTilSpiller } from "@/lib/auth/coached";
+import { loadStallen } from "@/lib/admin/stallen-data";
 import {
   addDrill as addDrillPure,
   applySeriesPatch,
@@ -31,6 +32,7 @@ import {
   sessionsMatchingPolicy,
   unpublishSession as unpublishSessionPure,
 } from "@/lib/domain/workbench/operations";
+import { buildStallDagViewModel, type StallDagViewModel } from "@/lib/domain/workbench/stall-dag";
 import type {
   AKFormel,
   RecurrencePolicy,
@@ -39,6 +41,7 @@ import type {
   WorkbenchMode,
   WorkbenchSession,
 } from "@/lib/domain/workbench/types";
+import { UI } from "@/lib/domain/workbench/labels";
 import {
   AkFormelSchema,
   BlockTypeSchema,
@@ -263,6 +266,39 @@ export async function loadSession(
       : { ok: false, error: treff.feil };
   }
   return { ok: true, data: mapSession(treff.row) };
+}
+
+/**
+ * Stall · dag (Loop 6 / C2): spillere som kolonner for én dag, med UTKAST
+ * synlig — kun coach/admin. Gjenbruker `loadStallen` (samme entitlement- og
+ * coach-scope som `/admin/spillere`) for spillerlista, henter dagens økter
+ * direkte fra `WorkbenchSession`, og lar den rene aggregatoren gruppere.
+ */
+export async function loadStallDag(params: {
+  dato: string;
+}): Promise<WbResultat<StallDagViewModel>> {
+  const dato = IsoDateSchema.safeParse(params.dato);
+  if (!dato.success) return { ok: false, error: "Ugyldig dato." };
+
+  const user = await requirePortalUser({ allow: ["ADMIN", "COACH"] });
+  const stall = await loadStallen({ id: user.id, role: user.role }, {});
+
+  const dag = tilDatoKolonne(dato.data);
+  const spillerIder = stall.rows.map((r) => r.id);
+  const okterRader = spillerIder.length
+    ? await prisma.workbenchSession.findMany({
+        where: { playerId: { in: spillerIder }, date: dag },
+        include: { drills: true },
+        orderBy: [{ startMinute: "asc" }],
+      })
+    : [];
+
+  const vm = buildStallDagViewModel(
+    dato.data,
+    stall.rows.map((r) => ({ id: r.id, navn: r.name || UI.unnamedPlayer })),
+    okterRader.map(mapSession),
+  );
+  return { ok: true, data: vm };
 }
 
 const UKEDAG_KORT = ["man", "tir", "ons", "tor", "fre", "lør", "søn"];
