@@ -1,6 +1,6 @@
 /**
- * AgencyOS — Rediger spiller (`/admin/spillere/[id]/rediger`). v2-port
- * 16. juli 2026.
+ * AgencyOS — Rediger spiller (`/admin/spillere/[id]/rediger`). Train-lock-
+ * port 27.08.2026 (T4) — se TrainLockSpillerRediger.tsx for detaljer.
  *
  * 2-kol form med sticky lagre-bar topp + bunn. Endrings-historikk høyre.
  * Bruker Server Action `lagreSpiller`.
@@ -11,7 +11,10 @@ import { notFound } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { coachScopedPlayerWhere } from "@/lib/auth/coached";
 import { prisma } from "@/lib/prisma";
-import { AdminSpillerRedigerV2, type AdminSpillerRedigerV2Data } from "@/components/admin/v2/AdminSpillerRedigerV2";
+import {
+  TrainLockSpillerRediger,
+  type TrainLockSpillerRedigerData,
+} from "@/components/admin/v2/TrainLockSpillerRediger";
 
 function formatHcpInput(v: number | null | undefined): string {
   if (v == null) return "";
@@ -56,7 +59,7 @@ export default async function RedigerSpiller({ params }: { params: Promise<{ id:
   const fornavn = player.name.split(" ")[0] ?? "";
   const etternavn = player.name.split(" ").slice(1).join(" ");
 
-  const data: AdminSpillerRedigerV2Data = {
+  const data: TrainLockSpillerRedigerData = {
     spillerId: player.id,
     spillerNavn: player.name,
     fornavn,
@@ -80,5 +83,5 @@ export default async function RedigerSpiller({ params }: { params: Promise<{ id:
     })),
   };
 
-  return <AdminSpillerRedigerV2 data={data} />;
+  return <TrainLockSpillerRediger data={data} />;
 }
