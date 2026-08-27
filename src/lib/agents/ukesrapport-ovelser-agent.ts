@@ -3,7 +3,7 @@
 // Telegram OG som in-app-varsel i AgencyOS (varsleAgentFunn dekker begge
 // kanaler i ett kall — samme mønster som resten av agent-varslingen i appen).
 // Ren rapportering, ingen handling: coachen åpner selv
-// /admin/drills/forslag for å godkjenne/avvise.
+// /admin/agenticos for å godkjenne/avvise (drill-forslag samlet der, T6).
 
 import { prisma } from "@/lib/prisma";
 import { runAgent, type AgentResult } from "./agent-runner";
@@ -72,7 +72,7 @@ export async function runUkesrapportOvelser(): Promise<AgentResult> {
         coachId: admins[i].id,
         tittel: "Øvelses-motoren — ukesrapport",
         tekst,
-        lenke: "/admin/drills/forslag",
+        lenke: "/admin/agenticos",
         telegram: i === 0, // kun ett Telegram-varsel selv om det er flere admin-brukere
       });
     }

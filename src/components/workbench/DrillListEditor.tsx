@@ -12,6 +12,7 @@
 import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Select } from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
 import { Knapp } from "@/components/v2/core";
 import { Icon } from "@/components/v2/icon";
 import { T } from "@/lib/v2/tokens";
@@ -33,6 +34,7 @@ export type DrillListItem = {
   title: string;
   durationMinutes: number;
   akFormel: { pyramid: PyramidArea; area: TrainingArea; label: string };
+  description?: string;
 };
 
 export type LeggTilDrillVerdier = {
@@ -40,6 +42,7 @@ export type LeggTilDrillVerdier = {
   durationMinutes: number;
   pyramid: PyramidArea;
   area: TrainingArea;
+  description?: string;
 };
 
 function drillErKomplett(d: DrillListItem): boolean {
@@ -69,6 +72,7 @@ export function DrillListEditor({
   const [pyramid, setPyramid] = useState<PyramidArea>(defaultPyramid);
   const [omrade, setOmrade] = useState<TrainingArea>("TEE");
   const [varighet, setVarighet] = useState(15);
+  const [beskrivelse, setBeskrivelse] = useState("");
 
   return (
     <div style={{ display: "grid", gap: 10 }}>
@@ -128,6 +132,20 @@ export function DrillListEditor({
                       {UI.incompleteDrill}
                     </span>
                   )}
+                  {d.description ? (
+                    <span
+                      style={{
+                        fontFamily: T.ui,
+                        fontSize: 11,
+                        color: T.mut,
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                        whiteSpace: "nowrap",
+                      }}
+                    >
+                      {d.description}
+                    </span>
+                  ) : null}
                 </div>
                 <div style={{ display: "flex", gap: 2, flex: "none" }}>
                   <IkonKnapp
@@ -206,12 +224,21 @@ export function DrillListEditor({
               onChange={(e) => setVarighet(Number(e.target.value))}
             />
           </Felt>
+          <Felt label={UI.drillDescription}>
+            <Textarea
+              value={beskrivelse}
+              onChange={(e) => setBeskrivelse(e.target.value)}
+              placeholder={UI.drillDescriptionPlaceholder}
+              rows={2}
+            />
+          </Felt>
           <div style={{ display: "flex", gap: 8, justifyContent: "flex-end" }}>
             <Knapp
               ghost
               onClick={() => {
                 setVisSkjema(false);
                 setTittel("");
+                setBeskrivelse("");
               }}
             >
               {UI.cancel}
@@ -224,9 +251,11 @@ export function DrillListEditor({
                   durationMinutes: varighet,
                   pyramid,
                   area: omrade,
+                  description: beskrivelse.trim() || undefined,
                 });
                 setVisSkjema(false);
                 setTittel("");
+                setBeskrivelse("");
               }}
             >
               {UI.save}

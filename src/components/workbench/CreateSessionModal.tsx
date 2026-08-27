@@ -37,6 +37,7 @@ export type NyOktDrillVerdier = {
   title: string;
   durationMinutes: number;
   akFormel: AKFormel;
+  description?: string;
 };
 
 export type NyOktVerdier = {
@@ -101,6 +102,7 @@ export function CreateSessionModal({
         title: d.title,
         durationMinutes: d.durationMinutes,
         akFormel: d.akFormel,
+        description: d.description,
       })),
       repeatWeeks: gjentaUker,
     });
@@ -190,6 +192,7 @@ export function CreateSessionModal({
                         area: v.area,
                         label: `${PYRAMID_LABEL[v.pyramid]} · ${AREA_LABEL[v.area]}`,
                       },
+                      description: v.description,
                     },
                   ]);
                 }}
