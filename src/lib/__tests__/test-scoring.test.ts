@@ -40,6 +40,32 @@ test("pei_average (fullslag, carry+side) regner nærhet til hull først", () => 
   assert.equal(score, 0.02);
 });
 
+test("pei (NGF-batteri, till_hull_m + shot_distance_m per slag) — Inspill Basic-formen", () => {
+  // Variant A: ett steg, ingen protokoll-tall for target (kun tekst-terskel) —
+  // målavstanden må derfor komme fra spillerens EGET shot_distance_m-felt.
+  const protocol = {
+    scoringMode: "pei",
+    steps: [
+      {
+        label: "10 inspill",
+        shots: 2,
+        target: "PEI 100-150m < 0.06",
+        inputFields: [
+          { key: "shot_distance_m", unit: "m" },
+          { key: "till_hull_m", unit: "m" },
+        ],
+      },
+    ],
+  };
+  const { score, details } = scoreTest(protocol, [
+    { nr: 1, verdier: { shot_distance_m: 145, till_hull_m: 5.8 } }, // 5,8/145 = 0,04
+    { nr: 2, verdier: { shot_distance_m: 160, till_hull_m: 6.4 } }, // 6,4/160 = 0,04
+  ]);
+  assert.equal(score, 0.04);
+  assert.equal(details.perSlag[0].pei, 0.04);
+  assert.equal(details.retning, "lavere_bedre");
+});
+
 test("pei_total = sum av PEI per slag", () => {
   const protocol = protB("pei_total", [{ nr: 1, target: 100 }, { nr: 2, target: 100 }]);
   const { score } = scoreTest(protocol, [

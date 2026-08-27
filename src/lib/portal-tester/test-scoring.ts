@@ -25,7 +25,8 @@ import { z } from "zod";
 
 /* ── Typer ───────────────────────────────────────────────────────────────── */
 
-export type Verdi = number | boolean | null;
+/** «V»/«H» = registrert miss-retning (kun Gate-protokoller med miss_side, TE-04). */
+export type Verdi = number | boolean | "V" | "H" | null;
 export type Forsok = { nr: number; label?: string; verdier: Record<string, Verdi> };
 
 export type ScoringKind =
@@ -225,14 +226,18 @@ function rund(n: number, d = 2): number {
   return Math.round(n * f) / f;
 }
 
-/** PEI for ett slag = nærhet ÷ lengde. Nærhet fra resultatM, ellers carry+side. */
+/**
+ * PEI for ett slag = nærhet ÷ lengde. Nærhet fra resultatM/till_hull_m
+ * (nærspill/inspill — avstand til hull tastet direkte), ellers carry(+side)
+ * for fullslag (Team Norway-navn og NGF-batteriets `_m`-suffiks begge støttet).
+ */
 function peiForSlag(verdier: Record<string, Verdi>, target: number | undefined): number | null {
-  const resultatM = felt(verdier, ["resultatM"]);
+  const resultatM = felt(verdier, ["resultatM", "till_hull_m"]);
   let naerhet: number | null = resultatM;
   if (naerhet === null) {
-    const carry = felt(verdier, ["carry"]);
+    const carry = felt(verdier, ["carry", "carry_m"]);
     if (carry === null || target === undefined) return null;
-    const side = felt(verdier, ["carrySide", "retning", "side"]) ?? 0;
+    const side = felt(verdier, ["carrySide", "retning", "side", "side_m"]) ?? 0;
     naerhet = Math.sqrt((target - carry) ** 2 + side ** 2);
   }
   if (naerhet === null) return null;
@@ -268,7 +273,11 @@ export function scoreTest(protocol: unknown, forsok: Forsok[]): ScoreResultat {
     case "pei_total": {
       const peis: number[] = [];
       perSlag.forEach((d) => {
-        const pei = peiForSlag(d.verdier, d.target);
+        // Protokollens eget target (steg-nivå) vinner. Uten det: målavstanden
+        // spilleren selv har ført for DETTE slaget (Inspill Basic — avstanden
+        // varierer per slag, den finnes ikke som ett protokoll-tall).
+        const target = d.target ?? felt(d.verdier, ["shot_distance_m", "malAvstandM"]) ?? undefined;
+        const pei = peiForSlag(d.verdier, target);
         if (pei !== null) {
           d.pei = rund(pei, 4);
           peis.push(pei);

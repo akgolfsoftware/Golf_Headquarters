@@ -16,8 +16,66 @@ import { prisma } from "@/lib/prisma";
 import { testTilgangWhere } from "@/lib/portal-tester/test-tilgang";
 import { fallbackScorekortSpec, parseProtocol } from "@/lib/portal-tester/protocol";
 import { parseSessionScoring, tilScorekortState } from "@/lib/portal-tester/session-data";
+import {
+  detectLiveArtefaktKind,
+  gateMaalFraProtokoll,
+  harMissSideFelt,
+  liveArtefaktShots,
+  peiMalAvstandNokkel,
+  peiStartMalAvstand,
+  peiTillMalNokkel,
+  tomtGateForsok,
+  tomtPeiForsok,
+  type GateForsok,
+  type PeiForsok,
+} from "@/lib/domain/tester-live";
 import { T } from "@/lib/v2/tokens";
 import { ScorekortKlient } from "./scorekort-klient";
+import { GateLiveArtefakt } from "./gate-live-artefakt";
+import { PeiLiveArtefakt } from "./pei-live-artefakt";
+
+/** Norsk desimal-parsing («12,4» → 12.4). Tom/ugyldig → null. Speiler scorekort-klient.tsx. */
+function parseNorskTall(raw: string): number | null {
+  const n = Number(raw.trim().replace("−", "-").replace(",", "."));
+  return Number.isFinite(n) ? n : null;
+}
+
+/** Bygger Gate-gjenopptaksstate fra en pågående økts lagrede `verdier` (T5-formatet). */
+function gateGjenopptakFraVerdier(
+  verdier: Record<number, Record<string, string | boolean>>,
+  shots: number,
+): GateForsok[] {
+  const ut = tomtGateForsok(shots);
+  for (let i = 0; i < shots; i++) {
+    const rad = verdier[i + 1];
+    if (!rad) continue;
+    const ok = typeof rad.ok === "boolean" ? rad.ok : null;
+    const side = rad.miss_side === "V" || rad.miss_side === "H" ? rad.miss_side : null;
+    ut[i] = { ok, side };
+  }
+  return ut;
+}
+
+/** Bygger PEI-gjenopptaksstate fra en pågående økts lagrede `verdier` (T5-formatet). */
+function peiGjenopptakFraVerdier(
+  verdier: Record<number, Record<string, string | boolean>>,
+  shots: number,
+  malAvstandNokkel: string,
+  tillMalNokkel: string,
+): PeiForsok[] {
+  const ut = tomtPeiForsok(shots);
+  for (let i = 0; i < shots; i++) {
+    const rad = verdier[i + 1];
+    if (!rad) continue;
+    const malRaw = rad[malAvstandNokkel];
+    const tillRaw = rad[tillMalNokkel];
+    ut[i] = {
+      malAvstandM: typeof malRaw === "string" ? parseNorskTall(malRaw) : null,
+      tillMalM: typeof tillRaw === "string" ? parseNorskTall(tillRaw) : null,
+    };
+  }
+  return ut;
+}
 
 export const dynamic = "force-dynamic";
 
@@ -68,6 +126,47 @@ export default async function GjennomforTestPage({
         verdier: tilScorekortState(parseSessionScoring(paagaaende.scoringData)),
       }
     : null;
+
+  // C4/Loop 8 — gate-/PEI-protokoller får det dedikerte live-artefaktet
+  // (TE-04/05/06). Andre protokolltyper er urørt: ScorekortKlient under.
+  const liveKind = detectLiveArtefaktKind(test.protocol);
+  if (liveKind === "gate") {
+    const shots = liveArtefaktShots(test.protocol);
+    return (
+      <GateLiveArtefakt
+        testId={test.id}
+        sessionId={gjenopptak?.sessionId ?? null}
+        gjenopptattForsok={gjenopptak ? gateGjenopptakFraVerdier(gjenopptak.verdier, shots) : null}
+        caption={`TEST · ${test.name.toUpperCase()}`}
+        shots={shots}
+        hasMissSide={harMissSideFelt(test.protocol)}
+        maal={gateMaalFraProtokoll(test.protocol)}
+        forrigeScore={forrige?.score ?? null}
+      />
+    );
+  }
+  if (liveKind === "pei") {
+    const shots = liveArtefaktShots(test.protocol);
+    const malAvstandNokkel = peiMalAvstandNokkel(test.protocol);
+    const tillMalNokkel = peiTillMalNokkel(test.protocol);
+    return (
+      <PeiLiveArtefakt
+        testId={test.id}
+        sessionId={gjenopptak?.sessionId ?? null}
+        gjenopptattForsok={
+          gjenopptak
+            ? peiGjenopptakFraVerdier(gjenopptak.verdier, shots, malAvstandNokkel, tillMalNokkel)
+            : null
+        }
+        caption={`TEST · ${test.name.toUpperCase()} · ${shots} SLAG`}
+        shots={shots}
+        malAvstandNokkel={malAvstandNokkel}
+        tillMalNokkel={tillMalNokkel}
+        startMalAvstand={peiStartMalAvstand(test.protocol)}
+      />
+    );
+  }
+
   return (
     <div data-paper-wave-d="test-gjennomfor" style={{ minHeight: "100dvh", background: T.bg, color: T.fg, fontFamily: T.ui }}>
       <div
