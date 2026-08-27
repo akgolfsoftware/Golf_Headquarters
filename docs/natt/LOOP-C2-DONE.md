@@ -75,6 +75,8 @@ Gjenstår før merge:
 ## PR og preview
 
 - PR: <https://github.com/akgolfsoftware/Golf_Headquarters/pull/624> (draft)
-- Vercel-preview: legges automatisk inn som PR-kommentar av Vercel-boten når bygget er
-  ferdig (var «pending» ved commit-tidspunkt) — se PR-en for lenken, eller `vercel.com/
-  akgolfgroup-netizens-projects/akgolf-hq` for byggestatus.
+- Vercel-preview (bygget, klart): <https://akgolf-hq-git-claude-c2-st-70173d-akgolfgroup-netizens-projects.vercel.app>
+  → `/admin/stall/dag`
+- Oppfølgingscommiten (kun denne doc-fila) ble automatisk hoppet over av Vercel («Canceled
+  by Ignored Build Step» — ingen build-relevante filer endret), så preview-URL-en over
+  peker fortsatt til det ferdige bygget av kodeendringen.
