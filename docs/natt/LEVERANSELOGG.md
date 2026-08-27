@@ -38,6 +38,7 @@ GJELDENDE merge-status, se `docs/STATUS-NÅ.md`.
 | QA-1 | Web-hygiene: admin-toast, tel-lenke, årstall, hub-titler, én e-post på kontakt | `claude/natt-lansering-2026-08-28` | Ferdig, ikke merget |
 | C6 | Jarvis-merge eval-gate + proveniens (Filip åpen / Jonas stengt). Ikke `src/lib/jarvis/` | `claude/natt-lansering-2026-08-28` | Ferdig, ikke merget |
 | C7 | AgenticOS godkjenningspolicy A3/B1/C3 (ren funksjon). J-A/J-B hoppet | `claude/natt-lansering-2026-08-28` | Ferdig, ikke merget |
+| C9 | FO-01 neste økt-kort på wb-domenet (aldri DRAFT, kun fornavn) | `claude/natt-lansering-2026-08-28` | Ferdig, ikke merget; skjermbilde-gate gjenstår |
 
 Se `docs/natt/README.md` for hvilke natt-dokumenter som fortsatt er levende (LAUNCH-PLAN,
 ACCESS-AND-GROUPS, SKJERM-STATUS, D-beslutningene) vs. denne loggen (historikk).

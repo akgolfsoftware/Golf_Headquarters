@@ -15,6 +15,8 @@
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { hentForelderOversikt } from "@/lib/forelder";
+import { hentForelderNesteOkt } from "@/lib/forelder-neste-okt";
+import { ForelderNesteOktKort } from "@/components/forelder/ForelderNesteOktKort";
 import { hentSamtykkeStatus } from "@/lib/health/samtykke";
 import { V2Shell, FORELDER_NAV } from "@/components/v2/shell";
 import {
@@ -95,7 +97,7 @@ export default async function ForelderPage({
   const childName = oversikt.fokusBarn.name;
   const fornavn = childName.split(" ")[0] ?? childName;
 
-  const [barnRad, lyd, helse, payments, coachRad] = await Promise.all([
+  const [barnRad, lyd, helse, payments, coachRad, nesteOkt] = await Promise.all([
     prisma.user.findUnique({
       where: { id: childId },
       select: { guardianConsentGivenAt: true },
@@ -122,6 +124,7 @@ export default async function ForelderPage({
       orderBy: { startAt: "desc" },
       select: { coach: { select: { name: true, email: true } } },
     }),
+    hentForelderNesteOkt(childId, childName),
   ]);
 
   /* ── Samtykker — kun det datamodellen faktisk bærer ─────────────── */
@@ -256,7 +259,10 @@ export default async function ForelderPage({
       navn={user.name}
       avatarUrl={user.avatarUrl}
     >
-      <ForelderV2 data={data} />
+      <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+        <ForelderNesteOktKort data={nesteOkt} />
+        <ForelderV2 data={data} />
+      </div>
     </V2Shell>
   );
 }

@@ -114,6 +114,32 @@ VERIFY_EXIT:0
 TEST_EXIT:0
 ```
 
+### C9 — Foreldre-kort FO-01
+
+Neste økt fra Workbench (PUBLISHED / IN_PROGRESS, aldri DRAFT). Kun fornavn. Tom tilstand hvis ingenting er publisert.
+
+Verify/test-bevis 28.08:
+
+```
+VERIFY_EXIT:0
+ℹ tests 1770
+ℹ pass 1770
+TEST_EXIT:0
+```
+
+---
+
+## IKKE TATT DENNE NATTEN (gått gjennom, for store / avhengige)
+
+- **T12** — AgenticOS + Jarvis + Caddie-port. Motoren (C6+C7) er inne; selve skjermporten gjenstår.
+- **C1** — Måned/år i Workbench.
+- **C10** — DataGolf + økonomi (Tripletex-lesing finnes; Invoice-modell og D2 booking→faktura krever Anders).
+- **P1–P4** — Player-porten (53 Paper-ruter).
+- **AD-1** — Admin-rest (T7 er inne, så fil-kollisjon mot kalender er unngått).
+- **F1** — Forelder-helporten (kjent bug i `hentForelderUkerapport` tas der).
+- **C8** — Lys-pass (skal kjøres sist).
+- **V2** — Full smoke + release (menneske).
+
 ---
 
 ## FEILET
@@ -131,11 +157,11 @@ TEST_EXIT:0
 - **C7 J-A / J-B** — hvor `/meg` lenkes, og Gmail-send vs. «Utkast opprettet». Hoppes.
 - **T12 J-C** — om `/admin/godkjenninger` skal inn i AgenticOS-flaten. Hoppes.
 - **Skjermbilde-gate** for alle skjerm-PR-er — Anders må se 390 + 1280, lys + mørk, før merge.
+- **MobileMenu-sletting** (QA-1 d) — hard regel 5: slettes ikke av agent. Fila er allerede ubrukt.
+- **C10 D2 booking→faktura** — Invoice-modell mangler.
 
 ---
 
 ## Logg
 
-### T7 — pågår
-
-Samler `/admin/kalender` og måned-flaten til én Train-lock-kalender (C3-laget som kjerne). Booking-lista og `agencyos/uka` pensjoneres med redirect. Google-synk røres ikke. `/admin/bookinger/[id]`, `/admin/bookinger/ny` og `/admin/availability` beholdes som skrive-/detaljflater (wizard og tilgjengelighet er for store til å bli ekte bunnark uten å ødelegge flyten).
+Nattøkt på `claude/natt-lansering-2026-08-28`. T7, T8, QA-1, C6, C7 og C9 levert og verifisert. T12 og videre er for store for samme natt; motorene til T12 (C6+C7) ligger klare.
