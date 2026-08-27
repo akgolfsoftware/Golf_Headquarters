@@ -1,39 +1,12 @@
 /**
- * AgencyOS — Rediger drill (/admin/drills/[id]/rediger) — v2.
- * v2-port 17. juli 2026 (Team D3): `AdminDrillRedigerV2` erstatter
- * drill-edit-form, ruten flyttet ut av (legacy). Auth-guard (COACH + ADMIN),
- * Prisma-queries (drill + andre drills til forutsetnings-flervalget) og
- * server action `updateDrill` er uendret — kun presentasjonslaget er nytt.
+ * Gammel "rediger drill"-side. Pensjonert (T6, 27.08.2026) sammen med resten
+ * av drill-biblioteket (se src/app/admin/(legacy)/drills/) — overlapper
+ * Workbench sin drill-editor (src/components/workbench/DrillListEditor.tsx).
+ * Redirecter til Planlegge-hub'en.
  */
 
-import { notFound } from "next/navigation";
-import { requirePortalUser } from "@/lib/auth/requirePortalUser";
-import { prisma } from "@/lib/prisma";
-import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
-import { AdminDrillRedigerV2 } from "@/components/admin/v2/AdminDrillRedigerV2";
+import { permanentRedirect } from "next/navigation";
 
-export default async function DrillEditPage({
-  params,
-}: {
-  params: Promise<{ id: string }>;
-}) {
-  const user = await requirePortalUser({ allow: ["COACH", "ADMIN"] });
-  const { id } = await params;
-
-  const drill = await prisma.exerciseDefinition.findUnique({
-    where: { id },
-  });
-  if (!drill) notFound();
-
-  const andreDrills = await prisma.exerciseDefinition.findMany({
-    where: { NOT: { id } },
-    select: { id: true, name: true },
-    orderBy: { name: "asc" },
-  });
-
-  return (
-    <V2Shell bredde="kolonne" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"} avatarUrl={user.avatarUrl}>
-      <AdminDrillRedigerV2 drill={drill} andreDrills={andreDrills} />
-    </V2Shell>
-  );
+export default function DrillRedigerRedirect() {
+  permanentRedirect("/admin/planlegge");
 }

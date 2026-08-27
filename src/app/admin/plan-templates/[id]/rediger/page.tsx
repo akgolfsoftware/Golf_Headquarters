@@ -1,11 +1,9 @@
 /**
- * AgencyOS — Plan-mal-editor (/admin/plan-templates/[id]/rediger) — v2.
- * v2-port 17. juli 2026 (Team F1): `AdminPlanMalRedigerV2` erstatter
- * template-editor + volum-linje, ruten flyttet ut av (legacy). Auth-guard
- * (COACH + ADMIN), Prisma-queries (mal + økter + drill-bibliotek) og alle
- * server actions (inkl. masseredigering: sett varighet for hele uka og
- * kopier uke→uke med konflikt-bekreftelse) er uendret — kun presentasjonen
- * er ny. Volum-beregningen bor fortsatt i src/lib/plan-templates/.
+ * AgencyOS — Plan-mal-editor (/admin/plan-templates/[id]/rediger).
+ * Produksjonsside. Auth-guard, Prisma-queries og server actions (inkl.
+ * masseredigering) er uendret — token/skall byttet til Train-lock via
+ * `TL_SCOPE`, se `../../page.tsx` for begrunnelse. Volum-beregningen bor
+ * fortsatt i src/lib/plan-templates/.
  */
 
 import { notFound } from "next/navigation";
@@ -23,6 +21,7 @@ import {
   readDrills,
   readFordeling,
 } from "@/components/admin/plan-templates/shared";
+import { TL_SCOPE } from "@/components/workbench/wb-tl-scope";
 
 export const dynamic = "force-dynamic";
 
@@ -93,9 +92,11 @@ export default async function PlanTemplateEditorPage({
   }));
 
   return (
-    <V2Shell bredde="kolonne" aktiv="planlegge" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"} avatarUrl={user.avatarUrl}>
-      <TilbakeLenke href={`/admin/plan-templates/${id}`}>Mal-detalj</TilbakeLenke>
-      <AdminPlanMalRedigerV2 template={data} drillOptions={drillOptions} />
-    </V2Shell>
+    <div style={TL_SCOPE}>
+      <V2Shell bredde="kolonne" aktiv="planlegge" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"} avatarUrl={user.avatarUrl}>
+        <TilbakeLenke href={`/admin/plan-templates/${id}`}>Mal-detalj</TilbakeLenke>
+        <AdminPlanMalRedigerV2 template={data} drillOptions={drillOptions} />
+      </V2Shell>
+    </div>
   );
 }

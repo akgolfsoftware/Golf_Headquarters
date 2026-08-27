@@ -1,9 +1,7 @@
 /**
- * AgencyOS — Plan-mal-detalj (/admin/plan-templates/[id]) — v2.
- * v2-port 17. juli 2026 (Team F1): `AdminPlanMalDetaljV2` erstatter
- * template-detail, ruten flyttet ut av (legacy). Auth-guard (COACH + ADMIN),
- * Prisma-queries (mal + økter + drill-navn-oppslag) og datamapping er
- * uendret — kun presentasjonslaget er nytt.
+ * AgencyOS — Plan-mal-detalj (/admin/plan-templates/[id]). Produksjonsside.
+ * Auth-guard, Prisma-queries og datamapping uendret — token/skall byttet
+ * til Train-lock via `TL_SCOPE`, se `../page.tsx` for begrunnelse.
  */
 
 import { notFound } from "next/navigation";
@@ -21,6 +19,7 @@ import {
   readDrills,
   readFordeling,
 } from "@/components/admin/plan-templates/shared";
+import { TL_SCOPE } from "@/components/workbench/wb-tl-scope";
 
 export const dynamic = "force-dynamic";
 
@@ -100,9 +99,11 @@ export default async function PlanTemplateDetailPage({
   };
 
   return (
-    <V2Shell bredde="kolonne" aktiv="planlegge" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"} avatarUrl={user.avatarUrl}>
-      <TilbakeLenke href="/admin/plan-templates">Plan-maler</TilbakeLenke>
-      <AdminPlanMalDetaljV2 template={data} />
-    </V2Shell>
+    <div style={TL_SCOPE}>
+      <V2Shell bredde="kolonne" aktiv="planlegge" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"} avatarUrl={user.avatarUrl}>
+        <TilbakeLenke href="/admin/plan-templates">Plan-maler</TilbakeLenke>
+        <AdminPlanMalDetaljV2 template={data} />
+      </V2Shell>
+    </div>
   );
 }

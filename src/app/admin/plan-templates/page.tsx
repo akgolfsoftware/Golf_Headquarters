@@ -1,12 +1,15 @@
 /**
- * v2-forhåndsvisning — AgencyOS Plan-maler (retning C). Egen top-level
- * route-group (v2preview) som IKKE arver AdminShell — kun root-layout — så
- * V2Shell leverer all chrome (IkonRail/BunnNav) i mørk v2-scope.
+ * AgencyOS — Plan-maler-indeks (/admin/plan-templates). Produksjonsside,
+ * IKKE forhåndsvisning — samme PlanTemplate-spørring den alltid har brukt
+ * (mest brukt → navn), med usageCount og økt-antall (_count.sessions).
  *
- * Auth + datakontrakt gjenbrukt 1:1 fra den ekte siden
- * (src/app/admin/plan-templates/page.tsx): samme requirePortalUser-guard
- * (ADMIN/COACH) og samme PlanTemplate-spørring (mest brukt → navn), med
- * usageCount og økt-antall (_count.sessions).
+ * Ingen egen Train-lock-fasit finnes for CRUD-flatene rundt plan-maler
+ * (Klasse A-porting, prinsipp-JA fra Anders, se
+ * `docs/natt/D-LYS-OG-5T-BESLUTNING.md` §2.2) — dette er en token/skall-jobb,
+ * ikke en funksjons-ombygging. `TL_SCOPE` skygger de gamle Paper-fargene
+ * (`--v2-*`) om til Train-lock (`--tl-*`) uten å røre komponent-internt
+ * markup — samme mønster som Workbench-uka (se
+ * `src/components/workbench/wb-tl-scope.ts`).
  *
  * Akse-fordeling: disciplinFordeling er en Json-kolonne — validert med zod
  * (safeParse) før visning, aldri `as`-castet. Ugyldig/ manglende blob → ærlig
@@ -27,6 +30,7 @@ import {
 import type { AkseKey } from "@/lib/v2/tokens";
 import { TilbakeLenke } from "@/components/v2";
 import { bygUkeOversikt } from "@/lib/domain/plan-uke-oversikt";
+import { TL_SCOPE } from "@/components/workbench/wb-tl-scope";
 
 export const dynamic = "force-dynamic";
 
@@ -46,7 +50,7 @@ function tilFordeling(blob: unknown): PlanMalFordeling[] {
   });
 }
 
-export default async function V2AdminPlanMalerPreviewPage() {
+export default async function AdminPlanMalerPage() {
   const user = await requirePortalUser({ allow: ["ADMIN", "COACH"] });
 
   // Samme select-kontrakt + sortering som den ekte plan-maler-indeksen, utvidet
@@ -89,12 +93,14 @@ export default async function V2AdminPlanMalerPreviewPage() {
   };
 
   return (
-    // "full" (ikke "kolonne"): inspektørpanelet på ≥1024px er en andre kolonne
-    // ved siden av lista (fasitens `<aside class="panel">`, 380px) — samme
-    // mønster som AdminGodkjenningerV2 sin «Køen i tall».
-    <V2Shell bredde="full" aktiv="planlegge" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>
-      <TilbakeLenke href="/admin/planlegge">Planlegge</TilbakeLenke>
-      <AdminPlanMalerV2 data={data} />
-    </V2Shell>
+    <div style={TL_SCOPE}>
+      {/* "full" (ikke "kolonne"): inspektørpanelet på ≥1024px er en andre
+          kolonne ved siden av lista (fasitens `<aside class="panel">`,
+          380px) — samme mønster som AdminGodkjenningerV2 sin «Køen i tall». */}
+      <V2Shell bredde="full" aktiv="planlegge" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>
+        <TilbakeLenke href="/admin/planlegge">Planlegge</TilbakeLenke>
+        <AdminPlanMalerV2 data={data} />
+      </V2Shell>
+    </div>
   );
 }
