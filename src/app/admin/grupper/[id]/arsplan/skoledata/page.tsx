@@ -3,11 +3,12 @@ import { requireCapability } from "@/lib/auth/requireCapability";
 import { Capability } from "@/lib/auth/cbac";
 import { prisma } from "@/lib/prisma";
 import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
-import { TilbakeLenke } from "@/components/v2";
+import { TlTilbake } from "@/components/admin/v2/oppsett/tl-kit";
 import { GruppeFaner } from "@/components/admin/v2/GruppeFaner";
 import { SkoledataForm } from "./skoledata-form";
 
 export const dynamic = "force-dynamic";
+export const metadata = { title: "Skoledata · Grupper · AgencyOS" };
 
 export default async function SkoledataPage({ params }: { params: Promise<{ id: string }> }) {
   // G6: skoledata redigerer årsplan-grunnlaget → EDIT_GROUP_PLANS.
@@ -19,9 +20,9 @@ export default async function SkoledataPage({ params }: { params: Promise<{ id: 
 
   return (
     <V2Shell bredde="kolonne" aktiv="spillere" nav={AGENCYOS_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
-      <TilbakeLenke href={`/admin/grupper/${id}/arsplan`}>Årsplan</TilbakeLenke>
+      <TlTilbake href={`/admin/grupper/${id}/arsplan`}>Årsplan</TlTilbake>
 
-      <div data-paper-slug="agencyos-gruppe-detalj" className="flex flex-col gap-4">
+      <div className="flex flex-col gap-4">
         <GruppeFaner groupId={id} aktiv="skoledata" />
 
         <div>

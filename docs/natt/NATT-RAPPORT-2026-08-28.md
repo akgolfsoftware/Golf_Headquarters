@@ -54,6 +54,24 @@ TEST_EXIT:0
 
 Skjermbilde-gate (390+1280, lys+mørk) er IKKE gjort — krever Anders før merge.
 
+### T8 — Grupper
+
+Train-lock-port av gruppeliste, gruppedetalj, timeplan og AK-stigen. Workbench-fane i gruppe-fanene. `lPhase`-etiketter i årsplan er allerede GRUNN/SPESIAL/TURNERING (`LPHASE_LABEL`). Stall-dag (A-10) gjenbrukt via lenke fra gruppedetalj. Årsplan-canvas (`WorkbenchAarsplan`) er delt med spiller-workbench og ble ikke portet isolert (unngå T/TL-blanding i canvas). Ny-gruppe-modalen er fortsatt Paper-tokens.
+
+Verify/test-bevis 28.08:
+
+```
+check-action-auth: OK.
+check-token-gap: ingen Presis-farger, ingen hex i style={{}}, className eller SVG.
+check-critical-imports: OK.
+VERIFY_EXIT:0
+
+ℹ tests 1749
+ℹ pass 1749
+ℹ fail 0
+TEST_EXIT:0
+```
+
 ---
 
 ## FEILET

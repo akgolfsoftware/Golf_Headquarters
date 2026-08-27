@@ -27,6 +27,7 @@ import {
 } from "./gruppe-actions";
 
 export const dynamic = "force-dynamic";
+export const metadata = { title: "Gruppe · AgencyOS" };
 
 function fmtHcp(h: number | null): string {
   if (h == null) return "—";

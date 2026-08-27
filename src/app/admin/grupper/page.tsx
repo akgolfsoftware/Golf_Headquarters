@@ -16,11 +16,12 @@ import { Capability } from "@/lib/auth/cbac";
 import { prisma } from "@/lib/prisma";
 import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
 import { GrupperV2, type GrupperData, type GruppeV2, type FastTid } from "@/components/admin/v2/GrupperV2";
-import { TilbakeLenke } from "@/components/v2";
+import { TlTilbake } from "@/components/admin/v2/oppsett/tl-kit";
 import { GfgkBootstrapButton, NyGruppeButton } from "./grupper-actions";
 import { GFGK_BOOTSTRAP_GRUPPER } from "@/lib/gfgk-junior/bootstrap";
 
 export const dynamic = "force-dynamic";
+export const metadata = { title: "Grupper · AgencyOS" };
 
 // Man-indeksert (0=mandag) ukedagsforkortelser — matcher AK-kalenderens uke.
 const DAG_KORT = ["Man", "Tir", "Ons", "Tor", "Fre", "Lør", "Søn"];
@@ -127,7 +128,7 @@ export default async function V2GrupperPage() {
 
   return (
     <V2Shell bredde="kolonne" aktiv="spillere" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>
-      <TilbakeLenke href="/admin/spillere">Stall</TilbakeLenke>
+      <TlTilbake href="/admin/spillere">Stall</TlTilbake>
       {manglerGfgk ? (
         <div style={{ marginBottom: 14 }}>
           <GfgkBootstrapButton />

@@ -12,14 +12,21 @@ import { requireCapability } from "@/lib/auth/requireCapability";
 import { Capability } from "@/lib/auth/cbac";
 import { prisma } from "@/lib/prisma";
 import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
-import { TilbakeLenke, Kort, Caps } from "@/components/v2";
+import { TlKort, TlTilbake } from "@/components/admin/v2/oppsett/tl-kit";
+import { GruppeFaner } from "@/components/admin/v2/GruppeFaner";
 import { GruppeAarsplanKlient } from "./gruppe-aarsplan-klient";
 import { coachLagreGruppePeriode, coachSlettGruppePeriode, coachRullUtGruppeAarsplan } from "@/lib/workbench/gruppe-periode-actions";
 import { parseSessionBudget } from "@/lib/workbench/perioder";
+import { dagNavnKort } from "@/lib/uke-helpers";
 
 export const dynamic = "force-dynamic";
+export const metadata = { title: "Gruppe-workbench · AgencyOS" };
 
-const DAGNAVN = ["man", "tir", "ons", "tor", "fre", "lør", "søn"];
+const OSLO_TID = new Intl.DateTimeFormat("nb-NO", {
+  timeZone: "Europe/Oslo",
+  hour: "2-digit",
+  minute: "2-digit",
+});
 
 export default async function GruppeWorkbenchPage({ params }: { params: Promise<{ id: string }> }) {
   // G6: gruppe-workbench redigerer gruppens årsplan → EDIT_GROUP_PLANS.
@@ -66,8 +73,9 @@ export default async function GruppeWorkbenchPage({ params }: { params: Promise<
   return (
     <V2Shell bredde="full" aktiv="spillere" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>
       <div>
-        <TilbakeLenke href={`/admin/grupper/${gruppe.id}`}>{gruppe.name}</TilbakeLenke>
+        <TlTilbake href={`/admin/grupper/${gruppe.id}`}>{gruppe.name}</TlTilbake>
       </div>
+      <GruppeFaner groupId={gruppe.id} aktiv="workbench" />
       <GruppeAarsplanKlient
         gruppeNavn={gruppe.name}
         medlemmer={gruppe._count.members}
@@ -76,19 +84,38 @@ export default async function GruppeWorkbenchPage({ params }: { params: Promise<
         onSlett={coachSlettGruppePeriode.bind(null, gruppe.id)}
         onRullUt={coachRullUtGruppeAarsplan.bind(null, gruppe.id)}
       />
-      <Kort eyebrow="Faste gruppetider" action={<Link href={`/admin/grupper/${gruppe.id}/timeplan`} style={{ textDecoration: "none" }}><Caps size={9}>Rediger timeplan →</Caps></Link>}>
+      <TlKort
+        eyebrow="Faste gruppetider"
+        action={
+          <Link href={`/admin/grupper/${gruppe.id}/timeplan`} style={{ fontSize: 13, color: "var(--tl-mute)", textDecoration: "none" }}>
+            Rediger timeplan
+          </Link>
+        }
+      >
         {gruppe.schedules.length > 0 ? (
           <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
             {gruppe.schedules.map((s, i) => (
-              <span key={i} style={{ fontFamily: "var(--v2-font-mono, monospace)", fontSize: 11, color: "var(--v2-fg2)", background: "var(--v2-panel2)", border: "1px solid var(--v2-border)", borderRadius: 9, padding: "6px 10px" }}>
-                {DAGNAVN[(s.startAt.getDay() + 6) % 7]} {String(s.startAt.getHours()).padStart(2, "0")}:{String(s.startAt.getMinutes()).padStart(2, "0")}–{String(s.endAt.getHours()).padStart(2, "0")}:{String(s.endAt.getMinutes()).padStart(2, "0")}{s.location ? ` · ${s.location}` : ""}
+              <span
+                key={i}
+                style={{
+                  fontSize: 12,
+                  color: "var(--tl-mute)",
+                  background: "var(--tl-dock)",
+                  boxShadow: "inset 0 0 0 1px var(--tl-hair)",
+                  borderRadius: 9,
+                  padding: "6px 10px",
+                  fontVariantNumeric: "tabular-nums",
+                }}
+              >
+                {dagNavnKort(s.startAt)} {OSLO_TID.format(s.startAt)}–{OSLO_TID.format(s.endAt)}
+                {s.location ? ` · ${s.location}` : ""}
               </span>
             ))}
           </div>
         ) : (
-          <span style={{ fontFamily: "Inter,system-ui,sans-serif", fontSize: 12, color: "var(--v2-mut)" }}>Ingen faste tider registrert.</span>
+          <span style={{ fontSize: 13, color: "var(--tl-mute)" }}>Ingen faste tider registrert.</span>
         )}
-      </Kort>
+      </TlKort>
     </V2Shell>
   );
 }
