@@ -20,6 +20,8 @@
  */
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
+import { requireCapability } from "@/lib/auth/requireCapability";
+import { Capability } from "@/lib/auth/cbac";
 import { prisma } from "@/lib/prisma";
 import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
 import { TlTilbake } from "@/components/admin/v2/oppsett/tl-kit";
@@ -61,6 +63,11 @@ function parseApningstider(raw: unknown): Apningstider | null {
 
 export default async function V2KlubbInnstillingerPage() {
   const user = await requirePortalUser({ allow: ["ADMIN"] });
+  // Fasilitet-CRUD-delen av denne siden var tidligere en egen flate
+  // (/admin/anlegg) gated på MANAGE_FACILITIES — behold den håndhevingen
+  // her etter konsolideringen (T13, 27.08.2026), ikke bare rolle-listen
+  // over, så en fremtidig per-trener-revoke fortsatt har effekt.
+  await requireCapability(Capability.MANAGE_FACILITIES);
 
   // Samme ukevindu som den gamle /admin/anlegg-ruten — bookinger denne uka
   // (mandag 00:00 til påfølgende mandag 00:00, lokal servertid).
