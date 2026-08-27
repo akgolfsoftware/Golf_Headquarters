@@ -50,6 +50,8 @@ export function RundeEtterregistreringKlient({ baner, siste }: Props) {
   const [courseId, setCourseId] = useState(baner[0]?.id ?? "");
   const [scores, setScores] = useState<Array<number | null>>(Array(ANTALL_HULL).fill(null));
   const [total, setTotal] = useState<number | null>(null);
+  /** Kun brukt i «Bare totalen» — gir et grovt SG-estimat (RU-04, merkes EST). */
+  const [totalPutt, setTotalPutt] = useState<number | null>(null);
   /** Par + lengde per hull fra baneregisteret; fallback par 4. */
   const [hullInfo, setHullInfo] = useState<Array<{ par: number; lengdeMeter: number }>>(
     Array.from({ length: ANTALL_HULL }, () => ({ par: 4, lengdeMeter: STANDARD_LENGDE[4] })),
@@ -154,6 +156,9 @@ export function RundeEtterregistreringKlient({ baner, siste }: Props) {
             courseId,
             playedAt: new Date(dato).toISOString(),
             hull,
+            // Syntetisert fra hullscore, ikke ekte lie/avstand — SG merkes
+            // "estimert" (RU-04), aldri "beregnet" som live slag-for-slag.
+            estimert: true,
           });
           setKvittering({ roundId: res.roundId, hull: hull.length, slag: res.score, rel: relStr });
         } else {
@@ -163,6 +168,7 @@ export function RundeEtterregistreringKlient({ baner, siste }: Props) {
             courseId,
             playedAt: new Date(dato).toISOString(),
             score: total as number,
+            putts: totalPutt ?? undefined,
           });
         }
       } catch (e) {
@@ -177,6 +183,7 @@ export function RundeEtterregistreringKlient({ baner, siste }: Props) {
   const nullstill = () => {
     setScores(Array(ANTALL_HULL).fill(null));
     setTotal(null);
+    setTotalPutt(null);
     setKvittering(null);
   };
 
@@ -641,6 +648,36 @@ export function RundeEtterregistreringKlient({ baner, siste }: Props) {
                     appearance: "textfield",
                   }}
                 />
+                <span style={{ ...eyebrowStil, display: "block", marginTop: 16 }}>putt (valgfritt)</span>
+                <input
+                  type="number"
+                  min={0}
+                  max={70}
+                  inputMode="numeric"
+                  placeholder="—"
+                  value={totalPutt ?? ""}
+                  aria-label="Totalt antall putt"
+                  onChange={(e) => {
+                    const v = parseInt(e.target.value, 10);
+                    setTotalPutt(v >= 0 && v <= 70 ? v : null);
+                  }}
+                  className="v2-focus"
+                  style={{
+                    width: "100%",
+                    minHeight: 48,
+                    marginTop: 8,
+                    textAlign: "center",
+                    fontFamily: T.mono,
+                    fontSize: 20,
+                    fontVariantNumeric: "tabular-nums",
+                    background: T.bg,
+                    color: T.fg,
+                    border: `1px solid ${T.border}`,
+                    borderRadius: 12,
+                    outline: "none",
+                    appearance: "textfield",
+                  }}
+                />
                 <p
                   style={{
                     margin: "12px 0 0",
@@ -650,8 +687,7 @@ export function RundeEtterregistreringKlient({ baner, siste }: Props) {
                     lineHeight: 1.55,
                   }}
                 >
-                  Uten hull for hull kan ikke Analyse regne SG per hull — men totalen teller
-                  fortsatt i snittet ditt. Helt greit å bruke den.
+                  Uten hull-for-hull blir SG et estimat, merket EST i Analyse.
                 </p>
               </div>
             )}

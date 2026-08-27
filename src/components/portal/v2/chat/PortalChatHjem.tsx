@@ -55,6 +55,7 @@ import { usePortalChat } from "./use-portal-chat";
 import { PortalStegListe } from "./PortalStegListe";
 import { PortalHvorforDette } from "./PortalHvorforDette";
 import { ArtefaktPanel, useErMobil } from "./ArtefaktPanel";
+import { RundeLiveArtefakt } from "@/components/portal/runde-logg/runde-live-artefakt";
 import { PushOptInBanner } from "@/components/portal/push-opt-in-banner";
 import { FangstSheet } from "./FangstSheet";
 import type { PortalChatMessage } from "./types";
@@ -922,6 +923,7 @@ export function PortalChatHjem({
             }}
           >
             <WorkbenchIDagArtefakt workbenchDay={workbenchDay} />
+            <RundeLiveArtefakt />
             {trackman && <TrackManTeaserKort trackman={trackman} />}
 
             {messages.length === 0 && heltTom && (
