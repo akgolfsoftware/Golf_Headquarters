@@ -2,152 +2,92 @@
 
 > **Hva dette er:** ett snapshot av hvor plattformen står akkurat nå. Oppdater datoen + relevante linjer når noe vesentlig endrer seg.
 
-**Sist oppdatert:** 2026-08-27 ettermiddag (T10 #617 + T11 #616 + T4-rest #618 merget;
-T6 i PR #620 og T13-detaljer i PR #619 venter på skjermbilde-gate; neste: T9 + bølge 2
-C2/C3/C4/C5 i parallelle cloud-økter — se LAUNCH-PLAN § 8.3).
-Samlet lanseringsplan: **`docs/natt/LAUNCH-PLAN-FULL-2026-08-25.md` § 8** (fersk status +
-neste steg, oppdatert 27.08 — vinner over MASTERPLAN der de overlapper).
+**Sist oppdatert:** 2026-08-27 kveld (alt av T9/C2/C3/C4/C5 + T6 #620 + T13-detaljer #619
+merget — 0 åpne PR-er; samlet plan skrevet).
+**Samlet lanseringsplan: `docs/LANSERINGSPLAN-KOMPLETT-2026-08-27.md`** — den ENE oversikten
+over alt gjenstående (sesjoner, web-QA, P0, beslutninger). LAUNCH-PLAN-FULL er detaljgrunnlag
+for T-/C-radene.
 
-## Hovedbildet 26.08 (målt mot git/kode/prod)
+## Hovedbildet 27.08 kveld (målt mot origin/main @ 4a7e7987)
 
-- **Bølge 1 er FERDIG og i main:** Loop 1/2/2S/3S, B2–B7, **B6 (#604)**, **B8 (#612)**.
-  RLS kjørt og verifisert aktiv i prod (#593). Alle B-radene i LAUNCH-PLAN §0.2 er nå levert.
-  Bølge N (data-bro, PEI-motor, Team Norway) også inne (#605).
-- **Train-lock-porten i gang:** T1-skallet (#596), T2-cockpit (#602), T3 Innboks +
-  godkjenninger (#609), T4 Stall + Spiller 360 (#608), **T13 Oppsett + Meg (#613,
-  inkl. «Spillere ser sin plan»-bryter lagt til etter skjermbilde-gjennomgang 27.08 —
-  UI-only placeholder, ikke koblet til ekte data ennå)** alle merget. **T5** vurdert
-  27.08: coach-Workbench var allerede fullt Train-lock-portet via D3/B5/B6 (se
-  `docs/natt/LEVERANSELOGG.md`) — ingen kodeendring nødvendig. Fasit synket fra zip (6) —
-  196 filer i `designsystem/train-lock/` (#603). Tokens i kode (#586 + font #597).
-- **Faktisk skjermstatus (målt 26.08, `docs/natt/SKJERM-STATUS-2026-08-26.md`):** av 240
-  skjerm-ruter er **2 reelt Train-lock** (Cockpit, TrackMan-detalj), **4 blandet** (bl.a.
-  coach-Workbench-uka fra D3), **234 fortsatt Paper-innhold** i det nye TL-skallet. Det er
-  forventet — T3–T13 og B8 er ikke kjørt — men tallet er nå målt, ikke antatt.
-  Remåling: `node scripts/maal-trainlock-status.mjs`.
-- **Etappe 3 i gang (27.08 ettermiddag):** T10 Turneringer (#617), T11 Innsikt-hub (#616)
-  og T4-restsidene spillere/ny + rediger (#618) er MERGET. **Åpne PR-er: #620 (T6
-  Plan-hub) og #619 (T13-detaljsider)** — begge venter på skjermbilde-gate + Anders' ja.
-  **§5T-beslutningskøen er LØST 27.08** (Anders, full detalj i
-  `docs/natt/D-LYS-OG-5T-BESLUTNING.md` § 0). Neste per planen: **T9** (Live + TrackMan
-  Agency, fri) og **bølge 2-start C2/C3/C4/C5** i parallelle økter — C2 låser opp T8, C3
-  låser opp T7, C4+C5 låser opp C8. Se `docs/natt/LAUNCH-PLAN-FULL-2026-08-25.md` § 8.3.
-- **P0-status (27.08):** Google Calendar re-kobling UTFØRT. Fortsatt åpent: DKIM, DNS
-  (`akgolf.no`), Stripe live-nøkler, aktiverings-e-post (ekte adresser ikke lagt inn),
-  `SCREENTEST_PASSWORD`-rotasjon. Se § 8.4 i LAUNCH-PLAN for detalj.
+- **Bølge 1 er FERDIG og i main:** Loop 1/2/2S/3S, B2–B8. RLS kjørt og verifisert aktiv i
+  prod (#593). Bølge N (data-bro, PEI-motor, Team Norway) inne (#605).
+- **T-bølgen nesten i mål:** T1–T6, T9–T11, T13 (+detaljer #619) og T4-rest alle merget.
+  T5 krevde ingen kode (allerede portet via D3/B5/B6). Gjenstår: **T7, T8, T12** (T12 venter
+  på C6+C7).
+- **Bølge 2 i gang:** C2 (#624), C3 (#623), C4 (#627), C5 (#625) merget 27.08. Gjenstår:
+  C1, C6, C7, C8 (sist), C9, C10.
+- **Målt skjermdekning (27.08 kveld):** 327 ruter → 45 PORTET / 7 BLANDET / **77 PAPER** /
+  95 chrome-only / 102 redirect. Største udekkede gap: **/portal har 53 Paper-ruter**
+  (Meg-familien, live-løypa, mal/analyse, tren-resten) — P-bølgen i den samlede planen
+  dekker dem. NB: `scripts/maal-trainlock-status.mjs` har hardkodet ROOT til hovedmappen —
+  sjekk hvilken gren hovedmappen står på før du stoler på tallene.
+- **Ingen åpne PR-er.** Alle §5T-beslutninger lukket 27.08 (`docs/natt/D-LYS-OG-5T-BESLUTNING.md` §0).
+- **Web-QA målt (20-punktsliste, se samlet plan §3):** to røde — sonner-toasts rendres aldri
+  (ingen `<Toaster/>` montert; admin-writes gir ingen bekreftelse) og kontaktsidens
+  telefonnummer er ikke klikkbart. Fikses i QA-1-sesjonen.
+- **P0-status:** Google Calendar re-kobling UTFØRT. Åpent: DKIM, DNS (`akgolf.no` +
+  vedlikeholdsmodus av), Stripe live-cutover, aktiverings-e-post (ekte adresser mangler),
+  `SCREENTEST_PASSWORD` (kildekonflikt — MASTERPLAN sier rotert 17.08, LAUNCH-PLAN sier åpen;
+  Anders avklarer). **Betaling starter automatisk 1. september** (`BETALING_STARTER`).
 
-## Hovedbildet 25.08 (historikk)
+## Neste steg
 
-- Train-lock besluttet som fasit for alle skjermer; Paper supersedert-merket; natt-spec
-  arkivert; bølge 1 lå da umerget på grener — alt dette er nå levert, se 26.08-avsnittet.
-
-## Hovedbildet 17.08 (målt, ikke antatt — historikk)
-
-- **Bygg:** `main` er grønn. ~1 390 enhetstester grønne (målt i port-sesjonene 17.08; 977 var tallet 13.08 — testdekningsløftet #488/#489 la til ~400).
-- **120 commits / 76 PR-er merget 13.–17.08.** De store sporene:
-  - **Integrasjonsbølgen 16.08:** A1–A5 (abonnement v2 med FULL/TALENT/INGEN, Stripe v2 med årspris 2 690, `resolveTilgang` v2, vinn-tilbake, ELITE-lekkasje tettet) · T1–T10 (test-deling, talent-gate, TalentHQ-registrering, TestResult→talentprofil-sync, CANON-avklaring 21 rader, DataGolf inn i Analyse, sync-vaktbikkje, ekstern lesetilgang WANG/Team Norway, terminologi) · G1–G6 (gruppetaksonomi, valgt coach, dedup-utrulling, plan-varsling, trener-i-gruppe, per-trener caps).
-  - **Talent-gaten var inert til 17.08:** rot- og mellomlayouter låste `/portal` til FULL (#537, #541 fikset; kontrakttester #539 avdekket det).
-  - **Jarvis:** `Sak`-modell + Gmail/iMessage-innsamlere + triage-agent + Telegram-godkjenning + `/meg` (3 av 12 skjermer, #532) + iOS Shortcuts-rute + Perplexity-verktøy. Se `docs/plan-agenticos-jarvis-2026-08-17.md`.
-  - **Port-systemfikser:** fase2-rail 1:1 (#500), clay-sweep (#502), delt Composer (#523), inspektørpanel (#524), portrett-lås + «Vri telefonen» (#498), bredde-gate 390px (#497), Paper-fonter/Presis-farger ut (#465/#499).
-  - **D-sporet:** ukesrapport i kø (D3), gapping-kart (D5), skoletidsbekreftelse (D6), AK-formel v3-taksonomi med 17 treningsområder + `TestDefinition.omraade` backfill 16/36 (D4).
-  - **WANG:** årsplan-flatene redesignet etter Claude Design `6061a53c` (#479) + tre prod-fikser (#486).
-- **DB (prod, målt 13.08):** 42 brukere · 38 spillere · 16 med innlogging · 0 push-abonnement · 22 bookinger. Aktiveringsgapet er 13 spillere (verken auth eller invitasjon).
+T7 (kalender) · T8 (grupper) · QA-1 (web-hygiene) i parallelle worktrees → C6 + C7 → T12.
+Full rekkefølge og alle gjenstående sesjoner: `docs/LANSERINGSPLAN-KOMPLETT-2026-08-27.md` §2.
 
 ## ⚠ Åpne risikopunkter
 
-1. **PII: `/team-wang` er åpen uten innlogging** (Anders 15.08, «pr nå») — inkl. `/coach` og
-   IUP-vurderinger av mindreårige. **PR #490 ligger klar** og lukker eksponeringen (fellessiden
-   forblir åpen men navnefri, coach sperres igjen). Trenger Anders' ja. #406 lukkes som overflødig.
-2. **`SCREENTEST_PASSWORD` fortsatt kompromittert/uroteret** (hendelsen 03.08). Blokkerer
-   sign-off-galleriene — rotasjonsscript ligger i repoet (`scripts/roter-screentest-passord.ts`).
-3. **Checklisten og planene spriker:** PAPER-ZIP-CHECKLIST førte 3 skjermer som ubygget som ER
-   bygget (rettet 17.08), PIXEL-PERFECT sa PP-A-gaten var åpen mens beslutninger.md sier besvart
-   (rettet 17.08). `rutefasit.md` W4 «Utgår»-linje er IKKE en slettliste — PORTPLAN §A0.
-
-## Paper-porten (styrende: PORTPLAN.md + PAPER-ZIP-CHECKLIST.md)
-
-- **40 av 88 aktive fasit-rader signert (45 %)** · 41 `[~]` bygget-men-usignert · 4 reelt ubygget
-  (2 blokkert: `wang-logg-inn` på #406/OTP-beslutning, D1 Workbench F4 på DB-ja; D2 er ublokkert
-  siden 15.08, D4 mangler ~12 testers backfill).
-- **0 av 72 variantruter kvittert** (W3: 9 · W4: 38 · W5: 25). W4s 38 kan kvitteres NÅ — alle
-  8 maler er signert.
-- **PP-B systemfikser ~80 % ferdig:** B1 rail ✅ · B2 clay delvis (44 filer bruker `enTing`) ·
-  **B3 halvveis — `Composer` er ekstrahert men IKKE montert i `V2Shell`** (0 kallsteder på
-  `composer=`-propen) · B4 uverifisert · B5 ✅.
-- **PORTPLAN (17.08):** 24 mal-fasiter dekker 164 ruter i 54 rader. 25 rader stryker
-  én-linje-testen (venter design/beslutning). **Fem sesjoner kan startes uten nye svar:**
-  S3 (systemtilstander — PR #549 åpen), S9 (booking-ny), S17 (turneringer), S22 (AgenticOS-hub),
-  S23 (agent-detalj). 10 A1-beslutninger venter på Anders (PORTPLAN §A1).
-- **Jarvis-fasitene (12 skjermer i `designsystem/paper/jarvis/`) er utenfor checklist-regnskapet**
-  — eget spor i PORTPLAN §B6; 3 av 12 portet (+1 i draft #547).
-- **Kritisk sti:** rotér screentest-passordet → kjør galleribølgene C1–C7 → kvitter W4-variantene.
-
-## Åpne PR-er (17.08)
-
-| PR | Hva | Venter på |
-|---|---|---|
-| #549 | Port S3 systemtilstander (felles 404) + login-fiks | Skjermbilde-gate på preview |
-| #547 | Jarvis Maskinrommet (skjerm 9/12), draft | Skjermbilde-gate + Anders |
-| #542 | Innganger for 13 skjulte PlayerHQ-flater | Skjermbilde-gate (9 skjermer) |
-| #534 | AP0 SG-grunnmur (én SG-sannhet, ellipse-bug fikset), draft | Anders (hører til #514-planen) |
-| #514 | Plan: egen SG-app + baneguide (AP0–AP6), docs, draft | Anders' ja til planen |
-| #490 | WANG PII-fiks (lukker åpen eksponering), draft | **Anders — haster** |
-| #406 | Gammel WANG-PR | Lukkes som overflødig når #490 merges |
-
-## Blokkert — P0 før ekte/betalende brukere (uendret spor)
-
-**Hos Anders (panel/DNS):** Resend DKIM for `send.akgolf.no` · `akgolf.no` → Vercel ·
-live Stripe-nøkler + webhook-verifisering (13 event-typer, sjekkliste:
-`docs/platform/stripe-cutover-sjekkliste.md`, testmodus komplett 16.08 #538) ·
-Google Calendar re-kobling · aktiverings-e-post (ekte spiller-adresser må inn — dry-run 13.08
-viste 14 «ok» mot syntetiske adresser) · rotér `SCREENTEST_PASSWORD`.
-
-**Kode/data:** aktiveringsflyt for de 13 spillerne uten auth/invitasjon · push-opt-in har motor
-og banner, men 0 abonnementer · betaling starter **1. september 2026** (`BETALING_STARTER` i
-`src/lib/feature-flags.ts` — `gratisForAlle()` slår av automatisk; verifiser cutover).
-
-**Kjent, bevisst åpent:** CSP-blokkert Turbopack-chunk i prod (konsollstøy, rendrer riktig —
-ikke fikset uten bevist effekt, jf. 03.08-målingen).
+1. **`SCREENTEST_PASSWORD`-kildekonflikt** (se P0 over) — blokkerer e2e-secrets i CI
+   (427 spillertester hoppes over).
+2. **Admin-writes uten synlig bekreftelse** (sonner aldri montert) — brukeropplevd
+   «skjedde det noe?» på godkjenninger/Workbench-lagring. QA-1 fikser.
+3. **Betalings-cutover 1. september er 5 dager unna** med 5 av 6 P0-punkter åpne —
+   V1-verifiseringen (test-clock, talent-gate i prod, push-opt-in) er ikke kjørt.
 
 ## Levende kilder (én av hver rolle — start her)
 
 | Rolle | Dokument |
 |---|---|
 | **Snapshot (denne)** | `docs/STATUS-NÅ.md` |
-| **Samlet gjenstående-plan** | `docs/MASTERPLAN-GJENSTAAENDE.md` |
+| **Samlet gjenstående-plan** | `docs/LANSERINGSPLAN-KOMPLETT-2026-08-27.md` |
+| **T-/C-rad-detaljer** | `docs/natt/LAUNCH-PLAN-FULL-2026-08-25.md` |
 | **Designfasit (alle skjermer)** | `designsystem/train-lock/DESIGN-SYSTEM.md` + `SCREEN-INDEX.md` |
 | **Uavklart / parkert / løst** | `docs/AAPNE-SPORSMAAL.md` |
 | **Låste forretningsregler** (fasit) | `docs/platform/BUSINESS-RULES.md` |
 | **Full plattformkontekst** (5 min) | `docs/platform/AGENT-BRIEF.md` |
-| **Lansering** | `docs/natt/LAUNCH-PLAN-FULL-2026-08-25.md` + `docs/platform/stripe-cutover-sjekkliste.md` |
+| **Stripe-cutover** | `docs/platform/stripe-cutover-sjekkliste.md` |
 | **AgenticOS + Jarvis** | `docs/plan-agenticos-jarvis-2026-08-17.md` |
 | **Arkiv: den avsluttede Paper-porten** | `docs/arkiv/paper-port/` (rutekartlegging med referanseverdi) |
 
 Historiske bygg-spor, nattrapporter, gallerier og erstattede planer er slettet 05.08, 17.08
 og 27.08.2026 (opprydding) — de lever i git-historikken, ikke bygg mot dem.
+`docs/MASTERPLAN-GJENSTAAENDE.md` (17.08) er supersedert som samlet oversikt av den nye
+planen; PR-tabellen og steg 0-listen der er utdatert (alle PR-ene merget 17.08).
 
 ## Ferdig / solid (verifisert, komprimert)
 
 - **Prod kjører** på `akgolf-hq.vercel.app`; push til `main` deployer via Vercel git-integrasjon
-  (aldri `vercel deploy --prod` manuelt).
+  (aldri `vercel deploy --prod` manuelt). `akgolf.no` står i vedlikeholdsmodus (#574) til DNS-cutover.
 - **PlayerHQ-kjernen:** Hjem/chat, Plan, Analyse (m/ DataGolf-fane + SG-bro), Meg (+ profil,
-  utstyr), Workbench V2, live-økt, runde-føring (live + etterregistrering, hull/slag, SG
-  server-side), testbatteri med live `TestSession`-scoring (21 CANON-protokoller for spiller).
-- **AgencyOS:** cockpit/konsoll (tråd + åtte-punkts rail → nå fase2-rail 7 punkter), innboks
-  (m/ Jarvis-sakskø), stall, kalender, godkjenninger, økonomi, AgenticOS-hub — ekte Prisma-data.
+  utstyr), Workbench V2 (uke + kilder/drag/serie + godta/avvis), live-økt, runde-føring
+  (live-artefakt fra C5, hull/slag, SG server-side m/ EST-merking), testbatteri med live
+  `TestSession`-scoring + Gate/Innspill-artefakt (C4), TrackMan DispersionMap (B7).
+- **AgencyOS:** TL-skall (AX-01, 5 destinasjoner), cockpit, innboks + godkjenninger, stall
+  (+ dag-visning C2), Spiller 360, kalender-lag (C3), live-tavle + TrackMan (T9), turneringer
+  (T10), Innsikt-hub (T11), plan-hub (T6), oppsett + Meg (T13) — alt Train-lock.
 - **Domenemotorer m/ tester:** SG (Broadie + Team Norway IUP PUTT), fys-score v1 (stall-relativ,
   plassholder-merket i UI), ak-kategori, test-scoring (15 ScoringKind), talent-sync,
-  plan-builder, uke-helpers (Oslo-korrekt).
+  plan-builder, uke-helpers (Oslo-korrekt), PEI/scorekort (N3), Tripletex-klient (read-only).
 - **Datapipelines:** GolfBox (timesvis) + GJGT (daglig) + DataGolf (schedule daglig, live hvert
-  10. min, skills ukentlig) + sync-vaktbikkje mandager. Se `docs/turnering-datakilder.md` for
-  dekningskartet.
-- **Foreldreportal** 11/11 ruter ekte data · **GDPR/moderering** bygget · **ekstern lesetilgang**
-  (Team Norway/WANG, samtykke-håndhevet) bygget 16.08.
+  10. min, skills ukentlig) + sync-vaktbikkje mandager. Se `docs/turnering-datakilder.md`.
+- **Foreldreportal** 11/11 ruter ekte data (design-port gjenstår, F1) · **GDPR/moderering**
+  bygget · **ekstern lesetilgang** (Team Norway/WANG, samtykke-håndhevet) bygget 16.08.
 
 ## Verifisert vs. antatt
 
-- **Verifisert 17.08 (kode/git):** alle tall i dette dokumentet om port, PR-er, faner, rail,
-  talent-gate og Jarvis er målt mot `main` @ `1f3e127`.
+- **Verifisert 27.08 (kode/git):** merge-status, skjermdekning, QA-punktene og PR-tilstand er
+  målt mot `origin/main` @ `4a7e7987` + `gh pr list`.
 - **DB-tall** er fra målingen 13.08 (mot `DIRECT_URL`, prod) — remåles ved neste aktiveringspush.
 - **Antatt / panel (kun Anders kan verifisere):** Stripe live-nøkler, Resend DKIM,
-  Google Calendar-tokens, DNS `akgolf.no`.
+  DNS `akgolf.no`, SCREENTEST-rotasjonens faktiske tilstand.
