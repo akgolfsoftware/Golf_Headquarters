@@ -88,6 +88,19 @@ VERIFY_EXIT:0
 TEST_EXIT:0
 ```
 
+### C6 — Jarvis-merge-motor
+
+Eval-gate (ACWR 0,8–1,3 · kollisjon · motorer adskilt · drills komplette) + proveniens. Jarvis merger aldri. `src/lib/jarvis/` urørt. Testdata: Filip 4/4 ÅPEN, Jonas ACWR 1,46 STENGT.
+
+Verify/test-bevis 28.08:
+
+```
+VERIFY_EXIT:0
+ℹ tests 1760
+ℹ pass 1760
+TEST_EXIT:0
+```
+
 ---
 
 ## FEILET
