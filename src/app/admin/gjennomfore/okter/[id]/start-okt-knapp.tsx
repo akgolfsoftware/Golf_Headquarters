@@ -2,7 +2,7 @@
 
 // Start økt / Åpne live-konsoll (client-leaf) for økt-detalj.
 // Kaller server-action startOkt → kobler Booking til en TrainingSessionV2 og
-// navigerer til live-konsollens brief (/admin/live/[sessionId]/brief).
+// navigerer til live-økt-siden (/admin/agencyos/live/[sessionId]).
 
 import { Knapp } from "@/components/v2";
 import { useState, useTransition } from "react";
@@ -28,7 +28,7 @@ export function StartOktKnapp({
     startTransition(async () => {
       const res = await startOkt(bookingId);
       if (res.ok && res.sessionId) {
-        router.push(`/admin/live/${res.sessionId}/brief`);
+        router.push(`/admin/agencyos/live/${res.sessionId}`);
       } else {
         setError(res.error ?? "Kunne ikke starte økten. Prøv igjen.");
       }

@@ -118,7 +118,7 @@ export default async function OktDetaljPage({
                 <StartOktKnapp bookingId={booking.id} label={status === "AKTIV NÅ" ? "Åpne live-konsoll" : "Start økt"} />
               </>
             ) : booking.trainingSessionV2Id ? (
-              <Link href={`/admin/live/${booking.trainingSessionV2Id}/summary`} style={{ textDecoration: "none" }}>
+              <Link href={`/admin/agencyos/live/${booking.trainingSessionV2Id}`} style={{ textDecoration: "none" }}>
                 <CTAPill icon="send">Skriv oppfølging</CTAPill>
               </Link>
             ) : (
@@ -293,7 +293,7 @@ export default async function OktDetaljPage({
             <StartOktKnapp bookingId={booking.id} label={status === "AKTIV NÅ" ? "Åpne live" : "Start"} fullWidth />
           </>
         ) : booking.trainingSessionV2Id ? (
-          <Link href={`/admin/live/${booking.trainingSessionV2Id}/summary`} style={{ textDecoration: "none", flex: 1 }}>
+          <Link href={`/admin/agencyos/live/${booking.trainingSessionV2Id}`} style={{ textDecoration: "none", flex: 1 }}>
             <CTAPill icon="send">Skriv oppfølging</CTAPill>
           </Link>
         ) : (
