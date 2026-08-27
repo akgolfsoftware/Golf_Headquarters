@@ -1,13 +1,15 @@
 /**
- * AgencyOS · Norge turneringskart (MVP)
- * Dekning, toppliste, ærlig tomtilstand.
+ * AgencyOS · Norge turneringskart (MVP) — Train-lock (T10, 27.08.2026).
+ * Dekning, toppliste, ærlig tomtilstand. Minimal TL-verktøyside etter
+ * TU-01-mønsteret (D-LYS-OG-5T-BESLUTNING.md §0.9/§2.3).
  */
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
-import { TilbakeLenke, Caps, Tittel, Kort, TomTilstand } from "@/components/v2";
-import { T } from "@/lib/v2/tokens";
+import { TL } from "@/lib/v2/train-lock";
+import { TlKort, TlTilbake, TlTomTilstand } from "@/components/admin/v2/oppsett/tl-kit";
+import { TlCaps } from "@/components/admin/v2/godkjenninger/tl-inspektor";
 
 export const dynamic = "force-dynamic";
 
@@ -71,18 +73,15 @@ export default async function TurneringKartPage() {
       avatarUrl={user.avatarUrl}
     >
       <div style={{ maxWidth: 900, margin: "0 auto", padding: "16px 0 48px" }}>
-        <TilbakeLenke href="/admin/spillere">Stall</TilbakeLenke>
+        <TlTilbake href="/admin/spillere">Stall</TlTilbake>
         <div style={{ marginTop: 16 }}>
-          <Caps>Data · Norge</Caps>
-          <div style={{ marginTop: 10 }}>
-            <Tittel em="kart.">Turneringsdekning</Tittel>
-          </div>
+          <TlCaps>Data · Norge</TlCaps>
+          <h1 style={{ margin: "10px 0 0", fontSize: 26, fontWeight: 700, letterSpacing: "-0.01em", color: TL.text }}>Turneringsdekning</h1>
           <p
             style={{
               margin: "10px 0 0",
-              fontFamily: T.ui,
               fontSize: 13.5,
-              color: T.fg2,
+              color: TL.mute,
               maxWidth: 520,
               lineHeight: 1.5,
             }}
@@ -94,7 +93,7 @@ export default async function TurneringKartPage() {
 
         <div
           className="grid grid-cols-2 lg:grid-cols-4"
-          style={{ gap: T.gap, marginTop: 22 }}
+          style={{ gap: 10, marginTop: 22 }}
         >
           {[
             { k: "Norske spillere", v: noPlayers },
@@ -104,30 +103,31 @@ export default async function TurneringKartPage() {
             { k: "NO-turneringer", v: tournamentsNo },
             { k: "Entries siden 2016", v: since2016 },
           ].map((x) => (
-            <Kort key={x.k}>
-              <Caps size={9}>{x.k}</Caps>
+            <TlKort key={x.k}>
+              <TlCaps size={9}>{x.k}</TlCaps>
               <div
                 style={{
-                  fontFamily: T.mono,
+                  fontFamily: TL.font.mono,
                   fontSize: 28,
                   fontWeight: 700,
-                  color: T.lime,
+                  color: TL.text,
                   marginTop: 8,
+                  fontVariantNumeric: "tabular-nums",
                 }}
               >
                 {x.v.toLocaleString("nb-NO")}
               </div>
-            </Kort>
+            </TlKort>
           ))}
         </div>
 
         <div
           className="grid grid-cols-1 lg:grid-cols-2"
-          style={{ gap: T.gap, marginTop: T.gap }}
+          style={{ gap: 18, marginTop: 18 }}
         >
-          <Kort eyebrow="Kilder (tournaments)">
+          <TlKort eyebrow="Kilder (tournaments)">
             {byOrigin.length === 0 ? (
-              <TomTilstand
+              <TlTomTilstand
                 icon="database"
                 title="Ingen turneringer"
                 sub="Kjør GolfBox/DataGolf-sync."
@@ -141,24 +141,23 @@ export default async function TurneringKartPage() {
                     justifyContent: "space-between",
                     padding: "10px 0",
                     borderBottom:
-                      i < byOrigin.length - 1 ? `1px solid ${T.border}` : "none",
-                    fontFamily: T.ui,
+                      i < byOrigin.length - 1 ? `1px solid ${TL.hair}` : "none",
                     fontSize: 13,
-                    color: T.fg,
+                    color: TL.text,
                   }}
                 >
                   <span>{o.sourceOrigin ?? "ukjent"}</span>
-                  <span style={{ fontFamily: T.mono, color: T.mut }}>
+                  <span style={{ fontFamily: TL.font.mono, color: TL.mute, fontVariantNumeric: "tabular-nums" }}>
                     {o._count}
                   </span>
                 </div>
               ))
             )}
-          </Kort>
+          </TlKort>
 
-          <Kort eyebrow="Flest resultater (NO)">
+          <TlKort eyebrow="Flest resultater (NO)">
             {topPlayers.length === 0 ? (
-              <TomTilstand
+              <TlTomTilstand
                 icon="users"
                 title="Ingen spillere"
                 sub="Importer historikk for å fylle listen."
@@ -174,26 +173,25 @@ export default async function TurneringKartPage() {
                     padding: "10px 0",
                     borderBottom:
                       i < topPlayers.length - 1
-                        ? `1px solid ${T.border}`
+                        ? `1px solid ${TL.hair}`
                         : "none",
                   }}
                 >
                   <div>
                     <div
                       style={{
-                        fontFamily: T.ui,
                         fontSize: 13,
                         fontWeight: 600,
-                        color: T.fg,
+                        color: TL.text,
                       }}
                     >
                       {p.name}
                     </div>
                     <div
                       style={{
-                        fontFamily: T.mono,
+                        fontFamily: TL.font.mono,
                         fontSize: 9,
-                        color: T.mut,
+                        color: TL.mute,
                         marginTop: 3,
                       }}
                     >
@@ -203,10 +201,11 @@ export default async function TurneringKartPage() {
                   </div>
                   <span
                     style={{
-                      fontFamily: T.mono,
+                      fontFamily: TL.font.mono,
                       fontSize: 12,
                       fontWeight: 700,
-                      color: T.lime,
+                      color: TL.text,
+                      fontVariantNumeric: "tabular-nums",
                     }}
                   >
                     {p._count.entries}
@@ -214,7 +213,7 @@ export default async function TurneringKartPage() {
                 </div>
               ))
             )}
-          </Kort>
+          </TlKort>
         </div>
       </div>
     </V2Shell>

@@ -19,9 +19,31 @@
 
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { Kort, T, StatusPill } from "@/components/v2";
+import { TL } from "@/lib/v2/train-lock";
+import { TlKort } from "@/components/admin/v2/oppsett/tl-kit";
 import { Icon } from "@/components/v2/icon";
 import { mergeTurneringer } from "../actions";
+
+/** Nøytralt merke — ingen fargekoding (train-lock.ts §Signal). */
+function TlMerke({ children }: { children: React.ReactNode }) {
+  return (
+    <span
+      style={{
+        fontSize: 10,
+        fontWeight: 700,
+        letterSpacing: "0.06em",
+        textTransform: "uppercase",
+        color: TL.mute,
+        boxShadow: `inset 0 0 0 1px ${TL.hair}`,
+        borderRadius: 999,
+        padding: "3px 8px",
+        whiteSpace: "nowrap",
+      }}
+    >
+      {children}
+    </span>
+  );
+}
 
 const SANNSYNLIG_TERSKEL = 250;
 
@@ -77,12 +99,16 @@ export function MergeDubletterListe({ liste }: { liste: MergeKandidat[] }) {
   );
 }
 
-/** Ett felt i side-om-side-diffen. `ulik` fremhever verdien når sidene avviker. */
+/**
+ * Ett felt i side-om-side-diffen. `ulik` fremhever verdien når sidene
+ * avviker — kun opasitet/vekt, aldri farge (train-lock.ts §Signal: negativ
+ * verdi = samme tekstfarge med opasitet + fortegn, ikke rødt).
+ */
 function Diffrad({ label, verdi, ulik }: { label: string; verdi: string; ulik?: boolean }) {
   return (
-    <div style={{ display: "flex", gap: 8, fontFamily: T.mono, fontSize: 11, padding: "5px 0", borderBottom: `1px solid ${T.border}` }}>
-      <span style={{ color: T.mut, minWidth: 74, flex: "none" }}>{label}</span>
-      <span style={{ color: ulik ? T.down : T.fg, minWidth: 0 }}>{verdi}</span>
+    <div style={{ display: "flex", gap: 8, fontFamily: TL.font.mono, fontSize: 11, padding: "5px 0", borderBottom: `1px solid ${TL.hair}` }}>
+      <span style={{ color: TL.mute, minWidth: 74, flex: "none" }}>{label}</span>
+      <span style={{ color: TL.text, fontWeight: ulik ? 700 : 400, minWidth: 0 }}>{verdi}</span>
     </div>
   );
 }
@@ -113,24 +139,24 @@ function DublettKort({ kandidat }: { kandidat: MergeKandidat }) {
   const sannsynlig = topp !== null && topp.score >= SANNSYNLIG_TERSKEL;
 
   return (
-    <Kort pad="0">
-      <div style={{ borderBottom: `1px solid ${T.border}`, background: T.panel2, padding: "14px 20px", borderRadius: "20px 20px 0 0" }}>
+    <TlKort pad="0" style={{ borderRadius: TL.radius.card }}>
+      <div style={{ borderBottom: `1px solid ${TL.hair}`, background: TL.dock, padding: "14px 20px", borderRadius: `${TL.radius.card} ${TL.radius.card} 0 0` }}>
         <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap", justifyContent: "space-between" }}>
           <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
-            <StatusPill tone="info">Manuell</StatusPill>
-            <span style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 14.5, color: T.fg }}>{kandidat.manual.name}</span>
+            <TlMerke>Manuell</TlMerke>
+            <span style={{ fontWeight: 700, fontSize: 14.5, color: TL.text }}>{kandidat.manual.name}</span>
           </div>
-          {topp && <StatusPill tone={sannsynlig ? "lime" : "info"}>{sannsynlig ? "Sannsynlig dublett" : "Usikker"}</StatusPill>}
+          {topp && <TlMerke>{sannsynlig ? "Sannsynlig dublett" : "Usikker"}</TlMerke>}
         </div>
         <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: 14, marginTop: 6 }}>
-          <span style={{ fontFamily: T.ui, fontSize: 11.5, color: T.mut }}>{formaterDato(kandidat.manual.startDate)}</span>
+          <span style={{ fontSize: 11.5, color: TL.mute }}>{formaterDato(kandidat.manual.startDate)}</span>
           {kandidat.manual.location && (
-            <span style={{ display: "inline-flex", alignItems: "center", gap: 4, fontFamily: T.ui, fontSize: 11.5, color: T.mut }}>
+            <span style={{ display: "inline-flex", alignItems: "center", gap: 4, fontSize: 11.5, color: TL.mute }}>
               <Icon name="map-pin" size={11} /> {kandidat.manual.location}
             </span>
           )}
           {kandidat.manual.createdByName && (
-            <span style={{ display: "inline-flex", alignItems: "center", gap: 4, fontFamily: T.ui, fontSize: 11.5, color: T.mut }}>
+            <span style={{ display: "inline-flex", alignItems: "center", gap: 4, fontSize: 11.5, color: TL.mute }}>
               <Icon name="user" size={11} /> {kandidat.manual.createdByName}
             </span>
           )}
@@ -139,17 +165,17 @@ function DublettKort({ kandidat }: { kandidat: MergeKandidat }) {
 
       <div style={{ padding: "16px 20px" }}>
         {topp === null ? (
-          <p style={{ margin: 0, fontFamily: T.ui, fontSize: 12.5, color: T.mut }}>
+          <p style={{ margin: 0, fontSize: 12.5, color: TL.mute }}>
             Ingen automatiske match-forslag. Du kan velge fra full liste i AgencyOS.
           </p>
         ) : sannsynlig ? (
           <>
-            <p style={{ margin: "0 0 12px", fontFamily: T.ui, fontSize: 12, color: T.mut }}>
+            <p style={{ margin: "0 0 12px", fontSize: 12, color: TL.mute }}>
               Sammenslåing kan ikke angres. Velg hvilken oppføring som beholdes — resultater og påmeldinger flyttes over til den, den andre slettes.
             </p>
             <div className="grid grid-cols-1 sm:grid-cols-2" style={{ gap: 12 }}>
-              <div style={{ padding: "12px 14px", borderRadius: 10, background: T.panel, border: `1px solid ${T.fg}` }}>
-                <div style={{ fontFamily: T.ui, fontSize: 12.5, fontWeight: 600, color: T.fg, marginBottom: 8 }}>
+              <div style={{ padding: "12px 14px", borderRadius: 10, background: TL.dock, boxShadow: `inset 0 0 0 1px ${TL.text}` }}>
+                <div style={{ fontSize: 12.5, fontWeight: 600, color: TL.text, marginBottom: 8 }}>
                   Beholdes · {SOURCE_LABEL[topp.sourceOrigin ?? ""] ?? topp.sourceOrigin ?? "?"}
                 </div>
                 <Diffrad label="Navn" verdi={topp.name} ulik={topp.name !== kandidat.manual.name} />
@@ -158,8 +184,8 @@ function DublettKort({ kandidat }: { kandidat: MergeKandidat }) {
                 <Diffrad label="Påmeldte" verdi={String(topp.antallEntries)} />
                 <Diffrad label="Resultater" verdi={String(topp.antallResults)} />
               </div>
-              <div style={{ padding: "12px 14px", borderRadius: 10, background: T.panel3, border: `1px solid ${T.border}` }}>
-                <div style={{ fontFamily: T.ui, fontSize: 12.5, fontWeight: 600, color: T.fg, marginBottom: 8 }}>Slettes · Manuell</div>
+              <div style={{ padding: "12px 14px", borderRadius: 10, background: TL.dock, opacity: 0.7 }}>
+                <div style={{ fontSize: 12.5, fontWeight: 600, color: TL.text, marginBottom: 8 }}>Slettes · Manuell</div>
                 <Diffrad label="Navn" verdi={kandidat.manual.name} ulik={topp.name !== kandidat.manual.name} />
                 <Diffrad label="Dato" verdi={formaterDato(kandidat.manual.startDate)} ulik={formaterDato(topp.startDate) !== formaterDato(kandidat.manual.startDate)} />
                 <Diffrad label="Bane" verdi={kandidat.manual.location ?? "—"} ulik={(topp.location ?? "") !== (kandidat.manual.location ?? "")} />
@@ -173,9 +199,9 @@ function DublettKort({ kandidat }: { kandidat: MergeKandidat }) {
                 onClick={() => handleMerge(kandidat.manual.id, topp.id, topp.name)}
                 disabled={isPending}
                 className="v2-press v2-focus"
-                style={{ display: "inline-flex", alignItems: "center", gap: 6, appearance: "none", cursor: isPending ? "default" : "pointer", borderRadius: 9999, padding: "8px 15px", fontFamily: T.ui, fontSize: 12, fontWeight: 700, color: T.onLime, background: T.lime, border: "none", opacity: isPending ? 0.6 : 1 }}
+                style={{ display: "inline-flex", alignItems: "center", gap: 6, appearance: "none", cursor: isPending ? "default" : "pointer", borderRadius: TL.radius.pill, padding: "8px 15px", fontSize: 12, fontWeight: 700, color: TL.onFill, background: TL.fill, border: "none", opacity: isPending ? 0.6 : 1 }}
               >
-                <Icon name={isPending ? "loader" : "git-compare"} size={13} style={{ color: T.onLime }} />
+                <Icon name={isPending ? "loader" : "git-compare"} size={13} style={{ color: TL.onFill }} />
                 Slå sammen
               </button>
               <button
@@ -183,7 +209,7 @@ function DublettKort({ kandidat }: { kandidat: MergeKandidat }) {
                 onClick={() => handleMerge(topp.id, kandidat.manual.id, kandidat.manual.name)}
                 disabled={isPending}
                 className="v2-press v2-focus"
-                style={{ appearance: "none", cursor: isPending ? "default" : "pointer", borderRadius: 9999, padding: "8px 15px", fontFamily: T.ui, fontSize: 12, fontWeight: 600, color: T.fg, background: "transparent", border: `1px solid ${T.border}`, opacity: isPending ? 0.6 : 1 }}
+                style={{ appearance: "none", cursor: isPending ? "default" : "pointer", borderRadius: TL.radius.pill, padding: "8px 15px", fontSize: 12, fontWeight: 600, color: TL.text, background: TL.dim, border: "none", opacity: isPending ? 0.6 : 1 }}
               >
                 Bytt hvilken som beholdes
               </button>
@@ -191,7 +217,7 @@ function DublettKort({ kandidat }: { kandidat: MergeKandidat }) {
           </>
         ) : (
           <>
-            <p style={{ margin: "0 0 12px", fontFamily: T.ui, fontSize: 12.5, color: T.fg2 }}>
+            <p style={{ margin: "0 0 12px", fontSize: 12.5, color: TL.text }}>
               Samme dato, men svakt navnetreff — kan være ulike turneringer. Sjekk før du slår sammen.
             </p>
             <button
@@ -199,22 +225,22 @@ function DublettKort({ kandidat }: { kandidat: MergeKandidat }) {
               onClick={() => handleMerge(kandidat.manual.id, topp.id, topp.name)}
               disabled={isPending}
               className="v2-press v2-focus"
-              style={{ display: "inline-flex", alignItems: "center", gap: 6, appearance: "none", cursor: isPending ? "default" : "pointer", borderRadius: 9999, padding: "8px 15px", fontFamily: T.ui, fontSize: 12, fontWeight: 700, color: T.onLime, background: T.lime, border: "none", opacity: isPending ? 0.6 : 1 }}
+              style={{ display: "inline-flex", alignItems: "center", gap: 6, appearance: "none", cursor: isPending ? "default" : "pointer", borderRadius: TL.radius.pill, padding: "8px 15px", fontSize: 12, fontWeight: 700, color: TL.onFill, background: TL.fill, border: "none", opacity: isPending ? 0.6 : 1 }}
             >
-              <Icon name={isPending ? "loader" : "git-compare"} size={13} style={{ color: T.onLime }} />
+              <Icon name={isPending ? "loader" : "git-compare"} size={13} style={{ color: TL.onFill }} />
               Slå sammen med «{topp.name}»
             </button>
           </>
         )}
 
         {restForslag.length > 0 && (
-          <div style={{ marginTop: 14, paddingTop: 12, borderTop: `1px solid ${T.border}` }}>
-            <span style={{ fontFamily: T.mono, fontSize: 10, letterSpacing: "0.06em", textTransform: "uppercase", color: T.mut }}>
+          <div style={{ marginTop: 14, paddingTop: 12, borderTop: `1px solid ${TL.hair}` }}>
+            <span style={{ fontFamily: TL.font.mono, fontSize: 10, letterSpacing: "0.06em", textTransform: "uppercase", color: TL.mute }}>
               {restForslag.length === 1 ? "Ett annet forslag" : `${restForslag.length} andre forslag`}
             </span>
             {restForslag.map((f) => (
               <div key={f.id} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, marginTop: 8 }}>
-                <span style={{ fontFamily: T.ui, fontSize: 12, color: T.fg2, minWidth: 0 }}>
+                <span style={{ fontSize: 12, color: TL.text, minWidth: 0 }}>
                   {f.name} · {formaterDato(f.startDate)}
                 </span>
                 <button
@@ -222,7 +248,7 @@ function DublettKort({ kandidat }: { kandidat: MergeKandidat }) {
                   onClick={() => handleMerge(kandidat.manual.id, f.id, f.name)}
                   disabled={isPending}
                   className="v2-press v2-focus"
-                  style={{ flex: "none", appearance: "none", cursor: isPending ? "default" : "pointer", borderRadius: 9999, padding: "5px 12px", fontFamily: T.ui, fontSize: 11, fontWeight: 600, color: T.fg, background: "transparent", border: `1px solid ${T.border}` }}
+                  style={{ flex: "none", appearance: "none", cursor: isPending ? "default" : "pointer", borderRadius: TL.radius.pill, padding: "5px 12px", fontSize: 11, fontWeight: 600, color: TL.text, background: TL.dim, border: "none" }}
                 >
                   Slå sammen
                 </button>
@@ -233,16 +259,16 @@ function DublettKort({ kandidat }: { kandidat: MergeKandidat }) {
       </div>
 
       {feedback && (
-        <div style={{ display: "flex", alignItems: "flex-start", gap: 8, borderTop: `1px solid color-mix(in srgb, ${T.lime} 25%, transparent)`, background: `color-mix(in srgb, ${T.lime} 8%, transparent)`, padding: "10px 20px", fontFamily: T.ui, fontSize: 12.5, color: T.fg, borderRadius: "0 0 20px 20px" }}>
-          <Icon name="check-circle" size={14} style={{ color: T.lime, marginTop: 1, flex: "none" }} />
+        <div style={{ display: "flex", alignItems: "flex-start", gap: 8, borderTop: `1px solid ${TL.hair}`, padding: "10px 20px", fontSize: 12.5, color: TL.text, borderRadius: `0 0 ${TL.radius.card} ${TL.radius.card}` }}>
+          <Icon name="check-circle" size={14} style={{ color: TL.mute, marginTop: 1, flex: "none" }} />
           {feedback}
         </div>
       )}
       {feil && (
-        <div style={{ borderTop: `1px solid color-mix(in srgb, ${T.down} 25%, transparent)`, background: `color-mix(in srgb, ${T.down} 8%, transparent)`, padding: "10px 20px", fontFamily: T.ui, fontSize: 12.5, color: T.down, borderRadius: "0 0 20px 20px" }}>
+        <div role="alert" style={{ borderTop: `1px solid ${TL.hair}`, padding: "10px 20px", fontSize: 12.5, color: TL.danger, borderRadius: `0 0 ${TL.radius.card} ${TL.radius.card}` }}>
           {feil}
         </div>
       )}
-    </Kort>
+    </TlKort>
   );
 }
