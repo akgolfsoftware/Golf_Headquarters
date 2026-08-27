@@ -1,49 +1,33 @@
 /**
- * AgencyOS · Live (v2) — «Mission Control». V2-port av
- * src/app/admin/(legacy)/agencyos/live/page.tsx + mission-control.tsx.
- * Fortsatt et visuelt skall med statisk seed-data (src/lib/agencyos/live-data.ts) —
- * live-integrasjoner kobles senere. Auth arves fra AgencyOS (ADMIN/COACH).
+ * AgencyOS · Live-tavle (T9, 27.08.2026) — AG-09 / AG-09b Train-lock.
  *
- * Server component (klientlogikken bor i AgencyLiveV2).
+ * Artefakt, aldri fane (fasit AG-09b3: «Tavla er artefakt, aldri fane»).
+ * Åpnes fra Cockpit; «Lukk» går tilbake dit. Erstatter den gamle «Mission
+ * Control»-innboks-visningen som lå på denne ruten (statisk seed av
+ * e-post/meldinger/Notion) — den var Cockpit-innhold, ikke en live-tavle
+ * over økter i gang, og hadde ingen egen Train-lock-fasit. Se
+ * docs/natt/T9-DONE.md.
+ *
+ * Data: WorkbenchSession-erstatningen `TrainingSessionV2` (status
+ * IN_PROGRESS) — se src/lib/agencyos/live-tavle-data.ts.
  */
 
-import { TilbakeLenke, Kort, StatusPill, Icon, T } from "@/components/v2";
 import type { Metadata } from "next";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
-import { AgencyLiveV2 } from "@/components/admin/v2/AgencyLiveV2";
+import { lastLiveTavleData } from "@/lib/agencyos/live-tavle-data";
+import { AgencyLiveTavleFull } from "@/components/admin/v2/live/AgencyLiveTavleTrainLock";
 
-export const metadata: Metadata = { title: "Mission Control · AgencyOS (v2)" };
+export const dynamic = "force-dynamic";
+export const metadata: Metadata = { title: "Live-tavle · AgencyOS" };
 
-export default async function V2LivePage() {
+export default async function AgencyLivePage() {
   const user = await requirePortalUser({ allow: ["ADMIN", "COACH"] });
-  const coachFirstName = (user.name ?? "Coach").trim().split(/\s+/)[0];
+  const data = await lastLiveTavleData();
 
   return (
-    <V2Shell bredde="full" aktiv="live" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>
-      <TilbakeLenke href="/admin/agencyos">Cockpit</TilbakeLenke>
-      <Kort
-        pad="14px 18px"
-        style={{
-          flexDirection: "row",
-          alignItems: "center",
-          gap: 14,
-          marginBottom: 16,
-          background: `color-mix(in srgb, ${T.warn} 12%, ${T.panel})`,
-          border: `1px solid color-mix(in srgb, ${T.warn} 45%, ${T.border})`,
-        }}
-      >
-        <Icon name="triangle-alert" size={22} style={{ color: T.warn, flexShrink: 0 }} />
-        <div style={{ display: "flex", flexDirection: "column", gap: 6, minWidth: 0 }}>
-          <StatusPill tone="warn">Forhåndsvisning</StatusPill>
-          <span style={{ fontFamily: T.ui, fontSize: 13, color: T.fg2, lineHeight: 1.4 }}>
-            Dataene her er ikke live ennå. Kobles til sanntidsdata før full lansering.
-          </span>
-        </div>
-      </Kort>
-      <div data-paper-agencyos-live-route>
-        <AgencyLiveV2 coachFirstName={coachFirstName} />
-      </div>
+    <V2Shell bredde="full" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"} avatarUrl={user.avatarUrl}>
+      <AgencyLiveTavleFull data={data} />
     </V2Shell>
   );
 }

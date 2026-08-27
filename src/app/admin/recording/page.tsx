@@ -12,7 +12,7 @@
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
-import { TilbakeLenke } from "@/components/v2";
+import { TlTilbake } from "@/components/admin/v2/oppsett/tl-kit";
 import { GlobalSearchModal } from "@/components/admin/global-search-modal";
 import { AnalyseResultatSchema, type AnalyseResultat } from "@/lib/coaching-analysis";
 import {
@@ -188,7 +188,9 @@ export default async function RecordingAdmin({ searchParams }: { searchParams?: 
 
   return (
     <V2Shell bredde="kolonne" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"} avatarUrl={user.avatarUrl}>
-      <TilbakeLenke href="/admin/agencyos">Cockpit</TilbakeLenke>
+      <div style={{ marginBottom: 16 }}>
+        <TlTilbake href="/admin/agencyos">Cockpit</TlTilbake>
+      </div>
       <AdminRecordingV2 data={data} />
       <GlobalSearchModal />
     </V2Shell>
