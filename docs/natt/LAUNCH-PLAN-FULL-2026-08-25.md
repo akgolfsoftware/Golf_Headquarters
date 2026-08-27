@@ -1,5 +1,12 @@
 # LAUNCH-PLAN-FULL — 2026-08-25
 
+> **OPPDATERING 27.08.2026 (dokument-opprydding + statusoppdatering, Anders' ja):**
+> Docs-oppryddingen (R1-tabellen i Del 1) er utført — se `docs/OPPRYDDING-PLAN-2026-08-27.md`
+> og [`#614`](https://github.com/akgolfsoftware/Golf_Headquarters/pull/614). Del 1-tabellen
+> under er historikk. **Ny, kortfattet status og neste steg: § 8 nederst i dette dokumentet
+> — les den FØR resten av filen**, som fortsatt inneholder verdifull detalj (funksjonsmatrise,
+> ruteinventar §5T) men er stedvis 25.–26.08-datert og ikke lenger ferskvare alene.
+
 Komplett lanseringsplan for AK Golf HQ (AgencyOS + PlayerHQ). Skrevet av plan-session
 (Fable 5, Ultracode, read-only) 25.08.2026 på gren `claude/workbench-launch-plan-7503ff`.
 Grunnlag: 9 parallelle kartleggingsagenter (docs, kode, UI, sikkerhet, bølge 2, fasit)
@@ -498,3 +505,77 @@ Feiler noe: skriv DONE-fila med hva som feilet — ikke fiks i det stille utenfo
 4. Gjenbrukbarhet av `src/lib/gameplan/dispersion.ts` i Loop 4 er uverifisert — B7 verifiserer matematikken før valg.
 5. Globale skills' innhold (ak-designekspert m.fl.) er vurdert på katalogtekst, ikke lest — Anders' globale ryddeøkt bekrefter.
 6. «B2-varianter» finnes ikke som skjerm-ID-familie i repoet — antatt misforståelse i oppdraget (PP-B2 er noe annet).
+
+---
+
+## 8. Status og gjenstående vei til lansering (oppdatert 27.08.2026)
+
+Denne seksjonen er den ferske sannheten. Del 0–7 over er detaljgrunnlaget den bygger på —
+konsulter dem for fil:linje-nivå, men **stol på denne seksjonen for hva som faktisk gjenstår.**
+Løpende snapshot: `docs/STATUS-NÅ.md` (oppdateres oftere enn denne filen).
+
+### 8.1 Levert siden 25.08 (verifisert mot `main`)
+
+**Bølge 1 (økt-pakken) er FERDIG og prod-testet:** Loop 1/2/2S/3S, B2–B8 alle i `main`.
+RLS kjørt og verifisert aktiv i prod. Bølge N (data-bro, PEI-motor, Team Norway) også inne.
+
+**Train-lock-porten, etappe 1–2 komplett:** T1 (skall), T2 (cockpit), T3 (innboks +
+godkjenninger), T4 (stall + spiller 360), T13 (oppsett + meg) — alle merget. T5
+(coach-Workbench) viste seg allerede portet via D3/B5/B6 — ingen kodeendring trengtes,
+se `docs/natt/LEVERANSELOGG.md`.
+
+**Ingen åpne PR-er** per 27.08 — repoet er i en ren tilstand å bygge videre fra.
+
+**Målt skjermdekning** (`docs/natt/SKJERM-STATUS-2026-08-26.md`, remåling:
+`node scripts/maal-trainlock-status.mjs`): av 240 skjerm-ruter er et lite antall reelt
+Train-lock etter T1–T5/T13/B8 — resten venter på etappe 3–4 under. Forventet, ikke et avvik.
+
+### 8.2 Blokkerende beslutning — løs denne FØRST
+
+**§5T-beslutningskøen** (`docs/natt/D-LYS-OG-5T-BESLUTNING.md`): 14 pensjoneringskandidater +
+38 klasse B-hull + prinsipp-ja for 24 klasse A-ruter. Blokkerer deler av T6- og T9-omfanget.
+Uten svar her kan T6/T9 bare porte det som HAR fasit, ikke ta endelig IA-beslutning på resten.
+Alt annet i denne planen ruller uten å vente på dette.
+
+### 8.3 Neste kodesteg (rekkefølge, fri for §5T-blokken)
+
+| Rekkefølge | Rad | Hvorfor nå | Avhenger av |
+|---|---|---|---|
+| 1 | **T10** — Turneringer (`/admin/tournaments` → `TU-01`/`TU-02`) | Fri avhengighet, egen fasit finnes | main |
+| 1 | **T11** — Innsikt-hub (`/admin/analyse` → `AG-07`/`AG-12`) | Fri avhengighet, egen fasit finnes | main |
+| 2 | **T6** — Plan-hub + Workbench-kilder | T5 er avklart (ingen kodeendring), kan starte nå. Deler av omfanget (pensjoneringsliste) venter på §5T | T5 (løst) + delvis §5T |
+| 3 | **T7** — Kalender + booking-lag | | C3 (bølge 2, se under) |
+| 3 | **T8/T9** — Grupper / Live+TrackMan Agency | | C2 / B7 (begge levert) — kan trolig startes tidligere enn opprinnelig planlagt, verifiser avhengighetene på nytt før start |
+| 3 | **T12** — AgenticOS + Jarvis + Caddie | | C6+C7 (bølge 2, ikke startet) |
+| 4 | **Bølge 2 (C1–C10)** | Måned/år, stall→WB, kalender-lag, tester/runde-live, Jarvis-merge-motor, AgenticOS-queue, lys-pass, foreldre, DataGolf+økonomi | `docs/natt/OVERNIGHT-CODING-LOOP-BOLGE2.md` — kjør **kun etter** at etappe 3 over er unna, jf. anti-scope-regelen i CLAUDE.md |
+| 5 | **Full smoke** → merge-sjekk mot Del 3-kriteriene | | Alt over |
+
+T7/T8/T9/T12 sin avhengighet på C-rader betyr i praksis: kjør T10/T11/T6 nå, **deretter**
+start bølge 2 (C1–C10) parallelt med at gjenstående T-rader porter det som ikke venter på
+en C-rad. Ikke la T-bølgen stå helt stille til hele bølge 2 er ferdig.
+
+### 8.4 P0 — det som blokkerer ekte/betalende brukere (uendret, hos Anders)
+
+Disse er **ikke kodearbeid** — Claude kan ikke utføre dem. Fra `docs/STATUS-NÅ.md`:
+
+- Resend DKIM for `send.akgolf.no`
+- `akgolf.no` → Vercel (DNS)
+- Live Stripe-nøkler + webhook-verifisering (testmodus er komplett, sjekkliste:
+  `docs/platform/stripe-cutover-sjekkliste.md`)
+- Google Calendar re-kobling
+- Aktiverings-e-post til ekte spilleradresser (dry-run viste 14 «ok» mot syntetiske adresser)
+- Rotér `SCREENTEST_PASSWORD` (kompromittert siden hendelsen 03.08)
+
+**Betaling starter automatisk 1. september 2026** (`BETALING_STARTER` i
+`src/lib/feature-flags.ts` — `gratisForAlle()` slår av samtidig). Verifiser cutover nærmere
+datoen.
+
+### 8.5 Definisjon av «klar til å presentere for ekte brukere»
+
+Alle punktene i Del 3 over holder fortsatt. I tillegg, konkret for dagens tilstand:
+1. T10, T11, T6 (det avklarte omfanget) levert og skjermbilde-godkjent av Anders.
+2. §5T-beslutningskøen besvart (låser opp resten av T6/T9 + T-bølgens siste rader).
+3. Bølge 2 (C1–C10) levert — spesielt C8 (lys-pass) og C10 (DataGolf+økonomi), som er
+   synlige for sluttbruker fra dag én.
+4. P0-listen i §8.4 lukket av Anders.
+5. Full smoke (CLAUDE.md-målsmoken) klikket av et menneske på release-kandidaten.

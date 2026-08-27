@@ -2,8 +2,9 @@
 
 > **Hva dette er:** ett snapshot av hvor plattformen står akkurat nå. Oppdater datoen + relevante linjer når noe vesentlig endrer seg.
 
-**Sist oppdatert:** 2026-08-27 (B8 + T13 merget — bølge 1 komplett).
-Samlet lanseringsplan: **`docs/natt/LAUNCH-PLAN-FULL-2026-08-25.md`** (vinner over MASTERPLAN der de overlapper).
+**Sist oppdatert:** 2026-08-27 (B8 + T13 merget — bølge 1 komplett; docs-opprydding #614 merget).
+Samlet lanseringsplan: **`docs/natt/LAUNCH-PLAN-FULL-2026-08-25.md` § 8** (fersk status +
+neste steg, oppdatert 27.08 — vinner over MASTERPLAN der de overlapper).
 
 ## Hovedbildet 26.08 (målt mot git/kode/prod)
 
