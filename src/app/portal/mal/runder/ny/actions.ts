@@ -8,6 +8,10 @@ import { prisma } from "@/lib/prisma";
 import { sikreBaneBro } from "@/lib/portal/bane-bro";
 import { parTemplate } from "@/lib/portal-runder/par-template";
 import { synkroniserSgFraRunder } from "@/lib/portal-stats/sg-bro";
+import { estimerHullFraTotal } from "@/lib/runde-logg/estimer-fra-total";
+import { beregnSg } from "@/lib/domain/sg";
+import { beregnGranulaerSg } from "@/lib/runde-logg/granulaer-sg";
+import { rundeTilSgShots } from "@/lib/runde-logg/til-sg-shots";
 
 /**
  * Hull-for-hull-detaljer fra det valgfrie logge-steget (D6a, 17. juli 2026).
@@ -80,7 +84,7 @@ export async function logRoundManual(input: LogRoundManualInput) {
   const user = await requireConsentingUser();
 
   const sgValues = [input.sgOtt, input.sgApp, input.sgArg, input.sgPutt];
-  const sgTotal = sgValues.some((v) => typeof v === "number")
+  const sgTastet = sgValues.some((v) => typeof v === "number")
     ? sgValues.reduce<number>((sum, v) => sum + (v ?? 0), 0)
     : null;
 
@@ -137,6 +141,38 @@ export async function logRoundManual(input: LogRoundManualInput) {
       ? holeScores.reduce((sum, h) => sum + h.strokes, 0)
       : input.score;
 
+  // «Bare totalen» (RU-04): ingen hull-detaljer, ingen legacy holeScores, og
+  // ingen håndtastet SG — eneste vei til ET SG-tall er å fordele totalen over
+  // en syntetisk 18-hulls kjede (samme motor som hurtigmodusen i live-føringen,
+  // se estimer-fra-total.ts) og merke resultatet "estimert", ALDRI "beregnet".
+  // Den syntetiske kjeden brukes KUN til å regne SG — ingen HoleScore-rader
+  // skrives fra den (holeScores forblir tom, som før): per-hull strokes/putt
+  // her er oppdiktet fordeling, ikke noe spilleren faktisk førte, og PH-12
+  // (urørt av denne loopen) har ingen EST-merking å vise dem med.
+  let sgEstimat: ReturnType<typeof beregnSg> | null = null;
+  let granulaerEstimat: ReturnType<typeof beregnGranulaerSg> | null = null;
+  if (holeScores.length === 0 && sgTastet == null) {
+    try {
+      const syntetiskHull = estimerHullFraTotal({
+        score: input.score,
+        putts: input.putts ?? null,
+        coursePar: course.par,
+      });
+      const sgShots = rundeTilSgShots(syntetiskHull);
+      sgEstimat = beregnSg(sgShots);
+      granulaerEstimat = beregnGranulaerSg(syntetiskHull, sgShots);
+    } catch {
+      // Ugyldig input for syntetisering (f.eks. urealistisk score) — lagre
+      // uten SG heller enn å kaste og miste hele registreringen.
+      sgEstimat = null;
+      granulaerEstimat = null;
+    }
+  }
+
+  const sgTotal = sgTastet ?? sgEstimat?.total ?? null;
+  const sgSource: "manual" | "estimert" | null =
+    sgTastet != null ? "manual" : sgEstimat != null ? "estimert" : null;
+
   await prisma.$transaction(async (tx) => {
     const round = await tx.round.create({
       data: {
@@ -145,13 +181,29 @@ export async function logRoundManual(input: LogRoundManualInput) {
         playedAt: new Date(input.playedAt),
         score,
         notes: input.notes ?? null,
-        sgOtt: input.sgOtt ?? null,
-        sgApp: input.sgApp ?? null,
-        sgArg: input.sgArg ?? null,
-        sgPutt: input.sgPutt ?? null,
+        sgOtt: input.sgOtt ?? sgEstimat?.ott ?? null,
+        sgApp: input.sgApp ?? sgEstimat?.app ?? null,
+        sgArg: input.sgArg ?? sgEstimat?.arg ?? null,
+        sgPutt: input.sgPutt ?? sgEstimat?.putt ?? null,
         sgTotal,
-        // Håndtastet SG skal aldri overskrives av autoberegning (recomputeRoundSg)
-        sgSource: sgTotal != null ? "manual" : null,
+        sgTee: granulaerEstimat?.sgTee ?? null,
+        sgApp200: granulaerEstimat?.sgApp200 ?? null,
+        sgApp150: granulaerEstimat?.sgApp150 ?? null,
+        sgApp100: granulaerEstimat?.sgApp100 ?? null,
+        sgApp50: granulaerEstimat?.sgApp50 ?? null,
+        sgChip: granulaerEstimat?.sgChip ?? null,
+        sgPitch: granulaerEstimat?.sgPitch ?? null,
+        sgBunker: granulaerEstimat?.sgBunker ?? null,
+        sgPutt0_3: granulaerEstimat?.sgPutt0_3 ?? null,
+        sgPutt3_5: granulaerEstimat?.sgPutt3_5 ?? null,
+        sgPutt5_10: granulaerEstimat?.sgPutt5_10 ?? null,
+        sgPutt10_15: granulaerEstimat?.sgPutt10_15 ?? null,
+        sgPutt15_25: granulaerEstimat?.sgPutt15_25 ?? null,
+        sgPutt25_40: granulaerEstimat?.sgPutt25_40 ?? null,
+        sgPutt40plus: granulaerEstimat?.sgPutt40plus ?? null,
+        // Håndtastet SG skal aldri overskrives av autoberegning (recomputeRoundSg).
+        // Estimert (fra kun totalscore) overskrives derimot gjerne — se sg-skriving.ts.
+        sgSource,
       },
       select: { id: true },
     });
