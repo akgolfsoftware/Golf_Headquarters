@@ -25,7 +25,7 @@
 
 import Link from "next/link";
 import { TL } from "@/lib/v2/train-lock";
-import { MasterDetalj, TlCaps, TlInspektorBlokk, TlInspektorKpi, TlInspektorLinje, TlInspektorpanel, TlKnapp, TlRad, TlRadGruppe, TlTilbake, TlTittel, useInspektorSynlig } from "./tl-kit";
+import { MasterDetalj, TlCaps, TlInspektorBlokk, TlInspektorKpi, TlInspektorLinje, TlInspektorpanel, TlKnapp, TlRad, TlRadGruppe, TlTilbake, TlTittel, TlToggleRad, useInspektorSynlig } from "./tl-kit";
 
 export type OppsettRadKey = "akademi" | "varsler" | "tilgang" | "klubb" | "konto";
 
@@ -209,6 +209,12 @@ function OppsettListe({ data, valgtRad }: { data: AdminOppsettHubData; valgtRad:
           last
         />
       </TlRadGruppe>
+
+      {/* AG-18 linje 39/138: eget toggle-panel under rad-listen, ikke sjette rad.
+          UI-only inntil ekte «spillere ser publiserte uker»-setting finnes — se TlToggleRad. */}
+      <TlToggleRad title="Spillere ser sin plan" sub="Publiserte uker vises i Player HQ." />
+      <div style={{ fontSize: 13, color: TL.mute, lineHeight: 1.5 }}>Google-synk hører i Kalender-bølgen og er ikke tegnet.</div>
+
       <div aria-hidden style={{ display: "none" }} data-valgt-rad={valgtRad} />
     </div>
   );

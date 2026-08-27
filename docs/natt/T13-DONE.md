@@ -142,3 +142,33 @@ Full TL-port av de ~15 detaljsidene listet under «Avvik» — én ny
 TL-komponent per skjerm (ikke gjenbruk av Paper-`*V2`-komponentene), og en
 vurdering av om `(legacy)/anlegg` og `klubb/innstillinger` bør slås sammen
 til én skjerm når begge er TL-portet.
+
+## Etterfølgende fiks (26.08.2026, samme PR) — manglende togglerad i hub-en
+
+Skjermbilde-gjennomgang mot AG-18 avdekket at hub-en manglet raden fasiten
+tegner UNDER de fem radene («fem rader, ÉN toggle, ingen hvit primær»,
+AG-18a linje 39 + AG-18c linje 138): «Spillere ser sin plan» / «Publiserte
+uker vises i Player HQ.», pluss footnote-linjen «Google-synk hører i
+Kalender-bølgen og er ikke tegnet.» under panelet.
+
+**Lagt til:**
+- `TlToggle` + `TlToggleRad` i `src/components/admin/v2/oppsett/tl-kit.tsx`
+  — visuell 51×31-pille i fasitens on/off-stil (`TL.fill`/`TL.onFill` på,
+  `TL.dim`/`TL.mute` av).
+- Raden i `OppsettListe` (`AdminOppsettHubTrainLock.tsx`), som eget kort
+  under `TlRadGruppe` (ikke sjette rad i lista — fasiten legger den i eget
+  panel), pluss footnote-linjen.
+
+**Bryteren er UI-ONLY, IKKE koblet til ekte data.** Undersøkt før bygging:
+det finnes INGEN academy-/gruppe-nivå «spillere ser publiserte uker»-setting
+i domenet i dag. `loadPlayerDay` (`src/lib/workbench/wb-actions.ts`)
+filtrerer utelukkende på øktstatus (PUBLISHED|IN_PROGRESS|COMPLETED —
+invariant 3 i CLAUDE.md), ikke på noen global av/på-bryter. Å bygge en ekte
+bryter ville krevd ny domenelogikk (og trolig en ny kolonne på academy-/
+klubbnivå) — utenfor scope for denne skjermbilde-fiksen. `TlToggleRad`
+renders derfor med `disabled` (55 % opasitet, ingen `onClick`) og viser
+`on={true}` fordi det reelle nå-tilstanden («spillere ser publiserte
+uker») allerede stemmer — bryteren kan bare ikke slås AV ennå.
+Dokumentert i JSDoc på begge komponentene. Neste steg for å gjøre den ekte:
+et boolsk felt (f.eks. på et fremtidig `Academy`/`ClubSettings`-nivå) +
+en gate i `loadPlayerDay` + en server action koblet til `onClick`.

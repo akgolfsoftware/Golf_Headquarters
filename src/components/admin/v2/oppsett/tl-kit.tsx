@@ -209,6 +209,74 @@ export function TlRad({ title, sub, meta, trailing, chevron = true, last, href, 
   );
 }
 
+/**
+ * Toggle-visual — DESIGN-SYSTEM.md §5, brukt i AG-18 Oppsett-hub linje 39/138
+ * (51×31 pille, 27px kule). `disabled` (T13-nivå, 26.08.2026): kun visuell —
+ * ingen backend-setting finnes ennå for «spillere ser sin plan», se
+ * `TlToggleRad`-dokumentasjonen under. IKKE bruk denne som funksjonell bryter
+ * før en ekte handler er koblet på.
+ */
+export function TlToggle({ on, disabled }: { on?: boolean; disabled?: boolean }) {
+  return (
+    <div
+      aria-hidden
+      style={{
+        width: 51,
+        height: 31,
+        borderRadius: 999,
+        background: on ? TL.fill : TL.dim,
+        position: "relative",
+        flexShrink: 0,
+        opacity: disabled ? 0.55 : 1,
+      }}
+    >
+      <div
+        style={{
+          position: "absolute",
+          top: 2,
+          left: on ? undefined : 2,
+          right: on ? 2 : undefined,
+          width: 27,
+          height: 27,
+          borderRadius: "50%",
+          background: on ? TL.onFill : TL.mute,
+        }}
+      />
+    </div>
+  );
+}
+
+export interface TlToggleRadProps {
+  title: ReactNode;
+  sub?: ReactNode;
+  on?: boolean;
+  disabled?: boolean;
+}
+/**
+ * Toggle-kort — fasitens frittstående «Spillere ser sin plan»-panel
+ * (AG-18 linje 39/138), IKKE en `TlRad` inni `TlRadGruppe` (fasiten legger
+ * den i eget kort under rad-listen, ikke som sjette rad).
+ *
+ * `disabled` (T13, 26.08.2026): denne bryteren er UI-only inntil en reell
+ * academy-/gruppe-nivå «spillere ser publiserte uker»-setting finnes i
+ * domenet. `loadPlayerDay` (src/lib/workbench/wb-actions.ts) filtrerer i
+ * dag KUN på status (PUBLISHED|IN_PROGRESS|COMPLETED, invariant 3) — det
+ * finnes ingen global av/på-bryter å style den mot. Se docs/natt/T13-DONE.md.
+ */
+export function TlToggleRad({ title, sub, on = true, disabled = true }: TlToggleRadProps) {
+  return (
+    <div style={{ background: TL.elev, borderRadius: TL.radius.card, padding: 20 }}>
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 14 }}>
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <div style={{ fontSize: 15, fontWeight: 600, color: TL.text }}>{title}</div>
+          {sub && <div style={{ marginTop: 3, fontSize: 13, color: TL.mute }}>{sub}</div>}
+        </div>
+        <TlToggle on={on} disabled={disabled} />
+      </div>
+    </div>
+  );
+}
+
 /** Radgruppe — elev-kort med rader (fasitens «rad-liste i kort»). */
 export function TlRadGruppe({ children, style }: { children?: ReactNode; style?: CSSProperties }) {
   return (
