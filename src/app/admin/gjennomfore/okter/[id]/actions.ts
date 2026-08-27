@@ -22,7 +22,7 @@ import { notify } from "@/lib/notifications";
 /**
  * startOkt — Booking↔live-konsoll-broen.
  *
- * Live-konsollen (/admin/live/[sessionId]) kjører på TrainingSessionV2, ikke
+ * Live-konsollen (/admin/agencyos/live/[sessionId]) kjører på TrainingSessionV2, ikke
  * Booking. Denne action-en kobler en booking til en live-økt i tre trinn:
  *   1. Finnes koblingen fra før (Booking.trainingSessionV2Id) → returner den.
  *   2. Har coachen en planlagt økt (PLANNED) for samme spiller i bookingens

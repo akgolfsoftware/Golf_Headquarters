@@ -4,6 +4,9 @@
  * root-layout — så V2Shell leverer all chrome (IkonRail/BunnNav) i mørk
  * v2-scope. Erstatter den tidligere `(legacy)/trackman`-siden.
  *
+ * Train-lock-port (T9, 27.08.2026) — se AdminTrackmanTrainLock.tsx for
+ * fasit-referanse og dokumenterte avvik.
+ *
  * Auth + datakontrakt gjenbrukt 1:1 fra den ekte flaten: samme
  * requirePortalUser-guard (ADMIN/COACH) og samme prisma.trackManSession-
  * spørring (nyeste 50, m/ spiller-navn+HCP), snitt/uniktall regnet ut her
@@ -15,29 +18,20 @@
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
-import { InnsiktHubNav } from "@/components/admin/v2/agency-hub-subnav";
+import { startOfWeek, endOfWeek } from "@/lib/uke-helpers";
+import { computeTrackManDispersionMap } from "@/lib/trackman/dispersion-map";
 
 import {
-  AdminTrackmanV2,
-  type AdminTrackmanV2Data,
-  type AdminTrackmanV2Rad,
-} from "@/components/admin/v2/AdminTrackmanV2";
+  AdminTrackmanTrainLock,
+  type AdminTrackmanTLData,
+  type AdminTrackmanTLRad,
+} from "@/components/admin/v2/AdminTrackmanTrainLock";
 
 export const dynamic = "force-dynamic";
 
-// Matcher TrackManEnvironment-enum i prisma/schema.prisma.
-const ENV_LABEL: Record<string, string> = {
-  SIMULATOR_INDOOR: "Simulator inne",
-  NET_INDOOR: "Nett inne",
-  RANGE_OUTDOOR_MAT: "Range matte",
-  RANGE_OUTDOOR_GRASS: "Range gress",
-  COURSE_PRACTICE: "Bane trening",
-  COURSE_COMPETITION: "Bane konkurranse",
-};
-
 const SOURCE_LABEL: Record<string, string> = {
-  "csv-import": "CSV-import",
-  api: "API",
+  "csv-import": "csv",
+  api: "api",
 };
 
 function datoLabel(d: Date): string {
@@ -55,14 +49,14 @@ export default async function V2AdminTrackmanPage() {
 
   const totalShots = sessions.reduce((s, x) => s + x.shotCount, 0);
 
-  // eslint-disable-next-line react-hooks/purity
-  const trettiSiden = Date.now() - 30 * 24 * 60 * 60 * 1000;
-  const siste30d = sessions.filter((s) => s.recordedAt.getTime() >= trettiSiden);
-  const shots30d = siste30d.reduce((s, x) => s + x.shotCount, 0);
+  const naa = new Date();
+  const ukeStart = startOfWeek(naa);
+  const ukeSlutt = endOfWeek(naa);
+  const denneUken = sessions.filter((s) => s.recordedAt >= ukeStart && s.recordedAt <= ukeSlutt);
   const uniquePlayers = new Set(sessions.map((s) => s.userId)).size;
   const snittShots = sessions.length === 0 ? 0 : Math.round(totalShots / sessions.length);
 
-  const rader: AdminTrackmanV2Rad[] = sessions.map((s) => ({
+  const rader: AdminTrackmanTLRad[] = sessions.map((s) => ({
     key: s.id,
     spillerId: s.user.id,
     navn: s.user.name,
@@ -70,26 +64,57 @@ export default async function V2AdminTrackmanPage() {
     dato: datoLabel(s.recordedAt),
     slag: s.shotCount,
     kildeLabel: SOURCE_LABEL[s.source] ?? s.source,
-    miljoLabel: s.environment ? (ENV_LABEL[s.environment] ?? s.environment) : null,
   }));
 
-  const miljoer = Array.from(new Set(rader.map((r) => r.miljoLabel).filter((m): m is string => m !== null))).sort();
+  // Hero-kort: siste økt med nok gyldige slag (side + carry) til å tegne et kart.
+  // Kun ÉN ekstra spørring — ikke én per rad (se avvik-notat i AdminTrackmanTrainLock).
+  let hero: AdminTrackmanTLData["hero"] = null;
+  for (const s of sessions.slice(0, 8)) {
+    const shots = await prisma.trackManShot.findMany({
+      where: { sessionId: s.id },
+      orderBy: { shotNumber: "asc" },
+      select: { id: true, shotNumber: true, club: true, side: true, carryDistance: true, totalDistance: true, smashFactor: true, launchAngle: true },
+    });
+    const perKolle = new Map<string, typeof shots>();
+    for (const shot of shots) {
+      if (shot.side == null || shot.carryDistance == null) continue;
+      perKolle.set(shot.club, [...(perKolle.get(shot.club) ?? []), shot]);
+    }
+    let valgtKolle: string | null = null;
+    let flest = -1;
+    for (const [kolle, liste] of perKolle) {
+      if (liste.length > flest) {
+        flest = liste.length;
+        valgtKolle = kolle;
+      }
+    }
+    if (!valgtKolle || flest < 2) continue;
+    const kolleShots = shots.filter((shot) => shot.club === valgtKolle);
+    hero = {
+      playerName: s.user.name ?? "Spiller",
+      club: valgtKolle,
+      sessionHref: `/admin/trackman/${s.id}`,
+      result: computeTrackManDispersionMap(kolleShots),
+    };
+    break;
+  }
 
-  const data: AdminTrackmanV2Data = {
+  const data: AdminTrackmanTLData = {
     kpis: [
-      { label: "Sesjoner · 30d", value: String(siste30d.length), tint: true },
-      { label: "Slag · 30d", value: shots30d.toLocaleString("nb-NO") },
+      { label: "Sesjoner · uken", value: String(denneUken.length) },
       { label: "Snitt slag/sesjon", value: String(snittShots) },
       { label: "Aktive spillere", value: String(uniquePlayers) },
+      { label: "Totalt slag", value: totalShots.toLocaleString("nb-NO") },
     ],
-    miljoer,
+    oktDenneUken: denneUken.length,
+    antallSpillere: uniquePlayers,
+    hero,
     rader,
   };
 
   return (
     <V2Shell bredde="kolonne" aktiv="innsikt" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>
-      <InnsiktHubNav />
-      <AdminTrackmanV2 data={data} />
+      <AdminTrackmanTrainLock data={data} />
     </V2Shell>
   );
 }
