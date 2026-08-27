@@ -514,6 +514,12 @@ Denne seksjonen er den ferske sannheten. Del 0–7 over er detaljgrunnlaget den 
 konsulter dem for fil:linje-nivå, men **stol på denne seksjonen for hva som faktisk gjenstår.**
 Løpende snapshot: `docs/STATUS-NÅ.md` (oppdateres oftere enn denne filen).
 
+> **27.08 kveld:** samlet plan for ALT gjenstående (inkl. P-bølgen for Player-porten,
+> forelder-helporten, web-QA og cutover-verifisering) er nå
+> **`docs/LANSERINGSPLAN-KOMPLETT-2026-08-27.md`** — den vinner på rekkefølge/omfang;
+> denne filen er detaljgrunnlag for T-/C-radene. §8.3-tabellen under er delvis bak:
+> T9, C2, C3, C4, C5, T6 (#620) og T13-detaljer (#619) er alle MERGET 27.08.
+
 ### 8.1 Levert siden 25.08 (verifisert mot `main`)
 
 **Bølge 1 (økt-pakken) er FERDIG og prod-testet:** Loop 1/2/2S/3S, B2–B8 alle i `main`.
