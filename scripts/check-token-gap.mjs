@@ -89,7 +89,9 @@ const ALLOW_MARKUP = [
   "src/app/(internal)/demos/",
   // Notion sin egen merkelogo (svart flate, hvitt merke). Tredjeparts
   // merkevare skal IKKE temafarges — da er det ikke lenger deres logo.
-  "src/app/admin/workspace/notion/page.tsx",
+  // Flyttet til egen komponent i T13-restside-porten (27.08.2026, se
+  // docs/natt/T13-DETALJER-DONE.md) — samme unntak, ny fil.
+  "src/components/admin/v2/workspace/AdminWorkspaceNotionTrainLock.tsx",
   // Delekortet eksporteres som bilde og fanges utenfor tema-konteksten;
   // gradienten må derfor være faste Paper-verdier (= T.wrapped.bgForest).
   "src/components/shared/del-runde-modal.tsx",

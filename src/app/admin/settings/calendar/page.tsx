@@ -14,12 +14,12 @@
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
-import { TilbakeLenke } from "@/components/v2";
+import { TlTilbake } from "@/components/admin/v2/oppsett/tl-kit";
 import {
-  AdminKalenderSynkV2,
+  AdminKalenderSynkTrainLock,
   type AdminKalenderSynkV2Data,
   type KalenderRad,
-} from "@/components/admin/v2/AdminKalenderSynkV2";
+} from "@/components/admin/v2/oppsett/AdminKalenderSynkTrainLock";
 
 export const dynamic = "force-dynamic";
 
@@ -76,8 +76,8 @@ export default async function KalenderSynkPage({
 
   return (
     <V2Shell bredde="kolonne" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>
-      <TilbakeLenke href="/admin/settings">Innstillinger</TilbakeLenke>
-      <AdminKalenderSynkV2 data={data} />
+      <TlTilbake href="/admin/settings">Innstillinger</TlTilbake>
+      <AdminKalenderSynkTrainLock data={data} />
     </V2Shell>
   );
 }

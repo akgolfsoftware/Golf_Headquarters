@@ -17,13 +17,13 @@ import { prisma } from "@/lib/prisma";
 import { getProjectsForUser } from "@/lib/notion/queries";
 import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
 import {
-  AdminWorkspaceV2,
+  AdminWorkspaceHubTrainLock,
   type AdminWorkspaceV2Data,
   type AdminWorkspaceV2Task,
   type AdminWorkspaceV2Project,
-} from "@/components/admin/v2/AdminWorkspaceV2";
+} from "@/components/admin/v2/workspace/AdminWorkspaceHubTrainLock";
 import type { CompanyKind } from "@/components/workspace/primitives";
-import { TilbakeLenke } from "@/components/v2";
+import { TlTilbake } from "@/components/admin/v2/oppsett/tl-kit";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Workspace · AgencyOS (v2)" };
@@ -94,8 +94,8 @@ export default async function V2AdminWorkspacePage() {
 
   return (
     <V2Shell bredde="kolonne" aktiv="cockpit" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>
-      <TilbakeLenke href="/admin/agencyos">Cockpit</TilbakeLenke>
-      <AdminWorkspaceV2 data={data} />
+      <TlTilbake href="/admin/agencyos">Cockpit</TlTilbake>
+      <AdminWorkspaceHubTrainLock data={data} />
     </V2Shell>
   );
 }

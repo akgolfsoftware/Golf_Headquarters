@@ -7,11 +7,11 @@
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
-import { TilbakeLenke } from "@/components/v2";
 import {
-  AdminEksternLeserV2,
+  AdminEksternLeserTrainLock,
   type EksternLeserRad,
-} from "@/components/admin/v2/AdminEksternLeserV2";
+} from "@/components/admin/v2/oppsett/AdminEksternLeserTrainLock";
+import { TlTilbake } from "@/components/admin/v2/oppsett/tl-kit";
 
 export const dynamic = "force-dynamic";
 
@@ -56,8 +56,8 @@ export default async function AdminEksternLeserPage() {
 
   return (
     <V2Shell bredde="kolonne" nav={AGENCYOS_NAV} navn={user.name ?? "Admin"}>
-      <TilbakeLenke href="/admin/team">Team</TilbakeLenke>
-      <AdminEksternLeserV2 grupper={grupper} lesere={lesere} />
+      <TlTilbake href="/admin/team">Team</TlTilbake>
+      <AdminEksternLeserTrainLock grupper={grupper} lesere={lesere} />
     </V2Shell>
   );
 }

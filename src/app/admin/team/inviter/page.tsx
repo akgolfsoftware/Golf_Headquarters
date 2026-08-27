@@ -10,16 +10,16 @@
 import { requireCapability } from "@/lib/auth/requireCapability";
 import { Capability } from "@/lib/auth/cbac";
 import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
-import { TilbakeLenke } from "@/components/v2";
-import { AdminInviterCoachV2 } from "@/components/admin/v2/AdminInviterCoachV2";
+import { AdminInviterCoachTrainLock } from "@/components/admin/v2/oppsett/AdminInviterCoachTrainLock";
+import { TlTilbake } from "@/components/admin/v2/oppsett/tl-kit";
 
 export default async function V2AdminInviterCoachPage() {
   const user = await requireCapability(Capability.INVITE_USERS);
 
   return (
     <V2Shell bredde="kolonne" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>
-      <TilbakeLenke href="/admin/team">Team</TilbakeLenke>
-      <AdminInviterCoachV2 kanTildeleTilganger={user.role === "ADMIN"} />
+      <TlTilbake href="/admin/team">Team</TlTilbake>
+      <AdminInviterCoachTrainLock kanTildeleTilganger={user.role === "ADMIN"} />
     </V2Shell>
   );
 }

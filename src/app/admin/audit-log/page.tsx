@@ -15,14 +15,14 @@
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
-import { TilbakeLenke } from "@/components/v2";
+import { TlTilbake } from "@/components/admin/v2/oppsett/tl-kit";
 import {
-  AdminAuditLogV2,
+  AdminAuditLogTrainLock,
   type AdminAuditLogV2Data,
   type AdminAuditLogV2Event,
   type AdminAuditLogV2Kind,
   type AdminAuditLogV2Status,
-} from "@/components/admin/v2/AdminAuditLogV2";
+} from "@/components/admin/v2/oppsett/AdminAuditLogTrainLock";
 
 export const dynamic = "force-dynamic";
 
@@ -81,8 +81,8 @@ export default async function V2AdminAuditLogPage() {
 
   return (
     <V2Shell bredde="kolonne" aktiv="innstillinger" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>
-      <TilbakeLenke href="/admin/settings">Innstillinger</TilbakeLenke>
-      <AdminAuditLogV2 data={data} />
+      <TlTilbake href="/admin/settings">Innstillinger</TlTilbake>
+      <AdminAuditLogTrainLock data={data} />
     </V2Shell>
   );
 }

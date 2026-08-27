@@ -48,7 +48,7 @@ export async function createLocation(input: LocationInput) {
     action: "location.created",
     target: `Location:${ny.id}`,
   });
-  revalidatePath("/admin/anlegg");
+  revalidatePath("/admin/klubb/innstillinger");
 }
 
 export async function updateLocation(id: string, input: LocationInput) {
@@ -62,7 +62,7 @@ export async function updateLocation(id: string, input: LocationInput) {
     data: { name: data.name, address: data.address, active: data.active, latitude, longitude },
   });
   await audit({ actorId: user.id, action: "location.updated", target: `Location:${id}` });
-  revalidatePath("/admin/anlegg");
+  revalidatePath("/admin/klubb/innstillinger");
 }
 
 /** Soft delete/gjenoppretting — aldri hard delete (bookinger/availability refererer lokasjonen). */
@@ -74,7 +74,7 @@ export async function setLocationActive(id: string, active: boolean) {
     action: active ? "location.activated" : "location.deactivated",
     target: `Location:${id}`,
   });
-  revalidatePath("/admin/anlegg");
+  revalidatePath("/admin/klubb/innstillinger");
 }
 
 const fasilitetSchema = z.object({
@@ -104,7 +104,7 @@ export async function createFacility(locationId: string, input: FacilityInput) {
     action: "facility.created",
     target: `Facility:${ny.id}`,
   });
-  revalidatePath("/admin/anlegg");
+  revalidatePath("/admin/klubb/innstillinger");
 }
 
 export async function updateFacility(id: string, input: FacilityInput) {
@@ -112,7 +112,7 @@ export async function updateFacility(id: string, input: FacilityInput) {
   const data = fasilitetSchema.parse(input);
   await prisma.facility.update({ where: { id }, data });
   await audit({ actorId: user.id, action: "facility.updated", target: `Facility:${id}` });
-  revalidatePath("/admin/anlegg");
+  revalidatePath("/admin/klubb/innstillinger");
 }
 
 /** Soft delete/gjenoppretting — aldri hard delete (bookinger refererer fasiliteten). */
@@ -124,5 +124,5 @@ export async function setFacilityActive(id: string, active: boolean) {
     action: active ? "facility.activated" : "facility.deactivated",
     target: `Facility:${id}`,
   });
-  revalidatePath("/admin/anlegg");
+  revalidatePath("/admin/klubb/innstillinger");
 }
