@@ -530,12 +530,22 @@ se `docs/natt/LEVERANSELOGG.md`.
 `node scripts/maal-trainlock-status.mjs`): av 240 skjerm-ruter er et lite antall reelt
 Train-lock etter T1–T5/T13/B8 — resten venter på etappe 3–4 under. Forventet, ikke et avvik.
 
-### 8.2 Blokkerende beslutning — løs denne FØRST
+### 8.2 §5T-beslutningskøen — LØST 27.08.2026
 
-**§5T-beslutningskøen** (`docs/natt/D-LYS-OG-5T-BESLUTNING.md`): 14 pensjoneringskandidater +
-38 klasse B-hull + prinsipp-ja for 24 klasse A-ruter. Blokkerer deler av T6- og T9-omfanget.
-Uten svar her kan T6/T9 bare porte det som HAR fasit, ikke ta endelig IA-beslutning på resten.
-Alt annet i denne planen ruller uten å vente på dette.
+Alle punktene i `docs/natt/D-LYS-OG-5T-BESLUTNING.md` er avgjort av Anders (§ 0 i det
+dokumentet har full detalj). Kort versjon:
+
+- Klasse A (24 detaljsider) portes etter hub-mønster. Bulk-tabellen (14 pensjonering +
+  ~13 klasse B «M»-rader) er godkjent som den står.
+- `tournaments/ny` og de 4 talent-adminsidene var allerede avgjort tidligere (04.08 / 26.08)
+  — ingen ny beslutning trengtes, bare rettet i tabellen.
+- Caddie (chat) legges ned til fordel for Jarvis' godkjenningskø.
+- Tre PII-tunge flater (innboks-e-post, AK-stigen, opptak) planlegges portet nå, med
+  PII-vurdering bygget inn i den enkelte T-økten.
+- `reports` flettes inn i økonomiflaten (EC-01). T13-restsidene portes nå, ikke utsatt.
+
+**Ingenting blokkerer lenger T6/T9 eller resten av T-bølgen.** Neste plan-/bygge-økt for
+hver T-rad henter presist omfang fra D-LYS-OG-5T-BESLUTNING.md § 0.
 
 ### 8.3 Neste kodesteg (rekkefølge, fri for §5T-blokken)
 
@@ -554,27 +564,29 @@ T7/T8/T9/T12 sin avhengighet på C-rader betyr i praksis: kjør T10/T11/T6 nå, 
 start bølge 2 (C1–C10) parallelt med at gjenstående T-rader porter det som ikke venter på
 en C-rad. Ikke la T-bølgen stå helt stille til hele bølge 2 er ferdig.
 
-### 8.4 P0 — det som blokkerer ekte/betalende brukere (uendret, hos Anders)
+### 8.4 P0 — det som blokkerer ekte/betalende brukere (statussjekket 27.08.2026, hos Anders)
 
-Disse er **ikke kodearbeid** — Claude kan ikke utføre dem. Fra `docs/STATUS-NÅ.md`:
+Disse er **ikke kodearbeid** — Claude kan ikke utføre dem, kun forberede underlag.
 
-- Resend DKIM for `send.akgolf.no`
-- `akgolf.no` → Vercel (DNS)
-- Live Stripe-nøkler + webhook-verifisering (testmodus er komplett, sjekkliste:
-  `docs/platform/stripe-cutover-sjekkliste.md`)
-- Google Calendar re-kobling
-- Aktiverings-e-post til ekte spilleradresser (dry-run viste 14 «ok» mot syntetiske adresser)
-- Rotér `SCREENTEST_PASSWORD` (kompromittert siden hendelsen 03.08)
+| Punkt | Status 27.08.2026 |
+|---|---|
+| Resend DKIM for `send.akgolf.no` | Fortsatt åpen |
+| `akgolf.no` → Vercel (DNS) | Fortsatt åpen |
+| Live Stripe-nøkler + webhook-verifisering | Fortsatt åpen (testmodus komplett, sjekkliste: `docs/platform/stripe-cutover-sjekkliste.md`) |
+| Google Calendar re-kobling | **UTFØRT** |
+| Aktiverings-e-post til ekte spilleradresser | Fortsatt åpen — ekte adresser er ikke lagt inn ennå (dry-run 13.08 viste 14 «ok» mot syntetiske adresser) |
+| Rotér `SCREENTEST_PASSWORD` | Fortsatt åpen (kompromittert siden hendelsen 03.08) |
 
 **Betaling starter automatisk 1. september 2026** (`BETALING_STARTER` i
-`src/lib/feature-flags.ts` — `gratisForAlle()` slår av samtidig). Verifiser cutover nærmere
-datoen.
+`src/lib/feature-flags.ts` — `gratisForAlle()` slår av samtidig). Fem av seks P0-punkter er
+fortsatt åpne — verifiser at de er lukket i god tid før den datoen, ikke bare cutover-flagget.
 
 ### 8.5 Definisjon av «klar til å presentere for ekte brukere»
 
 Alle punktene i Del 3 over holder fortsatt. I tillegg, konkret for dagens tilstand:
-1. T10, T11, T6 (det avklarte omfanget) levert og skjermbilde-godkjent av Anders.
-2. §5T-beslutningskøen besvart (låser opp resten av T6/T9 + T-bølgens siste rader).
+1. T-bølgen (T6–T13, komplett omfang per D-LYS-OG-5T-BESLUTNING § 0) levert og
+   skjermbilde-godkjent av Anders.
+2. ~~§5T-beslutningskøen besvart~~ — **LØST 27.08.2026**, se § 8.2.
 3. Bølge 2 (C1–C10) levert — spesielt C8 (lys-pass) og C10 (DataGolf+økonomi), som er
    synlige for sluttbruker fra dag én.
 4. P0-listen i §8.4 lukket av Anders.
