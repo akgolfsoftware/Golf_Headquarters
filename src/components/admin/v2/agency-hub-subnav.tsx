@@ -33,6 +33,7 @@ export const KO_HUB_TABS: AgencyHubTab[] = [
 /** Primær «Kalender» — all tid og booking. */
 export const KALENDER_HUB_TABS: AgencyHubTab[] = [
   { href: "/admin/kalender", label: "Uke", exact: true },
+  { href: "/admin/kalender/lag", label: "Lag" },
   { href: "/admin/bookinger", label: "Bookinger" },
   { href: "/admin/agencyos/uka", label: "Tavle" },
   { href: "/admin/availability", label: "Tilgjengelighet" },
