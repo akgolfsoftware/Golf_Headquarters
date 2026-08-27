@@ -2,8 +2,9 @@
 
 > **Hva dette er:** ett snapshot av hvor plattformen står akkurat nå. Oppdater datoen + relevante linjer når noe vesentlig endrer seg.
 
-**Sist oppdatert:** 2026-08-27 (B8 + T13 merget — bølge 1 komplett).
-Samlet lanseringsplan: **`docs/natt/LAUNCH-PLAN-FULL-2026-08-25.md`** (vinner over MASTERPLAN der de overlapper).
+**Sist oppdatert:** 2026-08-27 (B8 + T13 merget — bølge 1 komplett; docs-opprydding #614 merget).
+Samlet lanseringsplan: **`docs/natt/LAUNCH-PLAN-FULL-2026-08-25.md` § 8** (fersk status +
+neste steg, oppdatert 27.08 — vinner over MASTERPLAN der de overlapper).
 
 ## Hovedbildet 26.08 (målt mot git/kode/prod)
 
@@ -23,10 +24,14 @@ Samlet lanseringsplan: **`docs/natt/LAUNCH-PLAN-FULL-2026-08-25.md`** (vinner ov
   forventet — T3–T13 og B8 er ikke kjørt — men tallet er nå målt, ikke antatt.
   Remåling: `node scripts/maal-trainlock-status.mjs`.
 - **Åpent nå: ingen åpne PR-er.** Etappe 2 i LAUNCH-PLAN §0.2 er komplett (B6, B8, T2,
-  T3, T4, T13 alle merget). Neste per planen: etappe 3 — **T10** (Turneringer) og
-  **T11** (Innsikt-hub), begge fri avhengighet mot main. **T6** (Plan-hub) kan starte
-  siden T5 er avklart. §5T-beslutningskøen (pensjoneringskandidater/klasse B-hull)
-  står fortsatt ubesvart og blokkerer deler av T6/T9-scope.
+  T3, T4, T13 alle merget). **§5T-beslutningskøen er LØST 27.08** (Anders, full detalj i
+  `docs/natt/D-LYS-OG-5T-BESLUTNING.md` § 0) — ingenting blokkerer lenger T-bølgen. Neste per
+  planen: T10 (Turneringer) og T11 (Innsikt-hub) — begge fri avhengighet. T6 (Plan-hub) kan
+  starte samtidig siden T5 er avklart. Se `docs/natt/LAUNCH-PLAN-FULL-2026-08-25.md` § 8.3
+  for full rekkefølge.
+- **P0-status (27.08):** Google Calendar re-kobling UTFØRT. Fortsatt åpent: DKIM, DNS
+  (`akgolf.no`), Stripe live-nøkler, aktiverings-e-post (ekte adresser ikke lagt inn),
+  `SCREENTEST_PASSWORD`-rotasjon. Se § 8.4 i LAUNCH-PLAN for detalj.
 
 ## Hovedbildet 25.08 (historikk)
 

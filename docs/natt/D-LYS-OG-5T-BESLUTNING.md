@@ -20,8 +20,41 @@ Skrevet av plan-session (read-only) 26.08. Alle tall er målt mot `designsystem/
 
 **Tre kryss fra deg låser opp nesten hele T-bølgen:**
 - [x] Lys: alternativ (a) godkjent — **Anders 26.08.2026:** «Alle skjermer i PlayerHQ, AgencyOS og foreldre-skjermene skal ha mørk og lys modus.» Utvidet samtidig til å gjelde forelder-appen i sin helhet, ikke bare AgencyOS — se `.claude/rules/beslutninger.md`.
-- [ ] Klasse A: prinsipp-OK for port etter hub-mønster (24 sider)
-- [ ] Samletabellen under: kryss per rad (14 + 38)
+- [x] Klasse A: prinsipp-OK for port etter hub-mønster (24 sider) — **Anders 27.08.2026: JA.**
+- [x] Samletabellen under: kryss per rad (14 + 38) — **Anders 27.08.2026: JA til alle forslag**,
+  se § 0 «AVGJORT 27.08.2026» under for de rekke enkeltbeslutningene som lå utenfor bulk-svaret.
+
+## 0. AVGJORT 27.08.2026 (Anders, i økt — dokumentert i `docs/natt/LAUNCH-PLAN-FULL-2026-08-25.md` § 8)
+
+Hele beslutningskøen i dette dokumentet er nå lukket. Sammendrag av svarene, i tillegg til
+de to bulk-kryssene over:
+
+1. **Klasse A (24 sider) og bulk-tabellen (14 pensjonering + ~13 klasse B «M»-rader):
+   JA til begge.** «Ditt svar»-kolonnen i § 2.4 leses derfor som JA på alle rader merket
+   Pensjonering eller M, med unntak av radene under som fikk et annet/mer presist svar.
+2. **`queue` (T2, rad 16):** viste seg allerede løst i koden — «Kø» i railen (T1, `V2Shell`)
+   peker på `/admin/queue`, en ekte spiller-oppfølgingskø (risiko/watch/sjekk inn/løst),
+   adskilt fra AgenticOS' godkjenningskø. Ingen ny beslutning trengtes.
+3. **`tournaments/ny` (T10, rad 35):** allerede avgjort 04.08.2026 (se `.claude/rules/
+   beslutninger.md`) — turneringsplanlegging bygges i Workbench, ikke som ombygging av
+   `/admin/tournaments`. Rad 35 er dermed løst, ikke lenger «egen sak».
+4. **`talent/radar`, `talent/discovery`, `talent/sammenligning`, `talent/wagr-import`**
+   (T11, rader 41–44): allerede avgjort 26.08.2026 — TalentHQ slås sammen inn i PlayerHQ,
+   egen bølge ETTER T-bølgen (se auto-memory `talenthq-samles-i-playerhq`). Radene er
+   dermed IKKE en del av T11-omfanget — utsett til TalentHQ-konsolideringsbølgen.
+5. **Caddie-trioen `agencyos/caddie` + `aktivitet` + `dashbord` (T12, rader 45–47):**
+   **Caddie som chat-konsept legges ned.** Jarvis-fasitens godkjenningskø (JV-01–03)
+   overtar jobben. Ingen egen chat-flate bygges videre på siden av Jarvis.
+6. **PII-tunge flater — `innboks-epost` (T3, rad 17), `ak-stigen` (T8, rad 31),
+   `recording` (T9, rad 33):** **planlegges portet nå**, med riktig PII-håndtering bygget inn
+   underveis (kunde-e-post, junior-PII, lydopptak — hver flate får egen vurdering i sin
+   T-økt, ikke en felles mal). Bygger-økten stopper og spør Anders ved reell tvil om omfang.
+7. **`reports` (T11, rad 38):** flettes inn i økonomiflaten (EC-01/C10) — ikke egen side.
+8. **T13-restsidene `marketing`, `videoer`, `workspace`, `workspace/notion`,
+   `workspace/prosjekter` (rader 48–52):** portes NÅ etter Oppsett-hub-mønsteret, sammen
+   med de 24 klasse A-sidene — ikke utsatt bak Meg.
+9. **`turnering-kobling` (T4, rad 19):** lav risiko, ingen produktbeslutning nødvendig —
+   portes som minimal TL-verktøyside etter samme mønster som andre datavask-verktøy.
 
 ---
 
@@ -230,5 +263,7 @@ eller eget svar i siste kolonne.
 | 51 | `workspace/notion` | Klasse B | Egen sak (bak Meg?) | T13 | |
 | 52 | `workspace/prosjekter` | Klasse B | Egen sak (bak Meg?) | T13 | |
 
-Pluss de to blokk-krysse­ne fra oppsummeringen: **lys (a)/(b)** og **klasse A prinsipp-OK**.
-Svarene skrives tilbake i LAUNCH-PLAN-FULL §5T av neste plan-/statusøkt.
+**AVGJORT 27.08.2026 — se § 0 øverst i dette dokumentet for alle svarene**, inkl. de ni
+radene/gruppene som fikk et mer presist svar enn et rent bulk-JA. Neste steg: svarene
+føres inn i `docs/natt/LAUNCH-PLAN-FULL-2026-08-25.md` § 5T sine T-rader (T2–T13) slik at
+hver bygge-økt ser riktig omfang direkte i sin rad, ikke bare her.
