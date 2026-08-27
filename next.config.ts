@@ -106,6 +106,12 @@ const nextConfig: NextConfig = {
       { source: "/admin/board", destination: "/admin/spillere?view=tavle", permanent: false },
       { source: "/admin/prosjekter", destination: "/admin/agent-team", permanent: false },
       { source: "/admin/tilstander", destination: "/admin/gjennomfore", permanent: false },
+      // T9 (27.08.2026): (legacy)/live/[id]/{active,brief,summary} pensjonert —
+      // funksjonen (melding/brief/vurdering) lever nå som seksjoner på
+      // /admin/agencyos/live/[id] (se docs/natt/T9-DONE.md).
+      { source: "/admin/live/:id/active", destination: "/admin/agencyos/live/:id", permanent: false },
+      { source: "/admin/live/:id/brief", destination: "/admin/agencyos/live/:id", permanent: false },
+      { source: "/admin/live/:id/summary", destination: "/admin/agencyos/live/:id", permanent: false },
       { source: "/portal/reach", destination: "/portal", permanent: false },
       { source: "/portal/mal/statistikk", destination: "/portal/analysere", permanent: false },
       { source: "/portal/mal/milepaeler", destination: "/portal/talent", permanent: false },

@@ -137,7 +137,7 @@ export function OktArkV2({ data }: { data: OktArkData }) {
     startTravel(async () => {
       const res = await startOkt(data.bookingId);
       if (res.ok && res.sessionId) {
-        router.push(`/admin/live/${res.sessionId}/brief`);
+        router.push(`/admin/agencyos/live/${res.sessionId}`);
       } else {
         setFeil(res.error ?? "Kunne ikke starte økten. Prøv igjen.");
       }
@@ -346,7 +346,7 @@ export function OktArkV2({ data }: { data: OktArkData }) {
           </div>
         </div>
       ) : data.trainingSessionV2Id ? (
-        <Link href={`/admin/live/${data.trainingSessionV2Id}/summary`} style={{ textDecoration: "none" }}>
+        <Link href={`/admin/agencyos/live/${data.trainingSessionV2Id}`} style={{ textDecoration: "none" }}>
           <span style={primærKnapp}>Skriv oppfølging</span>
         </Link>
       ) : (

@@ -9,17 +9,19 @@
  * (AnalyseResultatSchema) — aldri `as unknown as`.
  */
 
+import Link from "next/link";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
-import { TilbakeLenke } from "@/components/v2";
+import { TL } from "@/lib/v2/train-lock";
+import { Icon } from "@/components/v2/icon";
 import { GlobalSearchModal } from "@/components/admin/global-search-modal";
 import { AnalyseResultatSchema, type AnalyseResultat } from "@/lib/coaching-analysis";
 import {
-  AdminRecordingV2,
-  type AdminRecordingV2Data,
+  AdminRecordingTrainLock,
+  type AdminRecordingTLData,
   type AdminRecordingRad,
-} from "@/components/admin/v2/AdminRecordingV2";
+} from "@/components/admin/v2/AdminRecordingTrainLock";
 import { hentLydSamtykkeKart } from "@/lib/recording/lyd-samtykke";
 
 type SearchParams = Promise<{ id?: string; okt?: string }>;
@@ -93,7 +95,7 @@ export default async function RecordingAdmin({ searchParams }: { searchParams?: 
 
   // Pipeline-status utledes fra faktisk fremdrift (transcript/aiAnalysis),
   // ikke bare status-enum — så coach ser hvilket steg som faktisk pågår.
-  const pipeline: AdminRecordingV2Data["pipeline"] = (() => {
+  const pipeline: AdminRecordingTLData["pipeline"] = (() => {
     if (!aktivt) {
       return [
         { label: "Transkriberer", meta: "—", status: "idle" as const },
@@ -154,7 +156,7 @@ export default async function RecordingAdmin({ searchParams }: { searchParams?: 
     analyse: parseAnalyse(r.aiAnalysis),
   }));
 
-  const data: AdminRecordingV2Data = {
+  const data: AdminRecordingTLData = {
     coachNavn: user.name ?? "Coach",
     harTranskriberingsNokkel,
     activeRecordingId,
@@ -188,8 +190,14 @@ export default async function RecordingAdmin({ searchParams }: { searchParams?: 
 
   return (
     <V2Shell bredde="kolonne" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"} avatarUrl={user.avatarUrl}>
-      <TilbakeLenke href="/admin/agencyos">Cockpit</TilbakeLenke>
-      <AdminRecordingV2 data={data} />
+      <Link
+        href="/admin/agencyos"
+        style={{ display: "inline-flex", alignItems: "center", gap: 6, fontFamily: TL.font.sans, fontSize: 13, color: TL.mute, textDecoration: "none", marginBottom: 12 }}
+      >
+        <Icon name="arrow-left" size={15} />
+        Cockpit
+      </Link>
+      <AdminRecordingTrainLock data={data} />
       <GlobalSearchModal />
     </V2Shell>
   );

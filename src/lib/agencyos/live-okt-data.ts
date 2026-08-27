@@ -31,7 +31,11 @@ export type LiveOktData = {
      *  coaching-analysis (den drar med seg Anthropic SDK + fs inn i bundelen). */
     coachAnalyse: string | null;
   } | null;
-  driller: { id: string; navn: string; varighetMin: number; pyramide: string }[];
+  driller: { id: string; navn: string; varighetMin: number; pyramide: string; logget: boolean }[];
+  /** Tidligere sendt fokuspunkt til spiller (completedSummary.coachBrief), tom streng hvis ingen. */
+  coachBrief: string;
+  /** Coachens post-økt-vurdering 1–5 (completedSummary.coachRating), null hvis ikke satt. */
+  coachRating: number | null;
 };
 
 export async function lastLiveOktData(sessionId: string): Promise<LiveOktData | null> {
@@ -49,6 +53,8 @@ export async function lastLiveOktData(sessionId: string): Promise<LiveOktData | 
       practiceType: true,
       status: true,
       maalsetning: true,
+      notes: true,
+      completedSummary: true,
       drills: {
         orderBy: { sortOrder: "asc" },
         select: { id: true, name: true, durationMinutes: true, pyramide: true },
@@ -59,7 +65,7 @@ export async function lastLiveOktData(sessionId: string): Promise<LiveOktData | 
 
   // studentId/coachId har ingen navngitt Prisma-relasjon på modellen —
   // slås opp separat, ikke via include.
-  const [student, coach, opptak] = await Promise.all([
+  const [student, coach, opptak, logs] = await Promise.all([
     okt.studentId ? prisma.user.findUnique({ where: { id: okt.studentId }, select: { name: true } }) : null,
     prisma.user.findUnique({ where: { id: okt.coachId }, select: { name: true } }),
     prisma.sessionRecording.findFirst({
@@ -67,7 +73,24 @@ export async function lastLiveOktData(sessionId: string): Promise<LiveOktData | 
       orderBy: { createdAt: "desc" },
       select: { status: true, durationSec: true, transcript: true, aiAnalysis: true },
     }),
+    prisma.drillLogV2.findMany({ where: { drill: { sessionId } }, select: { drillId: true } }),
   ]);
+  const loggedDrillIds = new Set(logs.map((l) => l.drillId));
+
+  // completedSummary er et JSON-objekt der spiller- og coach-felt lever side
+  // om side (SessionSummaryShape + coachBrief/coachRating) — les forsiktig,
+  // aldri `as unknown as`.
+  const rawSummary: unknown = okt.completedSummary;
+  const summaryObj =
+    rawSummary && typeof rawSummary === "object" && !Array.isArray(rawSummary)
+      ? (rawSummary as Record<string, unknown>)
+      : {};
+  const briefObj =
+    summaryObj.coachBrief && typeof summaryObj.coachBrief === "object" && !Array.isArray(summaryObj.coachBrief)
+      ? (summaryObj.coachBrief as Record<string, unknown>)
+      : {};
+  const coachBrief = typeof briefObj.melding === "string" ? briefObj.melding : "";
+  const coachRating = typeof summaryObj.coachRating === "number" ? summaryObj.coachRating : null;
 
   const varighetMin = Math.round((okt.endTime.getTime() - okt.startTime.getTime()) / 60_000);
 
@@ -91,6 +114,14 @@ export async function lastLiveOktData(sessionId: string): Promise<LiveOktData | 
           coachAnalyse: AnalyseResultatSchema.safeParse(opptak.aiAnalysis).data?.coachAnalyse ?? null,
         }
       : null,
-    driller: okt.drills.map((d) => ({ id: d.id, navn: d.name, varighetMin: d.durationMinutes, pyramide: d.pyramide })),
+    driller: okt.drills.map((d) => ({
+      id: d.id,
+      navn: d.name,
+      varighetMin: d.durationMinutes,
+      pyramide: d.pyramide,
+      logget: loggedDrillIds.has(d.id),
+    })),
+    coachBrief,
+    coachRating,
   };
 }
