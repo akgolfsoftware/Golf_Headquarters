@@ -11,6 +11,7 @@ export const metadata: Metadata = {
   title: "Kontakt AK Golf Academy",
   description:
     "Ta kontakt med AK Golf Academy. Personlig coaching, booking og spørsmål. Vi svarer innen 1 virkedag.",
+  formatDetection: { telephone: true },
 };
 
 export default function KontaktPage() {

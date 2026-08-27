@@ -20,6 +20,7 @@ import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
 import { InnsiktHubV2, type InnsiktHubV2Data, type InnsiktHubV2Kategori } from "@/components/admin/v2/InnsiktHubV2";
 
 export const dynamic = "force-dynamic";
+export const metadata = { title: "Innsikt · AgencyOS" };
 
 const DAG_MS = 86_400_000;
 const PERIODE_UKER = 8;

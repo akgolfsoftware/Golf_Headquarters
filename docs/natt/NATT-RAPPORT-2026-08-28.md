@@ -72,6 +72,22 @@ VERIFY_EXIT:0
 TEST_EXIT:0
 ```
 
+### QA-1 — Web-hygiene
+
+(a) Sonner-Toaster montert i admin-layout. (b) Telefon på kontaktsiden er `tel:+4748216540`. (c) GFGK-junior-footer bruker løpende årstall. (d) `MobileMenu` slettes ikke (hard regel 5 — fila er allerede ubrukt). (e) Fane-titler på cockpit, stall, plan, innsikt, turneringer, oppsett, tester, TrackMan, stall-dag, tilgjengelighet, I dag, Plan, Analyse, Meg, Gjennomføre, Forelder. (f) Dobbel e-post på kontakt slått sammen til én mailto.
+
+Verify/test-bevis 28.08:
+
+```
+check-action-auth: OK.
+check-token-gap: ingen Presis-farger, ingen hex i style={{}}, className eller SVG.
+VERIFY_EXIT:0
+
+ℹ tests 1749
+ℹ pass 1749
+TEST_EXIT:0
+```
+
 ---
 
 ## FEILET

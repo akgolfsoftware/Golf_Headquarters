@@ -1,5 +1,6 @@
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { AdminRolleProvider } from "@/components/v2/rolle";
+import { AdminToaster } from "@/components/admin/admin-toaster";
 
 // TOPP-layout for /admin — kun auth-guarden, INGEN visuell chrome. page.tsx
 // (rot) er en ren redirect til /admin/agencyos og trenger ingen chrome.
@@ -19,6 +20,7 @@ export default async function AdminLayout({
   return (
     <AdminRolleProvider erAdmin={user.role === "ADMIN"}>
       {children}
+      <AdminToaster />
     </AdminRolleProvider>
   );
 }

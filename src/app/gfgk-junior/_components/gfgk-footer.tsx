@@ -75,7 +75,7 @@ export function GfgkFooter() {
           className="mx-auto flex max-w-[1200px] flex-wrap justify-between gap-3 px-5 py-4 text-[13px] sm:px-7"
           style={{ color: T.farge.hvitA55 }}
         >
-          <span>© 2026 GFGK Junior & Elite</span>
+          <span>© {new Date().getFullYear()} GFGK Junior & Elite</span>
           <span>Torsnesveien 16, 1630 Gamle Fredrikstad</span>
         </div>
       </div>

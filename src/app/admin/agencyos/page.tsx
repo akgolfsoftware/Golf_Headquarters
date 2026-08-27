@@ -25,6 +25,7 @@ import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
 import { AgencyCockpitTrainLock } from "@/components/admin/cockpit/TrainLockCockpit";
 
 export const dynamic = "force-dynamic";
+export const metadata = { title: "Cockpit · AgencyOS" };
 
 export default async function V2CockpitPage() {
   const user = await requirePortalUser({ allow: ["ADMIN", "COACH"] });

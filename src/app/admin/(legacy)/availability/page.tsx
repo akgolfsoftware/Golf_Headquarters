@@ -26,6 +26,7 @@ import { KalenderHubNav } from "@/components/admin/v2/agency-hub-subnav";
 const REP_TEKST: Record<number, string> = { 2: "annenhver uke", 3: "hver 3. uke", 4: "hver 4. uke" };
 
 export const dynamic = "force-dynamic";
+export const metadata = { title: "Tilgjengelighet · AgencyOS" };
 
 const MND_NB = ["Januar", "Februar", "Mars", "April", "Mai", "Juni", "Juli", "August", "September", "Oktober", "November", "Desember"];
 const UKEDAGER_NB = ["Man", "Tir", "Ons", "Tor", "Fre", "Lør", "Søn"];

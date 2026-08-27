@@ -35,6 +35,7 @@ GJELDENDE merge-status, se `docs/STATUS-NÅ.md`.
 | RLS-Workbench | RLS på `workbench_sessions`/`workbench_drills` | — (#593) | Kjørt og verifisert aktiv i prod |
 | T7 | Kalender + booking-lag samlet til én TL-flate (`/admin/kalender`); lista og uka-tavla redirect | `claude/natt-lansering-2026-08-28` | Ferdig, ikke merget; skjermbilde-gate gjenstår |
 | T8 | Grupper til Train-lock (liste, detalj, timeplan, AK-stigen) + workbench-fane | `claude/natt-lansering-2026-08-28` | Ferdig, ikke merget; skjermbilde-gate gjenstår |
+| QA-1 | Web-hygiene: admin-toast, tel-lenke, årstall, hub-titler, én e-post på kontakt | `claude/natt-lansering-2026-08-28` | Ferdig, ikke merget |
 
 Se `docs/natt/README.md` for hvilke natt-dokumenter som fortsatt er levende (LAUNCH-PLAN,
 ACCESS-AND-GROUPS, SKJERM-STATUS, D-beslutningene) vs. denne loggen (historikk).

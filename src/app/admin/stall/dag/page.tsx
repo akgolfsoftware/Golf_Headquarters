@@ -13,6 +13,7 @@ import { StallDagV2, StallDagFeil } from "@/components/workbench/StallDagV2";
 import { TL_SCOPE } from "@/components/workbench/wb-tl-scope";
 
 export const dynamic = "force-dynamic";
+export const metadata = { title: "Stall-dag · AgencyOS" };
 
 type Props = {
   searchParams: Promise<{ dato?: string }>;

@@ -26,6 +26,7 @@ import { pakkeNavn } from "@/lib/domain/abonnement";
 import { FEATURES } from "@/lib/features";
 
 export const dynamic = "force-dynamic";
+export const metadata = { title: "Meg · PlayerHQ" };
 
 export default async function V2MegPreviewPage() {
   const user = await requirePortalUser({ kreverTilgang: "INGEN" });

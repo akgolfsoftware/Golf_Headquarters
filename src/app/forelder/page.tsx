@@ -26,6 +26,7 @@ import { TomTilstand } from "@/components/v2";
 import type { PaymentStatus } from "@/generated/prisma/client";
 
 export const dynamic = "force-dynamic";
+export const metadata = { title: "Oversikt · Forelder" };
 
 const OSLO_DATO = new Intl.DateTimeFormat("nb-NO", {
   timeZone: "Europe/Oslo",

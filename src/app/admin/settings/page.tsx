@@ -27,6 +27,7 @@ import {
 } from "@/components/admin/v2/oppsett/AdminOppsettHubTrainLock";
 
 export const dynamic = "force-dynamic";
+export const metadata = { title: "Oppsett · AgencyOS" };
 
 const RAD_KEYS: OppsettRadKey[] = ["akademi", "varsler", "tilgang", "klubb", "konto"];
 
