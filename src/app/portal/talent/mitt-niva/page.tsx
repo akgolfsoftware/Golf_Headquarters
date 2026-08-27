@@ -14,9 +14,12 @@ import { FEATURES } from "@/lib/features";
 import { prisma } from "@/lib/prisma";
 import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
 import { TilbakeLenke } from "@/components/v2";
+import { testNivaaerSchema } from "@/lib/domain/talent-sync";
+import { PYRAMID_LABEL } from "@/lib/domain/workbench/labels";
 import {
   TalentMittNivaV2,
   type TalentMittNivaData,
+  type TalentTestNivaaRad,
 } from "@/components/portal/v2/TalentMittNivaV2";
 import {
   TALENT_AKSE_KEYS,
@@ -83,6 +86,25 @@ export default async function MittNivaPage() {
 
   const kohortSnitt = computeAverage(kohort);
 
+  // T4-synken (src/lib/talent/test-sync.ts) skriver testNivaaer per pyramideområde
+  // fra CANON-testresultater — leses her for FØRSTE gang av en talent-skjerm.
+  // Korrupt/manglende JSON → tom liste, aldri kast (samme mønster som synken selv).
+  const testNivaaerParsed = testNivaaerSchema.safeParse(tracking.testNivaaer);
+  const testNivaaer: TalentTestNivaaRad[] = testNivaaerParsed.success
+    ? Object.entries(testNivaaerParsed.data)
+        .map(([omraade, n]) => ({
+          omraade,
+          omraadeLabel: PYRAMID_LABEL[omraade as keyof typeof PYRAMID_LABEL] ?? omraade,
+          testNavn: n.testNavn,
+          sisteScore: n.sisteScore,
+          sisteDato: n.sisteDato,
+          antallTester: n.antallTester,
+          benchmarkLabel: n.benchmarkLabel,
+          trend: n.trend,
+        }))
+        .sort((a, b) => (a.sisteDato < b.sisteDato ? 1 : -1))
+    : [];
+
   const data: TalentMittNivaData = {
     niva: tracking.niva,
     kohortAntall: kohort.length,
@@ -92,6 +114,7 @@ export default async function MittNivaPage() {
       verdi: tracking[k],
       kohort: kohortSnitt[k],
     })),
+    testNivaaer,
   };
 
   return (

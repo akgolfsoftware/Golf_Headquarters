@@ -60,6 +60,7 @@ import { PushOptInBanner } from "@/components/portal/push-opt-in-banner";
 import { FangstSheet } from "./FangstSheet";
 import type { PortalChatMessage } from "./types";
 import type { TrackManTeaser } from "@/lib/trackman/teaser";
+import type { TesterLiveKort as TesterLiveKortData } from "@/lib/portal-tester/tester-live-kort";
 import { IDagITidenArk } from "@/components/portal/v2/kalender/IDagITidenArk";
 import type { KalenderHendelse } from "@/lib/domain/kalender-lag";
 
@@ -385,6 +386,46 @@ function TomTilstand({
         Lag en 25-minutters økt
       </button>
     </div>
+  );
+}
+
+/**
+ * «Pågår test»-kortet på I dag (C4/Loop 8) — samme presedens som
+ * GodkjenningKort under: pure TL.*, ingen T.*-visning å videreføre for et
+ * helt nytt kort. Skjules helt uten en pågående gate-/PEI-test-live-økt
+ * (`getTesterLiveKort`). Lenker rett inn i artefaktet (TE-04/06), som
+ * gjenopptar økta der spilleren slapp (T5-gjenopptak).
+ */
+function TesterLiveKort({ testerLive }: { testerLive: TesterLiveKortData }) {
+  return (
+    <Link
+      href={`/portal/tren/tester/${testerLive.testId}/gjennomfor`}
+      data-od-id="ph-tester-live-kort"
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        gap: 4,
+        border: `1px solid ${TL.hair}`,
+        borderRadius: TL.radius.card,
+        background: TL.elev,
+        padding: "12px 14px",
+        textDecoration: "none",
+        color: "inherit",
+      }}
+    >
+      <span
+        style={{
+          fontFamily: TL.font.mono,
+          fontSize: 10,
+          letterSpacing: "0.06em",
+          textTransform: "uppercase",
+          color: TL.mute,
+        }}
+      >
+        Pågår · {testerLive.testNavn} · {testerLive.fremdrift}
+      </span>
+      <span style={{ fontFamily: TL.font.sans, fontSize: 13, color: TL.text }}>Fortsett testen ›</span>
+    </Link>
   );
 }
 
@@ -725,6 +766,7 @@ export function PortalChatHjem({
   naaTekst,
   workbenchDay,
   trackman,
+  testerLive,
   dagITiden,
 }: {
   data: DashboardData;
@@ -735,6 +777,8 @@ export function PortalChatHjem({
   workbenchDay: PlayerDayResult;
   /** PH-01c: siste TrackMan-økt, eller null når spilleren ikke har noen (kortet skjules da helt). */
   trackman: TrackManTeaser | null;
+  /** TE-04/06 (C4/Loop 8): pågående gate-/PEI-test-live-økt, eller null (kortet skjules da helt). */
+  testerLive: TesterLiveKortData | null;
   /** KA-04 (Loop 7/C3): hele dagen på tvers av lagene — se `IDagITidenArk`. */
   dagITiden: { dagLabel: string; hendelser: KalenderHendelse[] };
 }) {
@@ -924,6 +968,7 @@ export function PortalChatHjem({
           >
             <WorkbenchIDagArtefakt workbenchDay={workbenchDay} />
             <RundeLiveArtefakt />
+            {testerLive && <TesterLiveKort testerLive={testerLive} />}
             {trackman && <TrackManTeaserKort trackman={trackman} />}
 
             {messages.length === 0 && heltTom && (

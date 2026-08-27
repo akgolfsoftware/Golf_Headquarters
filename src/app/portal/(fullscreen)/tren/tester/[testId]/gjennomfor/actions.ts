@@ -38,7 +38,8 @@ import { scoreTest } from "@/lib/portal-tester/test-scoring";
 import { syncTalentEtterTest } from "@/lib/talent/test-sync";
 import { notify } from "@/lib/notifications";
 
-const VerdiSchema = z.union([z.number().finite(), z.boolean(), z.null()]);
+/** «V»/«H» = registrert miss-retning (kun Gate-protokoller med miss_side, TE-04). */
+const VerdiSchema = z.union([z.number().finite(), z.boolean(), z.enum(["V", "H"]), z.null()]);
 
 /** Per-slag-verdier slik scorekortet fører dem (rå — ingen forhåndsregnet score). */
 const ForsokSchema = z.object({
@@ -80,7 +81,7 @@ export type LagreStegInput = z.infer<typeof LagreStegSchema>;
 
 const AvbrytSchema = z.object({ sessionId: z.string().min(1) });
 
-function harVerdi(verdier: Record<string, number | boolean | null>): boolean {
+function harVerdi(verdier: Record<string, number | boolean | "V" | "H" | null>): boolean {
   return Object.values(verdier).some((v) => v !== null);
 }
 

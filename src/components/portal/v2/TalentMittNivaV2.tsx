@@ -5,8 +5,21 @@
  * T.* only. Lys PlayerHQ.
  */
 
-import { T, Kort, StatusPill, HjelpTips, RadarProfil } from "@/components/v2";
+import { T, Kort, StatusPill, HjelpTips, RadarProfil, Icon } from "@/components/v2";
 import type { TalentAkseKey } from "./TalentFellesV2";
+
+/** Én rad i «Testresultater · CANON» — bygget fra TalentTracking.testNivaaer (T4-synken). */
+export interface TalentTestNivaaRad {
+  omraade: string;
+  omraadeLabel: string;
+  testNavn: string;
+  sisteScore: number;
+  /** ISO-dato. */
+  sisteDato: string;
+  antallTester: number;
+  benchmarkLabel: string | null;
+  trend: "opp" | "ned" | "flat" | null;
+}
 
 /* ── Data-kontrakt ─────────────────────────────────────────────────── */
 
@@ -23,6 +36,8 @@ export interface TalentMittNivaData {
   niva: string;
   kohortAntall: number;
   akser: TalentMittNivaAkse[];
+  /** Testresultater fra CANON-batteriet, nyeste område først. Tom = ingen tester ennå. */
+  testNivaaer: TalentTestNivaaRad[];
 }
 
 /* Kort tekstforklaring per akse (uendret copy fra legacy-skjermen). */
@@ -120,6 +135,53 @@ export function TalentMittNivaV2({ data }: { data: TalentMittNivaData }) {
           ))}
         </div>
       </Kort>
+
+      {/* Testresultater — CANON-batteriet (T4-synken), C4/Loop 8: første talent-skjerm som leser testNivaaer. */}
+      {data.testNivaaer.length > 0 && (
+        <Kort eyebrow="Testresultater · CANON">
+          <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+            {data.testNivaaer.map((r) => (
+              <TestNivaaRad key={r.omraade} rad={r} />
+            ))}
+          </div>
+        </Kort>
+      )}
+    </div>
+  );
+}
+
+function fmtDato(iso: string): string {
+  const d = new Date(iso);
+  return Number.isNaN(d.getTime())
+    ? "—"
+    : new Intl.DateTimeFormat("nb-NO", { day: "2-digit", month: "2-digit", timeZone: "Europe/Oslo" }).format(d);
+}
+
+const TREND_IKON: Record<NonNullable<TalentTestNivaaRad["trend"]>, { navn: "trending-up" | "trending-down" | "minus"; farge: string }> = {
+  opp: { navn: "trending-up", farge: T.up },
+  ned: { navn: "trending-down", farge: T.down },
+  flat: { navn: "minus", farge: T.mut },
+};
+
+function TestNivaaRad({ rad }: { rad: TalentTestNivaaRad }) {
+  const trendIkon = rad.trend ? TREND_IKON[rad.trend] : null;
+  return (
+    <div style={{ background: T.panel2, border: `1px solid ${T.border}`, borderRadius: T.rRow, padding: "12px 16px" }}>
+      <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: 8 }}>
+        <span style={{ fontFamily: T.ui, fontSize: 13, fontWeight: 600, color: T.fg }}>{rad.omraadeLabel}</span>
+        {trendIkon && <Icon name={trendIkon.navn} size={14} style={{ color: trendIkon.farge, flex: "none" }} />}
+      </div>
+      <p style={{ margin: "4px 0 0", fontFamily: T.ui, fontSize: 12, color: T.mut }}>
+        {rad.testNavn} · {fmtDato(rad.sisteDato)} · {rad.antallTester} {rad.antallTester === 1 ? "test" : "tester"}
+      </p>
+      <div style={{ display: "flex", alignItems: "baseline", gap: 8, marginTop: 6 }}>
+        <span style={{ fontFamily: T.mono, fontSize: 15, fontWeight: 700, color: T.fg, fontVariantNumeric: "tabular-nums" }}>
+          {fmt10(rad.sisteScore)}
+        </span>
+        {rad.benchmarkLabel && (
+          <span style={{ fontFamily: T.mono, fontSize: 10.5, color: T.mut }}>{rad.benchmarkLabel}</span>
+        )}
+      </div>
     </div>
   );
 }
