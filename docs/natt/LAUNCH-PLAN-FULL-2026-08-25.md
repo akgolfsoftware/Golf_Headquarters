@@ -524,7 +524,9 @@ godkjenninger), T4 (stall + spiller 360), T13 (oppsett + meg) — alle merget. T
 (coach-Workbench) viste seg allerede portet via D3/B5/B6 — ingen kodeendring trengtes,
 se `docs/natt/LEVERANSELOGG.md`.
 
-**Ingen åpne PR-er** per 27.08 — repoet er i en ren tilstand å bygge videre fra.
+**Etappe 3 i gang (27.08 ettermiddag):** **T10** Turneringer (#617), **T11** Innsikt-hub
+(#616) og **T4-restsidene** spillere/ny + rediger (#618) er merget. **Åpne PR-er:**
+#619 (T13-detaljsider) og #620 (T6 Plan-hub) — venter på skjermbilde-gate + Anders' ja.
 
 **Målt skjermdekning** (`docs/natt/SKJERM-STATUS-2026-08-26.md`, remåling:
 `node scripts/maal-trainlock-status.mjs`): av 240 skjerm-ruter er et lite antall reelt
@@ -549,20 +551,26 @@ hver T-rad henter presist omfang fra D-LYS-OG-5T-BESLUTNING.md § 0.
 
 ### 8.3 Neste kodesteg (rekkefølge, fri for §5T-blokken)
 
-| Rekkefølge | Rad | Hvorfor nå | Avhenger av |
+| Rekkefølge | Rad | Status/hvorfor nå | Avhenger av |
 |---|---|---|---|
-| 1 | **T10** — Turneringer (`/admin/tournaments` → `TU-01`/`TU-02`) | Fri avhengighet, egen fasit finnes | main |
-| 1 | **T11** — Innsikt-hub (`/admin/analyse` → `AG-07`/`AG-12`) | Fri avhengighet, egen fasit finnes | main |
-| 2 | **T6** — Plan-hub + Workbench-kilder | T5 er avklart (ingen kodeendring), kan starte nå. Deler av omfanget (pensjoneringsliste) venter på §5T | T5 (løst) + delvis §5T |
-| 3 | **T7** — Kalender + booking-lag | | C3 (bølge 2, se under) |
-| 3 | **T8/T9** — Grupper / Live+TrackMan Agency | | C2 / B7 (begge levert) — kan trolig startes tidligere enn opprinnelig planlagt, verifiser avhengighetene på nytt før start |
-| 3 | **T12** — AgenticOS + Jarvis + Caddie | | C6+C7 (bølge 2, ikke startet) |
-| 4 | **Bølge 2 (C1–C10)** | Måned/år, stall→WB, kalender-lag, tester/runde-live, Jarvis-merge-motor, AgenticOS-queue, lys-pass, foreldre, DataGolf+økonomi | `docs/natt/OVERNIGHT-CODING-LOOP-BOLGE2.md` — kjør **kun etter** at etappe 3 over er unna, jf. anti-scope-regelen i CLAUDE.md |
+| ✓ | **T10** — Turneringer | **MERGET 27.08 (#617)** | — |
+| ✓ | **T11** — Innsikt-hub | **MERGET 27.08 (#616)** | — |
+| ✓ | **T4-rest** — spillere/ny + rediger | **MERGET 27.08 (#618)** | — |
+| PR | **T6** — Plan-hub + Workbench-kilder | **I PR #620** — venter skjermbilde-gate + Anders' ja | — |
+| PR | **T13-detaljer** — Oppsett-detaljsider | **I PR #619** — venter skjermbilde-gate + Anders' ja | — |
+| 1 | **T9** — Live + TrackMan Agency | Fri: B7 er levert, live-delen kun main | main |
+| 1 | **C2** — Stall→Workbench + **C3** — Kalender-lag | Bølge 2 starter nå (T10/T11/T6 unna, jf. regelen under); C2 låser opp T8, C3 låser opp T7 | M1 (levert) |
+| 1 | **C4** — Tester-live + **C5** — Runde-live | Parallellbare med C2/C3 (disjunkte filer); låser opp C8 lys-pass | M1 (levert) |
+| 2 | **T8** — Grupper | Etter C2 er merget | C2 |
+| 2 | **T7** — Kalender + booking-lag | Etter C3 er merget | C3 |
+| 3 | **C6 + C7** — Jarvis-merge + AgenticOS-queue | Låser opp T12 | M1 (levert) |
+| 3 | **T12** — AgenticOS + Jarvis + Caddie | | C6+C7 |
+| 4 | **C1 · C9 · C10 · C8** | Måned/år, foreldre, DataGolf+økonomi, lys-pass (C8 sist — rører manges filer) | C8: C4+C5 |
 | 5 | **Full smoke** → merge-sjekk mot Del 3-kriteriene | | Alt over |
 
-T7/T8/T9/T12 sin avhengighet på C-rader betyr i praksis: kjør T10/T11/T6 nå, **deretter**
-start bølge 2 (C1–C10) parallelt med at gjenstående T-rader porter det som ikke venter på
-en C-rad. Ikke la T-bølgen stå helt stille til hele bølge 2 er ferdig.
+Regelen fra 27.08 står: T10/T11/T6 er unna (merget/PR), så bølge 2 (C-radene) kjøres nå
+**parallelt** med gjenstående T-rader som ikke venter på en C-rad. Ikke la T-bølgen stå
+helt stille til hele bølge 2 er ferdig.
 
 ### 8.4 P0 — det som blokkerer ekte/betalende brukere (statussjekket 27.08.2026, hos Anders)
 

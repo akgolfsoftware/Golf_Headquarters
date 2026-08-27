@@ -2,7 +2,9 @@
 
 > **Hva dette er:** ett snapshot av hvor plattformen står akkurat nå. Oppdater datoen + relevante linjer når noe vesentlig endrer seg.
 
-**Sist oppdatert:** 2026-08-27 (B8 + T13 merget — bølge 1 komplett; docs-opprydding #614 merget).
+**Sist oppdatert:** 2026-08-27 ettermiddag (T10 #617 + T11 #616 + T4-rest #618 merget;
+T6 i PR #620 og T13-detaljer i PR #619 venter på skjermbilde-gate; neste: T9 + bølge 2
+C2/C3/C4/C5 i parallelle cloud-økter — se LAUNCH-PLAN § 8.3).
 Samlet lanseringsplan: **`docs/natt/LAUNCH-PLAN-FULL-2026-08-25.md` § 8** (fersk status +
 neste steg, oppdatert 27.08 — vinner over MASTERPLAN der de overlapper).
 
@@ -23,12 +25,13 @@ neste steg, oppdatert 27.08 — vinner over MASTERPLAN der de overlapper).
   coach-Workbench-uka fra D3), **234 fortsatt Paper-innhold** i det nye TL-skallet. Det er
   forventet — T3–T13 og B8 er ikke kjørt — men tallet er nå målt, ikke antatt.
   Remåling: `node scripts/maal-trainlock-status.mjs`.
-- **Åpent nå: ingen åpne PR-er.** Etappe 2 i LAUNCH-PLAN §0.2 er komplett (B6, B8, T2,
-  T3, T4, T13 alle merget). **§5T-beslutningskøen er LØST 27.08** (Anders, full detalj i
-  `docs/natt/D-LYS-OG-5T-BESLUTNING.md` § 0) — ingenting blokkerer lenger T-bølgen. Neste per
-  planen: T10 (Turneringer) og T11 (Innsikt-hub) — begge fri avhengighet. T6 (Plan-hub) kan
-  starte samtidig siden T5 er avklart. Se `docs/natt/LAUNCH-PLAN-FULL-2026-08-25.md` § 8.3
-  for full rekkefølge.
+- **Etappe 3 i gang (27.08 ettermiddag):** T10 Turneringer (#617), T11 Innsikt-hub (#616)
+  og T4-restsidene spillere/ny + rediger (#618) er MERGET. **Åpne PR-er: #620 (T6
+  Plan-hub) og #619 (T13-detaljsider)** — begge venter på skjermbilde-gate + Anders' ja.
+  **§5T-beslutningskøen er LØST 27.08** (Anders, full detalj i
+  `docs/natt/D-LYS-OG-5T-BESLUTNING.md` § 0). Neste per planen: **T9** (Live + TrackMan
+  Agency, fri) og **bølge 2-start C2/C3/C4/C5** i parallelle økter — C2 låser opp T8, C3
+  låser opp T7, C4+C5 låser opp C8. Se `docs/natt/LAUNCH-PLAN-FULL-2026-08-25.md` § 8.3.
 - **P0-status (27.08):** Google Calendar re-kobling UTFØRT. Fortsatt åpent: DKIM, DNS
   (`akgolf.no`), Stripe live-nøkler, aktiverings-e-post (ekte adresser ikke lagt inn),
   `SCREENTEST_PASSWORD`-rotasjon. Se § 8.4 i LAUNCH-PLAN for detalj.
