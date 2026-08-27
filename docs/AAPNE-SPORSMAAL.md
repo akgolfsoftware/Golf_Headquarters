@@ -92,14 +92,15 @@ Disse kan en agent IKKE løse selv — de er produkt-/metodikkvalg.
 
 ### ÅPNE spørsmål per 17.08 (kanonisk liste — pekere, ikke duplikater)
 
-1. **PORTPLAN §A1 — 10 portbeslutninger** (talent-hub vs redirect, godkjenninger én-vs-fem,
-   booking 3-vs-5 steg, årsplan-fane, coach-tråd-modell, Stripe Elements vs Billing Portal,
-   help-skall, `utstyr` vs `utstyrsbag`, ukesdigest-URL, PP-A-gatens formelle status).
-2. **WANG B4/B5** (`docs/port/plan-design-wang-arsplan.md`): overlever `/team-wang/coach`
-   eller redirect til AgencyOS? Skal skole-/foreldredata modelleres eller forbli demo?
+1. **`docs/arkiv/paper-port/PORTPLAN.md` §A1 — 10 portbeslutninger** (talent-hub vs redirect,
+   godkjenninger én-vs-fem, booking 3-vs-5 steg, årsplan-fane, coach-tråd-modell, Stripe
+   Elements vs Billing Portal, help-skall, `utstyr` vs `utstyrsbag`, ukesdigest-URL,
+   PP-A-gatens formelle status) — historisk arkiv, Train-lock-porten kan ha egne svar.
+2. **WANG B4/B5:** overlever `/team-wang/coach` eller redirect til AgencyOS? Skal
+   skole-/foreldredata modelleres eller forbli demo?
 3. **PR-F: DataGolf/stats-plassering i PlayerHQ** — blokkerer W7-stats (~45 ruter) og resten
    av 04.08-beslutningen om DataGolf inn i PlayerHQ.
-4. **KommandoTask vs Notion-cache** (`docs/port/drift-agenticos-konsolidering.md` pkt. 4).
+4. **KommandoTask vs Notion-cache** (`docs/drift-agenticos-konsolidering.md` pkt. 4).
 5. **FYS-formelen** — fortsatt AVVENTER (v1 stall-relativ er plassholder, merket i UI).
 6. **D4-backfill** — områdekode for de resterende testdefinisjonene
    (`docs/testomrader-forslag-2026-08-15.md`).

@@ -12,7 +12,7 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 <!-- END:nextjs-agent-rules -->
 
 # Skjermarbeid — les FØR skjerm-arbeid
-Designfasit er Claude Paper (Claude Design-prosjekt `605a48cc`, skjermer i `fase1/`). Dekningsregnskap: `docs/port/fasit-liste-paper.md`. Plan, rekkefølge og §«Ferdig-definisjon per skjerm»: `docs/port/plan-designport-alle-skjermer.md`. En skjerm er ferdig når ferdig-definisjonen er oppfylt og Anders har SETT skjermbildet (mobil 390px + desktop, lys + mørk, fasit ved siden av) — ikke når CI er grønn.
+Designfasit er **Train-lock** (`designsystem/train-lock/` — les `DESIGN-SYSTEM.md`, finn skjermen i `SCREEN-INDEX.md`), for ALLE skjermer i PlayerHQ og AgencyOS. Claude Paper (`designsystem/paper/`) er historikk/arkiv, aldri bygg-fasit. En skjerm er ferdig når Anders har SETT skjermbildet (mobil 390px + desktop, lys + mørk, fasit ved siden av) — ikke når CI er grønn. Se `CLAUDE.md` invariant 2 og `.claude/rules/beslutninger.md`.
 
 # Enkelhet (LÅST 2026-07-21)
 Behold alle funksjoner, men minst mulig trykk og super enkelt UI. Vanskelig å forstå = feil design. Se `docs/platform/BUSINESS-RULES.md`.

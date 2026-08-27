@@ -9,13 +9,14 @@ skjermer i PlayerHQ OG AgencyOS** — se CLAUDE.md invariant 2 og `.claude/rules
 | Fil | Bruk |
 |-----|------|
 | `LAUNCH-PLAN-FULL-2026-08-25.md` | **Gjeldende plan**: inventory, opprydding, bølger, session-tabell |
-| `KOMPLETT-PLAN.md` | Rydd v1 vs greenfield, publisering, horisonter |
-| `UTVIKLINGSPLAN-LANSERING.md` | A1–A4 sjekkliste |
-| `OVERNIGHT-CODING-LOOP.md` | Bølge 1: loop 1–4 + 2S/2T/3S/3T |
+| `LEVERANSELOGG.md` | Komprimert kvittering for hver leverte loop/rad (erstatter 24 enkelt-DONE-filer + LOOP-1-PROMPT, opprydding 27.08) |
+| `KOMPLETT-PLAN.md` | Historikk — rydd v1 vs greenfield, publisering, horisonter (supersedert av LAUNCH-PLAN) |
+| `UTVIKLINGSPLAN-LANSERING.md` | Historikk — A1–A4 sjekkliste (supersedert av LAUNCH-PLAN) |
+| `OVERNIGHT-CODING-LOOP.md` | Historikk — ferdig brukt, ikke lim inn på nytt |
 | `OVERNIGHT-CODING-LOOP-BOLGE2.md` | Bølge 2: loop 5–14 + lim-inn |
-| `LOOP-1-PROMPT.md` | FERDIG BRUKT — historikk, ikke lim inn på nytt |
-| `LOOP-*-DONE.md` | Leveranserapporter per loop |
-| `workbench/` | ACCESS (gjelder), integration, store-kontrakt; `arkiv/` = frossen spec |
+| `SKJERM-STATUS-2026-08-26.md` | Målt Train-lock-dekning per skjerm |
+| `D-LYS-OG-5T-BESLUTNING.md`, `D2-TOKENS-DONE.md`, `D2-UNDERLAG-2026-08-25.md` | Design-token- og lys/mørk-beslutninger — gjelder fortsatt |
+| `workbench/` | ACCESS-AND-GROUPS (gjelder), integration, store-kontrakt |
 
 ## Workbench-spec (`workbench/`)
 
@@ -44,7 +45,7 @@ Smoke manuelt grønn 7/8 (TM-steget venter på B7). Design: Train-lock-tokens i 
 Additiv DDL (`seriesId`/`seriesIndex`/`isTemplate` på `workbench_sessions`) er ALLEREDE
 kjørt mot prod — ikke bare skrevet — så en gren som starter fra `main` uten #601 vil
 mangle disse kolonnene i `schema.prisma`/generert klient selv om databasen har dem. Detalj:
-`docs/natt/LOOP-B5-DONE.md`. **B6/T5/T6 (som avhenger av B5) bør branche fra en gren som
+`docs/natt/LEVERANSELOGG.md`. **B6/T5/T6 (som avhenger av B5) bør branche fra en gren som
 inkluderer #601**, ikke fra `main`/`release` alene, for å unngå å bygge kilder/drag/serie
 på nytt.
 

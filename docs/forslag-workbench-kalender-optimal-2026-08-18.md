@@ -2,8 +2,9 @@
 
 **Laget:** 18.08.2026. **Status:** FORSLAG — analyse av alt som finnes i dag (fasiter + kode,
 verifisert i repoet samme dag), etterfulgt av et konkret målbilde. Ingenting er vedtatt.
-Søsterdokumenter: `parameterbok-planlegging-2026-08-18.md` (alle parametere) og
-`forslag-parameterbok-fasit-2026-08-18.md` (forslag til fasit-vedtak).
+Søsterdokumentene (`parameterbok-planlegging-2026-08-18.md`, `forslag-parameterbok-fasit-
+2026-08-18.md`) er slettet i opprydding 27.08.2026 — historisk detalj erstattet av
+`docs/vokabular-planlegging-2026-08-18.md` og `docs/FASIT-AK-GOLF-HQ.md`.
 
 ---
 
@@ -186,5 +187,5 @@ Etappe 1–2 er fundamentet og bør gå først; 3–7 kan omprioriteres fritt et
 ---
 
 *Analyse verifisert mot repoet 18.08.2026 (fasiter i designsystem/paper/, produksjonskode i
-src/, docs/feillogg.md, docs/port/plan-designport-alle-skjermer.md). Forslagene i del 2 er
+src/, docs/feillogg.md). Forslagene i del 2 er
 til diskusjon — ingen kode endres før rekkefølgen og omfanget er godkjent.*

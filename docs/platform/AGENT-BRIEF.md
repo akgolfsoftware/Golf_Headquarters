@@ -96,11 +96,10 @@ Slettede mapper det ikke skal letes etter: `public/design-handover/`, `wireframe
 - **TS-speil for charts:** `src/lib/v2/tokens.ts` (objektet `T`) — kun les herfra. Den gamle
   `src/lib/design-tokens.ts` finnes ikke lenger.
 - **Komponenter:** primitiver fra `src/components/ui/` + `v2/`-mønstre; `athletic/golfdata/` er overgangslag i vedlikeholdsmodus. Sjekk ALLTID hva som finnes FØR du lager noe nytt.
-- **Designfasit (ENDRET 25.08.2026 — TRAIN-LOCK vinner alltid, Anders i økt):** Train-lock er
-  eneste designfasit for ALLE skjermer i PlayerHQ og AgencyOS. Claude Paper (`605a48cc` /
-  `designsystem/paper/`) er HISTORIKK — aldri bygg-fasit, og `docs/port/PORTPLAN.md` /
-  `monsterdokument-paper.md` er arkivert som kilder. Fasit-zip og Train-lock-tokens er ennå
-  ikke i repoet (se `docs/natt/LAUNCH-PLAN-FULL-2026-08-25.md` D2/D3). Ferdig-definisjon:
+- **Designfasit (ENDRET 25.08.2026 — TRAIN-LOCK vinner alltid, Anders i økt):** Train-lock
+  (`designsystem/train-lock/`) er eneste designfasit for ALLE skjermer i PlayerHQ og AgencyOS.
+  Claude Paper (`605a48cc` / `designsystem/paper/`) er HISTORIKK — aldri bygg-fasit; den gamle
+  Paper-porteringsplanen ligger arkivert i `docs/arkiv/paper-port/`. Ferdig-definisjon:
   skjermbilde-gaten i `CLAUDE.md` §Skjermarbeid. Ved konflikt mellom et dokument og
   Train-lock **vinner Train-lock**.
 - **Farger/flater:** Paper-tokens (`--p-*` i `src/styles/paper-tokens.css`), som `--v2-*` peker på
@@ -169,6 +168,13 @@ og fiks til 0 avvik. En skjerm regnes som ferdig først når
 skjermbilde-gaten i `CLAUDE.md` §Skjermarbeid er oppfylt og Anders har sett skjermbildet.
 
 ---
+
+## Andre referansedokumenter (ikke duplisert her)
+
+- `docs/gdpr/behandlingsregister.md` — GDPR-behandlingsregister
+- `docs/sikkerhet/action-audit.md` — sikkerhetsrevisjon av agent-handlinger
+- `docs/skjermtekst/skjerm-tekst-hovedskjermer.md` — norsk UI-copy-kilde
+- `docs/integrasjoner/whoop-garmin-oppsett.md` — Whoop/Garmin-oppsett
 
 ## Verifikasjon (kjør før hver commit)
 

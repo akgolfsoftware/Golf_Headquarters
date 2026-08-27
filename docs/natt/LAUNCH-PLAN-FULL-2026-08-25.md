@@ -110,6 +110,10 @@ det stemmer ikke lenger; arbeidet skjedde på `agency-workbench-uke-ui-c4d2a4`-l
 
 ## 1. Del 1 — Søppel, konflikter, gamle regler
 
+> **UTFØRT 27.08.2026:** Anders sa «utfør opprydding» — se `docs/OPPRYDDING-PLAN-2026-08-27.md`
+> for den faktiske gjennomføringen. Filreferansene i tabellen under er nå historikk (mange av
+> filene er slettet/arkivert som anbefalt); ikke bruk dem som levende stier.
+
 **Ingen fil slettes/endres før Anders sier «utfør opprydding».** Radene er sortert etter risiko.
 
 ### 1a. Presedens-konflikter (farligst — kan få en agent til å bygge feil ting)
@@ -117,12 +121,12 @@ det stemmer ikke lenger; arbeidet skjedde på `agency-workbench-uke-ui-c4d2a4`-l
 | Path | Problem | Anbefaling | Risiko om urørt | Eier-session |
 |---|---|---|---|---|
 | `docs/ak-master.md` | Erklærer seg MASTER, og rot-CLAUDE.md sier «ak-master.md > denne filen». Filen er fra 06.08 — 18 dager før Train-lock-beslutningen. Sier fortsatt «implementere design fra Claude Paper» som prosjektmål | OPPDATER (Train-lock-unntak + ny presedenssetning) | HØY — presedensregelen gjør en stale fil formelt overordnet gjeldende instruks | R1 |
-| `docs/port/GYLDIGHET.md` | Rangerer `designsystem/paper/` som #1-fasit for ALT; motsagt av natt-KOMPLETT-PLAN («Paper er historikk, ikke ny fasit» for Player/Workbench). Bryter sin egen «slett ved erstatning»-regel | OPPDATER (eksplisitt unntak: Player HQ + nye WB-flater → docs/natt/Train-lock) | HØY | R1 |
+| `GYLDIGHET.md` (slettet 27.08) | Rangerer `designsystem/paper/` som #1-fasit for ALT; motsagt av natt-KOMPLETT-PLAN («Paper er historikk, ikke ny fasit» for Player/Workbench). Bryter sin egen «slett ved erstatning»-regel | OPPDATER (eksplisitt unntak: Player HQ + nye WB-flater → docs/natt/Train-lock) | HØY | R1 |
 | `docs/MASTERPLAN-GJENSTAAENDE.md` | Erklærer seg «den ENE planen», kjenner ikke natt-sporet (0 treff på «natt») | OPPDATER (banner: «Workbench/Player-sporet styres av docs/natt/ + denne LAUNCH-PLAN») | HØY — to dokumenter påstår å være den ene planen | R1 |
 | `docs/STATUS-NÅ.md` | Obligatorisk lesing #4 i CLAUDE.md, sist oppdatert 17.08 — mangler alt fra 24.–25.08 | OPPDATER | MIDDELS-HØY | R1 |
 | `.claude/rules/beslutninger.md` §Design-fasit | «Paper vinner alltid» uten Train-lock-unntaket fra 24.08 | OPPDATER (kryssreferanse til CLAUDE.md invariant 2 + docs/natt) | MIDDELS-HØY | R1 |
-| `docs/port/rutefasit.md` + `fasit-liste-paper.md` | Paper-rutefasit dekker også Player-/Workbench-ruter uten unntaksmerke | OPPDATER (merk radene «unntatt — se docs/natt») | MIDDELS | R1 |
-| `docs/port/PIXEL-PERFECT-PLAN-COMPLETE.md` | Pixel-perfekt mot Paper uten Player/WB-unntak | OPPDATER (unntaksavsnitt) | MIDDELS | R1 |
+| `rutefasit.md` (nå `docs/arkiv/paper-port/rutefasit.md`) + `fasit-liste-paper.md` | Paper-rutefasit dekker også Player-/Workbench-ruter uten unntaksmerke | OPPDATER (merk radene «unntatt — se docs/natt») | MIDDELS | R1 |
+| `PIXEL-PERFECT-PLAN-COMPLETE.md` (slettet 27.08) | Pixel-perfekt mot Paper uten Player/WB-unntak | OPPDATER (unntaksavsnitt) | MIDDELS | R1 |
 | `docs/plan-treningsplanlegging-til-kode-2026-08-20.md` | Parallell build-plan for samme domenefamilie (TrainingSessionV2) uten kryssreferanse til natt-loopene | OPPDATER (avklar: superseded av natt-sporet ELLER egen fase etter lansering — Anders avgjør) | MIDDELS — dobbel domenemodell-endring mulig | R1 + Anders |
 | `.claude/skills/mobbin-inspo/SKILL.md`, `.claude/skills/agencyos-arkitektur/SKILL.md` | Peker ukvalifisert på Paper som fasit; agencyos-skillen mangler «nye WB-flater = Train-lock/WB»-nyansen | OPPDATER | MIDDELS | R1 |
 | Globale skills (utenfor repo): `ak-designekspert`, `akgolf-claude-paper`, `playerhq-arkitektur` | Katalogtekstene peker på Paper for PlayerHQ (ANTAKELSE — innhold ikke lest av repo-agent) | Anders rydder i egen global-skill-økt (ARKIVER/OPPDATER) | HØY hvis de trigges i en Player-økt | Anders |
@@ -137,9 +141,9 @@ det stemmer ikke lenger; arbeidet skjedde på `agency-workbench-uke-ui-c4d2a4`-l
 | `docs/natt/workbench/domain/*` + `ui/labels.ts` | Frossen kopi som har DRIFTET: src-labels.ts fikk 6 nye strenger i Loop 3S som spec-kopien mangler. Koden i `src/lib/domain/workbench/` er nå eneste sannhet | ARKIVER (flytt til `docs/natt/workbench/arkiv/` + banner «koden er fasit») | MIDDELS — re-innliming av spec kan overskrive nyere kode | R1 |
 | `docs/natt/workbench/ui/state-machine.ts` | Aldri portert; UI bruker component-state, ikke reducer | ARKIVER | LAV (villeder om arkitektur) | R1 |
 | `docs/natt/workbench/store/actions.ts` | Kontrakt-skisse med utdaterte signaturer (mangler WbResultat-mønsteret) | OPPDATER (kort: «se wb-actions.ts for gjeldende mønster») | LAV-MIDDELS | R1 |
-| `docs/natt/workbench/CLAUDE-CODE-PROMPT.md` | Duplikat av LOOP-1-PROMPT med utdaterte modellnavn | ARKIVER | LAV | R1 |
-| `docs/natt/LOOP-1-PROMPT.md` | Ferdig brukt, ingen markering | OPPDATER («FERDIG 25.08 — se LOOP-1-DONE.md» øverst) | LAV | R1 |
-| `docs/natt/LOOP-2-DONE.md` | Flagger RLS som uløst — RLS-kode finnes nå på egen gren | OPPDATER (etter Session S1) | MIDDELS (dobbeltarbeid) | S1 |
+| `CLAUDE-CODE-PROMPT.md` (slettet 27.08) | Duplikat av LOOP-1-PROMPT med utdaterte modellnavn | ARKIVER | LAV | R1 |
+| `LOOP-1-PROMPT.md` (slettet 27.08, se LEVERANSELOGG.md) | Ferdig brukt, ingen markering | OPPDATER («FERDIG 25.08 — se LOOP-1-DONE.md» øverst) | LAV | R1 |
+| `LOOP-2-DONE.md` (slettet 27.08, se LEVERANSELOGG.md) | Flagger RLS som uløst — RLS-kode finnes nå på egen gren | OPPDATER (etter Session S1) | MIDDELS (dobbeltarbeid) | S1 |
 | `docs/natt/workbench/README.md:42` + `ACCESS-AND-GROUPS.md:170` | Død referanse til `HANDOFF.md` (finnes ikke i repoet) | OPPDATER | LAV | R1 |
 | `docs/natt/README.md` | Peker på feil kodegren (natt-a1-a4) | OPPDATER (etter B2: pek på release-grenen) | LAV | B2 |
 
@@ -147,10 +151,10 @@ det stemmer ikke lenger; arbeidet skjedde på `agency-workbench-uke-ui-c4d2a4`-l
 
 | Path | Problem | Anbefaling | Risiko | Eier |
 |---|---|---|---|---|
-| `docs/siste-24-timer-2026-08-19.md` | Éngangslogg, inviterer selv til sletting, ingen refererer den | SLETT | LAV | R1 |
-| `docs/port/masterplan-lansering-2026-08-12.md` | Foreldet snapshot, duplikat av MASTERPLAN | ARKIVER | LAV-MIDDELS | R1 |
-| `docs/port/portstatus-paper.md` | Avledede talltabeller, 8 dager gamle | ARKIVER | LAV | R1 |
-| `docs/port/SIKKERHETSRAPPORT-2026-08-11.md` | Éngangs øyeblikksrapport | ARKIVER | LAV | R1 |
+| `siste-24-timer-2026-08-19.md` (allerede slettet) | Éngangslogg, inviterer selv til sletting, ingen refererer den | SLETT | LAV | R1 |
+| `masterplan-lansering-2026-08-12.md` (arkivert i `docs/arkiv/paper-port/arkiv-gammelt/`) | Foreldet snapshot, duplikat av MASTERPLAN | ARKIVER | LAV-MIDDELS | R1 |
+| `portstatus-paper.md` (slettet 27.08) | Avledede talltabeller, 8 dager gamle | ARKIVER | LAV | R1 |
+| `SIKKERHETSRAPPORT-2026-08-11.md` (slettet 27.08) | Éngangs øyeblikksrapport | ARKIVER | LAV | R1 |
 | `docs/AAPNE-SPORSMAAL.md` | Register ikke ført a jour siden 17.08 | OPPDATER | LAV-MIDDELS | R1 |
 | Grener `claude/natt-a1-a4-2026-08-24`, `claude/workbench-actions-check-8399ef` + PR #575 | Delmengder / identisk innhold | Slett grener / lukk #575 ETTER at release-grenen er merget | LAV | B2 |
 
@@ -303,7 +307,7 @@ Regler (gjelder alle rader): build = Sonnet 5, ny session, smal prompt, 1 primæ
 | B2 | Release-gren settes sammen | Sonnet 5 | Build (git-kirurgi, ingen ny feature) | ny gren `release/workbench-b1` fra HEAD | Merge inn PR #577 (2S) + S1-grenen + origin/main. Løs labels.ts-konflikt. Lukk #575 som superseded (kommentar). `npm run verify && npm test` | Verify+test grønn; alle 4 kilder inne; DONE-fil med konfliktlogg | S1 | Nei (alle senere avhenger) | validator |
 | B3 | Agency-herding | Sonnet 5 | Build | worktree, gren fra release | loading.tsx+error.tsx på /admin/workbench/[playerId]; mobil-inspector (ark/sheet under lg); flytt hardkodet copy → labels.ts; koble validateWeek()-VARSEL til publish-flyt (advarsel, aldri sperre); zod på move/reorder-input | Verify grønn; mobil-coach kan redigere enkeltøkt; VARSEL vises ved overlapp; DONE-fil | B2 | Ja, med B4/B7 | Explore |
 | B4 | Loop 3 — ekte «I dag» | Sonnet 5 | Build | worktree, gren fra release | PortalChatHjem/portal-hjem leser loadPlayerDay; PH-01e fire tilstander (publisert/hvile/pågår/feil); PH-05 pågår-artefakt; lenk økt-ark fra I dag; midlertidig /tren/wb-liste beholdes som fallback til klikk-test | DRAFT usynlig i ekte I dag; fire tilstander klikkbare; verify grønn; DONE-fil | B2 | Ja, med B3/B7 | Explore |
-| B5 | ~~Loop 2T — kilder, drag, serie~~ **DONE 26.08 — PR #601** (worktree `wang-toppidrett-arsplan-d88725`, gren `claude/wb-b5-kilder-serie-c90b5c`, fra `origin/main` — ikke `release`) | Sonnet 5 | Build | gren fra release | loadSources ekte innhold (øvelsesbank/maler/forrige uke); drag fra kilder→uke (native HTML5 DnD, ikke dnd-kit); serie (gjenta + endre-policy) inkl. additiv DDL via kirurgisk db execute-script — `scripts/add-workbench-series-template-2026-08-26.ts`, KJØRT mot prod (ikke bare skrevet). Detalj: `docs/natt/LOOP-B5-DONE.md` | Verify grønn; serie-økter opprettes/endres per policy; DONE-fil — **alle oppfylt** | B3 (samme filer) | Nei mot B3; Ja mot B4/B7 | Explore, validator |
+| B5 | ~~Loop 2T — kilder, drag, serie~~ **DONE 26.08 — PR #601** (worktree `wang-toppidrett-arsplan-d88725`, gren `claude/wb-b5-kilder-serie-c90b5c`, fra `origin/main` — ikke `release`) | Sonnet 5 | Build | gren fra release | loadSources ekte innhold (øvelsesbank/maler/forrige uke); drag fra kilder→uke (native HTML5 DnD, ikke dnd-kit); serie (gjenta + endre-policy) inkl. additiv DDL via kirurgisk db execute-script — `scripts/add-workbench-series-template-2026-08-26.ts`, KJØRT mot prod (ikke bare skrevet). Detalj: `docs/natt/LEVERANSELOGG.md` | Verify grønn; serie-økter opprettes/endres per policy; DONE-fil — **alle oppfylt** | B3 (samme filer) | Nei mot B3; Ja mot B4/B7 | Explore, validator |
 | B6 | Loop 3T — godta/avvis + ikke delta | Sonnet 5 | Build | gren fra release | resolvePlayerApproval ekte; UI spiller (godta/avvis) + agency-visning (A-09/WB-10); hiddenByPlayer additiv DDL + filter; aldri #30D158 utenom Godta | Flyt klikkbar begge sider; DRAFT-invariant intakt; verify grønn; DONE-fil | B4 | Ja mot B5/B7 | Explore |
 | B7 | Loop 4 — DispersionMap/TM | Sonnet 5 | Build | worktree, gren fra release | TM-08: 1σ-ellipse + én caddie-setning + prikk→slag-ark (TM-11); tom-tilstand TM-10; vurder gjenbruk av `src/lib/gameplan/dispersion.ts` (verifiser matematikken først); PH-01c-kort gated på data | Smoke-målet i CLAUDE.md klikkbart; verify grønn; DONE-fil | B2 (+D3 for pixel) | Ja, med B3/B4 | Explore, validator |
 | B8 | Train-lock design-pass Player | Sonnet 5 | Build (port, ikke redesign) | gren fra release | Bruk `--tl-*`/`TL` (D2 ferdig; mørk default avklart 25.08); port PH-01e/PH-04/05/06 + /tren/wb-flater til scene #000000; skjermbilde-gate 390px+1280px lys/mørk | Anders har SETT skjermbilder; ingen nye token-familier utenom vedtatt sett; DONE-fil | D3, B4 (D2 løst) | Nei (rører B4-filer) | — |

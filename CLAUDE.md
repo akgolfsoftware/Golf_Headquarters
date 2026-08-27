@@ -42,7 +42,7 @@ TrackMan-detalj: 1σ-ellipse + én caddie-setning + prikk → slag-ark
 | 3T | Godta/Avvis + ikke delta | full GROUP-materialisering |
 | 4 | DispersionMap | ingest, DataGolf, stall-preview |
 
-**Én Claude-session per loop.** Ny chat. Commit + `docs/natt/LOOP-N-DONE.md`. Ikke start neste loop uten grønn forrige.
+**Én Claude-session per loop.** Ny chat. Commit + leveranserapport for loopen. Ikke start neste loop uten grønn forrige.
 
 Gren for kode: `claude/agency-workbench-uke-ui-c4d2a4`-linjen (Loop 1+2+3S); Loop 2S ligger på PR #577, RLS på `claude/workbench-rls-policies-8b054b` — samles i release-gren per `docs/natt/LAUNCH-PLAN-FULL-2026-08-25.md` (session B2). PR #575 er superseded.
 
@@ -162,8 +162,8 @@ CI = verify + test. Deploy: Vercel git på `main` / PR-preview. **Aldri** `verce
 
 ## Design / skjerm (kort)
 
-- **A1–A4 / økt / I dag / TM:** Train-lock + `docs/natt/` + design-zip-skjermene listet i overnight-planen.
-- **Øvrig Agency-port:** Paper-speil `designsystem/paper/` + `docs/port/PORTPLAN.md` når det sporet kjøres — ikke bland inn i natt-smoke.
+- **Alle skjermer:** Train-lock (`designsystem/train-lock/`) — se invariant 2. `designsystem/paper/`
+  er historikk/arkiv for skjermer som ennå ikke er portet, aldri bygg-fasit.
 - Skjerm-PR: Anders må ha *sett* skjermen (mobil først). Ikke merge på «ser bra ut i koden».
 - Port HTML 1:1: **nei**. Port oppførsel, hierarki, copy. Gjenbruk Button / Modal / TimeGrid / SessionCard / artefakt-panel.
 

@@ -12,8 +12,8 @@ og fem parallelle kodekartlegginger — ikke antatt). Erstatter `COMPLETE-REMAIN
 `REMAINING.md` og `gjenstaaende-plan-2026-07-31.md` (alle slettet — git-historikk).
 
 **Underplaner denne peker på (ikke dupliserer):**
-`docs/port/PORTPLAN.md` (supersedert 25.08 — arkivreferanse) · `docs/port/arkiv/masterplan-lansering-2026-08-12.md`
-(arkivert; lansering styres av `docs/natt/LAUNCH-PLAN-FULL-2026-08-25.md`) · `docs/plan-agenticos-jarvis-2026-08-17.md` (AI-laget) ·
+`docs/arkiv/paper-port/PORTPLAN.md` (supersedert 25.08 — arkivreferanse; lansering styres av
+`docs/natt/LAUNCH-PLAN-FULL-2026-08-25.md`) · `docs/plan-agenticos-jarvis-2026-08-17.md` (AI-laget) ·
 `docs/plan-baneguide-sg-app-2026-08-16.md` i PR #514 (SG-appen) ·
 `docs/platform/stripe-cutover-sjekkliste.md` (betaling).
 

@@ -1,22 +1,16 @@
-# Workbench — komplett spesifikasjon
+# Workbench — kontrakt/arkiv
 
-**Dato:** 24.08.2026  
-**Scope:** Komplett Workbench (mobil · iPad · desktop) + todelt tilgangsmodell.
+**Dato:** 24.08.2026 (opprydding 27.08.2026: implementeringsprompter og frosne domain/ui-spec-
+duplikater fjernet — koden i `src/lib/domain/workbench/` + `src/lib/workbench/wb-actions.ts`
+er fasit, ikke disse filene).
 
-## Hva som er levert her
+## Hva som fortsatt gjelder
 
 | Fil | Innhold |
 |-----|---------|
 | `ACCESS-AND-GROUPS.md` | **Låst** todelt plattform, multi-gruppe, lisens vs self-serve, GDPR-gate, gruppe→privat propagasjon |
-| `domain/types.ts` | Domain-typer inkl. Group, GroupMembership, Entitlement, SessionOrigin, approval |
-| `domain/operations.ts` | Pure funksjoner: create, move, publish, addDrill, budget, week assembly |
-| `ui/labels.ts` | Norske UI-strenger |
-| `ui/state-machine.ts` | UI-state + events + reducer |
-| `ui/components.md` | Kontrakt for UI-komponenter |
-| `store/actions.ts` | Server-action / API-kontrakt + Prisma-skisse |
+| `ui/components.md` | Kontrakt for UI-komponenter (ikke portert 1:1) |
 | `integration/player-hq.md` | Player HQ ↔ Workbench (approval, materialisering, tilgang) |
-| `arkiv/CLAUDE-CODE-PROMPT.md` | Historisk implementeringsprompt — FERDIG BRUKT, arkivert |
-| `STEP-1-EXECUTION.md` | Steg 1 sjekkliste |
 
 ## Kjerneregler
 
@@ -27,13 +21,6 @@
 5. **Én motor, tre moduser** (PLAYER / GROUP / AGENCY).
 6. **Ingen AI/Caddie inne i Workbench** (egne flater).
 7. **Ingen treningsregler** i domain (vokabular ja).
-
-## Hvordan gå videre
-
-1. Les `ACCESS-AND-GROUPS.md` først.
-2. Les `STEP-1-EXECUTION.md` og utvid med entitlement-filter + GROUP materialise.
-3. Lim inn oppdatert Claude Code-prompt mot repoet.
-4. Design: bruk den komplette Claude Design-prompten (mobil/iPad/desktop + approval-UI).
 
 ## Avhengigheter
 

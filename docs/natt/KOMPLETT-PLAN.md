@@ -1,5 +1,8 @@
 # AK Golf HQ — komplett plan (kode + publisering)
 
+> **SUPERSEDERT 25.08.2026 (senere samme dag):** `docs/natt/LAUNCH-PLAN-FULL-2026-08-25.md` er
+> gjeldende lanseringsplan. Repo/DB/look-beslutningene under står fortsatt, resten er historikk.
+
 **Dato:** 25.08.2026 05:10 CEST  
 **Beslutning:** **Rydd og bygg videre i `Golf_Headquarters`. Start ikke nytt.**  
 **Repo:** `akgolfsoftware/Golf_Headquarters`  

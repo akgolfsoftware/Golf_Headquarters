@@ -16,10 +16,11 @@ skjermporten generelt styres fortsatt av `docs/port/PORTPLAN.md`, og totalbildet
 `docs/MASTERPLAN-GJENSTAAENDE.md` — denne planen erstatter ingen av dem, den kobler
 spec-arbeidet inn i dem.
 
-**Kildene (leses av hver utførende økt før arbeid):**
+**Kildene (leses av hver utførende økt før arbeid) — historisk liste, to slettet i opprydding
+27.08.2026 (git-historikk):**
 `docs/spec-treningsplanlegging-2026-08-19.md` (fasit for alt besluttet) ·
-`docs/analyse-treningsplanlegger-2026-08-20.md` (v1-fasering, risikoer) ·
-`docs/gap-evaluering-treningsplanlegging-2026-08-20.md` (relevans-matrise, AI-kartlegging) ·
+`docs/relevans-matrise-treningsplanlegging-2026-08-20-v2.md` (relevans-matrise, fortsatt fasit
+for kode) ·
 `docs/FASIT-AK-GOLF-HQ.md` (vokabular) · `.claude/rules/gotchas.md` (før all kode).
 
 ---
@@ -63,8 +64,10 @@ Claude Paper-prosjektet (`605a48cc`), zip leveres, speilet resynkes.
 | 2.3 | Zip → resynk `designsystem/paper/` + `SYNC-STATUS.md` + én MCP-sammenligning (CLAUDE.md-regelen mot utdatert zip) |
 
 > **RETTET 20.08.2026 etter måling:** seks av de åtte har allerede fasit, delvis.
-> Jobben er **utvid seks, tegn to** — ikke tegn åtte. Full tabell med gap per skjerm:
-> `docs/gap-designfasit-workbench-2026-08-20.md`. Tegnes de åtte fra bunnen får vi
+> Jobben er **utvid seks, tegn to** — ikke tegn åtte. Full tabell med gap per skjerm sto i
+> `docs/gap-designfasit-workbench-2026-08-20.md` (slettet i opprydding 27.08.2026 —
+> git-historikk; hele denne Paper-baserte seksjonen er uansett supersedert av Train-lock).
+> Tegnes de åtte fra bunnen får vi
 > duplikat-fasit, som CLAUDE.md §Skjermarbeid forbyr. Helt nye: **2** (periodemal-flyten)
 > og **8** (Standard/Tour + onboarding). Skjerm 2 tegnes først — den produserer
 > skall-øktene som skjerm 1 mangler visning for på mobil.
