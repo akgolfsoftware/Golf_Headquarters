@@ -9,11 +9,12 @@ import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { getDashboardData } from "@/app/portal/actions";
 import { getGjennomforeData } from "@/lib/portal-gjennomfore/gjennomfore-data";
 import { loadPlayerDay } from "@/lib/workbench/wb-actions";
-import { dagNavnKort } from "@/lib/uke-helpers";
+import { dagNavnKort, dagNavnLang } from "@/lib/uke-helpers";
 import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
 import { PortalChatHjem } from "@/components/portal/v2/chat/PortalChatHjem";
 import { getTrackManTeaser } from "@/lib/trackman/teaser";
 import { getTesterLiveKort } from "@/lib/portal-tester/tester-live-kort";
+import { hentSpillerDagITiden } from "@/lib/kalender-lag/player-dag";
 
 export const dynamic = "force-dynamic";
 
@@ -38,17 +39,30 @@ export default async function PortalHjemPage() {
   // som Gjør-fanen) OG fra den nye Workbench-modellen (loadPlayerDay,
   // Loop 3/B4). Begge sendes videre — PortalChatHjem kobler workbenchDay inn
   // som egen «Én ting nå»/artefakt-tilstand ved siden av det eksisterende.
-  const [data, gjennomfore, workbenchDay, trackman, testerLive] = await Promise.all([
+  const [data, gjennomfore, workbenchDay, trackman, testerLive, dagITidenHendelser] = await Promise.all([
     getDashboardData(user.id),
     getGjennomforeData(user.id),
     loadPlayerDay({ playerId: user.id, date: iDag }),
     getTrackManTeaser(user.id),
     getTesterLiveKort(user.id),
+    hentSpillerDagITiden(user.id, iDag),
   ]);
+
+  // KA-04-format: ukedag + dag uten ledende null + punktum, ingen måned
+  // (fasitens «Lørdag 22.»).
+  const dagITiden = { dagLabel: `${dagNavnLang(naa)} ${Number(iDag.slice(8, 10))}.`, hendelser: dagITidenHendelser };
 
   return (
     <V2Shell bredde="full" hoyde="skjerm" aktiv="hjem" nav={PLAYERHQ_NAV} navn={data.user.name} avatarUrl={data.user.avatarUrl}>
-      <PortalChatHjem data={data} gjennomfore={gjennomfore} naaTekst={naaTekst} workbenchDay={workbenchDay} trackman={trackman} testerLive={testerLive} />
+      <PortalChatHjem
+        data={data}
+        gjennomfore={gjennomfore}
+        naaTekst={naaTekst}
+        workbenchDay={workbenchDay}
+        trackman={trackman}
+        testerLive={testerLive}
+        dagITiden={dagITiden}
+      />
     </V2Shell>
   );
 }

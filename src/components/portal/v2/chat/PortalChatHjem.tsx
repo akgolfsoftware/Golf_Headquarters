@@ -60,6 +60,8 @@ import { FangstSheet } from "./FangstSheet";
 import type { PortalChatMessage } from "./types";
 import type { TrackManTeaser } from "@/lib/trackman/teaser";
 import type { TesterLiveKort as TesterLiveKortData } from "@/lib/portal-tester/tester-live-kort";
+import { IDagITidenArk } from "@/components/portal/v2/kalender/IDagITidenArk";
+import type { KalenderHendelse } from "@/lib/domain/kalender-lag";
 
 const FORSLAG = ["Hva skal jeg trene i dag?", "Hva var resultatet sist?", "Hva står på ukeplanen?"];
 
@@ -764,6 +766,7 @@ export function PortalChatHjem({
   workbenchDay,
   trackman,
   testerLive,
+  dagITiden,
 }: {
   data: DashboardData;
   gjennomfore: GjennomforeData;
@@ -775,10 +778,13 @@ export function PortalChatHjem({
   trackman: TrackManTeaser | null;
   /** TE-04/06 (C4/Loop 8): pågående gate-/PEI-test-live-økt, eller null (kortet skjules da helt). */
   testerLive: TesterLiveKortData | null;
+  /** KA-04 (Loop 7/C3): hele dagen på tvers av lagene — se `IDagITidenArk`. */
+  dagITiden: { dagLabel: string; hendelser: KalenderHendelse[] };
 }) {
   const { messages, status, error, sendMessage } = usePortalChat();
   const [artefaktApen, setArtefaktApen] = useState(false);
   const [fangstApen, setFangstApen] = useState(false);
+  const [idagItidenApen, setIdagItidenApen] = useState(false);
   const mobil = useErMobil();
   const trådRef = useRef<HTMLDivElement>(null);
   // Sticky toppbar over dokumentrullen — publiser høyden (toppbar-hoyde.tsx).
@@ -903,6 +909,29 @@ export function PortalChatHjem({
               <Icon name="mic" size={18} />
             </button>
           )}
+          {/* KA-04 (Loop 7/C3): «I dag i tiden» — hele dagen på tvers av lagene
+              (økt/skole/turnering/tester/booking), lesevisning. Ingen egen
+              kalender-fane for spilleren — dette er inngangen. */}
+          <button
+            type="button"
+            onClick={() => setIdagItidenApen(true)}
+            className="v2-press v2-focus"
+            aria-label="I dag i tiden"
+            style={{
+              width: 44,
+              height: 44,
+              display: "grid",
+              placeItems: "center",
+              borderRadius: T.rCard,
+              border: `1px solid ${T.border}`,
+              background: "transparent",
+              color: T.fg,
+              cursor: "pointer",
+              flex: "none",
+            }}
+          >
+            <Icon name="clock" size={18} />
+          </button>
           {/* Paper har temabryteren i headeren på hver skjerm (mobil-fasitens
               `#themeToggle`). Den satt bare i desktop-railen før, altså
               utilgjengelig på telefon — der Øyvind faktisk bruker appen. */}
@@ -1116,6 +1145,13 @@ export function PortalChatHjem({
           oktLabel={fangstOkt ? `${fangstOkt.tittel} · ${fangstOkt.meta}` : null}
         />
       )}
+
+      <IDagITidenArk
+        open={idagItidenApen}
+        onClose={() => setIdagItidenApen(false)}
+        dagLabel={dagITiden.dagLabel}
+        hendelser={dagITiden.hendelser}
+      />
     </div>
   );
 }
