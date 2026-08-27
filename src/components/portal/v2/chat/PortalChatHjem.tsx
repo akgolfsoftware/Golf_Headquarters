@@ -42,7 +42,6 @@ import { useToppbarHoyde } from "@/components/v2/toppbar-hoyde";
 import { SamtaleBoble, SamtaleSkriver, SamtaleFeil, ForslagRad } from "@/components/v2/samtale";
 import { Composer } from "@/components/v2/composer";
 import { Icon } from "@/components/v2/icon";
-import { Kort, Rad } from "@/components/v2/core";
 import { kategoriFraSnittscore } from "@/lib/domain/ak-kategori";
 import { formatSg } from "@/lib/sg";
 import type { DashboardData } from "@/app/portal/actions";
@@ -51,7 +50,7 @@ import type { PlayerDayResult, PlayerDaySession } from "@/lib/workbench/wb-actio
 import { resolvePlayerApproval } from "@/lib/workbench/wb-actions";
 import type { SessionStatus } from "@/lib/domain/workbench/types";
 import { UI as WB_UI, PYRAMID_LABEL, formatMinutes, formatTime } from "@/lib/domain/workbench/labels";
-import { harHake, STATUS_CAPS, WARM } from "@/components/workbench/wb-visuelt";
+import { harHake, STATUS_CAPS } from "@/components/workbench/wb-visuelt";
 import { usePortalChat } from "./use-portal-chat";
 import { PortalStegListe } from "./PortalStegListe";
 import { PortalHvorforDette } from "./PortalHvorforDette";
@@ -559,13 +558,20 @@ function GodkjenningKort({ okt, onFerdig }: { okt: PlayerDaySession; onFerdig: (
   );
 }
 
+/** Kort-flate — PH-01e-mønster: TL.elev, TL.radius.card, ingen kant. */
+const wbKortStil: CSSProperties = {
+  background: TL.elev,
+  borderRadius: TL.radius.card,
+  padding: 20,
+};
+
 function WorkbenchIDagArtefakt({ workbenchDay }: { workbenchDay: PlayerDayResult }) {
   // Optimistisk skjuling av godkjenninger spilleren nettopp svarte på — det
   // faktiske resultatet kommer tilbake via router.refresh() i GodkjenningKort.
   const [besvart, setBesvart] = useState<Set<string>>(() => new Set());
 
   const eyebrow = (
-    <div style={{ fontFamily: T.mono, fontSize: 10, letterSpacing: "0.08em", textTransform: "uppercase", color: T.mut }}>
+    <div style={{ fontFamily: TL.font.mono, fontSize: 10, letterSpacing: TL.track.caps, textTransform: "uppercase", color: TL.mute }}>
       workbench
     </div>
   );
@@ -574,7 +580,14 @@ function WorkbenchIDagArtefakt({ workbenchDay }: { workbenchDay: PlayerDayResult
     return (
       <div data-od-id="wb-idag-feil" style={{ display: "flex", flexDirection: "column", gap: 8 }}>
         {eyebrow}
-        <SamtaleFeil>{workbenchDay.error}</SamtaleFeil>
+        <div style={wbKortStil}>
+          <div style={{ fontFamily: TL.font.mono, fontSize: 11, fontWeight: 700, letterSpacing: TL.track.capsSm, textTransform: "uppercase", color: TL.danger }}>
+            Ingen forbindelse
+          </div>
+          <p style={{ margin: "10px 0 0", fontFamily: TL.font.sans, fontSize: 13, color: TL.mute, lineHeight: 1.45 }}>
+            {workbenchDay.error}
+          </p>
+        </div>
       </div>
     );
   }
@@ -597,18 +610,8 @@ function WorkbenchIDagArtefakt({ workbenchDay }: { workbenchDay: PlayerDayResult
       <div data-od-id="wb-idag-hvile" style={{ display: "flex", flexDirection: "column", gap: 8 }}>
         {eyebrow}
         {godkjenningskort}
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            gap: 4,
-            border: `1px dashed ${T.border}`,
-            borderRadius: T.rCard,
-            background: T.panel2,
-            padding: 16,
-          }}
-        >
-          <p style={{ margin: 0, fontFamily: T.ui, fontSize: 13, color: T.fg2, lineHeight: 1.5 }}>
+        <div style={wbKortStil}>
+          <p style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 13, color: TL.mute, lineHeight: 1.5 }}>
             {WB_UI.playerNoSessions}
           </p>
         </div>
@@ -621,25 +624,15 @@ function WorkbenchIDagArtefakt({ workbenchDay }: { workbenchDay: PlayerDayResult
       <div data-od-id="wb-idag-pagar" style={{ display: "flex", flexDirection: "column", gap: 8 }}>
         {eyebrow}
         {godkjenningskort}
-        <div
-          style={{
-            border: `1px solid ${T.border}`,
-            borderRadius: T.rCard,
-            background: T.panel2,
-            padding: 16,
-            display: "flex",
-            flexDirection: "column",
-            gap: 8,
-          }}
-        >
+        <div style={{ ...wbKortStil, display: "flex", flexDirection: "column", gap: 8 }}>
           <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-            <Icon name="play" size={16} style={{ color: WARM }} />
-            <span style={{ fontFamily: T.mono, fontSize: 10, fontWeight: 700, letterSpacing: "0.06em", color: WARM }}>
+            <span style={{ width: 6, height: 6, borderRadius: "50%", background: TL.warm, flex: "none" }} aria-hidden="true" />
+            <span style={{ fontFamily: TL.font.mono, fontSize: 10, fontWeight: 700, letterSpacing: TL.track.capsSm, textTransform: "uppercase", color: TL.warm }}>
               {STATUS_CAPS.IN_PROGRESS}
             </span>
           </div>
-          <h3 style={{ margin: 0, fontFamily: T.disp, fontSize: 16, fontWeight: 600, color: T.fg }}>{pagaende.title}</h3>
-          <p style={{ margin: 0, fontFamily: T.ui, fontSize: 13, color: T.fg2, lineHeight: 1.5 }}>
+          <h3 style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 16, fontWeight: 600, color: TL.text }}>{pagaende.title}</h3>
+          <p style={{ margin: 0, fontFamily: TL.font.mono, fontSize: 12, color: TL.mute }}>
             Startet {formatTime(pagaende.startMinute)} · {formatMinutes(pagaende.durationMinutes)} ·{" "}
             {pagaende.drillsCount} øvelser
           </p>
@@ -651,20 +644,18 @@ function WorkbenchIDagArtefakt({ workbenchDay }: { workbenchDay: PlayerDayResult
               display: "inline-flex",
               alignItems: "center",
               justifyContent: "center",
-              alignSelf: "flex-start",
-              minHeight: 44,
-              padding: "0 16px",
-              borderRadius: T.rTag,
-              background: T.cta,
-              color: T.onCta,
-              fontFamily: T.ui,
-              fontSize: 13,
-              fontWeight: 600,
+              minHeight: 48,
+              borderRadius: TL.radius.pill,
+              background: TL.fill,
+              color: TL.onFill,
+              fontFamily: TL.font.sans,
+              fontSize: 15,
+              fontWeight: 700,
               textDecoration: "none",
-              marginTop: 4,
+              marginTop: 8,
             }}
           >
-            Åpne økt-arket
+            Fortsett
           </Link>
         </div>
       </div>
@@ -675,42 +666,52 @@ function WorkbenchIDagArtefakt({ workbenchDay }: { workbenchDay: PlayerDayResult
     <div data-od-id="wb-idag-publisert" style={{ display: "flex", flexDirection: "column", gap: 8 }}>
       {eyebrow}
       {godkjenningskort}
-      <Kort eyebrow={WB_UI.today}>
+      <div style={{ ...wbKortStil, padding: 0 }}>
         {okter.map((s, i) => {
           const status = s.status as SessionStatus;
           return (
-            <Link key={s.id} href={`/portal/tren/wb/${s.id}`} style={{ textDecoration: "none", color: "inherit", display: "block" }}>
-              <Rad
-                leading={
-                  <span style={{ width: 44, flex: "none", fontFamily: T.mono, fontSize: 11, fontWeight: 700, color: T.mut }}>
-                    {formatTime(s.startMinute)}
-                  </span>
-                }
-                title={s.title}
-                sub={`${PYRAMID_LABEL[s.pyramid as keyof typeof PYRAMID_LABEL] ?? s.pyramid} · ${formatMinutes(s.durationMinutes)}`}
-                trailing={
-                  <span
-                    style={{
-                      display: "inline-flex",
-                      alignItems: "center",
-                      gap: 4,
-                      fontFamily: T.mono,
-                      fontSize: 9,
-                      fontWeight: 700,
-                      letterSpacing: "0.06em",
-                      color: harHake(status) ? WARM : T.mut,
-                    }}
-                  >
-                    {harHake(status) && <Icon name="check" size={10} style={{ color: WARM }} />}
-                    {STATUS_CAPS[status]}
-                  </span>
-                }
-                last={i === okter.length - 1}
-              />
+            <Link
+              key={s.id}
+              href={`/portal/tren/wb/${s.id}`}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: 14,
+                padding: "16px 20px",
+                borderTop: i === 0 ? "none" : `1px solid ${TL.hair}`,
+                textDecoration: "none",
+                color: "inherit",
+              }}
+            >
+              <span style={{ width: 44, flex: "none", fontFamily: TL.font.mono, fontSize: 12, fontWeight: 700, color: TL.mute, fontVariantNumeric: "tabular-nums" }}>
+                {formatTime(s.startMinute)}
+              </span>
+              <span style={{ flex: 1, minWidth: 0 }}>
+                <span style={{ display: "block", fontFamily: TL.font.sans, fontSize: 15, fontWeight: 600, color: TL.text }}>{s.title}</span>
+                <span style={{ display: "block", marginTop: 2, fontFamily: TL.font.sans, fontSize: 13, color: TL.mute }}>
+                  {PYRAMID_LABEL[s.pyramid as keyof typeof PYRAMID_LABEL] ?? s.pyramid} · {formatMinutes(s.durationMinutes)}
+                </span>
+              </span>
+              <span
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: 4,
+                  flex: "none",
+                  fontFamily: TL.font.mono,
+                  fontSize: 9,
+                  fontWeight: 700,
+                  letterSpacing: TL.track.capsSm,
+                  color: harHake(status) ? TL.warm : TL.mute,
+                }}
+              >
+                {harHake(status) && <Icon name="check" size={10} style={{ color: TL.warm }} />}
+                {STATUS_CAPS[status]}
+              </span>
             </Link>
           );
         })}
-      </Kort>
+      </div>
     </div>
   );
 }

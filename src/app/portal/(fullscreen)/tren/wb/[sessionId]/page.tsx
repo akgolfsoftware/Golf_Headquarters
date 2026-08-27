@@ -8,8 +8,8 @@
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { loadPlayerSession } from "@/lib/workbench/wb-actions";
 import { UI } from "@/lib/domain/workbench/labels";
-import { T } from "@/lib/v2/tokens";
-import { Icon, Knapp } from "@/components/v2";
+import { TL } from "@/lib/v2/train-lock";
+import { Icon } from "@/components/v2/icon";
 import { OktArk } from "@/components/portal/workbench/OktArk";
 
 export const dynamic = "force-dynamic";
@@ -24,7 +24,7 @@ export default async function WorkbenchOktPage({
   const res = await loadPlayerSession(sessionId);
 
   return (
-    <div style={{ minHeight: "100dvh", background: T.bg, color: T.fg, fontFamily: T.ui }}>
+    <div style={{ minHeight: "100dvh", background: TL.scene, color: TL.text, fontFamily: TL.font.sans }}>
       <div
         className="mx-auto w-full max-w-[460px] px-4 pb-8 sm:px-5 md:max-w-[860px] md:px-8 md:pt-6"
         style={{ paddingTop: "calc(12px + env(safe-area-inset-top))" }}
@@ -55,11 +55,27 @@ function TilstandKort({ ikon, tittel, tekst }: { ikon: "triangle-alert" | "eye";
         margin: "0 auto",
       }}
     >
-      <Icon name={ikon} size={22} style={{ color: T.mut }} />
-      <div style={{ fontFamily: T.disp, fontSize: 15, fontWeight: 600, color: T.fg }}>{tittel}</div>
-      <div style={{ fontFamily: T.ui, fontSize: 13, color: T.fg2, maxWidth: 340 }}>{tekst}</div>
-      <a href="/portal" style={{ textDecoration: "none" }}>
-        <Knapp>{UI.backToToday}</Knapp>
+      <Icon name={ikon} size={22} style={{ color: TL.mute }} />
+      <div style={{ fontFamily: TL.font.sans, fontSize: 16, fontWeight: 700, color: TL.text }}>{tittel}</div>
+      <div style={{ fontFamily: TL.font.sans, fontSize: 13, color: TL.mute, maxWidth: 340 }}>{tekst}</div>
+      <a
+        href="/portal"
+        style={{
+          display: "inline-flex",
+          alignItems: "center",
+          justifyContent: "center",
+          minHeight: 44,
+          padding: "0 20px",
+          borderRadius: TL.radius.pill,
+          background: TL.fill,
+          color: TL.onFill,
+          fontFamily: TL.font.sans,
+          fontSize: 14,
+          fontWeight: 700,
+          textDecoration: "none",
+        }}
+      >
+        {UI.backToToday}
       </a>
     </div>
   );
