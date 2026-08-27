@@ -101,6 +101,19 @@ VERIFY_EXIT:0
 TEST_EXIT:0
 ```
 
+### C7 — AgenticOS cockpit-queue
+
+AO-12 policy A3/B1/C3 som ren funksjon: start-godkjenning for sky/sensitiv area/skriv; research uten skriv = Cockpit-badge; Workbench-write forbudt. J-A og J-B hoppet.
+
+Verify/test-bevis 28.08:
+
+```
+VERIFY_EXIT:0
+ℹ tests 1766
+ℹ pass 1766
+TEST_EXIT:0
+```
+
 ---
 
 ## FEILET
