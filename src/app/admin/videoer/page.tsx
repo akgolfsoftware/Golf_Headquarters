@@ -13,9 +13,9 @@ import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
 import {
-  AdminVideoerV2,
+  AdminVideoerTrainLock,
   type AdminVideoerV2Data,
-} from "@/components/admin/v2/AdminVideoerV2";
+} from "@/components/admin/v2/oppsett/AdminVideoerTrainLock";
 
 export default async function VideoerPage() {
   const user = await requirePortalUser({ allow: ["COACH", "ADMIN"] });
@@ -74,7 +74,7 @@ export default async function VideoerPage() {
 
   return (
     <V2Shell bredde="kolonne" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"} avatarUrl={user.avatarUrl}>
-      <AdminVideoerV2 data={data} />
+      <AdminVideoerTrainLock data={data} />
     </V2Shell>
   );
 }

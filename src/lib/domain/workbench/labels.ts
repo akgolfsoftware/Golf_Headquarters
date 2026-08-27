@@ -118,6 +118,8 @@ export const UI = {
   drillPyramid: "Pyramide",
   drillArea: "Område",
   drillDuration: "Tid",
+  drillDescription: "Beskrivelse",
+  drillDescriptionPlaceholder: "Valgfritt notat om øvelsen",
   moveDrillUp: "Flytt opp",
   moveDrillDown: "Flytt ned",
   removeDrillLabel: "Fjern øvelse",

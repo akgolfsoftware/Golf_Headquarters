@@ -197,6 +197,7 @@ export function WorkbenchUke({ playerId, spillerNavn, uke, kilder }: Props) {
                   area: v.area,
                   label: `${PYRAMID_LABEL[v.pyramid]} · ${AREA_LABEL[v.area]}`,
                 },
+                description: v.description,
               },
             }),
           () => toast.success(UI.toastDrillAdded),

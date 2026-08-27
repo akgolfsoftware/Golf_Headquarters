@@ -15,16 +15,16 @@
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
-import { TilbakeLenke } from "@/components/v2";
-import { AdminHjelpV2 } from "@/components/admin/v2/AdminHjelpV2";
+import { TlTilbake } from "@/components/admin/v2/oppsett/tl-kit";
+import { AdminHjelpTrainLock } from "@/components/admin/v2/oppsett/AdminHjelpTrainLock";
 
 export default async function V2AdminHjelpPage() {
   const user = await requirePortalUser({ allow: ["ADMIN", "COACH"] });
 
   return (
     <V2Shell bredde="kolonne" aktiv="cockpit" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>
-      <TilbakeLenke href="/admin/agencyos">Cockpit</TilbakeLenke>
-      <AdminHjelpV2 />
+      <TlTilbake href="/admin/agencyos">Cockpit</TlTilbake>
+      <AdminHjelpTrainLock />
     </V2Shell>
   );
 }

@@ -286,5 +286,122 @@ export function TlRadGruppe({ children, style }: { children?: ReactNode; style?:
   );
 }
 
+/**
+ * Funksjonell bryter (T13-tillegg, 27.08.2026) — samme visual som `TlToggle`,
+ * men med `onChange` for ekte av/på-innstillinger (kalender-synk, per-trener
+ * capabilities). `TlToggle`/`TlToggleRad` over er bevisst UI-only for én
+ * spesifikk fasit-caveat (se dokumentasjonen der) — denne er den generelle
+ * varianten for alt annet som faktisk skal kunne slås av/på.
+ */
+export function TlSwitch({
+  on,
+  onChange,
+  disabled,
+  label,
+}: {
+  on: boolean;
+  onChange: () => void;
+  disabled?: boolean;
+  label?: string;
+}) {
+  return (
+    <button
+      type="button"
+      role="switch"
+      aria-checked={on}
+      aria-label={label}
+      disabled={disabled}
+      onClick={onChange}
+      style={{
+        appearance: "none",
+        border: "none",
+        padding: 0,
+        cursor: disabled ? "not-allowed" : "pointer",
+        opacity: disabled ? 0.5 : 1,
+        width: 51,
+        height: 31,
+        borderRadius: 999,
+        background: on ? TL.fill : TL.dim,
+        position: "relative",
+        flexShrink: 0,
+      }}
+    >
+      <span
+        style={{
+          position: "absolute",
+          top: 2,
+          left: on ? undefined : 2,
+          right: on ? 2 : undefined,
+          width: 27,
+          height: 27,
+          borderRadius: "50%",
+          background: on ? TL.onFill : TL.mute,
+        }}
+      />
+    </button>
+  );
+}
+
+/** Rad med tittel/sub til venstre og funksjonell `TlSwitch` til høyre. */
+export function TlSwitchRad({
+  title,
+  sub,
+  on,
+  onChange,
+  disabled,
+  last,
+}: {
+  title: ReactNode;
+  sub?: ReactNode;
+  on: boolean;
+  onChange: () => void;
+  disabled?: boolean;
+  last?: boolean;
+}) {
+  return (
+    <div
+      style={{
+        display: "flex",
+        alignItems: "center",
+        gap: 14,
+        padding: "15px 0",
+        borderBottom: last ? "none" : `1px solid ${TL.hair}`,
+        minWidth: 0,
+      }}
+    >
+      <div style={{ flex: 1, minWidth: 0 }}>
+        <div style={{ fontSize: 15, fontWeight: 600, color: TL.text }}>{title}</div>
+        {sub && <div style={{ marginTop: 2, fontSize: 13, color: TL.mute }}>{sub}</div>}
+      </div>
+      <TlSwitch on={on} onChange={onChange} disabled={disabled} />
+    </div>
+  );
+}
+
+export type TlBadgeTone = "nøytral" | "fare" | "varsel";
+/** Liten statuspille — nøytral tekst, `fare`/`varsel` er de eneste tillatte signalfargene (DESIGN-SYSTEM.md). */
+export function TlBadge({ tone = "nøytral", children }: { tone?: TlBadgeTone; children: ReactNode }) {
+  const farge = tone === "fare" ? TL.danger : tone === "varsel" ? TL.warn : TL.text;
+  const bg = tone === "fare" ? TL.danger : tone === "varsel" ? TL.warn : TL.dim;
+  return (
+    <span
+      style={{
+        display: "inline-flex",
+        alignItems: "center",
+        height: 24,
+        padding: "0 10px",
+        borderRadius: 999,
+        background: tone === "nøytral" ? TL.dim : `color-mix(in srgb, ${bg} 16%, transparent)`,
+        color: tone === "nøytral" ? TL.text : farge,
+        fontSize: 11,
+        fontWeight: 600,
+        whiteSpace: "nowrap",
+      }}
+    >
+      {children}
+    </span>
+  );
+}
+
 export { TlCaps, TlInspektorBlokk, TlInspektorKpi, TlInspektorLinje, TlInspektorpanel, TlInspektorTom } from "../godkjenninger/tl-inspektor";
 export { MasterDetalj, useInspektorSynlig } from "@/components/v2/inspektorpanel";

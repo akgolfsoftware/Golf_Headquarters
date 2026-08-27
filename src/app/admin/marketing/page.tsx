@@ -13,7 +13,7 @@
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
-import { AdminMarketingV2, type MarketingPostV2Row } from "@/components/admin/v2/AdminMarketingV2";
+import { AdminMarketingTrainLock, type MarketingPostV2Row } from "@/components/admin/v2/oppsett/AdminMarketingTrainLock";
 import { MARKETING_KANALER, MARKETING_STATUSER, type MarketingKanal, type MarketingStatus } from "@/lib/admin-marketing/konstanter";
 
 export const dynamic = "force-dynamic";
@@ -54,7 +54,7 @@ export default async function AdminMarketingPage() {
 
   return (
     <V2Shell bredde="kolonne" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>
-      <AdminMarketingV2 poster={rader} />
+      <AdminMarketingTrainLock poster={rader} />
     </V2Shell>
   );
 }

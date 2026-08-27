@@ -12,13 +12,13 @@
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
-import { TilbakeLenke } from "@/components/v2";
+import { TlTilbake } from "@/components/admin/v2/oppsett/tl-kit";
 import {
-  AdminFeilloggV2,
+  AdminFeilloggTrainLock,
   type AdminFeilloggV2Data,
   type AdminFeilloggV2Rad,
   type AdminFeilloggV2Severity,
-} from "@/components/admin/v2/AdminFeilloggV2";
+} from "@/components/admin/v2/oppsett/AdminFeilloggTrainLock";
 
 export const dynamic = "force-dynamic";
 
@@ -72,8 +72,8 @@ export default async function AdminFeilloggPage() {
 
   return (
     <V2Shell bredde="kolonne" aktiv="innstillinger" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>
-      <TilbakeLenke href="/admin/settings">Innstillinger</TilbakeLenke>
-      <AdminFeilloggV2 data={data} />
+      <TlTilbake href="/admin/settings">Innstillinger</TlTilbake>
+      <AdminFeilloggTrainLock data={data} />
     </V2Shell>
   );
 }

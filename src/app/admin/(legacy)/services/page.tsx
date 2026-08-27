@@ -12,7 +12,7 @@
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
-import { AdminServicesV2, type AdminServicesV2Data } from "@/components/admin/v2/AdminServicesV2";
+import { AdminServicesTrainLock, type AdminServicesV2Data } from "@/components/admin/v2/oppsett/AdminServicesTrainLock";
 
 export const dynamic = "force-dynamic";
 
@@ -44,5 +44,5 @@ export default async function ServicesPage() {
     })),
   };
 
-  return <AdminServicesV2 data={data} />;
+  return <AdminServicesTrainLock data={data} />;
 }

@@ -1,6 +1,7 @@
 /**
- * AgencyOS · Turneringer · Dubletter — v2. Auth/Prisma/match-algoritme
- * bevart 1:1 fra legacy-siden — kun visuelt portert til v2-biblioteket.
+ * AgencyOS · Turneringer · Dubletter — Train-lock (T10, 27.08.2026). Auth/
+ * Prisma/match-algoritme bevart 1:1 fra legacy-siden — kun visuelt portert.
+ * Minimal TL-verktøyside etter TU-01-mønsteret (D-LYS-OG-5T-BESLUTNING.md §0.9/§2.3).
  *
  * Algoritme: for hver MANUAL-turnering uten mergedIntoId, søk
  * DATAGOLF/NGF/GJGT-turneringer med overlappende dato (±3 dager) og
@@ -11,7 +12,9 @@
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
-import { Caps, Kort, T, Tittel, TilbakeLenke, TomTilstand } from "@/components/v2";
+import { TL } from "@/lib/v2/train-lock";
+import { TlRadGruppe, TlTilbake, TlTomTilstand } from "@/components/admin/v2/oppsett/tl-kit";
+import { TlCaps } from "@/components/admin/v2/godkjenninger/tl-inspektor";
 import { Icon } from "@/components/v2/icon";
 import { MergeDubletterListe, type MergeKandidat } from "./merge-liste";
 
@@ -122,28 +125,26 @@ export default async function DubletterPage() {
 
   return (
     <V2Shell bredde="kolonne" aktiv="planlegge" nav={AGENCYOS_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
-      <TilbakeLenke href="/admin/tournaments">Turneringer</TilbakeLenke>
-      <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
-        <div data-paper-pattern-topp data-paper-slug="agencyos-turneringer">
-          <Caps>Planlegge · Turneringer</Caps>
-          <div style={{ marginTop: 10 }}>
-            <Tittel em="dubletter">Vurder</Tittel>
-          </div>
-          <p style={{ fontFamily: T.ui, fontSize: 12.5, color: T.mut, margin: "8px 0 0", maxWidth: 520 }}>
+      <TlTilbake href="/admin/tournaments">Turneringer</TlTilbake>
+      <div style={{ display: "flex", flexDirection: "column", gap: 18, marginTop: 14 }}>
+        <div>
+          <TlCaps>Planlegge · Turneringer</TlCaps>
+          <h1 style={{ margin: "10px 0 0", fontSize: 26, fontWeight: 700, letterSpacing: "-0.01em", color: TL.text }}>Vurder dubletter</h1>
+          <p style={{ margin: "8px 0 0", fontSize: 13, color: TL.mute, maxWidth: 520, lineHeight: 1.5 }}>
             {manuals.length} {manuals.length === 1 ? "manuell turnering" : "manuelle turneringer"} venter på vurdering. Slå sammen når kilden matcher.
           </p>
         </div>
 
         {liste.length === 0 ? (
-          <Kort>
-            <TomTilstand icon="check-circle" title="Ingen ventende dubletter" sub="Når spillere legger til manuelle turneringer som matcher en kjent kilde, vises de her for vurdering." />
-          </Kort>
+          <TlRadGruppe>
+            <TlTomTilstand icon="check-circle" title="Ingen ventende dubletter" sub="Når spillere legger til manuelle turneringer som matcher en kjent kilde, vises de her for vurdering." />
+          </TlRadGruppe>
         ) : (
           <>
-            <div style={{ display: "flex", alignItems: "flex-start", gap: 10, borderRadius: 14, background: T.panel, border: `1px solid ${T.border}`, padding: "14px 18px" }}>
-              <Icon name="info" size={16} style={{ color: T.lime, marginTop: 1, flex: "none" }} />
-              <p style={{ fontFamily: T.ui, fontSize: 12.5, color: T.mut, margin: 0, lineHeight: 1.6 }}>
-                <strong style={{ color: T.fg, fontWeight: 600 }}>Slik fungerer sammenslåing: </strong>
+            <div style={{ display: "flex", alignItems: "flex-start", gap: 10, borderRadius: TL.radius.card, background: TL.elev, padding: "14px 18px" }}>
+              <Icon name="info" size={16} style={{ color: TL.mute, marginTop: 1, flex: "none" }} />
+              <p style={{ fontSize: 12.5, color: TL.mute, margin: 0, lineHeight: 1.6 }}>
+                <strong style={{ color: TL.text, fontWeight: 600 }}>Slik fungerer sammenslåing: </strong>
                 Når du slår sammen en manuell turnering inn i en kanonisk turnering, flyttes alle påmeldinger, resultater og
                 deltakerlister automatisk. Manuell-raden markeres som dublett og forsvinner fra hovedlista.
               </p>

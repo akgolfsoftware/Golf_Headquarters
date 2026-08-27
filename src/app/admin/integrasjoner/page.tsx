@@ -1,55 +1,24 @@
 /**
- * AgencyOS — Integrasjoner (v2, retning C «Presis»).
+ * AgencyOS — Integrasjoner (Train-lock, T13-detaljer 27.08.2026).
  *
  * Port av /admin/(legacy)/integrasjoner: dashboard som viser status for alle
  * tilkoblede tredjeparts-tjenester (Google Calendar, Stripe, Notion,
  * Anthropic, Resend, Supabase). Data/logikk (env-sjekker, Prisma-spørringer,
- * NOK-formatering, CTA-adresser) er kopiert verbatim fra legacy-fasiten —
- * dette er ekte infrastruktur-status, ikke pynt.
- *
- * Rent lesbart statusgrid uten interaksjon → server component, ingen
- * "use client", ingen egen komponentfil. Kun v2-primitiver (Kort/StatusPill/
- * Icon) fra "@/components/v2" — ingen rå hex, ingen ad-hoc UI.
+ * NOK-formatering, CTA-adresser) er UENDRET fra Paper-versjonen — kun
+ * visningen er byttet til `AdminIntegrasjonerTrainLock` (TL.*).
  */
 
-import Link from "next/link";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
 import {
-  TilbakeLenke,
-  Kort,
-  StatusPill,
-  Icon,
-  Caps,
-  Tittel,
-  CTAPill,
-  T,
-  type StatusTone,
-} from "@/components/v2";
+  AdminIntegrasjonerTrainLock,
+  type IntegrasjonKort,
+  type IntegrasjonStatus,
+} from "@/components/admin/v2/oppsett/AdminIntegrasjonerTrainLock";
+import { TlTilbake } from "@/components/admin/v2/oppsett/tl-kit";
 
 export const dynamic = "force-dynamic";
-
-type IntegrasjonStatus = "active" | "connected" | "disconnected";
-
-type IntegrasjonKort = {
-  key: string;
-  title: string;
-  icon: string;
-  status: IntegrasjonStatus;
-  statusLabel: string;
-  description: string;
-  meta?: string;
-  ctaLabel: string;
-  ctaHref: string;
-  ctaExternal?: boolean;
-};
-
-const TONE_FOR_STATUS: Record<IntegrasjonStatus, StatusTone> = {
-  active: "lime",
-  connected: "lime",
-  disconnected: "warn",
-};
 
 function nokFormat(ore: number): string {
   return new Intl.NumberFormat("nb-NO", {
@@ -91,7 +60,7 @@ export default async function V2IntegrasjonerPage() {
       key: "google-calendar",
       title: "Google Calendar",
       icon: "calendar",
-      status: googleConn ? "connected" : "disconnected",
+      status: (googleConn ? "connected" : "disconnected") as IntegrasjonStatus,
       statusLabel: googleConn ? "Koblet" : "Ikke koblet",
       description:
         "Toveis-sync av timer og bookinger med trenerens Google-kalender.",
@@ -105,7 +74,7 @@ export default async function V2IntegrasjonerPage() {
       key: "stripe",
       title: "Stripe",
       icon: "credit-card",
-      status: stripeAktiv ? "active" : "disconnected",
+      status: (stripeAktiv ? "active" : "disconnected") as IntegrasjonStatus,
       statusLabel: stripeAktiv ? "Aktiv" : "Ikke konfigurert",
       description: "Betaling for bookinger, abonnement og fakturering.",
       meta: stripeAktiv
@@ -130,7 +99,7 @@ export default async function V2IntegrasjonerPage() {
       key: "anthropic",
       title: "Anthropic (AI)",
       icon: "sparkles",
-      status: anthropicAktiv ? "active" : "disconnected",
+      status: (anthropicAktiv ? "active" : "disconnected") as IntegrasjonStatus,
       statusLabel: anthropicAktiv ? "Aktiv" : "Ikke konfigurert",
       description:
         "Claude-modeller for AI-agenter, godkjennelser og innholdsgenerering.",
@@ -141,7 +110,7 @@ export default async function V2IntegrasjonerPage() {
       key: "resend",
       title: "Resend (E-post)",
       icon: "mail",
-      status: resendAktiv ? "active" : "disconnected",
+      status: (resendAktiv ? "active" : "disconnected") as IntegrasjonStatus,
       statusLabel: resendAktiv ? "Aktiv" : "Ikke konfigurert",
       description: "Transaksjonell e-post — bekreftelser, påminnelser, maler.",
       ctaLabel: "E-postmaler",
@@ -164,115 +133,8 @@ export default async function V2IntegrasjonerPage() {
 
   return (
     <V2Shell bredde="kolonne" aktiv="cockpit" nav={AGENCYOS_NAV} navn={me.name ?? "Coach"}>
-      <TilbakeLenke href="/admin/agencyos">Cockpit</TilbakeLenke>
-      <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
-        <div>
-          <Caps>AgencyOS · Verktøy</Caps>
-          <div style={{ marginTop: 10 }}>
-            <Tittel em="tjenester.">Tilkoblede</Tittel>
-          </div>
-        </div>
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-          {cards.map((card) => (
-            <IntegrasjonKortView key={card.key} card={card} />
-          ))}
-        </div>
-      </div>
+      <TlTilbake href="/admin/agencyos">Cockpit</TlTilbake>
+      <AdminIntegrasjonerTrainLock cards={cards} />
     </V2Shell>
-  );
-}
-
-function IntegrasjonKortView({ card }: { card: IntegrasjonKort }) {
-  return (
-    <Kort>
-      <div
-        style={{
-          display: "flex",
-          alignItems: "flex-start",
-          justifyContent: "space-between",
-          gap: 12,
-        }}
-      >
-        <span
-          style={{
-            display: "grid",
-            placeItems: "center",
-            width: 40,
-            height: 40,
-            borderRadius: 10,
-            background: T.panel2,
-            border: `1px solid ${T.border}`,
-            color: T.fg2,
-            flex: "none",
-          }}
-        >
-          <Icon name={card.icon} size={18} />
-        </span>
-        <StatusPill tone={TONE_FOR_STATUS[card.status]}>
-          {card.statusLabel}
-        </StatusPill>
-      </div>
-      <div style={{ marginTop: 16, flex: 1 }}>
-        <div
-          style={{
-            fontFamily: T.disp,
-            fontWeight: 700,
-            fontSize: 16,
-            letterSpacing: "-0.01em",
-            color: T.fg,
-          }}
-        >
-          {card.title}
-        </div>
-        <p
-          style={{
-            marginTop: 8,
-            fontFamily: T.ui,
-            fontSize: 13,
-            lineHeight: 1.55,
-            color: T.mut,
-          }}
-        >
-          {card.description}
-        </p>
-        {card.meta && (
-          <p
-            style={{
-              marginTop: 14,
-              fontFamily: T.mono,
-              fontSize: 10,
-              fontWeight: 700,
-              letterSpacing: "0.10em",
-              textTransform: "uppercase",
-              color: T.mut,
-            }}
-          >
-            {card.meta}
-          </p>
-        )}
-      </div>
-      <div
-        style={{
-          marginTop: 16,
-          paddingTop: 16,
-          borderTop: `1px solid ${T.border}`,
-        }}
-      >
-        {card.ctaExternal ? (
-          <a
-            href={card.ctaHref}
-            target="_blank"
-            rel="noopener noreferrer"
-            style={{ textDecoration: "none" }}
-          >
-            <CTAPill icon="external-link">{card.ctaLabel}</CTAPill>
-          </a>
-        ) : (
-          <Link href={card.ctaHref} style={{ textDecoration: "none" }}>
-            <CTAPill>{card.ctaLabel}</CTAPill>
-          </Link>
-        )}
-      </div>
-    </Kort>
   );
 }
