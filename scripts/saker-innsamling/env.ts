@@ -5,6 +5,7 @@
  */
 
 export const SAKER_GMAIL_QUERY_DEFAULT = "in:inbox is:unread newer_than:2d -from:me";
+/** Fallback når JarvisInnstilling.slaTerskelTimer ikke kan leses. Live-kode bruker innstillingene. */
 export const SAKER_SLA_TIMER = 6;
 export const SAKER_TRIAGE_BATCH_LIMIT_DEFAULT = 20;
 

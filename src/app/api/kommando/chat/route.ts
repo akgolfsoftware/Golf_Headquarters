@@ -101,7 +101,7 @@ export async function POST(req: Request) {
   const modelMessages = await convertToModelMessages(messages);
 
   const result = streamText({
-    model: resolveKommandoModel(modelId),
+    model: await resolveKommandoModel(modelId),
     system: SYSTEM_PROMPT,
     messages: modelMessages,
     maxRetries: 2,

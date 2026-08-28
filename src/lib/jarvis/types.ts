@@ -50,9 +50,25 @@ export interface InnsamlerStatus {
   frekvens: string | null;
 }
 
+/** Status Jarvis leser fra Agentic OS (godkjenningskø + siste agentkjøring). */
+export interface AgenticosBroStatus {
+  ulosteGodkjenninger: number;
+  planActions: number;
+  caddieDrafts: number;
+  sessionRequests: number;
+  sisteAgentKjoring: {
+    agentName: string;
+    status: string;
+    createdAt: string;
+    error: string | null;
+  } | null;
+  feiledeSisteDognet: number;
+}
+
 /** Maskinrommets «Agent og kjøretid»-gruppe — helsesignaler Vercel kan/ikke kan lese selv. */
 export interface SystemHelse {
   innsamlere: InnsamlerStatus[];
+  agenticos: AgenticosBroStatus;
   /** Sum siste 7 dager for Jarvis-relaterte agentnavn (agentName som starter med «jarvis»). Tom = ingen kostnad logget ennå. */
   aiKostSum: { inputTokens: number; outputTokens: number; costUsd: number | null; antallKall: number };
   /** Ollama/LaunchAgent-helse kan aldri leses fra Vercel (Tailscale-only, se gotchas.md) — alltid "ukjent lokalt" herfra. */
@@ -142,12 +158,10 @@ export interface UkesreviewData {
 }
 
 /**
- * Innstillingene (skjerm 11) — «fire ting du kan skru på» (fasitens egen
- * formulering, ikke et admin-panel). Persisteres i JarvisInnstilling
- * (prisma/schema.prisma), men INGEN forbruker leser feltene ennå — se
- * repository.ts sin doc-kommentar for hvilke steder som fortsatt er
- * hardkodet. STANDARD_INNSTILLINGER speiler skjemaets @default-verdier
- * eksakt — brukes når ingen rad finnes ennå (aldri lagret noe valg).
+ * Innstillingene (skjerm 11) — «fire ting du kan skru på». Persisteres i
+ * JarvisInnstilling og leses av src/lib/jarvis/innstillinger.ts (kø-filter,
+ * kalender, SLA, stille tidsrom, innsamlere). STANDARD_INNSTILLINGER speiler
+ * skjemaets @default-verdier — brukes når ingen rad finnes ennå.
  */
 export interface Innstillinger {
   kanalGmail: boolean;

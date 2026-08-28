@@ -33,6 +33,7 @@ import { MorgenbriefArtefakt } from "@/components/meg/artefakter/MorgenbriefArte
 import { KveldsjournalArtefakt } from "@/components/meg/artefakter/KveldsjournalArtefakt";
 import { UkesreviewArtefakt } from "@/components/meg/artefakter/UkesreviewArtefakt";
 import { InnstillingerArtefakt } from "@/components/meg/artefakter/InnstillingerArtefakt";
+import { useAgenticosBro } from "@/components/meg/use-agenticos-bro";
 import type { Sak } from "@/generated/prisma/client";
 import { SakStatus } from "@/generated/prisma/enums";
 import type {
@@ -91,6 +92,7 @@ export function MegApp({
   const mobil = useErMobil();
 
   const na = new Date(naServertid);
+  const agenticos = useAgenticosBro(systemHelse.agenticos);
   const artefaktFraUrl = searchParams.get("artefakt");
   const [activeArtifact, setActiveArtifact] = useState<ArtefaktType>(
     erArtefaktType(artefaktFraUrl) ? artefaktFraUrl : "saker",
@@ -139,7 +141,7 @@ export function MegApp({
       />
     );
   } else if (activeArtifact === "maskinrom") {
-    artefaktInnhold = <MaskinromArtefakt data={systemHelse} na={na} />;
+    artefaktInnhold = <MaskinromArtefakt data={{ ...systemHelse, agenticos }} na={na} />;
   } else if (activeArtifact === "vakt") {
     artefaktInnhold = <KalendervaktArtefakt avvik={avvik} />;
   } else if (activeArtifact === "dagen") {

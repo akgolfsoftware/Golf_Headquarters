@@ -84,7 +84,7 @@ export async function POST(req: Request) {
 
         try {
           const { text } = await generateText({
-            model: resolveKommandoModel(step.model),
+            model: await resolveKommandoModel(step.model),
             system: step.instruction,
             prompt,
             maxRetries: 1,

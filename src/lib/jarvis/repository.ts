@@ -29,12 +29,9 @@
 // inntil funnene lagres et sted. "Tre ting som
 // gledet"/"til neste uke" og 150M-tokenbudsjettet fra fasiten er utelatt
 // helt (se UkesreviewData sin doc-kommentar i types.ts).
-// hentInnstillinger(): leser JarvisInnstilling (skjema lagt til 17.08,
-// migrasjonsscript IKKE kjørt mot ekte DB ennå — se
-// scripts/add-jarvis-innstillinger-2026-08-17.ts). Ingen rad ennå = STANDARD_
-// INNSTILLINGER (skjemaets egne @default-verdier), ikke en feiltilstand.
-// Selve TOGGLINGEN (oppdaterInnstilling i src/app/meg/actions.ts) er ekte
-// skriving — men INGEN forbruker leser feltene tilbake ennå.
+// hentInnstillinger(): leser JarvisInnstilling via
+// src/lib/jarvis/innstillinger.ts. Ingen rad / DB-feil = STANDARD_INNSTILLINGER.
+// Feltene styrer kø-filter, kalender, SLA, stille tidsrom og innsamlere.
 import "server-only";
 import { prisma } from "@/lib/prisma";
 import { SakStatus } from "@/generated/prisma/enums";
@@ -50,10 +47,15 @@ import type {
   SystemHelse,
   UkesreviewData,
 } from "@/lib/jarvis/types";
-import { STANDARD_INNSTILLINGER } from "@/lib/jarvis/types";
 import type { JarvisRepository } from "@/fixtures/jarvis-demo";
 import { JARVIS_AGENT_NAVN } from "@/lib/jarvis/agent-navn";
 import { avledInnsamlerHelse } from "@/lib/jarvis/innsamler-helse";
+import {
+  filtrerSakerEtterKanal,
+  hentJarvisInnstillinger,
+} from "@/lib/jarvis/innstillinger";
+import { hentAgenticosBro } from "@/lib/jarvis/agenticos-bro";
+import { byggAgenticosInnsamlere } from "@/lib/jarvis/agenticos-visning";
 import { hentKalenderHendelser } from "@/lib/meg/connectors/google";
 import { hentBriefer } from "@/lib/meg/read";
 import { adminSubject } from "@/lib/meg/access";
@@ -103,24 +105,31 @@ async function hentInnsamlerStatus(
 export function lagPrismaRepository(): JarvisRepository {
   return {
     async hentSaker() {
-      return prisma.sak.findMany({ orderBy: { opprettet: "desc" } });
+      const [saker, inn] = await Promise.all([
+        prisma.sak.findMany({ orderBy: { opprettet: "desc" } }),
+        hentJarvisInnstillinger(),
+      ]);
+      return filtrerSakerEtterKanal(saker, inn);
     },
     async hentSak(id: string) {
       return prisma.sak.findUnique({ where: { id } });
     },
     async hentAvvik(): Promise<Avvik[]> {
+      const inn = await hentJarvisInnstillinger();
+      if (!inn.kanalKalender) return [];
       const na = new Date();
       const res = await hentKalenderHendelser(na, new Date(na.getTime() + 7 * 24 * 60 * 60 * 1000));
       if (!res.ok) return [];
       return finnAvvik(res.hendelser, na);
     },
     async hentLogg(): Promise<LoggRad[]> {
+      const inn = await hentJarvisInnstillinger();
       const avgjorte = await prisma.sak.findMany({
         where: { status: { in: [...AVGJORTE_STATUSER] } },
         orderBy: { oppdatert: "desc" },
         take: 50,
       });
-      return avgjorte.map((s) => ({
+      return filtrerSakerEtterKanal(avgjorte, inn).map((s) => ({
         id: `logg-${s.id}`,
         tidspunkt: s.oppdatert.toISOString(),
         handling: HANDLING_FOR_STATUS[s.status] ?? s.status,
@@ -130,23 +139,32 @@ export function lagPrismaRepository(): JarvisRepository {
       }));
     },
     async hentSystemHelse(): Promise<SystemHelse> {
-      const [gmail, imessage, kost] = await Promise.all([
-        hentInnsamlerStatus("gmail", "Gmail", JARVIS_AGENT_NAVN.gmail, "hvert 10. min", TI_MIN_MS),
-        hentInnsamlerStatus(
-          "imessage",
-          "iMessage/SMS",
-          JARVIS_AGENT_NAVN.imessage,
-          "manuell (ingen LaunchAgent ennå)",
-          null,
-        ),
+      const inn = await hentJarvisInnstillinger();
+      const [gmail, imessage, kost, agenticos] = await Promise.all([
+        inn.kanalGmail
+          ? hentInnsamlerStatus("gmail", "Gmail", JARVIS_AGENT_NAVN.gmail, "hvert 10. min", TI_MIN_MS)
+          : Promise.resolve(null),
+        inn.kanalImessage
+          ? hentInnsamlerStatus(
+              "imessage",
+              "iMessage/SMS",
+              JARVIS_AGENT_NAVN.imessage,
+              "manuell (ingen LaunchAgent ennå)",
+              null,
+            )
+          : Promise.resolve(null),
         prisma.aiCost.aggregate({
           where: { agentName: { startsWith: "jarvis" }, createdAt: { gte: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000) } },
           _sum: { inputTokens: true, outputTokens: true, costUsd: true },
           _count: true,
         }),
+        hentAgenticosBro(),
       ]);
+      const innsamlere = [gmail, imessage].filter((r): r is InnsamlerStatus => r != null);
+      innsamlere.push(...byggAgenticosInnsamlere(agenticos));
       return {
-        innsamlere: [gmail, imessage],
+        innsamlere,
+        agenticos,
         aiKostSum: {
           inputTokens: kost._sum.inputTokens ?? 0,
           outputTokens: kost._sum.outputTokens ?? 0,
@@ -157,8 +175,22 @@ export function lagPrismaRepository(): JarvisRepository {
       };
     },
     async hentDagen(saker: Sak[]): Promise<DagenData> {
+      const inn = await hentJarvisInnstillinger();
       const na = new Date();
       const grenser = osloDagGrenser(na);
+      if (!inn.kanalKalender) {
+        const innboksblokker = byggInnboksblokker(saker, grenser.start, na);
+        const ledig = byggLedigElementer(innboksblokker, grenser, na);
+        const elementer = [...innboksblokker, ...ledig].sort(
+          (a, b) => new Date(a.start).getTime() - new Date(b.start).getTime(),
+        );
+        return {
+          kalenderTilgjengelig: false,
+          kalenderFeil: "Kalender-kanalen er skrudd av i innstillingene.",
+          elementer,
+          ledigMinutterIgjen: summerLedigMinutterIgjen(ledig, na),
+        };
+      }
       const res = await hentKalenderHendelser(grenser.start, grenser.slutt);
 
       if (!res.ok) {
@@ -213,8 +245,9 @@ export function lagPrismaRepository(): JarvisRepository {
         }),
       ]);
 
-      const sla = beregnSlaEtterlevelse(avgjortDenneUken);
-      const slaForrige = beregnSlaEtterlevelse(avgjortForrigeUken);
+      const inn = await hentJarvisInnstillinger();
+      const sla = beregnSlaEtterlevelse(filtrerSakerEtterKanal(avgjortDenneUken, inn));
+      const slaForrige = beregnSlaEtterlevelse(filtrerSakerEtterKanal(avgjortForrigeUken, inn));
 
       return {
         ukenummer: ukenummer(na),
@@ -226,7 +259,7 @@ export function lagPrismaRepository(): JarvisRepository {
           medianSvartidMin: sla.medianSvartidMin,
           prosentUnderFristForrigeUke: slaForrige.prosentUnderFrist,
         },
-        sakerPerKanal: tellPerKanal(mottattDenneUken),
+        sakerPerKanal: tellPerKanal(filtrerSakerEtterKanal(mottattDenneUken, inn)),
         kalenderavvikFanget: 0,
         aiKost: {
           inputTokens: kost._sum.inputTokens ?? 0,
@@ -237,18 +270,7 @@ export function lagPrismaRepository(): JarvisRepository {
       };
     },
     async hentInnstillinger(userId: string): Promise<Innstillinger> {
-      const rad = await prisma.jarvisInnstilling.findUnique({ where: { userId } });
-      if (!rad) return STANDARD_INNSTILLINGER;
-      return {
-        kanalGmail: rad.kanalGmail,
-        kanalImessage: rad.kanalImessage,
-        kanalTelegram: rad.kanalTelegram,
-        kanalAnrop: rad.kanalAnrop,
-        kanalKalender: rad.kanalKalender,
-        slaTerskelTimer: rad.slaTerskelTimer,
-        stemmeAktivert: rad.stemmeAktivert,
-        stilleTidsromAktivert: rad.stilleTidsromAktivert,
-      };
+      return hentJarvisInnstillinger(userId);
     },
   };
 }

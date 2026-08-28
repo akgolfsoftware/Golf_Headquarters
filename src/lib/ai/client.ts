@@ -10,6 +10,8 @@
 import "server-only";
 import Anthropic from "@anthropic-ai/sdk";
 import { createAnthropic } from "@ai-sdk/anthropic";
+import { FALLBACK_ANTHROPIC_MODEL, velgRutetModell } from "@/lib/domain/ai-ruting";
+import { kickRutingCache, lesRutingCache } from "@/lib/ai/ruting";
 
 const apiKey = process.env.ANTHROPIC_API_KEY;
 if (!apiKey) {
@@ -20,25 +22,21 @@ export const anthropic: Anthropic | null = apiKey
   ? new Anthropic({ apiKey })
   : null;
 
-// Modell-tier per agent (AgencyOS-designfasit-ordren, punkt 2). Ukjente
-// agent-id-er faller til sonnet — samme modell alle agenter brukte før
-// registeret fantes, så en glemt/ny agentId aldri ender opp dyrere eller
-// tregere enn før.
-const OPUS_MODEL = "claude-opus-4-8";
-const SONNET_MODEL = "claude-sonnet-4-6";
+// Modell-id-er for Meg-bryteren og fallback når RoutingRule-tabellen er tom.
+const SONNET_MODEL = FALLBACK_ANTHROPIC_MODEL;
 const HAIKU_MODEL = "claude-haiku-4-5-20251001";
 
-// Kun agenter som faktisk kaller modelFor med disse id-ene står her —
-// registeret skal aldri liste agenter som ikke finnes eller ikke kaller AI.
-const OPUS_AGENTS = new Set([
-  "plan-revisjon",
-  "sg-interpretation",
-  "performance-peaking",
-]);
-
+/**
+ * Modellvalg per agent. Leser AiModel/RoutingRule via cache (kickes i
+ * bakgrunnen). Tom tabell eller kald cache → Anthropic Sonnet, ellers Ollama.
+ */
 export function modelFor(agentId: string): string {
-  if (OPUS_AGENTS.has(agentId)) return OPUS_MODEL;
-  return SONNET_MODEL;
+  kickRutingCache();
+  return velgRutetModell({
+    agentName: agentId,
+    regler: lesRutingCache(),
+    anthropicTilgjengelig: Boolean(apiKey),
+  }).modelId;
 }
 
 // Meg-assistenten — modell-bryter via env.

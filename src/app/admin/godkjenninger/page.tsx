@@ -16,7 +16,7 @@ import { coachScopedPlayerWhere } from "@/lib/auth/coached";
 import { handlingstypeLabel } from "@/lib/labels/handlingstyper";
 import { prisma } from "@/lib/prisma";
 import { LOW_RISK_ACTION_TYPES } from "@/lib/training/skills";
-import { koTelling } from "@/lib/admin/ko-telling";
+import { koTelling, planActionKoWhere } from "@/lib/admin/ko-telling";
 import { hentUkesrapport } from "@/lib/admin/ukesrapport";
 import {
   buildDiffPreview,
@@ -70,11 +70,7 @@ export default async function V2AdminGodkjenningerPage() {
     sessionAvvist7d,
   ] = await Promise.all([
     prisma.planAction.findMany({
-      where: {
-        status: "PENDING",
-        OR: [{ coachId: user.id }, { coachId: null }],
-        user: spillerScope,
-      },
+      where: planActionKoWhere(user),
       include: {
         user: { select: { id: true, name: true } },
         plan: { select: { id: true, name: true } },

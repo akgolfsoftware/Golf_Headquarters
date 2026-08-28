@@ -37,7 +37,11 @@
  * `vercel.json` sine `crons` — kjører altså kun når noen trykker «Kjør nå».
  * Ikke legg dem i vercel.json uten Anders' eksplisitte beslutning.
  */
-export const AGENTER_UTEN_TIDSPLAN = ["booking-optimizer", "availability-24-7-monitor"];
+export const AGENTER_UTEN_TIDSPLAN = [
+  "booking-optimizer",
+  "availability-24-7-monitor",
+  "social-media",
+];
 
 /** Bakoverkompatibelt navn — samme innhold som AGENTER_UTEN_TIDSPLAN. */
 export const MANUELLE_AGENTER = AGENTER_UTEN_TIDSPLAN;
@@ -373,6 +377,15 @@ export const AGENT_INFO: Record<string, AgentInfo> = {
     trigger: "Cron onsdag 06:15",
     beskrivelse:
       "Henter WAGR-rankinger fra wagr.com (skånsom ukentlig henting) og kobler snapshots til spillere på entydig navn. Borte fra WAGR = blitt proff.",
+  },
+
+  "social-media": {
+    navn: "SoMe-utkast",
+    trigger: "Manuell (Kjør nå)",
+    beskrivelse:
+      "Lager Instagram- og Facebook-utkast fra nylige treninger og legger dem i godkjenningskøen. Publiserer aldri selv.",
+    langBeskrivelse:
+      "Leser økter siste 7 dager (tittel og pyramide, uten navn) og skriver PENDING SOCIAL_POST i /admin/godkjenninger. Ingen auto-publisering.",
   },
 };
 
