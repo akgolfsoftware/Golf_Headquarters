@@ -1,4 +1,5 @@
 "use client";
+import { TL } from "@/lib/v2/train-lock";
 
 /**
  * PlayerHQ Meg · Hjelpesenter — v2 Presis + B-pakke (søk, tom = én grønn vei).
@@ -6,18 +7,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import {
-  T,
-  Caps,
-  Tittel,
-  Kort,
-  Rad,
-  Trekkspill,
-  TomTilstand,
-  Icon,
-  PalettSok,
-} from "@/components/v2";
-
+import { Caps, Kort, Rad, Trekkspill, TomTilstand, Icon, PalettSok } from "@/components/v2";
 /* ── Datakontrakt ──────────────────────────────────────────────────── */
 
 export type HjelpFaq = { q: string; a: string };
@@ -51,15 +41,15 @@ function Emblem({ name, size = 34 }: { name: string; size?: number }) {
         width: size,
         height: size,
         borderRadius: 11,
-        background: T.panel3,
-        border: `1px solid ${T.border}`,
+        background: TL.dim,
+        border: `1px solid ${TL.hair}`,
         display: "inline-flex",
         alignItems: "center",
         justifyContent: "center",
         flex: "none",
       }}
     >
-      <Icon name={name} size={Math.round(size * 0.45)} style={{ color: T.fg2 }} />
+      <Icon name={name} size={Math.round(size * 0.45)} style={{ color: TL.mute }} />
     </span>
   );
 }
@@ -82,7 +72,7 @@ function useMobile(): boolean {
 /* ── Skjerm ────────────────────────────────────────────────────────── */
 
 export function MegHelpV2({ data }: { data: MegHelpData }) {
-  const mobile = useMobile();
+  const _mobile = useMobile();
   const { faq, kategorier, artikler } = data;
   const [sok, setSok] = useState("");
 
@@ -112,14 +102,14 @@ export function MegHelpV2({ data }: { data: MegHelpData }) {
   const ingenTreff = q.length > 0 && treffKat.length === 0 && treffArt.length === 0;
 
   return (
-    <div data-paper-wave-g="meghelp" data-paper-portal-meg-help style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
+    <div data-paper-wave-g="meghelp" data-paper-portal-meg-help style={{ display: "flex", flexDirection: "column", gap: 16, maxWidth: 720, margin: "0 auto", width: "100%" }}>
       {/* Hode */}
       <div>
         <div data-paper-pattern-topp>
-          <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>Hjelp</h1>
-          <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>Meg</span>
+          <h1 style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 17, fontWeight: 600, color: TL.text }}>Hjelp</h1>
+          <span style={{ display: "block", fontFamily: TL.font.mono, fontSize: 10.5, color: TL.mute, marginTop: 2 }}>Meg</span>
         </div>
-        <p style={{ fontFamily: T.ui, fontSize: 13, color: T.mut, lineHeight: 1.6, margin: "10px 0 0", maxWidth: 520 }}>
+        <p style={{ fontFamily: TL.font.sans, fontSize: 13, color: TL.mute, lineHeight: 1.6, margin: "10px 0 0", maxWidth: 520 }}>
           Svar på vanlige spørsmål, søk i veiledningene, eller ta direkte kontakt.
         </p>
       </div>
@@ -141,12 +131,12 @@ export function MegHelpV2({ data }: { data: MegHelpData }) {
             <Link href="/portal/meg/help/kontakt" style={{ textDecoration: "none", display: "block" }}>
               <span style={{
             display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, minHeight: 56, width: "100%", padding: "10px 16px",
-            borderRadius: 12, background: T.handling, color: T.onHandling, fontFamily: T.ui, fontSize: 14, fontWeight: 600,
+            borderRadius: 12, background: TL.fill, color: TL.onFill, fontFamily: TL.font.sans, fontSize: 14, fontWeight: 600,
           }}>Kontakt support</span>
             </Link>
           </>
         ) : (
-          <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
             {treffKat.length > 0 && (
               <Kort eyebrow={`Kategorier · ${treffKat.length}`}>
                 {treffKat.map((k, i) => (
@@ -192,7 +182,7 @@ export function MegHelpV2({ data }: { data: MegHelpData }) {
           {/* Kategori-grid */}
           <div>
             <Caps size={9} style={{ margin: "0 2px 10px" }}>Kategorier</Caps>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3" style={{ gap: T.gap }}>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3" style={{ gap: 16 }}>
               {kategorier.map((k) => (
                 <Link
                   key={k.slug}
@@ -202,13 +192,13 @@ export function MegHelpV2({ data }: { data: MegHelpData }) {
                   <Kort hover style={{ height: "100%", gap: 12 }}>
                     <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
                       <Emblem name={k.ikon} size={38} />
-                      <Icon name="arrow-up-right" size={15} style={{ color: T.mut }} />
+                      <Icon name="arrow-up-right" size={15} style={{ color: TL.mute }} />
                     </div>
                     <div>
-                      <div style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 15.5, color: T.fg, letterSpacing: "-0.01em" }}>
+                      <div style={{ fontFamily: TL.font.sans, fontWeight: 700, fontSize: 15.5, color: TL.text, letterSpacing: "-0.01em" }}>
                         {k.tittel}
                       </div>
-                      <p style={{ fontFamily: T.ui, fontSize: 12, color: T.mut, lineHeight: 1.55, margin: "6px 0 0" }}>
+                      <p style={{ fontFamily: TL.font.sans, fontSize: 12, color: TL.mute, lineHeight: 1.55, margin: "6px 0 0" }}>
                         {k.beskrivelse}
                       </p>
                     </div>
@@ -248,7 +238,7 @@ export function MegHelpV2({ data }: { data: MegHelpData }) {
                 leading={<Emblem name="file-text" />}
                 title="Veiledninger"
                 sub="Kom-i-gang-guider"
-                trailing={<Icon name="external-link" size={14} style={{ color: T.mut }} />}
+                trailing={<Icon name="external-link" size={14} style={{ color: TL.mute }} />}
                 last
               />
             </Link>
@@ -257,7 +247,7 @@ export function MegHelpV2({ data }: { data: MegHelpData }) {
           <Link href="/portal/meg/help/kontakt" style={{ textDecoration: "none", display: "block" }}>
             <span style={{
             display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, minHeight: 56, width: "100%", padding: "10px 16px",
-            borderRadius: 12, background: T.handling, color: T.onHandling, fontFamily: T.ui, fontSize: 14, fontWeight: 600,
+            borderRadius: 12, background: TL.fill, color: TL.onFill, fontFamily: TL.font.sans, fontSize: 14, fontWeight: 600,
           }}>Kontakt support</span>
           </Link>
           <Link
@@ -266,10 +256,10 @@ export function MegHelpV2({ data }: { data: MegHelpData }) {
               textDecoration: "none",
               display: "block",
               textAlign: "center",
-              fontFamily: T.ui,
+              fontFamily: TL.font.sans,
               fontSize: 12,
               fontWeight: 600,
-              color: T.mut,
+              color: TL.mute,
               padding: "2px 0 4px",
             }}
           >

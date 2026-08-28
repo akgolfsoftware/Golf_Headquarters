@@ -1,5 +1,6 @@
 import Link from "next/link";
-import { T } from "@/lib/v2/tokens";
+import { TL } from "@/lib/v2/train-lock";
+
 
 export type LiveLoopSteg = "for" | "under" | "etter";
 
@@ -29,8 +30,8 @@ export function LiveLoopNav({
         display: "flex",
         alignItems: "stretch",
         width: "100%",
-        borderBottom: `1px solid ${T.border}`,
-        background: T.bg,
+        borderBottom: `1px solid ${TL.hair}`,
+        background: TL.scene,
         marginBottom: 4,
       }}
     >
@@ -46,9 +47,9 @@ export function LiveLoopNav({
               justifyContent: "center",
               minHeight: 52,
               padding: "8px 4px",
-              borderBottom: on ? `2px solid ${T.handling}` : "2px solid transparent",
-              color: on ? T.fg : T.mut,
-              fontFamily: T.mono,
+              borderBottom: on ? `2px solid ${TL.fill}` : "2px solid transparent",
+              color: on ? TL.text : TL.mute,
+              fontFamily: TL.font.mono,
               fontSize: 11,
               fontWeight: 600,
               letterSpacing: "0.08em",
@@ -59,12 +60,12 @@ export function LiveLoopNav({
             <span>{s.label}</span>
             <span
               style={{
-                fontFamily: T.ui,
+                fontFamily: TL.font.sans,
                 fontSize: 10,
                 fontWeight: 500,
                 letterSpacing: 0,
                 textTransform: "none",
-                color: on ? T.fg2 : T.mut,
+                color: on ? TL.mute : TL.mute,
                 marginTop: 2,
               }}
             >
@@ -84,7 +85,7 @@ export function LiveLoopNav({
               </span>
             )}
             {i < steg.length - 1 && (
-              <span style={{ color: T.mut, fontSize: 10, alignSelf: "center", padding: "0 2px", flex: "none" }} aria-hidden>
+              <span style={{ color: TL.mute, fontSize: 10, alignSelf: "center", padding: "0 2px", flex: "none" }} aria-hidden>
                 →
               </span>
             )}

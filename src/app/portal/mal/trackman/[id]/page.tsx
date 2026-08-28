@@ -28,7 +28,8 @@ import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { FEATURES } from "@/lib/features";
 import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
-import { T } from "@/lib/v2/tokens";
+import { TL } from "@/lib/v2/train-lock";
+
 import {
   Caps,
   Kort,
@@ -205,16 +206,16 @@ export default async function TrackManDetalj({
       <div
         data-paper-slug="playerhq-trackman-detalj"
         data-od-id="playerhq-trackman-detalj"
-        style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%", minWidth: 0 }}
+        style={{ display: "flex", flexDirection: "column", gap: 16, maxWidth: 720, margin: "0 auto", width: "100%", minWidth: 0 }}
       >
         <div>
-          <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>
+          <h1 style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 17, fontWeight: 600, color: TL.text }}>
             Økt · {datoTekst}
           </h1>
-          <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>
+          <span style={{ display: "block", fontFamily: TL.font.mono, fontSize: 10.5, color: TL.mute, marginTop: 2 }}>
             TrackMan · {kilde}
           </span>
-          <p style={{ fontFamily: T.ui, fontSize: 12.5, color: T.mut, margin: "10px 0 0" }}>
+          <p style={{ fontFamily: TL.font.sans, fontSize: 12.5, color: TL.mute, margin: "10px 0 0" }}>
             {sesjon.shotCount} slag registrert
             {shots.length > 0
               ? ` · ${matchet} matchet til teknisk plan`
@@ -251,7 +252,7 @@ export default async function TrackManDetalj({
             </Kort>
           )}
           {dispersjon && rader.length > 0 && kolleKort.length > 1 && (
-            <p style={{ fontFamily: T.ui, fontSize: 11.5, color: T.mut, margin: "8px 2px 0" }}>
+            <p style={{ fontFamily: TL.font.sans, fontSize: 11.5, color: TL.mute, margin: "8px 2px 0" }}>
               Viser {dispersjon.kolle} — kølla med flest slag i økta. Snitt og spredning for de
               øvrige står under.
             </p>
@@ -278,20 +279,20 @@ export default async function TrackManDetalj({
                   key={k.kolle}
                   style={{
                     display: "flex", alignItems: "center", gap: 12, padding: "10px 0",
-                    borderBottom: i === kolleKort.length - 1 ? "none" : `1px solid ${T.border}`,
+                    borderBottom: i === kolleKort.length - 1 ? "none" : `1px solid ${TL.hair}`,
                   }}
                 >
-                  <span style={{ flex: 1, fontFamily: T.ui, fontSize: 13, fontWeight: 500, color: T.fg, minWidth: 0 }}>{k.kolle}</span>
-                  <span style={{ fontFamily: T.mono, fontSize: 13, width: 56, textAlign: "right", color: T.fg }}>
+                  <span style={{ flex: 1, fontFamily: TL.font.sans, fontSize: 13, fontWeight: 500, color: TL.text, minWidth: 0 }}>{k.kolle}</span>
+                  <span style={{ fontFamily: TL.font.mono, fontSize: 13, width: 56, textAlign: "right", color: TL.text }}>
                     {k.snitt === null ? "—" : `${heltall(k.snitt)} m`}
                   </span>
-                  <span style={{ fontFamily: T.mono, fontSize: 13, width: 50, textAlign: "right", color: T.mut }}>
+                  <span style={{ fontFamily: TL.font.mono, fontSize: 13, width: 50, textAlign: "right", color: TL.mute }}>
                     {k.spredning === null ? "—" : `${komma(k.spredning, 1)} m`}
                   </span>
-                  <span style={{ fontFamily: T.mono, fontSize: 11, width: 72, textAlign: "right", color: T.mut }}>
+                  <span style={{ fontFamily: TL.font.mono, fontSize: 11, width: 72, textAlign: "right", color: TL.mute }}>
                     {k.side ?? "—"}
                   </span>
-                  <span style={{ fontFamily: T.mono, fontSize: 11, width: 48, textAlign: "right", color: T.mut }}>
+                  <span style={{ fontFamily: TL.font.mono, fontSize: 11, width: 48, textAlign: "right", color: TL.mute }}>
                     {k.slag === null ? "—" : `${k.slag} slag`}
                   </span>
                 </div>

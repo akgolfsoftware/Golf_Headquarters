@@ -1,5 +1,5 @@
 "use client";
-
+import { TL } from "@/lib/v2/train-lock";
 /**
  * Foreldreportal · Bookinger — v2 Presis + B-pakke (status + innsyn).
  * Lese-først. Kun v2 + T.*. Enklere foreldre-språk.
@@ -8,20 +8,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import type { BookingStatus } from "@/generated/prisma/client";
-import {
-  T,
-  Caps,
-  Tittel,
-  Kort,
-  KpiFlis,
-  StatusPill,
-  Rad,
-  TomTilstand,
-  Icon,
-  Knapp,
-  type StatusTone,
-} from "@/components/v2";
-
+import { Caps, Tittel, Kort, KpiFlis, StatusPill, Rad, TomTilstand, Icon, Knapp, type StatusTone } from "@/components/v2";
 /* ── Datakontrakt (serialiserbar server→klient) ────────────────────── */
 
 export interface ForelderBookingRad {
@@ -95,17 +82,17 @@ function DatoBoks({ dato, aktiv }: { dato: Date; aktiv?: boolean }) {
         flexDirection: "column",
         alignItems: "center",
         justifyContent: "center",
-        background: aktiv ? T.handling : T.panel3,
-        border: `1px solid ${aktiv ? "transparent" : T.border}`,
+        background: aktiv ? TL.fill : TL.dim,
+        border: `1px solid ${aktiv ? "transparent" : TL.hair}`,
       }}
     >
       <span
         style={{
-          fontFamily: T.mono,
+          fontFamily: TL.font.mono,
           fontSize: 15,
           fontWeight: 700,
           lineHeight: 1,
-          color: aktiv ? T.onHandling : T.fg,
+          color: aktiv ? TL.onFill : TL.text,
           fontVariantNumeric: "tabular-nums",
         }}
       >
@@ -113,12 +100,12 @@ function DatoBoks({ dato, aktiv }: { dato: Date; aktiv?: boolean }) {
       </span>
       <span
         style={{
-          fontFamily: T.mono,
+          fontFamily: TL.font.mono,
           fontSize: 8,
           fontWeight: 700,
           letterSpacing: "0.06em",
           marginTop: 2,
-          color: aktiv ? T.onHandling : T.mut,
+          color: aktiv ? TL.onFill : TL.mute,
         }}
       >
         {mnd}
@@ -175,7 +162,7 @@ export function ForelderBookingerV2({ data }: { data: ForelderBookingerData }) {
   // Ingen barn koblet → ærlig tom-tilstand (lese-først portal).
   if (antallBarn === 0) {
     return (
-      <div data-paper-wave-e="forelder-sub" data-paper-portal-forelder-bookinger style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
+      <div data-paper-wave-e="forelder-sub" data-paper-portal-forelder-bookinger style={{ display: "flex", flexDirection: "column", gap: 16, maxWidth: 720, margin: "0 auto", width: "100%" }}>
         <div>
           <Caps>Bookinger</Caps>
           <div style={{ marginTop: 10 }}>
@@ -204,7 +191,7 @@ export function ForelderBookingerV2({ data }: { data: ForelderBookingerData }) {
         : "Ingen timer snart";
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+    <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
       {/* Hode + status */}
       <div
         style={{
@@ -227,7 +214,7 @@ export function ForelderBookingerV2({ data }: { data: ForelderBookingerData }) {
       </div>
 
       {/* KPI-stripe — status først */}
-      <div className="grid grid-cols-2 md:grid-cols-3" style={{ gap: T.gap }}>
+      <div className="grid grid-cols-2 md:grid-cols-3" style={{ gap: 16 }}>
         <KpiFlis label="Kommende" value={kommende.length} />
         <KpiFlis label="Denne uka" value={denneUka} />
         <KpiFlis label="Tidligere" value={tidligere.length} />
@@ -278,12 +265,12 @@ export function ForelderBookingerV2({ data }: { data: ForelderBookingerData }) {
       {/* Lesemodus-notis */}
       <Kort>
         <div style={{ display: "flex", gap: 12, alignItems: "flex-start" }}>
-          <Icon name="eye" size={16} style={{ color: T.fg2, flex: "none", marginTop: 2 }} />
+          <Icon name="eye" size={16} style={{ color: TL.mute, flex: "none", marginTop: 2 }} />
           <p
             style={{
-              fontFamily: T.ui,
+              fontFamily: TL.font.sans,
               fontSize: 12.5,
-              color: T.fg2,
+              color: TL.mute,
               lineHeight: 1.55,
               margin: 0,
             }}

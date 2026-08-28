@@ -6,7 +6,7 @@
  * Erstatter HjemV2 som innhold på /portal. V2Shell (rail/bunn-nav) er uendret
  * rundt denne komponenten — se src/app/portal/page.tsx.
  *
- * PP-1.1 (2026-08-09): loop ink underline, btn.ink=T.cta, mic 60px clay, composer bg canvas.
+ * PP-1.1 (2026-08-09): loop ink underline, btn.ink=TL.fill, mic 60px clay, composer bg canvas.
  * Matcher Paper-fasiten (designsystem/paper/fase1/playerhq-chat-desktop.html)
  * strukturelt: rail(V2Shell) + tråd(≤720px lesebredde) + FAST artefaktpanel
  * 360px ved ≥1121px, composer festet nederst. Bygget med EKSISTERENDE
@@ -18,7 +18,7 @@
  * A1-rettelser (2026-08-06): (1) artefaktpanelet er nå en FAST grid-kolonne på
  * desktop — ikke en toggle (useErMobil delt med ArtefaktPanel, samme
  * brytepunkt 1120px som fasiten). (2) «Én ting nå»-systeminnlegget («Dagens
- * økt starter …» + «Start økta» som ink; mic i composer eier T.handling) vises når dagens økt
+ * økt starter …» + «Start økta» som ink; mic i composer eier TL.fill) vises når dagens økt
  * ikke er startet. (3) Ærlig tom tilstand (ingen fabrikkerte påstander — kun
  * data.week/gjennomfore) med tre veier videre. (4) Toppheader viser
  * navn · kategori (ak-kategori.ts) · SG total (ekte kpiStats) · dato (Oslo,
@@ -35,7 +35,6 @@ import { useEffect, useRef, useState, useTransition, type CSSProperties } from "
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { T } from "@/lib/v2/tokens";
 import { TL } from "@/lib/v2/train-lock";
 import { TemaHeaderKnapp } from "@/components/v2/tema";
 import { useToppbarHoyde } from "@/components/v2/toppbar-hoyde";
@@ -116,8 +115,8 @@ function LoopNav({ gjennomfore }: { gjennomfore: GjennomforeData }) {
         display: "flex",
         alignItems: "stretch",
         width: "100%",
-        borderBottom: `1px solid ${T.border}`,
-        background: T.bg,
+        borderBottom: `1px solid ${TL.hair}`,
+        background: TL.scene,
       }}
     >
       {steg.map((s, i) => {
@@ -133,11 +132,11 @@ function LoopNav({ gjennomfore }: { gjennomfore: GjennomforeData }) {
               justifyContent: "center",
               minHeight: 48,
               padding: "8px 6px",
-              background: on ? T.panel2 : "transparent",
+              background: on ? TL.dock : "transparent",
               /* Paper .loop a[aria-current]: inset ink underline — clay is mic-only on Hjem */
-              boxShadow: on ? `inset 0 -2px 0 0 ${T.fg}` : "none",
-              color: on ? T.fg : T.mut,
-              fontFamily: T.mono,
+              boxShadow: on ? `inset 0 -2px 0 0 ${TL.text}` : "none",
+              color: on ? TL.text : TL.mute,
+              fontFamily: TL.font.mono,
               fontSize: 11,
               fontWeight: 600,
               letterSpacing: "0.08em",
@@ -150,12 +149,12 @@ function LoopNav({ gjennomfore }: { gjennomfore: GjennomforeData }) {
             {s.label}
             <small
               style={{
-                fontFamily: T.ui,
+                fontFamily: TL.font.sans,
                 fontSize: 10,
                 fontWeight: 500,
                 letterSpacing: 0,
                 textTransform: "none",
-                color: on ? T.fg2 : T.mut,
+                color: on ? TL.mute : TL.mute,
                 marginTop: 2,
               }}
             >
@@ -175,7 +174,7 @@ function LoopNav({ gjennomfore }: { gjennomfore: GjennomforeData }) {
               </span>
             )}
             {i < steg.length - 1 && (
-              <span style={{ color: T.mut, fontSize: 10, alignSelf: "center", padding: "0 2px", flex: "none" }} aria-hidden>
+              <span style={{ color: TL.mute, fontSize: 10, alignSelf: "center", padding: "0 2px", flex: "none" }} aria-hidden>
                 →
               </span>
             )}
@@ -189,25 +188,25 @@ function LoopNav({ gjennomfore }: { gjennomfore: GjennomforeData }) {
 function DagensOktInnhold({ gjennomfore }: { gjennomfore: GjennomforeData }) {
   const okt = gjennomfore.nesteOkt ?? gjennomfore.fullfortIdag[0] ?? null;
   if (!okt) {
-    return <p style={{ fontFamily: T.ui, fontSize: 13.5, color: T.mut }}>Ingen økt registrert i dag.</p>;
+    return <p style={{ fontFamily: TL.font.sans, fontSize: 13.5, color: TL.mute }}>Ingen økt registrert i dag.</p>;
   }
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
       <div>
-        <div style={{ fontFamily: T.disp, fontSize: 14, fontWeight: 600, color: T.fg }}>{okt.tittel}</div>
-        <div style={{ fontFamily: T.mono, fontSize: 11, color: T.mut, marginTop: 4 }}>{okt.meta}</div>
+        <div style={{ fontFamily: TL.font.sans, fontSize: 14, fontWeight: 600, color: TL.text }}>{okt.tittel}</div>
+        <div style={{ fontFamily: TL.font.mono, fontSize: 11, color: TL.mute, marginTop: 4 }}>{okt.meta}</div>
       </div>
       {okt.drillNavn.length > 0 && (
         <ul style={{ margin: 0, padding: 0, listStyle: "none", display: "flex", flexDirection: "column", gap: 6 }}>
           {okt.drillNavn.map((navn, i) => (
-            <li key={i} style={{ display: "flex", gap: 8, fontSize: 12.5, color: T.fg, padding: "6px 0", borderTop: i > 0 ? `1px solid ${T.border}` : undefined }}>
-              <span style={{ fontFamily: T.mono, fontSize: 11, color: T.mut }}>{i + 1}</span>
+            <li key={i} style={{ display: "flex", gap: 8, fontSize: 12.5, color: TL.text, padding: "6px 0", borderTop: i > 0 ? `1px solid ${TL.hair}` : undefined }}>
+              <span style={{ fontFamily: TL.font.mono, fontSize: 11, color: TL.mute }}>{i + 1}</span>
               {navn}
             </li>
           ))}
         </ul>
       )}
-      {/* T.lime — bekreftende, IKKE «Én ting nå»-monopolet (T.handling). Panelet
+      {/* TL.fill — bekreftende, IKKE «Én ting nå»-monopolet (TL.fill). Panelet
           er nå alltid synlig på desktop, så knappen her må aldri konkurrere
           med tråd-banneret under — matcher fasitens .btn.ink vs .btn.now. */}
       <Link
@@ -219,9 +218,9 @@ function DagensOktInnhold({ gjennomfore }: { gjennomfore: GjennomforeData }) {
           justifyContent: "center",
           minHeight: 44,
           borderRadius: 10,
-          background: T.cta,
-          color: T.onCta,
-          fontFamily: T.ui,
+          background: TL.fill,
+          color: TL.onFill,
+          fontFamily: TL.font.sans,
           fontSize: 13,
           fontWeight: 600,
           textDecoration: "none",
@@ -237,26 +236,26 @@ function DagensOktInnhold({ gjennomfore }: { gjennomfore: GjennomforeData }) {
 function EnTingNaBanner({ okt, klokke, onSePlan }: { okt: NonNullable<GjennomforeData["nesteOkt"]>; klokke: string; onSePlan: () => void }) {
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-      <div style={{ fontFamily: T.mono, fontSize: 10, letterSpacing: "0.08em", textTransform: "uppercase", color: T.mut }}>
+      <div style={{ fontFamily: TL.font.mono, fontSize: 10, letterSpacing: "0.08em", textTransform: "uppercase", color: TL.mute }}>
         systemet, uoppfordret · {klokke}
       </div>
       <div
         style={{
-          border: `1px solid ${T.border}`,
-          borderRadius: T.rCard,
-          background: T.panel2,
+          border: `1px solid ${TL.hair}`,
+          borderRadius: TL.radius.card,
+          background: TL.dock,
           padding: 16,
           display: "flex",
           flexDirection: "column",
           gap: 8,
         }}
       >
-        <div style={{ fontFamily: T.mono, fontSize: 10, letterSpacing: "0.08em", textTransform: "uppercase", color: T.mut }}>Én ting nå</div>
-        <h3 style={{ margin: 0, fontFamily: T.disp, fontSize: 16, fontWeight: 600, color: T.fg }}>
+        <div style={{ fontFamily: TL.font.mono, fontSize: 10, letterSpacing: "0.08em", textTransform: "uppercase", color: TL.mute }}>Én ting nå</div>
+        <h3 style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 16, fontWeight: 600, color: TL.text }}>
           Dagens økt {okt.relTidTekst.startsWith("Pågår") ? okt.relTidTekst.toLowerCase() : `starter ${okt.relTidTekst}`}
         </h3>
-        <p style={{ margin: 0, fontFamily: T.ui, fontSize: 13, color: T.fg2, lineHeight: 1.5 }}>
-          {okt.sted} er booket <span style={{ fontFamily: T.mono }}>{okt.tid}</span>. Du trenger ikke gjøre noe før økta starter.
+        <p style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 13, color: TL.mute, lineHeight: 1.5 }}>
+          {okt.sted} er booket <span style={{ fontFamily: TL.font.mono }}>{okt.tid}</span>. Du trenger ikke gjøre noe før økta starter.
         </p>
         <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginTop: 4 }}>
           <Link
@@ -268,11 +267,11 @@ function EnTingNaBanner({ okt, klokke, onSePlan }: { okt: NonNullable<Gjennomfor
               alignItems: "center",
               minHeight: 44,
               padding: "0 16px",
-              borderRadius: T.rTag,
-              /* Paper .btn.ink — ink CTA; mic owns T.handling on Hjem */
-              background: T.cta,
-              color: T.onCta,
-              fontFamily: T.ui,
+              borderRadius: TL.radius.row,
+              /* Paper .btn.ink — ink CTA; mic owns TL.fill on Hjem */
+              background: TL.fill,
+              color: TL.onFill,
+              fontFamily: TL.font.sans,
               fontSize: 13,
               fontWeight: 600,
               textDecoration: "none",
@@ -287,11 +286,11 @@ function EnTingNaBanner({ okt, klokke, onSePlan }: { okt: NonNullable<Gjennomfor
             style={{
               minHeight: 44,
               padding: "0 16px",
-              borderRadius: T.rTag,
-              border: `1px solid ${T.border}`,
+              borderRadius: TL.radius.row,
+              border: `1px solid ${TL.hair}`,
               background: "transparent",
-              color: T.fg,
-              fontFamily: T.ui,
+              color: TL.text,
+              fontFamily: TL.font.sans,
               fontSize: 13,
               fontWeight: 500,
               cursor: "pointer",
@@ -319,11 +318,11 @@ function TomTilstand({
   const btn: CSSProperties = {
     minHeight: 48,
     padding: "0 16px",
-    borderRadius: T.rCard,
-    border: `1px solid ${T.border}`,
-    background: T.panel,
-    color: T.fg,
-    fontFamily: T.ui,
+    borderRadius: TL.radius.card,
+    border: `1px solid ${TL.hair}`,
+    background: TL.elev,
+    color: TL.text,
+    fontFamily: TL.font.sans,
     fontSize: 13,
     fontWeight: 600,
     cursor: "pointer",
@@ -336,9 +335,9 @@ function TomTilstand({
         maxWidth: 520,
         width: "100%",
         padding: "32px 24px",
-        borderRadius: T.rCard,
-        border: `1px dashed ${T.border}`,
-        background: T.panel2,
+        borderRadius: TL.radius.card,
+        border: `1px dashed ${TL.hair}`,
+        background: TL.dock,
         display: "flex",
         flexDirection: "column",
         alignItems: "flex-start",
@@ -349,10 +348,10 @@ function TomTilstand({
         <h3
           style={{
             margin: 0,
-            fontFamily: T.disp,
+            fontFamily: TL.font.sans,
             fontSize: 15,
             fontWeight: 600,
-            color: T.fg,
+            color: TL.text,
             lineHeight: 1.3,
           }}
         >
@@ -361,9 +360,9 @@ function TomTilstand({
         <p
           style={{
             margin: "8px 0 0",
-            fontFamily: T.bodyFont,
+            fontFamily: TL.font.sans,
             fontSize: 14,
-            color: T.mut,
+            color: TL.mute,
             lineHeight: 1.55,
             maxWidth: "46ch",
           }}
@@ -381,7 +380,7 @@ function TomTilstand({
         onClick={() => onForslag("Lag en 25-minutters økt")}
         className="v2-press v2-focus"
         data-od-id="empty-short"
-        style={{ ...btn, background: T.fg, color: T.bg, border: "none" }}
+        style={{ ...btn, background: TL.text, color: TL.scene, border: "none" }}
       >
         Lag en 25-minutters økt
       </button>
@@ -452,19 +451,19 @@ function TrackManTeaserKort({ trackman }: { trackman: TrackManTeaser }) {
         display: "flex",
         flexDirection: "column",
         gap: 4,
-        border: `1px solid ${T.border}`,
-        borderRadius: T.rCard,
+        border: `1px solid ${TL.hair}`,
+        borderRadius: TL.radius.card,
         background: "transparent",
         padding: "12px 14px",
         textDecoration: "none",
         color: "inherit",
       }}
     >
-      <span style={{ fontFamily: T.mono, fontSize: 10, letterSpacing: "0.06em", textTransform: "uppercase", color: T.mut }}>
+      <span style={{ fontFamily: TL.font.mono, fontSize: 10, letterSpacing: "0.06em", textTransform: "uppercase", color: TL.mute }}>
         Siste TrackMan · {trackman.club} · {trackman.dateText}
       </span>
-      <p style={{ margin: 0, fontFamily: T.ui, fontSize: 12.5, color: T.fg2, lineHeight: 1.4 }}>{trackman.sentence}</p>
-      <span style={{ fontFamily: T.ui, fontSize: 12, color: T.fg2 }}>Se spredning ›</span>
+      <p style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 12.5, color: TL.mute, lineHeight: 1.4 }}>{trackman.sentence}</p>
+      <span style={{ fontFamily: TL.font.sans, fontSize: 12, color: TL.mute }}>Se spredning ›</span>
     </Link>
   );
 }
@@ -822,7 +821,7 @@ export function PortalChatHjem({
       }}
     >
       {/* ── Hovedkolonne: header + loop + tråd + composer ── */}
-      <div style={{ display: "flex", flexDirection: "column", height: "100%", minHeight: 0, minWidth: 0, background: T.bg, borderRight: mobil ? undefined : `1px solid ${T.border}` }}>
+      <div style={{ display: "flex", flexDirection: "column", height: "100%", minHeight: 0, minWidth: 0, background: TL.scene, borderRight: mobil ? undefined : `1px solid ${TL.hair}` }}>
         {/* ── Topplinje (Paper .top: tittel + loop + capture) ── */}
         <header
           ref={toppRef}
@@ -833,24 +832,24 @@ export function PortalChatHjem({
             alignItems: "center",
             gap: 12,
             padding: "10px 16px",
-            background: T.bg,
-            borderBottom: `1px solid ${T.border}`,
+            background: TL.scene,
+            borderBottom: `1px solid ${TL.hair}`,
             position: "sticky",
             top: 0,
             zIndex: 5,
           }}
         >
           <div style={{ minWidth: 0, flex: "1 1 160px" }}>
-            <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 15, fontWeight: 600, color: T.fg }}>
+            <h1 style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 15, fontWeight: 600, color: TL.text }}>
               I dag
             </h1>
             <div
               className="num"
               style={{
-                fontFamily: T.mono,
+                fontFamily: TL.font.mono,
                 fontSize: 11,
                 letterSpacing: "0.02em",
-                color: T.mut,
+                color: TL.mute,
                 marginTop: 2,
               }}
             >
@@ -870,11 +869,11 @@ export function PortalChatHjem({
               style={{
                 minHeight: 44,
                 padding: "0 12px",
-                borderRadius: T.rCard,
-                border: `1px solid ${T.border}`,
-                background: T.panel,
-                color: T.fg,
-                fontFamily: T.ui,
+                borderRadius: TL.radius.card,
+                border: `1px solid ${TL.hair}`,
+                background: TL.elev,
+                color: TL.text,
+                fontFamily: TL.font.sans,
                 fontSize: 12,
                 fontWeight: 500,
                 cursor: "pointer",
@@ -899,10 +898,10 @@ export function PortalChatHjem({
                 height: 44,
                 display: "grid",
                 placeItems: "center",
-                borderRadius: T.rCard,
-                border: `1px solid ${T.border}`,
+                borderRadius: TL.radius.card,
+                border: `1px solid ${TL.hair}`,
                 background: "transparent",
-                color: T.fg,
+                color: TL.text,
                 cursor: "pointer",
                 flex: "none",
               }}
@@ -923,10 +922,10 @@ export function PortalChatHjem({
               height: 44,
               display: "grid",
               placeItems: "center",
-              borderRadius: T.rCard,
-              border: `1px solid ${T.border}`,
+              borderRadius: TL.radius.card,
+              border: `1px solid ${TL.hair}`,
               background: "transparent",
-              color: T.fg,
+              color: TL.text,
               cursor: "pointer",
               flex: "none",
             }}
@@ -950,7 +949,7 @@ export function PortalChatHjem({
             padding: "16px 16px 24px",
             display: "flex",
             flexDirection: "column",
-            background: T.bg,
+            background: TL.scene,
           }}
         >
           <div
@@ -988,14 +987,14 @@ export function PortalChatHjem({
                     gap: 8,
                     padding: "8px 14px",
                     borderRadius: 999,
-                    background: T.panel2,
-                    border: `1px solid ${T.border}`,
-                    fontFamily: T.ui,
+                    background: TL.dock,
+                    border: `1px solid ${TL.hair}`,
+                    fontFamily: TL.font.sans,
                     fontSize: 12.5,
-                    color: T.mut,
+                    color: TL.mute,
                   }}
                 >
-                  <Icon name="message-circle" size={14} style={{ color: T.mut }} />
+                  <Icon name="message-circle" size={14} style={{ color: TL.mute }} />
                   Spør om treningen din — svar baseres på plan og logg, ikke gjetning.
                 </div>
                 <ForslagRad items={FORSLAG} onPick={send} />
@@ -1034,7 +1033,7 @@ export function PortalChatHjem({
 
         {/* ── Composer — delt komponent (PP-B3), fasit-tro per brytepunkt:
             mobil = playerhq-chat-mobil.html (ctxline øverst, cbox + clay-mic +
-            pilknapp — mic er skjermens ene T.handling, Kontrakt §3), desktop =
+            pilknapp — mic er skjermens ene TL.fill, Kontrakt §3), desktop =
             playerhq-chat-desktop.html (box + boxbar med nøytral .mic-knapp og
             «Send» som btn.ink, ctxline under). */}
         <div style={{ flex: "none" }}>
@@ -1071,13 +1070,13 @@ export function PortalChatHjem({
                     minHeight: 60,
                     borderRadius: 9999,
                     border: "none",
-                    background: T.handling,
-                    color: T.onHandling,
+                    background: TL.fill,
+                    color: TL.onFill,
                     display: "inline-flex",
                     alignItems: "center",
                     justifyContent: "center",
                     cursor: "pointer",
-                    boxShadow: "0 2px 10px color-mix(in srgb, var(--v2-handling) 40%, transparent)",
+                    boxShadow: "0 2px 10px color-mix(in srgb, var(--tl-fill) 40%, transparent)",
                   }}
                 >
                   <Icon name="mic" size={24} />
@@ -1099,10 +1098,10 @@ export function PortalChatHjem({
                     minHeight: 60,
                     display: "grid",
                     placeItems: "center",
-                    background: T.panel2,
-                    border: `1px solid ${T.border}`,
-                    borderRadius: T.rCard,
-                    color: T.fg,
+                    background: TL.dock,
+                    border: `1px solid ${TL.hair}`,
+                    borderRadius: TL.radius.card,
+                    color: TL.text,
                     cursor: "pointer",
                   }}
                 >
@@ -1124,11 +1123,11 @@ export function PortalChatHjem({
             display: "block",
             marginTop: 16,
             paddingTop: 12,
-            borderTop: `1px solid ${T.border}`,
-            fontFamily: T.ui,
+            borderTop: `1px solid ${TL.hair}`,
+            fontFamily: TL.font.sans,
             fontSize: 13,
             fontWeight: 500,
-            color: T.mut,
+            color: TL.mute,
             textDecoration: "underline",
             textUnderlineOffset: 3,
           }}

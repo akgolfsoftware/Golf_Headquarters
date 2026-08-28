@@ -1,4 +1,5 @@
 "use client";
+import { TL } from "@/lib/v2/train-lock";
 
 /**
  * «Fullfør kjeden» — før slag-kjeden per hull på en runde som har scorekort
@@ -13,7 +14,7 @@ import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { lagreHullKjede } from "@/app/portal/mal/runder/[id]/actions";
 import type { HvileLie, LoggetHull, LoggetSlag } from "@/lib/runde-logg/types";
-import { T, fmtSg, Caps, Kort, Icon } from "@/components/v2";
+import { fmtSg, Caps, Kort, Icon } from "@/components/v2";
 import { SlagEditor } from "./slag-editor";
 
 const LIE_LABEL: Record<"TEE" | HvileLie, string> = {
@@ -154,25 +155,25 @@ export function FullforKjedeKlient({
       <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
         <Kort>
           <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 12, textAlign: "center", padding: "10px 0" }}>
-            <span style={{ width: 56, height: 56, borderRadius: 9999, background: "color-mix(in srgb, var(--v2-lime) 12%, transparent)", border: "1px solid color-mix(in srgb, var(--v2-lime) 45%, transparent)", display: "inline-flex", alignItems: "center", justifyContent: "center" }}>
-              <Icon name="trending-up" size={26} style={{ color: T.lime }} />
+            <span style={{ width: 56, height: 56, borderRadius: 9999, background: "color-mix(in srgb, var(--tl-fill) 12%, transparent)", border: "1px solid color-mix(in srgb, var(--tl-fill) 45%, transparent)", display: "inline-flex", alignItems: "center", justifyContent: "center" }}>
+              <Icon name="trending-up" size={26} style={{ color: TL.fill }} />
             </span>
-            <div style={{ fontFamily: T.disp, fontSize: 19, fontWeight: 700, color: T.fg }}>
+            <div style={{ fontFamily: TL.font.sans, fontSize: 19, fontWeight: 700, color: TL.text }}>
               Full Strokes Gained klar
             </div>
             {sgTotal != null && (
-              <div style={{ fontFamily: T.mono, fontSize: 24, fontWeight: 700, color: sgTotal >= 0 ? T.up : T.down }}>
+              <div style={{ fontFamily: TL.font.mono, fontSize: 24, fontWeight: 700, color: sgTotal >= 0 ? TL.ok : TL.danger }}>
                 {fmtSg(sgTotal)}
               </div>
             )}
-            <div style={{ fontFamily: T.ui, fontSize: 11.5, color: T.fg2, lineHeight: 1.55 }}>
+            <div style={{ fontFamily: TL.font.sans, fontSize: 11.5, color: TL.mute, lineHeight: 1.55 }}>
               Alle {alle} kjeder komplette — se hvor slagene ble tjent og tapt.
             </div>
             <button
               type="button"
               onClick={() => router.push(`/portal/mal/runder/${roundId}`)}
               className="v2-press v2-focus"
-              style={{ appearance: "none", cursor: "pointer", width: "100%", height: 46, borderRadius: 12, border: "none", background: T.handling, color: T.onHandling, fontFamily: T.disp, fontSize: 14.5, fontWeight: 700 }}
+              style={{ appearance: "none", cursor: "pointer", width: "100%", height: 46, borderRadius: 12, border: "none", background: TL.fill, color: TL.onFill, fontFamily: TL.font.sans, fontSize: 14.5, fontWeight: 700 }}
             >
               Til runden
             </button>
@@ -187,10 +188,10 @@ export function FullforKjedeKlient({
     return (
       <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
         <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: 10 }}>
-          <div style={{ fontFamily: T.disp, fontSize: 18, fontWeight: 700, color: T.fg }}>
+          <div style={{ fontFamily: TL.font.sans, fontSize: 18, fontWeight: 700, color: TL.text }}>
             Hull {valgt.holeNumber} · par {valgt.par}
           </div>
-          <span style={{ fontFamily: T.mono, fontSize: 11, color: T.fg2 }}>
+          <span style={{ fontFamily: TL.font.mono, fontSize: 11, color: TL.mute }}>
             scorekort: {valgt.strokes} slag
             {valgt.putts != null ? ` · ${valgt.putts} putter` : ""}
             {valgt.fairway != null ? ` · FIR ${valgt.fairway ? "ja" : "nei"}` : ""}
@@ -208,9 +209,9 @@ export function FullforKjedeKlient({
                   const v = Number(e.target.value.replace(/\D/g, ""));
                   if (v >= 40 && v <= 700) setLengde(v);
                 }}
-                style={{ flex: 1, height: 44, borderRadius: 11, padding: "0 12px", background: T.panel2, border: `1px solid ${T.borderS}`, color: T.fg, fontFamily: T.mono, fontSize: 13, outline: "none" }}
+                style={{ flex: 1, height: 44, borderRadius: 11, padding: "0 12px", background: TL.dock, border: `1px solid ${TL.hair}`, color: TL.text, fontFamily: TL.font.mono, fontSize: 13, outline: "none" }}
               />
-              <span style={{ fontFamily: T.mono, fontSize: 11, color: T.mut }}>40–700 m</span>
+              <span style={{ fontFamily: TL.font.mono, fontSize: 11, color: TL.mute }}>40–700 m</span>
             </div>
           </Kort>
         ) : (
@@ -220,16 +221,16 @@ export function FullforKjedeKlient({
                 <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
                   {kjedeRader.map((rad) => (
                     <div key={rad.nr} style={{ display: "flex", alignItems: "center", gap: 10, padding: "8px 10px", borderRadius: 10 }}>
-                      <span style={{ width: 22, height: 22, borderRadius: 8, background: T.panel2, border: `1px solid ${T.border}`, display: "inline-flex", alignItems: "center", justifyContent: "center", fontFamily: T.mono, fontSize: 10.5, fontWeight: 700, color: T.fg2, flex: "none" }}>
+                      <span style={{ width: 22, height: 22, borderRadius: 8, background: TL.dock, border: `1px solid ${TL.hair}`, display: "inline-flex", alignItems: "center", justifyContent: "center", fontFamily: TL.font.mono, fontSize: 10.5, fontWeight: 700, color: TL.mute, flex: "none" }}>
                         {rad.nr}
                       </span>
                       <div style={{ flex: 1, minWidth: 0 }}>
-                        <span style={{ fontFamily: T.ui, fontSize: 12.5, fontWeight: 600, color: T.fg }}>{rad.fra}</span>
-                        <span style={{ fontFamily: T.ui, fontSize: 11.5, color: rad.iHull ? T.up : T.fg2 }}>
+                        <span style={{ fontFamily: TL.font.sans, fontSize: 12.5, fontWeight: 600, color: TL.text }}>{rad.fra}</span>
+                        <span style={{ fontFamily: TL.font.sans, fontSize: 11.5, color: rad.iHull ? TL.ok : TL.mute }}>
                           {" "}→ {rad.til}
                         </span>
                         {rad.straffe && (
-                          <span style={{ fontFamily: T.mono, fontSize: 9.5, fontWeight: 700, color: T.down, marginLeft: 6 }}>+1 STRAFFE</span>
+                          <span style={{ fontFamily: TL.font.mono, fontSize: 9.5, fontWeight: 700, color: TL.danger, marginLeft: 6 }}>+1 STRAFFE</span>
                         )}
                       </div>
                     </div>
@@ -253,8 +254,8 @@ export function FullforKjedeKlient({
 
             {(mismatch || forMange) && (
               <div style={{ display: "flex", alignItems: "center", gap: 8, padding: "10px 12px", borderRadius: 12, background: "color-mix(in srgb, var(--v2-down) 8%, transparent)", border: "1px solid color-mix(in srgb, var(--v2-down) 35%, transparent)" }}>
-                <Icon name="triangle-alert" size={14} style={{ color: T.down, flex: "none" }} />
-                <span style={{ fontFamily: T.ui, fontSize: 11.5, color: T.fg, lineHeight: 1.5 }}>
+                <Icon name="triangle-alert" size={14} style={{ color: TL.danger, flex: "none" }} />
+                <span style={{ fontFamily: TL.font.sans, fontSize: 11.5, color: TL.text, lineHeight: 1.5 }}>
                   Kjeden har <b>{slag.length} slag + {straffer} straffer</b>, men scorekortet sier{" "}
                   <b>{valgt.strokes}</b> — angre og rett kjeden før lagring.
                 </span>
@@ -266,7 +267,7 @@ export function FullforKjedeKlient({
                 type="button"
                 onClick={() => setSlag((x) => x.slice(0, -1))}
                 className="v2-press v2-focus"
-                style={{ appearance: "none", cursor: "pointer", alignSelf: "flex-start", display: "inline-flex", alignItems: "center", gap: 5, padding: "7px 12px", borderRadius: 9999, background: "transparent", border: `1px solid ${T.border}`, fontFamily: T.mono, fontSize: 10, fontWeight: 700, color: T.fg2 }}
+                style={{ appearance: "none", cursor: "pointer", alignSelf: "flex-start", display: "inline-flex", alignItems: "center", gap: 5, padding: "7px 12px", borderRadius: 9999, background: "transparent", border: `1px solid ${TL.hair}`, fontFamily: TL.font.mono, fontSize: 10, fontWeight: 700, color: TL.mute }}
               >
                 <Icon name="arrow-left" size={12} />
                 Angre siste slag
@@ -275,8 +276,8 @@ export function FullforKjedeKlient({
 
             {feil && (
               <div style={{ display: "flex", alignItems: "center", gap: 8, padding: "10px 12px", borderRadius: 12, background: "color-mix(in srgb, var(--v2-down) 8%, transparent)", border: "1px solid color-mix(in srgb, var(--v2-down) 35%, transparent)" }}>
-                <Icon name="triangle-alert" size={14} style={{ color: T.down, flex: "none" }} />
-                <span style={{ fontFamily: T.ui, fontSize: 11.5, color: T.fg }}>{feil}</span>
+                <Icon name="triangle-alert" size={14} style={{ color: TL.danger, flex: "none" }} />
+                <span style={{ fontFamily: TL.font.sans, fontSize: 11.5, color: TL.text }}>{feil}</span>
               </div>
             )}
 
@@ -292,9 +293,9 @@ export function FullforKjedeKlient({
                 height: 50,
                 borderRadius: 14,
                 border: "none",
-                background: ferdig && !mismatch ? T.lime : T.panel3,
-                color: ferdig && !mismatch ? T.onHandling : T.mut,
-                fontFamily: T.disp,
+                background: ferdig && !mismatch ? TL.fill : TL.dim,
+                color: ferdig && !mismatch ? TL.onFill : TL.mute,
+                fontFamily: TL.font.sans,
                 fontSize: 15,
                 fontWeight: 700,
                 opacity: lagrer ? 0.75 : 1,
@@ -316,7 +317,7 @@ export function FullforKjedeKlient({
             setSlag([]);
           }}
           className="v2-press v2-focus"
-          style={{ appearance: "none", cursor: "pointer", width: "100%", display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 6, padding: "12px 0", borderRadius: 12, background: "transparent", border: `1px solid ${T.border}`, fontFamily: T.ui, fontSize: 13, fontWeight: 600, color: T.fg2 }}
+          style={{ appearance: "none", cursor: "pointer", width: "100%", display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 6, padding: "12px 0", borderRadius: 12, background: "transparent", border: `1px solid ${TL.hair}`, fontFamily: TL.font.sans, fontSize: 13, fontWeight: 600, color: TL.mute }}
         >
           <Icon name="arrow-left" size={14} />
           Til hull-lista
@@ -330,30 +331,30 @@ export function FullforKjedeKlient({
     <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
       <div>
         <Caps>{courseNavn}</Caps>
-        <div style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 22, color: T.fg, lineHeight: 1.1, marginTop: 6 }}>
+        <div style={{ fontFamily: TL.font.sans, fontWeight: 700, fontSize: 22, color: TL.text, lineHeight: 1.1, marginTop: 6 }}>
           Fullfør kjeden
         </div>
-        <div style={{ fontFamily: T.ui, fontSize: 11.5, color: T.mut, marginTop: 3 }}>
+        <div style={{ fontFamily: TL.font.sans, fontSize: 11.5, color: TL.mute, marginTop: 3 }}>
           {komplette} av {alle} kjeder komplette · full SG låses opp på {alle}/{alle}
         </div>
       </div>
 
       <Kort pad="14px 12px">
         <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
-          <div style={{ height: 5, borderRadius: 9999, background: T.panel2, margin: "4px 10px 10px" }}>
-            <div style={{ width: `${Math.round((komplette / alle) * 100)}%`, height: "100%", borderRadius: 9999, background: T.handling }} />
+          <div style={{ height: 5, borderRadius: 9999, background: TL.dock, margin: "4px 10px 10px" }}>
+            <div style={{ width: `${Math.round((komplette / alle) * 100)}%`, height: "100%", borderRadius: 9999, background: TL.fill }} />
           </div>
           {hullListe.map((h) => (
             <div key={h.holeNumber} className="v2-row-h" style={{ display: "flex", alignItems: "center", gap: 10, padding: "9px 12px", borderRadius: 10 }}>
-              <span style={{ fontFamily: T.mono, fontSize: 11.5, fontWeight: 700, color: T.fg2, width: 52 }}>
+              <span style={{ fontFamily: TL.font.mono, fontSize: 11.5, fontWeight: 700, color: TL.mute, width: 52 }}>
                 Hull {h.holeNumber}
               </span>
-              <span style={{ fontFamily: T.mono, fontSize: 11, color: T.mut, whiteSpace: "nowrap" }}>
+              <span style={{ fontFamily: TL.font.mono, fontSize: 11, color: TL.mute, whiteSpace: "nowrap" }}>
                 par {h.par} · {h.strokes} slag
               </span>
               <div style={{ flex: 1 }} />
               {h.kjedeKomplett ? (
-                <span style={{ display: "inline-flex", alignItems: "center", gap: 5, fontFamily: T.mono, fontSize: 10, fontWeight: 700, color: T.up }}>
+                <span style={{ display: "inline-flex", alignItems: "center", gap: 5, fontFamily: TL.font.mono, fontSize: 10, fontWeight: 700, color: TL.ok }}>
                   <Icon name="check" size={12} />
                   KJEDE OK
                 </span>
@@ -362,7 +363,7 @@ export function FullforKjedeKlient({
                   type="button"
                   onClick={() => aapne(h)}
                   className="v2-press v2-focus"
-                  style={{ appearance: "none", cursor: "pointer", padding: "6px 12px", borderRadius: 9999, background: T.panel3, border: `1px solid ${T.borderS}`, fontFamily: T.mono, fontSize: 10, fontWeight: 700, color: T.fg }}
+                  style={{ appearance: "none", cursor: "pointer", padding: "6px 12px", borderRadius: 9999, background: TL.dim, border: `1px solid ${TL.hair}`, fontFamily: TL.font.mono, fontSize: 10, fontWeight: 700, color: TL.text }}
                 >
                   Før slag
                 </button>
@@ -372,7 +373,7 @@ export function FullforKjedeKlient({
         </div>
       </Kort>
 
-      <div style={{ fontFamily: T.ui, fontSize: 10.5, color: T.mut, lineHeight: 1.55 }}>
+      <div style={{ fontFamily: TL.font.sans, fontSize: 10.5, color: TL.mute, lineHeight: 1.55 }}>
         Strokes Gained regnes kun fra ekte slag-kjeder — vi gjetter aldri. Kjeden må stemme med
         scorekortet (slag + straffer = score).
       </div>
@@ -381,7 +382,7 @@ export function FullforKjedeKlient({
         type="button"
         onClick={() => router.push(`/portal/mal/runder/${roundId}`)}
         className="v2-press v2-focus"
-        style={{ appearance: "none", cursor: "pointer", width: "100%", display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 6, padding: "12px 0", borderRadius: 12, background: "transparent", border: `1px solid ${T.border}`, fontFamily: T.ui, fontSize: 13, fontWeight: 600, color: T.fg2 }}
+        style={{ appearance: "none", cursor: "pointer", width: "100%", display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 6, padding: "12px 0", borderRadius: 12, background: "transparent", border: `1px solid ${TL.hair}`, fontFamily: TL.font.sans, fontSize: 13, fontWeight: 600, color: TL.mute }}
       >
         <Icon name="arrow-left" size={14} />
         Tilbake til runden

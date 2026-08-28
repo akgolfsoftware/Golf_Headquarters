@@ -16,7 +16,8 @@ import { hentGameplanForHull } from "@/lib/gameplan/actions";
 import { CourseMap } from "@/components/gameplan/course-map";
 import { GameplanPlanlegger } from "@/components/gameplan/GameplanPlanlegger";
 import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
-import { T } from "@/lib/v2/tokens";
+import { TL } from "@/lib/v2/train-lock";
+
 import { Caps, Tittel, Kort, KpiFlis, MikroMeta, TomTilstand } from "@/components/v2";
 import type { ShotType } from "@/generated/prisma/client";
 
@@ -61,7 +62,7 @@ export default async function HoleDetailPage({
 
   return (
     <V2Shell bredde="kolonne" aktiv="analyse" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
-      <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+      <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
         <Link
           href={`/portal/gameplan/${bane.id}`}
           style={{ textDecoration: "none", alignSelf: "flex-start" }}
@@ -74,7 +75,7 @@ export default async function HoleDetailPage({
           <div style={{ marginTop: 10 }}>
             <Tittel em={`hull ${hole.holeNumber}`} />
           </div>
-          <p style={{ fontFamily: T.ui, fontSize: 12.5, color: T.mut, margin: "10px 0 0" }}>
+          <p style={{ fontFamily: TL.font.sans, fontSize: 12.5, color: TL.mute, margin: "10px 0 0" }}>
             {hole.par ? `Par ${hole.par}` : "Par –"}
             {hole.lengthMeter ? ` · ${hole.lengthMeter} m` : ""}
           </p>
@@ -117,16 +118,16 @@ export default async function HoleDetailPage({
                   flex: 1,
                   textAlign: "center",
                   textDecoration: "none",
-                  fontFamily: T.mono,
+                  fontFamily: TL.font.mono,
                   fontSize: 10.5,
                   fontWeight: 700,
                   letterSpacing: "0.06em",
                   textTransform: "uppercase",
                   padding: "9px 0",
                   borderRadius: 9999,
-                  color: active ? T.onLime : T.mut,
-                  background: active ? T.lime : T.panel2,
-                  border: `1px solid ${active ? "transparent" : T.border}`,
+                  color: active ? TL.onFill : TL.mute,
+                  background: active ? TL.fill : TL.dock,
+                  border: `1px solid ${active ? "transparent" : TL.hair}`,
                 }}
               >
                 {s.label}
@@ -157,7 +158,7 @@ export default async function HoleDetailPage({
           )
         ) : stats ? (
           <>
-            <div className="grid grid-cols-2 lg:grid-cols-4" style={{ gap: T.gap }}>
+            <div className="grid grid-cols-2 lg:grid-cols-4" style={{ gap: 16 }}>
               <KpiFlis label="σ side" value={`${fmt(stats.std.lateral)} m`} hjelp="spredningSigma" />
               <KpiFlis label="σ lengde" value={`${fmt(stats.std.distance)} m`} hjelp="spredningSigma" />
               <KpiFlis
@@ -171,9 +172,9 @@ export default async function HoleDetailPage({
             {stats.bias.side !== "rett" && (
               <Kort tint>
                 <MikroMeta icon="lightbulb">Innsikt</MikroMeta>
-                <p style={{ fontFamily: T.ui, fontSize: 13, color: T.fg2, lineHeight: 1.6, margin: "10px 0 0" }}>
+                <p style={{ fontFamily: TL.font.sans, fontSize: 13, color: TL.mute, lineHeight: 1.6, margin: "10px 0 0" }}>
                   Du misser{" "}
-                  <em style={{ fontFamily: T.disp, fontStyle: "italic", color: T.lime }}>
+                  <em style={{ fontFamily: TL.font.sans, fontStyle: "italic", color: TL.fill }}>
                     {fmt(Math.abs(stats.bias.lateral))} m {stats.bias.side}
                   </em>{" "}
                   i snitt på dette hullet. Sikt mot{" "}

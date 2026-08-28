@@ -1,3 +1,4 @@
+import { TL } from "@/lib/v2/train-lock";
 /**
  * v2 — PlayerHQ Meg · Helse (retning C). V2Shell leverer chrome-en
  * (IkonRail/BunnNav), MegHelseV2 rendrer stacken.
@@ -8,7 +9,7 @@
  */
 
 import Link from "next/link";
-import { TilbakeLenke, Kort, Icon, T } from "@/components/v2";
+import { TilbakeLenke, Kort, Icon } from "@/components/v2";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { harManuellHelseSamtykke } from "@/lib/health/samtykke";
 import { prisma } from "@/lib/prisma";
@@ -33,12 +34,12 @@ function HelseSamtykkeMangler() {
   return (
     <Kort>
       <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 10 }}>
-        <Icon name="heart" size={16} style={{ color: T.fg2 }} />
-        <span style={{ fontFamily: T.disp, fontSize: 17, fontWeight: 700, color: T.fg, letterSpacing: "-0.02em" }}>
+        <Icon name="heart" size={16} style={{ color: TL.mute }} />
+        <span style={{ fontFamily: TL.font.sans, fontSize: 17, fontWeight: 700, color: TL.text, letterSpacing: "-0.02em" }}>
           Helse-loggen er avslått
         </span>
       </div>
-      <p style={{ fontFamily: T.ui, fontSize: 13.5, color: T.fg2, margin: 0, lineHeight: 1.55, maxWidth: "48ch" }}>
+      <p style={{ fontFamily: TL.font.sans, fontSize: 13.5, color: TL.mute, margin: 0, lineHeight: 1.55, maxWidth: "48ch" }}>
         Søvn, puls, vekt og skader er sensitive opplysninger, så vi lagrer dem
         ikke før du sier ja. Slår du det på, kan du føre dem her og bruke dem til
         å tilpasse treningen din. Treningen din går helt som før uansett hva du
@@ -53,9 +54,9 @@ function HelseSamtykkeMangler() {
             gap: 8,
             padding: "10px 16px",
             borderRadius: 11,
-            background: T.forest,
-            color: T.onForest,
-            fontFamily: T.ui,
+            background: TL.fill,
+            color: TL.onFill,
+            fontFamily: TL.font.sans,
             fontSize: 13.5,
             fontWeight: 600,
             textDecoration: "none",

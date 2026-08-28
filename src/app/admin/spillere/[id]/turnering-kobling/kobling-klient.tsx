@@ -5,7 +5,8 @@
  */
 
 import { useCallback, useState, useTransition } from "react";
-import { T } from "@/lib/v2/tokens";
+import { TL } from "@/lib/v2/train-lock";
+
 import { Caps, Kort, Icon, TomTilstand } from "@/components/v2";
 import {
   fjernPublicPlayerKobling,
@@ -90,18 +91,18 @@ export function TurneringKoblingKlient({
   }, [spillerId]);
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+    <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
       {feil && (
         <div
           role="alert"
           style={{
             padding: "12px 14px",
             borderRadius: 10,
-            background: `color-mix(in srgb, ${T.warn} 12%, ${T.panel2})`,
-            border: `1px solid color-mix(in srgb, ${T.warn} 35%, ${T.border})`,
-            fontFamily: T.ui,
+            background: `color-mix(in srgb, ${TL.warn} 12%, ${TL.dock})`,
+            border: `1px solid color-mix(in srgb, ${TL.warn} 35%, ${TL.hair})`,
+            fontFamily: TL.font.sans,
             fontSize: 13,
-            color: T.fg,
+            color: TL.text,
           }}
         >
           {feil}
@@ -113,11 +114,11 @@ export function TurneringKoblingKlient({
           style={{
             padding: "12px 14px",
             borderRadius: 10,
-            background: `color-mix(in srgb, ${T.lime} 10%, ${T.panel2})`,
-            border: `1px solid color-mix(in srgb, ${T.lime} 30%, ${T.border})`,
-            fontFamily: T.ui,
+            background: `color-mix(in srgb, ${TL.fill} 10%, ${TL.dock})`,
+            border: `1px solid color-mix(in srgb, ${TL.fill} 30%, ${TL.hair})`,
+            fontFamily: TL.font.sans,
             fontSize: 13,
-            color: T.fg,
+            color: TL.text,
           }}
         >
           {melding}
@@ -129,10 +130,10 @@ export function TurneringKoblingKlient({
           <div>
             <div
               style={{
-                fontFamily: T.ui,
+                fontFamily: TL.font.sans,
                 fontSize: 16,
                 fontWeight: 700,
-                color: T.fg,
+                color: TL.text,
                 marginBottom: 6,
               }}
             >
@@ -140,9 +141,9 @@ export function TurneringKoblingKlient({
             </div>
             <div
               style={{
-                fontFamily: T.mono,
+                fontFamily: TL.font.mono,
                 fontSize: 10,
-                color: T.mut,
+                color: TL.mute,
                 marginBottom: 14,
               }}
             >
@@ -155,12 +156,12 @@ export function TurneringKoblingKlient({
               onClick={fjern}
               disabled={pending}
               style={{
-                fontFamily: T.ui,
+                fontFamily: TL.font.sans,
                 fontSize: 12,
                 fontWeight: 600,
-                color: T.warn,
+                color: TL.warn,
                 background: "transparent",
-                border: `1px solid color-mix(in srgb, ${T.warn} 40%, ${T.border})`,
+                border: `1px solid color-mix(in srgb, ${TL.warn} 40%, ${TL.hair})`,
                 borderRadius: 999,
                 padding: "8px 14px",
                 cursor: pending ? "wait" : "pointer",
@@ -201,20 +202,20 @@ export function TurneringKoblingKlient({
             style={{
               flex: 1,
               minWidth: 180,
-              fontFamily: T.ui,
+              fontFamily: TL.font.sans,
               fontSize: 13,
               padding: "10px 12px",
               borderRadius: 10,
-              border: `1px solid ${T.border}`,
-              background: T.panel2,
-              color: T.fg,
+              border: `1px solid ${TL.hair}`,
+              background: TL.dock,
+              color: TL.text,
             }}
           />
           <button
             type="submit"
             disabled={pending || q.trim().length < 2}
             style={{
-              fontFamily: T.mono,
+              fontFamily: TL.font.mono,
               fontSize: 11,
               fontWeight: 700,
               letterSpacing: "0.04em",
@@ -222,8 +223,8 @@ export function TurneringKoblingKlient({
               padding: "10px 16px",
               borderRadius: 999,
               border: "none",
-              background: T.lime,
-              color: T.bg,
+              background: TL.fill,
+              color: TL.scene,
               cursor: pending ? "wait" : "pointer",
               opacity: q.trim().length < 2 ? 0.5 : 1,
             }}
@@ -234,13 +235,13 @@ export function TurneringKoblingKlient({
         {treff.length > 0 ? (
           <TreffListe treff={treff} pending={pending} onKoble={koble} />
         ) : (
-          <p style={{ margin: 0, fontFamily: T.ui, fontSize: 12.5, color: T.mut }}>
+          <p style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 12.5, color: TL.mute }}>
             Skriv minst to bokstaver og trykk Søk. Velg deretter riktig person.
           </p>
         )}
       </Kort>
 
-      <p style={{ margin: 0, fontFamily: T.mono, fontSize: 9.5, color: T.mut, lineHeight: 1.5 }}>
+      <p style={{ margin: 0, fontFamily: TL.font.mono, fontSize: 9.5, color: TL.mute, lineHeight: 1.5 }}>
         Tips: Auto-kobling kjører også på natt-cron ved eksakt navnematch. Bruk denne
         siden når navnene ikke er like nok (middelsnavn, kallenavn).
       </p>
@@ -268,25 +269,25 @@ function TreffListe({
             gap: 12,
             padding: "12px 0",
             borderBottom:
-              i < treff.length - 1 ? `1px solid ${T.border}` : "none",
+              i < treff.length - 1 ? `1px solid ${TL.hair}` : "none",
           }}
         >
           <div style={{ flex: 1, minWidth: 0 }}>
             <div
               style={{
-                fontFamily: T.ui,
+                fontFamily: TL.font.sans,
                 fontSize: 13,
                 fontWeight: 600,
-                color: T.fg,
+                color: TL.text,
               }}
             >
               {t.name}
             </div>
             <div
               style={{
-                fontFamily: T.mono,
+                fontFamily: TL.font.mono,
                 fontSize: 9,
-                color: T.mut,
+                color: TL.mute,
                 marginTop: 3,
               }}
             >
@@ -299,7 +300,7 @@ function TreffListe({
             </div>
           </div>
           {t.alreadyLinkedTo ? (
-            <Caps size={9} style={{ color: T.mut }}>
+            <Caps size={9} style={{ color: TL.mute }}>
               Opptatt
             </Caps>
           ) : (
@@ -311,16 +312,16 @@ function TreffListe({
                 display: "inline-flex",
                 alignItems: "center",
                 gap: 6,
-                fontFamily: T.mono,
+                fontFamily: TL.font.mono,
                 fontSize: 10,
                 fontWeight: 700,
                 letterSpacing: "0.04em",
                 textTransform: "uppercase",
                 padding: "8px 12px",
                 borderRadius: 999,
-                border: `1px solid ${T.border}`,
-                background: T.panel2,
-                color: T.fg,
+                border: `1px solid ${TL.hair}`,
+                background: TL.dock,
+                color: TL.text,
                 cursor: pending ? "wait" : "pointer",
                 flex: "none",
               }}

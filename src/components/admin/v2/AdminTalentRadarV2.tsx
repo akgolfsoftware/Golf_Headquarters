@@ -7,22 +7,9 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { T } from "@/lib/v2/tokens";
-import {
-  Caps,
-  Tittel,
-  Kort,
-  Rad,
-  DeltaChip,
-  InnsiktChip,
-  TomTilstand,
-  StatusPill,
-  CTAPill,
-  AvatarInit,
-  StatStrip,
-  RadarProfil,
-} from "@/components/v2";
+import { TL } from "@/lib/v2/train-lock";
 
+import { Caps, Tittel, Kort, Rad, DeltaChip, InnsiktChip, TomTilstand, StatusPill, CTAPill, AvatarInit, StatStrip, RadarProfil } from "@/components/v2";
 // ── Datakontrakt (mappes fra de ekte loaderne i ruten) ─────────
 export interface TalentRadarAkse {
   /** Feltnøkkel i TalentTracking (fysisk/teknikk/…). */
@@ -78,12 +65,12 @@ export function AdminTalentRadarV2({ data }: { data: TalentRadarData }) {
   // ── Tom plattform: ingen talenter i programmet ─────────────────
   if (!valgt) {
     return (
-      <div data-paper-wave-h="talentradar" data-paper-pattern  style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+      <div data-paper-wave-h="talentradar" data-paper-pattern  style={{ display: "flex", flexDirection: "column", gap: 16 }}>
         <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 14, flexWrap: "wrap" }}>
           <div>
             <div data-paper-pattern-topp>
-          <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>Talent-radar</h1>
-          <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>AgencyOS</span>
+          <h1 style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 17, fontWeight: 600, color: TL.text }}>Talent-radar</h1>
+          <span style={{ display: "block", fontFamily: TL.font.mono, fontSize: 10.5, color: TL.mute, marginTop: 2 }}>AgencyOS</span>
         </div>
           </div>
           <StatusPill tone="warn">Ingen talenter</StatusPill>
@@ -139,7 +126,7 @@ export function AdminTalentRadarV2({ data }: { data: TalentRadarData }) {
         <div className="hidden md:block" style={{ marginTop: 6 }}>
           <Caps size={9}>{valgt.niva}{valgt.region ? ` · ${valgt.region}` : ""}</Caps>
           {valgt.klubb && (
-            <div style={{ fontFamily: T.ui, fontSize: 12, color: T.mut, marginTop: 3 }}>{valgt.klubb}</div>
+            <div style={{ fontFamily: TL.font.sans, fontSize: 12, color: TL.mute, marginTop: 3 }}>{valgt.klubb}</div>
           )}
         </div>
       </div>
@@ -178,9 +165,9 @@ export function AdminTalentRadarV2({ data }: { data: TalentRadarData }) {
                 alignItems: "center",
                 gap: 9,
                 padding: "8px 12px 8px 8px",
-                borderRadius: T.rRow,
-                border: `1px solid ${on ? T.lime : T.border}`,
-                background: on ? "color-mix(in srgb, var(--v2-lime) 8%, transparent)" : T.panel2,
+                borderRadius: TL.radius.row,
+                border: `1px solid ${on ? TL.fill : TL.hair}`,
+                background: on ? "color-mix(in srgb, var(--tl-fill) 8%, transparent)" : TL.dock,
                 cursor: "pointer",
                 textAlign: "left",
                 minWidth: 0,
@@ -188,10 +175,10 @@ export function AdminTalentRadarV2({ data }: { data: TalentRadarData }) {
             >
               <AvatarInit navn={s.navn} size={30} />
               <span style={{ display: "flex", flexDirection: "column", gap: 2, minWidth: 0 }}>
-                <span style={{ fontFamily: T.ui, fontSize: 12.5, fontWeight: 600, color: on ? T.fg : T.fg2, whiteSpace: "nowrap" }}>
+                <span style={{ fontFamily: TL.font.sans, fontSize: 12.5, fontWeight: 600, color: on ? TL.text : TL.mute, whiteSpace: "nowrap" }}>
                   {s.navn}
                 </span>
-                <span style={{ fontFamily: T.mono, fontSize: 9.5, color: T.mut, whiteSpace: "nowrap" }}>
+                <span style={{ fontFamily: TL.font.mono, fontSize: 9.5, color: TL.mute, whiteSpace: "nowrap" }}>
                   {s.sum > 0 ? `${s.sum}/50` : "Uvurdert"} · {s.niva}
                 </span>
               </span>
@@ -218,13 +205,13 @@ export function AdminTalentRadarV2({ data }: { data: TalentRadarData }) {
           </div>
           <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "center", gap: 18, marginTop: 12 }}>
             <span style={{ display: "inline-flex", alignItems: "center", gap: 7 }}>
-              <span style={{ width: 12, height: 12, borderRadius: 3, background: `color-mix(in srgb, ${T.lime} 40%, transparent)`, border: `1px solid ${T.lime}` }} />
-              <span style={{ fontFamily: T.ui, fontSize: 12, color: T.fg2 }}>{valgt.navn}</span>
+              <span style={{ width: 12, height: 12, borderRadius: 3, background: `color-mix(in srgb, ${TL.fill} 40%, transparent)`, border: `1px solid ${TL.fill}` }} />
+              <span style={{ fontFamily: TL.font.sans, fontSize: 12, color: TL.mute }}>{valgt.navn}</span>
             </span>
             {harPeer && (
               <span style={{ display: "inline-flex", alignItems: "center", gap: 7 }}>
-                <span style={{ width: 12, height: 0, borderTop: `1.5px dashed ${T.fg2}` }} />
-                <span style={{ fontFamily: T.ui, fontSize: 12, color: T.mut }}>{valgt.niva}-snitt ({valgt.peerAntall})</span>
+                <span style={{ width: 12, height: 0, borderTop: `1.5px dashed ${TL.mute}` }} />
+                <span style={{ fontFamily: TL.font.sans, fontSize: 12, color: TL.mute }}>{valgt.niva}-snitt ({valgt.peerAntall})</span>
               </span>
             )}
           </div>
@@ -248,7 +235,7 @@ export function AdminTalentRadarV2({ data }: { data: TalentRadarData }) {
             sub={`Nivåsnitt ${kd(peer)}`}
             meta={
               <span style={{ display: "inline-flex", alignItems: "center", gap: 10 }}>
-                <span style={{ fontFamily: T.mono, fontSize: 15, fontWeight: 700, color: egen != null ? T.fg : T.mut, fontVariantNumeric: "tabular-nums" }}>
+                <span style={{ fontFamily: TL.font.mono, fontSize: 15, fontWeight: 700, color: egen != null ? TL.text : TL.mute, fontVariantNumeric: "tabular-nums" }}>
                   {egen != null ? egen : "—"}
                 </span>
                 {visDelta && (
@@ -278,12 +265,12 @@ export function AdminTalentRadarV2({ data }: { data: TalentRadarData }) {
     ) : null;
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+    <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
       {hode}
       {primaerCta}
       {velger}
       <StatStrip items={kpiItems} />
-      <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,360px)_1fr]" style={{ gap: T.gap, alignItems: "start" }}>
+      <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,360px)_1fr]" style={{ gap: 16, alignItems: "start" }}>
         {radarKort}
         {akseKort}
       </div>

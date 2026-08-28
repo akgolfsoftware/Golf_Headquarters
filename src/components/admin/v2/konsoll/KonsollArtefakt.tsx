@@ -17,7 +17,8 @@
  */
 
 import Link from "next/link";
-import { T, type AkseKey } from "@/lib/v2/tokens";
+import { TL } from "@/lib/v2/train-lock";
+import { type AkseKey } from "@/lib/v2/tokens";
 import { AKSE_NAVN } from "@/components/v2";
 import type { CockpitData } from "@/components/admin/cockpit/agency-cockpit";
 import { Merkelapp } from "./KonsollDeler";
@@ -27,11 +28,11 @@ function Seksjon({ tittel, children }: { tittel: string; children: React.ReactNo
     <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
       <div
         style={{
-          fontFamily: T.mono,
+          fontFamily: TL.font.mono,
           fontSize: 10,
           letterSpacing: "0.08em",
           textTransform: "uppercase",
-          color: T.mut,
+          color: TL.mute,
         }}
       >
         {tittel}
@@ -60,9 +61,9 @@ function DagKort({
   const innhold = (
     <div
       style={{
-        border: `1px solid ${naa ? `color-mix(in srgb, ${T.handling} 30%, ${T.border})` : T.border}`,
-        borderRadius: T.rTag,
-        background: naa ? T.handlingSoft : T.panel2,
+        border: `1px solid ${naa ? `color-mix(in srgb, ${TL.fill} 30%, ${TL.hair})` : TL.hair}`,
+        borderRadius: TL.radius.row,
+        background: naa ? TL.dim : TL.dock,
         padding: "10px 12px",
         display: "flex",
         flexDirection: "column",
@@ -71,13 +72,13 @@ function DagKort({
       }}
     >
       <div style={{ display: "flex", alignItems: "baseline", gap: 8, minWidth: 0 }}>
-        <span style={{ fontFamily: T.mono, fontSize: 12, color: T.fg, flex: "none" }}>{tid}</span>
+        <span style={{ fontFamily: TL.font.mono, fontSize: 12, color: TL.text, flex: "none" }}>{tid}</span>
         <span
           style={{
-            fontFamily: T.disp,
+            fontFamily: TL.font.sans,
             fontSize: 13,
             fontWeight: 600,
-            color: T.fg,
+            color: TL.text,
             minWidth: 0,
             overflow: "hidden",
             textOverflow: "ellipsis",
@@ -87,13 +88,13 @@ function DagKort({
           {tittel}
         </span>
       </div>
-      <div style={{ fontFamily: T.ui, fontSize: 11.5, color: T.mut, minWidth: 0 }}>{meta}</div>
+      <div style={{ fontFamily: TL.font.sans, fontSize: 11.5, color: TL.mute, minWidth: 0 }}>{meta}</div>
       <div
         style={{
-          fontFamily: T.mono,
+          fontFamily: TL.font.mono,
           fontSize: 10,
           letterSpacing: "0.03em",
-          color: T.mut,
+          color: TL.mute,
           minWidth: 0,
           overflow: "hidden",
           textOverflow: "ellipsis",
@@ -117,11 +118,11 @@ const lenkeStil: React.CSSProperties = {
   alignItems: "center",
   minHeight: 40,
   padding: "0 12px",
-  borderRadius: T.rTag,
-  border: `1px solid ${T.border}`,
-  background: T.panel,
-  color: T.fg,
-  fontFamily: T.ui,
+  borderRadius: TL.radius.row,
+  border: `1px solid ${TL.hair}`,
+  background: TL.elev,
+  color: TL.text,
+  fontFamily: TL.font.sans,
   fontSize: 12.5,
   fontWeight: 500,
   textDecoration: "none",
@@ -144,7 +145,7 @@ export function KonsollArtefakt({ data }: { data: CockpitData }) {
 
       <Seksjon tittel="dagens økter">
         {okter.length === 0 ? (
-          <p style={{ margin: 0, fontFamily: T.ui, fontSize: 12.5, color: T.mut, lineHeight: 1.5 }}>
+          <p style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 12.5, color: TL.mute, lineHeight: 1.5 }}>
             Ingen økter i dag. Dagen er åpen — bruk den til å planlegge uka.
           </p>
         ) : (
@@ -196,7 +197,7 @@ export function KonsollArtefakt({ data }: { data: CockpitData }) {
           href="/admin/planlegge"
           className="v2-press v2-focus"
           data-od-id="artifact-workbench"
-          style={{ ...lenkeStil, flex: 1, justifyContent: "center", background: T.cta, color: T.onCta, border: "none", fontWeight: 600 }}
+          style={{ ...lenkeStil, flex: 1, justifyContent: "center", background: TL.fill, color: TL.onFill, border: "none", fontWeight: 600 }}
         >
           Planlegg i Workbench
         </Link>
@@ -211,8 +212,8 @@ export function KonsollArtefakt({ data }: { data: CockpitData }) {
 function NokkelRad({ label, verdi }: { label: string; verdi: string }) {
   return (
     <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: 12, minWidth: 0 }}>
-      <span style={{ fontFamily: T.ui, fontSize: 12.5, color: T.mut, minWidth: 0 }}>{label}</span>
-      <span style={{ fontFamily: T.mono, fontSize: 13, color: T.fg, flex: "none" }}>{verdi}</span>
+      <span style={{ fontFamily: TL.font.sans, fontSize: 12.5, color: TL.mute, minWidth: 0 }}>{label}</span>
+      <span style={{ fontFamily: TL.font.mono, fontSize: 13, color: TL.text, flex: "none" }}>{verdi}</span>
     </div>
   );
 }

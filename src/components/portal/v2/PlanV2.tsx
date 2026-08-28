@@ -1,4 +1,5 @@
 "use client";
+import { TL } from "@/lib/v2/train-lock";
 
 /**
  * PlayerHQ Plan — Paper-port PR-B (avvik A2).
@@ -14,16 +15,7 @@ import { useState } from "react";
 import { useToppbarHoyde } from "@/components/v2/toppbar-hoyde";
 import type { DashboardData } from "@/app/portal/actions";
 import { TemaHeaderKnapp } from "@/components/v2/tema";
-import {
-  T,
-  Caps,
-  AkseChip,
-  StatusPill,
-  CTAPill,
-  DagStripe,
-  Icon,
-  type StripeDag,
-} from "@/components/v2";
+import { Caps, AkseChip, StatusPill, CTAPill, DagStripe, Icon, type StripeDag } from "@/components/v2";
 import { OktKort } from "@/components/v2/domene";
 import { HvorforDette } from "@/components/v2/hjelp";
 import { BunnArk } from "@/components/v2/bunn-ark";
@@ -146,7 +138,7 @@ export function PlanV2({
         height: "100%",
         minHeight: 0,
         position: "relative",
-        background: T.bg,
+        background: TL.scene,
       }}
     >
       {/* Paper .topp — sticky surface header */}
@@ -159,8 +151,8 @@ export function PlanV2({
           alignItems: "center",
           gap: 8,
           padding: "12px 16px",
-          borderBottom: `1px solid ${T.border}`,
-          background: T.bg,
+          borderBottom: `1px solid ${TL.hair}`,
+          background: TL.scene,
           position: "sticky",
           top: 0,
           zIndex: 5,
@@ -170,10 +162,10 @@ export function PlanV2({
           <h1
             style={{
               margin: 0,
-              fontFamily: T.disp,
+              fontFamily: TL.font.sans,
               fontSize: 17,
               fontWeight: 600,
-              color: T.fg,
+              color: TL.text,
             }}
           >
             Plan
@@ -181,9 +173,9 @@ export function PlanV2({
           <span
             style={{
               display: "block",
-              fontFamily: T.mono,
+              fontFamily: TL.font.mono,
               fontSize: 10.5,
-              color: T.mut,
+              color: TL.mute,
               marginTop: 2,
             }}
           >
@@ -199,11 +191,11 @@ export function PlanV2({
             style={{
               minHeight: 44,
               padding: "0 14px",
-              borderRadius: T.rCard,
-              border: `1px solid ${T.border}`,
+              borderRadius: TL.radius.card,
+              border: `1px solid ${TL.hair}`,
               background: "transparent",
-              color: T.fg,
-              fontFamily: T.ui,
+              color: TL.text,
+              fontFamily: TL.font.sans,
               fontSize: 13,
               fontWeight: 500,
               textDecoration: "none",
@@ -224,8 +216,8 @@ export function PlanV2({
       <div
         style={{
           flex: "none",
-          borderBottom: `1px solid ${T.border}`,
-          background: T.bg,
+          borderBottom: `1px solid ${TL.hair}`,
+          background: TL.scene,
           padding: "12px 16px",
         }}
       >
@@ -241,7 +233,7 @@ export function PlanV2({
           minHeight: 0,
           overflow: "auto",
           padding: "16px 16px 100px",
-          background: T.bg,
+          background: TL.scene,
         }}
       >
         <div
@@ -257,9 +249,9 @@ export function PlanV2({
           <section
             data-od-id="plan-uke"
             style={{
-              background: T.panel,
-              border: `1px solid ${T.border}`,
-              borderRadius: T.rCard,
+              background: TL.elev,
+              border: `1px solid ${TL.hair}`,
+              borderRadius: TL.radius.card,
               padding: 16,
             }}
           >
@@ -271,7 +263,7 @@ export function PlanV2({
               style={{
                 height: 6,
                 borderRadius: 999,
-                background: T.panel3,
+                background: TL.dim,
                 overflow: "hidden",
                 margin: "10px 0 8px",
               }}
@@ -286,7 +278,7 @@ export function PlanV2({
                   display: "block",
                   height: "100%",
                   width: `${gjennomforPct}%`,
-                  background: T.fg,
+                  background: TL.text,
                 }}
               />
             </div>
@@ -309,13 +301,13 @@ export function PlanV2({
                     justifyContent: "space-between",
                     gap: 12,
                     minHeight: 32,
-                    borderTop: `1px solid ${T.border}`,
+                    borderTop: `1px solid ${TL.hair}`,
                     paddingTop: 6,
                     marginTop: 6,
                   }}
                 >
-                  <span style={{ fontFamily: T.ui, fontSize: 13, color: T.mut, minWidth: 0 }}>{etikett}</span>
-                  <span style={{ fontFamily: T.mono, fontSize: 13, color: T.fg, flex: "none" }}>{verdi}</span>
+                  <span style={{ fontFamily: TL.font.sans, fontSize: 13, color: TL.mute, minWidth: 0 }}>{etikett}</span>
+                  <span style={{ fontFamily: TL.font.mono, fontSize: 13, color: TL.text, flex: "none" }}>{verdi}</span>
                 </div>
               ))}
             </div>
@@ -337,13 +329,13 @@ export function PlanV2({
               display: "flex",
               gap: 12,
               padding: "12px 16px",
-              borderRadius: T.rCard,
-              background: T.panel2,
-              border: `1px solid ${T.border}`,
-              fontFamily: T.bodyFont,
+              borderRadius: TL.radius.card,
+              background: TL.dock,
+              border: `1px solid ${TL.hair}`,
+              fontFamily: TL.font.sans,
               fontSize: 12.5,
               lineHeight: 1.5,
-              color: T.mut,
+              color: TL.mute,
             }}
           >
             <Icon name="pencil" size={16} style={{ flex: "none", marginTop: 2 }} />
@@ -360,11 +352,11 @@ export function PlanV2({
             className="v2-press v2-focus"
             style={{
               minHeight: 44,
-              borderRadius: T.rCard,
-              border: `1px solid ${T.border}`,
+              borderRadius: TL.radius.card,
+              border: `1px solid ${TL.hair}`,
               background: "transparent",
-              color: T.fg,
-              fontFamily: T.ui,
+              color: TL.text,
+              fontFamily: TL.font.sans,
               fontSize: 14,
               fontWeight: 500,
               textDecoration: "none",
@@ -379,9 +371,9 @@ export function PlanV2({
           {valgtDagObj && (
             <section
               style={{
-                background: T.panel,
-                border: `1px solid ${T.border}`,
-                borderRadius: T.rCard,
+                background: TL.elev,
+                border: `1px solid ${TL.hair}`,
+                borderRadius: TL.radius.card,
                 padding: 16,
               }}
               data-od-id="plan-dag"
@@ -394,7 +386,7 @@ export function PlanV2({
                   marginBottom: valgtDagObj.sessions.length || (valgtDagObj.isToday && optimalSession) ? 12 : 0,
                 }}
               >
-                <span style={{ fontFamily: T.disp, fontSize: 14, fontWeight: 600, color: T.fg }}>
+                <span style={{ fontFamily: TL.font.sans, fontSize: 14, fontWeight: 600, color: TL.text }}>
                   {valgtDagObj.isToday ? "I dag" : dagEtikett(valgtDagObj.date)}
                 </span>
                 {valgtDagObj.sessions.length > 0 && (
@@ -430,10 +422,10 @@ export function PlanV2({
               ) : valgtDagObj.isToday && optimalSession ? (
                 <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
                   <Caps>Anbefalt (fra form)</Caps>
-                  <div style={{ fontFamily: T.disp, fontWeight: 600, fontSize: 15, color: T.fg }}>
+                  <div style={{ fontFamily: TL.font.sans, fontWeight: 600, fontSize: 15, color: TL.text }}>
                     {optimalSession.title}
                   </div>
-                  <p style={{ fontFamily: T.bodyFont, fontSize: 13.5, color: T.mut, margin: 0, lineHeight: 1.55 }}>
+                  <p style={{ fontFamily: TL.font.sans, fontSize: 13.5, color: TL.mute, margin: 0, lineHeight: 1.55 }}>
                     {optimalSession.rationale}
                   </p>
                   <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
@@ -446,20 +438,20 @@ export function PlanV2({
                   data-od-id="plan-hvile"
                   style={{
                     padding: "20px 16px",
-                    background: T.panel2,
-                    border: `1px dashed ${T.border}`,
-                    borderRadius: T.rCard,
+                    background: TL.dock,
+                    border: `1px dashed ${TL.hair}`,
+                    borderRadius: TL.radius.card,
                   }}
                 >
-                  <h3 style={{ margin: "0 0 8px", fontFamily: T.disp, fontSize: 15, fontWeight: 600, color: T.fg }}>
+                  <h3 style={{ margin: "0 0 8px", fontFamily: TL.font.sans, fontSize: 15, fontWeight: 600, color: TL.text }}>
                     Hviledag
                   </h3>
                   <p
                     style={{
                       margin: 0,
-                      fontFamily: T.bodyFont,
+                      fontFamily: TL.font.sans,
                       fontSize: 13.5,
-                      color: T.mut,
+                      color: TL.mute,
                       lineHeight: 1.5,
                       maxWidth: "46ch",
                     }}
@@ -479,27 +471,27 @@ export function PlanV2({
               data-od-id="plan-tom-uke"
               style={{
                 padding: "24px 20px",
-                background: T.panel2,
-                border: `1px dashed ${T.border}`,
-                borderRadius: T.rCard,
+                background: TL.dock,
+                border: `1px dashed ${TL.hair}`,
+                borderRadius: TL.radius.card,
               }}
             >
-              <h3 style={{ margin: "0 0 8px", fontFamily: T.disp, fontSize: 15, fontWeight: 600, color: T.fg }}>
+              <h3 style={{ margin: "0 0 8px", fontFamily: TL.font.sans, fontSize: 15, fontWeight: 600, color: TL.text }}>
                 Ingen økter planlagt denne uka
               </h3>
               <p
                 style={{
                   margin: "0 0 16px",
-                  fontFamily: T.bodyFont,
+                  fontFamily: TL.font.sans,
                   fontSize: 13.5,
-                  color: T.mut,
+                  color: TL.mute,
                   lineHeight: 1.55,
                   maxWidth: "46ch",
                 }}
               >
                 Hvile er en del av planen, ikke et hull i den. Når coach eller du legger inn økter, dukker de opp her.
               </p>
-              {/* Paper .tom .valg — stille sekundærvalg, aldri T.handling her */}
+              {/* Paper .tom .valg — stille sekundærvalg, aldri TL.fill her */}
               <div
                 style={{
                   display: "flex",
@@ -511,15 +503,15 @@ export function PlanV2({
                   href="/portal"
                   data-od-id="plan-tom-fangst"
                   style={{
-                    fontFamily: T.ui,
+                    fontFamily: TL.font.sans,
                     fontSize: 13,
                     fontWeight: 600,
-                    color: T.fg,
+                    color: TL.text,
                     textDecoration: "none",
                     minHeight: 44,
                     display: "flex",
                     alignItems: "center",
-                    borderBottom: `1px solid ${T.border}`,
+                    borderBottom: `1px solid ${TL.hair}`,
                     padding: "8px 0",
                   }}
                 >
@@ -529,15 +521,15 @@ export function PlanV2({
                   href="/portal/coach/melding"
                   data-od-id="plan-tom-spor"
                   style={{
-                    fontFamily: T.ui,
+                    fontFamily: TL.font.sans,
                     fontSize: 13,
                     fontWeight: 600,
-                    color: T.fg,
+                    color: TL.text,
                     textDecoration: "none",
                     minHeight: 44,
                     display: "flex",
                     alignItems: "center",
-                    borderBottom: `1px solid ${T.border}`,
+                    borderBottom: `1px solid ${TL.hair}`,
                     padding: "8px 0",
                   }}
                 >
@@ -548,10 +540,10 @@ export function PlanV2({
                     href={WORKBENCH_HREF}
                     data-od-id="plan-tom-workbench"
                     style={{
-                      fontFamily: T.ui,
+                      fontFamily: TL.font.sans,
                       fontSize: 13,
                       fontWeight: 600,
-                      color: T.mut,
+                      color: TL.mute,
                       textDecoration: "none",
                       minHeight: 44,
                       display: "flex",
@@ -566,10 +558,10 @@ export function PlanV2({
                     href="/portal/meg/innstillinger"
                     data-od-id="plan-tom-depth"
                     style={{
-                      fontFamily: T.ui,
+                      fontFamily: TL.font.sans,
                       fontSize: 13,
                       fontWeight: 600,
-                      color: T.mut,
+                      color: TL.mute,
                       textDecoration: "none",
                       minHeight: 44,
                       display: "flex",
@@ -592,9 +584,9 @@ export function PlanV2({
           style={{
             position: "sticky",
             bottom: 0,
-            borderTop: `1px solid ${T.border}`,
+            borderTop: `1px solid ${TL.hair}`,
             /* Paper .dokk — fade over innhold */
-            background: "linear-gradient(180deg, color-mix(in srgb, var(--v2-bg) 0%, transparent) 0%, var(--v2-bg) 28%)",
+            background: "linear-gradient(180deg, color-mix(in srgb, var(--tl-scene) 0%, transparent) 0%, var(--tl-scene) 28%)",
             padding: "16px 16px",
             // + --ak-cookie-h: forskyv opp mens cookie-banneret dekker bunnen.
             paddingBottom: "calc(max(16px, env(safe-area-inset-bottom)) + var(--ak-cookie-h, 0px))",
@@ -614,13 +606,13 @@ export function PlanV2({
                 minHeight: 56,
                 width: "100%",
                 borderRadius: 12,
-                background: T.handling,
-                color: T.onHandling,
-                fontFamily: T.ui,
+                background: TL.fill,
+                color: TL.onFill,
+                fontFamily: TL.font.sans,
                 fontSize: 14,
                 fontWeight: 600,
                 textDecoration: "none",
-                border: `1px solid ${T.handling}`,
+                border: `1px solid ${TL.fill}`,
               }}
             >
               {dokkTekst}
@@ -645,12 +637,12 @@ export function PlanV2({
                     display: "flex",
                     justifyContent: "space-between",
                     fontSize: 12.5,
-                    fontFamily: T.ui,
-                    color: T.mut,
+                    fontFamily: TL.font.sans,
+                    color: TL.mute,
                   }}
                 >
                   <span>{l}</span>
-                  <span style={{ fontFamily: T.mono, color: T.fg }}>{v}</span>
+                  <span style={{ fontFamily: TL.font.mono, color: TL.text }}>{v}</span>
                 </div>
               ))}
             </div>
@@ -658,7 +650,7 @@ export function PlanV2({
             {apenOkt.maalsetning && (
               <div>
                 <Caps size={9}>Målsetning</Caps>
-                <p style={{ margin: "6px 0 0", fontFamily: T.bodyFont, fontSize: 14, color: T.mut, lineHeight: 1.55 }}>
+                <p style={{ margin: "6px 0 0", fontFamily: TL.font.sans, fontSize: 14, color: TL.mute, lineHeight: 1.55 }}>
                   {apenOkt.maalsetning}
                 </p>
               </div>
@@ -672,17 +664,17 @@ export function PlanV2({
                     <div
                       key={d.id}
                       style={{
-                        border: `1px solid ${T.border}`,
-                        borderRadius: T.rCard,
+                        border: `1px solid ${TL.hair}`,
+                        borderRadius: TL.radius.card,
                         padding: "8px 12px",
-                        background: T.bg,
+                        background: TL.scene,
                         display: "flex",
                         justifyContent: "space-between",
                         gap: 8,
                       }}
                     >
-                      <span style={{ fontFamily: T.ui, fontSize: 13, fontWeight: 600, color: T.fg }}>{d.name}</span>
-                      <span style={{ fontFamily: T.mono, fontSize: 11, color: T.mut, flex: "none" }}>
+                      <span style={{ fontFamily: TL.font.sans, fontSize: 13, fontWeight: 600, color: TL.text }}>{d.name}</span>
+                      <span style={{ fontFamily: TL.font.mono, fontSize: 11, color: TL.mute, flex: "none" }}>
                         {d.durationMinutes} min
                       </span>
                     </div>
@@ -692,7 +684,7 @@ export function PlanV2({
             )}
 
             {deep && (
-              <p style={{ margin: 0, fontFamily: T.ui, fontSize: 12, color: T.mut, lineHeight: 1.5 }}>
+              <p style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 12, color: TL.mute, lineHeight: 1.5 }}>
                 Vil du flytte økta? Gjør det i Workbench — endringen gjelder med én gang.
               </p>
             )}
@@ -715,9 +707,9 @@ export function PlanV2({
                   justifyContent: "center",
                   minHeight: 44,
                   borderRadius: 10,
-                  background: apenOkt.status === "COMPLETED" ? T.panel3 : T.handling,
-                  color: apenOkt.status === "COMPLETED" ? T.fg : T.onHandling,
-                  fontFamily: T.ui,
+                  background: apenOkt.status === "COMPLETED" ? TL.dim : TL.fill,
+                  color: apenOkt.status === "COMPLETED" ? TL.text : TL.onFill,
+                  fontFamily: TL.font.sans,
                   fontSize: 13,
                   fontWeight: 600,
                   textDecoration: "none",

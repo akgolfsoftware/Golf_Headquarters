@@ -7,7 +7,7 @@
 
 import { useState } from "react";
 import { Knapp, Caps, Tittel, Kort, TilbakeLenke, StatusPill, Icon } from "@/components/v2";
-import { T } from "@/lib/v2/tokens";
+import { TL } from "@/lib/v2/train-lock";
 
 const FORDELER: { icon: string; tittel: string; meta: string }[] = [
   { icon: "sparkles", tittel: "AI-coach 24/7", meta: "Svar tilpasset dine TrackMan-data" },
@@ -57,7 +57,7 @@ export function OppgraderFlytWizard() {
         padding: "0 0 24px",
         display: "flex",
         flexDirection: "column",
-        gap: T.gap,
+        gap: 16,
       }}
     >
       <TilbakeLenke href="/portal/meg/abonnement">Abonnement</TilbakeLenke>
@@ -68,7 +68,7 @@ export function OppgraderFlytWizard() {
           <div style={{ marginTop: 10 }}>
             <Tittel em="Pro">Løft spillet med</Tittel>
           </div>
-          <p style={{ fontFamily: T.ui, fontSize: 13, color: T.fg2, margin: "8px 0 0", lineHeight: 1.45, maxWidth: "36ch" }}>
+          <p style={{ fontFamily: TL.font.sans, fontSize: 13, color: TL.mute, margin: "8px 0 0", lineHeight: 1.45, maxWidth: "36ch" }}>
             AI-coach, videoanalyse og komplett historikk. Avbryt når som helst.
           </p>
         </div>
@@ -94,36 +94,36 @@ export function OppgraderFlytWizard() {
             onClick={() => setIntervall(v.key)}
             style={{
               textAlign: "left",
-              borderRadius: T.rRow,
-              border: `2px solid ${intervall === v.key ? T.forest : T.border}`,
-              background: intervall === v.key ? T.panel3 : T.panel,
+              borderRadius: TL.radius.row,
+              border: `2px solid ${intervall === v.key ? TL.fill : TL.hair}`,
+              background: intervall === v.key ? TL.dim : TL.elev,
               padding: "12px 14px",
               cursor: "pointer",
             }}
           >
-            <div style={{ fontFamily: T.ui, fontSize: 13, fontWeight: 700, color: T.fg }}>{v.label}</div>
-            <div style={{ fontFamily: T.mono, fontSize: 14, fontWeight: 800, color: T.fg, marginTop: 4 }}>{v.pris}</div>
-            <div style={{ fontFamily: T.ui, fontSize: 11.5, color: T.mut, marginTop: 2 }}>{v.under}</div>
+            <div style={{ fontFamily: TL.font.sans, fontSize: 13, fontWeight: 700, color: TL.text }}>{v.label}</div>
+            <div style={{ fontFamily: TL.font.mono, fontSize: 14, fontWeight: 800, color: TL.text, marginTop: 4 }}>{v.pris}</div>
+            <div style={{ fontFamily: TL.font.sans, fontSize: 11.5, color: TL.mute, marginTop: 2 }}>{v.under}</div>
           </button>
         ))}
       </div>
 
       <Kort
         style={{
-          background: T.forest,
+          background: TL.fill,
           border: "none",
         }}
       >
         <Caps color="color-mix(in srgb, var(--v2-on-lime) 70%, transparent)">Din pris</Caps>
         <div style={{ display: "flex", alignItems: "baseline", gap: 8, marginTop: 8 }}>
-          <span style={{ fontFamily: T.mono, fontSize: 48, fontWeight: 800, letterSpacing: "-0.03em", color: T.onLime, lineHeight: 1 }}>
+          <span style={{ fontFamily: TL.font.mono, fontSize: 48, fontWeight: 800, letterSpacing: "-0.03em", color: TL.onFill, lineHeight: 1 }}>
             {intervall === "aar" ? "2 690" : "299"}
           </span>
-          <span style={{ fontFamily: T.mono, fontSize: 14, fontWeight: 700, color: "color-mix(in srgb, var(--v2-on-lime) 70%, transparent)" }}>
+          <span style={{ fontFamily: TL.font.mono, fontSize: 14, fontWeight: 700, color: "color-mix(in srgb, var(--v2-on-lime) 70%, transparent)" }}>
             {intervall === "aar" ? "kr / år" : "kr / mnd"}
           </span>
         </div>
-        <p style={{ margin: "10px 0 0", fontFamily: T.ui, fontSize: 13, color: "color-mix(in srgb, var(--v2-on-lime) 80%, transparent)", lineHeight: 1.45 }}>
+        <p style={{ margin: "10px 0 0", fontFamily: TL.font.sans, fontSize: 13, color: "color-mix(in srgb, var(--v2-on-lime) 80%, transparent)", lineHeight: 1.45 }}>
           {intervall === "aar"
             ? "Tre måneder gratis mot månedspris. Alt inkludert."
             : "Alt inkludert. Fri pause, fri avbestilling."}
@@ -133,12 +133,12 @@ export function OppgraderFlytWizard() {
             <span
               key={c}
               style={{
-                fontFamily: T.mono,
+                fontFamily: TL.font.mono,
                 fontSize: 10,
                 fontWeight: 700,
                 letterSpacing: "0.04em",
-                color: T.forest,
-                background: T.lime,
+                color: TL.fill,
+                background: TL.fill,
                 borderRadius: 9999,
                 padding: "4px 9px",
               }}
@@ -150,7 +150,7 @@ export function OppgraderFlytWizard() {
       </Kort>
 
       <Kort pad="0">
-        <div style={{ padding: "12px 18px", borderBottom: `1px solid ${T.border}` }}>
+        <div style={{ padding: "12px 18px", borderBottom: `1px solid ${TL.hair}` }}>
           <Caps>Inkludert i Pro</Caps>
         </div>
         {FORDELER.map((f, i) => (
@@ -161,7 +161,7 @@ export function OppgraderFlytWizard() {
               alignItems: "center",
               gap: 12,
               padding: "12px 18px",
-              borderBottom: i < FORDELER.length - 1 ? `1px solid ${T.border}` : "none",
+              borderBottom: i < FORDELER.length - 1 ? `1px solid ${TL.hair}` : "none",
             }}
           >
             <span
@@ -169,21 +169,21 @@ export function OppgraderFlytWizard() {
                 width: 34,
                 height: 34,
                 borderRadius: 10,
-                background: T.panel3,
-                border: `1px solid ${T.border}`,
+                background: TL.dim,
+                border: `1px solid ${TL.hair}`,
                 display: "inline-flex",
                 alignItems: "center",
                 justifyContent: "center",
                 flex: "none",
               }}
             >
-              <Icon name={f.icon} size={15} style={{ color: T.fg2 }} />
+              <Icon name={f.icon} size={15} style={{ color: TL.mute }} />
             </span>
             <div style={{ minWidth: 0 }}>
-              <div style={{ fontFamily: T.ui, fontSize: 13.5, fontWeight: 600, color: T.fg }}>{f.tittel}</div>
-              <div style={{ fontFamily: T.ui, fontSize: 12, color: T.mut, marginTop: 2 }}>{f.meta}</div>
+              <div style={{ fontFamily: TL.font.sans, fontSize: 13.5, fontWeight: 600, color: TL.text }}>{f.tittel}</div>
+              <div style={{ fontFamily: TL.font.sans, fontSize: 12, color: TL.mute, marginTop: 2 }}>{f.meta}</div>
             </div>
-            <Icon name="check" size={14} style={{ color: T.up, marginLeft: "auto", flex: "none" }} />
+            <Icon name="check" size={14} style={{ color: TL.ok, marginLeft: "auto", flex: "none" }} />
           </div>
         ))}
       </Kort>
@@ -192,13 +192,13 @@ export function OppgraderFlytWizard() {
         <div
           role="alert"
           style={{
-            borderRadius: T.rRow,
-            border: `1px solid color-mix(in srgb, ${T.down} 30%, transparent)`,
-            background: `color-mix(in srgb, ${T.down} 10%, ${T.panel})`,
+            borderRadius: TL.radius.row,
+            border: `1px solid color-mix(in srgb, ${TL.danger} 30%, transparent)`,
+            background: `color-mix(in srgb, ${TL.danger} 10%, ${TL.elev})`,
             padding: 12,
-            fontFamily: T.ui,
+            fontFamily: TL.font.sans,
             fontSize: 13,
-            color: T.down,
+            color: TL.danger,
           }}
         >
           {error}
@@ -209,7 +209,7 @@ export function OppgraderFlytWizard() {
         {loading ? "Åpner betaling …" : "Gå til betaling"}
       </Knapp>
 
-      <p style={{ margin: 0, fontFamily: T.ui, fontSize: 11.5, color: T.mut, textAlign: "center", lineHeight: 1.5 }}>
+      <p style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 11.5, color: TL.mute, textAlign: "center", lineHeight: 1.5 }}>
         Sikker betaling via Stripe. 30 dagers angrerett.
       </p>
     </div>

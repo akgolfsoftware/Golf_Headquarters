@@ -1,4 +1,5 @@
 "use client";
+import { TL } from "@/lib/v2/train-lock";
 
 /**
  * AgencyOS Feillogg — v2 Presis. Viser de siste feilene fra ErrorLog-tabellen
@@ -10,8 +11,7 @@
  */
 
 import { useState } from "react";
-import { Caps, Tittel, Kort, KpiFlis, StatusPill, TomTilstand, Icon, T } from "@/components/v2";
-
+import { Kort, KpiFlis, StatusPill, TomTilstand, Icon } from "@/components/v2";
 // ── Datakontrakt (mappes fra ErrorLog i ruten) ──────────────────
 export type AdminFeilloggV2Severity = "fatal" | "error" | "warn" | "info";
 
@@ -54,7 +54,7 @@ function FeilRad({ rad, last }: { rad: AdminFeilloggV2Rad; last: boolean }) {
   const [apen, setApen] = useState(false);
 
   return (
-    <div style={{ borderBottom: last ? "none" : `1px solid ${T.border}`, padding: "14px 0" }}>
+    <div style={{ borderBottom: last ? "none" : `1px solid ${TL.hair}`, padding: "14px 0" }}>
       <div style={{ display: "flex", alignItems: "flex-start", gap: 12 }}>
         <span
           style={{
@@ -64,29 +64,29 @@ function FeilRad({ rad, last }: { rad: AdminFeilloggV2Rad; last: boolean }) {
             width: 34,
             height: 34,
             borderRadius: 10,
-            background: `color-mix(in srgb, ${T.forest} 10%, transparent)`,
-            color: T.forest,
+            background: `color-mix(in srgb, ${TL.fill} 10%, transparent)`,
+            color: TL.fill,
             flexShrink: 0,
           }}
         >
           <Icon name="alert-triangle" size={15} />
         </span>
         <div style={{ minWidth: 0, flex: 1 }}>
-          <div style={{ fontFamily: T.ui, fontSize: 14, color: T.fg, fontWeight: 600 }}>
+          <div style={{ fontFamily: TL.font.sans, fontSize: 14, color: TL.text, fontWeight: 600 }}>
             {rad.kontekst}
           </div>
           <div
             style={{
-              fontFamily: T.mono,
+              fontFamily: TL.font.mono,
               fontSize: 12,
-              color: T.fg2,
+              color: TL.mute,
               marginTop: 4,
               wordBreak: "break-word",
             }}
           >
             {rad.melding}
           </div>
-          <div style={{ fontFamily: T.ui, fontSize: 12, color: T.mut, marginTop: 6 }}>
+          <div style={{ fontFamily: TL.font.sans, fontSize: 12, color: TL.mute, marginTop: 6 }}>
             {rad.tid}
           </div>
           {rad.stack && (
@@ -99,9 +99,9 @@ function FeilRad({ rad, last }: { rad: AdminFeilloggV2Rad; last: boolean }) {
                 border: "none",
                 padding: 0,
                 cursor: "pointer",
-                fontFamily: T.ui,
+                fontFamily: TL.font.sans,
                 fontSize: 12,
-                color: T.lime,
+                color: TL.fill,
               }}
             >
               {apen ? "Skjul stack trace" : "Vis stack trace"}
@@ -113,11 +113,11 @@ function FeilRad({ rad, last }: { rad: AdminFeilloggV2Rad; last: boolean }) {
                 marginTop: 8,
                 padding: 12,
                 borderRadius: 10,
-                border: `1px solid ${T.border}`,
-                background: T.farge.svartA18,
-                fontFamily: T.mono,
+                border: `1px solid ${TL.hair}`,
+                background: TL.scrim,
+                fontFamily: TL.font.mono,
                 fontSize: 11,
-                color: T.fg2,
+                color: TL.mute,
                 lineHeight: 1.5,
                 overflowX: "auto",
                 whiteSpace: "pre-wrap",
@@ -148,8 +148,8 @@ export function AdminFeilloggV2({ data }: { data: AdminFeilloggV2Data }) {
     >
       <div>
         <div data-paper-pattern-topp>
-          <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>Feillogg</h1>
-          <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>System</span>
+          <h1 style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 17, fontWeight: 600, color: TL.text }}>Feillogg</h1>
+          <span style={{ display: "block", fontFamily: TL.font.mono, fontSize: 10.5, color: TL.mute, marginTop: 2 }}>System</span>
         </div>
       </div>
       <StatusPill tone={rolig ? "up" : "down"}>{rolig ? "Rolig siste døgn" : "Feil siste døgn"}</StatusPill>
@@ -157,7 +157,7 @@ export function AdminFeilloggV2({ data }: { data: AdminFeilloggV2Data }) {
   );
 
   const kpi = (
-    <div className="grid grid-cols-2" style={{ gap: T.gap }}>
+    <div className="grid grid-cols-2" style={{ gap: 16 }}>
       <KpiFlis label="Feil vist" value={`${data.feil.length} av ${data.total}`} />
       <KpiFlis label="Kritisk · 24t" value={data.sisteDogn} varsle={data.sisteDogn > 0} />
     </div>
@@ -165,7 +165,7 @@ export function AdminFeilloggV2({ data }: { data: AdminFeilloggV2Data }) {
 
   if (data.feil.length === 0) {
     return (
-      <div data-paper-wave-h="feillogg" data-paper-pattern style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 960, margin: "0 auto", width: "100%" }}>
+      <div data-paper-wave-h="feillogg" data-paper-pattern style={{ display: "flex", flexDirection: "column", gap: 16, maxWidth: 960, margin: "0 auto", width: "100%" }}>
         {hode}
         {kpi}
         <Kort>
@@ -180,7 +180,7 @@ export function AdminFeilloggV2({ data }: { data: AdminFeilloggV2Data }) {
   }
 
   return (
-    <div data-paper-slug="agencyos-oppsett" style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+    <div data-paper-slug="agencyos-oppsett" style={{ display: "flex", flexDirection: "column", gap: 16 }}>
       {hode}
       {kpi}
       <Kort pad="4px 18px">

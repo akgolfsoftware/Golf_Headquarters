@@ -16,7 +16,8 @@
 
 import { useRouter, useSearchParams } from "next/navigation";
 import { Caps, Kort, TomTilstand, AvatarInit, Velger, TilbakeLenke, type VelgerIdValg } from "@/components/v2";
-import { T } from "@/lib/v2/tokens";
+import { TL } from "@/lib/v2/train-lock";
+
 import { WorkbenchV2, type WorkbenchV2Actions } from "@/components/portal/v2/WorkbenchV2";
 import type { WorkbenchData } from "@/lib/workbench/load-workbench";
 import type { WorkbenchInsights } from "@/lib/workbench/types";
@@ -78,7 +79,7 @@ export function CoachWorkbenchMount({
 
   if (players.length === 0 || currentPlayerId === null) {
     return (
-      <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+      <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
         <Caps>Coach-workbench · {coachName}</Caps>
         <Kort>
           <TomTilstand
@@ -102,7 +103,7 @@ export function CoachWorkbenchMount({
   };
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+    <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
       <TilbakeLenke href={`/admin/spillere/${currentPlayerId}`}>Tilbake til {playerName}</TilbakeLenke>
       {/* Coach-kontekstbar: hvem planlegger + spiller-velger (roster) */}
       <Kort pad="12px 16px">
@@ -120,10 +121,10 @@ export function CoachWorkbenchMount({
               <Caps size={9}>Coach</Caps>
               <div
                 style={{
-                  fontFamily: T.ui,
+                  fontFamily: TL.font.sans,
                   fontSize: 13,
                   fontWeight: 600,
-                  color: T.fg,
+                  color: TL.text,
                   whiteSpace: "nowrap",
                   overflow: "hidden",
                   textOverflow: "ellipsis",
@@ -155,12 +156,12 @@ export function CoachWorkbenchMount({
           )}
           <span
             style={{
-              fontFamily: T.mono,
+              fontFamily: TL.font.mono,
               fontSize: 9,
               fontWeight: 700,
               letterSpacing: "0.05em",
               textTransform: "uppercase",
-              color: T.mut,
+              color: TL.mute,
               flex: "none",
             }}
           >

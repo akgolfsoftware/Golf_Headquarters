@@ -1,5 +1,5 @@
 "use client";
-
+import { TL } from "@/lib/v2/train-lock";
 /**
  * Foreldreportal · hovedside — Paper-port PP-3 (fase 1).
  * Fasit: designsystem/paper/fase1/foreldreportal.html.
@@ -21,16 +21,8 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import {
-  T,
-  Kort,
-  Knapp,
-  StatusPill,
-  TomTilstand,
-  BunnArk,
-} from "@/components/v2";
+import { Kort, Knapp, StatusPill, TomTilstand, BunnArk } from "@/components/v2";
 import { Icon } from "@/components/v2/icon";
-
 /* ── Datakontrakt (bygges server-side i src/app/forelder/page.tsx) ──── */
 
 export type ForelderSamtykkeItem = {
@@ -104,9 +96,9 @@ function Kilde({ k }: { k: string }) {
     <span
       style={{
         display: "block",
-        fontFamily: T.mono,
+        fontFamily: TL.font.mono,
         fontSize: 9,
-        color: T.mut,
+        color: TL.mute,
         letterSpacing: "0.04em",
         marginBottom: 10,
       }}
@@ -135,15 +127,15 @@ function InfoRad({
         alignItems: "center",
         gap: 12,
         padding: "10px 0",
-        borderBottom: last ? "none" : `1px solid ${T.border}`,
+        borderBottom: last ? "none" : `1px solid ${TL.hair}`,
         fontSize: 13.5,
         minWidth: 0,
       }}
     >
       <div style={{ minWidth: 0 }}>
-        <span style={{ fontFamily: T.ui, color: T.fg }}>{k}</span>
+        <span style={{ fontFamily: TL.font.sans, color: TL.text }}>{k}</span>
         {sub && (
-          <span style={{ display: "block", fontSize: 11.5, color: T.mut, fontFamily: T.bodyFont }}>
+          <span style={{ display: "block", fontSize: 11.5, color: TL.mute, fontFamily: TL.font.sans }}>
             {sub}
           </span>
         )}
@@ -152,11 +144,11 @@ function InfoRad({
         <span
           style={{
             marginLeft: "auto",
-            fontFamily: T.mono,
+            fontFamily: TL.font.mono,
             fontSize: 13,
             textAlign: "right",
             flex: "none",
-            color: T.fg,
+            color: TL.text,
             fontVariantNumeric: "tabular-nums",
           }}
         >
@@ -175,18 +167,18 @@ function Merk({ laas, children }: { laas?: boolean; children: React.ReactNode })
         display: "flex",
         gap: 12,
         padding: "12px 16px",
-        background: T.panel2,
-        border: `1px solid ${T.border}`,
-        borderRadius: T.rCard,
+        background: TL.dock,
+        border: `1px solid ${TL.hair}`,
+        borderRadius: TL.radius.card,
         minWidth: 0,
       }}
     >
       <Icon
         name={laas ? "lock" : "info"}
         size={16}
-        style={{ color: laas ? T.down : T.mut, flex: "none", marginTop: 2 }}
+        style={{ color: laas ? TL.danger : TL.mute, flex: "none", marginTop: 2 }}
       />
-      <p style={{ margin: 0, fontFamily: T.bodyFont, fontSize: 12.5, color: T.mut, lineHeight: 1.55 }}>
+      <p style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 12.5, color: TL.mute, lineHeight: 1.55 }}>
         {children}
       </p>
     </div>
@@ -219,24 +211,24 @@ function LenkeRad({
         textAlign: "left",
         padding: "10px 0",
         border: 0,
-        borderBottom: last ? "none" : `1px solid ${T.border}`,
+        borderBottom: last ? "none" : `1px solid ${TL.hair}`,
         background: "transparent",
         cursor: "pointer",
         fontSize: 13.5,
         minHeight: 44,
-        color: T.fg,
+        color: TL.text,
         minWidth: 0,
       }}
     >
       <div style={{ minWidth: 0 }}>
         {tekst}
         {sub && (
-          <span style={{ display: "block", fontSize: 11.5, color: T.mut, fontFamily: T.bodyFont }}>
+          <span style={{ display: "block", fontSize: 11.5, color: TL.mute, fontFamily: TL.font.sans }}>
             {sub}
           </span>
         )}
       </div>
-      <Icon name="chevron-right" size={15} style={{ marginLeft: "auto", color: T.mut, flex: "none" }} />
+      <Icon name="chevron-right" size={15} style={{ marginLeft: "auto", color: TL.mute, flex: "none" }} />
     </button>
   );
 }
@@ -251,9 +243,9 @@ function SamtykkeStatusTekst({ gitt, dato }: { gitt: boolean; dato: string | nul
         display: "inline-flex",
         alignItems: "center",
         gap: 6,
-        fontFamily: T.mono,
+        fontFamily: TL.font.mono,
         fontSize: 10.5,
-        color: T.mut,
+        color: TL.mute,
       }}
     >
       <span
@@ -262,7 +254,7 @@ function SamtykkeStatusTekst({ gitt, dato }: { gitt: boolean; dato: string | nul
           width: 7,
           height: 7,
           borderRadius: 9999,
-          background: gitt ? T.up : T.down,
+          background: gitt ? TL.ok : TL.danger,
         }}
       />
       {gitt ? (dato ? `gitt ${dato}` : "gitt") : "mangler"}
@@ -299,31 +291,31 @@ export function ForelderV2({ data }: { data: ForelderPortalData }) {
       return (
         <div
           style={{
-            background: T.handlingSoft,
-            border: `1px solid ${T.border}`,
-            borderLeft: `3px solid ${T.handling}`,
-            borderRadius: T.rCard,
+            background: TL.dim,
+            border: `1px solid ${TL.hair}`,
+            borderLeft: `3px solid ${TL.fill}`,
+            borderRadius: TL.radius.card,
             padding: 16,
           }}
         >
           <span
             style={{
-              fontFamily: T.mono,
+              fontFamily: TL.font.mono,
               fontSize: 10,
               fontWeight: 500,
               letterSpacing: "0.09em",
               textTransform: "uppercase",
-              color: T.handling,
+              color: TL.fill,
             }}
           >
             Én ting nå
           </span>
-          <h2 style={{ margin: "4px 0 8px", fontFamily: T.disp, fontSize: 15, fontWeight: 600, color: T.fg }}>
+          <h2 style={{ margin: "4px 0 8px", fontFamily: TL.font.sans, fontSize: 15, fontWeight: 600, color: TL.text }}>
             {f
               ? `${f.tekst} — ${f.belopKr} utestående`
               : `${data.utestaaendeAntall} utestående ${data.utestaaendeAntall === 1 ? "faktura" : "fakturaer"}`}
           </h2>
-          <p style={{ margin: "0 0 12px", fontFamily: T.bodyFont, fontSize: 13, color: T.mut, lineHeight: 1.55 }}>
+          <p style={{ margin: "0 0 12px", fontFamily: TL.font.sans, fontSize: 13, color: TL.mute, lineHeight: 1.55 }}>
             {data.utestaaendeSum
               ? `Totalt ${data.utestaaendeSum} utestående. Blir det stående ubetalt, kan abonnementet stanses — og da mister ${fornavn} både øktene og PlayerHQ.`
               : `Blir det stående ubetalt, kan abonnementet stanses — og da mister ${fornavn} både øktene og PlayerHQ.`}
@@ -346,29 +338,29 @@ export function ForelderV2({ data }: { data: ForelderPortalData }) {
       return (
         <div
           style={{
-            background: T.handlingSoft,
-            border: `1px solid ${T.border}`,
-            borderLeft: `3px solid ${T.handling}`,
-            borderRadius: T.rCard,
+            background: TL.dim,
+            border: `1px solid ${TL.hair}`,
+            borderLeft: `3px solid ${TL.fill}`,
+            borderRadius: TL.radius.card,
             padding: 16,
           }}
         >
           <span
             style={{
-              fontFamily: T.mono,
+              fontFamily: TL.font.mono,
               fontSize: 10,
               fontWeight: 500,
               letterSpacing: "0.09em",
               textTransform: "uppercase",
-              color: T.handling,
+              color: TL.fill,
             }}
           >
             Én ting nå
           </span>
-          <h2 style={{ margin: "4px 0 8px", fontFamily: T.disp, fontSize: 15, fontWeight: 600, color: T.fg }}>
+          <h2 style={{ margin: "4px 0 8px", fontFamily: TL.font.sans, fontSize: 15, fontWeight: 600, color: TL.text }}>
             {s.navn} mangler
           </h2>
-          <p style={{ margin: "0 0 12px", fontFamily: T.bodyFont, fontSize: 13, color: T.mut, lineHeight: 1.55 }}>
+          <p style={{ margin: "0 0 12px", fontFamily: TL.font.sans, fontSize: 13, color: TL.mute, lineHeight: 1.55 }}>
             {s.d}
           </p>
           <Knapp full icon="shield" onClick={() => router.push("/forelder/samtykke")}>
@@ -440,7 +432,7 @@ export function ForelderV2({ data }: { data: ForelderPortalData }) {
       <>
         <Kort eyebrow="Samtykker">
           <Kilde k="lyd_samtykker, helse_samtykker, parent_relations" />
-          <p style={{ margin: "0 0 4px", fontFamily: T.bodyFont, fontSize: 13, color: T.mut, lineHeight: 1.55 }}>
+          <p style={{ margin: "0 0 4px", fontFamily: TL.font.sans, fontSize: 13, color: TL.mute, lineHeight: 1.55 }}>
             Selvstendige valg. Hvert av dem gjelder én ting, og hvert av dem kan
             stå alene.
           </p>
@@ -449,14 +441,14 @@ export function ForelderV2({ data }: { data: ForelderPortalData }) {
               key={s.k}
               style={{
                 padding: "12px 0",
-                borderBottom: i === data.samtykker.length - 1 ? "none" : `1px solid ${T.border}`,
+                borderBottom: i === data.samtykker.length - 1 ? "none" : `1px solid ${TL.hair}`,
               }}
             >
               <div style={{ display: "flex", alignItems: "center", gap: 12, minHeight: 28, minWidth: 0 }}>
-                <span style={{ fontSize: 13.5, fontWeight: 500, color: T.fg, minWidth: 0 }}>{s.navn}</span>
+                <span style={{ fontSize: 13.5, fontWeight: 500, color: TL.text, minWidth: 0 }}>{s.navn}</span>
                 <SamtykkeStatusTekst gitt={s.gitt} dato={s.dato} />
               </div>
-              <p style={{ margin: "4px 0 8px", fontFamily: T.bodyFont, fontSize: 12.5, color: T.mut, lineHeight: 1.55 }}>
+              <p style={{ margin: "4px 0 8px", fontFamily: TL.font.sans, fontSize: 12.5, color: TL.mute, lineHeight: 1.55 }}>
                 {s.d}
               </p>
               {s.merknad && (
@@ -517,31 +509,31 @@ export function ForelderV2({ data }: { data: ForelderPortalData }) {
                   textAlign: "left",
                   padding: "10px 12px",
                   marginBottom: 8,
-                  background: T.panel2,
-                  border: `1px solid ${T.border}`,
-                  borderLeft: f.utestaaende ? `3px solid ${T.down}` : `1px solid ${T.border}`,
-                  borderRadius: T.rCard,
+                  background: TL.dock,
+                  border: `1px solid ${TL.hair}`,
+                  borderLeft: f.utestaaende ? `3px solid ${TL.danger}` : `1px solid ${TL.hair}`,
+                  borderRadius: TL.radius.card,
                   cursor: "pointer",
                   minHeight: 44,
                   fontSize: 13.5,
-                  color: T.fg,
+                  color: TL.text,
                   minWidth: 0,
                 }}
               >
                 <div style={{ minWidth: 0 }}>
                   {f.tekst}
-                  <span style={{ display: "block", fontFamily: T.bodyFont, fontSize: 11.5, color: T.mut }}>
+                  <span style={{ display: "block", fontFamily: TL.font.sans, fontSize: 11.5, color: TL.mute }}>
                     {f.dato} · {f.status}
                   </span>
                 </div>
                 <span
                   style={{
                     marginLeft: "auto",
-                    fontFamily: T.mono,
+                    fontFamily: TL.font.mono,
                     fontSize: 13,
                     flex: "none",
                     fontVariantNumeric: "tabular-nums",
-                    color: f.utestaaende ? T.down : T.fg,
+                    color: f.utestaaende ? TL.danger : TL.text,
                   }}
                 >
                   {f.belopKr}
@@ -586,7 +578,7 @@ export function ForelderV2({ data }: { data: ForelderPortalData }) {
       <>
         <Kort eyebrow="Denne uka">
           <Kilde k="training_plans, bookings" />
-          <p style={{ margin: "0 0 12px", fontFamily: T.bodyFont, fontSize: 13, color: T.mut, lineHeight: 1.55 }}>
+          <p style={{ margin: "0 0 12px", fontFamily: TL.font.sans, fontSize: 13, color: TL.mute, lineHeight: 1.55 }}>
             Slik ser uka til {fornavn} ut. Du ser den — du endrer den ikke.
           </p>
           {data.uke.length === 0 ? (
@@ -605,19 +597,19 @@ export function ForelderV2({ data }: { data: ForelderPortalData }) {
                     alignItems: "flex-start",
                     gap: 12,
                     padding: 12,
-                    background: T.panel2,
-                    border: `1px solid ${T.border}`,
-                    borderLeft: `3px solid ${T.info}`,
-                    borderRadius: T.rCard,
+                    background: TL.dock,
+                    border: `1px solid ${TL.hair}`,
+                    borderLeft: `3px solid ${TL.viz.target}`,
+                    borderRadius: TL.radius.card,
                     fontSize: 13,
                     minWidth: 0,
                   }}
                 >
                   <span
                     style={{
-                      fontFamily: T.mono,
+                      fontFamily: TL.font.mono,
                       fontSize: 11.5,
-                      color: T.mut,
+                      color: TL.mute,
                       flex: "none",
                       minWidth: 64,
                     }}
@@ -625,9 +617,9 @@ export function ForelderV2({ data }: { data: ForelderPortalData }) {
                     {o.dag}
                   </span>
                   <div style={{ minWidth: 0 }}>
-                    <span style={{ display: "block", fontWeight: 500, color: T.fg }}>{o.tittel}</span>
+                    <span style={{ display: "block", fontWeight: 500, color: TL.text }}>{o.tittel}</span>
                     {o.sub && (
-                      <span style={{ display: "block", fontFamily: T.bodyFont, fontSize: 12, color: T.mut }}>
+                      <span style={{ display: "block", fontFamily: TL.font.sans, fontSize: 12, color: TL.mute }}>
                         {o.sub}
                       </span>
                     )}
@@ -675,14 +667,14 @@ export function ForelderV2({ data }: { data: ForelderPortalData }) {
         {data.sisteMelding && (
           <Kort eyebrow="Siste melding">
             <Kilde k="notifications" />
-            <span style={{ fontFamily: T.mono, fontSize: 10.5, color: T.mut, display: "block", marginBottom: 6 }}>
+            <span style={{ fontFamily: TL.font.mono, fontSize: 10.5, color: TL.mute, display: "block", marginBottom: 6 }}>
               {data.sisteMelding.dato}
             </span>
-            <span style={{ display: "block", fontSize: 13.5, fontWeight: 500, color: T.fg }}>
+            <span style={{ display: "block", fontSize: 13.5, fontWeight: 500, color: TL.text }}>
               {data.sisteMelding.title}
             </span>
             {data.sisteMelding.body && (
-              <p style={{ margin: "6px 0 0", fontFamily: T.bodyFont, fontSize: 13, color: T.mut, lineHeight: 1.6 }}>
+              <p style={{ margin: "6px 0 0", fontFamily: TL.font.sans, fontSize: 13, color: TL.mute, lineHeight: 1.6 }}>
                 {data.sisteMelding.body}
               </p>
             )}
@@ -701,7 +693,7 @@ export function ForelderV2({ data }: { data: ForelderPortalData }) {
       style={{
         display: "flex",
         flexDirection: "column",
-        gap: T.gap,
+        gap: 16,
         maxWidth: 720,
         margin: "0 auto",
         width: "100%",
@@ -720,21 +712,21 @@ export function ForelderV2({ data }: { data: ForelderPortalData }) {
             display: "inline-flex",
             alignItems: "center",
             justifyContent: "center",
-            background: T.panel2,
-            border: `1px solid ${T.border}`,
-            fontFamily: T.mono,
+            background: TL.dock,
+            border: `1px solid ${TL.hair}`,
+            fontFamily: TL.font.mono,
             fontSize: 15,
             fontWeight: 600,
-            color: T.mut,
+            color: TL.mute,
           }}
         >
           {initialer}
         </span>
         <div style={{ minWidth: 0 }}>
-          <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>
+          <h1 style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 17, fontWeight: 600, color: TL.text }}>
             {data.childName}
           </h1>
-          <span style={{ display: "block", fontFamily: T.mono, fontSize: 11, color: T.mut, marginTop: 2 }}>
+          <span style={{ display: "block", fontFamily: TL.font.mono, fontSize: 11, color: TL.mute, marginTop: 2 }}>
             du er registrert som foresatt
           </span>
         </div>
@@ -776,11 +768,11 @@ export function ForelderV2({ data }: { data: ForelderPortalData }) {
                 minHeight: 44,
                 padding: "0 16px",
                 fontSize: 12.5,
-                fontFamily: T.ui,
-                background: aktiv ? T.cta : T.panel,
-                color: aktiv ? T.onCta : T.fg,
+                fontFamily: TL.font.sans,
+                background: aktiv ? TL.fill : TL.elev,
+                color: aktiv ? TL.onFill : TL.text,
                 flex: "none",
-                border: `1px solid ${aktiv ? T.cta : T.border}`,
+                border: `1px solid ${aktiv ? TL.fill : TL.hair}`,
                 borderRadius: 9999,
                 cursor: "pointer",
               }}
@@ -793,11 +785,11 @@ export function ForelderV2({ data }: { data: ForelderPortalData }) {
                     alignItems: "center",
                     padding: "1px 7px",
                     borderRadius: 9999,
-                    fontFamily: T.mono,
+                    fontFamily: TL.font.mono,
                     fontSize: 10,
-                    background: aktiv ? T.onCta : T.panel2,
-                    color: T.down,
-                    border: `1px solid ${T.border}`,
+                    background: aktiv ? TL.onFill : TL.dock,
+                    color: TL.danger,
+                    border: `1px solid ${TL.hair}`,
                   }}
                 >
                   {badge}
@@ -808,7 +800,7 @@ export function ForelderV2({ data }: { data: ForelderPortalData }) {
         })}
       </div>
 
-      <div style={{ display: "flex", flexDirection: "column", gap: T.gap, minWidth: 0 }}>
+      <div style={{ display: "flex", flexDirection: "column", gap: 16, minWidth: 0 }}>
         {fane === "oversikt" && renderOversikt()}
         {fane === "samtykker" && renderSamtykker()}
         {fane === "betaling" && renderBetaling()}
@@ -833,7 +825,7 @@ export function ForelderV2({ data }: { data: ForelderPortalData }) {
                   : "Mangler"}
               </StatusPill>
             </div>
-            <p style={{ margin: 0, fontFamily: T.bodyFont, fontSize: 13.5, color: T.fg2, lineHeight: 1.6 }}>
+            <p style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 13.5, color: TL.mute, lineHeight: 1.6 }}>
               {arkSamtykke.d}
             </p>
             {arkSamtykke.detaljer && arkSamtykke.detaljer.length > 0 && (
@@ -849,9 +841,9 @@ export function ForelderV2({ data }: { data: ForelderPortalData }) {
                       borderBottom:
                         i === (arkSamtykke.detaljer?.length ?? 0) - 1
                           ? "none"
-                          : `1px solid ${T.border}`,
+                          : `1px solid ${TL.hair}`,
                       fontSize: 13,
-                      color: T.fg,
+                      color: TL.text,
                     }}
                   >
                     {d.navn}

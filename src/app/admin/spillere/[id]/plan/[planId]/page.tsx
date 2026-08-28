@@ -13,7 +13,8 @@ import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { coachScopedPlayerWhere } from "@/lib/auth/coached";
 import { prisma } from "@/lib/prisma";
 import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
-import { T } from "@/lib/v2/tokens";
+import { TL } from "@/lib/v2/train-lock";
+
 import { Caps, Tittel, Kort, KpiFlis, StatusPill, MikroMeta, TomTilstand } from "@/components/v2";
 import { omraadeToTab, type PyramidArea } from "@/components/teknisk-plan/constants";
 import type { OppgaveDraft } from "@/components/teknisk-plan/oppgave-modal";
@@ -175,7 +176,7 @@ export default async function SpillerPlanDetaljPage({
 
   return (
     <V2Shell bredde="kolonne" aktiv="spillere" nav={AGENCYOS_NAV} navn={coach.name} avatarUrl={coach.avatarUrl}>
-      <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+      <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
         {/* Hode */}
         <div style={{ display: "flex", flexWrap: "wrap", alignItems: "flex-end", justifyContent: "space-between", gap: 12 }}>
           <div>
@@ -187,7 +188,7 @@ export default async function SpillerPlanDetaljPage({
               <Link href={`/admin/spillere/${id}`} style={{ textDecoration: "none" }}>
                 <MikroMeta icon="arrow-left">Tilbake til {spiller!.name}</MikroMeta>
               </Link>
-              <span style={{ fontFamily: T.mono, fontSize: 10, color: T.mut, marginLeft: 10 }}>
+              <span style={{ fontFamily: TL.font.mono, fontSize: 10, color: TL.mute, marginLeft: 10 }}>
                 {plan!.startDato.toLocaleDateString("nb-NO", { day: "2-digit", month: "short" }).toUpperCase()}
                 {plan!.sluttDato ? ` — ${plan!.sluttDato.toLocaleDateString("nb-NO", { day: "2-digit", month: "short" }).toUpperCase()}` : ""}
               </span>
@@ -197,7 +198,7 @@ export default async function SpillerPlanDetaljPage({
         </div>
 
         {/* KPI-strip */}
-        <div className="grid grid-cols-2 sm:grid-cols-4" style={{ gap: T.gap }}>
+        <div className="grid grid-cols-2 sm:grid-cols-4" style={{ gap: 16 }}>
           <Kort>
             <Caps size={9}>Status</Caps>
             <div style={{ marginTop: 12 }}>
@@ -228,12 +229,12 @@ export default async function SpillerPlanDetaljPage({
                     display: "inline-block",
                     padding: "7px 16px",
                     borderRadius: 9999,
-                    fontFamily: T.ui,
+                    fontFamily: TL.font.sans,
                     fontSize: 12.5,
                     fontWeight: 600,
-                    color: active ? T.onLime : T.mut,
-                    background: active ? T.lime : T.panel2,
-                    border: `1px solid ${active ? "transparent" : T.border}`,
+                    color: active ? TL.onFill : TL.mute,
+                    background: active ? TL.fill : TL.dock,
+                    border: `1px solid ${active ? "transparent" : TL.hair}`,
                   }}
                 >
                   {t.label}
@@ -245,14 +246,14 @@ export default async function SpillerPlanDetaljPage({
 
         {/* Tab-innhold */}
         {tab === "oversikt" && (
-          <div className="grid grid-cols-1 lg:grid-cols-[1.5fr_1fr]" style={{ gap: T.gap }}>
+          <div className="grid grid-cols-1 lg:grid-cols-[1.5fr_1fr]" style={{ gap: 16 }}>
             <Kort eyebrow="Plan · sammendrag">
-              <p style={{ fontFamily: T.disp, fontStyle: "italic", fontSize: 15, lineHeight: 1.6, color: T.fg, margin: 0 }}>
+              <p style={{ fontFamily: TL.font.sans, fontStyle: "italic", fontSize: 15, lineHeight: 1.6, color: TL.text, margin: 0 }}>
                 {plan!.navn} for {spiller!.name}. {drillsTotal} drills fordelt på {plan!.positions.length} P-posisjoner.
               </p>
             </Kort>
             <Kort tint eyebrow={<MikroMeta icon="sparkles">Neste steg</MikroMeta>}>
-              <p style={{ fontFamily: T.ui, fontSize: 12.5, color: T.fg2, lineHeight: 1.6, margin: 0 }}>
+              <p style={{ fontFamily: TL.font.sans, fontSize: 12.5, color: TL.mute, lineHeight: 1.6, margin: 0 }}>
                 {drillsTotal === 0
                   ? "Planen har ingen drills ennå. Gå til Drills-fanen og legg til den første."
                   : "Rediger drills i Drills-fanen, eller publiser planen for å gjøre den aktiv for spilleren."}
@@ -263,7 +264,7 @@ export default async function SpillerPlanDetaljPage({
 
         {tab === "periodisering" && (
           <Kort eyebrow="Periodisering">
-            <p style={{ fontFamily: T.ui, fontSize: 12.5, color: T.mut, margin: 0 }}>
+            <p style={{ fontFamily: TL.font.sans, fontSize: 12.5, color: TL.mute, margin: 0 }}>
               Periodisering settes i Workbench. Denne fanen viser planens tidslinje når periode-blokker er koblet.
             </p>
           </Kort>
@@ -281,14 +282,14 @@ export default async function SpillerPlanDetaljPage({
               />
             </Kort>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3" style={{ gap: T.gap }}>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3" style={{ gap: 16 }}>
               {hitRateDrills.map((d) => (
                 <Kort key={d.taskId}>
                   <StatusPill tone={KATEGORI_TONE[d.category]}>{d.category}</StatusPill>
-                  <div style={{ fontFamily: T.disp, fontSize: 15, fontWeight: 700, color: T.fg, marginTop: 10 }}>{d.name}</div>
+                  <div style={{ fontFamily: TL.font.sans, fontSize: 15, fontWeight: 700, color: TL.text, marginTop: 10 }}>{d.name}</div>
                   <div style={{ display: "flex", alignItems: "baseline", gap: 8, marginTop: 10 }}>
-                    <span style={{ fontFamily: T.mono, fontSize: 30, fontWeight: 700, color: T.up }}>{d.rate}</span>
-                    <span style={{ fontFamily: T.mono, fontSize: 10, textTransform: "uppercase", letterSpacing: "0.04em", color: T.mut }}>
+                    <span style={{ fontFamily: TL.font.mono, fontSize: 30, fontWeight: 700, color: TL.ok }}>{d.rate}</span>
+                    <span style={{ fontFamily: TL.font.mono, fontSize: 10, textTransform: "uppercase", letterSpacing: "0.04em", color: TL.mute }}>
                       hit-rate · siste vindu
                     </span>
                   </div>

@@ -1,4 +1,5 @@
 "use client";
+import { TL } from "@/lib/v2/train-lock";
 
 /**
  * Klient-limet for gruppe-årsplanen: PeriodePalett (venstre) + samme
@@ -8,7 +9,7 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { T, Caps, Kort, Knapp, Icon } from "@/components/v2";
+import { Caps, Kort, Knapp, Icon } from "@/components/v2";
 import { WorkbenchAarsplan, PeriodePalett } from "@/components/portal/v2/WorkbenchAarsplan";
 import type { WorkbenchData } from "@/lib/workbench/load-workbench";
 import type { PeriodeInput } from "@/lib/workbench/perioder";
@@ -53,14 +54,14 @@ export function GruppeAarsplanKlient({ gruppeNavn, medlemmer, seasonBlocks, onLa
   };
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+    <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
       <div>
         <Caps>Gruppe-workbench</Caps>
-        <h1 style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 24, letterSpacing: "-0.02em", color: T.fg, margin: "6px 0 0" }}>{gruppeNavn}</h1>
-        <span style={{ fontFamily: T.mono, fontSize: 10, color: T.mut }}>{medlemmer} medlemmer · gruppens egen årsplan — spillerne beholder individuelle planer</span>
+        <h1 style={{ fontFamily: TL.font.sans, fontWeight: 700, fontSize: 24, letterSpacing: "-0.02em", color: TL.text, margin: "6px 0 0" }}>{gruppeNavn}</h1>
+        <span style={{ fontFamily: TL.font.mono, fontSize: 10, color: TL.mute }}>{medlemmer} medlemmer · gruppens egen årsplan — spillerne beholder individuelle planer</span>
       </div>
       {rullResultat && (
-        <Kort pad="10px 14px"><span style={{ fontFamily: T.ui, fontSize: 12.5, color: T.fg }} data-wb-rullresultat>{rullResultat}</span></Kort>
+        <Kort pad="10px 14px"><span style={{ fontFamily: TL.font.sans, fontSize: 12.5, color: TL.text }} data-wb-rullresultat>{rullResultat}</span></Kort>
       )}
       {onRullUt && seasonBlocks.length > 0 && (
         <div>
@@ -71,13 +72,13 @@ export function GruppeAarsplanKlient({ gruppeNavn, medlemmer, seasonBlocks, onLa
       )}
       {rullBekreft && (
         <div style={{ position: "fixed", inset: 0, zIndex: 70, display: "flex", alignItems: "center", justifyContent: "center", padding: 16 }}>
-          <div onClick={ruller ? undefined : () => setRullBekreft(false)} style={{ position: "absolute", inset: 0, background: T.farge.nestenSvartA62, backdropFilter: "blur(2px)" }} />
-          <div role="dialog" aria-label="Bekreft utrulling" style={{ position: "relative", width: "min(420px, 100%)", background: T.panel, border: `1px solid ${T.borderS}`, borderRadius: 20, padding: "20px 22px", boxShadow: `0 24px 60px ${T.farge.svartA50}` }}>
+          <div onClick={ruller ? undefined : () => setRullBekreft(false)} style={{ position: "absolute", inset: 0, background: TL.scrim, backdropFilter: "none" }} />
+          <div role="dialog" aria-label="Bekreft utrulling" style={{ position: "relative", width: "min(420px, 100%)", background: TL.elev, border: `1px solid ${TL.hair}`, borderRadius: 20, padding: "20px 22px", boxShadow: "none" }}>
             <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-              <Icon name="users" size={16} style={{ color: T.lime }} />
-              <h2 style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 17, letterSpacing: "-0.02em", color: T.fg, margin: 0 }}>Rull ut årsplanen</h2>
+              <Icon name="users" size={16} style={{ color: TL.fill }} />
+              <h2 style={{ fontFamily: TL.font.sans, fontWeight: 700, fontSize: 17, letterSpacing: "-0.02em", color: TL.text, margin: 0 }}>Rull ut årsplanen</h2>
             </div>
-            <p style={{ fontFamily: T.ui, fontSize: 12.5, color: T.fg2, margin: "12px 0 0", lineHeight: 1.55 }}>
+            <p style={{ fontFamily: TL.font.sans, fontSize: 12.5, color: TL.mute, margin: "12px 0 0", lineHeight: 1.55 }}>
               {seasonBlocks.length} perioder kopieres til {medlemmer} spilleres individuelle årsplaner.
               Spillere som allerede har en overlappende periode av samme type hoppes over — ingenting overskrives.
             </p>
@@ -88,7 +89,7 @@ export function GruppeAarsplanKlient({ gruppeNavn, medlemmer, seasonBlocks, onLa
           </div>
         </div>
       )}
-      <div className="grid grid-cols-1 md:grid-cols-[206px_1fr]" style={{ gap: T.gap, alignItems: "start" }}>
+      <div className="grid grid-cols-1 md:grid-cols-[206px_1fr]" style={{ gap: 16, alignItems: "start" }}>
         <Kort pad="14px 14px">
           <PeriodePalett />
         </Kort>

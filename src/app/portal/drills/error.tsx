@@ -5,7 +5,8 @@
    økta og virker som før. Dekker også [id]-ruten. */
 
 import { useEffect } from "react";
-import { T } from "@/lib/v2/tokens";
+import { TL } from "@/lib/v2/train-lock";
+
 
 export default function Error({
   error,
@@ -23,15 +24,15 @@ export default function Error({
       <div
         style={{
           padding: "24px 16px",
-          background: T.panel2,
-          border: `1px dashed ${T.border}`,
-          borderRadius: T.rCard,
+          background: TL.dock,
+          border: `1px dashed ${TL.hair}`,
+          borderRadius: TL.radius.card,
         }}
       >
-        <h3 style={{ margin: "0 0 8px", fontFamily: T.disp, fontSize: 15, fontWeight: 600, color: T.fg }}>
+        <h3 style={{ margin: "0 0 8px", fontFamily: TL.font.sans, fontSize: 15, fontWeight: 600, color: TL.text }}>
           Klarte ikke å hente øvelsesbanken
         </h3>
-        <p style={{ margin: "0 0 12px", fontFamily: T.bodyFont, fontSize: 13.5, color: T.mut }}>
+        <p style={{ margin: "0 0 12px", fontFamily: TL.font.sans, fontSize: 13.5, color: TL.mute }}>
           Banken svarte ikke innen 30 sekunder. Drillene i planlagte økter ligger i selve økta
           og virker som før.
         </p>
@@ -46,11 +47,11 @@ export default function Error({
             justifyContent: "center",
             minHeight: 56,
             width: "100%",
-            border: `1px solid ${T.borderS}`,
-            borderRadius: T.rCard,
-            background: T.panel3,
-            color: T.fg,
-            fontFamily: T.ui,
+            border: `1px solid ${TL.hair}`,
+            borderRadius: TL.radius.card,
+            background: TL.dim,
+            color: TL.text,
+            fontFamily: TL.font.sans,
             fontSize: 14,
             fontWeight: 600,
             cursor: "pointer",

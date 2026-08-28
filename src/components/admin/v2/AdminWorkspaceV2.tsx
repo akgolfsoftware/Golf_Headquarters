@@ -1,5 +1,5 @@
 "use client";
-
+import { TL } from "@/lib/v2/train-lock";
 /**
  * AgencyOS Workspace — v2 Presis + B-pakke (status + én primær CTA, tom = vei).
  * Oppgaver/prosjekter fra Notion-sync. T.* only.
@@ -7,24 +7,7 @@
 
 import { useMemo, useState } from "react";
 import Link from "next/link";
-import {
-  Caps,
-  Tittel,
-  Kort,
-  Rad,
-  KpiFlis,
-  StatusPill,
-  FilterChips,
-  PillTabs,
-  FordelingRad,
-  AvatarInit,
-  TomTilstand,
-  InnsiktChip,
-  CTAPill,
-  T,
-  type StatusTone,
-} from "@/components/v2";
-
+import { Caps, Kort, Rad, KpiFlis, StatusPill, FilterChips, PillTabs, FordelingRad, AvatarInit, TomTilstand, InnsiktChip, CTAPill, type StatusTone } from "@/components/v2";
 // ── Datakontrakt (mappes fra Prisma/cache i ruten) ──────────────
 export type WorkspacePrio = "BRENNER" | "HOY" | "MED" | "LAV";
 export type WorkspaceStatus = "TODO" | "DOING" | "DONE" | "BLOKKERT";
@@ -144,21 +127,21 @@ function KolonneKort({
 function ProsjektKort({ p }: { p: AdminWorkspaceV2Project }) {
   const st = PROSJEKT_STATUS[p.status];
   const stats: { n: number; l: string; c: string }[] = [
-    { n: p.open, l: "Åpne", c: T.fg },
-    { n: p.doing, l: "Pågår", c: T.fg },
-    { n: p.done, l: "Ferdig", c: T.up },
-    { n: p.total, l: "Totalt", c: T.mut },
+    { n: p.open, l: "Åpne", c: TL.text },
+    { n: p.doing, l: "Pågår", c: TL.text },
+    { n: p.done, l: "Ferdig", c: TL.ok },
+    { n: p.total, l: "Totalt", c: TL.mute },
   ];
   return (
     <Kort hover eyebrow={p.selskap} action={<StatusPill tone={st.tone}>{st.label}</StatusPill>}>
-      <div style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 16, color: T.fg, letterSpacing: "-0.01em" }}>
+      <div style={{ fontFamily: TL.font.sans, fontWeight: 700, fontSize: 16, color: TL.text, letterSpacing: "-0.01em" }}>
         {p.tittel}
       </div>
       <p
         style={{
-          fontFamily: T.ui,
+          fontFamily: TL.font.sans,
           fontSize: 12.5,
-          color: T.mut,
+          color: TL.mute,
           lineHeight: 1.5,
           margin: "6px 0 0",
           display: "-webkit-box",
@@ -173,7 +156,7 @@ function ProsjektKort({ p }: { p: AdminWorkspaceV2Project }) {
       <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 8, marginTop: 14 }}>
         {stats.map((s) => (
           <div key={s.l}>
-            <div style={{ fontFamily: T.mono, fontSize: 18, fontWeight: 700, color: s.c, fontVariantNumeric: "tabular-nums", lineHeight: 1 }}>
+            <div style={{ fontFamily: TL.font.mono, fontSize: 18, fontWeight: 700, color: s.c, fontVariantNumeric: "tabular-nums", lineHeight: 1 }}>
               {s.n}
             </div>
             <Caps size={8.5} style={{ marginTop: 4 }}>{s.l}</Caps>
@@ -196,7 +179,7 @@ function ProsjektKort({ p }: { p: AdminWorkspaceV2Project }) {
           gap: 10,
           marginTop: 14,
           paddingTop: 12,
-          borderTop: `1px solid ${T.border}`,
+          borderTop: `1px solid ${TL.hair}`,
         }}
       >
         {p.assigned.length > 0 ? (
@@ -280,8 +263,8 @@ export function AdminWorkspaceV2({ data }: { data: AdminWorkspaceV2Data }) {
     <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 14, flexWrap: "wrap" }}>
       <div>
         <div data-paper-pattern-topp>
-          <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>Workspace</h1>
-          <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>AgencyOS</span>
+          <h1 style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 17, fontWeight: 600, color: TL.text }}>Workspace</h1>
+          <span style={{ display: "block", fontFamily: TL.font.mono, fontSize: 10.5, color: TL.mute, marginTop: 2 }}>AgencyOS</span>
         </div>
       </div>
       <StatusPill tone={statusTone}>{statusTekst}</StatusPill>
@@ -299,7 +282,7 @@ export function AdminWorkspaceV2({ data }: { data: AdminWorkspaceV2Data }) {
 
   // ── KPI-flis (4) ──────────────────────────────────────────────
   const kpiFlis = (
-    <div className="grid grid-cols-2 lg:grid-cols-4" style={{ gap: T.gap }}>
+    <div className="grid grid-cols-2 lg:grid-cols-4" style={{ gap: 16 }}>
       <KpiFlis label="I dag" value={kpi.iDag} />
       <KpiFlis label="Denne uka" value={kpi.denneUka} />
       <KpiFlis label="Blokkert" value={kpi.blokkert} varsle={kpi.blokkert > 0} />
@@ -322,7 +305,7 @@ export function AdminWorkspaceV2({ data }: { data: AdminWorkspaceV2Data }) {
   // ── «Min uke» ─────────────────────────────────────────────────
   const brennerStrip =
     brenner.length > 0 ? (
-      <Kort action={<Caps size={9} color={T.down}>{pl(brenner.length, "sak", "saker")}</Caps>}>
+      <Kort action={<Caps size={9} color={TL.danger}>{pl(brenner.length, "sak", "saker")}</Caps>}>
         <div style={{ marginBottom: 12 }}>
           <StatusPill tone="down">Brenner nå</StatusPill>
         </div>
@@ -333,9 +316,9 @@ export function AdminWorkspaceV2({ data }: { data: AdminWorkspaceV2Data }) {
     ) : null;
 
   const ukeView = (
-    <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+    <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
       {brennerStrip}
-      <div className="grid grid-cols-1 lg:grid-cols-3" style={{ gap: T.gap, alignItems: "start" }}>
+      <div className="grid grid-cols-1 lg:grid-cols-3" style={{ gap: 16, alignItems: "start" }}>
         <KolonneKort tittel="I dag" tasks={iDag} tint tomTekst="Ingenting forfaller i dag." />
         <KolonneKort tittel="Denne uka" tasks={denneUka} tomTekst="Uka er åpen — rom for planlegging." />
         <KolonneKort tittel="Senere" tasks={senere} tomTekst="Ingen oppgaver lenger fram." />
@@ -354,7 +337,7 @@ export function AdminWorkspaceV2({ data }: { data: AdminWorkspaceV2Data }) {
         />
       </Kort>
     ) : (
-      <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+      <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
         {grupper.map((g) => (
           <Kort
             key={g.status}
@@ -380,7 +363,7 @@ export function AdminWorkspaceV2({ data }: { data: AdminWorkspaceV2Data }) {
         />
       </Kort>
     ) : (
-      <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+      <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
         <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
           <Caps size={9} style={{ width: 64, flex: "none" }}>Status</Caps>
           <FilterChips items={FILTER_ITEMS} active={prosjektFilter} onToggle={toggleFilter} />
@@ -390,7 +373,7 @@ export function AdminWorkspaceV2({ data }: { data: AdminWorkspaceV2Data }) {
             <TomTilstand icon="layers" title="Ingen prosjekter her" sub="Ingen prosjekter passer filteret akkurat nå." />
           </Kort>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3" style={{ gap: T.gap, alignItems: "start" }}>
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3" style={{ gap: 16, alignItems: "start" }}>
             {prosjekterFiltrert.map((p) => (
               <ProsjektKort key={p.id} p={p} />
             ))}
@@ -406,7 +389,7 @@ export function AdminWorkspaceV2({ data }: { data: AdminWorkspaceV2Data }) {
       : `${pl(kpi.apne, "åpen oppgave", "åpne oppgaver")} fordelt på uka. Synk med Notion for å holde lista fersk.`;
 
   return (
-    <div data-paper-wave-h="workspace" data-paper-pattern  style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+    <div data-paper-wave-h="workspace" data-paper-pattern  style={{ display: "flex", flexDirection: "column", gap: 16 }}>
       {hode}
       {kpiFlis}
       {primaerCta}

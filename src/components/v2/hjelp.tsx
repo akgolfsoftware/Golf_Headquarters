@@ -7,7 +7,8 @@
    FRA hjelpetekster.ts — aldri ad-hoc forklaringstekst i skjermfiler. */
 
 import { useEffect, useRef, useState } from "react";
-import { T } from "@/lib/v2/tokens";
+import { TL } from "@/lib/v2/train-lock";
+
 import { Icon } from "@/components/v2/icon";
 import { HJELPETEKSTER, type HjelpNokkel } from "@/lib/v2/hjelpetekster";
 
@@ -55,7 +56,7 @@ export function HjelpTips({ k, size = 13, align = "left" }: HjelpTipsProps) {
         onKeyDown={(e) => { if (e.key === "Escape") setOpen(false); }}
         style={{ display: "inline-flex", alignItems: "center", cursor: "pointer", borderRadius: 9999 }}
       >
-        <Icon name="help-circle" size={size} style={{ color: T.mut }} />
+        <Icon name="help-circle" size={size} style={{ color: TL.mute }} />
       </span>
       {open && (
         <div
@@ -67,18 +68,18 @@ export function HjelpTips({ k, size = 13, align = "left" }: HjelpTipsProps) {
             zIndex: 50,
             width: "max-content",
             maxWidth: 260,
-            background: T.panel3,
-            border: `1px solid ${T.border}`,
+            background: TL.dim,
+            border: `1px solid ${TL.hair}`,
             borderRadius: 12,
             padding: "11px 13px",
-            boxShadow: `0 12px 32px ${T.farge.svartA45}`,
+            boxShadow: `0 12px 32px ${TL.scrim}`,
           }}
         >
-          <div style={{ fontFamily: T.ui, fontSize: 12.5, fontWeight: 700, color: T.fg }}>{tekst.tittel}</div>
-          <p style={{ fontFamily: T.ui, fontSize: 11.5, color: T.fg2, lineHeight: 1.55, margin: "5px 0 0" }}>{tekst.forklaring}</p>
+          <div style={{ fontFamily: TL.font.sans, fontSize: 12.5, fontWeight: 700, color: TL.text }}>{tekst.tittel}</div>
+          <p style={{ fontFamily: TL.font.sans, fontSize: 11.5, color: TL.mute, lineHeight: 1.55, margin: "5px 0 0" }}>{tekst.forklaring}</p>
           {tekst.mobilTips && (
-            <p style={{ fontFamily: T.ui, fontSize: 10.5, color: T.mut, lineHeight: 1.5, margin: "7px 0 0", paddingTop: 7, borderTop: `1px solid ${T.border}` }}>
-              <span style={{ fontWeight: 700, color: T.fg2 }}>Mobil: </span>{tekst.mobilTips}
+            <p style={{ fontFamily: TL.font.sans, fontSize: 10.5, color: TL.mute, lineHeight: 1.5, margin: "7px 0 0", paddingTop: 7, borderTop: `1px solid ${TL.hair}` }}>
+              <span style={{ fontWeight: 700, color: TL.mute }}>Mobil: </span>{tekst.mobilTips}
             </p>
           )}
         </div>
@@ -100,7 +101,7 @@ export interface HvorforDetteProps {
 
 export function HvorforDette({ kilde, beregning, forbehold }: HvorforDetteProps) {
   return (
-    <details style={{ margin: "12px 0 0", border: `1px solid ${T.border}`, borderRadius: T.rCard, background: T.panel }}>
+    <details style={{ margin: "12px 0 0", border: `1px solid ${TL.hair}`, borderRadius: TL.radius.card, background: TL.elev }}>
       <summary
         style={{
           display: "flex",
@@ -109,25 +110,25 @@ export function HvorforDette({ kilde, beregning, forbehold }: HvorforDetteProps)
           padding: "0 16px",
           cursor: "pointer",
           listStyle: "none",
-          fontFamily: T.ui,
+          fontFamily: TL.font.sans,
           fontSize: 12.5,
           fontWeight: 500,
-          color: T.mut,
+          color: TL.mute,
         }}
       >
         Hvorfor dette tallet
       </summary>
-      <ul style={{ margin: 0, padding: "12px 16px 16px 24px", fontSize: 13.5, color: T.mut, lineHeight: 1.6 }}>
+      <ul style={{ margin: 0, padding: "12px 16px 16px 24px", fontSize: 13.5, color: TL.mute, lineHeight: 1.6 }}>
         <li style={{ marginBottom: 8 }}>
-          <strong style={{ color: T.fg, fontWeight: 500 }}>Kilde: </strong>
+          <strong style={{ color: TL.text, fontWeight: 500 }}>Kilde: </strong>
           {kilde}
         </li>
         <li style={{ marginBottom: 8 }}>
-          <strong style={{ color: T.fg, fontWeight: 500 }}>Beregning: </strong>
+          <strong style={{ color: TL.text, fontWeight: 500 }}>Beregning: </strong>
           {beregning}
         </li>
         <li>
-          <strong style={{ color: T.fg, fontWeight: 500 }}>Forbehold: </strong>
+          <strong style={{ color: TL.text, fontWeight: 500 }}>Forbehold: </strong>
           {forbehold}
         </li>
       </ul>

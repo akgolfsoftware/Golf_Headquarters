@@ -1,4 +1,5 @@
 "use client";
+import { TL } from "@/lib/v2/train-lock";
 
 /**
  * PlayerHQ · Test-gjennomføring — Paper-port PP-3 (fase 1).
@@ -34,16 +35,11 @@
 import { useEffect, useMemo, useRef, useState, useTransition } from "react";
 import type { CSSProperties, ReactNode } from "react";
 import { useRouter } from "next/navigation";
-import { T, Knapp, TekstOmraade } from "@/components/v2";
+import { Knapp, TekstOmraade } from "@/components/v2";
 import { Icon } from "@/components/v2/icon";
 import type { ScorekortFelt, ScorekortForsok, ScorekortSpec } from "@/lib/portal-tester/protocol";
 import { scoreTest } from "@/lib/portal-tester/test-scoring";
-import {
-  avbrytTestSession,
-  fullforTestSession,
-  lagreSteg,
-  startTestSession,
-} from "./actions";
+import { avbrytTestSession, fullforTestSession, lagreSteg, startTestSession } from "./actions";
 
 /** Verdi-state: tallfelt som rå streng (norsk komma), checkbox som boolean.
  *  Fravær av nøkkel = uregistrert. */
@@ -95,12 +91,12 @@ function renKontekst(k: Kontekst): Record<string, string> | undefined {
 /* ── Delte stiler ─────────────────────────────────────────────── */
 
 const lblStil: CSSProperties = {
-  fontFamily: T.mono,
+  fontFamily: TL.font.mono,
   fontSize: 9,
   fontWeight: 700,
   letterSpacing: "0.10em",
   textTransform: "uppercase",
-  color: T.mut,
+  color: TL.mute,
 };
 
 const inputStil: CSSProperties = {
@@ -108,13 +104,13 @@ const inputStil: CSSProperties = {
   boxSizing: "border-box",
   appearance: "none",
   height: 44,
-  background: T.panel2,
-  border: `1px solid ${T.borderS}`,
+  background: TL.dock,
+  border: `1px solid ${TL.hair}`,
   borderRadius: 11,
   padding: "0 13px",
-  fontFamily: T.mono,
+  fontFamily: TL.font.mono,
   fontSize: 13,
-  color: T.fg,
+  color: TL.text,
   outline: "none",
 };
 
@@ -377,22 +373,22 @@ export function ScorekortKlient({
       <div
         data-paper-slug="playerhq-test-gjennomfor"
         data-od-id="playerhq-test-gjennomfor-feil"
-        style={{ maxWidth: 720, margin: "0 auto", width: "100%", color: T.fg, minWidth: 0 }}
+        style={{ maxWidth: 720, margin: "0 auto", width: "100%", color: TL.text, minWidth: 0 }}
       >
         <div
           role="alert"
           style={{
             padding: "24px 16px",
-            background: T.panel2,
-            border: `1px dashed ${T.border}`,
-            borderRadius: T.rCard,
+            background: TL.dock,
+            border: `1px dashed ${TL.hair}`,
+            borderRadius: TL.radius.card,
             marginTop: 16,
           }}
         >
-          <h3 style={{ margin: "0 0 8px", fontFamily: T.disp, fontSize: 15, fontWeight: 600, color: T.fg }}>
+          <h3 style={{ margin: "0 0 8px", fontFamily: TL.font.sans, fontSize: 15, fontWeight: 600, color: TL.text }}>
             Klarte ikke å lagre testen
           </h3>
-          <p style={{ margin: "0 0 12px", fontFamily: T.bodyFont, fontSize: 13.5, color: T.mut, lineHeight: 1.55 }}>
+          <p style={{ margin: "0 0 12px", fontFamily: TL.font.sans, fontSize: 13.5, color: TL.mute, lineHeight: 1.55 }}>
             Resultatet ligger trygt på telefonen — ingenting av det du har
             registrert er tapt. Prøv å lagre på nytt når du er klar.
           </p>
@@ -401,7 +397,7 @@ export function ScorekortKlient({
             icon="check"
             onClick={lagre}
             disabled={pending}
-            style={{ minHeight: 56, borderRadius: T.rCard }}
+            style={{ minHeight: 56, borderRadius: TL.radius.card }}
             data-paper-en-ting="true"
           >
             {pending ? "Lagrer…" : "Prøv igjen"}
@@ -415,13 +411,13 @@ export function ScorekortKlient({
     <div
       data-paper-slug="playerhq-test-gjennomfor"
       data-od-id="playerhq-test-gjennomfor"
-      style={{ maxWidth: 720, margin: "0 auto", width: "100%", color: T.fg, minWidth: 0 }}
+      style={{ maxWidth: 720, margin: "0 auto", width: "100%", color: TL.text, minWidth: 0 }}
     >
       {/* ── Protokollen — kilde: TestDefinition ── */}
-      <div style={{ background: T.panel, border: `1px solid ${T.border}`, borderRadius: T.rCard, padding: 16, marginTop: 16 }}>
+      <div style={{ background: TL.elev, border: `1px solid ${TL.hair}`, borderRadius: TL.radius.card, padding: 16, marginTop: 16 }}>
         <span style={lblStil}>Protokoll</span>
         {beskrivelse && (
-          <p style={{ margin: "8px 0", fontFamily: T.bodyFont, fontSize: 13.5, lineHeight: 1.6, color: T.fg2 }}>
+          <p style={{ margin: "8px 0", fontFamily: TL.font.sans, fontSize: 13.5, lineHeight: 1.6, color: TL.mute }}>
             {beskrivelse}
           </p>
         )}
@@ -432,7 +428,7 @@ export function ScorekortKlient({
         )}
         {foreslaatt !== null && sist !== null && (
           <details
-            style={{ margin: "12px 0 0", border: `1px solid ${T.border}`, borderRadius: T.rCard }}
+            style={{ margin: "12px 0 0", border: `1px solid ${TL.hair}`, borderRadius: TL.radius.card }}
           >
             <summary
               className="v2-focus"
@@ -445,7 +441,7 @@ export function ScorekortKlient({
                 listStyle: "none",
                 fontSize: 12.5,
                 fontWeight: 500,
-                color: T.mut,
+                color: TL.mute,
               }}
             >
               Hvorfor dette tallet
@@ -454,9 +450,9 @@ export function ScorekortKlient({
               style={{
                 margin: 0,
                 padding: "12px 16px 16px 26px",
-                fontFamily: T.bodyFont,
+                fontFamily: TL.font.sans,
                 fontSize: 13,
-                color: T.mut,
+                color: TL.mute,
                 lineHeight: 1.55,
               }}
             >
@@ -474,7 +470,7 @@ export function ScorekortKlient({
       </div>
 
       {/* ── Kontekst — funksjon beholdt, sammenslått på flata ── */}
-      <details style={{ marginTop: 12, border: `1px solid ${T.border}`, borderRadius: T.rCard, background: T.panel }}>
+      <details style={{ marginTop: 12, border: `1px solid ${TL.hair}`, borderRadius: TL.radius.card, background: TL.elev }}>
         <summary
           className="v2-focus"
           style={{
@@ -486,7 +482,7 @@ export function ScorekortKlient({
             listStyle: "none",
             fontSize: 12.5,
             fontWeight: 500,
-            color: T.mut,
+            color: TL.mute,
           }}
         >
           Kontekst · valgfritt
@@ -497,7 +493,7 @@ export function ScorekortKlient({
       </details>
 
       {/* ── Scorekortet — løpende score + én rad per forsøk ── */}
-      <div style={{ background: T.panel, border: `1px solid ${T.border}`, borderRadius: T.rCard, padding: 16, marginTop: 12 }}>
+      <div style={{ background: TL.elev, border: `1px solid ${TL.hair}`, borderRadius: TL.radius.card, padding: 16, marginTop: 12 }}>
         <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
           <span style={lblStil}>Scorekort</span>
           <span style={{ flex: 1 }} />
@@ -514,12 +510,12 @@ export function ScorekortKlient({
               minHeight: 32,
               padding: "0 10px",
               background: "transparent",
-              border: `1px solid ${T.borderS}`,
+              border: `1px solid ${TL.hair}`,
               borderRadius: 9999,
               cursor: historikk.length === 0 ? "default" : "pointer",
-              fontFamily: T.mono,
+              fontFamily: TL.font.mono,
               fontSize: 10.5,
-              color: T.mut,
+              color: TL.mute,
               opacity: historikk.length === 0 ? 0.4 : 1,
             }}
           >
@@ -535,17 +531,17 @@ export function ScorekortKlient({
         >
           <span
             style={{
-              fontFamily: T.mono,
+              fontFamily: TL.font.mono,
               fontVariantNumeric: "tabular-nums",
               fontSize: 40,
               fontWeight: 500,
               lineHeight: 1,
-              color: T.fg,
+              color: TL.text,
             }}
           >
             {erTelling ? antOk : antallFort === 0 ? "–" : fmt.format(motor.score)}
           </span>
-          <span style={{ fontFamily: T.mono, fontSize: 13, color: T.mut }}>
+          <span style={{ fontFamily: TL.font.mono, fontSize: 13, color: TL.mute }}>
             {erTelling
               ? `OK · ${antallFort} av ${antallForsok} registrert`
               : `${scoreEnhet ?? "score"} · ${antallFort} av ${antallForsok} registrert`}
@@ -581,7 +577,7 @@ export function ScorekortKlient({
         />
       </div>
 
-      <p style={{ margin: "12px 0 0", fontFamily: T.bodyFont, fontSize: 12.5, color: T.mut, lineHeight: 1.55 }}>
+      <p style={{ margin: "12px 0 0", fontFamily: TL.font.sans, fontSize: 12.5, color: TL.mute, lineHeight: 1.55 }}>
         Du kan lagre når som helst — også en avbrutt test. Det som er registrert,
         telles og merkes med antall forsøk.
       </p>
@@ -602,9 +598,9 @@ export function ScorekortKlient({
             gap: 6,
             minHeight: 44,
             padding: "0 12px",
-            fontFamily: T.ui,
+            fontFamily: TL.font.sans,
             fontSize: 13,
-            color: T.mut,
+            color: TL.mute,
           }}
         >
           <Icon name="x" size={14} />
@@ -621,7 +617,7 @@ export function ScorekortKlient({
           bottom: 0,
           marginTop: 12,
           padding: "12px 0 calc(12px + env(safe-area-inset-bottom) + var(--ak-cookie-h, 0px))",
-          background: `linear-gradient(to top, ${T.bg} 70%, transparent)`,
+          background: `linear-gradient(to top, ${TL.scene} 70%, transparent)`,
         }}
       >
         <Knapp
@@ -645,12 +641,12 @@ export function ScorekortKlient({
             bottom: 96,
             transform: "translateX(-50%)",
             zIndex: 100,
-            background: T.fg,
-            color: T.bg,
+            background: TL.text,
+            color: TL.scene,
             padding: "12px 16px",
             borderRadius: 12,
             fontSize: 13,
-            fontFamily: T.ui,
+            fontFamily: TL.font.sans,
             maxWidth: "min(90vw, 420px)",
           }}
         >
@@ -674,18 +670,18 @@ function ProtokollRad({ k, v, last }: { k: string; v: string; last?: boolean }) 
         alignItems: "baseline",
         gap: 8,
         padding: "8px 0",
-        borderBottom: last ? "none" : `1px solid ${T.border}`,
+        borderBottom: last ? "none" : `1px solid ${TL.hair}`,
         fontSize: 13,
         minWidth: 0,
       }}
     >
-      <span style={{ color: T.fg, flex: "none" }}>{k}</span>
+      <span style={{ color: TL.text, flex: "none" }}>{k}</span>
       <span
         style={{
           marginLeft: "auto",
-          fontFamily: T.mono,
+          fontFamily: TL.font.mono,
           textAlign: "right",
-          color: T.fg2,
+          color: TL.mute,
           fontVariantNumeric: "tabular-nums",
           minWidth: 0,
         }}
@@ -699,7 +695,7 @@ function ProtokollRad({ k, v, last }: { k: string; v: string; last?: boolean }) 
 /** Bunn-note fra Live Test-fasit — gjør FYS-plassholder-status eksplisitt. */
 function FysPlassholderNote() {
   return (
-    <p style={{ margin: "20px 0 0", borderTop: `1px solid ${T.border}`, paddingTop: 14, textAlign: "center", fontFamily: T.mono, fontSize: 9, fontWeight: 600, letterSpacing: "0.08em", textTransform: "uppercase", color: T.mut }}>
+    <p style={{ margin: "20px 0 0", borderTop: `1px solid ${TL.hair}`, paddingTop: 14, textAlign: "center", fontFamily: TL.font.mono, fontSize: 9, fontWeight: 600, letterSpacing: "0.08em", textTransform: "uppercase", color: TL.mute }}>
       FYS-resultater er plassholderverdier · formelen er ikke låst
     </p>
   );
@@ -739,7 +735,7 @@ function ForsokRad({
           alignItems: "center",
           gap: 12,
           padding: "4px 0",
-          borderBottom: last ? "none" : `1px solid ${T.border}`,
+          borderBottom: last ? "none" : `1px solid ${TL.hair}`,
           minWidth: 0,
         }}
       >
@@ -747,9 +743,9 @@ function ForsokRad({
           style={{
             flex: "none",
             width: 24,
-            fontFamily: T.mono,
+            fontFamily: TL.font.mono,
             fontSize: 11,
-            color: T.mut,
+            color: TL.mute,
             textAlign: "right",
             fontVariantNumeric: "tabular-nums",
           }}
@@ -761,7 +757,7 @@ function ForsokRad({
             minWidth: 0,
             flex: 1,
             fontSize: 13,
-            color: T.fg,
+            color: TL.text,
             whiteSpace: "nowrap",
             overflow: "hidden",
             textOverflow: "ellipsis",
@@ -769,7 +765,7 @@ function ForsokRad({
         >
           {forsok.label}
           {forsok.target && (
-            <span style={{ fontFamily: T.mono, fontSize: 9, color: T.mut, marginLeft: 6 }}>
+            <span style={{ fontFamily: TL.font.mono, fontSize: 9, color: TL.mute, marginLeft: 6 }}>
               mål {forsok.target}
             </span>
           )}
@@ -794,16 +790,16 @@ function ForsokRad({
             alignItems: "center",
             justifyContent: "center",
             gap: 4,
-            border: `1px solid ${erOk ? T.up : T.borderS}`,
+            border: `1px solid ${erOk ? TL.ok : TL.hair}`,
             borderRadius: 9999,
-            background: erOk ? T.panel2 : "transparent",
+            background: erOk ? TL.dock : "transparent",
             cursor: "pointer",
-            fontFamily: T.mono,
+            fontFamily: TL.font.mono,
             fontSize: 11,
-            color: erOk ? T.up : erBom ? T.down : T.mut,
+            color: erOk ? TL.ok : erBom ? TL.danger : TL.mute,
           }}
         >
-          {erOk && <Icon name="check" size={14} style={{ color: T.up }} />}
+          {erOk && <Icon name="check" size={14} style={{ color: TL.ok }} />}
           {erOk ? "OK" : erBom ? "bom" : "—"}
         </button>
       </div>
@@ -818,7 +814,7 @@ function ForsokRad({
         alignItems: "flex-start",
         gap: 12,
         padding: "10px 0",
-        borderBottom: last ? "none" : `1px solid ${T.border}`,
+        borderBottom: last ? "none" : `1px solid ${TL.hair}`,
         minWidth: 0,
       }}
     >
@@ -827,9 +823,9 @@ function ForsokRad({
           flex: "none",
           width: 24,
           marginTop: 4,
-          fontFamily: T.mono,
+          fontFamily: TL.font.mono,
           fontSize: 11,
-          color: T.mut,
+          color: TL.mute,
           textAlign: "right",
           fontVariantNumeric: "tabular-nums",
         }}
@@ -837,10 +833,10 @@ function ForsokRad({
         {forsok.nr}
       </span>
       <div style={{ minWidth: 0, flex: 1, display: "flex", flexDirection: "column", gap: 8 }}>
-        <span style={{ fontSize: 13, color: T.fg }}>
+        <span style={{ fontSize: 13, color: TL.text }}>
           {forsok.label}
           {forsok.target && (
-            <span style={{ fontFamily: T.mono, fontSize: 9, color: T.mut, marginLeft: 6 }}>
+            <span style={{ fontFamily: TL.font.mono, fontSize: 9, color: TL.mute, marginLeft: 6 }}>
               mål {forsok.target}
             </span>
           )}
@@ -973,14 +969,14 @@ function PillValg({
               alignItems: "center",
               justifyContent: "center",
               borderRadius: 11,
-              fontFamily: T.mono,
+              fontFamily: TL.font.mono,
               fontSize: 10,
               fontWeight: 700,
               letterSpacing: "0.05em",
               textTransform: "uppercase",
-              background: on ? T.cta : T.panel2,
-              border: `1px solid ${on ? "transparent" : T.borderS}`,
-              color: on ? T.onCta : T.fg2,
+              background: on ? TL.fill : TL.dock,
+              border: `1px solid ${on ? "transparent" : TL.hair}`,
+              color: on ? TL.onFill : TL.mute,
             }}
           >
             {label}
@@ -1014,14 +1010,14 @@ function FeltInput({
       justifyContent: "center",
       gap: 4,
       borderRadius: 11,
-      fontFamily: T.mono,
+      fontFamily: TL.font.mono,
       fontSize: 10,
       fontWeight: 700,
       letterSpacing: "0.06em",
       textTransform: "uppercase",
-      background: on ? T.cta : T.panel2,
-      border: `1px solid ${on ? "transparent" : T.borderS}`,
-      color: on ? T.onCta : T.fg2,
+      background: on ? TL.fill : TL.dock,
+      border: `1px solid ${on ? "transparent" : TL.hair}`,
+      color: on ? TL.onFill : TL.mute,
     });
     return (
       <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
@@ -1047,7 +1043,7 @@ function FeltInput({
             style={{
               ...valgStil(false),
               ...(verdi === false
-                ? { background: T.panel3, border: `1px solid ${T.borderS}`, color: T.fg }
+                ? { background: TL.dim, border: `1px solid ${TL.hair}`, color: TL.text }
                 : null),
             }}
           >
@@ -1076,9 +1072,9 @@ function FeltInput({
       alignItems: "center",
       justifyContent: "center",
       borderRadius: 11,
-      background: T.panel3,
-      border: `1px solid ${T.borderS}`,
-      color: T.fg,
+      background: TL.dim,
+      border: `1px solid ${TL.hair}`,
+      color: TL.text,
     };
     return (
       <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
@@ -1097,7 +1093,7 @@ function FeltInput({
           >
             <Icon name="minus" size={15} />
           </button>
-          <span style={{ minWidth: 0, flex: 1, textAlign: "center", fontFamily: T.mono, fontSize: 22, fontWeight: 700, lineHeight: 1, letterSpacing: "-0.03em", fontVariantNumeric: "tabular-nums", color: fort ? T.fg : T.mut }}>
+          <span style={{ minWidth: 0, flex: 1, textAlign: "center", fontFamily: TL.font.mono, fontSize: 22, fontWeight: 700, lineHeight: 1, letterSpacing: "-0.03em", fontVariantNumeric: "tabular-nums", color: fort ? TL.text : TL.mute }}>
             {fort ? fmt.format(tall) : "–"}
           </span>
           <button
@@ -1120,7 +1116,7 @@ function FeltInput({
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
       <span style={lblStil}>{felt.label}</span>
-      <label style={{ display: "flex", height: 48, alignItems: "center", gap: 8, borderRadius: 11, border: `1px solid ${T.borderS}`, background: T.panel2, padding: "0 13px" }}>
+      <label style={{ display: "flex", height: 48, alignItems: "center", gap: 8, borderRadius: 11, border: `1px solid ${TL.hair}`, background: TL.dock, padding: "0 13px" }}>
         <input
           type="text"
           inputMode="decimal"
@@ -1129,10 +1125,10 @@ function FeltInput({
           onChange={(e) => onSett(e.target.value, false)}
           placeholder="0"
           aria-label={`${felt.label}, forsøk ${forsokNr}`}
-          style={{ minWidth: 0, flex: 1, border: 0, background: "transparent", padding: 0, outline: "none", fontFamily: T.mono, fontSize: 15, fontWeight: 700, fontVariantNumeric: "tabular-nums", color: T.fg }}
+          style={{ minWidth: 0, flex: 1, border: 0, background: "transparent", padding: 0, outline: "none", fontFamily: TL.font.mono, fontSize: 15, fontWeight: 700, fontVariantNumeric: "tabular-nums", color: TL.text }}
         />
         {enhet && (
-          <span style={{ flex: "none", fontFamily: T.mono, fontSize: 10, fontWeight: 700, color: T.mut }}>
+          <span style={{ flex: "none", fontFamily: TL.font.mono, fontSize: 10, fontWeight: 700, color: TL.mute }}>
             {enhet}
           </span>
         )}

@@ -1,4 +1,4 @@
-import { T } from "@/components/v2";
+import { TL } from "@/lib/v2/train-lock";
 
 /**
  * År-Gantt for tilgjengelighet, v2-port 16. juli 2026. Viser hvert ukentlige
@@ -7,7 +7,7 @@ import { T } from "@/components/v2";
  */
 
 const MND_KORT = ["J", "F", "M", "A", "M", "J", "J", "A", "S", "O", "N", "D"];
-const TONER = [T.up, T.info, T.warn, T.lime];
+const TONER = [TL.ok, TL.viz.target, TL.warn, TL.fill];
 
 export type YearWindow = {
   id: string;
@@ -37,18 +37,18 @@ export function AvailabilityYearGanttV2({ year, windows }: { year: number; windo
   const toneFor = (navn: string) => TONER[anleggsNavn.indexOf(navn) % TONER.length];
 
   return (
-    <div data-paper-wave-h="availabilityyeargantt" data-paper-pattern  style={{ borderRadius: T.rCard, border: `1px solid ${T.border}`, background: T.panel, padding: 18 }}>
+    <div data-paper-wave-h="availabilityyeargantt" data-paper-pattern  style={{ borderRadius: TL.radius.card, border: `1px solid ${TL.hair}`, background: TL.elev, padding: 18 }}>
       <div style={{ display: "grid", gridTemplateColumns: "160px 1fr", alignItems: "center", gap: 12, marginBottom: 12 }}>
-        <span style={{ fontFamily: T.mono, fontSize: 10, textTransform: "uppercase", letterSpacing: "0.10em", color: T.mut }}>{year}</span>
+        <span style={{ fontFamily: TL.font.mono, fontSize: 10, textTransform: "uppercase", letterSpacing: "0.10em", color: TL.mute }}>{year}</span>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(12, 1fr)" }}>
           {MND_KORT.map((mnd, i) => (
-            <span key={i} style={{ textAlign: "center", fontFamily: T.mono, fontSize: 9, fontWeight: 800, letterSpacing: "0.06em", color: T.mut }}>{mnd}</span>
+            <span key={i} style={{ textAlign: "center", fontFamily: TL.font.mono, fontSize: 9, fontWeight: 800, letterSpacing: "0.06em", color: TL.mute }}>{mnd}</span>
           ))}
         </div>
       </div>
 
       {windows.length === 0 ? (
-        <p style={{ fontSize: 13, color: T.mut, margin: 0 }}>
+        <p style={{ fontSize: 13, color: TL.mute, margin: 0 }}>
           Ingen ukentlige tidsvinduer satt. Legg til vinduer med periode for å se dem fordelt over året.
         </p>
       ) : (
@@ -57,7 +57,7 @@ export function AvailabilityYearGanttV2({ year, windows }: { year: number; windo
             <div key={navn}>
               <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 6 }}>
                 <span style={{ width: 7, height: 7, borderRadius: 9999, background: toneFor(navn) }} />
-                <span style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 14, color: T.fg }}>{navn}</span>
+                <span style={{ fontFamily: TL.font.sans, fontWeight: 700, fontSize: 14, color: TL.text }}>{navn}</span>
               </div>
               <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
                 {grupper.get(navn)!.map((w) => {
@@ -66,11 +66,11 @@ export function AvailabilityYearGanttV2({ year, windows }: { year: number; windo
                   const bredde = Math.max(0.02, til - fra);
                   return (
                     <div key={w.id} style={{ display: "grid", gridTemplateColumns: "160px 1fr", alignItems: "center", gap: 12 }}>
-                      <span style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", fontFamily: T.mono, fontSize: 11, color: T.mut }}>{w.label}</span>
-                      <div style={{ position: "relative", height: 20, borderRadius: 6, background: T.panel2 }}>
+                      <span style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", fontFamily: TL.font.mono, fontSize: 11, color: TL.mute }}>{w.label}</span>
+                      <div style={{ position: "relative", height: 20, borderRadius: 6, background: TL.dock }}>
                         <div style={{ position: "absolute", inset: 0, display: "grid", gridTemplateColumns: "repeat(12, 1fr)" }}>
                           {MND_KORT.map((_, i) => (
-                            <span key={i} style={{ borderLeft: i === 0 ? "none" : `1px solid color-mix(in srgb, ${T.border} 60%, transparent)` }} />
+                            <span key={i} style={{ borderLeft: i === 0 ? "none" : `1px solid color-mix(in srgb, ${TL.hair} 60%, transparent)` }} />
                           ))}
                         </div>
                         <div
@@ -87,7 +87,7 @@ export function AvailabilityYearGanttV2({ year, windows }: { year: number; windo
         </div>
       )}
 
-      <div style={{ marginTop: 16, fontFamily: T.mono, fontSize: 9, letterSpacing: "0.06em", color: T.mut }}>
+      <div style={{ marginTop: 16, fontFamily: TL.font.mono, fontSize: 9, letterSpacing: "0.06em", color: TL.mute }}>
         Bjelker uten satt periode spenner hele året. Sett «Begrens til periode» i et tidsvindu for å avgrense det til en sesong.
       </div>
     </div>

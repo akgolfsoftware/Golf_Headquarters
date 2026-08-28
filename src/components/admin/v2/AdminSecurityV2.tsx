@@ -1,5 +1,5 @@
 "use client";
-
+import { TL } from "@/lib/v2/train-lock";
 /**
  * v2: AgencyOS Innstillinger → Sikkerhet. Rekomponerer
  * /admin/(legacy)/settings/security i v2-språket (V2Shell +
@@ -13,9 +13,8 @@
  */
 
 import Link from "next/link";
-import { Caps, Tittel, Kort, Rad, TallHero, TomTilstand, CTAPill, T } from "@/components/v2";
+import { Caps, Kort, Rad, TallHero, TomTilstand, CTAPill } from "@/components/v2";
 import { Setup2FA } from "@/app/portal/meg/sikkerhet/setup-2fa";
-
 export interface AdminSecurityV2Data {
   rolle: "ADMIN" | "COACH";
   epost: string;
@@ -27,20 +26,20 @@ export function AdminSecurityV2({ data }: { data: AdminSecurityV2Data }) {
   const rolleLabel = data.rolle === "ADMIN" ? "Administrator" : "Coach";
 
   return (
-    <div data-paper-wave-h="security" data-paper-pattern data-paper-slug="agencyos-oppsett" style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 960, margin: "0 auto", width: "100%" }}>
+    <div data-paper-wave-h="security" data-paper-pattern data-paper-slug="agencyos-oppsett" style={{ display: "flex", flexDirection: "column", gap: 16, maxWidth: 960, margin: "0 auto", width: "100%" }}>
       <div>
         <div data-paper-pattern-topp>
-          <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>Sikkerhet</h1>
-          <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>AgencyOS</span>
+          <h1 style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 17, fontWeight: 600, color: TL.text }}>Sikkerhet</h1>
+          <span style={{ display: "block", fontFamily: TL.font.mono, fontSize: 10.5, color: TL.mute, marginTop: 2 }}>AgencyOS</span>
         </div>
-        <p style={{ fontFamily: T.ui, fontSize: 13, color: T.mut, lineHeight: 1.6, margin: "10px 0 0", maxWidth: 560 }}>
+        <p style={{ fontFamily: TL.font.sans, fontSize: 13, color: TL.mute, lineHeight: 1.6, margin: "10px 0 0", maxWidth: 560 }}>
           Kontoen din virker grei. Sjekk likevel listen under — første gang du ser en rar
           IP er ofte siste sjanse.
         </p>
       </div>
 
       <Kort eyebrow="Oversikt">
-        <div className="grid grid-cols-1 sm:grid-cols-2" style={{ gap: T.gap }}>
+        <div className="grid grid-cols-1 sm:grid-cols-2" style={{ gap: 16 }}>
           <TallHero label="Konto" value={rolleLabel} sub={`E-post ${data.epost}`} size={26} />
           <TallHero label="Sist oppdatert" value={data.sistOppdatert} sub="Tidspunkt for siste profil-endring" size={26} />
         </div>

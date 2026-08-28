@@ -1,5 +1,5 @@
 "use client";
-
+import { TL } from "@/lib/v2/train-lock";
 /**
  * WORKBENCH — v2 MOBIL-MOTPARTER (retning C «Presis»). Rene, dataminimale
  * komponenter for <md-visningen av WorkbenchV2.tsx: dag-agenda i stedet for
@@ -12,7 +12,7 @@
  */
 
 import { useState, type ReactNode } from "react";
-import { T, Kort, TomTilstand, StatusPill, Icon } from "@/components/v2";
+import { Kort, TomTilstand, StatusPill, Icon } from "@/components/v2";
 import { DagStripe, type StripeDag } from "@/components/v2/kalender";
 import { DagNivaa, MANEDER, LPHASE_LABEL, type DagKol } from "./WorkbenchV2";
 import type { WorkbenchData } from "@/lib/workbench/load-workbench";
@@ -66,21 +66,21 @@ export function AarNivaaMobil({ data }: { data: WorkbenchData }) {
               style={{
                 padding: "10px 12px",
                 borderRadius: 12,
-                background: naa ? T.handlingSoft : T.panel2,
-                border: `1px solid ${naa ? "transparent" : T.border}`,
+                background: naa ? TL.dim : TL.dock,
+                border: `1px solid ${naa ? "transparent" : TL.hair}`,
               }}
             >
               <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8 }}>
-                <span style={{ fontFamily: T.ui, fontSize: 13, fontWeight: 600, color: T.fg }}>
+                <span style={{ fontFamily: TL.font.sans, fontSize: 13, fontWeight: 600, color: TL.text }}>
                   {LPHASE_LABEL[b.lPhase] ?? b.lPhase}
                 </span>
                 {naa && <StatusPill>Nå</StatusPill>}
               </div>
-              <span style={{ fontFamily: T.mono, fontSize: 9.5, color: T.mut, display: "block", marginTop: 3 }}>
+              <span style={{ fontFamily: TL.font.mono, fontSize: 9.5, color: TL.mute, display: "block", marginTop: 3 }}>
                 {start.getDate()}. {MANEDER[start.getMonth()].slice(0, 3)}–{end.getDate()}. {MANEDER[end.getMonth()].slice(0, 3)}
               </span>
               {b.focus && (
-                <span style={{ fontFamily: T.ui, fontSize: 11.5, color: T.mut, display: "block", marginTop: 6, lineHeight: 1.4 }}>
+                <span style={{ fontFamily: TL.font.sans, fontSize: 11.5, color: TL.mute, display: "block", marginTop: 6, lineHeight: 1.4 }}>
                   {b.focus}
                 </span>
               )}
@@ -106,25 +106,25 @@ export function WbBottomSheet({
 }) {
   return (
     <div style={{ position: "fixed", inset: 0, zIndex: 70 }} role="dialog" aria-modal="true" aria-label={tittel}>
-      <div onClick={onLukk} style={{ position: "absolute", inset: 0, background: T.farge.nestenSvartA62, backdropFilter: "blur(2px)" }} />
+      <div onClick={onLukk} style={{ position: "absolute", inset: 0, background: TL.scrim, backdropFilter: "none" }} />
       <div
         className="v2-sheet-in"
         style={{
           position: "absolute", left: 0, right: 0, bottom: 0, maxHeight: "88dvh",
-          display: "flex", flexDirection: "column", background: T.panel,
-          borderTop: `1px solid ${T.borderS}`, borderRadius: "20px 20px 0 0",
+          display: "flex", flexDirection: "column", background: TL.elev,
+          borderTop: `1px solid ${TL.hair}`, borderRadius: "20px 20px 0 0",
           paddingBottom: "env(safe-area-inset-bottom)",
         }}
       >
-        <span aria-hidden style={{ width: 36, height: 4, borderRadius: 9999, background: T.border, margin: "10px auto 6px", flex: "none" }} />
-        <div style={{ display: "flex", alignItems: "center", gap: 8, padding: "0 16px 10px", borderBottom: `1px solid ${T.border}`, flex: "none" }}>
-          <span style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 15, color: T.fg, flex: 1, minWidth: 0 }}>{tittel}</span>
+        <span aria-hidden style={{ width: 36, height: 4, borderRadius: 9999, background: TL.hair, margin: "10px auto 6px", flex: "none" }} />
+        <div style={{ display: "flex", alignItems: "center", gap: 8, padding: "0 16px 10px", borderBottom: `1px solid ${TL.hair}`, flex: "none" }}>
+          <span style={{ fontFamily: TL.font.sans, fontWeight: 700, fontSize: 15, color: TL.text, flex: 1, minWidth: 0 }}>{tittel}</span>
           <button
             type="button"
             onClick={onLukk}
             aria-label="Lukk"
             className="v2-press v2-focus"
-            style={{ appearance: "none", cursor: "pointer", width: 44, height: 44, display: "inline-flex", alignItems: "center", justifyContent: "center", background: "transparent", border: `1px solid ${T.border}`, borderRadius: 10, color: T.fg2 }}
+            style={{ appearance: "none", cursor: "pointer", width: 44, height: 44, display: "inline-flex", alignItems: "center", justifyContent: "center", background: "transparent", border: `1px solid ${TL.hair}`, borderRadius: 10, color: TL.mute }}
           >
             <Icon name="x" size={16} />
           </button>

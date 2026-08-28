@@ -1,5 +1,5 @@
 "use client";
-
+import { TL } from "@/lib/v2/train-lock";
 /**
  * PlayerHQ · Talent · Sammenligning — v2 Presis + B-pakke (status + én primær CTA, tom = vei).
  * T.* only. Lys PlayerHQ.
@@ -8,22 +8,7 @@
 import { useState, useTransition } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-
-import {
-  T,
-  Kort,
-  StatusPill,
-  TomTilstand,
-  HjelpTips,
-  CTAPill,
-  Knapp,
-  RadarProfil,
-  DiffKort,
-  Inndata,
-  Velger,
-  Bryter,
-  PillVelger,
-} from "@/components/v2";
+import { Kort, StatusPill, TomTilstand, HjelpTips, CTAPill, Knapp, RadarProfil, DiffKort, Inndata, Velger, Bryter, PillVelger } from "@/components/v2";
 import { toggleAnonymiser } from "@/app/portal/talent/sammenligning/actions";
 import type { TalentAkseKey } from "./TalentFellesV2";
 
@@ -89,16 +74,16 @@ export function TalentSammenligningV2({ data }: { data: TalentSammenligningData 
   const harValgt = data.valgt !== null;
 
   return (
-    <div data-paper-wave-g="talentsammenligning" data-paper-portal-talent-sammenligning data-paper-slug="playerhq-talent" style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
+    <div data-paper-wave-g="talentsammenligning" data-paper-portal-talent-sammenligning data-paper-slug="playerhq-talent" style={{ display: "flex", flexDirection: "column", gap: 16, maxWidth: 720, margin: "0 auto", width: "100%" }}>
       {/* Hode */}
       <div>
         <div data-paper-pattern-topp>
-          <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>Sammenligning</h1>
-          <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>Talent</span>
+          <h1 style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 17, fontWeight: 600, color: TL.text }}>Sammenligning</h1>
+          <span style={{ display: "block", fontFamily: TL.font.mono, fontSize: 10.5, color: TL.mute, marginTop: 2 }}>Talent</span>
         </div>
         <div style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 10, flexWrap: "wrap" }}>
           <StatusPill tone="lime">Nivå {data.niva}</StatusPill>
-          <span style={{ fontFamily: T.ui, fontSize: 11.5, color: T.mut }}>
+          <span style={{ fontFamily: TL.font.sans, fontSize: 11.5, color: TL.mute }}>
             Velg en spiller på {data.niva}-nivå for å se hvordan dere ligger mot hverandre.
           </span>
         </div>
@@ -147,7 +132,7 @@ export function TalentSammenligningV2({ data }: { data: TalentSammenligningData 
             Sammenlign
           </Knapp>
           {data.q && data.kandidater.length === 0 && (
-            <span style={{ fontFamily: T.ui, fontSize: 12, color: T.mut }}>
+            <span style={{ fontFamily: TL.font.sans, fontSize: 12, color: TL.mute }}>
               Ingen treff på «{data.q}» på {data.niva}-nivå.
             </span>
           )}
@@ -181,9 +166,9 @@ export function TalentSammenligningV2({ data }: { data: TalentSammenligningData 
               />
             </div>
             {/* Legende */}
-            <div style={{ display: "flex", flexDirection: "column", gap: 8, borderTop: `1px solid ${T.border}`, paddingTop: 12, marginTop: 12 }}>
-              <LegendeRad farge={T.lime} navn={data.mittNavn} klubb={data.minKlubb} stiplet={false} />
-              <LegendeRad farge={T.fg2} navn={data.valgt!.navn} klubb={data.valgt!.klubb} stiplet />
+            <div style={{ display: "flex", flexDirection: "column", gap: 8, borderTop: `1px solid ${TL.hair}`, paddingTop: 12, marginTop: 12 }}>
+              <LegendeRad farge={TL.fill} navn={data.mittNavn} klubb={data.minKlubb} stiplet={false} />
+              <LegendeRad farge={TL.mute} navn={data.valgt!.navn} klubb={data.valgt!.klubb} stiplet />
             </div>
             <div style={{ marginTop: 12 }}>
               <Link href="/portal/talent/sammenligning" style={{ textDecoration: "none" }}>
@@ -197,12 +182,12 @@ export function TalentSammenligningV2({ data }: { data: TalentSammenligningData 
             <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
               {data.akser.map((a) => (
                 <div key={a.key}>
-                  <span style={{ fontFamily: T.ui, fontSize: 13, fontWeight: 600, color: T.fg, display: "block", marginBottom: 8 }}>
+                  <span style={{ fontFamily: TL.font.sans, fontSize: 13, fontWeight: 600, color: TL.text, display: "block", marginBottom: 8 }}>
                     {a.label}
                   </span>
-                  <AkseLinje navn={data.mittNavn} verdi={a.min} farge={T.lime} />
+                  <AkseLinje navn={data.mittNavn} verdi={a.min} farge={TL.fill} />
                   <div style={{ height: 7 }} />
-                  <AkseLinje navn={data.valgt!.navn} verdi={a.andre} farge={T.fg2} />
+                  <AkseLinje navn={data.valgt!.navn} verdi={a.andre} farge={TL.mute} />
                 </div>
               ))}
             </div>
@@ -225,7 +210,7 @@ export function TalentSammenligningV2({ data }: { data: TalentSammenligningData 
           />
         }
       >
-        <div className="grid grid-cols-1 sm:grid-cols-2" style={{ gap: T.gap }}>
+        <div className="grid grid-cols-1 sm:grid-cols-2" style={{ gap: 16 }}>
           {data.sgDeltas.map((d) => {
             const diff = d.naa !== null && d.foer !== null ? d.naa - d.foer : null;
             return (
@@ -256,11 +241,11 @@ function LegendeRad({ farge, navn, klubb, stiplet }: { farge: string; navn: stri
         ) : (
           <span aria-hidden style={{ width: 18, height: 3, borderRadius: 2, background: farge, flex: "none" }} />
         )}
-        <span style={{ fontFamily: T.ui, fontSize: 13, fontWeight: 700, color: T.fg, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+        <span style={{ fontFamily: TL.font.sans, fontSize: 13, fontWeight: 700, color: TL.text, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
           {navn}
         </span>
       </span>
-      <span style={{ fontFamily: T.mono, fontSize: 10, color: T.mut, flex: "none" }}>{klubb ?? "—"}</span>
+      <span style={{ fontFamily: TL.font.mono, fontSize: 10, color: TL.mute, flex: "none" }}>{klubb ?? "—"}</span>
     </div>
   );
 }
@@ -270,14 +255,14 @@ function AkseLinje({ navn, verdi, farge }: { navn: string; verdi: number | null;
   return (
     <div>
       <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: 8 }}>
-        <span style={{ fontFamily: T.ui, fontSize: 11.5, color: T.fg2, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+        <span style={{ fontFamily: TL.font.sans, fontSize: 11.5, color: TL.mute, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
           {navn}
         </span>
-        <span style={{ fontFamily: T.mono, fontSize: 10.5, color: T.mut, fontVariantNumeric: "tabular-nums", flex: "none" }}>
+        <span style={{ fontFamily: TL.font.mono, fontSize: 10.5, color: TL.mute, fontVariantNumeric: "tabular-nums", flex: "none" }}>
           {fmt10(verdi)} / 10
         </span>
       </div>
-      <div style={{ height: 7, borderRadius: 9999, background: T.track, marginTop: 5, overflow: "hidden" }}>
+      <div style={{ height: 7, borderRadius: 9999, background: TL.hair, marginTop: 5, overflow: "hidden" }}>
         <div style={{ width: `${pct}%`, height: "100%", borderRadius: 9999, background: farge, opacity: 0.9 }} />
       </div>
     </div>

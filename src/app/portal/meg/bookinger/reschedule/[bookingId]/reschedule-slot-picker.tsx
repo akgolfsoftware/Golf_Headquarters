@@ -3,7 +3,8 @@
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { rescheduleBooking } from "@/app/portal/meg/bookinger/actions";
-import { T } from "@/lib/v2/tokens";
+import { TL } from "@/lib/v2/train-lock";
+
 import { Caps, Kort, Knapp } from "@/components/v2";
 
 type Slot = {
@@ -74,11 +75,11 @@ export function RescheduleSlotPicker({ bookingId, slots }: Props) {
                   style={{
                     appearance: "none",
                     borderRadius: 11,
-                    border: `1px solid ${aktiv ? "transparent" : T.border}`,
-                    background: aktiv ? T.lime : T.panel,
-                    color: aktiv ? T.onLime : T.fg,
+                    border: `1px solid ${aktiv ? "transparent" : TL.hair}`,
+                    background: aktiv ? TL.fill : TL.elev,
+                    color: aktiv ? TL.onFill : TL.text,
                     padding: "10px 8px",
-                    fontFamily: T.mono,
+                    fontFamily: TL.font.mono,
                     fontSize: 13,
                     fontWeight: 600,
                     fontVariantNumeric: "tabular-nums",
@@ -99,12 +100,12 @@ export function RescheduleSlotPicker({ bookingId, slots }: Props) {
           role="alert"
           style={{
             borderRadius: 10,
-            border: `1px solid color-mix(in srgb, ${T.down} 30%, transparent)`,
-            background: `color-mix(in srgb, ${T.down} 10%, ${T.panel})`,
+            border: `1px solid color-mix(in srgb, ${TL.danger} 30%, transparent)`,
+            background: `color-mix(in srgb, ${TL.danger} 10%, ${TL.elev})`,
             padding: "10px 12px",
-            fontFamily: T.ui,
+            fontFamily: TL.font.sans,
             fontSize: 13,
-            color: T.down,
+            color: TL.danger,
           }}
         >
           {error}
@@ -113,7 +114,7 @@ export function RescheduleSlotPicker({ bookingId, slots }: Props) {
 
       <Kort>
         <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", justifyContent: "space-between", gap: 12 }}>
-          <p style={{ margin: 0, fontFamily: T.ui, fontSize: 13, color: T.fg2, lineHeight: 1.45, flex: 1, minWidth: 180 }}>
+          <p style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 13, color: TL.mute, lineHeight: 1.45, flex: 1, minWidth: 180 }}>
             {valgt
               ? `Valgt: ${new Date(valgt.start).toLocaleString("nb-NO", { dateStyle: "medium", timeStyle: "short" })} (${valgt.coachName})`
               : "Velg en tid over for å bekrefte byttet."}

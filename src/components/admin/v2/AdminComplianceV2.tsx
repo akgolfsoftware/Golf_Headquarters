@@ -1,5 +1,5 @@
 "use client";
-
+import { TL } from "@/lib/v2/train-lock";
 /**
  * AgencyOS Compliance — v2 (retning C «Presis»). Plan møter virkelighet på
  * tvers av stallen, drevet av EKTE ComplianceData fra loadComplianceData
@@ -20,28 +20,7 @@
 import { usePathname, useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import { sendMeldingTilSpiller } from "@/app/admin/(legacy)/messages/actions";
-import {
-  Caps,
-  Tittel,
-  Kort,
-  Rad,
-  KpiFlis,
-  AvatarInit,
-  AkseBar,
-  AkseChip,
-  RingMaaler,
-  ProgresjonsBar,
-  InnsiktChip,
-  TomTilstand,
-  PillVelger,
-  Icon,
-  Knapp,
-  UkeStripe,
-  HjelpTips,
-  etterlevFarge,
-  type EtterlevBand,
-  T,
-} from "@/components/v2";
+import { Caps, Kort, Rad, KpiFlis, AvatarInit, AkseBar, AkseChip, RingMaaler, ProgresjonsBar, InnsiktChip, TomTilstand, PillVelger, Icon, Knapp, UkeStripe, HjelpTips, etterlevFarge, type EtterlevBand } from "@/components/v2";
 import type { AkseKey } from "@/lib/v2/tokens";
 import type { ComplianceData, ComplianceAxis, StallRow } from "@/lib/admin-compliance/compliance-data";
 
@@ -55,9 +34,9 @@ const AKSE: Record<ComplianceAxis, AkseKey> = {
 };
 
 const LOGG_FARGE: Record<StallRow["lastLogBand"], string> = {
-  ok: T.up,
-  warn: T.warn,
-  bad: T.down,
+  ok: TL.ok,
+  warn: TL.warn,
+  bad: TL.danger,
 };
 
 const PERIODER = [
@@ -70,10 +49,10 @@ const PERIODER = [
 const pl = (n: number, en: string, flere: string) => `${n} ${n === 1 ? en : flere}`;
 
 const RING_ZONER = [
-  { from: 0, to: 60, color: T.down, label: "Bak plan" },
-  { from: 60, to: 75, color: T.warn, label: "Følg opp" },
-  { from: 75, to: 100, color: T.up, label: "I rute" },
-  { from: 100, to: 100000, color: T.lime, label: "Over plan" },
+  { from: 0, to: 60, color: TL.danger, label: "Bak plan" },
+  { from: 60, to: 75, color: TL.warn, label: "Følg opp" },
+  { from: 75, to: 100, color: TL.ok, label: "I rute" },
+  { from: 100, to: 100000, color: TL.fill, label: "Over plan" },
 ];
 
 export function AdminComplianceV2({ data }: { data: ComplianceData }) {
@@ -132,8 +111,8 @@ export function AdminComplianceV2({ data }: { data: ComplianceData }) {
     <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 14, flexWrap: "wrap" }}>
       <div>
         <div data-paper-pattern-topp>
-          <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>Compliance</h1>
-          <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>AgencyOS</span>
+          <h1 style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 17, fontWeight: 600, color: TL.text }}>Compliance</h1>
+          <span style={{ display: "block", fontFamily: TL.font.mono, fontSize: 10.5, color: TL.mute, marginTop: 2 }}>AgencyOS</span>
         </div>
       </div>
       <PillVelger
@@ -147,7 +126,7 @@ export function AdminComplianceV2({ data }: { data: ComplianceData }) {
   // Tom stall → ærlig tomrom, ingen resten.
   if (data.stall.length === 0) {
     return (
-      <div data-paper-wave-h="compliance" data-paper-pattern style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 960, margin: "0 auto", width: "100%" }}>
+      <div data-paper-wave-h="compliance" data-paper-pattern style={{ display: "flex", flexDirection: "column", gap: 16, maxWidth: 960, margin: "0 auto", width: "100%" }}>
         {hode}
         <Kort>
           <TomTilstand icon="users" title="Ingen spillere i stallen" sub="Ingen aktive spillere er koblet til deg ennå — etterlevelse måles når det finnes planer å følge." />
@@ -159,7 +138,7 @@ export function AdminComplianceV2({ data }: { data: ComplianceData }) {
   // ── KPI-flis (4) ──────────────────────────────────────────────
   const medPlan = data.stall.filter((s) => s.planned > 0).length;
   const kpi = (
-    <div className="grid grid-cols-2 lg:grid-cols-4" style={{ gap: T.gap }}>
+    <div className="grid grid-cols-2 lg:grid-cols-4" style={{ gap: 16 }}>
       <KpiFlis label="Stall-snitt" value={data.cohortAvg != null ? `${data.cohortAvg} %` : "—"} />
       <KpiFlis label="Median" value={data.cohortMedian != null ? `${data.cohortMedian} %` : "—"} />
       <KpiFlis label="Uten fersk logg" value={data.staleCount} varsle={data.staleCount > 0} />
@@ -183,8 +162,8 @@ export function AdminComplianceV2({ data }: { data: ComplianceData }) {
           <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 4 }}>
             <AvatarInit navn={panel.playerName} size={44} />
             <div style={{ minWidth: 0 }}>
-              <div style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 18, color: T.fg }}>{panel.playerName}</div>
-              {panelMeta && <div style={{ fontFamily: T.ui, fontSize: 11.5, color: T.mut, marginTop: 2 }}>{panelMeta}</div>}
+              <div style={{ fontFamily: TL.font.sans, fontWeight: 700, fontSize: 18, color: TL.text }}>{panel.playerName}</div>
+              {panelMeta && <div style={{ fontFamily: TL.font.sans, fontSize: 11.5, color: TL.mute, marginTop: 2 }}>{panelMeta}</div>}
             </div>
           </div>
           <TomTilstand icon="calendar" title="Ingen planlagte økter" sub="Ingen plan i denne perioden å måle etterlevelse mot." />
@@ -206,11 +185,11 @@ export function AdminComplianceV2({ data }: { data: ComplianceData }) {
               <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
                 <AvatarInit navn={panel.playerName} size={38} />
                 <div style={{ minWidth: 0 }}>
-                  <div style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 17, color: T.fg }}>{panel.playerName}</div>
-                  {panelMeta && <div style={{ fontFamily: T.ui, fontSize: 11, color: T.mut, marginTop: 2 }}>{panelMeta}</div>}
+                  <div style={{ fontFamily: TL.font.sans, fontWeight: 700, fontSize: 17, color: TL.text }}>{panel.playerName}</div>
+                  {panelMeta && <div style={{ fontFamily: TL.font.sans, fontSize: 11, color: TL.mute, marginTop: 2 }}>{panelMeta}</div>}
                 </div>
               </div>
-              <div style={{ marginTop: 12, fontFamily: T.mono, fontSize: 12.5, color: T.fg2, fontVariantNumeric: "tabular-nums" }}>
+              <div style={{ marginTop: 12, fontFamily: TL.font.mono, fontSize: 12.5, color: TL.mute, fontVariantNumeric: "tabular-nums" }}>
                 {panel.totalDone} av {panel.totalPlanned} økter fullført
               </div>
             </div>
@@ -267,8 +246,8 @@ export function AdminComplianceV2({ data }: { data: ComplianceData }) {
         <TomTilstand icon="activity" title="Ingen logget økt" sub="Ingen startet eller fullført plan-økt for denne spilleren ennå." />
       ) : (
         <>
-          <div style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 17, color: T.fg }}>{ds.title}</div>
-          <div style={{ fontFamily: T.mono, fontSize: 10, color: T.mut, marginTop: 4 }}>
+          <div style={{ fontFamily: TL.font.sans, fontWeight: 700, fontSize: 17, color: TL.text }}>{ds.title}</div>
+          <div style={{ fontFamily: TL.font.mono, fontSize: 10, color: TL.mute, marginTop: 4 }}>
             {ds.playerName} · {ds.dateLabel} · {ds.durationMin} min
           </div>
           <div style={{ marginTop: 14 }}>
@@ -278,7 +257,7 @@ export function AdminComplianceV2({ data }: { data: ComplianceData }) {
             {ds.drills.map((d, i) => (
               <Rad
                 key={d.id}
-                leading={<Icon name={d.done ? "check-circle" : "circle"} size={16} style={{ color: d.done ? T.up : T.mut, flex: "none" }} />}
+                leading={<Icon name={d.done ? "check-circle" : "circle"} size={16} style={{ color: d.done ? TL.ok : TL.mute, flex: "none" }} />}
                 title={d.name}
                 sub={d.planned}
                 meta={d.axis ? <AkseChip a={AKSE[d.axis]} /> : undefined}
@@ -332,11 +311,11 @@ export function AdminComplianceV2({ data }: { data: ComplianceData }) {
           borderRadius: 8,
           flex: "none",
           cursor: "pointer",
-          background: meldingApen ? T.panel3 : "transparent",
-          border: `1px solid ${meldingApen ? T.border : "transparent"}`,
+          background: meldingApen ? TL.dim : "transparent",
+          border: `1px solid ${meldingApen ? TL.hair : "transparent"}`,
         }}
       >
-        <Icon name="message-circle" size={14} style={{ color: sendtTil === s.playerId ? T.up : T.mut }} />
+        <Icon name="message-circle" size={14} style={{ color: sendtTil === s.playerId ? TL.ok : TL.mute }} />
       </span>
     );
 
@@ -347,8 +326,8 @@ export function AdminComplianceV2({ data }: { data: ComplianceData }) {
           padding: "10px 12px",
           margin: "0 -10px 4px",
           borderRadius: 10,
-          background: T.panel2,
-          border: `1px solid ${T.border}`,
+          background: TL.dock,
+          border: `1px solid ${TL.hair}`,
           display: "flex",
           flexDirection: "column",
           gap: 8,
@@ -363,17 +342,17 @@ export function AdminComplianceV2({ data }: { data: ComplianceData }) {
           style={{
             width: "100%",
             resize: "vertical",
-            fontFamily: T.ui,
+            fontFamily: TL.font.sans,
             fontSize: 13,
-            color: T.fg,
-            background: T.panel,
-            border: `1px solid ${T.border}`,
+            color: TL.text,
+            background: TL.elev,
+            border: `1px solid ${TL.hair}`,
             borderRadius: 8,
             padding: "8px 10px",
           }}
         />
         {meldingFeil && (
-          <span style={{ fontFamily: T.ui, fontSize: 11.5, color: T.down }}>{meldingFeil}</span>
+          <span style={{ fontFamily: TL.font.sans, fontSize: 11.5, color: TL.danger }}>{meldingFeil}</span>
         )}
         <div style={{ display: "flex", justifyContent: "flex-end", gap: 8 }}>
           <Knapp ghost onClick={() => setMeldingTil(null)}>Avbryt</Knapp>
@@ -396,26 +375,26 @@ export function AdminComplianceV2({ data }: { data: ComplianceData }) {
             padding: "11px 10px",
             margin: "0 -10px",
             borderRadius: 10,
-            borderBottom: last && !meldingApen ? "none" : `1px solid ${T.border}`,
+            borderBottom: last && !meldingApen ? "none" : `1px solid ${TL.hair}`,
             cursor: "pointer",
           }}
         >
           <AvatarInit navn={s.playerName} size={32} />
           <div style={{ flex: 1, minWidth: 0 }}>
-            <div style={{ fontFamily: T.ui, fontSize: 13.5, fontWeight: 600, color: T.fg, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{s.playerName}</div>
-            <div style={{ fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{meta}</div>
+            <div style={{ fontFamily: TL.font.sans, fontSize: 13.5, fontWeight: 600, color: TL.text, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{s.playerName}</div>
+            <div style={{ fontFamily: TL.font.mono, fontSize: 10.5, color: TL.mute, marginTop: 2, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{meta}</div>
           </div>
           <div className="hidden lg:block" style={{ flex: "none" }}>
             <UkeStripe uker={s.spark.map((fill, i) => ({ label: `U${i + 1}`, done: 0, planned: 1, fill, band: s.band as EtterlevBand, isNow: i === s.spark.length - 1 }))} kompakt />
           </div>
-          <span style={{ width: 52, flex: "none", textAlign: "right", fontFamily: T.mono, fontSize: 14, fontWeight: 700, color: s.planned > 0 ? pctFarge : T.mut, fontVariantNumeric: "tabular-nums" }}>
+          <span style={{ width: 52, flex: "none", textAlign: "right", fontFamily: TL.font.mono, fontSize: 14, fontWeight: 700, color: s.planned > 0 ? pctFarge : TL.mute, fontVariantNumeric: "tabular-nums" }}>
             {s.planned > 0 ? `${s.pct} %` : "—"}
           </span>
-          <span style={{ width: 80, flex: "none", textAlign: "right", fontFamily: T.mono, fontSize: 10.5, fontWeight: 600, color: LOGG_FARGE[s.lastLogBand], fontVariantNumeric: "tabular-nums" }}>
+          <span style={{ width: 80, flex: "none", textAlign: "right", fontFamily: TL.font.mono, fontSize: 10.5, fontWeight: 600, color: LOGG_FARGE[s.lastLogBand], fontVariantNumeric: "tabular-nums" }}>
             {s.lastLog}
           </span>
           {meldingKnapp}
-          <span style={{ width: 2, height: 22, borderRadius: 2, background: valgt ? T.lime : "transparent", flex: "none" }} />
+          <span style={{ width: 2, height: 22, borderRadius: 2, background: valgt ? TL.fill : "transparent", flex: "none" }} />
         </div>
         <div className="hidden md:block" style={{ margin: meldingApen ? "8px -10px 0" : 0 }}>{meldingsboks}</div>
 
@@ -428,13 +407,13 @@ export function AdminComplianceV2({ data }: { data: ComplianceData }) {
             sub={`${s.planned > 0 ? `${s.done}/${s.planned} økter` : "Ingen plan"} · ${s.lastLog}`}
             meta={
               <span style={{ display: "flex", alignItems: "center", gap: 6 }}>
-                <span style={{ fontFamily: T.mono, fontSize: 15, fontWeight: 700, color: s.planned > 0 ? pctFarge : T.mut, fontVariantNumeric: "tabular-nums" }}>
+                <span style={{ fontFamily: TL.font.mono, fontSize: 15, fontWeight: 700, color: s.planned > 0 ? pctFarge : TL.mute, fontVariantNumeric: "tabular-nums" }}>
                   {s.planned > 0 ? `${s.pct} %` : "—"}
                 </span>
                 {meldingKnapp}
               </span>
             }
-            trailing={valgt ? <span style={{ width: 2, height: 20, borderRadius: 2, background: T.lime, flex: "none" }} /> : undefined}
+            trailing={valgt ? <span style={{ width: 2, height: 20, borderRadius: 2, background: TL.fill, flex: "none" }} /> : undefined}
             last={last && !meldingApen}
           />
           <div style={{ margin: meldingApen ? "8px 0 4px" : 0 }}>{meldingsboks}</div>
@@ -446,7 +425,7 @@ export function AdminComplianceV2({ data }: { data: ComplianceData }) {
   const stalliste = (
     <Kort eyebrow="Stallen · etterlevelse" action={<Caps size={9}>{pl(data.stall.length, "spiller", "spillere")}</Caps>}>
       <div className="hidden md:block" style={{ marginBottom: 4 }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 12, padding: "0 10px 8px", margin: "0 -10px", borderBottom: `1px solid ${T.borderS}` }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 12, padding: "0 10px 8px", margin: "0 -10px", borderBottom: `1px solid ${TL.hair}` }}>
           <span style={{ width: 32, flex: "none" }} />
           <Caps size={9} style={{ flex: 1 }}>Spiller</Caps>
           <span className="hidden lg:block" style={{ flex: "none" }}><Caps size={9}>Uke for uke</Caps></span>
@@ -463,10 +442,10 @@ export function AdminComplianceV2({ data }: { data: ComplianceData }) {
   );
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+    <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
       {hode}
       {kpi}
-      <div className="grid grid-cols-1 lg:grid-cols-[3fr_2fr]" style={{ gap: T.gap, alignItems: "start" }}>
+      <div className="grid grid-cols-1 lg:grid-cols-[3fr_2fr]" style={{ gap: 16, alignItems: "start" }}>
         {spillerpanel}
         {drillkort}
       </div>

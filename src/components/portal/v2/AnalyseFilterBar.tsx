@@ -1,4 +1,5 @@
 "use client";
+import { TL } from "@/lib/v2/train-lock";
 
 /**
  * Filterbar for Analyse → Trening (2026-07-27).
@@ -13,12 +14,8 @@
  */
 
 import { useState } from "react";
-import { T, Icon, FilterChips, PillTabs } from "@/components/v2";
-import {
-  PERIODE_VALG,
-  PERIODE_LABEL,
-  type PeriodeValg,
-} from "@/lib/portal-analyse/periode-vindu";
+import { Icon, FilterChips, PillTabs } from "@/components/v2";
+import { PERIODE_VALG, PERIODE_LABEL, type PeriodeValg } from "@/lib/portal-analyse/periode-vindu";
 import { MILJO_GRUPPER, MILJO_GRUPPE_LABEL, type MiljoGruppe } from "@/lib/taxonomy";
 import type { TreningsKilde } from "@/lib/portal-analyse/trenings-historikk";
 
@@ -93,16 +90,16 @@ export function AnalyseFilterBar({
       <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
         <span
           style={{
-            fontFamily: T.mono,
+            fontFamily: TL.font.mono,
             fontSize: 11,
-            color: T.fg2,
+            color: TL.mute,
             fontVariantNumeric: "tabular-nums",
           }}
         >
           {vinduLabel}
         </span>
         {fallbackVarsel && (
-          <span style={{ fontFamily: T.ui, fontSize: 11, color: T.mut }}>
+          <span style={{ fontFamily: TL.font.sans, fontSize: 11, color: TL.mute }}>
             Ingen periode i årsplanen — viser måneden
           </span>
         )}
@@ -120,10 +117,10 @@ export function AnalyseFilterBar({
             height: 28,
             padding: "0 11px",
             borderRadius: 9999,
-            background: antallAktive > 0 ? T.lime : T.panel3,
-            border: `1px solid ${antallAktive > 0 ? "transparent" : T.borderS}`,
-            color: antallAktive > 0 ? T.onLime : T.fg2,
-            fontFamily: T.ui,
+            background: antallAktive > 0 ? TL.fill : TL.dim,
+            border: `1px solid ${antallAktive > 0 ? "transparent" : TL.hair}`,
+            color: antallAktive > 0 ? TL.onFill : TL.mute,
+            fontFamily: TL.font.sans,
             fontSize: 12,
             fontWeight: 600,
           }}
@@ -142,8 +139,8 @@ export function AnalyseFilterBar({
               background: "transparent",
               border: 0,
               padding: 0,
-              color: T.mut,
-              fontFamily: T.mono,
+              color: TL.mute,
+              fontFamily: TL.font.mono,
               fontSize: 10.5,
             }}
           >
@@ -161,8 +158,8 @@ export function AnalyseFilterBar({
             gap: 10,
             padding: 12,
             borderRadius: 12,
-            background: T.panel2,
-            border: `1px solid ${T.border}`,
+            background: TL.dock,
+            border: `1px solid ${TL.hair}`,
           }}
         >
           <Gruppe label="Type trening">
@@ -217,12 +214,12 @@ function Gruppe({ label, children }: { label: string; children: React.ReactNode 
     <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
       <span
         style={{
-          fontFamily: T.mono,
+          fontFamily: TL.font.mono,
           fontSize: 9.5,
           fontWeight: 700,
           letterSpacing: "0.08em",
           textTransform: "uppercase",
-          color: T.mut,
+          color: TL.mute,
         }}
       >
         {label}

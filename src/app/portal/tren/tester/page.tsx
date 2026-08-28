@@ -15,16 +15,17 @@ import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { loadTesterScreen, type TestRow } from "@/lib/portal-tester/tester-data";
 import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
-import { T } from "@/lib/v2/tokens";
+import { TL } from "@/lib/v2/train-lock";
+
 import { Caps, TilbakeLenke } from "@/components/v2";
 import { Icon } from "@/components/v2/icon";
 
 export const dynamic = "force-dynamic";
 
 const TONE_FARGE: Record<"pos" | "neg" | "flat", string> = {
-  pos: T.up,
-  neg: T.down,
-  flat: T.mut,
+  pos: TL.ok,
+  neg: TL.danger,
+  flat: TL.mute,
 };
 
 function TrendTag({ delta }: { delta: NonNullable<TestRow["delta"]> }) {
@@ -34,14 +35,14 @@ function TrendTag({ delta }: { delta: NonNullable<TestRow["delta"]> }) {
         display: "inline-flex",
         alignItems: "center",
         padding: "3px 8px",
-        borderRadius: T.rPill,
-        fontFamily: T.mono,
+        borderRadius: TL.radius.pill,
+        fontFamily: TL.font.mono,
         fontSize: 10,
         letterSpacing: "0.04em",
         textTransform: "uppercase",
-        background: T.panel2,
+        background: TL.dock,
         color: TONE_FARGE[delta.tone],
-        border: `1px solid ${T.border}`,
+        border: `1px solid ${TL.hair}`,
       }}
     >
       {delta.text} vs forrige
@@ -83,12 +84,12 @@ export default async function TesterHubPage() {
       <div
         data-paper-slug="playerhq-tester-hub"
         data-od-id="playerhq-tester-hub"
-        style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}
+        style={{ display: "flex", flexDirection: "column", gap: 16, maxWidth: 720, margin: "0 auto", width: "100%" }}
       >
         {/* Topp — fasit: Tester / Testbatteriet ditt · resultater går til talentprofilen din */}
         <div>
-          <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>Tester</h1>
-          <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>
+          <h1 style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 17, fontWeight: 600, color: TL.text }}>Tester</h1>
+          <span style={{ display: "block", fontFamily: TL.font.mono, fontSize: 10.5, color: TL.mute, marginTop: 2 }}>
             Testbatteriet ditt · resultater går til talentprofilen din
           </span>
         </div>
@@ -98,15 +99,15 @@ export default async function TesterHubPage() {
           <div
             style={{
               padding: "24px 16px",
-              background: T.panel2,
-              border: `1px dashed ${T.border}`,
-              borderRadius: T.rCard,
+              background: TL.dock,
+              border: `1px dashed ${TL.hair}`,
+              borderRadius: TL.radius.card,
             }}
           >
-            <h3 style={{ margin: "0 0 8px", fontFamily: T.disp, fontSize: 15, fontWeight: 600, color: T.fg }}>
+            <h3 style={{ margin: "0 0 8px", fontFamily: TL.font.sans, fontSize: 15, fontWeight: 600, color: TL.text }}>
               Ingen tester i batteriet ditt ennå
             </h3>
-            <p style={{ margin: "0 0 12px", fontFamily: T.bodyFont, fontSize: 13.5, color: T.mut }}>
+            <p style={{ margin: "0 0 12px", fontFamily: TL.font.sans, fontSize: 13.5, color: TL.mute }}>
               Testene avtaler du med Anders i Workbench — legg dem inn som vanlige økter der,
               sammen med resten av planen din.
             </p>
@@ -123,10 +124,10 @@ export default async function TesterHubPage() {
                 justifyContent: "center",
                 minHeight: 56,
                 width: "100%",
-                borderRadius: T.rCard,
-                background: T.handling,
-                color: T.onHandling,
-                fontFamily: T.ui,
+                borderRadius: TL.radius.card,
+                background: TL.fill,
+                color: TL.onFill,
+                fontFamily: TL.font.sans,
                 fontSize: 14,
                 fontWeight: 600,
               }}
@@ -140,17 +141,17 @@ export default async function TesterHubPage() {
             {neste && (
               <div
                 style={{
-                  background: T.handlingSoft,
-                  border: `1px solid ${T.border}`,
-                  borderRadius: T.rCard,
+                  background: TL.dim,
+                  border: `1px solid ${TL.hair}`,
+                  borderRadius: TL.radius.card,
                   padding: 16,
                 }}
               >
                 <Caps>Én ting nå</Caps>
-                <h3 style={{ margin: "8px 0", fontFamily: T.disp, fontSize: 15, fontWeight: 600, color: T.fg }}>
+                <h3 style={{ margin: "8px 0", fontFamily: TL.font.sans, fontSize: 15, fontWeight: 600, color: TL.text }}>
                   {neste.navn} står for tur
                 </h3>
-                <p style={{ margin: "0 0 16px", fontFamily: T.bodyFont, fontSize: 14, color: T.mut, maxWidth: "52ch" }}>
+                <p style={{ margin: "0 0 16px", fontFamily: TL.font.sans, fontSize: 14, color: TL.mute, maxWidth: "52ch" }}>
                   {neste.meta}. Resultatet går rett inn i talentprofilen din når du logger det.
                 </p>
                 {/* Kontrakt §3: skjermens ene aksenthandling — starter testen */}
@@ -166,10 +167,10 @@ export default async function TesterHubPage() {
                     justifyContent: "center",
                     minHeight: 56,
                     width: "100%",
-                    borderRadius: T.rCard,
-                    background: T.handling,
-                    color: T.onHandling,
-                    fontFamily: T.ui,
+                    borderRadius: TL.radius.card,
+                    background: TL.fill,
+                    color: TL.onFill,
+                    fontFamily: TL.font.sans,
                     fontSize: 14,
                     fontWeight: 600,
                   }}
@@ -188,15 +189,15 @@ export default async function TesterHubPage() {
                 <div
                   style={{
                     padding: "24px 16px",
-                    background: T.panel2,
-                    border: `1px dashed ${T.border}`,
-                    borderRadius: T.rCard,
+                    background: TL.dock,
+                    border: `1px dashed ${TL.hair}`,
+                    borderRadius: TL.radius.card,
                   }}
                 >
-                  <h3 style={{ margin: "0 0 8px", fontFamily: T.disp, fontSize: 15, fontWeight: 600, color: T.fg }}>
+                  <h3 style={{ margin: "0 0 8px", fontFamily: TL.font.sans, fontSize: 15, fontWeight: 600, color: TL.text }}>
                     Ingen resultater ennå
                   </h3>
-                  <p style={{ margin: 0, fontFamily: T.bodyFont, fontSize: 13.5, color: T.mut }}>
+                  <p style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 13.5, color: TL.mute }}>
                     {screen.totalTests} tester ligger klare i batteriet — første måling blir
                     referansen din.
                   </p>
@@ -212,9 +213,9 @@ export default async function TesterHubPage() {
                         display: "flex",
                         alignItems: "center",
                         gap: 12,
-                        background: T.panel,
-                        border: `1px solid ${T.border}`,
-                        borderRadius: T.rCard,
+                        background: TL.elev,
+                        border: `1px solid ${TL.hair}`,
+                        borderRadius: TL.radius.card,
                         padding: "12px 16px",
                         marginBottom: 8,
                         textDecoration: "none",
@@ -222,10 +223,10 @@ export default async function TesterHubPage() {
                       }}
                     >
                       <div style={{ flex: 1, minWidth: 0 }}>
-                        <span style={{ display: "block", fontFamily: T.ui, fontSize: 13.5, fontWeight: 600, color: T.fg }}>
+                        <span style={{ display: "block", fontFamily: TL.font.sans, fontSize: 13.5, fontWeight: 600, color: TL.text }}>
                           {r.name}
                         </span>
-                        <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>
+                        <span style={{ display: "block", fontFamily: TL.font.mono, fontSize: 10.5, color: TL.mute, marginTop: 2 }}>
                           {r.axis.toUpperCase()}
                           {r.latestDate ? ` · sist ${r.latestDate}` : ""}
                         </span>
@@ -233,11 +234,11 @@ export default async function TesterHubPage() {
                       <div style={{ textAlign: "right", display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 4 }}>
                         <span
                           style={{
-                            fontFamily: T.mono,
+                            fontFamily: TL.font.mono,
                             fontSize: 14,
                             fontWeight: 600,
                             fontVariantNumeric: "tabular-nums",
-                            color: T.fg,
+                            color: TL.text,
                           }}
                         >
                           {r.latest}
@@ -256,15 +257,15 @@ export default async function TesterHubPage() {
                 display: "flex",
                 gap: 12,
                 padding: "12px 16px",
-                borderRadius: T.rCard,
-                background: T.panel2,
-                border: `1px solid ${T.border}`,
-                fontFamily: T.bodyFont,
+                borderRadius: TL.radius.card,
+                background: TL.dock,
+                border: `1px solid ${TL.hair}`,
+                fontFamily: TL.font.sans,
                 fontSize: 12.5,
-                color: T.mut,
+                color: TL.mute,
               }}
             >
-              <Icon name="refresh-cw" size={16} style={{ color: T.mut, flex: "none", marginTop: 2 }} />
+              <Icon name="refresh-cw" size={16} style={{ color: TL.mute, flex: "none", marginTop: 2 }} />
               <span>
                 Nye tester planlegges i Workbench, sammen med Anders — som vanlige økter. Hvert
                 logget resultat oppdaterer talentprofilen din automatisk.

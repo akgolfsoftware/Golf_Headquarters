@@ -1,4 +1,5 @@
 "use client";
+import { TL } from "@/lib/v2/train-lock";
 
 /**
  * Caddie · proaktive forslag (v2). Rekomponert fra
@@ -9,7 +10,7 @@
 
 import { useState, useTransition } from "react";
 import Link from "next/link";
-import { Kort, Knapp, Icon, StatusPill, TomTilstand, T } from "@/components/v2";
+import { Kort, Knapp, Icon, StatusPill, TomTilstand } from "@/components/v2";
 import { avvisProaktivtForslag, kjorCaddieProaktiv } from "@/app/admin/agencyos/caddie/dashbord/actions";
 
 export type ProaktivtForslag = {
@@ -39,8 +40,8 @@ export function AdminCaddieProaktivV2({ forslag }: { forslag: ProaktivtForslag[]
     <div data-paper-wave-h="caddie-proaktiv" data-paper-pattern style={{ display: "contents" }}><Kort>
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, marginBottom: 12, flexWrap: "wrap" }}>
         <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
-          <Icon name="sparkles" size={15} style={{ color: T.lime }} />
-          <span style={{ fontFamily: T.disp, fontSize: 15, fontWeight: 700, letterSpacing: "-0.01em", color: T.fg }}>Proaktive forslag fra Caddie</span>
+          <Icon name="sparkles" size={15} style={{ color: TL.fill }} />
+          <span style={{ fontFamily: TL.font.sans, fontSize: 15, fontWeight: 700, letterSpacing: "-0.01em", color: TL.text }}>Proaktive forslag fra Caddie</span>
           <StatusPill tone={forslag.length > 0 ? "warn" : "info"}>
             {forslag.length > 0 ? `${forslag.length} åpne` : "Ingen åpne"}
           </StatusPill>
@@ -52,8 +53,8 @@ export function AdminCaddieProaktivV2({ forslag }: { forslag: ProaktivtForslag[]
       </div>
 
       {statusTekst && (
-        <p style={{ marginBottom: 12, display: "flex", alignItems: "center", gap: 6, fontFamily: T.mono, fontSize: 11, color: T.up }}>
-          <Icon name="check" size={13} style={{ color: T.up }} /> {statusTekst}
+        <p style={{ marginBottom: 12, display: "flex", alignItems: "center", gap: 6, fontFamily: TL.font.mono, fontSize: 11, color: TL.ok }}>
+          <Icon name="check" size={13} style={{ color: TL.ok }} /> {statusTekst}
         </p>
       )}
 
@@ -66,8 +67,8 @@ export function AdminCaddieProaktivV2({ forslag }: { forslag: ProaktivtForslag[]
       ) : (
         <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
           {forslag.map((f) => (
-            <div key={f.id} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, borderRadius: 12, border: `1px solid ${T.border}`, padding: "10px 14px" }}>
-              <span style={{ fontFamily: T.ui, fontSize: 12.5, lineHeight: 1.4, color: T.fg }}>{f.previewText}</span>
+            <div key={f.id} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, borderRadius: 12, border: `1px solid ${TL.hair}`, padding: "10px 14px" }}>
+              <span style={{ fontFamily: TL.font.sans, fontSize: 12.5, lineHeight: 1.4, color: TL.text }}>{f.previewText}</span>
               <div style={{ display: "flex", flex: "none", alignItems: "center", gap: 8 }}>
                 <Link
                   href={`/admin/agencyos/caddie?seed=${encodeURIComponent(
@@ -75,11 +76,11 @@ export function AdminCaddieProaktivV2({ forslag }: { forslag: ProaktivtForslag[]
                   )}`}
                   className="v2-press v2-focus"
                   style={{
-                    display: "inline-flex", alignItems: "center", gap: 5, borderRadius: 9999, background: T.handling, padding: "5px 11px",
-                    fontFamily: T.mono, fontSize: 9.5, fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.05em", color: T.onHandling, textDecoration: "none",
+                    display: "inline-flex", alignItems: "center", gap: 5, borderRadius: 9999, background: TL.fill, padding: "5px 11px",
+                    fontFamily: TL.font.mono, fontSize: 9.5, fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.05em", color: TL.onFill, textDecoration: "none",
                   }}
                 >
-                  Åpne i samtale <Icon name="arrow-right" size={11} style={{ color: T.onHandling }} />
+                  Åpne i samtale <Icon name="arrow-right" size={11} style={{ color: TL.onFill }} />
                 </Link>
                 <AvvisKnapp id={f.id} />
               </div>
@@ -101,7 +102,7 @@ function AvvisKnapp({ id }: { id: string }) {
       aria-label="Avvis forslag"
       className="v2-press v2-focus"
       style={{
-        width: 28, height: 28, borderRadius: 9999, border: `1px solid ${T.border}`, background: "none", color: T.mut, cursor: "pointer",
+        width: 28, height: 28, borderRadius: 9999, border: `1px solid ${TL.hair}`, background: "none", color: TL.mute, cursor: "pointer",
         display: "inline-flex", alignItems: "center", justifyContent: "center", opacity: pending ? 0.5 : 1,
       }}
     >

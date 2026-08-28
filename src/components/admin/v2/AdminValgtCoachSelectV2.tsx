@@ -1,4 +1,5 @@
 "use client";
+import { TL } from "@/lib/v2/train-lock";
 
 /**
  * «Valgt coach»-select på rediger spiller (plan G2). Lagrer umiddelbart via
@@ -10,7 +11,6 @@
 
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { T } from "@/components/v2";
 import { settValgtCoach } from "@/app/admin/(legacy)/spillere/[id]/rediger/actions";
 
 export interface CoachValg {
@@ -48,21 +48,21 @@ export function AdminValgtCoachSelectV2({
 
   return (
     <label style={{ display: "block" }}>
-      <span style={{ fontFamily: T.mono, fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.10em", color: T.mut }}>
+      <span style={{ fontFamily: TL.font.mono, fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.10em", color: TL.mute }}>
         Valgt coach
       </span>
       <select
         value={valgtCoachId ?? ""}
         onChange={(e) => velg(e.target.value)}
         disabled={pending}
-        style={{ display: "block", width: "100%", marginTop: 6, borderRadius: 10, border: `1px solid ${T.border}`, background: T.panel2, padding: "10px 14px", fontSize: 13, color: T.fg, outline: "none", boxSizing: "border-box", opacity: pending ? 0.6 : 1 }}
+        style={{ display: "block", width: "100%", marginTop: 6, borderRadius: 10, border: `1px solid ${TL.hair}`, background: TL.dock, padding: "10px 14px", fontSize: 13, color: TL.text, outline: "none", boxSizing: "border-box", opacity: pending ? 0.6 : 1 }}
       >
         <option value="">Ikke valgt (automatisk)</option>
         {coacher.map((c) => (
           <option key={c.id} value={c.id}>{c.navn}</option>
         ))}
       </select>
-      <span style={{ display: "block", marginTop: 4, fontFamily: T.mono, fontSize: 10, color: error ? T.down : T.mut }}>
+      <span style={{ display: "block", marginTop: 4, fontFamily: TL.font.mono, fontSize: 10, color: error ? TL.danger : TL.mute }}>
         {error
           ? error
           : pending

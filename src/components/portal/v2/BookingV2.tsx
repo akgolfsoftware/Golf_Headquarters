@@ -1,4 +1,5 @@
 "use client";
+import { TL } from "@/lib/v2/train-lock";
 
 /**
  * PlayerHQ Booking — v2 Presis + B-pakke (oversikt + én primær Neste/Book).
@@ -151,12 +152,12 @@ function StegIndikator({ steg, onVelg, mobile }: { steg: number; onVelg: (n: num
               className="v2-press v2-focus"
               style={{ appearance: "none", background: "none", border: "none", padding: 0, display: "flex", alignItems: "center", gap: 7, cursor: "pointer", flex: "none" }}
             >
-              <span style={{ width: 22, height: 22, borderRadius: 9999, display: "inline-flex", alignItems: "center", justifyContent: "center", flex: "none", fontFamily: T.mono, fontSize: 10, fontWeight: 700, background: aktiv ? T.handling : ferdig ? "color-mix(in srgb, var(--v2-lime) 12%, transparent)" : T.panel2, color: aktiv ? T.onHandling : ferdig ? T.lime : T.mut, border: `1px solid ${aktiv ? "transparent" : ferdig ? "color-mix(in srgb, var(--v2-lime) 25%, transparent)" : T.border}` }}>
+              <span style={{ width: 22, height: 22, borderRadius: 9999, display: "inline-flex", alignItems: "center", justifyContent: "center", flex: "none", fontFamily: TL.font.mono, fontSize: 10, fontWeight: 700, background: aktiv ? TL.fill : ferdig ? "color-mix(in srgb, var(--tl-fill) 12%, transparent)" : TL.dock, color: aktiv ? TL.onFill : ferdig ? TL.fill : TL.mute, border: `1px solid ${aktiv ? "transparent" : ferdig ? "color-mix(in srgb, var(--tl-fill) 25%, transparent)" : TL.hair}` }}>
                 {ferdig ? <Icon name="check" size={11} /> : s.n}
               </span>
-              {(!mobile || aktiv) && <span style={{ fontFamily: T.ui, fontSize: 12, fontWeight: 600, color: aktiv ? T.fg : ferdig ? T.fg2 : T.mut, whiteSpace: "nowrap" }}>{s.l}</span>}
+              {(!mobile || aktiv) && <span style={{ fontFamily: TL.font.sans, fontSize: 12, fontWeight: 600, color: aktiv ? TL.text : ferdig ? TL.mute : TL.mute, whiteSpace: "nowrap" }}>{s.l}</span>}
             </button>
-            {i < STEG.length - 1 && <span style={{ flex: 1, maxWidth: mobile ? 18 : 36, height: 1, background: steg > s.n ? "color-mix(in srgb, var(--v2-lime) 30%, transparent)" : T.border }} />}
+            {i < STEG.length - 1 && <span style={{ flex: 1, maxWidth: mobile ? 18 : 36, height: 1, background: steg > s.n ? "color-mix(in srgb, var(--tl-fill) 30%, transparent)" : TL.hair }} />}
           </div>
         );
       })}
@@ -182,8 +183,8 @@ function StegType({ tjenester, credits, valgt, setValgt, mobile }: {
     );
   }
   return (
-    <div data-paper-portal-booking-legacy style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
-      <div style={{ display: "grid", gridTemplateColumns: mobile ? "1fr" : "repeat(3,1fr)", gap: T.gap }}>
+    <div data-paper-portal-booking-legacy style={{ display: "flex", flexDirection: "column", gap: 16, maxWidth: 720, margin: "0 auto", width: "100%" }}>
+      <div style={{ display: "grid", gridTemplateColumns: mobile ? "1fr" : "repeat(3,1fr)", gap: 16 }}>
         {tjenester.map((x) => {
           const er = valgt === x.id;
           return (
@@ -192,32 +193,32 @@ function StegType({ tjenester, credits, valgt, setValgt, mobile }: {
               type="button"
               onClick={() => setValgt(x.id)}
               className="v2-press v2-focus"
-              style={{ appearance: "none", textAlign: "left", background: er ? `${T.tint}, ${T.panel}` : T.panel, border: `1px solid ${er ? "color-mix(in srgb, var(--v2-lime) 35%, transparent)" : T.border}`, borderRadius: T.rCard, padding: "18px 20px", cursor: "pointer", position: "relative", display: "flex", flexDirection: "column", gap: 12 }}
+              style={{ appearance: "none", textAlign: "left", background: er ? `${TL.dim}, ${TL.elev}` : TL.elev, border: `1px solid ${er ? "color-mix(in srgb, var(--tl-fill) 35%, transparent)" : TL.hair}`, borderRadius: TL.radius.card, padding: "18px 20px", cursor: "pointer", position: "relative", display: "flex", flexDirection: "column", gap: 12 }}
             >
               <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-                <span style={{ width: 36, height: 36, borderRadius: 11, background: T.panel3, border: `1px solid ${T.border}`, display: "inline-flex", alignItems: "center", justifyContent: "center" }}>
-                  <Icon name={ikonForTjeneste(x)} size={16} style={{ color: er ? T.lime : T.fg2 }} />
+                <span style={{ width: 36, height: 36, borderRadius: 11, background: TL.dim, border: `1px solid ${TL.hair}`, display: "inline-flex", alignItems: "center", justifyContent: "center" }}>
+                  <Icon name={ikonForTjeneste(x)} size={16} style={{ color: er ? TL.fill : TL.mute }} />
                 </span>
                 <span style={{ display: "flex", alignItems: "center", gap: 6 }}>
                   {x.betalesMedCredit && (
                     <span
                       onClick={(e) => { e.stopPropagation(); setHjelp(!hjelp); }}
                       title="Hva er pakketime?"
-                      style={{ width: 20, height: 20, borderRadius: 9999, border: `1px solid ${T.borderS}`, display: "inline-flex", alignItems: "center", justifyContent: "center", cursor: "pointer" }}
+                      style={{ width: 20, height: 20, borderRadius: 9999, border: `1px solid ${TL.hair}`, display: "inline-flex", alignItems: "center", justifyContent: "center", cursor: "pointer" }}
                     >
-                      <Icon name="help-circle" size={12} style={{ color: hjelp ? T.lime : T.mut }} />
+                      <Icon name="help-circle" size={12} style={{ color: hjelp ? TL.fill : TL.mute }} />
                     </span>
                   )}
-                  {er && <span style={{ width: 20, height: 20, borderRadius: 9999, background: T.handling, display: "inline-flex", alignItems: "center", justifyContent: "center" }}><Icon name="check" size={12} style={{ color: T.onHandling }} /></span>}
+                  {er && <span style={{ width: 20, height: 20, borderRadius: 9999, background: TL.fill, display: "inline-flex", alignItems: "center", justifyContent: "center" }}><Icon name="check" size={12} style={{ color: TL.onFill }} /></span>}
                 </span>
               </div>
               <div>
-                <div style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 16, color: T.fg }}>{x.navn}</div>
-                <div style={{ fontFamily: T.ui, fontSize: 11.5, color: T.mut, marginTop: 4, lineHeight: 1.5 }}>
+                <div style={{ fontFamily: TL.font.sans, fontWeight: 700, fontSize: 16, color: TL.text }}>{x.navn}</div>
+                <div style={{ fontFamily: TL.font.sans, fontSize: 11.5, color: TL.mute, marginTop: 4, lineHeight: 1.5 }}>
                   {[`${x.varighetMin} min`, x.beskrivelse, x.stedNavn].filter(Boolean).join(" · ")}
                 </div>
               </div>
-              <span style={{ fontFamily: T.mono, fontSize: 13, fontWeight: 700, color: er ? T.lime : T.fg }}>{prisTekst(x, credits)}</span>
+              <span style={{ fontFamily: TL.font.mono, fontSize: 13, fontWeight: 700, color: er ? TL.fill : TL.text }}>{prisTekst(x, credits)}</span>
             </button>
           );
         })}
@@ -228,11 +229,11 @@ function StegType({ tjenester, credits, valgt, setValgt, mobile }: {
         </InnsiktChip>
       )}
       {/* Kommer: digital coaching — statisk «kommer»-rad (ikke ekte data) */}
-      <div style={{ display: "flex", alignItems: "center", gap: 12, padding: "13px 18px", borderRadius: T.rRow, border: `1px dashed ${T.border}`, opacity: 0.55 }}>
-        <Icon name="message-circle" size={15} style={{ color: T.mut }} />
+      <div style={{ display: "flex", alignItems: "center", gap: 12, padding: "13px 18px", borderRadius: TL.radius.row, border: `1px dashed ${TL.hair}`, opacity: 0.55 }}>
+        <Icon name="message-circle" size={15} style={{ color: TL.mute }} />
         <div style={{ flex: 1 }}>
-          <span style={{ fontFamily: T.ui, fontSize: 13, fontWeight: 600, color: T.fg2 }}>Digital coaching</span>
-          <span style={{ fontFamily: T.ui, fontSize: 11.5, color: T.mut, marginLeft: 8 }}>videoanalyse og oppfølging hjemmefra</span>
+          <span style={{ fontFamily: TL.font.sans, fontSize: 13, fontWeight: 600, color: TL.mute }}>Digital coaching</span>
+          <span style={{ fontFamily: TL.font.sans, fontSize: 11.5, color: TL.mute, marginLeft: 8 }}>videoanalyse og oppfølging hjemmefra</span>
         </div>
         <Caps size={8.5}>Kommer</Caps>
       </div>
@@ -258,7 +259,7 @@ function StegCoach({ coacher, fraPris, nesteLedig, valgt, setValgt, mobile }: {
     );
   }
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+    <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
       {coacher.map((c) => {
         const er = valgt === c.id;
         const neste = nesteLedig(c.id);
@@ -269,24 +270,24 @@ function StegCoach({ coacher, fraPris, nesteLedig, valgt, setValgt, mobile }: {
             type="button"
             onClick={() => setValgt(c.id)}
             className="v2-press v2-focus"
-            style={{ appearance: "none", textAlign: "left", background: er ? `${T.tint}, ${T.panel}` : T.panel, border: `1px solid ${er ? "color-mix(in srgb, var(--v2-lime) 35%, transparent)" : T.border}`, borderRadius: T.rCard, padding: "22px 24px", cursor: "pointer" }}
+            style={{ appearance: "none", textAlign: "left", background: er ? `${TL.dim}, ${TL.elev}` : TL.elev, border: `1px solid ${er ? "color-mix(in srgb, var(--tl-fill) 35%, transparent)" : TL.hair}`, borderRadius: TL.radius.card, padding: "22px 24px", cursor: "pointer" }}
           >
             <div style={{ display: "flex", alignItems: mobile ? "flex-start" : "center", gap: 18, flexDirection: mobile ? "column" : "row" }}>
               <AvatarInit navn={c.navn} size={mobile ? 56 : 64} />
               <div style={{ flex: 1, minWidth: 0 }}>
                 <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
-                  <span style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 20, color: T.fg }}>{c.navn}</span>
+                  <span style={{ fontFamily: TL.font.sans, fontWeight: 700, fontSize: 20, color: TL.text }}>{c.navn}</span>
                   {neste && <StatusPill tone="up">Ledig snart</StatusPill>}
                 </div>
-                <p style={{ fontFamily: T.ui, fontSize: 12.5, color: T.fg2, lineHeight: 1.6, margin: "8px 0 0" }}>
+                <p style={{ fontFamily: TL.font.sans, fontSize: 12.5, color: TL.mute, lineHeight: 1.6, margin: "8px 0 0" }}>
                   AK Golf Academy · coach.
                 </p>
                 <div style={{ display: "flex", gap: 14, marginTop: 12, flexWrap: "wrap" }}>
-                  {neste && <span style={{ display: "inline-flex", alignItems: "center", gap: 6, fontFamily: T.mono, fontSize: 11, fontWeight: 700, color: T.fg2 }}><Icon name="calendar" size={12} style={{ color: T.mut }} />Neste ledige: {neste}</span>}
-                  {pris && <span style={{ display: "inline-flex", alignItems: "center", gap: 6, fontFamily: T.mono, fontSize: 11, fontWeight: 700, color: T.fg2 }}><Icon name="credit-card" size={12} style={{ color: T.mut }} />{pris}</span>}
+                  {neste && <span style={{ display: "inline-flex", alignItems: "center", gap: 6, fontFamily: TL.font.mono, fontSize: 11, fontWeight: 700, color: TL.mute }}><Icon name="calendar" size={12} style={{ color: TL.mute }} />Neste ledige: {neste}</span>}
+                  {pris && <span style={{ display: "inline-flex", alignItems: "center", gap: 6, fontFamily: TL.font.mono, fontSize: 11, fontWeight: 700, color: TL.mute }}><Icon name="credit-card" size={12} style={{ color: TL.mute }} />{pris}</span>}
                 </div>
               </div>
-              {er && <span style={{ width: 24, height: 24, borderRadius: 9999, background: T.handling, display: "inline-flex", alignItems: "center", justifyContent: "center", flex: "none", alignSelf: mobile ? "flex-end" : "center" }}><Icon name="check" size={13} style={{ color: T.onHandling }} /></span>}
+              {er && <span style={{ width: 24, height: 24, borderRadius: 9999, background: TL.fill, display: "inline-flex", alignItems: "center", justifyContent: "center", flex: "none", alignSelf: mobile ? "flex-end" : "center" }}><Icon name="check" size={13} style={{ color: TL.onFill }} /></span>}
             </div>
           </button>
         );
@@ -334,17 +335,17 @@ function MiniKalender({ ledigeIso, valgtIso, setValgtIso, visMnd, visAar, setVis
   return (
     <div>
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 12 }}>
-        <span style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 15, color: T.fg, textTransform: "capitalize" }}>
-          {MANED[visMnd]} <span style={{ color: T.mut, fontWeight: 500 }}>{visAar}</span>
+        <span style={{ fontFamily: TL.font.sans, fontWeight: 700, fontSize: 15, color: TL.text, textTransform: "capitalize" }}>
+          {MANED[visMnd]} <span style={{ color: TL.mute, fontWeight: 500 }}>{visAar}</span>
         </span>
         <span style={{ display: "flex", gap: 4 }}>
-          <button type="button" onClick={() => setVis(visMnd === 0 ? 11 : visMnd - 1, visMnd === 0 ? visAar - 1 : visAar)} className="v2-press v2-focus" style={{ appearance: "none", width: 26, height: 26, borderRadius: 8, background: "none", border: `1px solid ${T.border}`, display: "inline-flex", alignItems: "center", justifyContent: "center", cursor: "pointer" }}><Icon name="chevron-left" size={13} style={{ color: T.mut }} /></button>
-          <button type="button" onClick={() => setVis(visMnd === 11 ? 0 : visMnd + 1, visMnd === 11 ? visAar + 1 : visAar)} className="v2-press v2-focus" style={{ appearance: "none", width: 26, height: 26, borderRadius: 8, background: "none", border: `1px solid ${T.border}`, display: "inline-flex", alignItems: "center", justifyContent: "center", cursor: "pointer" }}><Icon name="chevron-right" size={13} style={{ color: T.fg2 }} /></button>
+          <button type="button" onClick={() => setVis(visMnd === 0 ? 11 : visMnd - 1, visMnd === 0 ? visAar - 1 : visAar)} className="v2-press v2-focus" style={{ appearance: "none", width: 26, height: 26, borderRadius: 8, background: "none", border: `1px solid ${TL.hair}`, display: "inline-flex", alignItems: "center", justifyContent: "center", cursor: "pointer" }}><Icon name="chevron-left" size={13} style={{ color: TL.mute }} /></button>
+          <button type="button" onClick={() => setVis(visMnd === 11 ? 0 : visMnd + 1, visMnd === 11 ? visAar + 1 : visAar)} className="v2-press v2-focus" style={{ appearance: "none", width: 26, height: 26, borderRadius: 8, background: "none", border: `1px solid ${TL.hair}`, display: "inline-flex", alignItems: "center", justifyContent: "center", cursor: "pointer" }}><Icon name="chevron-right" size={13} style={{ color: TL.mute }} /></button>
         </span>
       </div>
       <div style={{ display: "grid", gridTemplateColumns: "repeat(7,1fr)", gap: 2 }}>
         {["MA", "TI", "ON", "TO", "FR", "LØ", "SØ"].map((d) => (
-          <span key={d} style={{ fontFamily: T.mono, fontSize: 8.5, fontWeight: 700, color: T.mut, textAlign: "center", letterSpacing: "0.08em", paddingBottom: 6 }}>{d}</span>
+          <span key={d} style={{ fontFamily: TL.font.mono, fontSize: 8.5, fontWeight: 700, color: TL.mute, textAlign: "center", letterSpacing: "0.08em", paddingBottom: 6 }}>{d}</span>
         ))}
         {Array.from({ length: blanke }, (_, i) => <span key={`b${i}`} />)}
         {Array.from({ length: antDager }, (_, i) => {
@@ -363,10 +364,10 @@ function MiniKalender({ ledigeIso, valgtIso, setValgtIso, visMnd, visAar, setVis
               onClick={() => iso !== null && setValgtIso(iso)}
               disabled={!ledig}
               className={ledig ? "v2-press v2-focus" : undefined}
-              style={{ appearance: "none", height: celle, borderRadius: 10, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 2, fontFamily: T.mono, fontSize: 12, fontWeight: valgt ? 700 : 500, cursor: ledig ? "pointer" : "default", background: valgt ? T.fg : ledig ? T.panel3 : "transparent", color: valgt ? T.bg : passert ? T.farge.hvitA18 : ledig ? T.fg : T.mut, border: iDagCelle && !valgt ? `1px solid ${T.borderS}` : "1px solid transparent" }}
+              style={{ appearance: "none", height: celle, borderRadius: 10, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 2, fontFamily: TL.font.mono, fontSize: 12, fontWeight: valgt ? 700 : 500, cursor: ledig ? "pointer" : "default", background: valgt ? TL.text : ledig ? TL.dim : "transparent", color: valgt ? TL.scene : passert ? T.farge.hvitA18 : ledig ? TL.text : TL.mute, border: iDagCelle && !valgt ? `1px solid ${TL.hair}` : "1px solid transparent" }}
             >
               {n}
-              {ledig && !valgt && <span style={{ width: 3, height: 3, borderRadius: 9999, background: T.handling }} />}
+              {ledig && !valgt && <span style={{ width: 3, height: 3, borderRadius: 9999, background: TL.fill }} />}
             </button>
           );
         })}
@@ -383,8 +384,8 @@ function TidKolonne({ dato, tider, valgt, setValgt }: {
 }) {
   return (
     <div style={{ display: "flex", flexDirection: "column", minHeight: 0 }}>
-      <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", paddingBottom: 10, borderBottom: `1px solid ${T.border}`, marginBottom: 10 }}>
-        <span style={{ fontFamily: T.ui, fontSize: 13, fontWeight: 600, color: T.fg }}>
+      <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", paddingBottom: 10, borderBottom: `1px solid ${TL.hair}`, marginBottom: 10 }}>
+        <span style={{ fontFamily: TL.font.sans, fontSize: 13, fontWeight: 600, color: TL.text }}>
           {dato ? formatDato(dato) : "Velg dag"}
         </span>
         <Caps size={8.5}>{tider.length} ledige</Caps>
@@ -401,7 +402,7 @@ function TidKolonne({ dato, tider, valgt, setValgt }: {
                 type="button"
                 onClick={() => setValgt(kl)}
                 className="v2-press v2-focus"
-                style={{ appearance: "none", display: "flex", alignItems: "center", justifyContent: "center", gap: 8, fontFamily: T.mono, fontSize: 12.5, fontWeight: 700, padding: "10px 0", borderRadius: 10, cursor: "pointer", background: er ? T.lime : T.panel2, color: er ? T.onHandling : T.fg, border: `1px solid ${er ? "transparent" : T.border}` }}
+                style={{ appearance: "none", display: "flex", alignItems: "center", justifyContent: "center", gap: 8, fontFamily: TL.font.mono, fontSize: 12.5, fontWeight: 700, padding: "10px 0", borderRadius: 10, cursor: "pointer", background: er ? TL.fill : TL.dock, color: er ? TL.onFill : TL.text, border: `1px solid ${er ? "transparent" : TL.hair}` }}
               >
                 {kl}{er && <Icon name="check" size={12} />}
               </button>
@@ -426,14 +427,14 @@ function OppsummeringsRader({ tjeneste, coachNavn, kompakt }: { tjeneste: Bookin
           <AvatarInit navn={coachNavn} size={38} />
           <div>
             <Caps size={8.5}>AK Golf Academy</Caps>
-            <div style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 16, color: T.fg, marginTop: 3 }}>{tjeneste.navn}</div>
+            <div style={{ fontFamily: TL.font.sans, fontWeight: 700, fontSize: 16, color: TL.text, marginTop: 3 }}>{tjeneste.navn}</div>
           </div>
         </div>
       )}
       <div style={{ display: "flex", flexDirection: "column", gap: 9 }}>
         {rader.map((r, i) => (
-          <span key={i} style={{ display: "flex", alignItems: "center", gap: 8, fontFamily: T.ui, fontSize: 12.5, color: T.fg2 }}>
-            <Icon name={r.i} size={13} style={{ color: T.mut }} />{r.l}
+          <span key={i} style={{ display: "flex", alignItems: "center", gap: 8, fontFamily: TL.font.sans, fontSize: 12.5, color: TL.mute }}>
+            <Icon name={r.i} size={13} style={{ color: TL.mute }} />{r.l}
           </span>
         ))}
       </div>
@@ -462,15 +463,15 @@ function StegTid({ tjeneste, coachNavn, laster, ledigeIso, valgtIso, setValgtIso
 
   if (mobile) {
     return (
-      <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+      <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
         <Kort pad="14px 16px">
           <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
             <AvatarInit navn={coachNavn} size={32} />
             <div style={{ flex: 1, minWidth: 0 }}>
-              <div style={{ fontFamily: T.ui, fontSize: 13, fontWeight: 600, color: T.fg }}>{tjeneste.navn}</div>
-              <div style={{ fontFamily: T.ui, fontSize: 11, color: T.mut, marginTop: 2 }}>{coachNavn} · {tjeneste.varighetMin} min</div>
+              <div style={{ fontFamily: TL.font.sans, fontSize: 13, fontWeight: 600, color: TL.text }}>{tjeneste.navn}</div>
+              <div style={{ fontFamily: TL.font.sans, fontSize: 11, color: TL.mute, marginTop: 2 }}>{coachNavn} · {tjeneste.varighetMin} min</div>
             </div>
-            <span style={{ fontFamily: T.mono, fontSize: 12, fontWeight: 700, color: T.fg }}>{prisTekst(tjeneste, credits)}</span>
+            <span style={{ fontFamily: TL.font.mono, fontSize: 12, fontWeight: 700, color: TL.text }}>{prisTekst(tjeneste, credits)}</span>
           </div>
         </Kort>
         {laster ? <Kort><TomTilstand icon="clock" title="Henter ledige tider…" sub="Ett øyeblikk." /></Kort> : <><Kort>{kal}</Kort><Kort>{kol}</Kort></>}
@@ -483,13 +484,13 @@ function StegTid({ tjeneste, coachNavn, laster, ledigeIso, valgtIso, setValgtIso
   return (
     <Kort pad="0">
       <div style={{ display: "grid", gridTemplateColumns: "240px 1fr 220px" }}>
-        <div style={{ padding: "20px 22px", borderRight: `1px solid ${T.border}` }}>
+        <div style={{ padding: "20px 22px", borderRight: `1px solid ${TL.hair}` }}>
           <OppsummeringsRader tjeneste={tjeneste} coachNavn={coachNavn} />
-          <span style={{ display: "flex", alignItems: "center", gap: 8, fontFamily: T.mono, fontSize: 12.5, fontWeight: 700, color: T.fg, marginTop: 9 }}>
-            <Icon name="credit-card" size={13} style={{ color: T.mut }} />{prisTekst(tjeneste, credits)}
+          <span style={{ display: "flex", alignItems: "center", gap: 8, fontFamily: TL.font.mono, fontSize: 12.5, fontWeight: 700, color: TL.text, marginTop: 9 }}>
+            <Icon name="credit-card" size={13} style={{ color: TL.mute }} />{prisTekst(tjeneste, credits)}
           </span>
         </div>
-        <div style={{ padding: "20px 24px", borderRight: `1px solid ${T.border}` }}>{kal}</div>
+        <div style={{ padding: "20px 24px", borderRight: `1px solid ${TL.hair}` }}>{kal}</div>
         <div style={{ padding: "20px 18px" }}>{kol}</div>
       </div>
     </Kort>
@@ -515,45 +516,45 @@ function StegBekreft({ tjeneste, coachNavn, dato, tid, credits, onBook, onBetalM
   const sluttTid = tid ? sluttKl(tid, tjeneste.varighetMin) : null;
   // CSS-responsiv grid i tillegg til mobile-bryteren: SSR/first-paint på 390px traff desktop-griden før hydrering
   return (
-    <div className="grid grid-cols-1 md:grid-cols-[3fr_2fr]" style={{ gap: T.gap }}>
+    <div className="grid grid-cols-1 md:grid-cols-[3fr_2fr]" style={{ gap: 16 }}>
       <Kort tint eyebrow="Oppsummering">
-        <div style={{ fontFamily: T.disp, fontWeight: 700, fontSize: mobile ? 18 : 21, color: T.fg, lineHeight: 1.25 }}>
-          {tjeneste.navn}{dato && <> <em style={{ fontStyle: "italic", color: T.lime }}>{formatDato(dato)}</em></>}
+        <div style={{ fontFamily: TL.font.sans, fontWeight: 700, fontSize: mobile ? 18 : 21, color: TL.text, lineHeight: 1.25 }}>
+          {tjeneste.navn}{dato && <> <em style={{ fontStyle: "italic", color: TL.fill }}>{formatDato(dato)}</em></>}
         </div>
-        <div style={{ fontFamily: T.mono, fontSize: 13, fontWeight: 700, color: T.fg2, marginTop: 8 }}>
+        <div style={{ fontFamily: TL.font.mono, fontSize: 13, fontWeight: 700, color: TL.mute, marginTop: 8 }}>
           {klar ? `${tid}–${sluttTid} · ${tjeneste.varighetMin} min` : `${tjeneste.varighetMin} min · velg tid over`}
         </div>
         <div style={{ marginTop: 16 }}><OppsummeringsRader tjeneste={tjeneste} coachNavn={coachNavn} kompakt /></div>
       </Kort>
-      <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+      <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
         <Kort eyebrow="Betaling">
           <Rad
-            leading={<span style={{ width: 34, height: 34, borderRadius: 10, background: T.panel3, border: `1px solid ${T.border}`, display: "inline-flex", alignItems: "center", justifyContent: "center" }}><Icon name={pakke ? "target" : "credit-card"} size={15} style={{ color: T.fg2 }} /></span>}
+            leading={<span style={{ width: 34, height: 34, borderRadius: 10, background: TL.dim, border: `1px solid ${TL.hair}`, display: "inline-flex", alignItems: "center", justifyContent: "center" }}><Icon name={pakke ? "target" : "credit-card"} size={15} style={{ color: TL.mute }} /></span>}
             title={pakke ? "Coaching-pakke" : "Betaling per time"}
             sub={pakke ? (credits.canUseCredits ? `Trekker 1 av ${credits.creditsRemaining} gjenstående timer — 0 kr nå` : "Krever aktiv coaching-pakke") : "Belastes etter timen"}
             trailing={null}
             last
           />
-          <div style={{ display: "flex", justifyContent: "space-between", paddingTop: 12, borderTop: `1px solid ${T.border}` }}>
+          <div style={{ display: "flex", justifyContent: "space-between", paddingTop: 12, borderTop: `1px solid ${TL.hair}` }}>
             <Caps size={9}>Å betale</Caps>
-            <span style={{ fontFamily: T.mono, fontSize: 15, fontWeight: 700, color: T.fg }}>
+            <span style={{ fontFamily: TL.font.mono, fontSize: 15, fontWeight: 700, color: TL.text }}>
               {pakke ? "0 kr" : `${NOK.format(Math.round(tjeneste.prisOre / 100))} kr`}
             </span>
           </div>
         </Kort>
         {feil && feil !== "KREVER_BETALING" && (
-          <div style={{ display: "flex", gap: 8, alignItems: "flex-start", padding: "10px 12px", borderRadius: 12, background: `color-mix(in srgb,${T.down} 10%,transparent)`, border: `1px solid ${T.down}` }}>
-            <Icon name="alert-triangle" size={13} style={{ color: T.down, flex: "none", marginTop: 1 }} />
-            <span style={{ fontFamily: T.ui, fontSize: 12, color: T.fg2, lineHeight: 1.5 }}>{feil}</span>
+          <div style={{ display: "flex", gap: 8, alignItems: "flex-start", padding: "10px 12px", borderRadius: 12, background: `color-mix(in srgb,${TL.danger} 10%,transparent)`, border: `1px solid ${TL.danger}` }}>
+            <Icon name="alert-triangle" size={13} style={{ color: TL.danger, flex: "none", marginTop: 1 }} />
+            <span style={{ fontFamily: TL.font.sans, fontSize: 12, color: TL.mute, lineHeight: 1.5 }}>{feil}</span>
           </div>
         )}
         {feil === "KREVER_BETALING" && (
-          <div style={{ display: "flex", flexDirection: "column", gap: 10, padding: "12px", borderRadius: 12, background: T.panel2, border: `1px solid ${T.border}` }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: 10, padding: "12px", borderRadius: 12, background: TL.dock, border: `1px solid ${TL.hair}` }}>
             <div style={{ display: "flex", gap: 8, alignItems: "flex-start" }}>
-              <Icon name="credit-card" size={13} style={{ color: T.warn, flex: "none", marginTop: 1 }} />
-              <span style={{ fontFamily: T.ui, fontSize: 12, color: T.fg2, lineHeight: 1.5 }}>
+              <Icon name="credit-card" size={13} style={{ color: TL.warn, flex: "none", marginTop: 1 }} />
+              <span style={{ fontFamily: TL.font.sans, fontSize: 12, color: TL.mute, lineHeight: 1.5 }}>
                 Du har ingen coaching-pakke med ledige timer — betal med kort, eller{" "}
-                <Link href="/portal/meg/abonnement" style={{ color: T.lime, fontWeight: 600 }}>se abonnement →</Link>
+                <Link href="/portal/meg/abonnement" style={{ color: TL.fill, fontWeight: 600 }}>se abonnement →</Link>
               </span>
             </div>
             <Knapp icon="credit-card" full onClick={onBetalMedKort} disabled={laster}>
@@ -562,7 +563,7 @@ function StegBekreft({ tjeneste, coachNavn, dato, tid, credits, onBook, onBetalM
           </div>
         )}
         <Knapp icon="check" full onClick={onBook} disabled={!klar || laster}>{laster ? "Booker …" : "Book time"}</Knapp>
-        <p style={{ fontFamily: T.ui, fontSize: 11, color: T.mut, textAlign: "center", margin: 0, lineHeight: 1.5 }}>
+        <p style={{ fontFamily: TL.font.sans, fontSize: 11, color: TL.mute, textAlign: "center", margin: 0, lineHeight: 1.5 }}>
           Gratis avbestilling inntil 24 timer før. Bekreftes umiddelbart når du har coaching-pakke med ledige timer.
         </p>
       </div>
@@ -584,19 +585,19 @@ function Kvittering({ tjeneste, coachNavn, dato, tid, bookingId, mobile }: {
   return (
     <Kort tint pad={mobile ? "28px 20px" : "40px 24px"}>
       <div style={{ display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center", gap: 14 }}>
-        <span style={{ width: 56, height: 56, borderRadius: 9999, background: T.handling, display: "inline-flex", alignItems: "center", justifyContent: "center", boxShadow: "0 0 0 10px color-mix(in srgb, var(--v2-lime) 10%, transparent)" }}>
-          <Icon name="check" size={26} style={{ color: T.onHandling }} />
+        <span style={{ width: 56, height: 56, borderRadius: 9999, background: TL.fill, display: "inline-flex", alignItems: "center", justifyContent: "center", boxShadow: "0 0 0 10px color-mix(in srgb, var(--tl-fill) 10%, transparent)" }}>
+          <Icon name="check" size={26} style={{ color: TL.onFill }} />
         </span>
         <div>
-          <div style={{ fontFamily: T.disp, fontWeight: 700, fontSize: mobile ? 22 : 26, color: T.fg, letterSpacing: "-0.02em" }}>Timen er booket</div>
-          <p style={{ fontFamily: T.ui, fontSize: 13, color: T.fg2, margin: "8px 0 0", lineHeight: 1.6 }}>
+          <div style={{ fontFamily: TL.font.sans, fontWeight: 700, fontSize: mobile ? 22 : 26, color: TL.text, letterSpacing: "-0.02em" }}>Timen er booket</div>
+          <p style={{ fontFamily: TL.font.sans, fontSize: 13, color: TL.mute, margin: "8px 0 0", lineHeight: 1.6 }}>
             {tjeneste.navn} med {coachNavn}<br />
-            {dato && tid && <span style={{ fontFamily: T.mono, fontSize: 12.5, fontWeight: 700, color: T.fg }}>{formatDato(dato)} · {tid}–{sluttTid}</span>}
+            {dato && tid && <span style={{ fontFamily: TL.font.mono, fontSize: 12.5, fontWeight: 700, color: TL.text }}>{formatDato(dato)} · {tid}–{sluttTid}</span>}
             {tjeneste.stedNavn && <> · {tjeneste.stedNavn}</>}
           </p>
         </div>
         <StatusPill tone="up">Bekreftet</StatusPill>
-        <span style={{ fontFamily: T.mono, fontSize: 10, color: T.mut }}>Booking-id {bookingId.slice(0, 8)}</span>
+        <span style={{ fontFamily: TL.font.mono, fontSize: 10, color: TL.mute }}>Booking-id {bookingId.slice(0, 8)}</span>
       </div>
     </Kort>
   );
@@ -736,7 +737,7 @@ export function BookingV2({ data }: { data: BookingV2Data }) {
       : "Uten pakke";
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+    <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
       {/* Hode — B: status synlig før steg */}
       <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
         <div>
@@ -782,9 +783,9 @@ export function BookingV2({ data }: { data: BookingV2Data }) {
             marginLeft: mobile ? -16 : -4,
             marginRight: mobile ? -16 : -4,
             padding: mobile ? "12px 16px" : "14px 16px",
-            background: `color-mix(in srgb,${T.bg} 92%,transparent)`,
+            background: `color-mix(in srgb,${TL.scene} 92%,transparent)`,
             backdropFilter: "blur(10px)",
-            borderTop: `1px solid ${T.border}`,
+            borderTop: `1px solid ${TL.hair}`,
             zIndex: 30,
             borderRadius: mobile ? 0 : 16,
           }}

@@ -32,7 +32,8 @@
 import { useMemo, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { T } from "@/lib/v2/tokens";
+import { TL } from "@/lib/v2/train-lock";
+
 import { Icon } from "@/components/v2/icon";
 import { useToppbarHoyde } from "@/components/v2/toppbar-hoyde";
 import { ArtefaktPanel, useErMobil } from "@/components/portal/v2/chat/ArtefaktPanel";
@@ -127,7 +128,7 @@ export function InnboksSaker({ data }: { data: InnboksData }) {
       }}
     >
       {/* ══ Lista ══ */}
-      <div style={{ display: "flex", flexDirection: "column", minWidth: 0, background: T.bg }}>
+      <div style={{ display: "flex", flexDirection: "column", minWidth: 0, background: TL.scene }}>
         <header
           ref={toppRef}
           data-paper-topp
@@ -137,18 +138,18 @@ export function InnboksSaker({ data }: { data: InnboksData }) {
             alignItems: "center",
             gap: 10,
             padding: "10px 16px",
-            background: T.bg,
-            borderBottom: `1px solid ${T.border}`,
+            background: TL.scene,
+            borderBottom: `1px solid ${TL.hair}`,
             position: "sticky",
             top: 0,
             zIndex: 5,
           }}
         >
           <div style={{ minWidth: 0, flex: "1 1 180px" }}>
-            <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>
+            <h1 style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 17, fontWeight: 600, color: TL.text }}>
               Innboks
             </h1>
-            <div style={{ fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>
+            <div style={{ fontFamily: TL.font.mono, fontSize: 10.5, color: TL.mute, marginTop: 2 }}>
               {pl(data.apne, "åpen sak", "åpne saker")} · {data.dagLabel}
             </div>
           </div>
@@ -161,11 +162,11 @@ export function InnboksSaker({ data }: { data: InnboksData }) {
               style={{
                 minHeight: 44,
                 padding: "0 12px",
-                borderRadius: T.rTag,
-                border: `1px solid ${T.border}`,
-                background: T.panel,
-                color: T.fg,
-                fontFamily: T.ui,
+                borderRadius: TL.radius.row,
+                border: `1px solid ${TL.hair}`,
+                background: TL.elev,
+                color: TL.text,
+                fontFamily: TL.font.sans,
                 fontSize: 12.5,
                 fontWeight: 500,
                 cursor: "pointer",
@@ -184,7 +185,7 @@ export function InnboksSaker({ data }: { data: InnboksData }) {
             display: "flex",
             gap: 8,
             padding: "12px 16px",
-            borderBottom: `1px solid ${T.borderS}`,
+            borderBottom: `1px solid ${TL.hair}`,
             overflowX: "auto",
             scrollbarWidth: "none",
           }}
@@ -207,18 +208,18 @@ export function InnboksSaker({ data }: { data: InnboksData }) {
                   minHeight: 44,
                   padding: "0 16px",
                   flex: "none",
-                  borderRadius: T.rPill,
-                  border: `1px solid ${aktiv ? T.fg : T.border}`,
-                  background: aktiv ? T.fg : T.panel,
-                  color: aktiv ? T.bg : T.fg,
-                  fontFamily: T.ui,
+                  borderRadius: TL.radius.pill,
+                  border: `1px solid ${aktiv ? TL.text : TL.hair}`,
+                  background: aktiv ? TL.text : TL.elev,
+                  color: aktiv ? TL.scene : TL.text,
+                  fontFamily: TL.font.sans,
                   fontSize: 12.5,
                   cursor: "pointer",
                   whiteSpace: "nowrap",
                 }}
               >
                 <span>{f.n}</span>
-                <span style={{ fontFamily: T.mono, fontSize: 11, opacity: 0.7 }}>{n}</span>
+                <span style={{ fontFamily: TL.font.mono, fontSize: 11, opacity: 0.7 }}>{n}</span>
               </button>
             );
           })}
@@ -259,8 +260,8 @@ export function InnboksSaker({ data }: { data: InnboksData }) {
             bottom: "calc(72px + env(safe-area-inset-bottom) + var(--ak-cookie-h, 0px))",
             zIndex: 30,
             padding: "12px 16px",
-            borderTop: `1px solid ${T.border}`,
-            background: T.panel,
+            borderTop: `1px solid ${TL.hair}`,
+            background: TL.elev,
           }}
         >
           {(() => {
@@ -268,7 +269,7 @@ export function InnboksSaker({ data }: { data: InnboksData }) {
             if (!sak)
               return (
                 <>
-                  <span style={{ display: "block", fontFamily: T.bodyFont, fontSize: 12, color: T.mut, marginBottom: 8 }}>
+                  <span style={{ display: "block", fontFamily: TL.font.sans, fontSize: 12, color: TL.mute, marginBottom: 8 }}>
                     Innboksen er tom. Ingenting venter på deg.
                   </span>
                   <Link
@@ -283,7 +284,7 @@ export function InnboksSaker({ data }: { data: InnboksData }) {
               );
             return (
               <>
-                <span style={{ display: "block", fontFamily: T.bodyFont, fontSize: 12, color: T.mut, marginBottom: 8 }}>
+                <span style={{ display: "block", fontFamily: TL.font.sans, fontSize: 12, color: TL.mute, marginBottom: 8 }}>
                   Øverste ubehandlede sak: {sak.tittel}
                 </span>
                 <button
@@ -319,9 +320,9 @@ export function InnboksSaker({ data }: { data: InnboksData }) {
             maxHeight: "calc(100dvh - 32px)",
             minWidth: 0,
             display: "flex",
-            borderRadius: T.rCard,
+            borderRadius: TL.radius.card,
             overflow: "hidden",
-            border: `1px solid ${T.border}`,
+            border: `1px solid ${TL.hair}`,
           }}
         >
           <ArtefaktPanel mobil={false} open onClose={() => undefined} tittel={valgt?.tittel ?? "Grunnlag"}>
@@ -351,10 +352,10 @@ function SakRad({ sak, valgt, onClick }: { sak: InnboksSak; valgt: boolean; onCl
         textAlign: "left",
         padding: "12px 16px",
         alignItems: "start",
-        background: T.panel,
-        border: `1px solid ${valgt ? T.fg : T.border}`,
-        boxShadow: valgt ? `inset 3px 0 0 ${T.fg}` : undefined,
-        borderRadius: T.rCard,
+        background: TL.elev,
+        border: `1px solid ${valgt ? TL.text : TL.hair}`,
+        boxShadow: valgt ? `inset 3px 0 0 ${TL.text}` : undefined,
+        borderRadius: TL.radius.card,
         cursor: "pointer",
         opacity: sak.lost ? 0.62 : 1,
       }}
@@ -365,9 +366,9 @@ function SakRad({ sak, valgt, onClick }: { sak: InnboksSak; valgt: boolean; onCl
           height: 34,
           display: "grid",
           placeItems: "center",
-          borderRadius: T.rTag,
-          background: T.panel2,
-          color: T.mut,
+          borderRadius: TL.radius.row,
+          background: TL.dock,
+          color: TL.mute,
         }}
       >
         <Icon name={IKON[sak.type]} size={16} />
@@ -377,10 +378,10 @@ function SakRad({ sak, valgt, onClick }: { sak: InnboksSak; valgt: boolean; onCl
         <span
           style={{
             display: "block",
-            fontFamily: T.ui,
+            fontFamily: TL.font.sans,
             fontSize: 13.5,
             fontWeight: 600,
-            color: T.fg,
+            color: TL.text,
             marginBottom: 2,
             textDecoration: sak.lost ? "line-through" : undefined,
           }}
@@ -389,9 +390,9 @@ function SakRad({ sak, valgt, onClick }: { sak: InnboksSak; valgt: boolean; onCl
         </span>
         <span
           style={{
-            fontFamily: T.bodyFont,
+            fontFamily: TL.font.sans,
             fontSize: 12.5,
-            color: T.mut,
+            color: TL.mute,
             overflow: "hidden",
             display: "-webkit-box",
             WebkitLineClamp: 2,
@@ -409,9 +410,9 @@ function SakRad({ sak, valgt, onClick }: { sak: InnboksSak; valgt: boolean; onCl
 
       <span
         style={{
-          fontFamily: T.mono,
+          fontFamily: TL.font.mono,
           fontSize: 11,
-          color: sak.snart && !sak.lost ? T.down : T.mut,
+          color: sak.snart && !sak.lost ? TL.danger : TL.mute,
           whiteSpace: "nowrap",
         }}
       >
@@ -428,14 +429,14 @@ function Etikett({ children, tone }: { children: React.ReactNode; tone?: "up" })
         display: "inline-flex",
         alignItems: "center",
         padding: "3px 8px",
-        borderRadius: T.rPill,
-        fontFamily: T.mono,
+        borderRadius: TL.radius.pill,
+        fontFamily: TL.font.mono,
         fontSize: 10,
         letterSpacing: "0.04em",
         textTransform: "uppercase",
-        background: T.panel2,
-        color: tone === "up" ? T.up : T.mut,
-        border: `1px solid ${T.border}`,
+        background: TL.dock,
+        color: tone === "up" ? TL.ok : TL.mute,
+        border: `1px solid ${TL.hair}`,
       }}
     >
       {children}
@@ -454,15 +455,15 @@ function TomListe({ filter, apne, onAlle }: { filter: FilterKey; apne: number; o
         alignItems: "flex-start",
         gap: 12,
         padding: "32px 24px",
-        background: T.panel2,
-        border: `1px dashed ${T.border}`,
-        borderRadius: T.rCard,
+        background: TL.dock,
+        border: `1px dashed ${TL.hair}`,
+        borderRadius: TL.radius.card,
       }}
     >
-      <h3 style={{ margin: 0, fontFamily: T.disp, fontSize: 15, fontWeight: 600, color: T.fg }}>
+      <h3 style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 15, fontWeight: 600, color: TL.text }}>
         {løst ? "Ingenting er løst ennå" : filter === "alle" ? "Innboksen er tom" : "Ingenting her"}
       </h3>
-      <p style={{ margin: 0, maxWidth: "44ch", fontFamily: T.bodyFont, fontSize: 13.5, color: T.mut }}>
+      <p style={{ margin: 0, maxWidth: "44ch", fontFamily: TL.font.sans, fontSize: 13.5, color: TL.mute }}>
         {løst
           ? "Saker du godkjenner eller avviser havner her, med tidsstempel."
           : filter === "alle"
@@ -478,11 +479,11 @@ function TomListe({ filter, apne, onAlle }: { filter: FilterKey; apne: number; o
           style={{
             minHeight: 44,
             padding: "0 16px",
-            borderRadius: T.rCard,
-            border: `1px solid ${T.border}`,
+            borderRadius: TL.radius.card,
+            border: `1px solid ${TL.hair}`,
             background: "transparent",
-            color: T.fg,
-            fontFamily: T.ui,
+            color: TL.text,
+            fontFamily: TL.font.sans,
             fontSize: 13,
             fontWeight: 500,
             cursor: "pointer",
@@ -520,10 +521,10 @@ function InnboksDetalj({
   if (!sak) {
     return (
       <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-        <h3 style={{ margin: 0, fontFamily: T.disp, fontSize: 15, fontWeight: 600, color: T.fg }}>
+        <h3 style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 15, fontWeight: 600, color: TL.text }}>
           Velg en sak
         </h3>
-        <p style={{ margin: 0, fontFamily: T.bodyFont, fontSize: 13.5, color: T.mut }}>
+        <p style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 13.5, color: TL.mute }}>
           Trykk en rad i lista for å se grunnlaget og avgjøre den.
         </p>
       </div>
@@ -539,8 +540,8 @@ function InnboksDetalj({
       {sak.kontrakt ? (
         <div
           style={{
-            border: `1px solid ${T.border}`,
-            borderRadius: T.rCard,
+            border: `1px solid ${TL.hair}`,
+            borderRadius: TL.radius.card,
             overflow: "hidden",
           }}
         >
@@ -556,17 +557,17 @@ function InnboksDetalj({
               key={k}
               style={{
                 padding: "12px 16px",
-                borderBottom: i === arr.length - 1 ? undefined : `1px solid ${T.borderS}`,
+                borderBottom: i === arr.length - 1 ? undefined : `1px solid ${TL.hair}`,
               }}
             >
               <span
                 style={{
                   display: "block",
-                  fontFamily: T.mono,
+                  fontFamily: TL.font.mono,
                   fontSize: 9.5,
                   letterSpacing: "0.09em",
                   textTransform: "uppercase",
-                  color: T.mut,
+                  color: TL.mute,
                   marginBottom: 3,
                 }}
               >
@@ -574,9 +575,9 @@ function InnboksDetalj({
               </span>
               <span
                 style={{
-                  fontFamily: T.bodyFont,
+                  fontFamily: TL.font.sans,
                   fontSize: 13,
-                  color: v ? T.fg : T.mut,
+                  color: v ? TL.text : TL.mute,
                   fontStyle: v ? undefined : "italic",
                 }}
               >
@@ -595,20 +596,20 @@ function InnboksDetalj({
       {sak.foreslattSvar && sak.foreslattSvar.trim() && (
         <div
           style={{
-            border: `1px solid ${T.border}`,
-            borderRadius: T.rCard,
+            border: `1px solid ${TL.hair}`,
+            borderRadius: TL.radius.card,
             padding: "12px 16px",
-            background: T.panel2,
+            background: TL.dock,
           }}
         >
           <span
             style={{
               display: "block",
-              fontFamily: T.mono,
+              fontFamily: TL.font.mono,
               fontSize: 9.5,
               letterSpacing: "0.09em",
               textTransform: "uppercase",
-              color: T.mut,
+              color: TL.mute,
               marginBottom: 6,
             }}
           >
@@ -617,9 +618,9 @@ function InnboksDetalj({
           <p
             style={{
               margin: 0,
-              fontFamily: T.bodyFont,
+              fontFamily: TL.font.sans,
               fontSize: 13,
-              color: T.fg,
+              color: TL.text,
               whiteSpace: "pre-wrap",
             }}
           >
@@ -631,20 +632,20 @@ function InnboksDetalj({
       {sak.grunnlag.length > 0 && (
         <div
           style={{
-            background: T.panel2,
-            border: `1px solid ${T.borderS}`,
-            borderRadius: T.rCard,
+            background: TL.dock,
+            border: `1px solid ${TL.hair}`,
+            borderRadius: TL.radius.card,
             padding: "12px 16px",
           }}
         >
           <span
             style={{
               display: "block",
-              fontFamily: T.mono,
+              fontFamily: TL.font.mono,
               fontSize: 10,
               letterSpacing: "0.09em",
               textTransform: "uppercase",
-              color: T.mut,
+              color: TL.mute,
               marginBottom: 8,
             }}
           >
@@ -652,7 +653,7 @@ function InnboksDetalj({
           </span>
           <ul style={{ margin: 0, padding: 0, listStyle: "none" }}>
             {sak.grunnlag.map((g, i) => (
-              <li key={i} style={{ fontFamily: T.mono, fontSize: 11.5, color: T.mut, marginBottom: 4 }}>
+              <li key={i} style={{ fontFamily: TL.font.mono, fontSize: 11.5, color: TL.mute, marginBottom: 4 }}>
                 {g}
               </li>
             ))}
@@ -672,11 +673,11 @@ function InnboksDetalj({
             alignSelf: "flex-start",
             minHeight: 44,
             padding: "0 16px",
-            borderRadius: T.rCard,
-            border: `1px solid ${T.border}`,
-            color: T.fg,
+            borderRadius: TL.radius.card,
+            border: `1px solid ${TL.hair}`,
+            color: TL.text,
             textDecoration: "none",
-            fontFamily: T.ui,
+            fontFamily: TL.font.sans,
             fontSize: 13,
           }}
         >
@@ -688,7 +689,7 @@ function InnboksDetalj({
       {feil && (
         <p
           role="alert"
-          style={{ margin: 0, fontFamily: T.ui, fontSize: 12.5, color: T.down }}
+          style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 12.5, color: TL.danger }}
         >
           {feil}
         </p>
@@ -699,11 +700,11 @@ function InnboksDetalj({
         <div style={{ display: "flex", alignItems: "center", gap: 12, flexWrap: "wrap" }}>
           <span
             style={{
-              fontFamily: T.mono,
+              fontFamily: TL.font.mono,
               fontSize: 10,
               letterSpacing: "0.09em",
               textTransform: "uppercase",
-              color: T.mut,
+              color: TL.mute,
             }}
           >
             {sak.lostTekst ?? "løst"}
@@ -729,11 +730,11 @@ function InnboksDetalj({
               style={{
                 minHeight: 44,
                 padding: "0 14px",
-                borderRadius: T.rInput,
-                border: `1px solid ${T.border}`,
-                background: T.panel,
-                color: T.fg,
-                fontFamily: T.ui,
+                borderRadius: TL.radius.field,
+                border: `1px solid ${TL.hair}`,
+                background: TL.elev,
+                color: TL.text,
+                fontFamily: TL.font.sans,
                 fontSize: 13,
               }}
             />
@@ -785,17 +786,17 @@ function Blokk({ label, children }: { label: string; children: React.ReactNode }
       <span
         style={{
           display: "block",
-          fontFamily: T.mono,
+          fontFamily: TL.font.mono,
           fontSize: 10,
           letterSpacing: "0.09em",
           textTransform: "uppercase",
-          color: T.mut,
+          color: TL.mute,
           marginBottom: 8,
         }}
       >
         {label}
       </span>
-      <p style={{ margin: 0, fontFamily: T.bodyFont, fontSize: 13.5, color: T.fg }}>{children}</p>
+      <p style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 13.5, color: TL.text }}>{children}</p>
     </div>
   );
 }
@@ -809,16 +810,16 @@ function knappStil({ fyll }: { fyll: "omriss" | "ink" | "clay" }): React.CSSProp
     gap: 8,
     minHeight: fyll === "clay" ? 48 : 44,
     padding: fyll === "clay" ? "0 24px" : "0 16px",
-    borderRadius: T.rCard,
-    fontFamily: T.ui,
+    borderRadius: TL.radius.card,
+    fontFamily: TL.font.sans,
     fontSize: 13,
     fontWeight: fyll === "clay" ? 600 : 500,
     cursor: "pointer",
     whiteSpace: "nowrap",
   };
   if (fyll === "clay")
-    return { ...base, background: T.handling, color: T.onHandling, border: `1px solid ${T.handling}` };
+    return { ...base, background: TL.fill, color: TL.onFill, border: `1px solid ${TL.fill}` };
   if (fyll === "ink")
-    return { ...base, background: T.cta, color: T.onCta, border: `1px solid ${T.cta}` };
-  return { ...base, background: "transparent", color: T.fg, border: `1px solid ${T.border}` };
+    return { ...base, background: TL.fill, color: TL.onFill, border: `1px solid ${TL.fill}` };
+  return { ...base, background: "transparent", color: TL.text, border: `1px solid ${TL.hair}` };
 }

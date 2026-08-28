@@ -1,26 +1,12 @@
 "use client";
-
+import { TL } from "@/lib/v2/train-lock";
 /**
  * PlayerHQ Meg · Symptom — v2 Presis + B-pakke (wizard, Neste/Lagre = grønn).
  */
 
 import { useState, useTransition } from "react";
-import {
-  T,
-  Caps,
-  Kort,
-  Knapp,
-  Icon,
-  FilterChips,
-  PillVelger,
-  ValgKort,
-  Glider,
-  TekstOmraade,
-  Bryter,
-  HjelpTips,
-} from "@/components/v2";
+import { Caps, Kort, Knapp, Icon, FilterChips, PillVelger, ValgKort, Glider, TekstOmraade, Bryter, HjelpTips } from "@/components/v2";
 import { logSymptom } from "@/app/portal/meg/helse/symptom/ny/actions";
-
 type Side = "Venstre" | "Høyre" | "Midt / begge";
 type View = "front" | "back";
 
@@ -80,10 +66,10 @@ function StegHode({ eyebrow, tittel, em, sub }: { eyebrow: string; tittel: strin
   return (
     <div>
       <Caps size={9}>{eyebrow}</Caps>
-      <h2 style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 22, letterSpacing: "-0.02em", color: T.fg, margin: "8px 0 0", lineHeight: 1.15 }}>
-        {tittel} <em style={{ fontStyle: "italic", fontWeight: 400, color: T.lime }}>{em}</em>?
+      <h2 style={{ fontFamily: TL.font.sans, fontWeight: 700, fontSize: 22, letterSpacing: "-0.02em", color: TL.text, margin: "8px 0 0", lineHeight: 1.15 }}>
+        {tittel} <em style={{ fontStyle: "italic", fontWeight: 400, color: TL.fill }}>{em}</em>?
       </h2>
-      <p style={{ fontFamily: T.ui, fontSize: 12.5, lineHeight: 1.6, color: T.mut, margin: "8px 0 0" }}>{sub}</p>
+      <p style={{ fontFamily: TL.font.sans, fontSize: 12.5, lineHeight: 1.6, color: TL.mute, margin: "8px 0 0" }}>{sub}</p>
     </div>
   );
 }
@@ -138,12 +124,12 @@ export function MegSymptomNyV2() {
   }
 
   return (
-    <div data-paper-wave-g="megsymptomny" data-paper-pattern  data-paper-portal-meg-symptom-ny style={{ maxWidth: 520, width: "100%", margin: "0 auto", display: "flex", flexDirection: "column", gap: T.gap }}>
+    <div data-paper-wave-g="megsymptomny" data-paper-pattern  data-paper-portal-meg-symptom-ny style={{ maxWidth: 520, width: "100%", margin: "0 auto", display: "flex", flexDirection: "column", gap: 16 }}>
       {/* Hode */}
       <div>
         <Caps>Meg · Helse</Caps>
-        <h1 style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 26, letterSpacing: "-0.02em", color: T.fg, margin: "10px 0 0", lineHeight: 1.1 }}>
-          Legg til <em style={{ fontStyle: "italic", color: T.lime }}>symptom</em>
+        <h1 style={{ fontFamily: TL.font.sans, fontWeight: 700, fontSize: 26, letterSpacing: "-0.02em", color: TL.text, margin: "10px 0 0", lineHeight: 1.1 }}>
+          Legg til <em style={{ fontStyle: "italic", color: TL.fill }}>symptom</em>
         </h1>
       </div>
 
@@ -171,19 +157,19 @@ export function MegSymptomNyV2() {
                   display: "inline-flex",
                   alignItems: "center",
                   justifyContent: "center",
-                  fontFamily: T.mono,
+                  fontFamily: TL.font.mono,
                   fontSize: 11.5,
                   fontWeight: 700,
                   fontVariantNumeric: "tabular-nums",
-                  background: done ? T.lime : on ? "transparent" : T.panel2,
-                  border: `2px solid ${done || on ? T.lime : T.borderS}`,
-                  color: done ? T.onHandling : on ? T.lime : T.mut,
+                  background: done ? TL.fill : on ? "transparent" : TL.dock,
+                  border: `2px solid ${done || on ? TL.fill : TL.hair}`,
+                  color: done ? TL.onFill : on ? TL.fill : TL.mute,
                 }}
               >
                 {done ? <Icon name="check" size={13} /> : i}
               </button>
               {idx < 2 && (
-                <span style={{ width: 24, height: 2, borderRadius: 2, background: done ? `color-mix(in srgb, ${T.lime} 45%, transparent)` : T.track }} />
+                <span style={{ width: 24, height: 2, borderRadius: 2, background: done ? `color-mix(in srgb, ${TL.fill} 45%, transparent)` : TL.hair }} />
               )}
             </div>
           );
@@ -195,7 +181,7 @@ export function MegSymptomNyV2() {
 
       {/* STEG 1 — kroppskart */}
       {step === 1 && (
-        <section style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+        <section style={{ display: "flex", flexDirection: "column", gap: 16 }}>
           <StegHode
             eyebrow="Kroppskart · steg 1"
             tittel="Hvor"
@@ -216,16 +202,16 @@ export function MegSymptomNyV2() {
               <svg viewBox="0 0 200 440" style={{ height: 288, width: "auto" }}>
                 <path
                   d="M100 8c-15 0-26 11-26 26 0 9 4 17 11 22-3 4-5 8-7 12-12 4-22 10-22 18v36c0 4 2 7 5 9l1 86c-7 4-11 11-11 18v62c0 14 11 25 25 25h.5v92c0 9 7 16 16 16 9 0 16-7 16-16v-92m14 0v92c0 9 7 16 16 16 9 0 16-7 16-16v-92h.5c14 0 25-11 25-25v-62c0-7-4-14-11-18l1-86c3-2 5-5 5-9V86c0-8-10-14-22-18-2-4-4-8-7-12 7-5 11-13 11-22 0-15-11-26-26-26z"
-                  fill={T.panel2}
-                  stroke={T.border}
+                  fill={TL.dock}
+                  stroke={TL.hair}
                   strokeWidth="1.5"
                 />
                 {SONER.map((r) => {
                   const sel = selectedRegion === r.id;
                   const common = {
                     style: { cursor: "pointer" } as const,
-                    fill: sel ? T.lime : T.panel3,
-                    stroke: sel ? T.lime : T.borderS,
+                    fill: sel ? TL.fill : TL.dim,
+                    stroke: sel ? TL.fill : TL.hair,
                     strokeWidth: 1.5,
                     onClick: () => {
                       setSelectedRegion(r.id);
@@ -264,14 +250,14 @@ export function MegSymptomNyV2() {
                 gap: 10,
                 padding: "12px 14px",
                 borderRadius: 12,
-                background: T.panel2,
-                border: `1px solid color-mix(in srgb, ${T.lime} 30%, transparent)`,
+                background: TL.dock,
+                border: `1px solid color-mix(in srgb, ${TL.fill} 30%, transparent)`,
               }}
             >
-              <span style={{ marginTop: 5, width: 9, height: 9, borderRadius: 9999, background: T.handling, flex: "none" }} />
+              <span style={{ marginTop: 5, width: 9, height: 9, borderRadius: 9999, background: TL.fill, flex: "none" }} />
               <div>
-                <div style={{ fontFamily: T.ui, fontSize: 13.5, color: T.fg }}>
-                  <em style={{ fontFamily: T.disp, fontStyle: "italic", color: T.lime }}>{side}</em>{" "}
+                <div style={{ fontFamily: TL.font.sans, fontSize: 13.5, color: TL.text }}>
+                  <em style={{ fontFamily: TL.font.sans, fontStyle: "italic", color: TL.fill }}>{side}</em>{" "}
                   {region?.label.toLowerCase()}
                 </div>
                 <Caps size={9} style={{ marginTop: 3 }}>{region?.label}</Caps>
@@ -295,7 +281,7 @@ export function MegSymptomNyV2() {
 
       {/* STEG 2 — intensitet + varighet */}
       {step === 2 && (
-        <section style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+        <section style={{ display: "flex", flexDirection: "column", gap: 16 }}>
           <StegHode
             eyebrow="Intensitet · varighet · steg 2"
             tittel="Hvor"
@@ -347,7 +333,7 @@ export function MegSymptomNyV2() {
 
       {/* STEG 3 — triggere + notat */}
       {step === 3 && (
-        <section style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+        <section style={{ display: "flex", flexDirection: "column", gap: 16 }}>
           <StegHode
             eyebrow="Triggere · notat · steg 3"
             tittel="Hva"
@@ -381,7 +367,7 @@ export function MegSymptomNyV2() {
               placeholder="Skriv kort hva du opplever — hjelper coach og fysio prioritere"
               onChange={(v) => setNote(v.slice(0, 500))}
             />
-            <div style={{ textAlign: "right", fontFamily: T.mono, fontSize: 10, color: T.mut, marginTop: 4 }}>
+            <div style={{ textAlign: "right", fontFamily: TL.font.mono, fontSize: 10, color: TL.mute, marginTop: 4 }}>
               {note.length} / 500
             </div>
           </div>
@@ -401,12 +387,12 @@ export function MegSymptomNyV2() {
         <p
           role="alert"
           style={{
-            fontFamily: T.ui,
+            fontFamily: TL.font.sans,
             fontSize: 12.5,
             fontWeight: 500,
-            color: T.down,
-            background: `color-mix(in srgb, ${T.down} 10%, transparent)`,
-            border: `1px solid color-mix(in srgb, ${T.down} 35%, transparent)`,
+            color: TL.danger,
+            background: `color-mix(in srgb, ${TL.danger} 10%, transparent)`,
+            border: `1px solid color-mix(in srgb, ${TL.danger} 35%, transparent)`,
             borderRadius: 12,
             padding: "10px 14px",
             margin: 0,
@@ -425,13 +411,13 @@ export function MegSymptomNyV2() {
           gap: 8,
           padding: "12px",
           borderRadius: 16,
-          background: T.panel,
-          border: `1px solid ${T.border}`,
-          boxShadow: "0 8px 24px color-mix(in srgb, " + T.fg + " 8%, transparent)",
+          background: TL.elev,
+          border: `1px solid ${TL.hair}`,
+          boxShadow: "0 8px 24px color-mix(in srgb, " + TL.text + " 8%, transparent)",
         }}
       >
-        <span style={{ whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", fontFamily: T.mono, fontSize: 10, color: T.mut, textAlign: "center" }}>
-          {side} {region?.label.toLowerCase()} · VAS <strong style={{ color: T.fg }}>{vas}/10</strong>
+        <span style={{ whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", fontFamily: TL.font.mono, fontSize: 10, color: TL.mute, textAlign: "center" }}>
+          {side} {region?.label.toLowerCase()} · VAS <strong style={{ color: TL.text }}>{vas}/10</strong>
         </span>
         <div style={{ display: "flex", gap: 8 }}>
           {step > 1 && (

@@ -29,7 +29,8 @@ import {
   type GateForsok,
   type PeiForsok,
 } from "@/lib/domain/tester-live";
-import { T } from "@/lib/v2/tokens";
+import { TL } from "@/lib/v2/train-lock";
+
 import { ScorekortKlient } from "./scorekort-klient";
 import { GateLiveArtefakt } from "./gate-live-artefakt";
 import { PeiLiveArtefakt } from "./pei-live-artefakt";
@@ -168,7 +169,7 @@ export default async function GjennomforTestPage({
   }
 
   return (
-    <div data-paper-wave-d="test-gjennomfor" style={{ minHeight: "100dvh", background: T.bg, color: T.fg, fontFamily: T.ui }}>
+    <div data-paper-wave-d="test-gjennomfor" style={{ minHeight: "100dvh", background: TL.scene, color: TL.text, fontFamily: TL.font.sans }}>
       <div
         className="mx-auto w-full max-w-[460px] px-4 pb-8 sm:px-5 md:max-w-[860px] md:px-8 md:pt-6"
         style={{ paddingTop: "calc(12px + env(safe-area-inset-top))" }}
@@ -176,10 +177,10 @@ export default async function GjennomforTestPage({
         {/* Paper .topp — fasit playerhq-test-gjennomfor.html */}
         <header data-paper-topp style={{ display: "flex", alignItems: "flex-start", gap: 12, marginBottom: 4 }}>
           <div style={{ minWidth: 0, flex: 1 }}>
-            <h1 style={{ margin: 0, fontFamily: T.disp, fontWeight: 600, fontSize: 17, lineHeight: 1.2, color: T.fg }}>
+            <h1 style={{ margin: 0, fontFamily: TL.font.sans, fontWeight: 600, fontSize: 17, lineHeight: 1.2, color: TL.text }}>
               Test
             </h1>
-            <span style={{ display: "block", marginTop: 2, fontFamily: T.mono, fontSize: 10.5, color: T.mut }}>
+            <span style={{ display: "block", marginTop: 2, fontFamily: TL.font.mono, fontSize: 10.5, color: TL.mute }}>
               {test.name} · {test.pyramidArea}
             </span>
           </div>

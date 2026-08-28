@@ -1,4 +1,5 @@
 "use client";
+import { TL } from "@/lib/v2/train-lock";
 
 /**
  * 8c.2 — ÅRSPLAN-CANVAS (fasit workbench-arsplan.jsx, Anders' interaksjon):
@@ -71,10 +72,10 @@ export function PeriodePalett() {
             e.dataTransfer.effectAllowed = "copy";
           }}
           title={LPHASE_BESKRIVELSE[p]}
-          style={{ display: "flex", alignItems: "center", gap: 8, padding: "8px 10px", borderRadius: 10, background: T.panel2, border: `1px dashed ${T.borderS}`, cursor: "grab" }}
+          style={{ display: "flex", alignItems: "center", gap: 8, padding: "8px 10px", borderRadius: 10, background: TL.dock, border: `1px dashed ${TL.hair}`, cursor: "grab" }}
         >
           <span style={{ width: 8, height: 8, borderRadius: 3, background: LPHASE_FARGE[p], flex: "none" }} />
-          <span style={{ fontFamily: T.ui, fontSize: 11.5, fontWeight: 600, color: T.fg }}>{LPHASE_LABEL[p]}</span>
+          <span style={{ fontFamily: TL.font.sans, fontSize: 11.5, fontWeight: 600, color: TL.text }}>{LPHASE_LABEL[p]}</span>
         </div>
       ))}
     </div>
@@ -247,7 +248,7 @@ export function WorkbenchAarsplan({ data, handlers, onEndret }: {
           {/* Månedsakse */}
           <div style={{ display: "grid", gridTemplateColumns: "repeat(12, 1fr)", marginBottom: 6 }}>
             {MND_KORT.map((m) => (
-              <span key={m} style={{ fontFamily: T.mono, fontSize: 8.5, fontWeight: 700, letterSpacing: "0.06em", textTransform: "uppercase", color: T.mut, borderLeft: `1px solid ${T.border}`, paddingLeft: 5 }}>{m}</span>
+              <span key={m} style={{ fontFamily: TL.font.mono, fontSize: 8.5, fontWeight: 700, letterSpacing: "0.06em", textTransform: "uppercase", color: TL.mute, borderLeft: `1px solid ${TL.hair}`, paddingLeft: 5 }}>{m}</span>
             ))}
           </div>
 
@@ -274,10 +275,10 @@ export function WorkbenchAarsplan({ data, handlers, onEndret }: {
                 }
               } catch { /* ignorer ugyldig payload */ }
             } : undefined}
-            style={{ position: "relative", borderRadius: 12, background: T.panel2, border: `1px dashed ${T.border}`, minHeight: 40 + antallLanes * 40, padding: "8px 0" }}
+            style={{ position: "relative", borderRadius: 12, background: TL.dock, border: `1px dashed ${TL.hair}`, minHeight: 40 + antallLanes * 40, padding: "8px 0" }}
           >
             {/* Nå-linje */}
-            <div style={{ position: "absolute", left: `${naaPct}%`, top: 0, bottom: 0, width: 2, background: T.lime, opacity: 0.7, borderRadius: 2 }} aria-hidden />
+            <div style={{ position: "absolute", left: `${naaPct}%`, top: 0, bottom: 0, width: 2, background: TL.fill, opacity: 0.7, borderRadius: 2 }} aria-hidden />
 
             {blocks.length === 0 && (
               <div style={{ padding: "18px 16px" }}>
@@ -289,7 +290,7 @@ export function WorkbenchAarsplan({ data, handlers, onEndret }: {
               const s = Math.max(0, dagIAaret(new Date(b.startDate), year));
               const e = Math.min(totDager - 1, dagIAaret(new Date(b.endDate), year));
               const sum = budsjettSum(b.budsjett ?? null);
-              const farge = LPHASE_FARGE[b.lPhase] ?? T.mut;
+              const farge = LPHASE_FARGE[b.lPhase] ?? TL.mute;
               const draggesNaa = drag?.id === b.id;
               const visS = draggesNaa ? s + drag.deltaDager : s;
               const visE = draggesNaa ? e + drag.deltaDager : e;
@@ -312,7 +313,7 @@ export function WorkbenchAarsplan({ data, handlers, onEndret }: {
                     top: 8 + lane * 40,
                     height: 34,
                     borderRadius: 9,
-                    background: `color-mix(in srgb, ${farge} 20%, ${T.panel})`,
+                    background: `color-mix(in srgb, ${farge} 20%, ${TL.elev})`,
                     border: `1px solid color-mix(in srgb, ${farge} 55%, transparent)`,
                     cursor: handlers ? "grab" : "default",
                     touchAction: handlers ? "none" : undefined,
@@ -325,20 +326,20 @@ export function WorkbenchAarsplan({ data, handlers, onEndret }: {
                   }}
                 >
                   <span style={{ width: 7, height: 7, borderRadius: 2, background: farge, flex: "none" }} />
-                  <span style={{ fontFamily: T.ui, fontSize: 11, fontWeight: 700, color: T.fg, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                  <span style={{ fontFamily: TL.font.sans, fontSize: 11, fontWeight: 700, color: TL.text, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
                     {LPHASE_LABEL[b.lPhase]}
                   </span>
                   {/* G3: peak-merke for turneringsperioder / høy ukevolum */}
                   {(b.lPhase === "TURNERING" || (b.weeklyVolMax != null && b.weeklyVolMax >= 600)) && (
                     <span
                       style={{
-                        fontFamily: T.mono,
+                        fontFamily: TL.font.mono,
                         fontSize: 7.5,
                         fontWeight: 800,
                         letterSpacing: "0.06em",
                         textTransform: "uppercase",
-                        color: T.onLime,
-                        background: T.lime,
+                        color: TL.onFill,
+                        background: TL.fill,
                         borderRadius: 4,
                         padding: "1px 5px",
                         flex: "none",
@@ -348,7 +349,7 @@ export function WorkbenchAarsplan({ data, handlers, onEndret }: {
                       Peak
                     </span>
                   )}
-                  {sum > 0 && <span style={{ fontFamily: T.mono, fontSize: 8.5, fontWeight: 700, color: T.fg2, flex: "none" }}>{sum}/uke</span>}
+                  {sum > 0 && <span style={{ fontFamily: TL.font.mono, fontSize: 8.5, fontWeight: 700, color: TL.mute, flex: "none" }}>{sum}/uke</span>}
                 </button>
               );
             })}
@@ -356,10 +357,10 @@ export function WorkbenchAarsplan({ data, handlers, onEndret }: {
             {/* Dato-boble under drag (Anders: live dato som følger markøren) */}
             {boble && (
               <div style={{ position: "absolute", left: `${boble.pct}%`, top: -2, transform: "translate(-50%, -100%)", pointerEvents: "none", zIndex: 5 }}>
-                <div style={{ background: T.lime, color: T.onLime, fontFamily: T.mono, fontSize: 10, fontWeight: 700, borderRadius: 8, padding: "4px 9px", whiteSpace: "nowrap", boxShadow: `0 6px 18px ${T.farge.svartA35}` }}>
+                <div style={{ background: TL.fill, color: TL.onFill, fontFamily: TL.font.mono, fontSize: 10, fontWeight: 700, borderRadius: 8, padding: "4px 9px", whiteSpace: "nowrap", boxShadow: `0 6px 18px ${TL.scrim}` }}>
                   {boble.tekst}
                 </div>
-                <div style={{ width: 2, height: 10, background: T.lime, margin: "0 auto" }} />
+                <div style={{ width: 2, height: 10, background: TL.fill, margin: "0 auto" }} />
               </div>
             )}
           </div>
@@ -373,12 +374,12 @@ export function WorkbenchAarsplan({ data, handlers, onEndret }: {
               const major = t.priority === "MAJOR";
               return (
                 <span key={i} title={`${t.title} · ${datoKort(d)}`} style={{ position: "absolute", left: `${pct}%`, top: 2, transform: "translateX(-50%)", display: "inline-flex", flexDirection: "column", alignItems: "center", gap: 1 }}>
-                  <Icon name="trophy" size={major ? 14 : 11} style={{ color: major ? T.warn : T.mut }} />
+                  <Icon name="trophy" size={major ? 14 : 11} style={{ color: major ? TL.warn : TL.mute }} />
                 </span>
               );
             })}
             {turneringer.length > 0 && (
-              <span style={{ position: "absolute", right: 0, top: 4, fontFamily: T.mono, fontSize: 8, color: T.mut }}>turneringer</span>
+              <span style={{ position: "absolute", right: 0, top: 4, fontFamily: TL.font.mono, fontSize: 8, color: TL.mute }}>turneringer</span>
             )}
           </div>
 
@@ -387,18 +388,18 @@ export function WorkbenchAarsplan({ data, handlers, onEndret }: {
             {(["GRUNN", "SPESIAL", "TURNERING", "FERIE"] as LPhase[]).map((p) => (
               <span key={p} style={{ display: "inline-flex", alignItems: "center", gap: 5 }}>
                 <span style={{ width: 7, height: 7, borderRadius: 2, background: LPHASE_FARGE[p] }} />
-                <span style={{ fontFamily: T.mono, fontSize: 8, fontWeight: 700, color: T.mut, letterSpacing: "0.04em", textTransform: "uppercase" }}>
+                <span style={{ fontFamily: TL.font.mono, fontSize: 8, fontWeight: 700, color: TL.mute, letterSpacing: "0.04em", textTransform: "uppercase" }}>
                   {LPHASE_LABEL[p]}
                 </span>
               </span>
             ))}
             <span style={{ display: "inline-flex", alignItems: "center", gap: 4, marginLeft: 4 }}>
-              <span style={{ fontFamily: T.mono, fontSize: 7.5, fontWeight: 800, color: T.onLime, background: T.lime, borderRadius: 3, padding: "1px 4px" }}>Peak</span>
-              <span style={{ fontFamily: T.mono, fontSize: 8, color: T.mut }}>turnering / høy volum</span>
+              <span style={{ fontFamily: TL.font.mono, fontSize: 7.5, fontWeight: 800, color: TL.onFill, background: TL.fill, borderRadius: 3, padding: "1px 4px" }}>Peak</span>
+              <span style={{ fontFamily: TL.font.mono, fontSize: 8, color: TL.mute }}>turnering / høy volum</span>
             </span>
             <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}>
-              <Icon name="trophy" size={10} style={{ color: T.warn }} />
-              <span style={{ fontFamily: T.mono, fontSize: 8, color: T.mut }}>turnering i kalender</span>
+              <Icon name="trophy" size={10} style={{ color: TL.warn }} />
+              <span style={{ fontFamily: TL.font.mono, fontSize: 8, color: TL.mute }}>turnering i kalender</span>
             </span>
           </div>
         </div>
@@ -407,15 +408,15 @@ export function WorkbenchAarsplan({ data, handlers, onEndret }: {
       {/* Periode-popup (ny/rediger) — Anders-logikken: alt justerbart, så Bekreft */}
       {popup && (
         <div style={{ position: "fixed", inset: 0, zIndex: 70, display: "flex", alignItems: "center", justifyContent: "center", padding: 16 }}>
-          <div onClick={lagrer ? undefined : () => setPopup(null)} style={{ position: "absolute", inset: 0, background: T.farge.nestenSvartA62, backdropFilter: "blur(2px)" }} />
-          <div role="dialog" aria-label={popup.periodeId ? "Rediger periode" : "Ny periode"} className="v2-sheet-in" style={{ position: "relative", width: "min(440px, 100%)", maxHeight: "88vh", overflowY: "auto", background: T.panel, border: `1px solid ${T.borderS}`, borderRadius: 20, padding: "20px 22px", boxShadow: `0 24px 60px ${T.farge.svartA50}` }}>
+          <div onClick={lagrer ? undefined : () => setPopup(null)} style={{ position: "absolute", inset: 0, background: TL.scrim, backdropFilter: "none" }} />
+          <div role="dialog" aria-label={popup.periodeId ? "Rediger periode" : "Ny periode"} className="v2-sheet-in" style={{ position: "relative", width: "min(440px, 100%)", maxHeight: "88vh", overflowY: "auto", background: TL.elev, border: `1px solid ${TL.hair}`, borderRadius: 20, padding: "20px 22px", boxShadow: "none" }}>
             <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
               <span style={{ width: 10, height: 10, borderRadius: 3, background: LPHASE_FARGE[popup.lPhase] }} />
-              <h2 style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 17, letterSpacing: "-0.02em", color: T.fg, margin: 0 }}>
+              <h2 style={{ fontFamily: TL.font.sans, fontWeight: 700, fontSize: 17, letterSpacing: "-0.02em", color: TL.text, margin: 0 }}>
                 {popup.periodeId ? "Rediger" : "Ny"} · {LPHASE_LABEL[popup.lPhase]}
               </h2>
             </div>
-            <p style={{ fontFamily: T.ui, fontSize: 11, color: T.mut, margin: "6px 0 0", lineHeight: 1.5 }}>{LPHASE_BESKRIVELSE[popup.lPhase]}</p>
+            <p style={{ fontFamily: TL.font.sans, fontSize: 11, color: TL.mute, margin: "6px 0 0", lineHeight: 1.5 }}>{LPHASE_BESKRIVELSE[popup.lPhase]}</p>
 
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginTop: 14 }}>
               <label style={{ display: "block" }}>
@@ -459,10 +460,10 @@ export function WorkbenchAarsplan({ data, handlers, onEndret }: {
                   return (
                     <div key={o} style={{ display: "flex", alignItems: "center", gap: 10 }}>
                       <span style={{ width: 8, height: 8, borderRadius: 3, background: T.ax[o], flex: "none" }} />
-                      <span style={{ fontFamily: T.mono, fontSize: 10, fontWeight: 700, color: T.fg2, width: 46 }}>{o}</span>
+                      <span style={{ fontFamily: TL.font.mono, fontSize: 10, fontWeight: 700, color: TL.mute, width: 46 }}>{o}</span>
                       <div style={{ display: "flex", alignItems: "center", gap: 8, marginLeft: "auto" }}>
                         <button type="button" onClick={() => sett(verdi - 1)} disabled={verdi <= 0} className="v2-press" aria-label={`Færre ${o}-økter`} style={stepperStil(verdi <= 0)}>−</button>
-                        <span style={{ fontFamily: T.mono, fontSize: 13, fontWeight: 700, color: verdi > 0 ? T.fg : T.mut, width: 22, textAlign: "center" }}>{verdi}</span>
+                        <span style={{ fontFamily: TL.font.mono, fontSize: 13, fontWeight: 700, color: verdi > 0 ? TL.text : TL.mute, width: 22, textAlign: "center" }}>{verdi}</span>
                         <button type="button" onClick={() => sett(verdi + 1)} className="v2-press" aria-label={`Flere ${o}-økter`} style={stepperStil(false)}>+</button>
                       </div>
                     </div>
@@ -470,15 +471,15 @@ export function WorkbenchAarsplan({ data, handlers, onEndret }: {
                 })}
               </div>
               {budsjettSum(popup.budsjett) > 0 && (
-                <div style={{ fontFamily: T.mono, fontSize: 9, color: T.fg2, marginTop: 7 }}>Sum: {budsjettSum(popup.budsjett)} økter/uke</div>
+                <div style={{ fontFamily: TL.font.mono, fontSize: 9, color: TL.mute, marginTop: 7 }}>Sum: {budsjettSum(popup.budsjett)} økter/uke</div>
               )}
             </div>
 
-            {feil && <span style={{ fontFamily: T.ui, fontSize: 12, color: T.down, display: "block", marginTop: 10 }}>{feil}</span>}
+            {feil && <span style={{ fontFamily: TL.font.sans, fontSize: 12, color: TL.danger, display: "block", marginTop: 10 }}>{feil}</span>}
 
             {bekreftSlett ? (
-              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8, marginTop: 16, padding: "10px 12px", borderRadius: 11, background: `color-mix(in srgb, ${T.down} 8%, ${T.panel2})`, border: `1px solid color-mix(in srgb, ${T.down} 35%, transparent)` }}>
-                <span style={{ fontFamily: T.ui, fontSize: 12, color: T.fg }}>Slette perioden? Kan ikke angres.</span>
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8, marginTop: 16, padding: "10px 12px", borderRadius: 11, background: `color-mix(in srgb, ${TL.danger} 8%, ${TL.dock})`, border: `1px solid color-mix(in srgb, ${TL.danger} 35%, transparent)` }}>
+                <span style={{ fontFamily: TL.font.sans, fontSize: 12, color: TL.text }}>Slette perioden? Kan ikke angres.</span>
                 <div style={{ display: "flex", gap: 8 }}>
                   <Knapp ghost onClick={() => setBekreftSlett(false)} disabled={lagrer}>Avbryt</Knapp>
                   <Knapp icon="trash-2" onClick={slett} disabled={lagrer}>{lagrer ? "Sletter…" : "Bekreft"}</Knapp>
@@ -514,10 +515,10 @@ const feltStil: React.CSSProperties = {
   width: "100%",
   height: 40,
   borderRadius: 10,
-  border: `1px solid ${T.borderS}`,
-  background: T.panel2,
-  color: T.fg,
-  fontFamily: T.ui,
+  border: `1px solid ${TL.hair}`,
+  background: TL.dock,
+  color: TL.text,
+  fontFamily: TL.font.sans,
   fontSize: 13,
   padding: "0 10px",
   marginTop: 5,
@@ -529,10 +530,10 @@ function stepperStil(disabled: boolean): React.CSSProperties {
     width: 30,
     height: 30,
     borderRadius: 9,
-    border: `1px solid ${T.borderS}`,
-    background: T.panel3,
-    color: disabled ? T.mut : T.fg,
-    fontFamily: T.mono,
+    border: `1px solid ${TL.hair}`,
+    background: TL.dim,
+    color: disabled ? TL.mute : TL.text,
+    fontFamily: TL.font.mono,
     fontSize: 15,
     fontWeight: 700,
     cursor: disabled ? "default" : "pointer",
@@ -570,27 +571,27 @@ export function WBPeriodeStrip({ data, vindu, onTilAarsplan }: {
       className="v2-press v2-focus"
       title="Åpne årsplanen"
       data-wb-periodestrip
-      style={{ appearance: "none", display: "block", width: "100%", background: T.panel, border: `1px solid ${T.border}`, borderRadius: 12, padding: "9px 14px", cursor: onTilAarsplan ? "pointer" : "default", textAlign: "left" }}
+      style={{ appearance: "none", display: "block", width: "100%", background: TL.elev, border: `1px solid ${TL.hair}`, borderRadius: 12, padding: "9px 14px", cursor: onTilAarsplan ? "pointer" : "default", textAlign: "left" }}
     >
       <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 7 }}>
-        <Icon name="calendar-range" size={12} style={{ color: T.fg2 }} />
-        <span style={{ fontFamily: T.mono, fontSize: 8.5, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: T.mut }}>Periodisering</span>
+        <Icon name="calendar-range" size={12} style={{ color: TL.mute }} />
+        <span style={{ fontFamily: TL.font.mono, fontSize: 8.5, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: TL.mute }}>Periodisering</span>
         {aktiv && (
-          <span style={{ fontFamily: T.ui, fontSize: 11, color: T.fg2 }}>
-            Nå: <span style={{ fontWeight: 700, color: T.fg }}>{LPHASE_LABEL[aktiv.lPhase]}</span>
+          <span style={{ fontFamily: TL.font.sans, fontSize: 11, color: TL.mute }}>
+            Nå: <span style={{ fontWeight: 700, color: TL.text }}>{LPHASE_LABEL[aktiv.lPhase]}</span>
             {aktiv.focus ? ` · ${aktiv.focus}` : ""}
           </span>
         )}
-        <span style={{ marginLeft: "auto", fontFamily: T.mono, fontSize: 8.5, color: T.mut }}>årsplan →</span>
+        <span style={{ marginLeft: "auto", fontFamily: TL.font.mono, fontSize: 8.5, color: TL.mute }}>årsplan →</span>
       </div>
-      <div style={{ position: "relative", height: 10, borderRadius: 9999, background: T.track, overflow: "hidden" }}>
+      <div style={{ position: "relative", height: 10, borderRadius: 9999, background: TL.hair, overflow: "hidden" }}>
         {blocks.map((b) => (
-          <span key={b.id} style={{ position: "absolute", left: `${pct(new Date(b.startDate))}%`, width: `${Math.max(0.6, pct(new Date(b.endDate)) - pct(new Date(b.startDate)))}%`, top: 0, bottom: 0, background: LPHASE_FARGE[b.lPhase] ?? T.mut, opacity: 0.85 }} />
+          <span key={b.id} style={{ position: "absolute", left: `${pct(new Date(b.startDate))}%`, width: `${Math.max(0.6, pct(new Date(b.endDate)) - pct(new Date(b.startDate)))}%`, top: 0, bottom: 0, background: LPHASE_FARGE[b.lPhase] ?? TL.mute, opacity: 0.85 }} />
         ))}
         {vindu && (
-          <span style={{ position: "absolute", left: `${pct(vindu.fra)}%`, width: `${Math.max(0.8, pct(vindu.til) - pct(vindu.fra))}%`, top: 0, bottom: 0, border: `1.5px solid ${T.fg}`, borderRadius: 4, boxSizing: "border-box" }} />
+          <span style={{ position: "absolute", left: `${pct(vindu.fra)}%`, width: `${Math.max(0.8, pct(vindu.til) - pct(vindu.fra))}%`, top: 0, bottom: 0, border: `1.5px solid ${TL.text}`, borderRadius: 4, boxSizing: "border-box" }} />
         )}
-        <span style={{ position: "absolute", left: `${naaPct}%`, top: -1, bottom: -1, width: 2, background: T.lime }} />
+        <span style={{ position: "absolute", left: `${naaPct}%`, top: -1, bottom: -1, width: 2, background: TL.fill }} />
       </div>
     </button>
   );

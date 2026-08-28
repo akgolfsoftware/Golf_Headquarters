@@ -9,20 +9,9 @@
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import {
-  Caps,
-  Kort,
-  Rad,
-  AvatarInit,
-  KpiFlis,
-  TallHero,
-  StatusPill,
-  TomTilstand,
-  CTAPill,
-  Icon,
-} from "@/components/v2";
-import { T, fmtSg } from "@/lib/v2/tokens";
-
+import { Caps, Kort, Rad, AvatarInit, KpiFlis, TallHero, StatusPill, TomTilstand, CTAPill, Icon } from "@/components/v2";
+import { TL } from "@/lib/v2/train-lock";
+import { fmtSg } from "@/lib/v2/tokens";
 // ── Datakontrakt (mappes fra Round i ruten) ─────────────────────
 export interface AdminRunderV2Round {
   id: string;
@@ -75,7 +64,7 @@ function fmtDiff(n: number): string {
 
 /** vs par → farge: under par = signal-grønt (prestasjon), par/over = nøytralt. */
 function diffFarge(n: number): string {
-  return n < 0 ? T.up : n === 0 ? T.fg : T.mut;
+  return n < 0 ? TL.ok : n === 0 ? TL.text : TL.mute;
 }
 
 /** 1-desimal komma-snitt (aldri rå JS-float). */
@@ -84,8 +73,8 @@ function fmtSnitt(n: number): string {
 }
 
 function sgFarge(sg: number | null): string {
-  if (sg == null || sg === 0) return T.mut;
-  return sg > 0 ? T.up : T.down;
+  if (sg == null || sg === 0) return TL.mute;
+  return sg > 0 ? TL.ok : TL.danger;
 }
 
 /* ── SG-verdi (mono, fortegnsfarget) ──────────────────────────── */
@@ -93,7 +82,7 @@ function SgVerdi({ sg }: { sg: number | null }) {
   return (
     <span
       style={{
-        fontFamily: T.mono,
+        fontFamily: TL.font.mono,
         fontSize: 13,
         fontWeight: 700,
         color: sgFarge(sg),
@@ -116,13 +105,13 @@ function RunderTabell({
   const th: React.CSSProperties = {
     padding: "9px 12px",
     textAlign: "left",
-    fontFamily: T.mono,
+    fontFamily: TL.font.mono,
     fontSize: 9,
     fontWeight: 700,
     letterSpacing: "0.1em",
     textTransform: "uppercase",
-    color: T.mut,
-    borderBottom: `1px solid ${T.borderS}`,
+    color: TL.mute,
+    borderBottom: `1px solid ${TL.hair}`,
     whiteSpace: "nowrap",
   };
   const thNum: React.CSSProperties = { ...th, textAlign: "right" };
@@ -145,13 +134,13 @@ function RunderTabell({
             const last = i === runder.length - 1;
             const bd: React.CSSProperties = {
               padding: "11px 12px",
-              borderBottom: last ? "none" : `1px solid ${T.border}`,
+              borderBottom: last ? "none" : `1px solid ${TL.hair}`,
               verticalAlign: "middle",
             };
             const bdNum: React.CSSProperties = {
               ...bd,
               textAlign: "right",
-              fontFamily: T.mono,
+              fontFamily: TL.font.mono,
               fontVariantNumeric: "tabular-nums",
             };
             return (
@@ -165,11 +154,11 @@ function RunderTabell({
                   <span style={{ display: "inline-flex", alignItems: "center", gap: 10, minWidth: 0 }}>
                     <AvatarInit navn={r.spiller} size={30} />
                     <span style={{ minWidth: 0 }}>
-                      <span style={{ display: "block", fontFamily: T.ui, fontSize: 13, fontWeight: 600, color: T.fg }}>
+                      <span style={{ display: "block", fontFamily: TL.font.sans, fontSize: 13, fontWeight: 600, color: TL.text }}>
                         {r.spiller}
                       </span>
                       {r.hcp && (
-                        <span style={{ display: "block", fontFamily: T.mono, fontSize: 10, color: T.mut, marginTop: 1 }}>
+                        <span style={{ display: "block", fontFamily: TL.font.mono, fontSize: 10, color: TL.mute, marginTop: 1 }}>
                           Hcp {r.hcp}
                         </span>
                       )}
@@ -177,15 +166,15 @@ function RunderTabell({
                   </span>
                 </td>
                 <td style={bd}>
-                  <span style={{ display: "block", fontFamily: T.ui, fontSize: 13, color: T.fg }}>{r.bane}</span>
-                  <span style={{ display: "block", fontFamily: T.mono, fontSize: 10, color: T.mut, marginTop: 1 }}>
+                  <span style={{ display: "block", fontFamily: TL.font.sans, fontSize: 13, color: TL.text }}>{r.bane}</span>
+                  <span style={{ display: "block", fontFamily: TL.font.mono, fontSize: 10, color: TL.mute, marginTop: 1 }}>
                     Par {r.par}
                   </span>
                 </td>
-                <td style={{ ...bd, fontFamily: T.mono, fontSize: 12, color: T.fg2, whiteSpace: "nowrap" }}>
+                <td style={{ ...bd, fontFamily: TL.font.mono, fontSize: 12, color: TL.mute, whiteSpace: "nowrap" }}>
                   {r.dato}
                 </td>
-                <td style={{ ...bdNum, fontSize: 14, fontWeight: 700, color: T.fg }}>{r.score}</td>
+                <td style={{ ...bdNum, fontSize: 14, fontWeight: 700, color: TL.text }}>{r.score}</td>
                 <td style={{ ...bdNum, fontSize: 13, fontWeight: 700, color: diffFarge(r.vsPar) }}>
                   {fmtDiff(r.vsPar)}
                 </td>
@@ -205,9 +194,9 @@ function RunderTabell({
                       alignItems: "center",
                       justifyContent: "center",
                       borderRadius: 8,
-                      border: `1px solid ${T.border}`,
-                      background: T.panel2,
-                      color: T.mut,
+                      border: `1px solid ${TL.hair}`,
+                      background: TL.dock,
+                      color: TL.mute,
                     }}
                   >
                     <Icon name="chevron-right" size={14} />
@@ -245,10 +234,10 @@ function RunderListe({
                 <span
                   style={{
                     display: "block",
-                    fontFamily: T.mono,
+                    fontFamily: TL.font.mono,
                     fontSize: 15,
                     fontWeight: 700,
-                    color: T.fg,
+                    color: TL.text,
                     fontVariantNumeric: "tabular-nums",
                     lineHeight: 1,
                   }}
@@ -258,7 +247,7 @@ function RunderListe({
                 <span
                   style={{
                     display: "block",
-                    fontFamily: T.mono,
+                    fontFamily: TL.font.mono,
                     fontSize: 10,
                     fontWeight: 700,
                     color: diffFarge(r.vsPar),
@@ -297,8 +286,8 @@ export function AdminRunderV2({ data }: { data: AdminRunderV2Data }) {
     <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 14, flexWrap: "wrap" }}>
       <div>
         <div data-paper-pattern-topp>
-          <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>Runder</h1>
-          <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>AgencyOS</span>
+          <h1 style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 17, fontWeight: 600, color: TL.text }}>Runder</h1>
+          <span style={{ display: "block", fontFamily: TL.font.mono, fontSize: 10.5, color: TL.mute, marginTop: 2 }}>AgencyOS</span>
         </div>
       </div>
       <StatusPill tone={data.total > 0 ? "lime" : "warn"}>
@@ -318,7 +307,7 @@ export function AdminRunderV2({ data }: { data: AdminRunderV2Data }) {
 
   // ── KPI-strip (4) ───────────────────────────────────────────────
   const kpi = (
-    <div className="grid grid-cols-2 lg:grid-cols-4" style={{ gap: T.gap }}>
+    <div className="grid grid-cols-2 lg:grid-cols-4" style={{ gap: 16 }}>
       <KpiFlis label="Snitt-score" value={data.snittScore == null ? "—" : fmtSnitt(data.snittScore)} />
       <KpiFlis
         label="Vs par · snitt"
@@ -357,12 +346,12 @@ export function AdminRunderV2({ data }: { data: AdminRunderV2Data }) {
           minWidth: 220,
           height: 40,
           padding: "0 14px",
-          borderRadius: T.rRow,
-          background: T.panel2,
-          border: `1px solid ${T.border}`,
+          borderRadius: TL.radius.row,
+          background: TL.dock,
+          border: `1px solid ${TL.hair}`,
         }}
       >
-        <Icon name="search" size={15} style={{ color: T.mut }} />
+        <Icon name="search" size={15} style={{ color: TL.mute }} />
         <input
           type="search"
           value={sok}
@@ -375,9 +364,9 @@ export function AdminRunderV2({ data }: { data: AdminRunderV2Data }) {
             background: "transparent",
             border: "none",
             outline: "none",
-            fontFamily: T.ui,
+            fontFamily: TL.font.sans,
             fontSize: 13.5,
-            color: T.fg,
+            color: TL.text,
           }}
         />
       </div>
@@ -390,7 +379,7 @@ export function AdminRunderV2({ data }: { data: AdminRunderV2Data }) {
   // ── Tom-tilstand + vei videre ───────────────────────────────────
   if (data.runder.length === 0) {
     return (
-      <div data-paper-wave-h="runder" data-paper-pattern style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 960, margin: "0 auto", width: "100%" }}>
+      <div data-paper-wave-h="runder" data-paper-pattern style={{ display: "flex", flexDirection: "column", gap: 16, maxWidth: 960, margin: "0 auto", width: "100%" }}>
         {hode}
         {kpi}
         <Kort>
@@ -424,7 +413,7 @@ export function AdminRunderV2({ data }: { data: AdminRunderV2Data }) {
     );
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+    <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
       {hode}
       {kpi}
       {primaerCta}

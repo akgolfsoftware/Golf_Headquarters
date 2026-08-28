@@ -1,4 +1,5 @@
 "use client";
+import { TL } from "@/lib/v2/train-lock";
 
 /**
  * WORKBENCH — v2 (retning C «Presis»). Flaggskipet: delt av coach og spiller
@@ -196,14 +197,14 @@ function TLBlokkInnhold({ o, kompakt, h, col }: { o: WeekEvent; kompakt: boolean
   return (
     <>
       <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
-        <span style={{ fontFamily: T.mono, fontSize: 8.5, fontWeight: 700, letterSpacing: "0.03em", color: `color-mix(in srgb, ${col} 55%, ${T.fg})`, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{AKSE_NAVN[ak] || o.eb} · {toKl(o.h, o.m)}</span>
-        {done && <Icon name="check" size={9} style={{ color: T.up, marginLeft: "auto", flex: "none" }} />}
-        {avvik && <Icon name="alert-triangle" size={9} style={{ color: T.down, marginLeft: "auto", flex: "none" }} />}
+        <span style={{ fontFamily: TL.font.mono, fontSize: 8.5, fontWeight: 700, letterSpacing: "0.03em", color: `color-mix(in srgb, ${col} 55%, ${TL.text})`, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{AKSE_NAVN[ak] || o.eb} · {toKl(o.h, o.m)}</span>
+        {done && <Icon name="check" size={9} style={{ color: TL.ok, marginLeft: "auto", flex: "none" }} />}
+        {avvik && <Icon name="alert-triangle" size={9} style={{ color: TL.danger, marginLeft: "auto", flex: "none" }} />}
       </div>
-      {!kompakt && <div style={{ fontFamily: T.ui, fontSize: 10.5, fontWeight: 600, color: T.fg, marginTop: 2, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{o.ttl}</div>}
-      {!kompakt && h >= 58 && <div style={{ fontFamily: T.mono, fontSize: 8.5, color: T.mut, marginTop: 2 }}>{toKl(o.h, o.m)} · {fmtVarighet(o.durMin)}</div>}
+      {!kompakt && <div style={{ fontFamily: TL.font.sans, fontSize: 10.5, fontWeight: 600, color: TL.text, marginTop: 2, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{o.ttl}</div>}
+      {!kompakt && h >= 58 && <div style={{ fontFamily: TL.font.mono, fontSize: 8.5, color: TL.mute, marginTop: 2 }}>{toKl(o.h, o.m)} · {fmtVarighet(o.durMin)}</div>}
       {formelLinje ? (
-        <div style={{ fontFamily: T.mono, fontSize: 8.5, fontWeight: 700, color: T.fg2, marginTop: 2, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+        <div style={{ fontFamily: TL.font.mono, fontSize: 8.5, fontWeight: 700, color: TL.mute, marginTop: 2, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
           {formelLinje}
         </div>
       ) : null}
@@ -217,10 +218,10 @@ function TLBlokk({ o, dragKey, valgt, onVelg, dragbar }: { o: WeekEvent; /** Sta
   const h = typeof blockStyle.height === "number" ? blockStyle.height : 40;
   const kompakt = h < 42;
   const ak = o.eb as AkseKey;
-  const col = T.ax[ak] || T.mut;
+  const col = T.ax[ak] || TL.mute;
   const avvik = o.compliance === "avvik" || o.compliance === "ikke-gjennomfort";
   const pending = erOptimistisk(o.id);
-  const ramme = avvik ? T.down : valgt ? T.handling : T.border;
+  const ramme = avvik ? TL.danger : valgt ? TL.fill : TL.hair;
   const kanDra = dragbar && !pending && !!o.id;
   const { attributes, listeners, setNodeRef, isDragging } = useDraggable({
     id: `session:${dragKey}`,
@@ -237,14 +238,14 @@ function TLBlokk({ o, dragKey, valgt, onVelg, dragbar }: { o: WeekEvent; /** Sta
         ...blockStyle,
         borderRadius: 8, padding: kompakt ? "2px 7px" : "5px 8px", cursor: pending ? "default" : dragbar ? "grab" : "pointer", overflow: "hidden",
         touchAction: kanDra ? "none" : undefined,
-        background: `color-mix(in srgb, ${col} 15%, ${T.panel3})`,
+        background: `color-mix(in srgb, ${col} 15%, ${TL.dim})`,
         border: `1px ${pending ? "dashed" : "solid"} ${ramme}`,
         borderLeft: `3px solid ${col}`,
         opacity: isDragging ? 0.35 : pending ? 0.6 : 1,
         boxShadow: avvik
-          ? `0 0 0 1px color-mix(in srgb, ${T.down} 25%, transparent)`
+          ? `0 0 0 1px color-mix(in srgb, ${TL.danger} 25%, transparent)`
           : valgt
-            ? `0 0 0 1px color-mix(in srgb, ${T.handling} 35%, transparent)`
+            ? `0 0 0 1px color-mix(in srgb, ${TL.fill} 35%, transparent)`
             : "none",
       }}
     >
@@ -262,9 +263,9 @@ function WBDragOverlayInnhold({ data }: { data: WbDragData }) {
     const o = data.event;
     const h = Math.max(40, (o.durMin / 60) * HOUR_H);
     const kompakt = h < 42;
-    const col = T.ax[o.eb as AkseKey] || T.mut;
+    const col = T.ax[o.eb as AkseKey] || TL.mute;
     return (
-      <div style={{ width: 200, borderRadius: 8, padding: kompakt ? "2px 7px" : "5px 8px", background: `color-mix(in srgb, ${col} 15%, ${T.panel3})`, border: `1px solid ${T.borderS}`, borderLeft: `3px solid ${col}`, boxShadow: `0 10px 28px ${T.farge.svartA40}`, cursor: "grabbing" }}>
+      <div style={{ width: 200, borderRadius: 8, padding: kompakt ? "2px 7px" : "5px 8px", background: `color-mix(in srgb, ${col} 15%, ${TL.dim})`, border: `1px solid ${TL.hair}`, borderLeft: `3px solid ${col}`, boxShadow: `0 10px 28px ${TL.scrim}`, cursor: "grabbing" }}>
         <TLBlokkInnhold o={o} kompakt={kompakt} h={h} col={col} />
       </div>
     );
@@ -273,12 +274,12 @@ function WBDragOverlayInnhold({ data }: { data: WbDragData }) {
   const tittel = data.kind === "add" ? data.title : data.name;
   const sub = data.kind === "add" ? fmtVarighet(data.durMin) : `${data.sessionCount} økter · ${data.varighetUker} uker`;
   return (
-    <div style={{ width: 200, display: "flex", flexDirection: "column", gap: 4, padding: "8px 10px", borderRadius: 10, background: T.panel2, border: `1px dashed ${T.borderS}`, boxShadow: `0 10px 28px ${T.farge.svartA40}`, cursor: "grabbing" }}>
+    <div style={{ width: 200, display: "flex", flexDirection: "column", gap: 4, padding: "8px 10px", borderRadius: 10, background: TL.dock, border: `1px dashed ${TL.hair}`, boxShadow: `0 10px 28px ${TL.scrim}`, cursor: "grabbing" }}>
       <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-        {akse && <span style={{ width: 6, height: 6, borderRadius: 9999, background: T.ax[akse] || T.mut, flex: "none" }} />}
-        <span style={{ fontFamily: T.ui, fontSize: 12, fontWeight: 600, color: T.fg, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{tittel}</span>
+        {akse && <span style={{ width: 6, height: 6, borderRadius: 9999, background: T.ax[akse] || TL.mute, flex: "none" }} />}
+        <span style={{ fontFamily: TL.font.sans, fontSize: 12, fontWeight: 600, color: TL.text, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{tittel}</span>
       </div>
-      <span style={{ fontFamily: T.mono, fontSize: 9, color: T.mut }}>{sub}</span>
+      <span style={{ fontFamily: TL.font.mono, fontSize: 9, color: TL.mute }}>{sub}</span>
     </div>
   );
 }
@@ -314,8 +315,8 @@ function WBTidslinjeDagInnhold({ dag, index, valgt, onVelg, droppbar, kanFlytteO
       style={{
         position: "absolute",
         inset: 0,
-        background: isOver ? `color-mix(in srgb, ${T.handling} 8%, transparent)` : "transparent",
-        outline: isOver ? `1px dashed color-mix(in srgb, ${T.handling} 45%, transparent)` : "none",
+        background: isOver ? `color-mix(in srgb, ${TL.fill} 8%, transparent)` : "transparent",
+        outline: isOver ? `1px dashed color-mix(in srgb, ${TL.fill} 45%, transparent)` : "none",
         outlineOffset: -2,
         transition: "background 80ms",
       }}
@@ -390,15 +391,15 @@ function PalettBrikke({ pid, tittel, akse, durMin, sub, onClick }: { pid: string
       {...(dragbar ? attributes : undefined)}
       {...(dragbar ? listeners : undefined)}
       className="v2-press v2-focus"
-      style={{ appearance: "none", textAlign: "left", width: "100%", padding: "8px 9px", borderRadius: 10, background: T.panel2, border: `1px dashed ${T.borderS}`, cursor: dragbar ? "grab" : onClick ? "pointer" : "default", minWidth: 0, touchAction: dragbar ? "none" : undefined, opacity: isDragging ? 0.35 : 1 }}
+      style={{ appearance: "none", textAlign: "left", width: "100%", padding: "8px 9px", borderRadius: 10, background: TL.dock, border: `1px dashed ${TL.hair}`, cursor: dragbar ? "grab" : onClick ? "pointer" : "default", minWidth: 0, touchAction: dragbar ? "none" : undefined, opacity: isDragging ? 0.35 : 1 }}
     >
       <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-        {akse && <span style={{ width: 6, height: 6, borderRadius: 9999, background: T.ax[akse] || T.mut, flex: "none" }} />}
-        <span style={{ fontFamily: T.ui, fontSize: 11.5, fontWeight: 600, color: T.fg, flex: 1, minWidth: 0, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{tittel}</span>
+        {akse && <span style={{ width: 6, height: 6, borderRadius: 9999, background: T.ax[akse] || TL.mute, flex: "none" }} />}
+        <span style={{ fontFamily: TL.font.sans, fontSize: 11.5, fontWeight: 600, color: TL.text, flex: 1, minWidth: 0, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{tittel}</span>
       </div>
       <div style={{ display: "flex", alignItems: "center", gap: 6, marginTop: 4 }}>
-        <span style={{ fontFamily: T.mono, fontSize: 8.5, color: T.mut }}>{sub}</span>
-        {onClick && <Icon name="plus" size={10} style={{ color: T.mut, marginLeft: "auto", flex: "none" }} />}
+        <span style={{ fontFamily: TL.font.mono, fontSize: 8.5, color: TL.mute }}>{sub}</span>
+        {onClick && <Icon name="plus" size={10} style={{ color: TL.mute, marginLeft: "auto", flex: "none" }} />}
       </div>
     </button>
   );
@@ -424,16 +425,16 @@ function WBMalKort({ mal, onBrukMal }: {
       ref={setNodeRef}
       {...(onBrukMal ? attributes : undefined)}
       {...(onBrukMal ? listeners : undefined)}
-      style={{ padding: "11px 12px", borderRadius: 12, background: T.panel2, border: `1px solid ${T.border}`, cursor: onBrukMal ? "grab" : "default", touchAction: onBrukMal ? "none" : undefined, opacity: isDragging ? 0.35 : 1 }}
+      style={{ padding: "11px 12px", borderRadius: 12, background: TL.dock, border: `1px solid ${TL.hair}`, cursor: onBrukMal ? "grab" : "default", touchAction: onBrukMal ? "none" : undefined, opacity: isDragging ? 0.35 : 1 }}
     >
-      <span style={{ display: "block", minWidth: 0, fontFamily: T.ui, fontSize: 12.5, fontWeight: 600, color: T.fg, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{mal.name}</span>
-      <span style={{ fontFamily: T.mono, fontSize: 9, color: T.mut, display: "block", marginTop: 3 }}>{mal.sessionCount} økter · {LPHASE_LABEL[mal.lPhase] ?? mal.lPhase} · {mal.varighetUker} uker</span>
+      <span style={{ display: "block", minWidth: 0, fontFamily: TL.font.sans, fontSize: 12.5, fontWeight: 600, color: TL.text, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{mal.name}</span>
+      <span style={{ fontFamily: TL.font.mono, fontSize: 9, color: TL.mute, display: "block", marginTop: 3 }}>{mal.sessionCount} økter · {LPHASE_LABEL[mal.lPhase] ?? mal.lPhase} · {mal.varighetUker} uker</span>
       {onBrukMal && (
         <button
           type="button"
           onClick={() => onBrukMal(mal.id)}
           className="v2-press v2-focus"
-          style={{ appearance: "none", cursor: "pointer", marginTop: 8, width: "100%", padding: "6px 0", borderRadius: 8, border: `1px solid ${T.borderS}`, background: T.panel3, color: T.fg2, fontFamily: T.mono, fontSize: 9, fontWeight: 700, letterSpacing: "0.05em", textTransform: "uppercase" }}
+          style={{ appearance: "none", cursor: "pointer", marginTop: 8, width: "100%", padding: "6px 0", borderRadius: 8, border: `1px solid ${TL.hair}`, background: TL.dim, color: TL.mute, fontFamily: TL.font.mono, fontSize: 9, fontWeight: 700, letterSpacing: "0.05em", textTransform: "uppercase" }}
         >
           Bruk · legg inn uke 1
         </button>
@@ -449,15 +450,15 @@ function WBGruppetider({ slots }: { slots: NonNullable<WorkbenchData["groupSlots
   const DAGER_KORT = ["Man", "Tir", "Ons", "Tor", "Fre", "Lør", "Søn"];
   return (
     <Kort pad="10px 12px" style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: 8 }}>
-      <span style={{ fontFamily: T.mono, fontSize: 9, fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", color: T.mut }}>
+      <span style={{ fontFamily: TL.font.mono, fontSize: 9, fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", color: TL.mute }}>
         Gruppetider
       </span>
       {slots.map((s) => {
         const start = new Date(s.startAt);
         const kl = `${String(start.getHours()).padStart(2, "0")}:${String(start.getMinutes()).padStart(2, "0")}`;
         return (
-          <span key={s.id} style={{ display: "inline-flex", alignItems: "center", gap: 6, padding: "5px 10px", borderRadius: 9999, background: T.panel2, border: `1px solid ${T.border}`, fontFamily: T.ui, fontSize: 11.5, color: T.fg2 }}>
-            <Icon name="users" size={11} style={{ color: T.handling }} />
+          <span key={s.id} style={{ display: "inline-flex", alignItems: "center", gap: 6, padding: "5px 10px", borderRadius: 9999, background: TL.dock, border: `1px solid ${TL.hair}`, fontFamily: TL.font.sans, fontSize: 11.5, color: TL.mute }}>
+            <Icon name="users" size={11} style={{ color: TL.fill }} />
             {DAGER_KORT[s.dayIndex] ?? ""} {kl} · {s.groupName}
             {s.location ? ` · ${s.location}` : ""}
           </span>
@@ -525,10 +526,10 @@ export function WBBibliotek({ data, tab, setTab, sok, setSok, onVelgOkt, onBrukM
             gap: 6,
             padding: "7px 10px",
             borderRadius: 8,
-            border: `1px solid ${T.border}`,
-            background: T.panel2,
-            color: T.fg2,
-            fontFamily: T.mono,
+            border: `1px solid ${TL.hair}`,
+            background: TL.dock,
+            color: TL.mute,
+            fontFamily: TL.font.mono,
             fontSize: 9,
             fontWeight: 700,
             letterSpacing: "0.04em",
@@ -542,7 +543,7 @@ export function WBBibliotek({ data, tab, setTab, sok, setSok, onVelgOkt, onBrukM
       <PalettSok value={sok} onChange={setSok} placeholder="Søk…" />
       <div style={{ display: "flex", gap: 4 }}>
         {faner.map(([id, l]) => (
-          <button key={id} type="button" onClick={() => setTab(id)} className="v2-press v2-focus" style={{ appearance: "none", cursor: "pointer", flex: 1, fontFamily: T.mono, fontSize: 9, fontWeight: 700, padding: "6px 0", borderRadius: 8, border: `1px solid ${effectiveTab === id ? "transparent" : T.border}`, background: effectiveTab === id ? T.fg : T.panel2, color: effectiveTab === id ? T.bg : T.fg2, textTransform: "uppercase", letterSpacing: "0.04em" }}>{l}</button>
+          <button key={id} type="button" onClick={() => setTab(id)} className="v2-press v2-focus" style={{ appearance: "none", cursor: "pointer", flex: 1, fontFamily: TL.font.mono, fontSize: 9, fontWeight: 700, padding: "6px 0", borderRadius: 8, border: `1px solid ${effectiveTab === id ? "transparent" : TL.hair}`, background: effectiveTab === id ? TL.text : TL.dock, color: effectiveTab === id ? TL.scene : TL.mute, textTransform: "uppercase", letterSpacing: "0.04em" }}>{l}</button>
         ))}
       </div>
       {visPerioder && (
@@ -555,7 +556,7 @@ export function WBBibliotek({ data, tab, setTab, sok, setSok, onVelgOkt, onBrukM
           {([null, "FYS", "TEK", "SLAG", "SPILL", "TURN"] as (AkseKey | null)[]).map((f) => {
             const on = akseFilter === f;
             return (
-              <button key={f ?? "alle"} type="button" onClick={() => setAkseFilter(f)} className="v2-press" style={{ appearance: "none", cursor: "pointer", fontFamily: T.mono, fontSize: 8.5, fontWeight: 700, padding: "4px 8px", borderRadius: 9999, border: `1px solid ${on ? "transparent" : T.border}`, background: on ? (f ? T.ax[f] : T.fg) : T.panel2, color: on ? (f ? T.onLime : T.bg) : T.mut, letterSpacing: "0.04em" }}>
+              <button key={f ?? "alle"} type="button" onClick={() => setAkseFilter(f)} className="v2-press" style={{ appearance: "none", cursor: "pointer", fontFamily: TL.font.mono, fontSize: 8.5, fontWeight: 700, padding: "4px 8px", borderRadius: 9999, border: `1px solid ${on ? "transparent" : TL.hair}`, background: on ? (f ? T.ax[f] : TL.text) : TL.dock, color: on ? (f ? TL.onFill : TL.scene) : TL.mute, letterSpacing: "0.04em" }}>
                 {f ?? "ALLE"}
               </button>
             );
@@ -566,7 +567,7 @@ export function WBBibliotek({ data, tab, setTab, sok, setSok, onVelgOkt, onBrukM
         <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginTop: 2 }}>
             <Caps size={9}>Planmaler</Caps>
-            <span style={{ fontFamily: T.mono, fontSize: 9, fontWeight: 700, color: T.mut }}>{data.planTemplates?.length ?? 0}</span>
+            <span style={{ fontFamily: TL.font.mono, fontSize: 9, fontWeight: 700, color: TL.mute }}>{data.planTemplates?.length ?? 0}</span>
           </div>
           {maler.length ? maler.map((m) => (
             <WBMalKort key={m.id} mal={m} onBrukMal={onBrukMal} />
@@ -614,12 +615,12 @@ export function WBBibliotek({ data, tab, setTab, sok, setSok, onVelgOkt, onBrukM
               ? kal.map((t) => ({ n: t.title, f: `${new Date(t.startDate).toLocaleDateString("nb-NO", { day: "numeric", month: "short" })} · ${PRIO[t.priority] ?? t.priority} · om ${t.daysUntil} d` }))
               : enkel.map((t) => ({ n: t.tn, f: t.td }));
             return rader.map((r, i) => (
-              <div key={`${r.n}-${i}`} style={{ padding: "8px 9px", borderRadius: 10, background: T.panel2, border: `1px dashed ${T.borderS}`, minWidth: 0 }}>
+              <div key={`${r.n}-${i}`} style={{ padding: "8px 9px", borderRadius: 10, background: TL.dock, border: `1px dashed ${TL.hair}`, minWidth: 0 }}>
                 <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-                  <Icon name="trophy" size={11} style={{ color: T.mut, flex: "none" }} />
-                  <span style={{ fontFamily: T.ui, fontSize: 11.5, fontWeight: 600, color: T.fg, flex: 1, minWidth: 0, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{r.n}</span>
+                  <Icon name="trophy" size={11} style={{ color: TL.mute, flex: "none" }} />
+                  <span style={{ fontFamily: TL.font.sans, fontSize: 11.5, fontWeight: 600, color: TL.text, flex: 1, minWidth: 0, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{r.n}</span>
                 </div>
-                <span style={{ display: "block", fontFamily: T.mono, fontSize: 8.5, color: T.mut, marginTop: 4 }}>{r.f}</span>
+                <span style={{ display: "block", fontFamily: TL.font.mono, fontSize: 8.5, color: TL.mute, marginTop: 4 }}>{r.f}</span>
               </div>
             ));
           })()}
@@ -627,7 +628,7 @@ export function WBBibliotek({ data, tab, setTab, sok, setSok, onVelgOkt, onBrukM
       )}
       {tab === "driller" && (
         <div style={{ display: "flex", flexDirection: "column", gap: 6 }} data-wb-drillerfane>
-          <span style={{ fontFamily: T.mono, fontSize: 8.5, color: T.mut }}>
+          <span style={{ fontFamily: TL.font.mono, fontSize: 8.5, color: TL.mute }}>
             {onLeggDrillIValgt ? "Trykk en drill for å legge den i valgt økt." : "Øvelsesbanken (lesevisning)."}
           </span>
           {drillMelding && <InnsiktChip>{drillMelding}</InnsiktChip>}
@@ -642,12 +643,12 @@ export function WBBibliotek({ data, tab, setTab, sok, setSok, onVelgOkt, onBrukM
                 setDrillMelding(res.ok ? `«${d.name}» lagt i valgt økt.` : res.error ?? "Kunne ikke legge til.");
                 window.setTimeout(() => setDrillMelding(null), 3500);
               } : undefined}
-              style={{ appearance: "none", textAlign: "left", padding: "8px 10px", borderRadius: 10, background: T.panel2, border: `1px dashed ${T.borderS}`, cursor: onLeggDrillIValgt ? "pointer" : "default" }}
+              style={{ appearance: "none", textAlign: "left", padding: "8px 10px", borderRadius: 10, background: TL.dock, border: `1px dashed ${TL.hair}`, cursor: onLeggDrillIValgt ? "pointer" : "default" }}
             >
               <span style={{ display: "flex", alignItems: "center", gap: 7 }}>
-                <span style={{ width: 6, height: 6, borderRadius: 9999, background: T.ax[d.pyramidArea as AkseKey] ?? T.mut, flex: "none" }} />
-                <span style={{ fontFamily: T.ui, fontSize: 11.5, fontWeight: 600, color: T.fg, flex: 1, minWidth: 0, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{d.name}</span>
-                {onLeggDrillIValgt && <Icon name="plus" size={10} style={{ color: T.mut, flex: "none" }} />}
+                <span style={{ width: 6, height: 6, borderRadius: 9999, background: T.ax[d.pyramidArea as AkseKey] ?? TL.mute, flex: "none" }} />
+                <span style={{ fontFamily: TL.font.sans, fontSize: 11.5, fontWeight: 600, color: TL.text, flex: 1, minWidth: 0, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{d.name}</span>
+                {onLeggDrillIValgt && <Icon name="plus" size={10} style={{ color: TL.mute, flex: "none" }} />}
               </span>
             </button>
           )) : <TomTilstand icon="dumbbell" title="Ingen driller" sub={sok ? "Prøv et annet søk." : "Søk eller filtrer på område."} />}
@@ -688,39 +689,39 @@ export function WBBelastning({ data }: { data: WorkbenchData }) {
         ? Math.round((b.akuttMin / 60) * 10) / 10
         : null;
   const acwrTone =
-    b?.acwr == null ? T.mut : b.acwr > 1.4 ? T.down : b.acwr > 1.2 ? T.warn : T.up;
+    b?.acwr == null ? TL.mute : b.acwr > 1.4 ? TL.danger : b.acwr > 1.2 ? TL.warn : TL.ok;
 
   const advarsler: { tekst: string; tone: string }[] = [];
   if (b?.acwr != null && b.acwr > 1.4) {
     advarsler.push({
       tekst: "Kraftig belastningsøkning (ACWR > 1,4) — vurder å lette uka.",
-      tone: T.down,
+      tone: TL.danger,
     });
   } else if (b?.acwr != null && b.acwr > 1.2) {
     advarsler.push({
       tekst: "Belastningen øker raskt (ACWR > 1,2) — følg med.",
-      tone: T.warn,
+      tone: TL.warn,
     });
   }
   if (turnering?.soon) {
     advarsler.push({
       tekst: `Turnering snart: ${turnering.tn} (${turnering.td}).`,
-      tone: T.warn,
+      tone: TL.warn,
     });
   }
   if (visUkeT != null && snittT != null && snittT > 0 && visUkeT > snittT * 1.35) {
     advarsler.push({
       tekst: `Uka er ${fmtTimer(visUkeT)} mot snitt ${fmtTimer(snittT)} — tydelig tyngre.`,
-      tone: T.warn,
+      tone: TL.warn,
     });
   }
   return (
     <Kort pad="12px 14px">
       <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 10 }}>
-        <Icon name="activity" size={14} style={{ color: T.handling }} />
+        <Icon name="activity" size={14} style={{ color: TL.fill }} />
         <Caps size={9}>Kontekst · uke</Caps>
         {sessionCount > 0 && (
-          <span style={{ marginLeft: "auto", fontFamily: T.mono, fontSize: 9, color: T.mut }}>
+          <span style={{ marginLeft: "auto", fontFamily: TL.font.mono, fontSize: 9, color: TL.mute }}>
             {sessionCount} økter
           </span>
         )}
@@ -737,18 +738,18 @@ export function WBBelastning({ data }: { data: WorkbenchData }) {
           style={{
             padding: "9px 11px",
             borderRadius: 10,
-            background: T.panel2,
-            border: `1px solid ${T.border}`,
+            background: TL.dock,
+            border: `1px solid ${TL.hair}`,
           }}
         >
-          <div style={{ fontFamily: T.mono, fontSize: 8.5, fontWeight: 700, color: T.mut, letterSpacing: "0.06em", textTransform: "uppercase" }}>
+          <div style={{ fontFamily: TL.font.mono, fontSize: 8.5, fontWeight: 700, color: TL.mute, letterSpacing: "0.06em", textTransform: "uppercase" }}>
             Planlagt
           </div>
-          <div style={{ fontFamily: T.mono, fontSize: 15, fontWeight: 700, color: T.fg, marginTop: 4, fontVariantNumeric: "tabular-nums" }}>
+          <div style={{ fontFamily: TL.font.mono, fontSize: 15, fontWeight: 700, color: TL.text, marginTop: 4, fontVariantNumeric: "tabular-nums" }}>
             {visUkeT != null ? fmtTimer(visUkeT) : "—"}
           </div>
           {snittT != null && (
-            <div style={{ fontFamily: T.ui, fontSize: 10.5, color: T.mut, marginTop: 2 }}>
+            <div style={{ fontFamily: TL.font.sans, fontSize: 10.5, color: TL.mute, marginTop: 2 }}>
               snitt 4 uker {fmtTimer(snittT)}
             </div>
           )}
@@ -758,20 +759,20 @@ export function WBBelastning({ data }: { data: WorkbenchData }) {
           style={{
             padding: "9px 11px",
             borderRadius: 10,
-            background: T.panel2,
-            border: `1px solid ${T.border}`,
+            background: TL.dock,
+            border: `1px solid ${TL.hair}`,
           }}
         >
           <div style={{ display: "flex", alignItems: "center", gap: 5 }}>
-            <span style={{ fontFamily: T.mono, fontSize: 8.5, fontWeight: 700, color: T.mut, letterSpacing: "0.06em", textTransform: "uppercase" }}>
+            <span style={{ fontFamily: TL.font.mono, fontSize: 8.5, fontWeight: 700, color: TL.mute, letterSpacing: "0.06em", textTransform: "uppercase" }}>
               ACWR
             </span>
             <HjelpTips k="acwr" size={10} />
           </div>
-          <div style={{ fontFamily: T.mono, fontSize: 15, fontWeight: 700, color: acwrTone, marginTop: 4, fontVariantNumeric: "tabular-nums" }}>
+          <div style={{ fontFamily: TL.font.mono, fontSize: 15, fontWeight: 700, color: acwrTone, marginTop: 4, fontVariantNumeric: "tabular-nums" }}>
             {b?.acwr != null ? b.acwr.toFixed(2).replace(".", ",") : "—"}
           </div>
-          <div style={{ fontFamily: T.ui, fontSize: 10.5, color: T.mut, marginTop: 2 }}>
+          <div style={{ fontFamily: TL.font.sans, fontSize: 10.5, color: TL.mute, marginTop: 2 }}>
             {b?.acwr == null ? "Trenger mer historikk" : b.acwr > 1.4 ? "Høy" : b.acwr > 1.2 ? "Økende" : "Trygg sone"}
           </div>
         </div>
@@ -780,24 +781,24 @@ export function WBBelastning({ data }: { data: WorkbenchData }) {
           style={{
             padding: "9px 11px",
             borderRadius: 10,
-            background: T.panel2,
-            border: `1px solid ${turnering?.soon ? `color-mix(in srgb, ${T.warn} 40%, ${T.border})` : T.border}`,
+            background: TL.dock,
+            border: `1px solid ${turnering?.soon ? `color-mix(in srgb, ${TL.warn} 40%, ${TL.hair})` : TL.hair}`,
           }}
         >
-          <div style={{ fontFamily: T.mono, fontSize: 8.5, fontWeight: 700, color: T.mut, letterSpacing: "0.06em", textTransform: "uppercase" }}>
+          <div style={{ fontFamily: TL.font.mono, fontSize: 8.5, fontWeight: 700, color: TL.mute, letterSpacing: "0.06em", textTransform: "uppercase" }}>
             Neste turnering
           </div>
           {turnering ? (
             <>
-              <div style={{ fontFamily: T.mono, fontSize: 13, fontWeight: 700, color: turnering.soon ? T.warn : T.fg, marginTop: 4 }}>
+              <div style={{ fontFamily: TL.font.mono, fontSize: 13, fontWeight: 700, color: turnering.soon ? TL.warn : TL.text, marginTop: 4 }}>
                 {turnering.td}
               </div>
-              <div style={{ fontFamily: T.ui, fontSize: 10.5, color: T.mut, marginTop: 2, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+              <div style={{ fontFamily: TL.font.sans, fontSize: 10.5, color: TL.mute, marginTop: 2, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
                 {turnering.tn}
               </div>
             </>
           ) : (
-            <div style={{ fontFamily: T.ui, fontSize: 12, color: T.mut, marginTop: 6 }}>Ingen i kalender</div>
+            <div style={{ fontFamily: TL.font.sans, fontSize: 12, color: TL.mute, marginTop: 6 }}>Ingen i kalender</div>
           )}
         </div>
       </div>
@@ -818,7 +819,7 @@ export function WBBelastning({ data }: { data: WorkbenchData }) {
               }}
             >
               <Icon name="alert-triangle" size={12} style={{ color: a.tone, flex: "none", marginTop: 1 }} />
-              <span style={{ fontFamily: T.ui, fontSize: 11.5, color: a.tone, lineHeight: 1.35 }}>{a.tekst}</span>
+              <span style={{ fontFamily: TL.font.sans, fontSize: 11.5, color: a.tone, lineHeight: 1.35 }}>{a.tekst}</span>
             </div>
           ))}
         </div>
@@ -853,9 +854,9 @@ function KoachNotatSeksjon({ coachNotat }: { coachNotat: NonNullable<WorkbenchV2
     <BalSeksjon label="Coach-notat · privat">
       <div style={{ display: "flex", flexDirection: "column", gap: 7 }} data-wb-coachnotat>
         {notater.map((n) => (
-          <div key={n.id} style={{ padding: "8px 10px", borderRadius: 10, background: T.panel2, border: `1px solid ${T.border}` }}>
-            <p style={{ margin: 0, fontFamily: T.ui, fontSize: 11.5, color: T.fg, lineHeight: 1.45 }}>{n.content}</p>
-            <span style={{ fontFamily: T.mono, fontSize: 8.5, color: T.mut }}>{new Date(n.createdAt).toLocaleDateString("nb-NO", { day: "numeric", month: "short" })}</span>
+          <div key={n.id} style={{ padding: "8px 10px", borderRadius: 10, background: TL.dock, border: `1px solid ${TL.hair}` }}>
+            <p style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 11.5, color: TL.text, lineHeight: 1.45 }}>{n.content}</p>
+            <span style={{ fontFamily: TL.font.mono, fontSize: 8.5, color: TL.mute }}>{new Date(n.createdAt).toLocaleDateString("nb-NO", { day: "numeric", month: "short" })}</span>
           </div>
         ))}
         <textarea
@@ -863,7 +864,7 @@ function KoachNotatSeksjon({ coachNotat }: { coachNotat: NonNullable<WorkbenchV2
           onChange={(e) => setTekst(e.target.value)}
           placeholder="Nytt notat — kun synlig for deg…"
           rows={2}
-          style={{ width: "100%", resize: "vertical", background: T.panel2, border: `1px solid ${T.border}`, borderRadius: 10, padding: "8px 10px", color: T.fg, fontFamily: T.ui, fontSize: 12, outline: "none" }}
+          style={{ width: "100%", resize: "vertical", background: TL.dock, border: `1px solid ${TL.hair}`, borderRadius: 10, padding: "8px 10px", color: TL.text, fontFamily: TL.font.sans, fontSize: 12, outline: "none" }}
         />
         <Knapp ghost icon="file-text" full disabled={!tekst.trim() || lagrer} onClick={lagre}>
           {lagrer ? "Lagrer…" : "Lagre notat"}
@@ -895,11 +896,11 @@ export function WBBalanse({ data, valgtOkt, valgtDag, weekNumber, actions, weekO
     <div style={{ display: "flex", flexDirection: "column", gap: 20, minWidth: 0 }}>
       {!skjulTittel && (
         <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-          <Icon name="activity" size={15} style={{ color: T.handling }} />
-          <span style={{ fontFamily: T.disp, fontSize: 16, fontWeight: 700, color: T.fg }}>
+          <Icon name="activity" size={15} style={{ color: TL.fill }} />
+          <span style={{ fontFamily: TL.font.sans, fontSize: 16, fontWeight: 700, color: TL.text }}>
             {valgtOkt ? "Inspektør" : "Balanse"}
           </span>
-          <span style={{ marginLeft: "auto", fontFamily: T.mono, fontSize: 9.5, color: T.mut }}>uke {weekNumber}</span>
+          <span style={{ marginLeft: "auto", fontFamily: TL.font.mono, fontSize: 9.5, color: TL.mute }}>uke {weekNumber}</span>
         </div>
       )}
 
@@ -909,38 +910,38 @@ export function WBBalanse({ data, valgtOkt, valgtDag, weekNumber, actions, weekO
       <BalSeksjon label="Spilleren nå">
         <div style={{ display: "flex", flexDirection: "column", gap: 7 }}>
           {fokus && (
-            <div style={{ display: "flex", alignItems: "center", gap: 10, padding: "9px 11px", borderRadius: 11, background: T.panel2, border: `1px solid ${T.border}` }}>
-              <span style={{ width: 28, height: 28, borderRadius: 8, background: T.panel3, border: `1px solid ${T.border}`, display: "inline-flex", alignItems: "center", justifyContent: "center", flex: "none" }}><Icon name="target" size={13} style={{ color: T.handling }} /></span>
+            <div style={{ display: "flex", alignItems: "center", gap: 10, padding: "9px 11px", borderRadius: 11, background: TL.dock, border: `1px solid ${TL.hair}` }}>
+              <span style={{ width: 28, height: 28, borderRadius: 8, background: TL.dim, border: `1px solid ${TL.hair}`, display: "inline-flex", alignItems: "center", justifyContent: "center", flex: "none" }}><Icon name="target" size={13} style={{ color: TL.fill }} /></span>
               <div style={{ flex: 1, minWidth: 0 }}>
-                <div style={{ fontFamily: T.ui, fontSize: 12, fontWeight: 600, color: T.fg, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{fokus.label}</div>
-                <div style={{ fontFamily: T.ui, fontSize: 10.5, color: T.mut, marginTop: 1 }}>Fokus · {fokus.kilde === "coach" ? "satt av coach" : "beregnet fra SG-gap"}</div>
+                <div style={{ fontFamily: TL.font.sans, fontSize: 12, fontWeight: 600, color: TL.text, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{fokus.label}</div>
+                <div style={{ fontFamily: TL.font.sans, fontSize: 10.5, color: TL.mute, marginTop: 1 }}>Fokus · {fokus.kilde === "coach" ? "satt av coach" : "beregnet fra SG-gap"}</div>
               </div>
             </div>
           )}
           {data.adherencePct != null && (
-            <div style={{ display: "flex", alignItems: "center", gap: 10, padding: "9px 11px", borderRadius: 11, background: T.panel2, border: `1px solid ${T.border}` }}>
-              <span style={{ width: 28, height: 28, borderRadius: 8, background: T.panel3, border: `1px solid ${T.border}`, display: "inline-flex", alignItems: "center", justifyContent: "center", flex: "none" }}><Icon name="check-check" size={13} style={{ color: data.adherencePct >= 70 ? T.up : data.adherencePct >= 40 ? T.warn : T.down }} /></span>
+            <div style={{ display: "flex", alignItems: "center", gap: 10, padding: "9px 11px", borderRadius: 11, background: TL.dock, border: `1px solid ${TL.hair}` }}>
+              <span style={{ width: 28, height: 28, borderRadius: 8, background: TL.dim, border: `1px solid ${TL.hair}`, display: "inline-flex", alignItems: "center", justifyContent: "center", flex: "none" }}><Icon name="check-check" size={13} style={{ color: data.adherencePct >= 70 ? TL.ok : data.adherencePct >= 40 ? TL.warn : TL.danger }} /></span>
               <div style={{ flex: 1, minWidth: 0 }}>
                 <div style={{ display: "flex", alignItems: "center", gap: 5 }}>
-                  <span style={{ fontFamily: T.mono, fontSize: 13, fontWeight: 700, color: T.fg }}>{adherDisp} %</span>
+                  <span style={{ fontFamily: TL.font.mono, fontSize: 13, fontWeight: 700, color: TL.text }}>{adherDisp} %</span>
                   <HjelpTips k="planEtterlevelse" size={11} />
                 </div>
-                <div style={{ fontFamily: T.ui, fontSize: 10.5, color: T.mut, marginTop: 1 }}>Plan-etterlevelse denne uka</div>
+                <div style={{ fontFamily: TL.font.sans, fontSize: 10.5, color: TL.mute, marginTop: 1 }}>Plan-etterlevelse denne uka</div>
               </div>
-              <div style={{ width: 52, height: 5, borderRadius: 9999, background: T.track, overflow: "hidden", flex: "none" }}>
-                <div style={{ width: `${Math.min(100, data.adherencePct)}%`, height: "100%", borderRadius: 9999, background: data.adherencePct >= 70 ? T.up : data.adherencePct >= 40 ? T.warn : T.down }} />
+              <div style={{ width: 52, height: 5, borderRadius: 9999, background: TL.hair, overflow: "hidden", flex: "none" }}>
+                <div style={{ width: `${Math.min(100, data.adherencePct)}%`, height: "100%", borderRadius: 9999, background: data.adherencePct >= 70 ? TL.ok : data.adherencePct >= 40 ? TL.warn : TL.danger }} />
               </div>
             </div>
           )}
           {data.tournaments && data.tournaments.length > 0 ? (
             data.tournaments.map((n, i) => (
-              <div key={i} style={{ display: "flex", alignItems: "center", gap: 10, padding: "9px 11px", borderRadius: 11, background: T.panel2, border: `1px solid ${T.border}` }}>
-                <span style={{ width: 28, height: 28, borderRadius: 8, background: T.panel3, border: `1px solid ${T.border}`, display: "inline-flex", alignItems: "center", justifyContent: "center", flex: "none" }}><Icon name="trophy" size={13} style={{ color: n.soon ? T.warn : T.fg2 }} /></span>
+              <div key={i} style={{ display: "flex", alignItems: "center", gap: 10, padding: "9px 11px", borderRadius: 11, background: TL.dock, border: `1px solid ${TL.hair}` }}>
+                <span style={{ width: 28, height: 28, borderRadius: 8, background: TL.dim, border: `1px solid ${TL.hair}`, display: "inline-flex", alignItems: "center", justifyContent: "center", flex: "none" }}><Icon name="trophy" size={13} style={{ color: n.soon ? TL.warn : TL.mute }} /></span>
                 <div style={{ flex: 1, minWidth: 0 }}>
-                  <div style={{ fontFamily: T.ui, fontSize: 12, fontWeight: 600, color: T.fg, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{n.tn}</div>
-                  <div style={{ fontFamily: T.ui, fontSize: 10.5, color: T.mut, marginTop: 1 }}>Neste turnering</div>
+                  <div style={{ fontFamily: TL.font.sans, fontSize: 12, fontWeight: 600, color: TL.text, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{n.tn}</div>
+                  <div style={{ fontFamily: TL.font.sans, fontSize: 10.5, color: TL.mute, marginTop: 1 }}>Neste turnering</div>
                 </div>
-                <span style={{ fontFamily: T.mono, fontSize: 9, fontWeight: 700, color: n.soon ? T.warn : T.fg2, flex: "none" }}>{n.td}</span>
+                <span style={{ fontFamily: TL.font.mono, fontSize: 9, fontWeight: 700, color: n.soon ? TL.warn : TL.mute, flex: "none" }}>{n.td}</span>
               </div>
             ))
           ) : (
@@ -968,7 +969,7 @@ export function WBBalanse({ data, valgtOkt, valgtDag, weekNumber, actions, weekO
         ) : <TomTilstand icon="target" title="Ingen økt valgt" sub="Trykk en økt i tidslinja — da åpnes inspektøren her." />}
       </BalSeksjon>
 
-      <BalSeksjon label="Ukens fordeling · timer" right={<span style={{ fontFamily: T.mono, fontSize: 9.5, fontWeight: 700, color: T.fg2 }}>{fmtTimer(totalT)}</span>}>
+      <BalSeksjon label="Ukens fordeling · timer" right={<span style={{ fontFamily: TL.font.mono, fontSize: 9.5, fontWeight: 700, color: TL.mute }}>{fmtTimer(totalT)}</span>}>
         {totalT > 0 ? (
           axis.filter((x) => x.hours > 0).map((x, i, arr) => (
             <FordelingRad
@@ -1021,7 +1022,7 @@ function MndNivaa({ data, onVelgDato }: { data: WorkbenchData; onVelgDato: (dato
     <Kort eyebrow={`${MANEDER[mnd][0].toUpperCase() + MANEDER[mnd].slice(1)} ${ar}`} action={<Caps size={9}>{totalOkter} økter</Caps>}>
       <div style={{ display: "grid", gridTemplateColumns: "repeat(7, 1fr)", gap: 4, marginTop: 4 }}>
         {DOW7.map((d) => (
-          <span key={d} style={{ textAlign: "center", fontFamily: T.mono, fontSize: 8.5, fontWeight: 700, letterSpacing: "0.08em", color: T.mut, padding: "2px 0 6px" }}>{d}</span>
+          <span key={d} style={{ textAlign: "center", fontFamily: TL.font.mono, fontSize: 8.5, fontWeight: 700, letterSpacing: "0.08em", color: TL.mute, padding: "2px 0 6px" }}>{d}</span>
         ))}
         {Array.from({ length: rader * 7 }, (_, i) => {
           const dagNr = i - startPad + 1;
@@ -1042,30 +1043,30 @@ function MndNivaa({ data, onVelgDato }: { data: WorkbenchData; onVelgDato: (dato
               style={{
                 appearance: "none", cursor: "pointer", minHeight: 64, padding: "6px 7px",
                 borderRadius: 10, textAlign: "left", display: "flex", flexDirection: "column", gap: 5,
-                background: erIDag ? T.handlingSoft : T.panel2,
-                border: `1px solid ${erIDag ? T.handling : T.border}`,
+                background: erIDag ? TL.dim : TL.dock,
+                border: `1px solid ${erIDag ? TL.fill : TL.hair}`,
                 borderBottom: pFarge ? `2px solid color-mix(in srgb, ${pFarge} 70%, transparent)` : undefined,
               }}
             >
               <span style={{ display: "flex", alignItems: "center", gap: 4 }}>
-                <span style={{ fontFamily: T.disp, fontSize: 13, fontWeight: 700, color: erIDag ? T.handling : c ? T.fg : T.mut }}>{dagNr}</span>
-                {turnering && <Icon name="trophy" size={10} style={{ color: T.warn }} aria-label={turnering} />}
+                <span style={{ fontFamily: TL.font.sans, fontSize: 13, fontWeight: 700, color: erIDag ? TL.fill : c ? TL.text : TL.mute }}>{dagNr}</span>
+                {turnering && <Icon name="trophy" size={10} style={{ color: TL.warn }} aria-label={turnering} />}
               </span>
               {c ? (
                 <>
                   <span style={{ display: "flex", gap: 3, flexWrap: "wrap" }}>
                     {c.axes.map((x) => (
-                      <span key={x.ax} title={`${AKSE_NAVN[x.ax.toUpperCase() as AkseKey] ?? x.ax} · ${fmtVarighet(x.min)}`} style={{ width: 7, height: 7, borderRadius: 9999, background: T.ax[x.ax.toUpperCase() as AkseKey] ?? T.mut }} />
+                      <span key={x.ax} title={`${AKSE_NAVN[x.ax.toUpperCase() as AkseKey] ?? x.ax} · ${fmtVarighet(x.min)}`} style={{ width: 7, height: 7, borderRadius: 9999, background: T.ax[x.ax.toUpperCase() as AkseKey] ?? TL.mute }} />
                     ))}
                   </span>
-                  <span style={{ fontFamily: T.mono, fontSize: 8.5, color: T.mut }}>{c.count} · {fmtVarighet(totMin)}</span>
+                  <span style={{ fontFamily: TL.font.mono, fontSize: 8.5, color: TL.mute }}>{c.count} · {fmtVarighet(totMin)}</span>
                 </>
               ) : null}
             </button>
           );
         })}
       </div>
-      <span style={{ display: "block", marginTop: 10, fontFamily: T.mono, fontSize: 8.5, color: T.mut }}>Trykk en dag for å åpne uka i tidslinja.</span>
+      <span style={{ display: "block", marginTop: 10, fontFamily: TL.font.mono, fontSize: 8.5, color: TL.mute }}>Trykk en dag for å åpne uka i tidslinja.</span>
     </Kort>
   );
 }
@@ -1089,19 +1090,19 @@ export function DagNivaa({ dag, valgt, onVelg, dager, onFlytt }: {
       <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
         {dag.events.map((o, j) => {
           const ak = o.eb as AkseKey;
-          const col = T.ax[ak] || T.mut;
+          const col = T.ax[ak] || TL.mute;
           const sel = !!o.id && valgt === o.id;
           const pending = erOptimistisk(o.id);
           const flyttApen = !!o.id && flyttId === o.id;
           return (
-            <div key={o.id ?? j} className="v2-fade-in" style={{ padding: "9px 11px", borderRadius: 10, background: T.panel2, border: `1px ${pending ? "dashed" : "solid"} ${sel ? T.handling : T.border}`, borderLeft: `3px solid ${col}`, opacity: pending ? 0.6 : 1 }}>
+            <div key={o.id ?? j} className="v2-fade-in" style={{ padding: "9px 11px", borderRadius: 10, background: TL.dock, border: `1px ${pending ? "dashed" : "solid"} ${sel ? TL.fill : TL.hair}`, borderLeft: `3px solid ${col}`, opacity: pending ? 0.6 : 1 }}>
               <div onClick={() => o.id && !pending && onVelg(o.id)} style={{ cursor: pending ? "default" : "pointer" }}>
                 <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-                  <span style={{ fontFamily: T.mono, fontSize: 9, fontWeight: 700, color: T.fg2 }}>{toKl(o.h, o.m)}</span>
-                  <span style={{ fontFamily: T.mono, fontSize: 8.5, fontWeight: 700, color: `color-mix(in srgb, ${col} 55%, ${T.fg})` }}>{AKSE_NAVN[ak] || o.eb}</span>
-                  <span style={{ marginLeft: "auto", fontFamily: T.mono, fontSize: 8.5, color: T.mut }}>{fmtVarighet(o.durMin)}</span>
+                  <span style={{ fontFamily: TL.font.mono, fontSize: 9, fontWeight: 700, color: TL.mute }}>{toKl(o.h, o.m)}</span>
+                  <span style={{ fontFamily: TL.font.mono, fontSize: 8.5, fontWeight: 700, color: `color-mix(in srgb, ${col} 55%, ${TL.text})` }}>{AKSE_NAVN[ak] || o.eb}</span>
+                  <span style={{ marginLeft: "auto", fontFamily: TL.font.mono, fontSize: 8.5, color: TL.mute }}>{fmtVarighet(o.durMin)}</span>
                 </div>
-                <div style={{ fontFamily: T.ui, fontSize: 12.5, fontWeight: 600, color: T.fg, marginTop: 5 }}>{o.ttl}</div>
+                <div style={{ fontFamily: TL.font.sans, fontSize: 12.5, fontWeight: 600, color: TL.text, marginTop: 5 }}>{o.ttl}</div>
               </div>
               {onFlytt && dager && !pending && o.id && (
                 <>
@@ -1109,7 +1110,7 @@ export function DagNivaa({ dag, valgt, onVelg, dager, onFlytt }: {
                     type="button"
                     onClick={(e) => { e.stopPropagation(); setFlyttId(flyttApen ? null : o.id!); }}
                     className="v2-press v2-focus"
-                    style={{ appearance: "none", cursor: "pointer", marginTop: 8, display: "inline-flex", alignItems: "center", gap: 5, background: "transparent", border: "none", padding: 0, fontFamily: T.mono, fontSize: 8.5, fontWeight: 700, letterSpacing: "0.05em", textTransform: "uppercase", color: T.handling }}
+                    style={{ appearance: "none", cursor: "pointer", marginTop: 8, display: "inline-flex", alignItems: "center", gap: 5, background: "transparent", border: "none", padding: 0, fontFamily: TL.font.mono, fontSize: 8.5, fontWeight: 700, letterSpacing: "0.05em", textTransform: "uppercase", color: TL.fill }}
                   >
                     <Icon name="calendar" size={11} />
                     {flyttApen ? "Avbryt" : "Flytt til annen dag"}
@@ -1125,7 +1126,7 @@ export function DagNivaa({ dag, valgt, onVelg, dager, onFlytt }: {
                             disabled={erDenneDagen}
                             onClick={(e) => { e.stopPropagation(); setFlyttId(null); onFlytt(o.id!, i); }}
                             className="v2-press v2-focus"
-                            style={{ appearance: "none", cursor: erDenneDagen ? "default" : "pointer", width: 34, height: 34, borderRadius: 9, background: erDenneDagen ? T.panel3 : T.panel, border: `1px solid ${erDenneDagen ? T.borderS : T.border}`, fontFamily: T.mono, fontSize: 9, fontWeight: 700, color: erDenneDagen ? T.mut : T.fg2, opacity: erDenneDagen ? 0.5 : 1 }}
+                            style={{ appearance: "none", cursor: erDenneDagen ? "default" : "pointer", width: 34, height: 34, borderRadius: 9, background: erDenneDagen ? TL.dim : TL.elev, border: `1px solid ${erDenneDagen ? TL.hair : TL.hair}`, fontFamily: TL.font.mono, fontSize: 9, fontWeight: 700, color: erDenneDagen ? TL.mute : TL.mute, opacity: erDenneDagen ? 0.5 : 1 }}
                             title={`${d.dow} ${d.dato}`}
                           >
                             {d.dow.slice(0, 2)}
@@ -1203,7 +1204,7 @@ export function OktDrillTidslinje({
   const [drills, setDrills] = useState<OktDrillRad[] | null>(null);
   const [feil, setFeil] = useState(false);
   const ak = (okt.eb as AkseKey) || "TEK";
-  const col = T.ax[ak] || T.mut;
+  const col = T.ax[ak] || TL.mute;
 
   useEffect(() => {
     let aktiv = true;
@@ -1252,10 +1253,10 @@ export function OktDrillTidslinje({
               cursor: "pointer",
               background: "transparent",
               border: 0,
-              fontFamily: T.mono,
+              fontFamily: TL.font.mono,
               fontSize: 9,
               fontWeight: 700,
-              color: T.lime,
+              color: TL.fill,
               letterSpacing: "0.04em",
               textTransform: "uppercase",
             }}
@@ -1266,16 +1267,16 @@ export function OktDrillTidslinje({
       }
     >
       <div style={{ marginBottom: 12 }}>
-        <div style={{ fontFamily: T.disp, fontSize: 18, fontWeight: 700, color: T.fg, letterSpacing: "-0.02em" }}>
+        <div style={{ fontFamily: TL.font.sans, fontSize: 18, fontWeight: 700, color: TL.text, letterSpacing: "-0.02em" }}>
           {okt.ttl}
         </div>
-        <div style={{ fontFamily: T.mono, fontSize: 9, color: T.mut, marginTop: 4, textTransform: "uppercase", letterSpacing: "0.06em" }}>
+        <div style={{ fontFamily: TL.font.mono, fontSize: 9, color: TL.mute, marginTop: 4, textTransform: "uppercase", letterSpacing: "0.06em" }}>
           Drill-tidslinje
         </div>
       </div>
 
       {drills === null ? (
-        <div style={{ fontFamily: T.mono, fontSize: 10, color: T.mut, padding: "12px 0" }}>Henter driller…</div>
+        <div style={{ fontFamily: TL.font.mono, fontSize: 10, color: TL.mute, padding: "12px 0" }}>Henter driller…</div>
       ) : feil ? (
         <TomTilstand icon="alert-circle" title="Kunne ikke hente økt" sub="Prøv igjen, eller åpne Rediger." />
       ) : rader.length === 0 ? (
@@ -1311,10 +1312,10 @@ export function OktDrillTidslinje({
                     paddingTop: 2,
                   }}
                 >
-                  <span style={{ fontFamily: T.mono, fontSize: 12, fontWeight: 700, color: T.fg, fontVariantNumeric: "tabular-nums" }}>
+                  <span style={{ fontFamily: TL.font.mono, fontSize: 12, fontWeight: 700, color: TL.text, fontVariantNumeric: "tabular-nums" }}>
                     {kl}
                   </span>
-                  <span style={{ fontFamily: T.mono, fontSize: 9, color: T.mut, marginTop: 3 }}>{durMin}m</span>
+                  <span style={{ fontFamily: TL.font.mono, fontSize: 9, color: TL.mute, marginTop: 3 }}>{durMin}m</span>
                 </div>
                 <div
                   style={{
@@ -1331,14 +1332,14 @@ export function OktDrillTidslinje({
                       height: 11,
                       borderRadius: 9999,
                       background: col,
-                      border: `2px solid ${T.panel}`,
+                      border: `2px solid ${TL.elev}`,
                       boxShadow: `0 0 0 1px ${col}`,
                       flex: "none",
                       marginTop: 4,
                     }}
                   />
                   {!last && (
-                    <span style={{ flex: 1, width: 2, background: T.border, marginTop: 2, minHeight: 28 }} />
+                    <span style={{ flex: 1, width: 2, background: TL.hair, marginTop: 2, minHeight: 28 }} />
                   )}
                 </div>
                 <button
@@ -1352,7 +1353,7 @@ export function OktDrillTidslinje({
                     marginBottom: last ? 0 : 10,
                     borderRadius: 12,
                     overflow: "hidden",
-                    background: `color-mix(in srgb, ${col} 12%, ${T.panel2})`,
+                    background: `color-mix(in srgb, ${col} 12%, ${TL.dock})`,
                     border: `1px solid color-mix(in srgb, ${col} 40%, transparent)`,
                     padding: "10px 12px",
                     textAlign: "left",
@@ -1363,10 +1364,10 @@ export function OktDrillTidslinje({
                   <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
                     <span
                       style={{
-                        fontFamily: T.mono,
+                        fontFamily: TL.font.mono,
                         fontSize: 8.5,
                         fontWeight: 700,
-                        color: T.mut,
+                        color: TL.mute,
                         flex: "none",
                       }}
                     >
@@ -1376,10 +1377,10 @@ export function OktDrillTidslinje({
                       style={{
                         flex: 1,
                         minWidth: 0,
-                        fontFamily: T.ui,
+                        fontFamily: TL.font.sans,
                         fontSize: 13,
                         fontWeight: 600,
-                        color: T.fg,
+                        color: TL.text,
                         whiteSpace: "nowrap",
                         overflow: "hidden",
                         textOverflow: "ellipsis",
@@ -1389,7 +1390,7 @@ export function OktDrillTidslinje({
                     </span>
                   </div>
                   {dose && (
-                    <div style={{ fontFamily: T.mono, fontSize: 9, color: T.mut, marginTop: 4, paddingLeft: 22 }}>
+                    <div style={{ fontFamily: TL.font.mono, fontSize: 9, color: TL.mute, marginTop: 4, paddingLeft: 22 }}>
                       {dose}
                     </div>
                   )}
@@ -1424,7 +1425,7 @@ function byggDager(data: WorkbenchData): DagKol[] {
 function Felt({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 5 }}>
-      <span style={{ fontFamily: T.mono, fontSize: 8.5, fontWeight: 700, letterSpacing: "0.11em", textTransform: "uppercase", color: T.mut }}>{label}</span>
+      <span style={{ fontFamily: TL.font.mono, fontSize: 8.5, fontWeight: 700, letterSpacing: "0.11em", textTransform: "uppercase", color: TL.mute }}>{label}</span>
       {children}
     </div>
   );
@@ -1491,42 +1492,42 @@ function WBTurneringNivaa({ data, actions }: { data: WorkbenchData; actions?: Wo
     <span
       style={{
         display: "inline-flex", alignItems: "center", padding: "2px 8px", borderRadius: 9999,
-        fontFamily: T.mono, fontSize: 10, letterSpacing: "0.04em", textTransform: "uppercase",
-        background: T.panel2, border: `1px solid ${T.border}`,
-        color: tone === "avvik" ? T.down : tone === "ok" ? T.up : T.mut,
+        fontFamily: TL.font.mono, fontSize: 10, letterSpacing: "0.04em", textTransform: "uppercase",
+        background: TL.dock, border: `1px solid ${TL.hair}`,
+        color: tone === "avvik" ? TL.danger : tone === "ok" ? TL.ok : TL.mute,
       }}
     >
       {tekst}
     </span>
   );
   const detaljRad = (k: string, v: string, sub?: string) => (
-    <div style={{ display: "flex", alignItems: "baseline", gap: 12, padding: "9px 0", borderBottom: `1px solid ${T.border}` }}>
+    <div style={{ display: "flex", alignItems: "baseline", gap: 12, padding: "9px 0", borderBottom: `1px solid ${TL.hair}` }}>
       <div style={{ flex: 1, minWidth: 0 }}>
-        <span style={{ fontFamily: T.ui, fontSize: 13, color: T.fg }}>{k}</span>
-        {sub && <span style={{ display: "block", fontFamily: T.ui, fontSize: 11.5, color: T.mut, marginTop: 2 }}>{sub}</span>}
+        <span style={{ fontFamily: TL.font.sans, fontSize: 13, color: TL.text }}>{k}</span>
+        {sub && <span style={{ display: "block", fontFamily: TL.font.sans, fontSize: 11.5, color: TL.mute, marginTop: 2 }}>{sub}</span>}
       </div>
-      <span style={{ fontFamily: T.mono, fontSize: 12.5, color: T.fg, textAlign: "right", flex: "none" }}>{v}</span>
+      <span style={{ fontFamily: TL.font.mono, fontSize: 12.5, color: TL.text, textAlign: "right", flex: "none" }}>{v}</span>
     </div>
   );
 
   return (
-    <div data-paper-workbench-turnering data-paper-slug="workbench-turnering" data-paper-wave-f="workbench-turnering" style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 1080 }}>
+    <div data-paper-workbench-turnering data-paper-slug="workbench-turnering" data-paper-wave-f="workbench-turnering" style={{ display: "flex", flexDirection: "column", gap: 16, maxWidth: 1080 }}>
       {/* Én ting nå — nærmeste turnering der noe faktisk er uavklart. En
           avklart turnering krever ingen handling og får ikke blokka. */}
       {nesteUavklart && (
         <Kort
           pad="16px 18px"
           style={{
-            border: `1px solid color-mix(in srgb, ${T.handling} 35%, ${T.border})`,
-            borderLeft: `3px solid ${T.handling}`,
-            background: `color-mix(in srgb, ${T.handling} 6%, ${T.panel})`,
+            border: `1px solid color-mix(in srgb, ${TL.fill} 35%, ${TL.hair})`,
+            borderLeft: `3px solid ${TL.fill}`,
+            background: `color-mix(in srgb, ${TL.fill} 6%, ${TL.elev})`,
           }}
         >
-          <Caps size={9} color={T.handling}>Én ting nå</Caps>
-          <div style={{ marginTop: 8, fontFamily: T.disp, fontSize: 18, fontWeight: 600, color: T.fg, letterSpacing: "-0.02em" }}>
+          <Caps size={9} color={TL.fill}>Én ting nå</Caps>
+          <div style={{ marginTop: 8, fontFamily: TL.font.sans, fontSize: 18, fontWeight: 600, color: TL.text, letterSpacing: "-0.02em" }}>
             {nesteUavklart.navn} om {dagerMellom(iDag, nesteUavklart.fra)} dager
           </div>
-          <p style={{ margin: "6px 0 0", fontFamily: T.ui, fontSize: 13, color: T.fg2, lineHeight: 1.5, maxWidth: "62ch" }}>
+          <p style={{ margin: "6px 0 0", fontFamily: TL.font.sans, fontSize: 13, color: TL.mute, lineHeight: 1.5, maxWidth: "62ch" }}>
             Påmeldingen står fortsatt som tentativ{nesteUavklart.notat ? `: ${nesteUavklart.notat}` : "."} Blir den ikke
             avklart, planlegger du en uke som kanskje ikke skal brukes til turnering — og skal det reises, er det for
             sent å bestille billig.
@@ -1542,14 +1543,14 @@ function WBTurneringNivaa({ data, actions }: { data: WorkbenchData; actions?: Wo
       <Kort eyebrow="Sesongen">
         {vindu ? (
           <>
-            <p style={{ margin: "0 0 12px", fontFamily: T.ui, fontSize: 12.5, color: T.mut, lineHeight: 1.5 }}>
+            <p style={{ margin: "0 0 12px", fontFamily: TL.font.sans, fontSize: 12.5, color: TL.mute, lineHeight: 1.5 }}>
               Turneringene ligger oppå periodiseringen. Rødt merke betyr at turneringen faller i en periode som ikke er
               satt av til å konkurrere.
             </p>
             <div
               style={{
                 display: "grid", gridAutoFlow: "column", gridAutoColumns: "1fr", gap: 1,
-                fontFamily: T.mono, fontSize: 9.5, color: T.mut, textTransform: "uppercase",
+                fontFamily: TL.font.mono, fontSize: 9.5, color: TL.mute, textTransform: "uppercase",
                 letterSpacing: "0.06em", marginBottom: 4,
               }}
             >
@@ -1557,11 +1558,11 @@ function WBTurneringNivaa({ data, actions }: { data: WorkbenchData; actions?: Wo
                 <span key={`${m}-${i}`} style={{ paddingLeft: 2 }}>{m}</span>
               ))}
             </div>
-            <div style={{ position: "relative", height: 34, borderRadius: 8, overflow: "hidden", background: T.panel2, border: `1px solid ${T.border}`, marginBottom: 8 }}>
+            <div style={{ position: "relative", height: 34, borderRadius: 8, overflow: "hidden", background: TL.dock, border: `1px solid ${TL.hair}`, marginBottom: 8 }}>
               {blokker.map((b, i) => {
                 const fra = prosentAvVindu(b.startDate.slice(0, 10), vindu);
                 const til = prosentAvVindu(b.endDate.slice(0, 10), vindu);
-                const farge = LPHASE_FARGE_KANON[b.lPhase] ?? T.mut;
+                const farge = LPHASE_FARGE_KANON[b.lPhase] ?? TL.mute;
                 return (
                   <div
                     key={`${b.lPhase}-${b.startDate}-${i}`}
@@ -1569,10 +1570,10 @@ function WBTurneringNivaa({ data, actions }: { data: WorkbenchData; actions?: Wo
                     style={{
                       position: "absolute", top: 0, bottom: 0, left: `${fra}%`, width: `${Math.max(til - fra, 1)}%`,
                       display: "flex", alignItems: "center", padding: "0 8px", overflow: "hidden",
-                      whiteSpace: "nowrap", fontFamily: T.mono, fontSize: 10, letterSpacing: "0.04em",
-                      textTransform: "uppercase", color: T.fg2,
-                      background: `color-mix(in srgb, ${farge} 22%, ${T.panel})`,
-                      borderRight: `1px solid ${T.panel}`,
+                      whiteSpace: "nowrap", fontFamily: TL.font.mono, fontSize: 10, letterSpacing: "0.04em",
+                      textTransform: "uppercase", color: TL.mute,
+                      background: `color-mix(in srgb, ${farge} 22%, ${TL.elev})`,
+                      borderRight: `1px solid ${TL.elev}`,
                     }}
                   >
                     {lphaseLabel(b.lPhase)}
@@ -1590,14 +1591,14 @@ function WBTurneringNivaa({ data, actions }: { data: WorkbenchData; actions?: Wo
                     style={{
                       position: "absolute", top: 0, left: `${prosentAvVindu(p.fra, vindu)}%`,
                       width: 12, height: 12, marginLeft: -6, borderRadius: 9999,
-                      background: kol.ja ? T.down : T.info, border: `2px solid ${T.panel}`,
+                      background: kol.ja ? TL.danger : TL.viz.target, border: `2px solid ${TL.elev}`,
                     }}
                   />
                 );
               })}
             </div>
-            <div style={{ display: "flex", flexWrap: "wrap", gap: 14, fontFamily: T.mono, fontSize: 10, color: T.mut }}>
-              {([["i turneringsperiode", T.info], ["utenfor turneringsperiode", T.down]] as const).map(([tekst, farge]) => (
+            <div style={{ display: "flex", flexWrap: "wrap", gap: 14, fontFamily: TL.font.mono, fontSize: 10, color: TL.mute }}>
+              {([["i turneringsperiode", TL.viz.target], ["utenfor turneringsperiode", TL.danger]] as const).map(([tekst, farge]) => (
                 <span key={tekst} style={{ display: "inline-flex", alignItems: "center", gap: 5 }}>
                   <span style={{ width: 9, height: 9, borderRadius: 9999, background: farge }} />
                   {tekst}
@@ -1640,10 +1641,10 @@ function WBTurneringNivaa({ data, actions }: { data: WorkbenchData; actions?: Wo
               synlige.map((p, i) => {
                 const kol = vurder(p);
                 return (
-                  <div key={p.id} style={kol.ja ? { borderLeft: `3px solid ${T.down}`, paddingLeft: 9, marginLeft: -12 } : undefined}>
+                  <div key={p.id} style={kol.ja ? { borderLeft: `3px solid ${TL.danger}`, paddingLeft: 9, marginLeft: -12 } : undefined}>
                     <Rad
                       onClick={() => apneArk(p)}
-                      leading={<span style={{ fontFamily: T.mono, fontSize: 11.5, color: T.mut, minWidth: 84, flex: "none" }}>{datoSpenn(p.fra, p.til)}</span>}
+                      leading={<span style={{ fontFamily: TL.font.mono, fontSize: 11.5, color: TL.mute, minWidth: 84, flex: "none" }}>{datoSpenn(p.fra, p.til)}</span>}
                       title={p.navn}
                       sub={p.sted ? `${p.sted}` : undefined}
                       meta={
@@ -1666,9 +1667,9 @@ function WBTurneringNivaa({ data, actions }: { data: WorkbenchData; actions?: Wo
       {/* Null kollisjoner sies høyt — en sjekk som bare snakker når den finner
           noe, er ikke til å skille fra en sjekk som ikke kjørte. */}
       {paameldinger.length > 0 && blokker.length > 0 && (
-        <div style={{ display: "flex", gap: 10, padding: "12px 14px", background: T.panel2, border: `1px solid ${T.border}`, borderRadius: 12 }}>
-          <Icon name={kollisjoner.length > 0 ? "alert-triangle" : "check"} size={15} style={{ color: kollisjoner.length > 0 ? T.down : T.up, flex: "none", marginTop: 2 }} />
-          <p style={{ margin: 0, fontFamily: T.ui, fontSize: 12.5, color: T.mut, lineHeight: 1.5 }}>
+        <div style={{ display: "flex", gap: 10, padding: "12px 14px", background: TL.dock, border: `1px solid ${TL.hair}`, borderRadius: 12 }}>
+          <Icon name={kollisjoner.length > 0 ? "alert-triangle" : "check"} size={15} style={{ color: kollisjoner.length > 0 ? TL.danger : TL.ok, flex: "none", marginTop: 2 }} />
+          <p style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 12.5, color: TL.mute, lineHeight: 1.5 }}>
             {kollisjoner.length > 0
               ? `${kollisjoner.length} av ${paameldinger.length} påmeldinger ligger utenfor en turneringsperiode. Det er ikke feil i seg selv — men det er en avveining som bør tas bevisst, ikke oppdages i ettertid.`
               : `Alle ${paameldinger.length} påmeldingene ligger i en turneringsperiode. Ingen kollisjon med periodiseringen nå — sjekken kjører hver gang du åpner fanen.`}
@@ -1679,7 +1680,7 @@ function WBTurneringNivaa({ data, actions }: { data: WorkbenchData; actions?: Wo
       {/* To felt fasiten krever, som ikke finnes i basen — vises som ærlig
           manglende, aldri som plausible tall ingen har lagt inn. */}
       <Kort eyebrow="Ikke i basen ennå">
-        <p style={{ margin: "0 0 6px", fontFamily: T.ui, fontSize: 12.5, color: T.mut, lineHeight: 1.5 }}>
+        <p style={{ margin: "0 0 6px", fontFamily: TL.font.sans, fontSize: 12.5, color: TL.mute, lineHeight: 1.5 }}>
           To ting hører hjemme i en turneringsplanlegger, men finnes ikke som felter i dag. De står her som tomme, ikke
           som antatte.
         </p>
@@ -1692,22 +1693,22 @@ function WBTurneringNivaa({ data, actions }: { data: WorkbenchData; actions?: Wo
         <div style={{ position: "fixed", inset: 0, zIndex: 70, display: "flex", alignItems: "center", justifyContent: "center", padding: 16 }}>
           <div
             onClick={bekrefter ? undefined : () => setValgt(null)}
-            style={{ position: "absolute", inset: 0, background: T.farge.nestenSvartA62, backdropFilter: "blur(2px)" }}
+            style={{ position: "absolute", inset: 0, background: TL.scrim, backdropFilter: "none" }}
           />
           <div
             className="v2-sheet-in"
             style={{
               position: "relative", width: "min(520px, 100%)", maxHeight: "88vh", overflowY: "auto",
-              background: T.panel, border: `1px solid ${T.borderS}`, borderRadius: 20, padding: "20px 22px",
-              boxShadow: `0 24px 60px ${T.farge.svartA50}`,
+              background: TL.elev, border: `1px solid ${TL.hair}`, borderRadius: 20, padding: "20px 22px",
+              boxShadow: "none",
             }}
           >
             <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 12 }}>
               <div style={{ minWidth: 0 }}>
-                <h2 style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 18, letterSpacing: "-0.02em", color: T.fg, margin: 0 }}>
+                <h2 style={{ fontFamily: TL.font.sans, fontWeight: 700, fontSize: 18, letterSpacing: "-0.02em", color: TL.text, margin: 0 }}>
                   {valgt.navn}
                 </h2>
-                <span style={{ fontFamily: T.mono, fontSize: 11.5, color: T.mut, display: "block", marginTop: 4 }}>
+                <span style={{ fontFamily: TL.font.mono, fontSize: 11.5, color: TL.mute, display: "block", marginTop: 4 }}>
                   {datoSpenn(valgt.fra, valgt.til)}
                   {valgt.sted ? ` · ${valgt.sted}` : ""}
                 </span>
@@ -1719,11 +1720,11 @@ function WBTurneringNivaa({ data, actions }: { data: WorkbenchData; actions?: Wo
                 aria-label="Lukk"
                 style={{
                   appearance: "none", cursor: "pointer", width: 28, height: 28, borderRadius: 8,
-                  background: T.panel2, border: `1px solid ${T.border}`, display: "inline-flex",
+                  background: TL.dock, border: `1px solid ${TL.hair}`, display: "inline-flex",
                   alignItems: "center", justifyContent: "center", flex: "none",
                 }}
               >
-                <Icon name="x" size={14} style={{ color: T.fg2 }} />
+                <Icon name="x" size={14} style={{ color: TL.mute }} />
               </button>
             </div>
             <div style={{ marginTop: 12 }}>
@@ -1737,7 +1738,7 @@ function WBTurneringNivaa({ data, actions }: { data: WorkbenchData; actions?: Wo
               {detaljRad("Om", `${Math.max(0, dagerMellom(iDag, valgt.fra))} dager`)}
             </div>
             {valgt.notat && (
-              <p style={{ margin: "12px 0 0", padding: "10px 12px", background: T.panel2, border: `1px solid ${T.border}`, borderRadius: 10, fontFamily: T.ui, fontSize: 12.5, color: T.mut, lineHeight: 1.5 }}>
+              <p style={{ margin: "12px 0 0", padding: "10px 12px", background: TL.dock, border: `1px solid ${TL.hair}`, borderRadius: 10, fontFamily: TL.font.sans, fontSize: 12.5, color: TL.mute, lineHeight: 1.5 }}>
                 {valgt.notat}
               </p>
             )}
@@ -1745,17 +1746,17 @@ function WBTurneringNivaa({ data, actions }: { data: WorkbenchData; actions?: Wo
               const kol = vurder(valgt);
               if (!kol.ja) return null;
               return (
-                <div style={{ display: "flex", gap: 10, margin: "12px 0 0", padding: "10px 12px", background: T.panel2, border: `1px solid ${T.border}`, borderRadius: 10 }}>
-                  <Icon name="alert-triangle" size={14} style={{ color: T.down, flex: "none", marginTop: 2 }} />
-                  <p style={{ margin: 0, fontFamily: T.ui, fontSize: 12.5, color: T.mut, lineHeight: 1.5 }}>{kol.grunn}</p>
+                <div style={{ display: "flex", gap: 10, margin: "12px 0 0", padding: "10px 12px", background: TL.dock, border: `1px solid ${TL.hair}`, borderRadius: 10 }}>
+                  <Icon name="alert-triangle" size={14} style={{ color: TL.danger, flex: "none", marginTop: 2 }} />
+                  <p style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 12.5, color: TL.mute, lineHeight: 1.5 }}>{kol.grunn}</p>
                 </div>
               );
             })()}
-            <p style={{ margin: "12px 0 0", fontFamily: T.ui, fontSize: 11.5, color: T.mut }}>
+            <p style={{ margin: "12px 0 0", fontFamily: TL.font.sans, fontSize: 11.5, color: TL.mute }}>
               Påmeldingsfrist og reise mangler i basen og kan ikke fylles ut herfra ennå.
             </p>
             {arkFeil && (
-              <p style={{ margin: "10px 0 0", fontFamily: T.ui, fontSize: 12, color: T.down }}>{arkFeil}</p>
+              <p style={{ margin: "10px 0 0", fontFamily: TL.font.sans, fontSize: 12, color: TL.danger }}>{arkFeil}</p>
             )}
             <div style={{ display: "flex", gap: 8, marginTop: 16 }}>
               <Knapp ghost full onClick={() => setValgt(null)} disabled={bekrefter}>Lukk</Knapp>
@@ -1786,10 +1787,10 @@ function WBPeriodeBand({ data, onTilAarsplan }: { data: WorkbenchData; onTilAars
   const neste = blocks.find((b) => new Date(b.startDate) > etter) ?? null;
   if (!aktiv && !neste) return null;
   const pille = (lPhase: NonNullable<WorkbenchData["seasonBlocks"]>[number]["lPhase"], suffiks?: string) => (
-    <span style={{ display: "inline-flex", alignItems: "center", gap: 6, padding: "3px 10px", borderRadius: 9999, background: T.panel, border: `1px solid ${T.border}`, fontFamily: T.ui, fontSize: 11.5, color: T.fg }}>
-      <span style={{ width: 7, height: 7, borderRadius: 9999, background: LPHASE_FARGE_KANON[lPhase] ?? T.mut, flex: "none" }} />
+    <span style={{ display: "inline-flex", alignItems: "center", gap: 6, padding: "3px 10px", borderRadius: 9999, background: TL.elev, border: `1px solid ${TL.hair}`, fontFamily: TL.font.sans, fontSize: 11.5, color: TL.text }}>
+      <span style={{ width: 7, height: 7, borderRadius: 9999, background: LPHASE_FARGE_KANON[lPhase] ?? TL.mute, flex: "none" }} />
       {LPHASE_LABEL[lPhase] ?? lPhase}
-      {suffiks && <span style={{ fontFamily: T.mono, fontSize: 10, color: T.mut }}>{suffiks}</span>}
+      {suffiks && <span style={{ fontFamily: TL.font.mono, fontSize: 10, color: TL.mute }}>{suffiks}</span>}
     </span>
   );
   return (
@@ -1799,10 +1800,10 @@ function WBPeriodeBand({ data, onTilAarsplan }: { data: WorkbenchData; onTilAars
       title="Åpne årsplanen"
       className="v2-press v2-focus"
       data-wb-periodeband
-      style={{ appearance: "none", cursor: onTilAarsplan ? "pointer" : "default", display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap", width: "100%", minHeight: 40, padding: "6px 14px", background: T.panel2, border: 0, borderBottom: `1px solid ${T.border}`, textAlign: "left", flex: "none" }}
+      style={{ appearance: "none", cursor: onTilAarsplan ? "pointer" : "default", display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap", width: "100%", minHeight: 40, padding: "6px 14px", background: TL.dock, border: 0, borderBottom: `1px solid ${TL.hair}`, textAlign: "left", flex: "none" }}
     >
       <Caps size={8.5}>Periode</Caps>
-      {aktiv ? pille(aktiv.lPhase) : <span style={{ fontFamily: T.ui, fontSize: 11.5, color: T.mut }}>Ingen aktiv periode</span>}
+      {aktiv ? pille(aktiv.lPhase) : <span style={{ fontFamily: TL.font.sans, fontSize: 11.5, color: TL.mute }}>Ingen aktiv periode</span>}
       {neste && (
         <span style={{ marginLeft: "auto", display: "inline-flex", alignItems: "center", gap: 8 }}>
           <Caps size={8.5}>Neste</Caps>
@@ -2446,8 +2447,8 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions, w
 
   if (!data) {
     return (
-      <div data-paper-wave-d="workbench-tom" style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
-        <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>Workbench</h1>
+      <div data-paper-wave-d="workbench-tom" style={{ display: "flex", flexDirection: "column", gap: 16, maxWidth: 720, margin: "0 auto", width: "100%" }}>
+        <h1 style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 17, fontWeight: 600, color: TL.text }}>Workbench</h1>
         <Kort><TomTilstand icon="calendar" title="Ingen plandata" sub="Fant ingen treningsplan for spilleren." /></Kort>
       </div>
     );
@@ -2470,13 +2471,13 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions, w
       onDragCancel={() => setActiveDrag(null)}
     >
     {/* PP-3: full bredde (fasit .wb eier hele vinduet) — maxWidth 1200 fjernet. */}
-    <div data-paper-workbench data-paper-wave-d="workbench" data-od-id="workbench" style={{ display: "flex", flexDirection: "column", gap: T.gap, position: "relative", width: "100%" }}>
+    <div data-paper-workbench data-paper-wave-d="workbench" data-od-id="workbench" style={{ display: "flex", flexDirection: "column", gap: 16, position: "relative", width: "100%" }}>
       {visColdstartTips && (
-        <Kort pad="12px 14px" style={{ border: `1px solid color-mix(in srgb, ${T.handling} 28%, ${T.border})` }}>
+        <Kort pad="12px 14px" style={{ border: `1px solid color-mix(in srgb, ${TL.fill} 28%, ${TL.hair})` }}>
           <div style={{ display: "flex", alignItems: "flex-start", gap: 12, flexWrap: "wrap" }}>
             <div style={{ flex: 1, minWidth: 200 }}>
               <Caps size={9}>Kom i gang · {playerName.split(" ")[0]}</Caps>
-              <p style={{ margin: "6px 0 0", fontFamily: T.ui, fontSize: 13, color: T.fg2, lineHeight: 1.45 }}>
+              <p style={{ margin: "6px 0 0", fontFamily: TL.font.sans, fontSize: 13, color: TL.mute, lineHeight: 1.45 }}>
                 Uka er tom — dra en standardøkt fra biblioteket inn på tidslinja, eller trykk en tom luke.
               </p>
               <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginTop: 10 }}>
@@ -2511,7 +2512,7 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions, w
               onClick={() => setColdstartTipsLukket(true)}
               className="v2-press"
               aria-label="Lukk tips"
-              style={{ appearance: "none", cursor: "pointer", background: T.panel2, border: `1px solid ${T.border}`, borderRadius: 8, color: T.mut, padding: 6 }}
+              style={{ appearance: "none", cursor: "pointer", background: TL.dock, border: `1px solid ${TL.hair}`, borderRadius: 8, color: TL.mute, padding: 6 }}
             >
               <Icon name="x" size={14} />
             </button>
@@ -2525,10 +2526,10 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions, w
           <Kort pad="14px 16px">
             <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
               <div>
-                <span style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 15, color: T.fg }}>
+                <span style={{ fontFamily: TL.font.sans, fontWeight: 700, fontSize: 15, color: TL.text }}>
                   Ny plan fra coachen venter
                 </span>
-                <p style={{ fontFamily: T.ui, fontSize: 12.5, color: T.mut, margin: "6px 0 0", lineHeight: 1.5 }}>
+                <p style={{ fontFamily: TL.font.sans, fontSize: 12.5, color: TL.mute, margin: "6px 0 0", lineHeight: 1.5 }}>
                   Se uka under. Godkjenn for å gjøre den aktiv, eller be om endring.
                 </p>
               </div>
@@ -2584,10 +2585,10 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions, w
 
       {/* MELDING — resultat av siste handling (publiser/foreslå/gjenta) */}
       {melding && (
-        <div style={{ display: "flex", alignItems: "center", gap: 10, padding: "10px 14px", borderRadius: 12, background: `color-mix(in srgb, ${melding.tone === "down" ? T.down : melding.tone === "up" ? T.up : T.info} 9%, ${T.panel})`, border: `1px solid color-mix(in srgb, ${melding.tone === "down" ? T.down : melding.tone === "up" ? T.up : T.info} 30%, transparent)` }}>
-          <Icon name={melding.tone === "down" ? "alert-triangle" : melding.tone === "up" ? "check" : "info"} size={14} style={{ color: melding.tone === "down" ? T.down : melding.tone === "up" ? T.up : T.info, flex: "none" }} />
-          <span style={{ flex: 1, fontFamily: T.ui, fontSize: 12.5, color: T.fg }}>{melding.tekst}</span>
-          <button type="button" onClick={() => setMelding(null)} className="v2-press v2-focus" style={{ appearance: "none", cursor: "pointer", background: "transparent", border: "none", color: T.mut, display: "inline-flex", flex: "none", padding: 0 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 10, padding: "10px 14px", borderRadius: 12, background: `color-mix(in srgb, ${melding.tone === "down" ? TL.danger : melding.tone === "up" ? TL.ok : TL.viz.target} 9%, ${TL.elev})`, border: `1px solid color-mix(in srgb, ${melding.tone === "down" ? TL.danger : melding.tone === "up" ? TL.ok : TL.viz.target} 30%, transparent)` }}>
+          <Icon name={melding.tone === "down" ? "alert-triangle" : melding.tone === "up" ? "check" : "info"} size={14} style={{ color: melding.tone === "down" ? TL.danger : melding.tone === "up" ? TL.ok : TL.viz.target, flex: "none" }} />
+          <span style={{ flex: 1, fontFamily: TL.font.sans, fontSize: 12.5, color: TL.text }}>{melding.tekst}</span>
+          <button type="button" onClick={() => setMelding(null)} className="v2-press v2-focus" style={{ appearance: "none", cursor: "pointer", background: "transparent", border: "none", color: TL.mute, display: "inline-flex", flex: "none", padding: 0 }}>
             <Icon name="x" size={13} />
           </button>
         </div>
@@ -2611,8 +2612,8 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions, w
             flexWrap: "wrap",
             minHeight: 60,
             padding: "10px 0 14px",
-            borderBottom: `1px solid ${T.border}`,
-            background: T.bg,
+            borderBottom: `1px solid ${TL.hair}`,
+            background: TL.scene,
           }}
         >
           <button
@@ -2629,11 +2630,11 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions, w
               gap: 8,
               minHeight: 40,
               padding: "0 14px",
-              borderRadius: T.rPill,
-              border: `1px solid ${T.border}`,
+              borderRadius: TL.radius.pill,
+              border: `1px solid ${TL.hair}`,
               background: "transparent",
-              color: T.fg,
-              fontFamily: T.ui,
+              color: TL.text,
+              fontFamily: TL.font.sans,
               fontSize: 12.5,
               fontWeight: 500,
               cursor: "pointer",
@@ -2643,18 +2644,18 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions, w
             Tilbake til tråden
           </button>
           <div style={{ minWidth: 0 }}>
-            <h1 style={{ margin: 0, fontFamily: T.disp, fontWeight: 600, fontSize: 17, color: T.fg, letterSpacing: "-0.02em" }}>Workbench</h1>
-            <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, letterSpacing: "0.06em", textTransform: "uppercase", color: T.mut, marginTop: 2 }}>
+            <h1 style={{ margin: 0, fontFamily: TL.font.sans, fontWeight: 600, fontSize: 17, color: TL.text, letterSpacing: "-0.02em" }}>Workbench</h1>
+            <span style={{ display: "block", fontFamily: TL.font.mono, fontSize: 10.5, letterSpacing: "0.06em", textTransform: "uppercase", color: TL.mute, marginTop: 2 }}>
               {playerName} · uke {weekNumber}
             </span>
           </div>
           <Felt label="Zoom"><PillVelger options={zoomOptions} value={nivaa} onChange={setNivaa} /></Felt>
           <div style={{ display: "flex", alignItems: "center", gap: 8, marginLeft: "auto" }}>
             {actions && (
-              <button type="button" onClick={() => setNyOktApen(true)} className="v2-press v2-focus" style={{ appearance: "none", cursor: "pointer", display: "inline-flex", alignItems: "center", gap: 7, minHeight: 44, padding: "0 16px", borderRadius: T.rPill, background: T.panel3, border: `1px solid ${T.border}`, fontFamily: T.ui, fontSize: 12.5, fontWeight: 600, color: T.fg }}><Icon name="plus" size={14} />Ny økt</button>
+              <button type="button" onClick={() => setNyOktApen(true)} className="v2-press v2-focus" style={{ appearance: "none", cursor: "pointer", display: "inline-flex", alignItems: "center", gap: 7, minHeight: 44, padding: "0 16px", borderRadius: TL.radius.pill, background: TL.dim, border: `1px solid ${TL.hair}`, fontFamily: TL.font.sans, fontSize: 12.5, fontWeight: 600, color: TL.text }}><Icon name="plus" size={14} />Ny økt</button>
             )}
             {actions?.suggestWeek && (
-              <button type="button" onClick={handleSuggest} disabled={suggestLoading} title="AI-forslag for uka" className="v2-press v2-focus" style={{ appearance: "none", cursor: suggestLoading ? "default" : "pointer", minWidth: 44, minHeight: 44, borderRadius: T.rPill, background: T.panel3, border: `1px solid ${T.border}`, display: "inline-flex", alignItems: "center", justifyContent: "center", opacity: suggestLoading ? 0.5 : 1 }}><Icon name="sparkles" size={15} style={{ color: T.handling }} /></button>
+              <button type="button" onClick={handleSuggest} disabled={suggestLoading} title="AI-forslag for uka" className="v2-press v2-focus" style={{ appearance: "none", cursor: suggestLoading ? "default" : "pointer", minWidth: 44, minHeight: 44, borderRadius: TL.radius.pill, background: TL.dim, border: `1px solid ${TL.hair}`, display: "inline-flex", alignItems: "center", justifyContent: "center", opacity: suggestLoading ? 0.5 : 1 }}><Icon name="sparkles" size={15} style={{ color: TL.fill }} /></button>
             )}
             <div style={{ position: "relative" }}>
               <button
@@ -2665,9 +2666,9 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions, w
                 aria-haspopup="true"
                 aria-expanded={merApenDesktop}
                 className="v2-press v2-focus"
-                style={{ appearance: "none", cursor: "pointer", minWidth: 44, minHeight: 44, borderRadius: T.rPill, background: merApenDesktop ? T.panel2 : T.panel3, border: `1px solid ${T.border}`, display: "inline-flex", alignItems: "center", justifyContent: "center" }}
+                style={{ appearance: "none", cursor: "pointer", minWidth: 44, minHeight: 44, borderRadius: TL.radius.pill, background: merApenDesktop ? TL.dock : TL.dim, border: `1px solid ${TL.hair}`, display: "inline-flex", alignItems: "center", justifyContent: "center" }}
               >
-                <Icon name="more-horizontal" size={16} style={{ color: T.fg2 }} />
+                <Icon name="more-horizontal" size={16} style={{ color: TL.mute }} />
               </button>
               {merApenDesktop && (
                 <div
@@ -2683,32 +2684,32 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions, w
                     flexDirection: "column",
                     gap: 10,
                     padding: 14,
-                    borderRadius: T.rCard,
-                    background: T.panel,
-                    border: `1px solid ${T.borderS}`,
-                    boxShadow: `0 16px 40px ${T.farge.svartA50}`,
+                    borderRadius: TL.radius.card,
+                    background: TL.elev,
+                    border: `1px solid ${TL.hair}`,
+                    boxShadow: `0 16px 40px ${TL.scrim}`,
                   }}
                 >
                   <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-                    <span style={{ fontFamily: T.mono, fontSize: 9, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: T.mut }}>Status</span>
+                    <span style={{ fontFamily: TL.font.mono, fontSize: 9, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: TL.mute }}>Status</span>
                     <StatusPill tone={st.tone}>{st.l}</StatusPill>
                   </div>
                   <div>
-                    <span style={{ display: "block", fontFamily: T.mono, fontSize: 9, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: T.mut, marginBottom: 6 }}>Modus</span>
+                    <span style={{ display: "block", fontFamily: TL.font.mono, fontSize: 9, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: TL.mute, marginBottom: 6 }}>Modus</span>
                     <PillVelger
                       options={[{ v: "standard", l: "Standard" }, { v: "pro", l: "Pro" }]}
                       value={wbMode ?? "pro"}
                       onChange={(v) => byttWbMode(v === "standard" ? "standard" : "pro")}
                     />
                   </div>
-                  <div style={{ display: "flex", alignItems: "center", gap: 10, padding: "8px 10px", borderRadius: T.rRow, background: `color-mix(in srgb, ${harAvvik ? T.warn : T.up} 6%, transparent)`, border: `1px solid color-mix(in srgb, ${harAvvik ? T.warn : T.up} 32%, transparent)` }}>
-                    <span style={{ fontFamily: T.mono, fontSize: 18, fontWeight: 700, color: T.fg, fontVariantNumeric: "tabular-nums", flex: "none" }}>{adher != null ? `${adherDisp}%` : "—"}</span>
+                  <div style={{ display: "flex", alignItems: "center", gap: 10, padding: "8px 10px", borderRadius: TL.radius.row, background: `color-mix(in srgb, ${harAvvik ? TL.warn : TL.ok} 6%, transparent)`, border: `1px solid color-mix(in srgb, ${harAvvik ? TL.warn : TL.ok} 32%, transparent)` }}>
+                    <span style={{ fontFamily: TL.font.mono, fontSize: 18, fontWeight: 700, color: TL.text, fontVariantNumeric: "tabular-nums", flex: "none" }}>{adher != null ? `${adherDisp}%` : "—"}</span>
                     <div style={{ minWidth: 0 }}>
                       <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}>
-                        <span style={{ fontFamily: T.mono, fontSize: 8.5, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: T.mut, whiteSpace: "nowrap" }}>Plan-etterlevelse</span>
+                        <span style={{ fontFamily: TL.font.mono, fontSize: 8.5, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: TL.mute, whiteSpace: "nowrap" }}>Plan-etterlevelse</span>
                         <HjelpTips k="planEtterlevelse" size={11} />
                       </span>
-                      <span style={{ fontFamily: T.mono, fontSize: 9, fontWeight: 700, color: harAvvik ? T.warn : T.up, display: "block", marginTop: 2, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{avvikTekst}</span>
+                      <span style={{ fontFamily: TL.font.mono, fontSize: 9, fontWeight: 700, color: harAvvik ? TL.warn : TL.ok, display: "block", marginTop: 2, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{avvikTekst}</span>
                     </div>
                   </div>
                 </div>
@@ -2719,24 +2720,24 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions, w
         </div>
 
         {/* KPI-STRIPE (fasit .kpis): rene målinger av uka — regnet av ekte ukedata */}
-        <div role="group" aria-label="Målinger" data-wb-kpistripe style={{ display: "flex", alignItems: "stretch", overflowX: "auto", borderBottom: `1px solid ${T.border}`, background: T.panel2 }}>
+        <div role="group" aria-label="Målinger" data-wb-kpistripe style={{ display: "flex", alignItems: "stretch", overflowX: "auto", borderBottom: `1px solid ${TL.hair}`, background: TL.dock }}>
           {([
             { k: "trening", v: fmtTidMin(ukeKpi.treningMin), w: `uke ${weekNumber}` },
             { k: "turnering", v: ukeKpi.turneringMin ? fmtTidMin(ukeKpi.turneringMin) : "—", w: `uke ${weekNumber}` },
             { k: "økter", v: String(ukeKpi.okter), w: `${ukeKpi.golf} golf · ${ukeKpi.fys} fysisk` },
             { k: "drills", v: String(ukeKpi.drills), w: "i uka" },
           ] as const).map((c) => (
-            <div key={c.k} style={{ display: "flex", flexDirection: "column", gap: 2, padding: "10px 16px", borderRight: `1px solid ${T.border}`, minWidth: 118 }}>
-              <span style={{ fontFamily: T.mono, fontSize: 8.5, fontWeight: 700, letterSpacing: "0.09em", textTransform: "uppercase", color: T.mut }}>{c.k}</span>
-              <span style={{ fontFamily: T.mono, fontSize: 19, fontWeight: 700, color: T.fg, letterSpacing: "-0.02em", fontVariantNumeric: "tabular-nums" }}>{c.v}</span>
-              <span style={{ fontFamily: T.ui, fontSize: 10.5, color: T.mut }}>{c.w}</span>
+            <div key={c.k} style={{ display: "flex", flexDirection: "column", gap: 2, padding: "10px 16px", borderRight: `1px solid ${TL.hair}`, minWidth: 118 }}>
+              <span style={{ fontFamily: TL.font.mono, fontSize: 8.5, fontWeight: 700, letterSpacing: "0.09em", textTransform: "uppercase", color: TL.mute }}>{c.k}</span>
+              <span style={{ fontFamily: TL.font.mono, fontSize: 19, fontWeight: 700, color: TL.text, letterSpacing: "-0.02em", fontVariantNumeric: "tabular-nums" }}>{c.v}</span>
+              <span style={{ fontFamily: TL.font.sans, fontSize: 10.5, color: TL.mute }}>{c.w}</span>
             </div>
           ))}
         </div>
 
         {/* MIDTSONE (fasit .wbmid): Bibliotek | lerret | Inspektør — egen scroll per kolonne, min-w-0 overalt */}
         <div className="grid md:grid-cols-[200px_minmax(0,1fr)_300px] xl:grid-cols-[232px_minmax(0,1fr)_340px]" style={{ minHeight: 0 }}>
-          <div aria-label="Bibliotek" style={{ minWidth: 0, minHeight: 0, overflowY: "auto", padding: "12px 12px 12px 0", borderRight: `1px solid ${T.border}` }}>
+          <div aria-label="Bibliotek" style={{ minWidth: 0, minHeight: 0, overflowY: "auto", padding: "12px 12px 12px 0", borderRight: `1px solid ${TL.hair}` }}>
         <WBBibliotek data={data} tab={tab} setTab={setTab} sok={sok} setSok={setSok} onVelgOkt={actions ? velgFraBibliotek : undefined} onBrukMal={actions?.applyTemplate ? brukMalFraBibliotek : undefined} visPerioder={nivaa === "ar" && !!actions?.lagrePeriode} onLeggDrillIValgt={actions?.updateSession ? leggDrillIValgt : undefined} proMode={proMode} />
           </div>
           <div style={{ minWidth: 0, minHeight: 0, display: "flex", flexDirection: "column" }}>
@@ -2746,18 +2747,18 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions, w
         <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
           {[["ar", `Sesong ${visningsDato.getFullYear()}`, "circle"], ["maned", MANEDER[visningsDato.getMonth()][0].toUpperCase() + MANEDER[visningsDato.getMonth()].slice(1), "circle-dot"], ["uke", `Uke ${weekNumber}`, "calendar"]].map(([v, l, ic], i, arr) => (
             <span key={v} style={{ display: "inline-flex", alignItems: "center", gap: 8 }}>
-              <button type="button" onClick={() => setNivaa(v)} className="v2-press v2-focus" style={{ appearance: "none", cursor: "pointer", display: "inline-flex", alignItems: "center", gap: 7, padding: "8px 12px", minHeight: 40, borderRadius: 9999, border: `1px solid ${nivaa === v ? T.fg : T.border}`, background: nivaa === v ? T.panel : T.panel2, boxShadow: nivaa === v ? `inset 0 -2px 0 ${T.handling}` : undefined, fontFamily: T.ui, fontSize: 12.5, fontWeight: 600, color: nivaa === v ? T.fg : T.fg2 }}>
-                <Icon name={ic} size={13} style={{ color: nivaa === v ? T.handling : T.mut }} />{l}
+              <button type="button" onClick={() => setNivaa(v)} className="v2-press v2-focus" style={{ appearance: "none", cursor: "pointer", display: "inline-flex", alignItems: "center", gap: 7, padding: "8px 12px", minHeight: 40, borderRadius: 9999, border: `1px solid ${nivaa === v ? TL.text : TL.hair}`, background: nivaa === v ? TL.elev : TL.dock, boxShadow: nivaa === v ? `inset 0 -2px 0 ${TL.fill}` : undefined, fontFamily: TL.font.sans, fontSize: 12.5, fontWeight: 600, color: nivaa === v ? TL.text : TL.mute }}>
+                <Icon name={ic} size={13} style={{ color: nivaa === v ? TL.fill : TL.mute }} />{l}
               </button>
-              {i < arr.length - 1 && <Icon name="chevron-right" size={13} style={{ color: T.mut }} />}
+              {i < arr.length - 1 && <Icon name="chevron-right" size={13} style={{ color: TL.mute }} />}
             </span>
           ))}
           <div style={{ display: "flex", alignItems: "center", gap: 2, marginLeft: 4 }}>
-            <button type="button" onClick={() => goToWeek(-1)} disabled={weekOffset <= WEEK_OFFSET_MIN} title="Forrige uke" className="v2-press v2-focus" style={{ appearance: "none", cursor: weekOffset <= WEEK_OFFSET_MIN ? "default" : "pointer", width: 26, height: 26, borderRadius: 8, background: T.panel2, border: `1px solid ${T.border}`, display: "inline-flex", alignItems: "center", justifyContent: "center", opacity: weekOffset <= WEEK_OFFSET_MIN ? 0.4 : 1 }}>
-              <Icon name="chevron-left" size={13} style={{ color: T.fg2 }} />
+            <button type="button" onClick={() => goToWeek(-1)} disabled={weekOffset <= WEEK_OFFSET_MIN} title="Forrige uke" className="v2-press v2-focus" style={{ appearance: "none", cursor: weekOffset <= WEEK_OFFSET_MIN ? "default" : "pointer", width: 26, height: 26, borderRadius: 8, background: TL.dock, border: `1px solid ${TL.hair}`, display: "inline-flex", alignItems: "center", justifyContent: "center", opacity: weekOffset <= WEEK_OFFSET_MIN ? 0.4 : 1 }}>
+              <Icon name="chevron-left" size={13} style={{ color: TL.mute }} />
             </button>
-            <button type="button" onClick={() => goToWeek(1)} disabled={weekOffset >= WEEK_OFFSET_MAX} title="Neste uke" className="v2-press v2-focus" style={{ appearance: "none", cursor: weekOffset >= WEEK_OFFSET_MAX ? "default" : "pointer", width: 26, height: 26, borderRadius: 8, background: T.panel2, border: `1px solid ${T.border}`, display: "inline-flex", alignItems: "center", justifyContent: "center", opacity: weekOffset >= WEEK_OFFSET_MAX ? 0.4 : 1 }}>
-              <Icon name="chevron-right" size={13} style={{ color: T.fg2 }} />
+            <button type="button" onClick={() => goToWeek(1)} disabled={weekOffset >= WEEK_OFFSET_MAX} title="Neste uke" className="v2-press v2-focus" style={{ appearance: "none", cursor: weekOffset >= WEEK_OFFSET_MAX ? "default" : "pointer", width: 26, height: 26, borderRadius: 8, background: TL.dock, border: `1px solid ${TL.hair}`, display: "inline-flex", alignItems: "center", justifyContent: "center", opacity: weekOffset >= WEEK_OFFSET_MAX ? 0.4 : 1 }}>
+              <Icon name="chevron-right" size={13} style={{ color: TL.mute }} />
             </button>
           </div>
         </div>
@@ -2770,7 +2771,7 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions, w
           )}
         </div>
       </div>
-            <div style={{ flex: 1, minHeight: 0, overflowY: "auto", padding: "8px 14px 14px", display: "flex", flexDirection: "column", gap: T.gap }}>
+            <div style={{ flex: 1, minHeight: 0, overflowY: "auto", padding: "8px 14px 14px", display: "flex", flexDirection: "column", gap: 16 }}>
           {dupliserMelding && <InnsiktChip>{dupliserMelding}</InnsiktChip>}
           {leggTilMelding && <InnsiktChip>{leggTilMelding}</InnsiktChip>}
           {insights?.line && <InnsiktChip>{insights.line}</InnsiktChip>}
@@ -2802,7 +2803,7 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions, w
             </div>
           )}
           {nivaa === "dag" && (
-            <div key="dag" className="v2-fade-in" style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+            <div key="dag" className="v2-fade-in" style={{ display: "flex", flexDirection: "column", gap: 16 }}>
               {valgtOkt && (valgtOkt.source ?? "plan") === "plan" && valgtOkt.id ? (
                 <OktDrillTidslinje
                   okt={valgtOkt}
@@ -2833,16 +2834,16 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions, w
                             textAlign: "left",
                             padding: "8px 10px",
                             borderRadius: 9,
-                            background: T.panel2,
-                            border: `1px solid ${T.border}`,
+                            background: TL.dock,
+                            border: `1px solid ${TL.hair}`,
                             cursor: "pointer",
                             color: "inherit",
                           }}
                         >
-                          <span style={{ fontFamily: T.mono, fontSize: 9, fontWeight: 700, color: T.mut }}>
+                          <span style={{ fontFamily: TL.font.mono, fontSize: 9, fontWeight: 700, color: TL.mute }}>
                             {toKl(e.h, e.m)}
                           </span>
-                          <span style={{ fontFamily: T.ui, fontSize: 12, fontWeight: 600, color: T.fg, marginLeft: 8 }}>
+                          <span style={{ fontFamily: TL.font.sans, fontSize: 12, fontWeight: 600, color: TL.text, marginLeft: 8 }}>
                             {e.ttl}
                           </span>
                         </button>
@@ -2857,10 +2858,10 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions, w
             </div>
           </div>
           {/* INSPEKTØR (fasit .insp): faner Økt | Innboks | Caddie */}
-          <div aria-label="Inspektør" style={{ minWidth: 0, minHeight: 0, display: "flex", flexDirection: "column", borderLeft: `1px solid ${T.border}` }}>
-            <div role="tablist" aria-label="Inspektør" style={{ display: "flex", borderBottom: `1px solid ${T.border}`, flex: "none" }}>
+          <div aria-label="Inspektør" style={{ minWidth: 0, minHeight: 0, display: "flex", flexDirection: "column", borderLeft: `1px solid ${TL.hair}` }}>
+            <div role="tablist" aria-label="Inspektør" style={{ display: "flex", borderBottom: `1px solid ${TL.hair}`, flex: "none" }}>
               {([["okt", "Økt"], ["innboks", "Innboks"], ["caddie", "Caddie"]] as const).map(([id, l]) => (
-                <button key={id} type="button" role="tab" aria-selected={inspTab === id} onClick={() => setInspTab(id)} className="v2-press v2-focus" style={{ appearance: "none", cursor: "pointer", flex: 1, minHeight: 44, background: "transparent", border: 0, borderBottom: `2px solid ${inspTab === id ? T.fg : "transparent"}`, fontFamily: T.ui, fontSize: 12.5, fontWeight: inspTab === id ? 700 : 500, color: inspTab === id ? T.fg : T.mut }}>{l}</button>
+                <button key={id} type="button" role="tab" aria-selected={inspTab === id} onClick={() => setInspTab(id)} className="v2-press v2-focus" style={{ appearance: "none", cursor: "pointer", flex: 1, minHeight: 44, background: "transparent", border: 0, borderBottom: `2px solid ${inspTab === id ? TL.text : "transparent"}`, fontFamily: TL.font.sans, fontSize: 12.5, fontWeight: inspTab === id ? 700 : 500, color: inspTab === id ? TL.text : TL.mute }}>{l}</button>
               ))}
             </div>
             <div style={{ flex: 1, minHeight: 0, overflowY: "auto", padding: "14px 0 14px 14px" }}>
@@ -2880,14 +2881,14 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions, w
                 <div style={{ display: "flex", flexDirection: "column", gap: 10 }} data-wb-innboks>
                   <TomTilstand icon="inbox" title="Ingen meldinger her ennå" sub="Workbench har ingen egen meldingskilde ennå — varsler om planen ligger under Varsler." />
                   {role === "player" && (
-                    <a href="/portal/varsler" className="v2-press v2-focus" style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 7, minHeight: 44, padding: "0 14px", borderRadius: 12, border: `1px solid ${T.border}`, background: T.panel2, color: T.fg2, fontFamily: T.ui, fontSize: 12.5, fontWeight: 600, textDecoration: "none" }}>Åpne varsler</a>
+                    <a href="/portal/varsler" className="v2-press v2-focus" style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 7, minHeight: 44, padding: "0 14px", borderRadius: 12, border: `1px solid ${TL.hair}`, background: TL.dock, color: TL.mute, fontFamily: TL.font.sans, fontSize: 12.5, fontWeight: 600, textDecoration: "none" }}>Åpne varsler</a>
                   )}
                 </div>
               )}
               {inspTab === "caddie" && (
                 actions?.suggestWeek ? (
                   <div style={{ display: "flex", flexDirection: "column", gap: 10 }} data-wb-caddie>
-                    <p style={{ margin: 0, fontFamily: T.ui, fontSize: 12.5, color: T.fg2, lineHeight: 1.5 }}>
+                    <p style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 12.5, color: TL.mute, lineHeight: 1.5 }}>
                       Caddie foreslår en hel uke ut fra fokus, periode og belastning. Ingenting legges inn før du velger et forslag.
                     </p>
                     <Knapp icon="sparkles" full onClick={handleSuggest} disabled={suggestLoading}>{suggestLoading ? "Foreslår…" : "Foreslå uke med Caddie"}</Knapp>
@@ -2901,26 +2902,26 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions, w
         </div>
 
         {/* BUNNSONE (fasit .bunn): brudd-chips + Publiser — eneste clay i visningen */}
-        <div data-wb-bunn style={{ display: "flex", alignItems: "center", gap: 12, flexWrap: "wrap", padding: "10px 0", borderTop: `1px solid ${T.border}`, background: T.bg }}>
+        <div data-wb-bunn style={{ display: "flex", alignItems: "center", gap: 12, flexWrap: "wrap", padding: "10px 0", borderTop: `1px solid ${TL.hair}`, background: TL.scene }}>
           <Caps size={9}>Status</Caps>
           <div style={{ display: "flex", gap: 8, flexWrap: "wrap", flex: 1, minWidth: 0 }}>
             {bruddChips.map((c, i) => (
-              <span key={i} style={{ display: "inline-flex", alignItems: "center", gap: 6, padding: "5px 12px", borderRadius: 9999, fontFamily: T.ui, fontSize: 11.5, color: c.tone === "warn" ? T.warn : c.tone === "ok" ? T.up : T.mut, background: `color-mix(in srgb, ${c.tone === "warn" ? T.warn : c.tone === "ok" ? T.up : T.mut} 8%, transparent)`, border: `1px solid color-mix(in srgb, ${c.tone === "warn" ? T.warn : c.tone === "ok" ? T.up : T.mut} 28%, transparent)` }}>{c.tekst}</span>
+              <span key={i} style={{ display: "inline-flex", alignItems: "center", gap: 6, padding: "5px 12px", borderRadius: 9999, fontFamily: TL.font.sans, fontSize: 11.5, color: c.tone === "warn" ? TL.warn : c.tone === "ok" ? TL.ok : TL.mute, background: `color-mix(in srgb, ${c.tone === "warn" ? TL.warn : c.tone === "ok" ? TL.ok : TL.mute} 8%, transparent)`, border: `1px solid color-mix(in srgb, ${c.tone === "warn" ? TL.warn : c.tone === "ok" ? TL.ok : TL.mute} 28%, transparent)` }}>{c.tekst}</span>
             ))}
           </div>
           {publiserSynlig && (
-            <Knapp icon="send" onClick={handlePublish} disabled={pubLoading} style={{ background: T.handling, color: T.onHandling, minHeight: 48, borderRadius: 12 }} data-paper-en-ting="true">{pubLoading ? "Publiserer…" : publiserLabel}</Knapp>
+            <Knapp icon="send" onClick={handlePublish} disabled={pubLoading} style={{ background: TL.fill, color: TL.onFill, minHeight: 48, borderRadius: 12 }} data-paper-en-ting="true">{pubLoading ? "Publiserer…" : publiserLabel}</Knapp>
           )}
         </div>
       </div>
 
       {/* Mobil (<md): fasit workbench-mobil — top · zooms · daystrip · dagbody · bunnlinje; Bibliotek/Balanse som bottom-sheets */}
-      <div className="flex md:hidden" data-paper-slug="workbench-mobil" style={{ flexDirection: "column", gap: T.gap }}>
+      <div className="flex md:hidden" data-paper-slug="workbench-mobil" style={{ flexDirection: "column", gap: 16 }}>
         {/* TOPP-BAR — mobil: fasit .top (workbench-mobil.html) er kun tilbake ·
             tittel/undertekst · tema. Std/Pro-modus, plan-etterlevelse og
             status-badge er IKKE i fasitens hode — flyttet inn i «mer»-menyen
             ved «Ny økt» sammen med Foreslå/Gjenta, i stedet for fjernet. */}
-        <div style={{ display: "flex", flexDirection: "column", gap: 10, paddingBottom: 14, borderBottom: `1px solid ${T.border}` }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: 10, paddingBottom: 14, borderBottom: `1px solid ${TL.hair}` }}>
         <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
           <button
             type="button"
@@ -2929,13 +2930,13 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions, w
             aria-label="Tilbake til tråden"
             title="Tilbake til tråden"
             data-od-id="wbm-back"
-            style={{ flex: "none", width: 40, height: 40, display: "inline-flex", alignItems: "center", justifyContent: "center", borderRadius: 12, background: "transparent", border: `1px solid ${T.border}`, color: T.fg, cursor: "pointer" }}
+            style={{ flex: "none", width: 40, height: 40, display: "inline-flex", alignItems: "center", justifyContent: "center", borderRadius: 12, background: "transparent", border: `1px solid ${TL.hair}`, color: TL.text, cursor: "pointer" }}
           >
             <Icon name="chevron-left" size={18} />
           </button>
           <div style={{ minWidth: 0, flex: 1 }}>
-            <h1 style={{ margin: 0, fontFamily: T.disp, fontWeight: 600, fontSize: 17, color: T.fg }}>Workbench</h1>
-            <span style={{ display: "block", fontFamily: T.mono, fontSize: 10, letterSpacing: "0.06em", textTransform: "uppercase", color: T.mut, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+            <h1 style={{ margin: 0, fontFamily: TL.font.sans, fontWeight: 600, fontSize: 17, color: TL.text }}>Workbench</h1>
+            <span style={{ display: "block", fontFamily: TL.font.mono, fontSize: 10, letterSpacing: "0.06em", textTransform: "uppercase", color: TL.mute, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
               {playerName} · uke {weekNumber}
             </span>
           </div>
@@ -2960,16 +2961,16 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions, w
             aria-haspopup="true"
             aria-expanded={merApen}
             className="v2-press v2-focus"
-            style={{ appearance: "none", cursor: "pointer", width: 44, height: 44, flex: "none", borderRadius: 12, background: merApen ? T.panel2 : T.panel3, border: `1px solid ${T.borderS}`, display: "inline-flex", alignItems: "center", justifyContent: "center" }}
+            style={{ appearance: "none", cursor: "pointer", width: 44, height: 44, flex: "none", borderRadius: 12, background: merApen ? TL.dock : TL.dim, border: `1px solid ${TL.hair}`, display: "inline-flex", alignItems: "center", justifyContent: "center" }}
           >
-            <Icon name="more-horizontal" size={17} style={{ color: T.fg2 }} />
+            <Icon name="more-horizontal" size={17} style={{ color: TL.mute }} />
           </button>
         </div>
 
         {merApen && (
-          <div style={{ display: "flex", flexDirection: "column", gap: 10, padding: 12, borderRadius: 12, background: T.panel2, border: `1px solid ${T.border}` }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: 10, padding: 12, borderRadius: 12, background: TL.dock, border: `1px solid ${TL.hair}` }}>
             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-              <span style={{ fontFamily: T.mono, fontSize: 9, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: T.mut }}>Status</span>
+              <span style={{ fontFamily: TL.font.mono, fontSize: 9, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: TL.mute }}>Status</span>
               <StatusPill tone={st.tone}>{st.l}</StatusPill>
             </div>
             <PillVelger
@@ -2977,9 +2978,9 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions, w
               value={wbMode ?? "pro"}
               onChange={(v) => byttWbMode(v === "standard" ? "standard" : "pro")}
             />
-            <div style={{ display: "flex", alignItems: "center", gap: 8, padding: "6px 10px", borderRadius: 10, background: `color-mix(in srgb, ${harAvvik ? T.warn : T.up} 8%, transparent)`, border: `1px solid color-mix(in srgb, ${harAvvik ? T.warn : T.up} 32%, transparent)` }}>
-              <span style={{ fontFamily: T.mono, fontSize: 15, fontWeight: 700, color: T.fg, fontVariantNumeric: "tabular-nums" }}>{adher != null ? `${adherDisp}%` : "–"}</span>
-              <span style={{ fontFamily: T.mono, fontSize: 8.5, fontWeight: 700, letterSpacing: "0.05em", textTransform: "uppercase", color: T.mut, whiteSpace: "nowrap" }}>etterlevelse · {avvikTekst}</span>
+            <div style={{ display: "flex", alignItems: "center", gap: 8, padding: "6px 10px", borderRadius: 10, background: `color-mix(in srgb, ${harAvvik ? TL.warn : TL.ok} 8%, transparent)`, border: `1px solid color-mix(in srgb, ${harAvvik ? TL.warn : TL.ok} 32%, transparent)` }}>
+              <span style={{ fontFamily: TL.font.mono, fontSize: 15, fontWeight: 700, color: TL.text, fontVariantNumeric: "tabular-nums" }}>{adher != null ? `${adherDisp}%` : "–"}</span>
+              <span style={{ fontFamily: TL.font.mono, fontSize: 8.5, fontWeight: 700, letterSpacing: "0.05em", textTransform: "uppercase", color: TL.mute, whiteSpace: "nowrap" }}>etterlevelse · {avvikTekst}</span>
             </div>
             {(actions?.suggestWeek || actions?.duplicateWeek) && (
               <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
@@ -3003,11 +3004,11 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions, w
           />
         </div>
         <div style={{ display: "flex", alignItems: "center", gap: 4, flex: "none" }}>
-          <button type="button" onClick={() => goToWeek(-1)} disabled={weekOffset <= WEEK_OFFSET_MIN} title="Forrige uke" className="v2-press v2-focus" style={{ appearance: "none", cursor: weekOffset <= WEEK_OFFSET_MIN ? "default" : "pointer", width: 36, height: 36, borderRadius: 10, background: T.panel2, border: `1px solid ${T.border}`, display: "inline-flex", alignItems: "center", justifyContent: "center", opacity: weekOffset <= WEEK_OFFSET_MIN ? 0.4 : 1 }}>
-            <Icon name="chevron-left" size={14} style={{ color: T.fg2 }} />
+          <button type="button" onClick={() => goToWeek(-1)} disabled={weekOffset <= WEEK_OFFSET_MIN} title="Forrige uke" className="v2-press v2-focus" style={{ appearance: "none", cursor: weekOffset <= WEEK_OFFSET_MIN ? "default" : "pointer", width: 36, height: 36, borderRadius: 10, background: TL.dock, border: `1px solid ${TL.hair}`, display: "inline-flex", alignItems: "center", justifyContent: "center", opacity: weekOffset <= WEEK_OFFSET_MIN ? 0.4 : 1 }}>
+            <Icon name="chevron-left" size={14} style={{ color: TL.mute }} />
           </button>
-          <button type="button" onClick={() => goToWeek(1)} disabled={weekOffset >= WEEK_OFFSET_MAX} title="Neste uke" className="v2-press v2-focus" style={{ appearance: "none", cursor: weekOffset >= WEEK_OFFSET_MAX ? "default" : "pointer", width: 36, height: 36, borderRadius: 10, background: T.panel2, border: `1px solid ${T.border}`, display: "inline-flex", alignItems: "center", justifyContent: "center", opacity: weekOffset >= WEEK_OFFSET_MAX ? 0.4 : 1 }}>
-            <Icon name="chevron-right" size={14} style={{ color: T.fg2 }} />
+          <button type="button" onClick={() => goToWeek(1)} disabled={weekOffset >= WEEK_OFFSET_MAX} title="Neste uke" className="v2-press v2-focus" style={{ appearance: "none", cursor: weekOffset >= WEEK_OFFSET_MAX ? "default" : "pointer", width: 36, height: 36, borderRadius: 10, background: TL.dock, border: `1px solid ${TL.hair}`, display: "inline-flex", alignItems: "center", justifyContent: "center", opacity: weekOffset >= WEEK_OFFSET_MAX ? 0.4 : 1 }}>
+            <Icon name="chevron-right" size={14} style={{ color: TL.mute }} />
           </button>
         </div>
       </div>
@@ -3032,7 +3033,7 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions, w
           </div>
         )}
         {nivaa === "dag" && (
-          <div key="dag" className="v2-fade-in" style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+          <div key="dag" className="v2-fade-in" style={{ display: "flex", flexDirection: "column", gap: 16 }}>
             {valgtOkt && (valgtOkt.source ?? "plan") === "plan" && valgtOkt.id ? (
               <OktDrillTidslinje
                 okt={valgtOkt}
@@ -3070,8 +3071,8 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions, w
             display: "flex",
             flexDirection: "column",
             gap: 8,
-            background: T.bg,
-            borderTop: `1px solid ${T.border}`,
+            background: TL.scene,
+            borderTop: `1px solid ${TL.hair}`,
             padding: "10px 0 8px",
           }}
         >
@@ -3083,13 +3084,13 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions, w
               ["drills", String(ukeKpi.drills)],
             ] as const).map(([k, v]) => (
               <div key={k} style={{ flex: "none" }}>
-                <span style={{ display: "block", fontFamily: T.mono, fontSize: 8.5, letterSpacing: "0.08em", textTransform: "uppercase", color: T.mut }}>{k}</span>
-                <span style={{ display: "block", fontFamily: T.mono, fontSize: 15, fontWeight: 700, color: T.fg, fontVariantNumeric: "tabular-nums" }}>{v}</span>
+                <span style={{ display: "block", fontFamily: TL.font.mono, fontSize: 8.5, letterSpacing: "0.08em", textTransform: "uppercase", color: TL.mute }}>{k}</span>
+                <span style={{ display: "block", fontFamily: TL.font.mono, fontSize: 15, fontWeight: 700, color: TL.text, fontVariantNumeric: "tabular-nums" }}>{v}</span>
               </div>
             ))}
           </div>
           {publiserSynlig && (
-            <Knapp icon="send" full onClick={handlePublish} disabled={pubLoading} style={{ background: T.handling, color: T.onHandling, minHeight: 56, borderRadius: 12 }} data-paper-en-ting="true">
+            <Knapp icon="send" full onClick={handlePublish} disabled={pubLoading} style={{ background: TL.fill, color: TL.onFill, minHeight: 56, borderRadius: 12 }} data-paper-en-ting="true">
               {pubLoading ? "Publiserer…" : publiserLabel}
             </Knapp>
           )}
@@ -3124,27 +3125,27 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions, w
 
       {pubDiff && (
         <div style={{ position: "fixed", inset: 0, zIndex: 70, display: "flex", alignItems: "center", justifyContent: "center", padding: 16 }}>
-          <div onClick={() => setPubDiff(null)} style={{ position: "absolute", inset: 0, background: T.farge.nestenSvartA62, backdropFilter: "blur(2px)" }} />
-          <div role="dialog" aria-label="Bekreft publisering" className="v2-sheet-in" style={{ position: "relative", width: "min(460px, 100%)", maxHeight: "85vh", overflowY: "auto", background: T.panel, border: `1px solid ${T.borderS}`, borderRadius: 20, padding: "20px 22px", boxShadow: `0 24px 60px ${T.farge.svartA50}` }}>
+          <div onClick={() => setPubDiff(null)} style={{ position: "absolute", inset: 0, background: TL.scrim, backdropFilter: "none" }} />
+          <div role="dialog" aria-label="Bekreft publisering" className="v2-sheet-in" style={{ position: "relative", width: "min(460px, 100%)", maxHeight: "85vh", overflowY: "auto", background: TL.elev, border: `1px solid ${TL.hair}`, borderRadius: 20, padding: "20px 22px", boxShadow: "none" }}>
             <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-              <Icon name="send" size={16} style={{ color: T.handling }} />
+              <Icon name="send" size={16} style={{ color: TL.fill }} />
               <div style={{ flex: 1, minWidth: 0 }}>
                 <Caps size={8.5}>Før spiller ser endringen</Caps>
-                <h2 style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 17, letterSpacing: "-0.02em", color: T.fg, margin: "4px 0 0" }}>
+                <h2 style={{ fontFamily: TL.font.sans, fontWeight: 700, fontSize: 17, letterSpacing: "-0.02em", color: TL.text, margin: "4px 0 0" }}>
                   {pubDiff.forsteGang ? "Første publisering" : "Publiser endringer"}
                 </h2>
               </div>
             </div>
             {pubDiff.forsteGang ? (
-              <p style={{ fontFamily: T.ui, fontSize: 12.5, color: T.fg2, margin: "14px 0 0", lineHeight: 1.55 }}>
+              <p style={{ fontFamily: TL.font.sans, fontSize: 12.5, color: TL.mute, margin: "14px 0 0", lineHeight: 1.55 }}>
                 Hele planen sendes til spilleren for godkjenning. Du kan endre og publisere på nytt senere.
               </p>
             ) : (
               <div style={{ marginTop: 14, display: "flex", flexDirection: "column", gap: 10 }} data-wb-pubdiff>
                 {([
-                  { key: "lagtTil" as const, label: "Lagt til", tone: T.up, prefix: "+" },
-                  { key: "fjernet" as const, label: "Fjernet", tone: T.down, prefix: "−" },
-                  { key: "endret" as const, label: "Endret", tone: T.warn, prefix: "~" },
+                  { key: "lagtTil" as const, label: "Lagt til", tone: TL.ok, prefix: "+" },
+                  { key: "fjernet" as const, label: "Fjernet", tone: TL.danger, prefix: "−" },
+                  { key: "endret" as const, label: "Endret", tone: TL.warn, prefix: "~" },
                 ] as const).map((sek) => {
                   const rader =
                     sek.key === "lagtTil"
@@ -3159,13 +3160,13 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions, w
                       style={{
                         padding: "10px 12px",
                         borderRadius: 12,
-                        background: `color-mix(in srgb, ${sek.tone} 8%, ${T.panel2})`,
+                        background: `color-mix(in srgb, ${sek.tone} 8%, ${TL.dock})`,
                         border: `1px solid color-mix(in srgb, ${sek.tone} 28%, transparent)`,
                       }}
                     >
                       <Caps size={8.5}>{sek.label} ({rader.length})</Caps>
                       {rader.map((tekst, i) => (
-                        <div key={i} style={{ fontFamily: T.ui, fontSize: 12.5, color: sek.tone, marginTop: 5, lineHeight: 1.35 }}>
+                        <div key={i} style={{ fontFamily: TL.font.sans, fontSize: 12.5, color: sek.tone, marginTop: 5, lineHeight: 1.35 }}>
                           {sek.prefix} {tekst}
                         </div>
                       ))}
@@ -3173,8 +3174,8 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions, w
                   );
                 })}
                 {pubDiff.lagtTil.length === 0 && pubDiff.fjernet.length === 0 && pubDiff.endret.length === 0 && (
-                  <div style={{ padding: "12px 14px", borderRadius: 12, background: T.panel2, border: `1px solid ${T.border}` }}>
-                    <span style={{ fontFamily: T.ui, fontSize: 12.5, color: T.mut }}>Ingen endringer siden forrige publisering — du kan likevel sende på nytt.</span>
+                  <div style={{ padding: "12px 14px", borderRadius: 12, background: TL.dock, border: `1px solid ${TL.hair}` }}>
+                    <span style={{ fontFamily: TL.font.sans, fontSize: 12.5, color: TL.mute }}>Ingen endringer siden forrige publisering — du kan likevel sende på nytt.</span>
                   </div>
                 )}
                 <div
@@ -3184,19 +3185,19 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions, w
                     gap: 10,
                     padding: "10px 12px",
                     borderRadius: 12,
-                    background: T.panel2,
-                    border: `1px solid ${T.border}`,
+                    background: TL.dock,
+                    border: `1px solid ${TL.hair}`,
                   }}
                 >
-                  <Icon name="activity" size={14} style={{ color: T.fg2, flex: "none" }} />
+                  <Icon name="activity" size={14} style={{ color: TL.mute, flex: "none" }} />
                   <div style={{ flex: 1, minWidth: 0 }}>
-                    <div style={{ fontFamily: T.mono, fontSize: 8.5, fontWeight: 700, color: T.mut, letterSpacing: "0.05em", textTransform: "uppercase" }}>
+                    <div style={{ fontFamily: TL.font.mono, fontSize: 8.5, fontWeight: 700, color: TL.mute, letterSpacing: "0.05em", textTransform: "uppercase" }}>
                       Belastning fremover
                     </div>
-                    <div style={{ fontFamily: T.mono, fontSize: 13, fontWeight: 700, color: T.fg, marginTop: 3, fontVariantNumeric: "tabular-nums" }}>
+                    <div style={{ fontFamily: TL.font.mono, fontSize: 13, fontWeight: 700, color: TL.text, marginTop: 3, fontVariantNumeric: "tabular-nums" }}>
                       {fmtTimer(pubDiff.minutterFor / 60)}
-                      <span style={{ color: T.mut, fontWeight: 600 }}> → </span>
-                      <span style={{ color: pubDiff.minutterNa > pubDiff.minutterFor ? T.warn : T.fg }}>
+                      <span style={{ color: TL.mute, fontWeight: 600 }}> → </span>
+                      <span style={{ color: pubDiff.minutterNa > pubDiff.minutterFor ? TL.warn : TL.text }}>
                         {fmtTimer(pubDiff.minutterNa / 60)}
                       </span>
                     </div>
@@ -3206,7 +3207,7 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions, w
             )}
             {/* PP-3 fasit: begrunnelsesfelt — følger varselet til spilleren (valgfritt) */}
             <div style={{ marginTop: 14 }} data-wb-pubbegrunnelse>
-              <label htmlFor="wb-pub-begrunnelse" style={{ display: "block", fontFamily: T.mono, fontSize: 8.5, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: T.mut, marginBottom: 6 }}>
+              <label htmlFor="wb-pub-begrunnelse" style={{ display: "block", fontFamily: TL.font.mono, fontSize: 8.5, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: TL.mute, marginBottom: 6 }}>
                 Begrunnelse {role === "coach" ? `til ${playerName.split(" ")[0]}` : ""} (valgfritt)
               </label>
               <textarea
@@ -3216,7 +3217,7 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions, w
                 placeholder="Hvorfor ser uka slik ut?"
                 rows={2}
                 maxLength={500}
-                style={{ width: "100%", resize: "vertical", background: T.panel2, border: `1px solid ${T.border}`, borderRadius: 10, padding: "8px 10px", color: T.fg, fontFamily: T.ui, fontSize: 12.5, outline: "none" }}
+                style={{ width: "100%", resize: "vertical", background: TL.dock, border: `1px solid ${TL.hair}`, borderRadius: 10, padding: "8px 10px", color: TL.text, fontFamily: TL.font.sans, fontSize: 12.5, outline: "none" }}
               />
             </div>
             <div style={{ display: "flex", justifyContent: "flex-end", gap: 8, marginTop: 14 }}>
@@ -3241,17 +3242,17 @@ export function WorkbenchV2({ data, insights, playerName, planStatus, actions, w
 
       {malBekreft && (
         <div style={{ position: "fixed", inset: 0, zIndex: 70, display: "flex", alignItems: "center", justifyContent: "center", padding: 16 }}>
-          <div onClick={malLegger ? undefined : () => setMalBekreft(null)} style={{ position: "absolute", inset: 0, background: T.farge.nestenSvartA62, backdropFilter: "blur(2px)" }} />
-          <div role="dialog" aria-label="Legg inn mal" className="v2-sheet-in" style={{ position: "relative", width: "min(400px, 100%)", background: T.panel, border: `1px solid ${T.borderS}`, borderRadius: 20, padding: "20px 22px", boxShadow: `0 24px 60px ${T.farge.svartA50}` }}>
+          <div onClick={malLegger ? undefined : () => setMalBekreft(null)} style={{ position: "absolute", inset: 0, background: TL.scrim, backdropFilter: "none" }} />
+          <div role="dialog" aria-label="Legg inn mal" className="v2-sheet-in" style={{ position: "relative", width: "min(400px, 100%)", background: TL.elev, border: `1px solid ${TL.hair}`, borderRadius: 20, padding: "20px 22px", boxShadow: "none" }}>
             <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-              <Icon name="layers" size={16} style={{ color: T.handling }} />
-              <h2 style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 17, letterSpacing: "-0.02em", color: T.fg, margin: 0 }}>Legg inn mal</h2>
+              <Icon name="layers" size={16} style={{ color: TL.fill }} />
+              <h2 style={{ fontFamily: TL.font.sans, fontWeight: 700, fontSize: 17, letterSpacing: "-0.02em", color: TL.text, margin: 0 }}>Legg inn mal</h2>
             </div>
-            <div style={{ marginTop: 12, padding: "11px 13px", borderRadius: 11, background: T.panel2, border: `1px solid ${T.border}` }}>
-              <div style={{ fontFamily: T.ui, fontSize: 13.5, fontWeight: 600, color: T.fg }}>{malBekreft.name}</div>
-              <div style={{ fontFamily: T.mono, fontSize: 9.5, color: T.mut, marginTop: 3 }}>{malBekreft.sessionCount} økter · {malBekreft.varighetUker} uker · uke 1 legges i uke {weekNumber}</div>
+            <div style={{ marginTop: 12, padding: "11px 13px", borderRadius: 11, background: TL.dock, border: `1px solid ${TL.hair}` }}>
+              <div style={{ fontFamily: TL.font.sans, fontSize: 13.5, fontWeight: 600, color: TL.text }}>{malBekreft.name}</div>
+              <div style={{ fontFamily: TL.font.mono, fontSize: 9.5, color: TL.mute, marginTop: 3 }}>{malBekreft.sessionCount} økter · {malBekreft.varighetUker} uker · uke 1 legges i uke {weekNumber}</div>
             </div>
-            <p style={{ fontFamily: T.ui, fontSize: 11.5, color: T.mut, margin: "10px 0 0", lineHeight: 1.5 }}>
+            <p style={{ fontFamily: TL.font.sans, fontSize: 11.5, color: TL.mute, margin: "10px 0 0", lineHeight: 1.5 }}>
               Øktene legges på {playerName.split(" ")[0]} sine foretrukne dager — alt kan justeres på tidslinja etterpå.
             </p>
             <div style={{ display: "flex", justifyContent: "flex-end", gap: 8, marginTop: 16 }}>

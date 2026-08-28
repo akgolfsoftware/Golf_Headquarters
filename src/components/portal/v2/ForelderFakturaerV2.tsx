@@ -1,5 +1,5 @@
 "use client";
-
+import { TL } from "@/lib/v2/train-lock";
 /**
  * Foreldreportal · Fakturaer — v2 Presis + B-pakke (status + én vei).
  * Kun v2 + T.*. Enklere foreldre-språk.
@@ -7,20 +7,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import {
-  T,
-  Caps,
-  Tittel,
-  Kort,
-  Rad,
-  TallHero,
-  StatusPill,
-  TomTilstand,
-  Icon,
-  Knapp,
-  type StatusTone,
-} from "@/components/v2";
-
+import { Caps, Tittel, Kort, Rad, TallHero, StatusPill, TomTilstand, Icon, Knapp, type StatusTone } from "@/components/v2";
 /* ── Datakontrakt (mappes fra Prisma i ruten) ─────────────────────── */
 
 export type FakturaStatus =
@@ -87,15 +74,15 @@ function FakturaRad({ f, last }: { f: ForelderFakturaRad; last: boolean }) {
             width: 38,
             height: 38,
             borderRadius: 11,
-            background: T.panel3,
-            border: `1px solid ${T.border}`,
+            background: TL.dim,
+            border: `1px solid ${TL.hair}`,
             display: "inline-flex",
             alignItems: "center",
             justifyContent: "center",
             flex: "none",
           }}
         >
-          <Icon name="file-text" size={16} style={{ color: T.fg2 }} />
+          <Icon name="file-text" size={16} style={{ color: TL.mute }} />
         </span>
       }
       title={f.beskrivelse}
@@ -112,10 +99,10 @@ function FakturaRad({ f, last }: { f: ForelderFakturaRad; last: boolean }) {
         >
           <span
             style={{
-              fontFamily: T.mono,
+              fontFamily: TL.font.mono,
               fontSize: 13.5,
               fontWeight: 700,
-              color: T.fg,
+              color: TL.text,
               fontVariantNumeric: "tabular-nums",
               whiteSpace: "nowrap",
             }}
@@ -147,7 +134,7 @@ export function ForelderFakturaerV2({ data }: { data: ForelderFakturaerData }) {
   const heroSize = mobile ? 34 : 40;
 
   return (
-    <div data-paper-wave-e="forelder-sub" data-paper-portal-forelder-fakturaer style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
+    <div data-paper-wave-e="forelder-sub" data-paper-portal-forelder-fakturaer style={{ display: "flex", flexDirection: "column", gap: 16, maxWidth: 720, margin: "0 auto", width: "100%" }}>
       {/* Hode + status */}
       <div
         style={{
@@ -172,7 +159,7 @@ export function ForelderFakturaerV2({ data }: { data: ForelderFakturaerData }) {
       </div>
 
       {/* Status-stripe */}
-      <div className="grid grid-cols-1 sm:grid-cols-2" style={{ gap: T.gap }}>
+      <div className="grid grid-cols-1 sm:grid-cols-2" style={{ gap: 16 }}>
         <Kort tint>
           <TallHero
             label="Betalt hittil"
@@ -256,13 +243,13 @@ export function ForelderFakturaerV2({ data }: { data: ForelderFakturaerData }) {
           <Icon
             name="info"
             size={16}
-            style={{ color: T.fg2, flex: "none", marginTop: 2 }}
+            style={{ color: TL.mute, flex: "none", marginTop: 2 }}
           />
           <p
             style={{
-              fontFamily: T.ui,
+              fontFamily: TL.font.sans,
               fontSize: 12.5,
-              color: T.fg2,
+              color: TL.mute,
               lineHeight: 1.6,
               margin: 0,
             }}
@@ -270,7 +257,7 @@ export function ForelderFakturaerV2({ data }: { data: ForelderFakturaerData }) {
             Betaling følger coaching-avtalen. Spørsmål? Skriv til{" "}
             <a
               href="mailto:hei@akgolf.no"
-              style={{ color: T.lime, fontWeight: 600, textDecoration: "none" }}
+              style={{ color: TL.fill, fontWeight: 600, textDecoration: "none" }}
             >
               hei@akgolf.no
             </a>

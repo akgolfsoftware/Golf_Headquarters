@@ -1,13 +1,12 @@
 "use client";
-
+import { TL } from "@/lib/v2/train-lock";
 /**
  * PlayerHQ Innstillinger · Integrasjoner — v2 Presis + B-pakke (status, tom + CTA).
  */
 
 import Link from "next/link";
-import { T, Caps, Kort, StatusPill, TomTilstand, Icon } from "@/components/v2";
+import { Caps, Kort, StatusPill, TomTilstand, Icon } from "@/components/v2";
 import { InnstillingerHode } from "@/components/portal/v2/InnstillingerHode";
-
 /* ── Datakontrakt (kun ekte data fra page.tsx) ─────────────────────── */
 
 export type InnstillingerIntegrasjonerData = {
@@ -53,15 +52,15 @@ function Emblem({ ikon, aktiv }: { ikon: string; aktiv?: boolean }) {
         width: 40,
         height: 40,
         borderRadius: 12,
-        background: aktiv ? `color-mix(in srgb, ${T.lime} 10%, transparent)` : T.panel3,
-        border: `1px solid ${T.border}`,
+        background: aktiv ? `color-mix(in srgb, ${TL.fill} 10%, transparent)` : TL.dim,
+        border: `1px solid ${TL.hair}`,
         display: "inline-flex",
         alignItems: "center",
         justifyContent: "center",
         flex: "none",
       }}
     >
-      <Icon name={ikon} size={18} style={{ color: aktiv ? T.lime : T.fg2 }} />
+      <Icon name={ikon} size={18} style={{ color: aktiv ? TL.fill : TL.mute }} />
     </span>
   );
 }
@@ -74,19 +73,19 @@ function IkkeTilkobletPill() {
         display: "inline-flex",
         alignItems: "center",
         gap: 6,
-        fontFamily: T.mono,
+        fontFamily: TL.font.mono,
         fontSize: 9,
         fontWeight: 700,
         letterSpacing: "0.06em",
         textTransform: "uppercase",
-        color: T.mut,
-        background: T.panel2,
-        border: `1px solid ${T.border}`,
+        color: TL.mute,
+        background: TL.dock,
+        border: `1px solid ${TL.hair}`,
         borderRadius: 9999,
         padding: "4px 9px",
       }}
     >
-      <span style={{ width: 5, height: 5, borderRadius: 9999, background: `color-mix(in srgb, ${T.mut} 55%, transparent)` }} />
+      <span style={{ width: 5, height: 5, borderRadius: 9999, background: `color-mix(in srgb, ${TL.mute} 55%, transparent)` }} />
       Ikke tilkoblet
     </span>
   );
@@ -99,13 +98,13 @@ function IntegrasjonKort({ integrasjon }: { integrasjon: Integrasjon }) {
       <div style={{ display: "flex", alignItems: "flex-start", gap: 12 }}>
         <Emblem ikon={ikon} aktiv={tilkoblet} />
         <div style={{ flex: 1, minWidth: 0 }}>
-          <div style={{ fontFamily: T.ui, fontSize: 13.5, fontWeight: 600, color: T.fg }}>{navn}</div>
+          <div style={{ fontFamily: TL.font.sans, fontSize: 13.5, fontWeight: 600, color: TL.text }}>{navn}</div>
           <Caps size={9} style={{ marginTop: 3 }}>{kategori}</Caps>
         </div>
         {proBadge && <StatusPill tone="lime">Pro</StatusPill>}
       </div>
 
-      <p style={{ fontFamily: T.ui, fontSize: 12, color: T.fg2, lineHeight: 1.6, margin: "10px 0 0" }}>
+      <p style={{ fontFamily: TL.font.sans, fontSize: 12, color: TL.mute, lineHeight: 1.6, margin: "10px 0 0" }}>
         {beskrivelse}
       </p>
 
@@ -118,8 +117,8 @@ function IntegrasjonKort({ integrasjon }: { integrasjon: Integrasjon }) {
             margin: "12px 0 0",
             padding: "10px 12px",
             borderRadius: 12,
-            background: T.panel2,
-            border: `1px solid ${T.border}`,
+            background: TL.dock,
+            border: `1px solid ${TL.hair}`,
           }}
         >
           {data.map((d) => (
@@ -130,10 +129,10 @@ function IntegrasjonKort({ integrasjon }: { integrasjon: Integrasjon }) {
               <dd
                 style={{
                   margin: 0,
-                  fontFamily: T.mono,
+                  fontFamily: TL.font.mono,
                   fontSize: 11,
                   fontWeight: 700,
-                  color: T.fg,
+                  color: TL.text,
                   fontVariantNumeric: "tabular-nums",
                   whiteSpace: "nowrap",
                   overflow: "hidden",
@@ -159,7 +158,7 @@ function IntegrasjonKort({ integrasjon }: { integrasjon: Integrasjon }) {
               <Link href="/portal/meg/help/kontakt" style={{ textDecoration: "none" }}>
                 <span style={{
             display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, minHeight: 56, width: "100%", padding: "10px 16px",
-            borderRadius: 12, background: T.panel3, color: T.fg, border: `1px solid ${T.borderS}`, fontFamily: T.ui, fontSize: 14, fontWeight: 600,
+            borderRadius: 12, background: TL.dim, color: TL.text, border: `1px solid ${TL.hair}`, fontFamily: TL.font.sans, fontSize: 14, fontWeight: 600,
           }}>Administrer</span>
               </Link>
             </span>
@@ -176,7 +175,7 @@ function IntegrasjonKort({ integrasjon }: { integrasjon: Integrasjon }) {
               <Link href="/portal/meg/help/kontakt" style={{ textDecoration: "none" }}>
                 <span style={{
             display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, minHeight: 56, width: "100%", padding: "10px 16px",
-            borderRadius: 12, background: T.panel3, color: T.fg, border: `1px solid ${T.borderS}`, fontFamily: T.ui, fontSize: 14, fontWeight: 600,
+            borderRadius: 12, background: TL.dim, color: TL.text, border: `1px solid ${TL.hair}`, fontFamily: TL.font.sans, fontSize: 14, fontWeight: 600,
           }}>Be om tilgang</span>
               </Link>
             </span>
@@ -292,29 +291,29 @@ export function InnstillingerIntegrasjonerV2({ data }: { data: InnstillingerInte
   const totalt = tilkoblet.length + tilgjengelig.length;
 
   return (
-    <div data-paper-wave-g="innstillingerintegrasjoner" data-paper-portal-innstillinger-integrasjoner data-paper-slug="playerhq-innstillinger" style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
+    <div data-paper-wave-g="innstillingerintegrasjoner" data-paper-portal-innstillinger-integrasjoner data-paper-slug="playerhq-innstillinger" style={{ display: "flex", flexDirection: "column", gap: 16, maxWidth: 720, margin: "0 auto", width: "100%" }}>
       <InnstillingerHode tittel="Integrasjoner" undertekst="Innstillinger" tilbakeHref="/portal/meg/innstillinger" />
-      <p style={{ fontFamily: T.ui, fontSize: 12.5, color: T.mut, lineHeight: 1.6, margin: "-8px 0 0" }}>
+      <p style={{ fontFamily: TL.font.sans, fontSize: 12.5, color: TL.mute, lineHeight: 1.6, margin: "-8px 0 0" }}>
         Samle handicap, runder, shot-data, søvn og puls ett sted — uten manuell jobb.
       </p>
 
       {/* Status-strip */}
       <Kort pad="0">
         <div className="grid grid-cols-2">
-          <div style={{ display: "flex", flexDirection: "column", gap: 6, padding: "16px 20px", borderRight: `1px solid ${T.border}` }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: 6, padding: "16px 20px", borderRight: `1px solid ${TL.hair}` }}>
             <Caps size={9}>Tilkoblet</Caps>
-            <span style={{ fontFamily: T.mono, fontSize: 26, fontWeight: 700, color: T.fg, lineHeight: 1, fontVariantNumeric: "tabular-nums" }}>
+            <span style={{ fontFamily: TL.font.mono, fontSize: 26, fontWeight: 700, color: TL.text, lineHeight: 1, fontVariantNumeric: "tabular-nums" }}>
               {antallTilkoblet}
-              <span style={{ fontSize: 12, color: T.mut, marginLeft: 4 }}>/ {totalt}</span>
+              <span style={{ fontSize: 12, color: TL.mute, marginLeft: 4 }}>/ {totalt}</span>
             </span>
-            <Caps size={9} color={T.mut}>aktive kilder</Caps>
+            <Caps size={9} color={TL.mute}>aktive kilder</Caps>
           </div>
           <div style={{ display: "flex", flexDirection: "column", gap: 6, padding: "16px 20px" }}>
             <Caps size={9}>Sist synket</Caps>
-            <span style={{ fontFamily: T.mono, fontSize: 26, fontWeight: 700, color: T.fg, lineHeight: 1, fontVariantNumeric: "tabular-nums" }}>
+            <span style={{ fontFamily: TL.font.mono, fontSize: 26, fontWeight: 700, color: TL.text, lineHeight: 1, fontVariantNumeric: "tabular-nums" }}>
               {data.sistSynkTid ?? "—"}
             </span>
-            <Caps size={9} color={T.mut}>{data.sistSynkDato ?? "ingen synk enda"}</Caps>
+            <Caps size={9} color={TL.mute}>{data.sistSynkDato ?? "ingen synk enda"}</Caps>
           </div>
         </div>
       </Kort>
@@ -342,7 +341,7 @@ export function InnstillingerIntegrasjonerV2({ data }: { data: InnstillingerInte
             <Link href="/portal/meg/help/kontakt" style={{ textDecoration: "none", display: "block", marginBottom: 8 }}>
               <span style={{
             display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, minHeight: 56, width: "100%", padding: "10px 16px",
-            borderRadius: 12, background: T.panel3, color: T.fg, border: `1px solid ${T.borderS}`, fontFamily: T.ui, fontSize: 14, fontWeight: 600,
+            borderRadius: 12, background: TL.dim, color: TL.text, border: `1px solid ${TL.hair}`, fontFamily: TL.font.sans, fontSize: 14, fontWeight: 600,
           }}>Be om tilkobling</span>
             </Link>
           </>
@@ -366,10 +365,10 @@ export function InnstillingerIntegrasjonerV2({ data }: { data: InnstillingerInte
         <div style={{ display: "flex", gap: 12, alignItems: "flex-start" }}>
           <Emblem ikon="help-circle" />
           <div style={{ flex: 1, minWidth: 0 }}>
-            <div style={{ fontFamily: T.ui, fontSize: 13.5, fontWeight: 600, color: T.fg }}>
+            <div style={{ fontFamily: TL.font.sans, fontSize: 13.5, fontWeight: 600, color: TL.text }}>
               Får du ikke koblet til?
             </div>
-            <p style={{ fontFamily: T.ui, fontSize: 12, color: T.fg2, lineHeight: 1.6, margin: "5px 0 0" }}>
+            <p style={{ fontFamily: TL.font.sans, fontSize: 12, color: TL.mute, lineHeight: 1.6, margin: "5px 0 0" }}>
               Vi har en kort guide for hver tjeneste — eller send oss et spørsmål, vi svarer innen 4
               timer på hverdager.
             </p>
@@ -377,7 +376,7 @@ export function InnstillingerIntegrasjonerV2({ data }: { data: InnstillingerInte
               <Link href="/portal/meg/help/kontakt" style={{ textDecoration: "none" }}>
                 <span style={{
             display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, minHeight: 56, width: "100%", padding: "10px 16px",
-            borderRadius: 12, background: T.panel3, color: T.fg, border: `1px solid ${T.borderS}`, fontFamily: T.ui, fontSize: 14, fontWeight: 600,
+            borderRadius: 12, background: TL.dim, color: TL.text, border: `1px solid ${TL.hair}`, fontFamily: TL.font.sans, fontSize: 14, fontWeight: 600,
           }}>Kontakt support</span>
               </Link>
             </div>

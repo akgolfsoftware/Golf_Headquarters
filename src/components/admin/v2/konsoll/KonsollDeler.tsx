@@ -12,13 +12,14 @@
  * fylles av KonsollChat med EKTE CockpitData. Ingen av dem fabrikkerer tall:
  * mangler et grunnlag, sender kalleren rett og slett ikke `hvorfor`.
  *
- * Én oransje handling per skjerm (T.handling) eies av «Én ting nå» — alle
+ * Én oransje handling per skjerm (TL.fill) eies av «Én ting nå» — alle
  * knapper her er derfor nøytrale eller ink.
  */
 
 import type { CSSProperties, ReactNode } from "react";
 import Link from "next/link";
-import { T } from "@/lib/v2/tokens";
+import { TL } from "@/lib/v2/train-lock";
+
 import { Icon } from "@/components/v2/icon";
 
 /* ── Systeminnlegg — fasitens <article class="turn"> med kun ai-siden ───── */
@@ -40,11 +41,11 @@ export function SystemInnlegg({
     <article data-od-id={odId} style={{ display: "flex", flexDirection: "column", gap: 8 }}>
       <div
         style={{
-          fontFamily: T.mono,
+          fontFamily: TL.font.mono,
           fontSize: 10,
           letterSpacing: "0.08em",
           textTransform: "uppercase",
-          color: T.mut,
+          color: TL.mute,
         }}
       >
         {eyebrow}
@@ -68,12 +69,12 @@ export function StegListe({ steg }: { steg: string[] }) {
             display: "flex",
             alignItems: "center",
             gap: 8,
-            fontFamily: T.mono,
+            fontFamily: TL.font.mono,
             fontSize: 11,
-            color: T.mut,
+            color: TL.mute,
           }}
         >
-          <Icon name="check" size={12} style={{ color: T.mut, flex: "none" }} />
+          <Icon name="check" size={12} style={{ color: TL.mute, flex: "none" }} />
           {s}
         </li>
       ))}
@@ -88,10 +89,10 @@ export function Prosa({ children }: { children: ReactNode }) {
     <p
       style={{
         margin: 0,
-        fontFamily: T.bodyFont,
+        fontFamily: TL.font.sans,
         fontSize: 14.5,
         lineHeight: 1.6,
-        color: T.fg,
+        color: TL.text,
         maxWidth: "68ch",
       }}
     >
@@ -102,7 +103,7 @@ export function Prosa({ children }: { children: ReactNode }) {
 
 /** Tall i prosa — mono, som fasitens <span class="num">. */
 export function Tall({ children }: { children: ReactNode }) {
-  return <span style={{ fontFamily: T.mono, fontSize: "0.94em" }}>{children}</span>;
+  return <span style={{ fontFamily: TL.font.mono, fontSize: "0.94em" }}>{children}</span>;
 }
 
 /* ── «Hvorfor dette tallet» — fasitens <details class="why"> ────────────── */
@@ -113,19 +114,19 @@ export function Hvorfor({ punkter, odId }: { punkter: ReactNode[]; odId?: string
     <details
       data-od-id={odId}
       style={{
-        border: `1px solid ${T.border}`,
-        borderRadius: T.rTag,
-        background: T.panel2,
+        border: `1px solid ${TL.hair}`,
+        borderRadius: TL.radius.row,
+        background: TL.dock,
         padding: "8px 12px",
       }}
     >
       <summary
         style={{
           cursor: "pointer",
-          fontFamily: T.ui,
+          fontFamily: TL.font.sans,
           fontSize: 12.5,
           fontWeight: 500,
-          color: T.fg2,
+          color: TL.mute,
           listStyle: "none",
         }}
       >
@@ -138,10 +139,10 @@ export function Hvorfor({ punkter, odId }: { punkter: ReactNode[]; odId?: string
           display: "flex",
           flexDirection: "column",
           gap: 4,
-          fontFamily: T.ui,
+          fontFamily: TL.font.sans,
           fontSize: 12.5,
           lineHeight: 1.5,
-          color: T.mut,
+          color: TL.mute,
         }}
       >
         {punkter.map((p, i) => (
@@ -197,9 +198,9 @@ export function Tabell({
           <div
             key={i}
             style={{
-              border: `1px solid ${T.border}`,
-              borderRadius: T.rTag,
-              background: T.panel2,
+              border: `1px solid ${TL.hair}`,
+              borderRadius: TL.radius.row,
+              background: TL.dock,
               padding: "10px 12px",
               display: "flex",
               flexDirection: "column",
@@ -207,7 +208,7 @@ export function Tabell({
               minWidth: 0,
             }}
           >
-            <div style={{ fontFamily: T.disp, fontSize: 13.5, fontWeight: 600, color: T.fg, minWidth: 0 }}>
+            <div style={{ fontFamily: TL.font.sans, fontSize: 13.5, fontWeight: 600, color: TL.text, minWidth: 0 }}>
               {r[forste.nokkel]}
             </div>
             {resten.map((k) => (
@@ -217,11 +218,11 @@ export function Tabell({
               >
                 <span
                   style={{
-                    fontFamily: T.mono,
+                    fontFamily: TL.font.mono,
                     fontSize: 10,
                     letterSpacing: "0.06em",
                     textTransform: "uppercase",
-                    color: T.mut,
+                    color: TL.mute,
                     flex: "none",
                   }}
                 >
@@ -229,9 +230,9 @@ export function Tabell({
                 </span>
                 <span
                   style={{
-                    fontFamily: k.tall ? T.mono : T.ui,
+                    fontFamily: k.tall ? TL.font.mono : TL.font.sans,
                     fontSize: 12.5,
-                    color: T.fg,
+                    color: TL.text,
                     textAlign: "right",
                     minWidth: 0,
                   }}
@@ -248,10 +249,10 @@ export function Tabell({
 
   const celle: CSSProperties = {
     padding: "7px 10px",
-    borderBottom: `1px solid ${T.border}`,
-    fontFamily: T.ui,
+    borderBottom: `1px solid ${TL.hair}`,
+    fontFamily: TL.font.sans,
     fontSize: 13,
-    color: T.fg,
+    color: TL.text,
     textAlign: "left",
   };
   return (
@@ -277,11 +278,11 @@ export function Tabell({
                 scope="col"
                 style={{
                   ...celle,
-                  fontFamily: T.mono,
+                  fontFamily: TL.font.mono,
                   fontSize: 10,
                   letterSpacing: "0.06em",
                   textTransform: "uppercase",
-                  color: T.mut,
+                  color: TL.mute,
                   fontWeight: 500,
                   textAlign: k.tall ? "right" : "left",
                 }}
@@ -301,7 +302,7 @@ export function Tabell({
                     ...celle,
                     borderBottom: i === rader.length - 1 ? "none" : celle.borderBottom,
                     textAlign: k.tall ? "right" : "left",
-                    fontFamily: k.tall ? T.mono : T.ui,
+                    fontFamily: k.tall ? TL.font.mono : TL.font.sans,
                     fontSize: k.tall ? 12.5 : 13,
                   }}
                 >
@@ -323,11 +324,11 @@ const handlingStil: CSSProperties = {
   alignItems: "center",
   minHeight: 40,
   padding: "0 14px",
-  borderRadius: T.rTag,
-  border: `1px solid ${T.border}`,
-  background: T.panel,
-  color: T.fg,
-  fontFamily: T.ui,
+  borderRadius: TL.radius.row,
+  border: `1px solid ${TL.hair}`,
+  background: TL.elev,
+  color: TL.text,
+  fontFamily: TL.font.sans,
   fontSize: 13,
   fontWeight: 500,
   textDecoration: "none",
@@ -380,9 +381,9 @@ export function ArtefaktKort({
   return (
     <div
       style={{
-        border: `1px solid ${T.border}`,
-        borderRadius: T.rCard,
-        background: T.panel2,
+        border: `1px solid ${TL.hair}`,
+        borderRadius: TL.radius.card,
+        background: TL.dock,
         padding: 14,
         display: "flex",
         flexDirection: "column",
@@ -390,10 +391,10 @@ export function ArtefaktKort({
       }}
     >
       <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
-        <span style={{ fontFamily: T.disp, fontSize: 13.5, fontWeight: 600, color: T.fg }}>{navn}</span>
+        <span style={{ fontFamily: TL.font.sans, fontSize: 13.5, fontWeight: 600, color: TL.text }}>{navn}</span>
         <Merkelapp>{status}</Merkelapp>
       </div>
-      <p style={{ margin: 0, fontFamily: T.ui, fontSize: 12.5, color: T.mut, lineHeight: 1.5 }}>{beskrivelse}</p>
+      <p style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 12.5, color: TL.mute, lineHeight: 1.5 }}>{beskrivelse}</p>
       <Handlinger lenker={handlinger} />
     </div>
   );
@@ -409,12 +410,12 @@ export function Merkelapp({ children }: { children: ReactNode }) {
         alignItems: "center",
         padding: "2px 8px",
         borderRadius: 999,
-        border: `1px solid ${T.border}`,
-        background: T.panel,
-        fontFamily: T.mono,
+        border: `1px solid ${TL.hair}`,
+        background: TL.elev,
+        fontFamily: TL.font.mono,
         fontSize: 10,
         letterSpacing: "0.04em",
-        color: T.fg2,
+        color: TL.mute,
       }}
     >
       {children}
@@ -437,17 +438,17 @@ export function EnTingNa({
     <div
       data-paper-en-ting="true"
       style={{
-        border: `1px solid color-mix(in srgb, ${T.handling} 32%, ${T.border})`,
-        borderRadius: T.rCard,
-        background: T.handlingSoft,
+        border: `1px solid color-mix(in srgb, ${TL.fill} 32%, ${TL.hair})`,
+        borderRadius: TL.radius.card,
+        background: TL.dim,
         padding: 16,
         display: "flex",
         flexDirection: "column",
         gap: 10,
       }}
     >
-      <h3 style={{ margin: 0, fontFamily: T.disp, fontSize: 16, fontWeight: 600, color: T.fg }}>Én ting nå</h3>
-      <p style={{ margin: 0, fontFamily: T.bodyFont, fontSize: 14.5, lineHeight: 1.6, color: T.fg }}>{tekst}</p>
+      <h3 style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 16, fontWeight: 600, color: TL.text }}>Én ting nå</h3>
+      <p style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 14.5, lineHeight: 1.6, color: TL.text }}>{tekst}</p>
       <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginTop: 2 }}>
         <Link
           href={primaer.href}
@@ -458,8 +459,8 @@ export function EnTingNa({
             minHeight: 44,
             padding: "0 18px",
             border: "none",
-            background: T.handling,
-            color: T.onHandling,
+            background: TL.fill,
+            color: TL.onFill,
             fontWeight: 600,
           }}
         >

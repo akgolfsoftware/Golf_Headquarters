@@ -1,5 +1,5 @@
 "use client";
-
+import { TL } from "@/lib/v2/train-lock";
 /**
  * PLAN-BYGGER V2 — 5-stegs wizard (Mål → Mal → Generer → Juster → Lag… — v2 Presis + B-pakke (status + én primær CTA, tom = vei).
  * T.* only. Lys PlayerHQ.
@@ -8,22 +8,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import type { CSSProperties } from "react";
-import {
-  T,
-  Icon,
-  Kort,
-  Caps,
-  Tittel,
-  Knapp,
-  KpiFlis,
-  PillVelger,
-  StatusPill,
-  AkseChip,
-  Rad,
-  FordelingHode,
-  FordelingRad,
-  InnsiktChip,
-} from "@/components/v2";
+import { Icon, Kort, Caps, Tittel, Knapp, KpiFlis, PillVelger, StatusPill, AkseChip, Rad, FordelingHode, FordelingRad, InnsiktChip } from "@/components/v2";
 import type { AkseKey } from "@/lib/v2/tokens";
 import type {
   ByggerKontekst,
@@ -76,8 +61,8 @@ function nesteMandag(): string {
 
 const inputStyle: CSSProperties = {
   width: "100%", boxSizing: "border-box", appearance: "none",
-  background: T.panel2, border: `1px solid ${T.border}`, borderRadius: 10,
-  padding: "9px 11px", color: T.fg, fontFamily: T.ui, fontSize: 13, outline: "none",
+  background: TL.dock, border: `1px solid ${TL.hair}`, borderRadius: 10,
+  padding: "9px 11px", color: TL.text, fontFamily: TL.font.sans, fontSize: 13, outline: "none",
 };
 
 /* Steg-rad — lokal inntil gjenbruk (v2-core-kandidat «StegRad», jf. mockup). */
@@ -97,15 +82,15 @@ function StegRad({ steg, onVelg }: { steg: number; onVelg: (n: number) => void }
               appearance: "none", cursor: ferdig ? "pointer" : "default", flex: "1 0 auto",
               display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 7,
               padding: "9px 13px", borderRadius: 9999,
-              border: `1px solid ${aktiv ? "transparent" : T.border}`,
-              background: aktiv ? T.lime : T.panel,
-              color: aktiv ? T.onLime : ferdig ? T.fg : T.mut,
+              border: `1px solid ${aktiv ? "transparent" : TL.hair}`,
+              background: aktiv ? TL.fill : TL.elev,
+              color: aktiv ? TL.onFill : ferdig ? TL.text : TL.mute,
             }}
           >
-            <span style={{ fontFamily: T.mono, fontSize: 9.5, fontWeight: 700 }}>
+            <span style={{ fontFamily: TL.font.mono, fontSize: 9.5, fontWeight: 700 }}>
               {ferdig ? <Icon name="check" size={11} /> : s.n}
             </span>
-            <span style={{ fontFamily: T.ui, fontSize: 11.5, fontWeight: 600 }}>{s.l}</span>
+            <span style={{ fontFamily: TL.font.sans, fontSize: 11.5, fontWeight: 600 }}>{s.l}</span>
           </button>
         );
       })}
@@ -218,7 +203,7 @@ export function PlanByggerV2({ kontekst, actions }: PlanByggerV2Props) {
     : [];
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+    <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
       <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
         <div>
           <Caps>Planlegge · Plan-bygger</Caps>
@@ -226,27 +211,27 @@ export function PlanByggerV2({ kontekst, actions }: PlanByggerV2Props) {
             <Tittel em="plan.">Bygg en</Tittel>
           </div>
         </div>
-        <Caps size={9} color={T.mut}>Steg {steg} av 5</Caps>
+        <Caps size={9} color={TL.mute}>Steg {steg} av 5</Caps>
       </div>
 
       <StegRad steg={steg} onVelg={setSteg} />
 
       {steg === 1 && (
         <>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: T.gap }}>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: 16 }}>
             {MAALTYPER.map((m) => {
               const on = maltype === m.id;
               return (
                 <div key={m.id} onClick={() => setMaltype(m.id)} style={{ cursor: "pointer" }}>
-                  <Kort style={{ border: `1px solid ${on ? "color-mix(in srgb, var(--v2-lime) 45%, transparent)" : T.border}`, height: "100%" }}>
+                  <Kort style={{ border: `1px solid ${on ? "color-mix(in srgb, var(--tl-fill) 45%, transparent)" : TL.hair}`, height: "100%" }}>
                     <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                      <span style={{ width: 34, height: 34, borderRadius: 10, flex: "none", display: "inline-flex", alignItems: "center", justifyContent: "center", background: on ? "color-mix(in srgb, var(--v2-lime) 14%, transparent)" : T.panel2 }}>
-                        <Icon name={m.icon} size={15} style={{ color: on ? T.lime : T.fg2 }} />
+                      <span style={{ width: 34, height: 34, borderRadius: 10, flex: "none", display: "inline-flex", alignItems: "center", justifyContent: "center", background: on ? "color-mix(in srgb, var(--tl-fill) 14%, transparent)" : TL.dock }}>
+                        <Icon name={m.icon} size={15} style={{ color: on ? TL.fill : TL.mute }} />
                       </span>
-                      <span style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 15, color: T.fg, flex: 1 }}>{m.t}</span>
-                      {on && <Icon name="check" size={15} style={{ color: T.lime }} />}
+                      <span style={{ fontFamily: TL.font.sans, fontWeight: 700, fontSize: 15, color: TL.text, flex: 1 }}>{m.t}</span>
+                      {on && <Icon name="check" size={15} style={{ color: TL.fill }} />}
                     </div>
-                    <p style={{ fontFamily: T.ui, fontSize: 12, color: T.fg2, lineHeight: 1.55, margin: "9px 0 0" }}>
+                    <p style={{ fontFamily: TL.font.sans, fontSize: 12, color: TL.mute, lineHeight: 1.55, margin: "9px 0 0" }}>
                       {maalBeskrivelse[m.id]}
                     </p>
                   </Kort>
@@ -286,22 +271,22 @@ export function PlanByggerV2({ kontekst, actions }: PlanByggerV2Props) {
       )}
 
       {steg === 2 && (
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: T.gap, alignItems: "start" }}>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: 16, alignItems: "start" }}>
           {anbefalingLaster ? (
-            <Kort><span style={{ fontFamily: T.ui, fontSize: 12.5, color: T.fg2 }}>Finner malen som passer deg best …</span></Kort>
+            <Kort><span style={{ fontFamily: TL.font.sans, fontSize: 12.5, color: TL.mute }}>Finner malen som passer deg best …</span></Kort>
           ) : anbefaling?.anbefalt ? (
             <Kort
               tint
               eyebrow={`Anbefalt for deg · nivå ${anbefaling.anbefalt.kategori} · ${anbefaling.anbefalt.lPhase.toLowerCase()}`}
               action={<StatusPill tone="up">Godkjent av coach</StatusPill>}
             >
-              <div style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 19, color: T.fg }}>{anbefaling.anbefalt.navn}</div>
+              <div style={{ fontFamily: TL.font.sans, fontWeight: 700, fontSize: 19, color: TL.text }}>{anbefaling.anbefalt.navn}</div>
               {anbefaling.anbefalt.beskrivelse && (
-                <p style={{ fontFamily: T.ui, fontSize: 12.5, color: T.fg2, lineHeight: 1.6, margin: "8px 0 0" }}>
+                <p style={{ fontFamily: TL.font.sans, fontSize: 12.5, color: TL.mute, lineHeight: 1.6, margin: "8px 0 0" }}>
                   {anbefaling.anbefalt.beskrivelse}
                 </p>
               )}
-              <div style={{ display: "grid", gridTemplateColumns: "repeat(2,1fr)", gap: T.gap, margin: "14px 0" }}>
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(2,1fr)", gap: 16, margin: "14px 0" }}>
                 <KpiFlis label="Varighet" value={`${anbefaling.anbefalt.varighetUker} uker`} />
                 <KpiFlis label="Økter per uke" value={String(anbefaling.anbefalt.ukentligOktAntall)} />
               </div>
@@ -313,7 +298,7 @@ export function PlanByggerV2({ kontekst, actions }: PlanByggerV2Props) {
             </Kort>
           ) : (
             <Kort>
-              <span style={{ fontFamily: T.ui, fontSize: 12.5, color: T.fg2 }}>
+              <span style={{ fontFamily: TL.font.sans, fontSize: 12.5, color: TL.mute }}>
                 Ingen mal matcher nivået ditt ennå — planen bygges fra grunnen av etter metodikken.
               </span>
             </Kort>
@@ -331,9 +316,9 @@ export function PlanByggerV2({ kontekst, actions }: PlanByggerV2Props) {
                 />
               ))
             ) : (
-              <span style={{ fontFamily: T.ui, fontSize: 12, color: T.mut }}>Ingen andre maler for nivået ennå.</span>
+              <span style={{ fontFamily: TL.font.sans, fontSize: 12, color: TL.mute }}>Ingen andre maler for nivået ennå.</span>
             )}
-            <p style={{ fontFamily: T.ui, fontSize: 11.5, color: T.mut, lineHeight: 1.55, margin: "12px 0 0" }}>
+            <p style={{ fontFamily: TL.font.sans, fontSize: 11.5, color: TL.mute, lineHeight: 1.55, margin: "12px 0 0" }}>
               Perioden din fremhever anbefalingen — men alle maler kan velges. Anbefalinger sperrer aldri.
             </p>
           </Kort>
@@ -341,10 +326,10 @@ export function PlanByggerV2({ kontekst, actions }: PlanByggerV2Props) {
       )}
 
       {steg === 3 && (
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: T.gap, alignItems: "start" }}>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: 16, alignItems: "start" }}>
           <Kort eyebrow="Hva skjer nå">
-            <div style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 17, color: T.fg }}>Planen fylles med innhold</div>
-            <p style={{ fontFamily: T.ui, fontSize: 12.5, color: T.fg2, lineHeight: 1.6, margin: "8px 0 0" }}>
+            <div style={{ fontFamily: TL.font.sans, fontWeight: 700, fontSize: 17, color: TL.text }}>Planen fylles med innhold</div>
+            <p style={{ fontFamily: TL.font.sans, fontSize: 12.5, color: TL.mute, lineHeight: 1.6, margin: "8px 0 0" }}>
               Strukturen kommer fra standardplanen for nivået ditt. AI-en velger øvelser fra øvelsesbanken
               og tilpasser planen til målet ditt, fokusområdet fra coach og hvor mye du faktisk har trent.
             </p>
@@ -365,11 +350,11 @@ export function PlanByggerV2({ kontekst, actions }: PlanByggerV2Props) {
       )}
 
       {steg === 4 && f && (
-        <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
             <div>
-              <div style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 19, color: T.fg }}>{f.navn}</div>
-              <span style={{ fontFamily: T.ui, fontSize: 12, color: T.fg2 }}>
+              <div style={{ fontFamily: TL.font.sans, fontWeight: 700, fontSize: 19, color: TL.text }}>{f.navn}</div>
+              <span style={{ fontFamily: TL.font.sans, fontSize: 12, color: TL.mute }}>
                 {f.periodeUker} uker · {f.okter.length} økter
               </span>
             </div>
@@ -377,14 +362,14 @@ export function PlanByggerV2({ kontekst, actions }: PlanByggerV2Props) {
               <PillVelger options={ukeValg} value={String(uke)} onChange={(v) => setUke(Number(v))} />
             )}
           </div>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: T.gap, alignItems: "start" }}>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: 16, alignItems: "start" }}>
             <Kort eyebrow={`Uke ${uke} · ${ukeOkter.length} ${ukeOkter.length === 1 ? "økt" : "økter"}`}>
               {ukeOkter.length > 0 ? (
                 ukeOkter.map((o, i) => (
                   <Rad
                     key={o.idx}
                     leading={
-                      <span style={{ width: 34, flex: "none", fontFamily: T.mono, fontSize: 10, fontWeight: 700, color: T.mut }}>
+                      <span style={{ width: 34, flex: "none", fontFamily: TL.font.mono, fontSize: 10, fontWeight: 700, color: TL.mute }}>
                         {DAG_LABEL[o.dag]}
                       </span>
                     }
@@ -398,19 +383,19 @@ export function PlanByggerV2({ kontekst, actions }: PlanByggerV2Props) {
                         title="Fjern økt"
                         style={{ appearance: "none", cursor: "pointer", background: "none", border: "none", padding: 4, display: "inline-flex" }}
                       >
-                        <Icon name="x" size={13} style={{ color: T.mut }} />
+                        <Icon name="x" size={13} style={{ color: TL.mute }} />
                       </button>
                     }
                     last={i === ukeOkter.length - 1}
                   />
                 ))
               ) : (
-                <span style={{ fontFamily: T.ui, fontSize: 12, color: T.mut }}>Ingen økter igjen denne uka.</span>
+                <span style={{ fontFamily: TL.font.sans, fontSize: 12, color: TL.mute }}>Ingen økter igjen denne uka.</span>
               )}
             </Kort>
             <Kort eyebrow="Om planen">
               {f.beskrivelse && (
-                <p style={{ fontFamily: T.ui, fontSize: 12.5, color: T.fg2, lineHeight: 1.6, margin: 0 }}>{f.beskrivelse}</p>
+                <p style={{ fontFamily: TL.font.sans, fontSize: 12.5, color: TL.mute, lineHeight: 1.6, margin: 0 }}>{f.beskrivelse}</p>
               )}
               {f.fokusOmrader.length > 0 && (
                 <div style={{ display: "flex", gap: 6, marginTop: 12, flexWrap: "wrap" }}>
@@ -419,7 +404,7 @@ export function PlanByggerV2({ kontekst, actions }: PlanByggerV2Props) {
                   ))}
                 </div>
               )}
-              <p style={{ fontFamily: T.ui, fontSize: 11.5, color: T.mut, lineHeight: 1.55, margin: "12px 0 0" }}>
+              <p style={{ fontFamily: TL.font.sans, fontSize: 11.5, color: TL.mute, lineHeight: 1.55, margin: "12px 0 0" }}>
                 Fjern økter som ikke passer — resten justerer du i Workbench etter lagring. Dette er forslag, aldri krav.
               </p>
             </Kort>
@@ -429,7 +414,7 @@ export function PlanByggerV2({ kontekst, actions }: PlanByggerV2Props) {
 
       {steg === 4 && !f && (
         <Kort>
-          <span style={{ fontFamily: T.ui, fontSize: 12.5, color: T.fg2 }}>
+          <span style={{ fontFamily: TL.font.sans, fontSize: 12.5, color: TL.mute }}>
             Ingen plan er generert ennå — gå tilbake til steg 3 og trykk «Generer plan».
           </span>
         </Kort>
@@ -438,10 +423,10 @@ export function PlanByggerV2({ kontekst, actions }: PlanByggerV2Props) {
       {steg === 5 && (
         lagretPlanId ? (
           <Kort tint eyebrow="Planen er lagret">
-            <div style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 17, color: T.fg }}>
+            <div style={{ fontFamily: TL.font.sans, fontWeight: 700, fontSize: 17, color: TL.text }}>
               {status === "DRAFT" ? "Utkastet ligger klart." : "Planen er sendt til godkjenning."}
             </div>
-            <p style={{ fontFamily: T.ui, fontSize: 12.5, color: T.fg2, lineHeight: 1.6, margin: "8px 0 14px" }}>
+            <p style={{ fontFamily: TL.font.sans, fontSize: 12.5, color: TL.mute, lineHeight: 1.6, margin: "8px 0 14px" }}>
               {status === "DRAFT"
                 ? "Du finner den under Planlegge — aktiver den når du er klar."
                 : "Anders Kristiansen får planen til gjennomsyn og aktiverer den sammen med deg."}
@@ -451,10 +436,10 @@ export function PlanByggerV2({ kontekst, actions }: PlanByggerV2Props) {
             </Knapp>
           </Kort>
         ) : f ? (
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: T.gap, alignItems: "start" }}>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: 16, alignItems: "start" }}>
             <Kort tint eyebrow="Klar til lagring">
-              <div style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 17, color: T.fg }}>{f.navn}</div>
-              <div style={{ display: "grid", gridTemplateColumns: "repeat(2,1fr)", gap: T.gap, margin: "12px 0 14px" }}>
+              <div style={{ fontFamily: TL.font.sans, fontWeight: 700, fontSize: 17, color: TL.text }}>{f.navn}</div>
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(2,1fr)", gap: 16, margin: "12px 0 14px" }}>
                 <KpiFlis label="Varighet" value={`${f.periodeUker} uker`} />
                 <KpiFlis label="Økter" value={String(f.okter.length)} />
               </div>
@@ -470,7 +455,7 @@ export function PlanByggerV2({ kontekst, actions }: PlanByggerV2Props) {
                   onChange={(v) => setStatus(v as "DRAFT" | "PENDING_COACH")}
                 />
               </div>
-              <p style={{ fontFamily: T.ui, fontSize: 11.5, color: T.mut, lineHeight: 1.55, margin: "10px 0 14px" }}>
+              <p style={{ fontFamily: TL.font.sans, fontSize: 11.5, color: TL.mute, lineHeight: 1.55, margin: "10px 0 14px" }}>
                 {status === "DRAFT"
                   ? "Utkastet ligger hos deg til du aktiverer det — ingenting planlegges før du sier fra."
                   : "Anders Kristiansen får planen til gjennomsyn og aktiverer den sammen med deg."}
@@ -482,8 +467,8 @@ export function PlanByggerV2({ kontekst, actions }: PlanByggerV2Props) {
             {kontekst.spiller.tier === "GRATIS" && (
               <Kort eyebrow="Abonnement">
                 <div style={{ display: "flex", gap: 9 }}>
-                  <Icon name="lock" size={14} style={{ color: T.mut, flex: "none", marginTop: 2 }} />
-                  <p style={{ fontFamily: T.ui, fontSize: 12, color: T.fg2, lineHeight: 1.6, margin: 0 }}>
+                  <Icon name="lock" size={14} style={{ color: TL.mute, flex: "none", marginTop: 2 }} />
+                  <p style={{ fontFamily: TL.font.sans, fontSize: 12, color: TL.mute, lineHeight: 1.6, margin: 0 }}>
                     Med gratis tilgang kan du se og prøve forslag, men ikke lagre planen.
                     Oppgrader til PlayerHQ (299 kr/mnd) — eller tren med coach, så er alt inkludert.
                   </p>
@@ -493,14 +478,14 @@ export function PlanByggerV2({ kontekst, actions }: PlanByggerV2Props) {
           </div>
         ) : (
           <Kort>
-            <span style={{ fontFamily: T.ui, fontSize: 12.5, color: T.fg2 }}>
+            <span style={{ fontFamily: TL.font.sans, fontSize: 12.5, color: TL.mute }}>
               Ingen plan å lagre ennå — generer planen i steg 3 først.
             </span>
           </Kort>
         )
       )}
 
-      {feil && <span style={{ fontFamily: T.ui, fontSize: 12, color: T.down }}>{feil}</span>}
+      {feil && <span style={{ fontFamily: TL.font.sans, fontSize: 12, color: TL.danger }}>{feil}</span>}
 
       {!lagretPlanId && (
         <div style={{ display: "flex", justifyContent: "space-between" }}>

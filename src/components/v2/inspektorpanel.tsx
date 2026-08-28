@@ -23,7 +23,8 @@
  */
 
 import { useEffect, useState, type CSSProperties, type HTMLAttributes, type ReactNode } from "react";
-import { T } from "@/lib/v2/tokens";
+import { TL } from "@/lib/v2/train-lock";
+
 import { Caps } from "./core";
 
 /** ≥1024px (Tailwind lg) — samme brekkpunkt som `hidden lg:block` i MasterDetalj. */
@@ -97,9 +98,9 @@ export function Inspektorpanel({ tittel, tag, children, fot, ariaLabel }: Inspek
         maxHeight: "calc(100vh - var(--ak-topbar-h, 0px) - 32px)",
         display: "flex",
         flexDirection: "column",
-        background: T.panel,
-        border: `1px solid ${T.border}`,
-        borderRadius: T.rCard,
+        background: TL.elev,
+        border: `1px solid ${TL.hair}`,
+        borderRadius: TL.radius.card,
         minWidth: 0,
         overflow: "hidden",
       }}
@@ -111,15 +112,15 @@ export function Inspektorpanel({ tittel, tag, children, fot, ariaLabel }: Inspek
           alignItems: "center",
           gap: 8,
           padding: "12px 16px",
-          borderBottom: `1px solid ${T.borderS}`,
+          borderBottom: `1px solid ${TL.hair}`,
         }}
       >
         <span
           style={{
-            fontFamily: T.disp,
+            fontFamily: TL.font.sans,
             fontSize: 13.5,
             fontWeight: 600,
-            color: T.fg,
+            color: TL.text,
             minWidth: 0,
             overflow: "hidden",
             textOverflow: "ellipsis",
@@ -155,8 +156,8 @@ export function Inspektorpanel({ tittel, tag, children, fot, ariaLabel }: Inspek
             gridAutoColumns: "1fr",
             gap: 8,
             padding: "12px 16px",
-            borderTop: `1px solid ${T.borderS}`,
-            background: T.panel2,
+            borderTop: `1px solid ${TL.hair}`,
+            background: TL.dock,
           }}
         >
           {fot}
@@ -181,14 +182,14 @@ export function InspektorTom({ tittel, tekst }: { tittel: string; tekst: string 
         gap: 8,
         textAlign: "center",
         padding: "40px 24px",
-        background: T.panel2,
-        border: `1px dashed ${T.border}`,
-        borderRadius: T.rCard,
+        background: TL.dock,
+        border: `1px dashed ${TL.hair}`,
+        borderRadius: TL.radius.card,
         minWidth: 0,
       }}
     >
-      <h3 style={{ margin: 0, fontFamily: T.disp, fontSize: 14.5, fontWeight: 600, color: T.fg }}>{tittel}</h3>
-      <p style={{ margin: 0, maxWidth: "36ch", fontFamily: T.ui, fontSize: 12.5, lineHeight: 1.55, color: T.mut }}>
+      <h3 style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 14.5, fontWeight: 600, color: TL.text }}>{tittel}</h3>
+      <p style={{ margin: 0, maxWidth: "36ch", fontFamily: TL.font.sans, fontSize: 12.5, lineHeight: 1.55, color: TL.mute }}>
         {tekst}
       </p>
     </aside>
@@ -198,12 +199,12 @@ export function InspektorTom({ tittel, tekst }: { tittel: string; tekst: string 
 /** KPI-flis i panelet — fasitens `.kpi` inne i `.kpirad`. */
 export function InspektorKpi({ label, verdi, sub }: { label: string; verdi: string; sub: string }) {
   return (
-    <div style={{ background: T.panel2, border: `1px solid ${T.borderS}`, borderRadius: T.rTag, padding: 12, minWidth: 0 }}>
+    <div style={{ background: TL.dock, border: `1px solid ${TL.hair}`, borderRadius: TL.radius.row, padding: 12, minWidth: 0 }}>
       <Caps size={9}>{label}</Caps>
-      <div style={{ fontFamily: T.mono, fontSize: 22, fontWeight: 600, color: T.fg, marginTop: 6, fontVariantNumeric: "tabular-nums" }}>
+      <div style={{ fontFamily: TL.font.mono, fontSize: 22, fontWeight: 600, color: TL.text, marginTop: 6, fontVariantNumeric: "tabular-nums" }}>
         {verdi}
       </div>
-      <div style={{ fontFamily: T.ui, fontSize: 11, color: T.mut, marginTop: 2, overflowWrap: "anywhere" }}>{sub}</div>
+      <div style={{ fontFamily: TL.font.sans, fontSize: 11, color: TL.mute, marginTop: 2, overflowWrap: "anywhere" }}>{sub}</div>
     </div>
   );
 }
@@ -224,9 +225,9 @@ export function InspektorLinje({ label, verdi }: { label: ReactNode; verdi: Reac
     <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: 8, minWidth: 0 }}>
       <span
         style={{
-          fontFamily: T.ui,
+          fontFamily: TL.font.sans,
           fontSize: 12.5,
-          color: T.fg,
+          color: TL.text,
           minWidth: 0,
           overflow: "hidden",
           textOverflow: "ellipsis",
@@ -235,7 +236,7 @@ export function InspektorLinje({ label, verdi }: { label: ReactNode; verdi: Reac
       >
         {label}
       </span>
-      <span style={{ fontFamily: T.mono, fontSize: 12, color: T.mut, flex: "none", fontVariantNumeric: "tabular-nums" }}>
+      <span style={{ fontFamily: TL.font.mono, fontSize: 12, color: TL.mute, flex: "none", fontVariantNumeric: "tabular-nums" }}>
         {verdi}
       </span>
     </div>

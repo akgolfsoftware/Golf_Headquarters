@@ -1,5 +1,5 @@
 "use client";
-
+import { TL } from "@/lib/v2/train-lock";
 /**
  * PlayerHQ Meg · Helse — v2 Presis + B-pakke (status først, logg = én grønn CTA).
  */
@@ -7,19 +7,7 @@
 import { useEffect, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import {
-  T,
-  Caps,
-  Tittel,
-  Kort,
-  Rad,
-  StatusPill,
-  Knapp,
-  Icon,
-  Inndata,
-  TekstOmraade,
-} from "@/components/v2";
-
+import { Caps, Tittel, Kort, Rad, StatusPill, Knapp, Icon, Inndata, TekstOmraade } from "@/components/v2";
 /* ── Datakontrakt (serialiserbar — datoer ferdig-formatert på server) ─── */
 
 export type MegHelseData = {
@@ -84,15 +72,15 @@ function IkonEmblem({ name, farge, tint }: { name: string; farge?: string; tint?
         width: 32,
         height: 32,
         borderRadius: 10,
-        background: tint || T.panel3,
-        border: `1px solid ${T.border}`,
+        background: tint || TL.dim,
+        border: `1px solid ${TL.hair}`,
         display: "inline-flex",
         alignItems: "center",
         justifyContent: "center",
         flex: "none",
       }}
     >
-      <Icon name={name} size={14} style={{ color: farge || T.fg2 }} />
+      <Icon name={name} size={14} style={{ color: farge || TL.mute }} />
     </span>
   );
 }
@@ -102,10 +90,10 @@ function RadVerdi({ children, tom }: { children: React.ReactNode; tom?: boolean 
   return (
     <span
       style={{
-        fontFamily: T.mono,
+        fontFamily: TL.font.mono,
         fontSize: 14,
         fontWeight: 700,
-        color: tom ? T.mut : T.fg,
+        color: tom ? TL.mute : TL.text,
         fontVariantNumeric: "tabular-nums",
         whiteSpace: "nowrap",
         flex: "none",
@@ -135,20 +123,20 @@ function HelseKpi({
       <div style={{ display: "flex", alignItems: "baseline", gap: 5, marginTop: 12 }}>
         <span
           style={{
-            fontFamily: T.mono,
+            fontFamily: TL.font.mono,
             fontSize: 30,
             fontWeight: 700,
             lineHeight: 0.9,
             letterSpacing: "-0.02em",
-            color: tom ? T.mut : T.fg,
+            color: tom ? TL.mute : TL.text,
             fontVariantNumeric: "tabular-nums",
           }}
         >
           {value}
         </span>
-        {unit && <span style={{ fontFamily: T.mono, fontSize: 11, color: T.mut }}>{unit}</span>}
+        {unit && <span style={{ fontFamily: TL.font.mono, fontSize: 11, color: TL.mute }}>{unit}</span>}
       </div>
-      <span style={{ fontFamily: T.ui, fontSize: 11, color: T.mut, display: "block", marginTop: 9, lineHeight: 1.35 }}>
+      <span style={{ fontFamily: TL.font.sans, fontSize: 11, color: TL.mute, display: "block", marginTop: 9, lineHeight: 1.35 }}>
         {sub}
       </span>
     </Kort>
@@ -236,12 +224,12 @@ function HelseLoggForm({
         </Knapp>
         <div style={{ display: "flex", alignItems: "center", gap: 14, flexWrap: "wrap" }}>
         {lagret && (
-          <span style={{ fontFamily: T.mono, fontSize: 10, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: T.lime }}>
+          <span style={{ fontFamily: TL.font.mono, fontSize: 10, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: TL.fill }}>
             Lagret
           </span>
         )}
         {feil && (
-          <span style={{ fontFamily: T.mono, fontSize: 10, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: T.down }}>
+          <span style={{ fontFamily: TL.font.mono, fontSize: 10, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: TL.danger }}>
             {feil}
           </span>
         )}
@@ -262,7 +250,7 @@ export function MegHelseV2({ data, lagre }: { data: MegHelseData; lagre: LagreFn
   const sovnKpi = siste?.sleepHours != null ? formatTimer(siste.sleepHours) : "—";
 
   return (
-    <div data-paper-wave-g="meghelse" data-paper-slug="playerhq-helse" data-paper-portal-meg-helse style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
+    <div data-paper-wave-g="meghelse" data-paper-slug="playerhq-helse" data-paper-portal-meg-helse style={{ display: "flex", flexDirection: "column", gap: 16, maxWidth: 720, margin: "0 auto", width: "100%" }}>
       <div>
         <Caps style={{ marginBottom: 10 }}>Meg · Helse</Caps>
         <Tittel mobile={mobile} em="status">
@@ -322,14 +310,14 @@ export function MegHelseV2({ data, lagre }: { data: MegHelseData; lagre: LagreFn
       <Kort eyebrow="Skade & status">
         {skade.aktivSiden ? (
           <Rad
-            leading={<IkonEmblem name="stethoscope" farge={T.warn} tint={`color-mix(in srgb, ${T.warn} 12%, transparent)`} />}
+            leading={<IkonEmblem name="stethoscope" farge={TL.warn} tint={`color-mix(in srgb, ${TL.warn} 12%, transparent)`} />}
             title="Aktiv skade"
             sub={`Siden ${skade.aktivSiden}`}
             trailing={<StatusPill tone="warn">Aktiv</StatusPill>}
           />
         ) : (
           <Rad
-            leading={<IkonEmblem name="check-circle" farge={T.up} tint={`color-mix(in srgb, ${T.up} 12%, transparent)`} />}
+            leading={<IkonEmblem name="check-circle" farge={TL.ok} tint={`color-mix(in srgb, ${TL.ok} 12%, transparent)`} />}
             title="Ingen aktive skader"
             sub={skade.sistLogget ? `Sist logget ${skade.sistLogget}` : "Ingen logger ennå"}
             trailing={<StatusPill tone="up">Frisk</StatusPill>}
@@ -347,17 +335,17 @@ export function MegHelseV2({ data, lagre }: { data: MegHelseData; lagre: LagreFn
           href="/portal/meg/helse/symptom/ny"
           style={{ textDecoration: "none", color: "inherit", display: "block" }}
         >
-          <Rad last leading={<IkonEmblem name="plus" farge={T.lime} />} title="Registrer symptom" sub="Kroppskart, intensitet og triggere" />
+          <Rad last leading={<IkonEmblem name="plus" farge={TL.fill} />} title="Registrer symptom" sub="Kroppskart, intensitet og triggere" />
         </Link>
       </Kort>
 
       {/* Forklaring (accent-kort, lime venstrekant) */}
-      <Kort style={{ borderLeft: `3px solid ${T.lime}` }}>
-        <p style={{ fontFamily: T.ui, fontSize: 12.5, color: T.fg2, lineHeight: 1.6, margin: 0 }}>
-          <strong style={{ color: T.fg, fontWeight: 600 }}>FYS-score</strong> er din samlede testbatteri-form
-          (0–100, relativt til stallen). <strong style={{ color: T.fg, fontWeight: 600 }}>Belastning</strong> viser
+      <Kort style={{ borderLeft: `3px solid ${TL.fill}` }}>
+        <p style={{ fontFamily: TL.font.sans, fontSize: 12.5, color: TL.mute, lineHeight: 1.6, margin: 0 }}>
+          <strong style={{ color: TL.text, fontWeight: 600 }}>FYS-score</strong> er din samlede testbatteri-form
+          (0–100, relativt til stallen). <strong style={{ color: TL.text, fontWeight: 600 }}>Belastning</strong> viser
           siste ukes trening + runder som prosent av ditt eget 4-ukers snitt (100 % = som vanlig).{" "}
-          <strong style={{ color: T.fg, fontWeight: 600 }}>HRV</strong> (RMSSD i ms) logger du selv ved siden av
+          <strong style={{ color: TL.text, fontWeight: 600 }}>HRV</strong> (RMSSD i ms) logger du selv ved siden av
           hvilepuls. En wearable-sync kan fylle samme felt senere.
         </p>
       </Kort>

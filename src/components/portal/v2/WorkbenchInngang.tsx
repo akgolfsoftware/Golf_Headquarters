@@ -8,7 +8,8 @@
 
 import Link from "next/link";
 import { Kort, Icon } from "@/components/v2";
-import { T } from "@/lib/v2/tokens";
+import { TL } from "@/lib/v2/train-lock";
+
 
 export const WORKBENCH_HREF = "/portal/planlegge/workbench";
 
@@ -23,22 +24,22 @@ export function WorkbenchInngang() {
               height: 38,
               borderRadius: 12,
               flex: "none",
-              background: `color-mix(in srgb, ${T.handling} 12%, transparent)`,
-              border: `1px solid ${T.border}`,
+              background: `color-mix(in srgb, ${TL.fill} 12%, transparent)`,
+              border: `1px solid ${TL.hair}`,
               display: "inline-flex",
               alignItems: "center",
               justifyContent: "center",
             }}
           >
-            <Icon name="calendar" size={17} style={{ color: T.handling }} />
+            <Icon name="calendar" size={17} style={{ color: TL.fill }} />
           </span>
           <div style={{ flex: 1, minWidth: 0 }}>
-            <div style={{ fontFamily: T.ui, fontSize: 13.5, fontWeight: 600, color: T.fg }}>Åpne Workbench</div>
-            <div style={{ fontFamily: T.ui, fontSize: 11.5, color: T.mut, marginTop: 2 }}>
+            <div style={{ fontFamily: TL.font.sans, fontSize: 13.5, fontWeight: 600, color: TL.text }}>Åpne Workbench</div>
+            <div style={{ fontFamily: TL.font.sans, fontSize: 11.5, color: TL.mute, marginTop: 2 }}>
               All planlegging skjer der — dra, slipp, be om endring
             </div>
           </div>
-          <Icon name="arrow-right" size={16} style={{ color: T.mut, flex: "none" }} />
+          <Icon name="arrow-right" size={16} style={{ color: TL.mute, flex: "none" }} />
         </div>
       </Kort>
     </Link>

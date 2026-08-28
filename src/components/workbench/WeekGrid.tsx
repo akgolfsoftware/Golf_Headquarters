@@ -13,7 +13,6 @@
 import { type CSSProperties, type DragEvent } from "react";
 import { TimeGrid, timeGridBlockStyle, type TimeGridDay } from "@/components/v2/time-grid";
 import { Icon } from "@/components/v2/icon";
-import { T } from "@/lib/v2/tokens";
 import { TL } from "@/lib/v2/train-lock";
 import { formatTime, PYRAMID_LABEL, UI } from "@/lib/domain/workbench/labels";
 import type { WeekViewModel, WorkbenchSession } from "@/lib/domain/workbench/types";
@@ -67,16 +66,16 @@ export function WeekGrid({
             justifyContent: "center",
             gap: 8,
             marginBottom: 10,
-            border: `1px dashed ${T.border}`,
-            borderRadius: T.rCard,
+            border: `1px dashed ${TL.hair}`,
+            borderRadius: TL.radius.card,
             padding: "12px 16px",
-            background: T.panel,
+            background: TL.elev,
           }}
         >
-          <span style={{ fontFamily: T.disp, fontSize: 13.5, fontWeight: 600, color: T.fg }}>
+          <span style={{ fontFamily: TL.font.sans, fontSize: 13.5, fontWeight: 600, color: TL.text }}>
             {UI.emptyWeekTitle}
           </span>
-          <span style={{ fontFamily: T.ui, fontSize: 12.5, color: T.fg2 }}>
+          <span style={{ fontFamily: TL.font.sans, fontSize: 12.5, color: TL.mute }}>
             {UI.emptyWeekHint}
           </span>
         </div>
@@ -108,15 +107,15 @@ export function WeekGrid({
                   aria-hidden
                   style={{
                     ...timeGridBlockStyle(b.startMinute, b.durationMinutes),
-                    background: T.panel2,
-                    border: `1px dashed ${T.border}`,
+                    background: TL.dock,
+                    border: `1px dashed ${TL.hair}`,
                     borderRadius: 8,
                     opacity: 0.55,
                     pointerEvents: "none",
                     padding: "3px 6px",
-                    fontFamily: T.ui,
+                    fontFamily: TL.font.sans,
                     fontSize: 10,
-                    color: T.mut,
+                    color: TL.mute,
                     overflow: "hidden",
                   }}
                 >
@@ -213,11 +212,11 @@ function OktKort({
           display: "flex",
           alignItems: "center",
           gap: 4,
-          fontFamily: T.mono,
+          fontFamily: TL.font.mono,
           fontSize: 8.5,
           fontWeight: 700,
           letterSpacing: "0.06em",
-          color: utkast ? T.mut : WARM,
+          color: utkast ? TL.mute : WARM,
         }}
       >
         {hake && !skjultHosSpiller && !venterGodkjenning && <Icon name="check" size={9} style={{ color: WARM }} />}
@@ -226,10 +225,10 @@ function OktKort({
       <span
         style={{
           display: "block",
-          fontFamily: T.ui,
+          fontFamily: TL.font.sans,
           fontSize: 11.5,
           fontWeight: 600,
-          color: T.fg,
+          color: TL.text,
           whiteSpace: "nowrap",
           overflow: "hidden",
           textOverflow: "ellipsis",
@@ -240,9 +239,9 @@ function OktKort({
       <span
         style={{
           display: "block",
-          fontFamily: T.mono,
+          fontFamily: TL.font.mono,
           fontSize: 9.5,
-          color: T.mut,
+          color: TL.mute,
           fontVariantNumeric: "tabular-nums",
         }}
       >

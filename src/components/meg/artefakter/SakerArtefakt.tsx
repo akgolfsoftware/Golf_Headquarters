@@ -6,7 +6,8 @@
  * anrop-radvariant). Klikk på en rad åpner «sak»-artefaktet for den saken.
  */
 import { useMemo, useState } from "react";
-import { T } from "@/lib/v2/tokens";
+import { TL } from "@/lib/v2/train-lock";
+
 import { Icon } from "@/components/v2/icon";
 import { InspektorBlokk, InspektorTom } from "@/components/v2/inspektorpanel";
 import type { Sak } from "@/generated/prisma/client";
@@ -77,7 +78,7 @@ export function SakerArtefakt({
     return (
       <div data-od-id="state-saker-laster" style={{ display: "flex", flexDirection: "column", gap: 8 }}>
         {[0, 1, 2].map((i) => (
-          <div key={i} style={{ height: 56, borderRadius: T.rTag, background: T.panel2 }} />
+          <div key={i} style={{ height: 56, borderRadius: TL.radius.row, background: TL.dock }} />
         ))}
       </div>
     );
@@ -140,25 +141,25 @@ export function SakerArtefakt({
                     alignItems: "center",
                     gap: 10,
                     padding: sak.kanal === SakKanal.ANROP ? "10px 10px" : "8px 10px",
-                    borderRadius: T.rTag,
-                    border: `1px solid ${T.borderS}`,
-                    background: T.panel2,
+                    borderRadius: TL.radius.row,
+                    border: `1px solid ${TL.hair}`,
+                    background: TL.dock,
                     textAlign: "left",
                     cursor: "pointer",
                     minWidth: 0,
                   }}
                 >
-                  <span style={{ flex: "none", color: T.mut }}>
+                  <span style={{ flex: "none", color: TL.mute }}>
                     <Icon name={KANAL_IKON[sak.kanal]} size={15} strokeWidth={1.7} />
                   </span>
                   <span style={{ flex: 1, minWidth: 0 }}>
                     <span
                       style={{
                         display: "block",
-                        fontFamily: T.ui,
+                        fontFamily: TL.font.sans,
                         fontSize: 12.5,
                         fontWeight: 500,
-                        color: T.fg,
+                        color: TL.text,
                         overflow: "hidden",
                         textOverflow: "ellipsis",
                         whiteSpace: "nowrap",
@@ -169,9 +170,9 @@ export function SakerArtefakt({
                     <span
                       style={{
                         display: "block",
-                        fontFamily: T.ui,
+                        fontFamily: TL.font.sans,
                         fontSize: 11.5,
-                        color: T.mut,
+                        color: TL.mute,
                         overflow: "hidden",
                         textOverflow: "ellipsis",
                         whiteSpace: "nowrap",
@@ -184,9 +185,9 @@ export function SakerArtefakt({
                     <span
                       style={{
                         flex: "none",
-                        fontFamily: T.mono,
+                        fontFamily: TL.font.mono,
                         fontSize: 10.5,
-                        color: (tidIgjenMs(sak, na) ?? 1) < 0 ? T.down : T.mut,
+                        color: (tidIgjenMs(sak, na) ?? 1) < 0 ? TL.danger : TL.mute,
                       }}
                     >
                       {sladTid(sak, na)}
@@ -209,11 +210,11 @@ function sjappStil(aktiv: boolean): React.CSSProperties {
     gap: 5,
     minHeight: 28,
     padding: "0 10px",
-    borderRadius: T.rPill,
-    border: `1px solid ${aktiv ? T.fg : T.border}`,
-    background: aktiv ? T.panel3 : "transparent",
-    color: aktiv ? T.fg : T.mut,
-    fontFamily: T.ui,
+    borderRadius: TL.radius.pill,
+    border: `1px solid ${aktiv ? TL.text : TL.hair}`,
+    background: aktiv ? TL.dim : "transparent",
+    color: aktiv ? TL.text : TL.mute,
+    fontFamily: TL.font.sans,
     fontSize: 11.5,
     fontWeight: 500,
     cursor: "pointer",

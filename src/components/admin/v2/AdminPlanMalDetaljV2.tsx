@@ -1,4 +1,5 @@
 "use client";
+import { TL } from "@/lib/v2/train-lock";
 
 /**
  * AgencyOS — Plan-mal-detalj (`/admin/plan-templates/[id]`) — v2.
@@ -23,33 +24,9 @@ import type {
   SessionEnvironment,
   SkillArea,
 } from "@/generated/prisma/enums";
-import {
-  archiveTemplate,
-  duplicateTemplate,
-  unarchiveTemplate,
-} from "@/app/admin/(legacy)/plan-templates/actions";
-import {
-  DAG_LABEL,
-  ENV_LABEL,
-  FASE_LABEL,
-  SKILL_LABEL,
-  type DisciplinFordeling,
-  type DrillEntry,
-} from "@/components/admin/plan-templates/shared";
-import {
-  Kort,
-  Caps,
-  Tittel,
-  Knapp,
-  CTAPill,
-  KpiFlis,
-  Pyramide,
-  TomTilstand,
-  Icon,
-  HjelpTips,
-  AKSE_NAVN,
-  T,
-} from "@/components/v2";
+import { archiveTemplate, duplicateTemplate, unarchiveTemplate } from "@/app/admin/(legacy)/plan-templates/actions";
+import { DAG_LABEL, ENV_LABEL, SKILL_LABEL, type DisciplinFordeling, type DrillEntry } from "@/components/admin/plan-templates/shared";
+import { Kort, Caps, Knapp, CTAPill, KpiFlis, Pyramide, TomTilstand, Icon, HjelpTips, AKSE_NAVN, T } from "@/components/v2";
 
 /* ── Datakontrakt (mappes fra Prisma i ruten) ─────────── */
 
@@ -118,25 +95,20 @@ export function AdminPlanMalDetaljV2({ template }: { template: PlanMalDetalj }) 
     });
   }
 
-  // Siste ord i kursiv lime (samme splitt som golfdata-versjonen)
-  const deler = template.name.split(" ");
-  const em = deler[deler.length - 1];
-  const lead = deler.slice(0, -1).join(" ");
-
   const rating =
     template.effectivenessAvg != null
       ? Math.min(5, Math.max(1, 3 + template.effectivenessAvg))
       : null;
 
   return (
-    <div data-paper-wave-h="plan-mal-detalj" data-paper-pattern style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 960, margin: "0 auto", width: "100%" }}>
+    <div data-paper-wave-h="plan-mal-detalj" data-paper-pattern style={{ display: "flex", flexDirection: "column", gap: 16, maxWidth: 960, margin: "0 auto", width: "100%" }}>
       {/* Topptekst */}
       <div>
         <div data-paper-pattern-topp data-paper-slug="agencyos-planbibliotek">
-          <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>Planmal</h1>
-          <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>Detalj</span>
+          <h1 style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 17, fontWeight: 600, color: TL.text }}>Planmal</h1>
+          <span style={{ display: "block", fontFamily: TL.font.mono, fontSize: 10.5, color: TL.mute, marginTop: 2 }}>Detalj</span>
         </div>
-        <p style={{ fontFamily: T.ui, fontSize: 13, color: T.fg2, margin: "8px 0 0", lineHeight: 1.55, maxWidth: 640 }}>
+        <p style={{ fontFamily: TL.font.sans, fontSize: 13, color: TL.mute, margin: "8px 0 0", lineHeight: 1.55, maxWidth: 640 }}>
           {template.description ?? "Ingen beskrivelse lagt til ennå."}
         </p>
       </div>
@@ -165,7 +137,7 @@ export function AdminPlanMalDetaljV2({ template }: { template: PlanMalDetalj }) 
           </span>
         }
         action={
-          <span style={{ fontFamily: T.mono, fontSize: 9, color: T.mut }}>
+          <span style={{ fontFamily: TL.font.mono, fontSize: 9, color: TL.mute }}>
             {template.sessions.length} økter · {template.varighetUker} uker
           </span>
         }
@@ -194,7 +166,7 @@ export function AdminPlanMalDetaljV2({ template }: { template: PlanMalDetalj }) 
           </span>
         }
         action={
-          <span style={{ fontFamily: T.mono, fontSize: 9, color: T.mut }}>
+          <span style={{ fontFamily: TL.font.mono, fontSize: 9, color: TL.mute }}>
             mot anbefalt for nivå {template.kategori}
           </span>
         }
@@ -206,7 +178,7 @@ export function AdminPlanMalDetaljV2({ template }: { template: PlanMalDetalj }) 
             plan: Math.round(template.anbefaltFordeling[a] * 100),
           }))}
         />
-        <p style={{ fontFamily: T.ui, fontSize: 11, color: T.mut, margin: "12px 0 0" }}>
+        <p style={{ fontFamily: TL.font.sans, fontSize: 11, color: TL.mute, margin: "12px 0 0" }}>
           Strek = anbefalt baseline for nivå {template.kategori}. Tall: malens andel / anbefalt, i prosent.
         </p>
       </Kort>
@@ -224,7 +196,7 @@ export function AdminPlanMalDetaljV2({ template }: { template: PlanMalDetalj }) 
           icon="archive"
           disabled={isPending}
           onClick={onToggleArchive}
-          style={{ color: template.approved ? T.down : T.up, borderColor: `color-mix(in srgb, ${template.approved ? T.down : T.up} 40%, transparent)` }}
+          style={{ color: template.approved ? TL.danger : TL.ok, borderColor: `color-mix(in srgb, ${template.approved ? TL.danger : TL.ok} 40%, transparent)` }}
         >
           {template.approved ? "Arkiver" : "Gjenåpne"}
         </Knapp>
@@ -265,7 +237,7 @@ function UkeGrid({
           {dager.map((d) => (
             <div
               key={d}
-              style={{ borderRadius: 8, background: T.panel2, border: `1px solid ${T.border}`, padding: "5px 0", textAlign: "center", fontFamily: T.mono, fontSize: 9.5, fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", color: T.mut }}
+              style={{ borderRadius: 8, background: TL.dock, border: `1px solid ${TL.hair}`, padding: "5px 0", textAlign: "center", fontFamily: TL.font.mono, fontSize: 9.5, fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", color: TL.mute }}
             >
               {DAG_LABEL[d - 1]}
             </div>
@@ -274,7 +246,7 @@ function UkeGrid({
 
         {uker.map((uke) => (
           <div key={uke} style={{ marginTop: 4, display: "grid", gridTemplateColumns: "60px repeat(7, 1fr)", gap: 4 }}>
-            <div style={{ display: "flex", alignItems: "center", justifyContent: "center", borderRadius: 8, background: T.panel3, fontFamily: T.mono, fontSize: 11, fontWeight: 700, color: T.fg2 }}>
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "center", borderRadius: 8, background: TL.dim, fontFamily: TL.font.mono, fontSize: 11, fontWeight: 700, color: TL.mute }}>
               Uke {uke}
             </div>
             {dager.map((dag) => {
@@ -286,17 +258,17 @@ function UkeGrid({
                       type="button"
                       onClick={() => onSelect(s)}
                       className="v2-row-h v2-focus"
-                      style={{ appearance: "none", cursor: "pointer", display: "flex", height: "100%", width: "100%", flexDirection: "column", alignItems: "flex-start", gap: 4, borderRadius: 8, border: `1px solid ${T.border}`, borderLeft: `3px solid ${T.ax[s.pyramidArea]}`, background: T.panel2, padding: 8, textAlign: "left" }}
+                      style={{ appearance: "none", cursor: "pointer", display: "flex", height: "100%", width: "100%", flexDirection: "column", alignItems: "flex-start", gap: 4, borderRadius: 8, border: `1px solid ${TL.hair}`, borderLeft: `3px solid ${T.ax[s.pyramidArea]}`, background: TL.dock, padding: 8, textAlign: "left" }}
                     >
-                      <span style={{ fontFamily: T.ui, fontSize: 11, fontWeight: 600, color: T.fg, lineHeight: 1.3, display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" }}>
+                      <span style={{ fontFamily: TL.font.sans, fontSize: 11, fontWeight: 600, color: TL.text, lineHeight: 1.3, display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" }}>
                         {s.title}
                       </span>
-                      <span style={{ marginTop: "auto", fontFamily: T.mono, fontSize: 8.5, fontWeight: 700, letterSpacing: "0.05em", textTransform: "uppercase", color: T.mut }}>
+                      <span style={{ marginTop: "auto", fontFamily: TL.font.mono, fontSize: 8.5, fontWeight: 700, letterSpacing: "0.05em", textTransform: "uppercase", color: TL.mute }}>
                         {s.varighetMin} min · {s.drills.length}d
                       </span>
                     </button>
                   ) : (
-                    <div style={{ display: "flex", height: "100%", alignItems: "center", justifyContent: "center", borderRadius: 8, border: `1px dashed ${T.border}`, fontFamily: T.mono, fontSize: 10, color: T.mut }}>
+                    <div style={{ display: "flex", height: "100%", alignItems: "center", justifyContent: "center", borderRadius: 8, border: `1px dashed ${TL.hair}`, fontFamily: TL.font.mono, fontSize: 10, color: TL.mute }}>
                       —
                     </div>
                   )}
@@ -314,7 +286,7 @@ function AkseLegende() {
   return (
     <div style={{ marginTop: 14, display: "flex", flexWrap: "wrap", alignItems: "center", gap: 12 }}>
       {PYR_ALLE.map((o) => (
-        <span key={o} style={{ display: "inline-flex", alignItems: "center", gap: 5, fontFamily: T.mono, fontSize: 9, fontWeight: 700, letterSpacing: "0.06em", textTransform: "uppercase", color: T.mut }}>
+        <span key={o} style={{ display: "inline-flex", alignItems: "center", gap: 5, fontFamily: TL.font.mono, fontSize: 9, fontWeight: 700, letterSpacing: "0.06em", textTransform: "uppercase", color: TL.mute }}>
           <span aria-hidden style={{ width: 8, height: 8, borderRadius: 3, background: T.ax[o] }} />
           {AKSE_NAVN[o]}
         </span>
@@ -334,11 +306,11 @@ function OktDialog({ okt, onClose }: { okt: PlanMalOkt; onClose: () => void }) {
       onClick={(e) => {
         if (e.target === e.currentTarget) onClose();
       }}
-      style={{ position: "fixed", inset: 0, zIndex: 50, display: "grid", placeItems: "center", background: T.farge.svartA55, padding: 16 }}
+      style={{ position: "fixed", inset: 0, zIndex: 50, display: "grid", placeItems: "center", background: TL.scrim, padding: 16 }}
     >
       <div
         className="v2-sheet-in"
-        style={{ width: "100%", maxWidth: 560, maxHeight: "90vh", overflowY: "auto", borderRadius: T.rCard, background: T.panel, border: `1px solid ${T.borderS}`, padding: 22, boxShadow: `0 24px 60px ${T.farge.svartA50}` }}
+        style={{ width: "100%", maxWidth: 560, maxHeight: "90vh", overflowY: "auto", borderRadius: TL.radius.card, background: TL.elev, border: `1px solid ${TL.hair}`, padding: 22, boxShadow: "none" }}
       >
         <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 12 }}>
           <div style={{ minWidth: 0 }}>
@@ -348,7 +320,7 @@ function OktDialog({ okt, onClose }: { okt: PlanMalOkt; onClose: () => void }) {
               </Caps>
               <HjelpTips k="miljo" size={11} />
             </span>
-            <h2 style={{ margin: "6px 0 0", fontFamily: T.disp, fontWeight: 700, fontSize: 20, letterSpacing: "-0.02em", color: T.fg }}>
+            <h2 style={{ margin: "6px 0 0", fontFamily: TL.font.sans, fontWeight: 700, fontSize: 20, letterSpacing: "-0.02em", color: TL.text }}>
               {okt.title}
             </h2>
           </div>
@@ -357,19 +329,19 @@ function OktDialog({ okt, onClose }: { okt: PlanMalOkt; onClose: () => void }) {
             onClick={onClose}
             aria-label="Lukk"
             className="v2-press v2-focus"
-            style={{ appearance: "none", cursor: "pointer", width: 28, height: 28, borderRadius: 8, background: T.panel2, border: `1px solid ${T.border}`, display: "inline-flex", alignItems: "center", justifyContent: "center", flex: "none", color: T.fg2 }}
+            style={{ appearance: "none", cursor: "pointer", width: 28, height: 28, borderRadius: 8, background: TL.dock, border: `1px solid ${TL.hair}`, display: "inline-flex", alignItems: "center", justifyContent: "center", flex: "none", color: TL.mute }}
           >
             <Icon name="x" size={14} />
           </button>
         </div>
 
         <div style={{ marginTop: 14, display: "flex", flexWrap: "wrap", gap: 6 }}>
-          <span style={{ display: "inline-flex", alignItems: "center", gap: 5, fontFamily: T.mono, fontSize: 9, fontWeight: 700, color: T.fg2, background: T.panel2, border: `1px solid ${T.border}`, borderRadius: 5, padding: "3px 7px" }}>
+          <span style={{ display: "inline-flex", alignItems: "center", gap: 5, fontFamily: TL.font.mono, fontSize: 9, fontWeight: 700, color: TL.mute, background: TL.dock, border: `1px solid ${TL.hair}`, borderRadius: 5, padding: "3px 7px" }}>
             <span aria-hidden style={{ width: 6, height: 6, borderRadius: 9999, background: T.ax[okt.pyramidArea] }} />
             {AKSE_NAVN[okt.pyramidArea]}
           </span>
           {okt.skillArea && (
-            <span style={{ display: "inline-flex", alignItems: "center", gap: 5, fontFamily: T.mono, fontSize: 9, fontWeight: 700, color: T.fg2, background: T.panel2, border: `1px solid ${T.border}`, borderRadius: 5, padding: "3px 7px" }}>
+            <span style={{ display: "inline-flex", alignItems: "center", gap: 5, fontFamily: TL.font.mono, fontSize: 9, fontWeight: 700, color: TL.mute, background: TL.dock, border: `1px solid ${TL.hair}`, borderRadius: 5, padding: "3px 7px" }}>
               {SKILL_LABEL[okt.skillArea]}
               <HjelpTips k="skillArea" size={10} />
             </span>
@@ -379,7 +351,7 @@ function OktDialog({ okt, onClose }: { okt: PlanMalOkt; onClose: () => void }) {
         {okt.focus && (
           <div style={{ marginTop: 16 }}>
             <Caps>Fokus</Caps>
-            <p style={{ fontFamily: T.ui, fontSize: 13, color: T.fg, margin: "6px 0 0", lineHeight: 1.55 }}>{okt.focus}</p>
+            <p style={{ fontFamily: TL.font.sans, fontSize: 13, color: TL.text, margin: "6px 0 0", lineHeight: 1.55 }}>{okt.focus}</p>
           </div>
         )}
 
@@ -390,22 +362,22 @@ function OktDialog({ okt, onClose }: { okt: PlanMalOkt; onClose: () => void }) {
           </span>
           <div style={{ marginTop: 8, display: "flex", flexDirection: "column", gap: 8 }}>
             {okt.drills.map((d, i) => (
-              <div key={`${d.exerciseId}-${i}`} style={{ borderRadius: T.rRow, border: `1px solid ${T.border}`, background: T.panel2, padding: "10px 13px" }}>
-                <div style={{ fontFamily: T.ui, fontSize: 13, fontWeight: 600, color: T.fg }}>
+              <div key={`${d.exerciseId}-${i}`} style={{ borderRadius: TL.radius.row, border: `1px solid ${TL.hair}`, background: TL.dock, padding: "10px 13px" }}>
+                <div style={{ fontFamily: TL.font.sans, fontSize: 13, fontWeight: 600, color: TL.text }}>
                   {d.exerciseName ?? d.exerciseId}
                 </div>
-                <div style={{ marginTop: 4, display: "flex", flexWrap: "wrap", gap: 10, fontFamily: T.mono, fontSize: 10, fontWeight: 700, letterSpacing: "0.05em", textTransform: "uppercase", color: T.mut }}>
+                <div style={{ marginTop: 4, display: "flex", flexWrap: "wrap", gap: 10, fontFamily: TL.font.mono, fontSize: 10, fontWeight: 700, letterSpacing: "0.05em", textTransform: "uppercase", color: TL.mute }}>
                   {d.sets != null && <span>{d.sets} sett</span>}
                   {d.reps != null && <span>{d.reps} reps</span>}
                   {d.csTarget != null && <span>CS {d.csTarget}</span>}
                 </div>
                 {d.notes && (
-                  <p style={{ margin: "6px 0 0", fontFamily: T.ui, fontSize: 12, color: T.fg2, lineHeight: 1.5 }}>{d.notes}</p>
+                  <p style={{ margin: "6px 0 0", fontFamily: TL.font.sans, fontSize: 12, color: TL.mute, lineHeight: 1.5 }}>{d.notes}</p>
                 )}
               </div>
             ))}
             {okt.drills.length === 0 && (
-              <p style={{ fontFamily: T.ui, fontSize: 12, color: T.mut, margin: 0 }}>Ingen drills definert for økten.</p>
+              <p style={{ fontFamily: TL.font.sans, fontSize: 12, color: TL.mute, margin: 0 }}>Ingen drills definert for økten.</p>
             )}
           </div>
         </div>
@@ -413,7 +385,7 @@ function OktDialog({ okt, onClose }: { okt: PlanMalOkt; onClose: () => void }) {
         {okt.notes && (
           <div style={{ marginTop: 16 }}>
             <Caps>Notater</Caps>
-            <p style={{ fontFamily: T.ui, fontSize: 13, color: T.fg, margin: "6px 0 0", lineHeight: 1.55, whiteSpace: "pre-wrap" }}>{okt.notes}</p>
+            <p style={{ fontFamily: TL.font.sans, fontSize: 13, color: TL.text, margin: "6px 0 0", lineHeight: 1.55, whiteSpace: "pre-wrap" }}>{okt.notes}</p>
           </div>
         )}
       </div>

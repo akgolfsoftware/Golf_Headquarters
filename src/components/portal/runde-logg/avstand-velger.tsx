@@ -1,4 +1,5 @@
 "use client";
+import { TL } from "@/lib/v2/train-lock";
 
 /**
  * Avstandsvelger for slag-editoren (B3-interaksjonen, gjenbrukes i
@@ -6,7 +7,7 @@
  * Meter lagres ALLTID; fot vises kun som undertekst på green (kanon).
  */
 
-import { T, Icon } from "@/components/v2";
+import { Icon } from "@/components/v2";
 
 export type AvstandKontekst = "TEE" | "LANGT" | "APP" | "ARG" | "GREEN";
 
@@ -61,9 +62,9 @@ export function AvstandVelger({ kontekst, hullLengde, verdi, onVerdi }: AvstandV
         width: 48,
         height: 48,
         borderRadius: 12,
-        background: T.panel2,
-        border: `1px solid ${T.border}`,
-        color: T.fg,
+        background: TL.dock,
+        border: `1px solid ${TL.hair}`,
+        color: TL.text,
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
@@ -91,12 +92,12 @@ export function AvstandVelger({ kontekst, hullLengde, verdi, onVerdi }: AvstandV
                 padding: "8px 0",
                 width: kontekst === "GREEN" ? 52 : 58,
                 borderRadius: 10,
-                fontFamily: T.mono,
+                fontFamily: TL.font.mono,
                 fontSize: 13,
                 fontWeight: 700,
-                background: on ? "color-mix(in srgb, var(--v2-lime) 12%, transparent)" : T.panel2,
-                color: on ? T.lime : T.fg2,
-                border: `1px solid ${on ? "color-mix(in srgb, var(--v2-lime) 40%, transparent)" : T.border}`,
+                background: on ? "color-mix(in srgb, var(--tl-fill) 12%, transparent)" : TL.dock,
+                color: on ? TL.fill : TL.mute,
+                border: `1px solid ${on ? "color-mix(in srgb, var(--tl-fill) 40%, transparent)" : TL.hair}`,
                 display: "flex",
                 flexDirection: "column",
                 alignItems: "center",
@@ -107,10 +108,10 @@ export function AvstandVelger({ kontekst, hullLengde, verdi, onVerdi }: AvstandV
               {kontekst === "GREEN" && (
                 <span
                   style={{
-                    fontFamily: T.mono,
+                    fontFamily: TL.font.mono,
                     fontSize: 8,
                     fontWeight: 600,
-                    color: on ? "color-mix(in srgb, var(--v2-lime) 70%, transparent)" : T.mut,
+                    color: on ? "color-mix(in srgb, var(--tl-fill) 70%, transparent)" : TL.mute,
                   }}
                 >
                   {fot(c)} ft
@@ -123,15 +124,15 @@ export function AvstandVelger({ kontekst, hullLengde, verdi, onVerdi }: AvstandV
       <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
         {stegKnapp(-1)}
         <div style={{ flex: 1, textAlign: "center" }}>
-          <div style={{ fontFamily: T.mono, fontSize: 34, fontWeight: 700, color: T.fg, lineHeight: 1 }}>
+          <div style={{ fontFamily: TL.font.mono, fontSize: 34, fontWeight: 700, color: TL.text, lineHeight: 1 }}>
             {verdi == null ? "—" : komma(verdi)}
-            <span style={{ fontSize: 14, color: T.mut, marginLeft: 6 }}>m</span>
+            <span style={{ fontSize: 14, color: TL.mute, marginLeft: 6 }}>m</span>
           </div>
           <div
             style={{
-              fontFamily: T.mono,
+              fontFamily: TL.font.mono,
               fontSize: 9.5,
-              color: T.mut,
+              color: TL.mute,
               marginTop: 4,
               textTransform: "uppercase",
               letterSpacing: "0.08em",

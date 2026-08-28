@@ -1,4 +1,5 @@
 "use client";
+import { TL } from "@/lib/v2/train-lock";
 
 /**
  * PlayerHQ · Booking bekreftet (kvittering etter credit-booking) — v2
@@ -10,7 +11,7 @@
  */
 
 import Link from "next/link";
-import { T, Caps, Tittel, Kort, AvatarInit } from "@/components/v2";
+import { Caps, Tittel, Kort, AvatarInit } from "@/components/v2";
 import { Icon } from "@/components/v2/icon";
 
 export type BookingBekreftetV2Data = {
@@ -25,7 +26,7 @@ export type BookingBekreftetV2Data = {
 
 export function BookingBekreftetV2({ data }: { data: BookingBekreftetV2Data }) {
   return (
-    <div data-paper-portal-booking-bekreftet style={{ maxWidth: 440, width: "100%", margin: "0 auto", display: "flex", flexDirection: "column", gap: T.gap }}>
+    <div data-paper-portal-booking-bekreftet style={{ maxWidth: 440, width: "100%", margin: "0 auto", display: "flex", flexDirection: "column", gap: 16 }}>
       {/* Hero */}
       <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 12, textAlign: "center", paddingTop: 8 }}>
         <span
@@ -33,18 +34,18 @@ export function BookingBekreftetV2({ data }: { data: BookingBekreftetV2Data }) {
             width: 68,
             height: 68,
             borderRadius: 9999,
-            background: `color-mix(in srgb, ${T.lime} 14%, transparent)`,
-            border: `1px solid color-mix(in srgb, ${T.lime} 35%, transparent)`,
+            background: `color-mix(in srgb, ${TL.fill} 14%, transparent)`,
+            border: `1px solid color-mix(in srgb, ${TL.fill} 35%, transparent)`,
             display: "inline-flex",
             alignItems: "center",
             justifyContent: "center",
           }}
         >
-          <Icon name="check-circle" size={28} style={{ color: T.lime }} />
+          <Icon name="check-circle" size={28} style={{ color: TL.fill }} />
         </span>
         <Caps>PlayerHQ · Booking</Caps>
         <Tittel em="bekreftet">Booking</Tittel>
-        <p style={{ fontFamily: T.ui, fontSize: 13.5, lineHeight: 1.55, color: T.fg2, maxWidth: 320, margin: 0 }}>
+        <p style={{ fontFamily: TL.font.sans, fontSize: 13.5, lineHeight: 1.55, color: TL.mute, maxWidth: 320, margin: 0 }}>
           {data.linje}
         </p>
       </div>
@@ -54,10 +55,10 @@ export function BookingBekreftetV2({ data }: { data: BookingBekreftetV2Data }) {
         <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
           <AvatarInit navn={data.coachNavn ?? "AK Golf Academy"} size={38} />
           <div style={{ minWidth: 0 }}>
-            <div style={{ fontFamily: T.disp, fontSize: 14, fontWeight: 700, color: T.fg, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+            <div style={{ fontFamily: TL.font.sans, fontSize: 14, fontWeight: 700, color: TL.text, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
               {data.coachNavn ?? "AK Golf Academy"}
             </div>
-            <div style={{ fontFamily: T.mono, fontSize: 10, color: T.mut, marginTop: 2 }}>
+            <div style={{ fontFamily: TL.font.mono, fontSize: 10, color: TL.mute, marginTop: 2 }}>
               {data.sted} · {data.varighetMin} min
             </div>
           </div>
@@ -69,13 +70,13 @@ export function BookingBekreftetV2({ data }: { data: BookingBekreftetV2Data }) {
         <a href={data.kalenderUrl} target="_blank" rel="noopener noreferrer" style={{ textDecoration: "none", display: "block" }}>
           <span style={{
             display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, minHeight: 48, width: "100%", padding: "10px 16px",
-            borderRadius: 10, background: T.handling, color: T.onHandling, fontFamily: T.ui, fontSize: 14, fontWeight: 600,
+            borderRadius: 10, background: TL.fill, color: TL.onFill, fontFamily: TL.font.sans, fontSize: 14, fontWeight: 600,
           }}>Legg i kalender</span>
         </a>
         <Link href="/portal/meg/bookinger" style={{ textDecoration: "none", display: "block" }}>
           <span style={{
             display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, minHeight: 48, width: "100%", padding: "10px 16px",
-            borderRadius: 10, background: T.handling, color: T.onHandling, fontFamily: T.ui, fontSize: 14, fontWeight: 600,
+            borderRadius: 10, background: TL.fill, color: TL.onFill, fontFamily: TL.font.sans, fontSize: 14, fontWeight: 600,
           }}>Se alle bookinger</span>
         </Link>
       </div>

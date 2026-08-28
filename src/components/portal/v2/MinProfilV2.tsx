@@ -1,4 +1,5 @@
 "use client";
+import { TL } from "@/lib/v2/train-lock";
 
 /**
  * PlayerHQ Min profil — v2 Presis + B-pakke (status først, lagre = én grønn CTA).
@@ -8,22 +9,7 @@
 import { useEffect, useRef, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import {
-  T,
-  Caps,
-  Tittel,
-  Knapp,
-  Kort,
-  StatusPill,
-  AvatarFoto,
-  Rad,
-  ProfilFelt,
-  Inndata,
-  TomTilstand,
-  Icon,
-  HjelpTips,
-  type StatusTone,
-} from "@/components/v2";
+import { Caps, Knapp, Kort, StatusPill, AvatarFoto, Rad, ProfilFelt, Inndata, TomTilstand, Icon, HjelpTips, type StatusTone } from "@/components/v2";
 import { oppdaterProfil } from "@/app/portal/meg/actions";
 import { uploadAvatar } from "@/lib/storage/avatar";
 import { skalerAvatar } from "@/lib/klient/skaler-avatar";
@@ -75,8 +61,8 @@ function useMobile(): boolean {
 /* ── Ikon-boks for koblings-rader (mockupens leading-idiom) ────────── */
 function RadIkon({ name }: { name: string }) {
   return (
-    <span style={{ width: 32, height: 32, borderRadius: 10, background: T.panel3, border: `1px solid ${T.border}`, display: "inline-flex", alignItems: "center", justifyContent: "center", flex: "none" }}>
-      <Icon name={name} size={14} style={{ color: T.fg2 }} />
+    <span style={{ width: 32, height: 32, borderRadius: 10, background: TL.dim, border: `1px solid ${TL.hair}`, display: "inline-flex", alignItems: "center", justifyContent: "center", flex: "none" }}>
+      <Icon name={name} size={14} style={{ color: TL.mute }} />
     </span>
   );
 }
@@ -196,7 +182,7 @@ export function MinProfilV2({ data }: { data: MinProfilData }) {
       <div style={{ display: "flex", alignItems: "center", gap: mobile ? 16 : 22, flexDirection: mobile ? "column" : "row", textAlign: mobile ? "center" : "left" }}>
         <AvatarFoto src={avatarUrl} navn={navn} size={mobile ? 88 : 96} ring />
         <div style={{ flex: 1, minWidth: 0 }}>
-          <h1 style={{ fontFamily: T.disp, fontWeight: 700, fontSize: mobile ? 24 : 28, letterSpacing: "-0.03em", color: T.fg, margin: 0 }}>{navn}</h1>
+          <h1 style={{ fontFamily: TL.font.sans, fontWeight: 700, fontSize: mobile ? 24 : 28, letterSpacing: "-0.03em", color: TL.text, margin: 0 }}>{navn}</h1>
           {piller.length > 0 && (
             <div style={{ display: "flex", gap: 6, marginTop: 9, justifyContent: mobile ? "center" : "flex-start", flexWrap: "wrap" }}>
               {piller.map((p) => (
@@ -208,7 +194,7 @@ export function MinProfilV2({ data }: { data: MinProfilData }) {
         <label htmlFor="min-profil-avatar-input" style={{ cursor: avatarLagrer ? "default" : "pointer" }}>
           <span style={{
             display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, minHeight: 56, width: "100%", padding: "10px 16px",
-            borderRadius: 12, background: T.handling, color: T.onHandling, fontFamily: T.ui, fontSize: 14, fontWeight: 600,
+            borderRadius: 12, background: TL.fill, color: TL.onFill, fontFamily: TL.font.sans, fontSize: 14, fontWeight: 600,
           }}>{avatarLagrer ? "Laster opp …" : "Bytt bilde"}</span>
         </label>
         <input
@@ -222,7 +208,7 @@ export function MinProfilV2({ data }: { data: MinProfilData }) {
         />
       </div>
       {avatarFeil && (
-        <p style={{ fontFamily: T.ui, fontSize: 12, color: T.down, margin: "12px 0 0" }}>{avatarFeil}</p>
+        <p style={{ fontFamily: TL.font.sans, fontSize: 12, color: TL.danger, margin: "12px 0 0" }}>{avatarFeil}</p>
       )}
     </Kort>
   );
@@ -247,10 +233,10 @@ export function MinProfilV2({ data }: { data: MinProfilData }) {
       </div>
       <Inndata label="Klubb" value={klubbFelt} onChange={setKlubbFelt} placeholder="Ikke satt" />
       {feil && (
-        <p style={{ fontFamily: T.ui, fontSize: 12, color: T.down, margin: 0 }}>{feil}</p>
+        <p style={{ fontFamily: TL.font.sans, fontSize: 12, color: TL.danger, margin: 0 }}>{feil}</p>
       )}
       {lagret && !feil && (
-        <p style={{ fontFamily: T.ui, fontSize: 12, color: T.up, margin: 0 }}>Lagret.</p>
+        <p style={{ fontFamily: TL.font.sans, fontSize: 12, color: TL.ok, margin: 0 }}>Lagret.</p>
       )}
     </Kort>
   );
@@ -262,7 +248,7 @@ export function MinProfilV2({ data }: { data: MinProfilData }) {
       <Link href="/portal/meg/help" style={{ textDecoration: "none", display: "block", marginTop: 4 }}>
         <span style={{
             display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, minHeight: 56, width: "100%", padding: "10px 16px",
-            borderRadius: 12, background: T.handling, color: T.onHandling, fontFamily: T.ui, fontSize: 14, fontWeight: 600,
+            borderRadius: 12, background: TL.fill, color: TL.onFill, fontFamily: TL.font.sans, fontSize: 14, fontWeight: 600,
           }}>Les mer i hjelp</span>
       </Link>
     </Kort>
@@ -294,11 +280,11 @@ export function MinProfilV2({ data }: { data: MinProfilData }) {
   );
 
   return (
-    <div data-paper-wave-g="minprofil" data-paper-portal-meg-profil style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
+    <div data-paper-wave-g="minprofil" data-paper-portal-meg-profil style={{ display: "flex", flexDirection: "column", gap: 16, maxWidth: 720, margin: "0 auto", width: "100%" }}>
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12 }}>
         <div data-paper-pattern-topp>
-        <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>Min profil</h1>
-        <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>Konto</span>
+        <h1 style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 17, fontWeight: 600, color: TL.text }}>Min profil</h1>
+        <span style={{ display: "block", fontFamily: TL.font.mono, fontSize: 10.5, color: TL.mute, marginTop: 2 }}>Konto</span>
       </div>
         {!mobile && (
           <Knapp icon={lagrer ? "loader" : "check"} disabled={lagrer} onClick={lagreEndringer}>
@@ -318,7 +304,7 @@ export function MinProfilV2({ data }: { data: MinProfilData }) {
         ).map((k) => (
           <Kort key={k.l} pad="12px">
             <Caps size={9}>{k.l}</Caps>
-            <div style={{ fontFamily: T.mono, fontWeight: 700, fontSize: 14, marginTop: 8, color: T.fg, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{k.v}</div>
+            <div style={{ fontFamily: TL.font.mono, fontWeight: 700, fontSize: 14, marginTop: 8, color: TL.text, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{k.v}</div>
           </Kort>
         ))}
       </div>
@@ -335,12 +321,12 @@ export function MinProfilV2({ data }: { data: MinProfilData }) {
           </Knapp>
         </>
       ) : (
-        <div style={{ display: "grid", gridTemplateColumns: "1.35fr 1fr", gap: T.gap, alignItems: "start" }}>
-          <div style={{ display: "flex", flexDirection: "column", gap: T.gap, minWidth: 0 }}>
+        <div style={{ display: "grid", gridTemplateColumns: "1.35fr 1fr", gap: 16, alignItems: "start" }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: 16, minWidth: 0 }}>
             {felter}
             {koblinger}
           </div>
-          <div style={{ display: "flex", flexDirection: "column", gap: T.gap, minWidth: 0 }}>{wagr}</div>
+          <div style={{ display: "flex", flexDirection: "column", gap: 16, minWidth: 0 }}>{wagr}</div>
         </div>
       )}
     </div>

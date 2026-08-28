@@ -1,5 +1,5 @@
 "use client";
-
+import { TL } from "@/lib/v2/train-lock";
 /**
  * Delte v2-byggeklosser for turnerings-skjermene (liste, detalj, ny, dubletter).
  * Ekte interaktivt overlay-mønster (fixed inset-0 + backdrop-blur + panel) —
@@ -9,9 +9,8 @@
  */
 
 import { useEffect, useState, type ReactNode } from "react";
-import { Caps, Knapp, T } from "@/components/v2";
+import { Caps, Knapp } from "@/components/v2";
 import { Icon } from "@/components/v2/icon";
-
 /** md-breakpoint-speil (matcher V2Shell/AdminBookingerV2). */
 export function useMobile(): boolean {
   const [m, setM] = useState(false);
@@ -44,7 +43,7 @@ export function TurneringModal({
   const mobile = useMobile();
   return (
     <div style={{ position: "fixed", inset: 0, zIndex: 80, display: "flex", alignItems: mobile ? "flex-end" : "center", justifyContent: "center", padding: mobile ? 0 : 16 }}>
-      <div onClick={busy ? undefined : onLukk} style={{ position: "absolute", inset: 0, background: T.farge.nestenSvartA62, backdropFilter: "blur(2px)" }} />
+      <div onClick={busy ? undefined : onLukk} style={{ position: "absolute", inset: 0, background: TL.scrim, backdropFilter: "none" }} />
       <div
         style={{
           position: "relative",
@@ -52,27 +51,27 @@ export function TurneringModal({
           maxWidth: wide ? 640 : 480,
           maxHeight: mobile ? "88vh" : "86vh",
           overflowY: "auto",
-          background: T.panel,
-          border: `1px solid ${T.borderS}`,
+          background: TL.elev,
+          border: `1px solid ${TL.hair}`,
           borderRadius: mobile ? "20px 20px 0 0" : 20,
           padding: mobile ? "10px 20px 24px" : "22px 24px",
-          boxShadow: `0 24px 60px ${T.farge.svartA50}`,
+          boxShadow: "none",
         }}
       >
-        {mobile && <span style={{ display: "block", width: 36, height: 4, borderRadius: 9999, background: T.borderS, margin: "0 auto 14px" }} />}
+        {mobile && <span style={{ display: "block", width: 36, height: 4, borderRadius: 9999, background: TL.hair, margin: "0 auto 14px" }} />}
         <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 12 }}>
           <div>
             {eyebrow && <Caps size={9} style={{ marginBottom: 6 }}>{eyebrow}</Caps>}
-            <h2 style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 19, letterSpacing: "-0.02em", color: T.fg, margin: 0, lineHeight: 1.2 }}>{title}</h2>
+            <h2 style={{ fontFamily: TL.font.sans, fontWeight: 700, fontSize: 19, letterSpacing: "-0.02em", color: TL.text, margin: 0, lineHeight: 1.2 }}>{title}</h2>
           </div>
           <button
             type="button"
             onClick={onLukk}
             disabled={busy}
             className="v2-press v2-focus"
-            style={{ width: 28, height: 28, borderRadius: 8, background: T.panel2, border: `1px solid ${T.border}`, display: "inline-flex", alignItems: "center", justifyContent: "center", cursor: busy ? "default" : "pointer", flex: "none", opacity: busy ? 0.5 : 1 }}
+            style={{ width: 28, height: 28, borderRadius: 8, background: TL.dock, border: `1px solid ${TL.hair}`, display: "inline-flex", alignItems: "center", justifyContent: "center", cursor: busy ? "default" : "pointer", flex: "none", opacity: busy ? 0.5 : 1 }}
           >
-            <Icon name="x" size={14} style={{ color: T.fg2 }} />
+            <Icon name="x" size={14} style={{ color: TL.mute }} />
           </button>
         </div>
         <div style={{ marginTop: 18 }}>{children}</div>
@@ -84,7 +83,7 @@ export function TurneringModal({
 /** Feilbanner inne i modaler — konsistent med resten av v2-skjemaene. */
 export function ModalFeil({ children }: { children: ReactNode }) {
   return (
-    <div role="alert" style={{ marginTop: 16, borderRadius: 11, background: `color-mix(in srgb, ${T.down} 10%, transparent)`, border: `1px solid color-mix(in srgb, ${T.down} 35%, transparent)`, padding: "10px 13px", fontFamily: T.ui, fontSize: 12.5, color: T.down }}>
+    <div role="alert" style={{ marginTop: 16, borderRadius: 11, background: `color-mix(in srgb, ${TL.danger} 10%, transparent)`, border: `1px solid color-mix(in srgb, ${TL.danger} 35%, transparent)`, padding: "10px 13px", fontFamily: TL.font.sans, fontSize: 12.5, color: TL.danger }}>
       {children}
     </div>
   );
@@ -122,7 +121,7 @@ export function ModalFooter({
           onClick={onSlett}
           disabled={busy || slettBusy}
           className="v2-press v2-focus"
-          style={{ appearance: "none", cursor: "pointer", borderRadius: 9999, padding: "9px 16px", fontFamily: T.ui, fontSize: 12.5, fontWeight: 600, color: T.down, background: `color-mix(in srgb, ${T.down} 10%, transparent)`, border: `1px solid color-mix(in srgb, ${T.down} 30%, transparent)`, opacity: busy || slettBusy ? 0.6 : 1 }}
+          style={{ appearance: "none", cursor: "pointer", borderRadius: 9999, padding: "9px 16px", fontFamily: TL.font.sans, fontSize: 12.5, fontWeight: 600, color: TL.danger, background: `color-mix(in srgb, ${TL.danger} 10%, transparent)`, border: `1px solid color-mix(in srgb, ${TL.danger} 30%, transparent)`, opacity: busy || slettBusy ? 0.6 : 1 }}
         >
           {slettBusy ? "Sletter…" : slettTekst}
         </button>
@@ -133,7 +132,7 @@ export function ModalFooter({
         onClick={onAvbryt}
         disabled={busy}
         className="v2-press v2-focus"
-        style={{ appearance: "none", cursor: "pointer", borderRadius: 9999, padding: "9px 16px", fontFamily: T.ui, fontSize: 12.5, fontWeight: 600, color: T.fg, background: T.panel3, border: `1px solid ${T.borderS}`, opacity: busy ? 0.6 : 1 }}
+        style={{ appearance: "none", cursor: "pointer", borderRadius: 9999, padding: "9px 16px", fontFamily: TL.font.sans, fontSize: 12.5, fontWeight: 600, color: TL.text, background: TL.dim, border: `1px solid ${TL.hair}`, opacity: busy ? 0.6 : 1 }}
       >
         Avbryt
       </button>
@@ -142,7 +141,7 @@ export function ModalFooter({
         onClick={submitForm ? undefined : onLagre}
         disabled={busy || lagreDisabled}
         className="v2-press v2-focus"
-        style={{ appearance: "none", cursor: busy || lagreDisabled ? "default" : "pointer", borderRadius: 9999, padding: "9px 18px", fontFamily: T.ui, fontSize: 12.5, fontWeight: 700, color: T.onHandling, background: T.handling, border: "none", opacity: busy || lagreDisabled ? 0.6 : 1 }}
+        style={{ appearance: "none", cursor: busy || lagreDisabled ? "default" : "pointer", borderRadius: 9999, padding: "9px 18px", fontFamily: TL.font.sans, fontSize: 12.5, fontWeight: 700, color: TL.onFill, background: TL.fill, border: "none", opacity: busy || lagreDisabled ? 0.6 : 1 }}
       >
         {busy ? "Lagrer…" : lagreTekst}
       </button>
@@ -157,7 +156,7 @@ export function TekstTrigger({ children, onClick }: { children: ReactNode; onCli
       type="button"
       onClick={onClick}
       className="v2-focus"
-      style={{ appearance: "none", cursor: "pointer", background: "none", border: "none", padding: 0, fontFamily: T.ui, fontSize: 12, fontWeight: 600, color: T.lime }}
+      style={{ appearance: "none", cursor: "pointer", background: "none", border: "none", padding: 0, fontFamily: TL.font.sans, fontSize: 12, fontWeight: 600, color: TL.fill }}
     >
       {children}
     </button>

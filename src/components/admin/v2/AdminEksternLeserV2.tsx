@@ -1,5 +1,5 @@
 "use client";
-
+import { TL } from "@/lib/v2/train-lock";
 /**
  * AgencyOS — Eksterne lesere (plan T8, funksjonelt — trenger fasit-runde for
  * endelig utseende). Opprett Team Norway-/WANG-ansvarlige med GUEST-innsyn
@@ -7,23 +7,9 @@
  */
 
 import { useState, useTransition } from "react";
-import {
-  Kort,
-  SkjemaFelt,
-  Inndata,
-  Knapp,
-  Avkryssing,
-  T,
-} from "@/components/v2";
-import {
-  DELING_SCOPES,
-  type DelingScope,
-} from "@/lib/deling/samtykke-regler";
-import {
-  opprettEksternLeser,
-  trekkEksternLeser,
-} from "@/app/admin/(legacy)/team/ekstern-leser-actions";
-
+import { Kort, SkjemaFelt, Inndata, Knapp, Avkryssing } from "@/components/v2";
+import { DELING_SCOPES, type DelingScope } from "@/lib/deling/samtykke-regler";
+import { opprettEksternLeser, trekkEksternLeser } from "@/app/admin/(legacy)/team/ekstern-leser-actions";
 const SCOPE_LABEL: Record<DelingScope, string> = {
   TEST_RESULTATER: "Testresultater",
   STATS: "Statistikk",
@@ -109,12 +95,12 @@ export function AdminEksternLeserV2({
   }
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 960, margin: "0 auto", width: "100%" }}>
+    <div style={{ display: "flex", flexDirection: "column", gap: 16, maxWidth: 960, margin: "0 auto", width: "100%" }}>
       <div>
-        <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>
+        <h1 style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 17, fontWeight: 600, color: TL.text }}>
           Eksterne lesere
         </h1>
-        <p style={{ fontFamily: T.ui, fontSize: 12.5, color: T.mut, lineHeight: 1.55, margin: "10px 0 0", maxWidth: 480 }}>
+        <p style={{ fontFamily: TL.font.sans, fontSize: 12.5, color: TL.mute, lineHeight: 1.55, margin: "10px 0 0", maxWidth: 480 }}>
           Team Norway-/WANG-ansvarlige med egen innlogging. De ser KUN
           testresultater og statistikk for spillere som har samtykket til
           deling — aldri treningsplaner. Uten samtykke ser de ingenting.
@@ -132,11 +118,11 @@ export function AdminEksternLeserV2({
           </SkjemaFelt>
 
           <div>
-            <div style={{ fontFamily: T.ui, fontSize: 13, fontWeight: 600, color: T.fg }}>
+            <div style={{ fontFamily: TL.font.sans, fontSize: 13, fontWeight: 600, color: TL.text }}>
               Grupper
             </div>
             {fieldErrors.groupIds && (
-              <div style={{ fontFamily: T.ui, fontSize: 12, color: T.down, marginTop: 4 }}>
+              <div style={{ fontFamily: TL.font.sans, fontSize: 12, color: TL.danger, marginTop: 4 }}>
                 {fieldErrors.groupIds}
               </div>
             )}
@@ -153,11 +139,11 @@ export function AdminEksternLeserV2({
           </div>
 
           <div>
-            <div style={{ fontFamily: T.ui, fontSize: 13, fontWeight: 600, color: T.fg }}>
+            <div style={{ fontFamily: TL.font.sans, fontSize: 13, fontWeight: 600, color: TL.text }}>
               Innsyn
             </div>
             {fieldErrors.scopes && (
-              <div style={{ fontFamily: T.ui, fontSize: 12, color: T.down, marginTop: 4 }}>
+              <div style={{ fontFamily: TL.font.sans, fontSize: 12, color: TL.danger, marginTop: 4 }}>
                 {fieldErrors.scopes}
               </div>
             )}
@@ -174,10 +160,10 @@ export function AdminEksternLeserV2({
           </div>
 
           {error && (
-            <div style={{ fontFamily: T.ui, fontSize: 12.5, color: T.down }}>{error}</div>
+            <div style={{ fontFamily: TL.font.sans, fontSize: 12.5, color: TL.danger }}>{error}</div>
           )}
           {success && (
-            <div style={{ fontFamily: T.ui, fontSize: 12.5, color: T.up }}>{success}</div>
+            <div style={{ fontFamily: TL.font.sans, fontSize: 12.5, color: TL.ok }}>{success}</div>
           )}
 
           <Knapp type="submit" disabled={pending}>
@@ -187,11 +173,11 @@ export function AdminEksternLeserV2({
       </Kort>
 
       <Kort>
-        <div style={{ fontFamily: T.disp, fontSize: 14, fontWeight: 700, color: T.fg }}>
+        <div style={{ fontFamily: TL.font.sans, fontSize: 14, fontWeight: 700, color: TL.text }}>
           Aktive eksterne lesere
         </div>
         {lesere.length === 0 ? (
-          <p style={{ fontFamily: T.ui, fontSize: 13, color: T.fg2, margin: "10px 0 0" }}>
+          <p style={{ fontFamily: TL.font.sans, fontSize: 13, color: TL.mute, margin: "10px 0 0" }}>
             Ingen aktive eksterne lesere.
           </p>
         ) : (
@@ -205,15 +191,15 @@ export function AdminEksternLeserV2({
                   justifyContent: "space-between",
                   gap: 12,
                   padding: "10px 0",
-                  borderTop: `1px solid ${T.border}`,
+                  borderTop: `1px solid ${TL.hair}`,
                   minWidth: 0,
                 }}
               >
                 <div style={{ minWidth: 0 }}>
-                  <div style={{ fontFamily: T.ui, fontSize: 13.5, fontWeight: 600, color: T.fg }}>
+                  <div style={{ fontFamily: TL.font.sans, fontSize: 13.5, fontWeight: 600, color: TL.text }}>
                     {leser.navn}
                   </div>
-                  <div style={{ fontFamily: T.ui, fontSize: 12, color: T.fg2, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                  <div style={{ fontFamily: TL.font.sans, fontSize: 12, color: TL.mute, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
                     {leser.epost} · {leser.grupper.join(", ")}
                   </div>
                 </div>

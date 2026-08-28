@@ -11,7 +11,8 @@
 
 import { useState, useTransition } from "react";
 import { Knapp, Caps, Tittel, Kort, TilbakeLenke } from "@/components/v2";
-import { T } from "@/lib/v2/tokens";
+import { TL } from "@/lib/v2/train-lock";
+
 import { avslaaWinback } from "@/app/portal/meg/abonnement/fortsett/actions";
 
 export function MegFortsettV2({
@@ -60,7 +61,7 @@ export function MegFortsettV2({
         padding: "0 0 24px",
         display: "flex",
         flexDirection: "column",
-        gap: T.gap,
+        gap: 16,
       }}
     >
       <TilbakeLenke href="/portal/meg/abonnement">Abonnement</TilbakeLenke>
@@ -70,7 +71,7 @@ export function MegFortsettV2({
         <div style={{ marginTop: 10 }}>
           <Tittel em="PlayerHQ">Behold</Tittel>
         </div>
-        <p style={{ fontFamily: T.ui, fontSize: 13, color: T.fg2, margin: "8px 0 0", lineHeight: 1.5, maxWidth: "42ch" }}>
+        <p style={{ fontFamily: TL.font.sans, fontSize: 13, color: TL.mute, margin: "8px 0 0", lineHeight: 1.5, maxWidth: "42ch" }}>
           {utlopsDato
             ? `Coaching-pakken din avsluttes ${utlopsDato}. Treningsplanen, statistikken og historikken ligger klar til deg videre — og abonnementet starter først når coaching-perioden utløper, så du betaler aldri dobbelt.`
             : "Coaching-pakken din er sagt opp. Treningsplanen, statistikken og historikken ligger klar til deg videre."}
@@ -102,9 +103,9 @@ export function MegFortsettV2({
             onClick={() => setIntervall(v.key)}
             style={{
               textAlign: "left",
-              borderRadius: T.rRow,
-              border: `2px solid ${intervall === v.key ? T.forest : T.border}`,
-              background: intervall === v.key ? T.panel3 : T.panel,
+              borderRadius: TL.radius.row,
+              border: `2px solid ${intervall === v.key ? TL.fill : TL.hair}`,
+              background: intervall === v.key ? TL.dim : TL.elev,
               padding: "14px 16px",
               cursor: "pointer",
               display: "flex",
@@ -114,18 +115,18 @@ export function MegFortsettV2({
             }}
           >
             <div>
-              <div style={{ fontFamily: T.ui, fontSize: 13.5, fontWeight: 700, color: T.fg }}>
+              <div style={{ fontFamily: TL.font.sans, fontSize: 13.5, fontWeight: 700, color: TL.text }}>
                 {v.label}
                 {v.anbefalt ? (
                   <span
                     style={{
                       marginLeft: 8,
-                      fontFamily: T.mono,
+                      fontFamily: TL.font.mono,
                       fontSize: 10,
                       fontWeight: 700,
                       letterSpacing: "0.04em",
-                      color: T.forest,
-                      background: T.lime,
+                      color: TL.fill,
+                      background: TL.fill,
                       borderRadius: 9999,
                       padding: "2px 8px",
                     }}
@@ -134,9 +135,9 @@ export function MegFortsettV2({
                   </span>
                 ) : null}
               </div>
-              <div style={{ fontFamily: T.ui, fontSize: 12, color: T.mut, marginTop: 3 }}>{v.under}</div>
+              <div style={{ fontFamily: TL.font.sans, fontSize: 12, color: TL.mute, marginTop: 3 }}>{v.under}</div>
             </div>
-            <div style={{ fontFamily: T.mono, fontSize: 16, fontWeight: 800, color: T.fg, whiteSpace: "nowrap" }}>
+            <div style={{ fontFamily: TL.font.mono, fontSize: 16, fontWeight: 800, color: TL.text, whiteSpace: "nowrap" }}>
               {v.pris}
             </div>
           </button>
@@ -145,7 +146,7 @@ export function MegFortsettV2({
 
       <Kort>
         <Caps>Dette beholder du</Caps>
-        <ul style={{ margin: "10px 0 0", paddingLeft: 18, fontFamily: T.ui, fontSize: 13, color: T.fg2, lineHeight: 1.7 }}>
+        <ul style={{ margin: "10px 0 0", paddingLeft: 18, fontFamily: TL.font.sans, fontSize: 13, color: TL.mute, lineHeight: 1.7 }}>
           <li>Treningsplanen og hele historikken din</li>
           <li>Statistikk, runder og Strokes Gained</li>
           <li>Testbatteriet og utviklingen din</li>
@@ -157,13 +158,13 @@ export function MegFortsettV2({
         <div
           role="alert"
           style={{
-            borderRadius: T.rRow,
-            border: `1px solid color-mix(in srgb, ${T.down} 30%, transparent)`,
-            background: `color-mix(in srgb, ${T.down} 10%, ${T.panel})`,
+            borderRadius: TL.radius.row,
+            border: `1px solid color-mix(in srgb, ${TL.danger} 30%, transparent)`,
+            background: `color-mix(in srgb, ${TL.danger} 10%, ${TL.elev})`,
             padding: 12,
-            fontFamily: T.ui,
+            fontFamily: TL.font.sans,
             fontSize: 13,
-            color: T.down,
+            color: TL.danger,
           }}
         >
           {error}
@@ -185,9 +186,9 @@ export function MegFortsettV2({
         style={{
           background: "none",
           border: "none",
-          fontFamily: T.ui,
+          fontFamily: TL.font.sans,
           fontSize: 12.5,
-          color: T.mut,
+          color: TL.mute,
           textDecoration: "underline",
           cursor: "pointer",
           padding: 6,
@@ -196,7 +197,7 @@ export function MegFortsettV2({
         {avslaar ? "Lagrer …" : "Nei takk, avslutt tilgangen når perioden utløper"}
       </button>
 
-      <p style={{ margin: 0, fontFamily: T.ui, fontSize: 11.5, color: T.mut, textAlign: "center", lineHeight: 1.5 }}>
+      <p style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 11.5, color: TL.mute, textAlign: "center", lineHeight: 1.5 }}>
         Sikker betaling via Stripe. Abonnementet starter når coaching-perioden utløper.
       </p>
     </div>

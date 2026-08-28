@@ -13,7 +13,8 @@
  */
 import { useCallback, useRef, useState } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { T } from "@/lib/v2/tokens";
+import { TL } from "@/lib/v2/train-lock";
+
 import { Icon } from "@/components/v2/icon";
 import { TemaHeaderKnapp } from "@/components/v2/tema";
 import { Composer } from "@/components/v2/composer";
@@ -171,7 +172,7 @@ export function MegApp({
         alignItems: "start",
         gap: mobil ? 0 : 16,
         minHeight: "100dvh",
-        background: T.bg,
+        background: TL.scene,
       }}
     >
       <div style={{ display: "flex", flexDirection: "column", minHeight: mobil ? 0 : "100dvh", minWidth: 0 }}>
@@ -183,17 +184,17 @@ export function MegApp({
             alignItems: "center",
             gap: 10,
             padding: "12px 16px",
-            borderBottom: `1px solid ${T.border}`,
+            borderBottom: `1px solid ${TL.hair}`,
             position: "sticky",
             top: 0,
             zIndex: 5,
-            background: T.bg,
+            background: TL.scene,
             flex: "none",
           }}
         >
           <div style={{ minWidth: 0, flex: "1 1 160px" }}>
-            <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 15, fontWeight: 600, color: T.fg }}>Meg</h1>
-            <div style={{ fontFamily: T.mono, fontSize: 11, color: T.mut, marginTop: 2 }}>
+            <h1 style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 15, fontWeight: 600, color: TL.text }}>Meg</h1>
+            <div style={{ fontFamily: TL.font.mono, fontSize: 11, color: TL.mute, marginTop: 2 }}>
               Hei, {brukernavn.split(" ")[0]}
             </div>
           </div>
@@ -208,11 +209,11 @@ export function MegApp({
               style={{
                 minHeight: 32,
                 padding: "0 10px",
-                borderRadius: T.rPill,
-                border: `1px solid ${T.border}`,
-                background: T.panel2,
-                color: T.fg,
-                fontFamily: T.mono,
+                borderRadius: TL.radius.pill,
+                border: `1px solid ${TL.hair}`,
+                background: TL.dock,
+                color: TL.text,
+                fontFamily: TL.font.mono,
                 fontSize: 12,
                 fontWeight: 600,
                 cursor: "pointer",
@@ -236,18 +237,18 @@ export function MegApp({
               alignItems: "center",
               gap: 6,
               padding: "0 10px",
-              borderRadius: T.rTag,
-              border: `1px solid ${T.border}`,
+              borderRadius: TL.radius.row,
+              border: `1px solid ${TL.hair}`,
               background: "transparent",
-              color: T.mut,
-              fontFamily: T.ui,
+              color: TL.mute,
+              fontFamily: TL.font.sans,
               fontSize: 12,
               cursor: "pointer",
               flex: "none",
             }}
           >
             <Icon name="search" size={14} strokeWidth={1.7} />
-            {!mobil && <kbd style={{ fontFamily: T.mono, fontSize: 10 }}>⌘K</kbd>}
+            {!mobil && <kbd style={{ fontFamily: TL.font.mono, fontSize: 10 }}>⌘K</kbd>}
           </button>
 
           {mobil && (
@@ -259,11 +260,11 @@ export function MegApp({
               style={{
                 minHeight: 32,
                 padding: "0 10px",
-                borderRadius: T.rTag,
-                border: `1px solid ${T.border}`,
-                background: T.panel2,
-                color: T.fg,
-                fontFamily: T.ui,
+                borderRadius: TL.radius.row,
+                border: `1px solid ${TL.hair}`,
+                background: TL.dock,
+                color: TL.text,
+                fontFamily: TL.font.sans,
                 fontSize: 12,
                 fontWeight: 500,
                 cursor: "pointer",
@@ -312,9 +313,9 @@ export function MegApp({
             maxHeight: "calc(100dvh - 32px)",
             minWidth: 0,
             display: "flex",
-            borderRadius: T.rCard,
+            borderRadius: TL.radius.card,
             overflow: "hidden",
-            border: `1px solid ${T.border}`,
+            border: `1px solid ${TL.hair}`,
           }}
         >
           <ArtefaktPanel mobil={false} open onClose={() => undefined} tittel={ARTEFAKT_TITTEL[activeArtifact]}>

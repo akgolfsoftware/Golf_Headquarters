@@ -1,4 +1,5 @@
 "use client";
+import { TL } from "@/lib/v2/train-lock";
 
 /**
  * PlayerHQ · Turneringer — Paper-port W1 (fase2).
@@ -17,7 +18,7 @@
 import { useState, useTransition } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { T, Caps } from "@/components/v2";
+import { Caps } from "@/components/v2";
 import { Icon } from "@/components/v2/icon";
 import type {
   PlanleggerTurnering,
@@ -80,9 +81,9 @@ function TurnRad({
         display: "flex",
         alignItems: "center",
         gap: 12,
-        background: T.panel,
-        border: `1px solid ${T.border}`,
-        borderRadius: T.rCard,
+        background: TL.elev,
+        border: `1px solid ${TL.hair}`,
+        borderRadius: TL.radius.card,
         padding: "12px 16px",
         marginBottom: 8,
         minWidth: 0,
@@ -102,18 +103,18 @@ function TurnRad({
         }}
       >
         <span style={{ flex: "none", width: 44, textAlign: "center" }}>
-          <span style={{ display: "block", fontFamily: T.mono, fontSize: 15, fontWeight: 600, fontVariantNumeric: "tabular-nums", color: T.fg }}>
+          <span style={{ display: "block", fontFamily: TL.font.mono, fontSize: 15, fontWeight: 600, fontVariantNumeric: "tabular-nums", color: TL.text }}>
             {dag}
           </span>
-          <span style={{ display: "block", fontFamily: T.mono, fontSize: 9.5, textTransform: "uppercase", color: T.mut }}>
+          <span style={{ display: "block", fontFamily: TL.font.mono, fontSize: 9.5, textTransform: "uppercase", color: TL.mute }}>
             {mnd}
           </span>
         </span>
         <span style={{ flex: 1, minWidth: 0 }}>
-          <span style={{ display: "block", fontSize: 13.5, fontWeight: 600, fontFamily: T.ui, color: T.fg, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+          <span style={{ display: "block", fontSize: 13.5, fontWeight: 600, fontFamily: TL.font.sans, color: TL.text, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
             {t.name}
           </span>
-          <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+          <span style={{ display: "block", fontFamily: TL.font.mono, fontSize: 10.5, color: TL.mute, marginTop: 2, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
             {meta}
           </span>
         </span>
@@ -134,14 +135,14 @@ function TurnRad({
           alignItems: "center",
           padding: "3px 8px",
           minHeight: 28,
-          borderRadius: T.rPill,
-          fontFamily: T.mono,
+          borderRadius: TL.radius.pill,
+          fontFamily: TL.font.mono,
           fontSize: 10,
           letterSpacing: "0.04em",
           textTransform: "uppercase",
-          background: T.panel2,
-          color: tier === "A" ? T.info : T.mut,
-          border: `1px solid ${T.border}`,
+          background: TL.dock,
+          color: tier === "A" ? TL.viz.target : TL.mute,
+          border: `1px solid ${TL.hair}`,
           cursor: pending ? "wait" : "pointer",
         }}
       >
@@ -196,19 +197,19 @@ export function TurneringPlanleggerV2({
     <div
       data-paper-slug="playerhq-turneringer"
       data-od-id="playerhq-turneringer"
-      style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}
+      style={{ display: "flex", flexDirection: "column", gap: 16, maxWidth: 720, margin: "0 auto", width: "100%" }}
     >
       {feil && (
         <div
           role="alert"
           style={{
             padding: "12px 14px",
-            borderRadius: T.rCard,
-            border: `1px solid color-mix(in srgb, ${T.warn} 40%, ${T.border})`,
-            background: `color-mix(in srgb, ${T.warn} 10%, ${T.panel2})`,
-            fontFamily: T.ui,
+            borderRadius: TL.radius.card,
+            border: `1px solid color-mix(in srgb, ${TL.warn} 40%, ${TL.hair})`,
+            background: `color-mix(in srgb, ${TL.warn} 10%, ${TL.dock})`,
+            fontFamily: TL.font.sans,
             fontSize: 13,
-            color: T.fg,
+            color: TL.text,
           }}
         >
           {feil}
@@ -219,17 +220,17 @@ export function TurneringPlanleggerV2({
       {frist && frist.entryClosesLabel && (
         <div
           style={{
-            background: T.handlingSoft,
-            border: `1px solid ${T.border}`,
-            borderRadius: T.rCard,
+            background: TL.dim,
+            border: `1px solid ${TL.hair}`,
+            borderRadius: TL.radius.card,
             padding: 16,
           }}
         >
           <Caps>Én ting nå</Caps>
-          <h3 style={{ margin: "8px 0", fontFamily: T.disp, fontSize: 15, fontWeight: 600, color: T.fg }}>
+          <h3 style={{ margin: "8px 0", fontFamily: TL.font.sans, fontSize: 15, fontWeight: 600, color: TL.text }}>
             Påmeldingsfristen for {frist.name} går ut {frist.entryClosesLabel}
           </h3>
-          <p style={{ margin: "0 0 16px", fontFamily: T.bodyFont, fontSize: 14, color: T.mut, maxWidth: "52ch" }}>
+          <p style={{ margin: "0 0 16px", fontFamily: TL.font.sans, fontSize: 14, color: TL.mute, maxWidth: "52ch" }}>
             {frist.venue ? `${frist.venue} ` : ""}
             {fristKort(frist.startDate)}. Turneringen står som plan{" "}
             {frist.entry?.planTier ?? "B"} i sesongplanen din, men du er ikke
@@ -249,10 +250,10 @@ export function TurneringPlanleggerV2({
               justifyContent: "center",
               minHeight: 56,
               width: "100%",
-              borderRadius: T.rCard,
-              background: T.handling,
-              color: T.onHandling,
-              fontFamily: T.ui,
+              borderRadius: TL.radius.card,
+              background: TL.fill,
+              color: TL.onFill,
+              fontFamily: TL.font.sans,
               fontSize: 14,
               fontWeight: 600,
             }}
@@ -267,15 +268,15 @@ export function TurneringPlanleggerV2({
         <div
           style={{
             padding: "24px 16px",
-            background: T.panel2,
-            border: `1px dashed ${T.border}`,
-            borderRadius: T.rCard,
+            background: TL.dock,
+            border: `1px dashed ${TL.hair}`,
+            borderRadius: TL.radius.card,
           }}
         >
-          <h3 style={{ margin: "0 0 8px", fontFamily: T.disp, fontSize: 15, fontWeight: 600, color: T.fg }}>
+          <h3 style={{ margin: "0 0 8px", fontFamily: TL.font.sans, fontSize: 15, fontWeight: 600, color: TL.text }}>
             Ingen turneringer i planen din
           </h3>
-          <p style={{ margin: "0 0 12px", fontFamily: T.bodyFont, fontSize: 13.5, color: T.mut }}>
+          <p style={{ margin: "0 0 12px", fontFamily: TL.font.sans, fontSize: 13.5, color: TL.mute }}>
             Sesongplanen din har ingen turneringer ennå. Katalogen under viser
             hva som finnes — eller be Anders foreslå en turneringsplan.
           </p>
@@ -291,10 +292,10 @@ export function TurneringPlanleggerV2({
               justifyContent: "center",
               minHeight: 56,
               width: "100%",
-              borderRadius: T.rCard,
-              background: T.handling,
-              color: T.onHandling,
-              fontFamily: T.ui,
+              borderRadius: TL.radius.card,
+              background: TL.fill,
+              color: TL.onFill,
+              fontFamily: TL.font.sans,
               fontSize: 14,
               fontWeight: 600,
             }}
@@ -340,24 +341,24 @@ export function TurneringPlanleggerV2({
           display: "flex",
           alignItems: "center",
           gap: 10,
-          background: T.panel,
-          border: `1px solid ${T.border}`,
-          borderRadius: T.rCard,
+          background: TL.elev,
+          border: `1px solid ${TL.hair}`,
+          borderRadius: TL.radius.card,
           padding: "12px 16px",
           textDecoration: "none",
           color: "inherit",
         }}
       >
-        <Icon name="sparkles" size={16} style={{ color: T.mut, flex: "none" }} />
+        <Icon name="sparkles" size={16} style={{ color: TL.mute, flex: "none" }} />
         <div style={{ flex: 1, minWidth: 0 }}>
-          <span style={{ display: "block", fontFamily: T.ui, fontSize: 13, fontWeight: 600, color: T.fg }}>
+          <span style={{ display: "block", fontFamily: TL.font.sans, fontSize: 13, fontWeight: 600, color: TL.text }}>
             La AI foreslå turneringer
           </span>
-          <span style={{ display: "block", fontFamily: T.ui, fontSize: 11.5, color: T.mut, marginTop: 1 }}>
+          <span style={{ display: "block", fontFamily: TL.font.sans, fontSize: 11.5, color: TL.mute, marginTop: 1 }}>
             Rangert etter nivået og planen din
           </span>
         </div>
-        <Icon name="chevron-right" size={15} style={{ color: T.mut, flex: "none" }} />
+        <Icon name="chevron-right" size={15} style={{ color: TL.mute, flex: "none" }} />
       </Link>
 
       {/* Katalogen */}
@@ -365,7 +366,7 @@ export function TurneringPlanleggerV2({
         <Caps>katalogen · {iKatalogen.length}</Caps>
         <div style={{ marginTop: 8 }}>
           {iKatalogen.length === 0 ? (
-            <p style={{ margin: 0, fontFamily: T.bodyFont, fontSize: 13.5, color: T.mut }}>
+            <p style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 13.5, color: TL.mute }}>
               Ingen kommende turneringer i katalogen akkurat nå — den fylles av
               GolfBox-synken.
             </p>
@@ -394,15 +395,15 @@ export function TurneringPlanleggerV2({
           display: "flex",
           gap: 12,
           padding: "12px 16px",
-          borderRadius: T.rCard,
-          background: T.panel2,
-          border: `1px solid ${T.border}`,
-          fontFamily: T.bodyFont,
+          borderRadius: TL.radius.card,
+          background: TL.dock,
+          border: `1px solid ${TL.hair}`,
+          fontFamily: TL.font.sans,
           fontSize: 12.5,
-          color: T.mut,
+          color: TL.mute,
         }}
       >
-        <Icon name="pencil" size={16} style={{ color: T.mut, flex: "none", marginTop: 2 }} />
+        <Icon name="pencil" size={16} style={{ color: TL.mute, flex: "none", marginTop: 2 }} />
         <span>
           Påmelding og avmelding er ditt ansvar — appen minner deg om frister,
           men trykker aldri for deg. Anders ser planen din og gir råd, ikke

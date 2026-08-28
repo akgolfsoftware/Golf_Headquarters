@@ -1,5 +1,5 @@
 "use client";
-
+import { TL } from "@/lib/v2/train-lock";
 /**
  * AgencyOS Økter — v2 Presis + B-pakke (status + én primær CTA, tom = vei).
  * T.* only. Mørk AgencyOS. Uke-agenda for hele stallen.
@@ -8,22 +8,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import {
-  Caps,
-  Tittel,
-  Kort,
-  Rad,
-  KpiFlis,
-  AkseChip,
-  StatusPill,
-  FilterChips,
-  TomTilstand,
-  InnsiktChip,
-  CTAPill,
-  TidsPyramide,
-  T,
-  type StatusTone,
-} from "@/components/v2";
+import { Caps, Kort, Rad, KpiFlis, AkseChip, StatusPill, FilterChips, TomTilstand, InnsiktChip, CTAPill, TidsPyramide, type StatusTone } from "@/components/v2";
 import type { AkseKey } from "@/lib/v2/tokens";
 
 // ── Datakontrakt (mappes fra TrainingPlanSession i ruten) ───────
@@ -164,8 +149,8 @@ export function AdminOkterV2({ data }: { data: AdminOkterData }) {
     >
       <div>
         <div data-paper-pattern-topp data-paper-slug="agencyos-planbibliotek">
-          <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>Økter</h1>
-          <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>AgencyOS</span>
+          <h1 style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 17, fontWeight: 600, color: TL.text }}>Økter</h1>
+          <span style={{ display: "block", fontFamily: TL.font.mono, fontSize: 10.5, color: TL.mute, marginTop: 2 }}>AgencyOS</span>
         </div>
       </div>
       <StatusPill tone={statusTone}>{statusTekst}</StatusPill>
@@ -183,7 +168,7 @@ export function AdminOkterV2({ data }: { data: AdminOkterData }) {
   // Tom uke: ærlig tom-tilstand + vei
   if (data.dager.length === 0) {
     return (
-      <div data-paper-wave-h="okter" data-paper-pattern style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 960, margin: "0 auto", width: "100%" }}>
+      <div data-paper-wave-h="okter" data-paper-pattern style={{ display: "flex", flexDirection: "column", gap: 16, maxWidth: 960, margin: "0 auto", width: "100%" }}>
         {hode}
         <Kort>
           <TomTilstand
@@ -198,10 +183,10 @@ export function AdminOkterV2({ data }: { data: AdminOkterData }) {
           style={{
             textDecoration: "none",
             textAlign: "center",
-            fontFamily: T.ui,
+            fontFamily: TL.font.sans,
             fontSize: 12,
             fontWeight: 600,
-            color: T.mut,
+            color: TL.mute,
           }}
         >
           Eller åpne kalender →
@@ -212,7 +197,7 @@ export function AdminOkterV2({ data }: { data: AdminOkterData }) {
 
   // ── KPI-flis (alle ukas nøkkeltall) ───────────────────────────
   const kpiRad = (
-    <div className="grid grid-cols-2 md:grid-cols-5" style={{ gap: T.gap }}>
+    <div className="grid grid-cols-2 md:grid-cols-5" style={{ gap: 16 }}>
       <KpiFlis label="Økter denne uka" value={kpi.total} />
       <KpiFlis label="Gjennomført" value={kpi.gjennomfort} />
       <KpiFlis label="Planlagt" value={kpi.planlagt} />
@@ -267,10 +252,10 @@ export function AdminOkterV2({ data }: { data: AdminOkterData }) {
               style={{
                 width: 44,
                 flex: "none",
-                fontFamily: T.mono,
+                fontFamily: TL.font.mono,
                 fontSize: 11,
                 fontWeight: 700,
-                color: o.naa ? T.lime : T.mut,
+                color: o.naa ? TL.fill : TL.mute,
                 fontVariantNumeric: "tabular-nums",
               }}
             >
@@ -305,7 +290,7 @@ export function AdminOkterV2({ data }: { data: AdminOkterData }) {
     ) : (
       <div
         className="grid grid-cols-1 lg:grid-cols-2"
-        style={{ gap: T.gap, alignItems: "start" }}
+        style={{ gap: 16, alignItems: "start" }}
       >
         {dagerFiltrert.map(dagKort)}
       </div>
@@ -320,7 +305,7 @@ export function AdminOkterV2({ data }: { data: AdminOkterData }) {
   const innsikt = <InnsiktChip cta="Planlegg i Workbench" href="/admin/planlegge">{innsiktTekst}</InnsiktChip>;
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+    <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
       {hode}
       {primaerCta}
       {kpiRad}

@@ -1,5 +1,5 @@
 "use client";
-
+import { TL } from "@/lib/v2/train-lock";
 /**
  * Foreldreportal · Barn-profil — Paper-port (W5).
  * Fasit: designsystem/paper/fase2/forelder/forelder-barn.html, data-vis="barn".
@@ -27,25 +27,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import type { PaymentStatus, PyramidArea } from "@/generated/prisma/client";
-import {
-  T,
-  fmtSg,
-  Caps,
-  Tittel,
-  Kort,
-  KpiFlis,
-  Pyramide,
-  TomTilstand,
-  AvatarFoto,
-  TilbakeLenke,
-  StatusPill,
-  HjelpTips,
-  Icon,
-  Knapp,
-  Rad,
-  type StatusTone,
-} from "@/components/v2";
-
+import { fmtSg, Caps, Tittel, Kort, KpiFlis, Pyramide, TomTilstand, AvatarFoto, TilbakeLenke, StatusPill, HjelpTips, Icon, Knapp, Rad, type StatusTone } from "@/components/v2";
 /* ── Datakontrakt (1:1 med page.tsx-loaderen) ──────────────────────── */
 
 export type BarnDetaljTab = "oversikt" | "uke" | "mal" | "okonomi";
@@ -177,7 +159,7 @@ function FaneRad({ barnId }: { barnId: string }) {
   return (
     <nav
       aria-label="Visning"
-      style={{ display: "flex", gap: 20, overflowX: "auto", borderBottom: `1px solid ${T.border}` }}
+      style={{ display: "flex", gap: 20, overflowX: "auto", borderBottom: `1px solid ${TL.hair}` }}
     >
       {FASIT_FANER.map((f) => (
         <Link
@@ -187,11 +169,11 @@ function FaneRad({ barnId }: { barnId: string }) {
           style={{
             display: "block",
             padding: "0 2px 10px",
-            fontFamily: T.ui,
+            fontFamily: TL.font.sans,
             fontSize: 14,
             fontWeight: f.aktiv ? 600 : 500,
-            color: f.aktiv ? T.fg : T.mut,
-            borderBottom: f.aktiv ? `2px solid ${T.fg}` : "2px solid transparent",
+            color: f.aktiv ? TL.text : TL.mute,
+            borderBottom: f.aktiv ? `2px solid ${TL.text}` : "2px solid transparent",
             whiteSpace: "nowrap",
             textDecoration: "none",
           }}
@@ -212,15 +194,15 @@ function Personvernlinje({ fornavn }: { fornavn: string }) {
         display: "flex",
         gap: 10,
         padding: "12px 14px",
-        background: T.panel2,
-        borderRadius: T.rCard,
-        fontFamily: T.ui,
+        background: TL.dock,
+        borderRadius: TL.radius.card,
+        fontFamily: TL.font.sans,
         fontSize: 12.5,
-        color: T.mut,
+        color: TL.mute,
         lineHeight: 1.5,
       }}
     >
-      <Icon name="shield-check" size={14} style={{ color: T.mut, flex: "none", marginTop: 1 }} />
+      <Icon name="shield-check" size={14} style={{ color: TL.mute, flex: "none", marginTop: 1 }} />
       <span>
         Du ser oppmøte, plan og økonomi. {fornavn}s egne notater, meldinger til coachen og velværelogg er
         hans/hennes — de vises ikke her.
@@ -248,7 +230,7 @@ function UtenSamtykke({ fornavn }: { fornavn: string }) {
         </div>
       </Kort>
       <Kort eyebrow="Dette ser du når samtykket er på plass">
-        <p style={{ fontFamily: T.ui, fontSize: 13, color: T.mut, margin: 0, lineHeight: 1.6 }}>
+        <p style={{ fontFamily: TL.font.sans, fontSize: 13, color: TL.mute, margin: 0, lineHeight: 1.6 }}>
           Oppmøte og treningstider, ukerapport fra coachen, plan for perioden, turneringer{" "}
           {fornavn} er påmeldt, og alt som gjelder betaling.
         </p>
@@ -320,14 +302,14 @@ function TabLenker({ barnId, aktiv }: { barnId: string; aktiv: BarnDetaljTab }) 
             aria-current={on ? "page" : undefined}
             className="v2-press v2-focus"
             style={{
-              fontFamily: T.ui,
+              fontFamily: TL.font.sans,
               fontSize: 13,
               fontWeight: 600,
               padding: "8px 15px",
               borderRadius: 9999,
-              color: on ? T.onHandling : T.fg2,
-              background: on ? T.handling : T.panel2,
-              border: `1px solid ${on ? "transparent" : T.border}`,
+              color: on ? TL.onFill : TL.mute,
+              background: on ? TL.fill : TL.dock,
+              border: `1px solid ${on ? "transparent" : TL.hair}`,
               whiteSpace: "nowrap",
               textDecoration: "none",
             }}
@@ -360,16 +342,16 @@ function ListeRad({
         alignItems: "center",
         gap: 12,
         padding: "11px 0",
-        borderBottom: last ? "none" : `1px solid ${T.border}`,
+        borderBottom: last ? "none" : `1px solid ${TL.hair}`,
       }}
     >
       <div style={{ flex: 1, minWidth: 0 }}>
         <div
           style={{
-            fontFamily: T.ui,
+            fontFamily: TL.font.sans,
             fontSize: 13.5,
             fontWeight: 600,
-            color: T.fg,
+            color: TL.text,
             whiteSpace: "nowrap",
             overflow: "hidden",
             textOverflow: "ellipsis",
@@ -381,12 +363,12 @@ function ListeRad({
           <div
             style={{
               marginTop: 3,
-              fontFamily: T.mono,
+              fontFamily: TL.font.mono,
               fontSize: 9.5,
               fontWeight: 700,
               letterSpacing: "0.08em",
               textTransform: "uppercase",
-              color: T.mut,
+              color: TL.mute,
               whiteSpace: "nowrap",
               overflow: "hidden",
               textOverflow: "ellipsis",
@@ -416,7 +398,7 @@ export function ForelderBarnDetaljV2({ data }: { data: ForelderBarnDetaljData })
       data-paper-slug="forelder-barn"
       data-paper-wave-e="forelder-sub"
       data-paper-portal-forelder-barn-detalj
-      style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}
+      style={{ display: "flex", flexDirection: "column", gap: 16, maxWidth: 720, margin: "0 auto", width: "100%" }}
     >
       {/* Tilbake + hode */}
       <div>
@@ -431,7 +413,7 @@ export function ForelderBarnDetaljV2({ data }: { data: ForelderBarnDetaljData })
           </Caps>
           <div style={{ marginTop: 4 }}>
             <Tittel mobile={mobile}>
-              <span style={{ color: T.lime }}>{fornavn}</span>
+              <span style={{ color: TL.fill }}>{fornavn}</span>
               {etternavn ? ` ${etternavn}` : ""}
             </Tittel>
           </div>
@@ -441,12 +423,12 @@ export function ForelderBarnDetaljV2({ data }: { data: ForelderBarnDetaljData })
               alignItems: "center",
               gap: 6,
               marginTop: 6,
-              fontFamily: T.mono,
+              fontFamily: TL.font.mono,
               fontSize: 9.5,
               fontWeight: 700,
               letterSpacing: "0.08em",
               textTransform: "uppercase",
-              color: T.mut,
+              color: TL.mute,
             }}
           >
             {barn.alder != null ? `${barn.alder} år · ` : ""}HCP{" "}
@@ -466,7 +448,7 @@ export function ForelderBarnDetaljV2({ data }: { data: ForelderBarnDetaljData })
           <Personvernlinje fornavn={fornavn} />
 
           {/* Oppmøte-proxy — samme kilde som «Uke»-fanen under, løftet opp per fasit */}
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: T.gap }}>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 16 }}>
             <KpiFlis label="Økter · 4 uker" value={data.uke.antall} instant />
             <KpiFlis label="Timer trent" value={String(Math.round((data.uke.totalMinutter / 60) * 10) / 10).replace(".", ",")} sub="siste 7 dager" instant />
             <KpiFlis label="Runder" value={data.antallRunder} sub="siste 30 dager" instant />
@@ -480,12 +462,12 @@ export function ForelderBarnDetaljV2({ data }: { data: ForelderBarnDetaljData })
                   key={d.dato.toISOString()}
                   style={{
                     padding: "8px 0",
-                    borderRadius: T.rTag,
-                    background: d.time ? T.panel2 : "transparent",
-                    border: d.time ? "none" : `1px dashed ${T.border}`,
-                    fontFamily: T.mono,
+                    borderRadius: TL.radius.row,
+                    background: d.time ? TL.dock : "transparent",
+                    border: d.time ? "none" : `1px dashed ${TL.hair}`,
+                    fontFamily: TL.font.mono,
                     fontSize: 10,
-                    color: d.time ? T.fg : T.mut,
+                    color: d.time ? TL.text : TL.mute,
                     textAlign: "center",
                   }}
                 >
@@ -495,7 +477,7 @@ export function ForelderBarnDetaljV2({ data }: { data: ForelderBarnDetaljData })
                 </div>
               ))}
             </div>
-            <p style={{ marginTop: 12, fontFamily: T.ui, fontSize: 12.5, color: T.mut, marginBottom: 0 }}>
+            <p style={{ marginTop: 12, fontFamily: TL.font.sans, fontSize: 12.5, color: TL.mute, marginBottom: 0 }}>
               {data.ukeGrid.filter((d) => d.time != null).length} økter planlagt denne uka.
             </p>
           </Kort>
@@ -504,10 +486,10 @@ export function ForelderBarnDetaljV2({ data }: { data: ForelderBarnDetaljData })
           <Kort eyebrow="Ukerapport fra coach">
             {data.coachMelding ? (
               <>
-                <p style={{ fontFamily: T.bodyFont, fontSize: 14, color: T.fg, lineHeight: 1.6, margin: 0 }}>
+                <p style={{ fontFamily: TL.font.sans, fontSize: 14, color: TL.text, lineHeight: 1.6, margin: 0 }}>
                   {data.coachMelding.tekst || data.coachMelding.forfatter}
                 </p>
-                <div style={{ display: "flex", justifyContent: "space-between", marginTop: 12, fontFamily: T.mono, fontSize: 10.5, color: T.mut }}>
+                <div style={{ display: "flex", justifyContent: "space-between", marginTop: 12, fontFamily: TL.font.mono, fontSize: 10.5, color: TL.mute }}>
                   <span>Sendt</span>
                   <span>{NB_KORT.format(data.coachMelding.sendtAt)}</span>
                 </div>
@@ -522,7 +504,7 @@ export function ForelderBarnDetaljV2({ data }: { data: ForelderBarnDetaljData })
               onClick={() => router.push(`/forelder/barn/${barn.id}?tab=uke`)}
               title={`Neste økt · ${data.nesteOkt.title}`}
               sub={`${NB_KORT.format(data.nesteOkt.scheduledAt)} · ${NB_KL.format(data.nesteOkt.scheduledAt)}${data.nesteOkt.location ? ` · ${data.nesteOkt.location}` : ""}`}
-              trailing={<Icon name="chevron-right" size={16} style={{ color: T.mut }} />}
+              trailing={<Icon name="chevron-right" size={16} style={{ color: TL.mute }} />}
             />
           )}
 
@@ -531,7 +513,7 @@ export function ForelderBarnDetaljV2({ data }: { data: ForelderBarnDetaljData })
               onClick={() => router.push("/forelder/ukerapport")}
               title={data.nesteTurnering.navn}
               sub={`${NB_KORT.format(data.nesteTurnering.dato)} · ${TURNERING_STATUS[data.nesteTurnering.status] ?? data.nesteTurnering.status}`}
-              trailing={<Icon name="chevron-right" size={16} style={{ color: T.mut }} />}
+              trailing={<Icon name="chevron-right" size={16} style={{ color: TL.mute }} />}
             />
           )}
 
@@ -560,7 +542,7 @@ export function ForelderBarnDetaljV2({ data }: { data: ForelderBarnDetaljData })
         {data.aktivPlan ? (
           <>
             <Pyramide data={data.pyramide.map((p) => ({ akse: p.akse, value: p.pct }))} max={100} showValues />
-            <span style={{ marginTop: 10, fontFamily: T.ui, fontSize: 11.5, color: T.mut }}>
+            <span style={{ marginTop: 10, fontFamily: TL.font.sans, fontSize: 11.5, color: TL.mute }}>
               Andel av øktene i planen, i prosent.
             </span>
           </>
@@ -583,18 +565,18 @@ export function ForelderBarnDetaljV2({ data }: { data: ForelderBarnDetaljData })
                 <div key={g.id}>
                   <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 12 }}>
                     <div style={{ minWidth: 0 }}>
-                      <div style={{ fontFamily: T.ui, fontSize: 13.5, fontWeight: 600, color: T.fg }}>
+                      <div style={{ fontFamily: TL.font.sans, fontSize: 13.5, fontWeight: 600, color: TL.text }}>
                         {g.title}
                       </div>
                       <div
                         style={{
                           marginTop: 3,
-                          fontFamily: T.mono,
+                          fontFamily: TL.font.mono,
                           fontSize: 9,
                           fontWeight: 700,
                           letterSpacing: "0.08em",
                           textTransform: "uppercase",
-                          color: T.mut,
+                          color: TL.mute,
                         }}
                       >
                         {goalTypeLabel(g.type)}
@@ -602,7 +584,7 @@ export function ForelderBarnDetaljV2({ data }: { data: ForelderBarnDetaljData })
                         {frist ? ` · frist ${frist}` : ""}
                       </div>
                     </div>
-                    <Icon name="flag" size={13} style={{ color: T.mut, flex: "none", marginTop: 2 }} />
+                    <Icon name="flag" size={13} style={{ color: TL.mute, flex: "none", marginTop: 2 }} />
                   </div>
                   {g.fremdriftPct != null && (
                     <div
@@ -610,7 +592,7 @@ export function ForelderBarnDetaljV2({ data }: { data: ForelderBarnDetaljData })
                         marginTop: 8,
                         height: 7,
                         borderRadius: 9999,
-                        background: T.track,
+                        background: TL.hair,
                         overflow: "hidden",
                       }}
                     >
@@ -619,7 +601,7 @@ export function ForelderBarnDetaljV2({ data }: { data: ForelderBarnDetaljData })
                           width: `${g.fremdriftPct}%`,
                           height: "100%",
                           borderRadius: 9999,
-                          background: T.handling,
+                          background: TL.fill,
                           opacity: 0.9,
                         }}
                       />
@@ -647,7 +629,7 @@ export function ForelderBarnDetaljV2({ data }: { data: ForelderBarnDetaljData })
               />
             ) : (
               <>
-                <div style={{ fontFamily: T.disp, fontSize: 16, fontWeight: 700, color: T.fg, marginBottom: 4 }}>
+                <div style={{ fontFamily: TL.font.sans, fontSize: 16, fontWeight: 700, color: TL.text, marginBottom: 4 }}>
                   {data.aktivPlan.name}
                 </div>
                 {data.aktivPlan.sessions.map((s, i) => (
@@ -662,15 +644,15 @@ export function ForelderBarnDetaljV2({ data }: { data: ForelderBarnDetaljData })
                             display: "inline-flex",
                             alignItems: "center",
                             gap: 4,
-                            fontFamily: T.mono,
+                            fontFamily: TL.font.mono,
                             fontSize: 11.5,
                             fontWeight: 700,
                             fontVariantNumeric: "tabular-nums",
-                            color: T.fg2,
+                            color: TL.mute,
                             flex: "none",
                           }}
                         >
-                          <Icon name="star" size={12} style={{ color: T.lime }} />
+                          <Icon name="star" size={12} style={{ color: TL.fill }} />
                           {s.rating}/5
                         </span>
                       ) : undefined
@@ -697,11 +679,11 @@ export function ForelderBarnDetaljV2({ data }: { data: ForelderBarnDetaljData })
                   trailing={
                     <span
                       style={{
-                        fontFamily: T.mono,
+                        fontFamily: TL.font.mono,
                         fontSize: 12,
                         fontWeight: 700,
                         fontVariantNumeric: "tabular-nums",
-                        color: T.fg2,
+                        color: TL.mute,
                         flex: "none",
                       }}
                     >
@@ -720,7 +702,7 @@ export function ForelderBarnDetaljV2({ data }: { data: ForelderBarnDetaljData })
       {/* Uke */}
       {tab === "uke" && (
         <>
-          <div style={{ display: "grid", gridTemplateColumns: mobile ? "1fr" : "repeat(3, 1fr)", gap: T.gap }}>
+          <div style={{ display: "grid", gridTemplateColumns: mobile ? "1fr" : "repeat(3, 1fr)", gap: 16 }}>
             <KpiFlis label="Økter · siste 28 dgr" value={data.uke.antall} instant />
             <KpiFlis
               label="Treningstid"
@@ -749,11 +731,11 @@ export function ForelderBarnDetaljV2({ data }: { data: ForelderBarnDetaljData })
                   trailing={
                     <span
                       style={{
-                        fontFamily: T.mono,
+                        fontFamily: TL.font.mono,
                         fontSize: 12,
                         fontWeight: 700,
                         fontVariantNumeric: "tabular-nums",
-                        color: T.fg2,
+                        color: TL.mute,
                         flex: "none",
                       }}
                     >
@@ -815,11 +797,11 @@ export function ForelderBarnDetaljV2({ data }: { data: ForelderBarnDetaljData })
                     <span style={{ display: "inline-flex", alignItems: "center", gap: 10, flex: "none" }}>
                       <span
                         style={{
-                          fontFamily: T.mono,
+                          fontFamily: TL.font.mono,
                           fontSize: 12.5,
                           fontWeight: 700,
                           fontVariantNumeric: "tabular-nums",
-                          color: T.fg,
+                          color: TL.text,
                         }}
                       >
                         {ore(p.amountOre)}

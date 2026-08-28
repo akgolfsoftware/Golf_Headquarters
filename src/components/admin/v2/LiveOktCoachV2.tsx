@@ -1,4 +1,5 @@
 "use client";
+import { TL } from "@/lib/v2/train-lock";
 
 /**
  * Coachens per-økt live-visning. Paper-fasit: fase1/agencyos-live-session.html.
@@ -10,7 +11,7 @@
  */
 
 import Link from "next/link";
-import { T, Caps, Kort, TomTilstand } from "@/components/v2";
+import { Caps, Kort, TomTilstand } from "@/components/v2";
 import type { LiveOktData } from "@/lib/agencyos/live-okt-data";
 
 const MMILJO_LABEL: Record<string, string> = {
@@ -19,9 +20,9 @@ const MMILJO_LABEL: Record<string, string> = {
 
 function linje(k: string, v: string) {
   return (
-    <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: 12, padding: "9px 0", borderBottom: `1px solid ${T.border}` }}>
-      <span style={{ fontFamily: T.ui, fontSize: 12.5, color: T.fg2 }}>{k}</span>
-      <span style={{ fontFamily: T.mono, fontSize: 13, fontWeight: 700, color: T.fg }}>{v}</span>
+    <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: 12, padding: "9px 0", borderBottom: `1px solid ${TL.hair}` }}>
+      <span style={{ fontFamily: TL.font.sans, fontSize: 12.5, color: TL.mute }}>{k}</span>
+      <span style={{ fontFamily: TL.font.mono, fontSize: 13, fontWeight: 700, color: TL.text }}>{v}</span>
     </div>
   );
 }
@@ -34,18 +35,16 @@ function fmtVarighet(sec: number | null): string {
 }
 
 export function LiveOktCoachV2({ data }: { data: LiveOktData }) {
-  const varighet = `${data.varighetPlanlagtMin} min planlagt`;
-
   return (
     <div
       data-paper-agencyos-live-session
       data-paper-wave-f="live-session"
       data-od-id="agencyos-live-session" data-paper-slug="agencyos-live-session"
-      style={{ display: "flex", flexDirection: "column", gap: T.gap, width: "100%", maxWidth: 1080 }}
+      style={{ display: "flex", flexDirection: "column", gap: 16, width: "100%", maxWidth: 1080 }}
     >
       <div>
-        <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>{data.tittel}</h1>
-        <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>
+        <h1 style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 17, fontWeight: 600, color: TL.text }}>{data.tittel}</h1>
+        <span style={{ display: "block", fontFamily: TL.font.mono, fontSize: 10.5, color: TL.mute, marginTop: 2 }}>
           {new Date(data.startTime).toLocaleDateString("nb-NO", { weekday: "short", day: "numeric", month: "short" })} ·{" "}
           {new Date(data.startTime).toLocaleTimeString("nb-NO", { hour: "2-digit", minute: "2-digit" })}–
           {MMILJO_LABEL[data.miljo] ?? data.miljo}
@@ -56,16 +55,16 @@ export function LiveOktCoachV2({ data }: { data: LiveOktData }) {
         <Kort
           pad="16px 18px"
           style={{
-            border: `1px solid color-mix(in srgb, ${T.handling} 35%, ${T.border})`,
-            borderLeft: `3px solid ${T.handling}`,
-            background: `color-mix(in srgb, ${T.handling} 6%, ${T.panel})`,
+            border: `1px solid color-mix(in srgb, ${TL.fill} 35%, ${TL.hair})`,
+            borderLeft: `3px solid ${TL.fill}`,
+            background: `color-mix(in srgb, ${TL.fill} 6%, ${TL.elev})`,
           }}
         >
-          <Caps size={9} color={T.handling}>Én ting nå</Caps>
-          <div style={{ marginTop: 8, fontFamily: T.disp, fontSize: 18, fontWeight: 600, color: T.fg }}>
+          <Caps size={9} color={TL.fill}>Én ting nå</Caps>
+          <div style={{ marginTop: 8, fontFamily: TL.font.sans, fontSize: 18, fontWeight: 600, color: TL.text }}>
             Start opptaket før du sier noe
           </div>
-          <p style={{ margin: "6px 0 0", fontFamily: T.ui, fontSize: 13, color: T.fg2, lineHeight: 1.5 }}>
+          <p style={{ margin: "6px 0 0", fontFamily: TL.font.sans, fontSize: 13, color: TL.mute, lineHeight: 1.5 }}>
             Alt du sier fra du trykker og til du stopper blir til transkript, analyse og hjemmelekse. Starter du sent,
             mister spilleren begynnelsen av det du forklarte.
           </p>
@@ -75,7 +74,7 @@ export function LiveOktCoachV2({ data }: { data: LiveOktData }) {
               className="v2-press v2-focus"
               style={{
                 display: "inline-flex", alignItems: "center", gap: 8, minHeight: 56, padding: "10px 16px",
-                borderRadius: 12, background: T.handling, color: T.onHandling, fontFamily: T.ui, fontSize: 14,
+                borderRadius: 12, background: TL.fill, color: TL.onFill, fontFamily: TL.font.sans, fontSize: 14,
                 fontWeight: 600, textDecoration: "none",
               }}
             >
@@ -85,8 +84,8 @@ export function LiveOktCoachV2({ data }: { data: LiveOktData }) {
         </Kort>
       )}
 
-      <div className="grid grid-cols-1 lg:grid-cols-[1.5fr_1fr]" style={{ gap: T.gap, alignItems: "start" }}>
-        <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+      <div className="grid grid-cols-1 lg:grid-cols-[1.5fr_1fr]" style={{ gap: 16, alignItems: "start" }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
           <Kort eyebrow="Økta">
             {linje("Spiller", data.spillerNavn ?? "ikke satt")}
             {linje("Coach", data.coachNavn ?? "—")}
@@ -95,7 +94,7 @@ export function LiveOktCoachV2({ data }: { data: LiveOktData }) {
             {linje("Type", data.type)}
             {linje("Status", data.status)}
             {data.malsetning && (
-              <p style={{ margin: "12px 0 0", fontFamily: T.ui, fontSize: 12.5, color: T.mut, lineHeight: 1.5 }}>
+              <p style={{ margin: "12px 0 0", fontFamily: TL.font.sans, fontSize: 12.5, color: TL.mute, lineHeight: 1.5 }}>
                 {data.malsetning}
               </p>
             )}
@@ -110,29 +109,29 @@ export function LiveOktCoachV2({ data }: { data: LiveOktData }) {
                   key={d.id}
                   style={{
                     display: "flex", justifyContent: "space-between", gap: 12, padding: "10px 0",
-                    borderBottom: i === data.driller.length - 1 ? "none" : `1px solid ${T.border}`,
+                    borderBottom: i === data.driller.length - 1 ? "none" : `1px solid ${TL.hair}`,
                   }}
                 >
-                  <span style={{ fontFamily: T.ui, fontSize: 13, color: T.fg }}>{d.navn}</span>
-                  <span style={{ fontFamily: T.mono, fontSize: 12, color: T.mut }}>{d.pyramide} · {d.varighetMin} min</span>
+                  <span style={{ fontFamily: TL.font.sans, fontSize: 13, color: TL.text }}>{d.navn}</span>
+                  <span style={{ fontFamily: TL.font.mono, fontSize: 12, color: TL.mute }}>{d.pyramide} · {d.varighetMin} min</span>
                 </div>
               ))
             )}
           </Kort>
         </div>
 
-        <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
           <Kort eyebrow="Opptak">
-            <div style={{ fontFamily: T.disp, fontSize: 15, fontWeight: 600, color: T.fg }}>Lyd fra økta</div>
+            <div style={{ fontFamily: TL.font.sans, fontSize: 15, fontWeight: 600, color: TL.text }}>Lyd fra økta</div>
             {data.opptak ? (
               <>
-                <p style={{ margin: "8px 0 0", fontFamily: T.mono, fontSize: 24, fontWeight: 600, color: T.fg }}>
+                <p style={{ margin: "8px 0 0", fontFamily: TL.font.mono, fontSize: 24, fontWeight: 600, color: TL.text }}>
                   {fmtVarighet(data.opptak.durationSec)}
                 </p>
-                <p style={{ margin: "4px 0 0", fontFamily: T.ui, fontSize: 12, color: T.mut }}>status: {data.opptak.status.toLowerCase()}</p>
+                <p style={{ margin: "4px 0 0", fontFamily: TL.font.sans, fontSize: 12, color: TL.mute }}>status: {data.opptak.status.toLowerCase()}</p>
               </>
             ) : (
-              <p style={{ margin: "10px 0 0", fontFamily: T.ui, fontSize: 12.5, color: T.mut, lineHeight: 1.5 }}>
+              <p style={{ margin: "10px 0 0", fontFamily: TL.font.sans, fontSize: 12.5, color: TL.mute, lineHeight: 1.5 }}>
                 Ingen opptak på denne økta ennå. Opptaket startes fra Én ting nå øverst.
               </p>
             )}
@@ -140,11 +139,11 @@ export function LiveOktCoachV2({ data }: { data: LiveOktData }) {
 
           <Kort eyebrow="Siste analyse">
             {data.opptak?.coachAnalyse ? (
-              <p style={{ margin: 0, fontFamily: T.ui, fontSize: 12.5, color: T.mut, lineHeight: 1.5 }}>{data.opptak.coachAnalyse}</p>
+              <p style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 12.5, color: TL.mute, lineHeight: 1.5 }}>{data.opptak.coachAnalyse}</p>
             ) : (
               <>
-                <div style={{ fontFamily: T.disp, fontSize: 14, fontWeight: 600, color: T.fg }}>Ingen analyse for denne økta</div>
-                <p style={{ margin: "6px 0 0", fontFamily: T.ui, fontSize: 12.5, color: T.mut, lineHeight: 1.5 }}>
+                <div style={{ fontFamily: TL.font.sans, fontSize: 14, fontWeight: 600, color: TL.text }}>Ingen analyse for denne økta</div>
+                <p style={{ margin: "6px 0 0", fontFamily: TL.font.sans, fontSize: 12.5, color: TL.mute, lineHeight: 1.5 }}>
                   {data.opptak
                     ? "Analysen lages av opptaket. Kjøres når opptaket er ferdig transkribert."
                     : "Analysen lages av opptaket. Start opptaket øverst, så kommer analysen hit når den er ferdig."}
@@ -155,7 +154,7 @@ export function LiveOktCoachV2({ data }: { data: LiveOktData }) {
 
           <Kort eyebrow="Transkript">
             {data.opptak?.transcript ? (
-              <p style={{ margin: 0, fontFamily: T.ui, fontSize: 12.5, color: T.mut, lineHeight: 1.5, whiteSpace: "pre-wrap" }}>
+              <p style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 12.5, color: TL.mute, lineHeight: 1.5, whiteSpace: "pre-wrap" }}>
                 {data.opptak.transcript}
               </p>
             ) : (

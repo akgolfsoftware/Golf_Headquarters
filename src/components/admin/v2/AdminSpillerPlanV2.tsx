@@ -1,5 +1,5 @@
 "use client";
-
+import { TL } from "@/lib/v2/train-lock";
 /**
  * AgencyOS Spiller-plan — v2 Presis + B-pakke (status + én primær «Lag plan»).
  * TechnicalPlan-liste · KPI · tom = Workbench. Kun T.* / v2.
@@ -7,20 +7,7 @@
 
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import {
-  Caps,
-  Kort,
-  Rad,
-  KpiFlis,
-  StatusPill,
-  CTAPill,
-  TilbakeLenke,
-  InnsiktChip,
-  TomTilstand,
-  Icon,
-  T,
-  type StatusTone,
-} from "@/components/v2";
+import { Caps, Kort, Rad, KpiFlis, StatusPill, CTAPill, TilbakeLenke, InnsiktChip, TomTilstand, Icon, type StatusTone } from "@/components/v2";
 import type { TechPlanStatus } from "@/generated/prisma/client";
 
 // ── Datakontrakt (mappes fra TechnicalPlan i ruten) ─────────────
@@ -96,8 +83,8 @@ export function AdminSpillerPlanV2({ data }: { data: AdminSpillerPlanData }) {
       <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 14, flexWrap: "wrap" }}>
         <div>
           <div data-paper-pattern-topp data-paper-slug="agencyos-planbibliotek">
-          <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>Spillerplan</h1>
-          <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>AgencyOS</span>
+          <h1 style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 17, fontWeight: 600, color: TL.text }}>Spillerplan</h1>
+          <span style={{ display: "block", fontFamily: TL.font.mono, fontSize: 10.5, color: TL.mute, marginTop: 2 }}>AgencyOS</span>
         </div>
         </div>
         <StatusPill tone={statusTone}>{statusTekst}</StatusPill>
@@ -107,7 +94,7 @@ export function AdminSpillerPlanV2({ data }: { data: AdminSpillerPlanData }) {
 
   // ── KPI ───────────────────────────────────────────────────────
   const kpi = (
-    <div className="grid grid-cols-3" style={{ gap: T.gap }}>
+    <div className="grid grid-cols-3" style={{ gap: 16 }}>
       <KpiFlis label="Planer" value={sortert.length} />
       <KpiFlis label="Aktive" value={aktive} tint={aktive > 0} />
       <KpiFlis label="Utkast" value={utkast} />
@@ -142,7 +129,7 @@ export function AdminSpillerPlanV2({ data }: { data: AdminSpillerPlanData }) {
           <Rad
             key={plan.id}
             onClick={() => router.push(`/admin/spillere/${spiller.id}/plan/${plan.id}`)}
-            leading={<Icon name="file-text" size={17} style={{ color: T.mut, flex: "none" }} />}
+            leading={<Icon name="file-text" size={17} style={{ color: TL.mute, flex: "none" }} />}
             title={plan.navn}
             sub={datoStreng(plan.startDato, plan.sluttDato)}
             meta={<StatusPill tone={STATUS_TONE[plan.status]}>{STATUS_LABEL[plan.status]}</StatusPill>}
@@ -160,7 +147,7 @@ export function AdminSpillerPlanV2({ data }: { data: AdminSpillerPlanData }) {
         : `${pl(aktive, "aktiv plan", "aktive planer")} — juster mål, drills og periodisering i Workbench.`;
 
   return (
-    <div data-paper-wave-h="spiller-plan" data-paper-pattern style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 960, margin: "0 auto", width: "100%" }}>
+    <div data-paper-wave-h="spiller-plan" data-paper-pattern style={{ display: "flex", flexDirection: "column", gap: 16, maxWidth: 960, margin: "0 auto", width: "100%" }}>
       {hode}
       {kpi}
       {primaerCta}

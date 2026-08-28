@@ -1,4 +1,5 @@
 "use client";
+import { TL } from "@/lib/v2/train-lock";
 
 /**
  * «Fortsett runde» når localStorage-kladd finnes.
@@ -8,7 +9,7 @@
 import Link from "next/link";
 import { useSyncExternalStore } from "react";
 import { lesKladdCached, lesKladdServer } from "@/lib/runde-logg/draft";
-import { T, Icon } from "@/components/v2";
+import { Icon } from "@/components/v2";
 
 const abonnerIngen = () => () => {};
 
@@ -47,9 +48,9 @@ export function FortsettRundeCta({ variant = "row" }: Props) {
           alignItems: "center",
           gap: 8,
           borderRadius: 999,
-          background: T.cta,
-          color: T.onCta,
-          fontFamily: T.ui,
+          background: TL.fill,
+          color: TL.onFill,
+          fontFamily: TL.font.sans,
           fontSize: 13,
           fontWeight: 700,
           padding: "10px 16px",
@@ -80,8 +81,8 @@ export function FortsettRundeCta({ variant = "row" }: Props) {
           borderRadius: 10,
           display: "grid",
           placeItems: "center",
-          background: `color-mix(in srgb, ${T.cta} 14%, transparent)`,
-          color: T.fg,
+          background: `color-mix(in srgb, ${TL.fill} 14%, transparent)`,
+          color: TL.text,
           flex: "none",
         }}
       >
@@ -91,10 +92,10 @@ export function FortsettRundeCta({ variant = "row" }: Props) {
         <span
           style={{
             display: "block",
-            fontFamily: T.ui,
+            fontFamily: TL.font.sans,
             fontSize: 14,
             fontWeight: 700,
-            color: T.fg,
+            color: TL.text,
           }}
         >
           {title}
@@ -102,16 +103,16 @@ export function FortsettRundeCta({ variant = "row" }: Props) {
         <span
           style={{
             display: "block",
-            fontFamily: T.ui,
+            fontFamily: TL.font.sans,
             fontSize: 12,
-            color: T.mut,
+            color: TL.mute,
             marginTop: 2,
           }}
         >
           {sub} · lagret på denne enheten
         </span>
       </span>
-      <Icon name="chevron-right" size={16} style={{ color: T.mut }} />
+      <Icon name="chevron-right" size={16} style={{ color: TL.mute }} />
     </Link>
   );
 }

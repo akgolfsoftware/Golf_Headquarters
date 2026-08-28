@@ -33,7 +33,8 @@
  */
 
 import { useEffect, useMemo, useRef, useState } from "react";
-import { T, type AkseKey } from "@/lib/v2/tokens";
+import { TL } from "@/lib/v2/train-lock";
+import { type AkseKey } from "@/lib/v2/tokens";
 import { AKSE_NAVN } from "@/components/v2";
 import { Icon } from "@/components/v2/icon";
 import { ArtefaktPanel, useErMobil } from "@/components/portal/v2/chat/ArtefaktPanel";
@@ -198,7 +199,7 @@ export function KonsollChat({
              kolonnen skal ikke tvinges høy. */
           minHeight: mobil ? 0 : "calc(100dvh - 60px)",
           minWidth: 0,
-          background: T.bg,
+          background: TL.scene,
         }}
       >
         <header
@@ -210,8 +211,8 @@ export function KonsollChat({
             alignItems: "center",
             gap: 10,
             padding: "10px 16px",
-            background: T.bg,
-            borderBottom: `1px solid ${T.border}`,
+            background: TL.scene,
+            borderBottom: `1px solid ${TL.hair}`,
             position: "sticky",
             top: 0,
             zIndex: 5,
@@ -219,8 +220,8 @@ export function KonsollChat({
           }}
         >
           <div style={{ minWidth: 0, flex: "1 1 180px" }}>
-            <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 15, fontWeight: 600, color: T.fg }}>Konsoll</h1>
-            <div style={{ fontFamily: T.mono, fontSize: 11, color: T.mut, marginTop: 2 }}>
+            <h1 style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 15, fontWeight: 600, color: TL.text }}>Konsoll</h1>
+            <div style={{ fontFamily: TL.font.mono, fontSize: 11, color: TL.mute, marginTop: 2 }}>
               {data.dayLabel}
               {klokke ? ` · ${klokke}` : ""}
               {data.liveSessionsCount > 0 ? ` · ${pl(data.liveSessionsCount, "økt pågår", "økter pågår")}` : ""}
@@ -244,11 +245,11 @@ export function KonsollChat({
               alignItems: "center",
               gap: 6,
               padding: "0 12px",
-              borderRadius: T.rTag,
-              border: `1px solid ${T.border}`,
-              background: T.panel,
-              color: T.fg2,
-              fontFamily: T.ui,
+              borderRadius: TL.radius.row,
+              border: `1px solid ${TL.hair}`,
+              background: TL.elev,
+              color: TL.mute,
+              fontFamily: TL.font.sans,
               fontSize: 12.5,
               cursor: "pointer",
               flex: "none",
@@ -259,7 +260,7 @@ export function KonsollChat({
               "Søk"
             ) : (
               <>
-                Kommandoer <kbd style={{ fontFamily: T.mono, fontSize: 11 }}>⌘K</kbd>
+                Kommandoer <kbd style={{ fontFamily: TL.font.mono, fontSize: 11 }}>⌘K</kbd>
               </>
             )}
           </button>
@@ -273,11 +274,11 @@ export function KonsollChat({
               style={{
                 minHeight: 40,
                 padding: "0 12px",
-                borderRadius: T.rTag,
-                border: `1px solid ${T.border}`,
-                background: T.panel,
-                color: T.fg,
-                fontFamily: T.ui,
+                borderRadius: TL.radius.row,
+                border: `1px solid ${TL.hair}`,
+                background: TL.elev,
+                color: TL.text,
+                fontFamily: TL.font.sans,
                 fontSize: 12.5,
                 fontWeight: 500,
                 cursor: "pointer",
@@ -625,10 +626,10 @@ export function KonsollChat({
                   display: "inline-flex",
                   alignItems: "center",
                   justifyContent: "center",
-                  background: T.panel2,
-                  border: `1px solid ${T.border}`,
-                  borderRadius: T.rTag,
-                  color: T.mut,
+                  background: TL.dock,
+                  border: `1px solid ${TL.hair}`,
+                  borderRadius: TL.radius.row,
+                  color: TL.mute,
                   cursor: "not-allowed",
                 }}
               >
@@ -659,9 +660,9 @@ export function KonsollChat({
             maxHeight: "calc(100dvh - 32px)",
             minWidth: 0,
             display: "flex",
-            borderRadius: T.rCard,
+            borderRadius: TL.radius.card,
             overflow: "hidden",
-            border: `1px solid ${T.border}`,
+            border: `1px solid ${TL.hair}`,
           }}
         >
           <ArtefaktPanel
@@ -710,24 +711,24 @@ function TomKonsoll({ kanChatte, onForslag }: { kanChatte: boolean; onForslag: (
         alignSelf: "stretch",
         maxWidth: 560,
         padding: "32px 24px",
-        borderRadius: T.rCard,
-        border: `1px dashed ${T.border}`,
-        background: T.panel2,
+        borderRadius: TL.radius.card,
+        border: `1px dashed ${TL.hair}`,
+        background: TL.dock,
         display: "flex",
         flexDirection: "column",
         gap: 16,
       }}
     >
       <div>
-        <h3 style={{ margin: 0, fontFamily: T.disp, fontSize: 16, fontWeight: 600, color: T.fg }}>
+        <h3 style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 16, fontWeight: 600, color: TL.text }}>
           Ingenting venter på deg nå
         </h3>
         <p
           style={{
             margin: "8px 0 0",
-            fontFamily: T.bodyFont,
+            fontFamily: TL.font.sans,
             fontSize: 14,
-            color: T.mut,
+            color: TL.mute,
             lineHeight: 1.6,
             maxWidth: "48ch",
           }}

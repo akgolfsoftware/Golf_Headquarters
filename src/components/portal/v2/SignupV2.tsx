@@ -27,6 +27,7 @@
 import { useState, type ReactNode, type CSSProperties } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { TL } from "@/lib/v2/train-lock";
 import { T } from "@/lib/v2/tokens";
 import { LogoAK, Caps, Icon } from "@/components/v2";
 import { createClient } from "@/lib/supabase/client";
@@ -134,8 +135,8 @@ function Felt({
           height: 44,
           padding: "0 14px",
           borderRadius: 12,
-          background: T.panel2,
-          border: `1px solid ${T.borderS}`,
+          background: TL.dock,
+          border: `1px solid ${TL.hair}`,
         }}
       >
         <input
@@ -152,10 +153,10 @@ function Felt({
             background: "transparent",
             border: "none",
             outline: "none",
-            fontFamily: mono ? T.mono : T.ui,
+            fontFamily: mono ? TL.font.mono : TL.font.sans,
             fontSize: 13.5,
             fontWeight: 500,
-            color: T.fg,
+            color: TL.text,
           }}
         />
         {trailing}
@@ -182,8 +183,8 @@ function Knapp({
 }) {
   const v: CSSProperties =
     variant === "primary"
-      ? { background: T.handling, color: T.onHandling, border: "none" }
-      : { background: T.panel3, color: T.fg, border: `1px solid ${T.borderS}` };
+      ? { background: TL.fill, color: TL.onFill, border: "none" }
+      : { background: TL.dim, color: TL.text, border: `1px solid ${TL.hair}` };
   return (
     <button
       type={type}
@@ -202,7 +203,7 @@ function Knapp({
         alignItems: "center",
         justifyContent: "center",
         gap: 9,
-        fontFamily: T.ui,
+        fontFamily: TL.font.sans,
         fontSize: 13.5,
         fontWeight: 600,
         ...v,
@@ -222,15 +223,15 @@ function GoogleG() {
         width: 18,
         height: 18,
         borderRadius: 9999,
-        background: T.panel,
-        border: `1px solid ${T.borderS}`,
+        background: TL.elev,
+        border: `1px solid ${TL.hair}`,
         display: "inline-flex",
         alignItems: "center",
         justifyContent: "center",
-        fontFamily: T.disp,
+        fontFamily: TL.font.sans,
         fontSize: 11,
         fontWeight: 700,
-        color: T.fg,
+        color: TL.text,
         flex: "none",
       }}
     >
@@ -242,19 +243,19 @@ function GoogleG() {
 function EllerSkille() {
   return (
     <div  data-paper-slug="auth-signup" style={{ display: "flex", alignItems: "center", gap: 12 }}>
-      <span style={{ flex: 1, height: 1, background: T.border }} />
+      <span style={{ flex: 1, height: 1, background: TL.hair }} />
       <span
         style={{
-          fontFamily: T.mono,
+          fontFamily: TL.font.mono,
           fontSize: 9,
           fontWeight: 700,
           letterSpacing: "0.1em",
-          color: T.mut,
+          color: TL.mute,
         }}
       >
         ELLER
       </span>
-      <span style={{ flex: 1, height: 1, background: T.border }} />
+      <span style={{ flex: 1, height: 1, background: TL.hair }} />
     </div>
   );
 }
@@ -265,13 +266,13 @@ function Lenke({ href, children }: { href: string; children: ReactNode }) {
     <Link
       href={href}
       style={{
-        fontFamily: T.ui,
+        fontFamily: TL.font.sans,
         fontSize: 12,
         fontWeight: 600,
-        color: T.fg2,
+        color: TL.mute,
         cursor: "pointer",
         textDecoration: "underline",
-        textDecorationColor: T.borderS,
+        textDecorationColor: TL.hair,
         textUnderlineOffset: 3,
       }}
     >
@@ -289,9 +290,9 @@ function Samtykke({ checked, onToggle }: { checked: boolean; onToggle: () => voi
         alignItems: "flex-start",
         gap: 10,
         cursor: "pointer",
-        fontFamily: T.ui,
+        fontFamily: TL.font.sans,
         fontSize: 12,
-        color: T.fg2,
+        color: TL.mute,
         lineHeight: 1.5,
       }}
     >
@@ -311,12 +312,12 @@ function Samtykke({ checked, onToggle }: { checked: boolean; onToggle: () => voi
           cursor: "pointer",
           display: "grid",
           placeItems: "center",
-          background: checked ? T.lime : T.panel2,
-          border: `1.5px solid ${checked ? T.lime : T.borderS}`,
-          transition: `background ${T.dur}ms ${T.ease}, border-color ${T.dur}ms ${T.ease}`,
+          background: checked ? TL.fill : TL.dock,
+          border: `1.5px solid ${checked ? TL.fill : TL.hair}`,
+          transition: `background ${180}ms ${TL.motion.ease}, border-color ${180}ms ${TL.motion.ease}`,
         }}
       >
-        {checked && <Icon name="check" size={13} strokeWidth={3} style={{ color: T.onHandling }} />}
+        {checked && <Icon name="check" size={13} strokeWidth={3} style={{ color: TL.onFill }} />}
       </button>
       <span>
         Jeg godtar{" "}
@@ -337,12 +338,12 @@ function Feilboks({ children }: { children: ReactNode }) {
         gap: 9,
         padding: "11px 13px",
         borderRadius: 12,
-        background: T.panel2,
-        border: `1px solid ${T.borderS}`,
+        background: TL.dock,
+        border: `1px solid ${TL.hair}`,
       }}
     >
-      <Icon name="triangle-alert" size={14} style={{ color: T.down, marginTop: 1, flex: "none" }} />
-      <span style={{ fontFamily: T.ui, fontSize: 12.5, fontWeight: 500, color: T.down }}>
+      <Icon name="triangle-alert" size={14} style={{ color: TL.danger, marginTop: 1, flex: "none" }} />
+      <span style={{ fontFamily: TL.font.sans, fontSize: 12.5, fontWeight: 500, color: TL.danger }}>
         {children}
       </span>
     </div>
@@ -384,9 +385,9 @@ function PakkeVelger({
                 gap: 4,
                 padding: 14,
                 borderRadius: 12,
-                background: aktiv ? T.panel3 : T.panel2,
-                border: `1px solid ${aktiv ? T.lime : T.border}`,
-                transition: `background ${T.dur}ms ${T.ease}, border-color ${T.dur}ms ${T.ease}`,
+                background: aktiv ? TL.dim : TL.dock,
+                border: `1px solid ${aktiv ? TL.fill : TL.hair}`,
+                transition: `background ${180}ms ${TL.motion.ease}, border-color ${180}ms ${TL.motion.ease}`,
               }}
             >
               {p.featured && (
@@ -397,23 +398,23 @@ function PakkeVelger({
                     right: 14,
                     borderRadius: 9999,
                     padding: "2px 9px",
-                    background: T.handling,
-                    fontFamily: T.mono,
+                    background: TL.fill,
+                    fontFamily: TL.font.mono,
                     fontSize: 8.5,
                     fontWeight: 800,
                     letterSpacing: "0.06em",
                     textTransform: "uppercase",
-                    color: T.onHandling,
+                    color: TL.onFill,
                   }}
                 >
                   Mest populær
                 </span>
               )}
               <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: 8 }}>
-                <span style={{ fontFamily: T.disp, fontSize: 14, fontWeight: 600, color: T.fg }}>
+                <span style={{ fontFamily: TL.font.sans, fontSize: 14, fontWeight: 600, color: TL.text }}>
                   {p.name}
                 </span>
-                <span style={{ fontFamily: T.mono, fontSize: 11.5, fontWeight: 700, color: T.lime }}>
+                <span style={{ fontFamily: TL.font.mono, fontSize: 11.5, fontWeight: 700, color: TL.fill }}>
                   {p.price}
                 </span>
               </div>
@@ -423,17 +424,17 @@ function PakkeVelger({
                     alignSelf: "flex-start",
                     borderRadius: 9999,
                     padding: "2px 8px",
-                    background: "color-mix(in srgb, var(--v2-lime) 12%, transparent)",
-                    fontFamily: T.mono,
+                    background: "color-mix(in srgb, var(--tl-fill) 12%, transparent)",
+                    fontFamily: TL.font.mono,
                     fontSize: 9,
                     fontWeight: 700,
-                    color: T.lime,
+                    color: TL.fill,
                   }}
                 >
                   {p.trialHint}
                 </span>
               )}
-              <span style={{ fontFamily: T.ui, fontSize: 12, lineHeight: 1.4, color: T.fg2 }}>
+              <span style={{ fontFamily: TL.font.sans, fontSize: 12, lineHeight: 1.4, color: TL.mute }}>
                 {p.desc}
               </span>
             </button>
@@ -457,19 +458,19 @@ function TalentInfo() {
         gap: 4,
         padding: 14,
         borderRadius: 12,
-        background: T.panel2,
-        border: `1px solid ${T.border}`,
+        background: TL.dock,
+        border: `1px solid ${TL.hair}`,
       }}
     >
       <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: 8 }}>
-        <span style={{ fontFamily: T.disp, fontSize: 14, fontWeight: 600, color: T.fg }}>
+        <span style={{ fontFamily: TL.font.sans, fontSize: 14, fontWeight: 600, color: TL.text }}>
           Gratis testprofil
         </span>
-        <span style={{ fontFamily: T.mono, fontSize: 11.5, fontWeight: 700, color: T.lime }}>
+        <span style={{ fontFamily: TL.font.mono, fontSize: 11.5, fontWeight: 700, color: TL.fill }}>
           0 kr
         </span>
       </div>
-      <span style={{ fontFamily: T.ui, fontSize: 12, lineHeight: 1.4, color: T.fg2 }}>
+      <span style={{ fontFamily: TL.font.sans, fontSize: 12, lineHeight: 1.4, color: TL.mute }}>
         Testbatteri, stats og SG-registrering.
       </span>
     </div>
@@ -505,13 +506,13 @@ function RolleVelger({
                 flex: 1,
                 height: 40,
                 borderRadius: 10,
-                fontFamily: T.ui,
+                fontFamily: TL.font.sans,
                 fontSize: 13,
                 fontWeight: aktiv ? 600 : 500,
-                background: aktiv ? T.panel3 : T.panel2,
-                border: `1px solid ${aktiv ? T.lime : T.border}`,
-                color: aktiv ? T.lime : T.fg2,
-                transition: `background ${T.dur}ms ${T.ease}, border-color ${T.dur}ms ${T.ease}`,
+                background: aktiv ? TL.dim : TL.dock,
+                border: `1px solid ${aktiv ? TL.fill : TL.hair}`,
+                color: aktiv ? TL.fill : TL.mute,
+                transition: `background ${180}ms ${TL.motion.ease}, border-color ${180}ms ${TL.motion.ease}`,
               }}
             >
               {r.label}
@@ -536,8 +537,8 @@ function BrandPanel() {
         minWidth: 420,
         position: "relative",
         overflow: "hidden",
-        borderRight: `1px solid ${T.border}`,
-        background: `radial-gradient(560px 460px at 28% 24%, ${T.handlingSoft}, transparent 68%), radial-gradient(420px 380px at 82% 88%, color-mix(in srgb, var(--v2-handling) 10%, transparent), transparent 60%), ${T.bg}`,
+        borderRight: `1px solid ${TL.hair}`,
+        background: `radial-gradient(560px 460px at 28% 24%, ${TL.dim}, transparent 68%), radial-gradient(420px 380px at 82% 88%, color-mix(in srgb, var(--tl-fill) 10%, transparent), transparent 60%), ${TL.scene}`,
         flexDirection: "column",
         padding: "34px 40px 44px",
       }}
@@ -559,7 +560,7 @@ function BrandPanel() {
             strokeWidth="1"
           />
         ))}
-        <circle cx="260" cy="330" r="3.5" fill="color-mix(in srgb, var(--v2-handling) 45%, transparent)" />
+        <circle cx="260" cy="330" r="3.5" fill="color-mix(in srgb, var(--tl-fill) 45%, transparent)" />
       </svg>
       <div style={{ position: "relative" }}>
         <LogoAK size={30} surface="paper" />
@@ -569,23 +570,23 @@ function BrandPanel() {
         <LogoAK size={64} surface="paper" style={{ marginBottom: 22 }} />
         <h2
           style={{
-            fontFamily: T.disp,
+            fontFamily: TL.font.sans,
             fontWeight: 700,
             fontSize: 30,
             letterSpacing: "-0.03em",
             lineHeight: 1.12,
-            color: T.fg,
+            color: TL.text,
             margin: 0,
           }}
         >
           Start reisen din.{" "}
-          <em style={{ fontStyle: "italic", color: T.lime }}>Gratis.</em>
+          <em style={{ fontStyle: "italic", color: TL.fill }}>Gratis.</em>
         </h2>
         <p
           style={{
-            fontFamily: T.ui,
+            fontFamily: TL.font.sans,
             fontSize: 13.5,
-            color: T.fg2,
+            color: TL.mute,
             lineHeight: 1.6,
             margin: "14px 0 0",
             maxWidth: 360,
@@ -727,17 +728,17 @@ function SignupKort({
       <div style={{ marginBottom: 4 }}>
         <h1
           style={{
-            fontFamily: T.disp,
+            fontFamily: TL.font.sans,
             fontWeight: 700,
             fontSize: 28,
             letterSpacing: "-0.03em",
-            color: T.fg,
+            color: TL.text,
             margin: 0,
           }}
         >
           Lag konto
         </h1>
-        <p style={{ fontFamily: T.ui, fontSize: 12.5, color: T.mut, margin: "8px 0 0" }}>
+        <p style={{ fontFamily: TL.font.sans, fontSize: 12.5, color: TL.mute, margin: "8px 0 0" }}>
           {erTalent && "Gratis testprofil — testbatteri, stats og SG-registrering. "}
           Har du konto? <Lenke href="/auth/login">Logg inn</Lenke>
         </p>
@@ -746,14 +747,14 @@ function SignupKort({
       <form
         onSubmit={onSubmit}
         style={{
-          background: T.panel,
-          border: `1px solid ${T.border}`,
-          borderRadius: T.rCard,
+          background: TL.elev,
+          border: `1px solid ${TL.hair}`,
+          borderRadius: TL.radius.card,
           padding: 20,
           display: "flex",
           flexDirection: "column",
           gap: 14,
-          boxShadow: `inset 0 1px 0 ${T.farge.hvitA5}, 0 12px 32px ${T.farge.svartA35}`,
+          boxShadow: `inset 0 1px 0 ${T.farge.hvitA5}, 0 12px 32px ${TL.scrim}`,
         }}
       >
         {erTalent ? <TalentInfo /> : <PakkeVelger value={pkg} onChange={setPkg} />}
@@ -780,7 +781,7 @@ function SignupKort({
           onChange={setEmail}
           placeholder="oyvind@akgolf.no"
           autoComplete="email"
-          trailing={<Icon name="mail" size={14} style={{ color: T.mut }} />}
+          trailing={<Icon name="mail" size={14} style={{ color: TL.mute }} />}
         />
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
           <Felt
@@ -807,7 +808,7 @@ function SignupKort({
                   display: "inline-flex",
                 }}
               >
-                <Icon name="eye" size={14} style={{ color: T.mut }} />
+                <Icon name="eye" size={14} style={{ color: TL.mute }} />
               </button>
             }
           />
@@ -835,7 +836,7 @@ function SignupKort({
                   display: "inline-flex",
                 }}
               >
-                <Icon name="eye" size={14} style={{ color: T.mut }} />
+                <Icon name="eye" size={14} style={{ color: TL.mute }} />
               </button>
             }
           />
@@ -849,7 +850,7 @@ function SignupKort({
           variant="primary"
           type="submit"
           disabled={laster}
-          icon={<Icon name="arrow-right" size={16} style={{ color: T.onHandling }} />}
+          icon={<Icon name="arrow-right" size={16} style={{ color: TL.onFill }} />}
         >
           {laster ? "Oppretter…" : "Opprett konto"}
         </Knapp>
@@ -863,9 +864,9 @@ function SignupKort({
       <p
         className="md:hidden"
         style={{
-          fontFamily: T.ui,
+          fontFamily: TL.font.sans,
           fontSize: 10.5,
-          color: T.mut,
+          color: TL.mute,
           textAlign: "center",
           margin: "6px 0 0",
         }}
@@ -891,9 +892,9 @@ export function SignupV2({
         // Flaten er Paper LYS — "dark" fikk nettleseren til å tegne autofyll,
         // passordikon og rullefelt mørkt oppå en lys side.
         colorScheme: "light",
-        color: T.fg,
-        fontFamily: T.ui,
-        background: T.bg,
+        color: TL.text,
+        fontFamily: TL.font.sans,
+        background: TL.scene,
       }}
     >
       <BrandPanel />
@@ -905,7 +906,7 @@ export function SignupV2({
           alignItems: "center",
           justifyContent: "center",
           padding: "48px 22px",
-          background: `radial-gradient(700px 420px at 60% -12%, ${T.handlingSoft}, transparent 62%), ${T.bg}`,
+          background: `radial-gradient(700px 420px at 60% -12%, ${TL.dim}, transparent 62%), ${TL.scene}`,
         }}
       >
         <SignupKort defaultEmail={defaultEmail} subscribe={subscribe} kilde={kilde} />

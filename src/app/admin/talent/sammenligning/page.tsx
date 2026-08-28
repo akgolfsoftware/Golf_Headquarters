@@ -12,7 +12,8 @@
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { loadMultiCompare } from "@/lib/admin-compare/multi-compare-data";
 import { Caps, Tittel, TilbakeLenke } from "@/components/v2";
-import { T } from "@/lib/v2/tokens";
+import { TL } from "@/lib/v2/train-lock";
+
 import { TalentSammenligning } from "@/components/admin/talent/sammenligning";
 import { mapCompareData } from "./map-compare-data";
 
@@ -40,14 +41,14 @@ export default async function TalentSammenligningPage({
   }
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+    <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
       <TilbakeLenke href="/admin/talent/radar">Talent-radar</TilbakeLenke>
       <div>
         <Caps>Stall · Talent</Caps>
         <div style={{ marginTop: 10 }}>
           <Tittel em="sammenligning.">Talent-</Tittel>
         </div>
-        <p style={{ marginTop: 8, maxWidth: 520, fontFamily: T.ui, fontSize: 13, color: T.fg2, lineHeight: 1.5 }}>
+        <p style={{ marginTop: 8, maxWidth: 520, fontFamily: TL.font.sans, fontSize: 13, color: TL.mute, lineHeight: 1.5 }}>
           Sammenlign inntil fire spillere side om side. Uten valg vises de tre øverste i kohorten.
         </p>
       </div>

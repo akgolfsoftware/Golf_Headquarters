@@ -25,25 +25,9 @@
 
 import { useEffect, useState, type ReactNode } from "react";
 import Link from "next/link";
-import {
-  Caps,
-  Tittel,
-  Kort,
-  Rad,
-  KpiFlis,
-  PillTabs,
-  TallHero,
-  StatusPill,
-  CTAPill,
-  AvatarInit,
-  Trend,
-  TomTilstand,
-  InnsiktChip,
-  Icon,
-  type StatusTone,
-} from "@/components/v2";
-import { T, TOM_TALL } from "@/lib/v2/tokens";
-
+import { Caps, Kort, Rad, KpiFlis, PillTabs, TallHero, StatusPill, CTAPill, AvatarInit, Trend, TomTilstand, InnsiktChip, Icon, type StatusTone } from "@/components/v2";
+import { TL } from "@/lib/v2/train-lock";
+import { TOM_TALL } from "@/lib/v2/tokens";
 // ── Datakontrakt (mappes fra Prisma i ruten) ────────────────────
 export type BetalingStatusKey =
   | "SUCCEEDED"
@@ -146,10 +130,10 @@ function BetalingRad({ b, last, mobile }: { b: AdminOkonomiV2Betaling; last: boo
         >
           <span
             style={{
-              fontFamily: T.mono,
+              fontFamily: TL.font.mono,
               fontSize: 13,
               fontWeight: 700,
-              color: T.fg,
+              color: TL.text,
               fontVariantNumeric: "tabular-nums",
               whiteSpace: "nowrap",
             }}
@@ -167,9 +151,9 @@ function BetalingRad({ b, last, mobile }: { b: AdminOkonomiV2Betaling; last: boo
 
 function Merknad({ children }: { children: ReactNode }) {
   return (
-    <div style={{ display: "flex", gap: 10, padding: "12px 14px", background: T.panel2, border: `1px solid ${T.border}`, borderRadius: 12 }}>
-      <Icon name="alert-triangle" size={14} style={{ color: T.mut, flex: "none", marginTop: 2 }} />
-      <p style={{ margin: 0, fontFamily: T.ui, fontSize: 12.5, color: T.mut, lineHeight: 1.5 }}>{children}</p>
+    <div style={{ display: "flex", gap: 10, padding: "12px 14px", background: TL.dock, border: `1px solid ${TL.hair}`, borderRadius: 12 }}>
+      <Icon name="alert-triangle" size={14} style={{ color: TL.mute, flex: "none", marginTop: 2 }} />
+      <p style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 12.5, color: TL.mute, lineHeight: 1.5 }}>{children}</p>
     </div>
   );
 }
@@ -184,8 +168,8 @@ export function AdminOkonomiV2({ data }: { data: AdminOkonomiV2Data }) {
   const hode = (
     <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 14, flexWrap: "wrap" }}>
       <div>
-        <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>Økonomi</h1>
-        <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>
+        <h1 style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 17, fontWeight: 600, color: TL.text }}>Økonomi</h1>
+        <span style={{ display: "block", fontFamily: TL.font.mono, fontSize: 10.5, color: TL.mute, marginTop: 2 }}>
           Mer · {data.periodeLabel} · penger og kapasitet
         </span>
       </div>
@@ -199,7 +183,7 @@ export function AdminOkonomiV2({ data }: { data: AdminOkonomiV2Data }) {
       >
         <span style={{
           display: "inline-flex", alignItems: "center", gap: 8, minHeight: 56, padding: "10px 16px",
-          borderRadius: 12, background: T.handling, color: T.onHandling, fontFamily: T.ui, fontSize: 14, fontWeight: 600,
+          borderRadius: 12, background: TL.fill, color: TL.onFill, fontFamily: TL.font.sans, fontSize: 14, fontWeight: 600,
         }}>Åpne Stripe</span>
       </a>
     </div>
@@ -211,7 +195,7 @@ export function AdminOkonomiV2({ data }: { data: AdminOkonomiV2Data }) {
       ? { delta: `${data.endringPct > 0 ? "+" : "−"}${Math.abs(data.endringPct)} %`, dir: data.endringPct >= 0 ? ("up" as const) : ("down" as const) }
       : {};
   const kpi = (
-    <div className="grid grid-cols-2 lg:grid-cols-4" style={{ gap: T.gap }}>
+    <div className="grid grid-cols-2 lg:grid-cols-4" style={{ gap: 16 }}>
       <KpiFlis label="Belegg uke" value={data.beleggPct == null ? null : `${data.beleggPct} %`} instant />
       <KpiFlis label="Innbetalt denne mnd" value={kr(data.innbetaltMndKr)} {...endringChip} />
       <KpiFlis label="Åpne fakturaer" value={data.utestaendeAntall} varsle={data.utestaendeAntall > 0} instant />
@@ -268,32 +252,32 @@ export function AdminOkonomiV2({ data }: { data: AdminOkonomiV2Data }) {
               justifyContent: "space-between",
               gap: 10,
               padding: "11px 13px",
-              borderRadius: T.rRow,
-              background: T.panel2,
-              border: `1px solid ${T.border}`,
+              borderRadius: TL.radius.row,
+              background: TL.dock,
+              border: `1px solid ${TL.hair}`,
             }}
           >
             <span style={{ display: "inline-flex", alignItems: "center", gap: 8 }}>
               <span
                 style={{
-                  fontFamily: T.mono,
+                  fontFamily: TL.font.mono,
                   fontSize: 9,
                   fontWeight: 700,
                   letterSpacing: "0.08em",
-                  color: T.fg2,
-                  background: T.panel2,
-                  border: `1px solid ${T.border}`,
+                  color: TL.mute,
+                  background: TL.dock,
+                  border: `1px solid ${TL.hair}`,
                   borderRadius: 5,
                   padding: "3px 6px",
                 }}
               >
                 PRO
               </span>
-              <span style={{ fontFamily: T.ui, fontSize: 12.5, color: T.fg2 }}>
+              <span style={{ fontFamily: TL.font.sans, fontSize: 12.5, color: TL.mute }}>
                 {pl(data.proAktive, "abonnement", "abonnement")}
               </span>
             </span>
-            <span style={{ fontFamily: T.mono, fontSize: 12.5, fontWeight: 700, color: T.fg, fontVariantNumeric: "tabular-nums" }}>
+            <span style={{ fontFamily: TL.font.mono, fontSize: 12.5, fontWeight: 700, color: TL.text, fontVariantNumeric: "tabular-nums" }}>
               {kr(data.mrrKr)}
             </span>
           </div>
@@ -308,8 +292,8 @@ export function AdminOkonomiV2({ data }: { data: AdminOkonomiV2Data }) {
     data.utestaendeKr > 0 ? (
       <Kort>
         <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 12 }}>
-          <Icon name="flag" size={13} style={{ color: T.warn }} />
-          <Caps color={T.warn}>Utestående</Caps>
+          <Icon name="flag" size={13} style={{ color: TL.warn }} />
+          <Caps color={TL.warn}>Utestående</Caps>
         </div>
         <TallHero
           value={kr(data.utestaendeKr)}
@@ -339,9 +323,9 @@ export function AdminOkonomiV2({ data }: { data: AdminOkonomiV2Data }) {
   // som ikke allerede dekkes av Oversikt-sidekolonnen er flyttet til
   // «Mer her»-lenkene under — sjeldent brukt, derfor lenke, ikke egen fane.
   const linje = (k: string, v: ReactNode) => (
-    <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: 12, padding: "9px 0", borderBottom: `1px solid ${T.border}` }}>
-      <span style={{ fontFamily: T.ui, fontSize: 12.5, color: T.fg2 }}>{k}</span>
-      <span style={{ fontFamily: T.mono, fontSize: 13, fontWeight: 700, color: T.fg, fontVariantNumeric: "tabular-nums" }}>{v}</span>
+    <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: 12, padding: "9px 0", borderBottom: `1px solid ${TL.hair}` }}>
+      <span style={{ fontFamily: TL.font.sans, fontSize: 12.5, color: TL.mute }}>{k}</span>
+      <span style={{ fontFamily: TL.font.mono, fontSize: 13, fontWeight: 700, color: TL.text, fontVariantNumeric: "tabular-nums" }}>{v}</span>
     </div>
   );
   const beleggTekst = data.beleggPct == null ? TOM_TALL : `${data.beleggPct} %`;
@@ -370,16 +354,16 @@ export function AdminOkonomiV2({ data }: { data: AdminOkonomiV2Data }) {
           <Kort
             pad="16px 18px"
             style={{
-              border: `1px solid color-mix(in srgb, ${T.handling} 35%, ${T.border})`,
-              borderLeft: `3px solid ${T.handling}`,
-              background: `color-mix(in srgb, ${T.handling} 6%, ${T.panel})`,
+              border: `1px solid color-mix(in srgb, ${TL.fill} 35%, ${TL.hair})`,
+              borderLeft: `3px solid ${TL.fill}`,
+              background: `color-mix(in srgb, ${TL.fill} 6%, ${TL.elev})`,
             }}
           >
-            <Caps size={9} color={T.handling}>Én ting nå</Caps>
-            <div style={{ marginTop: 8, fontFamily: T.disp, fontSize: 18, fontWeight: 600, color: T.fg }}>
+            <Caps size={9} color={TL.fill}>Én ting nå</Caps>
+            <div style={{ marginTop: 8, fontFamily: TL.font.sans, fontSize: 18, fontWeight: 600, color: TL.text }}>
               {pl(feilede.length, "betaling feilet", "betalinger feilet")}
             </div>
-            <p style={{ margin: "6px 0 0", fontFamily: T.ui, fontSize: 13, color: T.fg2, lineHeight: 1.5 }}>
+            <p style={{ margin: "6px 0 0", fontFamily: TL.font.sans, fontSize: 13, color: TL.mute, lineHeight: 1.5 }}>
               {kr(feiletKr)} kom aldri inn. Ingen har fulgt dem opp, fordi de ikke ligger i noen kø.
             </p>
             <div style={{ marginTop: 14 }}>
@@ -389,7 +373,7 @@ export function AdminOkonomiV2({ data }: { data: AdminOkonomiV2Data }) {
                 className="v2-press v2-focus"
                 style={{
                   display: "inline-flex", alignItems: "center", gap: 8, minHeight: 56, padding: "10px 16px",
-                  borderRadius: 12, background: T.handling, color: T.onHandling, fontFamily: T.ui, fontSize: 14,
+                  borderRadius: 12, background: TL.fill, color: TL.onFill, fontFamily: TL.font.sans, fontSize: 14,
                   fontWeight: 600, border: 0, cursor: "pointer",
                 }}
               >
@@ -399,9 +383,9 @@ export function AdminOkonomiV2({ data }: { data: AdminOkonomiV2Data }) {
           </Kort>
         )}
         {trendKort}
-        <div className="grid grid-cols-1 lg:grid-cols-[1.5fr_1fr]" style={{ gap: T.gap, alignItems: "start" }}>
+        <div className="grid grid-cols-1 lg:grid-cols-[1.5fr_1fr]" style={{ gap: 16, alignItems: "start" }}>
           {liste}
-          <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
             {mrrKort}
             {utestaendeKort}
           </div>
@@ -438,7 +422,7 @@ export function AdminOkonomiV2({ data }: { data: AdminOkonomiV2Data }) {
           {linje("Denne uka", beleggTekst)}
           {linje("Bookinger denne uka", data.bookingerUka)}
           {data.beleggPct == null && (
-            <p style={{ fontFamily: T.ui, fontSize: 12, color: T.mut, margin: "12px 0 0", lineHeight: 1.5 }}>
+            <p style={{ fontFamily: TL.font.sans, fontSize: 12, color: TL.mute, margin: "12px 0 0", lineHeight: 1.5 }}>
               Belegg krever registrerte tilgjengelighets-vinduer på coach. Uten dem finnes ingen
               kapasitet å måle mot — derfor {TOM_TALL} og ikke et anslag.
             </p>
@@ -453,17 +437,17 @@ export function AdminOkonomiV2({ data }: { data: AdminOkonomiV2Data }) {
       return (
         <>
           <Kort eyebrow="Konsernmålet">
-            <div style={{ fontFamily: T.disp, fontSize: 18, fontWeight: 600, color: T.fg }}>
+            <div style={{ fontFamily: TL.font.sans, fontSize: 18, fontWeight: 600, color: TL.text }}>
               {belopKompakt(data.konsernMaal.usd)} USD netto per år
             </div>
-            <p style={{ margin: "8px 0 16px", fontFamily: T.ui, fontSize: 12.5, color: T.mut, lineHeight: 1.5 }}>
+            <p style={{ margin: "8px 0 16px", fontFamily: TL.font.sans, fontSize: 12.5, color: TL.mute, lineHeight: 1.5 }}>
               Målet er i dollar, omsetningen er i kroner, og kursen ligger ikke i basen. Regnestykket under bruker{" "}
               {data.konsernMaal.antattKurs} — en forutsetning, ikke et hentet tall.
             </p>
             {linje("Mål i kroner", `${belopKompakt(iKr)} kr`)}
             {linje("Denne mnd × 12", `${belopKompakt(aarTakt)} kr`)}
-            <div style={{ marginTop: 12, height: 8, borderRadius: 9999, background: T.panel2, border: `1px solid ${T.border}`, overflow: "hidden" }}>
-              <div style={{ height: "100%", width: `${Math.max(0.4, Math.min(100, andelPct))}%`, background: T.handling, borderRadius: 9999 }} />
+            <div style={{ marginTop: 12, height: 8, borderRadius: 9999, background: TL.dock, border: `1px solid ${TL.hair}`, overflow: "hidden" }}>
+              <div style={{ height: "100%", width: `${Math.max(0.4, Math.min(100, andelPct))}%`, background: TL.fill, borderRadius: 9999 }} />
             </div>
             {linje("Andel av målet", `${andelPct.toFixed(1).replace(".", ",")} %`)}
           </Kort>
@@ -475,7 +459,7 @@ export function AdminOkonomiV2({ data }: { data: AdminOkonomiV2Data }) {
             {linje("PRO aktive", data.proAktive)}
             {linje("MRR", kr(data.mrrKr))}
             {linje("GRATIS-spillere", data.gratisSpillere)}
-            <p style={{ fontFamily: T.ui, fontSize: 12, color: T.mut, margin: "12px 0 0", lineHeight: 1.5 }}>
+            <p style={{ fontFamily: TL.font.sans, fontSize: 12, color: TL.mute, margin: "12px 0 0", lineHeight: 1.5 }}>
               Churn og fornyelser krever abonnementshistorikk som ikke lagres ennå — derfor ikke vist.
             </p>
           </Kort>
@@ -485,7 +469,7 @@ export function AdminOkonomiV2({ data }: { data: AdminOkonomiV2Data }) {
     hull: (
       <>
         <Kort eyebrow="Hull i tallene">
-          <p style={{ margin: "0 0 12px", fontFamily: T.ui, fontSize: 12.5, color: T.mut, lineHeight: 1.5 }}>
+          <p style={{ margin: "0 0 12px", fontFamily: TL.font.sans, fontSize: 12.5, color: TL.mute, lineHeight: 1.5 }}>
             Det som gjør at denne skjermen ikke kan svare på alt du egentlig spør om. Databaseendringer, ikke
             designvalg.
           </p>
@@ -512,7 +496,7 @@ export function AdminOkonomiV2({ data }: { data: AdminOkonomiV2Data }) {
   };
 
   return (
-    <div data-paper-agencyos-okonomi data-paper-wave-f="okonomi" data-od-id="agencyos-okonomi" data-paper-slug="agencyos-okonomi" style={{ display: "flex", flexDirection: "column", gap: T.gap, width: "100%", background: T.bg }}>
+    <div data-paper-agencyos-okonomi data-paper-wave-f="okonomi" data-od-id="agencyos-okonomi" data-paper-slug="agencyos-okonomi" style={{ display: "flex", flexDirection: "column", gap: 16, width: "100%", background: TL.scene }}>
       {hode}
 
       {/* Mobil-snarvei (skjult på desktop der den ligger i hodet) */}
@@ -525,7 +509,7 @@ export function AdminOkonomiV2({ data }: { data: AdminOkonomiV2Data }) {
       >
         <span style={{
           display: "inline-flex", alignItems: "center", gap: 8, minHeight: 56, padding: "10px 16px",
-          borderRadius: 12, background: T.handling, color: T.onHandling, fontFamily: T.ui, fontSize: 14, fontWeight: 600, width: "100%", justifyContent: "center",
+          borderRadius: 12, background: TL.fill, color: TL.onFill, fontFamily: TL.font.sans, fontSize: 14, fontWeight: 600, width: "100%", justifyContent: "center",
         }}>Åpne Stripe</span>
       </a>
 

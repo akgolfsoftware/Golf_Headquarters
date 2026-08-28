@@ -6,7 +6,8 @@
 import { redirect } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
-import { T } from "@/lib/v2/tokens";
+import { TL } from "@/lib/v2/train-lock";
+
 import { Caps, Tittel, Kort, TilbakeLenke, StatusPill, Icon } from "@/components/v2";
 import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
 import { AapneStripePortal } from "./aapne-stripe-portal";
@@ -49,7 +50,7 @@ export default async function NyttKortPage() {
           margin: "0 auto",
           display: "flex",
           flexDirection: "column",
-          gap: T.gap,
+          gap: 16,
         }}
       >
         <TilbakeLenke href="/portal/meg/abonnement">Abonnement</TilbakeLenke>
@@ -60,7 +61,7 @@ export default async function NyttKortPage() {
             <div style={{ marginTop: 10 }}>
               <Tittel em="kort">Administrer</Tittel>
             </div>
-            <p style={{ fontFamily: T.ui, fontSize: 13, color: T.fg2, margin: "8px 0 0", lineHeight: 1.45 }}>
+            <p style={{ fontFamily: TL.font.sans, fontSize: 13, color: TL.mute, margin: "8px 0 0", lineHeight: 1.45 }}>
               Legg til eller endre kort i Stripes sikre portal. Vi lagrer aldri kortdata.
             </p>
           </div>
@@ -72,14 +73,14 @@ export default async function NyttKortPage() {
         <Kort>
           <Caps style={{ marginBottom: 8 }}>Neste belastning</Caps>
           <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: 12 }}>
-            <span style={{ fontFamily: T.mono, fontSize: 28, fontWeight: 700, color: T.fg, letterSpacing: "-0.03em" }}>
+            <span style={{ fontFamily: TL.font.mono, fontSize: 28, fontWeight: 700, color: TL.text, letterSpacing: "-0.03em" }}>
               299 kr
             </span>
-            <span style={{ fontFamily: T.mono, fontSize: 12, color: T.mut }}>
+            <span style={{ fontFamily: TL.font.mono, fontSize: 12, color: TL.mute }}>
               {formatNesteBelastning(nesteBelastning)}
             </span>
           </div>
-          <p style={{ margin: "8px 0 0", fontFamily: T.ui, fontSize: 12, color: T.mut, lineHeight: 1.45 }}>
+          <p style={{ margin: "8px 0 0", fontFamily: TL.font.sans, fontSize: 12, color: TL.mute, lineHeight: 1.45 }}>
             Pro · månedlig · fornyes automatisk. Kanseller når som helst fra abonnement-siden.
           </p>
         </Kort>
@@ -92,15 +93,15 @@ export default async function NyttKortPage() {
               display: "flex",
               gap: 10,
               alignItems: "flex-start",
-              borderRadius: T.rRow,
-              border: `1px solid ${T.border}`,
-              background: T.panel2,
+              borderRadius: TL.radius.row,
+              border: `1px solid ${TL.hair}`,
+              background: TL.dock,
               padding: 12,
             }}
           >
-            <Icon name="lock" size={14} style={{ color: T.mut, marginTop: 2, flex: "none" }} />
-            <p style={{ margin: 0, fontFamily: T.ui, fontSize: 12, color: T.fg2, lineHeight: 1.5 }}>
-              <strong style={{ color: T.fg }}>Vi lagrer aldri kortdata.</strong> Betalingen håndteres av Stripe.
+            <Icon name="lock" size={14} style={{ color: TL.mute, marginTop: 2, flex: "none" }} />
+            <p style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 12, color: TL.mute, lineHeight: 1.5 }}>
+              <strong style={{ color: TL.text }}>Vi lagrer aldri kortdata.</strong> Betalingen håndteres av Stripe.
             </p>
           </div>
         </Kort>
@@ -119,16 +120,16 @@ export default async function NyttKortPage() {
                     width: 18,
                     height: 18,
                     borderRadius: 9999,
-                    background: T.lime,
+                    background: TL.fill,
                     display: "inline-flex",
                     alignItems: "center",
                     justifyContent: "center",
                     flex: "none",
                   }}
                 >
-                  <Icon name="check" size={11} style={{ color: T.onLime }} />
+                  <Icon name="check" size={11} style={{ color: TL.onFill }} />
                 </span>
-                <span style={{ fontFamily: T.ui, fontSize: 13, color: T.fg }}>{s}</span>
+                <span style={{ fontFamily: TL.font.sans, fontSize: 13, color: TL.text }}>{s}</span>
               </li>
             ))}
           </ul>

@@ -1,4 +1,5 @@
 "use client";
+import { TL } from "@/lib/v2/train-lock";
 
 /**
  * BookingNyBekreftV2 — v2-port (retning C) av /portal/booking/ny/bekreft.
@@ -12,7 +13,7 @@
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { T, Caps, Tittel, Kort, Knapp, TekstOmraade, Icon } from "@/components/v2";
+import { Caps, Tittel, Kort, Knapp, TekstOmraade, Icon } from "@/components/v2";
 import { createCreditBooking } from "@/lib/booking/credit-booking";
 import { PolicyBanner } from "@/components/booking/PolicyBanner";
 
@@ -36,9 +37,9 @@ export type BookingNyBekreftV2Data = {
 
 function FeilBoks({ children }: { children: React.ReactNode }) {
   return (
-    <div style={{ display: "flex", gap: 8, alignItems: "flex-start", padding: "10px 12px", borderRadius: 12, background: `color-mix(in srgb, ${T.down} 10%, transparent)`, border: `1px solid ${T.down}` }}>
-      <Icon name="alert-triangle" size={13} style={{ color: T.down, flex: "none", marginTop: 1 }} />
-      <span style={{ fontFamily: T.ui, fontSize: 12, color: T.fg2, lineHeight: 1.5 }}>{children}</span>
+    <div style={{ display: "flex", gap: 8, alignItems: "flex-start", padding: "10px 12px", borderRadius: 12, background: `color-mix(in srgb, ${TL.danger} 10%, transparent)`, border: `1px solid ${TL.danger}` }}>
+      <Icon name="alert-triangle" size={13} style={{ color: TL.danger, flex: "none", marginTop: 1 }} />
+      <span style={{ fontFamily: TL.font.sans, fontSize: 12, color: TL.mute, lineHeight: 1.5 }}>{children}</span>
     </div>
   );
 }
@@ -69,7 +70,7 @@ export function BookingNyBekreftV2({ data }: { data: BookingNyBekreftV2Data }) {
   }
 
   return (
-    <div data-paper-portal-booking-ny-bekreft style={{ width: "100%", maxWidth: 560, margin: "0 auto", display: "flex", flexDirection: "column", gap: T.gap }}>
+    <div data-paper-portal-booking-ny-bekreft style={{ width: "100%", maxWidth: 560, margin: "0 auto", display: "flex", flexDirection: "column", gap: 16 }}>
       {/* Hode */}
       <div>
         <Caps>PlayerHQ · Book ny time</Caps>
@@ -86,11 +87,11 @@ export function BookingNyBekreftV2({ data }: { data: BookingNyBekreftV2Data }) {
       <Kort eyebrow="Oppsummering">
         <div style={{ display: "flex", flexDirection: "column" }}>
           {rader.map((rad, i) => (
-            <div key={rad.label} style={{ display: "flex", alignItems: "center", gap: 12, padding: "10px 0", borderBottom: i === rader.length - 1 ? "none" : `1px solid ${T.border}` }}>
-              <span style={{ width: 84, flex: "none", fontFamily: T.mono, fontSize: 10, fontWeight: 700, color: T.mut }}>
+            <div key={rad.label} style={{ display: "flex", alignItems: "center", gap: 12, padding: "10px 0", borderBottom: i === rader.length - 1 ? "none" : `1px solid ${TL.hair}` }}>
+              <span style={{ width: 84, flex: "none", fontFamily: TL.font.mono, fontSize: 10, fontWeight: 700, color: TL.mute }}>
                 {rad.label}
               </span>
-              <span style={{ fontFamily: T.ui, fontSize: 13.5, fontWeight: 600, color: T.fg }}>{rad.verdi}</span>
+              <span style={{ fontFamily: TL.font.sans, fontSize: 13.5, fontWeight: 600, color: TL.text }}>{rad.verdi}</span>
             </div>
           ))}
         </div>
@@ -98,12 +99,12 @@ export function BookingNyBekreftV2({ data }: { data: BookingNyBekreftV2Data }) {
 
       {/* Betaling → credit-saldo (denne flyten bruker forhåndsbetalte timer) */}
       <Kort tint eyebrow="Betaling">
-        <div style={{ display: "flex", alignItems: "center", gap: 10, padding: "10px 12px", borderRadius: T.rRow, background: T.panel2, border: `1px solid ${T.border}` }}>
-          <span style={{ width: 32, height: 32, flex: "none", borderRadius: 9999, background: T.handling, display: "inline-flex", alignItems: "center", justifyContent: "center" }}>
-            <Icon name="credit-card" size={15} style={{ color: T.onHandling }} />
+        <div style={{ display: "flex", alignItems: "center", gap: 10, padding: "10px 12px", borderRadius: TL.radius.row, background: TL.dock, border: `1px solid ${TL.hair}` }}>
+          <span style={{ width: 32, height: 32, flex: "none", borderRadius: 9999, background: TL.fill, display: "inline-flex", alignItems: "center", justifyContent: "center" }}>
+            <Icon name="credit-card" size={15} style={{ color: TL.onFill }} />
           </span>
-          <span style={{ fontFamily: T.ui, fontSize: 13, color: T.fg }}>Trekkes fra forhåndsbetalte timer</span>
-          <span style={{ marginLeft: "auto", fontFamily: T.mono, fontSize: 11.5, fontWeight: 700, color: T.fg2, fontVariantNumeric: "tabular-nums" }}>
+          <span style={{ fontFamily: TL.font.sans, fontSize: 13, color: TL.text }}>Trekkes fra forhåndsbetalte timer</span>
+          <span style={{ marginLeft: "auto", fontFamily: TL.font.mono, fontSize: 11.5, fontWeight: 700, color: TL.mute, fontVariantNumeric: "tabular-nums" }}>
             {creditsRemaining} → {saldoEtter}
           </span>
         </div>
@@ -131,15 +132,15 @@ export function BookingNyBekreftV2({ data }: { data: BookingNyBekreftV2Data }) {
           <Link href={backHref} style={{ textDecoration: "none" }}>
             <span style={{
             display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, minHeight: 48, width: "100%", padding: "10px 16px",
-            borderRadius: 10, background: T.handling, color: T.onHandling, fontFamily: T.ui, fontSize: 14, fontWeight: 600,
+            borderRadius: 10, background: TL.fill, color: TL.onFill, fontFamily: TL.font.sans, fontSize: 14, fontWeight: 600,
           }}>Endre valg</span>
           </Link>
         </form>
       )}
 
       <PolicyBanner variant="cancel" />
-      <p style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 6, fontFamily: T.mono, fontSize: 10, color: T.mut, margin: 0 }}>
-        <Icon name="shield" size={12} style={{ color: T.mut }} />
+      <p style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 6, fontFamily: TL.font.mono, fontSize: 10, color: TL.mute, margin: 0 }}>
+        <Icon name="shield" size={12} style={{ color: TL.mute }} />
         Gratis avbestilling inntil 24 timer før
       </p>
     </div>

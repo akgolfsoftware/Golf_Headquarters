@@ -1,3 +1,4 @@
+import { TL } from "@/lib/v2/train-lock";
 /**
  * AgencyOS — Tilgjengelighet (GJENNOMFØRE · TILGJENGELIGHET), /admin/availability.
  * v2-port 16. juli 2026.
@@ -20,7 +21,7 @@ import { AdminAvailabilityV2, type AdminAvailabilityV2Data, type AvailabilitySlo
 import type { WeekWindow } from "@/components/admin/v2/AdminAvailabilityWeekGridV2";
 import type { YearWindow } from "@/components/admin/v2/AdminAvailabilityYearGanttV2";
 import { CalendarSyncSection } from "@/app/admin/(legacy)/settings/calendar/calendar-sync-section";
-import { Caps, T } from "@/components/v2";
+import { Caps } from "@/components/v2";
 import { KalenderHubNav } from "@/components/admin/v2/agency-hub-subnav";
 
 const REP_TEKST: Record<number, string> = { 2: "annenhver uke", 3: "hver 3. uke", 4: "hver 4. uke" };
@@ -159,10 +160,10 @@ export default async function AvailabilityPage({ searchParams }: { searchParams:
       <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
         <div>
           <Caps>Gjennomføre · Tilgjengelighet · Google Calendar</Caps>
-          <h2 style={{ margin: "6px 0 0", fontFamily: T.disp, fontWeight: 700, fontSize: 17, color: T.fg }}>
+          <h2 style={{ margin: "6px 0 0", fontFamily: TL.font.sans, fontWeight: 700, fontSize: 17, color: TL.text }}>
             Koble kalender — velg hva som blokkerer booking
           </h2>
-          <p style={{ margin: "6px 0 0", fontSize: 13, color: T.mut }}>
+          <p style={{ margin: "6px 0 0", fontSize: 13, color: TL.mute }}>
             Familie-, jobb- og møtekalendere du huker av blokkerer automatisk booking-tid. Opptatt-tid kan aldri dobbeltbookes.
           </p>
         </div>

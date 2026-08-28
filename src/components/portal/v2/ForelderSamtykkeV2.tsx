@@ -1,33 +1,15 @@
 "use client";
-
+import { TL } from "@/lib/v2/train-lock";
 /**
  * Foreldreportal · Samtykke — v2 Presis + B-pakke (status + lagre-CTA).
  * Server-actions uendret. Kun v2 + T.*. Enklere foreldre-språk.
  */
 
 import { useEffect, useState, useTransition } from "react";
-import {
-  T,
-  Caps,
-  Tittel,
-  Kort,
-  StatusPill,
-  Knapp,
-  Rad,
-  TomTilstand,
-  Icon,
-} from "@/components/v2";
+import { Caps, Tittel, Kort, StatusPill, Knapp, Rad, TomTilstand, Icon } from "@/components/v2";
 import { Bryter } from "@/components/v2/skjema";
-import {
-  lagreSamtykker,
-  beOmDataSletting,
-  settHelseSamtykkeForBarn,
-} from "@/app/forelder/samtykke/actions";
-import {
-  HELSE_SAMTYKKE_TEKST,
-  type HelseSamtykkeType,
-} from "@/lib/health/samtykke-regler";
-
+import { lagreSamtykker, beOmDataSletting, settHelseSamtykkeForBarn } from "@/app/forelder/samtykke/actions";
+import { HELSE_SAMTYKKE_TEKST, type HelseSamtykkeType } from "@/lib/health/samtykke-regler";
 /* ── Datakontrakt (avledet av barnets EKTE Prisma-data) ────────────── */
 
 export type SamtykkeBarn = {
@@ -152,20 +134,20 @@ function HelseSamtykkeSeksjon({ barn }: { barn: SamtykkeBarn }) {
     <div
       style={{
         padding: "14px 18px",
-        borderTop: `1px solid ${T.border}`,
-        background: T.panel2,
+        borderTop: `1px solid ${TL.hair}`,
+        background: TL.dock,
       }}
     >
       <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 4 }}>
-        <Icon name="heart" size={13} style={{ color: T.mut }} />
+        <Icon name="heart" size={13} style={{ color: TL.mute }} />
         <span
           style={{
-            fontFamily: T.ui,
+            fontFamily: TL.font.sans,
             fontSize: 10.5,
             fontWeight: 700,
             letterSpacing: "0.08em",
             textTransform: "uppercase",
-            color: T.mut,
+            color: TL.mute,
           }}
         >
           Helsedata
@@ -174,9 +156,9 @@ function HelseSamtykkeSeksjon({ barn }: { barn: SamtykkeBarn }) {
 
       <p
         style={{
-          fontFamily: T.ui,
+          fontFamily: TL.font.sans,
           fontSize: 12,
-          color: T.fg2,
+          color: TL.mute,
           lineHeight: 1.5,
           margin: "0 0 8px",
         }}
@@ -201,7 +183,7 @@ function HelseSamtykkeSeksjon({ barn }: { barn: SamtykkeBarn }) {
       ))}
 
       {harKilde && (
-        <div style={{ padding: "6px 0", borderTop: `1px solid ${T.border}` }}>
+        <div style={{ padding: "6px 0", borderTop: `1px solid ${TL.hair}` }}>
           <Bryter
             label={HELSE_SAMTYKKE_TEKST.COACH_INNSYN.tittel}
             sub={HELSE_SAMTYKKE_TEKST.COACH_INNSYN.forklaring}
@@ -214,7 +196,7 @@ function HelseSamtykkeSeksjon({ barn }: { barn: SamtykkeBarn }) {
       )}
 
       {valg.coachInnsyn && (
-        <div style={{ padding: "6px 0", borderTop: `1px solid ${T.border}` }}>
+        <div style={{ padding: "6px 0", borderTop: `1px solid ${TL.hair}` }}>
           <Bryter
             label={HELSE_SAMTYKKE_TEKST.COACH_DETALJ.tittel}
             sub={HELSE_SAMTYKKE_TEKST.COACH_DETALJ.forklaring}
@@ -229,9 +211,9 @@ function HelseSamtykkeSeksjon({ barn }: { barn: SamtykkeBarn }) {
       {feil && (
         <p
           style={{
-            fontFamily: T.ui,
+            fontFamily: TL.font.sans,
             fontSize: 12,
-            color: T.down,
+            color: TL.danger,
             margin: "8px 0 0",
           }}
         >
@@ -277,7 +259,7 @@ function BarnSamtykkeKort({ barn }: { barn: SamtykkeBarn }) {
       <div
         style={{
           padding: "16px 18px",
-          borderBottom: `1px solid ${T.border}`,
+          borderBottom: `1px solid ${TL.hair}`,
           display: "flex",
           alignItems: "center",
           gap: 12,
@@ -288,23 +270,23 @@ function BarnSamtykkeKort({ barn }: { barn: SamtykkeBarn }) {
             width: 34,
             height: 34,
             borderRadius: 10,
-            background: T.panel3,
-            border: `1px solid ${T.border}`,
+            background: TL.dim,
+            border: `1px solid ${TL.hair}`,
             display: "inline-flex",
             alignItems: "center",
             justifyContent: "center",
             flex: "none",
           }}
         >
-          <Icon name="user" size={16} style={{ color: T.fg2 }} />
+          <Icon name="user" size={16} style={{ color: TL.mute }} />
         </span>
         <div style={{ minWidth: 0 }}>
           <div
             style={{
-              fontFamily: T.disp,
+              fontFamily: TL.font.sans,
               fontWeight: 700,
               fontSize: 15,
-              color: T.fg,
+              color: TL.text,
               whiteSpace: "nowrap",
               overflow: "hidden",
               textOverflow: "ellipsis",
@@ -314,9 +296,9 @@ function BarnSamtykkeKort({ barn }: { barn: SamtykkeBarn }) {
           </div>
           <div
             style={{
-              fontFamily: T.mono,
+              fontFamily: TL.font.mono,
               fontSize: 10.5,
-              color: T.mut,
+              color: TL.mute,
               marginTop: 2,
               whiteSpace: "nowrap",
               overflow: "hidden",
@@ -336,7 +318,7 @@ function BarnSamtykkeKort({ barn }: { barn: SamtykkeBarn }) {
             style={{
               padding: "14px 0",
               borderBottom:
-                i < SAMTYKKER.length - 1 ? `1px solid ${T.border}` : "none",
+                i < SAMTYKKER.length - 1 ? `1px solid ${TL.hair}` : "none",
             }}
           >
             <Bryter
@@ -362,22 +344,22 @@ function BarnSamtykkeKort({ barn }: { barn: SamtykkeBarn }) {
           justifyContent: "space-between",
           gap: 12,
           padding: "14px 18px",
-          borderTop: `1px solid ${T.border}`,
-          background: T.panel2,
+          borderTop: `1px solid ${TL.hair}`,
+          background: TL.dock,
         }}
       >
         <span
           style={{
-            fontFamily: T.ui,
+            fontFamily: TL.font.sans,
             fontSize: 11.5,
-            color: lagret ? T.up : feil ? T.down : T.mut,
+            color: lagret ? TL.ok : feil ? TL.danger : TL.mute,
             display: "inline-flex",
             alignItems: "center",
             gap: 6,
           }}
         >
           {lagret && (
-            <Icon name="check-circle" size={14} style={{ color: T.up }} />
+            <Icon name="check-circle" size={14} style={{ color: TL.ok }} />
           )}
           {lagret
             ? "Samtykker lagret"
@@ -430,15 +412,15 @@ function DataHandlinger({
               width: 34,
               height: 34,
               borderRadius: 10,
-              background: T.panel3,
-              border: `1px solid ${T.border}`,
+              background: TL.dim,
+              border: `1px solid ${TL.hair}`,
               display: "inline-flex",
               alignItems: "center",
               justifyContent: "center",
               flex: "none",
             }}
           >
-            <Icon name="download" size={16} style={{ color: T.lime }} />
+            <Icon name="download" size={16} style={{ color: TL.fill }} />
           </span>
         }
         title="Last ned alle data"
@@ -474,24 +456,24 @@ function DataHandlinger({
             width: 34,
             height: 34,
             borderRadius: 10,
-            background: `color-mix(in srgb, ${T.down} 12%, transparent)`,
-            border: `1px solid color-mix(in srgb, ${T.down} 26%, transparent)`,
+            background: `color-mix(in srgb, ${TL.danger} 12%, transparent)`,
+            border: `1px solid color-mix(in srgb, ${TL.danger} 26%, transparent)`,
             display: "inline-flex",
             alignItems: "center",
             justifyContent: "center",
             flex: "none",
           }}
         >
-          <Icon name="trash-2" size={15} style={{ color: T.down }} />
+          <Icon name="trash-2" size={15} style={{ color: TL.danger }} />
         </span>
         <span style={{ flex: 1, minWidth: 0 }}>
           <span
             style={{
               display: "block",
-              fontFamily: T.ui,
+              fontFamily: TL.font.sans,
               fontSize: 13.5,
               fontWeight: 600,
-              color: T.down,
+              color: TL.danger,
             }}
           >
             {pending ? "Sender forespørsel …" : "Be om sletting av data"}
@@ -499,9 +481,9 @@ function DataHandlinger({
           <span
             style={{
               display: "block",
-              fontFamily: T.ui,
+              fontFamily: TL.font.sans,
               fontSize: 11.5,
-              color: T.mut,
+              color: TL.mute,
               marginTop: 2,
             }}
           >
@@ -513,9 +495,9 @@ function DataHandlinger({
       {feil && (
         <p
           style={{
-            fontFamily: T.ui,
+            fontFamily: TL.font.sans,
             fontSize: 12,
-            color: T.down,
+            color: TL.danger,
             margin: "8px 0 0",
           }}
         >
@@ -532,24 +514,24 @@ function DataHandlinger({
             marginTop: 12,
             padding: "11px 13px",
             borderRadius: 12,
-            background: `color-mix(in srgb, ${T.up} 10%, transparent)`,
-            border: `1px solid color-mix(in srgb, ${T.up} 24%, transparent)`,
+            background: `color-mix(in srgb, ${TL.ok} 10%, transparent)`,
+            border: `1px solid color-mix(in srgb, ${TL.ok} 24%, transparent)`,
           }}
         >
           <Icon
             name="check"
             size={15}
-            style={{ color: T.up, flex: "none", marginTop: 1 }}
+            style={{ color: TL.ok, flex: "none", marginTop: 1 }}
           />
           <span
             style={{
-              fontFamily: T.ui,
+              fontFamily: TL.font.sans,
               fontSize: 12.5,
-              color: T.fg2,
+              color: TL.mute,
               lineHeight: 1.5,
             }}
           >
-            <strong style={{ color: T.fg, fontWeight: 600 }}>
+            <strong style={{ color: TL.text, fontWeight: 600 }}>
               Slette-forespørsel registrert.
             </strong>{" "}
             {sisteSletting && !sendt
@@ -571,7 +553,7 @@ export function ForelderSamtykkeV2({ data }: { data: ForelderSamtykkeData }) {
   const harBarn = barn.length > 0;
 
   return (
-    <div data-paper-portal-forelder-samtykke style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
+    <div data-paper-portal-forelder-samtykke style={{ display: "flex", flexDirection: "column", gap: 16, maxWidth: 720, margin: "0 auto", width: "100%" }}>
       {/* Hode */}
       <div
         style={{
@@ -591,9 +573,9 @@ export function ForelderSamtykkeV2({ data }: { data: ForelderSamtykkeData }) {
           </div>
           <span
             style={{
-              fontFamily: T.ui,
+              fontFamily: TL.font.sans,
               fontSize: 12.5,
-              color: T.mut,
+              color: TL.mute,
               display: "block",
               marginTop: 8,
             }}
@@ -614,24 +596,24 @@ export function ForelderSamtykkeV2({ data }: { data: ForelderSamtykkeData }) {
           <Icon
             name="shield"
             size={18}
-            style={{ color: T.lime, flex: "none", marginTop: 2 }}
+            style={{ color: TL.fill, flex: "none", marginTop: 2 }}
           />
           <div style={{ flex: 1, minWidth: 0 }}>
             <div
               style={{
-                fontFamily: T.disp,
+                fontFamily: TL.font.sans,
                 fontWeight: 700,
                 fontSize: 15,
-                color: T.fg,
+                color: TL.text,
               }}
             >
               Du bestemmer til barnet er 18
             </div>
             <p
               style={{
-                fontFamily: T.ui,
+                fontFamily: TL.font.sans,
                 fontSize: 12.5,
-                color: T.fg2,
+                color: TL.mute,
                 lineHeight: 1.55,
                 margin: "6px 0 0",
               }}
@@ -668,9 +650,9 @@ export function ForelderSamtykkeV2({ data }: { data: ForelderSamtykkeData }) {
             display: "flex",
             flexDirection: "column",
             gap: 8,
-            fontFamily: T.ui,
+            fontFamily: TL.font.sans,
             fontSize: 12.5,
-            color: T.fg2,
+            color: TL.mute,
             lineHeight: 1.55,
           }}
         >
@@ -680,7 +662,7 @@ export function ForelderSamtykkeV2({ data }: { data: ForelderSamtykkeData }) {
             Du kan be om full dataeksport eller sletting når som helst via{" "}
             <a
               href="mailto:personvern@akgolf.no"
-              style={{ color: T.lime, textDecoration: "none" }}
+              style={{ color: TL.fill, textDecoration: "none" }}
             >
               personvern@akgolf.no
             </a>

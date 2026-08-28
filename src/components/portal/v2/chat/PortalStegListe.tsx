@@ -8,7 +8,8 @@
  */
 
 import { Check, Loader2, X } from "lucide-react";
-import { T } from "@/lib/v2/tokens";
+import { TL } from "@/lib/v2/train-lock";
+
 import { PORTAL_CHAT_TOOL_LABEL, type PortalChatToolName } from "@/lib/portal-chat/labels";
 import type { PortalToolCall } from "./types";
 
@@ -28,22 +29,22 @@ export function PortalStegListe({ steg }: { steg: PortalToolCall[] }) {
         const feilet = s.state === "error" || s.output?.ok === false;
         const ferdig = s.state === "result";
         return (
-          <li key={s.id} style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 12.5, color: T.mut }}>
+          <li key={s.id} style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 12.5, color: TL.mute }}>
             {feilet ? (
-              <X size={14} style={{ color: T.down, flex: "none" }} />
+              <X size={14} style={{ color: TL.danger, flex: "none" }} />
             ) : ferdig ? (
-              <Check size={14} style={{ color: T.up, flex: "none" }} />
+              <Check size={14} style={{ color: TL.ok, flex: "none" }} />
             ) : (
-              <Loader2 size={14} style={{ color: T.mut, flex: "none" }} className="animate-spin" />
+              <Loader2 size={14} style={{ color: TL.mute, flex: "none" }} className="animate-spin" />
             )}
             <span>{labelFor(s.toolName)}</span>
             {ferdig && typeof s.output?.tookMs === "number" && (
-              <span style={{ marginLeft: "auto", fontFamily: T.mono, fontSize: 11.5, color: T.mut }}>
+              <span style={{ marginLeft: "auto", fontFamily: TL.font.mono, fontSize: 11.5, color: TL.mute }}>
                 {sekunder(s.output.tookMs)}
               </span>
             )}
             {feilet && (
-              <span style={{ marginLeft: "auto", fontFamily: T.mono, fontSize: 11.5, color: T.down }}>Feilet</span>
+              <span style={{ marginLeft: "auto", fontFamily: TL.font.mono, fontSize: 11.5, color: TL.danger }}>Feilet</span>
             )}
           </li>
         );

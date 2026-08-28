@@ -1,5 +1,6 @@
+import { TL } from "@/lib/v2/train-lock";
 import Link from "next/link";
-import { Caps, Kort, Knapp, StatusPill, TomTilstand, T } from "@/components/v2";
+import { Caps, Kort, Knapp, StatusPill, TomTilstand } from "@/components/v2";
 import { Icon } from "@/components/v2/icon";
 import { ToppbarHoyde } from "@/components/v2/toppbar-hoyde";
 import { AdminSlettSpillerKnappV2 } from "./AdminSlettSpillerKnappV2";
@@ -46,18 +47,18 @@ export interface AdminSpillerRedigerV2Data {
 function Felt({ label, name, defaultValue, type = "text", required, hint }: { label: string; name: string; defaultValue: string; type?: string; required?: boolean; hint?: string }) {
   return (
     <label style={{ display: "block" }}>
-      <span style={{ fontFamily: T.mono, fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.10em", color: T.mut }}>
+      <span style={{ fontFamily: TL.font.mono, fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.10em", color: TL.mute }}>
         {label}
-        {required && <span style={{ color: T.down }}> *</span>}
+        {required && <span style={{ color: TL.danger }}> *</span>}
       </span>
       <input
         type={type}
         name={name}
         defaultValue={defaultValue}
         required={required}
-        style={{ display: "block", width: "100%", marginTop: 6, borderRadius: 10, border: `1px solid ${T.border}`, background: T.panel2, padding: "10px 14px", fontSize: 13, color: T.fg, outline: "none", boxSizing: "border-box" }}
+        style={{ display: "block", width: "100%", marginTop: 6, borderRadius: 10, border: `1px solid ${TL.hair}`, background: TL.dock, padding: "10px 14px", fontSize: 13, color: TL.text, outline: "none", boxSizing: "border-box" }}
       />
-      {hint && <span style={{ display: "block", marginTop: 4, fontFamily: T.mono, fontSize: 10, color: T.mut }}>{hint}</span>}
+      {hint && <span style={{ display: "block", marginTop: 4, fontFamily: TL.font.mono, fontSize: 10, color: TL.mute }}>{hint}</span>}
     </label>
   );
 }
@@ -65,11 +66,11 @@ function Felt({ label, name, defaultValue, type = "text", required, hint }: { la
 function SelectFelt({ label, name, defaultValue, options }: { label: string; name: string; defaultValue: string; options: { value: string; label: string }[] }) {
   return (
     <label style={{ display: "block" }}>
-      <span style={{ fontFamily: T.mono, fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.10em", color: T.mut }}>{label}</span>
+      <span style={{ fontFamily: TL.font.mono, fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.10em", color: TL.mute }}>{label}</span>
       <select
         name={name}
         defaultValue={defaultValue}
-        style={{ display: "block", width: "100%", marginTop: 6, borderRadius: 10, border: `1px solid ${T.border}`, background: T.panel2, padding: "10px 14px", fontSize: 13, color: T.fg, outline: "none", boxSizing: "border-box" }}
+        style={{ display: "block", width: "100%", marginTop: 6, borderRadius: 10, border: `1px solid ${TL.hair}`, background: TL.dock, padding: "10px 14px", fontSize: 13, color: TL.text, outline: "none", boxSizing: "border-box" }}
       >
         {options.map((o) => (
           <option key={o.value} value={o.value}>{o.label}</option>
@@ -87,7 +88,7 @@ function LagreKnapp({ children }: { children: React.ReactNode }) {
       type="submit"
       form="rediger-form"
       className="v2-press v2-focus"
-      style={{ appearance: "none", display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, fontFamily: T.ui, fontSize: 12.5, fontWeight: 600, color: T.onHandling, background: T.handling, border: "1px solid transparent", borderRadius: 9999, padding: "10px 18px", cursor: "pointer" }}
+      style={{ appearance: "none", display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, fontFamily: TL.font.sans, fontSize: 12.5, fontWeight: 600, color: TL.onFill, background: TL.fill, border: "1px solid transparent", borderRadius: 9999, padding: "10px 18px", cursor: "pointer" }}
     >
       {children}
     </button>
@@ -97,32 +98,32 @@ function LagreKnapp({ children }: { children: React.ReactNode }) {
 function FeltOmraade({ label, name, defaultValue, hint }: { label: string; name: string; defaultValue: string; hint?: string }) {
   return (
     <label style={{ display: "block" }}>
-      <span style={{ fontFamily: T.mono, fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.10em", color: T.mut }}>{label}</span>
+      <span style={{ fontFamily: TL.font.mono, fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.10em", color: TL.mute }}>{label}</span>
       <textarea
         name={name}
         defaultValue={defaultValue}
         rows={4}
-        style={{ display: "block", width: "100%", marginTop: 6, borderRadius: 10, border: `1px solid ${T.border}`, background: T.panel2, padding: "10px 14px", fontSize: 13, color: T.fg, outline: "none", resize: "vertical", boxSizing: "border-box" }}
+        style={{ display: "block", width: "100%", marginTop: 6, borderRadius: 10, border: `1px solid ${TL.hair}`, background: TL.dock, padding: "10px 14px", fontSize: 13, color: TL.text, outline: "none", resize: "vertical", boxSizing: "border-box" }}
       />
-      {hint && <span style={{ display: "block", marginTop: 4, fontFamily: T.mono, fontSize: 10, color: T.mut }}>{hint}</span>}
+      {hint && <span style={{ display: "block", marginTop: 4, fontFamily: TL.font.mono, fontSize: 10, color: TL.mute }}>{hint}</span>}
     </label>
   );
 }
 
 export function AdminSpillerRedigerV2({ data }: { data: AdminSpillerRedigerV2Data }) {
   return (
-    <div data-paper-wave-h="spiller-rediger" data-paper-pattern style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 960, margin: "0 auto", width: "100%" }}>
-      <div style={{ position: "sticky", top: 0, zIndex: 20, background: `color-mix(in srgb, ${T.bg} 95%, transparent)`, backdropFilter: "blur(6px)", borderBottom: `1px solid ${T.border}`, padding: "10px 0" }}>
+    <div data-paper-wave-h="spiller-rediger" data-paper-pattern style={{ display: "flex", flexDirection: "column", gap: 16, maxWidth: 960, margin: "0 auto", width: "100%" }}>
+      <div style={{ position: "sticky", top: 0, zIndex: 20, background: `color-mix(in srgb, ${TL.scene} 95%, transparent)`, backdropFilter: "blur(6px)", borderBottom: `1px solid ${TL.hair}`, padding: "10px 0" }}>
         {/* Server-komponent — kan ikke bruke hooken, så måleren måler forelderen. */}
         <ToppbarHoyde />
         <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", justifyContent: "space-between", gap: 10 }}>
           <div style={{ minWidth: 0 }}>
-            <Link href={`/admin/spillere/${data.spillerId}`} style={{ display: "inline-flex", alignItems: "center", gap: 6, fontFamily: T.mono, fontSize: 10, textTransform: "uppercase", letterSpacing: "0.08em", color: T.mut, textDecoration: "none" }}>
+            <Link href={`/admin/spillere/${data.spillerId}`} style={{ display: "inline-flex", alignItems: "center", gap: 6, fontFamily: TL.font.mono, fontSize: 10, textTransform: "uppercase", letterSpacing: "0.08em", color: TL.mute, textDecoration: "none" }}>
               <Icon name="arrow-left" size={12} />
               {data.spillerNavn} · Rediger
             </Link>
-            <h1 style={{ margin: "4px 0 0", fontFamily: T.disp, fontWeight: 700, fontSize: 24, color: T.fg }}>
-              Rediger <em style={{ fontStyle: "italic", fontWeight: 400, color: T.lime }}>spiller</em>
+            <h1 style={{ margin: "4px 0 0", fontFamily: TL.font.sans, fontWeight: 700, fontSize: 24, color: TL.text }}>
+              Rediger <em style={{ fontStyle: "italic", fontWeight: 400, color: TL.fill }}>spiller</em>
             </h1>
             <div style={{ marginTop: 8, display: "flex", flexWrap: "wrap", gap: 8, alignItems: "center" }}>
               <StatusPill tone="info">
@@ -146,10 +147,10 @@ export function AdminSpillerRedigerV2({ data }: { data: AdminSpillerRedigerV2Dat
         </div>
       </div>
 
-      <form id="rediger-form" action={lagreSpiller} style={{ gap: T.gap, alignItems: "start" }} className="grid grid-cols-1 lg:grid-cols-[3fr_2fr]">
+      <form id="rediger-form" action={lagreSpiller} style={{ gap: 16, alignItems: "start" }} className="grid grid-cols-1 lg:grid-cols-[3fr_2fr]">
         <input type="hidden" name="id" value={data.spillerId} />
 
-        <div className="min-w-0" style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+        <div className="min-w-0" style={{ display: "flex", flexDirection: "column", gap: 16 }}>
           <Kort>
             <Caps>Personalia</Caps>
             <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: 14, marginTop: 14 }}>
@@ -191,7 +192,7 @@ export function AdminSpillerRedigerV2({ data }: { data: AdminSpillerRedigerV2Dat
           <Kort>
             <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", marginBottom: 14 }}>
               <Caps>Foresatte</Caps>
-              <span style={{ fontFamily: T.mono, fontSize: 10, color: T.mut }}>{data.foreldre.length}</span>
+              <span style={{ fontFamily: TL.font.mono, fontSize: 10, color: TL.mute }}>{data.foreldre.length}</span>
             </div>
             {data.foreldre.length === 0 ? (
               <TomTilstand
@@ -202,12 +203,12 @@ export function AdminSpillerRedigerV2({ data }: { data: AdminSpillerRedigerV2Dat
             ) : (
               <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
                 {data.foreldre.map((p) => (
-                  <div key={p.id} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10, borderRadius: 12, border: `1px solid ${T.border}`, background: T.panel2, padding: 14 }}>
+                  <div key={p.id} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10, borderRadius: 12, border: `1px solid ${TL.hair}`, background: TL.dock, padding: 14 }}>
                     <div style={{ minWidth: 0 }}>
-                      <div style={{ fontSize: 13, fontWeight: 600, color: T.fg, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{p.navn}</div>
-                      <div style={{ fontFamily: T.mono, fontSize: 10, textTransform: "uppercase", letterSpacing: "0.08em", color: T.mut }}>{p.relasjon}</div>
+                      <div style={{ fontSize: 13, fontWeight: 600, color: TL.text, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{p.navn}</div>
+                      <div style={{ fontFamily: TL.font.mono, fontSize: 10, textTransform: "uppercase", letterSpacing: "0.08em", color: TL.mute }}>{p.relasjon}</div>
                     </div>
-                    <Link href={`/admin/spillere/${data.spillerId}/profil`} style={{ fontFamily: T.mono, fontSize: 10, textTransform: "uppercase", letterSpacing: "0.08em", color: T.lime, textDecoration: "none" }}>
+                    <Link href={`/admin/spillere/${data.spillerId}/profil`} style={{ fontFamily: TL.font.mono, fontSize: 10, textTransform: "uppercase", letterSpacing: "0.08em", color: TL.fill, textDecoration: "none" }}>
                       Rediger →
                     </Link>
                   </div>
@@ -217,11 +218,11 @@ export function AdminSpillerRedigerV2({ data }: { data: AdminSpillerRedigerV2Dat
           </Kort>
         </div>
 
-        <aside style={{ display: "flex", flexDirection: "column", gap: T.gap }} className="min-w-0 lg:sticky lg:top-32 lg:self-start">
+        <aside style={{ display: "flex", flexDirection: "column", gap: 16 }} className="min-w-0 lg:sticky lg:top-32 lg:self-start">
           <Kort>
             <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", marginBottom: 10 }}>
               <Caps>Endrings-historikk</Caps>
-              <span style={{ fontFamily: T.mono, fontSize: 10, color: T.mut }}>{data.historikk.length}</span>
+              <span style={{ fontFamily: TL.font.mono, fontSize: 10, color: TL.mute }}>{data.historikk.length}</span>
             </div>
             {data.historikk.length === 0 ? (
               <TomTilstand
@@ -232,10 +233,10 @@ export function AdminSpillerRedigerV2({ data }: { data: AdminSpillerRedigerV2Dat
             ) : (
               <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
                 {data.historikk.map((h) => (
-                  <div key={h.id} style={{ borderLeft: `2px solid ${T.border}`, paddingLeft: 14 }}>
-                    <div style={{ fontFamily: T.mono, fontSize: 10, textTransform: "uppercase", letterSpacing: "0.08em", color: T.mut }}>{h.datoLabel}</div>
-                    <div style={{ marginTop: 2, fontSize: 13, color: T.fg }}>{h.handling}</div>
-                    {h.aktorNavn && <div style={{ marginTop: 2, fontFamily: T.mono, fontSize: 10, color: T.mut }}>av {h.aktorNavn}</div>}
+                  <div key={h.id} style={{ borderLeft: `2px solid ${TL.hair}`, paddingLeft: 14 }}>
+                    <div style={{ fontFamily: TL.font.mono, fontSize: 10, textTransform: "uppercase", letterSpacing: "0.08em", color: TL.mute }}>{h.datoLabel}</div>
+                    <div style={{ marginTop: 2, fontSize: 13, color: TL.text }}>{h.handling}</div>
+                    {h.aktorNavn && <div style={{ marginTop: 2, fontFamily: TL.font.mono, fontSize: 10, color: TL.mute }}>av {h.aktorNavn}</div>}
                   </div>
                 ))}
               </div>
@@ -244,7 +245,7 @@ export function AdminSpillerRedigerV2({ data }: { data: AdminSpillerRedigerV2Dat
         </aside>
       </form>
 
-      <div style={{ position: "sticky", bottom: 0, zIndex: 20, background: `color-mix(in srgb, ${T.bg} 95%, transparent)`, backdropFilter: "blur(6px)", borderTop: `1px solid ${T.border}`, padding: "10px 0" }}>
+      <div style={{ position: "sticky", bottom: 0, zIndex: 20, background: `color-mix(in srgb, ${TL.scene} 95%, transparent)`, backdropFilter: "blur(6px)", borderTop: `1px solid ${TL.hair}`, padding: "10px 0" }}>
         <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", justifyContent: "space-between", gap: 10 }}>
           <AdminSlettSpillerKnappV2 spillerId={data.spillerId} spillerNavn={data.spillerNavn} />
           <div style={{ display: "flex", alignItems: "center", gap: 8 }}>

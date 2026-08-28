@@ -5,7 +5,8 @@
 
 import Link from "next/link";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
-import { T } from "@/lib/v2/tokens";
+import { TL } from "@/lib/v2/train-lock";
+
 import { Kort, StatusPill, Icon } from "@/components/v2";
 import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
 import { InnstillingerHode } from "@/components/portal/v2/InnstillingerHode";
@@ -45,7 +46,7 @@ export default async function PersonvernPage() {
         margin: "0 auto",
         display: "flex",
         flexDirection: "column",
-        gap: T.gap,
+        gap: 16,
       }}
     >
       <InnstillingerHode
@@ -54,7 +55,7 @@ export default async function PersonvernPage() {
         tilbakeHref="/portal/meg/innstillinger"
         action={<StatusPill tone="info">GDPR</StatusPill>}
       />
-      <p style={{ fontFamily: T.ui, fontSize: 13, color: T.fg2, margin: 0, lineHeight: 1.45, maxWidth: "42ch" }}>
+      <p style={{ fontFamily: TL.font.sans, fontSize: 13, color: TL.mute, margin: 0, lineHeight: 1.45, maxWidth: "42ch" }}>
         Last ned dine data, se hvordan vi lagrer dem, eller be om sletting.
       </p>
 
@@ -93,21 +94,21 @@ export default async function PersonvernPage() {
               width: 40,
               height: 40,
               borderRadius: 12,
-              background: T.panel3,
-              border: `1px solid ${T.border}`,
+              background: TL.dim,
+              border: `1px solid ${TL.hair}`,
               display: "inline-flex",
               alignItems: "center",
               justifyContent: "center",
               flex: "none",
             }}
           >
-            <Icon name="download" size={16} style={{ color: T.fg2 }} />
+            <Icon name="download" size={16} style={{ color: TL.mute }} />
           </span>
           <div style={{ minWidth: 0, flex: 1 }}>
-            <div style={{ fontFamily: T.disp, fontSize: 16, fontWeight: 700, color: T.fg, letterSpacing: "-0.02em" }}>
+            <div style={{ fontFamily: TL.font.sans, fontSize: 16, fontWeight: 700, color: TL.text, letterSpacing: "-0.02em" }}>
               Last ned dine data
             </div>
-            <p style={{ fontFamily: T.ui, fontSize: 13, color: T.fg2, margin: "6px 0 0", lineHeight: 1.5 }}>
+            <p style={{ fontFamily: TL.font.sans, fontSize: 13, color: TL.mute, margin: "6px 0 0", lineHeight: 1.5 }}>
               Få en fil med profil, runder, økter, mål, betalinger, varsler og meldinger.
             </p>
             <PersonvernActions kind="export" />
@@ -117,8 +118,8 @@ export default async function PersonvernPage() {
 
       <Kort>
         <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 12 }}>
-          <Icon name="shield" size={14} style={{ color: T.fg2 }} />
-          <span style={{ fontFamily: T.disp, fontSize: 14, fontWeight: 700, color: T.fg }}>
+          <Icon name="shield" size={14} style={{ color: TL.mute }} />
+          <span style={{ fontFamily: TL.font.sans, fontSize: 14, fontWeight: 700, color: TL.text }}>
             Hvordan vi behandler dataene dine
           </span>
         </div>
@@ -129,47 +130,47 @@ export default async function PersonvernPage() {
             { t: "E-post", d: "Kun nødvendige e-poster (booking, plan, varsler) — ikke reklame uten samtykke." },
           ].map((r) => (
             <li key={r.t} style={{ display: "flex", gap: 10, alignItems: "flex-start" }}>
-              <Icon name="lock" size={13} style={{ color: T.mut, marginTop: 2, flex: "none" }} />
-              <span style={{ fontFamily: T.ui, fontSize: 13, color: T.fg2, lineHeight: 1.5 }}>
-                <strong style={{ color: T.fg, fontWeight: 600 }}>{r.t}:</strong> {r.d}
+              <Icon name="lock" size={13} style={{ color: TL.mute, marginTop: 2, flex: "none" }} />
+              <span style={{ fontFamily: TL.font.sans, fontSize: 13, color: TL.mute, lineHeight: 1.5 }}>
+                <strong style={{ color: TL.text, fontWeight: 600 }}>{r.t}:</strong> {r.d}
               </span>
             </li>
           ))}
         </ul>
-        <p style={{ fontFamily: T.ui, fontSize: 12, color: T.mut, margin: "14px 0 0", lineHeight: 1.5 }}>
+        <p style={{ fontFamily: TL.font.sans, fontSize: 12, color: TL.mute, margin: "14px 0 0", lineHeight: 1.5 }}>
           Mer i{" "}
-          <Link href="/personvern" style={{ color: T.forest, fontWeight: 600, textDecoration: "none" }}>
+          <Link href="/personvern" style={{ color: TL.fill, fontWeight: 600, textDecoration: "none" }}>
             personvernerklæringen
           </Link>
           . Spørsmål?{" "}
-          <a href="mailto:post@akgolf.no" style={{ color: T.forest, fontWeight: 600, textDecoration: "none" }}>
+          <a href="mailto:post@akgolf.no" style={{ color: TL.fill, fontWeight: 600, textDecoration: "none" }}>
             post@akgolf.no
           </a>
         </p>
       </Kort>
 
-      <Kort style={{ borderColor: `color-mix(in srgb, ${T.down} 28%, ${T.border})` }}>
+      <Kort style={{ borderColor: `color-mix(in srgb, ${TL.danger} 28%, ${TL.hair})` }}>
         <div style={{ display: "flex", alignItems: "flex-start", gap: 14 }}>
           <span
             style={{
               width: 40,
               height: 40,
               borderRadius: 12,
-              background: `color-mix(in srgb, ${T.down} 12%, ${T.panel})`,
-              border: `1px solid color-mix(in srgb, ${T.down} 30%, transparent)`,
+              background: `color-mix(in srgb, ${TL.danger} 12%, ${TL.elev})`,
+              border: `1px solid color-mix(in srgb, ${TL.danger} 30%, transparent)`,
               display: "inline-flex",
               alignItems: "center",
               justifyContent: "center",
               flex: "none",
             }}
           >
-            <Icon name="trash-2" size={16} style={{ color: T.down }} />
+            <Icon name="trash-2" size={16} style={{ color: TL.danger }} />
           </span>
           <div style={{ minWidth: 0, flex: 1 }}>
-            <div style={{ fontFamily: T.disp, fontSize: 16, fontWeight: 700, color: T.fg, letterSpacing: "-0.02em" }}>
+            <div style={{ fontFamily: TL.font.sans, fontSize: 16, fontWeight: 700, color: TL.text, letterSpacing: "-0.02em" }}>
               Slett kontoen din
             </div>
-            <p style={{ fontFamily: T.ui, fontSize: 13, color: T.fg2, margin: "6px 0 0", lineHeight: 1.5 }}>
+            <p style={{ fontFamily: TL.font.sans, fontSize: 13, color: TL.mute, margin: "6px 0 0", lineHeight: 1.5 }}>
               Forespørselen vurderes av coach/admin. Ved godkjenning anonymiseres navn, e-post, telefon og bilde.
               Avidentifisert treningshistorikk beholdes.
             </p>

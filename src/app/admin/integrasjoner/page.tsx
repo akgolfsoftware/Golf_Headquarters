@@ -11,11 +11,7 @@
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
-import {
-  AdminIntegrasjonerTrainLock,
-  type IntegrasjonKort,
-  type IntegrasjonStatus,
-} from "@/components/admin/v2/oppsett/AdminIntegrasjonerTrainLock";
+import { AdminIntegrasjonerTrainLock, type IntegrasjonKort, type IntegrasjonStatus } from "@/components/admin/v2/oppsett/AdminIntegrasjonerTrainLock";
 import { TlTilbake } from "@/components/admin/v2/oppsett/tl-kit";
 
 export const dynamic = "force-dynamic";

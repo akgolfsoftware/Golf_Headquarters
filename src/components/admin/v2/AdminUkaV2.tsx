@@ -1,5 +1,5 @@
 "use client";
-
+import { TL } from "@/lib/v2/train-lock";
 /**
  * AgencyOS · Uka — v2. Rekomponert fra src/app/admin/(legacy)/agencyos/uka/page.tsx
  * (7-dagers kanban med bookinger gruppert per dag) med v2-biblioteket
@@ -16,9 +16,8 @@
 import Link from "next/link";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Caps, Tittel, Kort, KpiFlis, CTAPill, StatusPill, TomTilstand, Icon, T, HurtigOpprett, foreslaTid } from "@/components/v2";
+import { Caps, Tittel, Kort, KpiFlis, CTAPill, StatusPill, TomTilstand, Icon, HurtigOpprett, foreslaTid } from "@/components/v2";
 import { flyttBookingTilDag } from "@/app/admin/agencyos/uka/actions";
-
 // I5: samme DnD-payload-mønster som Workbench-tidslinja.
 const DND_MIME = "application/x-akgolf-uka";
 
@@ -77,17 +76,17 @@ function DagKort({ d, onFlytt, flytterId, onTomLuke }: { d: UkaDagV2; onFlytt: (
       style={{
         minHeight: 200,
         flex: 1,
-        border: `1px solid ${over ? T.lime : d.erIdag ? T.lime : T.border}`,
-        background: over ? `color-mix(in srgb, ${T.lime} 6%, ${T.panel})` : d.erHelg && !d.erIdag ? T.panel2 : undefined,
+        border: `1px solid ${over ? TL.fill : d.erIdag ? TL.fill : TL.hair}`,
+        background: over ? `color-mix(in srgb, ${TL.fill} 6%, ${TL.elev})` : d.erHelg && !d.erIdag ? TL.dock : undefined,
         transition: "background 80ms, border-color 80ms",
       }}
     >
-      <div style={{ paddingBottom: 10, marginBottom: 10, borderBottom: `1px solid ${T.border}` }}>
-        <Caps color={d.erIdag ? T.lime : d.erHelg ? T.down : T.mut}>
+      <div style={{ paddingBottom: 10, marginBottom: 10, borderBottom: `1px solid ${TL.hair}` }}>
+        <Caps color={d.erIdag ? TL.fill : d.erHelg ? TL.danger : TL.mute}>
           {d.kortNavn} · {d.bookinger.length}
         </Caps>
-        <div style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 14, letterSpacing: "-0.01em", color: T.fg, marginTop: 3 }}>
-          {d.erIdag ? <em style={{ fontStyle: "italic", color: T.lime }}>I dag</em> : d.erHelg ? "Låst dag" : d.langNavn}
+        <div style={{ fontFamily: TL.font.sans, fontWeight: 700, fontSize: 14, letterSpacing: "-0.01em", color: TL.text, marginTop: 3 }}>
+          {d.erIdag ? <em style={{ fontStyle: "italic", color: TL.fill }}>I dag</em> : d.erHelg ? "Låst dag" : d.langNavn}
         </div>
       </div>
       {d.bookinger.length === 0 ? (
@@ -100,7 +99,7 @@ function DagKort({ d, onFlytt, flytterId, onTomLuke }: { d: UkaDagV2; onFlytt: (
           aria-label={`Ny booking eller økt ${d.langNavn}`}
           className="v2-press v2-focus"
           style={{ appearance: "none", cursor: "pointer", background: "none", border: `1px dashed transparent`, borderRadius: 10, flex: 1, display: "flex", alignItems: "center", justifyContent: "center", minHeight: 100, padding: 0 }}
-          onMouseEnter={(e) => { e.currentTarget.style.borderColor = T.borderS; }}
+          onMouseEnter={(e) => { e.currentTarget.style.borderColor = TL.hair; }}
           onMouseLeave={(e) => { e.currentTarget.style.borderColor = "transparent"; }}
         >
           <Caps size={9}>{d.erHelg ? "— beskyttet —" : "— ledig —"}</Caps>
@@ -117,20 +116,20 @@ function DagKort({ d, onFlytt, flytterId, onTomLuke }: { d: UkaDagV2; onFlytt: (
               }}
               style={{
                 padding: "9px 0",
-                borderBottom: i === d.bookinger.length - 1 ? "none" : `1px solid ${T.border}`,
+                borderBottom: i === d.bookinger.length - 1 ? "none" : `1px solid ${TL.hair}`,
                 cursor: "grab",
                 opacity: flytterId === b.id ? 0.45 : 1,
               }}
             >
-              <div style={{ display: "flex", alignItems: "center", gap: 6, fontFamily: T.ui, fontSize: 13, fontWeight: 600, color: T.fg, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
-                <Icon name="grip-vertical" size={11} style={{ color: T.mut, flex: "none" }} />
+              <div style={{ display: "flex", alignItems: "center", gap: 6, fontFamily: TL.font.sans, fontSize: 13, fontWeight: 600, color: TL.text, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                <Icon name="grip-vertical" size={11} style={{ color: TL.mute, flex: "none" }} />
                 {b.navn}
               </div>
               <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: 6, marginTop: 2 }}>
-                <span style={{ fontFamily: T.ui, fontSize: 11, color: T.mut, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                <span style={{ fontFamily: TL.font.sans, fontSize: 11, color: TL.mute, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
                   {b.tjeneste}
                 </span>
-                <span style={{ fontFamily: T.mono, fontSize: 10, color: T.mut, whiteSpace: "nowrap", flexShrink: 0 }}>
+                <span style={{ fontFamily: TL.font.mono, fontSize: 10, color: TL.mute, whiteSpace: "nowrap", flexShrink: 0 }}>
                   {b.time} · {b.durMin} min
                 </span>
               </div>
@@ -146,7 +145,7 @@ function DagKort({ d, onFlytt, flytterId, onTomLuke }: { d: UkaDagV2; onFlytt: (
             aria-label={`Ny booking eller økt ${d.langNavn}`}
             className="v2-press v2-focus"
             style={{ appearance: "none", cursor: "pointer", background: "none", border: `1px dashed transparent`, borderRadius: 10, width: "100%", minHeight: 36, display: "flex", alignItems: "center", justifyContent: "center", color: "transparent", padding: 0, marginTop: 4 }}
-            onMouseEnter={(e) => { e.currentTarget.style.borderColor = T.borderS; e.currentTarget.style.color = T.mut; }}
+            onMouseEnter={(e) => { e.currentTarget.style.borderColor = TL.hair; e.currentTarget.style.color = TL.mute; }}
             onMouseLeave={(e) => { e.currentTarget.style.borderColor = "transparent"; e.currentTarget.style.color = "transparent"; }}
           >
             <Icon name="plus" size={13} />
@@ -191,7 +190,7 @@ export function AdminUkaV2({ data }: { data: AdminUkaV2Data }) {
           <div style={{ marginTop: 10 }}>
             <Tittel em={data.periodeLabel}>Uka</Tittel>
           </div>
-          <p style={{ fontFamily: T.ui, fontSize: 13, color: T.fg2, marginTop: 8 }}>
+          <p style={{ fontFamily: TL.font.sans, fontSize: 13, color: TL.mute, marginTop: 8 }}>
             Caddie balanserer kapasitet, reise og familie-tid.
           </p>
         </div>
@@ -200,7 +199,7 @@ export function AdminUkaV2({ data }: { data: AdminUkaV2Data }) {
         </StatusPill>
       </div>
 
-      <div className="grid grid-cols-2 lg:grid-cols-4" style={{ gap: T.gap }}>
+      <div className="grid grid-cols-2 lg:grid-cols-4" style={{ gap: 16 }}>
         <KpiFlis label="Timer totalt" value={`${data.timerTotalt} t`} />
         <KpiFlis label="Bookinger" value={data.antallBookinger} />
         <KpiFlis label="Unike spillere" value={data.unikeSpillere} />
@@ -210,9 +209,9 @@ export function AdminUkaV2({ data }: { data: AdminUkaV2Data }) {
       {primaerCta}
 
       {feil && (
-        <div style={{ display: "flex", alignItems: "center", gap: 8, padding: "9px 13px", borderRadius: 11, background: `color-mix(in srgb, ${T.down} 9%, ${T.panel})`, border: `1px solid color-mix(in srgb, ${T.down} 30%, transparent)` }}>
-          <Icon name="alert-triangle" size={13} style={{ color: T.down }} />
-          <span style={{ fontFamily: T.ui, fontSize: 12, color: T.fg }}>{feil}</span>
+        <div style={{ display: "flex", alignItems: "center", gap: 8, padding: "9px 13px", borderRadius: 11, background: `color-mix(in srgb, ${TL.danger} 9%, ${TL.elev})`, border: `1px solid color-mix(in srgb, ${TL.danger} 30%, transparent)` }}>
+          <Icon name="alert-triangle" size={13} style={{ color: TL.danger }} />
+          <span style={{ fontFamily: TL.font.sans, fontSize: 12, color: TL.text }}>{feil}</span>
         </div>
       )}
 

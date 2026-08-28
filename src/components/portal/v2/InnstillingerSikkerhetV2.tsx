@@ -1,5 +1,5 @@
 "use client";
-
+import { TL } from "@/lib/v2/train-lock";
 /**
  * PlayerHQ Innstillinger · Sikkerhet — v2 Presis + B-pakke (score først, full CTA).
  */
@@ -9,20 +9,7 @@ import Link from "next/link";
 import { ReauthModal } from "@/components/auth/reauth-modal";
 import { InnstillingerHode } from "@/components/portal/v2/InnstillingerHode";
 import { createClient } from "@/lib/supabase/client";
-import {
-  T,
-  Caps,
-  Kort,
-  Rad,
-  StatusPill,
-  TallHero,
-  ProgresjonsBar,
-  Icon,
-  Inndata,
-  Knapp,
-  type StatusTone,
-} from "@/components/v2";
-
+import { Caps, Kort, Rad, StatusPill, TallHero, ProgresjonsBar, Icon, Inndata, Knapp, type StatusTone } from "@/components/v2";
 /* ── Datakontrakt ──────────────────────────────────────────────────── */
 
 export type InnstillingerSikkerhetData = {
@@ -55,15 +42,15 @@ function SeksjonIkon({ name, farge }: { name: string; farge?: string }) {
         width: 32,
         height: 32,
         borderRadius: 10,
-        background: T.panel3,
-        border: `1px solid ${T.border}`,
+        background: TL.dim,
+        border: `1px solid ${TL.hair}`,
         display: "inline-flex",
         alignItems: "center",
         justifyContent: "center",
         flex: "none",
       }}
     >
-      <Icon name={name} size={14} style={{ color: farge || T.fg2 }} />
+      <Icon name={name} size={14} style={{ color: farge || TL.mute }} />
     </span>
   );
 }
@@ -168,7 +155,7 @@ export function InnstillingerSikkerhetV2({ data }: { data: InnstillingerSikkerhe
   }
 
   return (
-    <div data-paper-wave-g="innstillingersikkerhet" data-paper-portal-innstillinger-sikkerhet data-paper-slug="playerhq-innstillinger" style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
+    <div data-paper-wave-g="innstillingersikkerhet" data-paper-portal-innstillinger-sikkerhet data-paper-slug="playerhq-innstillinger" style={{ display: "flex", flexDirection: "column", gap: 16, maxWidth: 720, margin: "0 auto", width: "100%" }}>
       <InnstillingerHode tittel="Sikkerhet" undertekst="Innstillinger" tilbakeHref="/portal/meg/innstillinger" />
 
       {/* B: score/status først */}
@@ -184,7 +171,7 @@ export function InnstillingerSikkerhetV2({ data }: { data: InnstillingerSikkerhe
         <div style={{ marginTop: 16 }}>
           <ProgresjonsBar variant="bar" value={score} max={100} label={null} showValue={false} />
         </div>
-        <p style={{ fontFamily: T.ui, fontSize: 12.5, color: T.fg2, lineHeight: 1.6, margin: "12px 0 0" }}>
+        <p style={{ fontFamily: TL.font.sans, fontSize: 12.5, color: TL.mute, lineHeight: 1.6, margin: "12px 0 0" }}>
           Sist innlogget: {sisteInnlogging}. Aktiver tofaktor for +20.
         </p>
       </Kort>
@@ -193,13 +180,13 @@ export function InnstillingerSikkerhetV2({ data }: { data: InnstillingerSikkerhe
         <Link href="/portal/meg/sikkerhet/2fa" style={{ textDecoration: "none", display: "block" }}>
           <span style={{
             display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, minHeight: 56, width: "100%", padding: "10px 16px",
-            borderRadius: 12, background: T.handling, color: T.onHandling, fontFamily: T.ui, fontSize: 14, fontWeight: 600,
+            borderRadius: 12, background: TL.fill, color: TL.onFill, fontFamily: TL.font.sans, fontSize: 14, fontWeight: 600,
           }}>Aktiver tofaktor</span>
         </Link>
       )}
 
       {/* Endre passord + Endre e-post */}
-      <div className="grid grid-cols-1 md:grid-cols-2" style={{ gap: T.gap, alignItems: "start" }}>
+      <div className="grid grid-cols-1 md:grid-cols-2" style={{ gap: 16, alignItems: "start" }}>
         <Kort eyebrow="Endre passord">
           <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
             <Inndata
@@ -217,10 +204,10 @@ export function InnstillingerSikkerhetV2({ data }: { data: InnstillingerSikkerhe
               placeholder="Gjenta passordet"
             />
             {passordFeil && (
-              <p style={{ fontFamily: T.ui, fontSize: 12, color: T.down, margin: 0 }}>{passordFeil}</p>
+              <p style={{ fontFamily: TL.font.sans, fontSize: 12, color: TL.danger, margin: 0 }}>{passordFeil}</p>
             )}
             {passordSuksess && !passordFeil && (
-              <p style={{ fontFamily: T.ui, fontSize: 12, color: T.up, margin: 0 }}>Passord oppdatert.</p>
+              <p style={{ fontFamily: TL.font.sans, fontSize: 12, color: TL.ok, margin: 0 }}>Passord oppdatert.</p>
             )}
             <Knapp icon="check" full disabled={passordLagrer} onClick={lagrePassord}>
               {passordLagrer ? "Lagrer …" : "Lagre nytt passord"}
@@ -238,10 +225,10 @@ export function InnstillingerSikkerhetV2({ data }: { data: InnstillingerSikkerhe
               placeholder="navn@eksempel.no"
             />
             {epostFeil && (
-              <p style={{ fontFamily: T.ui, fontSize: 12, color: T.down, margin: 0 }}>{epostFeil}</p>
+              <p style={{ fontFamily: TL.font.sans, fontSize: 12, color: TL.danger, margin: 0 }}>{epostFeil}</p>
             )}
             {epostSuksess && !epostFeil && (
-              <p style={{ fontFamily: T.ui, fontSize: 12, color: T.up, lineHeight: 1.5, margin: 0 }}>
+              <p style={{ fontFamily: TL.font.sans, fontSize: 12, color: TL.ok, lineHeight: 1.5, margin: 0 }}>
                 Bekreftelseslenke sendt til {nyEpost.trim()}. E-posten din endres først når du klikker
                 lenken.
               </p>
@@ -253,7 +240,7 @@ export function InnstillingerSikkerhetV2({ data }: { data: InnstillingerSikkerhe
         </Kort>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2" style={{ gap: T.gap, alignItems: "start" }}>
+      <div className="grid grid-cols-1 md:grid-cols-2" style={{ gap: 16, alignItems: "start" }}>
         {/* Innlogging */}
         <div>
           <Caps size={9} style={{ margin: "0 4px 8px" }}>Innlogging</Caps>
@@ -268,7 +255,7 @@ export function InnstillingerSikkerhetV2({ data }: { data: InnstillingerSikkerhe
             <Link href="/portal/meg/sikkerhet/2fa" style={{ textDecoration: "none", color: "inherit", display: "block" }}>
               <Rad
                 last
-                leading={<SeksjonIkon name="shield-check" farge={T.lime} />}
+                leading={<SeksjonIkon name="shield-check" farge={TL.fill} />}
                 title="Tofaktor-autentisering"
                 sub="Authenticator-app · ekstra beskyttelse"
                 meta={<StatusPill tone="lime">Anbefalt</StatusPill>}
@@ -282,7 +269,7 @@ export function InnstillingerSikkerhetV2({ data }: { data: InnstillingerSikkerhe
           <Caps size={9} style={{ margin: "0 4px 8px" }}>Aktive økter</Caps>
           <Kort pad="4px 20px 6px">
             <Rad
-              leading={<SeksjonIkon name="monitor" farge={T.lime} />}
+              leading={<SeksjonIkon name="monitor" farge={TL.fill} />}
               title="Denne enheten"
               sub={`Siste innlogging · ${sisteInnlogging}`}
               meta={<StatusPill tone="lime">Aktiv</StatusPill>}

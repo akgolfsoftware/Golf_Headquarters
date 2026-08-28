@@ -1,4 +1,5 @@
 "use client";
+import { TL } from "@/lib/v2/train-lock";
 
 /**
  * AgencyOS Plan-maler — v2 Presis + B-pakke (status + én primær CTA, tom = vei).
@@ -137,9 +138,9 @@ function MalRad({
         gap: 12,
         padding: "11px 10px",
         margin: "0 -10px",
-        borderRadius: T.rRow,
-        borderBottom: last ? "none" : `1px solid ${T.border}`,
-        background: valgt ? T.panel3 : undefined,
+        borderRadius: TL.radius.row,
+        borderBottom: last ? "none" : `1px solid ${TL.hair}`,
+        background: valgt ? TL.dim : undefined,
         textDecoration: "none",
       }}
     >
@@ -152,11 +153,11 @@ function MalRad({
           height: 32,
           flex: "none",
           borderRadius: 9,
-          background: T.panel3,
-          border: `1px solid ${T.border}`,
+          background: TL.dim,
+          border: `1px solid ${TL.hair}`,
         }}
       >
-        <Icon name={FASE_IKON[m.fase]} size={16} style={{ color: T.lime }} />
+        <Icon name={FASE_IKON[m.fase]} size={16} style={{ color: TL.fill }} />
       </span>
 
       {/* minWidth 0: uten den sprenger nowrap-teksten kolonnen (gotcha 10.08) */}
@@ -164,10 +165,10 @@ function MalRad({
         <span
           style={{
             display: "block",
-            fontFamily: T.ui,
+            fontFamily: TL.font.sans,
             fontSize: 13.5,
             fontWeight: 600,
-            color: T.fg,
+            color: TL.text,
             whiteSpace: "nowrap",
             overflow: "hidden",
             textOverflow: "ellipsis",
@@ -178,9 +179,9 @@ function MalRad({
         <span
           style={{
             display: "block",
-            fontFamily: T.ui,
+            fontFamily: TL.font.sans,
             fontSize: 11.5,
-            color: T.mut,
+            color: TL.mute,
             marginTop: 2,
             whiteSpace: "nowrap",
             overflow: "hidden",
@@ -206,15 +207,15 @@ function MalRad({
                 gap: 10,
                 flexWrap: "wrap",
                 marginTop: 5,
-                fontFamily: T.mono,
+                fontFamily: TL.font.mono,
                 fontSize: 10,
-                color: T.mut,
+                color: TL.mute,
                 fontVariantNumeric: "tabular-nums",
               }}
             >
               {nokler.map((f) => (
                 <span key={f.akse}>
-                  {f.akse} <b style={{ fontWeight: 500, color: T.fg }}>{f.value} %</b>
+                  {f.akse} <b style={{ fontWeight: 500, color: TL.text }}>{f.value} %</b>
                 </span>
               ))}
             </span>
@@ -222,7 +223,7 @@ function MalRad({
         )}
       </span>
 
-      <Icon name="chevron-right" size={14} style={{ color: T.mut, flex: "none" }} />
+      <Icon name="chevron-right" size={14} style={{ color: TL.mute, flex: "none" }} />
     </Link>
   );
 }
@@ -252,12 +253,12 @@ function Gruppe({
   return (
     <Kort>
       <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: 10 }}>
-        <h2 style={{ margin: 0, fontFamily: T.disp, fontSize: 14, fontWeight: 600, color: T.fg }}>{tittel}</h2>
-        <span style={{ fontFamily: T.mono, fontSize: 10.5, color: T.mut, fontVariantNumeric: "tabular-nums" }}>
+        <h2 style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 14, fontWeight: 600, color: TL.text }}>{tittel}</h2>
+        <span style={{ fontFamily: TL.font.mono, fontSize: 10.5, color: TL.mute, fontVariantNumeric: "tabular-nums" }}>
           {teller}
         </span>
       </div>
-      <p style={{ margin: "6px 0 4px", fontFamily: T.ui, fontSize: 11.5, lineHeight: 1.45, color: T.mut }}>
+      <p style={{ margin: "6px 0 4px", fontFamily: TL.font.sans, fontSize: 11.5, lineHeight: 1.45, color: TL.mute }}>
         {notat}
       </p>
       <div style={{ minWidth: 0 }}>
@@ -314,20 +315,20 @@ function FilterChip({
         gap: 6,
         minHeight: 36,
         padding: "0 14px",
-        borderRadius: T.rPill,
+        borderRadius: TL.radius.pill,
         whiteSpace: "nowrap",
-        fontFamily: T.ui,
+        fontFamily: TL.font.sans,
         fontSize: 12.5,
         fontWeight: 500,
-        background: aktiv ? T.fg : T.panel3,
-        color: aktiv ? T.bg : T.fg,
-        border: `1px solid ${aktiv ? T.fg : T.borderS}`,
+        background: aktiv ? TL.text : TL.dim,
+        color: aktiv ? TL.scene : TL.text,
+        border: `1px solid ${aktiv ? TL.text : TL.hair}`,
       }}
     >
       {etikett}
       <span
         style={{
-          fontFamily: T.mono,
+          fontFamily: TL.font.mono,
           fontSize: 11,
           opacity: 0.7,
           fontVariantNumeric: "tabular-nums",
@@ -391,9 +392,9 @@ function PlanMalInspektor({ mal }: { mal: PlanMalRad }) {
 
       {mal.effektAvg != null && mal.effektAntall > 0 && (
         <InspektorBlokk label="Effekt">
-          <p style={{ margin: 0, fontFamily: T.ui, fontSize: 12, lineHeight: 1.55, color: T.mut }}>
+          <p style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 12, lineHeight: 1.55, color: TL.mute }}>
             Spillere som fullførte malen endret SG-Total med{" "}
-            <span style={{ color: T.fg, fontWeight: 600 }}>
+            <span style={{ color: TL.text, fontWeight: 600 }}>
               {mal.effektAvg >= 0 ? "+" : ""}
               {mal.effektAvg.toFixed(2).replace(".", ",")}
             </span>{" "}
@@ -404,7 +405,7 @@ function PlanMalInspektor({ mal }: { mal: PlanMalRad }) {
 
       <InspektorBlokk label="Uke for uke">
         {mal.ukeOversikt.length === 0 ? (
-          <p style={{ margin: 0, fontFamily: T.ui, fontSize: 12, color: T.mut }}>
+          <p style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 12, color: TL.mute }}>
             Ingen økter lagt inn i malen ennå.
           </p>
         ) : (
@@ -467,8 +468,8 @@ export function AdminPlanMalerV2({ data }: { data: AdminPlanMalerData }) {
   const hode = (
     <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 14, flexWrap: "wrap" }}>
       <div data-paper-pattern-topp data-paper-slug="agencyos-planbibliotek" style={{ minWidth: 0 }}>
-        <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>Planer og maler</h1>
-        <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>
+        <h1 style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 17, fontWeight: 600, color: TL.text }}>Planer og maler</h1>
+        <span style={{ display: "block", fontFamily: TL.font.mono, fontSize: 10.5, color: TL.mute, marginTop: 2 }}>
           {undertittel}
         </span>
       </div>
@@ -478,7 +479,7 @@ export function AdminPlanMalerV2({ data }: { data: AdminPlanMalerData }) {
 
   if (total === 0) {
     return (
-      <div data-paper-wave-h="plan-maler" data-paper-pattern style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 960, margin: "0 auto", width: "100%" }}>
+      <div data-paper-wave-h="plan-maler" data-paper-pattern style={{ display: "flex", flexDirection: "column", gap: 16, maxWidth: 960, margin: "0 auto", width: "100%" }}>
         {hode}
         <Kort>
           <TomTilstand
@@ -519,9 +520,9 @@ export function AdminPlanMalerV2({ data }: { data: AdminPlanMalerData }) {
         minWidth: 0,
         overflowX: "auto",
         padding: "10px 12px",
-        borderRadius: T.rCard,
-        background: T.panel2,
-        border: `1px solid ${T.borderS}`,
+        borderRadius: TL.radius.card,
+        background: TL.dock,
+        border: `1px solid ${TL.hair}`,
       }}
     >
       {statusMedTall.map((s) => (
@@ -555,7 +556,7 @@ export function AdminPlanMalerV2({ data }: { data: AdminPlanMalerData }) {
         <TomTilstand icon="filter" title="Ingen maler her" sub="Ingen maler passer filteret akkurat nå." />
       </Kort>
     ) : (
-      <div style={{ display: "flex", flexDirection: "column", gap: T.gap, minWidth: 0 }}>
+      <div style={{ display: "flex", flexDirection: "column", gap: 16, minWidth: 0 }}>
         {godkjente.length > 0 && (
           <Gruppe
             tittel="Mest brukt"
@@ -598,7 +599,7 @@ export function AdminPlanMalerV2({ data }: { data: AdminPlanMalerData }) {
         )
       }
     >
-      <div style={{ display: "flex", flexDirection: "column", gap: T.gap, minWidth: 0 }}>
+      <div style={{ display: "flex", flexDirection: "column", gap: 16, minWidth: 0 }}>
         {hode}
         {filtre}
         {liste}

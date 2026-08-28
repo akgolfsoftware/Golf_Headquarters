@@ -1,4 +1,5 @@
 "use client";
+import { TL } from "@/lib/v2/train-lock";
 
 /**
  * Caddie · godkjenningsmodal (v2). Rekomponert fra
@@ -8,7 +9,7 @@
  */
 
 import { useEffect, useRef, useState } from "react";
-import { T, Icon, Knapp } from "@/components/v2";
+import { Icon, Knapp } from "@/components/v2";
 import type { CaddieToolCall } from "@/components/admin/caddie/types";
 import type { ToolApprovalState } from "@/components/admin/caddie/use-caddie-chat";
 
@@ -79,7 +80,7 @@ export function CaddieApprovalModalV2({ toolCall, onApprove, onReject, onClose }
       aria-modal="true"
       aria-labelledby="caddie-approval-title-v2"
       className="fixed inset-0 z-[80] flex items-center justify-center px-4"
-      style={{ background: T.farge.nestenSvartA62, backdropFilter: "blur(2px)" }}
+      style={{ background: TL.scrim, backdropFilter: "none" }}
       onClick={() => {
         if (!isBusy) onClose();
       }}
@@ -88,27 +89,27 @@ export function CaddieApprovalModalV2({ toolCall, onApprove, onReject, onClose }
         ref={dialogRef}
         tabIndex={-1}
         onClick={(e) => e.stopPropagation()}
-        style={{ width: "100%", maxWidth: 520, borderRadius: 20, border: `1px solid ${T.borderS}`, background: T.panel, boxShadow: `0 24px 60px ${T.farge.svartA50}`, outline: "none" }}
+        style={{ width: "100%", maxWidth: 520, borderRadius: 20, border: `1px solid ${TL.hair}`, background: TL.elev, boxShadow: "none", outline: "none" }}
       >
-        <div style={{ display: "flex", alignItems: "center", gap: 8, borderBottom: `1px solid ${T.border}`, padding: "16px 22px" }}>
-          <Icon name="mail" size={16} style={{ color: T.lime }} />
-          <h2 id="caddie-approval-title-v2" style={{ fontFamily: T.disp, fontSize: 16, fontWeight: 700, letterSpacing: "-0.01em", color: T.fg, margin: 0 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 8, borderBottom: `1px solid ${TL.hair}`, padding: "16px 22px" }}>
+          <Icon name="mail" size={16} style={{ color: TL.fill }} />
+          <h2 id="caddie-approval-title-v2" style={{ fontFamily: TL.font.sans, fontSize: 16, fontWeight: 700, letterSpacing: "-0.01em", color: TL.text, margin: 0 }}>
             Caddie vil sende e-post
           </h2>
         </div>
         <div style={{ display: "flex", flexDirection: "column", gap: 14, padding: "16px 22px" }}>
           {recipient && (
-            <div style={{ fontFamily: T.mono, fontSize: 10, textTransform: "uppercase", letterSpacing: "0.08em", color: T.mut }}>
-              Til: <span style={{ color: T.fg }}>{recipient}</span>
+            <div style={{ fontFamily: TL.font.mono, fontSize: 10, textTransform: "uppercase", letterSpacing: "0.08em", color: TL.mute }}>
+              Til: <span style={{ color: TL.text }}>{recipient}</span>
             </div>
           )}
           <div>
-            <div style={{ fontFamily: T.mono, fontSize: 10, textTransform: "uppercase", letterSpacing: "0.08em", color: T.mut }}>Emne</div>
-            <div style={{ marginTop: 4, fontFamily: T.ui, fontSize: 13.5, fontWeight: 700, color: T.fg }}>{title}</div>
+            <div style={{ fontFamily: TL.font.mono, fontSize: 10, textTransform: "uppercase", letterSpacing: "0.08em", color: TL.mute }}>Emne</div>
+            <div style={{ marginTop: 4, fontFamily: TL.font.sans, fontSize: 13.5, fontWeight: 700, color: TL.text }}>{title}</div>
           </div>
           <div>
-            <div style={{ fontFamily: T.mono, fontSize: 10, textTransform: "uppercase", letterSpacing: "0.08em", color: T.mut }}>Forhåndsvisning</div>
-            <pre style={{ marginTop: 4, maxHeight: 260, overflowY: "auto", whiteSpace: "pre-wrap", borderRadius: 10, border: `1px solid ${T.border}`, background: T.panel2, padding: "10px 14px", fontFamily: T.ui, fontSize: 13, color: T.fg }}>
+            <div style={{ fontFamily: TL.font.mono, fontSize: 10, textTransform: "uppercase", letterSpacing: "0.08em", color: TL.mute }}>Forhåndsvisning</div>
+            <pre style={{ marginTop: 4, maxHeight: 260, overflowY: "auto", whiteSpace: "pre-wrap", borderRadius: 10, border: `1px solid ${TL.hair}`, background: TL.dock, padding: "10px 14px", fontFamily: TL.font.sans, fontSize: 13, color: TL.text }}>
               {body}
             </pre>
           </div>
@@ -116,16 +117,16 @@ export function CaddieApprovalModalV2({ toolCall, onApprove, onReject, onClose }
             <div
               role="status"
               style={{
-                borderRadius: 10, border: `1px solid ${phase === "failed" ? T.down : T.lime}`, padding: "10px 14px", fontFamily: T.ui, fontSize: 13,
-                background: phase === "failed" ? `color-mix(in srgb, ${T.down} 10%, transparent)` : `color-mix(in srgb, ${T.lime} 6%, transparent)`,
-                color: phase === "failed" ? T.down : T.fg,
+                borderRadius: 10, border: `1px solid ${phase === "failed" ? TL.danger : TL.fill}`, padding: "10px 14px", fontFamily: TL.font.sans, fontSize: 13,
+                background: phase === "failed" ? `color-mix(in srgb, ${TL.danger} 10%, transparent)` : `color-mix(in srgb, ${TL.fill} 6%, transparent)`,
+                color: phase === "failed" ? TL.danger : TL.text,
               }}
             >
               {resultText}
             </div>
           )}
         </div>
-        <div style={{ display: "flex", justifyContent: "flex-end", gap: 10, borderTop: `1px solid ${T.border}`, padding: "14px 22px" }}>
+        <div style={{ display: "flex", justifyContent: "flex-end", gap: 10, borderTop: `1px solid ${TL.hair}`, padding: "14px 22px" }}>
           <Knapp ghost icon="x" disabled={isBusy || isFinished} onClick={handleReject}>Avvis</Knapp>
           <Knapp
             icon={isBusy ? "loader" : "check"}

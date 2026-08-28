@@ -1,7 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { T } from "@/lib/v2/tokens";
+import { TL } from "@/lib/v2/train-lock";
+
 
 const UKEDAG = ["Sø", "Ma", "Ti", "On", "To", "Fr", "Lø"];
 
@@ -42,21 +43,21 @@ export function RescheduleDatoVelger({ valgtDato, bookingId, dager }: Props) {
               flexDirection: "column",
               alignItems: "center",
               borderRadius: 12,
-              border: `1px solid ${aktiv ? "transparent" : T.border}`,
-              background: aktiv ? T.lime : T.panel,
-              color: aktiv ? T.onLime : T.fg,
+              border: `1px solid ${aktiv ? "transparent" : TL.hair}`,
+              background: aktiv ? TL.fill : TL.elev,
+              color: aktiv ? TL.onFill : TL.text,
               padding: "10px 12px",
               textDecoration: "none",
               boxShadow: aktiv ? "none" : undefined,
             }}
           >
-            <span style={{ fontFamily: T.mono, fontSize: 10, letterSpacing: "0.08em", textTransform: "uppercase", opacity: aktiv ? 0.8 : 1, color: aktiv ? T.onLime : T.mut }}>
+            <span style={{ fontFamily: TL.font.mono, fontSize: 10, letterSpacing: "0.08em", textTransform: "uppercase", opacity: aktiv ? 0.8 : 1, color: aktiv ? TL.onFill : TL.mute }}>
               {UKEDAG[d.getDay()]}
             </span>
-            <span style={{ fontFamily: T.disp, fontSize: 18, fontWeight: 700, fontVariantNumeric: "tabular-nums", marginTop: 2 }}>
+            <span style={{ fontFamily: TL.font.sans, fontSize: 18, fontWeight: 700, fontVariantNumeric: "tabular-nums", marginTop: 2 }}>
               {d.getDate()}
             </span>
-            <span style={{ fontFamily: T.mono, fontSize: 10, letterSpacing: "0.06em", textTransform: "uppercase", color: aktiv ? T.onLime : T.mut, opacity: aktiv ? 0.8 : 1 }}>
+            <span style={{ fontFamily: TL.font.mono, fontSize: 10, letterSpacing: "0.06em", textTransform: "uppercase", color: aktiv ? TL.onFill : TL.mute, opacity: aktiv ? 0.8 : 1 }}>
               {d.toLocaleDateString("nb-NO", { month: "short" })}
             </span>
           </Link>

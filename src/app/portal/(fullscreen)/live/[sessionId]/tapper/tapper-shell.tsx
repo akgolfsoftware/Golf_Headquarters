@@ -18,7 +18,8 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { T } from "@/lib/v2/tokens";
+import { TL } from "@/lib/v2/train-lock";
+
 import { Icon } from "@/components/v2/icon";
 import { LiveCoachPanel } from "@/components/portal/live/LiveCoachPanel";
 import type { LiveCoachPanelData } from "@/components/portal/live/types";
@@ -157,8 +158,8 @@ export function TapperShell({ sessionId, oktLabel, clubs, coachPanel, initialCou
         display: "flex",
         flexDirection: "column",
         overflow: "hidden",
-        background: T.bg,
-        color: T.fg,
+        background: TL.scene,
+        color: TL.text,
       }}
     >
       {/* Topp — tilbake + Slagteller + økt-sub */}
@@ -169,8 +170,8 @@ export function TapperShell({ sessionId, oktLabel, clubs, coachPanel, initialCou
           alignItems: "center",
           gap: 8,
           padding: "calc(12px + env(safe-area-inset-top)) 16px 12px",
-          borderBottom: `1px solid ${T.border}`,
-          background: T.panel,
+          borderBottom: `1px solid ${TL.hair}`,
+          background: TL.elev,
         }}
       >
         <Link
@@ -184,8 +185,8 @@ export function TapperShell({ sessionId, oktLabel, clubs, coachPanel, initialCou
             height: 44,
             display: "grid",
             placeItems: "center",
-            border: `1px solid ${T.border}`,
-            borderRadius: T.rCard,
+            border: `1px solid ${TL.hair}`,
+            borderRadius: TL.radius.card,
             color: "inherit",
             textDecoration: "none",
           }}
@@ -193,8 +194,8 @@ export function TapperShell({ sessionId, oktLabel, clubs, coachPanel, initialCou
           <Icon name="chevron-left" size={18} />
         </Link>
         <div style={{ minWidth: 0 }}>
-          <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600 }}>Slagteller</h1>
-          <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+          <h1 style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 17, fontWeight: 600 }}>Slagteller</h1>
+          <span style={{ display: "block", fontFamily: TL.font.mono, fontSize: 10.5, color: TL.mute, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
             {oktLabel}
           </span>
         </div>
@@ -206,12 +207,12 @@ export function TapperShell({ sessionId, oktLabel, clubs, coachPanel, initialCou
         {lagreStatus !== "ok" && (
           <div
             role="alert"
-            style={{ padding: "16px", background: T.panel2, border: `1px dashed ${T.border}`, borderRadius: T.rCard, marginBottom: 12 }}
+            style={{ padding: "16px", background: TL.dock, border: `1px dashed ${TL.hair}`, borderRadius: TL.radius.card, marginBottom: 12 }}
           >
-            <h3 style={{ margin: "0 0 8px", fontFamily: T.disp, fontSize: 15, fontWeight: 600, color: T.fg }}>
+            <h3 style={{ margin: "0 0 8px", fontFamily: TL.font.sans, fontSize: 15, fontWeight: 600, color: TL.text }}>
               Slagene ble ikke lagret
             </h3>
-            <p style={{ margin: "0 0 12px", fontFamily: T.bodyFont, fontSize: 13.5, color: T.mut }}>
+            <p style={{ margin: "0 0 12px", fontFamily: TL.font.sans, fontSize: 13.5, color: TL.mute }}>
               {lagreStatus === "gitt-opp"
                 ? "Fikk ikke synket etter flere forsøk — slagene ligger fortsatt trygt på telefonen. Sjekk nettet ditt."
                 : `Nettet forsvant under lagringen. De ${totalCount} slagene ligger trygt på telefonen og sendes automatisk når nettet er tilbake.`}
@@ -227,13 +228,13 @@ export function TapperShell({ sessionId, oktLabel, clubs, coachPanel, initialCou
                 justifyContent: "center",
                 minHeight: 44,
                 padding: "0 16px",
-                fontFamily: T.ui,
+                fontFamily: TL.font.sans,
                 fontSize: 14,
                 fontWeight: 500,
                 background: "transparent",
-                border: `1px solid ${T.border}`,
-                borderRadius: T.rCard,
-                color: T.fg,
+                border: `1px solid ${TL.hair}`,
+                borderRadius: TL.radius.card,
+                color: TL.text,
                 cursor: "pointer",
               }}
             >
@@ -244,13 +245,13 @@ export function TapperShell({ sessionId, oktLabel, clubs, coachPanel, initialCou
 
         {/* Telleren — skjermens hovedoppslag */}
         <div style={{ textAlign: "center", padding: "24px 0 16px" }}>
-          <span style={{ display: "block", fontFamily: T.mono, fontSize: 10, fontWeight: 500, letterSpacing: "0.09em", textTransform: "uppercase", color: T.mut }}>
+          <span style={{ display: "block", fontFamily: TL.font.mono, fontSize: 10, fontWeight: 500, letterSpacing: "0.09em", textTransform: "uppercase", color: TL.mute }}>
             slag denne økta
           </span>
-          <div style={{ fontFamily: T.mono, fontSize: 40, fontWeight: 600, fontVariantNumeric: "tabular-nums", lineHeight: 1.1 }}>
+          <div style={{ fontFamily: TL.font.mono, fontSize: 40, fontWeight: 600, fontVariantNumeric: "tabular-nums", lineHeight: 1.1 }}>
             {totalCount}
           </div>
-          <div style={{ fontFamily: T.bodyFont, fontSize: 13.5, color: T.mut }}>
+          <div style={{ fontFamily: TL.font.sans, fontSize: 13.5, color: TL.mute }}>
             Tapp kølla du slo med — ett tapp per slag.
           </div>
         </div>
@@ -263,18 +264,18 @@ export function TapperShell({ sessionId, oktLabel, clubs, coachPanel, initialCou
               display: "flex",
               alignItems: "center",
               gap: 12,
-              background: T.panel,
-              border: `1px solid ${T.border}`,
-              borderRadius: T.rCard,
+              background: TL.elev,
+              border: `1px solid ${TL.hair}`,
+              borderRadius: TL.radius.card,
               padding: "12px 16px",
               marginBottom: 12,
               minWidth: 0,
             }}
           >
-            <div style={{ flex: 1, minWidth: 0, fontSize: 13, fontFamily: T.ui }}>
+            <div style={{ flex: 1, minWidth: 0, fontSize: 13, fontFamily: TL.font.sans }}>
               <span style={{ fontWeight: 600 }}>{navnFor(tapp[0].clubId)}</span>
               {" · siste slag"}
-              <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, fontVariantNumeric: "tabular-nums" }}>
+              <span style={{ display: "block", fontFamily: TL.font.mono, fontSize: 10.5, color: TL.mute, fontVariantNumeric: "tabular-nums" }}>
                 kl. {tapp[0].kl}
               </span>
             </div>
@@ -290,13 +291,13 @@ export function TapperShell({ sessionId, oktLabel, clubs, coachPanel, initialCou
                 justifyContent: "center",
                 minHeight: 44,
                 padding: "0 16px",
-                fontFamily: T.ui,
+                fontFamily: TL.font.sans,
                 fontSize: 14,
                 fontWeight: 500,
                 background: "transparent",
-                border: `1px solid ${T.border}`,
-                borderRadius: T.rCard,
-                color: T.fg,
+                border: `1px solid ${TL.hair}`,
+                borderRadius: TL.radius.card,
+                color: TL.text,
                 cursor: "pointer",
               }}
             >
@@ -308,7 +309,7 @@ export function TapperShell({ sessionId, oktLabel, clubs, coachPanel, initialCou
         {/* Fordeling per kølle */}
         {fordelingIds.length > 0 && (
           <div>
-            <span style={{ display: "block", fontFamily: T.mono, fontSize: 10, fontWeight: 500, letterSpacing: "0.09em", textTransform: "uppercase", color: T.mut }}>
+            <span style={{ display: "block", fontFamily: TL.font.mono, fontSize: 10, fontWeight: 500, letterSpacing: "0.09em", textTransform: "uppercase", color: TL.mute }}>
               fordeling per kølle
             </span>
             {fordelingIds.map((id, i) => (
@@ -320,24 +321,24 @@ export function TapperShell({ sessionId, oktLabel, clubs, coachPanel, initialCou
                   gap: 12,
                   padding: "8px 0",
                   fontSize: 13,
-                  fontFamily: T.ui,
-                  borderBottom: i === fordelingIds.length - 1 ? "none" : `1px solid ${T.borderS}`,
+                  fontFamily: TL.font.sans,
+                  borderBottom: i === fordelingIds.length - 1 ? "none" : `1px solid ${TL.hair}`,
                   minWidth: 0,
                 }}
               >
                 <span style={{ minWidth: 64, flex: "none" }}>{navnFor(id)}</span>
-                <span style={{ flex: 1, height: 6, background: T.panel2, borderRadius: T.rPill, overflow: "hidden", minWidth: 0 }}>
+                <span style={{ flex: 1, height: 6, background: TL.dock, borderRadius: TL.radius.pill, overflow: "hidden", minWidth: 0 }}>
                   <span
                     style={{
                       display: "block",
                       height: "100%",
                       width: `${Math.round(((counts[id] ?? 0) / maks) * 100)}%`,
-                      background: T.mut,
-                      borderRadius: T.rPill,
+                      background: TL.mute,
+                      borderRadius: TL.radius.pill,
                     }}
                   />
                 </span>
-                <span style={{ fontFamily: T.mono, fontVariantNumeric: "tabular-nums", minWidth: "2ch", textAlign: "right" }}>
+                <span style={{ fontFamily: TL.font.mono, fontVariantNumeric: "tabular-nums", minWidth: "2ch", textAlign: "right" }}>
                   {counts[id]}
                 </span>
               </div>
@@ -351,8 +352,8 @@ export function TapperShell({ sessionId, oktLabel, clubs, coachPanel, initialCou
       <div
         style={{
           flex: "none",
-          borderTop: `1px solid ${T.border}`,
-          background: T.panel,
+          borderTop: `1px solid ${TL.hair}`,
+          background: TL.elev,
           padding: "12px 16px calc(12px + env(safe-area-inset-bottom))",
         }}
       >
@@ -367,11 +368,11 @@ export function TapperShell({ sessionId, oktLabel, clubs, coachPanel, initialCou
                 className="v2-press v2-focus"
                 style={{
                   minHeight: 60,
-                  border: `1px solid ${T.border}`,
-                  borderRadius: T.rCard,
-                  background: T.bg,
-                  color: T.fg,
-                  fontFamily: T.ui,
+                  border: `1px solid ${TL.hair}`,
+                  borderRadius: TL.radius.card,
+                  background: TL.scene,
+                  color: TL.text,
+                  fontFamily: TL.font.sans,
                   fontSize: 14,
                   fontWeight: 500,
                   cursor: "pointer",
@@ -384,7 +385,7 @@ export function TapperShell({ sessionId, oktLabel, clubs, coachPanel, initialCou
                 }}
               >
                 <span>{c.name}</span>
-                <span style={{ fontFamily: T.mono, fontSize: 10, color: T.mut }}>tapp = 1 slag</span>
+                <span style={{ fontFamily: TL.font.mono, fontSize: 10, color: TL.mute }}>tapp = 1 slag</span>
               </button>
             ))}
           </div>
@@ -403,10 +404,10 @@ export function TapperShell({ sessionId, oktLabel, clubs, coachPanel, initialCou
               minHeight: 56,
               width: "100%",
               border: "none",
-              borderRadius: T.rCard,
-              background: T.handling,
-              color: T.onHandling,
-              fontFamily: T.ui,
+              borderRadius: TL.radius.card,
+              background: TL.fill,
+              color: TL.onFill,
+              fontFamily: TL.font.sans,
               fontSize: 14,
               fontWeight: 600,
               cursor: "pointer",

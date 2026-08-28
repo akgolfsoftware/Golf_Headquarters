@@ -1,3 +1,4 @@
+import { TL } from "@/lib/v2/train-lock";
 /**
  * PlayerHQ · Tren · Tester · Ny egen test (/portal/tren/tester/ny/egen) — v2.
  * v2-port 17. juli 2026 (Team F3): `NyTestEgenV2` erstatter legacy
@@ -7,7 +8,7 @@
  */
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
-import { TilbakeLenke, Caps, Tittel, T } from "@/components/v2";
+import { TilbakeLenke, Caps, Tittel } from "@/components/v2";
 import { NyTestEgenV2 } from "@/components/portal/v2/NyTestEgenV2";
 
 export const dynamic = "force-dynamic";
@@ -23,7 +24,7 @@ export default async function NyEgenTestPage() {
         <div style={{ marginTop: 10 }}>
           <Tittel em="egen test">Lag en</Tittel>
         </div>
-        <p style={{ fontFamily: T.ui, fontSize: 13, color: T.mut, lineHeight: 1.55, margin: "10px 0 0" }}>
+        <p style={{ fontFamily: TL.font.sans, fontSize: 13, color: TL.mute, lineHeight: 1.55, margin: "10px 0 0" }}>
           Fem steg — navn, protokoll, måleenhet, synlighet og forhåndsvisning
           {user.name ? `, ${user.name.split(" ")[0]}` : ""}.
         </p>

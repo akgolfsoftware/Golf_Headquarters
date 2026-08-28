@@ -1,5 +1,5 @@
 "use client";
-
+import { TL } from "@/lib/v2/train-lock";
 /**
  * PlayerHQ Booking — oversikt (ny default-landing på /portal/booking).
  * Bygget 2026-08-04 på Anders' eksplisitte instruks: default-siden skal vise
@@ -19,15 +19,7 @@
  */
 
 import Link from "next/link";
-import {
-  T,
-  Caps,
-  Kort,
-  Rad,
-  StatusPill,
-  TomTilstand,
-  Icon,
-} from "@/components/v2";
+import { Caps, Kort, Rad, StatusPill, TomTilstand, Icon } from "@/components/v2";
 import { pakkeNavn } from "@/lib/domain/abonnement";
 import { PaperPage, PaperTopp, PaperKropp, PaperDokk } from "./PaperChrome";
 import type { HubCredits, HubBooking, HubCoach, HubForsteLedige } from "@/lib/portal-booking/hub-data";
@@ -73,11 +65,11 @@ function AboRad({ label, verdi, last }: { label: string; verdi: string; last?: b
         justifyContent: "space-between",
         gap: 12,
         padding: "10px 0",
-        borderBottom: last ? "none" : `1px solid ${T.border}`,
+        borderBottom: last ? "none" : `1px solid ${TL.hair}`,
       }}
     >
-      <span style={{ fontFamily: T.ui, fontSize: 13, color: T.mut }}>{label}</span>
-      <span style={{ fontFamily: T.mono, fontSize: 12.5, color: T.fg, textAlign: "right" }}>{verdi}</span>
+      <span style={{ fontFamily: TL.font.sans, fontSize: 13, color: TL.mute }}>{label}</span>
+      <span style={{ fontFamily: TL.font.mono, fontSize: 12.5, color: TL.text, textAlign: "right" }}>{verdi}</span>
     </div>
   );
 }
@@ -108,10 +100,10 @@ export function BookingHubV2({ data }: { data: BookingHubV2Data }) {
         <div
           data-od-id="pb-one-thing-now"
           style={{
-            border: `1px solid ${T.border}`,
-            borderLeft: `3px solid ${T.handling}`,
-            borderRadius: T.rCard,
-            background: T.handlingSoft,
+            border: `1px solid ${TL.hair}`,
+            borderLeft: `3px solid ${TL.fill}`,
+            borderRadius: TL.radius.card,
+            background: TL.dim,
             padding: 16,
             display: "flex",
             flexDirection: "column",
@@ -119,10 +111,10 @@ export function BookingHubV2({ data }: { data: BookingHubV2Data }) {
           }}
         >
           <Caps size={9}>Én ting nå</Caps>
-          <h2 style={{ margin: 0, fontFamily: T.disp, fontSize: 16, fontWeight: 600, color: T.fg }}>
+          <h2 style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 16, fontWeight: 600, color: TL.text }}>
             Første ledige time er {forsteLedige.ukedagKort} kl. {forsteLedige.kl}
           </h2>
-          <p style={{ margin: 0, fontFamily: T.bodyFont, fontSize: T.body, color: T.mut, lineHeight: 1.55, maxWidth: "52ch" }}>
+          <p style={{ margin: 0, fontFamily: TL.font.sans, fontSize: TL.storrelse.kropp, color: TL.mute, lineHeight: 1.55, maxWidth: "52ch" }}>
             {forsteLedige.serviceName} med {forsteLedige.coachNavn}
             {formatDato(forsteLedige.datoIso) ? ` · ${formatDato(forsteLedige.datoIso)}` : ""}.{" "}
             {/* Saldoen regnes, aldri skrives — står det «én time igjen» som fast
@@ -147,9 +139,9 @@ export function BookingHubV2({ data }: { data: BookingHubV2Data }) {
               minHeight: 56,
               width: "100%",
               borderRadius: 12,
-              background: T.handling,
-              color: T.onHandling,
-              fontFamily: T.ui,
+              background: TL.fill,
+              color: TL.onFill,
+              fontFamily: TL.font.sans,
               fontSize: 14,
               fontWeight: 600,
             }}
@@ -167,10 +159,10 @@ export function BookingHubV2({ data }: { data: BookingHubV2Data }) {
               <div>
                 <Caps size={9}>Timer denne perioden</Caps>
                 <div style={{ display: "flex", alignItems: "baseline", gap: 8, marginTop: 6 }}>
-                  <span style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 40, color: T.fg, lineHeight: 1 }}>
+                  <span style={{ fontFamily: TL.font.sans, fontWeight: 700, fontSize: 40, color: TL.text, lineHeight: 1 }}>
                     {credits.creditsRemaining}
                   </span>
-                  <span style={{ fontFamily: T.ui, fontSize: 14, color: T.mut }}>av {credits.monthlyCredits} timer igjen</span>
+                  <span style={{ fontFamily: TL.font.sans, fontSize: 14, color: TL.mute }}>av {credits.monthlyCredits} timer igjen</span>
                 </div>
               </div>
               <StatusPill tone={tomtForCredits ? "warn" : "up"}>
@@ -178,7 +170,7 @@ export function BookingHubV2({ data }: { data: BookingHubV2Data }) {
               </StatusPill>
             </div>
             {credits.renewsAtIso && (
-              <div style={{ fontFamily: T.ui, fontSize: 11.5, color: T.mut, marginTop: 10 }}>
+              <div style={{ fontFamily: TL.font.sans, fontSize: 11.5, color: TL.mute, marginTop: 10 }}>
                 Fornyes {formatDato(credits.renewsAtIso)}
               </div>
             )}
@@ -204,10 +196,10 @@ export function BookingHubV2({ data }: { data: BookingHubV2Data }) {
               minHeight: forsteLedige ? 44 : 56,
               width: "100%",
               borderRadius: 12,
-              border: forsteLedige ? `1px solid ${T.border}` : "none",
-              background: forsteLedige ? "transparent" : T.handling,
-              color: forsteLedige ? T.fg : T.onHandling,
-              fontFamily: T.ui,
+              border: forsteLedige ? `1px solid ${TL.hair}` : "none",
+              background: forsteLedige ? "transparent" : TL.fill,
+              color: forsteLedige ? TL.text : TL.onFill,
+              fontFamily: TL.font.sans,
               fontSize: 14,
               fontWeight: 600,
             }}
@@ -217,7 +209,7 @@ export function BookingHubV2({ data }: { data: BookingHubV2Data }) {
           {/* Samme mål som BruktOppV2 sin drop-in-CTA (BookingNyV2.tsx) — ikke en ny betalingsflyt. */}
           <Link
             href="/booking"
-            style={{ textDecoration: "none", textAlign: "center", fontFamily: T.ui, fontSize: 12, fontWeight: 600, color: T.fg2, padding: "6px 0" }}
+            style={{ textDecoration: "none", textAlign: "center", fontFamily: TL.font.sans, fontSize: 12, fontWeight: 600, color: TL.mute, padding: "6px 0" }}
           >
             Kjøp ekstra time mot betaling →
           </Link>
@@ -225,7 +217,7 @@ export function BookingHubV2({ data }: { data: BookingHubV2Data }) {
       </Kort>
 
       {/* Kommende — henter fra samme data som var utrukket her fra før. */}
-      <Kort eyebrow="Kommende timer" action={upcoming.length > 0 ? <Link href="/portal/meg/bookinger" style={{ fontFamily: T.ui, fontSize: 11.5, fontWeight: 600, color: T.fg2, textDecoration: "none" }}>Se alle →</Link> : undefined}>
+      <Kort eyebrow="Kommende timer" action={upcoming.length > 0 ? <Link href="/portal/meg/bookinger" style={{ fontFamily: TL.font.sans, fontSize: 11.5, fontWeight: 600, color: TL.mute, textDecoration: "none" }}>Se alle →</Link> : undefined}>
         {upcoming.length === 0 ? (
           <TomTilstand icon="calendar" title="Ingen kommende timer" sub="Book en time over for å komme i gang." />
         ) : (
@@ -234,16 +226,16 @@ export function BookingHubV2({ data }: { data: BookingHubV2Data }) {
             return (
               <Link key={b.id} href={`/portal/booking/${b.id}`} style={{ textDecoration: "none", color: "inherit" }}>
                 <Rad
-                  leading={<span style={{ width: 46, flex: "none", fontFamily: T.mono, fontSize: 10, color: T.mut }}>{dato}</span>}
+                  leading={<span style={{ width: 46, flex: "none", fontFamily: TL.font.mono, fontSize: 10, color: TL.mute }}>{dato}</span>}
                   title={b.serviceName}
                   sub={[b.coachName, b.locationName].filter(Boolean).join(" · ")}
                   meta={
                     <span style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                      <span style={{ fontFamily: T.mono, fontSize: 12.5, fontWeight: 700, color: T.fg }}>{kl}</span>
+                      <span style={{ fontFamily: TL.font.mono, fontSize: 12.5, fontWeight: 700, color: TL.text }}>{kl}</span>
                       <StatusPill tone={b.status === "CONFIRMED" ? "up" : "warn"}>{STATUS_LABEL[b.status]}</StatusPill>
                     </span>
                   }
-                  trailing={<Icon name="chevron-right" size={14} style={{ color: T.mut }} />}
+                  trailing={<Icon name="chevron-right" size={14} style={{ color: TL.mute }} />}
                   last={i === arr.length - 1}
                 />
               </Link>
@@ -291,10 +283,10 @@ export function BookingHubV2({ data }: { data: BookingHubV2Data }) {
             minHeight: 48,
             width: "100%",
             borderRadius: 12,
-            background: T.panel,
-            border: `1px solid ${T.border}`,
-            color: T.fg,
-            fontFamily: T.ui,
+            background: TL.elev,
+            border: `1px solid ${TL.hair}`,
+            color: TL.text,
+            fontFamily: TL.font.sans,
             fontSize: 14,
             fontWeight: 600,
           }}

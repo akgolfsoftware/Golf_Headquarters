@@ -1,5 +1,5 @@
 "use client";
-
+import { TL } from "@/lib/v2/train-lock";
 /**
  * PlayerHQ Runder — v2 Presis + B-pakke (KPI-status + én primær live-føring).
  * Liste + snitt. Tom = full grønn vei til live-føring. T.* only.
@@ -9,20 +9,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import type { RundeRow, RunderKpis } from "@/lib/portal-runder/runder-list-data";
 import { FortsettRundeCta, useHarRundeKladd } from "@/components/portal/runde-logg/fortsett-runde-cta";
-import {
-  T,
-  fmtSg,
-  Caps,
-  Kort,
-  KpiFlis,
-  CTAPill,
-  Knapp,
-  Rad,
-  TomTilstand,
-  Icon,
-  HjelpTips,
-} from "@/components/v2";
-
+import { fmtSg, Caps, Kort, KpiFlis, Knapp, Rad, TomTilstand, Icon, HjelpTips } from "@/components/v2";
 /* ── Data-kontrakt ─────────────────────────────────────────────────── */
 
 export type RunderV2Data = {
@@ -71,13 +58,13 @@ function ScoreBoks({ score, tilPar, beste }: { score: number; tilPar: number; be
         flexDirection: "column",
         alignItems: "center",
         justifyContent: "center",
-        background: beste ? T.up : T.panel3,
-        border: `1px solid ${beste ? T.up : T.border}`,
-        color: beste ? T.panel : T.fg,
+        background: beste ? TL.ok : TL.dim,
+        border: `1px solid ${beste ? TL.ok : TL.hair}`,
+        color: beste ? TL.elev : TL.text,
       }}
     >
-      <span style={{ fontFamily: T.mono, fontSize: 16, fontWeight: 700, lineHeight: 1, fontVariantNumeric: "tabular-nums" }}>{score}</span>
-      <span style={{ fontFamily: T.mono, fontSize: 9, fontWeight: 600, marginTop: 2, opacity: 0.72, fontVariantNumeric: "tabular-nums" }}>{tilParTxt(tilPar)}</span>
+      <span style={{ fontFamily: TL.font.mono, fontSize: 16, fontWeight: 700, lineHeight: 1, fontVariantNumeric: "tabular-nums" }}>{score}</span>
+      <span style={{ fontFamily: TL.font.mono, fontSize: 9, fontWeight: 600, marginTop: 2, opacity: 0.72, fontVariantNumeric: "tabular-nums" }}>{tilParTxt(tilPar)}</span>
     </span>
   );
 }
@@ -97,12 +84,12 @@ export function RunderV2({ data }: { data: RunderV2Data }) {
   const snittSg = kpis.sgTotalSnitt != null ? fmtSg(kpis.sgTotalSnitt) : "–";
 
   return (
-    <div  data-paper-slug="playerhq-runder-liste" data-paper-portal-runder style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%", minWidth: 0 }}>
+    <div  data-paper-slug="playerhq-runder-liste" data-paper-portal-runder style={{ display: "flex", flexDirection: "column", gap: 16, maxWidth: 720, margin: "0 auto", width: "100%", minWidth: 0 }}>
       {/* Hode — fasit: h1 «Runder» + mono-sub «navn · Sesong år · HCP» */}
       <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
         <div style={{ minWidth: 0 }}>
-          <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>Runder</h1>
-          <span className="num" style={{ display: "inline-flex", alignItems: "center", gap: 5, fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>
+          <h1 style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 17, fontWeight: 600, color: TL.text }}>Runder</h1>
+          <span className="num" style={{ display: "inline-flex", alignItems: "center", gap: 5, fontFamily: TL.font.mono, fontSize: 10.5, color: TL.mute, marginTop: 2 }}>
             {sub}
             {hcp != null && <HjelpTips k="hcp" size={11} />}
           </span>
@@ -112,7 +99,7 @@ export function RunderV2({ data }: { data: RunderV2Data }) {
           <Link href={RUTE_LIVE} style={{ textDecoration: "none" }}>
             <span style={{
               display: "inline-flex", alignItems: "center", gap: 8, minHeight: 44, padding: "10px 16px",
-              borderRadius: 10, background: T.cta, color: T.onCta, fontFamily: T.ui, fontSize: 13, fontWeight: 600,
+              borderRadius: 10, background: TL.fill, color: TL.onFill, fontFamily: TL.font.sans, fontSize: 13, fontWeight: 600,
             }}>Start live-føring</span>
           </Link>
           <Link href={RUTE_SLAG} style={{ textDecoration: "none" }}>
@@ -134,7 +121,7 @@ export function RunderV2({ data }: { data: RunderV2Data }) {
       )}
 
       {/* B: status først (også tom) */}
-      <div className="grid grid-cols-3" style={{ gap: T.gap }}>
+      <div className="grid grid-cols-3" style={{ gap: 16 }}>
         <KpiFlis label="Snittscore · brutto" value={tom ? "—" : snittScore} hjelp="bruttoScore" />
         <KpiFlis label="Snitt SG" value={tom ? "—" : snittSg} hjelp="sgTotal" />
         <KpiFlis label="Runder" value={tom ? "0" : String(kpis.total)} tint />
@@ -151,7 +138,7 @@ export function RunderV2({ data }: { data: RunderV2Data }) {
             <Link href={RUTE_LIVE} style={{ textDecoration: "none", display: "block" }}>
               <span style={{
                 display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, minHeight: 48, width: "100%", padding: "10px 16px",
-                borderRadius: 10, background: T.cta, color: T.onCta, fontFamily: T.ui, fontSize: 14, fontWeight: 600,
+                borderRadius: 10, background: TL.fill, color: TL.onFill, fontFamily: TL.font.sans, fontSize: 14, fontWeight: 600,
               }}>Start live-føring
               </span>
             </Link>
@@ -161,10 +148,10 @@ export function RunderV2({ data }: { data: RunderV2Data }) {
                 textDecoration: "none",
                 display: "block",
                 textAlign: "center",
-                fontFamily: T.ui,
+                fontFamily: TL.font.sans,
                 fontSize: 12,
                 fontWeight: 600,
-                color: T.mut,
+                color: TL.mute,
               }}
             >
               Hurtig score — deretter importer fra UpGame på rundedetalj →
@@ -178,7 +165,7 @@ export function RunderV2({ data }: { data: RunderV2Data }) {
             <Link href={RUTE_LIVE} style={{ textDecoration: "none", display: "block" }}>
               <span style={{
                 display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, minHeight: 48, width: "100%", padding: "10px 16px",
-                borderRadius: 10, background: T.cta, color: T.onCta, fontFamily: T.ui, fontSize: 14, fontWeight: 600,
+                borderRadius: 10, background: TL.fill, color: TL.onFill, fontFamily: TL.font.sans, fontSize: 14, fontWeight: 600,
               }}>Start live-føring
               </span>
             </Link>
@@ -202,17 +189,17 @@ export function RunderV2({ data }: { data: RunderV2Data }) {
                 title={
                   <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
                     {r.courseName}
-                    {r.isBest && <Icon name="star" size={12} style={{ color: T.up, flex: "none" }} />}
+                    {r.isBest && <Icon name="star" size={12} style={{ color: TL.ok, flex: "none" }} />}
                   </span>
                 }
                 sub={`${datoTxt(r.playedAt)} · Par ${r.par}`}
                 meta={
                   <span
                     style={{
-                      fontFamily: T.mono,
+                      fontFamily: TL.font.mono,
                       fontSize: 13,
                       fontWeight: 700,
-                      color: r.sgTotal == null ? T.mut : r.sgTotal < 0 ? T.down : T.up,
+                      color: r.sgTotal == null ? TL.mute : r.sgTotal < 0 ? TL.danger : TL.ok,
                       width: 48,
                       textAlign: "right",
                       fontVariantNumeric: "tabular-nums",
@@ -221,7 +208,7 @@ export function RunderV2({ data }: { data: RunderV2Data }) {
                     {r.sgTotal == null ? "–" : fmtSg(r.sgTotal)}
                   </span>
                 }
-                trailing={<Icon name="chevron-right" size={16} style={{ color: T.mut, flex: "none" }} />}
+                trailing={<Icon name="chevron-right" size={16} style={{ color: TL.mute, flex: "none" }} />}
                 last={i === arr.length - 1}
               />
             ))}

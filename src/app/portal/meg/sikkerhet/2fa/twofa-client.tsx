@@ -5,7 +5,8 @@ import { useRouter } from "next/navigation";
 import { useToast } from "@/components/shared/toast-provider";
 import { ReauthModal } from "@/components/auth/reauth-modal";
 import { createClient } from "@/lib/supabase/client";
-import { T } from "@/lib/v2/tokens";
+import { TL } from "@/lib/v2/train-lock";
+
 import { Caps, Kort, Knapp, StatusPill, Icon } from "@/components/v2";
 
 type Steg = 1 | 2 | 3;
@@ -191,7 +192,7 @@ export function TwoFaClient() {
     return (
       <Kort>
         <div style={{ display: "flex", justifyContent: "center", padding: 32 }}>
-          <Icon name="loader" size={18} style={{ color: T.mut }} />
+          <Icon name="loader" size={18} style={{ color: TL.mute }} />
         </div>
       </Kort>
     );
@@ -200,7 +201,7 @@ export function TwoFaClient() {
   if (aktivFactor) {
     return (
       <>
-        <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
           <div style={{ display: "flex", justifyContent: "flex-end" }}>
             <StatusPill tone="up">Aktiv</StatusPill>
           </div>
@@ -211,28 +212,28 @@ export function TwoFaClient() {
                   width: 44,
                   height: 44,
                   borderRadius: 9999,
-                  background: `color-mix(in srgb, ${T.up} 12%, ${T.panel})`,
+                  background: `color-mix(in srgb, ${TL.ok} 12%, ${TL.elev})`,
                   display: "inline-flex",
                   alignItems: "center",
                   justifyContent: "center",
                   flex: "none",
                 }}
               >
-                <Icon name="shield-check" size={20} style={{ color: T.up }} />
+                <Icon name="shield-check" size={20} style={{ color: TL.ok }} />
               </span>
               <div style={{ minWidth: 0, flex: 1 }}>
-                <div style={{ fontFamily: T.disp, fontSize: 16, fontWeight: 700, color: T.fg }}>
+                <div style={{ fontFamily: TL.font.sans, fontSize: 16, fontWeight: 700, color: TL.text }}>
                   2FA er aktivert
                 </div>
-                <p style={{ margin: "6px 0 0", fontFamily: T.ui, fontSize: 13, color: T.fg2, lineHeight: 1.5 }}>
+                <p style={{ margin: "6px 0 0", fontFamily: TL.font.sans, fontSize: 13, color: TL.mute, lineHeight: 1.5 }}>
                   Kontoen din er beskyttet. Du må oppgi en 6-sifret kode ved innlogging.
                 </p>
                 {aktivFactor.friendlyName && (
-                  <p style={{ margin: "8px 0 0", fontFamily: T.mono, fontSize: 10, color: T.mut, textTransform: "uppercase", letterSpacing: "0.08em" }}>
+                  <p style={{ margin: "8px 0 0", fontFamily: TL.font.mono, fontSize: 10, color: TL.mute, textTransform: "uppercase", letterSpacing: "0.08em" }}>
                     {aktivFactor.friendlyName}
                   </p>
                 )}
-                <p style={{ margin: "4px 0 0", fontFamily: T.mono, fontSize: 11, color: T.mut }}>
+                <p style={{ margin: "4px 0 0", fontFamily: TL.font.mono, fontSize: 11, color: TL.mute }}>
                   Aktivert{" "}
                   {new Date(aktivFactor.createdAt).toLocaleDateString("nb-NO", {
                     year: "numeric",
@@ -258,13 +259,13 @@ export function TwoFaClient() {
                   gap: 6,
                   minHeight: 40,
                   borderRadius: 9999,
-                  border: `1px solid color-mix(in srgb, ${T.down} 35%, transparent)`,
-                  background: `color-mix(in srgb, ${T.down} 10%, ${T.panel})`,
+                  border: `1px solid color-mix(in srgb, ${TL.danger} 35%, transparent)`,
+                  background: `color-mix(in srgb, ${TL.danger} 10%, ${TL.elev})`,
                   padding: "0 14px",
-                  fontFamily: T.ui,
+                  fontFamily: TL.font.sans,
                   fontSize: 12.5,
                   fontWeight: 600,
-                  color: T.down,
+                  color: TL.danger,
                   cursor: deaktiverer ? "default" : "pointer",
                   opacity: deaktiverer ? 0.5 : 1,
                 }}
@@ -291,22 +292,22 @@ export function TwoFaClient() {
   }
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+    <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
       <StegIndikator steg={steg} />
 
       {steg === 1 && (
         <Kort>
           <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: 12, marginBottom: 12 }}>
-            <div style={{ fontFamily: T.disp, fontSize: 16, fontWeight: 700, color: T.fg }}>Aktiver tofaktor</div>
+            <div style={{ fontFamily: TL.font.sans, fontSize: 16, fontWeight: 700, color: TL.text }}>Aktiver tofaktor</div>
             <Caps>Steg 1 av 3</Caps>
           </div>
-          <p style={{ margin: 0, fontFamily: T.ui, fontSize: 13, color: T.fg2, lineHeight: 1.5 }}>
+          <p style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 13, color: TL.mute, lineHeight: 1.5 }}>
             Beskytt kontoen med en 6-sifret engangskode i tillegg til passord. Du trenger en authenticator-app:
           </p>
           <ul style={{ margin: "12px 0 0", padding: 0, listStyle: "none", display: "flex", flexDirection: "column", gap: 8 }}>
             {["Google Authenticator", "Authy", "1Password", "Microsoft Authenticator"].map((app) => (
-              <li key={app} style={{ display: "flex", alignItems: "center", gap: 8, fontFamily: T.ui, fontSize: 13, color: T.fg }}>
-                <Icon name="phone" size={14} style={{ color: T.forest }} />
+              <li key={app} style={{ display: "flex", alignItems: "center", gap: 8, fontFamily: TL.font.sans, fontSize: 13, color: TL.text }}>
+                <Icon name="phone" size={14} style={{ color: TL.fill }} />
                 {app}
               </li>
             ))}
@@ -323,14 +324,14 @@ export function TwoFaClient() {
       {steg === 2 && enrolled && (
         <Kort>
           <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: 12, marginBottom: 12 }}>
-            <div style={{ fontFamily: T.disp, fontSize: 16, fontWeight: 700, color: T.fg }}>Skann QR-kode</div>
+            <div style={{ fontFamily: TL.font.sans, fontSize: 16, fontWeight: 700, color: TL.text }}>Skann QR-kode</div>
             <Caps>Steg 2 av 3</Caps>
           </div>
-          <p style={{ margin: 0, fontFamily: T.ui, fontSize: 13, color: T.fg2, lineHeight: 1.5 }}>
+          <p style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 13, color: TL.mute, lineHeight: 1.5 }}>
             Åpne authenticator-appen og skann QR-koden. Eller skriv inn secret manuelt.
           </p>
           <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 12, marginTop: 16 }}>
-            <div style={{ borderRadius: 12, border: `1px solid ${T.border}`, background: T.panel2, padding: 12 }}>
+            <div style={{ borderRadius: 12, border: `1px solid ${TL.hair}`, background: TL.dock, padding: 12 }}>
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src={enrolled.qrCode} alt="QR-kode for 2FA-oppsett" width={200} height={200} style={{ display: "block" }} />
             </div>
@@ -341,12 +342,12 @@ export function TwoFaClient() {
                   display: "inline-block",
                   marginTop: 6,
                   borderRadius: 10,
-                  border: `1px solid ${T.borderS}`,
-                  background: T.panel2,
+                  border: `1px solid ${TL.hair}`,
+                  background: TL.dock,
                   padding: "8px 12px",
-                  fontFamily: T.mono,
+                  fontFamily: TL.font.mono,
                   fontSize: 12,
-                  color: T.fg,
+                  color: TL.text,
                   wordBreak: "break-all",
                 }}
               >
@@ -370,13 +371,13 @@ export function TwoFaClient() {
                 width: "100%",
                 height: 52,
                 borderRadius: 12,
-                border: `1px solid ${T.borderS}`,
-                background: T.panel2,
+                border: `1px solid ${TL.hair}`,
+                background: TL.dock,
                 textAlign: "center",
-                fontFamily: T.mono,
+                fontFamily: TL.font.mono,
                 fontSize: 20,
                 letterSpacing: "0.4em",
-                color: T.fg,
+                color: TL.text,
                 outline: "none",
                 boxSizing: "border-box",
               }}
@@ -410,7 +411,7 @@ export function TwoFaClient() {
       {steg === 3 && (
         <Kort>
           <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: 12, marginBottom: 12 }}>
-            <div style={{ fontFamily: T.disp, fontSize: 16, fontWeight: 700, color: T.fg }}>Backup-koder</div>
+            <div style={{ fontFamily: TL.font.sans, fontSize: 16, fontWeight: 700, color: TL.text }}>Backup-koder</div>
             <Caps>Steg 3 av 3</Caps>
           </div>
           <div
@@ -418,14 +419,14 @@ export function TwoFaClient() {
               display: "flex",
               gap: 10,
               alignItems: "flex-start",
-              borderRadius: T.rRow,
-              border: `1px solid color-mix(in srgb, ${T.warn} 35%, transparent)`,
-              background: `color-mix(in srgb, ${T.warn} 10%, ${T.panel})`,
+              borderRadius: TL.radius.row,
+              border: `1px solid color-mix(in srgb, ${TL.warn} 35%, transparent)`,
+              background: `color-mix(in srgb, ${TL.warn} 10%, ${TL.elev})`,
               padding: "10px 12px",
             }}
           >
-            <Icon name="lock" size={14} style={{ color: T.warn, marginTop: 2, flex: "none" }} />
-            <p style={{ margin: 0, fontFamily: T.ui, fontSize: 13, color: T.fg, lineHeight: 1.5 }}>
+            <Icon name="lock" size={14} style={{ color: TL.warn, marginTop: 2, flex: "none" }} />
+            <p style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 13, color: TL.text, lineHeight: 1.5 }}>
               Hver kode kan brukes <strong>én gang</strong> hvis du mister appen. Lagre dem trygt — du får ikke se dem igjen.
             </p>
           </div>
@@ -448,15 +449,15 @@ export function TwoFaClient() {
                   alignItems: "center",
                   gap: 8,
                   borderRadius: 10,
-                  border: `1px solid ${T.borderS}`,
-                  background: T.panel2,
+                  border: `1px solid ${TL.hair}`,
+                  background: TL.dock,
                   padding: "8px 10px",
-                  fontFamily: T.mono,
+                  fontFamily: TL.font.mono,
                   fontSize: 12,
-                  color: T.fg,
+                  color: TL.text,
                 }}
               >
-                <span style={{ fontFamily: T.mono, fontSize: 10, color: T.mut }}>
+                <span style={{ fontFamily: TL.font.mono, fontSize: 10, color: TL.mute }}>
                   {String(i + 1).padStart(2, "0")}
                 </span>
                 {k}
@@ -479,9 +480,9 @@ export function TwoFaClient() {
               display: "flex",
               gap: 10,
               alignItems: "flex-start",
-              borderRadius: T.rRow,
-              border: `1px solid ${T.border}`,
-              background: T.panel2,
+              borderRadius: TL.radius.row,
+              border: `1px solid ${TL.hair}`,
+              background: TL.dock,
               padding: "12px 14px",
               cursor: "pointer",
             }}
@@ -493,9 +494,9 @@ export function TwoFaClient() {
                 setLagret(e.target.checked);
                 setFeil(null);
               }}
-              style={{ marginTop: 2, accentColor: "var(--v2-lime)" }}
+              style={{ marginTop: 2, accentColor: "var(--tl-fill)" }}
             />
-            <span style={{ fontFamily: T.ui, fontSize: 13, color: T.fg, lineHeight: 1.45 }}>
+            <span style={{ fontFamily: TL.font.sans, fontSize: 13, color: TL.text, lineHeight: 1.45 }}>
               Jeg har lagret backup-kodene på et trygt sted.
             </span>
           </label>
@@ -520,12 +521,12 @@ function FeilBoks({ msg }: { msg: string }) {
       style={{
         marginTop: 12,
         borderRadius: 10,
-        border: `1px solid color-mix(in srgb, ${T.down} 30%, transparent)`,
-        background: `color-mix(in srgb, ${T.down} 10%, ${T.panel})`,
+        border: `1px solid color-mix(in srgb, ${TL.danger} 30%, transparent)`,
+        background: `color-mix(in srgb, ${TL.danger} 10%, ${TL.elev})`,
         padding: "10px 12px",
-        fontFamily: T.ui,
+        fontFamily: TL.font.sans,
         fontSize: 13,
-        color: T.down,
+        color: TL.danger,
       }}
     >
       {msg}
@@ -583,23 +584,23 @@ function StegIndikator({ steg }: { steg: Steg }) {
                 display: "inline-flex",
                 alignItems: "center",
                 justifyContent: "center",
-                fontFamily: T.mono,
+                fontFamily: TL.font.mono,
                 fontSize: 11,
                 fontWeight: 700,
-                border: `1px solid ${aktiv || ferdig ? "transparent" : T.border}`,
-                background: aktiv ? T.lime : ferdig ? `color-mix(in srgb, ${T.up} 14%, ${T.panel})` : T.panel2,
-                color: aktiv ? T.onLime : ferdig ? T.up : T.mut,
+                border: `1px solid ${aktiv || ferdig ? "transparent" : TL.hair}`,
+                background: aktiv ? TL.fill : ferdig ? `color-mix(in srgb, ${TL.ok} 14%, ${TL.elev})` : TL.dock,
+                color: aktiv ? TL.onFill : ferdig ? TL.ok : TL.mute,
               }}
             >
               {ferdig ? <Icon name="check" size={12} /> : s.id}
             </span>
             <span
               style={{
-                fontFamily: T.mono,
+                fontFamily: TL.font.mono,
                 fontSize: 10,
                 letterSpacing: "0.08em",
                 textTransform: "uppercase",
-                color: aktiv ? T.fg : T.mut,
+                color: aktiv ? TL.text : TL.mute,
               }}
             >
               {s.label}
@@ -610,7 +611,7 @@ function StegIndikator({ steg }: { steg: Steg }) {
                 style={{
                   width: 24,
                   height: 1,
-                  background: ferdig ? T.up : T.border,
+                  background: ferdig ? TL.ok : TL.hair,
                   margin: "0 4px",
                 }}
               />

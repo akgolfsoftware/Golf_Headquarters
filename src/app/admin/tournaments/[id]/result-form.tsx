@@ -1,4 +1,5 @@
 "use client";
+import { TL } from "@/lib/v2/train-lock";
 
 /**
  * Nytt/endre resultat — v2. Logikk bevart 1:1 fra legacy result-form.tsx —
@@ -8,7 +9,7 @@
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { Inndata, Velger, TekstOmraade } from "@/components/v2/skjema";
-import { Caps, T } from "@/components/v2";
+import { Caps } from "@/components/v2";
 import { TurneringModal, ModalFeil, ModalFooter, TekstTrigger } from "@/components/admin/v2/turnering-ui";
 import { Knapp } from "@/components/v2";
 import { addResult, deleteResult } from "@/app/admin/tournaments/actions";
@@ -92,7 +93,7 @@ export function ResultForm({ tournamentId, players, initial, triggerLabel }: Pro
             {initial ? (
               <div>
                 <Caps size={9} style={{ marginBottom: 7 }}>Spiller</Caps>
-                <div style={{ borderRadius: 11, background: T.panel2, border: `1px solid ${T.border}`, padding: "10px 13px", fontFamily: T.ui, fontSize: 13.5, color: T.mut }}>
+                <div style={{ borderRadius: 11, background: TL.dock, border: `1px solid ${TL.hair}`, padding: "10px 13px", fontFamily: TL.font.sans, fontSize: 13.5, color: TL.mute }}>
                   {players.find((p) => p.id === userId)?.name ?? "—"}
                 </div>
               </div>

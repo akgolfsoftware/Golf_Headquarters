@@ -1,5 +1,5 @@
 "use client";
-
+import { TL } from "@/lib/v2/train-lock";
 /**
  * AgencyOS Marketing — v2 (retning C «Presis»). M1-grunnmuren: innholds-
  * kalender (planlagte poster sortert på dato) + «Ny post»-skjema i popup +
@@ -13,35 +13,9 @@
  */
 
 import { useMemo, useState, useTransition } from "react";
-import {
-  Caps,
-  Tittel,
-  Kort,
-  Rad,
-  KpiFlis,
-  StatusPill,
-  CTAPill,
-  Knapp,
-  FilterChips,
-  TomTilstand,
-  Inndata,
-  TekstOmraade,
-  Icon,
-  T,
-  type StatusTone,
-} from "@/components/v2";
-import {
-  opprettMarketingPost,
-  settMarketingStatus,
-} from "@/lib/admin-marketing/actions";
-import {
-  KANAL_NAVN,
-  MARKETING_KANALER,
-  MARKETING_STATUSER,
-  type MarketingKanal,
-  type MarketingStatus,
-} from "@/lib/admin-marketing/konstanter";
-
+import { Caps, Kort, Rad, KpiFlis, StatusPill, CTAPill, Knapp, FilterChips, TomTilstand, Inndata, TekstOmraade, Icon, type StatusTone } from "@/components/v2";
+import { opprettMarketingPost, settMarketingStatus } from "@/lib/admin-marketing/actions";
+import { KANAL_NAVN, MARKETING_KANALER, MARKETING_STATUSER, type MarketingKanal, type MarketingStatus } from "@/lib/admin-marketing/konstanter";
 // ── Datakontrakt (mappes fra Prisma i ruten) ────────────────────
 export interface MarketingPostV2Row {
   id: string;
@@ -93,7 +67,7 @@ function StatusSykleChip({ id, status }: { id: string; status: MarketingStatus }
   const meta = STATUS_META[lokal];
   return (
     <div style={{ display: "flex", alignItems: "center", gap: 8, flex: "none" }}>
-      {feil && <span style={{ fontFamily: T.ui, fontSize: 11, color: T.down }}>Feilet — prøv igjen</span>}
+      {feil && <span style={{ fontFamily: TL.font.sans, fontSize: 11, color: TL.danger }}>Feilet — prøv igjen</span>}
       <button
         type="button"
         onClick={sykle}
@@ -153,7 +127,7 @@ function NyPostPopup({ onLukk }: { onLukk: () => void }) {
         position: "fixed",
         inset: 0,
         zIndex: 60,
-        background: T.farge.svartA62,
+        background: TL.scrim,
         backdropFilter: "blur(4px)",
         display: "flex",
         alignItems: "flex-start",
@@ -166,8 +140,8 @@ function NyPostPopup({ onLukk }: { onLukk: () => void }) {
         <Kort>
           <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 12, marginBottom: 4 }}>
             <div>
-              <Caps size={9} color={T.lime}>Innholdskalender</Caps>
-              <h2 style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 20, letterSpacing: "-0.02em", color: T.fg, margin: "8px 0 0" }}>
+              <Caps size={9} color={TL.fill}>Innholdskalender</Caps>
+              <h2 style={{ fontFamily: TL.font.sans, fontWeight: 700, fontSize: 20, letterSpacing: "-0.02em", color: TL.text, margin: "8px 0 0" }}>
                 Ny post
               </h2>
             </div>
@@ -176,9 +150,9 @@ function NyPostPopup({ onLukk }: { onLukk: () => void }) {
               onClick={onLukk}
               aria-label="Lukk"
               className="v2-press v2-focus"
-              style={{ width: 30, height: 30, borderRadius: 9, background: T.panel2, border: `1px solid ${T.border}`, display: "inline-flex", alignItems: "center", justifyContent: "center", cursor: "pointer", flex: "none" }}
+              style={{ width: 30, height: 30, borderRadius: 9, background: TL.dock, border: `1px solid ${TL.hair}`, display: "inline-flex", alignItems: "center", justifyContent: "center", cursor: "pointer", flex: "none" }}
             >
-              <Icon name="x" size={15} style={{ color: T.fg2 }} />
+              <Icon name="x" size={15} style={{ color: TL.mute }} />
             </button>
           </div>
 
@@ -191,7 +165,7 @@ function NyPostPopup({ onLukk }: { onLukk: () => void }) {
             />
 
             <div>
-              <span style={{ fontFamily: T.ui, fontSize: 12, fontWeight: 600, color: T.fg2, display: "block", marginBottom: 7 }}>Kanal</span>
+              <span style={{ fontFamily: TL.font.sans, fontSize: 12, fontWeight: 600, color: TL.mute, display: "block", marginBottom: 7 }}>Kanal</span>
               <FilterChips
                 items={MARKETING_KANALER.map((k) => KANAL_NAVN[k])}
                 active={[KANAL_NAVN[kanal]]}
@@ -212,7 +186,7 @@ function NyPostPopup({ onLukk }: { onLukk: () => void }) {
               onChange={setBrief}
             />
 
-            {feil && <span style={{ fontFamily: T.ui, fontSize: 12, color: T.down }}>{feil}</span>}
+            {feil && <span style={{ fontFamily: TL.font.sans, fontSize: 12, color: TL.danger }}>{feil}</span>}
 
             <div style={{ display: "flex", justifyContent: "flex-end", gap: 8, opacity: pending ? 0.6 : 1 }}>
               <Knapp ghost disabled={pending} onClick={onLukk}>
@@ -241,8 +215,8 @@ export function AdminMarketingV2({ poster }: { poster: MarketingPostV2Row[] }) {
     <Rad
       key={p.id}
       leading={
-        <span style={{ width: 32, height: 32, borderRadius: 9, background: T.panel2, border: `1px solid ${T.border}`, display: "inline-flex", alignItems: "center", justifyContent: "center", flex: "none" }}>
-          <Icon name="megaphone" size={15} style={{ color: T.mut }} />
+        <span style={{ width: 32, height: 32, borderRadius: 9, background: TL.dock, border: `1px solid ${TL.hair}`, display: "inline-flex", alignItems: "center", justifyContent: "center", flex: "none" }}>
+          <Icon name="megaphone" size={15} style={{ color: TL.mute }} />
         </span>
       }
       title={p.tittel}
@@ -257,8 +231,8 @@ export function AdminMarketingV2({ poster }: { poster: MarketingPostV2Row[] }) {
     <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 14, flexWrap: "wrap" }}>
       <div>
         <div data-paper-pattern-topp>
-          <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>Marketing</h1>
-          <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>AgencyOS</span>
+          <h1 style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 17, fontWeight: 600, color: TL.text }}>Marketing</h1>
+          <span style={{ display: "block", fontFamily: TL.font.mono, fontSize: 10.5, color: TL.mute, marginTop: 2 }}>AgencyOS</span>
         </div>
       </div>
       <div className="hidden md:inline-flex">
@@ -271,7 +245,7 @@ export function AdminMarketingV2({ poster }: { poster: MarketingPostV2Row[] }) {
 
   // ── KPI-fliser ────────────────────────────────────────────────
   const kpi = (
-    <div className="grid grid-cols-3" style={{ gap: T.gap }}>
+    <div className="grid grid-cols-3" style={{ gap: 16 }}>
       <KpiFlis label="Kommende poster" value={kommende.length} />
       <KpiFlis label="Klare til publisering" value={antallKlar} varsle={antallKlar > 0} />
       <KpiFlis label="Utkast" value={antallUtkast} />
@@ -312,7 +286,7 @@ export function AdminMarketingV2({ poster }: { poster: MarketingPostV2Row[] }) {
     ) : null;
 
   return (
-    <div data-paper-wave-h="marketing" data-paper-pattern style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 960, margin: "0 auto", width: "100%" }}>
+    <div data-paper-wave-h="marketing" data-paper-pattern style={{ display: "flex", flexDirection: "column", gap: 16, maxWidth: 960, margin: "0 auto", width: "100%" }}>
       {hode}
 
       {/* Mobil-handling (skjult på desktop der den ligger i hodet) */}

@@ -19,7 +19,8 @@ import {
 } from "@/components/ui/dialog";
 import { Knapp } from "@/components/v2/core";
 import { Icon } from "@/components/v2/icon";
-import { T } from "@/lib/v2/tokens";
+import { TL } from "@/lib/v2/train-lock";
+
 import { formatTime, UI } from "@/lib/domain/workbench/labels";
 import type { ValidationNote } from "@/lib/domain/workbench/operations";
 import type { WorkbenchSession } from "@/lib/domain/workbench/types";
@@ -66,13 +67,13 @@ export function PublishConfirmDialog({
                 alignItems: "flex-start",
                 padding: "10px 12px",
                 marginBottom: 12,
-                borderRadius: T.rTag,
+                borderRadius: TL.radius.row,
                 border: `1px solid color-mix(in srgb, ${WARM} 35%, transparent)`,
                 background: `color-mix(in srgb, ${WARM} 8%, transparent)`,
               }}
             >
               <Icon name="info" size={14} style={{ color: WARM, marginTop: 1 }} />
-              <span style={{ fontFamily: T.ui, fontSize: 12.5, color: T.fg2 }}>
+              <span style={{ fontFamily: TL.font.sans, fontSize: 12.5, color: TL.mute }}>
                 {iDagAntall === 1
                   ? UI.publishTodayWarnOne
                   : UI.publishTodayWarnMany(iDagAntall)}
@@ -89,20 +90,20 @@ export function PublishConfirmDialog({
                 alignItems: "flex-start",
                 padding: "10px 12px",
                 marginBottom: 12,
-                borderRadius: T.rTag,
-                border: `1px solid color-mix(in srgb, ${T.down} 35%, transparent)`,
-                background: `color-mix(in srgb, ${T.down} 8%, transparent)`,
+                borderRadius: TL.radius.row,
+                border: `1px solid color-mix(in srgb, ${TL.danger} 35%, transparent)`,
+                background: `color-mix(in srgb, ${TL.danger} 8%, transparent)`,
               }}
             >
-              <Icon name="triangle-alert" size={14} style={{ color: T.down, marginTop: 1 }} />
+              <Icon name="triangle-alert" size={14} style={{ color: TL.danger, marginTop: 1 }} />
               <div style={{ display: "grid", gap: 4, minWidth: 0 }}>
-                <span style={{ fontFamily: T.ui, fontSize: 12.5, fontWeight: 600, color: T.fg }}>
+                <span style={{ fontFamily: TL.font.sans, fontSize: 12.5, fontWeight: 600, color: TL.text }}>
                   {UI.publishOverlapWarnTitle}
                 </span>
                 {notater.map((n, i) => (
                   <span
                     key={`${n.sessionId ?? "note"}-${i}`}
-                    style={{ fontFamily: T.ui, fontSize: 12, color: T.fg2 }}
+                    style={{ fontFamily: TL.font.sans, fontSize: 12, color: TL.mute }}
                   >
                     {n.message}
                   </span>
@@ -120,16 +121,16 @@ export function PublishConfirmDialog({
                   gap: 10,
                   alignItems: "baseline",
                   padding: "8px 10px",
-                  borderRadius: T.rTag,
-                  background: T.panel2,
+                  borderRadius: TL.radius.row,
+                  background: TL.dock,
                   minWidth: 0,
                 }}
               >
                 <span
                   style={{
-                    fontFamily: T.mono,
+                    fontFamily: TL.font.mono,
                     fontSize: 11,
-                    color: T.mut,
+                    color: TL.mute,
                     flex: "none",
                     fontVariantNumeric: "tabular-nums",
                   }}
@@ -138,9 +139,9 @@ export function PublishConfirmDialog({
                 </span>
                 <span
                   style={{
-                    fontFamily: T.ui,
+                    fontFamily: TL.font.sans,
                     fontSize: 13,
-                    color: T.fg,
+                    color: TL.text,
                     minWidth: 0,
                     overflow: "hidden",
                     textOverflow: "ellipsis",

@@ -1,4 +1,5 @@
 "use client";
+import { TL } from "@/lib/v2/train-lock";
 
 /**
  * PlayerHQ Fysisk — v2 Presis + B-pakke (status + logg, tom = én grønn vei).
@@ -8,22 +9,7 @@
 import { useEffect, useState } from "react";
 import type { FysiskViewData } from "@/lib/portal-fysisk/fysisk-data";
 import Link from "next/link";
-import {
-  T,
-  Caps,
-  Tittel,
-  StatusPill,
-  Kort,
-  TomTilstand,
-  CTAPill,
-  SettRepsLogger,
-  TonnasjeHero,
-  IntervallBlokk,
-  PulsSoneVelger,
-  FysOktKort,
-  FYS_TYPER,
-} from "@/components/v2";
-
+import { Caps, Tittel, StatusPill, Kort, TomTilstand, SettRepsLogger, TonnasjeHero, IntervallBlokk, PulsSoneVelger, FysOktKort, FYS_TYPER } from "@/components/v2";
 /** true på klient etter mount når viewport < 768px (styrer kun tallstørrelser). */
 function useMobile(): boolean {
   const [m, setM] = useState(false);
@@ -46,12 +32,12 @@ export function FysiskV2({ data }: { data: FysiskViewData }) {
 
   if (!okt) {
     return (
-      <div data-paper-portal-fysisk data-paper-wave-f="fys" data-od-id="playerhq-fys-plan" data-paper-slug="playerhq-fys-plan" style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
+      <div data-paper-portal-fysisk data-paper-wave-f="fys" data-od-id="playerhq-fys-plan" data-paper-slug="playerhq-fys-plan" style={{ display: "flex", flexDirection: "column", gap: 16, maxWidth: 720, margin: "0 auto", width: "100%" }}>
         <div>
           <Caps>Fysisk trening</Caps>
           <div style={{ marginTop: 10 }}>
-            <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>FYS</h1>
-            <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>{spillerNavn}</span>
+            <h1 style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 17, fontWeight: 600, color: TL.text }}>FYS</h1>
+            <span style={{ display: "block", fontFamily: TL.font.mono, fontSize: 10.5, color: TL.mute, marginTop: 2 }}>{spillerNavn}</span>
           </div>
         </div>
         <div className="grid grid-cols-3" style={{ gap: 8 }}>
@@ -64,7 +50,7 @@ export function FysiskV2({ data }: { data: FysiskViewData }) {
           ).map((k) => (
             <Kort key={k.l} pad="12px">
               <Caps size={9}>{k.l}</Caps>
-              <div style={{ fontFamily: T.mono, fontWeight: 700, fontSize: 15, marginTop: 8, color: T.fg }}>{k.v}</div>
+              <div style={{ fontFamily: TL.font.mono, fontWeight: 700, fontSize: 15, marginTop: 8, color: TL.text }}>{k.v}</div>
             </Kort>
           ))}
         </div>
@@ -78,7 +64,7 @@ export function FysiskV2({ data }: { data: FysiskViewData }) {
         <Link href="/portal/planlegge/workbench?zoom=uke" style={{ textDecoration: "none", display: "block" }}>
           <span style={{
             display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, minHeight: 56, width: "100%", padding: "10px 16px",
-            borderRadius: 12, background: T.handling, color: T.onHandling, fontFamily: T.ui, fontSize: 14, fontWeight: 600,
+            borderRadius: 12, background: TL.fill, color: TL.onFill, fontFamily: TL.font.sans, fontSize: 14, fontWeight: 600,
           }}>Åpne Workbench
           </span>
         </Link>
@@ -88,10 +74,10 @@ export function FysiskV2({ data }: { data: FysiskViewData }) {
             textDecoration: "none",
             display: "block",
             textAlign: "center",
-            fontFamily: T.ui,
+            fontFamily: TL.font.sans,
             fontSize: 12,
             fontWeight: 600,
-            color: T.mut,
+            color: TL.mute,
           }}
         >
           Tilbake til Gjør →
@@ -104,7 +90,7 @@ export function FysiskV2({ data }: { data: FysiskViewData }) {
   const domSone = okt.intervaller[0]?.sone ?? "S3";
 
   return (
-    <div data-paper-portal-fysisk data-paper-wave-f="fys" data-od-id="playerhq-fys-plan" style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
+    <div data-paper-portal-fysisk data-paper-wave-f="fys" data-od-id="playerhq-fys-plan" style={{ display: "flex", flexDirection: "column", gap: 16, maxWidth: 720, margin: "0 auto", width: "100%" }}>
       {/* Hode */}
       <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
         <div>
@@ -127,7 +113,7 @@ export function FysiskV2({ data }: { data: FysiskViewData }) {
         ).map((k) => (
           <Kort key={k.l} pad="12px">
             <Caps size={9}>{k.l}</Caps>
-            <div style={{ fontFamily: T.mono, fontWeight: 700, fontSize: 16, marginTop: 8, color: T.fg }}>{k.v}</div>
+            <div style={{ fontFamily: TL.font.mono, fontWeight: 700, fontSize: 16, marginTop: 8, color: TL.text }}>{k.v}</div>
           </Kort>
         ))}
       </div>
@@ -155,7 +141,7 @@ export function FysiskV2({ data }: { data: FysiskViewData }) {
             <Link href="/portal/planlegge/workbench?zoom=uke" style={{ textDecoration: "none", display: "block" }}>
               <span style={{
             display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, minHeight: 56, width: "100%", padding: "10px 16px",
-            borderRadius: 12, background: T.handling, color: T.onHandling, fontFamily: T.ui, fontSize: 14, fontWeight: 600,
+            borderRadius: 12, background: TL.fill, color: TL.onFill, fontFamily: TL.font.sans, fontSize: 14, fontWeight: 600,
           }}>Åpne Workbench
               </span>
             </Link>
@@ -164,12 +150,12 @@ export function FysiskV2({ data }: { data: FysiskViewData }) {
       )}
 
       {harInnhold && (
-        <Caps style={{ color: T.mut }}>Logg under — lagres når du fyller sett</Caps>
+        <Caps style={{ color: TL.mute }}>Logg under — lagres når du fyller sett</Caps>
       )}
 
       {/* Styrke — én logger per øvelse (sett × reps) */}
       {okt.styrke.length > 0 && (
-        <div data-paper-portal-fysisk data-paper-wave-f="fys" data-od-id="playerhq-fys-plan" style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
+        <div data-paper-portal-fysisk data-paper-wave-f="fys" data-od-id="playerhq-fys-plan" style={{ display: "flex", flexDirection: "column", gap: 16, maxWidth: 720, margin: "0 auto", width: "100%" }}>
           <Caps>Styrke · logg sett × reps</Caps>
           {okt.styrke.map((o) => (
             <SettRepsLogger
@@ -187,7 +173,7 @@ export function FysiskV2({ data }: { data: FysiskViewData }) {
 
       {/* Kondisjon — intervall-blokker + målsone */}
       {okt.intervaller.length > 0 && (
-        <div className="grid grid-cols-1 md:grid-cols-[3fr_2fr]" style={{ gap: T.gap }}>
+        <div className="grid grid-cols-1 md:grid-cols-[3fr_2fr]" style={{ gap: 16 }}>
           <Kort eyebrow="Kondisjon · intervaller">
             <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
               {okt.intervaller.map((iv) => (

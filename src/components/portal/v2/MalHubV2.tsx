@@ -1,5 +1,5 @@
 "use client";
-
+import { TL } from "@/lib/v2/train-lock";
 /**
  * PlayerHQ Mål-hub — v2 Presis + B-pakke (status + én primær «nytt mål»).
  * Liste med fremdrift. Tom = full grønn vei til bygger. T.* only.
@@ -7,17 +7,7 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import {
-  T,
-  Caps,
-  Kort,
-  StatusPill,
-  ProgresjonsBar,
-  TomTilstand,
-  Icon,
-  type StatusTone,
-} from "@/components/v2";
-
+import { Caps, Kort, StatusPill, ProgresjonsBar, TomTilstand, Icon, type StatusTone } from "@/components/v2";
 /* ── Data-kontrakt (speiler mapGoalRow + siste Achievement fra ekte side) ── */
 
 export type MalGoalStatus = "on-track" | "behind" | "achieved" | "no-data";
@@ -52,10 +42,10 @@ function tone(status: MalGoalStatus, pct: number): StatusTone {
 
 /** Aksent-/fremdriftsfarge per status (venstre-kant + progressbar). */
 function farge(status: MalGoalStatus, pct: number): string {
-  if (status === "achieved") return T.up;
-  if (status === "no-data") return T.mut;
-  if (status === "behind") return T.warn;
-  return pct >= 80 ? T.lime : T.forest;
+  if (status === "achieved") return TL.ok;
+  if (status === "no-data") return TL.mute;
+  if (status === "behind") return TL.warn;
+  return pct >= 80 ? TL.fill : TL.fill;
 }
 
 /** true på klient etter mount når viewport < 768px (styrer kun tittelstørrelse). */
@@ -80,13 +70,13 @@ export function MalHubV2({ data }: { data: MalHubData }) {
   const { antall, goals, milepael } = data;
 
   return (
-    <div data-paper-wave-g="malhub" data-paper-portal-mal style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
+    <div data-paper-wave-g="malhub" data-paper-portal-mal style={{ display: "flex", flexDirection: "column", gap: 16, maxWidth: 720, margin: "0 auto", width: "100%" }}>
       {/* Hode + B: status pill */}
       <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
         <div>
           <div data-paper-pattern-topp>
-          <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>Mål</h1>
-          <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>Mine mål og milepæler</span>
+          <h1 style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 17, fontWeight: 600, color: TL.text }}>Mål</h1>
+          <span style={{ display: "block", fontFamily: TL.font.mono, fontSize: 10.5, color: TL.mute, marginTop: 2 }}>Mine mål og milepæler</span>
         </div>
         </div>
         <StatusPill tone={antall > 0 ? "lime" : "info"}>
@@ -98,7 +88,7 @@ export function MalHubV2({ data }: { data: MalHubData }) {
       <Link href="/portal/mal/bygger" style={{ textDecoration: "none", display: "block" }}>
         <span style={{
                 display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, width: "100%", padding: "10px 16px",
-                borderRadius: 12, background: T.handling, color: T.onHandling, fontFamily: T.ui, fontSize: 14, fontWeight: 600, minHeight: 56,
+                borderRadius: 12, background: TL.fill, color: TL.onFill, fontFamily: TL.font.sans, fontSize: 14, fontWeight: 600, minHeight: 56,
               }}>{goals.length === 0 ? "Sett første mål" : "Nytt mål"}
         </span>
       </Link>
@@ -109,16 +99,16 @@ export function MalHubV2({ data }: { data: MalHubData }) {
       <Link href="/portal/ai/mal-bygger" style={{ textDecoration: "none", display: "block" }}>
         <Kort hover>
           <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-            <Icon name="sparkles" size={16} style={{ color: T.mut, flex: "none" }} />
+            <Icon name="sparkles" size={16} style={{ color: TL.mute, flex: "none" }} />
             <div style={{ flex: 1, minWidth: 0 }}>
-              <span style={{ display: "block", fontFamily: T.ui, fontSize: 13, fontWeight: 600, color: T.fg }}>
+              <span style={{ display: "block", fontFamily: TL.font.sans, fontSize: 13, fontWeight: 600, color: TL.text }}>
                 AI mål-bygger
               </span>
-              <span style={{ display: "block", fontFamily: T.ui, fontSize: 11.5, color: T.mut, marginTop: 1 }}>
+              <span style={{ display: "block", fontFamily: TL.font.sans, fontSize: 11.5, color: TL.mute, marginTop: 1 }}>
                 Formuler ett SMART-mål steg for steg
               </span>
             </div>
-            <Icon name="chevron-right" size={15} style={{ color: T.mut, flex: "none" }} />
+            <Icon name="chevron-right" size={15} style={{ color: TL.mute, flex: "none" }} />
           </div>
         </Kort>
       </Link>
@@ -127,13 +117,13 @@ export function MalHubV2({ data }: { data: MalHubData }) {
       {milepael && (
         <Kort tint>
           <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
-            <Icon name="trophy" size={14} style={{ color: T.lime }} />
-            <Caps color={T.handling}>Siste milepæl</Caps>
+            <Icon name="trophy" size={14} style={{ color: TL.fill }} />
+            <Caps color={TL.fill}>Siste milepæl</Caps>
           </div>
-          <div style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 17, color: T.fg, lineHeight: 1.3 }}>
+          <div style={{ fontFamily: TL.font.sans, fontWeight: 700, fontSize: 17, color: TL.text, lineHeight: 1.3 }}>
             {milepael.tittel}
           </div>
-          <span style={{ fontFamily: T.mono, fontSize: 11, color: T.mut, display: "block", marginTop: 6 }}>
+          <span style={{ fontFamily: TL.font.mono, fontSize: 11, color: TL.mute, display: "block", marginTop: 6 }}>
             {milepael.dato}
           </span>
         </Kort>
@@ -141,7 +131,7 @@ export function MalHubV2({ data }: { data: MalHubData }) {
 
       {/* Mål-liste */}
       {goals.length > 0 ? (
-        <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
           {goals.map((g) => {
             const c = farge(g.status, g.pct);
             return (
@@ -150,7 +140,7 @@ export function MalHubV2({ data }: { data: MalHubData }) {
                   <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 10 }}>
                     <div style={{ minWidth: 0 }}>
                       <Caps size={9} color={c}>{g.type}</Caps>
-                      <div style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 15, color: T.fg, lineHeight: 1.35, marginTop: 4 }}>
+                      <div style={{ fontFamily: TL.font.sans, fontWeight: 700, fontSize: 15, color: TL.text, lineHeight: 1.35, marginTop: 4 }}>
                         {g.title}
                       </div>
                     </div>
@@ -161,13 +151,13 @@ export function MalHubV2({ data }: { data: MalHubData }) {
                     {g.hasData ? (
                       <ProgresjonsBar value={g.pct} max={100} label="Fremdrift" color={c} />
                     ) : (
-                      <span style={{ fontFamily: T.mono, fontSize: 10.5, textTransform: "uppercase", letterSpacing: "0.06em", color: T.mut }}>
+                      <span style={{ fontFamily: TL.font.mono, fontSize: 10.5, textTransform: "uppercase", letterSpacing: "0.06em", color: TL.mute }}>
                         Ingen data ennå
                       </span>
                     )}
                   </div>
 
-                  <span style={{ fontFamily: T.ui, fontSize: 12, color: T.mut, display: "block", marginTop: 10 }}>
+                  <span style={{ fontFamily: TL.font.sans, fontSize: 12, color: TL.mute, display: "block", marginTop: 10 }}>
                     {g.sub}
                   </span>
                 </Kort>

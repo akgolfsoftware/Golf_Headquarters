@@ -1,23 +1,12 @@
 "use client";
-
+import { TL } from "@/lib/v2/train-lock";
 /**
  * PlayerHQ Utfordringer — v2 Presis + B-pakke (status + én primær CTA, tom = vei).
  * T.* only. Lys PlayerHQ.
  */
 
 import Link from "next/link";
-import {
-  T,
-  Caps,
-  Tittel,
-  Kort,
-  CTAPill,
-  StatusPill,
-  MikroMeta,
-  TomTilstand,
-  Bit,
-} from "@/components/v2";
-
+import { Caps, Tittel, Kort, StatusPill, MikroMeta, TomTilstand, Bit } from "@/components/v2";
 /* ── Data-kontrakt ─────────────────────────────────────────────────── */
 
 /** Ett utfordrings-kort, ferdigberegnet på serveren (brukerens perspektiv). */
@@ -72,16 +61,16 @@ function UtfordringKort({ u }: { u: UtfordringKortData }) {
         </div>
 
         {/* Tittel */}
-        <div style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 16, color: T.fg, lineHeight: 1.3, marginTop: 12 }}>
+        <div style={{ fontFamily: TL.font.sans, fontWeight: 700, fontSize: 16, color: TL.text, lineHeight: 1.3, marginTop: 12 }}>
           {u.name}
         </div>
 
         {u.description && (
           <p
             style={{
-              fontFamily: T.ui,
+              fontFamily: TL.font.sans,
               fontSize: 12.5,
-              color: T.fg2,
+              color: TL.mute,
               lineHeight: 1.55,
               margin: "8px 0 0",
               display: "-webkit-box",
@@ -102,27 +91,27 @@ function UtfordringKort({ u }: { u: UtfordringKortData }) {
             gap: 12,
             marginTop: 14,
             paddingTop: 14,
-            borderTop: `1px solid ${T.border}`,
+            borderTop: `1px solid ${TL.hair}`,
           }}
         >
           <div>
             <Caps size={9}>Deltakere</Caps>
-            <div style={{ fontFamily: T.mono, fontSize: 20, fontWeight: 700, color: T.fg, marginTop: 6, fontVariantNumeric: "tabular-nums" }}>
+            <div style={{ fontFamily: TL.font.mono, fontSize: 20, fontWeight: 700, color: TL.text, marginTop: 6, fontVariantNumeric: "tabular-nums" }}>
               {u.deltakere}
             </div>
           </div>
           <div>
             <Caps size={9}>Min plassering</Caps>
-            <div style={{ fontFamily: T.mono, fontSize: 20, fontWeight: 700, marginTop: 6, fontVariantNumeric: "tabular-nums" }}>
+            <div style={{ fontFamily: TL.font.mono, fontSize: 20, fontWeight: 700, marginTop: 6, fontVariantNumeric: "tabular-nums" }}>
               {u.minRank != null ? (
-                <span style={{ color: T.lime }}>
+                <span style={{ color: TL.fill }}>
                   #{u.minRank}
                   {u.minScore != null && (
-                    <span style={{ fontSize: 12, fontWeight: 600, color: T.mut }}> ({scoreTekst(u.minScore)})</span>
+                    <span style={{ fontSize: 12, fontWeight: 600, color: TL.mute }}> ({scoreTekst(u.minScore)})</span>
                   )}
                 </span>
               ) : (
-                <span style={{ color: T.mut }}>–</span>
+                <span style={{ color: TL.mute }}>–</span>
               )}
             </div>
           </div>
@@ -143,7 +132,7 @@ export function UtfordringerV2({ data }: { data: UtfordringerData }) {
   const { aktive, tidligere } = data;
 
   return (
-    <div data-paper-portal-utfordringer style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 960, margin: "0 auto", width: "100%" }}>
+    <div data-paper-portal-utfordringer style={{ display: "flex", flexDirection: "column", gap: 16, maxWidth: 960, margin: "0 auto", width: "100%" }}>
       {/* Hode */}
       <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
         <div>
@@ -151,14 +140,14 @@ export function UtfordringerV2({ data }: { data: UtfordringerData }) {
           <div style={{ marginTop: 10 }}>
             <Tittel em="utfordringer">Mine</Tittel>
           </div>
-          <p style={{ fontFamily: T.ui, fontSize: 12.5, color: T.mut, margin: "10px 0 0" }}>
+          <p style={{ fontFamily: TL.font.sans, fontSize: 12.5, color: TL.mute, margin: "10px 0 0" }}>
             {aktive.length} aktive · utfordringer du har laget eller deltar i.
           </p>
         </div>
         <Link href="/portal/utfordringer/ny" style={{ textDecoration: "none" }}>
           <span style={{
             display: "inline-flex", alignItems: "center", gap: 8, minHeight: 44, padding: "10px 16px",
-            borderRadius: 10, background: T.handling, color: T.onHandling, fontFamily: T.ui, fontSize: 13, fontWeight: 600,
+            borderRadius: 10, background: TL.fill, color: TL.onFill, fontFamily: TL.font.sans, fontSize: 13, fontWeight: 600,
           }}>Ny utfordring</span>
         </Link>
       </div>
@@ -167,7 +156,7 @@ export function UtfordringerV2({ data }: { data: UtfordringerData }) {
       <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
         <Caps>Aktive ({aktive.length})</Caps>
         {aktive.length > 0 ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3" style={{ gap: T.gap }}>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3" style={{ gap: 16 }}>
             {aktive.map((u) => (
               <UtfordringKort key={u.id} u={u} />
             ))}
@@ -183,7 +172,7 @@ export function UtfordringerV2({ data }: { data: UtfordringerData }) {
               <Link href="/portal/utfordringer/ny" style={{ textDecoration: "none", display: "block" }}>
                 <span style={{
                   display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, minHeight: 48, width: "100%", padding: "10px 16px",
-                  borderRadius: 10, background: T.handling, color: T.onHandling, fontFamily: T.ui, fontSize: 14, fontWeight: 600,
+                  borderRadius: 10, background: TL.fill, color: TL.onFill, fontFamily: TL.font.sans, fontSize: 14, fontWeight: 600,
                 }}>Ny utfordring</span>
               </Link>
             </div>
@@ -195,7 +184,7 @@ export function UtfordringerV2({ data }: { data: UtfordringerData }) {
       {tidligere.length > 0 && (
         <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
           <Caps>Tidligere ({tidligere.length})</Caps>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3" style={{ gap: T.gap }}>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3" style={{ gap: 16 }}>
             {tidligere.map((u) => (
               <UtfordringKort key={u.id} u={u} />
             ))}

@@ -1,4 +1,5 @@
 "use client";
+import { TL } from "@/lib/v2/train-lock";
 
 /**
  * Hull-føring — HOVEDSKJERMEN i live-føringen.
@@ -11,7 +12,7 @@ import type { WindDir } from "@/generated/prisma/enums";
 import type { HvileLie, LoggetHull, LoggetSlag } from "@/lib/runde-logg/types";
 import { beregnSg } from "@/lib/domain/sg";
 import { rundeTilSgShots } from "@/lib/runde-logg/til-sg-shots";
-import { T, fmtSg, Caps, Kort, Icon } from "@/components/v2";
+import { fmtSg, Caps, Kort, Icon } from "@/components/v2";
 import { SlagEditor } from "./slag-editor";
 import { TommelSone, PrimaerKnapp } from "./tommel-sone";
 
@@ -74,8 +75,8 @@ function KjedeRad({ rad, aktiv }: { rad: KjedeRadData; aktiv?: boolean }) {
         gap: 10,
         padding: "10px 12px",
         borderRadius: 12,
-        background: aktiv ? T.panel3 : "transparent",
-        border: `1px solid ${aktiv ? T.borderS : "transparent"}`,
+        background: aktiv ? TL.dim : "transparent",
+        border: `1px solid ${aktiv ? TL.hair : "transparent"}`,
       }}
     >
       <span
@@ -83,15 +84,15 @@ function KjedeRad({ rad, aktiv }: { rad: KjedeRadData; aktiv?: boolean }) {
           width: 22,
           height: 22,
           borderRadius: 8,
-          background: T.panel2,
-          border: `1px solid ${T.border}`,
+          background: TL.dock,
+          border: `1px solid ${TL.hair}`,
           display: "inline-flex",
           alignItems: "center",
           justifyContent: "center",
-          fontFamily: T.mono,
+          fontFamily: TL.font.mono,
           fontSize: 10.5,
           fontWeight: 700,
-          color: T.fg2,
+          color: TL.mute,
           flex: "none",
         }}
       >
@@ -99,17 +100,17 @@ function KjedeRad({ rad, aktiv }: { rad: KjedeRadData; aktiv?: boolean }) {
       </span>
       <div style={{ flex: 1, minWidth: 0 }}>
         <div style={{ display: "flex", alignItems: "baseline", gap: 6 }}>
-          <span style={{ fontFamily: T.ui, fontSize: 13, fontWeight: 600, color: T.fg }}>
+          <span style={{ fontFamily: TL.font.sans, fontSize: 13, fontWeight: 600, color: TL.text }}>
             {LIE_LABEL[rad.fraLie]}
-            <span style={{ fontFamily: T.mono, fontWeight: 400, color: T.fg2 }}> · {komma(rad.fraM)} m</span>
+            <span style={{ fontFamily: TL.font.mono, fontWeight: 400, color: TL.mute }}> · {komma(rad.fraM)} m</span>
           </span>
           <span
             style={{
-              fontFamily: T.mono,
+              fontFamily: TL.font.mono,
               fontSize: 9,
               fontWeight: 700,
               letterSpacing: "0.08em",
-              color: T.mut,
+              color: TL.mute,
             }}
           >
             {kategori(rad.fraLie, rad.fraM)}
@@ -117,21 +118,21 @@ function KjedeRad({ rad, aktiv }: { rad: KjedeRadData; aktiv?: boolean }) {
         </div>
         <div
           style={{
-            fontFamily: T.ui,
+            fontFamily: TL.font.sans,
             fontSize: 11.5,
-            color: rad.til === "I hull" ? T.up : T.fg2,
+            color: rad.til === "I hull" ? TL.ok : TL.mute,
             marginTop: 1,
           }}
         >
           → {rad.til}
-          {rad.tilM != null && <span style={{ fontFamily: T.mono }}> · {komma(rad.tilM)} m igjen</span>}
+          {rad.tilM != null && <span style={{ fontFamily: TL.font.mono }}> · {komma(rad.tilM)} m igjen</span>}
           {rad.straffe && (
             <span
               style={{
-                fontFamily: T.mono,
+                fontFamily: TL.font.mono,
                 fontSize: 9.5,
                 fontWeight: 700,
-                color: T.down,
+                color: TL.danger,
                 marginLeft: 6,
               }}
             >
@@ -140,7 +141,7 @@ function KjedeRad({ rad, aktiv }: { rad: KjedeRadData; aktiv?: boolean }) {
           )}
         </div>
       </div>
-      {aktiv && <Icon name="pencil" size={13} style={{ color: T.lime, flex: "none" }} />}
+      {aktiv && <Icon name="pencil" size={13} style={{ color: TL.fill, flex: "none" }} />}
     </div>
   );
 }
@@ -215,11 +216,11 @@ export function HullForing({
         padding: "11px 0",
         borderRadius: 12,
         background: "transparent",
-        border: `1px solid ${T.border}`,
-        fontFamily: T.ui,
+        border: `1px solid ${TL.hair}`,
+        fontFamily: TL.font.sans,
         fontSize: 12.5,
         fontWeight: 600,
-        color: T.fg2,
+        color: TL.mute,
       }}
     >
       <Icon name={ikon} size={13} />
@@ -234,28 +235,28 @@ export function HullForing({
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
           <span
             style={{
-              fontFamily: T.mono,
+              fontFamily: TL.font.mono,
               fontSize: 11,
               fontWeight: 700,
               letterSpacing: "0.1em",
               textTransform: "uppercase",
-              color: T.fg,
+              color: TL.text,
             }}
           >
             Hull {hull.holeNumber} · par {hull.par} · {komma(hull.lengdeMeter)} m
           </span>
-          <span style={{ fontFamily: T.mono, fontSize: 12, fontWeight: 700, color: T.fg }}>
+          <span style={{ fontFamily: TL.font.mono, fontSize: 12, fontWeight: 700, color: TL.text }}>
             {scoreHittil}
-            <span style={{ color: T.mut, fontWeight: 400 }}> totalt</span>
+            <span style={{ color: TL.mute, fontWeight: 400 }}> totalt</span>
           </span>
         </div>
-        <div style={{ height: 3, borderRadius: 9999, background: T.panel2 }}>
+        <div style={{ height: 3, borderRadius: 9999, background: TL.dock }}>
           <div
             style={{
               width: `${Math.round((ferdigeFor / antallHull) * 100)}%`,
               height: "100%",
               borderRadius: 9999,
-              background: T.lime,
+              background: TL.fill,
             }}
           />
         </div>
@@ -281,8 +282,8 @@ export function HullForing({
             gap: 14,
             padding: "18px 14px 16px",
             borderRadius: 16,
-            background: T.panel,
-            border: `1px solid ${T.borderS}`,
+            background: TL.elev,
+            border: `1px solid ${TL.hair}`,
           }}
         >
           <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 10 }}>
@@ -291,28 +292,28 @@ export function HullForing({
                 width: 52,
                 height: 52,
                 borderRadius: 9999,
-                background: "color-mix(in srgb, var(--v2-up) 12%, transparent)",
-                border: "1px solid color-mix(in srgb, var(--v2-up) 40%, transparent)",
+                background: "color-mix(in srgb, var(--tl-ok) 12%, transparent)",
+                border: "1px solid color-mix(in srgb, var(--tl-ok) 40%, transparent)",
                 display: "inline-flex",
                 alignItems: "center",
                 justifyContent: "center",
               }}
             >
-              <Icon name="check" size={24} style={{ color: T.up }} />
+              <Icon name="check" size={24} style={{ color: TL.ok }} />
             </span>
-            <div style={{ fontFamily: T.disp, fontSize: 18, fontWeight: 700, color: T.fg }}>
+            <div style={{ fontFamily: TL.font.sans, fontSize: 18, fontWeight: 700, color: TL.text }}>
               Hull {hull.holeNumber} ferdig — {strokes} slag
               {straffer > 0 ? ` (+${straffer})` : ""}
             </div>
             {hullSg != null && (
-              <div style={{ display: "flex", gap: 12, fontFamily: T.mono, fontSize: 11.5 }}>
-                <span style={{ color: T.fg2 }}>
+              <div style={{ display: "flex", gap: 12, fontFamily: TL.font.mono, fontSize: 11.5 }}>
+                <span style={{ color: TL.mute }}>
                   Hull-SG{" "}
-                  <b style={{ color: hullSg >= 0 ? T.up : T.down }}>{fmtSg(hullSg)}</b>
+                  <b style={{ color: hullSg >= 0 ? TL.ok : TL.danger }}>{fmtSg(hullSg)}</b>
                 </span>
                 {straffer > 0 && (
-                  <span style={{ color: T.fg2 }}>
-                    Straffen{straffer > 1 ? "e" : ""} kostet <b style={{ color: T.down }}>−{komma(straffer)},0</b>
+                  <span style={{ color: TL.mute }}>
+                    Straffen{straffer > 1 ? "e" : ""} kostet <b style={{ color: TL.danger }}>−{komma(straffer)},0</b>
                   </span>
                 )}
               </div>
@@ -331,11 +332,11 @@ export function HullForing({
                   padding: "5px 10px",
                   borderRadius: 9999,
                   background: "transparent",
-                  border: `1px solid ${T.border}`,
-                  fontFamily: T.mono,
+                  border: `1px solid ${TL.hair}`,
+                  fontFamily: TL.font.mono,
                   fontSize: 10,
                   fontWeight: 700,
-                  color: T.fg2,
+                  color: TL.mute,
                 }}
               >
                 <Icon name="arrow-left" size={12} />

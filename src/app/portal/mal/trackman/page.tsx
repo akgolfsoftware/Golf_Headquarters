@@ -14,7 +14,8 @@ import Link from "next/link";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
-import { T } from "@/lib/v2/tokens";
+import { TL } from "@/lib/v2/train-lock";
+
 import { Kort, Rad, CTAPill, TomTilstand, TilbakeLenke, Icon } from "@/components/v2";
 import { TrackmanImportModal } from "@/components/shared/trackman-import-modal";
 import { TrackManTrendSeksjon, byggTrendData } from "./trend-seksjon";
@@ -44,13 +45,13 @@ const INK_FULL: CSSProperties = {
   width: "100%",
   minHeight: 48,
   padding: "0 16px",
-  fontFamily: T.ui,
+  fontFamily: TL.font.sans,
   fontSize: 14,
   fontWeight: 500,
-  background: T.cta,
-  color: T.onCta,
-  border: `1px solid ${T.cta}`,
-  borderRadius: T.rCard,
+  background: TL.fill,
+  color: TL.onFill,
+  border: `1px solid ${TL.fill}`,
+  borderRadius: TL.radius.card,
   cursor: "pointer",
 };
 
@@ -72,10 +73,10 @@ export default async function TrackManListePage() {
 
   const hode = (
     <div>
-      <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>
+      <h1 style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 17, fontWeight: 600, color: TL.text }}>
         Range-analyse
       </h1>
-      <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>
+      <span style={{ display: "block", fontFamily: TL.font.mono, fontSize: 10.5, color: TL.mute, marginTop: 2 }}>
         TrackMan · sesjonsanalyse per kølle
       </span>
     </div>
@@ -95,7 +96,7 @@ export default async function TrackManListePage() {
         <div
           data-paper-slug="playerhq-trackman-liste"
           data-od-id="playerhq-trackman-liste"
-          style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%", minWidth: 0 }}
+          style={{ display: "flex", flexDirection: "column", gap: 16, maxWidth: 720, margin: "0 auto", width: "100%", minWidth: 0 }}
         >
           {hode}
           {importKnapp}
@@ -107,17 +108,17 @@ export default async function TrackManListePage() {
             />
             <p
               style={{
-                fontFamily: T.mono,
+                fontFamily: TL.font.mono,
                 fontSize: 11,
                 lineHeight: 1.7,
-                color: T.mut,
-                background: T.panel2,
+                color: TL.mute,
+                background: TL.dock,
                 borderRadius: 8,
                 padding: "10px 14px",
                 margin: "14px 0 0",
               }}
             >
-              <strong style={{ color: T.fg }}>Eksporter fra TrackMan:</strong>
+              <strong style={{ color: TL.text }}>Eksporter fra TrackMan:</strong>
               <br />
               CSV: Sessions → velg økt → Export → CSV
               <br />
@@ -135,11 +136,11 @@ export default async function TrackManListePage() {
       <div
         data-paper-slug="playerhq-trackman-liste"
         data-od-id="playerhq-trackman-liste"
-        style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%", minWidth: 0 }}
+        style={{ display: "flex", flexDirection: "column", gap: 16, maxWidth: 720, margin: "0 auto", width: "100%", minWidth: 0 }}
       >
         {hode}
 
-        <p style={{ fontFamily: T.mono, fontSize: 11, color: T.mut, margin: 0, fontVariantNumeric: "tabular-nums" }}>
+        <p style={{ fontFamily: TL.font.mono, fontSize: 11, color: TL.mute, margin: 0, fontVariantNumeric: "tabular-nums" }}>
           {okter.length} {okter.length === 1 ? "økt" : "økter"} registrert · nyeste først
         </p>
 
@@ -152,7 +153,7 @@ export default async function TrackManListePage() {
         <Link href="/portal/mal/trackman/gapping" style={{ textDecoration: "none", color: "inherit", display: "block" }}>
           <Kort hover>
             <Rad
-              leading={<Icon name="sliders" size={16} style={{ color: T.mut }} />}
+              leading={<Icon name="sliders" size={16} style={{ color: TL.mute }} />}
               title="Gapping"
               sub="Avstand mellom køllene dine"
               last
@@ -187,8 +188,8 @@ export default async function TrackManListePage() {
                         display: "flex",
                         flexDirection: "column",
                         alignItems: "center",
-                        background: T.panel2,
-                        border: `1px solid ${T.border}`,
+                        background: TL.dock,
+                        border: `1px solid ${TL.hair}`,
                         borderRadius: 10,
                         padding: "6px 10px",
                         minWidth: 46,
@@ -196,10 +197,10 @@ export default async function TrackManListePage() {
                     >
                       <span
                         style={{
-                          fontFamily: T.mono,
+                          fontFamily: TL.font.mono,
                           fontSize: 15,
                           fontWeight: 700,
-                          color: T.fg,
+                          color: TL.text,
                           lineHeight: 1,
                           fontVariantNumeric: "tabular-nums",
                         }}
@@ -208,11 +209,11 @@ export default async function TrackManListePage() {
                       </span>
                       <span
                         style={{
-                          fontFamily: T.mono,
+                          fontFamily: TL.font.mono,
                           fontSize: 8.5,
                           textTransform: "uppercase",
                           letterSpacing: "0.08em",
-                          color: T.mut,
+                          color: TL.mute,
                           marginTop: 2,
                         }}
                       >

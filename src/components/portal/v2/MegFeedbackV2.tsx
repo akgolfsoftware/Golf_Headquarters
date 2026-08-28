@@ -1,4 +1,5 @@
 "use client";
+import { TL } from "@/lib/v2/train-lock";
 
 /**
  * PlayerHQ Meg · Feedback — v2 Presis + B-pakke (send = én full grønn CTA).
@@ -7,23 +8,7 @@
 import { useEffect, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { submitFeedback } from "@/app/portal/meg/feedback/actions";
-import {
-  T,
-  Caps,
-  Tittel,
-  Kort,
-  Knapp,
-  StatusPill,
-  MikroMeta,
-  TomTilstand,
-  TekstOmraade,
-  Bryter,
-  NpsSkala,
-  npsSegment,
-  IkonChipVelger,
-  type IkonChipValg,
-} from "@/components/v2";
-
+import { Caps, Kort, Knapp, StatusPill, MikroMeta, TomTilstand, TekstOmraade, Bryter, NpsSkala, npsSegment, IkonChipVelger, type IkonChipValg } from "@/components/v2";
 /* ── Datakontrakt ──────────────────────────────────────────────────── */
 
 type FeedbackType = "bug" | "forslag" | "ros" | "sporsmal";
@@ -68,7 +53,7 @@ function useMobile(): boolean {
 /** Liten mono-caps markør (Påkrevd / Valgfritt) til kort-hodet. */
 function Markor({ tekst, farge }: { tekst: string; farge: string }) {
   return (
-    <span style={{ fontFamily: T.mono, fontSize: 9, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: farge, whiteSpace: "nowrap" }}>
+    <span style={{ fontFamily: TL.font.mono, fontSize: 9, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: farge, whiteSpace: "nowrap" }}>
       {tekst}
     </span>
   );
@@ -78,7 +63,7 @@ function Markor({ tekst, farge }: { tekst: string; farge: string }) {
 
 export function MegFeedbackV2({ data }: { data: MegFeedbackData }) {
   const router = useRouter();
-  const mobile = useMobile();
+  const _mobile = useMobile();
   const [nps, setNps] = useState(9);
   const [type, setType] = useState<FeedbackType>("forslag");
   const [tekst, setTekst] = useState("");
@@ -104,17 +89,17 @@ export function MegFeedbackV2({ data }: { data: MegFeedbackData }) {
   const kanSende = tekst.trim().length > 0 && !pending;
 
   return (
-    <div data-paper-wave-g="megfeedback" data-paper-portal-meg-feedback style={{ maxWidth: 720, width: "100%", margin: "0 auto", display: "flex", flexDirection: "column", gap: T.gap }}>
+    <div data-paper-wave-g="megfeedback" data-paper-portal-meg-feedback style={{ maxWidth: 720, width: "100%", margin: "0 auto", display: "flex", flexDirection: "column", gap: 16 }}>
       {/* Hode */}
       <div>
         <Caps>Tilbakemelding · under ett minutt</Caps>
         <div style={{ marginTop: 12 }}>
           <div data-paper-pattern-topp>
-        <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>Tilbakemelding</h1>
-        <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>Meg</span>
+        <h1 style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 17, fontWeight: 600, color: TL.text }}>Tilbakemelding</h1>
+        <span style={{ display: "block", fontFamily: TL.font.mono, fontSize: 10.5, color: TL.mute, marginTop: 2 }}>Meg</span>
       </div>
         </div>
-        <p style={{ fontFamily: T.ui, fontSize: 13.5, color: T.fg2, lineHeight: 1.6, margin: "12px 0 0", maxWidth: 560 }}>
+        <p style={{ fontFamily: TL.font.sans, fontSize: 13.5, color: TL.mute, lineHeight: 1.6, margin: "12px 0 0", maxWidth: 560 }}>
           Vi leser hver eneste tilbakemelding. Bug, forslag eller bare ros, alt teller.
         </p>
       </div>
@@ -124,7 +109,7 @@ export function MegFeedbackV2({ data }: { data: MegFeedbackData }) {
         <Kort tint>
           <div style={{ display: "flex", alignItems: "center", gap: 11 }}>
             <StatusPill tone="up">Sendt</StatusPill>
-            <span style={{ fontFamily: T.ui, fontSize: 13, color: T.fg }}>
+            <span style={{ fontFamily: TL.font.sans, fontSize: 13, color: TL.text }}>
               Takk for tilbakemeldingen. Du gjør PlayerHQ bedre.
             </span>
           </div>
@@ -139,7 +124,7 @@ export function MegFeedbackV2({ data }: { data: MegFeedbackData }) {
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 11, flexWrap: "wrap" }}>
             <div style={{ display: "flex", alignItems: "center", gap: 11 }}>
               <StatusPill tone="down">Kunne ikke sende</StatusPill>
-              <span style={{ fontFamily: T.ui, fontSize: 13, color: T.fg }}>
+              <span style={{ fontFamily: TL.font.sans, fontSize: 13, color: TL.text }}>
                 Noe gikk galt. Prøv igjen, eller logg inn på nytt hvis du ble logget ut.
               </span>
             </div>
@@ -154,21 +139,21 @@ export function MegFeedbackV2({ data }: { data: MegFeedbackData }) {
       )}
 
       {/* NPS — anbefaling */}
-      <Kort eyebrow="Anbefaling" action={<Markor tekst="Påkrevd" farge={T.down} />}>
-        <div style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 16, color: T.fg, lineHeight: 1.35, marginBottom: 16 }}>
+      <Kort eyebrow="Anbefaling" action={<Markor tekst="Påkrevd" farge={TL.danger} />}>
+        <div style={{ fontFamily: TL.font.sans, fontWeight: 700, fontSize: 16, color: TL.text, lineHeight: 1.35, marginBottom: 16 }}>
           Hvor sannsynlig er det at du anbefaler PlayerHQ til en venn?
         </div>
         <NpsSkala value={nps} onChange={setNps} />
       </Kort>
 
       {/* Type */}
-      <Kort eyebrow="Type tilbakemelding" action={<Markor tekst="Påkrevd" farge={T.down} />}>
+      <Kort eyebrow="Type tilbakemelding" action={<Markor tekst="Påkrevd" farge={TL.danger} />}>
         <IkonChipVelger valg={TYPER} value={type} onChange={setType} />
       </Kort>
 
       {/* Fritekst — spørsmålet følger NPS-segmentet */}
-      <Kort eyebrow="Din tilbakemelding" action={<Markor tekst="Valgfritt" farge={T.mut} />}>
-        <div style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 15, color: T.fg, marginBottom: 12 }}>
+      <Kort eyebrow="Din tilbakemelding" action={<Markor tekst="Valgfritt" farge={TL.mute} />}>
+        <div style={{ fontFamily: TL.font.sans, fontWeight: 700, fontSize: 15, color: TL.text, marginBottom: 12 }}>
           {fritekstSporsmal(nps)}
         </div>
         <TekstOmraade
@@ -179,8 +164,8 @@ export function MegFeedbackV2({ data }: { data: MegFeedbackData }) {
           placeholder="Skriv her, så detaljert eller kort du vil."
         />
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10, marginTop: 9 }}>
-          <span style={{ fontFamily: T.ui, fontSize: 11.5, color: T.mut }}>Hjelper oss å forstå hva som funker</span>
-          <span style={{ fontFamily: T.mono, fontSize: 11, color: T.mut, fontVariantNumeric: "tabular-nums" }}>{tekst.length} / {MAX}</span>
+          <span style={{ fontFamily: TL.font.sans, fontSize: 11.5, color: TL.mute }}>Hjelper oss å forstå hva som funker</span>
+          <span style={{ fontFamily: TL.font.mono, fontSize: 11, color: TL.mute, fontVariantNumeric: "tabular-nums" }}>{tekst.length} / {MAX}</span>
         </div>
       </Kort>
 

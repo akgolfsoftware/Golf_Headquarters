@@ -1,5 +1,5 @@
 "use client";
-
+import { TL } from "@/lib/v2/train-lock";
 /**
  * AgencyOS E-postmaler — v2 (retning C «Presis»). Coach/ADMIN forvalter
  * EmailTemplate-malene som agent-pipelinen sender automatiske e-poster fra.
@@ -27,27 +27,9 @@
 import { useMemo, useState, useTransition } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import {
-  Caps,
-  Tittel,
-  Kort,
-  Rad,
-  KpiFlis,
-  StatusPill,
-  CTAPill,
-  Knapp,
-  FilterChips,
-  TomTilstand,
-  Icon,
-  T,
-} from "@/components/v2";
+import { Caps, Kort, Rad, KpiFlis, StatusPill, CTAPill, Knapp, FilterChips, TomTilstand, Icon } from "@/components/v2";
 import { Inndata, TekstOmraade, Bryter } from "@/components/v2";
-import {
-  createTemplate,
-  updateTemplate,
-  deleteTemplate,
-} from "@/app/admin/(legacy)/email-templates/actions";
-
+import { createTemplate, updateTemplate, deleteTemplate } from "@/app/admin/(legacy)/email-templates/actions";
 // ── Datakontrakt (mappes fra Prisma i ruten) ────────────────────
 export interface AdminEmailV2Template {
   id: string;
@@ -146,7 +128,7 @@ function MalEditor({
         position: "fixed",
         inset: 0,
         zIndex: 60,
-        background: T.farge.svartA62,
+        background: TL.scrim,
         backdropFilter: "blur(4px)",
         display: "flex",
         alignItems: "flex-start",
@@ -159,8 +141,8 @@ function MalEditor({
         <Kort>
           <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 12, marginBottom: 4 }}>
             <div>
-              <Caps size={9} color={T.lime}>{erEndre ? "Endre mal" : "Ny mal"}</Caps>
-              <h2 style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 20, letterSpacing: "-0.02em", color: T.fg, margin: "8px 0 0" }}>
+              <Caps size={9} color={TL.fill}>{erEndre ? "Endre mal" : "Ny mal"}</Caps>
+              <h2 style={{ fontFamily: TL.font.sans, fontWeight: 700, fontSize: 20, letterSpacing: "-0.02em", color: TL.text, margin: "8px 0 0" }}>
                 {erEndre ? initial?.name : "E-postmal"}
               </h2>
             </div>
@@ -169,9 +151,9 @@ function MalEditor({
               onClick={onLukk}
               aria-label="Lukk"
               className="v2-press v2-focus"
-              style={{ width: 30, height: 30, borderRadius: 9, background: T.panel2, border: `1px solid ${T.border}`, display: "inline-flex", alignItems: "center", justifyContent: "center", cursor: "pointer", flex: "none" }}
+              style={{ width: 30, height: 30, borderRadius: 9, background: TL.dock, border: `1px solid ${TL.hair}`, display: "inline-flex", alignItems: "center", justifyContent: "center", cursor: "pointer", flex: "none" }}
             >
-              <Icon name="x" size={15} style={{ color: T.fg2 }} />
+              <Icon name="x" size={15} style={{ color: TL.mute }} />
             </button>
           </div>
 
@@ -203,7 +185,7 @@ function MalEditor({
           </div>
 
           {feil && (
-            <p role="alert" style={{ fontFamily: T.ui, fontSize: 12.5, color: T.down, margin: "14px 0 0" }}>
+            <p role="alert" style={{ fontFamily: TL.font.sans, fontSize: 12.5, color: TL.danger, margin: "14px 0 0" }}>
               {feil}
             </p>
           )}
@@ -247,16 +229,16 @@ function MalDetalj({
         <StatusPill tone={mal.active ? "up" : "info"}>{mal.active ? "Aktiv" : "Inaktiv"}</StatusPill>
       }
     >
-      <div style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 20, letterSpacing: "-0.02em", color: T.fg }}>
+      <div style={{ fontFamily: TL.font.sans, fontWeight: 700, fontSize: 20, letterSpacing: "-0.02em", color: TL.text }}>
         {mal.name}
       </div>
-      <div style={{ fontFamily: T.mono, fontSize: 10.5, letterSpacing: "0.04em", color: T.mut, marginTop: 4 }}>
+      <div style={{ fontFamily: TL.font.mono, fontSize: 10.5, letterSpacing: "0.04em", color: TL.mute, marginTop: 4 }}>
         {mal.slug} · sist endret {mal.sistEndret}
       </div>
 
       <div style={{ marginTop: 16 }}>
         <Caps size={9}>Emne</Caps>
-        <div style={{ marginTop: 7, borderRadius: 11, background: T.panel2, border: `1px solid ${T.borderS}`, padding: "10px 13px", fontFamily: T.ui, fontSize: 13.5, color: T.fg }}>
+        <div style={{ marginTop: 7, borderRadius: 11, background: TL.dock, border: `1px solid ${TL.hair}`, padding: "10px 13px", fontFamily: TL.font.sans, fontSize: 13.5, color: TL.text }}>
           {mal.subject}
         </div>
       </div>
@@ -266,13 +248,13 @@ function MalDetalj({
           type="button"
           onClick={() => setVisInnhold((v) => !v)}
           className="v2-press v2-focus"
-          style={{ appearance: "none", cursor: "pointer", display: "inline-flex", alignItems: "center", gap: 7, background: "transparent", border: "none", padding: 0, fontFamily: T.mono, fontSize: 10, fontWeight: 700, letterSpacing: "0.10em", textTransform: "uppercase", color: T.fg2 }}
+          style={{ appearance: "none", cursor: "pointer", display: "inline-flex", alignItems: "center", gap: 7, background: "transparent", border: "none", padding: 0, fontFamily: TL.font.mono, fontSize: 10, fontWeight: 700, letterSpacing: "0.10em", textTransform: "uppercase", color: TL.mute }}
         >
-          <Icon name={visInnhold ? "chevron-down" : "chevron-right"} size={13} style={{ color: T.mut }} />
+          <Icon name={visInnhold ? "chevron-down" : "chevron-right"} size={13} style={{ color: TL.mute }} />
           {visInnhold ? "Skjul innhold" : "Vis innhold"}
         </button>
         {visInnhold && (
-          <pre style={{ marginTop: 10, borderRadius: 11, background: T.panel2, border: `1px solid ${T.border}`, padding: 14, fontFamily: T.mono, fontSize: 12, lineHeight: 1.6, color: T.fg, whiteSpace: "pre-wrap", overflowX: "auto" }}>
+          <pre style={{ marginTop: 10, borderRadius: 11, background: TL.dock, border: `1px solid ${TL.hair}`, padding: 14, fontFamily: TL.font.mono, fontSize: 12, lineHeight: 1.6, color: TL.text, whiteSpace: "pre-wrap", overflowX: "auto" }}>
             {mal.body}
           </pre>
         )}
@@ -290,7 +272,7 @@ function MalDetalj({
         </Knapp>
       </div>
 
-      <div style={{ fontFamily: T.mono, fontSize: 9.5, letterSpacing: "0.04em", color: T.mut, marginTop: 16 }}>
+      <div style={{ fontFamily: TL.font.mono, fontSize: 9.5, letterSpacing: "0.04em", color: TL.mute, marginTop: 16 }}>
         Opprettet {mal.opprettet}
       </div>
     </Kort>
@@ -332,8 +314,8 @@ export function AdminEmailV2({ data }: { data: AdminEmailV2Data }) {
     <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 14, flexWrap: "wrap" }}>
       <div>
         <div data-paper-pattern-topp>
-          <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>E-post</h1>
-          <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>Maler og utsending</span>
+          <h1 style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 17, fontWeight: 600, color: TL.text }}>E-post</h1>
+          <span style={{ display: "block", fontFamily: TL.font.mono, fontSize: 10.5, color: TL.mute, marginTop: 2 }}>Maler og utsending</span>
         </div>
       </div>
       <div className="hidden md:inline-flex">
@@ -346,7 +328,7 @@ export function AdminEmailV2({ data }: { data: AdminEmailV2Data }) {
 
   // ── KPI-flis (3) ──────────────────────────────────────────────
   const kpi = (
-    <div className="grid grid-cols-3" style={{ gap: T.gap }}>
+    <div className="grid grid-cols-3" style={{ gap: 16 }}>
       <KpiFlis label="Maler totalt" value={data.total} />
       <KpiFlis label="Aktive" value={data.aktive} />
       <KpiFlis label="Grupper" value={data.grupper.length} />
@@ -392,7 +374,7 @@ export function AdminEmailV2({ data }: { data: AdminEmailV2Data }) {
             onClick={() => setValgtId(m.id)}
             leading={
               <span
-                style={{ width: 4, height: 30, borderRadius: 9999, background: m.active ? T.lime : T.border, flex: "none" }}
+                style={{ width: 4, height: 30, borderRadius: 9999, background: m.active ? TL.fill : TL.hair, flex: "none" }}
                 aria-hidden
               />
             }
@@ -400,11 +382,11 @@ export function AdminEmailV2({ data }: { data: AdminEmailV2Data }) {
             sub={m.subject}
             meta={
               <span style={{ display: "inline-flex", alignItems: "center", gap: 8 }}>
-                <span style={{ fontFamily: T.mono, fontSize: 9, color: T.mut, whiteSpace: "nowrap" }}>{m.slug}</span>
+                <span style={{ fontFamily: TL.font.mono, fontSize: 9, color: TL.mute, whiteSpace: "nowrap" }}>{m.slug}</span>
                 <StatusPill tone={m.active ? "up" : "info"}>{m.active ? "Aktiv" : "Av"}</StatusPill>
               </span>
             }
-            trailing={valgt?.id === m.id ? <span style={{ width: 2, height: 20, borderRadius: 2, background: T.lime, flex: "none" }} /> : undefined}
+            trailing={valgt?.id === m.id ? <span style={{ width: 2, height: 20, borderRadius: 2, background: TL.fill, flex: "none" }} /> : undefined}
             last={i === filtrert.length - 1}
           />
         ))}
@@ -412,7 +394,7 @@ export function AdminEmailV2({ data }: { data: AdminEmailV2Data }) {
     );
 
   return (
-    <div data-paper-wave-h="email" data-paper-pattern style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 960, margin: "0 auto", width: "100%" }}>
+    <div data-paper-wave-h="email" data-paper-pattern style={{ display: "flex", flexDirection: "column", gap: 16, maxWidth: 960, margin: "0 auto", width: "100%" }}>
       {hode}
 
       {/* Mobil-handling (skjult på desktop der den ligger i hodet) */}
@@ -428,7 +410,7 @@ export function AdminEmailV2({ data }: { data: AdminEmailV2Data }) {
       {data.maler.length === 0 ? (
         liste
       ) : (
-        <div className="grid grid-cols-1 lg:grid-cols-[3fr_2fr]" style={{ gap: T.gap, alignItems: "start" }}>
+        <div className="grid grid-cols-1 lg:grid-cols-[3fr_2fr]" style={{ gap: 16, alignItems: "start" }}>
           {liste}
           {valgt && <MalDetalj mal={valgt} onEndre={() => setEditor({ modus: "endre", mal: valgt })} />}
         </div>

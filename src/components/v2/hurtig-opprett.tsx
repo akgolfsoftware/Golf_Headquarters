@@ -21,15 +21,11 @@
 import Link from "next/link";
 import { useEffect, useState, useTransition } from "react";
 import { foreslaGridTid, tilStartParam } from "@/lib/calendar/notion-grid";
-import { T } from "@/lib/v2/tokens";
+import { TL } from "@/lib/v2/train-lock";
+
 import { Caps, Knapp } from "./core";
 import { Icon } from "./icon";
-import {
-  hentBookingValg,
-  bookIKalender,
-  type BookingValg,
-} from "@/app/admin/kalender/booking-actions";
-
+import { hentBookingValg, bookIKalender, type BookingValg } from "@/app/admin/kalender/booking-actions";
 export interface HurtigOpprettProps {
   /** ISO-dato «YYYY-MM-DD» fra luken som ble trykket. */
   dato: string;
@@ -56,9 +52,9 @@ function Valg({ href, icon, tittel, sub }: { href: string; icon: string; tittel:
         alignItems: "center",
         gap: 12,
         padding: "12px 13px",
-        borderRadius: T.rRow,
-        background: T.panel2,
-        border: `1px solid ${T.border}`,
+        borderRadius: TL.radius.row,
+        background: TL.dock,
+        border: `1px solid ${TL.hair}`,
         textDecoration: "none",
         minHeight: 44,
       }}
@@ -69,21 +65,21 @@ function Valg({ href, icon, tittel, sub }: { href: string; icon: string; tittel:
           height: 32,
           flex: "none",
           borderRadius: 9999,
-          background: T.tint,
-          border: `1px solid ${T.borderS}`,
+          background: TL.dim,
+          border: `1px solid ${TL.hair}`,
           display: "inline-flex",
           alignItems: "center",
           justifyContent: "center",
-          color: T.lime,
+          color: TL.fill,
         }}
       >
         <Icon name={icon} size={15} />
       </span>
       <span style={{ display: "flex", flexDirection: "column", gap: 2, minWidth: 0 }}>
-        <span style={{ fontFamily: T.ui, fontSize: 13, fontWeight: 700, color: T.fg }}>{tittel}</span>
-        <span style={{ fontFamily: T.ui, fontSize: 11, color: T.mut }}>{sub}</span>
+        <span style={{ fontFamily: TL.font.sans, fontSize: 13, fontWeight: 700, color: TL.text }}>{tittel}</span>
+        <span style={{ fontFamily: TL.font.sans, fontSize: 11, color: TL.mute }}>{sub}</span>
       </span>
-      <Icon name="chevron-right" size={14} style={{ color: T.mut, marginLeft: "auto", flex: "none" }} />
+      <Icon name="chevron-right" size={14} style={{ color: TL.mute, marginLeft: "auto", flex: "none" }} />
     </Link>
   );
 }
@@ -150,33 +146,33 @@ function HurtigBooking({
 
   const feltStil: React.CSSProperties = {
     width: "100%",
-    background: T.panel2,
-    border: `1px solid ${T.border}`,
+    background: TL.dock,
+    border: `1px solid ${TL.hair}`,
     borderRadius: 8,
     padding: "7px 9px",
-    fontFamily: T.ui,
+    fontFamily: TL.font.sans,
     fontSize: 12.5,
-    color: T.fg,
+    color: TL.text,
     marginTop: 3,
     boxSizing: "border-box",
   };
   const merke: React.CSSProperties = {
-    fontFamily: T.mono,
+    fontFamily: TL.font.mono,
     fontSize: 9,
     fontWeight: 700,
-    color: T.mut,
+    color: TL.mute,
   };
 
   if (!valg) {
     return (
-      <div style={{ marginTop: 14, fontFamily: T.ui, fontSize: 12, color: T.mut }}>
+      <div style={{ marginTop: 14, fontFamily: TL.font.sans, fontSize: 12, color: TL.mute }}>
         {feil ?? "Henter tjenester …"}
       </div>
     );
   }
 
   return (
-    <div style={{ marginTop: 14, paddingTop: 12, borderTop: `1px solid ${T.border}` }}>
+    <div style={{ marginTop: 14, paddingTop: 12, borderTop: `1px solid ${TL.hair}` }}>
       <Caps size={8.5}>Book kunde her</Caps>
       <div style={{ display: "flex", flexDirection: "column", gap: 8, marginTop: 8 }}>
         <label style={merke}>
@@ -210,12 +206,12 @@ function HurtigBooking({
         </label>
 
         {valgtTjeneste && valgtTjeneste.maxDeltakere > 1 && (
-          <div style={{ fontFamily: T.ui, fontSize: 11.5, color: T.mut }}>
+          <div style={{ fontFamily: TL.font.sans, fontSize: 11.5, color: TL.mute }}>
             Delt økt — inntil {valgtTjeneste.maxDeltakere} spillere i samme luke.
           </div>
         )}
         {feil && (
-          <div style={{ fontFamily: T.ui, fontSize: 12, color: T.fg }}>{feil}</div>
+          <div style={{ fontFamily: TL.font.sans, fontSize: 12, color: TL.text }}>{feil}</div>
         )}
 
         <div style={{ display: "flex", justifyContent: "flex-end" }}>
@@ -245,26 +241,26 @@ export function HurtigOpprett({ dato, klokkeslett, onLukk }: HurtigOpprettProps)
     >
       <div
         onClick={onLukk}
-        style={{ position: "absolute", inset: 0, background: `color-mix(in srgb, ${T.bg} 62%, transparent)`, backdropFilter: "blur(2px)" }}
+        style={{ position: "absolute", inset: 0, background: `color-mix(in srgb, ${TL.scene} 62%, transparent)`, backdropFilter: "none" }}
       />
       <div
         style={{
           position: "relative",
           width: "min(360px, 100%)",
-          background: T.panel,
-          border: `1px solid ${T.borderS}`,
-          borderRadius: T.rCard,
+          background: TL.elev,
+          border: `1px solid ${TL.hair}`,
+          borderRadius: TL.radius.card,
           padding: "18px 20px 20px",
-          boxShadow: `0 24px 60px ${T.farge.svartA50}`,
+          boxShadow: "none",
         }}
       >
         <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 12 }}>
           <div>
             <Caps size={8.5}>Tom luke</Caps>
-            <div style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 17, letterSpacing: "-0.02em", color: T.fg, marginTop: 5 }}>
+            <div style={{ fontFamily: TL.font.sans, fontWeight: 700, fontSize: 17, letterSpacing: "-0.02em", color: TL.text, marginTop: 5 }}>
               {datoLabel}
             </div>
-            <div style={{ fontFamily: T.mono, fontSize: 11, fontWeight: 700, color: T.mut, marginTop: 2, fontVariantNumeric: "tabular-nums" }}>
+            <div style={{ fontFamily: TL.font.mono, fontSize: 11, fontWeight: 700, color: TL.mute, marginTop: 2, fontVariantNumeric: "tabular-nums" }}>
               kl. {klokkeslett}
             </div>
           </div>
@@ -279,15 +275,15 @@ export function HurtigOpprett({ dato, klokkeslett, onLukk }: HurtigOpprettProps)
               width: 28,
               height: 28,
               borderRadius: 8,
-              background: T.panel2,
-              border: `1px solid ${T.border}`,
+              background: TL.dock,
+              border: `1px solid ${TL.hair}`,
               display: "inline-flex",
               alignItems: "center",
               justifyContent: "center",
               flex: "none",
             }}
           >
-            <Icon name="x" size={14} style={{ color: T.fg2 }} />
+            <Icon name="x" size={14} style={{ color: TL.mute }} />
           </button>
         </div>
 

@@ -18,7 +18,8 @@ import { beregnSgGap } from "@/lib/workbench/sg-gap";
 import { SG_FOKUS_LABEL, type SgKategori } from "@/lib/workbench/fokus";
 import type { SkillArea } from "@/generated/prisma/client";
 import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
-import { T } from "@/lib/v2/tokens";
+import { TL } from "@/lib/v2/train-lock";
+
 import { TilbakeLenke } from "@/components/v2";
 import { DrillsListe, type AnbefaltDrill, type DrillRad } from "./drills-liste";
 
@@ -160,14 +161,14 @@ export default async function DrillsPage() {
       <div
         data-paper-slug="playerhq-drills"
         data-od-id="playerhq-drills"
-        style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}
+        style={{ display: "flex", flexDirection: "column", gap: 16, maxWidth: 720, margin: "0 auto", width: "100%" }}
       >
         {/* Topp — fasit: Øvelsesbank / Drills du kan legge i øktene dine */}
         <div>
-          <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>
+          <h1 style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 17, fontWeight: 600, color: TL.text }}>
             Øvelsesbank
           </h1>
-          <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>
+          <span style={{ display: "block", fontFamily: TL.font.mono, fontSize: 10.5, color: TL.mute, marginTop: 2 }}>
             Drills du kan legge i øktene dine
           </span>
         </div>
@@ -177,15 +178,15 @@ export default async function DrillsPage() {
           <div
             style={{
               padding: "24px 16px",
-              background: T.panel2,
-              border: `1px dashed ${T.border}`,
-              borderRadius: T.rCard,
+              background: TL.dock,
+              border: `1px dashed ${TL.hair}`,
+              borderRadius: TL.radius.card,
             }}
           >
-            <h3 style={{ margin: "0 0 8px", fontFamily: T.disp, fontSize: 15, fontWeight: 600, color: T.fg }}>
+            <h3 style={{ margin: "0 0 8px", fontFamily: TL.font.sans, fontSize: 15, fontWeight: 600, color: TL.text }}>
               Øvelsesbanken er tom
             </h3>
-            <p style={{ margin: "0 0 12px", fontFamily: T.bodyFont, fontSize: 13.5, color: T.mut }}>
+            <p style={{ margin: "0 0 12px", fontFamily: TL.font.sans, fontSize: 13.5, color: TL.mute }}>
               Anders har ikke publisert driller ennå — banken fylles av coachen, ikke av appen.
               Øktene dine virker som før; drillene der ligger i selve økta.
             </p>
@@ -202,10 +203,10 @@ export default async function DrillsPage() {
                 justifyContent: "center",
                 minHeight: 56,
                 width: "100%",
-                borderRadius: T.rCard,
-                background: T.handling,
-                color: T.onHandling,
-                fontFamily: T.ui,
+                borderRadius: TL.radius.card,
+                background: TL.fill,
+                color: TL.onFill,
+                fontFamily: TL.font.sans,
                 fontSize: 14,
                 fontWeight: 600,
               }}

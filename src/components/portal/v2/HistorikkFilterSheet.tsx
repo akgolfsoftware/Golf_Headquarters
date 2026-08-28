@@ -15,7 +15,8 @@
  */
 
 import { useState } from "react";
-import { T } from "@/lib/v2/tokens";
+import { TL } from "@/lib/v2/train-lock";
+
 import { Caps } from "@/components/v2";
 import { BunnArk } from "@/components/v2/bunn-ark";
 
@@ -64,7 +65,7 @@ const SONER: HistorikkSone[] = ["tee", "innspill", "naerspill", "putt"];
 
 function Gruppe({ label, children }: { label: string; children: React.ReactNode }) {
   return (
-    <div style={{ padding: "16px 0", borderBottom: `1px solid ${T.borderS}` }}>
+    <div style={{ padding: "16px 0", borderBottom: `1px solid ${TL.hair}` }}>
       <div style={{ marginBottom: 12 }}>
         <Caps>{label}</Caps>
       </div>
@@ -97,11 +98,11 @@ function SegKnapp({
         flex: 1,
         minHeight: 44,
         padding: "0 12px",
-        background: on ? T.panel2 : T.panel,
+        background: on ? TL.dock : TL.elev,
         border: 0,
-        borderRight: last ? "none" : `1px solid ${T.border}`,
-        color: T.fg,
-        fontFamily: T.ui,
+        borderRight: last ? "none" : `1px solid ${TL.hair}`,
+        color: TL.text,
+        fontFamily: TL.font.sans,
         fontSize: 12.5,
         fontWeight: on ? 600 : 400,
         cursor: "pointer",
@@ -139,11 +140,11 @@ export function FilterChip({
         gap: 6,
         minHeight: 36,
         padding: "0 12px",
-        border: `1px solid ${on ? T.borderS : T.border}`,
-        borderRadius: T.rPill,
-        background: on ? T.panel2 : T.panel,
-        color: T.fg,
-        fontFamily: T.mono,
+        border: `1px solid ${on ? TL.hair : TL.hair}`,
+        borderRadius: TL.radius.pill,
+        background: on ? TL.dock : TL.elev,
+        color: TL.text,
+        fontFamily: TL.font.mono,
         fontSize: 11,
         fontWeight: on ? 600 : 400,
         cursor: "pointer",
@@ -152,7 +153,7 @@ export function FilterChip({
     >
       {label}
       {fjernbar && (
-        <span aria-hidden style={{ color: T.mut }}>
+        <span aria-hidden style={{ color: TL.mute }}>
           ×
         </span>
       )}
@@ -218,7 +219,7 @@ function SheetInnhold({
   return (
     <div style={{ minWidth: 0 }}>
         <Gruppe label="Periode">
-          <div style={{ display: "flex", border: `1px solid ${T.border}`, borderRadius: T.rTag, overflow: "hidden" }} role="group" aria-label="Periode">
+          <div style={{ display: "flex", border: `1px solid ${TL.hair}`, borderRadius: TL.radius.row, overflow: "hidden" }} role="group" aria-label="Periode">
             {PERIODER.map((p, i) => (
               <SegKnapp
                 key={p.v}
@@ -255,7 +256,7 @@ function SheetInnhold({
         </Gruppe>
 
         <Gruppe label="Sortering">
-          <div style={{ display: "flex", border: `1px solid ${T.border}`, borderRadius: T.rTag, overflow: "hidden" }} role="group" aria-label="Sortering">
+          <div style={{ display: "flex", border: `1px solid ${TL.hair}`, borderRadius: TL.radius.row, overflow: "hidden" }} role="group" aria-label="Sortering">
             {SORTERINGER.map((s, i) => (
               <SegKnapp
                 key={s.v}
@@ -279,11 +280,11 @@ function SheetInnhold({
             style={{
               flex: 1,
               minHeight: 48,
-              borderRadius: T.rTag,
-              border: `1px solid ${T.border}`,
-              background: T.panel,
-              color: T.fg,
-              fontFamily: T.ui,
+              borderRadius: TL.radius.row,
+              border: `1px solid ${TL.hair}`,
+              background: TL.elev,
+              color: TL.text,
+              fontFamily: TL.font.sans,
               fontSize: 13,
               fontWeight: 600,
               cursor: "pointer",
@@ -302,18 +303,18 @@ function SheetInnhold({
             style={{
               flex: 1,
               minHeight: 48,
-              borderRadius: T.rTag,
+              borderRadius: TL.radius.row,
               border: "none",
-              background: T.cta,
-              color: T.onCta,
-              fontFamily: T.ui,
+              background: TL.fill,
+              color: TL.onFill,
+              fontFamily: TL.font.sans,
               fontSize: 13,
               fontWeight: 600,
               cursor: "pointer",
             }}
           >
             Vis{" "}
-            <span className="num" style={{ fontFamily: T.mono, margin: "0 4px" }}>
+            <span className="num" style={{ fontFamily: TL.font.mono, margin: "0 4px" }}>
               {treff}
             </span>{" "}
             treff

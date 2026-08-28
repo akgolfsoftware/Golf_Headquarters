@@ -1,4 +1,5 @@
 "use client";
+import { TL } from "@/lib/v2/train-lock";
 
 /**
  * PlayerHQ · Del runde — v2 Presis + B-pakke (status + én primær last ned/kopier).
@@ -7,16 +8,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import {
-  Kort,
-  Caps,
-  Tittel,
-  Knapp,
-  PillVelger,
-  Icon,
-  T,
-  fmtSg,
-} from "@/components/v2";
+import { Kort, Knapp, PillVelger, Icon, T, fmtSg } from "@/components/v2";
 
 type Format = "story" | "post" | "pdf" | "link";
 type Synlighet = "privat" | "coach" | "offentlig";
@@ -107,33 +99,33 @@ export function DelRundeV2({ runde, spiller }: DelRundeV2Props) {
     ? T.wrapped.bgForest
     : format === "link"
       ? T.wrapped.bgOffwhite
-      : T.panel;
-  const kortFg = morkKort ? T.wrapped.textOnDark : format === "link" ? T.wrapped.textOnLight : T.fg;
+      : TL.elev;
+  const kortFg = morkKort ? T.wrapped.textOnDark : format === "link" ? T.wrapped.textOnLight : TL.text;
   const kortMut = morkKort
     ? `color-mix(in srgb, ${T.wrapped.textOnDark} 65%, transparent)`
     : format === "link"
       ? `color-mix(in srgb, ${T.wrapped.textOnLight} 60%, transparent)`
-      : T.mut;
-  const scoreFarge = morkKort ? T.lime : format === "link" ? T.forest : T.fg;
+      : TL.mute;
+  const scoreFarge = morkKort ? TL.fill : format === "link" ? TL.fill : TL.text;
   const scoreSize = format === "story" ? 84 : format === "post" ? 72 : 56;
 
   return (
-    <div data-paper-wave-g="del-runde" data-paper-pattern style={{ maxWidth: 720, margin: "0 auto", width: "100%", display: "flex", flexDirection: "column", gap: T.gap }}>
+    <div data-paper-wave-g="del-runde" data-paper-pattern style={{ maxWidth: 720, margin: "0 auto", width: "100%", display: "flex", flexDirection: "column", gap: 16 }}>
       {/* Topptekst */}
       <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 12 }}>
         <div>
           <div data-paper-pattern-topp>
-            <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>Del runde</h1>
-            <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>
+            <h1 style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 17, fontWeight: 600, color: TL.text }}>Del runde</h1>
+            <span style={{ display: "block", fontFamily: TL.font.mono, fontSize: 10.5, color: TL.mute, marginTop: 2 }}>
               Format og synlighet
             </span>
           </div>
-          <p style={{ fontFamily: T.mono, fontSize: 11, color: T.mut, margin: "8px 0 0" }}>
-            <span style={{ color: T.fg, fontWeight: 700 }}>{runde.kursNavn}</span>
+          <p style={{ fontFamily: TL.font.mono, fontSize: 11, color: TL.mute, margin: "8px 0 0" }}>
+            <span style={{ color: TL.text, fontWeight: 700 }}>{runde.kursNavn}</span>
             {" · "}
             {formatDato(runde.playedAt)}
             {" · "}
-            <span style={{ color: T.fg, fontWeight: 700 }}>
+            <span style={{ color: TL.text, fontWeight: 700 }}>
               {runde.score} slag ({relativStr(runde.relativ)})
             </span>
           </p>
@@ -142,7 +134,7 @@ export function DelRundeV2({ runde, spiller }: DelRundeV2Props) {
           href="/portal/statistikk"
           aria-label="Lukk"
           className="v2-press v2-focus"
-          style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", width: 34, height: 34, borderRadius: 10, background: T.panel2, border: `1px solid ${T.border}`, color: T.fg2, textDecoration: "none", flex: "none" }}
+          style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", width: 34, height: 34, borderRadius: 10, background: TL.dock, border: `1px solid ${TL.hair}`, color: TL.mute, textDecoration: "none", flex: "none" }}
         >
           <Icon name="x" size={15} />
         </Link>
@@ -159,12 +151,12 @@ export function DelRundeV2({ runde, spiller }: DelRundeV2Props) {
             overflow: "hidden",
             borderRadius: 16,
             background: kortBg,
-            border: format === "pdf" ? `1px solid ${T.border}` : "none",
+            border: format === "pdf" ? `1px solid ${TL.hair}` : "none",
             color: kortFg,
             display: "flex",
             flexDirection: "column",
             padding: 22,
-            boxShadow: `0 18px 44px ${T.farge.svartA40}`,
+            boxShadow: `0 18px 44px ${TL.scrim}`,
           }}
         >
           {/* Bakgrunnsdekor (kun story/post) */}
@@ -175,7 +167,7 @@ export function DelRundeV2({ runde, spiller }: DelRundeV2Props) {
                 position: "absolute",
                 inset: 0,
                 pointerEvents: "none",
-                background: `radial-gradient(ellipse 80% 50% at 90% 10%, color-mix(in srgb, ${T.lime} 20%, transparent), transparent 60%)`,
+                background: `radial-gradient(ellipse 80% 50% at 90% 10%, color-mix(in srgb, ${TL.fill} 20%, transparent), transparent 60%)`,
               }}
             />
           )}
@@ -187,12 +179,12 @@ export function DelRundeV2({ runde, spiller }: DelRundeV2Props) {
                 width: 36,
                 height: 36,
                 borderRadius: 9999,
-                background: morkKort ? T.lime : T.forest,
+                background: morkKort ? TL.fill : TL.fill,
                 color: morkKort ? T.wrapped.textOnLight : T.wrapped.textOnDark,
                 display: "inline-flex",
                 alignItems: "center",
                 justifyContent: "center",
-                fontFamily: T.disp,
+                fontFamily: TL.font.sans,
                 fontSize: 14,
                 fontWeight: 700,
                 flex: "none",
@@ -201,8 +193,8 @@ export function DelRundeV2({ runde, spiller }: DelRundeV2Props) {
               {spiller.initial}
             </span>
             <div style={{ minWidth: 0 }}>
-              <div style={{ fontFamily: T.disp, fontSize: 13.5, fontWeight: 700, lineHeight: 1.2 }}>{spiller.navn}</div>
-              <div style={{ fontFamily: T.mono, fontSize: 9.5, color: kortMut }}>
+              <div style={{ fontFamily: TL.font.sans, fontSize: 13.5, fontWeight: 700, lineHeight: 1.2 }}>{spiller.navn}</div>
+              <div style={{ fontFamily: TL.font.mono, fontSize: 9.5, color: kortMut }}>
                 {spiller.hcp !== null ? `HCP ${String(spiller.hcp).replace(".", ",")}` : ""}
                 {spiller.homeClub ? `${spiller.hcp !== null ? " · " : ""}${spiller.homeClub}` : ""}
               </div>
@@ -211,13 +203,13 @@ export function DelRundeV2({ runde, spiller }: DelRundeV2Props) {
 
           {/* Score-blokk */}
           <div style={{ position: "relative", zIndex: 1, marginTop: "auto" }}>
-            <div style={{ fontFamily: T.mono, fontSize: 9.5, fontWeight: 700, letterSpacing: "0.16em", textTransform: "uppercase", color: kortMut }}>
+            <div style={{ fontFamily: TL.font.mono, fontSize: 9.5, fontWeight: 700, letterSpacing: "0.16em", textTransform: "uppercase", color: kortMut }}>
               Runde · 18 hull
             </div>
-            <div style={{ fontFamily: T.mono, fontSize: scoreSize, fontWeight: 700, lineHeight: 0.95, color: scoreFarge, fontVariantNumeric: "tabular-nums" }}>
+            <div style={{ fontFamily: TL.font.mono, fontSize: scoreSize, fontWeight: 700, lineHeight: 0.95, color: scoreFarge, fontVariantNumeric: "tabular-nums" }}>
               {runde.score}
             </div>
-            <div style={{ marginTop: 6, display: "flex", alignItems: "center", gap: 8, fontFamily: T.mono, fontSize: 12, fontWeight: 600, color: kortMut }}>
+            <div style={{ marginTop: 6, display: "flex", alignItems: "center", gap: 8, fontFamily: TL.font.mono, fontSize: 12, fontWeight: 600, color: kortMut }}>
               <span
                 style={{
                   borderRadius: 6,
@@ -250,7 +242,7 @@ export function DelRundeV2({ runde, spiller }: DelRundeV2Props) {
                         border: `1px solid color-mix(in srgb, ${kortFg} 16%, transparent)`,
                         background: `color-mix(in srgb, ${kortFg} 8%, transparent)`,
                         padding: "3px 9px",
-                        fontFamily: T.mono,
+                        fontFamily: TL.font.mono,
                         fontSize: 9,
                         fontWeight: 700,
                         letterSpacing: "0.05em",
@@ -259,7 +251,7 @@ export function DelRundeV2({ runde, spiller }: DelRundeV2Props) {
                       }}
                     >
                       {p.label}
-                      <span style={{ color: (p.v ?? 0) >= 0 ? (morkKort ? T.lime : T.up) : T.down }}>
+                      <span style={{ color: (p.v ?? 0) >= 0 ? (morkKort ? TL.fill : TL.ok) : TL.danger }}>
                         {fmtSg(p.v ?? 0)}
                       </span>
                     </span>
@@ -275,12 +267,12 @@ export function DelRundeV2({ runde, spiller }: DelRundeV2Props) {
               bottom: 14,
               right: 16,
               zIndex: 1,
-              fontFamily: T.disp,
+              fontFamily: TL.font.sans,
               fontSize: 10.5,
               fontWeight: 700,
               letterSpacing: "0.16em",
               textTransform: "uppercase",
-              color: morkKort ? T.lime : T.forest,
+              color: morkKort ? TL.fill : TL.fill,
             }}
           >
             AK Golf
@@ -308,8 +300,8 @@ export function DelRundeV2({ runde, spiller }: DelRundeV2Props) {
                   alignItems: "center",
                   gap: 6,
                   borderRadius: 13,
-                  border: `1px solid ${on ? T.lime : T.border}`,
-                  background: on ? `color-mix(in srgb, ${T.lime} 9%, transparent)` : T.panel2,
+                  border: `1px solid ${on ? TL.fill : TL.hair}`,
+                  background: on ? `color-mix(in srgb, ${TL.fill} 9%, transparent)` : TL.dock,
                   padding: "12px 8px",
                 }}
               >
@@ -318,8 +310,8 @@ export function DelRundeV2({ runde, spiller }: DelRundeV2Props) {
                     width: 26,
                     height: 26,
                     borderRadius: 8,
-                    background: on ? T.lime : T.panel3,
-                    color: on ? T.onLime : T.fg2,
+                    background: on ? TL.fill : TL.dim,
+                    color: on ? TL.onFill : TL.mute,
                     display: "inline-flex",
                     alignItems: "center",
                     justifyContent: "center",
@@ -327,8 +319,8 @@ export function DelRundeV2({ runde, spiller }: DelRundeV2Props) {
                 >
                   <Icon name={f.ikon} size={14} />
                 </span>
-                <span style={{ fontFamily: T.disp, fontSize: 12, fontWeight: 700, color: T.fg }}>{f.nm}</span>
-                <span style={{ fontFamily: T.mono, fontSize: 8.5, color: T.mut, letterSpacing: "0.04em", textTransform: "uppercase" }}>{f.dim}</span>
+                <span style={{ fontFamily: TL.font.sans, fontSize: 12, fontWeight: 700, color: TL.text }}>{f.nm}</span>
+                <span style={{ fontFamily: TL.font.mono, fontSize: 8.5, color: TL.mute, letterSpacing: "0.04em", textTransform: "uppercase" }}>{f.dim}</span>
               </button>
             );
           })}
@@ -372,17 +364,17 @@ export function DelRundeV2({ runde, spiller }: DelRundeV2Props) {
             alignItems: "center",
             gap: 8,
             borderRadius: 9999,
-            background: T.panel,
-            border: `1px solid ${T.borderS}`,
-            boxShadow: `0 12px 32px ${T.farge.svartA45}`,
+            background: TL.elev,
+            border: `1px solid ${TL.hair}`,
+            boxShadow: `0 12px 32px ${TL.scrim}`,
             padding: "10px 20px",
-            fontFamily: T.ui,
+            fontFamily: TL.font.sans,
             fontSize: 13,
             fontWeight: 500,
-            color: T.fg,
+            color: TL.text,
           }}
         >
-          <Icon name="check" size={14} style={{ color: T.lime }} />
+          <Icon name="check" size={14} style={{ color: TL.fill }} />
           Lenke kopiert
         </div>
       )}

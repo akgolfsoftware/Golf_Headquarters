@@ -5,7 +5,8 @@
 
 import Image from "next/image";
 import { useSyncExternalStore, type ReactNode } from "react";
-import { T, fmtTall, TOM_TALL } from "@/lib/v2/tokens";
+import { TL } from "@/lib/v2/train-lock";
+import { fmtTall, TOM_TALL } from "@/lib/v2/tokens";
 import {
   Caps,
   CTAPill,
@@ -116,9 +117,9 @@ export function DesignLabV2() {
     <div
       style={{
         minHeight: "100vh",
-        background: `radial-gradient(900px 380px at 20% -10%, var(--v2-vignett), transparent 60%), ${T.bg}`,
-        color: T.fg,
-        fontFamily: T.ui,
+        background: `radial-gradient(900px 380px at 20% -10%, var(--v2-vignett), transparent 60%), ${TL.scene}`,
+        color: TL.text,
+        fontFamily: TL.font.sans,
         padding: "32px 20px 64px",
       }}
     >
@@ -130,7 +131,7 @@ export function DesignLabV2() {
             alignItems: "flex-start",
             justifyContent: "space-between",
             gap: 16,
-            borderBottom: `1px solid ${T.border}`,
+            borderBottom: `1px solid ${TL.hair}`,
             paddingBottom: 22,
           }}
         >
@@ -138,7 +139,7 @@ export function DesignLabV2() {
             <Caps size={10}>AgencyOS · design-lab · Fase F</Caps>
             <h1
               style={{
-                fontFamily: T.disp,
+                fontFamily: TL.font.sans,
                 fontWeight: 700,
                 fontSize: 28,
                 letterSpacing: "-0.02em",
@@ -148,7 +149,7 @@ export function DesignLabV2() {
             >
               Core parity
             </h1>
-            <p style={{ fontFamily: T.ui, fontSize: 14, color: T.fg2, margin: "10px 0 0", maxWidth: 520, lineHeight: 1.55 }}>
+            <p style={{ fontFamily: TL.font.sans, fontSize: 14, color: TL.mute, margin: "10px 0 0", maxWidth: 520, lineHeight: 1.55 }}>
               Tokens og kjernekomponenter mot Open Design-fasit. Lys er default. Primær-CTA i lys =
               forest, i mørk = lime.
             </p>
@@ -165,11 +166,11 @@ export function DesignLabV2() {
               gap: 8,
               minHeight: 44,
               padding: "10px 16px",
-              borderRadius: T.rPill,
-              border: `1px solid ${T.borderS}`,
-              background: T.panel,
-              color: T.fg,
-              fontFamily: T.ui,
+              borderRadius: TL.radius.pill,
+              border: `1px solid ${TL.hair}`,
+              background: TL.elev,
+              color: TL.text,
+              fontFamily: TL.font.sans,
               fontSize: 13,
               fontWeight: 600,
               cursor: "pointer",
@@ -192,7 +193,7 @@ export function DesignLabV2() {
                 style={{ height: 40, width: "auto" }}
                 unoptimized
               />
-              <p style={{ fontFamily: T.mono, fontSize: 11, color: T.mut, margin: "12px 0 0" }}>
+              <p style={{ fontFamily: TL.font.mono, fontSize: 11, color: TL.mute, margin: "12px 0 0" }}>
                 {tema === "dark" ? "white-on-dark.svg" : "primary-on-light.svg"} · ikke recolor i CSS
               </p>
             </Kort>
@@ -211,7 +212,7 @@ export function DesignLabV2() {
                 <Knapp icon="check">Knapp</Knapp>
                 <Knapp ghost>Ghost-knapp</Knapp>
               </div>
-              <p style={{ fontFamily: T.ui, fontSize: 12.5, color: T.mut, margin: "14px 0 0", lineHeight: 1.5 }}>
+              <p style={{ fontFamily: TL.font.sans, fontSize: 12.5, color: TL.mute, margin: "14px 0 0", lineHeight: 1.5 }}>
                 Lys: forest på hvit tekst. Mørk: lime. Touch ≥ 44px.
               </p>
             </Kort>
@@ -221,14 +222,14 @@ export function DesignLabV2() {
         <Seksjon
           tittel="Card · Kort"
           barn={
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: T.gap }}>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: 16 }}>
               <Kort eyebrow="Radius 20" hover>
-                <p style={{ fontFamily: T.ui, fontSize: 13.5, color: T.fg2, margin: 0, lineHeight: 1.5 }}>
+                <p style={{ fontFamily: TL.font.sans, fontSize: 13.5, color: TL.mute, margin: 0, lineHeight: 1.5 }}>
                   Standard panel-kort. Hover-løft på desktop.
                 </p>
               </Kort>
               <Kort tint eyebrow="Med tint">
-                <p style={{ fontFamily: T.ui, fontSize: 13.5, color: T.fg2, margin: 0, lineHeight: 1.5 }}>
+                <p style={{ fontFamily: TL.font.sans, fontSize: 13.5, color: TL.mute, margin: 0, lineHeight: 1.5 }}>
                   Forest-tint bakgrunn for vekt.
                 </p>
               </Kort>
@@ -247,7 +248,7 @@ export function DesignLabV2() {
                 <Tag tone="warn">Varsel</Tag>
                 <Tag tone="info">Info</Tag>
               </div>
-              <p style={{ fontFamily: T.ui, fontSize: 12.5, color: T.mut, margin: "12px 0 0" }}>
+              <p style={{ fontFamily: TL.font.sans, fontSize: 12.5, color: TL.mute, margin: "12px 0 0" }}>
                 Radius tag = 8. Opp/ned bruker --v2-up / --v2-down — aldri lime for delta.
               </p>
             </Kort>
@@ -257,7 +258,7 @@ export function DesignLabV2() {
         <Seksjon
           tittel="Forms · parity (Fase 1)"
           barn={
-            <div style={{ display: "grid", gap: T.gap, gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))" }}>
+            <div style={{ display: "grid", gap: 16, gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))" }}>
               <Kort pad="20px">
                 <Caps size={9} style={{ marginBottom: 12 }}>
                   Inndata · Velger · Tekst
@@ -298,7 +299,7 @@ export function DesignLabV2() {
                     <Inndata label={null} defaultValue="4,2" mono />
                   </SkjemaFelt>
                 </div>
-                <p style={{ fontFamily: T.ui, fontSize: 12.5, color: T.mut, margin: "14px 0 0", lineHeight: 1.5 }}>
+                <p style={{ fontFamily: TL.font.sans, fontSize: 12.5, color: TL.mute, margin: "14px 0 0", lineHeight: 1.5 }}>
                   Radius input 12 · touch ≥ 44px · feil = --v2-down · primær on = forest i lys / lime i mørk.
                 </p>
               </Kort>
@@ -322,8 +323,8 @@ export function DesignLabV2() {
         <Seksjon
           tittel="KPI / tall · eksempel (ikke produksjonsdata)"
           barn={
-            <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
-              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: T.gap }}>
+            <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: 16 }}>
                 <KpiFlis label="Eksempel SG total" value={0.4} delta="+0,2" dir="up" instant />
                 <KpiFlis label="Eksempel SG putting" value={-0.3} delta="−0,1" dir="down" instant />
                 <KpiFlis label="Mangler data" value={null} />
@@ -343,7 +344,7 @@ export function DesignLabV2() {
                 <Caps size={9}>Delta</Caps>
                 <DeltaChip v="+0,4" dir="up" />
                 <DeltaChip v="−0,3" dir="down" />
-                <span style={{ fontFamily: T.mono, fontSize: 12, color: T.mut }}>tom = {fmtTall(null)}</span>
+                <span style={{ fontFamily: TL.font.mono, fontSize: 12, color: TL.mute }}>tom = {fmtTall(null)}</span>
               </div>
             </div>
           }
@@ -366,8 +367,8 @@ export function DesignLabV2() {
         <Seksjon
           tittel="Overlays · nav (Fase 7 / reg-test)"
           barn={
-            <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
-              <p style={{ fontFamily: T.ui, fontSize: 12.5, color: T.mut, margin: 0, lineHeight: 1.5 }}>
+            <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+              <p style={{ fontFamily: TL.font.sans, fontSize: 12.5, color: TL.mute, margin: 0, lineHeight: 1.5 }}>
                 Paper-port steg 5B: modal/popover r12, ark-topp r12, lukk ≥ 44px (skuff 32px/r-sm), dialog-roller, toast/banner a11y. AgencyOS — aldri CoachHQ.
               </p>
               <div style={{ overflowX: "auto" }}>
@@ -385,7 +386,7 @@ export function DesignLabV2() {
               </div>
               <Kort pad="16px">
                 <Caps size={9}>Reg-sjekk</Caps>
-                <ul style={{ fontFamily: T.ui, fontSize: 13, color: T.fg2, lineHeight: 1.65, margin: "10px 0 0", paddingLeft: 18 }}>
+                <ul style={{ fontFamily: TL.font.sans, fontSize: 13, color: TL.mute, lineHeight: 1.65, margin: "10px 0 0", paddingLeft: 18 }}>
                   <li>Lys CTA = forest (lime-token remappet)</li>
                   <li>Mørk: én primær lime per flate</li>
                   <li>Delta = up/down · tom tall = —</li>
@@ -400,27 +401,27 @@ export function DesignLabV2() {
           tittel="Produktflater · Fase 3"
           barn={
             <Kort pad="20px">
-              <p style={{ fontFamily: T.ui, fontSize: 13.5, color: T.fg2, margin: 0, lineHeight: 1.55 }}>
+              <p style={{ fontFamily: TL.font.sans, fontSize: 13.5, color: TL.mute, margin: 0, lineHeight: 1.55 }}>
                 Speil av Open Design workbench-unified / player-plan. Ruter (krever innlogging):
               </p>
-              <ul style={{ fontFamily: T.ui, fontSize: 13, color: T.fg, lineHeight: 1.7, margin: "12px 0 0", paddingLeft: 18 }}>
+              <ul style={{ fontFamily: TL.font.sans, fontSize: 13, color: TL.text, lineHeight: 1.7, margin: "12px 0 0", paddingLeft: 18 }}>
                 <li>
                   <strong>AgencyOS cockpit</strong> —{" "}
-                  <code style={{ fontFamily: T.mono, fontSize: 12 }}>/admin/agencyos</code>
+                  <code style={{ fontFamily: TL.font.mono, fontSize: 12 }}>/admin/agencyos</code>
                   {" · "}LiveBar + OktKort (dagens timer)
                 </li>
                 <li>
                   <strong>PlayerHQ uke</strong> —{" "}
-                  <code style={{ fontFamily: T.mono, fontSize: 12 }}>/portal/planlegge</code>
+                  <code style={{ fontFamily: TL.font.mono, fontSize: 12 }}>/portal/planlegge</code>
                   {" · "}OktKort for dagens økter + én primær CTA
                 </li>
                 <li>
                   <strong>Coach workbench</strong> —{" "}
-                  <code style={{ fontFamily: T.mono, fontSize: 12 }}>/admin/spillere/[id]/workbench</code>
+                  <code style={{ fontFamily: TL.font.mono, fontSize: 12 }}>/admin/spillere/[id]/workbench</code>
                   {" · "}chrome med AgencyOS-label, 44px kontroller
                 </li>
               </ul>
-              <p style={{ fontFamily: T.ui, fontSize: 12.5, color: T.mut, margin: "14px 0 0", lineHeight: 1.5 }}>
+              <p style={{ fontFamily: TL.font.sans, fontSize: 12.5, color: TL.mute, margin: "14px 0 0", lineHeight: 1.5 }}>
                 Domain top 5 (over) er byggeklossene. Full grid-paritet er later waves.
               </p>
             </Kort>
@@ -430,8 +431,8 @@ export function DesignLabV2() {
         <Seksjon
           tittel="Domain top 5 · eksempel (ikke produksjonsdata)"
           barn={
-            <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
-              <p style={{ fontFamily: T.ui, fontSize: 12.5, color: T.mut, margin: 0, lineHeight: 1.5 }}>
+            <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+              <p style={{ fontFamily: TL.font.sans, fontSize: 12.5, color: TL.mute, margin: 0, lineHeight: 1.5 }}>
                 Parity mot Open Design familie-domain. Alle tall er lab-eksempel.
               </p>
               <SpillerKort
@@ -472,8 +473,8 @@ export function DesignLabV2() {
                 state="done"
                 meta="I går · green · 3 drills · eksempel"
                 footerTall={
-                  <span style={{ fontFamily: T.mono, fontSize: 12, color: T.fg2 }}>
-                    Adherence <b style={{ color: T.up }}>92 %</b>
+                  <span style={{ fontFamily: TL.font.mono, fontSize: 12, color: TL.mute }}>
+                    Adherence <b style={{ color: TL.ok }}>92 %</b>
                   </span>
                 }
                 ctaGhost="Se logg"
@@ -490,7 +491,7 @@ export function DesignLabV2() {
         <Seksjon
           tittel="Domain-kjerne · status-tag, liste-rad, metric strip"
           barn={
-            <div style={{ display: "grid", gap: T.gap }}>
+            <div style={{ display: "grid", gap: 16 }}>
               <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
                 <Tag tone="lime">Status</Tag>
                 <Tag tone="up">I rute</Tag>
@@ -510,7 +511,7 @@ export function DesignLabV2() {
                   title="Uten meta"
                   sub={`Tom tall: ${fmtTall(null)}`}
                   trailing={
-                    <span style={{ fontFamily: T.mono, fontSize: 14, fontWeight: 700, color: T.fg, fontVariantNumeric: "tabular-nums" }}>
+                    <span style={{ fontFamily: TL.font.mono, fontSize: 14, fontWeight: 700, color: TL.text, fontVariantNumeric: "tabular-nums" }}>
                       {fmtTall(null)}
                     </span>
                   }
@@ -524,8 +525,8 @@ export function DesignLabV2() {
                   sub="EmptyState inne i liste-seksjon — anbefaler, sperrer ikke."
                 />
               </Kort>
-              <p style={{ fontFamily: T.ui, fontSize: 12.5, color: T.mut, margin: 0, lineHeight: 1.5 }}>
-                Metric strip: se StatStrip over. Radius: tag 8 · rad 12 · kort 20 · sheet {T.rSheet}.
+              <p style={{ fontFamily: TL.font.sans, fontSize: 12.5, color: TL.mute, margin: 0, lineHeight: 1.5 }}>
+                Metric strip: se StatStrip over. Radius: tag 8 · rad 12 · kort 20 · sheet {TL.radius.sheet}.
               </p>
             </div>
           }
@@ -534,8 +535,8 @@ export function DesignLabV2() {
         <Seksjon
           tittel="Kalender · Fase 8 (eksempel)"
           barn={
-            <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
-              <p style={{ fontFamily: T.ui, fontSize: 12.5, color: T.mut, margin: 0, lineHeight: 1.5 }}>
+            <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+              <p style={{ fontFamily: TL.font.sans, fontSize: 12.5, color: TL.mute, margin: 0, lineHeight: 1.5 }}>
                 Parity mot Open Design familie-calendar. Alle datoer/økter er lab-eksempel.
               </p>
               <VisningsVelger periode="Uke 28 · juli 2026 · eksempel" />
@@ -564,13 +565,13 @@ export function DesignLabV2() {
         <Seksjon
           tittel="Golfdata · SG · Fase 9 (eksempel)"
           barn={
-            <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
-              <p style={{ fontFamily: T.ui, fontSize: 12.5, color: T.mut, margin: 0, lineHeight: 1.5 }}>
+            <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+              <p style={{ fontFamily: TL.font.sans, fontSize: 12.5, color: TL.mute, margin: 0, lineHeight: 1.5 }}>
                 Parity mot familie-golfdata / familie-data. Tall er lab-eksempel — ikke produksjons-KPI.
               </p>
               <SgTotal />
               <SgKategorier />
-              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: T.gap }}>
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: 16 }}>
                 <Kort pad="16px">
                   <Caps size={9}>Progresjon · eksempel</Caps>
                   <div style={{ marginTop: 12 }}>
@@ -581,7 +582,7 @@ export function DesignLabV2() {
                   <Caps size={9}>Mini-spark · eksempel</Caps>
                   <div style={{ marginTop: 12, display: "flex", alignItems: "center", gap: 12 }}>
                     <MiniSpark verdier={[0.2, -0.1, 0.4, 0.3, 0.8, 0.5, 1.1]} />
-                    <span style={{ fontFamily: T.mono, fontSize: 12, color: T.fg2 }}>SG trend</span>
+                    <span style={{ fontFamily: TL.font.mono, fontSize: 12, color: TL.mute }}>SG trend</span>
                   </div>
                 </Kort>
               </div>
@@ -597,12 +598,12 @@ export function DesignLabV2() {
         <Seksjon
           tittel="TrackMan · Fase 10 (eksempel)"
           barn={
-            <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
-              <p style={{ fontFamily: T.ui, fontSize: 12.5, color: T.mut, margin: 0, lineHeight: 1.5 }}>
+            <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+              <p style={{ fontFamily: TL.font.sans, fontSize: 12.5, color: TL.mute, margin: 0, lineHeight: 1.5 }}>
                 Parity mot familie-trackman. Plottene er SVG-demo med eksempeldata.
               </p>
               <TrackmanSammendrag />
-              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: T.gap }}>
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: 16 }}>
                 <KolleStatKort />
                 <LaunchWindow />
               </div>
@@ -625,8 +626,8 @@ export function DesignLabV2() {
         <Seksjon
           tittel="Feedback · struktur · Bølge 11 (eksempel)"
           barn={
-            <div style={{ display: "grid", gap: T.gap }}>
-              <p style={{ fontFamily: T.ui, fontSize: 12.5, color: T.mut, margin: 0, lineHeight: 1.5 }}>
+            <div style={{ display: "grid", gap: 16 }}>
+              <p style={{ fontFamily: TL.font.sans, fontSize: 12.5, color: TL.mute, margin: 0, lineHeight: 1.5 }}>
                 Parity mot Open Design familie-feedback + familie-structure. Alle tall er lab-eksempel.
                 Lime-jobben i AI-tipset er merket og nøkkeltallet — handlingen er forest.
               </p>
@@ -694,7 +695,7 @@ export function DesignLabV2() {
                   <div style={{ display: "flex", alignItems: "center", gap: 12, flexWrap: "wrap" }}>
                     <ValideringsChip tone="advarsel" tekst="Uke over anbefalt volum — anbefaling, ikke sperre" />
                     <Skilje retning="loddrett" />
-                    <span style={{ display: "inline-flex", alignItems: "center", gap: 6, fontFamily: T.ui, fontSize: 13.5, color: T.fg2 }}>
+                    <span style={{ display: "inline-flex", alignItems: "center", gap: 6, fontFamily: TL.font.sans, fontSize: 13.5, color: TL.mute }}>
                       Strokes Gained
                       <HjelpPopover />
                     </span>
@@ -703,7 +704,7 @@ export function DesignLabV2() {
                 </div>
               </Kort>
 
-              <div style={{ display: "grid", gap: T.gap, gridTemplateColumns: "repeat(auto-fit,minmax(280px,1fr))" }}>
+              <div style={{ display: "grid", gap: 16, gridTemplateColumns: "repeat(auto-fit,minmax(280px,1fr))" }}>
                 <Trekkspill />
                 <Skjelett />
               </div>
@@ -715,8 +716,8 @@ export function DesignLabV2() {
           tittel="Port-status · resterende"
           barn={
             <Kort pad="20px">
-              <p style={{ fontFamily: T.ui, fontSize: 13.5, color: T.fg2, margin: 0, lineHeight: 1.55 }}>
-                Plan: <code style={{ fontFamily: T.mono, fontSize: 12 }}>docs/design-system/plan-resterende-port.md</code>
+              <p style={{ fontFamily: TL.font.sans, fontSize: 13.5, color: TL.mute, margin: 0, lineHeight: 1.55 }}>
+                Plan: <code style={{ fontFamily: TL.font.mono, fontSize: 12 }}>docs/design-system/plan-resterende-port.md</code>
               </p>
               <ul style={{ listStyle: "none", margin: "12px 0 0", padding: 0, display: "grid", gap: 7 }}>
                 {[
@@ -726,11 +727,11 @@ export function DesignLabV2() {
                   { ferdig: false, tekst: "Bølge 12: dypere produktflater (admin-kalender, SG, TM live)" },
                   { ferdig: false, tekst: "Bølge 13–14: marketing polish + hardening" },
                 ].map((r) => (
-                  <li key={r.tekst} style={{ display: "flex", alignItems: "flex-start", gap: 9, fontFamily: T.ui, fontSize: 13, lineHeight: 1.5, color: r.ferdig ? T.fg2 : T.fg }}>
+                  <li key={r.tekst} style={{ display: "flex", alignItems: "flex-start", gap: 9, fontFamily: TL.font.sans, fontSize: 13, lineHeight: 1.5, color: r.ferdig ? TL.mute : TL.text }}>
                     <Icon
                       name={r.ferdig ? "check-circle" : "circle"}
                       size={15}
-                      style={{ color: r.ferdig ? T.up : T.mut, flex: "none", marginTop: 2 }}
+                      style={{ color: r.ferdig ? TL.ok : TL.mute, flex: "none", marginTop: 2 }}
                     />
                     {r.tekst}
                   </li>

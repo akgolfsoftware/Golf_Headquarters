@@ -1,5 +1,5 @@
 "use client";
-
+import { TL } from "@/lib/v2/train-lock";
 /**
  * PlayerHQ · Mål-detalj — v2 Presis + B-pakke (status + én primær CTA, tom = vei).
  * T.* only. Lys PlayerHQ.
@@ -7,33 +7,12 @@
 
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import {
-  T,
-  Caps,
-  Tittel,
-  Kort,
-  Knapp,
-  StatusPill,
-  ProgresjonsBar,
-  NivaStige,
-  Inndata,
-  Velger,
-  TekstOmraade,
-  FilterChips,
-  HjelpTips,
-  TomTilstand,
-} from "@/components/v2";
+import { Caps, Kort, Knapp, StatusPill, ProgresjonsBar, NivaStige, Inndata, Velger, TekstOmraade, FilterChips, HjelpTips, TomTilstand } from "@/components/v2";
 import { Icon } from "@/components/v2/icon";
-import {
-  avbrytGoal,
-  endreGoal,
-  markeerGoalSomOppnaadd,
-  type GoalInput,
-} from "@/app/portal/(legacy)/mal/goals-actions";
+import { avbrytGoal, endreGoal, markeerGoalSomOppnaadd, type GoalInput } from "@/app/portal/(legacy)/mal/goals-actions";
 import { PYR_REKKEFOLGE, PYR_LABEL } from "@/lib/pyramide";
 import type { PyramidArea } from "@/generated/prisma/client";
 import { SG_OMRADER, SG_OMRADE_NAVN, erSgOmrade } from "@/lib/domain/maal-fremdrift";
-
 export type MalStigeTrinn = {
   code: string;
   label: string;
@@ -124,20 +103,20 @@ function ModalSkall({
       onClick={(e) => {
         if (e.target === e.currentTarget) onClose();
       }}
-      style={{ position: "fixed", inset: 0, zIndex: 90, display: "flex", alignItems: "center", justifyContent: "center", padding: "24px 16px", background: T.farge.svartA55 }}
+      style={{ position: "fixed", inset: 0, zIndex: 90, display: "flex", alignItems: "center", justifyContent: "center", padding: "24px 16px", background: TL.scrim }}
     >
-      <div className="v2-sheet-in" style={{ width: "100%", maxWidth: 440, background: T.panel, border: `1px solid ${T.borderS}`, borderRadius: 20, padding: "20px 22px", boxShadow: `0 24px 60px ${T.farge.svartA50}`, maxHeight: "86vh", overflowY: "auto" }}>
+      <div className="v2-sheet-in" style={{ width: "100%", maxWidth: 440, background: TL.elev, border: `1px solid ${TL.hair}`, borderRadius: 20, padding: "20px 22px", boxShadow: "none", maxHeight: "86vh", overflowY: "auto" }}>
         <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 12 }}>
           <div>
             <Caps size={9}>{eyebrow}</Caps>
-            <h2 style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 19, letterSpacing: "-0.02em", color: T.fg, margin: "6px 0 0", lineHeight: 1.2 }}>{tittel}</h2>
+            <h2 style={{ fontFamily: TL.font.sans, fontWeight: 700, fontSize: 19, letterSpacing: "-0.02em", color: TL.text, margin: "6px 0 0", lineHeight: 1.2 }}>{tittel}</h2>
           </div>
           <button
             type="button"
             aria-label="Lukk"
             onClick={onClose}
             className="v2-press v2-focus"
-            style={{ appearance: "none", width: 28, height: 28, borderRadius: 8, background: T.panel2, border: `1px solid ${T.border}`, display: "inline-flex", alignItems: "center", justifyContent: "center", cursor: "pointer", flex: "none", color: T.fg2 }}
+            style={{ appearance: "none", width: 28, height: 28, borderRadius: 8, background: TL.dock, border: `1px solid ${TL.hair}`, display: "inline-flex", alignItems: "center", justifyContent: "center", cursor: "pointer", flex: "none", color: TL.mute }}
           >
             <Icon name="x" size={14} />
           </button>
@@ -276,7 +255,7 @@ function EndreModal({
         {erSg && (
           <div>
             <Velger label="SG-område" options={SG_OMRADE_VALG} value={sgOmrade} onChange={setSgOmrade} />
-            <p style={{ fontFamily: T.ui, fontSize: 11.5, color: T.mut, lineHeight: 1.55, margin: "8px 0 0" }}>
+            <p style={{ fontFamily: TL.font.sans, fontSize: 11.5, color: TL.mute, lineHeight: 1.55, margin: "8px 0 0" }}>
               {manglerOmrade
                 ? "Velg område — uten det kan ikke fremdriften måles mot rundene dine."
                 : "Fremdriften måles fra din SG i området nå og frem mot målverdien."}
@@ -328,15 +307,15 @@ function FeireModal({
   return (
     <ModalSkall eyebrow="Gratulerer" tittel="Mål oppnådd" onClose={onClose}>
       <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 14, textAlign: "center", padding: "18px 0 4px" }}>
-        <span style={{ width: 64, height: 64, borderRadius: 9999, background: `color-mix(in srgb, ${T.lime} 12%, transparent)`, display: "inline-flex", alignItems: "center", justifyContent: "center" }}>
-          <Icon name="trophy" size={28} style={{ color: T.lime }} />
+        <span style={{ width: 64, height: 64, borderRadius: 9999, background: `color-mix(in srgb, ${TL.fill} 12%, transparent)`, display: "inline-flex", alignItems: "center", justifyContent: "center" }}>
+          <Icon name="trophy" size={28} style={{ color: TL.fill }} />
         </span>
         <div>
           <Caps size={9}>Du markerer at du har nådd</Caps>
-          <p style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 18, color: T.fg, margin: "8px 0 0", lineHeight: 1.3 }}>
+          <p style={{ fontFamily: TL.font.sans, fontWeight: 700, fontSize: 18, color: TL.text, margin: "8px 0 0", lineHeight: 1.3 }}>
             «{tittel}»
           </p>
-          <p style={{ fontFamily: T.ui, fontSize: 12.5, color: T.mut, lineHeight: 1.6, margin: "8px 0 0" }}>
+          <p style={{ fontFamily: TL.font.sans, fontSize: 12.5, color: TL.mute, lineHeight: 1.6, margin: "8px 0 0" }}>
             Målet flyttes til arkivet og coach blir varslet. Du kan se det igjen under «Oppnådde mål».
           </p>
         </div>
@@ -371,9 +350,9 @@ function AvbrytModal({
   return (
     <ModalSkall eyebrow="Mål · Avbryt" tittel="Avbryt mål" onClose={onClose}>
       <div style={{ display: "flex", flexDirection: "column", gap: 14, marginTop: 14 }}>
-        <p style={{ fontFamily: T.ui, fontSize: 13, color: T.fg2, lineHeight: 1.6, margin: 0 }}>
+        <p style={{ fontFamily: TL.font.sans, fontSize: 13, color: TL.mute, lineHeight: 1.6, margin: 0 }}>
           Er du sikker på at du vil avbryte{" "}
-          <span style={{ color: T.fg, fontWeight: 600 }}>«{tittel}»</span>? Målet
+          <span style={{ color: TL.text, fontWeight: 600 }}>«{tittel}»</span>? Målet
           beholdes i historikken, men markeres som avbrutt.
         </p>
         <div>
@@ -414,33 +393,33 @@ export function MalDetaljV2({ data, testOptions = [] }: { data: MalDetaljV2Data;
     (data.linkedTestName ? `Test: ${data.linkedTestName}` : null);
 
   return (
-    <div data-paper-wave-g="maldetalj" data-paper-pattern style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
+    <div data-paper-wave-g="maldetalj" data-paper-pattern style={{ display: "flex", flexDirection: "column", gap: 16, maxWidth: 720, margin: "0 auto", width: "100%" }}>
       {/* Header */}
       <div>
         <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
-          <Caps color={T.handling}>{data.typeLabel}</Caps>
+          <Caps color={TL.fill}>{data.typeLabel}</Caps>
           {data.goalType === "HCP_TARGET" && <HjelpTips k="hcp" size={12} />}
           {data.goalType === "SG_AREA" && <HjelpTips k="sgOmrade" size={12} />}
         </span>
         <div style={{ marginTop: 10 }}>
           <div data-paper-pattern-topp>
-        <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>Mål</h1>
-        <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>Detalj</span>
+        <h1 style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 17, fontWeight: 600, color: TL.text }}>Mål</h1>
+        <span style={{ display: "block", fontFamily: TL.font.mono, fontSize: 10.5, color: TL.mute, marginTop: 2 }}>Detalj</span>
       </div>
         </div>
         {data.fristTekst && (
-          <p style={{ fontFamily: T.ui, fontSize: 12.5, color: T.mut, margin: "10px 0 0" }}>
+          <p style={{ fontFamily: TL.font.sans, fontSize: 12.5, color: TL.mute, margin: "10px 0 0" }}>
             Frist: {data.fristTekst}
             {data.etaUker != null && ` · ETA: ~${data.etaUker} uker`}
           </p>
         )}
         {data.status === "ACHIEVED" && data.achievedAtTekst && (
-          <p style={{ fontFamily: T.mono, fontSize: 11, color: T.up, margin: "6px 0 0", textTransform: "uppercase", letterSpacing: "0.04em" }}>
+          <p style={{ fontFamily: TL.font.mono, fontSize: 11, color: TL.ok, margin: "6px 0 0", textTransform: "uppercase", letterSpacing: "0.04em" }}>
             Oppnådd {data.achievedAtTekst}
           </p>
         )}
         {koblingTekst && (
-          <p style={{ fontFamily: T.ui, fontSize: 12, color: T.mut, margin: "6px 0 0" }}>
+          <p style={{ fontFamily: TL.font.sans, fontSize: 12, color: TL.mute, margin: "6px 0 0" }}>
             Koblet til: {koblingTekst}
           </p>
         )}
@@ -451,17 +430,17 @@ export function MalDetaljV2({ data, testOptions = [] }: { data: MalDetaljV2Data;
         {data.hasData ? (
           <>
             <div style={{ display: "flex", alignItems: "baseline", gap: 10, flexWrap: "wrap" }}>
-              <span style={{ fontFamily: T.mono, fontSize: 36, fontWeight: 700, color: T.fg, lineHeight: 0.9, fontVariantNumeric: "tabular-nums" }}>
+              <span style={{ fontFamily: TL.font.mono, fontSize: 36, fontWeight: 700, color: TL.text, lineHeight: 0.9, fontVariantNumeric: "tabular-nums" }}>
                 {fmtVerdi(data.naaVerdi)}
               </span>
-              <span style={{ fontFamily: T.mono, fontSize: 13, color: T.mut, fontVariantNumeric: "tabular-nums" }}>
+              <span style={{ fontFamily: TL.font.mono, fontSize: 13, color: TL.mute, fontVariantNumeric: "tabular-nums" }}>
                 / {fmtVerdi(data.maalVerdi)} {data.enhet}
               </span>
             </div>
             <div style={{ marginTop: 14 }}>
               <ProgresjonsBar variant="bar" value={Math.round(data.progressPct)} max={100} label="Av målet" />
             </div>
-            <span style={{ fontFamily: T.ui, fontSize: 11.5, color: T.mut, marginTop: 8, display: "block" }}>
+            <span style={{ fontFamily: TL.font.sans, fontSize: 11.5, color: TL.mute, marginTop: 8, display: "block" }}>
               {data.fremdriftTekst}
             </span>
           </>
@@ -469,7 +448,7 @@ export function MalDetaljV2({ data, testOptions = [] }: { data: MalDetaljV2Data;
           <TomTilstand icon="target" title="Ingen data ennå" sub={data.fremdriftTekst} />
         )}
         {data.dagerIgjen != null && (
-          <span style={{ fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 8, display: "block" }}>
+          <span style={{ fontFamily: TL.font.mono, fontSize: 10.5, color: TL.mute, marginTop: 8, display: "block" }}>
             {data.dagerIgjen} dager igjen
           </span>
         )}
@@ -489,7 +468,7 @@ export function MalDetaljV2({ data, testOptions = [] }: { data: MalDetaljV2Data;
       {/* Avbrutt-grunn */}
       {data.status === "ABANDONED" && data.avbruttGrunn && (
         <Kort eyebrow="Årsak">
-          <p style={{ fontFamily: T.ui, fontSize: 13, color: T.fg2, lineHeight: 1.6, margin: 0 }}>
+          <p style={{ fontFamily: TL.font.sans, fontSize: 13, color: TL.mute, lineHeight: 1.6, margin: 0 }}>
             {data.avbruttGrunn}
           </p>
         </Kort>

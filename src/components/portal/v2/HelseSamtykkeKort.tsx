@@ -1,4 +1,5 @@
 "use client";
+import { TL } from "@/lib/v2/train-lock";
 
 /**
  * Samtykke til helsedata — GDPR art. 9-2 a.
@@ -15,12 +16,9 @@
  */
 
 import { useState, useTransition } from "react";
-import { T, Kort, Icon, StatusPill } from "@/components/v2";
+import { Kort, Icon, StatusPill } from "@/components/v2";
 import { Bryter } from "@/components/v2/skjema";
-import {
-  HELSE_SAMTYKKE_TEKST,
-  type HelseSamtykkeType,
-} from "@/lib/health/samtykke-regler";
+import { HELSE_SAMTYKKE_TEKST, type HelseSamtykkeType } from "@/lib/health/samtykke-regler";
 import { settEgetHelseSamtykke } from "@/app/portal/meg/innstillinger/personvern/helse-samtykke-actions";
 
 export type HelseSamtykkeKortData = {
@@ -59,13 +57,13 @@ function Punktliste({ punkter }: { punkter: string[] }) {
           <Icon
             name="check"
             size={12}
-            style={{ color: T.mut, marginTop: 3, flex: "none" }}
+            style={{ color: TL.mute, marginTop: 3, flex: "none" }}
           />
           <span
             style={{
-              fontFamily: T.ui,
+              fontFamily: TL.font.sans,
               fontSize: 12,
-              color: T.fg2,
+              color: TL.mute,
               lineHeight: 1.5,
             }}
           >
@@ -93,7 +91,7 @@ function Samtykkebryter({
 }) {
   const tekst = HELSE_SAMTYKKE_TEKST[type];
   return (
-    <div style={{ marginTop: 16, paddingTop: 16, borderTop: `1px solid ${T.border}` }}>
+    <div style={{ marginTop: 16, paddingTop: 16, borderTop: `1px solid ${TL.hair}` }}>
       <Bryter
         label={tekst.tittel}
         sub={tekst.forklaring}
@@ -191,15 +189,15 @@ export function HelseSamtykkeKort({ data }: { data: HelseSamtykkeKortData }) {
             width: 40,
             height: 40,
             borderRadius: 12,
-            background: T.panel3,
-            border: `1px solid ${T.border}`,
+            background: TL.dim,
+            border: `1px solid ${TL.hair}`,
             display: "inline-flex",
             alignItems: "center",
             justifyContent: "center",
             flex: "none",
           }}
         >
-          <Icon name="heart" size={16} style={{ color: T.fg2 }} />
+          <Icon name="heart" size={16} style={{ color: TL.mute }} />
         </span>
         <div style={{ minWidth: 0, flex: 1 }}>
           <div
@@ -212,10 +210,10 @@ export function HelseSamtykkeKort({ data }: { data: HelseSamtykkeKortData }) {
           >
             <span
               style={{
-                fontFamily: T.disp,
+                fontFamily: TL.font.sans,
                 fontSize: 16,
                 fontWeight: 700,
-                color: T.fg,
+                color: TL.text,
                 letterSpacing: "-0.02em",
               }}
             >
@@ -227,9 +225,9 @@ export function HelseSamtykkeKort({ data }: { data: HelseSamtykkeKortData }) {
           </div>
           <p
             style={{
-              fontFamily: T.ui,
+              fontFamily: TL.font.sans,
               fontSize: 13,
-              color: T.fg2,
+              color: TL.mute,
               margin: "6px 0 0",
               lineHeight: 1.5,
             }}
@@ -250,20 +248,20 @@ export function HelseSamtykkeKort({ data }: { data: HelseSamtykkeKortData }) {
             marginTop: 14,
             padding: "11px 13px",
             borderRadius: 12,
-            background: T.panel2,
-            border: `1px solid ${T.border}`,
+            background: TL.dock,
+            border: `1px solid ${TL.hair}`,
           }}
         >
           <Icon
             name="shield"
             size={15}
-            style={{ color: T.mut, flex: "none", marginTop: 1 }}
+            style={{ color: TL.mute, flex: "none", marginTop: 1 }}
           />
           <span
             style={{
-              fontFamily: T.ui,
+              fontFamily: TL.font.sans,
               fontSize: 12.5,
-              color: T.fg2,
+              color: TL.mute,
               lineHeight: 1.5,
             }}
           >
@@ -286,17 +284,17 @@ export function HelseSamtykkeKort({ data }: { data: HelseSamtykkeKortData }) {
         style={{
           marginTop: 14,
           paddingTop: 12,
-          borderTop: `1px solid ${T.border}`,
-          fontFamily: T.ui,
+          borderTop: `1px solid ${TL.hair}`,
+          fontFamily: TL.font.sans,
           fontSize: 11.5,
-          color: feil ? T.down : lagret ? T.up : T.mut,
+          color: feil ? TL.danger : lagret ? TL.ok : TL.mute,
           display: "flex",
           alignItems: "center",
           gap: 6,
         }}
       >
         {lagret && !feil && (
-          <Icon name="check-circle" size={13} style={{ color: T.up }} />
+          <Icon name="check-circle" size={13} style={{ color: TL.ok }} />
         )}
         <span>
           {pending

@@ -27,7 +27,8 @@
 
 import Link from "next/link";
 import { AlertTriangle, ArrowRight, Bot } from "lucide-react";
-import { T } from "@/lib/v2/tokens";
+import { TL } from "@/lib/v2/train-lock";
+
 import { Caps, Tittel, Kort, Rad, StatusPill, TomTilstand, Icon } from "@/components/v2";
 import { useErMobil } from "@/components/portal/v2/chat/ArtefaktPanel";
 
@@ -108,9 +109,9 @@ function IkonFlis() {
         display: "grid",
         placeItems: "center",
         borderRadius: 10,
-        background: T.panel2,
-        border: `1px solid ${T.border}`,
-        color: T.fg2,
+        background: TL.dock,
+        border: `1px solid ${TL.hair}`,
+        color: TL.mute,
       }}
     >
       <Bot size={16} strokeWidth={1.5} />
@@ -141,11 +142,11 @@ function KpiCell({
       <span
         style={{
           display: "block",
-          fontFamily: T.mono,
+          fontFamily: TL.font.mono,
           fontSize: "clamp(24px, 2.4vw, 28px)",
           fontWeight: 600,
           letterSpacing: "-0.03em",
-          color: T.fg,
+          color: TL.text,
           lineHeight: 1,
           marginTop: 12,
           fontVariantNumeric: "tabular-nums",
@@ -154,7 +155,7 @@ function KpiCell({
         {value}
       </span>
       {sub && (
-        <span style={{ display: "block", fontFamily: T.ui, fontSize: 11.5, color: T.mut, marginTop: 8 }}>{sub}</span>
+        <span style={{ display: "block", fontFamily: TL.font.sans, fontSize: 11.5, color: TL.mute, marginTop: 8 }}>{sub}</span>
       )}
     </Kort>
   );
@@ -172,11 +173,11 @@ function AgentfeilVarsel({ feilende }: { feilende: { navn: string; detaljHref: s
   if (feilende.length === 0) return null;
   return (
     <Kort
-      style={{ borderColor: T.down, boxShadow: `inset 3px 0 0 ${T.down}` }}
+      style={{ borderColor: TL.danger, boxShadow: `inset 3px 0 0 ${TL.danger}` }}
       eyebrow={feilende.length === 1 ? "1 agent feiler" : `${feilende.length} agenter feiler`}
-      action={<AlertTriangle size={16} color={T.down} strokeWidth={1.5} />}
+      action={<AlertTriangle size={16} color={TL.danger} strokeWidth={1.5} />}
     >
-      <p style={{ fontFamily: T.ui, fontSize: 12.5, color: T.mut, margin: "0 0 10px" }}>
+      <p style={{ fontFamily: TL.font.sans, fontSize: 12.5, color: TL.mute, margin: "0 0 10px" }}>
         Minst én kjøring har feilet i de siste 30 dagene. Godkjente forslag fra tidligere kjøringer
         står fortsatt i køen — ingenting er rørt uten deg.
       </p>
@@ -189,15 +190,15 @@ function AgentfeilVarsel({ feilende }: { feilende: { navn: string; detaljHref: s
               display: "flex",
               alignItems: "center",
               gap: 8,
-              fontFamily: T.ui,
+              fontFamily: TL.font.sans,
               fontSize: 12.5,
-              color: T.fg,
+              color: TL.text,
               textDecoration: "none",
             }}
           >
             <StatusPill tone="down">Feil</StatusPill>
             {a.navn}
-            <ArrowRight size={13} style={{ marginLeft: "auto", color: T.mut }} />
+            <ArrowRight size={13} style={{ marginLeft: "auto", color: TL.mute }} />
           </Link>
         ))}
       </div>
@@ -228,9 +229,9 @@ function DriftPanel({ data }: { data: AgenticosHubData }) {
 
       <Kort eyebrow="AI-kost" pad="16px">
         {data.aiKost.kall7d === 0 ? (
-          <p style={{ fontFamily: T.ui, fontSize: 12, color: T.mut, margin: 0, lineHeight: 1.6 }}>
+          <p style={{ fontFamily: TL.font.sans, fontSize: 12, color: TL.mute, margin: 0, lineHeight: 1.6 }}>
             Ingen kostdata siste 7 dager. Tabellene er på plass — agentene logger kall via{" "}
-            <code style={{ fontFamily: T.mono, fontSize: 11, background: T.panel2, padding: "1px 4px", borderRadius: 4 }}>
+            <code style={{ fontFamily: TL.font.mono, fontSize: 11, background: TL.dock, padding: "1px 4px", borderRadius: 4 }}>
               registrerAiKost
             </code>{" "}
             etter hvert som de kobles på.
@@ -242,7 +243,7 @@ function DriftPanel({ data }: { data: AgenticosHubData }) {
               <KpiCell label="Kost 7 d" value={usd(data.aiKost.kost7dUsd)} sub={pl(data.aiKost.kall7d, "kall", "kall")} />
             </div>
             {data.aiKost.kallUtenPris7d > 0 && (
-              <p style={{ fontFamily: T.ui, fontSize: 11, color: T.mut, margin: "8px 0 0", lineHeight: 1.5 }}>
+              <p style={{ fontFamily: TL.font.sans, fontSize: 11, color: TL.mute, margin: "8px 0 0", lineHeight: 1.5 }}>
                 {pl(data.aiKost.kallUtenPris7d, "kall mangler pris", "kall mangler pris")} — modellen er
                 ikke i katalogen, kosten er ikke medregnet.
               </p>
@@ -261,8 +262,8 @@ function DriftPanel({ data }: { data: AgenticosHubData }) {
       <Link href={data.godkjenningerHref} style={{ textDecoration: "none" }}>
         <Kort pad="14px 16px" hover>
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10 }}>
-            <span style={{ fontFamily: T.ui, fontSize: 13, fontWeight: 600, color: T.fg }}>Åpne godkjenningskøen</span>
-            <ArrowRight size={16} style={{ color: T.mut }} />
+            <span style={{ fontFamily: TL.font.sans, fontSize: 13, fontWeight: 600, color: TL.text }}>Åpne godkjenningskøen</span>
+            <ArrowRight size={16} style={{ color: TL.mute }} />
           </div>
         </Kort>
       </Link>
@@ -276,7 +277,7 @@ export function AdminAgenticosHubV2({ data }: { data: AgenticosHubData }) {
   // ── Tom-tilstand: ingen kjøringer i det hele tatt ──────────────
   if (data.runs.length === 0 && data.agenter.every((a) => a.status === "ingen-data")) {
     return (
-      <div data-paper-slug="agencyos-agenticos-hub" style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 640, margin: "0 auto" }}>
+      <div data-paper-slug="agencyos-agenticos-hub" style={{ display: "flex", flexDirection: "column", gap: 16, maxWidth: 640, margin: "0 auto" }}>
         <div>
           <Caps>AgencyOS · AgenticOS</Caps>
           <div style={{ marginTop: 8 }}>
@@ -293,7 +294,7 @@ export function AdminAgenticosHubV2({ data }: { data: AgenticosHubData }) {
             <div style={{ marginTop: 14 }}>
               <Link href={data.agenter[0].detaljHref} style={{ textDecoration: "none" }}>
                 <Kort hover pad="12px 16px">
-                  <span style={{ fontFamily: T.ui, fontSize: 13, fontWeight: 600, color: T.fg }}>Åpne en agent →</span>
+                  <span style={{ fontFamily: TL.font.sans, fontSize: 13, fontWeight: 600, color: TL.text }}>Åpne en agent →</span>
                 </Kort>
               </Link>
             </div>
@@ -309,14 +310,14 @@ export function AdminAgenticosHubV2({ data }: { data: AgenticosHubData }) {
       <div style={{ marginTop: 8 }}>
         <Tittel>AgenticOS</Tittel>
       </div>
-      <p style={{ fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 4 }}>
+      <p style={{ fontFamily: TL.font.mono, fontSize: 10.5, color: TL.mute, marginTop: 4 }}>
         agencyos · drift · nås fra «Mer» og ⌘K
       </p>
     </div>
   );
 
   const kpi = (
-    <div className="grid grid-cols-2 lg:grid-cols-4" style={{ gap: T.gap }}>
+    <div className="grid grid-cols-2 lg:grid-cols-4" style={{ gap: 16 }}>
       <KpiCell
         label="Registrerte agenter"
         value={data.kpi.registrerteAgenter}
@@ -343,7 +344,7 @@ export function AdminAgenticosHubV2({ data }: { data: AgenticosHubData }) {
   // wrap i Link i stedet for å bruke Rads onClick+router.push.
   const agentTabellMedLenker = (
     <Kort eyebrow="Agenter" action={<Caps size={9}>{pl(data.agenter.length, "registrert", "registrert")}</Caps>} pad="4px 20px">
-      <p style={{ fontFamily: T.ui, fontSize: 11.5, color: T.mut, margin: "10px 0" }}>
+      <p style={{ fontFamily: TL.font.sans, fontSize: 11.5, color: TL.mute, margin: "10px 0" }}>
         Statusen regnes fra kjøringene de siste 30 dagene: feil betyr minst én feilet kjøring i
         vinduet, ikke at agenten er nede.
       </p>
@@ -361,7 +362,7 @@ export function AdminAgenticosHubV2({ data }: { data: AgenticosHubData }) {
               title={a.navn}
               sub={`${a.trigger} · ${stats}`}
               meta={<AgentStatus status={a.status} />}
-              trailing={<Icon name="chevron-right" size={16} style={{ color: T.mut }} />}
+              trailing={<Icon name="chevron-right" size={16} style={{ color: TL.mute }} />}
               last={i === data.agenter.length - 1}
             />
           </Link>
@@ -384,7 +385,7 @@ export function AdminAgenticosHubV2({ data }: { data: AgenticosHubData }) {
             title={r.agentNavn}
             sub={r.naar}
             meta={
-              <span style={{ fontFamily: T.mono, fontSize: 11, fontWeight: 700, color: T.mut, fontVariantNumeric: "tabular-nums" }}>
+              <span style={{ fontFamily: TL.font.mono, fontSize: 11, fontWeight: 700, color: TL.mute, fontVariantNumeric: "tabular-nums" }}>
                 {(r.durationMs / 1000).toFixed(1).replace(".", ",")}&nbsp;s
               </span>
             }
@@ -397,19 +398,19 @@ export function AdminAgenticosHubV2({ data }: { data: AgenticosHubData }) {
 
   const rom = (
     <Kort eyebrow="Verktøy og rom" pad="4px 20px">
-      <p style={{ fontFamily: T.ui, fontSize: 11.5, color: T.mut, margin: "10px 0" }}>
+      <p style={{ fontFamily: TL.font.sans, fontSize: 11.5, color: TL.mute, margin: "10px 0" }}>
         Egne ruter som hører til drift — samleflaten er inngangen, ikke erstatningen.
       </p>
       {data.rom.map((r, i) => (
         <Link key={r.href} href={r.href} style={{ textDecoration: "none", color: "inherit", display: "block" }}>
-          <Rad title={r.navn} sub={r.meta} trailing={<Icon name="chevron-right" size={16} style={{ color: T.mut }} />} last={i === data.rom.length - 1} />
+          <Rad title={r.navn} sub={r.meta} trailing={<Icon name="chevron-right" size={16} style={{ color: TL.mute }} />} last={i === data.rom.length - 1} />
         </Link>
       ))}
     </Kort>
   );
 
   const hovedinnhold = (
-    <div style={{ display: "flex", flexDirection: "column", gap: T.gap, minWidth: 0 }}>
+    <div style={{ display: "flex", flexDirection: "column", gap: 16, minWidth: 0 }}>
       {hode}
       <AgentfeilVarsel feilende={data.feilendeAgenter} />
       {kpi}
@@ -421,7 +422,7 @@ export function AdminAgenticosHubV2({ data }: { data: AgenticosHubData }) {
 
   if (smal) {
     return (
-      <div data-paper-slug="agencyos-agenticos-hub" style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+      <div data-paper-slug="agencyos-agenticos-hub" style={{ display: "flex", flexDirection: "column", gap: 16 }}>
         {hovedinnhold}
         <DriftPanel data={data} />
       </div>
@@ -434,7 +435,7 @@ export function AdminAgenticosHubV2({ data }: { data: AgenticosHubData }) {
       style={{
         display: "grid",
         gridTemplateColumns: "minmax(0,1fr) 380px",
-        gap: T.gap,
+        gap: 16,
         alignItems: "start",
         minWidth: 0,
       }}

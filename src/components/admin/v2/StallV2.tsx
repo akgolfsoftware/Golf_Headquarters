@@ -1,5 +1,5 @@
 "use client";
-
+import { TL } from "@/lib/v2/train-lock";
 /**
  * AgencyOS Stall — v2 Presis + B-idé (tilstand 5s, én hovedhandling per spiller).
  * Ekte data loadStallen. Kun v2 / T.*. Standard mørk AgencyOS-chrome.
@@ -13,24 +13,7 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import {
-  Caps,
-  Kort,
-  Rad,
-  AvatarInit,
-  SevChip,
-  DeltaChip,
-  TallHero,
-  Trend,
-  AkseBar,
-  CTAPill,
-  TomTilstand,
-  BunnArk,
-  HjelpTips,
-  Icon,
-  T,
-  type SevKey,
-} from "@/components/v2";
+import { Caps, Kort, Rad, AvatarInit, SevChip, DeltaChip, TallHero, Trend, AkseBar, CTAPill, TomTilstand, BunnArk, HjelpTips, Icon, type SevKey } from "@/components/v2";
 import type { AkseKey } from "@/lib/v2/tokens";
 
 /** true på klient etter mount når viewport < 768px (M3-mobilvariant). */
@@ -145,15 +128,15 @@ function ProgramChip({
         borderRadius: 999,
         whiteSpace: "nowrap",
         cursor: "pointer",
-        fontFamily: T.ui,
+        fontFamily: TL.font.sans,
         fontSize: 12.5,
-        background: aktiv ? T.fg : T.panel,
-        color: aktiv ? T.bg : T.fg,
-        border: `1px solid ${aktiv ? T.fg : T.border}`,
+        background: aktiv ? TL.text : TL.elev,
+        color: aktiv ? TL.scene : TL.text,
+        border: `1px solid ${aktiv ? TL.text : TL.hair}`,
       }}
     >
       {navn}
-      <span style={{ fontFamily: T.mono, fontSize: 11, opacity: 0.7, fontVariantNumeric: "tabular-nums" }}>
+      <span style={{ fontFamily: TL.font.mono, fontSize: 11, opacity: 0.7, fontVariantNumeric: "tabular-nums" }}>
         {antall}
       </span>
     </button>
@@ -185,10 +168,10 @@ function SpillerRadEnkel({
             <Caps size={8}>SG total</Caps>
             <span
               style={{
-                fontFamily: T.mono,
+                fontFamily: TL.font.mono,
                 fontSize: 15,
                 fontWeight: 700,
-                color: s.sg.startsWith("+") ? T.up : s.sg.startsWith("−") || s.sg.startsWith("-") ? T.down : T.fg,
+                color: s.sg.startsWith("+") ? TL.ok : s.sg.startsWith("−") || s.sg.startsWith("-") ? TL.danger : TL.text,
                 fontVariantNumeric: "tabular-nums",
               }}
             >
@@ -199,7 +182,7 @@ function SpillerRadEnkel({
           <SevChip s={s.sev} />
         </span>
       }
-      trailing={valgt ? <span style={{ width: 2, height: 20, borderRadius: 2, background: T.handling, flex: "none" }} /> : undefined}
+      trailing={valgt ? <span style={{ width: 2, height: 20, borderRadius: 2, background: TL.fill, flex: "none" }} /> : undefined}
       last={last}
     />
   );
@@ -216,12 +199,12 @@ function SpillerSammendrag({ s }: { s: StallV2Player }) {
       <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
         <AvatarInit navn={s.navn} size={44} />
         <div style={{ minWidth: 0 }}>
-          <div style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 18, color: T.fg }}>{s.navn}</div>
-          <div style={{ fontFamily: T.ui, fontSize: 11.5, color: T.mut, marginTop: 2 }}>
+          <div style={{ fontFamily: TL.font.sans, fontWeight: 700, fontSize: 18, color: TL.text }}>{s.navn}</div>
+          <div style={{ fontFamily: TL.font.sans, fontSize: 11.5, color: TL.mute, marginTop: 2 }}>
             Hcp{" "}
-            <span style={{ fontFamily: T.mono, fontVariantNumeric: "tabular-nums" }}>{s.hcp}</span> · {s.gruppe} ·{" "}
-            <span style={{ color: s.pakkeAktiv ? T.fg2 : T.mut }}>{s.pakke}</span>
-            {s.skylder && <span style={{ color: T.down, fontWeight: 600 }}> · skylder</span>}
+            <span style={{ fontFamily: TL.font.mono, fontVariantNumeric: "tabular-nums" }}>{s.hcp}</span> · {s.gruppe} ·{" "}
+            <span style={{ color: s.pakkeAktiv ? TL.mute : TL.mute }}>{s.pakke}</span>
+            {s.skylder && <span style={{ color: TL.danger, fontWeight: 600 }}> · skylder</span>}
           </div>
         </div>
       </div>
@@ -354,11 +337,11 @@ export function StallV2({ data }: { data: StallV2Data }) {
           minHeight: 44,
           padding: "0 12px",
           borderRadius: 12,
-          background: T.panel,
-          border: `1px solid ${T.border}`,
+          background: TL.elev,
+          border: `1px solid ${TL.hair}`,
         }}
       >
-        <Icon name="search" size={15} style={{ color: T.mut, flex: "none" }} />
+        <Icon name="search" size={15} style={{ color: TL.mute, flex: "none" }} />
         <input
           type="search"
           value={sok}
@@ -374,9 +357,9 @@ export function StallV2({ data }: { data: StallV2Data }) {
             background: "transparent",
             border: "none",
             outline: "none",
-            fontFamily: T.ui,
+            fontFamily: TL.font.sans,
             fontSize: 13,
-            color: T.fg,
+            color: TL.text,
           }}
         />
         {sok !== "" && (
@@ -393,7 +376,7 @@ export function StallV2({ data }: { data: StallV2Data }) {
               padding: 4,
               cursor: "pointer",
               display: "inline-flex",
-              color: T.mut,
+              color: TL.mute,
             }}
           >
             <Icon name="x" size={14} />
@@ -443,9 +426,9 @@ export function StallV2({ data }: { data: StallV2Data }) {
               <div style={{ padding: "12px 0 8px" }}>
                 <div style={{ display: "flex", alignItems: "baseline", gap: 8 }}>
                   <Caps size={9}>{b.n}</Caps>
-                  <span style={{ fontFamily: T.mono, fontSize: 11, color: T.mut }}>{rader.length}</span>
+                  <span style={{ fontFamily: TL.font.mono, fontSize: 11, color: TL.mute }}>{rader.length}</span>
                 </div>
-                <p style={{ margin: "4px 0 0", fontFamily: T.ui, fontSize: 11.5, color: T.mut, lineHeight: 1.45 }}>
+                <p style={{ margin: "4px 0 0", fontFamily: TL.font.sans, fontSize: 11.5, color: TL.mute, lineHeight: 1.45 }}>
                   {b.note}
                 </p>
               </div>
@@ -471,7 +454,7 @@ export function StallV2({ data }: { data: StallV2Data }) {
           onClick={() => setVenterApen((v) => !v)}
           title={`Venter på innlogging (${venterRader.length})`}
           sub="Bulk-importert, ingen aktivitet ennå"
-          trailing={<Icon name={venterApen ? "chevron-up" : "chevron-down"} size={14} style={{ color: T.mut }} />}
+          trailing={<Icon name={venterApen ? "chevron-up" : "chevron-down"} size={14} style={{ color: TL.mute }} />}
           last={!venterApen}
         />
         {venterApen &&
@@ -497,16 +480,16 @@ export function StallV2({ data }: { data: StallV2Data }) {
       data-stall-kpi
     >
       {([
-        { l: "Aktive", v: String(stallKpi.total), c: T.fg },
-        { l: "I rute", v: String(stallKpi.iRute), c: T.up },
-        { l: "Trenger deg", v: String(stallKpi.trenger), c: stallKpi.trenger > 0 ? T.down : T.fg },
-        { l: "Skylder", v: String(stallKpi.skylder), c: stallKpi.skylder > 0 ? T.warn : T.fg },
+        { l: "Aktive", v: String(stallKpi.total), c: TL.text },
+        { l: "I rute", v: String(stallKpi.iRute), c: TL.ok },
+        { l: "Trenger deg", v: String(stallKpi.trenger), c: stallKpi.trenger > 0 ? TL.danger : TL.text },
+        { l: "Skylder", v: String(stallKpi.skylder), c: stallKpi.skylder > 0 ? TL.warn : TL.text },
       ] as const).map((k) => (
         <Kort key={k.l} pad="12px 14px">
           <Caps size={9}>{k.l}</Caps>
           <div
             style={{
-              fontFamily: T.mono,
+              fontFamily: TL.font.mono,
               fontSize: mobile ? 22 : 26,
               fontWeight: 700,
               color: k.c,
@@ -533,9 +516,9 @@ export function StallV2({ data }: { data: StallV2Data }) {
   const hode = (
     <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 14, flexWrap: "wrap" }}>
       <div>
-        <span style={{ fontFamily: T.mono, fontSize: 10.5, color: T.mut }}>{data.total} spillere · {stallKpi.trenger} trenger deg</span>
+        <span style={{ fontFamily: TL.font.mono, fontSize: 10.5, color: TL.mute }}>{data.total} spillere · {stallKpi.trenger} trenger deg</span>
         <div style={{ marginTop: 10 }}>
-          <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>Spillere</h1>
+          <h1 style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 17, fontWeight: 600, color: TL.text }}>Spillere</h1>
         </div>
       </div>
       {/* B: én primær i hode — «følg opp» når noen trenger deg; ellers ghost «Ny spiller» */}
@@ -545,7 +528,7 @@ export function StallV2({ data }: { data: StallV2Data }) {
 <span style={{
               display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8,
               minHeight: 44, padding: "10px 16px", borderRadius: 12,
-              background: T.handling, color: T.onHandling, fontFamily: T.ui, fontSize: 13, fontWeight: 600,
+              background: TL.fill, color: TL.onFill, fontFamily: TL.font.sans, fontSize: 13, fontWeight: 600,
             }} data-paper-en-ting="true">Åpne {forsteTrenger.navn.split(" ")[0]}</span>
           </button>
         ) : (
@@ -571,14 +554,14 @@ export function StallV2({ data }: { data: StallV2Data }) {
         marginLeft: -16,
         marginRight: -16,
         padding: "12px 16px calc(12px + env(safe-area-inset-bottom) + var(--ak-cookie-h, 0px))",
-        borderTop: `1px solid ${T.border}`,
-        background: T.panel,
+        borderTop: `1px solid ${TL.hair}`,
+        background: TL.elev,
         zIndex: 5,
       }}
     >
       {forsteTrenger ? (
         <>
-          <span style={{ display: "block", fontFamily: T.ui, fontSize: 12, color: T.mut, marginBottom: 8 }}>
+          <span style={{ display: "block", fontFamily: TL.font.sans, fontSize: 12, color: TL.mute, marginBottom: 8 }}>
             Øverst i «Trenger deg nå»: {forsteTrenger.navn}.
           </span>
           <button
@@ -591,7 +574,7 @@ export function StallV2({ data }: { data: StallV2Data }) {
               style={{
                 display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8,
                 minHeight: 44, padding: "10px 16px", borderRadius: 10, width: "100%",
-                background: T.handling, color: T.onHandling, fontFamily: T.ui, fontSize: 13, fontWeight: 600,
+                background: TL.fill, color: TL.onFill, fontFamily: TL.font.sans, fontSize: 13, fontWeight: 600,
               }}
               data-paper-en-ting="true"
             >
@@ -601,7 +584,7 @@ export function StallV2({ data }: { data: StallV2Data }) {
         </>
       ) : (
         <>
-          <span style={{ display: "block", fontFamily: T.ui, fontSize: 12, color: T.mut, marginBottom: 8 }}>
+          <span style={{ display: "block", fontFamily: TL.font.sans, fontSize: 12, color: TL.mute, marginBottom: 8 }}>
             Ingen spiller venter på deg i dette utvalget.
           </span>
           <Link href="/admin/kalender" style={{ textDecoration: "none", display: "block" }} data-od-id="spm-bunn-kalender">
@@ -609,8 +592,8 @@ export function StallV2({ data }: { data: StallV2Data }) {
               style={{
                 display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8,
                 minHeight: 44, padding: "10px 16px", borderRadius: 10, width: "100%",
-                background: T.panel, color: T.fg, border: `1px solid ${T.border}`,
-                fontFamily: T.ui, fontSize: 13, fontWeight: 600,
+                background: TL.elev, color: TL.text, border: `1px solid ${TL.hair}`,
+                fontFamily: TL.font.sans, fontSize: 13, fontWeight: 600,
               }}
             >
               Åpne kalenderen
@@ -623,11 +606,11 @@ export function StallV2({ data }: { data: StallV2Data }) {
 
   if (data.spillere.length === 0) {
     return (
-      <div data-paper-agencyos-spillere data-paper-wave-b="spillere" data-od-id="agency-spillere" style={{ display: "flex", flexDirection: "column", gap: T.gap, width: "100%" }} data-paper-slug="agencyos-spillere">
+      <div data-paper-agencyos-spillere data-paper-wave-b="spillere" data-od-id="agency-spillere" style={{ display: "flex", flexDirection: "column", gap: 16, width: "100%" }} data-paper-slug="agencyos-spillere">
         <div>
           <Caps>AgencyOS</Caps>
           <div style={{ marginTop: 10 }}>
-            <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>Spillere</h1>
+            <h1 style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 17, fontWeight: 600, color: TL.text }}>Spillere</h1>
           </div>
         </div>
         <Kort>
@@ -641,7 +624,7 @@ export function StallV2({ data }: { data: StallV2Data }) {
 <span style={{
               display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8,
               minHeight: 44, padding: "10px 16px", borderRadius: 10, width: "100%",
-              background: T.handling, color: T.onHandling, fontFamily: T.ui, fontSize: 13, fontWeight: 600,
+              background: TL.fill, color: TL.onFill, fontFamily: TL.font.sans, fontSize: 13, fontWeight: 600,
             }}>Legg til første spiller</span>
         </Link>
       </div>
@@ -650,11 +633,11 @@ export function StallV2({ data }: { data: StallV2Data }) {
 
   if (mobile) {
     return (
-      <div data-paper-agencyos-spillere data-paper-wave-b="spillere" data-od-id="agency-spillere" style={{ display: "flex", flexDirection: "column", gap: T.gap, width: "100%" }}>
+      <div data-paper-agencyos-spillere data-paper-wave-b="spillere" data-od-id="agency-spillere" style={{ display: "flex", flexDirection: "column", gap: 16, width: "100%" }}>
         {hode}
         {tilstandKort}
         {filtre}
-        <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
           {aktivListe}
           {venterSeksjon}
         </div>
@@ -667,12 +650,12 @@ export function StallV2({ data }: { data: StallV2Data }) {
   }
 
   return (
-    <div data-paper-agencyos-spillere data-paper-wave-b="spillere" data-od-id="agency-spillere" style={{ display: "flex", flexDirection: "column", gap: T.gap, width: "100%" }}>
+    <div data-paper-agencyos-spillere data-paper-wave-b="spillere" data-od-id="agency-spillere" style={{ display: "flex", flexDirection: "column", gap: 16, width: "100%" }}>
       {hode}
       {tilstandKort}
       {filtre}
-      <div className="grid grid-cols-1 lg:grid-cols-[3fr_2fr]" style={{ gap: T.gap, alignItems: "start" }}>
-        <div className="min-w-0" style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+      <div className="grid grid-cols-1 lg:grid-cols-[3fr_2fr]" style={{ gap: 16, alignItems: "start" }}>
+        <div className="min-w-0" style={{ display: "flex", flexDirection: "column", gap: 16 }}>
           {aktivListe}
           {venterSeksjon}
         </div>

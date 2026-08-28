@@ -27,7 +27,8 @@ import {
   gridHours,
   gridTicks,
 } from "@/lib/calendar/notion-grid";
-import { T } from "@/lib/v2/tokens";
+import { TL } from "@/lib/v2/train-lock";
+
 
 export type TimeGridDay = {
   id: string;
@@ -131,15 +132,15 @@ export function TimeGrid({
   const shell: CSSProperties = {
     overflow: "hidden",
     borderRadius: bordered ? 12 : 0,
-    border: bordered ? `1px solid ${T.border}` : "none",
-    background: T.panel,
+    border: bordered ? `1px solid ${TL.hair}` : "none",
+    background: TL.elev,
     ...style,
   };
 
   return (
     <div className={className} style={shell} data-time-grid="notion">
       {/* Dag-header */}
-      <div style={{ display: "flex", borderBottom: `1px solid ${T.border}` }}>
+      <div style={{ display: "flex", borderBottom: `1px solid ${TL.hair}` }}>
         <div style={{ width: timeColWidth, flex: "none" }} />
         {days.map((d) => (
           <div
@@ -149,30 +150,30 @@ export function TimeGrid({
               minWidth: 0,
               textAlign: "center",
               padding: "9px 0 8px",
-              borderLeft: `1px solid ${T.border}`,
+              borderLeft: `1px solid ${TL.hair}`,
               background: d.today
-                ? `color-mix(in srgb, ${T.lime} 6%, transparent)`
+                ? `color-mix(in srgb, ${TL.fill} 6%, transparent)`
                 : "transparent",
             }}
           >
             <div
               style={{
-                fontFamily: T.mono,
+                fontFamily: TL.font.mono,
                 fontSize: 8.5,
                 fontWeight: 700,
                 letterSpacing: "0.08em",
                 textTransform: "uppercase",
-                color: d.today ? T.lime : T.mut,
+                color: d.today ? TL.fill : TL.mute,
               }}
             >
               {d.dow}
             </div>
             <div
               style={{
-                fontFamily: T.disp,
+                fontFamily: TL.font.sans,
                 fontSize: 15,
                 fontWeight: 700,
-                color: d.today ? T.fg : T.fg2,
+                color: d.today ? TL.text : TL.mute,
                 marginTop: 1,
                 fontVariantNumeric: "tabular-nums",
               }}
@@ -186,7 +187,7 @@ export function TimeGrid({
                   width: 4,
                   height: 4,
                   borderRadius: 9999,
-                  background: T.lime,
+                  background: TL.fill,
                   marginTop: 3,
                 }}
               />
@@ -209,10 +210,10 @@ export function TimeGrid({
                   position: "absolute",
                   top: ((min - GRID_START_MIN) / 60) * PIXEL_PER_HOUR - 5,
                   right: 8,
-                  fontFamily: T.mono,
+                  fontFamily: TL.font.mono,
                   fontSize: 10,
                   fontWeight: helTime ? 500 : 400,
-                  color: helTime ? T.fg : T.mut,
+                  color: helTime ? TL.text : TL.mute,
                   fontVariantNumeric: "tabular-nums",
                 }}
               >
@@ -234,7 +235,7 @@ export function TimeGrid({
                   right: 0,
                   top: (h - GRID_START_HOUR) * PIXEL_PER_HOUR,
                   height: 1,
-                  background: `color-mix(in srgb, ${T.border} 70%, transparent)`,
+                  background: `color-mix(in srgb, ${TL.hair} 70%, transparent)`,
                   pointerEvents: "none",
                   zIndex: 0,
                 }}
@@ -251,7 +252,7 @@ export function TimeGrid({
                   right: 0,
                   top: (h - GRID_START_HOUR) * PIXEL_PER_HOUR + PIXEL_PER_HOUR / 2,
                   height: 1,
-                  background: `color-mix(in srgb, ${T.border} 32%, transparent)`,
+                  background: `color-mix(in srgb, ${TL.hair} 32%, transparent)`,
                   pointerEvents: "none",
                   zIndex: 0,
                 }}
@@ -269,8 +270,8 @@ export function TimeGrid({
                 top: nowTop,
                 zIndex: 2,
                 pointerEvents: "none",
-                borderTop: `2px solid ${T.lime}`,
-                boxShadow: `0 0 6px color-mix(in srgb, ${T.lime} 40%, transparent)`,
+                borderTop: `2px solid ${TL.fill}`,
+                boxShadow: `0 0 6px color-mix(in srgb, ${TL.fill} 40%, transparent)`,
               }}
             />
           )}
@@ -304,9 +305,9 @@ export function TimeGrid({
                 flex: 1,
                 minWidth: 0,
                 position: "relative",
-                borderLeft: `1px solid ${T.border}`,
+                borderLeft: `1px solid ${TL.hair}`,
                 background: d.today
-                  ? `color-mix(in srgb, ${T.lime} 3%, transparent)`
+                  ? `color-mix(in srgb, ${TL.fill} 3%, transparent)`
                   : "transparent",
                 height: bodyH,
               }}

@@ -1,5 +1,5 @@
 "use client";
-
+import { TL } from "@/lib/v2/train-lock";
 /**
  * PlayerHQ · AI mål-bygger (SMART-mål) — v2 Presis + B-pakke (status + én primær CTA, tom = vei).
  * T.* only. Lys PlayerHQ.
@@ -7,18 +7,7 @@
 
 import { useMemo, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import {
-  T,
-  Caps,
-  Tittel,
-  Kort,
-  Knapp,
-  ValgKort,
-  Inndata,
-  Velger,
-  InnsiktChip,
-  StatusPill,
-} from "@/components/v2";
+import { Kort, Knapp, ValgKort, Inndata, Velger, InnsiktChip, StatusPill } from "@/components/v2";
 import { Icon } from "@/components/v2/icon";
 import { lagreMalForslag, type MalForslagInput } from "@/app/portal/ai/mal-bygger/actions";
 import { PYR_REKKEFOLGE, PYR_LABEL } from "@/lib/pyramide";
@@ -159,9 +148,9 @@ function isComplete(g: SelectedGoal): boolean {
 
 /** Liten kategori-tag (Resultat/Prosess) i mal-kortene. */
 function KategoriTag({ category, label }: { category: "OUTCOME" | "PROCESS"; label: string }) {
-  const c = category === "OUTCOME" ? T.lime : T.fg2;
+  const c = category === "OUTCOME" ? TL.fill : TL.mute;
   return (
-    <span style={{ fontFamily: T.mono, fontSize: 8.5, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: c, background: `color-mix(in srgb, ${c} 12%, transparent)`, borderRadius: 9999, padding: "3px 8px" }}>
+    <span style={{ fontFamily: TL.font.mono, fontSize: 8.5, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: c, background: `color-mix(in srgb, ${c} 12%, transparent)`, borderRadius: 9999, padding: "3px 8px" }}>
       {label}
     </span>
   );
@@ -179,12 +168,12 @@ function StegRad({ aktiv }: { aktiv: 1 | 2 | 3 }) {
         return (
           <div key={s} style={{ display: "flex", alignItems: "center", gap: 8, flex: i < steg.length - 1 ? 1 : "none" }}>
             <span style={{ display: "inline-flex", alignItems: "center", gap: 7, flex: "none" }}>
-              <span style={{ width: 24, height: 24, borderRadius: 9999, display: "inline-flex", alignItems: "center", justifyContent: "center", fontFamily: T.mono, fontSize: 11, fontWeight: 700, background: done ? T.lime : "transparent", border: `2px solid ${done || on ? T.lime : T.borderS}`, color: done ? T.onLime : on ? T.lime : T.mut }}>
+              <span style={{ width: 24, height: 24, borderRadius: 9999, display: "inline-flex", alignItems: "center", justifyContent: "center", fontFamily: TL.font.mono, fontSize: 11, fontWeight: 700, background: done ? TL.fill : "transparent", border: `2px solid ${done || on ? TL.fill : TL.hair}`, color: done ? TL.onFill : on ? TL.fill : TL.mute }}>
                 {done ? <Icon name="check" size={12} /> : n}
               </span>
-              <span style={{ fontFamily: T.ui, fontSize: 11.5, fontWeight: on ? 700 : 500, color: on ? T.fg : T.mut, whiteSpace: "nowrap" }}>{s}</span>
+              <span style={{ fontFamily: TL.font.sans, fontSize: 11.5, fontWeight: on ? 700 : 500, color: on ? TL.text : TL.mute, whiteSpace: "nowrap" }}>{s}</span>
             </span>
-            {i < steg.length - 1 && <span style={{ flex: 1, height: 2, borderRadius: 2, background: done ? `color-mix(in srgb, ${T.lime} 45%, transparent)` : T.track }} />}
+            {i < steg.length - 1 && <span style={{ flex: 1, height: 2, borderRadius: 2, background: done ? `color-mix(in srgb, ${TL.fill} 45%, transparent)` : TL.hair }} />}
           </div>
         );
       })}
@@ -193,7 +182,7 @@ function StegRad({ aktiv }: { aktiv: 1 | 2 | 3 }) {
 }
 
 export function AiMalByggerV2({
-  playerFirstName,
+  playerFirstName: _playerFirstName,
   defaultYearEnd,
   testOptions,
 }: {
@@ -289,11 +278,11 @@ export function AiMalByggerV2({
   }
 
   return (
-    <div data-paper-wave-g="aimalbygger" data-paper-pattern style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
+    <div data-paper-wave-g="aimalbygger" data-paper-pattern style={{ display: "flex", flexDirection: "column", gap: 16, maxWidth: 720, margin: "0 auto", width: "100%" }}>
       <div>
         <div data-paper-pattern-topp>
-          <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>Målbygger</h1>
-          <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>AI-forslag</span>
+          <h1 style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 17, fontWeight: 600, color: TL.text }}>Målbygger</h1>
+          <span style={{ display: "block", fontFamily: TL.font.mono, fontSize: 10.5, color: TL.mute, marginTop: 2 }}>AI-forslag</span>
         </div>
       </div>
 
@@ -341,7 +330,7 @@ export function AiMalByggerV2({
         <>
           <InnsiktChip>
             Velg de målene som passer, og fyll inn{" "}
-            <span style={{ color: T.fg, fontWeight: 600 }}>dine egne tall</span>. Vi dikter ingenting opp for deg.
+            <span style={{ color: TL.text, fontWeight: 600 }}>dine egne tall</span>. Vi dikter ingenting opp for deg.
           </InnsiktChip>
 
           <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
@@ -349,7 +338,7 @@ export function AiMalByggerV2({
               const sel = selected[t.id];
               const open = !!sel;
               return (
-                <Kort key={t.id} style={{ border: `1px solid ${open ? T.lime : T.border}` }}>
+                <Kort key={t.id} style={{ border: `1px solid ${open ? TL.fill : TL.hair}` }}>
                   <div
                     role="checkbox"
                     aria-checked={open}
@@ -358,20 +347,20 @@ export function AiMalByggerV2({
                     onClick={() => toggle(t)}
                     style={{ display: "flex", alignItems: "flex-start", gap: 12, cursor: "pointer" }}
                   >
-                    <span style={{ marginTop: 2, width: 18, height: 18, borderRadius: 6, border: `2px solid ${open ? T.lime : T.borderS}`, background: open ? T.lime : "transparent", display: "inline-flex", alignItems: "center", justifyContent: "center", flex: "none" }}>
-                      {open && <Icon name="check" size={12} style={{ color: T.onLime }} />}
+                    <span style={{ marginTop: 2, width: 18, height: 18, borderRadius: 6, border: `2px solid ${open ? TL.fill : TL.hair}`, background: open ? TL.fill : "transparent", display: "inline-flex", alignItems: "center", justifyContent: "center", flex: "none" }}>
+                      {open && <Icon name="check" size={12} style={{ color: TL.onFill }} />}
                     </span>
                     <div style={{ flex: 1, minWidth: 0 }}>
                       <KategoriTag category={t.category} label={t.categoryLabel} />
-                      <div style={{ fontFamily: T.ui, fontSize: 14, fontWeight: 600, color: T.fg, marginTop: 6, lineHeight: 1.4 }}>
+                      <div style={{ fontFamily: TL.font.sans, fontSize: 14, fontWeight: 600, color: TL.text, marginTop: 6, lineHeight: 1.4 }}>
                         {open ? fillTitle(t, medValgtLabel(sel)) : t.title.replace(/\{(\w+)\}/g, "…")}
                       </div>
-                      <div style={{ fontFamily: T.ui, fontSize: 11.5, color: T.mut, marginTop: 4, lineHeight: 1.5 }}>{t.hint}</div>
+                      <div style={{ fontFamily: TL.font.sans, fontSize: 11.5, color: TL.mute, marginTop: 4, lineHeight: 1.5 }}>{t.hint}</div>
                     </div>
                   </div>
 
                   {open && (
-                    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginTop: 14, paddingTop: 14, borderTop: `1px solid ${T.border}` }}>
+                    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginTop: 14, paddingTop: 14, borderTop: `1px solid ${TL.hair}` }}>
                       {t.fields.map((f) => (
                         <Inndata
                           key={f.key}
@@ -425,16 +414,16 @@ export function AiMalByggerV2({
           <Kort eyebrow="Klar til å lagre">
             <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
               {chosen.filter(isComplete).map((g) => (
-                <div key={g.template.id} style={{ display: "flex", alignItems: "flex-start", gap: 12, borderRadius: 12, background: T.panel2, border: `1px solid ${T.border}`, padding: "12px 14px" }}>
-                  <span style={{ width: 28, height: 28, borderRadius: 9999, background: T.panel3, border: `1px solid ${T.border}`, display: "inline-flex", alignItems: "center", justifyContent: "center", flex: "none" }}>
-                    <Icon name="target" size={13} style={{ color: T.lime }} />
+                <div key={g.template.id} style={{ display: "flex", alignItems: "flex-start", gap: 12, borderRadius: 12, background: TL.dock, border: `1px solid ${TL.hair}`, padding: "12px 14px" }}>
+                  <span style={{ width: 28, height: 28, borderRadius: 9999, background: TL.dim, border: `1px solid ${TL.hair}`, display: "inline-flex", alignItems: "center", justifyContent: "center", flex: "none" }}>
+                    <Icon name="target" size={13} style={{ color: TL.fill }} />
                   </span>
                   <div style={{ flex: 1, minWidth: 0 }}>
                     <KategoriTag category={g.template.category} label={g.template.categoryLabel} />
-                    <div style={{ fontFamily: T.ui, fontSize: 14, fontWeight: 600, color: T.fg, marginTop: 6, lineHeight: 1.4 }}>
+                    <div style={{ fontFamily: TL.font.sans, fontSize: 14, fontWeight: 600, color: TL.text, marginTop: 6, lineHeight: 1.4 }}>
                       {fillTitle(g.template, medValgtLabel(g))}
                     </div>
-                    <div style={{ fontFamily: T.mono, fontSize: 10, fontWeight: 700, color: T.mut, marginTop: 5, textTransform: "uppercase", letterSpacing: "0.04em" }}>
+                    <div style={{ fontFamily: TL.font.mono, fontSize: 10, fontWeight: 700, color: TL.mute, marginTop: 5, textTransform: "uppercase", letterSpacing: "0.04em" }}>
                       Frist{" "}
                       {g.targetDate
                         ? new Date(g.targetDate).toLocaleDateString("nb-NO", {
@@ -453,7 +442,7 @@ export function AiMalByggerV2({
           {error && (
             <div role="alert" style={{ display: "flex", alignItems: "center", gap: 10 }}>
               <StatusPill tone="down">Feil</StatusPill>
-              <span style={{ fontFamily: T.ui, fontSize: 12.5, color: T.down }}>{error}</span>
+              <span style={{ fontFamily: TL.font.sans, fontSize: 12.5, color: TL.danger }}>{error}</span>
             </div>
           )}
 

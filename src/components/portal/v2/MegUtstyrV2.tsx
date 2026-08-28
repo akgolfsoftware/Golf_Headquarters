@@ -20,20 +20,20 @@
 import type { ReactNode } from "react";
 import Link from "next/link";
 
-import { T } from "@/lib/v2/tokens";
+import { TL } from "@/lib/v2/train-lock";
+
 import { MIN_SLAG } from "@/lib/domain/gapping";
 import { kortKolleNavn, type UtstyrFlateData, type UtstyrBagFelt } from "@/lib/portal/utstyr-data";
 import { PaperPage, PaperTopp, PaperKropp } from "./PaperChrome";
-
 /* ── Lokale byggeklosser (kun T.*) ─────────────────────────────────── */
 
 function Kort({ eyebrow, children }: { eyebrow?: string; children: ReactNode }) {
   return (
     <section
       style={{
-        background: T.panel,
-        border: `1px solid ${T.border}`,
-        borderRadius: T.rCard,
+        background: TL.elev,
+        border: `1px solid ${TL.hair}`,
+        borderRadius: TL.radius.card,
         padding: 16,
         minWidth: 0,
       }}
@@ -42,11 +42,11 @@ function Kort({ eyebrow, children }: { eyebrow?: string; children: ReactNode }) 
         <span
           style={{
             display: "block",
-            fontFamily: T.mono,
-            fontSize: T.capsSm,
+            fontFamily: TL.font.mono,
+            fontSize: TL.storrelse.capsSm,
             letterSpacing: "0.09em",
             textTransform: "uppercase",
-            color: T.mut,
+            color: TL.mute,
             marginBottom: 10,
           }}
         >
@@ -63,9 +63,9 @@ function Hjelp({ children }: { children: ReactNode }) {
     <p
       style={{
         margin: "10px 0 0",
-        fontFamily: T.mono,
+        fontFamily: TL.font.mono,
         fontSize: 10,
-        color: T.mut,
+        color: TL.mute,
         letterSpacing: "0.03em",
         lineHeight: 1.5,
       }}
@@ -100,18 +100,18 @@ function KolleRad({
         alignItems: "center",
         minHeight: 48,
         padding: "6px 0",
-        borderBottom: last ? "none" : `1px solid ${T.borderS}`,
+        borderBottom: last ? "none" : `1px solid ${TL.hair}`,
         minWidth: 0,
       }}
     >
-      <span style={{ fontFamily: T.mono, fontSize: 13, fontWeight: 700, color: T.fg }}>{kode}</span>
+      <span style={{ fontFamily: TL.font.mono, fontSize: 13, fontWeight: 700, color: TL.text }}>{kode}</span>
       <div style={{ minWidth: 0 }}>
         <span
           style={{
             display: "block",
-            fontFamily: T.ui,
+            fontFamily: TL.font.sans,
             fontSize: 13,
-            color: T.fg,
+            color: TL.text,
             whiteSpace: "nowrap",
             overflow: "hidden",
             textOverflow: "ellipsis",
@@ -120,17 +120,17 @@ function KolleRad({
           {navn}
         </span>
         {sub && (
-          <span style={{ display: "block", fontFamily: T.mono, fontSize: 10, color: T.mut, marginTop: 1 }}>
+          <span style={{ display: "block", fontFamily: TL.font.mono, fontSize: 10, color: TL.mute, marginTop: 1 }}>
             {sub}
           </span>
         )}
       </div>
       <span
         style={{
-          fontFamily: T.mono,
+          fontFamily: TL.font.mono,
           fontSize: 13.5,
           fontWeight: ukjent ? 400 : 600,
-          color: ukjent ? T.mut : T.fg,
+          color: ukjent ? TL.mute : TL.text,
           textAlign: "right",
           fontVariantNumeric: "tabular-nums",
         }}
@@ -154,12 +154,12 @@ function KnappLenke({ href, children, odId }: { href: string; children: ReactNod
         justifyContent: "center",
         width: "100%",
         padding: "12px 18px",
-        borderRadius: T.rInput,
-        border: `1px solid ${T.border}`,
-        background: T.panel,
-        color: T.fg,
-        fontFamily: T.ui,
-        fontSize: T.body,
+        borderRadius: TL.radius.field,
+        border: `1px solid ${TL.hair}`,
+        background: TL.elev,
+        color: TL.text,
+        fontFamily: TL.font.sans,
+        fontSize: TL.storrelse.kropp,
         fontWeight: 500,
         textDecoration: "none",
         textAlign: "center",
@@ -213,15 +213,15 @@ export function MegUtstyrV2({ data }: { data: UtstyrFlateData }) {
               <div
                 style={{
                   padding: "24px 16px",
-                  background: T.panel2,
-                  border: `1px dashed ${T.border}`,
-                  borderRadius: T.rCard,
+                  background: TL.dock,
+                  border: `1px dashed ${TL.hair}`,
+                  borderRadius: TL.radius.card,
                 }}
               >
-                <h3 style={{ margin: "0 0 8px", fontFamily: T.disp, fontSize: 15, fontWeight: 600, color: T.fg }}>
+                <h3 style={{ margin: "0 0 8px", fontFamily: TL.font.sans, fontSize: 15, fontWeight: 600, color: TL.text }}>
                   Ingen køller registrert
                 </h3>
-                <p style={{ margin: "0 0 12px", fontFamily: T.bodyFont, fontSize: 13.5, color: T.mut, lineHeight: 1.55 }}>
+                <p style={{ margin: "0 0 12px", fontFamily: TL.font.sans, fontSize: 13.5, color: TL.mute, lineHeight: 1.55 }}>
                   Registrer bagen én gang, så kan gameplan foreslå kølle per hull og lengdene
                   fylles automatisk fra TrackMan-øktene dine. Du trenger ikke fylle inn lengder
                   selv.
@@ -231,7 +231,7 @@ export function MegUtstyrV2({ data }: { data: UtstyrFlateData }) {
                 </KnappLenke>
               </div>
               <Kort>
-                <p style={{ margin: 0, fontFamily: T.bodyFont, fontSize: 13.5, color: T.mut, lineHeight: 1.55 }}>
+                <p style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 13.5, color: TL.mute, lineHeight: 1.55 }}>
                   Har du hatt fitting hos AK Golf, kan Anders legge inn bagen for deg. Spør i
                   chatten.
                 </p>
@@ -247,13 +247,13 @@ export function MegUtstyrV2({ data }: { data: UtstyrFlateData }) {
                     display: "flex",
                     gap: 12,
                     padding: "12px 16px",
-                    borderRadius: T.rCard,
-                    background: T.handlingSoft,
+                    borderRadius: TL.radius.card,
+                    background: TL.dim,
                     minWidth: 0,
                   }}
                 >
-                  <p style={{ flex: 1, minWidth: 0, margin: 0, fontFamily: T.bodyFont, fontSize: 13, color: T.fg2, lineHeight: 1.55 }}>
-                    <strong style={{ color: T.fg, fontWeight: 600 }}>
+                  <p style={{ flex: 1, minWidth: 0, margin: 0, fontFamily: TL.font.sans, fontSize: 13, color: TL.mute, lineHeight: 1.55 }}>
+                    <strong style={{ color: TL.text, fontWeight: 600 }}>
                       Hull i lengdetrappa mellom {gap[0].under} og {gap[0].over}.
                     </strong>{" "}
                     {gap[0].meter} meter mellom to køller er mye — ta det med til neste time med
@@ -279,14 +279,14 @@ export function MegUtstyrV2({ data }: { data: UtstyrFlateData }) {
                           display: "block",
                           height: `${Math.max(10, Math.round((k.median / maksMedian) * 100))}%`,
                           borderRadius: "6px 6px 0 0",
-                          background: k.tynn ? "transparent" : T.panel2,
-                          border: k.tynn ? `1px dashed ${T.border}` : `1px solid ${T.border}`,
+                          background: k.tynn ? "transparent" : TL.dock,
+                          border: k.tynn ? `1px dashed ${TL.hair}` : `1px solid ${TL.hair}`,
                           borderBottom: "none",
                         }}
                       />
                     ))}
                   </div>
-                  <div style={{ display: "flex", gap: 3, marginTop: 4, fontFamily: T.mono, fontSize: 9, color: T.mut }}>
+                  <div style={{ display: "flex", gap: 3, marginTop: 4, fontFamily: TL.font.mono, fontSize: 9, color: TL.mute }}>
                     {koller.map((k) => (
                       <span key={k.klubb} style={{ flex: 1, minWidth: 0, textAlign: "center", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
                         {kortKolleNavn(k.klubb)}
@@ -303,7 +303,7 @@ export function MegUtstyrV2({ data }: { data: UtstyrFlateData }) {
                 </Kort>
               ) : (
                 <Kort eyebrow="Lengdetrapp · carry-snitt">
-                  <p style={{ margin: 0, fontFamily: T.bodyFont, fontSize: 13.5, color: T.mut, lineHeight: 1.55 }}>
+                  <p style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 13.5, color: TL.mute, lineHeight: 1.55 }}>
                     Ingen målte lengder ennå. Lengdene fylles automatisk fra TrackMan-øktene
                     dine — ingenting skal tastes inn eller gjettes.
                   </p>
@@ -348,7 +348,7 @@ export function MegUtstyrV2({ data }: { data: UtstyrFlateData }) {
                 </Kort>
               ) : (
                 <Kort eyebrow="Bagen">
-                  <p style={{ margin: "0 0 12px", fontFamily: T.bodyFont, fontSize: 13.5, color: T.mut, lineHeight: 1.55 }}>
+                  <p style={{ margin: "0 0 12px", fontFamily: TL.font.sans, fontSize: 13.5, color: TL.mute, lineHeight: 1.55 }}>
                     Bagen er ikke registrert ennå. Registrer den én gang, så kan gameplan
                     foreslå kølle per hull.
                   </p>
@@ -363,7 +363,7 @@ export function MegUtstyrV2({ data }: { data: UtstyrFlateData }) {
                 <Kort eyebrow="Ball og tilbehør">
                   {tilbehor.length > 0 && <BagRader felter={tilbehor} />}
                   {notater && (
-                    <p style={{ margin: tilbehor.length > 0 ? "10px 0 0" : 0, fontFamily: T.bodyFont, fontSize: 13, color: T.fg2, lineHeight: 1.55 }}>
+                    <p style={{ margin: tilbehor.length > 0 ? "10px 0 0" : 0, fontFamily: TL.font.sans, fontSize: 13, color: TL.mute, lineHeight: 1.55 }}>
                       {notater}
                     </p>
                   )}

@@ -1,5 +1,5 @@
 "use client";
-
+import { TL } from "@/lib/v2/train-lock";
 /**
  * PlayerHQ Coach · Nytt spørsmål — v2 Presis + B-pakke (status + én primær CTA, tom = vei).
  * T.* only. Lys PlayerHQ.
@@ -7,18 +7,7 @@
 
 import { useState, useTransition } from "react";
 import Link from "next/link";
-import {
-  T,
-  Kort,
-  StatusPill,
-  Rad,
-  Inndata,
-  TekstOmraade,
-  FilterChips,
-  Veiviser,
-  TomTilstand,
-} from "@/components/v2";
-
+import { Kort, StatusPill, Rad, Inndata, TekstOmraade, FilterChips, Veiviser, TomTilstand } from "@/components/v2";
 export type MinSporsmal = {
   id: string;
   tittel: string;
@@ -84,11 +73,11 @@ export function CoachSporsmalNyV2({
   }
 
   return (
-    <div data-paper-wave-g="coachsporsmalny" data-paper-pattern  data-paper-portal-coach-sporsmal-ny data-paper-slug="playerhq-coach-hub" style={{ maxWidth: 720, width: "100%", margin: "0 auto", display: "flex", flexDirection: "column", gap: T.gap }}>
+    <div data-paper-wave-g="coachsporsmalny" data-paper-pattern  data-paper-portal-coach-sporsmal-ny data-paper-slug="playerhq-coach-hub" style={{ maxWidth: 720, width: "100%", margin: "0 auto", display: "flex", flexDirection: "column", gap: 16 }}>
       <div>
         <div data-paper-pattern-topp>
-          <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>Nytt spørsmål</h1>
-          <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>Coach</span>
+          <h1 style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 17, fontWeight: 600, color: TL.text }}>Nytt spørsmål</h1>
+          <span style={{ display: "block", fontFamily: TL.font.mono, fontSize: 10.5, color: TL.mute, marginTop: 2 }}>Coach</span>
         </div>
       </div>
 
@@ -96,7 +85,7 @@ export function CoachSporsmalNyV2({
         <Kort tint>
           <div style={{ display: "flex", alignItems: "center", gap: 11 }}>
             <StatusPill tone="up">Sendt</StatusPill>
-            <span style={{ fontFamily: T.ui, fontSize: 13, color: T.fg }}>
+            <span style={{ fontFamily: TL.font.sans, fontSize: 13, color: TL.text }}>
               Spørsmålet er sendt til coachen din. Du får svar i samtalen.
             </span>
           </div>
@@ -105,7 +94,7 @@ export function CoachSporsmalNyV2({
 
       {aktiv === 0 && (
         <Kort eyebrow="Tema">
-          <div style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 16, color: T.fg, marginBottom: 12 }}>
+          <div style={{ fontFamily: TL.font.sans, fontWeight: 700, fontSize: 16, color: TL.text, marginBottom: 12 }}>
             Hva gjelder spørsmålet?
           </div>
           <FilterChips items={[...HURTIGTEMA]} active={[tema]} onToggle={velgTema} />
@@ -124,7 +113,7 @@ export function CoachSporsmalNyV2({
               placeholder={`Spør coachen din om ${tema.toLowerCase()} …`}
             />
           </div>
-          {feil && <div style={{ fontFamily: T.ui, fontSize: 12, color: T.down, marginTop: 10 }}>{feil}</div>}
+          {feil && <div style={{ fontFamily: TL.font.sans, fontSize: 12, color: TL.danger, marginTop: 10 }}>{feil}</div>}
         </Kort>
       )}
 
@@ -136,7 +125,7 @@ export function CoachSporsmalNyV2({
         sisteTekst={pending ? "Sender …" : "Send spørsmål"}
       />
 
-      <Kort eyebrow="Mine spørsmål" action={<span style={{ fontFamily: T.mono, fontSize: 10.5, color: T.mut }}>{mine.length} totalt</span>}>
+      <Kort eyebrow="Mine spørsmål" action={<span style={{ fontFamily: TL.font.mono, fontSize: 10.5, color: TL.mute }}>{mine.length} totalt</span>}>
         {mine.length === 0 ? (
           <TomTilstand icon="message-square" title="Ingen spørsmål ennå" sub="Spørsmålene du sender, dukker opp her med status." />
         ) : (

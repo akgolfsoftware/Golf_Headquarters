@@ -1,4 +1,5 @@
 "use client";
+import { TL } from "@/lib/v2/train-lock";
 
 /**
  * PlayerHQ · AI mal-bygger (/portal/mal/bygger) — v2 Presis + B-pakke (status + én primær CTA, tom = vei).
@@ -8,30 +9,10 @@
 import { useState, useTransition } from "react";
 import Link from "next/link";
 import type { CSSProperties } from "react";
-import {
-  T,
-  Icon,
-  Kort,
-  Caps,
-  Tittel,
-  Knapp,
-  KpiFlis,
-  StatusPill,
-  Rad,
-  FordelingHode,
-  FordelingRad,
-  InnsiktChip,
-  HjelpTips,
-  AKSE_NAVN,
-} from "@/components/v2";
+import { T, Icon, Kort, Caps, Knapp, KpiFlis, StatusPill, Rad, FordelingHode, FordelingRad, InnsiktChip, HjelpTips, AKSE_NAVN } from "@/components/v2";
 import type { AkseKey } from "@/lib/v2/tokens";
 import type { HjelpNokkel } from "@/lib/v2/hjelpetekster";
-import {
-  anbefalMal,
-  genererPlanForslag,
-  lagrePlan,
-  sendTilGodkjenning,
-} from "@/app/portal/mal/bygger/actions";
+import { anbefalMal, genererPlanForslag, lagrePlan, sendTilGodkjenning } from "@/app/portal/mal/bygger/actions";
 import type {
   AnbefalingerResultat,
   ByggerKontekst,
@@ -94,12 +75,12 @@ const inputStyle: CSSProperties = {
   width: "100%",
   boxSizing: "border-box",
   appearance: "none",
-  background: T.panel2,
-  border: `1px solid ${T.border}`,
+  background: TL.dock,
+  border: `1px solid ${TL.hair}`,
   borderRadius: 10,
   padding: "9px 11px",
-  color: T.fg,
-  fontFamily: T.ui,
+  color: TL.text,
+  fontFamily: TL.font.sans,
   fontSize: 13,
   outline: "none",
 };
@@ -212,7 +193,7 @@ export function MalByggerV2({ kontekst }: MalByggerV2Props) {
   }
 
   return (
-    <div data-paper-wave-g="malbygger" data-paper-pattern style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
+    <div data-paper-wave-g="malbygger" data-paper-pattern style={{ display: "flex", flexDirection: "column", gap: 16, maxWidth: 720, margin: "0 auto", width: "100%" }}>
       {/* Topp */}
       <div
         style={{
@@ -225,14 +206,14 @@ export function MalByggerV2({ kontekst }: MalByggerV2Props) {
       >
         <div>
           <div data-paper-pattern-topp>
-          <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>Målbygger</h1>
-          <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>Sett nytt mål</span>
+          <h1 style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 17, fontWeight: 600, color: TL.text }}>Målbygger</h1>
+          <span style={{ display: "block", fontFamily: TL.font.mono, fontSize: 10.5, color: TL.mute, marginTop: 2 }}>Sett nytt mål</span>
         </div>
           <p
             style={{
-              fontFamily: T.ui,
+              fontFamily: TL.font.sans,
               fontSize: 13,
-              color: T.fg2,
+              color: TL.mute,
               lineHeight: 1.6,
               margin: "10px 0 0",
               maxWidth: 560,
@@ -250,7 +231,7 @@ export function MalByggerV2({ kontekst }: MalByggerV2Props) {
             flexWrap: "wrap",
           }}
         >
-          <Caps size={9} color={T.mut}>
+          <Caps size={9} color={TL.mute}>
             Steg {steg} av 5
           </Caps>
           <Knapp ghost onClick={nullstill}>
@@ -341,17 +322,17 @@ function StegRad({ steg }: { steg: Step }) {
               gap: 7,
               padding: "9px 13px",
               borderRadius: 9999,
-              border: `1px solid ${aktiv ? "transparent" : T.border}`,
-              background: aktiv ? T.lime : T.panel,
-              color: aktiv ? T.onLime : ferdig ? T.fg : T.mut,
+              border: `1px solid ${aktiv ? "transparent" : TL.hair}`,
+              background: aktiv ? TL.fill : TL.elev,
+              color: aktiv ? TL.onFill : ferdig ? TL.text : TL.mute,
             }}
           >
-            <span style={{ fontFamily: T.mono, fontSize: 9.5, fontWeight: 700, display: "inline-flex" }}>
+            <span style={{ fontFamily: TL.font.mono, fontSize: 9.5, fontWeight: 700, display: "inline-flex" }}>
               {ferdig ? <Icon name="check" size={11} /> : n}
             </span>
             <span
               className="hidden sm:inline"
-              style={{ fontFamily: T.ui, fontSize: 11.5, fontWeight: 600, whiteSpace: "nowrap" }}
+              style={{ fontFamily: TL.font.sans, fontSize: 11.5, fontWeight: 600, whiteSpace: "nowrap" }}
             >
               {STEG_NAVN[n]}
             </span>
@@ -393,7 +374,7 @@ function Steg1VelgMal(props: {
     (maltype !== "EGENDEFINERT" || egendefinertTekst.trim().length >= 10);
 
   return (
-    <section style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+    <section style={{ display: "flex", flexDirection: "column", gap: 16 }}>
       <InnsiktChip>
         Hva vil du oppnå med neste treningsplan, {kontekst.spiller.fornavn}?
       </InnsiktChip>
@@ -402,7 +383,7 @@ function Steg1VelgMal(props: {
         style={{
           display: "grid",
           gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))",
-          gap: T.gap,
+          gap: 16,
         }}
       >
         <MalValgKort
@@ -448,11 +429,11 @@ function Steg1VelgMal(props: {
       {maltype === "TURNERING" && (
         <Kort eyebrow="Velg turnering">
           {kontekst.kommendeTurneringer.length === 0 ? (
-            <p style={{ fontFamily: T.ui, fontSize: 12.5, color: T.fg2, lineHeight: 1.6, margin: 0 }}>
+            <p style={{ fontFamily: TL.font.sans, fontSize: 12.5, color: TL.mute, lineHeight: 1.6, margin: 0 }}>
               Du har ingen planlagte turneringer. Legg til en under{" "}
               <Link
                 href="/portal/tren/turneringer"
-                style={{ color: T.lime, fontWeight: 600, textDecoration: "none" }}
+                style={{ color: TL.fill, fontWeight: 600, textDecoration: "none" }}
               >
                 Turneringer
               </Link>
@@ -513,7 +494,7 @@ function MalValgKort(props: {
     <div onClick={onClick} style={{ cursor: "pointer" }}>
       <Kort
         style={{
-          border: `1px solid ${valgt ? `color-mix(in srgb, ${T.lime} 45%, transparent)` : T.border}`,
+          border: `1px solid ${valgt ? `color-mix(in srgb, ${TL.fill} 45%, transparent)` : TL.hair}`,
           height: "100%",
         }}
       >
@@ -528,18 +509,18 @@ function MalValgKort(props: {
               alignItems: "center",
               justifyContent: "center",
               background: valgt
-                ? `color-mix(in srgb, ${T.lime} 14%, transparent)`
-                : T.panel2,
+                ? `color-mix(in srgb, ${TL.fill} 14%, transparent)`
+                : TL.dock,
             }}
           >
-            <Icon name={icon} size={15} style={{ color: valgt ? T.lime : T.fg2 }} />
+            <Icon name={icon} size={15} style={{ color: valgt ? TL.fill : TL.mute }} />
           </span>
-          <span style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 15, color: T.fg, flex: 1 }}>
+          <span style={{ fontFamily: TL.font.sans, fontWeight: 700, fontSize: 15, color: TL.text, flex: 1 }}>
             {tittel}
           </span>
-          {valgt && <Icon name="check" size={15} style={{ color: T.lime }} />}
+          {valgt && <Icon name="check" size={15} style={{ color: TL.fill }} />}
         </div>
-        <p style={{ fontFamily: T.ui, fontSize: 12, color: T.fg2, lineHeight: 1.55, margin: "9px 0 0" }}>
+        <p style={{ fontFamily: TL.font.sans, fontSize: 12, color: TL.mute, lineHeight: 1.55, margin: "9px 0 0" }}>
           {beskrivelse}
           {hjelp && (
             <span
@@ -581,7 +562,7 @@ function Steg2Anbefaling(props: {
   if (!anbefalinger.anbefalt && anbefalinger.alternativer.length === 0) {
     return (
       <Kort eyebrow="Ingen mal funnet">
-        <p style={{ fontFamily: T.ui, fontSize: 12.5, color: T.fg2, lineHeight: 1.6, margin: 0 }}>
+        <p style={{ fontFamily: TL.font.sans, fontSize: 12.5, color: TL.mute, lineHeight: 1.6, margin: 0 }}>
           Vi fant ingen plan-template som matcher din kategori og fase. Du kan
           fortsatt la AI-en lage en plan fra scratch.
         </p>
@@ -601,7 +582,7 @@ function Steg2Anbefaling(props: {
   const alternativer = anbefalinger.alternativer;
 
   return (
-    <section style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+    <section style={{ display: "flex", flexDirection: "column", gap: 16 }}>
       <InnsiktChip>
         Basert på din NGF-kategori og aktive fase fant jeg denne malen til deg:
       </InnsiktChip>
@@ -685,19 +666,19 @@ function MalKortV2(props: {
           ) : undefined
         }
         style={{
-          border: `1px solid ${valgt ? `color-mix(in srgb, ${T.lime} 45%, transparent)` : T.border}`,
+          border: `1px solid ${valgt ? `color-mix(in srgb, ${TL.fill} 45%, transparent)` : TL.hair}`,
         }}
       >
         <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-          <span style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 19, color: T.fg, flex: 1, minWidth: 0 }}>
+          <span style={{ fontFamily: TL.font.sans, fontWeight: 700, fontSize: 19, color: TL.text, flex: 1, minWidth: 0 }}>
             {mal.navn}
           </span>
           {valgt && erAnbefalt && (
-            <Icon name="check" size={15} style={{ color: T.lime, flex: "none" }} />
+            <Icon name="check" size={15} style={{ color: TL.fill, flex: "none" }} />
           )}
         </div>
         {mal.beskrivelse && (
-          <p style={{ fontFamily: T.ui, fontSize: 12.5, color: T.fg2, lineHeight: 1.6, margin: "8px 0 0", maxWidth: 600 }}>
+          <p style={{ fontFamily: TL.font.sans, fontSize: 12.5, color: TL.mute, lineHeight: 1.6, margin: "8px 0 0", maxWidth: 600 }}>
             {mal.beskrivelse}
           </p>
         )}
@@ -705,7 +686,7 @@ function MalKortV2(props: {
           style={{
             display: "grid",
             gridTemplateColumns: "repeat(auto-fit, minmax(140px, 1fr))",
-            gap: T.gap,
+            gap: 16,
             margin: "14px 0",
           }}
         >
@@ -734,14 +715,14 @@ function MalKortV2(props: {
             gap: 14,
             marginTop: 12,
             flexWrap: "wrap",
-            fontFamily: T.ui,
+            fontFamily: TL.font.sans,
             fontSize: 12,
-            color: T.fg2,
+            color: TL.mute,
           }}
         >
           <span>
             Brukt{" "}
-            <strong style={{ fontWeight: 600, color: T.fg, fontVariantNumeric: "tabular-nums" }}>
+            <strong style={{ fontWeight: 600, color: TL.text, fontVariantNumeric: "tabular-nums" }}>
               {mal.usageCount}
             </strong>{" "}
             ganger
@@ -749,7 +730,7 @@ function MalKortV2(props: {
           {mal.effectivenessAvg !== null && (
             <span style={{ display: "inline-flex", alignItems: "center", gap: 5 }}>
               Snitt-effekt:{" "}
-              <strong style={{ fontFamily: T.mono, fontWeight: 700, color: T.lime, fontVariantNumeric: "tabular-nums" }}>
+              <strong style={{ fontFamily: TL.font.mono, fontWeight: 700, color: TL.fill, fontVariantNumeric: "tabular-nums" }}>
                 {mal.effectivenessAvg >= 0 ? "+" : ""}
                 {mal.effectivenessAvg.toFixed(2)}
               </strong>{" "}
@@ -820,16 +801,16 @@ function Steg3AiTilpasser(props: {
                 display: "inline-flex",
                 alignItems: "center",
                 justifyContent: "center",
-                background: `color-mix(in srgb, ${T.down} 12%, transparent)`,
+                background: `color-mix(in srgb, ${TL.danger} 12%, transparent)`,
               }}
             >
-              <Icon name="triangle-alert" size={24} style={{ color: T.down }} />
+              <Icon name="triangle-alert" size={24} style={{ color: TL.danger }} />
             </span>
             <div>
-              <div style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 21, color: T.fg }}>
+              <div style={{ fontFamily: TL.font.sans, fontWeight: 700, fontSize: 21, color: TL.text }}>
                 AI klarte ikke å fullføre
               </div>
-              <p style={{ fontFamily: T.ui, fontSize: 12.5, color: T.fg2, lineHeight: 1.6, margin: "8px 0 0", maxWidth: 480 }}>
+              <p style={{ fontFamily: TL.font.sans, fontSize: 12.5, color: TL.mute, lineHeight: 1.6, margin: "8px 0 0", maxWidth: 480 }}>
                 {feil}
               </p>
             </div>
@@ -853,25 +834,25 @@ function Steg3AiTilpasser(props: {
                   display: "inline-flex",
                   alignItems: "center",
                   justifyContent: "center",
-                  background: `color-mix(in srgb, ${T.lime} 14%, transparent)`,
+                  background: `color-mix(in srgb, ${TL.fill} 14%, transparent)`,
                 }}
               >
-                <Icon name="sparkles" size={28} style={{ color: T.lime }} />
+                <Icon name="sparkles" size={28} style={{ color: TL.fill }} />
               </span>
               <Icon
                 name="loader"
                 size={20}
                 className="animate-spin"
-                style={{ position: "absolute", right: -4, bottom: -4, color: T.lime }}
+                style={{ position: "absolute", right: -4, bottom: -4, color: TL.fill }}
               />
             </span>
             <div>
-              <div style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 22, color: T.fg }}>
+              <div style={{ fontFamily: TL.font.sans, fontWeight: 700, fontSize: 22, color: TL.text }}>
                 Anders&apos;{" "}
-                <em style={{ fontStyle: "italic", color: T.lime }}>AI tilpasser</em>{" "}
+                <em style={{ fontStyle: "italic", color: TL.fill }}>AI tilpasser</em>{" "}
                 malen til deg …
               </div>
-              <p style={{ fontFamily: T.ui, fontSize: 12.5, color: T.fg2, margin: "8px 0 0" }}>
+              <p style={{ fontFamily: TL.font.sans, fontSize: 12.5, color: TL.mute, margin: "8px 0 0" }}>
                 Dette tar typisk 10-15 sekunder.
               </p>
             </div>
@@ -896,17 +877,17 @@ function Steg3AiTilpasser(props: {
                     alignItems: "flex-start",
                     gap: 8,
                     borderRadius: 10,
-                    border: `1px solid ${T.border}`,
-                    background: T.panel2,
+                    border: `1px solid ${TL.hair}`,
+                    background: TL.dock,
                     padding: "10px 12px",
                   }}
                 >
                   <Icon
                     name="check-circle"
                     size={14}
-                    style={{ color: T.lime, flex: "none", marginTop: 2 }}
+                    style={{ color: TL.fill, flex: "none", marginTop: 2 }}
                   />
-                  <span style={{ fontFamily: T.ui, fontSize: 12.5, lineHeight: 1.5, color: T.fg }}>
+                  <span style={{ fontFamily: TL.font.sans, fontSize: 12.5, lineHeight: 1.5, color: TL.text }}>
                     {b.tekst}
                     {b.hjelp && (
                       <span style={{ marginLeft: 5, display: "inline-flex", verticalAlign: "middle" }}>
@@ -968,19 +949,19 @@ function Steg4Forhandsvis(props: {
   })).filter((e) => e.pct > 0);
 
   return (
-    <section style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
-      <div className="grid grid-cols-1 lg:grid-cols-[340px_1fr]" style={{ gap: T.gap, alignItems: "start" }}>
+    <section style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+      <div className="grid grid-cols-1 lg:grid-cols-[340px_1fr]" style={{ gap: 16, alignItems: "start" }}>
         {/* Venstre — Plan-oversikt */}
-        <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
           <Kort eyebrow="Plan-navn">
             <input
               id="plannavn"
               type="text"
               value={forslag.navn}
               onChange={(e) => oppdaterNavn(e.target.value)}
-              style={{ ...inputStyle, fontFamily: T.disp, fontWeight: 700, fontSize: 16 }}
+              style={{ ...inputStyle, fontFamily: TL.font.sans, fontWeight: 700, fontSize: 16 }}
             />
-            <p style={{ fontFamily: T.ui, fontSize: 12.5, color: T.fg2, lineHeight: 1.6, margin: "10px 0 0" }}>
+            <p style={{ fontFamily: TL.font.sans, fontSize: 12.5, color: TL.mute, lineHeight: 1.6, margin: "10px 0 0" }}>
               {forslag.beskrivelse}
             </p>
           </Kort>
@@ -1023,7 +1004,7 @@ function Steg4Forhandsvis(props: {
         </div>
 
         {/* Høyre — Ukentlig grid */}
-        <div style={{ display: "flex", flexDirection: "column", gap: T.gap, minWidth: 0 }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: 16, minWidth: 0 }}>
           <div
             style={{
               display: "flex",
@@ -1033,11 +1014,11 @@ function Steg4Forhandsvis(props: {
               flexWrap: "wrap",
             }}
           >
-            <span style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 19, color: T.fg }}>
+            <span style={{ fontFamily: TL.font.sans, fontWeight: 700, fontSize: 19, color: TL.text }}>
               Ukentlig grid
             </span>
             <span style={{ display: "inline-flex", alignItems: "center", gap: 5 }}>
-              <Icon name="pencil" size={11} style={{ color: T.mut }} />
+              <Icon name="pencil" size={11} style={{ color: TL.mute }} />
               <Caps size={9}>Klikk for å redigere</Caps>
             </span>
           </div>
@@ -1057,13 +1038,13 @@ function Steg4Forhandsvis(props: {
       {feil && (
         <div
           style={{
-            border: `1px solid color-mix(in srgb, ${T.down} 35%, transparent)`,
-            background: `color-mix(in srgb, ${T.down} 8%, transparent)`,
+            border: `1px solid color-mix(in srgb, ${TL.danger} 35%, transparent)`,
+            background: `color-mix(in srgb, ${TL.danger} 8%, transparent)`,
             borderRadius: 12,
             padding: "10px 14px",
-            fontFamily: T.ui,
+            fontFamily: TL.font.sans,
             fontSize: 12.5,
-            color: T.down,
+            color: TL.danger,
           }}
         >
           {feil}
@@ -1073,13 +1054,13 @@ function Steg4Forhandsvis(props: {
       {erGratis && (
         <Kort eyebrow="Abonnement">
           <div style={{ display: "flex", gap: 9 }}>
-            <Icon name="lock" size={14} style={{ color: T.mut, flex: "none", marginTop: 2 }} />
-            <p style={{ fontFamily: T.ui, fontSize: 12, color: T.fg2, lineHeight: 1.6, margin: 0 }}>
-              <strong style={{ fontWeight: 600, color: T.fg }}>GRATIS-konto:</strong>{" "}
+            <Icon name="lock" size={14} style={{ color: TL.mute, flex: "none", marginTop: 2 }} />
+            <p style={{ fontFamily: TL.font.sans, fontSize: 12, color: TL.mute, lineHeight: 1.6, margin: 0 }}>
+              <strong style={{ fontWeight: 600, color: TL.text }}>GRATIS-konto:</strong>{" "}
               Du kan se forslaget, men ikke lagre det.{" "}
               <Link
                 href="/portal/meg/abonnement"
-                style={{ color: T.lime, fontWeight: 600, textDecoration: "none" }}
+                style={{ color: TL.fill, fontWeight: 600, textDecoration: "none" }}
               >
                 Oppgrader til PRO
               </Link>{" "}
@@ -1138,11 +1119,11 @@ function NokkelRad({ label, verdi, last }: { label: string; verdi: string; last?
         justifyContent: "space-between",
         gap: 10,
         padding: "8px 0",
-        borderBottom: last ? "none" : `1px solid ${T.border}`,
+        borderBottom: last ? "none" : `1px solid ${TL.hair}`,
       }}
     >
-      <span style={{ fontFamily: T.ui, fontSize: 12.5, color: T.fg2 }}>{label}</span>
-      <span style={{ fontFamily: T.mono, fontSize: 12.5, fontWeight: 700, color: T.fg, fontVariantNumeric: "tabular-nums" }}>
+      <span style={{ fontFamily: TL.font.sans, fontSize: 12.5, color: TL.mute }}>{label}</span>
+      <span style={{ fontFamily: TL.font.mono, fontSize: 12.5, fontWeight: 700, color: TL.text, fontVariantNumeric: "tabular-nums" }}>
         {verdi}
       </span>
     </div>
@@ -1172,8 +1153,8 @@ function UkeKort(props: {
               style={{
                 minHeight: 80,
                 borderRadius: 10,
-                border: `1px solid ${T.border}`,
-                background: T.panel2,
+                border: `1px solid ${TL.hair}`,
+                background: TL.dock,
                 padding: 8,
                 minWidth: 0,
               }}
@@ -1188,10 +1169,10 @@ function UkeKort(props: {
                     alignItems: "center",
                     justifyContent: "center",
                     borderRadius: 8,
-                    border: `1px dashed ${T.border}`,
+                    border: `1px dashed ${TL.hair}`,
                   }}
                 >
-                  <Icon name="plus" size={12} style={{ color: T.mut }} />
+                  <Icon name="plus" size={12} style={{ color: TL.mute }} />
                 </div>
               ) : (
                 <div style={{ marginTop: 6, display: "flex", flexDirection: "column", gap: 6 }}>
@@ -1222,14 +1203,14 @@ function OktBoks(props: {
 }) {
   const { okt, aapen, onToggle, onFjern } = props;
   const akse = TYPE_TIL_AKSE[okt.type] ?? "TEK";
-  const farge = T.ax[akse] ?? T.mut;
+  const farge = T.ax[akse] ?? TL.mute;
   return (
     <div
       style={{
         overflow: "hidden",
         borderRadius: 8,
-        border: `1px solid ${T.border}`,
-        background: T.panel,
+        border: `1px solid ${TL.hair}`,
+        background: TL.elev,
       }}
     >
       <button
@@ -1264,11 +1245,11 @@ function OktBoks(props: {
           <span
             style={{
               display: "block",
-              fontFamily: T.ui,
+              fontFamily: TL.font.sans,
               fontSize: 10.5,
               fontWeight: 600,
               lineHeight: 1.3,
-              color: T.fg,
+              color: TL.text,
               whiteSpace: "nowrap",
               overflow: "hidden",
               textOverflow: "ellipsis",
@@ -1276,26 +1257,26 @@ function OktBoks(props: {
           >
             {okt.fokus}
           </span>
-          <span style={{ fontFamily: T.mono, fontSize: 9, color: T.mut, fontVariantNumeric: "tabular-nums" }}>
+          <span style={{ fontFamily: TL.font.mono, fontSize: 9, color: TL.mute, fontVariantNumeric: "tabular-nums" }}>
             {okt.varighetMin} min
           </span>
         </span>
       </button>
       {aapen && (
-        <div style={{ borderTop: `1px solid ${T.border}`, background: T.panel2, padding: "8px" }}>
+        <div style={{ borderTop: `1px solid ${TL.hair}`, background: TL.dock, padding: "8px" }}>
           <Caps size={9}>Drills ({okt.drills.length})</Caps>
           <ul style={{ margin: "4px 0 0", padding: 0, listStyle: "none", display: "flex", flexDirection: "column", gap: 4 }}>
             {okt.drills.map((d, i) => (
-              <li key={i} style={{ fontFamily: T.ui, fontSize: 10.5, lineHeight: 1.4, color: T.fg }}>
+              <li key={i} style={{ fontFamily: TL.font.sans, fontSize: 10.5, lineHeight: 1.4, color: TL.text }}>
                 <strong style={{ fontWeight: 600 }}>{d.navn}</strong>
                 {(d.sets ?? d.antallSet) !== undefined &&
                   (d.reps ?? d.antallRep) !== undefined && (
-                    <span style={{ marginLeft: 4, fontFamily: T.mono, color: T.mut, fontVariantNumeric: "tabular-nums" }}>
+                    <span style={{ marginLeft: 4, fontFamily: TL.font.mono, color: TL.mute, fontVariantNumeric: "tabular-nums" }}>
                       {d.sets ?? d.antallSet}×{d.reps ?? d.antallRep}
                     </span>
                   )}
                 {d.csTarget !== undefined && (
-                  <span style={{ marginLeft: 4, fontFamily: T.mono, color: T.lime, fontVariantNumeric: "tabular-nums" }}>
+                  <span style={{ marginLeft: 4, fontFamily: TL.font.mono, color: TL.fill, fontVariantNumeric: "tabular-nums" }}>
                     @{d.csTarget}%
                   </span>
                 )}
@@ -1319,12 +1300,12 @@ function OktBoks(props: {
               background: "transparent",
               border: "none",
               padding: 0,
-              fontFamily: T.mono,
+              fontFamily: TL.font.mono,
               fontSize: 9.5,
               fontWeight: 700,
               letterSpacing: "0.06em",
               textTransform: "uppercase",
-              color: T.down,
+              color: TL.danger,
             }}
           >
             <Icon name="trash-2" size={11} />
@@ -1396,16 +1377,16 @@ function Steg5Bekreftelse(props: {
             display: "inline-flex",
             alignItems: "center",
             justifyContent: "center",
-            background: `color-mix(in srgb, ${T.lime} 14%, transparent)`,
+            background: `color-mix(in srgb, ${TL.fill} 14%, transparent)`,
           }}
         >
-          <Icon name="check-circle" size={30} style={{ color: T.lime }} />
+          <Icon name="check-circle" size={30} style={{ color: TL.fill }} />
         </span>
         <div>
-          <div style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 26, letterSpacing: "-0.02em", color: T.fg }}>
+          <div style={{ fontFamily: TL.font.sans, fontWeight: 700, fontSize: 26, letterSpacing: "-0.02em", color: TL.text }}>
             {sendtTilGodkjenning ? "Sendt til Anders!" : "Lagret som utkast"}
           </div>
-          <p style={{ fontFamily: T.ui, fontSize: 13, color: T.fg2, lineHeight: 1.6, margin: "8px 0 0" }}>
+          <p style={{ fontFamily: TL.font.sans, fontSize: 13, color: TL.mute, lineHeight: 1.6, margin: "8px 0 0" }}>
             {sendtTilGodkjenning
               ? "Anders svarer vanligvis innen 24 timer. Du får varsel når planen er godkjent."
               : "Planen ligger nå som utkast under Mål-fanen. Du kan redigere eller sende den til godkjenning når du vil."}

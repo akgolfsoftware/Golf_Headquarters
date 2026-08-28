@@ -1,4 +1,5 @@
 "use client";
+import { TL } from "@/lib/v2/train-lock";
 
 /**
  * AgencyOS Hjelp — v2 (retning C «Presis»). Rekomponerer
@@ -14,18 +15,7 @@
 
 import { useMemo, useState } from "react";
 import Link from "next/link";
-import {
-  Caps,
-  Tittel,
-  Kort,
-  Rad,
-  CTAPill,
-  Inndata,
-  TomTilstand,
-  Icon,
-  T,
-} from "@/components/v2";
-
+import { Caps, Kort, Rad, CTAPill, Inndata, TomTilstand, Icon } from "@/components/v2";
 interface HjelpKategori {
   id: string;
   tittel: string;
@@ -89,7 +79,7 @@ const FORESLATT = ["Logg runde", "Pyramide", "Oppgrader til Pro", "Bytt coach"];
 function seksjonHode(tittel: string, meta: string) {
   return (
     <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: 12, marginBottom: 12 }}>
-      <span style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 18, fontStyle: "italic", color: T.fg }}>{tittel}</span>
+      <span style={{ fontFamily: TL.font.sans, fontWeight: 700, fontSize: 18, fontStyle: "italic", color: TL.text }}>{tittel}</span>
       <Caps size={9}>{meta}</Caps>
     </div>
   );
@@ -101,18 +91,18 @@ function KategoriKort({ kategori }: { kategori: HjelpKategori }) {
       <Kort hover>
         <span
           aria-hidden="true"
-          style={{ width: 40, height: 40, borderRadius: 10, background: T.panel2, display: "inline-flex", alignItems: "center", justifyContent: "center" }}
+          style={{ width: 40, height: 40, borderRadius: 10, background: TL.dock, display: "inline-flex", alignItems: "center", justifyContent: "center" }}
         >
-          <Icon name={kategori.icon} size={18} style={{ color: T.lime }} />
+          <Icon name={kategori.icon} size={18} style={{ color: TL.fill }} />
         </span>
-        <div style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 15, color: T.fg, marginTop: 12 }}>
+        <div style={{ fontFamily: TL.font.sans, fontWeight: 700, fontSize: 15, color: TL.text, marginTop: 12 }}>
           {kategori.tittel}
         </div>
         <div style={{ marginTop: 6 }}>
           <Caps size={9}>{`${kategori.antall} artikler`}</Caps>
         </div>
         <div style={{ display: "flex", justifyContent: "flex-end", marginTop: 14 }}>
-          <span style={{ display: "inline-flex", alignItems: "center", gap: 4, fontFamily: T.ui, fontSize: 12, fontWeight: 600, color: T.lime }}>
+          <span style={{ display: "inline-flex", alignItems: "center", gap: 4, fontFamily: TL.font.sans, fontSize: 12, fontWeight: 600, color: TL.fill }}>
             Åpne
             <Icon name="arrow-right" size={12} />
           </span>
@@ -129,7 +119,7 @@ function ArtikkelRad({ artikkel, last }: { artikkel: HjelpArtikkel; last: boolea
         title={artikkel.tittel}
         sub={artikkel.utdrag}
         meta={
-          <span style={{ fontFamily: T.mono, fontSize: 10, fontWeight: 700, color: T.mut, whiteSpace: "nowrap" }}>
+          <span style={{ fontFamily: TL.font.mono, fontSize: 10, fontWeight: 700, color: TL.mute, whiteSpace: "nowrap" }}>
             {`${artikkel.kategori} · ${artikkel.lesetidMin} min`}
           </span>
         }
@@ -158,12 +148,12 @@ function KontaktKort({
       <Kort tint>
         <span
           aria-hidden="true"
-          style={{ width: 40, height: 40, borderRadius: 10, background: T.panel2, display: "inline-flex", alignItems: "center", justifyContent: "center" }}
+          style={{ width: 40, height: 40, borderRadius: 10, background: TL.dock, display: "inline-flex", alignItems: "center", justifyContent: "center" }}
         >
-          <Icon name={icon} size={18} style={{ color: T.lime }} />
+          <Icon name={icon} size={18} style={{ color: TL.fill }} />
         </span>
-        <div style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 15, color: T.fg, marginTop: 12 }}>{tittel}</div>
-        <p style={{ fontFamily: T.ui, fontSize: 11.5, lineHeight: 1.5, color: T.mut, margin: "6px 0 0" }}>{sub}</p>
+        <div style={{ fontFamily: TL.font.sans, fontWeight: 700, fontSize: 15, color: TL.text, marginTop: 12 }}>{tittel}</div>
+        <p style={{ fontFamily: TL.font.sans, fontSize: 11.5, lineHeight: 1.5, color: TL.mute, margin: "6px 0 0" }}>{sub}</p>
         <div style={{ marginTop: 14 }}>
           <CTAPill ghost icon={isMail ? "mail" : "arrow-right"}>{cta}</CTAPill>
         </div>
@@ -190,13 +180,13 @@ export function AdminHjelpV2() {
   const totalArtikler = KATEGORIER.reduce((sum, k) => sum + k.antall, 0);
 
   return (
-    <div data-paper-wave-h="hjelp" data-paper-pattern style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 960, margin: "0 auto", width: "100%" }}>
+    <div data-paper-wave-h="hjelp" data-paper-pattern style={{ display: "flex", flexDirection: "column", gap: 16, maxWidth: 960, margin: "0 auto", width: "100%" }}>
       <div>
         <div data-paper-pattern-topp>
-          <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>Hjelp</h1>
-          <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>AgencyOS</span>
+          <h1 style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 17, fontWeight: 600, color: TL.text }}>Hjelp</h1>
+          <span style={{ display: "block", fontFamily: TL.font.mono, fontSize: 10.5, color: TL.mute, marginTop: 2 }}>AgencyOS</span>
         </div>
-        <p style={{ fontFamily: T.ui, fontSize: 13, color: T.mut, marginTop: 8, maxWidth: 480 }}>
+        <p style={{ fontFamily: TL.font.sans, fontSize: 13, color: TL.mute, marginTop: 8, maxWidth: 480 }}>
           Søk i hjelp-artikler, eller spør direkte. Vi svarer innen 1 time på hverdager.
         </p>
       </div>
@@ -208,7 +198,7 @@ export function AdminHjelpV2() {
           value={sok}
           onChange={setSok}
           placeholder="Søk hjelp-artikler eller skriv et spørsmål…"
-          suffix={<Icon name="search" size={13} style={{ color: T.mut }} />}
+          suffix={<Icon name="search" size={13} style={{ color: TL.mute }} />}
         />
       </div>
 
@@ -221,12 +211,12 @@ export function AdminHjelpV2() {
               onClick={() => setSok(label)}
               className="v2-press v2-focus"
               style={{
-                fontFamily: T.ui,
+                fontFamily: TL.font.sans,
                 fontSize: 12.5,
                 fontWeight: 500,
-                color: T.fg2,
-                background: T.panel2,
-                border: `1px solid ${T.border}`,
+                color: TL.mute,
+                background: TL.dock,
+                border: `1px solid ${TL.hair}`,
                 borderRadius: 9999,
                 padding: "8px 14px",
                 cursor: "pointer",
@@ -251,7 +241,7 @@ export function AdminHjelpV2() {
       {/* Kategorier */}
       <section aria-labelledby="kategorier-heading">
         {seksjonHode("Kategorier", `${totalArtikler} artikler totalt`)}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3" style={{ gap: T.gap }}>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3" style={{ gap: 16 }}>
           {KATEGORIER.map((k) => (
             <KategoriKort key={k.id} kategori={k} />
           ))}
@@ -271,14 +261,14 @@ export function AdminHjelpV2() {
       {/* Kontakt-CTA */}
       <section aria-labelledby="kontakt-heading">
         <div style={{ textAlign: "center", marginBottom: 12 }}>
-          <span style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 20, color: T.fg }}>
-            Trenger du <em style={{ fontStyle: "italic", color: T.lime }}>mer hjelp?</em>
+          <span style={{ fontFamily: TL.font.sans, fontWeight: 700, fontSize: 20, color: TL.text }}>
+            Trenger du <em style={{ fontStyle: "italic", color: TL.fill }}>mer hjelp?</em>
           </span>
           <div style={{ marginTop: 6 }}>
             <Caps size={9}>Vi er her — velg det som passer deg</Caps>
           </div>
         </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3" style={{ gap: T.gap }}>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3" style={{ gap: 16 }}>
           <KontaktKort
             icon="message-circle"
             tittel="Chat med oss"
@@ -303,7 +293,7 @@ export function AdminHjelpV2() {
         </div>
       </section>
 
-      <p style={{ fontFamily: T.ui, fontSize: 12, color: T.mut, lineHeight: 1.6, margin: 0 }}>
+      <p style={{ fontFamily: TL.font.sans, fontSize: 12, color: TL.mute, lineHeight: 1.6, margin: 0 }}>
         Hjelp-innholdet er statisk og vedlikeholdes manuelt — kontakt support dersom en artikkel mangler eller er
         utdatert.
       </p>

@@ -1,5 +1,5 @@
 "use client";
-
+import { TL } from "@/lib/v2/train-lock";
 /**
  * AgencyOS Foreslåtte tester — v2 (retning C «Presis», mørk først). Coach/ADMIN
  * behandler custom-tester spillere har sendt inn til godkjenning. Rekomponert
@@ -17,20 +17,9 @@
 
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import {
-  T,
-  Caps,
-  Tittel,
-  Kort,
-  Knapp,
-  AkseChip,
-  TomTilstand,
-  HjelpTips,
-  Icon,
-} from "@/components/v2";
+import { Caps, Kort, Knapp, AkseChip, TomTilstand, HjelpTips, Icon } from "@/components/v2";
 import type { AkseKey } from "@/lib/v2/tokens";
 import { avvisForslag, godkjennForslag } from "@/app/admin/tester/foreslatte/actions";
-
 /* ── Datakontrakt (mappes fra Prisma + protokoll-parsing i ruten) ─────── */
 
 export interface ForeslattTestV2 {
@@ -88,7 +77,7 @@ function ForslagKort({ test }: { test: ForeslattTestV2 }) {
     <Kort
       eyebrow={
         <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
-          <Icon name="user" size={11} style={{ color: T.mut }} />
+          <Icon name="user" size={11} style={{ color: TL.mute }} />
           {test.forfatter} · {test.opprettet}
         </span>
       }
@@ -100,18 +89,18 @@ function ForslagKort({ test }: { test: ForeslattTestV2 }) {
       }
       style={{ height: "100%" }}
     >
-      <div style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 17, lineHeight: 1.25, color: T.fg }}>
+      <div style={{ fontFamily: TL.font.sans, fontWeight: 700, fontSize: 17, lineHeight: 1.25, color: TL.text }}>
         {test.navn}
       </div>
       {test.beskrivelse && (
-        <p style={{ fontFamily: T.ui, fontSize: 12.5, color: T.fg2, lineHeight: 1.55, margin: "8px 0 0" }}>
+        <p style={{ fontFamily: TL.font.sans, fontSize: 12.5, color: TL.mute, lineHeight: 1.55, margin: "8px 0 0" }}>
           {test.beskrivelse}
         </p>
       )}
 
       <div style={{ marginTop: 14 }}>
         <Caps size={9}>Scoring</Caps>
-        <p style={{ fontFamily: T.ui, fontSize: 13, color: T.fg, lineHeight: 1.5, margin: "5px 0 0" }}>
+        <p style={{ fontFamily: TL.font.sans, fontSize: 13, color: TL.text, lineHeight: 1.5, margin: "5px 0 0" }}>
           {test.scoring}
         </p>
       </div>
@@ -121,8 +110,8 @@ function ForslagKort({ test }: { test: ForeslattTestV2 }) {
           <Caps size={9}>Protokoll</Caps>
           <ol style={{ listStyle: "none", margin: "6px 0 0", padding: 0, display: "flex", flexDirection: "column", gap: 5 }}>
             {test.steg.map((s, i) => (
-              <li key={i} style={{ display: "flex", gap: 8, fontFamily: T.ui, fontSize: 12.5, color: T.fg2, lineHeight: 1.5 }}>
-                <span style={{ fontFamily: T.mono, fontSize: 11, fontWeight: 700, color: T.lime, flex: "none", fontVariantNumeric: "tabular-nums" }}>
+              <li key={i} style={{ display: "flex", gap: 8, fontFamily: TL.font.sans, fontSize: 12.5, color: TL.mute, lineHeight: 1.5 }}>
+                <span style={{ fontFamily: TL.font.mono, fontSize: 11, fontWeight: 700, color: TL.fill, flex: "none", fontVariantNumeric: "tabular-nums" }}>
                   {i + 1}.
                 </span>
                 {s}
@@ -139,10 +128,10 @@ function ForslagKort({ test }: { test: ForeslattTestV2 }) {
             {test.nivaaer.map((n) => (
               <div
                 key={n.nivaa}
-                style={{ background: T.panel2, border: `1px solid ${T.border}`, borderRadius: 10, padding: "7px 10px", minWidth: 0 }}
+                style={{ background: TL.dock, border: `1px solid ${TL.hair}`, borderRadius: 10, padding: "7px 10px", minWidth: 0 }}
               >
                 <Caps size={8.5}>{n.nivaa}</Caps>
-                <div style={{ fontFamily: T.mono, fontSize: 13, fontWeight: 700, color: T.fg, fontVariantNumeric: "tabular-nums", marginTop: 3, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                <div style={{ fontFamily: TL.font.mono, fontSize: 13, fontWeight: 700, color: TL.text, fontVariantNumeric: "tabular-nums", marginTop: 3, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
                   {n.verdi}
                 </div>
               </div>
@@ -155,11 +144,11 @@ function ForslagKort({ test }: { test: ForeslattTestV2 }) {
         <div
           role="alert"
           style={{
-            fontFamily: T.ui,
+            fontFamily: TL.font.sans,
             fontSize: 12,
-            color: T.down,
-            background: `color-mix(in srgb, ${T.down} 10%, transparent)`,
-            border: `1px solid color-mix(in srgb, ${T.down} 30%, transparent)`,
+            color: TL.danger,
+            background: `color-mix(in srgb, ${TL.danger} 10%, transparent)`,
+            border: `1px solid color-mix(in srgb, ${TL.danger} 30%, transparent)`,
             borderRadius: 10,
             padding: "8px 11px",
             marginTop: 12,
@@ -182,7 +171,7 @@ function ForslagKort({ test }: { test: ForeslattTestV2 }) {
         <Knapp icon={pending ? "loader" : "check"} disabled={pending} onClick={godkjenn} full style={{ minHeight: 44 }}>
           Godkjenn
         </Knapp>
-        <Knapp ghost icon="trash" disabled={pending} onClick={avvis} style={{ minHeight: 44, color: T.down }}>
+        <Knapp ghost icon="trash" disabled={pending} onClick={avvis} style={{ minHeight: 44, color: TL.danger }}>
           Avvis
         </Knapp>
       </div>
@@ -196,14 +185,14 @@ export function AdminForeslatteTesterV2({ data }: { data: AdminForeslatteTesterV
   const { forslag } = data;
 
   return (
-    <div data-paper-wave-h="foreslatte-tester" data-paper-pattern style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 960, margin: "0 auto", width: "100%" }}>
+    <div data-paper-wave-h="foreslatte-tester" data-paper-pattern style={{ display: "flex", flexDirection: "column", gap: 16, maxWidth: 960, margin: "0 auto", width: "100%" }}>
       {/* Hode */}
       <div>
         <div data-paper-pattern-topp>
-          <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>Foreslåtte tester</h1>
-          <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>AgencyOS</span>
+          <h1 style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 17, fontWeight: 600, color: TL.text }}>Foreslåtte tester</h1>
+          <span style={{ display: "block", fontFamily: TL.font.mono, fontSize: 10.5, color: TL.mute, marginTop: 2 }}>AgencyOS</span>
         </div>
-        <p style={{ fontFamily: T.ui, fontSize: 13, color: T.mut, lineHeight: 1.55, margin: "10px 0 0", maxWidth: 560 }}>
+        <p style={{ fontFamily: TL.font.sans, fontSize: 13, color: TL.mute, lineHeight: 1.55, margin: "10px 0 0", maxWidth: 560 }}>
           Spillere har sendt inn egne tester for godkjenning. Godkjente tester
           blir tilgjengelige for hele akademiet.
         </p>
@@ -218,7 +207,7 @@ export function AdminForeslatteTesterV2({ data }: { data: AdminForeslatteTesterV
           />
         </Kort>
       ) : (
-        <div className="grid grid-cols-1 lg:grid-cols-2" style={{ gap: T.gap }}>
+        <div className="grid grid-cols-1 lg:grid-cols-2" style={{ gap: 16 }}>
           {forslag.map((t) => (
             <ForslagKort key={t.id} test={t} />
           ))}

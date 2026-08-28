@@ -1,5 +1,5 @@
 "use client";
-
+import { TL } from "@/lib/v2/train-lock";
 /**
  * Delt periode-skjema — v2 Presis + B-pakke (status + én primær CTA, tom = vei).
  * T.* only. Lys PlayerHQ.
@@ -8,16 +8,11 @@
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import type { LPhase } from "@/generated/prisma/client";
-import { T, Caps, Kort, Knapp, StatusPill } from "@/components/v2";
+import { Caps, Kort, Knapp, StatusPill } from "@/components/v2";
 import { Inndata, TekstOmraade } from "@/components/v2/skjema";
 import { Icon } from "@/components/v2/icon";
 import { HjelpTips } from "@/components/v2/hjelp";
-import {
-  opprettPeriode,
-  oppdaterPeriode,
-  slettPeriode,
-} from "@/app/portal/(legacy)/tren/aarsplan/periode/actions";
-
+import { opprettPeriode, oppdaterPeriode, slettPeriode } from "@/app/portal/(legacy)/tren/aarsplan/periode/actions";
 const LPHASE_META: Record<LPhase, string> = {
   GRUNN: "Grunnperiode",
   SPESIAL: "Spesialisering",
@@ -80,10 +75,10 @@ function TypePille({
         height: 32,
         padding: "0 14px",
         borderRadius: 9999,
-        background: aktiv ? T.lime : T.panel3,
-        border: `1px solid ${aktiv ? "transparent" : T.borderS}`,
-        color: aktiv ? T.onLime : T.fg,
-        fontFamily: T.ui,
+        background: aktiv ? TL.fill : TL.dim,
+        border: `1px solid ${aktiv ? "transparent" : TL.hair}`,
+        color: aktiv ? TL.onFill : TL.text,
+        fontFamily: TL.font.sans,
         fontSize: 12.5,
         fontWeight: aktiv ? 600 : 500,
         whiteSpace: "nowrap",
@@ -109,7 +104,7 @@ function FeltEtikett({
     <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 7 }}>
       <Caps size={9}>{children}</Caps>
       {paakrevd && (
-        <span style={{ fontFamily: T.mono, fontSize: 10, fontWeight: 700, color: T.down }}>*</span>
+        <span style={{ fontFamily: TL.font.mono, fontSize: 10, fontWeight: 700, color: TL.danger }}>*</span>
       )}
       {hjelp}
     </div>
@@ -170,7 +165,7 @@ export function PeriodeFormV2(props: Props) {
   }
 
   return (
-    <div style={{ maxWidth: 720, width: "100%", margin: "0 auto", display: "flex", flexDirection: "column", gap: T.gap }}>
+    <div style={{ maxWidth: 720, width: "100%", margin: "0 auto", display: "flex", flexDirection: "column", gap: 16 }}>
       {/* ── Periodetype ─────────────────────────────────── */}
       <Kort eyebrow="Periodetype">
         <div style={{ display: "flex", flexWrap: "wrap", gap: 8, alignItems: "center" }}>
@@ -221,14 +216,14 @@ export function PeriodeFormV2(props: Props) {
       {error && (
         <div role="alert" style={{ display: "flex", alignItems: "center", gap: 10 }}>
           <StatusPill tone="down">Feil</StatusPill>
-          <span style={{ fontFamily: T.ui, fontSize: 12.5, color: T.down }}>{error}</span>
+          <span style={{ fontFamily: TL.font.sans, fontSize: 12.5, color: TL.danger }}>{error}</span>
         </div>
       )}
 
       {/* ── Handlinger ──────────────────────────────────── */}
       <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: 8 }}>
         {props.mode === "rediger" && (
-          <Knapp ghost icon="trash-2" disabled={pending} onClick={slett} style={{ color: T.down }}>
+          <Knapp ghost icon="trash-2" disabled={pending} onClick={slett} style={{ color: TL.danger }}>
             Slett periode
           </Knapp>
         )}

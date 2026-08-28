@@ -1,26 +1,12 @@
 "use client";
-
+import { TL } from "@/lib/v2/train-lock";
 /**
  * PlayerHQ · Statistikk · Drill-down per disiplin (/portal/statistikk… — v2 Presis + B-pakke (status + én primær CTA, tom = vei).
  * T.* only. Lys PlayerHQ.
  */
 
 import Link from "next/link";
-import {
-  Kort,
-  Caps,
-  Tittel,
-  TallHero,
-  Trend,
-  TomTilstand,
-  CTAPill,
-  DataTabell,
-  type DataTabellColumn,
-  T,
-  fmtSg,
-  HjelpTips,
-} from "@/components/v2";
-
+import { Kort, Caps, Tittel, TallHero, Trend, TomTilstand, CTAPill, DataTabell, type DataTabellColumn, fmtSg, HjelpTips } from "@/components/v2";
 export interface StatMetrikkTrend {
   punkter: number[];
   yMin: number;
@@ -96,9 +82,9 @@ export function StatistikkMetrikkV2({ data }: { data: StatistikkMetrikkV2Data })
           <div style={{ marginTop: 6 }}>
             <Tittel em={data.em}>{data.tittel}</Tittel>
           </div>
-          <p style={{ fontFamily: T.ui, fontSize: 13, color: T.mut, margin: "8px 0 0" }}>{data.underLabel}</p>
+          <p style={{ fontFamily: TL.font.sans, fontSize: 13, color: TL.mute, margin: "8px 0 0" }}>{data.underLabel}</p>
         </div>
-        <span style={{ fontFamily: T.mono, fontSize: 9.5, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: T.mut, border: `1px solid ${T.border}`, borderRadius: 9999, padding: "5px 12px" }}>
+        <span style={{ fontFamily: TL.font.mono, fontSize: 9.5, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: TL.mute, border: `1px solid ${TL.hair}`, borderRadius: 9999, padding: "5px 12px" }}>
           Siste 90 d
         </span>
       </div>
@@ -115,7 +101,7 @@ export function StatistikkMetrikkV2({ data }: { data: StatistikkMetrikkV2Data })
       ) : (
         <>
           {/* Hovedtall-rad */}
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: T.gap }}>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: 16 }}>
             <Kort tint>
               <TallHero
                 label="Snitt 30 d"
@@ -135,20 +121,20 @@ export function StatistikkMetrikkV2({ data }: { data: StatistikkMetrikkV2Data })
                 <HjelpTips k="kategoriSnitt" size={11} />
               </span>
               <div style={{ display: "flex", alignItems: "baseline", gap: 8, marginTop: 12 }}>
-                <span style={{ fontFamily: T.mono, fontSize: 30, fontWeight: 700, color: data.benchmarkPositiv ? T.up : T.down, fontVariantNumeric: "tabular-nums" }}>
+                <span style={{ fontFamily: TL.font.mono, fontSize: 30, fontWeight: 700, color: data.benchmarkPositiv ? TL.ok : TL.danger, fontVariantNumeric: "tabular-nums" }}>
                   {data.benchmarkDiffLabel}
                 </span>
               </div>
-              <span style={{ fontFamily: T.mono, fontSize: 10, color: T.mut, marginTop: 10 }}>{data.benchmarkSnittLabel}</span>
+              <span style={{ fontFamily: TL.font.mono, fontSize: 10, color: TL.mute, marginTop: 10 }}>{data.benchmarkSnittLabel}</span>
             </Kort>
             <Kort>
               <Caps size={9}>{data.tredjeLabel}</Caps>
               <div style={{ display: "flex", alignItems: "baseline", gap: 8, marginTop: 12 }}>
-                <span style={{ fontFamily: T.mono, fontSize: 30, fontWeight: 700, color: T.fg, fontVariantNumeric: "tabular-nums" }}>
+                <span style={{ fontFamily: TL.font.mono, fontSize: 30, fontWeight: 700, color: TL.text, fontVariantNumeric: "tabular-nums" }}>
                   {data.tredjeVerdi}
                 </span>
               </div>
-              <span style={{ fontFamily: T.mono, fontSize: 10, color: T.mut, marginTop: 10 }}>{data.tredjeSub}</span>
+              <span style={{ fontFamily: TL.font.mono, fontSize: 10, color: TL.mute, marginTop: 10 }}>{data.tredjeSub}</span>
             </Kort>
           </div>
 
@@ -215,10 +201,10 @@ export function StatistikkMetrikkV2({ data }: { data: StatistikkMetrikkV2Data })
         <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", justifyContent: "space-between", gap: 14 }}>
           <div style={{ minWidth: 220, flex: 1 }}>
             <Caps size={9}>Be coachen om mer fokus</Caps>
-            <div style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 16, color: T.fg, marginTop: 8 }}>
+            <div style={{ fontFamily: TL.font.sans, fontWeight: 700, fontSize: 16, color: TL.text, marginTop: 8 }}>
               Vil du jobbe mer med {data.em.toLowerCase()}?
             </div>
-            <p style={{ fontFamily: T.ui, fontSize: 12.5, color: T.mut, lineHeight: 1.55, margin: "6px 0 0" }}>
+            <p style={{ fontFamily: TL.font.sans, fontSize: 12.5, color: TL.mute, lineHeight: 1.55, margin: "6px 0 0" }}>
               Send en melding til coach Anders Kristiansen og be ham legge mer av denne disiplinen inn i neste plan.
             </p>
           </div>

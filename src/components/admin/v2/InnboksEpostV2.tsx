@@ -11,20 +11,9 @@
  */
 
 import { useState, useTransition } from "react";
-import {
-  Caps,
-  Tittel,
-  Kort,
-  Rad,
-  AvatarInit,
-  StatusPill,
-  TekstOmraade,
-  Knapp,
-  TomTilstand,
-  Icon,
-  type StatusTone,
-} from "@/components/v2";
-import { T } from "@/lib/v2/tokens";
+import { Caps, Kort, Rad, AvatarInit, StatusPill, TekstOmraade, Knapp, TomTilstand, Icon, type StatusTone } from "@/components/v2";
+import { TL } from "@/lib/v2/train-lock";
+
 import { sendGodkjentSvar, arkiverEpost } from "@/lib/innboks/actions";
 import type { InnboksEpostVm } from "@/lib/innboks/data";
 
@@ -42,20 +31,20 @@ export function InnboksEpostV2({ epost }: { epost: InnboksEpostVm[] }) {
   const antallNye = epost.filter((e) => e.status === "NY").length;
 
   return (
-    <div data-paper-wave-e="innboks-epost" data-od-id="agencyos-innboks-epost" style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 1100, margin: "0 auto", width: "100%" }}>
+    <div data-paper-wave-e="innboks-epost" data-od-id="agencyos-innboks-epost" style={{ display: "flex", flexDirection: "column", gap: 16, maxWidth: 1100, margin: "0 auto", width: "100%" }}>
       <div>
-        <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>Innboks</h1>
-        <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>
+        <h1 style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 17, fontWeight: 600, color: TL.text }}>Innboks</h1>
+        <span style={{ display: "block", fontFamily: TL.font.mono, fontSize: 10.5, color: TL.mute, marginTop: 2 }}>
           E-post · post@akgolf.no · {pl(epost.length, "melding", "meldinger")}
           {antallNye > 0 ? ` · ${antallNye} nye` : ""}
         </span>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-[340px_1fr]" style={{ gap: T.gap }}>
+      <div className="grid grid-cols-1 lg:grid-cols-[340px_1fr]" style={{ gap: 16 }}>
         <Kort
           eyebrow="Alle e-poster"
           pad="8px"
-          action={epost.length > 0 ? <Caps size={9} color={antallNye > 0 ? T.warn : T.mut}>{pl(epost.length, "e-post", "e-poster")}</Caps> : undefined}
+          action={epost.length > 0 ? <Caps size={9} color={antallNye > 0 ? TL.warn : TL.mute}>{pl(epost.length, "e-post", "e-poster")}</Caps> : undefined}
         >
           {epost.length === 0 ? (
             <TomTilstand icon="mail" title="Ingen e-poster" sub="Innboksen er tom." />
@@ -73,7 +62,7 @@ export function InnboksEpostV2({ epost }: { epost: InnboksEpostVm[] }) {
                     status ? (
                       <StatusPill tone={status.tone}>{status.label}</StatusPill>
                     ) : (
-                      <Caps size={9} color={T.mut}>Arkivert</Caps>
+                      <Caps size={9} color={TL.mute}>Arkivert</Caps>
                     )
                   }
                   trailing={null}
@@ -121,18 +110,18 @@ function EpostDetalj({ epost }: { epost: InnboksEpostVm }) {
   }
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+    <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
       <Kort
         eyebrow="Original e-post"
-        action={status ? <StatusPill tone={status.tone}>{status.label}</StatusPill> : <Caps size={9} color={T.mut}>Arkivert</Caps>}
+        action={status ? <StatusPill tone={status.tone}>{status.label}</StatusPill> : <Caps size={9} color={TL.mute}>Arkivert</Caps>}
       >
         <div style={{ display: "flex", flexDirection: "column", gap: 3, marginBottom: 12 }}>
-          <div style={{ fontFamily: T.ui, fontSize: 15, fontWeight: 700, color: T.fg }}>{epost.emne}</div>
-          <div style={{ fontFamily: T.ui, fontSize: 12, color: T.mut }}>
+          <div style={{ fontFamily: TL.font.sans, fontSize: 15, fontWeight: 700, color: TL.text }}>{epost.emne}</div>
+          <div style={{ fontFamily: TL.font.sans, fontSize: 12, color: TL.mute }}>
             {epost.fraNavn ? `${epost.fraNavn} · ${epost.fraEpost}` : epost.fraEpost} — {epost.mottattAt}
           </div>
         </div>
-        <p style={{ fontFamily: T.ui, fontSize: 13, lineHeight: 1.6, color: T.fg2, whiteSpace: "pre-wrap", margin: 0 }}>
+        <p style={{ fontFamily: TL.font.sans, fontSize: 13, lineHeight: 1.6, color: TL.mute, whiteSpace: "pre-wrap", margin: 0 }}>
           {epost.brodtekst || "(tom e-post)"}
         </p>
       </Kort>
@@ -151,13 +140,13 @@ function EpostDetalj({ epost }: { epost: InnboksEpostVm }) {
               display: "flex",
               alignItems: "center",
               gap: 6,
-              fontFamily: T.ui,
+              fontFamily: TL.font.sans,
               fontSize: 12,
-              color: melding.ok ? T.up : T.warn,
+              color: melding.ok ? TL.ok : TL.warn,
               marginTop: 10,
             }}
           >
-            <Icon name={melding.ok ? "check-circle" : "alert-triangle"} size={13} style={{ color: melding.ok ? T.up : T.warn, flex: "none" }} />
+            <Icon name={melding.ok ? "check-circle" : "alert-triangle"} size={13} style={{ color: melding.ok ? TL.ok : TL.warn, flex: "none" }} />
             {melding.tekst}
           </div>
         )}

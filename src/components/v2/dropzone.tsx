@@ -11,7 +11,8 @@
 
 import { useRef, useState } from "react";
 import type { CSSProperties } from "react";
-import { T } from "@/lib/v2/tokens";
+import { TL } from "@/lib/v2/train-lock";
+
 import { Icon } from "@/components/v2/icon";
 import { Knapp } from "./core";
 
@@ -49,7 +50,7 @@ export function Dropzone({
   const inputRef = useRef<HTMLInputElement>(null);
   const [dragging, setDragging] = useState(false);
   const aktiv = dragging || !!file;
-  const kant = aktiv ? T.lime : T.borderS;
+  const kant = aktiv ? TL.fill : TL.hair;
 
   return (
     <label
@@ -74,7 +75,7 @@ export function Dropzone({
         padding: "34px 20px",
         borderRadius: 14,
         border: `1.5px dashed ${kant}`,
-        background: aktiv ? `color-mix(in srgb, ${T.lime} 6%, transparent)` : T.panel2,
+        background: aktiv ? `color-mix(in srgb, ${TL.fill} 6%, transparent)` : TL.dock,
         cursor: "pointer",
         transition: "border-color 180ms, background 180ms",
         ...style,
@@ -92,19 +93,19 @@ export function Dropzone({
           width: 46,
           height: 46,
           borderRadius: 9999,
-          background: file ? `color-mix(in srgb, ${T.lime} 12%, transparent)` : T.panel3,
-          border: `1px solid ${T.border}`,
+          background: file ? `color-mix(in srgb, ${TL.fill} 12%, transparent)` : TL.dim,
+          border: `1px solid ${TL.hair}`,
           display: "inline-flex",
           alignItems: "center",
           justifyContent: "center",
         }}
       >
-        <Icon name={file ? valgtIkon : idleIkon} size={19} style={{ color: file ? T.lime : T.fg2 }} />
+        <Icon name={file ? valgtIkon : idleIkon} size={19} style={{ color: file ? TL.fill : TL.mute }} />
       </span>
       {file ? (
         <>
-          <span style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 14, color: T.fg }}>{file.name}</span>
-          <span style={{ fontFamily: T.mono, fontSize: 11, color: T.mut, fontVariantNumeric: "tabular-nums" }}>
+          <span style={{ fontFamily: TL.font.sans, fontWeight: 700, fontSize: 14, color: TL.text }}>{file.name}</span>
+          <span style={{ fontFamily: TL.font.mono, fontSize: 11, color: TL.mute, fontVariantNumeric: "tabular-nums" }}>
             {mb(file.size)} MB · {file.type || "ukjent format"}
           </span>
           <Knapp
@@ -120,8 +121,8 @@ export function Dropzone({
         </>
       ) : (
         <>
-          <span style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 14, color: T.fg }}>{idleTittel}</span>
-          <span style={{ fontFamily: T.mono, fontSize: 11, color: T.mut }}>{idleSub}</span>
+          <span style={{ fontFamily: TL.font.sans, fontWeight: 700, fontSize: 14, color: TL.text }}>{idleTittel}</span>
+          <span style={{ fontFamily: TL.font.mono, fontSize: 11, color: TL.mute }}>{idleSub}</span>
         </>
       )}
     </label>

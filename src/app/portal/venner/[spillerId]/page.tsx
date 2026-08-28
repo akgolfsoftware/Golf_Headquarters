@@ -6,7 +6,8 @@
 import { notFound } from "next/navigation";
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { hentVennProfil } from "@/lib/venner/actions";
-import { T } from "@/lib/v2/tokens";
+import { TL } from "@/lib/v2/train-lock";
+
 import {
   Caps,
   Tittel,
@@ -56,7 +57,7 @@ export default async function VennProfilPage({
         margin: "0 auto",
         display: "flex",
         flexDirection: "column",
-        gap: T.gap,
+        gap: 16,
       }}
     >
       <TilbakeLenke href="/portal/venner">Venner</TilbakeLenke>
@@ -74,7 +75,7 @@ export default async function VennProfilPage({
               )}
             </div>
             {meta ? (
-              <p style={{ fontFamily: T.ui, fontSize: 13, color: T.fg2, margin: "6px 0 0" }}>{meta}</p>
+              <p style={{ fontFamily: TL.font.sans, fontSize: 13, color: TL.mute, margin: "6px 0 0" }}>{meta}</p>
             ) : null}
           </div>
         </div>
@@ -110,14 +111,14 @@ export default async function VennProfilPage({
               <Kort key={a.id} pad="12px 14px">
                 <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
                   <div style={{ minWidth: 0, flex: 1 }}>
-                    <div style={{ fontFamily: T.ui, fontSize: 13.5, fontWeight: 600, color: T.fg }}>
+                    <div style={{ fontFamily: TL.font.sans, fontSize: 13.5, fontWeight: 600, color: TL.text }}>
                       {a.tittel}
                     </div>
-                    <div style={{ fontFamily: T.ui, fontSize: 12, color: T.mut, marginTop: 3 }}>
+                    <div style={{ fontFamily: TL.font.sans, fontSize: 12, color: TL.mute, marginTop: 3 }}>
                       {a.detalj}
                     </div>
                   </div>
-                  <div style={{ fontFamily: T.mono, fontSize: 11, color: T.mut, flex: "none" }}>
+                  <div style={{ fontFamily: TL.font.mono, fontSize: 11, color: TL.mute, flex: "none" }}>
                     {formatterDato(a.dato)}
                   </div>
                 </div>
@@ -132,12 +133,12 @@ export default async function VennProfilPage({
           display: "flex",
           alignItems: "flex-start",
           gap: 8,
-          borderTop: `1px solid ${T.border}`,
+          borderTop: `1px solid ${TL.hair}`,
           paddingTop: 14,
         }}
       >
-        <Icon name="eye" size={14} style={{ color: T.mut, marginTop: 2, flex: "none" }} />
-        <span style={{ fontFamily: T.ui, fontSize: 12, color: T.mut, lineHeight: 1.5 }}>
+        <Icon name="eye" size={14} style={{ color: TL.mute, marginTop: 2, flex: "none" }} />
+        <span style={{ fontFamily: TL.font.sans, fontSize: 12, color: TL.mute, lineHeight: 1.5 }}>
           Du ser kun AT {fornavn} har trent — ingen plan, mål eller tall er delt.
         </span>
       </div>

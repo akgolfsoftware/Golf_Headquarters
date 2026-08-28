@@ -18,7 +18,8 @@
  * den dynamisk per artefakt er en egen, større endring utenfor denne PR-en.
  */
 import { useRef, useState } from "react";
-import { T } from "@/lib/v2/tokens";
+import { TL } from "@/lib/v2/train-lock";
+
 import { Icon } from "@/components/v2/icon";
 import { FANGST_TYPER, FANGST_TYPE_LABEL, type FangstType } from "@/lib/jarvis/types";
 
@@ -58,7 +59,7 @@ export function FangstArtefakt({ onFang }: { onFang: (type: FangstType, tekst: s
 
   return (
     <div data-od-id="panel-fangst" style={{ display: "flex", flexDirection: "column", gap: 4 }}>
-      <div style={{ fontFamily: T.mono, fontSize: 11, color: T.mut, marginBottom: 8 }}>under 20 sekunder</div>
+      <div style={{ fontFamily: TL.font.mono, fontSize: 11, color: TL.mute, marginBottom: 8 }}>under 20 sekunder</div>
 
       <button
         type="button"
@@ -70,17 +71,17 @@ export function FangstArtefakt({ onFang }: { onFang: (type: FangstType, tekst: s
           height: 60,
           display: "grid",
           placeItems: "center",
-          background: T.panel2,
-          color: T.mut,
-          border: `1px solid ${T.border}`,
-          borderRadius: T.rPill,
+          background: TL.dock,
+          color: TL.mute,
+          border: `1px solid ${TL.hair}`,
+          borderRadius: TL.radius.pill,
           margin: "0 auto",
           cursor: "not-allowed",
         }}
       >
         <Icon name="mic" size={24} strokeWidth={1.6} />
       </button>
-      <div style={{ textAlign: "center", fontFamily: T.mono, fontSize: 10.5, letterSpacing: "0.05em", color: T.mut, margin: "8px 0 16px" }}>
+      <div style={{ textAlign: "center", fontFamily: TL.font.mono, fontSize: 10.5, letterSpacing: "0.05em", color: TL.mute, margin: "8px 0 16px" }}>
         STEMME IKKE KOBLET TIL — SKRIV I STEDET
       </div>
 
@@ -97,11 +98,11 @@ export function FangstArtefakt({ onFang }: { onFang: (type: FangstType, tekst: s
               minHeight: 32,
               padding: "0 14px",
               fontSize: 13,
-              fontFamily: T.ui,
-              color: type === t ? T.onBrand : T.fg,
-              background: type === t ? T.fg : T.panel,
-              border: `1px solid ${type === t ? T.fg : T.border}`,
-              borderRadius: T.rPill,
+              fontFamily: TL.font.sans,
+              color: type === t ? TL.onFill : TL.text,
+              background: type === t ? TL.text : TL.elev,
+              border: `1px solid ${type === t ? TL.text : TL.hair}`,
+              borderRadius: TL.radius.pill,
               cursor: "pointer",
             }}
           >
@@ -121,18 +122,18 @@ export function FangstArtefakt({ onFang }: { onFang: (type: FangstType, tekst: s
           display: "block",
           width: "100%",
           minHeight: 64,
-          border: `1px solid ${T.border}`,
-          borderRadius: T.rTag,
-          background: T.panel,
+          border: `1px solid ${TL.hair}`,
+          borderRadius: TL.radius.row,
+          background: TL.elev,
           padding: 10,
-          fontFamily: T.bodyFont,
+          fontFamily: TL.font.sans,
           fontSize: 15,
           lineHeight: 1.5,
-          color: T.fg,
+          color: TL.text,
           resize: "none",
         }}
       />
-      <div style={{ fontFamily: T.mono, fontSize: 10, color: T.mut, marginTop: 4 }}>
+      <div style={{ fontFamily: TL.font.mono, fontSize: 10, color: TL.mute, marginTop: 4 }}>
         {status === "lagrer" && "LAGRES …"}
         {status === "feil" && "KUNNE IKKE LAGRE — PRØV IGJEN"}
         {status === "venter" && "AUTOLAGRES — INGEN LAGRE-KNAPP"}
@@ -146,19 +147,19 @@ export function FangstArtefakt({ onFang }: { onFang: (type: FangstType, tekst: s
             alignItems: "center",
             gap: 8,
             padding: "10px 12px",
-            background: T.panel2,
-            border: `1px solid ${T.border}`,
-            borderRadius: T.rTag,
+            background: TL.dock,
+            border: `1px solid ${TL.hair}`,
+            borderRadius: TL.radius.row,
             fontSize: 13,
-            fontFamily: T.ui,
+            fontFamily: TL.font.sans,
             marginTop: 12,
           }}
         >
-          <Icon name="check" size={16} strokeWidth={2} style={{ color: T.up, flex: "none" }} />
+          <Icon name="check" size={16} strokeWidth={2} style={{ color: TL.ok, flex: "none" }} />
           <span>
             Fanget → inbox som <strong>{FANGST_TYPE_LABEL[kvittering.type].toLowerCase()}</strong>
           </span>
-          <span style={{ marginLeft: "auto", fontFamily: T.mono, fontSize: 10.5, color: T.mut }}>{kvittering.klokke}</span>
+          <span style={{ marginLeft: "auto", fontFamily: TL.font.mono, fontSize: 10.5, color: TL.mute }}>{kvittering.klokke}</span>
         </div>
       )}
     </div>

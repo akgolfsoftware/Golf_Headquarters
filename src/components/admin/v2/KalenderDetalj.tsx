@@ -22,7 +22,8 @@
 import { useState, useTransition } from "react";
 import type { ReactNode } from "react";
 import Link from "next/link";
-import { T } from "@/lib/v2/tokens";
+import { TL } from "@/lib/v2/train-lock";
+
 import { Caps, Icon } from "@/components/v2";
 import { HvorforDette } from "@/components/v2/hjelp";
 import type { Belegg, Kollisjon } from "@/lib/domain/kalender-belegg";
@@ -38,17 +39,17 @@ function Linje({ k, v }: { k: string; v: ReactNode }) {
         alignItems: "baseline",
         gap: 12,
         padding: "8px 0",
-        borderBottom: `1px solid ${T.border}`,
+        borderBottom: `1px solid ${TL.hair}`,
         minWidth: 0,
       }}
     >
-      <span style={{ fontFamily: T.ui, fontSize: 12.5, color: T.mut, flex: "none" }}>{k}</span>
+      <span style={{ fontFamily: TL.font.sans, fontSize: 12.5, color: TL.mute, flex: "none" }}>{k}</span>
       <span
         style={{
           marginLeft: "auto",
-          fontFamily: T.mono,
+          fontFamily: TL.font.mono,
           fontSize: 12.5,
-          color: T.fg,
+          color: TL.text,
           textAlign: "right",
           minWidth: 0,
           overflowWrap: "anywhere",
@@ -130,9 +131,9 @@ export function KalenderDetaljInnhold({
         <p
           style={{
             margin: "16px 0 0",
-            fontFamily: T.bodyFont,
+            fontFamily: TL.font.sans,
             fontSize: 12.5,
-            color: T.mut,
+            color: TL.mute,
             lineHeight: 1.55,
           }}
         >
@@ -168,13 +169,13 @@ export function KalenderDetaljInnhold({
             alignItems: "flex-start",
             padding: "12px 14px",
             marginBottom: 16,
-            borderRadius: T.rCard,
-            background: T.handlingSoft,
-            borderLeft: `3px solid ${T.handling}`,
+            borderRadius: TL.radius.card,
+            background: TL.dim,
+            borderLeft: `3px solid ${TL.fill}`,
           }}
         >
-          <Icon name="alert-triangle" size={14} style={{ color: T.handling, flex: "none", marginTop: 2 }} />
-          <span style={{ fontFamily: T.ui, fontSize: 12.5, color: T.fg, lineHeight: 1.55 }}>
+          <Icon name="alert-triangle" size={14} style={{ color: TL.fill, flex: "none", marginTop: 2 }} />
+          <span style={{ fontFamily: TL.font.sans, fontSize: 12.5, color: TL.text, lineHeight: 1.55 }}>
             Kollisjon i din kalender — «{valgt.navn}»
             {motpartNavn ? ` og «${motpartNavn}»` : ""} overlapper{" "}
             {klokke(kollisjon.fraMin)}–{klokke(kollisjon.tilMin)}. Du kan ikke ta begge.
@@ -193,7 +194,7 @@ export function KalenderDetaljInnhold({
 
       {valgt.erGoogle && (
         <Blokk etikett="merk">
-          <p style={{ margin: 0, fontFamily: T.bodyFont, fontSize: 12.5, color: T.mut, lineHeight: 1.55 }}>
+          <p style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 12.5, color: TL.mute, lineHeight: 1.55 }}>
             Denne ligger i Google-kalenderen din og blokkerer bookbar tid. Endres den her, skrives
             endringen tilbake til Google.
           </p>
@@ -255,11 +256,11 @@ export function KalenderDetaljFot({
             appearance: "none",
             width: "100%",
             minHeight: 44,
-            borderRadius: T.rCard,
+            borderRadius: TL.radius.card,
             border: "none",
-            background: T.handling,
-            color: T.onHandling,
-            fontFamily: T.ui,
+            background: TL.fill,
+            color: TL.onFill,
+            fontFamily: TL.font.sans,
             fontSize: 13.5,
             fontWeight: 600,
             cursor: venter ? "progress" : "pointer",
@@ -271,7 +272,7 @@ export function KalenderDetaljFot({
             : `Flytt til ${klokke(forslag.startMin)}–${klokke(forslag.sluttMin)}`}
         </button>
         {feil && (
-          <span role="alert" style={{ fontFamily: T.ui, fontSize: 11.5, color: T.down, lineHeight: 1.45 }}>
+          <span role="alert" style={{ fontFamily: TL.font.sans, fontSize: 11.5, color: TL.danger, lineHeight: 1.45 }}>
             {feil}
           </span>
         )}
@@ -289,11 +290,11 @@ export function KalenderDetaljFot({
     gap: 6,
     width: "100%",
     minHeight: 44,
-    borderRadius: T.rCard,
-    border: `1px solid ${T.border}`,
-    background: T.panel2,
-    color: T.fg,
-    fontFamily: T.ui,
+    borderRadius: TL.radius.card,
+    border: `1px solid ${TL.hair}`,
+    background: TL.dock,
+    color: TL.text,
+    fontFamily: TL.font.sans,
     fontSize: 13,
     fontWeight: 600,
     textDecoration: "none",

@@ -1,5 +1,5 @@
 "use client";
-
+import { TL } from "@/lib/v2/train-lock";
 /**
  * Foreldreportal · Ukerapport (detalj) — v2 Presis + B-pakke.
  * Status først, én grønn CTA, TomTilstand med neste steg. Kun v2 + T.*.
@@ -7,21 +7,7 @@
 
 import { useRouter } from "next/navigation";
 import type { ForelderUkerapport } from "@/lib/forelder";
-import {
-  T,
-  fmtSg,
-  Caps,
-  Tittel,
-  Kort,
-  KpiFlis,
-  Rad,
-  Icon,
-  TomTilstand,
-  Knapp,
-  StatusPill,
-  HjelpTips,
-} from "@/components/v2";
-
+import { fmtSg, Caps, Tittel, Kort, KpiFlis, Rad, Icon, TomTilstand, Knapp, StatusPill, HjelpTips } from "@/components/v2";
 /* ── Rene hjelpere ─────────────────────────────────────────────────── */
 
 /** «4,5» — komma-desimal for norsk visning. */
@@ -38,13 +24,13 @@ function Rapportlinje({ navn, verdi }: { navn: string; verdi: string }) {
         alignItems: "baseline",
         justifyContent: "space-between",
         gap: 12,
-        fontFamily: T.ui,
+        fontFamily: TL.font.sans,
         fontSize: 13,
-        color: T.fg,
+        color: TL.text,
       }}
     >
       <span style={{ flex: "none" }}>{navn}</span>
-      <span style={{ color: T.mut, textAlign: "right", minWidth: 0 }}>{verdi}</span>
+      <span style={{ color: TL.mute, textAlign: "right", minWidth: 0 }}>{verdi}</span>
     </div>
   );
 }
@@ -68,7 +54,7 @@ export function ForelderUkerapportV2({ data }: { data: ForelderUkerapport }) {
   const harAktivitet = oktFullfort > 0 || ukeSg != null;
 
   return (
-    <div data-paper-wave-e="forelder-sub" data-paper-portal-forelder-ukerapport style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
+    <div data-paper-wave-e="forelder-sub" data-paper-portal-forelder-ukerapport style={{ display: "flex", flexDirection: "column", gap: 16, maxWidth: 720, margin: "0 auto", width: "100%" }}>
       {/* Hode + status */}
       <div
         style={{
@@ -94,9 +80,9 @@ export function ForelderUkerapportV2({ data }: { data: ForelderUkerapport }) {
           digest. Delingen er en manuell handling fra coachen, aldri automatikk. */}
       <div
         style={{
-          background: T.panel,
-          border: `1px solid ${T.border}`,
-          borderRadius: T.rCard,
+          background: TL.elev,
+          border: `1px solid ${TL.hair}`,
+          borderRadius: TL.radius.card,
           padding: 16,
           display: "flex",
           flexDirection: "column",
@@ -122,9 +108,9 @@ export function ForelderUkerapportV2({ data }: { data: ForelderUkerapport }) {
         <p
           style={{
             margin: "4px 0 0",
-            fontFamily: T.ui,
+            fontFamily: TL.font.sans,
             fontSize: 12,
-            color: T.mut,
+            color: TL.mute,
             lineHeight: 1.55,
           }}
         >
@@ -134,7 +120,7 @@ export function ForelderUkerapportV2({ data }: { data: ForelderUkerapport }) {
       </div>
 
       {/* Status først — 3 KPI */}
-      <div className="grid grid-cols-3" style={{ gap: T.gap }}>
+      <div className="grid grid-cols-3" style={{ gap: 16 }}>
         <KpiFlis label="Økter" value={String(oktFullfort)} />
         <KpiFlis label="Trent" value={trentTekst} />
         <KpiFlis
@@ -161,9 +147,9 @@ export function ForelderUkerapportV2({ data }: { data: ForelderUkerapport }) {
           <div>
             <p
               style={{
-                fontFamily: T.ui,
+                fontFamily: TL.font.sans,
                 fontSize: 13.5,
-                color: T.fg,
+                color: TL.text,
                 lineHeight: 1.6,
                 margin: 0,
               }}
@@ -193,15 +179,15 @@ export function ForelderUkerapportV2({ data }: { data: ForelderUkerapport }) {
                   width: 34,
                   height: 34,
                   borderRadius: 10,
-                  background: T.panel3,
-                  border: `1px solid ${T.border}`,
+                  background: TL.dim,
+                  border: `1px solid ${TL.hair}`,
                   display: "inline-flex",
                   alignItems: "center",
                   justifyContent: "center",
                   flex: "none",
                 }}
               >
-                <Icon name="trophy" size={16} style={{ color: T.lime }} />
+                <Icon name="trophy" size={16} style={{ color: TL.fill }} />
               </span>
             }
             title={hoydepunkt.testNavn}
@@ -209,10 +195,10 @@ export function ForelderUkerapportV2({ data }: { data: ForelderUkerapport }) {
             trailing={
               <span
                 style={{
-                  fontFamily: T.mono,
+                  fontFamily: TL.font.mono,
                   fontSize: 16,
                   fontWeight: 700,
-                  color: T.fg,
+                  color: TL.text,
                   fontVariantNumeric: "tabular-nums",
                 }}
               >

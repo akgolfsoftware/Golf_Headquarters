@@ -1,5 +1,5 @@
 "use client";
-
+import { TL } from "@/lib/v2/train-lock";
 /**
  * AgencyOS Forespørsler — v2 Presis + B-pakke (status + én primær CTA, tom = vei).
  * Booking-ønsker fra stallen. T.* only.
@@ -7,9 +7,8 @@
 
 import { useTransition } from "react";
 import Link from "next/link";
-import { Kort, Knapp, StatusPill, AvatarInit, TomTilstand, CTAPill, T } from "@/components/v2";
+import { Kort, Knapp, StatusPill, AvatarInit, TomTilstand, CTAPill } from "@/components/v2";
 import { markerSomPlanlagt, avslaaForespørsel } from "@/app/admin/(legacy)/foresporsler/actions";
-
 export interface AdminForesporselRad {
   id: string;
   navn: string;
@@ -44,10 +43,10 @@ export function AdminForesporslerV2({ data }: { data: AdminForesporslerV2Data })
     <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 14, flexWrap: "wrap" }}>
       <div>
         <div data-paper-pattern-topp>
-          <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>Forespørsler</h1>
-          <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>AgencyOS</span>
+          <h1 style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 17, fontWeight: 600, color: TL.text }}>Forespørsler</h1>
+          <span style={{ display: "block", fontFamily: TL.font.mono, fontSize: 10.5, color: TL.mute, marginTop: 2 }}>AgencyOS</span>
         </div>
-        <p style={{ fontFamily: T.ui, fontSize: 13, lineHeight: 1.55, color: T.mut, margin: "10px 0 0", maxWidth: 560 }}>
+        <p style={{ fontFamily: TL.font.sans, fontSize: 13, lineHeight: 1.55, color: TL.mute, margin: "10px 0 0", maxWidth: 560 }}>
           Booking-ønsker, meldinger og råd fra stallen. Svar eller deleger.
         </p>
       </div>
@@ -65,7 +64,7 @@ export function AdminForesporslerV2({ data }: { data: AdminForesporslerV2Data })
 
   if (data.rader.length === 0) {
     return (
-      <div data-paper-wave-h="foresporsler" data-paper-pattern style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 960, margin: "0 auto", width: "100%" }}>
+      <div data-paper-wave-h="foresporsler" data-paper-pattern style={{ display: "flex", flexDirection: "column", gap: 16, maxWidth: 960, margin: "0 auto", width: "100%" }}>
         {hode}
         <Kort>
           <TomTilstand
@@ -80,7 +79,7 @@ export function AdminForesporslerV2({ data }: { data: AdminForesporslerV2Data })
   }
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+    <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
       {hode}
       {primaerCta}
       <Kort pad="4px 20px">
@@ -92,21 +91,21 @@ export function AdminForesporslerV2({ data }: { data: AdminForesporslerV2Data })
               alignItems: "flex-start",
               gap: 14,
               padding: "14px 0",
-              borderTop: i ? `1px solid ${T.border}` : "none",
+              borderTop: i ? `1px solid ${TL.hair}` : "none",
               opacity: r.behandlet ? 0.5 : 1,
               flexWrap: "wrap",
             }}
           >
-            <span style={r.harOktIdag ? { boxShadow: `0 0 0 2px ${T.panel}, 0 0 0 3.5px color-mix(in srgb, ${T.lime} 55%, transparent)`, borderRadius: 9999 } : undefined}>
+            <span style={r.harOktIdag ? { boxShadow: `0 0 0 2px ${TL.elev}, 0 0 0 3.5px color-mix(in srgb, ${TL.fill} 55%, transparent)`, borderRadius: 9999 } : undefined}>
               <AvatarInit navn={r.navn} size={36} />
             </span>
             <div style={{ flex: 1, minWidth: 200 }}>
               <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
-                <span style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 14, color: T.fg }}>{r.navn}</span>
+                <span style={{ fontFamily: TL.font.sans, fontWeight: 700, fontSize: 14, color: TL.text }}>{r.navn}</span>
                 <StatusPill tone="info">Booking</StatusPill>
-                <span style={{ fontFamily: T.mono, fontSize: 10, color: T.mut }}>{r.nårTekst}</span>
+                <span style={{ fontFamily: TL.font.mono, fontSize: 10, color: TL.mute }}>{r.nårTekst}</span>
               </div>
-              <p style={{ margin: "4px 0 0", fontFamily: T.ui, fontSize: 13, color: T.mut }}>{r.begrunnelse}</p>
+              <p style={{ margin: "4px 0 0", fontFamily: TL.font.sans, fontSize: 13, color: TL.mute }}>{r.begrunnelse}</p>
             </div>
             {r.behandlet ? <StatusPill tone="lime">Behandlet</StatusPill> : <ForespørselHandlinger id={r.id} />}
           </div>

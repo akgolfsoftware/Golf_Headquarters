@@ -1,30 +1,12 @@
 "use client";
-
+import { TL } from "@/lib/v2/train-lock";
 /**
  * PlayerHQ Utviklingsplan — v2 Presis + B-pakke (oversikt + tom = Workbench).
  * Talent + teknisk P-spor. T.* only.
  */
 
 import Link from "next/link";
-import {
-  T,
-  Caps,
-  Tittel,
-  Kort,
-  TomTilstand,
-  CTAPill,
-  StatusPill,
-  UtviklingsplanOversikt,
-  MilepaelKort,
-  LaeringsTrapp,
-  CoachGodkjenning,
-  TalentProfil,
-  type Posisjon,
-  type KravData,
-  type TalentAkse,
-  type TalentMilepael,
-} from "@/components/v2";
-
+import { Caps, Tittel, Kort, TomTilstand, StatusPill, UtviklingsplanOversikt, MilepaelKort, LaeringsTrapp, CoachGodkjenning, TalentProfil, type Posisjon, type KravData, type TalentAkse, type TalentMilepael } from "@/components/v2";
 /* ── Datakontrakt (serialiserbart, bygget server-side i page.tsx) ──── */
 
 export interface MilepaelData {
@@ -74,7 +56,7 @@ export function UtviklingsplanV2({ data }: { data: UtviklingsplanData }) {
   const { talent, plan, forslag } = data;
 
   return (
-    <div data-paper-portal-utviklingsplan style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
+    <div data-paper-portal-utviklingsplan style={{ display: "flex", flexDirection: "column", gap: 16, maxWidth: 720, margin: "0 auto", width: "100%" }}>
       {/* Hode + B: status */}
       <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
         <div>
@@ -110,7 +92,7 @@ export function UtviklingsplanV2({ data }: { data: UtviklingsplanData }) {
             <Link href="/portal/planlegge/workbench?zoom=uke" style={{ textDecoration: "none", display: "block" }}>
               <span style={{
                 display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, minHeight: 48, width: "100%", padding: "10px 16px",
-                borderRadius: 10, background: T.handling, color: T.onHandling, fontFamily: T.ui, fontSize: 14, fontWeight: 600,
+                borderRadius: 10, background: TL.fill, color: TL.onFill, fontFamily: TL.font.sans, fontSize: 14, fontWeight: 600,
               }}>Åpne Workbench
               </span>
             </Link>
@@ -119,7 +101,7 @@ export function UtviklingsplanV2({ data }: { data: UtviklingsplanData }) {
       )}
 
       {/* Talent + læringstrapp side om side (stables på mobil) */}
-      <div className="grid grid-cols-1 md:grid-cols-2" style={{ gap: T.gap }}>
+      <div className="grid grid-cols-1 md:grid-cols-2" style={{ gap: 16 }}>
         {talent ? (
           <TalentProfil
             niva={talent.niva}
@@ -152,7 +134,7 @@ export function UtviklingsplanV2({ data }: { data: UtviklingsplanData }) {
 
       {/* Milepæler — én MilepaelKort per P-posisjon */}
       {plan && plan.milepaeler.length > 0 && (
-        <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
           <Caps>Milepæler · P-posisjoner</Caps>
           {plan.milepaeler.map((m) => (
             <MilepaelKort

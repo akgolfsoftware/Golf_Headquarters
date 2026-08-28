@@ -1,3 +1,4 @@
+import { TL } from "@/lib/v2/train-lock";
 /**
  * PlayerHQ · Tren · Tester · Ny test (/portal/tren/tester/ny) — v2.
  * v2-port 17. juli 2026 (Team D2): `NyTestV2` erstatter legacy NyTestWizard,
@@ -9,7 +10,7 @@
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
-import { TilbakeLenke, Caps, Tittel, T } from "@/components/v2";
+import { TilbakeLenke, Caps, Tittel } from "@/components/v2";
 import { NyTestV2 } from "@/components/portal/v2/NyTestV2";
 
 export default async function NyTestPage() {
@@ -49,7 +50,7 @@ export default async function NyTestPage() {
         <div style={{ marginTop: 10 }}>
           <Tittel em="ny test">Logg</Tittel>
         </div>
-        <p style={{ fontFamily: T.ui, fontSize: 13, color: T.mut, lineHeight: 1.55, margin: "10px 0 0" }}>
+        <p style={{ fontFamily: TL.font.sans, fontSize: 13, color: TL.mute, lineHeight: 1.55, margin: "10px 0 0" }}>
           Gå gjennom de fire stegene — type, detaljer, resultat og bekreft
           {user.name ? `, ${user.name.split(" ")[0]}` : ""}.
         </p>

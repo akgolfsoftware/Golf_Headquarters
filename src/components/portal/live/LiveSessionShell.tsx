@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { X } from "lucide-react";
-import { T } from "@/lib/v2/tokens";
+import { TL } from "@/lib/v2/train-lock";
+
 
 export type LiveSessionShellProps = {
   title?: string;
@@ -41,7 +42,7 @@ export function LiveSessionShell({
       data-paper-wave-c={odId ?? "live"}
       data-od-id={odId}
       className="fixed inset-0 z-50 flex flex-col overflow-hidden"
-      style={{ background: T.bg, color: T.fg, isolation: "isolate", fontFamily: T.ui }}
+      style={{ background: TL.scene, color: TL.text, isolation: "isolate", fontFamily: TL.font.sans }}
      data-paper-slug="playerhq-live">
       <header
         data-paper-topp
@@ -52,8 +53,8 @@ export function LiveSessionShell({
           gap: 8,
           padding: "12px 16px",
           paddingTop: "max(env(safe-area-inset-top) + 10px, 14px)",
-          borderBottom: `1px solid ${T.border}`,
-          background: T.bg,
+          borderBottom: `1px solid ${TL.hair}`,
+          background: TL.scene,
         }}
       >
         {backHref && (
@@ -68,9 +69,9 @@ export function LiveSessionShell({
               width: 40,
               height: 40,
               borderRadius: 9999,
-              border: `1px solid ${T.border}`,
-              background: T.panel,
-              color: T.fg,
+              border: `1px solid ${TL.hair}`,
+              background: TL.elev,
+              color: TL.text,
               textDecoration: "none",
               flex: "none",
             }}
@@ -86,11 +87,11 @@ export function LiveSessionShell({
               <h1
                 style={{
                   margin: 0,
-                  fontFamily: T.disp,
+                  fontFamily: TL.font.sans,
                   fontSize: 17,
                   fontWeight: 600,
                   lineHeight: 1.2,
-                  color: T.fg,
+                  color: TL.text,
                 }}
               >
                 {title}
@@ -100,9 +101,9 @@ export function LiveSessionShell({
                   style={{
                     display: "block",
                     marginTop: 2,
-                    fontFamily: T.mono,
+                    fontFamily: TL.font.mono,
                     fontSize: 10.5,
-                    color: T.mut,
+                    color: TL.mute,
                   }}
                 >
                   {subtitle}
@@ -112,12 +113,12 @@ export function LiveSessionShell({
           ) : (
             <span
               style={{
-                fontFamily: T.mono,
+                fontFamily: TL.font.mono,
                 fontSize: 10,
                 fontWeight: 700,
                 letterSpacing: "0.12em",
                 textTransform: "uppercase",
-                color: T.mut,
+                color: TL.mute,
               }}
             >
               PlayerHQ · Live
@@ -136,9 +137,9 @@ export function LiveSessionShell({
               width: 40,
               height: 40,
               borderRadius: 9999,
-              border: `1px solid ${T.border}`,
-              background: T.panel,
-              color: T.fg2,
+              border: `1px solid ${TL.hair}`,
+              background: TL.elev,
+              color: TL.mute,
               textDecoration: "none",
               flex: "none",
             }}
@@ -151,7 +152,7 @@ export function LiveSessionShell({
       <main
         data-paper-kropp
         className="flex flex-1 flex-col overflow-y-auto overflow-x-hidden"
-        style={{ minHeight: 0, background: T.bg }}
+        style={{ minHeight: 0, background: TL.scene }}
       >
         {children}
       </main>
@@ -161,8 +162,8 @@ export function LiveSessionShell({
           data-paper-dokk
           style={{
             flex: "none",
-            borderTop: `1px solid ${T.border}`,
-            background: T.bg,
+            borderTop: `1px solid ${TL.hair}`,
+            background: TL.scene,
             padding: "12px 16px",
             paddingBottom: "max(env(safe-area-inset-bottom), 12px)",
           }}

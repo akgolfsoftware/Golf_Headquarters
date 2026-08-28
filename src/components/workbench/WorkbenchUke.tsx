@@ -14,7 +14,6 @@ import { toast } from "sonner";
 import { Knapp } from "@/components/v2/core";
 import { Icon } from "@/components/v2/icon";
 import { BunnArk } from "@/components/v2/bunn-ark";
-import { T } from "@/lib/v2/tokens";
 import { TL } from "@/lib/v2/train-lock";
 import { addDays, mondayOf, validateWeek } from "@/lib/domain/workbench/operations";
 import { AREA_LABEL, formatHours, PYRAMID_LABEL, UI } from "@/lib/domain/workbench/labels";
@@ -24,29 +23,10 @@ import type {
   WorkbenchSession,
 } from "@/lib/domain/workbench/types";
 import type { RecurrencePolicy } from "@/lib/domain/workbench/types";
-import {
-  addDrill,
-  addDrillFromSource,
-  createSession,
-  createSessionFromSource,
-  createSessionSeries,
-  deleteSession,
-  deleteSessionSeries,
-  loadWeek,
-  moveSession,
-  publishSessions,
-  removeDrill,
-  reorderDrills,
-  setSessionTemplate,
-  unpublishSession,
-} from "@/lib/workbench/wb-actions";
+import { addDrill, addDrillFromSource, createSession, createSessionFromSource, createSessionSeries, deleteSession, deleteSessionSeries, loadWeek, moveSession, publishSessions, removeDrill, reorderDrills, setSessionTemplate, unpublishSession } from "@/lib/workbench/wb-actions";
 import { CreateSessionModal, type NyOktVerdier } from "./CreateSessionModal";
 import { PublishConfirmDialog } from "./PublishConfirmDialog";
-import {
-  SessionInspector,
-  type FlyttVerdier,
-  type LeggTilDrillVerdier,
-} from "./SessionInspector";
+import { SessionInspector, type FlyttVerdier, type LeggTilDrillVerdier } from "./SessionInspector";
 import { SourcesPanel } from "./SourcesPanel";
 import { TL_SCOPE } from "./wb-tl-scope";
 import { osloIdag, WeekGrid } from "./WeekGrid";
@@ -257,13 +237,13 @@ export function WorkbenchUke({ playerId, spillerNavn, uke, kilder }: Props) {
             alignItems: "center",
             gap: 10,
             padding: "11px 13px",
-            borderRadius: T.rCard,
-            border: `1px solid color-mix(in srgb, ${T.down} 35%, transparent)`,
-            background: `color-mix(in srgb, ${T.down} 8%, transparent)`,
+            borderRadius: TL.radius.card,
+            border: `1px solid color-mix(in srgb, ${TL.danger} 35%, transparent)`,
+            background: `color-mix(in srgb, ${TL.danger} 8%, transparent)`,
           }}
         >
-          <Icon name="triangle-alert" size={15} style={{ color: T.down }} />
-          <span style={{ fontFamily: T.ui, fontSize: 13, color: T.fg, flex: 1 }}>{feil}</span>
+          <Icon name="triangle-alert" size={15} style={{ color: TL.danger }} />
+          <span style={{ fontFamily: TL.font.sans, fontSize: 13, color: TL.text, flex: 1 }}>{feil}</span>
           <Knapp ghost onClick={() => void lastPaaNytt()}>
             {UI.retry}
           </Knapp>
@@ -418,10 +398,10 @@ function Topplinje({
       }}
     >
       <div style={{ minWidth: 0 }}>
-        <div style={{ fontFamily: T.disp, fontSize: 19, fontWeight: 600, color: T.fg }}>
+        <div style={{ fontFamily: TL.font.sans, fontSize: 19, fontWeight: 600, color: TL.text }}>
           {UI.titleAgency}
         </div>
-        <div style={{ fontFamily: T.ui, fontSize: 12.5, color: T.mut }}>
+        <div style={{ fontFamily: TL.font.sans, fontSize: 12.5, color: TL.mute }}>
           {spillerNavn} · {periode} ·{" "}
           {UI.budgetLabel(
             formatHours(week.budget.plannedMinutes),

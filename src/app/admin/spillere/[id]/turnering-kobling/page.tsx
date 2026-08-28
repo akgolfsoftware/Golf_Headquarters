@@ -12,7 +12,8 @@ import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
 import { TilbakeLenke, Tittel, Caps } from "@/components/v2";
-import { T } from "@/lib/v2/tokens";
+import { TL } from "@/lib/v2/train-lock";
+
 import { foreslaPublicPlayers } from "./actions";
 import { TurneringKoblingKlient } from "./kobling-klient";
 
@@ -74,7 +75,7 @@ export default async function TurneringKoblingPage({
           Tilbake til spiller
         </TilbakeLenke>
         <div style={{ marginTop: 16, marginBottom: 6 }}>
-          <Caps size={10} style={{ color: T.mut }}>
+          <Caps size={10} style={{ color: TL.mute }}>
             Turnering · kobling
           </Caps>
         </div>
@@ -84,9 +85,9 @@ export default async function TurneringKoblingPage({
         <p
           style={{
             margin: "0 0 24px",
-            fontFamily: T.ui,
+            fontFamily: TL.font.sans,
             fontSize: 13.5,
-            color: T.fg2,
+            color: TL.mute,
             lineHeight: 1.5,
             maxWidth: 520,
           }}

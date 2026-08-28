@@ -12,7 +12,8 @@ import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { prisma } from "@/lib/prisma";
 import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
 import { TilbakeLenke, Tittel, Caps } from "@/components/v2";
-import { T } from "@/lib/v2/tokens";
+import { TL } from "@/lib/v2/train-lock";
+
 import { SlettKnapp } from "./slett-knapp";
 
 export const dynamic = "force-dynamic";
@@ -50,11 +51,11 @@ export default async function HendelseDetaljPage({ params }: { params: Promise<{
       </div>
 
       <div style={{ display: "flex", flexDirection: "column", gap: 6, maxWidth: 420 }}>
-        <span style={{ fontFamily: T.ui, fontSize: 13, color: T.fg2 }}>
+        <span style={{ fontFamily: TL.font.sans, fontSize: 13, color: TL.mute }}>
           {fmt(hendelse.startAt)} – {fmt(hendelse.endAt)}
         </span>
         {hendelse.notes && (
-          <span style={{ fontFamily: T.ui, fontSize: 13, color: T.fg2, marginTop: 8 }}>{hendelse.notes}</span>
+          <span style={{ fontFamily: TL.font.sans, fontSize: 13, color: TL.mute, marginTop: 8 }}>{hendelse.notes}</span>
         )}
       </div>
 

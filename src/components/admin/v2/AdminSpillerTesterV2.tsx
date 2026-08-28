@@ -1,5 +1,5 @@
 "use client";
-
+import { TL } from "@/lib/v2/train-lock";
 /**
  * AgencyOS Spiller-tester — v2 (retning C «Presis»). Coach-view av EN spillers
  * testprofil, rekomponert fra /admin/spillere/[id]/tester mot v2-biblioteket
@@ -16,21 +16,7 @@
  */
 
 import Link from "next/link";
-import {
-  Caps,
-  Kort,
-  Rad,
-  AvatarInit,
-  KpiFlis,
-  CTAPill,
-  TilbakeLenke,
-  InnsiktChip,
-  AkseChip,
-  TomTilstand,
-  Radar,
-  T,
-  type RadarPunkt,
-} from "@/components/v2";
+import { Caps, Kort, Rad, AvatarInit, KpiFlis, CTAPill, TilbakeLenke, InnsiktChip, AkseChip, TomTilstand, Radar, type RadarPunkt } from "@/components/v2";
 import type { AkseKey } from "@/lib/v2/tokens";
 import type { SpillerTesterData } from "@/lib/admin/spiller-tester-data";
 
@@ -66,19 +52,19 @@ export function AdminSpillerTesterV2({
         <div style={{ minWidth: 0, flex: 1 }}>
           <Caps>AgencyOS · Stall · Tester</Caps>
           <div style={{ display: "flex", alignItems: "center", gap: 10, marginTop: 6, flexWrap: "wrap" }}>
-            <span style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 22, color: T.fg, letterSpacing: "-0.01em" }}>
+            <span style={{ fontFamily: TL.font.sans, fontWeight: 700, fontSize: 22, color: TL.text, letterSpacing: "-0.01em" }}>
               {player.name}
             </span>
             <span
               style={{
-                fontFamily: T.mono,
+                fontFamily: TL.font.mono,
                 fontSize: 9,
                 fontWeight: 700,
                 letterSpacing: "0.06em",
                 textTransform: "uppercase",
-                color: T.fg2,
-                background: T.panel2,
-                border: `1px solid ${T.border}`,
+                color: TL.mute,
+                background: TL.dock,
+                border: `1px solid ${TL.hair}`,
                 borderRadius: 5,
                 padding: "3px 7px",
               }}
@@ -86,7 +72,7 @@ export function AdminSpillerTesterV2({
               {player.tier}
             </span>
           </div>
-          <div style={{ fontFamily: T.ui, fontSize: 12, color: T.mut, marginTop: 4 }}>
+          <div style={{ fontFamily: TL.font.sans, fontSize: 12, color: TL.mute, marginTop: 4 }}>
             {meta.join(" · ")}
           </div>
         </div>
@@ -99,7 +85,7 @@ export function AdminSpillerTesterV2({
 
   // ── KPI (4) ─────────────────────────────────────────────────────
   const kpi = (
-    <div className="grid grid-cols-2 lg:grid-cols-4" style={{ gap: T.gap }}>
+    <div className="grid grid-cols-2 lg:grid-cols-4" style={{ gap: 16 }}>
       <KpiFlis label="Tester gjennomført" value={`${data.testsDone}/${data.testsTotal}`} />
       <KpiFlis label="Disipliner dekket" value={`${data.omraderDekket}/5`} />
       <KpiFlis label="Målinger totalt" value={data.measurements} />
@@ -112,11 +98,11 @@ export function AdminSpillerTesterV2({
     <div>
       <Caps size={9}>{label}</Caps>
       <div style={{ display: "flex", alignItems: "baseline", gap: 6, marginTop: 6 }}>
-        <span style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 15, color: T.fg }}>
+        <span style={{ fontFamily: TL.font.sans, fontWeight: 700, fontSize: 15, color: TL.text }}>
           {o ? `${o.area} · ${o.label}` : "—"}
         </span>
       </div>
-      <div style={{ fontFamily: T.mono, fontSize: 11, color: farge, marginTop: 3, fontVariantNumeric: "tabular-nums" }}>
+      <div style={{ fontFamily: TL.font.mono, fontSize: 11, color: farge, marginTop: 3, fontVariantNumeric: "tabular-nums" }}>
         {o ? `${o.coveragePct}% dekket${o.bestLevel ? ` · nivå ${o.bestLevel}` : ""}` : "Ingen målinger ennå"}
       </div>
     </div>
@@ -135,12 +121,12 @@ export function AdminSpillerTesterV2({
               alignItems: "center",
               gap: 8,
               marginTop: 4,
-              fontFamily: T.mono,
+              fontFamily: TL.font.mono,
               fontSize: 10,
-              color: T.mut,
+              color: TL.mute,
             }}
           >
-            <span style={{ width: 10, height: 10, borderRadius: 3, background: T.lime, flex: "none" }} />
+            <span style={{ width: 10, height: 10, borderRadius: 3, background: TL.fill, flex: "none" }} />
             Dekning (tester målt / tilgjengelig)
             <span style={{ marginLeft: "auto" }}>Skala 0–100 %</span>
           </div>
@@ -155,10 +141,10 @@ export function AdminSpillerTesterV2({
 
       <div
         className="grid grid-cols-2"
-        style={{ gap: T.gap, marginTop: 16, paddingTop: 14, borderTop: `1px solid ${T.border}` }}
+        style={{ gap: 16, marginTop: 16, paddingTop: 14, borderTop: `1px solid ${TL.hair}` }}
       >
-        {statBlokk("Sterkeste dekning", sterkeste, T.up)}
-        {statBlokk("Svakeste dekning", svakeste, T.warn)}
+        {statBlokk("Sterkeste dekning", sterkeste, TL.ok)}
+        {statBlokk("Svakeste dekning", svakeste, TL.warn)}
       </div>
     </Kort>
   );
@@ -188,10 +174,10 @@ export function AdminSpillerTesterV2({
             meta={
               <span
                 style={{
-                  fontFamily: T.mono,
+                  fontFamily: TL.font.mono,
                   fontSize: 14,
                   fontWeight: 700,
-                  color: o.coveragePct > 0 ? T.fg : T.mut,
+                  color: o.coveragePct > 0 ? TL.text : TL.mute,
                   fontVariantNumeric: "tabular-nums",
                 }}
               >
@@ -206,13 +192,13 @@ export function AdminSpillerTesterV2({
   );
 
   return (
-    <div data-paper-wave-h="spiller-tester" data-paper-pattern style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 960, margin: "0 auto", width: "100%" }}>
+    <div data-paper-wave-h="spiller-tester" data-paper-pattern style={{ display: "flex", flexDirection: "column", gap: 16, maxWidth: 960, margin: "0 auto", width: "100%" }}>
       <TilbakeLenke href={`/admin/spillere/${playerId}`}>Tilbake til {player.name}</TilbakeLenke>
       {hode}
       {kpi}
-      <div className="grid grid-cols-1 lg:grid-cols-[3fr_2fr]" style={{ gap: T.gap, alignItems: "start" }}>
+      <div className="grid grid-cols-1 lg:grid-cols-[3fr_2fr]" style={{ gap: 16, alignItems: "start" }}>
         {radarKort}
-        <div className="min-w-0" style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+        <div className="min-w-0" style={{ display: "flex", flexDirection: "column", gap: 16 }}>
           {nesteTest}
           {liste}
         </div>

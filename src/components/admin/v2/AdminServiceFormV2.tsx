@@ -1,4 +1,5 @@
 "use client";
+import { TL } from "@/lib/v2/train-lock";
 
 /**
  * AgencyOS — Tjeneste-skjema (opprett/endre/slett), v2-port 16. juli 2026.
@@ -13,7 +14,7 @@
 
 import { useEffect, useRef, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { T, Caps, CTAPill } from "@/components/v2";
+import { Caps, CTAPill } from "@/components/v2";
 import { Icon } from "@/components/v2/icon";
 import { createService, updateService, deleteService } from "@/app/admin/(legacy)/services/actions";
 
@@ -33,13 +34,13 @@ type ServiceFormV2Props = {
 function Felt({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <label style={{ display: "block" }}>
-      <span style={{ display: "block", marginBottom: 6, fontFamily: T.mono, fontSize: 10, textTransform: "uppercase", letterSpacing: "0.10em", color: T.mut }}>{label}</span>
+      <span style={{ display: "block", marginBottom: 6, fontFamily: TL.font.mono, fontSize: 10, textTransform: "uppercase", letterSpacing: "0.10em", color: TL.mute }}>{label}</span>
       {children}
     </label>
   );
 }
 
-const inputStyle: React.CSSProperties = { width: "100%", borderRadius: 10, border: `1px solid ${T.border}`, background: T.panel2, padding: "10px 12px", fontSize: 13, color: T.fg, outline: "none", boxSizing: "border-box" };
+const inputStyle: React.CSSProperties = { width: "100%", borderRadius: 10, border: `1px solid ${TL.hair}`, background: TL.dock, padding: "10px 12px", fontSize: 13, color: TL.text, outline: "none", boxSizing: "border-box" };
 
 export function ServiceFormV2({ initial, triggerLabel, triggerVariant = "cta" }: ServiceFormV2Props) {
   const router = useRouter();
@@ -118,7 +119,7 @@ export function ServiceFormV2({ initial, triggerLabel, triggerVariant = "cta" }:
         <button
           type="button"
           onClick={() => setOpen(true)}
-          style={{ background: "none", border: "none", cursor: "pointer", fontFamily: T.mono, fontSize: 11, color: T.lime, textTransform: "uppercase", letterSpacing: "0.06em" }}
+          style={{ background: "none", border: "none", cursor: "pointer", fontFamily: TL.font.mono, fontSize: 11, color: TL.fill, textTransform: "uppercase", letterSpacing: "0.06em" }}
         >
           {triggerLabel}
         </button>
@@ -127,15 +128,15 @@ export function ServiceFormV2({ initial, triggerLabel, triggerVariant = "cta" }:
       <dialog
         ref={dialogRef}
         onClose={() => setOpen(false)}
-        style={{ borderRadius: T.rCard, border: `1px solid ${T.borderS}`, background: T.panel, padding: 0, boxShadow: `0 24px 60px ${T.farge.svartA50}`, maxWidth: 420, width: "100%", color: T.fg }}
+        style={{ borderRadius: TL.radius.card, border: `1px solid ${TL.hair}`, background: TL.elev, padding: 0, boxShadow: "none", maxWidth: 420, width: "100%", color: TL.text }}
       >
         <form onSubmit={lagre} style={{ padding: 22 }}>
           <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 12 }}>
             <div>
               <Caps>{initial ? "Endre" : "Ny"} tjeneste</Caps>
-              <h2 style={{ margin: "6px 0 0", fontFamily: T.disp, fontWeight: 700, fontSize: 20, color: T.fg }}>{name || (initial ? "Endre tjeneste" : "Ny tjeneste")}</h2>
+              <h2 style={{ margin: "6px 0 0", fontFamily: TL.font.sans, fontWeight: 700, fontSize: 20, color: TL.text }}>{name || (initial ? "Endre tjeneste" : "Ny tjeneste")}</h2>
             </div>
-            <button type="button" onClick={() => setOpen(false)} aria-label="Lukk" style={{ display: "grid", placeItems: "center", width: 28, height: 28, borderRadius: 8, background: T.panel2, border: `1px solid ${T.border}`, color: T.mut, cursor: "pointer" }}>
+            <button type="button" onClick={() => setOpen(false)} aria-label="Lukk" style={{ display: "grid", placeItems: "center", width: 28, height: 28, borderRadius: 8, background: TL.dock, border: `1px solid ${TL.hair}`, color: TL.mute, cursor: "pointer" }}>
               <Icon name="x" size={14} />
             </button>
           </div>
@@ -155,14 +156,14 @@ export function ServiceFormV2({ initial, triggerLabel, triggerVariant = "cta" }:
                 <input type="number" step="5" min="5" value={durationMin} onChange={(e) => setDurationMin(e.target.value)} style={inputStyle} />
               </Felt>
             </div>
-            <label style={{ display: "flex", alignItems: "center", gap: 8, cursor: "pointer", fontSize: 13, color: T.fg }}>
+            <label style={{ display: "flex", alignItems: "center", gap: 8, cursor: "pointer", fontSize: 13, color: TL.text }}>
               <input type="checkbox" checked={active} onChange={(e) => setActive(e.target.checked)} />
               Aktiv (kan bookes)
             </label>
           </div>
 
           {error && (
-            <div role="alert" style={{ marginTop: 14, borderRadius: 10, border: `1px solid color-mix(in srgb, ${T.down} 30%, transparent)`, background: `color-mix(in srgb, ${T.down} 10%, transparent)`, padding: "10px 14px", fontSize: 13, color: T.down }}>
+            <div role="alert" style={{ marginTop: 14, borderRadius: 10, border: `1px solid color-mix(in srgb, ${TL.danger} 30%, transparent)`, background: `color-mix(in srgb, ${TL.danger} 10%, transparent)`, padding: "10px 14px", fontSize: 13, color: TL.danger }}>
               {error}
             </div>
           )}
@@ -173,7 +174,7 @@ export function ServiceFormV2({ initial, triggerLabel, triggerVariant = "cta" }:
                 type="button"
                 onClick={slett}
                 disabled={pending}
-                style={{ borderRadius: 9999, border: `1px solid color-mix(in srgb, ${T.down} 35%, transparent)`, background: `color-mix(in srgb, ${T.down} 6%, transparent)`, padding: "8px 16px", fontSize: 12, fontWeight: 600, color: T.down, cursor: "pointer", opacity: pending ? 0.6 : 1 }}
+                style={{ borderRadius: 9999, border: `1px solid color-mix(in srgb, ${TL.danger} 35%, transparent)`, background: `color-mix(in srgb, ${TL.danger} 6%, transparent)`, padding: "8px 16px", fontSize: 12, fontWeight: 600, color: TL.danger, cursor: "pointer", opacity: pending ? 0.6 : 1 }}
               >
                 Slett
               </button>
@@ -182,14 +183,14 @@ export function ServiceFormV2({ initial, triggerLabel, triggerVariant = "cta" }:
               type="button"
               onClick={() => setOpen(false)}
               disabled={pending}
-              style={{ marginLeft: "auto", borderRadius: 9999, border: `1px solid ${T.border}`, background: T.panel2, padding: "10px 18px", fontSize: 13, fontWeight: 600, color: T.fg, cursor: "pointer", opacity: pending ? 0.6 : 1 }}
+              style={{ marginLeft: "auto", borderRadius: 9999, border: `1px solid ${TL.hair}`, background: TL.dock, padding: "10px 18px", fontSize: 13, fontWeight: 600, color: TL.text, cursor: "pointer", opacity: pending ? 0.6 : 1 }}
             >
               Avbryt
             </button>
             <button
               type="submit"
               disabled={pending}
-              style={{ borderRadius: 9999, border: "1px solid transparent", background: T.handling, padding: "10px 18px", fontSize: 13, fontWeight: 600, color: T.onHandling, cursor: "pointer", opacity: pending ? 0.6 : 1 }}
+              style={{ borderRadius: 9999, border: "1px solid transparent", background: TL.fill, padding: "10px 18px", fontSize: 13, fontWeight: 600, color: TL.onFill, cursor: "pointer", opacity: pending ? 0.6 : 1 }}
             >
               {pending ? "Lagrer…" : "Lagre"}
             </button>

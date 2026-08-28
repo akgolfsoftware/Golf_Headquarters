@@ -9,7 +9,7 @@
 
 import type { CSSProperties } from "react";
 import Link from "next/link";
-import { T } from "@/lib/v2/tokens";
+import { TL } from "@/lib/v2/train-lock";
 import { Icon } from "@/components/v2/icon";
 import { Knapp } from "@/components/v2/core";
 
@@ -27,11 +27,11 @@ export interface V2FeilProps {
 export function V2Feil({ reset, tilbakeHref, tittel = "Noe gikk galt" }: V2FeilProps) {
   return (
     <main style={{ minHeight: "60vh", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", textAlign: "center", gap: 14, padding: "48px 24px" }}>
-      <span style={{ width: 52, height: 52, borderRadius: 16, background: `color-mix(in srgb, ${T.down} 14%, transparent)`, border: `1px solid ${T.down}`, display: "inline-flex", alignItems: "center", justifyContent: "center" }}>
-        <Icon name="alert-triangle" size={22} style={{ color: T.down }} />
+      <span style={{ width: 52, height: 52, borderRadius: 16, background: `color-mix(in srgb, ${TL.danger} 14%, transparent)`, border: `1px solid ${TL.danger}`, display: "inline-flex", alignItems: "center", justifyContent: "center" }}>
+        <Icon name="alert-triangle" size={22} style={{ color: TL.danger }} />
       </span>
-      <h1 style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 22, color: T.fg, margin: 0 }}>{tittel}</h1>
-      <p style={{ fontFamily: T.ui, fontSize: 13, color: T.mut, maxWidth: 340, lineHeight: 1.6, margin: 0 }}>
+      <h1 style={{ fontFamily: TL.font.sans, fontWeight: 700, fontSize: 22, color: TL.text, margin: 0 }}>{tittel}</h1>
+      <p style={{ fontFamily: TL.font.sans, fontSize: 13, color: TL.mute, maxWidth: 340, lineHeight: 1.6, margin: 0 }}>
         Vi støtte på en uventet feil — prøv igjen, eller gå tilbake.
       </p>
       <div style={{ display: "flex", gap: 10, marginTop: 6, flexWrap: "wrap", justifyContent: "center" }}>
@@ -39,7 +39,7 @@ export function V2Feil({ reset, tilbakeHref, tittel = "Noe gikk galt" }: V2FeilP
         <Link
           href={tilbakeHref}
           className="v2-press v2-focus"
-          style={{ display: "inline-flex", alignItems: "center", gap: 8, fontFamily: T.ui, fontSize: 12.5, fontWeight: 600, color: T.fg, background: T.panel3, border: `1px solid ${T.borderS}`, borderRadius: 9999, padding: "10px 18px", textDecoration: "none" }}
+          style={{ display: "inline-flex", alignItems: "center", gap: 8, fontFamily: TL.font.sans, fontSize: 12.5, fontWeight: 600, color: TL.text, background: TL.dim, border: `1px solid ${TL.hair}`, borderRadius: 9999, padding: "10px 18px", textDecoration: "none" }}
         >
           <Icon name="arrow-left" size={14} />Tilbake
         </Link>
@@ -51,7 +51,7 @@ export function V2Feil({ reset, tilbakeHref, tittel = "Noe gikk galt" }: V2FeilP
 /* ── V2Laster ─────────────────────────────────────────── */
 /* .v2-skel-pulsen bor statisk i src/styles/v2/motion.css (FASIT §4b). */
 
-const PANEL_STYLE: CSSProperties = { background: T.panel, border: `1px solid ${T.border}`, borderRadius: T.rCard, padding: "18px 20px", minWidth: 0 };
+const PANEL_STYLE: CSSProperties = { background: TL.elev, border: `1px solid ${TL.hair}`, borderRadius: TL.radius.card, padding: "18px 20px", minWidth: 0 };
 
 function SkelBlock({ w, h, r = 8, style }: { w?: number | string; h: number; r?: number; style?: CSSProperties }) {
   return <div className="v2-skel" style={{ width: w ?? "100%", height: h, borderRadius: r, flex: "none", ...style }} />;
@@ -63,7 +63,7 @@ function ListeSkel() {
     <div style={PANEL_STYLE}>
       <SkelBlock w={96} h={9} r={4} style={{ marginBottom: 16 }} />
       {Array.from({ length: 5 }).map((_, i) => (
-        <div key={i} style={{ display: "flex", alignItems: "center", gap: 12, padding: "11px 0", borderBottom: i < 4 ? `1px solid ${T.border}` : "none" }}>
+        <div key={i} style={{ display: "flex", alignItems: "center", gap: 12, padding: "11px 0", borderBottom: i < 4 ? `1px solid ${TL.hair}` : "none" }}>
           <SkelBlock w={30} h={30} r={9999} />
           <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: 6, minWidth: 0 }}>
             <SkelBlock w="60%" h={12} />
@@ -79,7 +79,7 @@ function ListeSkel() {
 /** Skeleton-kortgrid — dekker KPI-/kort-baserte skjermer (Kort/KpiFlis-mønsteret). */
 function KortSkel() {
   return (
-    <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(140px,1fr))", gap: T.gap }}>
+    <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(140px,1fr))", gap: 16 }}>
       {Array.from({ length: 4 }).map((_, i) => (
         <div key={i} style={PANEL_STYLE}>
           <SkelBlock w={64} h={9} r={4} />
@@ -93,10 +93,10 @@ function KortSkel() {
 /** Skeleton-dashboard — hero-tall + KPI-rad + graf, dekker oversiktsskjermer. */
 function DashboardSkel() {
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+    <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
       <div style={PANEL_STYLE}>
         <SkelBlock w={120} h={9} r={4} />
-        <SkelBlock w={180} h={T.numHero} style={{ marginTop: 14 }} />
+        <SkelBlock w={180} h={56} style={{ marginTop: 14 }} />
       </div>
       <KortSkel />
       <div style={PANEL_STYLE}>
@@ -136,7 +136,7 @@ function HodeSkel({ avatar = false, cta = false, ingress = false }: { avatar?: b
 /** KPI-rad — samme responsive grid-klasser som målskjermens KpiFlis-rad. */
 function KpiRadSkel({ antall = 4, cls = "grid grid-cols-2 lg:grid-cols-4" }: { antall?: number; cls?: string }) {
   return (
-    <div className={cls} style={{ gap: T.gap }}>
+    <div className={cls} style={{ gap: 16 }}>
       {Array.from({ length: antall }).map((_, i) => (
         <div key={i} style={PANEL_STYLE}>
           <SkelBlock w={64} h={9} r={4} />
@@ -150,7 +150,7 @@ function KpiRadSkel({ antall = 4, cls = "grid grid-cols-2 lg:grid-cols-4" }: { a
 /** Én Rad-silhuett: leading (avatar/klokkeslett/status-dott) + to linjer + chip. */
 function RadSkel({ leading = "avatar", last = false }: { leading?: "avatar" | "tid" | "dott"; last?: boolean }) {
   return (
-    <div style={{ display: "flex", alignItems: "center", gap: 12, padding: "11px 0", borderBottom: last ? "none" : `1px solid ${T.border}` }}>
+    <div style={{ display: "flex", alignItems: "center", gap: 12, padding: "11px 0", borderBottom: last ? "none" : `1px solid ${TL.hair}` }}>
       {leading === "tid" ? (
         <SkelBlock w={44} h={11} r={4} />
       ) : (
@@ -204,12 +204,12 @@ function HeroPanelSkel({ trend = false }: { trend?: boolean }) {
 /** /admin/agencyos — konsollen (tidl. CockpitV2): hode m/avatar · 4 KPI · kø · innboks · (timer | stall-uka). */
 function CockpitSkel() {
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+    <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
       <HodeSkel avatar />
       <KpiRadSkel />
       <RadPanelSkel rader={3} />
       <RadPanelSkel rader={3} />
-      <div className="grid grid-cols-1 lg:grid-cols-2" style={{ gap: T.gap }}>
+      <div className="grid grid-cols-1 lg:grid-cols-2" style={{ gap: 16 }}>
         <RadPanelSkel rader={4} leading="tid" />
         <HeroPanelSkel />
       </div>
@@ -220,11 +220,11 @@ function CockpitSkel() {
 /** /admin/bookinger — AdminBookingerV2: hode m/CTA · 4 KPI · filter · (liste | heatmap). */
 function BookingerSkel() {
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+    <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
       <HodeSkel cta />
       <KpiRadSkel />
       <FilterSkel />
-      <div className="grid grid-cols-1 lg:grid-cols-[1.3fr_1fr]" style={{ gap: T.gap, alignItems: "start" }}>
+      <div className="grid grid-cols-1 lg:grid-cols-[1.3fr_1fr]" style={{ gap: 16, alignItems: "start" }}>
         <RadPanelSkel rader={6} />
         <div style={PANEL_STYLE}>
           <SkelBlock w={140} h={9} r={4} style={{ marginBottom: 16 }} />
@@ -239,14 +239,14 @@ function BookingerSkel() {
 /** /admin/spillere — StallV2: hode m/CTA · 3 filterrader · (spillerliste | spillersammendrag). */
 function StallSkel() {
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+    <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
       <HodeSkel cta />
       <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
         <FilterSkel />
         <FilterSkel />
         <FilterSkel />
       </div>
-      <div className="grid grid-cols-1 lg:grid-cols-[3fr_2fr]" style={{ gap: T.gap, alignItems: "start" }}>
+      <div className="grid grid-cols-1 lg:grid-cols-[3fr_2fr]" style={{ gap: 16, alignItems: "start" }}>
         <RadPanelSkel rader={7} />
         <div style={PANEL_STYLE}>
           <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
@@ -272,7 +272,7 @@ function StallSkel() {
 /** /admin/godkjenninger — AdminGodkjenningerV2: hode m/ingress · filter · seksjoner per spiller med sak-kort. */
 function GodkjenningerSkel() {
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+    <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
       <HodeSkel ingress cta />
       <FilterSkel />
       {Array.from({ length: 2 }).map((_, s) => (
@@ -300,7 +300,7 @@ function GodkjenningerSkel() {
 /** /portal — PortalChatHjem (designport steg 7): topplinje · tråd med melding-bobler · composer-linje. */
 function HjemSkel() {
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: T.gap, height: "100%" }}>
+    <div style={{ display: "flex", flexDirection: "column", gap: 16, height: "100%" }}>
       <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
         <SkelBlock w={70} h={14} />
         <SkelBlock w={140} h={10} style={{ marginLeft: "auto" }} />
@@ -317,7 +317,7 @@ function HjemSkel() {
 /** /portal/gjennomfore — GjorV2: hode · runde-kort · KPI-rad · øvelser · (neste økt | avslutt-flyt). */
 function GjorSkel() {
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+    <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
       <HodeSkel />
       <div style={PANEL_STYLE}>
         <SkelBlock w={60} h={9} r={4} />
@@ -334,7 +334,7 @@ function GjorSkel() {
       </div>
       <KpiRadSkel antall={3} cls="grid grid-cols-2 md:grid-cols-3" />
       <RadPanelSkel rader={4} leading="dott" />
-      <div className="grid grid-cols-1 md:grid-cols-[3fr_2fr]" style={{ gap: T.gap }}>
+      <div className="grid grid-cols-1 md:grid-cols-[3fr_2fr]" style={{ gap: 16 }}>
         <HeroPanelSkel />
         <div style={PANEL_STYLE}>
           <SkelBlock w={110} h={9} r={4} />
@@ -363,7 +363,7 @@ export interface V2LasterProps {
 
 /** Skeleton i v2-design. Rendres i en tynn loading.tsx (Server Component OK —
  *  se docs/redesign-v2/maler/loading-mal.tsx.txt). Tre varianter dekker
- *  liste-, kort- og dashboard-skjermer; pulserende paneler i T.panel2.
+ *  liste-, kort- og dashboard-skjermer; pulserende paneler i TL.dock.
  *
  *  VIKTIG (bugfix 2026-07-12, sett i prod): loading.tsx rendres UTEN sidens
  *  V2Shell (shellen bor i page, ikke layout) — skeletonen bærer derfor selv
@@ -384,13 +384,13 @@ export function V2Laster({ variant = "kort" }: V2LasterProps) {
     <div
       style={{
         minHeight: "100vh",
-        background: `radial-gradient(1100px 460px at 24% -8%, var(--v2-vignett), transparent 62%), ${T.bg}`,
+        background: `radial-gradient(1100px 460px at 24% -8%, var(--v2-vignett), transparent 62%), ${TL.scene}`,
         colorScheme: "dark",
         display: "flex",
       }}
     >
       {/* Rail-silhuett — matcher V2Shell-railen så overgangen er sømløs. */}
-      <div className="hidden md:block" style={{ width: 60, flex: "none", borderRight: `1px solid ${T.border}` }} />
+      <div className="hidden md:block" style={{ width: 60, flex: "none", borderRight: `1px solid ${TL.hair}` }} />
       <main className="px-4 md:px-8 pt-6 pb-24 md:pb-9" style={{ flex: 1, minWidth: 0 }}>
         <div style={{ width: "100%" }}>{inner}</div>
       </main>

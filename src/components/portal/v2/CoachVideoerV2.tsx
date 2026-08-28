@@ -1,5 +1,5 @@
 "use client";
-
+import { TL } from "@/lib/v2/train-lock";
 /**
  * PlayerHQ Coach-videoer — v2 Presis + B-pakke (status + én primær CTA, tom = vei).
  * T.* only. Lys PlayerHQ.
@@ -8,8 +8,7 @@
 import { useState } from "react";
 import { getSignedVideoUrl } from "@/lib/storage/video";
 import Link from "next/link";
-import { T, Kort, VideoKort, TomTilstand } from "@/components/v2";
-
+import { Kort, VideoKort, TomTilstand } from "@/components/v2";
 /* ── Datakontrakt (speiler prisma.sessionVideo, status READY) ──────────── */
 
 export type CoachVideoItem = {
@@ -63,12 +62,12 @@ export function CoachVideoerV2({ data }: { data: CoachVideoerData }) {
   }
 
   return (
-    <div data-paper-wave-g="coachvideoer" data-paper-portal-coach-videoer data-paper-slug="playerhq-coach-hub" style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
+    <div data-paper-wave-g="coachvideoer" data-paper-portal-coach-videoer data-paper-slug="playerhq-coach-hub" style={{ display: "flex", flexDirection: "column", gap: 16, maxWidth: 720, margin: "0 auto", width: "100%" }}>
       {/* Hode */}
       <div>
         <div data-paper-pattern-topp>
-          <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>Videoer</h1>
-          <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>Coach</span>
+          <h1 style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 17, fontWeight: 600, color: TL.text }}>Videoer</h1>
+          <span style={{ display: "block", fontFamily: TL.font.mono, fontSize: 10.5, color: TL.mute, marginTop: 2 }}>Coach</span>
         </div>
       </div>
 
@@ -84,13 +83,13 @@ export function CoachVideoerV2({ data }: { data: CoachVideoerData }) {
             <Link href="/portal/coach/melding" style={{ textDecoration: "none", display: "block" }}>
               <span style={{
             display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, minHeight: 56, width: "100%", padding: "10px 16px",
-            borderRadius: 12, background: T.handling, color: T.onHandling, fontFamily: T.ui, fontSize: 14, fontWeight: 600,
+            borderRadius: 12, background: TL.fill, color: TL.onFill, fontFamily: TL.font.sans, fontSize: 14, fontWeight: 600,
           }}>Spør coach om video</span>
             </Link>
           </div>
         </Kort>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2" style={{ gap: T.gap }}>
+        <div className="grid grid-cols-1 sm:grid-cols-2" style={{ gap: 16 }}>
           {videoer.map((v) => (
             <VideoKort
               key={v.id}

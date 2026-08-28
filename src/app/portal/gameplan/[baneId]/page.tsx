@@ -18,7 +18,8 @@ import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { getBaneOverview } from "@/lib/gameplan/queries";
 import { CourseMap, type CourseMapHole } from "@/components/gameplan/course-map";
 import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
-import { T } from "@/lib/v2/tokens";
+import { TL } from "@/lib/v2/train-lock";
+
 import { Kort, Rad, TomTilstand, TilbakeLenke } from "@/components/v2";
 import type { CSSProperties } from "react";
 
@@ -26,11 +27,11 @@ export const dynamic = "force-dynamic";
 
 /** Fasitens `.merknad` — Lora-prosa på soft flate. */
 const MERKNAD: CSSProperties = {
-  fontFamily: T.bodyFont,
+  fontFamily: TL.font.sans,
   fontSize: 12,
-  color: T.mut,
+  color: TL.mute,
   padding: "8px 12px",
-  background: T.panel2,
+  background: TL.dock,
   borderRadius: 8,
   margin: 0,
 };
@@ -64,14 +65,14 @@ export default async function BaneOverviewPage({
       <div
         data-paper-slug="playerhq-gameplan-banekart"
         data-od-id="playerhq-gameplan-banekart"
-        style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%", minWidth: 0 }}
+        style={{ display: "flex", flexDirection: "column", gap: 16, maxWidth: 720, margin: "0 auto", width: "100%", minWidth: 0 }}
       >
         {/* Topp per fasit: banenavn som tittel, «Banekart» som sub */}
         <div style={{ minWidth: 0 }}>
-          <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>
+          <h1 style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 17, fontWeight: 600, color: TL.text }}>
             {bane.navn}
           </h1>
-          <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>
+          <span style={{ display: "block", fontFamily: TL.font.mono, fontSize: 10.5, color: TL.mute, marginTop: 2 }}>
             Banekart
           </span>
         </div>
@@ -85,7 +86,7 @@ export default async function BaneOverviewPage({
 
         {/* Kartpanel — Mapbox-satellitt med tee/green per hull (fasitens mapph) */}
         {harData && harKart && (
-          <div style={{ border: `1px solid ${T.border}`, borderRadius: T.rCard, overflow: "hidden" }}>
+          <div style={{ border: `1px solid ${TL.hair}`, borderRadius: TL.radius.card, overflow: "hidden" }}>
             <CourseMap
               center={{ lat: bane.latitude!, lng: bane.longitude! }}
               geojson={bane.geojson as unknown as GeoJSON.FeatureCollection}
@@ -116,12 +117,12 @@ export default async function BaneOverviewPage({
                         height: 32,
                         flex: "none",
                         borderRadius: 9999,
-                        background: T.panel2,
-                        border: `1px solid ${T.border}`,
-                        fontFamily: T.mono,
+                        background: TL.dock,
+                        border: `1px solid ${TL.hair}`,
+                        fontFamily: TL.font.mono,
                         fontSize: 12,
                         fontWeight: 700,
-                        color: T.fg,
+                        color: TL.text,
                         fontVariantNumeric: "tabular-nums",
                       }}
                     >

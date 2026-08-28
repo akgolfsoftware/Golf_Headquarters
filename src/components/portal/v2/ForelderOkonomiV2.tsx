@@ -1,5 +1,5 @@
 "use client";
-
+import { TL } from "@/lib/v2/train-lock";
 /**
  * Foreldreportal · Økonomi — v2 Presis + B-pakke (status + én grønn CTA).
  * Kun v2 + T.*. Enklere foreldre-språk.
@@ -7,20 +7,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import {
-  T,
-  Caps,
-  Tittel,
-  Kort,
-  TallHero,
-  StatusPill,
-  Rad,
-  AvatarInit,
-  Knapp,
-  TomTilstand,
-  Icon,
-  type StatusTone,
-} from "@/components/v2";
+import { Caps, Tittel, Kort, TallHero, StatusPill, Rad, AvatarInit, Knapp, TomTilstand, Icon, type StatusTone } from "@/components/v2";
 import type {
   PaymentStatus,
   SubscriptionStatus,
@@ -117,10 +104,10 @@ function MonoVerdi({ children }: { children: React.ReactNode }) {
   return (
     <span
       style={{
-        fontFamily: T.mono,
+        fontFamily: TL.font.mono,
         fontSize: 14,
         fontWeight: 700,
-        color: T.fg,
+        color: TL.text,
         fontVariantNumeric: "tabular-nums",
         whiteSpace: "nowrap",
       }}
@@ -150,7 +137,7 @@ export function ForelderOkonomiV2({ data }: { data: ForelderOkonomiData }) {
   // Tomtilstand — ingen barn koblet.
   if (barnAntall === 0) {
     return (
-      <div data-paper-wave-e="forelder-sub" data-paper-portal-forelder-okonomi style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
+      <div data-paper-wave-e="forelder-sub" data-paper-portal-forelder-okonomi style={{ display: "flex", flexDirection: "column", gap: 16, maxWidth: 720, margin: "0 auto", width: "100%" }}>
         <Hode mobile={mobile} sub="Abonnement, fakturaer og kommende trekk." />
         <Kort>
           <TomTilstand
@@ -171,7 +158,7 @@ export function ForelderOkonomiV2({ data }: { data: ForelderOkonomiData }) {
     : `Alt er betalt${barnAntall > 1 ? ` · ${barnAntall} barn` : ""}`;
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+    <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
       <Hode
         mobile={mobile}
         sub={
@@ -189,7 +176,7 @@ export function ForelderOkonomiV2({ data }: { data: ForelderOkonomiData }) {
       {/* Betalingsstatus (hero) + nøkkeltall */}
       <div
         className="grid grid-cols-1 md:grid-cols-[3fr_2fr]"
-        style={{ gap: T.gap }}
+        style={{ gap: 16 }}
       >
         <Kort tint={harUtestaaende} eyebrow="Betalingsstatus">
           <TallHero
@@ -233,7 +220,7 @@ export function ForelderOkonomiV2({ data }: { data: ForelderOkonomiData }) {
             marginTop: 12,
             display: "flex",
             flexDirection: "column",
-            gap: T.gap,
+            gap: 16,
           }}
         >
           {abonnement.map((a) => (
@@ -290,13 +277,13 @@ export function ForelderOkonomiV2({ data }: { data: ForelderOkonomiData }) {
           <Icon
             name="info"
             size={16}
-            style={{ color: T.mut, flex: "none", marginTop: 2 }}
+            style={{ color: TL.mute, flex: "none", marginTop: 2 }}
           />
           <p
             style={{
-              fontFamily: T.ui,
+              fontFamily: TL.font.sans,
               fontSize: 12.5,
-              color: T.fg2,
+              color: TL.mute,
               lineHeight: 1.6,
               margin: 0,
             }}
@@ -340,9 +327,9 @@ function Hode({
         </div>
         <span
           style={{
-            fontFamily: T.ui,
+            fontFamily: TL.font.sans,
             fontSize: 12.5,
-            color: T.mut,
+            color: TL.mute,
             display: "block",
             marginTop: 8,
           }}
@@ -365,10 +352,10 @@ function AbonnementKort({ a }: { a: OkonomiAbonnement }) {
         <div style={{ flex: 1, minWidth: 0 }}>
           <div
             style={{
-              fontFamily: T.disp,
+              fontFamily: TL.font.sans,
               fontWeight: 700,
               fontSize: 15,
-              color: T.fg,
+              color: TL.text,
               letterSpacing: "-0.01em",
               whiteSpace: "nowrap",
               overflow: "hidden",
@@ -393,16 +380,16 @@ function AbonnementKort({ a }: { a: OkonomiAbonnement }) {
           style={{
             marginTop: 14,
             paddingTop: 4,
-            borderTop: `1px solid ${T.border}`,
+            borderTop: `1px solid ${TL.hair}`,
           }}
         >
           <Rad
-            leading={<Icon name="sparkles" size={15} style={{ color: T.lime }} />}
+            leading={<Icon name="sparkles" size={15} style={{ color: TL.fill }} />}
             title="Timer igjen"
             trailing={
               <MonoVerdi>
                 {a.creditsRemaining}
-                <span style={{ color: T.mut, fontWeight: 400 }}>
+                <span style={{ color: TL.mute, fontWeight: 400 }}>
                   {" "}
                   / {a.monthlyCredits}
                 </span>
@@ -410,7 +397,7 @@ function AbonnementKort({ a }: { a: OkonomiAbonnement }) {
             }
           />
           <Rad
-            leading={<Icon name="calendar" size={15} style={{ color: T.fg2 }} />}
+            leading={<Icon name="calendar" size={15} style={{ color: TL.mute }} />}
             title="Neste trekk"
             trailing={
               <MonoVerdi>

@@ -17,7 +17,8 @@
 import { useState, type ReactNode } from "react";
 import Link from "next/link";
 import { Pencil, BookOpen } from "lucide-react";
-import { T } from "@/lib/v2/tokens";
+import { TL } from "@/lib/v2/train-lock";
+
 import { Caps } from "@/components/v2";
 
 export type FokusLes = {
@@ -49,11 +50,11 @@ function knappStil(fylt: boolean): React.CSSProperties {
     gap: 8,
     minHeight: 44,
     padding: "0 16px",
-    borderRadius: T.rCard,
-    border: `1px solid ${fylt ? T.cta : T.border}`,
-    background: fylt ? T.cta : "transparent",
-    color: fylt ? T.onCta : T.fg,
-    fontFamily: T.ui,
+    borderRadius: TL.radius.card,
+    border: `1px solid ${fylt ? TL.fill : TL.hair}`,
+    background: fylt ? TL.fill : "transparent",
+    color: fylt ? TL.onFill : TL.text,
+    fontFamily: TL.font.sans,
     fontSize: 13,
     fontWeight: 500,
     cursor: "pointer",
@@ -80,7 +81,7 @@ export function TekniskPlanVisning({
 
   if (modus === "rediger") {
     return (
-      <div style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+      <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
         <div style={{ display: "flex", justifyContent: "flex-end" }}>
           <button
             type="button"
@@ -99,14 +100,14 @@ export function TekniskPlanVisning({
   }
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
+    <div style={{ display: "flex", flexDirection: "column", gap: 16, maxWidth: 720, margin: "0 auto", width: "100%" }}>
       {/* Topp — fasit: «Teknisk plan» + sub, nøytral Rediger-knapp */}
       <div style={{ display: "flex", alignItems: "flex-start", gap: 8, minWidth: 0 }}>
         <div style={{ minWidth: 0, flex: 1 }}>
-          <h1 style={{ margin: 0, fontFamily: T.disp, fontSize: 17, fontWeight: 600, color: T.fg }}>
+          <h1 style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 17, fontWeight: 600, color: TL.text }}>
             Teknisk plan
           </h1>
-          <span style={{ display: "block", fontFamily: T.mono, fontSize: 10.5, color: T.mut, marginTop: 2 }}>
+          <span style={{ display: "block", fontFamily: TL.font.mono, fontSize: 10.5, color: TL.mute, marginTop: 2 }}>
             {tittelSub}
           </span>
         </div>
@@ -128,15 +129,15 @@ export function TekniskPlanVisning({
         <div
           style={{
             padding: "24px 16px",
-            background: T.panel2,
-            border: `1px dashed ${T.border}`,
-            borderRadius: T.rCard,
+            background: TL.dock,
+            border: `1px dashed ${TL.hair}`,
+            borderRadius: TL.radius.card,
           }}
         >
-          <h3 style={{ margin: "0 0 8px", fontFamily: T.disp, fontSize: 15, fontWeight: 600, color: T.fg }}>
+          <h3 style={{ margin: "0 0 8px", fontFamily: TL.font.sans, fontSize: 15, fontWeight: 600, color: TL.text }}>
             Ingen fokusområder ennå
           </h3>
-          <p style={{ margin: "0 0 12px", fontFamily: T.bodyFont, fontSize: 13.5, color: T.mut }}>
+          <p style={{ margin: "0 0 12px", fontFamily: TL.font.sans, fontSize: 13.5, color: TL.mute }}>
             Planen er opprettet, men har ingen P-posisjoner med oppgaver. Den bygges vanligvis
             etter en svinganalyse — be coachen om en, eller legg inn første oppgave selv.
           </p>
@@ -153,11 +154,11 @@ export function TekniskPlanVisning({
               justifyContent: "center",
               minHeight: 56,
               width: "100%",
-              borderRadius: T.rCard,
+              borderRadius: TL.radius.card,
               border: "none",
-              background: T.handling,
-              color: T.onHandling,
-              fontFamily: T.ui,
+              background: TL.fill,
+              color: TL.onFill,
+              fontFamily: TL.font.sans,
               fontSize: 14,
               fontWeight: 600,
               cursor: "pointer",
@@ -172,18 +173,18 @@ export function TekniskPlanVisning({
           {enTing && (
             <div
               style={{
-                background: T.handlingSoft,
-                border: `1px solid ${T.border}`,
-                borderRadius: T.rCard,
+                background: TL.dim,
+                border: `1px solid ${TL.hair}`,
+                borderRadius: TL.radius.card,
                 padding: 16,
               }}
             >
               <Caps>Én ting nå</Caps>
-              <h3 style={{ margin: "8px 0", fontFamily: T.disp, fontSize: 15, fontWeight: 600, color: T.fg }}>
+              <h3 style={{ margin: "8px 0", fontFamily: TL.font.sans, fontSize: 15, fontWeight: 600, color: TL.text }}>
                 Neste tekniske fokus:{" "}
-                <span style={{ fontFamily: T.mono }}>{enTing.pNummer}</span> · {enTing.navn}
+                <span style={{ fontFamily: TL.font.mono }}>{enTing.pNummer}</span> · {enTing.navn}
               </h3>
-              <p style={{ margin: "0 0 16px", fontFamily: T.bodyFont, fontSize: 14, color: T.mut, maxWidth: "52ch" }}>
+              <p style={{ margin: "0 0 16px", fontFamily: TL.font.sans, fontSize: 14, color: TL.mute, maxWidth: "52ch" }}>
                 {enTing.tekst}
               </p>
               {/* Kontrakt §3: skjermens ene aksenthandling. */}
@@ -199,10 +200,10 @@ export function TekniskPlanVisning({
                   justifyContent: "center",
                   minHeight: 56,
                   width: "100%",
-                  borderRadius: T.rCard,
-                  background: T.handling,
-                  color: T.onHandling,
-                  fontFamily: T.ui,
+                  borderRadius: TL.radius.card,
+                  background: TL.fill,
+                  color: TL.onFill,
+                  fontFamily: TL.font.sans,
                   fontSize: 14,
                   fontWeight: 600,
                 }}
@@ -215,9 +216,9 @@ export function TekniskPlanVisning({
           {/* Plankort */}
           <div
             style={{
-              background: T.panel,
-              border: `1px solid ${T.border}`,
-              borderRadius: T.rCard,
+              background: TL.elev,
+              border: `1px solid ${TL.hair}`,
+              borderRadius: TL.radius.card,
               padding: 16,
             }}
           >
@@ -231,14 +232,14 @@ export function TekniskPlanVisning({
                     alignItems: "baseline",
                     gap: 8,
                     padding: "8px 0",
-                    borderBottom: i < planKort.length - 1 ? `1px solid ${T.borderS}` : undefined,
-                    fontFamily: T.ui,
+                    borderBottom: i < planKort.length - 1 ? `1px solid ${TL.hair}` : undefined,
+                    fontFamily: TL.font.sans,
                     fontSize: 13,
-                    color: T.fg,
+                    color: TL.text,
                   }}
                 >
                   <span style={{ minWidth: 0 }}>{label}</span>
-                  <span style={{ marginLeft: "auto", fontFamily: T.mono, textAlign: "right", minWidth: 0 }}>
+                  <span style={{ marginLeft: "auto", fontFamily: TL.font.mono, textAlign: "right", minWidth: 0 }}>
                     {verdi}
                   </span>
                 </div>
@@ -256,29 +257,29 @@ export function TekniskPlanVisning({
                   <div
                     key={f.id}
                     style={{
-                      border: `1px solid ${T.border}`,
-                      borderRadius: T.rCard,
+                      border: `1px solid ${TL.hair}`,
+                      borderRadius: TL.radius.card,
                       padding: "12px 16px",
                       marginBottom: 8,
-                      background: T.panel,
+                      background: TL.elev,
                       minWidth: 0,
                     }}
                   >
                     <div style={{ display: "flex", alignItems: "baseline", gap: 8, minWidth: 0 }}>
-                      <span style={{ fontFamily: T.mono, fontSize: 11, color: T.handling, fontWeight: 600 }}>
+                      <span style={{ fontFamily: TL.font.mono, fontSize: 11, color: TL.fill, fontWeight: 600 }}>
                         {f.pNummer}
                       </span>
                       {f.hovedfokus && (
-                        <span style={{ fontFamily: T.mono, fontSize: 9.5, color: T.mut, textTransform: "uppercase", letterSpacing: "0.04em" }}>
+                        <span style={{ fontFamily: TL.font.mono, fontSize: 9.5, color: TL.mute, textTransform: "uppercase", letterSpacing: "0.04em" }}>
                           hovedfokus
                         </span>
                       )}
                     </div>
-                    <span style={{ display: "block", fontFamily: T.ui, fontSize: 13.5, fontWeight: 600, color: T.fg, marginTop: 2 }}>
+                    <span style={{ display: "block", fontFamily: TL.font.sans, fontSize: 13.5, fontWeight: 600, color: TL.text, marginTop: 2 }}>
                       {f.navn}
                     </span>
                     {f.beskrivelse && (
-                      <span style={{ display: "block", fontFamily: T.bodyFont, fontSize: 12.5, color: T.mut, marginTop: 4 }}>
+                      <span style={{ display: "block", fontFamily: TL.font.sans, fontSize: 12.5, color: TL.mute, marginTop: 4 }}>
                         {f.beskrivelse}
                       </span>
                     )}
@@ -289,8 +290,8 @@ export function TekniskPlanVisning({
                           style={{
                             display: "block",
                             height: 6,
-                            background: T.track,
-                            borderRadius: T.rPill,
+                            background: TL.hair,
+                            borderRadius: TL.radius.pill,
                             overflow: "hidden",
                             marginTop: 12,
                           }}
@@ -300,12 +301,12 @@ export function TekniskPlanVisning({
                               display: "block",
                               height: "100%",
                               width: `${pct}%`,
-                              background: T.mut,
-                              borderRadius: T.rPill,
+                              background: TL.mute,
+                              borderRadius: TL.radius.pill,
                             }}
                           />
                         </span>
-                        <span style={{ display: "block", fontFamily: T.mono, fontSize: 10, color: T.mut, marginTop: 4 }}>
+                        <span style={{ display: "block", fontFamily: TL.font.mono, fontSize: 10, color: TL.mute, marginTop: 4 }}>
                           {f.gjort.toLocaleString("nb-NO")} av {f.av.toLocaleString("nb-NO")} reps
                           {f.gjort >= f.av ? " · fullført" : ""}
                         </span>
@@ -320,7 +321,7 @@ export function TekniskPlanVisning({
           {/* Hvorfor disse fremdriftstallene */}
           <details
             data-od-id="tek-why"
-            style={{ border: `1px solid ${T.border}`, borderRadius: T.rCard }}
+            style={{ border: `1px solid ${TL.hair}`, borderRadius: TL.radius.card }}
           >
             <summary
               style={{
@@ -330,10 +331,10 @@ export function TekniskPlanVisning({
                 padding: "0 16px",
                 cursor: "pointer",
                 listStyle: "none",
-                fontFamily: T.ui,
+                fontFamily: TL.font.sans,
                 fontSize: 12.5,
                 fontWeight: 500,
-                color: T.mut,
+                color: TL.mute,
               }}
             >
               Hvorfor disse fremdriftstallene
@@ -342,10 +343,10 @@ export function TekniskPlanVisning({
               style={{
                 margin: 0,
                 padding: "12px 16px 16px 24px",
-                fontFamily: T.bodyFont,
+                fontFamily: TL.font.sans,
                 fontSize: 13,
-                color: T.mut,
-                borderTop: `1px solid ${T.border}`,
+                color: TL.mute,
+                borderTop: `1px solid ${TL.hair}`,
               }}
             >
               {whyPunkter.map((p) => (

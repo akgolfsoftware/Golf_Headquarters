@@ -1,24 +1,12 @@
 "use client";
-
+import { TL } from "@/lib/v2/train-lock";
 /**
  * Foreldreportal · Innstillinger — v2 Presis + B-pakke (status + én grønn CTA).
  * Varsel-brytere fortsatt lese-status (ikke lagret ennå). Kun v2 + T.*.
  */
 
 import { useRouter } from "next/navigation";
-import {
-  T,
-  Caps,
-  Tittel,
-  Kort,
-  Rad,
-  StatusPill,
-  TomTilstand,
-  AvatarInit,
-  Icon,
-  Knapp,
-} from "@/components/v2";
-
+import { Caps, Tittel, Kort, Rad, StatusPill, TomTilstand, AvatarInit, Icon, Knapp } from "@/components/v2";
 /* ── Datakontrakt (avledet av requirePortalUser + hentBarnForForelder) ── */
 
 export interface ForelderInnstillingerBarn {
@@ -56,12 +44,12 @@ function KortLenke({ children, onClick }: { children: string; onClick: () => voi
         background: "transparent",
         border: "none",
         cursor: "pointer",
-        fontFamily: T.mono,
+        fontFamily: TL.font.mono,
         fontSize: 10,
         fontWeight: 700,
         letterSpacing: "0.1em",
         textTransform: "uppercase",
-        color: T.lime,
+        color: TL.fill,
         padding: 0,
       }}
     >
@@ -87,7 +75,7 @@ export function ForelderInnstillingerV2({ data }: { data: ForelderInnstillingerD
   ];
 
   return (
-    <div data-paper-wave-e="forelder-sub" data-paper-portal-forelder-innstillinger style={{ display: "flex", flexDirection: "column", gap: T.gap, maxWidth: 720, margin: "0 auto", width: "100%" }}>
+    <div data-paper-wave-e="forelder-sub" data-paper-portal-forelder-innstillinger style={{ display: "flex", flexDirection: "column", gap: 16, maxWidth: 720, margin: "0 auto", width: "100%" }}>
       {/* Hode + status */}
       <div
         style={{
@@ -105,9 +93,9 @@ export function ForelderInnstillingerV2({ data }: { data: ForelderInnstillingerD
           </div>
           <span
             style={{
-              fontFamily: T.ui,
+              fontFamily: TL.font.sans,
               fontSize: 12.5,
-              color: T.mut,
+              color: TL.mute,
               display: "block",
               marginTop: 8,
             }}
@@ -140,9 +128,9 @@ export function ForelderInnstillingerV2({ data }: { data: ForelderInnstillingerD
           {kontakt.map((k, i) => (
             <Rad
               key={k.label}
-              leading={<Icon name={k.icon} size={16} style={{ color: T.fg2 }} />}
+              leading={<Icon name={k.icon} size={16} style={{ color: TL.mute }} />}
               title={
-                <span style={{ color: k.mangler ? T.mut : T.fg }}>{k.verdi}</span>
+                <span style={{ color: k.mangler ? TL.mute : TL.text }}>{k.verdi}</span>
               }
               sub={k.label}
               trailing={null}
@@ -190,12 +178,12 @@ export function ForelderInnstillingerV2({ data }: { data: ForelderInnstillingerD
               trailing={
                 <span
                   style={{
-                    fontFamily: T.mono,
+                    fontFamily: TL.font.mono,
                     fontSize: 10,
                     fontWeight: 700,
                     letterSpacing: "0.1em",
                     textTransform: "uppercase",
-                    color: T.up,
+                    color: TL.ok,
                     flex: "none",
                   }}
                 >
@@ -208,13 +196,13 @@ export function ForelderInnstillingerV2({ data }: { data: ForelderInnstillingerD
         </div>
         <p
           style={{
-            fontFamily: T.ui,
+            fontFamily: TL.font.sans,
             fontSize: 12,
-            color: T.mut,
+            color: TL.mute,
             lineHeight: 1.6,
             margin: "14px 0 0",
             paddingTop: 14,
-            borderTop: `1px solid ${T.border}`,
+            borderTop: `1px solid ${TL.hair}`,
           }}
         >
           Varslene sendes til e-posten din. Individuelle varselbrytere og
@@ -226,22 +214,22 @@ export function ForelderInnstillingerV2({ data }: { data: ForelderInnstillingerD
       <Kort eyebrow="Konto">
         <div>
           <Rad
-            leading={<Icon name="lock" size={16} style={{ color: T.fg2 }} />}
+            leading={<Icon name="lock" size={16} style={{ color: TL.mute }} />}
             title="Endre passord"
             sub="Via Supabase Auth"
             onClick={gaaTil("/portal/meg/innstillinger/sikkerhet")}
           />
           <Rad
-            leading={<Icon name="shield-check" size={16} style={{ color: T.fg2 }} />}
+            leading={<Icon name="shield-check" size={16} style={{ color: TL.mute }} />}
             title="To-faktor-autentisering"
             sub="Ikke aktivert"
             onClick={gaaTil("/portal/meg/innstillinger/sikkerhet")}
           />
           <Rad
-            leading={<Icon name="log-out" size={16} style={{ color: T.down }} />}
-            title={<span style={{ color: T.down }}>Logg ut</span>}
+            leading={<Icon name="log-out" size={16} style={{ color: TL.danger }} />}
+            title={<span style={{ color: TL.danger }}>Logg ut</span>}
             onClick={gaaTil("/auth/login")}
-            trailing={<Icon name="chevron-right" size={14} style={{ color: T.down }} />}
+            trailing={<Icon name="chevron-right" size={14} style={{ color: TL.danger }} />}
             last
           />
         </div>

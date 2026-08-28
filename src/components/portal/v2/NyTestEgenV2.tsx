@@ -1,4 +1,5 @@
 "use client";
+import { TL } from "@/lib/v2/train-lock";
 
 /**
  * PlayerHQ · Ny egen test — v2 Presis + B-pakke (status + én primær CTA, tom = vei).
@@ -227,7 +228,7 @@ export function NyTestEgenV2({ rolle }: Props) {
 
   return (
     // wave-d
-    <div style={{ maxWidth: 720, width: "100%", margin: "0 auto", display: "flex", flexDirection: "column", gap: T.gap }}>
+    <div style={{ maxWidth: 720, width: "100%", margin: "0 auto", display: "flex", flexDirection: "column", gap: 16 }}>
       <ProgresjonsBar
         variant="segment"
         total={5}
@@ -245,7 +246,7 @@ export function NyTestEgenV2({ rolle }: Props) {
         {feilmelding && (
           <div
             role="alert"
-            style={{ marginTop: 18, borderRadius: 11, border: `1px solid color-mix(in srgb, ${T.down} 35%, transparent)`, background: `color-mix(in srgb, ${T.down} 10%, transparent)`, padding: "10px 14px", fontFamily: T.ui, fontSize: 13, color: T.down }}
+            style={{ marginTop: 18, borderRadius: 11, border: `1px solid color-mix(in srgb, ${TL.danger} 35%, transparent)`, background: `color-mix(in srgb, ${TL.danger} 10%, transparent)`, padding: "10px 14px", fontFamily: TL.font.sans, fontSize: 13, color: TL.danger }}
           >
             {feilmelding}
           </div>
@@ -253,7 +254,7 @@ export function NyTestEgenV2({ rolle }: Props) {
       </Kort>
 
       {/* Footer-navigasjon */}
-      <div style={{ position: "sticky", bottom: 12, zIndex: 10, display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10, borderRadius: 16, border: `1px solid ${T.border}`, background: T.panel, padding: "12px 14px", boxShadow: `0 12px 32px ${T.farge.svartA35}` }}>
+      <div style={{ position: "sticky", bottom: 12, zIndex: 10, display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10, borderRadius: 16, border: `1px solid ${TL.hair}`, background: TL.elev, padding: "12px 14px", boxShadow: `0 12px 32px ${TL.scrim}` }}>
         <Knapp
           ghost
           icon="chevron-left"
@@ -285,7 +286,7 @@ export function NyTestEgenV2({ rolle }: Props) {
 
 function StegTittel({ children }: { children: React.ReactNode }) {
   return (
-    <h2 style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 21, letterSpacing: "-0.02em", color: T.fg, lineHeight: 1.2, margin: 0 }}>
+    <h2 style={{ fontFamily: TL.font.sans, fontWeight: 700, fontSize: 21, letterSpacing: "-0.02em", color: TL.text, lineHeight: 1.2, margin: 0 }}>
       {children}
     </h2>
   );
@@ -293,7 +294,7 @@ function StegTittel({ children }: { children: React.ReactNode }) {
 
 function StegIngress({ children }: { children: React.ReactNode }) {
   return (
-    <p style={{ fontFamily: T.ui, fontSize: 12.5, color: T.mut, lineHeight: 1.55, margin: "8px 0 0" }}>
+    <p style={{ fontFamily: TL.font.sans, fontSize: 12.5, color: TL.mute, lineHeight: 1.55, margin: "8px 0 0" }}>
       {children}
     </p>
   );
@@ -301,7 +302,7 @@ function StegIngress({ children }: { children: React.ReactNode }) {
 
 function FeltEtikett({ children }: { children: React.ReactNode }) {
   return (
-    <span style={{ fontFamily: T.ui, fontSize: 12, fontWeight: 600, color: T.fg2, display: "block", marginBottom: 7 }}>
+    <span style={{ fontFamily: TL.font.sans, fontSize: 12, fontWeight: 600, color: TL.mute, display: "block", marginBottom: 7 }}>
       {children}
     </span>
   );
@@ -319,7 +320,7 @@ function Steg1({
   return (
     <div>
       <StegTittel>
-        Hva skal <em style={{ fontStyle: "italic", color: T.lime }}>testen</em> hete?
+        Hva skal <em style={{ fontStyle: "italic", color: TL.fill }}>testen</em> hete?
       </StegTittel>
       <StegIngress>Gi testen et navn og velg hvilket pyramide-område den hører til.</StegIngress>
 
@@ -330,7 +331,7 @@ function Steg1({
           placeholder="Eks. «Putt-konsistens 6 fot»"
           onChange={(v) => oppdater("navn", v.slice(0, 100))}
         />
-        <span style={{ fontFamily: T.mono, fontSize: 10.5, color: T.mut, display: "block", marginTop: 6, fontVariantNumeric: "tabular-nums" }}>
+        <span style={{ fontFamily: TL.font.mono, fontSize: 10.5, color: TL.mute, display: "block", marginTop: 6, fontVariantNumeric: "tabular-nums" }}>
           Minst 2 tegn. {state.navn.length}/100.
         </span>
       </div>
@@ -365,8 +366,8 @@ function Steg1({
                   textAlign: "left",
                   borderRadius: 13,
                   padding: 14,
-                  background: valgt ? T.panel3 : T.panel2,
-                  border: `1px solid ${valgt ? T.lime : T.border}`,
+                  background: valgt ? TL.dim : TL.dock,
+                  border: `1px solid ${valgt ? TL.fill : TL.hair}`,
                 }}
               >
                 <span
@@ -383,10 +384,10 @@ function Steg1({
                   <Icon name={k.ikon} size={16} style={{ color: aksefarge }} />
                 </span>
                 <span>
-                  <span style={{ display: "block", fontFamily: T.ui, fontSize: 13, fontWeight: 600, color: T.fg, lineHeight: 1.3 }}>
+                  <span style={{ display: "block", fontFamily: TL.font.sans, fontSize: 13, fontWeight: 600, color: TL.text, lineHeight: 1.3 }}>
                     {k.navn}
                   </span>
-                  <span style={{ display: "block", fontFamily: T.ui, fontSize: 11.5, color: T.mut, lineHeight: 1.45, marginTop: 4 }}>
+                  <span style={{ display: "block", fontFamily: TL.font.sans, fontSize: 11.5, color: TL.mute, lineHeight: 1.45, marginTop: 4 }}>
                     {k.beskrivelse}
                   </span>
                 </span>
@@ -445,7 +446,7 @@ function Steg2({
   return (
     <div>
       <StegTittel>
-        Hvordan <em style={{ fontStyle: "italic", color: T.lime }}>gjennomføres</em> testen?
+        Hvordan <em style={{ fontStyle: "italic", color: TL.fill }}>gjennomføres</em> testen?
       </StegTittel>
       <StegIngress>Beskriv protokollen steg for steg — slik at testen gjøres likt hver gang.</StegIngress>
 
@@ -464,7 +465,7 @@ function Steg2({
         <ol style={{ listStyle: "none", margin: 0, padding: 0, display: "flex", flexDirection: "column", gap: 8 }}>
           {state.protokollSteg.map((tekst, i) => (
             <li key={i} style={{ display: "flex", alignItems: "center", gap: 8 }}>
-              <span style={{ flex: "none", fontFamily: T.mono, fontSize: 12, fontWeight: 700, color: T.lime, fontVariantNumeric: "tabular-nums" }}>
+              <span style={{ flex: "none", fontFamily: TL.font.mono, fontSize: 12, fontWeight: 700, color: TL.fill, fontVariantNumeric: "tabular-nums" }}>
                 {i + 1}.
               </span>
               <input
@@ -478,7 +479,7 @@ function Steg2({
                 }
                 maxLength={300}
                 className="v2-focus"
-                style={{ flex: 1, minWidth: 0, boxSizing: "border-box", appearance: "none", borderRadius: 11, border: `1px solid ${T.borderS}`, background: T.panel2, padding: "10px 13px", fontFamily: T.ui, fontSize: 13, color: T.fg, outline: "none" }}
+                style={{ flex: 1, minWidth: 0, boxSizing: "border-box", appearance: "none", borderRadius: 11, border: `1px solid ${TL.hair}`, background: TL.dock, padding: "10px 13px", fontFamily: TL.font.sans, fontSize: 13, color: TL.text, outline: "none" }}
               />
               {state.protokollSteg.length > 1 && (
                 <button
@@ -486,7 +487,7 @@ function Steg2({
                   onClick={() => fjernSteg(i)}
                   aria-label={`Fjern steg ${i + 1}`}
                   className="v2-press v2-focus"
-                  style={{ appearance: "none", flex: "none", width: 28, height: 28, borderRadius: 8, background: T.panel2, border: `1px solid ${T.border}`, display: "inline-flex", alignItems: "center", justifyContent: "center", cursor: "pointer", color: T.fg2 }}
+                  style={{ appearance: "none", flex: "none", width: 28, height: 28, borderRadius: 8, background: TL.dock, border: `1px solid ${TL.hair}`, display: "inline-flex", alignItems: "center", justifyContent: "center", cursor: "pointer", color: TL.mute }}
                 >
                   <Icon name="x" size={13} />
                 </button>
@@ -514,16 +515,16 @@ function Steg2({
 
         <div>
           <FeltEtikett>Utstyr som trengs</FeltEtikett>
-          <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: 7, borderRadius: 11, border: `1px solid ${T.borderS}`, background: T.panel2, padding: "8px 12px" }}>
+          <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: 7, borderRadius: 11, border: `1px solid ${TL.hair}`, background: TL.dock, padding: "8px 12px" }}>
             {state.utstyr.map((u) => (
-              <span key={u} style={{ display: "inline-flex", alignItems: "center", gap: 6, borderRadius: 9999, background: T.panel3, border: `1px solid ${T.borderS}`, padding: "4px 11px", fontFamily: T.ui, fontSize: 12, fontWeight: 500, color: T.fg }}>
+              <span key={u} style={{ display: "inline-flex", alignItems: "center", gap: 6, borderRadius: 9999, background: TL.dim, border: `1px solid ${TL.hair}`, padding: "4px 11px", fontFamily: TL.font.sans, fontSize: 12, fontWeight: 500, color: TL.text }}>
                 {u}
                 <button
                   type="button"
                   onClick={() => fjernUtstyr(u)}
                   aria-label={`Fjern ${u}`}
                   className="v2-focus"
-                  style={{ appearance: "none", background: "transparent", border: 0, padding: 0, cursor: "pointer", color: T.mut, display: "inline-flex" }}
+                  style={{ appearance: "none", background: "transparent", border: 0, padding: 0, cursor: "pointer", color: TL.mute, display: "inline-flex" }}
                 >
                   <Icon name="x" size={12} />
                 </button>
@@ -544,7 +545,7 @@ function Steg2({
               maxLength={60}
               aria-label="Legg til utstyr"
               className="v2-focus"
-              style={{ minWidth: 120, flex: 1, background: "transparent", border: 0, outline: "none", fontFamily: T.ui, fontSize: 13, color: T.fg, padding: "4px 0" }}
+              style={{ minWidth: 120, flex: 1, background: "transparent", border: 0, outline: "none", fontFamily: TL.font.sans, fontSize: 13, color: TL.text, padding: "4px 0" }}
             />
           </div>
         </div>
@@ -569,7 +570,7 @@ function Steg3({
   return (
     <div>
       <StegTittel>
-        Hvordan <em style={{ fontStyle: "italic", color: T.lime }}>måles</em> resultatet?
+        Hvordan <em style={{ fontStyle: "italic", color: TL.fill }}>måles</em> resultatet?
       </StegTittel>
       <StegIngress>Velg måleenhet og beskriv hvordan score regnes.</StegIngress>
 
@@ -599,14 +600,14 @@ function Steg3({
           placeholder="Eks. «Antall puttede av 10» eller «Beste tid»"
           onChange={(v) => oppdater("scoringRule", v.slice(0, 200))}
         />
-        <span style={{ fontFamily: T.ui, fontSize: 11, color: T.mut, display: "block", marginTop: 6 }}>
+        <span style={{ fontFamily: TL.font.sans, fontSize: 11, color: TL.mute, display: "block", marginTop: 6 }}>
           Beskriv hvordan score regnes — høyere bedre eller lavere bedre?
         </span>
       </div>
 
       <div style={{ marginTop: 18 }}>
         <FeltEtikett>Mål-verdier per NGF-nivå (valgfritt) <HjelpTips k="ngfNivaa" size={11} /></FeltEtikett>
-        <p style={{ fontFamily: T.ui, fontSize: 11.5, color: T.mut, lineHeight: 1.5, margin: "0 0 10px" }}>
+        <p style={{ fontFamily: TL.font.sans, fontSize: 11.5, color: TL.mute, lineHeight: 1.5, margin: "0 0 10px" }}>
           Definer hva som regnes som godkjent per nivå. La stå tomt hvis ikke
           aktuelt.
         </p>
@@ -647,7 +648,7 @@ function Steg4({
   return (
     <div>
       <StegTittel>
-        Hvem skal kunne <em style={{ fontStyle: "italic", color: T.lime }}>bruke</em> testen?
+        Hvem skal kunne <em style={{ fontStyle: "italic", color: TL.fill }}>bruke</em> testen?
       </StegTittel>
       <StegIngress>Du kan alltid endre synligheten senere via coach.</StegIngress>
 
@@ -675,8 +676,8 @@ function Steg4({
                 textAlign: "left",
                 borderRadius: 13,
                 padding: 14,
-                background: valgt ? T.panel3 : T.panel2,
-                border: `1px solid ${valgt ? T.lime : T.border}`,
+                background: valgt ? TL.dim : TL.dock,
+                border: `1px solid ${valgt ? TL.fill : TL.hair}`,
               }}
             >
               <span
@@ -688,17 +689,17 @@ function Steg4({
                   display: "inline-flex",
                   alignItems: "center",
                   justifyContent: "center",
-                  background: valgt ? T.lime : T.panel3,
-                  border: valgt ? "none" : `1px solid ${T.borderS}`,
+                  background: valgt ? TL.fill : TL.dim,
+                  border: valgt ? "none" : `1px solid ${TL.hair}`,
                 }}
               >
-                <Icon name={s.ikon} size={15} style={{ color: valgt ? T.onLime : T.fg2 }} />
+                <Icon name={s.ikon} size={15} style={{ color: valgt ? TL.onFill : TL.mute }} />
               </span>
               <span>
-                <span style={{ display: "block", fontFamily: T.ui, fontSize: 13, fontWeight: 600, color: T.fg, lineHeight: 1.3 }}>
+                <span style={{ display: "block", fontFamily: TL.font.sans, fontSize: 13, fontWeight: 600, color: TL.text, lineHeight: 1.3 }}>
                   {s.navn}
                 </span>
-                <span style={{ display: "block", fontFamily: T.ui, fontSize: 11.5, color: T.mut, lineHeight: 1.45, marginTop: 4 }}>
+                <span style={{ display: "block", fontFamily: TL.font.sans, fontSize: 11.5, color: TL.mute, lineHeight: 1.45, marginTop: 4 }}>
                   {s.beskrivelse}
                 </span>
               </span>
@@ -708,8 +709,8 @@ function Steg4({
       </div>
 
       {erSpiller && state.synlighet === "COACH" && (
-        <div style={{ marginTop: 18, borderRadius: 11, border: `1px solid color-mix(in srgb, ${T.lime} 25%, transparent)`, background: `color-mix(in srgb, ${T.lime} 6%, transparent)`, padding: "10px 14px", fontFamily: T.ui, fontSize: 12.5, color: T.fg2, lineHeight: 1.55 }}>
-          <strong style={{ fontWeight: 600, color: T.fg }}>Tips:</strong> Når du
+        <div style={{ marginTop: 18, borderRadius: 11, border: `1px solid color-mix(in srgb, ${TL.fill} 25%, transparent)`, background: `color-mix(in srgb, ${TL.fill} 6%, transparent)`, padding: "10px 14px", fontFamily: TL.font.sans, fontSize: 12.5, color: TL.mute, lineHeight: 1.55 }}>
+          <strong style={{ fontWeight: 600, color: TL.text }}>Tips:</strong> Når du
           foreslår en test til coach, vil hen kunne godkjenne den til hele
           akademi. Du beholder kreditten som skaper.
         </div>
@@ -741,45 +742,45 @@ function Steg5({
   return (
     <div>
       <StegTittel>
-        Klar til å <em style={{ fontStyle: "italic", color: T.lime }}>lagre</em>?
+        Klar til å <em style={{ fontStyle: "italic", color: TL.fill }}>lagre</em>?
       </StegTittel>
       <StegIngress>Sjekk at forhåndsvisningen under stemmer før du lagrer.</StegIngress>
 
-      <div style={{ marginTop: 18, borderRadius: 13, border: `1px solid ${T.border}`, background: T.panel2, padding: 18 }}>
+      <div style={{ marginTop: 18, borderRadius: 13, border: `1px solid ${TL.hair}`, background: TL.dock, padding: 18 }}>
         <Caps size={9}>Forhåndsvisning</Caps>
-        <h3 style={{ fontFamily: T.disp, fontWeight: 700, fontSize: 22, letterSpacing: "-0.02em", color: T.fg, lineHeight: 1.2, margin: "8px 0 0" }}>
-          {state.navn || <em style={{ fontStyle: "italic", color: T.mut }}>(uten navn)</em>}
+        <h3 style={{ fontFamily: TL.font.sans, fontWeight: 700, fontSize: 22, letterSpacing: "-0.02em", color: TL.text, lineHeight: 1.2, margin: "8px 0 0" }}>
+          {state.navn || <em style={{ fontStyle: "italic", color: TL.mute }}>(uten navn)</em>}
         </h3>
         {kategori && (
-          <span style={{ marginTop: 10, display: "inline-flex", alignItems: "center", gap: 6, borderRadius: 9999, background: `color-mix(in srgb, ${T.ax[kategori.verdi]} 14%, transparent)`, padding: "4px 12px", fontFamily: T.ui, fontSize: 12, fontWeight: 600, color: T.ax[kategori.verdi] }}>
+          <span style={{ marginTop: 10, display: "inline-flex", alignItems: "center", gap: 6, borderRadius: 9999, background: `color-mix(in srgb, ${T.ax[kategori.verdi]} 14%, transparent)`, padding: "4px 12px", fontFamily: TL.font.sans, fontSize: 12, fontWeight: 600, color: T.ax[kategori.verdi] }}>
             <Icon name={kategori.ikon} size={12} />
             {kategori.navn}
           </span>
         )}
 
         {state.beskrivelse && (
-          <p style={{ fontFamily: T.ui, fontSize: 12.5, color: T.mut, lineHeight: 1.55, margin: "12px 0 0" }}>
+          <p style={{ fontFamily: TL.font.sans, fontSize: 12.5, color: TL.mute, lineHeight: 1.55, margin: "12px 0 0" }}>
             {state.beskrivelse}
           </p>
         )}
 
-        <div style={{ marginTop: 16, borderTop: `1px solid ${T.border}`, paddingTop: 14, display: "grid", gridTemplateColumns: "1fr 1fr", gap: "14px 24px" }}>
+        <div style={{ marginTop: 16, borderTop: `1px solid ${TL.hair}`, paddingTop: 14, display: "grid", gridTemplateColumns: "1fr 1fr", gap: "14px 24px" }}>
           <div>
             <Caps size={9}>Måleenhet</Caps>
-            <div style={{ fontFamily: T.ui, fontSize: 13, fontWeight: 500, color: T.fg, marginTop: 4 }}>
+            <div style={{ fontFamily: TL.font.sans, fontSize: 13, fontWeight: 500, color: TL.text, marginTop: 4 }}>
               {enhet?.navn ?? "—"}
             </div>
           </div>
           <div>
             <Caps size={9}>Scoring</Caps>
-            <div style={{ fontFamily: T.ui, fontSize: 13, fontWeight: 500, color: T.fg, marginTop: 4 }}>
+            <div style={{ fontFamily: TL.font.sans, fontSize: 13, fontWeight: 500, color: TL.text, marginTop: 4 }}>
               {state.scoringRule || "—"}
             </div>
           </div>
           {state.estMinutter && (
             <div>
               <Caps size={9}>Estimert tid</Caps>
-              <div style={{ fontFamily: T.mono, fontSize: 13, fontWeight: 500, fontVariantNumeric: "tabular-nums", color: T.fg, marginTop: 4 }}>
+              <div style={{ fontFamily: TL.font.mono, fontSize: 13, fontWeight: 500, fontVariantNumeric: "tabular-nums", color: TL.text, marginTop: 4 }}>
                 {state.estMinutter} min
               </div>
             </div>
@@ -787,7 +788,7 @@ function Steg5({
           {state.utstyr.length > 0 && (
             <div>
               <Caps size={9}>Utstyr</Caps>
-              <div style={{ fontFamily: T.ui, fontSize: 13, fontWeight: 500, color: T.fg, marginTop: 4 }}>
+              <div style={{ fontFamily: TL.font.sans, fontSize: 13, fontWeight: 500, color: TL.text, marginTop: 4 }}>
                 {state.utstyr.join(", ")}
               </div>
             </div>
@@ -795,12 +796,12 @@ function Steg5({
         </div>
 
         {protokollSteg.length > 0 && (
-          <div style={{ marginTop: 16, borderTop: `1px solid ${T.border}`, paddingTop: 14 }}>
+          <div style={{ marginTop: 16, borderTop: `1px solid ${TL.hair}`, paddingTop: 14 }}>
             <Caps size={9}>Protokoll</Caps>
             <ol style={{ listStyle: "none", margin: "10px 0 0", padding: 0, display: "flex", flexDirection: "column", gap: 6 }}>
               {protokollSteg.map((tekst, i) => (
-                <li key={i} style={{ display: "flex", gap: 8, fontFamily: T.ui, fontSize: 13, color: T.fg, lineHeight: 1.5 }}>
-                  <span style={{ flex: "none", fontFamily: T.mono, fontSize: 12, fontWeight: 700, color: T.lime, fontVariantNumeric: "tabular-nums" }}>
+                <li key={i} style={{ display: "flex", gap: 8, fontFamily: TL.font.sans, fontSize: 13, color: TL.text, lineHeight: 1.5 }}>
+                  <span style={{ flex: "none", fontFamily: TL.font.mono, fontSize: 12, fontWeight: 700, color: TL.fill, fontVariantNumeric: "tabular-nums" }}>
                     {i + 1}.
                   </span>
                   <span>{tekst}</span>
@@ -813,15 +814,15 @@ function Steg5({
         {Object.keys(state.malverdier).some(
           (k) => state.malverdier[k]?.trim().length > 0,
         ) && (
-          <div style={{ marginTop: 16, borderTop: `1px solid ${T.border}`, paddingTop: 14 }}>
+          <div style={{ marginTop: 16, borderTop: `1px solid ${TL.hair}`, paddingTop: 14 }}>
             <Caps size={9}>Mål-verdier (NGF-nivå)</Caps>
             <div style={{ marginTop: 10, display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(90px, 1fr))", gap: 8 }}>
               {NGF_NIVAAER.map(
                 (n) =>
                   state.malverdier[n] && (
-                    <div key={n} style={{ borderRadius: 11, border: `1px solid ${T.border}`, background: T.panel, padding: "8px 11px" }}>
+                    <div key={n} style={{ borderRadius: 11, border: `1px solid ${TL.hair}`, background: TL.elev, padding: "8px 11px" }}>
                       <Caps size={8.5}>{n}</Caps>
-                      <div style={{ fontFamily: T.mono, fontSize: 13, fontWeight: 700, fontVariantNumeric: "tabular-nums", color: T.fg, marginTop: 3 }}>
+                      <div style={{ fontFamily: TL.font.mono, fontSize: 13, fontWeight: 700, fontVariantNumeric: "tabular-nums", color: TL.text, marginTop: 3 }}>
                         {state.malverdier[n]}
                       </div>
                     </div>
@@ -831,11 +832,11 @@ function Steg5({
           </div>
         )}
 
-        <div style={{ marginTop: 16, borderTop: `1px solid ${T.border}`, paddingTop: 14, display: "flex", alignItems: "center", gap: 8 }}>
-          <Icon name={synlighet.ikon} size={14} style={{ color: T.mut }} />
-          <span style={{ fontFamily: T.ui, fontSize: 12.5, color: T.fg2 }}>
+        <div style={{ marginTop: 16, borderTop: `1px solid ${TL.hair}`, paddingTop: 14, display: "flex", alignItems: "center", gap: 8 }}>
+          <Icon name={synlighet.ikon} size={14} style={{ color: TL.mute }} />
+          <span style={{ fontFamily: TL.font.sans, fontSize: 12.5, color: TL.mute }}>
             Synlighet:{" "}
-            <strong style={{ fontWeight: 600, color: T.fg }}>{synlighet.navn}</strong>{" "}
+            <strong style={{ fontWeight: 600, color: TL.text }}>{synlighet.navn}</strong>{" "}
             — {synlighet.beskrivelse}
           </span>
         </div>

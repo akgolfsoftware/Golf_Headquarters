@@ -17,6 +17,7 @@
 
 import type { ReactNode, CSSProperties } from "react";
 import Link from "next/link";
+import { TL } from "@/lib/v2/train-lock";
 import { T } from "@/lib/v2/tokens";
 import { LogoAK, Caps, Icon } from "@/components/v2";
 
@@ -36,8 +37,8 @@ function Knapp({
 }) {
   const v: CSSProperties =
     variant === "primary"
-      ? { background: T.handling, color: T.onHandling, border: "none" }
-      : { background: T.panel3, color: T.fg, border: `1px solid ${T.borderS}` };
+      ? { background: TL.fill, color: TL.onFill, border: "none" }
+      : { background: TL.dim, color: TL.text, border: `1px solid ${TL.hair}` };
   return (
     <Link
       href={href}
@@ -52,7 +53,7 @@ function Knapp({
         alignItems: "center",
         justifyContent: "center",
         gap: 9,
-        fontFamily: T.ui,
+        fontFamily: TL.font.sans,
         fontSize: 13.5,
         fontWeight: 600,
         ...v,
@@ -70,12 +71,12 @@ function Lenke({ href, children }: { href: string; children: ReactNode }) {
     <Link
       href={href}
       style={{
-        fontFamily: T.ui,
+        fontFamily: TL.font.sans,
         fontWeight: 600,
-        color: T.fg2,
+        color: TL.mute,
         cursor: "pointer",
         textDecoration: "underline",
-        textDecorationColor: T.borderS,
+        textDecorationColor: TL.hair,
         textUnderlineOffset: 3,
       }}
     >
@@ -97,8 +98,8 @@ function BrandPanel() {
         minWidth: 420,
         position: "relative",
         overflow: "hidden",
-        borderRight: `1px solid ${T.border}`,
-        background: `radial-gradient(560px 460px at 28% 24%, ${T.handlingSoft}, transparent 68%), radial-gradient(420px 380px at 82% 88%, color-mix(in srgb, var(--v2-handling) 10%, transparent), transparent 60%), ${T.bg}`,
+        borderRight: `1px solid ${TL.hair}`,
+        background: `radial-gradient(560px 460px at 28% 24%, ${TL.dim}, transparent 68%), radial-gradient(420px 380px at 82% 88%, color-mix(in srgb, var(--tl-fill) 10%, transparent), transparent 60%), ${TL.scene}`,
         flexDirection: "column",
         padding: "34px 40px 44px",
       }}
@@ -120,7 +121,7 @@ function BrandPanel() {
             strokeWidth="1"
           />
         ))}
-        <circle cx="260" cy="330" r="3.5" fill="color-mix(in srgb, var(--v2-handling) 45%, transparent)" />
+        <circle cx="260" cy="330" r="3.5" fill="color-mix(in srgb, var(--tl-fill) 45%, transparent)" />
       </svg>
       <div style={{ position: "relative" }}>
         <LogoAK size={30} surface="paper" />
@@ -130,23 +131,23 @@ function BrandPanel() {
         <LogoAK size={64} surface="paper" style={{ marginBottom: 22 }} />
         <h2
           style={{
-            fontFamily: T.disp,
+            fontFamily: TL.font.sans,
             fontWeight: 700,
             fontSize: 30,
             letterSpacing: "-0.03em",
             lineHeight: 1.12,
-            color: T.fg,
+            color: TL.text,
             margin: 0,
           }}
         >
           Nesten i mål.{" "}
-          <em style={{ fontStyle: "italic", color: T.lime }}>Én klikk igjen.</em>
+          <em style={{ fontStyle: "italic", color: TL.fill }}>Én klikk igjen.</em>
         </h2>
         <p
           style={{
-            fontFamily: T.ui,
+            fontFamily: TL.font.sans,
             fontSize: 13.5,
-            color: T.fg2,
+            color: TL.mute,
             lineHeight: 1.6,
             margin: "14px 0 0",
             maxWidth: 360,
@@ -180,16 +181,16 @@ function CheckEmailKort() {
 
       <div
         style={{
-          background: T.panel,
-          border: `1px solid ${T.border}`,
-          borderRadius: T.rCard,
+          background: TL.elev,
+          border: `1px solid ${TL.hair}`,
+          borderRadius: TL.radius.card,
           padding: 28,
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
           textAlign: "center",
           gap: 0,
-          boxShadow: `inset 0 1px 0 ${T.farge.hvitA5}, 0 12px 32px ${T.farge.svartA35}`,
+          boxShadow: `inset 0 1px 0 ${T.farge.hvitA5}, 0 12px 32px ${TL.scrim}`,
         }}
       >
         {/* Mail-check-merke i lime-tintet sirkel */}
@@ -197,39 +198,39 @@ function CheckEmailKort() {
           style={{
             width: 76,
             height: 76,
-            borderRadius: T.rPill,
+            borderRadius: TL.radius.pill,
             display: "grid",
             placeItems: "center",
-            background: "color-mix(in srgb, var(--v2-lime) 10%, transparent)",
-            border: `1px solid ${T.borderS}`,
+            background: "color-mix(in srgb, var(--tl-fill) 10%, transparent)",
+            border: `1px solid ${TL.hair}`,
             marginBottom: 22,
           }}
         >
-          <Icon name="mail-check" size={38} strokeWidth={1.5} style={{ color: T.lime }} />
+          <Icon name="mail-check" size={38} strokeWidth={1.5} style={{ color: TL.fill }} />
         </div>
 
-        <Caps size={9} color={T.lime} style={{ marginBottom: 14 }}>
+        <Caps size={9} color={TL.fill} style={{ marginBottom: 14 }}>
           AK GOLF · BEKREFT E-POST
         </Caps>
 
         <h1
           style={{
-            fontFamily: T.disp,
+            fontFamily: TL.font.sans,
             fontWeight: 700,
             fontSize: 28,
             letterSpacing: "-0.03em",
-            color: T.fg,
+            color: TL.text,
             margin: 0,
             lineHeight: 1.08,
           }}
         >
-          Sjekk <em style={{ fontStyle: "italic", color: T.lime }}>innboksen</em> din
+          Sjekk <em style={{ fontStyle: "italic", color: TL.fill }}>innboksen</em> din
         </h1>
         <p
           style={{
-            fontFamily: T.ui,
+            fontFamily: TL.font.sans,
             fontSize: 13.5,
-            color: T.fg2,
+            color: TL.mute,
             lineHeight: 1.55,
             margin: "12px 0 24px",
             maxWidth: 300,
@@ -245,8 +246,8 @@ function CheckEmailKort() {
             width: "100%",
             textAlign: "left",
             borderRadius: 12,
-            background: T.panel2,
-            border: `1px solid ${T.borderS}`,
+            background: TL.dock,
+            border: `1px solid ${TL.hair}`,
             padding: "14px 16px",
             marginBottom: 20,
           }}
@@ -254,7 +255,7 @@ function CheckEmailKort() {
           <Caps size={9} style={{ marginBottom: 6 }}>
             Ikke fått e-posten?
           </Caps>
-          <p style={{ fontFamily: T.ui, fontSize: 13, color: T.fg2, lineHeight: 1.55, margin: 0 }}>
+          <p style={{ fontFamily: TL.font.sans, fontSize: 13, color: TL.mute, lineHeight: 1.55, margin: 0 }}>
             Sjekk søppelpost-mappen, eller{" "}
             <Lenke href="/auth/signup">registrer deg på nytt</Lenke>.
           </p>
@@ -282,9 +283,9 @@ export function CheckEmailV2() {
         // Flaten er Paper LYS — "dark" fikk nettleseren til å tegne autofyll,
         // passordikon og rullefelt mørkt oppå en lys side.
         colorScheme: "light",
-        color: T.fg,
-        fontFamily: T.ui,
-        background: T.bg,
+        color: TL.text,
+        fontFamily: TL.font.sans,
+        background: TL.scene,
       }}
     >
       <BrandPanel />
@@ -296,7 +297,7 @@ export function CheckEmailV2() {
           alignItems: "center",
           justifyContent: "center",
           padding: "48px 22px",
-          background: `radial-gradient(700px 420px at 60% -12%, ${T.handlingSoft}, transparent 62%), ${T.bg}`,
+          background: `radial-gradient(700px 420px at 60% -12%, ${TL.dim}, transparent 62%), ${TL.scene}`,
         }}
       >
         <CheckEmailKort />

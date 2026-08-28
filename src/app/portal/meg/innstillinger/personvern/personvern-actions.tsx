@@ -1,7 +1,8 @@
 "use client";
 
 import { Knapp } from "@/components/v2";
-import { T } from "@/lib/v2/tokens";
+import { TL } from "@/lib/v2/train-lock";
+
 import { useState, useTransition } from "react";
 import { exportUserData } from "@/app/portal/meg/innstillinger/actions";
 import { opprettGdprForesporsel } from "@/lib/moderering/actions";
@@ -52,10 +53,10 @@ function ExportAction() {
       {status ? (
         <span
           style={{
-            fontFamily: T.mono,
+            fontFamily: TL.font.mono,
             fontSize: 11,
             letterSpacing: "0.04em",
-            color: status.ok ? T.up : T.down,
+            color: status.ok ? TL.ok : TL.danger,
           }}
         >
           {status.msg}
@@ -106,10 +107,10 @@ function SlettKontoAction() {
         {status ? (
           <span
             style={{
-              fontFamily: T.mono,
+              fontFamily: TL.font.mono,
               fontSize: 11,
               letterSpacing: "0.04em",
-              color: status.ok ? T.up : T.down,
+              color: status.ok ? TL.ok : TL.danger,
             }}
           >
             {status.msg}
@@ -123,17 +124,17 @@ function SlettKontoAction() {
     <div
       style={{
         marginTop: 14,
-        borderRadius: T.rRow,
-        border: `1px solid color-mix(in srgb, ${T.down} 35%, transparent)`,
-        background: `color-mix(in srgb, ${T.down} 6%, ${T.panel})`,
+        borderRadius: TL.radius.row,
+        border: `1px solid color-mix(in srgb, ${TL.danger} 35%, transparent)`,
+        background: `color-mix(in srgb, ${TL.danger} 6%, ${TL.elev})`,
         padding: 14,
       }}
     >
-      <p style={{ margin: 0, fontFamily: T.ui, fontSize: 13.5, fontWeight: 600, color: T.down }}>
+      <p style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 13.5, fontWeight: 600, color: TL.danger }}>
         Er du helt sikker?
       </p>
-      <p style={{ margin: "6px 0 0", fontFamily: T.ui, fontSize: 12.5, color: T.fg2, lineHeight: 1.5 }}>
-        Forespørselen behandles av coach eller admin. Skriv <strong style={{ color: T.fg }}>SLETT</strong> for å bekrefte.
+      <p style={{ margin: "6px 0 0", fontFamily: TL.font.sans, fontSize: 12.5, color: TL.mute, lineHeight: 1.5 }}>
+        Forespørselen behandles av coach eller admin. Skriv <strong style={{ color: TL.text }}>SLETT</strong> for å bekrefte.
       </p>
       <input
         type="text"
@@ -148,14 +149,14 @@ function SlettKontoAction() {
           maxWidth: 200,
           height: 42,
           borderRadius: 11,
-          border: `1px solid ${T.borderS}`,
-          background: T.panel2,
+          border: `1px solid ${TL.hair}`,
+          background: TL.dock,
           padding: "0 12px",
-          fontFamily: T.mono,
+          fontFamily: TL.font.mono,
           fontSize: 13,
           letterSpacing: "0.12em",
           textTransform: "uppercase",
-          color: T.fg,
+          color: TL.text,
           outline: "none",
         }}
       />
@@ -170,18 +171,18 @@ function SlettKontoAction() {
           width: "100%",
           resize: "none",
           borderRadius: 11,
-          border: `1px solid ${T.borderS}`,
-          background: T.panel2,
+          border: `1px solid ${TL.hair}`,
+          background: TL.dock,
           padding: "10px 12px",
-          fontFamily: T.ui,
+          fontFamily: TL.font.sans,
           fontSize: 13,
-          color: T.fg,
+          color: TL.text,
           outline: "none",
           boxSizing: "border-box",
         }}
       />
       {error ? (
-        <p style={{ margin: "8px 0 0", fontFamily: T.mono, fontSize: 11, color: T.down }}>{error}</p>
+        <p style={{ margin: "8px 0 0", fontFamily: TL.font.mono, fontSize: 11, color: TL.danger }}>{error}</p>
       ) : null}
       <div style={{ marginTop: 10, display: "flex", flexWrap: "wrap", gap: 8 }}>
         <button
@@ -195,9 +196,9 @@ function SlettKontoAction() {
             borderRadius: 9999,
             border: "none",
             padding: "0 18px",
-            background: T.down,
-            color: T.onLime,
-            fontFamily: T.ui,
+            background: TL.danger,
+            color: TL.onFill,
+            fontFamily: TL.font.sans,
             fontSize: 12.5,
             fontWeight: 600,
             cursor: isPending || confirmText !== "SLETT" ? "default" : "pointer",

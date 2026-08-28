@@ -15,7 +15,8 @@ import { Select } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { Knapp } from "@/components/v2/core";
 import { Icon } from "@/components/v2/icon";
-import { T } from "@/lib/v2/tokens";
+import { TL } from "@/lib/v2/train-lock";
+
 import { AREA_LABEL, PYRAMID_LABEL, UI } from "@/lib/domain/workbench/labels";
 import type { PyramidArea, TrainingArea } from "@/lib/domain/workbench/types";
 
@@ -77,7 +78,7 @@ export function DrillListEditor({
   return (
     <div style={{ display: "grid", gap: 10 }}>
       {drills.length === 0 ? (
-        <p style={{ fontFamily: T.ui, fontSize: 12.5, color: T.mut, margin: 0 }}>
+        <p style={{ fontFamily: TL.font.sans, fontSize: 12.5, color: TL.mute, margin: 0 }}>
           {UI.emptyDrills}
         </p>
       ) : (
@@ -93,18 +94,18 @@ export function DrillListEditor({
                   justifyContent: "space-between",
                   gap: 8,
                   padding: "7px 9px",
-                  borderRadius: T.rTag,
-                  border: `1px solid ${T.border}`,
-                  background: T.panel2,
+                  borderRadius: TL.radius.row,
+                  border: `1px solid ${TL.hair}`,
+                  background: TL.dock,
                   minWidth: 0,
                 }}
               >
                 <div style={{ display: "grid", gap: 2, minWidth: 0, flex: 1 }}>
                   <span
                     style={{
-                      fontFamily: T.ui,
+                      fontFamily: TL.font.sans,
                       fontSize: 12.5,
-                      color: T.fg,
+                      color: TL.text,
                       overflow: "hidden",
                       textOverflow: "ellipsis",
                       whiteSpace: "nowrap",
@@ -113,7 +114,7 @@ export function DrillListEditor({
                     {d.title || UI.drillTitlePlaceholder}
                   </span>
                   {komplett ? (
-                    <span style={{ fontFamily: T.mono, fontSize: 10.5, color: T.mut }}>
+                    <span style={{ fontFamily: TL.font.mono, fontSize: 10.5, color: TL.mute }}>
                       {PYRAMID_LABEL[d.akFormel.pyramid]} · {AREA_LABEL[d.akFormel.area]} ·{" "}
                       {d.durationMinutes} min
                     </span>
@@ -123,9 +124,9 @@ export function DrillListEditor({
                         display: "inline-flex",
                         alignItems: "center",
                         gap: 4,
-                        fontFamily: T.mono,
+                        fontFamily: TL.font.mono,
                         fontSize: 10.5,
-                        color: T.down,
+                        color: TL.danger,
                       }}
                     >
                       <Icon name="triangle-alert" size={11} />
@@ -135,9 +136,9 @@ export function DrillListEditor({
                   {d.description ? (
                     <span
                       style={{
-                        fontFamily: T.ui,
+                        fontFamily: TL.font.sans,
                         fontSize: 11,
-                        color: T.mut,
+                        color: TL.mute,
                         overflow: "hidden",
                         textOverflow: "ellipsis",
                         whiteSpace: "nowrap",
@@ -179,8 +180,8 @@ export function DrillListEditor({
             display: "grid",
             gap: 8,
             padding: "9px 11px",
-            borderRadius: T.rTag,
-            border: `1px dashed ${T.border}`,
+            borderRadius: TL.radius.row,
+            border: `1px dashed ${TL.hair}`,
           }}
         >
           <Felt label={UI.drillTitle}>
@@ -295,10 +296,10 @@ function IkonKnapp({
         justifyContent: "center",
         width: 22,
         height: 22,
-        borderRadius: T.rTag,
-        border: `1px solid ${T.border}`,
+        borderRadius: TL.radius.row,
+        border: `1px solid ${TL.hair}`,
         background: "transparent",
-        color: T.mut,
+        color: TL.mute,
         cursor: disabled ? "not-allowed" : "pointer",
         opacity: disabled ? 0.4 : 1,
       }}
@@ -313,12 +314,12 @@ function Felt({ label, children }: { label: string; children: React.ReactNode })
     <label style={{ display: "grid", gap: 5, minWidth: 0 }}>
       <span
         style={{
-          fontFamily: T.mono,
+          fontFamily: TL.font.mono,
           fontSize: 9.5,
           fontWeight: 600,
           letterSpacing: "0.07em",
           textTransform: "uppercase",
-          color: T.mut,
+          color: TL.mute,
         }}
       >
         {label}

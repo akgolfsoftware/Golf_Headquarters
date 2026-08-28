@@ -7,14 +7,15 @@
    rød, i rute = grønn, over plan = lime-aksent) — full variant til spillerpanelet,
    kompakt variant til stall-radenes sparkline. Kun T.*-tokens, ingen rå hex. */
 
-import { T } from "@/lib/v2/tokens";
+import { TL } from "@/lib/v2/train-lock";
+
 
 /** Status-bånd for fullføring mot mål (100 %). Speil av loaderens ComplianceBand. */
 export type EtterlevBand = "bad" | "warn" | "ok" | "over";
 
 /** Bånd → signalfarge. Lime kun som «over plan»-aksent (aldri som nøytralt datasignal). */
 export function etterlevFarge(band: EtterlevBand): string {
-  return band === "bad" ? T.down : band === "warn" ? T.warn : band === "over" ? T.lime : T.up;
+  return band === "bad" ? TL.danger : band === "warn" ? TL.warn : band === "over" ? TL.fill : TL.ok;
 }
 
 export interface UkeStripeUke {
@@ -62,9 +63,9 @@ export function UkeStripe({ uker, kompakt = false, height }: UkeStripeProps) {
                 width: kompakt ? 6 : "100%",
                 height: h,
                 borderRadius: kompakt ? 2 : 5,
-                background: T.track,
+                background: TL.hair,
                 overflow: "hidden",
-                border: u.isNow ? `1px solid ${T.borderS}` : "1px solid transparent",
+                border: u.isNow ? `1px solid ${TL.hair}` : "1px solid transparent",
               }}
             >
               {!tom && (
@@ -83,7 +84,7 @@ export function UkeStripe({ uker, kompakt = false, height }: UkeStripeProps) {
               )}
             </div>
             {!kompakt && (
-              <span style={{ fontFamily: T.mono, fontSize: 8, color: u.isNow ? T.fg2 : T.mut }}>
+              <span style={{ fontFamily: TL.font.mono, fontSize: 8, color: u.isNow ? TL.mute : TL.mute }}>
                 {u.label}
               </span>
             )}

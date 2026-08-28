@@ -1,4 +1,5 @@
 "use client";
+import { TL } from "@/lib/v2/train-lock";
 
 /**
  * AgencyOS hub-faner — forener overflødige menypunkter under de 5 primærjobbene.
@@ -12,7 +13,6 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { T } from "@/components/v2";
 
 export type AgencyHubTab = {
   href: string;
@@ -88,16 +88,16 @@ export function AgencyHubSubNav({
             className="v2-press v2-focus"
             style={{
               appearance: "none",
-              fontFamily: T.ui,
+              fontFamily: TL.font.sans,
               fontSize: 13,
               fontWeight: 600,
               padding: "8px 15px",
               minHeight: 44,
               borderRadius: 9999,
-              color: aktiv ? T.fg : T.fg2,
-              background: aktiv ? T.panel : T.panel2,
-              border: `1px solid ${aktiv ? T.fg : T.border}`,
-              boxShadow: aktiv ? `inset 0 -2px 0 ${T.handling}` : undefined,
+              color: aktiv ? TL.text : TL.mute,
+              background: aktiv ? TL.elev : TL.dock,
+              border: `1px solid ${aktiv ? TL.text : TL.hair}`,
+              boxShadow: aktiv ? `inset 0 -2px 0 ${TL.fill}` : undefined,
               whiteSpace: "nowrap",
               textDecoration: "none",
               flex: "none",
