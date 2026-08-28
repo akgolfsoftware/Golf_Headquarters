@@ -15,6 +15,7 @@ import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
 import { AdminTurneringerTrainLock, type AdminTurneringV2Row, type TurneringChipTone } from "@/components/admin/v2/tournaments/AdminTurneringerTrainLock";
 
 export const dynamic = "force-dynamic";
+export const metadata = { title: "Turneringer · AgencyOS" };
 
 type RadIntern = Omit<AdminTurneringV2Row, "erKommende"> & { statuser: string[] };
 

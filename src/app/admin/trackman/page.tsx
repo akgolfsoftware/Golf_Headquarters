@@ -28,6 +28,7 @@ import {
 } from "@/components/admin/v2/AdminTrackmanTrainLock";
 
 export const dynamic = "force-dynamic";
+export const metadata = { title: "TrackMan · AgencyOS" };
 
 const SOURCE_LABEL: Record<string, string> = {
   "csv-import": "csv",

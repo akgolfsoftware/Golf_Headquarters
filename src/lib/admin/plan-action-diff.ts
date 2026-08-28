@@ -62,6 +62,20 @@ export async function buildDiffPreview(
       ? `Sender melding: «${m.data.melding.subject}» — ${m.data.melding.body.slice(0, 120)}…`
       : null;
   }
+  if (actionType === "SOCIAL_POST") {
+    const m = z
+      .object({
+        plattform: z.string().optional(),
+        tekst: z.string().optional(),
+        forklaring: z.string().optional(),
+      })
+      .safeParse(suggestion);
+    if (!m.success) return null;
+    const tekst = m.data.tekst ?? m.data.forklaring;
+    if (!tekst) return null;
+    const plat = m.data.plattform ?? "SoMe";
+    return `${plat}: ${tekst.slice(0, 240)}`;
+  }
   // Test → full sving TM-baseline
   if (actionType === "TM_BASELINE_PROPOSE") {
     const m = z

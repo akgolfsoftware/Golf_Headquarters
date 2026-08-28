@@ -17,6 +17,7 @@ import { getTesterLiveKort } from "@/lib/portal-tester/tester-live-kort";
 import { hentSpillerDagITiden } from "@/lib/kalender-lag/player-dag";
 
 export const dynamic = "force-dynamic";
+export const metadata = { title: "I dag · PlayerHQ" };
 
 const OSLO_DATO_FMT = new Intl.DateTimeFormat("nb-NO", { day: "2-digit", month: "2-digit", timeZone: "Europe/Oslo" });
 const OSLO_KLOKKE_FMT = new Intl.DateTimeFormat("nb-NO", { hour: "2-digit", minute: "2-digit", hour12: false, timeZone: "Europe/Oslo" });

@@ -14,6 +14,7 @@ import { V2Shell, PLAYERHQ_NAV } from "@/components/v2/shell";
 import { GjorV2 } from "@/components/portal/v2/GjorV2";
 
 export const dynamic = "force-dynamic";
+export const metadata = { title: "Gjennomføre · PlayerHQ" };
 
 export default async function V2GjorPreviewPage() {
   const user = await requirePortalUser();

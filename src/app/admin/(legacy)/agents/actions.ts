@@ -14,6 +14,7 @@ import { runAiCodeReviewer } from "@/lib/agents/ai-code-reviewer";
 import { runDemandPredictor } from "@/lib/agents/demand-predictor";
 import { runProactiveBookingAlerts } from "@/lib/agents/booking-alerts-proactive";
 import { runPlanEffectivenessAgent } from "@/lib/agents/plan-effectiveness-agent";
+import { runSocialMediaAgent } from "@/lib/agents/social-media-agent";
 
 
 // Agenter som kan kjøres manuelt fra Mission Control (ADMIN-only).
@@ -30,6 +31,7 @@ const MANUELT: Record<string, () => Promise<unknown>> = {
   "demand-predictor": runDemandPredictor,
   "24-7-booking-alerts": runProactiveBookingAlerts,
   "plan-effectiveness-agent": runPlanEffectivenessAgent,
+  "social-media": runSocialMediaAgent,
 };
 
 export const MANUELLE_AGENTER = Object.keys(MANUELT);

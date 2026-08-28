@@ -166,15 +166,15 @@ export function MarkedKontaktV2() {
               <div className="pk-fakta-liste">
                 <div className="pk-linje">
                   <span>Anders Kristiansen</span>
-                  <span className="pk-v">+47 482 16 540</span>
+                  <a className="pk-v" href="tel:+4748216540">
+                    +47 482 16 540
+                  </a>
                 </div>
                 <div className="pk-linje">
-                  <span>Bedriftshenvendelser</span>
-                  <span className="pk-v">post@akgolf.no</span>
-                </div>
-                <div className="pk-linje">
-                  <span>E-post · alt annet</span>
-                  <span className="pk-v">post@akgolf.no</span>
+                  <span>E-post</span>
+                  <a className="pk-v" href="mailto:post@akgolf.no">
+                    post@akgolf.no
+                  </a>
                 </div>
               </div>
             </div>

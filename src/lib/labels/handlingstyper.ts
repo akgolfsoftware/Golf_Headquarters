@@ -36,6 +36,7 @@ export const HANDLINGSTYPE_LABEL: Record<string, string> = {
   SESSION_REQUEST: "Økt-forespørsel",
   TM_BASELINE_PROPOSE: "TrackMan-baseline fra test",
   FANGST_SJEKKPUNKT: "Sjekkpunkt etter fangst",
+  SOCIAL_POST: "SoMe-utkast",
 };
 
 /** Label for en handlingstype — faller ærlig tilbake til «Forslag» i stedet

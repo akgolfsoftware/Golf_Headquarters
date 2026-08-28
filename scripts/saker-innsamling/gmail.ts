@@ -16,7 +16,12 @@ import { prisma } from "@/lib/prisma";
 import { runAgent } from "@/lib/agents/agent-runner";
 import { JARVIS_AGENT_NAVN } from "@/lib/jarvis/agent-navn";
 import { hentAdminGoogleTilkobling } from "./google-tilkobling";
-import { lesSakerInnsamlingEnv, SAKER_SLA_TIMER } from "./env";
+import { lesSakerInnsamlingEnv } from "./env";
+import {
+  hentJarvisInnstillinger,
+  skalSendeJarvisTelegram,
+  slaTerskelTimer,
+} from "@/lib/jarvis/innstillinger";
 
 const EN_TIME_MS = 60 * 60 * 1000;
 
@@ -80,6 +85,8 @@ function hentEpostTekst(message: gmail_v1.Schema$Message): string {
  * avhengighet.
  */
 async function sendTelegramOppsummering(tekst: string): Promise<void> {
+  const inn = await hentJarvisInnstillinger();
+  if (!skalSendeJarvisTelegram(inn)) return;
   const botToken = process.env.MEG_TELEGRAM_BOT_TOKEN;
   const chatId = process.env.MEG_TELEGRAM_ALLOWED_CHAT_ID;
   if (!botToken || !chatId) {
@@ -108,6 +115,11 @@ async function sendTelegramOppsummering(tekst: string): Promise<void> {
  * runAgent fanger, logger AgentRun status ERROR og rethrower til main().
  */
 async function samleInn(env: ReturnType<typeof lesSakerInnsamlingEnv>) {
+  const inn = await hentJarvisInnstillinger();
+  if (!inn.kanalGmail) {
+    return { output: { hoppetOver: "kanalGmail av" } };
+  }
+  const slaTimer = slaTerskelTimer(inn);
   const conn = await hentAdminGoogleTilkobling();
   if (!conn) {
     await sendTelegramOppsummering(
@@ -166,7 +178,7 @@ async function samleInn(env: ReturnType<typeof lesSakerInnsamlingEnv>) {
           innhold,
           status: "VENTER",
           kildeId: m.id,
-          frist: new Date(naa.getTime() + SAKER_SLA_TIMER * EN_TIME_MS),
+          frist: new Date(naa.getTime() + slaTimer * EN_TIME_MS),
           provenance: { kilde: "gmail-innsamler", kjort: naa.toISOString() },
         },
       });

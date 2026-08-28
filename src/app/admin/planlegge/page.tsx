@@ -39,6 +39,7 @@ import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
 import { PlanHubV2, type PlanHubData, type PlanHubMalRad } from "@/components/admin/v2/PlanHubV2";
 
 export const dynamic = "force-dynamic";
+export const metadata = { title: "Plan · AgencyOS" };
 
 function osloIdag(): string {
   return new Intl.DateTimeFormat("sv-SE", { timeZone: "Europe/Oslo" }).format(new Date());

@@ -33,7 +33,11 @@ import { join } from "node:path";
 import { prisma } from "@/lib/prisma";
 import { runAgent } from "@/lib/agents/agent-runner";
 import { JARVIS_AGENT_NAVN } from "@/lib/jarvis/agent-navn";
-import { SAKER_SLA_TIMER } from "./env";
+import {
+  hentJarvisInnstillinger,
+  skalSendeJarvisTelegram,
+  slaTerskelTimer,
+} from "@/lib/jarvis/innstillinger";
 import type { $Enums } from "@/generated/prisma/client";
 
 const CHAT_DB_PATH = join(homedir(), "Library", "Messages", "chat.db");
@@ -86,6 +90,8 @@ function tilSakKanal(service: string | null): $Enums.SakKanal {
 }
 
 async function sendTelegramOppsummering(tekst: string): Promise<void> {
+  const inn = await hentJarvisInnstillinger();
+  if (!skalSendeJarvisTelegram(inn)) return;
   const botToken = process.env.MEG_TELEGRAM_BOT_TOKEN;
   const chatId = process.env.MEG_TELEGRAM_ALLOWED_CHAT_ID;
   if (!botToken || !chatId) {
@@ -114,6 +120,11 @@ async function sendTelegramOppsummering(tekst: string): Promise<void> {
  * AgentRun status ERROR og rethrower til main().
  */
 async function samleInn(naa: Date) {
+  const inn = await hentJarvisInnstillinger();
+  if (!inn.kanalImessage) {
+    return { output: { hoppetOver: "kanalImessage av" } };
+  }
+  const slaTimer = slaTerskelTimer(inn);
   const cutoffApple = Math.floor(
     (naa.getTime() - TO_DAGER_MS) / 1000 - APPLE_EPOKE_FORSKYVNING_SEKUNDER,
   ) * 1_000_000_000;
@@ -183,7 +194,7 @@ async function samleInn(naa: Date) {
           innhold: tekst,
           status: "VENTER",
           kildeId,
-          frist: new Date(naa.getTime() + SAKER_SLA_TIMER * EN_TIME_MS),
+          frist: new Date(naa.getTime() + slaTimer * EN_TIME_MS),
           provenance: { kilde: "imessage-innsamler", kjort: naa.toISOString() },
         },
       });

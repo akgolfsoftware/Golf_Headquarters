@@ -5,7 +5,7 @@
 
 import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
-import { TilbakeLenke } from "@/components/v2";
+import { TlTilbake } from "@/components/admin/v2/oppsett/tl-kit";
 import { AkStigenV2 } from "@/components/admin/v2/AkStigenV2";
 import { lastAkStigenData } from "@/lib/agencyos/ak-stigen-data";
 
@@ -18,7 +18,7 @@ export default async function AkStigenPage() {
 
   return (
     <V2Shell bredde="full" aktiv="spillere" nav={AGENCYOS_NAV} navn={user.name ?? "Coach"}>
-      <TilbakeLenke href="/admin/agencyos">Cockpit</TilbakeLenke>
+      <TlTilbake href="/admin/agencyos">Cockpit</TlTilbake>
       <AkStigenV2 data={data} />
     </V2Shell>
   );

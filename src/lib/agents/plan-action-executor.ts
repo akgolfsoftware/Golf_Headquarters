@@ -708,6 +708,28 @@ export async function executePlanAction(actionId: string): Promise<ExecuteResult
 
   // B4: PAYMENT_FOLLOWUP er en kvittering på MANUELL oppfølging — godkjenning
   // betyr «saken er håndtert av et menneske»; ingen systemendring gjøres.
+  // SoMe-utkast: godkjenning = Anders har lest teksten. Systemet publiserer
+  // aldri til Instagram/Facebook.
+  if (action.actionType === "SOCIAL_POST") {
+    const s = z
+      .object({
+        plattform: z.string().optional(),
+        tekst: z.string().optional(),
+        forklaring: z.string().optional(),
+      })
+      .safeParse(action.suggestion);
+    const plattform = s.success && s.data.plattform ? s.data.plattform : "sosiale medier";
+    return {
+      applied: true,
+      summary: s.success && s.data.forklaring
+        ? s.data.forklaring
+        : `SoMe-utkast godkjent (${plattform}) — publiseres ikke automatisk`,
+      sessionsAdded: 0,
+      sessionsRemoved: 0,
+      sessionsModified: 0,
+    };
+  }
+
   if (action.actionType === "PAYMENT_FOLLOWUP") {
     return {
       applied: true,

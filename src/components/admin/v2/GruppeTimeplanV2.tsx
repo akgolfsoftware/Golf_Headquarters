@@ -1,18 +1,14 @@
 "use client";
 
 /**
- * AgencyOS Gruppe-timeplan — v2. Full ukentlig timeplan for én gruppe
- * (faste tider / kommende / tidligere). `?focus=<scheduleId>` framhever én
- * rad. Dupliser-skjemaet er en ren server-action-form (uncontrolled native
- * inputs, styles med T-tokens) — samme kontrakt som legacy.
+ * AgencyOS Gruppe-timeplan — T8 Train-lock.
+ * Samme datakontrakt og server-action-skjema som før.
  */
 
 import { useState } from "react";
-import { Caps, Kort, Knapp, StatusPill, MikroMeta, TomTilstand } from "@/components/v2";
-import { T } from "@/lib/v2/tokens";
+import { TL } from "@/lib/v2/train-lock";
+import { TlBadge, TlKort, TlKnapp, TlTittel, TlTomTilstand } from "@/components/admin/v2/oppsett/tl-kit";
 import { GruppeFaner } from "./GruppeFaner";
-
-/* ── Data-kontrakt ─────────────────────────────────────────────────── */
 
 export type TimeplanRad = {
   id: string;
@@ -35,9 +31,6 @@ export type GruppeTimeplanV2Data = {
   focusId: string | null;
 };
 
-// Alltid Europe/Oslo — der øktene faktisk skjer. Uten eksplisitt timeZone
-// formaterer serveren (UTC) og klienten (Oslo) ulikt → feil klokkeslett og
-// hydreringsmismatch (samme mønster som OSLO_DAG_FMT i BookingV2).
 const NB_WEEKDAY = new Intl.DateTimeFormat("nb-NO", { timeZone: "Europe/Oslo", weekday: "long" });
 const NB_DATE = new Intl.DateTimeFormat("nb-NO", { timeZone: "Europe/Oslo", day: "numeric", month: "short" });
 const NB_TIME = new Intl.DateTimeFormat("nb-NO", { timeZone: "Europe/Oslo", hour: "2-digit", minute: "2-digit" });
@@ -59,17 +52,14 @@ function storForbokstav(s: string): string {
 const inputStyle: React.CSSProperties = {
   height: 36,
   borderRadius: 8,
-  border: `1px solid ${T.border}`,
-  background: T.panel,
-  color: T.fg,
+  border: `1px solid ${TL.hair}`,
+  background: TL.elev,
+  color: TL.text,
   padding: "0 10px",
-  fontFamily: T.ui,
-  fontSize: 12.5,
+  fontSize: 13,
   outline: "none",
   width: "100%",
 };
-
-/* ── Seksjon ───────────────────────────────────────────────────────── */
 
 function TimeplanSeksjon({
   tittel,
@@ -88,10 +78,10 @@ function TimeplanSeksjon({
 }) {
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 12, opacity: dempet ? 0.7 : 1 }}>
-      <MikroMeta icon="calendar">
+      <div style={{ fontSize: 11, fontWeight: 600, letterSpacing: "0.08em", textTransform: "uppercase", color: TL.mute }}>
         {tittel} · {rader.length}
-      </MikroMeta>
-      <Kort pad="6px 18px">
+      </div>
+      <TlKort pad="6px 18px">
         {rader.map((s, i) => {
           const erFokus = s.id === focusId;
           const defaultNewStart = new Date(new Date(s.startAt).getTime() + 7 * 24 * 60 * 60 * 1000)
@@ -103,30 +93,30 @@ function TimeplanSeksjon({
               id={`s-${s.id}`}
               style={{
                 padding: "14px 0",
-                borderBottom: i === rader.length - 1 ? "none" : `1px solid ${T.border}`,
+                borderBottom: i === rader.length - 1 ? "none" : `1px solid ${TL.hair}`,
+                boxShadow: erFokus ? `inset 0 0 0 1px ${TL.text}` : "none",
                 borderRadius: erFokus ? 8 : 0,
-                outline: erFokus ? `1px solid ${T.lime}` : "none",
-                outlineOffset: erFokus ? 4 : 0,
               }}
             >
               <div style={{ display: "flex", flexWrap: "wrap", alignItems: "flex-start", justifyContent: "space-between", gap: 12 }}>
                 <div style={{ minWidth: 0 }}>
                   <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: 8 }}>
-                    <span style={{ fontFamily: T.disp, fontSize: 15, fontWeight: 700, color: T.fg }}>{s.title}</span>
-                    {fast && s.recurring && <StatusPill tone="info">{s.recurring === "WEEKLY" ? "UKENTLIG" : s.recurring}</StatusPill>}
+                    <span style={{ fontSize: 15, fontWeight: 700, color: TL.text }}>{s.title}</span>
+                    {fast && s.recurring && (
+                      <TlBadge>{s.recurring === "WEEKLY" ? "Ukentlig" : s.recurring}</TlBadge>
+                    )}
                   </div>
-                  <p style={{ fontFamily: T.mono, fontSize: 10.5, textTransform: "uppercase", letterSpacing: "0.06em", color: T.mut, margin: "6px 0 0" }}>
+                  <p style={{ fontSize: 12, color: TL.mute, margin: "6px 0 0", fontVariantNumeric: "tabular-nums" }}>
                     {storForbokstav(NB_WEEKDAY.format(new Date(s.startAt)))} · {NB_TIME.format(new Date(s.startAt))}–
                     {NB_TIME.format(new Date(s.endAt))} · {varighet(s.startAt, s.endAt)}
                     {!fast && ` · ${NB_DATE.format(new Date(s.startAt))}`}
                     {s.location && ` · ${s.location}`}
-                    {s.maxParticipants != null && ` · Max ${s.maxParticipants} deltagere`}
+                    {s.maxParticipants != null && ` · Maks ${s.maxParticipants} deltagere`}
                   </p>
                   {s.description && (
-                    <p style={{ fontFamily: T.ui, fontSize: 12.5, color: T.mut, marginTop: 8, maxWidth: "60ch" }}>{s.description}</p>
+                    <p style={{ fontSize: 13, color: TL.mute, marginTop: 8, maxWidth: "60ch" }}>{s.description}</p>
                   )}
                 </div>
-
                 <form
                   action={async (fd: FormData) => {
                     const newStart = fd.get("newStart") as string;
@@ -135,20 +125,18 @@ function TimeplanSeksjon({
                   style={{ display: "flex", alignItems: "flex-end", gap: 6 }}
                 >
                   <input type="datetime-local" name="newStart" required defaultValue={defaultNewStart} style={{ ...inputStyle, width: 180 }} />
-                  <Knapp type="submit" ghost>
+                  <TlKnapp type="submit" variant="tertiaer">
                     Dupliser
-                  </Knapp>
+                  </TlKnapp>
                 </form>
               </div>
             </div>
           );
         })}
-      </Kort>
+      </TlKort>
     </div>
   );
 }
-
-/* ── Skjermen ──────────────────────────────────────────────────────── */
 
 export function GruppeTimeplanV2({
   data,
@@ -161,17 +149,13 @@ export function GruppeTimeplanV2({
 }) {
   const [opprettFeil, setOpprettFeil] = useState<string | null>(null);
   return (
-    <div data-paper-wave-h="gruppetimeplan" data-paper-slug="agencyos-gruppe-detalj" data-paper-pattern  style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
+    <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
       <GruppeFaner groupId={data.groupId} aktiv="timeplan" />
-      <div>
-        <Caps>Grupper · {data.navn}</Caps>
-        <p style={{ fontFamily: T.ui, fontSize: 12.5, color: T.mut, margin: "10px 0 0" }}>
-          {data.totaltAntall} tider totalt · {data.faste.length} faste · {data.kommende.length} kommende
-        </p>
-      </div>
+      <TlTittel sub={`${data.totaltAntall} tider totalt · ${data.faste.length} faste · ${data.kommende.length} kommende`}>
+        {data.navn}
+      </TlTittel>
 
-      {/* Opprett gruppetrening */}
-      <Kort eyebrow="Opprett gruppetrening">
+      <TlKort eyebrow="Opprett gruppetrening">
         <form
           action={async (fd: FormData) => {
             const res = await onOpprett(fd);
@@ -192,20 +176,20 @@ export function GruppeTimeplanV2({
           </select>
           <input type="number" name="maxParticipants" placeholder="Antall deltagere (max)" style={inputStyle} />
           <div style={{ gridColumn: "1 / -1", display: "flex", alignItems: "center", gap: 12, flexWrap: "wrap" }}>
-            <Knapp type="submit">Opprett</Knapp>
-            {opprettFeil && <span style={{ fontFamily: T.ui, fontSize: 12, color: T.down }}>{opprettFeil}</span>}
+            <TlKnapp type="submit" variant="primaer">
+              Opprett
+            </TlKnapp>
+            {opprettFeil && <span style={{ fontSize: 13, color: TL.danger }}>{opprettFeil}</span>}
           </div>
         </form>
-      </Kort>
+      </TlKort>
 
       {data.totaltAntall === 0 ? (
-        <Kort>
-          <TomTilstand
-            icon="calendar"
-            title="Ingen faste tider satt"
-            sub="Bruk skjemaet over for å legge inn første økt (støtter tidspunkt, antall deltagere, duplisering via knapp under)."
-          />
-        </Kort>
+        <TlTomTilstand
+          icon="calendar"
+          title="Ingen faste tider satt"
+          sub="Bruk skjemaet over for å legge inn første økt."
+        />
       ) : (
         <>
           {data.faste.length > 0 && (

@@ -16,6 +16,7 @@ import { getPlayerDepthMode } from "@/lib/player-depth-mode";
 import { loadPuttingSignalsForUser } from "@/lib/masterbrain/load-putting-signals";
 
 export const dynamic = "force-dynamic";
+export const metadata = { title: "Analyse · PlayerHQ" };
 
 export default async function V2AnalyserePreviewPage() {
   const user = await requirePortalUser({ kreverTilgang: "TALENT" });

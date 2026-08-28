@@ -22,8 +22,8 @@ export function osloUkeGrenser(referanse: Date): { start: Date; slutt: Date } {
 /**
  * SLA-etterlevelse for en liste avgjorte Saker (GODKJENT/AVVIST/UTFORT) MED
  * frist. Prosent = andel der oppdatert (avgjort-tidspunkt) kom før frist —
- * fristen er allerede satt til opprettet+6t ved Sak-opprettelse (se
- * SAKER_SLA_TIMER i scripts/saker-innsamling/env.ts), så ingen ny SLA-
+ * fristen er allerede satt ved Sak-opprettelse (JarvisInnstilling.slaTerskelTimer),
+ * så ingen ny SLA-
  * konstant trengs her. Saker uten frist er utenfor SLA-målet og telles ikke
  * med. Null = ingen kvalifiserte saker denne perioden — IKKE 0 %, det er en
  * annen påstand.

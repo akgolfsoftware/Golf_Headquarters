@@ -140,11 +140,8 @@ function endringTilData(e: InnstillingEndring): Prisma.JarvisInnstillingUpdateIn
 }
 
 /**
- * Innstillingene (skjerm 11) — én bryter/valg om gangen, autolagres (fasitens
- * "Lagres automatisk"). Ekte skriving til JarvisInnstilling, men INGEN
- * forbruker leser feltene tilbake ennå (se repository.ts sin doc-kommentar)
- * — verdien persisteres, men endrer ikke faktisk innsamler-/SLA-/stemme-
- * oppførsel i denne PR-en.
+ * Innstillingene (skjerm 11) — én bryter/valg om gangen, autolagres.
+ * Leses av src/lib/jarvis/innstillinger.ts (kø, kalender, SLA, stille tidsrom).
  */
 export async function oppdaterInnstilling(endring: InnstillingEndring): Promise<{ ok: true } | { ok: false; feil: string }> {
   const user = await kreverAdmin();

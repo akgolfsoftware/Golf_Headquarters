@@ -27,6 +27,7 @@ import {
 } from "@/components/admin/v2/AdminTesterV2";
 
 export const dynamic = "force-dynamic";
+export const metadata = { title: "Tester · AgencyOS" };
 
 function datoLabel(d: Date): string {
   return d.toLocaleDateString("nb-NO", { day: "2-digit", month: "2-digit" });

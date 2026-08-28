@@ -19,6 +19,7 @@ import { TrainLockStall } from "@/components/admin/v2/TrainLockStall";
 import type { SevKey } from "@/components/v2";
 
 export const dynamic = "force-dynamic";
+export const metadata = { title: "Stall · AgencyOS" };
 
 /** StatusKind (loader) → SevChip-kategori (klarspråk, aldri sperre-språk). */
 const SEV_MAP: Record<StatusKind, SevKey> = {

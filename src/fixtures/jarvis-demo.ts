@@ -219,6 +219,14 @@ export const demoInnsamlere: InnsamlerStatus[] = [
 
 export const demoSystemHelse: SystemHelse = {
   innsamlere: demoInnsamlere,
+  agenticos: {
+    ulosteGodkjenninger: 0,
+    planActions: 0,
+    caddieDrafts: 0,
+    sessionRequests: 0,
+    sisteAgentKjoring: null,
+    feiledeSisteDognet: 0,
+  },
   aiKostSum: { inputTokens: 84213, outputTokens: 19042, costUsd: 0.62, antallKall: 11 },
   lokalHelseTilgjengelig: false,
 };

@@ -11,7 +11,7 @@ import { requireCapability } from "@/lib/auth/requireCapability";
 import { Capability } from "@/lib/auth/cbac";
 import { prisma } from "@/lib/prisma";
 import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
-import { TilbakeLenke } from "@/components/v2";
+import { TlTilbake } from "@/components/admin/v2/oppsett/tl-kit";
 import { GruppeFaner } from "@/components/admin/v2/GruppeFaner";
 import { hentGruppeKalenderData } from "@/lib/gruppe-kalender/hent-data";
 import { GruppeKalenderWrapper } from "@/components/gruppe-kalender/gruppe-kalender-wrapper";
@@ -19,6 +19,7 @@ import { TrinnFilter } from "@/components/gruppe-kalender/trinn-filter";
 import { TurneringPlan } from "@/components/gruppe-kalender/turnering-plan";
 
 export const dynamic = "force-dynamic";
+export const metadata = { title: "Årsplan · Grupper · AgencyOS" };
 
 export default async function GruppeArsplanPage({
   params,
@@ -40,9 +41,9 @@ export default async function GruppeArsplanPage({
 
   return (
     <V2Shell bredde="kolonne" aktiv="spillere" nav={AGENCYOS_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
-      <TilbakeLenke href={`/admin/grupper/${id}`}>Gruppe</TilbakeLenke>
+      <TlTilbake href={`/admin/grupper/${id}`}>Gruppe</TlTilbake>
 
-      <div data-paper-slug="agencyos-gruppe-detalj" className="flex flex-col gap-4">
+      <div className="flex flex-col gap-4">
         <GruppeFaner groupId={id} aktiv="arsplan" />
 
         <div className="flex flex-wrap items-center justify-between gap-3">

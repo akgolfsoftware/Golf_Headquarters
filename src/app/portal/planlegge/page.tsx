@@ -16,6 +16,7 @@ import { getPlayerDepthMode } from "@/lib/player-depth-mode";
 import { hentUkePeriode } from "@/lib/portal-plan/uke-periode";
 
 export const dynamic = "force-dynamic";
+export const metadata = { title: "Plan · PlayerHQ" };
 
 export default async function V2PlanPreviewPage() {
   const user = await requirePortalUser();

@@ -1,27 +1,14 @@
 "use client";
 
 /**
- * AgencyOS Gruppe-detalj — v2 Presis + B-pakke (status + én primær CTA, tom = vei).
- * Hero · samling · medlemmer. T.* only.
+ * AgencyOS Gruppe-detalj — T8 Train-lock.
+ * Samme datakontrakt og action-slots som før.
  */
 
 import Link from "next/link";
-import {
-  T,
-  Caps,
-  Tittel,
-  Kort,
-  Rad,
-  KpiFlis,
-  StatusPill,
-  MikroMeta,
-  TomTilstand,
-  CTAPill,
-  AvatarFoto,
-} from "@/components/v2";
+import { TL } from "@/lib/v2/train-lock";
+import { TlBadge, TlKort, TlKnapp, TlRad, TlTilbake, TlTittel, TlTomTilstand } from "@/components/admin/v2/oppsett/tl-kit";
 import { GruppeFaner } from "./GruppeFaner";
-
-/* ── Data-kontrakt ─────────────────────────────────────────────────── */
 
 export type SamlingRad = {
   id: string;
@@ -68,32 +55,44 @@ export type GruppeDetaljV2Data = {
   trinnValg: string[];
   aktivtTrinn: string | null;
   kandidater: { id: string; name: string; hcp: number | null; homeClub: string | null }[];
-  /** G5: kandidater til trenerrollene (brukere med role COACH/ADMIN). */
   trenerKandidater: { id: string; name: string; hcp: number | null; homeClub: string | null }[];
 };
 
 export type GruppeDetaljV2Actions = {
   StartOktButton: React.ComponentType;
-  LeggTilSpillerButton: React.ComponentType<{ groupId: string; kandidater: { id: string; name: string; hcp: number | null; homeClub: string | null }[]; trenerKandidater: { id: string; name: string; hcp: number | null; homeClub: string | null }[] }>;
+  LeggTilSpillerButton: React.ComponentType<{
+    groupId: string;
+    kandidater: { id: string; name: string; hcp: number | null; homeClub: string | null }[];
+    trenerKandidater: { id: string; name: string; hcp: number | null; homeClub: string | null }[];
+  }>;
   FjernMedlemButton: React.ComponentType<{ groupId: string; userId: string; navn: string }>;
   SeAlleTimePlanButton: React.ComponentType<{ groupId: string }>;
   DetaljerButton: React.ComponentType<{ groupId: string; scheduleId: string }>;
   AapneButton: React.ComponentType<{ groupId: string; scheduleId: string }>;
-  SlettGruppeButton: React.ComponentType<{ groupId: string; navn: string; antallMedlemmer: number; antallSamlinger: number }>;
+  SlettGruppeButton: React.ComponentType<{
+    groupId: string;
+    navn: string;
+    antallMedlemmer: number;
+    antallSamlinger: number;
+  }>;
 };
 
-/* ── Rene hjelpere ─────────────────────────────────────────────────── */
-
-// Alltid Europe/Oslo — der samlingene faktisk skjer. Uten eksplisitt timeZone
-// formaterer serveren (UTC) og klienten (Oslo) ulikt → feil klokkeslett og
-// hydreringsmismatch (samme mønster som OSLO_DAG_FMT i BookingV2).
-const NB_DATE = new Intl.DateTimeFormat("nb-NO", { timeZone: "Europe/Oslo", day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" });
+const NB_DATE = new Intl.DateTimeFormat("nb-NO", {
+  timeZone: "Europe/Oslo",
+  day: "numeric",
+  month: "short",
+  hour: "2-digit",
+  minute: "2-digit",
+});
 
 function fmtDato(iso: string): string {
   return NB_DATE.format(new Date(iso));
 }
 
-/* ── Skjermen ──────────────────────────────────────────────────────── */
+function fmtHcp(h: number | null): string {
+  if (h == null) return "—";
+  return h.toFixed(1).replace(".", ",");
+}
 
 export function GruppeDetaljV2({
   data,
@@ -102,49 +101,40 @@ export function GruppeDetaljV2({
 }: {
   data: GruppeDetaljV2Data;
   actions: GruppeDetaljV2Actions;
-  /** Å3: server-side ekstra-seksjon (Rull ut mal-panelet) rendret etter hodet. */
   ekstra?: React.ReactNode;
 }) {
   return (
-    <div data-paper-wave-h="gruppedetalj" data-paper-slug="agencyos-gruppe-detalj" data-paper-pattern  style={{ display: "flex", flexDirection: "column", gap: T.gap }}>
-      <Link href="/admin/grupper" style={{ textDecoration: "none", alignSelf: "flex-start" }}>
-        <MikroMeta icon="arrow-left">Grupper</MikroMeta>
-      </Link>
-
+    <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+      <TlTilbake href="/admin/grupper">Grupper</TlTilbake>
       <GruppeFaner groupId={data.id} aktiv="medlemmer" />
 
-      {/* Hode — B: status */}
       <div style={{ display: "flex", flexWrap: "wrap", alignItems: "flex-end", justifyContent: "space-between", gap: 12 }}>
         <div>
-          <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-            <Caps>AgencyOS · Grupper</Caps>
-            <StatusPill tone="info">{data.type.toUpperCase()}</StatusPill>
-          </div>
-          <div style={{ marginTop: 10 }}>
-            <Tittel em={data.navn}>{""}</Tittel>
-          </div>
-          <p style={{ fontFamily: T.ui, fontSize: 12.5, color: T.mut, margin: "10px 0 0" }}>
-            {data.antallMedlemmer} medlemmer · Snitt-HCP {data.snittHcp} · {data.antallSamlinger} planlagte samlinger · Coach{" "}
-            {data.coachNavn ?? "ikke satt"}
-          </p>
+          <TlTittel sub={`${data.antallMedlemmer} medlemmer · Snitt-HCP ${data.snittHcp} · Coach ${data.coachNavn ?? "ikke satt"}`}>
+            {data.navn}
+          </TlTittel>
         </div>
-        <StatusPill tone={data.antallMedlemmer > 0 ? "lime" : "warn"}>
+        <TlBadge tone={data.antallMedlemmer > 0 ? "nøytral" : "varsel"}>
           {data.antallMedlemmer === 0 ? "Ingen medlemmer" : `${data.antallMedlemmer} medlemmer`}
-        </StatusPill>
+        </TlBadge>
       </div>
 
-      {/* B: én primær CTA */}
-      <Link href={`/admin/grupper/${data.id}/timeplan`} style={{ textDecoration: "none", display: "block" }}>
-        <CTAPill icon="calendar" full>
-          Planlegg gruppetrening
-        </CTAPill>
-      </Link>
+      <TlKnapp variant="primaer" href={`/admin/grupper/${data.id}/timeplan`}>
+        Planlegg gruppetrening
+      </TlKnapp>
 
       <div style={{ display: "flex", gap: 8, flexWrap: "wrap", alignItems: "center" }}>
-        <Link href={`/admin/grupper/${data.id}/arsplan`} style={{ textDecoration: "none" }}>
-          <CTAPill ghost icon="calendar">Årsplan</CTAPill>
-        </Link>
-        <A.LeggTilSpillerButton groupId={data.id} kandidater={data.kandidater} trenerKandidater={data.trenerKandidater} />
+        <TlKnapp variant="sekundaer" href={`/admin/grupper/${data.id}/workbench`}>
+          Workbench
+        </TlKnapp>
+        <TlKnapp variant="tertiaer" href={`/admin/stall/dag`}>
+          Stall-dag
+        </TlKnapp>
+        <A.LeggTilSpillerButton
+          groupId={data.id}
+          kandidater={data.kandidater}
+          trenerKandidater={data.trenerKandidater}
+        />
         <A.SlettGruppeButton
           groupId={data.id}
           navn={data.navn}
@@ -155,183 +145,113 @@ export function GruppeDetaljV2({
 
       {ekstra}
 
-      {/* KPI-rad */}
-      <div className="grid grid-cols-2 sm:grid-cols-4" style={{ gap: T.gap }}>
-        <KpiFlis label="Medlemmer" value={String(data.antallMedlemmer)} delta={`${data.antallHjelpetrenere} hjelpecoach`} />
-        <KpiFlis label="Snitt-HCP" value={data.snittHcp} hjelp="hcp" />
-        <KpiFlis label="Runder · 90 d" value={String(data.totalRunder)} />
-        <KpiFlis label="PRO-andel" value={`${data.proAndel}%`} />
+      <div className="grid grid-cols-2 sm:grid-cols-4" style={{ gap: 12 }}>
+        {[
+          { l: "Medlemmer", v: String(data.antallMedlemmer), s: `${data.antallHjelpetrenere} hjelpecoach` },
+          { l: "Snitt-HCP", v: data.snittHcp, s: undefined },
+          { l: "Runder · 90 d", v: String(data.totalRunder), s: undefined },
+          { l: "PRO-andel", v: `${data.proAndel} %`, s: undefined },
+        ].map((k) => (
+          <TlKort key={k.l} pad="14px 16px">
+            <div style={{ fontSize: 11, fontWeight: 600, letterSpacing: "0.08em", textTransform: "uppercase", color: TL.mute }}>
+              {k.l}
+            </div>
+            <div style={{ marginTop: 6, fontSize: 22, fontWeight: 700, fontVariantNumeric: "tabular-nums", color: TL.text }}>
+              {k.v}
+            </div>
+            {k.s && <div style={{ marginTop: 4, fontSize: 12, color: TL.mute }}>{k.s}</div>}
+          </TlKort>
+        ))}
       </div>
 
-      {/* Neste samling */}
-      <Kort
-        eyebrow={
-          <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
-            <MikroMeta icon="calendar">Gruppeplan · neste samling</MikroMeta>
-          </span>
-        }
-        action={<A.SeAlleTimePlanButton groupId={data.id} />}
-      >
+      <TlKort eyebrow="Neste samling" action={<A.SeAlleTimePlanButton groupId={data.id} />}>
         {data.nesteSamling ? (
           <>
-            <div style={{ display: "flex", flexWrap: "wrap", alignItems: "flex-end", justifyContent: "space-between", gap: 14 }}>
-              <div>
-                <div style={{ fontFamily: T.disp, fontSize: 18, fontWeight: 700, color: T.fg }}>{data.nesteSamling.title}</div>
-                <p style={{ fontFamily: T.mono, fontSize: 11, textTransform: "uppercase", letterSpacing: "0.06em", color: T.mut, margin: "6px 0 0" }}>
-                  {fmtDato(data.nesteSamling.startAt)}
-                  {data.nesteSamling.location && ` · ${data.nesteSamling.location}`}
-                  {data.nesteSamling.recurring && data.nesteSamling.recurring !== "NONE" && ` · ${data.nesteSamling.recurring}`}
-                  {data.nesteSamling.maxParticipants != null && ` · Max ${data.nesteSamling.maxParticipants} deltagere`}
-                </p>
-                {data.nesteSamling.description && (
-                  <p style={{ fontFamily: T.ui, fontSize: 13, color: T.fg2, marginTop: 8, maxWidth: "60ch" }}>{data.nesteSamling.description}</p>
-                )}
-              </div>
-              <div style={{ display: "flex", gap: 8 }}>
-                <A.DetaljerButton groupId={data.id} scheduleId={data.nesteSamling.id} />
-                <A.StartOktButton />
-              </div>
-            </div>
-
-            {data.kommendeSamlinger.length > 1 && (
-              <div style={{ marginTop: 16, borderTop: `1px solid ${T.border}` }}>
-                {data.kommendeSamlinger.slice(1).map((s, i, arr) => (
-                  <Rad
-                    key={s.id}
-                    last={i === arr.length - 1}
-                    title={s.title}
-                    sub={`${fmtDato(s.startAt)}${s.location ? ` · ${s.location}` : ""}`}
-                    trailing={<A.AapneButton groupId={data.id} scheduleId={s.id} />}
-                  />
-                ))}
-              </div>
+            <div style={{ fontSize: 18, fontWeight: 700, color: TL.text }}>{data.nesteSamling.title}</div>
+            <p style={{ fontSize: 13, color: TL.mute, margin: "6px 0 0", fontVariantNumeric: "tabular-nums" }}>
+              {fmtDato(data.nesteSamling.startAt)}
+              {data.nesteSamling.location && ` · ${data.nesteSamling.location}`}
+            </p>
+            {data.nesteSamling.description && (
+              <p style={{ fontSize: 13, color: TL.mute, marginTop: 8, maxWidth: "60ch" }}>{data.nesteSamling.description}</p>
             )}
+            <div style={{ display: "flex", gap: 8, marginTop: 12 }}>
+              <A.DetaljerButton groupId={data.id} scheduleId={data.nesteSamling.id} />
+              <A.StartOktButton />
+            </div>
+            {data.kommendeSamlinger.length > 1 &&
+              data.kommendeSamlinger.slice(1).map((s, i, arr) => (
+                <TlRad
+                  key={s.id}
+                  last={i === arr.length - 1}
+                  title={s.title}
+                  sub={`${fmtDato(s.startAt)}${s.location ? ` · ${s.location}` : ""}`}
+                  trailing={<A.AapneButton groupId={data.id} scheduleId={s.id} />}
+                  chevron={false}
+                />
+              ))}
           </>
         ) : (
-          <p style={{ fontFamily: T.ui, fontSize: 13, color: T.mut, margin: 0 }}>
-            Ingen samlinger planlagt. Bruk «Planlegg samling»-knappen for å legge inn første økt.
-          </p>
+          <TlTomTilstand icon="calendar" title="Ingen samlinger planlagt" sub="Bruk «Planlegg gruppetrening» for å legge inn første økt." />
         )}
-      </Kort>
+      </TlKort>
 
-      {/* Medlemmer */}
-      <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12 }}>
-          <MikroMeta icon="users">Medlemmer · sammenlign statistikk</MikroMeta>
-          <span style={{ fontFamily: T.mono, fontSize: 10, color: T.mut }}>
-            {data.medlemmer.length} av {data.antallMedlemmer}
-          </span>
-        </div>
-
+      <TlKort eyebrow={`Medlemmer · ${data.medlemmer.length}`}>
         {data.trinnValg.length > 0 && (
-          <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginBottom: 12 }}>
             {["", ...data.trinnValg].map((t) => {
               const on = (data.aktivtTrinn ?? "") === t;
               return (
-                <Link key={t || "alle"} href={t ? `?trinn=${t}` : "?"} scroll={false} style={{ textDecoration: "none" }}>
-                  <span
-                    style={{
-                      display: "inline-block",
-                      padding: "5px 12px",
-                      borderRadius: 9999,
-                      fontFamily: T.mono,
-                      fontSize: 10,
-                      fontWeight: 700,
-                      textTransform: "uppercase",
-                      letterSpacing: "0.06em",
-                      color: on ? T.onLime : T.mut,
-                      background: on ? T.lime : T.panel2,
-                      border: `1px solid ${on ? "transparent" : T.border}`,
-                    }}
-                  >
-                    {t || "Alle"}
-                  </span>
+                <Link
+                  key={t || "alle"}
+                  href={t ? `?trinn=${t}` : "?"}
+                  scroll={false}
+                  className="v2-press v2-focus"
+                  style={{
+                    textDecoration: "none",
+                    height: 28,
+                    padding: "0 12px",
+                    borderRadius: 999,
+                    display: "inline-flex",
+                    alignItems: "center",
+                    fontSize: 12,
+                    fontWeight: 600,
+                    color: on ? TL.onFill : TL.mute,
+                    background: on ? TL.fill : "transparent",
+                    boxShadow: on ? "none" : `inset 0 0 0 1px ${TL.hair}`,
+                  }}
+                >
+                  {t || "Alle"}
                 </Link>
               );
             })}
           </div>
         )}
-
         {data.medlemmer.length === 0 ? (
-          <Kort>
-            <TomTilstand icon="users" title="Ingen medlemmer ennå" sub="Legg til spillere for å se sammenlignet statistikk per medlem." />
-          </Kort>
+          <TlTomTilstand icon="users" title="Ingen medlemmer ennå" sub="Legg til spillere for å se gruppen her." />
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3" style={{ gap: T.gap }}>
-            {data.medlemmer.map((m) => (
-              <Kort key={m.id} hover pad="16px 18px">
-                <div style={{ display: "flex", alignItems: "flex-start", gap: 10 }}>
-                  <Link href={`/admin/spillere/${m.userId}`} style={{ display: "flex", flex: 1, minWidth: 0, alignItems: "flex-start", gap: 10, textDecoration: "none" }}>
-                    <AvatarFoto src={m.avatarUrl} navn={m.navn} size={44} />
-                    <div style={{ minWidth: 0, flex: 1 }}>
-                      <div style={{ fontFamily: T.ui, fontSize: 13.5, fontWeight: 600, color: T.fg, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
-                        {m.navn}
-                      </div>
-                      <div style={{ fontFamily: T.mono, fontSize: 10, textTransform: "uppercase", letterSpacing: "0.06em", color: T.mut, marginTop: 2 }}>
-                        {m.homeClub ?? "Klubb ukjent"} · {m.erTrener ? "Trener" : m.erHjelpetrener ? "Hjelpecoach" : "Spiller"}
-                        {m.schoolYear && ` · ${m.schoolYear}`}
-                      </div>
-                    </div>
-                    {m.erPro && <StatusPill tone="info">PRO</StatusPill>}
-                  </Link>
-                  <A.FjernMedlemButton groupId={data.id} userId={m.userId} navn={m.navn} />
-                </div>
-
-                <div className="grid grid-cols-3" style={{ gap: 8, marginTop: 14, paddingTop: 12, borderTop: `1px solid ${T.border}` }}>
-                  <div>
-                    <Caps size={8.5}>HCP</Caps>
-                    <div style={{ fontFamily: T.mono, fontSize: 14, fontWeight: 700, color: T.fg, marginTop: 4 }}>
-                      {m.hcp != null ? m.hcp.toFixed(1).replace(".", ",") : "—"}
-                    </div>
-                  </div>
-                  <div>
-                    <Caps size={8.5}>Runder</Caps>
-                    <div style={{ fontFamily: T.mono, fontSize: 14, fontWeight: 700, color: T.fg, marginTop: 4 }}>{m.runder90d}</div>
-                  </div>
-                  <div>
-                    <Caps size={8.5}>Plan</Caps>
-                    <div style={{ fontFamily: T.mono, fontSize: 14, fontWeight: 700, color: T.fg, marginTop: 4 }}>
-                      {m.planNavn ? `${m.planAndel}%` : "—"}
-                    </div>
-                  </div>
-                </div>
-
-                {m.planNavn && m.planTotal > 0 && (
-                  <div style={{ marginTop: 10 }}>
-                    <div style={{ height: 6, borderRadius: 9999, background: T.track, overflow: "hidden" }}>
-                      <div style={{ height: "100%", borderRadius: 9999, width: `${m.planAndel}%`, background: T.lime }} />
-                    </div>
-                    <p style={{ fontFamily: T.mono, fontSize: 10, color: T.mut, marginTop: 6, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
-                      {m.planNavn} · {m.planDone}/{m.planTotal} økter
-                    </p>
-                  </div>
-                )}
-              </Kort>
-            ))}
-          </div>
+          data.medlemmer.map((m, i) => (
+            <TlRad
+              key={m.id}
+              title={
+                <Link href={`/admin/spillere/${m.userId}`} style={{ color: TL.text, textDecoration: "none" }}>
+                  {m.navn}
+                </Link>
+              }
+              sub={`${m.homeClub ?? "Klubb ukjent"} · ${m.erTrener ? "Trener" : m.erHjelpetrener ? "Hjelpecoach" : "Spiller"}${m.schoolYear ? ` · ${m.schoolYear}` : ""}`}
+              meta={`HCP ${fmtHcp(m.hcp)}`}
+              trailing={<A.FjernMedlemButton groupId={data.id} userId={m.userId} navn={m.navn} />}
+              chevron={false}
+              last={i === data.medlemmer.length - 1}
+            />
+          ))
         )}
-      </div>
+      </TlKort>
 
-      {/* Gruppeprestasjon — quick stats */}
-      <div className="grid grid-cols-1 lg:grid-cols-3" style={{ gap: T.gap }}>
-        <Kort eyebrow={<MikroMeta icon="trophy">Beste HCP-utvikling</MikroMeta>}>
-          <p style={{ fontFamily: T.ui, fontSize: 12.5, color: T.mut, margin: 0 }}>
-            Detaljert utvikling per spiller vises i{" "}
-            <Link href="/admin/analyse" style={{ color: T.lime, fontWeight: 600, textDecoration: "none" }}>
-              gruppe-analyse
-            </Link>
-            .
-          </p>
-        </Kort>
-        <Kort eyebrow={<MikroMeta icon="calendar">Oppmøte siste 30 d</MikroMeta>}>
-          <div style={{ fontFamily: T.mono, fontSize: 26, fontWeight: 700, color: T.fg }}>—</div>
-          <p style={{ fontFamily: T.mono, fontSize: 10, color: T.mut, marginTop: 4 }}>Aktiveres når oppmøte-logg er fylt ut</p>
-        </Kort>
-        <Kort eyebrow={<MikroMeta icon="users">Coach-ressurs</MikroMeta>}>
-          <p style={{ fontFamily: T.ui, fontSize: 13, color: T.fg, margin: 0 }}>{data.coachNavn ?? "Ingen primær-coach satt"}</p>
-          {data.coachEpost && <p style={{ fontFamily: T.mono, fontSize: 10, color: T.mut, marginTop: 4 }}>{data.coachEpost}</p>}
-        </Kort>
-      </div>
+      <TlKort eyebrow="Coach">
+        <div style={{ fontSize: 15, fontWeight: 600, color: TL.text }}>{data.coachNavn ?? "Ingen primær-coach satt"}</div>
+        {data.coachEpost && <div style={{ marginTop: 4, fontSize: 13, color: TL.mute }}>{data.coachEpost}</div>}
+      </TlKort>
     </div>
   );
 }
