@@ -164,7 +164,8 @@ export function PlanV2({
       <div
         style={{
           position: "sticky",
-          top: 0,
+          /* Sklir aldri under en dokument-sticky toppbar (gotcha --ak-topbar-h). */
+          top: "var(--ak-topbar-h, 0px)",
           background: TL.scene,
           padding: "14px 0 10px",
           zIndex: 3,
