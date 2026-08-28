@@ -567,6 +567,7 @@ model User {
   gameplanHull         GameplanHull[]
   gameplanSoner        GameplanSone[]
   testResults          TestResult[]
+  testResultsAsWitness TestResult[]          @relation("TestWitness")
   testSessions         TestSession[]
   testAssignments      TestAssignment[]  @relation("PlayerTestAssignments")
   coachTestAssignments TestAssignment[]  @relation("CoachTestAssignments")
@@ -1774,21 +1775,57 @@ enum TestVisibility {
   ACADEMY // delt med hele akademi
 }
 
-model TestResult {
-  id        String   @id @default(cuid())
-  userId    String
-  testId    String
-  takenAt   DateTime
-  score     Float
-  notes     String?
-  details   Json?
-  createdAt DateTime @default(now())
+enum TestWitnessStatus {
+  PENDING
+  ATTESTED
+  REJECTED
+}
 
-  user User           @relation(fields: [userId], references: [id], onDelete: Cascade)
-  test TestDefinition @relation(fields: [testId], references: [id])
+enum TestAttestationMode {
+  DIGITAL
+  MANUAL
+  NONE
+}
+
+model TestResult {
+  id              String              @id @default(cuid())
+  userId          String
+  testId          String
+  takenAt         DateTime
+  score           Float
+  notes           String?
+  details         Json?
+  witnessUserId   String?
+  witnessStatus   TestWitnessStatus   @default(PENDING)
+  attestationMode TestAttestationMode @default(NONE)
+  createdAt       DateTime            @default(now())
+
+  user    User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  test    TestDefinition @relation(fields: [testId], references: [id])
+  shots   TestShot[]
+  witness User?          @relation("TestWitness", fields: [witnessUserId], references: [id], onDelete: SetNull)
 
   @@index([userId, takenAt])
+  @@index([witnessUserId])
   @@map("test_results")
+}
+
+model TestShot {
+  id           String   @id @default(cuid())
+  testResultId String
+  shotNumber   Int
+  pei          Float?
+  sg           Float?
+  pgaPutts     Float?
+  x            Float?
+  y            Float?
+  retning      String?
+  createdAt    DateTime @default(now())
+
+  testResult TestResult @relation(fields: [testResultId], references: [id], onDelete: Cascade)
+
+  @@index([testResultId, shotNumber])
+  @@map("test_shots")
 }
 
 /// In-progress test-økt (live scoring). Opprettes ved `start`, oppdateres per slag,
