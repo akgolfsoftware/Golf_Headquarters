@@ -1,5 +1,8 @@
 # LANSERINGSPLAN — KOMPLETT (27.08.2026, kveld)
 
+**Oppdatert 28.08.2026** mot `origin/main` @ `8c00c322d` (C1 #632, Train-lock-tokenport #631,
+natt #629/#630). Snapshot: `docs/STATUS-NÅ.md`.
+
 **Rolle:** den ENE samlede planen for alt som gjenstår før lansering — backend, funksjoner,
 design (Train-lock) og web-kvalitet, for HELE appen (marketing, /auth, /portal, /admin,
 /forelder). Skrevet 27.08 kveld etter måling mot `origin/main` @ `4a7e7987` (0 åpne PR-er),
@@ -13,6 +16,33 @@ ikke lest fra eldre dokumenter.
 - `docs/STATUS-NÅ.md` — løpende snapshot, oppdateres oftere.
 - Design: `designsystem/train-lock/` er fasit for alle produktskjermer (invariant 2).
   Marketing har egen fasit (ak-golf-website). `/auth` er låst lys (PP-A/A4).
+
+---
+
+## 0. Gjenstår 28.08 (kjør mot dette)
+
+**Levert siden 27.08 kveld:** T7 T8 QA-1 C6 C7 C9 (#629) · T12-IA J-A/J-B/J-C (#630) ·
+Train-lock-tokenport PlayerHQ+AgencyOS+Meg+Forelder + F1 mandags-bug (#631) · C1 måned/år (#632).
+
+| Hva | Eier | Merknad |
+|---|---|---|
+| Stripe live-cutover | Anders | Sjekkliste i `docs/platform/stripe-cutover-sjekkliste.md` |
+| DNS `akgolf.no` → Vercel + vedlikehold AV | Anders | Samme operasjon |
+| Resend DKIM `send.akgolf.no` | Anders | Blokkerer ekte aktiverings-e-post |
+| Aktiverings-e-post til spillere | Anders | Venter på DKIM |
+| `SCREENTEST_PASSWORD` | Anders | Avklar; e2e-spillertester hoppes over i CI |
+| Se skjermene (390 + 1280, lys + mørk) | Anders | Skjermbilde-gate — tokenport er ikke piksel-1:1 |
+| Freemium: strammes TALENT-listen? | Anders | Før 1. sep |
+| C10 DataGolf-kort + økonomiflate | Kode | DG-01 + EC-01; bland aldri Broadie/DataGolf/PEI |
+| C8 lys-pass | Kode | Sist av design; 8 nøkkelskjermer + mekanisk lys |
+| T12 visuell AgenticOS | Kode | IA inne (#630); AO-00/01 piksel gjenstår |
+| V1 betalings-verifisering | Kode + Anders | Test-clock, talent-gate, push — etter Stripe live |
+| V2 røyk-test klikket av menneske | Anders | Coach opprett→publiser · spiller I dag · TrackMan |
+
+P-bølgen (P1–P4) og AD-1/F1-skjermene har **token-port** (#631), ikke fasit-1:1. W5-auth
+venter på tegnet fasit (ikke smoke-blokker). J-A/J-B/J-C er kodet.
+
+**Neste 5:** C10 · C8 · T12-visuell · V1 (etter Stripe) · V2.
 
 ---
 
@@ -53,25 +83,25 @@ parallelle økter, kun disjunkte filområder.
 
 | # | Sesjon | Scope | Fasit/kilder | Avhenger |
 |---|---|---|---|---|
-| T7 | Kalender + booking-lag | Samle `/admin/kalender` + `(legacy)/kalender/maned` til ÉN kalender; booking (`bookinger` + `[id]` + `ny`, availability) inn som lag/ark. Pensjoner `agencyos/uka` og bookinger-listeflaten (JA 27.08). Google-synk røres IKKE. `/admin/kalender/lag` (fra C3) er startpunktet — hovedsiden har 0 TL-tokens i dag | KA-01/01L, KA-02, KA-03, KA-05, AG-11 | C3 ✓ (levert) |
-| T8 | Grupper | `grupper/[id]/workbench` → WB-08/09; `arsplan` → A-06 + WB-06; gruppedag → A-10 (gjenbruk TimeGrid fra C2). Uten fasit (mønsterport, JA 27.08): grupper-liste, medlemsadmin, timeplan, skoledata, ak-stigen (PII-vurdering i økten). Rett `lPhase`-etiketter (utgått vokabular) | WB-08/09, A-06, WB-06, A-10 | C2 ✓ (levert) |
-| QA-1 | Web-hygiene (funn fra 20-punkts audit, §3) | (a) **Monter toast-oppsett i admin** — 78 `toast.*`-kall fra sonner rendres ALDRI (`<Toaster/>` er ikke montert noe sted; admin-layout har ingen provider). Velg én kanal (sonner-Toaster i admin-layout, eller ToastProvider-mønsteret fra portal) og få suksess/feil på writes synlig. (b) Klikkbart telefonnummer på kontaktsiden (`tel:` + vurder `formatDetection`). (c) Fjern hardkodet «© 2026» i gfgk-junior-footer. (d) Slett død `MobileMenu`-komponent. (e) Fane-titler (`metadata.title`) på de ~20 viktigste portal-/admin-hubene. (f) Fjern dobbel e-postvisning på kontaktsiden | §3 under; `src/components/shared/toast-provider.tsx`, `src/app/admin/layout.tsx` | Ingen |
+| T7 | Kalender + booking-lag | Samle `/admin/kalender` + `(legacy)/kalender/maned` til ÉN kalender; booking (`bookinger` + `[id]` + `ny`, availability) inn som lag/ark. Pensjoner `agencyos/uka` og bookinger-listeflaten (JA 27.08). Google-synk røres IKKE. `/admin/kalender/lag` (fra C3) er startpunktet — hovedsiden har 0 TL-tokens i dag | KA-01/01L, KA-02, KA-03, KA-05, AG-11 | **LEVERT #629** |
+| T8 | Grupper | `grupper/[id]/workbench` → WB-08/09; `arsplan` → A-06 + WB-06; gruppedag → A-10 (gjenbruk TimeGrid fra C2). Uten fasit (mønsterport, JA 27.08): grupper-liste, medlemsadmin, timeplan, skoledata, ak-stigen (PII-vurdering i økten). Rett `lPhase`-etiketter (utgått vokabular) | WB-08/09, A-06, WB-06, A-10 | **LEVERT #629** |
+| QA-1 | Web-hygiene (funn fra 20-punkts audit, §3) | (a) **Monter toast-oppsett i admin** — 78 `toast.*`-kall fra sonner rendres ALDRI (`<Toaster/>` er ikke montert noe sted; admin-layout har ingen provider). Velg én kanal (sonner-Toaster i admin-layout, eller ToastProvider-mønsteret fra portal) og få suksess/feil på writes synlig. (b) Klikkbart telefonnummer på kontaktsiden (`tel:` + vurder `formatDetection`). (c) Fjern hardkodet «© 2026» i gfgk-junior-footer. (d) Slett død `MobileMenu`-komponent. (e) Fane-titler (`metadata.title`) på de ~20 viktigste portal-/admin-hubene. (f) Fjern dobbel e-postvisning på kontaktsiden | §3 under; `src/components/shared/toast-provider.tsx`, `src/app/admin/layout.tsx` | **LEVERT #629** |
 
 ### Etappe 2 — motor før T12
 
 | # | Sesjon | Scope | Fasit/kilder | Avhenger |
 |---|---|---|---|---|
-| C6 | Jarvis-merge-motor | Kø + eval-gate (ACWR 0,8–1,3 · ingen kollisjon · motorer adskilt · drills komplette) + merge-provenance. Jarvis merger ALDRI selv; rød eval = STENGT. **Anti-scope: `src/lib/jarvis/` er Anders' PERSONLIGE assistent — feil «Jarvis», ikke rør.** ACWR-gjenbruk: sjekk `src/lib/health/belastning.ts` | JV-01–03 | Ingen |
-| C7 | AgenticOS cockpit-queue | Queue + approval-policy A3/B1/C3 (agent skriver aldri uten godkjenning; research uten write = badge). Inneholder to Anders-valg: **J-A** (/meg-lenking i IA) og **J-B** (Gmail-send-scope vs «Utkast opprettet») — spør i økten | AO-00/01/02/05/12 | Ingen |
-| T12 | AgenticOS + Jarvis + Caddie-port | `/admin/agenticos` + `agents/[agentId]` + `handlingssenter` til TL. Caddie (chat) NEDLAGT (27.08) → foldes inn i Jarvis-tabben; ompek `(legacy)/caddie`-redirecten. Pensjoner `workspace/tildelt-meg`, `drills/forslag` → AO-01-køen. Avklar J-C (godkjenninger inn i AgenticOS-flaten) her | AO-fasitene + JV-01–03 | C6 + C7 |
+| C6 | Jarvis-merge-motor | Kø + eval-gate (ACWR 0,8–1,3 · ingen kollisjon · motorer adskilt · drills komplette) + merge-provenance. Jarvis merger ALDRI selv; rød eval = STENGT. **Anti-scope: `src/lib/jarvis/` er Anders' PERSONLIGE assistent — feil «Jarvis», ikke rør.** ACWR-gjenbruk: sjekk `src/lib/health/belastning.ts` | JV-01–03 | **LEVERT #629** |
+| C7 | AgenticOS cockpit-queue | Queue + approval-policy A3/B1/C3 (agent skriver aldri uten godkjenning; research uten write = badge). Inneholder to Anders-valg: **J-A** (/meg-lenking i IA) og **J-B** (Gmail-send-scope vs «Utkast opprettet») — spør i økten | AO-00/01/02/05/12 | **LEVERT #629** (J-A/J-B kodet i #630) |
+| T12 | AgenticOS + Jarvis + Caddie-port | `/admin/agenticos` + `agents/[agentId]` + `handlingssenter` til TL. Caddie (chat) NEDLAGT (27.08) → foldes inn i Jarvis-tabben; ompek `(legacy)/caddie`-redirecten. Pensjoner `workspace/tildelt-meg`, `drills/forslag` → AO-01-køen. Avklar J-C (godkjenninger inn i AgenticOS-flaten) her | AO-fasitene + JV-01–03 | **IA LEVERT #630** — visuell AO-00/01 gjenstår |
 
 ### Etappe 3 — resterende C-rader
 
 | # | Sesjon | Scope | Fasit/kilder | Avhenger |
 |---|---|---|---|---|
-| C1 | Måned/år i Workbench | Read-first: klikk dag → uke, ingen redigering i årscelle. Uke/Måned/År bevarer valgt spiller; tom måned = norsk empty-state. ETTERPÅ: pensjoner gamle `spillere/[id]/workbench` (§5T.2 rad 14) | A-05, A-06, WB-05, WB-06 | Ingen |
-| C10 | DataGolf + økonomi | DG-01-spillerkort (bland ALDRI Broadie/DataGolf/PEI) + EC-01-økonomiflate (FORFALT eneste danger; Tripletex-LESING — klient finnes i `src/lib/tripletex/`). `reports` flettes inn (JA 27.08). Avklar plassering av **D2 booking→faktura** her (datakjeden finnes, Invoice-modell mangler; «forfalt» fra Stripe ved visning). Ta med PGA-kildemerking (syncPgaPuttDistance er Broadie-tabell — merk i UI) | DG-01, EC-01 | Ingen |
-| C9 | Foreldre-kort FO-01 | Read-only «neste økt»-kort på wb-domenet i forelder-hjem. Aldri DRAFT, kun fornavn (GDPR). NB: dette er IKKE forelder-helporten (egen rad F1) | FO-01 | Ingen |
+| C1 | Måned/år i Workbench | Read-first: klikk dag → uke, ingen redigering i årscelle. Uke/Måned/År bevarer valgt spiller; tom måned = norsk empty-state. ETTERPÅ: pensjoner gamle `spillere/[id]/workbench` (§5T.2 rad 14) | A-05, A-06, WB-05, WB-06 | **LEVERT #632** |
+| C10 | DataGolf + økonomi | DG-01-spillerkort (bland ALDRI Broadie/DataGolf/PEI) + EC-01-økonomiflate (FORFALT eneste danger; Tripletex-LESING — klient finnes i `src/lib/tripletex/`). `reports` flettes inn (JA 27.08). Avklar plassering av **D2 booking→faktura** her (datakjeden finnes, Invoice-modell mangler; «forfalt» fra Stripe ved visning). Ta med PGA-kildemerking (syncPgaPuttDistance er Broadie-tabell — merk i UI) | DG-01, EC-01 | **ÅPEN** |
+| C9 | Foreldre-kort FO-01 | Read-only «neste økt»-kort på wb-domenet i forelder-hjem. Aldri DRAFT, kun fornavn (GDPR). NB: dette er IKKE forelder-helporten (egen rad F1) | FO-01 | **LEVERT #629** |
 
 ### Etappe 4 — P-bølgen (Player-porten, NYE rader) + admin-rest + forelder
 
@@ -81,12 +111,12 @@ finn hver skjerm i `SCREEN-INDEX.md`.
 
 | # | Sesjon | Scope (ruter) | Avhenger |
 |---|---|---|---|
-| P1 | Meg-familien | `/portal/meg` + ~19 underruter (innstillinger ×N, abonnement + faktura, bookinger, profil, utstyr, 2fa, varsler) | Ingen |
-| P2 | Analyse-familien | `mal/runder` + `mal/trackman` (7), `analysere` + historikk, `gameplan` (2), `drills` (2) | Ingen |
-| P3 | Tren + planlegge + resten | `tren/` (tester, turneringer, fys-plan, teknisk-plan), `planlegge/workbench`, booking (2), venner (2), kalender, varsler, coach (2), `utenfor-banen`, `ai/foresla-drill` | Ingen |
-| P4 | Live-løypa + gjennomføring | live-rutene (4), `gjennomfore/[id]`, offline-siden (Paper-stilet i dag). Vurder testbatteri-ark i Workbench her hvis T6 ikke dekket det (grep 27.08: finnes ikke) | Ingen |
-| AD-1 | Admin-rest | `spillere/[id]`-detaljrest (fremgang/analyse/tester/turnering-kobling — det som IKKE pensjoneres via T6/T7), `runder`, `teknisk-plan`, `queue`, `brief`, `innboks-epost` (PII-vurdering i økten), `bookinger/[id]` (hvis ikke tatt i T7), `analysere/compliance`, `tester/foreslatte` | T7 (unngå fil-kollisjon) |
-| F1 | Forelder-helporten | Alle 9 seksjoner + barn/[childId] til Train-lock med lys+mørk toggle (T4-beslutning 26.08; default forblir lys). Fasit komplett i zip (6). **Fiks kjent bug:** `hentForelderUkerapport` teller mandagsøkter dobbelt (lte mot eksklusiv grense, `src/lib/forelder.ts`) | Ingen |
+| P1 | Meg-familien | `/portal/meg` + ~19 underruter (innstillinger ×N, abonnement + faktura, bookinger, profil, utstyr, 2fa, varsler) | **TOKEN #631** — fasit-1:1 og skjermbilde-gate gjenstår |
+| P2 | Analyse-familien | `mal/runder` + `mal/trackman` (7), `analysere` + historikk, `gameplan` (2), `drills` (2) | **TOKEN #631** — fasit-1:1 og skjermbilde-gate gjenstår |
+| P3 | Tren + planlegge + resten | `tren/` (tester, turneringer, fys-plan, teknisk-plan), `planlegge/workbench`, booking (2), venner (2), kalender, varsler, coach (2), `utenfor-banen`, `ai/foresla-drill` | **TOKEN #631** — fasit-1:1 og skjermbilde-gate gjenstår |
+| P4 | Live-løypa + gjennomføring | live-rutene (4), `gjennomfore/[id]`, offline-siden (Paper-stilet i dag). Vurder testbatteri-ark i Workbench her hvis T6 ikke dekket det (grep 27.08: finnes ikke) | **TOKEN #631** — fasit-1:1 og skjermbilde-gate gjenstår |
+| AD-1 | Admin-rest | `spillere/[id]`-detaljrest (fremgang/analyse/tester/turnering-kobling — det som IKKE pensjoneres via T6/T7), `runder`, `teknisk-plan`, `queue`, `brief`, `innboks-epost` (PII-vurdering i økten), `bookinger/[id]` (hvis ikke tatt i T7), `analysere/compliance`, `tester/foreslatte` | **TOKEN #631** (T7 kalender levert #629) |
+| F1 | Forelder-helporten | Alle 9 seksjoner + barn/[childId] til Train-lock med lys+mørk toggle (T4-beslutning 26.08; default forblir lys). Fasit komplett i zip (6). **Fiks kjent bug:** `hentForelderUkerapport` teller mandagsøkter dobbelt (lte mot eksklusiv grense, `src/lib/forelder.ts`) | **Mandags-bug + token #631** — fasit-1:1 gjenstår |
 
 ### Etappe 5 — lys-pass og auth (sist av design)
 
@@ -102,7 +132,7 @@ finn hver skjerm i `SCREEN-INDEX.md`.
 | V1 | Betalings-cutover-verifisering | `BETALING_STARTER = 2026-09-01` slår av `gratisForAlle()` automatisk. Kjør test-clock-løypa (8 steg i `stripe-cutover-sjekkliste.md`), verifiser talent-gate i prod (kontrakttestene fra #539 mot prod — aldri kjørt), sjekk A1-indeks-scriptet (`--dropp-gammel-indeks` — udokumentert om kjørt), push-opt-in i prod | Anders: Stripe live (P0) |
 | V2 | Full smoke + release | Del 3-kriteriene i LAUNCH-PLAN (8 punkter) + §8.5: samlet ende-til-ende-smoke klikket av MENNESKE (inkl. TM-steget + godta/avvis), offentlig booking ende-til-ende, e2e-secrets i CI (427 spillertester hoppes over i dag), vedlikeholdsmodus-av-plan for akgolf.no | Alt over |
 
-**Neste 5 sesjoner nå:** T7 · T8 · QA-1 (parallelle) → C6 · C7 (parallelle) → deretter T12.
+**Neste 5 sesjoner nå (28.08):** C10 · C8 · T12-visuell · V1 (etter Stripe live) · V2.
 
 ---
 
@@ -143,11 +173,11 @@ Betaling starter **automatisk 1. september** (`BETALING_STARTER` i `src/lib/feat
 
 | # | Punkt | Status 27.08 | Merknad |
 |---|---|---|---|
-| 1 | Resend DKIM `send.akgolf.no` | Åpen | Blokkerer aktiverings-e-post (spam ellers) |
-| 2 | `akgolf.no` DNS → Vercel | Åpen | + skru AV vedlikeholdsmodus (#574) i samme operasjon; sjekk `NEXT_PUBLIC_APP_URL` |
-| 3 | Stripe live-cutover | Åpen | 4 priser m/metadata, price-id-er i env, logo, Billing Portal-lås, webhook 13 event-typer. Sjekkliste: `docs/platform/stripe-cutover-sjekkliste.md` |
+| 1 | Resend DKIM `send.akgolf.no` | Åpen 28.08 | Blokkerer aktiverings-e-post (spam ellers) |
+| 2 | `akgolf.no` DNS → Vercel | Åpen 28.08 | + skru AV vedlikeholdsmodus (#574) i samme operasjon; sjekk `NEXT_PUBLIC_APP_URL` |
+| 3 | Stripe live-cutover | Åpen 28.08 | 4 priser m/metadata, price-id-er i env, logo, Billing Portal-lås, webhook 13 event-typer. Sjekkliste: `docs/platform/stripe-cutover-sjekkliste.md` |
 | 4 | Google Calendar re-kobling | **UTFØRT** | — |
-| 5 | Ekte spilleradresser + aktiverings-e-post | Åpen | 13 spillere uten auth/invitasjon; `scripts/send-aktiverings-epost.ts --dry-run` først; venter på DKIM |
+| 5 | Ekte spilleradresser + aktiverings-e-post | Åpen 28.08 | 13 spillere uten auth/invitasjon; `scripts/send-aktiverings-epost.ts --dry-run` først; venter på DKIM |
 | 6 | `SCREENTEST_PASSWORD` | **KILDEKONFLIKT** | MASTERPLAN sier rotert 17.08 (96/98 OK, forelder-bruker gjensto); LAUNCH-PLAN/STATUS-NÅ 27.08 sier fortsatt åpen. **Anders avklarer** — minst forelder-brukeren gjenstår uansett |
 
 ---
@@ -157,9 +187,9 @@ Betaling starter **automatisk 1. september** (`BETALING_STARTER` i `src/lib/feat
 | Beslutning | Haster? | Hvor den tas |
 |---|---|---|
 | Freemium-presisering: strammes TALENT-listen (16.08-listen er fasit inntil svar)? | **Før 1. sep** | Én linje fra Anders |
-| J-A: hvor lenkes `/meg` inn i IA-en (i dag kun via URL) | Nei | C7-økten |
-| J-B: Gmail-send-scope eller «Utkast opprettet» | Nei | C7-økten |
-| J-C: `/admin/godkjenninger` inn i AgenticOS-flaten? | Nei | T12-økten |
+| J-A: hvor lenkes `/meg` inn i IA-en (i dag kun via URL) | Nei | **LØST #630** — `/meg` under Meg (admin) |
+| J-B: Gmail-send-scope eller «Utkast opprettet» | Nei | **LØST #630** — utkast, aldri send |
+| J-C: `/admin/godkjenninger` inn i AgenticOS-flaten? | Nei | **LØST #630** — Kø-fane = `/admin/godkjenninger` |
 | J-D: KommandoTask vs Notion-cache | Nei | Egen beslutning (blokkerer /kommando-opprydding) |
 | `/team-wang` varig åpen (navnefri) eller sperres? | Nei | Én linje |
 | W5: bestille tegnet auth-skall? | Nei (ikke smoke-blokker) | Designbestilling |

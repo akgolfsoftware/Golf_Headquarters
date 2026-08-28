@@ -37,9 +37,12 @@ GJELDENDE merge-status, se `docs/STATUS-NÅ.md`.
 | T8 | Grupper til Train-lock (liste, detalj, timeplan, AK-stigen) + workbench-fane | `claude/natt-lansering-2026-08-28` | Merget #629 |
 | QA-1 | Web-hygiene: admin-toast, tel-lenke, årstall, hub-titler, én e-post på kontakt | `claude/natt-lansering-2026-08-28` | Merget #629 |
 | C6 | Jarvis-merge eval-gate + proveniens (Filip åpen / Jonas stengt). Ikke `src/lib/jarvis/` | `claude/natt-lansering-2026-08-28` | Merget #629 |
-| C7 | AgenticOS godkjenningspolicy A3/B1/C3 (ren funksjon). J-A/J-B hoppet | `claude/natt-lansering-2026-08-28` | Merget #629 |
-| T12 | J-A `/meg` under Meg (ADMIN) + ⌘K. J-B utkast (ingen send). J-C Kø-fane = godkjenninger. Caddie/tildelt-meg/drill-forslag redirect | `claude/t12-agenticos-ia-2026-08-28` | Ferdig |
-| C9 | FO-01 neste økt-kort på wb-domenet (aldri DRAFT, kun fornavn) | `claude/natt-lansering-2026-08-28` | Ferdig, ikke merget; skjermbilde-gate gjenstår |
+| C7 | AgenticOS godkjenningspolicy A3/B1/C3 (ren funksjon) | `claude/natt-lansering-2026-08-28` | Merget #629 |
+| C9 | FO-01 neste økt-kort på wb-domenet (aldri DRAFT, kun fornavn) | `claude/natt-lansering-2026-08-28` | Merget #629 |
+| T12 | J-A `/meg` under Meg (ADMIN) + ⌘K. J-B utkast (ingen send). J-C Kø = godkjenninger. Caddie-redirect | `claude/t12-agenticos-ia-2026-08-28` | IA merget #630; visuell AO-00/01 gjenstår |
+| TL-port | T→TL på PlayerHQ, AgencyOS, Meg, Forelder (380 filer). Marketing/auth urørt | `claude/tl-port-alle-skjermer-2026-08-28` | Merget #631 — token, ikke piksel-1:1 |
+| F1-bug | Mandagsøkter i ukesrapport telles ikke lenger dobbelt (`lt` mot `endOfWeek`) | samme som #631 | Merget #631 |
+| C1 | Workbench måned + år (leseflate; klikk dag→uke; gammel rute redirect) | `claude/c1-workbench-maned-aar-2026-08-28` | Merget #632 |
 
 Se `docs/natt/README.md` for hvilke natt-dokumenter som fortsatt er levende (LAUNCH-PLAN,
 ACCESS-AND-GROUPS, SKJERM-STATUS, D-beslutningene) vs. denne loggen (historikk).
