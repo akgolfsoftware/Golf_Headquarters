@@ -25,7 +25,8 @@ export default async function V2RunderPreviewPage() {
 
   return (
     <V2Shell bredde="kolonne" aktiv="analyse" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
-      <TilbakeLenke href="/portal/mal">Mål</TilbakeLenke>
+      {/* PH-11: Runder er push under Analyse — tilbake dit. */}
+      <TilbakeLenke href="/portal/analysere">Analyse</TilbakeLenke>
       <RunderV2 data={{ navn: user.name ?? "", hcp: user.hcp, rows: model.rows, kpis: model.kpis }} />
     </V2Shell>
   );
