@@ -95,8 +95,21 @@ Kjør med en Stripe **test clock** og en testbruker i preview:
 ## 4. Post-deploy-steg for A1 (én gang)
 
 - [ ] Etter at PR #503 (A1) er deployet til prod: kjør
-      `npx tsx scripts/add-abonnement-v2-2026-08-16.ts --dropp-gammel-indeks`
+      `npx tsx scripts/arkiv/add-abonnement-v2-2026-08-16.ts --dropp-gammel-indeks`
       (fjerner den gamle unike indeksen på userId som gammel kode trengte).
+
+Status 2026-08-28 (V1, kun repo — **ikke** kjørt mot prod herfra):
+scriptet ligger i `scripts/arkiv/` (ikke `scripts/`). `DROP INDEX` kjører
+KUN med `--dropp-gammel-indeks`. Schema har `@@unique([userId, kind])`.
+Om flagget er kjørt i prod kan ikke leses fra git. Sjekk før du kjører:
+
+```sql
+SELECT indexname FROM pg_indexes WHERE tablename = 'subscriptions';
+```
+
+Skal ha `subscriptions_userId_kind_key`. Skal IKKE ha `subscriptions_userId_key`.
+Hvis den gamle fortsatt står, kan ikke én bruker ha både coaching- og
+PlayerHQ-rad — da må flagget kjøres (Anders, mot prod).
 
 ## 5. Cutover-dagen (1. september)
 
