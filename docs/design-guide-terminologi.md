@@ -14,7 +14,8 @@
 > (`.claude/rules/designsystem.md`, som denne fila tidligere pekte på, finnes ikke.)
 >
 > Resten — særlig **§2 tall, enheter og formatering** — er fortsatt gjeldende og
-> uavhengig av palett. Fargeverdiene ble verifisert mot koden 2026-07-03.
+> uavhengig av palett. Fargeverdiene i §1 er historikk. Ny skjermkode bruker Train-lock
+> (`--tl-*` / `TL`), ikke Presis og ikke Paper-cream.
 
 ## 1. Farger per begrepsdomene
 
@@ -49,7 +50,8 @@ Fremtidige økter: INGEN badge. Kilde: `COMPLIANCE_COLORS` + UkeView.
 
 ### Semantiske tokens (lys) — UTGÅTT, historikk
 
-> Presis-verdier, ikke lenger fasit. Gjeldende: Paper-tokens `--p-*` i `src/styles/paper-tokens.css`.
+> Presis-verdier, ikke lenger fasit. Gjeldende palett: Train-lock `--tl-*` i
+> `src/styles/train-lock-tokens.css`. Paper `--p-*` er utgående runtime.
 
 `background #FAFAF7 · foreground #0A1F17 · card #FFFFFF · primary #005840 ·
 primary-foreground #D1F843 · accent #D1F843 · accent-foreground #005840 ·

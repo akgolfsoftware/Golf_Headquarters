@@ -273,21 +273,18 @@ AK Golf Academy bruker en 5-trinns trenings-pyramide:
 > Paper-låsen fra 03.08 er supersedert; Claude Paper (`605a48cc`) er historikk. Mangler en
 > skjerm fasit: spør Anders. Ved konflikt mellom et dokument og Train-lock vinner Train-lock.
 >
-> **Token i kode:** `--v2-handling` / alias `--handling` i `src/app/globals.css`,
-> speilet som `T.handling` i `src/lib/v2/tokens.ts`. Bruk: `var(--handling)` eller
-> `T.handling`. Maks én primærhandling per skjerm. Aldri aksent som dekorasjon.
+> **Token i kode (ny skjerm):** `--tl-*` / `TL` (`src/styles/train-lock-tokens.css`,
+> `src/lib/v2/train-lock.ts`). Én primær CTA per skjerm (fill/on-fill). Fullført = warm.
+> `T` / `--p-*` / `--v2-*` er utgående Paper-bro — ikke bruk i ny kode.
 >
-> **Palett:** Paper-tokens (`--p-*` i `src/styles/paper-tokens.css`) er kilden — `--v2-*` peker
-> på dem etter porten steg 5A. Den gamle Presis-paletten (forest `#005840` / lime `#D1F843`)
-> er **ikke** lenger fasit; gjenværende forekomster er restarbeid i porten, ikke en regel å følge.
+> **Palett:** Train-lock (scene `#000000` / lys `#FFFFFF`). Paper-cream og Presis-skog/lime
+> er **ikke** fasit. Marketing har egen palett.
 >
-> Det under er beskrivelse av nåværende tema-oppførsel i kode (lys default + bryter),
-> ikke en konkurrerende designkanon.
+> Det under er beskrivelse av nåværende tema-oppførsel i kode, ikke en konkurrerende designkanon.
 
-Nåværende oppførsel i kode: PlayerHQ (`/portal`), AgencyOS (`/admin`) og Forelder
-(`/forelder`) er lys som standard med lys/mørk-bryter (cookie `ak-v2-tema=dark` gir mørk).
-Auth og marketing er mørke. Implementasjon: `src/app/layout.tsx` (før-paint-script) +
-`src/components/v2/shell.tsx` (bryter + synk). Historikk: `docs/design-system/` (UTGÅTT).
+Nåværende oppførsel i kode: `/portal` og `/admin` er **mørke** som standard; `/auth` og
+`/forelder` er lyse; landingssider alltid lyse. Cookie `ak-v2-tema` vinner over defaulten.
+Implementasjon: `src/lib/v2/tema-default.ts` + `src/app/layout.tsx` + `src/components/v2/shell.tsx`.
 
 ---
 

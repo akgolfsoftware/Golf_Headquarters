@@ -13,12 +13,11 @@ import { AnalyticsLoader } from "@/components/shared/analytics-loader";
 import { onsketTema } from "@/lib/v2/tema-default";
 import "./globals.css";
 
-// ---------- Claude Paper-fontene (designport steg 4 + 10) ----------
+// ---------- Produktfonter (Train-lock arver skala, ikke Paper-look) ----------
 // Poppins (UI/display) · Lora (prosa) · IBM Plex Mono (tall) er de ENESTE
 // fontene i appen. Inter, Familjen Grotesk og JetBrains Mono ble fjernet i
-// steg 10 (2026-08-14) da siste direkte referanse til deres CSS-variabler
-// var portet til --p-ui / --p-disp / --p-mono. Ikke gjeninnfør dem — se
-// CLAUDE.md invariant 2. Lint-porten i scripts/check-token-gap.mjs vokter det.
+// steg 10 (2026-08-14). Ikke gjeninnfør dem — se CLAUDE.md invariant 2.
+// Lint-porten i scripts/check-token-gap.mjs vokter det.
 const poppins = Poppins({
   variable: "--font-poppins",
   weight: ["400", "500", "600", "700"],

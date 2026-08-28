@@ -1,6 +1,9 @@
 # DESIGN-FASIT — AK Golf HQ · Claude Paper
 
-> **Dette dokumentet er porteringsfasiten.** Alt her gjelder produktet: tokens, typografi, farge, moduser, språk, ikoner, komponentkontrakter. Arbeidsregler for design INNE i Claude Design ligger i `PROSESS.md` og gjelder ikke kodeporten. Porteringskontrakten ligger i `PORT-README.md` — les den først.
+> **ARKIV / DEPRECATED (25.08.2026).** Dette er IKKE porteringsfasiten lenger.
+> Gjeldende: `designsystem/train-lock/DESIGN-SYSTEM.md`. Se `DEPRECATED.md` i denne mappen.
+>
+> **Historisk dokument under.** Alt her gjaldt Paper-porten: tokens, typografi, farge, moduser, språk, ikoner, komponentkontrakter. Arbeidsregler for design INNE i Claude Design ligger i `PROSESS.md` og gjelder ikke kodeporten. Porteringskontrakten ligger i `PORT-README.md`.
 >
 > Sist rettet 18.08.2026: radius 12/8/999, token-baseline v3.1, Lucide som eneste ikonkilde.
 

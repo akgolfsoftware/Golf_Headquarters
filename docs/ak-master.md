@@ -9,7 +9,7 @@ Paper-referanser under er historikk.*
 **Grunnregel for all Claude-bruk:** Claude spør Anders KUN om hva som skal lages (funksjoner, innhold, tekst i produktet). Aldri om innstillinger, konfigurasjon, modellvalg, tekniske valg eller kompliserte spørsmål — der bestemmer Claude selv, flagger bekymringer i rapporten, og kjører. Unntak: nummerert plan ved store byggeoppgaver skal fortsatt godkjennes før bygging starter (det er en scope-sjekk, ikke et innstillingsspørsmål).
 ---
 ## 0. Forutsetning før du starter
-Denne guiden dekker **kode**-siden av AK Golf HQ. Kode skal alltid ligge i `~/Developer/akgolf-hq` og pushes via Claude Code — aldri i Cowork, Drive eller Notion. Design gjøres i Claude Design («AK Golf HQ — Claude Paper», `605a48cc`), ikke her.
+Denne guiden dekker **kode**-siden av AK Golf HQ. Kode skal alltid ligge i `~/Developer/akgolf-hq` og pushes via Claude Code — aldri i Cowork, Drive eller Notion. Designfasit for produktflatene er Train-lock i repoet (`designsystem/train-lock/`), ikke Claude Paper.
 ---
 ## 1. Prosjektstruktur
 ```
@@ -26,7 +26,7 @@ Denne guiden dekker **kode**-siden av AK Golf HQ. Kode skal alltid ligge i `~/De
 │   ├── (forelder)/              ← "/forelder" — Forelderportal
 │   └── api/                     ← route handlers (Stripe, TrackMan, DataGolf, Anthropic)
 ├── components/
-│   ├── ui/                      ← delte primitiver (Claude Paper-tokens)
+│   ├── ui/                      ← delte primitiver (Train-lock for produkt; shadcn-base)
 │   ├── agencyos/                 ← komponenter kun for coach-siden
 │   └── playerhq/                 ← komponenter kun for spiller-siden
 ├── lib/
@@ -91,9 +91,9 @@ Dette er *ikke* det samme som `~/.claude/CLAUDE.md` (den globale masteren for id
 - Forelderflate = Forelderportal (/forelder)
 - Simulator vises ALDRI i UI — sted er anlegget, ikke "Sim 1/2/3"
 ## Design
-- Designsystem: Claude Paper. Tokens: ~/Documents/Claude/akgolf-hq-redesign/tokens/akhq-tokens.css
-- Radius: --r 12px, --r-sm 8px. Aksent #D97757 KUN på "Én ting nå"-handlingen.
-- Gamle farger (#005840, #D1F843) og Inter-font er utgått — bruk aldri.
+- Designsystem: Train-lock (`designsystem/train-lock/`). Tokens: `--tl-*` / `TL`.
+- Scene `#000000` (lys `#FFFFFF`). Radius-card 20, pill 999. Én hvit primær per skjerm.
+- Paper-cream, Presis-skog/lime (#005840, #D1F843) og Inter/Familjen er utgått — bruk aldri.
 ## Fagterminologi (ikke forenkle)
 - Økt-ID-format: PYRAMIDE_OMRÅDE_L-FASE_CS_M_PR — gyldige områder: TEE, INNSPILL, NÆRSPILL, PUTT, BANE
 - AK-formel v2 gjelder fra 03.08.2026 — 17 områder. L-faser/M/PR er UTGÅTT i ny formel — spør Anders før CS brukes i nytt.
@@ -241,10 +241,10 @@ Kort rutine ved start av en Claude Code-økt på dette prosjektet:
 ---
 ## 11. Design i Claude Design og porting til kode
 ### 11.1 Hvordan design skal lages i Claude Design
-- **Ett aktivt prosjekt:** «AK Golf HQ — Claude Paper» (`605a48cc-81e8-44bd-94d2-07d50a97370a`). Kryss-sjekk alltid mot det eldre prosjektet «AK Golf HQ Design System» (`bb9b2b1d-ce2b-4757-be37-ee2096ba9d0d`) — det har Workbench, kalender-familien og ui_kits som skal gjenbrukes, ikke bygges på nytt.
+- **Ett aktivt fasitsett:** Train-lock i repoet (`designsystem/train-lock/`). Claude Paper (`605a48cc`) er historikk. Ikke bygg nye produktskjermer mot Paper.
 - **Arbeidsmetode — låst:** audit → wireframe → godkjenning → hi-fi render, én skjerm om gangen. Dette er presisjonsforfining innenfor eksisterende visuelt språk, ikke redesign.
 - **Wireframe-fasen** bruker `akgolf-wireframe`-skillen (design-tokens.md, component-library.md, page-templates.md) — tre breakpoints alltid: 1440 / 1024 / 390px.
-- **Hi-fi-fasen** bruker `ak-designekspert`-skillen — den er bygget spesifikt for Claude Paper-språket og chat-først-mønsteret (Claude Code/Cowork som forbilde).
+- **Hi-fi-fasen** følger Train-lock `DESIGN-SYSTEM.md`. `ak-designekspert`-skillens Paper-kropp er historikk.
 - **Hver skjerm skal ha fast identitet før den regnes ferdig:** hvilken flate (AgencyOS: maks 5 flater — Konsoll · Innboks · Spillere · Kalender · Maskinrom. PlayerHQ: maks 4 — I dag · Plan · Analyse · Meg), lys OG mørk modus, alle tre breakpoints.
 - **Ordliste-sjekk:** all norsk UI-tekst skal matche `akordlistegjennomgang.html` (Del A+B, 506 termer) — ingen egne ord oppfinnes i Claude Design-fasen heller, ikke bare i koden.
 ### 11.2 Design-index, MASTER-SKJERMPLAN og porting-gate
@@ -253,7 +253,7 @@ Dette er strukturen jeg anbefaler for å koble Claude Design til Claude Code —
 - **`MASTER-SKJERMPLAN`** — det overordnede kartet: hvilke skjermer finnes og skal finnes per flate. Dette er planen `design-index` rapporterer fremdrift mot.
 - **`porting-gate`** — sjekkliste en skjerm MÅ gjennom før den regnes «portet» til kode:
   1. Design godkjent i Claude Design (ikke bare generert — eksplisitt godkjent av deg)
-  2. Tokens verifisert mot `~/Documents/Claude/akgolf-hq-redesign/tokens/akhq-tokens.css`
+  2. Tokens verifisert mot `src/styles/train-lock-tokens.css` / `TL` (ikke Paper `akhq-tokens.css`)
   3. Lys og mørk modus begge sjekket i selve Claude Design-renderet
   4. Alle tre breakpoints sjekket
   5. Komponenter matchet mot `component-library.md` — ingen ad-hoc-komponenter
@@ -275,7 +275,7 @@ Claude Code sin container er isolert — den kan ikke hente et Claude Design-pro
 5. Sjekk lys/mørk + alle tre breakpoints i faktisk nettleser, ikke bare i koden
 6. Oppdater `design-index`-status til «portet»
 7. PR med skjermbilde av design vs. portert resultat side om side (se PR-mal i del 5)
-**Fontkonflikt oppdaget — verifiser før neste porting:** `ak-golf-prompt-engineer`-skillen lister UI-fonter som Inter / Familjen Grotesk / JetBrains Mono. Design-beslutningen fra juli 2026 sier Poppins / Lora / IBM Plex Mono, og at Inter er uttrykkelig utgått. Én av disse er feil eller utdatert — ikke anta hvilken, sjekk mot faktisk `akhq-tokens.css` før neste skjerm portes.
+**Fonter (låst, verifisert i `src/app/layout.tsx`):** Poppins / Lora / IBM Plex Mono. Inter / Familjen Grotesk / JetBrains Mono er fjernet. Ikke sjekk Paper `akhq-tokens.css` for produktflater — sjekk Train-lock + layout.tsx.
 ### 11.4 Designmål: så likt Claude sin egen app som mulig (iPhone + desktop)
 Basert på Claude Design-prosjektet er ambisjonen at AK Golf HQ skal oppleves visuelt og
 strukturelt så likt Claude-appen som mulig — Claude sin iPhone-app for mobilflatene
@@ -411,7 +411,7 @@ Cowork er skrivebordsappen for ikke-kode-arbeid. Arbeidsdeling som gjelder:
 | Arbeid                                          | Verktøy                                     |
 | ------------------------------------------------ | -------------------------------------------- |
 | Kode (alt i ~/Developer/)                       | Claude Code                                 |
-| Design                                          | Claude Design («AK Golf HQ — Claude Paper») |
+| Design (produktflater)                          | Train-lock i repoet (`designsystem/train-lock/`) |
 | Dokumenter, rapporter, fakturaer, e-post, drift | Cowork                                      |
 | Raske spørsmål, planlegging, dispatch           | Claude-chat (mobil/web)                     |
 Cowork-oppsett:
@@ -600,7 +600,7 @@ Rotårsak observert: ucommittet arbeid revet med av parallell økt; økter avslu
 **Port 7: Design godkjennes i små biter, mot eksempel — aldri i batch, aldri mot beskrivelse.**
 Rotårsak observert i historikken: designspråket byttet underveis (Presis → Claude Paper) mens gamle fasitfiler fortsatt pekte på det gamle; 18 skjermer wireframet før konsolidering krympet dem til 11; batch-godkjenninger av wireframes uten at hi-fi var sett. Regler:
 - **Én skjerm godkjennes fullt (wireframe → hi-fi → dine øyne på renderet) før neste startes.** Aldri «godkjenn disse 18».
-- **Før en skjerm designes: Claude viser ett referansebilde** («den skal se ut som dette, i Paper-språket») og du sier ja/nei til retningen FØR timer brukes på render. Misliker du resultatet, er det retningen som var feil — da er det billig å snu.
+- **Før en skjerm designes: Claude viser ett referansebilde** («den skal se ut som dette, i Train-lock») og du sier ja/nei til retningen FØR timer brukes på render. Misliker du resultatet, er det retningen som var feil — da er det billig å snu.
 - **Ord som «premium» og «bedre» er ikke krav.** Claude oversetter ønsket ditt til konkrete, sjekkbare punkter (hvilke elementer, hvilken tetthet, hvilket forbilde) og bekrefter listen før generering. Design-misnøye = kravet var utydelig, og det er Claudes jobb å gjøre det tydelig — ikke din.
 **Port 8: «Ferdig» er definert FØR arbeid starter — og scope-endring er en ny beslutning, ikke en glidning.**
 Rotårsak observert: «ferdig» har flyttet seg (redesign ble til presisjonsforfining ble til full Paper-port), og hver flytting kostet uker. Regler:
@@ -608,4 +608,4 @@ Rotårsak observert: «ferdig» har flyttet seg (redesign ble til presisjonsforf
 - Vil du endre scope underveis: Claude svarer med kostnaden («dette legger X til, alternativet er å fullføre som planlagt og ta det som neste oppgave») FØR den utfører. Du bestemmer — men alltid informert.
 - Månedlig: Claude rapporterer oppgaver som har vart over to uker uten å bli ferdige — de deles opp eller avsluttes.
 ---
-*Denne guiden er kode-workflowen. For design: Claude Design («AK Golf HQ — Claude Paper»). For drift/status: Notion. For metodikk/MORAD: ak-second-brain/Masterbrain.*
+*Denne guiden er kode-workflowen. For design: Train-lock (`designsystem/train-lock/`). For drift/status: Notion. For metodikk/MORAD: ak-second-brain/Masterbrain.*
