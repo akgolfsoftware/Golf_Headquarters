@@ -154,6 +154,11 @@
      MOTION (TRAIN LOCK §03) — kun transform + opacity, aldri left/top
      ───────────────────────────────────────────────────────────────────── */
   --tl-ease: cubic-bezier(0.32, 0.72, 0, 1);
+  /* DESIGN-SYSTEM §4: entrer/exit → ease-out · beveger seg → ease-in-out ·
+     ark/drawer → --tl-ease (over). tl-prefiks for å ikke kollidere med
+     marketing-tokens med samme navn i globals.css. */
+  --tl-ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --tl-ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
   --tl-dur-press: 180ms;            /* scale 0.97 */
   --tl-dur-reduced: 180ms;          /* prefers-reduced-motion: kryss-fade */
   --tl-dur-dock: 380ms;             /* aktiv fane: scale 0.9 → 1.05 → 1 */
