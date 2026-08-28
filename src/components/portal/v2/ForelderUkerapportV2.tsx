@@ -1,220 +1,141 @@
 "use client";
-import { TL } from "@/lib/v2/train-lock";
+
 /**
- * Foreldreportal · Ukerapport (detalj) — v2 Presis + B-pakke.
- * Status først, én grønn CTA, TomTilstand med neste steg. Kun v2 + T.*.
+ * Foreldreportal · Ukerapport — pikselport PX-5.
+ * Fasit: designsystem/train-lock/FO-09 Ukerapport.dc.html
+ * (+ FO-09L Ukerapport lys.dc.html — lys/mørk gjøres av tokens).
+ * Bento «Økter»/«Oppmøte», «Gjennomført»-liste (hairline-rader), coach-notat
+ * i kort, tom-tilstand uten koblet barn. Datamatten i hentForelderUkerapport
+ * er urørt — dette er kun visning; øktradene hentes av siden.
  */
 
-import { useRouter } from "next/navigation";
+import { TL } from "@/lib/v2/train-lock";
 import type { ForelderUkerapport } from "@/lib/forelder";
-import { fmtSg, Caps, Tittel, Kort, KpiFlis, Rad, Icon, TomTilstand, Knapp, StatusPill, HjelpTips } from "@/components/v2";
-/* ── Rene hjelpere ─────────────────────────────────────────────────── */
+import {
+  FoSkjerm,
+  FoHode,
+  FoCaps,
+  FoKort,
+  FoRad,
+  FoTallKort,
+  FoFotnote,
+  FoTom,
+} from "@/components/forelder/fo-kit";
 
-/** «4,5» — komma-desimal for norsk visning. */
-function komma(n: number): string {
-  return n.toString().replace(".", ",");
-}
+/** Én gjennomført/planlagt økt denne uka — radene i «Gjennomført»-lista. */
+export type UkerapportOktRad = {
+  id: string;
+  /** «Man · Styrke og putting» — ferdig sammensatt på server. */
+  tittel: string;
+  /** «16.00–17.30 · fullført» — ferdig formatert på server (Oslo-tid). */
+  sub: string;
+};
 
-/** D3 · én linje i ukerapport-kortet: navn til venstre, verdi til høyre. */
-function Rapportlinje({ navn, verdi }: { navn: string; verdi: string }) {
+export function ForelderUkerapportV2({
+  data,
+  okter,
+  ukeSpenn,
+  parentName,
+}: {
+  data: ForelderUkerapport | null;
+  /** Ukas økter (server-formatert) — FO-09 «Gjennomført»-lista. */
+  okter: UkerapportOktRad[];
+  /** «18.–24.08.2026» — ferdig formatert ukespenn. */
+  ukeSpenn: string;
+  parentName?: string;
+}) {
+  const fornavn = (parentName ?? "").split(" ")[0] || "deg";
+
+  if (!data) {
+    return (
+      <FoSkjerm>
+        <FoHode caps={`Forelder · ${fornavn}`} tittel="Ukerapport" />
+        <FoTom
+          tittel="Ingen barn er koblet ennå"
+          sub="Coachen sender invitasjon når barnet er registrert i klubben."
+        />
+        <FoFotnote>
+          Rapporten viser plan og oppmøte. Detaljert analyse deles ikke med
+          foresatte.
+        </FoFotnote>
+      </FoSkjerm>
+    );
+  }
+
+  const { childFirstName, ukenummer, oktFullfort, oktPlanlagt, coachNote } = data;
+
   return (
-    <div
-      style={{
-        display: "flex",
-        alignItems: "baseline",
-        justifyContent: "space-between",
-        gap: 12,
-        fontFamily: TL.font.sans,
-        fontSize: 13,
-        color: TL.text,
-      }}
-    >
-      <span style={{ flex: "none" }}>{navn}</span>
-      <span style={{ color: TL.mute, textAlign: "right", minWidth: 0 }}>{verdi}</span>
-    </div>
-  );
-}
+    <FoSkjerm>
+      <FoHode
+        caps={`Forelder · ${fornavn}`}
+        tittel="Ukerapport"
+        under={`${childFirstName} · uke ${ukenummer} · ${ukeSpenn}`}
+      />
 
-/* ── Skjerm ────────────────────────────────────────────────────────── */
-
-export function ForelderUkerapportV2({ data }: { data: ForelderUkerapport }) {
-  const router = useRouter();
-  const {
-    childFirstName,
-    ukenummer,
-    oktFullfort,
-    trentTimer,
-    ukeSg,
-    coachNote,
-    hoydepunkt,
-  } = data;
-
-  const sgTekst = ukeSg != null ? fmtSg(ukeSg) : "–";
-  const trentTekst = trentTimer > 0 ? `${komma(trentTimer)} t` : "–";
-  const harAktivitet = oktFullfort > 0 || ukeSg != null;
-
-  return (
-    <div data-paper-wave-e="forelder-sub" data-paper-portal-forelder-ukerapport style={{ display: "flex", flexDirection: "column", gap: 16, maxWidth: 720, margin: "0 auto", width: "100%" }}>
-      {/* Hode + status */}
+      {/* Bento: Økter / Oppmøte (FO-09) */}
       <div
         style={{
-          display: "flex",
-          alignItems: "flex-end",
-          justifyContent: "space-between",
+          marginTop: 12,
+          display: "grid",
+          gridTemplateColumns: "1fr 1fr",
           gap: 12,
-          flexWrap: "wrap",
         }}
       >
-        <div>
-          <Caps>{`Uke ${ukenummer} · ${childFirstName}`}</Caps>
-          <div style={{ marginTop: 10 }}>
-            <Tittel em="uke">Denne</Tittel>
+        <FoTallKort label="Økter" value={oktFullfort} />
+        <FoTallKort
+          label="Oppmøte"
+          value={oktFullfort}
+          suffix={`av ${oktPlanlagt}`}
+        />
+      </div>
+
+      {/* Gjennomført-lista */}
+      <div style={{ marginTop: 22 }}>
+        <FoCaps>Gjennomført</FoCaps>
+      </div>
+      {okter.length === 0 ? (
+        <FoTom
+          tittel="Ingen økter denne uka"
+          sub="Ukas plan og oppmøte dukker opp her når økter er lagt inn."
+        />
+      ) : (
+        okter.map((o) => <FoRad key={o.id} title={o.tittel} sub={o.sub} />)
+      )}
+
+      {/* Notat fra coachen */}
+      {coachNote && (
+        <FoKort pad="16px 18px" style={{ marginTop: 14 }}>
+          <FoCaps>Notat fra coachen</FoCaps>
+          <div
+            style={{
+              marginTop: 8,
+              fontFamily: TL.font.sans,
+              fontSize: 15,
+              lineHeight: 1.5,
+              color: TL.text,
+              textWrap: "pretty",
+            }}
+          >
+            {coachNote.body}
           </div>
-        </div>
-        <StatusPill tone={harAktivitet ? "up" : "info"}>
-          {harAktivitet ? "Aktiv uke" : "Rolig uke"}
-        </StatusPill>
-      </div>
-
-      {/* D3 · ukerapport-kortet: samme tall og samme nevner som barnets egen
-          digest. Delingen er en manuell handling fra coachen, aldri automatikk. */}
-      <div
-        style={{
-          background: TL.elev,
-          border: `1px solid ${TL.hair}`,
-          borderRadius: TL.radius.card,
-          padding: 16,
-          display: "flex",
-          flexDirection: "column",
-          gap: 8,
-        }}
-      >
-        <Rapportlinje
-          navn="Gjennomført"
-          verdi={
-            data.etterlevelseTekst
-              ? `${data.etterlevelseTekst} ${data.nevnerTekst}`
-              : "Ingen økter er forfalt ennå denne uka"
-          }
-        />
-        <Rapportlinje
-          navn="Betaling"
-          verdi={
-            data.utestaendeOre > 0
-              ? `${(data.utestaendeOre / 100).toLocaleString("nb-NO")} kr utestående`
-              : "ingenting utestående"
-          }
-        />
-        <p
-          style={{
-            margin: "4px 0 0",
-            fontFamily: TL.font.sans,
-            fontSize: 12,
-            color: TL.mute,
-            lineHeight: 1.55,
-          }}
-        >
-          Tallene er de samme som i {childFirstName} sin egen digest — samme nevnere. Du ser
-          aldri andre spilleres tall her.
-        </p>
-      </div>
-
-      {/* Status først — 3 KPI */}
-      <div className="grid grid-cols-3" style={{ gap: 16 }}>
-        <KpiFlis label="Økter" value={String(oktFullfort)} />
-        <KpiFlis label="Trent" value={trentTekst} />
-        <KpiFlis
-          label={
-            <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}>
-              Form
-              <HjelpTips k="sgTotal" size={10} />
-            </span>
-          }
-          value={sgTekst}
-        />
-      </div>
-
-      {/* Én primær CTA (B) */}
-      <div>
-        <Knapp icon="arrow-right" onClick={() => router.push("/forelder")}>
-          Til oversikten
-        </Knapp>
-      </div>
-
-      {/* Coachens kommentar */}
-      <Kort eyebrow="Fra coachen">
-        {coachNote ? (
-          <div>
-            <p
-              style={{
-                fontFamily: TL.font.sans,
-                fontSize: 13.5,
-                color: TL.text,
-                lineHeight: 1.6,
-                margin: 0,
-              }}
-            >
-              {coachNote.body}
-            </p>
-            <div style={{ marginTop: 12 }}>
-              <Caps size={9}>{`— ${coachNote.author}`}</Caps>
-            </div>
+          <div
+            style={{
+              marginTop: 8,
+              fontFamily: TL.font.sans,
+              fontSize: 13,
+              color: TL.mute,
+              fontVariantNumeric: "tabular-nums",
+            }}
+          >
+            {coachNote.author}
           </div>
-        ) : (
-          <TomTilstand
-            icon="message-circle"
-            title="Ingen kommentar denne uka"
-            sub="Når coachen skriver noe, dukker det opp her."
-          />
-        )}
-      </Kort>
+        </FoKort>
+      )}
 
-      {/* Ukens høydepunkt */}
-      <Kort eyebrow="Ukens høydepunkt">
-        {hoydepunkt ? (
-          <Rad
-            leading={
-              <span
-                style={{
-                  width: 34,
-                  height: 34,
-                  borderRadius: 10,
-                  background: TL.dim,
-                  border: `1px solid ${TL.hair}`,
-                  display: "inline-flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  flex: "none",
-                }}
-              >
-                <Icon name="trophy" size={16} style={{ color: TL.fill }} />
-              </span>
-            }
-            title={hoydepunkt.testNavn}
-            sub="Beste testresultat"
-            trailing={
-              <span
-                style={{
-                  fontFamily: TL.font.mono,
-                  fontSize: 16,
-                  fontWeight: 700,
-                  color: TL.text,
-                  fontVariantNumeric: "tabular-nums",
-                }}
-              >
-                {komma(hoydepunkt.score)}
-              </span>
-            }
-            last
-          />
-        ) : (
-          <TomTilstand
-            icon="trophy"
-            title="Ingen test denne uka"
-            sub="Beste tester dukker opp her når de er logget."
-          />
-        )}
-      </Kort>
-    </div>
+      <FoFotnote>
+        Rapporten viser plan og oppmøte. Detaljert analyse deles ikke med
+        foresatte.
+      </FoFotnote>
+    </FoSkjerm>
   );
 }
