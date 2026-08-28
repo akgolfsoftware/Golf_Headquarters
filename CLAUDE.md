@@ -77,6 +77,7 @@ Bølge 2 (måned/år, stall, kalender uten Google, tester-live, runde-live, Jarv
      session ennå). Marketing/landingssider har egen fasit (ak-golf-website) og omfattes ikke.
    - Ingen nye tokens / parallelle designsystemer uten Anders' ja.
    - Fullført = warm `#B85C3D` + hake. `#30D158` **kun** Godta / PUBLISERT-merke.
+   - **DO NOT USE — Paper og Presis.** Ny skjermkode = `--tl-*` / `TL`. Ikke `T.*`, ikke `--p-*`, ikke cream `#FAF9F5`/`#F0EEE6`, ikke clay som generell CTA, ikke Inter/Familjen/JetBrains, ikke Presis-skog/lime. Ikke few-shot fra `designsystem/paper/` (arkiv, se `DEPRECATED.md` der). Marketing eier sin egen Paper-katalog; den kopieres ikke inn i PlayerHQ/AgencyOS. Skills `akgolf-claude-paper` og Paper-kroppen i `ak-designekspert` er historikk.
 3. **DRAFT er usynlig for spiller.** `loadPlayerDay` returnerer kun PUBLISHED | IN_PROGRESS | COMPLETED.
 4. **Norsk bokmål** i all UI-tekst. **Lucide** — aldri emoji i UI.
 5. **Domenelogikk** i `src/domain/workbench/` (økt) og `src/lib/domain/` (øvrig) — ikke i komponenter.
@@ -163,7 +164,8 @@ CI = verify + test. Deploy: Vercel git på `main` / PR-preview. **Aldri** `verce
 ## Design / skjerm (kort)
 
 - **Alle skjermer:** Train-lock (`designsystem/train-lock/`) — se invariant 2. `designsystem/paper/`
-  er historikk/arkiv for skjermer som ennå ikke er portet, aldri bygg-fasit.
+  er arkiv, aldri bygg-fasit og aldri few-shot for nye porter. Token-port (#631) er ikke
+  piksel-1:1; visuell fasit er `.dc.html` i Train-lock, ikke Paper-HTML.
 - Skjerm-PR: Anders må ha *sett* skjermen (mobil først). Ikke merge på «ser bra ut i koden».
 - Port HTML 1:1: **nei**. Port oppførsel, hierarki, copy. Gjenbruk Button / Modal / TimeGrid / SessionCard / artefakt-panel.
 

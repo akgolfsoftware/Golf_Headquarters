@@ -15,7 +15,7 @@ Hele plattformen for AK Golf Group — ett monorepo, ett Next.js-prosjekt, fire 
 - React 19
 - Prisma 7 + Supabase (Postgres)
 - Tailwind CSS v4 (CSS-first via `@theme` i `src/app/globals.css`)
-- Lucide React (eneste icon-bibliotek). Designfasit er **Claude Paper** (Poppins / Lora / IBM Plex Mono) — koden bruker fortsatt Inter / Familjen Grotesk / JetBrains Mono til fontbyttet i porten er gjort. Inter Tight er fjernet. Se `.claude/rules/beslutninger.md` §Tema/design
+- Lucide React (eneste icon-bibliotek). Designfasit for PlayerHQ / AgencyOS / Forelder er **Train-lock** (`designsystem/train-lock/`). Fonter i produktet: Poppins / Lora / IBM Plex Mono. Inter, Familjen Grotesk, JetBrains Mono og Inter Tight er fjernet. Claude Paper er arkiv. Se `CLAUDE.md` invariant 2.
 - npm
 
 ## Kom i gang
@@ -44,7 +44,7 @@ npm run build
 
 - **`docs/platform/BUSINESS-RULES.md`** — låste produktbeslutninger (eneste fasit)
 - **`docs/platform/PLATFORM-PRD.md`** + **`docs/platform/DATA-MODEL.md`** — produkt- og dataspec
-- **`docs/port/fasit-liste-paper.md`** + **`docs/port/PORTPLAN.md`** — designdekning og porteringsplan (les før skjerm-arbeid; ferdig-definisjonen er skjermbilde-gaten i `CLAUDE.md` §Skjermarbeid)
+- **`designsystem/train-lock/`** — designfasit (les `DESIGN-SYSTEM.md` + `SCREEN-INDEX.md` før skjerm-arbeid). Paper-portplanen ligger arkivert i `docs/arkiv/paper-port/`
 - **`docs/STATUS-NÅ.md`** — hvor vi er akkurat nå (oppdatert snapshot)
 - **`docs/AAPNE-SPORSMAAL.md`** — uavklarte beslutninger (ÅPEN / LØST / PARKERT)
 - **`CLAUDE.md`** — arbeidsregler, designsystem, gotchas

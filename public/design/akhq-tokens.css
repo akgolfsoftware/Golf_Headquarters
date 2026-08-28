@@ -1,8 +1,10 @@
 /* ─────────────────────────────────────────────────────────────
-   AK Golf HQ · Claude Paper tokens v3
-   Anthropic-justert (offentlige kilder) + AK produktregler
+   AK Golf HQ · Claude Paper tokens v3  — ARKIV, ikke produktfasit
+   Gjeldende produkttokens: src/styles/train-lock-tokens.css (--tl-*).
+   Ikke kopier disse verdiene inn i /portal eller /admin.
 
-   Én kilde. Kopier verbatim inn i hver HTML/skjerm, eller @import.
+   Historisk: Anthropic-justert (offentlige kilder) + AK produktregler
+   Én kilde for Paper-æraen. Kopier verbatim kun til marketing/historikk.
    Se SCOPE.md for hva «offisiell» betyr (vi er JUSTERT, ikke Anthropic).
 
    Kilder:

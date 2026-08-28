@@ -8,8 +8,9 @@
 3. [`docs/natt/LAUNCH-PLAN-FULL-2026-08-25.md`](docs/natt/LAUNCH-PLAN-FULL-2026-08-25.md) — gjeldende lanseringsspor.
 
 **Design:** Train-lock (`designsystem/train-lock/`) er designfasit for ALLE skjermer i
-PlayerHQ og AgencyOS — se `CLAUDE.md` invariant 2 og `.claude/rules/beslutninger.md`.
-Claude Paper (`designsystem/paper/`) er historikk/arkiv, aldri bygg-fasit.
+PlayerHQ, AgencyOS og Forelder — se `CLAUDE.md` invariant 2 og `.claude/rules/beslutninger.md`.
+Claude Paper (`designsystem/paper/`) er historikk/arkiv, aldri bygg-fasit. Ny kode bruker
+`--tl-*` / `TL`, aldri Paper-tokens (`T` / `--p-*`), cream `#FAF9F5` eller Inter/Familjen.
 
 ## Kjør lokalt
 

@@ -12,7 +12,21 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 <!-- END:nextjs-agent-rules -->
 
 # Skjermarbeid — les FØR skjerm-arbeid
-Designfasit er **Train-lock** (`designsystem/train-lock/` — les `DESIGN-SYSTEM.md`, finn skjermen i `SCREEN-INDEX.md`), for ALLE skjermer i PlayerHQ og AgencyOS. Claude Paper (`designsystem/paper/`) er historikk/arkiv, aldri bygg-fasit. En skjerm er ferdig når Anders har SETT skjermbildet (mobil 390px + desktop, lys + mørk, fasit ved siden av) — ikke når CI er grønn. Se `CLAUDE.md` invariant 2 og `.claude/rules/beslutninger.md`.
+Designfasit er **Train-lock** (`designsystem/train-lock/` — les `DESIGN-SYSTEM.md`, finn skjermen i `SCREEN-INDEX.md`), for ALLE skjermer i PlayerHQ, AgencyOS og Forelder. Claude Paper (`designsystem/paper/`) er historikk/arkiv, aldri bygg-fasit. En skjerm er ferdig når Anders har SETT skjermbildet (mobil 390px + desktop, lys + mørk, fasit ved siden av) — ikke når CI er grønn. Se `CLAUDE.md` invariant 2 og `.claude/rules/beslutninger.md`.
+
+## DO NOT USE — Paper og Presis
+Ny kode og nye skjermporter bruker KUN Train-lock: `--tl-*` / `TL` (`src/styles/train-lock-tokens.css`, `src/lib/v2/train-lock.ts`). Scene `#000000` (lys `#FFFFFF`). Fonter i produktet: Poppins / Lora / IBM Plex Mono.
+
+Ikke les, ikke kopier, ikke few-shot fra:
+- `designsystem/paper/` (arkiv — se `DEPRECATED.md` der)
+- `T` fra `src/lib/v2/tokens.ts` og `--p-*` i `src/styles/paper-tokens.css` (utgående runtime)
+- cream/ivory `#FAF9F5` `#F0EEE6`, «varmt papir», clay `#D97757` som generell CTA
+- Inter, Familjen Grotesk, JetBrains Mono, Inter Tight
+- Presis-skog `#005840` / lime `#D1F843`
+- `public/design/akhq-tokens.css`, `docs/arkiv/paper-port/`
+- Skills `akgolf-claude-paper` og Paper-kroppen i `ak-designekspert` (historikk)
+
+Marketing (`/` og `/(marketing)`) har egen fasit og får beholde Paper-katalogen. Ikke kopier den inn i `/portal` eller `/admin`.
 
 # Enkelhet (LÅST 2026-07-21)
 Behold alle funksjoner, men minst mulig trykk og super enkelt UI. Vanskelig å forstå = feil design. Se `docs/platform/BUSINESS-RULES.md`.

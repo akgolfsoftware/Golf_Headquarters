@@ -77,11 +77,11 @@ prisma/
 scripts/            # Engangs-/driftsscript: seed-screentest*.ts (Øyvind Rohjan) · drill-qa ·
                     # retag-drill-kategorier · check-action-auth.mjs · audit-rls · …
 docs/               # platform/ (NORDSTJERNE, AGENT-BRIEF, BUSINESS-RULES, DATA-MODEL, PLATFORM-PRD) ·
-                    # port/ (designport: fasit-liste + plan — LES FØR skjerm-arbeid) ·
-                    # skjermtekst/ (copy-kilde) · design-system/TEMA-LYS-MORK.md (tema-fasit) ·
-                    # gdpr/ · juridisk/ · sikkerhet/ · arkiv/
-designsystem/paper/ # Lokalt speil av Paper-fasiten — ARBEIDSFASIT siden 2026-08-12
-                    # (beslutninger.md §Design-fasit); Claude Design 605a48cc er original ved uenighet
+                    # natt/ (gjeldende lanseringsspor) · skjermtekst/ (copy-kilde) ·
+                    # design-system/TEMA-LYS-MORK.md (tema-oppførsel i kode) ·
+                    # gdpr/ · juridisk/ · sikkerhet/ · arkiv/ (inkl. paper-port)
+designsystem/train-lock/  # GJELDENDE designfasit for PlayerHQ, AgencyOS, Forelder
+designsystem/paper/       # ARKIV — aldri bygg-fasit, aldri few-shot (se DEPRECATED.md)
 tests/e2e/          # Én samlet e2e-suite (32 specs, siden 2026-08-03): a11y, PWA, ruter, meta/OG,
                     # offline, ikoner + auth-guard, IDOR, booking, workbench (fra gamle e2e/)
 ```
@@ -92,30 +92,31 @@ Slettede mapper det ikke skal letes etter: `public/design-handover/`, `wireframe
 
 ## Designsystem
 
-- **Tokens:** `src/app/globals.css` — HSL-trippel uten `hsl()`-wrapper, shadcn-konvensjon.
-- **TS-speil for charts:** `src/lib/v2/tokens.ts` (objektet `T`) — kun les herfra. Den gamle
-  `src/lib/design-tokens.ts` finnes ikke lenger.
-- **Komponenter:** primitiver fra `src/components/ui/` + `v2/`-mønstre; `athletic/golfdata/` er overgangslag i vedlikeholdsmodus. Sjekk ALLTID hva som finnes FØR du lager noe nytt.
-- **Designfasit (ENDRET 25.08.2026 — TRAIN-LOCK vinner alltid, Anders i økt):** Train-lock
-  (`designsystem/train-lock/`) er eneste designfasit for ALLE skjermer i PlayerHQ og AgencyOS.
-  Claude Paper (`605a48cc` / `designsystem/paper/`) er HISTORIKK — aldri bygg-fasit; den gamle
-  Paper-porteringsplanen ligger arkivert i `docs/arkiv/paper-port/`. Ferdig-definisjon:
-  skjermbilde-gaten i `CLAUDE.md` §Skjermarbeid. Ved konflikt mellom et dokument og
-  Train-lock **vinner Train-lock**.
-- **Farger/flater:** Paper-tokens (`--p-*` i `src/styles/paper-tokens.css`), som `--v2-*` peker på
-  etter steg 5A. Aksent `#D97757` har monopol på «Én ting nå» — maks én per skjerm.
-- **Fonter:** Paper-fasiten er Poppins (UI/titler) · Lora (prosa/AI-svar) · IBM Plex Mono (tall).
-  Koden bruker fortsatt Inter / Familjen Grotesk / JetBrains Mono — fontbyttet er ikke gjennomført
-  ennå (åpent punkt i porten). Inter Tight er FJERNET — ikke gjeninnfør.
+- **Designfasit:** Train-lock (`designsystem/train-lock/`) for ALLE skjermer i PlayerHQ,
+  AgencyOS og Forelder. Les `DESIGN-SYSTEM.md` → `SCREEN-INDEX.md` → `PORTING.md`.
+  Claude Paper (`designsystem/paper/`) er ARKIV — aldri bygg-fasit, aldri few-shot.
+  Gammel Paper-plan: `docs/arkiv/paper-port/`. Ved konflikt **vinner Train-lock**.
+- **Tokens (ny kode):** `--tl-*` i `src/styles/train-lock-tokens.css`, TS-speil `TL` i
+  `src/lib/v2/train-lock.ts`. Scene `#000000` / lys `#FFFFFF`. Fullført = warm `#B85C3D`.
+- **Tokens (utgående):** `--p-*` (`src/styles/paper-tokens.css`) og `T` (`src/lib/v2/tokens.ts`)
+  lever i runtime for usportede rester og marketing. Ikke importer `T` i ny skjermkode.
+  `--v2-*` i `globals.css` peker fortsatt på `--p-*` — det er bro, ikke fasit.
+- **Komponenter:** primitiver fra `src/components/ui/` + `v2/`-mønstre; `athletic/golfdata/`
+  er overgangslag. Sjekk ALLTID hva som finnes FØR du lager noe nytt.
+- **Fonter (live i `src/app/layout.tsx`):** Poppins (UI/titler) · Lora (prosa) · IBM Plex Mono
+  (tall). Inter / Familjen Grotesk / JetBrains Mono / Inter Tight er FJERNET — ikke gjeninnfør.
+- **Ferdig-definisjon:** skjermbilde-gaten i `CLAUDE.md` §Skjermarbeid.
 
-**FORBUDT:** lage ny `tokens.css`, importere fra `wireframe/`, lage `tokens.ts` i komponent-mapper.
+**FORBUDT:** lage ny `tokens.css`, importere fra `wireframe/` eller `designsystem/paper/`,
+lage `tokens.ts` i komponent-mapper, cream `#FAF9F5` / clay-CTA / Presis-skog/lime i produktflater.
 
 ---
 
 ## Låste beslutninger (ikke diskuter — bare følg)
 
 - **App-navn:** Coach-appen heter **AgencyOS** (`/admin`). «CoachHQ» er gammelt navn — aldri i ny UI-tekst.
-- **Tema:** PlayerHQ alltid **lyst**, AgencyOS alltid **mørkt** (`.dark`). Ingen toggle.
+- **Tema:** mørk default på `/portal` og `/admin` (`src/lib/v2/tema-default.ts`). `/auth`
+  og `/forelder` er lys default. Cookie `ak-v2-tema` vinner over defaulten. Landingssider alltid lyse.
 - **Planlegging → Workbench:** ÉN inngangspunkt. Ikke en meny av 6 kort. Workbench har **fem nivå**: årsplan → periodisering → måned → uke → økt.
 - **Analyse samlet:** Analysere + TrackMan + Runder + SG er én flate med faner.
 - **Demo-navn:** Spiller = **Øyvind Rohjan**, coach = **Anders Kristiansen**. Fulle navn alltid. Gamle navn (Markus Berg, Magnus, Andreas Kragerud) skal bort. NB: ekte coach «Markus Røinås Pedersen» på markedssider beholdes.
@@ -137,8 +138,8 @@ Beholdt kun som historikk:
 - PlayerHQ-hjem hero: profilbilde + tier-pill øverst (ikke dato-eyebrow + vær fra designet).
 - Tier-pill-tekst: «PlayerHQ · {tier}» (ikke «Performance Pro»).
 - Undersider mobil-topbar: global PortalShell-topbar (ikke sub-topbar med tilbake-pil).
-- Knappestil: `rounded-full` pill + mono 12px bold uppercase. **Utgått** — Paper bruker `--r-sm` 8px
-  og 13px knappetekst.
+- Knappestil: `rounded-full` pill + mono 12px bold uppercase. **Utgått** — Train-lock:
+  én hvit (lys: sort) primær per skjerm, radius-card 20 / pill 999.
 - AgencyOS-initialer: «ØR» for Øyvind Rohjan (fasit hardkodet «MB» — levning fra gammelt navn).
 - Konkrete tekstinnhold (meldinger, oppgavetekster) er data, ikke design-avvik.
 
@@ -159,9 +160,8 @@ Beholdt kun som historikk:
 
 ## Kvalitetsgate per skjerm (ingen snarvei)
 
-Fasiten er Train-lock (25.08.2026 — for alle PlayerHQ/AgencyOS-skjermer; fasit-zip ikke
-committet ennå, se LAUNCH-PLAN D3 — mangler fasit for skjermen: STOPP og spør Anders,
-ikke fall tilbake til Paper/monsterdokumentet).
+Fasiten er Train-lock (`designsystem/train-lock/`, 196 skjermfiler). Mangler fasit for
+skjermen: STOPP og spør Anders — ikke fall tilbake til Paper.
 Deretter: bygg fra fasiten (element-liste først), screenshot med Playwright (PlayerHQ 430px,
 AgencyOS ~1280px, full-page), spawn en adversarial diff-subagent som FINNER avvik (ikke bekrefter),
 og fiks til 0 avvik. En skjerm regnes som ferdig først når

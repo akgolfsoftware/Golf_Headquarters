@@ -26,10 +26,10 @@ slettet, beslutningen står ved lag; ordbokens «A=nybegynner» er forkastet).
 - **Avstander:** innspill i **meter**, putting i **fot (ft)**.
 - **Tall:** komma-desimal, mellomrom-tusenskille, `73 %` (mellomrom før %), 24-t klokke, tankestrek i perioder.
 - **Tomtilstand:** verdi `—` + ærlig subtekst, aldri oppdiktet tall.
-- **Knapper:** tekst per ordbok-tabell. Form og størrelse følger Paper-fasiten
-  (`--r-sm` 8px, 13px) — den gamle regelen «rounded-full pill, mono 12px bold uppercase» er utgått.
-- **Font:** Paper — Poppins (UI/titler), Lora (prosa), IBM Plex Mono (tall).
-  Familjen Grotesk og Inter Tight er begge utgått.
+- **Knapper:** tekst per ordbok-tabell. Form og størrelse følger Train-lock
+  (`DESIGN-SYSTEM.md` knappe-matrise) — Paper `--r-sm` 8px og «rounded-full pill, mono 12px» er utgått.
+- **Font:** Poppins (UI/titler), Lora (prosa), IBM Plex Mono (tall). Familjen Grotesk,
+  Inter og Inter Tight er utgått.
 - **Ingen emoji.** Lucide-ikoner.
 
 ---

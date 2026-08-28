@@ -1,8 +1,7 @@
 # Workbench UI components — launch minimum (A4)
 
-All components consume Train-lock tokens when inside Player HQ,  
-Claude Paper tokens when inside AgencyOS desktop.  
-Switch via existing theme context.
+All components consume Train-lock tokens (`TL` / `--tl-*`) in both Player HQ
+and AgencyOS. Paper tokens are legacy. Do not switch systems via theme context.
 
 ## 1. WeekGrid (Agency desktop)
 

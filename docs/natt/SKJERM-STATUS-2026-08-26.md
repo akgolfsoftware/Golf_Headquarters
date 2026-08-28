@@ -1,9 +1,13 @@
 # SKJERM-STATUS mot Train-lock-fasiten — målt 26.08.2026
 
-> **Hva dette er:** faktisk status per skjerm, målt mot koden (`main` 26.08) og verifisert med
-> skjermbilder mot prod — ikke mot planer eller DONE-filer. Regenereres med
-> `node scripts/maal-trainlock-status.mjs` (token-måling) + `node scripts/stikkprove-trainlock.mjs`
-> (skjermbilder mot prod).
+> **UTDATERT som token-telling (28.08.2026).** #631 byttet de fleste PlayerHQ/AgencyOS-filer
+> til `TL`. Ny kjøring av `node scripts/maal-trainlock-status.mjs` (28.08, main):
+> **188 PORTET · 23 BLANDET · 0 PAPER · 4 CHROME-ONLY · 111 REDIRECT.**
+> Det er token-port, **ikke** piksel-1:1 mot Train-lock `.dc.html`. Tallene under (2 PORTET /
+> 103 PAPER) beskriver 26.08 og skal ikke brukes som bygg-fasit.
+>
+> **Hva dette er:** status målt mot koden 26.08. Regenereres med
+> `node scripts/maal-trainlock-status.mjs` + `node scripts/stikkprove-trainlock.mjs`.
 
 ## Metode
 
