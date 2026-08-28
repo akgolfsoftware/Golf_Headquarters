@@ -1,5 +1,15 @@
 "use client";
 
+/**
+ * PlayerHQ «I dag» — Train-lock-porten av hele skjermfamilien.
+ * Fasit: designsystem/train-lock/PH-01 I dag.dc.html
+ * Fasit: designsystem/train-lock/PH-01b I dag FYS-mandag.dc.html (FYS-stripe + pyramide-indikator)
+ * Fasit: designsystem/train-lock/PH-01c I dag TrackMan-kort.dc.html (dempet TrackMan-kort)
+ * Fasit: designsystem/train-lock/PH-01e I dag tilstander laast.dc.html (tilstandene)
+ * Fasit: designsystem/train-lock/PH-02 I dag hvile.dc.html
+ * Fasit: designsystem/train-lock/PH-03 I dag tom uke.dc.html
+ */
+
 import { useState, type CSSProperties, type ReactNode } from "react";
 import Link from "next/link";
 import { ChevronRight } from "lucide-react";
@@ -26,7 +36,12 @@ export type NaaKort = {
   live: boolean;
   sekundarTekst?: string;
   sekundarHref?: string;
+  /** Øktens pyramide-nivå (FYS/TEK/SLAG/SPILL/TURN) — styrer PH-01b-stripen. */
+  pyramide?: string | null;
 };
+
+/** PH-01b: rekkefølgen i pyramide-indikatoren. */
+const PYRAMIDE_NIVAER = ["FYS", "TEK", "SLAG", "SPILL", "TURN"] as const;
 
 export type IDagTrainLockProps = {
   datoLinje: string;
@@ -103,12 +118,60 @@ function TekstLenke({ href, barn }: { href: string; barn: string }) {
   );
 }
 
+/** PH-01b: 5-segments pyramide-indikator — aktivt nivå hvitt, resten dim. */
+function PyramideStripe({ aktiv }: { aktiv: string }) {
+  return (
+    <div style={{ marginTop: 12, display: "flex", gap: 3 }}>
+      {PYRAMIDE_NIVAER.map((nivaa) => {
+        const er = nivaa === aktiv;
+        return (
+          <div key={nivaa} style={{ flex: 1 }}>
+            <div style={{ height: 3, borderRadius: 2, background: er ? TL.text : TL.dim }} />
+            <div
+              style={{
+                marginTop: 3,
+                fontSize: 7,
+                fontWeight: 600,
+                letterSpacing: "0.06em",
+                color: er ? TL.text : TL.mute,
+                textAlign: "center",
+              }}
+            >
+              {nivaa}
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
 function NaaFlate({ naa }: { naa: NaaKort }) {
+  const fys = naa.pyramide === "FYS";
   return (
     <div
-      className="ph01-naa"
-      style={{ background: TL.elev, borderRadius: TL.radius.card }}
+      className={fys ? undefined : "ph01-naa"}
+      style={{ background: TL.elev, borderRadius: TL.radius.card, overflow: fys ? "hidden" : undefined }}
     >
+      {fys && (
+        <div style={{ height: 120, borderRadius: 12, background: TL.elev, position: "relative", overflow: "hidden" }}>
+          <span
+            style={{
+              position: "absolute",
+              left: 10,
+              bottom: 8,
+              fontSize: 9,
+              fontWeight: 600,
+              letterSpacing: "0.08em",
+              textTransform: "uppercase",
+              color: TL.mute,
+            }}
+          >
+            FYS · {naa.tittel}
+          </span>
+        </div>
+      )}
+      <div className={fys ? "ph01-naa" : undefined} style={fys ? undefined : { display: "contents" }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>
         <span style={{ ...caps, color: naa.live ? TL.text : TL.mute, display: "inline-flex", alignItems: "center", gap: 7 }}>
           {naa.live && (
@@ -143,8 +206,10 @@ function NaaFlate({ naa }: { naa: NaaKort }) {
           )}
         </>
       )}
+      {fys && naa.pyramide && <PyramideStripe aktiv={naa.pyramide} />}
       <Cta href={naa.ctaHref} barn={naa.ctaTekst} />
       {naa.sekundarTekst && naa.sekundarHref && <TekstLenke href={naa.sekundarHref} barn={naa.sekundarTekst} />}
+      </div>
     </div>
   );
 }

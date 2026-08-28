@@ -1,12 +1,17 @@
 "use client";
 
+/**
+ * Live-økt (spiller, fullskjerm).
+ * Fasit: designsystem/train-lock/PH-05 Live.dc.html
+ * Faner skjult, caps «Live · tittel» + Avslutt i toppen, 72px øktklokke.
+ */
+
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Check } from "lucide-react";
 import type { LiveV2Session, DrillRepState, LiveCoachPanelData } from "./types";
 import type { LiveV2Drill } from "./types";
 import { DrillLogger } from "./DrillLogger";
-import { SessionTimer } from "./SessionTimer";
 import { LiveCoachPanel } from "./LiveCoachPanel";
 import { LiveLoopNav } from "./LiveLoopNav";
 import { WhyDetails } from "./WhyDetails";
@@ -494,25 +499,47 @@ export function LiveActive({ data, coachPanel }: { data: LiveV2Session; coachPan
         onCancel={() => setShowConfirm(false)}
       />
 
-      {/* Topp */}
+      {/* Topp — PH-05: caps «Live · tittel» venstre, Avslutt (mute tekst) høyre */}
       <header
         data-paper-topp
-        className="flex flex-shrink-0 items-center gap-2 px-4 py-3"
+        className="flex flex-shrink-0 items-center justify-between gap-2 px-4"
         style={{
-          paddingTop: "max(env(safe-area-inset-top) + 10px, 14px)",
-          borderBottom: "1px solid var(--tl-hair)",
-          background: "var(--tl-elev)",
+          paddingTop: "max(env(safe-area-inset-top) + 8px, 12px)",
+          background: "var(--tl-scene)",
         }}
       >
-        <div style={{ minWidth: 0, flex: 1 }}>
-          <h1 className="font-sans text-[17px] font-semibold leading-tight" style={{ margin: 0, color: "var(--tl-text)" }}>
-            Økta pågår
-          </h1>
-          <div className="mt-[2px] truncate font-mono text-[10.5px]" style={{ color: "var(--tl-mute)" }}>
-            {data.title}
-            {data.location ? ` · ${data.location}` : ""}
-          </div>
-        </div>
+        <h1
+          className="truncate font-sans"
+          style={{
+            margin: 0,
+            minWidth: 0,
+            fontSize: 11,
+            fontWeight: 600,
+            letterSpacing: "0.08em",
+            textTransform: "uppercase",
+            color: "var(--tl-mute)",
+          }}
+        >
+          Live · {data.title}
+        </h1>
+        <button
+          type="button"
+          onClick={() => setShowConfirm(true)}
+          data-od-id="live-avslutt"
+          className="v2-press flex-none border-none bg-transparent font-sans"
+          style={{
+            height: 44,
+            display: "flex",
+            alignItems: "center",
+            padding: "0 4px",
+            fontSize: 15,
+            fontWeight: 600,
+            color: "var(--tl-mute)",
+            cursor: "pointer",
+          }}
+        >
+          Avslutt
+        </button>
       </header>
 
       {/* Scrollbart innhold */}
@@ -539,9 +566,44 @@ export function LiveActive({ data, coachPanel }: { data: LiveV2Session; coachPan
           </div>
         )}
 
-        {/* Øktklokka — Pause stopper telleren, aldri økta */}
+        {/* Øktklokka — PH-05: 72px tabular, punktum-separator, meta-linje under.
+            Pause stopper telleren, aldri økta. */}
         <div className="mt-2">
-          <SessionTimer seconds={totalSec} paused={paused} onTogglePause={togglePause} meta={klokkeMeta} />
+          <div
+            aria-live="polite"
+            style={{
+              fontSize: 72,
+              fontWeight: 700,
+              letterSpacing: "-0.02em",
+              lineHeight: 1,
+              fontVariantNumeric: "tabular-nums",
+              color: paused ? "var(--tl-mute)" : "var(--tl-text)",
+            }}
+          >
+            {fmtMSS(totalSec).replace(":", ".")}
+          </div>
+          <div
+            className="mt-2 flex items-center justify-between gap-2"
+            style={{ fontSize: 13, color: "var(--tl-mute)", fontVariantNumeric: "tabular-nums" }}
+          >
+            <span className="min-w-0 truncate">
+              {[
+                planlagtMin > 0 ? `${Math.max(0, planlagtMin - Math.floor(totalSec / 60))} min igjen` : null,
+                drills.length > 0 ? `steg ${Math.min(completedCount + 1, drills.length)} av ${drills.length}` : null,
+              ]
+                .filter(Boolean)
+                .join(" · ") || klokkeMeta}
+            </span>
+            <button
+              type="button"
+              onClick={togglePause}
+              aria-label={paused ? "Fortsett økt" : "Pause økt"}
+              className="v2-press flex-none border-none bg-transparent font-sans"
+              style={{ minHeight: 44, padding: "0 4px", fontSize: 13, fontWeight: 600, color: "var(--tl-text)", cursor: "pointer" }}
+            >
+              {paused ? "Fortsett" : "Pause"}
+            </button>
+          </div>
         </div>
 
         {/* Modusveksler: Sjekkliste · Reps · Logg */}
@@ -844,35 +906,7 @@ export function LiveActive({ data, coachPanel }: { data: LiveV2Session; coachPan
         <div className="h-4" />
       </main>
 
-      {/* Dokk — skjermens ene clay-handling: avslutter og går til ETTER */}
-      <footer
-        data-paper-dokk
-        className="flex-shrink-0 px-4 pt-3"
-        style={{
-          paddingBottom: "max(env(safe-area-inset-bottom), 12px)",
-          borderTop: "1px solid var(--tl-hair)",
-          background: "var(--tl-scene)",
-        }}
-      >
-        <div style={{ maxWidth: 720, margin: "0 auto" }}>
-          <button
-            type="button"
-            onClick={() => setShowConfirm(true)}
-            data-od-id="live-avslutt"
-            data-paper-en-ting="true"
-            className="w-full border-none font-sans text-[14px] font-semibold active:translate-y-px"
-            style={{
-              minHeight: 56,
-              borderRadius: 12,
-              background: "var(--tl-fill)",
-              color: "var(--tl-on-fill)",
-            }}
-          >
-            Avslutt og logg økta
-          </button>
-        </div>
-      </footer>
-
+      {/* PH-05: ingen bunn-dokk — Avslutt bor i toppen, mute. */}
       <LiveCoachPanel data={coachPanel} activeDrillId={active?.id ?? null} />
     </div>
   );

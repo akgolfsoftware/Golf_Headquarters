@@ -1,6 +1,8 @@
 /**
  * PH-01 «I dag» — visningsmodell.
- * Ren: ingen Prisma, ingen React. Fasit: designsystem/train-lock/PH-01*.
+ * Ren: ingen Prisma, ingen React.
+ * Fasit: designsystem/train-lock/PH-01 I dag.dc.html
+ * Fasit: designsystem/train-lock/PH-01e I dag tilstander laast.dc.html (feil-copy PH-01e4)
  */
 
 export type IDagTilstand = "feil" | "pagar" | "okt" | "hvile" | "tom-dag" | "tom-uke";
@@ -27,9 +29,9 @@ export const IDAG_UI = {
   sporCaddie: "Spør Caddie",
   loggCaddie: "Logg med Caddie",
   seSpredning: "Se spredning",
-  feilCaps: "Feil",
+  feilCaps: "Ingen forbindelse",
   feilTittel: "Fikk ikke lastet dagen din",
-  feilBrød: "Sjekk nettet og prøv igjen. Planen ligger trygt hos Anders.",
+  feilBrød: "Sjekk nettet og prøv igjen. Økta ligger lagret.",
   provIgjen: "Prøv igjen",
   ingenOktCaps: "Ingen økt",
   ingenOktTittel: "Ingen økt i dag. Anders har ikke lagt inn.",

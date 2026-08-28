@@ -2,6 +2,7 @@
 
 /**
  * Spillerens økt-ark for en publisert Workbench-økt (Loop 3S).
+ * Fasit: designsystem/train-lock/PH-04 Økt-ark.dc.html
  * Start → IN_PROGRESS, Fullfør → COMPLETED, Hopp over → SKIPPED.
  * Kaller wb-actions direkte (server actions) — WbResultat + toast ved feil,
  * lokal state oppdateres optimistisk fra returnert økt (ingen full reload).
@@ -16,8 +17,8 @@ import {
   UI,
   PYRAMID_LABEL,
   formatMinutes,
-  formatTime,
 } from "@/lib/domain/workbench/labels";
+import { formatIntervallPunkt } from "@/lib/portal/idag-visning";
 import type { WorkbenchSession } from "@/lib/domain/workbench/types";
 import { startSession, completeSession, skipSession } from "@/lib/workbench/wb-actions";
 import { STATUS_CAPS, WARM } from "@/components/workbench/wb-visuelt";
@@ -30,11 +31,12 @@ const kort: CSSProperties = {
   padding: 20,
 };
 
+/** PH-04: caps-linjen er sans 11/600 med 0.08em — ikke mono. */
 const eyebrow: CSSProperties = {
-  fontFamily: TL.font.mono,
+  fontFamily: TL.font.sans,
   fontSize: 11,
   fontWeight: 600,
-  letterSpacing: TL.track.capsSm,
+  letterSpacing: "0.08em",
   textTransform: "uppercase",
   color: TL.mute,
 };
@@ -100,13 +102,20 @@ export function OktArk({ session: initial }: { session: WorkbenchSession }) {
     <div style={{ display: "flex", flexDirection: "column", gap: TL.loft.s2, maxWidth: 460, margin: "0 auto", width: "100%" }}>
       <div>
         <span style={{ ...eyebrow, color: session.status === "COMPLETED" ? TL.warm : eyebrow.color }}>
-          {STATUS_CAPS[session.status]} · {formatMinutes(session.durationMinutes)}
+          {session.status === "PUBLISHED" ? UI.inspectorTitle : STATUS_CAPS[session.status]} ·{" "}
+          {formatMinutes(session.durationMinutes)}
         </span>
-        <h1 style={{ margin: "6px 0 0", fontFamily: TL.font.sans, fontSize: 26, fontWeight: 700, letterSpacing: "-0.01em", color: TL.text }}>
+        <h1 style={{ margin: "7px 0 0", fontFamily: TL.font.sans, fontSize: 26, fontWeight: 700, letterSpacing: "-0.01em", color: TL.text }}>
           {session.title}
         </h1>
-        <span style={{ display: "block", marginTop: 4, fontFamily: TL.font.sans, fontSize: 13, color: TL.mute }}>
-          {PYRAMID_LABEL[session.pyramid]} · {formatTime(session.startMinute)}
+        <span style={{ display: "block", marginTop: 4, fontFamily: TL.font.sans, fontSize: 13, color: TL.mute, fontVariantNumeric: "tabular-nums" }}>
+          {[
+            PYRAMID_LABEL[session.pyramid],
+            session.location?.trim(),
+            formatIntervallPunkt(session.startMinute, session.durationMinutes),
+          ]
+            .filter(Boolean)
+            .join(" · ")}
         </span>
       </div>
 
@@ -152,8 +161,9 @@ export function OktArk({ session: initial }: { session: WorkbenchSession }) {
                     background: TL.fill,
                     color: TL.onFill,
                     fontFamily: TL.font.sans,
-                    fontSize: 12,
-                    fontWeight: 700,
+                    fontSize: 13,
+                    fontWeight: 600,
+                    fontVariantNumeric: "tabular-nums",
                   }}
                 >
                   {i + 1}

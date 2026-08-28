@@ -106,6 +106,7 @@ export default async function PortalHjemPage() {
       live,
       sekundarTekst: live ? IDAG_UI.avslutt : undefined,
       sekundarHref: live ? `/portal/tren/wb/${wbOkt.id}` : undefined,
+      pyramide: wbOkt.pyramid || null,
     };
   } else if (gjennomfore.nesteOkt && gjennomfore.nesteOkt.status !== "done") {
     const o = gjennomfore.nesteOkt;
