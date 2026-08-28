@@ -6,7 +6,7 @@ import { TL } from "@/lib/v2/train-lock";
  * WorkbenchV2.tsx (~300-linjer-regelen): «Ny økt»-skjema, delt dag-pille-rad,
  * og flytt/slett-panelet for valgt økt i Balanse-kolonnen.
  *
- * Ærlighet (prosjekt-regel): kun v2-primitiver (T/Icon/Kort/Knapp/AkseChip) —
+ * Ærlighet (prosjekt-regel): kun v2-primitiver (TL/Icon/Kort/Knapp/AkseChip) —
  * ingen rå hex, ingen ad-hoc UI utenom layout-divs (samme mønster som
  * WorkbenchV2.tsx for øvrig). Alle mutasjoner går via `actions`-prop fra
  * siden (spiller- eller coach-server-actions) — komponentene her kjenner
@@ -17,7 +17,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import type { ReactNode, CSSProperties } from "react";
-import { T, Icon, Kort, Knapp, AkseChip, HjelpTips, Caps } from "@/components/v2";
+import { Icon, Kort, Knapp, AkseChip, HjelpTips, Caps } from "@/components/v2";
 import type { HjelpNokkel } from "@/lib/v2/hjelpetekster";
 import type { AkseKey } from "@/lib/v2/tokens";
 import type { WeekEvent } from "@/lib/workbench/week-types";
@@ -798,9 +798,9 @@ function OktArkSkjema({
                 className="v2-press v2-focus"
                 data-wb-syklechip
                 aria-label={`Pyramideområde: ${akseLabel}. Trykk for neste.`}
-                style={{ appearance: "none", display: "inline-flex", alignItems: "center", gap: 8, alignSelf: "flex-start", padding: "9px 14px", borderRadius: 9999, background: `color-mix(in srgb, ${T.ax[akse]} 14%, ${TL.dock})`, border: `1px solid color-mix(in srgb, ${T.ax[akse]} 55%, transparent)`, cursor: "pointer", transition: "all 140ms" }}
+                style={{ appearance: "none", display: "inline-flex", alignItems: "center", gap: 8, alignSelf: "flex-start", padding: "9px 14px", borderRadius: 9999, background: TL.dock, border: `1px solid ${TL.hair}`, cursor: "pointer", transition: "all 140ms" }}
               >
-                <span style={{ width: 8, height: 8, borderRadius: 9999, background: T.ax[akse] }} />
+                <span style={{ width: 8, height: 8, borderRadius: 9999, background: TL.text }} />
                 <span style={{ fontFamily: TL.font.sans, fontSize: 13, fontWeight: 700, color: TL.text }}>{akseLabel}</span>
                 <Icon name="refresh-cw" size={12} style={{ color: TL.mute }} />
               </button>
@@ -1367,7 +1367,7 @@ export function ValgtOktSeksjon({
                 fontFamily: TL.font.sans, fontSize: 11, fontWeight: 600, opacity: lagrerFelt ? 0.5 : 1,
               }}
             >
-              <span style={{ width: 6, height: 6, borderRadius: 9999, background: okt.eb === a.v ? TL.onFill : T.ax[a.v] }} />
+              <span style={{ width: 6, height: 6, borderRadius: 9999, background: okt.eb === a.v ? TL.fill : TL.mute }} />
               {a.l}
             </button>
           ))}

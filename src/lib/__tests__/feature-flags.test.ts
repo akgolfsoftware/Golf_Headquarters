@@ -5,6 +5,8 @@
  */
 import { test } from "node:test";
 import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
+import { join } from "node:path";
 import {
   gratisForAlle,
   resolveTier,
@@ -13,6 +15,7 @@ import {
 } from "@/lib/feature-flags";
 
 const FOR_CUTOVER = new Date("2026-08-31T23:59:59+02:00");
+const CUTOVER = new Date("2026-09-01T00:00:00.000+02:00");
 const ETTER_CUTOVER = new Date("2026-09-01T00:00:01+02:00");
 const SENERE = new Date("2026-10-15T12:00:00+02:00");
 
@@ -38,11 +41,38 @@ test("gratisForAlle: true før cutover, false etter (eksakt grense)", () => {
   assert.equal(gratisForAlle(ETTER_CUTOVER), false);
 });
 
+test("gratisForAlle: nøyaktig 1. sep 00:00 Europe/Oslo er false (fra-og-med)", () => {
+  assert.equal(gratisForAlle(new Date("2026-08-31T23:59:59.999+02:00")), true);
+  assert.equal(gratisForAlle(CUTOVER), false);
+});
+
+test("BETALING_STARTER er 1. september 2026 kl 00:00 Europe/Oslo — kildelås", () => {
+  const src = readFileSync(join(process.cwd(), "src/lib/feature-flags.ts"), "utf8");
+  assert.match(
+    src,
+    /const BETALING_STARTER = new Date\("2026-09-01T00:00:00\.000\+02:00"\);/,
+  );
+});
+
 test("før cutover: ALLE personaer har FULL med kilde LANSERING", () => {
   const t = resolveTilgang(persona({ now: FOR_CUTOVER }));
   assert.equal(t.nivaa, "FULL");
   assert.equal(t.kilde, "LANSERING");
   assert.equal(t.effektivTier, "PRO");
+});
+
+test("før cutover: TALENT-profil er også FULL via LANSERING (gaten sover)", () => {
+  const t = resolveTilgang(persona({ profilType: "TALENT", now: FOR_CUTOVER }));
+  assert.equal(t.nivaa, "FULL");
+  assert.equal(t.kilde, "LANSERING");
+  assert.equal(t.effektivTier, "PRO");
+});
+
+test("fra 1. sep: TALENT uten annet grunnlag er TALENT (fail-closed, aldri FULL)", () => {
+  const t = resolveTilgang(persona({ profilType: "TALENT", now: CUTOVER }));
+  assert.equal(t.nivaa, "TALENT");
+  assert.equal(t.kilde, "TALENT_PROFIL");
+  assert.equal(t.effektivTier, "GRATIS");
 });
 
 // ── PlayerHQ-abonnement ────────────────────────────────────────────────────

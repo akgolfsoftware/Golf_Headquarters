@@ -40,7 +40,6 @@ import {
   PIXEL_PER_HOUR,
 } from "@/lib/calendar/notion-grid";
 import {
-  T,
   Caps,
   Kort,
   Knapp,
@@ -186,7 +185,7 @@ function tidFraPointerY(pointerY: number, kolonneTop: number): { hour: number; m
 
 /* ── Tidslinje-blokk ───────────────────────────────────── */
 /** Felles innhold (økt-boksen OG DragOverlay-spøkelset bruker samme visning). */
-function TLBlokkInnhold({ o, kompakt, h, col }: { o: WeekEvent; kompakt: boolean; h: number; col: string }) {
+function TLBlokkInnhold({ o, kompakt, h }: { o: WeekEvent; kompakt: boolean; h: number }) {
   const ak = o.eb as AkseKey;
   const done = o.compliance === "pa-plan";
   const avvik = o.compliance === "avvik" || o.compliance === "ikke-gjennomfort";
@@ -197,7 +196,7 @@ function TLBlokkInnhold({ o, kompakt, h, col }: { o: WeekEvent; kompakt: boolean
   return (
     <>
       <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
-        <span style={{ fontFamily: TL.font.mono, fontSize: 8.5, fontWeight: 700, letterSpacing: "0.03em", color: `color-mix(in srgb, ${col} 55%, ${TL.text})`, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{AKSE_NAVN[ak] || o.eb} · {toKl(o.h, o.m)}</span>
+        <span style={{ fontFamily: TL.font.mono, fontSize: 8.5, fontWeight: 700, letterSpacing: "0.03em", color: TL.mute, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{AKSE_NAVN[ak] || o.eb} · {toKl(o.h, o.m)}</span>
         {done && <Icon name="check" size={9} style={{ color: TL.ok, marginLeft: "auto", flex: "none" }} />}
         {avvik && <Icon name="alert-triangle" size={9} style={{ color: TL.danger, marginLeft: "auto", flex: "none" }} />}
       </div>
@@ -217,8 +216,6 @@ function TLBlokk({ o, dragKey, valgt, onVelg, dragbar }: { o: WeekEvent; /** Sta
   const blockStyle = timeGridBlockStyle(startMin, o.durMin);
   const h = typeof blockStyle.height === "number" ? blockStyle.height : 40;
   const kompakt = h < 42;
-  const ak = o.eb as AkseKey;
-  const col = T.ax[ak] || TL.mute;
   const avvik = o.compliance === "avvik" || o.compliance === "ikke-gjennomfort";
   const pending = erOptimistisk(o.id);
   const ramme = avvik ? TL.danger : valgt ? TL.fill : TL.hair;
@@ -238,9 +235,9 @@ function TLBlokk({ o, dragKey, valgt, onVelg, dragbar }: { o: WeekEvent; /** Sta
         ...blockStyle,
         borderRadius: 8, padding: kompakt ? "2px 7px" : "5px 8px", cursor: pending ? "default" : dragbar ? "grab" : "pointer", overflow: "hidden",
         touchAction: kanDra ? "none" : undefined,
-        background: `color-mix(in srgb, ${col} 15%, ${TL.dim})`,
+        background: TL.dock,
         border: `1px ${pending ? "dashed" : "solid"} ${ramme}`,
-        borderLeft: `3px solid ${col}`,
+        borderLeft: `3px solid ${valgt ? TL.fill : TL.hair}`,
         opacity: isDragging ? 0.35 : pending ? 0.6 : 1,
         boxShadow: avvik
           ? `0 0 0 1px color-mix(in srgb, ${TL.danger} 25%, transparent)`
@@ -249,7 +246,7 @@ function TLBlokk({ o, dragKey, valgt, onVelg, dragbar }: { o: WeekEvent; /** Sta
             : "none",
       }}
     >
-      <TLBlokkInnhold o={o} kompakt={kompakt} h={h} col={col} />
+      <TLBlokkInnhold o={o} kompakt={kompakt} h={h} />
     </div>
   );
 }
@@ -263,10 +260,9 @@ function WBDragOverlayInnhold({ data }: { data: WbDragData }) {
     const o = data.event;
     const h = Math.max(40, (o.durMin / 60) * HOUR_H);
     const kompakt = h < 42;
-    const col = T.ax[o.eb as AkseKey] || TL.mute;
     return (
-      <div style={{ width: 200, borderRadius: 8, padding: kompakt ? "2px 7px" : "5px 8px", background: `color-mix(in srgb, ${col} 15%, ${TL.dim})`, border: `1px solid ${TL.hair}`, borderLeft: `3px solid ${col}`, boxShadow: `0 10px 28px ${TL.scrim}`, cursor: "grabbing" }}>
-        <TLBlokkInnhold o={o} kompakt={kompakt} h={h} col={col} />
+      <div style={{ width: 200, borderRadius: 8, padding: kompakt ? "2px 7px" : "5px 8px", background: TL.dock, border: `1px solid ${TL.hair}`, borderLeft: `3px solid ${TL.hair}`, boxShadow: `0 10px 28px ${TL.scrim}`, cursor: "grabbing" }}>
+        <TLBlokkInnhold o={o} kompakt={kompakt} h={h} />
       </div>
     );
   }
@@ -276,7 +272,7 @@ function WBDragOverlayInnhold({ data }: { data: WbDragData }) {
   return (
     <div style={{ width: 200, display: "flex", flexDirection: "column", gap: 4, padding: "8px 10px", borderRadius: 10, background: TL.dock, border: `1px dashed ${TL.hair}`, boxShadow: `0 10px 28px ${TL.scrim}`, cursor: "grabbing" }}>
       <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-        {akse && <span style={{ width: 6, height: 6, borderRadius: 9999, background: T.ax[akse] || TL.mute, flex: "none" }} />}
+        {akse && <span style={{ width: 6, height: 6, borderRadius: 9999, background: TL.text, flex: "none" }} />}
         <span style={{ fontFamily: TL.font.sans, fontSize: 12, fontWeight: 600, color: TL.text, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{tittel}</span>
       </div>
       <span style={{ fontFamily: TL.font.mono, fontSize: 9, color: TL.mute }}>{sub}</span>
@@ -394,7 +390,7 @@ function PalettBrikke({ pid, tittel, akse, durMin, sub, onClick }: { pid: string
       style={{ appearance: "none", textAlign: "left", width: "100%", padding: "8px 9px", borderRadius: 10, background: TL.dock, border: `1px dashed ${TL.hair}`, cursor: dragbar ? "grab" : onClick ? "pointer" : "default", minWidth: 0, touchAction: dragbar ? "none" : undefined, opacity: isDragging ? 0.35 : 1 }}
     >
       <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-        {akse && <span style={{ width: 6, height: 6, borderRadius: 9999, background: T.ax[akse] || TL.mute, flex: "none" }} />}
+        {akse && <span style={{ width: 6, height: 6, borderRadius: 9999, background: TL.text, flex: "none" }} />}
         <span style={{ fontFamily: TL.font.sans, fontSize: 11.5, fontWeight: 600, color: TL.text, flex: 1, minWidth: 0, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{tittel}</span>
       </div>
       <div style={{ display: "flex", alignItems: "center", gap: 6, marginTop: 4 }}>
@@ -556,7 +552,7 @@ export function WBBibliotek({ data, tab, setTab, sok, setSok, onVelgOkt, onBrukM
           {([null, "FYS", "TEK", "SLAG", "SPILL", "TURN"] as (AkseKey | null)[]).map((f) => {
             const on = akseFilter === f;
             return (
-              <button key={f ?? "alle"} type="button" onClick={() => setAkseFilter(f)} className="v2-press" style={{ appearance: "none", cursor: "pointer", fontFamily: TL.font.mono, fontSize: 8.5, fontWeight: 700, padding: "4px 8px", borderRadius: 9999, border: `1px solid ${on ? "transparent" : TL.hair}`, background: on ? (f ? T.ax[f] : TL.text) : TL.dock, color: on ? (f ? TL.onFill : TL.scene) : TL.mute, letterSpacing: "0.04em" }}>
+              <button key={f ?? "alle"} type="button" onClick={() => setAkseFilter(f)} className="v2-press" style={{ appearance: "none", cursor: "pointer", fontFamily: TL.font.mono, fontSize: 8.5, fontWeight: 700, padding: "4px 8px", borderRadius: 9999, border: `1px solid ${on ? "transparent" : TL.hair}`, background: on ? TL.fill : TL.dock, color: on ? TL.onFill : TL.mute, letterSpacing: "0.04em" }}>
                 {f ?? "ALLE"}
               </button>
             );
@@ -646,7 +642,7 @@ export function WBBibliotek({ data, tab, setTab, sok, setSok, onVelgOkt, onBrukM
               style={{ appearance: "none", textAlign: "left", padding: "8px 10px", borderRadius: 10, background: TL.dock, border: `1px dashed ${TL.hair}`, cursor: onLeggDrillIValgt ? "pointer" : "default" }}
             >
               <span style={{ display: "flex", alignItems: "center", gap: 7 }}>
-                <span style={{ width: 6, height: 6, borderRadius: 9999, background: T.ax[d.pyramidArea as AkseKey] ?? TL.mute, flex: "none" }} />
+                <span style={{ width: 6, height: 6, borderRadius: 9999, background: TL.text, flex: "none" }} />
                 <span style={{ fontFamily: TL.font.sans, fontSize: 11.5, fontWeight: 600, color: TL.text, flex: 1, minWidth: 0, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{d.name}</span>
                 {onLeggDrillIValgt && <Icon name="plus" size={10} style={{ color: TL.mute, flex: "none" }} />}
               </span>
@@ -1056,7 +1052,7 @@ function MndNivaa({ data, onVelgDato }: { data: WorkbenchData; onVelgDato: (dato
                 <>
                   <span style={{ display: "flex", gap: 3, flexWrap: "wrap" }}>
                     {c.axes.map((x) => (
-                      <span key={x.ax} title={`${AKSE_NAVN[x.ax.toUpperCase() as AkseKey] ?? x.ax} · ${fmtVarighet(x.min)}`} style={{ width: 7, height: 7, borderRadius: 9999, background: T.ax[x.ax.toUpperCase() as AkseKey] ?? TL.mute }} />
+                      <span key={x.ax} title={`${AKSE_NAVN[x.ax.toUpperCase() as AkseKey] ?? x.ax} · ${fmtVarighet(x.min)}`} style={{ width: 7, height: 7, borderRadius: 9999, background: TL.text }} />
                     ))}
                   </span>
                   <span style={{ fontFamily: TL.font.mono, fontSize: 8.5, color: TL.mute }}>{c.count} · {fmtVarighet(totMin)}</span>
@@ -1090,16 +1086,15 @@ export function DagNivaa({ dag, valgt, onVelg, dager, onFlytt }: {
       <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
         {dag.events.map((o, j) => {
           const ak = o.eb as AkseKey;
-          const col = T.ax[ak] || TL.mute;
           const sel = !!o.id && valgt === o.id;
           const pending = erOptimistisk(o.id);
           const flyttApen = !!o.id && flyttId === o.id;
           return (
-            <div key={o.id ?? j} className="v2-fade-in" style={{ padding: "9px 11px", borderRadius: 10, background: TL.dock, border: `1px ${pending ? "dashed" : "solid"} ${sel ? TL.fill : TL.hair}`, borderLeft: `3px solid ${col}`, opacity: pending ? 0.6 : 1 }}>
+            <div key={o.id ?? j} className="v2-fade-in" style={{ padding: "9px 11px", borderRadius: 10, background: TL.dock, border: `1px ${pending ? "dashed" : "solid"} ${sel ? TL.fill : TL.hair}`, borderLeft: `3px solid ${sel ? TL.fill : TL.hair}`, opacity: pending ? 0.6 : 1 }}>
               <div onClick={() => o.id && !pending && onVelg(o.id)} style={{ cursor: pending ? "default" : "pointer" }}>
                 <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
                   <span style={{ fontFamily: TL.font.mono, fontSize: 9, fontWeight: 700, color: TL.mute }}>{toKl(o.h, o.m)}</span>
-                  <span style={{ fontFamily: TL.font.mono, fontSize: 8.5, fontWeight: 700, color: `color-mix(in srgb, ${col} 55%, ${TL.text})` }}>{AKSE_NAVN[ak] || o.eb}</span>
+                  <span style={{ fontFamily: TL.font.mono, fontSize: 8.5, fontWeight: 700, color: TL.mute }}>{AKSE_NAVN[ak] || o.eb}</span>
                   <span style={{ marginLeft: "auto", fontFamily: TL.font.mono, fontSize: 8.5, color: TL.mute }}>{fmtVarighet(o.durMin)}</span>
                 </div>
                 <div style={{ fontFamily: TL.font.sans, fontSize: 12.5, fontWeight: 600, color: TL.text, marginTop: 5 }}>{o.ttl}</div>
@@ -1204,7 +1199,6 @@ export function OktDrillTidslinje({
   const [drills, setDrills] = useState<OktDrillRad[] | null>(null);
   const [feil, setFeil] = useState(false);
   const ak = (okt.eb as AkseKey) || "TEK";
-  const col = T.ax[ak] || TL.mute;
 
   useEffect(() => {
     let aktiv = true;
@@ -1331,9 +1325,9 @@ export function OktDrillTidslinje({
                       width: 11,
                       height: 11,
                       borderRadius: 9999,
-                      background: col,
+                      background: TL.text,
                       border: `2px solid ${TL.elev}`,
-                      boxShadow: `0 0 0 1px ${col}`,
+                      boxShadow: `0 0 0 1px ${TL.hair}`,
                       flex: "none",
                       marginTop: 4,
                     }}
@@ -1353,8 +1347,8 @@ export function OktDrillTidslinje({
                     marginBottom: last ? 0 : 10,
                     borderRadius: 12,
                     overflow: "hidden",
-                    background: `color-mix(in srgb, ${col} 12%, ${TL.dock})`,
-                    border: `1px solid color-mix(in srgb, ${col} 40%, transparent)`,
+                    background: TL.dock,
+                    border: `1px solid ${TL.hair}`,
                     padding: "10px 12px",
                     textAlign: "left",
                     cursor: onRediger ? "pointer" : "default",

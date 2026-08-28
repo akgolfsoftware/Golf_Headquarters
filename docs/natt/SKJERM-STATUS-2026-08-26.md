@@ -334,8 +334,13 @@ T5-jobben. `/portal` og `/portal/(fullscreen)/tren/wb` drar inn én TL-fil via
 | `/admin/agencyos/caddie` | CHROME-ONLY |
 | `/admin/agencyos/caddie/aktivitet` | CHROME-ONLY |
 | `/admin/agencyos/caddie/dashbord` | CHROME-ONLY |
-| `/admin/agenticos` | PAPER |
-| `/admin/agents/[agentId]` | PAPER |
+| `/admin/agenticos` | PORTET (AO-01, 28.08 — se T12-VISUELL-DONE) |
+| `/admin/agenticos/ko` | PORTET (AO-03) |
+| `/admin/agenticos/godkjenn` | PORTET (AO-08) |
+| `/admin/agenticos/skills` | PORTET (AO-09) |
+| `/admin/agenticos/runtimes` | PORTET (AO-02/10) |
+| `/admin/agenticos/projects` | PORTET (AO-05) |
+| `/admin/agents/[agentId]` | PORTET (AO-04) |
 | `/admin/handlingssenter` | CHROME-ONLY |
 
 ### T13

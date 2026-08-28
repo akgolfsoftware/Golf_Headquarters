@@ -1,15 +1,7 @@
 /**
- * AgencyOS Agent-detalj — v2 pixel-pass mot Paper-fasiten. Auth/Prisma-loader
- * bevart 1:1 fra forrige versjon; den lokale AGENT_KONFIG er slått inn i det
- * kanoniske registeret (H6, 2026-08-17) — siden leser nå AGENT_INFO fra
- * `src/lib/agencyos/agent-registry.ts` og virker for alle registrerte slugs.
- * AgentRunPanel (manuell kjøring for plan-revisjon/peaking) og
- * ApprovalActions (godkjenn/avvis forslag) gjenbrukes uendret — begge har
- * ekte server actions bak seg (run-actions.ts / approval-actions.tsx).
- *
- * Fasit: designsystem/paper/fase2/agencyos/agencyos-agent-detalj.html.
- * Visning: AdminAgentDetaljV2 (src/components/admin/v2/) — samme
- * server-fetcher/client-view-oppdeling som AdminAgenticosHubV2.
+ * AgencyOS Agent-detalj — Train-lock AO-04 Run-detalj (T12 visuell).
+ * Auth/Prisma-loader bevart; visning er AdminAgenticosRunDetalj.
+ * AgentRunPanel (manuell kjøring for plan-revisjon/peaking) gjenbrukes.
  *
  * FeedbackForm (tommel opp/ned per kjøring) er IKKE lenger montert her —
  * fasiten har ingen slik affordance, og Paper vinner alltid ved konflikt
@@ -22,10 +14,10 @@ import { notFound } from "next/navigation";
 import { requireCapability } from "@/lib/auth/requireCapability";
 import { Capability } from "@/lib/auth/cbac";
 import { prisma } from "@/lib/prisma";
-import { V2Shell, AGENCYOS_NAV } from "@/components/v2/shell";
 import { AGENT_INFO, agentNavnFor } from "@/lib/agencyos/agent-registry";
+import { AgenticosRamme } from "@/components/admin/v2/agenticos/AgenticosRamme";
+import { AdminAgenticosRunDetalj } from "@/components/admin/v2/agenticos/AdminAgenticosRunDetalj";
 import {
-  AdminAgentDetaljV2,
   type AgentDetaljData,
   type AgentDetaljKjoring,
   type AgentDetaljForslag,
@@ -326,8 +318,8 @@ export default async function AgentDetaljPage({
   };
 
   return (
-    <V2Shell bredde="kolonne" aktiv="cockpit" nav={AGENCYOS_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
-      <AdminAgentDetaljV2 data={data} />
-    </V2Shell>
+    <AgenticosRamme user={user}>
+      <AdminAgenticosRunDetalj data={data} />
+    </AgenticosRamme>
   );
 }

@@ -3,20 +3,20 @@
 /* AK Golf HQ v2 — KALENDER (retning C «Presis»).
    Gjenskaping av golfdata/-kalenderkontraktene i v2-idiomet: samme data,
    nytt uttrykk. Statisk visning for galleriet (ingen DnD — det er prod-jobb).
-   Regler: aksefarger fra T.ax, lime kun som signal (i dag / nå-linje / aktiv fane),
+   Regler: Train-lock TL.* (C8) — ingen farge per pyramide-nivå, fill kun som signal (i dag / nå-linje / aktiv fane),
    mono-tall, norsk uke (man først), aldri emoji. Demo-data som default-props.
    Port av ui_kits/v2/v2-kalender.jsx → produksjons-TSX (diff-null). */
 
 import type { CSSProperties } from "react";
 import { TL } from "@/lib/v2/train-lock";
-import { T, type AkseKey } from "@/lib/v2/tokens";
+import type { AkseKey } from "@/lib/v2/tokens";
 import { StatusPill } from "./core";
 import { Icon } from "@/components/v2/icon";
 
 /* ── Lokale stil/format-helpere (som i mockupen) ────────── */
 const mono = (size: number, color: string = TL.text, weight: number = 700): CSSProperties => ({ fontFamily: TL.font.mono, fontSize: size, fontWeight: weight, color, fontVariantNumeric: "tabular-nums" });
 const fmtTime = (t: number): string => `${String(Math.floor(t)).padStart(2, "0")}:${t % 1 ? "30" : "00"}`;
-const aksesoft = (a: AkseKey, pct: number = 12): string => `color-mix(in srgb, ${T.ax[a] || TL.mute} ${pct}%, ${TL.dock})`;
+const aksesoft = (_a?: AkseKey, _pct: number = 12): string => TL.dock;
 
 /* ── UkeGrid — 7-kolonners uke, økter farget etter akse ──── */
 export type ComplianceKey = "on" | "off" | "none" | "planned";
@@ -60,7 +60,7 @@ export function UkeGrid({ week = UG_DEMO, onSessionClick = null }: UkeGridProps)
           <div style={{ display: "flex", flexDirection: "column", gap: 5, minHeight: 96, borderTop: `1px solid ${TL.hair}`, paddingTop: 6 }}>
             {(day.sessions || []).map((s, j) => (
               <div key={j} onClick={onSessionClick ? () => onSessionClick(s) : undefined}
-                style={{ borderRadius: 9, padding: "6px 8px 6px 10px", background: aksesoft(s.axis), borderLeft: `2px solid ${T.ax[s.axis] || TL.mute}`, cursor: onSessionClick ? "pointer" : "default" }}>
+                style={{ borderRadius: 9, padding: "6px 8px 6px 10px", background: aksesoft(s.axis), borderLeft: `2px solid ${TL.hair}`, cursor: onSessionClick ? "pointer" : "default" }}>
                 {s.time && <span style={{ ...mono(8.5, TL.mute, 600), display: "block" }}>{s.time}</span>}
                 <span style={{ display: "flex", alignItems: "center", gap: 5, marginTop: 2 }}>
                   <span style={{ width: 5, height: 5, borderRadius: 9999, background: UG_COMP[s.compliance || "planned"], flex: "none" }} />
@@ -121,7 +121,7 @@ export function TidsGrid({ fraTime = 7, tilTime = 18, timeHoyde = 44, naa = 12.5
               {timer.slice(1).map((t) => <div key={t} style={{ position: "absolute", left: 0, right: 0, top: (t - fraTime) * timeHoyde, height: 1, background: TL.hair }} />)}
               {(k.blokker || []).map((b, bi) => (
                 <div key={bi} onClick={onBlokkKlikk ? () => onBlokkKlikk(b, k) : undefined}
-                  style={{ position: "absolute", left: 3, right: 3, top: (b.fra - fraTime) * timeHoyde + 1, height: Math.max((b.til - b.fra) * timeHoyde - 4, 20), borderRadius: 8, padding: "5px 8px 5px 9px", overflow: "hidden", background: aksesoft(b.akse), borderLeft: `2px solid ${T.ax[b.akse] || TL.mute}`, cursor: onBlokkKlikk ? "pointer" : "default" }}>
+                  style={{ position: "absolute", left: 3, right: 3, top: (b.fra - fraTime) * timeHoyde + 1, height: Math.max((b.til - b.fra) * timeHoyde - 4, 20), borderRadius: 8, padding: "5px 8px 5px 9px", overflow: "hidden", background: aksesoft(b.akse), borderLeft: `2px solid ${TL.hair}`, cursor: onBlokkKlikk ? "pointer" : "default" }}>
                   <span style={{ ...mono(8, TL.mute, 600), display: "block" }}>{fmtTime(b.fra)}–{fmtTime(b.til)}</span>
                   <span style={{ fontFamily: TL.font.sans, fontSize: 11, fontWeight: 600, color: TL.text, display: "block", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{b.tittel}</span>
                   {b.sub && <span style={{ fontFamily: TL.font.sans, fontSize: 9.5, color: TL.mute, display: "block", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{b.sub}</span>}
@@ -190,12 +190,12 @@ export function Tidslinje({ total = 30, ticks = TL_TICKS, naa = 22, baner = TL_D
             <span style={{ width: etikettBredde, flex: "none", fontFamily: TL.font.sans, fontSize: 12, fontWeight: 600, color: TL.mute, paddingRight: 10, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{bane.etikett}</span>
             <div style={{ flex: 1, position: "relative", height: 46 }}>
               {(bane.barer || []).map((b, i) => (
-                <span key={i} style={{ position: "absolute", top: 10, height: 26, left: pct(b.fra), width: pct(b.til - b.fra), borderRadius: 7, background: aksesoft(b.akse, 16), borderLeft: `2px solid ${T.ax[b.akse] || TL.mute}`, display: "inline-flex", alignItems: "center", padding: "0 8px", overflow: "hidden" }}>
+                <span key={i} style={{ position: "absolute", top: 10, height: 26, left: pct(b.fra), width: pct(b.til - b.fra), borderRadius: 7, background: aksesoft(b.akse, 16), borderLeft: `2px solid ${TL.hair}`, display: "inline-flex", alignItems: "center", padding: "0 8px", overflow: "hidden" }}>
                   <span style={{ fontFamily: TL.font.sans, fontSize: 10.5, fontWeight: 600, color: TL.text, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{b.tekst}</span>
                 </span>
               ))}
               {(bane.punkter || []).map((p, i) => (
-                <span key={i} title={p.etikett} style={{ position: "absolute", top: 18, left: `calc(${pct(p.ved)} - 5px)`, width: 10, height: 10, borderRadius: 9999, background: p.variant === "peak" ? TL.fill : T.ax.TURN, border: `2px solid ${TL.scene}` }} />
+                <span key={i} title={p.etikett} style={{ position: "absolute", top: 18, left: `calc(${pct(p.ved)} - 5px)`, width: 10, height: 10, borderRadius: 9999, background: p.variant === "peak" ? TL.fill : TL.mute, border: `2px solid ${TL.scene}` }} />
               ))}
             </div>
           </div>
@@ -227,7 +227,7 @@ const PP_FASER: Fase[] = [
   { navn: "Turneringsperiode", fraUke: 27, uker: 16 }, { navn: "Restitusjon", fraUke: 43, uker: 10 },
 ];
 const PP_TURN: Turnering[] = [{ navn: "Norgescup 1", uke: 24, prio: "B" }, { navn: "NM junior", uke: 30, prio: "A" }, { navn: "Klubbmesterskap", uke: 34, prio: "C" }, { navn: "Norgescup-finale", uke: 38, prio: "A" }];
-const PP_PRIO: Record<PrioKey, string> = { A: T.ax.TURN, B: T.ax.SPILL, C: T.ax.SLAG };
+const PP_PRIO: Record<PrioKey, string> = { A: TL.text, B: TL.mute, C: TL.dim };
 export interface PeriodeplanProps {
   faser?: Fase[];
   turneringer?: Turnering[];
