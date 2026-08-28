@@ -33,7 +33,7 @@ Train-lock-tokenport PlayerHQ+AgencyOS+Meg+Forelder + F1 mandags-bug (#631) · C
 | `SCREENTEST_PASSWORD` | Anders | Avklar; e2e-spillertester hoppes over i CI |
 | Se skjermene (390 + 1280, lys + mørk) | Anders | Skjermbilde-gate — tokenport er ikke piksel-1:1 |
 | Freemium: strammes TALENT-listen? | Anders | Før 1. sep |
-| C10 DataGolf-kort + økonomiflate | Kode | DG-01 + EC-01; bland aldri Broadie/DataGolf/PEI |
+| C10 DataGolf-kort + økonomiflate | Kode | **LEVERT** på `claude/c10-datagolf-okonomi` — skjermbilde-gate gjenstår |
 | C8 lys-pass | Kode | Sist av design; 8 nøkkelskjermer + mekanisk lys |
 | T12 visuell AgenticOS | Kode | IA inne (#630); AO-00/01 piksel gjenstår |
 | V1 betalings-verifisering | Kode + Anders | Test-clock, talent-gate, push — etter Stripe live |
@@ -42,7 +42,7 @@ Train-lock-tokenport PlayerHQ+AgencyOS+Meg+Forelder + F1 mandags-bug (#631) · C
 P-bølgen (P1–P4) og AD-1/F1-skjermene har **token-port** (#631), ikke fasit-1:1. W5-auth
 venter på tegnet fasit (ikke smoke-blokker). J-A/J-B/J-C er kodet.
 
-**Neste 5:** C10 · C8 · T12-visuell · V1 (etter Stripe) · V2.
+**Neste 5:** C8 · T12-visuell · V1 (etter Stripe) · V2.
 
 ---
 
@@ -100,7 +100,7 @@ parallelle økter, kun disjunkte filområder.
 | # | Sesjon | Scope | Fasit/kilder | Avhenger |
 |---|---|---|---|---|
 | C1 | Måned/år i Workbench | Read-first: klikk dag → uke, ingen redigering i årscelle. Uke/Måned/År bevarer valgt spiller; tom måned = norsk empty-state. ETTERPÅ: pensjoner gamle `spillere/[id]/workbench` (§5T.2 rad 14) | A-05, A-06, WB-05, WB-06 | **LEVERT #632** |
-| C10 | DataGolf + økonomi | DG-01-spillerkort (bland ALDRI Broadie/DataGolf/PEI) + EC-01-økonomiflate (FORFALT eneste danger; Tripletex-LESING — klient finnes i `src/lib/tripletex/`). `reports` flettes inn (JA 27.08). Avklar plassering av **D2 booking→faktura** her (datakjeden finnes, Invoice-modell mangler; «forfalt» fra Stripe ved visning). Ta med PGA-kildemerking (syncPgaPuttDistance er Broadie-tabell — merk i UI) | DG-01, EC-01 | **ÅPEN** |
+| C10 | DataGolf + økonomi | DG-01-spillerkort (bland ALDRI Broadie/DataGolf/PEI) + EC-01-økonomiflate (FORFALT eneste danger; Tripletex-LESING — klient finnes i `src/lib/tripletex/`). `reports` flettes inn (JA 27.08). Avklar plassering av **D2 booking→faktura** her (datakjeden finnes, Invoice-modell mangler; «forfalt» fra Stripe ved visning). Ta med PGA-kildemerking (syncPgaPuttDistance er Broadie-tabell — merk i UI) | DG-01, EC-01 | **LEVERT** (kode; skjermbilde-gate gjenstår). D2 booking→faktura avklart: vises som Forfalt fra Stripe, Invoice-modell ikke innført. |
 | C9 | Foreldre-kort FO-01 | Read-only «neste økt»-kort på wb-domenet i forelder-hjem. Aldri DRAFT, kun fornavn (GDPR). NB: dette er IKKE forelder-helporten (egen rad F1) | FO-01 | **LEVERT #629** |
 
 ### Etappe 4 — P-bølgen (Player-porten, NYE rader) + admin-rest + forelder
@@ -132,7 +132,7 @@ finn hver skjerm i `SCREEN-INDEX.md`.
 | V1 | Betalings-cutover-verifisering | `BETALING_STARTER = 2026-09-01` slår av `gratisForAlle()` automatisk. Kjør test-clock-løypa (8 steg i `stripe-cutover-sjekkliste.md`), verifiser talent-gate i prod (kontrakttestene fra #539 mot prod — aldri kjørt), sjekk A1-indeks-scriptet (`--dropp-gammel-indeks` — udokumentert om kjørt), push-opt-in i prod | Anders: Stripe live (P0) |
 | V2 | Full smoke + release | Del 3-kriteriene i LAUNCH-PLAN (8 punkter) + §8.5: samlet ende-til-ende-smoke klikket av MENNESKE (inkl. TM-steget + godta/avvis), offentlig booking ende-til-ende, e2e-secrets i CI (427 spillertester hoppes over i dag), vedlikeholdsmodus-av-plan for akgolf.no | Alt over |
 
-**Neste 5 sesjoner nå (28.08):** C10 · C8 · T12-visuell · V1 (etter Stripe live) · V2.
+**Neste 5 sesjoner nå (28.08):** C8 · T12-visuell · V1 (etter Stripe live) · V2.
 
 ---
 

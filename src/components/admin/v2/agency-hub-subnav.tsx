@@ -43,7 +43,7 @@ export const INNSIKT_HUB_TABS: AgencyHubTab[] = [
   { href: "/admin/tester", label: "Tester" },
   { href: "/admin/trackman", label: "TrackMan" },
   { href: "/admin/runder", label: "Runder" },
-  { href: "/admin/reports", label: "Rapporter" },
+  { href: "/admin/agencyos/okonomi#rapporter", label: "Rapporter" },
   { href: "/admin/analysere/compliance", label: "Etterlevelse" },
 ];
 

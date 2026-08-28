@@ -1,77 +1,80 @@
 /**
- * Data-loader for PlayerHQ DataGolf (v2) — «Deg mot touren».
+ * Data-loader for PlayerHQ DataGolf-spillerkort (DG-01 / C10).
  *
- * Sammenligner spillerens strokes gained mot en ekte PGA Tour-referansespiller.
- * Kilder (alt ekte, aldri fabrikkert):
- *   - BrukerSammenligning  → lagrede sammenligninger mot en DataGolf-spiller
- *                            (snapshot av gap over tid via sgDiffTotal)
- *   - BrukerSgInput        → spillerens egen SG-fordeling (via relasjonen sgInput)
- *   - PgaPlayerSeason      → referansespillerens SG-fordeling per kategori
- *
- * Ingen sammenligning registrert → harData:false (ærlig tom-tilstand i UI).
- * Ingen utdiktede tall: mangler et felt, blir det null.
+ * Kun DataGolf-motor: PublicPlayerRound.source = DATAGOLF og PgaPlayerSeason
+ * med DataGolf-kilde. Broadie-SG fra Round/BrukerSgInput og PEI vises ikke.
+ * PGA-putt per avstand lastes for kildemerking (syncPgaPuttDistance = Broadie).
  */
 
 import { prisma } from "@/lib/prisma";
-import { sammenlignMedReferanse } from "@/lib/stats/sg-estimator";
+import { startOfDay } from "@/lib/uke-helpers";
+import {
+  byggFeltRader,
+  erDataGolfKilde,
+  fmtDatoNb,
+  initialer,
+  kunDataGolf,
+  pgaPuttKildeTekst,
+  restAv,
+  snitt,
+  svakesteBotte,
+  type FeltRad,
+} from "./datagolf-kort";
 
-const MND_KORT = [
-  "JAN", "FEB", "MAR", "APR", "MAI", "JUN",
-  "JUL", "AUG", "SEP", "OKT", "NOV", "DES",
-];
+const MAKS_RUNDER = 12;
+const HCP_FELT_MIN = 0;
+const HCP_FELT_MAX = 5;
 
 export type DataGolfKode = "OTT" | "APP" | "ARG" | "PUTT";
 
-/** Per SG-kategori: spillerens verdi mot referansespillerens (per runde). */
-export type DataGolfKategori = {
+export type DataGolfFeltRad = {
+  plass: number;
+  label: string;
+  verdi: number;
+  erDu: boolean;
+};
+
+export type DataGolfKategoriRad = {
   code: DataGolfKode;
-  /** Norsk visningsnavn (ordbok: ARG = Nærspill). */
   name: string;
-  /** Spillerens SG per runde i kategorien. null = mangler. */
-  deg: number | null;
-  /** Referansespillerens SG per runde. null = mangler. */
-  ref: number | null;
-  /** ref − deg (positiv = referansen er bedre = du ligger bak). null = mangler. */
-  gap: number | null;
+  verdi: number | null;
+};
+
+export type DataGolfInnspillBotte = {
+  label: string;
+  verdi: number | null;
+};
+
+export type DataGolfStart = {
+  id: string;
+  navn: string;
+  dato: string;
+  sg: number | null;
+  feltstyrke: number | null;
+  kommende: boolean;
+};
+
+export type DataGolfPuttRad = {
+  meter: number;
+  sunkPct: number;
 };
 
 export type DataGolfData = {
-  /** True kun når minst én registrert sammenligning finnes. */
-  harData: boolean;
-  /**
-   * Tomtilstands-markør (T6):
-   *  - "KLAR"        → sammenligning finnes (harData: true)
-   *  - "MANGLER_REF" → SG-grunnlag (BrukerSgInput, f.eks. fra SG-broen)
-   *                    finnes, men ingen referansespiller er valgt ennå
-   *  - "INGEN_DATA"  → verken SG-grunnlag eller sammenligning
-   */
-  tilstand: "KLAR" | "MANGLER_REF" | "INGEN_DATA";
-  /** Referansespillerens navn (fra sammenligningen). */
-  refNavn: string | null;
-  refAar: number | null;
-  refTour: string | null;
-  /** Spillerens SG total (per runde) i siste sammenligning. */
-  sgTotalDeg: number | null;
-  /** Referansespillerens SG total (per runde). */
-  sgTotalRef: number | null;
-  /** ref − deg for total (positiv = du ligger bak touren). */
-  gapTotal: number | null;
-  /** Endring i posisjon (deg − ref) fra forrige snapshot til nå. Positiv = nærmere touren. */
-  gapDelta: number | null;
-  /** Retning for gapDelta til DeltaChip. */
-  gapDeltaDir: "up" | "down" | null;
-  /** Antall registrerte sammenligninger totalt. */
-  antallSnapshots: number;
-  /** SG-kategoriene (OTT/APP/ARG/PUTT). */
-  kategorier: DataGolfKategori[];
-  /** Posisjon mot touren per snapshot (deg − ref = −sgDiffTotal), kronologisk. Negativ = bak. */
-  trend: number[];
-  /** Akse-etiketter for trend (måned, start/midt/slutt). */
-  trendLabels: string[];
-  /** Kategorien med størst avstand til touren. */
-  storsteGap: { code: DataGolfKode; name: string; gap: number } | null;
-  /** ISO-dato for siste sammenligning. */
-  sisteDato: string | null;
+  initialer: string;
+  feltTekst: string;
+  oppdatertLabel: string | null;
+  antallRunder: number;
+  skill: number | null;
+  trueSg: number | null;
+  rest: number | null;
+  felt: DataGolfFeltRad[];
+  skillKategorier: DataGolfKategoriRad[];
+  innspill: DataGolfInnspillBotte[];
+  innspillErTour: boolean;
+  lekkasje: { label: string; verdi: number } | null;
+  starter: DataGolfStart[];
+  pgaPutt: DataGolfPuttRad[];
+  pgaPuttKildeTekst: string;
 };
 
 const KAT_NAVN: Record<DataGolfKode, string> = {
@@ -82,118 +85,292 @@ const KAT_NAVN: Record<DataGolfKode, string> = {
 };
 
 const TOM: DataGolfData = {
-  harData: false,
-  tilstand: "INGEN_DATA",
-  refNavn: null,
-  refAar: null,
-  refTour: null,
-  sgTotalDeg: null,
-  sgTotalRef: null,
-  gapTotal: null,
-  gapDelta: null,
-  gapDeltaDir: null,
-  antallSnapshots: 0,
-  kategorier: [],
-  trend: [],
-  trendLabels: [],
-  storsteGap: null,
-  sisteDato: null,
+  initialer: "",
+  feltTekst: "HCP 0–5 · 0 = feltsnitt. Egen motor — blandes aldri med SG eller PEI.",
+  oppdatertLabel: null,
+  antallRunder: 0,
+  skill: null,
+  trueSg: null,
+  rest: null,
+  felt: [],
+  skillKategorier: [
+    { code: "OTT", name: KAT_NAVN.OTT, verdi: null },
+    { code: "APP", name: KAT_NAVN.APP, verdi: null },
+    { code: "ARG", name: KAT_NAVN.ARG, verdi: null },
+    { code: "PUTT", name: KAT_NAVN.PUTT, verdi: null },
+  ],
+  innspill: [],
+  innspillErTour: false,
+  lekkasje: null,
+  starter: [],
+  pgaPutt: [],
+  pgaPuttKildeTekst: pgaPuttKildeTekst("broadie-estimate"),
 };
 
+function sisteSnitt(
+  runder: Array<{
+    sgTotal: number | null;
+    sgOtt: number | null;
+    sgApp: number | null;
+    sgArg: number | null;
+    sgPutt: number | null;
+    playedAt: Date;
+  }>,
+) {
+  const siste = [...runder].sort((a, b) => b.playedAt.getTime() - a.playedAt.getTime()).slice(0, MAKS_RUNDER);
+  return {
+    antall: siste.length,
+    total: snitt(siste.map((r) => r.sgTotal)),
+    ott: snitt(siste.map((r) => r.sgOtt)),
+    app: snitt(siste.map((r) => r.sgApp)),
+    arg: snitt(siste.map((r) => r.sgArg)),
+    putt: snitt(siste.map((r) => r.sgPutt)),
+    sist: siste[0]?.playedAt ?? null,
+  };
+}
+
 export async function hentDataGolf(userId: string): Promise<DataGolfData> {
-  // Alle registrerte sammenligninger, kronologisk (eldst først → for trend).
-  const sammenligninger = await prisma.brukerSammenligning.findMany({
-    where: { userId },
-    orderBy: { createdAt: "asc" },
-    include: { sgInput: true },
-  });
-
-  if (sammenligninger.length === 0) {
-    // Har spilleren SG-grunnlag (f.eks. fra SG-broen som aggregerer runde-SG)
-    // mangler bare valget av referansespiller — skill det fra helt tomt.
-    const harSgInput = await prisma.brukerSgInput.findFirst({
-      where: { userId },
-      select: { id: true },
-    });
-    return harSgInput ? { ...TOM, tilstand: "MANGLER_REF" } : TOM;
-  }
-
-  const siste = sammenligninger[sammenligninger.length - 1];
-  const sg = siste.sgInput;
-
-  // Referansespillerens SG-fordeling fra PgaPlayerSeason (nyeste sesong).
-  const ref = await prisma.pgaPlayerSeason.findFirst({
-    where: { dgPlayerId: siste.refDgPlayerId, tour: siste.refTour },
-    orderBy: { year: "desc" },
-    select: { sgOtt: true, sgApp: true, sgArg: true, sgPutt: true, sgTotal: true },
-  });
-
-  const cmp = sammenlignMedReferanse(
-    { sgOtt: sg.sgOtt, sgApp: sg.sgApp, sgArg: sg.sgArg, sgPutt: sg.sgPutt, sgTotal: sg.sgTotal },
-    {
-      sgOtt: ref?.sgOtt ?? null,
-      sgApp: ref?.sgApp ?? null,
-      sgArg: ref?.sgArg ?? null,
-      sgPutt: ref?.sgPutt ?? null,
-      sgTotal: ref?.sgTotal ?? null,
+  const user = await prisma.user.findUnique({
+    where: { id: userId },
+    select: {
+      name: true,
+      publicPlayerId: true,
+      publicPlayer: { select: { id: true, dataGolfId: true } },
     },
+  });
+  if (!user) return TOM;
+
+  const now = startOfDay(new Date());
+
+  const [season, egneDgRunder, feltDgRunder, innspillBaselines, puttRader, egneStarter, egnePublicEntries] = await Promise.all([
+    user.publicPlayer?.dataGolfId != null
+      ? prisma.pgaPlayerSeason.findFirst({
+          where: { dgPlayerId: user.publicPlayer.dataGolfId },
+          orderBy: { year: "desc" },
+          select: { sgTotal: true, sgOtt: true, sgApp: true, sgArg: true, sgPutt: true, source: true },
+        })
+      : Promise.resolve(null),
+    user.publicPlayerId
+      ? prisma.publicPlayerRound.findMany({
+          where: { source: "DATAGOLF", entry: { playerId: user.publicPlayerId } },
+          select: {
+            sgTotal: true,
+            sgOtt: true,
+            sgApp: true,
+            sgArg: true,
+            sgPutt: true,
+            source: true,
+            entry: { select: { playerId: true, tournament: { select: { startDate: true } } } },
+          },
+        })
+      : Promise.resolve([]),
+    prisma.publicPlayerRound.findMany({
+      where: {
+        source: "DATAGOLF",
+        sgTotal: { not: null },
+        entry: { player: { linkedUser: { deletedAt: null, hcp: { gte: HCP_FELT_MIN, lte: HCP_FELT_MAX } } } },
+      },
+      select: {
+        sgTotal: true,
+        sgOtt: true,
+        sgApp: true,
+        sgArg: true,
+        sgPutt: true,
+        source: true,
+        createdAt: true,
+        entry: {
+          select: {
+            playerId: true,
+            tournament: { select: { startDate: true, name: true } },
+          },
+        },
+      },
+    }),
+    prisma.sgBaseline.findMany({
+      where: { category: "APP", lie: "FAIRWAY" },
+      select: { distanceBucket: true, expectedStrokes: true, source: true },
+      orderBy: { distanceBucket: "asc" },
+    }),
+    prisma.pgaPuttDistance.findMany({
+      orderBy: { distanceMeters: "asc" },
+      select: { distanceMeters: true, tourAvgSunkPct: true, source: true },
+    }),
+    prisma.tournamentEntry.findMany({
+      where: { userId, withdrawnAt: null },
+      orderBy: { createdAt: "desc" },
+      take: 8,
+      select: {
+        id: true,
+        manualName: true,
+        manualDate: true,
+        tournament: { select: { name: true, startDate: true, status: true } },
+      },
+    }),
+    user.publicPlayerId
+      ? prisma.publicPlayerEntry.findMany({
+          where: { playerId: user.publicPlayerId },
+          orderBy: { createdAt: "desc" },
+          take: 8,
+          select: {
+            id: true,
+            tournament: { select: { name: true, startDate: true, status: true } },
+            roundDetails: {
+              where: { source: "DATAGOLF", sgTotal: { not: null } },
+              select: { sgTotal: true },
+            },
+          },
+        })
+      : Promise.resolve([]),
+  ]);
+
+  const egne = kunDataGolf(
+    egneDgRunder.map((r) => ({
+      source: r.source,
+      playerId: r.entry.playerId,
+      sgTotal: r.sgTotal,
+      sgOtt: r.sgOtt,
+      sgApp: r.sgApp,
+      sgArg: r.sgArg,
+      sgPutt: r.sgPutt,
+      playedAt: r.entry.tournament.startDate,
+    })),
+  );
+  const duSnitt = sisteSnitt(egne);
+
+  const feltRunder = kunDataGolf(
+    feltDgRunder.map((r) => ({
+      source: r.source,
+      playerId: r.entry.playerId,
+      sgTotal: r.sgTotal,
+      sgOtt: r.sgOtt,
+      sgApp: r.sgApp,
+      sgArg: r.sgArg,
+      sgPutt: r.sgPutt,
+      playedAt: r.entry.tournament.startDate,
+    })),
   );
 
-  const kategorier: DataGolfKategori[] = (
-    [
-      { code: "OTT", deg: sg.sgOtt, ref: ref?.sgOtt ?? null, gap: cmp.diff.ott },
-      { code: "APP", deg: sg.sgApp, ref: ref?.sgApp ?? null, gap: cmp.diff.app },
-      { code: "ARG", deg: sg.sgArg, ref: ref?.sgArg ?? null, gap: cmp.diff.arg },
-      { code: "PUTT", deg: sg.sgPutt, ref: ref?.sgPutt ?? null, gap: cmp.diff.putt },
-    ] as const
-  ).map((k) => ({ code: k.code, name: KAT_NAVN[k.code], deg: k.deg, ref: k.ref, gap: k.gap }));
-
-  // Posisjon mot touren per snapshot = deg − ref = −sgDiffTotal. Negativ = bak.
-  const posisjoner = sammenligninger
-    .map((s) => (s.sgDiffTotal != null ? -s.sgDiffTotal : null))
-    .filter((v): v is number => v != null);
-
-  const trendLabels: string[] =
-    sammenligninger.length >= 2
-      ? [
-          MND_KORT[sammenligninger[0].createdAt.getMonth()],
-          MND_KORT[sammenligninger[Math.floor((sammenligninger.length - 1) / 2)].createdAt.getMonth()],
-          MND_KORT[sammenligninger[sammenligninger.length - 1].createdAt.getMonth()],
-        ]
-      : [];
-
-  // gapDelta = endring i posisjon fra nest-siste til siste (positiv = nærmere touren).
-  let gapDelta: number | null = null;
-  let gapDeltaDir: "up" | "down" | null = null;
-  if (posisjoner.length >= 2) {
-    gapDelta = posisjoner[posisjoner.length - 1] - posisjoner[posisjoner.length - 2];
-    gapDeltaDir = gapDelta >= 0 ? "up" : "down";
+  const perSpiller = new Map<string, typeof feltRunder>();
+  for (const r of feltRunder) {
+    const list = perSpiller.get(r.playerId) ?? [];
+    list.push(r);
+    perSpiller.set(r.playerId, list);
   }
 
-  const storsteGap = cmp.storsteGap
-    ? {
-        code: cmp.storsteGap.kategori.toUpperCase() as DataGolfKode,
-        name: KAT_NAVN[cmp.storsteGap.kategori.toUpperCase() as DataGolfKode],
-        gap: cmp.storsteGap.diff,
-      }
-    : null;
+  const duPlayerId = user.publicPlayerId;
+  const feltRader: FeltRad[] = [];
+  for (const [playerId, runder] of perSpiller) {
+    const s = sisteSnitt(runder);
+    if (s.total == null) continue;
+    feltRader.push({
+      id: playerId,
+      erDu: duPlayerId != null && playerId === duPlayerId,
+      verdi: s.total,
+    });
+  }
+
+  const feltSnitt = snitt(feltRader.map((r) => r.verdi));
+  const felt = byggFeltRader(feltRader, feltSnitt);
+
+  const skill = season && erDataGolfKilde(season.source) ? (season.sgTotal ?? null) : null;
+  const trueSg = duSnitt.total;
+  const rest = restAv(trueSg, skill);
+
+  // Skill-fanen: sesong-skill (DataGolf) hvis den finnes, ellers True SG
+  // per kategori fra egne DATAGOLF-runder. Aldri Broadie fra Round, og
+  // aldri sesong-tall blandet med runde-snitt i samme celle.
+  const harSkillSesong = skill != null;
+  const skillKategorier: DataGolfKategoriRad[] = [
+    { code: "OTT", name: KAT_NAVN.OTT, verdi: harSkillSesong ? (season?.sgOtt ?? null) : duSnitt.ott },
+    { code: "APP", name: KAT_NAVN.APP, verdi: harSkillSesong ? (season?.sgApp ?? null) : duSnitt.app },
+    { code: "ARG", name: KAT_NAVN.ARG, verdi: harSkillSesong ? (season?.sgArg ?? null) : duSnitt.arg },
+    { code: "PUTT", name: KAT_NAVN.PUTT, verdi: harSkillSesong ? (season?.sgPutt ?? null) : duSnitt.putt },
+  ];
+
+  const dgBaselines = innspillBaselines.filter((b) => erDataGolfKilde(b.source));
+  const innspill: DataGolfInnspillBotte[] = dgBaselines.slice(0, 6).map((b) => ({
+    label: b.distanceBucket.replace(/y$/i, ""),
+    verdi: b.expectedStrokes,
+  }));
+  const lekkasje = innspillErPlayer(innspill) ? svakesteBotte(innspill) : null;
+
+  const starterFraEntry: DataGolfStart[] = egneStarter.map((e) => {
+    const dato = e.tournament?.startDate ?? e.manualDate;
+    const navn = e.tournament?.name ?? e.manualName ?? "Start";
+    const kommende = dato != null && dato >= now;
+    return {
+      id: e.id,
+      navn,
+      dato: dato ? fmtDatoNb(dato) : "mangler",
+      sg: null,
+      feltstyrke: null,
+      kommende,
+    };
+  });
+
+  const starterFraPublic: DataGolfStart[] = egnePublicEntries.map((e) => {
+    const dato = e.tournament.startDate;
+    const kommende = dato >= now || e.tournament.status === "UPCOMING";
+    return {
+      id: e.id,
+      navn: e.tournament.name,
+      dato: fmtDatoNb(dato),
+      sg: snitt(e.roundDetails.map((r) => r.sgTotal)),
+      feltstyrke: null,
+      kommende,
+    };
+  });
+
+  const starter = dedupeStarter([...starterFraPublic, ...starterFraEntry]).slice(0, 6);
+
+  const puttKilde = puttRader[0]?.source ?? "broadie-estimate";
+  const pgaPutt: DataGolfPuttRad[] = puttRader.map((p) => ({
+    meter: p.distanceMeters,
+    sunkPct: p.tourAvgSunkPct,
+  }));
+
+  const oppdatert = duSnitt.sist;
 
   return {
-    harData: true,
-    tilstand: "KLAR",
-    refNavn: siste.refPlayerName,
-    refAar: siste.refYear,
-    refTour: siste.refTour,
-    sgTotalDeg: sg.sgTotal,
-    sgTotalRef: ref?.sgTotal ?? null,
-    gapTotal: cmp.diff.total ?? siste.sgDiffTotal,
-    gapDelta,
-    gapDeltaDir,
-    antallSnapshots: sammenligninger.length,
-    kategorier,
-    trend: posisjoner,
-    trendLabels,
-    storsteGap,
-    sisteDato: siste.createdAt.toISOString(),
+    initialer: initialer(user.name),
+    feltTekst: TOM.feltTekst,
+    oppdatertLabel: oppdatert
+      ? `Siste ${duSnitt.antall} DataGolf-runder · oppdatert ${fmtDatoNb(oppdatert)}`
+      : duSnitt.antall > 0
+        ? `Siste ${duSnitt.antall} DataGolf-runder`
+        : null,
+    antallRunder: duSnitt.antall,
+    skill,
+    trueSg,
+    rest,
+    felt,
+    skillKategorier,
+    innspill,
+    innspillErTour: innspill.length > 0,
+    lekkasje,
+    starter,
+    pgaPutt,
+    pgaPuttKildeTekst: pgaPuttKildeTekst(puttKilde),
   };
+}
+
+/** Tour-baselines er ikke spillerens tall — da er «lekkasje / tren mot» UTKAST uten auto-plan. */
+function innspillErPlayer(_botter: DataGolfInnspillBotte[]): boolean {
+  return false;
+}
+
+function dedupeStarter(rader: DataGolfStart[]): DataGolfStart[] {
+  const sett = new Set<string>();
+  const ut: DataGolfStart[] = [];
+  for (const r of rader) {
+    const k = `${r.navn}|${r.dato}`;
+    if (sett.has(k)) continue;
+    sett.add(k);
+    ut.push(r);
+  }
+  ut.sort((a, b) => {
+    if (a.kommende !== b.kommende) return a.kommende ? -1 : 1;
+    return b.dato.localeCompare(a.dato);
+  });
+  return ut;
 }

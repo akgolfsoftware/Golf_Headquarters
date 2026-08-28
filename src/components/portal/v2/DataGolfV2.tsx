@@ -1,229 +1,472 @@
 "use client";
-import { TL } from "@/lib/v2/train-lock";
+
 /**
- * PlayerHQ DataGolf — Paper-fasit playerhq-datagolf.html (deg mot touren).
- * Ekte SG vs PGA Tour-baseline. T.* only. Tom = registrer runde / se analyse.
+ * PlayerHQ DataGolf-spillerkort — Train-lock DG-01 (C10).
+ *
+ * Kun DataGolf-motor. Negative tall = opacity, aldri rødt. PGA-putt merkes
+ * som Broadie-tabell. «Tren mot» er UTKAST, aldri auto-plan.
  */
 
-import Link from "next/link";
-import type { DataGolfData, DataGolfKategori } from "@/lib/portal-stats/datagolf-data";
-import { fmtSg, Caps, Kort, KpiFlis, TomTilstand, HjelpTips, CTAPill, Trend } from "@/components/v2";
+import { useEffect, useState } from "react";
+import { TL, TL_BREKK } from "@/lib/v2/train-lock";
+import type { DataGolfData } from "@/lib/portal-stats/datagolf-data";
+import { fmtDgTall } from "@/lib/portal-stats/datagolf-kort";
+
 export type DataGolfProps = { data: DataGolfData; spillerNavn?: string };
 
-/* ── Rene hjelpere ─────────────────────────────────────────────────── */
+type Fane = "felt" | "skill" | "innspill" | "starter";
+type SkjermStorrelse = "compact" | "regular" | "wide";
 
-/** SG-verdi → norsk komma-desimal m/ fortegn, «—» for null. */
-function sg(v: number | null): string {
-  return v == null ? "—" : fmtSg(v);
+const PRESS =
+  "motion-safe:transition-transform motion-safe:duration-[180ms] motion-safe:ease-[cubic-bezier(0.32,0.72,0,1)] active:scale-[0.97]";
+
+function useSkjermStorrelse(): SkjermStorrelse {
+  const [s, setS] = useState<SkjermStorrelse>("compact");
+  useEffect(() => {
+    const mqRegular = window.matchMedia(`(min-width: ${TL_BREKK.ipadSmal}px)`);
+    const mqWide = window.matchMedia(`(min-width: ${TL_BREKK.macRail}px)`);
+    const oppdater = () => setS(mqWide.matches ? "wide" : mqRegular.matches ? "regular" : "compact");
+    oppdater();
+    mqRegular.addEventListener("change", oppdater);
+    mqWide.addEventListener("change", oppdater);
+    return () => {
+      mqRegular.removeEventListener("change", oppdater);
+      mqWide.removeEventListener("change", oppdater);
+    };
+  }, []);
+  return s;
 }
 
-/* Divergerende SG-bar rundt 0-linjen (tour-baseline). Fasit .spor2: positiv
-   fylles i up-grønn mot høyre, negativ i dn-rød mot venstre. */
-function SgBar({ v, max }: { v: number | null; max: number }) {
-  if (v == null) {
-    return <div style={{ flex: 1, height: 10, borderRadius: 9999, background: TL.hair }} />;
-  }
-  const halv = Math.min(48, (Math.abs(v) / max) * 48);
-  const neg = v < 0;
+function CapsLabel({ children }: { children: React.ReactNode }) {
   return (
-    <div style={{ flex: 1, height: 10, borderRadius: 9999, background: TL.hair, position: "relative" }}>
-      <span style={{ position: "absolute", left: "50%", top: -3, bottom: -3, width: 1, background: TL.hair }} />
+    <span
+      style={{
+        fontSize: 11,
+        fontWeight: TL.vekt.caps,
+        letterSpacing: TL.track.caps,
+        textTransform: "uppercase",
+        color: TL.mute,
+      }}
+    >
+      {children}
+    </span>
+  );
+}
+
+function KpiKort({ verdi, label, stor }: { verdi: string; label: string; stor?: boolean }) {
+  const mangler = verdi === "mangler";
+  return (
+    <div style={{ background: TL.elev, borderRadius: TL.radius.card, padding: stor ? 20 : 16 }}>
       <div
         style={{
-          position: "absolute",
-          top: 0,
-          bottom: 0,
-          ...(neg ? { right: "50%" } : { left: "50%" }),
-          width: halv + "%",
-          background: neg ? TL.danger : TL.ok,
-          borderRadius: 9999,
+          fontSize: stor ? 34 : 24,
+          fontWeight: 700,
+          letterSpacing: "-0.02em",
+          fontVariantNumeric: "tabular-nums",
+          color: TL.text,
+          opacity: mangler || verdi.startsWith("−") ? 0.45 : 1,
         }}
-      />
+      >
+        {verdi}
+      </div>
+      <div style={{ marginTop: 6 }}>
+        <CapsLabel>{label}</CapsLabel>
+      </div>
     </div>
   );
 }
 
-/* Én kategori = gruppe m/ Deg · Referanse (fasit-rader: navn 70px, spor, verdi). */
-function DGGruppe({ k, max, last }: { k: DataGolfKategori; max: number; last: boolean }) {
-  const rows = [
-    { l: "Deg", v: k.deg },
-    { l: "Referanse", v: k.ref },
+function Faner({ value, onChange }: { value: Fane; onChange: (f: Fane) => void }) {
+  const tabs: { id: Fane; l: string }[] = [
+    { id: "felt", l: "Felt" },
+    { id: "skill", l: "Skill" },
+    { id: "innspill", l: "Innspill" },
+    { id: "starter", l: "Starter" },
   ];
   return (
-    <div style={{ padding: "11px 0", borderBottom: last ? "none" : `1px solid ${TL.hair}` }}>
-      <div style={{ display: "flex", alignItems: "baseline", gap: 8, marginBottom: 8 }}>
-        <span style={{ fontFamily: TL.font.mono, fontSize: 12, fontVariantNumeric: "tabular-nums", color: TL.text }}>{k.code}</span>
-        <span style={{ fontFamily: TL.font.sans, fontSize: 12.5, color: TL.mute }}>{k.name}</span>
+    <div
+      role="tablist"
+      aria-label="DataGolf-visning"
+      style={{
+        marginTop: 14,
+        background: TL.elev,
+        borderRadius: TL.radius.pill,
+        padding: 4,
+        display: "flex",
+        gap: 2,
+        maxWidth: 460,
+      }}
+    >
+      {tabs.map((t) => {
+        const aktiv = value === t.id;
+        return (
+          <button
+            key={t.id}
+            type="button"
+            role="tab"
+            aria-selected={aktiv}
+            onClick={() => onChange(t.id)}
+            className={PRESS}
+            style={{
+              flex: 1,
+              height: 32,
+              borderRadius: TL.radius.pill,
+              background: aktiv ? TL.fill : "transparent",
+              color: aktiv ? TL.onFill : TL.mute,
+              fontSize: 13,
+              fontWeight: 600,
+              border: 0,
+              cursor: "pointer",
+            }}
+          >
+            {t.l}
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
+function FeltListe({ data }: { data: DataGolfData }) {
+  if (data.felt.length === 0) {
+    return (
+      <div style={{ background: TL.elev, borderRadius: TL.radius.card, padding: 20 }}>
+        <p style={{ margin: 0, fontSize: 13, color: TL.mute, lineHeight: 1.45 }}>
+          Ingen DataGolf-felt ennå. Broadie-SG og PEI vises ikke her.
+        </p>
       </div>
-      <div style={{ display: "flex", flexDirection: "column", gap: 5 }}>
-        {rows.map((r) => (
-          <div key={r.l} style={{ display: "grid", gridTemplateColumns: "70px minmax(0,1fr) 58px", gap: 8, alignItems: "center", minHeight: 32 }}>
-            <span style={{ fontFamily: TL.font.mono, fontSize: 12, color: TL.mute }}>{r.l}</span>
-            <SgBar v={r.v} max={max} />
+    );
+  }
+  return (
+    <div style={{ background: TL.elev, borderRadius: TL.radius.card, padding: "4px 20px" }}>
+      {data.felt.map((r, i) => (
+        <div
+          key={`${r.plass}-${r.label}`}
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: 12,
+            padding: "14px 0",
+            borderBottom: i < data.felt.length - 1 ? `1px solid ${TL.hair}` : "none",
+          }}
+        >
+          <span style={{ width: 18, fontSize: 13, color: TL.mute, fontVariantNumeric: "tabular-nums" }}>{r.plass}</span>
+          <span style={{ flex: 1, display: "flex", alignItems: "center", gap: 10 }}>
+            {r.erDu && (
+              <span
+                style={{
+                  width: 24,
+                  height: 24,
+                  borderRadius: "50%",
+                  background: TL.avatar,
+                  color: TL.onAvatar,
+                  fontSize: 9,
+                  fontWeight: 600,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                {data.initialer || "DU"}
+              </span>
+            )}
+            <span style={{ fontSize: 15, fontWeight: 600, color: TL.text }}>{r.label}</span>
+          </span>
+          <span
+            style={{
+              fontSize: 15,
+              fontWeight: 600,
+              fontVariantNumeric: "tabular-nums",
+              color: TL.text,
+              opacity: r.verdi < 0 ? 0.45 : 1,
+            }}
+          >
+            {fmtDgTall(r.verdi)}
+          </span>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function SkillListe({ data }: { data: DataGolfData }) {
+  return (
+    <div style={{ background: TL.elev, borderRadius: TL.radius.card, padding: "4px 20px" }}>
+      {data.skillKategorier.map((k, i) => (
+        <div
+          key={k.code}
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: 12,
+            padding: "14px 0",
+            borderBottom: i < data.skillKategorier.length - 1 ? `1px solid ${TL.hair}` : "none",
+          }}
+        >
+          <span style={{ width: 48, fontSize: 13, color: TL.mute, fontVariantNumeric: "tabular-nums" }}>{k.code}</span>
+          <span style={{ flex: 1, fontSize: 15, fontWeight: 600, color: TL.text }}>{k.name}</span>
+          <span
+            style={{
+              fontSize: 15,
+              fontWeight: 600,
+              fontVariantNumeric: "tabular-nums",
+              color: TL.text,
+              opacity: k.verdi == null || k.verdi < 0 ? 0.45 : 1,
+            }}
+          >
+            {fmtDgTall(k.verdi)}
+          </span>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function InnspillBars({ data }: { data: DataGolfData }) {
+  if (data.innspill.length === 0) {
+    return (
+      <div style={{ background: TL.elev, borderRadius: TL.radius.card, padding: 20 }}>
+        <CapsLabel>SG per bøtte</CapsLabel>
+        <p style={{ margin: "10px 0 0", fontSize: 13, color: TL.mute, lineHeight: 1.45 }}>
+          DataGolf per avstandsbøtte mangler for deg. Broadie-SG fra egne runder vises ikke her.
+        </p>
+      </div>
+    );
+  }
+  const absMax = Math.max(0.5, ...data.innspill.map((b) => Math.abs(b.verdi ?? 0)));
+  return (
+    <div style={{ background: TL.elev, borderRadius: TL.radius.card, padding: 20 }}>
+      <CapsLabel>SG per bøtte · {data.innspillErTour ? "DataGolf PGA (ikke deg)" : "meter"}</CapsLabel>
+      <div style={{ marginTop: 14, display: "grid", gridTemplateColumns: `repeat(${Math.min(6, data.innspill.length)}, 1fr)` }}>
+        {data.innspill.map((b) => {
+          const v = b.verdi;
+          const hoyde = v == null ? 0 : Math.max(3, Math.round((Math.abs(v) / absMax) * 48));
+          const neg = v != null && v < 0;
+          return (
+            <div key={b.label} style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+              <span
+                style={{
+                  fontSize: 13,
+                  fontWeight: 600,
+                  fontVariantNumeric: "tabular-nums",
+                  color: TL.text,
+                  opacity: v == null || neg ? 0.45 : 1,
+                }}
+              >
+                {fmtDgTall(v)}
+              </span>
+              <div style={{ position: "relative", width: "100%", height: 104, marginTop: 8 }}>
+                <div style={{ position: "absolute", left: 0, right: 0, top: 52, height: 1, background: TL.hair }} />
+                {v != null &&
+                  (neg ? (
+                    <div
+                      style={{
+                        position: "absolute",
+                        left: "50%",
+                        transform: "translateX(-50%)",
+                        width: 26,
+                        top: 53,
+                        height: hoyde,
+                        background: TL.fill,
+                        opacity: 0.4,
+                        borderRadius: "0 0 4px 4px",
+                      }}
+                    />
+                  ) : (
+                    <div
+                      style={{
+                        position: "absolute",
+                        left: "50%",
+                        transform: "translateX(-50%)",
+                        width: 26,
+                        bottom: 52,
+                        height: hoyde,
+                        background: TL.fill,
+                        borderRadius: "4px 4px 0 0",
+                      }}
+                    />
+                  ))}
+              </div>
+              <span
+                style={{
+                  marginTop: 8,
+                  fontSize: 11,
+                  fontWeight: 600,
+                  letterSpacing: "0.08em",
+                  textTransform: "uppercase",
+                  color: TL.mute,
+                }}
+              >
+                {b.label}
+              </span>
+            </div>
+          );
+        })}
+      </div>
+      <div style={{ marginTop: 12, fontSize: 13, color: TL.mute }}>
+        {data.innspillErTour
+          ? "Tour-bøtter fra DataGolf. 0 er ikke feltsnitt. Dine bøtter mangler."
+          : "Feltet = 0 i hver bøtte"}
+      </div>
+      {data.lekkasje && (
+        <div
+          style={{
+            marginTop: 14,
+            paddingTop: 14,
+            borderTop: `1px solid ${TL.hair}`,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            gap: 12,
+          }}
+        >
+          <span style={{ fontSize: 15, fontWeight: 600, color: TL.text }}>Tren mot {data.lekkasje.label}</span>
+          <span
+            style={{
+              height: 32,
+              padding: "0 16px",
+              borderRadius: TL.radius.pill,
+              background: TL.dim,
+              display: "flex",
+              alignItems: "center",
+              fontSize: 11,
+              fontWeight: 600,
+              letterSpacing: "0.08em",
+              textTransform: "uppercase",
+              color: TL.text,
+            }}
+          >
+            Utkast
+          </span>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function StarterListe({ data }: { data: DataGolfData }) {
+  if (data.starter.length === 0) {
+    return (
+      <div style={{ background: TL.elev, borderRadius: TL.radius.card, padding: 20 }}>
+        <p style={{ margin: 0, fontSize: 13, color: TL.mute, lineHeight: 1.45 }}>Ingen starter registrert.</p>
+      </div>
+    );
+  }
+  const neste = data.starter.find((s) => s.kommende);
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+      <div style={{ background: TL.elev, borderRadius: TL.radius.card, padding: "4px 20px" }}>
+        {data.starter.map((s, i) => (
+          <div
+            key={s.id}
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: 16,
+              padding: "16px 0",
+              borderBottom: i < data.starter.length - 1 ? `1px solid ${TL.hair}` : "none",
+              flexWrap: "wrap",
+            }}
+          >
+            <span style={{ flex: 1, minWidth: 120, fontSize: 15, fontWeight: 600, color: TL.text }}>{s.navn}</span>
+            <span style={{ fontSize: 13, color: TL.mute, fontVariantNumeric: "tabular-nums" }}>{s.dato}</span>
             <span
               style={{
+                width: 72,
                 textAlign: "right",
-                fontFamily: TL.font.mono,
-                fontSize: 13,
-                color: r.v == null ? TL.mute : r.v >= 0 ? TL.ok : TL.danger,
+                fontSize: 15,
+                fontWeight: 600,
                 fontVariantNumeric: "tabular-nums",
+                color: TL.text,
+                opacity: s.sg == null || s.sg < 0 ? 0.45 : 1,
               }}
             >
-              {sg(r.v)}
+              {fmtDgTall(s.sg)}
+            </span>
+            <span style={{ width: 110, textAlign: "right", fontSize: 13, color: TL.mute, fontVariantNumeric: "tabular-nums" }}>
+              {s.feltstyrke == null ? "feltstyrke mangler" : `feltstyrke ${fmtDgTall(s.feltstyrke)}`}
             </span>
           </div>
         ))}
       </div>
+      <div style={{ fontSize: 13, color: TL.mute }}>Feltstyrke = snitt skill i startfeltet · 0 = feltsnitt. Kun DataGolf.</div>
+      {neste && (
+        <div style={{ background: TL.elev, borderRadius: TL.radius.card, padding: 20 }}>
+          <CapsLabel>Neste start</CapsLabel>
+          <div style={{ marginTop: 8, fontSize: 26, fontWeight: 700, letterSpacing: "-0.01em", color: TL.text }}>{neste.navn}</div>
+          <div style={{ marginTop: 4, fontSize: 13, color: TL.mute, fontVariantNumeric: "tabular-nums" }}>
+            {neste.dato} · startfelt ikke publisert
+          </div>
+        </div>
+      )}
     </div>
   );
 }
 
-/* ── Skjerm ────────────────────────────────────────────────────────── */
+export function DataGolfV2({ data }: DataGolfProps) {
+  const storrelse = useSkjermStorrelse();
+  const wide = storrelse === "wide";
+  const [fane, setFane] = useState<Fane>("felt");
 
-export function DataGolfV2({ data, spillerNavn }: DataGolfProps) {
-  const navn = spillerNavn?.trim();
+  const kpis = (
+    <div style={{ display: "grid", gridTemplateColumns: wide ? "1fr" : "1fr 1fr 1fr", gap: wide ? 12 : 10 }}>
+      <KpiKort verdi={fmtDgTall(data.skill)} label="Skill" stor={wide} />
+      <KpiKort verdi={fmtDgTall(data.trueSg)} label="True SG" stor={wide} />
+      <KpiKort verdi={fmtDgTall(data.rest)} label="Rest" stor={wide} />
+    </div>
+  );
 
-  if (!data.harData) {
-    // "MANGLER_REF" (T6): SG-grunnlaget finnes (f.eks. fra SG-broen) — det
-    // eneste som mangler er valget av referansespiller. Samme skjelett som
-    // helt tom, men med riktig budskap og én vei videre.
-    const manglerRef = data.tilstand === "MANGLER_REF";
-    return (
-      <div data-paper-slug="playerhq-datagolf" data-paper-wave-g="datagolf" data-paper-portal-datagolf style={{ display: "flex", flexDirection: "column", gap: 16, maxWidth: 720, margin: "0 auto", width: "100%" }}>
-        <div data-paper-pattern-topp>
-          <h1 style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 17, fontWeight: 600, color: TL.text }}>Deg mot touren</h1>
-          <span style={{ display: "block", fontFamily: TL.font.mono, fontSize: 10.5, color: TL.mute, marginTop: 2 }}>
-            DataGolf · PGA Tour-baseline{navn ? ` · ${navn}` : ""}
-          </span>
-        </div>
-        <div className="grid grid-cols-3" style={{ gap: 8 }}>
-          <KpiFlis label="Gap" value="—" instant />
-          <KpiFlis label="Kategorier" value="—" instant />
-          <KpiFlis label="Status" value={manglerRef ? "Klar" : "Ingen data"} instant />
-        </div>
-        <Kort>
-          {manglerRef ? (
-            <TomTilstand
-              icon="bar-chart"
-              title="Tallene dine er klare"
-              sub="SG-grunnlaget ditt er registrert — velg en referansespiller for å se gap mot touren per kategori."
-            />
-          ) : (
-            <TomTilstand
-              icon="bar-chart"
-              title="Ingen sammenligning ennå"
-              sub="Registrer SG på runder — da fylles gap mot touren per kategori."
-            />
-          )}
-          <div style={{ marginTop: 12, display: "flex", flexDirection: "column", gap: 8 }}>
-            <Link href={manglerRef ? "/stats/sg-sammenlign/start" : "/portal/runde/live"} style={{ textDecoration: "none", display: "block" }}>
-              <span style={{
-                display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, width: "100%", padding: "10px 16px",
-                borderRadius: 12, background: TL.fill, color: TL.onFill, fontFamily: TL.font.sans, fontSize: 14, fontWeight: 600, minHeight: 48,
-              }}>{manglerRef ? "Velg referansespiller" : "Start live-føring"}
-              </span>
-            </Link>
-            <Link href="/portal/analysere" style={{ textDecoration: "none", display: "block" }}>
-              <CTAPill ghost full icon="bar-chart">
-                Se SG-analyse
-              </CTAPill>
-            </Link>
-          </div>
-        </Kort>
-      </div>
+  const panel =
+    fane === "felt" ? (
+      <FeltListe data={data} />
+    ) : fane === "skill" ? (
+      <SkillListe data={data} />
+    ) : fane === "innspill" ? (
+      <InnspillBars data={data} />
+    ) : (
+      <StarterListe data={data} />
     );
-  }
-
-  const refNavn = data.refNavn ?? "Referanse";
-  // Barskala: største absoluttverdi blant alle SG-verdier, min 0,5 for luft.
-  const alleVerdier = data.kategorier.flatMap((k) => [k.deg, k.ref]).filter((v): v is number => v != null);
-  const max = Math.max(0.5, ...alleVerdier.map((v) => Math.abs(v)));
-
-  // Posisjon mot touren (deg − ref). Negativ = bak.
-  const posisjon = data.gapTotal != null ? -data.gapTotal : null;
-
-  // Trend over registrerte sammenligninger (kun når ≥2 snapshots) —
-  // beholdt utover fasiten (ekte data, ingen fasit-seksjon å speile).
-  const harTrend = data.trend.length >= 2;
-  const trendLo = harTrend ? Math.min(0, ...data.trend) - 0.4 : 0;
-  const trendHi = harTrend ? Math.max(0, ...data.trend) + 0.4 : 0;
 
   return (
-    <div data-paper-slug="playerhq-datagolf" data-paper-portal-datagolf style={{ display: "flex", flexDirection: "column", gap: 16, maxWidth: 720, margin: "0 auto", width: "100%" }}>
-      {/* Hode — fasit: h1 «Deg mot touren», sub DataGolf · baseline · navn */}
-      <div data-paper-pattern-topp>
-        <h1 style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 17, fontWeight: 600, color: TL.text }}>Deg mot touren</h1>
-        <span style={{ display: "block", fontFamily: TL.font.mono, fontSize: 10.5, color: TL.mute, marginTop: 2 }}>
-          DataGolf · PGA Tour-baseline{navn ? ` · ${navn}` : ""}
-        </span>
+    <div data-screen="DG-01" style={{ display: "flex", flexDirection: "column", width: "100%", background: TL.scene }}>
+      <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 16, flexWrap: "wrap" }}>
+        <div>
+          <CapsLabel>Analyse · mot feltet</CapsLabel>
+          <h1 style={{ margin: "6px 0 0", fontSize: 34, fontWeight: 700, letterSpacing: "-0.02em", lineHeight: 1.1, color: TL.text }}>
+            DataGolf
+          </h1>
+        </div>
+      </div>
+      <div style={{ marginTop: 8, fontSize: 13, fontWeight: 400, color: TL.mute, lineHeight: 1.45, maxWidth: 640 }}>
+        {data.feltTekst}
       </div>
 
-      {/* Fasit: .merknad — serif på myk flate */}
-      <p style={{ fontFamily: TL.font.sans, fontSize: 12, color: TL.mute, lineHeight: 1.6, margin: 0, background: TL.dock, borderRadius: 8, padding: "8px 12px" }}>
-        Sammenligningen er mot én registrert referansespiller, ikke mot hele tourfeltet.
-      </p>
-
-      {/* Hero — fasit: tint-kort, 40px mono-tall tonet up/dn, serif-sub */}
-      <Kort tint>
-        <span style={{ display: "inline-flex", alignItems: "center", gap: 7 }}>
-          <Caps>Deg mot touren · SG total</Caps>
-          <HjelpTips k="dataGolfBaseline" size={12} />
-        </span>
-        <div style={{ marginTop: 10 }}>
-          <span
-            style={{
-              fontFamily: TL.font.mono,
-              fontSize: 40,
-              fontWeight: 600,
-              lineHeight: 1,
-              fontVariantNumeric: "tabular-nums",
-              color: posisjon == null ? TL.mute : posisjon >= 0 ? TL.ok : TL.danger,
-            }}
-          >
-            {posisjon != null ? fmtSg(posisjon) : "—"}
-          </span>
-          <span style={{ fontFamily: TL.font.sans, fontSize: 12, color: TL.mute }}> slag/runde</span>
-        </div>
-        <p style={{ fontFamily: TL.font.sans, fontSize: 12, color: TL.mute, margin: "6px 0 0" }}>
-          mot {refNavn}
-          {data.refAar != null ? ` (${data.refAar})` : ""} · brutto
-        </p>
-      </Kort>
-
-      {/* Per kategori — fasit-rader: Deg / Referanse, spor m/ nullinje, tonede verdier */}
-      <Kort eyebrow="Per kategori · deg vs referanse">
-        {data.kategorier.map((k, i) => (
-          <DGGruppe key={k.code} k={k} max={max} last={i === data.kategorier.length - 1} />
-        ))}
-      </Kort>
-
-      {/* Innsikt — fasit: kort m/ info-kant, serif, utledet av de samme tallene */}
-      {data.storsteGap && (
-        <Kort style={{ borderLeft: `3px solid ${TL.viz.target}` }}>
-          <p style={{ fontFamily: TL.font.sans, fontSize: 13, color: TL.text, lineHeight: 1.6, margin: 0 }}>
-            Størst avstand til referansen er i {data.storsteGap.name.toLowerCase()} ({sg(-data.storsteGap.gap)} slag) — det er der gapet mot touren lukkes raskest.
-          </p>
-        </Kort>
-      )}
-
-      {/* Gap over tid — beholdt utover fasiten (egen datastøtte) */}
-      {harTrend && (
-        <Kort eyebrow="Gap mot touren · registrerte sammenligninger" action={<Caps size={9}>0-linjen = tour</Caps>}>
-          <Trend
-            series={data.trend}
-            yMin={trendLo}
-            yMax={trendHi}
-            baseline={0}
-            height={92}
-            xLabels={data.trendLabels.length ? data.trendLabels : undefined}
-          />
-          <div style={{ marginTop: 10, fontFamily: TL.font.sans, fontSize: 11.5, color: TL.mute }}>
-            {data.gapDelta != null && data.gapDelta >= 0
-              ? `Gapet har krympet ${sg(Math.abs(data.gapDelta))} slag siden forrige sammenligning.`
-              : `Basert på ${data.antallSnapshots} registrerte sammenligninger.`}
+      {wide ? (
+        <>
+          <Faner value={fane} onChange={setFane} />
+          <div style={{ marginTop: 20, display: "flex", gap: 24, alignItems: "flex-start" }}>
+            <div style={{ flex: 1, minWidth: 0 }}>{panel}</div>
+            <div style={{ width: 320, flexShrink: 0 }}>{kpis}</div>
           </div>
-        </Kort>
+        </>
+      ) : (
+        <>
+          <div style={{ marginTop: 16 }}>{kpis}</div>
+          <Faner value={fane} onChange={setFane} />
+          <div style={{ marginTop: 14 }}>{panel}</div>
+        </>
       )}
+
+      <div style={{ marginTop: 10, fontSize: 13, color: TL.mute }}>
+        {data.oppdatertLabel ?? "Ingen DataGolf-runder ennå"}
+      </div>
+
+      <p style={{ margin: "16px 0 0", fontSize: 13, color: TL.mute, lineHeight: 1.45 }}>
+        {data.pgaPuttKildeTekst}
+        {data.pgaPutt.length > 0
+          ? ` ${data.pgaPutt.length} avstander lastet.`
+          : " Tabellen er tom — vi gjetter ikke putt-prosent."}
+      </p>
     </div>
   );
 }

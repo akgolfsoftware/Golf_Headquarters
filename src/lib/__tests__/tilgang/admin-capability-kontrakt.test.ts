@@ -120,7 +120,6 @@ const IKKE_HANDHEVET: readonly string[] = [
   "MANAGE_USERS",
   "VIEW_ALL_PLAYERS",
   "VIEW_PLAYER_DATA",
-  "VIEW_REPORTS",
   // Basis-rettigheter enhver innlogget bruker har. PlayerHQ gater på
   // requirePortalUser + rolle, ikke på capability, så disse er per design
   // uten kallsted. Forventet — ikke et hull.

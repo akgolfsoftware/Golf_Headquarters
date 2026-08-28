@@ -1,532 +1,267 @@
 "use client";
 
 /**
- * AgencyOS Økonomi — v2 (retning C «Presis»). Coach/ADMIN sitt business-
- * kontrolltårn for penger. Ingen mockup fantes — komponert utelukkende av
- * v2-biblioteket (src/components/v2), ingen ad-hoc UI, ingen rå hex (kun T.*).
+ * AgencyOS Økonomi — Train-lock EC-01 (C10).
  *
- * Funksjon/data bevart fra de to ekte skjermene (src/app/admin/okonomi +
- * src/app/admin/agencyos/okonomi):
- *   - 4 KPI-er: MRR coaching · Innbetalt denne mnd (+ endring vs forrige) ·
- *     Utestående · Aktive abonnement.
- *   - Inntektstrend siste 6 måneder (Trend-graf, ekte sum innbetalt per mnd).
- *   - Betalings-liste (kunde/beskrivelse/dato/beløp/status) — siste transaksjoner,
- *     med refusjons-note per rad der det finnes.
- *   - Sidekolonne: MRR-sammensetning (PRO-abonnement × 299 kr) + utestående-flagg
- *     med oppfølgingslenke.
- *   - Snarvei «Åpne Stripe» (ekstern).
- *
- * Mobil: KPI 2-kol, alt stables, betalings-lista er en kort-liste (Rad) — ingen
- * tabell. Desktop: 2-kol grid (liste | sidekolonne).
- *
- * Ærlige tomrom: ingen fabrikerte tall — MRR 0 + tomstate ved 0 PRO-abonnement,
- * tom liste ved 0 betalinger, «—» der data mangler.
+ * FORFALT = eneste danger (TL.danger). Øvrige statuser mute. Tripletex-tall
+ * som mangler = «mangler». Reports flettes inn nederst. Ingen simulator-omsetning.
  */
 
-import { useEffect, useState, type ReactNode } from "react";
-import Link from "next/link";
-import { Caps, Kort, Rad, KpiFlis, PillTabs, TallHero, StatusPill, CTAPill, AvatarInit, Trend, TomTilstand, InnsiktChip, Icon, type StatusTone } from "@/components/v2";
-import { TL } from "@/lib/v2/train-lock";
-import { TOM_TALL } from "@/lib/v2/tokens";
-// ── Datakontrakt (mappes fra Prisma i ruten) ────────────────────
-export type BetalingStatusKey =
-  | "SUCCEEDED"
-  | "PENDING"
-  | "FAILED"
-  | "REFUNDED"
-  | "PARTIALLY_REFUNDED";
+import { useEffect, useState } from "react";
+import { TL, TL_BREKK } from "@/lib/v2/train-lock";
+import { AdminReportsV2 } from "@/components/admin/v2/AdminReportsV2";
+import type { AdminOkonomiV2Data, OkonomiFaktura, OkonomiTimeklipp } from "@/lib/admin/okonomi-data";
+import {
+  erForfalt,
+  fmtKrNb,
+  klippPrikker,
+  ytdAvvik,
+  ytdAvvikTekst,
+  ytdBarPct,
+} from "@/lib/admin/okonomi-visning";
 
-export interface AdminOkonomiV2Betaling {
-  id: string;
-  navn: string;
-  beskrivelse: string | null;
-  type: string;
-  belopKr: number;
-  refundertKr: number;
-  dato: string;
-  status: BetalingStatusKey;
+export type { AdminOkonomiV2Data, OkonomiFaktura, OkonomiTimeklipp };
+
+function CapsLabel({ children, color }: { children: React.ReactNode; color?: string }) {
+  return (
+    <span
+      style={{
+        fontSize: 11,
+        fontWeight: TL.vekt.caps,
+        letterSpacing: TL.track.caps,
+        textTransform: "uppercase",
+        color: color ?? TL.mute,
+      }}
+    >
+      {children}
+    </span>
+  );
 }
 
-export interface AdminOkonomiV2Data {
-  periodeLabel: string;
-  mrrKr: number;
-  proAktive: number;
-  innbetaltMndKr: number;
-  endringPct: number | null;
-  utestaendeKr: number;
-  utestaendeAntall: number;
-  betalteAntall: number;
-  serie: { label: string; kr: number }[];
-  betalinger: AdminOkonomiV2Betaling[];
-  stripeHref: string;
-  oppfolgHref: string;
-  /** Belegg denne uka (bookede min / tilgjengelige coach-min). Null = ingen
-   *  kapasitet registrert → KPI-en viser «—» framfor et tall vi ikke kan stå for. */
-  beleggPct: number | null;
-  bookingerUka: number;
-  /** Spillere uten abonnement (GRATIS). ELITE finnes ikke. */
-  gratisSpillere: number;
-  tjenesterHref: string;
-  /** Konsernmålet (CLAUDE.md §3): 500 000 USD netto profitt/år. Kursen ligger
-   *  ikke i basen — antatt, ikke hentet, akkurat som fasitens egen løsning. */
-  konsernMaal: { usd: number; antattKurs: number };
-  /** «Hull i tallene»: hvor mange av betalingene mangler koblet bruker, og om
-   *  konsernstrukturen (selskap per betaling) finnes i basen ennå. */
-  hull: { betalingerTotalt: number; betalingerUtenBruker: number; harSelskapskobling: boolean };
+function YtdKort({ data, stor }: { data: AdminOkonomiV2Data; stor?: boolean }) {
+  const { budsjettKr, resultatKr } = data.ytd;
+  const tak = [budsjettKr, resultatKr].filter((v): v is number => v != null).reduce((a, b) => Math.max(a, b), 0);
+  const avvik = ytdAvvik(budsjettKr, resultatKr);
+  const budsjettPct = ytdBarPct(budsjettKr, tak || null);
+  const resultatPct = ytdBarPct(resultatKr, tak || null);
+
+  const linje = (label: string, verdi: string, pct: number | null, fyll: string) => (
+    <div>
+      {stor ? (
+        <>
+          <div style={{ fontSize: 34, fontWeight: 700, letterSpacing: "-0.02em", fontVariantNumeric: "tabular-nums", color: TL.text }}>
+            {verdi}
+          </div>
+          <div style={{ marginTop: 6 }}>
+            <CapsLabel>{label}</CapsLabel>
+          </div>
+        </>
+      ) : (
+        <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between" }}>
+          <span style={{ fontSize: 13, color: TL.mute }}>{label}</span>
+          <span style={{ fontSize: 15, fontWeight: 600, fontVariantNumeric: "tabular-nums", color: TL.text }}>{verdi}</span>
+        </div>
+      )}
+      <div style={{ marginTop: stor ? 12 : 8, height: 3, borderRadius: 2, background: TL.dim, overflow: "hidden" }}>
+        <div
+          style={{
+            width: pct == null ? "0%" : `${pct}%`,
+            height: "100%",
+            background: fyll,
+            borderRadius: 2,
+          }}
+        />
+      </div>
+    </div>
+  );
+
+  return (
+    <div style={{ background: TL.elev, borderRadius: TL.radius.card, padding: stor ? 24 : 20 }}>
+      <CapsLabel>YTD · {data.aar}</CapsLabel>
+      {!data.visKroner ? (
+        <p style={{ margin: "14px 0 0", fontSize: 13, color: TL.mute }}>Ingen tilgang til kronetall.</p>
+      ) : (
+        <>
+          <div style={{ marginTop: stor ? 16 : 14, display: stor ? "grid" : "block", gridTemplateColumns: stor ? "1fr 1fr" : undefined, gap: stor ? 24 : undefined }}>
+            {linje("Budsjett", fmtKrNb(budsjettKr), budsjettPct, TL.mute)}
+            <div style={{ marginTop: stor ? 0 : 14 }}>{linje("Resultat", fmtKrNb(resultatKr), resultatPct, TL.fill)}</div>
+          </div>
+          <div style={{ marginTop: stor ? 16 : 14, fontSize: 13, color: TL.mute, fontVariantNumeric: "tabular-nums" }}>
+            {ytdAvvikTekst(avvik)}
+            {!data.tripletexKonfigurert
+              ? " · Tripletex er ikke koblet."
+              : resultatKr == null
+                ? " · Tripletex-tall mangler."
+                : null}
+            {!data.hull.budsjettkilde ? " · Ingen budsjettkilde." : null}
+          </div>
+        </>
+      )}
+    </div>
+  );
 }
 
-const STATUS: Record<BetalingStatusKey, { label: string; tone: StatusTone }> = {
-  SUCCEEDED: { label: "Betalt", tone: "up" },
-  PENDING: { label: "Venter", tone: "warn" },
-  FAILED: { label: "Feilet", tone: "down" },
-  REFUNDED: { label: "Refundert", tone: "info" },
-  PARTIALLY_REFUNDED: { label: "Delvis refundert", tone: "warn" },
-};
+function FakturaListe({ rader, stor }: { rader: OkonomiFaktura[]; stor?: boolean }) {
+  return (
+    <div style={{ background: TL.elev, borderRadius: TL.radius.card, padding: stor ? "8px 24px" : "4px 20px" }}>
+      <div style={{ padding: stor ? "16px 0 10px" : "14px 0 10px" }}>
+        <CapsLabel>Faktura</CapsLabel>
+      </div>
+      {rader.length === 0 ? (
+        <p style={{ margin: "0 0 16px", fontSize: 13, color: TL.mute, lineHeight: 1.45 }}>Ingen fakturaer å vise.</p>
+      ) : (
+        rader.map((f) => {
+          const forfalt = erForfalt(f.status);
+          return (
+            <div
+              key={f.id}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: stor ? 16 : 12,
+                padding: stor ? "14px 0" : "13px 0",
+                borderTop: `1px solid ${TL.hair}`,
+              }}
+            >
+              {stor && (
+                <span style={{ width: 84, fontSize: 13, color: TL.mute, fontVariantNumeric: "tabular-nums" }}>{f.dato}</span>
+              )}
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <div style={{ fontSize: 15, fontWeight: 600, color: TL.text }}>{f.navn}</div>
+                <div style={{ marginTop: 2, fontSize: 13, color: TL.mute, fontVariantNumeric: "tabular-nums" }}>
+                  {stor ? f.beskrivelse : `${f.dato} · ${f.beskrivelse ?? ""}`}
+                </div>
+              </div>
+              <div style={{ textAlign: "right" }}>
+                <div style={{ fontSize: 15, fontWeight: 600, fontVariantNumeric: "tabular-nums", color: TL.text }}>
+                  {fmtKrNb(f.belopKr)}
+                </div>
+                <div
+                  style={{
+                    marginTop: 2,
+                    fontSize: 11,
+                    fontWeight: 600,
+                    letterSpacing: "0.08em",
+                    textTransform: "uppercase",
+                    color: forfalt ? TL.danger : TL.mute,
+                  }}
+                >
+                  {f.status}
+                </div>
+              </div>
+            </div>
+          );
+        })
+      )}
+    </div>
+  );
+}
 
-const pl = (n: number, en: string, flere: string) => `${n} ${n === 1 ? en : flere}`;
+function TimeklippKort({ rader, fulltNavn }: { rader: OkonomiTimeklipp[]; fulltNavn?: boolean }) {
+  return (
+    <div style={{ background: TL.elev, borderRadius: TL.radius.card, padding: 20 }}>
+      <CapsLabel>Timeklipp</CapsLabel>
+      {rader.length === 0 ? (
+        <p style={{ margin: "12px 0 0", fontSize: 13, color: TL.mute }}>Ingen klipp registrert.</p>
+      ) : (
+        rader.map((k) => {
+          const prikker = klippPrikker(k.brukt, k.totalt);
+          return (
+            <div key={k.id} style={{ display: "flex", alignItems: "center", gap: 12, padding: "6px 0", marginTop: 6 }}>
+              <span style={{ flex: 1, fontSize: 15, fontWeight: 600, color: TL.text }}>{fulltNavn ? k.navn : k.fornavn}</span>
+              {prikker.length > 0 && (
+                <span style={{ display: "flex", gap: 4 }} aria-hidden>
+                  {prikker.map((fylt, i) => (
+                    <span
+                      key={i}
+                      style={{
+                        width: 8,
+                        height: 8,
+                        borderRadius: "50%",
+                        background: fylt ? TL.text : TL.dim,
+                      }}
+                    />
+                  ))}
+                </span>
+              )}
+              <span style={{ width: 52, textAlign: "right", fontSize: 13, color: TL.mute, fontVariantNumeric: "tabular-nums" }}>
+                {k.brukt} av {k.totalt}
+              </span>
+            </div>
+          );
+        })
+      )}
+      <div style={{ marginTop: 10, fontSize: 13, color: TL.mute }}>Klipp hos coach · ikke app-nivå</div>
+    </div>
+  );
+}
 
-/** md-breakpoint-speil (matcher V2Shell/AdminBookingerV2). */
-function useMobile(): boolean {
-  const [m, setM] = useState(false);
+function useWide(): boolean {
+  const [wide, setWide] = useState(false);
   useEffect(() => {
-    const mq = window.matchMedia("(max-width: 767px)");
-    const oppdater = () => setM(mq.matches);
+    const mq = window.matchMedia(`(min-width: ${TL_BREKK.macRail}px)`);
+    const oppdater = () => setWide(mq.matches);
     oppdater();
     mq.addEventListener("change", oppdater);
     return () => mq.removeEventListener("change", oppdater);
   }, []);
-  return m;
-}
-
-/** nb-NO heltall med tusenskille — konsekvent «kr»-prefiks (aldri rå float). */
-function kr(v: number): string {
-  return `kr ${new Intl.NumberFormat("nb-NO").format(Math.round(v))}`;
-}
-
-/** Kompakt y-akse-format for trenden (12k / 900). */
-function kompakt(v: number): string {
-  return v >= 1000 ? `${Math.round(v / 1000)}k` : `${Math.round(v)}`;
-}
-
-/** Én betalingsrad som kort-liste-innslag (mobil-vennlig, ingen tabell).
- *  Mobil: beløp over status-pille (smal meta-kolonne → mer plass til navn/tekst). */
-function BetalingRad({ b, last, mobile }: { b: AdminOkonomiV2Betaling; last: boolean; mobile: boolean }) {
-  const st = STATUS[b.status];
-  const sub = [b.dato, b.beskrivelse ?? b.type.toLowerCase()].filter(Boolean).join(" · ");
-  const refund = b.refundertKr > 0 ? ` · − ${kr(b.refundertKr)} refundert` : "";
-  return (
-    <Rad
-      leading={<AvatarInit navn={b.navn} size={32} />}
-      title={b.navn}
-      sub={sub + refund}
-      meta={
-        <span
-          style={{
-            display: "inline-flex",
-            flexDirection: mobile ? "column" : "row",
-            alignItems: mobile ? "flex-end" : "center",
-            gap: mobile ? 4 : 10,
-          }}
-        >
-          <span
-            style={{
-              fontFamily: TL.font.mono,
-              fontSize: 13,
-              fontWeight: 700,
-              color: TL.text,
-              fontVariantNumeric: "tabular-nums",
-              whiteSpace: "nowrap",
-            }}
-          >
-            {kr(b.belopKr)}
-          </span>
-          <StatusPill tone={st.tone}>{st.label}</StatusPill>
-        </span>
-      }
-      trailing={null}
-      last={last}
-    />
-  );
-}
-
-function Merknad({ children }: { children: ReactNode }) {
-  return (
-    <div style={{ display: "flex", gap: 10, padding: "12px 14px", background: TL.dock, border: `1px solid ${TL.hair}`, borderRadius: 12 }}>
-      <Icon name="alert-triangle" size={14} style={{ color: TL.mute, flex: "none", marginTop: 2 }} />
-      <p style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 12.5, color: TL.mute, lineHeight: 1.5 }}>{children}</p>
-    </div>
-  );
+  return wide;
 }
 
 export function AdminOkonomiV2({ data }: { data: AdminOkonomiV2Data }) {
-  const mobile = useMobile();
-  const [fane, setFane] = useState("oversikt");
-  const maks = Math.max(1000, ...data.serie.map((m) => m.kr));
-  const harTrend = data.serie.length >= 2 && data.serie.some((m) => m.kr > 0);
-
-  // ── Hode ──────────────────────────────────────────────────────
-  const hode = (
-    <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 14, flexWrap: "wrap" }}>
-      <div>
-        <h1 style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 17, fontWeight: 600, color: TL.text }}>Økonomi</h1>
-        <span style={{ display: "block", fontFamily: TL.font.mono, fontSize: 10.5, color: TL.mute, marginTop: 2 }}>
-          Mer · {data.periodeLabel} · penger og kapasitet
-        </span>
-      </div>
-      <a
-        href={data.stripeHref}
-        target="_blank"
-        rel="noopener noreferrer"
-        style={{ textDecoration: "none" }}
-        className="hidden md:inline-flex"
-        data-paper-en-ting="true"
-      >
-        <span style={{
-          display: "inline-flex", alignItems: "center", gap: 8, minHeight: 56, padding: "10px 16px",
-          borderRadius: 12, background: TL.fill, color: TL.onFill, fontFamily: TL.font.sans, fontSize: 14, fontWeight: 600,
-        }}>Åpne Stripe</span>
-      </a>
-    </div>
-  );
-
-  // ── KPI-flis (4) ──────────────────────────────────────────────
-  const endringChip =
-    data.endringPct != null && data.endringPct !== 0
-      ? { delta: `${data.endringPct > 0 ? "+" : "−"}${Math.abs(data.endringPct)} %`, dir: data.endringPct >= 0 ? ("up" as const) : ("down" as const) }
-      : {};
-  const kpi = (
-    <div className="grid grid-cols-2 lg:grid-cols-4" style={{ gap: 16 }}>
-      <KpiFlis label="Belegg uke" value={data.beleggPct == null ? null : `${data.beleggPct} %`} instant />
-      <KpiFlis label="Innbetalt denne mnd" value={kr(data.innbetaltMndKr)} {...endringChip} />
-      <KpiFlis label="Åpne fakturaer" value={data.utestaendeAntall} varsle={data.utestaendeAntall > 0} instant />
-      <KpiFlis label="PRO · MRR" value={kr(data.mrrKr)} tint instant />
-    </div>
-  );
-
-  // ── Inntektstrend (6 mnd) ─────────────────────────────────────
-  const trendKort = (
-    <Kort eyebrow="Inntekt · siste 6 måneder" action={<Caps size={9}>kr · sum innbetalt per mnd</Caps>}>
-      {harTrend ? (
-        <Trend
-          series={data.serie.map((m) => m.kr)}
-          xLabels={data.serie.map((m) => m.label)}
-          yMin={0}
-          yMax={maks * 1.1}
-          baseline={null}
-          height={128}
-          fmt={kompakt}
-        />
-      ) : (
-        <TomTilstand icon="bar-chart" title="Ingen innbetalinger ennå" sub="Trenden tegnes når det finnes betalinger å summere." />
-      )}
-    </Kort>
-  );
-
-  // ── Betalings-liste ───────────────────────────────────────────
-  const liste = (
-    <Kort
-      eyebrow="Siste betalinger"
-      action={data.betalinger.length > 0 ? <Caps size={9}>{pl(data.betalinger.length, "rad", "rader")}</Caps> : undefined}
-      pad="4px 20px"
-    >
-      {data.betalinger.length === 0 ? (
-        <div style={{ padding: "16px 0" }}>
-          <TomTilstand icon="credit-card" title="Ingen transaksjoner ennå" sub="Betalinger dukker opp her når spillere blir fakturert." />
-        </div>
-      ) : (
-        data.betalinger.map((b, i) => <BetalingRad key={b.id} b={b} last={i === data.betalinger.length - 1} mobile={mobile} />)
-      )}
-    </Kort>
-  );
-
-  // ── Sidekolonne: MRR-sammensetning + utestående ───────────────
-  const mrrKort = (
-    <Kort tint eyebrow="MRR-sammensetning">
-      <TallHero label="Løpende per måned" value={kr(data.mrrKr)} accent size={44} sub="fra coaching-abonnement" />
-      <div style={{ marginTop: 16 }}>
-        {data.proAktive > 0 ? (
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "space-between",
-              gap: 10,
-              padding: "11px 13px",
-              borderRadius: TL.radius.row,
-              background: TL.dock,
-              border: `1px solid ${TL.hair}`,
-            }}
-          >
-            <span style={{ display: "inline-flex", alignItems: "center", gap: 8 }}>
-              <span
-                style={{
-                  fontFamily: TL.font.mono,
-                  fontSize: 9,
-                  fontWeight: 700,
-                  letterSpacing: "0.08em",
-                  color: TL.mute,
-                  background: TL.dock,
-                  border: `1px solid ${TL.hair}`,
-                  borderRadius: 5,
-                  padding: "3px 6px",
-                }}
-              >
-                PRO
-              </span>
-              <span style={{ fontFamily: TL.font.sans, fontSize: 12.5, color: TL.mute }}>
-                {pl(data.proAktive, "abonnement", "abonnement")}
-              </span>
-            </span>
-            <span style={{ fontFamily: TL.font.mono, fontSize: 12.5, fontWeight: 700, color: TL.text, fontVariantNumeric: "tabular-nums" }}>
-              {kr(data.mrrKr)}
-            </span>
-          </div>
-        ) : (
-          <TomTilstand icon="repeat" title="Ingen PRO-abonnement ennå" sub="MRR vokser når spillere oppgraderer til 299 kr/mnd." />
-        )}
-      </div>
-    </Kort>
-  );
-
-  const utestaendeKort =
-    data.utestaendeKr > 0 ? (
-      <Kort>
-        <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 12 }}>
-          <Icon name="flag" size={13} style={{ color: TL.warn }} />
-          <Caps color={TL.warn}>Utestående</Caps>
-        </div>
-        <TallHero
-          value={kr(data.utestaendeKr)}
-          size={38}
-          sub={pl(data.utestaendeAntall, "faktura venter", "fakturaer venter")}
-        />
-        <div style={{ marginTop: 14 }}>
-          <Link href={data.oppfolgHref} style={{ textDecoration: "none" }}>
-            <CTAPill ghost icon="arrow-right">Følg opp</CTAPill>
-          </Link>
-        </div>
-      </Kort>
-    ) : null;
-
-  // ── AI-innsikt ────────────────────────────────────────────────
-  const innsiktTekst =
-    data.utestaendeKr > 0
-      ? `${kr(data.utestaendeKr)} står ute fordelt på ${pl(data.utestaendeAntall, "faktura", "fakturaer")} — følg dem opp for å sikre innbetalingen.`
-      : `${pl(data.betalteAntall, "betaling", "betalinger")} innfridd denne måneden. MRR ${kr(data.mrrKr)} løpende fra ${pl(data.proAktive, "PRO-abonnement", "PRO-abonnement")}.`;
-
-  // ── Feilede betalinger — «Én ting nå» (fasit: 2 betalinger feilet 28. juli) ──
-  const feilede = data.betalinger.filter((b) => b.status === "FAILED");
-  const feiletKr = feilede.reduce((s, b) => s + b.belopKr, 0);
-
-  // ── Faner (fasit agencyos-okonomi.html: Oversikt · Betalinger · Mot
-  // målet · Hull i tallene). Belegg/Rapporter/Abonnement sitt eneste innhold
-  // som ikke allerede dekkes av Oversikt-sidekolonnen er flyttet til
-  // «Mer her»-lenkene under — sjeldent brukt, derfor lenke, ikke egen fane.
-  const linje = (k: string, v: ReactNode) => (
-    <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: 12, padding: "9px 0", borderBottom: `1px solid ${TL.hair}` }}>
-      <span style={{ fontFamily: TL.font.sans, fontSize: 12.5, color: TL.mute }}>{k}</span>
-      <span style={{ fontFamily: TL.font.mono, fontSize: 13, fontWeight: 700, color: TL.text, fontVariantNumeric: "tabular-nums" }}>{v}</span>
-    </div>
-  );
-  const beleggTekst = data.beleggPct == null ? TOM_TALL : `${data.beleggPct} %`;
-
-  const merHer = (
-    <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap", paddingTop: 4 }}>
-      <Caps size={9}>Mer her</Caps>
-      <Link href={data.tjenesterHref} style={{ textDecoration: "none" }}>
-        <CTAPill ghost icon="credit-card">Tjenester og priser</CTAPill>
-      </Link>
-      <Link href="/admin/availability" style={{ textDecoration: "none" }}>
-        <CTAPill ghost icon="calendar">Tilgjengelighet</CTAPill>
-      </Link>
-      <a href={data.stripeHref} target="_blank" rel="noopener noreferrer" style={{ textDecoration: "none" }}>
-        <CTAPill ghost icon="arrow-up-right">Stripe-dashboard / eksport</CTAPill>
-      </a>
-    </div>
-  );
-
-  const belopKompakt = (v: number) => new Intl.NumberFormat("nb-NO").format(Math.round(v));
-
-  const paneler: Record<string, ReactNode> = {
-    oversikt: (
-      <>
-        {feilede.length > 0 && (
-          <Kort
-            pad="16px 18px"
-            style={{
-              border: `1px solid color-mix(in srgb, ${TL.fill} 35%, ${TL.hair})`,
-              borderLeft: `3px solid ${TL.fill}`,
-              background: `color-mix(in srgb, ${TL.fill} 6%, ${TL.elev})`,
-            }}
-          >
-            <Caps size={9} color={TL.fill}>Én ting nå</Caps>
-            <div style={{ marginTop: 8, fontFamily: TL.font.sans, fontSize: 18, fontWeight: 600, color: TL.text }}>
-              {pl(feilede.length, "betaling feilet", "betalinger feilet")}
-            </div>
-            <p style={{ margin: "6px 0 0", fontFamily: TL.font.sans, fontSize: 13, color: TL.mute, lineHeight: 1.5 }}>
-              {kr(feiletKr)} kom aldri inn. Ingen har fulgt dem opp, fordi de ikke ligger i noen kø.
-            </p>
-            <div style={{ marginTop: 14 }}>
-              <button
-                type="button"
-                onClick={() => setFane("betalinger")}
-                className="v2-press v2-focus"
-                style={{
-                  display: "inline-flex", alignItems: "center", gap: 8, minHeight: 56, padding: "10px 16px",
-                  borderRadius: 12, background: TL.fill, color: TL.onFill, fontFamily: TL.font.sans, fontSize: 14,
-                  fontWeight: 600, border: 0, cursor: "pointer",
-                }}
-              >
-                Se {pl(feilede.length, "den feilede", "de feilede")}
-              </button>
-            </div>
-          </Kort>
-        )}
-        {trendKort}
-        <div className="grid grid-cols-1 lg:grid-cols-[1.5fr_1fr]" style={{ gap: 16, alignItems: "start" }}>
-          {liste}
-          <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-            {mrrKort}
-            {utestaendeKort}
-          </div>
-        </div>
-        <a href={data.stripeHref} target="_blank" rel="noopener noreferrer" style={{ textDecoration: "none" }}>
-          <InnsiktChip cta="Åpne Stripe">{innsiktTekst}</InnsiktChip>
-        </a>
-        {merHer}
-      </>
-    ),
-    betalinger: (
-      <>
-        <Kort
-          eyebrow="Betalinger"
-          action={<Caps size={9}>{pl(data.betalinger.length, "rad", "rader")}</Caps>}
-          pad="4px 20px"
-        >
-          {data.betalinger.length === 0 ? (
-            <div style={{ padding: "16px 0" }}>
-              <TomTilstand icon="credit-card" title="Ingen transaksjoner ennå" sub="Betalinger dukker opp her når spillere blir fakturert." />
-            </div>
-          ) : (
-            // Feilede først — det er det eneste som krever en handling.
-            data.betalinger
-              .slice()
-              .sort((a, b) => {
-                const v: Record<BetalingStatusKey, number> = { FAILED: 0, PENDING: 1, PARTIALLY_REFUNDED: 2, REFUNDED: 3, SUCCEEDED: 4 };
-                return v[a.status] - v[b.status];
-              })
-              .map((b, i, arr) => <BetalingRad key={b.id} b={b} last={i === arr.length - 1} mobile={mobile} />)
-          )}
-        </Kort>
-        <Kort eyebrow="Belegg · booking og kapasitet">
-          {linje("Denne uka", beleggTekst)}
-          {linje("Bookinger denne uka", data.bookingerUka)}
-          {data.beleggPct == null && (
-            <p style={{ fontFamily: TL.font.sans, fontSize: 12, color: TL.mute, margin: "12px 0 0", lineHeight: 1.5 }}>
-              Belegg krever registrerte tilgjengelighets-vinduer på coach. Uten dem finnes ingen
-              kapasitet å måle mot — derfor {TOM_TALL} og ikke et anslag.
-            </p>
-          )}
-        </Kort>
-      </>
-    ),
-    maal: (() => {
-      const iKr = data.konsernMaal.usd * data.konsernMaal.antattKurs;
-      const aarTakt = data.innbetaltMndKr * 12;
-      const andelPct = iKr > 0 ? (aarTakt / iKr) * 100 : 0;
-      return (
-        <>
-          <Kort eyebrow="Konsernmålet">
-            <div style={{ fontFamily: TL.font.sans, fontSize: 18, fontWeight: 600, color: TL.text }}>
-              {belopKompakt(data.konsernMaal.usd)} USD netto per år
-            </div>
-            <p style={{ margin: "8px 0 16px", fontFamily: TL.font.sans, fontSize: 12.5, color: TL.mute, lineHeight: 1.5 }}>
-              Målet er i dollar, omsetningen er i kroner, og kursen ligger ikke i basen. Regnestykket under bruker{" "}
-              {data.konsernMaal.antattKurs} — en forutsetning, ikke et hentet tall.
-            </p>
-            {linje("Mål i kroner", `${belopKompakt(iKr)} kr`)}
-            {linje("Denne mnd × 12", `${belopKompakt(aarTakt)} kr`)}
-            <div style={{ marginTop: 12, height: 8, borderRadius: 9999, background: TL.dock, border: `1px solid ${TL.hair}`, overflow: "hidden" }}>
-              <div style={{ height: "100%", width: `${Math.max(0.4, Math.min(100, andelPct))}%`, background: TL.fill, borderRadius: 9999 }} />
-            </div>
-            {linje("Andel av målet", `${andelPct.toFixed(1).replace(".", ",")} %`)}
-          </Kort>
-          <Merknad>
-            Én måned ganget med tolv er ikke en prognose. Det er det eneste tallet dataene tåler — et pent estimat
-            med samme grunnlag ville vært en påstand, ikke en måling.
-          </Merknad>
-          <Kort eyebrow="Abonnement · GRATIS / PRO">
-            {linje("PRO aktive", data.proAktive)}
-            {linje("MRR", kr(data.mrrKr))}
-            {linje("GRATIS-spillere", data.gratisSpillere)}
-            <p style={{ fontFamily: TL.font.sans, fontSize: 12, color: TL.mute, margin: "12px 0 0", lineHeight: 1.5 }}>
-              Churn og fornyelser krever abonnementshistorikk som ikke lagres ennå — derfor ikke vist.
-            </p>
-          </Kort>
-        </>
-      );
-    })(),
-    hull: (
-      <>
-        <Kort eyebrow="Hull i tallene">
-          <p style={{ margin: "0 0 12px", fontFamily: TL.font.sans, fontSize: 12.5, color: TL.mute, lineHeight: 1.5 }}>
-            Det som gjør at denne skjermen ikke kan svare på alt du egentlig spør om. Databaseendringer, ikke
-            designvalg.
-          </p>
-          {linje(
-            "Betalinger uten bruker",
-            `${data.hull.betalingerUtenBruker} av ${data.hull.betalingerTotalt}`,
-          )}
-          {linje("Selskap", data.hull.harSelskapskobling ? "koblet" : "finnes ikke")}
-        </Kort>
-        {data.hull.betalingerUtenBruker > 0 && (
-          <Merknad>
-            {data.hull.betalingerUtenBruker} av {data.hull.betalingerTotalt} betalinger mangler koblet bruker.
-            Uten den kan de verken fordeles per spiller eller per selskap.
-          </Merknad>
-        )}
-        {!data.hull.harSelskapskobling && (
-          <Merknad>
-            Ingen tabell knytter en betaling til AK Golf Academy, Mulligan eller Skarpnord. Konsernstrukturen finnes
-            bare i Notion — en selskapsfordeling her ville vært gjettet.
-          </Merknad>
-        )}
-      </>
-    ),
-  };
+  const wide = useWide();
+  useEffect(() => {
+    if (window.location.hash !== "#rapporter") return;
+    document.getElementById("rapporter")?.scrollIntoView({ block: "start" });
+  }, []);
 
   return (
-    <div data-paper-agencyos-okonomi data-paper-wave-f="okonomi" data-od-id="agencyos-okonomi" data-paper-slug="agencyos-okonomi" style={{ display: "flex", flexDirection: "column", gap: 16, width: "100%", background: TL.scene }}>
-      {hode}
+    <div data-screen="EC-01" style={{ display: "flex", flexDirection: "column", width: "100%", background: TL.scene }}>
+      <div>
+        <CapsLabel>Mer · Academy</CapsLabel>
+        <h1 style={{ margin: "6px 0 0", fontSize: 34, fontWeight: 700, letterSpacing: "-0.02em", lineHeight: 1.1, color: TL.text }}>
+          Økonomi
+        </h1>
+      </div>
 
-      {/* Mobil-snarvei (skjult på desktop der den ligger i hodet) */}
-      <a
-        href={data.stripeHref}
-        target="_blank"
-        rel="noopener noreferrer"
-        style={{ textDecoration: "none" }}
-        className="flex md:hidden"
+      <div
+        className="grid grid-cols-1 md:grid-cols-2"
+        style={{ marginTop: 18, gap: 16, alignItems: "start" }}
       >
-        <span style={{
-          display: "inline-flex", alignItems: "center", gap: 8, minHeight: 56, padding: "10px 16px",
-          borderRadius: 12, background: TL.fill, color: TL.onFill, fontFamily: TL.font.sans, fontSize: 14, fontWeight: 600, width: "100%", justifyContent: "center",
-        }}>Åpne Stripe</span>
-      </a>
+        <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+          <YtdKort data={data} stor={wide} />
+          <div className="hidden md:block">
+            <TimeklippKort rader={data.timeklipp} fulltNavn />
+          </div>
+        </div>
+        <FakturaListe rader={data.fakturaer} stor={wide} />
+      </div>
 
-      {kpi}
+      <div className="md:hidden" style={{ marginTop: 12 }}>
+        <TimeklippKort rader={data.timeklipp} />
+      </div>
 
-      <PillTabs
-        tabs={[
-          { id: "oversikt", l: "Oversikt" },
-          { id: "betalinger", l: "Betalinger" },
-          { id: "maal", l: "Mot målet" },
-          { id: "hull", l: data.hull.betalingerUtenBruker > 0 ? `Hull i tallene (${data.hull.betalingerUtenBruker})` : "Hull i tallene" },
-        ]}
-        value={fane}
-        onChange={setFane}
-      />
+      <p style={{ margin: "10px 0 0", fontSize: 13, color: TL.mute }}>
+        Alle beløp eks. mva · credits = timeklipp, aldri app-tier. Booking til faktura er ikke bygd (Invoice-modell mangler) —
+        Forfalt leses fra Stripe.
+      </p>
 
-      {paneler[fane]}
+      <div style={{ marginTop: 12 }}>
+        <a
+          href={data.stripeHref}
+          target="_blank"
+          rel="noopener noreferrer"
+          style={{ fontSize: 13, color: TL.mute, textDecoration: "underline" }}
+        >
+          Åpne Stripe
+        </a>
+      </div>
+
+      {data.visRapporter && data.rapporter && (
+        <div id="rapporter" style={{ marginTop: 28 }}>
+          <AdminReportsV2 data={data.rapporter} innfelt />
+        </div>
+      )}
     </div>
   );
 }
