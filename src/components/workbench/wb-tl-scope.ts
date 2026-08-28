@@ -1,6 +1,13 @@
 /**
  * TL_SCOPE — Train-lock-omskygging for Workbench-uka (D3, 25.08.2026).
  *
+ * Fasit: designsystem/train-lock/A-16 Mac Uke lys.dc.html
+ * Fasit: designsystem/train-lock/A-17 Mac Okt lys.dc.html
+ * Lys modus er samme flater med inverterte --tl-*-verdier (sort fill) —
+ * tokene bor lys på `:root` og mørk på `html[data-v2-tema="dark"]`, så
+ * A-16/A-17 dekkes av dette skopet uten egen skjermkode (D-LYS-beslutningen
+ * 26.08.2026: mekanisk avledet lys fra tokensettet er godkjent metode).
+ *
  * Workbench-uke gjenbruker delte v2-komponenter (Knapp, Inspektorpanel,
  * BunnArk, TimeGrid, Input, Select, Dialog — CLAUDE.md §Design: «Port HTML
  * 1:1: nei. Gjenbruk Button/Modal/TimeGrid/SessionCard»). De leser farge og

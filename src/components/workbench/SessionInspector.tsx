@@ -1,7 +1,22 @@
 "use client";
 
 /**
- * SessionInspector — høyrekolonnen i Workbench-uka (natt-plan Loop 2).
+ * SessionInspector — høyrekolonnen i Workbench-uka (natt-plan Loop 2, PX-2).
+ *
+ * Fasit: designsystem/train-lock/A-02 Mac Okt Naerspill.dc.html (økt/formel-panelet)
+ * Fasit: designsystem/train-lock/A-02b Mac Okt Innspill.dc.html (delvis — se avvik)
+ * Fasit: designsystem/train-lock/A-02c Mac Serie-ark.dc.html (endre serie-policy)
+ * Fasit: designsystem/train-lock/A-09 Mac Filip Godkjenn.dc.html (delvis — se avvik)
+ * Fasit: designsystem/train-lock/A-17 Mac Okt lys.dc.html (lys via --tl-*-tokens)
+ *
+ * Kjente avvik mot fasit (PX-2, dokumentert i PR):
+ * - A-02 tegner en EGEN «Økt»-visning (drill-liste venstre + formel-panel 380
+ *   + kontekst 300) — her er panelet inspektør-kolonnen i uka; formel-pillene
+ *   (Pyramide/Område/Situasjon/Miljø/Press/Teknikk) redigeres per drill i
+ *   DrillListEditor, ikke som pille-rader.
+ * - A-02b: reps-felt (12 baller · PEI) og Gjenta-felt på økt-nivå mangler.
+ * - A-09: Caddie-utkast med proveniens-banner og «Godkjenn uke» er ikke
+ *   bygget — kun godkjenning-status-linjene under vises.
  *
  * Flytting skjer HER i v1: dato, start og varighet er redigerbare felter som
  * kaller `moveSession`. Ingen drag-lib (anti-scope). Publiser/trekk tilbake og
@@ -248,7 +263,42 @@ export function SessionInspector({
         </InspektorBlokk>
       )}
 
-      <InspektorBlokk label={UI.drills}>
+      {/* Coach-notat (A-02): #1C1C1E-kort radius 16 med caps-etikett. */}
+      {session.notes && (
+        <div
+          style={{
+            background: TL.dock,
+            borderRadius: 16,
+            padding: "12px 14px",
+          }}
+        >
+          <div
+            style={{
+              fontFamily: TL.font.sans,
+              fontSize: 11,
+              fontWeight: 600,
+              letterSpacing: "0.08em",
+              textTransform: "uppercase",
+              color: TL.mute,
+            }}
+          >
+            {UI.coachNoteLabel}
+          </div>
+          <div
+            style={{
+              marginTop: 5,
+              fontFamily: TL.font.sans,
+              fontSize: 13,
+              color: TL.mute,
+              lineHeight: 1.45,
+            }}
+          >
+            {session.notes}
+          </div>
+        </div>
+      )}
+
+      <InspektorBlokk label={UI.drillsCaps}>
         <DrillListEditor
           drills={session.drills}
           disabled={travel}
@@ -262,15 +312,16 @@ export function SessionInspector({
   );
 }
 
+/* Fasit A-02/A-03: caps-etikett 11/600/0.08em over feltet. */
 function Felt({ label, children }: { label: string; children: React.ReactNode }) {
   return (
-    <label style={{ display: "grid", gap: 5, minWidth: 0 }}>
+    <label style={{ display: "grid", gap: 6, minWidth: 0 }}>
       <span
         style={{
-          fontFamily: TL.font.mono,
-          fontSize: 9.5,
+          fontFamily: TL.font.sans,
+          fontSize: 11,
           fontWeight: 600,
-          letterSpacing: "0.07em",
+          letterSpacing: "0.08em",
           textTransform: "uppercase",
           color: TL.mute,
         }}

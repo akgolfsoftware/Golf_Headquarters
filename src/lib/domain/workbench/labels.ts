@@ -254,6 +254,27 @@ export const UI = {
   // Fallback
   unnamedPlayer: "Spiller",
 
+  // Topplinje (fasit A-01: «Sesong 2026 › August › Uke 34» + caps «Utkast»)
+  weekCrumb: (n: number) => `Uke ${n}`,
+  draftCountBadge: (n: number) => (n === 1 ? "1 utkast" : `${n} utkast`),
+
+  // Publiser-dialog (fasit A-01d)
+  publishConfirmHeading: (n: number) => (n === 1 ? "Publiser 1 økt?" : `Publiser ${n} økter?`),
+  publishConfirmKicker: (uke: number, navn: string) => `Uke ${uke} · ${navn}`,
+
+  // Ny økt-modal (fasit A-03: «ingen formel her»)
+  createSessionFormelHint: "Formelen settes på første drill etter Lagre — ikke her.",
+  createSave: "Lagre økt",
+
+  // Drill-skjema (fasit A-03b/A-03c)
+  drillSave: "Lagre drill",
+  drillMissingCaps: "Mangler",
+  addDrillShort: "+ Legg til",
+
+  // Økt-kort / inspektør (fasit A-02)
+  coachNoteLabel: "Coach-notat",
+  drillsCaps: "Øvelser",
+
   // Godkjenning (Loop 3T/B6) — se resolvePlayerApproval
   approvalFromCoach: "Forslag fra coach",
   approvalFromGroup: "Forslag fra gruppe",
@@ -290,6 +311,14 @@ export function formatTime(minute: number): string {
     .padStart(2, "0");
   const m = (minute % 60).toString().padStart(2, "0");
   return `${h}:${m}`;
+}
+
+/**
+ * Norsk klokkevisning «16.00» (Train-lock: «Norsk format … 09.00»).
+ * KUN for visning — `<input type="time">` krever fortsatt `formatTime` (HH:MM).
+ */
+export function formatKlokke(minute: number): string {
+  return formatTime(minute).replace(":", ".");
 }
 
 export function formatHours(minutes: number): string {

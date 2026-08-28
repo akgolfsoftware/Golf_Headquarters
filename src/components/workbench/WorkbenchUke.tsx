@@ -1,21 +1,36 @@
 "use client";
 
 /**
- * WorkbenchUke — orkestreringen av Agency-uka (natt-plan Loop 2).
+ * WorkbenchUke — orkestreringen av Agency-uka (natt-plan Loop 2, PX-2).
+ *
+ * Fasit: designsystem/train-lock/A-01 Mac Uke Pro.dc.html (topplinje + skall)
+ * Fasit: designsystem/train-lock/A-12 iPad Uke.dc.html (delvis — se avvik)
+ * Fasit: designsystem/train-lock/A-13 iPhone Agenda.dc.html (delvis — se avvik)
+ * Fasit: designsystem/train-lock/A-07 Mac Standard.dc.html (avvik — se under)
+ * Fasit: designsystem/train-lock/A-08 Mac Rolle Spiller.dc.html (avvik)
+ *
+ * Kjente avvik mot fasit (PX-2, dokumentert i PR):
+ * - A-07/A-01: Standard/Pro-toggle og Balanse-kolonnen (Neste viktig, ACWR,
+ *   SG, Pyramide · uke) er ikke bygget — høyrekolonnen her er inspektøren.
+ * - A-08: Coach/Spiller-rolletoggle (read-only Player-forhåndsvisning) er
+ *   ikke bygget.
+ * - A-12: iPad-bruddpunktet bruker lg-terskelen, ikke egen 250 px-skinne
+ *   med inspektør-overlay.
+ * - A-13: mobil viser rutenettet, ikke fasitens agenda-liste med «+»-ark.
  *
  * Eier tilstanden (valgt økt, dialoger, laster/feil) og oversetter
  * `WbResultat` fra server-actions til norsk copy + toast. Domenet er rent,
  * actions eier sideeffektene, denne filen eier bare skjermen.
  */
 
-import { useCallback, useMemo, useState, useTransition } from "react";
+import { useCallback, useMemo, useState, useTransition, type CSSProperties } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { Knapp } from "@/components/v2/core";
 import { Icon } from "@/components/v2/icon";
 import { BunnArk } from "@/components/v2/bunn-ark";
 import { TL } from "@/lib/v2/train-lock";
-import { addDays, mondayOf, validateWeek } from "@/lib/domain/workbench/operations";
+import { addDays, isoWeekNumber, mondayOf, validateWeek } from "@/lib/domain/workbench/operations";
 import { AREA_LABEL, formatHours, PYRAMID_LABEL, UI } from "@/lib/domain/workbench/labels";
 import type {
   SourceItem,
@@ -344,6 +359,7 @@ export function WorkbenchUke({ playerId, spillerNavn, uke, kilder }: Props) {
         open={publiserApen}
         okter={utkast}
         idag={idag}
+        spillerNavn={spillerNavn}
         notater={valideringsnotater}
         publiserer={travel}
         onLukk={() => setPubliserApen(false)}
@@ -365,6 +381,14 @@ export function WorkbenchUke({ playerId, spillerNavn, uke, kilder }: Props) {
   );
 }
 
+/**
+ * Topplinjen — fasit A-01: spillernavnet ER tittelen (26/700/−0.01em) med
+ * caps «utkast»-merke ved siden av, deretter visnings-pillene, og helt til
+ * høyre «+ Ny økt» (hairline-pille 36) + den ENE hvite primæren «Publiser»
+ * (36 px pille, 13/700). Under: brødsmulen «Sesong 2026 › August › Uke 34».
+ * Uke-navigasjonen (‹ I dag ›) er beholdt som funksjon — fasiten navigerer
+ * via brødsmule/minikalender som ikke er bygget ennå (avvik, PX-2).
+ */
 function Topplinje({
   playerId,
   spillerNavn,
@@ -388,59 +412,129 @@ function Topplinje({
   onNyOkt: () => void;
   onPubliser: () => void;
 }) {
-  const slutt = week.days[week.days.length - 1]?.date ?? week.weekStart;
-  const periode = `${week.weekStart.slice(8, 10)}.${week.weekStart.slice(5, 7)} – ${slutt.slice(8, 10)}.${slutt.slice(5, 7)}`;
+  const ukeNr = isoWeekNumber(week.weekStart);
+  const manedNavn = UI.monthNames[Number(week.weekStart.slice(5, 7)) - 1];
+  const pillestil: CSSProperties = {
+    height: 36,
+    borderRadius: 9999,
+    minHeight: 36,
+    padding: "0 16px",
+    background: "transparent",
+    border: "none",
+    boxShadow: `inset 0 0 0 1px ${TL.draftBorder}`,
+    fontSize: 13,
+    fontWeight: 600,
+    color: TL.text,
+  };
 
   return (
-    <div
-      style={{
-        display: "flex",
-        flexWrap: "wrap",
-        alignItems: "center",
-        gap: 10,
-        minWidth: 0,
-      }}
-    >
-      <div style={{ minWidth: 0 }}>
-        <div style={{ fontFamily: TL.font.sans, fontSize: 19, fontWeight: 600, color: TL.text }}>
-          {UI.titleAgency}
+    <div style={{ display: "grid", gap: 8, minWidth: 0 }}>
+      <div
+        style={{
+          display: "flex",
+          flexWrap: "wrap",
+          alignItems: "center",
+          gap: 14,
+          minWidth: 0,
+        }}
+      >
+        <div style={{ display: "flex", alignItems: "baseline", gap: 10, minWidth: 0 }}>
+          <span
+            style={{
+              fontFamily: TL.font.sans,
+              fontSize: 26,
+              fontWeight: 700,
+              letterSpacing: "-0.01em",
+              color: TL.text,
+              whiteSpace: "nowrap",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+            }}
+          >
+            {spillerNavn}
+          </span>
+          {antallUtkast > 0 && (
+            <span
+              style={{
+                fontFamily: TL.font.sans,
+                fontSize: 11,
+                fontWeight: 600,
+                letterSpacing: "0.08em",
+                textTransform: "uppercase",
+                color: TL.mute,
+                fontVariantNumeric: "tabular-nums",
+                whiteSpace: "nowrap",
+              }}
+            >
+              {UI.draftCountBadge(antallUtkast)}
+            </span>
+          )}
         </div>
-        <div style={{ fontFamily: TL.font.sans, fontSize: 12.5, color: TL.mute }}>
-          {spillerNavn} · {periode} ·{" "}
+
+        <VisningPiller
+          playerId={playerId}
+          visning="uke"
+          uke={week.weekStart}
+          maned={week.weekStart.slice(0, 7)}
+          aar={week.weekStart.slice(0, 4)}
+        />
+
+        <div style={{ display: "flex", gap: 10, marginLeft: "auto", alignItems: "center", flexWrap: "wrap" }}>
+          <Knapp ghost icon="chevron-left" onClick={onForrige} style={{ minHeight: 36, padding: "0 10px" }}>
+            {UI.weekNavPrev}
+          </Knapp>
+          <Knapp ghost onClick={onIdag} style={{ minHeight: 36, padding: "0 10px" }}>
+            {UI.today}
+          </Knapp>
+          <Knapp ghost icon="chevron-right" onClick={onNeste} style={{ minHeight: 36, padding: "0 10px" }}>
+            {UI.weekNavNext}
+          </Knapp>
+          {/* A-01: «+ Ny økt» = hairline-pille, aldri fylt. */}
+          <Knapp ghost icon="plus" onClick={onNyOkt} style={pillestil}>
+            {UI.createSession}
+          </Knapp>
+          {/* A-01: den ENE hvite primæren. Disabled = dim flate (A-03-mønster). */}
+          <Knapp
+            enTing
+            disabled={antallUtkast === 0 || travel}
+            onClick={onPubliser}
+            style={{
+              height: 36,
+              minHeight: 36,
+              borderRadius: 9999,
+              padding: "0 18px",
+              fontSize: 13,
+              fontWeight: 700,
+              ...(antallUtkast === 0 || travel
+                ? { background: TL.dim, color: TL.mute }
+                : null),
+            }}
+          >
+            {UI.publish}
+          </Knapp>
+        </div>
+      </div>
+
+      {/* Brødsmule (A-01): «Sesong 2026 › August › Uke 34». */}
+      <div
+        style={{
+          fontFamily: TL.font.sans,
+          fontSize: 13,
+          color: TL.mute,
+          fontVariantNumeric: "tabular-nums",
+        }}
+      >
+        {UI.yearSeason(Number(week.weekStart.slice(0, 4)))}
+        <span style={{ margin: "0 4px" }}>›</span>
+        {manedNavn}
+        <span style={{ margin: "0 4px" }}>›</span>
+        <span style={{ color: TL.text, fontWeight: 600 }}>{UI.weekCrumb(ukeNr)}</span>
+        <span style={{ marginLeft: 12 }}>
           {UI.budgetLabel(
             formatHours(week.budget.plannedMinutes),
             formatHours(week.budget.targetMinutes),
           )}
-        </div>
-      </div>
-
-      <VisningPiller
-        playerId={playerId}
-        visning="uke"
-        uke={week.weekStart}
-        maned={week.weekStart.slice(0, 7)}
-        aar={week.weekStart.slice(0, 4)}
-      />
-
-      <div style={{ display: "flex", gap: 6, marginLeft: "auto", flexWrap: "wrap" }}>
-        <Knapp ghost icon="chevron-left" onClick={onForrige}>
-          {UI.weekNavPrev}
-        </Knapp>
-        <Knapp ghost onClick={onIdag}>
-          {UI.today}
-        </Knapp>
-        <Knapp ghost icon="chevron-right" onClick={onNeste}>
-          {UI.weekNavNext}
-        </Knapp>
-        {/* Fasitens topplinje (A-01) har KUN én hvit primær: Publiser.
-            «+ Ny økt» er en hairline sekundærknapp — derfor `ghost`, ikke
-            solid, selv om Knapp-primitiven nå arver Train-lock-fyll. */}
-        <Knapp ghost icon="plus" onClick={onNyOkt}>
-          {UI.createSession}
-        </Knapp>
-        <Knapp enTing disabled={antallUtkast === 0 || travel} onClick={onPubliser}>
-          {`${UI.publishWeek} · ${antallUtkast}`}
-        </Knapp>
+        </span>
       </div>
     </div>
   );

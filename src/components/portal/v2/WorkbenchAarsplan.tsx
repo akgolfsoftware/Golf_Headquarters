@@ -2,6 +2,17 @@
 import { TL } from "@/lib/v2/train-lock";
 
 /**
+ * Fasit: designsystem/train-lock/A-06 Mac Arsplan.dc.html (delvis — se avvik)
+ * Fasit: designsystem/train-lock/A-15 iPhone Arsplan.dc.html (spor under
+ * hverandre / horisontal scroll uten drag på mobil)
+ *
+ * Kjente avvik mot A-06 (PX-2, dokumentert i PR): fasitens spor for
+ * turneringer A/B/C, samlinger, tester Q, P3–P8, volum 3 px og ACWR mute er
+ * ikke bygget — kun periodisering + turnerings-markørrad; Caddie-kortene
+ * («Bruk forslag» → ghost-uke) og periode-inspektøren som egen kolonne
+ * mangler (popupen bærer redigeringen). PX-2 ryddet T/TL-blandingen: filen
+ * er nå ren TL.
+ *
  * 8c.2 — ÅRSPLAN-CANVAS (fasit workbench-arsplan.jsx, Anders' interaksjon):
  * hele sesongen som horisontal tidslinje med periodeblokker (farge per type),
  * turneringsmarkører og nå-linje. Perioder DRAS inn fra biblioteket — under
@@ -13,7 +24,7 @@ import { TL } from "@/lib/v2/train-lock";
  */
 
 import { useRef, useState, type PointerEvent as ReactPointerEvent } from "react";
-import { T, Kort, Caps, Icon, Knapp, TomTilstand, StatusPill } from "@/components/v2";
+import { Kort, Caps, Icon, Knapp, TomTilstand, StatusPill } from "@/components/v2";
 import { LPHASE_LABEL, LPHASE_FARGE, LPHASE_BESKRIVELSE } from "@/lib/labels/taxonomy";
 import { budsjettSum, type PeriodeInput, type SessionBudget } from "@/lib/workbench/perioder";
 import type { WorkbenchData } from "@/lib/workbench/load-workbench";
@@ -459,7 +470,8 @@ export function WorkbenchAarsplan({ data, handlers, onEndret }: {
                   };
                   return (
                     <div key={o} style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                      <span style={{ width: 8, height: 8, borderRadius: 3, background: T.ax[o], flex: "none" }} />
+                      {/* PX-2: Train-lock fargekoder aldri data — TL.mute-prikk, ikke Paper T.ax. */}
+                      <span style={{ width: 8, height: 8, borderRadius: 3, background: TL.mute, flex: "none" }} />
                       <span style={{ fontFamily: TL.font.mono, fontSize: 10, fontWeight: 700, color: TL.mute, width: 46 }}>{o}</span>
                       <div style={{ display: "flex", alignItems: "center", gap: 8, marginLeft: "auto" }}>
                         <button type="button" onClick={() => sett(verdi - 1)} disabled={verdi <= 0} className="v2-press" aria-label={`Færre ${o}-økter`} style={stepperStil(verdi <= 0)}>−</button>

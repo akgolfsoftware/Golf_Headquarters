@@ -159,18 +159,20 @@ function AapneUkePill({ playerId, dato, kompakt }: { playerId: string; dato: str
 }
 
 function DesktopGrid({ dato, spillere }: { dato: string; spillere: StallDagSpiller[] }) {
+  // A-10: kolonnehodet er «Filip FN» — fornavn først, så initialer
+  // (TimeGrid rendrer `dow date` på én caps-linje etter A-01-fasiten).
   const dager: TimeGridDay[] = spillere.map((s) => ({
     id: s.id,
-    dow: initialer(s.navn),
-    date: fornavn(s.navn),
+    dow: fornavn(s.navn),
+    date: initialer(s.navn),
   }));
 
   return (
     <div style={{ display: "grid", gap: 8, minWidth: 0 }}>
-      {/* Spiller-strip: samme flex-bredder som TimeGrid-hodet (62px tidskolonne +
+      {/* Spiller-strip: samme flex-bredder som TimeGrid-hodet (48px tidskolonne +
           N like kolonner), så pillene står rett over riktig kolonne. */}
       <div style={{ display: "flex", minWidth: 0 }}>
-        <div style={{ width: 62, flex: "none" }} />
+        <div style={{ width: 48, flex: "none" }} />
         {spillere.map((s) => (
           <div key={s.id} style={{ flex: 1, minWidth: 0, display: "flex", justifyContent: "center", padding: "0 4px" }}>
             <AapneUkePill playerId={s.id} dato={dato} kompakt />

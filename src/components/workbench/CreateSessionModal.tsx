@@ -1,17 +1,25 @@
 "use client";
 
 /**
- * CreateSessionModal — «Ny økt» (natt-plan Loop 2).
+ * CreateSessionModal — «Ny økt» (natt-plan Loop 2, PX-2).
  *
- * Feltene nullstilles ved å remonte komponenten (`key` i WorkbenchUke), ikke
- * med en effekt — hver åpning starter fra klikkpunktet i uka.
+ * Fasit: designsystem/train-lock/A-03 Ny okt modal.dc.html:
+ * 560 px modal, tittel 26/700 + undertekst 13 mute, caps-etiketter
+ * 11/600/0.08em, felt 44 px #1C1C1E radius 12, «ingen formel her» — hintet
+ * «Formelen settes på første drill etter Lagre — ikke her.» erstatter
+ * pyramide-valget og drill-editoren (formelen settes i inspektøren etterpå;
+ * økten opprettes med TEK som midlertidig dominant område). Footer = Avbryt
+ * som ren tekst + den ene hvite «Lagre økt»-pillen (44 px).
  *
- * Minimumsfelter per docs/natt/workbench/ui/components.md: tittel, dato,
- * start, varighet, område. Alt annet (drills, kilder, formel) kommer i 2S/2T.
+ * Kjente avvik (PX-2): fasitens Deltakere-pills (Individuell/Gruppe …),
+ * «Hent fra biblioteket», Dag-flervalg og Sted-feltet er ikke bygget —
+ * dato/gjenta-feltene bærer funksjonen.
+ *
+ * Feltene nullstilles ved å remonte komponenten (`key` i WorkbenchUke).
  * Nye økter er alltid UTKAST — spilleren ser dem først etter publisering.
  */
 
-import { useRef, useState } from "react";
+import { useState } from "react";
 import {
   Dialog,
   DialogBody,
@@ -23,14 +31,11 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Select } from "@/components/ui/select";
-import { Knapp } from "@/components/v2/core";
 import { TL } from "@/lib/v2/train-lock";
 
-import { AREA_LABEL, formatTime, PYRAMID_LABEL, UI } from "@/lib/domain/workbench/labels";
+import { formatTime, UI } from "@/lib/domain/workbench/labels";
 import type { AKFormel, PyramidArea } from "@/lib/domain/workbench/types";
-import { DrillListEditor, type DrillListItem } from "./DrillListEditor";
 
-const PYRAMIDER: PyramidArea[] = ["FYS", "TEK", "SLAG", "SPILL", "TURN"];
 const VARIGHETER = [30, 45, 60, 90, 120, 180];
 const GJENTA_UKER = [1, 2, 4, 6, 8, 12];
 
@@ -74,11 +79,8 @@ export function CreateSessionModal({
   const [dag, setDag] = useState(dato);
   const [start, setStart] = useState(formatTime(startMinutt));
   const [varighet, setVarighet] = useState(60);
-  const [pyramid, setPyramid] = useState<PyramidArea>("TEK");
   const [gjentaUker, setGjentaUker] = useState(1);
   const [feil, setFeil] = useState<string | null>(null);
-  const [drillUtkast, setDrillUtkast] = useState<DrillListItem[]>([]);
-  const nesteDrillId = useRef(0);
 
   function send() {
     const rensetTittel = tittel.trim();
@@ -98,13 +100,9 @@ export function CreateSessionModal({
       date: dag,
       startMinute: startMin,
       durationMinutes: varighet,
-      pyramid,
-      drills: drillUtkast.map((d) => ({
-        title: d.title,
-        durationMinutes: d.durationMinutes,
-        akFormel: d.akFormel,
-        description: d.description,
-      })),
+      // A-03: «ingen formel her» — TEK som midlertidig dominant område;
+      // formelen settes på første drill i inspektøren etterpå.
+      pyramid: "TEK",
       repeatWeeks: gjentaUker,
     });
   }
@@ -142,29 +140,15 @@ export function CreateSessionModal({
               </Felt>
             </div>
 
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
-              <Felt label={UI.duration}>
-                <Select value={varighet} onChange={(e) => setVarighet(Number(e.target.value))}>
-                  {VARIGHETER.map((v) => (
-                    <option key={v} value={v}>
-                      {v} min
-                    </option>
-                  ))}
-                </Select>
-              </Felt>
-              <Felt label={UI.pyramid}>
-                <Select
-                  value={pyramid}
-                  onChange={(e) => setPyramid(e.target.value as PyramidArea)}
-                >
-                  {PYRAMIDER.map((p) => (
-                    <option key={p} value={p}>
-                      {PYRAMID_LABEL[p]}
-                    </option>
-                  ))}
-                </Select>
-              </Felt>
-            </div>
+            <Felt label={UI.duration}>
+              <Select value={varighet} onChange={(e) => setVarighet(Number(e.target.value))}>
+                {VARIGHETER.map((v) => (
+                  <option key={v} value={v}>
+                    {v} min
+                  </option>
+                ))}
+              </Select>
+            </Felt>
 
             <Felt label={UI.repeatLabel}>
               <Select value={gjentaUker} onChange={(e) => setGjentaUker(Number(e.target.value))}>
@@ -176,42 +160,10 @@ export function CreateSessionModal({
               </Select>
             </Felt>
 
-            <Felt label={UI.drills}>
-              <DrillListEditor
-                drills={drillUtkast}
-                defaultPyramid={pyramid}
-                onLeggTil={(v) => {
-                  const id = `ny-${nesteDrillId.current++}`;
-                  setDrillUtkast((prev) => [
-                    ...prev,
-                    {
-                      id,
-                      title: v.title,
-                      durationMinutes: v.durationMinutes,
-                      akFormel: {
-                        pyramid: v.pyramid,
-                        area: v.area,
-                        label: `${PYRAMID_LABEL[v.pyramid]} · ${AREA_LABEL[v.area]}`,
-                      },
-                      description: v.description,
-                    },
-                  ]);
-                }}
-                onFlytt={(id, retning) => {
-                  setDrillUtkast((prev) => {
-                    const idx = prev.findIndex((d) => d.id === id);
-                    const nyIdx = idx + retning;
-                    if (idx < 0 || nyIdx < 0 || nyIdx >= prev.length) return prev;
-                    const kopi = [...prev];
-                    [kopi[idx], kopi[nyIdx]] = [kopi[nyIdx], kopi[idx]];
-                    return kopi;
-                  });
-                }}
-                onFjern={(id) => {
-                  setDrillUtkast((prev) => prev.filter((d) => d.id !== id));
-                }}
-              />
-            </Felt>
+            {/* A-03: «Formelen settes på første drill etter Lagre — ikke her.» */}
+            <p style={{ fontFamily: TL.font.sans, fontSize: 11, color: TL.mute, margin: 0 }}>
+              {UI.createSessionFormelHint}
+            </p>
 
             {feil && (
               <p style={{ fontFamily: TL.font.sans, fontSize: 12.5, color: TL.danger, margin: 0 }}>{feil}</p>
@@ -219,28 +171,67 @@ export function CreateSessionModal({
           </div>
         </DialogBody>
 
-        <DialogFooter>
-          <Knapp ghost onClick={onLukk}>
+        {/* A-03: Avbryt som ren tekst + den ene hvite «Lagre økt»-pillen. */}
+        <DialogFooter className="gap-4">
+          <button
+            type="button"
+            onClick={onLukk}
+            className="v2-focus"
+            style={{
+              appearance: "none",
+              background: "transparent",
+              border: "none",
+              padding: 0,
+              fontFamily: TL.font.sans,
+              fontSize: 15,
+              fontWeight: 600,
+              color: TL.mute,
+              cursor: "pointer",
+            }}
+          >
             {UI.cancel}
-          </Knapp>
-          <Knapp onClick={send} disabled={lagrer}>
-            {lagrer ? UI.creating : UI.create}
-          </Knapp>
+          </button>
+          <button
+            type="button"
+            onClick={lagrer ? undefined : send}
+            disabled={lagrer}
+            className="v2-press v2-focus"
+            style={{
+              appearance: "none",
+              height: 44,
+              borderRadius: 9999,
+              border: "none",
+              display: "inline-flex",
+              alignItems: "center",
+              justifyContent: "center",
+              padding: "0 26px",
+              fontFamily: TL.font.sans,
+              fontSize: 16,
+              fontWeight: 700,
+              whiteSpace: "nowrap",
+              cursor: lagrer ? "default" : "pointer",
+              background: lagrer ? TL.dim : TL.fill,
+              color: lagrer ? TL.mute : TL.onFill,
+            }}
+          >
+            {lagrer ? UI.creating : UI.createSave}
+          </button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
   );
 }
 
+/* Fasit A-03: caps-etikett 11/600/0.08em over feltet. */
 function Felt({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <label style={{ display: "grid", gap: 6, minWidth: 0 }}>
       <span
         style={{
-          fontFamily: TL.font.mono,
-          fontSize: 10,
+          fontFamily: TL.font.sans,
+          fontSize: 11,
           fontWeight: 600,
-          letterSpacing: "0.07em",
+          letterSpacing: "0.08em",
           textTransform: "uppercase",
           color: TL.mute,
         }}
