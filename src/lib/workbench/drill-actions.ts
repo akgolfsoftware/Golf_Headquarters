@@ -281,7 +281,7 @@ export async function createSessionDrill(input: {
     },
     select: DRILL_SELECT,
   });
-  revalidatePath("/admin/spillere/" + access.playerId + "/workbench");
+  revalidatePath("/admin/workbench/" + access.playerId);
   revalidatePath("/portal/planlegge/workbench");
   return { ok: true, drill: toWbDrill(created) };
 }
@@ -322,7 +322,7 @@ export async function updateSessionDrill(
     },
     select: DRILL_SELECT,
   });
-  revalidatePath("/admin/spillere/" + drill.session.plan.userId + "/workbench");
+  revalidatePath("/admin/workbench/" + drill.session.plan.userId);
   revalidatePath("/portal/planlegge/workbench");
   return { ok: true, drill: toWbDrill(updated) };
 }
@@ -352,7 +352,7 @@ export async function updateAllDrillsInSession(
     orderBy: { orderIndex: "asc" },
     select: DRILL_SELECT,
   });
-  revalidatePath("/admin/spillere/" + access.playerId + "/workbench");
+  revalidatePath("/admin/workbench/" + access.playerId);
   revalidatePath("/portal/planlegge/workbench");
   return { ok: true, drills: rows.map(toWbDrill) };
 }
@@ -369,7 +369,7 @@ export async function deleteSessionDrill(drillId: string): Promise<{ ok: boolean
     return { ok: false, error: "Du har ikke tilgang til denne spilleren." };
   }
   await prisma.sessionDrill.delete({ where: { id: drillId } });
-  revalidatePath("/admin/spillere/" + drill.session.plan.userId + "/workbench");
+  revalidatePath("/admin/workbench/" + drill.session.plan.userId);
   revalidatePath("/portal/planlegge/workbench");
   return { ok: true };
 }

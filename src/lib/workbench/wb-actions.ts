@@ -20,10 +20,16 @@ import { requirePortalUser } from "@/lib/auth/requirePortalUser";
 import { harCoachTilgangTilSpiller } from "@/lib/auth/coached";
 import { loadStallen } from "@/lib/admin/stallen-data";
 import {
+  addDays,
   addDrill as addDrillPure,
   applySeriesPatch,
+  buildMonthViewModel,
   buildWeekViewModel,
+  buildYearViewModel,
   createSession as createSessionPure,
+  lastDayOfMonth,
+  mondayOf,
+  monthStartOf,
   createSessionSeries as createSessionSeriesPure,
   moveSession as moveSessionPure,
   publishSession as publishSessionPure,
@@ -36,10 +42,12 @@ import { buildStallDagViewModel, type StallDagViewModel } from "@/lib/domain/wor
 import type {
   AKFormel,
   RecurrencePolicy,
+  MonthViewModel,
   SourceItem,
   WeekViewModel,
   WorkbenchMode,
   WorkbenchSession,
+  YearViewModel,
 } from "@/lib/domain/workbench/types";
 import { UI } from "@/lib/domain/workbench/labels";
 import {
@@ -253,6 +261,93 @@ export async function loadWeek(params: {
     params.targetMinutes ?? 0,
   );
   return { ok: true, data: vm };
+}
+
+async function lastOkterIVindu(
+  playerId: string,
+  fraIso: string,
+  tilIso: string,
+  viewerId: string,
+): Promise<WorkbenchSession[]> {
+  const fra = tilDatoKolonne(fraIso);
+  const til = tilDatoKolonne(tilIso);
+  const erSpillerenSelv = viewerId === playerId;
+  const rows = await prisma.workbenchSession.findMany({
+    where: {
+      playerId,
+      date: { gte: fra, lte: til },
+      ...(erSpillerenSelv ? { hiddenByPlayer: false } : {}),
+    },
+    include: { drills: true },
+    orderBy: [{ date: "asc" }, { startMinute: "asc" }],
+  });
+  return rows.map(mapSession);
+}
+
+/**
+ * Månedskalender — leseflate (C1). Inneholder DRAFT for coach.
+ * Rutenettet starter mandag i uka som inneholder den 1., slik at uketall
+ * og klikk-til-uke treffer hele uker.
+ */
+export async function loadMonth(params: {
+  monthStart: string;
+  mode: WorkbenchMode;
+  playerId: string;
+  targetMinutes?: number;
+}): Promise<WbResultat<MonthViewModel>> {
+  const parsed = IsoDateSchema.safeParse(params.monthStart);
+  if (!parsed.success) return { ok: false, error: "Ugyldig måned." };
+  const monthStart = monthStartOf(parsed.data);
+
+  const viewer = await kreverTilgangTilSpiller(params.playerId);
+  if (!viewer) return { ok: false, error: INGEN_TILGANG };
+
+  const last = lastDayOfMonth(monthStart);
+  const gridStart = mondayOf(monthStart);
+  const gridEnd = addDays(mondayOf(last), 6);
+  const sessions = await lastOkterIVindu(params.playerId, gridStart, gridEnd, viewer.id);
+  const [y, m] = monthStart.split("-").map(Number);
+  const label = `${UI.monthNames[m - 1]} ${y}`;
+  return {
+    ok: true,
+    data: buildMonthViewModel(
+      monthStart,
+      sessions,
+      params.mode,
+      params.targetMinutes ?? 0,
+      label,
+    ),
+  };
+}
+
+/** Årsplan — leseflate (C1). Ingen redigering i årscelle. */
+export async function loadYear(params: {
+  year: number;
+  mode: WorkbenchMode;
+  playerId: string;
+  targetMinutes?: number;
+}): Promise<WbResultat<YearViewModel>> {
+  if (!Number.isInteger(params.year) || params.year < 2000 || params.year > 2100) {
+    return { ok: false, error: "Ugyldig år." };
+  }
+  const viewer = await kreverTilgangTilSpiller(params.playerId);
+  if (!viewer) return { ok: false, error: INGEN_TILGANG };
+
+  const sessions = await lastOkterIVindu(
+    params.playerId,
+    `${params.year}-01-01`,
+    `${params.year}-12-31`,
+    viewer.id,
+  );
+  return {
+    ok: true,
+    data: buildYearViewModel(
+      params.year,
+      sessions,
+      params.mode,
+      params.targetMinutes ?? 0,
+    ),
+  };
 }
 
 /** Én økt — inspektør / dyplenke. */

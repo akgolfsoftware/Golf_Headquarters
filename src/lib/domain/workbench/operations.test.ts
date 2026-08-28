@@ -19,6 +19,13 @@ import {
   removeDrill,
   computeBudget,
   buildWeekViewModel,
+  buildMonthViewModel,
+  buildYearViewModel,
+  monthStartOf,
+  lastDayOfMonth,
+  addMonths,
+  isoWeekNumber,
+  dominantPyramid,
   validateWeek,
   publishMany,
   resolvePlayerApproval,
@@ -233,6 +240,63 @@ describe("budget + week", () => {
     assert.equal(week.days[0].date, "2026-08-24");
     assert.equal(week.days[0].sessions.length, 1);
     assert.equal(week.budget.targetMinutes, 480);
+  });
+});
+
+describe("måned og år", () => {
+  const mode = { kind: "AGENCY" as const, subjectId: "p1", sources: ["OEKTER" as const] };
+
+  it("monthStartOf og lastDayOfMonth", () => {
+    assert.equal(monthStartOf("2026-08-19"), "2026-08-01");
+    assert.equal(lastDayOfMonth("2026-08-01"), "2026-08-31");
+    assert.equal(lastDayOfMonth("2026-02-01"), "2026-02-28");
+    assert.equal(addMonths("2026-12-01", 1), "2027-01-01");
+    assert.equal(addMonths("2026-01-01", -1), "2025-12-01");
+  });
+
+  it("isoWeekNumber følger ISO (mandag-start)", () => {
+    assert.equal(isoWeekNumber("2026-08-24"), 35);
+  });
+
+  it("buildMonthViewModel: maks tre linjer og +N mer", () => {
+    const dager = [0, 1, 2, 3].map((i) =>
+      createSession({
+        ...baseCmd,
+        date: "2026-08-05",
+        title: `Økt ${i}`,
+        startMinute: 8 * 60 + i * 60,
+      }),
+    );
+    const month = buildMonthViewModel("2026-08-01", dager, mode, 0, "August 2026");
+    const celle = month.weeks.flatMap((w) => w.days).find((c) => c.date === "2026-08-05");
+    assert.ok(celle);
+    assert.equal(celle.lines.length, 3);
+    assert.equal(celle.restCount, 1);
+    assert.equal(month.empty, false);
+  });
+
+  it("buildMonthViewModel: dager utenfor måneden er merket, klikkbar uke starter mandag", () => {
+    const month = buildMonthViewModel("2026-08-01", [], mode, 0, "August 2026");
+    assert.equal(month.weeks[0].weekStart, "2026-07-27");
+    assert.equal(month.weeks[0].days[0].inMonth, false);
+    assert.equal(month.weeks[0].days[0].date, "2026-07-27");
+    const forste = month.weeks.flatMap((w) => w.days).find((c) => c.date === "2026-08-01");
+    assert.equal(forste?.inMonth, true);
+    assert.equal(month.empty, true);
+  });
+
+  it("cancelled økter telles ikke i dominant pyramide eller år-timer", () => {
+    const tek = createSession({ ...baseCmd, date: "2026-03-10", pyramid: "TEK" });
+    const fys = {
+      ...createSession({ ...baseCmd, date: "2026-03-10", pyramid: "FYS" as const, durationMinutes: 180 }),
+      status: "CANCELLED" as const,
+    };
+    assert.equal(dominantPyramid([tek, fys]), "TEK");
+    const year = buildYearViewModel(2026, [tek, fys], mode);
+    assert.equal(year.months.length, 12);
+    assert.equal(year.months[2].minutes, 60);
+    assert.equal(year.months[2].dominantPyramid, "TEK");
+    assert.equal(year.months[0].sessionCount, 0);
   });
 });
 

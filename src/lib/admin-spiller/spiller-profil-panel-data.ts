@@ -342,6 +342,6 @@ export async function loadSpillerProfilPanel(
     kpi,
     seksjoner,
     fullSideHref: `/admin/spillere/${player.id}`,
-    workbenchHref: `/admin/spillere/${player.id}/workbench`,
+    workbenchHref: `/admin/workbench/${player.id}`,
   };
 }

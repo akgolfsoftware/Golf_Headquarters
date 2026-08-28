@@ -63,7 +63,7 @@ export function AdminSpillerPlanV2({ data }: { data: AdminSpillerPlanData }) {
   const aktive = sortert.filter((p) => p.status === "ACTIVE").length;
   const utkast = sortert.filter((p) => p.status === "DRAFT").length;
 
-  const workbenchHref = `/admin/spillere/${spiller.id}/workbench`;
+  const workbenchHref = `/admin/workbench/${spiller.id}`;
 
   const statusTone: StatusTone =
     aktive > 0 ? "lime" : utkast > 0 ? "warn" : sortert.length > 0 ? "info" : "warn";

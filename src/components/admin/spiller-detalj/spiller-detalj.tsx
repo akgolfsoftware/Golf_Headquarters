@@ -299,7 +299,7 @@ function TabRow({ id }: { id: string }) {
     { label: "Analyse", href: `/admin/analysere?spiller=${id}` },
     { label: "Fremgang", href: `/admin/spillere/${id}/fremgang` },
     { label: "Tester", href: `/admin/spillere/${id}/tester` },
-    { label: "Workbench", href: `/admin/spillere/${id}/workbench` },
+    { label: "Workbench", href: `/admin/workbench/${id}` },
   ];
   return (
     <div className="relative">
@@ -452,7 +452,7 @@ function WeekGrid({
   return (
     <Panel>
       <SectionLabel
-        link={{ label: "Åpne i Workbench", href: `/admin/spillere/${id}/workbench` }}
+        link={{ label: "Åpne i Workbench", href: `/admin/workbench/${id}` }}
       >
         {heading}
       </SectionLabel>

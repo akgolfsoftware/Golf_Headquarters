@@ -449,3 +449,56 @@ export interface WeekViewModel {
   budget: WeekBudget;
   mode: WorkbenchMode;
 }
+
+/** Én synlig linje i en månedscelle (maks tre + «+N mer»). */
+export interface MonthDayLine {
+  title: string;
+  durationMinutes: number;
+  /** Turnering/test vises som hairline, ikke fylt. */
+  hairline: boolean;
+}
+
+export interface MonthDayCell {
+  date: string;
+  dayOfMonth: number;
+  inMonth: boolean;
+  lines: MonthDayLine[];
+  restCount: number;
+}
+
+export interface MonthWeekRow {
+  weekStart: string;
+  weekNumber: number;
+  days: MonthDayCell[];
+}
+
+export interface MonthViewModel {
+  monthStart: string;
+  label: string;
+  weeks: MonthWeekRow[];
+  budget: WeekBudget;
+  weekSummaries: Array<{
+    weekStart: string;
+    weekNumber: number;
+    sessionCount: number;
+    minutes: number;
+  }>;
+  empty: boolean;
+  mode: WorkbenchMode;
+}
+
+export interface YearMonthRow {
+  monthStart: string;
+  monthIndex: number; // 1–12
+  minutes: number;
+  sessionCount: number;
+  dominantPyramid: PyramidArea | null;
+  volumePct: number;
+}
+
+export interface YearViewModel {
+  year: number;
+  months: YearMonthRow[];
+  budget: WeekBudget;
+  mode: WorkbenchMode;
+}
