@@ -239,3 +239,68 @@ html[data-v2-tema="dark"] {
 
   color-scheme: dark;
 }
+
+/* ============================================================================
+   SEMANTISK BRO (28.08.2026) — Tailwind-semantikk inne i produktskallet.
+
+   ~77 produktfiler bruker fortsatt bg-card / text-primary / text-muted-
+   foreground osv. Denne blokken re-peker de semantiske variablene til
+   Train-lock-verdiene INNENFOR [data-paper-shell] (V2Shell-rota), så de
+   rendrer Train-lock i begge moduser uten omskriving av hver fil.
+   Marketing og /auth har ikke data-paper-shell og beholder Paper-verdiene
+   fra globals.css. HSL-tripler konvertert eksakt fra --tl-*-verdiene.
+   ========================================================================= */
+[data-paper-shell] {
+  /* Lys: scene #FFFFFF · elev #F2F2F2 · dock #E9E9EB · dim #DDDDDE
+     text #111111 · mute #6E6E73 · fill #000000 · hair #00000014 */
+  --background: 0 0% 100%;
+  --foreground: 0 0% 6.7%;
+  --card: 0 0% 94.9%;
+  --card-foreground: 0 0% 6.7%;
+  --popover: 0 0% 94.9%;
+  --popover-foreground: 0 0% 6.7%;
+  --primary: 0 0% 0%;
+  --primary-foreground: 0 0% 100%;
+  --accent: 240 3% 87.1%;
+  --accent-foreground: 0 0% 6.7%;
+  --secondary: 240 4.8% 91.8%;
+  --secondary-foreground: 0 0% 6.7%;
+  --muted: 240 4.8% 91.8%;
+  --muted-foreground: 240 2.2% 44.1%;
+  --destructive: 3 100% 59.4%;
+  --destructive-foreground: 0 0% 100%;
+  --success: 135 58.6% 49.2%;
+  --warning: 50 100% 52%;
+  --info: 210 100% 52%;
+  --border: 0 0% 0% / 0.08;
+  --input: 0 0% 0% / 0.08;
+  --ring: 210 100% 52%;
+  --radius: 20px;
+}
+
+html[data-v2-tema="dark"] [data-paper-shell] {
+  /* Mørk: scene #000000 · elev #161616 · dock #1C1C1E · dim #2C2C2E
+     text #F5F5F5 · mute #8E8E93 · fill #FFFFFF · hair #FFFFFF14 */
+  --background: 0 0% 0%;
+  --foreground: 0 0% 96.1%;
+  --card: 0 0% 8.6%;
+  --card-foreground: 0 0% 96.1%;
+  --popover: 0 0% 8.6%;
+  --popover-foreground: 0 0% 96.1%;
+  --primary: 0 0% 100%;
+  --primary-foreground: 0 0% 0%;
+  --accent: 240 2.2% 17.6%;
+  --accent-foreground: 0 0% 96.1%;
+  --secondary: 240 3.4% 11.4%;
+  --secondary-foreground: 0 0% 96.1%;
+  --muted: 240 3.4% 11.4%;
+  --muted-foreground: 240 2.3% 56.7%;
+  --destructive: 3 100% 61.4%;
+  --destructive-foreground: 0 0% 100%;
+  --success: 135 63.6% 50.4%;
+  --warning: 50 100% 52%;
+  --info: 210 100% 52%;
+  --border: 0 0% 100% / 0.08;
+  --input: 0 0% 100% / 0.08;
+  --ring: 210 100% 52%;
+}
