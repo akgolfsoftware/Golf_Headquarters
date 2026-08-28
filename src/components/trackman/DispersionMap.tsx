@@ -12,8 +12,9 @@
  *
  * Prikker er ALLTID #B08968 (TL.viz.dot) uansett bøtte — bøtte-fargene
  * (good/acceptable/disaster) brukes KUN i bøtte-baren under kartet og ALDRI
- * som per-prikk-farge (HANDOFF: «ikke som generell fargekoding»). Valgt slag
- * = hvit ring. Outliers (disaster-bøtta) dempes med TL.opasitet.outlier.
+ * som per-prikk-farge (HANDOFF: «ikke som generell fargekoding»). Valgt/siste
+ * slag = TL.fill-ring (mørk: hvit, lys: sort). 1σ-ellipsen er KUN tegnet i
+ * mørk fasit — C8 lar unntaket stå. Outliers dempes med TL.opasitet.outlier.
  */
 
 import { useMemo } from "react";
@@ -135,7 +136,7 @@ export function DispersionMap({
           </marker>
         </defs>
 
-        {/* Prikker — #B08968, siste slag hvit ring, valgt slag hvit ring, outliers dempet. */}
+        {/* Prikker — #B08968, siste/valgt slag TL.fill-ring, outliers dempet. */}
         {shots.map((s) => {
           const cx = toX(s.point.lateral);
           const cy = toY(s.point.distance);
@@ -150,7 +151,7 @@ export function DispersionMap({
                 cy={cy}
                 r={r}
                 fill={TL.viz.dot}
-                stroke={isSelected || isLast ? "#FFFFFF" : "none"}
+                stroke={isSelected || isLast ? TL.fill : "none"}
                 strokeWidth={isSelected || isLast ? 2 : 0}
                 onClick={() => onSelectShot(s)}
                 role="button"

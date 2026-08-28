@@ -185,17 +185,15 @@
   --tl-viz-dot: #B08968;            /* slag-prikk — aldri kølle-farge, aldri heat */
 
   /* Ellipse (1σ): 1 px hair-kant + svakt fyll rundt P10–P90.
-     ⚠ IKKE I FASITEN FOR LYS. Fasiten (TM-08f, TRAIN VIZ) tegner ellipsen
-     kun i mørk (#FFFFFF29 / #FFFFFF08). Verdiene under er speilet over på
-     sort med samme alfa — plassholder til lys-passet er tegnet.
-     Se docs/natt/D2-TOKENS-DONE.md §Åpne spørsmål. */
+     ⚠ C8: ellipsen er KUN tegnet i mørk (TM-unntak står). Fasiten
+     (TM-08f, TRAIN VIZ) har ingen lys-ellipse. Verdiene under er speilet
+     alfa på sort — ikke en tegnet lys-fasit. Hullkart-flater under står
+     mørke i begge varianter. */
   --tl-viz-ellipse-line: #00000029;
   --tl-viz-ellipse-fill: #00000008;
 
   /* Hullkart-flater (TM · 24.08) — stilisert, aldri satellitt/3D/grønt.
-     ⚠ Fasiten tegner hullkartet KUN i mørk. Verdiene står uendret i begge
-     varianter (kartet er en mørk artefakt-flate) til lys-passet finnes —
-     se docs/natt/D2-TOKENS-DONE.md §Åpne spørsmål. */
+     C8: kartet er en mørk artefakt-flate i begge varianter (TM-unntak). */
   --tl-course-base: #111111;
   --tl-course-rough: #141414;
   --tl-course-fairway: #1A1A1A;

@@ -2,7 +2,7 @@
 
 /**
  * AgencyOS Kalender — v2 Presis + B-pakke (status + én primær CTA, tom = vei).
- * T.* only. Lys default, mørk via bryter. Coach-uke: bookinger + serier.
+ * TL.* only. Lys via data-v2-tema (C8). Coach-uke: bookinger + serier.
  *
  * Bølge 12 (Open Design-port): toolbaren følger Notion-fasiten i
  * `familie-calendar.html` .cal-toolbar — «I dag» · piler · periode-tittel ·
@@ -38,7 +38,6 @@ import {
 } from "@/components/v2";
 import { PaperPage, PaperTopp, PaperKropp } from "@/components/portal/v2/PaperChrome";
 import { TL } from "@/lib/v2/train-lock";
-import { T, type AkseKey } from "@/lib/v2/tokens";
 import type { KalenderData, KalDag, KalOkt } from "@/app/admin/kalender/data";
 import {
   beleggForDager,
@@ -175,7 +174,7 @@ const NAKEN_KNAPP: React.CSSProperties = {
 function oktAksentFarge(okt: KalOkt): string {
   if (okt.erGoogle) return okt.kalenderFarge ?? TL.mute;
   if (okt.coachId) return coachColorFor(okt.coachId).accent;
-  if (okt.akse) return T.ax[okt.akse as AkseKey] ?? TL.mute;
+  if (okt.akse) return TL.text;
   return TL.mute;
 }
 
@@ -990,7 +989,7 @@ function MobilDagSeksjon({ dag, onApne }: { dag: KalDag; onApne: () => void }) {
           {dag.okter.map((o) => (
             <span key={o.id} style={{ display: "flex", alignItems: "center", gap: 8, minWidth: 0 }}>
               <span style={{ fontFamily: TL.font.mono, fontSize: 10, fontWeight: 700, color: TL.mute, fontVariantNumeric: "tabular-nums", flex: "none" }}>{o.kl}</span>
-              <span style={{ width: 5, height: 5, borderRadius: 9999, background: o.akse ? T.ax[o.akse as AkseKey] : TL.mute, flex: "none" }} />
+              <span style={{ width: 5, height: 5, borderRadius: 9999, background: o.akse ? TL.text : TL.mute, flex: "none" }} />
               <span style={{ fontFamily: TL.font.sans, fontSize: 11.5, fontWeight: 600, color: TL.text, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", flex: 1, minWidth: 0 }}>{o.navn}</span>
               {o.serie && <Icon name="repeat" size={11} style={{ color: TL.mute, flex: "none" }} />}
               {o.naa && <StatusPill tone="down">Live</StatusPill>}
@@ -1587,7 +1586,7 @@ export function AgencyKalenderV2({ data }: { data: KalenderData }) {
                   }}
                 >
                   <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                    <span style={{ width: 6, height: 6, borderRadius: 9999, background: T.ax[d.pyramide as AkseKey] ?? TL.mute }} />
+                    <span style={{ width: 6, height: 6, borderRadius: 9999, background: TL.text }} />
                     <span style={{ fontFamily: TL.font.sans, fontSize: 13, fontWeight: 600, color: TL.text, flex: 1 }}>{d.name}</span>
                     <Caps size={9}>{d.pyramide}</Caps>
                   </div>
@@ -1740,7 +1739,7 @@ export function AgencyKalenderV2({ data }: { data: KalenderData }) {
                 }}
               >
                 <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                  <span style={{ width: 6, height: 6, borderRadius: 9999, background: T.ax[d.pyramide as AkseKey] ?? TL.mute }} />
+                  <span style={{ width: 6, height: 6, borderRadius: 9999, background: TL.text }} />
                   <span style={{ fontFamily: TL.font.sans, fontSize: 13, fontWeight: 600, color: TL.text, flex: 1 }}>{d.name}</span>
                   <Caps size={9}>{d.pyramide}</Caps>
                 </div>

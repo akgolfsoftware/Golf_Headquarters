@@ -1,11 +1,9 @@
 "use client";
 
 /**
- * Login — v2 (retning C «Presis», mørk-først). Komponert 1:1 fra
- * ui_kits/v2/auth-profil.jsx → funksjonen Login (+ AuthRamme, BrandPanel,
- * LoginKort, Felt, GoogleG, EllerSkille, Lenke). Montert på /auth/login
- * (bytter ut gamle LoginForm 2026-07-10) og offentlig i
- * (v2preview)/v2-login/page.tsx (ingen auth-guard, ingen dataloader).
+ * Login — v2. Komponert 1:1 fra ui_kits/v2/auth-profil.jsx → funksjonen Login
+ * (+ AuthRamme, BrandPanel, LoginKort, Felt, GoogleG, EllerSkille, Lenke).
+ * Montert på /auth/login. Låst lys (PP-A/A4, C8).
  *
  * Ekte innloggings-logikk (Supabase signInWithPassword + Google OAuth,
  * feiloversettelse, safeRedirectPath m/ ?next=) er portert 1:1 fra
@@ -13,14 +11,10 @@
  * innpakning. Gammel login-form.tsx står urørt som fallback.
  *
  * Kun v2-primitiver fra "@/components/v2" (LogoAK, Caps, Icon). Auth-idiomene
- * (AuthRamme/BrandPanel/Felt/GoogleG/EllerSkille/Lenke/Knapp) er lokale her,
- * 1:1 med mockup-kilden — meldt som gap for opprykk til src/components/v2/auth.tsx
- * når Onboarding/MinProfil porteres. Ingen rå hex (kun T.* + rgba). Norsk æøå.
- * Fluid motpart til mockupens faste device-frame: full viewport, md-breakpoint
- * for split/stablet, ekte dark-scope.
+ * er lokale her. Ingen rå hex (kun TL.*). Norsk æøå.
  */
 
-import { Suspense, useState, type ReactNode, type CSSProperties } from "react";
+import { Suspense, useEffect, useState, type ReactNode, type CSSProperties } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { TL } from "@/lib/v2/train-lock";
@@ -268,7 +262,7 @@ function BrandPanel() {
             cy="330"
             r={r}
             fill="none"
-            stroke="rgba(238,240,236,0.05)"
+            stroke={TL.hair}
             strokeWidth="1"
           />
         ))}
@@ -578,9 +572,17 @@ function LoginKort() {
   );
 }
 
-/* ── Offentlig login-flate (dark-scope, fluid AuthRamme) ───────────── */
+/* ── Offentlig login-flate — låst lys (PP-A/A4) ───────────── */
 
 export function LoginV2 /* wave A fasit: innlogging.html */() {
+  // /auth er LYS uten cookie. Dark-cookie skal ikke gjøre innlogging mørk
+  // (PP-A/A4). Samme grep som VeiviserFlate: data-v2-tema av, ingen ny mekanisme.
+  useEffect(() => {
+    if (document.documentElement.getAttribute("data-v2-tema") === "dark") {
+      document.documentElement.removeAttribute("data-v2-tema");
+      window.dispatchEvent(new Event("ak-v2-tema"));
+    }
+  }, []);
   return (
     <div
       data-paper-innlogging
@@ -590,10 +592,6 @@ export function LoginV2 /* wave A fasit: innlogging.html */() {
       style={{
         minHeight: "100vh",
         display: "flex",
-        // Flaten er Paper LYS (målt på prod: bakgrunnen er --p-bg, ikke mørk).
-        // Sto tidligere "dark", som fikk nettleseren til å tegne sin egen
-        // native UI mørk oppå en lys side — autofyll-bakgrunn, passord-
-        // avsløringsikon og rullefelt. Gjaldt alle enheter.
         colorScheme: "light",
         color: TL.text,
         fontFamily: TL.font.sans,

@@ -4,7 +4,7 @@
    Gjenskaping av golfdata/-datakontraktene i v2-idiomet: samme props/innhold,
    nytt uttrykk. Komponeres av kjernen (T-tokens, Kort, TallHero, chips).
    Regler: mono-tall m/ komma-desimal, «—» for manglende data, opp/ned = TL.ok/TL.danger
-   (ALDRI lime), aksefarger fra T.ax, lime kun som aksent/hero.
+   (ALDRI lime). Pyramide: TL.text med opasitet, aldri farge per nivå (C8).
    Demo-data som default-props → rendres rett i galleriet.
    Port av ui_kits/v2/v2-datavis.jsx → produksjons-TSX (diff-null). */
 
@@ -12,7 +12,7 @@ import type { CSSProperties, ReactNode } from "react";
 import { Fragment, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { TL } from "@/lib/v2/train-lock";
-import { T, fmtSg, type AkseKey } from "@/lib/v2/tokens";
+import { fmtSg, type AkseKey } from "@/lib/v2/tokens";
 import { Icon } from "@/components/v2/icon";
 import { Kort, TallHero, Caps, TomTilstand, CTAPill, AkseChip, InnsiktChip, DeltaChip, AvatarInit, AKSE_NAVN, Rad } from "./core";
 import { HjelpTips, hoverKapabel } from "./hjelp";
@@ -629,44 +629,6 @@ export function TigerFive({ metrikker = T5_DEMO }: TigerFiveProps) {
   );
 }
 
-/* ── PuttModell — innslag-% per bånd mot IUP-baseline (alltid ft) ── */
-export interface PuttBaand {
-  band: string;
-  pct: number;
-  baseline?: number | null;
-}
-const PM_DEMO: PuttBaand[] = [
-  { band: "0–3 ft", pct: 99, baseline: 99 }, { band: "3–6 ft", pct: 84, baseline: 91 },
-  { band: "6–10 ft", pct: 52, baseline: 60 }, { band: "10–20 ft", pct: 28, baseline: 31 },
-  { band: "20+ ft", pct: 9, baseline: 8 },
-];
-export interface PuttModellProps {
-  band?: PuttBaand[];
-  baseline?: string;
-}
-export function PuttModell({ band = PM_DEMO, baseline = "Team Norway IUP" }: PuttModellProps) {
-  return (
-    <Kort>
-      {eyebrowRow("Puttemodell · innslag-%", `mot ${baseline}`)}
-      {band.map((b, i) => {
-        const d = b.baseline != null ? Math.round(b.pct - b.baseline) : null;
-        return (
-          <div key={b.band} style={{ display: "flex", alignItems: "center", gap: 11, padding: "8px 0", borderBottom: i === band.length - 1 ? "none" : `1px solid ${TL.hair}` }}>
-            <span style={{ width: 58, flex: "none", ...mono(10, TL.mute) }}>{b.band}</span>
-            <span style={{ flex: 1, height: 7, borderRadius: 9999, background: TL.hair, overflow: "hidden" }}>
-              <span style={{ display: "block", width: `${Math.max(0, Math.min(100, b.pct))}%`, height: "100%", borderRadius: 9999, background: TL.fill, opacity: 0.9 }} />
-            </span>
-            <span style={{ width: 40, flex: "none", textAlign: "right", ...mono(12) }}>{b.pct} %</span>
-            <span style={{ width: 52, flex: "none", textAlign: "right", ...mono(10.5, d == null ? TL.mute : d >= 0 ? TL.ok : TL.danger, 600) }}>
-              {d == null ? "—" : `${d > 0 ? "+" : d < 0 ? "−" : ""}${Math.abs(d)} pp`}
-            </span>
-          </div>
-        );
-      })}
-    </Kort>
-  );
-}
-
 /* ── Gapping — carry per kølle m/ ±spredning + gap-varsler ── */
 export interface GapKolle {
   navn: string;
@@ -1116,7 +1078,7 @@ export function SpillerTilstand({ navn = "Øyvind Rohjan", tilstand = "varsel", 
   );
 }
 
-/* ── Pyramide — fem akser faktisk vs plan (aksefarger fra T.ax) ── */
+/* ── Pyramide — fem akser faktisk vs plan (TL.text + opasitet, aldri farge per nivå) ── */
 export interface PyramideData {
   akse: string;
   value: number;
@@ -1135,14 +1097,14 @@ export interface PyramideProps {
 export function Pyramide({ data = PY_DEMO, max = 100, showValues = true }: PyramideProps) {
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 11 }}>
-      {data.map((d) => {
+      {data.map((d, i) => {
         const pct = Math.max(0, Math.min(100, (d.value / max) * 100));
         const planPct = d.plan != null ? Math.max(0, Math.min(100, (d.plan / max) * 100)) : null;
         return (
           <div key={d.akse} style={{ display: "flex", alignItems: "center", gap: 11 }}>
             <span style={{ width: 72, flex: "none", fontFamily: TL.font.sans, fontSize: 12.5, fontWeight: 600, color: TL.mute }}>{AKSE_NAVN[d.akse as AkseKey] || d.akse}</span>
             <div style={{ flex: 1, position: "relative", height: 9, borderRadius: 9999, background: TL.hair }}>
-              <div style={{ width: `${pct}%`, height: "100%", borderRadius: 9999, background: T.ax[d.akse as AkseKey] || TL.mute, opacity: 0.85 }} />
+              <div style={{ width: `${pct}%`, height: "100%", borderRadius: 9999, background: TL.text, opacity: 1 - Math.min(i, 4) * 0.18 }} />
               {planPct != null && <span title={`Plan ${d.plan}`} style={{ position: "absolute", top: -3, left: `calc(${planPct}% - 1px)`, width: 2, height: 15, background: TL.text, borderRadius: 1 }} />}
             </div>
             {showValues && (
