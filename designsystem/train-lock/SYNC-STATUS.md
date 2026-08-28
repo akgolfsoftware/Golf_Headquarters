@@ -1,17 +1,41 @@
 # Train-lock — synkstatus
 
-**Sist synket: 26.08.2026 fra «Player HQ Train lock (6).zip» (ny leveranse 26.08, 211 filer)
+**Sist synket: 28.08.2026 fra «Player HQ Train lock (1).zip» (ny leveranse 28.08, 220 filer)
 — import styrt av zip-ens `CLAUDE-CODE-IMPORT-PROMPT.md` (arkivert i cowork
-`innkommende/train-lock-uploads-2026-08-25/`).**
+`innkommende/train-lock-uploads-2026-08-28/`).**
 
 ## Innhold
 
-196 `.dc.html`-skjermfiler + `DESIGN-SYSTEM.md`, `SCREEN-INDEX.md`, `PORTING.md`,
+204 `.dc.html`-skjermfiler + `DESIGN-SYSTEM.md`, `SCREEN-INDEX.md`, `PORTING.md`,
 `HANDOFF.md`, `support.js`, `three-d-stage.js`. `README.md` og denne fila er repoets egne
 og finnes ikke i zip-en. Zip-ens `CLAUDE.md` er flettet inn i rot-`CLAUDE.md`
 (§Train-lock designfasit) per import-instruksen — ikke lagt her som andre CLAUDE.md.
 
-## Siste synk (26.08) — hva som endret seg
+## Siste synk (28.08) — hva som endret seg
+
+- **8 nye skjermfiler:** `AG-19 Notifikasjonssenter` (varselkjede/godkjenn-ark),
+  `AO-13 Routing-hub` (AgenticOS lokal vs. sky), `EC-02 AS Compliance` (AS-frister),
+  `GAP-2 Tilstander drift` (runtime nede / re-auth), `S3-03 Spiller profil bento`
+  (ny landingsside for spiller — S3-01 er fortsatt arbeidsvisning), `TM-12 Okt teknikk
+  og slag`, `TM-13 Progresjon maalvindu`, `TM-14 Bag mapping og DECADE` (siste tre er
+  TrackMan/Analyse-huben — se §Presedens for fargeregelen: målvindu er `target #0A84FF`,
+  ALDRI ok-grønn, bom er `dim`/`mute` aldri danger).
+- **Global motion-token-pass i 41 filer (~95 trykkflater):** gammel trykk-easing
+  (`transition: transform 180ms cubic-bezier(...)` + separat `style-active`) byttet til
+  fasit-tokenet `data-press="1"` (220ms inn / 110ms release). `TRAIN LOCK.dc.html` er
+  selve mønsteret — diffen der er KUN denne attributt-byttet, ingen farge-/tokenverdier
+  endret (verifisert linje for linje). `DESIGN-SYSTEM.md` §4 utvidet med de faktiske
+  motion-tokenene (`--ease-out`, `[data-press]`, hover-gating, reduced-motion/-transparency).
+  Trykkflate-minimum presisert til 44px inkl. chips/pills; 5 filer/11 flater rettet fra
+  34→44px der mønsteret var en ekte pille.
+- **`HANDOFF.md` oppdatert** (49 749 → 58 055 byte): seks nye linjer for EC-02/AG-19,
+  GAP-2/AO-13, S3-03 og TM-12–14, pluss motion-pass-linjen.
+- **`.thumbnail` oppdatert.** De øvrige 142 uendrede filene er byte-identiske med forrige
+  leveranse (verifisert med sha256 fil for fil).
+- **Ingen filer fjernet** — ren tilvekst + attributt-pass, ingen erstattede/utgåtte
+  skjermer denne runden.
+
+## Forrige synk (26.08) — hva som endret seg
 
 - **19 nye skjermfiler:** hele foreldreportalen — FO-02–FO-10 i mørk + lys, pluss
   `FO-01L Forelder les lys` (svar på bestillingen 26.08: alle flater i lys og mørk).
@@ -34,10 +58,9 @@ var avkuttet midt i en `div` og inneholdt verken rail eller tabbar.
 ## Holdt utenfor repoet med vilje
 
 Zip-ens `uploads/`-mappe (Team Norway-protokoll i xlsx med levende
-evalueringsskjema-lenker, fire inspirasjonsbilder, en promptfil og en bildemappe).
-Repoet er offentlig, og materialet er NGF/TN-internt. Ligger i stedet i cowork:
-`akgolf-hq/innkommende/train-lock-uploads-2026-08-25/`. Uendret siden forrige leveranse
-bortsett fra én ny bildemappe.
+evalueringsskjema-lenker, fire bilder, ett skjermbilde og en referanse-HTML-mappe
+`Acrispgreybox_blue/`). Repoet er offentlig, og materialet er NGF/TN-internt. Ligger i
+stedet i cowork: `akgolf-hq/innkommende/train-lock-uploads-2026-08-28/`.
 
 ## Presedens ved konflikt
 

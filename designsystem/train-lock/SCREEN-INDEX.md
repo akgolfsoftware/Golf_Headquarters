@@ -21,6 +21,7 @@ Les **DESIGN-SYSTEM.md** før du endrer noe. Endrer du en fil, oppdater raden he
 | `B4 Lys iPad Mac.dc.html` | 10 | 380,560,620,720,880,1180,1440 | B4 PH-01 I dag iPad lys / B4 PH-01 I dag Mac lys / B4 PH-04 Økt-ark iPad lys / B4 PH-04 Økt-ark Mac lys / B4 PH-05 Live iPad lys / B4 PH-05 Live Mac lys / B4 PH-10 Analyse iPad lys / B4 PH-10 Analyse Mac lys / B4 PH-17 Meg iPad lys / B4 PH-17 Meg Mac lys |
 | `B5 Lys Agency.dc.html` | 4 | 390,1180,1440 | B5 AG-02 Cockpit Mac lys / B5 AG-03 Innboks iPhone lys / B5 AG-04 Stall iPhone lys / B5 AG-16 Stall split iPad lys |
 | `GAP-00 Kart.dc.html` | 0 | 640,1080 | — |
+| `GAP-2 Tilstander drift.dc.html` | 6 | 390,1440 | GAP-2a Runtimes nede Mac / GAP-2b Runtime nede iPhone / GAP-2c Jarvis-ko tom iPhone / GAP-2d Integrasjoner reauth iPhone / GAP-2e Reauth-ark iPhone / GAP-2f Jarvis-ko tom lys |
 | `GAP-1 Tilstander.dc.html` | 12 | 560 | KA-01 Kalender tom / KA-01 Kalender laster / KA-01 Kalender feil / RU-01 Runde tom / RU-01 Runde laster / RU-01 Runde feil / S3-01 Spiller 360 tom / S3-01 Spiller 360 laster / S3-01 Spiller 360 feil / BO-01 Booking tom / BO-01 Booking laster / BO-01 Booking feil |
 | `MAT-00 Materialer.dc.html` | 1 | 560,620 | MAT-00 Materialer |
 | `MAT-01 Mac Okt FYS hero.dc.html` | 1 | 720,1440 | MAT-01 Økt FYS hero |
@@ -110,6 +111,7 @@ Les **DESIGN-SYSTEM.md** før du endrer noe. Endrer du en fil, oppdater raden he
 | `AO-01 Cockpit ko godkjenning.dc.html` | 4 | 393,620,760,1240 | AO-01 Cockpit 1440 / AO-01 Cockpit 393 / AO-03 Ko 1440 / AO-08 Godkjenn 1440 |
 | `AO-02 Runtimes og Ollama.dc.html` | 2 | 560,700,760 | AO-02 Runtimes 1440 / AO-10 Ollama 1440 |
 | `AO-05 Projects og Tasks.dc.html` | 3 | 560,700,760 | AO-05 Projects 1440 / AO-06 Project-ark / AO-07 Task-ark |
+| `AO-13 Routing-hub.dc.html` | 5 | 390,834,1440 | AO-13a Routing Mac / AO-13b Routing iPad / AO-13c Routing iPhone / AO-13d Regel-ark iPhone / AO-13e Routing Mac lys |
 | `AO-12 Godkjenningspolicy A3 B1 C3.dc.html` | 7 | 380,393,440,560,620,700,780,900,1440 | AO-12a Venter start 1440 / AO-12b Pagar 1440 / AO-12c Venter resultat 1440 / AO-12d Research ferdig 1440 / AO-12e Avvist feilet pause 1440 / AO-12f Tom godkjenn-ko 1440 / AO-12g Godkjenn 393 |
 
 ## AX · Skall
@@ -142,6 +144,9 @@ Les **DESIGN-SYSTEM.md** før du endrer noe. Endrer du en fil, oppdater raden he
 | `TM-08f Slag-ark fra prikk.dc.html` | 3 | 380,393,834,1440 | TM-08f1 Slag-ark iPhone / TM-08f2 Slag-ark iPad / TM-08f3 Slag inline panel Mac 1440 |
 | `TM-09 Mini-kart og runde.dc.html` | 6 | 393,834,1440 | TM-09a Analyse mini iPhone / TM-09b Analyse mini iPad / TM-09c Hull-detalj iPhone / TM-09d Hull-detalj Mac 1440 / TM-09e Hull-detalj iPad / TM-09f Analyse mini Mac 1440 |
 | `TM-10 Tom og agency-preview.dc.html` | 6 | 393,400,834,1440 | TM-10a Tom hullkart iPhone / TM-10b Tom hullkart iPad / TM-10c Tom hullkart Mac 1440 / TM-10d Agency preview iPhone / TM-10e Agency preview iPad / TM-10f Agency preview Mac 1440 |
+| `TM-12 Okt teknikk og slag.dc.html` | 3 | 390,1440 | TM-12a Teknikk Mac / TM-12b Slag Mac / TM-12c Teknikk iPhone |
+| `TM-13 Progresjon maalvindu.dc.html` | 3 | 390,1440 | TM-13a Progresjon i maal Mac / TM-13b Progresjon avvik Mac / TM-13c Progresjon iPhone |
+| `TM-14 Bag mapping og DECADE.dc.html` | 3 | 390,1440 | TM-14a Bag mapping Mac / TM-14b DECADE kjegle Mac / TM-14c DECADE kjegle iPhone |
 | `TM-11 Okt-detalj komplett.dc.html` | 4 | 380,393,834,1440 | TM-11a Økt-detalj iPhone / TM-11b Økt-detalj tom iPhone / TM-11c Økt-detalj iPad / TM-11d Økt-detalj Mac |
 
 ## FO · Foreldreportal
@@ -177,6 +182,7 @@ Les **DESIGN-SYSTEM.md** før du endrer noe. Endrer du en fil, oppdater raden he
 | `BO-02 Mine bookinger.dc.html` | 1 | 390 | BO-02 Mine bookinger |
 | `BO-03 Booking bekreftet.dc.html` | 1 | 390 | BO-03 Bekreftet |
 | `EC-01 Økonomi.dc.html` | — | — | *filnavn med spesialtegn — les direkte* |
+| `EC-02 AS Compliance.dc.html` | 5 | 390,834,1440 | EC-02a Compliance iPhone / EC-02b Compliance iPad / EC-02c Compliance Mac / EC-02d Compliance tom lys / EC-02e Compliance Mac lys |
 | `GP-01 Gameplan baner.dc.html` | 1 | 390 | GP-01 Gameplan |
 | `GP-02 Gameplan Onsoy.dc.html` | 1 | 390 | GP-02 Onsøy hull 1–5 |
 | `KA-01 Agency Kalender uke Mac.dc.html` | 1 | 1440 | KA-01 Kalender uke |
@@ -205,6 +211,7 @@ Les **DESIGN-SYSTEM.md** før du endrer noe. Endrer du en fil, oppdater raden he
 | `S3-01 Agency Spiller 360 Mac.dc.html` | 1 | 640,1440 | S3-01 Spiller 360 |
 | `S3-01L Spiller 360 lys.dc.html` | 1 | 640,1440 | S3-01L Spiller 360 lys |
 | `S3-02 Agency Spiller 360 iPad.dc.html` | 1 | 640,1180 | S3-02 Spiller 360 iPad |
+| `S3-03 Spiller profil bento.dc.html` | 2 | 390,1440 | S3-03a Spiller profil Mac / S3-03b Spiller profil iPhone |
 
 ## Uklassifisert
 
@@ -230,6 +237,7 @@ Les **DESIGN-SYSTEM.md** før du endrer noe. Endrer du en fil, oppdater raden he
 | `AG-15 Cockpit feil.dc.html` | 1 | 390 | AG-15 Cockpit feil |
 | `AG-16 iPad Stall split.dc.html` | 1 | 380,1180 | AG-16 iPad Stall split |
 | `AG-18 Oppsett-hub.dc.html` | 3 | 390,1180,1440 | AG-18a Oppsett-hub iPhone / AG-18b Oppsett-hub iPad / AG-18c Oppsett-hub Mac |
+| `AG-19 Notifikasjonssenter.dc.html` | 7 | 390,1440 | AG-19a Laseskjerm iPhone / AG-19b Varsel utvidet iPhone / AG-19c Notifikasjonssenter iPhone / AG-19d Godkjenn-ark iPhone / AG-19e SMS-godkjenning iPhone / AG-19f Notifikasjonssenter Mac / AG-19g Notifikasjonssenter Mac lys |
 | `Analyse Gapping.dc.html` | 1 | 390 | Analyse Gapping |
 | `DG-01 DataGolf spiller.dc.html` | 3 | 390,460,520,640,834,1440 | DG-01a DataGolf iPhone / DG-01b DataGolf iPad / DG-01c DataGolf Mac |
 | `FY-01 Fys stall.dc.html` | 3 | 390,420,834,1440 | FY-01a Fys stall iPhone / FY-01b Fys stall iPad / FY-01c Fys stall Mac |

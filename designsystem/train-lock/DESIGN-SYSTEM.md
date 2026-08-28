@@ -58,7 +58,7 @@ Gradient og glass (`backdrop-filter`, blur) — eneste unntak er `repeating-line
 | Seksjonsavstand | `margin-top: 22px` før caps-etikett, `14px` mellom kort, `10px` mellom rader i samme gruppe |
 | Skjerm-padding mobil | `8px 20px` innhold, `96px` bunn når dock finnes |
 | Skjerm-padding desktop | `22px 26px` innhold, rail 232, inspektør 300–380 |
-| Trykkflate | min 44, CTA 48, mobil-dock 64h |
+| Trykkflate | min 44 (også filter-chips/pills — ikke 34), CTA 48, mobil-dock 64h |
 | Kortpadding | 16–18 mobil, 18–22 desktop |
 
 Alltid `display: flex`/`grid` + `gap`. Aldri whitespace-avstand mellom UI-søsken.
@@ -87,7 +87,29 @@ Norsk format: `1 000,00` · `+0,18` · `22.08.2026` · `09.00–13.00`.
 
 ## 4 · Motion
 
-Kort inn 520ms `translateY(18px)` + opacity, stagger 70ms · ark inn 440ms fra bunn · press `scale(0.97)` 180ms · easing `cubic-bezier(0.32, 0.72, 0, 1)`. Kun `transform` og `opacity`.
+Kilder: Apple *Designing Fluid Interfaces* + Emil Kowalski (animations.dev). Kun `transform` og `opacity`.
+
+**Tokens (skriv disse ordrett i hver fils `<helmet><style>`, aldri en ny verdi):**
+
+```css
+:root { --ease-out: cubic-bezier(0.23, 1, 0.32, 1); --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1); --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1); }
+[data-press] { transition: transform 220ms var(--ease-out), background-color 220ms var(--ease-out), opacity 220ms var(--ease-out); }
+[data-press]:active { transition-duration: 110ms; }
+@media (hover: hover) and (pointer: fine) { [data-press]:hover { background-color: #1C1C1E; } [data-sub]:hover { opacity: 0.75; } }
+@media (prefers-reduced-motion: reduce) { [data-press] { transition: opacity 200ms ease, background-color 200ms ease; } [data-press]:active { transform: none !important; } }
+@media (prefers-reduced-transparency: reduce) { [data-material] { background: #000000 !important; backdrop-filter: none !important; } [data-edge] { display: none !important; } }
+```
+
+- **Skal-det-animeres-gate:** 100+×/dag (tastatursnarveier, tab-bytte) → ingen animasjon. Titalls×/dag (hover, listenavigasjon) → nesten umerkelig eller ingenting. Sjelden/modal/ark/toast → standard. Sjelden/første gang → delight er tillatt.
+- **Trykkflater** får `data-press="1"`, `style-active="transform: scale(0.97); background: #1C1C1E"` (eller `opacity: 0.75` for undermerkede rader med `data-sub="1"`). Press 110ms inn, release 220ms ut — asymmetrisk: rask respons, myk retur. Aldri `scale(0)` som entrance; start fra `scale(0.9–0.97)` + opacity.
+- **Easing:** entrer/exit → `--ease-out`. Beveger seg på skjermen → `--ease-in-out`. Hover/farge → `ease`. Konstant bevegelse (marquee, progresjon) → `linear`. Aldri `ease-in` på UI.
+- **Varighet:** trykk-feedback 100–160ms · tooltip/popover 125–200ms · dropdown 150–250ms · modal/ark/drawer 200–500ms. Under 300ms som regel.
+- **Kort inn** 520ms `translateY(18px)` + opacity, stagger 50–80ms — kun for innhold sett sjeldent (onboarding, første last). En skjerm åpnet daglig (bookinger, i dag) får **ingen** inngangsanimasjon, kun press-feedback.
+- **Ark inn** 440ms fra bunn, `--ease-drawer`. Reversible overganger speiler kurven ut samme vei de kom inn.
+- **Transitions, ikke keyframes**, for alt som kan trykkes/trigges raskt (rader, toggles, toasts) — de kan avbrytes og re-target; keyframes restarter fra null.
+- **Translucent materiale** (`data-material`, filterrader/sticky verktøylinjer): `background: rgba(0,0,0,0.72); backdrop-filter: blur(20px) saturate(180%)`, innhold scroller under. Følg alltid med en `data-edge` scroll-kant-gradient (`linear-gradient(to bottom, rgba(0,0,0,0.6), rgba(0,0,0,0))`, høyde 20px) — aldri en hard 1px-kant. Kun i filer der laget faktisk passerer over rullende innhold (mål før du bygger: scrollhøyde − viewport ≥ avstand til sticky-terskel).
+- **Hover** alltid bak `@media (hover: hover) and (pointer: fine)` — touch avfyrer falsk hover på tap.
+- **Reduced motion** er alltid til stede: fjern bevegelse, behold opacity/farge. **Reduced transparency**: materiale blir solid `#000000`/`#FFFFFF`, blur bort.
 
 ---
 
