@@ -377,7 +377,9 @@ export async function hentForelderUkerapport(
     }),
     // Øktene denne uka (status + varighet + drill-områder for fokus + oppmøte).
     prisma.trainingSessionV2.findMany({
-      where: { studentId: childId, startTime: { gte: ukeStart, lte: ukeSlutt } },
+      // endOfWeek er neste mandag 00:00 (eksklusiv). lte ville tatt med
+      // mandagsøkter i BÅDE denne og neste uke.
+      where: { studentId: childId, startTime: { gte: ukeStart, lt: ukeSlutt } },
       select: {
         status: true,
         startTime: true,
@@ -505,7 +507,7 @@ export async function hentForelderUkerapport(
 
   // SG denne uka (snitt sgTotal for runder spilt etter ukestart).
   const ukeRunder = runder.filter(
-    (r) => r.playedAt >= ukeStart && r.sgTotal != null
+    (r) => r.playedAt >= ukeStart && r.playedAt < ukeSlutt && r.sgTotal != null
   );
   const ukeSg =
     ukeRunder.length > 0

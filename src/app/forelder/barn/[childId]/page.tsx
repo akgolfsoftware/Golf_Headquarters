@@ -97,7 +97,7 @@ export default async function BarnProfil({
       prisma.trainingPlanSession.findMany({
         where: {
           plan: { userId: childId },
-          scheduledAt: { gte: ukeStart, lte: ukeSlutt },
+          scheduledAt: { gte: ukeStart, lt: ukeSlutt },
           status: { not: "CANCELLED" },
         },
         select: { scheduledAt: true },
