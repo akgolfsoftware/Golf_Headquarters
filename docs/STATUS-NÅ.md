@@ -2,7 +2,8 @@
 
 > **Hva dette er:** ett snapshot av hvor plattformen står akkurat nå. Oppdater datoen + relevante linjer når noe vesentlig endrer seg.
 
-**Sist oppdatert:** 2026-08-28 (C1 #632 + Train-lock-tokenport #631 + natt #629/#630 i main).
+**Sist oppdatert:** 2026-08-28 kveld (PR #645: TM-04 Analyse-hub + TrackMan-liste reddet,
+siste Paper-rester ut, semantisk TL-bro — måling: 214 PORTET · 0 BLANDET · 0 PAPER).
 **Samlet lanseringsplan: `docs/LANSERINGSPLAN-KOMPLETT-2026-08-27.md`** — den ENE oversikten
 over alt gjenstående. LAUNCH-PLAN-FULL er detaljgrunnlag for T-/C-radene.
 
@@ -16,6 +17,16 @@ over alt gjenstående. LAUNCH-PLAN-FULL er detaljgrunnlag for T-/C-radene.
   AgencyOS, Meg og Forelder (380 filer). Marketing og innlogging urørt. Dette er **ikke**
   piksel-1:1 mot 196 HTML-fasiter. Skjermbilde-gaten (du må SE mobil + Mac, lys + mørk)
   er ikke kjørt.
+- **Token-porten FULLFØRT 28.08 kveld (#645):** siste Paper-rester ut av produktflatene
+  (AkseKey/fmtSg til nøytral `src/lib/v2/format.ts`, map-colors/agent-strip/PolicyBanner/
+  p-stability til TL) + **semantisk TL-bro** i `train-lock-tokens.css` — de ~77 filene med
+  gammel Tailwind-semantikk (bg-card/text-primary/…) rendrer nå Train-lock i begge moduser
+  via `[data-paper-shell]`-scope. Måling (`scripts/maal-trainlock-status.mjs`, NB: sett ROOT
+  til riktig utsjekk): **214 PORTET · 0 BLANDET · 0 PAPER · 4 CHROME-ONLY** (de fire er
+  skall-arvede og dermed TL). Piksel-1:1 per fasitfil + skjermbilde-gate gjenstår fortsatt.
+- **Analyse-hub TM-04 + TrackMan-liste (#645):** `/portal/analysere` er nå TM-04-fasiten
+  (AnalyseHubTrainLock), `/portal/analysere/trackman` ny liste; `/portal/mal/trackman`
+  redirect (FULL-guard). Reddet fra glemt commit på `claude/lansering-rest-2026-08-28`.
 - **C1 Workbench måned/år** merget #632. Gammel `/admin/spillere/[id]/workbench` redirecter.
 - **F1 mandags-bug** fikset i #631 (økter telles ikke lenger to ganger).
 - **QA-1** merget #629 (admin-toast, tel-lenke m.m.).
