@@ -26,6 +26,7 @@ import {
   velgIDagTilstand,
 } from "@/lib/portal/idag-visning";
 import { IDagTrainLock, type NaaKort } from "@/components/portal/v2/idag/IDagTrainLock";
+import { IDagCaddie } from "@/components/portal/v2/idag/IDagCaddie";
 import { PushOptInBanner } from "@/components/portal/push-opt-in-banner";
 import type { PlayerDaySession } from "@/lib/workbench/wb-actions";
 
@@ -139,7 +140,22 @@ export default async function PortalHjemPage() {
   const fangstOkt = gjennomfore.nesteOkt ?? gjennomfore.fullfortIdag.at(-1) ?? null;
 
   return (
-    <V2Shell bredde="full" hoyde="skjerm" aktiv="hjem" nav={PLAYERHQ_NAV} navn={data.user.name} avatarUrl={data.user.avatarUrl}>
+    <V2Shell
+      bredde="full"
+      hoyde="skjerm"
+      aktiv="hjem"
+      nav={PLAYERHQ_NAV}
+      navn={data.user.name}
+      avatarUrl={data.user.avatarUrl}
+      composer={
+        <IDagCaddie
+          plassering="mac"
+          placeholder={tilstand === "pagar" ? IDAG_UI.loggCaddie : IDAG_UI.sporCaddie}
+          fangstFormel={fangstOkt?.formel ?? null}
+          oktLabel={fangstOkt ? `${fangstOkt.tittel} · ${fangstOkt.meta}` : null}
+        />
+      }
+    >
       <PushOptInBanner />
       <IDagTrainLock
         datoLinje={datoLinje}
@@ -154,9 +170,6 @@ export default async function PortalHjemPage() {
         trackman={trackman}
         testerLive={testerLive}
         godkjenninger={godkjenninger}
-        caddiePlaceholder={tilstand === "pagar" ? IDAG_UI.loggCaddie : IDAG_UI.sporCaddie}
-        fangstFormel={fangstOkt?.formel ?? null}
-        oktLabel={fangstOkt ? `${fangstOkt.tittel} · ${fangstOkt.meta}` : null}
       />
     </V2Shell>
   );

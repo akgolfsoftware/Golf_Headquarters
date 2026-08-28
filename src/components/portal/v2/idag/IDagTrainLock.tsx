@@ -13,9 +13,7 @@ import {
 import type { PlayerDaySession } from "@/lib/workbench/wb-actions";
 import type { TrackManTeaser } from "@/lib/trackman/teaser";
 import type { TesterLiveKort as TesterLiveKortData } from "@/lib/portal-tester/tester-live-kort";
-import type { FangstFormel } from "@/lib/domain/fangst-chips";
 import { GodkjenningKort } from "./GodkjenningKort";
-import { IDagCaddie } from "./IDagCaddie";
 
 export type NaaKort = {
   tittel: string;
@@ -43,9 +41,6 @@ export type IDagTrainLockProps = {
   trackman: TrackManTeaser | null;
   testerLive: TesterLiveKortData | null;
   godkjenninger: PlayerDaySession[];
-  caddiePlaceholder: string;
-  fangstFormel: FangstFormel | null;
-  oktLabel: string | null;
 };
 
 const caps: CSSProperties = {
@@ -66,7 +61,7 @@ function Cta({ href, barn, dim }: { href: string; barn: string; dim?: boolean })
   return (
     <Link
       href={href}
-      className="v2-press v2-focus"
+      className={dim ? "v2-press v2-focus" : "v2-press v2-focus ph01-cta-prim"}
       style={{
         display: "flex",
         alignItems: "center",
@@ -262,11 +257,6 @@ function TesterKort({ testerLive }: { testerLive: TesterLiveKortData }) {
 export function IDagTrainLock(p: IDagTrainLockProps) {
   const [besvart, setBesvart] = useState<Set<string>>(() => new Set());
   const godkjenninger = p.godkjenninger.filter((g) => !besvart.has(g.id));
-  const caddieProps = {
-    placeholder: p.caddiePlaceholder,
-    fangstFormel: p.fangstFormel,
-    oktLabel: p.oktLabel,
-  };
 
   let hero: ReactNode = null;
   if (p.tilstand === "feil") {
@@ -383,6 +373,7 @@ export function IDagTrainLock(p: IDagTrainLockProps) {
           .ph01-grid { display: grid; grid-template-columns: 1.25fr 1fr; gap: 14px; align-items: start; }
           .ph01-kun-mac { display: flex; flex-direction: column; gap: 12px; }
           .ph01-kun-telefon { display: none; }
+          .ph01-cta-prim { width: 260px; }
         }
       `}</style>
       <div
@@ -423,9 +414,6 @@ export function IDagTrainLock(p: IDagTrainLockProps) {
             {prikkNode}
           </div>
         </div>
-      </div>
-      <div style={{ flex: "none", padding: "10px 0 0", background: TL.scene }}>
-        <IDagCaddie plassering="mac" {...caddieProps} />
       </div>
     </div>
   );
