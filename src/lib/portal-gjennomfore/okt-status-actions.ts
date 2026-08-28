@@ -81,7 +81,7 @@ export async function markerOktStatus(input: {
             type: "okt_avvik",
             title: `${user.name ?? "Spiller"} hoppet over en økt`,
             body: `«${tittel}» ble hoppet over i dag. Ingen handling kreves — men verdt et blikk om det gjentar seg.`,
-            link: `/admin/spillere/${user.id}/workbench`,
+            link: `/admin/workbench/${user.id}`,
           },
         });
       }

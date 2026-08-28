@@ -335,7 +335,7 @@ function SpillerDetalj({ s }: { s: StallV2Player }) {
 
       <div style={{ display: "flex", gap: 8, marginTop: 20, flexWrap: "wrap" }}>
         <Link
-          href={`/admin/spillere/${s.id}/workbench`}
+          href={`/admin/workbench/${s.id}`}
           className={PRESS}
           style={{
             height: 44,

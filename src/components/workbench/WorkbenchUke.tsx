@@ -30,6 +30,7 @@ import { SessionInspector, type FlyttVerdier, type LeggTilDrillVerdier } from ".
 import { SourcesPanel } from "./SourcesPanel";
 import { TL_SCOPE } from "./wb-tl-scope";
 import { osloIdag, WeekGrid } from "./WeekGrid";
+import { VisningPiller } from "./VisningPiller";
 
 type Props = {
   playerId: string;
@@ -218,6 +219,7 @@ export function WorkbenchUke({ playerId, spillerNavn, uke, kilder }: Props) {
       }}
     >
       <Topplinje
+        playerId={playerId}
         spillerNavn={spillerNavn}
         week={week}
         antallUtkast={utkast.length}
@@ -364,6 +366,7 @@ export function WorkbenchUke({ playerId, spillerNavn, uke, kilder }: Props) {
 }
 
 function Topplinje({
+  playerId,
   spillerNavn,
   week,
   antallUtkast,
@@ -374,6 +377,7 @@ function Topplinje({
   onNyOkt,
   onPubliser,
 }: {
+  playerId: string;
   spillerNavn: string;
   week: WeekViewModel;
   antallUtkast: number;
@@ -409,6 +413,14 @@ function Topplinje({
           )}
         </div>
       </div>
+
+      <VisningPiller
+        playerId={playerId}
+        visning="uke"
+        uke={week.weekStart}
+        maned={week.weekStart.slice(0, 7)}
+        aar={week.weekStart.slice(0, 4)}
+      />
 
       <div style={{ display: "flex", gap: 6, marginLeft: "auto", flexWrap: "wrap" }}>
         <Knapp ghost icon="chevron-left" onClick={onForrige}>

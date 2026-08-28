@@ -31,7 +31,7 @@ export function AdminPlanleggeV2({ data }: { data: AdminPlanleggeData }) {
   // HurtigOpprett sender ?start= — følg med inn i Workbench så Ny økt prefylles.
   const startQ = searchParams.get("start");
   const workbenchHref = (id: string, extra?: { zoom?: string }) => {
-    const base = `/admin/spillere/${id}/workbench`;
+    const base = `/admin/workbench/${id}`;
     const params = new URLSearchParams();
     if (startQ) params.set("start", startQ);
     if (extra?.zoom) params.set("zoom", extra.zoom);

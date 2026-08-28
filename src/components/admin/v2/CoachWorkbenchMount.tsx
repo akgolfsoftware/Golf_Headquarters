@@ -98,7 +98,7 @@ export function CoachWorkbenchMount({
     if (id && id !== currentPlayerId) {
       const uke = searchParams.get("uke");
       const query = uke ? `?uke=${encodeURIComponent(uke)}` : "";
-      router.push(`/admin/spillere/${id}/workbench${query}`);
+      router.push(`/admin/workbench/${id}${query}`);
     }
   };
 

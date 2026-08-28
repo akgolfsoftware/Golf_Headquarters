@@ -71,7 +71,7 @@ export async function varsleCoachOmPlanendring(
       type: "plan",
       title: PLAN_ENDRING_TITTEL,
       body: byggPlanEndringBody(navn, 1, endringsType),
-      link: `/admin/spillere/${spillerId}/workbench`,
+      link: `/admin/workbench/${spillerId}`,
       groupKey,
     });
   } catch (error) {

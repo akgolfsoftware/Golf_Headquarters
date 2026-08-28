@@ -16,6 +16,11 @@ import type {
   PyramidArea,
   DayColumn,
   WeekViewModel,
+  MonthViewModel,
+  MonthWeekRow,
+  MonthDayCell,
+  YearViewModel,
+  YearMonthRow,
   WorkbenchMode,
   RecurrencePolicy,
   SeriesContentPatch,
@@ -313,6 +318,157 @@ export function buildWeekViewModel(
   budget.targetMinutes = targetMinutes;
 
   return { weekStart, days, budget, mode };
+}
+
+const PYRAMID_ORDER: PyramidArea[] = ["FYS", "TEK", "SLAG", "SPILL", "TURN"];
+const MAX_MONTH_LINES = 3;
+
+export function monthStartOf(isoDate: string): string {
+  return `${isoDate.slice(0, 7)}-01`;
+}
+
+export function lastDayOfMonth(monthStart: string): string {
+  const [y, m] = monthStart.split("-").map(Number);
+  const neste = m === 12 ? `${y + 1}-01-01` : `${y}-${String(m + 1).padStart(2, "0")}-01`;
+  return addDays(neste, -1);
+}
+
+export function addMonths(monthStart: string, delta: number): string {
+  const [y, m] = monthStart.split("-").map(Number);
+  const idx = y * 12 + (m - 1) + delta;
+  const ny = Math.floor(idx / 12);
+  const nm = (idx % 12) + 1;
+  return `${ny}-${String(nm).padStart(2, "0")}-01`;
+}
+
+/** ISO-uke for en YYYY-MM-DD (UTC-dato, samme konvensjon som mondayOf). */
+export function isoWeekNumber(isoDate: string): number {
+  const d = new Date(isoDate + "T12:00:00Z");
+  d.setUTCDate(d.getUTCDate() + 4 - (d.getUTCDay() || 7));
+  const yearStart = Date.UTC(d.getUTCFullYear(), 0, 1);
+  return Math.ceil(((d.getTime() - yearStart) / 86400000 + 1) / 7);
+}
+
+export function dominantPyramid(sessions: WorkbenchSession[]): PyramidArea | null {
+  const budget = computeBudget(sessions);
+  let best: PyramidArea | null = null;
+  let bestMin = 0;
+  for (const p of PYRAMID_ORDER) {
+    const min = budget.byPyramid[p] ?? 0;
+    if (min > bestMin) {
+      best = p;
+      bestMin = min;
+    }
+  }
+  return best;
+}
+
+function aktiveOkter(sessions: WorkbenchSession[]): WorkbenchSession[] {
+  return sessions.filter((s) => s.status !== "CANCELLED" && s.status !== "SKIPPED");
+}
+
+export function buildMonthViewModel(
+  monthStart: string,
+  sessions: WorkbenchSession[],
+  mode: WorkbenchMode,
+  targetMinutes = 0,
+  monthLabel: string,
+): MonthViewModel {
+  const last = lastDayOfMonth(monthStart);
+  const gridStart = mondayOf(monthStart);
+  const gridEndMonday = mondayOf(last);
+  const byDate = new Map<string, WorkbenchSession[]>();
+  for (const s of sessions) {
+    const list = byDate.get(s.date) ?? [];
+    list.push(s);
+    byDate.set(s.date, list);
+  }
+
+  const weeks: MonthWeekRow[] = [];
+  const weekSummaries: MonthViewModel["weekSummaries"] = [];
+  for (let cursor = gridStart; cursor <= gridEndMonday; cursor = addDays(cursor, 7)) {
+    const days: MonthDayCell[] = [];
+    let weekMinutes = 0;
+    let weekCount = 0;
+    for (let i = 0; i < 7; i++) {
+      const date = addDays(cursor, i);
+      const dags = (byDate.get(date) ?? [])
+        .slice()
+        .sort((a, b) => a.startMinute - b.startMinute);
+      const aktive = aktiveOkter(dags);
+      weekMinutes += aktive.reduce((n, s) => n + s.durationMinutes, 0);
+      weekCount += aktive.length;
+      const shown = aktive.slice(0, MAX_MONTH_LINES);
+      days.push({
+        date,
+        dayOfMonth: Number(date.slice(8, 10)),
+        inMonth: date >= monthStart && date <= last,
+        lines: shown.map((s) => ({
+          title: s.title,
+          durationMinutes: s.durationMinutes,
+          hairline: s.blockType === "TURNERING" || s.blockType === "TEST",
+        })),
+        restCount: Math.max(0, aktive.length - MAX_MONTH_LINES),
+      });
+    }
+    weeks.push({ weekStart: cursor, weekNumber: isoWeekNumber(cursor), days });
+    weekSummaries.push({
+      weekStart: cursor,
+      weekNumber: isoWeekNumber(cursor),
+      sessionCount: weekCount,
+      minutes: weekMinutes,
+    });
+  }
+
+  const inMonth = aktiveOkter(sessions).filter(
+    (s) => s.date >= monthStart && s.date <= last,
+  );
+  const budget = computeBudget(inMonth);
+  budget.targetMinutes = targetMinutes;
+
+  return {
+    monthStart,
+    label: monthLabel,
+    weeks,
+    budget,
+    weekSummaries,
+    empty: inMonth.length === 0,
+    mode,
+  };
+}
+
+export function buildYearViewModel(
+  year: number,
+  sessions: WorkbenchSession[],
+  mode: WorkbenchMode,
+  targetMinutes = 0,
+): YearViewModel {
+  const months: YearMonthRow[] = [];
+  let maxMin = 1;
+  const perMonth: { start: string; list: WorkbenchSession[] }[] = [];
+  for (let m = 1; m <= 12; m++) {
+    const start = `${year}-${String(m).padStart(2, "0")}-01`;
+    const last = lastDayOfMonth(start);
+    const list = aktiveOkter(sessions).filter((s) => s.date >= start && s.date <= last);
+    const minutes = list.reduce((n, s) => n + s.durationMinutes, 0);
+    if (minutes > maxMin) maxMin = minutes;
+    perMonth.push({ start, list });
+  }
+  for (let i = 0; i < 12; i++) {
+    const { start, list } = perMonth[i];
+    const minutes = list.reduce((n, s) => n + s.durationMinutes, 0);
+    months.push({
+      monthStart: start,
+      monthIndex: i + 1,
+      minutes,
+      sessionCount: list.length,
+      dominantPyramid: dominantPyramid(list),
+      volumePct: Math.round((minutes / maxMin) * 100),
+    });
+  }
+  const budget = computeBudget(aktiveOkter(sessions));
+  budget.targetMinutes = targetMinutes;
+  return { year, months, budget, mode };
 }
 
 // ─── Validation (soft — never blocks) ───────────────────────────────────────
