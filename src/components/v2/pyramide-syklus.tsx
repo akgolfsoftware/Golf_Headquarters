@@ -4,8 +4,8 @@
  * PyramideSyklusChip — trykk-for-å-bla pyramide-område på en enkelt drill.
  * Ett trykk sykler FYS→TEK→SLAG→SPILL→TURN→FYS. Optimistisk: UI oppdateres med
  * en gang, lagringen skjer i bakgrunnen, og rulles tilbake ved feil. Speiler
- * AkseChip sitt visuelle uttrykk (kategorifarge-prikk + sentence-case navn),
- * men som knapp med kategorifarget kant så den leser som interaktiv.
+ * AkseChip sitt visuelle uttrykk (prikk + sentence-case navn),
+ * men som knapp med hairline-kant så den leser som interaktiv.
  *
  * Read-only fallback: uten `onEndre` (ingen skrive-tilgang) rendres en vanlig
  * AkseChip i stedet — ærlig, ingen død knapp.
@@ -13,7 +13,6 @@
 
 import { useState, useTransition } from "react";
 import { TL } from "@/lib/v2/train-lock";
-import { T } from "@/lib/v2/tokens";
 import type { AkseKey } from "@/lib/v2/tokens";
 import { AKSE_NAVN, AkseChip } from "./core";
 
@@ -46,7 +45,6 @@ export function PyramideSyklusChip({ verdi, onEndre }: PyramideSyklusChipProps) 
     });
   };
 
-  const farge = T.ax[lokal] || TL.mute;
   return (
     <button
       type="button"
@@ -65,15 +63,15 @@ export function PyramideSyklusChip({ verdi, onEndre }: PyramideSyklusChipProps) 
         fontSize: 9,
         fontWeight: 700,
         color: feil ? TL.danger : TL.mute,
-        background: `color-mix(in srgb,${farge} 12%,transparent)`,
-        border: `1px solid ${feil ? TL.danger : `color-mix(in srgb,${farge} 45%,transparent)`}`,
+        background: TL.dock,
+        border: `1px solid ${feil ? TL.danger : TL.hair}`,
         borderRadius: 5,
         padding: "3px 7px",
         opacity: pending ? 0.6 : 1,
         transition: "opacity 120ms",
       }}
     >
-      <span style={{ width: 6, height: 6, borderRadius: 9999, background: farge }} />
+      <span style={{ width: 6, height: 6, borderRadius: 9999, background: TL.text }} />
       {AKSE_NAVN[lokal] || lokal}
     </button>
   );

@@ -435,12 +435,7 @@ function TesterLiveKort({ testerLive }: { testerLive: TesterLiveKortData }) {
  * sender `null` som prop da, og komponenten kalles ikke i det hele tatt (se
  * kallstedet). Hele kortet er trykkbart → TM-11.
  *
- * Bruker bevisst T.* (samme som resten av denne siden), IKKE TL.* — denne
- * skjermen (PortalChatHjem) er ikke Train-lock-portet ennå (CLAUDE.md:
- * «Selve skjermporten gjenstår, B8 = Player»). Å blande TL inn i et ellers
- * T-basert skjermbilde ville brutt regelen «bland aldri T.* og TL.* i samme
- * skjerm» enda mer direkte enn å holde dette kortet i T — se
- * docs/natt/LOOP-B7-DONE.md for avviket, som er meldt til Anders.
+ * C8: hele I dag-skjermen leser TL.* — ingen T.* her.
  */
 function TrackManTeaserKort({ trackman }: { trackman: TrackManTeaser }) {
   return (
@@ -469,29 +464,12 @@ function TrackManTeaserKort({ trackman }: { trackman: TrackManTeaser }) {
 }
 
 /**
- * Workbench «I dag» (Loop 3 / B4) — fire tilstander (PH-01e): feil (henting
- * feilet), hvile (ingen Workbench-økter i det hele tatt, ikke en feil), pågår
- * (én økt har status IN_PROGRESS — PH-05, egen fremhevet artefakt-tilstand),
- * publisert (én eller flere PUBLISHED/COMPLETED-økter). `loadPlayerDay`
- * filtrerer DRAFT bort server-side (invariant 3) — ingen ny håndheving her.
- * Lenker til det eksisterende økt-arket fra Loop 3S (`/portal/tren/wb/[id]`).
- */
-/**
  * Godkjenningskort (Loop 3T/B6, WB-10/WB-04-mønster) — én økt med
  * `needsPlayerApproval`. «Godta» er eneste sted #30D158 (TL.ok) forekommer i
  * denne flyten (CLAUDE.md invariant 2); «Avvis» er en nøytral ghost-knapp,
  * ALDRI rød. Avvis skjuler økten (hiddenByPlayer) — sletter aldri.
  *
- * Bruker BARE `TL.*` (Train-lock), aldri `T.*` (Paper) — motsatt av resten
- * av denne siden (se `TrackManTeaserKort` over, som bevisst gjør det
- * motsatte, av samme grunn). PortalChatHjem er ikke Train-lock-portet ennå
- * (B8 gjenstår), men et NYTT kort introdusert i B6 har ingen eksisterende
- * T.*-visning å videreføre — å bygge det i Paper ville vært å legge til enda
- * en T.*-flate rett før porten, ikke å respektere en fasit som allerede
- * står der. Regelen «bland aldri T.* og TL.* i samme skjerm» gjelder
- * FUNKSJONEN/komponenten, ikke filen: denne komponenten er internt 100 % ren
- * TL, resten av filen er internt 100 % ren T — de deler aldri ett DOM-tre av
- * stiler. Se docs/natt/LOOP-B6-DONE.md for avviket.
+ * C8: hele I dag-skjermen leser TL.* — «Godta» er eneste TL.ok.
  */
 function GodkjenningKort({ okt, onFerdig }: { okt: PlayerDaySession; onFerdig: (id: string) => void }) {
   const router = useRouter();
@@ -608,6 +586,7 @@ const wbKortStil: CSSProperties = {
   padding: 20,
 };
 
+/** Workbench «I dag» (PH-01e): feil, hvile, pågår, publisert. DRAFT er filtrert. */
 function WorkbenchIDagArtefakt({ workbenchDay }: { workbenchDay: PlayerDayResult }) {
   // Optimistisk skjuling av godkjenninger spilleren nettopp svarte på — det
   // faktiske resultatet kommer tilbake via router.refresh() i GodkjenningKort.
