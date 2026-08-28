@@ -18,7 +18,7 @@ import {
   MikroMeta,
   AKSE_NAVN,
 } from "@/components/v2";
-import type { AkseKey } from "@/lib/v2/tokens";
+import type { AkseKey } from "@/lib/v2/format";
 
 /* ── Datakontrakt ──────────────────────────────────────────────────── */
 

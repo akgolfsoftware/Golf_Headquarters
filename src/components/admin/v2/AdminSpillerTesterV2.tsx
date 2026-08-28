@@ -17,7 +17,7 @@ import { TL } from "@/lib/v2/train-lock";
 
 import Link from "next/link";
 import { Caps, Kort, Rad, AvatarInit, KpiFlis, CTAPill, TilbakeLenke, InnsiktChip, AkseChip, TomTilstand, Radar, type RadarPunkt } from "@/components/v2";
-import type { AkseKey } from "@/lib/v2/tokens";
+import type { AkseKey } from "@/lib/v2/format";
 import type { SpillerTesterData } from "@/lib/admin/spiller-tester-data";
 
 function fmtHcp(hcp: number | null): string {

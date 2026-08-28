@@ -9,7 +9,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import type { CSSProperties } from "react";
 import { Icon, Kort, Caps, Tittel, Knapp, KpiFlis, PillVelger, StatusPill, AkseChip, Rad, FordelingHode, FordelingRad, InnsiktChip } from "@/components/v2";
-import type { AkseKey } from "@/lib/v2/tokens";
+import type { AkseKey } from "@/lib/v2/format";
 import type {
   ByggerKontekst,
   ByggerMaltype,

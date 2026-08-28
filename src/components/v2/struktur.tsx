@@ -9,7 +9,7 @@
 import type { CSSProperties, ReactNode } from "react";
 import { useState } from "react";
 import { TL } from "@/lib/v2/train-lock";
-import { type AkseKey } from "@/lib/v2/tokens";
+import { type AkseKey } from "@/lib/v2/format";
 import { Caps, PillVelger, AvatarInit, AkseChip } from "./core";
 import { Icon } from "@/components/v2/icon";
 /* ── FAB: flytende handlingsknapp (lime = CTA) ────────── */

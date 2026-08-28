@@ -7,7 +7,7 @@
 
 import Link from "next/link";
 import { TL } from "@/lib/v2/train-lock";
-import { fmtSg } from "@/lib/v2/tokens";
+import { fmtSg } from "@/lib/v2/format";
 import { Caps, Kort, Rad, Trend, DeltaChip, FordelingRad, InnsiktChip, TomTilstand, StatusPill, CTAPill, TilbakeLenke } from "@/components/v2";
 // ── Datakontrakt (mappes fra den ekte loaderen i ruten) ─────────
 export interface FremgangV2Omrade {

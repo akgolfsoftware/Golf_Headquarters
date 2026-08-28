@@ -34,7 +34,7 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { TL } from "@/lib/v2/train-lock";
-import { type AkseKey } from "@/lib/v2/tokens";
+import { type AkseKey } from "@/lib/v2/format";
 import { AKSE_NAVN } from "@/components/v2";
 import { Icon } from "@/components/v2/icon";
 import { ArtefaktPanel, useErMobil } from "@/components/portal/v2/chat/ArtefaktPanel";

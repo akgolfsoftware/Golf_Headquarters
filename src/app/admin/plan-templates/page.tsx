@@ -27,7 +27,7 @@ import {
   type AdminPlanMalerData,
   type PlanMalFordeling,
 } from "@/components/admin/v2/AdminPlanMalerV2";
-import type { AkseKey } from "@/lib/v2/tokens";
+import type { AkseKey } from "@/lib/v2/format";
 import { TilbakeLenke } from "@/components/v2";
 import { bygUkeOversikt } from "@/lib/domain/plan-uke-oversikt";
 import { TL_SCOPE } from "@/components/workbench/wb-tl-scope";

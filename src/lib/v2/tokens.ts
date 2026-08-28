@@ -274,19 +274,6 @@ export const T = {
   dur: 180,
 } as const;
 
-/** Akse-nøkler i pyramiden (FYS/TEK/SLAG/SPILL/TURN). */
-export type AkseKey = keyof typeof T.ax;
-
-/** SG-formatering: komma-desimal + fortegn (+/−), 1 desimal. Speil av mockupens fmtSg. */
-export function fmtSg(v: number): string {
-  return (v > 0 ? "+" : v < 0 ? "−" : "") + Math.abs(v).toFixed(1).replace(".", ",");
-}
-
-/** Tom tallverdi i UI — alltid em-dash (fasit). */
-export const TOM_TALL = "—";
-
-/** Returner em-dash for null/undefined/tom streng; ellers verdien. */
-export function fmtTall(v: number | string | null | undefined): string {
-  if (v === null || v === undefined || v === "") return TOM_TALL;
-  return String(v);
-}
+// AkseKey/fmtSg/TOM_TALL/fmtTall er flyttet til src/lib/v2/format.ts
+// (designsystem-nøytrale). Re-eksportert her for bakoverkompatibilitet.
+export { fmtSg, fmtTall, TOM_TALL, type AkseKey } from "@/lib/v2/format";

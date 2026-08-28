@@ -19,7 +19,7 @@ import Link from "next/link";
 import type { ReactNode, CSSProperties } from "react";
 import { Icon, Kort, Knapp, AkseChip, HjelpTips, Caps } from "@/components/v2";
 import type { HjelpNokkel } from "@/lib/v2/hjelpetekster";
-import type { AkseKey } from "@/lib/v2/tokens";
+import type { AkseKey } from "@/lib/v2/format";
 import type { WeekEvent } from "@/lib/workbench/week-types";
 import type { WeekSuggestion } from "@/lib/ai-plan/week-suggest";
 import type { PlanStatus } from "@/generated/prisma/client";

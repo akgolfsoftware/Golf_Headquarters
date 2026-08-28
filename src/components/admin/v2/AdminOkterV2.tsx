@@ -9,7 +9,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Caps, Kort, Rad, KpiFlis, AkseChip, StatusPill, FilterChips, TomTilstand, InnsiktChip, CTAPill, TidsPyramide, type StatusTone } from "@/components/v2";
-import type { AkseKey } from "@/lib/v2/tokens";
+import type { AkseKey } from "@/lib/v2/format";
 
 // ── Datakontrakt (mappes fra TrainingPlanSession i ruten) ───────
 export interface OkterOkt {

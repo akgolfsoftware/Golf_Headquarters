@@ -65,7 +65,7 @@ import { WorkbenchAarsplan, PeriodePalett, WBPeriodeStrip } from "./WorkbenchAar
 import type { WeekSuggestion } from "@/lib/ai-plan/week-suggest";
 import { WBTidslinjeMobil, WbBottomSheet } from "./WorkbenchV2Mobil";
 import { ukenummer } from "@/lib/uke-helpers";
-import type { AkseKey } from "@/lib/v2/tokens";
+import type { AkseKey } from "@/lib/v2/format";
 import type { WorkbenchData } from "@/lib/workbench/load-workbench";
 import { LPHASE_LABEL as LPHASE_LABEL_KANON, LPHASE_FARGE as LPHASE_FARGE_KANON } from "@/lib/labels/taxonomy";
 import { sokOvelser, hentOktKomponist, hentMalOktDrills } from "@/lib/workbench/ovelse-sok";

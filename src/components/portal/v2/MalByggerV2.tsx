@@ -10,7 +10,7 @@ import { useState, useTransition } from "react";
 import Link from "next/link";
 import type { CSSProperties } from "react";
 import { T, Icon, Kort, Caps, Knapp, KpiFlis, StatusPill, Rad, FordelingHode, FordelingRad, InnsiktChip, HjelpTips, AKSE_NAVN } from "@/components/v2";
-import type { AkseKey } from "@/lib/v2/tokens";
+import type { AkseKey } from "@/lib/v2/format";
 import type { HjelpNokkel } from "@/lib/v2/hjelpetekster";
 import { anbefalMal, genererPlanForslag, lagrePlan, sendTilGodkjenning } from "@/app/portal/mal/bygger/actions";
 import type {

@@ -12,7 +12,7 @@ import type { CSSProperties, ReactNode } from "react";
 import { Fragment, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { TL } from "@/lib/v2/train-lock";
-import { fmtSg, type AkseKey } from "@/lib/v2/tokens";
+import { fmtSg, type AkseKey } from "@/lib/v2/format";
 import { Icon } from "@/components/v2/icon";
 import { Kort, TallHero, Caps, TomTilstand, CTAPill, AkseChip, InnsiktChip, DeltaChip, AvatarInit, AKSE_NAVN, Rad } from "./core";
 import { HjelpTips, hoverKapabel } from "./hjelp";

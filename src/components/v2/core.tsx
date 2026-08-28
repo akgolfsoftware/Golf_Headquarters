@@ -20,7 +20,7 @@ import type { CSSProperties, ReactNode } from "react";
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { TL } from "@/lib/v2/train-lock";
-import { fmtSg, TOM_TALL, type AkseKey } from "@/lib/v2/tokens";
+import { fmtSg, TOM_TALL, type AkseKey } from "@/lib/v2/format";
 import { useCountUp, useMount, EASE, reduced } from "@/lib/v2/hooks";
 import { Icon } from "@/components/v2/icon";
 import { HjelpTips } from "@/components/v2/hjelp";

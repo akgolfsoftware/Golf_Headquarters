@@ -13,7 +13,7 @@
 
 import { useState, useTransition } from "react";
 import { TL } from "@/lib/v2/train-lock";
-import type { AkseKey } from "@/lib/v2/tokens";
+import type { AkseKey } from "@/lib/v2/format";
 import { AKSE_NAVN, AkseChip } from "./core";
 
 const SYKLUS: AkseKey[] = ["FYS", "TEK", "SLAG", "SPILL", "TURN"];

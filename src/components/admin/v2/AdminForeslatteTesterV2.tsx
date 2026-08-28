@@ -18,7 +18,7 @@ import { TL } from "@/lib/v2/train-lock";
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { Caps, Kort, Knapp, AkseChip, TomTilstand, HjelpTips, Icon } from "@/components/v2";
-import type { AkseKey } from "@/lib/v2/tokens";
+import type { AkseKey } from "@/lib/v2/format";
 import { avvisForslag, godkjennForslag } from "@/app/admin/tester/foreslatte/actions";
 /* ── Datakontrakt (mappes fra Prisma + protokoll-parsing i ruten) ─────── */
 

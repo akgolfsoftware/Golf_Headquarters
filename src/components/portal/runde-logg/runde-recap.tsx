@@ -17,7 +17,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { TL } from "@/lib/v2/train-lock";
-import { fmtSg } from "@/lib/v2/tokens";
+import { fmtSg } from "@/lib/v2/format";
 import { Icon } from "@/components/v2/icon";
 import { lagreLoggetRunde } from "@/app/portal/(legacy)/mal/runder/logg/actions";
 import { slettKladd } from "@/lib/runde-logg/draft";

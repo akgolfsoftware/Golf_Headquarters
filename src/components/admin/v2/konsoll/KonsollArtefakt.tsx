@@ -18,7 +18,7 @@
 
 import Link from "next/link";
 import { TL } from "@/lib/v2/train-lock";
-import { type AkseKey } from "@/lib/v2/tokens";
+import { type AkseKey } from "@/lib/v2/format";
 import { AKSE_NAVN } from "@/components/v2";
 import type { CockpitData } from "@/components/admin/cockpit/agency-cockpit";
 import { Merkelapp } from "./KonsollDeler";

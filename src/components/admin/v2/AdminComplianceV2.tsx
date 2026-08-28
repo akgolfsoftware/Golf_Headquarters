@@ -21,7 +21,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import { sendMeldingTilSpiller } from "@/app/admin/(legacy)/messages/actions";
 import { Caps, Kort, Rad, KpiFlis, AvatarInit, AkseBar, AkseChip, RingMaaler, ProgresjonsBar, InnsiktChip, TomTilstand, PillVelger, Icon, Knapp, UkeStripe, HjelpTips, etterlevFarge, type EtterlevBand } from "@/components/v2";
-import type { AkseKey } from "@/lib/v2/tokens";
+import type { AkseKey } from "@/lib/v2/format";
 import type { ComplianceData, ComplianceAxis, StallRow } from "@/lib/admin-compliance/compliance-data";
 
 /* ── Oversettere (loader → v2-idiom) ────────────────────────────── */

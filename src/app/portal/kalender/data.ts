@@ -15,7 +15,7 @@ import type { PyramidArea, PracticeType } from "@/generated/prisma/client";
 import { translateMiljo } from "@/lib/portal/translate-taxonomy";
 import { lesPeriodeType } from "@/app/admin/(legacy)/kalender/lib/periode-helpers";
 import type { PeriodeType } from "@/generated/prisma/client";
-import type { AkseKey } from "@/lib/v2/tokens";
+import type { AkseKey } from "@/lib/v2/format";
 
 // PracticeType → pyramide-akse (samme kanon som portal/actions.ts).
 const PRACTICE_TO_PYRAMID: Record<PracticeType, PyramidArea> = {
