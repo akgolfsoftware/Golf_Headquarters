@@ -23,8 +23,8 @@ export type AgencyHubTab = {
 
 /** Primær «Kø» — alt som krever handling / oppmerksomhet. */
 export const KO_HUB_TABS: AgencyHubTab[] = [
-  { href: "/admin/innboks", label: "Innboks", exact: true },
   { href: "/admin/godkjenninger", label: "Godkjenning" },
+  { href: "/admin/innboks", label: "Innboks", exact: true },
   { href: "/admin/varsler", label: "Varsler" },
   { href: "/admin/queue", label: "Oppfølging" },
   { href: "/admin/handlingssenter", label: "Oppgaver" },

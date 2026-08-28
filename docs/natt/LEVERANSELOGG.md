@@ -33,11 +33,12 @@ GJELDENDE merge-status, se `docs/STATUS-NÅ.md`.
 | N3 | Scorekort- og PEI-beregningsmotor høstet fra talenthq | `claude/n3-pei-scorekort-motor` | Ferdig, ikke merget da |
 | N5 | Team Norway som egen organisasjon | `claude/n5-team-norway-org` | Ferdig |
 | RLS-Workbench | RLS på `workbench_sessions`/`workbench_drills` | — (#593) | Kjørt og verifisert aktiv i prod |
-| T7 | Kalender + booking-lag samlet til én TL-flate (`/admin/kalender`); lista og uka-tavla redirect | `claude/natt-lansering-2026-08-28` | Ferdig, ikke merget; skjermbilde-gate gjenstår |
-| T8 | Grupper til Train-lock (liste, detalj, timeplan, AK-stigen) + workbench-fane | `claude/natt-lansering-2026-08-28` | Ferdig, ikke merget; skjermbilde-gate gjenstår |
-| QA-1 | Web-hygiene: admin-toast, tel-lenke, årstall, hub-titler, én e-post på kontakt | `claude/natt-lansering-2026-08-28` | Ferdig, ikke merget |
-| C6 | Jarvis-merge eval-gate + proveniens (Filip åpen / Jonas stengt). Ikke `src/lib/jarvis/` | `claude/natt-lansering-2026-08-28` | Ferdig, ikke merget |
-| C7 | AgenticOS godkjenningspolicy A3/B1/C3 (ren funksjon). J-A/J-B hoppet | `claude/natt-lansering-2026-08-28` | Ferdig, ikke merget |
+| T7 | Kalender + booking-lag samlet til én TL-flate (`/admin/kalender`); lista og uka-tavla redirect | `claude/natt-lansering-2026-08-28` | Merget #629 |
+| T8 | Grupper til Train-lock (liste, detalj, timeplan, AK-stigen) + workbench-fane | `claude/natt-lansering-2026-08-28` | Merget #629 |
+| QA-1 | Web-hygiene: admin-toast, tel-lenke, årstall, hub-titler, én e-post på kontakt | `claude/natt-lansering-2026-08-28` | Merget #629 |
+| C6 | Jarvis-merge eval-gate + proveniens (Filip åpen / Jonas stengt). Ikke `src/lib/jarvis/` | `claude/natt-lansering-2026-08-28` | Merget #629 |
+| C7 | AgenticOS godkjenningspolicy A3/B1/C3 (ren funksjon). J-A/J-B hoppet | `claude/natt-lansering-2026-08-28` | Merget #629 |
+| T12 | J-A `/meg` under Meg (ADMIN) + ⌘K. J-B utkast (ingen send). J-C Kø-fane = godkjenninger. Caddie/tildelt-meg/drill-forslag redirect | `claude/t12-agenticos-ia-2026-08-28` | Ferdig |
 | C9 | FO-01 neste økt-kort på wb-domenet (aldri DRAFT, kun fornavn) | `claude/natt-lansering-2026-08-28` | Ferdig, ikke merget; skjermbilde-gate gjenstår |
 
 Se `docs/natt/README.md` for hvilke natt-dokumenter som fortsatt er levende (LAUNCH-PLAN,

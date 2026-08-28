@@ -25,6 +25,7 @@ import { onsketTema } from "@/lib/v2/tema-default";
 import { SpillerVeksler, type VekslerData } from "./spiller-veksler";
 import { useErAdmin } from "./rolle";
 import { GlobalSearchModal } from "@/components/admin/global-search-modal";
+import { AGENCYOS_SKALL_TABS, AGENCYOS_UNDER_MEG } from "@/lib/agencyos/skall-ia";
 
 // D2 (17. juli): re-eksporter veksler-datakontrakten fra shellen så kallsteder
 // (cockpit m.fl.) kan importere den fra samme sted som V2Shell.
@@ -143,7 +144,7 @@ export const AGENCYOS_ROM: V2Rom[] = [
   {
     id: "agenticos",
     label: "AgenticOS",
-    beskrivelse: "Caddie, coach-agenter, agent-team, daglig brief",
+    beskrivelse: "Agenter, godkjenningskø, daglig brief",
     meta: "Coach",
     icon: "bot",
     href: "/admin/agenticos",
@@ -555,21 +556,7 @@ function MerPanel({ grupper, rom, onClose, mobil, full, erAgency }: { grupper?: 
  * bruker derfor en frittstående tab-liste og leser aktiv fane av
  * `pathname`, ikke av `aktiv`-propen.
  */
-interface SkallTab { id: string; label: string; icon: string; href: string }
-const AGENCYOS_SKALL_TABS: SkallTab[] = [
-  { id: "stall", label: "Stall", icon: "users", href: "/admin/spillere" },
-  { id: "workbench", label: "Workbench", icon: "target", href: "/admin/planlegge" },
-  { id: "ko", label: "Kø", icon: "inbox", href: "/admin/queue" },
-  { id: "jarvis", label: "Jarvis", icon: "bot", href: "/admin/agenticos" },
-  { id: "meg", label: "Meg", icon: "user", href: "/admin/profile" },
-];
-
-/** «Under Meg» — rader, ikke tabber (AX-01b). */
-const AGENCYOS_UNDER_MEG: { id: string; label: string; href: string }[] = [
-  { id: "konsoll", label: "Konsoll", href: "/admin/agencyos" },
-  { id: "okonomi", label: "Økonomi", href: "/admin/agencyos/okonomi" },
-  { id: "kalender", label: "Kalender", href: "/admin/kalender" },
-];
+export { AGENCYOS_SKALL_TABS, AGENCYOS_UNDER_MEG };
 
 /** Aktiv fane av URL — AGENCYOS_SKALL_TABS-idene, «» hvis ingen treffer
  *  (typisk en under-Meg-side; radene der har egen, uavhengig aktiv-sjekk). */
@@ -586,7 +573,9 @@ function skallAktivFraPath(pathname: string): string {
     { prefix: "/admin/agenticos", id: "jarvis" },
     { prefix: "/admin/agent-team", id: "jarvis" },
     { prefix: "/admin/agents", id: "jarvis" },
+    { prefix: "/admin/agencyos/caddie", id: "jarvis" },
     { prefix: "/admin/profile", id: "meg" },
+    { prefix: "/meg", id: "meg" },
   ];
   for (const t of treff) {
     if (pathname === t.prefix || pathname.startsWith(t.prefix + "/")) return t.id;
@@ -603,6 +592,8 @@ function skallAktivFraPath(pathname: string): string {
 function TrainLockAgencyRail() {
   const pathname = usePathname();
   const aktivTab = skallAktivFraPath(pathname ?? "");
+  const erAdmin = useErAdmin();
+  const underMeg = AGENCYOS_UNDER_MEG.filter((r) => erAdmin || !r.adminOnly);
   return (
     <nav
       className="hidden md:flex"
@@ -645,7 +636,7 @@ function TrainLockAgencyRail() {
       >
         Under Meg
       </div>
-      {AGENCYOS_UNDER_MEG.map((r) => {
+      {underMeg.map((r) => {
         const on = (pathname ?? "").startsWith(r.href);
         return (
           <Link
@@ -1005,6 +996,7 @@ function TrainLockAgencyDock() {
  */
 function MegArkTL({ onClose }: { onClose: () => void }) {
   const pathname = usePathname();
+  const erAdmin = useErAdmin();
   useEffect(() => {
     const esc = (e: KeyboardEvent) => { if (e.key === "Escape") onClose(); };
     window.addEventListener("keydown", esc);
@@ -1015,7 +1007,10 @@ function MegArkTL({ onClose }: { onClose: () => void }) {
     if (pathname !== apnetPa) onClose();
   }, [pathname, apnetPa, onClose]);
 
-  const rader = [...AGENCYOS_UNDER_MEG, { id: "profil", label: "Min profil", href: "/admin/profile" }];
+  const rader = [
+    ...AGENCYOS_UNDER_MEG.filter((r) => erAdmin || !r.adminOnly),
+    { id: "profil", label: "Min profil", href: "/admin/profile" },
+  ];
 
   return createPortal(
     <>

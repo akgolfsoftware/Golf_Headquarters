@@ -7,5 +7,5 @@
 import { permanentRedirect } from "next/navigation";
 
 export default function DrillForslagRedirect() {
-  permanentRedirect("/admin/agenticos");
+  permanentRedirect("/admin/godkjenninger");
 }

@@ -37,6 +37,7 @@ export const metadata = { title: "AgenticOS · AgencyOS" };
 
 /** Ruter som hører til drift men lever på egne adresser (fasitens «Verktøy og rom»). */
 const ROM: { navn: string; href: string; meta: string }[] = [
+  { navn: "Godkjenninger", href: "/admin/godkjenninger", meta: "Agent-forslag som venter på deg" },
   { navn: "Daglig brief", href: "/admin/brief", meta: "Morgenbrief per coach og hastefunn" },
   { navn: "Opptak", href: "/admin/recording", meta: "Transkriberer → analyserer → foreslår" },
   { navn: "Workspace", href: "/admin/workspace", meta: "Oppgaver og prosjekter (Notion-synk)" },

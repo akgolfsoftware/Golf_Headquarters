@@ -54,6 +54,7 @@ const ITEMS: ReadonlyArray<PaletteItem> = [
   { id: "p-ma", kategori: "Sider", label: "Mål & Utfordringer", href: "/portal/mal" },
   { id: "p-dr", kategori: "Sider", label: "Drills", href: "/portal/drills" },
   { id: "p-me", kategori: "Sider", label: "Meg / Profil", href: "/portal/meg" },
+  { id: "a-jarvis", kategori: "Sider", label: "Personlig innboks (Jarvis)", href: "/meg" },
   // Data (kan utvides til ekte fetch)
   { id: "d-1", kategori: "Drills", label: "Drill-bibliotek", href: "/portal/drills" },
   { id: "m-1", kategori: "Mål", label: "Mål", href: "/portal/mal" },
