@@ -296,9 +296,9 @@ const RAW = {
       "Hvor langt ballen flyr i lufta før den lander, målt i meter. Viktigere enn totallengde når du skal bære over hindringer eller stoppe ballen på green.",
   },
   dataGolfBaseline: {
-    tittel: "Tour-referanse (0-linjen)",
+    tittel: "DataGolf-motoren",
     forklaring:
-      "0-linjen er tour-snittet fra DataGolf. Tallene dine viser hvor mange slag per runde du ligger over eller under det nivået i hver kategori — negativt tall betyr at gapet fortsatt er der, ikke at du spiller dårlig.",
+      "Skill, True SG og Rest er DataGolf-tall. De blandes aldri med Broadie-SG eller PEI. 0 = feltsnitt. Mangler tallet, står det «mangler» — vi gjetter ikke. PGA-putt per avstand er en Broadie-tabell, merket som det.",
   },
   sgGap: {
     tittel: "Gap til referansen",

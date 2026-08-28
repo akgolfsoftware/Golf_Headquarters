@@ -157,7 +157,7 @@ function RapportKort({ t }: { t: Tile }) {
   );
 }
 
-export function AdminReportsV2({ data }: { data: ReportsV2Data }) {
+export function AdminReportsV2({ data, innfelt = false }: { data: ReportsV2Data; innfelt?: boolean }) {
   const { spillere, okter, sesong, maanedsrapporter, visKroner } = data;
 
   const tiles: Tile[] = [
@@ -212,28 +212,47 @@ export function AdminReportsV2({ data }: { data: ReportsV2Data }) {
   ];
 
   return (
-    <div data-paper-wave-h="reports" data-paper-pattern style={{ display: "flex", flexDirection: "column", gap: 16, maxWidth: 960, margin: "0 auto", width: "100%" }}>
-      {/* B: status først + én primær CTA */}
-      <div style={{ display: "flex", flexWrap: "wrap", alignItems: "flex-end", justifyContent: "space-between", gap: 14 }}>
+    <div data-paper-wave-h="reports" data-paper-pattern style={{ display: "flex", flexDirection: "column", gap: 16, maxWidth: innfelt ? "none" : 960, margin: innfelt ? 0 : "0 auto", width: "100%" }}>
+      {innfelt ? (
         <div>
-          <div data-paper-pattern-topp>
-          <h1 style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 17, fontWeight: 600, color: TL.text }}>Rapporter</h1>
-          <span style={{ display: "block", fontFamily: TL.font.mono, fontSize: 10.5, color: TL.mute, marginTop: 2 }}>AgencyOS</span>
-        </div>
-          <p style={{ fontFamily: TL.font.sans, fontSize: 13, color: TL.mute, margin: "8px 0 0", maxWidth: 460 }}>
-            Generer rapporter for spillere, foreldre, klubb eller forbund. Eksport til PDF og CSV.
+          <span
+            style={{
+              fontSize: 11,
+              fontWeight: TL.vekt.caps,
+              letterSpacing: TL.track.caps,
+              textTransform: "uppercase",
+              color: TL.mute,
+            }}
+          >
+            Rapporter
+          </span>
+          <p style={{ fontFamily: TL.font.sans, fontSize: 13, color: TL.mute, margin: "8px 0 0", maxWidth: 520 }}>
+            {spillere} spillere · {okter} økter · sesong {sesong}. Eksport til CSV.
           </p>
         </div>
-        <StatusPill tone="lime">
-          {spillere} spillere · {okter} økter · sesong {sesong}
-        </StatusPill>
-      </div>
-
-      <a href="/api/admin/reports/spillere.csv" style={{ textDecoration: "none", display: "block" }}>
-        <CTAPill icon="download" full>
-          Generer spiller-rapport
-        </CTAPill>
-      </a>
+      ) : (
+        <>
+          <div style={{ display: "flex", flexWrap: "wrap", alignItems: "flex-end", justifyContent: "space-between", gap: 14 }}>
+            <div>
+              <div data-paper-pattern-topp>
+                <h1 style={{ margin: 0, fontFamily: TL.font.sans, fontSize: 17, fontWeight: 600, color: TL.text }}>Rapporter</h1>
+                <span style={{ display: "block", fontFamily: TL.font.mono, fontSize: 10.5, color: TL.mute, marginTop: 2 }}>AgencyOS</span>
+              </div>
+              <p style={{ fontFamily: TL.font.sans, fontSize: 13, color: TL.mute, margin: "8px 0 0", maxWidth: 460 }}>
+                Generer rapporter for spillere, foreldre, klubb eller forbund. Eksport til PDF og CSV.
+              </p>
+            </div>
+            <StatusPill tone="lime">
+              {spillere} spillere · {okter} økter · sesong {sesong}
+            </StatusPill>
+          </div>
+          <a href="/api/admin/reports/spillere.csv" style={{ textDecoration: "none", display: "block" }}>
+            <CTAPill icon="download" full>
+              Generer spiller-rapport
+            </CTAPill>
+          </a>
+        </>
+      )}
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3" style={{ gap: 16 }}>
         {tiles.map((t) => (

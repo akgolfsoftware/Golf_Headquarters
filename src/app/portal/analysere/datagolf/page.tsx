@@ -1,11 +1,6 @@
 /**
- * DataGolf under Analyse (T6, 2026-08-16) — flyttet fra /portal/datagolf per
- * beslutningen «DataGolf-skjermene skal inn i PlayerHQ» (Anders 2026-08-04,
- * plassering valgt 2026-08-16: fane/inngang i Analyse). V2Shell leverer
- * chrome-en (IkonRail/BunnNav), DataGolfV2 rendrer innholds-stacken.
- *
- * Auth + dataloader gjenbrukt: requirePortalUser + hentDataGolf (ekte data fra
- * BrukerSammenligning + BrukerSgInput + PgaPlayerSeason).
+ * DataGolf-spillerkort (DG-01 / C10). Kun DataGolf-motor — Broadie og PEI
+ * blandes aldri inn. V2Shell leverer chrome, DataGolfV2 innholdet.
  */
 
 import { redirect } from "next/navigation";
@@ -25,7 +20,7 @@ export default async function AnalysereDataGolfPage() {
   const data = await hentDataGolf(user.id);
 
   return (
-    <V2Shell bredde="kolonne" aktiv="analyse" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
+    <V2Shell bredde="full" aktiv="analyse" nav={PLAYERHQ_NAV} navn={user.name} avatarUrl={user.avatarUrl}>
       <TilbakeLenke href="/portal/analysere">Analyse</TilbakeLenke>
       <DataGolfV2 data={data} spillerNavn={user.name ?? undefined} />
     </V2Shell>

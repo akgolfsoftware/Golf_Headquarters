@@ -242,8 +242,7 @@ function TabSG({ data, mobile }: { data: AnalysereData; mobile: boolean }) {
         </Kort>
       )}
 
-      {/* DataGolf-inngangen (T6): samme videre-lenke-kort som dybdelaget —
-          skjermen bor på /portal/analysere/datagolf og fylles av SG-broen. */}
+      {/* DataGolf-inngangen (DG-01 / C10): egen motor, aldri Broadie/PEI. */}
       <Link href="/portal/analysere/datagolf" className="v2-press v2-focus" style={{ textDecoration: "none", gridColumn: "1 / -1" }}>
         <Kort>
           <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
@@ -252,7 +251,7 @@ function TabSG({ data, mobile }: { data: AnalysereData; mobile: boolean }) {
             </span>
             <div style={{ flex: 1, minWidth: 0 }}>
               <div style={{ fontFamily: TL.font.sans, fontWeight: 700, fontSize: 14, color: TL.text }}>DataGolf</div>
-              <div style={{ fontFamily: TL.font.sans, fontSize: 11.5, color: TL.mute, marginTop: 2 }}>Deg mot touren — din SG mot en PGA-referansespiller</div>
+              <div style={{ fontFamily: TL.font.sans, fontSize: 11.5, color: TL.mute, marginTop: 2 }}>mot feltet · egen motor, aldri Broadie eller PEI</div>
             </div>
             <Icon name="chevron-right" size={15} style={{ color: TL.mute, flex: "none" }} />
           </div>
@@ -338,7 +337,7 @@ function AnalyseDybde({ data, mobile }: { data: AnalysereData; mobile: boolean }
         {[
           { href: "/portal/analysere/hull", ic: "map", l: "Hull-analyse", s: "Hvor taper du slag — hull for hull" },
           { href: "/portal/gameplan", ic: "crosshair", l: "Gameplan", s: "Banekart, spredning og hull-for-hull sikte" },
-          { href: "/portal/analysere/datagolf", ic: "trophy", l: "Sammenlign med proffer", s: "Din SG mot DataGolf-baseline" },
+          { href: "/portal/analysere/datagolf", ic: "trophy", l: "DataGolf", s: "mot feltet" },
         ].map((c) => (
           <Link key={c.href} href={c.href} className="v2-press v2-focus" style={{ textDecoration: "none" }}>
             <Kort>
